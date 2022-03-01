@@ -330,7 +330,7 @@ public class Cession implements TKAnnotableObject, Serializable {
 	}
 
 	@Override
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "BANQUE_ID", nullable = false)
 	public Banque getBanque() {
 		return this.banque;
@@ -341,7 +341,7 @@ public class Cession implements TKAnnotableObject, Serializable {
 		this.banque = bank;
 	}
 
-	@ManyToOne(cascade = { CascadeType.PERSIST })
+	@ManyToOne(fetch = FetchType.LAZY,cascade = { CascadeType.PERSIST })
 	@JoinColumn(name = "CESSION_TYPE_ID", nullable = false)
 	public CessionType getCessionType() {
 		return this.cessionType;
@@ -351,7 +351,7 @@ public class Cession implements TKAnnotableObject, Serializable {
 		this.cessionType = type;
 	}
 
-	@ManyToOne(cascade = { CascadeType.PERSIST })
+	@ManyToOne(fetch = FetchType.LAZY,cascade = { CascadeType.PERSIST })
 	@JoinColumn(name = "CESSION_EXAMEN_ID", nullable = true)
 	public CessionExamen getCessionExamen() {
 		return this.cessionExamen;
@@ -361,7 +361,7 @@ public class Cession implements TKAnnotableObject, Serializable {
 		this.cessionExamen = examen;
 	}
 
-	@ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+	@ManyToOne(fetch = FetchType.LAZY,cascade = { CascadeType.PERSIST, CascadeType.MERGE })
 	@JoinColumn(name = "CONTRAT_ID", nullable = true)
 	public Contrat getContrat() {
 		return this.contrat;
@@ -371,7 +371,7 @@ public class Cession implements TKAnnotableObject, Serializable {
 		this.contrat = m;
 	}
 
-	@ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+	@ManyToOne(fetch = FetchType.LAZY,cascade = { CascadeType.PERSIST, CascadeType.MERGE })
 	@JoinColumn(name = "DESTINATAIRE_ID", nullable = true)
 	public Collaborateur getDestinataire() {
 		return this.destinataire;
@@ -381,7 +381,7 @@ public class Cession implements TKAnnotableObject, Serializable {
 		this.destinataire = dest;
 	}
 
-	@ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+	@ManyToOne(fetch = FetchType.LAZY,cascade = { CascadeType.PERSIST, CascadeType.MERGE })
 	@JoinColumn(name = "SERVICE_DEST_ID", nullable = true)
 	public Service getServiceDest() {
 		return this.serviceDest;
@@ -391,7 +391,7 @@ public class Cession implements TKAnnotableObject, Serializable {
 		this.serviceDest = service;
 	}
 
-	@ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+	@ManyToOne(fetch = FetchType.LAZY,cascade = { CascadeType.PERSIST, CascadeType.MERGE })
 	@JoinColumn(name = "DEMANDEUR_ID", nullable = true)
 	public Collaborateur getDemandeur() {
 		return this.demandeur;
@@ -401,7 +401,7 @@ public class Cession implements TKAnnotableObject, Serializable {
 		this.demandeur = dem;
 	}
 
-	@ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+	@ManyToOne(fetch = FetchType.LAZY,cascade = { CascadeType.PERSIST, CascadeType.MERGE })
 	@JoinColumn(name = "CESSION_STATUT_ID", nullable = false)
 	public CessionStatut getCessionStatut() {
 		return this.cessionStatut;
@@ -411,7 +411,7 @@ public class Cession implements TKAnnotableObject, Serializable {
 		this.cessionStatut = statut;
 	}
 
-	@ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+	@ManyToOne(fetch = FetchType.LAZY,cascade = { CascadeType.PERSIST, CascadeType.MERGE })
 	@JoinColumn(name = "EXECUTANT_ID", nullable = true)
 	public Collaborateur getExecutant() {
 		return this.executant;
@@ -421,7 +421,7 @@ public class Cession implements TKAnnotableObject, Serializable {
 		this.executant = exe;
 	}
 
-	@ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+	@ManyToOne(fetch = FetchType.LAZY,cascade = { CascadeType.PERSIST, CascadeType.MERGE })
 	@JoinColumn(name = "TRANSPORTEUR_ID", nullable = true)
 	public Transporteur getTransporteur() {
 		return this.transporteur;
@@ -431,7 +431,7 @@ public class Cession implements TKAnnotableObject, Serializable {
 		this.transporteur = transport;
 	}
 
-	@ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+	@ManyToOne(fetch = FetchType.LAZY,cascade = { CascadeType.PERSIST, CascadeType.MERGE })
 	@JoinColumn(name = "DESTRUCTION_MOTIF_ID", nullable = true)
 	public DestructionMotif getDestructionMotif() {
 		return this.destructionMotif;

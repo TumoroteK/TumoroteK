@@ -39,6 +39,7 @@ import java.io.Serializable;
 
 import javax.persistence.Embeddable;
 import javax.persistence.ManyToOne;
+import javax.persistence.FetchType;
 
 import fr.aphp.tumorotek.model.qualite.OperationType;
 import fr.aphp.tumorotek.model.systeme.Entite;
@@ -72,7 +73,7 @@ public class DroitObjetPK implements Serializable
       this.operationType = type;
    }
 
-   @ManyToOne(targetEntity = Entite.class)
+   @ManyToOne(fetch = FetchType.EAGER,targetEntity = Entite.class)
    public Entite getEntite(){
       return entite;
    }
@@ -81,7 +82,7 @@ public class DroitObjetPK implements Serializable
       this.entite = e;
    }
 
-   @ManyToOne(targetEntity = Profil.class)
+   @ManyToOne(fetch = FetchType.EAGER,targetEntity = Profil.class)
    public Profil getProfil(){
       return profil;
    }
@@ -90,7 +91,7 @@ public class DroitObjetPK implements Serializable
       this.profil = p;
    }
 
-   @ManyToOne(targetEntity = OperationType.class)
+   @ManyToOne(fetch = FetchType.LAZY,targetEntity = OperationType.class)
    public OperationType getOperationType(){
       return operationType;
    }

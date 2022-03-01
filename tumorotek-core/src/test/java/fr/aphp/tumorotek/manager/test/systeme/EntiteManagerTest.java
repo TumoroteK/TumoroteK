@@ -44,11 +44,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 
 import fr.aphp.tumorotek.dao.contexte.BanqueDao;
 import fr.aphp.tumorotek.manager.systeme.EntiteManager;
 import fr.aphp.tumorotek.manager.test.AbstractManagerTest4;
+import fr.aphp.tumorotek.manager.test.Config;
 import fr.aphp.tumorotek.model.coeur.annotation.ChampAnnotation;
 import fr.aphp.tumorotek.model.coeur.echantillon.Echantillon;
 import fr.aphp.tumorotek.model.coeur.prodderive.ProdDerive;
@@ -61,14 +67,18 @@ import fr.aphp.tumorotek.model.systeme.Entite;
  * Classe créée le 30/09/09.
  *
  * @author Pierre Ventadour.
- * @version 2.0
+ * @version 2.3
  *
  */
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = { Config.class })
+@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class })
 public class EntiteManagerTest extends AbstractManagerTest4
 {
 
    @Autowired
    private EntiteManager entiteManager;
+   
    @Autowired
    private BanqueDao banqueDao;
 
@@ -169,7 +179,7 @@ public class EntiteManagerTest extends AbstractManagerTest4
       assertTrue(ids.contains(3));
       assertTrue(ids.contains(4));
 
-      banks.add(banqueDao.findById(1)).orElse(null);
+      banks.add(banqueDao.findById(1).orElse(null));
       ids = entiteManager.findIdsByEntiteAndIdAfterBanqueFiltreManager(echan, ids, banks);
       assertTrue(ids.size() == 2);
       assertTrue(ids.contains(2));
@@ -177,7 +187,7 @@ public class EntiteManagerTest extends AbstractManagerTest4
 
       final Entite prod = entiteManager.findByIdManager(8);
       banks.clear();
-      banks.add(banqueDao.findById(2)).orElse(null);
+      banks.add(banqueDao.findById(2).orElse(null));
       ids = entiteManager.findIdsByEntiteAndIdAfterBanqueFiltreManager(prod, ids, banks);
       assertTrue(ids.isEmpty());
 
@@ -186,7 +196,7 @@ public class EntiteManagerTest extends AbstractManagerTest4
       assertTrue(ids.size() == 1);
       assertTrue(ids.contains(4));
 
-      banks.add(banqueDao.findById(1)).orElse(null);
+      banks.add(banqueDao.findById(1).orElse(null));
       ids.add(1);
       ids.add(2);
       ids.add(3);
@@ -199,7 +209,7 @@ public class EntiteManagerTest extends AbstractManagerTest4
       assertTrue(ids.contains(4));
 
       final Entite cession = entiteManager.findByIdManager(5);
-      banks.remove(banqueDao.findById(2)).orElse(null);
+      banks.remove(banqueDao.findById(2).orElse(null));
       assertTrue(entiteManager.findIdsByEntiteAndIdAfterBanqueFiltreManager(cession, ids, banks).size() == 3);
 
       final Entite prelevement = entiteManager.findByIdManager(2);

@@ -152,7 +152,7 @@ public class CederObjet implements Serializable, TKdataObject {
 		this.pk.setEntite(e);
 	}
 
-	@ManyToOne(cascade = { CascadeType.PERSIST })
+	@ManyToOne(fetch = FetchType.LAZY,cascade = { CascadeType.PERSIST })
 	@JoinColumn(name = "QUANTITE_UNITE_ID", nullable = true)
 	public Unite getQuantiteUnite() {
 		return this.quantiteUnite;
@@ -172,7 +172,7 @@ public class CederObjet implements Serializable, TKdataObject {
 		this.statut = statut;
 	}
 
-	@OneToMany(fetch = FetchType.EAGER)
+	@OneToMany(fetch = FetchType.LAZY)
 	@JoinTable(name = "CEDER_OBJET_PROD_DERIVE", joinColumns = {
 			@JoinColumn(name = "CESSION_ID", referencedColumnName = "CESSION_ID"),
 			@JoinColumn(name = "ENTITE_ID", referencedColumnName = "ENTITE_ID"),

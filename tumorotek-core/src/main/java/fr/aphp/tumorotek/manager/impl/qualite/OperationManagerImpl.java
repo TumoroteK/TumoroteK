@@ -64,6 +64,7 @@ import fr.aphp.tumorotek.dao.systeme.EntiteDao;
 import fr.aphp.tumorotek.dao.utilisateur.UtilisateurDao;
 import fr.aphp.tumorotek.manager.exception.RequiredObjectIsNullException;
 import fr.aphp.tumorotek.manager.qualite.OperationManager;
+import fr.aphp.tumorotek.manager.qualite.OperationManagerOld;
 import fr.aphp.tumorotek.manager.validation.BeanValidator;
 import fr.aphp.tumorotek.manager.validation.qualite.OperationValidator;
 import fr.aphp.tumorotek.model.TKFantomableObject;
@@ -84,7 +85,7 @@ import fr.aphp.tumorotek.utils.Utils;
  * @version 2.0
  *
  */
-public class OperationManagerImpl implements OperationManager
+public class OperationManagerImpl implements OperationManagerOld
 {
 
    private final Log log = LogFactory.getLog(OperationManager.class);

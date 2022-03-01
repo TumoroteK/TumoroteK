@@ -45,6 +45,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
@@ -147,7 +148,7 @@ public class Plateforme implements java.io.Serializable, TKFantomableObject, TKd
       this.alias = a;
    }
 
-   @ManyToOne
+   @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "COLLABORATEUR_ID", nullable = true)
    public Collaborateur getCollaborateur(){
       return collaborateur;

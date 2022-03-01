@@ -47,6 +47,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -226,7 +227,7 @@ public class Contrat implements TKdataObject, TKFantomableObject, Serializable {
 		this.description = desc;
 	}
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "PLATEFORME_ID", nullable = false)
 	public Plateforme getPlateforme() {
 		return plateforme;
@@ -236,7 +237,7 @@ public class Contrat implements TKdataObject, TKFantomableObject, Serializable {
 		this.plateforme = p;
 	}
 
-	@ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+	@ManyToOne(fetch = FetchType.LAZY,cascade = { CascadeType.PERSIST, CascadeType.MERGE })
 	@JoinColumn(name = "PROTOCOLE_TYPE_ID", nullable = true)
 	public ProtocoleType getProtocoleType() {
 		return this.protocoleType;
@@ -246,7 +247,7 @@ public class Contrat implements TKdataObject, TKFantomableObject, Serializable {
 		this.protocoleType = protocole;
 	}
 
-	@ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+	@ManyToOne(fetch = FetchType.LAZY,cascade = { CascadeType.PERSIST, CascadeType.MERGE })
 	@JoinColumn(name = "SERVICE_ID", nullable = true)
 	public Service getService() {
 		return this.service;
@@ -256,7 +257,7 @@ public class Contrat implements TKdataObject, TKFantomableObject, Serializable {
 		this.service = serv;
 	}
 
-	@ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+	@ManyToOne(fetch = FetchType.LAZY,cascade = { CascadeType.PERSIST, CascadeType.MERGE })
 	@JoinColumn(name = "COLLABORATEUR_ID", nullable = true)
 	public Collaborateur getCollaborateur() {
 		return this.collaborateur;
@@ -275,7 +276,7 @@ public class Contrat implements TKdataObject, TKFantomableObject, Serializable {
 		this.montant = m;
 	}
 
-	@ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+	@ManyToOne(fetch = FetchType.LAZY,cascade = { CascadeType.PERSIST, CascadeType.MERGE })
 	@JoinColumn(name = "ETABLISSEMENT_ID", nullable = true)
 	public Etablissement getEtablissement() {
 		return etablissement;

@@ -49,6 +49,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.OrderBy;
@@ -132,7 +133,7 @@ public class Maladie extends TKDelegetableObject<Maladie> implements TKdataObjec
 		this.maladieId = id;
 	}
 
-	@ManyToOne(cascade = { CascadeType.REFRESH })
+	@ManyToOne(fetch = FetchType.LAZY,cascade = { CascadeType.REFRESH })
 	@JoinColumn(name = "PATIENT_ID", nullable = false)
 	public Patient getPatient() {
 		return this.patient;

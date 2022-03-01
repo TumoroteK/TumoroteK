@@ -42,6 +42,7 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -199,9 +200,9 @@ public class Transporteur implements TKFantomableObject, TKdataObject, Serializa
       this.archive = arch;
    }
 
-   //	@ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE })
+   //	@ManyToOne(fetch = FetchType.LAZY,cascade = {CascadeType.PERSIST, CascadeType.MERGE })
    //	@JoinColumn(name = "COORDONNEE_ID", nullable = true)
-   @OneToOne(optional = true, cascade = CascadeType.ALL)
+   @OneToOne(optional = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
    @JoinColumn(name = "COORDONNEE_ID", nullable = true)
    public Coordonnee getCoordonnee(){
       return coordonnee;

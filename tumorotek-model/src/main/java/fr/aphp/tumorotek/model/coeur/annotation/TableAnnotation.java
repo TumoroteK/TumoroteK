@@ -46,6 +46,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.FetchType;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -152,7 +153,7 @@ public class TableAnnotation implements TKFantomableObject, TKdataObject, Serial
 		this.description = descr;
 	}
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ENTITE_ID", nullable = false)
 	public Entite getEntite() {
 		return this.entite;
@@ -162,7 +163,7 @@ public class TableAnnotation implements TKFantomableObject, TKdataObject, Serial
 		this.entite = en;
 	}
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "CATALOGUE_ID", nullable = true)
 	public Catalogue getCatalogue() {
 		return catalogue;
@@ -172,7 +173,7 @@ public class TableAnnotation implements TKFantomableObject, TKdataObject, Serial
 		this.catalogue = cata;
 	}
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "PLATEFORME_ID", nullable = true)
 	public Plateforme getPlateforme() {
 		return plateforme;

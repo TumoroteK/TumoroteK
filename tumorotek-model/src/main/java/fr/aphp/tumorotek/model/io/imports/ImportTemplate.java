@@ -46,6 +46,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -103,7 +104,7 @@ public class ImportTemplate implements java.io.Serializable, TKdataObject
       this.importTemplateId = id;
    }
 
-   @ManyToOne
+   @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "BANQUE_ID", nullable = false)
    public Banque getBanque(){
       return banque;
@@ -140,7 +141,7 @@ public class ImportTemplate implements java.io.Serializable, TKdataObject
       this.isEditable = e;
    }
 
-   @ManyToOne
+   @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "DERIVE_PARENT_ENTITE_ID", nullable = true)
    public Entite getDeriveParentEntite(){
       return this.deriveParentEntite;

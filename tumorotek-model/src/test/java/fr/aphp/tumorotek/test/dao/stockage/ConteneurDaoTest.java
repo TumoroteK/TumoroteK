@@ -380,8 +380,8 @@ public class ConteneurDaoTest extends AbstractDaoTest {
 	/**
 	 * Test la méthode clone.
 	 */
-	@Transactional
 	@Test
+	@Transactional
 	public void testClone() {
 		final Conteneur c1 = conteneurDao.findById(1).get();
 		Conteneur c2 = new Conteneur();

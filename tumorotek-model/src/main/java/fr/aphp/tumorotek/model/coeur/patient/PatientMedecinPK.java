@@ -39,6 +39,7 @@ import java.io.Serializable;
 
 import javax.persistence.Embeddable;
 import javax.persistence.ManyToOne;
+import javax.persistence.FetchType;
 
 import fr.aphp.tumorotek.model.contexte.Collaborateur;
 
@@ -69,7 +70,7 @@ public class PatientMedecinPK implements Serializable {
 		this.patient = p;
 	}
 
-	@ManyToOne(targetEntity = Collaborateur.class)
+	@ManyToOne(fetch = FetchType.LAZY,targetEntity = Collaborateur.class)
 	public Collaborateur getCollaborateur() {
 		return this.collaborateur;
 	}
@@ -78,7 +79,7 @@ public class PatientMedecinPK implements Serializable {
 		this.collaborateur = c;
 	}
 
-	@ManyToOne(targetEntity = Patient.class)
+	@ManyToOne(fetch = FetchType.LAZY,targetEntity = Patient.class)
 	public Patient getPatient() {
 		return patient;
 	}

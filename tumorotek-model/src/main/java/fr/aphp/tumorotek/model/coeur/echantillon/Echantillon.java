@@ -368,7 +368,7 @@ public class Echantillon extends TKDelegetableObject<Echantillon>
 	}
 
 	@Override
-	@ManyToOne(optional = false)
+	@ManyToOne(fetch = FetchType.LAZY,optional = false)
 	@JoinColumn(name = "BANQUE_ID")
 	public Banque getBanque() {
 		return banque;
@@ -380,7 +380,7 @@ public class Echantillon extends TKDelegetableObject<Echantillon>
 	}
 
 	@Override
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "OBJET_STATUT_ID", nullable = false)
 	public ObjetStatut getObjetStatut() {
 		return this.objetStatut;
@@ -391,7 +391,7 @@ public class Echantillon extends TKDelegetableObject<Echantillon>
 		this.objetStatut = objetStat;
 	}
 
-	@ManyToOne(cascade = { CascadeType.MERGE })
+	@ManyToOne(fetch = FetchType.LAZY,cascade = { CascadeType.MERGE })
 	@JoinColumn(name = "ECHAN_QUALITE_ID", nullable = true)
 	public EchanQualite getEchanQualite() {
 		return this.echanQualite;
@@ -401,7 +401,7 @@ public class Echantillon extends TKDelegetableObject<Echantillon>
 		this.echanQualite = qualite;
 	}
 
-	@ManyToOne(cascade = { CascadeType.MERGE })
+	@ManyToOne(fetch = FetchType.LAZY,cascade = { CascadeType.MERGE })
 	@JoinColumn(name = "MODE_PREPA_ID", nullable = true)
 	public ModePrepa getModePrepa() {
 		return this.modePrepa;
@@ -412,7 +412,7 @@ public class Echantillon extends TKDelegetableObject<Echantillon>
 	}
 
 	@Override
-	@ManyToOne(cascade = { CascadeType.MERGE })
+	@ManyToOne(fetch = FetchType.LAZY,cascade = { CascadeType.MERGE })
 	@JoinColumn(name = "QUANTITE_UNITE_ID", nullable = true)
 	public Unite getQuantiteUnite() {
 		return this.quantiteUnite;
@@ -423,7 +423,7 @@ public class Echantillon extends TKDelegetableObject<Echantillon>
 		this.quantiteUnite = qUnite;
 	}
 
-	@ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+	@ManyToOne(fetch = FetchType.LAZY,cascade = { CascadeType.PERSIST, CascadeType.MERGE })
 	@JoinColumn(name = "COLLABORATEUR_ID", nullable = true)
 	public Collaborateur getCollaborateur() {
 		return this.collaborateur;
@@ -445,7 +445,7 @@ public class Echantillon extends TKDelegetableObject<Echantillon>
 		this.emplacement = empl;
 	}
 
-	@OneToOne
+	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "CR_ANAPATH_ID", nullable = true)
 	public Fichier getCrAnapath() {
 		return this.crAnapath;
@@ -455,7 +455,7 @@ public class Echantillon extends TKDelegetableObject<Echantillon>
 		this.crAnapath = f;
 	}
 
-	@ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+	@ManyToOne(fetch = FetchType.LAZY,cascade = { CascadeType.PERSIST, CascadeType.MERGE })
 	@JoinColumn(name = "ECHANTILLON_TYPE_ID", nullable = false)
 	public EchantillonType getEchantillonType() {
 		return this.echantillonType;
@@ -465,7 +465,7 @@ public class Echantillon extends TKDelegetableObject<Echantillon>
 		this.echantillonType = type;
 	}
 
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "PRELEVEMENT_ID", nullable = true)
 	public Prelevement getPrelevement() {
 		return this.prelevement;

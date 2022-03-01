@@ -38,6 +38,7 @@ package fr.aphp.tumorotek.model.coeur.patient.serotk;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.FetchType;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -66,7 +67,7 @@ public class MaladieSero extends AbstractMaladieDelegate
    // Constructeur
    public MaladieSero(){}
 
-   @ManyToOne
+   @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "DIAGNOSTIC_ID")
    public Diagnostic getDiagnostic(){
       return diagnostic;

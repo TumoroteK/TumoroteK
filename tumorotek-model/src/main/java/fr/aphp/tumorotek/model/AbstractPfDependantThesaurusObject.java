@@ -39,6 +39,7 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.FetchType;
 import javax.persistence.MappedSuperclass;
 
 import fr.aphp.tumorotek.model.contexte.Plateforme;
@@ -56,7 +57,7 @@ public abstract class AbstractPfDependantThesaurusObject extends AbstractThesaur
    private Plateforme plateforme;
    
    @Override
-   @ManyToOne
+   @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "PLATEFORME_ID", nullable = false)
    public Plateforme getPlateforme(){
       return this.plateforme;

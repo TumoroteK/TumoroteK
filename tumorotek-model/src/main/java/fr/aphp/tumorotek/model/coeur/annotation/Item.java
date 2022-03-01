@@ -46,6 +46,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -120,7 +121,7 @@ public class Item implements Serializable {
 		this.valeur = v;
 	}
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "CHAMP_ANNOTATION_ID", nullable = false)
 	public ChampAnnotation getChampAnnotation() {
 		return this.champAnnotation;
@@ -130,7 +131,7 @@ public class Item implements Serializable {
 		this.champAnnotation = chp;
 	}
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "PLATEFORME_ID", nullable = true)
 	public Plateforme getPlateforme() {
 		return plateforme;

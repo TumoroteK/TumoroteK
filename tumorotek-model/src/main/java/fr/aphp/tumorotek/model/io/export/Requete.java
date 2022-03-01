@@ -45,6 +45,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -145,7 +146,7 @@ public class Requete implements TKdataObject, Comparable<Requete>
       this.groupementRacine = gRacine;
    }
 
-   @ManyToOne(optional = false)
+   @ManyToOne(fetch = FetchType.LAZY,optional = false)
    @JoinColumn(name = "BANQUE_ID")
    public Banque getBanque(){
       return banque;

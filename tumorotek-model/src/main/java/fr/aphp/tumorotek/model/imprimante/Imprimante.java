@@ -46,6 +46,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -180,7 +181,7 @@ public class Imprimante implements TKdataObject, Serializable
       this.mbioPrinter = m;
    }
 
-   @ManyToOne()
+   @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "IMPRIMANTE_API_ID", nullable = false)
    public ImprimanteApi getImprimanteApi(){
       return imprimanteApi;
@@ -190,7 +191,7 @@ public class Imprimante implements TKdataObject, Serializable
       this.imprimanteApi = iApi;
    }
 
-   @ManyToOne()
+   @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "PLATEFORME_ID", nullable = false)
    public Plateforme getPlateforme(){
       return plateforme;

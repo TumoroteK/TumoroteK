@@ -186,6 +186,7 @@ public class UniteManagerTest extends AbstractManagerTest4
     * Test d'un CRUD.
     */
    @Test
+   // @Transactional(transactionManager = "transactionManager")
    public void testCrud(){
       // Test de l'insertion
       final Unite unite1 = new Unite();

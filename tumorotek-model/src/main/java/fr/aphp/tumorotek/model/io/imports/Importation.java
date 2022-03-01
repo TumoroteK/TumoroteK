@@ -42,6 +42,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.FetchType;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
@@ -101,7 +102,7 @@ public class Importation implements java.io.Serializable
       this.objetId = id;
    }
 
-   @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+   @ManyToOne(fetch = FetchType.LAZY,cascade = {CascadeType.PERSIST, CascadeType.MERGE})
    @JoinColumn(name = "ENTITE_ID", nullable = false)
    public Entite getEntite(){
       return entite;
@@ -111,7 +112,7 @@ public class Importation implements java.io.Serializable
       this.entite = e;
    }
 
-   @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+   @ManyToOne(fetch = FetchType.LAZY,cascade = {CascadeType.PERSIST, CascadeType.MERGE})
    @JoinColumn(name = "IMPORT_HISTORIQUE_ID", nullable = true)
    public ImportHistorique getImportHistorique(){
       return importHistorique;

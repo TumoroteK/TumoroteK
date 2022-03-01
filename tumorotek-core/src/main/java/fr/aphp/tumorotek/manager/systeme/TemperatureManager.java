@@ -37,61 +37,103 @@ package fr.aphp.tumorotek.manager.systeme;
 
 import java.util.List;
 
+import org.apache.commons.collections4.IterableUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.Validator;
+
+import fr.aphp.tumorotek.dao.systeme.TemperatureDao;
+import fr.aphp.tumorotek.manager.exception.DoublonFoundException;
+import fr.aphp.tumorotek.manager.systeme.TemperatureManager;
+import fr.aphp.tumorotek.manager.validation.BeanValidator;
+import fr.aphp.tumorotek.manager.validation.systeme.TemperatureValidator;
 import fr.aphp.tumorotek.model.systeme.Temperature;
 
 /**
- *
- * Interface pour le manager du bean de domaine Temperature. Interface créée le
- * 07/07/2010.
- *
- * @author Pierre Ventadour
- * @version 2.0
+ * 
+ * @version 2.3
+ * @author Mathieu BARTHELEMY
  *
  */
-public interface TemperatureManager {
+@Service
+public class TemperatureManager {
 
-	/**
-	 * Recherche une Temperature dont l'identifiant est passé en paramètre.
-	 * 
-	 * @param temperatureId Identifiant de la Temperature que l'on recherche.
-	 * @return Une Temperature.
-	 */
-	Temperature findByIdManager(Integer temperatureId);
+	private final Log log = LogFactory.getLog(TemperatureManager.class);
 
-	/**
-	 * Recherche toutes les Temperatures présentes dans la base.
-	 * 
-	 * @return Liste de Temperatures.
-	 */
-	List<Temperature> findAllObjectsManager();
+	@Autowired
+	private TemperatureDao temperatureDao;
 
-	/**
-	 * Recherche les doublons de la Temperature passée en paramètre.
-	 * 
-	 * @param temperature Temperature pour laquelle on cherche des doublons.
-	 * @return True s'il existe des doublons.
-	 */
-	Boolean findDoublonManager(Temperature temperature);
+	@Autowired
+	private TemperatureValidator temperatureValidator;
 
-	/**
-	 * Persist une instance de Temperature dans la base de données.
-	 * 
-	 * @param temperature Nouvelle instance de l'objet à créer.
-	 */
-	void createObjectManager(Temperature temperature);
+	@Transactional(readOnly = true)
+	public Temperature findByIdManager(final Integer temperatureId) {
+		return temperatureDao.findById(temperatureId).orElse(null);
+	}
 
-	/**
-	 * Sauvegarde les modifications apportées à un objet persistant.
-	 * 
-	 * @param temperature Objet à mettre à jour dans la base.
-	 */
-	void updateObjectManager(Temperature temperature);
+	@Transactional(readOnly = true)
+	public List<Temperature> findAllObjectsManager() {
+		log.debug("Recherche de toutes les Températures");
+		return IterableUtils.toList(temperatureDao.findAll());
+	}
 
-	/**
-	 * Supprime une Temperature de la base de données.
-	 * 
-	 * @param temperature Temperature à supprimer de la base de données.
-	 */
-	void removeObjectManager(Temperature temperature);
+	@Transactional(readOnly = true)
+	public Boolean findDoublonManager(final Temperature temperature) {
+		if (temperature != null) {
+			if (temperature.getTemperatureId() == null) {
+				return IterableUtils.toList(temperatureDao.findAll()).contains(temperature);
+			} else {
+				return temperatureDao.findByExcludedId(temperature.getTemperatureId()).contains(temperature);
+			}
+		} else {
+			return false;
+		}
+	}
 
+	@Transactional
+	public void createObjectManager(final Temperature temperature) {
+		// Test s'il y a des doublons
+		if (findDoublonManager(temperature)) {
+			log.warn("Doublon lors de la creation de l'objet Temperature : " + temperature.toString());
+			throw new DoublonFoundException("Temperature", "creation");
+		} else {
+
+			// validation du Contrat
+			BeanValidator.validateObject(temperature, new Validator[] { temperatureValidator });
+
+			temperatureDao.save(temperature);
+
+			log.info("Enregistrement de l'objet Temperature : " + temperature.toString());
+		}
+	}
+
+	@Transactional
+	public void updateObjectManager(final Temperature temperature) {
+		// Test s'il y a des doublons
+		if (findDoublonManager(temperature)) {
+			log.warn("Doublon lors de la modification de " + "l'objet Temperature : " + temperature.toString());
+			throw new DoublonFoundException("Temperature", "modification");
+		} else {
+
+			// validation du Contrat
+			BeanValidator.validateObject(temperature, new Validator[] { temperatureValidator });
+
+			temperatureDao.save(temperature);
+
+			log.info("Enregistrement de l'objet Temperature : " + temperature.toString());
+		}
+	}
+
+	@Transactional
+	public void removeObjectManager(final Temperature temperature) {
+		if (temperature != null) {
+			temperatureDao.deleteById(temperature.getTemperatureId());
+			log.info("Suppression de l'objet Temperature : " + temperature.toString());
+		} else {
+			log.warn("Suppression d'une Temperature null");
+		}
+	}
 }

@@ -48,6 +48,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
@@ -224,7 +225,7 @@ public class Conteneur implements TKdataObject, TKFantomableObject, Serializable
       this.archive = arch;
    }
 
-   @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+   @ManyToOne(fetch = FetchType.LAZY,cascade = {CascadeType.PERSIST, CascadeType.MERGE})
    @JoinColumn(name = "CONTENEUR_TYPE_ID", nullable = true)
    public ConteneurType getConteneurType(){
       return this.conteneurType;
@@ -234,7 +235,7 @@ public class Conteneur implements TKdataObject, TKFantomableObject, Serializable
       this.conteneurType = cType;
    }
 
-   @ManyToOne
+   @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "SERVICE_ID", nullable = false)
    public Service getService(){
       return this.service;
@@ -244,7 +245,7 @@ public class Conteneur implements TKdataObject, TKFantomableObject, Serializable
       this.service = serv;
    }
 
-   @ManyToOne
+   @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "PLATEFORME_ORIG_ID", nullable = false)
    public Plateforme getPlateformeOrig(){
       return plateformeOrig;

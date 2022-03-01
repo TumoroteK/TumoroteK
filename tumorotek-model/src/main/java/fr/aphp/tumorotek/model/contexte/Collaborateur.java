@@ -36,6 +36,7 @@
 package fr.aphp.tumorotek.model.contexte;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -47,6 +48,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
@@ -221,7 +223,7 @@ public class Collaborateur implements TKdataObject, TKFantomableObject, java.io.
       this.archive = arch;
    }
 
-   @ManyToOne
+   @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "ETABLISSEMENT_ID", nullable = true)
    public Etablissement getEtablissement(){
       return etablissement;
@@ -243,7 +245,7 @@ public class Collaborateur implements TKdataObject, TKFantomableObject, java.io.
       this.coordonnees = cs;
    }
 
-   @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+   @ManyToOne(fetch = FetchType.LAZY,cascade = {CascadeType.PERSIST, CascadeType.MERGE})
    @JoinColumn(name = "SPECIALITE_ID", nullable = true)
    public Specialite getSpecialite(){
       return specialite;
@@ -253,7 +255,7 @@ public class Collaborateur implements TKdataObject, TKFantomableObject, java.io.
       this.specialite = s;
    }
 
-   @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+   @ManyToOne(fetch = FetchType.LAZY,cascade = {CascadeType.PERSIST, CascadeType.MERGE})
    @JoinColumn(name = "TITRE_ID", nullable = true)
    public Titre getTitre(){
       return titre;
@@ -426,16 +428,10 @@ public class Collaborateur implements TKdataObject, TKFantomableObject, java.io.
    @Override
    public boolean equals(final Object obj){
 
-      if(this == obj){
-         return true;
-      }
-      if((obj == null) || obj.getClass() != this.getClass()){
-         return false;
-      }
-      final Collaborateur test = (Collaborateur) obj;
-      return ((this.nom == test.nom || (this.nom != null && this.nom.equals(test.nom)))
-         && (this.prenom == test.prenom || (this.prenom != null && this.prenom.equals(test.prenom)))
-         && (this.specialite == test.specialite || (this.specialite != null && this.specialite.equals(test.specialite))));
+	  Collaborateur c = (Collaborateur) obj;
+      return Objects.equals(nom, c.nom)
+         && Objects.equals(prenom, c.prenom)
+         && Objects.equals(specialite, c.specialite);
    }
 
    /**

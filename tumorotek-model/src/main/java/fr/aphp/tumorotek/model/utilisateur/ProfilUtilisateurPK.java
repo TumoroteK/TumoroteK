@@ -39,6 +39,7 @@ import java.io.Serializable;
 
 import javax.persistence.Embeddable;
 import javax.persistence.ManyToOne;
+import javax.persistence.FetchType;
 
 import fr.aphp.tumorotek.model.contexte.Banque;
 
@@ -72,7 +73,7 @@ public class ProfilUtilisateurPK implements Serializable
       this.banque = bank;
    }
 
-   @ManyToOne(targetEntity = Profil.class)
+   @ManyToOne(fetch = FetchType.EAGER,targetEntity = Profil.class)
    public Profil getProfil(){
       return profil;
    }
@@ -81,7 +82,7 @@ public class ProfilUtilisateurPK implements Serializable
       this.profil = prof;
    }
 
-   @ManyToOne
+   @ManyToOne(fetch = FetchType.EAGER)
    public Utilisateur getUtilisateur(){
       return utilisateur;
    }
@@ -90,7 +91,7 @@ public class ProfilUtilisateurPK implements Serializable
       this.utilisateur = user;
    }
 
-   @ManyToOne
+   @ManyToOne(fetch = FetchType.LAZY)
    public Banque getBanque(){
       return banque;
    }

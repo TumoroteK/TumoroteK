@@ -44,6 +44,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.FetchType;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
@@ -101,7 +102,7 @@ public class PatientSipSejour
       this.dateSejour = date;
    }
 
-   @ManyToOne(cascade = {CascadeType.REFRESH})
+   @ManyToOne(fetch = FetchType.LAZY,cascade = {CascadeType.REFRESH})
    @JoinColumn(name = "PATIENT_SIP_ID", nullable = false)
    public PatientSip getPatientSip(){
       return this.patientSip;

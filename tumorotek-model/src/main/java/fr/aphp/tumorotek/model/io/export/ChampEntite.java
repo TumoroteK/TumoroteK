@@ -44,6 +44,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -139,7 +140,7 @@ public class ChampEntite extends AbstractTKChamp implements Comparable<ChampEnti
       this.setId(chId);
    }
    
-   @ManyToOne
+   @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "ENTITE_ID", nullable = false)
    public Entite getEntite(){
       return entite;
@@ -185,7 +186,7 @@ public class ChampEntite extends AbstractTKChamp implements Comparable<ChampEnti
       this.valeurDefaut = valDefaut;
    }
 
-   @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+   @ManyToOne(fetch = FetchType.LAZY,cascade = {CascadeType.PERSIST, CascadeType.MERGE})
    @JoinColumn(name = "QUERY_CHAMP_ID", nullable = true)
    public ChampEntite getQueryChamp(){
       return queryChamp;

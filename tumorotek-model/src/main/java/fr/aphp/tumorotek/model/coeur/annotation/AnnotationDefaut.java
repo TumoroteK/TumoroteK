@@ -45,6 +45,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.FetchType;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -165,7 +166,7 @@ public class AnnotationDefaut extends AnnotationCommon implements Serializable {
 	}
 
 	@Override
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "BANQUE_ID", nullable = true)
 	public Banque getBanque() {
 		return banque;
@@ -182,7 +183,7 @@ public class AnnotationDefaut extends AnnotationCommon implements Serializable {
 	 * contrairement aux valeurs qui sont assignees aux objets ultérieurement.
 	 */
 	@Override
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ITEM_ID", nullable = true)
 	public Item getItem() {
 		return this.item;
@@ -199,7 +200,7 @@ public class AnnotationDefaut extends AnnotationCommon implements Serializable {
 	 * contrairement aux valeurs qui sont assignees aux objets ultérieurement.
 	 */
 	@Override
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "CHAMP_ANNOTATION_ID", nullable = false)
 	public ChampAnnotation getChampAnnotation() {
 		return this.champAnnotation;

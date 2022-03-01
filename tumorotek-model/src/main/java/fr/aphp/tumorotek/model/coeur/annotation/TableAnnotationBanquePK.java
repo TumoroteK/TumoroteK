@@ -39,6 +39,7 @@ import java.io.Serializable;
 
 import javax.persistence.Embeddable;
 import javax.persistence.ManyToOne;
+import javax.persistence.FetchType;
 
 import fr.aphp.tumorotek.model.contexte.Banque;
 
@@ -69,7 +70,7 @@ public class TableAnnotationBanquePK implements Serializable {
 		this.tableAnnotation = t;
 	}
 
-	@ManyToOne(targetEntity = Banque.class)
+	@ManyToOne(fetch = FetchType.EAGER, targetEntity = Banque.class)
 	public Banque getBanque() {
 		return this.banque;
 	}
@@ -78,7 +79,7 @@ public class TableAnnotationBanquePK implements Serializable {
 		this.banque = b;
 	}
 
-	@ManyToOne(targetEntity = TableAnnotation.class)
+	@ManyToOne(fetch = FetchType.EAGER,targetEntity = TableAnnotation.class)
 	public TableAnnotation getTableAnnotation() {
 		return this.tableAnnotation;
 	}

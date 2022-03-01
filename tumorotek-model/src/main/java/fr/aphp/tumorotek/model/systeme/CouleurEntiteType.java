@@ -43,6 +43,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.FetchType;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
@@ -99,7 +100,7 @@ public class CouleurEntiteType implements Serializable
       this.couleurEntiteTypeId = cId;
    }
 
-   @ManyToOne()
+   @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "COULEUR_ID", nullable = false)
    public Couleur getCouleur(){
       return couleur;
@@ -109,7 +110,7 @@ public class CouleurEntiteType implements Serializable
       this.couleur = c;
    }
 
-   @ManyToOne()
+   @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "BANQUE_ID", nullable = false)
    public Banque getBanque(){
       return banque;
@@ -119,7 +120,7 @@ public class CouleurEntiteType implements Serializable
       this.banque = b;
    }
 
-   @ManyToOne()
+   @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "ECHANTILLON_TYPE_ID", nullable = true)
    public EchantillonType getEchantillonType(){
       return echantillonType;
@@ -129,7 +130,7 @@ public class CouleurEntiteType implements Serializable
       this.echantillonType = eType;
    }
 
-   @ManyToOne()
+   @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "PROD_TYPE_ID", nullable = true)
    public ProdType getProdType(){
       return prodType;

@@ -174,7 +174,7 @@ public class Template extends Object implements TKdataObject, Serializable
       this.piedPage = pied;
    }
 
-   @ManyToOne
+   @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "BANQUE_ID", nullable = false)
    public Banque getBanque(){
       return banque;
@@ -184,7 +184,7 @@ public class Template extends Object implements TKdataObject, Serializable
       this.banque = b;
    }
 
-   @ManyToOne
+   @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "ENTITE_ID", nullable = false)
    public Entite getEntite(){
       return entite;
@@ -212,7 +212,7 @@ public class Template extends Object implements TKdataObject, Serializable
       this.champImprimes = champIs;
    }
 
-   @ManyToMany(targetEntity = CleImpression.class, fetch = FetchType.EAGER)
+   @ManyToMany(targetEntity = CleImpression.class, fetch = FetchType.LAZY)
    @JoinTable(name = "CLE_IMPRESSION_TEMPLATE", joinColumns = @JoinColumn(name = "TEMPLATE_ID"),
    inverseJoinColumns = @JoinColumn(name = "CLE_IMPRESSION_ID"))
    public List<CleImpression> getCleImpressionList(){

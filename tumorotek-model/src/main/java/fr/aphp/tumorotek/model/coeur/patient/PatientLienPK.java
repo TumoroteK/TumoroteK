@@ -39,6 +39,7 @@ import java.io.Serializable;
 
 import javax.persistence.Embeddable;
 import javax.persistence.ManyToOne;
+import javax.persistence.FetchType;
 
 /**
  *
@@ -67,7 +68,7 @@ public class PatientLienPK implements Serializable {
 		this.patient2 = p2;
 	}
 
-	@ManyToOne(targetEntity = Patient.class)
+	@ManyToOne(fetch = FetchType.LAZY,targetEntity = Patient.class)
 	public Patient getPatient1() {
 		return patient1;
 	}
@@ -76,7 +77,7 @@ public class PatientLienPK implements Serializable {
 		this.patient1 = p1;
 	}
 
-	@ManyToOne(targetEntity = Patient.class)
+	@ManyToOne(fetch = FetchType.LAZY,targetEntity = Patient.class)
 	public Patient getPatient2() {
 		return patient2;
 	}

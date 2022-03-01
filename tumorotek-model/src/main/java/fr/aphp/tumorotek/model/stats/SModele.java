@@ -48,6 +48,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
@@ -141,7 +142,7 @@ public class SModele implements Serializable, Comparable<SModele>
       this.banques = banks;
    }
 
-   @ManyToOne
+   @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "PLATEFORME_ID", nullable = false)
    public Plateforme getPlateforme(){
       return plateforme;
@@ -160,7 +161,7 @@ public class SModele implements Serializable, Comparable<SModele>
       this.description = description;
    }
 
-   @ManyToOne
+   @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "SUBDIVISION_ID", nullable = true)
    public Subdivision getSubdivision(){
       return subdivision;

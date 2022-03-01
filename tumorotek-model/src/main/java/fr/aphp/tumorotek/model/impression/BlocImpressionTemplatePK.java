@@ -39,6 +39,7 @@ import java.io.Serializable;
 
 import javax.persistence.Embeddable;
 import javax.persistence.ManyToOne;
+import javax.persistence.FetchType;
 
 /**
  *
@@ -69,7 +70,7 @@ public class BlocImpressionTemplatePK implements Serializable
       this.blocImpression = bloc;
    }
 
-   @ManyToOne(targetEntity = Template.class)
+   @ManyToOne(fetch = FetchType.LAZY,targetEntity = Template.class)
    public Template getTemplate(){
       return template;
    }
@@ -78,7 +79,7 @@ public class BlocImpressionTemplatePK implements Serializable
       this.template = t;
    }
 
-   @ManyToOne(targetEntity = BlocImpression.class)
+   @ManyToOne(fetch = FetchType.LAZY,targetEntity = BlocImpression.class)
    public BlocImpression getBlocImpression(){
       return blocImpression;
    }

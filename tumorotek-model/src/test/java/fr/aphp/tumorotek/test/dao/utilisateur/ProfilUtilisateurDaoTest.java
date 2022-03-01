@@ -48,6 +48,7 @@ import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
+import org.springframework.transaction.annotation.Transactional;
 
 import fr.aphp.tumorotek.dao.contexte.BanqueDao;
 import fr.aphp.tumorotek.dao.contexte.PlateformeDao;
@@ -71,6 +72,7 @@ import fr.aphp.tumorotek.test.dao.Config;
  * @version 2.3
  *
  */
+@Transactional
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = { Config.class })
 @TestExecutionListeners({ DependencyInjectionTestExecutionListener.class, TransactionalTestExecutionListener.class })

@@ -47,6 +47,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -166,7 +167,7 @@ public class Service implements TKdataObject, TKFantomableObject, java.io.Serial
       this.archive = arch;
    }
 
-   @ManyToOne
+   @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "ETABLISSEMENT_ID", nullable = false)
    public Etablissement getEtablissement(){
       return etablissement;
@@ -176,7 +177,7 @@ public class Service implements TKdataObject, TKFantomableObject, java.io.Serial
       this.etablissement = e;
    }
 
-   @OneToOne(optional = true, cascade = CascadeType.ALL)
+   @OneToOne(optional = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
    @JoinColumn(name = "COORDONNEE_ID", nullable = true)
    public Coordonnee getCoordonnee(){
       return coordonnee;

@@ -37,48 +37,65 @@ package fr.aphp.tumorotek.manager.systeme;
 
 import java.util.List;
 
+import org.apache.commons.collections4.IterableUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import fr.aphp.tumorotek.dao.systeme.VersionDao;
+import fr.aphp.tumorotek.manager.systeme.VersionManager;
 import fr.aphp.tumorotek.model.systeme.Version;
 
 /**
  *
- * Interface pour le manager du bean de domaine Version. Interface créée le
+ * Implémentation du manager du bean de domaine Version. Interface créée le
  * 26/05/2011.
  *
  * @author Pierre Ventadour
- * @version 2.0
+ * @version 2.3
  *
  */
-public interface VersionManager {
+@Service
+public class VersionManager {
 
-	/**
-	 * Recherche une Version dont l'identifiant est passé en paramètre.
-	 * 
-	 * @param versionId Identifiant de la Version que l'on recherche.
-	 * @return Une Version.
-	 */
-	Version findByIdManager(Integer versionId);
+	private final Log log = LogFactory.getLog(VersionManager.class);
 
-	/**
-	 * Recherche toutes les Versions présentes dans la base.
-	 * 
-	 * @return Liste de Versions.
-	 */
-	List<Version> findAllObjectsManager();
+	@Autowired
+	private VersionDao versionDao;
 
-	/**
-	 * Recherche toutes les Versions présentes dans la base, ordonnées de manière
-	 * chronologique.
-	 * 
-	 * @return Liste de Versions.
-	 */
-	List<Version> findByDateChronologiqueManager();
+	@Transactional(readOnly = true)
+	public Version findByIdManager(final Integer versionId) {
+		return versionDao.findById(versionId).orElse(null);
+	}
 
-	/**
-	 * Recherche la version courante de l'application.
-	 * 
-	 * @return Version courante.
-	 */
-	Version findByCurrentVersionManager();
+	@Transactional(readOnly = true)
+	public List<Version> findAllObjectsManager() {
+		log.debug("Recherche de toutes les Versions.");
+		return IterableUtils.toList(versionDao.findAll());
+	}
 
-   void createObjectManager(Version version);
+	@Transactional(readOnly = true)
+	public List<Version> findByDateChronologiqueManager() {
+		log.debug("Recherche de toutes les Versions par " + "ordre chronologique.");
+		return versionDao.findByDateChronologique();
+	}
+
+	@Transactional(readOnly = true)
+	public Version findByCurrentVersionManager() {
+		log.debug("Recherche de la version courante");
+		final List<Version> versions = versionDao.findByDateAntiChronologique();
+
+		if (versions.size() > 0) {
+			return versions.get(0);
+		} else {
+			return null;
+		}
+	}
+
+	@Transactional
+	public void createObjectManager(final Version version) {
+		versionDao.save(version);
+	}
 }

@@ -447,7 +447,7 @@ public class Prelevement extends TKDelegetableObject<Prelevement> implements TKA
       this.archive = arch;
    }
 
-   @ManyToOne
+   @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "NATURE_ID", nullable = false)
    public Nature getNature(){
       return this.nature;
@@ -457,7 +457,7 @@ public class Prelevement extends TKDelegetableObject<Prelevement> implements TKA
       this.nature = n;
    }
 
-   @ManyToOne
+   @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "PRELEVEMENT_TYPE_ID", nullable = true)
    public PrelevementType getPrelevementType(){
       return this.prelevementType;
@@ -467,7 +467,7 @@ public class Prelevement extends TKDelegetableObject<Prelevement> implements TKA
       this.prelevementType = type;
    }
 
-   @ManyToOne
+   @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "CONDIT_TYPE_ID", nullable = true)
    public ConditType getConditType(){
       return this.conditType;
@@ -477,7 +477,7 @@ public class Prelevement extends TKDelegetableObject<Prelevement> implements TKA
       this.conditType = type;
    }
 
-   @ManyToOne
+   @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "CONDIT_MILIEU_ID", nullable = true)
    public ConditMilieu getConditMilieu(){
       return this.conditMilieu;
@@ -488,7 +488,7 @@ public class Prelevement extends TKDelegetableObject<Prelevement> implements TKA
    }
 
    @Override
-   @ManyToOne
+   @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "BANQUE_ID", nullable = false)
    public Banque getBanque(){
       return this.banque;
@@ -499,7 +499,7 @@ public class Prelevement extends TKDelegetableObject<Prelevement> implements TKA
       this.banque = bank;
    }
 
-   @ManyToOne
+   @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "PRELEVEUR_ID", nullable = true)
    public Collaborateur getPreleveur(){
       return this.preleveur;
@@ -509,7 +509,7 @@ public class Prelevement extends TKDelegetableObject<Prelevement> implements TKA
       this.preleveur = collaborateur;
    }
 
-   @ManyToOne
+   @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "SERVICE_PRELEVEUR_ID", nullable = true)
    public Service getServicePreleveur(){
       return this.servicePreleveur;
@@ -519,7 +519,7 @@ public class Prelevement extends TKDelegetableObject<Prelevement> implements TKA
       this.servicePreleveur = service;
    }
 
-   @ManyToOne
+   @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "TRANSPORTEUR_ID", nullable = true)
    public Transporteur getTransporteur(){
       return this.transporteur;
@@ -529,7 +529,7 @@ public class Prelevement extends TKDelegetableObject<Prelevement> implements TKA
       this.transporteur = transport;
    }
 
-   @ManyToOne
+   @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "OPERATEUR_ID", nullable = true)
    public Collaborateur getOperateur(){
       return this.operateur;
@@ -539,7 +539,7 @@ public class Prelevement extends TKDelegetableObject<Prelevement> implements TKA
       this.operateur = collaborateur;
    }
 
-   @ManyToOne
+   @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "QUANTITE_UNITE_ID", nullable = true)
    public Unite getQuantiteUnite(){
       return this.quantiteUnite;
@@ -549,7 +549,7 @@ public class Prelevement extends TKDelegetableObject<Prelevement> implements TKA
       this.quantiteUnite = unite;
    }
 
-   /*@ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE })
+   /*@ManyToOne(fetch = FetchType.LAZY,cascade = {CascadeType.PERSIST, CascadeType.MERGE })
    @JoinColumn(name = "VOLUME_UNITE_ID", nullable = true)
    public Unite getVolumeUnite() {
    	return this.volumeUnite;
@@ -559,7 +559,7 @@ public class Prelevement extends TKDelegetableObject<Prelevement> implements TKA
    	this.volumeUnite = unite;
    }*/
 
-   @ManyToOne
+   @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "CONSENT_TYPE_ID", nullable = false)
    public ConsentType getConsentType(){
       return this.consentType;
@@ -569,7 +569,7 @@ public class Prelevement extends TKDelegetableObject<Prelevement> implements TKA
       this.consentType = type;
    }
 
-   @ManyToOne
+   @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "MALADIE_ID", nullable = true)
    public Maladie getMaladie(){
       return this.maladie;
@@ -579,7 +579,7 @@ public class Prelevement extends TKDelegetableObject<Prelevement> implements TKA
       this.maladie = m;
    }
 
-   @OneToMany(mappedBy = "prelevement", cascade = {CascadeType.REMOVE}, fetch = FetchType.EAGER)
+   @OneToMany(mappedBy = "prelevement", cascade = {CascadeType.REMOVE}, fetch = FetchType.LAZY)
    public Set<LaboInter> getLaboInters(){
       return this.laboInters;
    }
@@ -598,7 +598,7 @@ public class Prelevement extends TKDelegetableObject<Prelevement> implements TKA
       this.echantillons = echants;
    }
 
-   @ManyToMany(targetEntity = Risque.class, fetch=FetchType.EAGER)
+   @ManyToMany(targetEntity = Risque.class, fetch=FetchType.LAZY)
    @JoinTable(name = "PRELEVEMENT_RISQUE", joinColumns = @JoinColumn(name = "PRELEVEMENT_ID"),
       inverseJoinColumns = @JoinColumn(name = "RISQUE_ID"))
    public Set<Risque> getRisques(){

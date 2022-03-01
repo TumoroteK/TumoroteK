@@ -120,7 +120,7 @@ public class ValeurExterne implements java.io.Serializable
       this.champAnnotationId = c;
    }
 
-   @ManyToOne()
+   @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "BLOC_EXTERNE_ID", nullable = false)
    public BlocExterne getBlocExterne(){
       return blocExterne;

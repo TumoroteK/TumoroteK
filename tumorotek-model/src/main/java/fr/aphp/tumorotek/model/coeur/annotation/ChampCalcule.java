@@ -44,6 +44,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.FetchType;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
@@ -150,7 +151,7 @@ public class ChampCalcule implements Serializable {
 	 * 
 	 * @return Premier champ pour le calcul
 	 */
-	@ManyToOne(cascade = { CascadeType.REMOVE })
+	@ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.REMOVE })
 	@JoinColumn(name = "CHAMP1_ID")
 	public Champ getChamp1() {
 		return champ1;
@@ -170,7 +171,7 @@ public class ChampCalcule implements Serializable {
 	 * 
 	 * @return Deuxième champ pour le calcul
 	 */
-	@ManyToOne(cascade = { CascadeType.REMOVE })
+	@ManyToOne(fetch = FetchType.LAZY,cascade = { CascadeType.REMOVE })
 	@JoinColumn(name = "CHAMP2_ID", nullable = true)
 	public Champ getChamp2() {
 		return champ2;
@@ -230,7 +231,7 @@ public class ChampCalcule implements Serializable {
 	 * 
 	 * @return DataType que retourne le champCalculé
 	 */
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "DATA_TYPE_ID", nullable = false)
 	public DataType getDataType() {
 		return dataType;

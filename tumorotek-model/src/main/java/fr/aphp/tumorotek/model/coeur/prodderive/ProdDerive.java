@@ -341,7 +341,7 @@ public class ProdDerive extends TKDelegetableObject<ProdDerive> implements TKSto
    }
 
    @Override
-   @ManyToOne
+   @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "BANQUE_ID", nullable = false)
    public Banque getBanque(){
       return banque;
@@ -353,7 +353,7 @@ public class ProdDerive extends TKDelegetableObject<ProdDerive> implements TKSto
    }
 
    @Override
-   @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+   @ManyToOne(fetch = FetchType.LAZY,cascade = {CascadeType.PERSIST, CascadeType.MERGE})
    @JoinColumn(name = "QUANTITE_UNITE_ID", nullable = true)
    public Unite getQuantiteUnite(){
       return this.quantiteUnite;
@@ -364,7 +364,7 @@ public class ProdDerive extends TKDelegetableObject<ProdDerive> implements TKSto
       this.quantiteUnite = quantiteU;
    }
 
-   @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+   @ManyToOne(fetch = FetchType.LAZY,cascade = {CascadeType.PERSIST, CascadeType.MERGE})
    @JoinColumn(name = "CONC_UNITE_ID", nullable = true)
    public Unite getConcUnite(){
       return this.concUnite;
@@ -374,7 +374,7 @@ public class ProdDerive extends TKDelegetableObject<ProdDerive> implements TKSto
       this.concUnite = concU;
    }
 
-   @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+   @ManyToOne(fetch = FetchType.LAZY,cascade = {CascadeType.PERSIST, CascadeType.MERGE})
    @JoinColumn(name = "PROD_TYPE_ID", nullable = false)
    public ProdType getProdType(){
       return this.prodType;
@@ -385,7 +385,7 @@ public class ProdDerive extends TKDelegetableObject<ProdDerive> implements TKSto
    }
 
    @Override
-   @ManyToOne
+   @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "OBJET_STATUT_ID", nullable = false)
    public ObjetStatut getObjetStatut(){
       return this.objetStatut;
@@ -396,7 +396,7 @@ public class ProdDerive extends TKDelegetableObject<ProdDerive> implements TKSto
       this.objetStatut = statut;
    }
 
-   @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+   @ManyToOne(fetch = FetchType.LAZY,cascade = {CascadeType.PERSIST, CascadeType.MERGE})
    @JoinColumn(name = "PROD_QUALITE_ID", nullable = true)
    public ProdQualite getProdQualite(){
       return this.prodQualite;
@@ -406,7 +406,7 @@ public class ProdDerive extends TKDelegetableObject<ProdDerive> implements TKSto
       this.prodQualite = qualite;
    }
 
-   @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+   @ManyToOne(fetch = FetchType.LAZY,cascade = {CascadeType.PERSIST, CascadeType.MERGE})
    @JoinColumn(name = "COLLABORATEUR_ID", nullable = true)
    public Collaborateur getCollaborateur(){
       return this.collaborateur;
@@ -416,7 +416,7 @@ public class ProdDerive extends TKDelegetableObject<ProdDerive> implements TKSto
       this.collaborateur = collab;
    }
 
-   //@ManyToOne(fetch = FetchType.LAZY)
+   //@ManyToOne(fetch = FetchType.LAZY,fetch = FetchType.LAZY)
    @Override
    @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.REMOVE})
    @JoinColumn(name = "EMPLACEMENT_ID", nullable = true)
@@ -429,7 +429,7 @@ public class ProdDerive extends TKDelegetableObject<ProdDerive> implements TKSto
       this.emplacement = empl;
    }
 
-   @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+   @ManyToOne(fetch = FetchType.LAZY,cascade = {CascadeType.PERSIST, CascadeType.MERGE})
    @JoinColumn(name = "VOLUME_UNITE_ID", nullable = true)
    public Unite getVolumeUnite(){
       return this.volumeUnite;
@@ -439,7 +439,7 @@ public class ProdDerive extends TKDelegetableObject<ProdDerive> implements TKSto
       this.volumeUnite = volumeU;
    }
 
-   @ManyToOne
+   @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "TRANSFORMATION_ID", nullable = true)
    public Transformation getTransformation(){
       return transformation;
@@ -449,7 +449,7 @@ public class ProdDerive extends TKDelegetableObject<ProdDerive> implements TKSto
       this.transformation = transfo;
    }
 
-   @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+   @ManyToOne(fetch = FetchType.LAZY,cascade = {CascadeType.PERSIST, CascadeType.MERGE})
    @JoinColumn(name = "MODE_PREPA_DERIVE_ID", nullable = true)
    public ModePrepaDerive getModePrepaDerive(){
       return modePrepaDerive;

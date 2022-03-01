@@ -41,6 +41,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.FetchType;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
@@ -110,7 +111,7 @@ public class Fantome
       this.commentaires = c;
    }
 
-   @ManyToOne
+   @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "ENTITE_ID", nullable = false)
    public Entite getEntite(){
       return this.entite;

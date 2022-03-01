@@ -43,6 +43,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.FetchType;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
@@ -114,7 +115,7 @@ public class CodeSelect implements Serializable {
 		this.codeId = code;
 	}
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "TABLE_CODAGE_ID", nullable = false)
 	public TableCodage getTableCodage() {
 		return this.tableCodage;
@@ -124,7 +125,7 @@ public class CodeSelect implements Serializable {
 		this.tableCodage = table;
 	}
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "UTILISATEUR_ID", nullable = false)
 	public Utilisateur getUtilisateur() {
 		return this.utilisateur;
@@ -134,7 +135,7 @@ public class CodeSelect implements Serializable {
 		this.utilisateur = util;
 	}
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "BANQUE_ID", nullable = false)
 	public Banque getBanque() {
 		return this.banque;
@@ -144,7 +145,7 @@ public class CodeSelect implements Serializable {
 		this.banque = bank;
 	}
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "CODE_DOSSIER_ID", nullable = true)
 	public CodeDossier getCodeDossier() {
 		return codeDossier;

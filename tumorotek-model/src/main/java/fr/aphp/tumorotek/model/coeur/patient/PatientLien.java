@@ -47,6 +47,7 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.FetchType;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -98,7 +99,7 @@ public class PatientLien implements Serializable {
 		this.pk = ppk;
 	}
 
-	@ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+	@ManyToOne(fetch = FetchType.LAZY,cascade = { CascadeType.PERSIST, CascadeType.MERGE })
 	@JoinColumn(name = "LIEN_FAMILIAL_ID", nullable = false)
 	public LienFamilial getLienFamilial() {
 		return this.lienFamilial;

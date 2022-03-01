@@ -35,190 +35,512 @@
  **/
 package fr.aphp.tumorotek.manager.qualite;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Query;
+import javax.persistence.TypedQuery;
+import javax.sql.DataSource;
+
+import org.apache.commons.collections4.IterableUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.CannotGetJdbcConnectionException;
+import org.springframework.jdbc.datasource.DataSourceUtils;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.Validator;
+
+import fr.aphp.tumorotek.dao.qualite.FantomeDao;
+import fr.aphp.tumorotek.dao.qualite.OperationDao;
+import fr.aphp.tumorotek.dao.qualite.OperationTypeDao;
+import fr.aphp.tumorotek.dao.systeme.EntiteDao;
+import fr.aphp.tumorotek.dao.utilisateur.UtilisateurDao;
+import fr.aphp.tumorotek.manager.exception.RequiredObjectIsNullException;
+import fr.aphp.tumorotek.manager.qualite.OperationManager;
+import fr.aphp.tumorotek.manager.validation.BeanValidator;
+import fr.aphp.tumorotek.manager.validation.qualite.OperationValidator;
 import fr.aphp.tumorotek.model.TKFantomableObject;
+import fr.aphp.tumorotek.model.code.CodeAssigne;
+import fr.aphp.tumorotek.model.qualite.Fantome;
 import fr.aphp.tumorotek.model.qualite.Operation;
 import fr.aphp.tumorotek.model.qualite.OperationType;
 import fr.aphp.tumorotek.model.systeme.Entite;
 import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
+import fr.aphp.tumorotek.utils.Utils;
 
 /**
  *
- * Interface pour le manager du bean de domaine Operation.
- * Interface créée le 14/10/09.
- *
- * Actions:
- * 	- Enregistrer une operation a partir d'un Objet (controle de doublons)
- *  - Afficher toutes les Operations
- *  - Afficher les operations pour un objet
- *  - Afficher les operations pour un utilisateur
- *  - Supprimer une operation
+ * Implémentation du manager du bean de domaine Operation. Classe créée le
+ * 14/10/09.
  *
  * @author Mathieu BARTHELEMY
- * @version 2.0.10
+ * @version 2.0
  *
  */
-public interface OperationManager
-{
+@Service
+public class OperationManager {
 
-   /**
-    * Persiste une instance afin de l'enregistrer dans la base de données.
-    * @param operation Operation a creer
-    * @param utilisateur Utilisateur associe (non null)
-    * @param operationType OperationType associee (non null)
-    * @param entite Entite associee (non null)
-    */
-   void createObjectManager(Operation operation, Utilisateur utilisateur, OperationType operationType, Object obj);
+	private final Log log = LogFactory.getLog(OperationManager.class);
 
-   /**
-    * Recherche toutes les instances de Operation présentes dans la base.
-    * @return List contenant les Operation.
-    */
-   List<Operation> findAllObjectsManager();
+	@Autowired
+	private OperationDao operationDao;
 
-   /**
-    * Cherche les doublons en se basant sur la methode equals()
-    * surchargee par les entites. 
-    * @param objet Operation dont on cherche la presence dans la base
-    * @return true/false
-    */
-   boolean findDoublonManager(Operation operation);
+	@Autowired
+	private UtilisateurDao utilisateurDao;
 
-   /**
-    * Supprime un objet de la base de données.
-    * @param objet Operation à supprimer de la base de données.
-    */
-   void removeObjectManager(Operation operation);
+	@Autowired
+	private EntiteDao entiteDao;
 
-   /**
-    * Recherche tous les Operations associes a un utilisateur
-    * passe en parametre.
-    * @param utilisateur Utilisateur
-    * @return Liste de Operation.
-    */
-   List<Operation> findByUtilisateurManager(Utilisateur utilisateur);
+	@Autowired
+	private OperationTypeDao operationTypeDao;
 
-   /**
-    * Recherche tous les Operations associes a un Object de domaine
-    * passe en parametre.
-    * @param obj Objet de domaine
-    * @return Liste de Operation.
-    */
-   List<Operation> findByObjectManager(Object obj);
+	@Autowired
+	private OperationValidator operationValidator;
 
-   /**
-    * Recherche tous les Operations associes a un Object de domaine
-    * passe en parametre afin d'afficher sopn historique : les 
-    * opérations de type login et logout sont exclues.
-    * @param obj Objet de domaine
-    * @return Liste de Operation.
-    */
-   List<Operation> findByObjectForHistoriqueManager(Object obj);
+	@Autowired
+	private FantomeDao fantomeDao;
 
-   /**
-    * Recherche la date de création de l'objet passé en paramètres.
-    * @param obj Un Object pour lequel on cherche la date de
-    * creation.
-    * @return Date de création de l'objet.
-    */
-   Calendar findDateCreationManager(Object obj);
+	@Autowired
+	private EntityManagerFactory entityManagerFactory;
 
-   /**
-    * Recherche l'opération de création d'un objet.
-    * @param obj Objet pour lequel on recherche l'op de création.
-    * @return Operation.
-    */
-   Operation findOperationCreationManager(Object obj);
+	@Autowired
+	private DataSource dataSource;
 
-   /**
-    * Recherche les opérations produites à une date.
-    * @param date Date.
-    * @return Liste d'opérations
-    */
-   List<Operation> findByDateOperationManager(Calendar date);
+	public OperationManager() {
+	}
 
-   /**
-    * Recherche les opérations produites après une date.
-    * @param date Date.
-    * @return Liste d'opérations
-    */
-   List<Operation> findAfterDateOperationManager(Calendar date);
+	@Transactional
+	public void createObjectManager(final Operation operation, final Utilisateur utilisateur,
+			final OperationType operationType, final Object obj) {
+		operation.setUtilisateur(utilisateurDao.save(utilisateur));
+		// OperationType required
+		if (operationType == null) {
+			log.warn("Objet obligatoire OperationType manquant" + " lors de la creation d'une Operation");
+			throw new RequiredObjectIsNullException("Operation", "creation", "OperationType");
+		}
+		operation.setOperationType(operationTypeDao.save(operationType));
+		// Obj required
+		if (obj == null) {
+			log.warn("Objet obligatoire Object manquant" + " lors de la creation d'une Operation");
+			throw new RequiredObjectIsNullException("Operation", "creation", "Object");
+		}
+		// recupere la reference vers entite a partir de la classe de obj
+		String entiteNom = obj.getClass().getSimpleName();
+		// CodeAssigne regroupe 3 entites
+		if (entiteNom.equals("CodeAssigne")) {
+			if (((CodeAssigne) obj).getIsOrgane()) {
+				entiteNom = "CodeOrgane";
+			} else if (((CodeAssigne) obj).getIsMorpho()) {
+				entiteNom = "CodeMorpho";
+			} else {
+				entiteNom = "CodeDiagnostic";
+			}
+		}
+		operation.setEntite(entiteDao.findByNom(entiteNom).get(0));
 
-   /**
-    * Recherche les opérations produites avant une date.
-    * @param date Date.
-    * @return Liste d'opérations
-    */
-   List<Operation> findBeforeDateOperationManager(Calendar date);
+		// recupere l'ObjetId a partir de obj
+		operation.setObjetId(getObjetIdFromObject(obj));
+		// Validation
+		BeanValidator.validateObject(obj, new Validator[] { operationValidator });
 
-   /**
-    * Recherche les opérations produites entre deux dates.
-    * @param date1 Première date.
-    * @param date2 Deuxième date.
-    * @return Liste d'Operations.
-    */
-   List<Operation> findBetweenDatesOperationManager(Calendar date1, Calendar date2);
+		operationDao.save(operation);
+		log.debug("Enregistrement objet Operation " + obj.toString());
 
-   /**
-    * Crée un objet phantom et l'opération de suppression 
-    * qui lui est associée.
-    * @param obj
-    * @param comments Commentaires associé à l'objet.
-    * @param utilisateur rélaisant la suppression.
-    */
-   void createPhantomManager(TKFantomableObject obj, String comments, Utilisateur user);
+	}
 
-   void removeAssociateOperationsManager(Object obj, String comments, Utilisateur user);
+	@Transactional(readOnly = true)
+	public List<Operation> findAllObjectsManager() {
+		log.debug("Recherche totalite des Operation");
+		return IterableUtils.toList(operationDao.findAll());
+	}
 
-   /**
-    * Recherche les opérations en fonctions de divers critères.
-    * @param operateurDate1
-    * @param date1
-    * @param operateurDate2
-    * @param date2
-    * @param operationType
-    * @param List<Utilisateur> users
-    * @param showLogin Si true, affichera les opréations de connexion.
-    * @return
-    */
-   List<Operation> findByMultiCriteresManager(String operateurDate1, Calendar date1, String operateurDate2, Calendar date2,
-      OperationType operationType, List<Utilisateur> users, boolean showLogin);
+	@Transactional(readOnly = true)
+	public List<Operation> findByUtilisateurManager(final Utilisateur utilisateur) {
+		if (utilisateur != null) {
+			log.debug("Recherche les operations pour l'utilisateur : " + utilisateur.toString());
+		}
+		return operationDao.findByUtilisateur(utilisateur);
+	}
 
-   /**
-    * Trouve les operations d'un type donné pour l'objet 
-    * passé en paramètres.
-    * @param obj
-    * @param oType
-    * @return une liste d'operations
-    */
-   List<Operation> findByObjetIdEntiteAndOpeTypeManager(Object obj, OperationType oType);
+	@Transactional(readOnly = true)
+	public boolean findDoublonManager(final Operation operation) {
+		return IterableUtils.toList(operationDao.findAll()).contains(operation);
+	}
 
-   /**
-    * Trouve une opération effectuée par un utilisateur pour un type 
-    * donnée. Utilise le positionnement dans la liste parmi les opérations 
-    * renvoyées. Ex: 2 avec un ordre DESC sur date renvoie l'avant dernière.
-    * @param operationType
-    * @param user
-    * @param pos 
-    * @return la dernière Operation
-    */
-   Operation findLastByUtilisateurAndTypeManager(OperationType operationType, Utilisateur user, int pos);
+	@Transactional(readOnly = true)
+	public List<Operation> findByObjectManager(final Object obj) {
+		Entite entite = null;
+		Integer objetId = null;
+		if (obj != null) {
+			// recupere la reference vers entite a partir de la classe de obj
+			String entiteNom = obj.getClass().getSimpleName();
+			// CodeAssigne regroupe 3 entites
+			if (entiteNom.equals("CodeAssigne")) {
+				if (((CodeAssigne) obj).getIsOrgane()) {
+					entiteNom = "CodeOrgane";
+				} else if (((CodeAssigne) obj).getIsMorpho()) {
+					entiteNom = "CodeMorpho";
+				} else {
+					entiteNom = "CodeDiagnostic";
+				}
+			}
+			log.debug("Recherche des Operation pour l'objet " + obj.toString());
+			entite = entiteDao.findByNom(entiteNom).get(0);
+			objetId = getObjetIdFromObject(obj);
+		}
+		return operationDao.findByObjetIdAndEntite(objetId, entite);
+	}
 
-   /**
-    * Sauve en batch mode une liste d'operations de type identique pour une liste d'objets 
-    * identifiés par leurs ids et leur entite.
-    * Utilise jdbc dans une JPA transaction pour plus de rapidité grace 
-    * au JPATransactionManager
-    * @see http://static.springsource.org/spring/docs/3.0.x/javadoc-api/org/springframework/orm/jpa/JpaTransactionManager.html
-    * @param objsId ids des objets
-    * @param u Utilisateur réalisant l'opération
-    * @param oT type opération
-    * @param cal date opération
-    * @param e entité des objets
-    * @since 2.0.10
-    */
-   void batchSaveManager(List<Integer> objsId, Utilisateur u, OperationType oT, Calendar cal, Entite e);
+	@Transactional(readOnly = true)
+	public List<Operation> findByObjectForHistoriqueManager(final Object obj) {
+		Entite entite = null;
+		Integer objetId = null;
+		if (obj != null) {
+			// recupere la reference vers entite a partir de la classe de obj
+			String entiteNom = obj.getClass().getSimpleName();
+			// CodeAssigne regroupe 3 entites
+			if (entiteNom.equals("CodeAssigne")) {
+				if (((CodeAssigne) obj).getIsOrgane()) {
+					entiteNom = "CodeOrgane";
+				} else if (((CodeAssigne) obj).getIsMorpho()) {
+					entiteNom = "CodeMorpho";
+				} else {
+					entiteNom = "CodeDiagnostic";
+				}
+			}
+			log.debug("Recherche des Operation pour l'objet " + obj.toString());
+			entite = entiteDao.findByNom(entiteNom).get(0);
+			objetId = getObjetIdFromObject(obj);
+		}
+		return operationDao.findByObjetIdAndEntiteForHistorique(objetId, entite);
+	}
 
+	@Transactional(readOnly = true)
+	public List<Operation> findByObjetIdEntiteAndOpeTypeManager(final Object obj, final OperationType oType) {
+		Entite entite = null;
+		Integer objetId = null;
+		if (obj != null) {
+			// recupere la reference vers entite a partir de la classe de obj
+			String entiteNom = obj.getClass().getSimpleName();
+			// CodeAssigne regroupe 3 entites
+			if (entiteNom.equals("CodeAssigne")) {
+				if (((CodeAssigne) obj).getIsOrgane()) {
+					entiteNom = "CodeOrgane";
+				} else if (((CodeAssigne) obj).getIsMorpho()) {
+					entiteNom = "CodeMorpho";
+				} else {
+					entiteNom = "CodeDiagnostic";
+				}
+			}
+			entite = entiteDao.findByNom(entiteNom).get(0);
+			objetId = getObjetIdFromObject(obj);
+		}
+		return operationDao.findByObjetIdEntiteAndOperationType(objetId, entite, oType);
+	}
+
+	@Transactional
+	public void removeObjectManager(final Operation operation) {
+		if (operation != null) {
+			// suppression fantome en cascade
+			if (operation.getOperationType().getNom().equals("Suppression")) {
+				fantomeDao.deleteById(operation.getObjetId());
+			}
+
+			operationDao.deleteById(operation.getOperationId());
+			log.info("Suppression objet Operation " + operation.toString());
+		} else {
+			log.warn("Suppression d'une Operation null");
+		}
+	}
+
+	/**
+	 * Recherche la date de création de l'objet passé en paramètres.
+	 * 
+	 * @param obj Un Object pour lequel on cherche la date de creation.
+	 * @return Date de création de l'objet.
+	 */
+	@Transactional(readOnly = true)
+	public Calendar findDateCreationManager(final Object obj) {
+
+		final Operation operation = findOperationCreationManager(obj);
+
+		if (operation != null) {
+			return operation.getDate();
+		}
+
+		return null;
+	}
+
+	@Transactional(readOnly = true)
+	public Operation findOperationCreationManager(final Object obj) {
+		Entite entite = null;
+		Integer objetId = null;
+		if (obj != null) {
+			final OperationType creation = operationTypeDao.findByNom("Creation").get(0);
+
+			log.debug("Recherche l'opération de création pour l'objet " + obj.toString());
+			entite = entiteDao.findByNom(obj.getClass().getSimpleName()).get(0);
+			objetId = getObjetIdFromObject(obj);
+
+			final List<Operation> operations = operationDao.findByObjetIdEntiteAndOperationType(objetId, entite,
+					creation);
+
+			if (operations != null && operations.size() > 0) {
+				return operations.get(0);
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Recupere a partir d'un bean du domaine la reference vers l'entite et son id
+	 * afin de l'assigner a l'Operation passee en parametre.
+	 * 
+	 * @param operation Operation
+	 * @param obj       Bean du domaine
+	 */
+	private Integer getObjetIdFromObject(final Object obj) {
+		// recupere l'objetId pour l'assigner a l'operation
+		try {
+			final Class<?> targetClass = obj.getClass();
+			final Method targetmethod = targetClass.getMethod("get" + targetClass.getSimpleName() + "Id",
+					new Class[] {});
+			return (Integer) targetmethod.invoke(obj, new Object[] {});
+		} catch (final IllegalArgumentException e) {
+			log.error("Creation Operation a echoue " + "car impossible de recupere ObjetId: " + e.getMessage());
+		} catch (final IllegalAccessException e) {
+			log.error("Creation Operation a echoue " + "car impossible de recupere ObjetId: " + e.getMessage());
+		} catch (final InvocationTargetException e) {
+			log.error("Creation Operation a echoue " + "car impossible de recupere ObjetId: " + e.getMessage());
+		} catch (final SecurityException e) {
+			log.error("Creation Operation a echoue " + "car impossible de recupere ObjetId: " + e.getMessage());
+		} catch (final NoSuchMethodException e) {
+			log.error("Creation Operation a echoue " + "car impossible de recupere ObjetId: " + e.getMessage());
+		}
+		return null;
+	}
+
+	@Transactional(readOnly = true)
+	public List<Operation> findByDateOperationManager(final Calendar date) {
+		if (date != null) {
+			return operationDao.findByDate(date);
+		}
+		return new ArrayList<>();
+	}
+
+	@Transactional(readOnly = true)
+	public List<Operation> findAfterDateOperationManager(final Calendar date) {
+		if (date != null) {
+			return operationDao.findByAfterDate(date);
+		}
+		return new ArrayList<>();
+	}
+
+	@Transactional(readOnly = true)
+	public List<Operation> findBeforeDateOperationManager(final Calendar date) {
+		if (date != null) {
+			return operationDao.findByBeforeDate(date);
+		}
+		return new ArrayList<>();
+	}
+
+	@Transactional(readOnly = true)
+	public List<Operation> findBetweenDatesOperationManager(final Calendar date1, final Calendar date2) {
+		if (date1 != null && date2 != null) {
+			return operationDao.findByBetweenDates(date1, date2);
+		}
+		return new ArrayList<>();
+	}
+
+	@Transactional
+	public void createPhantomManager(final TKFantomableObject obj, final String comments, final Utilisateur user) {
+		final Fantome f = new Fantome();
+		f.setNom(obj.getPhantomData());
+		f.setCommentaires(comments);
+		f.setEntite(entiteDao.findByNom(obj.entiteNom()).get(0));
+		fantomeDao.save(f);
+
+		final Operation suppr = new Operation();
+		suppr.setDate(Utils.getCurrentSystemCalendar());
+
+		createObjectManager(suppr, user, operationTypeDao.findByNom("Suppression").get(0), f);
+	}
+
+	@Transactional
+	public void removeAssociateOperationsManager(final Object obj, final String comments, final Utilisateur user) {
+
+		// List<Operation> ops = findByObjectManager(obj);
+		// for (int i = 0; i < ops.size(); i++) {
+		// removeObjectManager(ops.get(i));
+		// }
+
+		if (obj instanceof TKFantomableObject) {
+			createPhantomManager((TKFantomableObject) obj, comments, user);
+		}
+	}
+
+	@Transactional(readOnly = true)
+	public List<Operation> findByMultiCriteresManager(final String operateurDate1, final Calendar date1,
+			final String operateurDate2, final Calendar date2, final OperationType operationType,
+			final List<Utilisateur> users, final boolean showLogin) {
+		boolean critere = false;
+		final List<Operation> operations = new ArrayList<>();
+
+		if (date1 != null || operationType != null || (users != null && !users.isEmpty())) {
+			final StringBuffer sql = new StringBuffer();
+			sql.append("SELECT DISTINCT o FROM Operation o WHERE ");
+
+			if (operateurDate1 != null && date1 != null) {
+				critere = true;
+				sql.append("o.date ");
+				sql.append(operateurDate1);
+				sql.append(":date1 ");
+			}
+			if (operateurDate2 != null && date2 != null) {
+				if (critere) {
+					sql.append("AND ");
+				}
+				critere = true;
+				sql.append("o.date ");
+				sql.append(operateurDate2);
+				sql.append(":date2 ");
+			}
+
+			if (operationType != null) {
+				if (critere) {
+					sql.append("AND ");
+				}
+				critere = true;
+				sql.append("o.operationType = ");
+				sql.append(":type ");
+			}
+
+			if (users != null && !users.isEmpty()) {
+				if (critere) {
+					sql.append("AND ");
+				}
+				critere = true;
+				sql.append("o.utilisateur in ");
+				sql.append("(:users) ");
+			}
+
+			if (!showLogin) {
+				sql.append("AND o.operationType.nom != 'Login' ");
+				sql.append("AND o.operationType.nom != 'Logout' ");
+			}
+
+			final EntityManager em = entityManagerFactory.createEntityManager();
+			final TypedQuery<Operation> query = em.createQuery(sql.toString(), Operation.class);
+			log.debug("Recherche des opérations par multi-critères.");
+			log.debug(sql.toString());
+			if (sql.toString().contains("date1")) {
+				query.setParameter("date1", date1);
+			}
+			if (sql.toString().contains("date2")) {
+				query.setParameter("date2", date2);
+			}
+			if (sql.toString().contains("type")) {
+				query.setParameter("type", operationType);
+			}
+			if (sql.toString().contains("users")) {
+				query.setParameter("users", users);
+			}
+
+			operations.addAll(query.getResultList());
+		}
+
+		return operations;
+	}
+
+	@Transactional(readOnly = true)
+	public Operation findLastByUtilisateurAndTypeManager(final OperationType operationType, final Utilisateur user,
+			final int pos) {
+		Operation ope = null;
+
+		if (operationType != null && user != null) {
+			final StringBuffer sql = new StringBuffer();
+			sql.append("SELECT DISTINCT o FROM Operation o ");
+			sql.append("WHERE o.utilisateur = :user ");
+			sql.append("AND o.operationType = :type ");
+			sql.append("ORDER BY o.date DESC");
+
+			final EntityManager em = entityManagerFactory.createEntityManager();
+			final Query query = em.createQuery(sql.toString());
+			log.debug("Recherche de la dernière operation.");
+			log.debug(sql.toString());
+			query.setParameter("type", operationType);
+			query.setParameter("user", user);
+
+			// last one
+			query.setMaxResults(pos);
+
+			final List<?> res = query.getResultList();
+			if (!res.isEmpty() && (pos - 1) >= 0 && (pos - 1) < res.size()) {
+				ope = (Operation) res.get(pos - 1);
+			}
+
+		}
+
+		return ope;
+	}
+
+	@Transactional
+	public void batchSaveManager(final List<Integer> objsId, final Utilisateur u, final OperationType oT,
+			final Calendar cal, final Entite e) {
+		if (u != null && oT != null && e != null && cal != null && objsId != null && !objsId.isEmpty()) {
+			PreparedStatement pst = null;
+//         Connection conn = null;
+			try {
+				// conn = DataSourceUtils.getConnection(dataSource);
+				// Calendar curr = Utils.getCurrentSystemCalendar();
+				pst = DataSourceUtils.getConnection(dataSource).prepareStatement("insert into OPERATION (objet_id, "
+						+ "entite_id, utilisateur_id, date_, operation_type_id, v1) " + "values (?, ?, ?, ?, ?, 0)");
+
+				for (final Integer i : objsId) {
+					pst.setInt(3, u.getUtilisateurId());
+					pst.setInt(2, e.getEntiteId());
+					pst.setInt(1, i);
+					pst.setInt(5, oT.getOperationTypeId());
+					pst.setTimestamp(4, new Timestamp(cal.getTime().getTime()));
+					pst.addBatch();
+				}
+				pst.executeBatch();
+				// DataSourceUtils.getConnection(dataSource).commit();
+				// entityManagerFactory.getCache().evict(getClass());
+
+			} catch (final CannotGetJdbcConnectionException e1) {
+				throw new RuntimeException(e1);
+			} catch (final SQLException e1) {
+				throw new RuntimeException(e1);
+			} finally {
+				if (pst != null) {
+					try {
+						pst.close();
+					} catch (final SQLException qe) {
+					} finally {
+						pst = null;
+					}
+				}
+//            if(conn != null){
+//               try{
+//                  conn.close();
+//               }catch(final SQLException qe){}finally{
+//                  conn = null;
+//               }
+//            }
+			}
+		} else {
+			throw new NullPointerException();
+		}
+	}
 }

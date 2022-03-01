@@ -45,6 +45,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -122,8 +123,8 @@ public class Emplacement implements Serializable
       this.emplacementId = id;
    }
 
-   @ManyToOne
-   // @ManyToOne(cascade = {CascadeType.PERSIST })
+   @ManyToOne(fetch = FetchType.LAZY)
+   // @ManyToOne(fetch = FetchType.LAZY,cascade = {CascadeType.PERSIST })
    @JoinColumn(name = "TERMINALE_ID", nullable = false)
    public Terminale getTerminale(){
       return this.terminale;
@@ -151,8 +152,8 @@ public class Emplacement implements Serializable
       this.objetId = objet;
    }
 
-   @ManyToOne
-   //@ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE })
+   @ManyToOne(fetch = FetchType.LAZY)
+   //@ManyToOne(fetch = FetchType.LAZY,cascade = {CascadeType.PERSIST, CascadeType.MERGE })
    @JoinColumn(name = "ENTITE_ID", nullable = true)
    public Entite getEntite(){
       return this.entite;

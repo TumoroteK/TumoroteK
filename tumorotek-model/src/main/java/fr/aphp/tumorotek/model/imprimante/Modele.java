@@ -46,6 +46,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -140,7 +141,7 @@ public class Modele implements TKdataObject, Serializable
       this.isQRCode = isQR;
    }
 
-   @ManyToOne()
+   @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "MODELE_TYPE_ID", nullable = false)
    public ModeleType getModeleType(){
       return modeleType;
@@ -150,7 +151,7 @@ public class Modele implements TKdataObject, Serializable
       this.modeleType = m;
    }
 
-   @ManyToOne()
+   @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "PLATEFORME_ID", nullable = false)
    public Plateforme getPlateforme(){
       return plateforme;

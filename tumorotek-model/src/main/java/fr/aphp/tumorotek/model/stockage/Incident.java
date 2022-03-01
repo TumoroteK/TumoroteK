@@ -48,6 +48,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -154,7 +155,7 @@ public class Incident implements Serializable
       this.description = desc;
    }
 
-   @ManyToOne
+   @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "CONTENEUR_ID", nullable = true)
    public Conteneur getConteneur(){
       return this.conteneur;
@@ -164,7 +165,7 @@ public class Incident implements Serializable
       this.conteneur = c;
    }
 
-   @ManyToOne
+   @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "ENCEINTE_ID", nullable = true)
    public Enceinte getEnceinte(){
       return enceinte;
@@ -174,7 +175,7 @@ public class Incident implements Serializable
       this.enceinte = enceinte;
    }
 
-   @ManyToOne
+   @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "TERMINALE_ID", nullable = true)
    public Terminale getTerminale(){
       return terminale;

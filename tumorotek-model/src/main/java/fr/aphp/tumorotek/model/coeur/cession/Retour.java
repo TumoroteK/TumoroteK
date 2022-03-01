@@ -45,6 +45,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.FetchType;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -244,7 +245,7 @@ public class Retour implements TKdataObject, Serializable {
 		this.oldEmplacementAdrl = oAdrl;
 	}
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "CESSION_ID", nullable = true)
 	public Cession getCession() {
 		return this.cession;
@@ -254,7 +255,7 @@ public class Retour implements TKdataObject, Serializable {
 		this.cession = cess;
 	}
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "ENTITE_ID", nullable = true)
 	public Entite getEntite() {
 		return this.entite;
@@ -264,7 +265,7 @@ public class Retour implements TKdataObject, Serializable {
 		this.entite = e;
 	}
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "TRANSFORMATION_ID", nullable = true)
 	public Transformation getTransformation() {
 		return this.transformation;
@@ -274,7 +275,7 @@ public class Retour implements TKdataObject, Serializable {
 		this.transformation = trans;
 	}
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "COLLABORATEUR_ID", nullable = true)
 	public Collaborateur getCollaborateur() {
 		return this.collaborateur;
@@ -284,7 +285,7 @@ public class Retour implements TKdataObject, Serializable {
 		this.collaborateur = coll;
 	}
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "CONTENEUR_ID", nullable = true)
 	public Conteneur getConteneur() {
 		return this.conteneur;
@@ -294,7 +295,7 @@ public class Retour implements TKdataObject, Serializable {
 		this.conteneur = cu;
 	}
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "INCIDENT_ID", nullable = true)
 	public Incident getIncident() {
 		return this.incident;
@@ -304,7 +305,7 @@ public class Retour implements TKdataObject, Serializable {
 		this.incident = inc;
 	}
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "OBJET_STATUT_ID", nullable = true)
 	public ObjetStatut getObjetStatut() {
 		return objetStatut;

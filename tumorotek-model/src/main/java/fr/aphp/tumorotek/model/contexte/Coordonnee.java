@@ -40,6 +40,7 @@ import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -212,7 +213,7 @@ public class Coordonnee implements java.io.Serializable
    //	public void setEtablissements(Set<Etablissement> etabs) {
    //		this.etablissements = etabs;
    //	}
-   @OneToOne(mappedBy = "coordonnee", targetEntity = Etablissement.class)
+   @OneToOne(mappedBy = "coordonnee", targetEntity = Etablissement.class, fetch = FetchType.LAZY)
    public Etablissement getEtablissement(){
       return etablissement;
    }
@@ -230,7 +231,7 @@ public class Coordonnee implements java.io.Serializable
    //		this.services = serv;
    //	}
 
-   @OneToOne(mappedBy = "coordonnee", targetEntity = Service.class)
+   @OneToOne(mappedBy = "coordonnee", targetEntity = Service.class, fetch = FetchType.LAZY)
    public Service getService(){
       return service;
    }
@@ -248,7 +249,7 @@ public class Coordonnee implements java.io.Serializable
    //		this.transporteurs = transp;
    //	}
 
-   @OneToOne(mappedBy = "coordonnee", targetEntity = Transporteur.class)
+   @OneToOne(mappedBy = "coordonnee", targetEntity = Transporteur.class, fetch = FetchType.LAZY)
    public Transporteur getTransporteur(){
       return transporteur;
    }

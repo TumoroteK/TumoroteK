@@ -96,6 +96,7 @@ public class ChampAnnotationDaoTest extends AbstractDaoTest {
 	ImportTemplateDao importTemplateDao;
 
 	@Test
+	@Transactional
 	public void testToString() throws ParseException {
 		final ChampAnnotation c1 = champAnnotationDao.findById(1).get();
 		assertTrue(c1.toString().equals("{ChampAnnotation: TABLE_PAT1.Alphanum1}"));
@@ -279,7 +280,6 @@ public class ChampAnnotationDaoTest extends AbstractDaoTest {
 	}
 
 	@Test
-	@Transactional
 	public void testClone() {
 		final ChampAnnotation c = champAnnotationDao.findById(1).get();
 		final ChampAnnotation c2 = c.clone();

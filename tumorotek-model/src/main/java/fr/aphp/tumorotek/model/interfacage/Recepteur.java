@@ -41,6 +41,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.FetchType;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
@@ -116,7 +117,7 @@ public class Recepteur implements java.io.Serializable
       this.envoiNum = o;
    }
 
-   @ManyToOne()
+   @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "LOGICIEL_ID", nullable = false)
    public Logiciel getLogiciel(){
       return logiciel;

@@ -113,7 +113,7 @@ public class UiRequete implements java.io.Serializable //FIXME Class non utilis√
       this.nom = n;
    }
 
-   @ManyToOne
+   @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "UTILISATEUR_ID", nullable = false)
    public Utilisateur getUtilisateur(){
       return utilisateur;
@@ -123,7 +123,7 @@ public class UiRequete implements java.io.Serializable //FIXME Class non utilis√
       this.utilisateur = u;
    }
 
-   @ManyToOne
+   @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "ENTITE_ID", nullable = false)
    public Entite getEntite(){
       return entite;
@@ -142,7 +142,7 @@ public class UiRequete implements java.io.Serializable //FIXME Class non utilis√
       this.ordre = o;
    }
 
-   @OneToMany(mappedBy = "uiRequete", cascade = {CascadeType.ALL}, orphanRemoval = true, fetch = FetchType.EAGER)
+   @OneToMany(mappedBy = "uiRequete", cascade = {CascadeType.ALL}, orphanRemoval = true, fetch = FetchType.LAZY)
    @OrderBy(value = "uiCompValueId")
    public Set<UiCompValue> getUiCompValues(){
       return uiCompValues;

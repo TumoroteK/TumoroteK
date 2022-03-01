@@ -42,6 +42,7 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.FetchType;
 import javax.persistence.MappedSuperclass;
 
 import fr.aphp.tumorotek.model.coeur.annotation.DataType;
@@ -83,7 +84,7 @@ public abstract class AbstractTKChamp
       this.id = id;
    }
 
-   @ManyToOne
+   @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "DATA_TYPE_ID")
    public DataType getDataType(){
       return dataType;

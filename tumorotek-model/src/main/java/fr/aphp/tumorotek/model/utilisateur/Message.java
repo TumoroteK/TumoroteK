@@ -43,6 +43,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.FetchType;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
@@ -119,7 +120,7 @@ public class Message implements Serializable
       this.importance = imp;
    }
 
-   @ManyToOne
+   @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "DESTINATAIRE_ID", nullable = false)
    public Utilisateur getDestinataire(){
       return this.destinataire;
@@ -129,7 +130,7 @@ public class Message implements Serializable
       this.destinataire = dest;
    }
 
-   @ManyToOne
+   @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "EXPEDITEUR_ID", nullable = false)
    public Utilisateur getExpediteur(){
       return this.expediteur;

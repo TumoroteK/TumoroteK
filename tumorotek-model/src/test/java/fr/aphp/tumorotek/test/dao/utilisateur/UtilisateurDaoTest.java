@@ -41,7 +41,6 @@ import java.util.Date;
 import java.util.List;
 
 import javax.sql.DataSource;
-import javax.transaction.Transactional;
 
 import org.apache.commons.collections4.IterableUtils;
 import org.junit.Test;
@@ -52,6 +51,7 @@ import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
+import org.springframework.transaction.annotation.Transactional;
 
 import fr.aphp.tumorotek.dao.contexte.CollaborateurDao;
 import fr.aphp.tumorotek.dao.contexte.PlateformeDao;
@@ -71,6 +71,7 @@ import fr.aphp.tumorotek.test.dao.Config;
  * @version 2.2.1
  *
  */
+@Transactional
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = { Config.class })
 @TestExecutionListeners({ DependencyInjectionTestExecutionListener.class, TransactionalTestExecutionListener.class })
@@ -323,7 +324,6 @@ public class UtilisateurDaoTest extends AbstractDaoTest {
 	 * @throws Exception Lance une exception en cas d'erreur.
 	 */
 	@Test
-	@Transactional
 	public void testCrudUtilisateur() throws Exception {
 
 		final Utilisateur u = new Utilisateur();
@@ -450,7 +450,6 @@ public class UtilisateurDaoTest extends AbstractDaoTest {
 	 * Test la méthode clone.
 	 */
 	@Test
-	@Transactional
 	public void testClone() {
 		final Utilisateur u1 = utilisateurDao.findById(1).get();
 		Utilisateur u2 = new Utilisateur();

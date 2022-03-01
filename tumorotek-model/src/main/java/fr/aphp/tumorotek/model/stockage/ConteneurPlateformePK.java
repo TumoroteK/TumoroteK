@@ -39,6 +39,7 @@ import java.io.Serializable;
 
 import javax.persistence.Embeddable;
 import javax.persistence.ManyToOne;
+import javax.persistence.FetchType;
 
 import fr.aphp.tumorotek.model.contexte.Plateforme;
 
@@ -70,7 +71,7 @@ public class ConteneurPlateformePK implements Serializable
       this.plateforme = p;
    }
 
-   @ManyToOne(targetEntity = Conteneur.class)
+   @ManyToOne(fetch = FetchType.LAZY,targetEntity = Conteneur.class)
    public Conteneur getConteneur(){
       return this.conteneur;
    }
@@ -79,7 +80,7 @@ public class ConteneurPlateformePK implements Serializable
       this.conteneur = c;
    }
 
-   @ManyToOne(targetEntity = Plateforme.class)
+   @ManyToOne(fetch = FetchType.LAZY,targetEntity = Plateforme.class)
    public Plateforme getPlateforme(){
       return plateforme;
    }

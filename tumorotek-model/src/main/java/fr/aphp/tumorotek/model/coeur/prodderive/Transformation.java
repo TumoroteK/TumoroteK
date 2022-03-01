@@ -46,6 +46,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.PreRemove;
@@ -125,7 +126,7 @@ public class Transformation implements Serializable
       this.objetId = id;
    }
 
-   @ManyToOne(cascade = {CascadeType.MERGE})
+   @ManyToOne(fetch = FetchType.LAZY,cascade = {CascadeType.MERGE})
    @JoinColumn(name = "ENTITE_ID", nullable = false)
    public Entite getEntite(){
       return this.entite;
@@ -144,7 +145,7 @@ public class Transformation implements Serializable
       this.quantite = Utils.floor(quant, 3);
    }
 
-   @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+   @ManyToOne(fetch = FetchType.LAZY,cascade = {CascadeType.PERSIST, CascadeType.MERGE})
    @JoinColumn(name = "QUANTITE_UNITE_ID", nullable = true)
    public Unite getQuantiteUnite(){
       return this.quantiteUnite;
@@ -163,7 +164,7 @@ public class Transformation implements Serializable
    	this.volume = vol;
    }
    
-   @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE })
+   @ManyToOne(fetch = FetchType.LAZY,cascade = {CascadeType.PERSIST, CascadeType.MERGE })
    @JoinColumn(name = "VOLUME_UNITE_ID", nullable = true)
    public Unite getVolumeUnite() {
    	return this.volumeUnite;

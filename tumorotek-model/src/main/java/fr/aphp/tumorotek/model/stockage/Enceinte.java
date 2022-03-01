@@ -48,6 +48,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
@@ -201,8 +202,8 @@ public class Enceinte implements TKdataObject, TKFantomableObject, Serializable
       this.archive = arch;
    }
 
-   //@ManyToOne(cascade = {CascadeType.PERSIST })
-   @ManyToOne
+   //@ManyToOne(fetch = FetchType.LAZY,cascade = {CascadeType.PERSIST })
+   @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "CONTENEUR_ID", nullable = true)
    public Conteneur getConteneur(){
       return this.conteneur;
@@ -212,8 +213,8 @@ public class Enceinte implements TKdataObject, TKFantomableObject, Serializable
       this.conteneur = c;
    }
 
-   //@ManyToOne(cascade = {CascadeType.PERSIST })
-   @ManyToOne
+   //@ManyToOne(fetch = FetchType.LAZY,cascade = {CascadeType.PERSIST })
+   @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "ENCEINTE_PERE_ID", nullable = true)
    public Enceinte getEnceintePere(){
       return this.enceintePere;
@@ -223,7 +224,7 @@ public class Enceinte implements TKdataObject, TKFantomableObject, Serializable
       this.enceintePere = enceinte;
    }
 
-   @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+   @ManyToOne(fetch = FetchType.LAZY,cascade = {CascadeType.PERSIST, CascadeType.MERGE})
    @JoinColumn(name = "ENTITE_ID", nullable = true)
    public Entite getEntite(){
       return this.entite;
@@ -233,7 +234,7 @@ public class Enceinte implements TKdataObject, TKFantomableObject, Serializable
       this.entite = ent;
    }
 
-   @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+   @ManyToOne(fetch = FetchType.LAZY,cascade = {CascadeType.PERSIST, CascadeType.MERGE})
    @JoinColumn(name = "ENCEINTE_TYPE_ID", nullable = false)
    public EnceinteType getEnceinteType(){
       return this.enceinteType;
@@ -243,7 +244,7 @@ public class Enceinte implements TKdataObject, TKFantomableObject, Serializable
       this.enceinteType = type;
    }
 
-   @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+   @ManyToOne(fetch = FetchType.LAZY,cascade = {CascadeType.PERSIST, CascadeType.MERGE})
    @JoinColumn(name = "COULEUR_ID", nullable = true)
    public Couleur getCouleur(){
       return couleur;

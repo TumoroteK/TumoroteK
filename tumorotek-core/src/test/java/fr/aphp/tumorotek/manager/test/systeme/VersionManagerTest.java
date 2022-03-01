@@ -60,7 +60,7 @@ import fr.aphp.tumorotek.model.systeme.Version;
  * Classe créée le 26/05/2011.
  *
  * @author Pierre Ventadour.
- * @version 2.0
+ * @version 2.3
  *
  */
 @RunWith(SpringJUnit4ClassRunner.class)

@@ -281,7 +281,7 @@ public class PatientSip
       }
    }
 
-   @OneToMany(mappedBy = "patientSip", cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
+   @OneToMany(mappedBy = "patientSip", cascade = {CascadeType.ALL}, fetch = FetchType.LAZY)
    @OrderBy("dateSejour")
    public Set<PatientSipSejour> getSejours(){
       return sejours;

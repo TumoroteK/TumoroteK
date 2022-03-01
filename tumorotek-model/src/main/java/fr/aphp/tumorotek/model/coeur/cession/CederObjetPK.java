@@ -40,6 +40,7 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.ManyToOne;
+import javax.persistence.FetchType;
 
 import fr.aphp.tumorotek.model.systeme.Entite;
 
@@ -72,7 +73,7 @@ public class CederObjetPK implements Serializable {
 		this.objetId = id;
 	}
 
-	@ManyToOne(targetEntity = Cession.class)
+	@ManyToOne(fetch = FetchType.LAZY,targetEntity = Cession.class)
 	public Cession getCession() {
 		return cession;
 	}
@@ -81,7 +82,7 @@ public class CederObjetPK implements Serializable {
 		this.cession = cess;
 	}
 
-	@ManyToOne(targetEntity = Entite.class)
+	@ManyToOne(fetch = FetchType.LAZY,targetEntity = Entite.class)
 	public Entite getEntite() {
 		return entite;
 	}

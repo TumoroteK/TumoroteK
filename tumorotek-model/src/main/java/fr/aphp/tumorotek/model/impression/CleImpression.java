@@ -43,6 +43,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.FetchType;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
@@ -136,7 +137,7 @@ public class CleImpression implements Serializable
     * Champ associé
     * @return Champ associé
     */
-   @ManyToOne
+   @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "CHAMP_ID")
    public Champ getChamp(){
       return champ;
@@ -154,7 +155,7 @@ public class CleImpression implements Serializable
     * Template associé
     * @return Template associé
     */
-//   @ManyToOne(targetEntity = Template.class)
+//   @ManyToOne(fetch = FetchType.LAZY,targetEntity = Template.class)
 //   @JoinColumn(name = "TEMPLATE_ID")
 //   public Template getTemplate(){
 //      return template;

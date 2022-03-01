@@ -218,7 +218,7 @@ public class Utilisateur implements TKdataObject, java.io.Serializable, Comparab
 		this.superAdmin = superA;
 	}
 
-	@ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+	@ManyToOne(fetch = FetchType.LAZY,cascade = {CascadeType.PERSIST, CascadeType.MERGE})
 	@JoinColumn(name = "COLLABORATEUR_ID", nullable = true)
 	public Collaborateur getCollaborateur(){
 		return collaborateur;
@@ -255,7 +255,7 @@ public class Utilisateur implements TKdataObject, java.io.Serializable, Comparab
 		this.codeDossiers = codeDossiers;
 	}
 
-	@OneToMany(mappedBy = "pk.utilisateur", fetch=FetchType.EAGER)
+	@OneToMany(mappedBy = "pk.utilisateur", fetch=FetchType.LAZY)
 	public Set<ProfilUtilisateur> getProfilUtilisateurs(){
 		return profilUtilisateurs;
 	}
@@ -264,7 +264,7 @@ public class Utilisateur implements TKdataObject, java.io.Serializable, Comparab
 		this.profilUtilisateurs = profils;
 	}
 
-	@ManyToMany(targetEntity = Plateforme.class, fetch=FetchType.EAGER)
+	@ManyToMany(targetEntity = Plateforme.class, fetch=FetchType.LAZY)
 	@JoinTable(name = "PLATEFORME_ADMINISTRATEUR", joinColumns = @JoinColumn(name = "UTILISATEUR_ID"),
 	inverseJoinColumns = @JoinColumn(name = "PLATEFORME_ID"))
 	public Set<Plateforme> getPlateformes(){
@@ -284,7 +284,7 @@ public class Utilisateur implements TKdataObject, java.io.Serializable, Comparab
 		this.affectationImprimantes = aImprimantes;
 	}
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "PLATEFORME_ORIG_ID", nullable = true)
 	public Plateforme getPlateformeOrig(){
 		return plateformeOrig;

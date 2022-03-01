@@ -35,8 +35,25 @@
  **/
 package fr.aphp.tumorotek.manager.systeme;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.collections4.IterableUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import fr.aphp.tumorotek.dao.coeur.echantillon.EchantillonTypeDao;
+import fr.aphp.tumorotek.dao.coeur.prodderive.ProdTypeDao;
+import fr.aphp.tumorotek.dao.contexte.BanqueDao;
+import fr.aphp.tumorotek.dao.systeme.CouleurDao;
+import fr.aphp.tumorotek.dao.systeme.CouleurEntiteTypeDao;
+import fr.aphp.tumorotek.manager.exception.DoublonFoundException;
+import fr.aphp.tumorotek.manager.exception.InvalidMultipleAssociationException;
+import fr.aphp.tumorotek.manager.exception.RequiredObjectIsNullException;
+import fr.aphp.tumorotek.manager.systeme.CouleurEntiteTypeManager;
 import fr.aphp.tumorotek.model.coeur.echantillon.EchantillonType;
 import fr.aphp.tumorotek.model.coeur.prodderive.ProdType;
 import fr.aphp.tumorotek.model.contexte.Banque;
@@ -44,85 +61,165 @@ import fr.aphp.tumorotek.model.systeme.Couleur;
 import fr.aphp.tumorotek.model.systeme.CouleurEntiteType;
 
 /**
- *
- * Interface pour le manager du bean de domaine CouleurEntiteType. Interface
- * créée le 30/04/10.
- *
- * @author Pierre Ventadour
+ * 
  * @version 2.3
  *
  */
-public interface CouleurEntiteTypeManager {
+@Service
+public class CouleurEntiteTypeManager {
 
-	/**
-	 * Recherche une CouleurEntiteType dont l'identifiant est passé en paramètre.
-	 * 
-	 * @param couleurEntiteTypeId Identifiant de la CouleurEntiteType que l'on
-	 *                            recherche.
-	 * @return Une CouleurEntiteType.
-	 */
-	CouleurEntiteType findByIdManager(Integer couleurEntiteTypeId);
+	final Log log = LogFactory.getLog(CouleurEntiteTypeManager.class);
 
-	/**
-	 * Recherche toutes les CouleurEntiteTypes présentes dans la base.
-	 * 
-	 * @return Liste de CouleurEntiteTypes.
-	 */
-	List<CouleurEntiteType> findAllObjectsManager();
+	@Autowired
+	CouleurEntiteTypeDao couleurEntiteTypeDao;
+	@Autowired
+	CouleurDao couleurDao;
+	@Autowired
+	BanqueDao banqueDao;
+	@Autowired
+	EchantillonTypeDao echantillonTypeDao;
+	@Autowired
+	ProdTypeDao prodTypeDao;
 
-	/**
-	 * Recherche les couleurs définies pour une banque.
-	 * 
-	 * @param banque Banque pour laquelle on cherche des couleurs.
-	 * @return Liste de CouleurEntiteType.
-	 */
-	List<CouleurEntiteType> findAllObjectsByBanqueManager(Banque banque);
+	@Transactional(readOnly = true)
+	public CouleurEntiteType findByIdManager(final Integer couleurEntiteTypeId) {
+		return couleurEntiteTypeDao.findById(couleurEntiteTypeId).orElse(null);
+	}
 
-	/**
-	 * Recherche les couleurs pour les EchantillonType d'une banque.
-	 * 
-	 * @param banque Banque pour laquelle on cherche des couleurs.
-	 * @return Liste de CouleurEntiteType.
-	 */
-	List<CouleurEntiteType> findAllCouleursForEchanTypeByBanqueManager(Banque banque);
+	@Transactional(readOnly = true)
+	public List<CouleurEntiteType> findAllObjectsManager() {
+		return IterableUtils.toList(couleurEntiteTypeDao.findAll());
+	}
 
-	/**
-	 * Recherche les couleurs pour les ProdType d'une banque.
-	 * 
-	 * @param banque Banque pour laquelle on cherche des couleurs.
-	 * @return Liste de CouleurEntiteType.
-	 */
-	List<CouleurEntiteType> findAllCouleursForProdTypeByBanqueManager(Banque banque);
+	@Transactional(readOnly = true)
+	public List<CouleurEntiteType> findAllObjectsByBanqueManager(final Banque banque) {
+		if (banque != null && banque.getBanqueId() != null) {
+			return couleurEntiteTypeDao.findByBanque(banque);
+		}
+		return new ArrayList<>();
+	}
 
-	/**
-	 * Recherche les doublons de l'Incident passé en paramètre.
-	 * 
-	 * @param incident Incident pour lequel on cherche des doublons.
-	 * @return True s'il existe des doublons.
-	 */
-	Boolean findDoublonManager(CouleurEntiteType couleurEntiteType);
+	@Transactional(readOnly = true)
+	public List<CouleurEntiteType> findAllCouleursForEchanTypeByBanqueManager(final Banque banque) {
+		if (banque != null && banque.getBanqueId() != null) {
+			return couleurEntiteTypeDao.findByBanqueAllEchanType(banque);
+		}
+		return new ArrayList<>();
+	}
 
-	/**
-	 * Persist une instance de CouleurEntiteType dans la base de données.
-	 * 
-	 * @param couleurEntiteType Nouvelle instance de l'objet à créer.
-	 */
-	void createObjectManager(CouleurEntiteType couleurEntiteType, Couleur couleur, Banque banque,
-			EchantillonType echantillonType, ProdType prodType);
+	@Transactional(readOnly = true)
+	public List<CouleurEntiteType> findAllCouleursForProdTypeByBanqueManager(final Banque banque) {
+		if (banque != null && banque.getBanqueId() != null) {
+			return couleurEntiteTypeDao.findByBanqueAllProdType(banque);
+		}
+		return new ArrayList<>();
+	}
 
-	/**
-	 * Sauvegarde les modifications apportées à un objet persistant.
-	 * 
-	 * @param couleurEntiteType Objet à persister.
-	 */
-	void updateObjectManager(CouleurEntiteType couleurEntiteType, Couleur couleur, Banque banque,
-			EchantillonType echantillonType, ProdType prodType);
+	@Transactional(readOnly = true)
+	public Boolean findDoublonManager(final CouleurEntiteType couleurEntiteType) {
+		if (couleurEntiteType != null) {
+			if (couleurEntiteType.getCouleurEntiteTypeId() == null) {
+				return IterableUtils.toList(couleurEntiteTypeDao.findAll()).contains(couleurEntiteType);
+			}
+			return couleurEntiteTypeDao.findByExcludedId(couleurEntiteType.getCouleurEntiteTypeId())
+					.contains(couleurEntiteType);
+		}
+		return false;
+	}
 
-	/**
-	 * Supprime un Incident de la base de données.
-	 * 
-	 * @param incident Incident à supprimer de la base de données.
-	 */
-	void removeObjectManager(CouleurEntiteType couleurEntiteType);
+	@Transactional
+	public void createObjectManager(final CouleurEntiteType couleurEntiteType, final Couleur couleur,
+			final Banque banque, final EchantillonType echantillonType, final ProdType prodType) {
 
+		// Banque required
+		if (banque != null) {
+			couleurEntiteType.setBanque(banqueDao.save(banque));
+		} else {
+			log.warn("Objet obligatoire Banque manquant" + " lors de la création d'une" + " CouleurEntiteType");
+			throw new RequiredObjectIsNullException("CouleurEntiteType", "creation", "Banque");
+		}
+
+		// Couleur required
+		if (couleur != null) {
+			couleurEntiteType.setCouleur(couleurDao.save(couleur));
+		} else {
+			log.warn("Objet obligatoire Couleur manquant" + " lors de la création d'une" + " CouleurEntiteType");
+			throw new RequiredObjectIsNullException("CouleurEntiteType", "creation", "Couleur");
+		}
+
+		// il faut qu'un seul type soit défini pour cette relation
+		if (echantillonType != null && prodType != null) {
+			log.warn("Deux types sont définis" + " lors de la création d'une CouleurEntiteType");
+			throw new InvalidMultipleAssociationException("CouleurEntiteType", "creation", false);
+		} else if (echantillonType == null && prodType == null) {
+			log.warn("Aucun type n'est défini" + " lors de la création d'une CouleurEntiteType");
+			throw new InvalidMultipleAssociationException("CouleurEntiteType", "creation", true);
+		}
+
+		couleurEntiteType.setEchantillonType(echantillonTypeDao.save(echantillonType));
+		couleurEntiteType.setProdType(prodTypeDao.save(prodType));
+
+		// Test s'il y a des doublons
+		if (findDoublonManager(couleurEntiteType)) {
+			log.warn("Doublon lors de la creation de l'objet " + "CouleurEntiteType : " + couleurEntiteType.toString());
+			throw new DoublonFoundException("CouleurEntiteType", "creation");
+		}
+
+		couleurEntiteTypeDao.save(couleurEntiteType);
+
+		log.info("Enregistrement de l'objet CouleurEntiteType : " + couleurEntiteType.toString());
+	}
+
+	@Transactional
+	public void updateObjectManager(final CouleurEntiteType couleurEntiteType, final Couleur couleur,
+			final Banque banque, final EchantillonType echantillonType, final ProdType prodType) {
+		// Banque required
+		if (banque != null) {
+			couleurEntiteType.setBanque(banqueDao.save(banque));
+		} else {
+			log.warn("Objet obligatoire Banque manquant" + " lors de la modification d'une" + " CouleurEntiteType");
+			throw new RequiredObjectIsNullException("CouleurEntiteType", "modification", "Banque");
+		}
+
+		// Couleur required
+		if (couleur != null) {
+			couleurEntiteType.setCouleur(couleurDao.save(couleur));
+		} else {
+			log.warn("Objet obligatoire Couleur manquant" + " lors de la modification d'une" + " CouleurEntiteType");
+			throw new RequiredObjectIsNullException("CouleurEntiteType", "modification", "Couleur");
+		}
+
+		// il faut qu'un seul type soit défini pour cette relation
+		if (echantillonType != null && prodType != null) {
+			log.warn("Deux types sont définis" + " lors de la modification d'une CouleurEntiteType");
+			throw new InvalidMultipleAssociationException("CouleurEntiteType", "modification", false);
+		} else if (echantillonType == null && prodType == null) {
+			log.warn("Aucun type n'est défini" + " lors de la modification d'une CouleurEntiteType");
+			throw new InvalidMultipleAssociationException("CouleurEntiteType", "modification", true);
+		}
+
+		couleurEntiteType.setEchantillonType(echantillonTypeDao.save(echantillonType));
+		couleurEntiteType.setProdType(prodTypeDao.save(prodType));
+
+		// Test s'il y a des doublons
+		if (findDoublonManager(couleurEntiteType)) {
+			log.warn("Doublon lors de la modification de l'objet " + "CouleurEntiteType : "
+					+ couleurEntiteType.toString());
+			throw new DoublonFoundException("CouleurEntiteType", "modification");
+		}
+
+		couleurEntiteTypeDao.save(couleurEntiteType);
+
+		log.info("Enregistrement de l'objet CouleurEntiteType : " + couleurEntiteType.toString());
+	}
+
+	@Transactional
+	public void removeObjectManager(final CouleurEntiteType couleurEntiteType) {
+		if (couleurEntiteType != null) {
+			couleurEntiteTypeDao.deleteById(couleurEntiteType.getCouleurEntiteTypeId());
+			log.info("Suppression de l'objet CouleurEntiteType : " + couleurEntiteType.toString());
+		} else {
+			log.warn("Suppression d'une CouleurEntiteType null");
+		}
+	}
 }

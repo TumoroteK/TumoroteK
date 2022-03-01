@@ -41,6 +41,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.FetchType;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
@@ -107,7 +108,7 @@ public class ImportColonne implements java.io.Serializable {
 		this.importColonneId = id;
 	}
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "IMPORT_TEMPLATE_ID", nullable = false)
 	public ImportTemplate getImportTemplate() {
 		return importTemplate;
@@ -117,7 +118,7 @@ public class ImportColonne implements java.io.Serializable {
 		this.importTemplate = i;
 	}
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "CHAMP_ID", nullable = false)
 	public Champ getChamp() {
 		return champ;

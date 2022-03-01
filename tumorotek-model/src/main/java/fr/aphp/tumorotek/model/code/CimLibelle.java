@@ -42,6 +42,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.FetchType;
 import javax.persistence.Table;
 
 /**
@@ -114,7 +115,7 @@ public class CimLibelle implements Serializable {
 		this.libelle = lib;
 	}
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "SID", nullable = true)
 	public CimMaster getCimMaster() {
 		return this.cimMaster;

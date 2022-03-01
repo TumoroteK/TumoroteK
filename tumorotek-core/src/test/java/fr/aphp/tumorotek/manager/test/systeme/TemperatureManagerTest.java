@@ -44,10 +44,16 @@ import java.text.ParseException;
 import java.util.List;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 
 import fr.aphp.tumorotek.manager.systeme.TemperatureManager;
 import fr.aphp.tumorotek.manager.test.AbstractManagerTest4;
+import fr.aphp.tumorotek.manager.test.Config;
 import fr.aphp.tumorotek.model.systeme.Temperature;
 
 /**
@@ -59,6 +65,9 @@ import fr.aphp.tumorotek.model.systeme.Temperature;
  * @version 2.0
  *
  */
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = { Config.class })
+@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class })
 public class TemperatureManagerTest extends AbstractManagerTest4
 {
 

@@ -43,6 +43,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.FetchType;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
@@ -113,7 +114,7 @@ public class ChampLigneEtiquette implements Serializable
       this.expReg = e;
    }
 
-   @ManyToOne()
+   @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "LIGNE_ETIQUETTE_ID", nullable = false)
    public LigneEtiquette getLigneEtiquette(){
       return ligneEtiquette;
@@ -123,7 +124,7 @@ public class ChampLigneEtiquette implements Serializable
       this.ligneEtiquette = l;
    }
 
-   @ManyToOne()
+   @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "CHAMP_ID", nullable = false)
    public Champ getChamp(){
       return champ;
@@ -133,7 +134,7 @@ public class ChampLigneEtiquette implements Serializable
       this.champ = c;
    }
 
-   @ManyToOne()
+   @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "ENTITE_ID	", nullable = false)
    public Entite getEntite(){
       return entite;

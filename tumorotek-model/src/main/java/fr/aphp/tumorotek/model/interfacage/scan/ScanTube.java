@@ -41,6 +41,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.FetchType;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -85,7 +86,7 @@ public class ScanTube implements java.io.Serializable
       this.scanTubeId = _i;
    }
 
-   @ManyToOne
+   @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "SCAN_TERMINALE_ID", nullable = false)
    public ScanTerminale getScanTerminale(){
       return scanTerminale;

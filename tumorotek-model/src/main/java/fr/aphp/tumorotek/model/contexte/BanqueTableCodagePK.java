@@ -39,6 +39,7 @@ import java.io.Serializable;
 
 import javax.persistence.Embeddable;
 import javax.persistence.ManyToOne;
+import javax.persistence.FetchType;
 
 import fr.aphp.tumorotek.model.code.TableCodage;
 
@@ -70,7 +71,7 @@ public class BanqueTableCodagePK implements Serializable
       this.tableCodage = t;
    }
 
-   @ManyToOne(targetEntity = Banque.class)
+   @ManyToOne(fetch = FetchType.LAZY,targetEntity = Banque.class)
    public Banque getBanque(){
       return banque;
    }
@@ -79,7 +80,7 @@ public class BanqueTableCodagePK implements Serializable
       this.banque = b;
    }
 
-   @ManyToOne(targetEntity = TableCodage.class)
+   @ManyToOne(fetch = FetchType.LAZY,targetEntity = TableCodage.class)
    public TableCodage getTableCodage(){
       return tableCodage;
    }

@@ -24,7 +24,6 @@
   		</property>
 	</bean>
 	
-	
 	<bean id="cimMasterManager" parent="txProxyTemplateCodes">
   		<property name="target">
    	 		<bean class="fr.aphp.tumorotek.manager.impl.code.CimMasterManagerImpl">

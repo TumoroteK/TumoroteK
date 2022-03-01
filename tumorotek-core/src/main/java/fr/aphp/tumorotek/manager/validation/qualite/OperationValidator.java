@@ -35,6 +35,7 @@
  **/
 package fr.aphp.tumorotek.manager.validation.qualite;
 
+import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
@@ -52,6 +53,7 @@ import fr.aphp.tumorotek.model.qualite.Operation;
  * @author Mathieu BARTHELEMY
  * @version 2.0
  */
+@Component
 public class OperationValidator implements Validator
 {
 

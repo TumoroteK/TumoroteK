@@ -41,6 +41,7 @@ import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
@@ -130,7 +131,7 @@ public class Adicap implements CodeCommon, Serializable {
 		this.libelle = lib;
 	}
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ADICAP_GROUPE_ID")
 	public AdicapGroupe getAdicapGroupe() {
 		return this.adicapGroupe;
@@ -149,7 +150,7 @@ public class Adicap implements CodeCommon, Serializable {
 		this.morpho = morph;
 	}
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ADICAP_PARENT_ID", nullable = true)
 	public Adicap getAdicapParent() {
 		return this.adicapParent;

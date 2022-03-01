@@ -38,6 +38,8 @@ package fr.aphp.tumorotek.test.dao.impression;
 import java.text.ParseException;
 import java.util.List;
 
+import javax.transaction.Transactional;
+
 import org.springframework.test.annotation.Rollback;
 import org.apache.commons.collections4.IterableUtils;
 import org.junit.Test;

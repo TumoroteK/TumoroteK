@@ -45,6 +45,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.FetchType;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
@@ -151,7 +152,7 @@ public class Numerotation implements TKdataObject, Serializable
       this.zeroFill = zero;
    }
 
-   @ManyToOne
+   @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "ENTITE_ID", nullable = false)
    public Entite getEntite(){
       return this.entite;
@@ -161,7 +162,7 @@ public class Numerotation implements TKdataObject, Serializable
       this.entite = en;
    }
 
-   @ManyToOne
+   @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "BANQUE_ID", nullable = false)
    public Banque getBanque(){
       return this.banque;

@@ -46,6 +46,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -144,7 +145,7 @@ public class CodeUtilisateur implements CodeCommon, Serializable {
 		this.libelle = l;
 	}
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "UTILISATEUR_ID", nullable = false)
 	public Utilisateur getUtilisateur() {
 		return utilisateur;
@@ -154,7 +155,7 @@ public class CodeUtilisateur implements CodeCommon, Serializable {
 		this.utilisateur = u;
 	}
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "BANQUE_ID", nullable = false)
 	public Banque getBanque() {
 		return banque;
@@ -164,7 +165,7 @@ public class CodeUtilisateur implements CodeCommon, Serializable {
 		this.banque = bank;
 	}
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "CODE_DOSSIER_ID", nullable = true)
 	public CodeDossier getCodeDossier() {
 		return codeDossier;
@@ -174,7 +175,7 @@ public class CodeUtilisateur implements CodeCommon, Serializable {
 		this.codeDossier = cDos;
 	}
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "CODE_PARENT_ID", nullable = true)
 	public CodeUtilisateur getCodeParent() {
 		return codeParent;

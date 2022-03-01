@@ -35,104 +35,208 @@
  **/
 package fr.aphp.tumorotek.manager.systeme;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
+import org.apache.commons.collections4.IterableUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import fr.aphp.tumorotek.dao.contexte.BanqueDao;
+import fr.aphp.tumorotek.dao.systeme.EntiteDao;
+import fr.aphp.tumorotek.dao.systeme.NumerotationDao;
+import fr.aphp.tumorotek.manager.exception.DoublonFoundException;
+import fr.aphp.tumorotek.manager.exception.RequiredObjectIsNullException;
+import fr.aphp.tumorotek.manager.systeme.NumerotationManager;
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.systeme.Entite;
 import fr.aphp.tumorotek.model.systeme.Numerotation;
 
 /**
  *
- * Interface pour le manager du bean de domaine Numerotation. Interface créée le
+ * Implémentation du manager du bean de domaine Numerotation. Interface créée le
  * 18/01/2011.
  *
  * @author Pierre Ventadour
- * @version 2.0
+ * @version 2.3
  *
  */
-public interface NumerotationManager {
+@Service
+public class NumerotationManager {
+
+	private final Log log = LogFactory.getLog(NumerotationManager.class);
 
 	public static String DATE_PLACEHOLDER = "[DATE]";
 
-	/**
-	 * Recherche une Numerotation dont l'identifiant est passé en paramètre.
-	 * 
-	 * @param numerotationId Identifiant de la Numerotation que l'on recherche.
-	 * @return Une Numerotation.
-	 */
-	Numerotation findByIdManager(Integer numerotationId);
+	@Autowired
+	private NumerotationDao numerotationDao;
 
-	/**
-	 * Recherche toutes les Numerotations présentss dans la base.
-	 * 
-	 * @return Liste de Numerotations.
-	 */
-	List<Numerotation> findAllObjectsManager();
+	@Autowired
+	private BanqueDao banqueDao;
 
-	/**
-	 * Recherche les Numérotation des banques.
-	 * 
-	 * @param banques Liste de banques.
-	 * @return Liste de Numerotations.
-	 */
-	List<Numerotation> findByBanquesManager(List<Banque> banques);
+	@Autowired
+	private EntiteDao entiteDao;
 
-	/**
-	 * Recherche toutes les Numerotations de la banque et de l'entité.
-	 * 
-	 * @param banque Banque.
-	 * @param entite Entite.
-	 * @return Liste de Numerotations.
-	 */
-	List<Numerotation> findByBanqueAndEntiteManager(Banque banque, Entite entite);
+	@Transactional(readOnly = true)
+	public Numerotation findByIdManager(final Integer numerotationId) {
+		return numerotationDao.findById(numerotationId).orElse(null);
+	}
 
-	/**
-	 * Recherche toutes les Entités ayant des numérotations pour la banque.
-	 * 
-	 * @param banque Banque.
-	 * @return Liste d'Entites.
-	 */
-	List<Entite> findByBanqueSelectEntiteManager(Banque banque);
+	@Transactional(readOnly = true)
+	public List<Numerotation> findAllObjectsManager() {
+		return IterableUtils.toList(numerotationDao.findAll());
+	}
 
-	/**
-	 * Recherche les doublons de la Numerotation passée en paramètre.
-	 * 
-	 * @param numerotation Numerotation pour laquelle on cherche des doublons.
-	 * @return True s'il existe des doublons.
-	 */
-	Boolean findDoublonManager(Numerotation numerotation);
+	@Transactional(readOnly = true)
+	public List<Numerotation> findByBanqueAndEntiteManager(final Banque banque, final Entite entite) {
+		if (banque != null && entite != null) {
+			return numerotationDao.findByBanqueAndEntite(banque, entite);
+		} else {
+			return new ArrayList<>();
+		}
+	}
 
-	/**
-	 * Génère le code courant pour la numérotation.
-	 * 
-	 * @param numerotation Numerotation.
-	 * @return Code courant.
-	 */
-	String getGeneratedCodeManager(Numerotation numerotation);
+	@Transactional(readOnly = true)
+	public List<Entite> findByBanqueSelectEntiteManager(final Banque banque) {
+		if (banque != null) {
+			return numerotationDao.findByBanqueSelectEntite(banque);
+		} else {
+			return new ArrayList<>();
+		}
+	}
 
-	/**
-	 * Persist une instance de Numerotation dans la base de données.
-	 * 
-	 * @param numerotation Nouvelle instance de l'objet à créer.
-	 * @param banque       Banque.
-	 * @param entite       Entite.
-	 */
-	void createObjectManager(Numerotation numerotation, Banque banque, Entite entite);
+	@Transactional(readOnly = true)
+	public List<Numerotation> findByBanquesManager(final List<Banque> banques) {
+		if (banques != null && banques.size() > 0) {
+			return numerotationDao.findByBanques(banques);
+		} else {
+			return new ArrayList<>();
+		}
+	}
 
-	/**
-	 * Sauvegarde les modifications apportées à un objet persistant.
-	 * 
-	 * @param numerotation Objet à persister.
-	 * @param banque       Banque.
-	 * @param entite       Entite.
-	 */
-	void updateObjectManager(Numerotation numerotation, Banque banque, Entite entite);
+	@Transactional(readOnly = true)
+	public Boolean findDoublonManager(final Numerotation numerotation) {
+		if (numerotation != null) {
+			if (numerotation.getNumerotationId() == null) {
+				return IterableUtils.toList(numerotationDao.findAll()).contains(numerotation);
+			} else {
+				return numerotationDao.findByExcludedId(numerotation.getNumerotationId()).contains(numerotation);
+			}
+		} else {
+			return false;
+		}
+	}
 
-	/**
-	 * Supprime une Numerotation de la base de données.
-	 * 
-	 * @param numerotation Numerotation à supprimer de la base de données.
-	 */
-	void removeObjectManager(Numerotation numerotation);
+	@Transactional(readOnly = true)
+	public String getGeneratedCodeManager(final Numerotation numerotation) {
 
+		String generatedCode = null;
+
+		if (numerotation != null && numerotation.getCodeFormula() != null) {
+
+			final Integer currentIncrement = numerotation.getCurrentIncrement();
+
+			if (currentIncrement != null) {
+
+				final boolean zeroFill = Optional.ofNullable(numerotation.getZeroFill()).orElse(false);
+
+				String format = "%d";
+
+				if (zeroFill) {
+					format = "%0" + Optional.ofNullable(numerotation.getNbChiffres()).orElse(1) + "d";
+				}
+
+				final String num = String.format(format, currentIncrement);
+
+				generatedCode = numerotation.getCodeFormula().replace("[]", num);
+			} else {
+				generatedCode = numerotation.getCodeFormula();
+			}
+
+			if (numerotation.getCodeFormula().contains(DATE_PLACEHOLDER)) {
+
+				final String dateFormat = numerotation.getDateFormat().getFormat();
+				final String date = LocalDate.now().format(DateTimeFormatter.ofPattern(dateFormat));
+
+				generatedCode = generatedCode.replace(DATE_PLACEHOLDER, date);
+
+			}
+
+		}
+
+		return generatedCode;
+
+	}
+
+	@Transactional
+	public void createObjectManager(final Numerotation numerotation, final Banque banque, final Entite entite) {
+		// Banque required
+		if (banque != null) {
+			numerotation.setBanque(banqueDao.save(banque));
+		} else {
+			log.warn("Objet obligatoire Banque manquant" + " lors de la création d'une Numerotation");
+			throw new RequiredObjectIsNullException("Numerotation", "creation", "Banque");
+		}
+
+		// Entite required
+		if (entite != null) {
+			numerotation.setEntite(entiteDao.save(entite));
+		} else {
+			log.warn("Objet obligatoire Entite manquant" + " lors de la création d'une Numerotation");
+			throw new RequiredObjectIsNullException("Numerotation", "creation", "Entite");
+		}
+
+		// Test s'il y a des doublons
+		if (findDoublonManager(numerotation)) {
+			log.warn("Doublon lors de la creation de l'objet Numerotation : " + numerotation.toString());
+			throw new DoublonFoundException("Numerotation", "creation");
+		} else {
+
+			numerotationDao.save(numerotation);
+
+			log.info("Enregistrement de l'objet Numerotation : " + numerotation.toString());
+		}
+	}
+
+	@Transactional
+	public void updateObjectManager(final Numerotation numerotation, final Banque banque, final Entite entite) {
+		// Banque required
+		if (banque != null) {
+			numerotation.setBanque(banqueDao.save(banque));
+		} else {
+			log.warn("Objet obligatoire Banque manquant" + " lors de la modification d'une Numerotation");
+			throw new RequiredObjectIsNullException("Numerotation", "modification", "Banque");
+		}
+
+		// Entite required
+		if (entite != null) {
+			numerotation.setEntite(entiteDao.save(entite));
+		} else {
+			log.warn("Objet obligatoire Entite manquant" + " lors de la modification d'une Numerotation");
+			throw new RequiredObjectIsNullException("Numerotation", "modification", "Entite");
+		}
+
+		// Test s'il y a des doublons
+		if (findDoublonManager(numerotation)) {
+			log.warn("Doublon lors de la modification de " + "l'objet Numerotation : " + numerotation.toString());
+			throw new DoublonFoundException("Numerotation", "modification");
+		} else {
+
+			numerotationDao.save(numerotation);
+
+			log.info("Enregistrement de l'objet Numerotation : " + numerotation.toString());
+		}
+	}
+
+	@Transactional
+	public void removeObjectManager(final Numerotation numerotation) {
+		numerotationDao.deleteById(numerotation.getNumerotationId());
+		log.info("Suppression de l'objet Numerotation : " + numerotation.toString());
+	}
 }

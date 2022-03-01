@@ -44,6 +44,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.FetchType;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -113,7 +114,7 @@ public class BlocExterne implements java.io.Serializable
       this.ordre = o;
    }
 
-   @ManyToOne()
+   @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "DOSSIER_EXTERNE_ID", nullable = false)
    public DossierExterne getDossierExterne(){
       return dossierExterne;

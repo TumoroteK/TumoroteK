@@ -35,6 +35,7 @@
  **/
 package fr.aphp.tumorotek.manager.validation.systeme;
 
+import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
@@ -45,8 +46,9 @@ import fr.aphp.tumorotek.model.systeme.Temperature;
  * Classe creee le 07/07/2010
  *
  * @author Pierre VENTADOUR
- * @version 2.0
+ * @version 2.3
  */
+@Component
 public class TemperatureValidator implements Validator
 {
 

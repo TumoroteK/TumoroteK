@@ -45,6 +45,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.FetchType;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -231,7 +232,7 @@ public class LaboInter implements Serializable
       }
    }
 
-   @ManyToOne
+   @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "PRELEVEMENT_ID", nullable = false)
    public Prelevement getPrelevement(){
       return this.prelevement;
@@ -241,7 +242,7 @@ public class LaboInter implements Serializable
       this.prelevement = prelev;
    }
 
-   @ManyToOne(cascade = {CascadeType.MERGE})
+   @ManyToOne(fetch = FetchType.LAZY,cascade = {CascadeType.MERGE})
    @JoinColumn(name = "COLLABORATEUR_ID", nullable = true)
    public Collaborateur getCollaborateur(){
       return this.collaborateur;
@@ -251,7 +252,7 @@ public class LaboInter implements Serializable
       this.collaborateur = collab;
    }
 
-   @ManyToOne(cascade = {CascadeType.MERGE})
+   @ManyToOne(fetch = FetchType.LAZY,cascade = {CascadeType.MERGE})
    @JoinColumn(name = "TRANSPORTEUR_ID", nullable = true)
    public Transporteur getTransporteur(){
       return this.transporteur;
@@ -261,7 +262,7 @@ public class LaboInter implements Serializable
       this.transporteur = transport;
    }
 
-   @ManyToOne(cascade = {CascadeType.MERGE})
+   @ManyToOne(fetch = FetchType.LAZY,cascade = {CascadeType.MERGE})
    @JoinColumn(name = "SERVICE_ID", nullable = true)
    public Service getService(){
       return this.service;

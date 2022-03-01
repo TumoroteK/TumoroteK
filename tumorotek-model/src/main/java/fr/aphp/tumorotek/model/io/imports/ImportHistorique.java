@@ -46,6 +46,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -103,7 +104,7 @@ public class ImportHistorique implements java.io.Serializable, TKdataObject
       this.importHistoriqueId = id;
    }
 
-   @ManyToOne
+   @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "IMPORT_TEMPLATE_ID", nullable = false)
    public ImportTemplate getImportTemplate(){
       return importTemplate;
@@ -113,7 +114,7 @@ public class ImportHistorique implements java.io.Serializable, TKdataObject
       this.importTemplate = it;
    }
 
-   @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+   @ManyToOne(fetch = FetchType.LAZY,cascade = {CascadeType.PERSIST, CascadeType.MERGE})
    @JoinColumn(name = "UTILISATEUR_ID", nullable = false)
    public Utilisateur getUtilisateur(){
       return utilisateur;

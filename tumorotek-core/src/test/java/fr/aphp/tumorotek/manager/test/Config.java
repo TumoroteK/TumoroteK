@@ -40,6 +40,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.context.annotation.ImportResource;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.data.repository.config.BootstrapMode;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 /**
  * @version 2.3
@@ -47,16 +49,21 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
  * @author Mathieu BARTHELEMY
  */
 @Configuration
+@EnableJpaRepositories(
+		basePackages = {"fr.aphp.tumorotek.dao"},
+		excludeFilters = @ComponentScan.Filter(type = FilterType.REGEX, 
+			pattern = ".*(UiRequete|interfacage\\.scan|interfacage\\.(Logiciel|Emetteur|Recepteur|PatientSip|DossierExterne|BlocExterne|ValeurExterne)|code\\.(Cim|Adicap)).*"),
+		entityManagerFactoryRef = "entityManagerFactory", 
+		transactionManagerRef = "transactionManager")
 @ImportResource(locations = {
-		"classpath:spring-jpa-test-mysql.xml", 
-		"classpath:applicationContextManager.xml"
-	})
-//@EnableJpaRepositories(
-//		basePackages = {"fr.aphp.tumorotek.dao"},
-//		excludeFilters = @ComponentScan.Filter(type = FilterType.REGEX, 
-//		pattern = ".*(UiRequete|interfacage\\.scan|interfacage\\.(Logiciel|Emetteur|Recepteur|PatientSip|DossierExterne|BlocExterne|ValeurExterne)|code\\.(Cim|Adicap)).*"),
-//		entityManagerFactoryRef = "entityManagerFactory",
-//		transactionManagerRef = "transactionManager")
+		"classpath:spring-jpa-test-mysql.xml",
+//		"classpath:applicationContextManager.xml"
+})
+@EnableTransactionManagement
+@ComponentScan(basePackages = "fr.aphp.tumorotek.manager", 
+		excludeFilters = @ComponentScan.Filter(type = FilterType.REGEX, 
+			pattern = ".*(UiRequete|interfacage\\.scan|interfacage\\.(Logiciel|Emetteur|Recepteur|PatientSip|DossierExterne|BlocExterne|ValeurExterne)|code\\.(Cim|Adicap))|test.*")
+)
 public class Config {
 	
 }

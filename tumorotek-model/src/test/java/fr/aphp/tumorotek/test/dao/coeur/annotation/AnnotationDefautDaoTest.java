@@ -42,14 +42,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.transaction.Transactional;
-
-import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
-import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
+import org.springframework.transaction.annotation.Transactional;
 import org.apache.commons.collections4.IterableUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -77,9 +74,10 @@ import fr.aphp.tumorotek.test.dao.Config;
  * @version 2.0
  *
  */
+@Transactional
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = { Config.class })
-@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class, TransactionalTestExecutionListener.class })
+@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class })
 public class AnnotationDefautDaoTest extends AbstractDaoTest {
 
 	@Autowired
@@ -161,8 +159,6 @@ public class AnnotationDefautDaoTest extends AbstractDaoTest {
 	 * Test l'insertion, la mise à jour et la suppression d'un Item.
 	 */
 	@Test
-	@Transactional
-	@Rollback(false)
 	public void testCrudDefaut() {
 
 		// creation d'un Alphanum avec valeur par defaut

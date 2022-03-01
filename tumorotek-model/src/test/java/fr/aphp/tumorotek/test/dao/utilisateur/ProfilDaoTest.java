@@ -37,8 +37,6 @@ package fr.aphp.tumorotek.test.dao.utilisateur;
 
 import java.util.List;
 
-import javax.transaction.Transactional;
-
 import org.apache.commons.collections4.IterableUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -49,6 +47,7 @@ import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
+import org.springframework.transaction.annotation.Transactional;
 
 import fr.aphp.tumorotek.dao.contexte.PlateformeDao;
 import fr.aphp.tumorotek.dao.utilisateur.ProfilDao;
@@ -67,6 +66,7 @@ import fr.aphp.tumorotek.test.dao.Config;
  * @version 2.1
  *
  */
+@Transactional
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = { Config.class })
 @TestExecutionListeners({ DependencyInjectionTestExecutionListener.class, TransactionalTestExecutionListener.class })
@@ -309,7 +309,6 @@ public class ProfilDaoTest extends AbstractDaoTest {
 	 * Test la méthode clone.
 	 */
 	@Test
-	@Transactional
 	public void testClone() {
 		final Profil p1 = profilDao.findById(1).get();
 		Profil p2 = new Profil();

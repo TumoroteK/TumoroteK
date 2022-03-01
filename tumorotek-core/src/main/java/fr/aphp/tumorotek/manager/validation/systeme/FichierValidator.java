@@ -35,6 +35,7 @@
  **/
 package fr.aphp.tumorotek.manager.validation.systeme;
 
+import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
@@ -51,8 +52,9 @@ import fr.aphp.tumorotek.model.systeme.Fichier;
  * 	- le champ path doit etre non vide, non null
  *
  * @author Pierre VENTADOUR
- * @version 2.0
+ * @version 2.3
  */
+@Component
 public class FichierValidator implements Validator
 {
 

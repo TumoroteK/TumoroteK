@@ -45,6 +45,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -106,7 +107,7 @@ public class NonConformite extends AbstractPfDependantThesaurusObject implements
       this.setId(id);
    }
 
-   @ManyToOne()
+   @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "CONFORMITE_TYPE_ID", nullable = false)
    public ConformiteType getConformiteType(){
       return conformiteType;

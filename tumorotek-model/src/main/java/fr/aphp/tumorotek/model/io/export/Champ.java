@@ -45,6 +45,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -128,7 +129,7 @@ public class Champ implements Comparable<Champ>
       this.champId = chId;
    }
 
-   @ManyToOne
+   @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "CHAMP_ENTITE_ID")
    public ChampEntite getChampEntite(){
       return champEntite;
@@ -138,7 +139,7 @@ public class Champ implements Comparable<Champ>
       this.champEntite = sousEnt;
    }
 
-   @ManyToOne
+   @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "CHAMP_ANNOTATION_ID")
    public ChampAnnotation getChampAnnotation(){
       return champAnnotation;
@@ -148,7 +149,7 @@ public class Champ implements Comparable<Champ>
       this.champAnnotation = champAnno;
    }
 
-   @ManyToOne
+   @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "CHAMP_DELEGUE_ID")
    public ChampDelegue getChampDelegue(){
       return champDelegue;

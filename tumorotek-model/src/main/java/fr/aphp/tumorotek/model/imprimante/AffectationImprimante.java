@@ -46,6 +46,7 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.FetchType;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -125,7 +126,7 @@ public class AffectationImprimante implements Serializable
       this.getPk().setImprimante(i);
    }
 
-   @ManyToOne()
+   @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "MODELE_ID", nullable = true)
    public Modele getModele(){
       return this.modele;

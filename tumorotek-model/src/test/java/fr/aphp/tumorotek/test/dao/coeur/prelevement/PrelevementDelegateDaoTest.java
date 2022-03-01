@@ -193,6 +193,7 @@ public class PrelevementDelegateDaoTest extends AbstractDaoTest
 	 * transcodeUtilisateur.
 	 */
 	@Test
+	@Transactional
 	public void testEqualsAndHashCode() {
 		final AbstractPrelevementDelegate p1 = new PrelevementSero();
 		final AbstractPrelevementDelegate p2 = new PrelevementSero();

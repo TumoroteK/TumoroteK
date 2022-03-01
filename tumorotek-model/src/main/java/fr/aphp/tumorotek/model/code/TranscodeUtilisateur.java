@@ -43,6 +43,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.FetchType;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
@@ -83,7 +84,7 @@ public class TranscodeUtilisateur implements Serializable {
 		this.transcodeUtilisateurId = id;
 	}
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "CODE_UTILISATEUR_ID", nullable = false)
 	public CodeUtilisateur getCodeUtilisateur() {
 		return codeUtilisateur;
@@ -102,7 +103,7 @@ public class TranscodeUtilisateur implements Serializable {
 		this.codeId = c;
 	}
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "TABLE_CODAGE_ID", nullable = false)
 	public TableCodage getTableCodage() {
 		return this.tableCodage;

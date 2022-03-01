@@ -45,6 +45,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -152,7 +153,7 @@ public class Indicateur implements Serializable, Comparable<Object>
    	this.nature = n;
    }*/
 
-   @ManyToOne
+   @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "ENTITE_ID", nullable = true)
    public Entite getEntite(){
       return this.entite;
@@ -162,7 +163,7 @@ public class Indicateur implements Serializable, Comparable<Object>
       this.entite = entite;
    }
 
-   @ManyToOne
+   @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "SUBDIVISION_ID", nullable = true)
    public Subdivision getSubdivision(){
       return this.subdivision;

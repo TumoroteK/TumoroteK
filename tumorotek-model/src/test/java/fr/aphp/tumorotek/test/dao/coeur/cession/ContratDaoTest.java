@@ -332,6 +332,7 @@ public class ContratDaoTest extends AbstractDaoTest {
 	 * Test la méthode toString.
 	 */
 	@Test
+	@Transactional
 	public void testToString() {
 		final Contrat contrat1 = contratDao.findById(1).get();
 		assertTrue(contrat1.toString()
@@ -345,6 +346,7 @@ public class ContratDaoTest extends AbstractDaoTest {
 	 * Test la méthode clone.
 	 */
 	@Test
+	@Transactional
 	public void testClone() {
 		final Contrat contrat1 = contratDao.findById(1).get();
 		Contrat contrat2 = new Contrat();

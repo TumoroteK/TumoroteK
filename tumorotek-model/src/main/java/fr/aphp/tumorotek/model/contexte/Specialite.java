@@ -37,6 +37,7 @@ package fr.aphp.tumorotek.model.contexte;
 
 import java.io.Serializable;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 import javax.persistence.AttributeOverride;
@@ -114,16 +115,8 @@ public class Specialite extends AbstractThesaurusObject implements Serializable
    @Override
    public boolean equals(final Object obj){
 
-      if(this == obj){
-         return true;
-      }
-
-      if((obj == null) || obj.getClass() != this.getClass()){
-         return false;
-      }
-
-      final Specialite test = (Specialite) obj;
-      return ((this.getNom() == test.getNom() || (this.getNom() != null && this.getNom().equals(test.getNom()))));
+	   Specialite spec = (Specialite) obj;
+	   return Objects.equals(getNom(), spec.getNom());
    }
 
    /**

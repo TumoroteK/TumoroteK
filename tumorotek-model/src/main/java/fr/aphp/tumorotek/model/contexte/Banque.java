@@ -275,7 +275,7 @@ public class Banque implements TKFantomableObject, TKdataObject, java.io.Seriali
       this.defautMaladieCode = d;
    }
 
-   @ManyToOne
+   @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "COLLABORATEUR_ID", nullable = true)
    public Collaborateur getCollaborateur(){
       return collaborateur;
@@ -285,7 +285,7 @@ public class Banque implements TKFantomableObject, TKdataObject, java.io.Seriali
       this.collaborateur = c;
    }
 
-   @ManyToOne
+   @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "CONTACT_ID", nullable = true)
    public Collaborateur getContact(){
       return contact;
@@ -295,7 +295,7 @@ public class Banque implements TKFantomableObject, TKdataObject, java.io.Seriali
       this.contact = c;
    }
 
-   @ManyToOne
+   @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "PROPRIETAIRE_ID", nullable = true)
    public Service getProprietaire(){
       return proprietaire;
@@ -305,7 +305,7 @@ public class Banque implements TKFantomableObject, TKdataObject, java.io.Seriali
       this.proprietaire = s;
    }
 
-   @ManyToOne
+   @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "PLATEFORME_ID", nullable = false)
    public Plateforme getPlateforme(){
       return plateforme;
@@ -315,7 +315,7 @@ public class Banque implements TKFantomableObject, TKdataObject, java.io.Seriali
       this.plateforme = p;
    }
 
-   @ManyToOne
+   @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "CONTEXTE_ID", nullable = false)
    public Contexte getContexte(){
       return contexte;
@@ -325,7 +325,7 @@ public class Banque implements TKFantomableObject, TKdataObject, java.io.Seriali
       this.contexte = c;
    }
 
-   @ManyToOne()
+   @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "ECHANTILLON_COULEUR_ID", nullable = true)
    public Couleur getEchantillonCouleur(){
       return echantillonCouleur;
@@ -335,7 +335,7 @@ public class Banque implements TKFantomableObject, TKdataObject, java.io.Seriali
       this.echantillonCouleur = eCouleur;
    }
 
-   @ManyToOne()
+   @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "PROD_DERIVE_COULEUR_ID", nullable = true)
    public Couleur getProdDeriveCouleur(){
       return prodDeriveCouleur;
@@ -568,7 +568,7 @@ public class Banque implements TKFantomableObject, TKdataObject, java.io.Seriali
       this.templates = tps;
    }
 
-   @ManyToMany(targetEntity = Catalogue.class, fetch = FetchType.EAGER)
+   @ManyToMany(targetEntity = Catalogue.class, fetch = FetchType.LAZY)
    @JoinTable(name = "BANQUE_CATALOGUE", joinColumns = @JoinColumn(name = "BANQUE_ID"),
       inverseJoinColumns = @JoinColumn(name = "CATALOGUE_ID"))
    public Set<Catalogue> getCatalogues(){

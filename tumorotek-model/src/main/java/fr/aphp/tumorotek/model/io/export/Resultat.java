@@ -42,6 +42,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.FetchType;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
@@ -155,7 +156,7 @@ public class Resultat implements Comparable<Resultat>
       this.format = f;
    }
 
-   @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+   @ManyToOne(fetch = FetchType.LAZY,cascade = {CascadeType.PERSIST, CascadeType.MERGE})
    @JoinColumn(name = "AFFICHAGE_ID", nullable = false)
    public Affichage getAffichage(){
       return affichage;

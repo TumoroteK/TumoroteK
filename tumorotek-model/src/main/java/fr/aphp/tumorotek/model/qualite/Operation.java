@@ -44,6 +44,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.FetchType;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -151,7 +152,7 @@ public class Operation implements Serializable
       this.objetId = objId;
    }
 
-   @ManyToOne
+   @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "OPERATION_TYPE_ID", nullable = false)
    public OperationType getOperationType(){
       return this.operationType;
@@ -161,7 +162,7 @@ public class Operation implements Serializable
       this.operationType = opeType;
    }
 
-   @ManyToOne
+   @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "ENTITE_ID", nullable = false)
    public Entite getEntite(){
       return this.entite;
@@ -171,7 +172,7 @@ public class Operation implements Serializable
       this.entite = en;
    }
 
-   @ManyToOne
+   @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "UTILISATEUR_ID", nullable = true)
    public Utilisateur getUtilisateur(){
       return this.utilisateur;

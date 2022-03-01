@@ -39,6 +39,7 @@ import java.io.Serializable;
 
 import javax.persistence.Embeddable;
 import javax.persistence.ManyToOne;
+import javax.persistence.FetchType;
 
 import fr.aphp.tumorotek.model.io.export.ChampEntite;
 
@@ -73,7 +74,7 @@ public class ChampImprimePK implements Serializable
       this.blocImpression = bloc;
    }
 
-   @ManyToOne(targetEntity = Template.class)
+   @ManyToOne(fetch = FetchType.EAGER, targetEntity = Template.class)
    public Template getTemplate(){
       return template;
    }
@@ -82,7 +83,7 @@ public class ChampImprimePK implements Serializable
       this.template = t;
    }
 
-   @ManyToOne(targetEntity = ChampEntite.class)
+   @ManyToOne(fetch = FetchType.EAGER, targetEntity = ChampEntite.class)
    public ChampEntite getChampEntite(){
       return champEntite;
    }
@@ -91,7 +92,7 @@ public class ChampImprimePK implements Serializable
       this.champEntite = c;
    }
 
-   @ManyToOne(targetEntity = BlocImpression.class)
+   @ManyToOne(fetch = FetchType.EAGER,targetEntity = BlocImpression.class)
    public BlocImpression getBlocImpression(){
       return blocImpression;
    }

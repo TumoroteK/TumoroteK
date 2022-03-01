@@ -105,7 +105,7 @@ public class ScanTerminale implements java.io.Serializable
       this.scanTerminaleId = _i;
    }
 
-   @ManyToOne
+   @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "SCAN_DEVICE_ID", nullable = false)
    public ScanDevice getScanDevice(){
       return scanDevice;
@@ -133,7 +133,7 @@ public class ScanTerminale implements java.io.Serializable
       this.dateScan = _c;
    }
 
-   @OneToMany(mappedBy = "scanTerminale", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+   @OneToMany(mappedBy = "scanTerminale", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
    @OrderBy("cell")
    public List<ScanTube> getScanTubes(){
       return scanTubes;

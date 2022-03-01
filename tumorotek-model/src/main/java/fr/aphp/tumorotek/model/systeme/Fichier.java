@@ -39,6 +39,7 @@ import java.beans.Transient;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
@@ -135,7 +136,7 @@ public class Fichier implements java.io.Serializable
       this.mimeType = mType;
    }
 
-   @OneToOne(mappedBy = "crAnapath")
+   @OneToOne(mappedBy = "crAnapath", fetch = FetchType.LAZY)
    public Echantillon getEchantillon(){
       return echantillon;
    }
@@ -144,7 +145,7 @@ public class Fichier implements java.io.Serializable
       this.echantillon = echan;
    }
 
-   @OneToOne(mappedBy = "fichier")
+   @OneToOne(mappedBy = "fichier", fetch = FetchType.LAZY)
    public AnnotationValeur getAnnotationValeur(){
       return valeur;
    }

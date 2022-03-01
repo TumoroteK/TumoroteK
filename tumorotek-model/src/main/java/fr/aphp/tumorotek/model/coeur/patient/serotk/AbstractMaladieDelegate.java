@@ -113,7 +113,7 @@ public abstract class AbstractMaladieDelegate extends TKDelegateObject<Maladie>
 //      this.maladie = maladie;
 //   }
 
-//   @ManyToOne
+//   @ManyToOne(fetch = FetchType.LAZY)
 //   @JoinColumn(name = "CONTEXTE_ID", nullable = false)
 //   public Contexte getContexte(){
 //      return contexte;

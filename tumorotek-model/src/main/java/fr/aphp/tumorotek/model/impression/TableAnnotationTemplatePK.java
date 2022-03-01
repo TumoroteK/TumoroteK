@@ -39,6 +39,7 @@ import java.io.Serializable;
 
 import javax.persistence.Embeddable;
 import javax.persistence.ManyToOne;
+import javax.persistence.FetchType;
 
 import fr.aphp.tumorotek.model.coeur.annotation.TableAnnotation;
 
@@ -71,7 +72,7 @@ public class TableAnnotationTemplatePK implements Serializable
       this.tableAnnotation = table;
    }
 
-   @ManyToOne(targetEntity = Template.class)
+   @ManyToOne(fetch = FetchType.LAZY,targetEntity = Template.class)
    public Template getTemplate(){
       return template;
    }
@@ -80,7 +81,7 @@ public class TableAnnotationTemplatePK implements Serializable
       this.template = t;
    }
 
-   @ManyToOne(targetEntity = TableAnnotation.class)
+   @ManyToOne(fetch = FetchType.LAZY,targetEntity = TableAnnotation.class)
    public TableAnnotation getTableAnnotation(){
       return tableAnnotation;
    }

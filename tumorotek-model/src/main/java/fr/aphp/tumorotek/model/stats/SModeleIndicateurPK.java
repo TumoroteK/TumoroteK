@@ -39,6 +39,7 @@ import java.io.Serializable;
 
 import javax.persistence.Embeddable;
 import javax.persistence.ManyToOne;
+import javax.persistence.FetchType;
 
 /**
  *
@@ -68,7 +69,7 @@ public class SModeleIndicateurPK implements Serializable
       this.indicateur = i;
    }
 
-   @ManyToOne(targetEntity = SModele.class)
+   @ManyToOne(fetch = FetchType.LAZY,targetEntity = SModele.class)
    public SModele getsModele(){
       return sModele;
    }
@@ -77,7 +78,7 @@ public class SModeleIndicateurPK implements Serializable
       this.sModele = sModele;
    }
 
-   @ManyToOne(targetEntity = Indicateur.class)
+   @ManyToOne(fetch = FetchType.LAZY,targetEntity = Indicateur.class)
    public Indicateur getIndicateur(){
       return indicateur;
    }

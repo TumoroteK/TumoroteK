@@ -35,52 +35,61 @@
  **/
 package fr.aphp.tumorotek.manager.systeme;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.collections4.IterableUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import fr.aphp.tumorotek.dao.systeme.CouleurDao;
+import fr.aphp.tumorotek.manager.systeme.CouleurManager;
 import fr.aphp.tumorotek.model.systeme.Couleur;
 
 /**
  *
- * Interface pour le manager du bean de domaine Couleur. Interface créée le
+ * Implémentation du manager du bean de domaine Couleur. Interface créée le
  * 30/04/2010.
  *
  * @author Pierre Ventadour
- * @version 2.0
+ * @version 2.3
  *
  */
-public interface CouleurManager {
+@Service
+public class CouleurManager {
 
-	/**
-	 * Recherche une Couleur dont l'identifiant est passé en paramètre.
-	 * 
-	 * @param couleurId Identifiant de la Couleur que l'on recherche.
-	 * @return Une Couleur.
-	 */
-	Couleur findByIdManager(Integer couleurId);
+	private final Log log = LogFactory.getLog(CouleurManager.class);
 
-	/**
-	 * Recherche toutes les Couleurs présentes dans la base.
-	 * 
-	 * @return Liste de Couleurs.
-	 */
-	List<Couleur> findAllObjectsManager();
+	@Autowired
+	private CouleurDao couleurDao;
 
-	/**
-	 * Recherche toutes les Couleur dont le nom commence comme celui passé en
-	 * paramètre.
-	 * 
-	 * @param couleur    Couleur que l'on recherche.
-	 * @param exactMatch True si l'on souhaite seulement récuéprer les matchs
-	 *                   exactes.
-	 * @return Liste de Couleurs.
-	 */
-	List<Couleur> findByCouleurLikeManager(String couleur, boolean exactMatch);
+	@Transactional(readOnly = true)
+	public List<Couleur> findAllObjectsManager() {
+		return IterableUtils.toList(couleurDao.findAll());
+	}
 
-	/**
-	 * Recherche toutes les Couleurs utilisables pour les visotubes.
-	 * 
-	 * @return Liste de Couleurs.
-	 */
-	List<Couleur> findByOrdreVisotubeManager();
+	@Transactional(readOnly = true)
+	public List<Couleur> findByCouleurLikeManager(String couleur, final boolean exactMatch) {
+		log.debug("Recherche Couleur par " + couleur + " exactMatch " + String.valueOf(exactMatch));
+		if (couleur != null) {
+			if (!exactMatch) {
+				couleur = couleur + "%";
+			}
+			return couleurDao.findByCouleur(couleur);
+		}
+		return new ArrayList<>();
+	}
 
+	@Transactional(readOnly = true)
+	public Couleur findByIdManager(final Integer couleurId) {
+		return couleurDao.findById(couleurId).orElse(null);
+	}
+
+	@Transactional(readOnly = true)
+	public List<Couleur> findByOrdreVisotubeManager() {
+		return couleurDao.findByVisotube();
+	}
 }

@@ -39,6 +39,7 @@ import java.io.Serializable;
 
 import javax.persistence.Embeddable;
 import javax.persistence.ManyToOne;
+import javax.persistence.FetchType;
 
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
@@ -74,7 +75,7 @@ public class AffectationImprimantePK implements Serializable
       this.imprimante = i;
    }
 
-   @ManyToOne(targetEntity = Utilisateur.class)
+   @ManyToOne(fetch = FetchType.LAZY,targetEntity = Utilisateur.class)
    public Utilisateur getUtilisateur(){
       return utilisateur;
    }
@@ -83,7 +84,7 @@ public class AffectationImprimantePK implements Serializable
       this.utilisateur = u;
    }
 
-   @ManyToOne(targetEntity = Banque.class)
+   @ManyToOne(fetch = FetchType.LAZY,targetEntity = Banque.class)
    public Banque getBanque(){
       return banque;
    }
@@ -92,7 +93,7 @@ public class AffectationImprimantePK implements Serializable
       this.banque = b;
    }
 
-   @ManyToOne(targetEntity = Imprimante.class)
+   @ManyToOne(fetch = FetchType.LAZY,targetEntity = Imprimante.class)
    public Imprimante getImprimante(){
       return imprimante;
    }

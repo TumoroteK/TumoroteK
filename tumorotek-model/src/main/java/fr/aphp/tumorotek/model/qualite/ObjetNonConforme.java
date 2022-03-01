@@ -41,6 +41,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.FetchType;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
@@ -97,7 +98,7 @@ public class ObjetNonConforme implements java.io.Serializable
       this.objetNonConformeId = id;
    }
 
-   @ManyToOne()
+   @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "NON_CONFORMITE_ID", nullable = false)
    public NonConformite getNonConformite(){
       return nonConformite;
@@ -116,7 +117,7 @@ public class ObjetNonConforme implements java.io.Serializable
       this.objetId = id;
    }
 
-   @ManyToOne()
+   @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "ENTITE_ID", nullable = false)
    public Entite getEntite(){
       return entite;

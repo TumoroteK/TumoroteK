@@ -42,6 +42,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.FetchType;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
@@ -134,7 +135,7 @@ public class CodeDossier implements Serializable {
 		this.codeSelect = codeSel;
 	}
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "DOSSIER_PARENT_ID", nullable = true)
 	public CodeDossier getDossierParent() {
 		return dossierParent;
@@ -144,7 +145,7 @@ public class CodeDossier implements Serializable {
 		this.dossierParent = dosParent;
 	}
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "UTILISATEUR_ID", nullable = true)
 	public Utilisateur getUtilisateur() {
 		return utilisateur;
@@ -154,7 +155,7 @@ public class CodeDossier implements Serializable {
 		this.utilisateur = u;
 	}
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "BANQUE_ID", nullable = true)
 	public Banque getBanque() {
 		return banque;

@@ -43,6 +43,7 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.FetchType;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -70,7 +71,7 @@ public class ChampDelegue extends AbstractTKChamp
 	private Entite entite;
 	private EContexte contexte;
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ENTITE_ID", nullable = false)
 	public Entite getEntite(){
 		return entite;

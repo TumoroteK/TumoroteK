@@ -45,6 +45,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -156,9 +157,9 @@ public class Etablissement implements TKdataObject, TKFantomableObject, java.io.
       this.archive = arch;
    }
 
-   //@ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE })
+   //@ManyToOne(fetch = FetchType.LAZY,cascade = {CascadeType.PERSIST, CascadeType.MERGE })
    //@JoinColumn(name = "COORDONNEE_ID", nullable = true)
-   @OneToOne(optional = true, cascade = CascadeType.ALL)
+   @OneToOne(optional = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
    @JoinColumn(name = "COORDONNEE_ID", nullable = true)
    public Coordonnee getCoordonnee(){
       return coordonnee;
@@ -168,7 +169,7 @@ public class Etablissement implements TKdataObject, TKFantomableObject, java.io.
       this.coordonnee = c;
    }
 
-   @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+   @ManyToOne(fetch = FetchType.LAZY,cascade = {CascadeType.PERSIST, CascadeType.MERGE})
    @JoinColumn(name = "CATEGORIE_ID", nullable = true)
    public Categorie getCategorie(){
       return categorie;

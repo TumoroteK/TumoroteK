@@ -46,6 +46,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
@@ -172,7 +173,7 @@ public class Terminale implements TKdataObject, TKFantomableObject, Serializable
       this.archive = arch;
    }
 
-   @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+   @ManyToOne(fetch = FetchType.LAZY,cascade = {CascadeType.PERSIST, CascadeType.MERGE})
    @JoinColumn(name = "TERMINALE_TYPE_ID", nullable = false)
    public TerminaleType getTerminaleType(){
       return this.terminaleType;
@@ -182,7 +183,7 @@ public class Terminale implements TKdataObject, TKFantomableObject, Serializable
       this.terminaleType = type;
    }
 
-   @ManyToOne(cascade = {CascadeType.PERSIST})
+   @ManyToOne(fetch = FetchType.LAZY,cascade = {CascadeType.PERSIST})
    @JoinColumn(name = "ENCEINTE_ID", nullable = false)
    public Enceinte getEnceinte(){
       return this.enceinte;
@@ -192,7 +193,7 @@ public class Terminale implements TKdataObject, TKFantomableObject, Serializable
       this.enceinte = enc;
    }
 
-   @ManyToOne
+   @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "BANQUE_ID", nullable = true)
    public Banque getBanque(){
       return this.banque;
@@ -202,7 +203,7 @@ public class Terminale implements TKdataObject, TKFantomableObject, Serializable
       this.banque = bank;
    }
 
-   @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+   @ManyToOne(fetch = FetchType.LAZY,cascade = {CascadeType.PERSIST, CascadeType.MERGE})
    @JoinColumn(name = "ENTITE_ID", nullable = true)
    public Entite getEntite(){
       return this.entite;
@@ -212,7 +213,7 @@ public class Terminale implements TKdataObject, TKFantomableObject, Serializable
       this.entite = ent;
    }
 
-   @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+   @ManyToOne(fetch = FetchType.LAZY,cascade = {CascadeType.PERSIST, CascadeType.MERGE})
    @JoinColumn(name = "TERMINALE_NUMEROTATION_ID", nullable = false)
    public TerminaleNumerotation getTerminaleNumerotation(){
       return this.terminaleNumerotation;
@@ -222,7 +223,7 @@ public class Terminale implements TKdataObject, TKFantomableObject, Serializable
       this.terminaleNumerotation = numerotation;
    }
 
-   @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+   @ManyToOne(fetch = FetchType.LAZY,cascade = {CascadeType.PERSIST, CascadeType.MERGE})
    @JoinColumn(name = "COULEUR_ID", nullable = true)
    public Couleur getCouleur(){
       return couleur;

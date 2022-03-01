@@ -44,6 +44,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
@@ -99,7 +100,7 @@ public class AdicapGroupe implements Serializable {
 		this.nom = n;
 	}
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "GROUPE_PARENT_ID", nullable = true)
 	public AdicapGroupe getGroupeParent() {
 		return this.groupeParent;

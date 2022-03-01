@@ -44,7 +44,12 @@ import java.text.ParseException;
 import java.util.List;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 
 import fr.aphp.tumorotek.manager.coeur.echantillon.EchantillonTypeManager;
 import fr.aphp.tumorotek.manager.coeur.prodderive.ProdTypeManager;
@@ -52,6 +57,7 @@ import fr.aphp.tumorotek.manager.context.BanqueManager;
 import fr.aphp.tumorotek.manager.systeme.CouleurEntiteTypeManager;
 import fr.aphp.tumorotek.manager.systeme.CouleurManager;
 import fr.aphp.tumorotek.manager.test.AbstractManagerTest4;
+import fr.aphp.tumorotek.manager.test.Config;
 import fr.aphp.tumorotek.model.coeur.echantillon.EchantillonType;
 import fr.aphp.tumorotek.model.coeur.prodderive.ProdType;
 import fr.aphp.tumorotek.model.contexte.Banque;
@@ -67,6 +73,9 @@ import fr.aphp.tumorotek.model.systeme.CouleurEntiteType;
  * @version 2.0
  *
  */
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = { Config.class })
+@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class })
 public class CouleurEntiteTypeManagerTest extends AbstractManagerTest4
 {
 
