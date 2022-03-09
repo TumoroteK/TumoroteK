@@ -219,10 +219,7 @@ cursor: default !important;
 border-color: #D0DEF0 !important;
 }
 tr.z-treerow-seld {
-background-image: url(${c:encodeThemeURL('/images/icones/components/tree/item-sel.png')});
-<c:if test="${zk.ie == 6}">
-background-image: url(${c:encodeThemeURL('/images/icones/components/tree/item-sel.gif')});
-</c:if>
+background: #e6f7ff; 
 }
 tr.z-treerow-over > td.z-treecell {
 border-top: 1px solid #e3f2ff;

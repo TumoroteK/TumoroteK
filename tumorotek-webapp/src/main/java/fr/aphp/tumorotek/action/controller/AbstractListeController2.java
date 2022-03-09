@@ -95,6 +95,8 @@ import fr.aphp.tumorotek.model.TKAnnotableObject;
 import fr.aphp.tumorotek.model.TKStockableObject;
 import fr.aphp.tumorotek.model.TKdataObject;
 import fr.aphp.tumorotek.model.coeur.annotation.TableAnnotation;
+import fr.aphp.tumorotek.model.coeur.echantillon.Echantillon;
+import fr.aphp.tumorotek.model.coeur.prodderive.ProdDerive;
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.contexte.EContexte;
 import fr.aphp.tumorotek.model.imprimante.AffectationImprimante;
@@ -2212,25 +2214,38 @@ public abstract class AbstractListeController2 extends AbstractController
 		return out;
 	}
 
-	/**
-	 * Vérifie que dans la liste d'objets sélectionnés, au moins a un statut STOCKE
-	 * ou non STOCKE.
-	 * Cette méthode n'est appelée que pour les listes Echantillon et Derives.
-	 * @return false si au moins un objet n'est pas stocke.
-	 */
-	public boolean areAllObjectsCessibles(){
-		final boolean out = true;
 
-		for(final Object tkSObj : getSelectedObjects()){
-			if(((TKStockableObject) tkSObj).getObjetStatut().getStatut().equals("STOCKE")
-					|| ((TKStockableObject) tkSObj).getObjetStatut().getStatut().equals("NON STOCKE")){
-				return false;
-			}
-		}
+	//TK-314
+   /**
+    * Regarde si dans la liste d'objets sélectionnés, au moins un est cessible c'est-à-dire qu'il est stocké dans un conteneur accessible.
+    * Si oui, renvoie false sinon considère que tous les objets sont non cessibles et renvoie true
+    * Cette méthode n'est appelée que pour les listes Echantillon et Derives.
+    * @return false si au moins un objet cessible.
+    */
+   public boolean areAllObjectsNonCessibles(){
+      final boolean out = true;
 
-		return out;
-	}
+      for(final Object tkSObj : getSelectedObjects()){
+        if( isTKStockableObjectCessible((TKStockableObject) tkSObj) ) {
+            return false;
+         }
+      }
 
+      return out;
+   }	
+	//TK-314
+   private boolean isTKStockableObjectCessible(TKStockableObject tkSObj) {
+      boolean isStocke = ((TKStockableObject) tkSObj).getObjetStatut().getStatut().equals("STOCKE");
+      if(tkSObj instanceof Echantillon) {
+         return isStocke && isAccessibleConteneurForCurrentPlateform(ManagerLocator.getEchantillonManager().getEmplacementManager((Echantillon)tkSObj).getTerminale());
+      }
+      if(tkSObj instanceof ProdDerive) {
+         return isStocke && isAccessibleConteneurForCurrentPlateform(ManagerLocator.getProdDeriveManager().getEmplacementManager((ProdDerive)tkSObj).getTerminale());
+      }
+      return isStocke;
+   }
+	
+	
 	/**
 	 * Ouvre la modale permettant de renseigner un évènement de stockage
 	 * à tous les objets sélectionnés.

@@ -54,12 +54,12 @@ import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Panel;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Tree;
+import org.zkoss.zul.Treecell;
 import org.zkoss.zul.Treechildren;
 import org.zkoss.zul.Treeitem;
 import org.zkoss.zul.ext.TreeOpenableModel;
 import org.zkoss.zul.ext.TreeSelectableModel;
 
-import fr.aphp.tumorotek.model.stockage.ConteneurPlateforme;
 import fr.aphp.tumorotek.action.ManagerLocator;
 import fr.aphp.tumorotek.action.controller.AbstractController;
 import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
@@ -71,6 +71,7 @@ import fr.aphp.tumorotek.model.stockage.Conteneur;
 import fr.aphp.tumorotek.model.stockage.Emplacement;
 import fr.aphp.tumorotek.model.stockage.Enceinte;
 import fr.aphp.tumorotek.model.stockage.Terminale;
+import fr.aphp.tumorotek.utils.AffichageUtils;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
 import fr.aphp.tumorotek.webapp.tree.TumoTreeModel;
 import fr.aphp.tumorotek.webapp.tree.TumoTreeNode;
@@ -110,8 +111,10 @@ public class ListeStockages extends AbstractController
 	private Textbox findTerminaleBox;
 	private StockageController stockageController;
 	List<int[]> searchPaths = new ArrayList<>();
+	// TK-314 : mémorisation des paths correspondant aux conteneurs interdits pour annuler le passage en rouge fait éventuellement lors de l'appel précédent
+	List<int[]> forbiddenConteneurPaths = new ArrayList<>();
 
-	// @since 2.2.1
+   // @since 2.2.1
 	// TK-251
 	private List<Banque> restrictedBanqueDeplacement = 
 			new ArrayList<Banque>();
@@ -119,6 +122,7 @@ public class ListeStockages extends AbstractController
 	// @since 2.2.3-genno
 	private Plateforme curPf;
 
+	//lié au bouton "Activer le filtre des places vides" au niveau de la liste des conteneurs dans le cas d'un stockage
 	private boolean hideCompleteTerminales = false;
 
 	/**
@@ -207,9 +211,8 @@ public class ListeStockages extends AbstractController
 		hideCompleteButton.setVisible(false);
 		hideCompleteTerminales = false;
 		
-		// ajoute une restriction complémentaire sur les 
-		// déplacements d'enceinte / terminales
-		removePlateformeRestrictedConteneurs(false);
+		//TK-314
+		manageForbiddenConteneurs();
 
 		restrictedBanqueDeplacement.clear();
 		restrictedBanqueDeplacement.addAll(banks);
@@ -217,7 +220,7 @@ public class ListeStockages extends AbstractController
 
 		// récupère la ligne sélectionnée et la colore en jaune
 		final org.zkoss.zul.Treerow row = selectedItem.getTreerow();
-		colorateRowInYellow(row);      
+		AffichageUtils.colorateRowInYellow(row);      
 	}
 
 	/**
@@ -228,6 +231,12 @@ public class ListeStockages extends AbstractController
 		menuBar.setVisible(false);
 		hideCompleteButton.setVisible(false);
 		hideCompleteTerminales = false;
+		
+		//TK-314
+		//déselection de treeitem courant
+		mainTreeContext.setSelectedItem(null);
+		currentObject = null;
+		manageForbiddenConteneurs();
 	}
 
 	/**
@@ -235,46 +244,44 @@ public class ListeStockages extends AbstractController
 	 */
 	public void switchToStockerMode(){
 		switchToDeplacementEmplacementMode();
-		updateAllConteneurs(false);
 		hideCompleteButton.setVisible(true);
-		
-		// @since TK-306 déplacé dans updateAllConteneurs
-		// afin que soit appliquée la restriction même après update conteneurs
-		// removePlateformeRestrictedConteneurs(true);
 	}
 	
-	/**
-	 * IRELEC retire les conteneurs dont la modification 
-	 * de structure et de contenu sont restreintes à la  
-	 * la plateforme d'origine.
-	 * @param checkRestrict force la verification de la restriction lors du stockage
-	 * @since 2.2.1-IRELEC
-	 */
-	private void removePlateformeRestrictedConteneurs(boolean checkRestrictStock) {
-		
-		List<Conteneur> toRemove = new ArrayList<Conteneur>();
-		for(Conteneur cont : getRootConteneurs()) {
-			if (!isCurrentPFOrUserAtLeastAdminfPF(cont.getPlateformeOrig())) {
-				if (checkRestrictStock) {
-					ConteneurPlateforme cp = ManagerLocator.getConteneurManager()
-							.getOneConteneurPlateformeManager(cont, SessionUtils.getCurrentPlateforme());
-					if (cp != null && cp.getRestrictStock()) {
-						toRemove.add(cont);
-					}
-				} else {
-					toRemove.add(cont);
-				}
-			}
-		}
-		// update conteneurs
-		((StockageRootNode) ttm.getRoot()).
-			getConteneurs().removeAll(toRemove);
-		((StockageRootNode) ttm.getRoot()).readChildren();
-		rootNodes = ((StockageRootNode) ttm.getRoot()).getChildren();
-		
-		//TK-306 fix... nettoie la liste avant de rajouter sinon doublons ?!
-		getRootConteneurs().clear();
-		getRootConteneurs().addAll(((StockageRootNode) ttm.getRoot()).getConteneurs()); 
+	
+	//TK-314 : gère l'affichage des conteneurs interdits au stockage dans l'arbre des conteneurs pour un cas d'utilisation de stockage ou de déplacement :
+	// - désactive l'accès au conteneur
+	// - ajoute un sens interdit après le nom du conteneur
+	private void manageForbiddenConteneurs() {
+      //réinitialisation avant traitement :
+      forbiddenConteneurPaths=new ArrayList<>();
+	   
+	   //vérification qu'on est bien dans le cas de déplacement :
+	   if(isDeplacementOrDeplacementEmplacementMode()) {
+	      List<ConteneurNode> listForbiddenConteneurNode = new ArrayList<ConteneurNode>();
+	      for(TumoTreeNode conteneurNode : rootNodes) {
+           //par sécurité, vérification qu'on est bien sur un ConteneurNode :
+           if(conteneurNode instanceof ConteneurNode) {
+              Conteneur conteneur = ((ConteneurNode)conteneurNode).getConteneur();
+              //Le conteneur est interdit si :
+              //- il appartient à une plateforme différente de la plateforme courante
+              //- le partage du conteneur est restreint pour le stockage déplacement aux admin
+              //- l'utilisateur connecté n'est pas admin
+              if(!isAccessibleConteneurForCurrentPlateform(conteneur)) {
+                 //mémorisation du path pour gérer le nettoyage de l'affichage passé eventuellement en rouge si l'utilisateur l'a sélectionné
+                 int[] conteneurPath = ttm.getConteneurPath((ConteneurNode)conteneurNode);
+                 forbiddenConteneurPaths.add(conteneurPath);
+                
+                 Treeitem currentItem = mainTreeContext.renderItemByPath(conteneurPath);
+                 //nettoyage avant ajout pour ne pas ajouter en double :
+                 AffichageUtils.removeFirstImageInTreerow(currentItem.getTreerow());
+                 AffichageUtils.addImageInterditToTreecell((Treecell) currentItem.getTreerow().getFirstChild());
+                 currentItem.setDisabled(true);
+                 currentItem.setOpen(false);
+
+              }
+           }
+   	   }
+	   } 
 	}
 
 	public void onClick$hideCompleteButton(){
@@ -284,12 +291,29 @@ public class ListeStockages extends AbstractController
 		setSelectedDestinationItem(null);
 		setSelectedEnceinte(null);
 		updateAllConteneurs(false);
+		
+	   //TK-314 :
+	   Events.postEvent(new Event("onLaterUpdateAllContainerToManageForbiddenConteneurs", self, null));
+      
 	}
 
+	 //TK-314 :
+	 /**
+    * Permet de gérer l'affichage des conteneurs "interdits" après l'appel d'un updateAllConteneurs qui a entrainé le passage dans StockageTreeItemRenderer 
+    * et donc la réinialisation du Tree des conteneurs.
+    * 
+    */
+	public void onLaterUpdateAllContainerToManageForbiddenConteneurs(final Event e) {
+	   manageForbiddenConteneurs();
+	}
+	
 	/**
 	 * Passe la liste en mode "normal".
+	 * @param afterDone : true si l'appel de la méthode se fait dans le cadre d'une validation. 
+	 * un appel à updateAllConteneur sera alors fait. false s'il c'est dans le cadre d'une annulation
+	 * 
 	 */
-	public void switchToNormalMode(){
+	public void switchToNormalMode(boolean afterDone){
 
 		restrictedBanqueDeplacement.clear();
 
@@ -297,7 +321,7 @@ public class ListeStockages extends AbstractController
 		menuBar.setVisible(true);
 		hideCompleteButton.setVisible(false);
 		hideCompleteTerminales = false;
-
+		
 		// on met les deux lignes en blanc
 		if(selectedItem != null){
 			final org.zkoss.zul.Treerow row = selectedItem.getTreerow();
@@ -313,8 +337,41 @@ public class ListeStockages extends AbstractController
 		}
 
 		mainTreeContext.setSelectedItem(null);
+		
+	   //TK-314
+		if(afterDone) {
+		   //on est dans le cadre d'une validation donc il faut réinitialiser les conteneurs
+		   updateAllConteneurs(false);
+		}
+		else {
+		   //on est dans le cadre d'une annulation, il faut juste nettoyer l'affichage des conteneurs interdits
+		   cleanAffichageForbiddenConteneurs();
+		}
 	}
 
+	//TK-314 : réinitialise tout ce qui a pu être fait au niveau affichage concernant la restriction des conteneurs partagés
+	private void cleanAffichageForbiddenConteneurs() {
+	   redrawTreeForbiddenConteneur();
+      forbiddenConteneurPaths.clear();
+	}
+	
+	//TK-314 : réinitialise l'affichage des conteneurs interdits : ils redeviennent alors accessibles
+   private void redrawTreeForbiddenConteneur() {
+      try {
+         if (ttm!=null) {
+            for(final int[] path : forbiddenConteneurPaths){
+               if(path != null){
+                  Treeitem conteneurItem = mainTreeContext.renderItemByPath(path);
+                  ctr.render(conteneurItem, ttm.getChild(ttm.getRoot(), path[0]), path[0]);
+               }
+            }
+         }
+      }
+      catch(Exception e){
+         log.error(e);
+      }
+   }  
+	
 	/**
 	 * Lors de la sélection d'un noeud de l'arbre, nous afficherons la fiche
 	 * correspondant à cet élément.
@@ -323,7 +380,9 @@ public class ListeStockages extends AbstractController
 	public void onSelect$mainTreeContext(){
 
 		// since 2.1
-		cleanRowsColor();
+	   cleanBlueRowsColor();
+	   //TK-314
+	   cleanRedRowsColorForForbiddenConteneurs();
 		setSelectedConteneur(null);
 		setSelectedEnceinte(null);
 		setSelectedTerminale(null);
@@ -405,14 +464,14 @@ public class ListeStockages extends AbstractController
 						if (checkConteneurDeplacementCoherence(nodeDest)) {
 							// on met la destination en vert
 							final org.zkoss.zul.Treerow row = selectedDestinationItem.getTreerow();
-							colorateRowInGreen(row);
+							AffichageUtils.colorateRowInGreen(row);
 							// on l'envoie à la fiche enceinte
 							getStockageController().getFicheEnceinte().definirEnceinteDestination(nodeDest, null, null);
 						}
 					}else{
 						// on met la destination en rouge
 						final org.zkoss.zul.Treerow row = selectedDestinationItem.getTreerow();
-						colorateRowInRed(row);
+						AffichageUtils.colorateRowInRed(row);
 						getStockageController().getFicheEnceinte().definirEnceinteDestination(null, null, null);
 					}
 				}else{
@@ -422,7 +481,7 @@ public class ListeStockages extends AbstractController
 			}else{
 				// on met la destination en rouge
 				final org.zkoss.zul.Treerow row = selectedDestinationItem.getTreerow();
-				colorateRowInRed(row);
+				AffichageUtils.colorateRowInRed(row);
 				getStockageController().getFicheEnceinte().definirEnceinteDestination(null, null, null);
 			}
 
@@ -438,7 +497,7 @@ public class ListeStockages extends AbstractController
 					if (checkConteneurDeplacementCoherence(nodeDest)) {
 						// on met la destination en vert
 						final org.zkoss.zul.Treerow row = selectedDestinationItem.getTreerow();
-						colorateRowInGreen(row);
+						AffichageUtils.colorateRowInGreen(row);
 						// on l'envoie à la fiche enceinte
 						getStockageController().getFicheTerminale().definirTerminaleDestination(nodeDest, null, null);
 					}
@@ -449,7 +508,7 @@ public class ListeStockages extends AbstractController
 			}else{
 				// on met la destination en rouge
 				final org.zkoss.zul.Treerow row = selectedDestinationItem.getTreerow();
-				colorateRowInRed(row);
+				AffichageUtils.colorateRowInRed(row);
 				getStockageController().getFicheTerminale().definirTerminaleDestination(null, null, null);
 
 				// since 2.1
@@ -471,7 +530,8 @@ public class ListeStockages extends AbstractController
 	// contiennent au moins toutes les banques représentant le contenu 
 	// du couple enceintes/terminales qui fait le déplacement
 	private boolean checkConteneurDeplacementCoherence (TumoTreeNode destObj) {
-		Conteneur departCont = getRootConteneurs().get(ttm.getPath((TumoTreeNode) currentObject)[0]);
+	   int[] departContPath = ttm.getPath((TumoTreeNode) currentObject);
+	   Conteneur departCont = getRootConteneurs().get(departContPath[0]);
 		Conteneur destCont = getRootConteneurs().get(ttm.getSelectionPath()[0]);
 	
 		Set<Banque> departContBanks = ManagerLocator.getConteneurManager()
@@ -498,7 +558,7 @@ public class ListeStockages extends AbstractController
 				
 		if (unavailableConteneur != null) { // incoherence -> on met la destination en rouge
 			final org.zkoss.zul.Treerow row = selectedDestinationItem.getTreerow();
-			colorateRowInRed(row);
+			AffichageUtils.colorateRowInRed(row);
 			if(currentObject instanceof EnceinteNode){
 				getStockageController().getFicheEnceinte()
 					.definirEnceinteDestination(null, unavailableConteneur, missingBanks);
@@ -554,7 +614,7 @@ public class ListeStockages extends AbstractController
 	 * @version 2.1
 	 */
 	public void updateAllConteneurs(final boolean isAdd){
-		// Init du noeud root de l'arbre
+	   // Init du noeud root de l'arbre
 		final StockageRootNode root = 
 				new StockageRootNode(SessionUtils.getSelectedBanques(sessionScope), curPf);
 		root.setHideComplete(hideCompleteTerminales);
@@ -565,22 +625,21 @@ public class ListeStockages extends AbstractController
 		setSelectedEnceinte(null);
 		getRootConteneurs().clear();
 		getRootConteneurs().addAll(root.getConteneurs());
-		
-		//@since TK-306
-		// A TESTER
-		if (deplacementMode.equals("deplacementEmplacement")) {
-			removePlateformeRestrictedConteneurs(true);
-		}
-
+	
 		restrictedBanqueDeplacement.clear();
-
+	
 		// Init de l'arbre et de son affichage
 		ttm = new TumoTreeModel(root);
-		ctr = new StockageTreeItemRenderer();
+		
+		//TK-314 : mise en commentaire de la réinstantiation de ctr 
+		//En effet, cet objet n'a pas d'état donc ça ne sert à rien et il est apparu lors d'un test que si ctr avait un état, le fait de le réiniatiliser
+		//n'impacte pas l'instance attachée à la page courante
+		//ctr = new StockageTreeItemRenderer();
+				
 
 		// Maj de l'arbre
 		getBinder().loadAttribute(self.getFellow("mainTreeContext"), "model");
-
+	
 		if(isAdd){
 			mainTreeContext.setSelectedItem((Treeitem) mainTreeContext.getLastChild().getLastChild());
 		}
@@ -748,9 +807,7 @@ public class ListeStockages extends AbstractController
 	 *            Enceinte de "destination".
 	 */
 	public void deplacerDeuxEnceintes(final Enceinte enc1, Enceinte enc2){
-		switchToNormalMode();
-		// remet le tree à l'état initial
-		updateAllConteneurs(false);
+		switchToNormalMode(true);
 
 		final EnceinteNode oldNode = (EnceinteNode) selectedItem.getValue();
 		// si aucune enceinte se trouve à la destination
@@ -762,9 +819,13 @@ public class ListeStockages extends AbstractController
 			enc2.setPosition(oldNode.getEnceinte().getPosition());
 		}
 
-		// ouverture des deux enceintes
-		openEnceinte(enc2, false);
-		openEnceinte(enc1, true);
+     //TK-315 : on passe par un Event pour que le renderer qui redessine le Tree soit appelé avant de gérer les conséquences du 
+     //déplacement au niveau affichage du Tree des conteneurs 
+     //(il est déclenché par updateAllConteneurs() appelé dans switchToNormalMode())
+     List<Enceinte> enceintesConcernees = new ArrayList<Enceinte>();
+     enceintesConcernees.add(enc1);
+     enceintesConcernees.add(enc2);
+     Events.postEvent("onLaterDeplacementDeuxEnceintes", self, enceintesConcernees);
 	}
 
 	/**
@@ -776,9 +837,7 @@ public class ListeStockages extends AbstractController
 	 *            Terminale de "destination".
 	 */
 	public void deplacerDeuxTerminales(final Terminale term1, Terminale term2){
-		switchToNormalMode();
-		// remet le tree à l'état initial
-		updateAllConteneurs(false);
+	   switchToNormalMode(true);
 
 		final TerminaleNode oldNode = (TerminaleNode) selectedItem.getValue();
 		// si aucune terminale se trouve à la destination
@@ -789,9 +848,13 @@ public class ListeStockages extends AbstractController
 			term2.setPosition(oldNode.getTerminale().getPosition());
 		}
 
-		// ouverture des deux terminales
-		openTerminale(term2, false, true);
-		openTerminale(term1, true, true);
+	    //TK-315 : on passe par un Event pour que le renderer qui redessine le Tree soit appelé avant de gérer les conséquences du 
+		//déplacement au niveau affichage du Tree des conteneurs
+      //(il est déclenché par updateAllConteneurs() appelé dans switchToNormalMode())
+      List<Terminale> terminalesConcernees = new ArrayList<Terminale>();
+      terminalesConcernees.add(term1);
+      terminalesConcernees.add(term2);
+      Events.postEvent("onLaterDeplacementDeuxTerminales", self, terminalesConcernees);
 	}
 
 	/**
@@ -811,43 +874,6 @@ public class ListeStockages extends AbstractController
 
 		etiquettes.setDisabled(
 				ManagerLocator.getImprimanteManager().findByPlateformeManager(SessionUtils.getPlateforme(sessionScope)).isEmpty());
-	}
-
-	/**
-	 * Met une ligne en jaune.
-	 */
-	public void colorateRowInYellow(final org.zkoss.zul.Treerow row){
-		row.setStyle("background-color : #FDDFA9");
-	}
-
-	/**
-	 * Met une ligne en vert.
-	 */
-	public void colorateRowInGreen(final org.zkoss.zul.Treerow row){
-		row.setStyle("background-color : #90EE90");
-	}
-
-	/**
-	 * Met une ligne en rouge.
-	 */
-	public void colorateRowInRed(final org.zkoss.zul.Treerow row){
-		row.setStyle("background-color : #FEBAB3");
-	}
-
-	/**
-	 * Surligne la row en bleu léger, couleur correspondante à la sélection 
-	 * dans Tree.
-	 * Coloration appelée pour surlignée les terminales après recherche.
-	 * @since 2.1
-	 * @version 2.1
-	 * @param row
-	 */
-	public void colorateRowInLightBlue(final org.zkoss.zul.Treerow row){
-		row.setStyle("background-color : #e6f7ff");
-	}
-
-	public void unColorateRow(final org.zkoss.zul.Treerow row){
-		row.setStyle("background: none");
 	}
 
 	public Treeitem getSelectedItem(){
@@ -985,6 +1011,43 @@ public class ListeStockages extends AbstractController
 		}
 	}
 
+	//TK-315 :
+   /**
+    * Permet d'ouvrir les terminales concernées par le déplacement après un updateAllConteneurs qui a redessiné le Tree des conteneurs
+    */
+	public void onLaterDeplacementDeuxTerminales(final Event e){
+      List<Terminale> data = (List<Terminale>)e.getData();
+      //appelé après un updateAllConteneurs donc tout est fermé => false en 3e param
+      //la fiche terminale est déjà ouverte donc false pour le 2 param
+      Terminale term1 = data.get(0);
+      openTerminale(term1,false, false);//terminale 1 (celle à déplacer)
+      openTerminale(data.get(1),false, false);//terminale 2 (celle à remplacer)
+      
+      //on reste sur la terminale 1
+      selectedItem = mainTreeContext.renderItemByPath(ttm.getPath(new TerminaleNode(term1, null)));
+      currentObject = selectedItem.getValue();
+      mainTreeContext.setSelectedItem(selectedItem);
+ 	}
+	
+	
+   //TK-315 :
+   /**
+    * Permet d'ouvrir les enceintes concernées par le déplacement après un updateAllConteneurs qui a redessiné le Tree des conteneurs
+    */
+   public void onLaterDeplacementDeuxEnceintes(final Event e){
+        List<Enceinte> data = (List<Enceinte>)e.getData();
+        //la fiche enceinte est déjà ouverte donc false pour le 2 param
+        Enceinte enceinte1 = data.get(0);
+        openEnceinte(enceinte1,false);//enceinte 1 (celle à déplacer)
+        
+        openEnceinte(data.get(1),false);//enceinte 2 (celle à remplacer)
+        
+        //on reste sur la enceinte 1
+        selectedItem = mainTreeContext.renderItemByPath(ttm.getPath(new EnceinteNode(enceinte1, null, null, null)));
+        currentObject = selectedItem.getValue();
+        mainTreeContext.setSelectedItem(selectedItem);
+   }
+	
 	/**
 	 * Navigue dans la liste stockage pour ouvrir une terminale.
 	 * 
@@ -1231,7 +1294,7 @@ public class ListeStockages extends AbstractController
 	 * @version 2.1 
 	 */
 	public void onClick$findTerminaleBoxButton(){
-		cleanRowsColor();
+	   cleanBlueRowsColor();
 		final String tNameToSearch = findTerminaleBox.getValue();
 		if(tNameToSearch != null){
 			Events.echoEvent("onLaterTerminaleSearch", self, tNameToSearch);
@@ -1240,8 +1303,23 @@ public class ListeStockages extends AbstractController
 	}
 
 	public void onLaterTerminaleSearch(final Event e){
-		final List<Integer> termIds = ManagerLocator.getTerminaleManager().findTerminaleIdsFromNomManager((String) e.getData(),
-				getSelectedEnceinte(), getSelectedConteneurs());
+	   List<Conteneur> conteneursToUse = new ArrayList<Conteneur>(getSelectedConteneurs());
+      //TK-314 : dans le cas d'un déplacement, il ne faut pas prendre en compte les terminales 
+	   //dont le conteneur est interdit (mode deplacement ou deplacementEmplacement) :
+	   if(isDeplacementOrDeplacementEmplacementMode()) {
+   		//TK-314 : filtre sur les conteneurs accessibles :
+   	   List<Conteneur> conteneursToRemove = new ArrayList<Conteneur>();
+   	   for(Conteneur conteneur : conteneursToUse) {
+   	      if(!isAccessibleConteneurForCurrentPlateform(conteneur)) {
+   	         conteneursToRemove.add(conteneur);
+   	      }
+   	   }
+   	   conteneursToUse.removeAll(conteneursToRemove);
+   	   //
+	   }
+	   
+	   final List<Integer> termIds = ManagerLocator.getTerminaleManager().findTerminaleIdsFromNomManager((String) e.getData(),
+				getSelectedEnceinte(), conteneursToUse);
 
 		if(!termIds.isEmpty()){
 
@@ -1267,7 +1345,7 @@ public class ListeStockages extends AbstractController
 			// color results;
 			for(final int[] path : searchPaths){
 				if(null != path){
-					colorateRowInLightBlue(mainTreeContext.renderItemByPath(path).getTreerow());
+				   AffichageUtils.colorateRowInLightBlue(mainTreeContext.renderItemByPath(path).getTreerow());
 				}
 			}
 		}else{ // notification
@@ -1282,15 +1360,32 @@ public class ListeStockages extends AbstractController
 		Clients.clearBusy(self);
 	}
 
-	private void cleanRowsColor(){
-		// color results;
-		for(final int[] path : searchPaths){
-			if(path != null){
-				unColorateRow(mainTreeContext.renderItemByPath(path).getTreerow());
-			}
-		}
-		searchPaths.clear();
-	}
+   private void cleanBlueRowsColor(){
+      for(final int[] path : searchPaths){
+         if(path != null){
+            AffichageUtils.unColorateRow(mainTreeContext.renderItemByPath(path).getTreerow());
+         }
+      }
+      
+      searchPaths.clear();
+   }	
+	
+   //TK-314
+   //NB : un seul item est à réinitialiser mais c'est plus simple de réinitialiser tous les conteneurs
+   //pouvant avoir été passés en rouge c'est-à-dire tous les conteneurs interdits. Le nb de conteneurs partagés
+   //étant limité, cela n'a pas d'impact au niveau performance.
+   private void cleanRedRowsColorForForbiddenConteneurs(){
+      for(final int[] path : forbiddenConteneurPaths){
+         if(path != null){
+            AffichageUtils.unColorateRow(mainTreeContext.renderItemByPath(path).getTreerow());
+         }
+      }
+      
+      ///!\ contrairement à  cleanBlueRowsColor, la liste forbiddenConteneurPaths n'est pas nettoyée 
+      //car elle sert aussi à désactiver les items des conteneurs interdits.
+      //le nettoyage de la liste sera donc fait à la fin du process dans cleanAffichageForbiddenConteneurs
+   }  
+   
 
 	/**
 	 * Reset le tree
@@ -1298,17 +1393,21 @@ public class ListeStockages extends AbstractController
 	 * @version 2.1 
 	 */
 	public void onClick$resetTree(){
-		//		((TreeOpenableModel) ttm).clearOpen();
-		//		ttm.clearSelection();
-		//		
-		//		setSelectedConteneur(null);
-		//		setSelectedEnceinte(null);
-		//		setSelectedTerminale(null);
 		updateAllConteneurs(false);
+		//TK-314
+		Events.postEvent(new Event("onLaterUpdateAllContainerToManageForbiddenConteneurs", self, null));
 
 		if(!deplacementMode.equals("deplacementEmplacement")){
-			switchToNormalMode();
+			switchToNormalMode(false);
 			getStockageController().clearAllPage();
 		}
+
 	}
+
+
+	//TK-314
+	private boolean isDeplacementOrDeplacementEmplacementMode() {
+	   return deplacementMode != null && (deplacementMode.equals("deplacement") || deplacementMode.equals("deplacementEmplacement"));
+	}
+	
 }

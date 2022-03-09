@@ -252,8 +252,6 @@ public class FicheRetour extends AbstractFicheCombineController
 
       drawActionsForRetours();
 
-      winPanel.setHeight("360px");
-
       getBinder().loadAll();
    }
 
@@ -367,6 +365,8 @@ public class FicheRetour extends AbstractFicheCombineController
 
          }else{
 
+            //on remonte à winRetourModal définie dans AbstractController.openRetourFormModale()
+            //pour diminuer la taille de la fenêtre
             ((Window) fwinRetour.getParent().getParent()).setHeight("380px");
          }
          //			else {

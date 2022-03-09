@@ -69,8 +69,6 @@ import org.zkoss.zul.SimpleListModel;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.ext.Selectable;
 
-import fr.aphp.tumorotek.action.stockage.PlateformesAssociees;
-import fr.aphp.tumorotek.model.contexte.Plateforme;
 import fr.aphp.tumorotek.action.CustomSimpleListModel;
 import fr.aphp.tumorotek.action.ManagerLocator;
 import fr.aphp.tumorotek.component.CalendarBox;
@@ -271,38 +269,44 @@ public class FicheConteneur extends AbstractFicheCombineStockageController
 		}
 
 		// replaced by IRELEC logic
-		// updateButtonActionsWithPlateformeOrigine();
-		disableActionsForForeignPlateformeConteneur(conteneur.getPlateformeOrig());
-
+		//TK-314
+		updateButtonActionsWithPlateformeOrigine();
 
 		// clone er reload
 		super.setObject(conteneur);
 	}
 
-//	/**
-//	 * Switch action buttons disable status at each selection
-//	 * so that any button is disable if conteneur is shared 
-//	 * from foreign platforme.
-//	 * @since 2.2.1
-//	 */
-//	private void updateButtonActionsWithPlateformeOrigine() {
-//
-//		final boolean orig = conteneur != null && 
-//				conteneur.getPlateformeOrig().equals(SessionUtils.getCurrentPlateforme());
-//
-//		if (orig) { // fall back to profile rights
-//			editC.setDisabled(!isCanEdit());
-//			deleteC.setDisabled(!isCanDelete());
-//			addIncidentItem.setDisabled(!isCanEdit());
-//			numerotation.setDisabled(!isAdmin());
-//		} else { // disable all buttons
-//			editC.setDisabled(true);
-//			deleteC.setDisabled(true);
-//			addIncidentItem.setDisabled(true);
-//			numerotation.setDisabled(true);
-//		}
-//	}
+	  //TK-314 : adaptation
+   /**
+   * active / désactive les boutons d'action en fonction des droits de l'utilisateur et de la plateforme du conteneur concerné :
+   * si le conteneur est partagé, seul l'admin de la plateforme peut modifier / supprimer le conteneur et modifier la numérotation - quelques soit la restriction de stockage,
+   * sinon les droits s'appliquent
+   * L'ajout d'un incident est par contre possible si le conteneur est partagé sans restriction de stockage
+   * Convient aux spec Grenoble IRELEC.
+   * @since 2.2.1-IRELEC
+   */
+   private void updateButtonActionsWithPlateformeOrigine() {
+      //NB : la méthode AbstractFicheCombineStockageController.disableActionsForForeignPlateformeConteneur() n'est pas pertinente pour le conteneur
+      if(conteneur != null) {
+         boolean enable = isCurrentPFOrUserAtLeastAdminfPF(conteneur.getPlateformeOrig());
+         if(editC != null) {
+            editC.setDisabled( !(enable && isCanEdit()) );
+         }
+         if(deleteC != null) {
+            deleteC.setDisabled( !(enable && isCanDelete()) );
+         }
 
+         if (numerotation != null) {
+            numerotation.setDisabled(!isUserAtLeastAdminfPF(conteneur.getPlateformeOrig()));
+         }
+         
+         if(addIncidentItem != null) {
+            addIncidentItem.setDisabled( !(isAccessibleConteneurForCurrentPlateform(conteneur) && isCanEdit()) );
+         }
+      } 
+    }
+		
+	
 	@Override
 	public void setNewObject(){
 		final Conteneur c = new Conteneur();
@@ -1110,33 +1114,22 @@ public class FicheConteneur extends AbstractFicheCombineStockageController
 		Clients.clearWrongValue(nbNivBox);
 	}
 
-	/**
-	 * Rend les boutons d'actions cliquables ou non.
-	 */
-	public void drawActionsForConteneur(){
-		drawActionsButtons("Stockage");
+	 /**
+    * Rend les boutons d'actions cliquables ou non.
+    */
+	//TK-314 : adaptation
+   public void drawActionsForConteneur(){
+      drawActionsButtons("Stockage");
+      
+      //TK-314 : gestion des accès ne dépendant que des droits de l'utilisateur
+      if(createC != null) {
+         createC.setDisabled(!isCanNew());
+      }
 
-		if(SessionUtils.getSelectedBanques(sessionScope).size() == 1){
-			setCanNew(isCanNew());
-		}else{
-			setCanNew(false);
-		}
-
-		if(isCanEdit()){
-			addIncidentItem.setDisabled(false);
-		}else{
-			addIncidentItem.setDisabled(true);
-		}
-
-		// @since 2.2.1-IRELEC
-		if (SessionUtils.getSelectedBanques(sessionScope).size() == 1) {
-			canNumerotation = isAdmin();
-		} else {
-			canNumerotation = false;
-		}
-		numerotation.setDisabled(!canNumerotation);
-	}
-
+      //TK-314 : gestion des accès qui peuvent changer en fonction de la navigation (et par exemple du fait que le conteneur soit partagé ou non)
+      updateButtonActionsWithPlateformeOrigine();
+   }
+	
 	@Override
 	public void onClick$numerotation(){
 		openChangeNumerotationModaleWindow(this.conteneur);
@@ -1400,14 +1393,5 @@ public class FicheConteneur extends AbstractFicheCombineStockageController
 				.getFellow("winPlateformesAssociees")
 				.getAttributeOrFellow("winPlateformesAssociees$composer", true);
 	}
-	/**
-	 * Rend les boutons d'actions cliquables ou non.
-	 * @version 2.2.1-IRELEC
-	 */
-	@Override
-	public boolean disableActionsForForeignPlateformeConteneur(Plateforme pOrig) {
-		boolean enable = super.disableActionsForForeignPlateformeConteneur(pOrig);
-		numerotation.setDisabled(!canNumerotation || !enable);
-		return enable;
-	}
+
 }

@@ -187,7 +187,7 @@
 							</hbox>
 						
 							<listbox id="objectsBox" multiple="true" 
-								width="250px" checkmark="true" rows="5"
+								width="250px" checkmark="true" height="150px"
 								emptyMessage="test">
 								<!-- model="@{fwinRetour$composer.objects}" -->
 								<!-- selectedItems="@{fwinRetour$composer.selectedObjectsItem}" -->
