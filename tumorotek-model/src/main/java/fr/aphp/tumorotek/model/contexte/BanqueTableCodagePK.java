@@ -36,6 +36,7 @@
 package fr.aphp.tumorotek.model.contexte;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 import javax.persistence.Embeddable;
 import javax.persistence.ManyToOne;
@@ -45,91 +46,90 @@ import fr.aphp.tumorotek.model.code.TableCodage;
 
 /**
  *
- * Embedded Id pour la table BANQUE_TABLE_CODAGE.
- * Classe créée le 22/08/10.
+ * Embedded Id pour la table BANQUE_TABLE_CODAGE. Classe créée le 22/08/10.
  *
  * @author Mathieu BARTHELEMY
  * @see http://boris.kirzner.info/blog/archives/2008/07/19/
- * hibernate-annotations-the-many-to-many-association-with-composite-key/
+ *      hibernate-annotations-the-many-to-many-association-with-composite-key/
  * @version 2.0
  *
  */
 @Embeddable
-public class BanqueTableCodagePK implements Serializable
-{
+public class BanqueTableCodagePK implements Serializable {
 
-   private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-   private Banque banque;
-   private TableCodage tableCodage;
+	private Banque banque;
+	private TableCodage tableCodage;
 
-   /** Constructeur par défaut. */
-   public BanqueTableCodagePK(){}
+	/** Constructeur par défaut. */
+	public BanqueTableCodagePK() {
+	}
 
-   public BanqueTableCodagePK(final Banque b, final TableCodage t){
-      this.banque = b;
-      this.tableCodage = t;
-   }
+	public BanqueTableCodagePK(final Banque b, final TableCodage t) {
+		this.banque = b;
+		this.tableCodage = t;
+	}
 
-   @ManyToOne(fetch = FetchType.LAZY,targetEntity = Banque.class)
-   public Banque getBanque(){
-      return banque;
-   }
+	@ManyToOne(fetch = FetchType.LAZY, targetEntity = Banque.class)
+	public Banque getBanque() {
+		return banque;
+	}
 
-   public void setBanque(final Banque b){
-      this.banque = b;
-   }
+	public void setBanque(final Banque b) {
+		this.banque = b;
+	}
 
-   @ManyToOne(fetch = FetchType.LAZY,targetEntity = TableCodage.class)
-   public TableCodage getTableCodage(){
-      return tableCodage;
-   }
+	@ManyToOne(fetch = FetchType.LAZY, targetEntity = TableCodage.class)
+	public TableCodage getTableCodage() {
+		return tableCodage;
+	}
 
-   public void setTableCodage(final TableCodage t){
-      this.tableCodage = t;
-   }
+	public void setTableCodage(final TableCodage t) {
+		this.tableCodage = t;
+	}
 
-   /**
-    * 2 PKs sont considérés comme égales si elles sont composees 
-    * des mêmes clés.
-    * @param obj est la PK à tester.
-    * @return true si les PK sont egales.
-    */
-   @Override
-   public boolean equals(final Object obj){
+	/**
+	 * 2 PKs sont considérés comme égales si elles sont composees des mêmes clés.
+	 * 
+	 * @param obj est la PK à tester.
+	 * @return true si les PK sont egales.
+	 */
+	@Override
+	public boolean equals(final Object obj) {
 
-      if(this == obj){
-         return true;
-      }
-      if((obj == null) || obj.getClass() != this.getClass()){
-         return false;
-      }
-      final BanqueTableCodagePK test = (BanqueTableCodagePK) obj;
-      return (((this.banque != null && (this.banque.equals(test.banque)) || this.banque == test.banque)
-         && ((this.tableCodage != null && this.tableCodage.equals(test.tableCodage)) || this.tableCodage == test.tableCodage)));
-   }
+		if (this == obj) {
+			return true;
+		}
+		if ((obj == null) || !(obj instanceof BanqueTableCodagePK)) {
+			return false;
+		}
+		final BanqueTableCodagePK test = (BanqueTableCodagePK) obj;
+		return Objects.equals(banque, test.getBanque()) && Objects.equals(tableCodage, test.getTableCodage());
+	}
 
-   /**
-    * Le hashcode est calculé sur les clés.
-    * @return la valeur du hashcode.
-    */
-   @Override
-   public int hashCode(){
+	/**
+	 * Le hashcode est calculé sur les clés.
+	 * 
+	 * @return la valeur du hashcode.
+	 */
+	@Override
+	public int hashCode() {
 
-      int hash = 7;
-      int hashBanque = 0;
-      int hashTableCodage = 0;
+		int hash = 7;
+		int hashBanque = 0;
+		int hashTableCodage = 0;
 
-      if(this.banque != null){
-         hashBanque = this.banque.hashCode();
-      }
-      if(this.tableCodage != null){
-         hashTableCodage = this.tableCodage.hashCode();
-      }
+		if (this.banque != null) {
+			hashBanque = this.banque.hashCode();
+		}
+		if (this.tableCodage != null) {
+			hashTableCodage = this.tableCodage.hashCode();
+		}
 
-      hash = 7 * hash + hashBanque;
-      hash = 7 * hash + hashTableCodage;
+		hash = 7 * hash + hashBanque;
+		hash = 7 * hash + hashTableCodage;
 
-      return hash;
-   }
+		return hash;
+	}
 }

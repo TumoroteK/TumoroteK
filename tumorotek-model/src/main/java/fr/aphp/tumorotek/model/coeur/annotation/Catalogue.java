@@ -37,6 +37,7 @@ package fr.aphp.tumorotek.model.coeur.annotation;
 
 import java.io.Serializable;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -158,13 +159,11 @@ public class Catalogue implements Serializable {
 		if (this == obj) {
 			return true;
 		}
-		if ((obj == null) || obj.getClass() != this.getClass()) {
+		if ((obj == null) || !(obj instanceof Catalogue)) {
 			return false;
-		}
-
+		}		
 		final Catalogue test = (Catalogue) obj;
-
-		return ((this.nom == test.nom || (this.nom != null && this.nom.equals(test.nom))));
+		return Objects.equals(nom, test.getNom());
 	}
 
 	/**

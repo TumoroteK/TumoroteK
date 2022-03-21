@@ -39,6 +39,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -63,8 +64,7 @@ import fr.aphp.tumorotek.model.systeme.Entite;
 
 /**
  *
- * Objet persistant mappant la table TEMPLATE.
- * Classe créée le 21/07/2010.
+ * Objet persistant mappant la table TEMPLATE. Classe créée le 21/07/2010.
  *
  * @author Pierre Ventadour.
  * @version 2.3
@@ -79,266 +79,254 @@ import fr.aphp.tumorotek.model.systeme.Entite;
 //      query = "SELECT t FROM Template t " + "WHERE t.banque = ?1 AND t.entite = ?2 " + "ORDER BY t.nom"),
 //   @NamedQuery(name = "Template.findByExcludedId",
 //      query = "SELECT t FROM Template t " + "WHERE t.banque = ?1 AND t.templateId != ?2")})
-public class Template extends Object implements TKdataObject, Serializable
-{
+public class Template extends Object implements TKdataObject, Serializable {
 
-   private static final long serialVersionUID = 5591185846747255061L;
+	private static final long serialVersionUID = 5591185846747255061L;
 
-   private Integer templateId;
+	private Integer templateId;
 
-   private ETemplateType type;
+	private ETemplateType type;
 
-   private String nom;
+	private String nom;
 
-   private String description;
+	private String description;
 
-   private Banque banque;
+	private Banque banque;
 
-   private Entite entite;
+	private Entite entite;
 
-   //Pour types BLOC
-   private String enTete;
+	// Pour types BLOC
+	private String enTete;
 
-   private String piedPage;
+	private String piedPage;
 
-   private Set<TableAnnotationTemplate> tableAnnotationTemplates = new HashSet<>();
+	private Set<TableAnnotationTemplate> tableAnnotationTemplates = new HashSet<>();
 
-   private Set<BlocImpressionTemplate> blocImpressionTemplates = new HashSet<>();
+	private Set<BlocImpressionTemplate> blocImpressionTemplates = new HashSet<>();
 
-   private Set<ChampImprime> champImprimes = new HashSet<>();
+	private Set<ChampImprime> champImprimes = new HashSet<>();
 
-   //Pour types DOC
-   private String fichier;
+	// Pour types DOC
+	private String fichier;
 
-   private List<CleImpression> cleImpressionList = new ArrayList<>();
+	private List<CleImpression> cleImpressionList = new ArrayList<>();
 
-   public Template(){
+	public Template() {
 
-   }
+	}
 
-   @Id
-   @Column(name = "TEMPLATE_ID", unique = true, nullable = false)
-   @GeneratedValue(generator = "autoincrement")
-   @GenericGenerator(name = "autoincrement", strategy = "increment")
-   public Integer getTemplateId(){
-      return templateId;
-   }
+	@Id
+	@Column(name = "TEMPLATE_ID", unique = true, nullable = false)
+	@GeneratedValue(generator = "autoincrement")
+	@GenericGenerator(name = "autoincrement", strategy = "increment")
+	public Integer getTemplateId() {
+		return templateId;
+	}
 
-   public void setTemplateId(final Integer id){
-      this.templateId = id;
-   }
+	public void setTemplateId(final Integer id) {
+		this.templateId = id;
+	}
 
-   @Column(name = "TYPE", nullable = false)
-   @Enumerated(EnumType.STRING)
-   public ETemplateType getType(){
-      return type;
-   }
+	@Column(name = "TYPE", nullable = false)
+	@Enumerated(EnumType.STRING)
+	public ETemplateType getType() {
+		return type;
+	}
 
-   public void setType(final ETemplateType type){
-      this.type = type;
-   }
+	public void setType(final ETemplateType type) {
+		this.type = type;
+	}
 
-   @Column(name = "NOM", nullable = false)
-   public String getNom(){
-      return nom;
-   }
+	@Column(name = "NOM", nullable = false)
+	public String getNom() {
+		return nom;
+	}
 
-   public void setNom(final String n){
-      this.nom = n;
-   }
+	public void setNom(final String n) {
+		this.nom = n;
+	}
 
-   @Column(name = "DESCRIPTION", nullable = true)
-   public String getDescription(){
-      return description;
-   }
+	@Column(name = "DESCRIPTION", nullable = true)
+	public String getDescription() {
+		return description;
+	}
 
-   public void setDescription(final String desc){
-      this.description = desc;
-   }
+	public void setDescription(final String desc) {
+		this.description = desc;
+	}
 
-   @Column(name = "EN_TETE", nullable = true)
-   public String getEnTete(){
-      return enTete;
-   }
+	@Column(name = "EN_TETE", nullable = true)
+	public String getEnTete() {
+		return enTete;
+	}
 
-   public void setEnTete(final String tete){
-      this.enTete = tete;
-   }
+	public void setEnTete(final String tete) {
+		this.enTete = tete;
+	}
 
-   @Column(name = "PIED_PAGE", nullable = true)
-   public String getPiedPage(){
-      return piedPage;
-   }
+	@Column(name = "PIED_PAGE", nullable = true)
+	public String getPiedPage() {
+		return piedPage;
+	}
 
-   public void setPiedPage(final String pied){
-      this.piedPage = pied;
-   }
+	public void setPiedPage(final String pied) {
+		this.piedPage = pied;
+	}
 
-   @ManyToOne(fetch = FetchType.LAZY)
-   @JoinColumn(name = "BANQUE_ID", nullable = false)
-   public Banque getBanque(){
-      return banque;
-   }
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "BANQUE_ID", nullable = false)
+	public Banque getBanque() {
+		return banque;
+	}
 
-   public void setBanque(final Banque b){
-      this.banque = b;
-   }
+	public void setBanque(final Banque b) {
+		this.banque = b;
+	}
 
-   @ManyToOne(fetch = FetchType.LAZY)
-   @JoinColumn(name = "ENTITE_ID", nullable = false)
-   public Entite getEntite(){
-      return entite;
-   }
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "ENTITE_ID", nullable = false)
+	public Entite getEntite() {
+		return entite;
+	}
 
-   public void setEntite(final Entite e){
-      this.entite = e;
-   }
+	public void setEntite(final Entite e) {
+		this.entite = e;
+	}
 
-   @OneToMany(mappedBy = "pk.template")
-   public Set<BlocImpressionTemplate> getBlocImpressionTemplates(){
-      return blocImpressionTemplates;
-   }
+	@OneToMany(mappedBy = "pk.template")
+	public Set<BlocImpressionTemplate> getBlocImpressionTemplates() {
+		return blocImpressionTemplates;
+	}
 
-   public void setBlocImpressionTemplates(final Set<BlocImpressionTemplate> blocImpressions){
-      this.blocImpressionTemplates = blocImpressions;
-   }
+	public void setBlocImpressionTemplates(final Set<BlocImpressionTemplate> blocImpressions) {
+		this.blocImpressionTemplates = blocImpressions;
+	}
 
-   @OneToMany(mappedBy = "pk.template")
-   public Set<ChampImprime> getChampImprimes(){
-      return champImprimes;
-   }
+	@OneToMany(mappedBy = "pk.template")
+	public Set<ChampImprime> getChampImprimes() {
+		return champImprimes;
+	}
 
-   public void setChampImprimes(final Set<ChampImprime> champIs){
-      this.champImprimes = champIs;
-   }
+	public void setChampImprimes(final Set<ChampImprime> champIs) {
+		this.champImprimes = champIs;
+	}
 
-   @ManyToMany(targetEntity = CleImpression.class, fetch = FetchType.LAZY)
-   @JoinTable(name = "CLE_IMPRESSION_TEMPLATE", joinColumns = @JoinColumn(name = "TEMPLATE_ID"),
-   inverseJoinColumns = @JoinColumn(name = "CLE_IMPRESSION_ID"))
-   public List<CleImpression> getCleImpressionList(){
-      return cleImpressionList;
-   }
+	@ManyToMany(targetEntity = CleImpression.class, fetch = FetchType.LAZY)
+	@JoinTable(name = "CLE_IMPRESSION_TEMPLATE", joinColumns = @JoinColumn(name = "TEMPLATE_ID"), inverseJoinColumns = @JoinColumn(name = "CLE_IMPRESSION_ID"))
+	public List<CleImpression> getCleImpressionList() {
+		return cleImpressionList;
+	}
 
-   public void setCleImpressionList(final List<CleImpression> cleImpressionList){
-      this.cleImpressionList = cleImpressionList;
-   }
+	public void setCleImpressionList(final List<CleImpression> cleImpressionList) {
+		this.cleImpressionList = cleImpressionList;
+	}
 
-   @OneToMany(mappedBy = "pk.template")
-   public Set<TableAnnotationTemplate> getTableAnnotationTemplates(){
-      return tableAnnotationTemplates;
-   }
+	@OneToMany(mappedBy = "pk.template")
+	public Set<TableAnnotationTemplate> getTableAnnotationTemplates() {
+		return tableAnnotationTemplates;
+	}
 
-   public void setTableAnnotationTemplates(final Set<TableAnnotationTemplate> tables){
-      this.tableAnnotationTemplates = tables;
-   }
+	public void setTableAnnotationTemplates(final Set<TableAnnotationTemplate> tables) {
+		this.tableAnnotationTemplates = tables;
+	}
 
-   /**
-    * Path du fichier modèle
-    * @return Path du fichier modèle
-    */
-   @Column(name = "FICHIER")
-   public String getFichier(){
-      return fichier;
-   }
+	/**
+	 * Path du fichier modèle
+	 * 
+	 * @return Path du fichier modèle
+	 */
+	@Column(name = "FICHIER")
+	public String getFichier() {
+		return fichier;
+	}
 
-   /**
-    * Path du fichier modèle
-    * @param fichier Path du fichier modèle
-    */
-   public void setFichier(final String fichier){
-      this.fichier = fichier;
-   }
+	/**
+	 * Path du fichier modèle
+	 * 
+	 * @param fichier Path du fichier modèle
+	 */
+	public void setFichier(final String fichier) {
+		this.fichier = fichier;
+	}
 
-   /**
-    * 2 templates sont considérées comme égaux s'ils ont le même
-    * nom et la même banque.
-    * @param obj est le template à tester.
-    * @return true si les templates sont égaux.
-    */
-   @Override
-   public boolean equals(final Object obj){
-      if(this == obj){
-         return true;
-      }else if((obj == null) || obj.getClass() != this.getClass()){
-         return false;
-      }else{
-         final Template test = Template.class.cast(obj);
-         if(this.nom == null){
-            if(test.nom == null){
-               if(this.banque == null){
-                  return (test.banque == null);
-               }
-               return (this.banque.equals(test.banque));
-            }
-            return false;
-         }else if(this.banque == null){
-            if(test.banque == null){
-               return (this.nom.equals(test.nom));
-            }
-            return false;
-         }else{
-            return (this.nom.equals(test.nom) && this.banque.equals(test.banque));
-         }
-      }
-   }
+	/**
+	 * 2 templates sont considérées comme égaux s'ils ont le même nom et la même
+	 * banque.
+	 * 
+	 * @param obj est le template à tester.
+	 * @return true si les templates sont égaux.
+	 */
+	@Override
+	public boolean equals(final Object obj) {
 
-   /**
-    * Le hashcode est calculé sur les attributs nom et banque.
-    * @return la valeur du hashcode.
-    */
-   @Override
-   public int hashCode(){
+		if (this == obj) {
+			return true;
+		}
+		if ((obj == null) || !(obj instanceof Template)) {
+			return false;
+		}
+		final Template test = (Template) obj;
+		return Objects.equals(nom, test.getNom()) && Objects.equals(banque, test.getBanque());
+	}
 
-      int hash = 7;
-      int hashNom = 0;
-      int hashBanque = 0;
+	/**
+	 * Le hashcode est calculé sur les attributs nom et banque.
+	 * 
+	 * @return la valeur du hashcode.
+	 */
+	@Override
+	public int hashCode() {
 
-      if(this.nom != null){
-         hashNom = this.nom.hashCode();
-      }
-      if(this.banque != null){
-         hashBanque = this.banque.hashCode();
-      }
+		int hash = 7;
+		int hashNom = 0;
+		int hashBanque = 0;
 
-      hash = 31 * hash + hashNom;
-      hash = 31 * hash + hashBanque;
+		if (this.nom != null) {
+			hashNom = this.nom.hashCode();
+		}
+		if (this.banque != null) {
+			hashBanque = this.banque.hashCode();
+		}
 
-      return hash;
+		hash = 31 * hash + hashNom;
+		hash = 31 * hash + hashBanque;
 
-   }
+		return hash;
 
-   /**
-    * Méthode surchargeant le toString() de l'objet.
-    */
-   @Override
-   public String toString(){
-      if(this.nom != null){
-         return "{" + this.nom + "}";
-      }
-      return "{Empty Template}";
-   }
+	}
 
-   @Override
-   public Template clone(){
-      final Template clone = new Template();
+	/**
+	 * Méthode surchargeant le toString() de l'objet.
+	 */
+	@Override
+	public String toString() {
+		if (this.nom != null) {
+			return "{" + this.nom + "}";
+		}
+		return "{Empty Template}";
+	}
 
-      clone.setTemplateId(this.templateId);
-      clone.setType(this.type);
-      clone.setBanque(this.banque);
-      clone.setNom(this.nom);
-      clone.setEntite(this.entite);
-      clone.setDescription(this.description);
-      clone.setFichier(this.fichier);
-      clone.setEnTete(this.enTete);
-      clone.setPiedPage(this.piedPage);
-      clone.setCleImpressionList(this.cleImpressionList);
+	@Override
+	public Template clone() {
+		final Template clone = new Template();
 
-      return clone;
-   }
+		clone.setTemplateId(this.templateId);
+		clone.setType(this.type);
+		clone.setBanque(this.banque);
+		clone.setNom(this.nom);
+		clone.setEntite(this.entite);
+		clone.setDescription(this.description);
+		clone.setFichier(this.fichier);
+		clone.setEnTete(this.enTete);
+		clone.setPiedPage(this.piedPage);
+		clone.setCleImpressionList(this.cleImpressionList);
 
-   @Override
-   public Integer listableObjectId(){
-      return getTemplateId();
-   }
+		return clone;
+	}
+
+	@Override
+	public Integer listableObjectId() {
+		return getTemplateId();
+	}
 
 }

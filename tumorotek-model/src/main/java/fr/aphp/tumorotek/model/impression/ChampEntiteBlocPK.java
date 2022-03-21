@@ -36,6 +36,7 @@
 package fr.aphp.tumorotek.model.impression;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 import javax.persistence.Embeddable;
 import javax.persistence.ManyToOne;
@@ -45,104 +46,102 @@ import fr.aphp.tumorotek.model.io.export.ChampEntite;
 
 /**
  *
- * Embedded Id pour la table CHAMP_ENTITE_BLOC.
- * Classe créée le 30/07/2010.
+ * Embedded Id pour la table CHAMP_ENTITE_BLOC. Classe créée le 30/07/2010.
  *
  * @author Pierre VENTADOUR.
  * @see http://boris.kirzner.info/blog/archives/2008/07/19/
- * hibernate-annotations-the-many-to-many-association-with-composite-key/
+ *      hibernate-annotations-the-many-to-many-association-with-composite-key/
  * @version 2.0
  *
  */
 @Embeddable
-public class ChampEntiteBlocPK implements Serializable
-{
+public class ChampEntiteBlocPK implements Serializable {
 
-   private static final long serialVersionUID = 4932675709255221762L;
+	private static final long serialVersionUID = 4932675709255221762L;
 
-   private BlocImpression blocImpression;
-   private ChampEntite champEntite;
+	private BlocImpression blocImpression;
+	private ChampEntite champEntite;
 
-   public ChampEntiteBlocPK(){
+	public ChampEntiteBlocPK() {
 
-   }
+	}
 
-   public ChampEntiteBlocPK(final BlocImpression bloc, final ChampEntite champ){
-      this.blocImpression = bloc;
-      this.champEntite = champ;
-   }
+	public ChampEntiteBlocPK(final BlocImpression bloc, final ChampEntite champ) {
+		this.blocImpression = bloc;
+		this.champEntite = champ;
+	}
 
-   @ManyToOne(fetch = FetchType.LAZY,targetEntity = BlocImpression.class)
-   public BlocImpression getBlocImpression(){
-      return blocImpression;
-   }
+	@ManyToOne(fetch = FetchType.LAZY, targetEntity = BlocImpression.class)
+	public BlocImpression getBlocImpression() {
+		return blocImpression;
+	}
 
-   public void setBlocImpression(final BlocImpression b){
-      this.blocImpression = b;
-   }
+	public void setBlocImpression(final BlocImpression b) {
+		this.blocImpression = b;
+	}
 
-   @ManyToOne(fetch = FetchType.LAZY,targetEntity = ChampEntite.class)
-   public ChampEntite getChampEntite(){
-      return champEntite;
-   }
+	@ManyToOne(fetch = FetchType.LAZY, targetEntity = ChampEntite.class)
+	public ChampEntite getChampEntite() {
+		return champEntite;
+	}
 
-   public void setChampEntite(final ChampEntite c){
-      this.champEntite = c;
-   }
+	public void setChampEntite(final ChampEntite c) {
+		this.champEntite = c;
+	}
 
-   /**
-    * 2 PKs sont considérés comme égales si elles sont composees 
-    * des mêmes clés.
-    * @param obj est la PK à tester.
-    * @return true si les PK sont egales.
-    */
-   @Override
-   public boolean equals(final Object obj){
+	/**
+	 * 2 PKs sont considérés comme égales si elles sont composees des mêmes clés.
+	 * 
+	 * @param obj est la PK à tester.
+	 * @return true si les PK sont egales.
+	 */
+	@Override
+	public boolean equals(final Object obj) {
 
-      if(this == obj){
-         return true;
-      }
-      if((obj == null) || obj.getClass() != this.getClass()){
-         return false;
-      }
-      final ChampEntiteBlocPK test = (ChampEntiteBlocPK) obj;
-      return ((this.champEntite == test.champEntite || (this.champEntite != null && this.champEntite.equals(test.champEntite)))
-         && (this.blocImpression == test.blocImpression
-            || (this.blocImpression != null && this.blocImpression.equals(test.blocImpression))));
-   }
+		if (this == obj) {
+			return true;
+		}
+		if ((obj == null) || !(obj instanceof ChampEntiteBlocPK)) {
+			return false;
+		}
+		final ChampEntiteBlocPK test = (ChampEntiteBlocPK) obj;
+		return Objects.equals(champEntite, test.getChampEntite())
+				&& Objects.equals(blocImpression, test.getBlocImpression());
+	}
 
-   /**
-    * Le hashcode est calculé sur les clés.
-    * @return la valeur du hashcode.
-    */
-   @Override
-   public int hashCode(){
-      int hash = 7;
-      int hashChamp = 0;
-      int hashBloc = 0;
+	/**
+	 * Le hashcode est calculé sur les clés.
+	 * 
+	 * @return la valeur du hashcode.
+	 */
+	@Override
+	public int hashCode() {
+		int hash = 7;
+		int hashChamp = 0;
+		int hashBloc = 0;
 
-      if(this.champEntite != null){
-         hashChamp = this.champEntite.hashCode();
-      }
-      if(this.blocImpression != null){
-         hashBloc = this.blocImpression.hashCode();
-      }
+		if (this.champEntite != null) {
+			hashChamp = this.champEntite.hashCode();
+		}
+		if (this.blocImpression != null) {
+			hashBloc = this.blocImpression.hashCode();
+		}
 
-      hash = 7 * hash + hashChamp;
-      hash = 7 * hash + hashBloc;
+		hash = 7 * hash + hashChamp;
+		hash = 7 * hash + hashBloc;
 
-      return hash;
-   }
+		return hash;
+	}
 
-   /**
-    * Méthode surchargeant le toString() de l'objet.
-    */
-   @Override
-   public String toString(){
-      if(this.champEntite != null && this.blocImpression != null){
-         return "{" + champEntite.toString() + " (ChampEntite), " + blocImpression.toString() + " (BlocImpression)}";
-      }
-      return "{Empty ChampEntiteBlocPK}";
-   }
+	/**
+	 * Méthode surchargeant le toString() de l'objet.
+	 */
+	@Override
+	public String toString() {
+		if (this.champEntite != null && this.blocImpression != null) {
+			return "{" + champEntite.toString() + " (ChampEntite), " + blocImpression.toString() + " (BlocImpression)}";
+		}
+		return "{Empty ChampEntiteBlocPK}";
+	}
 
 }

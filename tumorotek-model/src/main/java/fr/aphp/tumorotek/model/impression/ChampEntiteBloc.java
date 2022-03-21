@@ -36,6 +36,7 @@
 package fr.aphp.tumorotek.model.impression;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 import javax.persistence.AssociationOverride;
 import javax.persistence.AssociationOverrides;
@@ -52,126 +53,124 @@ import fr.aphp.tumorotek.model.io.export.ChampEntite;
 
 /**
  *
- * Objet persistant mappant la table CHAMP_ENTITE_BLOC.
- * Classe créée le 30/07/2010.
+ * Objet persistant mappant la table CHAMP_ENTITE_BLOC. Classe créée le
+ * 30/07/2010.
  *
  * @author Pierre Ventadour
  * @see http://boris.kirzner.info/blog/archives/2008/07/19/
- * hibernate-annotations-the-many-to-many-association-with-composite-key/
+ *      hibernate-annotations-the-many-to-many-association-with-composite-key/
  * @version 2.3
  *
  */
 @Entity
 @Table(name = "CHAMP_ENTITE_BLOC")
 @AssociationOverrides({
-   @AssociationOverride(name = "pk.champEntite",
-      joinColumns = @JoinColumn(name = "CHAMP_ENTITE_ID", referencedColumnName = "CHAMP_ENTITE_ID")),
-   @AssociationOverride(name = "pk.blocImpression",
-      joinColumns = @JoinColumn(name = "BLOC_IMPRESSION_ID", referencedColumnName = "BLOC_IMPRESSION_ID"))})
+		@AssociationOverride(name = "pk.champEntite", joinColumns = @JoinColumn(name = "CHAMP_ENTITE_ID", referencedColumnName = "CHAMP_ENTITE_ID")),
+		@AssociationOverride(name = "pk.blocImpression", joinColumns = @JoinColumn(name = "BLOC_IMPRESSION_ID", referencedColumnName = "BLOC_IMPRESSION_ID")) })
 //@NamedQueries(value = {
 //   @NamedQuery(name = "ChampEntiteBloc." + "findByBlocImpression",
 //      query = "SELECT c FROM ChampEntiteBloc c " + "WHERE c.pk.blocImpression = ?1 " + "ORDER BY c.ordre"),
 //   @NamedQuery(name = "ChampEntiteBloc." + "findByExcludedPK", query = "SELECT c FROM ChampEntiteBloc c " + "WHERE c.pk != ?1")})
-public class ChampEntiteBloc implements Serializable
-{
+public class ChampEntiteBloc implements Serializable {
 
-   private static final long serialVersionUID = 4090410359848285650L;
+	private static final long serialVersionUID = 4090410359848285650L;
 
-   private Integer ordre;
-   private ChampEntiteBlocPK pk = new ChampEntiteBlocPK();
+	private Integer ordre;
+	private ChampEntiteBlocPK pk = new ChampEntiteBlocPK();
 
-   public ChampEntiteBloc(){
+	public ChampEntiteBloc() {
 
-   }
+	}
 
-   @Column(name = "ORDRE", nullable = false)
-   public Integer getOrdre(){
-      return ordre;
-   }
+	@Column(name = "ORDRE", nullable = false)
+	public Integer getOrdre() {
+		return ordre;
+	}
 
-   public void setOrdre(final Integer o){
-      this.ordre = o;
-   }
+	public void setOrdre(final Integer o) {
+		this.ordre = o;
+	}
 
-   @EmbeddedId
-   @AttributeOverrides({@AttributeOverride(name = "champEntite", column = @Column(name = "CHAMP_ENTITE_ID")),
-      @AttributeOverride(name = "blocImpression", column = @Column(name = "BLOC_IMPRESSION_ID"))})
-   public ChampEntiteBlocPK getPk(){
-      return pk;
-   }
+	@EmbeddedId
+	@AttributeOverrides({ @AttributeOverride(name = "champEntite", column = @Column(name = "CHAMP_ENTITE_ID")),
+			@AttributeOverride(name = "blocImpression", column = @Column(name = "BLOC_IMPRESSION_ID")) })
+	public ChampEntiteBlocPK getPk() {
+		return pk;
+	}
 
-   public void setPk(final ChampEntiteBlocPK p){
-      this.pk = p;
-   }
+	public void setPk(final ChampEntiteBlocPK p) {
+		this.pk = p;
+	}
 
-   @Transient
-   public BlocImpression getBlocImpression(){
-      return pk.getBlocImpression();
-   }
+	@Transient
+	public BlocImpression getBlocImpression() {
+		return pk.getBlocImpression();
+	}
 
-   public void setBlocImpression(final BlocImpression b){
-      this.pk.setBlocImpression(b);
-   }
+	public void setBlocImpression(final BlocImpression b) {
+		this.pk.setBlocImpression(b);
+	}
 
-   @Transient
-   public ChampEntite getChampEntite(){
-      return pk.getChampEntite();
-   }
+	@Transient
+	public ChampEntite getChampEntite() {
+		return pk.getChampEntite();
+	}
 
-   public void setChampEntite(final ChampEntite champ){
-      pk.setChampEntite(champ);
-   }
+	public void setChampEntite(final ChampEntite champ) {
+		pk.setChampEntite(champ);
+	}
 
-   @Override
-   public boolean equals(final Object obj){
+	@Override
+	public boolean equals(final Object obj) {
 
-      if(this == obj){
-         return true;
-      }
-      if((obj == null) || obj.getClass() != this.getClass()){
-         return false;
-      }
-      final ChampEntiteBloc test = (ChampEntiteBloc) obj;
-      return ((this.pk == test.pk || (this.pk != null && this.pk.equals(test.pk))));
-   }
+		if (this == obj) {
+			return true;
+		}
+		if ((obj == null) || !(obj instanceof ChampEntiteBloc)) {
+			return false;
+		}
+		final ChampEntiteBloc test = (ChampEntiteBloc) obj;
+		return Objects.equals(pk, test.getPk());
+	}
 
-   @Override
-   public int hashCode(){
-      int hash = 7;
-      int hashPk = 0;
+	@Override
+	public int hashCode() {
+		int hash = 7;
+		int hashPk = 0;
 
-      if(this.pk != null){
-         hashPk = this.pk.hashCode();
-      }
+		if (this.pk != null) {
+			hashPk = this.pk.hashCode();
+		}
 
-      hash = 7 * hash + hashPk;
+		hash = 7 * hash + hashPk;
 
-      return hash;
-   }
+		return hash;
+	}
 
-   /**
-    * Méthode surchargeant le toString() de l'objet.
-    */
-   @Override
-   public String toString(){
-      if(this.pk != null){
-         return "{" + this.pk.toString() + "}";
-      }
-      return "{Empty ChampEntiteBloc}";
-   }
+	/**
+	 * Méthode surchargeant le toString() de l'objet.
+	 */
+	@Override
+	public String toString() {
+		if (this.pk != null) {
+			return "{" + this.pk.toString() + "}";
+		}
+		return "{Empty ChampEntiteBloc}";
+	}
 
-   /**
-    * Cree un clone de l'objet.
-    * @return clone CederObjet.
-    */
-   @Override
-   public ChampEntiteBloc clone(){
-      final ChampEntiteBloc clone = new ChampEntiteBloc();
+	/**
+	 * Cree un clone de l'objet.
+	 * 
+	 * @return clone CederObjet.
+	 */
+	@Override
+	public ChampEntiteBloc clone() {
+		final ChampEntiteBloc clone = new ChampEntiteBloc();
 
-      clone.setPk(this.getPk());
-      clone.setOrdre(this.ordre);
+		clone.setPk(this.getPk());
+		clone.setOrdre(this.ordre);
 
-      return clone;
-   }
+		return clone;
+	}
 
 }

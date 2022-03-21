@@ -37,6 +37,7 @@ package fr.aphp.tumorotek.model.coeur.annotation;
 
 import java.io.Serializable;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 import javax.persistence.AttributeOverride;
@@ -228,14 +229,12 @@ public class ChampAnnotation extends AbstractTKChamp implements TKFantomableObje
 		if (this == obj) {
 			return true;
 		}
-		if ((obj == null) || obj.getClass() != this.getClass()) {
+		if ((obj == null) || !(obj instanceof ChampAnnotation)) {
 			return false;
-		}
-
+		}		
 		final ChampAnnotation test = (ChampAnnotation) obj;
-		return ((this.getNom() == test.getNom() || (this.getNom() != null && this.getNom().equals(test.getNom())))
-				&& (this.tableAnnotation == test.tableAnnotation
-						|| (this.tableAnnotation != null && this.tableAnnotation.equals(test.tableAnnotation))));
+		return Objects.equals(getNom(), test.getNom())
+			&& Objects.equals(tableAnnotation, test.getTableAnnotation());
 	}
 
 	/**

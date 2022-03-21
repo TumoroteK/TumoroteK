@@ -38,19 +38,19 @@ package fr.aphp.tumorotek.model.coeur.prelevement;
 import java.util.Comparator;
 
 /**
- * Comparator permettant le sort dans la liste en fonction de l'ordre
- * specifié pour le labo.
- * @return int négatif si ordre1 < ordre2, 0 si ordre1 = ordre2,
- * positif si ordre1 > ordre 2.
+ * Comparator permettant le sort dans la liste en fonction de l'ordre specifié
+ * pour le labo.
+ * 
+ * @return int négatif si ordre1 < ordre2, 0 si ordre1 = ordre2, positif si
+ *         ordre1 > ordre 2.
  */
-public class LaboInterComparator implements Comparator<Object>
-{
+public class LaboInterComparator implements Comparator<Object> {
 
-   @Override
-   public int compare(final Object arg0, final Object arg1){
-      final LaboInter lab1 = (LaboInter) arg0;
-      final LaboInter lab2 = (LaboInter) arg1;
-      return (lab1.getOrdre() - lab2.getOrdre());
-   }
+	@Override
+	public int compare(final Object arg0, final Object arg1) {
+		final LaboInter lab1 = (LaboInter) arg0;
+		final LaboInter lab2 = (LaboInter) arg1;
+		return (lab1.getOrdre() - lab2.getOrdre());
+	}
 
 }

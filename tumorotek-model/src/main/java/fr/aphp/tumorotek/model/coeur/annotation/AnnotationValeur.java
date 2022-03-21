@@ -43,6 +43,7 @@ import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Objects;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -272,18 +273,16 @@ public class AnnotationValeur extends AnnotationCommon implements Serializable, 
 		if (this == obj) {
 			return true;
 		}
-		if ((obj == null) || obj.getClass() != this.getClass()) {
+		if ((obj == null) || !(obj instanceof AnnotationValeur)) {
 			return false;
 		}
 
 		final AnnotationValeur test = (AnnotationValeur) obj;
-
-		return (((this.objetId != null && this.objetId.equals(test.objetId)) || this.objetId == test.objetId)
-				&& (this.champAnnotation == test.champAnnotation
-						|| (this.champAnnotation != null && this.champAnnotation.equals(test.champAnnotation)))
-				&& (this.item == test.item || (this.item != null && this.item.equals(test.item)))
-				&& (this.banque == test.banque || (this.banque != null && this.banque.equals(test.banque))));
-	}
+		return Objects.equals(objetId, test.getObjetId())
+				&& Objects.equals(champAnnotation, test.getChampAnnotation())
+				&& Objects.equals(item, test.getItem())
+				&& Objects.equals(banque, test.getBanque());
+		}
 
 	/**
 	 * Le hashcode est calculé sur les references vers l'objet, le champ annotation,

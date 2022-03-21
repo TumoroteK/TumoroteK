@@ -35,6 +35,8 @@
  **/
 package fr.aphp.tumorotek.model.contexte;
 
+import java.util.Objects;
+
 import javax.persistence.AssociationOverride;
 import javax.persistence.AssociationOverrides;
 import javax.persistence.AttributeOverride;
@@ -51,107 +53,106 @@ import fr.aphp.tumorotek.model.code.TableCodage;
 @Entity
 @Table(name = "BANQUE_TABLE_CODAGE")
 @AssociationOverrides({
-   @AssociationOverride(name = "pk.banque", joinColumns = @JoinColumn(name = "BANQUE_ID", referencedColumnName = "BANQUE_ID")),
-   @AssociationOverride(name = "pk.tableCodage",
-      joinColumns = @JoinColumn(name = "TABLE_CODAGE_ID", referencedColumnName = "TABLE_CODAGE_ID"))})
+		@AssociationOverride(name = "pk.banque", joinColumns = @JoinColumn(name = "BANQUE_ID", referencedColumnName = "BANQUE_ID")),
+		@AssociationOverride(name = "pk.tableCodage", joinColumns = @JoinColumn(name = "TABLE_CODAGE_ID", referencedColumnName = "TABLE_CODAGE_ID")) })
 //@NamedQueries(value = {@NamedQuery(name = "BanqueTableCodage.findByBanque",
 //   query = "SELECT b FROM BanqueTableCodage b " + "WHERE b.pk.banque = ?1 ORDER BY b.pk.tableCodage.nom")})
-public class BanqueTableCodage
-{
+public class BanqueTableCodage {
 	private BanqueTableCodagePK pk = new BanqueTableCodagePK();
 	private Boolean libelleExport;
-	
+
 	public BanqueTableCodage() {
 	}
-	
+
 	public BanqueTableCodage(Banque _b, TableCodage _t) {
 		this.pk.setBanque(_b);
 		this.pk.setTableCodage(_t);
 	}
 
-   @Override
-   public String toString(){
-      if(this.getBanque() != null && this.getTableCodage() != null){
-         return "{" + this.getBanque().getNom() + " - " + this.getTableCodage().getNom() + "}";
-      } else if (this.getTableCodage() != null) {
-    	  return this.getTableCodage().toString();
-      }
-      return "{Empty BanqueTableCodage}";
-   }
+	@Override
+	public String toString() {
+		if (this.getBanque() != null && this.getTableCodage() != null) {
+			return "{" + this.getBanque().getNom() + " - " + this.getTableCodage().getNom() + "}";
+		} else if (this.getTableCodage() != null) {
+			return this.getTableCodage().toString();
+		}
+		return "{Empty BanqueTableCodage}";
+	}
 
-   @EmbeddedId
-   @AttributeOverrides({@AttributeOverride(name = "banque", column = @Column(name = "BANQUE_ID")),
-      @AttributeOverride(name = "tableCodage", column = @Column(name = "TABLE_CODAGE_ID"))})
-   public BanqueTableCodagePK getPk(){
-      return pk;
-   }
+	@EmbeddedId
+	@AttributeOverrides({ @AttributeOverride(name = "banque", column = @Column(name = "BANQUE_ID")),
+			@AttributeOverride(name = "tableCodage", column = @Column(name = "TABLE_CODAGE_ID")) })
+	public BanqueTableCodagePK getPk() {
+		return pk;
+	}
 
-   public void setPk(final BanqueTableCodagePK btck){
-      this.pk = btck;
-   }
+	public void setPk(final BanqueTableCodagePK btck) {
+		this.pk = btck;
+	}
 
-   @Column(name = "LIBELLE_EXPORT", nullable = false)
-   public Boolean getLibelleExport(){
-      return libelleExport;
-   }
+	@Column(name = "LIBELLE_EXPORT", nullable = false)
+	public Boolean getLibelleExport() {
+		return libelleExport;
+	}
 
-   public void setLibelleExport(final Boolean l){
-      this.libelleExport = l;
-   }
+	public void setLibelleExport(final Boolean l) {
+		this.libelleExport = l;
+	}
 
-   @Transient
-   public Banque getBanque(){
-      return this.pk.getBanque();
-   }
+	@Transient
+	public Banque getBanque() {
+		return this.pk.getBanque();
+	}
 
-   public void setBanque(final Banque b){
-      this.pk.setBanque(b);
-   }
+	public void setBanque(final Banque b) {
+		this.pk.setBanque(b);
+	}
 
-   @Transient
-   public TableCodage getTableCodage(){
-      return this.pk.getTableCodage();
-   }
+	@Transient
+	public TableCodage getTableCodage() {
+		return this.pk.getTableCodage();
+	}
 
-   public void setTableCodage(final TableCodage t){
-      this.pk.setTableCodage(t);
-   }
+	public void setTableCodage(final TableCodage t) {
+		this.pk.setTableCodage(t);
+	}
 
-   /**
-    * 2 banqueTableCodage sont considérées comme égales 
-    * si elles ont la même pk.
-    * @param obj est l'objet à tester.
-    * @return true si les objets sont égaux.
-    */
-   @Override
-   public boolean equals(final Object obj){
+	/**
+	 * 2 banqueTableCodage sont considérées comme égales si elles ont la même pk.
+	 * 
+	 * @param obj est l'objet à tester.
+	 * @return true si les objets sont égaux.
+	 */
+	@Override
+	public boolean equals(final Object obj) {
 
-      if(this == obj){
-         return true;
-      }
-      if((obj == null) || obj.getClass() != this.getClass()){
-         return false;
-      }
-      final BanqueTableCodage test = (BanqueTableCodage) obj;
-      return (this.pk != null && (this.pk == test.pk || this.pk.equals(test.pk)));
-   }
+		if (this == obj) {
+			return true;
+		}
+		if ((obj == null) || !(obj instanceof BanqueTableCodage)) {
+			return false;
+		}
+		final BanqueTableCodage test = (BanqueTableCodage) obj;
+		return Objects.equals(pk, test.getPk());
+	}
 
-   /**
-    * Le hashcode est calculé sur la pk.
-    * @return la valeur du hashcode.
-    */
-   @Override
-   public int hashCode(){
+	/**
+	 * Le hashcode est calculé sur la pk.
+	 * 
+	 * @return la valeur du hashcode.
+	 */
+	@Override
+	public int hashCode() {
 
-      int hash = 7;
-      int hashPk = 0;
+		int hash = 7;
+		int hashPk = 0;
 
-      if(this.pk != null){
-         hashPk = this.pk.hashCode();
-      }
+		if (this.pk != null) {
+			hashPk = this.pk.hashCode();
+		}
 
-      hash = 7 * hash + hashPk;
+		hash = 7 * hash + hashPk;
 
-      return hash;
-   }
+		return hash;
+	}
 }

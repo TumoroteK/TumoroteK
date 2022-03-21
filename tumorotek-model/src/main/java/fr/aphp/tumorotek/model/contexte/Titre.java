@@ -36,6 +36,7 @@
 package fr.aphp.tumorotek.model.contexte;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -48,8 +49,7 @@ import javax.persistence.Table;
 import org.hibernate.annotations.GenericGenerator;
 
 /**
- * Objet persistant mappant la table TITRE.
- * Classe créée le 09/09/09.
+ * Objet persistant mappant la table TITRE. Classe créée le 09/09/09.
  *
  * @author Pierre Ventadour
  * @version 2.3
@@ -61,103 +61,105 @@ import org.hibernate.annotations.GenericGenerator;
 //   @NamedQuery(name = "Titre.findByCollaborateurId",
 //      query = "SELECT t FROM Titre t " + "left JOIN t.collaborateurs c " + "WHERE c.collaborateurId = ?1"),
 //   @NamedQuery(name = "Titre.findByOrder", query = "SELECT t FROM Titre t ORDER BY t.titre")})
-public class Titre implements java.io.Serializable
-{
+public class Titre implements java.io.Serializable {
 
-   private static final long serialVersionUID = 78644354386453143L;
+	private static final long serialVersionUID = 78644354386453143L;
 
-   private Integer titreId;
-   private String titre;
+	private Integer titreId;
+	private String titre;
 
-   private Set<Collaborateur> collaborateurs = new HashSet<>();
+	private Set<Collaborateur> collaborateurs = new HashSet<>();
 
-   /** Constructeur par défaut. */
-   public Titre(){}
+	/** Constructeur par défaut. */
+	public Titre() {
+	}
 
-   //	/**
-   //	 * Constructeur avec paramètres.
-   //	 * @param id est la clé primaire.
-   //	 * @param t est l'attribut titre.
-   //	 */
-   //	public Titre(Integer id, String t) {
-   //		this.titreId = id;
-   //		this.titre = t;
-   //	}
+	// /**
+	// * Constructeur avec paramètres.
+	// * @param id est la clé primaire.
+	// * @param t est l'attribut titre.
+	// */
+	// public Titre(Integer id, String t) {
+	// this.titreId = id;
+	// this.titre = t;
+	// }
 
-   @Id
-   @Column(name = "TITRE_ID", unique = true, nullable = false)
-   @GeneratedValue(generator = "autoincrement")
-   @GenericGenerator(name = "autoincrement", strategy = "increment")
-   public Integer getTitreId(){
-      return titreId;
-   }
+	@Id
+	@Column(name = "TITRE_ID", unique = true, nullable = false)
+	@GeneratedValue(generator = "autoincrement")
+	@GenericGenerator(name = "autoincrement", strategy = "increment")
+	public Integer getTitreId() {
+		return titreId;
+	}
 
-   public void setTitreId(final Integer tId){
-      this.titreId = tId;
-   }
+	public void setTitreId(final Integer tId) {
+		this.titreId = tId;
+	}
 
-   @Column(name = "TITRE", nullable = false, length = 100)
-   public String getTitre(){
-      return titre;
-   }
+	@Column(name = "TITRE", nullable = false, length = 100)
+	public String getTitre() {
+		return titre;
+	}
 
-   public void setTitre(final String newTitre){
-      this.titre = newTitre;
-   }
+	public void setTitre(final String newTitre) {
+		this.titre = newTitre;
+	}
 
-   @OneToMany(mappedBy = "titre")
-   public Set<Collaborateur> getCollaborateurs(){
-      return collaborateurs;
-   }
+	@OneToMany(mappedBy = "titre")
+	public Set<Collaborateur> getCollaborateurs() {
+		return collaborateurs;
+	}
 
-   public void setCollaborateurs(final Set<Collaborateur> newCollaborateurs){
-      this.collaborateurs = newCollaborateurs;
-   }
+	public void setCollaborateurs(final Set<Collaborateur> newCollaborateurs) {
+		this.collaborateurs = newCollaborateurs;
+	}
 
-   /**
-    * 2 titres sont considérés comme égaux s'ils ont le même titre.
-    * @param obj est le titre à tester.
-    * @return true si les titres sont égaux.
-    */
-   @Override
-   public boolean equals(final Object obj){
+	/**
+	 * 2 titres sont considérés comme égaux s'ils ont le même titre.
+	 * 
+	 * @param obj est le titre à tester.
+	 * @return true si les titres sont égaux.
+	 */
+	@Override
+	public boolean equals(final Object obj) {
 
-      if(this == obj){
-         return true;
-      }
-      if((obj == null) || obj.getClass() != this.getClass()){
-         return false;
-      }
-      final Titre test = (Titre) obj;
-      return ((this.titre == test.titre || (this.titre != null && this.titre.equals(test.titre))));
-   }
+		if (this == obj) {
+			return true;
+		}
+		if ((obj == null) || !(obj instanceof Titre)) {
+			return false;
+		}
+		final Titre test = (Titre) obj;
+		return Objects.equals(titre, test.getTitre());
+	}
 
-   /**
-    * Le hashcode est calculé sur l'attribut titre.
-    * @return la valeur du hashcode.
-    */
-   @Override
-   public int hashCode(){
+	/**
+	 * Le hashcode est calculé sur l'attribut titre.
+	 * 
+	 * @return la valeur du hashcode.
+	 */
+	@Override
+	public int hashCode() {
 
-      int hash = 7;
-      int hashTitre = 0;
+		int hash = 7;
+		int hashTitre = 0;
 
-      if(this.titre != null){
-         hashTitre = this.titre.hashCode();
-      }
+		if (this.titre != null) {
+			hashTitre = this.titre.hashCode();
+		}
 
-      hash = 31 * hash + hashTitre;
+		hash = 31 * hash + hashTitre;
 
-      return hash;
+		return hash;
 
-   }
+	}
 
-   /**
-    * Méthode surchargeant le toString() de l'objet.
-    */
-   @Override
-   public String toString(){
-      return "{" + this.titre + "}";
-   }
+	/**
+	 * Méthode surchargeant le toString() de l'objet.
+	 */
+	@Override
+	public String toString() {
+		return "{" + this.titre + "}";
+	}
 
 }

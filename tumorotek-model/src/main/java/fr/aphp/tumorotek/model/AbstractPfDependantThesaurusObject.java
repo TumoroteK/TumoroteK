@@ -39,9 +39,13 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+
+import java.util.Objects;
+
 import javax.persistence.FetchType;
 import javax.persistence.MappedSuperclass;
 
+import fr.aphp.tumorotek.model.coeur.annotation.TableAnnotation;
 import fr.aphp.tumorotek.model.contexte.Plateforme;
 
 /**
@@ -81,22 +85,13 @@ public abstract class AbstractPfDependantThesaurusObject extends AbstractThesaur
    public boolean equals(Object obj){
       if(this == obj)
          return true;
-      if(obj == null)
-         return false;
-      if(getClass() != obj.getClass())
-         return false;
-      AbstractPfDependantThesaurusObject other = (AbstractPfDependantThesaurusObject) obj;
-      if(this.getNom() == null){
-         if(other.getNom() != null)
-            return false;
-      }else if(!this.getNom().equals(other.getNom()))
-         return false;
-      if(plateforme == null){
-         if(other.getPlateforme() != null)
-            return false;
-      }else if(!plateforme.equals(other.getPlateforme()))
-         return false;
-      return true;
-   }
-   
+      
+		if ((obj == null) || !(obj instanceof AbstractPfDependantThesaurusObject)) {
+			return false;
+		}		
+		final AbstractPfDependantThesaurusObject test = 
+					(AbstractPfDependantThesaurusObject) obj;
+		return Objects.equals(getNom(), test.getNom())
+			&& Objects.equals(plateforme, test.getPlateforme());
+	}   
 }

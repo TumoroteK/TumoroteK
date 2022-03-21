@@ -53,8 +53,7 @@ import fr.aphp.tumorotek.model.AbstractPfDependantThesaurusObject;
 
 /**
  *
- * Objet persistant mappant la table PROD_QUALITE.
- * Classe créée le 14/09/09.
+ * Objet persistant mappant la table PROD_QUALITE. Classe créée le 14/09/09.
  *
  * @author Maxime Gousseau
  * @version 2.3
@@ -62,8 +61,8 @@ import fr.aphp.tumorotek.model.AbstractPfDependantThesaurusObject;
  */
 @Entity
 @Table(name = "PROD_QUALITE")
-@AttributeOverrides({@AttributeOverride(name = "id", column = @Column(name = "PROD_QUALITE_ID")),
-   @AttributeOverride(name = "nom", column = @Column(name = "PROD_QUALITE", nullable = false, length = 200))})
+@AttributeOverrides({ @AttributeOverride(name = "id", column = @Column(name = "PROD_QUALITE_ID")),
+		@AttributeOverride(name = "nom", column = @Column(name = "PROD_QUALITE", nullable = false, length = 200)) })
 @GenericGenerator(name = "autoincrement", strategy = "increment")
 //@NamedQueries(
 //   value = {@NamedQuery(name = "ProdQualite.findByProdQualite", query = "SELECT p FROM ProdQualite p WHERE p.nom like ?1"),
@@ -74,76 +73,75 @@ import fr.aphp.tumorotek.model.AbstractPfDependantThesaurusObject;
 //         query = "SELECT p FROM ProdQualite p " + "WHERE p.plateforme = ?1 ORDER BY p.nom"),
 //      @NamedQuery(name = "ProdQualite.findByOrder",
 //      query = "SELECT p FROM ProdQualite p ORDER BY p.nom")})
-public class ProdQualite extends AbstractPfDependantThesaurusObject implements Serializable
-{
+public class ProdQualite extends AbstractPfDependantThesaurusObject implements Serializable {
 
-   private static final long serialVersionUID = -4115872442854900525L;
+	private static final long serialVersionUID = -4115872442854900525L;
 
-   private Set<ProdDerive> prodDerives;
+	private Set<ProdDerive> prodDerives;
 
-   /** Constructeur par défaut. */
-   public ProdQualite(){
-      super();
-      prodDerives = new HashSet<>();
-   }
+	/** Constructeur par défaut. */
+	public ProdQualite() {
+		super();
+		prodDerives = new HashSet<>();
+	}
 
-   /**
-    * @deprecated Utiliser {@link #getId()}
-    * @return
-    */
-   @Deprecated
-   @Transient
-   public Integer getProdQualiteId(){
-      return this.getId();
-   }
+	/**
+	 * @deprecated Utiliser {@link #getId()}
+	 * @return
+	 */
+	@Deprecated
+	@Transient
+	public Integer getProdQualiteId() {
+		return this.getId();
+	}
 
-   /**
-    * @deprecated Utiliser {@link #setId(Integer)}
-    * @return
-    */
-   @Deprecated
-   public void setProdQualiteId(final Integer id){
-      this.setId(id);
-   }
+	/**
+	 * @deprecated Utiliser {@link #setId(Integer)}
+	 * @return
+	 */
+	@Deprecated
+	public void setProdQualiteId(final Integer id) {
+		this.setId(id);
+	}
 
-   /**
-    * @deprecated Utiliser {@link #getNom()}
-    * @return
-    */
-   @Deprecated
-   @Transient
-   public String getProdQualite(){
-      return this.getNom();
-   }
+	/**
+	 * @deprecated Utiliser {@link #getNom()}
+	 * @return
+	 */
+	@Deprecated
+	@Transient
+	public String getProdQualite() {
+		return this.getNom();
+	}
 
-   /**
-    * @deprecated Utiliser {@link #setNom(String)}
-    * @param t
-    */
-   @Deprecated
-   public void setProdQualite(final String qualite){
-      this.setNom(qualite);
-   }
+	/**
+	 * @deprecated Utiliser {@link #setNom(String)}
+	 * @param t
+	 */
+	@Deprecated
+	public void setProdQualite(final String qualite) {
+		this.setNom(qualite);
+	}
 
-   @OneToMany(mappedBy = "prodQualite")
-   public Set<ProdDerive> getProdDerives(){
-      return prodDerives;
-   }
+	@OneToMany(mappedBy = "prodQualite")
+	public Set<ProdDerive> getProdDerives() {
+		return prodDerives;
+	}
 
-   public void setProdDerives(final Set<ProdDerive> prodDs){
-      this.prodDerives = prodDs;
-   }
+	public void setProdDerives(final Set<ProdDerive> prodDs) {
+		this.prodDerives = prodDs;
+	}
 
-   /**
-    * Méthode surchargeant le toString() de l'objet.
-    */
-   @Override
-   public String toString(){
-      if(this.getNom() != null){
-         return "{" + this.getNom() + "}";
-      }else{
-         return "{Empty ProdQualite}";
-      }
-   }
+	/**
+	 * Méthode surchargeant le toString() de l'objet.
+	 */
+	@Override
+	public String toString() {
+		if (this.getNom() != null) {
+			return "{" + this.getNom() + "}";
+		} else {
+			return "{Empty ProdQualite}";
+		}
+	}
 
 }

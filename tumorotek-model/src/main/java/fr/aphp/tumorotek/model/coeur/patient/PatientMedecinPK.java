@@ -36,6 +36,7 @@
 package fr.aphp.tumorotek.model.coeur.patient;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 import javax.persistence.Embeddable;
 import javax.persistence.ManyToOne;
@@ -100,15 +101,14 @@ public class PatientMedecinPK implements Serializable {
 		if (this == obj) {
 			return true;
 		}
-		if ((obj == null) || obj.getClass() != this.getClass()) {
+		if ((obj == null) || !(obj instanceof PatientMedecinPK)) {
 			return false;
-		}
+		}		
 		final PatientMedecinPK test = (PatientMedecinPK) obj;
-		return (((this.collaborateur != null && (this.collaborateur.equals(test.collaborateur))
-				|| this.collaborateur == test.collaborateur)
-				&& ((this.patient != null && this.patient.equals(test.patient)) || this.patient == test.patient)));
+		return Objects.equals(collaborateur, test.getCollaborateur())
+			&& Objects.equals(patient, test.getPatient());
 	}
-
+	
 	/**
 	 * Le hashcode est calculé sur les clés.
 	 * 

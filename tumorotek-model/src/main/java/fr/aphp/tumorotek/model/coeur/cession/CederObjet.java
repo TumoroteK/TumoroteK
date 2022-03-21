@@ -37,6 +37,7 @@ package fr.aphp.tumorotek.model.coeur.cession;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Objects;
 
 import javax.persistence.AssociationOverride;
 import javax.persistence.AssociationOverrides;
@@ -207,11 +208,11 @@ public class CederObjet implements Serializable, TKdataObject {
 		if (this == obj) {
 			return true;
 		}
-		if ((obj == null) || obj.getClass() != this.getClass()) {
+		if ((obj == null) || !(obj instanceof CederObjet)) {
 			return false;
-		}
+		}		
 		final CederObjet test = (CederObjet) obj;
-		return ((this.pk == test.pk || (this.pk != null && this.pk.equals(test.pk))));
+		return Objects.equals(pk, test.getPk());
 	}
 
 	/**

@@ -37,6 +37,7 @@ package fr.aphp.tumorotek.model.coeur.cession;
 
 import java.io.Serializable;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -116,14 +117,11 @@ public class CessionStatut implements Serializable {
 		if (this == obj) {
 			return true;
 		}
-		if ((obj == null) || obj.getClass() != this.getClass()) {
+		if ((obj == null) || !(obj instanceof CessionStatut)) {
 			return false;
-		}
+		}		
 		final CessionStatut test = (CessionStatut) obj;
-		if (this.statut == null) {
-			return (test.statut == null);
-		}
-		return (this.statut.equals(test.statut));
+		return Objects.equals(statut, test.getStatut());
 	}
 
 	/**

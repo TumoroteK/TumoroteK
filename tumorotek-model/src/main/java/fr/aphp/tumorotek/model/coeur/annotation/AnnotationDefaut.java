@@ -38,6 +38,7 @@ package fr.aphp.tumorotek.model.coeur.annotation;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Objects;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -222,24 +223,19 @@ public class AnnotationDefaut extends AnnotationCommon implements Serializable {
 	 */
 	@Override
 	public boolean equals(final Object obj) {
-
 		if (this == obj) {
 			return true;
 		}
-		if ((obj == null) || obj.getClass() != this.getClass()) {
+		// instanceOf est utilise plutot que != a cause des proxys
+		// JPA qui sont crées par lors du fetch par
+		// la relation manyToAny
+		if ((obj == null) || !(obj instanceof AnnotationDefaut)) {
 			return false;
 		}
-
 		final AnnotationDefaut test = (AnnotationDefaut) obj;
-
-		if (this.annotationDefautId != null && this.annotationDefautId.equals(test.annotationDefautId)) {
-			return true;
-		}
-
-		return ((this.item == test.item || (this.item != null && this.item.equals(test.item)))
-				&& (this.champAnnotation == test.champAnnotation
-						|| (this.champAnnotation != null && this.champAnnotation.equals(test.champAnnotation)))
-				&& (this.banque == test.banque || (this.banque != null && this.banque.equals(test.banque))));
+		return Objects.equals(item, test.getItem())
+			&& Objects.equals(champAnnotation, test.getChampAnnotation())
+			&& Objects.equals(banque, test.getBanque());
 	}
 
 	/**

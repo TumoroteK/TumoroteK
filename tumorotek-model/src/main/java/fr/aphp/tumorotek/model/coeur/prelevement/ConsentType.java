@@ -53,8 +53,7 @@ import fr.aphp.tumorotek.model.AbstractPfDependantThesaurusObject;
 
 /**
  *
- * Objet persistant mappant la table CONSENT_TYPE.
- * Classe créée le 14/09/09.
+ * Objet persistant mappant la table CONSENT_TYPE. Classe créée le 14/09/09.
  *
  * @author Maxime Gousseau
  * @version 2.3
@@ -62,83 +61,83 @@ import fr.aphp.tumorotek.model.AbstractPfDependantThesaurusObject;
  */
 @Entity
 @Table(name = "CONSENT_TYPE")
-@AttributeOverrides({@AttributeOverride(name = "id", column = @Column(name = "CONSENT_TYPE_ID")),
-   @AttributeOverride(name = "nom", column = @Column(name = "TYPE", nullable = false, length = 200))})
+@AttributeOverrides({ @AttributeOverride(name = "id", column = @Column(name = "CONSENT_TYPE_ID")),
+		@AttributeOverride(name = "nom", column = @Column(name = "TYPE", nullable = false, length = 200)) })
 @GenericGenerator(name = "autoincrement", strategy = "increment")
 //@NamedQueries(value = {@NamedQuery(name = "ConsentType.findByType", query = "SELECT c FROM ConsentType c WHERE c.nom like ?1"),
 //   @NamedQuery(name = "ConsentType.findByExcludedId", query = "SELECT c FROM ConsentType c " + "WHERE c.id != ?1"),
 //   @NamedQuery(name = "ConsentType.findByPfOrder",
 //      query = "SELECT c FROM ConsentType c " + "WHERE c.plateforme = ?1 ORDER BY c.nom"),
 //   @NamedQuery(name = "ConsentType.findByOrder", query = "FROM ConsentType c ORDER BY c.nom")})
-public class ConsentType extends AbstractPfDependantThesaurusObject implements Serializable, Comparable<ConsentType>
-{
+public class ConsentType extends AbstractPfDependantThesaurusObject implements Serializable, Comparable<ConsentType> {
 
-   private static final long serialVersionUID = 8053863104954363979L;
+	private static final long serialVersionUID = 8053863104954363979L;
 
-   private Set<Prelevement> prelevements = new HashSet<>();
+	private Set<Prelevement> prelevements = new HashSet<>();
 
-   /** Constructeur par défaut. */
-   public ConsentType(){}
+	/** Constructeur par défaut. */
+	public ConsentType() {
+	}
 
-   /**
-    * @deprecated Utiliser {@link #getId()}
-    * @return
-    */
-   @Deprecated
-   @Transient
-   public Integer getConsentTypeId(){
-      return this.getId();
-   }
+	/**
+	 * @deprecated Utiliser {@link #getId()}
+	 * @return
+	 */
+	@Deprecated
+	@Transient
+	public Integer getConsentTypeId() {
+		return this.getId();
+	}
 
-   /**
-    * @deprecated Utiliser {@link #setId(Integer)}
-    * @return
-    */
-   @Deprecated
-   public void setConsentTypeId(final Integer id){
-      this.setId(id);
-   }
+	/**
+	 * @deprecated Utiliser {@link #setId(Integer)}
+	 * @return
+	 */
+	@Deprecated
+	public void setConsentTypeId(final Integer id) {
+		this.setId(id);
+	}
 
-   /**
-    * @deprecated Utiliser {@link #getNom()}
-    * @return
-    */
-   @Deprecated
-   @Transient
-   public String getType(){
-      return this.getNom();
-   }
+	/**
+	 * @deprecated Utiliser {@link #getNom()}
+	 * @return
+	 */
+	@Deprecated
+	@Transient
+	public String getType() {
+		return this.getNom();
+	}
 
-   /**
-    * @deprecated Utiliser {@link #setNom(String)}
-    * @param t
-    */
-   @Deprecated
-   public void setType(final String t){
-      this.setNom(t);
-   }
+	/**
+	 * @deprecated Utiliser {@link #setNom(String)}
+	 * @param t
+	 */
+	@Deprecated
+	public void setType(final String t) {
+		this.setNom(t);
+	}
 
-   @OneToMany(mappedBy = "consentType")
-   public Set<Prelevement> getPrelevements(){
-      return this.prelevements;
-   }
+	@OneToMany(mappedBy = "consentType")
+	public Set<Prelevement> getPrelevements() {
+		return this.prelevements;
+	}
 
-   public void setPrelevements(final Set<Prelevement> prelevs){
-      this.prelevements = prelevs;
-   }
+	public void setPrelevements(final Set<Prelevement> prelevs) {
+		this.prelevements = prelevs;
+	}
 
-   @Override
-   public String toString(){
-      if(this.getNom() != null){
-         return "{" + this.getNom() + "}";
-      }else{
-         return "{Empty ConsentType}";
-      }
-   }
+	@Override
+	public String toString() {
+		if (this.getNom() != null) {
+			return "{" + this.getNom() + "}";
+		} else {
+			return "{Empty ConsentType}";
+		}
+	}
 
-   @Override
-   public int compareTo(final ConsentType arg0){
-      return this.getNom().compareTo(arg0.getNom());
-   }
+	@Override
+	public int compareTo(final ConsentType arg0) {
+		return this.getNom().compareTo(arg0.getNom());
+	}
 
 }

@@ -53,8 +53,7 @@ import fr.aphp.tumorotek.model.AbstractPfDependantThesaurusObject;
 
 /**
  *
- * Objet persistant mappant la table CONDIT_TYPE.
- * Classe créée le 14/09/09.
+ * Objet persistant mappant la table CONDIT_TYPE. Classe créée le 14/09/09.
  *
  * @author Maxime Gousseau
  * @version 2.3
@@ -62,77 +61,77 @@ import fr.aphp.tumorotek.model.AbstractPfDependantThesaurusObject;
  */
 @Entity
 @Table(name = "CONDIT_TYPE")
-@AttributeOverrides({@AttributeOverride(name = "id", column = @Column(name = "CONDIT_TYPE_ID")),
-   @AttributeOverride(name = "nom", column = @Column(name = "TYPE", nullable = false, length = 200))})
+@AttributeOverrides({ @AttributeOverride(name = "id", column = @Column(name = "CONDIT_TYPE_ID")),
+		@AttributeOverride(name = "nom", column = @Column(name = "TYPE", nullable = false, length = 200)) })
 @GenericGenerator(name = "autoincrement", strategy = "increment")
 //@NamedQueries(value = {@NamedQuery(name = "ConditType.findByType", query = "SELECT c FROM ConditType c WHERE c.nom like ?1"),
 //   @NamedQuery(name = "ConditType.findByExcludedId", query = "SELECT c FROM ConditType c " + "WHERE c.id != ?1"),
 //   @NamedQuery(name = "ConditType.findByPfOrder",
 //      query = "SELECT c FROM ConditType c " + "WHERE c.plateforme = ?1 ORDER BY c.nom"),
 //   @NamedQuery(name = "ConditType.findByOrder", query = "FROM ConditType c ORDER BY c.nom")})
-public class ConditType extends AbstractPfDependantThesaurusObject implements Serializable
-{
+public class ConditType extends AbstractPfDependantThesaurusObject implements Serializable {
 
-   private Set<Prelevement> prelevements = new HashSet<>();
+	private Set<Prelevement> prelevements = new HashSet<>();
 
-   private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-   /** Constructeur par défaut. */
-   public ConditType(){}
+	/** Constructeur par défaut. */
+	public ConditType() {
+	}
 
-   /**
-    * @deprecated Utiliser {@link #getId()}
-    * @return
-    */
-   @Deprecated
-   @Transient
-   public Integer getConditTypeId(){
-      return this.getId();
-   }
+	/**
+	 * @deprecated Utiliser {@link #getId()}
+	 * @return
+	 */
+	@Deprecated
+	@Transient
+	public Integer getConditTypeId() {
+		return this.getId();
+	}
 
-   /**
-    * @deprecated Utiliser {@link #setId(Integer)}
-    * @return
-    */
-   @Deprecated
-   public void setConditTypeId(final Integer id){
-      this.setId(id);
-   }
+	/**
+	 * @deprecated Utiliser {@link #setId(Integer)}
+	 * @return
+	 */
+	@Deprecated
+	public void setConditTypeId(final Integer id) {
+		this.setId(id);
+	}
 
-   /**
-    * @deprecated Utiliser {@link #getNom()}
-    * @return
-    */
-   @Deprecated
-   @Transient
-   public String getType(){
-      return this.getNom();
-   }
+	/**
+	 * @deprecated Utiliser {@link #getNom()}
+	 * @return
+	 */
+	@Deprecated
+	@Transient
+	public String getType() {
+		return this.getNom();
+	}
 
-   /**
-    * @deprecated Utiliser {@link #setNom(String)}
-    * @param t
-    */
-   @Deprecated
-   public void setType(final String t){
-      this.setNom(t);
-   }
+	/**
+	 * @deprecated Utiliser {@link #setNom(String)}
+	 * @param t
+	 */
+	@Deprecated
+	public void setType(final String t) {
+		this.setNom(t);
+	}
 
-   @OneToMany(mappedBy = "conditType")
-   public Set<Prelevement> getPrelevements(){
-      return this.prelevements;
-   }
+	@OneToMany(mappedBy = "conditType")
+	public Set<Prelevement> getPrelevements() {
+		return this.prelevements;
+	}
 
-   public void setPrelevements(final Set<Prelevement> prelevs){
-      this.prelevements = prelevs;
-   }
+	public void setPrelevements(final Set<Prelevement> prelevs) {
+		this.prelevements = prelevs;
+	}
 
-   @Override
-   public String toString(){
-      if(this.getNom() != null){
-         return "{" + this.getNom() + "}";
-      }
-      return "{Empty ConditType}";
-   }
+	@Override
+	public String toString() {
+		if (this.getNom() != null) {
+			return "{" + this.getNom() + "}";
+		}
+		return "{Empty ConditType}";
+	}
 
 }

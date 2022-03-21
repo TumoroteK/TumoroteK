@@ -39,6 +39,7 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
+import java.util.Objects;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -400,21 +401,14 @@ public class Patient extends TKDelegetableObject<Patient> implements TKAnnotable
 		if (this == obj) {
 			return true;
 		}
-		if ((obj == null) || obj.getClass() != this.getClass()) {
+		if ((obj == null) || !(obj instanceof Patient)) {
 			return false;
-		}
+		}		
 		final Patient test = (Patient) obj;
-		// 2 coordonnees sont egales si toutes leurs valeurs le sont
-		final boolean eq = (((this.nom != null && this.nom.equalsIgnoreCase(test.nom)) || this.nom == test.nom)
-				&& ((this.prenom != null && this.prenom.equalsIgnoreCase(test.prenom)) || this.prenom == test.prenom)
-				&& ((this.dateNaissance != null && this.dateNaissance.equals(test.dateNaissance))
-						|| this.dateNaissance == test.dateNaissance));
-
-		// verif supp sur la ville de naissance
-		if (this.villeNaissance != null && test.villeNaissance != null) {
-			return eq && this.villeNaissance.equalsIgnoreCase(test.villeNaissance);
-		}
-		return eq;
+		return Objects.equals(nom, test.getNom())
+			&& Objects.equals(prenom, test.getPrenom())
+			&& Objects.equals(dateNaissance, test.getDateNaissance())
+			&& Objects.equals(villeNaissance, test.getVilleNaissance());
 	}
 
 	/**

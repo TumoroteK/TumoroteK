@@ -37,6 +37,7 @@ package fr.aphp.tumorotek.model.coeur.echantillon;
 
 import java.io.Serializable;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 import javax.persistence.AttributeOverride;
@@ -180,14 +181,13 @@ public class EchantillonType extends AbstractPfDependantThesaurusObject implemen
 		if (this == obj) {
 			return true;
 		}
-		if ((obj == null) || obj.getClass() != this.getClass()) {
+		if ((obj == null) || !(obj instanceof EchantillonType)) {
 			return false;
-		}
+		}		
 		final EchantillonType test = (EchantillonType) obj;
-		return ((this.getNom() == test.getNom() || (this.getNom() != null && this.getNom().equals(test.getNom())))
-				&& (this.incaCat == test.incaCat || (this.incaCat != null && this.incaCat.equals(test.incaCat)))
-				&& (this.getPlateforme() == test.getPlateforme()
-						|| (this.getPlateforme() != null && this.getPlateforme().equals(test.getPlateforme()))));
+		return Objects.equals(getNom(), test.getNom())
+			&& Objects.equals(incaCat, test.getIncaCat())
+			&& Objects.equals(getPlateforme(), test.getPlateforme());
 	}
 
 	/**

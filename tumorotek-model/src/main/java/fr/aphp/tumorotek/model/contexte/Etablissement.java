@@ -36,6 +36,7 @@
 package fr.aphp.tumorotek.model.contexte;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -58,8 +59,7 @@ import fr.aphp.tumorotek.model.TKdataObject;
 import fr.aphp.tumorotek.model.coeur.cession.Contrat;
 
 /**
- * Objet persistant mappant la table ETABLISSEMENT.
- * Classe créée le 09/09/09.
+ * Objet persistant mappant la table ETABLISSEMENT. Classe créée le 09/09/09.
  *
  * @author Pierre Ventadour
  * @version 2.3
@@ -86,217 +86,220 @@ import fr.aphp.tumorotek.model.coeur.cession.Contrat;
 //      query = "SELECT e FROM Etablissement e " + "left join e.collaborateurs c " + "WHERE c.collaborateurId = ?1"),
 //   @NamedQuery(name = "Etablissement.findByExcludedId",
 //      query = "SELECT e FROM Etablissement e " + "WHERE e.etablissementId != ?1")})
-public class Etablissement implements TKdataObject, TKFantomableObject, java.io.Serializable
-{
+public class Etablissement implements TKdataObject, TKFantomableObject, java.io.Serializable {
 
-   private static final long serialVersionUID = 1235484325153L;
+	private static final long serialVersionUID = 1235484325153L;
 
-   private Integer etablissementId;
-   private String nom;
-   private String finess;
-   private boolean local;
-   private Boolean archive = false;
+	private Integer etablissementId;
+	private String nom;
+	private String finess;
+	private boolean local;
+	private Boolean archive = false;
 
-   private Coordonnee coordonnee;
-   private Categorie categorie;
+	private Coordonnee coordonnee;
+	private Categorie categorie;
 
-   private Set<Service> services = new HashSet<>();
-   private Set<Collaborateur> collaborateurs = new HashSet<>();
-   private Set<Contrat> contrats = new HashSet<>();
+	private Set<Service> services = new HashSet<>();
+	private Set<Collaborateur> collaborateurs = new HashSet<>();
+	private Set<Contrat> contrats = new HashSet<>();
 
-   /**
-    * Constructeur par défaut.
-    */
-   public Etablissement(){}
+	/**
+	 * Constructeur par défaut.
+	 */
+	public Etablissement() {
+	}
 
-   @Id
-   @Column(name = "ETABLISSEMENT_ID", unique = true, nullable = false)
-   @GeneratedValue(generator = "autoincrement")
-   @GenericGenerator(name = "autoincrement", strategy = "increment")
-   public Integer getEtablissementId(){
-      return etablissementId;
-   }
+	@Id
+	@Column(name = "ETABLISSEMENT_ID", unique = true, nullable = false)
+	@GeneratedValue(generator = "autoincrement")
+	@GenericGenerator(name = "autoincrement", strategy = "increment")
+	public Integer getEtablissementId() {
+		return etablissementId;
+	}
 
-   public void setEtablissementId(final Integer eId){
-      this.etablissementId = eId;
-   }
+	public void setEtablissementId(final Integer eId) {
+		this.etablissementId = eId;
+	}
 
-   @Column(name = "NOM", nullable = false, length = 100)
-   public String getNom(){
-      return nom;
-   }
+	@Column(name = "NOM", nullable = false, length = 100)
+	public String getNom() {
+		return nom;
+	}
 
-   public void setNom(final String n){
-      this.nom = n;
-   }
+	public void setNom(final String n) {
+		this.nom = n;
+	}
 
-   @Column(name = "FINESS", nullable = true, length = 20)
-   public String getFiness(){
-      return finess;
-   }
+	@Column(name = "FINESS", nullable = true, length = 20)
+	public String getFiness() {
+		return finess;
+	}
 
-   public void setFiness(final String fin){
-      this.finess = fin;
-   }
+	public void setFiness(final String fin) {
+		this.finess = fin;
+	}
 
-   @Column(name = "LOCAL", nullable = true)
-   public boolean isLocal(){
-      return local;
-   }
+	@Column(name = "LOCAL", nullable = true)
+	public boolean isLocal() {
+		return local;
+	}
 
-   public void setLocal(final boolean loc){
-      this.local = loc;
-   }
+	public void setLocal(final boolean loc) {
+		this.local = loc;
+	}
 
-   @Column(name = "ARCHIVE", nullable = false)
-   public Boolean getArchive(){
-      return archive;
-   }
+	@Column(name = "ARCHIVE", nullable = false)
+	public Boolean getArchive() {
+		return archive;
+	}
 
-   public void setArchive(final Boolean arch){
-      this.archive = arch;
-   }
+	public void setArchive(final Boolean arch) {
+		this.archive = arch;
+	}
 
-   //@ManyToOne(fetch = FetchType.LAZY,cascade = {CascadeType.PERSIST, CascadeType.MERGE })
-   //@JoinColumn(name = "COORDONNEE_ID", nullable = true)
-   @OneToOne(optional = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-   @JoinColumn(name = "COORDONNEE_ID", nullable = true)
-   public Coordonnee getCoordonnee(){
-      return coordonnee;
-   }
+	// @ManyToOne(fetch = FetchType.LAZY,cascade = {CascadeType.PERSIST,
+	// CascadeType.MERGE })
+	// @JoinColumn(name = "COORDONNEE_ID", nullable = true)
+	@OneToOne(optional = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@JoinColumn(name = "COORDONNEE_ID", nullable = true)
+	public Coordonnee getCoordonnee() {
+		return coordonnee;
+	}
 
-   public void setCoordonnee(final Coordonnee c){
-      this.coordonnee = c;
-   }
+	public void setCoordonnee(final Coordonnee c) {
+		this.coordonnee = c;
+	}
 
-   @ManyToOne(fetch = FetchType.LAZY,cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-   @JoinColumn(name = "CATEGORIE_ID", nullable = true)
-   public Categorie getCategorie(){
-      return categorie;
-   }
+	@ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+	@JoinColumn(name = "CATEGORIE_ID", nullable = true)
+	public Categorie getCategorie() {
+		return categorie;
+	}
 
-   public void setCategorie(final Categorie c){
-      this.categorie = c;
-   }
+	public void setCategorie(final Categorie c) {
+		this.categorie = c;
+	}
 
-   @OneToMany(mappedBy = "etablissement")
-   @javax.persistence.OrderBy("nom")
-   public Set<Service> getServices(){
-      return services;
-   }
+	@OneToMany(mappedBy = "etablissement")
+	@javax.persistence.OrderBy("nom")
+	public Set<Service> getServices() {
+		return services;
+	}
 
-   public void setServices(final Set<Service> newServices){
-      this.services = newServices;
-   }
+	public void setServices(final Set<Service> newServices) {
+		this.services = newServices;
+	}
 
-   @OneToMany(mappedBy = "etablissement")
-   @javax.persistence.OrderBy("nom, prenom")
-   public Set<Collaborateur> getCollaborateurs(){
-      return collaborateurs;
-   }
+	@OneToMany(mappedBy = "etablissement")
+	@javax.persistence.OrderBy("nom, prenom")
+	public Set<Collaborateur> getCollaborateurs() {
+		return collaborateurs;
+	}
 
-   public void setCollaborateurs(final Set<Collaborateur> newCollaborateurs){
-      this.collaborateurs = newCollaborateurs;
-   }
+	public void setCollaborateurs(final Set<Collaborateur> newCollaborateurs) {
+		this.collaborateurs = newCollaborateurs;
+	}
 
-   @OneToMany(mappedBy = "etablissement")
-   public Set<Contrat> getContrats(){
-      return contrats;
-   }
+	@OneToMany(mappedBy = "etablissement")
+	public Set<Contrat> getContrats() {
+		return contrats;
+	}
 
-   public void setContrats(final Set<Contrat> c){
-      this.contrats = c;
-   }
+	public void setContrats(final Set<Contrat> c) {
+		this.contrats = c;
+	}
 
-   /**
-    * 2 établissements sont considérés comme égaux s'ils ont le même nom et
-    * le même finess.
-    * @param obj est l'établissement à tester.
-    * @return true si les établissements sont égaux.
-    */
-   @Override
-   public boolean equals(final Object obj){
+	/**
+	 * 2 établissements sont considérés comme égaux s'ils ont le même nom et le même
+	 * finess.
+	 * 
+	 * @param obj est l'établissement à tester.
+	 * @return true si les établissements sont égaux.
+	 */
+	@Override
+	public boolean equals(final Object obj) {
 
-      if(this == obj){
-         return true;
-      }
-      if((obj == null) || obj.getClass() != this.getClass()){
-         return false;
-      }
-      final Etablissement test = (Etablissement) obj;
-      return ((this.nom == test.nom || (this.nom != null && this.nom.equals(test.nom)))
-         && (this.finess == test.finess || (this.finess != null && this.finess.equals(test.finess))));
-   }
+		if (this == obj) {
+			return true;
+		}
+		if ((obj == null) || !(obj instanceof Etablissement)) {
+			return false;
+		}
+		final Etablissement test = (Etablissement) obj;
+		return Objects.equals(nom, test.getNom()) && Objects.equals(finess, test.getFiness());
+	}
 
-   /**
-    * Le hashcode est calculé sur les attributs nom et finess.
-    * @return la valeur du hashcode.
-    */
-   @Override
-   public int hashCode(){
-      int hash = 7;
-      int hashNom = 0;
-      int hashFiness = 0;
+	/**
+	 * Le hashcode est calculé sur les attributs nom et finess.
+	 * 
+	 * @return la valeur du hashcode.
+	 */
+	@Override
+	public int hashCode() {
+		int hash = 7;
+		int hashNom = 0;
+		int hashFiness = 0;
 
-      if(this.nom != null){
-         hashNom = this.nom.hashCode();
-      }
-      if(this.finess != null){
-         hashFiness = this.finess.hashCode();
-      }
+		if (this.nom != null) {
+			hashNom = this.nom.hashCode();
+		}
+		if (this.finess != null) {
+			hashFiness = this.finess.hashCode();
+		}
 
-      hash = 31 * hash + hashNom;
-      hash = 31 * hash + hashFiness;
+		hash = 31 * hash + hashNom;
+		hash = 31 * hash + hashFiness;
 
-      return hash;
-   }
+		return hash;
+	}
 
-   /**
-    * Méthode surchargeant le toString() de l'objet.
-    */
-   @Override
-   public String toString(){
-      if(this.nom != null){
-         return "{" + this.nom + "}";
-      }
-      return "{Empty Etablissement}";
-   }
+	/**
+	 * Méthode surchargeant le toString() de l'objet.
+	 */
+	@Override
+	public String toString() {
+		if (this.nom != null) {
+			return "{" + this.nom + "}";
+		}
+		return "{Empty Etablissement}";
+	}
 
-   /**
-    * Cree un clone de l'objet.
-    * @return clone Etablissement.
-    */
-   @Override
-   public Etablissement clone(){
-      final Etablissement clone = new Etablissement();
+	/**
+	 * Cree un clone de l'objet.
+	 * 
+	 * @return clone Etablissement.
+	 */
+	@Override
+	public Etablissement clone() {
+		final Etablissement clone = new Etablissement();
 
-      clone.setEtablissementId(this.getEtablissementId());
-      clone.setCoordonnee(this.getCoordonnee());
-      clone.setCategorie(this.getCategorie());
-      clone.setNom(this.getNom());
-      clone.setFiness(this.getFiness());
-      clone.setLocal(this.isLocal());
-      clone.setArchive(this.getArchive());
-      clone.setServices(this.getServices());
-      clone.setCollaborateurs(this.getCollaborateurs());
-      clone.setContrats(this.getContrats());
+		clone.setEtablissementId(this.getEtablissementId());
+		clone.setCoordonnee(this.getCoordonnee());
+		clone.setCategorie(this.getCategorie());
+		clone.setNom(this.getNom());
+		clone.setFiness(this.getFiness());
+		clone.setLocal(this.isLocal());
+		clone.setArchive(this.getArchive());
+		clone.setServices(this.getServices());
+		clone.setCollaborateurs(this.getCollaborateurs());
+		clone.setContrats(this.getContrats());
 
-      return clone;
-   }
+		return clone;
+	}
 
-   @Override
-   @Transient
-   public String getPhantomData(){
-      return getNom();
-   }
+	@Override
+	@Transient
+	public String getPhantomData() {
+		return getNom();
+	}
 
-   @Override
-   public String entiteNom(){
-      return "Etablissement";
-   }
+	@Override
+	public String entiteNom() {
+		return "Etablissement";
+	}
 
-   @Override
-   public Integer listableObjectId(){
-      return getEtablissementId();
-   }
+	@Override
+	public Integer listableObjectId() {
+		return getEtablissementId();
+	}
 }

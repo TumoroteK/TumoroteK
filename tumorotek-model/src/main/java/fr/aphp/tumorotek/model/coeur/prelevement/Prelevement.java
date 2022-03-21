@@ -39,6 +39,7 @@ import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -77,8 +78,7 @@ import fr.aphp.tumorotek.model.utils.Utils;
 
 /**
  *
- * Objet persistant mappant la table PRELEVEMENT.
- * Classe créée le 11/09/09.
+ * Objet persistant mappant la table PRELEVEMENT. Classe créée le 11/09/09.
  *
  *
  * @author Maxime Gousseau
@@ -187,548 +187,547 @@ import fr.aphp.tumorotek.model.utils.Utils;
 //		query = "SELECT DISTINCT e FROM Prelevement e JOIN e.laboInters l where l.service = (?1) AND e.banque in (?2)"), 
 //   @NamedQuery(name = "Prelevement.findByCollaborateurLaboInter", 
 //		query = "SELECT DISTINCT e FROM Prelevement e JOIN e.laboInters l where l.collaborateur = (?1) AND e.banque in (?2)")})
-public class Prelevement extends TKDelegetableObject<Prelevement> implements TKAnnotableObject, Serializable
-{
-
-   private static final long serialVersionUID = 6737874055478715763L;
-
-   private Integer prelevementId;
-   private String code;
-   private Date consentDate;
-   private Calendar datePrelevement;
-   private Integer conditNbr;
-   private Calendar dateDepart;
-   private Float transportTemp;
-   private Calendar dateArrivee;
-   private Float quantite;
-   //private Float volume;
-   private String patientNda;
-   private String numeroLabo;
-   private Boolean sterile;
-   private Boolean congDepart;
-   private Boolean congArrivee;
-   private Boolean conformeArrivee;
-   private Boolean etatIncomplet;
-
-   private Boolean archive = false;
-
-   private Nature nature;
-   private PrelevementType prelevementType;
-   private ConditType conditType;
-   private ConditMilieu conditMilieu;
-   private Banque banque;
-   private Collaborateur preleveur;
-   private Service servicePreleveur;
-   private Transporteur transporteur;
-   private Collaborateur operateur;
-   private Unite quantiteUnite;
-   //private Unite volumeUnite;
-   private ConsentType consentType;
-   private Maladie maladie;
-
-   private Set<LaboInter> laboInters = new HashSet<>();
-   private Set<Echantillon> echantillons = new HashSet<>();
-   private Set<Risque> risques = new HashSet<>();
-
-   private TKDelegateObject<Prelevement> delegate;
-
-   public Prelevement(){}
-
-   @Override
-   public String toString(){
-      if(this.code != null){
-         return "{" + this.code + "}";
-      }
-      return "{Empty Prelevement}";
-   }
-
-   @Id
-   @Column(name = "PRELEVEMENT_ID", unique = true, nullable = false)
-   @GeneratedValue(generator = "autoincrement")
-   @GenericGenerator(name = "autoincrement", strategy = "increment")
-   public Integer getPrelevementId(){
-      return this.prelevementId;
-   }
-
-   public void setPrelevementId(final Integer id){
-      this.prelevementId = id;
-   }
-
-   @Column(name = "CODE", nullable = true, length = 50)
-   public String getCode(){
-      return this.code;
-   }
-
-   public void setCode(final String c){
-      this.code = c;
-   }
-
-   @Column(name = "CONSENT_DATE", nullable = true)
-   public Date getConsentDate(){
-      if(consentDate != null){
-         return new Date(consentDate.getTime());
-      }
-      return null;
-   }
-
-   public void setConsentDate(final Date date){
-      if(date != null){
-         this.consentDate = new Date(date.getTime());
-      }else{
-         this.consentDate = null;
-      }
-   }
-
-   @Temporal(TemporalType.TIMESTAMP)
-   @Column(name = "DATE_PRELEVEMENT", nullable = true)
-   public Calendar getDatePrelevement(){
-      if(datePrelevement != null){
-         final Calendar cal = Calendar.getInstance();
-         cal.setTime(datePrelevement.getTime());
-         return cal;
-      }
-      return null;
-   }
-
-   public void setDatePrelevement(final Calendar cal){
-      if(cal != null){
-         this.datePrelevement = Calendar.getInstance();
-         this.datePrelevement.setTime(cal.getTime());
-      }else{
-         this.datePrelevement = null;
-      }
-   }
-
-   @Column(name = "CONDIT_NBR", nullable = true)
-   public Integer getConditNbr(){
-      return this.conditNbr;
-   }
-
-   public void setConditNbr(final Integer nbr){
-      this.conditNbr = nbr;
-   }
-
-   @Temporal(TemporalType.TIMESTAMP)
-   @Column(name = "DATE_DEPART", nullable = true)
-   public Calendar getDateDepart(){
-      if(dateDepart != null){
-         final Calendar cal = Calendar.getInstance();
-         cal.setTime(dateDepart.getTime());
-         return cal;
-      }
-      return null;
-   }
-
-   public void setDateDepart(final Calendar cal){
-      if(cal != null){
-         this.dateDepart = Calendar.getInstance();
-         this.dateDepart.setTime(cal.getTime());
-      }else{
-         this.dateDepart = null;
-      }
-   }
-
-   @Column(name = "TRANSPORT_TEMP", nullable = true)
-   public Float getTransportTemp(){
-      return this.transportTemp;
-   }
-
-   public void setTransportTemp(final Float temp){
-      this.transportTemp = temp;
-   }
-
-   @Temporal(TemporalType.TIMESTAMP)
-   @Column(name = "DATE_ARRIVEE", nullable = true)
-   public Calendar getDateArrivee(){
-      if(dateArrivee != null){
-         final Calendar cal = Calendar.getInstance();
-         cal.setTime(dateArrivee.getTime());
-         return cal;
-      }
-      return null;
-   }
-
-   public void setDateArrivee(final Calendar cal){
-      if(cal != null){
-         this.dateArrivee = Calendar.getInstance();
-         this.dateArrivee.setTime(cal.getTime());
-      }else{
-         this.dateArrivee = null;
-      }
-   }
-
-   @Column(name = "QUANTITE", nullable = true)
-   public Float getQuantite(){
-      return Utils.floor(this.quantite, 3);
-   }
-
-   public void setQuantite(final Float quant){
-      this.quantite = Utils.floor(quant, 3);
-   }
-
-   /*@Column(name = "VOLUME", nullable = true)
-   public Float getVolume() {
-   	return this.volume;
-   }
-   
-   public void setVolume(Float vol) {
-   	this.volume = vol;
-   }*/
-
-   @Column(name = "PATIENT_NDA", nullable = true, length = 20)
-   public String getPatientNda(){
-      return this.patientNda;
-   }
-
-   public void setPatientNda(final String nda){
-      this.patientNda = nda;
-   }
-
-   @Column(name = "NUMERO_LABO", nullable = true, length = 50)
-   public String getNumeroLabo(){
-      return this.numeroLabo;
-   }
-
-   public void setNumeroLabo(final String labo){
-      this.numeroLabo = labo;
-   }
-
-   @Column(name = "STERILE", nullable = true)
-   public Boolean getSterile(){
-      return this.sterile;
-   }
-
-   public void setSterile(final Boolean ster){
-      this.sterile = ster;
-   }
-
-   @Column(name = "CONG_DEPART", nullable = true)
-   public Boolean getCongDepart(){
-      return congDepart;
-   }
-
-   public void setCongDepart(final Boolean c){
-      this.congDepart = c;
-   }
-
-   @Column(name = "CONG_ARRIVEE", nullable = true)
-   public Boolean getCongArrivee(){
-      return congArrivee;
-   }
-
-   public void setCongArrivee(final Boolean c){
-      this.congArrivee = c;
-   }
-
-   @Column(name = "CONFORME_ARRIVEE", nullable = true)
-   public Boolean getConformeArrivee(){
-      return conformeArrivee;
-   }
-
-   public void setConformeArrivee(final Boolean conforme){
-      this.conformeArrivee = conforme;
-   }
-
-   @Column(name = "ETAT_INCOMPLET", nullable = true)
-   public Boolean getEtatIncomplet(){
-      return this.etatIncomplet;
-   }
-
-   public void setEtatIncomplet(final Boolean etat){
-      this.etatIncomplet = etat;
-   }
-
-   @Column(name = "ARCHIVE", nullable = false)
-   public Boolean getArchive(){
-      return this.archive;
-   }
-
-   public void setArchive(final Boolean arch){
-      this.archive = arch;
-   }
-
-   @ManyToOne(fetch = FetchType.LAZY)
-   @JoinColumn(name = "NATURE_ID", nullable = false)
-   public Nature getNature(){
-      return this.nature;
-   }
-
-   public void setNature(final Nature n){
-      this.nature = n;
-   }
-
-   @ManyToOne(fetch = FetchType.LAZY)
-   @JoinColumn(name = "PRELEVEMENT_TYPE_ID", nullable = true)
-   public PrelevementType getPrelevementType(){
-      return this.prelevementType;
-   }
-
-   public void setPrelevementType(final PrelevementType type){
-      this.prelevementType = type;
-   }
-
-   @ManyToOne(fetch = FetchType.LAZY)
-   @JoinColumn(name = "CONDIT_TYPE_ID", nullable = true)
-   public ConditType getConditType(){
-      return this.conditType;
-   }
-
-   public void setConditType(final ConditType type){
-      this.conditType = type;
-   }
-
-   @ManyToOne(fetch = FetchType.LAZY)
-   @JoinColumn(name = "CONDIT_MILIEU_ID", nullable = true)
-   public ConditMilieu getConditMilieu(){
-      return this.conditMilieu;
-   }
-
-   public void setConditMilieu(final ConditMilieu milieu){
-      this.conditMilieu = milieu;
-   }
-
-   @Override
-   @ManyToOne(fetch = FetchType.LAZY)
-   @JoinColumn(name = "BANQUE_ID", nullable = false)
-   public Banque getBanque(){
-      return this.banque;
-   }
-
-   @Override
-   public void setBanque(final Banque bank){
-      this.banque = bank;
-   }
-
-   @ManyToOne(fetch = FetchType.LAZY)
-   @JoinColumn(name = "PRELEVEUR_ID", nullable = true)
-   public Collaborateur getPreleveur(){
-      return this.preleveur;
-   }
-
-   public void setPreleveur(final Collaborateur collaborateur){
-      this.preleveur = collaborateur;
-   }
-
-   @ManyToOne(fetch = FetchType.LAZY)
-   @JoinColumn(name = "SERVICE_PRELEVEUR_ID", nullable = true)
-   public Service getServicePreleveur(){
-      return this.servicePreleveur;
-   }
-
-   public void setServicePreleveur(final Service service){
-      this.servicePreleveur = service;
-   }
-
-   @ManyToOne(fetch = FetchType.LAZY)
-   @JoinColumn(name = "TRANSPORTEUR_ID", nullable = true)
-   public Transporteur getTransporteur(){
-      return this.transporteur;
-   }
-
-   public void setTransporteur(final Transporteur transport){
-      this.transporteur = transport;
-   }
-
-   @ManyToOne(fetch = FetchType.LAZY)
-   @JoinColumn(name = "OPERATEUR_ID", nullable = true)
-   public Collaborateur getOperateur(){
-      return this.operateur;
-   }
-
-   public void setOperateur(final Collaborateur collaborateur){
-      this.operateur = collaborateur;
-   }
-
-   @ManyToOne(fetch = FetchType.LAZY)
-   @JoinColumn(name = "QUANTITE_UNITE_ID", nullable = true)
-   public Unite getQuantiteUnite(){
-      return this.quantiteUnite;
-   }
-
-   public void setQuantiteUnite(final Unite unite){
-      this.quantiteUnite = unite;
-   }
-
-   /*@ManyToOne(fetch = FetchType.LAZY,cascade = {CascadeType.PERSIST, CascadeType.MERGE })
-   @JoinColumn(name = "VOLUME_UNITE_ID", nullable = true)
-   public Unite getVolumeUnite() {
-   	return this.volumeUnite;
-   }
-   
-   public void setVolumeUnite(Unite unite) {
-   	this.volumeUnite = unite;
-   }*/
-
-   @ManyToOne(fetch = FetchType.LAZY)
-   @JoinColumn(name = "CONSENT_TYPE_ID", nullable = false)
-   public ConsentType getConsentType(){
-      return this.consentType;
-   }
-
-   public void setConsentType(final ConsentType type){
-      this.consentType = type;
-   }
-
-   @ManyToOne(fetch = FetchType.LAZY)
-   @JoinColumn(name = "MALADIE_ID", nullable = true)
-   public Maladie getMaladie(){
-      return this.maladie;
-   }
-
-   public void setMaladie(final Maladie m){
-      this.maladie = m;
-   }
-
-   @OneToMany(mappedBy = "prelevement", cascade = {CascadeType.REMOVE}, fetch = FetchType.LAZY)
-   public Set<LaboInter> getLaboInters(){
-      return this.laboInters;
-   }
-
-   public void setLaboInters(final Set<LaboInter> laboIs){
-      this.laboInters = laboIs;
-   }
-
-   @OneToMany(mappedBy = "prelevement")
-   @OrderBy("echantillonId")
-   public Set<Echantillon> getEchantillons(){
-      return this.echantillons;
-   }
-
-   public void setEchantillons(final Set<Echantillon> echants){
-      this.echantillons = echants;
-   }
-
-   @ManyToMany(targetEntity = Risque.class, fetch=FetchType.LAZY)
-   @JoinTable(name = "PRELEVEMENT_RISQUE", joinColumns = @JoinColumn(name = "PRELEVEMENT_ID"),
-      inverseJoinColumns = @JoinColumn(name = "RISQUE_ID"))
-   public Set<Risque> getRisques(){
-      return this.risques;
-   }
-
-   public void setRisques(final Set<Risque> risks){
-      this.risques = risks;
-   }
-
-   /**
-    * 2 prélèvements sont considérés comme égaux s'ils ont le même
-    * code et la même banque.
-    * @param obj est le prélèvement à tester.
-    * @return true si les prélèvements sont égaux.
-    */
-   @Override
-   public boolean equals(final Object obj){
-
-      if(this == obj){
-         return true;
-      }
-      if((obj == null) || obj.getClass() != this.getClass()){
-         return false;
-      }
-      final Prelevement test = (Prelevement) obj;
-      return ((this.code == test.code || (this.code != null && this.code.equals(test.code)))
-         && (this.getBanque() == test.getBanque() || (this.getBanque() != null && this.getBanque().equals(test.getBanque()))));
-   }
-
-   /**
-    * Le hashcode est calculé sur les attributs code et banque.
-    * @return la valeur du hashcode.
-    */
-   @Override
-   public int hashCode(){
-
-      int hash = 7;
-      int hashCode = 0;
-      int hashBanque = 0;
-
-      if(this.code != null){
-         hashCode = this.code.hashCode();
-      }
-      if(this.banque != null){
-         hashBanque = this.banque.hashCode();
-      }
-
-      hash = 7 * hash + hashCode;
-      hash = 7 * hash + hashBanque;
-
-      return hash;
-
-   }
-
-   @Override
-   public Prelevement clone(){
-      final Prelevement clone = new Prelevement();
-
-      clone.setPrelevementId(this.getPrelevementId());
-      clone.setBanque(this.getBanque());
-      clone.setCode(this.getCode());
-      clone.setNature(this.getNature());
-      clone.setMaladie(this.getMaladie());
-      clone.setConsentType(this.getConsentType());
-      clone.setConsentDate(this.getConsentDate());
-      clone.setPreleveur(this.getPreleveur());
-      clone.setServicePreleveur(this.getServicePreleveur());
-      clone.setDatePrelevement(this.getDatePrelevement());
-      clone.setPrelevementType(this.getPrelevementType());
-      clone.setConditType(this.getConditType());
-      clone.setConditMilieu(this.getConditMilieu());
-      clone.setConditNbr(this.getConditNbr());
-      clone.setDateDepart(this.getDateDepart());
-      clone.setTransporteur(this.getTransporteur());
-      clone.setTransportTemp(this.getTransportTemp());
-      clone.setDateArrivee(this.getDateArrivee());
-      clone.setOperateur(this.getOperateur());
-      clone.setQuantite(this.getQuantite());
-      clone.setQuantiteUnite(this.getQuantiteUnite());
-      /*clone.setVolume(this.getVolume());
-      clone.setVolumeUnite(this.getVolumeUnite());*/
-      clone.setPatientNda(this.getPatientNda());
-      clone.setNumeroLabo(this.getNumeroLabo());
-      clone.setSterile(this.getSterile());
-      clone.setCongDepart(this.getCongDepart());
-      clone.setCongArrivee(this.getCongArrivee());
-      clone.setConformeArrivee(this.getConformeArrivee());
-      clone.setEtatIncomplet(this.getEtatIncomplet());
-      clone.setArchive(this.getArchive());
-      clone.setRisques(getRisques());
-      
-      clone.setDelegate(getDelegate());
-      
-      return clone;
-   }
-
-   @Override
-   public Integer listableObjectId(){
-      return this.getPrelevementId();
-   }
-
-   @Override
-   public String entiteNom(){
-      return "Prelevement";
-   }
-
-   @Override
-   @Transient
-   public String getPhantomData(){
-      return code;
-   }
-
-   @Override
-   @OneToOne(optional = true, cascade = CascadeType.ALL, mappedBy = "delegator", orphanRemoval = true,
-      targetEntity = AbstractPrelevementDelegate.class)
-   public TKDelegateObject<Prelevement> getDelegate(){
-      return delegate;
-   }
-
-   @Transient
-   public PrelevementSero getPrelevementSero(){
-      if(delegate instanceof PrelevementSero){
-         return (PrelevementSero) delegate;
-      }
-      return null;
-   }
-
-   @Override
-   public void setDelegate(TKDelegateObject<Prelevement> _d) {
-	   this.delegate = _d;
-   }
+public class Prelevement extends TKDelegetableObject<Prelevement> implements TKAnnotableObject, Serializable {
+
+	private static final long serialVersionUID = 6737874055478715763L;
+
+	private Integer prelevementId;
+	private String code;
+	private Date consentDate;
+	private Calendar datePrelevement;
+	private Integer conditNbr;
+	private Calendar dateDepart;
+	private Float transportTemp;
+	private Calendar dateArrivee;
+	private Float quantite;
+	// private Float volume;
+	private String patientNda;
+	private String numeroLabo;
+	private Boolean sterile;
+	private Boolean congDepart;
+	private Boolean congArrivee;
+	private Boolean conformeArrivee;
+	private Boolean etatIncomplet;
+
+	private Boolean archive = false;
+
+	private Nature nature;
+	private PrelevementType prelevementType;
+	private ConditType conditType;
+	private ConditMilieu conditMilieu;
+	private Banque banque;
+	private Collaborateur preleveur;
+	private Service servicePreleveur;
+	private Transporteur transporteur;
+	private Collaborateur operateur;
+	private Unite quantiteUnite;
+	// private Unite volumeUnite;
+	private ConsentType consentType;
+	private Maladie maladie;
+
+	private Set<LaboInter> laboInters = new HashSet<>();
+	private Set<Echantillon> echantillons = new HashSet<>();
+	private Set<Risque> risques = new HashSet<>();
+
+	private TKDelegateObject<Prelevement> delegate;
+
+	public Prelevement() {
+	}
+
+	@Override
+	public String toString() {
+		if (this.code != null) {
+			return "{" + this.code + "}";
+		}
+		return "{Empty Prelevement}";
+	}
+
+	@Id
+	@Column(name = "PRELEVEMENT_ID", unique = true, nullable = false)
+	@GeneratedValue(generator = "autoincrement")
+	@GenericGenerator(name = "autoincrement", strategy = "increment")
+	public Integer getPrelevementId() {
+		return this.prelevementId;
+	}
+
+	public void setPrelevementId(final Integer id) {
+		this.prelevementId = id;
+	}
+
+	@Column(name = "CODE", nullable = true, length = 50)
+	public String getCode() {
+		return this.code;
+	}
+
+	public void setCode(final String c) {
+		this.code = c;
+	}
+
+	@Column(name = "CONSENT_DATE", nullable = true)
+	public Date getConsentDate() {
+		if (consentDate != null) {
+			return new Date(consentDate.getTime());
+		}
+		return null;
+	}
+
+	public void setConsentDate(final Date date) {
+		if (date != null) {
+			this.consentDate = new Date(date.getTime());
+		} else {
+			this.consentDate = null;
+		}
+	}
+
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "DATE_PRELEVEMENT", nullable = true)
+	public Calendar getDatePrelevement() {
+		if (datePrelevement != null) {
+			final Calendar cal = Calendar.getInstance();
+			cal.setTime(datePrelevement.getTime());
+			return cal;
+		}
+		return null;
+	}
+
+	public void setDatePrelevement(final Calendar cal) {
+		if (cal != null) {
+			this.datePrelevement = Calendar.getInstance();
+			this.datePrelevement.setTime(cal.getTime());
+		} else {
+			this.datePrelevement = null;
+		}
+	}
+
+	@Column(name = "CONDIT_NBR", nullable = true)
+	public Integer getConditNbr() {
+		return this.conditNbr;
+	}
+
+	public void setConditNbr(final Integer nbr) {
+		this.conditNbr = nbr;
+	}
+
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "DATE_DEPART", nullable = true)
+	public Calendar getDateDepart() {
+		if (dateDepart != null) {
+			final Calendar cal = Calendar.getInstance();
+			cal.setTime(dateDepart.getTime());
+			return cal;
+		}
+		return null;
+	}
+
+	public void setDateDepart(final Calendar cal) {
+		if (cal != null) {
+			this.dateDepart = Calendar.getInstance();
+			this.dateDepart.setTime(cal.getTime());
+		} else {
+			this.dateDepart = null;
+		}
+	}
+
+	@Column(name = "TRANSPORT_TEMP", nullable = true)
+	public Float getTransportTemp() {
+		return this.transportTemp;
+	}
+
+	public void setTransportTemp(final Float temp) {
+		this.transportTemp = temp;
+	}
+
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "DATE_ARRIVEE", nullable = true)
+	public Calendar getDateArrivee() {
+		if (dateArrivee != null) {
+			final Calendar cal = Calendar.getInstance();
+			cal.setTime(dateArrivee.getTime());
+			return cal;
+		}
+		return null;
+	}
+
+	public void setDateArrivee(final Calendar cal) {
+		if (cal != null) {
+			this.dateArrivee = Calendar.getInstance();
+			this.dateArrivee.setTime(cal.getTime());
+		} else {
+			this.dateArrivee = null;
+		}
+	}
+
+	@Column(name = "QUANTITE", nullable = true)
+	public Float getQuantite() {
+		return Utils.floor(this.quantite, 3);
+	}
+
+	public void setQuantite(final Float quant) {
+		this.quantite = Utils.floor(quant, 3);
+	}
+
+	/*
+	 * @Column(name = "VOLUME", nullable = true) public Float getVolume() { return
+	 * this.volume; }
+	 * 
+	 * public void setVolume(Float vol) { this.volume = vol; }
+	 */
+
+	@Column(name = "PATIENT_NDA", nullable = true, length = 20)
+	public String getPatientNda() {
+		return this.patientNda;
+	}
+
+	public void setPatientNda(final String nda) {
+		this.patientNda = nda;
+	}
+
+	@Column(name = "NUMERO_LABO", nullable = true, length = 50)
+	public String getNumeroLabo() {
+		return this.numeroLabo;
+	}
+
+	public void setNumeroLabo(final String labo) {
+		this.numeroLabo = labo;
+	}
+
+	@Column(name = "STERILE", nullable = true)
+	public Boolean getSterile() {
+		return this.sterile;
+	}
+
+	public void setSterile(final Boolean ster) {
+		this.sterile = ster;
+	}
+
+	@Column(name = "CONG_DEPART", nullable = true)
+	public Boolean getCongDepart() {
+		return congDepart;
+	}
+
+	public void setCongDepart(final Boolean c) {
+		this.congDepart = c;
+	}
+
+	@Column(name = "CONG_ARRIVEE", nullable = true)
+	public Boolean getCongArrivee() {
+		return congArrivee;
+	}
+
+	public void setCongArrivee(final Boolean c) {
+		this.congArrivee = c;
+	}
+
+	@Column(name = "CONFORME_ARRIVEE", nullable = true)
+	public Boolean getConformeArrivee() {
+		return conformeArrivee;
+	}
+
+	public void setConformeArrivee(final Boolean conforme) {
+		this.conformeArrivee = conforme;
+	}
+
+	@Column(name = "ETAT_INCOMPLET", nullable = true)
+	public Boolean getEtatIncomplet() {
+		return this.etatIncomplet;
+	}
+
+	public void setEtatIncomplet(final Boolean etat) {
+		this.etatIncomplet = etat;
+	}
+
+	@Column(name = "ARCHIVE", nullable = false)
+	public Boolean getArchive() {
+		return this.archive;
+	}
+
+	public void setArchive(final Boolean arch) {
+		this.archive = arch;
+	}
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "NATURE_ID", nullable = false)
+	public Nature getNature() {
+		return this.nature;
+	}
+
+	public void setNature(final Nature n) {
+		this.nature = n;
+	}
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "PRELEVEMENT_TYPE_ID", nullable = true)
+	public PrelevementType getPrelevementType() {
+		return this.prelevementType;
+	}
+
+	public void setPrelevementType(final PrelevementType type) {
+		this.prelevementType = type;
+	}
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "CONDIT_TYPE_ID", nullable = true)
+	public ConditType getConditType() {
+		return this.conditType;
+	}
+
+	public void setConditType(final ConditType type) {
+		this.conditType = type;
+	}
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "CONDIT_MILIEU_ID", nullable = true)
+	public ConditMilieu getConditMilieu() {
+		return this.conditMilieu;
+	}
+
+	public void setConditMilieu(final ConditMilieu milieu) {
+		this.conditMilieu = milieu;
+	}
+
+	@Override
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "BANQUE_ID", nullable = false)
+	public Banque getBanque() {
+		return this.banque;
+	}
+
+	@Override
+	public void setBanque(final Banque bank) {
+		this.banque = bank;
+	}
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "PRELEVEUR_ID", nullable = true)
+	public Collaborateur getPreleveur() {
+		return this.preleveur;
+	}
+
+	public void setPreleveur(final Collaborateur collaborateur) {
+		this.preleveur = collaborateur;
+	}
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "SERVICE_PRELEVEUR_ID", nullable = true)
+	public Service getServicePreleveur() {
+		return this.servicePreleveur;
+	}
+
+	public void setServicePreleveur(final Service service) {
+		this.servicePreleveur = service;
+	}
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "TRANSPORTEUR_ID", nullable = true)
+	public Transporteur getTransporteur() {
+		return this.transporteur;
+	}
+
+	public void setTransporteur(final Transporteur transport) {
+		this.transporteur = transport;
+	}
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "OPERATEUR_ID", nullable = true)
+	public Collaborateur getOperateur() {
+		return this.operateur;
+	}
+
+	public void setOperateur(final Collaborateur collaborateur) {
+		this.operateur = collaborateur;
+	}
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "QUANTITE_UNITE_ID", nullable = true)
+	public Unite getQuantiteUnite() {
+		return this.quantiteUnite;
+	}
+
+	public void setQuantiteUnite(final Unite unite) {
+		this.quantiteUnite = unite;
+	}
+
+	/*
+	 * @ManyToOne(fetch = FetchType.LAZY,cascade = {CascadeType.PERSIST,
+	 * CascadeType.MERGE })
+	 * 
+	 * @JoinColumn(name = "VOLUME_UNITE_ID", nullable = true) public Unite
+	 * getVolumeUnite() { return this.volumeUnite; }
+	 * 
+	 * public void setVolumeUnite(Unite unite) { this.volumeUnite = unite; }
+	 */
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "CONSENT_TYPE_ID", nullable = false)
+	public ConsentType getConsentType() {
+		return this.consentType;
+	}
+
+	public void setConsentType(final ConsentType type) {
+		this.consentType = type;
+	}
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "MALADIE_ID", nullable = true)
+	public Maladie getMaladie() {
+		return this.maladie;
+	}
+
+	public void setMaladie(final Maladie m) {
+		this.maladie = m;
+	}
+
+	@OneToMany(mappedBy = "prelevement", cascade = { CascadeType.REMOVE }, fetch = FetchType.LAZY)
+	public Set<LaboInter> getLaboInters() {
+		return this.laboInters;
+	}
+
+	public void setLaboInters(final Set<LaboInter> laboIs) {
+		this.laboInters = laboIs;
+	}
+
+	@OneToMany(mappedBy = "prelevement")
+	@OrderBy("echantillonId")
+	public Set<Echantillon> getEchantillons() {
+		return this.echantillons;
+	}
+
+	public void setEchantillons(final Set<Echantillon> echants) {
+		this.echantillons = echants;
+	}
+
+	@ManyToMany(targetEntity = Risque.class, fetch = FetchType.LAZY)
+	@JoinTable(name = "PRELEVEMENT_RISQUE", joinColumns = @JoinColumn(name = "PRELEVEMENT_ID"), inverseJoinColumns = @JoinColumn(name = "RISQUE_ID"))
+	public Set<Risque> getRisques() {
+		return this.risques;
+	}
+
+	public void setRisques(final Set<Risque> risks) {
+		this.risques = risks;
+	}
+
+	/**
+	 * 2 prélèvements sont considérés comme égaux s'ils ont le même code et la même
+	 * banque.
+	 * 
+	 * @param obj est le prélèvement à tester.
+	 * @return true si les prélèvements sont égaux.
+	 */
+	@Override
+	public boolean equals(final Object obj) {
+
+		if (this == obj) {
+			return true;
+		}
+		if ((obj == null) || !(obj instanceof Prelevement)) {
+			return false;
+		}
+		final Prelevement test = (Prelevement) obj;
+		return Objects.equals(code, test.getCode()) && Objects.equals(banque, test.getBanque());
+	}
+
+	/**
+	 * Le hashcode est calculé sur les attributs code et banque.
+	 * 
+	 * @return la valeur du hashcode.
+	 */
+	@Override
+	public int hashCode() {
+
+		int hash = 7;
+		int hashCode = 0;
+		int hashBanque = 0;
+
+		if (this.code != null) {
+			hashCode = this.code.hashCode();
+		}
+		if (this.banque != null) {
+			hashBanque = this.banque.hashCode();
+		}
+
+		hash = 7 * hash + hashCode;
+		hash = 7 * hash + hashBanque;
+
+		return hash;
+
+	}
+
+	@Override
+	public Prelevement clone() {
+		final Prelevement clone = new Prelevement();
+
+		clone.setPrelevementId(this.getPrelevementId());
+		clone.setBanque(this.getBanque());
+		clone.setCode(this.getCode());
+		clone.setNature(this.getNature());
+		clone.setMaladie(this.getMaladie());
+		clone.setConsentType(this.getConsentType());
+		clone.setConsentDate(this.getConsentDate());
+		clone.setPreleveur(this.getPreleveur());
+		clone.setServicePreleveur(this.getServicePreleveur());
+		clone.setDatePrelevement(this.getDatePrelevement());
+		clone.setPrelevementType(this.getPrelevementType());
+		clone.setConditType(this.getConditType());
+		clone.setConditMilieu(this.getConditMilieu());
+		clone.setConditNbr(this.getConditNbr());
+		clone.setDateDepart(this.getDateDepart());
+		clone.setTransporteur(this.getTransporteur());
+		clone.setTransportTemp(this.getTransportTemp());
+		clone.setDateArrivee(this.getDateArrivee());
+		clone.setOperateur(this.getOperateur());
+		clone.setQuantite(this.getQuantite());
+		clone.setQuantiteUnite(this.getQuantiteUnite());
+		/*
+		 * clone.setVolume(this.getVolume());
+		 * clone.setVolumeUnite(this.getVolumeUnite());
+		 */
+		clone.setPatientNda(this.getPatientNda());
+		clone.setNumeroLabo(this.getNumeroLabo());
+		clone.setSterile(this.getSterile());
+		clone.setCongDepart(this.getCongDepart());
+		clone.setCongArrivee(this.getCongArrivee());
+		clone.setConformeArrivee(this.getConformeArrivee());
+		clone.setEtatIncomplet(this.getEtatIncomplet());
+		clone.setArchive(this.getArchive());
+		clone.setRisques(getRisques());
+
+		clone.setDelegate(getDelegate());
+
+		return clone;
+	}
+
+	@Override
+	public Integer listableObjectId() {
+		return this.getPrelevementId();
+	}
+
+	@Override
+	public String entiteNom() {
+		return "Prelevement";
+	}
+
+	@Override
+	@Transient
+	public String getPhantomData() {
+		return code;
+	}
+
+	@Override
+	@OneToOne(optional = true, cascade = CascadeType.ALL, mappedBy = "delegator", orphanRemoval = true, targetEntity = AbstractPrelevementDelegate.class)
+	public TKDelegateObject<Prelevement> getDelegate() {
+		return delegate;
+	}
+
+	@Transient
+	public PrelevementSero getPrelevementSero() {
+		if (delegate instanceof PrelevementSero) {
+			return (PrelevementSero) delegate;
+		}
+		return null;
+	}
+
+	@Override
+	public void setDelegate(TKDelegateObject<Prelevement> _d) {
+		this.delegate = _d;
+	}
 }

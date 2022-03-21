@@ -37,6 +37,7 @@ package fr.aphp.tumorotek.model.coeur.prodderive;
 
 import java.io.Serializable;
 import java.util.Calendar;
+import java.util.Objects;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -68,8 +69,7 @@ import fr.aphp.tumorotek.model.utils.Utils;
 
 /**
  *
- * Objet persistant mappant la table PROD_DERIVE.
- * Classe créée le 14/09/09.
+ * Objet persistant mappant la table PROD_DERIVE. Classe créée le 14/09/09.
  *
  * @author Maxime Gousseau
  * @version 2.2.3-rc1
@@ -162,335 +162,334 @@ import fr.aphp.tumorotek.model.utils.Utils;
 //   @NamedQuery(name = "ProdDerive.findByBanksAndImpact",
 //   query = "SELECT e.prodDeriveId FROM ProdDerive e, Retour r " + "WHERE e.prodDeriveId = r.objetId "
 //      + "and e.banque in (?1)"+ "and r.impact in (?2) ")})
-public class ProdDerive extends TKDelegetableObject<ProdDerive> implements TKStockableObject, Serializable
-{
+public class ProdDerive extends TKDelegetableObject<ProdDerive> implements TKStockableObject, Serializable {
 
-   private static final long serialVersionUID = 1110628569548421522L;
+	private static final long serialVersionUID = 1110628569548421522L;
 
-   private Integer prodDeriveId;
-   private String code;
-   private String codeLabo;
-   private Float volumeInit;
-   private Float volume;
-   private Float conc;
-   private Calendar dateStock;
-   private Float quantiteInit;
-   private Float quantite;
-   private Calendar dateTransformation;
-   private Boolean etatIncomplet;
-   private Boolean archive = false;
-   private Boolean conformeTraitement;
-   private Boolean conformeCession;
+	private Integer prodDeriveId;
+	private String code;
+	private String codeLabo;
+	private Float volumeInit;
+	private Float volume;
+	private Float conc;
+	private Calendar dateStock;
+	private Float quantiteInit;
+	private Float quantite;
+	private Calendar dateTransformation;
+	private Boolean etatIncomplet;
+	private Boolean archive = false;
+	private Boolean conformeTraitement;
+	private Boolean conformeCession;
 
-   private Banque banque;
-   private Unite quantiteUnite;
-   private Unite concUnite;
-   private ProdType prodType;
-   private ObjetStatut objetStatut;
-   private ProdQualite prodQualite;
-   private Collaborateur collaborateur;
-   private Emplacement emplacement;
-   private Unite volumeUnite;
-   private Transformation transformation;
-   private ModePrepaDerive modePrepaDerive;
+	private Banque banque;
+	private Unite quantiteUnite;
+	private Unite concUnite;
+	private ProdType prodType;
+	private ObjetStatut objetStatut;
+	private ProdQualite prodQualite;
+	private Collaborateur collaborateur;
+	private Emplacement emplacement;
+	private Unite volumeUnite;
+	private Transformation transformation;
+	private ModePrepaDerive modePrepaDerive;
 
-   private TKDelegateObject<ProdDerive> delegate;
-   // private AbstractProdDeriveDelegate delegate;
+	private TKDelegateObject<ProdDerive> delegate;
+	// private AbstractProdDeriveDelegate delegate;
 
-   public ProdDerive(){
-      super();
-   }
+	public ProdDerive() {
+		super();
+	}
 
-   @Id
-   @Column(name = "PROD_DERIVE_ID", unique = true, nullable = false)
-   @GeneratedValue(generator = "autoincrement")
-   @GenericGenerator(name = "autoincrement", strategy = "increment")
-   public Integer getProdDeriveId(){
-      return this.prodDeriveId;
-   }
+	@Id
+	@Column(name = "PROD_DERIVE_ID", unique = true, nullable = false)
+	@GeneratedValue(generator = "autoincrement")
+	@GenericGenerator(name = "autoincrement", strategy = "increment")
+	public Integer getProdDeriveId() {
+		return this.prodDeriveId;
+	}
 
-   public void setProdDeriveId(final Integer id){
-      this.prodDeriveId = id;
-   }
+	public void setProdDeriveId(final Integer id) {
+		this.prodDeriveId = id;
+	}
 
-   @Override
-   @Column(name = "CODE", nullable = false, length = 50)
-   public String getCode(){
-      return this.code;
-   }
+	@Override
+	@Column(name = "CODE", nullable = false, length = 50)
+	public String getCode() {
+		return this.code;
+	}
 
-   @Override
-   public void setCode(final String c){
-      this.code = c;
-   }
+	@Override
+	public void setCode(final String c) {
+		this.code = c;
+	}
 
-   @Column(name = "CODE_LABO", nullable = true, length = 50)
-   public String getCodeLabo(){
-      return this.codeLabo;
-   }
+	@Column(name = "CODE_LABO", nullable = true, length = 50)
+	public String getCodeLabo() {
+		return this.codeLabo;
+	}
 
-   public void setCodeLabo(final String labo){
-      this.codeLabo = labo;
-   }
+	public void setCodeLabo(final String labo) {
+		this.codeLabo = labo;
+	}
 
-   @Column(name = "VOLUME_INIT", nullable = true)
-   public Float getVolumeInit(){
-      return Utils.floor(this.volumeInit, 3);
-   }
+	@Column(name = "VOLUME_INIT", nullable = true)
+	public Float getVolumeInit() {
+		return Utils.floor(this.volumeInit, 3);
+	}
 
-   public void setVolumeInit(final Float volumeI){
-      this.volumeInit = Utils.floor(volumeI, 3);
-   }
+	public void setVolumeInit(final Float volumeI) {
+		this.volumeInit = Utils.floor(volumeI, 3);
+	}
 
-   @Column(name = "VOLUME", nullable = true)
-   public Float getVolume(){
-      return Utils.floor(this.volume, 3);
-   }
+	@Column(name = "VOLUME", nullable = true)
+	public Float getVolume() {
+		return Utils.floor(this.volume, 3);
+	}
 
-   public void setVolume(final Float vol){
-      this.volume = Utils.floor(vol, 3);
-   }
+	public void setVolume(final Float vol) {
+		this.volume = Utils.floor(vol, 3);
+	}
 
-   @Column(name = "CONC", nullable = true)
-   public Float getConc(){
-      return Utils.floor(this.conc, 3);
-   }
+	@Column(name = "CONC", nullable = true)
+	public Float getConc() {
+		return Utils.floor(this.conc, 3);
+	}
 
-   public void setConc(final Float c){
-      this.conc = Utils.floor(c, 3);
-   }
+	public void setConc(final Float c) {
+		this.conc = Utils.floor(c, 3);
+	}
 
-   @Override
-   @Temporal(TemporalType.TIMESTAMP)
-   @Column(name = "DATE_STOCK", nullable = true)
-   public Calendar getDateStock(){
-      if(dateStock != null){
-         final Calendar cal = Calendar.getInstance();
-         cal.setTime(dateStock.getTime());
-         return cal;
-      }
-      return null;
-   }
+	@Override
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "DATE_STOCK", nullable = true)
+	public Calendar getDateStock() {
+		if (dateStock != null) {
+			final Calendar cal = Calendar.getInstance();
+			cal.setTime(dateStock.getTime());
+			return cal;
+		}
+		return null;
+	}
 
-   @Override
-   public void setDateStock(final Calendar cal){
-      if(cal != null){
-         this.dateStock = Calendar.getInstance();
-         this.dateStock.setTime(cal.getTime());
-      }else{
-         this.dateStock = null;
-      }
-   }
+	@Override
+	public void setDateStock(final Calendar cal) {
+		if (cal != null) {
+			this.dateStock = Calendar.getInstance();
+			this.dateStock.setTime(cal.getTime());
+		} else {
+			this.dateStock = null;
+		}
+	}
 
-   @Column(name = "QUANTITE_INIT", nullable = true)
-   public Float getQuantiteInit(){
-      return Utils.floor(this.quantiteInit, 3);
-   }
+	@Column(name = "QUANTITE_INIT", nullable = true)
+	public Float getQuantiteInit() {
+		return Utils.floor(this.quantiteInit, 3);
+	}
 
-   public void setQuantiteInit(final Float quantiteI){
-      this.quantiteInit = Utils.floor(quantiteI, 3);
-   }
+	public void setQuantiteInit(final Float quantiteI) {
+		this.quantiteInit = Utils.floor(quantiteI, 3);
+	}
 
-   @Override
-   @Column(name = "QUANTITE", nullable = true)
-   public Float getQuantite(){
-      return Utils.floor(this.quantite, 3);
-   }
+	@Override
+	@Column(name = "QUANTITE", nullable = true)
+	public Float getQuantite() {
+		return Utils.floor(this.quantite, 3);
+	}
 
-   @Override
-   public void setQuantite(final Float quant){
-      this.quantite = Utils.floor(quant, 3);
-   }
+	@Override
+	public void setQuantite(final Float quant) {
+		this.quantite = Utils.floor(quant, 3);
+	}
 
-   @Temporal(TemporalType.TIMESTAMP)
-   @Column(name = "DATE_TRANSFORMATION", nullable = true)
-   public Calendar getDateTransformation(){
-      if(dateTransformation != null){
-         final Calendar cal = Calendar.getInstance();
-         cal.setTime(dateTransformation.getTime());
-         return cal;
-      }
-      return null;
-   }
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "DATE_TRANSFORMATION", nullable = true)
+	public Calendar getDateTransformation() {
+		if (dateTransformation != null) {
+			final Calendar cal = Calendar.getInstance();
+			cal.setTime(dateTransformation.getTime());
+			return cal;
+		}
+		return null;
+	}
 
-   public void setDateTransformation(final Calendar cal){
-      if(cal != null){
-         this.dateTransformation = Calendar.getInstance();
-         this.dateTransformation.setTime(cal.getTime());
-      }else{
-         this.dateTransformation = null;
-      }
-   }
+	public void setDateTransformation(final Calendar cal) {
+		if (cal != null) {
+			this.dateTransformation = Calendar.getInstance();
+			this.dateTransformation.setTime(cal.getTime());
+		} else {
+			this.dateTransformation = null;
+		}
+	}
 
-   @Column(name = "ETAT_INCOMPLET", nullable = true)
-   public Boolean getEtatIncomplet(){
-      return this.etatIncomplet;
-   }
+	@Column(name = "ETAT_INCOMPLET", nullable = true)
+	public Boolean getEtatIncomplet() {
+		return this.etatIncomplet;
+	}
 
-   public void setEtatIncomplet(final Boolean etat){
-      this.etatIncomplet = etat;
-   }
+	public void setEtatIncomplet(final Boolean etat) {
+		this.etatIncomplet = etat;
+	}
 
-   @Column(name = "ARCHIVE", nullable = false)
-   public Boolean getArchive(){
-      return this.archive;
-   }
+	@Column(name = "ARCHIVE", nullable = false)
+	public Boolean getArchive() {
+		return this.archive;
+	}
 
-   public void setArchive(final Boolean arch){
-      this.archive = arch;
-   }
+	public void setArchive(final Boolean arch) {
+		this.archive = arch;
+	}
 
-   @Override
-   @ManyToOne(fetch = FetchType.LAZY)
-   @JoinColumn(name = "BANQUE_ID", nullable = false)
-   public Banque getBanque(){
-      return banque;
-   }
+	@Override
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "BANQUE_ID", nullable = false)
+	public Banque getBanque() {
+		return banque;
+	}
 
-   @Override
-   public void setBanque(final Banque b){
-      this.banque = b;
-   }
+	@Override
+	public void setBanque(final Banque b) {
+		this.banque = b;
+	}
 
-   @Override
-   @ManyToOne(fetch = FetchType.LAZY,cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-   @JoinColumn(name = "QUANTITE_UNITE_ID", nullable = true)
-   public Unite getQuantiteUnite(){
-      return this.quantiteUnite;
-   }
+	@Override
+	@ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+	@JoinColumn(name = "QUANTITE_UNITE_ID", nullable = true)
+	public Unite getQuantiteUnite() {
+		return this.quantiteUnite;
+	}
 
-   @Override
-   public void setQuantiteUnite(final Unite quantiteU){
-      this.quantiteUnite = quantiteU;
-   }
+	@Override
+	public void setQuantiteUnite(final Unite quantiteU) {
+		this.quantiteUnite = quantiteU;
+	}
 
-   @ManyToOne(fetch = FetchType.LAZY,cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-   @JoinColumn(name = "CONC_UNITE_ID", nullable = true)
-   public Unite getConcUnite(){
-      return this.concUnite;
-   }
+	@ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+	@JoinColumn(name = "CONC_UNITE_ID", nullable = true)
+	public Unite getConcUnite() {
+		return this.concUnite;
+	}
 
-   public void setConcUnite(final Unite concU){
-      this.concUnite = concU;
-   }
+	public void setConcUnite(final Unite concU) {
+		this.concUnite = concU;
+	}
 
-   @ManyToOne(fetch = FetchType.LAZY,cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-   @JoinColumn(name = "PROD_TYPE_ID", nullable = false)
-   public ProdType getProdType(){
-      return this.prodType;
-   }
+	@ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+	@JoinColumn(name = "PROD_TYPE_ID", nullable = false)
+	public ProdType getProdType() {
+		return this.prodType;
+	}
 
-   public void setProdType(final ProdType type){
-      this.prodType = type;
-   }
+	public void setProdType(final ProdType type) {
+		this.prodType = type;
+	}
 
-   @Override
-   @ManyToOne(fetch = FetchType.LAZY)
-   @JoinColumn(name = "OBJET_STATUT_ID", nullable = false)
-   public ObjetStatut getObjetStatut(){
-      return this.objetStatut;
-   }
+	@Override
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "OBJET_STATUT_ID", nullable = false)
+	public ObjetStatut getObjetStatut() {
+		return this.objetStatut;
+	}
 
-   @Override
-   public void setObjetStatut(final ObjetStatut statut){
-      this.objetStatut = statut;
-   }
+	@Override
+	public void setObjetStatut(final ObjetStatut statut) {
+		this.objetStatut = statut;
+	}
 
-   @ManyToOne(fetch = FetchType.LAZY,cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-   @JoinColumn(name = "PROD_QUALITE_ID", nullable = true)
-   public ProdQualite getProdQualite(){
-      return this.prodQualite;
-   }
+	@ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+	@JoinColumn(name = "PROD_QUALITE_ID", nullable = true)
+	public ProdQualite getProdQualite() {
+		return this.prodQualite;
+	}
 
-   public void setProdQualite(final ProdQualite qualite){
-      this.prodQualite = qualite;
-   }
+	public void setProdQualite(final ProdQualite qualite) {
+		this.prodQualite = qualite;
+	}
 
-   @ManyToOne(fetch = FetchType.LAZY,cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-   @JoinColumn(name = "COLLABORATEUR_ID", nullable = true)
-   public Collaborateur getCollaborateur(){
-      return this.collaborateur;
-   }
+	@ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+	@JoinColumn(name = "COLLABORATEUR_ID", nullable = true)
+	public Collaborateur getCollaborateur() {
+		return this.collaborateur;
+	}
 
-   public void setCollaborateur(final Collaborateur collab){
-      this.collaborateur = collab;
-   }
+	public void setCollaborateur(final Collaborateur collab) {
+		this.collaborateur = collab;
+	}
 
-   //@ManyToOne(fetch = FetchType.LAZY,fetch = FetchType.LAZY)
-   @Override
-   @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.REMOVE})
-   @JoinColumn(name = "EMPLACEMENT_ID", nullable = true)
-   public Emplacement getEmplacement(){
-      return this.emplacement;
-   }
+	// @ManyToOne(fetch = FetchType.LAZY,fetch = FetchType.LAZY)
+	@Override
+	@OneToOne(fetch = FetchType.LAZY, cascade = { CascadeType.REMOVE })
+	@JoinColumn(name = "EMPLACEMENT_ID", nullable = true)
+	public Emplacement getEmplacement() {
+		return this.emplacement;
+	}
 
-   @Override
-   public void setEmplacement(final Emplacement empl){
-      this.emplacement = empl;
-   }
+	@Override
+	public void setEmplacement(final Emplacement empl) {
+		this.emplacement = empl;
+	}
 
-   @ManyToOne(fetch = FetchType.LAZY,cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-   @JoinColumn(name = "VOLUME_UNITE_ID", nullable = true)
-   public Unite getVolumeUnite(){
-      return this.volumeUnite;
-   }
+	@ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+	@JoinColumn(name = "VOLUME_UNITE_ID", nullable = true)
+	public Unite getVolumeUnite() {
+		return this.volumeUnite;
+	}
 
-   public void setVolumeUnite(final Unite volumeU){
-      this.volumeUnite = volumeU;
-   }
+	public void setVolumeUnite(final Unite volumeU) {
+		this.volumeUnite = volumeU;
+	}
 
-   @ManyToOne(fetch = FetchType.LAZY)
-   @JoinColumn(name = "TRANSFORMATION_ID", nullable = true)
-   public Transformation getTransformation(){
-      return transformation;
-   }
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "TRANSFORMATION_ID", nullable = true)
+	public Transformation getTransformation() {
+		return transformation;
+	}
 
-   public void setTransformation(final Transformation transfo){
-      this.transformation = transfo;
-   }
+	public void setTransformation(final Transformation transfo) {
+		this.transformation = transfo;
+	}
 
-   @ManyToOne(fetch = FetchType.LAZY,cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-   @JoinColumn(name = "MODE_PREPA_DERIVE_ID", nullable = true)
-   public ModePrepaDerive getModePrepaDerive(){
-      return modePrepaDerive;
-   }
+	@ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+	@JoinColumn(name = "MODE_PREPA_DERIVE_ID", nullable = true)
+	public ModePrepaDerive getModePrepaDerive() {
+		return modePrepaDerive;
+	}
 
-   public void setModePrepaDerive(final ModePrepaDerive m){
-      this.modePrepaDerive = m;
-   }
+	public void setModePrepaDerive(final ModePrepaDerive m) {
+		this.modePrepaDerive = m;
+	}
 
-   @Override
-   @Column(name = "CONFORME_TRAITEMENT", nullable = true)
-   public Boolean getConformeTraitement(){
-      return conformeTraitement;
-   }
+	@Override
+	@Column(name = "CONFORME_TRAITEMENT", nullable = true)
+	public Boolean getConformeTraitement() {
+		return conformeTraitement;
+	}
 
-   public void setConformeTraitement(final Boolean conforme){
-      this.conformeTraitement = conforme;
-   }
+	public void setConformeTraitement(final Boolean conforme) {
+		this.conformeTraitement = conforme;
+	}
 
-   @Override
-   @Column(name = "CONFORME_CESSION", nullable = true)
-   public Boolean getConformeCession(){
-      return conformeCession;
-   }
+	@Override
+	@Column(name = "CONFORME_CESSION", nullable = true)
+	public Boolean getConformeCession() {
+		return conformeCession;
+	}
 
-   public void setConformeCession(final Boolean conforme){
-      this.conformeCession = conforme;
-   }
+	public void setConformeCession(final Boolean conforme) {
+		this.conformeCession = conforme;
+	}
 
-   @Override
-@OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "delegator",
-		      targetEntity = AbstractProdDeriveDelegate.class)
-   // @OneToOne(mappedBy = "delegator", cascade = CascadeType.MERGE, orphanRemoval = true)
-   public TKDelegateObject<ProdDerive> getDelegate(){
-      return delegate;
-   }
-   
-   @Override
-   public void setDelegate(TKDelegateObject<ProdDerive> _d){
-      this.delegate = _d;
-   }
+	@Override
+	@OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "delegator", targetEntity = AbstractProdDeriveDelegate.class)
+	// @OneToOne(mappedBy = "delegator", cascade = CascadeType.MERGE, orphanRemoval
+	// = true)
+	public TKDelegateObject<ProdDerive> getDelegate() {
+		return delegate;
+	}
+
+	@Override
+	public void setDelegate(TKDelegateObject<ProdDerive> _d) {
+		this.delegate = _d;
+	}
 
 //   /**
 //    * @param delegate the delegate to set
@@ -499,122 +498,123 @@ public class ProdDerive extends TKDelegetableObject<ProdDerive> implements TKSto
 //      this.delegate = delegate;
 //   }
 
-   /**
-    * 2 produits dérivés sont considérés comme égaux s'ils ont le même code
-    * et la même banque.
-    * @param obj est le produit dérivé à tester.
-    * @return true si les produits dérivés sont égaux.
-    */
-   @Override
-   public boolean equals(final Object obj){
+	/**
+	 * 2 produits dérivés sont considérés comme égaux s'ils ont le même code et la
+	 * même banque.
+	 * 
+	 * @param obj est le produit dérivé à tester.
+	 * @return true si les produits dérivés sont égaux.
+	 */
+	@Override
+	public boolean equals(final Object obj) {
 
-      if(this == obj){
-         return true;
-      }
-      if((obj == null) || obj.getClass() != this.getClass()){
-         return false;
-      }
-      final ProdDerive test = (ProdDerive) obj;
-      return ((this.code == test.code || (this.code != null && this.code.equals(test.code)))
-         && (this.banque == test.banque || (this.banque != null && this.banque.equals(test.banque))));
-   }
+		if (this == obj) {
+			return true;
+		}
+		if ((obj == null) || !(obj instanceof ProdDerive)) {
+			return false;
+		}
+		final ProdDerive test = (ProdDerive) obj;
+		return Objects.equals(code, test.getCode()) && Objects.equals(banque, test.getBanque());
+	}
 
-   /**
-    * Le hashcode est calculé sur les attributs code et banque.
-    * @return la valeur du hashcode.
-    */
-   @Override
-   public int hashCode(){
+	/**
+	 * Le hashcode est calculé sur les attributs code et banque.
+	 * 
+	 * @return la valeur du hashcode.
+	 */
+	@Override
+	public int hashCode() {
 
-      int hash = 7;
-      int hashCode = 0;
-      int hashBanque = 0;
+		int hash = 7;
+		int hashCode = 0;
+		int hashBanque = 0;
 
-      if(this.code != null){
-         hashCode = this.code.hashCode();
-      }
-      if(this.banque != null){
-         hashBanque = this.banque.hashCode();
-      }
+		if (this.code != null) {
+			hashCode = this.code.hashCode();
+		}
+		if (this.banque != null) {
+			hashBanque = this.banque.hashCode();
+		}
 
-      hash = 31 * hash + hashCode;
-      hash = 31 * hash + hashBanque;
+		hash = 31 * hash + hashCode;
+		hash = 31 * hash + hashBanque;
 
-      return hash;
+		return hash;
 
-   }
+	}
 
-   /**
-    * Méthode surchargeant le toString() de l'objet.
-    */
-   @Override
-   public String toString(){
-      if(this.code != null){
-         return "{" + this.code + "}";
-      }
-      return "{Empty ProdDerive}";
-   }
+	/**
+	 * Méthode surchargeant le toString() de l'objet.
+	 */
+	@Override
+	public String toString() {
+		if (this.code != null) {
+			return "{" + this.code + "}";
+		}
+		return "{Empty ProdDerive}";
+	}
 
-   @Override
-   public ProdDerive clone(){
-      final ProdDerive clone = new ProdDerive();
+	@Override
+	public ProdDerive clone() {
+		final ProdDerive clone = new ProdDerive();
 
-      clone.setProdDeriveId(this.getProdDeriveId());
-      clone.setBanque(this.getBanque());
-      clone.setProdType(this.getProdType());
-      clone.setCode(this.getCode());
-      clone.setCodeLabo(this.getCodeLabo());
-      clone.setObjetStatut(this.getObjetStatut());
-      clone.setCollaborateur(this.getCollaborateur());
-      clone.setVolumeInit(this.getVolumeInit());
-      clone.setVolume(this.getVolume());
-      clone.setConc(this.getConc());
-      clone.setDateStock(this.getDateStock());
-      clone.setEmplacement(this.getEmplacement());
-      clone.setVolumeUnite(this.getVolumeUnite());
-      clone.setConcUnite(this.getConcUnite());
-      clone.setQuantiteInit(this.getQuantiteInit());
-      clone.setQuantite(this.getQuantite());
-      clone.setQuantiteUnite(this.getQuantiteUnite());
-      clone.setProdQualite(this.getProdQualite());
-      clone.setTransformation(this.getTransformation());
-      clone.setDateTransformation(this.getDateTransformation());
-      clone.setModePrepaDerive(this.getModePrepaDerive());
-      clone.setEtatIncomplet(this.getEtatIncomplet());
-      clone.setArchive(this.getArchive());
-      clone.setConformeTraitement(this.getConformeTraitement());
-      clone.setConformeCession(this.getConformeCession());
-      
-      clone.setDelegate(getDelegate());
+		clone.setProdDeriveId(this.getProdDeriveId());
+		clone.setBanque(this.getBanque());
+		clone.setProdType(this.getProdType());
+		clone.setCode(this.getCode());
+		clone.setCodeLabo(this.getCodeLabo());
+		clone.setObjetStatut(this.getObjetStatut());
+		clone.setCollaborateur(this.getCollaborateur());
+		clone.setVolumeInit(this.getVolumeInit());
+		clone.setVolume(this.getVolume());
+		clone.setConc(this.getConc());
+		clone.setDateStock(this.getDateStock());
+		clone.setEmplacement(this.getEmplacement());
+		clone.setVolumeUnite(this.getVolumeUnite());
+		clone.setConcUnite(this.getConcUnite());
+		clone.setQuantiteInit(this.getQuantiteInit());
+		clone.setQuantite(this.getQuantite());
+		clone.setQuantiteUnite(this.getQuantiteUnite());
+		clone.setProdQualite(this.getProdQualite());
+		clone.setTransformation(this.getTransformation());
+		clone.setDateTransformation(this.getDateTransformation());
+		clone.setModePrepaDerive(this.getModePrepaDerive());
+		clone.setEtatIncomplet(this.getEtatIncomplet());
+		clone.setArchive(this.getArchive());
+		clone.setConformeTraitement(this.getConformeTraitement());
+		clone.setConformeCession(this.getConformeCession());
 
-      return clone;
-   }
+		clone.setDelegate(getDelegate());
 
-   @Override
-   public Integer listableObjectId(){
-      return this.getProdDeriveId();
-   }
+		return clone;
+	}
 
-   @Override
-   public String entiteNom(){
-      return "ProdDerive";
-   }
+	@Override
+	public Integer listableObjectId() {
+		return this.getProdDeriveId();
+	}
 
-   @Override
-   @Transient
-   public String getPhantomData(){
-      return code;
-   }
+	@Override
+	public String entiteNom() {
+		return "ProdDerive";
+	}
 
-   @Override
-   @Transient
-   public TKThesaurusObject getType(){
-      return getProdType();
-   }
+	@Override
+	@Transient
+	public String getPhantomData() {
+		return code;
+	}
 
-   @Override
-   @Transient
-   public void setType(final TKThesaurusObject o){
-      setProdType((ProdType) o);
-   }
+	@Override
+	@Transient
+	public TKThesaurusObject getType() {
+		return getProdType();
+	}
+
+	@Override
+	@Transient
+	public void setType(final TKThesaurusObject o) {
+		setProdType((ProdType) o);
+	}
 }

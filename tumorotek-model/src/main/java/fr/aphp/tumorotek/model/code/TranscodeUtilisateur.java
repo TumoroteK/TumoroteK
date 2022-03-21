@@ -36,6 +36,7 @@
 package fr.aphp.tumorotek.model.code;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -122,19 +123,19 @@ public class TranscodeUtilisateur implements Serializable {
 	 */
 	@Override
 	public boolean equals(final Object obj) {
-
 		if (this == obj) {
 			return true;
 		}
-		if ((obj == null) || obj.getClass() != this.getClass()) {
+		// instanceOf est utilise plutot que != a cause des proxys
+		// JPA qui sont crées par lors du fetch par
+		// la relation manyToAny
+		if ((obj == null) || !(obj instanceof TranscodeUtilisateur)) {
 			return false;
 		}
 		final TranscodeUtilisateur test = (TranscodeUtilisateur) obj;
-		return ((this.codeId == test.codeId || (this.codeId != null && this.codeId.equals(test.codeId)))
-				&& (this.codeUtilisateur == test.codeUtilisateur
-						|| (this.codeUtilisateur != null && this.codeUtilisateur.equals(test.codeUtilisateur)))
-				&& (this.tableCodage == test.tableCodage
-						|| (this.tableCodage != null && this.tableCodage.equals(test.tableCodage))));
+		return Objects.equals(codeId, test.getCodeId())
+			&& Objects.equals(codeUtilisateur, test.getCodeUtilisateur()) 
+			&& Objects.equals(tableCodage, test.getTableCodage());
 	}
 
 	/**

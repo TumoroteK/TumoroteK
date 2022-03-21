@@ -37,6 +37,7 @@ package fr.aphp.tumorotek.model.code;
 
 import java.io.Serializable;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -199,22 +200,17 @@ public class Adicap implements CodeCommon, Serializable {
 	 */
 	@Override
 	public boolean equals(final Object obj) {
-
 		if (this == obj) {
 			return true;
 		}
-		// instanceOf est utilise plutot que != a cause des instances
-		// Adicap$$EnhancerByCGLIB qui sont crées par lors du fetch par
+		// instanceOf est utilise plutot que != a cause des proxys
+		// JPA qui sont crées par lors du fetch par
 		// la relation manyToAny
 		if ((obj == null) || !(obj instanceof Adicap)) {
 			return false;
 		}
-		final Adicap test = (Adicap) obj;
-		if (this.getAdicapId() != null) {
-			// utilisation get car Adicap$$EnhancerByCGLIB proxy
-			return this.getAdicapId().equals(test.getAdicapId());
-		}
-		return false;
+		final Adicap test = (Adicap) obj;	
+		return Objects.equals(adicapId, test.getAdicapId());
 	}
 
 	/**

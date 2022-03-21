@@ -53,8 +53,7 @@ import org.hibernate.annotations.GenericGenerator;
 import fr.aphp.tumorotek.model.AbstractThesaurusObject;
 
 /**
- * Objet persistant mappant la table SPECIALITE.
- * Classe créée le 09/09/09.
+ * Objet persistant mappant la table SPECIALITE. Classe créée le 09/09/09.
  *
  * @author Pierre Ventadour
  * @version 2.3
@@ -62,89 +61,96 @@ import fr.aphp.tumorotek.model.AbstractThesaurusObject;
  */
 @Entity
 @Table(name = "SPECIALITE")
-@AttributeOverrides({@AttributeOverride(name = "id", column = @Column(name = "SPECIALITE_ID"))})
+@AttributeOverrides({ @AttributeOverride(name = "id", column = @Column(name = "SPECIALITE_ID")) })
 @GenericGenerator(name = "autoincrement", strategy = "increment")
 //@NamedQueries(value = {@NamedQuery(name = "Specialite.findByNom", query = "SELECT s FROM Specialite s WHERE s.nom like ?1"),
 //   @NamedQuery(name = "Specialite.findByCollaborateurId",
 //      query = "SELECT s FROM Specialite s " + "left join s.collaborateurs c " + "WHERE c.collaborateurId = ?1"),
 //   @NamedQuery(name = "Specialite.findByExcludedId", query = "SELECT s FROM Specialite s " + "WHERE s.id != ?1"),
 //   @NamedQuery(name = "Specialite.findByOrder", query = "SELECT s FROM Specialite s ORDER BY s.nom")})
-public class Specialite extends AbstractThesaurusObject implements Serializable
-{
+public class Specialite extends AbstractThesaurusObject implements Serializable {
 
-   private static final long serialVersionUID = 5165872187465355L;
+	private static final long serialVersionUID = 5165872187465355L;
 
-   private Set<Collaborateur> collaborateurs = new HashSet<>();
+	private Set<Collaborateur> collaborateurs = new HashSet<>();
 
-   /** Constructeur par défaut. */
-   public Specialite(){}
+	/** Constructeur par défaut. */
+	public Specialite() {
+	}
 
-   /**
-    * @deprecated Utiliser {@link #getId()}
-    * @return
-    */
-   @Deprecated
-   @Transient
-   public Integer getSpecialiteId(){
-      return this.getId();
-   }
+	/**
+	 * @deprecated Utiliser {@link #getId()}
+	 * @return
+	 */
+	@Deprecated
+	@Transient
+	public Integer getSpecialiteId() {
+		return this.getId();
+	}
 
-   /**
-    * @deprecated Utiliser {@link #setId(Integer)}
-    * @param sId
-    */
-   @Deprecated
-   public void setSpecialiteId(final Integer sId){
-      this.setId(sId);
-   }
+	/**
+	 * @deprecated Utiliser {@link #setId(Integer)}
+	 * @param sId
+	 */
+	@Deprecated
+	public void setSpecialiteId(final Integer sId) {
+		this.setId(sId);
+	}
 
-   @OneToMany(mappedBy = "specialite")
-   public Set<Collaborateur> getCollaborateurs(){
-      return collaborateurs;
-   }
+	@OneToMany(mappedBy = "specialite")
+	public Set<Collaborateur> getCollaborateurs() {
+		return collaborateurs;
+	}
 
-   public void setCollaborateurs(final Set<Collaborateur> newCollaborateurs){
-      this.collaborateurs = newCollaborateurs;
-   }
+	public void setCollaborateurs(final Set<Collaborateur> newCollaborateurs) {
+		this.collaborateurs = newCollaborateurs;
+	}
 
-   /**
-    * 2 spécialités sont considérées comme égales si elles ont le même nom.
-    * @param obj est la spécialité à tester.
-    * @return true si les spécialités sont égales.
-    */
-   @Override
-   public boolean equals(final Object obj){
+	/**
+	 * 2 spécialités sont considérées comme égales si elles ont le même nom.
+	 * 
+	 * @param obj est la spécialité à tester.
+	 * @return true si les spécialités sont égales.
+	 */
+	@Override
+	public boolean equals(final Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if ((obj == null) || !(obj instanceof Specialite)) {
+			return false;
+		}
+		final Specialite test = (Specialite) obj;
+		return Objects.equals(getNom(), test.getNom());
+	}
 
-	   Specialite spec = (Specialite) obj;
-	   return Objects.equals(getNom(), spec.getNom());
-   }
+	/**
+	 * Le hashcode est calculé sur l'attribut nom.
+	 * 
+	 * @return la valeur du hashcode.
+	 */
+	@Override
+	public int hashCode() {
 
-   /**
-    * Le hashcode est calculé sur l'attribut nom.
-    * @return la valeur du hashcode.
-    */
-   @Override
-   public int hashCode(){
+		int hash = 7;
+		int hashNom = 0;
 
-      int hash = 7;
-      int hashNom = 0;
+		if (this.getNom() != null) {
+			hashNom = this.getNom().hashCode();
+		}
 
-      if(this.getNom() != null){
-         hashNom = this.getNom().hashCode();
-      }
+		hash = 31 * hash + hashNom;
 
-      hash = 31 * hash + hashNom;
+		return hash;
 
-      return hash;
+	}
 
-   }
-
-   /**
-    * Méthode surchargeant le toString() de l'objet.
-    */
-   @Override
-   public String toString(){
-      return "{" + this.getNom() + "}";
-   }
+	/**
+	 * Méthode surchargeant le toString() de l'objet.
+	 */
+	@Override
+	public String toString() {
+		return "{" + this.getNom() + "}";
+	}
 
 }

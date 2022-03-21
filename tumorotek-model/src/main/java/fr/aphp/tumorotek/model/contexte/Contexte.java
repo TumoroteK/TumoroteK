@@ -36,6 +36,7 @@
 package fr.aphp.tumorotek.model.contexte;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -51,8 +52,7 @@ import org.hibernate.annotations.GenericGenerator;
 import fr.aphp.tumorotek.model.coeur.annotation.Catalogue;
 
 /**
- * Objet persistant mappant la table CONTEXTE.
- * Classe créée le 09/09/09.
+ * Objet persistant mappant la table CONTEXTE. Classe créée le 09/09/09.
  *
  * @author Pierre Ventadour
  * @version 2.3
@@ -64,123 +64,125 @@ import fr.aphp.tumorotek.model.coeur.annotation.Catalogue;
 //   @NamedQuery(name = "Contexte.findByBanqueId",
 //      query = "SELECT c FROM Contexte c " + "left join c.banques b " + "WHERE b.banqueId = ?1"),
 //   @NamedQuery(name = "Contexte.findByOrder", query = "SELECT c FROM Contexte c ORDER BY c.nom")})
-public class Contexte implements java.io.Serializable
-{
+public class Contexte implements java.io.Serializable {
 
-   private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-   private Integer contexteId;
-   private String nom;
-   private String libelle;
+	private Integer contexteId;
+	private String nom;
+	private String libelle;
 
-   private Set<Banque> banques = new HashSet<>();
-   private Set<Catalogue> catalogues = new HashSet<>();
+	private Set<Banque> banques = new HashSet<>();
+	private Set<Catalogue> catalogues = new HashSet<>();
 
-   /** Constructeur par défaut. */
-   public Contexte(){}
+	/** Constructeur par défaut. */
+	public Contexte() {
+	}
 
-   //	/**
-   //	 * Constructeur avec paramètres.
-   //	 * @param cId .
-   //	 * @param n .
-   //	 */
-   //	public Contexte(Integer cId, String n) {
-   //		this.contexteId = cId;
-   //		this.nom = n;
-   //	}
+	// /**
+	// * Constructeur avec paramètres.
+	// * @param cId .
+	// * @param n .
+	// */
+	// public Contexte(Integer cId, String n) {
+	// this.contexteId = cId;
+	// this.nom = n;
+	// }
 
-   @Id
-   @Column(name = "CONTEXTE_ID", unique = true, nullable = false)
-   @GeneratedValue(generator = "autoincrement")
-   @GenericGenerator(name = "autoincrement", strategy = "increment")
-   public Integer getContexteId(){
-      return this.contexteId;
-   }
+	@Id
+	@Column(name = "CONTEXTE_ID", unique = true, nullable = false)
+	@GeneratedValue(generator = "autoincrement")
+	@GenericGenerator(name = "autoincrement", strategy = "increment")
+	public Integer getContexteId() {
+		return this.contexteId;
+	}
 
-   public void setContexteId(final Integer cId){
-      this.contexteId = cId;
-   }
+	public void setContexteId(final Integer cId) {
+		this.contexteId = cId;
+	}
 
-   @Column(name = "NOM", nullable = false, length = 25)
-   public String getNom(){
-      return this.nom;
-   }
+	@Column(name = "NOM", nullable = false, length = 25)
+	public String getNom() {
+		return this.nom;
+	}
 
-   public void setNom(final String n){
-      this.nom = n;
-   }
+	public void setNom(final String n) {
+		this.nom = n;
+	}
 
-   public void setLibelle(final String libelle){
-      this.libelle = libelle;
-   }
+	public void setLibelle(final String libelle) {
+		this.libelle = libelle;
+	}
 
-   @Column(name = "LIBELLE", length = 50)
-   public String getLibelle(){
-      return this.libelle;
-   }
+	@Column(name = "LIBELLE", length = 50)
+	public String getLibelle() {
+		return this.libelle;
+	}
 
-   @OneToMany(mappedBy = "contexte")
-   public Set<Banque> getBanques(){
-      return this.banques;
-   }
+	@OneToMany(mappedBy = "contexte")
+	public Set<Banque> getBanques() {
+		return this.banques;
+	}
 
-   public void setBanques(final Set<Banque> newBanques){
-      this.banques = newBanques;
-   }
+	public void setBanques(final Set<Banque> newBanques) {
+		this.banques = newBanques;
+	}
 
-   @ManyToMany(mappedBy = "contextes", targetEntity = Catalogue.class)
-   public Set<Catalogue> getCatalogues(){
-      return catalogues;
-   }
+	@ManyToMany(mappedBy = "contextes", targetEntity = Catalogue.class)
+	public Set<Catalogue> getCatalogues() {
+		return catalogues;
+	}
 
-   public void setCatalogues(final Set<Catalogue> catals){
-      this.catalogues = catals;
-   }
+	public void setCatalogues(final Set<Catalogue> catals) {
+		this.catalogues = catals;
+	}
 
-   /**
-    * 2 contextes sont considérées comme égaux s'ils ont le même nom.
-    * @param obj est le contexte à tester.
-    * @return true si les contextes sont égaux.
-    */
-   @Override
-   public boolean equals(final Object obj){
+	/**
+	 * 2 contextes sont considérées comme égaux s'ils ont le même nom.
+	 * 
+	 * @param obj est le contexte à tester.
+	 * @return true si les contextes sont égaux.
+	 */
+	@Override
+	public boolean equals(final Object obj) {
 
-      if(this == obj){
-         return true;
-      }
-      if((obj == null) || obj.getClass() != this.getClass()){
-         return false;
-      }
-      final Contexte test = (Contexte) obj;
-      return ((this.nom == test.nom || (this.nom != null && this.nom.equals(test.nom))));
-   }
+		if (this == obj) {
+			return true;
+		}
+		if ((obj == null) || !(obj instanceof Contexte)) {
+			return false;
+		}
+		final Contexte test = (Contexte) obj;
+		return Objects.equals(nom, test.getNom());
+	}
 
-   /**
-    * Le hashcode est calculé sur l'attribut nom.
-    * @return la valeur du hashcode.
-    */
-   @Override
-   public int hashCode(){
+	/**
+	 * Le hashcode est calculé sur l'attribut nom.
+	 * 
+	 * @return la valeur du hashcode.
+	 */
+	@Override
+	public int hashCode() {
 
-      int hash = 7;
-      int hashNom = 0;
+		int hash = 7;
+		int hashNom = 0;
 
-      if(this.nom != null){
-         hashNom = this.nom.hashCode();
-      }
+		if (this.nom != null) {
+			hashNom = this.nom.hashCode();
+		}
 
-      hash = 31 * hash + hashNom;
+		hash = 31 * hash + hashNom;
 
-      return hash;
+		return hash;
 
-   }
+	}
 
-   /**
-    * Méthode surchargeant le toString() de l'objet.
-    */
-   @Override
-   public String toString(){
-      return "{" + this.nom + "}";
-   }
+	/**
+	 * Méthode surchargeant le toString() de l'objet.
+	 */
+	@Override
+	public String toString() {
+		return "{" + this.nom + "}";
+	}
 
 }

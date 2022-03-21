@@ -36,6 +36,7 @@
 package fr.aphp.tumorotek.model.contexte;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -64,8 +65,7 @@ import fr.aphp.tumorotek.model.coeur.prelevement.Prelevement;
 import fr.aphp.tumorotek.model.stockage.Conteneur;
 
 /**
- * Objet persistant mappant la table SERVICE.
- * Classe créée le 09/09/09.
+ * Objet persistant mappant la table SERVICE. Classe créée le 09/09/09.
  *
  * @author Pierre Ventadour
  * @version 2.3
@@ -100,262 +100,263 @@ import fr.aphp.tumorotek.model.stockage.Conteneur;
 //         + "WHERE s.serviceId = ?1"),
 //   @NamedQuery(name = "Service.findByExcludedId", query = "SELECT s FROM Service s " + "WHERE s.serviceId != ?1"), @NamedQuery(
 //      name = "Service.findByVille", query = "SELECT s FROM Service s " + "WHERE s.coordonnee.ville like ?1 " + "ORDER BY s.nom")})
-public class Service implements TKdataObject, TKFantomableObject, java.io.Serializable
-{
+public class Service implements TKdataObject, TKFantomableObject, java.io.Serializable {
 
-   private static final long serialVersionUID = 54864135646414L;
+	private static final long serialVersionUID = 54864135646414L;
 
-   private Integer serviceId;
-   private String nom;
-   private Boolean archive = false;
+	private Integer serviceId;
+	private String nom;
+	private Boolean archive = false;
 
-   private Etablissement etablissement;
-   private Coordonnee coordonnee;
+	private Etablissement etablissement;
+	private Coordonnee coordonnee;
 
-   private Set<Collaborateur> collaborateurs = new HashSet<>();
-   //private Set<Banque> banques = new HashSet<Banque>();
-   private Set<Banque> banquesPossedees = new HashSet<>();
-   private Set<Conteneur> conteneurs = new HashSet<>();
-   private Set<Prelevement> prelevements = new HashSet<>();
-   private Set<Cession> cessions = new HashSet<>();
-   private Set<Contrat> contrats = new HashSet<>();
-   private Set<LaboInter> laboInters = new HashSet<>();
+	private Set<Collaborateur> collaborateurs = new HashSet<>();
+	// private Set<Banque> banques = new HashSet<Banque>();
+	private Set<Banque> banquesPossedees = new HashSet<>();
+	private Set<Conteneur> conteneurs = new HashSet<>();
+	private Set<Prelevement> prelevements = new HashSet<>();
+	private Set<Cession> cessions = new HashSet<>();
+	private Set<Contrat> contrats = new HashSet<>();
+	private Set<LaboInter> laboInters = new HashSet<>();
 
-   /** Constructeur par défaut. */
-   public Service(){}
+	/** Constructeur par défaut. */
+	public Service() {
+	}
 
-   /**
-    * Constructeur avec paramètres.
-    * @param id .
-    * @param n .
-    * @param descr .
-    * @param arch .
-    */
-   public Service(final Integer id, final String n, final String descr, final boolean arch){
-      this.serviceId = id;
-      this.nom = n;
-      this.archive = arch;
-   }
+	/**
+	 * Constructeur avec paramètres.
+	 * 
+	 * @param id    .
+	 * @param n     .
+	 * @param descr .
+	 * @param arch  .
+	 */
+	public Service(final Integer id, final String n, final String descr, final boolean arch) {
+		this.serviceId = id;
+		this.nom = n;
+		this.archive = arch;
+	}
 
-   @Id
-   @Column(name = "SERVICE_ID", unique = true, nullable = false)
-   @GeneratedValue(generator = "autoincrement")
-   @GenericGenerator(name = "autoincrement", strategy = "increment")
-   public Integer getServiceId(){
-      return serviceId;
-   }
+	@Id
+	@Column(name = "SERVICE_ID", unique = true, nullable = false)
+	@GeneratedValue(generator = "autoincrement")
+	@GenericGenerator(name = "autoincrement", strategy = "increment")
+	public Integer getServiceId() {
+		return serviceId;
+	}
 
-   public void setServiceId(final Integer sId){
-      this.serviceId = sId;
-   }
+	public void setServiceId(final Integer sId) {
+		this.serviceId = sId;
+	}
 
-   @Column(name = "NOM", nullable = false, length = 100)
-   public String getNom(){
-      return nom;
-   }
+	@Column(name = "NOM", nullable = false, length = 100)
+	public String getNom() {
+		return nom;
+	}
 
-   public void setNom(final String n){
-      this.nom = n;
-   }
+	public void setNom(final String n) {
+		this.nom = n;
+	}
 
-   @Column(name = "ARCHIVE", nullable = false)
-   public Boolean getArchive(){
-      return archive;
-   }
+	@Column(name = "ARCHIVE", nullable = false)
+	public Boolean getArchive() {
+		return archive;
+	}
 
-   public void setArchive(final Boolean arch){
-      this.archive = arch;
-   }
+	public void setArchive(final Boolean arch) {
+		this.archive = arch;
+	}
 
-   @ManyToOne(fetch = FetchType.LAZY)
-   @JoinColumn(name = "ETABLISSEMENT_ID", nullable = false)
-   public Etablissement getEtablissement(){
-      return etablissement;
-   }
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "ETABLISSEMENT_ID", nullable = false)
+	public Etablissement getEtablissement() {
+		return etablissement;
+	}
 
-   public void setEtablissement(final Etablissement e){
-      this.etablissement = e;
-   }
+	public void setEtablissement(final Etablissement e) {
+		this.etablissement = e;
+	}
 
-   @OneToOne(optional = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-   @JoinColumn(name = "COORDONNEE_ID", nullable = true)
-   public Coordonnee getCoordonnee(){
-      return coordonnee;
-   }
+	@OneToOne(optional = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@JoinColumn(name = "COORDONNEE_ID", nullable = true)
+	public Coordonnee getCoordonnee() {
+		return coordonnee;
+	}
 
-   public void setCoordonnee(final Coordonnee c){
-      this.coordonnee = c;
-   }
+	public void setCoordonnee(final Coordonnee c) {
+		this.coordonnee = c;
+	}
 
-   @ManyToMany(targetEntity = Collaborateur.class, cascade = {})
-   @JoinTable(name = "SERVICE_COLLABORATEUR", joinColumns = @JoinColumn(name = "SERVICE_ID"),
-      inverseJoinColumns = @JoinColumn(name = "COLLABORATEUR_ID"))
-   @javax.persistence.OrderBy("nom, prenom")
-   public Set<Collaborateur> getCollaborateurs(){
-      return collaborateurs;
-   }
+	@ManyToMany(targetEntity = Collaborateur.class, cascade = {})
+	@JoinTable(name = "SERVICE_COLLABORATEUR", joinColumns = @JoinColumn(name = "SERVICE_ID"), inverseJoinColumns = @JoinColumn(name = "COLLABORATEUR_ID"))
+	@javax.persistence.OrderBy("nom, prenom")
+	public Set<Collaborateur> getCollaborateurs() {
+		return collaborateurs;
+	}
 
-   public void setCollaborateurs(final Set<Collaborateur> collabs){
-      this.collaborateurs = collabs;
-   }
+	public void setCollaborateurs(final Set<Collaborateur> collabs) {
+		this.collaborateurs = collabs;
+	}
 
-   //	@ManyToMany(
-   //			targetEntity = Banque.class,
-   //	        cascade = {CascadeType.PERSIST, CascadeType.MERGE }
-   //	)
-   //    @JoinTable(
-   //    		name = "BANQUE_STOCKAGE",
-   //            joinColumns = @JoinColumn(name = "SERVICE_ID"),
-   //            inverseJoinColumns = @JoinColumn(name = "BANQUE_ID")
-   //    )
-   //	public Set<Banque> getBanques() {
-   //		return banques;
-   //	}
-   //
-   //	public void setBanques(Set<Banque> banks) {
-   //		this.banques = banks;
-   //	}
+	// @ManyToMany(
+	// targetEntity = Banque.class,
+	// cascade = {CascadeType.PERSIST, CascadeType.MERGE }
+	// )
+	// @JoinTable(
+	// name = "BANQUE_STOCKAGE",
+	// joinColumns = @JoinColumn(name = "SERVICE_ID"),
+	// inverseJoinColumns = @JoinColumn(name = "BANQUE_ID")
+	// )
+	// public Set<Banque> getBanques() {
+	// return banques;
+	// }
+	//
+	// public void setBanques(Set<Banque> banks) {
+	// this.banques = banks;
+	// }
 
-   @OneToMany(mappedBy = "proprietaire")
-   public Set<Banque> getBanquesPossedees(){
-      return banquesPossedees;
-   }
+	@OneToMany(mappedBy = "proprietaire")
+	public Set<Banque> getBanquesPossedees() {
+		return banquesPossedees;
+	}
 
-   public void setBanquesPossedees(final Set<Banque> banquesPoss){
-      this.banquesPossedees = banquesPoss;
-   }
+	public void setBanquesPossedees(final Set<Banque> banquesPoss) {
+		this.banquesPossedees = banquesPoss;
+	}
 
-   @OneToMany(mappedBy = "service")
-   public Set<Conteneur> getConteneurs(){
-      return conteneurs;
-   }
+	@OneToMany(mappedBy = "service")
+	public Set<Conteneur> getConteneurs() {
+		return conteneurs;
+	}
 
-   public void setConteneurs(final Set<Conteneur> conts){
-      this.conteneurs = conts;
-   }
+	public void setConteneurs(final Set<Conteneur> conts) {
+		this.conteneurs = conts;
+	}
 
-   @OneToMany(mappedBy = "servicePreleveur")
-   public Set<Prelevement> getPrelevements(){
-      return prelevements;
-   }
+	@OneToMany(mappedBy = "servicePreleveur")
+	public Set<Prelevement> getPrelevements() {
+		return prelevements;
+	}
 
-   public void setPrelevements(final Set<Prelevement> prelevs){
-      this.prelevements = prelevs;
-   }
+	public void setPrelevements(final Set<Prelevement> prelevs) {
+		this.prelevements = prelevs;
+	}
 
-   @OneToMany(mappedBy = "serviceDest")
-   public Set<Cession> getCessions(){
-      return cessions;
-   }
+	@OneToMany(mappedBy = "serviceDest")
+	public Set<Cession> getCessions() {
+		return cessions;
+	}
 
-   public void setCessions(final Set<Cession> cess){
-      this.cessions = cess;
-   }
+	public void setCessions(final Set<Cession> cess) {
+		this.cessions = cess;
+	}
 
-   @OneToMany(mappedBy = "service")
-   public Set<Contrat> getContrats(){
-      return this.contrats;
-   }
+	@OneToMany(mappedBy = "service")
+	public Set<Contrat> getContrats() {
+		return this.contrats;
+	}
 
-   public void setContrats(final Set<Contrat> conts){
-      this.contrats = conts;
-   }
+	public void setContrats(final Set<Contrat> conts) {
+		this.contrats = conts;
+	}
 
-   @OneToMany(mappedBy = "service")
-   public Set<LaboInter> getLaboInters(){
-      return laboInters;
-   }
+	@OneToMany(mappedBy = "service")
+	public Set<LaboInter> getLaboInters() {
+		return laboInters;
+	}
 
-   public void setLaboInters(final Set<LaboInter> labos){
-      this.laboInters = labos;
-   }
+	public void setLaboInters(final Set<LaboInter> labos) {
+		this.laboInters = labos;
+	}
 
-   /**
-    * 2 services sont considérés comme égaux s'ils ont le même nom et
-    * la même reference vers etablissement.
-    * @param obj est le service à tester.
-    * @return true si les services sont égaux.
-    */
-   @Override
-   public boolean equals(final Object obj){
+	/**
+	 * 2 services sont considérés comme égaux s'ils ont le même nom et la même
+	 * reference vers etablissement.
+	 * 
+	 * @param obj est le service à tester.
+	 * @return true si les services sont égaux.
+	 */
+	@Override
+	public boolean equals(final Object obj) {
 
-      if(this == obj){
-         return true;
-      }
-      if((obj == null) || obj.getClass() != this.getClass()){
-         return false;
-      }
-      final Service test = (Service) obj;
-      return ((this.nom == test.nom || (this.nom != null && this.nom.equals(test.nom)))
-         && (this.etablissement == test.etablissement
-            || (this.etablissement != null && this.etablissement.equals(test.etablissement))));
-   }
+		if (this == obj) {
+			return true;
+		}
+		if ((obj == null) || !(obj instanceof Service)) {
+			return false;
+		}
+		final Service test = (Service) obj;
+		return Objects.equals(nom, test.getNom()) && Objects.equals(etablissement, test.getEtablissement());
+	}
 
-   /**
-    * Le hashcode est calculé sur l'attribut nom et la
-    * reference vers etablissement.
-    * @return la valeur du hashcode.
-    */
-   @Override
-   public int hashCode(){
+	/**
+	 * Le hashcode est calculé sur l'attribut nom et la reference vers
+	 * etablissement.
+	 * 
+	 * @return la valeur du hashcode.
+	 */
+	@Override
+	public int hashCode() {
 
-      int hash = 7;
-      int hashNom = 0;
-      int hashEtab = 0;
+		int hash = 7;
+		int hashNom = 0;
+		int hashEtab = 0;
 
-      if(this.nom != null){
-         hashNom = this.nom.hashCode();
-      }
-      if(this.etablissement != null){
-         hashEtab = this.etablissement.hashCode();
-      }
+		if (this.nom != null) {
+			hashNom = this.nom.hashCode();
+		}
+		if (this.etablissement != null) {
+			hashEtab = this.etablissement.hashCode();
+		}
 
-      hash = 31 * hash + hashNom;
-      hash = 31 * hash + hashEtab;
+		hash = 31 * hash + hashNom;
+		hash = 31 * hash + hashEtab;
 
-      return hash;
+		return hash;
 
-   }
+	}
 
-   /**
-    * Méthode surchargeant le toString() de l'objet.
-    */
-   @Override
-   public String toString(){
-      return "{" + this.nom + "}";
-   }
+	/**
+	 * Méthode surchargeant le toString() de l'objet.
+	 */
+	@Override
+	public String toString() {
+		return "{" + this.nom + "}";
+	}
 
-   /**
-    * Cree un clone de l'objet.
-    * @return clone Service.
-    */
-   @Override
-   public Service clone(){
-      final Service clone = new Service();
+	/**
+	 * Cree un clone de l'objet.
+	 * 
+	 * @return clone Service.
+	 */
+	@Override
+	public Service clone() {
+		final Service clone = new Service();
 
-      clone.setServiceId(this.getServiceId());
-      clone.setCoordonnee(this.getCoordonnee());
-      clone.setEtablissement(this.getEtablissement());
-      clone.setNom(this.getNom());
-      clone.setArchive(this.getArchive());
-      clone.setCollaborateurs(this.getCollaborateurs());
+		clone.setServiceId(this.getServiceId());
+		clone.setCoordonnee(this.getCoordonnee());
+		clone.setEtablissement(this.getEtablissement());
+		clone.setNom(this.getNom());
+		clone.setArchive(this.getArchive());
+		clone.setCollaborateurs(this.getCollaborateurs());
 
-      return clone;
-   }
+		return clone;
+	}
 
-   @Override
-   @Transient
-   public String getPhantomData(){
-      return getNom();
-   }
+	@Override
+	@Transient
+	public String getPhantomData() {
+		return getNom();
+	}
 
-   @Override
-   public String entiteNom(){
-      return "Service";
-   }
+	@Override
+	public String entiteNom() {
+		return "Service";
+	}
 
-   @Override
-   public Integer listableObjectId(){
-      return getServiceId();
-   }
+	@Override
+	public Integer listableObjectId() {
+		return getServiceId();
+	}
 }

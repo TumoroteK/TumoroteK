@@ -38,6 +38,7 @@ package fr.aphp.tumorotek.model.coeur.patient;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -235,14 +236,13 @@ public class Maladie extends TKDelegetableObject<Maladie> implements TKdataObjec
 		if (this == obj) {
 			return true;
 		}
-		if ((obj == null) || obj.getClass() != this.getClass()) {
+		if ((obj == null) || !(obj instanceof Maladie)) {
 			return false;
-		}
+		}		
 		final Maladie test = (Maladie) obj;
-		return (((this.libelle != null && this.libelle.equalsIgnoreCase(test.libelle)) || this.libelle == test.libelle)
-				&& ((this.patient != null && this.patient.equals(test.patient)) || this.patient == test.patient)
-				&& ((this.dateDiagnostic != null && this.dateDiagnostic.equals(test.dateDiagnostic))
-						|| this.dateDiagnostic == test.dateDiagnostic));
+		return Objects.equals(libelle, test.getLibelle())
+			&& Objects.equals(patient, test.getPatient())
+			&& Objects.equals(dateDiagnostic, test.getDateDiagnostic());
 	}
 
 	/**

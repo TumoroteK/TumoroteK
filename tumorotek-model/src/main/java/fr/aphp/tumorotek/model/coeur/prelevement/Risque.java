@@ -55,8 +55,7 @@ import fr.aphp.tumorotek.model.AbstractPfDependantThesaurusObject;
 
 /**
  *
- * Objet persistant mappant la table RISQUE.
- * Classe créée le 17/09/09.
+ * Objet persistant mappant la table RISQUE. Classe créée le 17/09/09.
  *
  * @author Pierre Ventadour
  * @version 2.3
@@ -64,7 +63,7 @@ import fr.aphp.tumorotek.model.AbstractPfDependantThesaurusObject;
  */
 @Entity
 @Table(name = "RISQUE")
-@AttributeOverrides({@AttributeOverride(name = "id", column = @Column(name = "RISQUE_ID"))})
+@AttributeOverrides({ @AttributeOverride(name = "id", column = @Column(name = "RISQUE_ID")) })
 @GenericGenerator(name = "autoincrement", strategy = "increment")
 //@NamedQueries(value = {@NamedQuery(name = "Risque.findByNom", query = "SELECT r FROM Risque r WHERE r.nom like ?1"),
 //   @NamedQuery(name = "Risque.findByInfectieux", query = "SELECT r FROM Risque r WHERE r.infectieux = ?1"),
@@ -73,63 +72,62 @@ import fr.aphp.tumorotek.model.AbstractPfDependantThesaurusObject;
 //   @NamedQuery(name = "Risque.findByExcludedId", query = "SELECT r FROM Risque r " + "WHERE r.id != ?1"),
 //   @NamedQuery(name = "Risque.findByPfOrder", query = "SELECT r FROM Risque r " + "WHERE r.plateforme = ?1 ORDER BY r.nom"),
 //   @NamedQuery(name = "Risque.findByOrder", query = "SELECT r FROM Risque r ORDER BY r.nom")})
-public class Risque extends AbstractPfDependantThesaurusObject implements Serializable
-{
+public class Risque extends AbstractPfDependantThesaurusObject implements Serializable {
 
-   private static final long serialVersionUID = 5495762619216759L;
+	private static final long serialVersionUID = 5495762619216759L;
 
-   private Boolean infectieux;
-   private Set<Prelevement> prelevements = new HashSet<>();
+	private Boolean infectieux;
+	private Set<Prelevement> prelevements = new HashSet<>();
 
-   /** Constructeur par défaut. */
-   public Risque(){}
+	/** Constructeur par défaut. */
+	public Risque() {
+	}
 
-   /**
-    * @deprecated Utiliser {@link #getId()}
-    * @return
-    */
-   @Deprecated
-   @Transient
-   public Integer getRisqueId(){
-      return this.getId();
-   }
+	/**
+	 * @deprecated Utiliser {@link #getId()}
+	 * @return
+	 */
+	@Deprecated
+	@Transient
+	public Integer getRisqueId() {
+		return this.getId();
+	}
 
-   /**
-    * @deprecated Utiliser {@link #setId(Integer)}
-    * @param mId
-    */
-   @Deprecated
-   public void setRisqueId(final Integer id){
-      this.setId(id);
-   }
+	/**
+	 * @deprecated Utiliser {@link #setId(Integer)}
+	 * @param mId
+	 */
+	@Deprecated
+	public void setRisqueId(final Integer id) {
+		this.setId(id);
+	}
 
-   @Column(name = "INFECTIEUX", nullable = false)
-   public Boolean getInfectieux(){
-      return this.infectieux;
-   }
+	@Column(name = "INFECTIEUX", nullable = false)
+	public Boolean getInfectieux() {
+		return this.infectieux;
+	}
 
-   public void setInfectieux(final Boolean inf){
-      this.infectieux = inf;
-   }
+	public void setInfectieux(final Boolean inf) {
+		this.infectieux = inf;
+	}
 
-   @ManyToMany(targetEntity = Prelevement.class)
-   @JoinTable(name = "PRELEVEMENT_RISQUE", joinColumns = @JoinColumn(name = "RISQUE_ID"),
-      inverseJoinColumns = @JoinColumn(name = "PRELEVEMENT_ID"))
-   public Set<Prelevement> getPrelevements(){
-      return this.prelevements;
-   }
+	@ManyToMany(targetEntity = Prelevement.class)
+	@JoinTable(name = "PRELEVEMENT_RISQUE", joinColumns = @JoinColumn(name = "RISQUE_ID"), inverseJoinColumns = @JoinColumn(name = "PRELEVEMENT_ID"))
+	public Set<Prelevement> getPrelevements() {
+		return this.prelevements;
+	}
 
-   public void setPrelevements(final Set<Prelevement> prelevs){
-      this.prelevements = prelevs;
-   }
+	public void setPrelevements(final Set<Prelevement> prelevs) {
+		this.prelevements = prelevs;
+	}
 
-   @Override
-   public String toString(){
-      if(this.getNom() != null){
-         return "{" + this.getNom() + "}";
-      }else{
-         return "{Empty Risque}";
-      }
-   }
+	@Override
+	public String toString() {
+		if (this.getNom() != null) {
+			return "{" + this.getNom() + "}";
+		} else {
+			return "{Empty Risque}";
+		}
+	}
 
 }

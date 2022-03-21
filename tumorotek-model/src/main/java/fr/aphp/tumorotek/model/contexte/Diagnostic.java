@@ -53,9 +53,8 @@ import fr.aphp.tumorotek.model.coeur.patient.Maladie;
 import fr.aphp.tumorotek.model.coeur.patient.serotk.MaladieSero;
 
 /**
- * Objet persistant mappant la table DIAGNOSTIC.
- * Contexte SeroTK.
- * Classe créée le 05/06/2018
+ * Objet persistant mappant la table DIAGNOSTIC. Contexte SeroTK. Classe créée
+ * le 05/06/2018
  *
  * @author Answald Bournique
  * @version 2.3
@@ -64,49 +63,49 @@ import fr.aphp.tumorotek.model.coeur.patient.serotk.MaladieSero;
  */
 @Entity
 @Table(name = "DIAGNOSTIC")
-@AttributeOverrides({@AttributeOverride(name = "id", column = @Column(name = "DIAGNOSTIC_ID"))})
+@AttributeOverrides({ @AttributeOverride(name = "id", column = @Column(name = "DIAGNOSTIC_ID")) })
 @GenericGenerator(name = "autoincrement", strategy = "increment")
 //@NamedQueries(value = {
 //   @NamedQuery(name = "Diagnostic.findByNom", query = "SELECT p FROM Diagnostic p WHERE p.nom like ?1 " + "order by p.nom"),
 //   @NamedQuery(name = "Diagnostic.findByExcludedId", query = "SELECT p FROM Diagnostic p " + "WHERE p.id != ?1"),
 //   @NamedQuery(name = "Diagnostic.findByOrder", query = "SELECT p FROM Diagnostic p " + "ORDER BY p.nom"), 
 //   @NamedQuery(name = "Diagnostic.findByPfOrder", query = "SELECT p FROM Diagnostic p " + "WHERE p.plateforme = ?1 ORDER BY p.nom")})
-public class Diagnostic extends AbstractPfDependantThesaurusObject implements Serializable
-{
+public class Diagnostic extends AbstractPfDependantThesaurusObject implements Serializable {
 
-   private static final long serialVersionUID = -2506949180590820975L;
+	private static final long serialVersionUID = -2506949180590820975L;
 
-   private String description;
-   private Set<Maladie> maladies = new HashSet<>();
+	private String description;
+	private Set<Maladie> maladies = new HashSet<>();
 
-   /** Constructeur par défaut. */
-   public Diagnostic(){}
+	/** Constructeur par défaut. */
+	public Diagnostic() {
+	}
 
-   @Column(name = "DESCRIPTION", nullable = true)
-   //Lob
-   public String getDescription(){
-      return description;
-   }
+	@Column(name = "DESCRIPTION", nullable = true)
+	// Lob
+	public String getDescription() {
+		return description;
+	}
 
-   public void setDescription(final String description){
-      this.description = description;
-   }
+	public void setDescription(final String description) {
+		this.description = description;
+	}
 
-   @OneToMany(mappedBy = "diagnostic", targetEntity = MaladieSero.class)
-   public Set<Maladie> getMaladies(){
-      return maladies;
-   }
+	@OneToMany(mappedBy = "diagnostic", targetEntity = MaladieSero.class)
+	public Set<Maladie> getMaladies() {
+		return maladies;
+	}
 
-   public void setMaladies(final Set<Maladie> maladies){
-      this.maladies = maladies;
-   }
+	public void setMaladies(final Set<Maladie> maladies) {
+		this.maladies = maladies;
+	}
 
-   @Override
-   public String toString(){
-      if(this.getNom() != null){
-         return "{" + this.getNom() + "}";
-      }
-      return "{Empty Diagnostic}";
-   }
+	@Override
+	public String toString() {
+		if (this.getNom() != null) {
+			return "{" + this.getNom() + "}";
+		}
+		return "{Empty Diagnostic}";
+	}
 
 }

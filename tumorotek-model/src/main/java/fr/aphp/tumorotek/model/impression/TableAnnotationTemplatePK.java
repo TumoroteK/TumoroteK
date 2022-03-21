@@ -36,6 +36,7 @@
 package fr.aphp.tumorotek.model.impression;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 import javax.persistence.Embeddable;
 import javax.persistence.ManyToOne;
@@ -45,105 +46,104 @@ import fr.aphp.tumorotek.model.coeur.annotation.TableAnnotation;
 
 /**
  *
- * Embedded Id pour la table TABLE_ANNOTATION_TEMPLATE.
- * Classe créée le 30/07/2010.
+ * Embedded Id pour la table TABLE_ANNOTATION_TEMPLATE. Classe créée le
+ * 30/07/2010.
  *
  * @author Pierre VENTADOUR.
  * @see http://boris.kirzner.info/blog/archives/2008/07/19/
- * hibernate-annotations-the-many-to-many-association-with-composite-key/
+ *      hibernate-annotations-the-many-to-many-association-with-composite-key/
  * @version 2.0
  *
  */
 @Embeddable
-public class TableAnnotationTemplatePK implements Serializable
-{
+public class TableAnnotationTemplatePK implements Serializable {
 
-   private static final long serialVersionUID = -2094357295011964584L;
+	private static final long serialVersionUID = -2094357295011964584L;
 
-   private Template template;
-   private TableAnnotation tableAnnotation;
+	private Template template;
+	private TableAnnotation tableAnnotation;
 
-   public TableAnnotationTemplatePK(){
+	public TableAnnotationTemplatePK() {
 
-   }
+	}
 
-   public TableAnnotationTemplatePK(final Template temp, final TableAnnotation table){
-      this.template = temp;
-      this.tableAnnotation = table;
-   }
+	public TableAnnotationTemplatePK(final Template temp, final TableAnnotation table) {
+		this.template = temp;
+		this.tableAnnotation = table;
+	}
 
-   @ManyToOne(fetch = FetchType.LAZY,targetEntity = Template.class)
-   public Template getTemplate(){
-      return template;
-   }
+	@ManyToOne(fetch = FetchType.LAZY, targetEntity = Template.class)
+	public Template getTemplate() {
+		return template;
+	}
 
-   public void setTemplate(final Template t){
-      this.template = t;
-   }
+	public void setTemplate(final Template t) {
+		this.template = t;
+	}
 
-   @ManyToOne(fetch = FetchType.LAZY,targetEntity = TableAnnotation.class)
-   public TableAnnotation getTableAnnotation(){
-      return tableAnnotation;
-   }
+	@ManyToOne(fetch = FetchType.LAZY, targetEntity = TableAnnotation.class)
+	public TableAnnotation getTableAnnotation() {
+		return tableAnnotation;
+	}
 
-   public void setTableAnnotation(final TableAnnotation t){
-      this.tableAnnotation = t;
-   }
+	public void setTableAnnotation(final TableAnnotation t) {
+		this.tableAnnotation = t;
+	}
 
-   /**
-    * 2 PKs sont considérés comme égales si elles sont composees 
-    * des mêmes clés.
-    * @param obj est la PK à tester.
-    * @return true si les PK sont egales.
-    */
-   @Override
-   public boolean equals(final Object obj){
+	/**
+	 * 2 PKs sont considérés comme égales si elles sont composees des mêmes clés.
+	 * 
+	 * @param obj est la PK à tester.
+	 * @return true si les PK sont egales.
+	 */
+	@Override
+	public boolean equals(final Object obj) {
 
-      if(this == obj){
-         return true;
-      }
-      if((obj == null) || obj.getClass() != this.getClass()){
-         return false;
-      }
-      final TableAnnotationTemplatePK test = (TableAnnotationTemplatePK) obj;
-      return ((this.template == test.template || (this.template != null && this.template.equals(test.template)))
-         && (this.tableAnnotation == test.tableAnnotation
-            || (this.tableAnnotation != null && this.tableAnnotation.equals(test.tableAnnotation))));
-   }
+		if (this == obj) {
+			return true;
+		}
+		if ((obj == null) || !(obj instanceof TableAnnotationTemplatePK)) {
+			return false;
+		}
+		final TableAnnotationTemplatePK test = (TableAnnotationTemplatePK) obj;
+		return Objects.equals(template, test.getTemplate())
+				&& Objects.equals(tableAnnotation, test.getTableAnnotation());
+	}
 
-   /**
-    * Le hashcode est calculé sur les clés.
-    * @return la valeur du hashcode.
-    */
-   @Override
-   public int hashCode(){
-      int hash = 7;
-      int hashTemplate = 0;
-      int hashTable = 0;
+	/**
+	 * Le hashcode est calculé sur les clés.
+	 * 
+	 * @return la valeur du hashcode.
+	 */
+	@Override
+	public int hashCode() {
+		int hash = 7;
+		int hashTemplate = 0;
+		int hashTable = 0;
 
-      if(this.template != null){
-         hashTemplate = this.template.hashCode();
-      }
-      if(this.tableAnnotation != null){
-         hashTable = this.tableAnnotation.hashCode();
-      }
+		if (this.template != null) {
+			hashTemplate = this.template.hashCode();
+		}
+		if (this.tableAnnotation != null) {
+			hashTable = this.tableAnnotation.hashCode();
+		}
 
-      hash = 7 * hash + hashTemplate;
-      hash = 7 * hash + hashTable;
+		hash = 7 * hash + hashTemplate;
+		hash = 7 * hash + hashTable;
 
-      return hash;
-   }
+		return hash;
+	}
 
-   /**
-    * Méthode surchargeant le toString() de l'objet.
-    */
-   @Override
-   public String toString(){
-      if(this.template != null && this.tableAnnotation != null){
-         return "{" + template.toString() + " (Template), " + tableAnnotation.toString() + " (TableAnnotation)}";
-      }else{
-         return "{Empty TableAnnotationTemplatePK}";
-      }
-   }
+	/**
+	 * Méthode surchargeant le toString() de l'objet.
+	 */
+	@Override
+	public String toString() {
+		if (this.template != null && this.tableAnnotation != null) {
+			return "{" + template.toString() + " (Template), " + tableAnnotation.toString() + " (TableAnnotation)}";
+		} else {
+			return "{Empty TableAnnotationTemplatePK}";
+		}
+	}
 
 }

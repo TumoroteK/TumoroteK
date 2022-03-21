@@ -37,6 +37,7 @@ package fr.aphp.tumorotek.model.coeur.prelevement;
 
 import java.io.Serializable;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 import javax.persistence.AttributeOverride;
@@ -53,8 +54,7 @@ import fr.aphp.tumorotek.model.AbstractPfDependantThesaurusObject;
 
 /**
  *
- * Objet persistant mappant la table PRELEVEMENT_TYPE.
- * Classe créée le 14/09/09.
+ * Objet persistant mappant la table PRELEVEMENT_TYPE. Classe créée le 14/09/09.
  *
  * @author Maxime Gousseau
  * @version 2.3
@@ -62,8 +62,8 @@ import fr.aphp.tumorotek.model.AbstractPfDependantThesaurusObject;
  */
 @Entity
 @Table(name = "PRELEVEMENT_TYPE")
-@AttributeOverrides({@AttributeOverride(name = "id", column = @Column(name = "PRELEVEMENT_TYPE_ID")),
-   @AttributeOverride(name = "nom", column = @Column(name = "TYPE", nullable = false, length = 200))})
+@AttributeOverrides({ @AttributeOverride(name = "id", column = @Column(name = "PRELEVEMENT_TYPE_ID")),
+		@AttributeOverride(name = "nom", column = @Column(name = "TYPE", nullable = false, length = 200)) })
 @GenericGenerator(name = "autoincrement", strategy = "increment")
 //@NamedQueries(
 //   value = {@NamedQuery(name = "PrelevementType.findByIncaCat", query = "SELECT p FROM PrelevementType p WHERE p.incaCat = ?1"),
@@ -74,131 +74,131 @@ import fr.aphp.tumorotek.model.AbstractPfDependantThesaurusObject;
 //         query = "SELECT p FROM PrelevementType p " + "ORDER BY p.nom"),
 //      @NamedQuery(name = "PrelevementType.findByPfOrder",
 //      query = "SELECT p FROM PrelevementType p WHERE p.plateforme = ?1 ORDER BY p.nom")})
-public class PrelevementType extends AbstractPfDependantThesaurusObject implements Serializable
-{
+public class PrelevementType extends AbstractPfDependantThesaurusObject implements Serializable {
 
-   private static final long serialVersionUID = -2564474300703034012L;
+	private static final long serialVersionUID = -2564474300703034012L;
 
-   private String incaCat;
-   private Set<Prelevement> prelevements = new HashSet<>();
+	private String incaCat;
+	private Set<Prelevement> prelevements = new HashSet<>();
 
-   /** Constructeur par défaut. */
-   public PrelevementType(){}
+	/** Constructeur par défaut. */
+	public PrelevementType() {
+	}
 
-   /**
-    * @deprecated Utiliser {@link #getId()}
-    * @return
-    */
-   @Deprecated
-   @Transient
-   public Integer getPrelevementTypeId(){
-      return this.getId();
-   }
+	/**
+	 * @deprecated Utiliser {@link #getId()}
+	 * @return
+	 */
+	@Deprecated
+	@Transient
+	public Integer getPrelevementTypeId() {
+		return this.getId();
+	}
 
-   /**
-    * @deprecated Utiliser {@link #setId(Integer)}
-    * @return
-    */
-   @Deprecated
-   public void setPrelevementTypeId(final Integer id){
-      this.setId(id);
-   }
+	/**
+	 * @deprecated Utiliser {@link #setId(Integer)}
+	 * @return
+	 */
+	@Deprecated
+	public void setPrelevementTypeId(final Integer id) {
+		this.setId(id);
+	}
 
-   @Column(name = "INCA_CAT", nullable = true, length = 2)
-   public String getIncaCat(){
-      return this.incaCat;
-   }
+	@Column(name = "INCA_CAT", nullable = true, length = 2)
+	public String getIncaCat() {
+		return this.incaCat;
+	}
 
-   public void setIncaCat(final String inca){
-      this.incaCat = inca;
-   }
+	public void setIncaCat(final String inca) {
+		this.incaCat = inca;
+	}
 
-   /**
-    * @deprecated Utiliser {@link #getNom()}
-    * @return
-    */
-   @Deprecated
-   @Transient
-   public String getType(){
-      return this.getNom();
-   }
+	/**
+	 * @deprecated Utiliser {@link #getNom()}
+	 * @return
+	 */
+	@Deprecated
+	@Transient
+	public String getType() {
+		return this.getNom();
+	}
 
-   /**
-    * @deprecated Utiliser {@link #setNom(String)}
-    * @param t
-    */
-   @Deprecated
-   public void setType(final String t){
-      this.setNom(t);
-   }
+	/**
+	 * @deprecated Utiliser {@link #setNom(String)}
+	 * @param t
+	 */
+	@Deprecated
+	public void setType(final String t) {
+		this.setNom(t);
+	}
 
-   @OneToMany(mappedBy = "prelevementType")
-   public Set<Prelevement> getPrelevements(){
-      return this.prelevements;
-   }
+	@OneToMany(mappedBy = "prelevementType")
+	public Set<Prelevement> getPrelevements() {
+		return this.prelevements;
+	}
 
-   public void setPrelevements(final Set<Prelevement> prelevs){
-      this.prelevements = prelevs;
-   }
+	public void setPrelevements(final Set<Prelevement> prelevs) {
+		this.prelevements = prelevs;
+	}
 
-   /**
-    * 2 types prelevements sont considérés comme égaux s'ils ont les mêmes
-    * types et catégories inca.
-    * @param obj est l'objet à tester.
-    * @return true si les objets sont égaux.
-    */
-   @Override
-   public boolean equals(final Object obj){
+	/**
+	 * 2 types prelevements sont considérés comme égaux s'ils ont les mêmes types et
+	 * catégories inca.
+	 * 
+	 * @param obj est l'objet à tester.
+	 * @return true si les objets sont égaux.
+	 */
+	@Override
+	public boolean equals(final Object obj) {
 
-      if(this == obj){
-         return true;
-      }
-      if((obj == null) || obj.getClass() != this.getClass()){
-         return false;
-      }
-      final PrelevementType test = (PrelevementType) obj;
-      return ((this.getNom() == test.getNom() || (this.getNom() != null && this.getNom().equals(test.getNom())))
-         && (this.incaCat == test.incaCat || (this.incaCat != null && this.incaCat.equals(test.incaCat)))
-         && (this.getPlateforme() == test.getPlateforme()
-            || (this.getPlateforme() != null && this.getPlateforme().equals(test.getPlateforme()))));
-   }
+		if (this == obj) {
+			return true;
+		}
+		if ((obj == null) || !(obj instanceof PrelevementType)) {
+			return false;
+		}
+		final PrelevementType test = (PrelevementType) obj;
+		return Objects.equals(getNom(), test.getNom()) && Objects.equals(incaCat, test.getIncaCat())
+				&& Objects.equals(getPlateforme(), test.getPlateforme());
+	}
 
-   /**
-    * Le hashcode est calculé sur les attributs type et inca.
-    * @return la valeur du hashcode.
-    */
-   @Override
-   public int hashCode(){
+	/**
+	 * Le hashcode est calculé sur les attributs type et inca.
+	 * 
+	 * @return la valeur du hashcode.
+	 */
+	@Override
+	public int hashCode() {
 
-      int hash = 7;
-      int hashType = 0;
-      int hashInca = 0;
-      int hashPF = 0;
+		int hash = 7;
+		int hashType = 0;
+		int hashInca = 0;
+		int hashPF = 0;
 
-      if(this.getNom() != null){
-         hashType = this.getNom().hashCode();
-      }
-      if(this.incaCat != null){
-         hashInca = this.incaCat.hashCode();
-      }
-      if(this.getPlateforme() != null){
-         hashPF = this.getPlateforme().hashCode();
-      }
+		if (this.getNom() != null) {
+			hashType = this.getNom().hashCode();
+		}
+		if (this.incaCat != null) {
+			hashInca = this.incaCat.hashCode();
+		}
+		if (this.getPlateforme() != null) {
+			hashPF = this.getPlateforme().hashCode();
+		}
 
-      hash = 31 * hash + hashType;
-      hash = 31 * hash + hashInca;
-      hash = 31 * hash + hashPF;
+		hash = 31 * hash + hashType;
+		hash = 31 * hash + hashInca;
+		hash = 31 * hash + hashPF;
 
-      return hash;
-   }
+		return hash;
+	}
 
-   @Override
-   public String toString(){
-      if(this.getNom() != null && this.incaCat != null){
-         return "{" + this.getNom() + ", " + this.incaCat + "}";
-      }else{
-         return "{Empty PrelevementType}";
-      }
-   }
+	@Override
+	public String toString() {
+		if (this.getNom() != null && this.incaCat != null) {
+			return "{" + this.getNom() + ", " + this.incaCat + "}";
+		} else {
+			return "{Empty PrelevementType}";
+		}
+	}
 
 }

@@ -36,6 +36,8 @@
 package fr.aphp.tumorotek.model.code;
 
 import java.io.Serializable;
+import java.util.Objects;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -167,18 +169,19 @@ public class CodeDossier implements Serializable {
 
 	@Override
 	public boolean equals(final Object obj) {
-
 		if (this == obj) {
 			return true;
 		}
-		if ((obj == null) || obj.getClass() != this.getClass()) {
+		// instanceOf est utilise plutot que != a cause des proxys
+		// JPA qui sont crées par lors du fetch par
+		// la relation manyToAny
+		if ((obj == null) || !(obj instanceof CodeDossier)) {
 			return false;
 		}
 		final CodeDossier test = (CodeDossier) obj;
-		return ((this.nom == test.nom || (this.nom != null && this.nom.equals(test.nom)))
-				&& (this.utilisateur == test.utilisateur
-						|| (this.utilisateur != null && this.utilisateur.equals(test.utilisateur)))
-				&& (this.banque == test.banque || (this.banque != null && this.banque.equals(test.banque))));
+		return Objects.equals(nom, test.getNom())
+			&& Objects.equals(utilisateur, test.getUtilisateur())
+			&& Objects.equals(banque, test.getBanque());
 	}
 
 	@Override

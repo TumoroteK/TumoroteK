@@ -36,6 +36,7 @@
 package fr.aphp.tumorotek.model.coeur.annotation;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -259,17 +260,11 @@ public class ChampCalcule implements Serializable {
 		if (this == obj) {
 			return true;
 		}
-		if ((obj == null) || obj.getClass() != this.getClass()) {
+		if ((obj == null) || !(obj instanceof ChampCalcule)) {
 			return false;
-		}
-
+		}				
 		ChampCalcule test = (ChampCalcule) obj;
-		if (this.champCalculeId != null && this.champCalculeId.equals(test.champCalculeId)) {
-			return true;
-		}
-
-		return ((this.champAnnotation == test.champAnnotation
-				|| (this.champAnnotation != null && this.champAnnotation.equals(test.champAnnotation))));
+		return Objects.equals(getChampAnnotation(), test.getChampAnnotation());
 	}
 
 	/**
@@ -281,11 +276,11 @@ public class ChampCalcule implements Serializable {
 
 		int hash = 7;
 		int hasChampId = 0;
-		int hasChamp1 = 0;
-		int hasChamp2 = 0;
-		int hasOperateur = 0;
-		int hasValeur = 0;
-		int hasDataType = 0;
+//		int hasChamp1 = 0;
+//		int hasChamp2 = 0;
+//		int hasOperateur = 0;
+//		int hasValeur = 0;
+//		int hasDataType = 0;
 
 		if (this.champCalculeId != null) {
 			return 31 * hash + this.champCalculeId.hashCode();
@@ -295,32 +290,32 @@ public class ChampCalcule implements Serializable {
 			hasChampId = this.champAnnotation.hashCode();
 		}
 
-		if (this.champ1 != null) {
-			hasChamp1 = this.champ1.hashCode();
-		}
-
-		if (this.champ2 != null) {
-			hasChamp2 = this.champ2.hashCode();
-		}
-
-		if (this.operateur != null) {
-			hasOperateur = this.operateur.hashCode();
-		}
-
-		if (this.valeur != null) {
-			hasValeur = this.valeur.hashCode();
-		}
-
-		if (this.dataType != null) {
-			hasDataType = this.dataType.hashCode();
-		}
-
+//		if (this.champ1 != null) {
+//			hasChamp1 = this.champ1.hashCode();
+//		}
+//
+//		if (this.champ2 != null) {
+//			hasChamp2 = this.champ2.hashCode();
+//		}
+//
+//		if (this.operateur != null) {
+//			hasOperateur = this.operateur.hashCode();
+//		}
+//
+//		if (this.valeur != null) {
+//			hasValeur = this.valeur.hashCode();
+//		}
+//
+//		if (this.dataType != null) {
+//			hasDataType = this.dataType.hashCode();
+//		}
+//
 		hash = 31 * hash + hasChampId;
-		hash = 31 * hash + hasChamp1;
-		hash = 31 * hash + hasChamp2;
-		hash = 31 * hash + hasOperateur;
-		hash = 31 * hash + hasValeur;
-		hash = 31 * hash + hasDataType;
+//		hash = 31 * hash + hasChamp1;
+//		hash = 31 * hash + hasChamp2;
+//		hash = 31 * hash + hasOperateur;
+//		hash = 31 * hash + hasValeur;
+//		hash = 31 * hash + hasDataType;
 
 		return hash;
 	}

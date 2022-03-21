@@ -37,6 +37,7 @@ package fr.aphp.tumorotek.model.code;
 
 import java.io.Serializable;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -155,19 +156,17 @@ public class TableCodage implements Serializable {
 	 */
 	@Override
 	public boolean equals(final Object obj) {
-
 		if (this == obj) {
 			return true;
 		}
-		if ((obj == null) || obj.getClass() != this.getClass()) {
+		// instanceOf est utilise plutot que != a cause des proxys
+		// JPA qui sont crées par lors du fetch par
+		// la relation manyToAny
+		if ((obj == null) || !(obj instanceof TableCodage)) {
 			return false;
 		}
 		final TableCodage test = (TableCodage) obj;
-		if (this.nom != null) {
-			return this.nom.equals(test.nom);
-		} else { // impossible
-			return false;
-		}
+		return Objects.equals(nom, test.getNom());
 	}
 
 	/**

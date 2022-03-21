@@ -36,6 +36,7 @@
 package fr.aphp.tumorotek.model.impression;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 import javax.persistence.AssociationOverride;
 import javax.persistence.AssociationOverrides;
@@ -52,128 +53,126 @@ import fr.aphp.tumorotek.model.coeur.annotation.TableAnnotation;
 
 /**
  *
- * Objet persistant mappant la table TABLE_ANNOTATION_TEMPLATE.
- * Classe créée le 30/07/2010.
+ * Objet persistant mappant la table TABLE_ANNOTATION_TEMPLATE. Classe créée le
+ * 30/07/2010.
  *
  * @author Pierre Ventadour
  * @see http://boris.kirzner.info/blog/archives/2008/07/19/
- * hibernate-annotations-the-many-to-many-association-with-composite-key/
+ *      hibernate-annotations-the-many-to-many-association-with-composite-key/
  * @version 2.3
  *
  */
 @Entity
 @Table(name = "TABLE_ANNOTATION_TEMPLATE")
 @AssociationOverrides({
-   @AssociationOverride(name = "pk.template",
-      joinColumns = @JoinColumn(name = "TEMPLATE_ID", referencedColumnName = "TEMPLATE_ID")),
-   @AssociationOverride(name = "pk.tableAnnotation",
-      joinColumns = @JoinColumn(name = "TABLE_ANNOTATION_ID", referencedColumnName = "TABLE_ANNOTATION_ID"))})
+		@AssociationOverride(name = "pk.template", joinColumns = @JoinColumn(name = "TEMPLATE_ID", referencedColumnName = "TEMPLATE_ID")),
+		@AssociationOverride(name = "pk.tableAnnotation", joinColumns = @JoinColumn(name = "TABLE_ANNOTATION_ID", referencedColumnName = "TABLE_ANNOTATION_ID")) })
 //@NamedQueries(value = {
 //   @NamedQuery(name = "TableAnnotationTemplate." + "findByTemplate",
 //      query = "SELECT t FROM TableAnnotationTemplate t " + "WHERE t.pk.template = ?1 " + "ORDER BY t.ordre"),
 //   @NamedQuery(name = "TableAnnotationTemplate." + "findByExcludedPK",
 //      query = "SELECT t FROM TableAnnotationTemplate t " + "WHERE t.pk != ?1")})
-public class TableAnnotationTemplate implements Serializable
-{
+public class TableAnnotationTemplate implements Serializable {
 
-   private static final long serialVersionUID = 7015726441690587506L;
+	private static final long serialVersionUID = 7015726441690587506L;
 
-   private Integer ordre;
-   private TableAnnotationTemplatePK pk = new TableAnnotationTemplatePK();
+	private Integer ordre;
+	private TableAnnotationTemplatePK pk = new TableAnnotationTemplatePK();
 
-   public TableAnnotationTemplate(){
+	public TableAnnotationTemplate() {
 
-   }
+	}
 
-   @Column(name = "ORDRE", nullable = false)
-   public Integer getOrdre(){
-      return ordre;
-   }
+	@Column(name = "ORDRE", nullable = false)
+	public Integer getOrdre() {
+		return ordre;
+	}
 
-   public void setOrdre(final Integer o){
-      this.ordre = o;
-   }
+	public void setOrdre(final Integer o) {
+		this.ordre = o;
+	}
 
-   @EmbeddedId
-   @AttributeOverrides({@AttributeOverride(name = "template", column = @Column(name = "TEMPLATE_ID")),
-      @AttributeOverride(name = "tableAnnotation", column = @Column(name = "TABLE_ANNOTATION_ID"))})
-   public TableAnnotationTemplatePK getPk(){
-      return pk;
-   }
+	@EmbeddedId
+	@AttributeOverrides({ @AttributeOverride(name = "template", column = @Column(name = "TEMPLATE_ID")),
+			@AttributeOverride(name = "tableAnnotation", column = @Column(name = "TABLE_ANNOTATION_ID")) })
+	public TableAnnotationTemplatePK getPk() {
+		return pk;
+	}
 
-   public void setPk(final TableAnnotationTemplatePK p){
-      this.pk = p;
-   }
+	public void setPk(final TableAnnotationTemplatePK p) {
+		this.pk = p;
+	}
 
-   @Transient
-   public Template getTemplate(){
-      return pk.getTemplate();
-   }
+	@Transient
+	public Template getTemplate() {
+		return pk.getTemplate();
+	}
 
-   public void setTemplate(final Template t){
-      this.pk.setTemplate(t);
-   }
+	public void setTemplate(final Template t) {
+		this.pk.setTemplate(t);
+	}
 
-   @Transient
-   public TableAnnotation getTableAnnotation(){
-      return pk.getTableAnnotation();
-   }
+	@Transient
+	public TableAnnotation getTableAnnotation() {
+		return pk.getTableAnnotation();
+	}
 
-   public void setTableAnnotation(final TableAnnotation table){
-      pk.setTableAnnotation(table);
-   }
+	public void setTableAnnotation(final TableAnnotation table) {
+		pk.setTableAnnotation(table);
+	}
 
-   @Override
-   public boolean equals(final Object obj){
+	@Override
+	public boolean equals(final Object obj) {
 
-      if(this == obj){
-         return true;
-      }
-      if((obj == null) || obj.getClass() != this.getClass()){
-         return false;
-      }
-      final TableAnnotationTemplate test = (TableAnnotationTemplate) obj;
-      return ((this.pk == test.pk || (this.pk != null && this.pk.equals(test.pk))));
-   }
+		if (this == obj) {
+			return true;
+		}
+		if ((obj == null) || !(obj instanceof TableAnnotationTemplate)) {
+			return false;
+		}
+		final TableAnnotationTemplate test = (TableAnnotationTemplate) obj;
+		return Objects.equals(pk, test.getPk());
+	}
 
-   @Override
-   public int hashCode(){
-      int hash = 7;
-      int hashPk = 0;
+	@Override
+	public int hashCode() {
+		int hash = 7;
+		int hashPk = 0;
 
-      if(this.pk != null){
-         hashPk = this.pk.hashCode();
-      }
+		if (this.pk != null) {
+			hashPk = this.pk.hashCode();
+		}
 
-      hash = 7 * hash + hashPk;
+		hash = 7 * hash + hashPk;
 
-      return hash;
-   }
+		return hash;
+	}
 
-   /**
-    * Méthode surchargeant le toString() de l'objet.
-    */
-   @Override
-   public String toString(){
-      if(this.pk != null){
-         return "{" + this.pk.toString() + "}";
-      }else{
-         return "{Empty TableAnnotationTemplate}";
-      }
-   }
+	/**
+	 * Méthode surchargeant le toString() de l'objet.
+	 */
+	@Override
+	public String toString() {
+		if (this.pk != null) {
+			return "{" + this.pk.toString() + "}";
+		} else {
+			return "{Empty TableAnnotationTemplate}";
+		}
+	}
 
-   /**
-    * Cree un clone de l'objet.
-    * @return clone CederObjet.
-    */
-   @Override
-   public TableAnnotationTemplate clone(){
-      final TableAnnotationTemplate clone = new TableAnnotationTemplate();
+	/**
+	 * Cree un clone de l'objet.
+	 * 
+	 * @return clone CederObjet.
+	 */
+	@Override
+	public TableAnnotationTemplate clone() {
+		final TableAnnotationTemplate clone = new TableAnnotationTemplate();
 
-      clone.setPk(this.getPk());
-      clone.setOrdre(this.ordre);
+		clone.setPk(this.getPk());
+		clone.setOrdre(this.ordre);
 
-      return clone;
-   }
+		return clone;
+	}
 
 }

@@ -37,6 +37,7 @@ package fr.aphp.tumorotek.model.code;
 
 import java.io.Serializable;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -145,14 +146,15 @@ public class AdicapGroupe implements Serializable {
 		if (this == obj) {
 			return true;
 		}
-		if ((obj == null) || obj.getClass() != this.getClass()) {
+		// instanceOf est utilise plutot que != a cause des proxys
+		// JPA qui sont crées par lors du fetch par
+		// la relation manyToAny
+		if ((obj == null) || !(obj instanceof AdicapGroupe)) {
 			return false;
 		}
 		final AdicapGroupe test = (AdicapGroupe) obj;
-		if (this.adicapGroupeId != null) {
-			return this.adicapGroupeId.equals(test.adicapGroupeId);
-		}
-		return false;
+		return Objects.equals(adicapGroupeId, test.getAdicapGroupeId());
+
 	}
 
 	/**

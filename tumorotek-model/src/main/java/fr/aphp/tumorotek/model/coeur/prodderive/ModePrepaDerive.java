@@ -53,8 +53,8 @@ import fr.aphp.tumorotek.model.AbstractPfDependantThesaurusObject;
 
 /**
  *
- * Objet persistant mappant la table MODE_PREPA_DERIVE.
- * Classe créée le 05/01/2011.
+ * Objet persistant mappant la table MODE_PREPA_DERIVE. Classe créée le
+ * 05/01/2011.
  *
  * @author Pierre Ventadour
  * @version 2.3
@@ -62,7 +62,7 @@ import fr.aphp.tumorotek.model.AbstractPfDependantThesaurusObject;
  */
 @Entity
 @Table(name = "MODE_PREPA_DERIVE")
-@AttributeOverrides({@AttributeOverride(name = "id", column = @Column(name = "MODE_PREPA_DERIVE_ID"))})
+@AttributeOverrides({ @AttributeOverride(name = "id", column = @Column(name = "MODE_PREPA_DERIVE_ID")) })
 @GenericGenerator(name = "autoincrement", strategy = "increment")
 //@NamedQueries(
 //   value = {@NamedQuery(name = "ModePrepaDerive.findByNom", query = "SELECT m FROM ModePrepaDerive m WHERE m.nom like ?1"),
@@ -71,65 +71,64 @@ import fr.aphp.tumorotek.model.AbstractPfDependantThesaurusObject;
 //         query = "SELECT m FROM ModePrepaDerive m " + "WHERE m.plateforme = ?1 ORDER BY m.nom"),
 //   @NamedQuery(name = "ModePrepaDerive.findByOrder",
 //      query = "SELECT m FROM ModePrepaDerive m ORDER BY m.nom")})
-public class ModePrepaDerive extends AbstractPfDependantThesaurusObject implements Serializable
-{
-   private static final long serialVersionUID = 5348645345465465L;
+public class ModePrepaDerive extends AbstractPfDependantThesaurusObject implements Serializable {
+	private static final long serialVersionUID = 5348645345465465L;
 
-   private String nomEn;
-   private Set<ProdDerive> prodDerives;
+	private String nomEn;
+	private Set<ProdDerive> prodDerives;
 
-   /** Constructeur par défaut. */
-   public ModePrepaDerive(){
-      prodDerives = new HashSet<>();
-   }
+	/** Constructeur par défaut. */
+	public ModePrepaDerive() {
+		prodDerives = new HashSet<>();
+	}
 
-   /**
-    * @deprecated Utiliser {@link #getId()}
-    * @return
-    */
-   @Deprecated
-   @Transient
-   public Integer getModePrepaDeriveId(){
-      return this.getId();
-   }
+	/**
+	 * @deprecated Utiliser {@link #getId()}
+	 * @return
+	 */
+	@Deprecated
+	@Transient
+	public Integer getModePrepaDeriveId() {
+		return this.getId();
+	}
 
-   /**
-    * @deprecated Utiliser {@link #setId(Integer)}
-    * @param mId
-    */
-   @Deprecated
-   public void setModePrepaDeriveId(final Integer mId){
-      this.setId(mId);
-   }
+	/**
+	 * @deprecated Utiliser {@link #setId(Integer)}
+	 * @param mId
+	 */
+	@Deprecated
+	public void setModePrepaDeriveId(final Integer mId) {
+		this.setId(mId);
+	}
 
-   @Column(name = "NOM_EN", nullable = true, length = 25)
-   public String getNomEn(){
-      return nomEn;
-   }
+	@Column(name = "NOM_EN", nullable = true, length = 25)
+	public String getNomEn() {
+		return nomEn;
+	}
 
-   public void setNomEn(final String e){
-      this.nomEn = e;
-   }
+	public void setNomEn(final String e) {
+		this.nomEn = e;
+	}
 
-   @OneToMany(mappedBy = "modePrepaDerive")
-   public Set<ProdDerive> getProdDerives(){
-      return prodDerives;
-   }
+	@OneToMany(mappedBy = "modePrepaDerive")
+	public Set<ProdDerive> getProdDerives() {
+		return prodDerives;
+	}
 
-   public void setProdDerives(final Set<ProdDerive> p){
-      this.prodDerives = p;
-   }
+	public void setProdDerives(final Set<ProdDerive> p) {
+		this.prodDerives = p;
+	}
 
-   /**
-    * Méthode surchargeant le toString() de l'objet.
-    */
-   @Override
-   public String toString(){
-      if(this.getNom() != null){
-         return "{" + this.getNom() + "}";
-      }else{
-         return "{Empty ModePrepaDerive}";
-      }
-   }
+	/**
+	 * Méthode surchargeant le toString() de l'objet.
+	 */
+	@Override
+	public String toString() {
+		if (this.getNom() != null) {
+			return "{" + this.getNom() + "}";
+		} else {
+			return "{Empty ModePrepaDerive}";
+		}
+	}
 
 }

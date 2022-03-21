@@ -37,6 +37,7 @@ package fr.aphp.tumorotek.model.coeur.annotation;
 
 import java.io.Serializable;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -172,20 +173,13 @@ public class Item implements Serializable {
 		if (this == obj) {
 			return true;
 		}
-		if ((obj == null) || obj.getClass() != this.getClass()) {
+		if ((obj == null) || !(obj instanceof Item)) {
 			return false;
-		}
-
+		}		
 		final Item test = (Item) obj;
-		if (this.itemId != null && this.itemId.equals(test.itemId)) {
-			return true;
-		}
-
-		return ((this.label == test.label || (this.label != null && this.label.equals(test.label)))
-				&& (this.champAnnotation == test.champAnnotation
-						|| (this.champAnnotation != null && this.champAnnotation.equals(test.champAnnotation)))
-				&& (this.plateforme == test.plateforme
-						|| (this.plateforme != null && this.plateforme.equals(test.plateforme))));
+		return Objects.equals(label, test.getLabel())
+			&& Objects.equals(champAnnotation, test.getChampAnnotation())
+			&& Objects.equals(plateforme, test.getPlateforme());
 	}
 
 	/**

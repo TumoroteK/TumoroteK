@@ -36,6 +36,7 @@
 package fr.aphp.tumorotek.model.contexte;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -64,8 +65,7 @@ import fr.aphp.tumorotek.model.stockage.ConteneurPlateforme;
 import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
 
 /**
- * Objet persistant mappant la table PLATEFORME.
- * Classe créée le 09/09/09.
+ * Objet persistant mappant la table PLATEFORME. Classe créée le 09/09/09.
  *
  * @author Pierre Ventadour
  * @version 2.3
@@ -82,239 +82,242 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
 //      query = "SELECT p FROM Plateforme p LEFT JOIN FETCH " + "p.collaborateur WHERE p.plateformeId = ?1"),
 //   @NamedQuery(name = "Plateforme.findByOrder", query = "SELECT p FROM Plateforme p ORDER BY p.nom"),
 //   @NamedQuery(name = "Plateforme.findByExcludedId", query = "SELECT p FROM Plateforme p " + "WHERE p.plateformeId != ?1")})
-public class Plateforme implements java.io.Serializable, TKFantomableObject, TKdataObject, Comparable<Plateforme>
-{
+public class Plateforme implements java.io.Serializable, TKFantomableObject, TKdataObject, Comparable<Plateforme> {
 
-   private static final long serialVersionUID = 54873512464151L;
+	private static final long serialVersionUID = 54873512464151L;
 
-   private Integer plateformeId;
-   private String nom;
-   private String alias;
+	private Integer plateformeId;
+	private String nom;
+	private String alias;
 
-   private Collaborateur collaborateur;
-   private Set<Banque> banques = new HashSet<>();
-   private Set<ConteneurPlateforme> conteneurPlateformes = new HashSet<>();
-   private Set<Utilisateur> utilisateurs = new HashSet<>();
-   private Set<Imprimante> imprimantes = new HashSet<>();
-   private Set<Modele> modeles = new HashSet<>();
-   private Set<SModele> sModeles = new HashSet<>();
-   private Set<Contrat> contrats = new HashSet<>();
-   private Set<NonConformite> nonConformites = new HashSet<>();
+	private Collaborateur collaborateur;
+	private Set<Banque> banques = new HashSet<>();
+	private Set<ConteneurPlateforme> conteneurPlateformes = new HashSet<>();
+	private Set<Utilisateur> utilisateurs = new HashSet<>();
+	private Set<Imprimante> imprimantes = new HashSet<>();
+	private Set<Modele> modeles = new HashSet<>();
+	private Set<SModele> sModeles = new HashSet<>();
+	private Set<Contrat> contrats = new HashSet<>();
+	private Set<NonConformite> nonConformites = new HashSet<>();
 
-   /**
-    * Constructeur par défaut.
-    */
-   public Plateforme(){}
+	/**
+	 * Constructeur par défaut.
+	 */
+	public Plateforme() {
+	}
 
-   /**
-    * Constructeur avec paramètres.
-    * @param id est l'identifiant de l'objet dans la base de données.
-    * @param n est le nom de la plateforme.
-    * @param a est l'alias.
-    */
-   public Plateforme(final Integer id, final String n, final String a){
-      this.plateformeId = id;
-      this.nom = n;
-      this.alias = a;
-   }
+	/**
+	 * Constructeur avec paramètres.
+	 * 
+	 * @param id est l'identifiant de l'objet dans la base de données.
+	 * @param n  est le nom de la plateforme.
+	 * @param a  est l'alias.
+	 */
+	public Plateforme(final Integer id, final String n, final String a) {
+		this.plateformeId = id;
+		this.nom = n;
+		this.alias = a;
+	}
 
-   @Id
-   @Column(name = "PLATEFORME_ID", unique = true, nullable = false)
-   @GeneratedValue(generator = "autoincrement")
-   @GenericGenerator(name = "autoincrement", strategy = "increment")
-   public Integer getPlateformeId(){
-      return plateformeId;
-   }
+	@Id
+	@Column(name = "PLATEFORME_ID", unique = true, nullable = false)
+	@GeneratedValue(generator = "autoincrement")
+	@GenericGenerator(name = "autoincrement", strategy = "increment")
+	public Integer getPlateformeId() {
+		return plateformeId;
+	}
 
-   public void setPlateformeId(final Integer pId){
-      this.plateformeId = pId;
-   }
+	public void setPlateformeId(final Integer pId) {
+		this.plateformeId = pId;
+	}
 
-   @Column(name = "NOM", nullable = false, length = 50)
-   public String getNom(){
-      return nom;
-   }
+	@Column(name = "NOM", nullable = false, length = 50)
+	public String getNom() {
+		return nom;
+	}
 
-   public void setNom(final String n){
-      this.nom = n;
-   }
+	public void setNom(final String n) {
+		this.nom = n;
+	}
 
-   @Column(name = "ALIAS", nullable = true, length = 5)
-   public String getAlias(){
-      return alias;
-   }
+	@Column(name = "ALIAS", nullable = true, length = 5)
+	public String getAlias() {
+		return alias;
+	}
 
-   public void setAlias(final String a){
-      this.alias = a;
-   }
+	public void setAlias(final String a) {
+		this.alias = a;
+	}
 
-   @ManyToOne(fetch = FetchType.LAZY)
-   @JoinColumn(name = "COLLABORATEUR_ID", nullable = true)
-   public Collaborateur getCollaborateur(){
-      return collaborateur;
-   }
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "COLLABORATEUR_ID", nullable = true)
+	public Collaborateur getCollaborateur() {
+		return collaborateur;
+	}
 
-   public void setCollaborateur(final Collaborateur c){
-      this.collaborateur = c;
-   }
+	public void setCollaborateur(final Collaborateur c) {
+		this.collaborateur = c;
+	}
 
-   @OneToMany(mappedBy = "plateforme")
-   @OrderBy("nom")
-   public Set<Banque> getBanques(){
-      return banques;
-   }
+	@OneToMany(mappedBy = "plateforme")
+	@OrderBy("nom")
+	public Set<Banque> getBanques() {
+		return banques;
+	}
 
-   public void setBanques(final Set<Banque> newBanques){
-      this.banques = newBanques;
-   }
+	public void setBanques(final Set<Banque> newBanques) {
+		this.banques = newBanques;
+	}
 
-   @OneToMany(mappedBy = "pk.plateforme")
-   public Set<ConteneurPlateforme> getConteneurPlateformes(){
-      return conteneurPlateformes;
-   }
+	@OneToMany(mappedBy = "pk.plateforme")
+	public Set<ConteneurPlateforme> getConteneurPlateformes() {
+		return conteneurPlateformes;
+	}
 
-   public void setConteneurPlateformes(final Set<ConteneurPlateforme> conts){
-      this.conteneurPlateformes = conts;
-   }
+	public void setConteneurPlateformes(final Set<ConteneurPlateforme> conts) {
+		this.conteneurPlateformes = conts;
+	}
 
-   @ManyToMany(mappedBy = "plateformes", targetEntity = Utilisateur.class)
-   public Set<Utilisateur> getUtilisateurs(){
-      return utilisateurs;
-   }
+	@ManyToMany(mappedBy = "plateformes", targetEntity = Utilisateur.class)
+	public Set<Utilisateur> getUtilisateurs() {
+		return utilisateurs;
+	}
 
-   public void setUtilisateurs(final Set<Utilisateur> u){
-      this.utilisateurs = u;
-   }
+	public void setUtilisateurs(final Set<Utilisateur> u) {
+		this.utilisateurs = u;
+	}
 
-   @OneToMany(mappedBy = "plateforme")
-   public Set<Imprimante> getImprimantes(){
-      return imprimantes;
-   }
+	@OneToMany(mappedBy = "plateforme")
+	public Set<Imprimante> getImprimantes() {
+		return imprimantes;
+	}
 
-   public void setImprimantes(final Set<Imprimante> i){
-      this.imprimantes = i;
-   }
+	public void setImprimantes(final Set<Imprimante> i) {
+		this.imprimantes = i;
+	}
 
-   @OneToMany(mappedBy = "plateforme")
-   public Set<Modele> getModeles(){
-      return modeles;
-   }
+	@OneToMany(mappedBy = "plateforme")
+	public Set<Modele> getModeles() {
+		return modeles;
+	}
 
-   public void setModeles(final Set<Modele> m){
-      this.modeles = m;
-   }
+	public void setModeles(final Set<Modele> m) {
+		this.modeles = m;
+	}
 
-   @OneToMany(mappedBy = "plateforme")
-   public Set<SModele> getSModeles(){
-      return sModeles;
-   }
+	@OneToMany(mappedBy = "plateforme")
+	public Set<SModele> getSModeles() {
+		return sModeles;
+	}
 
-   public void setSModeles(final Set<SModele> ss){
-      this.sModeles = ss;
-   }
+	public void setSModeles(final Set<SModele> ss) {
+		this.sModeles = ss;
+	}
 
-   @OneToMany(mappedBy = "plateforme")
-   public Set<Contrat> getContrats(){
-      return contrats;
-   }
+	@OneToMany(mappedBy = "plateforme")
+	public Set<Contrat> getContrats() {
+		return contrats;
+	}
 
-   public void setContrats(final Set<Contrat> c){
-      this.contrats = c;
-   }
+	public void setContrats(final Set<Contrat> c) {
+		this.contrats = c;
+	}
 
-   @OneToMany(mappedBy = "plateforme")
-   public Set<NonConformite> getNonConformites(){
-      return nonConformites;
-   }
+	@OneToMany(mappedBy = "plateforme")
+	public Set<NonConformite> getNonConformites() {
+		return nonConformites;
+	}
 
-   public void setNonConformites(final Set<NonConformite> nonConformites){
-      this.nonConformites = nonConformites;
-   }
+	public void setNonConformites(final Set<NonConformite> nonConformites) {
+		this.nonConformites = nonConformites;
+	}
 
-   /**
-    * 2 plateformes sont considérées comme égales si elles ont le même nom.
-    * @param obj est la plateforme à tester.
-    * @return true si les plateformes sont égales.
-    */
-   @Override
-   public boolean equals(final Object obj){
+	/**
+	 * 2 plateformes sont considérées comme égales si elles ont le même nom.
+	 * 
+	 * @param obj est la plateforme à tester.
+	 * @return true si les plateformes sont égales.
+	 */
+	@Override
+	public boolean equals(final Object obj) {
 
-      if(this == obj){
-         return true;
-      }
-      if((obj == null) || obj.getClass() != this.getClass()){
-         return false;
-      }
-      final Plateforme test = (Plateforme) obj;
-      return ((this.nom == test.nom || (this.nom != null && this.nom.equals(test.nom))));
-   }
+		if (this == obj) {
+			return true;
+		}
+		if ((obj == null) || !(obj instanceof Plateforme)) {
+			return false;
+		}
+		final Plateforme test = (Plateforme) obj;
+		return Objects.equals(nom, test.getNom());
+	}
 
-   /**
-    * Le hashcode est calculé sur l'attribut nom.
-    * @return la valeur du hashcode.
-    */
-   @Override
-   public int hashCode(){
+	/**
+	 * Le hashcode est calculé sur l'attribut nom.
+	 * 
+	 * @return la valeur du hashcode.
+	 */
+	@Override
+	public int hashCode() {
 
-      int hash = 7;
-      int hashNom = 0;
+		int hash = 7;
+		int hashNom = 0;
 
-      if(this.nom != null){
-         hashNom = this.nom.hashCode();
-      }
+		if (this.nom != null) {
+			hashNom = this.nom.hashCode();
+		}
 
-      hash = 31 * hash + hashNom;
+		hash = 31 * hash + hashNom;
 
-      return hash;
+		return hash;
 
-   }
+	}
 
-   /**
-    * Méthode surchargeant le toString() de l'objet.
-    */
-   @Override
-   public String toString(){
-      return "{" + this.nom + "}";
-   }
+	/**
+	 * Méthode surchargeant le toString() de l'objet.
+	 */
+	@Override
+	public String toString() {
+		return "{" + this.nom + "}";
+	}
 
-   @Override
-   public Plateforme clone(){
-      final Plateforme clone = new Plateforme();
+	@Override
+	public Plateforme clone() {
+		final Plateforme clone = new Plateforme();
 
-      clone.setPlateformeId(this.plateformeId);
-      clone.setCollaborateur(this.collaborateur);
-      clone.setNom(this.nom);
-      clone.setAlias(this.alias);
-      clone.setBanques(this.banques);
-      clone.setConteneurPlateformes(this.conteneurPlateformes);
-      clone.setUtilisateurs(this.utilisateurs);
-      clone.setImprimantes(this.imprimantes);
-      clone.setModeles(this.modeles);
-      clone.setSModeles(this.sModeles);
+		clone.setPlateformeId(this.plateformeId);
+		clone.setCollaborateur(this.collaborateur);
+		clone.setNom(this.nom);
+		clone.setAlias(this.alias);
+		clone.setBanques(this.banques);
+		clone.setConteneurPlateformes(this.conteneurPlateformes);
+		clone.setUtilisateurs(this.utilisateurs);
+		clone.setImprimantes(this.imprimantes);
+		clone.setModeles(this.modeles);
+		clone.setSModeles(this.sModeles);
 
-      return clone;
-   }
+		return clone;
+	}
 
-   @Override
-   public String entiteNom(){
-      return "Plateforme";
-   }
+	@Override
+	public String entiteNom() {
+		return "Plateforme";
+	}
 
-   @Override
-   @Transient
-   public Integer listableObjectId(){
-      return getPlateformeId();
-   }
+	@Override
+	@Transient
+	public Integer listableObjectId() {
+		return getPlateformeId();
+	}
 
-   @Override
-   @Transient
-   public String getPhantomData(){
-      return getNom();
-   }
+	@Override
+	@Transient
+	public String getPhantomData() {
+		return getNom();
+	}
 
-   @Override
-   public int compareTo(final Plateforme arg0){
-      return this.getNom().compareTo(arg0.getNom());
-   }
+	@Override
+	public int compareTo(final Plateforme arg0) {
+		return this.getNom().compareTo(arg0.getNom());
+	}
 
 }

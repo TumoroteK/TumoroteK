@@ -36,9 +36,11 @@
 package fr.aphp.tumorotek.model.coeur.patient;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 import javax.persistence.Embeddable;
 import javax.persistence.ManyToOne;
+
 import javax.persistence.FetchType;
 
 /**
@@ -98,16 +100,14 @@ public class PatientLienPK implements Serializable {
 		if (this == obj) {
 			return true;
 		}
-		if ((obj == null) || obj.getClass() != this.getClass()) {
+		if ((obj == null) || !(obj instanceof PatientLienPK)) {
 			return false;
-		}
+		}		
 		final PatientLienPK test = (PatientLienPK) obj;
-		return (((this.patient1 != null && (this.patient1.equals(test.patient1)) || this.patient1 == test.patient1)
-				&& ((this.patient2 != null && this.patient2.equals(test.patient2)) || this.patient2 == test.patient2))
-				// teste l'inverse
-				|| ((this.patient1 != null && (this.patient1.equals(test.patient2)) || this.patient1 == test.patient2)
-						&& ((this.patient2 != null && this.patient2.equals(test.patient1))
-								|| this.patient2 == test.patient1)));
+		return (Objects.equals(patient1, test.getPatient1())
+			&& Objects.equals(patient2, test.getPatient2()))
+		|| (Objects.equals(patient1, test.getPatient2())
+				&& Objects.equals(patient2, test.getPatient1()));
 	}
 
 	/**

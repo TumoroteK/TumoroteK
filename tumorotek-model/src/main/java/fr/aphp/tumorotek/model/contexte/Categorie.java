@@ -37,6 +37,7 @@ package fr.aphp.tumorotek.model.contexte;
 
 import java.io.Serializable;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 import javax.persistence.AttributeOverride;
@@ -53,8 +54,7 @@ import fr.aphp.tumorotek.model.AbstractThesaurusObject;
 
 /**
  *
- * Objet persistant mappant la table CATEGORIE.
- * Classe créée le 09/09/09.
+ * Objet persistant mappant la table CATEGORIE. Classe créée le 09/09/09.
  *
  * @author Pierre Ventadour
  * @version 2.3
@@ -62,97 +62,99 @@ import fr.aphp.tumorotek.model.AbstractThesaurusObject;
  */
 @Entity
 @Table(name = "CATEGORIE")
-@AttributeOverrides({@AttributeOverride(name = "id", column = @Column(name = "CATEGORIE_ID"))})
+@AttributeOverrides({ @AttributeOverride(name = "id", column = @Column(name = "CATEGORIE_ID")) })
 @GenericGenerator(name = "autoincrement", strategy = "increment")
 //@NamedQueries(value = {@NamedQuery(name = "Categorie.findByNom", query = "SELECT c FROM Categorie c WHERE c.nom like ?1"),
 //   @NamedQuery(name = "Categorie.findByEtablissementId",
 //      query = "SELECT c FROM Categorie c " + "left join c.etablissements e " + "WHERE e.etablissementId = ?1"),
 //   @NamedQuery(name = "Categorie.findByExcludedId", query = "SELECT c FROM Categorie c " + "WHERE c.id != ?1"),
 //   @NamedQuery(name = "Categorie.findByOrder", query = "SELECT c FROM Categorie c ORDER BY c.nom")})
-public class Categorie  extends AbstractThesaurusObject implements Serializable
-{
+public class Categorie extends AbstractThesaurusObject implements Serializable {
 
-   private static final long serialVersionUID = 86784231547511654L;
+	private static final long serialVersionUID = 86784231547511654L;
 
-   private Set<Etablissement> etablissements = new HashSet<>();
+	private Set<Etablissement> etablissements = new HashSet<>();
 
-   /**
-    * Constructeur par défaut.
-    */
-   public Categorie(){}
-   
-   /**
-    * @deprecated Utiliser {@link #getId()}
-    * @return
-    */
-   @Deprecated
-   @Transient
-   public Integer getCategorieId(){
-      return getId();
-   }
+	/**
+	 * Constructeur par défaut.
+	 */
+	public Categorie() {
+	}
 
-   /**
-    * @deprecated Utiliser {@link #setId(Integer)}
-    * @param cId
-    */
-   @Deprecated
-   public void setCategorieId(final Integer cId){
-      this.setId(cId);
-   }
+	/**
+	 * @deprecated Utiliser {@link #getId()}
+	 * @return
+	 */
+	@Deprecated
+	@Transient
+	public Integer getCategorieId() {
+		return getId();
+	}
 
-   @OneToMany(mappedBy = "categorie")
-   public Set<Etablissement> getEtablissements(){
-      return etablissements;
-   }
+	/**
+	 * @deprecated Utiliser {@link #setId(Integer)}
+	 * @param cId
+	 */
+	@Deprecated
+	public void setCategorieId(final Integer cId) {
+		this.setId(cId);
+	}
 
-   public void setEtablissements(final Set<Etablissement> newEtablissements){
-      this.etablissements = newEtablissements;
-   }
+	@OneToMany(mappedBy = "categorie")
+	public Set<Etablissement> getEtablissements() {
+		return etablissements;
+	}
 
-   /**
-    * 2 catégories sont considérées comme égales si elles ont le même nom.
-    * @param obj est la catégorie à tester.
-    * @return true si les catégories sont égales.
-    */
-   @Override
-   public boolean equals(final Object obj){
+	public void setEtablissements(final Set<Etablissement> newEtablissements) {
+		this.etablissements = newEtablissements;
+	}
 
-      if(this == obj){
-         return true;
-      }
-      if((obj == null) || obj.getClass() != this.getClass()){
-         return false;
-      }
-      final Categorie test = (Categorie) obj;
-      return ((this.getNom() == test.getNom() || (this.getNom() != null && this.getNom().equals(test.getNom()))));
-   }
+	/**
+	 * 2 catégories sont considérées comme égales si elles ont le même nom.
+	 * 
+	 * @param obj est la catégorie à tester.
+	 * @return true si les catégories sont égales.
+	 */
+	@Override
+	public boolean equals(final Object obj) {
 
-   /**
-    * Le hashcode est calculé sur l'attribut nom.
-    * @return la valeur du hashcode.
-    */
-   @Override
-   public int hashCode(){
+		if (this == obj) {
+			return true;
+		}
+		if ((obj == null) || !(obj instanceof Categorie)) {
+			return false;
+		}
+		final Categorie test = (Categorie) obj;
+		return Objects.equals(getNom(), test.getNom());
+	}
 
-      int hash = 7;
-      int hashNom = 0;
+	/**
+	 * Le hashcode est calculé sur l'attribut nom.
+	 * 
+	 * @return la valeur du hashcode.
+	 */
+	@Override
+	public int hashCode() {
 
-      if(this.getNom() != null){
-         hashNom = this.getNom().hashCode();
-      }
+		int hash = 7;
+		int hashNom = 0;
 
-      hash = 31 * hash + hashNom;
+		if (this.getNom() != null) {
+			hashNom = this.getNom().hashCode();
+		}
 
-      return hash;
+		hash = 31 * hash + hashNom;
 
-   }
+		return hash;
 
-   /**
-    * Méthode surchargeant le toString() de l'objet.
-    */
-   @Override
-   public String toString(){
-      return "{" + this.getNom() + "}";
-   }
+	}
+
+	/**
+	 * Méthode surchargeant le toString() de l'objet.
+	 */
+	@Override
+	public String toString() {
+		return "{" + this.getNom() + "}";
+	}
 
 }

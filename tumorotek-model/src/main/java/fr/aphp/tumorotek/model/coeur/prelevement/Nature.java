@@ -53,8 +53,7 @@ import fr.aphp.tumorotek.model.AbstractPfDependantThesaurusObject;
 
 /**
  *
- * Objet persistant mappant la table NATURE.
- * Classe créée le 14/09/09.
+ * Objet persistant mappant la table NATURE. Classe créée le 14/09/09.
  *
  * @author Maxime Gousseau
  * @version 2.3
@@ -63,92 +62,93 @@ import fr.aphp.tumorotek.model.AbstractPfDependantThesaurusObject;
 @Entity
 @Table(name = "NATURE")
 @GenericGenerator(name = "autoincrement", strategy = "increment")
-@AttributeOverrides({@AttributeOverride(name = "id", column = @Column(name = "NATURE_ID")),
-   @AttributeOverride(name = "nom", column = @Column(name = "NATURE", nullable = false, length = 200))})
+@AttributeOverrides({ @AttributeOverride(name = "id", column = @Column(name = "NATURE_ID")),
+		@AttributeOverride(name = "nom", column = @Column(name = "NATURE", nullable = false, length = 200)) })
 //@NamedQueries(value = {@NamedQuery(name = "Nature.findByNature", query = "SELECT n FROM Nature n WHERE n.nom like ?1"),
 //   @NamedQuery(name = "Nature.findByExcludedId", query = "SELECT n FROM Nature n " + "WHERE n.id != ?1"),
 //   @NamedQuery(name = "Nature.findByPfOrder", query = "SELECT n FROM Nature n " + "WHERE n.plateforme = ?1 ORDER BY n.nom"),
 //   @NamedQuery(name = "Nature.findByOrder", query = "SELECT n FROM Nature n ORDER BY n.nom")})
-public class Nature extends AbstractPfDependantThesaurusObject implements Serializable
-{
+public class Nature extends AbstractPfDependantThesaurusObject implements Serializable {
 
-   private static final long serialVersionUID = 8513939510881684683L;
+	private static final long serialVersionUID = 8513939510881684683L;
 
-   private Set<Prelevement> prelevements = new HashSet<>();
+	private Set<Prelevement> prelevements = new HashSet<>();
 
-   /** Constructeur par défaut. */
-   public Nature(){}
+	/** Constructeur par défaut. */
+	public Nature() {
+	}
 
-   /**
-    * @deprecated Utiliser {@link #getId()}
-    * @return
-    */
-   @Deprecated
-   @Transient
-   public Integer getNatureId(){
-      return this.getId();
-   }
+	/**
+	 * @deprecated Utiliser {@link #getId()}
+	 * @return
+	 */
+	@Deprecated
+	@Transient
+	public Integer getNatureId() {
+		return this.getId();
+	}
 
-   /**
-    * @deprecated Utiliser {@link #setId(Integer)}
-    * @param id
-    */
-   @Deprecated
-   public void setNatureId(final Integer id){
-      this.setId(id);
-      ;
-   }
+	/**
+	 * @deprecated Utiliser {@link #setId(Integer)}
+	 * @param id
+	 */
+	@Deprecated
+	public void setNatureId(final Integer id) {
+		this.setId(id);
+		;
+	}
 
-   /**
-    * @deprecated Utiliser {@link #getNom()}
-    * @return
-    */
-   @Deprecated
-   @Transient
-   public String getNature(){
-      return this.getNom();
-   }
+	/**
+	 * @deprecated Utiliser {@link #getNom()}
+	 * @return
+	 */
+	@Deprecated
+	@Transient
+	public String getNature() {
+		return this.getNom();
+	}
 
-   /**
-    * @deprecated Utiliser {@link #setNom(String)}
-    * @param nat
-    */
-   @Deprecated
-   public void setNature(final String nat){
-      this.setNom(nat);
-   }
+	/**
+	 * @deprecated Utiliser {@link #setNom(String)}
+	 * @param nat
+	 */
+	@Deprecated
+	public void setNature(final String nat) {
+		this.setNom(nat);
+	}
 
-   @OneToMany(mappedBy = "nature")
-   public Set<Prelevement> getPrelevements(){
-      return this.prelevements;
-   }
+	@OneToMany(mappedBy = "nature")
+	public Set<Prelevement> getPrelevements() {
+		return this.prelevements;
+	}
 
-   public void setPrelevements(final Set<Prelevement> prelevs){
-      this.prelevements = prelevs;
-   }
+	public void setPrelevements(final Set<Prelevement> prelevs) {
+		this.prelevements = prelevs;
+	}
 
-   /**
-    * Cree un clone de l'objet.
-    * @return clone Utilisateur.
-    */
-   @Override
-   public Nature clone(){
-      final Nature clone = new Nature();
+	/**
+	 * Cree un clone de l'objet.
+	 * 
+	 * @return clone Utilisateur.
+	 */
+	@Override
+	public Nature clone() {
+		final Nature clone = new Nature();
 
-      clone.setId(this.getId());
-      clone.setNom(this.getNom());
-      clone.setPlateforme(getPlateforme());
+		clone.setId(this.getId());
+		clone.setNom(this.getNom());
+		clone.setPlateforme(getPlateforme());
 
-      return clone;
+		return clone;
 
-   }
+	}
 
-   @Override
-   public String toString(){
-      if(this.getNom() != null){
-         return "{" + this.getNom() + "}";
-      }
-      return "{Empty Nature}";
-   }
+	@Override
+	public String toString() {
+		if (this.getNom() != null) {
+			return "{" + this.getNom() + "}";
+		}
+		return "{Empty Nature}";
+	}
 
 }

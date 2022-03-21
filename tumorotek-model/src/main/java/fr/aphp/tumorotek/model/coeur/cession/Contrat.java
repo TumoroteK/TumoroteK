@@ -38,6 +38,7 @@ package fr.aphp.tumorotek.model.coeur.cession;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -307,13 +308,12 @@ public class Contrat implements TKdataObject, TKFantomableObject, Serializable {
 		if (this == obj) {
 			return true;
 		}
-		if ((obj == null) || obj.getClass() != this.getClass()) {
+		if ((obj == null) || !(obj instanceof Contrat)) {
 			return false;
-		}
+		}		
 		final Contrat test = (Contrat) obj;
-		return ((this.numero == test.numero || (this.numero != null && this.numero.equals(test.numero)))
-				&& (this.plateforme == test.plateforme
-						|| (this.plateforme != null && this.plateforme.equals(test.plateforme))));
+		return Objects.equals(numero, test.getNumero())
+			&& Objects.equals(plateforme, test.getPlateforme());
 	}
 
 	/**

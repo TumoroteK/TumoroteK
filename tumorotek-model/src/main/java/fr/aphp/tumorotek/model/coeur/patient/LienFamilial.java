@@ -37,6 +37,7 @@ package fr.aphp.tumorotek.model.coeur.patient;
 
 import java.io.Serializable;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -163,12 +164,13 @@ public class LienFamilial implements Serializable {
 		if (this == obj) {
 			return true;
 		}
-		if ((obj == null) || obj.getClass() != this.getClass()) {
+		if ((obj == null) || !(obj instanceof LienFamilial)) {
 			return false;
-		}
+		}		
 		final LienFamilial test = (LienFamilial) obj;
-		return ((this.nom != null && this.nom.equals(test.nom)) || this.nom == test.nom);
+		return Objects.equals(nom, test.getNom());
 	}
+
 
 	/**
 	 * Le hashcode est calculé sur l'attribut nom.

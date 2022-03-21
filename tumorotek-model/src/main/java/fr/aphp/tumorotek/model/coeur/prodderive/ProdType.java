@@ -54,8 +54,7 @@ import fr.aphp.tumorotek.model.systeme.CouleurEntiteType;
 
 /**
  *
- * Objet persistant mappant la table PROD_TYPE.
- * Classe créée le 11/09/09.
+ * Objet persistant mappant la table PROD_TYPE. Classe créée le 11/09/09.
  *
  * @author Maxime Gousseau
  * @version 2.3
@@ -63,8 +62,8 @@ import fr.aphp.tumorotek.model.systeme.CouleurEntiteType;
  */
 @Entity
 @Table(name = "PROD_TYPE")
-@AttributeOverrides({@AttributeOverride(name = "id", column = @Column(name = "PROD_TYPE_ID")),
-   @AttributeOverride(name = "nom", column = @Column(name = "TYPE", nullable = false, length = 200))})
+@AttributeOverrides({ @AttributeOverride(name = "id", column = @Column(name = "PROD_TYPE_ID")),
+		@AttributeOverride(name = "nom", column = @Column(name = "TYPE", nullable = false, length = 200)) })
 @GenericGenerator(name = "autoincrement", strategy = "increment")
 //@NamedQueries(value = {@NamedQuery(name = "ProdType.findByType", query = "SELECT p FROM ProdType p WHERE p.nom like ?1"),
 //   @NamedQuery(name = "ProdType.findByProdDeriveId",
@@ -72,84 +71,83 @@ import fr.aphp.tumorotek.model.systeme.CouleurEntiteType;
 //   @NamedQuery(name = "ProdType.findByExcludedId", query = "SELECT p FROM ProdType p " + "WHERE p.id != ?1"),
 //   @NamedQuery(name = "ProdType.findByPfOrder", query = "SELECT p FROM ProdType p " + "WHERE p.plateforme = ?1 ORDER BY p.nom"),
 //   @NamedQuery(name = "ProdType.findByOrder", query = "SELECT p FROM ProdType p ORDER BY p.nom")})
-public class ProdType extends AbstractPfDependantThesaurusObject implements Serializable
-{
+public class ProdType extends AbstractPfDependantThesaurusObject implements Serializable {
 
-   private static final long serialVersionUID = -8819167609321186090L;
+	private static final long serialVersionUID = -8819167609321186090L;
 
-   private Set<ProdDerive> prodDerives;
-   private Set<CouleurEntiteType> couleurEntiteTypes = new HashSet<>();
+	private Set<ProdDerive> prodDerives;
+	private Set<CouleurEntiteType> couleurEntiteTypes = new HashSet<>();
 
-   /** Constructeur par défaut. */
-   public ProdType(){
-      super();
-      prodDerives = new HashSet<>();
-   }
+	/** Constructeur par défaut. */
+	public ProdType() {
+		super();
+		prodDerives = new HashSet<>();
+	}
 
-   /**
-    * @deprecated Utiliser {@link #getId()}
-    * @return
-    */
-   @Deprecated
-@Transient
-   public Integer getProdTypeId(){
-      return this.getId();
-   }
+	/**
+	 * @deprecated Utiliser {@link #getId()}
+	 * @return
+	 */
+	@Deprecated
+	@Transient
+	public Integer getProdTypeId() {
+		return this.getId();
+	}
 
-   /**
-    * @deprecated Utiliser {@link #setId(Integer)}
-    * @return
-    */
-   @Deprecated
-public void setProdTypeId(final Integer id){
-      this.setId(id);
-   }
+	/**
+	 * @deprecated Utiliser {@link #setId(Integer)}
+	 * @return
+	 */
+	@Deprecated
+	public void setProdTypeId(final Integer id) {
+		this.setId(id);
+	}
 
-   /**
-    * @deprecated Utiliser {@link #getNom()}
-    */
-   @Deprecated
-@Transient
-   public String getType(){
-      return this.getNom();
-   }
+	/**
+	 * @deprecated Utiliser {@link #getNom()}
+	 */
+	@Deprecated
+	@Transient
+	public String getType() {
+		return this.getNom();
+	}
 
-   /**
-    * @deprecated Utiliser {@link #setNom(String)}
-    */
-   @Deprecated
-public void setType(final String t){
-      this.setNom(t);
-   }
+	/**
+	 * @deprecated Utiliser {@link #setNom(String)}
+	 */
+	@Deprecated
+	public void setType(final String t) {
+		this.setNom(t);
+	}
 
-   @OneToMany(mappedBy = "prodType")
-   public Set<ProdDerive> getProdDerives(){
-      return prodDerives;
-   }
+	@OneToMany(mappedBy = "prodType")
+	public Set<ProdDerive> getProdDerives() {
+		return prodDerives;
+	}
 
-   public void setProdDerives(final Set<ProdDerive> prodDs){
-      this.prodDerives = prodDs;
-   }
+	public void setProdDerives(final Set<ProdDerive> prodDs) {
+		this.prodDerives = prodDs;
+	}
 
-   @OneToMany(mappedBy = "prodType")
-   public Set<CouleurEntiteType> getCouleurEntiteTypes(){
-      return couleurEntiteTypes;
-   }
+	@OneToMany(mappedBy = "prodType")
+	public Set<CouleurEntiteType> getCouleurEntiteTypes() {
+		return couleurEntiteTypes;
+	}
 
-   public void setCouleurEntiteTypes(final Set<CouleurEntiteType> cTypes){
-      this.couleurEntiteTypes = cTypes;
-   }
+	public void setCouleurEntiteTypes(final Set<CouleurEntiteType> cTypes) {
+		this.couleurEntiteTypes = cTypes;
+	}
 
-   /**
-    * Méthode surchargeant le toString() de l'objet.
-    */
-   @Override
-   public String toString(){
-      if(this.getNom() != null){
-         return "{" + this.getNom() + "}";
-      }else{
-         return "{Empty ProdType}";
-      }
-   }
+	/**
+	 * Méthode surchargeant le toString() de l'objet.
+	 */
+	@Override
+	public String toString() {
+		if (this.getNom() != null) {
+			return "{" + this.getNom() + "}";
+		} else {
+			return "{Empty ProdType}";
+		}
+	}
 
 }

@@ -36,6 +36,7 @@
 package fr.aphp.tumorotek.model.contexte;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -52,8 +53,7 @@ import javax.persistence.Table;
 import org.hibernate.annotations.GenericGenerator;
 
 /**
- * Objet persistant mappant la table COORDONNEE.
- * Classe créée le 09/09/09.
+ * Objet persistant mappant la table COORDONNEE. Classe créée le 09/09/09.
  *
  * @author Pierre Ventadour
  * @version 2.3
@@ -79,300 +79,298 @@ import org.hibernate.annotations.GenericGenerator;
 //      query = "SELECT c FROM Coordonnee c " + "left join c.collaborateurs o " + "WHERE o.collaborateurId = ?1 "
 //         + "AND c.coordonneeId != ?2"),
 //   @NamedQuery(name = "Coordonnee.findByExcludedId", query = "SELECT c FROM Coordonnee c " + "WHERE c.coordonneeId != ?1")})
-public class Coordonnee implements java.io.Serializable
-{
+public class Coordonnee implements java.io.Serializable {
 
-   private static final long serialVersionUID = 54687944563647L;
+	private static final long serialVersionUID = 54687944563647L;
 
-   private Integer coordonneeId;
-   private String adresse;
-   private String cp;
-   private String ville;
-   private String pays;
-   private String tel;
-   private String fax;
-   private String mail;
+	private Integer coordonneeId;
+	private String adresse;
+	private String cp;
+	private String ville;
+	private String pays;
+	private String tel;
+	private String fax;
+	private String mail;
 
-   //private Set<Etablissement> etablissements = new HashSet<Etablissement>();
-   private Etablissement etablissement;
-   //private Set<Service> services = new HashSet<Service>();
-   private Service service;
-   //private Set<Transporteur> transporteurs = new HashSet<Transporteur>();
-   private Transporteur transporteur;
+	// private Set<Etablissement> etablissements = new HashSet<Etablissement>();
+	private Etablissement etablissement;
+	// private Set<Service> services = new HashSet<Service>();
+	private Service service;
+	// private Set<Transporteur> transporteurs = new HashSet<Transporteur>();
+	private Transporteur transporteur;
 
-   private Set<Collaborateur> collaborateurs = new HashSet<>();
+	private Set<Collaborateur> collaborateurs = new HashSet<>();
 
-   /**
-    * Constructeur par défaut.
-    */
-   public Coordonnee(){}
+	/**
+	 * Constructeur par défaut.
+	 */
+	public Coordonnee() {
+	}
 
-   //	/**
-   //	 * Constructeur avec paramètres.
-   //	 * @param id est l'identifiant de l'objet dans la base de données.
-   //	 * @param adr .
-   //	 * @param newCp .
-   //	 * @param newVille .
-   //	 * @param newPays .
-   //	 * @param newTel .
-   //	 * @param newFax .
-   //	 * @param newMail .
-   //	 */
-   //	public Coordonnee(Integer id, String adr, String newCp, String newVille, 
-   //			String newPays, String newTel, String newFax, String newMail) {
-   //		this.coordonneeId = id;
-   //		this.adresse = adr;
-   //		this.cp = newCp;
-   //		this.ville = newVille;
-   //		this.pays = newPays;
-   //		this.tel = newTel;
-   //		this.fax = newFax;
-   //		this.mail = newMail;
-   //	}
+	// /**
+	// * Constructeur avec paramètres.
+	// * @param id est l'identifiant de l'objet dans la base de données.
+	// * @param adr .
+	// * @param newCp .
+	// * @param newVille .
+	// * @param newPays .
+	// * @param newTel .
+	// * @param newFax .
+	// * @param newMail .
+	// */
+	// public Coordonnee(Integer id, String adr, String newCp, String newVille,
+	// String newPays, String newTel, String newFax, String newMail) {
+	// this.coordonneeId = id;
+	// this.adresse = adr;
+	// this.cp = newCp;
+	// this.ville = newVille;
+	// this.pays = newPays;
+	// this.tel = newTel;
+	// this.fax = newFax;
+	// this.mail = newMail;
+	// }
 
-   @Id
-   @Column(name = "COORDONNEE_ID", unique = true, nullable = false)
-   @GeneratedValue(generator = "autoincrement")
-   @GenericGenerator(name = "autoincrement", strategy = "increment")
-   public Integer getCoordonneeId(){
-      return coordonneeId;
-   }
+	@Id
+	@Column(name = "COORDONNEE_ID", unique = true, nullable = false)
+	@GeneratedValue(generator = "autoincrement")
+	@GenericGenerator(name = "autoincrement", strategy = "increment")
+	public Integer getCoordonneeId() {
+		return coordonneeId;
+	}
 
-   public void setCoordonneeId(final Integer cId){
-      this.coordonneeId = cId;
-   }
+	public void setCoordonneeId(final Integer cId) {
+		this.coordonneeId = cId;
+	}
 
-   @Column(name = "ADRESSE", nullable = true, length = 250)
-   public String getAdresse(){
-      return adresse;
-   }
+	@Column(name = "ADRESSE", nullable = true, length = 250)
+	public String getAdresse() {
+		return adresse;
+	}
 
-   public void setAdresse(final String adr){
-      this.adresse = adr;
-   }
+	public void setAdresse(final String adr) {
+		this.adresse = adr;
+	}
 
-   @Column(name = "CP", nullable = true, length = 10)
-   public String getCp(){
-      return cp;
-   }
+	@Column(name = "CP", nullable = true, length = 10)
+	public String getCp() {
+		return cp;
+	}
 
-   public void setCp(final String newCp){
-      this.cp = newCp;
-   }
+	public void setCp(final String newCp) {
+		this.cp = newCp;
+	}
 
-   @Column(name = "VILLE", nullable = true, length = 100)
-   public String getVille(){
-      return ville;
-   }
+	@Column(name = "VILLE", nullable = true, length = 100)
+	public String getVille() {
+		return ville;
+	}
 
-   public void setVille(final String newVille){
-      this.ville = newVille;
-   }
+	public void setVille(final String newVille) {
+		this.ville = newVille;
+	}
 
-   @Column(name = "PAYS", nullable = true, length = 100)
-   public String getPays(){
-      return pays;
-   }
+	@Column(name = "PAYS", nullable = true, length = 100)
+	public String getPays() {
+		return pays;
+	}
 
-   public void setPays(final String newPays){
-      this.pays = newPays;
-   }
+	public void setPays(final String newPays) {
+		this.pays = newPays;
+	}
 
-   @Column(name = "TEL", nullable = true, length = 15)
-   public String getTel(){
-      return tel;
-   }
+	@Column(name = "TEL", nullable = true, length = 15)
+	public String getTel() {
+		return tel;
+	}
 
-   public void setTel(final String newTel){
-      this.tel = newTel;
-   }
+	public void setTel(final String newTel) {
+		this.tel = newTel;
+	}
 
-   @Column(name = "FAX", nullable = true, length = 15)
-   public String getFax(){
-      return fax;
-   }
+	@Column(name = "FAX", nullable = true, length = 15)
+	public String getFax() {
+		return fax;
+	}
 
-   public void setFax(final String newFax){
-      this.fax = newFax;
-   }
+	public void setFax(final String newFax) {
+		this.fax = newFax;
+	}
 
-   @Column(name = "MAIL", nullable = true, length = 100)
-   public String getMail(){
-      return mail;
-   }
+	@Column(name = "MAIL", nullable = true, length = 100)
+	public String getMail() {
+		return mail;
+	}
 
-   public void setMail(final String newMail){
-      this.mail = newMail;
-   }
+	public void setMail(final String newMail) {
+		this.mail = newMail;
+	}
 
-   //	@OneToMany(mappedBy = "coordonnee")
-   //	public Set<Etablissement> getEtablissements() {
-   //		return etablissements;
-   //	}
-   //
-   //	public void setEtablissements(Set<Etablissement> etabs) {
-   //		this.etablissements = etabs;
-   //	}
-   @OneToOne(mappedBy = "coordonnee", targetEntity = Etablissement.class, fetch = FetchType.LAZY)
-   public Etablissement getEtablissement(){
-      return etablissement;
-   }
+	// @OneToMany(mappedBy = "coordonnee")
+	// public Set<Etablissement> getEtablissements() {
+	// return etablissements;
+	// }
+	//
+	// public void setEtablissements(Set<Etablissement> etabs) {
+	// this.etablissements = etabs;
+	// }
+	@OneToOne(mappedBy = "coordonnee", targetEntity = Etablissement.class, fetch = FetchType.LAZY)
+	public Etablissement getEtablissement() {
+		return etablissement;
+	}
 
-   public void setEtablissement(final Etablissement etab){
-      this.etablissement = etab;
-   }
+	public void setEtablissement(final Etablissement etab) {
+		this.etablissement = etab;
+	}
 
-   //	@OneToMany(mappedBy = "coordonnee")
-   //	public Set<Service> getServices() {
-   //		return services;
-   //	}
-   //
-   //	public void setServices(Set<Service> serv) {
-   //		this.services = serv;
-   //	}
+	// @OneToMany(mappedBy = "coordonnee")
+	// public Set<Service> getServices() {
+	// return services;
+	// }
+	//
+	// public void setServices(Set<Service> serv) {
+	// this.services = serv;
+	// }
 
-   @OneToOne(mappedBy = "coordonnee", targetEntity = Service.class, fetch = FetchType.LAZY)
-   public Service getService(){
-      return service;
-   }
+	@OneToOne(mappedBy = "coordonnee", targetEntity = Service.class, fetch = FetchType.LAZY)
+	public Service getService() {
+		return service;
+	}
 
-   public void setService(final Service serv){
-      this.service = serv;
-   }
+	public void setService(final Service serv) {
+		this.service = serv;
+	}
 
-   //	@OneToMany(mappedBy = "coordonnee")
-   //	public Set<Transporteur> getTransporteurs() {
-   //		return transporteurs;
-   //	}
-   //
-   //	public void setTransporteurs(Set <Transporteur> transp) {
-   //		this.transporteurs = transp;
-   //	}
+	// @OneToMany(mappedBy = "coordonnee")
+	// public Set<Transporteur> getTransporteurs() {
+	// return transporteurs;
+	// }
+	//
+	// public void setTransporteurs(Set <Transporteur> transp) {
+	// this.transporteurs = transp;
+	// }
 
-   @OneToOne(mappedBy = "coordonnee", targetEntity = Transporteur.class, fetch = FetchType.LAZY)
-   public Transporteur getTransporteur(){
-      return transporteur;
-   }
+	@OneToOne(mappedBy = "coordonnee", targetEntity = Transporteur.class, fetch = FetchType.LAZY)
+	public Transporteur getTransporteur() {
+		return transporteur;
+	}
 
-   public void setTransporteur(final Transporteur transp){
-      this.transporteur = transp;
-   }
+	public void setTransporteur(final Transporteur transp) {
+		this.transporteur = transp;
+	}
 
-   @ManyToMany(targetEntity = Collaborateur.class)
-   @JoinTable(name = "COLLABORATEUR_COORDONNEE", joinColumns = @JoinColumn(name = "COORDONNEE_ID"),
-      inverseJoinColumns = @JoinColumn(name = "COLLABORATEUR_ID"))
-   public Set<Collaborateur> getCollaborateurs(){
-      return collaborateurs;
-   }
+	@ManyToMany(targetEntity = Collaborateur.class)
+	@JoinTable(name = "COLLABORATEUR_COORDONNEE", joinColumns = @JoinColumn(name = "COORDONNEE_ID"), inverseJoinColumns = @JoinColumn(name = "COLLABORATEUR_ID"))
+	public Set<Collaborateur> getCollaborateurs() {
+		return collaborateurs;
+	}
 
-   public void setCollaborateurs(final Set<Collaborateur> newCollaborateurs){
-      this.collaborateurs = newCollaborateurs;
-   }
+	public void setCollaborateurs(final Set<Collaborateur> newCollaborateurs) {
+		this.collaborateurs = newCollaborateurs;
+	}
 
-   /**
-    * 2 coordonnées sont considérées comme égales si elles ont la même adresse,
-    * le même cp, la même ville, le même pays, le même tel, le même fax et le
-    * même mail.
-    * @param obj est la coordonnée à tester.
-    * @return true si les coordonnées sont égales.
-    */
-   @Override
-   public boolean equals(final Object obj){
+	/**
+	 * 2 coordonnées sont considérées comme égales si elles ont la même adresse, le
+	 * même cp, la même ville, le même pays, le même tel, le même fax et le même
+	 * mail.
+	 * 
+	 * @param obj est la coordonnée à tester.
+	 * @return true si les coordonnées sont égales.
+	 */
+	@Override
+	public boolean equals(final Object obj) {
 
-      if(this == obj){
-         return true;
-      }
-      if((obj == null) || obj.getClass() != this.getClass()){
-         return false;
-      }
-      final Coordonnee test = (Coordonnee) obj;
-      // 2 coordonnees sont egales si toutes leurs valeurs le sont
-      return ((this.adresse == test.adresse || (this.adresse != null && this.adresse.equals(test.adresse)))
-         && (this.cp == test.cp || (this.cp != null && this.cp.equals(test.cp)))
-         && (this.ville == test.ville || (this.ville != null && this.ville.equals(test.ville)))
-         && (this.pays == test.pays || (this.pays != null && this.pays.equals(test.pays)))
-         && (this.tel == test.tel || (this.tel != null && this.tel.equals(test.tel)))
-         && (this.fax == test.fax || (this.fax != null && this.fax.equals(test.fax)))
-         && (this.mail == test.mail || (this.mail != null && this.mail.equals(test.mail))));
-   }
+		if (this == obj) {
+			return true;
+		}
+		if ((obj == null) || !(obj instanceof Coordonnee)) {
+			return false;
+		}
+		final Coordonnee test = (Coordonnee) obj;
+		return Objects.equals(adresse, test.getAdresse()) && Objects.equals(cp, test.getCp())
+				&& Objects.equals(ville, test.getVille()) && Objects.equals(pays, test.getPays())
+				&& Objects.equals(tel, test.getTel()) && Objects.equals(fax, test.getFax())
+				&& Objects.equals(mail, test.getMail());
+	}
 
-   /**
-    * Le hashcode est calculé sur tous les attributs.
-    * @return la valeur du hashcode.
-    */
-   @Override
-   public int hashCode(){
+	/**
+	 * Le hashcode est calculé sur tous les attributs.
+	 * 
+	 * @return la valeur du hashcode.
+	 */
+	@Override
+	public int hashCode() {
 
-      int hash = 7;
-      int hashAdresse = 0;
-      int hashCp = 0;
-      int hashVille = 0;
-      int hashPays = 0;
-      int hashTel = 0;
-      int hashFax = 0;
-      int hashMail = 0;
+		int hash = 7;
+		int hashAdresse = 0;
+		int hashCp = 0;
+		int hashVille = 0;
+		int hashPays = 0;
+		int hashTel = 0;
+		int hashFax = 0;
+		int hashMail = 0;
 
-      if(this.adresse != null){
-         hashAdresse = this.adresse.hashCode();
-      }
-      if(this.cp != null){
-         hashCp = this.cp.hashCode();
-      }
-      if(this.ville != null){
-         hashVille = this.ville.hashCode();
-      }
-      if(this.pays != null){
-         hashPays = this.pays.hashCode();
-      }
-      if(this.tel != null){
-         hashTel = this.tel.hashCode();
-      }
-      if(this.fax != null){
-         hashFax = this.fax.hashCode();
-      }
-      if(this.mail != null){
-         hashMail = this.mail.hashCode();
-      }
+		if (this.adresse != null) {
+			hashAdresse = this.adresse.hashCode();
+		}
+		if (this.cp != null) {
+			hashCp = this.cp.hashCode();
+		}
+		if (this.ville != null) {
+			hashVille = this.ville.hashCode();
+		}
+		if (this.pays != null) {
+			hashPays = this.pays.hashCode();
+		}
+		if (this.tel != null) {
+			hashTel = this.tel.hashCode();
+		}
+		if (this.fax != null) {
+			hashFax = this.fax.hashCode();
+		}
+		if (this.mail != null) {
+			hashMail = this.mail.hashCode();
+		}
 
-      hash = 7 * hash + hashAdresse;
-      hash = 7 * hash + hashCp;
-      hash = 7 * hash + hashVille;
-      hash = 7 * hash + hashPays;
-      hash = 7 * hash + hashTel;
-      hash = 7 * hash + hashFax;
-      hash = 7 * hash + hashMail;
+		hash = 7 * hash + hashAdresse;
+		hash = 7 * hash + hashCp;
+		hash = 7 * hash + hashVille;
+		hash = 7 * hash + hashPays;
+		hash = 7 * hash + hashTel;
+		hash = 7 * hash + hashFax;
+		hash = 7 * hash + hashMail;
 
-      return hash;
-   }
+		return hash;
+	}
 
-   /**
-    * Méthode surchargeant le toString() de l'objet.
-    */
-   @Override
-   public String toString(){
-      return "{" + this.adresse + ", " + this.cp + ", " + this.ville + ", " + this.pays + ", " + this.tel + ", " + this.fax + ", "
-         + this.mail + "}";
-   }
+	/**
+	 * Méthode surchargeant le toString() de l'objet.
+	 */
+	@Override
+	public String toString() {
+		return "{" + this.adresse + ", " + this.cp + ", " + this.ville + ", " + this.pays + ", " + this.tel + ", "
+				+ this.fax + ", " + this.mail + "}";
+	}
 
-   /**
-    * Cree un clone de l'objet.
-    * @return clone Coordonnee.
-    */
-   @Override
-   public Coordonnee clone(){
-      final Coordonnee clone = new Coordonnee();
+	/**
+	 * Cree un clone de l'objet.
+	 * 
+	 * @return clone Coordonnee.
+	 */
+	@Override
+	public Coordonnee clone() {
+		final Coordonnee clone = new Coordonnee();
 
-      clone.setCoordonneeId(this.getCoordonneeId());
-      clone.setAdresse(this.getAdresse());
-      clone.setCp(this.getCp());
-      clone.setVille(this.getVille());
-      clone.setPays(this.getPays());
-      clone.setTel(this.getTel());
-      clone.setFax(this.getFax());
-      clone.setMail(this.getMail());
-      clone.setCollaborateurs(this.getCollaborateurs());
+		clone.setCoordonneeId(this.getCoordonneeId());
+		clone.setAdresse(this.getAdresse());
+		clone.setCp(this.getCp());
+		clone.setVille(this.getVille());
+		clone.setPays(this.getPays());
+		clone.setTel(this.getTel());
+		clone.setFax(this.getFax());
+		clone.setMail(this.getMail());
+		clone.setCollaborateurs(this.getCollaborateurs());
 
-      return clone;
-   }
+		return clone;
+	}
 
 }

@@ -37,6 +37,7 @@ package fr.aphp.tumorotek.model.coeur.cession;
 
 import java.io.Serializable;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -115,14 +116,11 @@ public class CessionType implements Serializable {
 		if (this == obj) {
 			return true;
 		}
-		if ((obj == null) || obj.getClass() != this.getClass()) {
+		if ((obj == null) || !(obj instanceof CessionType)) {
 			return false;
-		}
+		}		
 		final CessionType test = (CessionType) obj;
-		if (this.type == null) {
-			return (test.type == null);
-		}
-		return (this.type.equals(test.type));
+		return Objects.equals(type, test.getType());
 	}
 
 	/**

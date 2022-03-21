@@ -37,6 +37,7 @@ package fr.aphp.tumorotek.model.code;
 
 import java.io.Serializable;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -139,22 +140,17 @@ public class CimoMorpho implements CodeCommon, Serializable {
 	 */
 	@Override
 	public boolean equals(final Object obj) {
-
 		if (this == obj) {
 			return true;
 		}
-		// instanceOf est utilise plutot que != a cause des instances
-		// CimoMorpho$$EnhancerByCGLIB qui sont crées par lors du fetch par
+		// instanceOf est utilise plutot que != a cause des proxys
+		// JPA qui sont crées par lors du fetch par
 		// la relation manyToAny
 		if ((obj == null) || !(obj instanceof CimoMorpho)) {
 			return false;
 		}
 		final CimoMorpho test = (CimoMorpho) obj;
-		if (this.getCimoMorphoId() != null) {
-			// utilisation get car CimoMoprho$$EnhancerByCGLIB proxy
-			return this.getCimoMorphoId().equals(test.getCimoMorphoId());
-		} // impossible
-		return false;
+		return Objects.equals(cimoMorphoId, test.getCimoMorphoId());
 	}
 
 	/**

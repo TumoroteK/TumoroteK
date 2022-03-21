@@ -36,6 +36,7 @@
 package fr.aphp.tumorotek.model.impression;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 import javax.persistence.Embeddable;
 import javax.persistence.ManyToOne;
@@ -45,121 +46,118 @@ import fr.aphp.tumorotek.model.io.export.ChampEntite;
 
 /**
  *
- * Embedded Id pour la table CHAMP_IMPRIME.
- * Classe créée le 21/07/2010.
+ * Embedded Id pour la table CHAMP_IMPRIME. Classe créée le 21/07/2010.
  *
  * @author Pierre VENTADOUR.
  * @see http://boris.kirzner.info/blog/archives/2008/07/19/
- * hibernate-annotations-the-many-to-many-association-with-composite-key/
+ *      hibernate-annotations-the-many-to-many-association-with-composite-key/
  * @version 2.0
  *
  */
 @Embeddable
-public class ChampImprimePK implements Serializable
-{
+public class ChampImprimePK implements Serializable {
 
-   private static final long serialVersionUID = -6467983035378024926L;
+	private static final long serialVersionUID = -6467983035378024926L;
 
-   private Template template;
-   private ChampEntite champEntite;
-   private BlocImpression blocImpression;
+	private Template template;
+	private ChampEntite champEntite;
+	private BlocImpression blocImpression;
 
-   public ChampImprimePK(){
+	public ChampImprimePK() {
 
-   }
+	}
 
-   public ChampImprimePK(final Template temp, final ChampEntite champ, final BlocImpression bloc){
-      this.template = temp;
-      this.champEntite = champ;
-      this.blocImpression = bloc;
-   }
+	public ChampImprimePK(final Template temp, final ChampEntite champ, final BlocImpression bloc) {
+		this.template = temp;
+		this.champEntite = champ;
+		this.blocImpression = bloc;
+	}
 
-   @ManyToOne(fetch = FetchType.EAGER, targetEntity = Template.class)
-   public Template getTemplate(){
-      return template;
-   }
+	@ManyToOne(fetch = FetchType.EAGER, targetEntity = Template.class)
+	public Template getTemplate() {
+		return template;
+	}
 
-   public void setTemplate(final Template t){
-      this.template = t;
-   }
+	public void setTemplate(final Template t) {
+		this.template = t;
+	}
 
-   @ManyToOne(fetch = FetchType.EAGER, targetEntity = ChampEntite.class)
-   public ChampEntite getChampEntite(){
-      return champEntite;
-   }
+	@ManyToOne(fetch = FetchType.EAGER, targetEntity = ChampEntite.class)
+	public ChampEntite getChampEntite() {
+		return champEntite;
+	}
 
-   public void setChampEntite(final ChampEntite c){
-      this.champEntite = c;
-   }
+	public void setChampEntite(final ChampEntite c) {
+		this.champEntite = c;
+	}
 
-   @ManyToOne(fetch = FetchType.EAGER,targetEntity = BlocImpression.class)
-   public BlocImpression getBlocImpression(){
-      return blocImpression;
-   }
+	@ManyToOne(fetch = FetchType.EAGER, targetEntity = BlocImpression.class)
+	public BlocImpression getBlocImpression() {
+		return blocImpression;
+	}
 
-   public void setBlocImpression(final BlocImpression bloc){
-      this.blocImpression = bloc;
-   }
+	public void setBlocImpression(final BlocImpression bloc) {
+		this.blocImpression = bloc;
+	}
 
-   /**
-    * 2 PKs sont considérés comme égales si elles sont composees 
-    * des mêmes clés.
-    * @param obj est la PK à tester.
-    * @return true si les PK sont egales.
-    */
-   @Override
-   public boolean equals(final Object obj){
+	/**
+	 * 2 PKs sont considérés comme égales si elles sont composees des mêmes clés.
+	 * 
+	 * @param obj est la PK à tester.
+	 * @return true si les PK sont egales.
+	 */
+	@Override
+	public boolean equals(final Object obj) {
 
-      if(this == obj){
-         return true;
-      }
-      if((obj == null) || obj.getClass() != this.getClass()){
-         return false;
-      }
-      final ChampImprimePK test = (ChampImprimePK) obj;
-      return ((this.template == test.template || (this.template != null && this.template.equals(test.template)))
-         && (this.champEntite == test.champEntite || (this.champEntite != null && this.champEntite.equals(test.champEntite)))
-         && (this.blocImpression == test.blocImpression
-            || (this.blocImpression != null && this.blocImpression.equals(test.blocImpression))));
-   }
+		if (this == obj) {
+			return true;
+		}
+		if ((obj == null) || !(obj instanceof ChampEntiteBlocPK)) {
+			return false;
+		}
+		final ChampImprimePK test = (ChampImprimePK) obj;
+		return Objects.equals(template, test.getTemplate()) && Objects.equals(champEntite, test.getChampEntite())
+				&& Objects.equals(blocImpression, test.getBlocImpression());
+	}
 
-   /**
-    * Le hashcode est calculé sur les clés.
-    * @return la valeur du hashcode.
-    */
-   @Override
-   public int hashCode(){
-      int hash = 7;
-      int hashTemplate = 0;
-      int hashChamp = 0;
-      int hashBloc = 0;
+	/**
+	 * Le hashcode est calculé sur les clés.
+	 * 
+	 * @return la valeur du hashcode.
+	 */
+	@Override
+	public int hashCode() {
+		int hash = 7;
+		int hashTemplate = 0;
+		int hashChamp = 0;
+		int hashBloc = 0;
 
-      if(this.template != null){
-         hashTemplate = this.template.hashCode();
-      }
-      if(this.champEntite != null){
-         hashChamp = this.champEntite.hashCode();
-      }
-      if(this.blocImpression != null){
-         hashBloc = this.blocImpression.hashCode();
-      }
+		if (this.template != null) {
+			hashTemplate = this.template.hashCode();
+		}
+		if (this.champEntite != null) {
+			hashChamp = this.champEntite.hashCode();
+		}
+		if (this.blocImpression != null) {
+			hashBloc = this.blocImpression.hashCode();
+		}
 
-      hash = 7 * hash + hashTemplate;
-      hash = 7 * hash + hashChamp;
-      hash = 7 * hash + hashBloc;
+		hash = 7 * hash + hashTemplate;
+		hash = 7 * hash + hashChamp;
+		hash = 7 * hash + hashBloc;
 
-      return hash;
-   }
+		return hash;
+	}
 
-   /**
-    * Méthode surchargeant le toString() de l'objet.
-    */
-   @Override
-   public String toString(){
-      if(this.template != null && this.champEntite != null && this.blocImpression != null){
-         return "{" + template.toString() + " (Template), " + champEntite.toString() + " (ChampEntite), "
-            + blocImpression.toString() + " (BlocImpression)}";
-      }
-      return "{Empty ChampImprimePK}";
-   }
+	/**
+	 * Méthode surchargeant le toString() de l'objet.
+	 */
+	@Override
+	public String toString() {
+		if (this.template != null && this.champEntite != null && this.blocImpression != null) {
+			return "{" + template.toString() + " (Template), " + champEntite.toString() + " (ChampEntite), "
+					+ blocImpression.toString() + " (BlocImpression)}";
+		}
+		return "{Empty ChampImprimePK}";
+	}
 }

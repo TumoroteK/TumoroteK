@@ -36,6 +36,7 @@
 package fr.aphp.tumorotek.model.code;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -214,24 +215,23 @@ public class CodeAssigne implements CodeCommon, Serializable {
 	 */
 	@Override
 	public boolean equals(final Object obj) {
-
 		if (this == obj) {
 			return true;
 		}
-		if ((obj == null) || obj.getClass() != this.getClass()) {
+		// instanceOf est utilise plutot que != a cause des proxys
+		// JPA qui sont crées par lors du fetch par
+		// la relation manyToAny
+		if ((obj == null) || !(obj instanceof CodeAssigne)) {
 			return false;
 		}
 		final CodeAssigne test = (CodeAssigne) obj;
-		return ((this.echantillon == test.echantillon
-				|| (this.echantillon != null && this.echantillon.equals(test.echantillon)))
-				&& (this.code == test.code || (this.code != null && this.code.equals(test.code)))
-				&& (this.libelle == test.libelle || (this.libelle != null && this.libelle.equals(test.libelle)))
-				&& (this.codeRefId == test.codeRefId
-						|| (this.codeRefId != null && this.codeRefId.equals(test.codeRefId)))
-				&& (this.tableCodage == test.tableCodage
-						|| (this.tableCodage != null && this.tableCodage.equals(test.tableCodage)))
-				&& (this.isOrgane == test.isOrgane || (this.isOrgane != null && this.isOrgane.equals(test.isOrgane)))
-				&& (this.isMorpho == test.isMorpho || (this.isMorpho != null && this.isMorpho.equals(test.isMorpho))));
+		return Objects.equals(echantillon, test.getEchantillon())
+			&& Objects.equals(code, test.getCode())
+			&& Objects.equals(libelle, test.getLibelle())
+			&& Objects.equals(codeRefId, test.getCodeRefId())
+			&& Objects.equals(tableCodage, test.getTableCodage())
+			&& Objects.equals(isOrgane, test.getIsOrgane())
+			&& Objects.equals(isMorpho, test.getIsMorpho());
 	}
 
 	/**

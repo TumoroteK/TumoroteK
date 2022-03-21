@@ -145,6 +145,9 @@ public class AffectationImprimante implements Serializable
    @Override
    public boolean equals(final Object obj){
 
+	   HERE -> refact equals
+	   remettre lazy ?
+	   
       if(this == obj){
          return true;
       }

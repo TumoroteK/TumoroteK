@@ -37,6 +37,7 @@ package fr.aphp.tumorotek.model.code;
 
 import java.io.Serializable;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -223,22 +224,17 @@ public class CimMaster implements CodeCommon, Serializable {
 	 */
 	@Override
 	public boolean equals(final Object obj) {
-
 		if (this == obj) {
 			return true;
 		}
-		// instanceOf est utilise plutot que != a cause des instances
-		// CimMaster$$EnhancerByCGLIB qui sont crées par lors du fetch par
+		// instanceOf est utilise plutot que != a cause des proxys
+		// JPA qui sont crées par lors du fetch par
 		// la relation manyToAny
 		if ((obj == null) || !(obj instanceof CimMaster)) {
 			return false;
 		}
 		final CimMaster test = (CimMaster) obj;
-		if (this.getSid() != null) {
-			// utilisation get car CimMaster$$EnhancerByCGLIB proxy
-			return this.getSid().equals(test.getSid());
-		} // impossible
-		return false;
+		return Objects.equals(sid, test.getSid());
 	}
 
 	/**

@@ -37,6 +37,7 @@ package fr.aphp.tumorotek.model.contexte;
 
 import java.io.Serializable;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -60,8 +61,7 @@ import fr.aphp.tumorotek.model.coeur.prelevement.LaboInter;
 import fr.aphp.tumorotek.model.coeur.prelevement.Prelevement;
 
 /**
- * Objet persistant mappant la table TRANSPORTEUR.
- * Classe créée le 09/09/09.
+ * Objet persistant mappant la table TRANSPORTEUR. Classe créée le 09/09/09.
  *
  * @author Pierre Ventadour
  * @version 2.3
@@ -78,278 +78,279 @@ import fr.aphp.tumorotek.model.coeur.prelevement.Prelevement;
 //      query = "SELECT t FROM Transporteur t LEFT JOIN FETCH " + "t.coordonnee WHERE t.transporteurId = ?1"),
 //   @NamedQuery(name = "Transporteur.findByExcludedId", query = "SELECT t FROM Transporteur t " + "WHERE t.transporteurId != ?1"),
 //   @NamedQuery(name = "Transporteur.findByOrder", query = "SELECT t FROM Transporteur t ORDER BY t.nom")})
-public class Transporteur implements TKFantomableObject, TKdataObject, Serializable
-{
+public class Transporteur implements TKFantomableObject, TKdataObject, Serializable {
 
-   private static final long serialVersionUID = 3254564866454L;
+	private static final long serialVersionUID = 3254564866454L;
 
-   private Integer transporteurId;
-   private String nom;
-   private String contactNom;
-   private String contactPrenom;
-   private String contactTel;
-   private String contactFax;
-   private String contactMail;
-   private Boolean archive = false;
+	private Integer transporteurId;
+	private String nom;
+	private String contactNom;
+	private String contactPrenom;
+	private String contactTel;
+	private String contactFax;
+	private String contactMail;
+	private Boolean archive = false;
 
-   private Coordonnee coordonnee;
+	private Coordonnee coordonnee;
 
-   private Set<Prelevement> prelevements = new HashSet<>();
-   private Set<Cession> cessions = new HashSet<>();
-   private Set<LaboInter> laboInters = new HashSet<>();
+	private Set<Prelevement> prelevements = new HashSet<>();
+	private Set<Cession> cessions = new HashSet<>();
+	private Set<LaboInter> laboInters = new HashSet<>();
 
-   /** Constructeur. */
-   public Transporteur(){}
+	/** Constructeur. */
+	public Transporteur() {
+	}
 
-   //	/**
-   //	 * Constructeur avec paramètres.
-   //	 * @param id .
-   //	 * @param n .
-   //	 * @param cNom .
-   //	 * @param cPrenom .
-   //	 * @param cTel .
-   //	 * @param cFax .
-   //	 * @param cMail .
-   //	 * @param arch .
-   //	 */
-   //	public Transporteur(Integer id, String n, String cNom, 
-   //			String cPrenom, String cTel, String cFax, 
-   //			String cMail, boolean arch) {
-   //		this.transporteurId = id;
-   //		this.nom = n;
-   //		this.contactNom = cNom;
-   //		this.contactPrenom = cPrenom;
-   //		this.contactTel = cTel;
-   //		this.contactFax = cFax;
-   //		this.contactMail = cMail;
-   //		this.archive = arch;
-   //	}
+	// /**
+	// * Constructeur avec paramètres.
+	// * @param id .
+	// * @param n .
+	// * @param cNom .
+	// * @param cPrenom .
+	// * @param cTel .
+	// * @param cFax .
+	// * @param cMail .
+	// * @param arch .
+	// */
+	// public Transporteur(Integer id, String n, String cNom,
+	// String cPrenom, String cTel, String cFax,
+	// String cMail, boolean arch) {
+	// this.transporteurId = id;
+	// this.nom = n;
+	// this.contactNom = cNom;
+	// this.contactPrenom = cPrenom;
+	// this.contactTel = cTel;
+	// this.contactFax = cFax;
+	// this.contactMail = cMail;
+	// this.archive = arch;
+	// }
 
-   @Id
-   @Column(name = "TRANSPORTEUR_ID", unique = true, nullable = false)
-   @GeneratedValue(generator = "autoincrement")
-   @GenericGenerator(name = "autoincrement", strategy = "increment")
-   public Integer getTransporteurId(){
-      return transporteurId;
-   }
+	@Id
+	@Column(name = "TRANSPORTEUR_ID", unique = true, nullable = false)
+	@GeneratedValue(generator = "autoincrement")
+	@GenericGenerator(name = "autoincrement", strategy = "increment")
+	public Integer getTransporteurId() {
+		return transporteurId;
+	}
 
-   public void setTransporteurId(final Integer tId){
-      this.transporteurId = tId;
-   }
+	public void setTransporteurId(final Integer tId) {
+		this.transporteurId = tId;
+	}
 
-   @Column(name = "NOM", nullable = false, length = 50)
-   public String getNom(){
-      return nom;
-   }
+	@Column(name = "NOM", nullable = false, length = 50)
+	public String getNom() {
+		return nom;
+	}
 
-   public void setNom(final String n){
-      this.nom = n;
-   }
+	public void setNom(final String n) {
+		this.nom = n;
+	}
 
-   @Column(name = "CONTACT_NOM", nullable = false, length = 50)
-   public String getContactNom(){
-      return contactNom;
-   }
+	@Column(name = "CONTACT_NOM", nullable = false, length = 50)
+	public String getContactNom() {
+		return contactNom;
+	}
 
-   public void setContactNom(final String cNom){
-      this.contactNom = cNom;
-   }
+	public void setContactNom(final String cNom) {
+		this.contactNom = cNom;
+	}
 
-   @Column(name = "CONTACT_PRENOM", nullable = true, length = 50)
-   public String getContactPrenom(){
-      return contactPrenom;
-   }
+	@Column(name = "CONTACT_PRENOM", nullable = true, length = 50)
+	public String getContactPrenom() {
+		return contactPrenom;
+	}
 
-   public void setContactPrenom(final String cPrenom){
-      this.contactPrenom = cPrenom;
-   }
+	public void setContactPrenom(final String cPrenom) {
+		this.contactPrenom = cPrenom;
+	}
 
-   @Column(name = "CONTACT_TEL", nullable = true, length = 15)
-   public String getContactTel(){
-      return contactTel;
-   }
+	@Column(name = "CONTACT_TEL", nullable = true, length = 15)
+	public String getContactTel() {
+		return contactTel;
+	}
 
-   public void setContactTel(final String cTel){
-      this.contactTel = cTel;
-   }
+	public void setContactTel(final String cTel) {
+		this.contactTel = cTel;
+	}
 
-   @Column(name = "CONTACT_FAX", nullable = true, length = 15)
-   public String getContactFax(){
-      return contactFax;
-   }
+	@Column(name = "CONTACT_FAX", nullable = true, length = 15)
+	public String getContactFax() {
+		return contactFax;
+	}
 
-   public void setContactFax(final String cFax){
-      this.contactFax = cFax;
-   }
+	public void setContactFax(final String cFax) {
+		this.contactFax = cFax;
+	}
 
-   @Column(name = "CONTACT_MAIL", nullable = true, length = 100)
-   public String getContactMail(){
-      return contactMail;
-   }
+	@Column(name = "CONTACT_MAIL", nullable = true, length = 100)
+	public String getContactMail() {
+		return contactMail;
+	}
 
-   public void setContactMail(final String cMail){
-      this.contactMail = cMail;
-   }
+	public void setContactMail(final String cMail) {
+		this.contactMail = cMail;
+	}
 
-   @Column(name = "ARCHIVE", nullable = false)
-   public Boolean getArchive(){
-      return archive;
-   }
+	@Column(name = "ARCHIVE", nullable = false)
+	public Boolean getArchive() {
+		return archive;
+	}
 
-   public void setArchive(final Boolean arch){
-      this.archive = arch;
-   }
+	public void setArchive(final Boolean arch) {
+		this.archive = arch;
+	}
 
-   //	@ManyToOne(fetch = FetchType.LAZY,cascade = {CascadeType.PERSIST, CascadeType.MERGE })
-   //	@JoinColumn(name = "COORDONNEE_ID", nullable = true)
-   @OneToOne(optional = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-   @JoinColumn(name = "COORDONNEE_ID", nullable = true)
-   public Coordonnee getCoordonnee(){
-      return coordonnee;
-   }
+	// @ManyToOne(fetch = FetchType.LAZY,cascade = {CascadeType.PERSIST,
+	// CascadeType.MERGE })
+	// @JoinColumn(name = "COORDONNEE_ID", nullable = true)
+	@OneToOne(optional = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@JoinColumn(name = "COORDONNEE_ID", nullable = true)
+	public Coordonnee getCoordonnee() {
+		return coordonnee;
+	}
 
-   public void setCoordonnee(final Coordonnee c){
-      this.coordonnee = c;
-   }
+	public void setCoordonnee(final Coordonnee c) {
+		this.coordonnee = c;
+	}
 
-   @OneToMany(mappedBy = "transporteur")
-   public Set<Prelevement> getPrelevements(){
-      return prelevements;
-   }
+	@OneToMany(mappedBy = "transporteur")
+	public Set<Prelevement> getPrelevements() {
+		return prelevements;
+	}
 
-   public void setPrelevements(final Set<Prelevement> prelevs){
-      this.prelevements = prelevs;
-   }
+	public void setPrelevements(final Set<Prelevement> prelevs) {
+		this.prelevements = prelevs;
+	}
 
-   @OneToMany(mappedBy = "transporteur")
-   public Set<Cession> getCessions(){
-      return cessions;
-   }
+	@OneToMany(mappedBy = "transporteur")
+	public Set<Cession> getCessions() {
+		return cessions;
+	}
 
-   public void setCessions(final Set<Cession> cess){
-      this.cessions = cess;
-   }
+	public void setCessions(final Set<Cession> cess) {
+		this.cessions = cess;
+	}
 
-   @OneToMany(mappedBy = "transporteur")
-   public Set<LaboInter> getLaboInters(){
-      return laboInters;
-   }
+	@OneToMany(mappedBy = "transporteur")
+	public Set<LaboInter> getLaboInters() {
+		return laboInters;
+	}
 
-   public void setLaboInters(final Set<LaboInter> labos){
-      this.laboInters = labos;
-   }
+	public void setLaboInters(final Set<LaboInter> labos) {
+		this.laboInters = labos;
+	}
 
-   /**
-    * 2 transporteurs sont considérés comme égaux s'ils ont les même attributs.
-    * @param obj est le transporteur à tester.
-    * @return true si les transporteurs sont égaux.
-    */
-   @Override
-   public boolean equals(final Object obj){
+	/**
+	 * 2 transporteurs sont considérés comme égaux s'ils ont les même attributs.
+	 * 
+	 * @param obj est le transporteur à tester.
+	 * @return true si les transporteurs sont égaux.
+	 */
+	@Override
+	public boolean equals(final Object obj) {
 
-      if(this == obj){
-         return true;
-      }
-      if((obj == null) || obj.getClass() != this.getClass()){
-         return false;
-      }
-      final Transporteur test = (Transporteur) obj;
-      return ((this.nom == test.nom || (this.nom != null && this.nom.equals(test.nom)))
-         && (this.contactNom == test.contactNom || (this.contactNom != null && this.contactNom.equals(test.contactNom)))
-         && (this.contactPrenom == test.contactPrenom
-            || (this.contactPrenom != null && this.contactPrenom.equals(test.contactPrenom)))
-         && (this.contactTel == test.contactTel || (this.contactTel != null && this.contactTel.equals(test.contactTel)))
-         && (this.contactFax == test.contactFax || (this.contactFax != null && this.contactFax.equals(test.contactFax)))
-         && (this.contactMail == test.contactMail || (this.contactMail != null && this.contactMail.equals(test.contactMail))));
-   }
+		if (this == obj) {
+			return true;
+		}
+		if ((obj == null) || !(obj instanceof Transporteur)) {
+			return false;
+		}
+		final Transporteur test = (Transporteur) obj;
+		return Objects.equals(nom, test.getNom()) && Objects.equals(contactNom, test.getContactNom())
+				&& Objects.equals(contactPrenom, test.getContactPrenom())
+				&& Objects.equals(contactTel, test.getContactTel()) && Objects.equals(contactFax, test.getContactFax())
+				&& Objects.equals(contactMail, test.getContactMail());
+	}
 
-   /**
-    * Le hashcode est calculé sur tous les attributs.
-    * @return la valeur du hashcode.
-    */
-   @Override
-   public int hashCode(){
-      int hash = 7;
-      int hashNom = 0;
-      int hashCNom = 0;
-      int hashCPrenom = 0;
-      int hashCTel = 0;
-      int hashCFax = 0;
-      int hashCMail = 0;
+	/**
+	 * Le hashcode est calculé sur tous les attributs.
+	 * 
+	 * @return la valeur du hashcode.
+	 */
+	@Override
+	public int hashCode() {
+		int hash = 7;
+		int hashNom = 0;
+		int hashCNom = 0;
+		int hashCPrenom = 0;
+		int hashCTel = 0;
+		int hashCFax = 0;
+		int hashCMail = 0;
 
-      if(this.nom != null){
-         hashNom = this.nom.hashCode();
-      }
-      if(this.contactNom != null){
-         hashCNom = this.contactNom.hashCode();
-      }
-      if(this.contactPrenom != null){
-         hashCPrenom = this.contactPrenom.hashCode();
-      }
-      if(this.contactTel != null){
-         hashCTel = this.contactTel.hashCode();
-      }
-      if(this.contactFax != null){
-         hashCFax = this.contactFax.hashCode();
-      }
-      if(this.contactMail != null){
-         hashCMail = this.contactMail.hashCode();
-      }
+		if (this.nom != null) {
+			hashNom = this.nom.hashCode();
+		}
+		if (this.contactNom != null) {
+			hashCNom = this.contactNom.hashCode();
+		}
+		if (this.contactPrenom != null) {
+			hashCPrenom = this.contactPrenom.hashCode();
+		}
+		if (this.contactTel != null) {
+			hashCTel = this.contactTel.hashCode();
+		}
+		if (this.contactFax != null) {
+			hashCFax = this.contactFax.hashCode();
+		}
+		if (this.contactMail != null) {
+			hashCMail = this.contactMail.hashCode();
+		}
 
-      hash = 7 * hash + hashNom;
-      hash = 7 * hash + hashCNom;
-      hash = 7 * hash + hashCPrenom;
-      hash = 7 * hash + hashCTel;
-      hash = 7 * hash + hashCFax;
-      hash = 7 * hash + hashCMail;
+		hash = 7 * hash + hashNom;
+		hash = 7 * hash + hashCNom;
+		hash = 7 * hash + hashCPrenom;
+		hash = 7 * hash + hashCTel;
+		hash = 7 * hash + hashCFax;
+		hash = 7 * hash + hashCMail;
 
-      return hash;
-   }
+		return hash;
+	}
 
-   /**
-    * Méthode surchargeant le toString() de l'objet.
-    */
-   @Override
-   public String toString(){
-      return "{" + this.nom + ", " + this.contactNom + ", " + this.contactPrenom + ", " + this.contactTel + ", " + this.contactFax
-         + ", " + this.contactMail + "}";
-   }
+	/**
+	 * Méthode surchargeant le toString() de l'objet.
+	 */
+	@Override
+	public String toString() {
+		return "{" + this.nom + ", " + this.contactNom + ", " + this.contactPrenom + ", " + this.contactTel + ", "
+				+ this.contactFax + ", " + this.contactMail + "}";
+	}
 
-   /**
-    * Cree un clone de l'objet.
-    * @return clone Collaborateur.
-    */
-   @Override
-   public Transporteur clone(){
-      final Transporteur clone = new Transporteur();
+	/**
+	 * Cree un clone de l'objet.
+	 * 
+	 * @return clone Collaborateur.
+	 */
+	@Override
+	public Transporteur clone() {
+		final Transporteur clone = new Transporteur();
 
-      clone.setTransporteurId(this.transporteurId);
-      clone.setNom(this.nom);
-      clone.setContactNom(this.contactNom);
-      clone.setContactPrenom(this.contactPrenom);
-      clone.setContactTel(this.contactTel);
-      clone.setContactFax(this.contactFax);
-      clone.setContactMail(this.contactMail);
-      clone.setArchive(this.archive);
-      clone.setCoordonnee(this.coordonnee);
+		clone.setTransporteurId(this.transporteurId);
+		clone.setNom(this.nom);
+		clone.setContactNom(this.contactNom);
+		clone.setContactPrenom(this.contactPrenom);
+		clone.setContactTel(this.contactTel);
+		clone.setContactFax(this.contactFax);
+		clone.setContactMail(this.contactMail);
+		clone.setArchive(this.archive);
+		clone.setCoordonnee(this.coordonnee);
 
-      return clone;
-   }
+		return clone;
+	}
 
-   @Override
-   public Integer listableObjectId(){
-      return getTransporteurId();
-   }
+	@Override
+	public Integer listableObjectId() {
+		return getTransporteurId();
+	}
 
-   @Override
-   @Transient
-   public String getPhantomData(){
-      return getNom();
-   }
+	@Override
+	@Transient
+	public String getPhantomData() {
+		return getNom();
+	}
 
-   @Override
-   public String entiteNom(){
-      return "Transporteur";
-   }
+	@Override
+	public String entiteNom() {
+		return "Transporteur";
+	}
 
 }

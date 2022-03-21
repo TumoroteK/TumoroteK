@@ -37,6 +37,7 @@ package fr.aphp.tumorotek.model.coeur.prodderive;
 
 import java.io.Serializable;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -61,8 +62,7 @@ import fr.aphp.tumorotek.model.utils.Utils;
 
 /**
  *
- * Objet persistant mappant la table TRANSFORMATION.
- * Classe créée le 11/09/09.
+ * Objet persistant mappant la table TRANSFORMATION. Classe créée le 11/09/09.
  *
  * @author Maxime Gousseau
  * @version 2.0
@@ -82,222 +82,215 @@ import fr.aphp.tumorotek.model.utils.Utils;
 //         query = "SELECT t FROM Transformation t " + "WHERE t.quantiteUnite = ?1"),
 //      @NamedQuery(name = "Transformation.findByProdDeriveId",
 //         query = "SELECT t FROM Transformation t " + "left join t.prodDerives p " + "WHERE p.prodDeriveId = ?1")})
-public class Transformation implements Serializable
-{
+public class Transformation implements Serializable {
 
-   private static final long serialVersionUID = 127047103050760932L;
+	private static final long serialVersionUID = 127047103050760932L;
 
-   private Integer transformationId;
-   private Integer objetId;
-   private Entite entite;
-   private Float quantite;
-   private Unite quantiteUnite;
-   //private Float volume;
-   //private Unite volumeUnite;
+	private Integer transformationId;
+	private Integer objetId;
+	private Entite entite;
+	private Float quantite;
+	private Unite quantiteUnite;
+	// private Float volume;
+	// private Unite volumeUnite;
 
-   private Set<Retour> retours;
-   private Set<ProdDerive> prodDerives;
+	private Set<Retour> retours;
+	private Set<ProdDerive> prodDerives;
 
-   /** Constructeur par défaut. */
-   public Transformation(){
-      super();
-      retours = new HashSet<>();
-      prodDerives = new HashSet<>();
-   }
+	/** Constructeur par défaut. */
+	public Transformation() {
+		super();
+		retours = new HashSet<>();
+		prodDerives = new HashSet<>();
+	}
 
-   @Id
-   @Column(name = "TRANSFORMATION_ID", unique = true, nullable = false)
-   @GeneratedValue(generator = "autoincrement")
-   @GenericGenerator(name = "autoincrement", strategy = "increment")
-   public Integer getTransformationId(){
-      return this.transformationId;
-   }
+	@Id
+	@Column(name = "TRANSFORMATION_ID", unique = true, nullable = false)
+	@GeneratedValue(generator = "autoincrement")
+	@GenericGenerator(name = "autoincrement", strategy = "increment")
+	public Integer getTransformationId() {
+		return this.transformationId;
+	}
 
-   public void setTransformationId(final Integer id){
-      this.transformationId = id;
-   }
+	public void setTransformationId(final Integer id) {
+		this.transformationId = id;
+	}
 
-   @Column(name = "OBJET_ID", nullable = false)
-   public Integer getObjetId(){
-      return this.objetId;
-   }
+	@Column(name = "OBJET_ID", nullable = false)
+	public Integer getObjetId() {
+		return this.objetId;
+	}
 
-   public void setObjetId(final Integer id){
-      this.objetId = id;
-   }
+	public void setObjetId(final Integer id) {
+		this.objetId = id;
+	}
 
-   @ManyToOne(fetch = FetchType.LAZY,cascade = {CascadeType.MERGE})
-   @JoinColumn(name = "ENTITE_ID", nullable = false)
-   public Entite getEntite(){
-      return this.entite;
-   }
+	@ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE })
+	@JoinColumn(name = "ENTITE_ID", nullable = false)
+	public Entite getEntite() {
+		return this.entite;
+	}
 
-   public void setEntite(final Entite ent){
-      this.entite = ent;
-   }
+	public void setEntite(final Entite ent) {
+		this.entite = ent;
+	}
 
-   @Column(name = "QUANTITE", nullable = true)
-   public Float getQuantite(){
-      return Utils.floor(this.quantite, 3);
-   }
+	@Column(name = "QUANTITE", nullable = true)
+	public Float getQuantite() {
+		return Utils.floor(this.quantite, 3);
+	}
 
-   public void setQuantite(final Float quant){
-      this.quantite = Utils.floor(quant, 3);
-   }
+	public void setQuantite(final Float quant) {
+		this.quantite = Utils.floor(quant, 3);
+	}
 
-   @ManyToOne(fetch = FetchType.LAZY,cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-   @JoinColumn(name = "QUANTITE_UNITE_ID", nullable = true)
-   public Unite getQuantiteUnite(){
-      return this.quantiteUnite;
-   }
+	@ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+	@JoinColumn(name = "QUANTITE_UNITE_ID", nullable = true)
+	public Unite getQuantiteUnite() {
+		return this.quantiteUnite;
+	}
 
-   public void setQuantiteUnite(final Unite qu){
-      this.quantiteUnite = qu;
-   }
+	public void setQuantiteUnite(final Unite qu) {
+		this.quantiteUnite = qu;
+	}
 
-   /*@Column(name = "VOLUME", nullable = true)
-   public Float getVolume() {
-   	return this.volume;
-   }
-   
-   public void setVolume(Float vol) {
-   	this.volume = vol;
-   }
-   
-   @ManyToOne(fetch = FetchType.LAZY,cascade = {CascadeType.PERSIST, CascadeType.MERGE })
-   @JoinColumn(name = "VOLUME_UNITE_ID", nullable = true)
-   public Unite getVolumeUnite() {
-   	return this.volumeUnite;
-   }
-   
-   public void setVolumeUnite(Unite volu) {
-   	this.volumeUnite = volu;
-   }*/
+	/*
+	 * @Column(name = "VOLUME", nullable = true) public Float getVolume() { return
+	 * this.volume; }
+	 * 
+	 * public void setVolume(Float vol) { this.volume = vol; }
+	 * 
+	 * @ManyToOne(fetch = FetchType.LAZY,cascade = {CascadeType.PERSIST,
+	 * CascadeType.MERGE })
+	 * 
+	 * @JoinColumn(name = "VOLUME_UNITE_ID", nullable = true) public Unite
+	 * getVolumeUnite() { return this.volumeUnite; }
+	 * 
+	 * public void setVolumeUnite(Unite volu) { this.volumeUnite = volu; }
+	 */
 
-   @OneToMany(mappedBy = "transformation")
-   public Set<Retour> getRetours(){
-      return retours;
-   }
+	@OneToMany(mappedBy = "transformation")
+	public Set<Retour> getRetours() {
+		return retours;
+	}
 
-   public void setRetours(final Set<Retour> rets){
-      this.retours = rets;
-   }
+	public void setRetours(final Set<Retour> rets) {
+		this.retours = rets;
+	}
 
-   @OneToMany(mappedBy = "transformation")
-   @OrderBy("prodDeriveId")
-   public Set<ProdDerive> getProdDerives(){
-      return prodDerives;
-   }
+	@OneToMany(mappedBy = "transformation")
+	@OrderBy("prodDeriveId")
+	public Set<ProdDerive> getProdDerives() {
+		return prodDerives;
+	}
 
-   public void setProdDerives(final Set<ProdDerive> prodDers){
-      this.prodDerives = prodDers;
-   }
+	public void setProdDerives(final Set<ProdDerive> prodDers) {
+		this.prodDerives = prodDers;
+	}
 
-   /**
-    * 2 transformations sont considérées comme égales si elles ont les mêmes
-    * quantités et volumes.
-    * @param obj est la transformation à tester.
-    * @return true si les transformations sont égales.
-    */
-   @Override
-   public boolean equals(final Object obj){
+	/**
+	 * 2 transformations sont considérées comme égales si elles ont les mêmes
+	 * quantités et volumes.
+	 * 
+	 * @param obj est la transformation à tester.
+	 * @return true si les transformations sont égales.
+	 */
+	@Override
+	public boolean equals(final Object obj) {
 
-      if(this == obj){
-         return true;
-      }
-      if((obj == null) || obj.getClass() != this.getClass()){
-         return false;
-      }
-      final Transformation test = (Transformation) obj;
-      return ((this.objetId == test.objetId || (this.objetId != null && this.objetId.equals(test.objetId)))
-         && (this.quantite == test.quantite || (this.quantite != null && this.quantite.equals(test.quantite)))
-         && (this.entite == test.entite || (this.entite != null && this.entite.equals(test.entite)))
-         && (this.quantiteUnite == test.quantiteUnite
-            || (this.quantiteUnite != null && this.quantiteUnite.equals(test.quantiteUnite))));
-      /*&& (this.volume == test.volume || (this.volume != null 
-      		&& this.volume.equals(test.volume))) 
-      && (this.volumeUnite == test.volumeUnite 
-      		|| (this.volumeUnite != null 
-      		&& this.volumeUnite.equals(test.volumeUnite))));*/
-   }
+		if (this == obj) {
+			return true;
+		}
+		if ((obj == null) || !(obj instanceof Transformation)) {
+			return false;
+		}
+		final Transformation test = (Transformation) obj;
+		return Objects.equals(objetId, test.getObjetId()) 
+				&& Objects.equals(quantite, test.getQuantite())
+				&& Objects.equals(quantiteUnite, test.getQuantiteUnite()) 
+				&& Objects.equals(entite, test.getEntite());
+	}
 
-   /**
-    * Le hashcode est calculé sur les attributs quantite et volume.
-    * @return la valeur du hashcode.
-    */
-   @Override
-   public int hashCode(){
+	/**
+	 * Le hashcode est calculé sur les attributs quantite et volume.
+	 * 
+	 * @return la valeur du hashcode.
+	 */
+	@Override
+	public int hashCode() {
 
-      int hash = 7;
-      int hashObjet = 0;
-      int hashEntite = 0;
-      int hashQuantite = 0;
-      int hashQuantiteUnite = 0;
+		int hash = 7;
+		int hashObjet = 0;
+		int hashEntite = 0;
+		int hashQuantite = 0;
+		int hashQuantiteUnite = 0;
 
-      if(this.objetId != null){
-         hashObjet = this.objetId.hashCode();
-      }
-      if(this.entite != null){
-         hashEntite = this.entite.hashCode();
-      }
-      if(this.quantite != null){
-         hashQuantite = this.quantite.hashCode();
-      }
-      if(this.quantiteUnite != null){
-         hashQuantiteUnite = this.quantiteUnite.hashCode();
-      }
-      /*if (this.volume != null) {
-      	hashVolume = this.volume.hashCode();
-      }
-      if (this.volumeUnite != null) {
-      	hashVolumeUnite = this.volumeUnite.hashCode();
-      }*/
+		if (this.objetId != null) {
+			hashObjet = this.objetId.hashCode();
+		}
+		if (this.entite != null) {
+			hashEntite = this.entite.hashCode();
+		}
+		if (this.quantite != null) {
+			hashQuantite = this.quantite.hashCode();
+		}
+		if (this.quantiteUnite != null) {
+			hashQuantiteUnite = this.quantiteUnite.hashCode();
+		}
+		/*
+		 * if (this.volume != null) { hashVolume = this.volume.hashCode(); } if
+		 * (this.volumeUnite != null) { hashVolumeUnite = this.volumeUnite.hashCode(); }
+		 */
 
-      hash = 7 * hash + hashObjet;
-      hash = 7 * hash + hashEntite;
-      hash = 7 * hash + hashQuantite;
-      hash = 7 * hash + hashQuantiteUnite;
-      /*hash = 7 * hash + hashVolume;
-      hash = 7 * hash + hashVolumeUnite;*/
+		hash = 7 * hash + hashObjet;
+		hash = 7 * hash + hashEntite;
+		hash = 7 * hash + hashQuantite;
+		hash = 7 * hash + hashQuantiteUnite;
+		/*
+		 * hash = 7 * hash + hashVolume; hash = 7 * hash + hashVolumeUnite;
+		 */
 
-      return hash;
+		return hash;
 
-   }
+	}
 
-   /**
-    * Méthode surchargeant le toString() de l'objet.
-    */
-   @Override
-   public String toString(){
-      if(this.entite != null && this.objetId != null){
-         return "{" + this.objetId + ", " + this.entite.toString() + "(Entite)}";
-      }
-      return "{Empty transformation}";
-   }
+	/**
+	 * Méthode surchargeant le toString() de l'objet.
+	 */
+	@Override
+	public String toString() {
+		if (this.entite != null && this.objetId != null) {
+			return "{" + this.objetId + ", " + this.entite.toString() + "(Entite)}";
+		}
+		return "{Empty transformation}";
+	}
 
-   /**
-    * Cree un clone de l'objet.
-    * @return clone Transformation.
-    */
-   @Override
-   public Transformation clone(){
-      final Transformation clone = new Transformation();
+	/**
+	 * Cree un clone de l'objet.
+	 * 
+	 * @return clone Transformation.
+	 */
+	@Override
+	public Transformation clone() {
+		final Transformation clone = new Transformation();
 
-      clone.setTransformationId(this.getTransformationId());
-      clone.setObjetId(this.getObjetId());
-      clone.setEntite(this.getEntite());
-      clone.setQuantite(this.getQuantite());
-      clone.setQuantiteUnite(this.getQuantiteUnite());
-      /*clone.setVolume(this.getVolume());
-      clone.setVolumeUnite(this.getVolumeUnite());*/
+		clone.setTransformationId(this.getTransformationId());
+		clone.setObjetId(this.getObjetId());
+		clone.setEntite(this.getEntite());
+		clone.setQuantite(this.getQuantite());
+		clone.setQuantiteUnite(this.getQuantiteUnite());
+		/*
+		 * clone.setVolume(this.getVolume());
+		 * clone.setVolumeUnite(this.getVolumeUnite());
+		 */
 
-      return clone;
-   }
+		return clone;
+	}
 
-   @PreRemove
-   private void nullifyRetours(){
-      for(final Retour r : getRetours()){
-         r.setTransformation(null);
-      }
-   }
+	@PreRemove
+	private void nullifyRetours() {
+		for (final Retour r : getRetours()) {
+			r.setTransformation(null);
+		}
+	}
 }

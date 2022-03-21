@@ -38,6 +38,7 @@ package fr.aphp.tumorotek.model.coeur;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -55,8 +56,7 @@ import fr.aphp.tumorotek.model.coeur.prodderive.ProdDerive;
 
 /**
  *
- * Objet persistant mappant la table OBJET_STATUT.
- * Classe créée le 09/09/09.
+ * Objet persistant mappant la table OBJET_STATUT. Classe créée le 09/09/09.
  *
  * @author Pierre Ventadour
  * @version 2.3
@@ -67,129 +67,131 @@ import fr.aphp.tumorotek.model.coeur.prodderive.ProdDerive;
 //@NamedQueries(
 //   value = {@NamedQuery(name = "ObjetStatut.findByStatut", query = "SELECT o FROM ObjetStatut o WHERE o.statut like ?1"),
 //      @NamedQuery(name = "ObjetStatut.findByOrder", query = "SELECT o FROM ObjetStatut o ORDER BY o.statut")})
-public class ObjetStatut implements java.io.Serializable
-{
+public class ObjetStatut implements java.io.Serializable {
 
-   private static final long serialVersionUID = 33315464531548613L;
+	private static final long serialVersionUID = 33315464531548613L;
 
-   private Integer objetStatutId;
-   private String statut;
+	private Integer objetStatutId;
+	private String statut;
 
-   private Set<Echantillon> echantillons = new HashSet<>();
-   private Set<ProdDerive> prodDerives = new HashSet<>();
-   private List<Retour> retours = new ArrayList<>();
+	private Set<Echantillon> echantillons = new HashSet<>();
+	private Set<ProdDerive> prodDerives = new HashSet<>();
+	private List<Retour> retours = new ArrayList<>();
 
-   /** Constructeur par défaut. */
-   public ObjetStatut(){}
+	/** Constructeur par défaut. */
+	public ObjetStatut() {
+	}
 
-   /**
-    * Constructeur avec paramètres.
-    * @param id .
-    * @param s .
-    */
-   public ObjetStatut(final Integer id, final String s){
-      this.objetStatutId = id;
-      this.statut = s;
-   }
+	/**
+	 * Constructeur avec paramètres.
+	 * 
+	 * @param id .
+	 * @param s  .
+	 */
+	public ObjetStatut(final Integer id, final String s) {
+		this.objetStatutId = id;
+		this.statut = s;
+	}
 
-   @Id
-   @Column(name = "OBJET_STATUT_ID", unique = true, nullable = false)
-   @GeneratedValue(generator = "autoincrement")
-   @GenericGenerator(name = "autoincrement", strategy = "increment")
-   public Integer getObjetStatutId(){
-      return objetStatutId;
-   }
+	@Id
+	@Column(name = "OBJET_STATUT_ID", unique = true, nullable = false)
+	@GeneratedValue(generator = "autoincrement")
+	@GenericGenerator(name = "autoincrement", strategy = "increment")
+	public Integer getObjetStatutId() {
+		return objetStatutId;
+	}
 
-   public void setObjetStatutId(final Integer id){
-      this.objetStatutId = id;
-   }
+	public void setObjetStatutId(final Integer id) {
+		this.objetStatutId = id;
+	}
 
-   @Column(name = "STATUT", nullable = false, length = 20)
-   public String getStatut(){
-      return statut;
-   }
+	@Column(name = "STATUT", nullable = false, length = 20)
+	public String getStatut() {
+		return statut;
+	}
 
-   public void setStatut(final String s){
-      this.statut = s;
-   }
+	public void setStatut(final String s) {
+		this.statut = s;
+	}
 
-   @OneToMany(mappedBy = "objetStatut")
-   public Set<Echantillon> getEchantillons(){
-      return echantillons;
-   }
+	@OneToMany(mappedBy = "objetStatut")
+	public Set<Echantillon> getEchantillons() {
+		return echantillons;
+	}
 
-   public void setEchantillons(final Set<Echantillon> echans){
-      this.echantillons = echans;
-   }
+	public void setEchantillons(final Set<Echantillon> echans) {
+		this.echantillons = echans;
+	}
 
-   @OneToMany(mappedBy = "objetStatut")
-   public Set<ProdDerive> getProdDerives(){
-      return prodDerives;
-   }
+	@OneToMany(mappedBy = "objetStatut")
+	public Set<ProdDerive> getProdDerives() {
+		return prodDerives;
+	}
 
-   public void setProdDerives(final Set<ProdDerive> prods){
-      this.prodDerives = prods;
-   }
+	public void setProdDerives(final Set<ProdDerive> prods) {
+		this.prodDerives = prods;
+	}
 
-   @OneToMany(mappedBy = "objetStatut")
-   public List<Retour> getRetours(){
-      return retours;
-   }
+	@OneToMany(mappedBy = "objetStatut")
+	public List<Retour> getRetours() {
+		return retours;
+	}
 
-   public void setRetours(final List<Retour> r){
-      this.retours = r;
-   }
+	public void setRetours(final List<Retour> r) {
+		this.retours = r;
+	}
 
-   /**
-    * 2 objets sont considérés comme égaux s'ils ont le même status.
-    * @param obj est l'objet à tester.
-    * @return true si les objets sont égaux.
-    */
-   @Override
-   public boolean equals(final Object obj){
+	/**
+	 * 2 objets sont considérés comme égaux s'ils ont le même status.
+	 * 
+	 * @param obj est l'objet à tester.
+	 * @return true si les objets sont égaux.
+	 */
+	@Override
+	public boolean equals(final Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		// instanceOf est utilise plutot que != a cause des proxys
+		// JPA qui sont crées par lors du fetch par
+		// la relation manyToAny
+		if ((obj == null) || !(obj instanceof ObjetStatut)) {
+			return false;
+		}
+		final ObjetStatut test = (ObjetStatut) obj;
+		return Objects.equals(statut, test.getStatut());
+	}
 
-      if(this == obj){
-         return true;
-      }
-      if((obj == null) || obj.getClass() != this.getClass()){
-         return false;
-      }
-      final ObjetStatut test = (ObjetStatut) obj;
-      if(this.statut == null){
-         return (test.statut == null);
-      }
-      return (this.statut.equals(test.statut));
-   }
+	/**
+	 * Le hashcode est calculé sur l'attribut statut.
+	 * 
+	 * @return la valeur du hashcode.
+	 */
+	@Override
+	public int hashCode() {
 
-   /**
-    * Le hashcode est calculé sur l'attribut statut.
-    * @return la valeur du hashcode.
-    */
-   @Override
-   public int hashCode(){
+		int hash = 7;
+		int hashStatut = 0;
 
-      int hash = 7;
-      int hashStatut = 0;
+		if (this.statut != null) {
+			hashStatut = this.statut.hashCode();
+		}
 
-      if(this.statut != null){
-         hashStatut = this.statut.hashCode();
-      }
+		hash = 31 * hash + hashStatut;
 
-      hash = 31 * hash + hashStatut;
+		return hash;
 
-      return hash;
+	}
 
-   }
-
-   /**
-    * Méthode surchargeant le toString() de l'objet.
-    */
-   @Override
-   public String toString(){
-      if(this.statut != null){
-         return "{" + this.statut + "}";
-      }
-      return "{Empty ObjetStatut}";
-   }
+	/**
+	 * Méthode surchargeant le toString() de l'objet.
+	 */
+	@Override
+	public String toString() {
+		if (this.statut != null) {
+			return "{" + this.statut + "}";
+		}
+		return "{Empty ObjetStatut}";
+	}
 
 }

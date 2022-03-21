@@ -37,6 +37,7 @@ package fr.aphp.tumorotek.model.code;
 
 import java.io.Serializable;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -212,18 +213,19 @@ public class CodeUtilisateur implements CodeCommon, Serializable {
 	 */
 	@Override
 	public boolean equals(final Object obj) {
-
 		if (this == obj) {
 			return true;
 		}
-		if ((obj == null) || obj.getClass() != this.getClass()) {
+		// instanceOf est utilise plutot que != a cause des proxys
+		// JPA qui sont crées par lors du fetch par
+		// la relation manyToAny
+		if ((obj == null) || !(obj instanceof CodeUtilisateur)) {
 			return false;
 		}
 		final CodeUtilisateur test = (CodeUtilisateur) obj;
-		return ((this.code == test.code || (this.code != null && this.code.equals(test.code)))
-				&& (this.utilisateur == test.utilisateur
-						|| (this.utilisateur != null && this.utilisateur.equals(test.utilisateur)))
-				&& (this.banque == test.banque || (this.banque != null && this.banque.equals(test.banque))));
+		return Objects.equals(code, test.getCode())
+			&& Objects.equals(utilisateur, test.getUtilisateur())
+			&& Objects.equals(banque, test.getBanque());
 	}
 
 	/**

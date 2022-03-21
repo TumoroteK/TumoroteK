@@ -37,6 +37,7 @@ package fr.aphp.tumorotek.model.impression;
 
 import java.io.Serializable;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -56,8 +57,8 @@ import fr.aphp.tumorotek.model.systeme.Entite;
 
 /**
  *
- * Objet persistant mappant la table BLOC_IMPRESSION.
- * Classe créée le 21/07/2010.
+ * Objet persistant mappant la table BLOC_IMPRESSION. Classe créée le
+ * 21/07/2010.
  *
  * @author Pierre Ventadour.
  * @version 2.3
@@ -67,197 +68,183 @@ import fr.aphp.tumorotek.model.systeme.Entite;
 @Table(name = "BLOC_IMPRESSION")
 //@NamedQueries(value = {@NamedQuery(name = "BlocImpression.findByEntite",
 //   query = "SELECT b FROM BlocImpression b WHERE b.entite = ?1 " + "ORDER BY b.ordre")})
-public class BlocImpression implements Serializable
-{
+public class BlocImpression implements Serializable {
 
-   private static final long serialVersionUID = -401351001870593573L;
+	private static final long serialVersionUID = -401351001870593573L;
 
-   private Integer blocImpressionId;
-   private String nom;
-   private Integer ordre;
-   private Boolean isListe;
-   private Boolean imprime = true;
+	private Integer blocImpressionId;
+	private String nom;
+	private Integer ordre;
+	private Boolean isListe;
+	private Boolean imprime = true;
 
-   private Entite entite;
+	private Entite entite;
 
-   private Set<ChampEntiteBloc> champEntiteBlocs = new HashSet<>();
-   private Set<BlocImpressionTemplate> blocImpressionTemplates = new HashSet<>();
-   private Set<ChampImprime> champImprimes = new HashSet<>();
+	private Set<ChampEntiteBloc> champEntiteBlocs = new HashSet<>();
+	private Set<BlocImpressionTemplate> blocImpressionTemplates = new HashSet<>();
+	private Set<ChampImprime> champImprimes = new HashSet<>();
 
-   public BlocImpression(){
+	public BlocImpression() {
 
-   }
+	}
 
-   @Id
-   @Column(name = "BLOC_IMPRESSION_ID", unique = true, nullable = false)
-   @GeneratedValue(generator = "autoincrement")
-   @GenericGenerator(name = "autoincrement", strategy = "increment")
-   public Integer getBlocImpressionId(){
-      return blocImpressionId;
-   }
+	@Id
+	@Column(name = "BLOC_IMPRESSION_ID", unique = true, nullable = false)
+	@GeneratedValue(generator = "autoincrement")
+	@GenericGenerator(name = "autoincrement", strategy = "increment")
+	public Integer getBlocImpressionId() {
+		return blocImpressionId;
+	}
 
-   public void setBlocImpressionId(final Integer id){
-      this.blocImpressionId = id;
-   }
+	public void setBlocImpressionId(final Integer id) {
+		this.blocImpressionId = id;
+	}
 
-   @Column(name = "NOM", nullable = false)
-   public String getNom(){
-      return nom;
-   }
+	@Column(name = "NOM", nullable = false)
+	public String getNom() {
+		return nom;
+	}
 
-   public void setNom(final String n){
-      this.nom = n;
-   }
+	public void setNom(final String n) {
+		this.nom = n;
+	}
 
-   @Column(name = "ORDRE", nullable = false)
-   public Integer getOrdre(){
-      return ordre;
-   }
+	@Column(name = "ORDRE", nullable = false)
+	public Integer getOrdre() {
+		return ordre;
+	}
 
-   public void setOrdre(final Integer o){
-      this.ordre = o;
-   }
+	public void setOrdre(final Integer o) {
+		this.ordre = o;
+	}
 
-   @Column(name = "IS_LISTE", nullable = false)
-   public Boolean getIsListe(){
-      return isListe;
-   }
+	@Column(name = "IS_LISTE", nullable = false)
+	public Boolean getIsListe() {
+		return isListe;
+	}
 
-   public void setIsListe(final Boolean isL){
-      this.isListe = isL;
-   }
+	public void setIsListe(final Boolean isL) {
+		this.isListe = isL;
+	}
 
-   @ManyToOne(fetch = FetchType.LAZY)
-   @JoinColumn(name = "ENTITE_ID", nullable = false)
-   public Entite getEntite(){
-      return entite;
-   }
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "ENTITE_ID", nullable = false)
+	public Entite getEntite() {
+		return entite;
+	}
 
-   public void setEntite(final Entite e){
-      this.entite = e;
-   }
+	public void setEntite(final Entite e) {
+		this.entite = e;
+	}
 
-   @OneToMany(mappedBy = "pk.blocImpression")
-   public Set<ChampEntiteBloc> getChampEntiteBlocs(){
-      return champEntiteBlocs;
-   }
+	@OneToMany(mappedBy = "pk.blocImpression")
+	public Set<ChampEntiteBloc> getChampEntiteBlocs() {
+		return champEntiteBlocs;
+	}
 
-   public void setChampEntiteBlocs(final Set<ChampEntiteBloc> champs){
-      this.champEntiteBlocs = champs;
-   }
+	public void setChampEntiteBlocs(final Set<ChampEntiteBloc> champs) {
+		this.champEntiteBlocs = champs;
+	}
 
-   @OneToMany(mappedBy = "pk.blocImpression")
-   public Set<BlocImpressionTemplate> getBlocImpressionTemplates(){
-      return blocImpressionTemplates;
-   }
+	@OneToMany(mappedBy = "pk.blocImpression")
+	public Set<BlocImpressionTemplate> getBlocImpressionTemplates() {
+		return blocImpressionTemplates;
+	}
 
-   public void setBlocImpressionTemplates(final Set<BlocImpressionTemplate> templates){
-      this.blocImpressionTemplates = templates;
-   }
+	public void setBlocImpressionTemplates(final Set<BlocImpressionTemplate> templates) {
+		this.blocImpressionTemplates = templates;
+	}
 
-   @OneToMany(mappedBy = "pk.blocImpression")
-   public Set<ChampImprime> getChampImprimes(){
-      return champImprimes;
-   }
+	@OneToMany(mappedBy = "pk.blocImpression")
+	public Set<ChampImprime> getChampImprimes() {
+		return champImprimes;
+	}
 
-   public void setChampImprimes(final Set<ChampImprime> champIs){
-      this.champImprimes = champIs;
-   }
+	public void setChampImprimes(final Set<ChampImprime> champIs) {
+		this.champImprimes = champIs;
+	}
 
-   @Transient
-   public Boolean getImprime(){
-      return imprime;
-   }
+	@Transient
+	public Boolean getImprime() {
+		return imprime;
+	}
 
-   public void setImprime(final Boolean imp){
-      this.imprime = imp;
-   }
+	public void setImprime(final Boolean imp) {
+		this.imprime = imp;
+	}
 
-   /**
-    * 2 blocs sont considérés comme égaux s'ils ont le même
-    * nom et la même entité.
-    * @param obj est le bloc à tester.
-    * @return true si les blocs sont égaux.
-    */
-   @Override
-   public boolean equals(final Object obj){
+	/**
+	 * 2 blocs sont considérés comme égaux s'ils ont le même nom et la même entité.
+	 * 
+	 * @param obj est le bloc à tester.
+	 * @return true si les blocs sont égaux.
+	 */
+	@Override
+	public boolean equals(final Object obj) {
 
-      if(this == obj){
-         return true;
-      }
-      if((obj == null) || obj.getClass() != this.getClass()){
-         return false;
-      }
-      final BlocImpression test = (BlocImpression) obj;
-      if(this.nom == null){
-         if(test.nom == null){
-            if(this.entite == null){
-               return (test.entite == null);
-            }
-            return (this.entite.equals(test.entite));
-         }
-         return false;
-      }else if(this.entite == null){
-         if(test.entite == null){
-            return (this.nom.equals(test.nom));
-         }
-         return false;
-      }else{
-         return (this.nom.equals(test.nom) && this.entite.equals(test.entite));
-      }
-   }
+		if (this == obj) {
+			return true;
+		}
+		if ((obj == null) || !(obj instanceof BlocImpression)) {
+			return false;
+		}
+		final BlocImpression test = (BlocImpression) obj;
+		return Objects.equals(nom, test.getNom()) && Objects.equals(entite, test.getEntite());
+	}
 
-   /**
-    * Le hashcode est calculé sur les attributs nom et banque.
-    * @return la valeur du hashcode.
-    */
-   @Override
-   public int hashCode(){
+	/**
+	 * Le hashcode est calculé sur les attributs nom et banque.
+	 * 
+	 * @return la valeur du hashcode.
+	 */
+	@Override
+	public int hashCode() {
 
-      int hash = 7;
-      int hashNom = 0;
-      int hashEntite = 0;
+		int hash = 7;
+		int hashNom = 0;
+		int hashEntite = 0;
 
-      if(this.nom != null){
-         hashNom = this.nom.hashCode();
-      }
-      if(this.entite != null){
-         hashEntite = this.entite.hashCode();
-      }
+		if (this.nom != null) {
+			hashNom = this.nom.hashCode();
+		}
+		if (this.entite != null) {
+			hashEntite = this.entite.hashCode();
+		}
 
-      hash = 31 * hash + hashNom;
-      hash = 31 * hash + hashEntite;
+		hash = 31 * hash + hashNom;
+		hash = 31 * hash + hashEntite;
 
-      return hash;
+		return hash;
 
-   }
+	}
 
-   /**
-    * Méthode surchargeant le toString() de l'objet.
-    */
-   @Override
-   public String toString(){
-      if(this.nom != null){
-         return "{" + this.nom + "}";
-      }
-      return "{Empty BlocImpression}";
-   }
+	/**
+	 * Méthode surchargeant le toString() de l'objet.
+	 */
+	@Override
+	public String toString() {
+		if (this.nom != null) {
+			return "{" + this.nom + "}";
+		}
+		return "{Empty BlocImpression}";
+	}
 
-   /**
-    * Cree un clone de l'objet.
-    * @return clone BlocImpression.
-    */
-   @Override
-   public BlocImpression clone(){
-      final BlocImpression clone = new BlocImpression();
+	/**
+	 * Cree un clone de l'objet.
+	 * 
+	 * @return clone BlocImpression.
+	 */
+	@Override
+	public BlocImpression clone() {
+		final BlocImpression clone = new BlocImpression();
 
-      clone.setBlocImpressionId(this.blocImpressionId);
-      clone.setNom(this.nom);
-      clone.setEntite(this.entite);
-      clone.setOrdre(this.ordre);
-      clone.setIsListe(this.isListe);
+		clone.setBlocImpressionId(this.blocImpressionId);
+		clone.setNom(this.nom);
+		clone.setEntite(this.entite);
+		clone.setOrdre(this.ordre);
+		clone.setIsListe(this.isListe);
 
-      return clone;
-   }
+		return clone;
+	}
 
 }

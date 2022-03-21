@@ -37,6 +37,7 @@ package fr.aphp.tumorotek.model.coeur.prelevement;
 
 import java.io.Serializable;
 import java.util.Calendar;
+import java.util.Objects;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -58,8 +59,7 @@ import fr.aphp.tumorotek.model.contexte.Transporteur;
 
 /**
  *
- * Objet persistant mappant la table LABO_INTER.
- * Classe créée le 17/09/09.
+ * Objet persistant mappant la table LABO_INTER. Classe créée le 17/09/09.
  *
  * @author Pierre Ventadour
  * @version 2.3
@@ -102,216 +102,217 @@ import fr.aphp.tumorotek.model.contexte.Transporteur;
 //   //					+ "LEFT JOIN FETCH l.transporteur LEFT JOIN FETCH " 
 //   //					+ "l.prelevement WHERE l.laboInterId = ?1"),
 //   })
-public class LaboInter implements Serializable
-{
+public class LaboInter implements Serializable {
 
-   private static final long serialVersionUID = 548676135486746L;
+	private static final long serialVersionUID = 548676135486746L;
 
-   private Integer laboInterId;
-   private Integer ordre;
-   private Calendar dateArrivee;
-   private Float conservTemp;
-   private Boolean sterile;
-   private Boolean congelation;
-   private Float transportTemp;
-   private Calendar dateDepart;
+	private Integer laboInterId;
+	private Integer ordre;
+	private Calendar dateArrivee;
+	private Float conservTemp;
+	private Boolean sterile;
+	private Boolean congelation;
+	private Float transportTemp;
+	private Calendar dateDepart;
 
-   private Prelevement prelevement;
-   private Collaborateur collaborateur;
-   private Transporteur transporteur;
-   private Service service;
+	private Prelevement prelevement;
+	private Collaborateur collaborateur;
+	private Transporteur transporteur;
+	private Service service;
 
-   /** Constructeur par défaut. */
-   public LaboInter(){}
+	/** Constructeur par défaut. */
+	public LaboInter() {
+	}
 
-   @Override
-   public String toString(){
-      if(this.prelevement != null && this.ordre != null){
-         return "{" + this.prelevement.getCode() + ", " + this.ordre.toString() + "}";
-      }else{
-         return "{Empty LaboInter}";
-      }
-   }
+	@Override
+	public String toString() {
+		if (this.prelevement != null && this.ordre != null) {
+			return "{" + this.prelevement.getCode() + ", " + this.ordre.toString() + "}";
+		} else {
+			return "{Empty LaboInter}";
+		}
+	}
 
-   @Id
-   @Column(name = "LABO_INTER_ID", unique = true, nullable = false)
-   @GeneratedValue(generator = "autoincrement")
-   @GenericGenerator(name = "autoincrement", strategy = "increment")
-   public Integer getLaboInterId(){
-      return this.laboInterId;
-   }
+	@Id
+	@Column(name = "LABO_INTER_ID", unique = true, nullable = false)
+	@GeneratedValue(generator = "autoincrement")
+	@GenericGenerator(name = "autoincrement", strategy = "increment")
+	public Integer getLaboInterId() {
+		return this.laboInterId;
+	}
 
-   public void setLaboInterId(final Integer id){
-      this.laboInterId = id;
-   }
+	public void setLaboInterId(final Integer id) {
+		this.laboInterId = id;
+	}
 
-   @Column(name = "ORDRE", nullable = false)
-   public Integer getOrdre(){
-      return this.ordre;
-   }
+	@Column(name = "ORDRE", nullable = false)
+	public Integer getOrdre() {
+		return this.ordre;
+	}
 
-   public void setOrdre(final Integer o){
-      this.ordre = o;
-   }
+	public void setOrdre(final Integer o) {
+		this.ordre = o;
+	}
 
-   @Temporal(TemporalType.TIMESTAMP)
-   @Column(name = "DATE_ARRIVEE", nullable = true)
-   public Calendar getDateArrivee(){
-      if(dateArrivee != null){
-         final Calendar cal = Calendar.getInstance();
-         cal.setTime(dateArrivee.getTime());
-         return cal;
-      }else{
-         return null;
-      }
-   }
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "DATE_ARRIVEE", nullable = true)
+	public Calendar getDateArrivee() {
+		if (dateArrivee != null) {
+			final Calendar cal = Calendar.getInstance();
+			cal.setTime(dateArrivee.getTime());
+			return cal;
+		} else {
+			return null;
+		}
+	}
 
-   public void setDateArrivee(final Calendar cal){
-      if(cal != null){
-         this.dateArrivee = Calendar.getInstance();
-         this.dateArrivee.setTime(cal.getTime());
-      }else{
-         this.dateArrivee = null;
-      }
-   }
+	public void setDateArrivee(final Calendar cal) {
+		if (cal != null) {
+			this.dateArrivee = Calendar.getInstance();
+			this.dateArrivee.setTime(cal.getTime());
+		} else {
+			this.dateArrivee = null;
+		}
+	}
 
-   @Column(name = "CONSERV_TEMP", nullable = true)
-   public Float getConservTemp(){
-      return this.conservTemp;
-   }
+	@Column(name = "CONSERV_TEMP", nullable = true)
+	public Float getConservTemp() {
+		return this.conservTemp;
+	}
 
-   public void setConservTemp(final Float temp){
-      this.conservTemp = temp;
-   }
+	public void setConservTemp(final Float temp) {
+		this.conservTemp = temp;
+	}
 
-   @Column(name = "STERILE", nullable = true)
-   public Boolean getSterile(){
-      return this.sterile;
-   }
+	@Column(name = "STERILE", nullable = true)
+	public Boolean getSterile() {
+		return this.sterile;
+	}
 
-   public void setSterile(final Boolean ster){
-      this.sterile = ster;
-   }
+	public void setSterile(final Boolean ster) {
+		this.sterile = ster;
+	}
 
-   @Column(name = "CONGELATION", nullable = true)
-   public Boolean getCongelation(){
-      return congelation;
-   }
+	@Column(name = "CONGELATION", nullable = true)
+	public Boolean getCongelation() {
+		return congelation;
+	}
 
-   public void setCongelation(final Boolean c){
-      this.congelation = c;
-   }
+	public void setCongelation(final Boolean c) {
+		this.congelation = c;
+	}
 
-   @Column(name = "TRANSPORT_TEMP", nullable = true)
-   public Float getTransportTemp(){
-      return this.transportTemp;
-   }
+	@Column(name = "TRANSPORT_TEMP", nullable = true)
+	public Float getTransportTemp() {
+		return this.transportTemp;
+	}
 
-   public void setTransportTemp(final Float temp){
-      this.transportTemp = temp;
-   }
+	public void setTransportTemp(final Float temp) {
+		this.transportTemp = temp;
+	}
 
-   @Temporal(TemporalType.TIMESTAMP)
-   @Column(name = "DATE_DEPART", nullable = true)
-   public Calendar getDateDepart(){
-      if(dateDepart != null){
-         final Calendar cal = Calendar.getInstance();
-         cal.setTime(dateDepart.getTime());
-         return cal;
-      }else{
-         return null;
-      }
-   }
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "DATE_DEPART", nullable = true)
+	public Calendar getDateDepart() {
+		if (dateDepart != null) {
+			final Calendar cal = Calendar.getInstance();
+			cal.setTime(dateDepart.getTime());
+			return cal;
+		} else {
+			return null;
+		}
+	}
 
-   public void setDateDepart(final Calendar cal){
-      if(cal != null){
-         this.dateDepart = Calendar.getInstance();
-         this.dateDepart.setTime(cal.getTime());
-      }else{
-         this.dateDepart = null;
-      }
-   }
+	public void setDateDepart(final Calendar cal) {
+		if (cal != null) {
+			this.dateDepart = Calendar.getInstance();
+			this.dateDepart.setTime(cal.getTime());
+		} else {
+			this.dateDepart = null;
+		}
+	}
 
-   @ManyToOne(fetch = FetchType.LAZY)
-   @JoinColumn(name = "PRELEVEMENT_ID", nullable = false)
-   public Prelevement getPrelevement(){
-      return this.prelevement;
-   }
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "PRELEVEMENT_ID", nullable = false)
+	public Prelevement getPrelevement() {
+		return this.prelevement;
+	}
 
-   public void setPrelevement(final Prelevement prelev){
-      this.prelevement = prelev;
-   }
+	public void setPrelevement(final Prelevement prelev) {
+		this.prelevement = prelev;
+	}
 
-   @ManyToOne(fetch = FetchType.LAZY,cascade = {CascadeType.MERGE})
-   @JoinColumn(name = "COLLABORATEUR_ID", nullable = true)
-   public Collaborateur getCollaborateur(){
-      return this.collaborateur;
-   }
+	@ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE })
+	@JoinColumn(name = "COLLABORATEUR_ID", nullable = true)
+	public Collaborateur getCollaborateur() {
+		return this.collaborateur;
+	}
 
-   public void setCollaborateur(final Collaborateur collab){
-      this.collaborateur = collab;
-   }
+	public void setCollaborateur(final Collaborateur collab) {
+		this.collaborateur = collab;
+	}
 
-   @ManyToOne(fetch = FetchType.LAZY,cascade = {CascadeType.MERGE})
-   @JoinColumn(name = "TRANSPORTEUR_ID", nullable = true)
-   public Transporteur getTransporteur(){
-      return this.transporteur;
-   }
+	@ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE })
+	@JoinColumn(name = "TRANSPORTEUR_ID", nullable = true)
+	public Transporteur getTransporteur() {
+		return this.transporteur;
+	}
 
-   public void setTransporteur(final Transporteur transport){
-      this.transporteur = transport;
-   }
+	public void setTransporteur(final Transporteur transport) {
+		this.transporteur = transport;
+	}
 
-   @ManyToOne(fetch = FetchType.LAZY,cascade = {CascadeType.MERGE})
-   @JoinColumn(name = "SERVICE_ID", nullable = true)
-   public Service getService(){
-      return this.service;
-   }
+	@ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE })
+	@JoinColumn(name = "SERVICE_ID", nullable = true)
+	public Service getService() {
+		return this.service;
+	}
 
-   public void setService(final Service serv){
-      this.service = serv;
-   }
+	public void setService(final Service serv) {
+		this.service = serv;
+	}
 
-   /**
-    * 2 labos intermedaires sont considérés comme égaux 
-    * s'ils ont le même ordre et si ils associes au même prélèvement.
-    * @param obj est le labo à tester.
-    * @return true si les labos sont égaux.
-    */
-   @Override
-   public boolean equals(final Object obj){
+	/**
+	 * 2 labos intermedaires sont considérés comme égaux s'ils ont le même ordre et
+	 * si ils associes au même prélèvement.
+	 * 
+	 * @param obj est le labo à tester.
+	 * @return true si les labos sont égaux.
+	 */
+	@Override
+	public boolean equals(final Object obj) {
 
-      if(this == obj){
-         return true;
-      }
-      if((obj == null) || obj.getClass() != this.getClass()){
-         return false;
-      }
-      final LaboInter test = (LaboInter) obj;
-      return ((this.prelevement == test.prelevement || (this.prelevement != null && this.prelevement.equals(test.prelevement)))
-         && (this.ordre == test.ordre || (this.ordre != null && this.ordre.equals(test.ordre))));
-   }
+		if (this == obj) {
+			return true;
+		}
+		if ((obj == null) || !(obj instanceof LaboInter)) {
+			return false;
+		}
+		final LaboInter test = (LaboInter) obj;
+		return Objects.equals(prelevement, test.getPrelevement()) && Objects.equals(ordre, test.getOrdre());
+	}
 
-   /**
-    * Le hashcode est calculé sur les attributs ordre et prelevement.
-    * @return la valeur du hashcode.
-    */
-   @Override
-   public int hashCode(){
+	/**
+	 * Le hashcode est calculé sur les attributs ordre et prelevement.
+	 * 
+	 * @return la valeur du hashcode.
+	 */
+	@Override
+	public int hashCode() {
 
-      int hash = 7;
-      int hashOrdre = 0;
-      int hashPrelevement = 0;
-      if(this.ordre != null){
-         hashOrdre = this.ordre.hashCode();
-      }
-      if(this.prelevement != null){
-         hashPrelevement = this.prelevement.hashCode();
-      }
-      hash = 31 * hash + hashOrdre;
-      hash = 31 * hash + hashPrelevement;
+		int hash = 7;
+		int hashOrdre = 0;
+		int hashPrelevement = 0;
+		if (this.ordre != null) {
+			hashOrdre = this.ordre.hashCode();
+		}
+		if (this.prelevement != null) {
+			hashPrelevement = this.prelevement.hashCode();
+		}
+		hash = 31 * hash + hashOrdre;
+		hash = 31 * hash + hashPrelevement;
 
-      return hash;
+		return hash;
 
-   }
+	}
 }

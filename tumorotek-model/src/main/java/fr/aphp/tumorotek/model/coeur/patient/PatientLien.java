@@ -36,6 +36,7 @@
 package fr.aphp.tumorotek.model.coeur.patient;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 import javax.persistence.AssociationOverride;
 import javax.persistence.AssociationOverrides;
@@ -139,11 +140,11 @@ public class PatientLien implements Serializable {
 		if (this == obj) {
 			return true;
 		}
-		if ((obj == null) || obj.getClass() != this.getClass()) {
+		if ((obj == null) || !(obj instanceof PatientLien)) {
 			return false;
-		}
+		}		
 		final PatientLien test = (PatientLien) obj;
-		return (this.pk != null && (this.pk == test.pk || this.pk.equals(test.pk)));
+		return Objects.equals(pk, test.getPk());
 	}
 
 	/**

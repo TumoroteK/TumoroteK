@@ -36,111 +36,111 @@
 package fr.aphp.tumorotek.model.impression;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 import javax.persistence.Embeddable;
 import javax.persistence.ManyToOne;
+
 import javax.persistence.FetchType;
 
 /**
  *
- * Embedded Id pour la table BLOC_IMPRESSION_TEMPLATE.
- * Classe créée le 21/07/2010.
+ * Embedded Id pour la table BLOC_IMPRESSION_TEMPLATE. Classe créée le
+ * 21/07/2010.
  *
  * @author Pierre VENTADOUR.
  * @see http://boris.kirzner.info/blog/archives/2008/07/19/
- * hibernate-annotations-the-many-to-many-association-with-composite-key/
+ *      hibernate-annotations-the-many-to-many-association-with-composite-key/
  * @version 2.0
  *
  */
 @Embeddable
-public class BlocImpressionTemplatePK implements Serializable
-{
+public class BlocImpressionTemplatePK implements Serializable {
 
-   private static final long serialVersionUID = -3474482771300314575L;
+	private static final long serialVersionUID = -3474482771300314575L;
 
-   private Template template;
-   private BlocImpression blocImpression;
+	private Template template;
+	private BlocImpression blocImpression;
 
-   public BlocImpressionTemplatePK(){
+	public BlocImpressionTemplatePK() {
 
-   }
+	}
 
-   public BlocImpressionTemplatePK(final Template temp, final BlocImpression bloc){
-      this.template = temp;
-      this.blocImpression = bloc;
-   }
+	public BlocImpressionTemplatePK(final Template temp, final BlocImpression bloc) {
+		this.template = temp;
+		this.blocImpression = bloc;
+	}
 
-   @ManyToOne(fetch = FetchType.LAZY,targetEntity = Template.class)
-   public Template getTemplate(){
-      return template;
-   }
+	@ManyToOne(fetch = FetchType.LAZY, targetEntity = Template.class)
+	public Template getTemplate() {
+		return template;
+	}
 
-   public void setTemplate(final Template t){
-      this.template = t;
-   }
+	public void setTemplate(final Template t) {
+		this.template = t;
+	}
 
-   @ManyToOne(fetch = FetchType.LAZY,targetEntity = BlocImpression.class)
-   public BlocImpression getBlocImpression(){
-      return blocImpression;
-   }
+	@ManyToOne(fetch = FetchType.LAZY, targetEntity = BlocImpression.class)
+	public BlocImpression getBlocImpression() {
+		return blocImpression;
+	}
 
-   public void setBlocImpression(final BlocImpression b){
-      this.blocImpression = b;
-   }
+	public void setBlocImpression(final BlocImpression b) {
+		this.blocImpression = b;
+	}
 
-   /**
-    * 2 PKs sont considérés comme égales si elles sont composees 
-    * des mêmes clés.
-    * @param obj est la PK à tester.
-    * @return true si les PK sont egales.
-    */
-   @Override
-   public boolean equals(final Object obj){
+	/**
+	 * 2 PKs sont considérés comme égales si elles sont composees des mêmes clés.
+	 * 
+	 * @param obj est la PK à tester.
+	 * @return true si les PK sont egales.
+	 */
+	@Override
+	public boolean equals(final Object obj) {
 
-      if(this == obj){
-         return true;
-      }
-      if((obj == null) || obj.getClass() != this.getClass()){
-         return false;
-      }
-      final BlocImpressionTemplatePK test = (BlocImpressionTemplatePK) obj;
-      return ((this.template == test.template || (this.template != null && this.template.equals(test.template)))
-         && (this.blocImpression == test.blocImpression
-            || (this.blocImpression != null && this.blocImpression.equals(test.blocImpression))));
-   }
+		if (this == obj) {
+			return true;
+		}
+		if ((obj == null) || !(obj instanceof BlocImpressionTemplatePK)) {
+			return false;
+		}
+		final BlocImpressionTemplatePK test = (BlocImpressionTemplatePK) obj;
+		return Objects.equals(template, test.getTemplate()) && Objects.equals(blocImpression, test.getBlocImpression());
+	}
 
-   /**
-    * Le hashcode est calculé sur les clés.
-    * @return la valeur du hashcode.
-    */
-   @Override
-   public int hashCode(){
-      int hash = 7;
-      int hashTemplate = 0;
-      int hashBloc = 0;
+	/**
+	 * Le hashcode est calculé sur les clés.
+	 * 
+	 * @return la valeur du hashcode.
+	 */
+	@Override
+	public int hashCode() {
+		int hash = 7;
+		int hashTemplate = 0;
+		int hashBloc = 0;
 
-      if(this.template != null){
-         hashTemplate = this.template.hashCode();
-      }
-      if(this.blocImpression != null){
-         hashBloc = this.blocImpression.hashCode();
-      }
+		if (this.template != null) {
+			hashTemplate = this.template.hashCode();
+		}
+		if (this.blocImpression != null) {
+			hashBloc = this.blocImpression.hashCode();
+		}
 
-      hash = 7 * hash + hashTemplate;
-      hash = 7 * hash + hashBloc;
+		hash = 7 * hash + hashTemplate;
+		hash = 7 * hash + hashBloc;
 
-      return hash;
-   }
+		return hash;
+	}
 
-   /**
-    * Méthode surchargeant le toString() de l'objet.
-    */
-   @Override
-   public String toString(){
-      if(this.template != null && this.blocImpression != null){
-         return "{" + template.toString() + " (Template), " + blocImpression.toString() + " (BlocImpression)}";
-      }
-      return "{Empty BlocImpressionTemplatePK}";
-   }
+	/**
+	 * Méthode surchargeant le toString() de l'objet.
+	 */
+	@Override
+	public String toString() {
+		if (this.template != null && this.blocImpression != null) {
+			return "{" + template.toString() + " (Template), " + blocImpression.toString() + " (BlocImpression)}";
+		}
+		return "{Empty BlocImpressionTemplatePK}";
+	}
 
 }

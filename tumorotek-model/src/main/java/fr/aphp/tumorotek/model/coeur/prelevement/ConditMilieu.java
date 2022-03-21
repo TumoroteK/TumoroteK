@@ -53,8 +53,7 @@ import fr.aphp.tumorotek.model.AbstractPfDependantThesaurusObject;
 
 /**
  *
- * Objet persistant mappant la table CONDIT_MILIEU.
- * Classe créée le 14/09/09.
+ * Objet persistant mappant la table CONDIT_MILIEU. Classe créée le 14/09/09.
  *
  * @author Maxime Gousseau
  * @version 2.3
@@ -62,8 +61,8 @@ import fr.aphp.tumorotek.model.AbstractPfDependantThesaurusObject;
  */
 @Entity
 @Table(name = "CONDIT_MILIEU")
-@AttributeOverrides({@AttributeOverride(name = "id", column = @Column(name = "CONDIT_MILIEU_ID")),
-   @AttributeOverride(name = "nom", column = @Column(name = "MILIEU", nullable = false, length = 200))})
+@AttributeOverrides({ @AttributeOverride(name = "id", column = @Column(name = "CONDIT_MILIEU_ID")),
+		@AttributeOverride(name = "nom", column = @Column(name = "MILIEU", nullable = false, length = 200)) })
 @GenericGenerator(name = "autoincrement", strategy = "increment")
 //@NamedQueries(
 //   value = {@NamedQuery(name = "ConditMilieu.findByMilieu", query = "SELECT c FROM ConditMilieu c WHERE c.nom like ?1"),
@@ -73,70 +72,70 @@ import fr.aphp.tumorotek.model.AbstractPfDependantThesaurusObject;
 //      @NamedQuery(name = "ConditMilieu.findByOrder",
 //         query = "FROM ConditMilieu c ORDER BY c.nom")})
 
-public class ConditMilieu extends AbstractPfDependantThesaurusObject implements Serializable
-{
+public class ConditMilieu extends AbstractPfDependantThesaurusObject implements Serializable {
 
-   private static final long serialVersionUID = -1948372046053283715L;
+	private static final long serialVersionUID = -1948372046053283715L;
 
-   private Set<Prelevement> prelevements = new HashSet<>();
+	private Set<Prelevement> prelevements = new HashSet<>();
 
-   /** Constructeur par défaut. */
-   public ConditMilieu(){}
+	/** Constructeur par défaut. */
+	public ConditMilieu() {
+	}
 
-   /**
-    * @deprecated Utiliser {@link #getId()}
-    * @return
-    */
-   @Deprecated
-   @Transient
-   public Integer getConditMilieuId(){
-      return this.getId();
-   }
+	/**
+	 * @deprecated Utiliser {@link #getId()}
+	 * @return
+	 */
+	@Deprecated
+	@Transient
+	public Integer getConditMilieuId() {
+		return this.getId();
+	}
 
-   /**
-    * @deprecated Utiliser {@link #setId(Integer)}
-    * @return
-    */
-   @Deprecated
-   public void setConditMilieuId(final Integer id){
-      this.setId(id);
-   }
+	/**
+	 * @deprecated Utiliser {@link #setId(Integer)}
+	 * @return
+	 */
+	@Deprecated
+	public void setConditMilieuId(final Integer id) {
+		this.setId(id);
+	}
 
-   /**
-    * @deprecated Utiliser {@link #getNom()}
-    * @return
-    */
-   @Deprecated
-   @Transient
-   public String getMilieu(){
-      return this.getNom();
-   }
+	/**
+	 * @deprecated Utiliser {@link #getNom()}
+	 * @return
+	 */
+	@Deprecated
+	@Transient
+	public String getMilieu() {
+		return this.getNom();
+	}
 
-   /**
-    * @deprecated Utiliser {@link #setNom(String)}
-    * @param mil
-    */
-   @Deprecated
-   public void setMilieu(final String mil){
-      this.setNom(mil);
-   }
+	/**
+	 * @deprecated Utiliser {@link #setNom(String)}
+	 * @param mil
+	 */
+	@Deprecated
+	public void setMilieu(final String mil) {
+		this.setNom(mil);
+	}
 
-   @OneToMany(mappedBy = "conditMilieu")
-   public Set<Prelevement> getPrelevements(){
-      return this.prelevements;
-   }
+	@OneToMany(mappedBy = "conditMilieu")
+	public Set<Prelevement> getPrelevements() {
+		return this.prelevements;
+	}
 
-   public void setPrelevements(final Set<Prelevement> prelevs){
-      this.prelevements = prelevs;
-   }
+	public void setPrelevements(final Set<Prelevement> prelevs) {
+		this.prelevements = prelevs;
+	}
 
-   @Override
-   public String toString(){
-      if(this.getNom() != null){
-         return "{" + this.getNom() + "}";
-      }else{
-         return "{Empty ConditMilieu}";
-      }
-   }
+	@Override
+	public String toString() {
+		if (this.getNom() != null) {
+			return "{" + this.getNom() + "}";
+		} else {
+			return "{Empty ConditMilieu}";
+		}
+	}
 
 }

@@ -36,6 +36,7 @@
 package fr.aphp.tumorotek.model.coeur.cession;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -112,13 +113,13 @@ public class CederObjetPK implements Serializable {
 		if (this == obj) {
 			return true;
 		}
-		if ((obj == null) || obj.getClass() != this.getClass()) {
+		if ((obj == null) || !(obj instanceof CederObjetPK)) {
 			return false;
-		}
+		}		
 		final CederObjetPK test = (CederObjetPK) obj;
-		return ((this.cession == test.cession || (this.cession != null && this.cession.equals(test.cession)))
-				&& (this.entite == test.entite || (this.entite != null && this.entite.equals(test.entite)))
-				&& (this.objetId == test.objetId || (this.objetId != null && this.objetId.equals(test.objetId))));
+		return Objects.equals(cession, test.getCession())
+			&& Objects.equals(entite, test.getEntite())
+			&& Objects.equals(objetId, test.getObjetId());
 	}
 
 	/**

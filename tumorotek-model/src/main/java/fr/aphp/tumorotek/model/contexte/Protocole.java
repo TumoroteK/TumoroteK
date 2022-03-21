@@ -53,9 +53,8 @@ import fr.aphp.tumorotek.model.AbstractPfDependantThesaurusObject;
 import fr.aphp.tumorotek.model.coeur.prelevement.delegate.PrelevementSero;
 
 /**
- * Objet persistant mappant la table PROTOCOLE.
- * Contexte SeroTK.
- * Classe créée le 09/01/12.
+ * Objet persistant mappant la table PROTOCOLE. Contexte SeroTK. Classe créée le
+ * 09/01/12.
  *
  * @author MAthieu BARTHELEMY
  * @version 2.3
@@ -63,66 +62,66 @@ import fr.aphp.tumorotek.model.coeur.prelevement.delegate.PrelevementSero;
  */
 @Entity
 @Table(name = "PROTOCOLE")
-@AttributeOverrides({@AttributeOverride(name = "id", column = @Column(name = "PROTOCOLE_ID"))})
+@AttributeOverrides({ @AttributeOverride(name = "id", column = @Column(name = "PROTOCOLE_ID")) })
 @GenericGenerator(name = "autoincrement", strategy = "increment")
 //@NamedQueries(value = {
 //   @NamedQuery(name = "Protocole.findByNom", query = "SELECT p FROM Protocole p WHERE p.nom like ?1 " + "order by p.nom"),
 //   @NamedQuery(name = "Protocole.findByExcludedId", query = "SELECT p FROM Protocole p " + "WHERE p.id != ?1"),
 //   @NamedQuery(name = "Protocole.findByPfOrder", query = "SELECT p FROM Protocole p " + "WHERE p.plateforme = ?1 ORDER BY p.nom"),
 //   @NamedQuery(name = "Protocole.findByOrder", query = "SELECT p FROM Protocole p ORDER BY p.nom")})
-public class Protocole extends AbstractPfDependantThesaurusObject implements Serializable
-{
+public class Protocole extends AbstractPfDependantThesaurusObject implements Serializable {
 
-   private static final long serialVersionUID = 54864135646414L;
+	private static final long serialVersionUID = 54864135646414L;
 
-   private String description;
-   private Set<PrelevementSero> prelevements = new HashSet<>();
+	private String description;
+	private Set<PrelevementSero> prelevements = new HashSet<>();
 
-   /** Constructeur par défaut. */
-   public Protocole(){}
+	/** Constructeur par défaut. */
+	public Protocole() {
+	}
 
-   /**
-    * @deprecated Utiliser {@link #getId()}
-    * @return
-    */
-   @Deprecated
-   @Transient
-   public Integer getProtocoleId(){
-      return getId();
-   }
+	/**
+	 * @deprecated Utiliser {@link #getId()}
+	 * @return
+	 */
+	@Deprecated
+	@Transient
+	public Integer getProtocoleId() {
+		return getId();
+	}
 
-   /**
-    * @deprecated Utiliser {@link #setId(Integer)}
-    * @param pId
-    */
-   @Deprecated
-   public void setProtocoleId(final Integer pId){
-      this.setId(pId);
-   }
+	/**
+	 * @deprecated Utiliser {@link #setId(Integer)}
+	 * @param pId
+	 */
+	@Deprecated
+	public void setProtocoleId(final Integer pId) {
+		this.setId(pId);
+	}
 
-   @Column(name = "DESCRIPTION", nullable = true)
-   public String getDescription(){
-      return description;
-   }
+	@Column(name = "DESCRIPTION", nullable = true)
+	public String getDescription() {
+		return description;
+	}
 
-   public void setDescription(final String description){
-      this.description = description;
-   }
+	public void setDescription(final String description) {
+		this.description = description;
+	}
 
-   @ManyToMany(mappedBy = "protocoles", targetEntity = PrelevementSero.class)
-   public Set<PrelevementSero> getPrelevements(){
-      return prelevements;
-   }
+	@ManyToMany(mappedBy = "protocoles", targetEntity = PrelevementSero.class)
+	public Set<PrelevementSero> getPrelevements() {
+		return prelevements;
+	}
 
-   public void setPrelevements(final Set<PrelevementSero> prelevements){
-      this.prelevements = prelevements;
-   }
+	public void setPrelevements(final Set<PrelevementSero> prelevements) {
+		this.prelevements = prelevements;
+	}
 
-   @Override
-   public String toString(){
-      if(this.getNom() != null){
-         return "{" + this.getNom() + "}";
-      }
-      return "{Empty Protocole}";
-   }
+	@Override
+	public String toString() {
+		if (this.getNom() != null) {
+			return "{" + this.getNom() + "}";
+		}
+		return "{Empty Protocole}";
+	}
 }

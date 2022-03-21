@@ -37,6 +37,7 @@ package fr.aphp.tumorotek.model.coeur.annotation;
 
 import java.io.Serializable;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -135,10 +136,12 @@ public class DataType implements Serializable { /*
 		if ((obj == null) || obj.getClass() != this.getClass()) {
 			return false;
 		}
-
+		
+		if ((obj == null) || !(obj instanceof DataType)) {
+			return false;
+		}		
 		final DataType test = (DataType) obj;
-
-		return ((this.type == test.type || (this.type != null && this.type.equals(test.type))));
+		return Objects.equals(type, test.getType());
 	}
 
 	/**

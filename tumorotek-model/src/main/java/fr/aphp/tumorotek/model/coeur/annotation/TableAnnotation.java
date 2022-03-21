@@ -37,6 +37,7 @@ package fr.aphp.tumorotek.model.coeur.annotation;
 
 import java.io.Serializable;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -227,16 +228,13 @@ public class TableAnnotation implements TKFantomableObject, TKdataObject, Serial
 		if (this == obj) {
 			return true;
 		}
-		if ((obj == null) || obj.getClass() != this.getClass()) {
+		if ((obj == null) || !(obj instanceof TableAnnotation)) {
 			return false;
-		}
-
+		}		
 		final TableAnnotation test = (TableAnnotation) obj;
-
-		return ((this.nom == test.nom || (this.nom != null && this.nom.equals(test.nom)))
-				&& (this.entite == test.entite || (this.entite != null && this.entite.equals(test.entite)))
-				&& (this.plateforme == test.plateforme
-						|| (this.plateforme != null && this.plateforme.equals(test.plateforme))));
+		return Objects.equals(getNom(), test.getNom())
+			&& Objects.equals(entite, test.getEntite())
+			&& Objects.equals(plateforme, test.getPlateforme());
 	}
 
 	/**

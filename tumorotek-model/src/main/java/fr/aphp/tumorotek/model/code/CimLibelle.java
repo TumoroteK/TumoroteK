@@ -36,6 +36,7 @@
 package fr.aphp.tumorotek.model.code;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -133,18 +134,18 @@ public class CimLibelle implements Serializable {
 	 */
 	@Override
 	public boolean equals(final Object obj) {
-
 		if (this == obj) {
 			return true;
 		}
-		if ((obj == null) || obj.getClass() != this.getClass()) {
+		// instanceOf est utilise plutot que != a cause des proxys
+		// JPA qui sont crées par lors du fetch par
+		// la relation manyToAny
+		if ((obj == null) || !(obj instanceof CimLibelle)) {
 			return false;
 		}
 		final CimLibelle test = (CimLibelle) obj;
-		if (this.lid != null) {
-			return this.lid.equals(test.lid);
-		} // impossible
-		return false;
+		return Objects.equals(lid, test.getLid());
+
 	}
 
 	/**

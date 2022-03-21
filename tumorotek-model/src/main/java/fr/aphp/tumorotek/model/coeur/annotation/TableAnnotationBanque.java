@@ -36,6 +36,7 @@
 package fr.aphp.tumorotek.model.coeur.annotation;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 import javax.persistence.AssociationOverride;
 import javax.persistence.AssociationOverrides;
@@ -137,11 +138,11 @@ public class TableAnnotationBanque implements Serializable {
 		if (this == obj) {
 			return true;
 		}
-		if ((obj == null) || obj.getClass() != this.getClass()) {
+		if ((obj == null) || !(obj instanceof TableAnnotationBanque)) {
 			return false;
-		}
+		}		
 		final TableAnnotationBanque test = (TableAnnotationBanque) obj;
-		return (this.pk != null && (this.pk == test.pk || this.pk.equals(test.pk)));
+		return Objects.equals(pk, test.getPk());
 	}
 
 	/**

@@ -39,6 +39,7 @@ import java.io.InputStream;
 import java.io.Serializable;
 import java.util.Calendar;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -503,26 +504,12 @@ public class Echantillon extends TKDelegetableObject<Echantillon>
 		if (this == obj) {
 			return true;
 		}
-		if ((obj == null) || obj.getClass() != this.getClass()) {
+		if ((obj == null) || !(obj instanceof Echantillon)) {
 			return false;
-		}
+		}		
 		final Echantillon test = (Echantillon) obj;
-		if (this.code == null) {
-			if (test.code == null) {
-				if (this.banque == null) {
-					return (test.banque == null);
-				}
-				return (this.banque.equals(test.banque));
-			}
-			return false;
-		} else if (this.banque == null) {
-			if (test.banque == null) {
-				return (this.code.equals(test.code));
-			}
-			return false;
-		} else {
-			return (this.code.equals(test.code) && this.banque.equals(test.banque));
-		}
+		return Objects.equals(code, test.getCode())
+			&& Objects.equals(banque, test.getBanque());
 	}
 
 	/**

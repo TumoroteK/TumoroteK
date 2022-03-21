@@ -36,6 +36,7 @@
 package fr.aphp.tumorotek.model.code;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -167,16 +168,17 @@ public class CodeSelect implements Serializable {
 		if (this == obj) {
 			return true;
 		}
-		if ((obj == null) || obj.getClass() != this.getClass()) {
+		// instanceOf est utilise plutot que != a cause des proxys
+		// JPA qui sont crées par lors du fetch par
+		// la relation manyToAny
+		if ((obj == null) || !(obj instanceof CodeSelect)) {
 			return false;
 		}
 		final CodeSelect test = (CodeSelect) obj;
-		return ((this.codeId == test.codeId || (this.codeId != null && this.codeId.equals(test.codeId)))
-				&& (this.banque == test.banque || (this.banque != null && this.banque.equals(test.banque)))
-				&& (this.tableCodage == test.tableCodage
-						|| (this.tableCodage != null && this.tableCodage.equals(test.tableCodage)))
-				&& (this.utilisateur == test.utilisateur
-						|| (this.utilisateur != null && this.utilisateur.equals(test.utilisateur))));
+		return Objects.equals(codeId, test.getCodeId())
+			&& Objects.equals(banque, test.getBanque())
+			&& Objects.equals(tableCodage, test.getTableCodage())
+			&& Objects.equals(utilisateur, test.getUtilisateur());
 	}
 
 	/**

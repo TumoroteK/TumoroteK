@@ -39,6 +39,7 @@ import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -481,26 +482,12 @@ public class Cession implements TKAnnotableObject, Serializable {
 		if (this == obj) {
 			return true;
 		}
-		if ((obj == null) || obj.getClass() != this.getClass()) {
+		if ((obj == null) || !(obj instanceof Cession)) {
 			return false;
-		}
+		}		
 		final Cession test = (Cession) obj;
-		if (this.numero == null) {
-			if (test.numero == null) {
-				if (this.banque == null) {
-					return (test.banque == null);
-				}
-				return (this.banque.equals(test.banque));
-			}
-			return false;
-		} else if (this.banque == null) {
-			if (test.banque == null) {
-				return (this.numero.equals(test.numero));
-			}
-			return false;
-		} else {
-			return (this.numero.equals(test.numero) && this.banque.equals(test.banque));
-		}
+		return Objects.equals(numero, test.getNumero())
+			&& Objects.equals(banque, test.getBanque());
 	}
 
 	/**

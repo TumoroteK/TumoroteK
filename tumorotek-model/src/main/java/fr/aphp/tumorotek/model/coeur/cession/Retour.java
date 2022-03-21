@@ -38,6 +38,7 @@ package fr.aphp.tumorotek.model.coeur.cession;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Objects;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -337,18 +338,14 @@ public class Retour implements TKdataObject, Serializable {
 		if (this == obj) {
 			return true;
 		}
-		if ((obj == null) || obj.getClass() != this.getClass()) {
+		if ((obj == null) || !(obj instanceof Retour)) {
 			return false;
-		}
+		}		
 		final Retour test = (Retour) obj;
-
-		return ((this.dateRetour == test.dateRetour
-				|| (this.dateRetour != null && this.dateRetour.equals(test.dateRetour)))
-				&& (this.dateSortie == test.dateSortie
-						|| (this.dateSortie != null && this.dateSortie.equals(test.dateSortie)))
-				&& (this.objetId == test.objetId || (this.objetId != null && this.objetId.equals(test.objetId)))
-				&& (this.entite == test.entite || (this.entite != null && this.entite.equals(test.entite))));
-
+		return Objects.equals(dateRetour, test.getDateRetour())
+			&& Objects.equals(dateSortie, test.getDateSortie())
+			&& Objects.equals(objetId, test.getObjetId())
+			&& Objects.equals(entite, test.getEntite());
 	}
 
 	/**

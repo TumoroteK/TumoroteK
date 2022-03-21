@@ -45,36 +45,36 @@ import java.util.List;
  * @version 2.2.0
  * @since 2.2.0
  */
-public enum ETemplateType
-{
+public enum ETemplateType {
 
-   BLOC("BLOC"), DOC("DOC");
+	BLOC("BLOC"), DOC("DOC");
 
-   private String type = "";
+	private String type = "";
 
-   ETemplateType(final String type){
-      this.type = type;
-   }
+	ETemplateType(final String type) {
+		this.type = type;
+	}
 
-   public String getType(){
-      return type;
-   }
+	public String getType() {
+		return type;
+	}
 
-   @Override
-   public String toString(){
-      return type;
-   }
+	@Override
+	public String toString() {
+		return type;
+	}
 
-   /**
-    * Liste tous les types
-    * @return liste de tous les types
-    */
-   public static List<String> getTypeList(){
-      final List<String> typeList = new ArrayList<>();
-      for(final ETemplateType templateType : ETemplateType.values()){
-         typeList.add(templateType.getType());
-      }
-      return typeList;
-   }
+	/**
+	 * Liste tous les types
+	 * 
+	 * @return liste de tous les types
+	 */
+	public static List<String> getTypeList() {
+		final List<String> typeList = new ArrayList<>();
+		for (final ETemplateType templateType : ETemplateType.values()) {
+			typeList.add(templateType.getType());
+		}
+		return typeList;
+	}
 
 }
