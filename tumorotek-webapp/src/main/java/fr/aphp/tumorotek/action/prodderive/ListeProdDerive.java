@@ -234,7 +234,8 @@ public class ListeProdDerive extends AbstractListeController2
    @Override
    public void disableObjetsSelectionItems(final boolean disable){
       super.disableObjetsSelectionItems(disable);
-      newCessionItem.setDisabled(disable || !isCanCession() || getSelectedObjects().isEmpty() || areAllObjectsCessibles());
+      //TK-314 : 
+      newCessionItem.setDisabled(disable || !isCanCession() || getSelectedObjects().isEmpty() || areAllObjectsNonCessibles());
       stockageItem.setDisabled(disable || !isCanStockage() || getSelectedObjects().isEmpty() || areAllObjectsStocked());
    }
 

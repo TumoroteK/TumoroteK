@@ -70,6 +70,7 @@ import fr.aphp.tumorotek.action.echantillon.EchantillonController;
 import fr.aphp.tumorotek.action.patient.PatientController;
 import fr.aphp.tumorotek.action.prelevement.PrelevementController;
 import fr.aphp.tumorotek.action.prodderive.ProdDeriveController;
+import fr.aphp.tumorotek.action.utilisateur.ProfilExport;
 import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
 import fr.aphp.tumorotek.decorator.TKSelectObjectRenderer;
 import fr.aphp.tumorotek.manager.impl.io.utils.RechercheUtilsManager;
@@ -80,6 +81,7 @@ import fr.aphp.tumorotek.model.coeur.annotation.ChampAnnotation;
 import fr.aphp.tumorotek.model.coeur.annotation.TableAnnotation;
 import fr.aphp.tumorotek.model.coeur.prelevement.Prelevement;
 import fr.aphp.tumorotek.model.contexte.Banque;
+import fr.aphp.tumorotek.model.contexte.EContexte;
 import fr.aphp.tumorotek.model.interfacage.DossierExterne;
 import fr.aphp.tumorotek.model.interfacage.Recepteur;
 import fr.aphp.tumorotek.model.interfacage.scan.ScanTerminale;
@@ -945,6 +947,8 @@ public abstract class AbstractObjectTabController extends AbstractController
 		}
 	}
 
+	//TK-320 : attention ce code plante car le constructeur utilisé n'existe plus ...
+	//Cet export n'est plus utilisé donc le code n'a pas été adpaté. La complexité est la gestion de l'anonymisation qui a semble-t-il changé.
 	/**
 	 * Methode generique des exports catalogue
 	 * @param params args passés à l'appel de la méthode
@@ -956,10 +960,16 @@ public abstract class AbstractObjectTabController extends AbstractController
 		try{
 			final Class<?> exportThread = Class.forName(SessionUtils.getDatabasePathClass());
 			final Constructor<?> constr = exportThread.getConstructor(Desktop.class, int.class, List.class, List.class,
-					boolean.class, short.class, Utilisateur.class, List.class, HtmlMacroComponent.class, Map.class);
+			   ProfilExport.class, short.class, Utilisateur.class, List.class, HtmlMacroComponent.class, Map.class);
 			final Object o = constr.newInstance(desktop, entiteId != null ? entiteId : getEntiteTab().getEntiteId(), ids,
 					SessionUtils.getSelectedBanques(sessionScope), isAnonyme(), catalogId, SessionUtils.getLoggedUser(sessionScope),
 					new ArrayList<Integer>(), callProgressBar(), params);
+			//TK-320 : Pour éviter le plantage : il faudrait le code suivant - à valider notamment concernant la gestion de l'anonymisation :
+//         final Constructor<?> constr = exportThread.getConstructor(Desktop.class, int.class, List.class, List.class,
+//            ProfilExport.class, short.class, Utilisateur.class, List.class, HtmlMacroComponent.class, Map.class, EContexte.class);
+//         final Object o = constr.newInstance(desktop, entiteId != null ? entiteId : getEntiteTab().getEntiteId(), ids,
+//               SessionUtils.getSelectedBanques(sessionScope), (isAnonyme() ? ProfilExport.ANONYME : ProfilExport.NOMINATIF), catalogId, SessionUtils.getLoggedUser(sessionScope),
+//               new ArrayList<Integer>(), callProgressBar(), params, EContexte.DEFAUT);
 			final Method method = exportThread.getMethod("start");
 
 			((Export) o).setContexte(SessionUtils.getSelectedBanques(sessionScope).get(0).getContexte());

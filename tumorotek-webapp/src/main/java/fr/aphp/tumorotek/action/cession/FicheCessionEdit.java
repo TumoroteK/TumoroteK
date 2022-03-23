@@ -203,8 +203,12 @@ public class FicheCessionEdit extends AbstractFicheEditController
 	private Label codeProdDeriveCede;
 	private Label codeEchantillonCede;
 	private Label echantillonsNonStockesLabel;
+	private Label echantillonsDansConteneurInterditLabel; 
+   private Label echantillonsNonStockesEtDansConteneurInterditLabel;	//des échantillons sont non stockés et d'autres sont stockés dans un conteneur interdit
 	private Label prodDerivesNonStockesLabel;
-	private Listbox banquesEchantillonsBox;
+   private Label prodDerivesDansConteneurInterditLabel;	
+   private Label prodDerivesNonStockesEtDansConteneurInterditLabel;
+   private Listbox banquesEchantillonsBox;
 	private Listbox banquesProdDerivesBox;
 	//private Listbox etabsBoxCession;
 	private Listbox servicesBoxCession;
@@ -550,42 +554,64 @@ public class FicheCessionEdit extends AbstractFicheEditController
 		if(echansACeder != null){
 			// pour chaque échantillon
 			boolean nonStocke = false;
+			boolean conteneurInterdit = false;
 			for(int i = echansACeder.size() - 1; i >= 0; i--){
-				final Echantillon echan = echansACeder.get(i);
+	         final Echantillon echan = echansACeder.get(i);
 				// si l'échantillon est stocké
 				if(echan.getObjetStatut().getStatut().equals("STOCKE")){
-					// on cède l'échantillon
-					cederEchantillon(echan);
+				   //TK-314 : si stocké, il ne faut pas que ce soit dans un conteneur partagé avec la restriction de stockage : dans ce cas, la cession est gérée par l'admin ou le robot
+				   //si terminaleDestockage est null (dépend de la navigation...), on va chercher la terminale de l'échantillon
+		         Terminale terminaleAPrendreEnCompte = terminaleDestockage;
+				   if(terminaleAPrendreEnCompte == null) {
+				      terminaleAPrendreEnCompte = ManagerLocator.getEchantillonManager().getEmplacementManager(echan).getTerminale();
+				   }
+				   if(isAccessibleConteneurForCurrentPlateform(terminaleAPrendreEnCompte)) {
+		            // on cède l'échantillon
+	               cederEchantillon(echan);
+				   }
+				   else {
+				      conteneurInterdit = true;
+				   }
+
 				}else{
 					nonStocke = true;
 				}
 			}
-			if(nonStocke){
-				echantillonsNonStockesLabel.setVisible(true);
-			}else{
-				echantillonsNonStockesLabel.setVisible(false);
-			}
+			echantillonsNonStockesEtDansConteneurInterditLabel.setVisible(nonStocke&&conteneurInterdit);
+			echantillonsNonStockesLabel.setVisible(nonStocke&&!conteneurInterdit);
+			echantillonsDansConteneurInterditLabel.setVisible(conteneurInterdit&&!nonStocke);
 		}
 
 		// si une liste de dérivés à céder est passée en paramètre
 		if(derivesACeder != null){
 			// pour chaque dérivé
 			boolean nonStocke = false;
+			boolean conteneurInterdit = false;
 			for(int i = derivesACeder.size() - 1; i >= 0; i--){
 				final ProdDerive derive = derivesACeder.get(i);
 				// si le derive est stocké
 				if(derive.getObjetStatut().getStatut().equals("STOCKE")){
-					// on cède le derive
-					cederProdDerive(derive);
+	            //TK-314 : si stocké, il ne faut pas que ce soit dans un conteneur partagé avec la restriction de stockage : dans ce cas, la cession est gérée par l'admin ou le robot
+               //si terminaleDestockage est null (dépend de la navigation...), on va chercher la terminale de l'échantillon
+	            Terminale terminaleAPrendreEnCompte = terminaleDestockage;
+				   if(terminaleAPrendreEnCompte == null) {
+                  terminaleAPrendreEnCompte = ManagerLocator.getProdDeriveManager().getEmplacementManager(derive).getTerminale();
+               }
+				   if(isAccessibleConteneurForCurrentPlateform(terminaleAPrendreEnCompte)) {
+                  // on cède le derive
+                  cederProdDerive(derive);
+               }
+               else {
+                  conteneurInterdit = true;
+               }               
+               
 				}else{
 					nonStocke = true;
 				}
 			}
-			if(nonStocke){
-				prodDerivesNonStockesLabel.setVisible(true);
-			}else{
-				prodDerivesNonStockesLabel.setVisible(false);
-			}
+			prodDerivesNonStockesEtDansConteneurInterditLabel.setVisible(nonStocke&&conteneurInterdit);
+			prodDerivesNonStockesLabel.setVisible(nonStocke&&!conteneurInterdit);
+			prodDerivesDansConteneurInterditLabel.setVisible(conteneurInterdit&&!nonStocke);
 		}
 
 		cederDerivesButton.setVisible(true);
@@ -1728,10 +1754,16 @@ public class FicheCessionEdit extends AbstractFicheEditController
 				final Echantillon added =
 						ManagerLocator.getEchantillonManager().findByCodeLikeWithBanqueManager(code, selected, true).get(0);
 
-				// on cède l'échantillon
-				cederEchantillon(added);
+				//TK-314 : vérification que l'échantillon appartient bien à un conteneur autorisé
+				if(isAccessibleConteneurForCurrentPlateform(ManagerLocator.getEchantillonManager().getEmplacementManager(added).getTerminale())) {
+		         // on cède l'échantillon
+	            cederEchantillon(added);
 
-				initEchansModel(0);
+	            initEchansModel(0);
+				}
+				else {
+				   throw new WrongValueException(echantillonsBox, Labels.getLabel("cession.error.code.invalid.echantillon.conteneur.interdit"));
+				}
 
 			}else{
 				throw new WrongValueException(echantillonsBox, Labels.getLabel("cession.error.code.invalid.echantillon"));
@@ -1766,23 +1798,31 @@ public class FicheCessionEdit extends AbstractFicheEditController
 		// si une liste d'objets à céder est passée en paramètre
 		if(echansACeder != null){
 			boolean nonStocke = false;
+			boolean conteneurInterdit = false;
 			for(int i = echansACeder.size() - 1; i >= 0; i--){
 				// on vérifie que l'élément renvoyé est bien un échantillon
 				if(echansACeder.get(i).getClass().getSimpleName().equals("Echantillon")){
 					final Echantillon echan = echansACeder.get(i);
 					// si l'échantillon est stocké, on le cède
 					if(echan.getObjetStatut().getStatut().equals("STOCKE")){
-						cederEchantillon(echan);
-					}else{
-						nonStocke = true;
-					}
+	               //TK-314 : si stocké, il ne faut pas que ce soit dans un conteneur partagé avec la restriction de stockage : dans ce cas, la cession est gérée par l'admin ou le robot
+					   if(isAccessibleConteneurForCurrentPlateform(ManagerLocator.getEchantillonManager().getEmplacementManager(echan).getTerminale())) {
+	                  // on cède l'échantillon
+	                  cederEchantillon(echan);
+	               }
+	               else {
+	                  conteneurInterdit = true;
+	               }
+
+	            } else{
+	               nonStocke = true;
+	            }
 				}
 			}
-			if(nonStocke){
-				echantillonsNonStockesLabel.setVisible(true);
-			}else{
-				echantillonsNonStockesLabel.setVisible(false);
-			}
+			
+         echantillonsNonStockesEtDansConteneurInterditLabel.setVisible(nonStocke&&conteneurInterdit);
+         echantillonsNonStockesLabel.setVisible(nonStocke&&!conteneurInterdit);
+         echantillonsDansConteneurInterditLabel.setVisible(conteneurInterdit&&!nonStocke);
 		}
 
 		initEchansModel(0);
@@ -1862,11 +1902,17 @@ public class FicheCessionEdit extends AbstractFicheEditController
 				// on récupère le dérivé correspondant au code
 				final ProdDerive addedDerive =
 						ManagerLocator.getProdDeriveManager().findByCodeOrLaboWithBanqueManager(code, selected, true).get(0);
-
-				cederProdDerive(addedDerive);
-
-				initDerivesModel(0);
-
+				
+				//TK-314
+				if(isAccessibleConteneurForCurrentPlateform(ManagerLocator.getProdDeriveManager().getEmplacementManager(addedDerive).getTerminale())) {
+   				cederProdDerive(addedDerive);
+   
+   				initDerivesModel(0);
+				}
+				else {
+				   throw new WrongValueException(derivesBox, Labels.getLabel("cession.error.code.invalid.prodDerive.conteneur.interdit"));
+				}
+				
 			}else{
 				throw new WrongValueException(derivesBox, Labels.getLabel("cession.error.code.invalid.prodDerive"));
 			}
@@ -1903,23 +1949,31 @@ public class FicheCessionEdit extends AbstractFicheEditController
 		// si une liste d'objets à céder est passée en paramètre
 		if(derivesACeder != null){
 			boolean nonStocke = false;
+			boolean conteneurInterdit = false;
 			for(int i = derivesACeder.size() - 1; i >= 0; i--){
 				// on vérifie que l'élément renvoyé est bien un dérivé
 				if(derivesACeder.get(i).getClass().getSimpleName().equals("ProdDerive")){
 					final ProdDerive derive = derivesACeder.get(i);
 					// si le derive est stocké, on le cède
 					if(derive.getObjetStatut().getStatut().equals("STOCKE")){
-						cederProdDerive(derive);
-					}else{
-						nonStocke = true;
-					}
-				}
+	               //TK-314 : si stocké, il ne faut pas que ce soit dans un conteneur partagé avec la restriction de stockage : dans ce cas, la cession est gérée par l'admin ou le robot
+					   if(isAccessibleConteneurForCurrentPlateform(ManagerLocator.getProdDeriveManager().getEmplacementManager(derive).getTerminale())) {
+	                  // on cède le derive
+	                  cederProdDerive(derive);
+	               }
+	               else {
+	                  conteneurInterdit = true;
+	               }               
+	               
+	            }else{
+	               nonStocke = true;
+	            }
+	         }
 			}
-			if(nonStocke){
-				prodDerivesNonStockesLabel.setVisible(true);
-			}else{
-				prodDerivesNonStockesLabel.setVisible(false);
-			}
+				
+	      prodDerivesNonStockesEtDansConteneurInterditLabel.setVisible(nonStocke&&conteneurInterdit);
+	      prodDerivesNonStockesLabel.setVisible(nonStocke&&!conteneurInterdit);
+	      prodDerivesDansConteneurInterditLabel.setVisible(conteneurInterdit&&!nonStocke);
 		}
 
 		initDerivesModel(0);
