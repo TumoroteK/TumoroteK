@@ -874,22 +874,30 @@ public abstract class AbstractListeController2 extends AbstractController
 
 	public void onLaterExport(final boolean fromSelection){
 
+	   //TK-320 : filtre sur les collections concernées par les objets à exporter
+	   List<Banque> listeCollectionsObjetAExporter = new ArrayList<Banque>();
 		if(fromSelection){
 			getResultatsIds().clear();
-			extractIdsFromList((List<TKdataObject>) getSelectedObjects(), getResultatsIds());
+			extractIdsFromListWithIdsCollection((List<TKdataObject>) getSelectedObjects(), getResultatsIds(), listeCollectionsObjetAExporter);
 		}
 		try{
-			// ajoute toutes les tables disponibles aucune restriction
-			if(getRestrictedTableIds() != null){
-				if(getRestrictedTableIds().isEmpty()){
-					for(final TableAnnotation tb : ManagerLocator.getTableAnnotationManager()
-							.findByBanquesManager(SessionUtils.getSelectedBanques(sessionScope), true)){
-						getRestrictedTableIds().add(tb.getTableAnnotationId());
-					}
-				}
-			}else{
-				setRestrictedTableIds(new ArrayList<Integer>());
-			}
+			//TK-320 : ajoute les tables d'annotation en filtrant sur les collections concernées par les objets à exporter
+         if(getRestrictedTableIds() != null){//cas où au moins une annotation a été sélectionnée
+   			if(getRestrictedTableIds().isEmpty()){
+   			   //TK-320 si la liste des banques récupérées précédemment est non vide, l'utiliser à la place de l'appel de SessionUtils.getSelectedBanques(sessionScope) ci-dessous
+   			   //=> filtre sur les annotations des collections concernées
+   			   if (listeCollectionsObjetAExporter.isEmpty()) {
+   			      //TK-320 : si pas de banques récupérées, on prend en compte celles dans la session
+   			      listeCollectionsObjetAExporter=SessionUtils.getSelectedBanques(sessionScope);
+   			   }
+   			   for(final TableAnnotation tb : ManagerLocator.getTableAnnotationManager()
+   						.findByBanquesManager(listeCollectionsObjetAExporter, true)){
+   			      getRestrictedTableIds().add(tb.getTableAnnotationId());
+   				}
+   			}
+         }else{
+            setRestrictedTableIds(new ArrayList<Integer>());//cas où aucune annotation n'a été sélectionnée (export sans les annotations)
+         }
 
 			getObjectTabController().enregistrerValeursChampsCalculesPourExport(null, getResultatsIds(), 
 					getRestrictedTableIds());
@@ -902,7 +910,8 @@ public abstract class AbstractListeController2 extends AbstractController
 			final Constructor<?> constr = exportThread.getConstructor(Desktop.class, int.class, List.class, List.class,
 					ProfilExport.class, short.class, Utilisateur.class, List.class, HtmlMacroComponent.class, Map.class, EContexte.class);
 			final Object o = constr.newInstance(desktop, getObjectTabController().getEntiteTab().getEntiteId(), getResultatsIds(),
-					SessionUtils.getSelectedBanques(sessionScope), pExport, ConfigManager.DEFAULT_EXPORT,
+			      (listeCollectionsObjetAExporter.isEmpty() ? SessionUtils.getSelectedBanques(sessionScope) :listeCollectionsObjetAExporter), 
+			      pExport, ConfigManager.DEFAULT_EXPORT,
 					SessionUtils.getLoggedUser(sessionScope), getRestrictedTableIds(), callProgressBar(), null, contexte);
 			final Method method = exportThread.getMethod("start");
 
@@ -1416,7 +1425,7 @@ public abstract class AbstractListeController2 extends AbstractController
 	public abstract List<? extends TKdataObject> extractObjectsFromIds(List<Integer> ids);
 
 	/**
-	 * Méthode qui va retourner une d'ids se trouvent dans
+	 * Méthode qui va retourner une liste d'ids se trouvant dans
 	 * la liste des objets.
 	 *
 	 * @param liste objetds
@@ -1429,6 +1438,27 @@ public abstract class AbstractListeController2 extends AbstractController
 		}
 	}
 
+	  //TK-320 : récupération des collections
+	 /**
+    * Méthode qui va retourner une liste d'ids se trouvant dans
+    * la liste des objets ainsi que la liste des id des collections concernées
+    *
+    * @param liste objetds
+    * @param liste ids à peupler
+    * @param liste id des collections
+    */
+   public void extractIdsFromListWithIdsCollection(final List<? extends TKdataObject> objs, final List<Integer> objetIds, final List<Banque> collections){
+      List<Banque> tempListCollection = new ArrayList<Banque>();
+      for(final TKdataObject obj : objs){
+         objetIds.add(obj.listableObjectId());
+         Banque collection = ((TKAnnotableObject)obj).getBanque();
+         if(!tempListCollection.contains(collection)) {
+            tempListCollection.add(collection);
+         }
+      }
+      collections.addAll(tempListCollection);
+   }
+	
 	public void addIdToListObjects(final Integer id, final Integer pos){
 		final TKdataObject obj = getObjectTabController().loadById(id);
 		addToListObjects(obj, pos);
