@@ -1,10 +1,17 @@
 #### Notes de version
 
-##### Version 2.2.3-fix305 - Publiée le 21/09/2021
-- YouTrack [TKB-305](https://tumorotek.myjetbrains.com/youtrack/issue/TKB-305)
-- YouTrack [TKB-302](https://tumorotek.myjetbrains.com/youtrack/issue/TKB-302)
-- YouTrack [TKB-299](https://tumorotek.myjetbrains.com/youtrack/issue/TKB-299)
- 
+##### Version 2.2.5 - Publiée le 23/03/2022
+###### Corrections
+- YouTrack [TK-313](https://tumorotek.myjetbrains.com/youtrack/issue/TK-313) : Conteneurs partagés : mauvaise prise en compte de la restriction de stockage à l'administrateur - déplacements bloqués à tort
+- YouTrack [TK-314](https://tumorotek.myjetbrains.com/youtrack/issue/TK-314) : Conteneurs partagés : mauvaise prise en compte de la restriction de stockage à l'administrateur - problème d'affichage des conteneurs
+- YouTrack [TK-320](https://tumorotek.myjetbrains.com/youtrack/issue/TK-320) : Exports : Plantage systématique lors des exports en "Toutes collections".
+- YouTrack [TK-321](https://tumorotek.myjetbrains.com/youtrack/issue/TK-321) : Exports : Amélioration d'un message d'erreur pour le rendre plus parlant.
+- YouTrack [TK-325](https://tumorotek.myjetbrains.com/youtrack/issue/TK-325) : Administration > Fiche Plateforme : tri des conteneurs par ordre alphabétique du nom
+- YouTrack [TK-326](https://tumorotek.myjetbrains.com/youtrack/issue/TK-326) : Administration > Fiche Collection (mode édition) : dans la liste déroulante "assigner un conteneur", tri par ordre alphabétique du nom des conteneurs
+
+***
+
+##### Version 2.2.3-fix302 - Publiée le 27/02/2022
 ###### Nouveautés
 - YouTrack [TKB-4](https://tumorotek.myjetbrains.com/youtrack/issue/TKB-4) : <span class="badge badge-prelevement">Prélèvement</span> Amélioration de la signification : congélation à l'arrivé à la biothèque
 - YouTrack [TK-14](https://tumorotek.myjetbrains.com/youtrack/issue/TK-14) : Evolution de la partie Numérotation
