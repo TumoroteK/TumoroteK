@@ -40,7 +40,8 @@ public enum ContexteType {
 	
 	PATIENT(1, Values.PATIENT), 
 	PRELEVEMENT(2, Values.PRELEVEMENT),
-	ECHANTILLON(3, Values.ECHANTILLON);
+	ECHANTILLON(3, Values.ECHANTILLON),
+	PROD_DERIVE(8, Values.PROD_DERIVE);
     
 	private Integer entiteId;
 	private String type;
@@ -59,6 +60,8 @@ public enum ContexteType {
         public static final String PATIENT = "Patient";
         public static final String PRELEVEMENT = "Prelevement";
         public static final String ECHANTILLON = "Echantillon";
+        public static final String PROD_DERIVE = "ProdDerive";
+
     }
     
     public static ContexteType getById(Integer _i) {

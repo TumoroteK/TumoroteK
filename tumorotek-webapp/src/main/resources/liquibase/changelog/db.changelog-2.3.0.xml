@@ -93,16 +93,16 @@
    <changeSet id="${project.artifactId}-8" author="MBA" runAlways="true" context="*">
         <preConditions onFail="MARK_RAN">
             <not>
-                <columnExists tableName="BANQUE" columnName="ETUDE_ID"/>
+                <columnExists tableName="BANQUE" columnName="GATSBY_ETUDE_ID"/>
             </not>
         </preConditions>
         <comment>Ajout de la référence BANQUE vers GATSBY_ETUDE_ID</comment>
         <addColumn tableName="BANQUE">
-            <column name="ETUDE_ID" type="INT(100)">
+            <column name="GATSBY_ETUDE_ID" type="INT(100)">
                 <constraints nullable="true"/>
             </column>
         </addColumn>
-        <addForeignKeyConstraint constraintName="FK_BANQUE_ETUDE_ID" referencedTableName="GATSBY_ETUDE" baseColumnNames="ETUDE_ID" baseTableName="BANQUE"
+        <addForeignKeyConstraint constraintName="FK_BANQUE_ETUDE_ID" referencedTableName="GATSBY_ETUDE" baseColumnNames="GATSBY_ETUDE_ID" baseTableName="BANQUE"
                                  referencedColumnNames="GATSBY_ETUDE_ID"/>
     </changeSet> 
 </databaseChangeLog>

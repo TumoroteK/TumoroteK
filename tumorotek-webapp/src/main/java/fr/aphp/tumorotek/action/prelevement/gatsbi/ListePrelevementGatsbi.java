@@ -73,20 +73,21 @@ public class ListePrelevementGatsbi extends ListePrelevement {
 	// flag passe à true si la colonne congelation est déja rendue
 	// afin d'éviter que cette colonne soit rendue deux fois
 	private boolean congColRendered = false;
-	
+
 	public ListePrelevementGatsbi() {
 		setListObjectsRenderer(new PrelevementRowRendererGatsbi(true, false));
 	}
-	
+
 	public void onCheckAll$gridColumns() {
 		onCheck$checkAll();
 	}
 
 	@Override
-	protected void drawColumnsForVisibleChampEntites() throws ClassNotFoundException, InstantiationException, IllegalAccessException {
+	protected void drawColumnsForVisibleChampEntites()
+			throws ClassNotFoundException, InstantiationException, IllegalAccessException {
 
 		contexte = SessionUtils.getCurrentGatsbiContexteForEntiteId(2);
-		
+
 		// check box first column, toujours affichée
 		Checkbox cbox = new Checkbox();
 		cbox.setId("checkAll");
@@ -94,11 +95,13 @@ public class ListePrelevementGatsbi extends ListePrelevement {
 		addColumn(null, "40px", null, cbox, null, true);
 
 		// icones column, visible si non conformites OU risque est visible
-		if (contexte.isChampIdVisible(249) || contexte.isChampIdVisible(256) 
+		if (contexte.isChampIdVisible(249) || contexte.isChampIdVisible(256)
 				|| SessionUtils.getEmetteursInterfacages(sessionScope).size() > 0) {
-			addColumn(null, 
-					(contexte.isChampIdVisible(249) && contexte.isChampIdVisible(256)) ? "70px" : "35px", 
-							"center", null, null, true);
+			addColumn(null, (contexte.isChampIdVisible(249) && contexte.isChampIdVisible(256)) ? "70px" : "35px",
+					"center", null, null, true);
+
+			// indique au row renderer qu'il doit dessiner les icones
+			getListObjectsRenderer().setIconesRendered(true);
 		}
 
 		// code prel column, toujours affichée
@@ -114,13 +117,12 @@ public class ListePrelevementGatsbi extends ListePrelevement {
 		addColumn("Champ.Patient.Nip", null, null, null, "auto(maladie.patient.nom)", false);
 
 		// maladie, colonne visible si banque définit le niveau
-		addColumn("prelevement.maladie", "150px", null, null, "auto(maladie.patient.nom)", 
-				getBanqueDefMaladies());
+		addColumn("prelevement.maladie", "150px", null, null, "auto(maladie.patient.nom)", getBanqueDefMaladies());
 
 		// variable columns
 		for (Integer chpId : contexte.getChampEntiteInTableauOrdered()) {
 			addColumnForChpId(chpId);
-		}	
+		}
 
 		// nb echantillons
 		Vbox vbox = new Vbox();
@@ -135,7 +137,7 @@ public class ListePrelevementGatsbi extends ListePrelevement {
 		nbEchantillonsColumn.setId("nbEchantillonsColumn");
 	}
 
-	private void addColumnForChpId(Integer chpId) 
+	private void addColumnForChpId(Integer chpId)
 			throws ClassNotFoundException, InstantiationException, IllegalAccessException {
 		switch (chpId) {
 		case 23:
@@ -218,8 +220,8 @@ public class ListePrelevementGatsbi extends ListePrelevement {
 			break;
 		}
 	}
-	
-	private Column addColumn(String nameKey, String width, String align, Component child, String sort, Boolean visible) 
+
+	private Column addColumn(String nameKey, String width, String align, Component child, String sort, Boolean visible)
 			throws ClassNotFoundException, InstantiationException, IllegalAccessException {
 		// check box first immutable column
 		Column col = new Column();
@@ -235,54 +237,60 @@ public class ListePrelevementGatsbi extends ListePrelevement {
 
 		return col;
 	}
-	
+
 	/**
-	 * Gatsbi surcharge pour intercaler une modale de sélection 
-	 * des parametrages proposés par le contexte.
-	 * @param click event 
+	 * Gatsbi surcharge pour intercaler une modale de sélection des parametrages
+	 * proposés par le contexte.
+	 * 
+	 * @param click event
 	 */
 	@Override
 	public void onClick$addNew(final Event event) throws Exception {
 		
-		final Map<String, Object> args = new HashMap<String, Object>();
-        args.put("contexte", contexte);
-        args.put("parent", self);
-        Executions.createComponents("/zuls/gatsbi/SelectParametrageModale.zul", null, args);		
+		if (!contexte.getParametrages().isEmpty()) {
+			final Map<String, Object> args = new HashMap<String, Object>();
+			args.put("contexte", contexte);
+			args.put("parent", self);
+			Executions.createComponents("/zuls/gatsbi/SelectParametrageModale.zul", null, args);
+		} else { // no parametrages
+			super.onClick$addNew(event);
+		}
 	}
-	
+
 	/**
 	 * Un parametrage a été sélectionné.
+	 * 
 	 * @param param
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	@SuppressWarnings("unchecked")
 	public void onGetSelectedParametrage(ForwardEvent evt) throws Exception {
-		
+
 		try {
 			ResultatInjection inject = null;
 			if (((Map<String, Integer>) evt.getOrigin().getData()).get("paramId") != null) {
-				ParametrageDTO parametrageDTO = 
-						GatsbiController.doGastbiParametrage(
-							((Map<String, Integer>) evt.getOrigin().getData()).get("paramId"));
-				
+				ParametrageDTO parametrageDTO = GatsbiController
+						.doGastbiParametrage(((Map<String, Integer>) evt.getOrigin().getData()).get("paramId"));
+
 				Consumer<Parametrage> validator = p -> {
 					// cong depart OU cong arrivee
-					if (p.getDefaultValuesForChampEntiteId(269) != null 
+					if (p.getDefaultValuesForChampEntiteId(269) != null
 							&& p.getDefaultValuesForChampEntiteId(269).contentEquals("1")
-						&& p.getDefaultValuesForChampEntiteId(270) != null 
+							&& p.getDefaultValuesForChampEntiteId(270) != null
 							&& p.getDefaultValuesForChampEntiteId(270).contentEquals("1")) {
 						throw new TKException("gatsbi.illegal.parametrage.prelevement.cong");
-					}			
+					}
 				};
-				
-				inject = GatsbiController
-					.injectGatsbiObject(contexte, parametrageDTO, SessionUtils.getCurrentBanque(sessionScope), validator);
+
+				inject = GatsbiController.injectGatsbiObject(contexte, parametrageDTO,
+						SessionUtils.getCurrentBanque(sessionScope), validator);
 			}
-			
+
 			super.onClick$addNew(null);
-			
+
 			if (inject != null) {
-				Events.postEvent("onGatsbiParamSelected", getObjectTabController().getFicheEdit().getSelfComponent(), inject);
+				Events.postEvent("onGatsbiParamSelected", getObjectTabController().getFicheEdit().getSelfComponent(),
+						inject);
 			}
 		} catch (Exception e) {
 			Messagebox.show(handleExceptionMessage(e), "Error", Messagebox.OK, Messagebox.ERROR);

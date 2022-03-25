@@ -51,9 +51,8 @@ import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
 /**
  *
- * Controller gérant la fiche de modification multiple de prélèvements 
- * sous le gestionnaire GATSBI.
- * Controller créé le 25/06/2021.
+ * Controller gérant la fiche de modification multiple de prélèvements sous le
+ * gestionnaire GATSBI. Controller créé le 25/06/2021.
  *
  * @author Mathieu BARTHELEMY
  * @version 2.3.0-gatsbi
@@ -62,43 +61,43 @@ import fr.aphp.tumorotek.webapp.general.SessionUtils;
 public class FicheModifMultiPrelevementGatsbi extends FicheModifMultiPrelevement {
 
 	private static final long serialVersionUID = 1L;
-	
+
 	private Div gatsbiContainer;
 
 	private Contexte c;
-	List<Div> itemDivs  = new ArrayList<Div>();
-	List<Div> blockDivs  = new ArrayList<Div>();
-	
+	List<Div> itemDivs = new ArrayList<Div>();
+	List<Div> blockDivs = new ArrayList<Div>();
+
 	@Override
 	public void doAfterCompose(Component comp) throws Exception {
 		super.doAfterCompose(comp);
-		
-		try {
-			itemDivs.addAll(GatsbiController.wireItemDivsFromMainComponent(gatsbiContainer));
-			blockDivs.addAll(GatsbiController.wireBlockDivsFromMainComponent(gatsbiContainer));
 
-		    c = SessionUtils.getCurrentGatsbiContexteForEntiteId(2);
+		try {
+			c = SessionUtils.getCurrentGatsbiContexteForEntiteId(2);
+
+			itemDivs = GatsbiController.wireItemDivsFromMainComponent(c.getContexteType(), gatsbiContainer);
+			blockDivs = GatsbiController.wireBlockDivsFromMainComponent(c.getContexteType(), gatsbiContainer);
 
 			GatsbiController.showOrhideItems(itemDivs, blockDivs, c); // TODO replace by collection.contexte
-			// GatsbiController.switchItemsRequiredOrNot(itemDivs, c, reqListboxes, 
-			//		new ArrayList<Combobox>(), new ArrayList<Div>());
+			// GatsbiController.switchItemsRequiredOrNot(itemDivs, c, reqListboxes,
+			// new ArrayList<Combobox>(), new ArrayList<Div>());
 
 		} catch (Exception e) {
 			log.debug(e);
 			Messagebox.show(handleExceptionMessage(e), "Error", Messagebox.OK, Messagebox.ERROR);
 		}
 	}
-	
+
 	@Override
 	protected List<Object> applyAnyThesaurusRestriction(List<Object> thObjs, Integer chpId) throws TKException {
 		return GatsbiController.filterExistingListModel(c, thObjs, chpId);
 	}
-	
+
 	@Override
 	protected Constraint muteAnyRequiredConstraint(Constraint cstr, Integer chpId) {
 		return GatsbiController.muteConstraintFromContexte(cstr, c.isChampIdRequired(chpId));
 	}
-	
+
 	@Override
 	protected boolean switchAnyRequiredFlag(Boolean flag, Integer chpId) {
 		return c.isChampIdRequired(chpId);

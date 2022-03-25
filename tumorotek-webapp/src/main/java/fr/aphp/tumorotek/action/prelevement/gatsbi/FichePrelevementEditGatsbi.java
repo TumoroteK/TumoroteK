@@ -40,9 +40,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
-import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.ForwardEvent;
 import org.zkoss.zk.ui.util.Clients;
@@ -60,9 +58,8 @@ import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
 /**
  *
- * Controller gérant la fiche formulaire d'un prélèvement sous le 
- * gestionnaire GATSBI.
- * Controller créé le 25/05/2021.
+ * Controller gérant la fiche formulaire d'un prélèvement sous le gestionnaire
+ * GATSBI. Controller créé le 25/05/2021.
  *
  * @author mathieu BARTHELEMY
  * @version 2.3.0-gatsbi
@@ -75,34 +72,32 @@ public class FichePrelevementEditGatsbi extends FichePrelevementEdit {
 	private Div gatsbiContainer;
 
 	private List<Listbox> reqListboxes = new ArrayList<Listbox>();
-	List<Div> itemDivs  = new ArrayList<Div>();
-	List<Div> blockDivs  = new ArrayList<Div>();
+	List<Div> itemDivs = new ArrayList<Div>();
+	List<Div> blockDivs = new ArrayList<Div>();
 
 	// @wire
 	private Groupbox groupPrlvt;
 
 	private Contexte c;
 
-
 	@Override
-	public void doAfterCompose(final Component comp) throws Exception{
+	public void doAfterCompose(final Component comp) throws Exception {
 		super.doAfterCompose(comp);
 
 		try {
-			itemDivs.addAll(GatsbiController.wireItemDivsFromMainComponent(gatsbiContainer));
-			blockDivs.addAll(GatsbiController.wireBlockDivsFromMainComponent(gatsbiContainer));
+			c = SessionUtils.getCurrentGatsbiContexteForEntiteId(2);
 
-		    c = SessionUtils.getCurrentGatsbiContexteForEntiteId(2);
-
+			itemDivs = GatsbiController.wireItemDivsFromMainComponent(c.getContexteType(), gatsbiContainer);
+			blockDivs = GatsbiController.wireBlockDivsFromMainComponent(c.getContexteType(), gatsbiContainer);
 
 			GatsbiController.showOrhideItems(itemDivs, blockDivs, c); // TODO replace by collection.contexte
-			GatsbiController.switchItemsRequiredOrNot(itemDivs, c, reqListboxes, 
-					new ArrayList<Combobox>(), new ArrayList<Div>());
+			GatsbiController.switchItemsRequiredOrNot(itemDivs, c, reqListboxes, new ArrayList<Combobox>(),
+					new ArrayList<Div>());
 
 			GatsbiController.appliThesaurusValues(itemDivs, c, this);
 
 			hideEmptyGroupboxes();
-			
+
 			// setRows ne marche pas ?
 			// seul moyen trouvé pour augmenter hauteur et voir tous les items de la listbox
 			risquesBox.setHeight(c.getThesaurusValuesForChampEntiteId(249).size() * 25 + "px");
@@ -125,7 +120,6 @@ public class FichePrelevementEditGatsbi extends FichePrelevementEdit {
 		return new ResumePatient(groupPatient, true);
 	}
 
-
 	@Override
 	protected void enablePatientGroup(boolean b) {
 		((Groupbox) this.groupPatient).setOpen(b);
@@ -142,14 +136,14 @@ public class FichePrelevementEditGatsbi extends FichePrelevementEdit {
 	}
 
 	/**
-	 * Processing echoEvent.
-	 * Gatsbi surcharge... si aucun champ de formulaire dans la page de 
-	 * transfert vers le site de stockage, passe directement à l'échantillon.
+	 * Processing echoEvent. Gatsbi surcharge... si aucun champ de formulaire dans
+	 * la page de transfert vers le site de stockage, passe directement à
+	 * l'échantillon.
 	 *
 	 * @see onClick$next
 	 */
 	@Override
-	public void onLaterNextStep(){
+	public void onLaterNextStep() {
 
 		log.debug("Surcharge Gastbi pour vérifier que la page de transfert des sites intermédiaire est affichée");
 
@@ -162,18 +156,20 @@ public class FichePrelevementEditGatsbi extends FichePrelevementEdit {
 			super.onLaterNextStep();
 		} else { // aucun formulaire n'est affiché -> passage direct à l'onglet échantillon
 			log.debug("Aucun formulaire à affiché dans la page transfert vers le site préleveur...");
-			if(this.prelevement.getPrelevementId() != null){
-				getObjectTabController().switchToMultiEchantillonsEditMode(this.prelevement, new ArrayList<LaboInter>(), new ArrayList<LaboInter>());
-			}else{
+			if (this.prelevement.getPrelevementId() != null) {
+				getObjectTabController().switchToMultiEchantillonsEditMode(this.prelevement, new ArrayList<LaboInter>(),
+						new ArrayList<LaboInter>());
+			} else {
 				// si nous sommes dans une action de création, on
 				// appelle la page FicheMultiEchantillons en mode create
-				getObjectTabController().switchToMultiEchantillonsCreateMode(this.prelevement, new ArrayList<LaboInter>());
+				getObjectTabController().switchToMultiEchantillonsCreateMode(this.prelevement,
+						new ArrayList<LaboInter>());
 			}
 
 			Clients.clearBusy();
 		}
 	}
-	
+
 	/**
 	 * Surcharge pour gérer la redirection d'évènement.
 	 */
@@ -181,16 +177,16 @@ public class FichePrelevementEditGatsbi extends FichePrelevementEdit {
 	public void onGetInjectionDossierExterneDone(Event e) {
 		super.onGetInjectionDossierExterneDone(((ForwardEvent) e).getOrigin());
 	}
-	
+
 	/**
 	 * Plus d'obligation
 	 */
 	@Override
-	public void onSelect$naturesBoxPrlvt(){
+	public void onSelect$naturesBoxPrlvt() {
 	}
 
 	@Override
-   public void onSelect$consentTypesBoxPrlvt(){
-   }
+	public void onSelect$consentTypesBoxPrlvt() {
+	}
 
 }

@@ -49,52 +49,54 @@ import fr.aphp.tumorotek.model.contexte.gatsbi.Contexte;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
 /**
- * Controller gérant le rendu dynamique des lignes du tableau 
- * prélèvement sous le gestionnaire GATSBI.
- * Ecris donc toutes les colonnes possibles, mais dans l'ordre 
- * spécifié par le contexte Gatsbi.
+ * Controller gérant le rendu dynamique des lignes du tableau prélèvement sous
+ * le gestionnaire GATSBI. Ecris donc toutes les colonnes possibles, mais dans
+ * l'ordre spécifié par le contexte Gatsbi.
  *
  * @author Mathieu BARTHELEMY
  * @version 2.3.0-gatsi
  */
-public class PrelevementRowRendererGatsbi extends PrelevementRowRenderer
-{
+public class PrelevementRowRendererGatsbi extends PrelevementRowRenderer {
 
-	private Contexte contexte; 
+	private Contexte contexte;
 
 	// flag passe à true si la cellule congelation est déja rendue
 	// afin d'éviter que cette cellule soit rendue deux fois
 	private boolean congCellRendered;
-	
-	public PrelevementRowRendererGatsbi(final boolean select, final boolean cols){
+
+	// par défaut les icones ne sont pas dessinées
+	private boolean iconesRendered = false;
+
+	public PrelevementRowRendererGatsbi(final boolean select, final boolean cols) {
 		super(select, cols);
 
 		contexte = SessionUtils.getCurrentGatsbiContexteForEntiteId(2);
 	}
 
 	@Override
-	protected void renderPrelevement(Row row, Prelevement prel) 
-		throws IllegalAccessException, InvocationTargetException, NoSuchMethodException, ParseException {
-		
+	protected void renderPrelevement(Row row, Prelevement prel)
+			throws IllegalAccessException, InvocationTargetException, NoSuchMethodException, ParseException {
+
 		congCellRendered = false;
-		
+
 		for (Integer chpId : contexte.getChampEntiteInTableauOrdered()) {
 			applyPrelevementChpRender(chpId, row, prel);
 		}
-		
+
 		renderNbEchans(row, prel);
 	}
 
 	/**
-	 * Applique la methode de rendering correspondant 
-	 * au champEntité id passé en paramètre
+	 * Applique la methode de rendering correspondant au champEntité id passé en
+	 * paramètre
+	 * 
 	 * @param chpId
-	 * @throws NoSuchMethodException 
-	 * @throws InvocationTargetException 
-	 * @throws IllegalAccessException 
-	 * @throws ParseException 
+	 * @throws NoSuchMethodException
+	 * @throws InvocationTargetException
+	 * @throws IllegalAccessException
+	 * @throws ParseException
 	 */
-	private void applyPrelevementChpRender(Integer chpId, Row row, Prelevement prel) 
+	private void applyPrelevementChpRender(Integer chpId, Row row, Prelevement prel)
 			throws IllegalAccessException, InvocationTargetException, NoSuchMethodException, ParseException {
 
 		switch (chpId) {
@@ -196,23 +198,30 @@ public class PrelevementRowRendererGatsbi extends PrelevementRowRenderer
 			new Label().setParent(row);
 		}
 	}
-	
+
 	private void renderServicePreleveur(Row row, Prelevement prel) {
 		if (prel.getServicePreleveur() != null) {
-			new Label(prel.getServicePreleveur().getEtablissement().getNom()
-				.concat(" ")
-				.concat(prel.getServicePreleveur().getNom()))
-			.setParent(row);
+			new Label(prel.getServicePreleveur().getEtablissement().getNom().concat(" ")
+					.concat(prel.getServicePreleveur().getNom())).setParent(row);
 		} else {
 			new Label().setParent(row);
 		}
 	}
-	
+
 	private void renderTransporteurProperty(Row row, Prelevement prel) {
 		if (prel.getTransporteur() != null) {
 			new Label(prel.getTransporteur().getNom()).setParent(row);
 		} else {
 			new Label().setParent(row);
 		}
+	}
+
+	public void setIconesRendered(boolean _i) {
+		this.iconesRendered = _i;
+	}
+
+	@Override
+	protected boolean areIconesRendered() {
+		return iconesRendered;
 	}
 }

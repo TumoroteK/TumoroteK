@@ -2082,6 +2082,7 @@ public class FicheRechercheAvancee extends AbstractFicheRechercheAvancee {
 	 * @return La liste de résultats mise à jour.
 	 */
 
+	@SuppressWarnings("unchecked")
 	public void executeTempStockQuery(final Decimalbox current, final String op, final Entite ent){
 
 		// on récupère la ou les banques sélectionnée(s)

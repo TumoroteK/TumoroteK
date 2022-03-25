@@ -48,6 +48,7 @@ import org.zkoss.zul.Messagebox;
 import fr.aphp.tumorotek.action.prelevement.gatsbi.GatsbiController;
 import fr.aphp.tumorotek.action.recherche.FicheRechercheAvancee;
 import fr.aphp.tumorotek.model.coeur.prelevement.Risque;
+import fr.aphp.tumorotek.model.contexte.gatsbi.Contexte;
 import fr.aphp.tumorotek.model.qualite.NonConformite;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
@@ -68,20 +69,32 @@ public class FicheRechercheAvanceeGatsbi extends FicheRechercheAvancee {
 	private Grid gatsbiContainer;
 	
 	List<Div> itemDivs = new ArrayList<Div>();
-	List<Div> blockDivs = new ArrayList<Div>();
 
 	@Override
 	public void doAfterCompose(final Component comp) throws Exception{
 		super.doAfterCompose(comp);
+		
+		List<Div> contexteItemDivs = new ArrayList<Div>();
+		List<Div> contexteBlockDivs = new ArrayList<Div>();
+		
+		for (Contexte contexte : SessionUtils.getGatsbiContextes()) {
+			contexteItemDivs.clear();
+			contexteBlockDivs.clear();
+			
+			contexteItemDivs.addAll(GatsbiController
+				.wireItemDivsFromMainComponent(contexte.getContexteType(), gatsbiContainer));
+			contexteBlockDivs.addAll(GatsbiController
+				.wireBlockDivsFromMainComponent(contexte.getContexteType(), gatsbiContainer));
 
-		itemDivs.addAll(GatsbiController.wireItemDivsFromMainComponent(gatsbiContainer));
-		blockDivs.addAll(GatsbiController.wireBlockDivsFromMainComponent(gatsbiContainer));
-
-		GatsbiController.showOrhideItems(itemDivs, blockDivs, SessionUtils.getGatsbiContextes());
+			GatsbiController.showOrhideItems(contexteItemDivs, contexteBlockDivs, contexte);
+			
+			// add itemDiv to all items div list, so that thesaurus restriction applies once
+			itemDivs.addAll(contexteItemDivs);
+		}
 		
 		// hide group labo Inter
 		groupLaboInters.setVisible(SessionUtils.getCurrentGatsbiContexteForEntiteId(2) != null 
-				&& SessionUtils.getCurrentGatsbiContexteForEntiteId(2).getSiteInter());
+			&& SessionUtils.getCurrentGatsbiContexteForEntiteId(2).getSiteInter());
 	}
 	
 	/**
@@ -97,7 +110,7 @@ public class FicheRechercheAvanceeGatsbi extends FicheRechercheAvancee {
 			Messagebox.show(handleExceptionMessage(e), "Error", Messagebox.OK, Messagebox.ERROR);
 		}
 	}
-	
+
 	/**
 	 * Gatsbi modifie cette liste et implémente donc le setter
 	 * @param risks

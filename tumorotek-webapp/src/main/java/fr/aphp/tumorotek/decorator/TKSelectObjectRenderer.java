@@ -375,4 +375,18 @@ public class TKSelectObjectRenderer<T extends TKdataObject> implements RowRender
 			new Label().setParent(row);
 		}
 	}
+	
+	/**
+	 * Sera surchargée par Gatsbi pour ne pas dessiner les icones 
+	 * quand les champs correspondants ne sont plus affichés dans les 
+	 * formulaires 
+	 * @since 2.3.0-gatsbi
+	 * @return true si les icones doivent être dessinées
+	 */
+	protected boolean areIconesRendered() {
+		return true;
+	}
+	
+	public void setIconesRendered(boolean _i) {
+	}
 }

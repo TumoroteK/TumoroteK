@@ -134,24 +134,27 @@ public class PrelevementRowRenderer extends TKSelectObjectRenderer<Prelevement>
 		// init nbEchansRestants
 		setNbEchansRestants(PrelevementUtils.getNbEchanRestants(prel));
 
-		final Hlayout icones = PrelevementUtils.drawListIcones(prel);
-
-		// Dossier externe en attente
-		// @since 2.0.13.1 pivot code ou numero labo
-		if(prel != null && emetteurs.size() > 0){
-			if(ManagerLocator.getDossierExterneManager().findByEmetteurInListAndIdentificationManager(getEmetteurs(), prel.getCode())
-					.size() > 0
-					|| ManagerLocator.getDossierExterneManager()
-					.findByEmetteurInListAndIdentificationManager(getEmetteurs(), prel.getNumeroLabo()).size() > 0){
-				final Div nonDossier = new Div();
-				nonDossier.setWidth("18px");
-				nonDossier.setHeight("18px");
-				nonDossier.setClass("dossierInbox formLink");
-				nonDossier.setParent(icones);
-				nonDossier.addForward(null, nonDossier.getParent().getParent(), "onClickDossierExt", prel);
+		// @since gatsbi, icones peuvent ne jamais s'afficher
+		if (areIconesRendered()) {
+			final Hlayout icones = PrelevementUtils.drawListIcones(prel);
+	
+			// Dossier externe en attente
+			// @since 2.0.13.1 pivot code ou numero labo
+			if(prel != null && emetteurs.size() > 0){
+				if(ManagerLocator.getDossierExterneManager().findByEmetteurInListAndIdentificationManager(getEmetteurs(), prel.getCode())
+						.size() > 0
+						|| ManagerLocator.getDossierExterneManager()
+						.findByEmetteurInListAndIdentificationManager(getEmetteurs(), prel.getNumeroLabo()).size() > 0){
+					final Div nonDossier = new Div();
+					nonDossier.setWidth("18px");
+					nonDossier.setHeight("18px");
+					nonDossier.setClass("dossierInbox formLink");
+					nonDossier.setParent(icones);
+					nonDossier.addForward(null, nonDossier.getParent().getParent(), "onClickDossierExt", prel);
+				}
 			}
+			icones.setParent(row);
 		}
-		icones.setParent(row);
 
 		final Label codeLabel = new Label(prel.getCode());
 		codeLabel.addForward(null, codeLabel.getParent(), "onClickObject", prel);

@@ -91,6 +91,7 @@ import fr.aphp.tumorotek.model.coeur.patient.Patient;
 import fr.aphp.tumorotek.model.coeur.prelevement.Prelevement;
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.contexte.Plateforme;
+import fr.aphp.tumorotek.model.contexte.gatsbi.Contexte;
 import fr.aphp.tumorotek.model.contexte.gatsbi.Etude;
 import fr.aphp.tumorotek.model.interfacage.Emetteur;
 import fr.aphp.tumorotek.model.interfacage.scan.ScanTerminale;
@@ -151,8 +152,8 @@ public class MainWindow extends GenericForwardComposer<Component>
    private Hashtable<String, String> prodDeriveTypesCouleur = new Hashtable<>();
 
    // Search History
-   public static String SEARCH_HISTORY_SESSION = "SearchHistorySession";
-   private List<SearchHistory> searchHistoryList;
+   public static String SEARCH_HISTORY_SESSIONS = "SearchHistorySessions";
+   private Map<Etude, LinkedList<SearchHistory>> searchHistoryMap;
 
    private AnnotateDataBinder mainBinder;
 
@@ -261,8 +262,9 @@ public class MainWindow extends GenericForwardComposer<Component>
       //		}
 
       // Initialise la sauvegarde de l'historique de recherche
-      searchHistoryList = new LinkedList<>();
-      sessionScope.put(SEARCH_HISTORY_SESSION, searchHistoryList);
+      // @since 2.3.0-gatsbi, historique is mapped by etude (ie sets of fomr contextes)
+      searchHistoryMap = new HashMap<Etude, LinkedList<SearchHistory>>();
+      sessionScope.put(SEARCH_HISTORY_SESSIONS, searchHistoryMap);
 
       if(sessionScope.containsKey("resourceRequest")){
          displayTkObjDetails((ResourceRequest<?>) sessionScope.get("resourceRequest"));

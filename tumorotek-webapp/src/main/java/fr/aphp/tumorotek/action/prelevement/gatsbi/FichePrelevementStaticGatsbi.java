@@ -60,8 +60,8 @@ import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
 /**
  *
- * Controller gérant la fiche static d'un prélèvement GATSBI.
- * Controller créé le 25/05/2021.
+ * Controller gérant la fiche static d'un prélèvement GATSBI. Controller créé le
+ * 25/05/2021.
  *
  * @author mathieu BARTHELEMY
  * @version 2.3.0-gatsbi
@@ -69,101 +69,106 @@ import fr.aphp.tumorotek.webapp.general.SessionUtils;
  */
 public class FichePrelevementStaticGatsbi extends FichePrelevementStatic {
 
-   private static final long serialVersionUID = -7612780578022559022L;
-   
-   private Div gatsbiContainer;
-   
-   private Groupbox groupPrlvt;
-   
-   private Contexte c;
+	private static final long serialVersionUID = -7612780578022559022L;
 
-   @Override
-   public void doAfterCompose(final Component comp) throws Exception{
-      super.doAfterCompose(comp);
-      
-      List<Div> itemDivs = GatsbiController.wireItemDivsFromMainComponent(gatsbiContainer);
-      List<Div> blockDivs = GatsbiController.wireBlockDivsFromMainComponent(gatsbiContainer);
+	private Div gatsbiContainer;
 
-      c = SessionUtils.getCurrentGatsbiContexteForEntiteId(2);
-      
-      GatsbiController.showOrhideItems(itemDivs, blockDivs, c); // TODO replace by collection.contexte
-      
-   // prelevement specific
-      if (groupLaboInter != null) {
-    	  groupLaboInter.setVisible(c!= null && c.getSiteInter());
-      }
-      hideEmptyGroupboxes();
-   }
-      
-   private void hideEmptyGroupboxes() {
-	   GatsbiController.hideGroupBoxIfEmpty(groupPrlvt);
-	   GatsbiController.hideGroupBoxIfEmpty(gridFormPrlvtComp);
-   }
-   
-   
-   @Override
-   protected ResumePatient initResumePatient() {
-	  return new ResumePatient(groupPatient, true);
-   }
+	private Groupbox groupPrlvt;
 
+	private Contexte c;
 
-   @Override
-   protected void enablePatientGroup(boolean b) {
-	   ((Groupbox) this.groupPatient).setOpen(b);
-	   ((Groupbox) this.groupPatient).setClosable(b);
-   }
-   
-   //TODO: ces deux méthodes sont factorisables avec 
-   // celles de ListePrelevementGatsbi
-   
+	@Override
+	public void doAfterCompose(final Component comp) throws Exception {
+		super.doAfterCompose(comp);
+
+		c = SessionUtils.getCurrentGatsbiContexteForEntiteId(2);
+
+		List<Div> itemDivs = GatsbiController.wireItemDivsFromMainComponent(c.getContexteType(), gatsbiContainer);
+		List<Div> blockDivs = GatsbiController.wireBlockDivsFromMainComponent(c.getContexteType(), gatsbiContainer);
+
+		GatsbiController.showOrhideItems(itemDivs, blockDivs, c); // TODO replace by collection.contexte
+
+		// prelevement specific
+		if (groupLaboInter != null) {
+			groupLaboInter.setVisible(c != null && c.getSiteInter());
+		}
+		hideEmptyGroupboxes();
+	}
+
+	private void hideEmptyGroupboxes() {
+		GatsbiController.hideGroupBoxIfEmpty(groupPrlvt);
+		GatsbiController.hideGroupBoxIfEmpty(gridFormPrlvtComp);
+	}
+
+	@Override
+	protected ResumePatient initResumePatient() {
+		return new ResumePatient(groupPatient, true);
+	}
+
+	@Override
+	protected void enablePatientGroup(boolean b) {
+		((Groupbox) this.groupPatient).setOpen(b);
+		((Groupbox) this.groupPatient).setClosable(b);
+	}
+
+	// TODO: ces deux méthodes sont factorisables avec
+	// celles de ListePrelevementGatsbi
+
 	/**
-	 * Gatsbi surcharge pour intercaler une modale de sélection 
-	 * des parametrages proposés par le contexte.
-	 * @param click event 
+	 * Gatsbi surcharge pour intercaler une modale de sélection des parametrages
+	 * proposés par le contexte.
+	 * 
+	 * @param click event
 	 */
 	@Override
-	public void onClick$addNew() {		
-		final Map<String, Object> args = new HashMap<String, Object>();
-       args.put("contexte", c);
-       args.put("parent", self);
-       Executions.createComponents("/zuls/gatsbi/SelectParametrageModale.zul", null, args);		
+	public void onClick$addNew() {
+
+		if (!c.getParametrages().isEmpty()) {
+			final Map<String, Object> args = new HashMap<String, Object>();
+			args.put("contexte", c);
+			args.put("parent", self);
+			Executions.createComponents("/zuls/gatsbi/SelectParametrageModale.zul", null, args);
+		} else { // no parametrages
+			super.onClick$addNew();
+		}
 	}
-	
+
 	/**
 	 * Un parametrage a été sélectionné.
+	 * 
 	 * @param param
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	@SuppressWarnings("unchecked")
 	public void onGetSelectedParametrage(ForwardEvent evt) throws Exception {
 		try {
 			ResultatInjection inject = null;
 			if (((Map<String, Integer>) evt.getOrigin().getData()).get("paramId") != null) {
-				ParametrageDTO parametrageDTO = 
-					GatsbiController.doGastbiParametrage(
-						((Map<String, Integer>) evt.getOrigin().getData()).get("paramId"));
-	
+				ParametrageDTO parametrageDTO = GatsbiController
+						.doGastbiParametrage(((Map<String, Integer>) evt.getOrigin().getData()).get("paramId"));
+
 				Consumer<Parametrage> validator = p -> {
 					// cong depart OU cong arrivee
-					if (p.getDefaultValuesForChampEntiteId(269) != null 
+					if (p.getDefaultValuesForChampEntiteId(269) != null
 							&& p.getDefaultValuesForChampEntiteId(269).contentEquals("1")
-						&& p.getDefaultValuesForChampEntiteId(270) != null 
+							&& p.getDefaultValuesForChampEntiteId(270) != null
 							&& p.getDefaultValuesForChampEntiteId(270).contentEquals("1")) {
 						throw new TKException("gatsbi.illegal.parametrage.prelevement.cong");
-					}			
+					}
 				};
-				
-				inject = GatsbiController
-					.injectGatsbiObject(c, parametrageDTO, SessionUtils.getCurrentBanque(sessionScope), validator);
+
+				inject = GatsbiController.injectGatsbiObject(c, parametrageDTO,
+						SessionUtils.getCurrentBanque(sessionScope), validator);
 			}
-			
+
 			super.onClick$addNew();
-			
+
 			if (inject != null) {
-				Events.postEvent("onGatsbiParamSelected", getObjectTabController().getFicheEdit().getSelfComponent(), inject);
+				Events.postEvent("onGatsbiParamSelected", getObjectTabController().getFicheEdit().getSelfComponent(),
+						inject);
 			}
 		} catch (Exception e) {
 			Messagebox.show(handleExceptionMessage(e), "Error", Messagebox.OK, Messagebox.ERROR);
 		}
-	}	
+	}
 }
