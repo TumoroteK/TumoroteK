@@ -50,6 +50,7 @@ import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Execution;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.ClientInfoEvent;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.Events;
@@ -60,6 +61,7 @@ import org.zkoss.zul.Label;
 import org.zkoss.zul.Row;
 
 import fr.aphp.tumorotek.action.ManagerLocator;
+import fr.aphp.tumorotek.action.prelevement.gatsbi.exception.GatsbiConnextionException;
 import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.contexte.Plateforme;
@@ -290,9 +292,13 @@ public class SelectBanqueController extends GenericForwardComposer<Component>
 	 */
 	public void onClick$validate(){
 		if(selectedBanque != null){
-
-			ConnexionUtils.selectConnection(user, selectedPlateforme, selectedBanque, banques, session);
-			Executions.sendRedirect("/zuls/main/main.zul");
+			
+			try {
+				ConnexionUtils.selectConnection(user, selectedPlateforme, selectedBanque, banques, session);
+				Executions.sendRedirect("/zuls/main/main.zul");
+			} catch (GatsbiConnextionException e) {
+				throw new WrongValueException(rowBanque.getFirstChild(), e.getMessage());
+			}
 		}else{
 			// cas admin première installation aucune collection
 			// et TK-27 plateforme nouvellement créée par adminPF

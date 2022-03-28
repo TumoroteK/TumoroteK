@@ -527,8 +527,9 @@ public class GatsbiController {
 	 * @throws JsonParseException
 	 * @throws JsonMappingException
 	 * @throws IOException
+	 * @throws GatsbiConnextionException 
 	 */
-	public static void doGastbiContexte(Banque bank) throws JsonParseException, JsonMappingException, IOException {
+	public static void doGastbiContexte(Banque bank) throws JsonParseException, JsonMappingException, IOException, GatsbiConnextionException {
 
 		UriComponentsBuilder etudeURIBld = UriComponentsBuilder
 				.fromUriString(TkParam.GATSBI_URL_BASE.getValue().concat(TkParam.GATSBI_URL_ETUDE_PATH.getValue()));
@@ -557,6 +558,27 @@ public class GatsbiController {
 		} catch (ResourceAccessException e) { // gatsbi inaccessible
 			throw new GatsbiConnextionException(e);
 		}
+	}
+	
+	/**
+	 * HTTP HEAD to GATSBI base url.
+	 * @return true if no exception thrown, false otherwise
+	 */
+	public static boolean doesGatsbiRespond() {
+		
+		UriComponentsBuilder headURIBld = UriComponentsBuilder
+				.fromUriString(TkParam.GATSBI_URL_BASE.getValue());
+		
+		log.debug("check if GATSBI URL HEAD responds");
+
+		try {
+			RestTemplate restTemplate = new RestTemplate();
+			restTemplate.headForHeaders(headURIBld.build(false).toUri());
+			return true;
+		} catch (Exception e) { // gatsbi inaccessible
+			log.warn(e.getMessage());
+		}
+		return false;
 	}
 
 	/**

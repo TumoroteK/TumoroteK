@@ -55,6 +55,7 @@ import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.Path;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
+import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.BookmarkEvent;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -82,6 +83,7 @@ import fr.aphp.tumorotek.action.io.RechercheComplexeController;
 import fr.aphp.tumorotek.action.io.RechercheController;
 import fr.aphp.tumorotek.action.io.RequeteController;
 import fr.aphp.tumorotek.action.prelevement.PrelevementController;
+import fr.aphp.tumorotek.action.prelevement.gatsbi.exception.GatsbiConnextionException;
 import fr.aphp.tumorotek.action.recherche.historique.SearchHistory;
 import fr.aphp.tumorotek.action.stockage.StockageController;
 import fr.aphp.tumorotek.action.utilisateur.FicheUtilisateurModale;
@@ -91,7 +93,6 @@ import fr.aphp.tumorotek.model.coeur.patient.Patient;
 import fr.aphp.tumorotek.model.coeur.prelevement.Prelevement;
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.contexte.Plateforme;
-import fr.aphp.tumorotek.model.contexte.gatsbi.Contexte;
 import fr.aphp.tumorotek.model.contexte.gatsbi.Etude;
 import fr.aphp.tumorotek.model.interfacage.Emetteur;
 import fr.aphp.tumorotek.model.interfacage.scan.ScanTerminale;
@@ -326,23 +327,42 @@ public class MainWindow extends GenericForwardComposer<Component>
       banqueListbox.setDisabled(disable);
    }
 
+   /**
+    * @since 2.3.0-gatsbi vérifie que GATSBI est bien accessible
+    * @param bank
+    */
    public void updateSelectedBanque(Banque bank){
-      if(bank == null){
+      
+	   // @since 2.30-gatsbi
+	   // conserve la banque pour remettre la liste 
+	   // si erreur conn GATSBI
+	   HERE
+	   Banque previous = getSelectedBanque();
+	   
+	   // selected banque
+	   if(bank == null){
          bank = selectedBanque;
       }else{
-         // met à jour la pf si update banque cross-plateforme
-         if(!bank.getPlateforme().equals(SessionUtils.getPlateforme(sessionScope))){
-            sessionScope.put("Plateforme", bank.getPlateforme());
-            prepareListBanques();
-         }
          setSelectedBanque(bank);
-         mainBinder.loadComponent(self.getFellow("main").getFellow("mainBanquesListBox"));
       }
       
       // user et plateforme peuvent être null car
       // ne seront jamais mis à jour depuis MainWindow update banque
-      ConnexionUtils.selectConnection(null, null, selectedBanque, banques, session);
+      try {
+    	  ConnexionUtils.selectConnection(null, null, selectedBanque, banques, session);
+      } catch (GatsbiConnextionException e) {
+    	  setSelectedBanque(previous);
+          mainBinder.loadAttribute(self.getFellow("main").getFellow("mainBanquesListBox"), "selectedItem");
+    	  Clients.clearBusy();
+    	  throw new WrongValueException(mainBanquesListBox, e.getMessage());
+	  }
       
+      // met à jour la pf si update banque cross-plateforme
+      if(!selectedBanque.getPlateforme().equals(SessionUtils.getPlateforme(sessionScope))){
+         sessionScope.put("Plateforme", selectedBanque.getPlateforme());
+         prepareListBanques();
+         mainBinder.loadComponent(self.getFellow("main").getFellow("mainBanquesListBox"));
+      }
 
 //      if(!selectedBanque.equals(toutesColl)){
 //         sessionScope.put("Banque", selectedBanque);

@@ -54,6 +54,7 @@ import org.zkoss.zk.ui.Session;
 
 import fr.aphp.tumorotek.action.ManagerLocator;
 import fr.aphp.tumorotek.action.prelevement.gatsbi.GatsbiController;
+import fr.aphp.tumorotek.action.prelevement.gatsbi.exception.GatsbiConnextionException;
 import fr.aphp.tumorotek.model.coeur.annotation.Catalogue;
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.contexte.Plateforme;
@@ -325,7 +326,8 @@ public final class ConnexionUtils
 				try {
 					GatsbiController.doGastbiContexte(bank);
 				} catch (Exception e) {
-					throw new RuntimeException(e);
+					// TODO améliorer erreur GATSBI runtime
+					throw new RuntimeException(e.getMessage());
 				}
 			}
 			
@@ -344,7 +346,8 @@ public final class ConnexionUtils
 				try {
 					GatsbiController.doGastbiContexte(banques.get(0));
 				} catch (Exception e) {
-					throw new RuntimeException(e);
+					// TODO améliorer erreur GATSBI runtime
+					throw new RuntimeException(e.getMessage());
 				}
 			}
 		
@@ -450,32 +453,37 @@ public final class ConnexionUtils
 			 Plateforme selectedPlateforme, 
 			 final Banque selectedBanque, 
 			final List<Banque> banques,
-			final Session session) {
+			final Session session) throws GatsbiConnextionException {
 		
-		if (user == null) {
-			user = (Utilisateur) session.getAttribute("User");
-		}
-		if (selectedPlateforme == null) {
-			selectedPlateforme = (Plateforme) session.getAttribute("Plateforme");
-		}
-		
-		Banque toutesColl = initFakeToutesCollBankItem(selectedPlateforme);
-		
-		if (selectedBanque.getBanqueId() != null) { // choix d'une banque existantes (donc pas ttesColl)
-			ConnexionUtils.initConnection(user, selectedPlateforme, selectedBanque, banques, session);
-		} else if (selectedBanque.equals(toutesColl)) { // toutes collections hors GATSBI
-			final List<Banque> bksList = new ArrayList<>();
-			bksList.addAll(banques);
-			bksList.remove(toutesColl);
-			ConnexionUtils.initConnection(user, selectedPlateforme, null, 
-				banques.stream().filter(b -> b.getBanqueId() != null && b.getEtude() == null)
-					.collect(Collectors.toList()), 
-				session);
-		} else { // toutes collections etude GATSBI
-			ConnexionUtils.initConnection(user, selectedPlateforme, null, 
-				banques.stream().filter(b -> b.getBanqueId() != null && b.getEtude() != null 
-					&& b.getEtude().equals(selectedBanque.getEtude())).collect(Collectors.toList()),
-				session);
+		// vérifie si besoin si l'URL est bien accessible
+		if (selectedBanque.getEtude() == null || GatsbiController.doesGatsbiRespond()) {	
+			if (user == null) {
+				user = (Utilisateur) session.getAttribute("User");
+			}
+			if (selectedPlateforme == null) {
+				selectedPlateforme = (Plateforme) session.getAttribute("Plateforme");
+			}
+			
+			Banque toutesColl = initFakeToutesCollBankItem(selectedPlateforme);
+			
+			if (selectedBanque.getBanqueId() != null) { // choix d'une banque existantes (donc pas ttesColl)
+				ConnexionUtils.initConnection(user, selectedPlateforme, selectedBanque, banques, session);
+			} else if (selectedBanque.equals(toutesColl)) { // toutes collections hors GATSBI
+				final List<Banque> bksList = new ArrayList<>();
+				bksList.addAll(banques);
+				bksList.remove(toutesColl);
+				ConnexionUtils.initConnection(user, selectedPlateforme, null, 
+					banques.stream().filter(b -> b.getBanqueId() != null && b.getEtude() == null)
+						.collect(Collectors.toList()), 
+					session);
+			} else { // toutes collections etude GATSBI
+				ConnexionUtils.initConnection(user, selectedPlateforme, null, 
+					banques.stream().filter(b -> b.getBanqueId() != null && b.getEtude() != null 
+						&& b.getEtude().equals(selectedBanque.getEtude())).collect(Collectors.toList()),
+					session);
+			}
+		} else { // collection ou Toutes collections GATSBI demandées mais URL inacessible
+			throw new GatsbiConnextionException(Labels.getLabel("gatsbi.connexion.error"));
 		}
 	}
 	
