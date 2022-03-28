@@ -91,7 +91,7 @@ import fr.aphp.tumorotek.webapp.general.SessionUtils;
  * Controller créé le 23/11/2009.
  *
  * @author Pierre Ventadour
- * @version 2.2.0
+ * @version 2.3.0-gatsbi
  * @since 2.0.6
  */
 public class PrelevementController extends AbstractObjectTabController

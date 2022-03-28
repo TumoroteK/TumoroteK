@@ -56,6 +56,7 @@ import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.DeserializationConfig.Feature;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 import org.zkoss.util.resource.Labels;
@@ -75,6 +76,7 @@ import fr.aphp.tumorotek.action.ManagerLocator;
 import fr.aphp.tumorotek.action.constraints.TumoTextConstraint;
 import fr.aphp.tumorotek.action.controller.AbstractController;
 import fr.aphp.tumorotek.action.imports.ImportColonneDecorator;
+import fr.aphp.tumorotek.action.prelevement.gatsbi.exception.GatsbiConnextionException;
 import fr.aphp.tumorotek.component.CalendarBox;
 import fr.aphp.tumorotek.manager.exception.TKException;
 import fr.aphp.tumorotek.manager.impl.interfacage.ResultatInjection;
@@ -537,19 +539,23 @@ public class GatsbiController {
 		log.debug("fetch etude from URL:"
 				+ (etudeURIBld.build(false).expand(bank.getEtude().getEtudeId())).toUriString());
 
-		RestTemplate restTemplate = new RestTemplate();
-		EtudeDTO etude = restTemplate
-				.getForObject(etudeURIBld.build(false).expand(bank.getEtude().getEtudeId()).toUri(), EtudeDTO.class);
-
-		for (ContexteDTO rCont : etude.getrContextes()) {
-			log.debug("fetch contexte from URL:"
-					+ (contexteURIBld.build(false).expand(bank.getEtude().getEtudeId(), rCont.getType()))
-							.toUriString());
-			bank.getEtude()
-					.addToContextes(restTemplate
-							.getForObject(contexteURIBld.build(false)
-									.expand(bank.getEtude().getEtudeId(), rCont.getType()).toUri(), ContexteDTO.class)
-							.toContexte());
+		try {
+			RestTemplate restTemplate = new RestTemplate();
+			EtudeDTO etude = restTemplate
+					.getForObject(etudeURIBld.build(false).expand(bank.getEtude().getEtudeId()).toUri(), EtudeDTO.class);
+	
+			for (ContexteDTO rCont : etude.getrContextes()) {
+				log.debug("fetch contexte from URL:"
+						+ (contexteURIBld.build(false).expand(bank.getEtude().getEtudeId(), rCont.getType()))
+								.toUriString());
+				bank.getEtude()
+						.addToContextes(restTemplate
+								.getForObject(contexteURIBld.build(false)
+										.expand(bank.getEtude().getEtudeId(), rCont.getType()).toUri(), ContexteDTO.class)
+								.toContexte());
+			}
+		} catch (ResourceAccessException e) { // gatsbi inaccessible
+			throw new GatsbiConnextionException(e);
 		}
 	}
 

@@ -76,7 +76,7 @@ public final class SessionUtils {
     *
     * @return liste de Banque
     */
-
+   @SuppressWarnings("unchecked")
    public static List<Banque> getSelectedBanques(final Map<?, ?> sessionScp){
       final List<Banque> banks = new ArrayList<>();
       if(sessionScp.containsKey("Banque")){
@@ -162,7 +162,7 @@ public final class SessionUtils {
     *
     * @return liste d'Emetteurs
     */
-
+   @SuppressWarnings("unchecked")
    public static List<Emetteur> getEmetteursInterfacages(final Map<?, ?> sessionScp){
       final List<Emetteur> emetteurs = new ArrayList<>();
       if(sessionScp.containsKey("Emetteurs")){
@@ -176,7 +176,7 @@ public final class SessionUtils {
     *
     * @return liste de Recepteurs
     */
-
+   @SuppressWarnings("unchecked")
    public static List<Recepteur> getRecepteursInterfacages(final Map<?, ?> sessionScp){
       final List<Recepteur> recepteurs = new ArrayList<>();
       if(sessionScp.containsKey("Recepteurs")){
@@ -230,16 +230,27 @@ public final class SessionUtils {
    }
    
    /**
+	* Rnvoie le contexte à appliquer pour une entité/onglet.
     * @version 2.3.0-gatsbi
     * @return Contexte gatsbi
     */
+   @SuppressWarnings("unchecked")
    public static Contexte getCurrentGatsbiContexteForEntiteId(Integer eId) {
 	   Contexte gatsbiContexte = null;
-	   if (null != Sessions.getCurrent().getAttribute("Banque") 
+	   
+	   // trouve le contexte depuis l'étude GATSBI, venant de la banque sélectionnée, 
+	   // ou la première banque de la liste si 'Toutes collections' sélectionné
+	   if (Sessions.getCurrent().getAttribute("Banque") != null
 			   && ((Banque) Sessions.getCurrent().getAttribute("Banque")).getEtude() != null) {
 		   gatsbiContexte = ((Banque) Sessions.getCurrent().getAttribute("Banque"))
-	        		 .getEtude().getContexteForEntite(eId);
+	        	.getEtude().getContexteForEntite(eId);
+	   } else if (Sessions.getCurrent().getAttribute("ToutesCollections") != null 
+			   && ((List<Banque>) Sessions.getCurrent()
+					.getAttribute("ToutesCollections")).get(0).getEtude() != null) {
+			gatsbiContexte = ((List<Banque>) Sessions.getCurrent().getAttribute("ToutesCollections"))
+				.get(0).getEtude().getContexteForEntite(eId);
 	   }
+
 	  return gatsbiContexte;
    }
 
