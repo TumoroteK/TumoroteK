@@ -1,6 +1,6 @@
 #### Notes de version
 
-##### Version 2.2.5 - Publiée le 23/03/2022
+##### Version 2.2.5 - Publiée le 30/03/2022
 ###### Corrections
 - YouTrack [TK-313](https://tumorotek.myjetbrains.com/youtrack/issue/TK-313) : Conteneurs partagés : mauvaise prise en compte de la restriction de stockage à l'administrateur - déplacements bloqués à tort
 - YouTrack [TK-314](https://tumorotek.myjetbrains.com/youtrack/issue/TK-314) : Conteneurs partagés : mauvaise prise en compte de la restriction de stockage à l'administrateur - problème d'affichage des conteneurs
@@ -16,7 +16,6 @@
 - YouTrack [TKB-305](https://tumorotek.myjetbrains.com/youtrack/issue/TKB-305)
 - YouTrack [TKB-302](https://tumorotek.myjetbrains.com/youtrack/issue/TKB-302)
 - YouTrack [TKB-299](https://tumorotek.myjetbrains.com/youtrack/issue/TKB-299)
- 
 
 ##### Version 2.2.3 - Publiée le 09/06/2021
 ###### Nouveautés
