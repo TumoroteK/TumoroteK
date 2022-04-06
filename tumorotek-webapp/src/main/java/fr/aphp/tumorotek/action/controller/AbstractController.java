@@ -1709,7 +1709,8 @@ public abstract class AbstractController extends GenericForwardComposer<Componen
 	 */
 	public ProfilExport getProfilExport(){		
 		// admin PF -> export nominatif possible
-		if (sessionScope.containsKey("AdminPF") && (Boolean) sessionScope.get("AdminPF")) {
+		if ( (sessionScope.containsKey("AdminPF") && (Boolean) sessionScope.get("AdminPF")) 
+		   || (sessionScope.containsKey("Admin") && (Boolean) sessionScope.get("Admin")) ) {
 			return ProfilExport.NOMINATIF;
 		}
 
