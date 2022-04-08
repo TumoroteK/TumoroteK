@@ -32,19 +32,19 @@
         </encoder>
     </appender>
 
-    <logger name="fr.aphp.tumorotek.manager" additivity="false" level="DEBUG">
+    <logger name="fr.aphp.tumorotek.manager" additivity="false" level="ERROR">
         <appender-ref ref="DailyRollingFile"/>
     </logger>
 
-    <logger name="fr.aphp.tumorotek.model" additivity="false" level="DEBUG">
+    <logger name="fr.aphp.tumorotek.model" additivity="false" level="ERROR">
         <appender-ref ref="DailyRollingFile"/>
     </logger>
 
-    <logger name="fr.aphp.tumorotek.webapp" additivity="false" level="DEBUG">
+    <logger name="fr.aphp.tumorotek.webapp" additivity="false" level="ERROR">
         <appender-ref ref="DailyRollingFile"/>
     </logger>
 
-    <logger name="fr.aphp.tumorotek.action" additivity="false" level="DEBUG">
+    <logger name="fr.aphp.tumorotek.action" additivity="false" level="ERROR">
         <appender-ref ref="DailyRollingFile"/>
     </logger>
 
@@ -56,8 +56,7 @@
         <appender-ref ref="DailyRollingFile"/>
     </logger>
    
-    <root level="DEBUG">
+    <root level="ERROR">
         <appender-ref ref="DailyRollingFile"/>
-        <appender-ref ref="LIQUIBASE" /><!-- mauvais non c'est la console -->
     </root>
 </configuration>
