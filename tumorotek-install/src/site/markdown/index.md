@@ -1,7 +1,8 @@
 #### Notes de version
 
-##### Version 2.2.5 - Publiée le 30/03/2022
+##### Version 2.2.5 - Publiée le 08/04/2022
 ###### Corrections
+- YouTrack [TK-328](https://tumorotek.myjetbrains.com/youtrack/issue/TK-328) : Export : mauvaise gestion de l'anonymisation pour les profils "administrateur de collections" 
 - YouTrack [TK-313](https://tumorotek.myjetbrains.com/youtrack/issue/TK-313) : Conteneurs partagés : mauvaise prise en compte de la restriction de stockage à l'administrateur - déplacements bloqués à tort
 - YouTrack [TK-314](https://tumorotek.myjetbrains.com/youtrack/issue/TK-314) : Conteneurs partagés : mauvaise prise en compte de la restriction de stockage à l'administrateur - problème d'affichage des conteneurs
 - YouTrack [TK-320](https://tumorotek.myjetbrains.com/youtrack/issue/TK-320) : Exports : Plantage systématique lors des exports en "Toutes collections".
