@@ -61,7 +61,7 @@ import org.zkoss.zul.Label;
 import org.zkoss.zul.Row;
 
 import fr.aphp.tumorotek.action.ManagerLocator;
-import fr.aphp.tumorotek.action.prelevement.gatsbi.exception.GatsbiConnextionException;
+import fr.aphp.tumorotek.action.prelevement.gatsbi.exception.GatsbiException;
 import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.contexte.Plateforme;
@@ -290,13 +290,12 @@ public class SelectBanqueController extends GenericForwardComposer<Component>
 	 * Si aucune collection disponible (selectBanque = null) alors permet 
 	 * la connection que si l'utilisateur est superAdmin.
 	 */
-	public void onClick$validate(){
-		if(selectedBanque != null){
-			
+	public void onClick$validate(){		
+		if(selectedBanque != null){		
 			try {
 				ConnexionUtils.selectConnection(user, selectedPlateforme, selectedBanque, banques, session);
 				Executions.sendRedirect("/zuls/main/main.zul");
-			} catch (GatsbiConnextionException e) {
+			} catch (GatsbiException e) {
 				throw new WrongValueException(rowBanque.getFirstChild(), e.getMessage());
 			}
 		}else{

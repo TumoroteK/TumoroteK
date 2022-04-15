@@ -76,7 +76,7 @@ import fr.aphp.tumorotek.action.ManagerLocator;
 import fr.aphp.tumorotek.action.constraints.TumoTextConstraint;
 import fr.aphp.tumorotek.action.controller.AbstractController;
 import fr.aphp.tumorotek.action.imports.ImportColonneDecorator;
-import fr.aphp.tumorotek.action.prelevement.gatsbi.exception.GatsbiConnextionException;
+import fr.aphp.tumorotek.action.prelevement.gatsbi.exception.GatsbiException;
 import fr.aphp.tumorotek.component.CalendarBox;
 import fr.aphp.tumorotek.manager.exception.TKException;
 import fr.aphp.tumorotek.manager.impl.interfacage.ResultatInjection;
@@ -521,15 +521,14 @@ public class GatsbiController {
 	}
 
 	/**
-	 * Sera remplacée par HttpClient
 	 * 
 	 * @param bank
 	 * @throws JsonParseException
 	 * @throws JsonMappingException
 	 * @throws IOException
-	 * @throws GatsbiConnextionException 
+	 * @throws GatsbiException 
 	 */
-	public static void doGastbiContexte(Banque bank) throws JsonParseException, JsonMappingException, IOException, GatsbiConnextionException {
+	public static void doGastbiContexte(Banque bank) throws GatsbiException {
 
 		UriComponentsBuilder etudeURIBld = UriComponentsBuilder
 				.fromUriString(TkParam.GATSBI_URL_BASE.getValue().concat(TkParam.GATSBI_URL_ETUDE_PATH.getValue()));
@@ -556,7 +555,9 @@ public class GatsbiController {
 								.toContexte());
 			}
 		} catch (ResourceAccessException e) { // gatsbi inaccessible
-			throw new GatsbiConnextionException(e);
+			throw new GatsbiException("gatsbi.connexion.error");
+		} catch (Exception e) {
+			throw new GatsbiException(e.getMessage());
 		}
 	}
 	
@@ -585,18 +586,21 @@ public class GatsbiController {
 	 * Sera remplacée par HttpClient
 	 * 
 	 * @param bank
-	 * @throws JsonParseException
-	 * @throws JsonMappingException
-	 * @throws IOException
+	 * @throws GatsbiException 
 	 */
-	public static ParametrageDTO doGastbiParametrage(Integer pId)
-			throws JsonParseException, JsonMappingException, IOException {
+	public static ParametrageDTO doGastbiParametrage(Integer pId) throws GatsbiException {
 
-		UriComponentsBuilder parametrageURIBld = UriComponentsBuilder.fromUriString(
-				TkParam.GATSBI_URL_BASE.getValue().concat(TkParam.GATSBI_URL_PARAMETRAGE_PATH.getValue()));
-
-		RestTemplate restTemplate = new RestTemplate();
-		return restTemplate.getForObject(parametrageURIBld.build(false).expand(pId).toUri(), ParametrageDTO.class);
+		try {
+			UriComponentsBuilder parametrageURIBld = UriComponentsBuilder.fromUriString(
+					TkParam.GATSBI_URL_BASE.getValue().concat(TkParam.GATSBI_URL_PARAMETRAGE_PATH.getValue()));
+	
+			RestTemplate restTemplate = new RestTemplate();
+			return restTemplate.getForObject(parametrageURIBld.build(false).expand(pId).toUri(), ParametrageDTO.class);
+		} catch (ResourceAccessException e) { // gatsbi inaccessible
+			throw new GatsbiException("gatsbi.connexion.error");
+		} catch (Exception e) {
+			throw new GatsbiException(e.getMessage());
+		}
 	}
 
 	/**

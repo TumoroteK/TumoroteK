@@ -54,7 +54,7 @@ import org.zkoss.zk.ui.Session;
 
 import fr.aphp.tumorotek.action.ManagerLocator;
 import fr.aphp.tumorotek.action.prelevement.gatsbi.GatsbiController;
-import fr.aphp.tumorotek.action.prelevement.gatsbi.exception.GatsbiConnextionException;
+import fr.aphp.tumorotek.action.prelevement.gatsbi.exception.GatsbiException;
 import fr.aphp.tumorotek.model.coeur.annotation.Catalogue;
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.contexte.Plateforme;
@@ -310,7 +310,7 @@ public final class ConnexionUtils
 	}
 
 	public static void initConnection(final Utilisateur user, final Plateforme pf, final Banque bank, final List<Banque> banques,
-			final Session session){
+			final Session session) throws GatsbiException{
 		final Map<String, Object> sessionScp = session.getAttributes();
 		if (user != null) {
 			sessionScp.put("User", user);
@@ -323,12 +323,7 @@ public final class ConnexionUtils
 			
 			// gatsbi si bank est liée à une étude	
 			if (bank.getEtude() != null) {
-				try {
-					GatsbiController.doGastbiContexte(bank);
-				} catch (Exception e) {
-					// TODO améliorer erreur GATSBI runtime
-					throw new RuntimeException(e.getMessage());
-				}
+				GatsbiController.doGastbiContexte(bank);
 			}
 			
 			session.setAttribute("Banque", bank);
@@ -343,12 +338,7 @@ public final class ConnexionUtils
 			
 			// gatsbi si bank est liée à une étude	
 			if (banques.get(0).getEtude() != null) {
-				try {
-					GatsbiController.doGastbiContexte(banques.get(0));
-				} catch (Exception e) {
-					// TODO améliorer erreur GATSBI runtime
-					throw new RuntimeException(e.getMessage());
-				}
+				GatsbiController.doGastbiContexte(banques.get(0));
 			}
 		
 			sessionScp.put("ToutesCollections", banques);
@@ -453,7 +443,7 @@ public final class ConnexionUtils
 			 Plateforme selectedPlateforme, 
 			 final Banque selectedBanque, 
 			final List<Banque> banques,
-			final Session session) throws GatsbiConnextionException {
+			final Session session) throws GatsbiException {
 		
 		// vérifie si besoin si l'URL est bien accessible
 		if (selectedBanque.getEtude() == null || GatsbiController.doesGatsbiRespond()) {	
@@ -483,7 +473,7 @@ public final class ConnexionUtils
 					session);
 			}
 		} else { // collection ou Toutes collections GATSBI demandées mais URL inacessible
-			throw new GatsbiConnextionException(Labels.getLabel("gatsbi.connexion.error"));
+			throw new GatsbiException(Labels.getLabel("gatsbi.connexion.error"));
 		}
 	}
 	

@@ -44,15 +44,15 @@ package fr.aphp.tumorotek.action.prelevement.gatsbi.exception;
 * @version 2.3.0-gatsbi
 *
 */
-public class GatsbiConnextionException extends Exception {
+public class GatsbiException extends Exception {
 
 	private static final long serialVersionUID = 1L;
 
-	public GatsbiConnextionException(String message) {
+	public GatsbiException(String message) {
 		super(message);
 	}
 	
-	public GatsbiConnextionException(Exception e) {
+	public GatsbiException(Exception e) {
 		super(e);
 	}
 }

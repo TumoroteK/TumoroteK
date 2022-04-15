@@ -42,11 +42,15 @@ import org.zkoss.zul.Listbox;
 
 import fr.aphp.tumorotek.action.MainWindow;
 
+/**
+ * @author Mathieu BARTHELEMY
+ *
+ */
 public class MainBanquesListBox extends Listbox
 {
 
    private static final long serialVersionUID = -8780717656148814516L;
-
+   
    /**
     * Méthode appelée lors de la sélection d'une banque : tous les 
     * formulaires, listes... seront ré-initialisés.
