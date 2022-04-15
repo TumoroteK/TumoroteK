@@ -140,7 +140,7 @@ public class FichePrelevementEdit extends AbstractFicheEditController
    protected ResumePatient resumePatient;
    protected Textbox ndaBox;
    
-   // gatsby overrides
+   // gatsbi overrides
    // protected Group groupPatient;
    protected HtmlBasedComponent groupPatient;
 
@@ -221,7 +221,7 @@ public class FichePrelevementEdit extends AbstractFicheEditController
       resumePatient = initResumePatient();
    }
    
-   // gatsby surcharge cette méthode 
+   // gatsbi surcharge cette méthode 
    // car le component group patient n'est pas 
    // de même type group VS Groupbox
    protected ResumePatient initResumePatient() {
@@ -299,7 +299,7 @@ public class FichePrelevementEdit extends AbstractFicheEditController
    }
    
    /** 
-    * Gatsby surcharge cette méthode
+    * Gatsbi surcharge cette méthode
     */
    protected void enablePatientGroup(boolean b) {
 	   if (b) { // enable

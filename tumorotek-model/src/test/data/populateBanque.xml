@@ -12253,8 +12253,8 @@
 			<value>DIAMIC</value>
 		</row>
 	</table>
-	<table name="GATSBY_ETUDE">
-		<column>GATSBY_ETUDE_ID</column>
+	<table name="GATSBI_ETUDE">
+		<column>GATSBI_ETUDE_ID</column>
 		<column>TITRE</column>
 		<column>ACRONYME</column>
 		<column>PLATEFORME_ID</column>

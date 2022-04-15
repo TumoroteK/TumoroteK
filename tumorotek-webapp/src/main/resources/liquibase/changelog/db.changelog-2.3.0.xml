@@ -64,14 +64,14 @@
     <changeSet id="${project.artifactId}-7" author="MB" runAlways="true" context="*">
         <preConditions onFail="MARK_RAN">
             <not>
-                <tableExists tableName="GATSBY_ETUDE"/>
+                <tableExists tableName="GATSBI_ETUDE"/>
             </not>
         </preConditions>
-        <comment>Création de la table GATSBY_ETUDE, si nécessaire, pour les tests principalement ou les installations 
+        <comment>Création de la table GATSBI_ETUDE, si nécessaire, pour les tests principalement ou les installations 
         	qui n'utiliseraient pas GATSBi
         </comment>
-        <createTable tableName="GATSBY_ETUDE">
-            <column name="GATSBY_ETUDE_ID" type="INT">
+        <createTable tableName="GATSBI_ETUDE">
+            <column name="GATSBI_ETUDE_ID" type="INT">
                 <constraints nullable="false"/>
             </column>
             <column name="TITRE" type="VARCHAR(100)">
@@ -86,23 +86,23 @@
             <column name="PLATEFORME_ID" type="INT"/>
         </createTable>
 
-        <addPrimaryKey tableName="GATSBY_ETUDE" columnNames="GATSBY_ETUDE_ID"/>
-        <addForeignKeyConstraint constraintName="FK_GATSBY_ETUDE_PLATEFORME_ID" referencedTableName="PLATEFORME" baseColumnNames="PLATEFORME_ID" baseTableName="GATSBY_ETUDE"
+        <addPrimaryKey tableName="GATSBI_ETUDE" columnNames="GATSBI_ETUDE_ID"/>
+        <addForeignKeyConstraint constraintName="FK_GATSBI_ETUDE_PLATEFORME_ID" referencedTableName="PLATEFORME" baseColumnNames="PLATEFORME_ID" baseTableName="GATSBI_ETUDE"
                                  referencedColumnNames="PLATEFORME_ID"/>
     </changeSet>
    <changeSet id="${project.artifactId}-8" author="MBA" runAlways="true" context="*">
         <preConditions onFail="MARK_RAN">
             <not>
-                <columnExists tableName="BANQUE" columnName="GATSBY_ETUDE_ID"/>
+                <columnExists tableName="BANQUE" columnName="GATSBI_ETUDE_ID"/>
             </not>
         </preConditions>
-        <comment>Ajout de la référence BANQUE vers GATSBY_ETUDE_ID</comment>
+        <comment>Ajout de la référence BANQUE vers GATSBI_ETUDE_ID</comment>
         <addColumn tableName="BANQUE">
-            <column name="GATSBY_ETUDE_ID" type="INT(100)">
+            <column name="GATSBI_ETUDE_ID" type="INT(100)">
                 <constraints nullable="true"/>
             </column>
         </addColumn>
-        <addForeignKeyConstraint constraintName="FK_BANQUE_ETUDE_ID" referencedTableName="GATSBY_ETUDE" baseColumnNames="GATSBY_ETUDE_ID" baseTableName="BANQUE"
-                                 referencedColumnNames="GATSBY_ETUDE_ID"/>
+        <addForeignKeyConstraint constraintName="FK_BANQUE_ETUDE_ID" referencedTableName="GATSBI_ETUDE" baseColumnNames="GATSBI_ETUDE_ID" baseTableName="BANQUE"
+                                 referencedColumnNames="GATSBI_ETUDE_ID"/>
     </changeSet> 
 </databaseChangeLog>

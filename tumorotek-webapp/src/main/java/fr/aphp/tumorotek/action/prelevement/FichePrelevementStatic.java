@@ -113,7 +113,7 @@ public class FichePrelevementStatic extends AbstractFicheStaticController
    protected Grid prodDerivesGrid;
    protected Grid laboIntersGrid;
    
-   // gatsby overrides
+   // gatsbi overrides
    // protected Grid gridFormPrlvtComp;
    // protected Group groupPatient;
    // protected Group groupLaboInter;
@@ -186,7 +186,7 @@ public class FichePrelevementStatic extends AbstractFicheStaticController
       } else {
     	  ((Groupbox) groupDerivesPrlvt).setOpen(false);
       }
-      // gatsby **************** 
+      // gatsbi **************** 
 
       echantillonRenderer.setEmbedded(true);
       echantillonRenderer.setTtesCollections(getTtesCollections());
@@ -196,11 +196,11 @@ public class FichePrelevementStatic extends AbstractFicheStaticController
 
       setImportDossierVisible();
 
-      // gatsby overrides
+      // gatsbi overrides
       resumePatient = initResumePatient();
    }
 
-   // gatsby surcharge cette méthode 
+   // gatsbi surcharge cette méthode 
    // car le component group patient n'est pas 
    // de même type group VS Groupbox
    protected ResumePatient initResumePatient() {
@@ -244,7 +244,7 @@ public class FichePrelevementStatic extends AbstractFicheStaticController
       // gridFormPrlvtComp.setVisible(true);
       // grise le libelle car pas de reference vers patient/maladie
       
-      // gatsby override
+      // gatsbi override
       enablePatientGroup(this.maladie != null 
     		  || this.prelevement.equals(new Prelevement()));
 
@@ -310,7 +310,7 @@ public class FichePrelevementStatic extends AbstractFicheStaticController
    }
 
    /** 
-    * Gatsby surcharge cette méthode
+    * Gatsbi surcharge cette méthode
     */
    protected void enablePatientGroup(boolean b) {
 	   if (b) { // enable

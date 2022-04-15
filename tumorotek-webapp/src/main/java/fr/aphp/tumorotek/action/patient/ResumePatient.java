@@ -93,17 +93,17 @@ public class ResumePatient
    private Row row5;
    private boolean anonyme = false;
    
-   // ******** Gatsby
-   private boolean gatsby = false;
+   // ******** Gatsbi
+   private boolean gatsbi = false;
    private Div mainContainer;
    private Component linkMaladie;
 
    public ResumePatient(final Component resumePatientGroup, boolean _g){
 
-	  this.gatsby = _g;
+	  this.gatsbi = _g;
       page = resumePatientGroup.getPage();
 
-      if (!gatsby) {
+      if (!gatsbi) {
 	      // first row
 	      row1 = (Row) resumePatientGroup.getNextSibling();
 	      nipLabel = (Label) row1.getFellowIfAny("nipLabel");
@@ -294,7 +294,7 @@ public class ResumePatient
 
    public void hideMaladieRows(final boolean visible){
       linkMaladie.setVisible(visible);
-      if (!gatsby) {
+      if (!gatsbi) {
     	  linkMaladie.getNextSibling().setVisible(visible);
       }
    }
@@ -333,7 +333,7 @@ public class ResumePatient
    }
 
    public void setVisible(final boolean b){
-	  if (!gatsby) {
+	  if (!gatsbi) {
 	      row1.setVisible(b);
 	      row2.setVisible(b);
 	      row3.setVisible(b);

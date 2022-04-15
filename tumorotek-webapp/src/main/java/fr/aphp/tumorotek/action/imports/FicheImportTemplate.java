@@ -904,7 +904,6 @@ public class FicheImportTemplate extends AbstractFicheCombineController
 			// @since 2.2.x
 			// enlève manuellement champs anapath ECHANTILLON
 			// pour le contexte sérothèque
-			// contextualiser la suppression avec GATSBY
 			if (selectedEntite.getEntite().getEntiteId() == 3 && 
 				"SEROLOGIE".equalsIgnoreCase(SessionUtils.getCurrentContexte().getNom())) {
 				ces.remove(new ChampEntite(selectedEntite.getEntite(), "Lateralite", null));

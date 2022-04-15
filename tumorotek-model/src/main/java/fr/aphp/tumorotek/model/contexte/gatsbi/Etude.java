@@ -65,7 +65,7 @@ import fr.aphp.tumorotek.model.contexte.Plateforme;
  */
 @Entity
 @Immutable
-@Table(name = "GATSBY_ETUDE")
+@Table(name = "GATSBI_ETUDE")
 @NamedQueries(value = {
 	@NamedQuery(name = "Etude.findByPfOrder", 
 		query = "SELECT e FROM Etude e " + "WHERE e.plateforme = ?1 AND archive = 0 ORDER BY e.titre")
@@ -86,7 +86,7 @@ public class Etude implements Serializable {
 	public Etude(){}
 	
 	@Id
-	@Column(name = "GATSBY_ETUDE_ID", unique = true, nullable = false)
+	@Column(name = "GATSBI_ETUDE_ID", unique = true, nullable = false)
 	public Integer getEtudeId() {
 		return etudeId;
 	}

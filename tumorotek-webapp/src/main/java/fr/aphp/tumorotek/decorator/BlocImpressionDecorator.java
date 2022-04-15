@@ -58,7 +58,6 @@ import fr.aphp.tumorotek.model.io.export.ChampEntite;
  * 
  * @since 2.2.3-genno vilain hack pour contexte SEROLOGIE, 
  * supprime ou ajoute manuellement dans le bloc des champs à imprimer
- * A revoir avec GATSBY
  * 
  * @author Pierre VENTADOUR
  * @author Mathieu BARTHELEMY
