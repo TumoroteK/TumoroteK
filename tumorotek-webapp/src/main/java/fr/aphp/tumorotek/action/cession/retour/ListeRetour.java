@@ -263,7 +263,7 @@ public class ListeRetour extends AbstractListeController2
             // suppression/insertion
             if(ind > -1){
                getListObjects().remove(ind);
-               addToListObjects(edit, new Integer(ind));
+               addToListObjects(edit, Integer.valueOf(ind));
 
                getBinder().loadAttribute(objectsListGrid, "model");
 
@@ -293,7 +293,7 @@ public class ListeRetour extends AbstractListeController2
          // suppression/insertion dans la liste
          final int ind = getListObjects().indexOf(edit);
          getListObjects().remove(ind);
-         addToListObjects(edit, new Integer(ind));
+         addToListObjects(edit, Integer.valueOf(ind));
 
          // maj de la grille
          getBinder().loadAttribute(objectsListGrid, "model");

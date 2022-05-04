@@ -24,7 +24,7 @@ public class ThesaurusValueDTO implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	private Integer champId;
-	private Integer templateThesaurusId;
+	// private Integer templateThesaurusId;
 	private Integer thesaurusId;
 	private String thesaurusValue;
 	private Integer position;
@@ -38,14 +38,14 @@ public class ThesaurusValueDTO implements Serializable {
 		this.champId = _i;
 	}
 	
-	@JsonProperty
-	public Integer getTemplateThesaurusId() {
-		return templateThesaurusId;
-	}
-	
-	public void setTemplateThesaurusId(Integer _t) {
-		this.templateThesaurusId = _t;
-	}
+//	@JsonProperty
+//	public Integer getTemplateThesaurusId() {
+//		return templateThesaurusId;
+//	}
+//	
+//	public void setTemplateThesaurusId(Integer _t) {
+//		this.templateThesaurusId = _t;
+//	}
 	
 	@JsonProperty
 	public Integer getThesaurusId() {
@@ -76,7 +76,9 @@ public class ThesaurusValueDTO implements Serializable {
 	
 	@JsonIgnore
 	public ThesaurusValue toThesaurusValue() {
-		return new ThesaurusValue(champId, templateThesaurusId, thesaurusId, thesaurusValue, position);
+		return new ThesaurusValue(champId, 
+			// templateThesaurusId, 
+			thesaurusId, thesaurusValue, position);
 	}
 	
 	

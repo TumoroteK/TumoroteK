@@ -66,7 +66,7 @@ public class ChampEntiteDTO implements Serializable {
 	
 	private Integer champId;
 	private Integer champOrdre;
-	private Integer contexteChampEntiteId;
+	// private Integer contexteChampEntiteId;
 	private String dateFormat;
 	private String isChampReferToThesaurus;
 	private Boolean obligatoire = false;
@@ -93,14 +93,14 @@ public class ChampEntiteDTO implements Serializable {
 		this.champOrdre = _o;
 	}
 	
-	@JsonProperty
-	public Integer getContexteChampEntiteId() {
-		return contexteChampEntiteId;
-	}
-	
-	public void setContexteChampEntiteId(Integer _c) {
-		this.contexteChampEntiteId = _c;
-	}
+//	@JsonProperty
+//	public Integer getContexteChampEntiteId() {
+//		return contexteChampEntiteId;
+//	}
+//	
+//	public void setContexteChampEntiteId(Integer _c) {
+//		this.contexteChampEntiteId = _c;
+//	}
 	
 	@JsonProperty
 	public String getDateFormat() {
@@ -166,7 +166,8 @@ public class ChampEntiteDTO implements Serializable {
 	}
 	
 	public ChampEntite toChampEntite() {
-		return new ChampEntite(champId, champOrdre, contexteChampEntiteId, 
+		return new ChampEntite(champId, champOrdre, 
+			// contexteChampEntiteId, 
 			dateFormat, isChampReferToThesaurus, obligatoire, visible, 
 			inTableau, ordreTableau,
 			thesaurusValueDTOs

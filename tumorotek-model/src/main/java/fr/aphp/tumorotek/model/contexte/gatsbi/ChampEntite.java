@@ -47,7 +47,7 @@ public class ChampEntite implements Serializable, Comparable<ChampEntite> {
 	
 	private Integer champId;
 	private Integer champOrdre;
-	private Integer contexteChampEntiteId;
+	// private Integer contexteChampEntiteId;
 	private String dateFormat;
 	private String isChampReferToThesaurus;
 	private Boolean obligatoire = false;
@@ -59,14 +59,16 @@ public class ChampEntite implements Serializable, Comparable<ChampEntite> {
 	public ChampEntite() {
 	}
 	
-	public ChampEntite(Integer champId, Integer champOrdre, Integer contexteChampEntiteId, String dateFormat,
+	public ChampEntite(Integer champId, Integer champOrdre, 
+			//Integer contexteChampEntiteId, 
+			String dateFormat,
 			String isChampReferToThesaurus, Boolean obligatoire, Boolean visible, 
 			Boolean inTableau, Integer ordreTableau,
 			List<ThesaurusValue> thesaurusValues) {
 		super();
 		this.champId = champId;
 		this.champOrdre = champOrdre;
-		this.contexteChampEntiteId = contexteChampEntiteId;
+		// this.contexteChampEntiteId = contexteChampEntiteId;
 		this.dateFormat = dateFormat;
 		this.isChampReferToThesaurus = isChampReferToThesaurus;
 		this.obligatoire = obligatoire;
@@ -92,13 +94,13 @@ public class ChampEntite implements Serializable, Comparable<ChampEntite> {
 		this.champOrdre = _o;
 	}
 	
-	public Integer getContexteChampEntiteId() {
-		return contexteChampEntiteId;
-	}
-	
-	public void setContexteChampEntiteId(Integer _c) {
-		this.contexteChampEntiteId = _c;
-	}
+//	public Integer getContexteChampEntiteId() {
+//		return contexteChampEntiteId;
+//	}
+//	
+//	public void setContexteChampEntiteId(Integer _c) {
+//		this.contexteChampEntiteId = _c;
+//	}
 	
 	public String getDateFormat() {
 		return dateFormat;

@@ -1757,5 +1757,4 @@ public class FichePrelevementEdit extends AbstractFicheEditController
 		      }
 		      Clients.clearWrongValue(consentTypesBoxPrlvt);	
    }
-
 }

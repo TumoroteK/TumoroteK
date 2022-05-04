@@ -106,9 +106,6 @@ public class FichePrelevementEditGatsbi extends FichePrelevementEdit {
 			log.debug(e);
 			Messagebox.show(handleExceptionMessage(e), "Error", Messagebox.OK, Messagebox.ERROR);
 		}
-
-		// prelevement specific
-		// groupLaboInter.setVisible(c.getSiteInter());
 	}
 
 	private void hideEmptyGroupboxes() {
@@ -126,12 +123,13 @@ public class FichePrelevementEditGatsbi extends FichePrelevementEdit {
 		((Groupbox) this.groupPatient).setClosable(b);
 	}
 
+	/**
+	 * Surcharge Gastbi pour conserver sélectivement la
+	 * contrainte de sélection obligatiure des listes nature et statut juridique 
+	 * dans le contexte TK historique
+	 */
 	@Override
 	protected void checkRequiredListboxes() {
-
-		log.debug("Surcharge Gastbi pour conserver sélectivement la "
-				+ "contrainte de sélection des listes nature et statut juridique ");
-
 		GatsbiController.checkRequiredNonInputComponents(reqListboxes, null, null);
 	}
 

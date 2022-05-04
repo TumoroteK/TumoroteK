@@ -425,11 +425,7 @@ public class FicheEchantillonEdit extends AbstractFicheEditController
 	@Override
 	public boolean onLaterUpdate(){
 
-		if(getSelectedType() == null){
-			// ferme wait message
-			Clients.clearBusy();
-			throw new WrongValueException(typesBoxEchan, Labels.getLabel("ficheEchantillon.error.type"));
-		}
+		checkRequiredListboxes();
 
 		try{
 			updateObjectWithAnnots();
@@ -1425,11 +1421,7 @@ public class FicheEchantillonEdit extends AbstractFicheEditController
 	}
 
 	public void onSelect$typesBoxEchan(){
-		if(getSelectedType() == null){
-			Clients.scrollIntoView(typesBoxEchan);
-			throw new WrongValueException(typesBoxEchan, Labels.getLabel("ficheEchantillon.error.type"));
-		}
-		Clients.clearWrongValue(typesBoxEchan);
+		checkRequiredListboxes();
 	}
 
 	@Override
@@ -1718,4 +1710,19 @@ public class FicheEchantillonEdit extends AbstractFicheEditController
 		return ObjectTypesFormatters.ILNObjectStatut(getObject().getObjetStatut());
 	}
 
+   /**
+    * Validation sécifique des listboxes obligatoires
+    * Gatsbi surcharge cette méthode
+    * @since 2.3.0-gatsbi
+    */
+   protected void checkRequiredListboxes() {
+	   
+	   if(getSelectedType() == null){
+			// ferme wait message si besoin
+			Clients.clearBusy();
+	        Clients.scrollIntoView(typesBoxEchan);
+			throw new WrongValueException(typesBoxEchan, Labels.getLabel("ficheEchantillon.error.type"));
+		}
+		Clients.clearWrongValue(typesBoxEchan);
+   }
 }

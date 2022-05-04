@@ -2063,8 +2063,8 @@ public class FicheEchantillonStatic extends AbstractFicheStaticController
     * un élément est ajouté.
     */
    public void onClickUpdateSorties$retourRow(final Event event){
-      //updateSortiesHeader(true);
-      getObjectTabController().getListe().updateObjectGridListFromOtherPage(((ForwardEvent) event).getOrigin().getData(), true);
+      getObjectTabController().getListe()
+      		.updateObjectGridListFromOtherPage(((ForwardEvent) event).getOrigin().getData(), true);
    }
 
    /**

@@ -1,0 +1,258 @@
+{
+    "type": "Echantillon",
+    "archive": false,
+    "contexteId": 3,
+    "contexteLibelle": "[MEL] Contexte Echantillo,",
+    "parametrages": [
+      {
+        "parametrageId": 3,
+        "parametrageLibelle": "[MEL] Serum"
+      },
+      {
+        "parametrageId": 4,
+        "parametrageLibelle": "[MEL] Culot"
+      }
+    ],
+    "rChampEntites": [
+      {
+	"__comment": "code",
+        "champId": 54,
+        "champOrdre": 1,
+        "obligatoire": true,
+        "visible": true,
+        "inTableau": true,
+	    "ordreTableau": 1
+      },
+      {
+	"__comment": "type",
+        "champId": 58,
+        "champOrdre": 2,
+        "isChampReferToThesaurus": "echantillon_type",
+        "obligatoire": true,
+	    "visible": true,
+	    "inTableau": true,
+	    "ordreTableau": 2,
+        "rThesauruses": [
+          {
+            "champId": 58,
+            "thesaurusId": 1,
+            "thesaurusValue": "CELLULES",
+            "position": 2
+          },
+          {
+            "champId": 58,
+            "thesaurusId": 3,
+            "thesaurusValue": "CULOT SEC",
+            "position": 1
+          }
+        ]
+      },
+      {
+	"__comment": "quantite",
+        "champId": 61,
+        "champOrdre": 3,
+        "obligatoire": true,
+        "visible": true,
+        "inTableau": true,
+	    "ordreTableau": 3
+      },
+      {
+	"__comment": "modePrepa",
+        "champId": 70,
+        "champOrdre": 4,
+        "obligatoire": true,
+        "visible": true,
+        "inTableau": true,
+	    "ordreTableau": 4
+      },
+      {
+	"__comment": "Sterile",
+        "champId": 72,
+        "champOrdre": 5,
+        "obligatoire": false,
+        "visible": true,
+        "inTableau": true,
+	    "ordreTableau": 5
+      },
+      {
+	"__comment": "Risques",
+        "champId": 249,
+        "champOrdre": 6,
+        "isChampReferToThesaurus": "risque",
+        "obligatoire": true,
+		"visible": true,
+		"inTableau": true,
+	    "ordreTableau": 6,
+        "rThesauruses": [
+		{
+            "champId": 249,
+            "thesaurusId": 1,
+            "thesaurusValue": "HIV"
+          },
+          {
+            "champId": 249,
+            "thesaurusId": 2,
+            "thesaurusValue": "GRIPPE A"
+          }
+		]     
+	  },
+      {
+	"__comment": "DateStock",
+        "champId": 56,
+        "champOrdre": 7,
+        "obligatoire": true,
+        "visible": true,
+        "inTableau": true,
+	    "ordreTableau": 7
+      },
+      {
+	"__comment": "Delai congelation",
+        "champId": 67,
+        "champOrdre": 8,
+        "obligatoire": true,
+        "visible": true,
+        "inTableau": true,
+	    "ordreTableau": 8
+      },
+      {
+	"__comment": "Operateur",
+        "champId": 53,
+        "champOrdre": 9,
+        "obligatoire": true,
+		"visible": true,
+		"inTableau": true,
+	    "ordreTableau": 9
+      },
+      {
+	"__comment": "Statut",
+        "champId": 55,
+        "champOrdre": 10,
+        "obligatoire": true,
+		"visible": true,
+		"inTableau": true,
+	    "ordreTableau": 10
+      },
+      {
+	"__comment": "Emplacement",
+        "champId": 57,
+        "champOrdre": 11,
+        "obligatoire": true,
+		"visible": true,
+		"inTableau": true,
+	    "ordreTableau": 11
+      },
+      {
+	"__comment": "Qualité",
+        "champId": 68,
+        "champOrdre": 12,
+        "isChampReferToThesaurus": "echan_qualite",
+        "obligatoire": true,
+		"visible": true,
+		"inTableau": true,
+	    "ordreTableau": 12,
+        "rThesauruses": [
+          {
+            "champId": 68,
+            "thesaurusId": 2,
+            "thesaurusValue": "MELANGE SG"
+          }
+        ]
+      },
+      {
+      "__comment": "Temp stock",
+        "champId": 265,
+        "champOrdre": 13,
+        "obligatoire": true,
+		"visible": true,
+		"inTableau": true,
+	    "ordreTableau": 13
+      },
+      {
+	"__comment": "Non conformite traitement",  
+        "champId": 243,
+        "champOrdre": 14,
+        "obligatoire": true,
+        "isChampReferToThesaurus": "non_conformite_traitement",
+        "visible": true,
+        "inTableau": true,
+	    "ordreTableau": 14,
+        "rThesauruses": [
+          {
+            "champId": 243,
+            "thesaurusId": 5,
+            "thesaurusValue": "Echantillon non stérile",
+            "position": 1
+          }
+        ]
+      },
+      {
+	"__comment": "Non conformite cession",  
+        "champId": 244,
+        "champOrdre": 15,
+        "obligatoire": true,
+        "isChampReferToThesaurus": "non_conformite_cession",
+        "visible": true,
+        "inTableau": true,
+	    "ordreTableau": 15,
+        "rThesauruses": [
+          {
+            "champId": 243,
+            "thesaurusId": 6,
+            "thesaurusValue": "Non cédable",
+            "position": 2
+          },
+          {
+            "champId": 243,
+            "thesaurusId": 7,
+            "thesaurusValue": "Non conforme pour cession",
+            "position": 1
+          }
+        ]
+      },
+      {
+      "__comment": "Cr Anapath",
+        "champId": 255,
+        "champOrdre": 16,
+        "obligatoire": true,
+		"visible": true,
+		"inTableau": true,
+	    "ordreTableau": 16
+      },
+      {
+      "__comment": "tumoral",
+        "champId": 69,
+        "champOrdre": 17,
+        "obligatoire": true,
+		"visible": true,
+		"inTableau": true,
+	    "ordreTableau": 17
+      },
+      {
+      "__comment": "codes organes",
+        "champId": 229,
+        "champOrdre": 18,
+        "obligatoire": true,
+		"visible": true,
+		"inTableau": true,
+	    "ordreTableau": 18
+      },
+      {
+      "__comment": "lateralite",
+        "champId": 60,
+        "champOrdre": 19,
+        "obligatoire": true,
+		"visible": true,
+		"inTableau": true,
+	    "ordreTableau": 19
+      },
+      {
+      "__comment": "codes morphos",
+        "champId": 230,
+        "champOrdre": 20,
+        "obligatoire": true,
+		"visible": true,
+		"inTableau": true,
+	    "ordreTableau": 20
+      }
+   ]
+}

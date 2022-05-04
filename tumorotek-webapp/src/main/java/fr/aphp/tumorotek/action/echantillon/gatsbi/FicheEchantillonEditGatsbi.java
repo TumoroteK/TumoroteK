@@ -34,95 +34,59 @@
  * avez pris connaissance de la licence CeCILL, et que vous en avez
  * accepté les termes.
  **/
-package fr.aphp.tumorotek.model.contexte.gatsbi;
+package fr.aphp.tumorotek.action.echantillon.gatsbi;
 
-import java.io.Serializable;
-import java.util.Objects;
+import java.util.ArrayList;
+import java.util.List;
 
-public class ThesaurusValue implements Serializable {
+import org.zkoss.zk.ui.Component;
+import org.zkoss.zul.Groupbox;
+import org.zkoss.zul.Listbox;
+import fr.aphp.tumorotek.action.echantillon.FicheEchantillonEdit;
+import fr.aphp.tumorotek.webapp.gatsbi.GatsbiController;
+
+/**
+ *
+ * Controller gérant la fiche formulaire d'un échantillon sous le gestionnaire
+ * GATSBI. Controller créé le 25/05/2021.
+ *
+ * @author mathieu BARTHELEMY
+ * @version 2.3.0-gatsbi
+ *
+ */
+public class FicheEchantillonEditGatsbi extends FicheEchantillonEdit {
 
 	private static final long serialVersionUID = 1L;
-	
-	private Integer champId;
-	// private Integer templateThesaurusId;
-	private Integer thesaurusId;
-	private String thesaurusValue;
-	private Integer position;
-	
-	public ThesaurusValue() {
-	}
-	
-	public ThesaurusValue(Integer champId, 
-			// Integer templateThesaurusId, 
-			Integer thesaurusId, String thesaurusValue,
-			Integer position) {
-		super();
-		this.champId = champId;
-		// this.templateThesaurusId = templateThesaurusId;
-		this.thesaurusId = thesaurusId;
-		this.thesaurusValue = thesaurusValue;
-		this.position = position;
-	}
 
-	public Integer getChampId() {
-		return champId;
-	}
-	
-	public void setChampId(Integer _i) {
-		this.champId = _i;
-	}
-	
-//	public Integer getTemplateThesaurusId() {
-//		return templateThesaurusId;
-//	}
-//	
-//	public void setTemplateThesaurusId(Integer _i) {
-//		this.templateThesaurusId = _i;
-//	}
+	private List<Listbox> reqListboxes = new ArrayList<Listbox>();
 
-	public Integer getThesaurusId() {
-		return thesaurusId;
-	}
-	
-	public void setThesaurusId(Integer _i) {
-		this.thesaurusId = _i;
-	}
-	
-	public String getThesaurusValue() {
-		return thesaurusValue;
-	}
-	
-	public void setThesaurusValue(String _v) {
-		this.thesaurusValue = _v;
-	}
-
-	public Integer getPosition() {
-		return position;
-	}
-
-	public void setPosition(Integer _p) {
-		this.position = _p;
-	}
+	// @wire
+	private Groupbox groupEchantillon;
 
 	@Override
-	public boolean equals(Object obj) {
-		if (obj == this) {
-            return true;
-        }
-        if (obj == null || obj.getClass() != this.getClass()) {
-            return false;
-        }
+	public void doAfterCompose(final Component comp) throws Exception {
+		super.doAfterCompose(comp);
 
-        ThesaurusValue val = (ThesaurusValue) obj;
-
-        return Objects.equals(thesaurusId, val.getThesaurusId());
+		GatsbiController.initWireAndDisplay(this, 
+				getObjectTabController().getEntiteTab().getEntiteId(), 
+				false, null,
+				groupEchantillon);
 	}
-	
+
+	/**
+	 * Surcharge Gastbi pour conserver sélectivement la
+	 * contrainte de sélection obligatiure des listes nature et statut juridique 
+	 * dans le contexte TK historique
+	 */
 	@Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-    	result = prime * result + ((thesaurusId == null) ? 0 : thesaurusId.hashCode());
-    	return result;
+	protected void checkRequiredListboxes() {
+		GatsbiController.checkRequiredNonInputComponents(reqListboxes, null, null);
+	}
+
+	/**
+	 * Plus d'obligation
+	 */
+	@Override
+	public void onSelect$typesBoxEchan() {
 	}
 }
