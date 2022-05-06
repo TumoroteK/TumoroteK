@@ -455,7 +455,7 @@ public class Echantillon extends TKDelegetableObject<Echantillon> implements TKS
    }
 
    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-   @JoinColumn(name = "ECHANTILLON_TYPE_ID", nullable = false)
+   @JoinColumn(name = "ECHANTILLON_TYPE_ID", nullable = true)
    public EchantillonType getEchantillonType(){
       return this.echantillonType;
    }

@@ -129,7 +129,7 @@ import fr.aphp.tumorotek.utils.Utils;
  * Implémentation du manager du bean de domaine Prelevement. Classe créée le
  *
  * @author Mathieu BARTHELEMY
- * @version 2.2.1
+ * @version 2.3.0-gatsbi
  *
  */
 public class PrelevementManagerImpl implements PrelevementManager

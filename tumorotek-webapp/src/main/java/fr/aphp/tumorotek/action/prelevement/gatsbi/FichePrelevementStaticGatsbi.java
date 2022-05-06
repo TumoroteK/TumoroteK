@@ -60,8 +60,7 @@ import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
 /**
  *
- * Controller gérant la fiche static d'un prélèvement GATSBI. Controller créé le
- * 25/05/2021.
+ * Controller gérant la fiche static d'un prélèvement GATSBI.
  *
  * @author mathieu BARTHELEMY
  * @version 2.3.0-gatsbi

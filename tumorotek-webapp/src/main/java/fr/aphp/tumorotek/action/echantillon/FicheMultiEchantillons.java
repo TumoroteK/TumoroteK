@@ -1125,9 +1125,7 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
 				}
 			}
 			
-			if(getSelectedType() == null){
-				throw new WrongValueException(typesBoxEchan, Labels.getLabel("ficheEchantillon.error.type"));
-			}
+			checkRequiredListboxes();
 
 			validateSterilite(sterileBox.isChecked());
 
@@ -2817,4 +2815,20 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
 			setSelectedCollaborateur(null);
 		}
 	}
+	
+	/**
+	    * Validation sécifique des listboxes obligatoires
+	    * Gatsbi surcharge cette méthode
+	    * @since 2.3.0-gatsbi
+	    */
+	   protected void checkRequiredListboxes() {
+		   
+		   if(getSelectedType() == null){
+				// ferme wait message si besoin
+				Clients.clearBusy();
+		        Clients.scrollIntoView(typesBoxEchan);
+				throw new WrongValueException(typesBoxEchan, Labels.getLabel("ficheEchantillon.error.type"));
+			}
+			Clients.clearWrongValue(typesBoxEchan);
+	   }
 }
