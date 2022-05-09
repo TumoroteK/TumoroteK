@@ -34,11 +34,16 @@
  * avez pris connaissance de la licence CeCILL, et que vous en avez
  * accepté les termes.
  **/
-package fr.aphp.tumorotek.manager.validation.coeur.prelevement.gastbi;
+package fr.aphp.tumorotek.manager.validation.coeur.echantillon.gatsbi;
 
+import java.util.Arrays;
 import java.util.List;
+
+import org.springframework.validation.Errors;
+
 import fr.aphp.tumorotek.manager.validation.RequiredValueValidator;
-import fr.aphp.tumorotek.model.coeur.prelevement.Prelevement;
+import fr.aphp.tumorotek.model.TKdataObject;
+import fr.aphp.tumorotek.model.coeur.echantillon.Echantillon;
 
 /**
  * Gatsbi validor appliquant de manière dynamique une validation sur les 
@@ -48,55 +53,64 @@ import fr.aphp.tumorotek.model.coeur.prelevement.Prelevement;
  * @version 2.3.0-gatsbi
  *
  */
-public class PrelevementGatsbiValidator extends RequiredValueValidator {
+public class EchantillonGatsbiValidator extends RequiredValueValidator {
 	
 
-	public PrelevementGatsbiValidator(String _e, List<Integer> _f) {
+	public EchantillonGatsbiValidator(String _e, List<Integer> _f) {
 		super(_e, _f);		
 	}
 
 	@Override
 	public boolean supports(final Class<?> clazz){
-		return Prelevement.class.equals(clazz);
+		return Echantillon.class.equals(clazz);
 	}
-
 
 	@Override
 	protected void initChpIdNameMap() {
-		// chpIdNameMap.put(23, "code"); 
-		chpIdNameMap.put(45, "numeroLabo");
-		// chpIdNameMap.put(24, "nature"); // validé par défaut dans checkrequired
-		chpIdNameMap.put(44, "patientNda");
-		chpIdNameMap.put(30, "datePrelevement");
-		chpIdNameMap.put(31, "prelevementType");
-		// sterile (boolean) ne peut être obligatoire
-		chpIdNameMap.put(249, "risques");
-		// etab preleveur non persisté
-		chpIdNameMap.put(29, "servicePreleveur");
-		chpIdNameMap.put(28, "preleveur");
-		chpIdNameMap.put(32, "conditType");
-		chpIdNameMap.put(34, "conditNbr");
-		chpIdNameMap.put(33, "conditMilieu");
-		// chpIdNameMap.put(26, "consentType"); // validé par défaut dans checkrequired
-		chpIdNameMap.put(27, "consentDate");
-		// congPrel (boolean) ne peut être obligatoire
-		chpIdNameMap.put(35, "dateDepart");
-		chpIdNameMap.put(36, "transporteur");
-		chpIdNameMap.put(37, "transportTemp");
-		chpIdNameMap.put(38, "dateArrivee");
-		chpIdNameMap.put(39, "operateur");
-		chpIdNameMap.put(40, "quantite");
-		// congBiotheque (boolean) ne peut être obligatoire
-		chpIdNameMap.put(256, "conformeArrivee");
+		chpIdNameMap.put(53, "collaborateur");
+		// chpIdNameMap.put(54, "code"); 
+		// chpIdNameMap.put(58, "echantillonType"); // validé par défaut dans checkrequired
+		// TODO vérifier avec CORINNE si besoin validation fonctionnelle ici
+		chpIdNameMap.put(61, "quantite");
+		chpIdNameMap.put(62, "quantiteInit"); // logiquement rempli si quantite remplie
+		chpIdNameMap.put(63, "quantiteUnite"); // logiquement rempli si quantite remplie
+		chpIdNameMap.put(70, "modePrepa");
+		// sterile id=72 (boolean) ne peut être obligatoire
+		chpIdNameMap.put(56, "dateStock");
+		chpIdNameMap.put(67, "delaiCgl");
+		chpIdNameMap.put(53, "collaborateur");
+		// chpIdNameMap.put(55, "statut"); // validé par défaut dans checkrequired
+		// emplacement id=57 ne peut être obligatoire
+		chpIdNameMap.put(68, "echanQualite");
+		chpIdNameMap.put(243, "conformeTraitement");
+		chpIdNameMap.put(244, "conformeCession");
+		chpIdNameMap.put(255, "crAnapath");
+		// tumoral id=69 (boolean) ne peut être obligatoire
+		chpIdNameMap.put(229, "codesOrganes");
+		chpIdNameMap.put(60, "lateralite");
+		chpIdNameMap.put(230, "codesMorphos");
 	}
-
+	
 	@Override
-	protected void initFunctionalValidationMap() {		
+	protected void initFunctionalValidationMap() {
+
+		// TODO vérifier avec CORINNE si besoin validation fonctionnelle ici
+		// chpIdNameMap.put(61, "quantite");
+		// chpIdNameMap.put(62, "quantiteInit"); // logiquement rempli si quantite remplie
+		validations.put(229, (TKdataObject e, Errors r) -> 
+			((Echantillon) e).getCodesAssignes().stream().anyMatch(c -> c.getIsOrgane()));
+		validations.put(230, (TKdataObject e, Errors r) -> 
+			((Echantillon) e).getCodesAssignes().stream().anyMatch(c -> c.getIsMorpho()));
 	}
 
+	/**
+	 * Echantillon impose la transformation des noms de certaines propriétés/champs.
+	 */
 	@Override
 	protected String correctFieldNameIfNeeded(String n) {
-		// pas de transformation du nom de la propriété
+		if (n != null && Arrays.asList("codesOrganes", "codesMorphos").contains(n)) {
+			return "codesAssignes";
+		}
 		return n;
 	}
 }

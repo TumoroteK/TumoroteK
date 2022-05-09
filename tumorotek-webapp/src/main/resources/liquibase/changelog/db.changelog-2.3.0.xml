@@ -52,7 +52,7 @@
             <column name="CAN_IMPORT" value="0"/>
         </insert>
     </changeSet>
-    <changeSet id="${project.artifactId}-6" author="MB" runAlways="true" context="*"> 
+    <changeSet id="${project.artifactId}-7" author="MB" runAlways="true" context="*"> 
     	<preConditions onFail="MARK_RAN">
             <sqlCheck expectedResult="0">SELECT COUNT(1) FROM CONTEXTE
                 WHERE NOM = 'GATSBI'
@@ -65,7 +65,7 @@
             <column name="LIBELLE" value="Gatsbi"/>
         </insert>
     </changeSet>
-  <!-- <changeSet id="${project.artifactId}-7" author="MB" runAlways="true" context="*">
+  	<changeSet id="${project.artifactId}-8" author="MB" runAlways="true" context="*">
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="GATSBI_ETUDE"/>
@@ -93,8 +93,8 @@
         <addPrimaryKey tableName="GATSBI_ETUDE" columnNames="GATSBI_ETUDE_ID"/>
         <addForeignKeyConstraint constraintName="FK_GATSBI_ETUDE_PLATEFORME_ID" referencedTableName="PLATEFORME" baseColumnNames="PLATEFORME_ID" baseTableName="GATSBI_ETUDE"
                                  referencedColumnNames="PLATEFORME_ID"/>
-    </changeSet> -->
-   <changeSet id="${project.artifactId}-8" author="MBA" runAlways="true" context="*">
+    </changeSet>
+   <changeSet id="${project.artifactId}-9" author="MBA" runAlways="true" context="*">
         <preConditions onFail="MARK_RAN">
             <not>
                 <columnExists tableName="BANQUE" columnName="GATSBI_ETUDE_ID"/>

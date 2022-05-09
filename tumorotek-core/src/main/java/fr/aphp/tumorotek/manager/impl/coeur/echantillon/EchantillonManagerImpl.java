@@ -94,6 +94,7 @@ import fr.aphp.tumorotek.manager.stockage.ConteneurManager;
 import fr.aphp.tumorotek.manager.stockage.EmplacementManager;
 import fr.aphp.tumorotek.manager.systeme.FichierManager;
 import fr.aphp.tumorotek.manager.validation.BeanValidator;
+import fr.aphp.tumorotek.manager.validation.coeur.echantillon.gatsbi.EchantillonGatsbiValidator;
 import fr.aphp.tumorotek.model.TKStockableObject;
 import fr.aphp.tumorotek.model.cession.CederObjet;
 import fr.aphp.tumorotek.model.cession.Retour;
@@ -726,95 +727,44 @@ public class EchantillonManagerImpl implements EchantillonManager {
 			final List<File> filesCreated, final Utilisateur utilisateur, final boolean doValidation,
 			final String baseDir, final boolean isImport) {
 
-		// On vérifie que la banque n'est pas null. Si c'est le cas on envoie
-		// une exception
-		if (banque == null) {
-			log.warn("Objet obligatoire Banque manquant lors de la creation d'un objet Echantillon");
-			throw new RequiredObjectIsNullException("Echantillon", "creation", "Banque");
-		}
-		echantillon.setBanque(banqueDao.mergeObject(banque));
-
-		// echantillon type 
-		// since 2.3.0-gatsbi peut être null
-		checkEchantillonTypeSinceGatsbi(echantillon, type, true);
-
-		// On vérifie que le statut n'est pas null. Si c'est le cas
-		// on envoie une exception
-		if (statut != null) {
-			echantillon.setObjetStatut(objetStatutDao.mergeObject(statut));
-		} else if (echantillon.getObjetStatut() == null) {
-			log.warn("Objet obligatoire ObjetStatut manquant lors de la creation d'un objet Echantillon");
-			throw new RequiredObjectIsNullException("Echantillon", "creation", "ObjetStatut");
-		}
-
-		if (prelevement != null) {
-			echantillon.setPrelevement(prelevementDao.mergeObject(prelevement));
-		} else {
-			echantillon.setPrelevement(null);
-		}
-		if (collaborateur != null) {
-			echantillon.setCollaborateur(collaborateurDao.mergeObject(collaborateur));
-		} else {
-			echantillon.setCollaborateur(null);
-		}
-		if (emplacement != null && checkEmplacementOccupied(emplacement, echantillon)) {
-			echantillon.setEmplacement(emplacementDao.mergeObject(emplacement));
-		} else {
-			echantillon.setEmplacement(null);
-		}
-		if (quantite != null) {
-			echantillon.setQuantiteUnite(uniteDao.mergeObject(quantite));
-		} else {
-			echantillon.setQuantiteUnite(null);
-		}
-		if (qualite != null) {
-			echantillon.setEchanQualite(echanQualiteDao.mergeObject(qualite));
-		} else {
-			echantillon.setEchanQualite(null);
-		}
-		if (preparation != null) {
-			echantillon.setModePrepa(modePrepaDao.mergeObject(preparation));
-		} else {
-			echantillon.setModePrepa(null);
-		}
-
-		if (findDoublonManager(echantillon)) {
-			log.warn("Doublon lors de la creation de l'objet Echantillon : " + echantillon.toString());
-			throw new DoublonFoundException("Echantillon", "creation", echantillon.getCode(), null);
-		}
-
 		try {
-			if (doValidation) {
-				BeanValidator.validateObject(echantillon, new Validator[] { echantillonValidator });
-			}
 
-			echantillonDao.createObject(echantillon);
-			log.info("Enregistrement de l'objet Echantillon : " + echantillon.toString());
+			checkRequiredObjectsAndValidate(echantillon, banque, type, statut, "creation", utilisateur, doValidation);
 
-			// Enregistrement de l'operation associee
-			final Operation creationOp = new Operation();
-			creationOp.setDate(Utils.getCurrentSystemCalendar());
-			operationManager.createObjectManager(creationOp, utilisateur, operationTypeDao.findByNom("Creation").get(0),
-					echantillon);
+			if (!findDoublonManager(echantillon)) {
+				mergeNonRequiredObjects(echantillon, prelevement, collaborateur, emplacement, quantite, qualite,
+						preparation);
 
-			// ajout/update association vers codes assignes
-			if (codes != null) {
-				try {
-					echantillon.setCodesAssignes(new HashSet<>(
-							createOrUpdateCodesAssignesManager(echantillon, codes, true, utilisateur, null)));
-				} catch (final SQLException e) {
-					// non reachable code
+				echantillonDao.createObject(echantillon);
+				log.info("Enregistrement de l'objet Echantillon : " + echantillon.toString());
+
+				// Enregistrement de l'operation associee
+				final Operation creationOp = new Operation();
+				creationOp.setDate(Utils.getCurrentSystemCalendar());
+				operationManager.createObjectManager(creationOp, utilisateur,
+						operationTypeDao.findByNom("Creation").get(0), echantillon);
+
+				// ajout/update association vers codes assignes
+				if (codes != null) {
+					try {
+						echantillon.setCodesAssignes(new HashSet<>(
+								createOrUpdateCodesAssignesManager(echantillon, codes, true, utilisateur, null)));
+					} catch (final SQLException e) {
+						// non reachable code
+					}
 				}
-			}
 
-			// cree les annotations, null operation pour
-			// laisser la possibilité création/modification au sein
-			// de la liste
-			if (listAnnoToCreateOrUpdate != null) {
-				annotationValeurManager.createAnnotationValeurListManager(listAnnoToCreateOrUpdate, echantillon,
-						utilisateur, null, baseDir, filesCreated, null);
+				// cree les annotations, null operation pour
+				// laisser la possibilité création/modification au sein
+				// de la liste
+				if (listAnnoToCreateOrUpdate != null) {
+					annotationValeurManager.createAnnotationValeurListManager(listAnnoToCreateOrUpdate, echantillon,
+							utilisateur, null, baseDir, filesCreated, null);
+				}
+			} else { // doublon
+				log.warn("Doublon lors de la creation de l'objet Echantillon : " + echantillon.toString());
+				throw new DoublonFoundException("Echantillon", "creation", echantillon.getCode(), null);
 			}
-
 		} catch (final RuntimeException re) {
 
 			if (filesCreated != null) {
@@ -920,11 +870,12 @@ public class EchantillonManagerImpl implements EchantillonManager {
 			banqueId = banque.getBanqueId();
 			echantillon.setBanque(banqueDao.mergeObject(banque));
 			// if (type == null) {
-			//	throw new RequiredObjectIsNullException("Echantillon", "creation", "EchantillonType");
+			// throw new RequiredObjectIsNullException("Echantillon", "creation",
+			// "EchantillonType");
 			// }
-			checkEchantillonTypeSinceGatsbi(echantillon, type, false);
+			checkEchantillonTypeSinceGatsbiAndReturnAllIds(echantillon, type, isImport);
 			typeId = type != null ? type.getId() : null;
-			
+
 			if (statut == null) {
 				throw new RequiredObjectIsNullException("Echantillon", "creation", "ObjetStatut");
 			}
@@ -1157,137 +1108,82 @@ public class EchantillonManagerImpl implements EchantillonManager {
 			final List<File> filesCreated, final List<File> filesToDelete, final Utilisateur utilisateur,
 			final boolean doValidation, final List<OperationType> operations, final String baseDir) {
 
-		// if(echantillon.getDelegate() != null){
-		// echantillon.setDelegate(delegateDao.mergeObject(echantillon.getDelegate()));
-		// }
-
-		// On vérifie que la banque n'est pas null. Si c'est le cas on envoie
-		// une exception
-		if (banque == null) {
-			log.warn("Objet obligatoire Banque manquant lors de " + "la modification " + "d'un objet Echantillon");
-			throw new RequiredObjectIsNullException("Echantillon", "modification", "Banque");
-		}
-		echantillon.setBanque(banqueDao.mergeObject(banque));
-
-		// echantillon type 
-		// since 2.3.0-gatsbi peut être null
-		checkEchantillonTypeSinceGatsbi(echantillon, type, true);
-
-		// On vérifie que le statut n'est pas null. Si c'est le cas
-		// on envoie une exception
-		if (statut != null) {
-			echantillon.setObjetStatut(objetStatutDao.mergeObject(statut));
-		} else if (echantillon.getObjetStatut() == null) {
-			log.warn("Objet obligatoire ObjetStatut manquant lors " + "de la creation " + "d'un objet Echantillon");
-			throw new RequiredObjectIsNullException("Echantillon", "creation", "ObjetStatut");
-		}
-
-		if (prelevement != null) {
-			echantillon.setPrelevement(prelevementDao.mergeObject(prelevement));
-		} else {
-			echantillon.setPrelevement(null);
-		}
-		if (collaborateur != null) {
-			echantillon.setCollaborateur(collaborateurDao.mergeObject(collaborateur));
-		} else {
-			echantillon.setCollaborateur(null);
-		}
-		if (emplacement != null && checkEmplacementOccupied(emplacement, echantillon)) {
-			echantillon.setEmplacement(emplacementDao.mergeObject(emplacement));
-		} else {
-			echantillon.setEmplacement(null);
-		}
-		if (quantite != null) {
-			echantillon.setQuantiteUnite(uniteDao.mergeObject(quantite));
-		} else {
-			echantillon.setQuantiteUnite(null);
-		}
-		if (qualite != null) {
-			echantillon.setEchanQualite(echanQualiteDao.mergeObject(qualite));
-		} else {
-			echantillon.setEchanQualite(null);
-		}
-		if (preparation != null) {
-			echantillon.setModePrepa(modePrepaDao.mergeObject(preparation));
-		} else {
-			echantillon.setModePrepa(null);
-		}
-
-		if (findDoublonManager(echantillon)) {
-			log.warn("Doublon lors de la modif de l'objet Echantillon : " + echantillon.toString());
-			throw new DoublonFoundException("Echantillon", "modification", echantillon.getCode(), null);
-		}
-
 		try {
-			if (doValidation) {
-				BeanValidator.validateObject(echantillon, new Validator[] { echantillonValidator });
-			}
+			checkRequiredObjectsAndValidate(echantillon, banque, type, statut, "modification", utilisateur,
+					doValidation);
 
-			echantillonDao.updateObject(echantillon);
-			log.info("Modification de l'objet Echantillon : " + echantillon.toString());
+			if (!findDoublonManager(echantillon)) {
+				mergeNonRequiredObjects(echantillon, prelevement, collaborateur, emplacement, quantite, qualite,
+						preparation);
 
-			if (operations == null || !operations.contains(operationTypeDao.findByNom("ModifMultiple").get(0))) {
-				// Enregistrement de l'operation associee
-				final Operation creationOp = new Operation();
-				creationOp.setDate(Utils.getCurrentSystemCalendar());
-				operationManager.createObjectManager(creationOp, utilisateur,
-						operationTypeDao.findByNom("Modification").get(0), echantillon);
-			}
+				echantillonDao.updateObject(echantillon);
+				log.info("Modification de l'objet Echantillon : " + echantillon.toString());
 
-			if (operations != null) {
-				for (int i = 0; i < operations.size(); i++) {
+				if (operations == null || !operations.contains(operationTypeDao.findByNom("ModifMultiple").get(0))) {
 					// Enregistrement de l'operation associee
-					final Operation dateOp = new Operation();
-					dateOp.setDate(Utils.getCurrentSystemCalendar());
-					operationManager.createObjectManager(dateOp, utilisateur, operations.get(i), echantillon);
+					final Operation creationOp = new Operation();
+					creationOp.setDate(Utils.getCurrentSystemCalendar());
+					operationManager.createObjectManager(creationOp, utilisateur,
+							operationTypeDao.findByNom("Modification").get(0), echantillon);
 				}
-			}
 
-			// délétion des champs à supprimer
-			if (codesToDelete != null) {
-				for (int i = 0; i < codesToDelete.size(); i++) {
-					codeAssigneManager.removeObjectManager(codesToDelete.get(i));
+				if (operations != null) {
+					for (int i = 0; i < operations.size(); i++) {
+						// Enregistrement de l'operation associee
+						final Operation dateOp = new Operation();
+						dateOp.setDate(Utils.getCurrentSystemCalendar());
+						operationManager.createObjectManager(dateOp, utilisateur, operations.get(i), echantillon);
+					}
 				}
-			}
 
-			// ajout/update association vers codes assignes
-			if (codes != null) {
-				try {
-					echantillon.setCodesAssignes(new HashSet<>(
-							createOrUpdateCodesAssignesManager(echantillon, codes, false, utilisateur, null)));
-				} catch (final SQLException e) {
-					// never accessible
+				// délétion des champs à supprimer
+				if (codesToDelete != null) {
+					for (int i = 0; i < codesToDelete.size(); i++) {
+						codeAssigneManager.removeObjectManager(codesToDelete.get(i));
+					}
 				}
-			}
 
-			// Annotations
-			// suppr les annotations
-			if (listAnnoToDelete != null) {
-				annotationValeurManager.removeAnnotationValeurListManager(listAnnoToDelete, filesToDelete);
-			}
-
-			// update les annotations, null operation pour
-			// laisser la possibilité création/modification au sein
-			// de la liste
-			if (listAnnoToCreateOrUpdate != null) {
-				annotationValeurManager.createAnnotationValeurListManager(listAnnoToCreateOrUpdate, echantillon,
-						utilisateur, null, baseDir, filesCreated, filesToDelete);
-			}
-
-			// enregistre operation associee annotation
-			// si il y a eu des deletes et pas d'updates
-			if ((listAnnoToCreateOrUpdate == null || listAnnoToCreateOrUpdate.isEmpty())
-					&& (listAnnoToDelete != null && !listAnnoToDelete.isEmpty())) {
-				CreateOrUpdateUtilities.createAssociateOperation(echantillon, operationManager,
-						operationTypeDao.findByNom("Annotation").get(0), utilisateur);
-			}
-
-			if (filesToDelete != null) {
-				for (final File f : filesToDelete) {
-					f.delete();
+				// ajout/update association vers codes assignes
+				if (codes != null) {
+					try {
+						echantillon.setCodesAssignes(new HashSet<>(
+								createOrUpdateCodesAssignesManager(echantillon, codes, false, utilisateur, null)));
+					} catch (final SQLException e) {
+						// never accessible
+					}
 				}
-			}
 
+				// Annotations
+				// suppr les annotations
+				if (listAnnoToDelete != null) {
+					annotationValeurManager.removeAnnotationValeurListManager(listAnnoToDelete, filesToDelete);
+				}
+
+				// update les annotations, null operation pour
+				// laisser la possibilité création/modification au sein
+				// de la liste
+				if (listAnnoToCreateOrUpdate != null) {
+					annotationValeurManager.createAnnotationValeurListManager(listAnnoToCreateOrUpdate, echantillon,
+							utilisateur, null, baseDir, filesCreated, filesToDelete);
+				}
+
+				// enregistre operation associee annotation
+				// si il y a eu des deletes et pas d'updates
+				if ((listAnnoToCreateOrUpdate == null || listAnnoToCreateOrUpdate.isEmpty())
+						&& (listAnnoToDelete != null && !listAnnoToDelete.isEmpty())) {
+					CreateOrUpdateUtilities.createAssociateOperation(echantillon, operationManager,
+							operationTypeDao.findByNom("Annotation").get(0), utilisateur);
+				}
+
+				if (filesToDelete != null) {
+					for (final File f : filesToDelete) {
+						f.delete();
+					}
+				}
+			} else { // doublon
+				log.warn("Doublon lors de la modification de l'objet Echantillon : " + echantillon.toString());
+				throw new DoublonFoundException("Echantillon", "modification", echantillon.getCode(), null);
+			}
 		} catch (final RuntimeException re) {
 			if (filesCreated != null) {
 				for (final File f : filesCreated) {
@@ -2048,20 +1944,88 @@ public class EchantillonManagerImpl implements EchantillonManager {
 		return milli;
 	}
 
+	@Override
+	public void checkRequiredObjectsAndValidate(final Echantillon echantillon, final Banque banque,
+			final EchantillonType type, final ObjetStatut statut, final String operation, final Utilisateur utilisateur,
+			final boolean doValidation) {
+
+		// Banque required
+		if (banque != null) {
+			echantillon.setBanque(banqueDao.mergeObject(banque));
+		} else if (echantillon.getBanque() == null) {
+			log.warn("Objet obligatoire Banque manquant" + " lors de la " + operation + " d'un Echantillon");
+			throw new RequiredObjectIsNullException("Prelevement", operation, "Banque");
+		}
+
+		// echantillon type
+		// since 2.3.0-gatsbi peut être null
+		List<Integer> requiredChampEntiteIds = checkEchantillonTypeSinceGatsbiAndReturnAllIds(echantillon, type, true);
+
+		// On vérifie que le statut n'est pas null. Si c'est le cas
+		// on envoie une exception
+		if (statut != null) {
+			echantillon.setObjetStatut(objetStatutDao.mergeObject(statut));
+		} else if (echantillon.getObjetStatut() == null) {
+			log.warn("Objet obligatoire ObjetStatut manquant lors " + "de la creation " + "d'un objet Echantillon");
+			throw new RequiredObjectIsNullException("Echantillon", "creation", "ObjetStatut");
+		}
+
+		// Validation
+		if (doValidation) {
+			Validator[] validators;
+			if (requiredChampEntiteIds.isEmpty()) { // pas de restriction gatsbi
+				validators = new Validator[] { echantillonValidator };
+			} else { // gatsbi définit certain champs obligatoires
+				EchantillonGatsbiValidator gValidator = new EchantillonGatsbiValidator("echantillon",
+						requiredChampEntiteIds);
+				validators = new Validator[] { gValidator, echantillonValidator };
+			}
+
+			BeanValidator.validateObject(echantillon, validators);
+		}
+	}
+
 	/**
-	 * Applique une vérification sur le champ EchantillonTyoe, car 
-	 * depuis GATSBI ce thésaurus n'est plus obligatoire.
+	 * Merge et assigne tous les objects associes non obligatoires au prelevement
+	 * (sauf maladie car utilisé dans validation).
+	 * 
+	 * @since 2.3.0-gatsbi
+	 * 
 	 * @param echantillon
-	 * @param type échantillon, peut être null
+	 * @param collaborateur
+	 * @param emplacement
+	 * @param quantiteUnite
+	 * @param qualite
+	 * @param preparation
 	 */
-	private void checkEchantillonTypeSinceGatsbi(Echantillon echantillon, 
-			EchantillonType type, boolean setType) {
+	private void mergeNonRequiredObjects(final Echantillon echantillon, final Prelevement prelevement,
+			final Collaborateur collaborateur, final Emplacement emplacement, final Unite quantiteUnite,
+			final EchanQualite qualite, final ModePrepa preparation) {
+
+		echantillon.setPrelevement(prelevementDao.mergeObject(prelevement));
+		echantillon.setCollaborateur(collaborateurDao.mergeObject(collaborateur));
+		echantillon.setEmplacement(emplacementDao.mergeObject(emplacement));
+		echantillon.setQuantiteUnite(uniteDao.mergeObject(quantiteUnite));
+		echantillon.setEchanQualite(echanQualiteDao.mergeObject(qualite));
+		echantillon.setModePrepa(modePrepaDao.mergeObject(preparation));
+	}
+
+	/**
+	 * Applique une vérification sur le champ EchantillonTyoe, car depuis GATSBI ce
+	 * thésaurus n'est plus obligatoire.
+	 * 
+	 * @param echantillon
+	 * @param type        échantillon, peut être null
+	 * @return liste champ entite ids définis comme obligatoire par gatsbi
+	 */
+	private List<Integer> checkEchantillonTypeSinceGatsbiAndReturnAllIds(Echantillon echantillon, EchantillonType type,
+			boolean setType) {
 		// Gatsbi required
-		List<Integer> requiredChampEntiteId = new ArrayList<Integer>();
+		List<Integer> requiredChampEntiteIds = new ArrayList<Integer>();
 		if (echantillon.getBanque().getEtude() != null) {
-			Contexte prelContexte = echantillon.getBanque().getEtude().getContexteForEntite(2);
-			if (prelContexte != null) {
-				requiredChampEntiteId.addAll(prelContexte.getRequiredChampEntiteIds());
+			Contexte echanContexte = echantillon.getBanque().getEtude().getContexteForEntite(3);
+			if (echanContexte != null) {
+				requiredChampEntiteIds.addAll(echanContexte.getRequiredChampEntiteIds());
 			}
 		}
 
@@ -2071,7 +2035,7 @@ public class EchantillonManagerImpl implements EchantillonManager {
 				echantillon.setEchantillonType(echantillonTypeDao.mergeObject(type));
 			}
 		} else { // valeur passée est nulle
-			if (echantillon.getBanque().getEtude() == null || requiredChampEntiteId.contains(58)) { // obligatoire!
+			if (echantillon.getBanque().getEtude() == null || requiredChampEntiteIds.contains(58)) { // obligatoire!
 				if (echantillon.getEchantillonType() == null) {
 					log.warn("Objet obligatoire EchantillonType manquant" + " lors de la " + "creation"
 							+ " d'un Echantillon");
@@ -2081,5 +2045,7 @@ public class EchantillonManagerImpl implements EchantillonManager {
 				echantillon.setEchantillonType(null);
 			}
 		}
+
+		return requiredChampEntiteIds;
 	}
 }

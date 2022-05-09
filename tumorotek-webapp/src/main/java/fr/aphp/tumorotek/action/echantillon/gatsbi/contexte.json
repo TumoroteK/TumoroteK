@@ -196,13 +196,13 @@
 	    "ordreTableau": 15,
         "rThesauruses": [
           {
-            "champId": 243,
+            "champId": 244,
             "thesaurusId": 6,
             "thesaurusValue": "Non cédable",
             "position": 2
           },
           {
-            "champId": 243,
+            "champId": 244,
             "thesaurusId": 7,
             "thesaurusValue": "Non conforme pour cession",
             "position": 1

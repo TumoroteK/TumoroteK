@@ -534,7 +534,7 @@
 		<column>PLATEFORME_ID</column>
 		<column>ECHANTILLON_COULEUR_ID</column>
 		<column>PROD_DERIVE_COULEUR_ID</column>
-		<column>ETUDE_ID</column>
+		<column>GATSBI_ETUDE_ID</column>
 		<row>
 			<value>1</value>
 			<value>1</value>

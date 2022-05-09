@@ -799,7 +799,7 @@ public class PrelevementManagerImpl implements PrelevementManager
       if(colla != null){
          return prelevementDao.findCountCreatedByCollaborateur(colla).get(0);
       }
-      return new Long(0);
+      return 0l;
    }
 
    @Override
@@ -807,7 +807,7 @@ public class PrelevementManagerImpl implements PrelevementManager
       if(colla != null){
          return prelevementDao.findCountByPreleveur(colla).get(0);
       }
-      return new Long(0);
+      return 0l;
    }
 
    @Override
@@ -815,7 +815,7 @@ public class PrelevementManagerImpl implements PrelevementManager
       if(serv != null){
          return prelevementDao.findCountByService(serv).get(0);
       }
-      return new Long(0);
+      return 0l;
    }
 
    /**

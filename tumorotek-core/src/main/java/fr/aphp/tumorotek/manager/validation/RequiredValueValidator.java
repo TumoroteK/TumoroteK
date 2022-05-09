@@ -49,6 +49,8 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
 
+import fr.aphp.tumorotek.model.TKdataObject;
+
 
 /**
  * Gatsbi validor appliquant de manière dynamique une validation sur les 
@@ -58,7 +60,7 @@ import org.springframework.validation.Validator;
  * @version 2.3.0-gatsbi
  *
  */
-public class RequiredValueValidator implements Validator {
+public abstract class RequiredValueValidator implements Validator {
 	
 	private final Log log = LogFactory.getLog(RequiredValueValidator.class);
 	
@@ -66,36 +68,55 @@ public class RequiredValueValidator implements Validator {
 	private String eNom;
 	private List<Integer> requiredFieldChpIds = new ArrayList<Integer>();
 	
+	protected Map<Integer, ValidateField> validations = new HashMap<Integer, ValidateField>();
+
 	public RequiredValueValidator(String _e, List<Integer> _f) {
 		super();
 		this.eNom = _e != null ? _e.toLowerCase() : null;
 		requiredFieldChpIds.addAll(_f);
 		initChpIdNameMap();
+		initFunctionalValidationMap();
 	}
 
 	@Override
 	public boolean supports(Class<?> clazz) {
 		return false;
 	}
+	
+	// surchargée par les validators spécifiques par entite
+	protected abstract void initChpIdNameMap();
+	protected abstract void initFunctionalValidationMap();	
+	protected abstract String correctFieldNameIfNeeded(String n);	
 
 	@Override
 	public void validate(Object target, Errors errs) {
-		for (String fName : translateChpIdToFieldName()) {
-			try {
-				if (!Collection.class.isAssignableFrom(PropertyUtils.getPropertyType(target, fName))) { // not collection
-				     ValidationUtils.rejectIfEmptyOrWhitespace(errs, fName, eNom + "." + fName + ".empty");
-				} else if (((Collection<?>) PropertyUtils.getProperty(target, fName)).isEmpty()) {
-					errs.rejectValue(fName, eNom + "." + fName + ".empty");
+		
+		for(Integer chpId : requiredFieldChpIds) {
+			if (chpIdNameMap.containsKey(chpId)) {
+
+				String fName = chpIdNameMap.get(chpId);
+
+				if (!validations.keySet().contains(chpId)) { // simple getProperty validation
+					log.debug("validating field " + fName + " through getProperty validation");
+					try {
+						if (!Collection.class.isAssignableFrom(PropertyUtils.getPropertyType(target, fName))) { // not collection
+						     ValidationUtils.rejectIfEmptyOrWhitespace(errs, fName, eNom + "." + fName + ".empty");
+						} else if (((Collection<?>) PropertyUtils.getProperty(target, fName)).isEmpty()) {
+							errs.rejectValue(fName, eNom + "." + fName + ".empty");
+						}
+					} catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+						log.warn(e.getMessage());
+						log.debug(e);
+					}
+				} else { // validation through functional interface
+					log.debug("validating field " + fName + " through functional validation");
+					
+					if (!validations.get(chpId).validate((TKdataObject) target, errs)) {
+						errs.rejectValue(correctFieldNameIfNeeded(fName), eNom + "." + fName + ".empty");
+					}
 				}
-			} catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-				log.warn(e.getMessage());
-				log.debug(e);
 			}
 		}
-	}
-	
-	// surchargée par les validators spécifiques par entite
-	protected void initChpIdNameMap() {
 	}
 	
 	/**

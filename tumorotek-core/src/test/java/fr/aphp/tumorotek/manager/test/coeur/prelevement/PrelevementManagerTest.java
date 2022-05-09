@@ -977,13 +977,13 @@ public class PrelevementManagerTest extends AbstractManagerTest4
       depDate.setTime(new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").parse("20/09/2006 12:57:01"));
       p.setDateDepart(depDate);
       final Transporteur t = transporteurDao.findById(1);
-      p.setTransportTemp(new Float(-5.9));
+      p.setTransportTemp(-5.9f);
       // Calendar arrDate = Calendar.getInstance();
       // arrDate.setTime(new SimpleDateFormat("dd/MM/yyyy HH:mm:ss")
       // .parse("22/09/2006 12:57:01"));
       // p.setDateArrivee(arrDate);
       final Collaborateur op = collaborateurDao.findById(2);
-      p.setQuantite(new Float(12.5));
+      p.setQuantite(12.5f);
       final Unite qU = (uniteDao.findByUnite("mg")).get(0);
       p.setPatientNda("NDA1");
       p.setNumeroLabo("1234");
@@ -1187,7 +1187,7 @@ public class PrelevementManagerTest extends AbstractManagerTest4
       // validation sur les champs nullables
       final ArrayList<Integer> conditNbrs = new ArrayList<>();
       conditNbrs.add(-1);
-      final List<Float> tValues = createNegativeAndOverFloats(new Float(1000.0));
+      final List<Float> tValues = createNegativeAndOverFloats(1000.0f);
       final List<Float> floats = createNegativeAndOverFloats(null);
       final List<String> ndas = createInvalideAndOverStrings(20);
       final List<String> nums = createInvalideAndOverStrings(50);
@@ -2072,12 +2072,12 @@ public class PrelevementManagerTest extends AbstractManagerTest4
       depDate.setTime(new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").parse("20/09/2006 12:57:01"));
       p.setDateDepart(depDate);
       p.setTransporteur(transporteurDao.findById(1));
-      p.setTransportTemp(new Float(-5.9));
+      p.setTransportTemp(-5.9f);
       final Calendar arrDate = Calendar.getInstance();
       arrDate.setTime(new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").parse("22/09/2006 12:57:01"));
       p.setDateArrivee(arrDate);
       p.setPreleveur(collaborateurDao.findById(2));
-      p.setQuantite(new Float(12.5));
+      p.setQuantite(12.5f);
       p.setQuantiteUnite((uniteDao.findByUnite("mg")).get(0));
       p.setPatientNda("NDA1");
       p.setNumeroLabo("1234");
@@ -3033,7 +3033,7 @@ public class PrelevementManagerTest extends AbstractManagerTest4
       depDate.setTime(new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").parse("20/09/2006 12:57:01"));
       prel3.setDateDepart(depDate);
       final Transporteur t = transporteurDao.findById(1);
-      prel2.setTransportTemp(new Float(-5.9));
+      prel2.setTransportTemp(-5.9f);
       prel1.setSterile(true);
       prel2.setSterile(true);
       final Set<LaboInter> labos = new HashSet<>();
@@ -3174,7 +3174,7 @@ public class PrelevementManagerTest extends AbstractManagerTest4
 
       // on teste une maj non valide sur le 1er élément
       prelTest1.setConsentDate(new SimpleDateFormat("dd/MM/yyyy").parse("17/09/2078"));
-      final Float temp = new Float(-12.5);
+      final Float temp = -12.5f;
       prelTest1.setTransportTemp(temp);
       prelTest2.setTransportTemp(temp);
       prelTest3.setTransportTemp(temp);
@@ -3204,7 +3204,7 @@ public class PrelevementManagerTest extends AbstractManagerTest4
       prelTest2.setLaboInters(new HashSet<LaboInter>());
       prelTest3.setLaboInters(new HashSet<LaboInter>());
       assertNull(prelTest1.getTransportTemp());
-      assertTrue(prelTest2.getTransportTemp().equals(new Float(-5.9)));
+      assertTrue(prelTest2.getTransportTemp().equals(-5.9f));
       assertNull(prelTest3.getTransportTemp());
       assertFalse(annotationValeurManager.findByChampAndObjetManager(champAnnotationDao.findById(2), prelTest1).get(0)
          .getAlphanum().equals("TEST"));
@@ -3242,7 +3242,7 @@ public class PrelevementManagerTest extends AbstractManagerTest4
       list.add(prelTest2);
       list.add(prelTest3);
       assertNull(prelTest1.getTransportTemp());
-      assertTrue(prelTest2.getTransportTemp().equals(new Float(-5.9)));
+      assertTrue(prelTest2.getTransportTemp().equals(-5.9f));
       assertNull(prelTest3.getTransportTemp());
       assertFalse(annotationValeurManager.findByChampAndObjetManager(champAnnotationDao.findById(2), prelTest1).get(0)
          .getAlphanum().equals("TEST"));
@@ -3354,12 +3354,12 @@ public class PrelevementManagerTest extends AbstractManagerTest4
       depDate.setTime(new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").parse("20/09/2006 12:57:01"));
       p.setDateDepart(depDate);
       final Transporteur t = transporteurDao.findById(1);
-      p.setTransportTemp(new Float(-5.9));
+      p.setTransportTemp(-5.9f);
       final Calendar arrDate = Calendar.getInstance();
       arrDate.setTime(new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").parse("22/09/2006 12:57:02"));
       p.setDateArrivee(arrDate);
       final Collaborateur op = collaborateurDao.findById(2);
-      p.setQuantite(new Float(12.5));
+      p.setQuantite(12.5f);
       final Unite qU = (uniteDao.findByUnite("mg")).get(0);
       p.setPatientNda("NDA1");
       p.setNumeroLabo("1234");
@@ -3429,10 +3429,10 @@ public class PrelevementManagerTest extends AbstractManagerTest4
       assertTrue(p3.getConditNbr().equals(1));
       assertTrue(p3.getDateDepart().equals(depDate));
       assertTrue(p3.getTransporteur().equals(t));
-      assertTrue(p3.getTransportTemp().equals(new Float(-5.9)));
+      assertTrue(p3.getTransportTemp().equals(-5.9f));
       assertTrue(p3.getDateArrivee().equals(arrDate));
       assertTrue(p3.getOperateur().equals(op));
-      assertTrue(p3.getQuantite().equals(new Float(12.5)));
+      assertTrue(p3.getQuantite().equals(12.5f));
       assertTrue(p3.getQuantiteUnite().equals(qU));
       assertTrue(p3.getPatientNda().equals("NDA1"));
       assertTrue(p3.getNumeroLabo().equals("1234"));
@@ -3542,7 +3542,7 @@ public class PrelevementManagerTest extends AbstractManagerTest4
       ids.add(p1.getPrelevementId());
       ids.add(p2.getPrelevementId());
       ids.add(p3.getPrelevementId());
-      final Integer prelCessedObjectId = new Integer(1);
+      final Integer prelCessedObjectId = 1;
       ids.add(prelCessedObjectId); // ce prelevement est parent d'un object cédé
 
       // rollback used object Exception
