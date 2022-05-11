@@ -979,6 +979,7 @@ public class EchantillonManagerTest extends AbstractManagerTest4
       // Insertion
       final Echantillon echan1 = new Echantillon();
       echan1.setCode("Code");
+      echan1.setType(type);
 
       final Emplacement emp = new Emplacement();
       emp.setTerminale(terminaleDao.findById(6));
@@ -1024,19 +1025,6 @@ public class EchantillonManagerTest extends AbstractManagerTest4
       assertTrue(catched);
       catched = false;
 
-      echan1.setCode("PTRA.1");
-      // On teste l'insertion d'un doublon pour vérifier que l'exception
-      // est lancée
-      try{
-         echantillonManager.createObjectManager(echan1, banque, null, null, statut, null, type, null, null, null, null,
-            null, null, null, true, null, false);
-      }catch(final Exception e){
-         if(e.getClass().getSimpleName().equals("DoublonFoundException")){
-            catched = true;
-         }
-      }
-      assertTrue(catched);
-
       // Emplacement occupé par un dérivé
       echan1.setCode("PTRA.3");
       final Emplacement empl = emplacementManager.findByIdManager(2);
@@ -1048,6 +1036,19 @@ public class EchantillonManagerTest extends AbstractManagerTest4
          catched = true;
          assertTrue(ex.getMessage().equals("PTRA.3 : error.emplacement.notEmpty"));
          assertTrue(ex.getIdentificationObjetException().equals("PTRA.3"));
+      }
+      assertTrue(catched);
+      
+      echan1.setCode("PTRA.1");
+      // On teste l'insertion d'un doublon pour vérifier que l'exception
+      // est lancée
+      try{
+         echantillonManager.createObjectManager(echan1, banque, null, null, statut, null, type, null, null, null, null,
+            null, null, null, true, null, false);
+      }catch(final Exception e){
+         if(e.getClass().getSimpleName().equals("DoublonFoundException")){
+            catched = true;
+         }
       }
       assertTrue(catched);
 
@@ -1129,6 +1130,7 @@ public class EchantillonManagerTest extends AbstractManagerTest4
       // on test l'update avec une banque nulle
       final Echantillon echan6 = echantillonManager.findByCodeLikeManager("PTRA.3", true).get(0);
       echan6.setCode(codeUpdated1);
+      echan6.setBanque(null);     
       try{
          echantillonManager.updateObjectManager(echan6, null, null, null, null, null, type, null, null, null, null, null,
             null, null, null, null, null, true, null, null);
@@ -1143,6 +1145,7 @@ public class EchantillonManagerTest extends AbstractManagerTest4
       // on test l'update avec un type null
       final Echantillon echan8 = echantillonManager.findByCodeLikeManager("PTRA.3", true).get(0);
       echan8.setCode(codeUpdated1);
+      echan8.setEchantillonType(null);     
       try{
          echantillonManager.updateObjectManager(echan8, banque, null, null, null, null, null, null, null, null, null, null,
             null, null, null, null, null, true, null, null);
@@ -1153,6 +1156,19 @@ public class EchantillonManagerTest extends AbstractManagerTest4
       }
       assertTrue(catchedUpdate);
       catchedUpdate = false;
+      
+      final Echantillon echan10 = echantillonManager.findByCodeLikeManager("PTRA.3", true).get(0);
+      // MAJ emplacemet Emplacement occupé par un dérivé
+      catched = false;
+      try{
+         echantillonManager.updateObjectManager(echan10, banque, null, null, null, empl, type, null, null, null, null, null,
+            null, null, null, null, utilisateur, false, null, null);
+      }catch(final TKException ex){
+         catched = true;
+         assertTrue(ex.getMessage().equals("PTRA.3 : error.emplacement.notEmpty"));
+         assertTrue(ex.getIdentificationObjetException().equals("PTRA.3"));
+      }
+      assertTrue(catched);
 
       // On teste l'update d'un doublon pour vérifier que l'exception
       // est lancée
@@ -1169,18 +1185,7 @@ public class EchantillonManagerTest extends AbstractManagerTest4
       assertTrue(catchedUpdate);
       catchedUpdate = false;
 
-      final Echantillon echan10 = echantillonManager.findByCodeLikeManager("PTRA.3", true).get(0);
-      // MAJ emplacemet Emplacement occupé par un dérivé
-      catched = false;
-      try{
-         echantillonManager.updateObjectManager(echan10, banque, null, null, null, empl, type, null, null, null, null, null,
-            null, null, null, null, utilisateur, false, null, null);
-      }catch(final TKException ex){
-         catched = true;
-         assertTrue(ex.getMessage().equals("PTRA.3 : error.emplacement.notEmpty"));
-         assertTrue(ex.getIdentificationObjetException().equals("PTRA.3"));
-      }
-      assertTrue(catched);
+
 
       // On test la validation lors d'un update
       validationUpdate(echan10);

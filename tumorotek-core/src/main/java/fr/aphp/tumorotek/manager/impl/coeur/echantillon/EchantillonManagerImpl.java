@@ -729,11 +729,12 @@ public class EchantillonManagerImpl implements EchantillonManager {
 
 		try {
 
+			mergeNonRequiredObjects(echantillon, prelevement, collaborateur, emplacement, quantite, qualite,
+					preparation);
+			
 			checkRequiredObjectsAndValidate(echantillon, banque, type, statut, "creation", utilisateur, doValidation);
 
 			if (!findDoublonManager(echantillon)) {
-				mergeNonRequiredObjects(echantillon, prelevement, collaborateur, emplacement, quantite, qualite,
-						preparation);
 
 				echantillonDao.createObject(echantillon);
 				log.info("Enregistrement de l'objet Echantillon : " + echantillon.toString());
@@ -1109,13 +1110,15 @@ public class EchantillonManagerImpl implements EchantillonManager {
 			final boolean doValidation, final List<OperationType> operations, final String baseDir) {
 
 		try {
+			
+			mergeNonRequiredObjects(echantillon, prelevement, collaborateur, emplacement, quantite, qualite,
+					preparation);
+			
 			checkRequiredObjectsAndValidate(echantillon, banque, type, statut, "modification", utilisateur,
 					doValidation);
 
 			if (!findDoublonManager(echantillon)) {
-				mergeNonRequiredObjects(echantillon, prelevement, collaborateur, emplacement, quantite, qualite,
-						preparation);
-
+				
 				echantillonDao.updateObject(echantillon);
 				log.info("Modification de l'objet Echantillon : " + echantillon.toString());
 
@@ -1969,7 +1972,7 @@ public class EchantillonManagerImpl implements EchantillonManager {
 			log.warn("Objet obligatoire ObjetStatut manquant lors " + "de la creation " + "d'un objet Echantillon");
 			throw new RequiredObjectIsNullException("Echantillon", "creation", "ObjetStatut");
 		}
-
+		
 		// Validation
 		if (doValidation) {
 			Validator[] validators;
@@ -2004,7 +2007,14 @@ public class EchantillonManagerImpl implements EchantillonManager {
 
 		echantillon.setPrelevement(prelevementDao.mergeObject(prelevement));
 		echantillon.setCollaborateur(collaborateurDao.mergeObject(collaborateur));
-		echantillon.setEmplacement(emplacementDao.mergeObject(emplacement));
+
+		// validation ne devrait pas être dans cette méthode...
+		if (emplacement != null && checkEmplacementOccupied(emplacement, echantillon)) {
+			echantillon.setEmplacement(emplacementDao.mergeObject(emplacement));
+		} else {
+			echantillon.setEmplacement(null);
+		}
+		
 		echantillon.setQuantiteUnite(uniteDao.mergeObject(quantiteUnite));
 		echantillon.setEchanQualite(echanQualiteDao.mergeObject(qualite));
 		echantillon.setModePrepa(modePrepaDao.mergeObject(preparation));
