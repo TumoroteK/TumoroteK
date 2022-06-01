@@ -30,7 +30,7 @@ div.item-mid {
 }
 
 div.item-wide {
-	width: 100%;
+	width: 95%;
 }
 
 .item:nth-child(2n){
@@ -65,7 +65,7 @@ div.column-container > * {
 }
 
 div.row-container > span {
-	margin-right: 2px;
+	padding-right: 2px;
 }
 
 div.block-separator {

@@ -33,34 +33,54 @@
  * avez pris connaissance de la licence CeCILL, et que vous en avez
  * accepté les termes.
  **/
-package fr.aphp.tumorotek.interfacage.hl7.test;
+package fr.aphp.tumorotek.action.echantillon.gatsbi;
 
-import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.text.ParseException;
 
-import org.junit.Test;
+import org.zkoss.zul.Row;
 
-import fr.aphp.tumorotek.interfacage.sender.ack.impl.TumoLinkUrdImpl;
-import fr.aphp.tumorotek.model.coeur.prelevement.Prelevement;
+import fr.aphp.tumorotek.action.echantillon.AbstractEchantillonDecoratorRowRenderer;
+import fr.aphp.tumorotek.dto.EchantillonDTO;
+import fr.aphp.tumorotek.model.contexte.gatsbi.Contexte;
+import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
-import ca.uhn.hl7v2.HL7Exception;
+/**
+ * EchantillonDecoratorRenderer surcharge gatsbi
+ *
+ * @author Mathieu BARTHELEMY.
+ * @version 2.3.0-gatsbi
+ */
+public class EchantillonDecoratorRowRendererGatsbi extends AbstractEchantillonDecoratorRowRenderer {
 
-public class TumoLinkUrdTest
-{
+	private boolean iconesRendered = false;
+	
+	private Contexte contexte;
+	
+	public EchantillonDecoratorRowRendererGatsbi() {
+		contexte = SessionUtils.getCurrentGatsbiContexteForEntiteId(3);
+	}
 
-   public TumoLinkUrdTest(){
-      super();
-   }
+	@Override
+	public void render(final Row row, final EchantillonDTO deco, final int index) {
+		super.render(row, deco, index);
+	}
 
-   @Test
-   public void testCreateUDMMessage() throws HL7Exception, IOException{
+	@Override
+	protected void renderEchantillon(Row row, EchantillonDTO deco) 
+			throws IllegalAccessException, InvocationTargetException, NoSuchMethodException, ParseException {	
+		for (Integer chpId : contexte.getChampEntiteInTableauOrdered()) {
+			GatsbiControllerEchantillon
+				.applyEchantillonDecoratorChpRender(chpId, row, deco, false, false);
+		}
+	}
 
-      final TumoLinkUrdImpl urd = new TumoLinkUrdImpl();
-      final Prelevement prel = new Prelevement();
-      prel.setPrelevementId(1234);
-      urd.createUDMMessage(prel, "H12345", "http://localhost:8080?bId=1&pCode=TEST");
-      urd.createUDMMessage(new Prelevement(), null, "http://test@camerl.org");
-      urd.createUDMMessage(new Prelevement(), "HA1234", null);
-      urd.createUDMMessage(null, "HA1234", "http://test@camerl.org");
-   }
+	public void setIconesRendered(boolean _i) {
+		this.iconesRendered = _i;
+	}
 
+	@Override
+	protected boolean areIconesRendered() {
+		return iconesRendered;
+	}
 }

@@ -48,9 +48,7 @@
 					load-after='findByListCodes.onClick,
 					findByListPatients.onClick'}"
 				rowRenderer="${lwinPrelevement$composer.listObjectsRenderer}">
-				<columns id="gridColumns" menupopup="auto" sizable="true" width="100%">
-					
-				</columns>
+				<columns id="gridColumns" menupopup="auto" sizable="true" width="100%" />
 				<rows>
 					<row self="@{each='currPrelevement'}"
 						value="currPrelevement" />

@@ -166,15 +166,6 @@ public class PrelevementController extends AbstractObjectTabController
 
 		super.doAfterCompose(comp);
 
-		//      switch(getCurrentContexte()){
-		//         case SEROLOGIE:
-		//            listePrelevementSero.setVisible(true);
-		//            break;
-		//         default:
-		//            listePrelevement.setVisible(true);
-		//            break;
-		//      }
-
 		setStaticDiv(divPrelevementStatic);
 		setEditDiv(divPrelevementEdit);
 		setModifMultiDiv(modifMultiDiv);

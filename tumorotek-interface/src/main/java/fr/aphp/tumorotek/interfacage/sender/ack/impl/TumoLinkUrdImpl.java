@@ -119,6 +119,8 @@ public class TumoLinkUrdImpl implements TumoLinkUrd
       //DSP
       final DSP dspSegment = udm.getDSP();
       dspSegment.getDataLine().setValue(url);
+      
+      System.out.println(dspSegment.getDataLine().getValue());
 
       log.debug(udm);
 

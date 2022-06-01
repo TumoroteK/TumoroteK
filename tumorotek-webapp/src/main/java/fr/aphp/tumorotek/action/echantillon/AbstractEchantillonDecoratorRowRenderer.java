@@ -35,6 +35,8 @@
  **/
 package fr.aphp.tumorotek.action.echantillon;
 
+import java.lang.reflect.InvocationTargetException;
+import java.text.ParseException;
 import java.util.List;
 
 import org.zkoss.util.resource.Labels;
@@ -59,103 +61,137 @@ import fr.aphp.tumorotek.manager.exception.DoublonFoundException;
  * @author GCH
  *
  */
-public abstract class AbstractEchantillonDecoratorRowRenderer implements RowRenderer<EchantillonDTO>
-{
+public abstract class AbstractEchantillonDecoratorRowRenderer implements RowRenderer<EchantillonDTO> {
 
-   private List<String> usedCodes = null;
+	private List<String> usedCodes = null;
 
-   public void setUsedCodes(final List<String> o){
-      usedCodes = o;
-   }
-   
-   @Override
-   public void render(final Row row, final EchantillonDTO deco, final int index) {
+	public void setUsedCodes(final List<String> o) {
+		usedCodes = o;
+	}
 
-      final Hlayout icones = TKStockableObjectUtils.drawListIcones(deco.getEchantillon(), deco.getNonConformiteTraitements(),
-         deco.getNonConformiteCessions());
-      icones.setParent(row);
+	@Override
+	public void render(final Row row, final EchantillonDTO deco, final int index) {
 
-      // code
-      if(deco.isNew() && deco.getAdrlTmp() == null){
-         final Textbox tb = new Textbox();
-         tb.setValue(deco.getCode());
-         tb.setInplace(true);
-         tb.setConstraint(EchantillonConstraints.getCodePrefixConstraint());
-         tb.addEventListener(Events.ON_CHANGE, new EventListener<Event>()
-         {
-            @Override
-            public void onEvent(final Event event) throws Exception{
-               final String old = deco.getCode();
-               tb.setValue(tb.getValue().toUpperCase());
-               deco.setCode(tb.getValue());
-               if(ManagerLocator.getEchantillonManager().findDoublonManager(deco.getEchantillon())){
-                  final String newCode = tb.getValue();
-                  deco.setCode(old);
-                  tb.setValue(old);
-                  throw new WrongValueException(tb, ObjectTypesFormatters.getLabel("error.code.used", new String[] {newCode})
-                     + " " + new DoublonFoundException("Echantillon", "creation").getMessage());
-               }else if(usedCodes != null && usedCodes.contains(tb.getValue())){
-                  deco.setCode(old);
-                  tb.setValue(old);
-                  throw new WrongValueException(tb,
-                     "Modification impossible! " + new DoublonFoundException("Echantillon", "creation").getMessage());
-               }else{ // changement du code
-                  usedCodes.remove(old);
-                  usedCodes.add(tb.getValue());
-               }
-            }
-         });
-         tb.addEventListener(Events.ON_OK, new EventListener<Event>()
-         {
-            @Override
-            public void onEvent(final Event event) throws Exception{
-               Events.postEvent(Events.ON_MOUSE_OUT, tb, null);
-            }
-         });
+		// @since gatsbi, icones peuvent ne jamais s'afficher
+		// icones
+		if (areIconesRendered()) {
+			final Hlayout icones = TKStockableObjectUtils.drawListIcones(deco.getEchantillon(),
+					deco.getNonConformiteTraitements(), deco.getNonConformiteCessions());
+			icones.setParent(row);
+		}
 
-         tb.setParent(row);
-      }else{
-         new Label(deco.getCode()).setParent(row);
-      }
+		// code
+		if (deco.isNew() && deco.getAdrlTmp() == null) {
+			final Textbox tb = new Textbox();
+			tb.setValue(deco.getCode());
+			tb.setInplace(true);
+			tb.setConstraint(EchantillonConstraints.getCodePrefixConstraint());
+			tb.addEventListener(Events.ON_CHANGE, new EventListener<Event>() {
+				@Override
+				public void onEvent(final Event event) throws Exception {
+					final String old = deco.getCode();
+					tb.setValue(tb.getValue().toUpperCase());
+					deco.setCode(tb.getValue());
+					if (ManagerLocator.getEchantillonManager().findDoublonManager(deco.getEchantillon())) {
+						final String newCode = tb.getValue();
+						deco.setCode(old);
+						tb.setValue(old);
+						throw new WrongValueException(tb,
+								ObjectTypesFormatters.getLabel("error.code.used", new String[] { newCode }) + " "
+										+ new DoublonFoundException("Echantillon", "creation").getMessage());
+					} else if (usedCodes != null && usedCodes.contains(tb.getValue())) {
+						deco.setCode(old);
+						tb.setValue(old);
+						throw new WrongValueException(tb, "Modification impossible! "
+								+ new DoublonFoundException("Echantillon", "creation").getMessage());
+					} else { // changement du code
+						usedCodes.remove(old);
+						usedCodes.add(tb.getValue());
+					}
+				}
+			});
+			tb.addEventListener(Events.ON_OK, new EventListener<Event>() {
+				@Override
+				public void onEvent(final Event event) throws Exception {
+					Events.postEvent(Events.ON_MOUSE_OUT, tb, null);
+				}
+			});
 
-      // type
-      if(deco.getType() != null){
-         new Label(deco.getType()).setParent(row);
-      }else{
-         new Label().setParent(row);
-      }
+			tb.setParent(row);
+		} else {
+			new Label(deco.getCode()).setParent(row);
+		}
 
-      // quantité
-      if(deco.getOnlyQuantiteInit() != null){
-         new Label(deco.getOnlyQuantiteInit()).setParent(row);
-      }else{
-         new Label().setParent(row);
-      }
+		// @since gatsbi
+		try {
+			renderEchantillon(row, deco);
+		} catch (Exception e) {
+			// une erreur inattendue levée dans la récupération
+			// ou le rendu d'une propriété prel
+			// va arrêter le rendu du reste du tableau
+			throw new RuntimeException(e);
+		}
 
-      // emplct
-      if(deco.getEmplacementAdrlinMulti() != null){
-         new Label(deco.getEmplacementAdrlinMulti()).setParent(row);
-      }else{
-         new Label().setParent(row);
-      }
+		// emplct
+		if (deco.getEmplacementAdrlinMulti() != null) {
+			new Label(deco.getEmplacementAdrlinMulti()).setParent(row);
+		} else {
+			new Label().setParent(row);
+		}
 
-      // objet statut
-      if(deco.getStatut() != null){
-         new Label(Labels.getLabel("Statut." + deco.getStatut().getStatut())).setParent(row);
-      }else{
-         new Label().setParent(row);
-      }
+		// objet statut
+		if (deco.getStatut() != null) {
+			new Label(Labels.getLabel("Statut." + deco.getStatut().getStatut())).setParent(row);
+		} else {
+			new Label().setParent(row);
+		}
 
-      // delete Image
-      final Image delImg = new Image();
-      delImg.setWidth("12px");
-      delImg.setHeight("12px");
-      delImg.setStyle("cursor:pointer");
-      delImg.setSrc("/images/icones/small_delete.png");
-      delImg.addForward("onClick", row.getParent(), "onDeleteDeco", deco);
-      delImg.setVisible(deco.isNew());
-      delImg.setParent(row);
-      
-   }
+		// delete Image
+		final Image delImg = new Image();
+		delImg.setWidth("12px");
+		delImg.setHeight("12px");
+		delImg.setStyle("cursor:pointer");
+		delImg.setSrc("/images/icones/small_delete.png");
+		delImg.addForward("onClick", row.getParent(), "onDeleteDeco", deco);
+		delImg.setVisible(deco.isNew());
+		delImg.setParent(row);
+	}
+
+	/**
+	 * Rendu des colonnes spécifiques échantillon, sera surchargé par Gatsbi.
+	 * 
+	 * @param row
+	 * @param deco
+	 */
+	protected void renderEchantillon(Row row, EchantillonDTO deco) 
+			throws IllegalAccessException, InvocationTargetException, NoSuchMethodException, ParseException {
+		// type
+		if (deco.getType() != null) {
+			new Label(deco.getType()).setParent(row);
+		} else {
+			new Label().setParent(row);
+		}
+
+		// quantité
+		if (deco.getOnlyQuantiteInit() != null) {
+			new Label(deco.getOnlyQuantiteInit()).setParent(row);
+		} else {
+			new Label().setParent(row);
+		}
+	}
+
+	/**
+	 * Sera surchargée par Gatsbi pour ne pas dessiner les icones quand les champs
+	 * correspondants ne sont plus affichés dans les formulaires
+	 * 
+	 * @since 2.3.0-gatsbi
+	 * @return true si les icones doivent être dessinées
+	 */
+	protected boolean areIconesRendered() {
+		return true;
+	}
+
+	public void setIconesRendered(boolean _i) {
+	}
 
 }

@@ -1764,7 +1764,9 @@ public abstract class AbstractListeController2 extends AbstractController
 							anonyme, listeController);
 
 		}else if(entiteToSearch.getNom().equals("Prelevement")){
-			String pageDef = "ficheRechercheAvanceePrelevementGatsbi"; // remplacer par Session contexte TODO
+			// since gatsbi
+			String pageDef = SessionUtils.getCurrentGatsbiContexteForEntiteId(2) == null ? 
+					"ficheRechercheAvanceePrelevement": "ficheRechercheAvanceePrelevementGatsbi";
 			String winDef = "fwinRechercheAvanceePrelevement";
 			if(SessionUtils.getCurrentContexte() == EContexte.SEROLOGIE){
 				pageDef = "ficheRechercheAvanceePrelevementSero";
@@ -1779,7 +1781,9 @@ public abstract class AbstractListeController2 extends AbstractController
 			((FicheRechercheAvancee) ua.getFellow(winDef).getAttributeOrFellow(winDef + "$composer", true))
 			.initRechercheAvancee(entiteToSearch, path, anonyme, listeController);
 		}else if(entiteToSearch.getNom().equals("Echantillon")){
-			String pageDef = "ficheRechercheAvanceeEchantillon";
+			// since gatsbi
+			String pageDef = SessionUtils.getCurrentGatsbiContexteForEntiteId(2) == null ? 
+					"ficheRechercheAvanceeEchantillon": "ficheRechercheAvanceeEchantillonGatsbi";					
 			String winDef = "fwinRechercheAvanceeEchantillon";
 			if(SessionUtils.getCurrentContexte() == EContexte.SEROLOGIE){
 				pageDef = "ficheRechercheAvanceeEchantillonSero";

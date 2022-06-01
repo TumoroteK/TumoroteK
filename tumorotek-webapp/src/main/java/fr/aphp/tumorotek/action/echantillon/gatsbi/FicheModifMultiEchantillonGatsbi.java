@@ -1,6 +1,7 @@
 /**
- * Copyright ou © ou Copr. Ministère de la santé, FRANCE (01/01/2011)
- * dsi-projet.tk@aphp.fr
+ * Copyright ou © ou Copr. Assistance Publique des Hôpitaux de 
+ * PARIS et SESAN
+ * projet-tk@sesan.fr
  *
  * Ce logiciel est un programme informatique servant à la gestion de
  * l'activité de biobanques.
@@ -33,34 +34,53 @@
  * avez pris connaissance de la licence CeCILL, et que vous en avez
  * accepté les termes.
  **/
-package fr.aphp.tumorotek.interfacage.hl7.test;
+package fr.aphp.tumorotek.action.echantillon.gatsbi;
 
-import java.io.IOException;
+import java.util.List;
 
-import org.junit.Test;
+import org.zkoss.zk.ui.Component;
+import org.zkoss.zul.Constraint;
+import fr.aphp.tumorotek.action.prelevement.FicheModifMultiPrelevement;
+import fr.aphp.tumorotek.manager.exception.TKException;
+import fr.aphp.tumorotek.model.contexte.gatsbi.Contexte;
+import fr.aphp.tumorotek.webapp.gatsbi.GatsbiController;
 
-import fr.aphp.tumorotek.interfacage.sender.ack.impl.TumoLinkUrdImpl;
-import fr.aphp.tumorotek.model.coeur.prelevement.Prelevement;
+/**
+ *
+ * Controller gérant la fiche de modification multiple des échantillons sous le
+ * gestionnaire GATSBI. 
+ *
+ * @author Mathieu BARTHELEMY
+ * @version 2.3.0-gatsbi
+ *
+ */
+public class FicheModifMultiEchantillonGatsbi extends FicheModifMultiPrelevement {
 
-import ca.uhn.hl7v2.HL7Exception;
+	private static final long serialVersionUID = 1L;
+	
+	private Contexte c;
 
-public class TumoLinkUrdTest
-{
+	@Override
+	public void doAfterCompose(Component comp) throws Exception {
+		super.doAfterCompose(comp);
 
-   public TumoLinkUrdTest(){
-      super();
-   }
+		c = GatsbiController.initWireAndDisplay(this, 
+				3, 
+				false, null, null, null);
+	}
 
-   @Test
-   public void testCreateUDMMessage() throws HL7Exception, IOException{
+	@Override
+	protected List<Object> applyAnyThesaurusRestriction(List<Object> thObjs, Integer chpId) throws TKException {
+		return GatsbiController.filterExistingListModel(c, thObjs, chpId);
+	}
 
-      final TumoLinkUrdImpl urd = new TumoLinkUrdImpl();
-      final Prelevement prel = new Prelevement();
-      prel.setPrelevementId(1234);
-      urd.createUDMMessage(prel, "H12345", "http://localhost:8080?bId=1&pCode=TEST");
-      urd.createUDMMessage(new Prelevement(), null, "http://test@camerl.org");
-      urd.createUDMMessage(new Prelevement(), "HA1234", null);
-      urd.createUDMMessage(null, "HA1234", "http://test@camerl.org");
-   }
+	@Override
+	protected Constraint muteAnyRequiredConstraint(Constraint cstr, Integer chpId) {
+		return GatsbiController.muteConstraintFromContexte(cstr, c.isChampIdRequired(chpId));
+	}
 
+	@Override
+	protected boolean switchAnyRequiredFlag(Boolean flag, Integer chpId) {
+		return c.isChampIdRequired(chpId);
+	}
 }

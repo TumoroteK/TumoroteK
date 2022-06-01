@@ -86,7 +86,6 @@ import fr.aphp.tumorotek.action.controller.AbstractListeController2;
 import fr.aphp.tumorotek.action.echantillon.EchantillonController;
 import fr.aphp.tumorotek.action.patient.PatientController;
 import fr.aphp.tumorotek.action.prelevement.PrelevementController;
-import fr.aphp.tumorotek.action.prelevement.gatsbi.GatsbiController;
 import fr.aphp.tumorotek.action.prodderive.ProdDeriveController;
 import fr.aphp.tumorotek.decorator.EntiteDecorator;
 import fr.aphp.tumorotek.decorator.I3listBoxItemRenderer;
@@ -110,6 +109,7 @@ import fr.aphp.tumorotek.model.io.imports.ImportHistorique;
 import fr.aphp.tumorotek.model.io.imports.ImportTemplate;
 import fr.aphp.tumorotek.model.io.imports.Importation;
 import fr.aphp.tumorotek.model.systeme.Entite;
+import fr.aphp.tumorotek.webapp.gatsbi.GatsbiController;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
 public class FicheImportTemplate extends AbstractFicheCombineController

@@ -693,7 +693,7 @@ public abstract class AbstractController extends GenericForwardComposer<Componen
 				message = new StringBuilder(ex.getMessage());
 			}
 			log.error(ex.getMessage());
-			log.debug(ex);
+			log.debug(ex.getMessage(), ex);
 		}
 //		// aucun message n'a pu être généré -> exception inattendue
 //		if(message == null){

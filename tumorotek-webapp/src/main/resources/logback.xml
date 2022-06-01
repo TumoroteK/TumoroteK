@@ -48,7 +48,7 @@
         <appender-ref ref="DailyRollingFile"/>
     </logger>
 
-    <logger name="liquibase" level="INFO">
+    <logger name="liquibase" level="DEBUG">
         <appender-ref ref="LIQUIBASE" />
     </logger>
     

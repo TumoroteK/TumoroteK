@@ -172,7 +172,7 @@ public class FichePrelevementStatic extends AbstractFicheStaticController
       prodDerivesGrid.setVisible(false);
       addDerive.setDisabled(true);
 
-      // **************** gastby
+      // **************** gastbi
       if (groupLaboInter instanceof Group) {
     	  ((Group) groupLaboInter).setOpen(false);
       }

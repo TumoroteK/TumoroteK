@@ -41,8 +41,6 @@
 
 	<?init id="test" class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" name="ficheRechercheAvanceePrelevement" root="../"?>
 
-	<style src="/css/gatsbi.css" />
-
 	<window id="fwinRechercheAvanceePrelevement" border="none"
 		apply="fr.aphp.tumorotek.action.recherche.gatsbi.FicheRechercheAvanceeGatsbi">
 		<div
@@ -109,8 +107,7 @@
 											</div>
 											<div class="item item-mid" id="datePrelDiv"><!-- date du prélèvement -->
 												<custom-attributes champId="30" />
-												<label
-													value="${c:l('Champ.Prelevement.DatePrelevement')}"
+												<label value="${c:l('Champ.Prelevement.DatePrelevement')}"
 													sclass="chpLabel formLabel" />
 												<vlayout hflex="1">
 													<hlayout hflex="1">
@@ -618,7 +615,7 @@
 														entite="Echantillon" />
 												</textbox>
 											</div>
-											<div class="item item-mid" id="typeEchanDiv"><!-- Type échantillon -->
+											<div class="item item-mid" id="echantillonTypeDiv"><!-- Type échantillon -->
 												<custom-attributes champId="58"
 													listmodel="echantillonTypes" />
 												<label
@@ -648,7 +645,7 @@
 															<listcell label="@{opQteEchan}" />
 														</listitem>
 													</listbox>
-													<decimalbox format="##0.###" scale="3"
+													<decimalbox format="#,##0.###" scale="3"
 														id="quantiteEchantillonBox" width="75px" locale="en">
 														<custom-attributes attribut="Quantite"
 															entite="Echantillon" />
@@ -708,8 +705,7 @@
 													</hlayout>
 												</vlayout>
 											</div>
-											<div class="item item-mid" id="echanTempStockDiv"><!-- temp stockage / non géré 
-													gatsbi -->
+											<div class="item item-mid" id="echanTempStockDiv"><!-- temp stockage / non géré gatsbi -->
 												<label value="${c:l('Champ.Echantillon.TempStock')}"
 													sclass="chpLabel formLabel" />
 												<div>
@@ -743,7 +739,7 @@
 														entite="Echantillon" />
 												</listbox>
 											</div>
-											<div class="item item-mid" id="codesLesDiv"><!-- Code lésionel -->
+											<div class="item item-wide" id="cMorphosDiv"><!-- Code lésionel -->
 												<custom-attributes champId="230" />
 												<hlayout style="z-valign-top">
 													<label
@@ -757,7 +753,7 @@
 														entite="CodeMorpho" />
 												</textbox>
 											</div>
-											<div class="item item-mid" id="codesOrgDiv"><!-- Organe -->
+											<div class="item item-wide" id="cOrganesDiv"><!-- Organe -->
 												<custom-attributes champId="229" />
 												<hlayout style="z-valign-top">
 													<label value="${c:l('Champ.Echantillon.Organe')}"
@@ -771,8 +767,7 @@
 												</textbox>
 											</div>
 											<div class="item item-mid" id="echanQualiteDiv"><!-- Qualité -->
-												<custom-attributes champId="68"
-													listmodel="echanQualites" />
+												<custom-attributes champId="68" listmodel="echanQualites" />
 												<label
 													value="${c:l('Champ.Echantillon.EchanQualite')}"
 													sclass="chpLabel formLabel" />
@@ -786,8 +781,8 @@
 														attribut="EchanQualiteId" entite="Echantillon" />
 												</listbox>
 											</div>
-											<div class="item item-mid" id="echanStatutDiv"><!-- Statut / non géré par Gatsbi -->
-												<custom-attributes champId="55" />
+											<div class="item item-mid" id="echanStatutDiv"><!-- Statut / non géré Gatsbi  -->
+												<custom-attributes champId="55" listmodel="objetStatuts" />
 												<label value="${c:l('Champ.Echantillon.ObjetStatut')}"
 													sclass="chpLabel formLabel" />
 												<listbox id="statutEchantillonBox" mold="select"
@@ -813,9 +808,8 @@
 														entite="Echantillon" />
 												</listbox>
 											</div>
-											<div class="item item-wide" id="echanConformeTraitDiv"><!-- conforme traitement -->
-												<custom-attributes champId="243"
-													listmodel="nCechanTraitement" />
+											<div class="item item-wide" id="conformeTraitementDiv"><!-- conforme traitement -->
+												<custom-attributes champId="243" listmodel="nctraitement" />
 												<label
 													value="${c:l('Champ.Echantillon.ConformeTraitement')}"
 													sclass="chpLabel formLabel" />
@@ -846,9 +840,8 @@
 													</listbox>
 												</div>
 											</div>
-											<div class="item item-wide" id="echanConformeCessDiv"><!-- conforme cession -->
-												<custom-attributes champId="243"
-													listmodel="nCechanCession" />
+											<div class="item item-wide" id="conformeCessionDiv"><!-- conforme cession -->
+												<custom-attributes champId="244" listmodel="nccession" />
 												<label
 													value="${c:l('Champ.Echantillon.ConformeCession')}"
 													sclass="chpLabel formLabel" />

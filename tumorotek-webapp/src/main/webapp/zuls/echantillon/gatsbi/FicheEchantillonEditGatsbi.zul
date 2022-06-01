@@ -36,12 +36,12 @@
 -->
 <zk>
 
-<style src="/css/gatsbi.css" />
 <?component name="calendarbox" macroURI="/zuls/component/CalendarBox.zul" class="fr.aphp.tumorotek.component.CalendarBox" ?>
 <?component name="codeAssigneEditor" macroURI="/zuls/code/CodeAssigneEditor.zul" ?>
 <?component name="incaPopUps" macroURI="/zuls/echantillon/incaPopUpsEchantillon.zul" inline="true" ?>
 
-<window id="fwinEchantillonEdit" border="none"apply="fr.aphp.tumorotek.action.echantillon.gatsbi.FicheEchantillonEditGatsbi">
+<window id="fwinEchantillonEdit" border="none" 
+		apply="fr.aphp.tumorotek.action.echantillon.gatsbi.FicheEchantillonEditGatsbi">
 	<panel collapsible="false" title="${c:l('ficheEchantillon.panel.title')}"
 	 		id="winPanel" sclass="fichePanelv2" closable="true">
 		<panelchildren style="overflow-y:scroll" id="panelChildrenWithScroll">
@@ -117,7 +117,7 @@
 					<div id="infoEchanBlockDiv">
 						<div class="block-container" id="infoEchanBlockDivContainer">
 							<div class="item item-mid" id="echanQteDiv"><!-- Quantité / QuantitéInit de l'échantillon -->
-								<custom-attributes champId="30" />
+								<custom-attributes champId="61" />
 								<div class="row-container chpLabel">
 									<label value="${c:l('ficheEchantillon.quantiteLabel')}" sclass="formLabel" />
 									<label value="*" sclass="requiredMark" />
@@ -297,14 +297,11 @@
 							</div>
 						</div>
 					</div>
-					<div class="block-separator" />
+				</groupbox>
+				<div class="block-separator" />	
+				<groupbox id="groupInfosCompEchan">
+					<caption label="${c:l('ficheEchantillon.infosComp')}" />
 					<div id="anapathInfosBlockDiv"><!-- Informations complémentaires -->
-						<div class="block-title">
-							<div class="column-container">
-								<label value="${c:l('ficheEchantillon.infosComp')}" sclass="formSubTitle"/>
-								<image width="100%" height="1px" src="/images/pixelble.gif" style="background-repeat: repeat-x;"/>
-							</div>
-						</div>
 						<div class="block-container" id="anapathInfosBlockDivContainer">
 							<div class="item item-mid" id="crAnapathDiv"><!-- CrAnapath -->
 								<custom-attributes champId="255" />

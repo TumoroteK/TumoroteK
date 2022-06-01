@@ -35,6 +35,8 @@
  **/
 package fr.aphp.tumorotek.action.echantillon;
 
+import java.lang.reflect.InvocationTargetException;
+import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
@@ -58,318 +60,396 @@ import fr.aphp.tumorotek.model.coeur.prelevement.Prelevement;
 import fr.aphp.tumorotek.model.coeur.prelevement.Risque;
 
 /**
- * EchantillonRenderer affiche dans le Row
- * les membres d'Echantillon sous forme de labels.
+ * EchantillonRenderer affiche dans le Row les membres d'Echantillon sous forme
+ * de labels.
  *
- * @see http://en.wikibooks.org/wiki/ZK/Examples
- * Date: 17/04/2010
+ * @see http://en.wikibooks.org/wiki/ZK/Examples Date: 17/04/2010
  *
  * @author Pierre Ventadour.
  * @version 2.0
  */
-public class EchantillonRowRenderer extends TKSelectObjectRenderer<Echantillon>
-{
+public class EchantillonRowRenderer extends TKSelectObjectRenderer<Echantillon> {
 
-   private final Log log = LogFactory.getLog(EchantillonRowRenderer.class);
+	private final Log log = LogFactory.getLog(EchantillonRowRenderer.class);
 
-   private boolean accessible = true;
-   private boolean isEmbedded = false;
+	private boolean accessible = true;
+	private boolean isEmbedded = false;
 
-   private boolean accessStockage = true;
+	private boolean accessStockage = true;
 
-   public void setAccessStockage(final boolean ac){
-      this.accessStockage = ac;
-   }
+	public void setAccessStockage(final boolean ac) {
+		this.accessStockage = ac;
+	}
 
-   public EchantillonRowRenderer(final boolean select, final boolean cols){
-      setSelectionMode(select);
-      setTtesCollections(cols);
-   }
+	public EchantillonRowRenderer(final boolean select, final boolean cols) {
+		setSelectionMode(select);
+		setTtesCollections(cols);
+	}
 
-   @Override
-   public void render(final Row row, final Echantillon data, final int index){
+	@Override
+	public void render(final Row row, final Echantillon data, final int index) {
 
-      log.debug("init render");
+		// dessine le checkbox
+		super.render(row, data, index);
 
-      // dessine le checkbox
-      drawCheckbox(row, data, index);
+		renderObjets(row, data);
+	}
 
-      log.debug("super");
+	public void renderObjets(final Row row, final Object data) {
 
-      final Echantillon echan = data;
+		final Echantillon echan = (Echantillon) data;
 
-      final Hlayout icones = TKStockableObjectUtils.drawListIcones(echan, null, null);
+		// @since gatsbi, icones peuvent ne jamais s'afficher
+		// icones
+		if (areIconesRendered()) {
+			final Hlayout icones = TKStockableObjectUtils.drawListIcones(echan, null, null);
 
-      //infectieux
-      final Prelevement prel = ManagerLocator.getEchantillonManager().getPrelevementManager(echan);
-      if(prel != null){
-         final Iterator<Risque> risksIt = ManagerLocator.getPrelevementManager().getRisquesManager(prel).iterator();
-         final Div bioHzd = new Div();
-         boolean risky = false;
-         String risks = "";
-         Risque risque;
-         while(risksIt.hasNext()){
-            risque = risksIt.next();
-            if(risque.getInfectieux()){
-               risky = true;
-               risks = risks + " " + risque.getNom();
-            }
-         }
-         if(risky){
-            bioHzd.setWidth("18px");
-            bioHzd.setHeight("18px");
-            bioHzd.setSclass("biohazard");
-            bioHzd.setTooltiptext(ObjectTypesFormatters.getLabel("tooltip.risque", new String[] {risks}));
-         }
+			// infectieux
+			final Prelevement prel = ManagerLocator.getEchantillonManager().getPrelevementManager(echan);
+			if (prel != null) {
+				final Iterator<Risque> risksIt = ManagerLocator.getPrelevementManager().getRisquesManager(prel)
+						.iterator();
+				final Div bioHzd = new Div();
+				boolean risky = false;
+				String risks = "";
+				Risque risque;
+				while (risksIt.hasNext()) {
+					risque = risksIt.next();
+					if (risque.getInfectieux()) {
+						risky = true;
+						risks = risks + " " + risque.getNom();
+					}
+				}
+				if (risky) {
+					bioHzd.setWidth("18px");
+					bioHzd.setHeight("18px");
+					bioHzd.setSclass("biohazard");
+					bioHzd.setTooltiptext(ObjectTypesFormatters.getLabel("tooltip.risque", new String[] { risks }));
+				}
 
-         icones.insertBefore(bioHzd, icones.getFirstChild());
-      }
-      log.debug("risque");
+				icones.insertBefore(bioHzd, icones.getFirstChild());
+			}
+			icones.setParent(row);
+		}
 
-      icones.setParent(row);
+		// identifiant
+		// code
+		final Label codeLabel = new Label(echan.getCode());
+		if (accessible) {
+			codeLabel.addForward(null, codeLabel.getParent(), "onClickObject", echan);
+			codeLabel.setClass("formLink");
+		}
+		codeLabel.setParent(row);
+		log.debug("code");
 
-      // code
-      final Label codeLabel = new Label(echan.getCode());
-      if(accessible){
-         codeLabel.addForward(null, codeLabel.getParent(), "onClickObject", echan);
-         codeLabel.setClass("formLink");
-      }
-      codeLabel.setParent(row);
-      log.debug("code");
+		if (isTtesCollections()) {
+			new Label(echan.getBanque().getNom()).setParent(row);
+		} else {
+			new Label().setParent(row);
+		}
 
-      if(isTtesCollections()){
-         new Label(echan.getBanque().getNom()).setParent(row);
-      }else{
-         new Label().setParent(row);
-      }
+		// patient
+		if (!isEmbedded) {
+			if (!anonyme) {
+				new Label(getPatient(echan)).setParent(row);
+			} else {
+				createAnonymeBlock().setParent(row);
+			}
+		}
 
-      // patient
-      if(!isEmbedded){
-         if(!anonyme){
-            new Label(getPatient(echan)).setParent(row);
-         }else{
-            createAnonymeBlock().setParent(row);
-         }
-      }
+		// @since gatsbi
+		try {
+			renderEchantillon(row, echan);
+		} catch (Exception e) {
+			// une erreur inattendue levée dans la récupération
+			// ou le rendu d'une propriété prel
+			// va arrêter le rendu du reste du tableau
+			throw new RuntimeException(e);
+		}
 
-      // date de stockage
-      new Label(ObjectTypesFormatters.dateRenderer2(echan.getDateStock())).setParent(row);
-      log.debug("date");
+	}
 
-      // codes organes : liste des codes exportés pour échantillons
-      ObjectTypesFormatters.drawCodesExpLabel(ManagerLocator.getCodeAssigneManager().findCodesOrganeByEchantillonManager(echan),
-         row, null, false);
-      log.debug("codes organes");
+	public boolean isAccessible() {
+		return accessible;
+	}
 
-      // codes lésionnels : liste des codes exportés pour échantillons
-      ObjectTypesFormatters.drawCodesExpLabel(ManagerLocator.getCodeAssigneManager().findCodesMorphoByEchantillonManager(echan),
-         row, null, false);
-      log.debug("codes lesionnels");
+	public void setAccessible(final boolean a) {
+		this.accessible = a;
+	}
 
-      // type
-      if(echan.getEchantillonType() != null){
-         new Label(echan.getEchantillonType().getNom()).setParent(row);
-      }else{
-         new Label().setParent(row);
-      }
-      log.debug("type");
+	public boolean isAccessStockage() {
+		return accessStockage;
+	}
 
-      // quantité
-      new Label(getQuantite(echan)).setParent(row);
-      log.debug("quantite");
+	public String getPatient(final Echantillon echan) {
+		final Prelevement prlvt = ManagerLocator.getEchantillonManager().getPrelevementManager(echan);
 
-      // objet statut
-      if(echan.getObjetStatut() != null){
-         final Label statut = new Label(ObjectTypesFormatters.ILNObjectStatut(echan.getObjetStatut()));
-         if(echan.getObjetStatut().getStatut().equals("ENCOURS")){
-            statut.setStyle("color: red");
-         }
-         statut.setParent(row);
-      }else{
-         new Label().setParent(row);
-      }
-      log.debug("objet statut");
+		if (prlvt != null) {
+			return PrelevementUtils.getPatientNomAndPrenom(prlvt);
+		}
+		return "";
+	}
 
-      // emplacement
-      if(!anonyme && accessStockage){
-         final Label emplLabel = new Label(getEmplacementAdrl(echan));
-         if(accessStockage){
-            emplLabel.setSclass("formLink");
-            emplLabel.addForward(null, emplLabel.getParent(), "onClickObjectEmplacement",
-               ManagerLocator.getEchantillonManager().getEmplacementManager(echan));
-         }
-         emplLabel.setParent(row);
-      }else{
-         createAnonymeBlock().setParent(row);
-      }
+	public boolean isEmbedded() {
+		return isEmbedded;
+	}
 
-      // nb prodderives
-      new Label(String.valueOf(getNbDerives(echan))).setParent(row);
+	public void setEmbedded(final boolean isE) {
+		this.isEmbedded = isE;
+	}
 
-      // nb cessions
-      new Label(String.valueOf(getNbCessions(echan))).setParent(row);
-      log.debug("cessions");
-   }
+	/**
+	 * Rendu des colonnes spécifiques échantillon, sera surchargé par Gatsbi.
+	 * 
+	 * @param row
+	 * @param echan
+	 * @throws NoSuchMethodException
+	 * @throws InvocationTargetException
+	 * @throws IllegalAccessException
+	 */
+	protected void renderEchantillon(Row row, Echantillon echan)
+			throws IllegalAccessException, InvocationTargetException, NoSuchMethodException, ParseException {
 
-   /**
-    * Concatène la quantité et son unité.
-    * @param echantillon Echantillon pour lequel on veut la quantité.
-    * @return String.
-    */
-   public String getQuantite(final Echantillon echantillon){
-      final StringBuffer sb = new StringBuffer();
-      if(echantillon.getQuantite() != null){
-         sb.append(floor(echantillon.getQuantite(), 4));
-      }else{
-         sb.append("-");
-      }
+		renderDateProperty(row, echan, "dateStock");
 
-      sb.append(" / ");
+		renderCodeOrganes(row, echan);
 
-      if(echantillon.getQuantiteInit() != null){
-         sb.append(floor(echantillon.getQuantiteInit(), 4));
-      }else{
-         sb.append("-");
-      }
+		renderCodeLesionnels(row, echan);
 
-      if(echantillon.getQuantiteUnite() != null){
-         sb.append(" ");
-         sb.append(echantillon.getQuantiteUnite().getNom());
-      }
+		renderThesObjectProperty(row, echan, "echantillonType");
 
-      return sb.toString();
-   }
+		renderQuantite(row, echan);
 
-   public String getEmplacementAdrl(final Echantillon echantillon){
-      if(echantillon != null && echantillon.getEchantillonId() != null){
-         return ManagerLocator.getEchantillonManager().getEmplacementAdrlManager(echantillon);
-      }
-      return "-";
-   }
+		renderObjetStatut(row, echan);
 
-   public String getDelaiCgl(final Echantillon echantillon){
-      final StringBuffer sb = new StringBuffer();
-      String heureLabel = "";
-      String minLabel = "";
-      if(echantillon.getDelaiCgl() != null && echantillon.getDelaiCgl() > -1){
-         final Float heure = echantillon.getDelaiCgl() / 60;
-         Integer heureDelai = 0;
-         Integer minDelai = 0;
-         if(heure > 0){
-            heureDelai = heure.intValue();
-            minDelai = echantillon.getDelaiCgl().intValue() - (heureDelai * 60);
-            heureLabel = heureDelai.toString();
-            minLabel = minDelai.toString();
-         }else{
-            heureDelai = 0;
-            minDelai = echantillon.getDelaiCgl().intValue();
-            heureLabel = heureDelai.toString();
-            minLabel = minDelai.toString();
-         }
+		renderEmplacement(row, echan, isAnonyme(), isAccessStockage());
 
-         sb.append(heureLabel);
-         sb.append("h ");
-         sb.append(minLabel);
-         sb.append("min");
-      }else{
-         sb.append(Labels.getLabel("ficheEchantillon.delaiCgl.inconnu"));
-      }
+		renderNbDerives(row, echan);
 
-      return sb.toString();
-   }
+		renderNbCessions(row, echan);
+	}
+	
+	// codes lésionnels : liste des codes exportés pour l'échantillon
+	public static void renderCodeOrganes(Row row, Echantillon echan) {
+		ObjectTypesFormatters.drawCodesExpLabel(
+			ManagerLocator.getCodeAssigneManager()
+				.findCodesOrganeByEchantillonManager(echan), row, null, false);
+	}
 
-   public static int getNbDerives(final Echantillon echantillon){
-      return ManagerLocator.getEchantillonManager().getProdDerivesManager(echantillon).size();
-   }
+	// codes lésionnels : liste des codes exportés pour l'échantillon
+	public static void renderCodeLesionnels(Row row, Echantillon echan) {
+		ObjectTypesFormatters.drawCodesExpLabel(
+				ManagerLocator.getCodeAssigneManager().findCodesMorphoByEchantillonManager(echan), row, null, false);
+	}
+	
+	/**
+	 * Arrondi d'un double avec n éléments après la virgule.
+	 * 
+	 * @param a La valeur à convertir.
+	 * @param n Le nombre de décimales à conserver.
+	 * @return La valeur arrondi à n décimales.
+	 */
+	public static float floor(final float a, final int n) {
+		final double p = Math.pow(10.0, n);
+		return (float) (Math.floor((a * p) + 0.5) / p);
+	}
 
-   public static int getNbCessions(final Echantillon echantillon){
-      return ManagerLocator.getCederObjetManager().findByObjetManager(echantillon).size();
-   }
+	/**
+	 * Concatène la quantité et son unité et écris dans la row
+	 * 
+	 * @param row
+	 * @param echantillon Echantillon pour lequel on veut la quantité.
+	 * @return String.
+	 */
+	public static void renderQuantite(Row row, Echantillon echantillon) {
+		new Label(formatQuantite(echantillon)).setParent(row);
+	}
+	
+	public static String formatQuantite(Echantillon echan) {
+		final StringBuffer sb = new StringBuffer();
+		if (echan.getQuantite() != null) {
+			sb.append(floor(echan.getQuantite(), 4));
+		} else {
+			sb.append("-");
+		}
 
-   /**
-    * Récupère la date de création système de l'échantillon.
-    * @return Date de création.
-    */
-   public String getDateCreation(final Echantillon echantillon){
-      final Calendar date = ManagerLocator.getOperationManager().findDateCreationManager(echantillon);
-      if(date != null){
-         return ObjectTypesFormatters.dateRenderer2(date);
-      }
-      return null;
-   }
+		sb.append(" / ");
 
-   /**
-    * Arrondi d'un double avec n éléments après la virgule.
-    * @param a La valeur à convertir.
-    * @param n Le nombre de décimales à conserver.
-    * @return La valeur arrondi à n décimales.
-    */
-   public static float floor(final float a, final int n){
-      final double p = Math.pow(10.0, n);
-      return (float) (Math.floor((a * p) + 0.5) / p);
-   }
+		if (echan.getQuantiteInit() != null) {
+			sb.append(floor(echan.getQuantiteInit(), 4));
+		} else {
+			sb.append("-");
+		}
 
-   public boolean isAccessible(){
-      return accessible;
-   }
+		if (echan.getQuantiteUnite() != null) {
+			sb.append(" ");
+			sb.append(echan.getQuantiteUnite().getNom());
+		}
+		return sb.toString();
+	}
 
-   public void setAccessible(final boolean a){
-      this.accessible = a;
-   }
-   
-   public boolean isAccessStockage(){
-      return accessStockage;
-   }
+	/**
+	 * Colorie le statut suivant la valeur
+	 * 
+	 * @param row
+	 * @param echan
+	 */
+	public static void renderObjetStatut(Row row, Echantillon echan) {
+		if (echan.getObjetStatut() != null) {
 
-   public String getCodeAssigneInString(final Echantillon echantillon, final boolean isOrg){
-      List<CodeAssigne> codes;
-      if(isOrg){
-         codes = ManagerLocator.getCodeAssigneManager().findCodesOrganeByEchantillonManager(echantillon);
-      }else{
-         codes = ManagerLocator.getCodeAssigneManager().findCodesMorphoByEchantillonManager(echantillon);
-      }
+			final Label statut = new Label(ObjectTypesFormatters.ILNObjectStatut(echan.getObjetStatut()));
+			if (echan.getObjetStatut().getStatut().equals("ENCOURS")) {
+				statut.setStyle("color: red");
+			}
+			statut.setParent(row);
+		} else {
+			new Label().setParent(row);
+		}
+	}
 
-      final StringBuffer sb = new StringBuffer();
-      if(!codes.isEmpty()){
-         for(int i = 0; i < codes.size(); i++){
-            if(isOrg){
-               sb.append(codes.get(0).getLibelle());
-               sb.append(" [");
-               sb.append(codes.get(0).getCode());
-               sb.append("]");
-            }else{
-               sb.append(codes.get(0).getCode());
-               sb.append(" [");
-               sb.append(codes.get(0).getLibelle());
-               sb.append("]");
-            }
+	public static void renderEmplacement(Row row, Echantillon echan, boolean anonyme, boolean accessStockage) {
+		// emplacement
+		if (!anonyme && accessStockage) {
+			final Label emplLabel = new Label(getEmplacementAdrl(echan));
+			if (accessStockage) {
+				emplLabel.setSclass("formLink");
+				emplLabel.addForward(null, emplLabel.getParent(), "onClickObjectEmplacement",
+						ManagerLocator.getEchantillonManager().getEmplacementManager(echan));
+			}
+			emplLabel.setParent(row);
+		} else {
+			createAnonymeBlock().setParent(row);
+		}
+	}
 
-            if(i < codes.size() - 1){
-               sb.append(", ");
-            }
-         }
-      }else{
-         sb.append("-");
-      }
+	public static String getEmplacementAdrl(final Echantillon echantillon) {
+		if (echantillon != null && echantillon.getEchantillonId() != null) {
+			return ManagerLocator.getEchantillonManager().getEmplacementAdrlManager(echantillon);
+		}
+		return "-";
+	}
 
-      return sb.toString();
-   }
+	public static void renderNbDerives(Row row, Echantillon echan) {
+		new Label(String.valueOf(ManagerLocator.getEchantillonManager().getProdDerivesManager(echan).size()))
+				.setParent(row);
+	}
 
-   public String getPatient(final Echantillon echan){
-      final Prelevement prlvt = ManagerLocator.getEchantillonManager().getPrelevementManager(echan);
+	public static void renderNbCessions(Row row, Echantillon echan) {
+		new Label(String.valueOf(ManagerLocator.getCederObjetManager().findByObjetManager(echan).size()))
+				.setParent(row);
+	}
+	
+	public static void renderDelaiCgl(Row row, Echantillon echan) {
+		if (echan.getDelaiCgl() != null) {
+			new Label(formatDelaiCgl(echan)).setParent(row);
+		} else {
+			new Label().setParent(row);
+		}		
+	}
+		
+	public static String formatDelaiCgl(final Echantillon echantillon) {
+		final StringBuffer sb = new StringBuffer();
+		String heureLabel = "";
+		String minLabel = "";
+		if (echantillon.getDelaiCgl() != null && echantillon.getDelaiCgl() > -1) {
+			final Float heure = echantillon.getDelaiCgl() / 60;
+			Integer heureDelai = 0;
+			Integer minDelai = 0;
+			if (heure > 0) {
+				heureDelai = heure.intValue();
+				minDelai = echantillon.getDelaiCgl().intValue() - (heureDelai * 60);
+				heureLabel = heureDelai.toString();
+				minLabel = minDelai.toString();
+			} else {
+				heureDelai = 0;
+				minDelai = echantillon.getDelaiCgl().intValue();
+				heureLabel = heureDelai.toString();
+				minLabel = minDelai.toString();
+			}
 
-      if(prlvt != null){
-         return PrelevementUtils.getPatientNomAndPrenom(prlvt);
-      }
-      return "";
-   }
+			sb.append(heureLabel);
+			sb.append("h ");
+			sb.append(minLabel);
+			sb.append("min");
+		} else {
+			sb.append(Labels.getLabel("ficheEchantillon.delaiCgl.inconnu"));
+		}
 
-   public boolean isEmbedded(){
-      return isEmbedded;
-   }
+		return sb.toString();
+	}
 
-   public void setEmbedded(final boolean isE){
-      this.isEmbedded = isE;
-   }
+	/**
+	 * Récupère la date de création système de l'échantillon.
+	 * 
+	 * @return Date de création.
+	 */
+	public static String getDateCreation(final Echantillon echantillon) {
+		final Calendar date = ManagerLocator.getOperationManager().findDateCreationManager(echantillon);
+		if (date != null) {
+			return ObjectTypesFormatters.dateRenderer2(date);
+		}
+		return null;
+	}
+	
+	public static String getCodeAssigneInString(final Echantillon echantillon, final boolean isOrg) {
+		List<CodeAssigne> codes;
+		if (isOrg) {
+			codes = ManagerLocator.getCodeAssigneManager().findCodesOrganeByEchantillonManager(echantillon);
+		} else {
+			codes = ManagerLocator.getCodeAssigneManager().findCodesMorphoByEchantillonManager(echantillon);
+		}
 
+		final StringBuffer sb = new StringBuffer();
+		if (!codes.isEmpty()) {
+			for (int i = 0; i < codes.size(); i++) {
+				if (isOrg) {
+					sb.append(codes.get(0).getLibelle());
+					sb.append(" [");
+					sb.append(codes.get(0).getCode());
+					sb.append("]");
+				} else {
+					sb.append(codes.get(0).getCode());
+					sb.append(" [");
+					sb.append(codes.get(0).getLibelle());
+					sb.append("]");
+				}
+
+				if (i < codes.size() - 1) {
+					sb.append(", ");
+				}
+			}
+		} else {
+			sb.append("-");
+		}
+
+		return sb.toString();
+	}
+	
+	public static void renderLateralite(Row row, Echantillon echan) {
+		if (echan.getLateralite() != null) {
+			new Label(Labels.getLabel("echantillon.lateralite."
+					.concat(echan.getLateralite()))).setParent(row);
+		} else {
+			new Label().setParent(row);
+		}
+	}
+	
+	public static void renderCrAnapath(Row row, Echantillon echan, boolean anonyme) {
+		if (echan.getCrAnapath() != null) {
+			Label crAnapathLabel = 
+					new Label(echan.getCrAnapath().getNom());
+			
+			// clickable -> download			
+			if(!anonyme){
+				
+				crAnapathLabel.setClass("formLink");
+				crAnapathLabel.addForward("onClick", row.getParent(), "onClickCrAnapathLabel", echan.getCrAnapath());
+		      }
+			
+			
+			crAnapathLabel.setParent(row);
+		} else {
+			new Label().setParent(row);
+		}
+	}
 }

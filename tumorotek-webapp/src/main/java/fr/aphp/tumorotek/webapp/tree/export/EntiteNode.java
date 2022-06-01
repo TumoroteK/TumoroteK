@@ -42,7 +42,6 @@ import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 import fr.aphp.tumorotek.action.ManagerLocator;
-import fr.aphp.tumorotek.action.prelevement.gatsbi.GatsbiController;
 import fr.aphp.tumorotek.action.utils.ChampUtils;
 import fr.aphp.tumorotek.manager.coeur.annotation.ChampAnnotationManager;
 import fr.aphp.tumorotek.manager.coeur.annotation.TableAnnotationManager;
@@ -54,6 +53,7 @@ import fr.aphp.tumorotek.model.io.export.AbstractTKChamp;
 import fr.aphp.tumorotek.model.io.export.Champ;
 import fr.aphp.tumorotek.model.io.export.ChampEntite;
 import fr.aphp.tumorotek.model.systeme.Entite;
+import fr.aphp.tumorotek.webapp.gatsbi.GatsbiController;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
 import fr.aphp.tumorotek.webapp.tree.TumoTreeNode;
 

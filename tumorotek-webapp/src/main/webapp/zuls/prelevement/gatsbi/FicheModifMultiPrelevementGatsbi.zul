@@ -36,7 +36,6 @@
 -->
 <zk>
 
-<style src="/css/gatsbi.css" />
 <window id="fwinModifMultiPrelevement" border="none" 
 		apply="fr.aphp.tumorotek.action.prelevement.gatsbi.FicheModifMultiPrelevementGatsbi">
 	<panel id="winPanel" title="${c:l('fichePatient.panel.title')}"

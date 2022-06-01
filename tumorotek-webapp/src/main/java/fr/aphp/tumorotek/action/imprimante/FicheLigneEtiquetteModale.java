@@ -63,7 +63,6 @@ import fr.aphp.tumorotek.action.ManagerLocator;
 import fr.aphp.tumorotek.action.constraints.ConstWord;
 import fr.aphp.tumorotek.action.controller.AbstractFicheCombineController;
 import fr.aphp.tumorotek.action.imports.ImportChampDecorator;
-import fr.aphp.tumorotek.action.prelevement.gatsbi.GatsbiController;
 import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
 import fr.aphp.tumorotek.manager.ConfigManager;
 import fr.aphp.tumorotek.manager.coeur.annotation.ChampAnnotationManager;
@@ -78,6 +77,7 @@ import fr.aphp.tumorotek.model.io.export.Champ;
 import fr.aphp.tumorotek.model.io.export.ChampDelegue;
 import fr.aphp.tumorotek.model.io.export.ChampEntite;
 import fr.aphp.tumorotek.model.systeme.Entite;
+import fr.aphp.tumorotek.webapp.gatsbi.GatsbiController;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
 /**

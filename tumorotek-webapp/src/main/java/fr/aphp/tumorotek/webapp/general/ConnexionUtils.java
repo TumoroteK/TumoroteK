@@ -53,7 +53,6 @@ import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Session;
 
 import fr.aphp.tumorotek.action.ManagerLocator;
-import fr.aphp.tumorotek.action.prelevement.gatsbi.GatsbiController;
 import fr.aphp.tumorotek.action.prelevement.gatsbi.exception.GatsbiException;
 import fr.aphp.tumorotek.model.coeur.annotation.Catalogue;
 import fr.aphp.tumorotek.model.contexte.Banque;
@@ -68,6 +67,7 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
 import fr.aphp.tumorotek.param.TkParam;
 import fr.aphp.tumorotek.param.TumorotekProperties;
 import fr.aphp.tumorotek.utils.Utils;
+import fr.aphp.tumorotek.webapp.gatsbi.GatsbiController;
 
 /**
  * Regroupe les méthodes utilisées après la connexion de l'utilisateur.

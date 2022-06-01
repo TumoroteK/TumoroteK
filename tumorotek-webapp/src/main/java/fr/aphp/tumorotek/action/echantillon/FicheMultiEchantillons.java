@@ -67,13 +67,13 @@ import org.springframework.validation.Errors;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.HtmlBasedComponent;
 import org.zkoss.zk.ui.Path;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.ForwardEvent;
 import org.zkoss.zk.ui.util.Clients;
-import org.zkoss.zul.Box;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Constraint;
@@ -86,7 +86,6 @@ import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Radio;
-import org.zkoss.zul.Row;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
 import org.zkoss.zul.ext.Selectable;
@@ -131,39 +130,37 @@ import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
 /**
  *
- * Controller gérant la fiche de création de
- * plusieurs échantillons.
- * Controller créé le 26/11/2009.
+ * Controller gérant la fiche de création de plusieurs échantillons. Controller
+ * créé le 26/11/2009.
  *
  * @author Pierre Ventadour
  * @version 2.2.1-IRELEC
  *
  */
-public class FicheMultiEchantillons extends FicheEchantillonEdit
-{
+public class FicheMultiEchantillons extends FicheEchantillonEdit {
 
 	private final Log log = LogFactory.getLog(FicheMultiEchantillons.class);
 
 	private static final long serialVersionUID = 3863329092781960062L;
 
 	// Buttons
-	private Button previous;
+	protected Button previous;
 
 	// Editable components : mode d'édition ou de création.
-	private Label operateurAideSaisieEchan;
-	private Combobox separatorBox;
-	private Intbox premierCodeBoxEchan;
-	private Intbox dernierCodeBoxEchan;
-	private Textbox premiereLettreBoxEchan;
-	private Textbox derniereLettreBoxEchan;
-	private Radio numNombres;
-	private Radio numLettres;
-	private Box choixNumerotation;
-	private Button changeNumerotation;
+	protected Label operateurAideSaisieEchan;
+	protected Combobox separatorBox;
+	protected Intbox premierCodeBoxEchan;
+	protected Intbox dernierCodeBoxEchan;
+	protected Textbox premiereLettreBoxEchan;
+	protected Textbox derniereLettreBoxEchan;
+	protected Radio numNombres;
+	protected Radio numLettres;
+	protected HtmlBasedComponent choixNumerotation;
+	protected Button changeNumerotation;
 
-	private Grid echantillonsList;
+	protected Grid echantillonsList;
 
-	private Button stockageEchantillons;
+	protected Button stockageEchantillons;
 
 	// Objets Principaux.
 	private Maladie maladie = new Maladie();
@@ -174,7 +171,7 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
 	private List<String> usedCodesEchantillons = new ArrayList<>();
 
 	// Variables formulaire.
-	private String[] connaissances = new String[] {"OUI", "NON"};
+	private String[] connaissances = new String[] { "OUI", "NON" };
 
 	private Integer premierCode;
 	private Integer dernierCode;
@@ -191,29 +188,30 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
 	private Listbox injectableEchantillonsBox;
 
 	/**
-	 * Indique au comportement de la fiche si elle appartient à
-	 * la procédure d'enregistrement d'un prélèvement ou non.
+	 * Indique au comportement de la fiche si elle appartient à la procédure
+	 * d'enregistrement d'un prélèvement ou non.
+	 * 
 	 * @param isProcedure true si procédure.
 	 */
-	public void setPrelevementProcedure(final boolean isProcedure){
+	public void setPrelevementProcedure(final boolean isProcedure) {
 		this.isPrelevementProcedure = isProcedure;
 
 		// bouton pour revenir sur la fiche prlvt
 		this.previous.setVisible(isProcedure);
-		if(isProcedure){
+		if (isProcedure) {
 			setWaitLabel("prelevement.creation.encours");
-		}else{
+		} else {
 			setWaitLabel("echantillon.creation.encours");
 		}
 	}
 
 	@Override
-	public void doAfterCompose(final Component comp) throws Exception{
+	public void doAfterCompose(final Component comp) throws Exception {
 		super.doAfterCompose(comp);
 
-		if(getDroitOnAction("Stockage", "Consultation")){
+		if (getDroitOnAction("Stockage", "Consultation")) {
 			stockageEchantillons.setVisible(true);
-		}else{
+		} else {
 			stockageEchantillons.setVisible(false);
 		}
 
@@ -225,13 +223,13 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
 	}
 
 	@Override
-	public void setObject(final TKdataObject echan){
+	public void setObject(final TKdataObject echan) {
 		setEchantillon((Echantillon) echan);
 		super.setObject(echan);
 	}
 
 	@Override
-	public void setEchantillon(final Echantillon e){
+	public void setEchantillon(final Echantillon e) {
 		// indispensable pour le rendu des codes assignés
 		// dans la table temporaire
 		e.setBanque(SessionUtils.getSelectedBanques(sessionScope).get(0));
@@ -239,10 +237,9 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
 	}
 
 	/**
-	 * Fiche en mode creation classique avec passage ou non
-	 * d'un prelevement parent.
+	 * Fiche en mode creation classique avec passage ou non d'un prelevement parent.
 	 */
-	public void switchToCreateMode(final Prelevement prel){
+	public void switchToCreateMode(final Prelevement prel) {
 
 		// Init du parent
 		setParentObject(prel);
@@ -253,10 +250,10 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
 		initAssociations();
 
 		// affiche le selecteur de parent au besoin.
-		if(!isPrelevementProcedure){
-			if(getParentObject() == null){
+		if (!isPrelevementProcedure) {
+			if (getParentObject() == null) {
 				addSelectParentMode();
-			}else{
+			} else {
 				sterileBox.setChecked(initSterileOrNot());
 			}
 		}
@@ -266,9 +263,9 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
 
 		super.switchToCreateMode();
 
-		Clients.scrollIntoView(formGrid.getColumns());
+		scrollToTop();
 
-		if(!getDroitOnAction("Collaborateur", "Consultation")){
+		if (!getDroitOnAction("Collaborateur", "Consultation")) {
 			operateurAideSaisieEchan.setVisible(false);
 		}
 
@@ -278,38 +275,38 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
 	}
 
 	@Override
-	public void onClick$create(){
+	public void onClick$create() {
 
 		boolean ok = false;
 
-		if(addedEchantillons.size() == 0){
-			if(Messagebox.show(Labels.getLabel("message.noEchantillonAdded"), Labels.getLabel("message.save.title"),
-					Messagebox.YES | Messagebox.NO, Messagebox.QUESTION) == Messagebox.YES){
+		if (addedEchantillons.size() == 0) {
+			if (Messagebox.show(Labels.getLabel("message.noEchantillonAdded"), Labels.getLabel("message.save.title"),
+					Messagebox.YES | Messagebox.NO, Messagebox.QUESTION) == Messagebox.YES) {
 				// on vérifie que l'on vient bien de la fiche
 				// prelevement
-				if(getPrelevementController().hasFicheLaboInter()){
+				if (getPrelevementController().hasFicheLaboInter()) {
 					getPrelevementController().getFicheLaboInter().onClick$create();
-				}else{
+				} else {
 					// si ce n'est pas le cas, aucune modif n'a été
 					// fait sur le prlvt, aucun nouveaux echantillons
 					// on va donc juste sauver les emplacements
 					Clients.showBusy(Labels.getLabel(getWaitLabel()));
 					Events.echoEvent("onLaterSaveEmplacements", self, null);
 				}
-			}else{
+			} else {
 				ok = false;
 			}
-		}else{
+		} else {
 			ok = true;
 		}
 
-		if(ok){
+		if (ok) {
 			super.onClick$create();
 		}
 	}
 
-	public void onLaterSaveEmplacements(){
-		try{
+	public void onLaterSaveEmplacements() {
+		try {
 			// enregistrement des emplacements
 			saveEmplacements();
 
@@ -320,7 +317,7 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
 			// ferme wait message
 			Clients.clearBusy();
 
-		}catch(final RuntimeException re){
+		} catch (final RuntimeException re) {
 			// ferme wait message
 			Clients.clearBusy();
 			Messagebox.show(handleExceptionMessage(re), "Error", Messagebox.OK, Messagebox.ERROR);
@@ -329,49 +326,50 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
 	}
 
 	@Override
-	public boolean onLaterCreate(){
+	public boolean onLaterCreate() {
 
-		try{
+		try {
 			createNewObject();
 
 			// ajout des echantillons
 			getObjectTabController().getListe().addListToObjectList(addedEchantillons);
 
-			if(isPrelevementProcedure){
+			if (isPrelevementProcedure) {
 				getPrelevementController().getListe().addToObjectList(getParentObject());
-			}else{
-				if(getParentObject() != null){
-					if(getPrelevementController() != null){
+			} else {
+				if (getParentObject() != null) {
+					if (getPrelevementController() != null) {
 						// update du parent dans la liste
-						getPrelevementController().getListe().updateObjectGridListFromOtherPage(getParentObject(), true);
+						getPrelevementController().getListe().updateObjectGridListFromOtherPage(getParentObject(),
+								true);
 					}
 					// retour vers la fiche prelevement au besoin
-					if(getObjectTabController().getFromFichePrelevement()){
+					if (getObjectTabController().getFromFichePrelevement()) {
 						getObjectTabController().setFromFichePrelevement(false);
 						PatientController.backToMe(getMainWindow(), page);
 					}
 				}
 			}
 
-			//update patient
-			if(getParentObject() != null && getParentObject().getMaladie() != null){
-				if(!getPrelevementController().getReferencingObjectControllers().isEmpty()){
+			// update patient
+			if (getParentObject() != null && getParentObject().getMaladie() != null) {
+				if (!getPrelevementController().getReferencingObjectControllers().isEmpty()) {
 					getPrelevementController().getReferencingObjectControllers().get(0).getListe()
-					.updateObjectGridListFromOtherPage(getParentObject().getMaladie().getPatient(), true);
+							.updateObjectGridListFromOtherPage(getParentObject().getMaladie().getPatient(), true);
 				}
 			}
 
 			getObjectTabController().onCreateDone();
 
 			// commande le passage en mode statique
-			if(isPrelevementProcedure){
+			if (isPrelevementProcedure) {
 				getPrelevementController().setNextToEchanClicked(false);
 				getPrelevementController().onCreateDone();
 				// retour vers la fiche patient au besoin
-				if(getPrelevementController().getFromFichePatient()){
+				if (getPrelevementController().getFromFichePatient()) {
 					getPrelevementController().setFromFichePatient(false);
 					PatientController.backToMe(getMainWindow(), page);
-				}else{
+				} else {
 					PrelevementController.backToMe(getMainWindow(), page);
 				}
 			}
@@ -381,12 +379,12 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
 
 			// si c'est une procédure de création d'un prlvt, on
 			// demande si l'utilisateur veut en creer un autre
-			if(isPrelevementProcedure){
+			if (isPrelevementProcedure) {
 				getPrelevementController().createAnotherPrelevement(getParentObject());
 			}
 
 			return true;
-		}catch(final DoublonFoundException re){
+		} catch (final DoublonFoundException re) {
 			Clients.clearBusy();
 
 			final HashMap<String, Object> map = new HashMap<>();
@@ -394,11 +392,12 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
 			map.put("message", handleExceptionMessage(re));
 			map.put("exception", re);
 
-			final Window window = (Window) Executions.createComponents("/zuls/component/DynamicMultiLineMessageBox.zul", null, map);
+			final Window window = (Window) Executions.createComponents("/zuls/component/DynamicMultiLineMessageBox.zul",
+					null, map);
 			window.doModal();
 
 			return false;
-		}catch(final RuntimeException re){
+		} catch (final RuntimeException re) {
 			// ferme wait message
 			Clients.clearBusy();
 			Messagebox.show(handleExceptionMessage(re), "Error", Messagebox.OK, Messagebox.ERROR);
@@ -407,27 +406,27 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
 	}
 
 	@Override
-	public void createNewObject(){
+	public void createNewObject() {
 
 		boolean revertMaladie = false;
 		boolean revertPatient = false;
 
 		// Enregistrement ou reference vers le prelevement
-		if(isPrelevementProcedure){
+		if (isPrelevementProcedure) {
 			getParentObject().setLaboInters(new HashSet<>(getLaboInters()));
 
-			if(getParentObject().getMaladie() != null){
+			if (getParentObject().getMaladie() != null) {
 				revertMaladie = getParentObject().getMaladie().getMaladieId() == null;
-				if(revertMaladie){
+				if (revertMaladie) {
 					revertPatient = getParentObject().getMaladie().getPatient().getPatientId() == null;
 				}
 			}
 
 			getPrelevementController().getFicheAnnotation().populateValeursActionLists(true, false);
 
-		}else{ // reference vers le patient
-			// si l'utilisateur devait sélectionner un prlvt parent
-			if(selectParent && connaissancesBoxEchan.getSelectedIndex() == 0){
+		} else { // reference vers le patient
+					// si l'utilisateur devait sélectionner un prlvt parent
+			if (selectParent && connaissancesBoxEchan.getSelectedIndex() == 0) {
 				setParentObject(getPrelevementFromSelect());
 				setBanque(getParentObject().getBanque());
 			}
@@ -441,16 +440,17 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
 
 		final TransactionStatus status = ManagerLocator.getTxManager().getTransaction(def);
 
-		try{
-			if(isPrelevementProcedure){
+		try {
+			if (isPrelevementProcedure) {
 
-				//enregistrement du prelevement
+				// enregistrement du prelevement
 				ManagerLocator.getPrelevementManager().createObjectManager(getParentObject(), getBanque(),
-						getParentObject().getNature(), getParentObject().getMaladie(), getParentObject().getConsentType(),
-						getParentObject().getPreleveur(), getParentObject().getServicePreleveur(), getParentObject().getPrelevementType(),
-						getParentObject().getConditType(), getParentObject().getConditMilieu(), getParentObject().getTransporteur(),
-						getParentObject().getOperateur(), getParentObject().getQuantiteUnite(),
-						new ArrayList<>(getParentObject().getLaboInters()),
+						getParentObject().getNature(), getParentObject().getMaladie(),
+						getParentObject().getConsentType(), getParentObject().getPreleveur(),
+						getParentObject().getServicePreleveur(), getParentObject().getPrelevementType(),
+						getParentObject().getConditType(), getParentObject().getConditMilieu(),
+						getParentObject().getTransporteur(), getParentObject().getOperateur(),
+						getParentObject().getQuantiteUnite(), new ArrayList<>(getParentObject().getLaboInters()),
 						getPrelevementController().getFicheAnnotation().getValeursToCreateOrUpdate(), filesCreated,
 						SessionUtils.getLoggedUser(sessionScope), true, SessionUtils.getSystemBaseDir(), false);
 			}
@@ -459,9 +459,9 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
 			String crDataType = null;
 			String crPath = null;
 
-			//enregistrement de l'echantillon
-			for(int i = 0; i < echantillonsDecorated.size(); i++){
-				if(echantillonsDecorated.get(i).isNew()){
+			// enregistrement de l'echantillon
+			for (int i = 0; i < echantillonsDecorated.size(); i++) {
+				if (echantillonsDecorated.get(i).isNew()) {
 					final Echantillon newEchan = echantillonsDecorated.get(i).getEchantillon();
 
 					// nettoie les code de la reference vers l'echantillon
@@ -471,7 +471,7 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
 					codes.addAll(echantillonsDecorated.get(i).getCodesLesToCreateOrEdit());
 
 					// recupere path + data type si nouveau strea
-					if(newEchan.getCrAnapath() != null && newEchan.getAnapathStream() == null){
+					if (newEchan.getCrAnapath() != null && newEchan.getAnapathStream() == null) {
 						newEchan.getCrAnapath().setMimeType(crDataType);
 						newEchan.getCrAnapath().setPath(crPath);
 					}
@@ -479,15 +479,16 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
 					newEchan.setCrAnapath(null);
 
 					// création de l'objet
-					ManagerLocator.getEchantillonManager().createObjectWithCrAnapathManager(newEchan, getBanque(), getParentObject(),
-							newEchan.getCollaborateur(),
-							ManagerLocator.getObjetStatutManager().findByStatutLikeManager("NON STOCKE", true).get(0), null, // since 2.0.13.2
-							newEchan.getEchantillonType(), codes, newEchan.getQuantiteUnite(), newEchan.getEchanQualite(),
-							newEchan.getModePrepa(), crAnapath, newEchan.getAnapathStream(), filesCreated,
-							echantillonsDecorated.get(i).getValeursToCreateOrUpdate(), SessionUtils.getLoggedUser(sessionScope), true,
-							SessionUtils.getSystemBaseDir(), false);
+					ManagerLocator.getEchantillonManager().createObjectWithCrAnapathManager(newEchan, getBanque(),
+							getParentObject(), newEchan.getCollaborateur(),
+							ManagerLocator.getObjetStatutManager().findByStatutLikeManager("NON STOCKE", true).get(0),
+							null, // since 2.0.13.2
+							newEchan.getEchantillonType(), codes, newEchan.getQuantiteUnite(),
+							newEchan.getEchanQualite(), newEchan.getModePrepa(), crAnapath, newEchan.getAnapathStream(),
+							filesCreated, echantillonsDecorated.get(i).getValeursToCreateOrUpdate(),
+							SessionUtils.getLoggedUser(sessionScope), true, SessionUtils.getSystemBaseDir(), false);
 
-					if(newEchan.getAnapathStream() != null){
+					if (newEchan.getAnapathStream() != null) {
 						crDataType = newEchan.getCrAnapath().getMimeType();
 						crPath = newEchan.getCrAnapath().getPath();
 					}
@@ -498,8 +499,8 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
 			saveEmplacements();
 
 			// gestion de la non conformité
-			if(isPrelevementProcedure){
-				if(getParentObject().getConformeArrivee() != null && !getParentObject().getConformeArrivee()){
+			if (isPrelevementProcedure) {
+				if (getParentObject().getConformeArrivee() != null && !getParentObject().getConformeArrivee()) {
 					ManagerLocator.getObjetNonConformeManager().createUpdateOrRemoveListObjectManager(getParentObject(),
 							getPrelevementController().getFicheLaboInter().findSelectedNonConformites(), "Arrivee");
 				}
@@ -507,51 +508,51 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
 				// suppression du patientSip
 				getPrelevementController().removePatientSip();
 			}
-			
-			for(int i = 0; i < echantillonsDecorated.size(); i++){
-			
+
+			for (int i = 0; i < echantillonsDecorated.size(); i++) {
+
 				// 2.1.4.1 FIX raisons non conformités disp ajout échantillons
 				// https://tumorotek.myjetbrains.com/youtrack/issue/TK-281
 				if (echantillonsDecorated.get(i).isNew()) {
-			
-					if(echantillonsDecorated.get(i).getEchantillon().getConformeTraitement() != null
-							&& !echantillonsDecorated.get(i).getEchantillon().getConformeTraitement()){
+
+					if (echantillonsDecorated.get(i).getEchantillon().getConformeTraitement() != null
+							&& !echantillonsDecorated.get(i).getEchantillon().getConformeTraitement()) {
 						// enregistrement de la non conformité
 						// après traitement
 						ManagerLocator.getObjetNonConformeManager().createUpdateOrRemoveListObjectManager(
-								echantillonsDecorated.get(i).getEchantillon(), echantillonsDecorated.get(i).getNonConformiteTraitements(),
-								"Traitement");
+								echantillonsDecorated.get(i).getEchantillon(),
+								echantillonsDecorated.get(i).getNonConformiteTraitements(), "Traitement");
 					}
-	
-					if(echantillonsDecorated.get(i).getEchantillon().getConformeCession() != null
-							&& !echantillonsDecorated.get(i).getEchantillon().getConformeCession()){
+
+					if (echantillonsDecorated.get(i).getEchantillon().getConformeCession() != null
+							&& !echantillonsDecorated.get(i).getEchantillon().getConformeCession()) {
 						// enregistrement de la non conformité
 						// à la cession
 						ManagerLocator.getObjetNonConformeManager().createUpdateOrRemoveListObjectManager(
-								echantillonsDecorated.get(i).getEchantillon(), echantillonsDecorated.get(i).getNonConformiteCessions(),
-								"Cession");
+								echantillonsDecorated.get(i).getEchantillon(),
+								echantillonsDecorated.get(i).getNonConformiteCessions(), "Cession");
 					}
 				}
 			}
 
 			// annotation file batches
-			for(final FileBatch batch : batches){
-				ManagerLocator.getAnnotationValeurManager().createFileBatchForTKObjectsManager(batch.getObjs(), batch.getFile(),
-						batch.getStream(), batch.getChamp(), getBanque(), SessionUtils.getLoggedUser(sessionScope),
-						SessionUtils.getSystemBaseDir(), filesCreated);
+			for (final FileBatch batch : batches) {
+				ManagerLocator.getAnnotationValeurManager().createFileBatchForTKObjectsManager(batch.getObjs(),
+						batch.getFile(), batch.getStream(), batch.getChamp(), getBanque(),
+						SessionUtils.getLoggedUser(sessionScope), SessionUtils.getSystemBaseDir(), filesCreated);
 			}
 
-		}catch(final RuntimeException re){
+		} catch (final RuntimeException re) {
 			ManagerLocator.getTxManager().rollback(status);
 
-			for(final File f : filesCreated){
+			for (final File f : filesCreated) {
 				f.delete();
 			}
 
-			if(isPrelevementProcedure){
-				if(revertMaladie){
+			if (isPrelevementProcedure) {
+				if (revertMaladie) {
 					getParentObject().getMaladie().setMaladieId(null);
-					if(revertPatient){
+					if (revertPatient) {
 						getParentObject().getMaladie().getPatient().setPatientId(null);
 					}
 				}
@@ -559,7 +560,7 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
 				getParentObject().setPrelevementId(null);
 				// revert Objects
 				final Iterator<LaboInter> it = getParentObject().getLaboInters().iterator();
-				while(it.hasNext()){
+				while (it.hasNext()) {
 					it.next().setLaboInterId(null);
 				}
 			}
@@ -567,28 +568,30 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
 
 			Echantillon e;
 			EchantillonDTO ed;
-			final ObjetStatut stocke = ManagerLocator.getObjetStatutManager().findByStatutLikeManager("STOCKE", false).get(0);
-			final ObjetStatut nonstocke = ManagerLocator.getObjetStatutManager().findByStatutLikeManager("NON STOCKE", false).get(0);
-			while(itE.hasNext()){
+			final ObjetStatut stocke = ManagerLocator.getObjetStatutManager().findByStatutLikeManager("STOCKE", false)
+					.get(0);
+			final ObjetStatut nonstocke = ManagerLocator.getObjetStatutManager()
+					.findByStatutLikeManager("NON STOCKE", false).get(0);
+			while (itE.hasNext()) {
 				ed = itE.next();
 				e = ed.getEchantillon();
-				if(e.getEchantillonId() != null){
+				if (e.getEchantillonId() != null) {
 					e.setEchantillonId(null);
-					if(e.getCrAnapath() != null){
+					if (e.getCrAnapath() != null) {
 						e.getCrAnapath().setFichierId(null);
 					}
 					// revert emplacement since 2.0.13.2
 					// au stade onGetResultsFromStockage
 					// se basant sur echEmpls
-					if(echansEmpl.containsKey(e)){
+					if (echansEmpl.containsKey(e)) {
 						e.setObjetStatut(stocke);
 						e.setEmplacement(null);
 						// clean echanEmpl from emplacement in error
 						// doublon ou emplacement occupé
-						if((re instanceof EmplacementDoublonFoundException
-								&& echansEmpl.get(e).equals(((EmplacementDoublonFoundException) re).getEmplacementMock()))
+						if ((re instanceof EmplacementDoublonFoundException && echansEmpl.get(e)
+								.equals(((EmplacementDoublonFoundException) re).getEmplacementMock()))
 								|| (re instanceof TKException && re.getMessage().equals("error.emplacement.notEmpty")
-										&& ((TKException) re).getTkObj().equals(e))){
+										&& ((TKException) re).getTkObj().equals(e))) {
 							echansEmpl.remove(e);
 							// reset decorateur
 							ed.setAdrlTmp(null);
@@ -598,7 +601,7 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
 
 				}
 				// la boucle arrive a l'echantillon planté.
-				else{
+				else {
 					break;
 				}
 			}
@@ -610,7 +613,7 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
 		ManagerLocator.getTxManager().commit(status);
 
 		// envoi informations exterieures
-		if(getParentObject() != null){
+		if (getParentObject() != null) {
 			getPrelevementController().handleExtCom(null, getParentObject(), getObjectTabController());
 		}
 
@@ -623,11 +626,12 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
 
 	/**
 	 * Recupere l'objet prelevement à partir du module de selection.
+	 * 
 	 * @return prelevement parent choisi.
 	 */
-	private Prelevement getPrelevementFromSelect(){
-		if(selectParentRowEchan.isVisible()){
-			if(codesParentBoxEchan.isVisible()){
+	private Prelevement getPrelevementFromSelect() {
+		if (selectParentRowEchan.isVisible()) {
+			if (codesParentBoxEchan.isVisible()) {
 				// on valide la sélection
 				cttCodeParentEchan.validate(codesParentBoxEchan, null);
 				final String tmp = codesParentBoxEchan.getSelectedItem().getValue();
@@ -639,58 +643,58 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
 	}
 
 	@Override
-	public void onClick$cancel(){
+	public void onClick$cancel() {
 		super.onClick$cancel();
-		if(isPrelevementProcedure){
+		if (isPrelevementProcedure) {
 			getPrelevementController().setNextToEchanClicked(false);
-			if(getPrelevementController().hasFicheLaboInter()){
+			if (getPrelevementController().hasFicheLaboInter()) {
 				getPrelevementController().getFicheLaboInter().onClick$cancel();
 			}
 		}
 	}
 
 	@Override
-	public void onClick$validate(){
+	public void onClick$validate() {
 
 		boolean ok = false;
 
-		if(addedEchantillons.size() == 0){
-			if(Messagebox.show(Labels.getLabel("message.noEchantillonAdded"), Labels.getLabel("message.save.title"),
-					Messagebox.YES | Messagebox.NO, Messagebox.QUESTION) == Messagebox.YES){
+		if (addedEchantillons.size() == 0) {
+			if (Messagebox.show(Labels.getLabel("message.noEchantillonAdded"), Labels.getLabel("message.save.title"),
+					Messagebox.YES | Messagebox.NO, Messagebox.QUESTION) == Messagebox.YES) {
 				getPrelevementController().getFicheLaboInter().onClick$validate();
 				saveEmplacements();
 				createFileHtmlToPrint();
-			}else{
+			} else {
 				ok = false;
 			}
-		}else{
+		} else {
 			ok = true;
 		}
 
-		if(ok){
+		if (ok) {
 			super.onClick$validate();
 		}
 	}
 
 	@Override
-	public boolean onLaterUpdate(){
+	public boolean onLaterUpdate() {
 
-		try{
+		try {
 			// updateObjectWithAnnots();
 			updateObject();
 
 			// ajout des echantillons
-			for(int i = 0; i < addedEchantillons.size(); i++){
+			for (int i = 0; i < addedEchantillons.size(); i++) {
 				getObjectTabController().getListe().addToObjectList(addedEchantillons.get(i));
 			}
 
 			getPrelevementController().getListe().updateObjectGridList(getParentObject());
 
-			//update patient
-			if(getParentObject().getMaladie() != null){
-				if(!getPrelevementController().getReferencingObjectControllers().isEmpty()){
+			// update patient
+			if (getParentObject().getMaladie() != null) {
+				if (!getPrelevementController().getReferencingObjectControllers().isEmpty()) {
 					getPrelevementController().getReferencingObjectControllers().get(0).getListe()
-					.updateObjectGridListFromOtherPage(getParentObject().getMaladie().getPatient(), true);
+							.updateObjectGridListFromOtherPage(getParentObject().getMaladie().getPatient(), true);
 				}
 			}
 
@@ -707,7 +711,7 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
 			getPrelevementController().showEchantillonsAfterUpdate(getPrelevement());
 			return true;
 
-		}catch(final DoublonFoundException re){
+		} catch (final DoublonFoundException re) {
 			Clients.clearBusy();
 
 			final HashMap<String, Object> map = new HashMap<>();
@@ -715,11 +719,12 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
 			map.put("message", handleExceptionMessage(re));
 			map.put("exception", re);
 
-			final Window window = (Window) Executions.createComponents("/zuls/component/DynamicMultiLineMessageBox.zul", null, map);
+			final Window window = (Window) Executions.createComponents("/zuls/component/DynamicMultiLineMessageBox.zul",
+					null, map);
 			window.doModal();
 
 			return false;
-		}catch(final RuntimeException re){
+		} catch (final RuntimeException re) {
 			// ferme wait message
 			Clients.clearBusy();
 			Messagebox.show(handleExceptionMessage(re), "Error", Messagebox.OK, Messagebox.ERROR);
@@ -729,10 +734,11 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
 
 	/**
 	 * Modification de l'objet. Transactionnel.
+	 * 
 	 * @return True si l'objet est modifié.
 	 */
 	@Override
-	public void updateObject(){
+	public void updateObject() {
 
 		final List<File> filesCreated = new ArrayList<>();
 
@@ -741,19 +747,19 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
 		def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
 
 		final TransactionStatus status = ManagerLocator.getTxManager().getTransaction(def);
-		try{
+		try {
 			getPrelevementController().getFicheLaboInter().updateObjectWithAnnots();
 
 			setParentObject(getPrelevementController().getFicheLaboInter().getObject());
-			getParentObject().setLaboInters(
-					new HashSet<>(ManagerLocator.getPrelevementManager().getLaboIntersWithOrderManager(getParentObject())));
+			getParentObject().setLaboInters(new HashSet<>(
+					ManagerLocator.getPrelevementManager().getLaboIntersWithOrderManager(getParentObject())));
 
 			Fichier crAnapath = null;
 			String crDataType = null;
 			String crPath = null;
 
-			for(int i = 0; i < echantillonsDecorated.size(); i++){
-				if(echantillonsDecorated.get(i).isNew()){
+			for (int i = 0; i < echantillonsDecorated.size(); i++) {
+				if (echantillonsDecorated.get(i).isNew()) {
 					final Echantillon newEchan = echantillonsDecorated.get(i).getEchantillon();
 					// nettoie les code de la reference vers l'echantillon
 					// utilisé comme base objet pour la creation multiple
@@ -762,7 +768,7 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
 					codes.addAll(echantillonsDecorated.get(i).getCodesLesToCreateOrEdit());
 
 					// recupere path + data type si nouveau strea
-					if(newEchan.getCrAnapath() != null && newEchan.getAnapathStream() == null){
+					if (newEchan.getCrAnapath() != null && newEchan.getAnapathStream() == null) {
 						newEchan.getCrAnapath().setMimeType(crDataType);
 						newEchan.getCrAnapath().setPath(crPath);
 					}
@@ -770,17 +776,17 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
 					newEchan.setCrAnapath(null);
 
 					// création de l'objet
-					ManagerLocator.getEchantillonManager().createObjectWithCrAnapathManager(newEchan, getBanque(), getParentObject(),
-							newEchan.getCollaborateur(),
+					ManagerLocator.getEchantillonManager().createObjectWithCrAnapathManager(newEchan, getBanque(),
+							getParentObject(), newEchan.getCollaborateur(),
 							ManagerLocator.getObjetStatutManager().findByStatutLikeManager("NON STOCKE", true).get(0),
 							// newEchan.getEmplacement(),
 							null, // since 2.0.13.2
-							newEchan.getEchantillonType(), codes, newEchan.getQuantiteUnite(), newEchan.getEchanQualite(),
-							newEchan.getModePrepa(), crAnapath, newEchan.getAnapathStream(), filesCreated, 
-							echantillonsDecorated.get(i).getValeursToCreateOrUpdate(), SessionUtils.getLoggedUser(sessionScope), true,
-							SessionUtils.getSystemBaseDir(), false);
+							newEchan.getEchantillonType(), codes, newEchan.getQuantiteUnite(),
+							newEchan.getEchanQualite(), newEchan.getModePrepa(), crAnapath, newEchan.getAnapathStream(),
+							filesCreated, echantillonsDecorated.get(i).getValeursToCreateOrUpdate(),
+							SessionUtils.getLoggedUser(sessionScope), true, SessionUtils.getSystemBaseDir(), false);
 
-					if(newEchan.getAnapathStream() != null){
+					if (newEchan.getAnapathStream() != null) {
 						crDataType = newEchan.getCrAnapath().getMimeType();
 						crPath = newEchan.getCrAnapath().getPath();
 					}
@@ -791,65 +797,67 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
 			saveEmplacements();
 
 			// gestion de la non conformité
-			for(int i = 0; i < echantillonsDecorated.size(); i++){
-				
+			for (int i = 0; i < echantillonsDecorated.size(); i++) {
+
 				// 2.1.4.1 FIX raisons non conformités disp ajout échantillons
 				// https://tumorotek.myjetbrains.com/youtrack/issue/TK-281
 				if (echantillonsDecorated.get(i).isNew()) {
-					
-					if(echantillonsDecorated.get(i).getEchantillon().getConformeTraitement() != null
-							&& !echantillonsDecorated.get(i).getEchantillon().getConformeTraitement()){
+
+					if (echantillonsDecorated.get(i).getEchantillon().getConformeTraitement() != null
+							&& !echantillonsDecorated.get(i).getEchantillon().getConformeTraitement()) {
 						// enregistrement de la non conformité
 						// après traitement
 						ManagerLocator.getObjetNonConformeManager().createUpdateOrRemoveListObjectManager(
-								echantillonsDecorated.get(i).getEchantillon(), echantillonsDecorated.get(i).getNonConformiteTraitements(),
-								"Traitement");
+								echantillonsDecorated.get(i).getEchantillon(),
+								echantillonsDecorated.get(i).getNonConformiteTraitements(), "Traitement");
 					}
-	
-					if(echantillonsDecorated.get(i).getEchantillon().getConformeCession() != null
-							&& !echantillonsDecorated.get(i).getEchantillon().getConformeCession()){
+
+					if (echantillonsDecorated.get(i).getEchantillon().getConformeCession() != null
+							&& !echantillonsDecorated.get(i).getEchantillon().getConformeCession()) {
 						// enregistrement de la non conformité
 						// à la cession
 						ManagerLocator.getObjetNonConformeManager().createUpdateOrRemoveListObjectManager(
-								echantillonsDecorated.get(i).getEchantillon(), echantillonsDecorated.get(i).getNonConformiteCessions(),
-								"Cession");
+								echantillonsDecorated.get(i).getEchantillon(),
+								echantillonsDecorated.get(i).getNonConformiteCessions(), "Cession");
 					}
 				}
 			}
 
-		}catch(final RuntimeException ex){
+		} catch (final RuntimeException ex) {
 			ManagerLocator.getTxManager().rollback(status);
 
-			for(final File f : filesCreated){
+			for (final File f : filesCreated) {
 				f.delete();
 			}
 
 			final Iterator<EchantillonDTO> itE = echantillonsDecorated.iterator();
-			final ObjetStatut stocke = ManagerLocator.getObjetStatutManager().findByStatutLikeManager("STOCKE", false).get(0);
-			final ObjetStatut nonstocke = ManagerLocator.getObjetStatutManager().findByStatutLikeManager("NON STOCKE", false).get(0);
+			final ObjetStatut stocke = ManagerLocator.getObjetStatutManager().findByStatutLikeManager("STOCKE", false)
+					.get(0);
+			final ObjetStatut nonstocke = ManagerLocator.getObjetStatutManager()
+					.findByStatutLikeManager("NON STOCKE", false).get(0);
 			Echantillon e;
 			EchantillonDTO ed;
-			while(itE.hasNext()){
+			while (itE.hasNext()) {
 				ed = itE.next();
 				e = ed.getEchantillon();
-				if(ed.isNew()){
+				if (ed.isNew()) {
 					e.setEchantillonId(null);
-					if(e.getCrAnapath() != null){
+					if (e.getCrAnapath() != null) {
 						e.getCrAnapath().setFichierId(null);
 					}
 				}
 				// revert emplacement since 2.0.13.2
 				// au stade onGetResultsFromStockage
 				// se basant sur echEmpls
-				if(echansEmpl.containsKey(e)){
+				if (echansEmpl.containsKey(e)) {
 					e.setObjetStatut(stocke);
 					e.setEmplacement(null);
 					// clean echanEmpl from emplacement in error
 					// doublon ou emplacement occupé
-					if((ex instanceof EmplacementDoublonFoundException
+					if ((ex instanceof EmplacementDoublonFoundException
 							&& echansEmpl.get(e).equals(((EmplacementDoublonFoundException) ex).getEmplacementMock()))
 							|| (ex instanceof TKException && ex.getMessage().equals("error.emplacement.notEmpty")
-									&& ((TKException) ex).getTkObj().equals(e))){
+									&& ((TKException) ex).getTkObj().equals(e))) {
 						echansEmpl.remove(e);
 						// reset decorateur
 						ed.setAdrlTmp(null);
@@ -864,7 +872,7 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
 		ManagerLocator.getTxManager().commit(status);
 
 		// envoi informations exterieures
-		if(getParentObject() != null){
+		if (getParentObject() != null) {
 			getPrelevementController().handleExtCom(null, getParentObject(), getObjectTabController());
 		}
 
@@ -877,14 +885,14 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
 	/**
 	 * Méthode qui va sauvegarder le stockage des échantillons.
 	 */
-	public void saveEmplacements(){
+	public void saveEmplacements() {
 
 		// on parcourt la hashtable du stockage et on extrait
 		// l'emplacement de chaque échantillon
 		final List<Emplacement> emplsFinaux = new ArrayList<>();
 		Set<TKStockableObject> echans = echansEmpl.keySet();
 		Iterator<TKStockableObject> it = echans.iterator();
-		while(it.hasNext()){
+		while (it.hasNext()) {
 			final Echantillon echan = (Echantillon) it.next();
 			final Emplacement empl = echansEmpl.get(echan);
 			empl.setObjetId(echan.getEchantillonId());
@@ -898,10 +906,12 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
 		// emplacement
 		echans = echansEmpl.keySet();
 		it = echans.iterator();
-		final ObjetStatut statut = ManagerLocator.getObjetStatutManager().findByStatutLikeManager("STOCKE", true).get(0);
-		while(it.hasNext()){
+		final ObjetStatut statut = ManagerLocator.getObjetStatutManager().findByStatutLikeManager("STOCKE", true)
+				.get(0);
+		while (it.hasNext()) {
 			final Echantillon echanToUpdate = (Echantillon) it.next();
-			final List<OperationType> ops = ManagerLocator.getOperationTypeManager().findByNomLikeManager("Stockage", true);
+			final List<OperationType> ops = ManagerLocator.getOperationTypeManager().findByNomLikeManager("Stockage",
+					true);
 
 			// update de l'objet
 			ManagerLocator.getEchantillonManager().saveEchantillonEmplacementManager(echanToUpdate, statut,
@@ -910,7 +920,7 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
 			final EchantillonDTO deco = new EchantillonDTO(echanToUpdate);
 			// si l'échantillon existait déjà, on MAJ sa fiche
 			// dans la liste des échantillons
-			if(!addedEchantillons.contains(deco.getEchantillon())){
+			if (!addedEchantillons.contains(deco.getEchantillon())) {
 				// update de l'échantillon dans la liste
 				getObjectTabController().getListe().updateObjectGridListFromOtherPage(echanToUpdate, false);
 			}
@@ -920,24 +930,24 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
 	/**
 	 * Méthode qui permet d'afficher la page d'impression de la cession.
 	 */
-	public void createFileHtmlToPrint(){
+	public void createFileHtmlToPrint() {
 		// s'il y a des éléments a stocker
-		if(echansEmpl.size() > 0){
+		if (echansEmpl.size() > 0) {
 			// création du document, de la page et de son titre
 			final Document doc = ManagerLocator.getXmlUtils().createJDomDocumentBoites();
 			final Element root = doc.getRootElement();
-			final Element page =
-					ManagerLocator.getXmlUtils().addPageBoite(root, Labels.getLabel("impression.boite.title.stockage.echantillons"));
+			final Element page = ManagerLocator.getXmlUtils().addPageBoite(root,
+					Labels.getLabel("impression.boite.title.stockage.echantillons"));
 
 			final List<BoiteImpression> listeBoites = new ArrayList<>();
 
 			// on parcourt la hashtable du stockage et on extrait
-			//  chaque dérivé
+			// chaque dérivé
 			final Set<TKStockableObject> echans = echansEmpl.keySet();
 			// pour chaque échantillon
-			for(int k = 0; k < echantillonsDecorated.size(); k++){
+			for (int k = 0; k < echantillonsDecorated.size(); k++) {
 				// s'il vient d'être stocké
-				if(echans.contains(echantillonsDecorated.get(k).getEchantillon())){
+				if (echans.contains(echantillonsDecorated.get(k).getEchantillon())) {
 					final Echantillon ech = echantillonsDecorated.get(k).getEchantillon();
 
 					// on récupère son emplacement et la boite
@@ -948,43 +958,46 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
 					newBi.setBoite(term);
 
 					// si c'est la 1ère fois que l'on rencontre cette boite
-					if(!listeBoites.contains(newBi)){
+					if (!listeBoites.contains(newBi)) {
 						// on remplit tous titres et légendes
 						newBi.setTitreModelisation(Labels.getLabel("impression.boite.title.visualisation"));
 						newBi.setTitreInstructions(Labels.getLabel("impression.boite.title.instructions"));
-						newBi.setNom(ObjectTypesFormatters.getLabel("impression.boite.nom", new String[] {term.getNom()}));
-						newBi.setTitreListe(Labels.getLabel("impression.boite.elements" + ".title.stockage.echantillons"));
+						newBi.setNom(
+								ObjectTypesFormatters.getLabel("impression.boite.nom", new String[] { term.getNom() }));
+						newBi.setTitreListe(
+								Labels.getLabel("impression.boite.elements" + ".title.stockage.echantillons"));
 						newBi.setLegendeVide(Labels.getLabel("impression.boite.legende.vide"));
 						newBi.setLegendePris(Labels.getLabel("impression.boite.legende.pris"));
-						newBi.setLegendeSelectionne(Labels.getLabel("impression.boite.legende.selectionne" + ".stockage.echantillons"));
+						newBi.setLegendeSelectionne(
+								Labels.getLabel("impression.boite.legende.selectionne" + ".stockage.echantillons"));
 
 						// création des intructions pour récupérer la boite
 						// Récup des parents de la boite
 						final List<Object> parents = ManagerLocator.getTerminaleManager().getListOfParentsManager(term);
 						final List<String> instructions = new ArrayList<>();
 						// pour chaque parent
-						for(int j = 0; j < parents.size(); j++){
-							if(parents.get(j).getClass().getSimpleName().equals("Conteneur")){
+						for (int j = 0; j < parents.size(); j++) {
+							if (parents.get(j).getClass().getSimpleName().equals("Conteneur")) {
 								final Conteneur c = (Conteneur) parents.get(j);
-								instructions.add(ObjectTypesFormatters.getLabel("impression.boite" + ".instruction.conteneur",
-										new String[] {c.getCode()}));
-							}else if(parents.get(j).getClass().getSimpleName().equals("Enceinte")){
+								instructions.add(ObjectTypesFormatters.getLabel(
+										"impression.boite" + ".instruction.conteneur", new String[] { c.getCode() }));
+							} else if (parents.get(j).getClass().getSimpleName().equals("Enceinte")) {
 								final Enceinte e = (Enceinte) parents.get(j);
-								instructions.add(ObjectTypesFormatters.getLabel("impression.boite" + ".instruction.enceinte",
-										new String[] {e.getNom()}));
+								instructions.add(ObjectTypesFormatters.getLabel(
+										"impression.boite" + ".instruction.enceinte", new String[] { e.getNom() }));
 							}
 						}
 						// ajout des instructions à la boite
-						instructions
-						.add(ObjectTypesFormatters.getLabel("impression.boite.instruction.terminale", new String[] {term.getNom()}));
+						instructions.add(ObjectTypesFormatters.getLabel("impression.boite.instruction.terminale",
+								new String[] { term.getNom() }));
 						instructions.add(Labels.getLabel("impression.boite.instruction" + ".stockage.echantillons"));
 						newBi.setInstructions(instructions);
 
 						// ajout du dérivé à la liste des éléments
 						// a extraire
 						final List<String> elements = new ArrayList<>();
-						elements.add(
-								ObjectTypesFormatters.getLabel("impression.boite.numero.echantillon", new String[] {"1", ech.getCode()}));
+						elements.add(ObjectTypesFormatters.getLabel("impression.boite.numero.echantillon",
+								new String[] { "1", ech.getCode() }));
 						newBi.setElements(elements);
 
 						// ajout de la position du dérivé
@@ -995,7 +1008,7 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
 						// ajout de la boite à la liste
 						listeBoites.add(newBi);
 
-					}else{
+					} else {
 						// sinon on récupère la boite dans la liste
 						final BoiteImpression bi = listeBoites.get(listeBoites.indexOf(newBi));
 
@@ -1004,7 +1017,7 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
 						final Integer pos = bi.getPositions().size() + 1;
 						bi.getPositions().add(emp.getPosition());
 						bi.getElements().add(ObjectTypesFormatters.getLabel("impression.boite.numero.echantillon",
-								new String[] {pos.toString(), ech.getCode()}));
+								new String[] { pos.toString(), ech.getCode() }));
 					}
 				}
 			}
@@ -1012,27 +1025,27 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
 			final StringBuffer adrImages = new StringBuffer();
 			adrImages.append(((HttpServletRequest) Executions.getCurrent().getNativeRequest()).getContextPath());
 			adrImages.append("/images/icones/emplacements/");
-			for(int i = 0; i < listeBoites.size(); i++){
+			for (int i = 0; i < listeBoites.size(); i++) {
 				ManagerLocator.getXmlUtils().addBoite(page, listeBoites.get(i), adrImages.toString());
 			}
 
 			// Transformation du document en fichier
 			byte[] dl = null;
-			try{
+			try {
 				dl = ManagerLocator.getXmlUtils().creerBoiteHtml(doc);
-			}catch(final Exception e){
+			} catch (final Exception e) {
 				log.error(e);
 			}
 
 			// envoie du fichier à imprimer à l'utilisateur
-			if(dl != null){
+			if (dl != null) {
 				// si c'est au format html, on va ouvrir une nouvelle
 				// fenêtre
-				try{
+				try {
 					sessionScope.put("File", dl);
 					execution.sendRedirect("/impression", "_blank");
-				}catch(final Exception e){
-					if(sessionScope.containsKey("File")){
+				} catch (final Exception e) {
+					if (sessionScope.containsKey("File")) {
 						sessionScope.remove("File");
 						dl = null;
 					}
@@ -1044,43 +1057,44 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
 	}
 
 	@Override
-	public void onClick$revert(){
-		if(isPrelevementProcedure){
+	public void onClick$revert() {
+		if (isPrelevementProcedure) {
 			getPrelevementController().getFicheLaboInter().onClick$revert();
 		}
 		getObjectTabController().onCancel();
 	}
 
 	/**
-	 * Revient sur la page FicheLaboInter dans l'état où elle
-	 * était avant d'arriver sur la page FicheMultiEchantillons.
+	 * Revient sur la page FicheLaboInter dans l'état où elle était avant d'arriver
+	 * sur la page FicheMultiEchantillons.
 	 */
-	public void onClick$previous(){
+	public void onClick$previous() {
 		clearConstraints();
 		getPrelevementController().switchFromEchantillonsToLabo();
 	}
 
 	/**
-	 * Méthode appelée par la fenêtre CollaborationsController quand
-	 * l'utilisateur sélectionne un collaborateur.
+	 * Méthode appelée par la fenêtre CollaborationsController quand l'utilisateur
+	 * sélectionne un collaborateur.
+	 * 
 	 * @param e Event contenant le collaborateur sélectionné.
 	 */
 	@Override
-	public void onGetObjectFromSelection(final Event e){
+	public void onGetObjectFromSelection(final Event e) {
 
 		// les collaborateurs peuvent être modifiés dans la fenêtre
 		// d'aide => maj de ceux-ci
 		getNomsAndPrenoms().clear();
 		setCollaborateurs(ManagerLocator.getCollaborateurManager().findAllActiveObjectsWithOrderManager());
-		for(int i = 0; i < getCollaborateurs().size(); i++){
+		for (int i = 0; i < getCollaborateurs().size(); i++) {
 			getNomsAndPrenoms().add(getCollaborateurs().get(i).getNomAndPrenom());
 		}
 		collabBox.setModel(new CustomSimpleListModel(getNomsAndPrenoms()));
 
 		// si un collaborateur a été sélectionné
-		if(e.getData() != null){
+		if (e.getData() != null) {
 			final Collaborateur coll = (Collaborateur) e.getData();
-			if(getNomsAndPrenoms().contains(coll.getNomAndPrenom())){
+			if (getNomsAndPrenoms().contains(coll.getNomAndPrenom())) {
 				final int ind = getNomsAndPrenoms().indexOf(coll.getNomAndPrenom());
 				setSelectedCollaborateur(getCollaborateurs().get(ind));
 				collabBox.setValue(getSelectedCollaborateur().getNomAndPrenom());
@@ -1089,19 +1103,21 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
 	}
 
 	/**
-	 * Méthode exécutée lors du clic sur le bouton addEchantillons.
-	 * Les nouveaux échantillons seront créés (mais pas encore
-	 * sauvegardés) et ajoutés à la liste.
+	 * Méthode exécutée lors du clic sur le bouton addEchantillons. Les nouveaux
+	 * échantillons seront créés (mais pas encore sauvegardés) et ajoutés à la
+	 * liste.
+	 * 
 	 * @param event : clic sur le lien addEchantillons.
 	 */
-	public void onClick$addEchantillons(final Event event){
-		try{
-			
+	public void onClick$addEchantillons(final Event event) {
+		try {
+
 			// gestion des bornes pour la création
-			// @since 2.2.2-diamic, first and last peuvent être vides, mais seulement en même temps
+			// @since 2.2.2-diamic, first and last peuvent être vides, mais seulement en
+			// même temps
 			int first = -1;
 			int last = -1;
-			if(numNombres.isChecked()){
+			if (numNombres.isChecked()) {
 				first = premierCode != null ? premierCode : -1;
 				last = dernierCode != null ? dernierCode : -1;
 				if ((first == -1 && last != -1) || (first != -1 && last == -1)) {
@@ -1111,20 +1127,20 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
 						throw new WrongValueException(dernierCodeBoxEchan, Labels.getLabel("validation.syntax.empty"));
 					}
 				}
-			}else{
-				first = premiereLettre != null 
-					&& !StringUtils.isEmpty(premiereLettre) ? premiereLettre.charAt(0) : -1;
-				last = derniereLettre != null 
-						&& !StringUtils.isEmpty(derniereLettre) ? derniereLettre.charAt(0) : -1;
+			} else {
+				first = premiereLettre != null && !StringUtils.isEmpty(premiereLettre) ? premiereLettre.charAt(0) : -1;
+				last = derniereLettre != null && !StringUtils.isEmpty(derniereLettre) ? derniereLettre.charAt(0) : -1;
 				if ((first == -1 && last != -1) || (first != -1 && last == -1)) {
 					if (first == -1) {
-						throw new WrongValueException(premiereLettreBoxEchan, Labels.getLabel("validation.syntax.empty"));
+						throw new WrongValueException(premiereLettreBoxEchan,
+								Labels.getLabel("validation.syntax.empty"));
 					} else {
-						throw new WrongValueException(derniereLettreBoxEchan, Labels.getLabel("validation.syntax.empty"));
+						throw new WrongValueException(derniereLettreBoxEchan,
+								Labels.getLabel("validation.syntax.empty"));
 					}
 				}
 			}
-			
+
 			checkRequiredListboxes();
 
 			validateSterilite(sterileBox.isChecked());
@@ -1135,30 +1151,30 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
 			getEchantillon().setSterile(sterileBox.isChecked());
 
 			// gestion de la non conformitée après traitement
-			if(conformeTraitementBoxOui.isChecked()){
+			if (conformeTraitementBoxOui.isChecked()) {
 				getEchantillon().setConformeTraitement(true);
-			}else if(conformeTraitementBoxNon.isChecked()){
+			} else if (conformeTraitementBoxNon.isChecked()) {
 				getEchantillon().setConformeTraitement(false);
-			}else{
+			} else {
 				getEchantillon().setConformeTraitement(null);
 			}
-			if(getEchantillon().getConformeTraitement() == null){
+			if (getEchantillon().getConformeTraitement() == null) {
 				setSelectedNonConformiteTraitement(null);
-			}else if(getEchantillon().getConformeTraitement()){
+			} else if (getEchantillon().getConformeTraitement()) {
 				setSelectedNonConformiteTraitement(null);
 			}
 
 			// gestion de la non conformitée à la cession
-			if(conformeCessionBoxOui.isChecked()){
+			if (conformeCessionBoxOui.isChecked()) {
 				getEchantillon().setConformeCession(true);
-			}else if(conformeCessionBoxNon.isChecked()){
+			} else if (conformeCessionBoxNon.isChecked()) {
 				getEchantillon().setConformeCession(false);
-			}else{
+			} else {
 				getEchantillon().setConformeCession(null);
 			}
-			if(getEchantillon().getConformeCession() == null){
+			if (getEchantillon().getConformeCession() == null) {
 				setSelectedNonConformiteCession(null);
-			}else if(getEchantillon().getConformeCession()){
+			} else if (getEchantillon().getConformeCession()) {
 				setSelectedNonConformiteCession(null);
 			}
 
@@ -1166,9 +1182,9 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
 			final String selectedNomAndPremon = this.collabBox.getValue().toUpperCase();
 			this.collabBox.setValue(selectedNomAndPremon);
 			final int ind = getNomsAndPrenoms().indexOf(selectedNomAndPremon);
-			if(ind > -1){
+			if (ind > -1) {
 				setSelectedCollaborateur(getCollaborateurs().get(ind));
-			}else{
+			} else {
 				setSelectedCollaborateur(null);
 			}
 
@@ -1177,7 +1193,8 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
 			getEchantillon().setQuantite(getEchantillon().getQuantiteInit());
 
 			getEchantillon().setObjetStatut(findStatutForTKStockableObject(getEchantillon()));
-			final ObjetStatut statut = ManagerLocator.getObjetStatutManager().findByStatutLikeManager("NON STOCKE", true).get(0);
+			final ObjetStatut statut = ManagerLocator.getObjetStatutManager()
+					.findByStatutLikeManager("NON STOCKE", true).get(0);
 
 			prepareCrAnapath();
 
@@ -1185,7 +1202,7 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
 
 			String lateralite = null;
 			// lateralite
-			if(getSelectedLateralite() != null && !getSelectedLateralite().equals("")){
+			if (getSelectedLateralite() != null && !getSelectedLateralite().equals("")) {
 				lateralite = getSelectedLateralite();
 			}
 
@@ -1195,44 +1212,47 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
 			// clone liste valeurs annotations
 			final List<AnnotationValeur> clonesValeurs = new ArrayList<>();
 
-			for(int i = 0; i < getObjectTabController().getFicheAnnotation().getValeursToCreateOrUpdate().size(); i++){
+			for (int i = 0; i < getObjectTabController().getFicheAnnotation().getValeursToCreateOrUpdate()
+					.size(); i++) {
 
-				final AnnotationValeur val = getObjectTabController().getFicheAnnotation().getValeursToCreateOrUpdate().get(i);
+				final AnnotationValeur val = getObjectTabController().getFicheAnnotation().getValeursToCreateOrUpdate()
+						.get(i);
 				// retire les annotations fichier car créés en batches ultérieurement
-				if(val.getChampAnnotation().getDataType().getDataTypeId() == 8){
-					if(val.getFichier() != null && val.getStream() != null){
+				if (val.getChampAnnotation().getDataType().getDataTypeId() == 8) {
+					if (val.getFichier() != null && val.getStream() != null) {
 						final FileBatch batch = new FileBatch();
 						batch.setChamp(val.getChampAnnotation());
 						batch.setFile(val.getFichier());
 						batch.setStream(val.getStream());
 						batches.add(batch);
 					}
-				}else{
-					clonesValeurs.add(getObjectTabController().getFicheAnnotation().getValeursToCreateOrUpdate().get(i).clone());
+				} else {
+					clonesValeurs.add(
+							getObjectTabController().getFicheAnnotation().getValeursToCreateOrUpdate().get(i).clone());
 				}
 			}
 
-			// @since 2.2.2-diamic emplacement peut être ajouté 
+			// @since 2.2.2-diamic emplacement peut être ajouté
 			// au moment de l'ajout
 			Map<TKStockableObject, Emplacement> injectableEchanEmpl = new HashMap<TKStockableObject, Emplacement>();
-			
+
 			// Création de tous les nouveaux échantillons
-			for(int i = first; i <= last; i++){
+			for (int i = first; i <= last; i++) {
 
 				// création du code échantillon en fct de celui du prlvt et
 				// du numéro saisi
 				final StringBuffer sb = new StringBuffer();
 
 				// 2.0.10.6 VIROBIOTEC création codes sans prefixe
-				if(getCodePrefixe() != null && !getCodePrefixe().trim().equals("")){
+				if (getCodePrefixe() != null && !getCodePrefixe().trim().equals("")) {
 					sb.append(getCodePrefixe());
 				}
-				
+
 				if (i > -1) { // pas ajout suffixe si first=last=-1
 					sb.append(separatorBox.getValue() != null ? separatorBox.getValue() : "");
-					if(numNombres.isChecked()){
+					if (numNombres.isChecked()) {
 						sb.append(i);
-					}else{
+					} else {
 						sb.append((char) i);
 					}
 				}
@@ -1278,44 +1298,45 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
 				echantillonsDecorated.add(deco);
 
 				// file batches
-				for(final FileBatch batch : batches){
-					if(!batch.isCompleted()){
+				for (final FileBatch batch : batches) {
+					if (!batch.isCompleted()) {
 						batch.getObjs().add(newEchantillon);
 					}
 				}
-				
+
 				// @since 2.2.2-diamic
-				// si ajout d'un échantillon transmis, mise à jour de som emplacement automatiquement
+				// si ajout d'un échantillon transmis, mise à jour de som emplacement
+				// automatiquement
 				// et affichage d'erreur non bloquante
 				if (getInjectableEchantillons().contains(newEchantillon)) {
 					try {
-						String adrl = SessionUtils.getDossierExterneInjection(sessionScope)
-								.getEchanAdrls().get(newEchantillon);
+						String adrl = SessionUtils.getDossierExterneInjection(sessionScope).getEchanAdrls()
+								.get(newEchantillon);
 						if (adrl != null) {
 							Emplacement empl = ManagerLocator.getEmplacementManager()
-								.findByEmplacementAdrlManager(SessionUtils.getDossierExterneInjection(sessionScope)
-										.getEchanAdrls().get(newEchantillon), getBanque());
+									.findByEmplacementAdrlManager(SessionUtils.getDossierExterneInjection(sessionScope)
+											.getEchanAdrls().get(newEchantillon), getBanque());
 							if (empl != null && empl.getVide()) {
 								empl.setVide(false);
 								empl.setAdrl(adrl);
 								empl.setEntite(getObjectTabController().getEntiteTab());
 								injectableEchanEmpl.put(newEchantillon, empl);
 							} else {
-								Clients.showNotification(ObjectTypesFormatters.getLabel("interfacage.emplacement.warning", new String[] { adrl }), 
-									"warning", null, null, 3000, true);
+								Clients.showNotification(ObjectTypesFormatters
+										.getLabel("interfacage.emplacement.warning", new String[] { adrl }), "warning",
+										null, null, 3000, true);
 							}
 						}
-					} catch (Exception e) { // error occurred 
-						Clients.showNotification(ObjectTypesFormatters.getLabel("interfacage.emplacement.error", new String[] { e.getMessage() }), 
-								"error", null, null, 3000, true);
+					} catch (Exception e) { // error occurred
+						Clients.showNotification(ObjectTypesFormatters.getLabel("interfacage.emplacement.error",
+								new String[] { e.getMessage() }), "error", null, null, 3000, true);
 					}
 				}
 			}
 
-			for(final FileBatch batch : batches){
+			for (final FileBatch batch : batches) {
 				batch.setCompleted(true);
 			}
-			
 
 			final ListModel<EchantillonDTO> list = new ListModelList<>(echantillonsDecorated);
 			echantillonsList.setModel(list);
@@ -1325,7 +1346,7 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
 			Clients.scrollIntoView(stockageEchantillons);
 
 			clearForm(true);
-			
+
 			// @since 2.2.2-diamic
 			// updates Emplacement depuis transmission diamic
 			if (!injectableEchanEmpl.isEmpty()) {
@@ -1333,28 +1354,27 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
 			}
 
 			// active le lien vers le stockage
-			if(!echantillons.isEmpty()){
+			if (!echantillons.isEmpty()) {
 				stockageEchantillons.setDisabled(false);
 			}
-		}catch(final ValidationException ve){
+		} catch (final ValidationException ve) {
 			Messagebox.show(handleExceptionMessage(ve), "Error", Messagebox.OK, Messagebox.ERROR);
 		}
 
 	}
 
 	/**
-	 * Méthode supprimant un des échantillons que l'utilisateur
-	 * souhaitait créer.
-	 * @param event : clic sur le lien deleteEchan dans la liste
-	 * d'échantillons.
+	 * Méthode supprimant un des échantillons que l'utilisateur souhaitait créer.
+	 * 
+	 * @param event : clic sur le lien deleteEchan dans la liste d'échantillons.
 	 */
-	public void onDeleteDeco$rows(final ForwardEvent event){
+	public void onDeleteDeco$rows(final ForwardEvent event) {
 
 		EchantillonDTO deco = (EchantillonDTO) event.getOrigin().getData();
 
 		Echantillon deletedEchantillon = deco.getEchantillon();
 
-		if(addedEchantillons.contains(deletedEchantillon)){
+		if (addedEchantillons.contains(deletedEchantillon)) {
 			addedEchantillons.remove(deletedEchantillon);
 			echantillons.remove(deletedEchantillon);
 			echantillonsDecorated.remove(deco);
@@ -1362,7 +1382,7 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
 
 			// on enlève l'association entre l'échantillon et son
 			// emplacement dans la hashtable
-			if(echansEmpl.containsKey(deletedEchantillon)){
+			if (echansEmpl.containsKey(deletedEchantillon)) {
 				echansEmpl.remove(deletedEchantillon);
 			}
 
@@ -1370,7 +1390,7 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
 			echantillonsList.setModel(list);
 
 			// echantillon retiré des fileBatches
-			for(final FileBatch batch : batches){
+			for (final FileBatch batch : batches) {
 				batch.getObjs().remove(deletedEchantillon);
 			}
 
@@ -1380,29 +1400,29 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
 		}
 
 		// desactive le lien vers le stockage
-		if(echantillons.isEmpty()){
+		if (echantillons.isEmpty()) {
 			stockageEchantillons.setDisabled(true);
 		}
 	}
 
 	/**
-	 * Méthode appelée après la saisie d'une valeur dans le champ
-	 * codePrefixeEchan. Cette valeur sera mise en majuscules.
+	 * Méthode appelée après la saisie d'une valeur dans le champ codePrefixeEchan.
+	 * Cette valeur sera mise en majuscules.
 	 */
 	@Override
-	public void onBlur$codePrefixeEchan(){
+	public void onBlur$codePrefixeEchan() {
 		codePrefixeEchan.setValue(codePrefixeEchan.getValue().toUpperCase().trim());
 	}
 
 	/**
 	 * Méthode appelée lors du clic sur le bouton stockageEchantillons.
 	 */
-	public void onClick$stockageEchantillons(){
-		if(!stockageEchantillons.isDisabled()){
+	public void onClick$stockageEchantillons() {
+		if (!stockageEchantillons.isDisabled()) {
 			// on récupère tous les échantillons NON STOCKE
 			final List<Echantillon> echansToStock = new ArrayList<>();
-			for(int i = 0; i < echantillons.size(); i++){
-				if(echantillons.get(i).getObjetStatut().getStatut().equals("NON STOCKE")){
+			for (int i = 0; i < echantillons.size(); i++) {
+				if (echantillons.get(i).getObjetStatut().getStatut().equals("NON STOCKE")) {
 					echansToStock.add(echantillons.get(i));
 				}
 			}
@@ -1411,55 +1431,59 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
 			// ils sont réservés
 			final Iterator<Emplacement> emplsIt = echansEmpl.values().iterator();
 			final List<Emplacement> reserves = new ArrayList<>();
-			while(emplsIt.hasNext()){
+			while (emplsIt.hasNext()) {
 				reserves.add(emplsIt.next());
 			}
 
 			final StockageController tabController = StockageController.backToMe(getMainWindow(), page);
 			getMainWindow().blockAllPanelsExceptOne("stockageTab");
 			tabController.clearAllPage();
-			tabController.switchToStockerMode(echansToStock, null, Path.getPath(self), "onGetResultsFromStockage", reserves);
+			tabController.switchToStockerMode(echansToStock, null, Path.getPath(self), "onGetResultsFromStockage",
+					reserves);
 		}
 	}
 
 	/**
-	 * Méthode qui récupère les emplacements choisis pour les
-	 * échantillons.
+	 * Méthode qui récupère les emplacements choisis pour les échantillons.
+	 * 
 	 * @param e Event contenant les emplacements.
 	 */
 
-	public void onGetResultsFromStockage(final Event e){
+	public void onGetResultsFromStockage(final Event e) {
 		// les emplacements sont contenus dans une hashtable mappant
 		// un échantillon avec son emplacement
-		final Hashtable<TKStockableObject, Emplacement> results = (Hashtable<TKStockableObject, Emplacement>) e.getData();
+		final Hashtable<TKStockableObject, Emplacement> results = (Hashtable<TKStockableObject, Emplacement>) e
+				.getData();
 
 		updateDecoList(results);
 	}
 
 	/**
 	 * Met à jour la liste d'échantillon décorées
+	 * 
 	 * @since 2.0.13.2
 	 * @param empls echantillon - emplacements
 	 */
-	private void updateDecoList(final Map<TKStockableObject, Emplacement> empls){
-		final ObjetStatut stocke = ManagerLocator.getObjetStatutManager().findByStatutLikeManager("STOCKE", true).get(0);
+	private void updateDecoList(final Map<TKStockableObject, Emplacement> empls) {
+		final ObjetStatut stocke = ManagerLocator.getObjetStatutManager().findByStatutLikeManager("STOCKE", true)
+				.get(0);
 
 		final Set<TKStockableObject> echans = empls.keySet();
 		final Iterator<TKStockableObject> it = echans.iterator();
 		Emplacement emp;
 		// pour chaque échantillon qui vient d'être stocké
-		while(it.hasNext()){
+		while (it.hasNext()) {
 			final TKStockableObject tmp = it.next();
 			final EchantillonDTO deco = new EchantillonDTO((Echantillon) tmp);
 			// on récupère son decorator correspondant dans la liste
-			if(echantillonsDecorated.contains(deco)){
+			if (echantillonsDecorated.contains(deco)) {
 				final EchantillonDTO decoUp = echantillonsDecorated.get(echantillonsDecorated.indexOf(deco));
 
 				emp = empls.get(tmp);
 
 				// since 2.0.13.2 empl peux être null
 				// pour nettoyer echan stockage en erreur
-				if(emp != null){
+				if (emp != null) {
 					// MAJ du stockage de cet échantillon
 					decoUp.setAdrlTmp(emp.getAdrl());
 					decoUp.getEchantillon().setObjetStatut(stocke);
@@ -1467,7 +1491,7 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
 			}
 
 			// ajout du couple dans la hashtable
-			if(!echansEmpl.containsKey(tmp)){
+			if (!echansEmpl.containsKey(tmp)) {
 				echansEmpl.put(tmp, empls.get(tmp));
 			}
 		}
@@ -1476,12 +1500,12 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
 		getBinder().loadAttribute(self.getFellow("echantillonsList"), "model");
 	}
 
-	public void onClick$changeNumerotation(){
+	public void onClick$changeNumerotation() {
 		changeNumerotation.setVisible(false);
 		choixNumerotation.setVisible(true);
 	}
 
-	public void onCheck$numNombres(){
+	public void onCheck$numNombres() {
 		premierCodeBoxEchan.setVisible(true);
 		dernierCodeBoxEchan.setVisible(true);
 		premiereLettreBoxEchan.setVisible(false);
@@ -1499,7 +1523,7 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
 		changeNumerotation.setImage("/images/icones/smallNumber.png");
 	}
 
-	public void onCheck$numLettres(){
+	public void onCheck$numLettres() {
 		premierCodeBoxEchan.setVisible(false);
 		dernierCodeBoxEchan.setVisible(false);
 		premiereLettreBoxEchan.setVisible(true);
@@ -1518,11 +1542,11 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
 	}
 
 	/**
-	 * Cette méthode va vider le formulaire une fois que l'utilisateur
-	 * aura cliqué sur le bouton addEchantillons.
+	 * Cette méthode va vider le formulaire une fois que l'utilisateur aura cliqué
+	 * sur le bouton addEchantillons.
 	 */
 
-	public void clearForm(final boolean setParentStatic){
+	public void clearForm(final boolean setParentStatic) {
 		setEchantillon(new Echantillon());
 
 		premierCode = null;
@@ -1538,9 +1562,9 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
 
 		setSelectedLateralite(null);
 
-		if(getTypes().size() > 0){
+		if (getTypes().size() > 0) {
 			setSelectedType(getTypes().get(0));
-		}else{
+		} else {
 			setSelectedType(null);
 		}
 		typesBoxEchan.clearSelection();
@@ -1559,26 +1583,26 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
 		((ListModelList<Object>) prepasBox.getModel()).clearSelection();
 
 		tumoraleBox.setChecked(false);
-
+		
 		crAnapathNomBox.setValue(null);
 		setCrAnapath(new Fichier());
 		setAnapathStream(null);
 		showDeleteAndFileNameBox(false);
 
-		if(setParentStatic){
-			if(selectParentRowEchan.isVisible()){
+		if (setParentStatic) {
+			if (selectParentRowEchan.isVisible()) {
 				removeSelectParentMode();
-				if(getParentObject() == null){
+				if (getParentObject() == null) {
 					prelRow.setVisible(false);
 					unknownPrelRow.setVisible(true);
 				}
 			}
-		}else{
+		} else {
 			setCodePrefixe(null);
 		}
 
-		sterileBox
-		.setChecked(getParentObject() != null && getParentObject().getSterile() != null && getParentObject().getSterile());
+		sterileBox.setChecked(
+				getParentObject() != null && getParentObject().getSterile() != null && getParentObject().getSterile());
 
 		dateStockCalBox.setHasChanged(false);
 
@@ -1587,7 +1611,7 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
 		getCodesMorphoController().setObjs(new ArrayList<SmallObjDecorator>());
 		getCodesMorphoController().reloadGrid();
 
-		if(getObjectTabController().canUpdateAnnotation()){
+		if (getObjectTabController().canUpdateAnnotation()) {
 			getObjectTabController().getFicheAnnotation().clearValeursLists(true);
 			getObjectTabController().getFicheAnnotation().updateAnnotationValues();
 			getObjectTabController().getFicheAnnotation().switchToStaticOrEditMode(false, false);
@@ -1606,27 +1630,28 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
 
 		// conserve les informations communes au dossier externe si existe
 		initFormFromDossierExterne();
-		
+
 		getBinder().loadComponent(self);
 	}
 
 	@Override
-	public void initEditableMode(){
+	public void initEditableMode() {
 
 		super.initEditableMode();
 
-		if(getParentObject() != null){
-			if(getParentObject().getCode() != null){
+		if (getParentObject() != null) {
+			if (getParentObject().getCode() != null) {
 				setCodePrefixe(getParentObject().getCode());
 			}
-			if(getParentObject().getOperateur() != null && getCollaborateurs().contains(getParentObject().getOperateur())){
+			if (getParentObject().getOperateur() != null
+					&& getCollaborateurs().contains(getParentObject().getOperateur())) {
 				setSelectedCollaborateur(getParentObject().getOperateur());
 				collabBox.setValue(getSelectedCollaborateur().getNomAndPrenom());
 			}
 		}
 
 		// active le lien vers le stockage
-		if(!echantillons.isEmpty()){
+		if (!echantillons.isEmpty()) {
 			stockageEchantillons.setDisabled(false);
 		}
 
@@ -1636,45 +1661,49 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
 
 	/**
 	 * Recherche des doublons pour le permier et dernier codes saisis.
+	 * 
 	 * @param premier Premier code des échanstillons à créer.
 	 * @param dernier Dernier code des échanstillons à créer.
 	 * @return True s'il y a des doublons, false sinon.
 	 */
-	private List<String> findDoublonsInUsedCodes(final Integer premier, final Integer dernier){
+	private List<String> findDoublonsInUsedCodes(final Integer premier, final Integer dernier) {
 
-		Function<Integer, String> codeEchantillonMapper =
-				i -> new StringBuilder(getCodePrefixe()).append(separatorBox.getValue()).append(i).toString();
-				return IntStream.rangeClosed(premier, dernier).boxed().map(codeEchantillonMapper)
-						.filter(code -> usedCodesEchantillons.contains(code)).collect(Collectors.toList());
+		Function<Integer, String> codeEchantillonMapper = i -> new StringBuilder(getCodePrefixe())
+				.append(separatorBox.getValue()).append(i).toString();
+		return IntStream.rangeClosed(premier, dernier).boxed().map(codeEchantillonMapper)
+				.filter(code -> usedCodesEchantillons.contains(code)).collect(Collectors.toList());
 
 	}
 
 	/**
-	 * Recherche s'il existe en base des doublons de code échantillon dans l'intervalle saisi pour la plateforme courante
+	 * Recherche s'il existe en base des doublons de code échantillon dans
+	 * l'intervalle saisi pour la plateforme courante
+	 * 
 	 * @param premier numéro de début de l'intervalle
 	 * @param dernier numéro de fn de l'intervalle
 	 * @return liste des codes échantillon en doublon
 	 */
-	private List<Echantillon> findDoublonsInPlateforme(final int premier, final int dernier){
+	private List<Echantillon> findDoublonsInPlateforme(final int premier, final int dernier) {
 
-		Function<String, String> mapToCodeEchantillon =
-				s -> new StringBuilder(getCodePrefixe()).append(separatorBox.getValue()).append(s).toString();
+		Function<String, String> mapToCodeEchantillon = s -> new StringBuilder(getCodePrefixe())
+				.append(separatorBox.getValue()).append(s).toString();
 
-				List<String> listeCodes = IntStream.rangeClosed(premierCode, dernierCode).mapToObj(String::valueOf)
-						.map(mapToCodeEchantillon).collect(Collectors.toList());
-				return ManagerLocator.getManager(EchantillonManager.class).findByCodeInListWithPlateforme(listeCodes,
-						SessionUtils.getCurrentPlateforme());
+		List<String> listeCodes = IntStream.rangeClosed(premierCode, dernierCode).mapToObj(String::valueOf)
+				.map(mapToCodeEchantillon).collect(Collectors.toList());
+		return ManagerLocator.getManager(EchantillonManager.class).findByCodeInListWithPlateforme(listeCodes,
+				SessionUtils.getCurrentPlateforme());
 
 	}
 
 	/**
-	 * Recherche s'il existe des doublons de code échantillon dans entre l'intervalle saisi et les
-	 * codes échantillons connus du prélèvement parent
+	 * Recherche s'il existe des doublons de code échantillon dans entre
+	 * l'intervalle saisi et les codes échantillons connus du prélèvement parent
+	 * 
 	 * @param premier lettre du début de l'intervalle
 	 * @param dernier lettre de fin de l'intervalle
 	 * @return liste des codes échantillon en doublon
 	 */
-	private List<String> findDoublonsInUsedCodes(final String premier, final String dernier){
+	private List<String> findDoublonsInUsedCodes(final String premier, final String dernier) {
 
 		int begin = premier.charAt(0);
 		int end = dernier.charAt(0);
@@ -1683,11 +1712,12 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
 
 		List<String> doublons = new ArrayList<>();
 
-		if(!StringUtils.isEmpty(prefix)){
+		if (!StringUtils.isEmpty(prefix)) {
 
 			String delimiter = Optional.ofNullable(separatorBox.getValue()).orElse("");
 
-			Function<String, String> mapCharToCode = s -> new StringBuilder().append(prefix).append(delimiter).append(s).toString();
+			Function<String, String> mapCharToCode = s -> new StringBuilder().append(prefix).append(delimiter).append(s)
+					.toString();
 			Predicate<String> isCodeUsed = s -> usedCodesEchantillons.contains(s);
 
 			doublons = IntStream.rangeClosed(begin, end).mapToObj(i -> String.valueOf((char) i)).map(mapCharToCode)
@@ -1700,44 +1730,47 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
 	}
 
 	/**
-	 * Recherche s'il existe en base des doublons de code échantillon dans l'intervalle saisi pour la plateforme courante
+	 * Recherche s'il existe en base des doublons de code échantillon dans
+	 * l'intervalle saisi pour la plateforme courante
+	 * 
 	 * @param premier lettre de début de l'intervalle
 	 * @param dernier lettre de fn de l'intervalle
 	 * @return liste des codes échantillon en doublon
 	 */
-	private List<Echantillon> findDoublonsInPlateforme(final String premier, final String dernier){
+	private List<Echantillon> findDoublonsInPlateforme(final String premier, final String dernier) {
 
 		int begin = premier.charAt(0);
 		int end = dernier.charAt(0);
 
-		Function<Character, String> mapToCodeEchantillon =
-				s -> new StringBuilder(getCodePrefixe()).append(separatorBox.getValue()).append(s).toString();
+		Function<Character, String> mapToCodeEchantillon = s -> new StringBuilder(getCodePrefixe())
+				.append(separatorBox.getValue()).append(s).toString();
 
-				List<String> listeCodes =
-						IntStream.rangeClosed(begin, end).mapToObj(idx -> (char) idx).map(mapToCodeEchantillon).collect(Collectors.toList());
-				return ManagerLocator.getManager(EchantillonManager.class).findByCodeInListWithPlateforme(listeCodes,
-						SessionUtils.getCurrentPlateforme());
+		List<String> listeCodes = IntStream.rangeClosed(begin, end).mapToObj(idx -> (char) idx)
+				.map(mapToCodeEchantillon).collect(Collectors.toList());
+		return ManagerLocator.getManager(EchantillonManager.class).findByCodeInListWithPlateforme(listeCodes,
+				SessionUtils.getCurrentPlateforme());
 
 	}
 
 	/**
 	 * Méthode initialisant les objets associés.
 	 */
-	public void initAssociations(){
-		if(getParentObject() != null && getParentObject().getBanque() != null){
+	public void initAssociations() {
+		if (getParentObject() != null && getParentObject().getBanque() != null) {
 			setBanque(getParentObject().getBanque());
-		}else{
+		} else {
 			setBanque(SessionUtils.getSelectedBanques(sessionScope).get(0));
 		}
 
-		if(addedEchantillons.size() == 0){
+		if (addedEchantillons.size() == 0) {
 			// Init des échantillons
-			if(getParentObject() != null && getParentObject().getPrelevementId() != null){
+			if (getParentObject() != null && getParentObject().getPrelevementId() != null) {
 				echantillons = ManagerLocator.getEchantillonManager().findByPrelevementManager(getParentObject());
 
-				usedCodesEchantillons = ManagerLocator.getEchantillonManager().findAllCodesForBanqueManager(getBanque());
+				usedCodesEchantillons = ManagerLocator.getEchantillonManager()
+						.findAllCodesForBanqueManager(getBanque());
 
-			}else{
+			} else {
 				usedCodesEchantillons.clear();
 				echantillons.clear();
 			}
@@ -1746,9 +1779,9 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
 			final ListModel<EchantillonDTO> list = new ListModelList<>(echantillonsDecorated);
 			echantillonsList.setModel(list);
 
-			if(echantillons.size() > 0){
+			if (echantillons.size() > 0) {
 				stockageEchantillons.setDisabled(false);
-			}else{
+			} else {
 				stockageEchantillons.setDisabled(true);
 			}
 		}
@@ -1758,87 +1791,87 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
 	/********************** ACCESSEURS. **********************/
 	/*********************************************************/
 
-	public Prelevement getPrelevement(){
+	public Prelevement getPrelevement() {
 		return getParentObject();
 	}
 
-	public String[] getConnaissances(){
+	public String[] getConnaissances() {
 		return connaissances;
 	}
 
-	public void setConnaissances(final String[] c){
+	public void setConnaissances(final String[] c) {
 		this.connaissances = c;
 	}
 
-	public boolean isSelectParent(){
+	public boolean isSelectParent() {
 		return selectParent;
 	}
 
-	public void setSelectParent(final boolean parent){
+	public void setSelectParent(final boolean parent) {
 		this.selectParent = parent;
 	}
 
-	public Maladie getMaladie(){
+	public Maladie getMaladie() {
 		return maladie;
 	}
 
-	public void setMaladie(final Maladie mal){
+	public void setMaladie(final Maladie mal) {
 		this.maladie = mal;
 	}
 
-	public List<Echantillon> getEchantillons(){
+	public List<Echantillon> getEchantillons() {
 		return echantillons;
 	}
 
-	public void setEchantillons(final List<Echantillon> echans){
+	public void setEchantillons(final List<Echantillon> echans) {
 		this.echantillons = echans;
 	}
 
-	public List<Object> getAddedEchantillons(){
+	public List<Object> getAddedEchantillons() {
 		return addedEchantillons;
 	}
 
-	public void setAddedEchantillons(final List<Object> added){
+	public void setAddedEchantillons(final List<Object> added) {
 		this.addedEchantillons = added;
 	}
 
-	public List<EchantillonDTO> getEchantillonsDecorated(){
+	public List<EchantillonDTO> getEchantillonsDecorated() {
 		return echantillonsDecorated;
 	}
 
-	public void setEchantillonsDecorated(final List<EchantillonDTO> decorated){
+	public void setEchantillonsDecorated(final List<EchantillonDTO> decorated) {
 		this.echantillonsDecorated = decorated;
 	}
 
-	public AbstractEchantillonDecoratorRowRenderer getEchanDecoRenderer(){
+	public AbstractEchantillonDecoratorRowRenderer getEchanDecoRenderer() {
 		return echanDecoRenderer;
 	}
 
-	public List<String> getUsedCodesEchantillons(){
+	public List<String> getUsedCodesEchantillons() {
 		return usedCodesEchantillons;
 	}
 
-	public void setUsedCodesEchantillons(final List<String> usedCodes){
+	public void setUsedCodesEchantillons(final List<String> usedCodes) {
 		this.usedCodesEchantillons = usedCodes;
 	}
 
-	public Integer getPremierCode(){
+	public Integer getPremierCode() {
 		return premierCode;
 	}
 
-	public void setPremierCode(final Integer code){
+	public void setPremierCode(final Integer code) {
 		this.premierCode = code;
 	}
 
-	public Integer getDernierCode(){
+	public Integer getDernierCode() {
 		return dernierCode;
 	}
 
-	public void setDernierCode(final Integer code){
+	public void setDernierCode(final Integer code) {
 		this.dernierCode = code;
 	}
 
-	public Map<? extends TKStockableObject, Emplacement> getEchansEmpl(){
+	public Map<? extends TKStockableObject, Emplacement> getEchansEmpl() {
 		return echansEmpl;
 	}
 
@@ -1846,19 +1879,19 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
 	/************************** VALIDATION ***********************************/
 	/*************************************************************************/
 
-	public Constraint getCttPremierCode(){
+	public Constraint getCttPremierCode() {
 		return cttPremierCode;
 	}
 
-	public void setCttPremierCode(final Constraint ctt){
+	public void setCttPremierCode(final Constraint ctt) {
 		this.cttPremierCode = ctt;
 	}
 
-	public Constraint getCttDernierCode(){
+	public Constraint getCttDernierCode() {
 		return cttDernierCode;
 	}
 
-	public void setCttDernierCode(final Constraint ctt){
+	public void setCttDernierCode(final Constraint ctt) {
 		this.cttDernierCode = ctt;
 	}
 
@@ -1867,27 +1900,27 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
 	 * @author Pierre Ventadour.
 	 *
 	 */
-	private class ConstPremierCode implements Constraint
-	{
+	protected class ConstPremierCode implements Constraint {
 
 		@Override
-		public void validate(final Component comp, final Object value){
+		public void validate(final Component comp, final Object value) {
 			// on ne prend en compte cette contrainte que si
 			// l'utilisateur veut utiliser des chiffres en
 			// numérotation
-			if(numNombres.isChecked()){
+			if (numNombres.isChecked()) {
 				// on récupère la valeur dans premierCodeBoxEchan
 				premierCode = (Integer) value;
 
 				// si une valeur est saisie dans le champ premierCodeBoxEchan
-				if(premierCode != null){
+				if (premierCode != null) {
 					// si le premier code est négatif
-					if(premierCode <= 0){
-						throw new WrongValueException(comp, Labels.getLabel("ficheMultiProdDerive.error.code.sup.zero"));
+					if (premierCode <= 0) {
+						throw new WrongValueException(comp,
+								Labels.getLabel("ficheMultiProdDerive.error.code.sup.zero"));
 					}
 					// Si le dernierCode est null (1ère édition de la page)
 					// on va récupérer la valeur du champ dernierCodeBoxEchan
-					if(dernierCode == null){
+					if (dernierCode == null) {
 						// on enlève la contrainte de dernierCodeBoxEchan pour
 						// pouvoir récupérer sa valeur
 						dernierCodeBoxEchan.setConstraint("");
@@ -1898,10 +1931,11 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
 					}
 
 					// si une valeur est saisie dans le champ dernierCodeBoxEchan
-					if(dernierCode != null){
+					if (dernierCode != null) {
 						// si le dernier code est < au premier
-						if(dernierCode < premierCode){
-							throw new WrongValueException(comp, Labels.getLabel("ficheMultiEchantillon.error.premier.code.superieur"));
+						if (dernierCode < premierCode) {
+							throw new WrongValueException(comp,
+									Labels.getLabel("ficheMultiEchantillon.error.premier.code.superieur"));
 						}
 
 						// sinon on enlève toutes les erreurs affichées
@@ -1913,20 +1947,21 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
 
 						// recherche de doublons dans les échantillons du parent
 						final List<String> doublonsParent = findDoublonsInUsedCodes(premierCode, dernierCode);
-						if(!doublonsParent.isEmpty()){
+						if (!doublonsParent.isEmpty()) {
 							String doublonsCodes = doublonsParent.stream().collect(Collectors.joining(", "));
 							throw new WrongValueException(comp,
-									Labels.getLabel("echantillon.doublon.error.num", new String[] {doublonsCodes}));
+									Labels.getLabel("echantillon.doublon.error.num", new String[] { doublonsCodes }));
 						}
 
 						// recherche de doublon dans les codes échantillons de la plateforme
 						final List<Echantillon> doublonsPf = findDoublonsInPlateforme(premierCode, dernierCode);
-						if(!doublonsPf.isEmpty()){
-							String doublonsCodes = doublonsPf.stream().map(Echantillon::getCode).collect(Collectors.joining(", "));
-							String doublonsBanques = doublonsPf.stream().map(Echantillon::getBanque).distinct().map(Banque::getNom)
+						if (!doublonsPf.isEmpty()) {
+							String doublonsCodes = doublonsPf.stream().map(Echantillon::getCode)
 									.collect(Collectors.joining(", "));
-							throw new WrongValueException(dernierCodeBoxEchan,
-									Labels.getLabel("error.validation.doublon.code", new String[] {doublonsCodes, doublonsBanques}));
+							String doublonsBanques = doublonsPf.stream().map(Echantillon::getBanque).distinct()
+									.map(Banque::getNom).collect(Collectors.joining(", "));
+							throw new WrongValueException(dernierCodeBoxEchan, Labels.getLabel(
+									"error.validation.doublon.code", new String[] { doublonsCodes, doublonsBanques }));
 						}
 
 						// sinon on enlève toutes les erreurs affichées
@@ -1935,7 +1970,7 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
 						dernierCodeBoxEchan.setConstraint("");
 						dernierCodeBoxEchan.setValue(tmp);
 						dernierCodeBoxEchan.setConstraint(cttDernierCode);
-					}else{
+					} else {
 						// sinon on enlève toutes les erreurs affichées
 						final Integer tmp = dernierCode;
 						Clients.clearWrongValue(dernierCodeBoxEchan);
@@ -1943,11 +1978,12 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
 						dernierCodeBoxEchan.setValue(tmp);
 						dernierCodeBoxEchan.setConstraint(cttDernierCode);
 					}
-				} 
+				}
 				// else if (!StringUtils.isEmpty(dernierCodeBoxEchan.getValue())) {
-				//	throw new WrongValueException(comp, Labels.getLabel("validation.syntax.empty"));
+				// throw new WrongValueException(comp,
+				// Labels.getLabel("validation.syntax.empty"));
 				// }
-			}else{
+			} else {
 				Clients.clearWrongValue(premierCodeBoxEchan);
 				premierCodeBoxEchan.setConstraint("");
 				premierCodeBoxEchan.setValue(null);
@@ -1960,34 +1996,34 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
 		}
 	}
 
-	private Constraint cttPremierCode = new ConstPremierCode();
+	protected Constraint cttPremierCode = new ConstPremierCode();
 
 	/**
 	 *
 	 * @author Pierre Ventadour.
 	 *
 	 */
-	private class ConstDernierCode implements Constraint
-	{
+	protected class ConstDernierCode implements Constraint {
 
 		@Override
-		public void validate(final Component comp, final Object value){
+		public void validate(final Component comp, final Object value) {
 			// on ne prend en compte cette contrainte que si
 			// l'utilisateur veut utiliser des chiffres en
 			// numérotation
-			if(numNombres.isChecked()){
+			if (numNombres.isChecked()) {
 				// on récupère la valeur dans dernierCodeBoxEchan
 				dernierCode = (Integer) value;
 
 				// si une valeur est saisie dans le champ dernierCodeBoxEchan
-				if(dernierCode != null){
+				if (dernierCode != null) {
 					// si le dernier code est négatif
-					if(dernierCode <= 0){
-						throw new WrongValueException(comp, Labels.getLabel("ficheMultiProdDerive.error.code.sup.zero"));
+					if (dernierCode <= 0) {
+						throw new WrongValueException(comp,
+								Labels.getLabel("ficheMultiProdDerive.error.code.sup.zero"));
 					}
 					// Si le premierCode est null (1ère édition de la page)
 					// on va récupérer la valeur du champ premierCodeBoxEchan
-					if(premierCode == null){
+					if (premierCode == null) {
 						// on enlève la contrainte de premierCodeBoxEchan pour
 						// pouvoir récupérer sa valeur
 						premierCodeBoxEchan.setConstraint("");
@@ -1998,10 +2034,11 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
 					}
 
 					// si une valeur est saisie dans le champ premierCodeBoxEchan
-					if(premierCode != null){
+					if (premierCode != null) {
 						// si le dernier code est < au premier
-						if(dernierCode < premierCode){
-							throw new WrongValueException(comp, Labels.getLabel("ficheMultiEchantillon.error.premier.code.superieur"));
+						if (dernierCode < premierCode) {
+							throw new WrongValueException(comp,
+									Labels.getLabel("ficheMultiEchantillon.error.premier.code.superieur"));
 						}
 
 						// sinon on enlève toutes les erreurs affichées
@@ -2013,23 +2050,24 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
 
 						// recherche de doublons avec les échantillons du parent
 						final List<String> doublonsCode = findDoublonsInUsedCodes(premierCode, dernierCode);
-						if(!doublonsCode.isEmpty()){
+						if (!doublonsCode.isEmpty()) {
 							String codesDoublons = doublonsCode.stream().collect(Collectors.joining(", "));
 							throw new WrongValueException(comp,
-									Labels.getLabel("echantillon.doublon.error.num", new String[] {codesDoublons}));
+									Labels.getLabel("echantillon.doublon.error.num", new String[] { codesDoublons }));
 						}
 
 						// si des doublons existent pour la plateforme
-						final List<Echantillon> doublonsEchantillons = findDoublonsInPlateforme(premierCode, dernierCode);
-						if(!doublonsEchantillons.isEmpty()){
+						final List<Echantillon> doublonsEchantillons = findDoublonsInPlateforme(premierCode,
+								dernierCode);
+						if (!doublonsEchantillons.isEmpty()) {
 
-							String codesDoublons =
-									doublonsEchantillons.stream().map(Echantillon::getCode).collect(Collectors.joining(", "));
-							String banquesDoublons = doublonsEchantillons.stream().map(Echantillon::getBanque).distinct()
-									.map(Banque::getNom).collect(Collectors.joining(", "));
+							String codesDoublons = doublonsEchantillons.stream().map(Echantillon::getCode)
+									.collect(Collectors.joining(", "));
+							String banquesDoublons = doublonsEchantillons.stream().map(Echantillon::getBanque)
+									.distinct().map(Banque::getNom).collect(Collectors.joining(", "));
 
-							throw new WrongValueException(comp,
-									Labels.getLabel("error.validation.doublon.code", new String[] {codesDoublons, banquesDoublons}));
+							throw new WrongValueException(comp, Labels.getLabel("error.validation.doublon.code",
+									new String[] { codesDoublons, banquesDoublons }));
 
 						}
 						// sinon on enlève toutes les erreurs affichées
@@ -2038,7 +2076,7 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
 						premierCodeBoxEchan.setConstraint("");
 						premierCodeBoxEchan.setValue(tmp);
 						premierCodeBoxEchan.setConstraint(cttPremierCode);
-					}else{
+					} else {
 						// sinon on enlève toutes les erreurs affichées
 						final Integer tmp = premierCode;
 						Clients.clearWrongValue(premierCodeBoxEchan);
@@ -2046,11 +2084,12 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
 						premierCodeBoxEchan.setValue(tmp);
 						premierCodeBoxEchan.setConstraint(cttPremierCode);
 					}
-				} 
+				}
 				// else if (!StringUtils.isEmpty(premierCodeBoxEchan.getValue())) {
-				//	throw new WrongValueException(comp, Labels.getLabel("validation.syntax.empty"));
+				// throw new WrongValueException(comp,
+				// Labels.getLabel("validation.syntax.empty"));
 				// }
-			}else{
+			} else {
 				Clients.clearWrongValue(premierCodeBoxEchan);
 				premierCodeBoxEchan.setConstraint("");
 				premierCodeBoxEchan.setValue(null);
@@ -2063,39 +2102,38 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
 		}
 	}
 
-	private Constraint cttDernierCode = new ConstDernierCode();
+	protected Constraint cttDernierCode = new ConstDernierCode();
 
 	/**
 	 *
 	 * @author Pierre Ventadour.
 	 *
 	 */
-	private class ConstPremiereLettre implements Constraint
-	{
+	protected class ConstPremiereLettre implements Constraint {
 
 		@Override
-		public void validate(final Component comp, final Object value){
+		public void validate(final Component comp, final Object value) {
 
 			// on ne prend en compte cette contrainte que si
 			// l'utilisateur veut utiliser des lettres en
 			// numérotation
-			if(numLettres.isChecked()){
+			if (numLettres.isChecked()) {
 
 				String sValue = (String) value;
 
 				// si une valeur est saisie
-				if(sValue != null && !"".equals(sValue)){
+				if (sValue != null && !"".equals(sValue)) {
 
 					// on récupère la valeur dans premiereLettreBoxEchan
 					premiereLettre = sValue.toUpperCase();
 
 					// si le premier code est invalide
-					if(!premiereLettre.matches("[A-Z]")){
+					if (!premiereLettre.matches("[A-Z]")) {
 						throw new WrongValueException(comp, Labels.getLabel("ficheMultiEchantillons.lettre.invalide"));
 					}
 					// Si la derniereLettre est null (1ère édition de la page)
 					// on va récupérer la valeur du champ derniereLettreBoxEchan
-					if(derniereLettre == null || derniereLettre.equals("")){
+					if (derniereLettre == null || derniereLettre.equals("")) {
 						// on enlève la contrainte de
 						// derniereLettreBoxEchan pour
 						// pouvoir récupérer sa valeur
@@ -2108,10 +2146,11 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
 
 					// si une valeur est saisie dans le champ
 					// derniereLettreBoxEchan
-					if(derniereLettre != null && !derniereLettre.equals("")){
+					if (derniereLettre != null && !derniereLettre.equals("")) {
 						// si la derniere est avant la premiere
-						if(derniereLettre.compareToIgnoreCase(premiereLettre) < 0){
-							throw new WrongValueException(comp, Labels.getLabel("ficheMultiEchantillon.error.premier.lettre.superieur"));
+						if (derniereLettre.compareToIgnoreCase(premiereLettre) < 0) {
+							throw new WrongValueException(comp,
+									Labels.getLabel("ficheMultiEchantillon.error.premier.lettre.superieur"));
 						}
 
 						// sinon on enlève toutes les erreurs affichées
@@ -2123,21 +2162,22 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
 
 						// recherche de doublons avec les échantillons du parent
 						final List<String> doublonsCodes = findDoublonsInUsedCodes(premiereLettre, derniereLettre);
-						if(!doublonsCodes.isEmpty()){
+						if (!doublonsCodes.isEmpty()) {
 							String codesDoublons = doublonsCodes.stream().collect(Collectors.joining(", "));
-							throw new WrongValueException(comp,
-									Labels.getLabel("echantillon.doublon.error.letter", new String[] {codesDoublons}));
+							throw new WrongValueException(comp, Labels.getLabel("echantillon.doublon.error.letter",
+									new String[] { codesDoublons }));
 						}
 
 						// recherche de doublons sur la plateforme
-						final List<Echantillon> doublonsEchantillons = findDoublonsInPlateforme(premiereLettre, derniereLettre);
-						if(!doublonsEchantillons.isEmpty()){
-							String codesDoublons =
-									doublonsEchantillons.stream().map(Echantillon::getCode).collect(Collectors.joining(", "));
-							String pfDoublons = doublonsEchantillons.stream().map(Echantillon::getBanque).distinct().map(Banque::getNom)
+						final List<Echantillon> doublonsEchantillons = findDoublonsInPlateforme(premiereLettre,
+								derniereLettre);
+						if (!doublonsEchantillons.isEmpty()) {
+							String codesDoublons = doublonsEchantillons.stream().map(Echantillon::getCode)
 									.collect(Collectors.joining(", "));
-							throw new WrongValueException(comp,
-									Labels.getLabel("error.validation.doublon.code", new String[] {codesDoublons, pfDoublons}));
+							String pfDoublons = doublonsEchantillons.stream().map(Echantillon::getBanque).distinct()
+									.map(Banque::getNom).collect(Collectors.joining(", "));
+							throw new WrongValueException(comp, Labels.getLabel("error.validation.doublon.code",
+									new String[] { codesDoublons, pfDoublons }));
 						}
 
 						// sinon on enlève toutes les erreurs affichées
@@ -2146,7 +2186,7 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
 						derniereLettreBoxEchan.setConstraint("");
 						derniereLettreBoxEchan.setValue(tmp);
 						derniereLettreBoxEchan.setConstraint(cttDerniereLettre);
-					}else{
+					} else {
 						// sinon on enlève toutes les erreurs affichées
 						final String tmp = derniereLettre;
 						Clients.clearWrongValue(derniereLettreBoxEchan);
@@ -2156,9 +2196,10 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
 					}
 				}
 				// else if (!StringUtils.isEmpty(premiereLettreBoxEchan.getValue())) {
-				//	throw new WrongValueException(comp, Labels.getLabel("validation.syntax.empty"));
+				// throw new WrongValueException(comp,
+				// Labels.getLabel("validation.syntax.empty"));
 				// }
-			}else{
+			} else {
 				Clients.clearWrongValue(premiereLettreBoxEchan);
 				premiereLettreBoxEchan.setConstraint("");
 				premiereLettreBoxEchan.setValue(null);
@@ -2171,40 +2212,39 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
 		}
 	}
 
-	private Constraint cttPremiereLettre = new ConstPremiereLettre();
+	protected Constraint cttPremiereLettre = new ConstPremiereLettre();
 
 	/**
 	 *
 	 * @author Pierre Ventadour.
 	 *
 	 */
-	private class ConstDerniereLettre implements Constraint
-	{
+	protected class ConstDerniereLettre implements Constraint {
 
 		@Override
-		public void validate(final Component comp, final Object value){
+		public void validate(final Component comp, final Object value) {
 
 			// on ne prend en compte cette contrainte que si
 			// l'utilisateur veut utiliser des lettres en
 			// numérotation
-			if(numLettres.isChecked()){
+			if (numLettres.isChecked()) {
 
 				final String sValue = (String) value;
 
 				// si une valeur est saisie
-				if(value != null && !"".equals(sValue)){
+				if (value != null && !"".equals(sValue)) {
 
 					// on récupère la valeur dans derniereLettreBoxEchan
 					derniereLettre = sValue.toUpperCase();
 
 					// si la derniere lettre n'est pas valide
-					if(!derniereLettre.matches("[A-Z]")){
+					if (!derniereLettre.matches("[A-Z]")) {
 						throw new WrongValueException(comp, Labels.getLabel("ficheMultiEchantillons.lettre.invalide"));
 					}
 					// Si la premiere lettre est null (1ère édition de la page)
 					// on va récupérer la valeur
 					// du champ premiereLettreBoxEchan
-					if(premiereLettre == null || premiereLettre.equals("")){
+					if (premiereLettre == null || premiereLettre.equals("")) {
 						// on enlève la contrainte pour
 						// pouvoir récupérer sa valeur
 						premiereLettreBoxEchan.setConstraint("");
@@ -2216,11 +2256,13 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
 
 					// si une valeur est saisie dans le champ
 					// premiereLettreBoxEchan
-					if(premiereLettre != null && !premiereLettre.equals("")){
+					if (premiereLettre != null && !premiereLettre.equals("")) {
 						// si le dernier code est < au premier
 						// si la derniere est avant la premiere
-						if(!premiereLettre.matches("[A-Z]") || derniereLettre.compareToIgnoreCase(premiereLettre) < 0){
-							throw new WrongValueException(comp, Labels.getLabel("ficheMultiEchantillon.error.premier.lettre.superieur"));
+						if (!premiereLettre.matches("[A-Z]")
+								|| derniereLettre.compareToIgnoreCase(premiereLettre) < 0) {
+							throw new WrongValueException(comp,
+									Labels.getLabel("ficheMultiEchantillon.error.premier.lettre.superieur"));
 						}
 						// sinon on enlève toutes les erreurs affichées
 						String tmp = premiereLettre;
@@ -2231,20 +2273,21 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
 
 						// recherche de doublons dans les échantillons du parent
 						final List<String> doublonsParent = findDoublonsInUsedCodes(premiereLettre, derniereLettre);
-						if(!doublonsParent.isEmpty()){
+						if (!doublonsParent.isEmpty()) {
 							String codesDoublons = doublonsParent.stream().collect(Collectors.joining(", "));
-							throw new WrongValueException(comp,
-									Labels.getLabel("echantillon.doublon.error.letter", new String[] {codesDoublons}));
+							throw new WrongValueException(comp, Labels.getLabel("echantillon.doublon.error.letter",
+									new String[] { codesDoublons }));
 						}
 
 						// recherche de doublons dans les échantillons de la plateforme
 						final List<Echantillon> doublonsPf = findDoublonsInPlateforme(premiereLettre, derniereLettre);
-						if(!doublonsPf.isEmpty()){
-							String codesDoublons = doublonsPf.stream().map(Echantillon::getCode).collect(Collectors.joining(", "));
-							String banquesDoublons = doublonsPf.stream().map(Echantillon::getBanque).distinct().map(Banque::getNom)
+						if (!doublonsPf.isEmpty()) {
+							String codesDoublons = doublonsPf.stream().map(Echantillon::getCode)
 									.collect(Collectors.joining(", "));
-							throw new WrongValueException(comp,
-									Labels.getLabel("error.validation.doublon.code", new String[] {codesDoublons, banquesDoublons}));
+							String banquesDoublons = doublonsPf.stream().map(Echantillon::getBanque).distinct()
+									.map(Banque::getNom).collect(Collectors.joining(", "));
+							throw new WrongValueException(comp, Labels.getLabel("error.validation.doublon.code",
+									new String[] { codesDoublons, banquesDoublons }));
 						}
 
 						// sinon on enlève toutes les erreurs affichées
@@ -2253,7 +2296,7 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
 						premiereLettreBoxEchan.setConstraint("");
 						premiereLettreBoxEchan.setValue(tmp);
 						premiereLettreBoxEchan.setConstraint(cttPremiereLettre);
-					}else{
+					} else {
 						// sinon on enlève toutes les erreurs affichées
 						final String tmp = premiereLettre;
 						Clients.clearWrongValue(premiereLettreBoxEchan);
@@ -2261,11 +2304,12 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
 						premiereLettreBoxEchan.setValue(tmp);
 						premiereLettreBoxEchan.setConstraint(cttPremiereLettre);
 					}
-				} 
+				}
 				// else if (!StringUtils.isEmpty(premiereLettreBoxEchan.getValue())) {
-				//	throw new WrongValueException(comp, Labels.getLabel("validation.syntax.empty"));
+				// throw new WrongValueException(comp,
+				// Labels.getLabel("validation.syntax.empty"));
 				// }
-			}else{
+			} else {
 				Clients.clearWrongValue(premiereLettreBoxEchan);
 				premiereLettreBoxEchan.setConstraint("");
 				premiereLettreBoxEchan.setValue(null);
@@ -2278,10 +2322,10 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
 		}
 	}
 
-	private Constraint cttDerniereLettre = new ConstDerniereLettre();
+	protected Constraint cttDerniereLettre = new ConstDerniereLettre();
 
 	@Override
-	public void clearConstraints(){
+	public void clearConstraints() {
 		Clients.clearWrongValue(codesParentBoxEchan);
 		Clients.clearWrongValue(premierCodeBoxEchan);
 		Clients.clearWrongValue(dernierCodeBoxEchan);
@@ -2296,32 +2340,34 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
 	 * Applique la validation sur la sterilite.
 	 */
 	@Override
-	public void onCheck$sterileBox(){
+	public void onCheck$sterileBox() {
 		Clients.clearWrongValue(sterileBox);
 	}
 
 	/**
 	 * Valide l'application de la sterilite au niveau echantillon.
+	 * 
 	 * @param value
 	 */
-	private void validateSterilite(final boolean value){
+	private void validateSterilite(final boolean value) {
 		Errors errs = null;
 
-		if(value){
+		if (value) {
 			// test objet
 			final Echantillon testEchan = new Echantillon();
 			testEchan.setSterile(true);
 			Prelevement prel = null;
-			if(isPrelevementProcedure){
+			if (isPrelevementProcedure) {
 				prel = getParentObject();
-			}else{
+			} else {
 				prel = getPrelevementFromSelect();
 			}
-			if(prel != null){
-				if(getLaboInters() != null && !getLaboInters().isEmpty()){
+			if (prel != null) {
+				if (getLaboInters() != null && !getLaboInters().isEmpty()) {
 					prel.setLaboInters(new HashSet<>(getLaboInters()));
-				}else if(prel.getPrelevementId() != null){
-					prel.setLaboInters(new HashSet<>(ManagerLocator.getPrelevementManager().getLaboIntersWithOrderManager(prel)));
+				} else if (prel.getPrelevementId() != null) {
+					prel.setLaboInters(
+							new HashSet<>(ManagerLocator.getPrelevementManager().getLaboIntersWithOrderManager(prel)));
 				}
 				testEchan.setPrelevement(prel);
 
@@ -2331,7 +2377,7 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
 			}
 		}
 
-		if(errs != null && errs.hasErrors()){
+		if (errs != null && errs.hasErrors()) {
 			final List<Errors> errors = new ArrayList<>();
 			errors.add(errs);
 			throw new ValidationException(errors);
@@ -2339,13 +2385,13 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
 	}
 
 	/*************************************************************************/
-	/************************** PROCEDURE PRELEVEMENT*************************/
+	/************************** PROCEDURE PRELEVEMENT *************************/
 	/*************************************************************************/
 	/**
-	 * Change mode de la fiche en mode create depuis la procedure
-	 * de  creation d'un prelevement.
+	 * Change mode de la fiche en mode create depuis la procedure de creation d'un
+	 * prelevement.
 	 */
-	public void switchToEditMode(final Prelevement prel){
+	public void switchToEditMode(final Prelevement prel) {
 
 		// passage prelevement
 		setParentObject(prel);
@@ -2353,14 +2399,14 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
 		setIsCreate(false);
 		switchButtons();
 
-		Clients.scrollIntoView(formGrid.getColumns());
+		scrollToTop();
 
 		// Initialisation du mode (listes, valeurs...)
 		initEditableMode();
 		initQuantiteAndVolume();
 		initAssociations();
 
-		if(!getDroitOnAction("Collaborateur", "Consultation")){
+		if (!getDroitOnAction("Collaborateur", "Consultation")) {
 			operateurAideSaisieEchan.setVisible(false);
 		}
 
@@ -2368,9 +2414,13 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
 
 		getBinder().loadComponent(self);
 	}
+	
+	protected void scrollToTop() {
+		Clients.scrollIntoView(formGrid.getColumns());
+	}
 
 	/*************************************************************************/
-	/************************** PARENT    ************************************/
+	/************************** PARENT ************************************/
 	/*************************************************************************/
 	// Objets pour la sélection du parent
 	private List<String> codesParent = new ArrayList<>();
@@ -2380,9 +2430,11 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
 	private boolean selectParent = false;
 
 	// Mode de sélection du parent
-	private Row selectParentRowEchan;
-	private Row prelRow;
-	private Row unknownPrelRow;
+	// gatsbi Row -> Div
+	protected HtmlBasedComponent selectParentRowEchan;
+	private HtmlBasedComponent prelRow;
+	private HtmlBasedComponent unknownPrelRow;
+	
 	private Combobox codesParentBoxEchan;
 	private Label codeParentLabelEchan;
 	private Label requiredCodeParentEchan;
@@ -2391,34 +2443,34 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
 	// Variable contenant le code prlvt saisi par l'utilisateur.
 	private String codeTmp;
 
-	public List<String> getCodesParent(){
+	public List<String> getCodesParent() {
 		return codesParent;
 	}
 
-	public void setCodesParent(final List<String> codes){
+	public void setCodesParent(final List<String> codes) {
 		this.codesParent = codes;
 	}
 
-	public CustomSimpleListModel getDictCodesModel(){
+	public CustomSimpleListModel getDictCodesModel() {
 		return dictCodesModel;
 	}
 
-	public void setDictCodesModel(final CustomSimpleListModel dictCodes){
+	public void setDictCodesModel(final CustomSimpleListModel dictCodes) {
 		this.dictCodesModel = dictCodes;
 	}
 
-	public String getSelectedCodeParent(){
+	public String getSelectedCodeParent() {
 		return selectedCodeParent;
 	}
 
-	public void setSelectedCodeParent(final String selectedCode){
+	public void setSelectedCodeParent(final String selectedCode) {
 		this.selectedCodeParent = selectedCode;
 	}
 
 	/**
 	 * Cache le mode de sélection du prlvt parent.
 	 */
-	public void removeSelectParentMode(){
+	public void removeSelectParentMode() {
 		selectParent = false;
 
 		// on cache les éléments.
@@ -2428,11 +2480,11 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
 	}
 
 	/**
-	 * Lors de la création d'un échantillon, si son prlvt parent n'est
-	 * pas fourni, on propose une sélection de celui-ci.
-	 * Cette méthode permet l'affichage de cette sélection.
+	 * Lors de la création d'un échantillon, si son prlvt parent n'est pas fourni,
+	 * on propose une sélection de celui-ci. Cette méthode permet l'affichage de
+	 * cette sélection.
 	 */
-	public void addSelectParentMode(){
+	public void addSelectParentMode() {
 		selectParent = true;
 		setParentObject(null);
 
@@ -2451,29 +2503,29 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
 	}
 
 	/**
-	 * Mise à jour de la valeur sélectionné dans la combobox lorsque
-	 * l'utilisateur clique à l'extérieur de celle-ci.
-	 * @param event Event : clique à l'extérieur de la combobox
-	 * codesParentBoxEchan.
+	 * Mise à jour de la valeur sélectionné dans la combobox lorsque l'utilisateur
+	 * clique à l'extérieur de celle-ci.
+	 * 
+	 * @param event Event : clique à l'extérieur de la combobox codesParentBoxEchan.
 	 * @throws Exception
 	 */
-	public void onBlur$codesParentBoxEchan(final Event event) throws Exception{
+	public void onBlur$codesParentBoxEchan(final Event event) throws Exception {
 		// on enlève la contrainte de la combobox
 		codesParentBoxEchan.setConstraint("");
 		codesParentBoxEchan.clearErrorMessage();
 		// si aucun élément n'est sélectionné, la valeur de la box correspond
 		// à ce qu'a tapé l'utilisateur.
-		if(codesParentBoxEchan.getSelectedItem() == null){
+		if (codesParentBoxEchan.getSelectedItem() == null) {
 			codesParentBoxEchan.setValue(codeTmp);
-		}else{
+		} else {
 			// on valide la sélection
 			cttCodeParentEchan.validate(codesParentBoxEchan, null);
 
 			setCodePrefixe(codesParentBoxEchan.getSelectedItem().getLabel());
 
 			// on récupère le prlvt en fonction de son code
-			setParentObject(ManagerLocator.getPrelevementManager().findByCodeOrNumLaboLikeWithBanqueManager(getCodePrefixe(),
-					SessionUtils.getSelectedBanques(sessionScope).get(0), true).get(0));
+			setParentObject(ManagerLocator.getPrelevementManager().findByCodeOrNumLaboLikeWithBanqueManager(
+					getCodePrefixe(), SessionUtils.getSelectedBanques(sessionScope).get(0), true).get(0));
 
 			calculDelaiCgl();
 			clearConstraints();
@@ -2493,10 +2545,10 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
 		cttCodeParentEchan.validate(codesParentBoxEchan, null);
 	}
 
-	public void onSelect$connaissancesBoxEchan(){
+	public void onSelect$connaissancesBoxEchan() {
 		final int ind = connaissancesBoxEchan.getSelectedIndex();
 		clearForm(false);
-		if(ind > 0){
+		if (ind > 0) {
 			setParentObject(null);
 			codeParentLabelEchan.setVisible(false);
 			requiredCodeParentEchan.setVisible(false);
@@ -2506,7 +2558,7 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
 			codesParentBoxEchan.clearErrorMessage();
 			codesParentBoxEchan.setValue("");
 			connaissancesBoxEchan.setSelectedIndex(1);
-		}else{
+		} else {
 			codeParentLabelEchan.setVisible(true);
 			requiredCodeParentEchan.setVisible(true);
 			codesParentBoxEchan.setVisible(true);
@@ -2529,7 +2581,7 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
 	 * Clic sur le bouton générant un code.
 	 */
 	@Override
-	public void onClick$numerotation(){
+	public void onClick$numerotation() {
 		setCodePrefixe(generateCodeAndUpdateNumerotation());
 	}
 
@@ -2537,40 +2589,40 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
 	/********************** VALIDATION ***********************/
 	/*********************************************************/
 	/**
-	 * Contrainte vérifiant que la combobox pour le code du parent n'est
-	 * pas nulle et que son contenu se trouve bien dans la liste.
+	 * Contrainte vérifiant que la combobox pour le code du parent n'est pas nulle
+	 * et que son contenu se trouve bien dans la liste.
+	 * 
 	 * @author Pierre Ventadour.
 	 *
 	 */
-	private class ConstCodeParentEchan implements Constraint
-	{
+	protected class ConstCodeParentEchan implements Constraint {
 		/**
 		 * Méthode de validation du champ dateTransfoBox.
 		 */
 		@Override
-		public void validate(final Component comp, final Object value){
+		public void validate(final Component comp, final Object value) {
 			codesParentBoxEchan.setConstraint("");
 			codesParentBoxEchan.clearErrorMessage();
 			String code = "";
-			if(codesParentBoxEchan.getSelectedItem() != null){
+			if (codesParentBoxEchan.getSelectedItem() != null) {
 				code = codesParentBoxEchan.getSelectedItem().getLabel();
-			}else{
+			} else {
 				code = codesParentBoxEchan.getValue();
 			}
 
-			if(code.length() == 0){
+			if (code.length() == 0) {
 				throw new WrongValueException(comp,
 						"Champ vide non autorisé. Vous devez " + "spécifier un code présent dans la liste.");
-			}else if(!codesParent.contains(code)){
+			} else if (!codesParent.contains(code)) {
 				throw new WrongValueException(comp,
 						"Valeur non autorisée. Vous devez spécifier " + "une valeur présente dans la liste.");
 			}
 		}
 	}
 
-	private final Constraint cttCodeParentEchan = new ConstCodeParentEchan();
+	protected final Constraint cttCodeParentEchan = new ConstCodeParentEchan();
 
-	public Constraint getCttCodeParentEchan(){
+	public Constraint getCttCodeParentEchan() {
 		return cttCodeParentEchan;
 	}
 
@@ -2578,31 +2630,32 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
 	 * Applique la validation sur la date.
 	 */
 	@Override
-	public void onBlur$dateStockCalBox(){
+	public void onBlur$dateStockCalBox() {
 		final Datebox box = (Datebox) dateStockCalBox.getFirstChild().getFirstChild();
 		boolean badDateFormat = false;
-		if(box.getErrorMessage() != null && box.getErrorMessage().contains(box.getFormat())){
+		if (box.getErrorMessage() != null && box.getErrorMessage().contains(box.getFormat())) {
 			badDateFormat = true;
-		}else{
+		} else {
 			final Calendar calValue = Calendar.getInstance();
-			if(box.getValue() != null){
+			if (box.getValue() != null) {
 				calValue.setTime(box.getValue());
-				if(calValue.get(Calendar.YEAR) > 9999){
+				if (calValue.get(Calendar.YEAR) > 9999) {
 					badDateFormat = true;
 				}
 			}
 		}
-		if(!badDateFormat){
+		if (!badDateFormat) {
 			// recupere le prelevement parent au besoin
-			if(getParentObject() == null && connaissancesBoxEchan.isVisible()){
+			if (getParentObject() == null && connaissancesBoxEchan.isVisible()) {
 				setParentObject(getPrelevementFromSelect());
 			}
-			if(getParentObject() != null){
+			if (getParentObject() != null) {
 				getEchantillon().setPrelevement(getParentObject());
-				if(!dateStockCalBox.isHasChanged() && dateStockCalBox.getValue() == null){
-					dateStockCalBox.setValue(ObjectTypesFormatters.getDateWithoutHoursAndMins(getParentObject().getDatePrelevement()));
+				if (!dateStockCalBox.isHasChanged() && dateStockCalBox.getValue() == null) {
+					dateStockCalBox.setValue(
+							ObjectTypesFormatters.getDateWithoutHoursAndMins(getParentObject().getDatePrelevement()));
 					getEchantillon().setDateStock(dateStockCalBox.getValue());
-				}else{
+				} else {
 					dateStockCalBox.clearErrorMessage(dateStockCalBox.getValue());
 					validateCoherenceDate(dateStockCalBox, dateStockCalBox.getValue());
 				}
@@ -2610,37 +2663,37 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
 			getEchantillon().setDateStock(dateStockCalBox.getValue());
 			calculDelaiCgl();
 			dateStockCalBox.setHasChanged(true);
-		}else{
+		} else {
 			throw new WrongValueException(dateStockCalBox, Labels.getLabel("validation.invalid.date"));
 		}
 	}
 
 	/**
-	 * Indique si le champ stérile doit être true ou false
-	 * par défaut dans le cas de procédure d'enregistrement
-	 * d'un prélèvement.
+	 * Indique si le champ stérile doit être true ou false par défaut dans le cas de
+	 * procédure d'enregistrement d'un prélèvement.
+	 * 
 	 * @return true/false.
 	 */
-	private boolean initSterileOrNot(){
-		if(getParentObject() == null || getParentObject().getSterile() == null || !getParentObject().getSterile()){
+	private boolean initSterileOrNot() {
+		if (getParentObject() == null || getParentObject().getSterile() == null || !getParentObject().getSterile()) {
 			return false;
 		}
 
 		Collection<LaboInter> labs = null;
 		// aucun nouveau labo créé
-		if(getLaboInters() == null || getLaboInters().isEmpty()){
-			if(getParentObject().getPrelevementId() != null){
+		if (getLaboInters() == null || getLaboInters().isEmpty()) {
+			if (getParentObject().getPrelevementId() != null) {
 				labs = ManagerLocator.getPrelevementManager().getLaboIntersWithOrderManager(getParentObject());
-			}else{
+			} else {
 				labs = new ArrayList<>();
 			}
-		}else{
+		} else {
 			labs = getLaboInters();
 		}
 
 		final Iterator<LaboInter> it = labs.iterator();
-		while(it.hasNext()){
-			if(!it.next().getSterile()){
+		while (it.hasNext()) {
+			if (!it.next().getSterile()) {
 				return false;
 			}
 		}
@@ -2651,13 +2704,13 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
 	/*************************************************************************/
 	/************************** INTERFACAGES *********************************/
 	/*************************************************************************/
-	public void initFormFromDossierExterne(){
+	public void initFormFromDossierExterne() {
 		final ResultatInjection res = SessionUtils.getDossierExterneInjection(sessionScope);
 
-		if(res != null){
+		if (res != null) {
 
 			Echantillon newObj = null;
-			if(res.getEchantillon() != null){
+			if (res.getEchantillon() != null) {
 				newObj = res.getEchantillon().clone();
 				newObj.setBanque((Banque) sessionScope.get("Banque"));
 				newObj.setPrelevement(getParentObject());
@@ -2670,7 +2723,7 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
 				setSelectedQuantiteUnite(newObj.getQuantiteUnite());
 			}
 
-			if(getObjectTabController() != null && getObjectTabController().getFicheAnnotation() != null
+			if (getObjectTabController() != null && getObjectTabController().getFicheAnnotation() != null
 					&& res.getAnnosEchantillon() != null && !res.getAnnosEchantillon().isEmpty()) {
 				getObjectTabController().getFicheAnnotation().setAnnotationValues(res.getAnnosEchantillon());
 			}
@@ -2680,7 +2733,7 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
 			getCodesMorphoController().addCodesFromInjection(res.getCodesMorpho());
 
 			// cr anapath
-			if(res.getCrAnapath() != null){
+			if (res.getCrAnapath() != null) {
 				setAnapathStream(res.getStream());
 				crAnapathNomBox.setValue(res.getCrAnapath().getNom());
 				showDeleteAndFileNameBox(true);
@@ -2690,63 +2743,64 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
 	}
 
 	@Override
-	public void setLaboInters(final List<LaboInter> labos){
+	public void setLaboInters(final List<LaboInter> labos) {
 		super.setLaboInters(labos);
-		if(isPrelevementProcedure){
+		if (isPrelevementProcedure) {
 			sterileBox.setChecked(initSterileOrNot());
 		}
 	}
 
-	public String getPremiereLettre(){
+	public String getPremiereLettre() {
 		return premiereLettre;
 	}
 
-	public void setPremiereLettre(final String l){
+	public void setPremiereLettre(final String l) {
 		this.premiereLettre = l;
 	}
 
-	public String getDerniereLettre(){
+	public String getDerniereLettre() {
 		return derniereLettre;
 	}
 
-	public void setDerniereLettre(final String l){
+	public void setDerniereLettre(final String l) {
 		this.derniereLettre = l;
 	}
 
-	public Constraint getCttPremiereLettre(){
+	public Constraint getCttPremiereLettre() {
 		return cttPremiereLettre;
 	}
 
-	public void setCttPremiereLettre(final Constraint c){
+	public void setCttPremiereLettre(final Constraint c) {
 		this.cttPremiereLettre = c;
 	}
 
-	public Constraint getCttDerniereLettre(){
+	public Constraint getCttDerniereLettre() {
 		return cttDerniereLettre;
 	}
 
-	public void setCttDerniereLettre(final Constraint c){
+	public void setCttDerniereLettre(final Constraint c) {
 		this.cttDerniereLettre = c;
 	}
 
 	/**
 	 * Applique les codes obtenus depuis le scan dans l'ordre aux codes échantillons
 	 * en attente de création dans la liste de travail.
+	 * 
 	 * @param sT scanTerminale
 	 */
-	public void applyTKObjectsCodesFromScan(final ScanTerminale sT){
-		if(!getAddedEchantillons().isEmpty() && !sT.getScanTubes().isEmpty()){
+	public void applyTKObjectsCodesFromScan(final ScanTerminale sT) {
+		if (!getAddedEchantillons().isEmpty() && !sT.getScanTubes().isEmpty()) {
 			int i = 0;
 			Textbox tb;
-			for(final EchantillonDTO deco : getEchantillonsDecorated()){
-				if(deco.isNew() && deco.getAdrlTmp() == null){
-					if(i < sT.getScanTubes().size()){
-						tb = (Textbox) echantillonsList.getRows().getChildren().get(getEchantillonsDecorated().indexOf(deco))
-								.getFirstChild().getNextSibling();
+			for (final EchantillonDTO deco : getEchantillonsDecorated()) {
+				if (deco.isNew() && deco.getAdrlTmp() == null) {
+					if (i < sT.getScanTubes().size()) {
+						tb = (Textbox) echantillonsList.getRows().getChildren()
+								.get(getEchantillonsDecorated().indexOf(deco)).getFirstChild().getNextSibling();
 						tb.setValue(sT.getScanTubes().get(i).getCode());
 						Events.postEvent("onChange", tb, null);
 						i++;
-					}else{
+					} else {
 						break;
 					}
 				}
@@ -2763,7 +2817,7 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
 	public List<Echantillon> getInjectableEchantillons() {
 		final ResultatInjection res = SessionUtils.getDossierExterneInjection(sessionScope);
 		List<Echantillon> echans = new ArrayList<Echantillon>();
-		if(res != null) {
+		if (res != null) {
 			echans.addAll(res.getEchanAdrls().keySet());
 			echans.sort(Comparator.comparing(Echantillon::getCode));
 		}
@@ -2775,60 +2829,61 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
 		final int ind = injectableEchantillonsBox.getSelectedIndex();
 		Echantillon echan = null;
 
-		if(ind > -1){
+		if (ind > -1) {
 			echan = getInjectableEchantillons().get(ind);
 		}
-		
+
 		if (echan != null) {
-			
+
 			clearForm(true);
-			
+
 			setCodePrefixe(echan.getCode());
 			setSelectedType(echan.getEchantillonType());
 
 			Echantillon newObj = echan.clone();
 			echan.setPrelevement(getParentObject());
 			setEchantillon(newObj);
-			
+
 			// car setObj passe prelevement à null..
 			// setParentObject(echan.getPrelevement());
-			
+
 			selectOperateur();
 		}
 
 		getBinder().loadComponent(self);
-				
-		// déclenche manuellement la validation de concordance 
+
+		// déclenche manuellement la validation de concordance
 		// des dates
 		onBlur$dateStockCalBox();
 	}
 
 	/**
-	 * Méthode inspirée initCollaborations et allégée pour appel uniquement
-	 * dans injection opérateur depuis interfaçage.
+	 * Méthode inspirée initCollaborations et allégée pour appel uniquement dans
+	 * injection opérateur depuis interfaçage.
 	 */
-	private void selectOperateur(){
-		if(getObject().getCollaborateur() != null){
+	private void selectOperateur() {
+		if (getObject().getCollaborateur() != null) {
 			setSelectedCollaborateur(this.getObject().getCollaborateur());
 			collabBox.setValue(getSelectedCollaborateur().getNomAndPrenom());
-		}else{
+		} else {
 			setSelectedCollaborateur(null);
 		}
 	}
-	
+
 	/**
-	    * Validation sécifique des listboxes obligatoires
-	    * Gatsbi surcharge cette méthode
-	    * @since 2.3.0-gatsbi
-	    */
-	   protected void checkRequiredListboxes() {
-		   
-		   if(getSelectedType() == null){
-				// ferme wait message si besoin
-				Clients.clearBusy();
-		        Clients.scrollIntoView(typesBoxEchan);
-				throw new WrongValueException(typesBoxEchan, Labels.getLabel("ficheEchantillon.error.type"));
-			}
-			Clients.clearWrongValue(typesBoxEchan);
-	   }
+	 * Validation sécifique des listboxes obligatoires Gatsbi surcharge cette
+	 * méthode
+	 * 
+	 * @since 2.3.0-gatsbi
+	 */
+	protected void checkRequiredListboxes() {
+
+		if (getSelectedType() == null) {
+			// ferme wait message si besoin
+			Clients.clearBusy();
+			Clients.scrollIntoView(typesBoxEchan);
+			throw new WrongValueException(typesBoxEchan, Labels.getLabel("ficheEchantillon.error.type"));
+		}
+		Clients.clearWrongValue(typesBoxEchan);
+	}
 }

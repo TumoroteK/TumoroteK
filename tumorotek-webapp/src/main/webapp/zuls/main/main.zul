@@ -72,6 +72,7 @@
 <?component name="ficheRechercheAvanceePrelevement" macroURI="/zuls/recherche/FicheRechercheAvanceePrelevement.zul"?>
 <?component name="ficheRechercheAvanceePrelevementGatsbi" macroURI="/zuls/recherche/gatsbi/FicheRechercheAvanceePrelevementGatsbi.zul"?>
 <?component name="ficheRechercheAvanceeEchantillon" macroURI="/zuls/recherche/FicheRechercheAvanceeEchantillon.zul"?>
+<?component name="ficheRechercheAvanceeEchantillonGatsbi" macroURI="/zuls/recherche/gatsbi/FicheRechercheAvanceeEchantillonGatsbi.zul"?>
 <?component name="ficheRechercheAvanceeProdDerive" macroURI="/zuls/recherche/FicheRechercheAvanceeProdDerive.zul"?>
 <?component name="ficheRechercheAvanceeCession" macroURI="/zuls/recherche/FicheRechercheAvanceeCession.zul"?>
 <?component name="ficheRechercheINCa" macroURI="/zuls/recherche/FicheRechercheINCa.zul"?>
@@ -136,6 +137,8 @@
 <style src="/css/font-awesome-4.6.1/css/font-awesome.min.css" />
 <style src="/css/newstyle.css.dsp" />
 <style src="/css/stats/chart.css" />
+
+<style src="/css/gatsbi.css" />
 
 
 <!-- <html><![CDATA[

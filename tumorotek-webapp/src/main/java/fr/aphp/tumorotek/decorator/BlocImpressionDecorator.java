@@ -43,7 +43,6 @@ import java.util.Set;
 import org.zkoss.util.resource.Labels;
 
 import fr.aphp.tumorotek.action.ManagerLocator;
-import fr.aphp.tumorotek.action.prelevement.gatsbi.GatsbiController;
 import fr.aphp.tumorotek.model.coeur.annotation.ChampAnnotation;
 import fr.aphp.tumorotek.model.coeur.annotation.TableAnnotation;
 import fr.aphp.tumorotek.model.contexte.EContexte;
@@ -52,6 +51,7 @@ import fr.aphp.tumorotek.model.impression.ChampEntiteBloc;
 import fr.aphp.tumorotek.model.impression.ChampImprime;
 import fr.aphp.tumorotek.model.impression.Template;
 import fr.aphp.tumorotek.model.io.export.ChampEntite;
+import fr.aphp.tumorotek.webapp.gatsbi.GatsbiController;
 
 /**
  * Decorateur bloc impression.

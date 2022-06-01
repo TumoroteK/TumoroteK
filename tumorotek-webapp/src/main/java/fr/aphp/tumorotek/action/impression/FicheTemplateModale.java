@@ -1494,7 +1494,7 @@ public class FicheTemplateModale extends AbstractImpressionController
 		// Quantité
 		String tmp = "";
 		final CoupleValeur cpVide = new CoupleValeur("", "");
-		tmp = renderer.getQuantite(echantillon);
+		tmp = renderer.formatQuantite(echantillon);
 		final CoupleValeur cp1 = new CoupleValeur(Labels.getLabel("Champ.Echantillon.Quantite"), tmp);
 		final LigneParagraphe li1 = new LigneParagraphe("", new CoupleValeur[] {cp1, cpVide});
 
@@ -1506,7 +1506,7 @@ public class FicheTemplateModale extends AbstractImpressionController
 		}
 		final CoupleValeur cp2 = new CoupleValeur(Labels.getLabel("Champ.Echantillon.DateStock"), tmp);
 		// Délai Cgl
-		final CoupleValeur cp3 = new CoupleValeur(Labels.getLabel("Champ.Echantillon.DelaiCgl"), renderer.getDelaiCgl(echantillon));
+		final CoupleValeur cp3 = new CoupleValeur(Labels.getLabel("Champ.Echantillon.DelaiCgl"), renderer.formatDelaiCgl(echantillon));
 		final LigneParagraphe li2 = new LigneParagraphe("", new CoupleValeur[] {cp2, cp3});
 
 		// Opérateur
@@ -2995,7 +2995,7 @@ public class FicheTemplateModale extends AbstractImpressionController
 					}
 					val.append(sb.toString());
 				}else if(champs.get(j).getNom().equals("Quantite")){
-					val.append(renderer.getQuantite(echan));
+					val.append(renderer.formatQuantite(echan));
 				}else if(champs.get(j).getNom().equals("ObjetStatutId")){
 					if(echan.getObjetStatut() != null){
 						val.append(ObjectTypesFormatters.ILNObjectStatut(echan.getObjetStatut()));
@@ -3009,7 +3009,7 @@ public class FicheTemplateModale extends AbstractImpressionController
 						val.append("-");
 					}
 				}else if(champs.get(j).getNom().equals("DelaiCgl")){
-					val.append(renderer.getDelaiCgl(echan));
+					val.append(renderer.formatDelaiCgl(echan));
 				}else if(champs.get(j).getNom().equals("EchanQualiteId")){
 					if(echan.getEchanQualite() != null){
 						val.append(echan.getEchanQualite().getNom());

@@ -35,102 +35,23 @@
  **/
 package fr.aphp.tumorotek.action.echantillon.gatsbi;
 
-import java.io.File;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Hashtable;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.function.Function;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.jdom.Document;
-import org.jdom.Element;
-import org.springframework.transaction.TransactionDefinition;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.support.DefaultTransactionDefinition;
-import org.springframework.util.StringUtils;
-import org.springframework.validation.Errors;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
-import org.zkoss.zk.ui.Executions;
-import org.zkoss.zk.ui.Path;
 import org.zkoss.zk.ui.WrongValueException;
-import org.zkoss.zk.ui.event.Event;
-import org.zkoss.zk.ui.event.Events;
-import org.zkoss.zk.ui.event.ForwardEvent;
 import org.zkoss.zk.ui.util.Clients;
-import org.zkoss.zul.Box;
-import org.zkoss.zul.Button;
 import org.zkoss.zul.Combobox;
-import org.zkoss.zul.Constraint;
-import org.zkoss.zul.Datebox;
+import org.zkoss.zul.Div;
 import org.zkoss.zul.Grid;
 import org.zkoss.zul.Groupbox;
-import org.zkoss.zul.Intbox;
-import org.zkoss.zul.Label;
-import org.zkoss.zul.ListModel;
-import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Listbox;
-import org.zkoss.zul.Messagebox;
-import org.zkoss.zul.Radio;
-import org.zkoss.zul.Row;
-import org.zkoss.zul.Textbox;
-import org.zkoss.zul.Window;
-import org.zkoss.zul.ext.Selectable;
 
-import fr.aphp.tumorotek.action.CustomSimpleListModel;
-import fr.aphp.tumorotek.action.ManagerLocator;
-import fr.aphp.tumorotek.action.code.CodeAssigneDecorator;
+import fr.aphp.tumorotek.action.echantillon.AbstractEchantillonDecoratorRowRenderer;
 import fr.aphp.tumorotek.action.echantillon.FicheMultiEchantillons;
-import fr.aphp.tumorotek.action.patient.PatientController;
-import fr.aphp.tumorotek.action.prelevement.PrelevementController;
-import fr.aphp.tumorotek.action.stockage.StockageController;
-import fr.aphp.tumorotek.component.SmallObjDecorator;
-import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
-import fr.aphp.tumorotek.dto.EchantillonDTO;
-import fr.aphp.tumorotek.manager.coeur.echantillon.EchantillonManager;
-import fr.aphp.tumorotek.manager.exception.DoublonFoundException;
-import fr.aphp.tumorotek.manager.exception.EmplacementDoublonFoundException;
-import fr.aphp.tumorotek.manager.exception.TKException;
-import fr.aphp.tumorotek.manager.helper.FileBatch;
-import fr.aphp.tumorotek.manager.impl.interfacage.ResultatInjection;
-import fr.aphp.tumorotek.manager.impl.xml.BoiteImpression;
-import fr.aphp.tumorotek.manager.validation.exception.ValidationException;
-import fr.aphp.tumorotek.model.TKStockableObject;
-import fr.aphp.tumorotek.model.TKdataObject;
-import fr.aphp.tumorotek.model.code.CodeAssigne;
-import fr.aphp.tumorotek.model.coeur.ObjetStatut;
-import fr.aphp.tumorotek.model.coeur.annotation.AnnotationValeur;
-import fr.aphp.tumorotek.model.coeur.echantillon.Echantillon;
-import fr.aphp.tumorotek.model.coeur.patient.Maladie;
-import fr.aphp.tumorotek.model.coeur.prelevement.LaboInter;
-import fr.aphp.tumorotek.model.coeur.prelevement.Prelevement;
-import fr.aphp.tumorotek.model.contexte.Banque;
-import fr.aphp.tumorotek.model.contexte.Collaborateur;
-import fr.aphp.tumorotek.model.interfacage.scan.ScanTerminale;
-import fr.aphp.tumorotek.model.qualite.NonConformite;
-import fr.aphp.tumorotek.model.qualite.OperationType;
-import fr.aphp.tumorotek.model.stockage.Conteneur;
-import fr.aphp.tumorotek.model.stockage.Emplacement;
-import fr.aphp.tumorotek.model.stockage.Enceinte;
-import fr.aphp.tumorotek.model.stockage.Terminale;
-import fr.aphp.tumorotek.model.systeme.Fichier;
+import fr.aphp.tumorotek.model.contexte.gatsbi.Contexte;
 import fr.aphp.tumorotek.webapp.gatsbi.GatsbiController;
-import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
 /**
 *
@@ -144,23 +65,32 @@ import fr.aphp.tumorotek.webapp.general.SessionUtils;
 public class FicheMultiEchantillonsGatsbi extends FicheMultiEchantillons
 {
 
-	private final Log log = LogFactory.getLog(FicheMultiEchantillonsGatsbi.class);
-
 	private static final long serialVersionUID = 3863329092781960062L;
 	
+	private Contexte contexte;
+	
 	private List<Listbox> reqListboxes = new ArrayList<Listbox>();
+	private List<Combobox> reqComboboxes = new ArrayList<Combobox>();
+	private List<Div> reqDivs = new ArrayList<Div>(); // contient conformite Div et crAnapath
 	
 	// @wire
 	private Groupbox groupEchantillon;
+	private Groupbox groupInfosCompEchan;
 
 	@Override
 	public void doAfterCompose(final Component comp) throws Exception{
 		super.doAfterCompose(comp);
 
-		GatsbiController.initWireAndDisplay(this, 
-				getObjectTabController().getEntiteTab().getEntiteId(), 
-				false, null,
-				groupEchantillon);
+		contexte = GatsbiController.initWireAndDisplay(this, 
+				3, 
+				true, reqListboxes, reqComboboxes, reqDivs,
+				groupEchantillon, groupInfosCompEchan);
+		
+		// affichage conditionnel infos prelevement 
+		GatsbiController.initWireAndDisplayForIds(this, 2, "natureDiv");
+		
+		// inner list
+		drawColumnsForEchantillonsToCreate(echantillonsList);
 	}
 
 	/**
@@ -178,5 +108,84 @@ public class FicheMultiEchantillonsGatsbi extends FicheMultiEchantillons
 	 */
 	@Override
 	public void onSelect$typesBoxEchan() {
+	}	
+	
+	@Override
+	protected void setGroupInfosCompEchanOpen(boolean b) {
+		((Groupbox) groupInfosCompEchan).setOpen(b);
+	}
+	
+	@Override
+	protected void scrollToTop() {
+		Clients.scrollIntoView(this.getSelfComponent());
+	}
+	
+	@Override
+	protected void prepareCrAnapath() {
+		if (crAnapathNomBox.getValue() != null && !crAnapathNomBox.getValue().equals("")) {
+			getCrAnapath().setNom(crAnapathNomBox.getValue());
+		} else { // empty value, check required
+			Div crAnapathDiv = reqDivs.stream().filter(d -> d.getId().equals("crAnapathDiv")).findFirst().orElse(null);
+			if (crAnapathDiv != null) { // required value
+				throw new WrongValueException(crAnapathDiv, Labels.getLabel("validation.syntax.empty"));
+			} else { // emptyallowed
+				setCrAnapath(null);
+				setAnapathStream(null);
+			}
+		}
+	}
+	
+	/** inner lists **/
+	private final AbstractEchantillonDecoratorRowRenderer echanDecoRendererGatsbi = 
+			new EchantillonDecoratorRowRendererGatsbi();
+	
+	public AbstractEchantillonDecoratorRowRenderer getEchanDecoRenderer() {
+		return echanDecoRendererGatsbi;
+	}
+	
+	private void drawColumnsForEchantillonsToCreate(Grid grid)
+			throws ClassNotFoundException, InstantiationException, IllegalAccessException {
+		
+		// icones column, visible si non conformites OU risque est visible
+		if (contexte.isChampIdVisible(249) || contexte.isChampIdVisible(243) || contexte.isChampIdVisible(244)) {
+			
+			int colsize = 0;
+			if (contexte.isChampIdVisible(249)) {
+				colsize = colsize + 35;
+			} 
+			if (contexte.isChampIdVisible(243)) {
+				colsize = colsize + 35;
+			}
+			if (contexte.isChampIdVisible(244)) {
+				colsize = colsize + 35;
+			}
+			
+			GatsbiController.addColumn(grid, null, String.valueOf(colsize).concat("px"),
+					"center", null, null, true);
+
+			// indique au row renderer qu'il doit dessiner les icones
+			echanDecoRendererGatsbi.setIconesRendered(true);
+		}
+
+		// code prel column, toujours affichée
+		GatsbiControllerEchantillon.drawCodeColumn(grid);
+		
+		// variable columns
+		for (Integer chpId : contexte.getChampEntiteInTableauOrdered()) {
+			// statut et emplacement toujours affichés
+			if (chpId != 55 && chpId != 57) {
+				GatsbiControllerEchantillon.addColumnForChpId(chpId, grid);
+			}
+		}
+
+		// emplacement, toujours affiché
+		GatsbiControllerEchantillon.drawEmplacementColumn(grid);
+
+
+		// statut, toujours affiché
+		GatsbiControllerEchantillon.drawObjetStatutColumn(grid);
+		
+		// delete col
+		GatsbiController.addColumn(grid, null, "35px", "center", null, null, true);
 	}
 }

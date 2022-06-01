@@ -124,7 +124,7 @@ public class TKSelectObjectRenderer<T extends TKdataObject> implements RowRender
 	 * Crée un bloc anonyme pour cacher la valeur d'un champ.
 	 * @return
 	 */
-	protected Label createAnonymeBlock(){
+	public static Label createAnonymeBlock(){
 		final Label anonymeLabel = new Label();
 		AbstractController.makeLabelAnonyme(anonymeLabel, false);
 
@@ -226,14 +226,14 @@ public class TKSelectObjectRenderer<T extends TKdataObject> implements RowRender
 	 * alphanumérique sous la forme d'une chaine de caractère, 
 	 * sans formatage
 	 * @param row
-	 * @param TK data object
+	 * @param TK data POJO / decorator
 	 * @param propName
 	 * @throws IllegalAccessException
 	 * @throws InvocationTargetException
 	 * @throws NoSuchMethodException
 	 * @since 2.3.0-gatsbi
 	 */
-	protected void renderAlphanumPropertyAsStringNoFormat(Row row, T obj, String propName) 
+	public static void renderAlphanumPropertyAsStringNoFormat(Row row, Object obj, String propName) 
 			throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 		String value = (String) PropertyUtils.getSimpleProperty(obj, propName);
 		if (value != null) {
@@ -247,14 +247,14 @@ public class TKSelectObjectRenderer<T extends TKdataObject> implements RowRender
 	 * Methode de rendu générique d'une proprité d'un objet de type 
 	 * datetime sous la forme d'une chaine de caractère, 
 	 * @param row
-	 * @param TK data object
+	 * @param TK data POJO / decorator
 	 * @param propName
 	 * @throws IllegalAccessException
 	 * @throws InvocationTargetException
 	 * @throws NoSuchMethodException
 	 * @since 2.3.0-gatsbi
 	 */
-	protected void renderDateProperty(Row row, T obj, String propName) 
+	public static void renderDateProperty(Row row, Object obj, String propName) 
 			throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 		Object dateValue = PropertyUtils.getSimpleProperty(obj, propName);
 		if (dateValue != null) {
@@ -268,14 +268,14 @@ public class TKSelectObjectRenderer<T extends TKdataObject> implements RowRender
 	 * Methode de rendu générique d'une proprité d'un objet de type 
 	 * TKThesaurusObject sous la forme d'une chaine de caractère, 
 	 * @param row
-	 * @param TK data object
+	 * @param TK data POJO / decorator
 	 * @param propName
 	 * @throws IllegalAccessException
 	 * @throws InvocationTargetException
 	 * @throws NoSuchMethodException
 	 * @since 2.3.0-gatsbi
 	 */
-	protected void renderThesObjectProperty(Row row, T obj, String propName) 
+	public static void renderThesObjectProperty(Row row, Object obj, String propName) 
 			throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 		TKThesaurusObject thesObjValue = (TKThesaurusObject) PropertyUtils.getSimpleProperty(obj, propName);
 		if (thesObjValue != null) {
@@ -296,7 +296,7 @@ public class TKSelectObjectRenderer<T extends TKdataObject> implements RowRender
 	 * @throws NoSuchMethodException
 	 * @since 2.3.0-gatsbi
 	 */
-	protected void renderBoolProperty(Row row, T obj, String propName) 
+	public static void renderBoolProperty(Row row, TKdataObject obj, String propName) 
 			throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 		Boolean boolValue = (Boolean) PropertyUtils.getSimpleProperty(obj, propName);
 		if (boolValue != null) {
@@ -310,7 +310,7 @@ public class TKSelectObjectRenderer<T extends TKdataObject> implements RowRender
 	 * Methode de rendu générique d'une proprité d'un objet de type 
 	 * Number sous la forme d'une chaine de caractère, 
 	 * @param row
-	 * @param TK data object
+	 * @param TK data POJO / decorator
 	 * @param propName
 	 * @throws IllegalAccessException
 	 * @throws InvocationTargetException
@@ -318,7 +318,7 @@ public class TKSelectObjectRenderer<T extends TKdataObject> implements RowRender
 	 * @throws ParseException 
 	 * @since 2.3.0-gatsbi
 	 */
-	protected void renderNumberProperty(Row row, T obj, String propName) 
+	public static void renderNumberProperty(Row row, Object obj, String propName) 
 			throws IllegalAccessException, InvocationTargetException, NoSuchMethodException, ParseException {
 		Number numValue = (Number) PropertyUtils.getSimpleProperty(obj, propName);
 		if (numValue != null) {
@@ -332,14 +332,14 @@ public class TKSelectObjectRenderer<T extends TKdataObject> implements RowRender
 	 * Methode de rendu générique d'une proprité d'un objet de type 
 	 * Collaborateur sous la forme d'une chaine de caractère, 
 	 * @param row
-	 * @param TK data object
+	 * @param TK data POJO / decorator
 	 * @param propName
 	 * @throws IllegalAccessException
 	 * @throws InvocationTargetException
 	 * @throws NoSuchMethodException
 	 * @since 2.3.0-gatsbi
 	 */
-	protected void renderCollaborateurProperty(Row row, T obj, String propName) 
+	public static void renderCollaborateurProperty(Row row, Object obj, String propName) 
 			throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 		Collaborateur collValue = (Collaborateur) PropertyUtils.getSimpleProperty(obj, propName);
 		if (collValue != null) {
@@ -353,7 +353,7 @@ public class TKSelectObjectRenderer<T extends TKdataObject> implements RowRender
 	 * Methode de rendu générique d'une proprité d'un objet de type 
 	 * Quantite (Number) + Unite sous la forme d'une chaine de caractère, 
 	 * @param row
-	 * @param TK data object
+	 * @param TK data POJO / decorator
 	 * @param propName
 	 * @param unite propName
 	 * @throws IllegalAccessException
@@ -362,7 +362,7 @@ public class TKSelectObjectRenderer<T extends TKdataObject> implements RowRender
 	 * @throws ParseException 
 	 * @since 2.3.0-gatsbi
 	 */
-	protected void renderQuantiteProperty(Row row, T obj, String propName, String unitePropName) 
+	public static void renderQuantiteProperty(Row row, Object obj, String propName, String unitePropName) 
 			throws IllegalAccessException, InvocationTargetException, NoSuchMethodException, ParseException {
 
 		Number qteValue = (Number) PropertyUtils.getSimpleProperty(obj, propName);

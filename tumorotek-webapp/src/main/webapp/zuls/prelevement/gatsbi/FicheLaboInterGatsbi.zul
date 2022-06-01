@@ -36,7 +36,6 @@
 -->
 <zk>
 
-<style src="/css/gatsbi.css" />
 <?component name="calendarbox" macroURI="/zuls/component/CalendarBox.zul" class="fr.aphp.tumorotek.component.CalendarBox" ?>
 
 	<window id="fwinLaboInter" border="none"

@@ -51,6 +51,7 @@ import org.zkoss.util.media.Media;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.HtmlBasedComponent;
 import org.zkoss.zk.ui.Path;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
@@ -64,6 +65,7 @@ import org.zkoss.zul.Decimalbox;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Fileupload;
 import org.zkoss.zul.Group;
+import org.zkoss.zul.Groupbox;
 import org.zkoss.zul.Image;
 import org.zkoss.zul.Intbox;
 import org.zkoss.zul.Label;
@@ -105,12 +107,12 @@ import fr.aphp.tumorotek.model.qualite.NonConformite;
 import fr.aphp.tumorotek.model.qualite.ObjetNonConforme;
 import fr.aphp.tumorotek.model.stockage.Conteneur;
 import fr.aphp.tumorotek.model.stockage.Emplacement;
+import fr.aphp.tumorotek.model.systeme.Entite;
 import fr.aphp.tumorotek.model.systeme.Fichier;
 import fr.aphp.tumorotek.model.systeme.Unite;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
-public class FicheEchantillonEdit extends AbstractFicheEditController
-{
+public class FicheEchantillonEdit extends AbstractFicheEditController {
 
 	private static final long serialVersionUID = 2661016754151830781L;
 
@@ -131,13 +133,15 @@ public class FicheEchantillonEdit extends AbstractFicheEditController
 	protected Checkbox sterileBox;
 	protected Checkbox validBox;
 	protected Textbox crAnapathNomBox;
-	//private Image addCrFile;
+	// private Image addCrFile;
 	protected Image deleteCrFile;
 	protected Listbox typesBoxEchan;
-	protected Group groupInfosCompEchan;
+
+	// gatsbi group -> groupbox
+	protected HtmlBasedComponent groupInfosCompEchan;
 
 	protected Label qualiteEchanLabel;
-	protected Row lateraliteRow;
+	// protected Row lateraliteRow;
 
 	protected Checkbox conformeTraitementBoxOui;
 	protected Checkbox conformeTraitementBoxNon;
@@ -148,8 +152,8 @@ public class FicheEchantillonEdit extends AbstractFicheEditController
 	protected Listbox nonConformitesTraitementBox;
 	protected Listbox nonConformitesCessionBox;
 
-	//Labels anonymisables
-	private Label emplacementLabelEchan;
+	// Labels anonymisables
+	protected Label emplacementLabelEchan;
 
 	// Objets Principaux.
 	private Echantillon echantillon = new Echantillon();
@@ -183,7 +187,7 @@ public class FicheEchantillonEdit extends AbstractFicheEditController
 	private Integer heureDelai = null;
 	private Integer minDelai = null;
 	protected String codePrefixe = "";
-	//	private String codeSuffixe = "";
+	// private String codeSuffixe = "";
 	private String emplacementAdrl = "";
 
 	private List<CodeAssigne> codesToCreateOrEdit = new ArrayList<>();
@@ -191,17 +195,19 @@ public class FicheEchantillonEdit extends AbstractFicheEditController
 	private List<CodeAssigne> codesAssignesToDelete = new ArrayList<>();
 
 	/**
-	 *  Gestion des contraintes sur les quantités et volumes.
-	 *  Variables conservant les valeurs saisies dans les champs.
+	 * Gestion des contraintes sur les quantités et volumes. Variables conservant
+	 * les valeurs saisies dans les champs.
 	 */
-	private Float quantite;
-	private Float quantiteInit;
+	protected Float quantite;
+	protected Float quantiteInit;
 
 	@Override
-	public void doAfterCompose(final Component comp) throws Exception{
+	public void doAfterCompose(final Component comp) throws Exception {
 		super.doAfterCompose(comp);
 
 		setWaitLabel("echantillon.creation.encours");
+
+		initLists();
 
 		getCodesOrganeController().setIsOrg(true);
 		getCodesOrganeController().setBanque(getMainWindow().getSelectedBanque());
@@ -209,36 +215,36 @@ public class FicheEchantillonEdit extends AbstractFicheEditController
 		getCodesMorphoController().setIsMorpho(true);
 		getCodesMorphoController().setBanque(getMainWindow().getSelectedBanque());
 
-		if(SessionUtils.getSelectedBanques(sessionScope).size() > 0
-				&& SessionUtils.getCurrentContexte() == EContexte.DEFAUT){
-			groupInfosCompEchan.setOpen(true);
-		}else{
-			groupInfosCompEchan.setOpen(false);
+		if (SessionUtils.getSelectedBanques(sessionScope).size() > 0
+				&& SessionUtils.getCurrentContexte() == EContexte.DEFAUT) {
+			setGroupInfosCompEchanOpen(true);
+		} else {
+			setGroupInfosCompEchanOpen(false);
 		}
 	}
 
 	@Override
-	public void setObject(final TKdataObject echan){
+	public void setObject(final TKdataObject echan) {
 		this.echantillon = (Echantillon) echan;
 
 		prelevement = null;
 		setCrAnapath(new Fichier());
 		emplacementAdrl = "";
 
-		if(this.echantillon.getEchantillonId() != null){
+		if (this.echantillon.getEchantillonId() != null) {
 			setBanque(echantillon.getBanque());
 			// on récupère le prélèvement parent
 			setParentObject(ManagerLocator.getEchantillonManager().getPrelevementManager(echantillon));
 			emplacementAdrl = ManagerLocator.getEchantillonManager().getEmplacementAdrlManager(echantillon);
-			getCodesOrganeController().setObjs(CodeAssigneDecorator
-					.decorateListe(ManagerLocator.getCodeAssigneManager().findCodesOrganeByEchantillonManager(echantillon)));
-			getCodesMorphoController().setObjs(CodeAssigneDecorator
-					.decorateListe(ManagerLocator.getCodeAssigneManager().findCodesMorphoByEchantillonManager(echantillon)));
+			getCodesOrganeController().setObjs(CodeAssigneDecorator.decorateListe(
+					ManagerLocator.getCodeAssigneManager().findCodesOrganeByEchantillonManager(echantillon)));
+			getCodesMorphoController().setObjs(CodeAssigneDecorator.decorateListe(
+					ManagerLocator.getCodeAssigneManager().findCodesMorphoByEchantillonManager(echantillon)));
 
 			initDelaiCgl();
 
 			// cr anapath
-			if(echantillon.getCrAnapath() != null){
+			if (echantillon.getCrAnapath() != null) {
 				showDeleteAndFileNameBox(true);
 				crAnapathNomBox.setValue(echantillon.getCrAnapath().getNom());
 				setCrAnapath(echantillon.getCrAnapath().clone());
@@ -261,74 +267,74 @@ public class FicheEchantillonEdit extends AbstractFicheEditController
 	}
 
 	@Override
-	public Echantillon getObject(){
+	public Echantillon getObject() {
 		return this.echantillon;
 	}
 
 	@Override
-	public void setNewObject(){
+	public void setNewObject() {
 		setObject(new Echantillon());
 	}
 
-	public Echantillon getEchantillon(){
+	public Echantillon getEchantillon() {
 		return echantillon;
 	}
 
-	public void setEchantillon(final Echantillon e){
+	public void setEchantillon(final Echantillon e) {
 		this.echantillon = e;
 	}
 
 	@Override
-	public void setParentObject(final TKdataObject obj){
+	public void setParentObject(final TKdataObject obj) {
 		this.prelevement = ((Prelevement) obj);
 	}
 
 	@Override
-	public Prelevement getParentObject(){
+	public Prelevement getParentObject() {
 		return this.prelevement;
 	}
 
-	public String getNomPatient(){
-		if(this.prelevement != null){
+	public String getNomPatient() {
+		if (this.prelevement != null) {
 			return PrelevementUtils.getPatientNomAndPrenom(prelevement);
 		}
 		return null;
 	}
 
 	@Override
-	public Echantillon getCopy(){
+	public Echantillon getCopy() {
 		return (Echantillon) super.getCopy();
 	}
 
 	@Override
-	public EchantillonController getObjectTabController(){
+	public EchantillonController getObjectTabController() {
 		return (EchantillonController) super.getObjectTabController();
 	}
 
 	@Override
-	public void switchToEditMode(){
+	public void switchToEditMode() {
 		// Initialisation du mode (listes, valeurs...)
 		initQuantiteAndVolume();
 		initEditableMode();
 
 		super.switchToEditMode();
 
-		if(prelevement != null){
+		if (prelevement != null) {
 			row1PrlvtEchan.setVisible(false);
 			row2PrlvtEchan.setVisible(true);
-			//row3PrlvtEchan.setVisible(true);
-		}else{
+			// row3PrlvtEchan.setVisible(true);
+		} else {
 			row1PrlvtEchan.setVisible(true);
 			row2PrlvtEchan.setVisible(false);
-			//row3PrlvtEchan.setVisible(false);
+			// row3PrlvtEchan.setVisible(false);
 		}
 
-		if(!getDroitOnAction("Collaborateur", "Consultation")){
+		if (!getDroitOnAction("Collaborateur", "Consultation")) {
 			operateurAideSaisieEchan.setVisible(false);
 		}
-		if(!getDroitOnAction("Prelevement", "Consultation")){
+		if (!getDroitOnAction("Prelevement", "Consultation")) {
 			codePrlvtLabel.setSclass("formValue");
-		}else{
+		} else {
 			codePrlvtLabel.setSclass("formLink");
 		}
 
@@ -336,16 +342,16 @@ public class FicheEchantillonEdit extends AbstractFicheEditController
 	}
 
 	@Override
-	public void onClick$create(){
+	public void onClick$create() {
 		super.onClick$create();
 	}
 
 	@Override
-	public void createNewObject(){
+	public void createNewObject() {
 	}
 
 	@Override
-	public void updateObject(){
+	public void updateObject() {
 
 		// création du code échantillon en fct de celui du prlvt et
 		// de celui saisi
@@ -362,16 +368,16 @@ public class FicheEchantillonEdit extends AbstractFicheEditController
 		final String selectedNomAndPremon = this.collabBox.getValue().toUpperCase();
 		this.collabBox.setValue(selectedNomAndPremon);
 		final int ind = nomsAndPrenoms.indexOf(selectedNomAndPremon);
-		if(ind > -1){
+		if (ind > -1) {
 			selectedCollaborateur = collaborateurs.get(ind);
-		}else{
+		} else {
 			selectedCollaborateur = null;
 		}
 
 		// final Emplacement emp = echantillon.getEmplacement();
-		// TK-225 echantillon en modification peux avoir son statut de stockage 
+		// TK-225 echantillon en modification peux avoir son statut de stockage
 		// modifié par un autre utilisateur
-		// -> refresh emplacement depuis la base de données 
+		// -> refresh emplacement depuis la base de données
 		final Emplacement emp = ManagerLocator.getEmplacementManager().findByTKStockableObjectManager(echantillon);
 		echantillon.setEmplacement(emp);
 		final ObjetStatut statut = findStatutForTKStockableObject(this.echantillon);
@@ -384,7 +390,7 @@ public class FicheEchantillonEdit extends AbstractFicheEditController
 		prepareCrAnapath();
 
 		// lateralite
-		if(selectedLateralite != null && !selectedLateralite.equals("")){
+		if (selectedLateralite != null && !selectedLateralite.equals("")) {
 			echantillon.setLateralite(selectedLateralite);
 		} else {
 			echantillon.setLateralite(null);
@@ -392,68 +398,69 @@ public class FicheEchantillonEdit extends AbstractFicheEditController
 
 		// gestion de la non conformitée après traitement
 		final List<NonConformite> noconfsT = new ArrayList<>();
-		if(conformeTraitementBoxOui.isChecked()){
+		if (conformeTraitementBoxOui.isChecked()) {
 			this.echantillon.setConformeTraitement(true);
-		}else if(conformeTraitementBoxNon.isChecked()){
+		} else if (conformeTraitementBoxNon.isChecked()) {
 			this.echantillon.setConformeTraitement(false);
 			noconfsT.addAll(findSelectedNonConformitesTraitement());
-		}else{
+		} else {
 			this.echantillon.setConformeTraitement(null);
 		}
 
 		// gestion de la non conformitée à la cession
 		final List<NonConformite> noconfsC = new ArrayList<>();
-		if(conformeCessionBoxOui.isChecked()){
+		if (conformeCessionBoxOui.isChecked()) {
 			this.echantillon.setConformeCession(true);
-		}else if(conformeCessionBoxNon.isChecked()){
+		} else if (conformeCessionBoxNon.isChecked()) {
 			this.echantillon.setConformeCession(false);
 			noconfsC.addAll(findSelectedNonConformitesCession());
-		}else{
+		} else {
 			this.echantillon.setConformeCession(null);
 		}
 
 		// update de l'objet
-		ManagerLocator.getEchantillonManager().updateObjectWithNonConformitesManager(echantillon, getBanque(), prelevement,
-				selectedCollaborateur, statut, emp, selectedType, codesToCreateOrEdit, codesAssignesToDelete, selectedQuantiteUnite,
-				selectedQualite, selectedPrepa, getCrAnapath(), getAnapathStream(),
-				getObjectTabController().getFicheAnnotation().getValeursToCreateOrUpdate(),
-				getObjectTabController().getFicheAnnotation().getValeursToDelete(), SessionUtils.getLoggedUser(sessionScope), true, null,
-				SessionUtils.getSystemBaseDir(), noconfsT, noconfsC);
+		ManagerLocator.getEchantillonManager().updateObjectWithNonConformitesManager(echantillon, getBanque(),
+				prelevement, selectedCollaborateur, statut, emp, selectedType, codesToCreateOrEdit,
+				codesAssignesToDelete, selectedQuantiteUnite, selectedQualite, selectedPrepa, getCrAnapath(),
+				getAnapathStream(), getObjectTabController().getFicheAnnotation().getValeursToCreateOrUpdate(),
+				getObjectTabController().getFicheAnnotation().getValeursToDelete(),
+				SessionUtils.getLoggedUser(sessionScope), true, null, SessionUtils.getSystemBaseDir(), noconfsT,
+				noconfsC);
 
 	}
 
 	@Override
-	public boolean onLaterUpdate(){
+	public boolean onLaterUpdate() {
 
 		checkRequiredListboxes();
 
-		try{
+		try {
 			updateObjectWithAnnots();
 			// updateObject();
 
 			// update de la liste
-			if(getObjectTabController().getListe() != null){
+			if (getObjectTabController().getListe() != null) {
 				getObjectTabController().getListe().updateObjectGridList(getObject());
 			}
 
-			if(getParentObject() != null){
-				if(getPrelevementController() != null){
+			if (getParentObject() != null) {
+				if (getPrelevementController() != null) {
 					getPrelevementController().getListe().updateObjectGridListFromOtherPage(getParentObject(), true);
 
-					//update patient
-					if(getParentObject().getMaladie() != null){
-						if(!getPrelevementController().getReferencingObjectControllers().isEmpty()){
+					// update patient
+					if (getParentObject().getMaladie() != null) {
+						if (!getPrelevementController().getReferencingObjectControllers().isEmpty()) {
 							getPrelevementController().getReferencingObjectControllers().get(0).getListe()
-							.updateObjectGridListFromOtherPage(getParentObject().getMaladie().getPatient(), true);
+									.updateObjectGridListFromOtherPage(getParentObject().getMaladie().getPatient(),
+											true);
 						}
 					}
 				}
 			}
 
 			// update de la liste des enfants et l'enfant en fiche
-			getObjectTabController()
-				.updateReferencedObjects((List<TKdataObject>) getObjectTabController()
-														.getChildrenObjects(getObject()));
+			getObjectTabController().updateReferencedObjects(
+					(List<TKdataObject>) getObjectTabController().getChildrenObjects(getObject()));
 
 			// commande le passage en mode statique
 			getObjectTabController().onEditDone(getObject());
@@ -462,7 +469,7 @@ public class FicheEchantillonEdit extends AbstractFicheEditController
 			Clients.clearBusy();
 
 			return true;
-		}catch(final DoublonFoundException re){
+		} catch (final DoublonFoundException re) {
 			Clients.clearBusy();
 
 			final HashMap<String, Object> map = new HashMap<>();
@@ -470,11 +477,12 @@ public class FicheEchantillonEdit extends AbstractFicheEditController
 			map.put("message", handleExceptionMessage(re));
 			map.put("exception", re);
 
-			final Window window = (Window) Executions.createComponents("/zuls/component/DynamicMultiLineMessageBox.zul", null, map);
+			final Window window = (Window) Executions.createComponents("/zuls/component/DynamicMultiLineMessageBox.zul",
+					null, map);
 			window.doModal();
 
 			return false;
-		}catch(final RuntimeException re){
+		} catch (final RuntimeException re) {
 			// ferme wait message
 			Clients.clearBusy();
 			Messagebox.show(handleExceptionMessage(re), "Error", Messagebox.OK, Messagebox.ERROR);
@@ -483,44 +491,45 @@ public class FicheEchantillonEdit extends AbstractFicheEditController
 	}
 
 	@Override
-	protected void setEmptyToNulls(){
+	protected void setEmptyToNulls() {
 
 		setHeureDelai(heureBox.getValue());
 		setMinDelai(minBox.getValue());
 
 		Float delai = (float) -1;
-		if(getHeureDelai() != null || getMinDelai() != null){
+		if (getHeureDelai() != null || getMinDelai() != null) {
 			delai += 1;
 		}
-		if(getHeureDelai() != null){
+		if (getHeureDelai() != null) {
 			delai += getHeureDelai() * 60;
 		}
-		if(getMinDelai() != null){
+		if (getMinDelai() != null) {
 			delai += getMinDelai();
 		}
 
 		// si le delai = -1 alors on l'enregistre comme null
-		if(delai == -1){
+		if (delai == -1) {
 			echantillon.setDelaiCgl(null);
-		}else{
+		} else {
 			echantillon.setDelaiCgl(delai);
 		}
 
-		if(this.echantillon.getArchive() == null){
+		if (this.echantillon.getArchive() == null) {
 			this.echantillon.setArchive(false);
 		}
 
-		if(this.echantillon.getEtatIncomplet() == null){
+		if (this.echantillon.getEtatIncomplet() == null) {
 			this.echantillon.setEtatIncomplet(false);
-		}      
+		}
 	}
 
 	/**
 	 * Retourne les non conformites sélectionnées.
+	 * 
 	 * @return
 	 */
 
-	public List<NonConformite> findSelectedNonConformitesTraitement(){
+	public List<NonConformite> findSelectedNonConformitesTraitement() {
 		final List<NonConformite> ncf = new ArrayList<>();
 		ncf.addAll(((Selectable<NonConformite>) nonConformitesTraitementBox.getModel()).getSelection());
 		return ncf;
@@ -528,34 +537,36 @@ public class FicheEchantillonEdit extends AbstractFicheEditController
 
 	/**
 	 * Retourne les non conformites sélectionnées.
+	 * 
 	 * @return
 	 */
 
-	public List<NonConformite> findSelectedNonConformitesCession(){
+	public List<NonConformite> findSelectedNonConformitesCession() {
 		final List<NonConformite> ncf = new ArrayList<>();
 		ncf.addAll(((Selectable<NonConformite>) nonConformitesCessionBox.getModel()).getSelection());
 		return ncf;
 	}
 
 	/*************************************************************************/
-	/************************** PARENT    ************************************/
+	/************************** PARENT ************************************/
 	/*************************************************************************/
 	private Prelevement prelevement;
 
 	// Infos prelevement
 	private Row row1PrlvtEchan;
 	private Row row2PrlvtEchan;
-	//private Row row3PrlvtEchan;
+	// private Row row3PrlvtEchan;
 	private Label codePrlvtLabel;
 
 	/**
 	 * Affiche la fiche d'un prélèvement.
+	 * 
 	 * @param event Event : clique sur un lien prlvtLinkDerive.
 	 * @throws Exception
 	 */
-	public void onClick$codePrlvtLabel(final Event event) throws Exception{
-		if(getDroitOnAction("Prelevement", "Consultation")){
-			if(getPrelevementController() == null){
+	public void onClick$codePrlvtLabel(final Event event) throws Exception {
+		if (getDroitOnAction("Prelevement", "Consultation")) {
+			if (getPrelevementController() == null) {
 				getMainWindow().createMacroComponent("/zuls/echantillon/Echantillon.zul", "winEchantillon",
 						(Tabpanel) getMainWindow().getMainTabbox().getTabpanels().getFellow("echantillonPanel"));
 			}
@@ -564,20 +575,21 @@ public class FicheEchantillonEdit extends AbstractFicheEditController
 		}
 	}
 
-	public String getCodePrefixe(){
+	public String getCodePrefixe() {
 		return codePrefixe;
 	}
 
-	public void setCodePrefixe(final String prefixe){
+	public void setCodePrefixe(final String prefixe) {
 		this.codePrefixe = prefixe;
 	}
 
 	/**
 	 * Formate la date de prélèvement.
+	 * 
 	 * @return Date du prélèvement formatée.
 	 */
-	public String getDatePrelevementFormated(){
-		if(getParentObject() != null){
+	public String getDatePrelevementFormated() {
+		if (getParentObject() != null) {
 			return ObjectTypesFormatters.dateRenderer2(getParentObject().getDatePrelevement());
 		}
 		return null;
@@ -589,14 +601,14 @@ public class FicheEchantillonEdit extends AbstractFicheEditController
 
 	/**
 	 * Méthode appelée lorsque l'utilisateur clique sur le lien
-	 * operateurAideSaisieEchan. Cette méthode va créer une nouvelle
-	 * fenêtre contenant l'aide pour la sélection d'un collaborateur.
+	 * operateurAideSaisieEchan. Cette méthode va créer une nouvelle fenêtre
+	 * contenant l'aide pour la sélection d'un collaborateur.
 	 */
-	public void onClick$operateurAideSaisieEchan(){
+	public void onClick$operateurAideSaisieEchan() {
 		// on récupère le collaborateur actuellement sélectionné
 		// pour l'afficher dans la modale
 		final List<Object> old = new ArrayList<>();
-		if(selectedCollaborateur != null){
+		if (selectedCollaborateur != null) {
 			old.add(selectedCollaborateur);
 		}
 		// on va appliquer à la fenêtre un filtre sur le service de
@@ -605,46 +617,49 @@ public class FicheEchantillonEdit extends AbstractFicheEditController
 
 		// choix de la banque si toutes collections, modification
 		// reste possible
-		if(getBanque() == null){ // echantillon en creation
-			if(SessionUtils.getSelectedBanques(sessionScope).get(0).getProprietaire() != null){
+		if (getBanque() == null) { // echantillon en creation
+			if (SessionUtils.getSelectedBanques(sessionScope).get(0).getProprietaire() != null) {
 				list.add(SessionUtils.getSelectedBanques(sessionScope).get(0).getProprietaire());
 			}
-		}else{ // echantillon en modification
-			if(getBanque().getProprietaire() != null){
+		} else { // echantillon en modification
+			if (getBanque().getProprietaire() != null) {
 				list.add(getBanque().getProprietaire());
 			}
 		}
 
 		// ouvre la modale
-		openCollaborationsWindow(page, "general.recherche", "select", null, "Collaborateur", list, Path.getPath(self), old);
+		openCollaborationsWindow(page, "general.recherche", "select", null, "Collaborateur", list, Path.getPath(self),
+				old);
 
 	}
 
 	/**
-	 * Méthode appelée par la fenêtre CollaborationsController quand
-	 * l'utilisateur sélectionne un collaborateur.
+	 * Méthode appelée par la fenêtre CollaborationsController quand l'utilisateur
+	 * sélectionne un collaborateur.
+	 * 
 	 * @param e Event contenant le collaborateur sélectionné.
 	 */
-	public void onGetObjectFromSelection(final Event e){
+	public void onGetObjectFromSelection(final Event e) {
 
 		// les collaborateurs peuvent être modifiés dans la fenêtre
 		// d'aide => maj de ceux-ci
 		nomsAndPrenoms = new ArrayList<>();
 		collaborateurs = ManagerLocator.getCollaborateurManager().findAllActiveObjectsWithOrderManager();
-		for(int i = 0; i < collaborateurs.size(); i++){
+		for (int i = 0; i < collaborateurs.size(); i++) {
 			nomsAndPrenoms.add(collaborateurs.get(i).getNomAndPrenom());
 		}
 
-		if(this.echantillon.getCollaborateur() != null && !collaborateurs.contains(this.echantillon.getCollaborateur())){
+		if (this.echantillon.getCollaborateur() != null
+				&& !collaborateurs.contains(this.echantillon.getCollaborateur())) {
 			collaborateurs.add(this.echantillon.getCollaborateur());
 			nomsAndPrenoms.add(this.echantillon.getCollaborateur().getNomAndPrenom());
 		}
 		collabBox.setModel(new CustomSimpleListModel(nomsAndPrenoms));
 
 		// si un collaborateur a été sélectionné
-		if(e.getData() != null){
+		if (e.getData() != null) {
 			final Collaborateur coll = (Collaborateur) e.getData();
-			if(nomsAndPrenoms.contains(coll.getNomAndPrenom())){
+			if (nomsAndPrenoms.contains(coll.getNomAndPrenom())) {
 				final int ind = nomsAndPrenoms.indexOf(coll.getNomAndPrenom());
 				selectedCollaborateur = collaborateurs.get(ind);
 				collabBox.setValue(selectedCollaborateur.getNomAndPrenom());
@@ -657,23 +672,24 @@ public class FicheEchantillonEdit extends AbstractFicheEditController
 	/*************************************************************************/
 
 	/**
-	 * Méthode appelée après la saisie d'une valeur dans le champ
-	 * codeBoxEchan. Cette valeur sera mise en majuscules.
+	 * Méthode appelée après la saisie d'une valeur dans le champ codeBoxEchan.
+	 * Cette valeur sera mise en majuscules.
 	 */
-	public void onBlur$codeBoxEchan(){
+	public void onBlur$codeBoxEchan() {
 		codeBoxEchan.setValue(codeBoxEchan.getValue().toUpperCase().trim());
 	}
 
 	/**
-	 * Méthode appelée après la saisie d'une valeur dans le champ
-	 * codePrefixeEchan. Cette valeur sera mise en majuscules.
+	 * Méthode appelée après la saisie d'une valeur dans le champ codePrefixeEchan.
+	 * Cette valeur sera mise en majuscules.
 	 */
-	public void onBlur$codePrefixeEchan(){
+	public void onBlur$codePrefixeEchan() {
 
 		codePrefixeEchan.setValue(codePrefixeEchan.getValue().toUpperCase().trim());
 
-		//On ne contrôle le code que s'il s'agit d'un nouveau prélèvement ou si le code a été modifié
-		if(echantillon.getEchantillonId() == null || !codePrefixeEchan.getValue().equals(echantillon.getCode())) {
+		// On ne contrôle le code que s'il s'agit d'un nouveau prélèvement ou si le code
+		// a été modifié
+		if (echantillon.getEchantillonId() == null || !codePrefixeEchan.getValue().equals(echantillon.getCode())) {
 			validateEchantillonCode(codePrefixeEchan.getValue());
 		}
 
@@ -681,76 +697,77 @@ public class FicheEchantillonEdit extends AbstractFicheEditController
 
 	/**
 	 * Validation "à la volée" du code échantillon saisi
+	 * 
 	 * @param echCode code échantillon à valider
 	 */
-	private void validateEchantillonCode(final String echCode){
+	private void validateEchantillonCode(final String echCode) {
 
-		//Vérification de l'absence de doublons
+		// Vérification de l'absence de doublons
 		final List<Echantillon> doublons = ManagerLocator.getManager(EchantillonManager.class)
 				.findByCodeInPlateformeManager(echCode, SessionUtils.getCurrentPlateforme());
 
-		if(!doublons.isEmpty()){
-			final String collectionsDoublon =
-					doublons.stream().map(Echantillon::getBanque).map(Banque::getNom).collect(Collectors.joining(", "));
+		if (!doublons.isEmpty()) {
+			final String collectionsDoublon = doublons.stream().map(Echantillon::getBanque).map(Banque::getNom)
+					.collect(Collectors.joining(", "));
 			throw new WrongValueException(codePrefixeEchan,
-					Labels.getLabel("error.validation.doublon.code", new String[] {echCode, collectionsDoublon}));
+					Labels.getLabel("error.validation.doublon.code", new String[] { echCode, collectionsDoublon }));
 		}
 
 	}
 
 	@Override
-	public void setFieldsToUpperCase(){
-		if(this.echantillon.getCode() != null){
+	public void setFieldsToUpperCase() {
+		if (this.echantillon.getCode() != null) {
 			this.echantillon.setCode(this.echantillon.getCode().toUpperCase().trim());
 		}
 	}
 
 	@Override
-	public void setFocusOnElement(){
+	public void setFocusOnElement() {
 		codePrefixeEchan.setFocus(true);
 	}
 
 	/**
-	 * Méthode appelée lors d'une modification du champ quantiteInitBoxEchan.
-	 * En fonction de la quantité initiale saisie, la quantité restante sera
-	 * mise à jour.
+	 * Méthode appelée lors d'une modification du champ quantiteInitBoxEchan. En
+	 * fonction de la quantité initiale saisie, la quantité restante sera mise à
+	 * jour.
 	 */
-	public void onBlur$quantiteInitBoxEchan(){
+	public void onBlur$quantiteInitBoxEchan() {
 
 		final BigDecimal value = quantiteInitBoxEchan.getValue();
 		final Float zero = new Float(0.0);
 		// si la quantité initiale a changé, on modifie la quantité
 		// restante en fonction
-		if(value != null){
+		if (value != null) {
 			echantillon.setQuantiteInit(value.floatValue());
 			final BigDecimal bd = new BigDecimal(echantillon.getQuantiteInit());
 			quantiteInitBoxEchan.setValue(bd);
 			Float diff = this.echantillon.getQuantiteInit();
 			// si une quantité initiale était saisie
-			if(getCopy().getQuantiteInit() != null){
+			if (getCopy().getQuantiteInit() != null) {
 				diff = diff - getCopy().getQuantiteInit();
-			}else if(getCopy().getQuantiteInit() == null && getCopy().getQuantite() != null){
+			} else if (getCopy().getQuantiteInit() == null && getCopy().getQuantite() != null) {
 				echantillon.setQuantite(echantillon.getQuantiteInit());
 				diff = zero;
 				valeurQuantiteRestante = echantillon.getQuantite().toString();
 			}
 			// on vérifie qu'un changement a eu lieu
-			if(diff != zero){
+			if (diff != zero) {
 				Float restant;
-				if(getCopy().getQuantite() != null){
+				if (getCopy().getQuantite() != null) {
 					restant = getCopy().getQuantite() + diff;
-				}else{
+				} else {
 					restant = diff;
 				}
 				// la quantité restante ne doit pas etre negative
-				if(restant >= zero){
+				if (restant >= zero) {
 					echantillon.setQuantite(restant);
-				}else{
+				} else {
 					echantillon.setQuantite(zero);
 				}
 				valeurQuantiteRestante = echantillon.getQuantite().toString();
 			}
-		}else{
+		} else {
 			echantillon.setQuantiteInit(null);
 			echantillon.setQuantite(null);
 			valeurQuantiteRestante = "-";
@@ -762,24 +779,23 @@ public class FicheEchantillonEdit extends AbstractFicheEditController
 	/*************************************************************************/
 
 	/**
-	 * Méthode initialisant les champs de formulaire pour la quantité et
-	 * le volume.
+	 * Méthode initialisant les champs de formulaire pour la quantité et le volume.
 	 */
-	public void initQuantiteAndVolume(){
+	public void initQuantiteAndVolume() {
 		final StringBuffer sb = new StringBuffer();
-		if(this.echantillon.getQuantite() != null){
+		if (this.echantillon.getQuantite() != null) {
 			sb.append(this.echantillon.getQuantite());
-		}else{
+		} else {
 			sb.append("-");
 		}
 		valeurQuantiteRestante = sb.toString();
 		sb.append(" / ");
-		if(this.echantillon.getQuantiteInit() != null){
+		if (this.echantillon.getQuantiteInit() != null) {
 			sb.append(this.echantillon.getQuantiteInit());
-		}else{
+		} else {
 			sb.append("-");
 		}
-		if(this.echantillon.getQuantiteUnite() != null){
+		if (this.echantillon.getQuantiteUnite() != null) {
 			sb.append(" ");
 			sb.append(this.echantillon.getQuantiteUnite().getNom());
 		}
@@ -788,52 +804,48 @@ public class FicheEchantillonEdit extends AbstractFicheEditController
 	}
 
 	/**
-	 * Méthode initialisant le champs de formulaire pour le délai
-	 * de congélation.
+	 * Méthode initialisant le champs de formulaire pour le délai de congélation.
 	 */
-	public void initDelaiCgl(){
+	public void initDelaiCgl() {
 
-		if(this.echantillon.getDelaiCgl() != null && this.echantillon.getDelaiCgl() < 0){
+		if (this.echantillon.getDelaiCgl() != null && this.echantillon.getDelaiCgl() < 0) {
 			this.echantillon.setDelaiCgl(null);
 		}
 
-		if(this.echantillon.getDelaiCgl() != null){
+		if (this.echantillon.getDelaiCgl() != null) {
 			final Float heure = this.echantillon.getDelaiCgl() / 60;
-			if(heure > 0){
+			if (heure > 0) {
 				heureDelai = heure.intValue();
 				minDelai = this.echantillon.getDelaiCgl().intValue() - (heureDelai * 60);
-			}else{
+			} else {
 				heureDelai = 0;
 				minDelai = this.echantillon.getDelaiCgl().intValue();
 			}
-		}else{
+		} else {
 			calculDelaiCgl();
 		}
 	}
 
 	/**
-	 * Cette méthode calcule automatiquement le délaiCgl.
-	 * Calcule la différence entre la date de prélèvement, la date associée
-	 * à la congélation dans la fiche labointer ou la date de stockage de l'
-	 * echantillon.
-	 * Ces dates doivent contenir des heures/minutes pour etre prise en
-	 * compte dans le calcul.
+	 * Cette méthode calcule automatiquement le délaiCgl. Calcule la différence
+	 * entre la date de prélèvement, la date associée à la congélation dans la fiche
+	 * labointer ou la date de stockage de l' echantillon. Ces dates doivent
+	 * contenir des heures/minutes pour etre prise en compte dans le calcul.
 	 */
-	public void calculDelaiCgl(){
+	public void calculDelaiCgl() {
 		setHeureDelai(null);
 		setMinDelai(null);
 
-		long milli = ManagerLocator.getEchantillonManager()
-				.calculDelaiStockage(echantillon, getParentObject());
+		long milli = ManagerLocator.getEchantillonManager().calculDelaiStockage(echantillon, getParentObject());
 
-		if(milli > 0){
+		if (milli > 0) {
 			final Float min = (float) (milli / 60000);
 
 			final Float heure = min / 60;
-			if(heure > 0){
+			if (heure > 0) {
 				setHeureDelai(heure.intValue());
 				setMinDelai(min.intValue() - (getHeureDelai() * 60));
-			}else{
+			} else {
 				setHeureDelai(0);
 				setMinDelai(min.intValue());
 			}
@@ -841,129 +853,145 @@ public class FicheEchantillonEdit extends AbstractFicheEditController
 	}
 
 	/**
-	 * Méthode pour l'initialisation du mode d'édition : récupération du contenu
-	 * des listes déroulantes (types, qualités...).
+	 * Initialisation du contenu des listes déroulantes.
 	 */
-
-	public void initEditableMode(){
-		quantite = null;
-		quantiteInit = null;
-
-		codePrefixe = this.echantillon.getCode();
-
+	public void initLists() {
 		types = ManagerLocator.getEchantillonTypeManager().findByOrderManager(SessionUtils.getPlateforme(sessionScope));
 		types.add(0, null);
-		if(echantillon.getEchantillonType() != null){
-			selectedType = echantillon.getEchantillonType();
-		}else{
-			selectedType = types.get(0);
-		}
 
-		// on récupère les unités de quantité
 		quantiteUnites = ManagerLocator.getUniteManager().findByTypeLikeManager("masse", true);
 		List<Unite> tmpUnites = ManagerLocator.getUniteManager().findByTypeLikeManager("discret", true);
 		quantiteUnites.addAll(tmpUnites);
 		tmpUnites = ManagerLocator.getUniteManager().findByTypeLikeManager("volume", true);
 		quantiteUnites.addAll(tmpUnites);
 		quantiteUnites.add(0, null);
-		selectedQuantiteUnite = echantillon.getQuantiteUnite();
 
 		// init des collaborateurs
 		nomsAndPrenoms = new ArrayList<>();
 		collaborateurs = ManagerLocator.getCollaborateurManager().findAllActiveObjectsWithOrderManager();
-		for(int i = 0; i < collaborateurs.size(); i++){
+		for (int i = 0; i < collaborateurs.size(); i++) {
 			nomsAndPrenoms.add(collaborateurs.get(i).getNomAndPrenom());
 		}
 		collabBox.setModel(new CustomSimpleListModel(nomsAndPrenoms));
 
-		if(this.echantillon.getCollaborateur() != null && collaborateurs.contains(this.echantillon.getCollaborateur())){
+		qualites = ManagerLocator.getEchanQualiteManager().findByOrderManager(SessionUtils.getPlateforme(sessionScope));
+		qualites.add(0, null);
+
+		prepas = ManagerLocator.getModePrepaManager().findByOrderManager(SessionUtils.getPlateforme(sessionScope));
+		prepas.add(0, null);
+
+		
+		Entite echEntite = ManagerLocator.getEntiteManager().findByIdManager(3);
+		
+		// init des non conformites de traitement
+		nonConformitesTraitement = ManagerLocator.getNonConformiteManager().findByPlateformeEntiteAndTypeStringManager(
+				SessionUtils.getPlateforme(sessionScope), "Traitement", echEntite);
+
+		// init des non conformites à la cession
+		nonConformitesCession = ManagerLocator.getNonConformiteManager().findByPlateformeEntiteAndTypeStringManager(
+				SessionUtils.getPlateforme(sessionScope), "Cession", echEntite);
+	}
+
+	/**
+	 * Méthode pour l'initialisation du mode d'édition : récupération du contenu des
+	 * listes déroulantes (types, qualités...).
+	 */
+	public void initEditableMode() {
+		quantite = null;
+		quantiteInit = null;
+
+		codePrefixe = this.echantillon.getCode();
+
+		if (echantillon.getEchantillonType() != null) {
+			selectedType = echantillon.getEchantillonType();
+		} else {
+			selectedType = types.get(0);
+		}
+
+		selectedQuantiteUnite = echantillon.getQuantiteUnite();
+
+		if (this.echantillon.getCollaborateur() != null
+				&& collaborateurs.contains(this.echantillon.getCollaborateur())) {
 			selectedCollaborateur = this.echantillon.getCollaborateur();
 			collabBox.setValue(selectedCollaborateur.getNomAndPrenom());
-		}else if(this.echantillon.getCollaborateur() != null){
+		} else if (this.echantillon.getCollaborateur() != null) {
 			collaborateurs.add(this.echantillon.getCollaborateur());
 			selectedCollaborateur = this.echantillon.getCollaborateur();
 			nomsAndPrenoms.add(this.echantillon.getCollaborateur().getNomAndPrenom());
 			collabBox.setModel(new CustomSimpleListModel(nomsAndPrenoms));
 			collabBox.setValue(selectedCollaborateur.getNomAndPrenom());
-		}else{
+		} else {
 			collabBox.setValue("");
 			selectedCollaborateur = null;
 		}
 
-		qualites = ManagerLocator.getEchanQualiteManager().findByOrderManager(SessionUtils.getPlateforme(sessionScope));
-		qualites.add(0, null);
 		selectedQualite = echantillon.getEchanQualite();
 
-		prepas = ManagerLocator.getModePrepaManager().findByOrderManager(SessionUtils.getPlateforme(sessionScope));
-		prepas.add(0, null);
 		selectedPrepa = echantillon.getModePrepa();
 
-		if(echantillon.getTumoral() != null){
+		if (echantillon.getTumoral() != null) {
 			tumoraleBox.setChecked(echantillon.getTumoral());
-		}else{
+		} else {
 			tumoraleBox.setChecked(false);
 		}
 
-		if(echantillon.getSterile() != null){
+		if (echantillon.getSterile() != null) {
 			sterileBox.setChecked(echantillon.getSterile());
-		}else{
+		} else {
 			sterileBox.setChecked(false);
 		}
 
 		// si la quantité init est nulle mais pas la quantité restante
 		// => quantiteInit = quantite
-		if(this.echantillon.getQuantite() != null && this.echantillon.getQuantiteInit() == null){
+		if (this.echantillon.getQuantite() != null && this.echantillon.getQuantiteInit() == null) {
 			this.echantillon.setQuantiteInit(this.echantillon.getQuantite());
 		}
 
 		initNonConformites();
 	}
 
-	public void initNonConformites(){
-		// init des non conformites de traitement
-		nonConformitesTraitement = ManagerLocator.getNonConformiteManager().findByPlateformeEntiteAndTypeStringManager(
-				SessionUtils.getPlateforme(sessionScope), "Traitement", getObjectTabController().getEntiteTab());
+	public void initNonConformites() {
+
+		// traitement
 		selectedNonConformiteTraitement = null;
-		if(echantillon != null && echantillon.getEchantillonId() != null){
-			final List<ObjetNonConforme> tmp =
-					ManagerLocator.getObjetNonConformeManager().findByObjetAndTypeManager(echantillon, "Traitement");
-			if(tmp.size() > 0){
-				if(nonConformitesTraitement.contains(tmp.get(0).getNonConformite())){
+		if (echantillon != null && echantillon.getEchantillonId() != null) {
+			final List<ObjetNonConforme> tmp = ManagerLocator.getObjetNonConformeManager()
+					.findByObjetAndTypeManager(echantillon, "Traitement");
+			if (tmp.size() > 0) {
+				if (nonConformitesTraitement.contains(tmp.get(0).getNonConformite())) {
 					selectedNonConformiteTraitement = tmp.get(0).getNonConformite();
 				}
 			}
 		}
-		if(this.echantillon.getConformeTraitement() != null){
-			if(this.echantillon.getConformeTraitement()){
+		if (this.echantillon.getConformeTraitement() != null) {
+			if (this.echantillon.getConformeTraitement()) {
 				conformeTraitementBoxOui.setChecked(true);
 				conformeTraitementBoxNon.setChecked(false);
 				conformeTraitementBox.setVisible(false);
-			}else{
+			} else {
 				conformeTraitementBoxOui.setChecked(false);
 				conformeTraitementBoxNon.setChecked(true);
 				conformeTraitementBox.setVisible(true);
 			}
 		}
 
-		// init des non conformites à la cession
-		nonConformitesCession = ManagerLocator.getNonConformiteManager().findByPlateformeEntiteAndTypeStringManager(
-				SessionUtils.getPlateforme(sessionScope), "Cession", getObjectTabController().getEntiteTab());
+		// cession
 		selectedNonConformiteCession = null;
-		if(echantillon != null && echantillon.getEchantillonId() != null){
-			final List<ObjetNonConforme> tmp =
-					ManagerLocator.getObjetNonConformeManager().findByObjetAndTypeManager(echantillon, "Cession");
-			if(tmp.size() > 0){
-				if(nonConformitesCession.contains(tmp.get(0).getNonConformite())){
+		if (echantillon != null && echantillon.getEchantillonId() != null) {
+			final List<ObjetNonConforme> tmp = ManagerLocator.getObjetNonConformeManager()
+					.findByObjetAndTypeManager(echantillon, "Cession");
+			if (tmp.size() > 0) {
+				if (nonConformitesCession.contains(tmp.get(0).getNonConformite())) {
 					selectedNonConformiteCession = tmp.get(0).getNonConformite();
 				}
 			}
 		}
-		if(this.echantillon.getConformeCession() != null){
-			if(this.echantillon.getConformeCession()){
+		if (this.echantillon.getConformeCession() != null) {
+			if (this.echantillon.getConformeCession()) {
 				conformeCessionBoxOui.setChecked(true);
 				conformeCessionBoxNon.setChecked(false);
 				conformeCessionBox.setVisible(false);
-			}else{
+			} else {
 				conformeCessionBoxOui.setChecked(false);
 				conformeCessionBoxNon.setChecked(true);
 				conformeCessionBox.setVisible(true);
@@ -978,21 +1006,22 @@ public class FicheEchantillonEdit extends AbstractFicheEditController
 
 	/**
 	 * Select les non conformites dans la dropdown list.
+	 * 
 	 * @param risks liste à selectionner
 	 */
 
-	public void selectNonConformites(){
+	public void selectNonConformites() {
 		final List<NonConformite> ncfTrait = new ArrayList<>();
 		final List<NonConformite> ncfCess = new ArrayList<>();
-		if(echantillon != null && echantillon.getEchantillonId() != null){
-			List<ObjetNonConforme> list =
-					ManagerLocator.getObjetNonConformeManager().findByObjetAndTypeManager(echantillon, "Traitement");
-			for(int i = 0; i < list.size(); i++){
+		if (echantillon != null && echantillon.getEchantillonId() != null) {
+			List<ObjetNonConforme> list = ManagerLocator.getObjetNonConformeManager()
+					.findByObjetAndTypeManager(echantillon, "Traitement");
+			for (int i = 0; i < list.size(); i++) {
 				ncfTrait.add(list.get(i).getNonConformite());
 			}
 
 			list = ManagerLocator.getObjetNonConformeManager().findByObjetAndTypeManager(echantillon, "Cession");
-			for(int i = 0; i < list.size(); i++){
+			for (int i = 0; i < list.size(); i++) {
 				ncfCess.add(list.get(i).getNonConformite());
 			}
 		}
@@ -1005,171 +1034,180 @@ public class FicheEchantillonEdit extends AbstractFicheEditController
 
 	}
 
-	public void onCheck$conformeTraitementBoxOui(){
-		if(conformeTraitementBoxOui.isChecked()){
+	public void onCheck$conformeTraitementBoxOui() {
+		if (conformeTraitementBoxOui.isChecked()) {
 			conformeTraitementBoxNon.setChecked(false);
 			conformeTraitementBox.setVisible(false);
 		}
 	}
 
-	public void onCheck$conformeTraitementBoxNon(){
-		if(conformeTraitementBoxNon.isChecked()){
+	public void onCheck$conformeTraitementBoxNon() {
+		if (conformeTraitementBoxNon.isChecked()) {
 			conformeTraitementBoxOui.setChecked(false);
 			conformeTraitementBox.setVisible(true);
-		}else{
+		} else {
 			conformeTraitementBox.setVisible(false);
 		}
 	}
 
-	public void onCheck$conformeCessionBoxOui(){
-		if(conformeCessionBoxOui.isChecked()){
+	public void onCheck$conformeCessionBoxOui() {
+		if (conformeCessionBoxOui.isChecked()) {
 			conformeCessionBoxNon.setChecked(false);
 			conformeCessionBox.setVisible(false);
 		}
 	}
 
-	public void onCheck$conformeCessionBoxNon(){
-		if(conformeCessionBoxNon.isChecked()){
+	public void onCheck$conformeCessionBoxNon() {
+		if (conformeCessionBoxNon.isChecked()) {
 			conformeCessionBoxOui.setChecked(false);
 			conformeCessionBox.setVisible(true);
-		}else{
+		} else {
 			conformeCessionBox.setVisible(false);
 		}
 	}
 
-	public List<EchantillonType> getTypes(){
+	public List<EchantillonType> getTypes() {
 		return types;
 	}
 
-	public EchantillonType getSelectedType(){
+	public void setTypes(List<EchantillonType> types) {
+		this.types = types;
+	}
+
+	public EchantillonType getSelectedType() {
 		return selectedType;
 	}
 
-	public void setSelectedType(final EchantillonType selected){
+	public void setSelectedType(final EchantillonType selected) {
 		this.selectedType = selected;
 	}
 
-	public List<Collaborateur> getCollaborateurs(){
+	public List<Collaborateur> getCollaborateurs() {
 		return collaborateurs;
 	}
 
-	public void setCollaborateurs(final List<Collaborateur> colls){
+	public void setCollaborateurs(final List<Collaborateur> colls) {
 		this.collaborateurs = colls;
 	}
 
-	public List<String> getNomsAndPrenoms(){
+	public List<String> getNomsAndPrenoms() {
 		return nomsAndPrenoms;
 	}
 
-	public void setNomsAndPrenoms(final List<String> nAndPs){
+	public void setNomsAndPrenoms(final List<String> nAndPs) {
 		this.nomsAndPrenoms = nAndPs;
 	}
 
-	public Collaborateur getSelectedCollaborateur(){
+	public Collaborateur getSelectedCollaborateur() {
 		return selectedCollaborateur;
 	}
 
-	public void setSelectedCollaborateur(final Collaborateur selectedCollab){
+	public void setSelectedCollaborateur(final Collaborateur selectedCollab) {
 		this.selectedCollaborateur = selectedCollab;
 	}
 
-	public List<EchanQualite> getQualites(){
+	public List<EchanQualite> getQualites() {
 		return qualites;
 	}
+	
+	public void setQualites(List<EchanQualite> qualites) {
+		this.qualites = qualites;
+	}
 
-	public EchanQualite getSelectedQualite(){
+	public EchanQualite getSelectedQualite() {
 		return selectedQualite;
 	}
 
-	public void setSelectedQualite(final EchanQualite selected){
+	public void setSelectedQualite(final EchanQualite selected) {
 		this.selectedQualite = selected;
 	}
 
-	public Unite getSelectedQuantiteUnite(){
+	public Unite getSelectedQuantiteUnite() {
 		return selectedQuantiteUnite;
 	}
 
-	public void setSelectedQuantiteUnite(final Unite selectedQuantite){
+	public void setSelectedQuantiteUnite(final Unite selectedQuantite) {
 		this.selectedQuantiteUnite = selectedQuantite;
 	}
 
-	public List<ModePrepa> getPrepas(){
+	public List<ModePrepa> getPrepas() {
 		return prepas;
 	}
 
-	public ModePrepa getSelectedPrepa(){
+	public ModePrepa getSelectedPrepa() {
 		return selectedPrepa;
 	}
 
-	public void setSelectedPrepa(final ModePrepa selected){
+	public void setSelectedPrepa(final ModePrepa selected) {
 		this.selectedPrepa = selected;
 	}
 
-	public String getValeurQuantite(){
+	public String getValeurQuantite() {
 		return valeurQuantite;
 	}
 
-	public void setValeurQuantite(final String q){
+	public void setValeurQuantite(final String q) {
 		this.valeurQuantite = q;
 	}
 
-	public String getValeurQuantiteRestante(){
+	public String getValeurQuantiteRestante() {
 		return valeurQuantiteRestante;
 	}
 
-	public void setValeurQuantiteRestante(final String valeurRestante){
+	public void setValeurQuantiteRestante(final String valeurRestante) {
 		this.valeurQuantiteRestante = valeurRestante;
 	}
 
-	public Integer getHeureDelai(){
+	public Integer getHeureDelai() {
 		return heureDelai;
 	}
 
-	public void setHeureDelai(final Integer heure){
+	public void setHeureDelai(final Integer heure) {
 		this.heureDelai = heure;
 	}
 
-	public Integer getMinDelai(){
+	public Integer getMinDelai() {
 		return minDelai;
 	}
 
-	public void setMinDelai(final Integer min){
+	public void setMinDelai(final Integer min) {
 		this.minDelai = min;
 	}
 
-	public List<Unite> getQuantiteUnites(){
+	public List<Unite> getQuantiteUnites() {
 		return quantiteUnites;
 	}
 
-	public Float getQuantite(){
+	public Float getQuantite() {
 		return quantite;
 	}
 
-	public void setQuantite(final Float q){
+	public void setQuantite(final Float q) {
 		this.quantite = q;
 	}
 
-	public Float getQuantiteInit(){
+	public Float getQuantiteInit() {
 		return quantiteInit;
 	}
 
-	public void setQuantiteInit(final Float qInit){
+	public void setQuantiteInit(final Float qInit) {
 		this.quantiteInit = qInit;
 	}
 
-	public String getEmplacementAdrl(){
+	public String getEmplacementAdrl() {
 
 		Boolean isAutorise;
 
-		if(isAnonyme()){
+		if (isAnonyme()) {
 			isAutorise = false;
-		}else{
-			//La modification du stockage ne peut pas se faire ici, on regarde donc les droits de consultation
-			//pour savoir si on affiche ou non la valeur du champ
+		} else {
+			// La modification du stockage ne peut pas se faire ici, on regarde donc les
+			// droits de consultation
+			// pour savoir si on affiche ou non la valeur du champ
 			isAutorise = getDroitOnAction("Stockage", "Consultation");
 		}
 
-		if(!isAutorise){
+		if (!isAutorise) {
 			makeLabelAnonyme(emplacementLabelEchan, false);
 			return getAnonymeString();
 		}
@@ -1178,15 +1216,15 @@ public class FicheEchantillonEdit extends AbstractFicheEditController
 
 	}
 
-	public String getTemperatureFormated(){
+	public String getTemperatureFormated() {
 		Float temp = null;
 
-		if(this.echantillon != null && this.echantillon.getEchantillonId() != null){
+		if (this.echantillon != null && this.echantillon.getEchantillonId() != null) {
 			final Emplacement emp = ManagerLocator.getEchantillonManager().getEmplacementManager(echantillon);
 
-			if(emp != null){
+			if (emp != null) {
 				final Conteneur cont = ManagerLocator.getEmplacementManager().getConteneurManager(emp);
-				if(cont != null && cont.getTemp() != null){
+				if (cont != null && cont.getTemp() != null) {
 					temp = cont.getTemp();
 				}
 			}
@@ -1195,82 +1233,93 @@ public class FicheEchantillonEdit extends AbstractFicheEditController
 		return ObjectTypesFormatters.formatTemperature(temp);
 	}
 
-	public void setEmplacementAdrl(final String emplacementA){
+	public void setEmplacementAdrl(final String emplacementA) {
 		this.emplacementAdrl = emplacementA;
 	}
 
-	public String getSelectedLateralite(){
+	public String getSelectedLateralite() {
 		return selectedLateralite;
 	}
 
-	public void setSelectedLateralite(final String selected){
+	public void setSelectedLateralite(final String selected) {
 		this.selectedLateralite = selected;
 	}
 
-	public Fichier getCrAnapath(){
+	public Fichier getCrAnapath() {
 		return crAnapath;
 	}
 
-	public void setCrAnapath(final Fichier c){
+	public void setCrAnapath(final Fichier c) {
 		this.crAnapath = c;
 	}
 
-	public InputStream getAnapathStream(){
+	public InputStream getAnapathStream() {
 		return anapathStream;
 	}
 
-	public void setAnapathStream(final InputStream aS){
+	public void setAnapathStream(final InputStream aS) {
 		this.anapathStream = aS;
 	}
 
-	public List<LaboInter> getLaboInters(){
+	public List<LaboInter> getLaboInters() {
 		return laboInters;
 	}
 
-	public void setLaboInters(final List<LaboInter> labos){
+	public void setLaboInters(final List<LaboInter> labos) {
 		this.laboInters = labos;
 	}
 
-	public List<LaboInter> getLaboIntersToDelete(){
+	public List<LaboInter> getLaboIntersToDelete() {
 		return laboIntersToDelete;
 	}
 
-	public void setLaboIntersToDelete(final List<LaboInter> labosToDelete){
+	public void setLaboIntersToDelete(final List<LaboInter> labosToDelete) {
 		this.laboIntersToDelete = labosToDelete;
 	}
 
 	/*********************************************************/
 	/********************** VALIDATION ***********************/
 	/*********************************************************/
-	private final Constraint cttQuantite = new ConstQuantite();
-	private final Constraint cttQuantiteInit = new ConstQuantiteInit();
+	protected final Constraint cttQuantite = new ConstQuantite();
+	protected final Constraint cttQuantiteInit = new ConstQuantiteInit();
 
-	public Constraint getCttQuantite(){
+	public Constraint getCttQuantite() {
 		return cttQuantite;
 	}
 
-	public Constraint getCttQuantiteInit(){
+	public Constraint getCttQuantiteInit() {
 		return cttQuantiteInit;
 	}
 
 	/**
-	 * Contrainte vérifiant que la quantité n'est pas supérieure
-	 * à la quantité init.
+	 * Contrainte vérifiant que la quantité n'est pas supérieure à la quantité init.
+	 * 
 	 * @author Pierre Ventadour.
+	 * @since 2.3.0-gatsbi nullable
 	 *
 	 */
-	public class ConstQuantite implements Constraint
-	{
+	public class ConstQuantite implements Constraint {
+
+		private boolean nullable = true;
+
+		public boolean isNullable() {
+			return nullable;
+		}
+
+		public void setNullable(boolean _n) {
+			this.nullable = _n;
+		}
+
 		/**
 		 * Méthode de validation du champ quantiteBox.
 		 */
 		@Override
-		public void validate(final Component comp, final Object value){
+		public void validate(final Component comp, final Object value) {
 			// on récupère la valeur dans quantiteBox
 			final BigDecimal quantiteValue = (BigDecimal) value;
 			// Si la QuantiteInit est null (1ère édition de la page)
 			// on va récupérer la valeur du champ quantiteInitBox
-			if(quantiteInit == null){
+			if (quantiteInit == null) {
 				// on enlève la contrainte de quantiteInitBox pour
 				// pouvoir récupérer sa valeur
 				quantiteInitBoxEchan.setConstraint("");
@@ -1279,22 +1328,22 @@ public class FicheEchantillonEdit extends AbstractFicheEditController
 				// on remet la contrainte
 				quantiteInitBoxEchan.setConstraint(cttQuantiteInit);
 				// si la valeur n'est pas nulle, on initialise quantiteInit
-				if(quantiteInitValue != null){
+				if (quantiteInitValue != null) {
 					quantiteInit = quantiteInitValue.floatValue();
 				}
 			}
 
 			// si une valeur est saisie dans le champ quantiteBox
-			if(quantiteValue != null){
+			if (quantiteValue != null) {
 				quantite = quantiteValue.floatValue();
 				// la quantite doit être positive
-				if(quantite < 0){
+				if (quantite < 0) {
 					throw new WrongValueException(comp, "Seul les nombres non-négatifs sont autorisés.");
 				}
 				// si une valeur est saisie dans le champ quantiteInitBox
-				if(quantiteInit != null){
+				if (quantiteInit != null) {
 					// si la quantite est supérieure à la quantiteInit
-					if(quantite > quantiteInit){
+					if (quantite > quantiteInit) {
 						throw new WrongValueException(comp,
 								"La quantité actuelle ne peut pas être " + "supérieure à la quantité initiale.");
 					}
@@ -1304,29 +1353,33 @@ public class FicheEchantillonEdit extends AbstractFicheEditController
 					quantiteInitBoxEchan.setConstraint("");
 					quantiteInitBoxEchan.setValue(decimal);
 					quantiteInitBoxEchan.setConstraint(cttQuantiteInit);
-				}else{
+				} else {
 					// si aucune quantiteInit n'est saisie, on enlève les
 					// erreurs
 					Clients.clearWrongValue(quantiteInitBoxEchan);
 					quantiteInitBoxEchan.setConstraint("");
-					//quantiteInitBoxEchan.setValue(null);
+					// quantiteInitBoxEchan.setValue(null);
 					quantiteInitBoxEchan.setValue("");
 					quantiteInitBoxEchan.setConstraint(cttQuantiteInit);
 				}
-			}else{
+			} else { // nullable ?
+				if (!nullable) {
+					throw new WrongValueException(comp, Labels.getLabel("anno.num.empty"));
+				}
+
 				// si aucune quantite n'est saisie, on enlève les
 				// erreurs
 				quantite = null;
-				if(quantiteInit != null){
+				if (quantiteInit != null) {
 					final BigDecimal decimal = new BigDecimal(quantiteInit);
 					Clients.clearWrongValue(quantiteInitBoxEchan);
 					quantiteInitBoxEchan.setConstraint("");
 					quantiteInitBoxEchan.setValue(decimal);
 					quantiteInitBoxEchan.setConstraint(cttQuantiteInit);
-				}else{
+				} else {
 					Clients.clearWrongValue(quantiteInitBoxEchan);
 					quantiteInitBoxEchan.setConstraint("");
-					//quantiteInitBoxEchan.setValue(null);
+					// quantiteInitBoxEchan.setValue(null);
 					quantiteInitBoxEchan.setValue("");
 					quantiteInitBoxEchan.setConstraint(cttQuantiteInit);
 				}
@@ -1335,49 +1388,64 @@ public class FicheEchantillonEdit extends AbstractFicheEditController
 	}
 
 	/**
-	 * Contrainte vérifiant que la quantiteInit n'est pas inférieure
-	 * à la quantite.
+	 * Contrainte vérifiant que la quantiteInit n'est pas inférieure à la quantite.
+	 * 
 	 * @author Pierre Ventadour.
-	 *
+	 * @since 2.3.0-gatsbi nullable
 	 */
-	public class ConstQuantiteInit implements Constraint
-	{
+	public class ConstQuantiteInit implements Constraint {
+
+		private boolean nullable = true;
+
+		public boolean isNullable() {
+			return nullable;
+		}
+
+		public void setNullable(boolean _n) {
+			this.nullable = _n;
+		}
+
 		/**
 		 * Méthode de validation du champ quantiteInitBox.
 		 */
 		@Override
-		public void validate(final Component comp, final Object value){
+		public void validate(final Component comp, final Object value) {
 			// on récupère la valeur dans quantiteInitBox
 			final BigDecimal quantiteInitValue = (BigDecimal) value;
 
 			// si une valeur est saisie dans le champ quantiteInitBox
-			if(quantiteInitValue != null){
+			if (quantiteInitValue != null) {
 				quantiteInit = quantiteInitValue.floatValue();
 				// la quantiteInit doit être positive
-				if(quantiteInit < 0){
+				if (quantiteInit < 0) {
 					throw new WrongValueException(comp, Labels.getLabel("validation.negative.value"));
 				}
 
 				// si l'échantillon avait deja une valeur de quantite et de
 				// quantiteInit
-				if(getCopy().getQuantite() != null && getCopy().getQuantiteInit() != null){
+				if (getCopy().getQuantite() != null && getCopy().getQuantiteInit() != null) {
 
 					final Float diff = quantiteInitValue.floatValue() - getCopy().getQuantiteInit();
 					final Float restant = getCopy().getQuantite() + diff;
 					final Float zero = new Float(0.0);
 					// si la Quantite restante est négative
-					if(restant < zero){
+					if (restant < zero) {
 						// on calcule la quantiteInit minimale autorisée
 						final Float min = getCopy().getQuantiteInit() - getCopy().getQuantite();
-						throw new WrongValueException(comp, Labels.getLabel("validation.invalid.quantite.init") + " " + min);
+						throw new WrongValueException(comp,
+								Labels.getLabel("validation.invalid.quantite.init") + " " + min);
 					}
+				}
+			} else { // nullable ?
+				if (!nullable) {
+					throw new WrongValueException(comp, Labels.getLabel("anno.num.empty"));
 				}
 			}
 		}
 	}
 
 	@Override
-	public void clearConstraints(){
+	public void clearConstraints() {
 		Clients.clearWrongValue(codePrefixeEchan);
 		Clients.clearWrongValue(quantiteBoxEchan);
 		Clients.clearWrongValue(quantiteInitBoxEchan);
@@ -1388,18 +1456,18 @@ public class FicheEchantillonEdit extends AbstractFicheEditController
 	/**
 	 * Applique la validation sur la date.
 	 */
-	public void onBlur$dateStockCalBox(){
+	public void onBlur$dateStockCalBox() {
 		final Datebox box = (Datebox) dateStockCalBox.getFirstChild().getFirstChild();
 		boolean badDateFormat = false;
-		if(box.getErrorMessage() != null && box.getErrorMessage().contains(box.getFormat())){
+		if (box.getErrorMessage() != null && box.getErrorMessage().contains(box.getFormat())) {
 			badDateFormat = true;
 		}
-		if(!badDateFormat){
+		if (!badDateFormat) {
 			// if(!dateStockCalBox.isHasChanged() && dateStockCalBox.getValue() == null){
-			//    if(getParentObject() != null){
-			//       dateStockCalBox.setValue(ObjectTypesFormatters.getDateWithoutHoursAndMins(getParentObject().getDatePrelevement()));
-			//       getEchantillon().setDateStock(dateStockCalBox.getValue());
-			//    }
+			// if(getParentObject() != null){
+			// dateStockCalBox.setValue(ObjectTypesFormatters.getDateWithoutHoursAndMins(getParentObject().getDatePrelevement()));
+			// getEchantillon().setDateStock(dateStockCalBox.getValue());
+			// }
 			// }else{
 			dateStockCalBox.clearErrorMessage(dateStockCalBox.getValue());
 			validateCoherenceDate(dateStockCalBox, dateStockCalBox.getValue());
@@ -1407,7 +1475,7 @@ public class FicheEchantillonEdit extends AbstractFicheEditController
 			echantillon.setDateStock(dateStockCalBox.getValue());
 			calculDelaiCgl();
 			dateStockCalBox.setHasChanged(true);
-		}else{
+		} else {
 			throw new WrongValueException(dateStockCalBox, Labels.getLabel("validation.invalid.date"));
 		}
 	}
@@ -1415,32 +1483,32 @@ public class FicheEchantillonEdit extends AbstractFicheEditController
 	/**
 	 * Applique la validation sur la sterilite.
 	 */
-	public void onCheck$sterileBox(){
+	public void onCheck$sterileBox() {
 		Clients.clearWrongValue(sterileBox);
 		validateSterilite(sterileBox.isChecked());
 	}
 
-	public void onSelect$typesBoxEchan(){
+	public void onSelect$typesBoxEchan() {
 		checkRequiredListboxes();
 	}
 
 	@Override
-	protected void validateCoherenceDate(final Component comp, final Object value){
+	protected void validateCoherenceDate(final Component comp, final Object value) {
 		Errors errs = null;
 		String field = "";
-		if(value == null || value.equals("")){
+		if (value == null || value.equals("")) {
 			((CalendarBox) comp).clearErrorMessage(dateStockCalBox.getValue());
 			((CalendarBox) comp).setValue(null);
 			echantillon.setDateStock(null);
-		}else{
+		} else {
 			// date stock
-			if(comp.getId().equals("dateStockCalBox")){
+			if (comp.getId().equals("dateStockCalBox")) {
 				field = "dateStock";
-				if(getParentObject() != null){
-					if(getLaboInters() == null){ // edit simple
-						getParentObject().setLaboInters(
-								new HashSet<>(ManagerLocator.getPrelevementManager().getLaboIntersWithOrderManager(getParentObject())));
-					}else{ // creation ou update dans procedure
+				if (getParentObject() != null) {
+					if (getLaboInters() == null) { // edit simple
+						getParentObject().setLaboInters(new HashSet<>(ManagerLocator.getPrelevementManager()
+								.getLaboIntersWithOrderManager(getParentObject())));
+					} else { // creation ou update dans procedure
 						getParentObject().setLaboInters(new HashSet<>(getLaboInters()));
 					}
 				}
@@ -1450,7 +1518,7 @@ public class FicheEchantillonEdit extends AbstractFicheEditController
 				errs = ManagerLocator.getEchantillonValidator().checkDateStockageCoherence(getEchantillon(), true);
 			}
 
-			if(errs != null && errs.hasErrors()){
+			if (errs != null && errs.hasErrors()) {
 				Clients.scrollIntoView(comp);
 				heureBox.setValue(0);
 				minBox.setValue(0);
@@ -1462,58 +1530,59 @@ public class FicheEchantillonEdit extends AbstractFicheEditController
 
 	/**
 	 * Valide l'application de la sterilite au niveau echantillon.
+	 * 
 	 * @param value
 	 */
-	private void validateSterilite(final boolean value){
+	private void validateSterilite(final boolean value) {
 		Errors errs = null;
 		String field = "";
 
-		if(value){
+		if (value) {
 			field = "sterile";
-			if(this.prelevement != null){
-				this.prelevement.setLaboInters(
-						new HashSet<>(ManagerLocator.getPrelevementManager().getLaboIntersWithOrderManager(this.prelevement)));
+			if (this.prelevement != null) {
+				this.prelevement.setLaboInters(new HashSet<>(
+						ManagerLocator.getPrelevementManager().getLaboIntersWithOrderManager(this.prelevement)));
 			}
 			this.echantillon.setPrelevement(this.prelevement);
 			this.echantillon.setSterile(true);
 			errs = ManagerLocator.getEchantillonValidator().checkSteriliteAntecedence(this.echantillon);
 		}
 
-		if(errs != null && errs.hasErrors()){
+		if (errs != null && errs.hasErrors()) {
 
 			throw new WrongValueException(sterileBox, ObjectTypesFormatters.handleErrors(errs, field));
 		}
 	}
 
-	public ConstCode getCodePrefixConstraint(){
+	public ConstCode getCodePrefixConstraint() {
 		return EchantillonConstraints.getCodePrefixConstraint();
 	}
 
-	public ConstCode getCodePrefixNullableConstraint(){
+	public ConstCode getCodePrefixNullableConstraint() {
 		return EchantillonConstraints.getCodePrefixNullableConstraint();
 	}
 
-	public ConstCode getCodeSuffixConstraint(){
+	public ConstCode getCodeSuffixConstraint() {
 		return EchantillonConstraints.getCodeSuffixConstraint();
 	}
 
-	public ConstFilename getCrAnapathConstraint(){
+	public ConstFilename getCrAnapathConstraint() {
 		return EchantillonConstraints.getCrAnapathConstraint();
 	}
 
-	public List<CodeAssigne> getCodesToCreateOrEdit(){
+	public List<CodeAssigne> getCodesToCreateOrEdit() {
 		return codesToCreateOrEdit;
 	}
 
-	public void setCodesToCreateOrEdit(final List<CodeAssigne> cce){
+	public void setCodesToCreateOrEdit(final List<CodeAssigne> cce) {
 		this.codesToCreateOrEdit = cce;
 	}
 
-	public List<CodeAssigne> getCodesAssignesToDelete(){
+	public List<CodeAssigne> getCodesAssignesToDelete() {
 		return codesAssignesToDelete;
 	}
 
-	public void setCodesAssignesToDelete(final List<CodeAssigne> ccD){
+	public void setCodesAssignesToDelete(final List<CodeAssigne> ccD) {
 		this.codesAssignesToDelete = ccD;
 	}
 
@@ -1522,23 +1591,22 @@ public class FicheEchantillonEdit extends AbstractFicheEditController
 	/*************************************************************/
 
 	/**
-	 * Pour les codes organes et lésionnels,
-	 * parcourt chaqueCodeAssigneDecorator cree ou modifie, extrait le code,
-	 * recupere le codeOrganeToExport.
+	 * Pour les codes organes et lésionnels, parcourt chaqueCodeAssigneDecorator
+	 * cree ou modifie, extrait le code, recupere le codeOrganeToExport.
 	 */
-	public void prepareCodes(){
+	public void prepareCodes() {
 
-		if(getCodesToCreateOrEdit() != null){
+		if (getCodesToCreateOrEdit() != null) {
 			getCodesToCreateOrEdit().clear();
-		}else{
+		} else {
 			setCodesToCreateOrEdit(new ArrayList<CodeAssigne>());
 		}
 
 		// prepare la liste de CodeAssigne a passer
 		Iterator<SmallObjDecorator> it = getCodesOrganeController().getObjs().iterator();
 		CodeAssigneDecorator next;
-		//int ordre = 0;
-		while(it.hasNext()){
+		// int ordre = 0;
+		while (it.hasNext()) {
 			next = (CodeAssigneDecorator) it.next();
 			next.syncOrdre();
 			getCodesToCreateOrEdit().add((CodeAssigne) next.getObj());
@@ -1546,45 +1614,46 @@ public class FicheEchantillonEdit extends AbstractFicheEditController
 
 		// prepare la liste de CodeAssigne a passer
 		it = getCodesMorphoController().getObjs().iterator();
-		while(it.hasNext()){
+		while (it.hasNext()) {
 			next = (CodeAssigneDecorator) it.next();
 			next.syncOrdre();
 			getCodesToCreateOrEdit().add((CodeAssigne) next.getObj());
 		}
 
 		// passe à null les listes si vides
-		if(getCodesToCreateOrEdit().isEmpty()){
+		if (getCodesToCreateOrEdit().isEmpty()) {
 			setCodesToCreateOrEdit(null);
 		}
 
 		// codesAssigneToDelete
 		it = getCodesOrganeController().getObjToDelete().iterator();
-		while(it.hasNext()){
+		while (it.hasNext()) {
 			getCodesAssignesToDelete().add((CodeAssigne) ((CodeAssigneDecorator) it.next()).getObj());
 		}
 		it = getCodesMorphoController().getObjToDelete().iterator();
-		while(it.hasNext()){
+		while (it.hasNext()) {
 			getCodesAssignesToDelete().add((CodeAssigne) ((CodeAssigneDecorator) it.next()).getObj());
 		}
 
 	}
 
-	public CodeAssigneEditableGrid getCodesOrganeController(){
+	public CodeAssigneEditableGrid getCodesOrganeController() {
 		return (CodeAssigneEditableGrid) self.getFellow("organesEditor").getFirstChild()
 				.getAttributeOrFellow("codesAssitGridDiv$composer", true);
 	}
 
-	public CodeAssigneEditableGrid getCodesMorphoController(){
+	public CodeAssigneEditableGrid getCodesMorphoController() {
 		return (CodeAssigneEditableGrid) self.getFellow("morphosEditor").getFirstChild()
 				.getAttributeOrFellow("codesAssitGridDiv$composer", true);
 	}
 
 	/**
 	 * Sélection d'une latéralité pour l'échantillon.
+	 * 
 	 * @param event Event : sélection sur la liste lateralitesBox.
 	 * @throws Exception
 	 */
-	public void onSelect$lateralitesBox(final Event event) throws Exception{
+	public void onSelect$lateralitesBox(final Event event) throws Exception {
 		selectedLateralite = lateralitesBox.getSelectedItem().getLabel();
 	}
 
@@ -1595,22 +1664,23 @@ public class FicheEchantillonEdit extends AbstractFicheEditController
 	/**
 	 * Recupere le nom du fichier et le stream depuis l'interface.
 	 */
-	protected void prepareCrAnapath(){
-		if(crAnapathNomBox.getValue() != null && !crAnapathNomBox.getValue().equals("")){
+	protected void prepareCrAnapath() {
+		if (crAnapathNomBox.getValue() != null && !crAnapathNomBox.getValue().equals("")) {
 			getCrAnapath().setNom(crAnapathNomBox.getValue());
-		}else{
+		} else {
 			setCrAnapath(null);
 			setAnapathStream(null);
 		}
 	}
 
-	public void onClick$addCrFile(){
+	public void onClick$addCrFile() {
 		Media[] medias;
 		medias = Fileupload.get(
 				ObjectTypesFormatters.getLabel("general.upload.limit",
-						new String[] {String.valueOf(EchantillonConstraints.getSizeLimit())}),
-				Labels.getLabel("ficheEchantillon" + ".crAnapath.upload.title"), 1, EchantillonConstraints.getSizeLimit(), true);
-		if(medias != null && medias.length > 0){
+						new String[] { String.valueOf(EchantillonConstraints.getSizeLimit()) }),
+				Labels.getLabel("ficheEchantillon" + ".crAnapath.upload.title"), 1,
+				EchantillonConstraints.getSizeLimit(), true);
+		if (medias != null && medias.length > 0) {
 			anapathStream = new ByteArrayInputStream(medias[0].getByteData());
 			crAnapathNomBox.setValue(medias[0].getName());
 			showDeleteAndFileNameBox(true);
@@ -1618,30 +1688,31 @@ public class FicheEchantillonEdit extends AbstractFicheEditController
 		}
 	}
 
-	public void onBlur$crAnapathNomBox(){
+	public void onBlur$crAnapathNomBox() {
 		getCrAnapathConstraint().validate(crAnapathNomBox, crAnapathNomBox.getValue());
 	}
 
-	public void onClick$deleteCrFile(){
+	public void onClick$deleteCrFile() {
 		resetCrAnapathBoxes();
 	}
 
 	/**
-	 * Remet les composants d'enregistrement du fichier
-	 * à l'état initial, fichier vide.
+	 * Remet les composants d'enregistrement du fichier à l'état initial, fichier
+	 * vide.
 	 */
-	public void resetCrAnapathBoxes(){
+	public void resetCrAnapathBoxes() {
 		setAnapathStream(null);
 		crAnapathNomBox.setValue(null);
 		showDeleteAndFileNameBox(false);
 	}
 
 	/**
-	 * Affiche ou non les composants delete/textbox pour une annotation fichier
-	 * en mode edit.
+	 * Affiche ou non les composants delete/textbox pour une annotation fichier en
+	 * mode edit.
+	 * 
 	 * @param boolean visible
 	 */
-	public void showDeleteAndFileNameBox(final boolean visible){
+	public void showDeleteAndFileNameBox(final boolean visible) {
 		crAnapathNomBox.setVisible(visible);
 		deleteCrFile.setVisible(visible);
 	}
@@ -1649,7 +1720,7 @@ public class FicheEchantillonEdit extends AbstractFicheEditController
 	/**
 	 * Remet à 0 le delai de congélation.
 	 */
-	public void resetDelaiCgl(){
+	public void resetDelaiCgl() {
 		setHeureDelai(null);
 		setMinDelai(null);
 		getBinder().loadComponent(heureBox);
@@ -1657,72 +1728,76 @@ public class FicheEchantillonEdit extends AbstractFicheEditController
 	}
 
 	/**
-	 * Bloque la navigation et passe le contrôle à la méthode
-	 * onLaterUpdate.
+	 * Bloque la navigation et passe le contrôle à la méthode onLaterUpdate.
 	 */
 	@Override
-	public void onClick$validate(){
+	public void onClick$validate() {
 		onBlur$dateStockCalBox();
 		Clients.showBusy(Labels.getLabel(getWaitLabel()));
 		Events.echoEvent("onLaterUpdate", self, null);
 	}
 
-	public PrelevementController getPrelevementController(){
-		if(!getObjectTabController().getReferencingObjectControllers().isEmpty()){
+	public PrelevementController getPrelevementController() {
+		if (!getObjectTabController().getReferencingObjectControllers().isEmpty()) {
 			return (PrelevementController) getObjectTabController().getReferencingObjectControllers().get(0);
 		}
 		return null;
 	}
 
-	public List<NonConformite> getNonConformitesTraitement(){
+	public List<NonConformite> getNonConformitesTraitement() {
 		return nonConformitesTraitement;
 	}
 
-	public void setNonConformitesTraitement(final List<NonConformite> nConformitesTraitement){
+	public void setNonConformitesTraitement(final List<NonConformite> nConformitesTraitement) {
 		this.nonConformitesTraitement = nConformitesTraitement;
 	}
 
-	public NonConformite getSelectedNonConformiteTraitement(){
+	public NonConformite getSelectedNonConformiteTraitement() {
 		return selectedNonConformiteTraitement;
 	}
 
-	public void setSelectedNonConformiteTraitement(final NonConformite selectedNConformiteTraitement){
+	public void setSelectedNonConformiteTraitement(final NonConformite selectedNConformiteTraitement) {
 		this.selectedNonConformiteTraitement = selectedNConformiteTraitement;
 	}
 
-	public List<NonConformite> getNonConformitesCession(){
+	public List<NonConformite> getNonConformitesCession() {
 		return nonConformitesCession;
 	}
 
-	public void setNonConformitesCession(final List<NonConformite> nConformitesCession){
+	public void setNonConformitesCession(final List<NonConformite> nConformitesCession) {
 		this.nonConformitesCession = nConformitesCession;
 	}
 
-	public NonConformite getSelectedNonConformiteCession(){
+	public NonConformite getSelectedNonConformiteCession() {
 		return selectedNonConformiteCession;
 	}
 
-	public void setSelectedNonConformiteCession(final NonConformite selectedNConformiteCession){
+	public void setSelectedNonConformiteCession(final NonConformite selectedNConformiteCession) {
 		this.selectedNonConformiteCession = selectedNConformiteCession;
 	}
 
-	public String getObjetStatut(){
+	public String getObjetStatut() {
 		return ObjectTypesFormatters.ILNObjectStatut(getObject().getObjetStatut());
 	}
 
-   /**
-    * Validation sécifique des listboxes obligatoires
-    * Gatsbi surcharge cette méthode
-    * @since 2.3.0-gatsbi
-    */
-   protected void checkRequiredListboxes() {
-	   
-	   if(getSelectedType() == null){
+	/**
+	 * Validation sécifique des listboxes obligatoires Gatsbi surcharge cette
+	 * méthode
+	 * 
+	 * @since 2.3.0-gatsbi
+	 */
+	protected void checkRequiredListboxes() {
+
+		if (getSelectedType() == null) {
 			// ferme wait message si besoin
 			Clients.clearBusy();
-	        Clients.scrollIntoView(typesBoxEchan);
+			Clients.scrollIntoView(typesBoxEchan);
 			throw new WrongValueException(typesBoxEchan, Labels.getLabel("ficheEchantillon.error.type"));
 		}
 		Clients.clearWrongValue(typesBoxEchan);
-   }
+	}
+
+	protected void setGroupInfosCompEchanOpen(boolean b) {
+		((Group) groupInfosCompEchan).setOpen(b);
+	}
 }

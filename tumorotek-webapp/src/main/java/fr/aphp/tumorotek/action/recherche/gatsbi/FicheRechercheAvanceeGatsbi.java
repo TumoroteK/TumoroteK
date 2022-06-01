@@ -45,11 +45,11 @@ import org.zkoss.zul.Grid;
 import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Messagebox;
 
-import fr.aphp.tumorotek.action.prelevement.gatsbi.GatsbiController;
 import fr.aphp.tumorotek.action.recherche.FicheRechercheAvancee;
 import fr.aphp.tumorotek.model.coeur.prelevement.Risque;
 import fr.aphp.tumorotek.model.contexte.gatsbi.Contexte;
 import fr.aphp.tumorotek.model.qualite.NonConformite;
+import fr.aphp.tumorotek.webapp.gatsbi.GatsbiController;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
 /**
@@ -127,5 +127,21 @@ public class FicheRechercheAvanceeGatsbi extends FicheRechercheAvancee {
 	
 	public void setNcarrivee(List<NonConformite> _ncs) {
 		setNCarrivee(_ncs);
+	}
+	
+	public List<NonConformite> getNctraitement() {
+		return getNCechanTraitement();
+	}
+	
+	public void setNctraitement(List<NonConformite> _ncs) {
+		setNCechanTraitement(_ncs);
+	}
+	
+	public List<NonConformite> getNccession() {
+		return getNCechanCession();
+	}
+	
+	public void setNccession(List<NonConformite> _ncs) {
+		setNCechanCession(_ncs);
 	}
 }

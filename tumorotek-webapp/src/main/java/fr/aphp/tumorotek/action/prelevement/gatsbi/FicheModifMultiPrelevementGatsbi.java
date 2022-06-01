@@ -36,18 +36,14 @@
  **/
 package fr.aphp.tumorotek.action.prelevement.gatsbi;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zul.Constraint;
-import org.zkoss.zul.Div;
-import org.zkoss.zul.Messagebox;
-
 import fr.aphp.tumorotek.action.prelevement.FicheModifMultiPrelevement;
 import fr.aphp.tumorotek.manager.exception.TKException;
 import fr.aphp.tumorotek.model.contexte.gatsbi.Contexte;
-import fr.aphp.tumorotek.webapp.general.SessionUtils;
+import fr.aphp.tumorotek.webapp.gatsbi.GatsbiController;
 
 /**
  *
@@ -62,30 +58,15 @@ public class FicheModifMultiPrelevementGatsbi extends FicheModifMultiPrelevement
 
 	private static final long serialVersionUID = 1L;
 
-	private Div gatsbiContainer;
-
 	private Contexte c;
-	List<Div> itemDivs = new ArrayList<Div>();
-	List<Div> blockDivs = new ArrayList<Div>();
 
 	@Override
 	public void doAfterCompose(Component comp) throws Exception {
 		super.doAfterCompose(comp);
 
-		try {
-			c = SessionUtils.getCurrentGatsbiContexteForEntiteId(2);
-
-			itemDivs = GatsbiController.wireItemDivsFromMainComponent(c.getContexteType(), gatsbiContainer);
-			blockDivs = GatsbiController.wireBlockDivsFromMainComponent(c.getContexteType(), gatsbiContainer);
-
-			GatsbiController.showOrhideItems(itemDivs, blockDivs, c); // TODO replace by collection.contexte
-			// GatsbiController.switchItemsRequiredOrNot(itemDivs, c, reqListboxes,
-			// new ArrayList<Combobox>(), new ArrayList<Div>());
-
-		} catch (Exception e) {
-			log.debug(e);
-			Messagebox.show(handleExceptionMessage(e), "Error", Messagebox.OK, Messagebox.ERROR);
-		}
+		c = GatsbiController.initWireAndDisplay(this, 
+				2, 
+				false, null, null, null);
 	}
 
 	@Override

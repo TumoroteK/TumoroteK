@@ -36,26 +36,17 @@
  **/
 package fr.aphp.tumorotek.action.prelevement.gatsbi;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.function.Consumer;
-
 import org.zkoss.zk.ui.Component;
-import org.zkoss.zk.ui.Executions;
-import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.ForwardEvent;
-import org.zkoss.zul.Div;
 import org.zkoss.zul.Groupbox;
 import org.zkoss.zul.Messagebox;
 
 import fr.aphp.tumorotek.action.patient.ResumePatient;
 import fr.aphp.tumorotek.action.prelevement.FichePrelevementStatic;
+import fr.aphp.tumorotek.action.prelevement.gatsbi.exception.GatsbiException;
 import fr.aphp.tumorotek.manager.exception.TKException;
-import fr.aphp.tumorotek.manager.impl.interfacage.ResultatInjection;
 import fr.aphp.tumorotek.model.contexte.gatsbi.Contexte;
-import fr.aphp.tumorotek.model.contexte.gatsbi.Parametrage;
-import fr.aphp.tumorotek.webapp.gatsbi.client.json.ParametrageDTO;
+import fr.aphp.tumorotek.webapp.gatsbi.GatsbiController;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
 /**
@@ -70,33 +61,24 @@ public class FichePrelevementStaticGatsbi extends FichePrelevementStatic {
 
 	private static final long serialVersionUID = -7612780578022559022L;
 
-	private Div gatsbiContainer;
-
 	private Groupbox groupPrlvt;
+	private Groupbox gridFormPrlvtComp;
 
 	private Contexte c;
 
 	@Override
 	public void doAfterCompose(final Component comp) throws Exception {
 		super.doAfterCompose(comp);
-
-		c = SessionUtils.getCurrentGatsbiContexteForEntiteId(2);
-
-		List<Div> itemDivs = GatsbiController.wireItemDivsFromMainComponent(c.getContexteType(), gatsbiContainer);
-		List<Div> blockDivs = GatsbiController.wireBlockDivsFromMainComponent(c.getContexteType(), gatsbiContainer);
-
-		GatsbiController.showOrhideItems(itemDivs, blockDivs, c); // TODO replace by collection.contexte
+		
+		c = GatsbiController.initWireAndDisplay(this, 
+				2, 
+				false, null, null, null,
+				groupPrlvt, gridFormPrlvtComp);
 
 		// prelevement specific
 		if (groupLaboInter != null) {
 			groupLaboInter.setVisible(c != null && c.getSiteInter());
 		}
-		hideEmptyGroupboxes();
-	}
-
-	private void hideEmptyGroupboxes() {
-		GatsbiController.hideGroupBoxIfEmpty(groupPrlvt);
-		GatsbiController.hideGroupBoxIfEmpty(gridFormPrlvtComp);
 	}
 
 	@Override
@@ -110,9 +92,6 @@ public class FichePrelevementStaticGatsbi extends FichePrelevementStatic {
 		((Groupbox) this.groupPatient).setClosable(b);
 	}
 
-	// TODO: ces deux méthodes sont factorisables avec
-	// celles de ListePrelevementGatsbi
-
 	/**
 	 * Gatsbi surcharge pour intercaler une modale de sélection des parametrages
 	 * proposés par le contexte.
@@ -120,16 +99,16 @@ public class FichePrelevementStaticGatsbi extends FichePrelevementStatic {
 	 * @param click event
 	 */
 	@Override
-	public void onClick$addNew() {
-
-		if (!c.getParametrages().isEmpty()) {
-			final Map<String, Object> args = new HashMap<String, Object>();
-			args.put("contexte", c);
-			args.put("parent", self);
-			Executions.createComponents("/zuls/gatsbi/SelectParametrageModale.zul", null, args);
-		} else { // no parametrages
-			super.onClick$addNew();
-		}
+	public void onClick$addNew() {		
+		GatsbiController.addNewObjectForContext(c, self, 
+			e -> {
+				try {
+					super.onClick$addNew();
+				} catch (Exception ex) {
+					Messagebox.show(handleExceptionMessage(ex), 
+							"Error", Messagebox.OK, Messagebox.ERROR);
+				}
+			}, null);
 	}
 
 	/**
@@ -138,15 +117,14 @@ public class FichePrelevementStaticGatsbi extends FichePrelevementStatic {
 	 * @param param
 	 * @throws Exception
 	 */
-	@SuppressWarnings("unchecked")
 	public void onGetSelectedParametrage(ForwardEvent evt) throws Exception {
-		try {
-			ResultatInjection inject = null;
-			if (((Map<String, Integer>) evt.getOrigin().getData()).get("paramId") != null) {
-				ParametrageDTO parametrageDTO = GatsbiController
-						.doGastbiParametrage(((Map<String, Integer>) evt.getOrigin().getData()).get("paramId"));
 
-				Consumer<Parametrage> validator = p -> {
+		try {
+			
+			GatsbiController.getSelectedParametrageFromSelectEvent(c, 
+				SessionUtils.getCurrentBanque(sessionScope), 
+				getObjectTabController(), 
+				p -> {
 					// cong depart OU cong arrivee
 					if (p.getDefaultValuesForChampEntiteId(269) != null
 							&& p.getDefaultValuesForChampEntiteId(269).contentEquals("1")
@@ -154,19 +132,16 @@ public class FichePrelevementStaticGatsbi extends FichePrelevementStatic {
 							&& p.getDefaultValuesForChampEntiteId(270).contentEquals("1")) {
 						throw new TKException("gatsbi.illegal.parametrage.prelevement.cong");
 					}
-				};
-
-				inject = GatsbiController.injectGatsbiObject(c, parametrageDTO,
-						SessionUtils.getCurrentBanque(sessionScope), validator);
-			}
-
-			super.onClick$addNew();
-
-			if (inject != null) {
-				Events.postEvent("onGatsbiParamSelected", getObjectTabController().getFicheEdit().getSelfComponent(),
-						inject);
-			}
-		} catch (Exception e) {
+				}, 
+				() -> {
+					try {
+						super.onClick$addNew();
+					} catch (Exception ex) {
+						Messagebox.show(handleExceptionMessage(ex), 
+								"Error", Messagebox.OK, Messagebox.ERROR);
+					}
+				}, evt);	
+		} catch (GatsbiException e) {
 			Messagebox.show(handleExceptionMessage(e), "Error", Messagebox.OK, Messagebox.ERROR);
 		}
 	}

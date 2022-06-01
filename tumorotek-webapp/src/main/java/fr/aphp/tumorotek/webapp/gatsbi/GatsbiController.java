@@ -61,12 +61,18 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.WrongValueException;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.event.ForwardEvent;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Checkbox;
+import org.zkoss.zul.Column;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Div;
+import org.zkoss.zul.Grid;
 import org.zkoss.zul.Groupbox;
 import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Listbox;
@@ -77,6 +83,9 @@ import org.zkoss.zul.impl.InputElement;
 import fr.aphp.tumorotek.action.ManagerLocator;
 import fr.aphp.tumorotek.action.constraints.TumoTextConstraint;
 import fr.aphp.tumorotek.action.controller.AbstractController;
+import fr.aphp.tumorotek.action.controller.AbstractObjectTabController;
+import fr.aphp.tumorotek.action.echantillon.FicheEchantillonEdit.ConstQuantite;
+import fr.aphp.tumorotek.action.echantillon.FicheEchantillonEdit.ConstQuantiteInit;
 import fr.aphp.tumorotek.action.imports.ImportColonneDecorator;
 import fr.aphp.tumorotek.action.prelevement.gatsbi.exception.GatsbiException;
 import fr.aphp.tumorotek.component.CalendarBox;
@@ -121,7 +130,6 @@ public class GatsbiController {
 			
 			put(ContexteType.ECHANTILLON, new String[] { 
 					"identifiantBlockDiv", 
-					"prelevementBlockDiv", 
 					"infoEchanBlockDiv",
 					"anapathInfosBlockDiv"
 			});
@@ -151,6 +159,7 @@ public class GatsbiController {
 							"echanSterileDiv", "echanRisquesDiv",
 							"echanDateStockDiv", "delaiCglDiv",
 							"echanOperateurDiv",
+							"echanQualiteDiv",
 							"echanStatutDiv", "echanEmplacementDiv",
 							"echanTempStockDiv",
 							"conformeCessionDiv",
@@ -187,7 +196,14 @@ public class GatsbiController {
 				.collect(Collectors.toList());
 		}
 		return new ArrayList<Div>();
-
+	}
+	
+	public static List<Div> wireItemDivsFromMainComponentByIds(Component main, String... ids) {
+		if (ids.length > 0) {
+			return Arrays.stream(ids).map(id -> (Div) main.getFellowIfAny(id)).filter(d -> d != null)
+				.collect(Collectors.toList());
+		}
+		return new ArrayList<Div>();
 	}
 
 	public static void showOrhideItems(List<Div> items, List<Div> blocks, Contexte c) {
@@ -222,7 +238,7 @@ public class GatsbiController {
 	}
 
 	public static void switchItemsRequiredOrNot(List<Div> items, Contexte c, List<Listbox> lboxes,
-			List<Combobox> cboxes, List<Div> reqConformeDivs) {
+			List<Combobox> cboxes, List<Div> reqDivs) {
 		log.debug("switch items required or not");
 		if (items != null && c != null) {
 
@@ -252,8 +268,8 @@ public class GatsbiController {
 								} else if (formElement instanceof CalendarBox) {
 									((CalendarBox) formElement).setConstraint("no empty");
 								}
-							} else if (div.getId().startsWith("conforme")) { // non-conformite
-								reqConformeDivs.add(div);
+							} else if (div.getId().startsWith("conforme") || div.getId().startsWith("crAnapath")) { // non-conformite | crAnapath
+								reqDivs.add(div);
 							}
 						}
 
@@ -409,7 +425,9 @@ public class GatsbiController {
 		if (item.getLastChild() instanceof InputElement || item.getLastChild() instanceof Listbox
 				|| item.getLastChild() instanceof CalendarBox) {
 			return item.getLastChild();
-		} else if (item.getLastChild() instanceof Div) {
+		} else if (item.getLastChild() instanceof Div && 
+			(((Div) item.getLastChild()).getSclass() == null 
+				|| !((Div) item.getLastChild()).getSclass().contains("skip-required"))) {
 			for (Component child : item.getLastChild().getChildren()) {
 				if (child instanceof InputElement || child instanceof Listbox
 						|| item.getLastChild() instanceof CalendarBox) {
@@ -427,6 +445,10 @@ public class GatsbiController {
 
 			if (constraint instanceof TumoTextConstraint) {
 				((TumoTextConstraint) constraint).setNullable(!required);
+			} else if (constraint instanceof ConstQuantite) { // echantillon
+				((ConstQuantite) constraint).setNullable(!required);
+			} else if (constraint instanceof ConstQuantiteInit) { // echantillon
+				((ConstQuantiteInit) constraint).setNullable(!required);
 			} else if (constraint instanceof SimpleConstraint) {
 				int flags = ((SimpleConstraint) constraint).getFlags();
 				if (required) {
@@ -435,7 +457,7 @@ public class GatsbiController {
 
 				constraint = new SimpleConstraint(flags);
 			} else {
-				throw new RuntimeException("Constraint unknown");
+				throw new RuntimeException("TK custom constraint... should be parametrized to be switched to non emtpy");
 			}
 		} else if (required) { // add required constraint
 			constraint = new SimpleConstraint("no empty");
@@ -649,7 +671,9 @@ public class GatsbiController {
 		if (param != null) {
 
 			// apply specific validation
-			validator.accept(param.toParametrage());
+			if (validator != null) {
+				validator.accept(param.toParametrage());
+			}
 
 			BlocExterne blocPrel = new BlocExterne();
 			ValeurExterne val;
@@ -678,9 +702,26 @@ public class GatsbiController {
 		return injection;
 	}
 	
-	// FACTORISATION controller
+	/**
+	 * Applique au rendement d'une page (contenu d'un onglet, formulaire), le wire des divs 
+	 * représentant chaque champ d'information, afin d'appliquer:
+	 *  - l'affichage conditionnel des champs
+	 *  - l'affichage conditionnel des blocks (invisible si vides)
+	 *  - l'application de la contrainte obligatoire oui/non en mode édition
+	 *  - la restriction des thesaurus en mode édition
+	 *  - l'affichage conditionnel des group boxes (invisible si vides)
+	 * @param controller
+	 * @param entiteId
+	 * @param edit
+	 * @param reqListboxes
+	 * @param reqComboboxes
+	 * @param reqDiv
+	 * @param groupsToHideWhenEmpy
+	 * @return
+	 */
 	public static Contexte initWireAndDisplay(AbstractController controller, Integer entiteId, 
-			boolean edit, List<Listbox> reqListboxes, 
+			boolean edit, 
+			List<Listbox> reqListboxes, List<Combobox> reqComboboxes, List<Div> reqDiv, 
 			Groupbox... groupsToHideWhenEmpy) {
 		try {
 			Contexte c = SessionUtils.getCurrentGatsbiContexteForEntiteId(entiteId);
@@ -697,8 +738,7 @@ public class GatsbiController {
 			
 			// required & thesaurus restriction
 			if (edit) {
-				switchItemsRequiredOrNot(itemDivs, c, reqListboxes, new ArrayList<Combobox>(),
-						new ArrayList<Div>());
+				switchItemsRequiredOrNot(itemDivs, c, reqListboxes, reqComboboxes, reqDiv);
 
 				appliThesaurusValues(itemDivs, c, controller);
 			}
@@ -709,10 +749,120 @@ public class GatsbiController {
 			
 			return c;
 		} catch (Exception e) {
-			log.debug(e);
+			log.debug(e.getMessage(), e);
 			Messagebox.show(AbstractController.handleExceptionMessage(e), "Error", Messagebox.OK, Messagebox.ERROR);
 		}
 		
 		return null;
+	}
+	
+	/**
+	 * Applique au rendement d'une page (contenu d'un onglet, formulaire), le wire des divs 
+	 * représentant chaque champ d'information, afin d'appliquer:
+	 *  - l'affichage conditionnel des champs
+	 *  - l'affichage conditionnel des blocks (invisible si vides)
+	 *  - l'application de la contrainte obligatoire oui/non en mode édition
+	 *  - la restriction des thesaurus en mode édition
+	 *  - l'affichage conditionnel des group boxes (invisible si vides)
+	 * @param controller
+	 * @param entiteId
+	 * @param edit
+	 * @param reqListboxes
+	 * @param reqComboboxes
+	 * @param reqDiv
+	 * @param groupsToHideWhenEmpy
+	 * @return
+	 */
+	public static void initWireAndDisplayForIds(AbstractController controller, Integer entiteId, 
+			String... ids) {
+		try {
+			Contexte c = SessionUtils.getCurrentGatsbiContexteForEntiteId(entiteId);
+			
+			Div gatsbiContainer = (Div) 
+					controller.getSelfComponent().getFellow("gatsbiContainer");
+	
+			// wire
+			List<Div> itemDivs = wireItemDivsFromMainComponentByIds(gatsbiContainer, ids);
+	
+			// display
+			showOrhideItems(itemDivs, null, c);
+			
+		} catch (Exception e) {
+			log.debug(e.getMessage(), e);
+			Messagebox.show(AbstractController.handleExceptionMessage(e), "Error", Messagebox.OK, Messagebox.ERROR);
+		}		
+	}	
+	
+	/**
+	 * Dessine une colonne.
+	 * @param grid composant parent
+	 * @param nameKey
+	 * @param width
+	 * @param align
+	 * @param child
+	 * @param sort
+	 * @param visible
+	 * @return composant column dessiné.
+	 * @throws ClassNotFoundException
+	 * @throws InstantiationException
+	 * @throws IllegalAccessException
+	 */
+	public static Column addColumn(Grid grid, 
+			String nameKey, String width, String align, Component child, String sort, Boolean visible)
+			throws ClassNotFoundException, InstantiationException, IllegalAccessException {
+		// check box first immutable column
+		Column col = new Column();
+		col.setLabel(Labels.getLabel(nameKey));
+		if (width != null) {
+			col.setWidth(width);
+		}
+		col.setAlign(align);
+		if (child != null) {
+			child.setParent(col);
+		}
+		col.setSort(sort);
+		col.setVisible(visible);
+		col.setParent(grid.getColumns());
+
+		return col;
+	}
+	
+	// add new refactor
+	public static void addNewObjectForContext(Contexte contexte, Component selfComponent, 
+			Consumer<Event> elseMethod, Event evt) {
+		if (!contexte.getParametrages().isEmpty()) {
+			final Map<String, Object> args = new HashMap<String, Object>();
+			args.put("contexte", contexte);
+			args.put("parent", selfComponent);
+			Executions.createComponents("/zuls/gatsbi/SelectParametrageModale.zul", null, args);
+		} else { // no parametrages
+			// super.onClick$addNew(event);
+			elseMethod.accept(evt);
+		}
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static void getSelectedParametrageFromSelectEvent(Contexte contexte, 
+			Banque banque, 
+			AbstractObjectTabController objectTabController,
+			Consumer<Parametrage> validator, Runnable elseMethod, 
+			ForwardEvent evt) throws GatsbiException {
+		
+		ResultatInjection inject = null;
+		if (((Map<String, Integer>) evt.getOrigin().getData()).get("paramId") != null) {
+			ParametrageDTO parametrageDTO = GatsbiController
+					.doGastbiParametrage(((Map<String, Integer>) evt.getOrigin().getData()).get("paramId"));
+
+			inject = GatsbiController.injectGatsbiObject(contexte, parametrageDTO,
+					banque, validator);
+		}
+
+		// super.onClick$addNew(null);
+		elseMethod.run();
+
+		if (inject != null) {
+			Events.postEvent("onGatsbiParamSelected", objectTabController.getFicheEdit().getSelfComponent(),
+					inject);
+		}
 	}
 }

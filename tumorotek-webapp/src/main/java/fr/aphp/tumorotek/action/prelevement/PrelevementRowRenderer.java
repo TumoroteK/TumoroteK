@@ -135,6 +135,7 @@ public class PrelevementRowRenderer extends TKSelectObjectRenderer<Prelevement>
 		setNbEchansRestants(PrelevementUtils.getNbEchanRestants(prel));
 
 		// @since gatsbi, icones peuvent ne jamais s'afficher
+		// icones
 		if (areIconesRendered()) {
 			final Hlayout icones = PrelevementUtils.drawListIcones(prel);
 	
@@ -156,6 +157,7 @@ public class PrelevementRowRenderer extends TKSelectObjectRenderer<Prelevement>
 			icones.setParent(row);
 		}
 
+		// identifiant
 		final Label codeLabel = new Label(prel.getCode());
 		codeLabel.addForward(null, codeLabel.getParent(), "onClickObject", prel);
 		codeLabel.setClass("formLink");
@@ -243,9 +245,7 @@ public class PrelevementRowRenderer extends TKSelectObjectRenderer<Prelevement>
 			
 			renderNbEchans(row, prel);
 			
-			renderThesObjectProperty(row, prel, "consentType");
-
-		
+			renderThesObjectProperty(row, prel, "consentType");		
 	}
 	
 	/*********** prelevement specific rendering information methods ***********/

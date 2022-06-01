@@ -39,7 +39,11 @@ package fr.aphp.tumorotek.action.echantillon.gatsbi;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.WrongValueException;
+import org.zkoss.zul.Combobox;
+import org.zkoss.zul.Div;
 import org.zkoss.zul.Groupbox;
 import org.zkoss.zul.Listbox;
 import fr.aphp.tumorotek.action.echantillon.FicheEchantillonEdit;
@@ -59,18 +63,24 @@ public class FicheEchantillonEditGatsbi extends FicheEchantillonEdit {
 	private static final long serialVersionUID = 1L;
 
 	private List<Listbox> reqListboxes = new ArrayList<Listbox>();
+	private List<Combobox> reqComboboxes = new ArrayList<Combobox>();
+	private List<Div> reqDivs = new ArrayList<Div>(); // contient conformite Div et crAnapath
 
 	// @wire
 	private Groupbox groupEchantillon;
+	private Groupbox groupInfosCompEchan;
 
 	@Override
 	public void doAfterCompose(final Component comp) throws Exception {
 		super.doAfterCompose(comp);
 
 		GatsbiController.initWireAndDisplay(this, 
-				getObjectTabController().getEntiteTab().getEntiteId(), 
-				false, null,
-				groupEchantillon);
+				3, 
+				true, reqListboxes, reqComboboxes, reqDivs,
+				groupEchantillon, groupInfosCompEchan);
+		
+		// affichage conditionnel infos prelevement 
+		GatsbiController.initWireAndDisplayForIds(this, 2, "natureDiv");
 	}
 
 	/**
@@ -88,5 +98,20 @@ public class FicheEchantillonEditGatsbi extends FicheEchantillonEdit {
 	 */
 	@Override
 	public void onSelect$typesBoxEchan() {
+	}
+	
+	@Override
+	protected void prepareCrAnapath() {
+		if (crAnapathNomBox.getValue() != null && !crAnapathNomBox.getValue().equals("")) {
+			getCrAnapath().setNom(crAnapathNomBox.getValue());
+		} else { // empty value, check required
+			Div crAnapathDiv = reqDivs.stream().filter(d -> d.getId().equals("crAnapathDiv")).findFirst().orElse(null);
+			if (crAnapathDiv != null) { // required value
+				throw new WrongValueException(crAnapathDiv, Labels.getLabel("validation.syntax.empty"));
+			} else { // emptyallowed
+				setCrAnapath(null);
+				setAnapathStream(null);
+			}
+		}
 	}
 }

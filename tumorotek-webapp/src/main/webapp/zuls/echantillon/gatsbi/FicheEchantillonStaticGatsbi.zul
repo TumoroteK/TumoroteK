@@ -38,10 +38,9 @@
 
 <?component name="listeRetours" macroURI="/zuls/cession/retour/ListeRetour2.zul" ?>
 
-<style src="/css/gatsbi.css" />
-
 <window id="fwinEchantillonStatic" border="none" 
-		apply="fr.aphp.tumorotek.action.echantillon.gatsbi.FicheEchantillonStaticGatsbi">
+		apply="fr.aphp.tumorotek.action.echantillon.gatsbi.FicheEchantillonStaticGatsbi"
+		forward="onSelectParametrage=onGetSelectedParametrage">
 	<panel collapsible="false" title="${c:l('ficheEchantillon.panel.title')}"
 	 sclass="fichePanelv2" id="winPanel" closable="true">
 		<panelchildren style="overflow-y:scroll" id="panelChildrenWithScroll">
@@ -70,14 +69,14 @@
 						<div id="prelevementBlockDiv"><!-- Prelevement -->
 							<!-- if no prelevement -->
 							<div class="item item-wide" id="row1PrlvtEchan" visible="false">
-								<label id="prlvtInconnuEchan"
+								<label width="100%" id="prlvtInconnuEchan"
 									value="${c:l('ficheEchantillon.prelevement.inconnu')}"
 									sclass="formValue"
 									style="font-style:italic"
 									visible="false"/>
 							</div>
 							<!-- else -->	
-							<div id="prelevementBlockDivContainer" class="block-container">
+							<div id="row2PrlvtEchan" class="block-container">
 								<div class="item item-mid" id="codePrelevementDiv"><!-- Code prélèvement -->
 									<custom-attributes champId="23" />
 									<label value="${c:l('ficheEchantillon.prelevement.code')}" sclass="chpLabel formLabel"/>
@@ -92,7 +91,7 @@
 										value="@{fwinEchantillonStatic$composer.prelevement.nature.nature}"
 										sclass="formValue" />
 								</div>
-								<div class="item item-wide" id="patientDiv"><!-- patient -->
+								<div class="item item-wide" id="row3PrlvtEchan"><!-- patient -->
 									<label value="${c:l('prelevement.patient')}" sclass="chpLabel formLabel" />
 									<label id="patientLabel" sclass="formValue" />
 								</div>
@@ -107,7 +106,7 @@
 					<div id="infoEchanBlockDiv">
 						<div class="block-container" id="infoEchanBlockDivContainer">
 							<div class="item item-mid" id="echanQteDiv"><!-- Quantité / QuantitéInit de l'échantillon -->
-								<custom-attributes champId="30" />
+								<custom-attributes champId="61" />
 								<label value="${c:l('ficheEchantillon.quantiteLabel')}" sclass="chpLabel formLabel"/>
 								<label id="quantiteLabelEchan" 
 									value="@{fwinEchantillonStatic$composer.valeurQuantite}"
@@ -132,7 +131,7 @@
 								<label value="${c:l('Champ.Prelevement.Risque')}" sclass="chpLabel formLabel"/>	
 								<vbox id="risquesBox" />
 							</div>
-							<div class="item item-mid" id="echanDateStockDiv"><!-- Date de congélation -->
+							<div class="item item-mid" id="echanDateStockDiv"><!-- Date de stockage -->
 								<custom-attributes champId="56" />
 								<label value="${c:l('Champ.Echantillon.DateStock')}" sclass="chpLabel formLabel"/>
 								<label id="dateLabelEchan" 
@@ -196,7 +195,9 @@
 							</div>
 						</div>
 					</div>
-					<div class="block-separator" />
+				</groupbox>
+				<div class="block-separator" />
+				<groupbox id="groupInfosCompEchan">
 					<div id="anapathInfosBlockDiv"><!-- Informations complémentaires -->
 						<div class="block-title">
 							<div class="column-container">

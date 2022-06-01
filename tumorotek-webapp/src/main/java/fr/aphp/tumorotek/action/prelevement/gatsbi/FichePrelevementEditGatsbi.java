@@ -48,13 +48,11 @@ import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Groupbox;
 import org.zkoss.zul.Listbox;
-import org.zkoss.zul.Messagebox;
-
 import fr.aphp.tumorotek.action.patient.ResumePatient;
 import fr.aphp.tumorotek.action.prelevement.FichePrelevementEdit;
 import fr.aphp.tumorotek.model.coeur.prelevement.LaboInter;
 import fr.aphp.tumorotek.model.contexte.gatsbi.Contexte;
-import fr.aphp.tumorotek.webapp.general.SessionUtils;
+import fr.aphp.tumorotek.webapp.gatsbi.GatsbiController;
 
 /**
  *
@@ -69,11 +67,10 @@ public class FichePrelevementEditGatsbi extends FichePrelevementEdit {
 
 	private static final long serialVersionUID = 1L;
 
-	private Div gatsbiContainer;
-
 	private List<Listbox> reqListboxes = new ArrayList<Listbox>();
-	List<Div> itemDivs = new ArrayList<Div>();
-	List<Div> blockDivs = new ArrayList<Div>();
+	private List<Combobox> reqComboboxes = new ArrayList<Combobox>();
+	private List<Div> reqConformeDivs = new ArrayList<Div>();
+	
 
 	// @wire
 	private Groupbox groupPrlvt;
@@ -84,32 +81,15 @@ public class FichePrelevementEditGatsbi extends FichePrelevementEdit {
 	public void doAfterCompose(final Component comp) throws Exception {
 		super.doAfterCompose(comp);
 
-		try {
-			c = SessionUtils.getCurrentGatsbiContexteForEntiteId(2);
+		c = GatsbiController.initWireAndDisplay(this, 
+					2, 
+					true, reqListboxes, reqComboboxes, reqConformeDivs,
+					groupPrlvt, groupPrlvt);
 
-			itemDivs = GatsbiController.wireItemDivsFromMainComponent(c.getContexteType(), gatsbiContainer);
-			blockDivs = GatsbiController.wireBlockDivsFromMainComponent(c.getContexteType(), gatsbiContainer);
 
-			GatsbiController.showOrhideItems(itemDivs, blockDivs, c); // TODO replace by collection.contexte
-			GatsbiController.switchItemsRequiredOrNot(itemDivs, c, reqListboxes, new ArrayList<Combobox>(),
-					new ArrayList<Div>());
-
-			GatsbiController.appliThesaurusValues(itemDivs, c, this);
-
-			hideEmptyGroupboxes();
-
-			// setRows ne marche pas ?
-			// seul moyen trouvé pour augmenter hauteur et voir tous les items de la listbox
-			risquesBox.setHeight(c.getThesaurusValuesForChampEntiteId(249).size() * 25 + "px");
-
-		} catch (Exception e) {
-			log.debug(e);
-			Messagebox.show(handleExceptionMessage(e), "Error", Messagebox.OK, Messagebox.ERROR);
-		}
-	}
-
-	private void hideEmptyGroupboxes() {
-		GatsbiController.hideGroupBoxIfEmpty(groupPrlvt);
+		// setRows ne marche pas ?
+		// seul moyen trouvé pour augmenter hauteur et voir tous les items de la listbox
+		risquesBox.setHeight(c.getThesaurusValuesForChampEntiteId(249).size() * 25 + "px");
 	}
 
 	@Override

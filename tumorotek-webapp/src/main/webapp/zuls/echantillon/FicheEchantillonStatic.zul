@@ -247,12 +247,7 @@
 						<div id="codesOrganeDiv" />
 					</row>
 					<row id="lateraliteRow" spans="1,3">
-						<label value="${c:l('Champ.Echantillon.Lat     
-						    
-						    
-						   
-						  
-						  pdceralite')}" sclass="formLabel"/>
+						<label value="${c:l('Champ.Echantillon.Lateralite')}" sclass="formLabel"/>
 						<label id="lateraliteLabel" sclass="formValue" value="@{fwinEchantillonStatic$composer.lateraliteLabel}"/>
 					</row>
 					<row spans="1,3">

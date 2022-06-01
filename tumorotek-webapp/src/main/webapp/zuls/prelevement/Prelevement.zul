@@ -50,10 +50,6 @@
 	<window id="winPrelevement" border="none" apply="fr.aphp.tumorotek.action.prelevement.PrelevementController">
 		<borderlayout sclass="tabBorderLayout" id="mainBorder">
 			<west size="30%" title="${c:l('general.recherche')}" border="normal" splittable="true" collapsible="true" id="listeRegion">
-				<!--  <div>
-					<listePrelevement visible="false" id="listePrelevement" hflex="1" vflex="1" />
-					<listePrelevementSero visible="false" id="listePrelevementSero" hflex="1" vflex="1" />
-				</div> -->
 			</west>
 			<center id="ficherRegion">
 				<div hflex="1">

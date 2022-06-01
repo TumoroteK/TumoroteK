@@ -35,22 +35,12 @@
  **/
 package fr.aphp.tumorotek.action.echantillon.serotk;
 
-import java.util.Iterator;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.zkoss.zul.Div;
-import org.zkoss.zul.Hlayout;
-import org.zkoss.zul.Label;
+import java.lang.reflect.InvocationTargetException;
+import java.text.ParseException;
 import org.zkoss.zul.Row;
 
-import fr.aphp.tumorotek.action.ManagerLocator;
 import fr.aphp.tumorotek.action.echantillon.EchantillonRowRenderer;
-import fr.aphp.tumorotek.action.utils.TKStockableObjectUtils;
-import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
 import fr.aphp.tumorotek.model.coeur.echantillon.Echantillon;
-import fr.aphp.tumorotek.model.coeur.prelevement.Prelevement;
-import fr.aphp.tumorotek.model.coeur.prelevement.Risque;
 
 /**
  * EchantillonRenderer affiche dans le Row
@@ -65,129 +55,45 @@ import fr.aphp.tumorotek.model.coeur.prelevement.Risque;
 public class EchantillonSeroRowRenderer extends EchantillonRowRenderer
 {
    
-   private final Log log = LogFactory.getLog(EchantillonSeroRowRenderer.class);
-
    public EchantillonSeroRowRenderer(boolean select, boolean cols){
       super(select, cols);
    }
 
-   @Override
-   public void render(final Row row, final Echantillon data, final int index){
+	@Override
+	public void render(final Row row, final Echantillon data, final int index) {
 
-      log.debug("init render");
+		// dessine le checkbox
+		super.render(row, data, index);
 
-      // dessine le checkbox
-      drawCheckbox(row, data, index);
+		renderObjets(row, data);
+	}
+	
+	/**
+	 * Rendu des colonnes spécifiques échantillon seroTK.
+	 * 
+	 * @param row
+	 * @param echan
+	 * @throws NoSuchMethodException
+	 * @throws InvocationTargetException
+	 * @throws IllegalAccessException
+	 */
+	protected void renderEchantillon(Row row, Echantillon echan)
+			throws IllegalAccessException, InvocationTargetException, NoSuchMethodException, ParseException {
 
-      log.debug("super");
+		renderDateProperty(row, echan, "dateStock");
 
-      final Echantillon echan = data;
+		renderDelaiCgl(row, echan);
 
-      final Hlayout icones = TKStockableObjectUtils.drawListIcones(echan, null, null);
+		renderThesObjectProperty(row, echan, "echantillonType");
 
-      //infectieux
-      final Prelevement prel = ManagerLocator.getEchantillonManager().getPrelevementManager(echan);
-      if(prel != null){
-         final Iterator<Risque> risksIt = ManagerLocator.getPrelevementManager().getRisquesManager(prel).iterator();
-         final Div bioHzd = new Div();
-         boolean risky = false;
-         String risks = "";
-         Risque risque;
-         while(risksIt.hasNext()){
-            risque = risksIt.next();
-            if(risque.getInfectieux()){
-               risky = true;
-               risks = risks + " " + risque.getNom();
-            }
-         }
-         if(risky){
-            bioHzd.setWidth("18px");
-            bioHzd.setHeight("18px");
-            bioHzd.setSclass("biohazard");
-            bioHzd.setTooltiptext(ObjectTypesFormatters.getLabel("tooltip.risque", new String[] {risks}));
-         }
+		renderQuantite(row, echan);
 
-         icones.insertBefore(bioHzd, icones.getFirstChild());
-      }
-      log.debug("risque");
+		renderObjetStatut(row, echan);
 
-      icones.setParent(row);
+		renderEmplacement(row, echan);
 
-      // code
-      final Label codeLabel = new Label(echan.getCode());
-      if(isAccessible()){
-         codeLabel.addForward(null, codeLabel.getParent(), "onClickObject", echan);
-         codeLabel.setClass("formLink");
-      }
-      codeLabel.setParent(row);
-      log.debug("code");
+		renderNbDerives(row, echan);
 
-      if(isTtesCollections()){
-         new Label(echan.getBanque().getNom()).setParent(row);
-      }else{
-         new Label().setParent(row);
-      }
-
-      // patient
-      if(!isEmbedded()){
-         if(!anonyme){
-            new Label(getPatient(echan)).setParent(row);
-         }else{
-            createAnonymeBlock().setParent(row);
-         }
-      }
-
-      // date de stockage
-      new Label(ObjectTypesFormatters.dateRenderer2(echan.getDateStock())).setParent(row);
-      log.debug("date");
-
-      // délai congélation
-      new Label(getDelaiCgl(echan)).setParent(row);
-      
-      log.debug("délai de congélation");
-
-      // type
-      if(echan.getEchantillonType() != null){
-         new Label(echan.getEchantillonType().getType()).setParent(row);
-      }else{
-         new Label().setParent(row);
-      }
-      log.debug("type");
-
-      // quantité
-      new Label(getQuantite(echan)).setParent(row);
-      log.debug("quantite");
-
-      // objet statut
-      if(echan.getObjetStatut() != null){
-         final Label statut = new Label(ObjectTypesFormatters.ILNObjectStatut(echan.getObjetStatut()));
-         if(echan.getObjetStatut().getStatut().equals("ENCOURS")){
-            statut.setStyle("color: red");
-         }
-         statut.setParent(row);
-      }else{
-         new Label().setParent(row);
-      }
-      log.debug("objet statut");
-
-      // emplacement
-      if(!isAnonyme() && isAccessStockage()){
-         final Label emplLabel = new Label(getEmplacementAdrl(echan));
-         if(isAccessStockage()){
-            emplLabel.setSclass("formLink");
-            emplLabel.addForward(null, emplLabel.getParent(), "onClickObjectEmplacement",
-               ManagerLocator.getEchantillonManager().getEmplacementManager(echan));
-         }
-         emplLabel.setParent(row);
-      }else{
-         createAnonymeBlock().setParent(row);
-      }
-
-      // nb prodderives
-      new Label(String.valueOf(getNbDerives(echan))).setParent(row);
-
-      // nb cessions
-      new Label(String.valueOf(getNbCessions(echan))).setParent(row);
-      log.debug("cessions");
+		renderNbCessions(row, echan);
    }
 }

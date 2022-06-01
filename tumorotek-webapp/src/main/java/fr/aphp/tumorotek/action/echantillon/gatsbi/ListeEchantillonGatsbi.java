@@ -36,47 +36,73 @@
  **/
 package fr.aphp.tumorotek.action.echantillon.gatsbi;
 
-import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.ForwardEvent;
-import org.zkoss.zul.Groupbox;
+import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Messagebox;
-
-import fr.aphp.tumorotek.action.echantillon.FicheEchantillonStatic;
+import fr.aphp.tumorotek.action.echantillon.ListeEchantillon;
 import fr.aphp.tumorotek.action.prelevement.gatsbi.exception.GatsbiException;
 import fr.aphp.tumorotek.model.contexte.gatsbi.Contexte;
 import fr.aphp.tumorotek.webapp.gatsbi.GatsbiController;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
 /**
- *
- * Controller gérant la fiche static d'un échantillon sous le gestionnaire GATSBI. 
- * Controller créé le 02/05/2022
- * 
- * @author mathieu BARTHELEMY
- * @version 2.3.0-gatsbi
+ * @version 2.3.0-gatsbi 
+ * @author Mathieu BARTHELEMY
  *
  */
-public class FicheEchantillonStaticGatsbi extends FicheEchantillonStatic {
+public class ListeEchantillonGatsbi extends ListeEchantillon {
 
-	private static final long serialVersionUID = -7612780578022559022L;
+	private static final long serialVersionUID = 1L;
 
-	private Groupbox groupEchantillon;
+	private Contexte contexte;
 
-	private Contexte c;
+	public ListeEchantillonGatsbi() {
+		setListObjectsRenderer(new EchantillonRowRendererGatsbi(true, false));
+	}
+
+	public void onCheckAll$gridColumns() {
+		onCheck$checkAll();
+	}
 
 	@Override
-	public void doAfterCompose(final Component comp) throws Exception {
-		super.doAfterCompose(comp);
+	protected void drawColumnsForVisibleChampEntites()
+			throws ClassNotFoundException, InstantiationException, IllegalAccessException {
 
-		c = GatsbiController.initWireAndDisplay(this, 
-			3, 
-			false, null, null, null,
-			groupEchantillon);
+		contexte = SessionUtils.getCurrentGatsbiContexteForEntiteId(3);
 		
-		// affichage conditionnel infos prelevement 
-		GatsbiController.initWireAndDisplayForIds(this, 2, "natureDiv");
+		// check box first column, toujours affichée
+		Checkbox cbox = new Checkbox();
+		cbox.setId("checkAll");
+		cbox.addForward("onCheck", objectsListGrid.getColumns(), "onCheckAll");
+		GatsbiController.addColumn(objectsListGrid, null, "40px", null, cbox, null, true);
+		
+		// icones column, toujours visible car impact evt de stockage
+		GatsbiController.addColumn(objectsListGrid, null, 
+			GatsbiControllerEchantillon.getIconesColWidthFrom(30, contexte), "center", null, null, true);
+
+		// code prel column, toujours affichée
+		GatsbiControllerEchantillon.drawCodeColumn(objectsListGrid);
+
+		// ttes collection
+		GatsbiControllerEchantillon.drawBanqueColumn(objectsListGrid, isTtesCollection());
+
+		// patient, colonne toujours affichée
+		GatsbiControllerEchantillon.drawPatientColumn(objectsListGrid);
+
+		// variable columns
+		for (Integer chpId : contexte.getChampEntiteInTableauOrdered()) {
+			GatsbiControllerEchantillon.addColumnForChpId(chpId, objectsListGrid);
+		}
+
+		// nb dérivés
+		nbProdDerivesColumn = GatsbiControllerEchantillon.drawNbDerivesColumn(objectsListGrid);
+
+
+		// nb cessions
+		nbCessionsColumn = GatsbiControllerEchantillon.drawNbCessionsColumn(objectsListGrid);
 	}
-	
+
 	/**
 	 * Gatsbi surcharge pour intercaler une modale de sélection des parametrages
 	 * proposés par le contexte.
@@ -84,16 +110,16 @@ public class FicheEchantillonStaticGatsbi extends FicheEchantillonStatic {
 	 * @param click event
 	 */
 	@Override
-	public void onClick$addNew() {		
-		GatsbiController.addNewObjectForContext(c, self, 
+	public void onClick$addNew(final Event event) throws Exception {		
+		GatsbiController.addNewObjectForContext(contexte, self, 
 			e -> {
 				try {
-					super.onClick$addNew();
+					super.onClick$addNew(e);
 				} catch (Exception ex) {
 					Messagebox.show(handleExceptionMessage(ex), 
 							"Error", Messagebox.OK, Messagebox.ERROR);
 				}
-			}, null);
+			}, event);
 	}
 
 	/**
@@ -106,12 +132,12 @@ public class FicheEchantillonStaticGatsbi extends FicheEchantillonStatic {
 
 		try {
 			
-			GatsbiController.getSelectedParametrageFromSelectEvent(c, 
+			GatsbiController.getSelectedParametrageFromSelectEvent(contexte, 
 				SessionUtils.getCurrentBanque(sessionScope), 
 				getObjectTabController(), null, 
 				() -> {
 					try {
-						super.onClick$addNew();
+						super.onClick$addNew(null);
 					} catch (Exception ex) {
 						Messagebox.show(handleExceptionMessage(ex), 
 								"Error", Messagebox.OK, Messagebox.ERROR);

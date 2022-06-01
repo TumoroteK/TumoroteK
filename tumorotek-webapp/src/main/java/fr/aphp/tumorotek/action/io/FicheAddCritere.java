@@ -56,7 +56,6 @@ import org.zkoss.zul.Row;
 import org.zkoss.zul.SimpleListModel;
 
 import fr.aphp.tumorotek.action.ManagerLocator;
-import fr.aphp.tumorotek.action.prelevement.gatsbi.GatsbiController;
 import fr.aphp.tumorotek.decorator.ChampDecorator;
 import fr.aphp.tumorotek.decorator.CritereDecorator;
 import fr.aphp.tumorotek.decorator.EntiteDecorator;
@@ -71,6 +70,7 @@ import fr.aphp.tumorotek.model.io.export.Champ;
 import fr.aphp.tumorotek.model.io.export.ChampEntite;
 import fr.aphp.tumorotek.model.io.export.Critere;
 import fr.aphp.tumorotek.model.systeme.Entite;
+import fr.aphp.tumorotek.webapp.gatsbi.GatsbiController;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
 /**

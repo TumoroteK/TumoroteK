@@ -44,11 +44,9 @@ import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Listbox;
-import org.zkoss.zul.Messagebox;
-
 import fr.aphp.tumorotek.action.prelevement.FicheLaboInter;
 import fr.aphp.tumorotek.model.contexte.gatsbi.Contexte;
-import fr.aphp.tumorotek.webapp.general.SessionUtils;
+import fr.aphp.tumorotek.webapp.gatsbi.GatsbiController;
 
 /**
  *
@@ -75,22 +73,9 @@ public class FicheLaboInterGatsbi extends FicheLaboInter {
 	public void doAfterCompose(final Component comp) throws Exception {
 		super.doAfterCompose(comp);
 
-		try {
-			c = SessionUtils.getCurrentGatsbiContexteForEntiteId(2);
-
-			List<Div> itemDivs = GatsbiController.wireItemDivsFromMainComponent(c.getContexteType(), gatsbiContainer);
-			List<Div> blockDivs = GatsbiController.wireBlockDivsFromMainComponent(c.getContexteType(), gatsbiContainer);
-
-			GatsbiController.showOrhideItems(itemDivs, blockDivs, c);
-			GatsbiController.switchItemsRequiredOrNot(itemDivs, c, reqListboxes, reqComboboxes, reqConformeDivs);
-
-			GatsbiController.appliThesaurusValues(itemDivs, c, this);
-
-		} catch (Exception e) {
-			Messagebox.show(handleExceptionMessage(e), "Error", Messagebox.OK, Messagebox.ERROR);
-			log.debug(e);
-		}
-
+		c = GatsbiController.initWireAndDisplay(this, 2, 
+				true, reqListboxes, reqComboboxes, reqConformeDivs);
+		
 		// labo inter specific
 		// Show/hide groupLaboInter
 		((Div) gatsbiContainer.getFellowIfAny("groupLaboInter")).setVisible(c.getSiteInter());
