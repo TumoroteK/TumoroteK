@@ -169,10 +169,18 @@ public class Contexte implements Serializable {
 		return ids;
 	}
 	
+	/**
+	 * Collecte et renvoie les champs de contexte considérés comme un thésaurus dont les 
+	 * valeurs sont à filtrer. Contient les champs:
+	 *  - les thesaurus (IsChampReferToThesaurus = true)
+	 *  - les champs présentant des valeurs de thésaurus (ex: quantite, thésaurus des unités à filtrer)
+	 * @return liste champs entite ids
+	 */
 	public List<Integer> getThesaurusChampEntiteIds() {
 		List<Integer> ids = new ArrayList<Integer>();
 		for (ChampEntite c : champEntites) {
-			if (c.getVisible() && c.getIsChampReferToThesaurus() != null) {
+			if (c.getVisible() && (c.getIsChampReferToThesaurus() != null 
+					|| !c.getThesaurusValues().isEmpty())) {  
 				ids.add(c.getChampId());
 			}
 		}

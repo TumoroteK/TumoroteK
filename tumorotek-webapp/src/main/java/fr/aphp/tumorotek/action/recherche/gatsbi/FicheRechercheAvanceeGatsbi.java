@@ -93,8 +93,10 @@ public class FicheRechercheAvanceeGatsbi extends FicheRechercheAvancee {
 		}
 		
 		// hide group labo Inter
-		groupLaboInters.setVisible(SessionUtils.getCurrentGatsbiContexteForEntiteId(2) != null 
-			&& SessionUtils.getCurrentGatsbiContexteForEntiteId(2).getSiteInter());
+		if (groupLaboInters != null) {
+			groupLaboInters.setVisible(SessionUtils.getCurrentGatsbiContexteForEntiteId(2) != null 
+					&& SessionUtils.getCurrentGatsbiContexteForEntiteId(2).getSiteInter());
+		}
 	}
 	
 	/**

@@ -241,7 +241,7 @@
 				<!-- Sortie stockages -->
 				<groupbox id="groupSortiesEchan">
 					<caption label="@{fwinEchantillonStatic$composer.sortiesGroupHeader}" />
-					<div class="item item-wide" id="retourRow">
+					<div class="item" id="retourRow">
 						<listeRetours id="listeRetour" hflex="1" />
 					</div>
 				</groupbox>
@@ -249,7 +249,7 @@
 				<!-- Dérivés -->
 				<groupbox id="groupDerivesEchan">
 					<caption label="@{fwinEchantillonStatic$composer.prodDerivesGroupHeader}" />
-					<div class="item item-wide">				
+					<div class="item">				
 						<vbox align="center" hflex="1" vflex="1">
 							<grid id="prodDerivesGrid"
 								fixedLayout="true" 
@@ -292,7 +292,7 @@
 				<!-- Cessions -->
 				<groupbox id="groupCessionsEchan">
 					<caption label="@{fwinEchantillonStatic$composer.prodDerivesGroupHeader}" />
-					<div class="item item-wide">
+					<div class="item">
 						<vbox align="center" hflex="1" vflex="1">
 							<grid id="cessionsGrid" mold="paging" pageSize="10"
 								fixedLayout="true" 

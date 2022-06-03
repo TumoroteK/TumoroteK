@@ -40,7 +40,8 @@ import java.util.List;
 
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zul.Constraint;
-import fr.aphp.tumorotek.action.prelevement.FicheModifMultiPrelevement;
+
+import fr.aphp.tumorotek.action.echantillon.FicheModifMultiEchantillon;
 import fr.aphp.tumorotek.manager.exception.TKException;
 import fr.aphp.tumorotek.model.contexte.gatsbi.Contexte;
 import fr.aphp.tumorotek.webapp.gatsbi.GatsbiController;
@@ -54,7 +55,7 @@ import fr.aphp.tumorotek.webapp.gatsbi.GatsbiController;
  * @version 2.3.0-gatsbi
  *
  */
-public class FicheModifMultiEchantillonGatsbi extends FicheModifMultiPrelevement {
+public class FicheModifMultiEchantillonGatsbi extends FicheModifMultiEchantillon {
 
 	private static final long serialVersionUID = 1L;
 	

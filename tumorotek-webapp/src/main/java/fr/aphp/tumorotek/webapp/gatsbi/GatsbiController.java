@@ -86,6 +86,7 @@ import fr.aphp.tumorotek.action.controller.AbstractController;
 import fr.aphp.tumorotek.action.controller.AbstractObjectTabController;
 import fr.aphp.tumorotek.action.echantillon.FicheEchantillonEdit.ConstQuantite;
 import fr.aphp.tumorotek.action.echantillon.FicheEchantillonEdit.ConstQuantiteInit;
+import fr.aphp.tumorotek.action.echantillon.gatsbi.GatsbiControllerEchantillon;
 import fr.aphp.tumorotek.action.imports.ImportColonneDecorator;
 import fr.aphp.tumorotek.action.prelevement.gatsbi.exception.GatsbiException;
 import fr.aphp.tumorotek.component.CalendarBox;
@@ -104,6 +105,7 @@ import fr.aphp.tumorotek.model.interfacage.ValeurExterne;
 import fr.aphp.tumorotek.model.io.export.ChampEntite;
 import fr.aphp.tumorotek.model.io.imports.ImportColonne;
 import fr.aphp.tumorotek.model.systeme.Entite;
+import fr.aphp.tumorotek.model.systeme.Unite;
 import fr.aphp.tumorotek.param.TkParam;
 import fr.aphp.tumorotek.webapp.gatsbi.client.json.ContexteDTO;
 import fr.aphp.tumorotek.webapp.gatsbi.client.json.EtudeDTO;
@@ -181,6 +183,27 @@ public class GatsbiController {
 
 	public GatsbiController() {
 	}
+	
+	/**
+	 * Récupére tous les ids des champs à ne plus afficher.
+	 * Surcharge l'appel de contexte.getHiddenChampEntiteIds afin d'ajouter 
+	 * des dépendances spécifiques par entité entre certains champs.
+	 * @param contexte 
+	 * @return liste ids
+	 */
+	public static List<Integer> getHiddenChampEntiteIdsForContexte(Contexte c) {
+		List<Integer> hiddenIds = new ArrayList<Integer>();
+		if (c != null) {
+			hiddenIds.addAll(c.getHiddenChampEntiteIds());
+		}
+		
+		// dependances entite specifiques
+		addPrelevementComplementaryIds(hiddenIds); // TODO move to prelevement specific controller
+		GatsbiControllerEchantillon.addComplementaryChpIds(hiddenIds);
+		
+		
+		return hiddenIds;
+	}
 
 	public static List<Div> wireBlockDivsFromMainComponent(ContexteType type, Component main) {
 		if (divBlockIds.containsKey(type)) {
@@ -210,7 +233,7 @@ public class GatsbiController {
 		log.debug("showing or hiding items");
 		if (items != null && c != null) {
 
-			List<Integer> hidden = c.getHiddenChampEntiteIds();
+			List<Integer> hidden = getHiddenChampEntiteIdsForContexte(c);
 
 			for (Div div : items) {
 				div.setVisible(!div.hasAttribute("champId")
@@ -367,8 +390,10 @@ public class GatsbiController {
 		}
 		for (ThesaurusValue val : values) {
 			thesObjs.add(lModel.stream()
-					.filter(v -> v != null && (v instanceof TKThesaurusObject)
-							&& ((TKThesaurusObject) v).getId().equals(val.getThesaurusId()))
+					.filter(v -> v != null  
+						&& (((v instanceof TKThesaurusObject) && ((TKThesaurusObject) v).getId().equals(val.getThesaurusId()))
+						 	|| ((v instanceof Unite) && ((Unite) v).getNom().equals(val.getThesaurusValue())))
+					)
 					.findAny()
 					.orElseThrow(() -> new TKException("gatsbi.thesaurus.value.notfound", val.getThesaurusValue())));
 		}
@@ -482,8 +507,7 @@ public class GatsbiController {
 			chpE.addAll(ManagerLocator.getChampEntiteManager().findByEntiteAndImportManager(entite, canImport));
 
 			// filtre les champs visibles suivant le contexte Gatsbi
-			List<Integer> hiddenIds = contexte.getHiddenChampEntiteIds();
-			addPrelevementComplementaryIds(hiddenIds);
+			List<Integer> hiddenIds = getHiddenChampEntiteIdsForContexte(contexte);
 			chpE.removeIf(chp -> hiddenIds.contains(chp.getId()));
 
 			if (isNullable != null) {
@@ -562,7 +586,7 @@ public class GatsbiController {
 		if (c != null) {
 			Contexte contexte = SessionUtils.getCurrentGatsbiContexteForEntiteId(c.getEntite().getEntiteId());
 			if (contexte != null) {
-				return contexte.isChampIdVisible(c.getId());
+				return !getHiddenChampEntiteIdsForContexte(contexte).contains(c.getId());
 			}
 		}
 		return true;

@@ -65,13 +65,11 @@ import org.zkoss.zul.Decimalbox;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Fileupload;
 import org.zkoss.zul.Group;
-import org.zkoss.zul.Groupbox;
 import org.zkoss.zul.Image;
 import org.zkoss.zul.Intbox;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Messagebox;
-import org.zkoss.zul.Row;
 import org.zkoss.zul.Tabpanel;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
@@ -553,8 +551,8 @@ public class FicheEchantillonEdit extends AbstractFicheEditController {
 	private Prelevement prelevement;
 
 	// Infos prelevement
-	private Row row1PrlvtEchan;
-	private Row row2PrlvtEchan;
+	private HtmlBasedComponent row1PrlvtEchan;
+	private HtmlBasedComponent row2PrlvtEchan;
 	// private Row row3PrlvtEchan;
 	private Label codePrlvtLabel;
 
@@ -1133,6 +1131,10 @@ public class FicheEchantillonEdit extends AbstractFicheEditController {
 	public List<ModePrepa> getPrepas() {
 		return prepas;
 	}
+	
+	public void setPrepas(List<ModePrepa> _p) {
+		this.prepas = _p;
+	}
 
 	public ModePrepa getSelectedPrepa() {
 		return selectedPrepa;
@@ -1176,6 +1178,10 @@ public class FicheEchantillonEdit extends AbstractFicheEditController {
 
 	public List<Unite> getQuantiteUnites() {
 		return quantiteUnites;
+	}
+	
+	public void setQuantiteUnites(List<Unite> _q) {
+		this.quantiteUnites = _q;
 	}
 
 	public Float getQuantite() {

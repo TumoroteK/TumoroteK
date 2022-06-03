@@ -61,7 +61,7 @@ import fr.aphp.tumorotek.webapp.gatsbi.GatsbiController;
 public class FicheEchantillonEditGatsbi extends FicheEchantillonEdit {
 
 	private static final long serialVersionUID = 1L;
-
+	
 	private List<Listbox> reqListboxes = new ArrayList<Listbox>();
 	private List<Combobox> reqComboboxes = new ArrayList<Combobox>();
 	private List<Div> reqDivs = new ArrayList<Div>(); // contient conformite Div et crAnapath
@@ -98,6 +98,11 @@ public class FicheEchantillonEditGatsbi extends FicheEchantillonEdit {
 	 */
 	@Override
 	public void onSelect$typesBoxEchan() {
+	}	
+	
+	@Override
+	protected void setGroupInfosCompEchanOpen(boolean b) {
+		((Groupbox) groupInfosCompEchan).setOpen(b);
 	}
 	
 	@Override

@@ -73,7 +73,7 @@
 							</columns>
 							<rows id="rechercheRows">
 								<!-- Groupe échantillon -->
-								<group id="groupEchantillons" open="false"
+								<group id="groupEchantillons" open="true"
 									label="${c:l('recherche.avancee.informations.echantillon')}" />
 								<row>
 									<cell colspan="4">
@@ -185,7 +185,6 @@
 												</vlayout>
 											</div>
 											<div class="item item-mid" id="echanTempStockDiv"><!-- temp stockage / non géré gatsbi -->
-												<custom-attributes champId="265" />
 												<label value="${c:l('Champ.Echantillon.TempStock')}"
 													sclass="chpLabel formLabel" />
 												<div>
@@ -340,7 +339,7 @@
 									</cell>
 								</row>
 								<!-- Groupe prélèvement -->
-								<group id="groupPrelevements"
+								<group id="groupPrelevements" open="false"
 									label="${c:l('recherche.avancee.informations.prelevement')}" />
 								<row>
 									<cell colspan="4">

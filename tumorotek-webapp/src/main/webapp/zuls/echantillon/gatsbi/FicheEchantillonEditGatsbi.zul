@@ -91,19 +91,19 @@
 									visible="false"/>
 							</div>
 							<!-- else -->	
-							<div id="prelevementBlockDivContainer" class="block-container">
+							<div id="row2PrlvtEchan" class="block-container">
 								<div class="item item-mid" id="codePrelevementDiv"><!-- Code prélèvement -->
 									<custom-attributes champId="23" />
 									<label value="${c:l('ficheEchantillon.prelevement.code')}" sclass="chpLabel formLabel"/>
 									<label id="codePrlvtLabel" 
-										value="@{fwinEchantillonStatic$composer.prelevement.code}"
+										value="@{fwinEchantillonEdit$composer.parentObject.code}"
 										sclass="formValue" />
 								</div>
 								<div class="item item-mid" id="natureDiv"><!-- nature -->
 									<custom-attributes champId="24" />
 									<label value="${c:l('Champ.Prelevement.Nature')}" sclass="chpLabel formLabel" />
 									<label id="typePrlvtLabel" 
-										value="@{fwinEchantillonStatic$composer.prelevement.nature.nature}"
+										value="@{fwinEchantillonEdit$composer.parentObject.nature.nature}"
 										sclass="formValue" />
 								</div>
 							</div>
@@ -117,7 +117,7 @@
 					<div id="infoEchanBlockDiv">
 						<div class="block-container" id="infoEchanBlockDivContainer">
 							<div class="item item-mid" id="echanQteDiv"><!-- Quantité / QuantitéInit de l'échantillon -->
-								<custom-attributes champId="61" />
+								<custom-attributes champId="61" listmodel="quantiteUnites" />
 								<div class="row-container chpLabel">
 									<label value="${c:l('ficheEchantillon.quantiteLabel')}" sclass="formLabel" />
 									<label value="*" sclass="requiredMark" />
@@ -203,7 +203,7 @@
 									<label value="${c:l('Champ.Echantillon.Collaborateur')}" sclass="formLabel" />
 									<label value="*" sclass="requiredMark" />
 								</div>
-								<div class="row-container>
+								<div class="row-container">
 									<combobox id="collabBox" 
 						 				autodrop="true" width="150px">
 						 					<comboitem self="@{each=attrValue}" label="@{attrValue}"/>

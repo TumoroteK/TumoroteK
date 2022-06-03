@@ -131,7 +131,7 @@
 								style="font-style:italic;font-size:8;"
 								image="/images/icones/smallNumber.png" sclass="buttonv2"/>
 						</div>
-						<div class="item item-wide">
+						<div class="item">
 							<div class="row-container chpLabel">
 								<label value="${c:l('ficheMultiEchantillons.numero')}" sclass="formLabel" />
 								<label value="*" sclass="requiredMark" />
@@ -235,7 +235,7 @@
 								</listbox>
 							</div>
 							<div class="item item-mid" id="echanQteDiv"><!-- Quantité / QuantitéInit de l'échantillon -->
-								<custom-attributes champId="61" />
+								<custom-attributes champId="61" listmodel="quantiteUnites" />
 								<div class="row-container chpLabel">
 									<label value="${c:l('ficheEchantillon.quantiteLabel')}" sclass="formLabel" />
 									<label value="*" sclass="requiredMark" />

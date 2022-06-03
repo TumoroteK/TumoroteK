@@ -55,6 +55,7 @@ import fr.aphp.tumorotek.decorator.ChampImpressionRowRenderer;
 import fr.aphp.tumorotek.model.TKdataObject;
 import fr.aphp.tumorotek.model.impression.ChampEntiteBloc;
 import fr.aphp.tumorotek.model.io.export.ChampEntite;
+import fr.aphp.tumorotek.webapp.gatsbi.GatsbiController;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
 /**
@@ -221,6 +222,9 @@ public class FicheChampsImpression extends AbstractFicheController
       final List<ChampEntiteBloc> cebs =
          ManagerLocator.getChampEntiteBlocManager().findByBlocManager(blocImpressionDecorator.getBlocImpression());
       
+      // since @gatsbi, retire tous les champs invisible
+      cebs.removeIf(c -> !GatsbiController.isChampEntiteVisible(c.getChampEntite()));
+   
       // decoration
       for(int i = 0; i < cebs.size(); i++){
           if(!blocImpressionDecorator.getChampEntites().contains(cebs.get(i).getChampEntite())){

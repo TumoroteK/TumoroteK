@@ -285,7 +285,7 @@ public class FicheImportTemplate extends AbstractFicheCombineController
 			importColonnes.addAll(makeSubderiveHeaderCols(it));
 			// ajout des colonnes obligatoires derives
 			// on récupère les champs obligatoires que l'on va ajouter
-			// @since 2.2.3-gatsbi surcharge 
+			// @since 2.3.0-gatsbi surcharge 
 			final List<ChampEntite> ces =
 				GatsbiController.findByEntiteImportAndIsNullableManager(deriveE, true, false);
 
