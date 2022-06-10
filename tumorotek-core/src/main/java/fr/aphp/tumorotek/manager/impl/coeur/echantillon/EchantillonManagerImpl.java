@@ -728,11 +728,12 @@ public class EchantillonManagerImpl implements EchantillonManager {
 			final String baseDir, final boolean isImport) {
 
 		try {
-
+			
 			mergeNonRequiredObjects(echantillon, prelevement, collaborateur, emplacement, quantite, qualite,
 					preparation);
 			
-			checkRequiredObjectsAndValidate(echantillon, banque, type, statut, "creation", utilisateur, doValidation);
+			checkRequiredObjectsAndValidate(echantillon, banque, type, statut, "creation", utilisateur, 
+					codes, doValidation);
 
 			if (!findDoublonManager(echantillon)) {
 
@@ -851,7 +852,7 @@ public class EchantillonManagerImpl implements EchantillonManager {
 			final EchanQualite qualite, final ModePrepa preparation, final List<CodeAssigne> codes,
 			final List<AnnotationValeur> listAnnoToCreateOrUpdate, final List<NonConformite> noconfsTrait,
 			final List<NonConformite> noconfsCess, final Utilisateur utilisateur, final boolean doValidation,
-			final boolean isImport) throws SQLException {
+			final boolean isImport, final List<Integer> requiredChampEntiteIds) throws SQLException {
 		Integer echanId = null;
 		if (jdbcSuite != null) {
 			echanId = jdbcSuite.getMaxEchantillonId();
@@ -874,7 +875,7 @@ public class EchantillonManagerImpl implements EchantillonManager {
 			// throw new RequiredObjectIsNullException("Echantillon", "creation",
 			// "EchantillonType");
 			// }
-			checkEchantillonTypeSinceGatsbiAndReturnAllIds(echantillon, type, isImport);
+			checkEchantillonTypeSinceGatsbiAndReturnAllIds(echantillon, type, isImport, requiredChampEntiteIds);
 			typeId = type != null ? type.getId() : null;
 
 			if (statut == null) {
@@ -918,9 +919,8 @@ public class EchantillonManagerImpl implements EchantillonManager {
 			}
 
 			try {
-				if (doValidation) {
-					BeanValidator.validateObject(echantillon, new Validator[] { echantillonValidator });
-				}
+				// @since gatsbi
+				doValidation(echantillon, doValidation, requiredChampEntiteIds, codes);
 
 				// increment maxId
 				jdbcSuite.incrementMaxEchantillonId();
@@ -1115,7 +1115,7 @@ public class EchantillonManagerImpl implements EchantillonManager {
 					preparation);
 			
 			checkRequiredObjectsAndValidate(echantillon, banque, type, statut, "modification", utilisateur,
-					doValidation);
+					codes, doValidation);		
 
 			if (!findDoublonManager(echantillon)) {
 				
@@ -1950,19 +1950,29 @@ public class EchantillonManagerImpl implements EchantillonManager {
 	@Override
 	public void checkRequiredObjectsAndValidate(final Echantillon echantillon, final Banque banque,
 			final EchantillonType type, final ObjetStatut statut, final String operation, final Utilisateur utilisateur,
+			final List<CodeAssigne> codes,
 			final boolean doValidation) {
 
 		// Banque required
 		if (banque != null) {
-			echantillon.setBanque(banqueDao.mergeObject(banque));
+			echantillon.setBanque(banque);
 		} else if (echantillon.getBanque() == null) {
 			log.warn("Objet obligatoire Banque manquant" + " lors de la " + operation + " d'un Echantillon");
 			throw new RequiredObjectIsNullException("Prelevement", operation, "Banque");
 		}
 
+		// Gatsbi required
+		List<Integer> requiredChampEntiteIds = new ArrayList<Integer>();
+		if (echantillon.getBanque().getEtude() != null) {
+			Contexte echanContexte = echantillon.getBanque().getEtude().getContexteForEntite(3);
+			if (echanContexte != null) {
+				requiredChampEntiteIds.addAll(echanContexte.getRequiredChampEntiteIds());
+			}
+		}
+				
 		// echantillon type
 		// since 2.3.0-gatsbi peut être null
-		List<Integer> requiredChampEntiteIds = checkEchantillonTypeSinceGatsbiAndReturnAllIds(echantillon, type, true);
+		checkEchantillonTypeSinceGatsbiAndReturnAllIds(echantillon, type, true, requiredChampEntiteIds);
 
 		// On vérifie que le statut n'est pas null. Si c'est le cas
 		// on envoie une exception
@@ -1973,14 +1983,19 @@ public class EchantillonManagerImpl implements EchantillonManager {
 			throw new RequiredObjectIsNullException("Echantillon", "creation", "ObjetStatut");
 		}
 		
+		doValidation(echantillon, doValidation, requiredChampEntiteIds, codes);
+	}
+	
+	private void doValidation(Echantillon echantillon, boolean skip, 
+			List<Integer> requiredChampEntiteIds, List<CodeAssigne> codes) {
 		// Validation
-		if (doValidation) {
+		if (skip) {
 			Validator[] validators;
 			if (requiredChampEntiteIds.isEmpty()) { // pas de restriction gatsbi
 				validators = new Validator[] { echantillonValidator };
 			} else { // gatsbi définit certain champs obligatoires
 				EchantillonGatsbiValidator gValidator = new EchantillonGatsbiValidator("echantillon",
-						requiredChampEntiteIds);
+						requiredChampEntiteIds, codes);
 				validators = new Validator[] { gValidator, echantillonValidator };
 			}
 
@@ -2028,16 +2043,8 @@ public class EchantillonManagerImpl implements EchantillonManager {
 	 * @param type        échantillon, peut être null
 	 * @return liste champ entite ids définis comme obligatoire par gatsbi
 	 */
-	private List<Integer> checkEchantillonTypeSinceGatsbiAndReturnAllIds(Echantillon echantillon, EchantillonType type,
-			boolean setType) {
-		// Gatsbi required
-		List<Integer> requiredChampEntiteIds = new ArrayList<Integer>();
-		if (echantillon.getBanque().getEtude() != null) {
-			Contexte echanContexte = echantillon.getBanque().getEtude().getContexteForEntite(3);
-			if (echanContexte != null) {
-				requiredChampEntiteIds.addAll(echanContexte.getRequiredChampEntiteIds());
-			}
-		}
+	private void checkEchantillonTypeSinceGatsbiAndReturnAllIds(Echantillon echantillon, EchantillonType type,
+			boolean setType, List<Integer> requiredChampEntiteIds) {
 
 		// type may be null since Gatsbi
 		if (type != null) {
@@ -2055,7 +2062,5 @@ public class EchantillonManagerImpl implements EchantillonManager {
 				echantillon.setEchantillonType(null);
 			}
 		}
-
-		return requiredChampEntiteIds;
 	}
 }

@@ -72,7 +72,7 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
  *
  *
  * @author Mathieu BARTHELEMY
- * @version 2.0.13.2
+ * @version 2.3.0-gatsbi
  */
 public interface ImportManager
 {
@@ -277,9 +277,11 @@ public interface ImportManager
     * @param file Fichier d'import.
     * @param importTemplate Template d'import.
     * @param utilisateur Utilisateur.
+    * @param banque
     * @return ImportHistorique
     */
-   ImportHistorique importFileManager(ImportTemplate importTemplate, Utilisateur utilisateur, InputStream fis);
+   ImportHistorique importFileManager(ImportTemplate importTemplate, 
+		   Utilisateur utilisateur, Banque banque, InputStream fis);
 
    /**
     * Extrait toutes les valeurs de la première colonne et les place
@@ -291,15 +293,17 @@ public interface ImportManager
    List<String> extractListOfStringFromExcelFile(InputStream fis, boolean fixNulls);
 
    /**
-    * Surcharge de la methode importFileManaer pour passer le contenu 
+    * Surcharge de la methode importFileManager pour passer le contenu 
     * du fichier à importer sous la forme d'une Sheet
     * @param importTemplate
     * @param utilisateur
+    * @param banque
     * @param wb HSSFSheet or XSSFSheet
     * @return ImportHistorique
-    * @version 2.0.10.6
+    * @version 2.3.0-gatsbi
     */
-   ImportHistorique importFileManager(ImportTemplate importTemplate, Utilisateur utilisateur, Sheet sheet);
+   ImportHistorique importFileManager(ImportTemplate importTemplate, 
+		   Utilisateur utilisateur, Banque banque, Sheet sheet);
 
    /**
     * Extrait les non conformites (séparés par des ';') et prepare la liste.
@@ -331,14 +335,16 @@ public interface ImportManager
     * permettant la créatien des dérivés enfants.
     * @param importTemplate
     * @param utilisateur
+    * @param banque
     * @param wb HSSFSheet or XSSFSheet
     * @param String texte (internationalisé) utilisé pour observations 
     * de l'évènement de stockage automatique EPUISEMENT du parent transformé.
     * @return ImportHistorique
     * @version 2.0.11
     */
-   ImportHistorique importSubDeriveFileManager(ImportTemplate importTemplate, Utilisateur utilisateur, Sheet sheet,
-      String retourTransfoEpuisement);
+   ImportHistorique importSubDeriveFileManager(ImportTemplate importTemplate, 
+		   Utilisateur utilisateur, Banque banque, Sheet sheet,
+		   String retourTransfoEpuisement);
 
    /**
     * Ajoute le derive contenu dans la ligne 

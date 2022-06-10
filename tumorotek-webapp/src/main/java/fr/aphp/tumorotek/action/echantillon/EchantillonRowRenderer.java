@@ -212,9 +212,11 @@ public class EchantillonRowRenderer extends TKSelectObjectRenderer<Echantillon> 
 
 		renderDateProperty(row, echan, "dateStock");
 
-		renderCodeOrganes(row, echan);
+		renderCodeAssignes(row, ManagerLocator.getCodeAssigneManager()
+							.findCodesOrganeByEchantillonManager(echan));
 
-		renderCodeLesionnels(row, echan);
+		renderCodeAssignes(row, ManagerLocator.getCodeAssigneManager()
+							.findCodesMorphoByEchantillonManager(echan));
 
 		renderThesObjectProperty(row, echan, "echantillonType");
 
@@ -230,16 +232,8 @@ public class EchantillonRowRenderer extends TKSelectObjectRenderer<Echantillon> 
 	}
 	
 	// codes lésionnels : liste des codes exportés pour l'échantillon
-	public static void renderCodeOrganes(Row row, Echantillon echan) {
-		ObjectTypesFormatters.drawCodesExpLabel(
-			ManagerLocator.getCodeAssigneManager()
-				.findCodesOrganeByEchantillonManager(echan), row, null, false);
-	}
-
-	// codes lésionnels : liste des codes exportés pour l'échantillon
-	public static void renderCodeLesionnels(Row row, Echantillon echan) {
-		ObjectTypesFormatters.drawCodesExpLabel(
-				ManagerLocator.getCodeAssigneManager().findCodesMorphoByEchantillonManager(echan), row, null, false);
+	public static void renderCodeAssignes(Row row, List<CodeAssigne> codes) {
+		ObjectTypesFormatters.drawCodesExpLabel(codes, row, null, false);
 	}
 	
 	/**
@@ -441,7 +435,6 @@ public class EchantillonRowRenderer extends TKSelectObjectRenderer<Echantillon> 
 			
 			// clickable -> download			
 			if(!anonyme){
-				
 				crAnapathLabel.setClass("formLink");
 				crAnapathLabel.addForward("onClick", row.getParent(), "onClickCrAnapathLabel", echan.getCrAnapath());
 		      }

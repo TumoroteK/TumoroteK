@@ -338,7 +338,7 @@ public final class ConnexionUtils
 			
 			// gatsbi si bank est liée à une étude	
 			if (banques.get(0).getEtude() != null) {
-				GatsbiController.doGastbiContexte(banques.get(0));
+				GatsbiController.doGastbiContexte(banques.toArray(new Banque[banques.size()]));
 			}
 		
 			sessionScp.put("ToutesCollections", banques);

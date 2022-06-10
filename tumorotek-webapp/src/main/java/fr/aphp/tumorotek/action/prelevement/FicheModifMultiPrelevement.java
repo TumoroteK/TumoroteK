@@ -60,7 +60,7 @@ import fr.aphp.tumorotek.webapp.general.SessionUtils;
  * Controller créé le 20/02/2011.
  *
  * @author Mathieu BARTHELEMY
- * @version 2.3.à-gatsbi
+ * @version 2.3.0-gatsbi
  *
  */
 public class FicheModifMultiPrelevement extends AbstractFicheModifMultiController
@@ -187,10 +187,8 @@ public class FicheModifMultiPrelevement extends AbstractFicheModifMultiControlle
 		}
 	}
 
-
-	@Override
 	public void updateMultiObjects(){
-
+		
 		final List<Prelevement> clones = new ArrayList<>();
 
 		// TK-253
@@ -391,7 +389,8 @@ public class FicheModifMultiPrelevement extends AbstractFicheModifMultiControlle
 	public void onClick$numeroLaboMultiLabel(){
 		openModificationMultipleWindow(page, Path.getPath(self), "onGetChangeOnChamp", "Textbox", getObjsToEdit(),
 			"Champ.Prelevement.NumeroLabo", "numeroLabo", null, null, null, 
-				muteAnyRequiredConstraint(PrelevementConstraints.getCodeNullConstraint(), 45), false, false, null);
+				muteAnyRequiredConstraint(PrelevementConstraints.getCodeNullConstraint(), 45), false, false, 
+				switchAnyRequiredFlag(true, 45));
 	}
 
 
@@ -400,6 +399,7 @@ public class FicheModifMultiPrelevement extends AbstractFicheModifMultiControlle
 			List<Object> natures = new ArrayList<Object>();
 			natures.addAll(ManagerLocator.getNatureManager().findByOrderManager(SessionUtils.getPlateforme(sessionScope)));
 			
+			// since gatsbi
 			natures = applyAnyThesaurusRestriction(natures, 24);
 
 			openModificationMultipleWindow(page, Path.getPath(self), "onGetChangeOnChamp", "Listbox", getObjsToEdit(),
@@ -412,7 +412,7 @@ public class FicheModifMultiPrelevement extends AbstractFicheModifMultiControlle
 	public void onClick$datePrelevementMultiLabel(){
 		openModificationMultipleWindow(page, Path.getPath(self), "onGetChangeOnChamp", "Calendarbox", getObjsToEdit(),
 			"Champ.Prelevement.DatePrelevement", "datePrelevement", null, null, null, 
-				muteAnyRequiredConstraint(null, 30), false, null, null);
+				muteAnyRequiredConstraint(null, 30), false, null, switchAnyRequiredFlag(false, 30));
 	}
 
 
@@ -421,10 +421,12 @@ public class FicheModifMultiPrelevement extends AbstractFicheModifMultiControlle
 			List<Object> pTypes = new ArrayList<Object>();
 			pTypes.addAll(ManagerLocator.getPrelevementTypeManager().findByOrderManager(SessionUtils.getPlateforme(sessionScope)));
 			
+			// since gatsbi
 			pTypes = applyAnyThesaurusRestriction(pTypes, 31);
 
 			openModificationMultipleWindow(page, Path.getPath(self), "onGetChangeOnChamp", "Listbox", getObjsToEdit(),
-					"Champ.Prelevement.PrelevementType", "prelevementType", pTypes, "type", null, null, false, null, switchAnyRequiredFlag(false, 31));
+					"Champ.Prelevement.PrelevementType", "prelevementType", pTypes, "type", null, null, false, null, 
+					switchAnyRequiredFlag(false, 31));
 		} catch (Exception e) {
 			Messagebox.show(handleExceptionMessage(e), "Error", Messagebox.OK, Messagebox.ERROR);
 		}
@@ -448,6 +450,7 @@ public class FicheModifMultiPrelevement extends AbstractFicheModifMultiControlle
 			List<Object> risques = new ArrayList<Object>();
 			risques.addAll(ManagerLocator.getRisqueManager().findByOrderManager(SessionUtils.getPlateforme(sessionScope)));
 			
+			// since gatsbi
 			risques = applyAnyThesaurusRestriction(risques, 249);
 
 			for(int i = 0; i < getObjsToEdit().size(); i++){
@@ -456,7 +459,8 @@ public class FicheModifMultiPrelevement extends AbstractFicheModifMultiControlle
 			}
 
 			openModificationMultipleWindow(page, Path.getPath(self), "onGetChangeOnChamp", "MultiListbox", getObjsToEdit(),
-					"Champ.Prelevement.Risque", "risques", risques, "nom", null, null, false, null, switchAnyRequiredFlag(false, 249));
+					"Champ.Prelevement.Risque", "risques", risques, "nom", null, null, false, null, 
+					switchAnyRequiredFlag(false, 249));
 		} catch (Exception e) {
 			Messagebox.show(handleExceptionMessage(e), "Error", Messagebox.OK, Messagebox.ERROR);
 		}
@@ -490,10 +494,12 @@ public class FicheModifMultiPrelevement extends AbstractFicheModifMultiControlle
 			List<Object> cTypes = new ArrayList<Object>();
 			cTypes.addAll(ManagerLocator.getConditTypeManager().findByOrderManager(SessionUtils.getPlateforme(sessionScope)));
 			
+			// since gatsbi
 			cTypes = applyAnyThesaurusRestriction(cTypes, 32);
 
 			openModificationMultipleWindow(page, Path.getPath(self), "onGetChangeOnChamp", "Listbox", getObjsToEdit(),
-					"Champ.Prelevement.ConditType", "conditType", cTypes, "type", null, null, false, null, switchAnyRequiredFlag(false, 32));
+					"Champ.Prelevement.ConditType", "conditType", cTypes, "type", null, null, false, null, 
+					switchAnyRequiredFlag(false, 32));
 		} catch (Exception e) {
 			Messagebox.show(handleExceptionMessage(e), "Error", Messagebox.OK, Messagebox.ERROR);
 		}
@@ -502,7 +508,8 @@ public class FicheModifMultiPrelevement extends AbstractFicheModifMultiControlle
 	public void onClick$conditNbMultiLabel(){
 
 		openModificationMultipleWindow(page, Path.getPath(self), "onGetChangeOnChamp", "Intbox", getObjsToEdit(),
-				"Champ.Prelevement.ConditNbr", "conditNbr", null, null, null, null, false, null, switchAnyRequiredFlag(false, 34));
+				"Champ.Prelevement.ConditNbr", "conditNbr", null, null, null, null, false, null, 
+				switchAnyRequiredFlag(false, 34));
 	}
 
 
@@ -512,10 +519,12 @@ public class FicheModifMultiPrelevement extends AbstractFicheModifMultiControlle
 			List<Object> milieux = new ArrayList<Object>();
 			milieux.addAll(ManagerLocator.getConditMilieuManager().findByOrderManager(SessionUtils.getPlateforme(sessionScope)));
 			
+			// since gatsbi
 			milieux = applyAnyThesaurusRestriction(milieux, 33);
 
 			openModificationMultipleWindow(page, Path.getPath(self), "onGetChangeOnChamp", "Listbox", getObjsToEdit(),
-					"Champ.Prelevement.ConditMilieu", "conditMilieu", milieux, "milieu", null, null, false, null, switchAnyRequiredFlag(false, 33));
+					"Champ.Prelevement.ConditMilieu", "conditMilieu", milieux, "milieu", null, null, false, null, 
+					switchAnyRequiredFlag(false, 33));
 		} catch (Exception e) {
 			Messagebox.show(handleExceptionMessage(e), "Error", Messagebox.OK, Messagebox.ERROR);
 		}
@@ -527,10 +536,12 @@ public class FicheModifMultiPrelevement extends AbstractFicheModifMultiControlle
 			List<Object> cTypes = new ArrayList<Object>();
 			cTypes.addAll(ManagerLocator.getConsentTypeManager().findByOrderManager(SessionUtils.getPlateforme(sessionScope)));
 			
+			// since gatsbi
 			cTypes = applyAnyThesaurusRestriction(cTypes, 26);
 
 			openModificationMultipleWindow(page, Path.getPath(self), "onGetChangeOnChamp", "Listbox", getObjsToEdit(),
-					"Champ.Prelevement.ConsentType", "consentType", cTypes, "type", null, null, false, null, switchAnyRequiredFlag(true, 26));
+					"Champ.Prelevement.ConsentType", "consentType", cTypes, "type", null, null, false, null, 
+					switchAnyRequiredFlag(true, 26));
 		} catch (Exception e) {
 			Messagebox.show(handleExceptionMessage(e), "Error", Messagebox.OK, Messagebox.ERROR);
 		}
@@ -539,13 +550,15 @@ public class FicheModifMultiPrelevement extends AbstractFicheModifMultiControlle
 	public void onClick$consentDateMultiLabel(){
 		openModificationMultipleWindow(page, Path.getPath(self), "onGetChangeOnChamp", "Datebox", getObjsToEdit(),
 			"Champ.Prelevement.ConsentDate", "consentDate", null, null, null, 
-				muteAnyRequiredConstraint(null, 27), false, null, null);
+				muteAnyRequiredConstraint(null, 27), false, null, 
+				switchAnyRequiredFlag(false, 27));
 	}
 
 	public void onClick$dateDepartMultiLabel(){
 		openModificationMultipleWindow(page, Path.getPath(self), "onGetChangeOnChamp", "Calendarbox", getObjsToEdit(),
 			"Champ.Prelevement.DateDepart", "dateDepart", null, null, null, 
-				muteAnyRequiredConstraint(null, 35), false, null, null);
+				muteAnyRequiredConstraint(null, 35), false, null, 
+				switchAnyRequiredFlag(false, 35));
 	}
 
 
@@ -568,7 +581,8 @@ public class FicheModifMultiPrelevement extends AbstractFicheModifMultiControlle
 	public void onClick$dateArriveeMultiLabel(){
 		openModificationMultipleWindow(page, Path.getPath(self), "onGetChangeOnChamp", "Calendarbox", getObjsToEdit(),
 			"Champ.Prelevement.DateArrivee", "dateArrivee", null, null, null, 
-				muteAnyRequiredConstraint(null, 38), false, null, null);
+				muteAnyRequiredConstraint(null, 38), false, null, 
+				switchAnyRequiredFlag(false, 38));
 	}
 
 
@@ -602,6 +616,7 @@ public class FicheModifMultiPrelevement extends AbstractFicheModifMultiControlle
 			nonConfs.addAll(ManagerLocator.getNonConformiteManager().findByPlateformeEntiteAndTypeStringManager(
 							SessionUtils.getPlateforme(sessionScope), "Arrivee", getObjectTabController().getEntiteTab()));
 			
+			// since gatsbi
 			nonConfs = applyAnyThesaurusRestriction(nonConfs, 256);
 
 			openModificationMultipleWindow(page, Path.getPath(self), "onGetChangeOnChamp", "Conformitebox", getObjsToEdit(),

@@ -1814,7 +1814,7 @@ public class ImportManagerTest extends AbstractManagerTest4
 
 		List<ImportError> errors = new ArrayList<>();
 		try( FileInputStream fis = new FileInputStream(file);){
-			ih = importManager.importFileManager(template, u, fis);
+			ih = importManager.importFileManager(template, u, null, fis);
 		}catch(final FileNotFoundException e){
 			e.printStackTrace();
 		}catch(final RuntimeException re){
@@ -1838,7 +1838,7 @@ public class ImportManagerTest extends AbstractManagerTest4
 
 		// imports identique = 0 importations + pas historique
 		try( FileInputStream fis = new FileInputStream(file);){
-			ih2 = importManager.importFileManager(template, u, fis);
+			ih2 = importManager.importFileManager(template, u, null, fis);
 		}catch(final FileNotFoundException e){
 			e.printStackTrace();
 		}catch(final RuntimeException re){
@@ -1955,7 +1955,7 @@ public class ImportManagerTest extends AbstractManagerTest4
 
 		List<ImportError> errors = new ArrayList<>();
 		try( FileInputStream fis = new FileInputStream(file);){
-			ih = importManager.importFileManager(template, u, fis);
+			ih = importManager.importFileManager(template, u, null, fis);
 		}catch(final FileNotFoundException e){
 			e.printStackTrace();
 		}catch(final RuntimeException re){
@@ -2076,7 +2076,7 @@ public class ImportManagerTest extends AbstractManagerTest4
 
 		List<ImportError> errors = new ArrayList<>();
 		try( FileInputStream fis = new FileInputStream(file);){
-			ih = importManager.importFileManager(template, u, fis);
+			ih = importManager.importFileManager(template, u, null, fis);
 		}catch(final FileNotFoundException e){
 			e.printStackTrace();
 		}catch(final RuntimeException re){
@@ -2506,7 +2506,7 @@ public class ImportManagerTest extends AbstractManagerTest4
 		}
 
 		try{
-			ih = importManager.importFileManager(template, u, wb.getSheetAt(0));
+			ih = importManager.importFileManager(template, u, null, wb.getSheetAt(0));
 		}catch(final RuntimeException re){
 			errors = ((ErrorsInImportException) re).getErrors();
 			re.printStackTrace();
@@ -2614,7 +2614,7 @@ public class ImportManagerTest extends AbstractManagerTest4
 		ImportHistorique ih2 = null;
 		errors.clear();
 		try{
-			ih2 = importManager.importFileManager(template, u, wb.getSheetAt(1));
+			ih2 = importManager.importFileManager(template, u, null, wb.getSheetAt(1));
 		}catch(final RuntimeException re){
 			errors = ((ErrorsInImportException) re).getErrors();
 			re.printStackTrace();

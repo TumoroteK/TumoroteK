@@ -41,6 +41,7 @@ import java.util.List;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
+import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Div;
@@ -187,5 +188,13 @@ public class FicheMultiEchantillonsGatsbi extends FicheMultiEchantillons
 		
 		// delete col
 		GatsbiController.addColumn(grid, null, "35px", "center", null, null, true);
+	}
+	
+	@Override
+	public void onClick$addEchantillons(Event event) {
+		
+		GatsbiController.checkRequiredNonInputComponents(reqListboxes, reqComboboxes, reqDivs);
+		
+		super.onClick$addEchantillons(event);
 	}
 }

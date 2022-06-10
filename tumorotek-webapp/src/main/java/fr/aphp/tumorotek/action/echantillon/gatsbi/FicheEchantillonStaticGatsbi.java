@@ -61,6 +61,7 @@ public class FicheEchantillonStaticGatsbi extends FicheEchantillonStatic {
 	private static final long serialVersionUID = -7612780578022559022L;
 
 	private Groupbox groupEchantillon;
+	private Groupbox groupInfosCompEchan;
 
 	private Contexte c;
 
@@ -71,7 +72,7 @@ public class FicheEchantillonStaticGatsbi extends FicheEchantillonStatic {
 		c = GatsbiController.initWireAndDisplay(this, 
 			3, 
 			false, null, null, null,
-			groupEchantillon);
+			groupEchantillon, groupInfosCompEchan);
 		
 		// affichage conditionnel infos prelevement 
 		GatsbiController.initWireAndDisplayForIds(this, 2, "natureDiv");
@@ -120,5 +121,10 @@ public class FicheEchantillonStaticGatsbi extends FicheEchantillonStatic {
 		} catch (GatsbiException e) {
 			Messagebox.show(handleExceptionMessage(e), "Error", Messagebox.OK, Messagebox.ERROR);
 		}
+	}
+	
+	@Override
+	protected void setGroupInfosCompEchanOpen(boolean b) {
+		((Groupbox) groupInfosCompEchan).setOpen(b);
 	}
 }

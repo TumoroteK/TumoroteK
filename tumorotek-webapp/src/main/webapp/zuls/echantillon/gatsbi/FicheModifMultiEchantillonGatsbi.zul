@@ -48,7 +48,7 @@
 					</div>
 					<div class="block-container" id="identifiantBlockDivContainer">
 						<div class="item item-wide" id="echantillonTypeDiv"><!-- Type -->	
-							<custom-attributes champId="58" listmodel="natures" />
+							<custom-attributes champId="58" listmodel="types" />
 							<label value="${c:l('Champ.Echantillon.EchantillonType.Type')}" sclass="chpLabel formLabel" />
 							<div class="row-container changedValue">				
 								<label id="echantillonTypeLabelChanged" 
@@ -73,7 +73,7 @@
 					</div>
 					<div class="block-container" id="infoEchanBlockDivContainer">
 						<div class="item item-wide" id="echanQteDiv"><!-- QuantiteInit -->
-							<custom-attributes champId="61" />
+							<custom-attributes champId="61" listmodel="quantiteUnites" />
 							<label value="${c:l('Champ.Echantillon.QuantiteInit')}" sclass="chpLabel formLabel"/>
 							<div class="row-container changedValue">				
 								<label id="quantiteInitLabelChanged" 
@@ -87,7 +87,7 @@
 							</div>
 						</div>
 						<div class="item item-wide" id="echanModePrepaDiv"><!-- Mode préparation -->
-							<custom-attributes champId="70" />
+							<custom-attributes champId="70" listmodel="prepas" />
 							<label value="${c:l('Champ.Echantillon.ModePrepa')}" sclass="chpLabel formLabel"/>
 							<div class="row-container changedValue">				
 								<label id="modePrepaLabelChanged" 
@@ -157,7 +157,7 @@
 							</div>
 						</div>
 						<div class="item item-wide" id="echanQualiteDiv"><!-- Qualité -->
-							<custom-attributes champId="68" />
+							<custom-attributes champId="68" listmodel="qualites" />
 							<label id="qualiteEchanLabel" value="${c:l('Champ.Echantillon.EchanQualite')}" sclass="chpLabel formLabel"/>
 							<div class="row-container changedValue">				
 								<label id="qualiteLabelChanged" 

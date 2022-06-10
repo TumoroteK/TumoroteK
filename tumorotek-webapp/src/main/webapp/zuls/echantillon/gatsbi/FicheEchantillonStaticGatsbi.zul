@@ -197,14 +197,9 @@
 					</div>
 				</groupbox>
 				<div class="block-separator" />
-				<groupbox id="groupInfosCompEchan">
+				<groupbox id="groupInfosCompEchan" open="true">
+					<caption label="${c:l('ficheEchantillon.infosComp')}" />
 					<div id="anapathInfosBlockDiv"><!-- Informations complémentaires -->
-						<div class="block-title">
-							<div class="column-container">
-								<label value="${c:l('ficheEchantillon.infosComp')}" sclass="formSubTitle"/>
-								<image width="100%" height="1px" src="/images/pixelble.gif" style="background-repeat: repeat-x;"/>
-							</div>
-						</div>
 						<div class="block-container" id="anapathInfosBlockDivContainer">
 							<div class="item item-mid" id="crAnapathDiv"><!-- CrAnapath -->
 								<custom-attributes champId="255" />
@@ -291,7 +286,7 @@
 				<div class="block-separator" />
 				<!-- Cessions -->
 				<groupbox id="groupCessionsEchan">
-					<caption label="@{fwinEchantillonStatic$composer.prodDerivesGroupHeader}" />
+					<caption label="@{fwinEchantillonStatic$composer.cessionsGroupHeader}" />
 					<div class="item">
 						<vbox align="center" hflex="1" vflex="1">
 							<grid id="cessionsGrid" mold="paging" pageSize="10"

@@ -3911,7 +3911,7 @@ public class EchantillonManagerTest extends AbstractManagerTest4
          // on test l'insertion avec la banque nulle
          try{
             echantillonManager.prepareObjectJDBCManager(jdbcSuite, echan1, null, null, null, null, null, type, null, null, null,
-               null, null, null, null, null, true, false);
+               null, null, null, null, null, true, false, new ArrayList<Integer>());
          }catch(final Exception e){
             if(e.getClass().getSimpleName().equals("RequiredObjectIsNullException")){
                catched = true;
@@ -3927,7 +3927,7 @@ public class EchantillonManagerTest extends AbstractManagerTest4
          // on test l'insertion avec le type nul
          try{
             echantillonManager.prepareObjectJDBCManager(jdbcSuite, echan1, banque, null, null, null, null, null, null, null, null,
-               null, null, null, null, null, true, false);
+               null, null, null, null, null, true, false, new ArrayList<Integer>());
          }catch(final Exception e){
             if(e.getClass().getSimpleName().equals("RequiredObjectIsNullException")){
                catched = true;
@@ -3939,7 +3939,7 @@ public class EchantillonManagerTest extends AbstractManagerTest4
          // on test l'insertion avec le statut null
          try{
             echantillonManager.prepareObjectJDBCManager(jdbcSuite, echan1, banque, null, null, null, null, type, null, null, null,
-               null, null, null, null, null, true, false);
+               null, null, null, null, null, true, false, new ArrayList<Integer>());
          }catch(final Exception e){
             if(e.getClass().getSimpleName().equals("RequiredObjectIsNullException")){
                catched = true;
@@ -3951,7 +3951,7 @@ public class EchantillonManagerTest extends AbstractManagerTest4
          // on test l'insertion avec utilistateur null
          try{
             echantillonManager.prepareObjectJDBCManager(jdbcSuite, echan1, banque, null, null, nonstocke, null, type, null, null,
-               null, null, null, null, null, null, true, false);
+               null, null, null, null, null, null, true, false, new ArrayList<Integer>());
          }catch(final Exception e){
             if(e.getClass().getSimpleName().equals("RequiredObjectIsNullException")){
                catched = true;
@@ -3965,7 +3965,7 @@ public class EchantillonManagerTest extends AbstractManagerTest4
          // est lancée
          try{
             echantillonManager.prepareObjectJDBCManager(jdbcSuite, echan1, banque, null, null, nonstocke, null, type, null, null,
-               null, null, null, null, null, utilisateur, true, false);
+               null, null, null, null, null, utilisateur, true, false, new ArrayList<Integer>());
          }catch(final Exception e){
             // e.printStackTrace();
             if(e.getClass().getSimpleName().equals("DoublonFoundException")){
@@ -3981,7 +3981,7 @@ public class EchantillonManagerTest extends AbstractManagerTest4
          catched = false;
          try{
             echantillonManager.prepareObjectJDBCManager(jdbcSuite, echan1, banque, null, null, stocke, empl, type, null, null,
-               null, null, null, null, null, utilisateur, true, false);
+               null, null, null, null, null, utilisateur, true, false, new ArrayList<Integer>());
          }catch(final TKException ex){
             catched = true;
             assertTrue(ex.getMessage().equals("PTRA.3 : error.emplacement.notEmpty"));
@@ -4017,7 +4017,7 @@ public class EchantillonManagerTest extends AbstractManagerTest4
          catched = false;
          try{
             echantillonManager.prepareObjectJDBCManager(jdbcSuite, echan1, banque, null, null, stocke, null, type, null, null,
-               null, codes, null, null, null, utilisateur, true, false);
+               null, codes, null, null, null, utilisateur, true, false, new ArrayList<Integer>());
          }catch(final ValidationException ex){
             catched = true;
          }
@@ -4038,7 +4038,7 @@ public class EchantillonManagerTest extends AbstractManagerTest4
          jdbcSuite.getPstmtOp().clearBatch();
 
          echantillonManager.prepareObjectJDBCManager(jdbcSuite, echan1, banque, null, null, nonstocke, null, type, null, null,
-            null, null, new ArrayList<AnnotationValeur>(), null, null, utilisateur, true, false);
+            null, null, new ArrayList<AnnotationValeur>(), null, null, utilisateur, true, false, new ArrayList<Integer>());
 
          // ids changés
          assertTrue(jdbcSuite.getMaxEchantillonId().equals(maxEchId + 1));
@@ -4111,7 +4111,7 @@ public class EchantillonManagerTest extends AbstractManagerTest4
          c3.setIsOrgane(false);
 
          echantillonManager.prepareObjectJDBCManager(jdbcSuite, echan2, banque, prelevement, collab, stocke, emp, type, quantite,
-            qualite, prepa, codes, avs, ncfsTrait, ncfsCess, utilisateur, true, false);
+            qualite, prepa, codes, avs, ncfsTrait, ncfsCess, utilisateur, true, false, new ArrayList<Integer>());
 
          // ids changés
          assertTrue(jdbcSuite.getMaxEchantillonId().equals(maxEchId + 2));

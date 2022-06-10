@@ -323,7 +323,8 @@ public class FicheEchantillonStatic extends AbstractFicheStaticController {
 		drawRisquesFormatted();
 
 		setGroupInfosCompEchanOpen(echantillon.getBanque() != null
-				&& echantillon.getBanque().getContexte().getNom().equals("anatomopathologie"));
+			&& (echantillon.getBanque().getContexte().getNom().equals("anatomopathologie")
+				|| SessionUtils.getCurrentGatsbiContexteForEntiteId(3) != null));
 
 		// annotations
 		super.setObject(echantillon);
@@ -2165,11 +2166,6 @@ public class FicheEchantillonStatic extends AbstractFicheStaticController {
 	}
 	
 	protected void setGroupInfosCompEchanOpen(boolean b) {
-		if (groupInfosCompEchan instanceof Group) {
-			((Group) groupInfosCompEchan).setOpen(b);
-		} else {
-			((Groupbox) groupInfosCompEchan).setOpen(b);
-		}
+		((Group) groupInfosCompEchan).setOpen(b);
 	}
-
 }

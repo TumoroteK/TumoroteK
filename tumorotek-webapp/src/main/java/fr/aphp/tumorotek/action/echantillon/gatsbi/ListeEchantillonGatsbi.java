@@ -36,13 +36,17 @@
  **/
 package fr.aphp.tumorotek.action.echantillon.gatsbi;
 
+import java.io.FileInputStream;
+
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.ForwardEvent;
 import org.zkoss.zul.Checkbox;
+import org.zkoss.zul.Filedownload;
 import org.zkoss.zul.Messagebox;
 import fr.aphp.tumorotek.action.echantillon.ListeEchantillon;
 import fr.aphp.tumorotek.action.prelevement.gatsbi.exception.GatsbiException;
 import fr.aphp.tumorotek.model.contexte.gatsbi.Contexte;
+import fr.aphp.tumorotek.model.systeme.Fichier;
 import fr.aphp.tumorotek.webapp.gatsbi.GatsbiController;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
@@ -146,5 +150,22 @@ public class ListeEchantillonGatsbi extends ListeEchantillon {
 		} catch (GatsbiException e) {
 			Messagebox.show(handleExceptionMessage(e), "Error", Messagebox.OK, Messagebox.ERROR);
 		}
+	}
+	
+	/**
+	 * Download le cr anapath d'un échantillon depuis la liste 
+	 * @param forward event dont l'event origine transporte l'objet CrAnapath
+	 */
+	public void onClickCrAnapathLabel$echantillonRows(final ForwardEvent event) {
+		if (event.getOrigin().getData() != null) {
+			try{
+	            Filedownload.save(new FileInputStream(
+            		((Fichier) event.getOrigin().getData()).getPath()), 
+            		((Fichier) event.getOrigin().getData()).getMimeType(),
+            		((Fichier) event.getOrigin().getData()).getNom());
+	         }catch(final Exception e) {
+	            log.error(e);
+	         }
+		}	
 	}
 }

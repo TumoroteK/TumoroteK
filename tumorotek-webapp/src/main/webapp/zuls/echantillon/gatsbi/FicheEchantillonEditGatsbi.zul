@@ -299,7 +299,7 @@
 					</div>
 				</groupbox>
 				<div class="block-separator" />	
-				<groupbox id="groupInfosCompEchan">
+				<groupbox id="groupInfosCompEchan" open="true">
 					<caption label="${c:l('ficheEchantillon.infosComp')}" />
 					<div id="anapathInfosBlockDiv"><!-- Informations complémentaires -->
 						<div class="block-container" id="anapathInfosBlockDivContainer">
@@ -309,7 +309,7 @@
 									<label value="${c:l('ficheEchantillon.crAnapathLabel')}" sclass="formLabel" />
 									<label value="*" sclass="requiredMark" />
 								</div>
-								<div class="row-container">
+								<div class="row-container skip-required">
 									<textbox id="crAnapathNomBox" cols="15" visible="false" />
 									<image id="addCrFile" src="/images/icones/fileimport.png" style="cursor: pointer" />
 									<image id="deleteCrFile" src="/images/icones/eraser.png" style="cursor: pointer" visible="false" />
@@ -329,8 +329,8 @@
 									<label value="${c:l('Champ.Echantillon.Organe')}" sclass="formLabel" />
 									<label value="*" sclass="requiredMark" />
 								</div>
-								<div>
-									<codeAssigneEditor id="organesEditor" isOrg="true" hflex="1" />
+								<div class="skip-required" width="95%" >
+									<codeAssigneEditor id="organesEditor" isOrg="true" />
 								</div>
 							</div>
 							<div class="item item-wide" id="lateraliteDiv"><!-- lateralite -->
@@ -354,8 +354,8 @@
 									<label value="${c:l('ficheEchantillon.codeLesionelLabel')}" sclass="formLabel" />
 									<label value="*" sclass="requiredMark" />
 								</div>
-								<div>
-									<codeAssigneEditor id="morphosEditor" isOrg="false" isMorpho="true" hflex="1"/>
+								<div class="skip-required" width="95%" >
+									<codeAssigneEditor id="morphosEditor" isOrg="false" isMorpho="true" />
 								</div>
 							</div>
 						</div>

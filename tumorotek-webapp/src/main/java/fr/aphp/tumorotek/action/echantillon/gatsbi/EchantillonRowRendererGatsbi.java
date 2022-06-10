@@ -86,19 +86,7 @@ public class EchantillonRowRendererGatsbi extends EchantillonRowRenderer {
 
 		renderNbDerives(row, echan);
 
-		renderNbCessions(row, echan);	}
-
-	public void onClickCrAnapathLabel$echantillonRows(final Event event) {
-		if (event.getData() != null) {
-			try{
-	            Filedownload.save(new FileInputStream(
-            		((Fichier) event.getData()).getPath()), 
-            		((Fichier) event.getData()).getMimeType(),
-            		((Fichier) event.getData()).getNom());
-	         }catch(final Exception e) {
-	            log.error(e);
-	         }
-		}	
+		renderNbCessions(row, echan);
 	}
 
 	public void setIconesRendered(boolean _i) {

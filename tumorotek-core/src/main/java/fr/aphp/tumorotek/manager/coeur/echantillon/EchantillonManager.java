@@ -72,7 +72,7 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
  *
  * @author Pierre Ventadour
  * @author Mathieu BARTHELEMY
- * @version 2.2.2
+ * @version 2.3.0-gatsbi
  *
  */
 public interface EchantillonManager {
@@ -801,14 +801,16 @@ public interface EchantillonManager {
 	 * @param utilisateur
 	 * @param doValidation
 	 * @param isImport
+	 * @param requiredChampEntiteIds gatsbi champ entite required
 	 * @return echantillon_id assigne au nouvel enregistrement
-	 * @version 2.0.10.6
+	 * @version 2.3.0-gatsbi
 	 */
 	Integer prepareObjectJDBCManager(EchantillonJdbcSuite jdbcSuite, Echantillon echantillon, Banque banque,
 			Prelevement prelevement, Collaborateur collaborateur, ObjetStatut statut, Emplacement emplacement,
 			EchantillonType type, Unite quantite, EchanQualite qualite, ModePrepa preparation, List<CodeAssigne> codes,
 			List<AnnotationValeur> listAnnoToCreateOrUpdate, List<NonConformite> noconfsTrait,
-			List<NonConformite> noconfsCess, Utilisateur utilisateur, boolean doValidation, boolean isImport)
+			List<NonConformite> noconfsCess, Utilisateur utilisateur, boolean doValidation, boolean isImport,
+			List<Integer> requiredChampEntiteIds)
 			throws SQLException;
 
 	/**
@@ -858,5 +860,6 @@ public interface EchantillonManager {
 	 * @since 2.3.0-gatsbi
 	 */
 	void checkRequiredObjectsAndValidate(Echantillon echantillon, Banque banque, EchantillonType type,
-			ObjetStatut statut, String operation, Utilisateur utilisateur, boolean doValidation);
+			ObjetStatut statut, String operation, Utilisateur utilisateur, 
+			List<CodeAssigne> codes, boolean doValidation);
 }

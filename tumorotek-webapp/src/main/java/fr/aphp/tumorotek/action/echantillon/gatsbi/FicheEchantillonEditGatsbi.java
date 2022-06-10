@@ -119,4 +119,10 @@ public class FicheEchantillonEditGatsbi extends FicheEchantillonEdit {
 			}
 		}
 	}
+	
+	@Override
+	public void onClick$validate() {
+		GatsbiController.checkRequiredNonInputComponents(reqListboxes, reqComboboxes, reqDivs);
+		super.onClick$validate();
+	}
 }

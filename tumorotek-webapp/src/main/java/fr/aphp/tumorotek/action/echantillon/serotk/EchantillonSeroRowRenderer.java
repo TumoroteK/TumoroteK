@@ -90,7 +90,7 @@ public class EchantillonSeroRowRenderer extends EchantillonRowRenderer
 
 		renderObjetStatut(row, echan);
 
-		renderEmplacement(row, echan);
+		renderEmplacement(row, echan, isAnonyme(), isAccessStockage());
 
 		renderNbDerives(row, echan);
 

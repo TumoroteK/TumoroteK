@@ -126,6 +126,7 @@ import fr.aphp.tumorotek.model.stockage.Emplacement;
 import fr.aphp.tumorotek.model.stockage.Enceinte;
 import fr.aphp.tumorotek.model.stockage.Terminale;
 import fr.aphp.tumorotek.model.systeme.Fichier;
+import fr.aphp.tumorotek.webapp.gatsbi.GatsbiController;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
 /**
@@ -444,7 +445,8 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit {
 			if (isPrelevementProcedure) {
 
 				// enregistrement du prelevement
-				ManagerLocator.getPrelevementManager().createObjectManager(getParentObject(), getBanque(),
+				ManagerLocator.getPrelevementManager().createObjectManager(getParentObject(), 
+						GatsbiController.enrichesBanqueWithEtudeContextes(getBanque(), sessionScope),
 						getParentObject().getNature(), getParentObject().getMaladie(),
 						getParentObject().getConsentType(), getParentObject().getPreleveur(),
 						getParentObject().getServicePreleveur(), getParentObject().getPrelevementType(),
@@ -479,7 +481,8 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit {
 					newEchan.setCrAnapath(null);
 
 					// création de l'objet
-					ManagerLocator.getEchantillonManager().createObjectWithCrAnapathManager(newEchan, getBanque(),
+					ManagerLocator.getEchantillonManager().createObjectWithCrAnapathManager(newEchan, 
+							GatsbiController.enrichesBanqueWithEtudeContextes(getBanque(), sessionScope),
 							getParentObject(), newEchan.getCollaborateur(),
 							ManagerLocator.getObjetStatutManager().findByStatutLikeManager("NON STOCKE", true).get(0),
 							null, // since 2.0.13.2
@@ -776,7 +779,8 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit {
 					newEchan.setCrAnapath(null);
 
 					// création de l'objet
-					ManagerLocator.getEchantillonManager().createObjectWithCrAnapathManager(newEchan, getBanque(),
+					ManagerLocator.getEchantillonManager().createObjectWithCrAnapathManager(newEchan, 
+							GatsbiController.enrichesBanqueWithEtudeContextes(getBanque(), sessionScope),
 							getParentObject(), newEchan.getCollaborateur(),
 							ManagerLocator.getObjetStatutManager().findByStatutLikeManager("NON STOCKE", true).get(0),
 							// newEchan.getEmplacement(),

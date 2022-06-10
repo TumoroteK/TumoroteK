@@ -37,6 +37,7 @@ package fr.aphp.tumorotek.action.echantillon.gatsbi;
 
 import java.lang.reflect.InvocationTargetException;
 import java.text.ParseException;
+import java.util.Arrays;
 
 import org.zkoss.zul.Row;
 
@@ -70,8 +71,10 @@ public class EchantillonDecoratorRowRendererGatsbi extends AbstractEchantillonDe
 	protected void renderEchantillon(Row row, EchantillonDTO deco) 
 			throws IllegalAccessException, InvocationTargetException, NoSuchMethodException, ParseException {	
 		for (Integer chpId : contexte.getChampEntiteInTableauOrdered()) {
-			GatsbiControllerEchantillon
-				.applyEchantillonDecoratorChpRender(chpId, row, deco, false, false);
+			if (!chpId.equals(55) && !chpId.equals(57)) { // statut et emplacement toujours rendus
+				GatsbiControllerEchantillon
+					.applyEchantillonDecoratorChpRender(chpId, row, deco, false, false);
+			}
 		}
 	}
 

@@ -597,7 +597,6 @@ public class FicheImportTemplate extends AbstractFicheCombineController
 				if(selectedEntite != null){
 					final List<Champ> tmp = new ArrayList<>();
 					final List<ChampEntite> ces =
-						// ManagerLocator.getChampEntiteManager().findByEntiteAndImportManager(selectedEntite.getEntite(), true);
 						GatsbiController.findByEntiteImportAndIsNullableManager(selectedEntite.getEntite(), true, true);
 					final List<TableAnnotation> tas = ManagerLocator.getTableAnnotationManager()
 							.findByEntiteAndBanqueManager(selectedEntite.getEntite(), importTemplate.getBanque());
@@ -629,7 +628,6 @@ public class FicheImportTemplate extends AbstractFicheCombineController
 
 			final List<Champ> tmp = new ArrayList<>();
 			final List<ChampEntite> ces =
-				// ManagerLocator.getChampEntiteManager().findByEntiteAndImportManager(entiteDeco.getEntite(), true);
 				GatsbiController.findByEntiteImportAndIsNullableManager(entiteDeco.getEntite(), true, null);
 			final List<TableAnnotation> tas = ManagerLocator.getTableAnnotationManager()
 					.findByEntiteAndBanqueManager(entiteDeco.getEntite(), importTemplate.getBanque());
@@ -758,7 +756,6 @@ public class FicheImportTemplate extends AbstractFicheCombineController
 		if(selectedEntite != null){
 			final List<Champ> tmp = new ArrayList<>();
 			final List<ChampEntite> ces =
-				// ManagerLocator.getChampEntiteManager().findByEntiteAndImportManager(selectedEntite.getEntite(), true);
 				GatsbiController.findByEntiteImportAndIsNullableManager(selectedEntite.getEntite(), true, true);
 			final List<TableAnnotation> tas = ManagerLocator.getTableAnnotationManager()
 					.findByEntiteAndBanqueManager(selectedEntite.getEntite(), importTemplate.getBanque());
@@ -898,8 +895,6 @@ public class FicheImportTemplate extends AbstractFicheCombineController
 			final List<Champ> tmp = new ArrayList<Champ>();
 			final List<ChampEntite> ces =
 				GatsbiController.findByEntiteImportAndIsNullableManager(selectedEntite.getEntite(), true, true);
-				// ManagerLocator.getChampEntiteManager()
-				//	.findByEntiteAndImportManager(selectedEntite.getEntite(), true);
 			
 			// @since 2.2.x
 			// enlève manuellement champs anapath ECHANTILLON
@@ -1192,12 +1187,16 @@ public class FicheImportTemplate extends AbstractFicheCombineController
 				this.importTemplate.setBanque(SessionUtils.getCurrentBanque(sessionScope));
 				
 				if(importTemplate.getDeriveParentEntite() == null){
-					historique = ManagerLocator.getImportManager().importFileManager(this.importTemplate,
+					historique = ManagerLocator.getImportManager()
+						.importFileManager(this.importTemplate,
 							SessionUtils.getLoggedUser(sessionScope),
+							SessionUtils.getCurrentBanque(sessionScope),
 							e.getData() == null ? uploadedWb.getSheetAt(0) : uploadedWb.getSheet((String) e.getData()));
 				}else{ // import sub derive
-					historique = ManagerLocator.getImportManager().importSubDeriveFileManager(this.importTemplate,
+					historique = ManagerLocator.getImportManager()
+						.importSubDeriveFileManager(this.importTemplate,
 							SessionUtils.getLoggedUser(sessionScope),
+							SessionUtils.getCurrentBanque(sessionScope),
 							e.getData() == null ? uploadedWb.getSheetAt(0) : uploadedWb.getSheet((String) e.getData()), null);
 				}
 

@@ -1568,6 +1568,18 @@ public class ImportManagerImpl implements ImportManager
 
 		if(objects != null){
 			try{
+				
+				// gatsbi required validation
+				// TODO indispensable pour l'instant que pour prepareObjectJDBCManager validation
+				// donc échantillons uniquement
+				// car sinon la validation gatsbi s'applique directement dans create/update Manager
+				List<Integer> requiredChampEntiteIds = new ArrayList<Integer>();
+				if (properties.getBanque().getEtude() != null) {
+					Contexte echanContexte = properties.getBanque().getEtude().getContexteForEntite(3);
+					if (echanContexte != null) {
+						requiredChampEntiteIds.addAll(echanContexte.getRequiredChampEntiteIds());
+					}
+				}
 
 				final List<AnnotationValeur> avs = new ArrayList<>();
 				final List<AnnotationValeur> toDelete = new ArrayList<>();
@@ -1751,12 +1763,12 @@ public class ImportManagerImpl implements ImportManager
 							}else{
 
 								echanId = echantillonManager.prepareObjectJDBCManager(jdbcSuite,
-
 										echan, echan.getBanque(), echan.getPrelevement(), echan.getCollaborateur(), echan.getObjetStatut(),
 										empl, echan.getEchantillonType(), echan.getQuantiteUnite(), echan.getEchanQualite(),
 										echan.getModePrepa(), codes, !toUpdate.isEmpty() ? toUpdate : null,
 												ncfsEchanTrait != null ? ncfsEchanTrait.get(echan) : null,
-														ncfsEchanCess != null ? ncfsEchanCess.get(echan) : null, utilisateur, true, true);
+												ncfsEchanCess != null ? ncfsEchanCess.get(echan) : null, utilisateur, true, true, 
+												requiredChampEntiteIds);
 
 								// echan.setEchantillonId(echanId);
 							}
@@ -1951,12 +1963,14 @@ public class ImportManagerImpl implements ImportManager
 	}
 
 	@Override
-	public ImportHistorique importFileManager(final ImportTemplate importTemplate, final Utilisateur utilisateur,
+	public ImportHistorique importFileManager(final ImportTemplate importTemplate,
+			final Utilisateur utilisateur,
+			final Banque banque,
 			final InputStream is){
 		//SXSSFWorkbook wb = null;
 		try( Workbook wb = WorkbookFactory.create(is);){
 			//wb = new SXSSFWorkbook( new XSSFWorkbook(is), 100);
-			return importFileManager(importTemplate, utilisateur, wb.getSheetAt(0));
+			return importFileManager(importTemplate, utilisateur, banque, wb.getSheetAt(0));
 		}catch(final IOException e){
 			e.printStackTrace();
 		}catch(final InvalidFormatException e){
@@ -1992,10 +2006,12 @@ public class ImportManagerImpl implements ImportManager
 	}
 
 	@Override
-	public ImportHistorique importFileManager(final ImportTemplate importTemplate, final Utilisateur utilisateur,
+	public ImportHistorique importFileManager(final ImportTemplate importTemplate, 
+			final Utilisateur utilisateur,
+			final Banque banque,
 			final Sheet sheet){ //TODO Refactorer
 		final ImportProperties properties = new ImportProperties();
-		properties.setBanque(importTemplate.getBanque());
+		properties.setBanque(banque != null ? banque : importTemplate.getBanque());
 		final List<ImportError> errors = new ArrayList<>();
 		ImportHistorique historique = null;
 		final List<Importation> importations = new ArrayList<>();
@@ -2247,10 +2263,12 @@ public class ImportManagerImpl implements ImportManager
 	}
 
 	@Override
-	public ImportHistorique importSubDeriveFileManager(final ImportTemplate importTemplate, final Utilisateur utilisateur,
+	public ImportHistorique importSubDeriveFileManager(final ImportTemplate importTemplate, 
+			final Utilisateur utilisateur,
+			final Banque banque,
 			final Sheet sheet, final String retourTransfoEpuisement){ //TODO Refactorer
 		final ImportProperties properties = new ImportProperties();
-		properties.setBanque(importTemplate.getBanque());
+		properties.setBanque(banque != null ? banque : importTemplate.getBanque());
 		final List<ImportError> errors = new ArrayList<>();
 		ImportHistorique historique = null;
 		final List<Importation> importations = new ArrayList<>();

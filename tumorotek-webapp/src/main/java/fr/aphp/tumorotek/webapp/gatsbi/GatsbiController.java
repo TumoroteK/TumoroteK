@@ -78,9 +78,11 @@ import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.SimpleConstraint;
+import org.zkoss.zul.Textbox;
 import org.zkoss.zul.impl.InputElement;
 
 import fr.aphp.tumorotek.action.ManagerLocator;
+import fr.aphp.tumorotek.action.code.CodeAssigneEditableGrid;
 import fr.aphp.tumorotek.action.constraints.TumoTextConstraint;
 import fr.aphp.tumorotek.action.controller.AbstractController;
 import fr.aphp.tumorotek.action.controller.AbstractObjectTabController;
@@ -98,6 +100,7 @@ import fr.aphp.tumorotek.model.coeur.prelevement.Prelevement;
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.contexte.gatsbi.Contexte;
 import fr.aphp.tumorotek.model.contexte.gatsbi.ContexteType;
+import fr.aphp.tumorotek.model.contexte.gatsbi.Etude;
 import fr.aphp.tumorotek.model.contexte.gatsbi.Parametrage;
 import fr.aphp.tumorotek.model.contexte.gatsbi.ThesaurusValue;
 import fr.aphp.tumorotek.model.interfacage.BlocExterne;
@@ -199,12 +202,29 @@ public class GatsbiController {
 		
 		// dependances entite specifiques
 		addPrelevementComplementaryIds(hiddenIds); // TODO move to prelevement specific controller
-		GatsbiControllerEchantillon.addComplementaryChpIds(hiddenIds);
-		
-		
+		GatsbiControllerEchantillon.addComplementaryVisibleChpIds(hiddenIds);
+			
 		return hiddenIds;
 	}
 
+	/**
+	 * Récupére tous les ids des champs obligatoires.
+	 * @param contexte 
+	 * @return liste ids
+	 */
+	public static List<Integer> getRequiredChampEntiteIdsForContexte(Contexte c) {
+		List<Integer> requiredIds = new ArrayList<Integer>();
+		if (c != null) {
+			requiredIds.addAll(c.getRequiredChampEntiteIds());
+		}
+		
+		// dependances entite specifiques
+		GatsbiControllerEchantillon.addComplementaryRequiredIds(requiredIds);
+		
+		return requiredIds;
+	}
+
+	
 	public static List<Div> wireBlockDivsFromMainComponent(ContexteType type, Component main) {
 		if (divBlockIds.containsKey(type)) {
 			return Arrays.stream(divBlockIds.get(type)).map(id -> (Div) main.getFellowIfAny(id)).filter(d -> d != null)
@@ -265,7 +285,7 @@ public class GatsbiController {
 		log.debug("switch items required or not");
 		if (items != null && c != null) {
 
-			List<Integer> required = c.getRequiredChampEntiteIds();
+			List<Integer> required = getRequiredChampEntiteIdsForContexte(c);
 
 			if (!required.isEmpty()) {
 				boolean isReq;
@@ -291,7 +311,10 @@ public class GatsbiController {
 								} else if (formElement instanceof CalendarBox) {
 									((CalendarBox) formElement).setConstraint("no empty");
 								}
-							} else if (div.getId().startsWith("conforme") || div.getId().startsWith("crAnapath")) { // non-conformite | crAnapath
+							} else if (div.getId().startsWith("conforme") // non-conformite
+									|| div.getId().startsWith("crAnapath")
+									|| div.getId().equals("cOrganesDiv")
+									|| div.getId().equals("cMorphosDiv")) {
 								reqDivs.add(div);
 							}
 						}
@@ -411,7 +434,7 @@ public class GatsbiController {
 	 * @param conformeDivs
 	 */
 	public static void checkRequiredNonInputComponents(List<Listbox> reqListboxes, List<Combobox> reqComboboxes,
-			List<Div> conformeDivs) {
+			List<Div> reqDivs) {
 
 		if (reqListboxes != null) {
 			for (Listbox lb : reqListboxes) {
@@ -433,13 +456,38 @@ public class GatsbiController {
 			}
 		}
 
-		if (conformeDivs != null) {
-			for (Div div : conformeDivs) {
-				Clients.clearWrongValue(div.getFirstChild());
-				if (div.getLastChild().getChildren().stream().filter(c -> c instanceof Checkbox)
-						.noneMatch(c -> ((Checkbox) c).isChecked())) {
+		if (reqDivs != null) {
+			for (Div div : reqDivs) {
+				Clients.clearWrongValue(div.getLastChild());
+				
+				boolean throwEmptyError = false;
+				
+				if (div.getId().startsWith("nonConformite")) { 	// non conformite
+
+					if (div.getLastChild().getChildren().stream().filter(c -> c instanceof Checkbox)
+							.noneMatch(c -> ((Checkbox) c).isChecked())) {
+						throwEmptyError = true;
+					}
+				} else if (div.getId().equals("crAnapathDiv")) { // cr anapath
+					Textbox tb = (Textbox) div.getLastChild().getChildren().stream()
+						.filter(c -> c instanceof Textbox)
+						.findFirst().orElse(null);
+
+					if (StringUtils.isEmpty(tb.getValue())) {
+						throwEmptyError = true;
+					}
+				} else if (Arrays.asList("cOrganesDiv","cMorphosDiv").contains(div.getId())) { // codes
+					CodeAssigneEditableGrid controller = (CodeAssigneEditableGrid) 
+						div.getLastChild().getFirstChild().getFellow("codesAssitGridDiv")
+							.getAttributeOrFellow("codesAssitGridDiv$composer", true);
+					if (controller.getObjs().isEmpty()) {
+						throwEmptyError = true;
+					}
+				}
+			
+				if (throwEmptyError) {
 					Clients.scrollIntoView(div);
-					throw new WrongValueException(div.getFirstChild(), Labels.getLabel("validation.syntax.empty"));
+					throw new WrongValueException(div.getLastChild(), Labels.getLabel("validation.syntax.empty"));
 				}
 			}
 		}
@@ -513,7 +561,7 @@ public class GatsbiController {
 			if (isNullable != null) {
 				// filtre les champs obligatoires suivant le contexte Gatsbi
 				// surcharge la propriété isNullable de manière non persistante
-				List<Integer> reqIds = contexte.getRequiredChampEntiteIds();
+				List<Integer> reqIds = getRequiredChampEntiteIdsForContexte(contexte);
 				if (isNullable) { // champs non obligatoires
 					chpE.removeIf(chp -> reqIds.contains(chp.getId()));
 					chpE.stream().forEach(chp -> chp.setNullable(true));
@@ -523,6 +571,9 @@ public class GatsbiController {
 				}
 			}
 		}
+		
+		Collections.sort(chpE, Comparator.comparing(ChampEntite::getId));
+		
 		return chpE;
 	}
 
@@ -531,12 +582,15 @@ public class GatsbiController {
 
 		List<ImportColonneDecorator> decos = ImportColonneDecorator.decorateListe(cols, isSubderive);
 
-		// surcharge la propriété deletable suivant le contexte gastby
+		// surcharge la propriété deletable suivant le contexte gastbi
 		Contexte c;
 		for (ImportColonneDecorator deco : decos) {
 			c = SessionUtils.getCurrentGatsbiContexteForEntiteId(
 					deco.getColonne().getChamp().getChampEntite().getEntite().getEntiteId());
-			deco.setCanDelete(!c.isChampIdRequired(deco.getColonne().getChamp().getChampEntite().getId()));
+			if (c != null) {
+				deco.setCanDelete(!getRequiredChampEntiteIdsForContexte(c)
+					.contains(deco.getColonne().getChamp().getChampEntite().getId()));
+			}
 		}
 		return decos;
 	}
@@ -576,7 +630,7 @@ public class GatsbiController {
 	}
 
 	/**
-	 * Vérifie la visbilité d'un champ entité en - retrouvant le contexte - puis la
+	 * Vérifie la visibilité d'un champ entité en - retrouvant le contexte - puis la
 	 * visibilité du champ
 	 * 
 	 * @param c ChampEntite
@@ -591,6 +645,24 @@ public class GatsbiController {
 		}
 		return true;
 	}
+	
+//	/**
+//	 * Vérifie le caractère obligatoire d'un champ entité à partir du contexte
+//	 * 
+//	 * @param c ChampEntite
+//	 * @return obligatoire ?
+//	 */
+//	public static boolean isChampEntiteRequired(Integer eId, Integer cId, boolean isObligDefault) {
+//		if (eId != null && cId != null) {
+//			Contexte contexte = SessionUtils.getCurrentGatsbiContexteForEntiteId(eId);
+//			if (contexte != null) {
+//				return getRequiredChampEntiteIdsForContexte(contexte).contains(cId);
+//			} else {
+//				return isObligDefault;
+//			}
+//		}
+//		return false;
+//	}
 
 	/**
 	 * 
@@ -600,37 +672,77 @@ public class GatsbiController {
 	 * @throws IOException
 	 * @throws GatsbiException 
 	 */
-	public static void doGastbiContexte(Banque bank) throws GatsbiException {
+	public static void doGastbiContexte(Banque... banks) throws GatsbiException {
 
-		UriComponentsBuilder etudeURIBld = UriComponentsBuilder
-				.fromUriString(TkParam.GATSBI_URL_BASE.getValue().concat(TkParam.GATSBI_URL_ETUDE_PATH.getValue()));
-
-		UriComponentsBuilder contexteURIBld = UriComponentsBuilder
-				.fromUriString(TkParam.GATSBI_URL_BASE.getValue().concat(TkParam.GATSBI_URL_CONTEXTE_PATH.getValue()));
-
-		log.debug("fetch etude from URL:"
-				+ (etudeURIBld.build(false).expand(bank.getEtude().getEtudeId())).toUriString());
-
-		try {
-			RestTemplate restTemplate = new RestTemplate();
-			EtudeDTO etude = restTemplate
-					.getForObject(etudeURIBld.build(false).expand(bank.getEtude().getEtudeId()).toUri(), EtudeDTO.class);
+		if (banks.length > 0) {
+			Etude etude = banks[0].getEtude(); // même en toutes collections, une seule étude !!
+			
+			UriComponentsBuilder etudeURIBld = UriComponentsBuilder
+					.fromUriString(TkParam.GATSBI_URL_BASE.getValue()
+							.concat(TkParam.GATSBI_URL_ETUDE_PATH.getValue()));
 	
-			for (ContexteDTO rCont : etude.getrContextes()) {
-				log.debug("fetch contexte from URL:"
-						+ (contexteURIBld.build(false).expand(bank.getEtude().getEtudeId(), rCont.getType()))
-								.toUriString());
-				bank.getEtude()
-						.addToContextes(restTemplate
-								.getForObject(contexteURIBld.build(false)
-										.expand(bank.getEtude().getEtudeId(), rCont.getType()).toUri(), ContexteDTO.class)
-								.toContexte());
+			UriComponentsBuilder contexteURIBld = UriComponentsBuilder
+					.fromUriString(TkParam.GATSBI_URL_BASE.getValue()
+						.concat(TkParam.GATSBI_URL_CONTEXTE_PATH.getValue()));
+			
+			log.debug("fetch etude from URL:"
+					+ (etudeURIBld.build(false).expand(etude.getEtudeId())).toUriString());
+	
+			try {
+				RestTemplate restTemplate = new RestTemplate();
+				EtudeDTO etudeDTO = restTemplate
+					.getForObject(etudeURIBld.build(false).expand(etude.getEtudeId()).toUri(), EtudeDTO.class);
+		
+				for (ContexteDTO rCont : etudeDTO.getrContextes()) {
+					log.debug("fetch contexte from URL:"
+							+ (contexteURIBld.build(false).expand(etude.getEtudeId(), rCont.getType()))
+									.toUriString());
+					
+					etude.addToContextes(restTemplate
+							.getForObject(contexteURIBld.build(false)
+										.expand(etude.getEtudeId(), rCont.getType()).toUri(), ContexteDTO.class)
+									.toContexte());
+				}		
+				
+				for (Banque bq :banks) { // applique l'étude enrichie des contextes à toutes les banques
+					bq.setEtude(etude);
+				}
+			} catch (ResourceAccessException e) { // gatsbi inaccessible
+				throw new GatsbiException("gatsbi.connexion.error");
+			} catch (Exception e) {
+				throw new GatsbiException(e.getMessage());
 			}
-		} catch (ResourceAccessException e) { // gatsbi inaccessible
-			throw new GatsbiException("gatsbi.connexion.error");
-		} catch (Exception e) {
-			throw new GatsbiException(e.getMessage());
 		}
+	}
+
+	/**
+	 * Enrichit la banque avec les contextes GATSBI, si nécessaire.
+	 * Si la banque à enrichir est égale à l'instance banque courante (session), renvoie cette 
+	 * instance car elle est déja enrichie, sinon appel webservices GATSBI pour enrichissement.
+	 * @param bank
+	 * @param sessionScp
+	 * @return banque enrichie des contextes GATSBI
+	 */
+	public static Banque enrichesBanqueWithEtudeContextes(Banque bank, final Map<?, ?> sessionScp) {
+		
+		if (bank != null) {
+			if (bank.getEtude() != null) { // gatsbi
+				if (SessionUtils.getSelectedBanques(sessionScp).contains(bank)) { // shortcut
+					return SessionUtils.getSelectedBanques(sessionScp)
+						.get(SessionUtils.getSelectedBanques(sessionScp).indexOf(bank)); // cette banque est déja enrichie
+				} else { // call webservice
+					try {
+						doGastbiContexte(bank);
+					} catch (GatsbiException e) {
+						throw new RuntimeException(e);
+					}
+				}
+			}
+		} else {
+			return SessionUtils.getCurrentBanque(sessionScp);
+		}
+		
+		return bank;
 	}
 	
 	/**

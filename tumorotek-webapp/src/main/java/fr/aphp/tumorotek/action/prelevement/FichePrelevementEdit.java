@@ -107,6 +107,7 @@ import fr.aphp.tumorotek.model.contexte.Etablissement;
 import fr.aphp.tumorotek.model.contexte.Service;
 import fr.aphp.tumorotek.model.contexte.Transporteur;
 import fr.aphp.tumorotek.model.systeme.Unite;
+import fr.aphp.tumorotek.webapp.gatsbi.GatsbiController;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
 /**
@@ -617,7 +618,8 @@ public class FichePrelevementEdit extends AbstractFicheEditController
 
          // update de l'objet
          ManagerLocator.getPrelevementManager().createObjectManager(prelevement,
-            SessionUtils.getSelectedBanques(sessionScope).get(0), selectedNature, this.maladie, selectedConsentType,
+        	GatsbiController.enrichesBanqueWithEtudeContextes(getBanque(), sessionScope), 
+            selectedNature, this.maladie, selectedConsentType,
             selectedCollaborateur, selectedService, selectedMode, selectedConditType, selectedConditMilieu, transporteur,
             operateur, quantiteUnite, null, getObjectTabController().getFicheAnnotation().getValeursToCreateOrUpdate(),
             filesCreated, SessionUtils.getLoggedUser(sessionScope), true, SessionUtils.getSystemBaseDir(), false);
@@ -781,7 +783,9 @@ public class FichePrelevementEdit extends AbstractFicheEditController
          getObject().getRisques().addAll(findSelectedRisques());
 
          //Update de l'objet
-         ManagerLocator.getPrelevementManager().updateObjectManager(prelevement, null, selectedNature, maladie,
+         ManagerLocator.getPrelevementManager().updateObjectManager(prelevement, 
+        	GatsbiController.enrichesBanqueWithEtudeContextes(prelevement.getBanque(), sessionScope), 
+        	selectedNature, maladie,
             selectedConsentType, selectedCollaborateur, selectedService, selectedMode, selectedConditType, selectedConditMilieu,
             transporteur, operateur, quantiteUnite, null,
             getObjectTabController().getFicheAnnotation().getValeursToCreateOrUpdate(),

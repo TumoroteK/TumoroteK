@@ -44,6 +44,7 @@ import org.zkoss.zul.Column;
 import org.zkoss.zul.Grid;
 import org.zkoss.zul.Row;
 
+import fr.aphp.tumorotek.action.ManagerLocator;
 import fr.aphp.tumorotek.action.echantillon.EchantillonRowRenderer;
 import fr.aphp.tumorotek.decorator.TKSelectObjectRenderer;
 import fr.aphp.tumorotek.dto.EchantillonDTO;
@@ -61,9 +62,9 @@ import fr.aphp.tumorotek.webapp.gatsbi.GatsbiController;
  */
 public class GatsbiControllerEchantillon {
 	
-	// ajoute les dépendances entre les champs entite
+	// ajoute les dépendances entre les champs entite visibles 
 	// à partir des ids
-	public static void addComplementaryChpIds(List<Integer> ids) {
+	public static void addComplementaryVisibleChpIds(List<Integer> ids) {
 
 		if (ids.contains(229))
 			ids.add(59); // adicap organe id
@@ -76,6 +77,14 @@ public class GatsbiControllerEchantillon {
 			ids.add(261); // raisons no conf traitement
 		if (ids.contains(244)) // non conformite cession
 			ids.add(262); // raisons no conf cession
+	}
+	
+	// ajoute les dépendances entre les champs entite obligatoires 
+	// à partir des ids
+	public static void addComplementaryRequiredIds(List<Integer> ids) {
+
+		if (ids.contains(61)) // quantite
+			ids.add(62); // quantité init
 	}
 	
 	public static void addColumnForChpId(Integer chpId, Grid grid)
@@ -344,10 +353,14 @@ public class GatsbiControllerEchantillon {
 			TKSelectObjectRenderer.renderBoolProperty(row, echan, "sterile");
 			break;
 		case 229: // codes organes
-			EchantillonRowRenderer.renderCodeOrganes(row, echan);
+			EchantillonRowRenderer.renderCodeAssignes(row, 
+				ManagerLocator.getCodeAssigneManager()
+					.findCodesOrganeByEchantillonManager(echan));
 			break;
 		case 230: // codes lesionnels
-			EchantillonRowRenderer.renderCodeLesionnels(row, echan);
+			EchantillonRowRenderer.renderCodeAssignes(row, 
+				ManagerLocator.getCodeAssigneManager()
+					.findCodesMorphoByEchantillonManager(echan));
 			break;	
 		case 243: // conforme traitement -> rendu sous la forme d'une icône
 			break;
@@ -419,17 +432,17 @@ public class GatsbiControllerEchantillon {
 			TKSelectObjectRenderer.renderBoolProperty(row, deco.getEchantillon(), "sterile");
 			break;
 		case 229: // codes organes
-			EchantillonRowRenderer.renderAlphanumPropertyAsStringNoFormat(row, deco, "codesOrgsToCreateOrEdit");
+			EchantillonRowRenderer.renderCodeAssignes(row, deco.getCodesOrgsToCreateOrEdit()); 
 			break;
 		case 230: // codes lesionnels
-			EchantillonRowRenderer.renderAlphanumPropertyAsStringNoFormat(row, deco, "codesLesToCreateOrEdit");
+			EchantillonRowRenderer.renderCodeAssignes(row, deco.getCodesLesToCreateOrEdit()); 
 			break;	
 		case 243: // conforme traitement -> rendu sous la forme d'une icône
 			break;
 		case 244: // conforme cession -> rendu sous la forme d'une icône
 			break;
 		case 255: // cr anapath
-			EchantillonRowRenderer.renderCrAnapath(row, deco.getEchantillon(), anonyme);
+			EchantillonRowRenderer.renderCrAnapath(row, deco.getEchantillon(), true); // non clickable
 			break;
 		default:
 			break;

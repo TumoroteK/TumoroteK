@@ -108,6 +108,7 @@ import fr.aphp.tumorotek.model.stockage.Emplacement;
 import fr.aphp.tumorotek.model.systeme.Entite;
 import fr.aphp.tumorotek.model.systeme.Fichier;
 import fr.aphp.tumorotek.model.systeme.Unite;
+import fr.aphp.tumorotek.webapp.gatsbi.GatsbiController;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
 public class FicheEchantillonEdit extends AbstractFicheEditController {
@@ -214,7 +215,8 @@ public class FicheEchantillonEdit extends AbstractFicheEditController {
 		getCodesMorphoController().setBanque(getMainWindow().getSelectedBanque());
 
 		if (SessionUtils.getSelectedBanques(sessionScope).size() > 0
-				&& SessionUtils.getCurrentContexte() == EContexte.DEFAUT) {
+				&& (SessionUtils.getCurrentContexte() == EContexte.DEFAUT
+				 || SessionUtils.getCurrentGatsbiContexteForEntiteId(3) != null)) {
 			setGroupInfosCompEchanOpen(true);
 		} else {
 			setGroupInfosCompEchanOpen(false);
@@ -417,7 +419,8 @@ public class FicheEchantillonEdit extends AbstractFicheEditController {
 		}
 
 		// update de l'objet
-		ManagerLocator.getEchantillonManager().updateObjectWithNonConformitesManager(echantillon, getBanque(),
+		ManagerLocator.getEchantillonManager().updateObjectWithNonConformitesManager(echantillon, 
+				GatsbiController.enrichesBanqueWithEtudeContextes(echantillon.getBanque(), sessionScope),
 				prelevement, selectedCollaborateur, statut, emp, selectedType, codesToCreateOrEdit,
 				codesAssignesToDelete, selectedQuantiteUnite, selectedQualite, selectedPrepa, getCrAnapath(),
 				getAnapathStream(), getObjectTabController().getFicheAnnotation().getValeursToCreateOrUpdate(),

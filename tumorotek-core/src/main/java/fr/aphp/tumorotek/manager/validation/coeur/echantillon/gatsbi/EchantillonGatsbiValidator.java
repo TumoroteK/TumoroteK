@@ -36,6 +36,7 @@
  **/
 package fr.aphp.tumorotek.manager.validation.coeur.echantillon.gatsbi;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -43,6 +44,7 @@ import org.springframework.validation.Errors;
 
 import fr.aphp.tumorotek.manager.validation.RequiredValueValidator;
 import fr.aphp.tumorotek.model.TKdataObject;
+import fr.aphp.tumorotek.model.code.CodeAssigne;
 import fr.aphp.tumorotek.model.coeur.echantillon.Echantillon;
 
 /**
@@ -55,9 +57,14 @@ import fr.aphp.tumorotek.model.coeur.echantillon.Echantillon;
  */
 public class EchantillonGatsbiValidator extends RequiredValueValidator {
 	
+	private List<CodeAssigne> codes = new ArrayList<CodeAssigne>();
 
-	public EchantillonGatsbiValidator(String _e, List<Integer> _f) {
-		super(_e, _f);		
+	public EchantillonGatsbiValidator(String _e, List<Integer> _f, List<CodeAssigne> _c) {
+		super(_e, _f);
+		
+		if (_c != null) {
+			codes.addAll(_c);
+		}
 	}
 
 	@Override
@@ -94,13 +101,13 @@ public class EchantillonGatsbiValidator extends RequiredValueValidator {
 	@Override
 	protected void initFunctionalValidationMap() {
 
-		// TODO vérifier avec CORINNE si besoin validation fonctionnelle ici
-		// chpIdNameMap.put(61, "quantite");
-		// chpIdNameMap.put(62, "quantiteInit"); // logiquement rempli si quantite remplie
+		validations.put(255, (TKdataObject e, Errors r) -> 
+			(((Echantillon) e).getAnapathStream() != null 
+				|| ((Echantillon) e).getCrAnapath() != null));
 		validations.put(229, (TKdataObject e, Errors r) -> 
-			((Echantillon) e).getCodesAssignes().stream().anyMatch(c -> c.getIsOrgane()));
+			codes.stream().anyMatch(c -> c.getIsOrgane()));
 		validations.put(230, (TKdataObject e, Errors r) -> 
-			((Echantillon) e).getCodesAssignes().stream().anyMatch(c -> c.getIsMorpho()));
+			codes.stream().anyMatch(c -> c.getIsMorpho()));
 	}
 
 	/**

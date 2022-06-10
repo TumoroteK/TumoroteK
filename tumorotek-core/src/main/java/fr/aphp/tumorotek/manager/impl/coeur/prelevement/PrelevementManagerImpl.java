@@ -323,14 +323,16 @@ public class PrelevementManagerImpl implements PrelevementManager
       }
 
       try{
+    	  mergeNonRequiredObjects(prelevement, /*maladie,*/ preleveur, servicePreleveur, prelevementType, conditType,
+                  conditMilieu, transporteur, operateur, quantiteUnite);
+    	  
          // Verifie required Objects associes et validation
          checkRequiredObjectsAndValidate(prelevement, banque, nature, consentType, maladie, laboInters, "creation", utilisateur,
             doValidation, baseDir);
 
          // Doublon
          if(!findDoublonManager(prelevement)){
-            mergeNonRequiredObjects(prelevement, /*maladie,*/ preleveur, servicePreleveur, prelevementType, conditType,
-               conditMilieu, transporteur, operateur, quantiteUnite);
+
 
             prelevementDao.createObject(prelevement);
             log.info("Enregistrement objet Prelevement " + prelevement.toString());
@@ -418,6 +420,9 @@ public class PrelevementManagerImpl implements PrelevementManager
       final List<File> filesCreated, final List<File> filesToDelete, final Utilisateur utilisateur,
       final Integer cascadeNonSterile, final boolean doValidation, final String baseDir, final boolean multiple){
 
+	   mergeNonRequiredObjects(prelevement, /*maladie,*/ preleveur, servicePreleveur, prelevementType, conditType, conditMilieu,
+	            transporteur, operateur, quantiteUnite);
+	   
       // Verifie required Objects associes et validation
       checkRequiredObjectsAndValidate(prelevement, banque, nature, consentType, maladie, laboInters, "modification", null,
          doValidation, baseDir);
@@ -428,8 +433,6 @@ public class PrelevementManagerImpl implements PrelevementManager
       }
 
       try{
-         mergeNonRequiredObjects(prelevement, /*maladie,*/ preleveur, servicePreleveur, prelevementType, conditType, conditMilieu,
-            transporteur, operateur, quantiteUnite);
 
          if(cascadeNonSterile != null){ // cascade non sterile condition
             log.info("Applique la cascade de sterilite" + " depuis le prelevement " + prelevement.toString());
@@ -1017,7 +1020,7 @@ public class PrelevementManagerImpl implements PrelevementManager
       final Utilisateur utilisateur, final boolean doValidation, final String baseDir){
       // Banque required
       if(banque != null){
-         prelevement.setBanque(banqueDao.mergeObject(banque));
+         prelevement.setBanque(banque);
       }else if(prelevement.getBanque() == null){
          log.warn("Objet obligatoire Banque manquant" + " lors de la " + operation + " d'un Prelevement");
          throw new RequiredObjectIsNullException("Prelevement", operation, "Banque");
@@ -1500,7 +1503,7 @@ public class PrelevementManagerImpl implements PrelevementManager
       for(int i = 0; i < prelevements.size(); i++){
          final Prelevement prel = prelevements.get(i);
          try{
-            updateObjectManager(prel, null, null, null, null, prel.getPreleveur(), prel.getServicePreleveur(),
+            updateObjectManager(prel, prel.getBanque(), null, null, null, prel.getPreleveur(), prel.getServicePreleveur(),
                prel.getPrelevementType(), prel.getConditType(), prel.getConditMilieu(), prel.getTransporteur(),
                prel.getOperateur(), prel.getQuantiteUnite(), null, null, null, filesCreated, filesToDelete, utilisateur,
                nosterile, true, baseDir, true);
