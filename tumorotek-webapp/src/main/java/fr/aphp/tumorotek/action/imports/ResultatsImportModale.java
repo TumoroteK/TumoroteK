@@ -624,16 +624,21 @@ public class ResultatsImportModale extends GenericForwardComposer<Component>
       iProperty.append(".");
 
       final String champ = er.getFieldError().getField();
+      
       String champOk = "";
       // si le nom du champ finit par "Id", on le retire
       if(champ.endsWith("Id")){
          champOk = champ.substring(0, champ.length() - 2);
-      }else{
+      } else if (er.getFieldError().getCode().contains("codeOrganes")) { // 2.3.0-gatsbi 
+          champOk = "codeOrganes";
+      } else if (er.getFieldError().getCode().contains("codeMorphos")) { // 2.3.0-gatsbi 
+          champOk = "codeMorphos";
+      } else {
          champOk = champ;
       }
       champOk = champOk.replaceFirst(".", (champOk.charAt(0) + "").toUpperCase());
       iProperty.append(champOk);
-
+      
       // si l'erreur porte sur une annotation, on va retourner
       // le nom du champannotation
       if(nomObjet.equals("AnnotationValeur")){

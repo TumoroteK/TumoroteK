@@ -71,6 +71,7 @@ import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Column;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Constraint;
+import org.zkoss.zul.Decimalbox;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Grid;
 import org.zkoss.zul.Groupbox;
@@ -199,10 +200,6 @@ public class GatsbiController {
 		if (c != null) {
 			hiddenIds.addAll(c.getHiddenChampEntiteIds());
 		}
-		
-		// dependances entite specifiques
-		addPrelevementComplementaryIds(hiddenIds); // TODO move to prelevement specific controller
-		GatsbiControllerEchantillon.addComplementaryVisibleChpIds(hiddenIds);
 			
 		return hiddenIds;
 	}
@@ -217,9 +214,6 @@ public class GatsbiController {
 		if (c != null) {
 			requiredIds.addAll(c.getRequiredChampEntiteIds());
 		}
-		
-		// dependances entite specifiques
-		GatsbiControllerEchantillon.addComplementaryRequiredIds(requiredIds);
 		
 		return requiredIds;
 	}
@@ -311,10 +305,11 @@ public class GatsbiController {
 								} else if (formElement instanceof CalendarBox) {
 									((CalendarBox) formElement).setConstraint("no empty");
 								}
-							} else if (div.getId().startsWith("conforme") // non-conformite
+							} else if (div.getId().startsWith("conforme") 
 									|| div.getId().startsWith("crAnapath")
 									|| div.getId().equals("cOrganesDiv")
-									|| div.getId().equals("cMorphosDiv")) {
+									|| div.getId().equals("cMorphosDiv")
+									|| div.getId().equals("echanQteDiv")) {
 								reqDivs.add(div);
 							}
 						}
@@ -461,6 +456,7 @@ public class GatsbiController {
 				Clients.clearWrongValue(div.getLastChild());
 				
 				boolean throwEmptyError = false;
+				Component throwEmptyErrorComponent = null;
 				
 				if (div.getId().startsWith("nonConformite")) { 	// non conformite
 
@@ -483,11 +479,33 @@ public class GatsbiController {
 					if (controller.getObjs().isEmpty()) {
 						throwEmptyError = true;
 					}
+				} else if ("echanQteDiv".contains(div.getId())) { // echan quantite
+					Decimalbox tb = (Decimalbox) 
+						div.getLastChild().getChildren().stream()
+							.filter(c -> c instanceof Decimalbox)
+							.findFirst().orElse(null);
+
+					if (tb.getValue() == null) {
+						throwEmptyError = true;
+						throwEmptyErrorComponent = tb;
+					} else {			
+						Listbox unitesBox = (Listbox) 
+							div.getLastChild().getChildren().stream()
+								.filter(c -> c instanceof Listbox)
+								.findFirst().orElse(null);
+	
+						if (unitesBox.getSelectedCount() == 0) {
+							throwEmptyError = true;
+							throwEmptyErrorComponent = unitesBox;
+						}
+					}
 				}
 			
 				if (throwEmptyError) {
 					Clients.scrollIntoView(div);
-					throw new WrongValueException(div.getLastChild(), Labels.getLabel("validation.syntax.empty"));
+					throw new WrongValueException(
+						throwEmptyErrorComponent == null ? div.getLastChild() : throwEmptyErrorComponent, 
+						Labels.getLabel("validation.syntax.empty"));
 				}
 			}
 		}
@@ -593,15 +611,6 @@ public class GatsbiController {
 			}
 		}
 		return decos;
-	}
-
-	// prelevement specific
-	public static void addPrelevementComplementaryIds(List<Integer> ids) {
-
-		if (ids.contains(40))
-			ids.add(41); // unite adds unite id
-		if (ids.contains(256))
-			ids.add(257); // non conformite adds raisons no conf
 	}
 
 	// test only

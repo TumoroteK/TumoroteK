@@ -861,5 +861,5 @@ public interface EchantillonManager {
 	 */
 	void checkRequiredObjectsAndValidate(Echantillon echantillon, Banque banque, EchantillonType type,
 			ObjetStatut statut, String operation, Utilisateur utilisateur, 
-			List<CodeAssigne> codes, boolean doValidation);
+			List<CodeAssigne> codes, boolean doValidation, boolean isImport);
 }

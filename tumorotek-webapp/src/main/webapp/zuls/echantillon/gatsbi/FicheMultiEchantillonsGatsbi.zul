@@ -241,7 +241,7 @@
 									<label value="${c:l('ficheEchantillon.quantiteLabel')}" sclass="formLabel" />
 									<label value="*" sclass="requiredMark" />
 								</div>
-								<div class="row-container">
+								<div class="row-container skip-required">
 									<decimalbox id="quantiteInitBoxEchan" 
 										constraint="@{fwinMultiEchantillons$composer.cttQuantiteInit}"
 										width="50px"

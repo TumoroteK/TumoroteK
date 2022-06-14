@@ -122,7 +122,7 @@
 									<label value="${c:l('ficheEchantillon.quantiteLabel')}" sclass="formLabel" />
 									<label value="*" sclass="requiredMark" />
 								</div>
-								<div class="row-container">
+								<div class="row-container skip-required">
 									<label id="quantiteBoxEchan" 
 										sclass="formValue"
 										value="@{fwinEchantillonEdit$composer.valeurQuantiteRestante, 

@@ -58,13 +58,18 @@ import fr.aphp.tumorotek.model.coeur.echantillon.Echantillon;
 public class EchantillonGatsbiValidator extends RequiredValueValidator {
 	
 	private List<CodeAssigne> codes = new ArrayList<CodeAssigne>();
+	
+	// permet de retirer la validation obligatoire du chmp crAnapath (id=255)
+	// uniquement pour l'import fichier excel
+	private boolean isImport = false;
 
-	public EchantillonGatsbiValidator(String _e, List<Integer> _f, List<CodeAssigne> _c) {
+	public EchantillonGatsbiValidator(String _e, List<Integer> _f, List<CodeAssigne> _c, boolean _i) {
 		super(_e, _f);
 		
 		if (_c != null) {
 			codes.addAll(_c);
 		}
+		this.isImport = _i;
 	}
 
 	@Override
@@ -91,19 +96,22 @@ public class EchantillonGatsbiValidator extends RequiredValueValidator {
 		chpIdNameMap.put(68, "echanQualite");
 		chpIdNameMap.put(243, "conformeTraitement");
 		chpIdNameMap.put(244, "conformeCession");
-		chpIdNameMap.put(255, "crAnapath");
+		if (!isImport) {
+			chpIdNameMap.put(255, "crAnapath");
+		}
 		// tumoral id=69 (boolean) ne peut être obligatoire
-		chpIdNameMap.put(229, "codesOrganes");
+		chpIdNameMap.put(229, "codeOrganes");
 		chpIdNameMap.put(60, "lateralite");
-		chpIdNameMap.put(230, "codesMorphos");
+		chpIdNameMap.put(230, "codeMorphos");
 	}
 	
 	@Override
 	protected void initFunctionalValidationMap() {
 
 		validations.put(255, (TKdataObject e, Errors r) -> 
-			(((Echantillon) e).getAnapathStream() != null 
+			(isImport || ((Echantillon) e).getAnapathStream() != null 
 				|| ((Echantillon) e).getCrAnapath() != null));
+		
 		validations.put(229, (TKdataObject e, Errors r) -> 
 			codes.stream().anyMatch(c -> c.getIsOrgane()));
 		validations.put(230, (TKdataObject e, Errors r) -> 
@@ -115,7 +123,7 @@ public class EchantillonGatsbiValidator extends RequiredValueValidator {
 	 */
 	@Override
 	protected String correctFieldNameIfNeeded(String n) {
-		if (n != null && Arrays.asList("codesOrganes", "codesMorphos").contains(n)) {
+		if (n != null && Arrays.asList("codeOrganes", "codeMorphos").contains(n)) {
 			return "codesAssignes";
 		}
 		return n;

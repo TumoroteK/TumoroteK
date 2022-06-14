@@ -518,6 +518,10 @@ public class ImportManagerImpl implements ImportManager
 		// prelevement
 		if (Arrays.asList(111, 113, 116, 144, 118, 247, 257).contains(id))
 			return 2;
+		
+		// echantillon
+		if (Arrays.asList(120, 131, 133, 215, 261, 262).contains(id))
+			return 3;
 
 		return id;
 	}
@@ -528,6 +532,7 @@ public class ImportManagerImpl implements ImportManager
 	 * qui correspond au QUERY_CHAMP_ID
 	 * @param id
 	 * @return id
+	 * TODO pourrait remplacer ce mapping par req en base, sauf pour certains champs (ex: qte unite 120 -> 61)!
 	 */
 	private Integer translateChpIdToMatchGatsbiContexte(Integer id) {
 		
@@ -539,12 +544,19 @@ public class ImportManagerImpl implements ImportManager
 		if (id == 144) return 32; // condit type
 		if (id == 118) return 33; // condit milieu
 		if (id == 247) return 249; // risques 		
-		// non conformites raisons car chpId uniquement sur booleen dans Gatsbi
-		if (id == 257) return 256;
-		if (id == 243) return 261;
-		if (id == 244) return 262;
-		if (id == 251) return 263;
-		if (id == 252) return 264;		
+		if (id == 257) return 256; // non conformites arrivée raisons car chpId uniquement sur booleen dans Gatsbi
+		
+		// echantillon
+		if (id == 120) return 61; // quantite unite car chpId uniquement sur quantite dans Gatsbi
+		if (id == 131) return 68; // echan qualite
+		if (id == 133) return 70; // mode prepa
+		if (id == 215) return 58; // echantillon type
+		if (id == 261) return 243; // non conformites traitement raisons 
+		if (id == 262) return 244; // non conformites cession raisons
+		
+		// derives
+		if (id == 263) return 251; // non conformites traitement raisons
+		if (id == 264) return 252; // non conformites cession raisons			
 		
 		return id;
 	}

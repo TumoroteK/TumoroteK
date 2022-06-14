@@ -38,7 +38,6 @@ package fr.aphp.tumorotek.action.echantillon.gatsbi;
 
 import java.lang.reflect.InvocationTargetException;
 import java.text.ParseException;
-import java.util.List;
 
 import org.zkoss.zul.Column;
 import org.zkoss.zul.Grid;
@@ -61,31 +60,6 @@ import fr.aphp.tumorotek.webapp.gatsbi.GatsbiController;
  *
  */
 public class GatsbiControllerEchantillon {
-	
-	// ajoute les dépendances entre les champs entite visibles 
-	// à partir des ids
-	public static void addComplementaryVisibleChpIds(List<Integer> ids) {
-
-		if (ids.contains(229))
-			ids.add(59); // adicap organe id
-		if (ids.contains(230))
-			ids.add(216); // code assigne id
-		if (ids.contains(61)) // quantite
-			ids.add(62); // quantité init
-			ids.add(63); // unite id
-		if (ids.contains(243)) // non conformite traitement
-			ids.add(261); // raisons no conf traitement
-		if (ids.contains(244)) // non conformite cession
-			ids.add(262); // raisons no conf cession
-	}
-	
-	// ajoute les dépendances entre les champs entite obligatoires 
-	// à partir des ids
-	public static void addComplementaryRequiredIds(List<Integer> ids) {
-
-		if (ids.contains(61)) // quantite
-			ids.add(62); // quantité init
-	}
 	
 	public static void addColumnForChpId(Integer chpId, Grid grid)
 			throws ClassNotFoundException, InstantiationException, IllegalAccessException {

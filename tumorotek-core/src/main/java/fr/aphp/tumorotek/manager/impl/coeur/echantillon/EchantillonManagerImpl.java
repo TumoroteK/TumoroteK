@@ -733,7 +733,7 @@ public class EchantillonManagerImpl implements EchantillonManager {
 					preparation);
 			
 			checkRequiredObjectsAndValidate(echantillon, banque, type, statut, "creation", utilisateur, 
-					codes, doValidation);
+					codes, doValidation, isImport);
 
 			if (!findDoublonManager(echantillon)) {
 
@@ -920,7 +920,7 @@ public class EchantillonManagerImpl implements EchantillonManager {
 
 			try {
 				// @since gatsbi
-				doValidation(echantillon, doValidation, requiredChampEntiteIds, codes);
+				doValidation(echantillon, doValidation, requiredChampEntiteIds, codes, isImport);
 
 				// increment maxId
 				jdbcSuite.incrementMaxEchantillonId();
@@ -1115,7 +1115,7 @@ public class EchantillonManagerImpl implements EchantillonManager {
 					preparation);
 			
 			checkRequiredObjectsAndValidate(echantillon, banque, type, statut, "modification", utilisateur,
-					codes, doValidation);		
+					codes, doValidation, false);		
 
 			if (!findDoublonManager(echantillon)) {
 				
@@ -1951,7 +1951,7 @@ public class EchantillonManagerImpl implements EchantillonManager {
 	public void checkRequiredObjectsAndValidate(final Echantillon echantillon, final Banque banque,
 			final EchantillonType type, final ObjetStatut statut, final String operation, final Utilisateur utilisateur,
 			final List<CodeAssigne> codes,
-			final boolean doValidation) {
+			final boolean doValidation, boolean isImport) {
 
 		// Banque required
 		if (banque != null) {
@@ -1983,11 +1983,12 @@ public class EchantillonManagerImpl implements EchantillonManager {
 			throw new RequiredObjectIsNullException("Echantillon", "creation", "ObjetStatut");
 		}
 		
-		doValidation(echantillon, doValidation, requiredChampEntiteIds, codes);
+		doValidation(echantillon, doValidation, requiredChampEntiteIds, codes, isImport);
 	}
 	
 	private void doValidation(Echantillon echantillon, boolean skip, 
-			List<Integer> requiredChampEntiteIds, List<CodeAssigne> codes) {
+			List<Integer> requiredChampEntiteIds, List<CodeAssigne> codes, 
+			boolean isImport) {
 		// Validation
 		if (skip) {
 			Validator[] validators;
@@ -1995,7 +1996,7 @@ public class EchantillonManagerImpl implements EchantillonManager {
 				validators = new Validator[] { echantillonValidator };
 			} else { // gatsbi définit certain champs obligatoires
 				EchantillonGatsbiValidator gValidator = new EchantillonGatsbiValidator("echantillon",
-						requiredChampEntiteIds, codes);
+						requiredChampEntiteIds, codes, isImport);
 				validators = new Validator[] { gValidator, echantillonValidator };
 			}
 

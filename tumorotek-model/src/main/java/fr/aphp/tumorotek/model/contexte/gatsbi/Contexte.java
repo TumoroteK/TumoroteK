@@ -156,8 +156,47 @@ public class Contexte implements Serializable {
 				ids.add(c.getChampId());
 			}
 		}
+		
+		// dependances entite specifiques
+		addPrelevementComplementaryVisibleIds(ids);
+		addEchantillonComplementaryVisibleChpIds(ids);
+		
 		return ids;
 	}
+	
+	/**
+	 * Dependances visibilité entre champs prélèvement
+	 * @param ids
+	 */
+	private void addPrelevementComplementaryVisibleIds(List<Integer> ids) {
+
+		if (ids.contains(40))
+			ids.add(41); // unite adds unite id
+		if (ids.contains(256))
+			ids.add(257); // non conformite adds raisons no conf
+	}
+	
+	/**
+	 * Dependances visibilité entre champs echantillons 
+	 * @param ids
+	 */
+	private void addEchantillonComplementaryVisibleChpIds(List<Integer> ids) {
+
+		if (ids.contains(229))
+			ids.add(59); // adicap organe id
+		if (ids.contains(230))
+			ids.add(216); // code assigne id
+		if (ids.contains(61)) { // quantite
+			ids.add(62); // quantité init
+			ids.add(63); // unite id
+		}
+		if (ids.contains(243)) // non conformite traitement
+			ids.add(261); // raisons no conf traitement
+		if (ids.contains(244)) // non conformite cession
+			ids.add(262); // raisons no conf cession
+	}
+	
+	
 	
 	public List<Integer> getRequiredChampEntiteIds() {
 		List<Integer> ids = new ArrayList<Integer>();
@@ -166,7 +205,21 @@ public class Contexte implements Serializable {
 				ids.add(c.getChampId());
 			}
 		}
+		
+		addEchantillonComplementaryRequiredIds(ids);
+		
 		return ids;
+	}
+	
+	
+	/**
+	 * Dependances obligatoire entre champs echantillons 
+	 * @param ids
+	 */
+	private void addEchantillonComplementaryRequiredIds(List<Integer> ids) {
+		// echantillon
+		if (ids.contains(61)) // quantite
+			ids.add(63); // quantité unite
 	}
 	
 	/**
