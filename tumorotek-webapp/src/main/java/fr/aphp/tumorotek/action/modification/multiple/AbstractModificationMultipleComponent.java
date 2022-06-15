@@ -54,6 +54,7 @@ import org.zkoss.zul.Image;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Row;
+import org.zkoss.zul.SimpleConstraint;
 
 import fr.aphp.tumorotek.action.constraints.TumoTextConstraint;
 import fr.aphp.tumorotek.action.controller.AbstractController;
@@ -632,7 +633,11 @@ public abstract class AbstractModificationMultipleComponent extends AbstractCont
     * @return boolean true si obligatoire
     */
    public Boolean isObligatoire(){
-      return (getConstraint() != null && getConstraint() instanceof TumoTextConstraint
-         && !((TumoTextConstraint) getConstraint()).getNullable());
+      return (getConstraint() != null && 
+    	(getConstraint() instanceof TumoTextConstraint
+    			&& !((TumoTextConstraint) getConstraint()).getNullable()) 
+    	|| (getConstraint() instanceof SimpleConstraint
+    	        && !((SimpleConstraint) getConstraint()).equals(new SimpleConstraint("no empty")))
+    	);
    }
 }

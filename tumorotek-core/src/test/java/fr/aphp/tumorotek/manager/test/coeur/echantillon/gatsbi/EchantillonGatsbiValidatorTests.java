@@ -97,7 +97,7 @@ public class EchantillonGatsbiValidatorTests extends AbstractManagerTest4
 
 		// when
 		try {
-			echantillonManager.checkRequiredObjectsAndValidate(e, null, null, null, null, null, false);
+			echantillonManager.checkRequiredObjectsAndValidate(e, null, null, null, null, null, null, false, false);
 		} catch (RequiredObjectIsNullException re) {
 			caught = true;
 		}
@@ -117,7 +117,7 @@ public class EchantillonGatsbiValidatorTests extends AbstractManagerTest4
 
 		// when
 		try {
-			echantillonManager.checkRequiredObjectsAndValidate(e, null, null, null, null, null, false);
+			echantillonManager.checkRequiredObjectsAndValidate(e, null, null, null, null, null, null, false, false);
 		} catch (RequiredObjectIsNullException re) {
 			caught = true;
 			assertTrue(re.getRequiredObject().equals("EchantillonType"));
@@ -130,18 +130,20 @@ public class EchantillonGatsbiValidatorTests extends AbstractManagerTest4
 	@Test
 	public void checkRequiredObjectsAndValidate_shouldFailAndThrowErrorForEachRequiredField_whenGastbiApplies() {
 		// given
-		List<Integer> ids = Arrays.asList(53, 56, 60, 61, 62, 63, 67, 68, 70, 229, 230, 243, 244, 255);
+		List<Integer> ids = Arrays.asList(53, 56, 60, 61, 62, 63, 67, 68, 70, 229, 230, 243, 244, 255); 
 		addChampEntiteAsObligatoireToContexte(ids);  
 		ValidationException ve = null;
 		e.setCode("TESTECH");
 
 		// when 
 		try {
-			echantillonManager.checkRequiredObjectsAndValidate(e, null, null, null, null, null, true);
+			// unite chp id = 63 comme dépendances dans les champs required
+			// donc l'erreur va apparaitre deux fois pour ce champs
+			echantillonManager.checkRequiredObjectsAndValidate(e, null, null, null, null, null, null, true, false);
 		} catch (ValidationException e) {
 			ve = e;
 		}
-
+	
 		// then
 		assertTrue(ve != null);
 		List<FieldError> errs = ve.getErrors().get(0).getFieldErrors();
@@ -164,17 +166,19 @@ public class EchantillonGatsbiValidatorTests extends AbstractManagerTest4
 		assertTrue(errs.get(8).getField().equals("modePrepa"));
 		assertTrue(errs.get(8).getCode().equals("echantillon.modePrepa.empty"));
 		assertTrue(errs.get(9).getField().equals("codesAssignes"));
-		assertTrue(errs.get(9).getCode().equals("echantillon.codesOrganes.empty"));
+		assertTrue(errs.get(9).getCode().equals("echantillon.codeOrganes.empty"));
 		assertTrue(errs.get(10).getField().equals("codesAssignes"));
-		assertTrue(errs.get(10).getCode().equals("echantillon.codesMorphos.empty"));
+		assertTrue(errs.get(10).getCode().equals("echantillon.codeMorphos.empty"));
 		assertTrue(errs.get(11).getField().equals("conformeTraitement"));
 		assertTrue(errs.get(11).getCode().equals("echantillon.conformeTraitement.empty"));
 		assertTrue(errs.get(12).getField().equals("conformeCession"));
 		assertTrue(errs.get(12).getCode().equals("echantillon.conformeCession.empty"));
 		assertTrue(errs.get(13).getField().equals("crAnapath"));
 		assertTrue(errs.get(13).getCode().equals("echantillon.crAnapath.empty"));
-		
-		assertTrue(ve.getErrors().get(0).getAllErrors().size() == ids.size());
+		assertTrue(errs.get(14).getField().equals("quantiteUnite"));
+		assertTrue(errs.get(14).getCode().equals("echantillon.quantiteUnite.empty"));
+				
+		assertTrue(ve.getErrors().get(0).getAllErrors().size() == ids.size() + 1);
 	}
 
 	private void addChampEntiteAsObligatoireToContexte(List<Integer> chpIds) {

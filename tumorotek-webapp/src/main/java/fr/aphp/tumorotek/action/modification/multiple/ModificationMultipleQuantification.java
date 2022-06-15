@@ -42,7 +42,9 @@ import java.util.List;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.zkoss.util.resource.Labels;
+import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zkplus.databind.AnnotateDataBinder;
 import org.zkoss.zul.Constraint;
@@ -51,411 +53,443 @@ import org.zkoss.zul.Label;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.SimpleConstraint;
+import org.zkoss.zul.impl.InputElement;
 
 import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
 import fr.aphp.tumorotek.model.systeme.Unite;
 
 /**
  * Classe gérant une fenêtre modal pour la modification multiple d'une
- * Quantification.
- * Classe créée le 15/03/09.
+ * Quantification. Classe créée le 15/03/09.
  *
  * @author Pierre Ventadour
- * @version 2.2.3-gatsbi
+ * @version 2.3.0-gatsbi
  */
-public class ModificationMultipleQuantification extends AbstractModificationMultipleComponent
-{
+public class ModificationMultipleQuantification extends AbstractModificationMultipleComponent {
 
-   private static final long serialVersionUID = -40186196122301556L;
-   /**
-    * Components.
-    */
-   private Decimalbox multiNumeriqueBox;
-   private Decimalbox eraseMultiNumeriqueBox;
-   private Listbox multiUnitesBox;
-   private Listbox multiValuesListBox;
-   private Listbox eraseMultiUnitesBox;
-   private Label modifImpossibleLabel;
-   private Row rowModifImpossible;
+	private static final long serialVersionUID = -40186196122301556L;
+	/**
+	 * Components.
+	 */
+	private Decimalbox multiNumeriqueBox;
+	private Decimalbox eraseMultiNumeriqueBox;
+	private Listbox multiUnitesBox;
+	private Listbox multiValuesListBox;
+	private Listbox eraseMultiUnitesBox;
+	private Label modifImpossibleLabel;
+	private Row rowModifImpossible;
 
-   /**
-    * Variables formulaire.
-    */
-   // Valeurs numériques du champ des différents objets
-   private List<Object> uniteValues = new ArrayList<>();
-   private List<Object> allUniteValues = new ArrayList<>();
-   private List<String> allStringUniteValues = new ArrayList<>();
+	/**
+	 * Variables formulaire.
+	 */
+	// Valeurs numériques du champ des différents objets
+	private List<Object> uniteValues = new ArrayList<>();
+	private List<Object> allUniteValues = new ArrayList<>();
+	private List<String> allStringUniteValues = new ArrayList<>();
 
-   // Si une seule valeur : ancienne
-   private Object oldUniqueUniteValue;
-   // Nouvelle valeur
-   private Object selectedUnite;
+	// Si une seule valeur : ancienne
+	private Object oldUniqueUniteValue;
+	// Nouvelle valeur
+	private Object selectedUnite;
 
-   private String champUnite = "";
+	private String champUnite = "";
 
-   // Si false, la modif multiple n'est pas autorisée : un des objets a été
-   // utilisé
-   private boolean modifPossible = true;
+	// Si false, la modif multiple n'est pas autorisée : un des objets a été
+	// utilisé
+	private boolean modifPossible = true;
 
-   public void init(final String pathToPage, final String methodToCall, final List<? extends Object> objs, final String label,
-      final String champToEdit, final List<Object> allValuesThesaurus, final String champNameThesaurus, final Constraint constr){
-      setPath(pathToPage);
-      setMethode(methodToCall);
-      getListObjets().clear();
-      getListObjets().addAll(objs);
-      setChampLabel(label);
-      setEntite(getListObjets().get(0).getClass().getSimpleName());
-      setChamp(champToEdit);
-      this.allUniteValues = allValuesThesaurus;
-      setChampThesaurus(champNameThesaurus);
-      setConstraint(constr);
-     
+	public void init(final String pathToPage, final String methodToCall, final List<? extends Object> objs,
+			final String label, final String champToEdit, final List<Object> allValuesThesaurus,
+			final String champNameThesaurus, final Constraint constr) {
+		setPath(pathToPage);
+		setMethode(methodToCall);
+		getListObjets().clear();
+		getListObjets().addAll(objs);
+		setChampLabel(label);
+		setEntite(getListObjets().get(0).getClass().getSimpleName());
+		setChamp(champToEdit);
+		this.allUniteValues = allValuesThesaurus;
+		setChampThesaurus(champNameThesaurus);
+		setConstraint(constr);
 
-      // on crée le nom du champ des unités
-      if(getChamp().contains("Init")){
-         champUnite = getChamp().replace("Init", "Unite");
-         // on vérifie que la modif est possible
-         validateModification();
-      }else{
-         champUnite = getChamp().concat("Unite");
-      }
+		// on crée le nom du champ des unités
+		if (getChamp().contains("Init")) {
+			champUnite = getChamp().replace("Init", "Unite");
+			// on vérifie que la modif est possible
+			validateModification();
+		} else {
+			champUnite = getChamp().concat("Unite");
+		}
 
-      // Initialisation du titre de la fenêtre
-      presentationLabel.setValue(createPresentationLabel());
+		// Initialisation du titre de la fenêtre
+		presentationLabel.setValue(createPresentationLabel());
 
-      // Si la modification est possible
-      if(modifPossible){
+		// Si la modification est possible
+		if (modifPossible) {
 
-         // extraction des valeurs
-         extractValuesFromObjects();
+			// extraction des valeurs
+			extractValuesFromObjects();
 
-         // initialisation des composants
-         initComponentsInWindow();
-         
-         // @since 2.2.3-gatsbi
-         setConstraintsToBoxes(constr);
+			// initialisation des composants
+			initComponentsInWindow();
 
-         getBinder().loadComponent(self);
+			// @since 2.2.3-gatsbi
+			setConstraintsToBoxes(constr);
 
-         if(getStringValues().size() <= 1){
-            multiUnitesBox.setSelectedIndex(allUniteValues.indexOf(selectedUnite));
-         }
-      }else{
-         // si la modif est interdite, on affiche un message d'erreur
-         final String[] params = new String[] {Labels.getLabel(getChampLabel())};
-         modifImpossibleLabel.setValue(ObjectTypesFormatters.getLabel("modification.multiple.impossible", params));
-         rowModifImpossible.setVisible(true);
-      }
-   }
+			getBinder().loadComponent(self);
 
-   /**
-    * Cette méthode vérifie que la modif est possible : les valeurs du champ
-    * initial et actuel doivent être les mêmes.
-    */
-   public void validateModification(){
-      final String champActuel = getChamp().replace("Init", "");
+			if (getStringValues().size() <= 1) {
+				multiUnitesBox.setSelectedIndex(allUniteValues.indexOf(selectedUnite));
+			}
+		} else {
+			// si la modif est interdite, on affiche un message d'erreur
+			final String[] params = new String[] { Labels.getLabel(getChampLabel()) };
+			modifImpossibleLabel.setValue(ObjectTypesFormatters.getLabel("modification.multiple.impossible", params));
+			rowModifImpossible.setVisible(true);
+		}
+	}
 
-      // pour chaque objet, on extrait les valeurs du champ
-      // initial et actuel et on les compare
-      for(int i = 0; i < getListObjets().size(); i++){
-         try{
-            final Float tmpFloatInit = (Float) PropertyUtils.getSimpleProperty(getListObjets().get(i), getChamp());
+	/**
+	 * Cette méthode vérifie que la modif est possible : les valeurs du champ
+	 * initial et actuel doivent être les mêmes.
+	 */
+	public void validateModification() {
+		final String champActuel = getChamp().replace("Init", "");
 
-            final Float tmpFloat = (Float) PropertyUtils.getSimpleProperty(getListObjets().get(i), champActuel);
+		// pour chaque objet, on extrait les valeurs du champ
+		// initial et actuel et on les compare
+		for (int i = 0; i < getListObjets().size(); i++) {
+			try {
+				final Float tmpFloatInit = (Float) PropertyUtils.getSimpleProperty(getListObjets().get(i), getChamp());
 
-            if(tmpFloatInit == null){
-               if(tmpFloat != null){
-                  modifPossible = false;
-               }
-            }else if(!tmpFloatInit.equals(tmpFloat)){
-               modifPossible = false;
-            }
+				final Float tmpFloat = (Float) PropertyUtils.getSimpleProperty(getListObjets().get(i), champActuel);
 
-         }catch(final IllegalAccessException e){
-            log.error(e);
-         }catch(final InvocationTargetException e){
-            log.error(e);
-         }catch(final NoSuchMethodException e){
-            log.error(e);
-         }
-      }
-   }
+				if (tmpFloatInit == null) {
+					if (tmpFloat != null) {
+						modifPossible = false;
+					}
+				} else if (!tmpFloatInit.equals(tmpFloat)) {
+					modifPossible = false;
+				}
 
-   @Override
-   public void extractValuesFromObjects(){
-      setHasNulls(false);
-      // pour chaque objet à modifier
-      // on extrait la valeur numérique et l'unité actuelle du 
-      // champ à modifier
-      for(int i = 0; i < getListObjets().size(); i++){
-         try{
-            // on extrait la valeur numérique
-            final Float tmpFloat = (Float) PropertyUtils.getSimpleProperty(getListObjets().get(i), getChamp());
+			} catch (final IllegalAccessException e) {
+				log.error(e);
+			} catch (final InvocationTargetException e) {
+				log.error(e);
+			} catch (final NoSuchMethodException e) {
+				log.error(e);
+			}
+		}
+	}
 
-            // on extrait l'unité
-            final Object tmp = PropertyUtils.getSimpleProperty(getListObjets().get(i), champUnite);
+	@Override
+	public void extractValuesFromObjects() {
+		setHasNulls(false);
+		// pour chaque objet à modifier
+		// on extrait la valeur numérique et l'unité actuelle du
+		// champ à modifier
+		for (int i = 0; i < getListObjets().size(); i++) {
+			try {
+				// on extrait la valeur numérique
+				final Float tmpFloat = (Float) PropertyUtils.getSimpleProperty(getListObjets().get(i), getChamp());
 
-            // on construit une liste de strings contenant la 
-            // concaténation des 2 valeurs
-            List<Object> tmps = null;
-            if(tmpFloat != null && tmp != null){
-               tmps = new ArrayList<>();
-               tmps.add(tmpFloat);
-               tmps.add(tmp);
-            }else{
-               setHasNulls(true);
-            }
+				// on extrait l'unité
+				final Object tmp = PropertyUtils.getSimpleProperty(getListObjets().get(i), champUnite);
 
-            if(tmps != null){
-               final Object formatted = formatValue(tmpFloat);
-               if(!getValues().contains(formatted)){
-                  getValues().add(formatted);
-                  getStringValues().add(formatLocalObject(tmps));
-                  uniteValues.add(tmp);
-               }
-            }
-         }catch(final IllegalAccessException e){
-            log.error(e);
-         }catch(final InvocationTargetException e){
-            log.error(e);
-         }catch(final NoSuchMethodException e){
-            log.error(e);
-         }
-      }
+				// on construit une liste de strings contenant la
+				// concaténation des 2 valeurs
+				List<Object> tmps = null;
+				if (tmpFloat != null && tmp != null) {
+					tmps = new ArrayList<>();
+					tmps.add(tmpFloat);
+					tmps.add(tmp);
+				} else {
+					setHasNulls(true);
+				}
 
-      // pour chaque unité, on extrait la valeur de son champ pour
-      // l'afficher dans les listes
-      for(int i = 0; i < allUniteValues.size(); i++){
-         try{
-            String stringTmp = null;
+				if (tmps != null) {
+					final Object formatted = formatValue(tmpFloat);
+					if (!getValues().contains(formatted)) {
+						getValues().add(formatted);
+						getStringValues().add(formatLocalObject(tmps));
+						uniteValues.add(tmp);
+					}
+				}
+			} catch (final IllegalAccessException e) {
+				log.error(e);
+			} catch (final InvocationTargetException e) {
+				log.error(e);
+			} catch (final NoSuchMethodException e) {
+				log.error(e);
+			}
+		}
 
-            if(allUniteValues.get(i) != null){
-               stringTmp = (String) PropertyUtils.getSimpleProperty(allUniteValues.get(i), getChampThesaurus());
-            }else{
-               stringTmp = "";
-            }
+		// pour chaque unité, on extrait la valeur de son champ pour
+		// l'afficher dans les listes
+		for (int i = 0; i < allUniteValues.size(); i++) {
+			try {
+				String stringTmp = null;
 
-            if(!allStringUniteValues.contains(stringTmp)){
-               allStringUniteValues.add(stringTmp);
-            }
-         }catch(final IllegalAccessException e){
-            log.error(e);
-         }catch(final InvocationTargetException e){
-            log.error(e);
-         }catch(final NoSuchMethodException e){
-            log.error(e);
-         }
-      }
-   }
+				if (allUniteValues.get(i) != null) {
+					stringTmp = (String) PropertyUtils.getSimpleProperty(allUniteValues.get(i), getChampThesaurus());
+				} else {
+					stringTmp = "";
+				}
 
-   @Override
-   public void initComponentsInWindow(){
-      super.initComponentsInWindow();
-      // unite 
-      if(uniteValues.size() == 1){
-         oldUniqueUniteValue = uniteValues.get(0);
-         selectedUnite = oldUniqueUniteValue;
-      }
-   }
+				if (!allStringUniteValues.contains(stringTmp)) {
+					allStringUniteValues.add(stringTmp);
+				}
+			} catch (final IllegalAccessException e) {
+				log.error(e);
+			} catch (final InvocationTargetException e) {
+				log.error(e);
+			} catch (final NoSuchMethodException e) {
+				log.error(e);
+			}
+		}
+	}
 
-   @Override
-   public void onClick$lock(){
-      // si la modification était impossible, on la rend
-      // possible.
-      if(multiValuesListBox.isDisabled()){
-         multiValuesListBox.setDisabled(false);
-         champAttentionLabel.setVisible(false);
-         champEcraserLabel.setVisible(true);
-         eraseMultiNumeriqueBox.setVisible(true);
-         eraseMultiNumeriqueBox.setConstraint(getConstraint());
-         eraseMultiUnitesBox.setVisible(true);
-         lock.setSrc("/images/icones/unlocked.png");
-         // pour jamais être egal à une nouvelle valeur
-         setOldUniqueValueAsNewObject();
-      }else{
-         // sinon, on empêche toute modif
-         multiValuesListBox.setDisabled(true);
-         champAttentionLabel.setVisible(true);
-         champEcraserLabel.setVisible(false);
-         eraseMultiNumeriqueBox.setVisible(false);
-         SimpleConstraint nullCstr = null;
-         eraseMultiNumeriqueBox.setConstraint(nullCstr);
-         eraseMultiUnitesBox.setVisible(false);
-         lock.setSrc("/images/icones/locked.png");
-         setOldUniqueValue(null);
-      }
-   }
+	@Override
+	public void initComponentsInWindow() {
+		super.initComponentsInWindow();
+		// unite
+		if (uniteValues.size() == 1) {
+			oldUniqueUniteValue = uniteValues.get(0);
+			selectedUnite = oldUniqueUniteValue;
+		}
+	}
 
-   @Override
-   public Object extractValueFromEraserBox(){
-      if(eraseMultiUnitesBox.getSelectedIndex() > -1){
-         selectedUnite = allUniteValues.get(eraseMultiUnitesBox.getSelectedIndex());
-      }else{
-         selectedUnite = allUniteValues.get(0);
-      }
-      if(eraseMultiNumeriqueBox.getValue() != null){
-         return ObjectTypesFormatters.floor(eraseMultiNumeriqueBox.getValue().floatValue(), 3);
-      }
-      return eraseMultiNumeriqueBox.getValue();
-   }
+	@Override
+	public void onClick$lock() {
+		// si la modification était impossible, on la rend
+		// possible.
+		if (multiValuesListBox.isDisabled()) {
+			multiValuesListBox.setDisabled(false);
+			champAttentionLabel.setVisible(false);
+			champEcraserLabel.setVisible(true);
+			eraseMultiNumeriqueBox.setVisible(true);
+			eraseMultiUnitesBox.setVisible(true);
+			lock.setSrc("/images/icones/unlocked.png");
+			// pour jamais être egal à une nouvelle valeur
+			setOldUniqueValueAsNewObject();
+		} else {
+			// sinon, on empêche toute modif
+			multiValuesListBox.setDisabled(true);
+			champAttentionLabel.setVisible(true);
+			champEcraserLabel.setVisible(false);
+			eraseMultiNumeriqueBox.setVisible(false);
+			eraseMultiUnitesBox.setVisible(false);
+			lock.setSrc("/images/icones/locked.png");
+			setOldUniqueValue(null);
+		}
 
-   public void onSelect$eraseMultiUnitesBox(){
-      selectedUnite = allUniteValues.get(eraseMultiUnitesBox.getSelectedIndex());
-   }
+		setConstraintsToBoxes(getConstraint());
+	}
 
-   @Override
-   public Object extractValueFromMultiBox(){
-      if(multiUnitesBox.getSelectedIndex() > -1){
-         selectedUnite = allUniteValues.get(multiUnitesBox.getSelectedIndex());
-      }else{
-         selectedUnite = allUniteValues.get(0);
-      }
-      if(multiNumeriqueBox.getValue() != null){
-         return ObjectTypesFormatters.floor(multiNumeriqueBox.getValue().floatValue(), 3);
-      }
-      return multiNumeriqueBox.getValue();
-   }
+	@Override
+	public Object extractValueFromEraserBox() {
+		if (eraseMultiUnitesBox.getSelectedIndex() > -1) {
+			selectedUnite = allUniteValues.get(eraseMultiUnitesBox.getSelectedIndex());
+		} else {
+			selectedUnite = allUniteValues.get(0);
+		}
+		if (eraseMultiNumeriqueBox.getValue() != null) {
+			return ObjectTypesFormatters.floor(eraseMultiNumeriqueBox.getValue().floatValue(), 3);
+		}
+		return eraseMultiNumeriqueBox.getValue();
+	}
 
-   @Override
-   public void onClick$validate(){
-      List<Object> finalValue = null;
-      setChangedValue(false);
-      // si on était en mode liste
-      if(getValues().size() > 1){
-         if(!multiValuesListBox.isDisabled()){
-            // si une valeur a été saisie dans le nouveau champ,
-            // c'est la nouvelle valeur
-            // sinon
-            setNewValue(extractValueFromEraserBox());
-            if(getNewValue() == null || getNewValue().equals("")){
-               if(multiValuesListBox.getSelectedIndex() > -1){
-                  setNewValue(getValues().get(multiValuesListBox.getSelectedIndex()));
-               }
-            }
-         }
-      }else{ // mode unique
-         setNewValue(extractValueFromMultiBox());
-      }
+	public void onSelect$eraseMultiUnitesBox() {
+		selectedUnite = allUniteValues.get(eraseMultiUnitesBox.getSelectedIndex());
+	}
 
-      // verifie le changement
-      if((getNewValue() != null
-         && (!getNewValue().equals(getOldUniqueValue()) || !selectedUnite.equals(oldUniqueUniteValue) || getHasNulls()))
-         || (getNewValue() == null && getOldUniqueValue() != null)){
-         finalValue = new ArrayList<>();
-         finalValue.add(getNewValue());
-         if(getNewValue() != null){
-            finalValue.add(selectedUnite);
-         }else{
-            finalValue.add(null);
-         }
-         setChangedValue(true);
-      }
+	@Override
+	public Object extractValueFromMultiBox() {
+		if (multiUnitesBox.getSelectedIndex() > -1) {
+			selectedUnite = allUniteValues.get(multiUnitesBox.getSelectedIndex());
+		} else {
+			selectedUnite = allUniteValues.get(0);
+		}
+		if (multiNumeriqueBox.getValue() != null) {
+			return ObjectTypesFormatters.floor(multiNumeriqueBox.getValue().floatValue(), 3);
+		}
+		return multiNumeriqueBox.getValue();
+	}
 
-      final SimpleChampValue scv = new SimpleChampValue();
-      scv.setChamp(getChamp());
-      scv.setValue(finalValue);
+	@Override
+	public void onClick$validate() {
+		
+		// checks unite is selected
+		if (isObligatoire()) {
+			checkUniteSelected();
+		}
+		
+		List<Object> finalValue = null;
+		setChangedValue(false);
+		// si on était en mode liste
+		if (getValues().size() > 1) {
+			if (!multiValuesListBox.isDisabled()) {
+				// si une valeur a été saisie dans le nouveau champ,
+				// c'est la nouvelle valeur
+				// sinon
+				setNewValue(extractValueFromEraserBox());
+				if (getNewValue() == null || getNewValue().equals("")) {
+					if (multiValuesListBox.getSelectedIndex() > -1) {
+						setNewValue(getValues().get(multiValuesListBox.getSelectedIndex()));
+					}
+				}
+			}
+		} else { // mode unique
+			setNewValue(extractValueFromMultiBox());
+		}
 
-      scv.setPrintValue(getPrintFinalValue(finalValue));
+		// verifie le changement
+		if ((getNewValue() != null && (!getNewValue().equals(getOldUniqueValue())
+				|| !selectedUnite.equals(oldUniqueUniteValue) || getHasNulls()))
+				|| (getNewValue() == null && getOldUniqueValue() != null)) {
+			finalValue = new ArrayList<>();
+			finalValue.add(getNewValue());
+			if (getNewValue() != null) {
+				finalValue.add(selectedUnite);
+			} else {
+				finalValue.add(null);
+			}
+			setChangedValue(true);
+		}
 
-      postBack(scv);
+		final SimpleChampValue scv = new SimpleChampValue();
+		scv.setChamp(getChamp());
+		scv.setValue(finalValue);
 
-      Events.postEvent(new Event("onClose", self.getRoot()));
-   }
+		scv.setPrintValue(getPrintFinalValue(finalValue));
 
-   @Override
-   public AnnotateDataBinder getBinder(){
-      return ((AnnotateDataBinder) self.getParent().getAttributeOrFellow("modificationQuantification", true));
-   }
+		postBack(scv);
 
-   public List<Object> getUniteValues(){
-      return uniteValues;
-   }
+		Events.postEvent(new Event("onClose", self.getRoot()));
+	}
 
-   public void setUniteValues(final List<Object> uniteVal){
-      this.uniteValues = uniteVal;
-   }
+	/**
+	 * @since 2.3.0-gatsbi
+	 */
+	private void checkUniteSelected() {
+		if (rowOneValue.isVisible()) {
+			if (multiUnitesBox.getSelectedCount() == 0) {
+				throw new WrongValueException(multiUnitesBox, Labels.getLabel("anno.thes.empty"));
+			}
+		} else if (rowMultiValue.isVisible()) {
+			if (eraseMultiUnitesBox.getSelectedCount() == 0) {
+				throw new WrongValueException(eraseMultiUnitesBox, Labels.getLabel("anno.thes.empty"));
+			}
+		}
+	}
 
-   public List<Object> getAllUniteValues(){
-      return allUniteValues;
-   }
+	@Override
+	public AnnotateDataBinder getBinder() {
+		return ((AnnotateDataBinder) self.getParent().getAttributeOrFellow("modificationQuantification", true));
+	}
 
-   public void setAllUniteValues(final List<Object> allUniteVal){
-      this.allUniteValues = allUniteVal;
-   }
+	public List<Object> getUniteValues() {
+		return uniteValues;
+	}
 
-   public List<String> getAllStringUniteValues(){
-      return allStringUniteValues;
-   }
+	public void setUniteValues(final List<Object> uniteVal) {
+		this.uniteValues = uniteVal;
+	}
 
-   public void setAllStringUniteValues(final List<String> allStringUniteVal){
-      this.allStringUniteValues = allStringUniteVal;
-   }
+	public List<Object> getAllUniteValues() {
+		return allUniteValues;
+	}
 
-   public String getChampUnite(){
-      return champUnite;
-   }
+	public void setAllUniteValues(final List<Object> allUniteVal) {
+		this.allUniteValues = allUniteVal;
+	}
 
-   public void setChampUnite(final String champUnit){
-      this.champUnite = champUnit;
-   }
+	public List<String> getAllStringUniteValues() {
+		return allStringUniteValues;
+	}
 
-   public boolean isModifPossible(){
-      return modifPossible;
-   }
+	public void setAllStringUniteValues(final List<String> allStringUniteVal) {
+		this.allStringUniteValues = allStringUniteVal;
+	}
 
-   public void setModifPossible(final boolean modif){
-      this.modifPossible = modif;
-   }
+	public String getChampUnite() {
+		return champUnite;
+	}
 
-   public Object getSelectedUnite(){
-      return selectedUnite;
-   }
+	public void setChampUnite(final String champUnit) {
+		this.champUnite = champUnit;
+	}
 
-   public void setSelectedUnite(final Object sU){
-      this.selectedUnite = sU;
-   }
+	public boolean isModifPossible() {
+		return modifPossible;
+	}
 
-   @Override
-   public String formatLocalObject(final Object obj){
-      if(obj != null && ((List<Object>) obj).get(0) != null){
-         final StringBuffer sb = new StringBuffer();
-         sb.append(String.valueOf(ObjectTypesFormatters.floor((Float) ((List<Object>) obj).get(0), 3)));
-         sb.append(" ");
-         sb.append(((Unite) ((List<Object>) obj).get(1)).getUnite());
+	public void setModifPossible(final boolean modif) {
+		this.modifPossible = modif;
+	}
 
-         return sb.toString();
-      }
-      return null;
-   }
+	public Object getSelectedUnite() {
+		return selectedUnite;
+	}
 
-   @Override
-   public void setConstraintsToBoxes(final Constraint constr){
-	   if (rowOneValue.isVisible()) {
-		   multiNumeriqueBox.setConstraint(constr);
-	   }
-   }
+	public void setSelectedUnite(final Object sU) {
+		this.selectedUnite = sU;
+	}
 
-   @Override
-   public void setEraserBoxeVisible(final boolean visible){}
+	@Override
+	public String formatLocalObject(final Object obj) {
+		if (obj != null && ((List<Object>) obj).get(0) != null) {
+			final StringBuffer sb = new StringBuffer();
+			sb.append(String.valueOf(ObjectTypesFormatters.floor((Float) ((List<Object>) obj).get(0), 3)));
+			sb.append(" ");
+			sb.append(((Unite) ((List<Object>) obj).get(1)).getUnite());
 
-   public void onSelect$multiValuesListBox(){
-      setSelectedValue(getValues().get(multiValuesListBox.getSelectedIndex()));
-      passValueToEraserBox();
-   }
+			return sb.toString();
+		}
+		return null;
+	}
 
-   @Override
-   public void passValueToEraserBox(){
-      if(getValues().get(multiValuesListBox.getSelectedIndex()) != null){
-         eraseMultiNumeriqueBox
-            .setValue(new BigDecimal(((Float) getValues().get(multiValuesListBox.getSelectedIndex())).floatValue()));
-         eraseMultiUnitesBox.setSelectedIndex(allUniteValues.indexOf(uniteValues.get(multiValuesListBox.getSelectedIndex() - 1)));
-      }else{
-         //eraseMultiNumeriqueBox.setValue(null);
-         eraseMultiNumeriqueBox.setValue("");
-      }
-   }
+	@Override
+	public void setConstraintsToBoxes(final Constraint constr) {
+		if (rowOneValue.isVisible()) {
+			multiNumeriqueBox.setConstraint(constr);
+		} else if (rowMultiValue.isVisible()) {
 
-   @Override
-   public void passNullToEraserBox(){}
+			if (constr != null && eraseMultiNumeriqueBox.isVisible()) {
+				eraseMultiNumeriqueBox.setConstraint(constr);
+			} else {
+				SimpleConstraint nullCstr = null;
+				eraseMultiNumeriqueBox.setConstraint(nullCstr);
+			}
+		}
+	}
+	
 
+	@Override
+	public void setEraserBoxeVisible(final boolean visible) {
+	}
+
+	public void onSelect$multiValuesListBox() {
+		setSelectedValue(getValues().get(multiValuesListBox.getSelectedIndex()));
+		passValueToEraserBox();
+	}
+
+	@Override
+	public void passValueToEraserBox() {
+		if (getValues().get(multiValuesListBox.getSelectedIndex()) != null) {
+			eraseMultiNumeriqueBox.setValue(
+					new BigDecimal(((Float) getValues().get(multiValuesListBox.getSelectedIndex())).floatValue()));
+			eraseMultiUnitesBox.setSelectedIndex(
+					allUniteValues.indexOf(uniteValues.get(multiValuesListBox.getSelectedIndex() - 1)));
+		} else { // TODO impossible de passer un decimalbox value à null
+			// eraseMultiNumeriqueBox.setValue(null);
+			// eraseMultiNumeriqueBox.;
+		}
+	}
+
+	@Override
+	public void passNullToEraserBox() {
+	}
+
+	
 }
