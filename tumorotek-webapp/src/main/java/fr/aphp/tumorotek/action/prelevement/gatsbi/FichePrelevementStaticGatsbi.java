@@ -37,10 +37,12 @@
 package fr.aphp.tumorotek.action.prelevement.gatsbi;
 
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.ForwardEvent;
 import org.zkoss.zul.Groupbox;
 import org.zkoss.zul.Messagebox;
 
+import fr.aphp.tumorotek.action.echantillon.EchantillonController;
 import fr.aphp.tumorotek.action.patient.ResumePatient;
 import fr.aphp.tumorotek.action.prelevement.FichePrelevementStatic;
 import fr.aphp.tumorotek.action.prelevement.gatsbi.exception.GatsbiException;
@@ -64,20 +66,20 @@ public class FichePrelevementStaticGatsbi extends FichePrelevementStatic {
 	private Groupbox groupPrlvt;
 	private Groupbox gridFormPrlvtComp;
 
-	private Contexte c;
+	private Contexte contexte;
 
 	@Override
 	public void doAfterCompose(final Component comp) throws Exception {
 		super.doAfterCompose(comp);
 		
-		c = GatsbiController.initWireAndDisplay(this, 
+		contexte = GatsbiController.initWireAndDisplay(this, 
 				2, 
 				false, null, null, null,
 				groupPrlvt, gridFormPrlvtComp);
 
 		// prelevement specific
 		if (groupLaboInter != null) {
-			groupLaboInter.setVisible(c != null && c.getSiteInter());
+			groupLaboInter.setVisible(contexte != null && contexte.getSiteInter());
 		}
 	}
 
@@ -100,7 +102,7 @@ public class FichePrelevementStaticGatsbi extends FichePrelevementStatic {
 	 */
 	@Override
 	public void onClick$addNew() {		
-		GatsbiController.addNewObjectForContext(c, self, 
+		GatsbiController.addNewObjectForContext(contexte, self, 
 			e -> {
 				try {
 					super.onClick$addNew();
@@ -108,7 +110,7 @@ public class FichePrelevementStaticGatsbi extends FichePrelevementStatic {
 					Messagebox.show(handleExceptionMessage(ex), 
 							"Error", Messagebox.OK, Messagebox.ERROR);
 				}
-			}, null);
+			}, null, null);
 	}
 
 	/**
@@ -121,7 +123,7 @@ public class FichePrelevementStaticGatsbi extends FichePrelevementStatic {
 
 		try {
 			
-			GatsbiController.getSelectedParametrageFromSelectEvent(c, 
+			GatsbiController.getSelectedParametrageFromSelectEvent(contexte, 
 				SessionUtils.getCurrentBanque(sessionScope), 
 				getObjectTabController(), 
 				p -> {
@@ -145,4 +147,22 @@ public class FichePrelevementStaticGatsbi extends FichePrelevementStatic {
 			Messagebox.show(handleExceptionMessage(e), "Error", Messagebox.OK, Messagebox.ERROR);
 		}
 	}
+	
+	@Override
+	public void onClick$addEchan(final Event event) throws Exception{
+		
+		final EchantillonController tabController = 
+				(EchantillonController) EchantillonController.backToMe(getMainWindow(), page);
+
+		GatsbiController.addNewObjectForContext(SessionUtils
+			.getCurrentGatsbiContexteForEntiteId(3), tabController.getListe().getSelfComponent(), 
+				e -> {
+					try {
+						 super.onClick$addEchan(event);
+					} catch (Exception ex) {
+						Messagebox.show(handleExceptionMessage(ex), 
+								"Error", Messagebox.OK, Messagebox.ERROR);
+					}
+				}, event, this.prelevement);	     
+	   }
 }

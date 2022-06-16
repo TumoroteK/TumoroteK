@@ -89,7 +89,6 @@ import fr.aphp.tumorotek.action.controller.AbstractController;
 import fr.aphp.tumorotek.action.controller.AbstractObjectTabController;
 import fr.aphp.tumorotek.action.echantillon.FicheEchantillonEdit.ConstQuantite;
 import fr.aphp.tumorotek.action.echantillon.FicheEchantillonEdit.ConstQuantiteInit;
-import fr.aphp.tumorotek.action.echantillon.gatsbi.GatsbiControllerEchantillon;
 import fr.aphp.tumorotek.action.imports.ImportColonneDecorator;
 import fr.aphp.tumorotek.action.prelevement.gatsbi.exception.GatsbiException;
 import fr.aphp.tumorotek.component.CalendarBox;
@@ -993,11 +992,12 @@ public class GatsbiController {
 	
 	// add new refactor
 	public static void addNewObjectForContext(Contexte contexte, Component selfComponent, 
-			Consumer<Event> elseMethod, Event evt) {
+			Consumer<Event> elseMethod, Event evt, TKAnnotableObject parentObj) {
 		if (!contexte.getParametrages().isEmpty()) {
 			final Map<String, Object> args = new HashMap<String, Object>();
 			args.put("contexte", contexte);
 			args.put("parent", selfComponent);
+			args.put("parentObj", parentObj);
 			Executions.createComponents("/zuls/gatsbi/SelectParametrageModale.zul", null, args);
 		} else { // no parametrages
 			// super.onClick$addNew(event);
@@ -1013,7 +1013,7 @@ public class GatsbiController {
 			ForwardEvent evt) throws GatsbiException {
 		
 		ResultatInjection inject = null;
-		if (((Map<String, Integer>) evt.getOrigin().getData()).get("paramId") != null) {
+		if (((Map<String, Object>) evt.getOrigin().getData()).get("paramId") != null) {
 			ParametrageDTO parametrageDTO = GatsbiController
 					.doGastbiParametrage(((Map<String, Integer>) evt.getOrigin().getData()).get("paramId"));
 
@@ -1021,7 +1021,6 @@ public class GatsbiController {
 					banque, validator);
 		}
 
-		// super.onClick$addNew(null);
 		elseMethod.run();
 
 		if (inject != null) {

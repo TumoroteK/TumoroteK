@@ -39,7 +39,8 @@
 <?component name="calendarbox" macroURI="/zuls/component/CalendarBox.zul" class="fr.aphp.tumorotek.component.CalendarBox" ?>
 
 	<window id="fwinLaboInter" border="none"
-		apply="fr.aphp.tumorotek.action.prelevement.gatsbi.FicheLaboInterGatsbi">
+		apply="fr.aphp.tumorotek.action.prelevement.gatsbi.FicheLaboInterGatsbi"
+		forward="onSelectParametrage=onGetSelectedParametrage">
 		<panel collapsible="false"
 			title="${c:l('bloc.prelevement.laboInter')}" sclass="fichePanelv2"
 			id="winPanel" closable="true">

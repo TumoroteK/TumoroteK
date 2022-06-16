@@ -37,6 +37,7 @@
 package fr.aphp.tumorotek.action.echantillon.gatsbi;
 
 import java.io.FileInputStream;
+import java.util.Map;
 
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.ForwardEvent;
@@ -45,6 +46,7 @@ import org.zkoss.zul.Filedownload;
 import org.zkoss.zul.Messagebox;
 import fr.aphp.tumorotek.action.echantillon.ListeEchantillon;
 import fr.aphp.tumorotek.action.prelevement.gatsbi.exception.GatsbiException;
+import fr.aphp.tumorotek.model.coeur.prelevement.Prelevement;
 import fr.aphp.tumorotek.model.contexte.gatsbi.Contexte;
 import fr.aphp.tumorotek.model.systeme.Fichier;
 import fr.aphp.tumorotek.webapp.gatsbi.GatsbiController;
@@ -123,7 +125,7 @@ public class ListeEchantillonGatsbi extends ListeEchantillon {
 					Messagebox.show(handleExceptionMessage(ex), 
 							"Error", Messagebox.OK, Messagebox.ERROR);
 				}
-			}, event);
+			}, event, null);
 	}
 
 	/**
@@ -133,7 +135,6 @@ public class ListeEchantillonGatsbi extends ListeEchantillon {
 	 * @throws Exception
 	 */
 	public void onGetSelectedParametrage(ForwardEvent evt) throws Exception {
-
 		try {
 			
 			GatsbiController.getSelectedParametrageFromSelectEvent(contexte, 
@@ -141,7 +142,14 @@ public class ListeEchantillonGatsbi extends ListeEchantillon {
 				getObjectTabController(), null, 
 				() -> {
 					try {
-						super.onClick$addNew(null);
+						if (((Map<?, ?>) 
+							evt.getOrigin().getData()).get("parentObj") == null) {
+							super.onClick$addNew(null);
+						} else {
+							getObjectTabController().switchToCreateMode((Prelevement) 
+								((Map<?, ?>) 
+									evt.getOrigin().getData()).get("parentObj"));
+						}
 					} catch (Exception ex) {
 						Messagebox.show(handleExceptionMessage(ex), 
 								"Error", Messagebox.OK, Messagebox.ERROR);

@@ -1655,6 +1655,8 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit {
 				setSelectedCollaborateur(getParentObject().getOperateur());
 				collabBox.setValue(getSelectedCollaborateur().getNomAndPrenom());
 			}
+		} else { // no parent
+			connaissances.setSelection(Arrays.asList("NON"));
 		}
 
 		// active le lien vers le stockage
@@ -1662,7 +1664,6 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit {
 			stockageEchantillons.setDisabled(false);
 		}
 
-		connaissances.setSelection(Arrays.asList("NON"));
 
 		// @since 2.3.0-gatsbi
 		// injection des codes assignes injectés 

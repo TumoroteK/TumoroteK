@@ -56,6 +56,7 @@ import org.zkoss.zk.ui.select.annotation.Wire;
 import org.zkoss.zul.SimpleListModel;
 import org.zkoss.zul.Window;
 
+import fr.aphp.tumorotek.model.TKAnnotableObject;
 import fr.aphp.tumorotek.model.contexte.gatsbi.Contexte;
 import fr.aphp.tumorotek.model.contexte.gatsbi.Parametrage;
 
@@ -70,6 +71,7 @@ public class SelectParametrageModaleVM {
 
 	private String entiteLabel;
 	private Component parent;
+	private TKAnnotableObject parentObj;
 	private SimpleListModel<Parametrage> parametrages;
 
 	@Wire
@@ -82,19 +84,22 @@ public class SelectParametrageModaleVM {
 
 	@Init
 	public void init(@ExecutionArgParam("contexte") Contexte _c, 
-			@ExecutionArgParam("parent") final Component _p){
+			@ExecutionArgParam("parent") final Component _p, 
+			@ExecutionArgParam("parentObj") TKAnnotableObject _o){
 		List<Parametrage> params = new ArrayList<Parametrage>();
 		params.add(0, new Parametrage(null, Labels.getLabel("general.new"), null));
 		params.addAll(_c.getParametrages());
 		parametrages = new SimpleListModel<Parametrage>(params);
 		entiteLabel = Labels.getLabel("Entite.".concat(_c.getContexteType().getType()));
 		parent = _p;
+		parentObj = _o;
 	}
 
 	@Command
 	public void onSelectParametrage(@BindingParam("paramId") Integer paramId){
-		Map<String, Integer> args = new HashMap<String, Integer>();
+		Map<String, Object> args = new HashMap<String, Object>();
 		args.put("paramId", paramId);
+		args.put("parentObj", parentObj);
 		Events.postEvent("onSelectParametrage", parent, args);
 		Events.postEvent("onClose", selectParametrageModale, null);
 	}

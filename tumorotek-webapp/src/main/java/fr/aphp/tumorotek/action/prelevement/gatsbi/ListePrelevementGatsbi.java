@@ -229,7 +229,7 @@ public class ListePrelevementGatsbi extends ListePrelevement {
 					Messagebox.show(handleExceptionMessage(ex), 
 							"Error", Messagebox.OK, Messagebox.ERROR);
 				}
-			}, event);
+			}, event, null);
 	}
 	
 	/**

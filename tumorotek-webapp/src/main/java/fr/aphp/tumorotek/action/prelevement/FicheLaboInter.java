@@ -147,7 +147,7 @@ public class FicheLaboInter extends AbstractFicheEditController {
 	/**
 	 * Objets Principaux.
 	 */
-	private Prelevement prelevement;
+	protected Prelevement prelevement;
 	private Maladie maladie;
 
 	/**
@@ -838,7 +838,7 @@ public class FicheLaboInter extends AbstractFicheEditController {
 	public void onOK() {
 		Events.postEvent(new Event("onClick", next));
 	}
-
+	
 	/**
 	 * Processing echoEvent.
 	 */
@@ -877,7 +877,7 @@ public class FicheLaboInter extends AbstractFicheEditController {
 			// appelle la page FicheMultiEchantillons en mode create
 			getObjectTabController().switchToMultiEchantillonsCreateMode(this.prelevement, this.laboInters);
 		}
-
+		
 		Clients.clearBusy();
 	}
 

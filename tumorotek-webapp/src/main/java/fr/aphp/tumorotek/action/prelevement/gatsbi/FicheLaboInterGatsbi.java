@@ -38,15 +38,23 @@ package fr.aphp.tumorotek.action.prelevement.gatsbi;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.event.ForwardEvent;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Listbox;
+import org.zkoss.zul.Messagebox;
+
+import fr.aphp.tumorotek.action.echantillon.EchantillonController;
 import fr.aphp.tumorotek.action.prelevement.FicheLaboInter;
+import fr.aphp.tumorotek.action.prelevement.gatsbi.exception.GatsbiException;
+import fr.aphp.tumorotek.model.coeur.prelevement.Prelevement;
 import fr.aphp.tumorotek.model.contexte.gatsbi.Contexte;
 import fr.aphp.tumorotek.webapp.gatsbi.GatsbiController;
+import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
 /**
  *
@@ -67,18 +75,18 @@ public class FicheLaboInterGatsbi extends FicheLaboInter {
 	private List<Combobox> reqComboboxes = new ArrayList<Combobox>();
 	private List<Div> reqConformeDivs = new ArrayList<Div>();
 
-	private Contexte c;
+	private Contexte contexte;
 
 	@Override
 	public void doAfterCompose(final Component comp) throws Exception {
 		super.doAfterCompose(comp);
 
-		c = GatsbiController.initWireAndDisplay(this, 2, 
+		contexte = GatsbiController.initWireAndDisplay(this, 2, 
 				true, reqListboxes, reqComboboxes, reqConformeDivs);
 		
 		// labo inter specific
 		// Show/hide groupLaboInter
-		((Div) gatsbiContainer.getFellowIfAny("groupLaboInter")).setVisible(c.getSiteInter());
+		((Div) gatsbiContainer.getFellowIfAny("groupLaboInter")).setVisible(contexte.getSiteInter());
 	}
 
 	@Override
@@ -88,7 +96,7 @@ public class FicheLaboInterGatsbi extends FicheLaboInter {
 
 		super.switchToCreateMode();
 
-		addLabo.setVisible(c.getSiteInter());
+		addLabo.setVisible(contexte.getSiteInter());
 
 		// scroll up pour se placer en haut de la page
 		Clients.scrollIntoView(gatsbiContainer);
@@ -102,13 +110,30 @@ public class FicheLaboInterGatsbi extends FicheLaboInter {
 
 		super.switchToEditMode();
 
-		addLabo.setVisible(c.getSiteInter());
+		addLabo.setVisible(contexte.getSiteInter());
 	}
 
 	@Override
 	public void onClick$next() {
 		GatsbiController.checkRequiredNonInputComponents(reqListboxes, reqComboboxes, reqConformeDivs);
 		super.onClick$next();
+	}
+	
+	@Override
+	public void onLaterNextStep() {
+		
+		Clients.clearBusy();
+		
+		GatsbiController.addNewObjectForContext(SessionUtils
+			.getCurrentGatsbiContexteForEntiteId(3), self, 
+				e -> {
+					try {
+						super.onLaterNextStep();
+					} catch (Exception ex) {
+						Messagebox.show(handleExceptionMessage(ex), 
+								"Error", Messagebox.OK, Messagebox.ERROR);
+					}
+				}, null, this.prelevement);
 	}
 
 	@Override
@@ -122,5 +147,31 @@ public class FicheLaboInterGatsbi extends FicheLaboInter {
 		GatsbiController.checkRequiredNonInputComponents(reqListboxes, reqComboboxes, reqConformeDivs);
 		super.onClick$create();
 	}
-
+	
+	/**
+	 * Un parametrage échantillon a été sélectionné.
+	 * 
+	 * @param param
+	 * @throws Exception
+	 */
+	public void onGetSelectedParametrage(ForwardEvent evt) throws Exception {
+		try {
+			
+			GatsbiController.getSelectedParametrageFromSelectEvent(
+				SessionUtils
+					.getCurrentGatsbiContexteForEntiteId(3), 
+				SessionUtils.getCurrentBanque(sessionScope), 
+				getObjectTabController().getReferencedObjectsControllers(true).get(0), null, 
+				() -> {
+					try {
+						super.onLaterNextStep();
+					} catch (Exception ex) {
+						Messagebox.show(handleExceptionMessage(ex), 
+								"Error", Messagebox.OK, Messagebox.ERROR);
+					}
+				}, evt);	
+		} catch (GatsbiException e) {
+			Messagebox.show(handleExceptionMessage(e), "Error", Messagebox.OK, Messagebox.ERROR);
+		}
+	}
 }

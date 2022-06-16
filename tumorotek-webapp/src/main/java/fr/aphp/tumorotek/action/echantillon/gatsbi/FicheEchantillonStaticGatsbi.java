@@ -94,7 +94,7 @@ public class FicheEchantillonStaticGatsbi extends FicheEchantillonStatic {
 					Messagebox.show(handleExceptionMessage(ex), 
 							"Error", Messagebox.OK, Messagebox.ERROR);
 				}
-			}, null);
+			}, null, null);
 	}
 
 	/**
