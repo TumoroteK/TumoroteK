@@ -42,7 +42,8 @@
 <style src="/css/font-awesome-4.6.1/css/font-awesome.min.css"/>
 
 <window id="fwinMultiEchantillons" border="none"
-    viewModel="@id('vm')" apply="fr.aphp.tumorotek.action.echantillon.gatsbi.FicheMultiEchantillonsGatsbi">
+    viewModel="@id('vm')" apply="fr.aphp.tumorotek.action.echantillon.gatsbi.FicheMultiEchantillonsGatsbi"
+    forward="onGatsbiParamSelected=onGetInjectionDossierExterneDone">
 	<panel collapsible="false" title="${c:l('ficheMultiEchantillons.title')}"
 	 		id="winPanel" sclass="fichePanelv2" closable="true">
 		<panelchildren style="overflow-y:scroll" id="panelChildrenWithScroll">
@@ -131,21 +132,22 @@
 								style="font-style:italic;font-size:8;"
 								image="/images/icones/smallNumber.png" sclass="buttonv2"/>
 						</div>
-						<div class="item" id="codeEchanDiv">
+						<div class="item item-wide" id="codeEchanDiv">
 							<custom-attributes champId="54" />
 							<div class="row-container chpLabel">
 								<label value="${c:l('ficheMultiEchantillons.numero')}" sclass="formLabel" />
 								<label value="*" sclass="requiredMark" />
 							</div>
-							<div class="row-container" >
+							<div class="row-container">
 								<textbox id="codePrefixeEchan" 
 									value="@{fwinMultiEchantillons$composer.codePrefixe,
 				        			save-when='addEchantillons.onClick' save-after='codePrefixeEchan.onBlur' 
 				        			load-after='addEchantillons.onClick, numerotation.onClick'}" 
-									width="150px" mold="rounded"
-									constraint="${fwinMultiEchantillons$composer.codePrefixNullableConstraint}" />
+									width="200px" mold="rounded"
+									constraint="${fwinMultiEchantillons$composer.codePrefixNullableConstraint}" 
+									/>
 								
-								<separator width="2px" />
+								<span style="max-width: 2px; min-width: 2px" />
 						
 								<combobox id="separatorBox" autodrop="true" 
 									value="${c:l('default.value.echantillon.separator')}"
@@ -155,7 +157,7 @@
 				                    <comboitem label="_" />
 	                			</combobox>
 	                			
-	                			<separator width="2px" />
+								<span style="max-width: 2px; min-width: 2px" />
 							
 								<intbox id="premierCodeBoxEchan"
 									value="@{fwinMultiEchantillons$composer.premierCode,
@@ -195,7 +197,8 @@
 									image="/images/icones/numerotation.png" sclass="buttonv2"
 									visible="false"/>
 						
-								<separator width="10px"/>
+								<div style="max-width: 10px; min-width: 10px" />
+								
 								<div class="row-container" id="choixNumerotation" visible="false">
 									<label value="(" sclass="formLabel"/>
 									<radiogroup orient="horizontal">

@@ -95,8 +95,11 @@ import fr.aphp.tumorotek.action.prelevement.gatsbi.exception.GatsbiException;
 import fr.aphp.tumorotek.component.CalendarBox;
 import fr.aphp.tumorotek.manager.exception.TKException;
 import fr.aphp.tumorotek.manager.impl.interfacage.ResultatInjection;
+import fr.aphp.tumorotek.model.TKAnnotableObject;
 import fr.aphp.tumorotek.model.TKThesaurusObject;
 import fr.aphp.tumorotek.model.coeur.annotation.AnnotationValeur;
+import fr.aphp.tumorotek.model.coeur.echantillon.Echantillon;
+import fr.aphp.tumorotek.model.coeur.patient.Patient;
 import fr.aphp.tumorotek.model.coeur.prelevement.Prelevement;
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.contexte.gatsbi.Contexte;
@@ -810,8 +813,26 @@ public class GatsbiController {
 		// crée dossier externe pour le transport des données
 		// values
 		ResultatInjection injection = new ResultatInjection();
-		Prelevement prelevement = new Prelevement();
-		prelevement.setBanque(banque);
+		TKAnnotableObject tkObj = null;
+		
+		switch (contexte.getContexteType()) {
+		case PATIENT:
+			tkObj = new Patient();
+			// injection.setPatient((Patient) tkObj);
+			break;
+		case PRELEVEMENT:
+			tkObj = new Prelevement();
+			injection.setPrelevement((Prelevement) tkObj);
+			break;
+		case ECHANTILLON:
+			tkObj = new Echantillon();
+			injection.setEchantillon((Echantillon) tkObj);
+			break;
+		default:
+			break;
+		}
+		
+		tkObj.setBanque(banque);
 
 		if (param != null) {
 
@@ -820,7 +841,7 @@ public class GatsbiController {
 				validator.accept(param.toParametrage());
 			}
 
-			BlocExterne blocPrel = new BlocExterne();
+			BlocExterne bloc = new BlocExterne();
 			ValeurExterne val;
 			for (ParametrageValueDTO value : param.getParametrageValueDTOs()) {
 				if (!StringUtils.isBlank(value.getDefaultValue())) {
@@ -834,15 +855,13 @@ public class GatsbiController {
 					val = new ValeurExterne();
 					val.setChampEntiteId(value.getChampId());
 					val.setValeur(value.getDefaultValue());
-					blocPrel.getValeurs().add(val);
+					bloc.getValeurs().add(val);
 				}
 			}
 
-			ManagerLocator.getInjectionManager().injectBlocExterneInObject(prelevement, banque, blocPrel,
+			ManagerLocator.getInjectionManager().injectBlocExterneInObject(tkObj, banque, bloc,
 					new ArrayList<AnnotationValeur>());
 		}
-
-		injection.setPrelevement(prelevement);
 
 		return injection;
 	}

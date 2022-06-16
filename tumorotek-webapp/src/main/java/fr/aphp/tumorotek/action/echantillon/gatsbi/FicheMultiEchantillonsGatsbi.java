@@ -42,6 +42,7 @@ import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.ForwardEvent;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Div;
@@ -51,6 +52,7 @@ import org.zkoss.zul.Listbox;
 
 import fr.aphp.tumorotek.action.echantillon.AbstractEchantillonDecoratorRowRenderer;
 import fr.aphp.tumorotek.action.echantillon.FicheMultiEchantillons;
+import fr.aphp.tumorotek.manager.impl.interfacage.ResultatInjection;
 import fr.aphp.tumorotek.model.contexte.gatsbi.Contexte;
 import fr.aphp.tumorotek.webapp.gatsbi.GatsbiController;
 
@@ -93,6 +95,18 @@ public class FicheMultiEchantillonsGatsbi extends FicheMultiEchantillons
 		// inner list
 		drawColumnsForEchantillonsToCreate(echantillonsList);
 	}
+	
+	@Override
+	protected void setGroupInfosCompEchanOpen(boolean b) {
+		((Groupbox) groupInfosCompEchan).setOpen(b);
+	}
+	
+	@Override
+	protected void scrollToTop() {
+		Clients.scrollIntoView(this.getSelfComponent());
+	}
+	
+	/*********** switch required ******************/
 
 	/**
 	 * Surcharge Gastbi pour conserver sélectivement la
@@ -112,16 +126,6 @@ public class FicheMultiEchantillonsGatsbi extends FicheMultiEchantillons
 	}	
 	
 	@Override
-	protected void setGroupInfosCompEchanOpen(boolean b) {
-		((Groupbox) groupInfosCompEchan).setOpen(b);
-	}
-	
-	@Override
-	protected void scrollToTop() {
-		Clients.scrollIntoView(this.getSelfComponent());
-	}
-	
-	@Override
 	protected void prepareCrAnapath() {
 		if (crAnapathNomBox.getValue() != null && !crAnapathNomBox.getValue().equals("")) {
 			getCrAnapath().setNom(crAnapathNomBox.getValue());
@@ -136,7 +140,16 @@ public class FicheMultiEchantillonsGatsbi extends FicheMultiEchantillons
 		}
 	}
 	
-	/** inner lists **/
+	@Override
+	public void onClick$addEchantillons(Event event) {
+		
+		GatsbiController.checkRequiredNonInputComponents(reqListboxes, reqComboboxes, reqDivs);
+		
+		super.onClick$addEchantillons(event);
+	}
+	
+	/*********** inner lists ******************/
+	
 	private final AbstractEchantillonDecoratorRowRenderer echanDecoRendererGatsbi = 
 			new EchantillonDecoratorRowRendererGatsbi();
 	
@@ -180,8 +193,7 @@ public class FicheMultiEchantillonsGatsbi extends FicheMultiEchantillons
 		}
 
 		// emplacement, toujours affiché
-		GatsbiControllerEchantillon.drawEmplacementColumn(grid);
-
+		GatsbiControllerEchantillon.drawEmplacementColumn(grid); 
 
 		// statut, toujours affiché
 		GatsbiControllerEchantillon.drawObjetStatutColumn(grid);
@@ -190,11 +202,13 @@ public class FicheMultiEchantillonsGatsbi extends FicheMultiEchantillons
 		GatsbiController.addColumn(grid, null, "35px", "center", null, null, true);
 	}
 	
-	@Override
-	public void onClick$addEchantillons(Event event) {
-		
-		GatsbiController.checkRequiredNonInputComponents(reqListboxes, reqComboboxes, reqDivs);
-		
-		super.onClick$addEchantillons(event);
+	/*********** Paramétrages ******************/
+	
+	/**
+	 * Redirection d'évènement lors du choix d'un paramétrage
+	 */
+	public void onGetInjectionDossierExterneDone(ForwardEvent e) {
+		final ResultatInjection res = (ResultatInjection) e.getOrigin().getData();
+		injectEchantillon(res.getEchantillon());
 	}
 }

@@ -39,6 +39,8 @@ package fr.aphp.tumorotek.action.echantillon.gatsbi;
 import java.util.List;
 
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.ForwardEvent;
 import org.zkoss.zul.Constraint;
 
 import fr.aphp.tumorotek.action.echantillon.FicheModifMultiEchantillon;

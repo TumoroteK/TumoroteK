@@ -40,6 +40,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
@@ -538,6 +539,11 @@ public class InjectionManagerImpl implements InjectionManager
 							}
 							// set de la valeur
 							setPropertyValueForObject(value, champ, obj);
+						} else { // champs particuliers
+							// codes organes / morphos
+							if (Arrays.asList(229, 230).contains(valeurExterne.getChampEntiteId())) { 
+								injectCodeAssignes(valeurExterne, champ, null, (Echantillon) obj);
+							}						
 						}
 					}catch(final IllegalAccessException e){
 						log.error(e);
@@ -673,44 +679,8 @@ public class InjectionManagerImpl implements InjectionManager
 									if(!isCode && !isCR){
 										injectValeurExterneInObject(echantillon, banque, val, annosEchantillon);
 									}else if(isCode){
-										String[] codes = null;
-										// DIAMIC Hack
-										if(val.getValeur().contains("~")){
-											codes = val.getValeur().split("~");
-										}else{
-											codes = val.getValeur().split(";");
-										}
-
-										int ordreOrgane = 1;
-										int ordreMorpho = 1;
-										for(int j = 0; j < codes.length; j++){
-											final CodeAssigne codeAs = new CodeAssigne();
-											codeAs.setCodeRefId(null);
-											codeAs.setCode(codes[j]);
-											// codeAs.setLibelle(codes[j]);
-											codeAs.setTableCodage(null);
-											codeAs.setIsMorpho(ce.getNom().equals("CodeMorphos"));
-											codeAs.setIsOrgane(ce.getNom().equals("CodeOrganes"));
-											if(ce.getNom().equals("CodeMorphos")){
-												codeAs.setOrdre(ordreMorpho);
-												if(ordreMorpho == 1){
-													codeAs.setExport(true);
-												}
-												++ordreMorpho;
-												if(!resultat.getCodesMorpho().contains(codeAs)){
-													resultat.getCodesMorpho().add(codeAs);
-												}
-											}else{
-												codeAs.setOrdre(ordreOrgane);
-												if(ordreOrgane == 1){
-													codeAs.setExport(true);
-												}
-												++ordreOrgane;
-												if(!resultat.getCodesOrgane().contains(codeAs)){
-													resultat.getCodesOrgane().add(codeAs);
-												}
-											}
-										}
+										
+										injectCodeAssignes(val, ce, resultat, null);
 
 									}else if(isCR){
 										final Fichier crAnapath = new Fichier();
@@ -787,6 +757,72 @@ public class InjectionManagerImpl implements InjectionManager
 		}
 
 		return resultat;
+	}
+	
+	/**
+	 * Factorisation de la méthode d'injection des codes organes / lésionnels 
+	 * vers un objet RésultatInjection OU un Echantillon à partir d'une ValeurExterne.
+	 * @param val ValeurExterne
+	 * @param ce ChampEntite
+	 * @param resultat ResultatInjection 
+	 * @param echan Echantillon
+	 */
+	private void injectCodeAssignes(ValeurExterne val, ChampEntite ce, 
+			ResultatInjection resultat, Echantillon echantillon) {
+		String[] codes = null;
+		// DIAMIC Hack
+		if(val.getValeur().contains("~")){
+			codes = val.getValeur().split("~");
+		}else{
+			codes = val.getValeur().split(";");
+		}
+
+		int ordreOrgane = 1;
+		int ordreMorpho = 1;
+		for(int j = 0; j < codes.length; j++){
+			final CodeAssigne codeAs = new CodeAssigne();
+			codeAs.setCodeRefId(null);
+			if (!codes[j].contains("&")) {
+				codeAs.setCode(codes[j].trim());
+			} else { // code & libelle
+				String[] codeAndLibelle = codes[j].split("&");
+				if (codeAndLibelle.length > 0)
+					codeAs.setCode(codeAndLibelle[0].trim());
+				if (codeAndLibelle.length > 1)
+					codeAs.setLibelle(codeAndLibelle[1].trim());
+			}
+			codeAs.setTableCodage(null);
+			codeAs.setIsMorpho(ce.getNom().equals("CodeMorphos"));
+			codeAs.setIsOrgane(ce.getNom().equals("CodeOrganes"));
+			if(ce.getNom().equals("CodeMorphos")){
+				codeAs.setOrdre(ordreMorpho);
+				if(ordreMorpho == 1){
+					codeAs.setExport(true);
+				}
+				++ordreMorpho;
+				
+				if (resultat != null) {
+					if(!resultat.getCodesMorpho().contains(codeAs)){
+						resultat.getCodesMorpho().add(codeAs);
+					}
+				} else if (echantillon != null) {
+					echantillon.getCodesAssignes().add(codeAs);
+				}
+			}else{
+				codeAs.setOrdre(ordreOrgane);
+				if(ordreOrgane == 1){
+					codeAs.setExport(true);
+				}
+				++ordreOrgane;
+				if (resultat != null) {
+					if(!resultat.getCodesOrgane().contains(codeAs)){
+						resultat.getCodesOrgane().add(codeAs);
+					}
+				} else if (echantillon != null) {
+					echantillon.getCodesAssignes().add(codeAs);
+				}
+			}
+		}
 	}
 
 	@Override

@@ -37,6 +37,7 @@ package fr.aphp.tumorotek.action.echantillon;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Comparator;
@@ -86,6 +87,7 @@ import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Radio;
+import org.zkoss.zul.SimpleListModel;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
 import org.zkoss.zul.ext.Selectable;
@@ -172,7 +174,7 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit {
 	private List<String> usedCodesEchantillons = new ArrayList<>();
 
 	// Variables formulaire.
-	private String[] connaissances = new String[] { "OUI", "NON" };
+	private SimpleListModel<String> connaissances = new SimpleListModel<String>(Arrays.asList("OUI", "NON"));
 
 	private Integer premierCode;
 	private Integer dernierCode;
@@ -1456,7 +1458,8 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit {
 	public void onGetResultsFromStockage(final Event e) {
 		// les emplacements sont contenus dans une hashtable mappant
 		// un échantillon avec son emplacement
-		final Hashtable<TKStockableObject, Emplacement> results = (Hashtable<TKStockableObject, Emplacement>) e
+		final Hashtable<TKStockableObject, Emplacement> results = 
+				(Hashtable<TKStockableObject, Emplacement>) e
 				.getData();
 
 		updateDecoList(results);
@@ -1659,8 +1662,23 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit {
 			stockageEchantillons.setDisabled(false);
 		}
 
-		connaissancesBoxEchan.setSelectedItem(connaissancesBoxEchan.getItemAtIndex(1));
+		connaissances.setSelection(Arrays.asList("NON"));
 
+		// @since 2.3.0-gatsbi
+		// injection des codes assignes injectés 
+		if (getObject().getEchantillonId() == null) {
+			List<CodeAssigne> codesOrgane = new ArrayList<CodeAssigne>();
+			List<CodeAssigne> codesMorpho = new ArrayList<CodeAssigne>();
+			for(CodeAssigne codeA : getObject().getCodesAssignes()) {
+				if (codeA.getIsOrgane()) {
+					codesOrgane.add(codeA);
+				} else if (codeA.getIsMorpho()) {
+					codesMorpho.add(codeA);
+				}
+			}		
+			getCodesOrganeController().addCodesFromInjection(codesOrgane);
+			getCodesMorphoController().addCodesFromInjection(codesMorpho);
+		}
 	}
 
 	/**
@@ -1799,11 +1817,11 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit {
 		return getParentObject();
 	}
 
-	public String[] getConnaissances() {
+	public ListModel<String> getConnaissances() {
 		return connaissances;
 	}
 
-	public void setConnaissances(final String[] c) {
+	public void setConnaissances(final SimpleListModel<String> c) {
 		this.connaissances = c;
 	}
 
@@ -2836,10 +2854,13 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit {
 		if (ind > -1) {
 			echan = getInjectableEchantillons().get(ind);
 		}
-
+		
+		injectEchantillon(echan);
+	}
+	
+	protected void injectEchantillon(Echantillon echan) {
 		if (echan != null) {
-
-			clearForm(true);
+			clearForm(false);
 
 			setCodePrefixe(echan.getCode());
 			setSelectedType(echan.getEchantillonType());
@@ -2851,28 +2872,30 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit {
 			// car setObj passe prelevement à null..
 			// setParentObject(echan.getPrelevement());
 
-			selectOperateur();
-		}
+			initEditableMode();
+		
+			getBinder().loadComponent(self);
 
-		getBinder().loadComponent(self);
-
-		// déclenche manuellement la validation de concordance
-		// des dates
-		onBlur$dateStockCalBox();
-	}
-
-	/**
-	 * Méthode inspirée initCollaborations et allégée pour appel uniquement dans
-	 * injection opérateur depuis interfaçage.
-	 */
-	private void selectOperateur() {
-		if (getObject().getCollaborateur() != null) {
-			setSelectedCollaborateur(this.getObject().getCollaborateur());
-			collabBox.setValue(getSelectedCollaborateur().getNomAndPrenom());
-		} else {
-			setSelectedCollaborateur(null);
+			// déclenche manuellement la validation de concordance
+			// des dates
+			// onBlur$dateStockCalBox();
 		}
 	}
+
+//	/**
+//	 * Selectionne les items dans les listes après une injection
+//	 */
+//	private void initSelectedInList() {
+//		
+//		// Méthode inspirée initCollaborations et allégée pour appel uniquement dans
+//		// injection opérateur depuis interfaçage.
+//		if (getObject().getCollaborateur() != null) {
+//			setSelectedCollaborateur(this.getObject().getCollaborateur());
+//			collabBox.setValue(getSelectedCollaborateur().getNomAndPrenom());
+//		} else {
+//			setSelectedCollaborateur(null);
+//		}
+//	}
 
 	/**
 	 * Validation sécifique des listboxes obligatoires Gatsbi surcharge cette

@@ -149,7 +149,7 @@ public class FichePrelevementEditGatsbi extends FichePrelevementEdit {
 	}
 
 	/**
-	 * Surcharge pour gérer la redirection d'évènement.
+	 * Surcharge pour gérer la redirection d'évènement lors du choix d'un paramétrage
 	 */
 	@Override
 	public void onGetInjectionDossierExterneDone(Event e) {

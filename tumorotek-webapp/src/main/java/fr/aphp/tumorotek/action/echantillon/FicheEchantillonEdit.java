@@ -216,7 +216,7 @@ public class FicheEchantillonEdit extends AbstractFicheEditController {
 
 		if (SessionUtils.getSelectedBanques(sessionScope).size() > 0
 				&& (SessionUtils.getCurrentContexte() == EContexte.DEFAUT
-				 || SessionUtils.getCurrentGatsbiContexteForEntiteId(3) != null)) {
+						|| SessionUtils.getCurrentGatsbiContexteForEntiteId(3) != null)) {
 			setGroupInfosCompEchanOpen(true);
 		} else {
 			setGroupInfosCompEchanOpen(false);
@@ -241,8 +241,6 @@ public class FicheEchantillonEdit extends AbstractFicheEditController {
 			getCodesMorphoController().setObjs(CodeAssigneDecorator.decorateListe(
 					ManagerLocator.getCodeAssigneManager().findCodesMorphoByEchantillonManager(echantillon)));
 
-			initDelaiCgl();
-
 			// cr anapath
 			if (echantillon.getCrAnapath() != null) {
 				showDeleteAndFileNameBox(true);
@@ -254,9 +252,6 @@ public class FicheEchantillonEdit extends AbstractFicheEditController {
 			quantiteInitBoxEchan.setDisabled(echantillon.getObjetStatut().getStatut().equals("ENCOURS"));
 			quaniteUnitesBoxEchan.setDisabled(echantillon.getObjetStatut().getStatut().equals("ENCOURS"));
 
-			if (echantillon.getLateralite() != null) {
-				selectedLateralite = echantillon.getLateralite();
-			}
 		}
 		// envoie l'enchantillon au controller des codes assignes
 		getCodesOrganeController().setEchantillon(echantillon);
@@ -419,11 +414,11 @@ public class FicheEchantillonEdit extends AbstractFicheEditController {
 		}
 
 		// update de l'objet
-		ManagerLocator.getEchantillonManager().updateObjectWithNonConformitesManager(echantillon, 
-				GatsbiController.enrichesBanqueWithEtudeContextes(echantillon.getBanque(), sessionScope),
-				prelevement, selectedCollaborateur, statut, emp, selectedType, codesToCreateOrEdit,
-				codesAssignesToDelete, selectedQuantiteUnite, selectedQualite, selectedPrepa, getCrAnapath(),
-				getAnapathStream(), getObjectTabController().getFicheAnnotation().getValeursToCreateOrUpdate(),
+		ManagerLocator.getEchantillonManager().updateObjectWithNonConformitesManager(echantillon,
+				GatsbiController.enrichesBanqueWithEtudeContextes(echantillon.getBanque(), sessionScope), prelevement,
+				selectedCollaborateur, statut, emp, selectedType, codesToCreateOrEdit, codesAssignesToDelete,
+				selectedQuantiteUnite, selectedQualite, selectedPrepa, getCrAnapath(), getAnapathStream(),
+				getObjectTabController().getFicheAnnotation().getValeursToCreateOrUpdate(),
 				getObjectTabController().getFicheAnnotation().getValeursToDelete(),
 				SessionUtils.getLoggedUser(sessionScope), true, null, SessionUtils.getSystemBaseDir(), noconfsT,
 				noconfsC);
@@ -814,13 +809,13 @@ public class FicheEchantillonEdit extends AbstractFicheEditController {
 		}
 
 		if (this.echantillon.getDelaiCgl() != null) {
-			final Float heure = this.echantillon.getDelaiCgl() / 60;
-			if (heure > 0) {
-				heureDelai = heure.intValue();
-				minDelai = this.echantillon.getDelaiCgl().intValue() - (heureDelai * 60);
+
+			final int delaiRound = Math.round(this.echantillon.getDelaiCgl());
+			if (delaiRound > 59) {
+				setHeureDelai(delaiRound / 60);
+				setMinDelai(delaiRound - (heureDelai * 60));
 			} else {
-				heureDelai = 0;
-				minDelai = this.echantillon.getDelaiCgl().intValue();
+				setMinDelai(delaiRound);
 			}
 		} else {
 			calculDelaiCgl();
@@ -881,9 +876,8 @@ public class FicheEchantillonEdit extends AbstractFicheEditController {
 		prepas = ManagerLocator.getModePrepaManager().findByOrderManager(SessionUtils.getPlateforme(sessionScope));
 		prepas.add(0, null);
 
-		
 		Entite echEntite = ManagerLocator.getEntiteManager().findByIdManager(3);
-		
+
 		// init des non conformites de traitement
 		nonConformitesTraitement = ManagerLocator.getNonConformiteManager().findByPlateformeEntiteAndTypeStringManager(
 				SessionUtils.getPlateforme(sessionScope), "Traitement", echEntite);
@@ -947,6 +941,11 @@ public class FicheEchantillonEdit extends AbstractFicheEditController {
 		if (this.echantillon.getQuantite() != null && this.echantillon.getQuantiteInit() == null) {
 			this.echantillon.setQuantiteInit(this.echantillon.getQuantite());
 		}
+
+		// @since 2.3.0-gatsbi
+		selectedLateralite = echantillon.getLateralite();
+
+		initDelaiCgl();
 
 		initNonConformites();
 	}
@@ -1110,7 +1109,7 @@ public class FicheEchantillonEdit extends AbstractFicheEditController {
 	public List<EchanQualite> getQualites() {
 		return qualites;
 	}
-	
+
 	public void setQualites(List<EchanQualite> qualites) {
 		this.qualites = qualites;
 	}
@@ -1134,7 +1133,7 @@ public class FicheEchantillonEdit extends AbstractFicheEditController {
 	public List<ModePrepa> getPrepas() {
 		return prepas;
 	}
-	
+
 	public void setPrepas(List<ModePrepa> _p) {
 		this.prepas = _p;
 	}
@@ -1182,7 +1181,7 @@ public class FicheEchantillonEdit extends AbstractFicheEditController {
 	public List<Unite> getQuantiteUnites() {
 		return quantiteUnites;
 	}
-	
+
 	public void setQuantiteUnites(List<Unite> _q) {
 		this.quantiteUnites = _q;
 	}
