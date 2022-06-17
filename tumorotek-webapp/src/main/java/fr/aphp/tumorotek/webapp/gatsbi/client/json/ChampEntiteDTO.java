@@ -50,7 +50,6 @@ import fr.aphp.tumorotek.model.contexte.gatsbi.ChampEntite;
 @JsonPropertyOrder({
 	"champId",
 	"champOrdre",
-	"contexteChampEntiteId",
 	"dateFormat",
 	"isChampReferToThesaurus",
 	"obligatoire",

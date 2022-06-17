@@ -460,8 +460,7 @@ public class GatsbiController {
 				boolean throwEmptyError = false;
 				Component throwEmptyErrorComponent = null;
 				
-				if (div.getId().startsWith("nonConformite")) { 	// non conformite
-
+				if (div.getId().startsWith("conforme")) { 	// non conformite
 					if (div.getLastChild().getChildren().stream().filter(c -> c instanceof Checkbox)
 							.noneMatch(c -> ((Checkbox) c).isChecked())) {
 						throwEmptyError = true;

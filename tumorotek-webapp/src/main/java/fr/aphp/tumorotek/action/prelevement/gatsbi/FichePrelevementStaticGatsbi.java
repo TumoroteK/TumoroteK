@@ -64,7 +64,7 @@ public class FichePrelevementStaticGatsbi extends FichePrelevementStatic {
 	private static final long serialVersionUID = -7612780578022559022L;
 
 	private Groupbox groupPrlvt;
-	private Groupbox gridFormPrlvtComp;
+	// private Groupbox gridFormPrlvtComp;
 
 	private Contexte contexte;
 
@@ -75,7 +75,7 @@ public class FichePrelevementStaticGatsbi extends FichePrelevementStatic {
 		contexte = GatsbiController.initWireAndDisplay(this, 
 				2, 
 				false, null, null, null,
-				groupPrlvt, gridFormPrlvtComp);
+				groupPrlvt, (Groupbox) gridFormPrlvtComp);
 
 		// prelevement specific
 		if (groupLaboInter != null) {
