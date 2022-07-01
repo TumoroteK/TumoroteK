@@ -64,7 +64,7 @@ public class ListeEchantillonGatsbi extends ListeEchantillon {
 	private Contexte contexte;
 
 	public ListeEchantillonGatsbi() {
-		setListObjectsRenderer(new EchantillonRowRendererGatsbi(true, false));
+		setListObjectsRenderer(new EchantillonRowRendererGatsbi(true, false, true, true));
 	}
 
 	public void onCheckAll$gridColumns() {

@@ -46,7 +46,6 @@ import org.zkoss.zk.ui.event.ForwardEvent;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Div;
-import org.zkoss.zul.Grid;
 import org.zkoss.zul.Groupbox;
 import org.zkoss.zul.Listbox;
 
@@ -79,6 +78,9 @@ public class FicheMultiEchantillonsGatsbi extends FicheMultiEchantillons
 	// @wire
 	private Groupbox groupEchantillon;
 	private Groupbox groupInfosCompEchan;
+	
+	private final AbstractEchantillonDecoratorRowRenderer echanDecoRendererGatsbi = 
+			new EchantillonDecoratorRowRendererGatsbi();
 
 	@Override
 	public void doAfterCompose(final Component comp) throws Exception{
@@ -93,7 +95,10 @@ public class FicheMultiEchantillonsGatsbi extends FicheMultiEchantillons
 		GatsbiController.initWireAndDisplayForIds(this, 2, "natureDiv");
 		
 		// inner list
-		drawColumnsForEchantillonsToCreate(echantillonsList);
+		// deletable
+		// force pas affichage emplacement et statut stockage en fin de grid
+		GatsbiControllerEchantillon
+			.drawColumnsForEchantillons(contexte, echantillonsList, echanDecoRendererGatsbi, true, true);
 	}
 	
 	@Override
@@ -150,56 +155,8 @@ public class FicheMultiEchantillonsGatsbi extends FicheMultiEchantillons
 	
 	/*********** inner lists ******************/
 	
-	private final AbstractEchantillonDecoratorRowRenderer echanDecoRendererGatsbi = 
-			new EchantillonDecoratorRowRendererGatsbi();
-	
 	public AbstractEchantillonDecoratorRowRenderer getEchanDecoRenderer() {
 		return echanDecoRendererGatsbi;
-	}
-	
-	private void drawColumnsForEchantillonsToCreate(Grid grid)
-			throws ClassNotFoundException, InstantiationException, IllegalAccessException {
-		
-		// icones column, visible si non conformites OU risque est visible
-		if (contexte.isChampIdVisible(249) || contexte.isChampIdVisible(243) || contexte.isChampIdVisible(244)) {
-			
-			int colsize = 0;
-			if (contexte.isChampIdVisible(249)) {
-				colsize = colsize + 35;
-			} 
-			if (contexte.isChampIdVisible(243)) {
-				colsize = colsize + 35;
-			}
-			if (contexte.isChampIdVisible(244)) {
-				colsize = colsize + 35;
-			}
-			
-			GatsbiController.addColumn(grid, null, String.valueOf(colsize).concat("px"),
-					"center", null, null, true);
-
-			// indique au row renderer qu'il doit dessiner les icones
-			echanDecoRendererGatsbi.setIconesRendered(true);
-		}
-
-		// code prel column, toujours affichée
-		GatsbiControllerEchantillon.drawCodeColumn(grid);
-		
-		// variable columns
-		for (Integer chpId : contexte.getChampEntiteInTableauOrdered()) {
-			// statut et emplacement toujours affichés
-			if (chpId != 55 && chpId != 57) {
-				GatsbiControllerEchantillon.addColumnForChpId(chpId, grid);
-			}
-		}
-
-		// emplacement, toujours affiché
-		GatsbiControllerEchantillon.drawEmplacementColumn(grid); 
-
-		// statut, toujours affiché
-		GatsbiControllerEchantillon.drawObjetStatutColumn(grid);
-		
-		// delete col
-		GatsbiController.addColumn(grid, null, "35px", "center", null, null, true);
 	}
 	
 	/*********** Paramétrages ******************/

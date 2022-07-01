@@ -465,14 +465,13 @@
 								style="font-weight: bold;" height="24px"
 								image="/images/icones/add_echantillons.png" sclass="buttonv2"/>
 					</div>
-					<div class="column-container" align="center">
+					<div class="column-container" align="center" style="padding: 5px">
 						<grid id="echantillonsList"
 							fixedLayout="true" 
 							span="true"
 							sclass="gridListStyle"
 							model="@{fwinMultiEchantillons$composer.echantillonsDecorated}"
-							rowRenderer="@{fwinMultiEchantillons$composer.echanDecoRenderer}"
-							>
+							rowRenderer="@{fwinMultiEchantillons$composer.echanDecoRenderer}">
 							<columns sizable="true" width="100%" />
 							<rows id="rows">
 								<row self="@{each='currNewEchan'}" value="@{currNewEchan}" />

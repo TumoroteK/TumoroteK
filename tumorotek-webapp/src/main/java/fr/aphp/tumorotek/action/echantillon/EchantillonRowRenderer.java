@@ -144,7 +144,7 @@ public class EchantillonRowRenderer extends TKSelectObjectRenderer<Echantillon> 
 
 		if (isTtesCollections()) {
 			new Label(echan.getBanque().getNom()).setParent(row);
-		} else {
+		} else if (!isEmbedded) {
 			new Label().setParent(row);
 		}
 

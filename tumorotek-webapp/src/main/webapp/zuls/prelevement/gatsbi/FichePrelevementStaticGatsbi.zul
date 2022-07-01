@@ -501,40 +501,22 @@
 				<!-- Echantillons -->
 				<groupbox id="groupEchans">
 					<caption label="@{fwinPrelevementStatic$composer.echantillonsGroupHeader}" />
-					<div class="item item-wide">
-						<vbox align="center" hflex="1" vflex="1">
-							<grid id="echantillonsGrid"
-								fixedLayout="true" 
-								hflex="1"
-								sclass="gridListStyle"
-								span="true"
-								sizedByContent="false"
-								model="@{fwinPrelevementStatic$composer.echantillons}"
-								rowRenderer="@{fwinPrelevementStatic$composer.echantillonRenderer}">
-								<columns menupopup="auto" sizable="true" >
-									<column align="center" width="70px"/>
-									<column label="${c:l('general.code')}" />
-									<column label="${c:l('Entite.Banque')}" visible="@{fwinPrelevementStatic$composer.ttesCollections}" />
-									<column label="${c:l('Champ.Echantillon.DateStock')}" width="130px" />
-									<column label="${c:l('Champ.Echantillon.Organe')}"/>
-									<column label="${c:l('Champ.Echantillon.CodeLes')}"/>
-									<column label="${c:l('Champ.Echantillon.EchantillonType.Type')}"/>
-									<column label="${c:l('Champ.Echantillon.Quantite')}" width="130px"/>
-									<column label="${c:l('Champ.Echantillon.ObjetStatut')}"/>
-									<column label="${c:l('Champ.Echantillon.Emplacement')}" />
-									<column label="${c:l('derives.nb')}" width="100px"
-										visible="false"/>
-									<column label="${c:l('cession.nb')}" width="100px"
-										visible="false"/>
-								</columns>
-								<rows id="echansRows">
-									<row self="@{each='currEchantillon'}" value="currEchantillon"/>
-								</rows>
-							</grid>
-							<button id="selectAllechantillonsButton" sclass="buttonv2" label="${c:l('general.selectAll')}"  
-									height="24px" visible="@{fwinPrelevementStatic$composer.echantillonsListSizeSupOne}"
-									image="/images/icones/selectall.png" forward="onClick=onSelectAllEchantillons(all)" />
-						</vbox>
+					<div class="column-container" align="center" style="padding: 5px">
+						<grid id="echantillonsGrid"
+							fixedLayout="true" 
+							sclass="gridListStyle"
+							span="true"
+							sizedByContent="false"
+							model="@{fwinPrelevementStatic$composer.echantillons}"
+							rowRenderer="@{fwinPrelevementStatic$composer.echantillonRenderer}">
+							<columns menupopup="auto" sizable="true" width="100%" />
+							<rows id="echansRows">
+								<row self="@{each='currEchantillon'}" value="currEchantillon"/>
+							</rows>
+						</grid>
+						<button id="selectAllechantillonsButton" sclass="buttonv2" label="${c:l('general.selectAll')}"  
+								height="24px" visible="@{fwinPrelevementStatic$composer.echantillonsListSizeSupOne}"
+								image="/images/icones/selectall.png" forward="onClick=onSelectAllEchantillons(all)" />
 					</div>
 				</groupbox>
 				<div class="block-separator" />

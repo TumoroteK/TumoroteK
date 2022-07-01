@@ -56,12 +56,13 @@ import fr.aphp.tumorotek.action.utils.TKStockableObjectUtils;
 import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
 import fr.aphp.tumorotek.dto.EchantillonDTO;
 import fr.aphp.tumorotek.manager.exception.DoublonFoundException;
+import fr.aphp.tumorotek.webapp.gatsbi.RowRendererGatsbi;
 
 /**
  * @author GCH
  *
  */
-public abstract class AbstractEchantillonDecoratorRowRenderer implements RowRenderer<EchantillonDTO> {
+public abstract class AbstractEchantillonDecoratorRowRenderer implements RowRenderer<EchantillonDTO>, RowRendererGatsbi {
 
 	private List<String> usedCodes = null;
 
@@ -187,10 +188,12 @@ public abstract class AbstractEchantillonDecoratorRowRenderer implements RowRend
 	 * @since 2.3.0-gatsbi
 	 * @return true si les icones doivent être dessinées
 	 */
-	protected boolean areIconesRendered() {
+	@Override
+	public boolean areIconesRendered() {
 		return true;
 	}
 
+	@Override
 	public void setIconesRendered(boolean _i) {
 	}
 

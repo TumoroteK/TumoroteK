@@ -46,6 +46,7 @@ import org.zkoss.zul.Row;
 import fr.aphp.tumorotek.action.prelevement.PrelevementRowRenderer;
 import fr.aphp.tumorotek.model.coeur.prelevement.Prelevement;
 import fr.aphp.tumorotek.model.contexte.gatsbi.Contexte;
+import fr.aphp.tumorotek.webapp.gatsbi.RowRendererGatsbi;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
 /**
@@ -56,7 +57,7 @@ import fr.aphp.tumorotek.webapp.general.SessionUtils;
  * @author Mathieu BARTHELEMY
  * @version 2.3.0-gatsi
  */
-public class PrelevementRowRendererGatsbi extends PrelevementRowRenderer {
+public class PrelevementRowRendererGatsbi extends PrelevementRowRenderer implements RowRendererGatsbi {
 
 	private Contexte contexte;
 
@@ -216,12 +217,13 @@ public class PrelevementRowRendererGatsbi extends PrelevementRowRenderer {
 		}
 	}
 
+	@Override
 	public void setIconesRendered(boolean _i) {
 		this.iconesRendered = _i;
 	}
 
 	@Override
-	protected boolean areIconesRendered() {
+	public boolean areIconesRendered() {
 		return iconesRendered;
 	}
 }

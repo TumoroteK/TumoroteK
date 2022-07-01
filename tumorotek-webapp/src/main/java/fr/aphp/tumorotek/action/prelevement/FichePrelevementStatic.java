@@ -188,8 +188,8 @@ public class FichePrelevementStatic extends AbstractFicheStaticController
       }
       // gatsbi **************** 
 
-      echantillonRenderer.setEmbedded(true);
-      echantillonRenderer.setTtesCollections(getTtesCollections());
+      getEchantillonRenderer().setEmbedded(true);
+      getEchantillonRenderer().setTtesCollections(getTtesCollections());
 
       prodDeriveRenderer.setEmbedded(true);
       prodDeriveRenderer.setTtesCollections(getTtesCollections());
@@ -824,15 +824,15 @@ public class FichePrelevementStatic extends AbstractFicheStaticController
       }
       // si pas le droit d'accès aux échantillons, on cache le lien
       if(!getDroitsConsultation().get("Echantillon")){
-         echantillonRenderer.setAccessible(false);
+         getEchantillonRenderer().setAccessible(false);
          canAccessEchantillons = false;
       }else{
-         echantillonRenderer.setAccessible(true);
+    	  getEchantillonRenderer().setAccessible(true);
          canAccessEchantillons = true;
       }
 
       final boolean canStockage = getDroitOnAction("Stockage", "Consultation");
-      echantillonRenderer.setAccessStockage(canStockage);
+      getEchantillonRenderer().setAccessStockage(canStockage);
       prodDeriveRenderer.setAccessStockage(canStockage);
 
       // gestion des droits sur les patients
@@ -844,7 +844,7 @@ public class FichePrelevementStatic extends AbstractFicheStaticController
 
       super.applyDroitsOnFiche();
       addDerive.setDisabled(!canCreateDerive);
-      echantillonRenderer.setAnonyme(isAnonyme());
+      getEchantillonRenderer().setAnonyme(isAnonyme());
       prodDeriveRenderer.setAnonyme(isAnonyme());
 
       // change collection

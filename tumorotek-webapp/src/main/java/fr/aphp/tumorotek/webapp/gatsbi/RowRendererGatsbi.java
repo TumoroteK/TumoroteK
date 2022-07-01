@@ -1,6 +1,7 @@
 /**
- * Copyright ou © ou Copr. Ministère de la santé, FRANCE (01/01/2011)
- * dsi-projet.tk@aphp.fr
+ * Copyright ou © ou Copr. Assistance Publique des Hôpitaux de 
+ * PARIS et SESAN
+ * projet-tk@sesan.fr
  *
  * Ce logiciel est un programme informatique servant à la gestion de
  * l'activité de biobanques.
@@ -33,57 +34,11 @@
  * avez pris connaissance de la licence CeCILL, et que vous en avez
  * accepté les termes.
  **/
-package fr.aphp.tumorotek.action.echantillon.gatsbi;
+package fr.aphp.tumorotek.webapp.gatsbi;
 
-import java.lang.reflect.InvocationTargetException;
-import java.text.ParseException;
-
-import org.zkoss.zul.Row;
-
-import fr.aphp.tumorotek.action.echantillon.AbstractEchantillonDecoratorRowRenderer;
-import fr.aphp.tumorotek.dto.EchantillonDTO;
-import fr.aphp.tumorotek.model.contexte.gatsbi.Contexte;
-import fr.aphp.tumorotek.webapp.general.SessionUtils;
-
-/**
- * EchantillonDecoratorRenderer surcharge gatsbi
- *
- * @author Mathieu BARTHELEMY.
- * @version 2.3.0-gatsbi
- */
-public class EchantillonDecoratorRowRendererGatsbi extends AbstractEchantillonDecoratorRowRenderer {
-
-	private boolean iconesRendered = false;
+public interface RowRendererGatsbi {
 	
-	private Contexte contexte;
-	
-	public EchantillonDecoratorRowRendererGatsbi() {
-		contexte = SessionUtils.getCurrentGatsbiContexteForEntiteId(3);
-	}
+	public boolean areIconesRendered();
 
-	@Override
-	public void render(final Row row, final EchantillonDTO deco, final int index) {
-		super.render(row, deco, index);
-	}
-
-	@Override
-	protected void renderEchantillon(Row row, EchantillonDTO deco) 
-			throws IllegalAccessException, InvocationTargetException, NoSuchMethodException, ParseException {	
-		for (Integer chpId : contexte.getChampEntiteInTableauOrdered()) {
-			if (!chpId.equals(55) && !chpId.equals(57)) { // statut et emplacement toujours rendus
-				GatsbiControllerEchantillon
-					.applyEchantillonDecoratorChpRender(chpId, row, deco, false, false);
-			}
-		}
-	}
-
-	@Override
-	public void setIconesRendered(boolean _i) {
-		this.iconesRendered = _i;
-	}
-
-	@Override
-	public boolean areIconesRendered() {
-		return iconesRendered;
-	}
+	public void setIconesRendered(boolean _i);
 }

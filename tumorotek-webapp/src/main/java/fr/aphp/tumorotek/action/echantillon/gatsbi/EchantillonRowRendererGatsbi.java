@@ -36,20 +36,15 @@
  **/
 package fr.aphp.tumorotek.action.echantillon.gatsbi;
 
-import java.io.FileInputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.text.ParseException;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.zkoss.zk.ui.event.Event;
-import org.zkoss.zul.Filedownload;
 import org.zkoss.zul.Row;
 
 import fr.aphp.tumorotek.action.echantillon.EchantillonRowRenderer;
 import fr.aphp.tumorotek.model.coeur.echantillon.Echantillon;
 import fr.aphp.tumorotek.model.contexte.gatsbi.Contexte;
-import fr.aphp.tumorotek.model.systeme.Fichier;
+import fr.aphp.tumorotek.webapp.gatsbi.RowRendererGatsbi;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
 /**
@@ -60,19 +55,36 @@ import fr.aphp.tumorotek.webapp.general.SessionUtils;
  * @author Mathieu BARTHELEMY
  * @version 2.3.0-gatsi
  */
-public class EchantillonRowRendererGatsbi extends EchantillonRowRenderer {
+public class EchantillonRowRendererGatsbi extends EchantillonRowRenderer implements RowRendererGatsbi {
 	
-	private final Log log = LogFactory.getLog(EchantillonRowRendererGatsbi.class);
-
 	private Contexte contexte;
 
 	// par défaut les icones sont toujours dessinées car impact evt de stockage
 	private boolean iconesRendered = true;
+	
+	private boolean renderNbs = true;
+	
+	private boolean drawCheckbox = true;
 
-	public EchantillonRowRendererGatsbi(final boolean select, final boolean cols) {
+	public EchantillonRowRendererGatsbi(final boolean select, final boolean cols, 
+			final boolean _c, final boolean _r) {
 		super(select, cols);
-
+		
+		this.drawCheckbox = _c;
+		this.renderNbs = _r;
+		
 		contexte = SessionUtils.getCurrentGatsbiContexteForEntiteId(3);
+	}
+	
+	@Override
+	public void render(final Row row, final Echantillon data, final int index) {
+
+		if (drawCheckbox) {
+			// dessine le checkbox
+			super.render(row, data, index);
+		}
+
+		renderObjets(row, data);
 	}
 
 	@Override
@@ -84,17 +96,20 @@ public class EchantillonRowRendererGatsbi extends EchantillonRowRenderer {
 				.applyEchantillonChpRender(chpId, row, echan, isAnonyme(), isAccessStockage());
 		}
 
-		renderNbDerives(row, echan);
+		if (renderNbs) {
+			renderNbDerives(row, echan);
 
-		renderNbCessions(row, echan);
+			renderNbCessions(row, echan);
+		}
 	}
-
+	
+	@Override
 	public void setIconesRendered(boolean _i) {
 		this.iconesRendered = _i;
 	}
 
 	@Override
-	protected boolean areIconesRendered() {
+	public boolean areIconesRendered() {
 		return iconesRendered;
 	}
 }

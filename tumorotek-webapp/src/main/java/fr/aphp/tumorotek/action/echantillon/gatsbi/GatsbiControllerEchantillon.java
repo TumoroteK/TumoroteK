@@ -50,6 +50,7 @@ import fr.aphp.tumorotek.dto.EchantillonDTO;
 import fr.aphp.tumorotek.model.coeur.echantillon.Echantillon;
 import fr.aphp.tumorotek.model.contexte.gatsbi.Contexte;
 import fr.aphp.tumorotek.webapp.gatsbi.GatsbiController;
+import fr.aphp.tumorotek.webapp.gatsbi.RowRendererGatsbi;
 
 /**
  * Gatsbi controller regroupant les fonctionalités de modification dynamique de
@@ -137,7 +138,7 @@ public class GatsbiControllerEchantillon {
 	public static Column drawPatientColumn(Grid grid)
 			throws ClassNotFoundException, InstantiationException, IllegalAccessException {
 		return GatsbiController.addColumn(grid, "prelevement.patient", null, null, null, "auto(maladie.patient.nom)",
-				true);
+				false);
 	}
 
 	// nb dérivés toujours affichée
@@ -420,6 +421,69 @@ public class GatsbiControllerEchantillon {
 			break;
 		default:
 			break;
+		}
+	}
+	
+	/**
+	 * Polymorphismes s'applqie sur  deletable et force affichage emplacement et statut de stockage 
+	 * car cette méthode est appelée pour rendre des inner lists de l'onglet Echantillon (échantillons 
+	 * en création dans FicheMultiEchantillon) et de l'onglet Prélèvement. 
+	 * @param contexte
+	 * @param grid
+	 * @param rowRenderer
+	 * @param deletable si true, affiche une dernière colonne avec un bouton delete
+	 * @param forceEmplacementAndStatut si true, affiche obligatoire les deux colonnes, à la fin.
+	 * @throws ClassNotFoundException
+	 * @throws InstantiationException
+	 * @throws IllegalAccessException
+	 */
+	public static void drawColumnsForEchantillons(Contexte contexte, Grid grid, RowRendererGatsbi rowRenderer, 
+			boolean deletable, boolean forceEmplacementAndStatut)
+			throws ClassNotFoundException, InstantiationException, IllegalAccessException {
+
+		// icones column, visible si non conformites OU risque est visible
+		if (contexte.isChampIdVisible(249) || contexte.isChampIdVisible(243) || contexte.isChampIdVisible(244)) {
+
+			int colsize = 0;
+			if (contexte.isChampIdVisible(249)) {
+				colsize = colsize + 35;
+			}
+			if (contexte.isChampIdVisible(243)) {
+				colsize = colsize + 35;
+			}
+			if (contexte.isChampIdVisible(244)) {
+				colsize = colsize + 35;
+			}
+
+			GatsbiController.addColumn(grid, null, String.valueOf(colsize).concat("px"), "center", null, null, true);
+
+			// indique au row renderer qu'il doit dessiner les icones
+			rowRenderer.setIconesRendered(true);
+		}
+
+		// code echan column, toujours affichée
+		GatsbiControllerEchantillon.drawCodeColumn(grid);
+
+		// variable columns
+		
+		for (Integer chpId : contexte.getChampEntiteInTableauOrdered()) {
+			// statut et emplacement toujours affichés
+			if (!forceEmplacementAndStatut || (chpId != 55 && chpId != 57)) {
+				GatsbiControllerEchantillon.addColumnForChpId(chpId, grid);
+			}
+		}
+
+		if (forceEmplacementAndStatut) {
+			// emplacement, toujours affiché
+			GatsbiControllerEchantillon.drawEmplacementColumn(grid);
+	
+			// statut, toujours affiché
+			GatsbiControllerEchantillon.drawObjetStatutColumn(grid);
+		}
+
+		// delete col
+		if (deletable) {
+			GatsbiController.addColumn(grid, null, "35px", "center", null, null, true);
 		}
 	}
 }

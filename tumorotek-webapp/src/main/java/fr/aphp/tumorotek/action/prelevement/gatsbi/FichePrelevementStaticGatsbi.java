@@ -43,6 +43,9 @@ import org.zkoss.zul.Groupbox;
 import org.zkoss.zul.Messagebox;
 
 import fr.aphp.tumorotek.action.echantillon.EchantillonController;
+import fr.aphp.tumorotek.action.echantillon.EchantillonRowRenderer;
+import fr.aphp.tumorotek.action.echantillon.gatsbi.EchantillonRowRendererGatsbi;
+import fr.aphp.tumorotek.action.echantillon.gatsbi.GatsbiControllerEchantillon;
 import fr.aphp.tumorotek.action.patient.ResumePatient;
 import fr.aphp.tumorotek.action.prelevement.FichePrelevementStatic;
 import fr.aphp.tumorotek.action.prelevement.gatsbi.exception.GatsbiException;
@@ -64,23 +67,30 @@ public class FichePrelevementStaticGatsbi extends FichePrelevementStatic {
 	private static final long serialVersionUID = -7612780578022559022L;
 
 	private Groupbox groupPrlvt;
-	// private Groupbox gridFormPrlvtComp;
 
 	private Contexte contexte;
+	
+	private final EchantillonRowRendererGatsbi echantillonRendererGatsbi = 
+			new EchantillonRowRendererGatsbi(false, false, false, false);
 
 	@Override
 	public void doAfterCompose(final Component comp) throws Exception {
 		super.doAfterCompose(comp);
-		
-		contexte = GatsbiController.initWireAndDisplay(this, 
-				2, 
-				false, null, null, null,
-				groupPrlvt, (Groupbox) gridFormPrlvtComp);
+
+		contexte = GatsbiController.initWireAndDisplay(this, 2, false, null, null, null, groupPrlvt,
+				(Groupbox) gridFormPrlvtComp);
 
 		// prelevement specific
 		if (groupLaboInter != null) {
 			groupLaboInter.setVisible(contexte != null && contexte.getSiteInter());
 		}
+		
+		// inner list
+		// non deletable
+		// ne force pas affichage emplacement et statut stockage en fin de grid
+		GatsbiControllerEchantillon
+			.drawColumnsForEchantillons(SessionUtils.getCurrentGatsbiContexteForEntiteId(3), 
+					echantillonsGrid, echantillonRendererGatsbi, false, false);
 	}
 
 	@Override
@@ -101,16 +111,14 @@ public class FichePrelevementStaticGatsbi extends FichePrelevementStatic {
 	 * @param click event
 	 */
 	@Override
-	public void onClick$addNew() {		
-		GatsbiController.addNewObjectForContext(contexte, self, 
-			e -> {
-				try {
-					super.onClick$addNew();
-				} catch (Exception ex) {
-					Messagebox.show(handleExceptionMessage(ex), 
-							"Error", Messagebox.OK, Messagebox.ERROR);
-				}
-			}, null, null);
+	public void onClick$addNew() {
+		GatsbiController.addNewObjectForContext(contexte, self, e -> {
+			try {
+				super.onClick$addNew();
+			} catch (Exception ex) {
+				Messagebox.show(handleExceptionMessage(ex), "Error", Messagebox.OK, Messagebox.ERROR);
+			}
+		}, null, null);
 	}
 
 	/**
@@ -122,47 +130,48 @@ public class FichePrelevementStaticGatsbi extends FichePrelevementStatic {
 	public void onGetSelectedParametrage(ForwardEvent evt) throws Exception {
 
 		try {
-			
-			GatsbiController.getSelectedParametrageFromSelectEvent(contexte, 
-				SessionUtils.getCurrentBanque(sessionScope), 
-				getObjectTabController(), 
-				p -> {
-					// cong depart OU cong arrivee
-					if (p.getDefaultValuesForChampEntiteId(269) != null
-							&& p.getDefaultValuesForChampEntiteId(269).contentEquals("1")
-							&& p.getDefaultValuesForChampEntiteId(270) != null
-							&& p.getDefaultValuesForChampEntiteId(270).contentEquals("1")) {
-						throw new TKException("gatsbi.illegal.parametrage.prelevement.cong");
-					}
-				}, 
-				() -> {
-					try {
-						super.onClick$addNew();
-					} catch (Exception ex) {
-						Messagebox.show(handleExceptionMessage(ex), 
-								"Error", Messagebox.OK, Messagebox.ERROR);
-					}
-				}, evt);	
+
+			GatsbiController.getSelectedParametrageFromSelectEvent(contexte,
+					SessionUtils.getCurrentBanque(sessionScope), getObjectTabController(), p -> {
+						// cong depart OU cong arrivee
+						if (p.getDefaultValuesForChampEntiteId(269) != null
+								&& p.getDefaultValuesForChampEntiteId(269).contentEquals("1")
+								&& p.getDefaultValuesForChampEntiteId(270) != null
+								&& p.getDefaultValuesForChampEntiteId(270).contentEquals("1")) {
+							throw new TKException("gatsbi.illegal.parametrage.prelevement.cong");
+						}
+					}, () -> {
+						try {
+							super.onClick$addNew();
+						} catch (Exception ex) {
+							Messagebox.show(handleExceptionMessage(ex), "Error", Messagebox.OK, Messagebox.ERROR);
+						}
+					}, evt);
 		} catch (GatsbiException e) {
 			Messagebox.show(handleExceptionMessage(e), "Error", Messagebox.OK, Messagebox.ERROR);
 		}
 	}
-	
-	@Override
-	public void onClick$addEchan(final Event event) throws Exception{
-		
-		final EchantillonController tabController = 
-				(EchantillonController) EchantillonController.backToMe(getMainWindow(), page);
 
-		GatsbiController.addNewObjectForContext(SessionUtils
-			.getCurrentGatsbiContexteForEntiteId(3), tabController.getListe().getSelfComponent(), 
-				e -> {
+	@Override
+	public void onClick$addEchan(final Event event) throws Exception {
+
+		final EchantillonController tabController = (EchantillonController) EchantillonController
+				.backToMe(getMainWindow(), page);
+
+		GatsbiController.addNewObjectForContext(SessionUtils.getCurrentGatsbiContexteForEntiteId(3),
+				tabController.getListe().getSelfComponent(), e -> {
 					try {
-						 super.onClick$addEchan(event);
+						super.onClick$addEchan(event);
 					} catch (Exception ex) {
-						Messagebox.show(handleExceptionMessage(ex), 
-								"Error", Messagebox.OK, Messagebox.ERROR);
+						Messagebox.show(handleExceptionMessage(ex), "Error", Messagebox.OK, Messagebox.ERROR);
 					}
-				}, event, this.prelevement);	     
-	   }
+				}, event, this.prelevement);
+	}
+
+	/*********** inner lists ******************/
+
+	@Override
+	public EchantillonRowRenderer getEchantillonRenderer() {
+		return echantillonRendererGatsbi;
+	}
 }
