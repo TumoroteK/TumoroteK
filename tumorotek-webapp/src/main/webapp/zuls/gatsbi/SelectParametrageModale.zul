@@ -46,8 +46,8 @@
 			multiple="false" checkmark="false" style="padding: 2px 15px 2px 2px"
 			onSelect="@command('onSelectParametrage', paramId=self.selectedItem.value)">
 			<template name="model">
-				<listitem value="@load(each.parametrageId)">
-                    <listcell label="@load(each.parametrageLibelle)"/>
+				<listitem value="@load(each.contexteParametrageId)">
+                    <listcell label="@load(each.nom)"/>
                 </listitem>
 			</template>
 		</listbox>

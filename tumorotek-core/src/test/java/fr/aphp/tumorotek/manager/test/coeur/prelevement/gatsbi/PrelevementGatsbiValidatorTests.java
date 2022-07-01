@@ -71,7 +71,7 @@ public class PrelevementGatsbiValidatorTests extends AbstractManagerTest4
 	public void setUp() {
 		contexte = new Contexte();  
 		contexte.setContexteType(ContexteType.PRELEVEMENT);
-		contexte.setContexteLibelle("test_contexte");
+		contexte.setNom("test_contexte");
 		Banque bank = new Banque();
 		Etude etude = new Etude();
 		etude.addToContextes(contexte);
@@ -85,11 +85,11 @@ public class PrelevementGatsbiValidatorTests extends AbstractManagerTest4
 
 		// given
 		ChampEntite nature = new ChampEntite();
-		nature.setChampId(24);
+		nature.setChampEntiteId(24);
 		nature.setObligatoire(false);
 		contexte.getChampEntites().add(nature);	   
 		ChampEntite consentType = new ChampEntite();
-		consentType.setChampId(26);
+		consentType.setChampEntiteId(26);
 		consentType.setObligatoire(false);
 		contexte.getChampEntites().add(consentType);	      
 		boolean caught = false;
@@ -110,7 +110,7 @@ public class PrelevementGatsbiValidatorTests extends AbstractManagerTest4
 	public void checkRequiredObjectsAndValidate_shouldFailIfNatureIsRequired_whenGastbiApplies() {
 		// given
 		ChampEntite nature = new ChampEntite();
-		nature.setChampId(24);
+		nature.setChampEntiteId(24);
 		nature.setObligatoire(true);
 		contexte.getChampEntites().add(nature);
 		boolean caught = false;
@@ -132,7 +132,7 @@ public class PrelevementGatsbiValidatorTests extends AbstractManagerTest4
 	public void checkRequiredObjectsAndValidate_shouldFailIfConsentTypeIsRequired_whenGastbiApplies() {
 		// given
 		ChampEntite consentType = new ChampEntite();
-		consentType.setChampId(26);
+		consentType.setChampEntiteId(26);
 		consentType.setObligatoire(true);
 		contexte.getChampEntites().add(consentType);	 
 		boolean caught = false;
@@ -212,7 +212,7 @@ public class PrelevementGatsbiValidatorTests extends AbstractManagerTest4
 	private void addChampEntiteAsObligatoireToContexte(List<Integer> chpIds) {
 		for (Integer i : chpIds) {
 			ChampEntite chpE = new ChampEntite();
-			chpE.setChampId(i);
+			chpE.setChampEntiteId(i);
 			chpE.setObligatoire(true);
 			contexte.getChampEntites().add(chpE);	
 		}

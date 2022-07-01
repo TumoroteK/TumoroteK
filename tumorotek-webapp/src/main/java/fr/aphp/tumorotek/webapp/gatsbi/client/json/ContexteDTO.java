@@ -18,12 +18,12 @@ import fr.aphp.tumorotek.model.contexte.gatsbi.ContexteType;
 
 @JsonPropertyOrder({
 	"contexteId",
-	"contexteLibelle",
+	"nom",
 	"type",
 	"archive",
-	"siteInter",
-	"parametrages",
-	"rChampEntites"
+	"siteIntermediaire",
+	"listContexteParametrageNom",
+	"listContexteChampEntite"
 })
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ContexteDTO implements Serializable {
@@ -31,10 +31,10 @@ public class ContexteDTO implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private Integer contexteId;
-	private String contexteLibelle;
+	private String nom;
 	private String type;
 	private Boolean archive;
-	private Boolean siteInter = true;
+	private Boolean siteIntermediaire = true;
 	private List<ParametrageDTO> parametrageDTOs = new ArrayList<ParametrageDTO>();
 	private List<ChampEntiteDTO> champEntiteDTOs = new ArrayList<ChampEntiteDTO>();
 	
@@ -48,12 +48,12 @@ public class ContexteDTO implements Serializable {
 	}
 
 	@JsonProperty
-	public String getContexteLibelle() {
-		return contexteLibelle;
+	public String getNom() {
+		return nom;
 	}
 	
-	public void setContexteLibelle(String contexteLibelle) {
-		this.contexteLibelle = contexteLibelle;
+	public void setNom(String _n) {
+		this.nom = _n;
 	}
 	
 	@JsonProperty
@@ -75,15 +75,15 @@ public class ContexteDTO implements Serializable {
 	}
 	
 	@JsonProperty
-	public Boolean getSiteInter() {
-		return siteInter;
+	public Boolean getSiteIntermediaire() {
+		return siteIntermediaire;
 	}
 
-	public void setSiteInter(Boolean siteInter) {
-		this.siteInter = siteInter;
+	public void setSiteIntermediaire(Boolean _s) {
+		this.siteIntermediaire = _s;
 	}
 	
-	@JsonProperty("parametrages")
+	@JsonProperty("listContexteParametrageNom")
 	public List<ParametrageDTO> getParametrageDTOs() {
 		return parametrageDTOs;
 	}
@@ -92,7 +92,7 @@ public class ContexteDTO implements Serializable {
 		this.parametrageDTOs = _p;;
 	}
 	
-	@JsonProperty("rChampEntites")
+	@JsonProperty("listContexteChampEntite")
 	public List<ChampEntiteDTO> getChampEntiteDTOs() {
 		return champEntiteDTOs;
 	}
@@ -103,7 +103,7 @@ public class ContexteDTO implements Serializable {
 	
 	@JsonIgnore
 	public Contexte toContexte() {
-		return new Contexte(contexteId, contexteLibelle, ContexteType.getByType(type), archive, siteInter, 
+		return new Contexte(contexteId, nom, ContexteType.getByType(type), archive, siteIntermediaire, 
 				parametrageDTOs
 					.stream().map(p -> p.toParametrage())
 					.collect(Collectors.toList()), 

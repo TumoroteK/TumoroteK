@@ -95,7 +95,7 @@ public class FicheRechercheAvanceeGatsbi extends FicheRechercheAvancee {
 		// hide group labo Inter
 		if (groupLaboInters != null) {
 			groupLaboInters.setVisible(SessionUtils.getCurrentGatsbiContexteForEntiteId(2) != null 
-					&& SessionUtils.getCurrentGatsbiContexteForEntiteId(2).getSiteInter());
+					&& SessionUtils.getCurrentGatsbiContexteForEntiteId(2).getSiteIntermediaire());
 		}
 	}
 	

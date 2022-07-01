@@ -45,33 +45,33 @@ public class Parametrage implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
-	private Integer parametrageId;
-	private String parametrageLibelle;
+	private Integer contexteParametrageId;
+	private String nom;
 	private List<ParametrageValue> parametrageValues = new ArrayList<ParametrageValue>();
 	
-	public Parametrage(Integer parametrageId, String parametrageLibelle, List<ParametrageValue> _v) {
+	public Parametrage(Integer parametrageId, String nom, List<ParametrageValue> _v) {
 		super();
-		this.parametrageId = parametrageId;
-		this.parametrageLibelle = parametrageLibelle;
+		this.contexteParametrageId = parametrageId;
+		this.nom = nom;
 		if (_v != null) {
 			this.parametrageValues.addAll(_v);
 		}
 	}
 
-	public Integer getParametrageId() {
-		return parametrageId;
+	public Integer getContexteParametrageId() {
+		return contexteParametrageId;
 	}
 	
-	public void setParametrageId(Integer _i) {
-		this.parametrageId = _i;
+	public void setContexteParametrageId(Integer _i) {
+		this.contexteParametrageId = _i;
 	}
 	
-	public String getParametrageLibelle() {
-		return parametrageLibelle;
+	public String getNom() {
+		return nom;
 	}
 	
-	public void setParametrageLibelle(String _l) {
-		this.parametrageLibelle = _l;
+	public void setNom(String _l) {
+		this.nom = _l;
 	}
 
 	public List<ParametrageValue> getParametrageValues() {
@@ -93,21 +93,21 @@ public class Parametrage implements Serializable {
 
         Parametrage param = (Parametrage) obj;
 
-        return Objects.equals(parametrageId, param.getParametrageId());
+        return Objects.equals(contexteParametrageId, param.getContexteParametrageId());
 	}
 	
 	@Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-    	result = prime * result + ((parametrageId == null) ? 0 : parametrageId.hashCode());
+    	result = prime * result + ((contexteParametrageId == null) ? 0 : contexteParametrageId.hashCode());
     	return result;
 	}
 	
 	public String getDefaultValuesForChampEntiteId(Integer id) {
 		
 		for (ParametrageValue v : parametrageValues) {
-			if (v.getChampId().equals(id)) {
+			if (v.getChampEntiteId().equals(id)) {
 				return v.getDefaultValue();
 			}
 		}

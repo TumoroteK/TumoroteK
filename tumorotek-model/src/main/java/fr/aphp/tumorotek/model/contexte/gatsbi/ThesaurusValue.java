@@ -43,8 +43,7 @@ public class ThesaurusValue implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
-	private Integer champId;
-	// private Integer templateThesaurusId;
+	private Integer champEntiteId;
 	private Integer thesaurusId;
 	private String thesaurusValue;
 	private Integer position;
@@ -52,24 +51,23 @@ public class ThesaurusValue implements Serializable {
 	public ThesaurusValue() {
 	}
 	
-	public ThesaurusValue(Integer champId, 
-			// Integer templateThesaurusId, 
+	public ThesaurusValue(Integer champEntiteId, 
 			Integer thesaurusId, String thesaurusValue,
 			Integer position) {
 		super();
-		this.champId = champId;
+		this.champEntiteId = champEntiteId;
 		// this.templateThesaurusId = templateThesaurusId;
 		this.thesaurusId = thesaurusId;
 		this.thesaurusValue = thesaurusValue;
 		this.position = position;
 	}
 
-	public Integer getChampId() {
-		return champId;
+	public Integer getChampEntiteId() {
+		return champEntiteId;
 	}
 	
-	public void setChampId(Integer _i) {
-		this.champId = _i;
+	public void setChampEntiteId(Integer _i) {
+		this.champEntiteId = _i;
 	}
 	
 //	public Integer getTemplateThesaurusId() {

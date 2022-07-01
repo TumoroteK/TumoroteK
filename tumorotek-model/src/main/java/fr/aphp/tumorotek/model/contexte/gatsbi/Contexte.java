@@ -47,24 +47,24 @@ public class Contexte implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private Integer contexteId;
-	private String contexteLibelle;
+	private String nom;
 	private ContexteType contexteType;
 	private Boolean archive;
-	private Boolean siteInter = true;
+	private Boolean siteIntermediaire = true;
 	protected List<Parametrage> parametrages = new ArrayList<Parametrage>();
 	protected List<ChampEntite> champEntites = new ArrayList<ChampEntite>();
 	
 	public Contexte() {
 	}
 	
-	public Contexte(Integer contexteId, String contexteLibelle, ContexteType contexteType, Boolean archive,
+	public Contexte(Integer contexteId, String nom, ContexteType contexteType, Boolean archive,
 			Boolean siteInter, List<Parametrage> parametrages, List<ChampEntite> champEntites) {
 		super();
 		this.contexteId = contexteId;
-		this.contexteLibelle = contexteLibelle;
+		this.nom = nom;
 		this.contexteType = contexteType;
 		this.archive = archive;
-		this.siteInter = siteInter;
+		this.siteIntermediaire = siteInter;
 		this.parametrages = parametrages;
 		this.champEntites = champEntites;
 	}
@@ -77,12 +77,12 @@ public class Contexte implements Serializable {
 		this.contexteId = contexteId;
 	}
 
-	public String getContexteLibelle() {
-		return contexteLibelle;
+	public String getNom() {
+		return nom;
 	}
 
-	public void setContexteLibelle(String _l) {
-		this.contexteLibelle = _l;
+	public void setNom(String _l) {
+		this.nom = _l;
 	}
 
 	public ContexteType getContexteType() {
@@ -101,12 +101,12 @@ public class Contexte implements Serializable {
 		this.archive = _a;
 	}
 	
-	public Boolean getSiteInter() {
-		return siteInter;
+	public Boolean getSiteIntermediaire() {
+		return siteIntermediaire;
 	}
 
-	public void setSiteInter(Boolean _s) {
-		this.siteInter = _s;
+	public void setSiteIntermediaire(Boolean _s) {
+		this.siteIntermediaire = _s;
 	}
 
 	public List<Parametrage> getParametrages() {
@@ -136,7 +136,7 @@ public class Contexte implements Serializable {
 
        Contexte contexte = (Contexte) obj;
 
-       return Objects.equals(contexteLibelle, contexte.getContexteLibelle())
+       return Objects.equals(nom, contexte.getNom())
        	&& Objects.equals(contexteType, contexte.getContexteType());
 	}
 	
@@ -144,7 +144,7 @@ public class Contexte implements Serializable {
    public int hashCode() {
        final int prime = 31;
        int result = 1;
-   	result = prime * result + ((contexteLibelle == null) ? 0 : contexteLibelle.hashCode());
+   	result = prime * result + ((nom == null) ? 0 : nom.hashCode());
    	result = prime * result + ((contexteType == null) ? 0 : contexteType.hashCode());
    	return result;
 	}
@@ -153,7 +153,7 @@ public class Contexte implements Serializable {
 		List<Integer> ids = new ArrayList<Integer>();
 		for (ChampEntite c : champEntites) {
 			if (!c.getVisible()) {
-				ids.add(c.getChampId());
+				ids.add(c.getChampEntiteId());
 			}
 		}
 		
@@ -202,7 +202,7 @@ public class Contexte implements Serializable {
 		List<Integer> ids = new ArrayList<Integer>();
 		for (ChampEntite c : champEntites) {
 			if (c.getVisible() && c.getObligatoire()) {
-				ids.add(c.getChampId());
+				ids.add(c.getChampEntiteId());
 			}
 		}
 		
@@ -232,9 +232,9 @@ public class Contexte implements Serializable {
 	public List<Integer> getThesaurusChampEntiteIds() {
 		List<Integer> ids = new ArrayList<Integer>();
 		for (ChampEntite c : champEntites) {
-			if (c.getVisible() && (c.getIsChampReferToThesaurus() != null 
+			if (c.getVisible() && (c.getThesaurusTableNom() != null 
 					|| !c.getThesaurusValues().isEmpty())) {  
-				ids.add(c.getChampId());
+				ids.add(c.getChampEntiteId());
 			}
 		}
 		return ids;
@@ -244,7 +244,7 @@ public class Contexte implements Serializable {
 		
 		List<ThesaurusValue> tValues = new ArrayList<ThesaurusValue>();
 		for (ChampEntite c : champEntites) {
-			if (c.getChampId().equals(id)) {
+			if (c.getChampEntiteId().equals(id)) {
 				tValues.addAll(c.getThesaurusValues());
 			}
 		}
@@ -253,7 +253,7 @@ public class Contexte implements Serializable {
 	
 	public boolean isChampIdRequired(Integer id) {
 		for (ChampEntite c : champEntites) {
-			if (c.getChampId().equals(id)) {
+			if (c.getChampEntiteId().equals(id)) {
 				return c.getVisible() && c.getObligatoire();
 			}
 		}
@@ -262,7 +262,7 @@ public class Contexte implements Serializable {
 	
 	public boolean isChampIdVisible(Integer id) {
 		for (ChampEntite c : champEntites) {
-			if (c.getChampId().equals(id)) {
+			if (c.getChampEntiteId().equals(id)) {
 				return c.getVisible();
 			}
 		}
@@ -276,7 +276,7 @@ public class Contexte implements Serializable {
 		
 		for (ChampEntite c : champEntites) {
 			if (c.getVisible() && c.getInTableau()) {
-				ids.add(c.getChampId());
+				ids.add(c.getChampEntiteId());
 			}
 		}		
 		return ids;

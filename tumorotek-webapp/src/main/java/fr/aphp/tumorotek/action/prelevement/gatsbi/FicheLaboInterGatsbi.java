@@ -38,8 +38,6 @@ package fr.aphp.tumorotek.action.prelevement.gatsbi;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.ForwardEvent;
 import org.zkoss.zk.ui.util.Clients;
@@ -48,10 +46,8 @@ import org.zkoss.zul.Div;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Messagebox;
 
-import fr.aphp.tumorotek.action.echantillon.EchantillonController;
 import fr.aphp.tumorotek.action.prelevement.FicheLaboInter;
 import fr.aphp.tumorotek.action.prelevement.gatsbi.exception.GatsbiException;
-import fr.aphp.tumorotek.model.coeur.prelevement.Prelevement;
 import fr.aphp.tumorotek.model.contexte.gatsbi.Contexte;
 import fr.aphp.tumorotek.webapp.gatsbi.GatsbiController;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
@@ -86,7 +82,7 @@ public class FicheLaboInterGatsbi extends FicheLaboInter {
 		
 		// labo inter specific
 		// Show/hide groupLaboInter
-		((Div) gatsbiContainer.getFellowIfAny("groupLaboInter")).setVisible(contexte.getSiteInter());
+		((Div) gatsbiContainer.getFellowIfAny("groupLaboInter")).setVisible(contexte.getSiteIntermediaire());
 	}
 
 	@Override
@@ -96,7 +92,7 @@ public class FicheLaboInterGatsbi extends FicheLaboInter {
 
 		super.switchToCreateMode();
 
-		addLabo.setVisible(contexte.getSiteInter());
+		addLabo.setVisible(contexte.getSiteIntermediaire());
 
 		// scroll up pour se placer en haut de la page
 		Clients.scrollIntoView(gatsbiContainer);
@@ -110,7 +106,7 @@ public class FicheLaboInterGatsbi extends FicheLaboInter {
 
 		super.switchToEditMode();
 
-		addLabo.setVisible(contexte.getSiteInter());
+		addLabo.setVisible(contexte.getSiteIntermediaire());
 	}
 
 	@Override

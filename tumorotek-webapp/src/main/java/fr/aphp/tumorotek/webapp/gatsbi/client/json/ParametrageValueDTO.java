@@ -48,7 +48,7 @@ import org.codehaus.jackson.annotate.JsonPropertyOrder;
 import fr.aphp.tumorotek.model.contexte.gatsbi.ParametrageValue;
 
 @JsonPropertyOrder({
-	"contexteChampEntiteId",
+	"contexteChampEntite",
 	"defaultValue"
 })
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -56,22 +56,22 @@ public class ParametrageValueDTO implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
-	private Integer champId;
+	private Integer champEntiteId;
 	private String defaultValue;
-	private String isChampReferToThesaurus;
+	private String thesaurusTableNom;
 
-	@JsonProperty("contexteChampEntiteId")
+	@JsonProperty("contexteChampEntite")
 	public void unpackChampIdFromNestedObject(Map<String, Object> chpE) {
-	    champId = (Integer) chpE.get("champId");
-		isChampReferToThesaurus = (String) chpE.get("isChampReferToThesaurus");
+	    champEntiteId = (Integer) chpE.get("champEntiteId");
+	    thesaurusTableNom = (String) chpE.get("thesaurusTableNom");
 	}
 	
-	public Integer getChampId() {
-		return this.champId;
+	public Integer getChampEntiteId() {
+		return this.champEntiteId;
 	}
 
-	public void setChampId(Integer _c) {
-		this.champId = _c;
+	public void setChampEntiteId(Integer _c) {
+		this.champEntiteId = _c;
 	}
 
 	@JsonProperty("defaultValue")
@@ -83,14 +83,14 @@ public class ParametrageValueDTO implements Serializable {
 		this.defaultValue = _v;
 	}
 	
-	public String getIsChampReferToThesaurus() {
-		return isChampReferToThesaurus;
-	}
-	
-	public void setIsChampReferToThesaurus(String _t) {
-		this.isChampReferToThesaurus = _t;
+	public String getThesaurusTableNom() {
+		return thesaurusTableNom;
 	}
 
+	public void setThesaurusTableNom(String _t) {
+		this.thesaurusTableNom = _t;
+	}
+	
 	@Override
 	public boolean equals(Object obj) {
 		if (obj == this) {
@@ -102,19 +102,19 @@ public class ParametrageValueDTO implements Serializable {
 
         ParametrageValueDTO param = (ParametrageValueDTO) obj;
 
-        return Objects.equals(champId, param.getChampId());
+        return Objects.equals(champEntiteId, param.getChampEntiteId());
 	}
 	
 	@Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-    	result = prime * result + ((champId == null) ? 0 : champId.hashCode());
+    	result = prime * result + ((champEntiteId == null) ? 0 : champEntiteId.hashCode());
     	return result;
 	}
 	
 	@JsonIgnore
 	public ParametrageValue toParametrageValue() {
-		return new ParametrageValue(champId, defaultValue, isChampReferToThesaurus); 
+		return new ParametrageValue(champEntiteId, defaultValue, thesaurusTableNom); 
 	}
 }

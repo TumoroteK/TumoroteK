@@ -48,26 +48,25 @@ import org.codehaus.jackson.annotate.JsonPropertyOrder;
 import fr.aphp.tumorotek.model.contexte.gatsbi.ChampEntite;
 
 @JsonPropertyOrder({
-	"champId",
-	"champOrdre",
+	"champEntiteId",
+	"champEntiteOrdre",
 	"dateFormat",
-	"isChampReferToThesaurus",
+	"thesaurusTableNom",
 	"obligatoire",
 	"visible", 
 	"inTableau",
 	"ordreTableau",
-	"rThesauruses"
+	"listContexteThesaurusItem"
 })
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ChampEntiteDTO implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
-	private Integer champId;
-	private Integer champOrdre;
-	// private Integer contexteChampEntiteId;
+	private Integer champEntiteId;
+	private Integer champEntiteOrdre;
 	private String dateFormat;
-	private String isChampReferToThesaurus;
+	private String thesaurusTableNom;
 	private Boolean obligatoire = false;
 	private Boolean visible = true;
 	private Boolean inTableau = false;
@@ -75,31 +74,22 @@ public class ChampEntiteDTO implements Serializable {
 	private List<ThesaurusValueDTO> thesaurusValueDTOs = new ArrayList<ThesaurusValueDTO>();
 	
 	@JsonProperty
-	public Integer getChampId() {
-		return champId;
+	public Integer getChampEntiteId() {
+		return champEntiteId;
 	}
 	
-	public void setChampId(Integer _i) {
-		this.champId = _i;
+	public void setChampEntiteId(Integer _i) {
+		this.champEntiteId = _i;
 	}
 	
 	@JsonProperty
-	public Integer getChampOrdre() {
-		return champOrdre;
+	public Integer getChampEntiteOrdre() {
+		return champEntiteOrdre;
 	}
 	
-	public void setChampOrdre(Integer _o) {
-		this.champOrdre = _o;
+	public void setChampEntiteOrdre(Integer _o) {
+		this.champEntiteOrdre = _o;
 	}
-	
-//	@JsonProperty
-//	public Integer getContexteChampEntiteId() {
-//		return contexteChampEntiteId;
-//	}
-//	
-//	public void setContexteChampEntiteId(Integer _c) {
-//		this.contexteChampEntiteId = _c;
-//	}
 	
 	@JsonProperty
 	public String getDateFormat() {
@@ -111,12 +101,12 @@ public class ChampEntiteDTO implements Serializable {
 	}
 
 	@JsonProperty
-	public String getIsChampReferToThesaurus() {
-		return isChampReferToThesaurus;
+	public String getThesaurusTableNom() {
+		return thesaurusTableNom;
 	}
 	
-	public void setIsChampReferToThesaurus(String _f) {
-		this.isChampReferToThesaurus = _f;
+	public void setThesaurusTableNom(String _f) {
+		this.thesaurusTableNom = _f;
 	}
 	
 	@JsonProperty
@@ -155,7 +145,7 @@ public class ChampEntiteDTO implements Serializable {
 		this.ordreTableau = _o;
 	}
 
-	@JsonProperty("rThesauruses")
+	@JsonProperty("listContexteThesaurusItem")
 	public List<ThesaurusValueDTO> getThesaurusValueDTOs() {
 		return thesaurusValueDTOs;
 	}
@@ -165,9 +155,9 @@ public class ChampEntiteDTO implements Serializable {
 	}
 	
 	public ChampEntite toChampEntite() {
-		return new ChampEntite(champId, champOrdre, 
+		return new ChampEntite(champEntiteId, champEntiteOrdre, 
 			// contexteChampEntiteId, 
-			dateFormat, isChampReferToThesaurus, obligatoire, visible, 
+			dateFormat, thesaurusTableNom, obligatoire, visible, 
 			inTableau, ordreTableau,
 			thesaurusValueDTOs
 				.stream().map(v -> v.toThesaurusValue())

@@ -843,15 +843,15 @@ public class GatsbiController {
 			ValeurExterne val;
 			for (ParametrageValueDTO value : param.getParametrageValueDTOs()) {
 				if (!StringUtils.isBlank(value.getDefaultValue())) {
-					if (value.getIsChampReferToThesaurus() != null) { // thesaurus value check!
-						boolean valueFound = contexte.getThesaurusValuesForChampEntiteId(value.getChampId()).stream()
+					if (value.getThesaurusTableNom() != null) { // thesaurus value check!
+						boolean valueFound = contexte.getThesaurusValuesForChampEntiteId(value.getChampEntiteId()).stream()
 								.map(v -> v.getThesaurusValue()).anyMatch(v -> v.equals(value.getDefaultValue()));
 						if (!valueFound) {
 							throw new TKException("gatsbi.thesaurus.value.notfound", value.getDefaultValue());
 						}
 					}
 					val = new ValeurExterne();
-					val.setChampEntiteId(value.getChampId());
+					val.setChampEntiteId(value.getChampEntiteId());
 					val.setValeur(value.getDefaultValue());
 					bloc.getValeurs().add(val);
 				}

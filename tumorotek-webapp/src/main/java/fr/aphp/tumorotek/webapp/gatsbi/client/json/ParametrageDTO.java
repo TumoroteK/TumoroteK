@@ -49,39 +49,39 @@ import org.codehaus.jackson.annotate.JsonPropertyOrder;
 import fr.aphp.tumorotek.model.contexte.gatsbi.Parametrage;
 
 @JsonPropertyOrder({
-	"parametrageId",
-	"parametrageLibelle",
-	"templateParametrages"
+	"contexteParametrageId",
+	"nom",
+	"listContexteParametrageItem"
 })
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ParametrageDTO implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
-	private Integer parametrageId;
-	private String parametrageLibelle;
+	private Integer contexteParametrageId;
+	private String nom;
 	private List<ParametrageValueDTO> parametrageValueDTOs = 
 							new ArrayList<ParametrageValueDTO>();
 	
 	@JsonProperty
-	public Integer getParametrageId() {
-		return this.parametrageId;
+	public Integer getContexteParametrageIdId() {
+		return this.contexteParametrageId;
 	}
 	
-	public void setParametrageId(Integer parametrageId) {
-		this.parametrageId = parametrageId;
+	public void setContexteParametrageId(Integer parametrageId) {
+		this.contexteParametrageId = parametrageId;
 	}
 	
 	@JsonProperty
-	public String getParametrageLibelle() {
-		return this.parametrageLibelle;
+	public String getNom() {
+		return this.nom;
 	}
 	
-	public void setParametrageLibelle(String parametrageLibelle) {
-		this.parametrageLibelle = parametrageLibelle;
+	public void setNom(String _n) {
+		this.nom = _n;
 	}
 	
-	@JsonProperty("templateParametrages")
+	@JsonProperty("listContexteParametrageItem")
 	public List<ParametrageValueDTO> getParametrageValueDTOs() {
 		return parametrageValueDTOs;
 	}
@@ -92,7 +92,7 @@ public class ParametrageDTO implements Serializable {
 
 	@JsonIgnore
 	public Parametrage toParametrage() {
-		return new Parametrage(parametrageId, parametrageLibelle, 
+		return new Parametrage(contexteParametrageId, nom, 
 			parametrageValueDTOs.stream().map(v -> v.toParametrageValue())
 					.collect(Collectors.toList()));
 	}

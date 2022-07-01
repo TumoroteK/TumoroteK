@@ -75,7 +75,7 @@ public class EchantillonGatsbiValidatorTests extends AbstractManagerTest4
 	public void setUp() {
 		contexte = new Contexte();  
 		contexte.setContexteType(ContexteType.ECHANTILLON);
-		contexte.setContexteLibelle("test_contexte");
+		contexte.setNom("test_contexte");
 		Banque bank = new Banque();
 		Etude etude = new Etude();
 		etude.addToContextes(contexte);
@@ -90,7 +90,7 @@ public class EchantillonGatsbiValidatorTests extends AbstractManagerTest4
 
 		// given
 		ChampEntite type = new ChampEntite();
-		type.setChampId(58);
+		type.setChampEntiteId(58);
 		type.setObligatoire(false);
 		contexte.getChampEntites().add(type);	         
 		boolean caught = false;
@@ -110,7 +110,7 @@ public class EchantillonGatsbiValidatorTests extends AbstractManagerTest4
 	public void checkRequiredObjectsAndValidate_shouldFailIfEchantillonTypeIsRequired_whenGastbiApplies() {
 		// given
 		ChampEntite type = new ChampEntite();
-		type.setChampId(58);
+		type.setChampEntiteId(58);
 		type.setObligatoire(true);
 		contexte.getChampEntites().add(type);	         
 		boolean caught = false;
@@ -184,7 +184,7 @@ public class EchantillonGatsbiValidatorTests extends AbstractManagerTest4
 	private void addChampEntiteAsObligatoireToContexte(List<Integer> chpIds) {
 		for (Integer i : chpIds) {
 			ChampEntite chpE = new ChampEntite();
-			chpE.setChampId(i);
+			chpE.setChampEntiteId(i);
 			chpE.setObligatoire(true);
 			contexte.getChampEntites().add(chpE);	
 		}

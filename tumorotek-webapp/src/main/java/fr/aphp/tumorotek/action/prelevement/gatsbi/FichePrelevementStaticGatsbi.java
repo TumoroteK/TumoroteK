@@ -82,7 +82,7 @@ public class FichePrelevementStaticGatsbi extends FichePrelevementStatic {
 
 		// prelevement specific
 		if (groupLaboInter != null) {
-			groupLaboInter.setVisible(contexte != null && contexte.getSiteInter());
+			groupLaboInter.setVisible(contexte != null && contexte.getSiteIntermediaire());
 		}
 		
 		// inner list

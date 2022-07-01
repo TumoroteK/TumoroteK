@@ -14,7 +14,7 @@ import fr.aphp.tumorotek.model.contexte.gatsbi.ThesaurusValue;
 
 
 @JsonPropertyOrder({
-	"champId",
+	"champEntiteId",
 	"thesaurusId",
 	"thesaurusValue",
 	"position"
@@ -24,19 +24,18 @@ public class ThesaurusValueDTO implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
-	private Integer champId;
-	// private Integer templateThesaurusId;
+	private Integer champEntiteId;
 	private Integer thesaurusId;
 	private String thesaurusValue;
 	private Integer position;
 	
 	@JsonProperty
-	public Integer getChampId() {
-		return champId;
+	public Integer getChampEntiteId() {
+		return champEntiteId;
 	}
 	
-	public void setChampId(Integer _i) {
-		this.champId = _i;
+	public void setChampEntiteId(Integer _i) {
+		this.champEntiteId = _i;
 	}
 	
 //	@JsonProperty
@@ -77,8 +76,7 @@ public class ThesaurusValueDTO implements Serializable {
 	
 	@JsonIgnore
 	public ThesaurusValue toThesaurusValue() {
-		return new ThesaurusValue(champId, 
-			// templateThesaurusId, 
+		return new ThesaurusValue(champEntiteId, 
 			thesaurusId, thesaurusValue, position);
 	}
 	

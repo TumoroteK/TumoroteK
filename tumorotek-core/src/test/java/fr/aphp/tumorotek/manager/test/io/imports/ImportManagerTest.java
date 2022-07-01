@@ -2825,10 +2825,10 @@ public class ImportManagerTest extends AbstractManagerTest4
 		//given
 		final Contexte contexte = new Contexte();
 		contexte.setContexteType(ContexteType.PRELEVEMENT);
-		contexte.setContexteLibelle("test_contexte");
+		contexte.setNom("test_contexte");
 		fr.aphp.tumorotek.model.contexte.gatsbi.ChampEntite nature = new fr.aphp.tumorotek.model.contexte.gatsbi.ChampEntite();
-		nature.setChampId(24);
-		nature.setIsChampReferToThesaurus("nature");
+		nature.setChampEntiteId(24);
+		nature.setThesaurusTableNom("nature");
 		ThesaurusValue liqAscite = new ThesaurusValue();
 		liqAscite.setThesaurusId(3); liqAscite.setThesaurusValue("LIQUIDE D'ASCITE");
 		nature.getThesaurusValues().add(liqAscite);
@@ -2854,8 +2854,8 @@ public class ImportManagerTest extends AbstractManagerTest4
 
 		// 1 valeur retenue pour Non conformité 
 		fr.aphp.tumorotek.model.contexte.gatsbi.ChampEntite ncArr = new fr.aphp.tumorotek.model.contexte.gatsbi.ChampEntite();
-		ncArr.setChampId(256);
-		ncArr.setIsChampReferToThesaurus("non_conformite_arrivee");
+		ncArr.setChampEntiteId(256);
+		ncArr.setThesaurusTableNom("non_conformite_arrivee");
 		ThesaurusValue errDossier = new ThesaurusValue();
 		errDossier.setThesaurusId(2); errDossier.setThesaurusValue("Erreur dossier");
 		ncArr.getThesaurusValues().add(errDossier);
@@ -2867,8 +2867,8 @@ public class ImportManagerTest extends AbstractManagerTest4
 
 		// 1 valeur retenue pour Consent type
 		fr.aphp.tumorotek.model.contexte.gatsbi.ChampEntite consentType = new fr.aphp.tumorotek.model.contexte.gatsbi.ChampEntite();
-		consentType.setChampId(26);
-		consentType.setIsChampReferToThesaurus("consent_type");
+		consentType.setChampEntiteId(26);
+		consentType.setThesaurusTableNom("consent_type");
 		ThesaurusValue enattente = new ThesaurusValue();
 		enattente.setThesaurusId(1); enattente.setThesaurusValue("EN ATTENTE");
 		consentType.getThesaurusValues().add(enattente);
@@ -2879,8 +2879,8 @@ public class ImportManagerTest extends AbstractManagerTest4
 
 		// 1 valeur retenue pour prelevement type
 		fr.aphp.tumorotek.model.contexte.gatsbi.ChampEntite prelType = new fr.aphp.tumorotek.model.contexte.gatsbi.ChampEntite();
-		prelType.setChampId(31);
-		prelType.setIsChampReferToThesaurus("prelevement_type");
+		prelType.setChampEntiteId(31);
+		prelType.setThesaurusTableNom("prelevement_type");
 		ThesaurusValue biopsie = new ThesaurusValue();
 		biopsie.setThesaurusId(1); biopsie.setThesaurusValue("BIOPSIE");
 		prelType.getThesaurusValues().add(biopsie);
@@ -2891,16 +2891,16 @@ public class ImportManagerTest extends AbstractManagerTest4
 
 		// 0 valeur retenue pour condit type
 		fr.aphp.tumorotek.model.contexte.gatsbi.ChampEntite conditType = new fr.aphp.tumorotek.model.contexte.gatsbi.ChampEntite();
-		conditType.setChampId(32);
-		conditType.setIsChampReferToThesaurus("condit_type");
+		conditType.setChampEntiteId(32);
+		conditType.setThesaurusTableNom("condit_type");
 		contexte.getChampEntites().add(conditType);
 		values = importManager.extractValuesForOneThesaurus(champEntiteDao.findById(144), it.getBanque());
 		assertTrue(values.size() == 0);
 
 		// 1 valeur retenue pour condit milieu
 		fr.aphp.tumorotek.model.contexte.gatsbi.ChampEntite conditMilieu = new fr.aphp.tumorotek.model.contexte.gatsbi.ChampEntite();
-		conditMilieu.setChampId(33);
-		conditMilieu.setIsChampReferToThesaurus("condit_milieu");
+		conditMilieu.setChampEntiteId(33);
+		conditMilieu.setThesaurusTableNom("condit_milieu");
 		ThesaurusValue sec = new ThesaurusValue();
 		sec.setThesaurusId(1); sec.setThesaurusValue("SEC");
 		conditMilieu.getThesaurusValues().add(sec);
@@ -2911,8 +2911,8 @@ public class ImportManagerTest extends AbstractManagerTest4
 
 		// 1 valeur retenue pour risques
 		fr.aphp.tumorotek.model.contexte.gatsbi.ChampEntite risques = new fr.aphp.tumorotek.model.contexte.gatsbi.ChampEntite();
-		risques.setChampId(249);
-		risques.setIsChampReferToThesaurus("risques");
+		risques.setChampEntiteId(249);
+		risques.setThesaurusTableNom("risques");
 		ThesaurusValue hiv = new ThesaurusValue();
 		hiv.setThesaurusId(1); hiv.setThesaurusValue("HIV");
 		risques.getThesaurusValues().add(hiv);

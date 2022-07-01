@@ -43,23 +43,23 @@ public class ParametrageValue implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
-	private Integer champId;
-	private String isChampReferToThesaurus;
+	private Integer champEntiteId;
+	private String thesaurusTableNom;
 	private String defaultValue;
 	
 	public ParametrageValue(Integer _c, String _v, String _t) {
 		super();
-		this.champId = _c;
-		this.isChampReferToThesaurus = _t;
+		this.champEntiteId = _c;
+		this.thesaurusTableNom = _t;
 		this.defaultValue = _v;
 	}
 
-	public Integer getChampId() {
-		return champId;
+	public Integer getChampEntiteId() {
+		return champEntiteId;
 	}
 
-	public void setChampId(Integer _c) {
-		this.champId = _c;
+	public void setChampEntiteId(Integer _c) {
+		this.champEntiteId = _c;
 	}
 
 	public String getDefaultValue() {
@@ -70,12 +70,12 @@ public class ParametrageValue implements Serializable {
 		this.defaultValue = _v;
 	}
 	
-	public String getIsChampReferToThesaurus() {
-		return isChampReferToThesaurus;
+	public String getThesaurusTableNom() {
+		return thesaurusTableNom;
 	}
-	
-	public void setIsChampReferToThesaurus(String _f) {
-		this.isChampReferToThesaurus = _f;
+
+	public void setThesaurusTableNom(String _t) {
+		this.thesaurusTableNom = _t;
 	}
 
 	@Override
@@ -89,14 +89,14 @@ public class ParametrageValue implements Serializable {
 
         ParametrageValue param = (ParametrageValue) obj;
 
-        return Objects.equals(champId, param.getChampId());
+        return Objects.equals(champEntiteId, param.getChampEntiteId());
 	}
 	
 	@Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-    	result = prime * result + ((champId == null) ? 0 : champId.hashCode());
+    	result = prime * result + ((champEntiteId == null) ? 0 : champEntiteId.hashCode());
     	return result;
 	}
 }
