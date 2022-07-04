@@ -806,62 +806,69 @@ public class GatsbiController {
 	 */
 	public static ResultatInjection injectGatsbiObject(Contexte contexte, ParametrageDTO param, Banque banque,
 			Consumer<Parametrage> validator) {
-
+		try {
 		// repose sur InjectionManager comme interfaçages
-		// crée dossier externe pour le transport des données
-		// values
-		ResultatInjection injection = new ResultatInjection();
-		TKAnnotableObject tkObj = null;
-		
-		switch (contexte.getContexteType()) {
-		case PATIENT:
-			tkObj = new Patient();
-			// injection.setPatient((Patient) tkObj);
-			break;
-		case PRELEVEMENT:
-			tkObj = new Prelevement();
-			injection.setPrelevement((Prelevement) tkObj);
-			break;
-		case ECHANTILLON:
-			tkObj = new Echantillon();
-			injection.setEchantillon((Echantillon) tkObj);
-			break;
-		default:
-			break;
-		}
-		
-		tkObj.setBanque(banque);
-
-		if (param != null) {
-
-			// apply specific validation
-			if (validator != null) {
-				validator.accept(param.toParametrage());
+			// crée dossier externe pour le transport des données
+			// values
+			ResultatInjection injection = new ResultatInjection();
+			TKAnnotableObject tkObj = null;
+			
+			switch (contexte.getContexteType()) {
+			case PATIENT:
+				tkObj = new Patient();
+				// injection.setPatient((Patient) tkObj);
+				break;
+			case PRELEVEMENT:
+				tkObj = new Prelevement();
+				injection.setPrelevement((Prelevement) tkObj);
+				break;
+			case ECHANTILLON:
+				tkObj = new Echantillon();
+				injection.setEchantillon((Echantillon) tkObj);
+				break;
+			default:
+				break;
 			}
-
-			BlocExterne bloc = new BlocExterne();
-			ValeurExterne val;
-			for (ParametrageValueDTO value : param.getParametrageValueDTOs()) {
-				if (!StringUtils.isBlank(value.getDefaultValue())) {
-					if (value.getThesaurusTableNom() != null) { // thesaurus value check!
-						boolean valueFound = contexte.getThesaurusValuesForChampEntiteId(value.getChampEntiteId()).stream()
-								.map(v -> v.getThesaurusValue()).anyMatch(v -> v.equals(value.getDefaultValue()));
-						if (!valueFound) {
-							throw new TKException("gatsbi.thesaurus.value.notfound", value.getDefaultValue());
-						}
-					}
-					val = new ValeurExterne();
-					val.setChampEntiteId(value.getChampEntiteId());
-					val.setValeur(value.getDefaultValue());
-					bloc.getValeurs().add(val);
+			
+			tkObj.setBanque(banque);
+	
+			if (param != null) {
+	
+				// apply specific validation
+				if (validator != null) {
+					validator.accept(param.toParametrage());
 				}
+	
+				BlocExterne bloc = new BlocExterne();
+				ValeurExterne val;
+				for (ParametrageValueDTO value : param.getParametrageValueDTOs()) {
+					if (!contexte.getHiddenChampEntiteIds().contains(value.getChampEntiteId()) 
+							&& !StringUtils.isBlank(value.getDefaultValue())) {
+						if (value.getThesaurusTableNom() != null) { // thesaurus value check!
+							for (String defvalue : value.getDefaultValue().split(";")) {
+								if (!contexte.getThesaurusValuesForChampEntiteId(value.getChampEntiteId())
+										.stream().anyMatch(v -> v.getThesaurusValue().equalsIgnoreCase(defvalue))) {
+									throw new TKException("gatsbi.thesaurus.value.notfound", defvalue);
+								}
+							}
+						}
+						val = new ValeurExterne();
+						val.setChampEntiteId(value.getChampEntiteId());
+						val.setValeur(value.getDefaultValue());
+						bloc.getValeurs().add(val);
+					}
+				}
+	
+				ManagerLocator.getInjectionManager().injectBlocExterneInObject(tkObj, banque, bloc,
+						new ArrayList<AnnotationValeur>());
 			}
-
-			ManagerLocator.getInjectionManager().injectBlocExterneInObject(tkObj, banque, bloc,
-					new ArrayList<AnnotationValeur>());
+	
+			return injection;
+		} catch (TKException e) {
+			Messagebox.show(AbstractController.handleExceptionMessage(e), "Error", Messagebox.OK, Messagebox.ERROR);
 		}
-
-		return injection;
+		
+		return null;
 	}
 	
 	/**

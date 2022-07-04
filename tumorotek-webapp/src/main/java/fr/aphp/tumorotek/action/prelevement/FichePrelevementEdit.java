@@ -1279,10 +1279,14 @@ public class FichePrelevementEdit extends AbstractFicheEditController
     * les dates de references du Patient ont pu changer a posteriori.
     */
    public void validateAllDateComps(){
-      datePrelCalBox.clearErrorMessage(datePrelCalBox.getValue());
-      validateCoherenceDate(datePrelCalBox, datePrelCalBox.getValue());
-      dateConsentBoxPrlvt.clearErrorMessage(true);
-      validateCoherenceDate(dateConsentBoxPrlvt, dateConsentBoxPrlvt.getValue());
+	  if (datePrelCalBox.isVisible()) {
+		  datePrelCalBox.clearErrorMessage(datePrelCalBox.getValue());
+		  validateCoherenceDate(datePrelCalBox, datePrelCalBox.getValue());
+	  }
+	  if (dateConsentBoxPrlvt.isVisible()) {
+		  dateConsentBoxPrlvt.clearErrorMessage(true);
+		  validateCoherenceDate(dateConsentBoxPrlvt, dateConsentBoxPrlvt.getValue());
+	  }
    }
 
    public List<Nature> getNatures(){
