@@ -40,11 +40,13 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.sql.BatchUpdateException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.SQLSyntaxErrorException;
 import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -128,10 +130,7 @@ public class Export extends Thread
 	protected String labelType;
 	protected String sheetName = " ";
 	protected short exportType = 1;
-	// collection
 	protected List<Banque> collections;
-	protected int collection;
-	protected int hasMultipleCollection = 0;
 
 	protected List<Integer> patientIds = new ArrayList<>();
 	protected List<Integer> prelevementIds = new ArrayList<>();
@@ -212,12 +211,6 @@ public class Export extends Thread
 
 		getRestrictedAnnosTableIds().addAll(rI);
 
-		if(collections.size() == 1){
-			this.collection = collections.get(0).getBanqueId();
-		}else{
-			hasMultipleCollection = 1;
-			this.collection = collections.get(0).getBanqueId();
-		}
 	}
 
 	protected void init(final Desktop d, final HtmlMacroComponent htmlMacroComponent){
@@ -265,7 +258,15 @@ public class Export extends Thread
 			// log.info("Total elapsed time in execution of method is :"
 			//		+ ((double) (endTime - startTime) / 1000000000.0));
 
-		}catch(final ClassNotFoundException e){
+		}
+		catch(final SQLTooManyAnnotationException e){
+         log.error(e.getMessage(), e.getCause());
+         e.getCause().printStackTrace();
+         try{
+            setExportDetails(0, 0, 0, null, null, e);
+         }catch(DesktopUnavailableException | InterruptedException e1){}
+      }
+		catch(final ClassNotFoundException e){
 			log.error(e);
 		}catch(final DesktopUnavailableException e){
 			e.printStackTrace();
@@ -916,7 +917,7 @@ public class Export extends Thread
 
 				final String sql1 = "{call fill_tmp_table_annotation(?, ?, ?)}";
 				setPreparedStatement(connection.prepareCall(sql1));
-				getPreparedStatement().setInt(1, collection);
+				getPreparedStatement().setInt(1, 0);//TK-320 : forcer à 0 : ce paramètre n'est plus utilisé par la procédure stockée
 				getPreparedStatement().setInt(2, entite);
 				getPreparedStatement().setInt(3, countAnnotation);
 				// getPreparedStatement().setInt(4, hasMultipleCollection);
@@ -926,6 +927,9 @@ public class Export extends Thread
 					getPreparedStatement().close();
 					getConnection().commit();
 				}
+			}
+			catch(SQLSyntaxErrorException sqlException) {
+			   throw new SQLTooManyAnnotationException(sqlException);//TK-320 : permet de gérer l'erreur : "Row size too large. The maximum row size for the used" liée à un trop grand nombre d'annotations
 			}catch(final Exception e){
 				if(Thread.interrupted()){
 					throw new InterruptedException();
@@ -960,36 +964,28 @@ public class Export extends Thread
 					firstAnno = false;
 				}
 
-				log.debug("fill annoation restrict");
+				log.debug("fill annotation restrict");
+				
+	         //TK-320 : adaptation de la requête select
+				StringBuilder selectInSb = new StringBuilder();
+				int nbCollections = collections.size();
+				for(int i=0; i<nbCollections; i++) {
+				   if(i!=0) {
+				      selectInSb = selectInSb.append(",");
+				   }
+				   selectInSb = selectInSb.append(collections.get(i).getBanqueId());
+				}
 
 				String query_get_annotation = "";
-				// if (hasMultipleCollection == 0) {
 				query_get_annotation = "SELECT DISTINCT ca.CHAMP_ANNOTATION_ID, ca.nom, ca.data_type_id, "
-						+ (hasMultipleCollection == 0 ? "tab.ORDRE, " : "") + "ca.ordre " 
-						//+ "FROM ANNOTATION_VALEUR av JOIN CHAMP_ANNOTATION ca ON ca.CHAMP_ANNOTATION_ID = av.CHAMP_ANNOTATION_ID "
+						+ "tab.ORDRE, ca.ordre " 
 						+ "FROM CHAMP_ANNOTATION ca " + "JOIN TABLE_ANNOTATION ta ON ta.TABLE_ANNOTATION_ID = ca.TABLE_ANNOTATION_ID "
 						+ "JOIN TMP_TABLE_ANNOTATION_RESTRICT r ON ta.TABLE_ANNOTATION_ID = r.TABLE_ANNOTATION_ID "
-						+ (hasMultipleCollection == 0 ? 
-							"JOIN TABLE_ANNOTATION_BANQUE tab ON tab.TABLE_ANNOTATION_ID = r.TABLE_ANNOTATION_ID AND tab.BANQUE_ID = " + collection + " ": "")
-						+ "WHERE ta.ENTITE_ID = " + entite_id 
+					   + "JOIN TABLE_ANNOTATION_BANQUE tab ON tab.TABLE_ANNOTATION_ID = r.TABLE_ANNOTATION_ID "
+						+ "WHERE ta.ENTITE_ID = " + entite_id + " AND tab.BANQUE_ID in (" + selectInSb.toString() + ") "
 						+ " ORDER BY "
-						+ (hasMultipleCollection == 0 ? "tab.ORDRE, " : "")
-						+ "ca.ORDRE";
+						+ "tab.ORDRE, ca.ORDRE";
 										
-				// + " AND av.BANQUE_ID = " + collection;
-				//				} else {
-				//					query_get_annotation = "SELECT DISTINCT av.CHAMP_ANNOTATION_ID, ca.nom, ca.data_type_id "
-				//							// + "FROM ANNOTATION_VALEUR av JOIN CHAMP_ANNOTATION ca ON ca.CHAMP_ANNOTATION_ID = av.CHAMP_ANNOTATION_ID "
-				//							+ "FROM CHAMP_ANNOTATION ca "
-				//							+ "JOIN TABLE_ANNOTATION ta ON ta.TABLE_ANNOTATION_ID = ca.TABLE_ANNOTATION_ID "
-				//							+ "JOIN TMP_TABLE_ANNOTATION_RESTRICT r ON ta.TABLE_ANNOTATION_ID = r.TABLE_ANNOTATION_ID "
-				//							+ "WHERE ta.ENTITE_ID = " + entite_id;
-				//				}
-				// VARIABLE DE RECUPERATION DES DATAS champ_nom/id annotation
-				// StringBuffer tableTmpAnnotationCreation = new StringBuffer();
-				// StringBuffer tableTmpAnnotationColumn = new StringBuffer();
-				// StringBuffer tableTmpAnnotationValues = new StringBuffer();
-
 				final List<Integer> annodates_idx = new ArrayList<>();
 				final List<Integer> annoNums_idx = new ArrayList<>();
 				final List<Integer> annoBools_idx = new ArrayList<>();
@@ -1367,6 +1363,7 @@ public class Export extends Thread
 			}
 
 			List<Integer> ids;
+			//TK-320 : apparamment o est toujours null (cf appel de export_xxx dans load_sequences()) :
 			if(o == null){
 				ids = objsId;
 			}else{
@@ -1399,7 +1396,12 @@ public class Export extends Thread
 			//	System.out.println("Total elapsed time in execution of method is :"
 			//			+ ((double) (endTime - startTime) / 1000000000.0));
 
-		}catch(final Exception e){
+	       
+		}
+		catch(BatchUpdateException sqlException) {
+         throw new SQLTooManyAnnotationException(sqlException);//TK-321 : permet de gérer l'erreur "Row 32 was cut by GROUP_CONCAT()" lié à un trop grand nombre d'annotation 
+		}
+		catch(final Exception e){
 			if(Thread.interrupted()){
 				throw new InterruptedException();
 			}

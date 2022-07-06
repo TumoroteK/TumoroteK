@@ -67,7 +67,6 @@ import org.zkoss.zul.Row;
 import org.zkoss.zul.SimpleListModel;
 import org.zkoss.zul.Textbox;
 
-import fr.aphp.tumorotek.model.contexte.Plateforme;
 import fr.aphp.tumorotek.action.ManagerLocator;
 import fr.aphp.tumorotek.decorator.CouleurItemRenderer;
 import fr.aphp.tumorotek.decorator.EnceinteDecorator;
@@ -226,9 +225,6 @@ public class FicheEnceinte extends AbstractFicheCombineStockageController
 	private Boolean arborescenceCreee = false;
 	private static String colorSrc = "/images/icones/boites/big_pastille";
 
-	// @since 2.2.1-IRELEC
-	private boolean canDeplace = false;
-	private boolean canNumerotation;
 
 	@Override
 	public void doAfterCompose(final Component comp) throws Exception{
@@ -319,46 +315,27 @@ public class FicheEnceinte extends AbstractFicheCombineStockageController
 			this.position = this.enceinte.getPosition();
 		}
 
-		// Treplaced by IRELEC logic
-		// updateButtonActionsWithPlateformeOrigine();
-		// restrict pf modification
-		if (enceinte.getEnceinteId() != null) {
-			disableActionsForForeignPlateformeConteneur(ManagerLocator
-					.getEnceinteManager().getConteneurManager(enceinte)
-					.getPlateformeOrig());
-		}
+	   //TK-314
+		updateButtonActionsWithPlateformeOrigine();
 
 		// clone er reload
 		super.setObject(enceinte);		
 	}
 
-//	/**
-//	 * Switch action buttons disable status at each selection
-//	 * so that any button is disable if conteneur is shared 
-//	 * from foreign platforme.
-//	 * @since 2.2.1
-//	 */
-//	private void updateButtonActionsWithPlateformeOrigine() {
-//
-//		final Conteneur cont = 
-//				ManagerLocator.getEnceinteManager().getConteneurManager(enceinte);
-//		final boolean orig = cont != null ? cont.getPlateformeOrig()
-//				.equals(SessionUtils.getCurrentPlateforme()) : false;
-//
-//				if (orig) { // fall back to profile rights
-//					editC.setDisabled(!isCanEdit());
-//					deleteC.setDisabled(!isCanDelete());
-//					addIncidentItem.setDisabled(!isCanEdit());
-//					numerotation.setDisabled(!isAdmin());
-//					deplacer.setDisabled(!isCanEdit());
-//				} else { // disable some of the buttons
-//					editC.setDisabled(true);
-//					deleteC.setDisabled(true);
-//					addIncidentItem.setDisabled(!isCanEdit());
-//					numerotation.setDisabled(!isAdmin());
-//					deplacer.setDisabled(!isCanEdit());
-//				}
-//	}
+	/**
+	 * Switch action buttons disable status at each selection
+	 * so that any button is disable if conteneur is shared 
+	 * from foreign platforme.
+	 * @since 2.2.1
+	 */
+	//TK314 : adaptation
+	private void updateButtonActionsWithPlateformeOrigine() {
+	   Conteneur cont = null;
+		if(enceinte != null) {
+				cont = ManagerLocator.getEnceinteManager().getConteneurManager(enceinte);
+		}
+		disableActionsForForeignPlateformeConteneur(cont);
+	}
 
 	@Override
 	public void setNewObject(){
@@ -663,7 +640,7 @@ public class FicheEnceinte extends AbstractFicheCombineStockageController
 		getBinder().loadComponent(self);
 		switchToStaticMode();
 		rowErreurDestination.setVisible(false);
-		getObjectTabController().getListeStockages().switchToNormalMode();
+		getObjectTabController().getListeStockages().switchToNormalMode(false);
 	}
 
 	@Override
@@ -1303,25 +1280,12 @@ public class FicheEnceinte extends AbstractFicheCombineStockageController
 	 * Rend les boutons d'actions cliquables ou non.
 	 * @version 2.2.1-IRELEC
 	 */
+	//TK314-adaptation
 	public void drawActionsForEnceinte(){
 		drawActionsButtons("Stockage");
 
-		if (!sessionScope.containsKey("ToutesCollections")) {
-			canDeplace = drawActionOnOneButton("Stockage", "Modification");
-		}
-
-		deplacer.setDisabled(!canDeplace);
-		// taille.setDisabled(!canDeplace);
-
-		Boolean admin = false;
-		if(sessionScope.containsKey("Admin")){
-			admin = (Boolean) sessionScope.get("Admin");
-		}
-
-		taille.setDisabled(!admin);
-
-		canNumerotation = admin;
-		numerotation.setDisabled(!canNumerotation);
+		//gestion des boutons dont l'affichage peut changer car il dépend de l'enceinte (plus précisément de la plateforme du conteneur de celle-ci)
+      updateButtonActionsWithPlateformeOrigine();
 	}
 
 	@Override
@@ -1657,15 +1621,35 @@ public class FicheEnceinte extends AbstractFicheCombineStockageController
 		return StockageConstraints.getIncidentConstraint();
 	}
 
-	/**
-	 * @since 2.2.1-IRELEC
-	 */
-	@Override
-	public boolean disableActionsForForeignPlateformeConteneur(Plateforme pOrig) {
-		boolean enabled = super.disableActionsForForeignPlateformeConteneur(pOrig);
-		numerotation.setDisabled(!canNumerotation || !enabled);
-		deplacer.setDisabled(!canDeplace || !enabled);
-		taille.setDisabled(!canDeplace || !enabled);
-		return enabled;
-	}
+   /**
+    * @since 2.2.1-IRELEC
+    */
+   //TK-314
+   @Override
+   public boolean disableActionsForForeignPlateformeConteneur(Conteneur conteneur) {
+      //disableARetourner s'appuie uniquement sur les règles de gestion des conteneurs partagés (pas sur les droits de l'utilisateur)
+      boolean disableARetourner = super.disableActionsForForeignPlateformeConteneur(conteneur);
+      
+      //bouton déplacer l'enceinte :
+      //le test SessionUtils.getSelectedBanques(sessionScope).size() != 1 est plus pertinent que sessionScope.containsKey("ToutesCollections")
+      //car dans l'avenir, il se pourrait qu'un utilisateur puisse sélectionner plusieurs collections. Il faudrait alors que le déplacement soit bloqué
+      boolean disable = disableARetourner || SessionUtils.getSelectedBanques(sessionScope).size() != 1 || !isCanEdit();
+      if(deplacer != null) {
+         deplacer.setDisabled(disable);
+      }
+      
+      boolean admin = false;
+      if(sessionScope.containsKey("Admin")){
+          admin = (Boolean) sessionScope.get("Admin");
+      }
+      boolean enable = admin && isAccessibleConteneurForCurrentPlateform(conteneur);
+      if(numerotation != null) {
+         numerotation.setDisabled(!enable);
+      }
+      if(taille != null) {
+         taille.setDisabled(!enable);
+      }
+
+      return disableARetourner;
+   }
 }

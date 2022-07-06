@@ -1,3 +1,5 @@
+-- ce fichier n'est plus utilisé. Les scripts sont désormais dans le projet tumorotek-install
+-- les maj corrigeant le problème TK-329 ne sont donc pas faites dans ce fichier mais dans export_oracle.sql de tumorotek-install
 -- -----------------------------------------------------
 --  Fichier créé - lundi-février-04-2013   
 --  Fichier modifié - lundi-novembre-19-2013   

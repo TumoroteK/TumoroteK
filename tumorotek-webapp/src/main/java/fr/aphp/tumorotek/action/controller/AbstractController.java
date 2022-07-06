@@ -132,6 +132,7 @@ import fr.aphp.tumorotek.model.imprimante.LigneEtiquette;
 import fr.aphp.tumorotek.model.imprimante.Modele;
 import fr.aphp.tumorotek.model.qualite.OperationType;
 import fr.aphp.tumorotek.model.stockage.Conteneur;
+import fr.aphp.tumorotek.model.stockage.ConteneurPlateforme;
 import fr.aphp.tumorotek.model.stockage.Emplacement;
 import fr.aphp.tumorotek.model.stockage.Enceinte;
 import fr.aphp.tumorotek.model.stockage.Incident;
@@ -1708,7 +1709,8 @@ public abstract class AbstractController extends GenericForwardComposer<Componen
 	 */
 	public ProfilExport getProfilExport(){		
 		// admin PF -> export nominatif possible
-		if (sessionScope.containsKey("AdminPF") && (Boolean) sessionScope.get("AdminPF")) {
+		if ( (sessionScope.containsKey("AdminPF") && (Boolean) sessionScope.get("AdminPF")) 
+		   || (sessionScope.containsKey("Admin") && (Boolean) sessionScope.get("Admin")) ) {
 			return ProfilExport.NOMINATIF;
 		}
 
@@ -2430,17 +2432,78 @@ public abstract class AbstractController extends GenericForwardComposer<Componen
 	}
 	
 	/**
-	 * Renvoie true si la plateforme passée en paramètre (origine d'un conteneur/user..) 
-	 * correspond à la PF courante ou si l'utilisateur est admin de cette plateforme 
+	 * Renvoie true si la plateforme passée en paramètre (origine d'un conteneur) 
+	 * correspond à la plateforme courante ou si l'utilisateur est admin de cette plateforme 
 	 * ou super administrateur.
 	 * @param pOrig Plateforme à tester
 	 * @return boolean
 	 */
 	public boolean isCurrentPFOrUserAtLeastAdminfPF(Plateforme pOrig) {
-		boolean enable = pOrig.equals(SessionUtils.getCurrentPlateforme())
-			|| SessionUtils.getLoggedUser(sessionScope).isSuperAdmin()
-			|| ManagerLocator.getUtilisateurManager()
-					.getPlateformesManager(SessionUtils.getLoggedUser(sessionScope)).contains(pOrig);
-		return enable;
+		return pOrig.equals(SessionUtils.getCurrentPlateforme()) || isUserAtLeastAdminfPF(pOrig);
 	}
-}
+	
+	//TK-314
+	/**
+    * Renvoie true si l'utilisateur connecté est :
+    *  - super administrateur
+    *  - ou administrateur de la plateforme passée en paramètre
+    * @param pOrig Plateforme à tester
+    * @return boolean
+   */
+   public boolean isUserAtLeastAdminfPF(Plateforme pOrig) {
+      boolean enable = SessionUtils.getLoggedUser(sessionScope).isSuperAdmin()
+         || ManagerLocator.getUtilisateurManager()
+               .getPlateformesManager(SessionUtils.getLoggedUser(sessionScope)).contains(pOrig);
+      return enable;
+   }	
+	
+	//TK-314
+   /**
+   * teste si la boîte passée en paramètre est dans un conteneur autorisé en stockage
+   * @param terminale boîte concernée par le test
+   * @return true si :
+   *    - si la terminale passée en paramètre appartient à la plateforme courante
+   *    - ou sinon (cas des conteneurs partagés) si :
+   *          - le stockage n'est pas restreint à l'administrateur de ce conteneur 
+   *          - ou l'utilisateur connecté est admin de la plateforme d'origine du conteneur
+   **/
+	public boolean isAccessibleConteneurForCurrentPlateform(Terminale terminale) {
+	   if(terminale != null) { 
+   	   boolean result = true;
+   	   List<Object> parents = ManagerLocator.getTerminaleManager().getListOfParentsManager(terminale);
+   	   if(parents != null) {
+   	      Conteneur conteneurTerminale = (Conteneur)parents.get(0);
+   	      
+   	      result = isAccessibleConteneurForCurrentPlateform(conteneurTerminale);
+   	   }
+   	   
+   	   return result;
+	   }
+	   return true;
+	}
+
+	//TK-314
+   /**
+   * teste si le conteneur passé en paramètre est autorisé en stockage
+   * @param conteneur conteneur concerné par le test
+   * @return true :
+   *    - si le conteneur passé en paramètre appartient à la plateforme courante
+   *    - ou sinon (cas des conteneurs partagés) si :
+   *          - le stockage n'est pas restreint à l'administrateur de ce conteneur 
+   *          - ou l'utilisateur connecté est admin de la plateforme d'origine du conteneur
+   **/	
+	public boolean isAccessibleConteneurForCurrentPlateform(Conteneur conteneur) {
+	   if(conteneur != null) {
+   	   boolean result = isCurrentPFOrUserAtLeastAdminfPF(conteneur.getPlateformeOrig());
+   	   if (!result) {
+            ConteneurPlateforme cp = ManagerLocator.getConteneurManager()
+               .getOneConteneurPlateformeManager(conteneur, SessionUtils.getCurrentPlateforme());
+         
+            result = !(cp != null && cp.getRestrictStock());
+   	   }
+   	   
+   	   return result;
+	   }
+	   return true;
+	}
+ }

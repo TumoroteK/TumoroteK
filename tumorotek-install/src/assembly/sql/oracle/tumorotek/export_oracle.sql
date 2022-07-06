@@ -266,7 +266,9 @@ BEGIN
      	 	WHEN OTHERS THEN
           	DBMS_OUTPUT.PUT_LINE ('Global table TMP_PRELEVEMENT_EXPORT Doesn''t exist.');
 	END;
-  
+
+-- TK-329 : Les dates dont les heures doivent être affichées sont stockées dans les tables temporaires en varchar pour forcer la récupération des heures
+-- sans cela, l'heure indiquée dans l'export est toujours 00:00 	
 EXECUTE IMMEDIATE
 	'CREATE GLOBAL TEMPORARY TABLE TMP_PRELEVEMENT_EXPORT (
             PRELEVEMENT_ID NUMBER(22) PRIMARY KEY,
@@ -274,7 +276,7 @@ EXECUTE IMMEDIATE
             CODE varchar2(50) ,
             NUMERO_LABO varchar(50),
             NATURE varchar2(200),
-            DATE_PRELEVEMENT date,
+            DATE_PRELEVEMENT varchar2(20),
             PRELEVEMENT_TYPE varchar2(200) ,
             STERILE NUMBER(1),
             RISQUE varchar2(200),
@@ -288,10 +290,10 @@ EXECUTE IMMEDIATE
             CONDIT_MILIEU varchar2(200),
             CONSENT_TYPE varchar2(200),
             CONSENT_DATE date,
-            DATE_DEPART date,
+            DATE_DEPART varchar2(20),
             TRANSPORTEUR varchar2(50),
             TRANSPORT_TEMP DECIMAL(12,3),
-            DATE_ARRIVEE DATE,
+            DATE_ARRIVEE varchar2(20),
 			OPERATEUR varchar2(50),
             CONG_DEPART NUMBER(1),
             CONG_ARRIVEE NUMBER(1),
@@ -305,7 +307,7 @@ EXECUTE IMMEDIATE
             ECHAN_STOCKE NUMBER(4),
             AGE_PREL NUMBER(4),
             NOMBRE_DERIVES NUMBER(4),
-            DATE_HEURE_SAISIE DATE,
+            DATE_HEURE_SAISIE varchar2(20),
             UTILISATEUR_SAISIE varchar2(100), 
 			MALADIE_ID NUMBER(10),
             LIBELLE varchar2(300),
@@ -335,8 +337,8 @@ EXECUTE IMMEDIATE
 		SERVICE varchar2(100),            
 		OPERATEUR varchar2(50),            
 		TRANSPORTEUR varchar2(50),            
-		DATE_ARRIVEE date,            
-		DATE_DEPART date,            
+		DATE_ARRIVEE varchar2(20),            
+		DATE_DEPART varchar2(20),            
 		TEMPERATURE_TRANSPORT DECIMAL(12,3),            
 		TEMPERATURE_CONSERVATION DECIMAL(12,3),            
 		CONGELATION number(1),            
@@ -362,7 +364,7 @@ EXECUTE IMMEDIATE
 			QUANTITE decimal(12,3),
             QUANTITE_INIT decimal(12,3),
             QUANTITE_UNITE varchar2(25),          
-			DATE_STOCK date,            
+			DATE_STOCK varchar2(20),            
 			DELAI_CGL DECIMAL(12,3),        
 			COLLABORATEUR varchar2(50),            
 			EMPLACEMENT varchar2(100), 
@@ -381,7 +383,7 @@ EXECUTE IMMEDIATE
 			CODE_MORPHOS varchar2(300),            
 			NOMBRE_DERIVES NUMBER(4),
 			EVTS_STOCK_E varchar2(3),            
-			DATE_HEURE_SAISIE date,            
+			DATE_HEURE_SAISIE varchar2(20),            
 			UTILISATEUR_SAISIE varchar2(100),             
 			PRELEVEMENT_ID NUMBER(10)
 			) ON COMMIT PRESERVE ROWS';
@@ -400,7 +402,7 @@ EXECUTE IMMEDIATE
 				BANQUE varchar2(200),
 				CODE varchar2(50) ,
 				PROD_TYPE varchar2(200),
-				DATE_TRANSFORMATION date,
+				DATE_TRANSFORMATION varchar2(20),
 				QUANTITE_UTILISEE decimal(12,3),
 				QUANTITE_UTILISEE_UNITE varchar2(30),
 				CODE_LABO varchar2(10),
@@ -412,7 +414,7 @@ EXECUTE IMMEDIATE
 				QUANTITE decimal(12,3),
 				QUANTITE_INIT decimal(12,3),
 				QUANTITE_UNITE varchar2(20),
-				DATE_STOCK date,
+				DATE_STOCK varchar2(20),
 				MODE_PREPA_DERIVE varchar2(200),
 				PROD_QUALITE varchar2(100) ,
 				COLLABORATEUR varchar2(100) ,
@@ -425,7 +427,7 @@ EXECUTE IMMEDIATE
 				RAISON_NC_CESSION varchar2(1000),
 				NOMBRE_DERIVES NUMBER(4),
 				EVTS_STOCK_D varchar2(3),
-				DATE_HEURE_SAISIE date,
+				DATE_HEURE_SAISIE varchar2(20),
 				UTILISATEUR_SAISIE varchar2(100),
 				PARENT_DERIVE_ID NUMBER(10),
 				ECHANTILLON_ID NUMBER(10),
@@ -447,8 +449,8 @@ EXECUTE IMMEDIATE
             ECHANTILLON_ID number(22),
 			CODE_E varchar2(50), 
             RETOUR_ID number(22) PRIMARY KEY,
-            DATE_SORTIE date,
-            DATE_RETOUR date,
+            DATE_SORTIE varchar2(20),
+            DATE_RETOUR varchar2(20),
             TEMP_MOYENNE DECIMAL(12,3),
             STERILE number(1), 
             IMPACT number(1),
@@ -471,8 +473,8 @@ EXECUTE IMMEDIATE
             PROD_DERIVE_ID number(22),
 			CODE_D varchar2(50), 
             RETOUR_ID number(22) PRIMARY KEY,
-            DATE_SORTIE date,
-            DATE_RETOUR date,
+            DATE_SORTIE varchar2(20),
+            DATE_RETOUR varchar2(20),
             TEMP_MOYENNE DECIMAL(12,3),
             STERILE number(1), 
             IMPACT number(1),
@@ -520,7 +522,7 @@ EXECUTE IMMEDIATE
 				TRANSPORTEUR varchar2(50),
 				TEMPERATURE DECIMAL(12,3),
 				OBSERVATIONS varchar(2000),
-				DATE_HEURE_SAISIE date,
+				DATE_HEURE_SAISIE varchar2(20),
 				UTILISATEUR_SAISIE varchar2(100)
         ) ON COMMIT PRESERVE ROWS';
 
@@ -938,7 +940,7 @@ BEGIN
 		    p.code,
 		    p.numero_labo AS laboratoire,
 		    n.nature,
-		    p.date_prelevement,
+		    to_char(p.date_prelevement, 'dd/mm/YYYY HH24:MI') AS date_prelevement,
 		    pt.type,
 		    p.sterile,
 		    SUBSTR((select stragg(r.nom) from RISQUE r JOIN PRELEVEMENT_RISQUE pr ON r.risque_id = pr.risque_id WHERE pr.prelevement_id = p.prelevement_id), 0, 200) AS risque_infectieux,
@@ -952,10 +954,10 @@ BEGIN
 		    cm.milieu,
 		    consent.type   AS Statut_juridique,
 		    p.consent_date AS date_du_statut,
-		    p.date_depart,
+		    to_char(p.date_depart, 'dd/mm/YYYY HH24:MI') AS date_depart,
 		    tr.nom           AS Transporteur,
 		    p.transport_temp AS Temps_de_transport,
-		    p.date_arrivee,
+		    to_char(p.date_arrivee, 'dd/mm/YYYY HH24:MI') AS date_arrivee,
 		    coco.nom AS COLLABORATEUR,
 		    p.cong_depart,
 		    p.cong_arrivee,
@@ -991,7 +993,7 @@ BEGIN
 		    ON tr.TRANSFORMATION_ID = pd.TRANSFORMATION_ID
 		    WHERE tr.OBJET_ID  = prel_id and tr.entite_id = 2
 		    )               AS Nb_Produits_derives,
-		    (SELECT op.date_ FROM OPERATION op WHERE op.OPERATION_TYPE_ID = 3 AND op.entite_id = 2 AND op.objet_id = prel_id) AS date_heure_saisie,
+		    (SELECT to_char(op.date_, 'dd/mm/YYYY HH24:MI') FROM OPERATION op WHERE op.OPERATION_TYPE_ID = 3 AND op.entite_id = 2 AND op.objet_id = prel_id) AS date_heure_saisie,
 		    (SELECT ut.login FROM UTILISATEUR ut JOIN OPERATION op ON ut.utilisateur_id = op.utilisateur_id WHERE op.OPERATION_TYPE_ID = 3 AND op.entite_id = 2 AND op.objet_id = prel_id) AS Utilisateur_saisie,
 		    p.maladie_id, m.libelle, m.code, m.date_diagnostic, m.date_debut,
         SUBSTR((select stragg(c.nom) FROM MALADIE_MEDECIN mm JOIN COLLABORATEUR c on mm.collaborateur_id = c.collaborateur_id WHERE mm.maladie_id = p.maladie_id), 0, 200),
@@ -1061,7 +1063,7 @@ INSERT INTO TMP_LABO_INTER_EXPORT (PRELEVEMENT_ID,
             STERILE 
 				)
 	SELECT l.prelevement_id, p.code, l.labo_inter_id, s.nom as "service", e.nom as "etablissement",
-	c.nom as "operateur", t.nom as "transporteur", l.date_arrivee, l.date_depart,
+	c.nom as "operateur", t.nom as "transporteur", to_char(l.date_arrivee, 'dd/mm/YYYY HH24:MI') AS date_arrivee, to_char(l.date_depart, 'dd/mm/YYYY HH24:MI') as date_depart,
 	l.transport_temp, l.conserv_temp, l.congelation, l.sterile
 	FROM LABO_INTER l 
 	LEFT JOIN PRELEVEMENT p ON p.prelevement_id = l.prelevement_id 
@@ -1130,7 +1132,7 @@ BEGIN
     quantite,
     quantite_init,
     u.unite,
-    date_stock,
+    to_char(date_stock, 'dd/mm/YYYY HH24:MI') AS date_stock,
     delai_cgl,
     co.nom    AS COLLABORATEUR,
     get_adrl(e.emplacement_id) AS emplacement,
@@ -1162,7 +1164,7 @@ BEGIN
     WHERE tr.OBJET_ID = id and tr.entite_id = 3
     )        AS Nb_Produits_derives,
     (select count(r.retour_id) FROM RETOUR r WHERE r.entite_id = 3 AND r.objet_id = id),
-    (select op.date_ FROM OPERATION op WHERE op.OPERATION_TYPE_ID = 3 AND op.entite_id = 3 AND op.objet_id = id) as date_de_saisie,
+    (select to_char(op.date_, 'dd/mm/YYYY HH24:MI') FROM OPERATION op WHERE op.OPERATION_TYPE_ID = 3 AND op.entite_id = 3 AND op.objet_id = id) as date_de_saisie,
     (select login FROM UTILISATEUR LEFT JOIN operation on utilisateur.utilisateur_id = operation.utilisateur_id where entite_id = 3 AND operation_type_id = 3 AND operation.objet_id = id),
     e.prelevement_id
   FROM ECHANTILLON e NATURAL JOIN ENTITE ent
@@ -1241,7 +1243,7 @@ BEGIN
     b.nom,
     pd.code,
     pt.type,
-    date_transformation,
+    to_char(date_transformation, 'dd/mm/YYYY HH24:MI') AS date_transformation,
     (SELECT t.quantite FROM TRANSFORMATION t WHERE t.transformation_id = pd.transformation_id),
    (SELECT u2.unite FROM TRANSFORMATION t
     	LEFT JOIN UNITE u2 ON t.quantite_unite_id = u2.unite_id
@@ -1250,7 +1252,7 @@ BEGIN
     pd.volume, pd.volume_init, u.unite,
     pd.conc, u1.unite,
     pd.quantite, pd.quantite_init, u2.unite,
-    pd.date_stock,
+    to_char(pd.date_stock, 'dd/mm/YYYY HH24:MI') AS date_stock,
     mpd.nom                AS Mode_de_preparation,
     pq.prod_qualite        AS Qualite,
     co.nom                 AS COLLABORATEURs,
@@ -1271,7 +1273,7 @@ BEGIN
     	INNER JOIN PROD_DERIVE pd ON tr.TRANSFORMATION_ID = pd.TRANSFORMATION_ID
     		WHERE tr.OBJET_ID = id and tr.entite_id = 8) AS Nb_Produits_derives,
     (select count(r.retour_id) FROM RETOUR r WHERE r.entite_id = 8 AND r.objet_id = id),
-    (SELECT o.date_ FROM OPERATION o WHERE o.entite_id = 8 AND o.objet_id = id AND o.operation_type_id = 3),
+    (SELECT to_char(o.date_,'dd/mm/YYYY HH24:MI') AS date_ FROM OPERATION o WHERE o.entite_id = 8 AND o.objet_id = id AND o.operation_type_id = 3),
     (SELECT login FROM UTILISATEUR
 		LEFT JOIN OPERATION ON utilisateur.utilisateur_id = operation.utilisateur_id
     		WHERE entite_id = 8 AND operation_type_id = 3 AND operation.objet_id = id ),
@@ -1352,7 +1354,7 @@ BEGIN
             CONTENEUR,
             RAISON
 			)
-	SELECT r.objet_id, e.code, r.retour_id, r.date_sortie, r.date_retour, r.temp_moyenne, r.sterile, r.impact, 
+	SELECT r.objet_id, e.code, r.retour_id, to_char(r.date_sortie, 'dd/mm/YYYY HH24:MI') AS date_sortie, to_char(r.date_retour, 'dd/mm/YYYY HH24:MI') AS date_retour, r.temp_moyenne, r.sterile, r.impact, 
 		c.nom AS collaborateur, r.observations, r.old_emplacement_adrl, t.nom,
 		CASE 
 			WHEN r.cession_id IS NOT NULL THEN CONCAT('Cession: ',  s.numero)
@@ -1390,7 +1392,7 @@ BEGIN
             CONTENEUR,
             RAISON
 			)
-	SELECT r.objet_id, p.code, r.retour_id, r.date_sortie, r.date_retour, r.temp_moyenne, r.sterile, r.impact, 
+	SELECT r.objet_id, p.code, r.retour_id, to_char(r.date_sortie, 'dd/mm/YYYY HH24:MI') AS date_sortie, to_char(r.date_retour, 'dd/mm/YYYY HH24:MI') AS date_retour, r.temp_moyenne, r.sterile, r.impact, 
 		c.nom AS collaborateur, r.observations, r.old_emplacement_adrl, t.nom,
 		CASE 
 			WHEN r.cession_id IS NOT NULL THEN CONCAT('Cession: ',  s.numero)
@@ -1499,7 +1501,7 @@ BEGIN
     t.nom,
     c.temperature,
     c.observations,
-    op.date_,
+    to_char(op.date_ , 'dd/mm/YYYY HH24:MI') AS date_,
     ut.login
   FROM CESSION c NATURAL JOIN ENTITE ent
   INNER JOIN BANQUE b ON c.banque_id    = b.banque_id

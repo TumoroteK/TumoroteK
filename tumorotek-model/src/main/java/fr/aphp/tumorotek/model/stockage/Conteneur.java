@@ -86,7 +86,7 @@ import fr.aphp.tumorotek.model.contexte.Service;
       @NamedQuery(name = "Conteneur.findByBanqueIdWithExcludedId",
          query = "SELECT c FROM Conteneur c left join c.banques b " + "WHERE b.banqueId = ?1 " + "AND c.conteneurId != ?2"),
       @NamedQuery(name = "Conteneur.findByPlateformeOrigWithOrder",
-         query = "SELECT c FROM Conteneur c " + "WHERE c.plateformeOrig = ?1 AND c.archive = 0 " + "ORDER BY c.code"),
+         query = "SELECT c FROM Conteneur c " + "WHERE c.plateformeOrig = ?1 AND c.archive = 0 " + "ORDER BY c.nom"),
       @NamedQuery(name = "Conteneur.findByExcludedId",
          query = "SELECT c FROM Conteneur c " + "WHERE c.conteneurId != ?1 AND c.archive = 0 "),
       @NamedQuery(name = "Conteneur.findByCode", query = "SELECT c FROM Conteneur c WHERE c.code = ?1 AND c.archive = 0"),
