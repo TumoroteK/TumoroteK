@@ -2,7 +2,7 @@
 --  function GET ADRL
 -- ------------------------------------------------------
 
-DELIMITER &&
+-- DELIMITER &&
 
 DROP FUNCTION IF EXISTS `get_adrl`&&
 
