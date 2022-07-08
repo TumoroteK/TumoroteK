@@ -164,7 +164,7 @@ public interface ProdDeriveManager
    List<Integer> findByCodeOrLaboBothSideWithBanqueReturnIdsManager(String code, List<Banque> banques, boolean exactMatch);
 
    /**
-    * Recherche la liste des codes utilisés par les produits dérivés liés à 
+    * Recherche la liste des codes utilisés par les produits dérivés liés à
     * la banque passée en paramètre.
     * @param banque Banque pour laquelle on recherche les codes.
     * @return Liste de codes.
@@ -172,13 +172,13 @@ public interface ProdDeriveManager
    List<String> findAllCodesForBanqueManager(Banque banque);
 
    /**
-    * Recherche la liste des codes utilisés par les produits dérivés liés à 
+    * Recherche la liste des codes utilisés par les produits dérivés liés à
     * la banque passée en paramètre et dont la quantité n'est pas égale à 0.
     * @param banque Banque pour laquelle on recherche les codes.
     * @return Liste de codes.
     */
    List<String> findAllCodesForBanqueAndQuantiteManager(Banque banque);
-   
+
    /**
     * Recherche la liste des codes utilisés par les dérivés pour associer à un produit dérivé :
     * Dérivés liés à la banque passée en paramètre et dont la quantité n'est pas égale à 0, ou dans une cession de type traotement
@@ -222,7 +222,7 @@ public interface ProdDeriveManager
    List<Integer> findByPatientNomReturnIdsManager(String nom, List<Banque> banks, boolean exactMatch);
 
    /**
-    * Recherche une liste de produits dérivés dont le prodDerive est 
+    * Recherche une liste de produits dérivés dont le prodDerive est
     * passé en paramètre.
     * @param prodDerive ProdDerive pour lequel on recherche des
     * produits dérivés.
@@ -231,7 +231,7 @@ public interface ProdDeriveManager
    List<ProdDerive> getProdDerivesManager(ProdDerive prodDerive);
 
    /**
-    * Recherche un emplacement dont le dérivé est 
+    * Recherche un emplacement dont le dérivé est
     * passé en paramètre.
     * @param prodDerive ProdDerive pour lequel on recherche un
     * emplacement.
@@ -240,16 +240,16 @@ public interface ProdDeriveManager
    Emplacement getEmplacementManager(ProdDerive prodDerive);
 
    /**
-    * Recherche d'adresse de l'emplacement dont l'échantillon est 
+    * Recherche d'adresse de l'emplacement dont l'échantillon est
     * passé en paramètre.
-    * @param prodDerive ProdDerive pour lequel on recherche 
+    * @param prodDerive ProdDerive pour lequel on recherche
     * l'adresse de son emplacement.
     * @return Adresse de l'emplacement du dérivé.
     */
    String getEmplacementAdrlManager(ProdDerive prodDerive);
 
    /**
-    * Recherche les doublons (= tous les dérivés appartenant à la même 
+    * Recherche les doublons (= tous les dérivés appartenant à la même
     * plateforme et partageant le même code) du ProdDerive passé en paramètre.
     * @param prodDerive Un ProdDerive pour lequel on cherche des doublons.
     * @return True s'il existe des doublons.
@@ -258,7 +258,7 @@ public interface ProdDeriveManager
    Boolean findDoublonManager(ProdDerive prodDerive);
 
    /**
-    * Recherche tous les dérivés dont la date de creation systeme est 
+    * Recherche tous les dérivés dont la date de creation systeme est
     * posterieure ou egale a celle passee en parametre.
     * @param date
     * @param banques liste Banque auxquelles appartient le dérivé.
@@ -267,7 +267,7 @@ public interface ProdDeriveManager
    List<Integer> findAfterDateCreationReturnIdsManager(Calendar date, List<Banque> banques);
 
    /**
-    * Recherche tous les dérivés dont la date de modification systeme est 
+    * Recherche tous les dérivés dont la date de modification systeme est
     * posterieure ou egale a celle passee en parametre.
     * @param date
     * @param banque Banque à laquelle appartient le dérivé.
@@ -291,7 +291,7 @@ public interface ProdDeriveManager
    List<ProdDerive> findLastCreationManager(List<Banque> banques, int nbResults);
 
    /**
-    * Recherche tous les dérivés dont la transformation est passee en 
+    * Recherche tous les dérivés dont la transformation est passee en
     * parametre.
     * @param transformation
     * @return Liste de ProdDerive.
@@ -338,7 +338,7 @@ public interface ProdDeriveManager
     * @param filesCreated liste de fichier créés
     * @param utilisateur Utilisateur ayant créé le prod dérivé.
     * @param doValidation True : la validation sera faite.
-    * @param base directory pour enregistrer un fichier associé 
+    * @param base directory pour enregistrer un fichier associé
     * dans le file system
     */
    void createObjectManager(ProdDerive prodDerive, Banque banque, ProdType type, ObjetStatut statut, Collaborateur collab,
@@ -365,19 +365,19 @@ public interface ProdDeriveManager
     * @param filesToDelete liste de fichier à supprimer
     * @param utilisateur Utilisateur ayant modifié le prod dérivé.
     * @param doValidation True : la validation sera faite.
-    * @param base directory pour enregistrer un fichier associé 
+    * @param base directory pour enregistrer un fichier associé
     * dans le file system
     */
    void updateObjectManager(ProdDerive prodDerive, Banque banque, ProdType type, ObjetStatut statut, Collaborateur collab,
       Emplacement emplacement, Unite volumeUnite, Unite concUnite, Unite quantiteUnite, ModePrepaDerive modePrepaDerive,
       ProdQualite qualite, Transformation transfo, List<AnnotationValeur> listAnnoToCreateOrUpdate,
-      List<AnnotationValeur> listAnnoToDelete, List<File> filesCreated, List<File> filesToDelete, 
-      Utilisateur utilisateur, boolean doValidation, List<OperationType> operations, String baseDir);
+      List<AnnotationValeur> listAnnoToDelete, List<File> filesCreated, List<File> filesToDelete, Utilisateur utilisateur,
+      boolean doValidation, List<OperationType> operations, String baseDir);
 
    /**
     * Cette méthode met à jour une liste de produits dérivés.
     * @param prodDerives Liste des dérivés à mettre à jour.
-    * @param Liste dérivés à la base de la modification multiple, cette liste est 
+    * @param Liste dérivés à la base de la modification multiple, cette liste est
     * utilisée pour la création des annotations Fichier en batch
     * @param list Annotations associées à mettre à jour ou créer
     * (doivent donc avoir objet, champ, et banque referencees)
@@ -385,7 +385,7 @@ public interface ProdDeriveManager
     * @param liste non conformites après traitement
     * @param liste non conformites avant cession
     * @param utilisateur Utilisateur voulant modifier les dérivés.
-    * @param base directory pour enregistrer un fichier associé 
+    * @param base directory pour enregistrer un fichier associé
     * dans le file system
     */
    void updateMultipleObjectsManager(List<ProdDerive> prodDerives, List<ProdDerive> baseProdDerives,
@@ -405,9 +405,9 @@ public interface ProdDeriveManager
    void removeObjectManager(ProdDerive prodDerive, String comments, Utilisateur user, List<File> filesToDelete);
 
    /**
-    * Supprime un objet de la base de données et en cascade tous les objets 
-    * dont il est le parent, deletion cascadant à leur tour sur les objets 
-    * en descendant la hierarchie. 
+    * Supprime un objet de la base de données et en cascade tous les objets
+    * dont il est le parent, deletion cascadant à leur tour sur les objets
+    * en descendant la hierarchie.
     * @param derive ProdDerive à supprimer de la base de données.
     * @param comments commentaires liés à la suppression
     * @param Utilisateur réalisant la suppression.
@@ -416,14 +416,14 @@ public interface ProdDeriveManager
    void removeObjectCascadeManager(ProdDerive derive, String comments, Utilisateur user, List<File> filesToDelete);
 
    /**
-    * Cree une liste de derives avec une liste d'annotations dont les 
+    * Cree une liste de derives avec une liste d'annotations dont les
     * valeurs sont identiques pour chacun.
     * @param listDerives
     * @param banque
     * @param transfo
     * @param utilisateur
     * @param listAnnotations
-    * @param base directory pour enregistrer un fichier associé 
+    * @param base directory pour enregistrer un fichier associé
     * dans le file system
     * @param noconfsTrait
     * @param noconfsCess
@@ -456,7 +456,7 @@ public interface ProdDeriveManager
 
    /**
     * Trouve les derives pour l'objet parent passé en paramètres.
-    * Peut chercher ou non recursivement tous les derives isssus des 
+    * Peut chercher ou non recursivement tous les derives isssus des
     * derives du parent passé en paramètre.
     * @param parent TKAnnotableObject
     * @param true si recursive
@@ -465,17 +465,17 @@ public interface ProdDeriveManager
    List<ProdDerive> findByParentManager(TKAnnotableObject parent, boolean recursive);
 
    /**
-    * Peuple la liste passée en deuxième paramètre avec toutes 
-    * les derives descendants de ceux passés dans la liste 
+    * Peuple la liste passée en deuxième paramètre avec toutes
+    * les derives descendants de ceux passés dans la liste
     * en premier paramètre.
-    * @param drvs 
+    * @param drvs
     * @param coll
     */
    void findRecursiveDerivesManager(List<ProdDerive> drvs, List<ProdDerive> coll);
 
    /**
-    * Change le dérivé de collection vers celle 
-    * passée en paramètre.  Une erreur est lancée si le dérivé 
+    * Change le dérivé de collection vers celle
+    * passée en paramètre.  Une erreur est lancée si le dérivé
     * est déplacé vers une banque appartenant à une autre plateforme.
     * @param derive à migrer
     * @param bank d'arrivée
@@ -484,14 +484,13 @@ public interface ProdDeriveManager
     * @param liste des fichiers à supprimer après transaction
     * @param liste de déplacements (uniques) de fichiers à programmer [Correctif bug TK-155]
     * @version 2.2.0
-	*/
-	void switchBanqueCascadeManager(ProdDerive derive, Banque bank,
-								boolean doValidation, Utilisateur u, 
-								List<File>filesToDelete, Set<MvFichier> filesToMove);
+   */
+   void switchBanqueCascadeManager(ProdDerive derive, Banque bank, boolean doValidation, Utilisateur u, List<File> filesToDelete,
+      Set<MvFichier> filesToMove);
 
    /**
     * Supprime une Transformation de la base de données.
-    * @param transformation Transformation à supprimer de la base 
+    * @param transformation Transformation à supprimer de la base
     * de données.
     * @param comments commentaires liés à la suppression
     * @param Utilisateur réalisant la suppression.
@@ -521,7 +520,7 @@ public interface ProdDeriveManager
    List<Integer> findByPatientNomOrNipInListManager(List<String> criteres, List<Banque> banks);
 
    /**
-    * Surcharge du manager updateObject pour lui ajouter les non 
+    * Surcharge du manager updateObject pour lui ajouter les non
     * conformites.
     * @param prodDerive
     * @param banque
@@ -547,12 +546,12 @@ public interface ProdDeriveManager
    void updateObjectWithNonConformitesManager(ProdDerive prodDerive, Banque banque, ProdType type, ObjetStatut statut,
       Collaborateur collab, Emplacement emplacement, Unite volumeUnite, Unite concUnite, Unite quantiteUnite,
       ModePrepaDerive modePrepaDerive, ProdQualite qualite, Transformation transfo,
-      List<AnnotationValeur> listAnnoToCreateOrUpdate, List<AnnotationValeur> listAnnoToDelete, 
-      Utilisateur utilisateur, boolean doValidation, List<OperationType> operations, String baseDir,
-      List<NonConformite> noconfsTraitement, List<NonConformite> noconfsCession);
+      List<AnnotationValeur> listAnnoToCreateOrUpdate, List<AnnotationValeur> listAnnoToDelete, Utilisateur utilisateur,
+      boolean doValidation, List<OperationType> operations, String baseDir, List<NonConformite> noconfsTraitement,
+      List<NonConformite> noconfsCession);
 
    /**
-    * Surcharge de la methode de creation d'un échantillon intégrant la 
+    * Surcharge de la methode de creation d'un échantillon intégrant la
     * relation avec les non-conformites.
     * @param prodDerive
     * @param banque
@@ -578,8 +577,8 @@ public interface ProdDeriveManager
    void createObjectWithNonConformitesManager(ProdDerive prodDerive, Banque banque, ProdType type, ObjetStatut statut,
       Collaborateur collab, Emplacement emplacement, Unite volumeUnite, Unite concUnite, Unite quantiteUnite,
       ModePrepaDerive modePrepaDerive, ProdQualite qualite, Transformation transfo,
-      List<AnnotationValeur> listAnnoToCreateOrUpdate, Utilisateur utilisateur, boolean doValidation,
-      String baseDir, boolean isImport, List<NonConformite> noconfsTrait, List<NonConformite> noconfsCess);
+      List<AnnotationValeur> listAnnoToCreateOrUpdate, Utilisateur utilisateur, boolean doValidation, String baseDir,
+      boolean isImport, List<NonConformite> noconfsTrait, List<NonConformite> noconfsCess);
 
    /**
     * Compte le nombre de produit dérivés créés par un collaborateur passé en param
@@ -589,7 +588,7 @@ public interface ProdDeriveManager
    public Long findCountCreatedByCollaborateurManager(Collaborateur colla);
 
    /**
-    * Compte le nombre de produit dérivés dont l'operateur 
+    * Compte le nombre de produit dérivés dont l'operateur
     * est le collaborateur passé en param
     * @param collaborateur
     * @return
@@ -597,7 +596,7 @@ public interface ProdDeriveManager
    public Long findCountByOperateurManager(Collaborateur colla);
 
    /**
-    * Céation lots de dérivés sous la forme d'une transformation, en une 
+    * Céation lots de dérivés sous la forme d'une transformation, en une
     * seule transaction. Appellée lors de l'import.
     * @param derives
     * @param b
@@ -621,7 +620,7 @@ public interface ProdDeriveManager
       Hashtable<ProdDerive, List<NonConformite>> noconfsTrait, Hashtable<ProdDerive, List<NonConformite>> noconfsCess);
 
    /**
-    * Supprime les dérivés et en cascade les dérivés dont 
+    * Supprime les dérivés et en cascade les dérivés dont
     * ils sont parents à partir des ids passés en paramètres.
     * @param ids
     * @param String fantome commentaire
@@ -632,7 +631,7 @@ public interface ProdDeriveManager
    void removeListFromIdsManager(List<Integer> ids, String comment, Utilisateur u);
 
    /**
-    * Renvoie tous les dérivés pour un code spécifié dans toutes 
+    * Renvoie tous les dérivés pour un code spécifié dans toutes
     * les collections d'une plateforme passée en paramètre.
     * @param code
     * @param pf Plateforme
@@ -640,13 +639,13 @@ public interface ProdDeriveManager
     * @since 2.1
     */
    List<ProdDerive> findByCodeInPlateformeManager(String code, Plateforme pf);
-   
+
    /**
     * Recherche sur une plateforme les dérivés dont le code est contenu dans la liste passée en paramètre
     * @param listCodes liste des codes recherchés
     * @param pf plateforme sur laquelle la recherche est effectuée
-    * @since 2.2.0 
+    * @since 2.2.0
     */
    List<ProdDerive> findByListCodeWithPlateforme(List<String> listCodes, Plateforme pf);
-   
+
 }

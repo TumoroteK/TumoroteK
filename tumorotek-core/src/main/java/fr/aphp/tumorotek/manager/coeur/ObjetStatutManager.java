@@ -67,7 +67,7 @@ public interface ObjetStatutManager
    List<ObjetStatut> findAllObjectsManager();
 
    /**
-    * Recherche tous les ObjetStatuts dont le statut commence comme celui 
+    * Recherche tous les ObjetStatuts dont le statut commence comme celui
     * passé en paramètre.
     * @param statut Statut que l'on recherche.
     * @param exactMatch True si l'on souhaite seulement récuéprer les matchs

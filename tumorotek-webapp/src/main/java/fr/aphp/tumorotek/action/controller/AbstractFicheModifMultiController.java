@@ -59,256 +59,256 @@ import fr.aphp.tumorotek.webapp.gatsbi.GatsbiController;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
 /**
- * 
+ *
  * @author Mathieu BARTHELEMY
  * @version 2.3.0-gatsbi
  *
  */
-public abstract class AbstractFicheModifMultiController extends AbstractFicheController {
+public abstract class AbstractFicheModifMultiController extends AbstractFicheController
+{
 
-	private static final long serialVersionUID = 1L;
+   private static final long serialVersionUID = 1L;
 
-	private TKdataObject baseObject;
-	private final String modifEncoursLabel = "general.modifMulti.encours";
+   private TKdataObject baseObject;
 
-	private List<? extends Object> objsToEdit = new ArrayList<>();
+   private final String modifEncoursLabel = "general.modifMulti.encours";
 
-	public void setObjsToEdit(final List<? extends Object> objs) {
-		this.objsToEdit = objs;
-	}
+   private List<? extends Object> objsToEdit = new ArrayList<>();
 
-	public List<? extends Object> getObjsToEdit() {
-		return this.objsToEdit;
-	}
+   public void setObjsToEdit(final List<? extends Object> objs){
+      this.objsToEdit = objs;
+   }
 
-	@Override
-	public void doAfterCompose(final Component comp) throws Exception {
-		super.doAfterCompose(comp);
+   public List<? extends Object> getObjsToEdit(){
+      return this.objsToEdit;
+   }
 
-		// init l'objet qui recevra les modifs multiples
-		setNewObject();
+   @Override
+   public void doAfterCompose(final Component comp) throws Exception{
+      super.doAfterCompose(comp);
 
-		winPanel.setHeight(getMainWindow().getPanelHeight() - 2 + "px");
-	}
+      // init l'objet qui recevra les modifs multiples
+      setNewObject();
 
-	@Override
-	public TKdataObject getObject() {
-		return baseObject;
-	}
+      winPanel.setHeight(getMainWindow().getPanelHeight() - 2 + "px");
+   }
 
-	public void setBaseObject(final TKdataObject obj) {
-		this.baseObject = obj;
-	}
+   @Override
+   public TKdataObject getObject(){
+      return baseObject;
+   }
 
-	/**
-	 * Methode qui recupere la modification spécifiée dans le composant de
-	 * modification multiple. L'event passe en data un objet simpleChampValue.
-	 * 
-	 * @param e
-	 */
-	public void onGetChangeOnChamp(final Event e) {
+   public void setBaseObject(final TKdataObject obj){
+      this.baseObject = obj;
+   }
 
-		boolean isDelegateProperty = false;
-		final SimpleChampValue tmp = (SimpleChampValue) e.getData();
+   /**
+    * Methode qui recupere la modification spécifiée dans le composant de
+    * modification multiple. L'event passe en data un objet simpleChampValue.
+    *
+    * @param e
+    */
+   public void onGetChangeOnChamp(final Event e){
 
-		TKDelegateObject<? extends TKdataObject> delegate = null;
-		if (!EContexte.DEFAUT.equals(SessionUtils.getCurrentContexte()) && getObject() instanceof TKDelegetableObject) {
+      boolean isDelegateProperty = false;
+      final SimpleChampValue tmp = (SimpleChampValue) e.getData();
 
-			delegate = DelegateFactory.getDelegate(getObject(), SessionUtils.getCurrentContexte());
+      TKDelegateObject<? extends TKdataObject> delegate = null;
+      if(!EContexte.DEFAUT.equals(SessionUtils.getCurrentContexte()) && getObject() instanceof TKDelegetableObject){
 
-			((TKDelegetableObject) getObject()).setDelegate(delegate);
+         delegate = DelegateFactory.getDelegate(getObject(), SessionUtils.getCurrentContexte());
 
-			try {
-				isDelegateProperty = PropertyUtils.describe(delegate).keySet().contains(tmp.getChamp());
-			} catch (Exception ex) {
-				log.error(ex);
-			}
+         ((TKDelegetableObject) getObject()).setDelegate(delegate);
 
-		}
+         try{
+            isDelegateProperty = PropertyUtils.describe(delegate).keySet().contains(tmp.getChamp());
+         }catch(final Exception ex){
+            log.error(ex);
+         }
 
-		try {
+      }
 
-			final Object beanToModify;
-			if (!isDelegateProperty) {
-				beanToModify = getObject();
-			} else {
-				beanToModify = delegate;
-			}
+      try{
 
-			if (!(tmp.getValue() instanceof List)) {
-				PropertyUtils.setSimpleProperty(beanToModify, tmp.getChamp(), tmp.getValue());
-			} else {
-				PropertyUtils.setSimpleProperty(beanToModify, tmp.getChamp(), ((List<Object>) tmp.getValue()).get(0));
+         final Object beanToModify;
+         if(!isDelegateProperty){
+            beanToModify = getObject();
+         }else{
+            beanToModify = delegate;
+         }
 
-				if (tmp.getChamp().contains("Init")) {
-					PropertyUtils.setSimpleProperty(beanToModify, tmp.getChamp().replace("Init", "Unite"),
-							((List<Object>) tmp.getValue()).get(1));
-				} else {
-					PropertyUtils.setSimpleProperty(beanToModify, tmp.getChamp() + "Unite",
-							((List<Object>) tmp.getValue()).get(1));
-				}
-			}
+         if(!(tmp.getValue() instanceof List)){
+            PropertyUtils.setSimpleProperty(beanToModify, tmp.getChamp(), tmp.getValue());
+         }else{
+            PropertyUtils.setSimpleProperty(beanToModify, tmp.getChamp(), ((List<Object>) tmp.getValue()).get(0));
 
-		} catch (final Exception ex) {
-			log.error(ex);
-		}
+            if(tmp.getChamp().contains("Init")){
+               PropertyUtils.setSimpleProperty(beanToModify, tmp.getChamp().replace("Init", "Unite"),
+                  ((List<Object>) tmp.getValue()).get(1));
+            }else{
+               PropertyUtils.setSimpleProperty(beanToModify, tmp.getChamp() + "Unite", ((List<Object>) tmp.getValue()).get(1));
+            }
+         }
 
-		final StringBuffer sb = new StringBuffer();
-		sb.append("[");
-		if (tmp.getPrintValue() != null) {
-			sb.append(tmp.getPrintValue());
-		} else {
-			sb.append(" ");
-		}
-		sb.append("]");
-		sb.append(" - ");
+      }catch(final Exception ex){
+         log.error(ex);
+      }
 
-		updateLabelChanged(tmp.getChamp(), sb.toString(), false);
-	}
+      final StringBuffer sb = new StringBuffer();
+      sb.append("[");
+      if(tmp.getPrintValue() != null){
+         sb.append(tmp.getPrintValue());
+      }else{
+         sb.append(" ");
+      }
+      sb.append("]");
+      sb.append(" - ");
 
-	/**
-	 * Recoit l'information 'reset' du pop up de modification multiple. L'event
-	 * contient le champLabel spécifié pour le 'reset'.
-	 * 
-	 * @param event
-	 */
-	public void onResetMulti(final Event event) {
-		final SimpleChampValue tmp = (SimpleChampValue) event.getData();
-		updateLabelChanged(tmp.getChamp(), "", true);
-	}
+      updateLabelChanged(tmp.getChamp(), sb.toString(), false);
+   }
 
-	/**
-	 * Met à jour le labelChanged en fonction du champ passé en paramètre.
-	 * 
-	 * @param champ
-	 * @param printValue valeur de la modification multiple à afficher.
-	 * @param true       si reset demandé
-	 */
-	public abstract void updateLabelChanged(String champ, String printValue, boolean reset);
+   /**
+    * Recoit l'information 'reset' du pop up de modification multiple. L'event
+    * contient le champLabel spécifié pour le 'reset'.
+    *
+    * @param event
+    */
+   public void onResetMulti(final Event event){
+      final SimpleChampValue tmp = (SimpleChampValue) event.getData();
+      updateLabelChanged(tmp.getChamp(), "", true);
+   }
 
-	/**
-	 * Valide les modifications multiples. Passe la fiche en affichage statique.
-	 * 
-	 * @param event Event : clique sur le bouton validateModifMultiple.
-	 * @throws Exception
-	 */
-	public void onClick$validateModifMultiple() {
-		Clients.showBusy(Labels.getLabel(modifEncoursLabel));
-		Events.echoEvent("onLaterUpdateMultiple", self, null);
-	}
+   /**
+    * Met à jour le labelChanged en fonction du champ passé en paramètre.
+    *
+    * @param champ
+    * @param printValue valeur de la modification multiple à afficher.
+    * @param true       si reset demandé
+    */
+   public abstract void updateLabelChanged(String champ, String printValue, boolean reset);
 
-	/**
-	 * Sort du contexte modification multiple.
-	 */
-	public void onClick$revert() {
-		Clients.showBusy(Labels.getLabel("general.display.wait"));
-		Events.echoEvent("onLaterRevertMultiple", self, null);
-	}
+   /**
+    * Valide les modifications multiples. Passe la fiche en affichage statique.
+    *
+    * @param event Event : clique sur le bouton validateModifMultiple.
+    * @throws Exception
+    */
+   public void onClick$validateModifMultiple(){
+      Clients.showBusy(Labels.getLabel(modifEncoursLabel));
+      Events.echoEvent("onLaterUpdateMultiple", self, null);
+   }
 
-	public void onLaterRevertMultiple() {
-		getObjectTabController().onMultiModifDone();
-		// ferme wait message
-		Clients.clearBusy();
-	}
+   /**
+    * Sort du contexte modification multiple.
+    */
+   public void onClick$revert(){
+      Clients.showBusy(Labels.getLabel("general.display.wait"));
+      Events.echoEvent("onLaterRevertMultiple", self, null);
+   }
 
-	public void onLaterUpdateMultiple() {
-		try {
+   public void onLaterRevertMultiple(){
+      getObjectTabController().onMultiModifDone();
+      // ferme wait message
+      Clients.clearBusy();
+   }
 
-			// enrichit les banques avec les contextes GATSBI
-			// avant update
-			for (Object tkObj : getObjsToEdit()) {
-				((TKAnnotableObject) tkObj).setBanque(GatsbiController
-						.enrichesBanqueWithEtudeContextes(((TKAnnotableObject) tkObj).getBanque(), sessionScope));
-			}
+   public void onLaterUpdateMultiple(){
+      try{
 
-			updateMultiObjects();
+         // enrichit les banques avec les contextes GATSBI
+         // avant update
+         for(final Object tkObj : getObjsToEdit()){
+            ((TKAnnotableObject) tkObj).setBanque(
+               GatsbiController.enrichesBanqueWithEtudeContextes(((TKAnnotableObject) tkObj).getBanque(), sessionScope));
+         }
 
-			// redessine la page d'annotation pour static
-			// getFicheAnnotation().drawAnnotationPanelContent(false);
+         updateMultiObjects();
 
-			// on vérifie que l'on retrouve bien la page contenant la liste
-			// des objets
-			if (getObjectTabController().getListe() != null) {
-				// ajout du dérivé à la liste
-				getObjectTabController().getListe()
-						.updateMultiObjectsGridListFromOtherPage((List<TKdataObject>) getObjsToEdit());
-			}
+         // redessine la page d'annotation pour static
+         // getFicheAnnotation().drawAnnotationPanelContent(false);
 
-			getObjectTabController().onMultiModifDone();
+         // on vérifie que l'on retrouve bien la page contenant la liste
+         // des objets
+         if(getObjectTabController().getListe() != null){
+            // ajout du dérivé à la liste
+            getObjectTabController().getListe().updateMultiObjectsGridListFromOtherPage((List<TKdataObject>) getObjsToEdit());
+         }
 
-			// ferme wait message
-			Clients.clearBusy();
+         getObjectTabController().onMultiModifDone();
 
-		} catch (final RuntimeException re) {
-			// ferme wait message
-			Clients.clearBusy();
-			log.error(re);
-			Messagebox.show(handleExceptionMessage(re), "Error", Messagebox.OK, Messagebox.ERROR);
-		}
-	}
+         // ferme wait message
+         Clients.clearBusy();
 
-	/**
-	 * Modification multiple d'objets.
-	 */
-	public abstract void updateMultiObjects();
+      }catch(final RuntimeException re){
+         // ferme wait message
+         Clients.clearBusy();
+         log.error(re);
+         Messagebox.show(handleExceptionMessage(re), "Error", Messagebox.OK, Messagebox.ERROR);
+      }
+   }
 
-	/**
-	 * Ordonne a la fiche Annotation de preparer les listes de valeurs à modifier,
-	 * créer, supprimer.
-	 * 
-	 * @return true si une de ces listes n'est pas vide.
-	 */
-	public boolean updateMultiAnnotationValeurs() {
-		getObjectTabController().getFicheAnnotation().populateValeursActionLists(false, true);
-		return (!getObjectTabController().getFicheAnnotation().getValeursToCreateOrUpdate().isEmpty()
-				|| !getObjectTabController().getFicheAnnotation().getValeursToDelete().isEmpty());
-	}
+   /**
+    * Modification multiple d'objets.
+    */
+   public abstract void updateMultiObjects();
 
-	/**
-	 * Méthode qui ferme la fiche : seule la liste sera visible.
-	 * 
-	 * @param event onClose de la fiche.
-	 */
-	public void onClose$winPanel(final Event event) {
-		Events.getRealOrigin((ForwardEvent) event).stopPropagation();
-		getObjectTabController().clearStaticFiche();
-		getObjectTabController().switchToOnlyListeMode();
-	}
+   /**
+    * Ordonne a la fiche Annotation de preparer les listes de valeurs à modifier,
+    * créer, supprimer.
+    *
+    * @return true si une de ces listes n'est pas vide.
+    */
+   public boolean updateMultiAnnotationValeurs(){
+      getObjectTabController().getFicheAnnotation().populateValeursActionLists(false, true);
+      return (!getObjectTabController().getFicheAnnotation().getValeursToCreateOrUpdate().isEmpty()
+         || !getObjectTabController().getFicheAnnotation().getValeursToDelete().isEmpty());
+   }
 
-	/**
-	 * Cette restriction est implémentée par Gatsbi
-	 * 
-	 * @param liste de valeurs de thesaurus initiale
-	 * @param champ entite id
-	 * @return liste filtrée par le contexte défini par le gestionnaire Gatsbi
-	 * @since 2.3.0-gatsbi
-	 */
-	protected List<Object> applyAnyThesaurusRestriction(List<Object> thObjs, Integer chpId) {
-		return thObjs;
-	}
+   /**
+    * Méthode qui ferme la fiche : seule la liste sera visible.
+    *
+    * @param event onClose de la fiche.
+    */
+   public void onClose$winPanel(final Event event){
+      Events.getRealOrigin((ForwardEvent) event).stopPropagation();
+      getObjectTabController().clearStaticFiche();
+      getObjectTabController().switchToOnlyListeMode();
+   }
 
-	/**
-	 * Cette mutation est implémentée par Gatsbi
-	 * 
-	 * @param contrainte dont le flag NO_EMPTY est muté suivant le caractère
-	 *                   obligatoire défini par Gatsbi
-	 * @param champ      entite id
-	 * @return contrainte mutée
-	 * @since 2.3.0-gatsbi
-	 */
-	protected Constraint muteAnyRequiredConstraint(Constraint cstr, Integer chpId) {
-		return cstr;
-	}
+   /**
+    * Cette restriction est implémentée par Gatsbi
+    *
+    * @param liste de valeurs de thesaurus initiale
+    * @param champ entite id
+    * @return liste filtrée par le contexte défini par le gestionnaire Gatsbi
+    * @since 2.3.0-gatsbi
+    */
+   protected List<Object> applyAnyThesaurusRestriction(final List<Object> thObjs, final Integer chpId){
+      return thObjs;
+   }
 
-	/**
-	 * Cette mutation est implémentée par Gatsbi
-	 * 
-	 * @param flag  isObligatoire
-	 * @param champ entite id
-	 * @return flag isObligatoire muté
-	 * @since 2.3.0-gatsbi
-	 */
-	protected boolean switchAnyRequiredFlag(Boolean flag, Integer chpId) {
-		return flag;
-	}
+   /**
+    * Cette mutation est implémentée par Gatsbi
+    *
+    * @param contrainte dont le flag NO_EMPTY est muté suivant le caractère
+    *                   obligatoire défini par Gatsbi
+    * @param champ      entite id
+    * @return contrainte mutée
+    * @since 2.3.0-gatsbi
+    */
+   protected Constraint muteAnyRequiredConstraint(final Constraint cstr, final Integer chpId){
+      return cstr;
+   }
+
+   /**
+    * Cette mutation est implémentée par Gatsbi
+    *
+    * @param flag  isObligatoire
+    * @param champ entite id
+    * @return flag isObligatoire muté
+    * @since 2.3.0-gatsbi
+    */
+   protected boolean switchAnyRequiredFlag(final Boolean flag, final Integer chpId){
+      return flag;
+   }
 }

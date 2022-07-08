@@ -68,6 +68,7 @@ public class PlateformesAssociees extends OneToManyComponent<ConteneurPlateforme
    private Listbox plateformeBox;
 
    private List<ConteneurPlateforme> objects = new ArrayList<>();
+
    private Conteneur conteneur;
 
    @Override
@@ -104,34 +105,34 @@ public class PlateformesAssociees extends OneToManyComponent<ConteneurPlateforme
 
    @Override
    public void removeFromListObjects(final Object obj){
-      
-      final ConteneurPlateforme objToRemove = (ConteneurPlateforme)obj;
-      
+
+      final ConteneurPlateforme objToRemove = (ConteneurPlateforme) obj;
+
       getObjects().remove(obj);
-      
-      if(null != objToRemove.getPlateforme() && plateformeBox.getListModel() != null) {
-         
-         ListModelSet<Object> listModel = ((ListModelSet<Object>)plateformeBox.getListModel());
-         
+
+      if(null != objToRemove.getPlateforme() && plateformeBox.getListModel() != null){
+
+         final ListModelSet<Object> listModel = ((ListModelSet<Object>) plateformeBox.getListModel());
+
          listModel.add(objToRemove.getPlateforme());
-         
+
       }
-      
+
    }
 
    @Override
    public void updateComponent(){
 
-      ListModelSet<Object> listModelPf = (ListModelSet<Object>)plateformeBox.getListModel();
-      
-      if(!addObj.isVisible() && null != listModelPf) {
+      final ListModelSet<Object> listModelPf = (ListModelSet<Object>) plateformeBox.getListModel();
+
+      if(!addObj.isVisible() && null != listModelPf){
          addObjBox.setVisible(!listModelPf.isEmpty());
       }
-      
+
       super.updateComponent();
-      
+
    }
-   
+
    @Override
    public String getGroupHeaderValue(){
       return Labels.getLabel("conteneur.plateformes.accessibles", new Object[] {getObjects().size()});
@@ -156,7 +157,7 @@ public class PlateformesAssociees extends OneToManyComponent<ConteneurPlateforme
    @Override
    public void onClick$addObj(){
 
-      ListModel<Plateforme> plateformesList = new ListModelSet<>(findObjectsAddable());
+      final ListModel<Plateforme> plateformesList = new ListModelSet<>(findObjectsAddable());
 
       plateformeBox.setModel(plateformesList);
 
@@ -172,9 +173,9 @@ public class PlateformesAssociees extends OneToManyComponent<ConteneurPlateforme
    public void onClick$objLinkLabel(final Event event){}
 
    /**
-    * Vérifies qu'aucun référencement sur ce conteneur, impliquant un 
-    * probable stockage de matériel, n'a été établi à partir de la 
-    * ConteneurPlateforme.	 
+    * Vérifies qu'aucun référencement sur ce conteneur, impliquant un
+    * probable stockage de matériel, n'a été établi à partir de la
+    * ConteneurPlateforme.
     **/
    @Override
    public void onClick$deleteImage(final Event event){
@@ -195,7 +196,7 @@ public class PlateformesAssociees extends OneToManyComponent<ConteneurPlateforme
 
       final Listitem selectedItem = plateformeBox.getSelectedItem();
 
-      if(null != selectedItem) {
+      if(null != selectedItem){
          final Plateforme selectedPf = selectedItem.getValue();
          final ConteneurPlateforme conteneurPf = new ConteneurPlateforme();
 
@@ -203,14 +204,14 @@ public class PlateformesAssociees extends OneToManyComponent<ConteneurPlateforme
          conteneurPf.setPlateforme(selectedPf);
          conteneurPf.setPartage(true);
          addToListObjects(conteneurPf);
-         
-         ListModelSet<Object> listModel = ((ListModelSet<Object>)plateformeBox.getListModel());
-         
+
+         final ListModelSet<Object> listModel = ((ListModelSet<Object>) plateformeBox.getListModel());
+
          listModel.remove(selectedPf);
       }
 
       updateComponent();
-      
+
    }
 
    /**

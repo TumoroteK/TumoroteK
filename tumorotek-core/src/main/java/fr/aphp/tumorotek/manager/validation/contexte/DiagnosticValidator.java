@@ -72,7 +72,7 @@ public class DiagnosticValidator implements Validator
          if(!diagnostic.getNom().matches(ValidationUtilities.MOTREGEXP)){
             errs.rejectValue("nom", "risque.nom.illegal");
          }
-         if(diagnostic.getNom().length() >   200){
+         if(diagnostic.getNom().length() > 200){
             errs.rejectValue("nom", "risque.nom.tooLong");
          }
       }

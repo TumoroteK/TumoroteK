@@ -84,7 +84,7 @@ public interface CodeAssigneManager
    List<CodeAssigne> findByLibelleLikeManager(String libelle, boolean exactMatch);
 
    /**
-    * Recherche les codes qui sont assignes comme type lésionnel/morpho 
+    * Recherche les codes qui sont assignes comme type lésionnel/morpho
     * pour l'échantillon.
     * @param echantillon.
     * @return une liste de codes assignes.
@@ -92,7 +92,7 @@ public interface CodeAssigneManager
    List<CodeAssigne> findCodesMorphoByEchantillonManager(Echantillon echan);
 
    /**
-    * Recherche les codes qui sont assignes pour definir l'organe 
+    * Recherche les codes qui sont assignes pour definir l'organe
     * dont est issu l'échantillon.
     * @param echantillon.
     * @return une liste de codes assignes.
@@ -101,7 +101,7 @@ public interface CodeAssigneManager
 
    /**
     * Cherche les doublons en se basant sur la methode equals()
-    * surchargee par les entites. Si l'objet est modifie donc a un id 
+    * surchargee par les entites. Si l'objet est modifie donc a un id
     * attribue par le SGBD, ce dernier est retire de la liste findAll.
     * @param table CodeAssigne dont on cherche la presence dans la base
     * @return true/false
@@ -109,7 +109,7 @@ public interface CodeAssigneManager
    boolean findDoublonManager(CodeAssigne code);
 
    /**
-    * Enregistre ou modifie un code assigne. 
+    * Enregistre ou modifie un code assigne.
     * @param code
     * @param echantillon
     * @param TableCodage code referent
@@ -126,7 +126,7 @@ public interface CodeAssigneManager
    void removeObjectManager(CodeAssigne code);
 
    /**
-    * Recherche les codes lésionels assignes exportes pour 
+    * Recherche les codes lésionels assignes exportes pour
     * chacun des echantillons issus du prélèvement passé en paramètre.
     * Ordonne les codes suivant id des échantillons.
     * @param prel Prelevement
@@ -135,7 +135,7 @@ public interface CodeAssigneManager
    List<CodeAssigne> findCodesLesExportedByPrelevementManager(Prelevement prel);
 
    /**
-    * Recherche les codes organes assignes exportes pour 
+    * Recherche les codes organes assignes exportes pour
     * chacun des echantillons issus du prélèvement passé en paramètre.
     * Ordonne les codes suivant id des échantillons.
     * @param prel Prelevement
@@ -144,7 +144,7 @@ public interface CodeAssigneManager
    List<CodeAssigne> findCodesOrgExportedByPrelevementManager(Prelevement prel);
 
    /**
-    * Recherche les codes organes assignes exportes pour 
+    * Recherche les codes organes assignes exportes pour
     * chacun des echantillons issus du patient passé en paramètre.
     * Ordonne les codes suivant id des échantillons.
     * @param pat Patient
@@ -153,7 +153,7 @@ public interface CodeAssigneManager
    List<CodeAssigne> findCodesOrgExportedByPatientManager(Patient pat);
 
    /**
-    * Recherche le premier code lésionel assigne pour 
+    * Recherche le premier code lésionel assigne pour
     * chacun des echantillons issus du prélèvement passé en paramètre.
     * Ordonne les codes suivant id des échantillons.
     * @param prel Prelevement
@@ -162,7 +162,7 @@ public interface CodeAssigneManager
    List<CodeAssigne> findFirstCodesLesByPrelevementManager(Prelevement prel);
 
    /**
-    * Recherche le premier code organe assigne pour 
+    * Recherche le premier code organe assigne pour
     * chacun des echantillons issus du prélèvement passé en paramètre.
     * Ordonne les codes suivant id des échantillons.
     * @param prel Prelevement
@@ -171,7 +171,7 @@ public interface CodeAssigneManager
    List<CodeAssigne> findFirstCodesOrgByPrelevementManager(Prelevement prel);
 
    /**
-    * Recherche le premier code organe assigne pour 
+    * Recherche le premier code organe assigne pour
     * chacun des echantillons issus du patient passé en paramètre.
     * Ordonne les codes suivant id des échantillons.
     * @param pat Patient
@@ -180,8 +180,8 @@ public interface CodeAssigneManager
    List<CodeAssigne> findFirstCodesOrgByPatientManager(Patient pat);
 
    /**
-    * Transforme une liste de codeAssigne en une liste de String 
-    * obtenue à partir du code ou du libelle si l'association entre 
+    * Transforme une liste de codeAssigne en une liste de String
+    * obtenue à partir du code ou du libelle si l'association entre
     * la banque et la table de codage le mentionne.
     * @param codes
     * @return liste String, utilisée pour l'affichage.
@@ -189,11 +189,11 @@ public interface CodeAssigneManager
    List<String> formatCodesAsStringsManager(List<CodeAssigne> codes);
 
    /**
-    * Préparations batch statements pour full JDBC inserts d'une liste de codes assignes associes 
+    * Préparations batch statements pour full JDBC inserts d'une liste de codes assignes associes
     * à l'echantillon passe en parametre.
-    * Les validations à la création sont identiques à celles lancées en JPA 
+    * Les validations à la création sont identiques à celles lancées en JPA
     * (doublons, syntaxe).
-    * @param jdbcSuite contenant les ids et statements permettant 
+    * @param jdbcSuite contenant les ids et statements permettant
     * la creation des objets en full JDBC
     * @param echantillon
     * @param codes

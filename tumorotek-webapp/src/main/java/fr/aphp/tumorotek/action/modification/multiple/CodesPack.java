@@ -58,7 +58,9 @@ public class CodesPack
    private static final long serialVersionUID = 3551763682958457361L;
 
    private List<SmallObjDecorator> codesToCreateOrEdit = new ArrayList<>();
+
    private CodeAssigne codeToExport = null;
+
    private List<CodeAssigne> codesToDelete = new ArrayList<>();
 
    public static long getSerialVersionUID(){

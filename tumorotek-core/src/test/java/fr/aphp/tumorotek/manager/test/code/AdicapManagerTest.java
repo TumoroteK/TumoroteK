@@ -62,18 +62,18 @@ public class AdicapManagerTest extends AbstractManagerTest4
 {
    @Autowired
    private AdicapManager adicapManager;
+
    @Autowired
    private AdicapGroupeDao adicapGroupeDao;
 
    @Test
    public void testFindAllObjectsManager(){
-      
+
       final List<Adicap> ads = adicapManager.findAllObjectsManager();
       //assertEquals(8907, ads.size());
       assertEquals(8906, ads.size()); // JDI : ce que j'ai en base, est-ce grave?
    }
 
-   
    @Test
    public void testFindByCodeLikeManager(){
       //teste une recherche exactMatch
@@ -90,7 +90,6 @@ public class AdicapManagerTest extends AbstractManagerTest4
       assertTrue(ads.size() == 0);
    }
 
-   
    @Test
    public void testFindByLibelleLikeManager(){
       //teste une recherche exactMatch

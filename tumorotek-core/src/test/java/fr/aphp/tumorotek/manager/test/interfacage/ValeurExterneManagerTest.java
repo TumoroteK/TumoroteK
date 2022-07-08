@@ -69,8 +69,10 @@ public class ValeurExterneManagerTest extends AbstractManagerTest4
 
    @Autowired
    private ValeurExterneManager valeurExterneManager;
+
    @Autowired
    private BlocExterneDao blocExterneDao;
+
    @Autowired
    private DossierExterneDao dossierExterneDao;
 
@@ -121,36 +123,30 @@ public class ValeurExterneManagerTest extends AbstractManagerTest4
       list = valeurExterneManager.findByBlocExterneManager(null);
       assertTrue(list.size() == 0);
    }
-   
+
    @Test
-   public void testFindByDossierChampEntiteIdAndBlocEntiteIdManager() {
-		  DossierExterne dos = dossierExterneDao.findById(4);
-	      List<ValeurExterne> liste = valeurExterneManager
-	    		  .findByDossierChampEntiteIdAndBlocEntiteIdManager(dos, 44, 2);
-	      assertTrue(liste.size() == 1);
-	      assertTrue(liste.get(0).getValeur().equals("NDA127896 BI"));
+   public void testFindByDossierChampEntiteIdAndBlocEntiteIdManager(){
+      DossierExterne dos = dossierExterneDao.findById(4);
+      List<ValeurExterne> liste = valeurExterneManager.findByDossierChampEntiteIdAndBlocEntiteIdManager(dos, 44, 2);
+      assertTrue(liste.size() == 1);
+      assertTrue(liste.get(0).getValeur().equals("NDA127896 BI"));
 
-	      liste = valeurExterneManager
-	    		  .findByDossierChampEntiteIdAndBlocEntiteIdManager(dos, 230, 3);
-	      assertTrue(liste.size() == 1);
-	      assertTrue(liste.get(0).getValeur().equals("GHLOJ7F4;GHOTJMF4"));
+      liste = valeurExterneManager.findByDossierChampEntiteIdAndBlocEntiteIdManager(dos, 230, 3);
+      assertTrue(liste.size() == 1);
+      assertTrue(liste.get(0).getValeur().equals("GHLOJ7F4;GHOTJMF4"));
 
-	      liste = valeurExterneManager
-	    		  .findByDossierChampEntiteIdAndBlocEntiteIdManager(dos, 89, 3);
-	      assertTrue(liste.isEmpty());
-	      
-	      liste = valeurExterneManager
-	    		  .findByDossierChampEntiteIdAndBlocEntiteIdManager(null, 89, 3);
-	      assertTrue(liste.isEmpty());
-	      
-	      liste = valeurExterneManager
-	    		  .findByDossierChampEntiteIdAndBlocEntiteIdManager(dos, null, 3);
-	      assertTrue(liste.isEmpty());
-	      
-	      liste = valeurExterneManager
-	    		  .findByDossierChampEntiteIdAndBlocEntiteIdManager(dos, 89, null);
-	      assertTrue(liste.isEmpty());
-	   }
+      liste = valeurExterneManager.findByDossierChampEntiteIdAndBlocEntiteIdManager(dos, 89, 3);
+      assertTrue(liste.isEmpty());
+
+      liste = valeurExterneManager.findByDossierChampEntiteIdAndBlocEntiteIdManager(null, 89, 3);
+      assertTrue(liste.isEmpty());
+
+      liste = valeurExterneManager.findByDossierChampEntiteIdAndBlocEntiteIdManager(dos, null, 3);
+      assertTrue(liste.isEmpty());
+
+      liste = valeurExterneManager.findByDossierChampEntiteIdAndBlocEntiteIdManager(dos, 89, null);
+      assertTrue(liste.isEmpty());
+   }
 
    /**
     * Test de la méthode getChampEntiteManager.

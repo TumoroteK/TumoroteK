@@ -45,7 +45,6 @@ import fr.aphp.tumorotek.model.imprimante.Modele;
 public class ModeleValidator implements Validator
 {
 
-   
    @Override
    public boolean supports(final Class<?> clazz){
       return Modele.class.equals(clazz);

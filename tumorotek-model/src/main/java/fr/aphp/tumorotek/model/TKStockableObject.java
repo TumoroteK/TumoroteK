@@ -87,10 +87,10 @@ public interface TKStockableObject extends TKAnnotableObject
    /**
     * Comparator permettant d'ordonner une liste de dérivés par leur codes.
     * Date: 27/05/2013
-    * 
-    * Soit compare les ids si compareId = true, 
-    * Sinon, compare les codes en commencant par le suffixe. 
-    * 
+    *
+    * Soit compare les ids si compareId = true,
+    * Sinon, compare les codes en commencant par le suffixe.
+    *
     * @author Mathieu BARTHELEMY
     * @version 2.0.12
     *

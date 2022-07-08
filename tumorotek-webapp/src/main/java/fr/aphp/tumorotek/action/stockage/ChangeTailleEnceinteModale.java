@@ -20,10 +20,15 @@ public class ChangeTailleEnceinteModale extends GenericForwardComposer<Component
    private static final long serialVersionUID = 7050591120146094296L;
 
    private Component parent;
+
    private Intbox nbPlacesBox;
+
    private Enceinte enceinte;
+
    private Integer nbPlaces;
+
    private Integer nbPlacesOcc;
+
    private AnnotateDataBinder binder;
 
    private String nbPlacesLabel;

@@ -91,34 +91,48 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
 public class ImportHistoriqueManagerTest extends AbstractManagerTest4
 {
 
-@Autowired
+   @Autowired
    private ImportHistoriqueManager importHistoriqueManager;
-@Autowired
+
+   @Autowired
    private ImportTemplateDao importTemplateDao;
-@Autowired
+
+   @Autowired
    private UtilisateurDao utilisateurDao;
-@Autowired
+
+   @Autowired
    private ImportationDao importationDao;
+
    @Autowired
    private EntiteDao entiteDao;
+
    @Autowired
    private ObjetStatutDao objetStatutDao;
+
    @Autowired
    private PatientManager patientManager;
+
    @Autowired
    private PrelevementManager prelevementManager;
+
    @Autowired
    private EchantillonManager echantillonManager;
+
    @Autowired
    private ProdDeriveManager prodDeriveManager;
+
    @Autowired
    private BanqueDao banqueDao;
+
    @Autowired
    private NatureDao natureDao;
+
    @Autowired
    private ConsentTypeDao consentTypeDao;
+
    @Autowired
    private EchantillonTypeDao echantillonTypeDao;
+
    @Autowired
    private ProdTypeDao prodTypeDao;
 
@@ -126,8 +140,8 @@ public class ImportHistoriqueManagerTest extends AbstractManagerTest4
 
    }
 
-  @Test
-  public void testFindById(){
+   @Test
+   public void testFindById(){
       final ImportHistorique temp = importHistoriqueManager.findByIdManager(1);
       assertNotNull(temp);
 

@@ -66,7 +66,7 @@ public interface UniteManager
    List<Unite> findAllObjectsManager();
 
    /**
-    * Recherche toutes les unités dont l'unite commence comme celle 
+    * Recherche toutes les unités dont l'unite commence comme celle
     * passée en paramètre.
     * @param unite Unite que l'on recherche.
     * @param exactMatch True si l'on souhaite seulement récuéprer les matchs
@@ -76,7 +76,7 @@ public interface UniteManager
    List<Unite> findByUniteLikeManager(String unite, boolean exactMatch);
 
    /**
-    * Recherche toutes les unités dont le type commence comme celui 
+    * Recherche toutes les unités dont le type commence comme celui
     * passé en paramètre.
     * @param type Type que l'on recherche.
     * @param exactMatch True si l'on souhaite seulement récuéprer les matchs

@@ -83,13 +83,21 @@ public class CodeUtilisateurManagerImpl implements CodeUtilisateurManager
    private final Log log = LogFactory.getLog(CodeUtilisateurManager.class);
 
    private CodeUtilisateurDao codeUtilisateurDao;
+
    private CodeDossierDao codeDossierDao;
+
    private OperationManager operationManager;
+
    private OperationTypeDao operationTypeDao;
+
    private BanqueDao banqueDao;
+
    private UtilisateurDao utilisateurDao;
+
    private CodeCommonValidator codeCommonValidator;
+
    private CommonUtilsManager commonUtilsManager;
+
    private TranscodeUtilisateurDao transcodeUtilisateurDao;
 
    public void setCodeUtilisateurDao(final CodeUtilisateurDao cUDao){
@@ -241,7 +249,7 @@ public class CodeUtilisateurManagerImpl implements CodeUtilisateurManager
    }
 
    /**
-    * Verifie que les Objets devant etre obligatoirement associes 
+    * Verifie que les Objets devant etre obligatoirement associes
     * sont non nulls et lance la validation via le Validator.
     * @param code CodeUtilisateur
     * @param bank
@@ -307,11 +315,11 @@ public class CodeUtilisateurManagerImpl implements CodeUtilisateurManager
    }
 
    /**
-    * Cette méthode met à jour les associations entre un les 
+    * Cette méthode met à jour les associations entre un les
     * codes de transcodage et le code utilisateur.
-    * @param code code utilisateur pour lequel 
+    * @param code code utilisateur pour lequel
     * on veut mettre à jour les transcodes.
-    * @param transcodes liste de transcodes 
+    * @param transcodes liste de transcodes
     * que l'on veut associer au patient.
     */
    private void updateTranscodes(final CodeUtilisateur codeU, final Collection<CodeCommon> transcodes){
@@ -364,7 +372,7 @@ public class CodeUtilisateurManagerImpl implements CodeUtilisateurManager
    }
 
    /**
-    * Cree une instance transcodeUTilisateur a partir d'une instance de 
+    * Cree une instance transcodeUTilisateur a partir d'une instance de
     * CodeCommon. Seul le code utilisateur lui faisant reference n'est pas
     * assigné.
     * @param code

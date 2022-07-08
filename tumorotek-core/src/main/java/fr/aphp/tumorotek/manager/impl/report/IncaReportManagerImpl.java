@@ -75,10 +75,15 @@ public class IncaReportManagerImpl implements IncaReportManager
    private final Log log = LogFactory.getLog(IncaReportManager.class);
 
    private EchantillonDao echantillonDao;
+
    private PrelevementDao prelevementDao;
+
    private TableCodageManager tableCodageManager;
+
    private BanqueManager banqueManager;
+
    private PatientDao patientDao;
+
    private CimMasterManager cimMasterManager;
 
    public void setEchantillonDao(final EchantillonDao eDao){
@@ -114,7 +119,7 @@ public class IncaReportManagerImpl implements IncaReportManager
       if(banks != null && !banks.isEmpty()){
          counts = new ArrayList<>();
          final long ms = 86400000;
-         final Long jourInMs = ms * interv;
+         final long jourInMs = ms * interv;
          final Calendar interm1 = Calendar.getInstance();
          interm1.setTimeInMillis(cal1.getTimeInMillis());
          final Calendar interm2 = Calendar.getInstance();
@@ -171,7 +176,7 @@ public class IncaReportManagerImpl implements IncaReportManager
          counts = new ArrayList<>();
          final long ms = 86400000;
 
-         final Long jourInMs = ms * interv;
+         final long jourInMs = ms * interv;
 
          final Calendar interm1 = Calendar.getInstance();
          interm1.setTimeInMillis(cal1.getTimeInMillis());
@@ -202,7 +207,7 @@ public class IncaReportManagerImpl implements IncaReportManager
       if(banks != null && !banks.isEmpty()){
          counts = new ArrayList<>();
          final long ms = 86400000;
-         final Long jourInMs = ms * interv;
+         final long jourInMs = ms * interv;
          final Date interm1 = new Date(d1.getTime());
          // la borne supérieure devient exclusive si on retire 1 ms
          final Date interm2 = new Date(d1.getTime() + jourInMs - 1);
@@ -290,12 +295,12 @@ public class IncaReportManagerImpl implements IncaReportManager
                ante.setTimeInMillis(0);
 
                // récupère les prélèvements
-               final Set<Prelevement> prelsTot = new HashSet<>(prelevementDao.findByOrganeByDates(
-                  tableCodageManager.getListCodesFromCodeCommon(new ArrayList<>(codes)), ante,
-                  Utils.getCurrentSystemCalendar(), currBanque));
-               prelsTot.addAll(prelevementDao.findByOrganeByDates(
-                  tableCodageManager.getListLibellesFromCodeCommon(new ArrayList<>(codes)), ante,
-                  Utils.getCurrentSystemCalendar(), currBanque));
+               final Set<Prelevement> prelsTot = new HashSet<>(
+                  prelevementDao.findByOrganeByDates(tableCodageManager.getListCodesFromCodeCommon(new ArrayList<>(codes)), ante,
+                     Utils.getCurrentSystemCalendar(), currBanque));
+               prelsTot.addAll(
+                  prelevementDao.findByOrganeByDates(tableCodageManager.getListLibellesFromCodeCommon(new ArrayList<>(codes)),
+                     ante, Utils.getCurrentSystemCalendar(), currBanque));
 
                tot = prelsTot.size();
 
@@ -368,7 +373,7 @@ public class IncaReportManagerImpl implements IncaReportManager
          counts = new ArrayList<>();
          final long ms = 86400000;
 
-         final Long jourInMs = ms * interv;
+         final long jourInMs = ms * interv;
 
          final Calendar interm1 = Calendar.getInstance();
          interm1.setTimeInMillis(cal1.getTimeInMillis());
@@ -400,7 +405,7 @@ public class IncaReportManagerImpl implements IncaReportManager
          counts = new ArrayList<>();
          final long ms = 86400000;
 
-         final Long jourInMs = ms * interv;
+         final long jourInMs = ms * interv;
 
          final Calendar interm1 = Calendar.getInstance();
          interm1.setTimeInMillis(cal1.getTimeInMillis());
@@ -440,7 +445,7 @@ public class IncaReportManagerImpl implements IncaReportManager
       if(banks != null && !banks.isEmpty()){
          counts = new ArrayList<>();
          final long ms = 86400000;
-         final Long jourInMs = ms * interv;
+         final long jourInMs = ms * interv;
          final Calendar interm1 = Calendar.getInstance();
          interm1.setTimeInMillis(cal1.getTimeInMillis());
          final Calendar interm2 = Calendar.getInstance();

@@ -69,13 +69,19 @@ public class TumoPrinterUtilsManagerImpl implements TumoPrinterUtilsManager
 {
 
    private static final String DERIVE = "ProdDerive";
+
    private static final String ECHANTILLON = "Echantillon";
 
    private EchantillonManager echantillonManager;
+
    private ProdDeriveManager prodDeriveManager;
+
    private LigneEtiquetteManager ligneEtiquetteManager;
+
    private ChampLigneEtiquetteManager champLigneEtiquetteManager;
+
    private EntiteManager entiteManager;
+
    private ExtractValueFromChampManager extractValueFromChampManager;
 
    public void setEchantillonManager(final EchantillonManager eManager){

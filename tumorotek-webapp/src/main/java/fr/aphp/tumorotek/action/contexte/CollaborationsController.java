@@ -68,8 +68,11 @@ public class CollaborationsController extends AbstractObjectTabController
    private static final long serialVersionUID = 3258354045207168273L;
 
    private Div divCollaborateur;
+
    private Div divService;
+
    private Div divEtablissement;
+
    private String from;
 
    // Mode des fiches

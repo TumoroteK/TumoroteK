@@ -164,7 +164,7 @@ public interface XmlUtils
    void addColonnesListe(Element parent, int nb);
 
    /**
-    * Ajoute un nouveau sous-paragraphe à un élément du 
+    * Ajoute un nouveau sous-paragraphe à un élément du
     * document JDOM.
     * @param parent Parent auquel on va ajouter la ligne.
     * @param sous SousParagraphe à ajouter.
@@ -172,7 +172,7 @@ public interface XmlUtils
    void addSousParagraphe(Element parent, SousParagraphe sous);
 
    /**
-    * Ajoute un nouveau paragraphe à un élément du 
+    * Ajoute un nouveau paragraphe à un élément du
     * document JDOM.
     * @param parent Parent auquel on va ajouter la ligne.
     * @param para Paragraphe à ajouter.
@@ -180,7 +180,7 @@ public interface XmlUtils
    void addParagraphe(Element parent, Paragraphe para);
 
    /**
-    * Ajoute une nouvelle liste à un élément du 
+    * Ajoute une nouvelle liste à un élément du
     * document JDOM.
     * @param parent Parent auquel on va ajouter la ligne.
     * @param liste Liste à ajouter.
@@ -225,7 +225,7 @@ public interface XmlUtils
 
    /**
     * Crée un fichier HTML qui va contenir la fiche à imprimer.
-    * @param doc. 
+    * @param doc.
     */
    byte[] creerHtml(Document doc) throws Exception;
 
@@ -288,7 +288,7 @@ public interface XmlUtils
 
    /**
     * Crée un fichier HTML qui va contenir la fiche à imprimer.
-    * @param doc. 
+    * @param doc.
     */
    byte[] creerBoiteHtml(Document doc) throws Exception;
 
@@ -334,7 +334,7 @@ public interface XmlUtils
 
    /**
     * Crée un fichier HTML qui va contenir la fiche à imprimer.
-    * @param doc. 
+    * @param doc.
     */
    byte[] creerContenuHtml(Document doc) throws Exception;
 

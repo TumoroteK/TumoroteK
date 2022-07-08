@@ -46,7 +46,7 @@ import fr.aphp.tumorotek.model.utils.Duree;
  * MacroComponent dessinant les composant editables permettant à
  * l'utilisateur de saisir une durée.
  * Classe crée le 20/03/2018
- * 
+ *
  * @author Answald Bournique
  * @version 2.2.0
  * @since 2.2.0
@@ -64,24 +64,30 @@ public class DureeComponent extends Div
     * Durée lié au composant
     */
    private Duree duree = new Duree(0L, Duree.SECONDE);
+
    /**
     * Désactivation du composant (grisage des différents champs)
     */
-   private Boolean disabled = false;
+   private final Boolean disabled = false;
 
-   private final Label anneesLabel = new Label(Labels.getLabel("date.annees")+" ");
+   private final Label anneesLabel = new Label(Labels.getLabel("date.annees") + " ");
+
    private final Longbox anneesBox = new Longbox();
 
-   Label moisLabel = new Label(Labels.getLabel("date.months")+" ");
+   Label moisLabel = new Label(Labels.getLabel("date.months") + " ");
+
    Longbox moisBox = new Longbox();
 
-   Label joursLabel = new Label(Labels.getLabel("date.jours")+" ");
+   Label joursLabel = new Label(Labels.getLabel("date.jours") + " ");
+
    final Longbox joursBox = new Longbox();
 
-   Label heuresLabel = new Label(Labels.getLabel("date.heures")+" ");
+   Label heuresLabel = new Label(Labels.getLabel("date.heures") + " ");
+
    final Longbox heuresBox = new Longbox();
 
-   Label minutesLabel = new Label(Labels.getLabel("date.minutes")+" ");
+   Label minutesLabel = new Label(Labels.getLabel("date.minutes") + " ");
+
    final Longbox minutesBox = new Longbox();
 
    /**
@@ -91,12 +97,12 @@ public class DureeComponent extends Div
       super();
       buildComponent();
    }
-   
+
    /**
     * Initialise le composant avec une durée liée
     * @param duree
     */
-   public DureeComponent(Duree duree){
+   public DureeComponent(final Duree duree){
       this();
       setDuree(duree);
    }
@@ -114,11 +120,11 @@ public class DureeComponent extends Div
     * Lie la durée au composant
     * @param duree
     */
-   public void setDuree(Duree duree){
+   public void setDuree(final Duree duree){
       this.duree = duree;
       fillupComponent();
    }
-   
+
    /**
     * Retourne true si le composent est désactivé
     * @return Retourne true si le composent est désactivé
@@ -126,12 +132,12 @@ public class DureeComponent extends Div
    public Boolean isDisabled(){
       return this.disabled;
    }
-   
+
    /**
     * Activer ou désactiver le composent
     * @param disabled true/false
     */
-   public void setDisabled(Boolean disabled){
+   public void setDisabled(final Boolean disabled){
       anneesBox.setDisabled(disabled);
       moisBox.setDisabled(disabled);
       joursBox.setDisabled(disabled);
@@ -175,16 +181,16 @@ public class DureeComponent extends Div
     */
    private void fillupComponent(){
       if(this.duree != null){
-         Duree dureeDecompte = new Duree(duree.getTemps(Duree.MILLISECONDE), Duree.MILLISECONDE);
-         Long annees = dureeDecompte.getTemps(Duree.ANNEE);
+         final Duree dureeDecompte = new Duree(duree.getTemps(Duree.MILLISECONDE), Duree.MILLISECONDE);
+         final Long annees = dureeDecompte.getTemps(Duree.ANNEE);
          dureeDecompte.addTemps(-annees, Duree.ANNEE);
-         Long mois = dureeDecompte.getTemps(Duree.MOIS);
+         final Long mois = dureeDecompte.getTemps(Duree.MOIS);
          dureeDecompte.addTemps(-mois, Duree.MOIS);
-         Long jours = dureeDecompte.getTemps(Duree.JOUR);
+         final Long jours = dureeDecompte.getTemps(Duree.JOUR);
          dureeDecompte.addTemps(-jours, Duree.JOUR);
-         Long heures = dureeDecompte.getTemps(Duree.HEURE);
+         final Long heures = dureeDecompte.getTemps(Duree.HEURE);
          dureeDecompte.addTemps(-heures, Duree.HEURE);
-         Long minutes = dureeDecompte.getTemps(Duree.MINUTE);
+         final Long minutes = dureeDecompte.getTemps(Duree.MINUTE);
 
          anneesBox.setValue(annees);
          moisBox.setValue(mois);
@@ -199,12 +205,12 @@ public class DureeComponent extends Div
          minutesBox.setValue(0L);
       }
    }
-   
+
    /**
     * Génère la durée en fonction des valeurs du composant
     */
    private void fillupDuree(){
-      Duree duree = new Duree(0L, Duree.SECONDE);
+      final Duree duree = new Duree(0L, Duree.SECONDE);
       duree.addTemps(minutesBox.getValue(), Duree.MINUTE);
       duree.addTemps(heuresBox.getValue(), Duree.HEURE);
       duree.addTemps(joursBox.getValue(), Duree.JOUR);
@@ -212,5 +218,5 @@ public class DureeComponent extends Div
       duree.addTemps(anneesBox.getValue(), Duree.ANNEE);
       this.duree = duree;
    }
-   
+
 }

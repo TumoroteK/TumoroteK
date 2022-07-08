@@ -70,9 +70,9 @@ public interface IncidentDao extends GenericDaoJpa<Incident, Integer>
    List<Incident> findByTerminale(Terminale terminale);
 
    /**
-    * Recherche tous les Incidents d'un conteneur sauf celui dont 
+    * Recherche tous les Incidents d'un conteneur sauf celui dont
     * l'identifiant est passé en paramètre.
-    * @param incidentId Identifiant de l'incident que l'on souhaite 
+    * @param incidentId Identifiant de l'incident que l'on souhaite
     * exclure.
     * @param conteneur Conteneur des incidents recherchés.
     * @return une liste d'Incidents.
@@ -80,9 +80,9 @@ public interface IncidentDao extends GenericDaoJpa<Incident, Integer>
    List<Incident> findByExcludedIdAndConteneur(Integer incidentId, Conteneur conteneur);
 
    /**
-    * Recherche tous les Incidents d'une enceinte sauf celui dont 
+    * Recherche tous les Incidents d'une enceinte sauf celui dont
     * l'identifiant est passé en paramètre.
-    * @param incidentId Identifiant de l'incident que l'on souhaite 
+    * @param incidentId Identifiant de l'incident que l'on souhaite
     * exclure.
     * @param enceinte des incidents recherchés.
     * @return une liste d'Incidents.
@@ -91,9 +91,9 @@ public interface IncidentDao extends GenericDaoJpa<Incident, Integer>
    List<Incident> findByExcludedIdAndEnceinte(Integer incidentId, Enceinte enceinte);
 
    /**
-    * Recherche tous les Incidents d'une terminale sauf celui dont 
+    * Recherche tous les Incidents d'une terminale sauf celui dont
     * l'identifiant est passé en paramètre.
-    * @param incidentId Identifiant de l'incident que l'on souhaite 
+    * @param incidentId Identifiant de l'incident que l'on souhaite
     * exclure.
     * @param terminale des incidents recherchés.
     * @return une liste d'Incidents.

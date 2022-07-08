@@ -54,7 +54,7 @@ public interface EchanQualiteDao extends GenericDaoJpa<EchanQualite, Integer>, P
 {
 
    /**
-    * Recherche les qualité d'échantillon dont la 
+    * Recherche les qualité d'échantillon dont la
     * valeur est égale au paramètre.
     * @param qualite est la qualite de l'echantillon.
     * @return une liste de qualités.
@@ -62,9 +62,9 @@ public interface EchanQualiteDao extends GenericDaoJpa<EchanQualite, Integer>, P
    List<EchanQualite> findByQualite(String qualite);
 
    /**
-    * Recherche la qualité qui est liée à léchantillon passé 
-    * en paramètre. 
-    * @param echantillonId Identifiant de l'échantillon pour lequel 
+    * Recherche la qualité qui est liée à léchantillon passé
+    * en paramètre.
+    * @param echantillonId Identifiant de l'échantillon pour lequel
     * on recherche une qualité.
     * @return une liste de qualités.
     */

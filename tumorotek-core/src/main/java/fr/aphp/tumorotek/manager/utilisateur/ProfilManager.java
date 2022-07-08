@@ -107,8 +107,8 @@ public interface ProfilManager
    void removeObjectManager(Profil profil);
 
    /**
-    * Recherche les profils pour une plateforme donnée 
-    * selon leur statut archivé. 
+    * Recherche les profils pour une plateforme donnée
+    * selon leur statut archivé.
     * Si archive = null, renvoie tous les profils pour la pf.
     * @param pf Plateforme
     * @param archive boolean

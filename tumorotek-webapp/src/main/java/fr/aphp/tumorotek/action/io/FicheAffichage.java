@@ -624,7 +624,7 @@ public class FicheAffichage extends AbstractFicheCombineController
 
          // pour chaque champ
          for(final Object currChampObj : (List<?>) e.getData()){
-            Champ currChamp = Champ.class.cast(currChampObj);
+            final Champ currChamp = Champ.class.cast(currChampObj);
             Champ sousChampTmp = null;
 
             if(currChamp.getChampEntite() != null && currChamp.getChampEntite().getQueryChamp() != null){
@@ -659,7 +659,7 @@ public class FicheAffichage extends AbstractFicheCombineController
     * @param page page où ouvrir la fenêtre
     * @return
     */
-   private Window createWindowForFicheChampsAffichageModale(Page page){
+   private Window createWindowForFicheChampsAffichageModale(final Page page){
       // nouvelle fenêtre
       final Window win = new Window();
       win.setVisible(false);
@@ -683,7 +683,7 @@ public class FicheAffichage extends AbstractFicheCombineController
     * @param page page où inclure le composant ?
     * @return composant  HTML
     */
-   private HtmlMacroComponent createComponentForChampsAffichageModale(Window win, Page page){
+   private HtmlMacroComponent createComponentForChampsAffichageModale(final Window win, final Page page){
       final HtmlMacroComponent ua;
       ua = (HtmlMacroComponent) page.getComponentDefinition("champsAffichageModale", false).newInstance(page, null);
       ua.setParent(win);
@@ -697,7 +697,7 @@ public class FicheAffichage extends AbstractFicheCombineController
 
    /**
     * Timer avant affichage de la FicheChampsAffichageModale ??
-    * @param win fenêtre 
+    * @param win fenêtre
     * @param ua composant
     */
    private void setTimerForChampsAffichageModale(final Window win, final HtmlMacroComponent ua){
@@ -724,7 +724,7 @@ public class FicheAffichage extends AbstractFicheCombineController
     * @param ua composant où est la fiche
     * @return
     */
-   private FicheChampsAffichageModale getFicheChampAffichageModale(HtmlMacroComponent ua){
+   private FicheChampsAffichageModale getFicheChampAffichageModale(final HtmlMacroComponent ua){
       return ((FicheChampsAffichageModale) ua.getFellow("fwinChampsAffichageModale")
          .getAttributeOrFellow("fwinChampsAffichageModale$composer", true));
    }
@@ -743,13 +743,13 @@ public class FicheAffichage extends AbstractFicheCombineController
 
          setBlockModal(true);
 
-         Window win = createWindowForFicheChampsAffichageModale(page);
+         final Window win = createWindowForFicheChampsAffichageModale(page);
 
          final HtmlMacroComponent ua = createComponentForChampsAffichageModale(win, page);
 
          setTimerForChampsAffichageModale(win, ua);
 
-         FicheChampsAffichageModale ficheChampsAffichageModale = getFicheChampAffichageModale(ua);
+         final FicheChampsAffichageModale ficheChampsAffichageModale = getFicheChampAffichageModale(ua);
 
          ficheChampsAffichageModale.init(oldSelectedChamps, parent, banque, selectionMultiple);
 
@@ -774,18 +774,18 @@ public class FicheAffichage extends AbstractFicheCombineController
     * @param excludeIds exclure les champs numérique de type Id
     */
    public void openChampsAffichageWindow(final Page page, final Component parent, final List<Champ> oldSelectedChamps,
-      final Banque banque, final Boolean selectionMultiple, List<DataType> dataTypeList, Boolean excludeIds){
+      final Banque banque, final Boolean selectionMultiple, final List<DataType> dataTypeList, final Boolean excludeIds){
       if(!isBlockModal()){
 
          setBlockModal(true);
 
-         Window win = createWindowForFicheChampsAffichageModale(page);
+         final Window win = createWindowForFicheChampsAffichageModale(page);
 
          final HtmlMacroComponent ua = createComponentForChampsAffichageModale(win, page);
 
          setTimerForChampsAffichageModale(win, ua);
 
-         FicheChampsAffichageModale ficheChampsAffichageModale = getFicheChampAffichageModale(ua);
+         final FicheChampsAffichageModale ficheChampsAffichageModale = getFicheChampAffichageModale(ua);
 
          ficheChampsAffichageModale.init(oldSelectedChamps, parent, banque, selectionMultiple, dataTypeList, excludeIds);
 

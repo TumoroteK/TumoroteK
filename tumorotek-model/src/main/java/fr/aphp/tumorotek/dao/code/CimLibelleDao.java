@@ -53,7 +53,7 @@ public interface CimLibelleDao extends GenericDaoJpa<CimLibelle, Integer>
 {
 
    /**
-    * Recherche les libellés CIM dont le libellé est like celui passé 
+    * Recherche les libellés CIM dont le libellé est like celui passé
     * en paramètre.
     * @param libelle Libelle pour lequel on recherche des libellés CIM.
     * @return une liste de libellés CIM.

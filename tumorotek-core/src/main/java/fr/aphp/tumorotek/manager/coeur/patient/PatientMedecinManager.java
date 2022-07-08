@@ -61,8 +61,8 @@ public interface PatientMedecinManager
     * Persiste une instance afin de l'enregistrer dans la base de données.
     * @param TableAnnotationBanque medecin à créer
     * @param patient associe (non null)
-    * @param collaborateur Collaborateur associe (non null)	 
-    * @param ordre lien familial associee (non null)	 
+    * @param collaborateur Collaborateur associe (non null)
+    * @param ordre lien familial associee (non null)
     * @param operation String creation / modification
     */
    void createOrUpdateObjectManager(PatientMedecin medecin, Patient patient, Collaborateur collaborateur, String operation);

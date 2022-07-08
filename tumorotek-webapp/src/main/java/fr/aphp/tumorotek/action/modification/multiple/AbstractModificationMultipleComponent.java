@@ -78,13 +78,21 @@ public abstract class AbstractModificationMultipleComponent extends AbstractCont
     * Components.
     */
    protected Label presentationLabel;
+
    protected Row rowOneValue;
+
    protected Row rowMultiValue;
+
    protected Label champAttentionLabel;
+
    protected Label champEcraserLabel;
+
    protected Image lock;
+
    protected Listbox multiListBox;
+
    protected Checkbox combine;
+
    protected Checkbox eraseCombine;
 
    protected Button validate;
@@ -96,30 +104,44 @@ public abstract class AbstractModificationMultipleComponent extends AbstractCont
     */
    // Valeurs du champ des différents objets
    private List<Object> values = new ArrayList<>();
+
    private final List<String> stringValues = new ArrayList<>();
+
    // Si une seule valeur : ancienne
    private Object oldUniqueValue;
+
    // Nouvelle valeur
    private Object newValue;
+
    // Valeur sélectionnée dans la liste
    private Object selectedValue;
+
    // liste des objets à modifier
    private List<Object> listObjets = new ArrayList<>();
+
    // Code pour label du champ dans .properties internationalisation
    private String champLabel = "";
+
    // Classe des objets à modifier
    private String entite = "";
+
    // Champ à modifier
    private String champ = "";
+
    // Champ du thesaurus a afficher
    private String champThesaurus = "";
+
    // Chemin pour retrouver la page de modif
    private String path = "";
+
    // Méthode à qui renvoyer la modif
    private String methode = "";
+
    private Boolean isCombined = false;
+
    // Modification ou non
    private boolean changedValue = false;
+
    private Constraint constraint = null;
 
    private static final long serialVersionUID = 1L;
@@ -245,11 +267,11 @@ public abstract class AbstractModificationMultipleComponent extends AbstractCont
       return constraint;
    }
 
-   public void setConstraint(Constraint constraint) {
-	this.constraint = constraint;
-}
+   public void setConstraint(final Constraint constraint){
+      this.constraint = constraint;
+   }
 
-/**
+   /**
     * Cette méthode crée le titre de la fenêtre.
     * Cherche dans le fichier d'internationalization les traductions des
     * champs et entités.
@@ -273,7 +295,7 @@ public abstract class AbstractModificationMultipleComponent extends AbstractCont
    }
 
    /**
-    * Renvoie l'evenement à la fiche commandant le pop up de 
+    * Renvoie l'evenement à la fiche commandant le pop up de
     * modification multiple. Peut renvoyer la nouvelle valeur
     * à appliquer ou un signal de 'reset'.
     * @param finalValue valeur à appliquer
@@ -301,9 +323,9 @@ public abstract class AbstractModificationMultipleComponent extends AbstractCont
     * @param pathToPage Chemin vers la page qui demande une modif.
     * @param methodToCall Méthode à appeler
     * @param objs Liste des objets à modifier
-    * @param label Code pour label du champ dans .properties 
+    * @param label Code pour label du champ dans .properties
     * internationalisation.
-    * @param entiteToEdit Nom de l'entité à modifier. 
+    * @param entiteToEdit Nom de l'entité à modifier.
     * @param champToEdit Champ de l'entité à modifier.
     * @param ent nom de l'entite a afficher dans l'intitulé
     * @param Constraint à appliquer
@@ -351,26 +373,24 @@ public abstract class AbstractModificationMultipleComponent extends AbstractCont
       // on extrait la valeur actuelle du champ à modifier
       // toutes ces valeurs sont placées dans la liste values
       hasNulls = false;
-      for(Object object : listObjets) {
+      for(final Object object : listObjets){
          try{
-            
+
             boolean isDelegateProperty = false;
             TKDelegateObject<?> delegate = null;
-            
-            if(object instanceof TKDelegetableObject) {
-               delegate = ((TKDelegetableObject<?>)object).getDelegate();
-               isDelegateProperty = delegate != null 
-            		   && PropertyUtils.describe(delegate).keySet().contains(champ);
+
+            if(object instanceof TKDelegetableObject){
+               delegate = ((TKDelegetableObject<?>) object).getDelegate();
+               isDelegateProperty = delegate != null && PropertyUtils.describe(delegate).keySet().contains(champ);
             }
-            
+
             Object tmp = null;
-            if(isDelegateProperty) {
+            if(isDelegateProperty){
                tmp = PropertyUtils.getSimpleProperty(delegate, champ);
-            }
-            else {
+            }else{
                tmp = PropertyUtils.getSimpleProperty(object, champ);
             }
-            
+
             // recupere les valeurs non vides
             if(tmp == null){
                if(isCombined){
@@ -398,7 +418,7 @@ public abstract class AbstractModificationMultipleComponent extends AbstractCont
    public void initComponentsInWindow(){
       // si plusieurs sont saisies pour les différents objets.
       // on affiche la liste permettant de choisir une de ces
-      // valeurs ou bien de les écraser par une nouvelle	
+      // valeurs ou bien de les écraser par une nouvelle
       rowOneValue.setVisible(values.size() <= 1);
       rowMultiValue.setVisible(values.size() > 1);
       if(values.size() != 1){
@@ -470,7 +490,7 @@ public abstract class AbstractModificationMultipleComponent extends AbstractCont
    }
 
    /**
-    * Prepare la valeur issu de la selection de la liste de valeurs 
+    * Prepare la valeur issu de la selection de la liste de valeurs
     * existantes. Passe la valeur au composant eraser;
     */
    public void onSelect$multiListBox(){
@@ -508,18 +528,18 @@ public abstract class AbstractModificationMultipleComponent extends AbstractCont
             // sinon
             newValue = extractValueFromEraserBox();
             if(newValue == null || newValue.equals("")){
-               // verifie que si eraseCombine box est checke 
+               // verifie que si eraseCombine box est checke
                if(isCombined && (eraseCombine.isChecked())){
                   newValue = "system.tk.unknownExistingValue";
                }else{
-                   newValue = null;
+                  newValue = null;
                }
             }
          }
       }else{ // mode unique
          newValue = extractValueFromMultiBox();
          if(newValue == null || newValue.equals("")){
-            // verifie que si eraseCombine box est checke 
+            // verifie que si eraseCombine box est checke
             if(isCombined && combine.isChecked()){
                newValue = "system.tk.unknownExistingValue";
             }else{
@@ -580,7 +600,7 @@ public abstract class AbstractModificationMultipleComponent extends AbstractCont
 
    /**
     * Formate au besoin la valeur extraite de la bd en un objet
-    * intermédiaire (LableCodeItem pour sexe ou état patient). 
+    * intermédiaire (LableCodeItem pour sexe ou état patient).
     * @param obj
     * @return
     */
@@ -607,7 +627,7 @@ public abstract class AbstractModificationMultipleComponent extends AbstractCont
    public abstract Object extractValueFromEraserBox();
 
    /**
-    * Prepare le String qui sera utilisé pour l'affichage de la 
+    * Prepare le String qui sera utilisé pour l'affichage de la
     * valeur issue de la modification multiple.
     * @param obj valeur issu modification multiple
     * @return String utilisé pour affichage
@@ -628,16 +648,14 @@ public abstract class AbstractModificationMultipleComponent extends AbstractCont
    public abstract void passNullToEraserBox();
 
    /**
-    * Indique si le champ est obligatoire en fonction de la contrainte 
+    * Indique si le champ est obligatoire en fonction de la contrainte
     * passée lors de la init.
     * @return boolean true si obligatoire
     */
    public Boolean isObligatoire(){
-      return (getConstraint() != null && 
-    	(getConstraint() instanceof TumoTextConstraint
-    			&& !((TumoTextConstraint) getConstraint()).getNullable()) 
-    	|| (getConstraint() instanceof SimpleConstraint
-    	        && !((SimpleConstraint) getConstraint()).equals(new SimpleConstraint("no empty")))
-    	);
+      return (getConstraint() != null
+         && (getConstraint() instanceof TumoTextConstraint && !((TumoTextConstraint) getConstraint()).getNullable())
+         || (getConstraint() instanceof SimpleConstraint
+            && !((SimpleConstraint) getConstraint()).equals(new SimpleConstraint("no empty"))));
    }
 }

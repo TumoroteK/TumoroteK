@@ -49,113 +49,113 @@ import fr.aphp.tumorotek.webapp.general.SessionUtils;
 public class ImportChampDecorator
 {
 
-	private Champ champ;
+   private Champ champ;
 
-	public ImportChampDecorator(final Champ chp){
-		this.champ = chp;
-	}
+   public ImportChampDecorator(final Champ chp){
+      this.champ = chp;
+   }
 
-	public Champ getChamp(){
-		return champ;
-	}
+   public Champ getChamp(){
+      return champ;
+   }
 
-	public void setChamp(final Champ c){
-		this.champ = c;
-	}
+   public void setChamp(final Champ c){
+      this.champ = c;
+   }
 
-	public String getNom(){
-		String nom = "";
-		if(champ.getChampEntite() != null){
-			nom = getLabelForChampEntite(champ.getChampEntite());
-		}else if(champ.getChampAnnotation() != null){
-			nom = champ.getChampAnnotation().getNom();
-		} else if (champ.getChampDelegue() != null) {
-			nom = getLabelForChampDelegue(champ.getChampDelegue());
-		}
-		return nom;
-	}
+   public String getNom(){
+      String nom = "";
+      if(champ.getChampEntite() != null){
+         nom = getLabelForChampEntite(champ.getChampEntite());
+      }else if(champ.getChampAnnotation() != null){
+         nom = champ.getChampAnnotation().getNom();
+      }else if(champ.getChampDelegue() != null){
+         nom = getLabelForChampDelegue(champ.getChampDelegue());
+      }
+      return nom;
+   }
 
-	public String getLabelForChampEntite(final ChampEntite c){
-		final StringBuffer iProperty = new StringBuffer();
-		iProperty.append("Champ.");
-		iProperty.append(c.getEntite().getNom());
-		iProperty.append(".");
+   public String getLabelForChampEntite(final ChampEntite c){
+      final StringBuffer iProperty = new StringBuffer();
+      iProperty.append("Champ.");
+      iProperty.append(c.getEntite().getNom());
+      iProperty.append(".");
 
-		String champOk = "";
-		// si le nom du champ finit par "Id", on le retire
-		if(c.getNom().endsWith("Id")){
-			champOk = c.getNom().substring(0, c.getNom().length() - 2);
-		}else{
-			champOk = c.getNom();
-		}
-		iProperty.append(champOk);
+      String champOk = "";
+      // si le nom du champ finit par "Id", on le retire
+      if(c.getNom().endsWith("Id")){
+         champOk = c.getNom().substring(0, c.getNom().length() - 2);
+      }else{
+         champOk = c.getNom();
+      }
+      iProperty.append(champOk);
 
-		// on ajoute la valeur du champ
-		return Labels.getLabel(iProperty.toString());
-	}
+      // on ajoute la valeur du champ
+      return Labels.getLabel(iProperty.toString());
+   }
 
-	public String getLabelForChampDelegue(final ChampDelegue c){
-		return Labels.getLabel(c.getILNLabelForChampDelegue(SessionUtils.getCurrentContexte()));
-	}
+   public String getLabelForChampDelegue(final ChampDelegue c){
+      return Labels.getLabel(c.getILNLabelForChampDelegue(SessionUtils.getCurrentContexte()));
+   }
 
-	/**
-	 * Decore une liste de cederobjets.
-	 * @param cederobjets
-	 * @return CederObjets décorées.
-	 */
-	public static List<ImportChampDecorator> decorateListe(final List<Champ> objets){
-		final List<ImportChampDecorator> liste = new ArrayList<>();
-		final Iterator<Champ> it = objets.iterator();
-		while(it.hasNext()){
-			liste.add(new ImportChampDecorator(it.next()));
-		}
-		return liste;
-	}
+   /**
+    * Decore une liste de cederobjets.
+    * @param cederobjets
+    * @return CederObjets décorées.
+    */
+   public static List<ImportChampDecorator> decorateListe(final List<Champ> objets){
+      final List<ImportChampDecorator> liste = new ArrayList<>();
+      final Iterator<Champ> it = objets.iterator();
+      while(it.hasNext()){
+         liste.add(new ImportChampDecorator(it.next()));
+      }
+      return liste;
+   }
 
-	/**
-	 * Extrait les CederObjets d'une liste de Decorator.
-	 * @param CederObjets
-	 * @return CederObjets décorés.
-	 */
-	public static List<Champ> extractListe(final List<ImportChampDecorator> cedes){
-		final List<Champ> liste = new ArrayList<>();
-		final Iterator<ImportChampDecorator> it = cedes.iterator();
+   /**
+    * Extrait les CederObjets d'une liste de Decorator.
+    * @param CederObjets
+    * @return CederObjets décorés.
+    */
+   public static List<Champ> extractListe(final List<ImportChampDecorator> cedes){
+      final List<Champ> liste = new ArrayList<>();
+      final Iterator<ImportChampDecorator> it = cedes.iterator();
 
-		while(it.hasNext()){
-			liste.add(it.next().getChamp());
-		}
-		return liste;
-	}
+      while(it.hasNext()){
+         liste.add(it.next().getChamp());
+      }
+      return liste;
+   }
 
-	@Override
-	public boolean equals(final Object obj){
+   @Override
+   public boolean equals(final Object obj){
 
-		if(this == obj){
-			return true;
-		}
+      if(this == obj){
+         return true;
+      }
 
-		if((obj == null) || obj.getClass() != this.getClass()){
-			return false;
-		}
+      if((obj == null) || obj.getClass() != this.getClass()){
+         return false;
+      }
 
-		final ImportChampDecorator deco = (ImportChampDecorator) obj;
-		return this.getChamp().equals(deco.getChamp());
+      final ImportChampDecorator deco = (ImportChampDecorator) obj;
+      return this.getChamp().equals(deco.getChamp());
 
-	}
+   }
 
-	@Override
-	public int hashCode(){
+   @Override
+   public int hashCode(){
 
-		int hash = 7;
-		int hashChamp = 0;
+      int hash = 7;
+      int hashChamp = 0;
 
-		if(this.getChamp() != null){
-			hashChamp = this.getChamp().hashCode();
-		}
+      if(this.getChamp() != null){
+         hashChamp = this.getChamp().hashCode();
+      }
 
-		hash = 7 * hash + hashChamp;
+      hash = 7 * hash + hashChamp;
 
-		return hash;
-	}
+      return hash;
+   }
 
 }

@@ -70,10 +70,15 @@ import fr.aphp.tumorotek.model.io.export.Critere;
 public abstract class ExportNode
 {
 
-   private final static Set<String> TEXT_DATATYPES = new HashSet<>(Arrays.asList("alphanum", "texte", "thesaurus", "hyperlien", "thesaurusM"));
+   private final static Set<String> TEXT_DATATYPES =
+      new HashSet<>(Arrays.asList("alphanum", "texte", "thesaurus", "hyperlien", "thesaurusM"));
+
    private final static Set<String> DATE_DATATYPES = new HashSet<>(Arrays.asList("date"));
+
    private final static Set<String> DATETIME_DATATYPES = new HashSet<>(Arrays.asList("datetime"));
+
    private final static Set<String> BOOLEAN_DATATYPES = new HashSet<>(Arrays.asList("boolean"));
+
    private final static Set<String> NUMERIC_DATATYPES = new HashSet<>(Arrays.asList("num", "duree"));
 
    private final Log log = LogFactory.getLog(ExportNode.class);
@@ -82,10 +87,15 @@ public abstract class ExportNode
     * Parent
     */
    GroupementNode parent = null;
+
    private String critereAlphanumValue;
+
    private Date critereDateValue;
+
    private Calendar critereCalendarValue;
+
    private Boolean critereBooleanValue;
+
    private Float critereNumValue;
 
    public GroupementNode getParent(){
@@ -168,7 +178,7 @@ public abstract class ExportNode
    }
 
    /**
-    * @return Nombre d'ascendants du noeud. 
+    * @return Nombre d'ascendants du noeud.
     */
    public int getParentCount(){
       int cpt = 0;
@@ -300,7 +310,7 @@ public abstract class ExportNode
       e = null;
       return crit;
    }
-   
+
    /**
     * Renvoie True si la valeur du critère est alphanumerique : on
     * va afficher une Textbox.
@@ -310,10 +320,10 @@ public abstract class ExportNode
 
       boolean visibleTextBox = false;
 
-      if(this instanceof CritereNode) {
-         CritereNode cn = (CritereNode) this;
-         if(!cn.getIsNullOperateur()) {
-            String dataType = ChampUtils.getChampDataType(cn.getCritere().getChamp()).getType(); 
+      if(this instanceof CritereNode){
+         final CritereNode cn = (CritereNode) this;
+         if(!cn.getIsNullOperateur()){
+            final String dataType = ChampUtils.getChampDataType(cn.getCritere().getChamp()).getType();
             visibleTextBox = TEXT_DATATYPES.contains(dataType);
          }
       }
@@ -322,26 +332,25 @@ public abstract class ExportNode
 
    }
 
-
    /**
     * Renvoie True si la valeur du critère est une date : on
     * va afficher une Datebox.
     * @return
     */
    public boolean getVisibleDatebox(){
-      
+
       boolean visibleTextBox = false;
 
-      if(this instanceof CritereNode) {
-         CritereNode cn = (CritereNode) this;
-         if(!cn.getIsNullOperateur()) {
-            String dataType = ChampUtils.getChampDataType(cn.getCritere().getChamp()).getType(); 
+      if(this instanceof CritereNode){
+         final CritereNode cn = (CritereNode) this;
+         if(!cn.getIsNullOperateur()){
+            final String dataType = ChampUtils.getChampDataType(cn.getCritere().getChamp()).getType();
             visibleTextBox = DATE_DATATYPES.contains(dataType);
          }
       }
 
       return visibleTextBox;
-      
+
    }
 
    /**
@@ -350,19 +359,19 @@ public abstract class ExportNode
     * @return
     */
    public boolean getVisibleCalendarbox(){
-      
+
       boolean visibleTextBox = false;
 
-      if(this instanceof CritereNode) {
-         CritereNode cn = (CritereNode) this;
-         if(!cn.getIsNullOperateur()) {
-            String dataType = ChampUtils.getChampDataType(cn.getCritere().getChamp()).getType(); 
+      if(this instanceof CritereNode){
+         final CritereNode cn = (CritereNode) this;
+         if(!cn.getIsNullOperateur()){
+            final String dataType = ChampUtils.getChampDataType(cn.getCritere().getChamp()).getType();
             visibleTextBox = DATETIME_DATATYPES.contains(dataType);
          }
       }
 
       return visibleTextBox;
-      
+
    }
 
    /**
@@ -371,19 +380,19 @@ public abstract class ExportNode
     * @return
     */
    public boolean getVisibleCheckbox(){
-      
+
       boolean visibleTextBox = false;
 
-      if(this instanceof CritereNode) {
-         CritereNode cn = (CritereNode) this;
-         if(!cn.getIsNullOperateur()) {
-            String dataType = ChampUtils.getChampDataType(cn.getCritere().getChamp()).getType(); 
+      if(this instanceof CritereNode){
+         final CritereNode cn = (CritereNode) this;
+         if(!cn.getIsNullOperateur()){
+            final String dataType = ChampUtils.getChampDataType(cn.getCritere().getChamp()).getType();
             visibleTextBox = BOOLEAN_DATATYPES.contains(dataType);
          }
       }
 
       return visibleTextBox;
-      
+
    }
 
    /**
@@ -392,19 +401,19 @@ public abstract class ExportNode
     * @return
     */
    public boolean getVisibleDecimalbox(){
-      
+
       boolean visibleTextBox = false;
 
-      if(this instanceof CritereNode) {
-         CritereNode cn = (CritereNode) this;
-         if(!cn.getIsNullOperateur()) {
-            String dataType = ChampUtils.getChampDataType(cn.getCritere().getChamp()).getType(); 
+      if(this instanceof CritereNode){
+         final CritereNode cn = (CritereNode) this;
+         if(!cn.getIsNullOperateur()){
+            final String dataType = ChampUtils.getChampDataType(cn.getCritere().getChamp()).getType();
             visibleTextBox = NUMERIC_DATATYPES.contains(dataType);
          }
       }
 
       return visibleTextBox;
-      
+
    }
 
    /**
@@ -433,7 +442,7 @@ public abstract class ExportNode
          final CritereNode cn = (CritereNode) this;
          if(cn.getCritere().getChamp() != null){
 
-            String dataType = ChampUtils.getChampDataType(cn.getCritere().getChamp()).getType();
+            final String dataType = ChampUtils.getChampDataType(cn.getCritere().getChamp()).getType();
 
             if(TEXT_DATATYPES.contains(dataType)){
                if(critereAlphanumValue != null && critereAlphanumValue.equals("")){

@@ -70,9 +70,13 @@ public class Recepteur implements java.io.Serializable
    private static final long serialVersionUID = -4548757508672995006L;
 
    private Integer recepteurId;
+
    private String identification;
+
    private String observations;
+
    private Logiciel logiciel;
+
    private Integer envoiNum;
 
    public Recepteur(){

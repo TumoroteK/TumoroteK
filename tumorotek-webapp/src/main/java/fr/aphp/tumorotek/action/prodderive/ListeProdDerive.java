@@ -89,31 +89,44 @@ public class ListeProdDerive extends AbstractListeController2
    private static final long serialVersionUID = -6167747099087709700L;
 
    private final List<ProdDerive> listObjects = new ArrayList<>();
+
    private List<ProdDerive> selectedObjects = new ArrayList<>();
 
    private Menuitem newCessionItem;
+
    private Menuitem stockageItem;
 
    // Critères de recherche.
    private Radio codeDerive;
+
    private Radio patientDerive;
+
    private Textbox codeBoxDerive;
+
    private Textbox patientBoxDerive;
+
    private Column nbProdDerivesColumn;
+
    private Column nbCessionsColumn;
 
    //Variables formulaire pour les critères.
    private String searchCode;
+
    private String searchPatientNom;
 
    private static ProdDeriveRowRenderer listObjectsRenderer = new ProdDeriveRowRenderer(true, false);
+
    private ProdDerivesNbDerivesComparator comparatorDerivesAsc = new ProdDerivesNbDerivesComparator(true);
+
    private ProdDerivesNbDerivesComparator comparatorDerivesDesc = new ProdDerivesNbDerivesComparator(false);
+
    private ProdDerivesNbCessionsComparator comparatorCessionsAsc = new ProdDerivesNbCessionsComparator(true);
+
    private ProdDerivesNbCessionsComparator comparatorCessionsDesc = new ProdDerivesNbCessionsComparator(false);
 
    // Variable de droits.
    private boolean canCession;
+
    private boolean canStockage;
 
    public String getSearchCode(){
@@ -399,9 +412,9 @@ public class ListeProdDerive extends AbstractListeController2
 
    /**
     * Forwarded Event.
-    * Sélectionne le parent concernée pour l'afficher dans sa fiche. 
-    * @param event forwardé depuis le label parent cliquable 
-    * (event.getData contient l'objet Prelevement, Echantillon ou Derive 
+    * Sélectionne le parent concernée pour l'afficher dans sa fiche.
+    * @param event forwardé depuis le label parent cliquable
+    * (event.getData contient l'objet Prelevement, Echantillon ou Derive
     * représentant le parent).
     */
    public void onClickParent(final Event event){
@@ -539,9 +552,9 @@ public class ListeProdDerive extends AbstractListeController2
    }
 
    /**
-    * Affiche une dans la liste les dérivés à partir de la liste des codes, qui 
+    * Affiche une dans la liste les dérivés à partir de la liste des codes, qui
     * peut être obtenue depuis un fichier Excel, ou un scan full-rack barcode 2D.
-    * Affiche une notification si codes proviennent d'un scan. 
+    * Affiche une notification si codes proviennent d'un scan.
     * @since 2.1
     */
    public void displayTKObjectsFromCodes(final List<String> codes, final ScanTerminale sT){

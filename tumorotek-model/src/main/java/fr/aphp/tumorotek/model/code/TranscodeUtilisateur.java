@@ -65,8 +65,11 @@ public class TranscodeUtilisateur implements Serializable
    private static final long serialVersionUID = 1L;
 
    private Integer transcodeUtilisateurId;
+
    private CodeUtilisateur codeUtilisateur;
+
    private Integer codeId;
+
    private TableCodage tableCodage;
 
    /** Constructeur par défaut. */

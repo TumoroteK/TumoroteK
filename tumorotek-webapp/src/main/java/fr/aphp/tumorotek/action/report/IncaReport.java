@@ -95,29 +95,47 @@ public class IncaReport extends AbstractFicheController
    private static final long serialVersionUID = 1L;
 
    private Datebox d1box;
+
    private Datebox d2box;
+
    private Intbox intervBox;
+
    private Listbox collectionsBox;
+
    private Listbox etabsBox;
+
    private Listbox consentsBox;
+
    private Listbox infosBox;
 
    private Datebox d1Orgbox;
+
    private Datebox d2Orgbox;
+
    private Listbox collectionsOrgBox;
+
    private Listbox naturesSainBox;
+
    private Listbox echanTypeSainBox;
+
    private Listbox naturesSangBox;
+
    private Listbox echanTypeSangBox;
+
    private Listbox consentsOrgBox;
 
    private Checkbox datePrelBox;
 
    private List<Banque> banques = new ArrayList<>();
+
    private List<Nature> natures = new ArrayList<>();
+
    private List<EchantillonType> echanTypes = new ArrayList<>();
+
    private List<ConsentType> consents = new ArrayList<>();
+
    private List<Etablissement> etabs = new ArrayList<>();
+
    private final List<CimMaster> cimsRequested = new ArrayList<>();
 
    public List<Banque> getBanques(){
@@ -277,9 +295,9 @@ public class IncaReport extends AbstractFicheController
    }
 
    /**
-    * Dessine une feuille dans le bilan d'activité numéro 1 
+    * Dessine une feuille dans le bilan d'activité numéro 1
     * pour la liste de banque passée en paramètre.
-    * Si la liste ne contient qu'une banque alors le nom de 
+    * Si la liste ne contient qu'une banque alors le nom de
     * la feuille prend le nom de la banque.
     * @param wb
     * @param banks
@@ -291,13 +309,13 @@ public class IncaReport extends AbstractFicheController
          String sheetname;
          if(banks.size() == 1){
             sheetname = banks.get(0).getNom();
-            
+
             // xlsx sheet infamous 7 chars
             sheetname = sheetname.replaceAll(ValidationUtilities.SHEETNAME_INFAMOUSCHARS, "");
-            
+
             // si une collection nommée uniquement avec des caractères illegaux pour sheet name
-            if (sheetname.isEmpty()) { // remplace par banque_id
-            	sheetname = banks.get(0).getBanqueId().toString();
+            if(sheetname.isEmpty()){ // remplace par banque_id
+               sheetname = banks.get(0).getBanqueId().toString();
             }
          }else{
             sheetname = "Total";
@@ -396,12 +414,12 @@ public class IncaReport extends AbstractFicheController
 
    @SuppressWarnings("unchecked")
    private <T> List<T> getSelectedFromListbox(final Listbox box){
-      final List<T> objs = new ArrayList<T>();
+      final List<T> objs = new ArrayList<>();
       Iterator<Listitem> listIt;
       if(box.getSelectedItems() != null){
          listIt = box.getSelectedItems().iterator();
          while(listIt.hasNext()){
-        	 objs.add((T) listIt.next().getValue());
+            objs.add((T) listIt.next().getValue());
          }
       }
       return objs;
@@ -409,7 +427,7 @@ public class IncaReport extends AbstractFicheController
    }
 
    /**
-    * Crée la liste de headers pour le tableau report 1 comprenant les 
+    * Crée la liste de headers pour le tableau report 1 comprenant les
     * dates limites supérieures pour chaque intervalle de dates calculé.
     * @param d1
     * @param d2
@@ -419,7 +437,7 @@ public class IncaReport extends AbstractFicheController
    private List<Date> createDateHeaders(final Date d1, final Date d2, final Integer interv){
       final List<Date> headers = new ArrayList<>();
       final long ms = 86400000;
-      final Long jourInMs = ms * interv;
+      final long jourInMs = ms * interv;
       final Date interm1 = new Date(d1.getTime());
       // la borne supérieure devient exclusive si on retire 1 jour
       final Date interm2 = new Date(d1.getTime() + jourInMs - ms);
@@ -440,9 +458,9 @@ public class IncaReport extends AbstractFicheController
    }
 
    /**
-    * Dessine une feuille dans le bilan d'activité numéro 2 
+    * Dessine une feuille dans le bilan d'activité numéro 2
     * pour la liste de banque passée en paramètre.
-    * Si la liste ne contient qu'une banque alors le nom de 
+    * Si la liste ne contient qu'une banque alors le nom de
     * la feuille prend le nom de la banque.
     * @param wb
     * @param banks
@@ -536,7 +554,7 @@ public class IncaReport extends AbstractFicheController
    }
 
    /**
-    * Dessine une ligne avec entête et une suite de cellules pour chaque 
+    * Dessine une ligne avec entête et une suite de cellules pour chaque
     * compte.
     * @param row ligne à dessiner
     * @param entête

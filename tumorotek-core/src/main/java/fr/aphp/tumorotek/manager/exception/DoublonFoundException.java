@@ -54,10 +54,12 @@ public class DoublonFoundException extends TKException
    private static final long serialVersionUID = 1L;
 
    private String entite;
+
    private String operation;
 
    // @since 2.1
    private String code;
+
    private Plateforme plateforme;
 
    public DoublonFoundException(){

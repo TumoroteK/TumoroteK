@@ -71,7 +71,7 @@ import fr.aphp.tumorotek.model.systeme.Entite;
 @Entity
 @Table(name = "CHAMP_ENTITE")
 @GenericGenerator(name = "seqGenerator", strategy = "increment")
-@AttributeOverride(name="id", column=@Column(name = "CHAMP_ENTITE_ID", unique = true, nullable = false))
+@AttributeOverride(name = "id", column = @Column(name = "CHAMP_ENTITE_ID", unique = true, nullable = false))
 @NamedQueries(value = {@NamedQuery(name = "ChampEntite.findByEntite", query = "SELECT c FROM ChampEntite c WHERE c.entite = ?1"),
    @NamedQuery(name = "ChampEntite.findByEntiteAndImport",
       query = "SELECT c FROM ChampEntite c " + "WHERE c.entite = ?1 " + "AND c.canImport = ?2 ORDER BY c.id"),
@@ -89,21 +89,29 @@ public class ChampEntite extends AbstractTKChamp implements Comparable<ChampEnti
 {
 
    private Entite entite;
+
    private Boolean nullable;
+
    private Boolean unique;
+
    private String valeurDefaut;
+
    private Boolean canImport;
+
    private ChampEntite queryChamp;
+
    private Subdivision subdivision;
 
    private Set<ChampImprime> champImprimes = new HashSet<>();
+
    private Set<ChampEntiteBloc> champEntiteBlocs = new HashSet<>();
+
    private Set<Champ> champs = new HashSet<>();
 
    public ChampEntite(){
       super();
    }
-   
+
    public ChampEntite(final Entite e, final String n, final DataType dt){
       super(n, dt);
       this.entite = e;
@@ -140,7 +148,7 @@ public class ChampEntite extends AbstractTKChamp implements Comparable<ChampEnti
    public void setChampEntiteId(final Integer chId){
       this.setId(chId);
    }
-   
+
    @ManyToOne
    @JoinColumn(name = "ENTITE_ID", nullable = false)
    public Entite getEntite(){
@@ -306,8 +314,8 @@ public class ChampEntite extends AbstractTKChamp implements Comparable<ChampEnti
    @Override
    public ChampEntite clone(){
       final ChampEntite clone = new ChampEntite();
-      clone.setId( this.getId() );
-      clone.setDataType( this.getDataType() );
+      clone.setId(this.getId());
+      clone.setDataType(this.getDataType());
       clone.setEntite(this.getEntite());
       clone.setNom(this.getNom());
       clone.setNullable(this.isNullable());

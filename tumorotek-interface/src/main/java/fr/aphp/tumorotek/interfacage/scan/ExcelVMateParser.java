@@ -86,7 +86,7 @@ public class ExcelVMateParser
       String terminaleName = null;
       Date dateScan = null;
       final DateFormat df = new SimpleDateFormat("YYYYMMDD HH:mm:ss");
-      try(final HSSFWorkbook workbook = new HSSFWorkbook(body);){
+      try( final HSSFWorkbook workbook = new HSSFWorkbook(body);){
          final HSSFSheet sheet = workbook.getSheetAt(0);
          boolean headersFound = false;
          int colNum;

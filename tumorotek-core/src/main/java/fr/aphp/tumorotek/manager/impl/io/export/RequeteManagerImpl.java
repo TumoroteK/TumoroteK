@@ -75,14 +75,19 @@ public class RequeteManagerImpl implements RequeteManager
 
    /** Liste des requêtes du manager. */
    private List<Requete> requetes = new ArrayList<>();
+
    /** Bean Dao RequeteDao. */
    private RequeteDao requeteDao = null;
+
    /** Bean Manager GroupementManager. */
    private GroupementManager groupementManager = null;
+
    /** Bean Dao GroupementDao. */
    private GroupementDao groupementDao = null;
+
    /** Bean Validator. */
    private RequeteValidator requeteValidator = null;
+
    private RechercheDao rechercheDao;
 
    public RequeteManagerImpl(){
@@ -342,7 +347,7 @@ public class RequeteManagerImpl implements RequeteManager
 
    /**
     * Recherche les Requêtes dont l'utilisateur créateur est passé en
-    * paramètre. 
+    * paramètre.
     * @param util Utilisateur qui à créé les Requêtes recherchées.
     * @return la liste de toutes les Requêtes de l'Utilisateur.
     */
@@ -357,7 +362,7 @@ public class RequeteManagerImpl implements RequeteManager
    }
 
    /**
-    * Recherche les Requêtes dont l'intitulé est passé en paramètre. 
+    * Recherche les Requêtes dont l'intitulé est passé en paramètre.
     * @param intitule Intitulé des Requêtes recherchées.
     * @return la liste de toutes les Requêtes de l'intitulé.
     */

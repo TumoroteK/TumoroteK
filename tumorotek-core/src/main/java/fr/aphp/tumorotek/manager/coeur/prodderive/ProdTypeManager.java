@@ -53,7 +53,7 @@ public interface ProdTypeManager extends PfDependantTKThesaurusManager<ProdType>
 {
 
    /**
-    * Recherche un type de produit dérivé dont l'identifiant est 
+    * Recherche un type de produit dérivé dont l'identifiant est
     * passé en paramètre.
     * @param prodTypeId Identifiant du type que l'on recherche.
     * @return Un ProdType.
@@ -77,15 +77,15 @@ public interface ProdTypeManager extends PfDependantTKThesaurusManager<ProdType>
    //	 * @return True s'il existe des doublons.
    //	 */
    //	Boolean findDoublonManager(ProdType type);
-   //	
+   //
    //	/**
-   //	 * Test si un type de produit dérivé est lié à des 
+   //	 * Test si un type de produit dérivé est lié à des
    //	 * produits dérivés.
    //	 * @param type ProdType que l'on souhaite tester.
    //	 * @return Vrai si la qualité est utilisée.
    //	 */
    //	Boolean isUsedObjectManager(ProdType type);
-   //	
+   //
    //	/**
    //	 * Persist une instance de ProdType dans la base de données.
    //	 * @param type Nouvelle instance de l'objet à créer.
@@ -93,7 +93,7 @@ public interface ProdTypeManager extends PfDependantTKThesaurusManager<ProdType>
    //	 * l'objet à créer se trouve déjà dans la base.
    //	 */
    //	void createObjectManager(ProdType type);
-   //	
+   //
    //	/**
    //	 * Sauvegarde les modifications apportées à un objet persistant.
    //	 * @param type Objet à mettre à jour dans la base.
@@ -101,7 +101,7 @@ public interface ProdTypeManager extends PfDependantTKThesaurusManager<ProdType>
    //	 * l'objet à créer se trouve déjà dans la base.
    //	 */
    //	void updateObjectManager(ProdType type);
-   //	
+   //
    //	/**
    //	 * Supprime un ProdType de la base de données.
    //	 * @param type EchanQualite à supprimer de la base de données.

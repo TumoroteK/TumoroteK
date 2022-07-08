@@ -53,7 +53,7 @@ public interface SubdivisionManager
 
    /**
     * Recherche toutes les Subdivision présentes dans la base.
-    * 
+    *
     * @return Liste de Statements.
     */
    List<Subdivision> findAllObjectsManager();

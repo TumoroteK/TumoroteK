@@ -101,49 +101,71 @@ public class ImportDerivesManagerTest extends AbstractManagerTest4
 
    @Autowired
    private ImportTemplateManager importTemplateManager;
+
    @Autowired
    private ImportColonneManager importColonneManager;
+
    @Autowired
    private ImportHistoriqueManager importHistoriqueManager;
+
    @Autowired
    private ImportManager importManager;
+
    @Autowired
    private EntiteDao entiteDao;
+
    @Autowired
    private ChampEntiteDao champEntiteDao;
+
    @Autowired
    private UtilisateurDao utilisateurDao;
+
    @Autowired
    private PatientManager patientManager;
+
    @Autowired
    private MaladieManager maladieManager;
+
    @Autowired
    private PrelevementManager prelevementManager;
+
    @Autowired
    private ChampAnnotationManager champAnnotationManager;
+
    @Autowired
    private AnnotationValeurManager annotationValeurManager;
+
    @Autowired
    private EchantillonManager echantillonManager;
+
    @Autowired
    private ProdDeriveManager prodDeriveManager;
+
    @Autowired
    private EmplacementManager emplacementManager;
+
    @Autowired
    private ObjetStatutDao objetStatutDao;
+
    @Autowired
    private NonConformiteDao nonConformiteDao;
+
    @Autowired
    private ObjetNonConformeDao objetNonConformeDao;
+
    @Autowired
    @Qualifier("dataSource")
    private DataSource dataSource;
+
    @Autowired
    private TransformationManager transformationManager;
+
    @Autowired
    private BanqueDao banqueDao;
+
    @Autowired
    private OperationTypeDao operationTypeDao;
+
    @Autowired
    private RetourManager retourManager;
 
@@ -162,7 +184,7 @@ public class ImportDerivesManagerTest extends AbstractManagerTest4
       template.setIsUpdate(false);
 
       List<ImportError> errors = new ArrayList<>();
-      try(FileInputStream fis = new FileInputStream(file)){
+      try( FileInputStream fis = new FileInputStream(file)){
          ih = importManager.importFileManager(template, u, null, fis);
       }catch(final FileNotFoundException e){
          e.printStackTrace();
@@ -256,7 +278,7 @@ public class ImportDerivesManagerTest extends AbstractManagerTest4
       final File file = new File("src/test/java/fr/aphp/tumorotek/manager/test/io/imports/importDerivesBatches.xls");
 
       List<ImportError> errors = new ArrayList<>();
-      try(FileInputStream fis = new FileInputStream(file);){
+      try( FileInputStream fis = new FileInputStream(file);){
          final Workbook wb = WorkbookFactory.create(fis);
          importManager.importFileManager(template, u, null, wb.getSheetAt(1));
       }catch(final Exception re){
@@ -312,7 +334,7 @@ public class ImportDerivesManagerTest extends AbstractManagerTest4
       final File file = new File("src/test/java/fr/aphp/tumorotek/manager/test/io/imports/importSubDerives.xls");
 
       List<ImportError> errors = new ArrayList<>();
-      try(FileInputStream fis = new FileInputStream(file);){
+      try( FileInputStream fis = new FileInputStream(file);){
          final Workbook wb = WorkbookFactory.create(fis);
          ih = importManager.importSubDeriveFileManager(itTest2, u, null, wb.getSheetAt(0), null);
       }catch(final Exception re){
@@ -520,7 +542,7 @@ public class ImportDerivesManagerTest extends AbstractManagerTest4
       final File file = new File("src/test/java/fr/aphp/tumorotek/manager/" + "test/io/imports/importSubDerives.xls");
 
       List<ImportError> errors = new ArrayList<>();
-      try(FileInputStream fis = new FileInputStream(file);){
+      try( FileInputStream fis = new FileInputStream(file);){
          final Workbook wb = WorkbookFactory.create(fis);
          ih = importManager.importSubDeriveFileManager(itTest2, u, null, wb.getSheetAt(1), null);
       }catch(final Exception re){
@@ -670,7 +692,7 @@ public class ImportDerivesManagerTest extends AbstractManagerTest4
       final File file = new File("src/test/java/fr/aphp/tumorotek/manager/" + "test/io/imports/importSubDerives.xls");
 
       List<ImportError> errors = new ArrayList<>();
-      try(FileInputStream fis = new FileInputStream(file);){
+      try( FileInputStream fis = new FileInputStream(file);){
          final Workbook wb = WorkbookFactory.create(fis);
          ih = importManager.importSubDeriveFileManager(itTest2, u, null, wb.getSheetAt(2), "OBS TEST");
       }catch(final Exception re){
@@ -948,7 +970,7 @@ public class ImportDerivesManagerTest extends AbstractManagerTest4
       final File file = new File("src/test/java/fr/aphp/tumorotek/manager/" + "test/io/imports/importSubDerives.xls");
 
       List<ImportError> errors = new ArrayList<>();
-      try(FileInputStream fis = new FileInputStream(file);){
+      try( FileInputStream fis = new FileInputStream(file);){
          final Workbook wb = WorkbookFactory.create(fis);
          ih = importManager.importSubDeriveFileManager(itTest2, u, null, wb.getSheetAt(3), "OBS TEST");
       }catch(final Exception re){
@@ -1105,7 +1127,7 @@ public class ImportDerivesManagerTest extends AbstractManagerTest4
       final File file = new File("src/test/java/fr/aphp/tumorotek/manager/" + "test/io/imports/importSubDerives.xls");
 
       List<ImportError> errors = new ArrayList<>();
-      try(FileInputStream fis = new FileInputStream(file);){
+      try( FileInputStream fis = new FileInputStream(file);){
          final Workbook wb = WorkbookFactory.create(fis);
          ih = importManager.importSubDeriveFileManager(itTest2, u, null, wb.getSheetAt(4), "OBS SUB DERIVES TEST");
       }catch(final Exception re){
@@ -1377,7 +1399,7 @@ public class ImportDerivesManagerTest extends AbstractManagerTest4
       final File file = new File("src/test/java/fr/aphp/tumorotek/manager/" + "test/io/imports/importSubDerives.xls");
 
       List<ImportError> errors = new ArrayList<>();
-      try(FileInputStream fis = new FileInputStream(file);){
+      try( FileInputStream fis = new FileInputStream(file);){
          final Workbook wb = WorkbookFactory.create(fis);
          ih = importManager.importSubDeriveFileManager(itTest2, u, null, wb.getSheetAt(5), "OBS DERIVE TEST");
       }catch(final Exception re){

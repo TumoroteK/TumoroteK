@@ -65,9 +65,9 @@ import org.hibernate.annotations.GenericGenerator;
 @Entity
 @Table(name = "LIEN_FAMILIAL")
 @NamedQueries(value = {@NamedQuery(name = "LienFamilial.findByNom", query = "SELECT l FROM LienFamilial l WHERE l.nom like ?1"),
-   //		@NamedQuery(name = "LienFamilial.findByReciproque", 
+   //		@NamedQuery(name = "LienFamilial.findByReciproque",
    //			query = "SELECT l FROM LienFamilial l WHERE l.reciproque = ?1"),
-   //		@NamedQuery(name = "LienFamilial.findByAscendant", 
+   //		@NamedQuery(name = "LienFamilial.findByAscendant",
    //			query = "SELECT l FROM LienFamilial l WHERE l.ascendant = ?1")
    @NamedQuery(name = "LienFamilial.findByExcludedId", query = "SELECT l FROM LienFamilial l " + "WHERE l.lienFamilialId != ?1")})
 public class LienFamilial implements Serializable
@@ -76,8 +76,11 @@ public class LienFamilial implements Serializable
    private static final long serialVersionUID = 1819985582518503182L;
 
    private Integer lienFamilialId;
+
    private String nom;
+
    private LienFamilial reciproque;
+
    private Boolean ascendant;
 
    private Set<PatientLien> patientLiens = new HashSet<>();

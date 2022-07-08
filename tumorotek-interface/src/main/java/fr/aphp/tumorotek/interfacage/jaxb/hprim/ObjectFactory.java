@@ -31,13 +31,13 @@ public class ObjectFactory
 
    /**
     * Create a new ObjectFactory that can be used to create new instances of schema derived classes for package: fr.aphp.tumorotek.interfacage.jaxb.inclusion
-    * 
+    *
     */
    public ObjectFactory(){}
 
    /**
     * Create an instance of {@link CreateResponse }
-    * 
+    *
     */
    public HprimMessage createHprimMessage(){
       return new HprimMessage();

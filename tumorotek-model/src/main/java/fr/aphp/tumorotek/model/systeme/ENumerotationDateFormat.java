@@ -42,36 +42,32 @@ package fr.aphp.tumorotek.model.systeme;
 public enum ENumerotationDateFormat
 {
 
-   AAAA("aaaa", "yyyy"),
-   AA("aa", "yy"),
-   AAAA_MM("aaaamm", "yyyy-MM"),
-   AA_MM("aamm", "yy-MM"),
-   AAAA_MM_JJ("aaaammjj", "yyyy-MM-dd"),
-   AA_MM_JJ("aammjj", "yyyy-MM-dd"),
-   MM_JJ("mmjj", "MM-dd");
-   
+   AAAA("aaaa", "yyyy"), AA("aa", "yy"), AAAA_MM("aaaamm", "yyyy-MM"), AA_MM("aamm", "yy-MM"),
+   AAAA_MM_JJ("aaaammjj", "yyyy-MM-dd"), AA_MM_JJ("aammjj", "yyyy-MM-dd"), MM_JJ("mmjj", "MM-dd");
+
    private String libelle;
+
    private String format;
-   
-   private ENumerotationDateFormat(String cleLibelle, String format){
+
+   private ENumerotationDateFormat(final String cleLibelle, final String format){
       this.libelle = cleLibelle;
       this.format = format;
    }
-   
+
    /**
     * Retourne le libellé du format de date
     * @return
     */
-   public String getLibelle() {
+   public String getLibelle(){
       return libelle;
    }
-   
+
    /**
     * Retourne le format de la date
     * @return
     */
-   public String getFormat() {
+   public String getFormat(){
       return format;
    }
-   
+
 }

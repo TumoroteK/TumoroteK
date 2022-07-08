@@ -35,32 +35,17 @@
  **/
 package fr.aphp.tumorotek.manager.impl.coeur;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.validation.Validator;
 
 import fr.aphp.tumorotek.dao.cession.CessionDao;
-import fr.aphp.tumorotek.dao.coeur.ObjetStatutDao;
 import fr.aphp.tumorotek.dao.coeur.echantillon.EchantillonDao;
 import fr.aphp.tumorotek.dao.coeur.patient.PatientDao;
 import fr.aphp.tumorotek.dao.coeur.prelevement.PrelevementDao;
 import fr.aphp.tumorotek.dao.coeur.prodderive.ProdDeriveDao;
-import fr.aphp.tumorotek.manager.coeur.ObjetStatutManager;
 import fr.aphp.tumorotek.manager.coeur.TKAnnotableObjectManager;
-import fr.aphp.tumorotek.manager.coeur.cession.CederObjetManager;
-import fr.aphp.tumorotek.manager.exception.DoublonFoundException;
-import fr.aphp.tumorotek.manager.exception.ObjectUsedException;
-import fr.aphp.tumorotek.manager.validation.BeanValidator;
-import fr.aphp.tumorotek.manager.validation.coeur.ObjetStatutValidator;
 import fr.aphp.tumorotek.model.TKAnnotableObject;
-import fr.aphp.tumorotek.model.TKStockableObject;
-import fr.aphp.tumorotek.model.cession.Cession;
-import fr.aphp.tumorotek.model.coeur.ObjetStatut;
-import fr.aphp.tumorotek.model.coeur.prodderive.ProdDerive;
 
 /**
  *
@@ -78,33 +63,37 @@ public class TKAnnotableObjectManagerImpl implements TKAnnotableObjectManager
 
    @Autowired
    private PatientDao patientDao;
+
    @Autowired
    private PrelevementDao prelevementDao;
+
    @Autowired
    private EchantillonDao echantillonDao;
+
    @Autowired
    private ProdDeriveDao prodDeriveDao;
+
    @Autowired
    private CessionDao cessionDao;
-   
+
    @Override
-   public TKAnnotableObject findByIdManager(TKAnnotableObject tkObj) {
-	   if (tkObj != null && tkObj.entiteNom() != null) {
-		   if (tkObj.entiteNom().equals("Patient")) {
-			   return patientDao.findById(tkObj.listableObjectId());
-		   } else if (tkObj.entiteNom().equals("Prelevement")) {
-			   return prelevementDao.findById(tkObj.listableObjectId());
-		   } else if (tkObj.entiteNom().equals("Echantillon")) {
-			   return echantillonDao.findById(tkObj.listableObjectId());
-		   } else if (tkObj.entiteNom().equals("ProdDerive")) {
-			   return prodDeriveDao.findById(tkObj.listableObjectId());
-		   } else if (tkObj.entiteNom().equals("Cession")) {
-			   return cessionDao.findById(tkObj.listableObjectId());
-		   } else {
-			   return tkObj;
-		   }
-	   }
-	   return null;
+   public TKAnnotableObject findByIdManager(final TKAnnotableObject tkObj){
+      if(tkObj != null && tkObj.entiteNom() != null){
+         if(tkObj.entiteNom().equals("Patient")){
+            return patientDao.findById(tkObj.listableObjectId());
+         }else if(tkObj.entiteNom().equals("Prelevement")){
+            return prelevementDao.findById(tkObj.listableObjectId());
+         }else if(tkObj.entiteNom().equals("Echantillon")){
+            return echantillonDao.findById(tkObj.listableObjectId());
+         }else if(tkObj.entiteNom().equals("ProdDerive")){
+            return prodDeriveDao.findById(tkObj.listableObjectId());
+         }else if(tkObj.entiteNom().equals("Cession")){
+            return cessionDao.findById(tkObj.listableObjectId());
+         }else{
+            return tkObj;
+         }
+      }
+      return null;
    }
 
 }

@@ -131,31 +131,57 @@ public class BanqueManagerImpl implements BanqueManager
    private final Log log = LogFactory.getLog(BanqueManager.class);
 
    private BanqueDao banqueDao;
+
    private PlateformeDao plateformeDao;
+
    private ContexteDao contexteDao;
+
    private BanqueValidator banqueValidator;
+
    private OperationTypeDao operationTypeDao;
+
    private OperationManager operationManager;
+
    private CollaborateurDao collaborateurDao;
+
    private ServiceDao serviceDao;
+
    private ConteneurDao conteneurDao;
+
    private ConteneurManager conteneurManager;
+
    private BanqueTableCodageDao banqueTableCodageDao;
+
    private CouleurEntiteTypeDao couleurEntiteTypeDao;
+
    private TableAnnotationBanqueDao tableAnnotationBanqueDao;
+
    private CouleurDao couleurDao;
+
    private TableAnnotationManager tableAnnotationManager;
+
    private EntiteDao entiteDao;
+
    private CodeSelectManager codeSelectManager;
+
    private CodeUtilisateurManager codeUtilisateurManager;
+
    private PrelevementManager prelevementManager;
+
    private EchantillonManager echantillonManager;
+
    private ProdDeriveManager prodDeriveManager;
+
    private CodeDossierManager codeDossierManager;
+
    private CessionManager cessionManager;
+
    private ImportTemplateManager importTemplateManager;
+
    private AnnotationValeurManager annotationValeurManager;
+
    private TemplateManager templateManager;
+
    private UtilisateurManager utilisateurManager;
 
    public void setBanqueDao(final BanqueDao bDao){
@@ -266,10 +292,10 @@ public class BanqueManagerImpl implements BanqueManager
       this.templateManager = tManager;
    }
 
-   public void setUtilisateurManager(UtilisateurManager utilisateurManager){
+   public void setUtilisateurManager(final UtilisateurManager utilisateurManager){
       this.utilisateurManager = utilisateurManager;
    }
-   
+
    /**
     * Recherche une Banque dont l'identifiant est passé en paramètre.
     * @param banqueId Identifiant de la banque que l'on recherche.
@@ -447,8 +473,8 @@ public class BanqueManagerImpl implements BanqueManager
       final List<BanqueTableCodage> codifications, final List<TableAnnotation> tablesPatient,
       final List<TableAnnotation> tablesPrlvt, final List<TableAnnotation> tablesEchan, final List<TableAnnotation> tablesDerive,
       final List<TableAnnotation> tablesCess, final List<CouleurEntiteType> coulTypes, final Couleur couleurEchan,
-      final Couleur couleurDerive, final Utilisateur utilisateur, final Set<Utilisateur> utilisateursList,
-      final String operation, final String basedir){
+      final Couleur couleurDerive, final Utilisateur utilisateur, final Set<Utilisateur> utilisateursList, final String operation,
+      final String basedir){
 
       if(operation == null){
          throw new NullPointerException("operation cannot be " + "set to null for createorUpdateMethod");
@@ -558,22 +584,21 @@ public class BanqueManagerImpl implements BanqueManager
                //Mise à jour des profils utilisateur sur la banque
                if(utilisateursList != null && !utilisateursList.isEmpty()){
 
-                  for(Utilisateur userToUpdate : utilisateursList){
+                  for(final Utilisateur userToUpdate : utilisateursList){
 
-                     Set<ProfilUtilisateur> profilsUtilisateur = userToUpdate.getProfilUtilisateurs();
-                     
+                     final Set<ProfilUtilisateur> profilsUtilisateur = userToUpdate.getProfilUtilisateurs();
+
                      //Pas idéal mais l'Utilisateur contient un set de ProfilUtilisateur qui lui-même contient l'Utilisateur,
                      //on se retrouve donc avec une référence circulaire qu'on est obligé de briser avant de pouvoir sauvegarder
                      //TODO Revoir la gestion des profils
-                     List<ProfilUtilisateur> newProfils = new ArrayList<>(userToUpdate.getProfilUtilisateurs());
+                     final List<ProfilUtilisateur> newProfils = new ArrayList<>(userToUpdate.getProfilUtilisateurs());
                      userToUpdate.setProfilUtilisateurs(new HashSet<>());
-                     
-                     utilisateurManager.updateObjectManager(userToUpdate, userToUpdate.getCollaborateur(),
-                        newProfils, new ArrayList<>(userToUpdate.getPlateformes()),
-                        utilisateur, oType);
-                     
+
+                     utilisateurManager.updateObjectManager(userToUpdate, userToUpdate.getCollaborateur(), newProfils,
+                        new ArrayList<>(userToUpdate.getPlateformes()), utilisateur, oType);
+
                      userToUpdate.setProfilUtilisateurs(profilsUtilisateur);
-                     
+
                   }
 
                }
@@ -599,7 +624,7 @@ public class BanqueManagerImpl implements BanqueManager
     * une liste de Conteneurs.
     * @param banque pour laquelle on veut mettre à jour
     * les associations.
-    * @param conteneurs Liste de conteneurs 
+    * @param conteneurs Liste de conteneurs
     * que l'on veut associer à la banque.
     * @return la banque dont les associations sont modifiées
     */
@@ -651,7 +676,7 @@ public class BanqueManagerImpl implements BanqueManager
     * une liste de TableCodage.
     * @param banque pour laquelle on veut mettre à jour
     * les associations.
-    * @param codifications Liste de TableCodage 
+    * @param codifications Liste de TableCodage
     * que l'on veut associer à la banque.
     */
    private void updateCodifications(final Banque banque, final List<BanqueTableCodage> codifications){
@@ -703,7 +728,7 @@ public class BanqueManagerImpl implements BanqueManager
     * une liste de TableAnnotation.
     * @param banque pour laquelle on veut mettre à jour
     * les associations.
-    * @param tableAnnotation Liste ordonnée des tables 
+    * @param tableAnnotation Liste ordonnée des tables
     * @param liste de tables à l'origine associée à la banque (avant modif)
     * que l'on veut associer à la banque.
     */
@@ -730,7 +755,7 @@ public class BanqueManagerImpl implements BanqueManager
       for(int i = 0; i < tabsToRemove.size(); i++){
          annoCount =
             annotationValeurManager.findCountByTableAnnotationBanqueManager(tabsToRemove.get(i).getTableAnnotation(), banque);
-         // lance une erreur si une table devant être supprimée 
+         // lance une erreur si une table devant être supprimée
          // contient des valeurs
          if(annoCount != null && annoCount > 0){
             throw new ExistingAnnotationValuesException(tabsToRemove.get(i).getTableAnnotation(), banque);
@@ -904,10 +929,10 @@ public class BanqueManagerImpl implements BanqueManager
             banqueDao.removeObject(banque.getBanqueId());
             log.info("Suppression objet Banque " + banque.toString());
 
-            for (SModele mod : banque.getSModeles()) {
-            	mod.getBanques().remove(banque);
+            for(final SModele mod : banque.getSModeles()){
+               mod.getBanques().remove(banque);
             }
-            
+
             for(final File f : filesToDelete){
                f.delete();
             }
@@ -935,7 +960,7 @@ public class BanqueManagerImpl implements BanqueManager
       if(banque != null){
          //banque = banqueDao.mergeObject(banque);
          //Set<Imprimante> imps = banque.getImprimantes();
-         //imps.size();		
+         //imps.size();
          return new HashSet<>();
       }
       return new HashSet<>();
@@ -956,7 +981,7 @@ public class BanqueManagerImpl implements BanqueManager
     * @param baseDir
     * @param bank
     * @param delete
-    * @throws FileNotFoundException 
+    * @throws FileNotFoundException
     */
    private void manageFileSystemForBanque(final String basedir, final Banque bank, final boolean delete){
       final String path = Utils.writeAnnoFilePath(basedir, bank, null, null);
@@ -998,17 +1023,16 @@ public class BanqueManagerImpl implements BanqueManager
 
          // premiere restriction sur les banques de la plateforme
          // TK-254 et stream filter restriction sur le contexte
-         adminBanks.addAll(findByUtilisateurIsAdminManager(u, p.getBanque().getPlateforme())
-        		 .stream().filter(b -> b.getContexte().equals(p.getBanque().getContexte()))
-        		 	.collect(Collectors.toList()));
-         
+         adminBanks.addAll(findByUtilisateurIsAdminManager(u, p.getBanque().getPlateforme()).stream()
+            .filter(b -> b.getContexte().equals(p.getBanque().getContexte())).collect(Collectors.toList()));
+
          // @since 2.3.0-gatsbi
          // filtre gatsbi même étude
          // banque de contexte non gatsbi sont déja filtrées
-         if (p.getBanque().getEtude() != null) {
-        	adminBanks.removeIf(b -> !p.getBanque().getEtude().equals(b.getEtude())); 
-         } 
-        
+         if(p.getBanque().getEtude() != null){
+            adminBanks.removeIf(b -> !p.getBanque().getEtude().equals(b.getEtude()));
+         }
+
          // deuxieme restriction sur les banques - conteneurs.
          final List<TKAnnotableObject> children = prelevementManager.getPrelevementChildrenManager(p);
          final Set<Banque> contBanks = new HashSet<>();
@@ -1034,7 +1058,7 @@ public class BanqueManagerImpl implements BanqueManager
             contBanks.remove(p.getBanque());
             banks.addAll(CollectionUtils.intersection(new ArrayList<>(contBanks), adminBanks));
          }else{
-        	adminBanks.remove(p.getBanque());
+            adminBanks.remove(p.getBanque());
             banks.addAll(adminBanks);
          }
          Collections.sort(banks);
@@ -1042,16 +1066,16 @@ public class BanqueManagerImpl implements BanqueManager
       return banks;
    }
 
-	@Override
-	public List<Banque> findByConteneurManager(Conteneur c1) {
-		if (c1 != null && c1.getConteneurId() != null) {
-			return banqueDao.findByConteneur(c1);
-		}
-		return new ArrayList<Banque>();
-	}
+   @Override
+   public List<Banque> findByConteneurManager(final Conteneur c1){
+      if(c1 != null && c1.getConteneurId() != null){
+         return banqueDao.findByConteneur(c1);
+      }
+      return new ArrayList<>();
+   }
 
-	@Override
-	public List<Banque> findByEtudeManager(Etude e) {
-		return banqueDao.findByEtude(e);
-	}
+   @Override
+   public List<Banque> findByEtudeManager(final Etude e){
+      return banqueDao.findByEtude(e);
+   }
 }

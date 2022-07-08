@@ -66,6 +66,7 @@ public class UniteManagerImpl implements UniteManager
 
    /** Bean Dao UniteDao. */
    private UniteDao uniteDao;
+
    /** Bean Validator. */
    private UniteValidator uniteValidator;
 
@@ -102,7 +103,7 @@ public class UniteManagerImpl implements UniteManager
    }
 
    /**
-    * Recherche toutes les unités dont l'unite commence comme celle 
+    * Recherche toutes les unités dont l'unite commence comme celle
     * passée en paramètre.
     * @param unite Unite que l'on recherche.
     * @param exactMatch True si l'on souhaite seulement récuéprer les matchs
@@ -123,7 +124,7 @@ public class UniteManagerImpl implements UniteManager
    }
 
    /**
-    * Recherche toutes les unités dont le type commence comme celui 
+    * Recherche toutes les unités dont le type commence comme celui
     * passé en paramètre.
     * @param type Type que l'on recherche.
     * @param exactMatch True si l'on souhaite seulement récuéprer les matchs

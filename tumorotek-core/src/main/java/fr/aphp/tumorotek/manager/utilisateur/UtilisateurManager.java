@@ -58,7 +58,7 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
  * logs INFO ces opérations
  *
  * @since 2.1 ajout toutes les pfs getPlateformesAvailableManager au superAdmin
- * 
+ *
  * @since 2.2.1 getAvailableBanque peux conserver les banques archivees, find super archive users
  *
  *
@@ -104,7 +104,7 @@ public interface UtilisateurManager
     * @return Liste d'utilisateurs.
     */
    List<Utilisateur> findByArchiveManager(boolean archive, List<Plateforme> pfs);
-   
+
    /**
     * Recherche les utilisateurs actifs ou non.
     * @param archive True si l'utilisateur n'est pas actif.
@@ -179,8 +179,7 @@ public interface UtilisateurManager
     * @param boolean conserve les banques archivées si true
     * @return Liste de banques.
     */
-   List<Banque> getAvailableBanquesByPlateformeManager(Utilisateur utilisateur, 
-		   Plateforme plateforme, boolean keepArchived);
+   List<Banque> getAvailableBanquesByPlateformeManager(Utilisateur utilisateur, Plateforme plateforme, boolean keepArchived);
 
    /**
     * Persist une instance d'Utilisateur dans la base de données.
@@ -232,8 +231,8 @@ public interface UtilisateurManager
    /**
     * Archive les utilisateurs pas encore archivés, dont le timeout a expiré.
     * Enregistre une trace dans la table OPERATION et log INFO.
-    * Cette méthode sera appelée au niveau de la webapp par le Spring Scheduler, 
-    * toutes les nuits à 00:00 heures. 
+    * Cette méthode sera appelée au niveau de la webapp par le Spring Scheduler,
+    * toutes les nuits à 00:00 heures.
     * @since 2.0.13
     * @param admin Utilisateur associée à la trace de l'archivage dans OPERATION
     */

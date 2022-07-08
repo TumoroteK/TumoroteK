@@ -103,52 +103,96 @@ public class FicheContrat extends AbstractFicheCombineController
 
    // Labels.
    private Label numeroLabel;
+
    private Label typeLabel;
+
    private Label descriptionLabel;
+
    private Label dateDemandeCessionLabel;
+
    private Label dateValidationLabel;
+
    private Label dateDemandeRedactionLabel;
+
    private Label dateEnvoiLabel;
+
    private Label dateSignatureLabel;
+
    private Label titreLabel;
+
    private Label etabLabelContrat;
+
    private Label serviceLabelContrat;
+
    private Label operateurLabelContrat;
+
    private Label montantLabel;
+
    private Group groupCessionsContrat;
+
    private Grid cessionsGrid;
+
    private Row rowGridCessions;
+
    private Row rowNbEchantillons;
+
    private Row rowNbProdDerives;
+
    private Menubar menuBar;
+
    private Label nbEchantillonsLabel;
+
    private Label nbProdDerivesLabel;
+
    private Group groupDelaisContrat;
+
    private Row rowDelaiValidation;
+
    private Row rowDelaiEnvoi;
+
    private Row rowDelaiSignature;
+
    private Row rowDelaiGlobal;
+
    private Label delaiValidationLabel;
+
    private Label delaiEnvoiLabel;
+
    private Label delaiSignatureLabel;
+
    private Label delaiGlobalLabel;
 
    // Editable components : mode d'édition ou de création.
    private Label numeroRequired;
+
    private Textbox numeroBox;
+
    private Textbox descriptionBox;
+
    private Listbox typesBox;
+
    private Datebox dateDemandeCessionBox;
+
    private Datebox dateValidationBox;
+
    private Datebox dateDemandeRedactionBox;
+
    private Datebox dateEnvoiBox;
+
    private Datebox dateSignatureBox;
+
    private Textbox titreBox;
+
    private Combobox etabsBoxContrat;
+
    private Combobox servicesBoxContrat;
+
    private Combobox operateursBoxContrat;
+
    private Decimalbox montantBox;
+
    private Div operateursBoxDiv;
+
    private Div servicesBoxDiv;
 
    // Objets Principaux.
@@ -156,26 +200,42 @@ public class FicheContrat extends AbstractFicheCombineController
 
    // Associations.
    private final List<ProtocoleType> types = new ArrayList<>();
+
    private ProtocoleType selectedType;
+
    private List<String> nomsAndPrenoms = new ArrayList<>();
+
    private final List<Collaborateur> collaborateurs = new ArrayList<>();
+
    private Collaborateur selectedCollaborateur;
+
    private List<String> nomsServices = new ArrayList<>();
+
    private final List<Service> services = new ArrayList<>();
+
    private Service selectedService;
+
    private List<String> nomsEtablissements = new ArrayList<>();
+
    private List<Etablissement> etablissements = new ArrayList<>();
+
    private Etablissement selectedEtablissement;
+
    private List<Cession> cessions = new ArrayList<>();
 
    private boolean detailMode;
 
    // Variables formulaire.
    private String cessionsGroupHeader = Labels.getLabel("contrat.cessions.title");
+
    private final CessionRowRenderer cessionRenderer = new CessionRowRenderer(false, false);
+
    private Integer nbEchantillons;
+
    private Integer nbProdDerives;
+
    private String piedPage;
+
    private String hautPage;
 
    @Override
@@ -281,10 +341,10 @@ public class FicheContrat extends AbstractFicheCombineController
          calDem.setTime(contrat.getDateDemandeCession());
          final Calendar calVal = Calendar.getInstance();
          calVal.setTime(contrat.getDateValidation());
-         final Long diffMillis = calVal.getTimeInMillis() - calDem.getTimeInMillis();
+         final long diffMillis = calVal.getTimeInMillis() - calDem.getTimeInMillis();
          // ie 86400000 = 24*60*60*1000
          // soit le nb de lillisecondes dans une année
-         final Long div = new Long(86400000L);
+         final long div = 86400000L;
          final int jours = (int) (diffMillis / div);
          delaiValidationLabel
             .setValue(ObjectTypesFormatters.getLabel("contrat.delai.validation", new String[] {String.valueOf(jours)}));
@@ -298,10 +358,10 @@ public class FicheContrat extends AbstractFicheCombineController
          calRedac.setTime(contrat.getDateDemandeRedaction());
          final Calendar calEnvoi = Calendar.getInstance();
          calEnvoi.setTime(contrat.getDateEnvoiContrat());
-         final Long diffMillis = calEnvoi.getTimeInMillis() - calRedac.getTimeInMillis();
+         final long diffMillis = calEnvoi.getTimeInMillis() - calRedac.getTimeInMillis();
          // ie 86400000 = 24*60*60*1000
          // soit le nb de lillisecondes dans une année
-         final Long div = new Long(86400000L);
+         final long div = 86400000L;
          final int jours = (int) (diffMillis / div);
          delaiEnvoiLabel.setValue(ObjectTypesFormatters.getLabel("contrat.delai.envoi", new String[] {String.valueOf(jours)}));
       }else{
@@ -314,10 +374,10 @@ public class FicheContrat extends AbstractFicheCombineController
          calEnvoi.setTime(contrat.getDateEnvoiContrat());
          final Calendar calSign = Calendar.getInstance();
          calSign.setTime(contrat.getDateSignature());
-         final Long diffMillis = calSign.getTimeInMillis() - calEnvoi.getTimeInMillis();
+         final long diffMillis = calSign.getTimeInMillis() - calEnvoi.getTimeInMillis();
          // ie 86400000 = 24*60*60*1000
          // soit le nb de lillisecondes dans une année
-         final Long div = new Long(86400000L);
+         final long div = 86400000L;
          final int jours = (int) (diffMillis / div);
          delaiSignatureLabel
             .setValue(ObjectTypesFormatters.getLabel("contrat.delai.signature", new String[] {String.valueOf(jours)}));
@@ -331,10 +391,10 @@ public class FicheContrat extends AbstractFicheCombineController
          calDem.setTime(contrat.getDateDemandeCession());
          final Calendar calSign = Calendar.getInstance();
          calSign.setTime(contrat.getDateSignature());
-         final Long diffMillis = calSign.getTimeInMillis() - calDem.getTimeInMillis();
+         final long diffMillis = calSign.getTimeInMillis() - calDem.getTimeInMillis();
          // ie 86400000 = 24*60*60*1000
          // soit le nb de lillisecondes dans une année
-         final Long div = new Long(86400000L);
+         final long div = 86400000L;
          final int jours = (int) (diffMillis / div);
          delaiGlobalLabel.setValue(ObjectTypesFormatters.getLabel("contrat.delai.global", new String[] {String.valueOf(jours)}));
       }else{
@@ -587,10 +647,10 @@ public class FicheContrat extends AbstractFicheCombineController
     * @throws Exception
     */
    public void onClickNumeroCession(final Event event){
-      //		CessionController tabController = 
+      //		CessionController tabController =
       //			(CessionController) CessionController.backToMe(
       //					getMainWindow(), page);
-      //		
+      //
       //		if (event != null) {
       //			Cession cess = (Cession) event.getData();
       //			tabController.switchToFicheStaticMode(cess);
@@ -610,7 +670,7 @@ public class FicheContrat extends AbstractFicheCombineController
    }
 
    /**
-    * Forward Event. 
+    * Forward Event.
     */
    public void onSelectAllCessions(final Event e){
       // onClickNumeroCession(null);
@@ -1038,10 +1098,10 @@ public class FicheContrat extends AbstractFicheCombineController
          calDem.setTime(contrat.getDateDemandeCession());
          final Calendar calVal = Calendar.getInstance();
          calVal.setTime(contrat.getDateValidation());
-         final Long diffMillis = calVal.getTimeInMillis() - calDem.getTimeInMillis();
+         final long diffMillis = calVal.getTimeInMillis() - calDem.getTimeInMillis();
          // ie 86400000 = 24*60*60*1000
          // soit le nb de lillisecondes dans une année
-         final Long div = new Long(86400000L);
+         final long div = 86400000L;
          final int jours = (int) (diffMillis / div);
          tmp = String.valueOf(jours);
       }else{
@@ -1057,10 +1117,10 @@ public class FicheContrat extends AbstractFicheCombineController
          calRedac.setTime(contrat.getDateDemandeRedaction());
          final Calendar calEnvoi = Calendar.getInstance();
          calEnvoi.setTime(contrat.getDateEnvoiContrat());
-         final Long diffMillis = calEnvoi.getTimeInMillis() - calRedac.getTimeInMillis();
+         final long diffMillis = calEnvoi.getTimeInMillis() - calRedac.getTimeInMillis();
          // ie 86400000 = 24*60*60*1000
          // soit le nb de lillisecondes dans une année
-         final Long div = new Long(86400000L);
+         final long div = 86400000L;
          final int jours = (int) (diffMillis / div);
          tmp = String.valueOf(jours);
       }else{
@@ -1076,10 +1136,10 @@ public class FicheContrat extends AbstractFicheCombineController
          calEnvoi.setTime(contrat.getDateEnvoiContrat());
          final Calendar calSign = Calendar.getInstance();
          calSign.setTime(contrat.getDateSignature());
-         final Long diffMillis = calSign.getTimeInMillis() - calEnvoi.getTimeInMillis();
+         final long diffMillis = calSign.getTimeInMillis() - calEnvoi.getTimeInMillis();
          // ie 86400000 = 24*60*60*1000
          // soit le nb de lillisecondes dans une année
-         final Long div = new Long(86400000L);
+         final long div = 86400000L;
          final int jours = (int) (diffMillis / div);
          tmp = String.valueOf(jours);
       }else{
@@ -1095,10 +1155,10 @@ public class FicheContrat extends AbstractFicheCombineController
          calDem.setTime(contrat.getDateDemandeCession());
          final Calendar calSign = Calendar.getInstance();
          calSign.setTime(contrat.getDateSignature());
-         final Long diffMillis = calSign.getTimeInMillis() - calDem.getTimeInMillis();
+         final long diffMillis = calSign.getTimeInMillis() - calDem.getTimeInMillis();
          // ie 86400000 = 24*60*60*1000
          // soit le nb de lillisecondes dans une année
-         final Long div = new Long(86400000L);
+         final long div = 86400000L;
          final int jours = (int) (diffMillis / div);
          tmp = String.valueOf(jours);
       }else{

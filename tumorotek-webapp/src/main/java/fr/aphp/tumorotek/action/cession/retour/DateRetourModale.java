@@ -37,10 +37,15 @@ public class DateRetourModale
    //private static final long serialVersionUID = -3694035708012726832L;
 
    private Calendar dateRetour;
+
    private List<TKStockableObject> objects;
+
    private List<Retour> retoursToUpdate = new ArrayList<>();
+
    private List<SimpleCodeDateSortie> simpleCDs = new ArrayList<>();
+
    private Utilisateur user;
+
    private AbstractObjectTabController controller;
 
    @Wire("#fwinDateRetourModale")
@@ -76,7 +81,7 @@ public class DateRetourModale
          }
          ManagerLocator.getRetourManager().updateMultipleObjectManager(getRetoursToUpdate(), null, null, null, null, user);
 
-         // mise à jour liste		
+         // mise à jour liste
          if(controller != null && controller.getListe() != null){
             if(controller instanceof EchantillonController
                && controller.getMainWindow().isFullfilledComponent("echantillonPanel", "winEchantillon")){
@@ -122,7 +127,7 @@ public class DateRetourModale
       //			while (it.hasNext()) {
       //				o = it.next();
       //				incomp = ManagerLocator.getRetourManager()
-      //					.findByObjectDateRetourEmptyManager(o.listableObjectId(), 
+      //					.findByObjectDateRetourEmptyManager(o.listableObjectId(),
       //							ManagerLocator.getEntiteManager()
       //									.findByNomManager(o.entiteNom()).get(0));
       //				retoursToUpdate.add(incomp);
@@ -175,6 +180,7 @@ public class DateRetourModale
    {
 
       private String code;
+
       private Calendar dateSortie;
 
       public SimpleCodeDateSortie(final String c, final Calendar dateS){

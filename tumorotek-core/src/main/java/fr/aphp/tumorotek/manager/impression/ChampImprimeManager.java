@@ -56,9 +56,9 @@ public interface ChampImprimeManager
 {
 
    /**
-    * Recherche un ChampImprime dont l'identifiant est 
+    * Recherche un ChampImprime dont l'identifiant est
     * passé en paramètre.
-    * @param pk Identifiant du ChampImprime que 
+    * @param pk Identifiant du ChampImprime que
     * l'on recherche.
     * @return Un ChampImprime.
     */
@@ -71,7 +71,7 @@ public interface ChampImprimeManager
    List<ChampImprime> findAllObjectsManager();
 
    /**
-    * Recherche les ChampImprimes sauf celui dont la clé 
+    * Recherche les ChampImprimes sauf celui dont la clé
     * primaire est passée en paramètre.
     * @param pk ChampImprimePK.
     * @return Liste de ChampImprimes.
@@ -79,7 +79,7 @@ public interface ChampImprimeManager
    List<ChampImprime> findByExcludedPKManager(ChampImprimePK pk);
 
    /**
-    * Recherche les ChampImprimes dont le Template est égal au 
+    * Recherche les ChampImprimes dont le Template est égal au
     * paramètre.
     * @param template Template des ChampImprimes recherchés.
     * @return une liste de ChampImprimes.

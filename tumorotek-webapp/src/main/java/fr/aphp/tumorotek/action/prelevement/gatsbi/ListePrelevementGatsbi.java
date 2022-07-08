@@ -1,5 +1,5 @@
 /**
- * Copyright ou © ou Copr. Assistance Publique des Hôpitaux de 
+ * Copyright ou © ou Copr. Assistance Publique des Hôpitaux de
  * PARIS et SESAN
  * projet-tk@sesan.fr
  *
@@ -52,258 +52,269 @@ import fr.aphp.tumorotek.webapp.gatsbi.GatsbiController;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
 /**
- * @version 2.3.0-gatsbi 
+ * @version 2.3.0-gatsbi
  * @author Mathieu BARTHELEMY
  *
  */
-public class ListePrelevementGatsbi extends ListePrelevement {
+public class ListePrelevementGatsbi extends ListePrelevement
+{
 
-	private static final long serialVersionUID = 1L;
+   private static final long serialVersionUID = 1L;
 
-	private Contexte contexte;
+   private Contexte contexte;
 
-	// flag passe à true si la colonne congelation est déja rendue
-	// afin d'éviter que cette colonne soit rendue deux fois
-	private boolean congColRendered = false;
+   // flag passe à true si la colonne congelation est déja rendue
+   // afin d'éviter que cette colonne soit rendue deux fois
+   private boolean congColRendered = false;
 
-	public ListePrelevementGatsbi() {
-		setListObjectsRenderer(new PrelevementRowRendererGatsbi(true, false));
-	}
+   public ListePrelevementGatsbi(){
+      setListObjectsRenderer(new PrelevementRowRendererGatsbi(true, false));
+   }
 
-	public void onCheckAll$gridColumns() {
-		onCheck$checkAll();
-	}
+   public void onCheckAll$gridColumns(){
+      onCheck$checkAll();
+   }
 
-	@Override
-	protected void drawColumnsForVisibleChampEntites()
-			throws ClassNotFoundException, InstantiationException, IllegalAccessException {
+   @Override
+   protected void drawColumnsForVisibleChampEntites()
+      throws ClassNotFoundException, InstantiationException, IllegalAccessException{
 
-		contexte = SessionUtils.getCurrentGatsbiContexteForEntiteId(2);
+      contexte = SessionUtils.getCurrentGatsbiContexteForEntiteId(2);
 
-		// check box first column, toujours affichée
-		Checkbox cbox = new Checkbox();
-		cbox.setId("checkAll");
-		cbox.addForward("onCheck", objectsListGrid.getColumns(), "onCheckAll");
-		GatsbiController.addColumn(objectsListGrid, null, "40px", null, cbox, null, true);
+      // check box first column, toujours affichée
+      final Checkbox cbox = new Checkbox();
+      cbox.setId("checkAll");
+      cbox.addForward("onCheck", objectsListGrid.getColumns(), "onCheckAll");
+      GatsbiController.addColumn(objectsListGrid, null, "40px", null, cbox, null, true);
 
-		// icones column, visible si non conformites OU risque est visible OU interfacages
-		if (contexte.isChampIdVisible(249) || contexte.isChampIdVisible(256)
-				|| SessionUtils.getEmetteursInterfacages(sessionScope).size() > 0) {
-			GatsbiController.addColumn(objectsListGrid, null, (contexte.isChampIdVisible(249) && contexte.isChampIdVisible(256)) ? "70px" : "35px",
-					"center", null, null, true);
+      // icones column, visible si non conformites OU risque est visible OU interfacages
+      if(contexte.isChampIdVisible(249) || contexte.isChampIdVisible(256)
+         || SessionUtils.getEmetteursInterfacages(sessionScope).size() > 0){
+         GatsbiController.addColumn(objectsListGrid, null,
+            (contexte.isChampIdVisible(249) && contexte.isChampIdVisible(256)) ? "70px" : "35px", "center", null, null, true);
 
-			// indique au row renderer qu'il doit dessiner les icones
-			getListObjectsRenderer().setIconesRendered(true);
-		}
+         // indique au row renderer qu'il doit dessiner les icones
+         getListObjectsRenderer().setIconesRendered(true);
+      }
 
-		// code prel column, toujours affichée
-		GatsbiController.addColumn(objectsListGrid, "general.code", null, null, null, "auto(code)", true);
+      // code prel column, toujours affichée
+      GatsbiController.addColumn(objectsListGrid, "general.code", null, null, null, "auto(code)", true);
 
-		// ttes collection
-		GatsbiController.addColumn(objectsListGrid, "Entite.Banque", null, null, null, "auto(code)", isTtesCollection());
+      // ttes collection
+      GatsbiController.addColumn(objectsListGrid, "Entite.Banque", null, null, null, "auto(code)", isTtesCollection());
 
-		// patient, colonne toujours affichée
-		GatsbiController.addColumn(objectsListGrid, "prelevement.patient", null, null, null, "auto(maladie.patient.nom)", true);
+      // patient, colonne toujours affichée
+      GatsbiController.addColumn(objectsListGrid, "prelevement.patient", null, null, null, "auto(maladie.patient.nom)", true);
 
-		// nip, colonne non visible par défaut
-		GatsbiController.addColumn(objectsListGrid, "Champ.Patient.Nip", null, null, null, "auto(maladie.patient.nom)", false);
+      // nip, colonne non visible par défaut
+      GatsbiController.addColumn(objectsListGrid, "Champ.Patient.Nip", null, null, null, "auto(maladie.patient.nom)", false);
 
-		// maladie, colonne visible si banque définit le niveau
-		GatsbiController.addColumn(objectsListGrid, "prelevement.maladie", "150px", null, null, "auto(maladie.patient.nom)", getBanqueDefMaladies());
+      // maladie, colonne visible si banque définit le niveau
+      GatsbiController.addColumn(objectsListGrid, "prelevement.maladie", "150px", null, null, "auto(maladie.patient.nom)",
+         getBanqueDefMaladies());
 
-		// variable columns
-		for (Integer chpId : contexte.getChampEntiteInTableauOrdered()) {
-			addColumnForChpId(chpId);
-		}
+      // variable columns
+      for(final Integer chpId : contexte.getChampEntiteInTableauOrdered()){
+         addColumnForChpId(chpId);
+      }
 
-		// nb echantillons
-		Vbox vbox = new Vbox();
-		vbox.setAlign("center");
-		Label nbEch = new Label(Labels.getLabel("prelevement.nbEchantillons"));
-		nbEch.setStyle("font-weight : bold;font-family: Verdana, Arial, Helvetica, sans-serif;");
-		nbEch.setParent(vbox);
-		Label nbEchRest = new Label(Labels.getLabel("prelevement.restants.total.stockes"));
-		nbEchRest.setStyle("font-weight : bold;font-family: Verdana, Arial, Helvetica, sans-serif;");
-		nbEchRest.setParent(vbox);
-		nbEchantillonsColumn = GatsbiController.addColumn(objectsListGrid, null, null, "center", vbox, "auto", true);
-		nbEchantillonsColumn.setId("nbEchantillonsColumn");
-	}
+      // nb echantillons
+      final Vbox vbox = new Vbox();
+      vbox.setAlign("center");
+      final Label nbEch = new Label(Labels.getLabel("prelevement.nbEchantillons"));
+      nbEch.setStyle("font-weight : bold;font-family: Verdana, Arial, Helvetica, sans-serif;");
+      nbEch.setParent(vbox);
+      final Label nbEchRest = new Label(Labels.getLabel("prelevement.restants.total.stockes"));
+      nbEchRest.setStyle("font-weight : bold;font-family: Verdana, Arial, Helvetica, sans-serif;");
+      nbEchRest.setParent(vbox);
+      nbEchantillonsColumn = GatsbiController.addColumn(objectsListGrid, null, null, "center", vbox, "auto", true);
+      nbEchantillonsColumn.setId("nbEchantillonsColumn");
+   }
 
-	private void addColumnForChpId(Integer chpId)
-			throws ClassNotFoundException, InstantiationException, IllegalAccessException {
-		switch (chpId) {
-		case 23:
-			// "code" toujours rendu par défaut
-			break;
-		case 45: // numero labo
-			GatsbiController.addColumn(objectsListGrid, "Champ.Prelevement.NumeroLabo", null, null, null, "auto(numeroLabo)", true);
-			break;
-		case 24: // nature
-			GatsbiController.addColumn(objectsListGrid, "Champ.Prelevement.Nature.Nature", null, null, null, "auto(nature.nom)", true);
-			break;
-		case 44: // nda
-			GatsbiController.addColumn(objectsListGrid, "Champ.Prelevement.PatientNda", null, null, null, "auto(patientNda)", true);
-			break;
-		case 30: // date prelevement
-			GatsbiController.addColumn(objectsListGrid, "prelevement.datePrelevementCourt", null, null, null, "auto(datePrelevement)", true);
-			break;
-		case 31: // prelevement type
-			GatsbiController.addColumn(objectsListGrid, "Champ.Prelevement.PrelevementType.Type", null, null, null, "auto(prelevementType.nom)", true);
-			break;
-		case 47: // sterile
-			GatsbiController.addColumn(objectsListGrid, "Champ.Prelevement.Sterile", null, null, null, "auto(sterile)", true);
-			break;
-		case 249: // risques -> rendu sous la forme d'une icône
-			break;
-		case 29: // service preleveur
-			GatsbiController.addColumn(objectsListGrid, "Champ.Prelevement.ServicePreleveur", null, null, null, "auto(servicePreleveur.nom)", true);
-			break;
-		case 28: // preleveur
-			GatsbiController.addColumn(objectsListGrid, "Champ.Prelevement.Preleveur", null, null, null, "auto(preleveur.nomAndPrenom)", true);
-			break;
-		case 32: // condit type
-			GatsbiController.addColumn(objectsListGrid, "Champ.Prelevement.ConditType.Type", null, null, null, "auto(conditType.nom)", true);
-			break;
-		case 34: // condit Nbr
-			GatsbiController.addColumn(objectsListGrid, "Champ.Prelevement.ConditNbr", null, null, null, "auto(conditNbr)", true);
-			break;
-		case 33: // condit milieu
-			GatsbiController.addColumn(objectsListGrid, "Champ.Prelevement.ConditMilieu", null, null, null, "auto(conditMilieu.nom)", true);
-			break;
-		case 26: // consent type
-			GatsbiController.addColumn(objectsListGrid, "Champ.Prelevement.ConsentType", null, null, null, "auto(consentType.nom)", true);
-			break;
-		case 27: // consent date
-			GatsbiController.addColumn(objectsListGrid, "Champ.Prelevement.ConsentDate", null, null, null, "auto(consentDate)", true);
-			break;
-		case 35: // date depart
-			GatsbiController.addColumn(objectsListGrid, "Champ.Prelevement.DateDepart", null, null, null, "auto(dateDepart)", true);
-			break;
-		case 36: // transporteur
-			GatsbiController.addColumn(objectsListGrid, "Champ.Prelevement.Transporteur", null, null, null, "auto(transporteur.nom)", true);
-			break;
-		case 37: // transport temperature
-			GatsbiController.addColumn(objectsListGrid, "Champ.Prelevement.TransportTemp", null, null, null, "auto(transportTemp)", true);
-			break;
-		case 269: // cong depart
-			if (!congColRendered) {
-				GatsbiController.addColumn(objectsListGrid, "prelevement.cong", null, null, null, "auto(transportTemp)", true);
-				congColRendered = true;
-			}
-			break;
-		case 38: // date arrivee
-			GatsbiController.addColumn(objectsListGrid, "Champ.Prelevement.DateArrivee", null, null, null, "auto(dateArrivee)", true);
-			break;
-		case 39: // operateur
-			GatsbiController.addColumn(objectsListGrid, "Champ.Prelevement.Operateur", null, null, null, "auto(operateur.nom)", true);
-			break;
-		case 40: // quantite
-			GatsbiController.addColumn(objectsListGrid, "Champ.Prelevement.Quantite", null, null, null, "auto(quantite)", true);
-			break;
-		case 270: // cong arrivee
-			if (!congColRendered) {
-				GatsbiController.addColumn(objectsListGrid, "prelevement.cong", null, null, null, "auto(transportTemp)", true);
-				congColRendered = true;
-			}
-			break;
-		case 256: // conforme arrivee -> rendu sous la forme d'une icône
-			break;
-		default:
-			break;
-		}
-	}
+   private void addColumnForChpId(final Integer chpId)
+      throws ClassNotFoundException, InstantiationException, IllegalAccessException{
+      switch(chpId){
+         case 23:
+            // "code" toujours rendu par défaut
+            break;
+         case 45: // numero labo
+            GatsbiController.addColumn(objectsListGrid, "Champ.Prelevement.NumeroLabo", null, null, null, "auto(numeroLabo)",
+               true);
+            break;
+         case 24: // nature
+            GatsbiController.addColumn(objectsListGrid, "Champ.Prelevement.Nature.Nature", null, null, null, "auto(nature.nom)",
+               true);
+            break;
+         case 44: // nda
+            GatsbiController.addColumn(objectsListGrid, "Champ.Prelevement.PatientNda", null, null, null, "auto(patientNda)",
+               true);
+            break;
+         case 30: // date prelevement
+            GatsbiController.addColumn(objectsListGrid, "prelevement.datePrelevementCourt", null, null, null,
+               "auto(datePrelevement)", true);
+            break;
+         case 31: // prelevement type
+            GatsbiController.addColumn(objectsListGrid, "Champ.Prelevement.PrelevementType.Type", null, null, null,
+               "auto(prelevementType.nom)", true);
+            break;
+         case 47: // sterile
+            GatsbiController.addColumn(objectsListGrid, "Champ.Prelevement.Sterile", null, null, null, "auto(sterile)", true);
+            break;
+         case 249: // risques -> rendu sous la forme d'une icône
+            break;
+         case 29: // service preleveur
+            GatsbiController.addColumn(objectsListGrid, "Champ.Prelevement.ServicePreleveur", null, null, null,
+               "auto(servicePreleveur.nom)", true);
+            break;
+         case 28: // preleveur
+            GatsbiController.addColumn(objectsListGrid, "Champ.Prelevement.Preleveur", null, null, null,
+               "auto(preleveur.nomAndPrenom)", true);
+            break;
+         case 32: // condit type
+            GatsbiController.addColumn(objectsListGrid, "Champ.Prelevement.ConditType.Type", null, null, null,
+               "auto(conditType.nom)", true);
+            break;
+         case 34: // condit Nbr
+            GatsbiController.addColumn(objectsListGrid, "Champ.Prelevement.ConditNbr", null, null, null, "auto(conditNbr)", true);
+            break;
+         case 33: // condit milieu
+            GatsbiController.addColumn(objectsListGrid, "Champ.Prelevement.ConditMilieu", null, null, null,
+               "auto(conditMilieu.nom)", true);
+            break;
+         case 26: // consent type
+            GatsbiController.addColumn(objectsListGrid, "Champ.Prelevement.ConsentType", null, null, null,
+               "auto(consentType.nom)", true);
+            break;
+         case 27: // consent date
+            GatsbiController.addColumn(objectsListGrid, "Champ.Prelevement.ConsentDate", null, null, null, "auto(consentDate)",
+               true);
+            break;
+         case 35: // date depart
+            GatsbiController.addColumn(objectsListGrid, "Champ.Prelevement.DateDepart", null, null, null, "auto(dateDepart)",
+               true);
+            break;
+         case 36: // transporteur
+            GatsbiController.addColumn(objectsListGrid, "Champ.Prelevement.Transporteur", null, null, null,
+               "auto(transporteur.nom)", true);
+            break;
+         case 37: // transport temperature
+            GatsbiController.addColumn(objectsListGrid, "Champ.Prelevement.TransportTemp", null, null, null,
+               "auto(transportTemp)", true);
+            break;
+         case 269: // cong depart
+            if(!congColRendered){
+               GatsbiController.addColumn(objectsListGrid, "prelevement.cong", null, null, null, "auto(transportTemp)", true);
+               congColRendered = true;
+            }
+            break;
+         case 38: // date arrivee
+            GatsbiController.addColumn(objectsListGrid, "Champ.Prelevement.DateArrivee", null, null, null, "auto(dateArrivee)",
+               true);
+            break;
+         case 39: // operateur
+            GatsbiController.addColumn(objectsListGrid, "Champ.Prelevement.Operateur", null, null, null, "auto(operateur.nom)",
+               true);
+            break;
+         case 40: // quantite
+            GatsbiController.addColumn(objectsListGrid, "Champ.Prelevement.Quantite", null, null, null, "auto(quantite)", true);
+            break;
+         case 270: // cong arrivee
+            if(!congColRendered){
+               GatsbiController.addColumn(objectsListGrid, "prelevement.cong", null, null, null, "auto(transportTemp)", true);
+               congColRendered = true;
+            }
+            break;
+         case 256: // conforme arrivee -> rendu sous la forme d'une icône
+            break;
+         default:
+            break;
+      }
+   }
 
-	/**
-	 * Gatsbi surcharge pour intercaler une modale de sélection des parametrages
-	 * proposés par le contexte.
-	 * 
-	 * @param click event
-	 */
-	@Override
-	public void onClick$addNew(final Event event) throws Exception {		
-		GatsbiController.addNewObjectForContext(contexte, self, 
-			e -> {
-				try {
-					super.onClick$addNew(e);
-				} catch (Exception ex) {
-					Messagebox.show(handleExceptionMessage(ex), 
-							"Error", Messagebox.OK, Messagebox.ERROR);
-				}
-			}, event, null);
-	}
-	
-	/**
-	 * Un parametrage a été sélectionné.
-	 * 
-	 * @param param
-	 * @throws Exception
-	 */
-	public void onGetSelectedParametrage(ForwardEvent evt) throws Exception {
+   /**
+    * Gatsbi surcharge pour intercaler une modale de sélection des parametrages
+    * proposés par le contexte.
+    *
+    * @param click event
+    */
+   @Override
+   public void onClick$addNew(final Event event) throws Exception{
+      GatsbiController.addNewObjectForContext(contexte, self, e -> {
+         try{
+            super.onClick$addNew(e);
+         }catch(final Exception ex){
+            Messagebox.show(handleExceptionMessage(ex), "Error", Messagebox.OK, Messagebox.ERROR);
+         }
+      }, event, null);
+   }
 
-		try {
-			
-			GatsbiController.getSelectedParametrageFromSelectEvent(contexte, 
-				SessionUtils.getCurrentBanque(sessionScope), 
-				getObjectTabController(), 
-				p -> {
-					// cong depart OU cong arrivee
-					if (p.getDefaultValuesForChampEntiteId(269) != null
-							&& p.getDefaultValuesForChampEntiteId(269).contentEquals("1")
-							&& p.getDefaultValuesForChampEntiteId(270) != null
-							&& p.getDefaultValuesForChampEntiteId(270).contentEquals("1")) {
-						throw new TKException("gatsbi.illegal.parametrage.prelevement.cong");
-					}
-				}, 
-				() -> {
-					try {
-						super.onClick$addNew(null);
-					} catch (Exception ex) {
-						Messagebox.show(handleExceptionMessage(ex), 
-								"Error", Messagebox.OK, Messagebox.ERROR);
-					}
-				}, evt);	
-		} catch (GatsbiException e) {
-			Messagebox.show(handleExceptionMessage(e), "Error", Messagebox.OK, Messagebox.ERROR);
-		}
-	}
+   /**
+    * Un parametrage a été sélectionné.
+    *
+    * @param param
+    * @throws Exception
+    */
+   public void onGetSelectedParametrage(final ForwardEvent evt) throws Exception{
 
-//	/**
-//	 * Un parametrage a été sélectionné.
-//	 * 
-//	 * @param param
-//	 * @throws Exception
-//	 */
-//	@SuppressWarnings("unchecked")
-//	public void onGetSelectedParametrage(ForwardEvent evt) throws Exception {
-//
-//		try {
-//			ResultatInjection inject = null;
-//			if (((Map<String, Integer>) evt.getOrigin().getData()).get("paramId") != null) {
-//				ParametrageDTO parametrageDTO = GatsbiController
-//						.doGastbiParametrage(((Map<String, Integer>) evt.getOrigin().getData()).get("paramId"));
-//
-//				Consumer<Parametrage> validator = p -> {
-//					// cong depart OU cong arrivee
-//					if (p.getDefaultValuesForChampEntiteId(269) != null
-//							&& p.getDefaultValuesForChampEntiteId(269).contentEquals("1")
-//							&& p.getDefaultValuesForChampEntiteId(270) != null
-//							&& p.getDefaultValuesForChampEntiteId(270).contentEquals("1")) {
-//						throw new TKException("gatsbi.illegal.parametrage.prelevement.cong");
-//					}
-//				};
-//
-//				inject = GatsbiController.injectGatsbiObject(contexte, parametrageDTO,
-//						SessionUtils.getCurrentBanque(sessionScope), validator);
-//			}
-//
-//			super.onClick$addNew(null);
-//
-//			if (inject != null) {
-//				Events.postEvent("onGatsbiParamSelected", getObjectTabController().getFicheEdit().getSelfComponent(),
-//						inject);
-//			}
-//		} catch (Exception e) {
-//			Messagebox.show(handleExceptionMessage(e), "Error", Messagebox.OK, Messagebox.ERROR);
-//		}
-//	}
+      try{
+
+         GatsbiController.getSelectedParametrageFromSelectEvent(contexte, SessionUtils.getCurrentBanque(sessionScope),
+            getObjectTabController(), p -> {
+               // cong depart OU cong arrivee
+               if(p.getDefaultValuesForChampEntiteId(269) != null && p.getDefaultValuesForChampEntiteId(269).contentEquals("1")
+                  && p.getDefaultValuesForChampEntiteId(270) != null
+                  && p.getDefaultValuesForChampEntiteId(270).contentEquals("1")){
+                  throw new TKException("gatsbi.illegal.parametrage.prelevement.cong");
+               }
+            }, () -> {
+               try{
+                  super.onClick$addNew(null);
+               }catch(final Exception ex){
+                  Messagebox.show(handleExceptionMessage(ex), "Error", Messagebox.OK, Messagebox.ERROR);
+               }
+            }, evt);
+      }catch(final GatsbiException e){
+         Messagebox.show(handleExceptionMessage(e), "Error", Messagebox.OK, Messagebox.ERROR);
+      }
+   }
+
+   //	/**
+   //	 * Un parametrage a été sélectionné.
+   //	 *
+   //	 * @param param
+   //	 * @throws Exception
+   //	 */
+   //	@SuppressWarnings("unchecked")
+   //	public void onGetSelectedParametrage(ForwardEvent evt) throws Exception {
+   //
+   //		try {
+   //			ResultatInjection inject = null;
+   //			if (((Map<String, Integer>) evt.getOrigin().getData()).get("paramId") != null) {
+   //				ParametrageDTO parametrageDTO = GatsbiController
+   //						.doGastbiParametrage(((Map<String, Integer>) evt.getOrigin().getData()).get("paramId"));
+   //
+   //				Consumer<Parametrage> validator = p -> {
+   //					// cong depart OU cong arrivee
+   //					if (p.getDefaultValuesForChampEntiteId(269) != null
+   //							&& p.getDefaultValuesForChampEntiteId(269).contentEquals("1")
+   //							&& p.getDefaultValuesForChampEntiteId(270) != null
+   //							&& p.getDefaultValuesForChampEntiteId(270).contentEquals("1")) {
+   //						throw new TKException("gatsbi.illegal.parametrage.prelevement.cong");
+   //					}
+   //				};
+   //
+   //				inject = GatsbiController.injectGatsbiObject(contexte, parametrageDTO,
+   //						SessionUtils.getCurrentBanque(sessionScope), validator);
+   //			}
+   //
+   //			super.onClick$addNew(null);
+   //
+   //			if (inject != null) {
+   //				Events.postEvent("onGatsbiParamSelected", getObjectTabController().getFicheEdit().getSelfComponent(),
+   //						inject);
+   //			}
+   //		} catch (Exception e) {
+   //			Messagebox.show(handleExceptionMessage(e), "Error", Messagebox.OK, Messagebox.ERROR);
+   //		}
+   //	}
 }

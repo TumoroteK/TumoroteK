@@ -80,7 +80,7 @@ public class ParametresManagerImpl implements ParametresManager
       //On utilise un nouveau Properties à chaque appel pour que le message soit mis à jour sans nécessiter
       //un redémarrage de l'application
       final Properties tumoProperties = new Properties();
-      try(InputStream is = Files.newInputStream(Paths.get(TumorotekProperties.TUMO_PROPERTIES_PATH))){
+      try( InputStream is = Files.newInputStream(Paths.get(TumorotekProperties.TUMO_PROPERTIES_PATH))){
          tumoProperties.load(is);
       }catch(final IOException e){
          log.error("Erreur lors du chargement du fichier " + TumorotekProperties.TUMO_PROPERTIES_PATH, e);

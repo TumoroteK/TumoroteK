@@ -1,5 +1,5 @@
 /**
- * Copyright ou © ou Copr. Assistance Publique des Hôpitaux de 
+ * Copyright ou © ou Copr. Assistance Publique des Hôpitaux de
  * PARIS et SESAN
  * projet-tk@sesan.fr
  *
@@ -37,66 +37,65 @@
 package fr.aphp.tumorotek.manager.validation.coeur.prelevement.gastbi;
 
 import java.util.List;
+
 import fr.aphp.tumorotek.manager.validation.RequiredValueValidator;
 import fr.aphp.tumorotek.model.coeur.prelevement.Prelevement;
 
 /**
- * Gatsbi validor appliquant de manière dynamique une validation sur les 
+ * Gatsbi validor appliquant de manière dynamique une validation sur les
  * champs obligatoires définis par un contexte.
- * 
+ *
  * @author Mathieu BARTHELEMY
  * @version 2.3.0-gatsbi
  *
  */
-public class PrelevementGatsbiValidator extends RequiredValueValidator {
-	
+public class PrelevementGatsbiValidator extends RequiredValueValidator
+{
 
-	public PrelevementGatsbiValidator(String _e, List<Integer> _f) {
-		super(_e, _f);		
-	}
+   public PrelevementGatsbiValidator(final String _e, final List<Integer> _f){
+      super(_e, _f);
+   }
 
-	@Override
-	public boolean supports(final Class<?> clazz){
-		return Prelevement.class.equals(clazz);
-	}
+   @Override
+   public boolean supports(final Class<?> clazz){
+      return Prelevement.class.equals(clazz);
+   }
 
+   @Override
+   protected void initChpIdNameMap(){
+      // chpIdNameMap.put(23, "code"); 
+      chpIdNameMap.put(45, "numeroLabo");
+      // chpIdNameMap.put(24, "nature"); // validé par défaut dans checkrequired
+      chpIdNameMap.put(44, "patientNda");
+      chpIdNameMap.put(30, "datePrelevement");
+      chpIdNameMap.put(31, "prelevementType");
+      // sterile (boolean) ne peut être obligatoire
+      chpIdNameMap.put(249, "risques");
+      // etab preleveur non persisté
+      chpIdNameMap.put(29, "servicePreleveur");
+      chpIdNameMap.put(28, "preleveur");
+      chpIdNameMap.put(32, "conditType");
+      chpIdNameMap.put(34, "conditNbr");
+      chpIdNameMap.put(33, "conditMilieu");
+      // chpIdNameMap.put(26, "consentType"); // validé par défaut dans checkrequired
+      chpIdNameMap.put(27, "consentDate");
+      // congPrel (boolean) ne peut être obligatoire
+      chpIdNameMap.put(35, "dateDepart");
+      chpIdNameMap.put(36, "transporteur");
+      chpIdNameMap.put(37, "transportTemp");
+      chpIdNameMap.put(38, "dateArrivee");
+      chpIdNameMap.put(39, "operateur");
+      chpIdNameMap.put(40, "quantite");
+      // congBiotheque (boolean) ne peut être obligatoire
+      chpIdNameMap.put(256, "conformeArrivee");
+   }
 
-	@Override
-	protected void initChpIdNameMap() {
-		// chpIdNameMap.put(23, "code"); 
-		chpIdNameMap.put(45, "numeroLabo");
-		// chpIdNameMap.put(24, "nature"); // validé par défaut dans checkrequired
-		chpIdNameMap.put(44, "patientNda");
-		chpIdNameMap.put(30, "datePrelevement");
-		chpIdNameMap.put(31, "prelevementType");
-		// sterile (boolean) ne peut être obligatoire
-		chpIdNameMap.put(249, "risques");
-		// etab preleveur non persisté
-		chpIdNameMap.put(29, "servicePreleveur");
-		chpIdNameMap.put(28, "preleveur");
-		chpIdNameMap.put(32, "conditType");
-		chpIdNameMap.put(34, "conditNbr");
-		chpIdNameMap.put(33, "conditMilieu");
-		// chpIdNameMap.put(26, "consentType"); // validé par défaut dans checkrequired
-		chpIdNameMap.put(27, "consentDate");
-		// congPrel (boolean) ne peut être obligatoire
-		chpIdNameMap.put(35, "dateDepart");
-		chpIdNameMap.put(36, "transporteur");
-		chpIdNameMap.put(37, "transportTemp");
-		chpIdNameMap.put(38, "dateArrivee");
-		chpIdNameMap.put(39, "operateur");
-		chpIdNameMap.put(40, "quantite");
-		// congBiotheque (boolean) ne peut être obligatoire
-		chpIdNameMap.put(256, "conformeArrivee");
-	}
+   @Override
+   protected void initFunctionalValidationMap(){}
 
-	@Override
-	protected void initFunctionalValidationMap() {		
-	}
-
-	@Override
-	protected String correctFieldNameIfNeeded(String n) {
-		// pas de transformation du nom de la propriété
-		return n;
-	}
+   @Override
+   protected String correctFieldNameIfNeeded(final String n){
+      // pas de transformation du nom de la propriété
+      return n;
+   }
 }

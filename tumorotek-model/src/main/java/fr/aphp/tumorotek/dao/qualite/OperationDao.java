@@ -57,7 +57,7 @@ public interface OperationDao extends GenericDaoJpa<Operation, Integer>
 {
 
    /**
-    * Recherche toutes les operations sauf celles dont l'id est passé 
+    * Recherche toutes les operations sauf celles dont l'id est passé
     * en paramètre.
     * @param OperationId Identifiant de l'operation que l'on souhaite
     * exclure de la liste retournée.

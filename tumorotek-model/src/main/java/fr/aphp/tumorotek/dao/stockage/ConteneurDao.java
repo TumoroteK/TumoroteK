@@ -56,7 +56,7 @@ public interface ConteneurDao extends GenericDaoJpa<Conteneur, Integer>
 
    /**
     * Recherche tous les Conteneurs d'une banque ordonnées.
-    * @param banqueId Identifiant de la Banque des Conteneurs 
+    * @param banqueId Identifiant de la Banque des Conteneurs
     * recherchés.
     * @return Liste ordonnée de Conteneurs.
     */
@@ -65,7 +65,7 @@ public interface ConteneurDao extends GenericDaoJpa<Conteneur, Integer>
    /**
     * Recherche tous les Conteneurs d'une banque en fct de son
     * code.
-    * @param banqueId Identifiant de la Banque des Conteneurs 
+    * @param banqueId Identifiant de la Banque des Conteneurs
     * recherchés.
     * @param code Code du conteneur.
     * @return Liste ordonnée de Conteneurs.
@@ -75,7 +75,7 @@ public interface ConteneurDao extends GenericDaoJpa<Conteneur, Integer>
    /**
     * Recherche tous les Conteneurs d'une banque ordonnées sauf
     * celui dont l'ID est passé en paramètre.
-    * @param banqueId Identifiant de la Banque des Conteneurs 
+    * @param banqueId Identifiant de la Banque des Conteneurs
     * recherchés.
     * @param conteneurId Id du conteneur à exclure.
     * @return Liste ordonnée de Conteneurs.
@@ -90,7 +90,7 @@ public interface ConteneurDao extends GenericDaoJpa<Conteneur, Integer>
    List<Conteneur> findByPlateformeOrigWithOrder(Plateforme orig);
 
    /**
-    * Recherche les Conteneurs sauf celui dont l'identifiant 
+    * Recherche les Conteneurs sauf celui dont l'identifiant
     * est en paramètre.
     * @param id Identifiant du Conteneur à exclure.
     * @return Liste de Conteneurs.
@@ -98,7 +98,7 @@ public interface ConteneurDao extends GenericDaoJpa<Conteneur, Integer>
    List<Conteneur> findByExcludedId(Integer conteneurId);
 
    /**
-    * Recherche tous les conteneurs qui sont accessibles à partir 
+    * Recherche tous les conteneurs qui sont accessibles à partir
     * d'une plateforme, et si ils sont actuellement déja assignés en partage ou pas.
     * @param Plateforme pf
     * @param partage true/false
@@ -107,7 +107,7 @@ public interface ConteneurDao extends GenericDaoJpa<Conteneur, Integer>
    List<Conteneur> findByPartage(Plateforme pf, Boolean partage);
 
    /**
-    * Recherche tous les conteneurs qui sont accessibles à partir 
+    * Recherche tous les conteneurs qui sont accessibles à partir
     * d'un service.
     * @param Service serv
     * @return Liste de conteneurs.

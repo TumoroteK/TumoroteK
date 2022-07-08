@@ -57,19 +57,19 @@ public class FicheMultiEchantillonsSero extends FicheMultiEchantillons
    private static final long serialVersionUID = 9006918899739619179L;
 
    private final AbstractEchantillonDecoratorRowRenderer echanDecoRenderer = new EchantillonSeroDecoratorRowRenderer();
-   
+
    @Override
-   public void doAfterCompose(Component comp) throws Exception{
+   public void doAfterCompose(final Component comp) throws Exception{
       super.doAfterCompose(comp);
-      
+
       qualitesBoxEchan.setVisible(false);
       qualiteEchanLabel.setVisible(false);
       groupInfosCompEchan.setVisible(false);
    }
-   
+
    @Override
    public AbstractEchantillonDecoratorRowRenderer getEchanDecoRenderer(){
       return echanDecoRenderer;
    }
-   
+
 }

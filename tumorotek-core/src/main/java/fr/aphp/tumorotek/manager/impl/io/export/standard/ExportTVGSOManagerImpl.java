@@ -4,6 +4,7 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -21,7 +22,7 @@ public class ExportTVGSOManagerImpl extends ExportCatalogueManagerImpl
       headers.add("Sexe");
       headers.add("Etat du patient");
       headers.add("Date de l'Etat");
-      //headers.add("Cause deces"); 
+      //headers.add("Cause deces");
       headers.add("Diagnostic principal");
       headers.add("Date du diagnostic");
       headers.add("Version TNM");
@@ -42,7 +43,7 @@ public class ExportTVGSOManagerImpl extends ExportCatalogueManagerImpl
       headers.add("Version pTNM");
       headers.add("T du pTNM");
       headers.add("N du pTNM");
-      //headers.add("pM"); 
+      //headers.add("pM");
       headers.add("Echantillon tumoral/non tumoral");
       headers.add("Mode conservation tumoral");
       headers.add("Type echantillon tumoral");

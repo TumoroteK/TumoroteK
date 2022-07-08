@@ -4,6 +4,7 @@ public class DuoPatients extends Object
 {
 
    private Patient p1;
+
    private Patient p2;
 
    public DuoPatients(){}

@@ -1,5 +1,5 @@
 /**
- * Copyright ou © ou Copr. Assistance Publique des Hôpitaux de 
+ * Copyright ou © ou Copr. Assistance Publique des Hôpitaux de
  * PARIS et SESAN
  * projet-tk@sesan.fr
  *
@@ -37,6 +37,7 @@
 package fr.aphp.tumorotek.manager.context.gatsbi;
 
 import java.util.List;
+
 import fr.aphp.tumorotek.model.contexte.Plateforme;
 import fr.aphp.tumorotek.model.contexte.gatsbi.Etude;
 
@@ -48,13 +49,13 @@ import fr.aphp.tumorotek.model.contexte.gatsbi.Etude;
 public interface EtudeManager
 {
 
-	/**
-	 * Recherche toutes les études définies pour la 
-	 * plateforme passée en paramètre.
-	 * Ordonnée par leur titre
-	 * @param pf
-	 * @return liste etude
-	 */
-	List<Etude> findByPfOrderManager(Plateforme pf);
+   /**
+    * Recherche toutes les études définies pour la 
+    * plateforme passée en paramètre.
+    * Ordonnée par leur titre
+    * @param pf
+    * @return liste etude
+    */
+   List<Etude> findByPfOrderManager(Plateforme pf);
 
 }

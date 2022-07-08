@@ -62,6 +62,7 @@ public class CatalogueManagerTest extends AbstractManagerTest4
 
    @Autowired
    private CatalogueManager catalogueManager;
+
    @Autowired
    private BanqueDao banqueDao;
 

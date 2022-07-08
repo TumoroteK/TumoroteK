@@ -67,41 +67,71 @@ public class FicheTransporteur extends AbstractFicheCombineController
 
    // Static Components pour le mode static.
    private Label nomLabel;
+
    private Label adresseLabel;
+
    private Label cpLabel;
+
    private Label villeLabel;
+
    private Label paysLabel;
+
    private Label telLabel;
+
    private Label faxLabel;
+
    private Label mailLabel;
+
    private Label contactNomLabel;
+
    private Label contactPrenomLabel;
+
    private Label contactTelLabel;
+
    private Label contactFaxLabel;
+
    private Label contactMailLabel;
+
    private Menubar menuBar;
+
    private Label archiveLabel;
 
    // Editable components : mode d'édition ou de création.
    private Label nomRequired;
+
    private Label contactNomRequired;
+
    private Textbox nomBox;
+
    private Textbox adresseBox;
+
    private Textbox cpBox;
+
    private Textbox villeBox;
+
    private Textbox paysBox;
+
    private Textbox telBox;
+
    private Textbox faxBox;
+
    private Textbox mailBox;
+
    private Textbox contactNomBox;
+
    private Textbox contactPrenomBox;
+
    private Textbox contactTelBox;
+
    private Textbox contactFaxBox;
+
    private Textbox contactMailBox;
+
    private Checkbox archiveBox;
 
    // Objets Principaux.
    private Transporteur transporteur;
+
    private Coordonnee coordonnee;
 
    @Override

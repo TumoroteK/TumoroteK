@@ -72,21 +72,35 @@ public class ChangeMaladieModale extends GenericForwardComposer<Component>
    private static final long serialVersionUID = 2132993101599271792L;
 
    private Label prelCodeLabel;
+
    private Label prelNumLabel;
+
    private Label prelNatureLabel;
+
    private Listbox maladiesBox;
+
    private Label patientNipLabel;
+
    private Label ndaLabel;
+
    private Label patientNomLabel;
+
    private Label patientPrenomLabel;
+
    private Label patientDdnLabel;
+
    private Label patientSexeLabel;
+
    private Label maladieLibelleLabel;
+
    private Label maladieCodeLabel;
 
    private Prelevement prelevement;
+
    private Maladie currentMaladie;
+
    private Patient patient;
+
    private List<Maladie> maladies;
 
    private MainWindow main;

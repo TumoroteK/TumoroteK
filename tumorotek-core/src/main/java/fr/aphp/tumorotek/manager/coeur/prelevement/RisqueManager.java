@@ -86,8 +86,8 @@ public interface RisqueManager extends PfDependantTKThesaurusManager<Risque>
    List<Risque> findByInfectieuxManager(Boolean infectieux);
 
    /**
-    * Recherche tous les risques associés aux prélèvements d'un 
-    * patient pour toutes les collections de la plateforme passée en 
+    * Recherche tous les risques associés aux prélèvements d'un
+    * patient pour toutes les collections de la plateforme passée en
     * paramètre.
     * @param pat
     * @param plateforme

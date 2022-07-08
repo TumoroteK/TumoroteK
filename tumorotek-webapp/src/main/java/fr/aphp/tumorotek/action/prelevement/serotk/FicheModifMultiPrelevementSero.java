@@ -35,7 +35,6 @@
  **/
 package fr.aphp.tumorotek.action.prelevement.serotk;
 
-import java.util.Iterator;
 import java.util.List;
 
 import org.zkoss.zk.ui.Path;
@@ -60,37 +59,38 @@ public class FicheModifMultiPrelevementSero extends FicheModifMultiPrelevement
    private static final long serialVersionUID = 1759167562352668210L;
 
    private Label protocolesLabelChanged;
+
    private Label complDiagLabelChanged;
 
    public void onClick$protocoleMultiLabel(){
 
-      final List<? extends Object> protocoles = ManagerLocator.getManager(ProtocoleManager.class).findByOrderManager(SessionUtils.getCurrentPlateforme());
+      final List<? extends Object> protocoles =
+         ManagerLocator.getManager(ProtocoleManager.class).findByOrderManager(SessionUtils.getCurrentPlateforme());
 
-      openModificationMultipleWindow(page, Path.getPath(self), "onGetChangeOnChamp", "MultiListbox", (List<Object>) getObjsToEdit(),
-         "Champ.Prelevement.SEROLOGIE.Protocoles", "protocoles", (List<Object>) protocoles, "nom", null, null, false, null,
-         false);
+      openModificationMultipleWindow(page, Path.getPath(self), "onGetChangeOnChamp", "MultiListbox",
+         (List<Object>) getObjsToEdit(), "Champ.Prelevement.SEROLOGIE.Protocoles", "protocoles", (List<Object>) protocoles, "nom",
+         null, null, false, null, false);
    }
 
-   public void onClick$complDiagMultiLabel() {
-      
-      final List<? extends Object> protocoles = ManagerLocator.getManager(ProtocoleManager.class).findByOrderManager(SessionUtils.getCurrentPlateforme());
+   public void onClick$complDiagMultiLabel(){
+
+      final List<? extends Object> protocoles =
+         ManagerLocator.getManager(ProtocoleManager.class).findByOrderManager(SessionUtils.getCurrentPlateforme());
 
       openModificationMultipleWindow(page, Path.getPath(self), "onGetChangeOnChamp", "Textbox", (List<Object>) getObjsToEdit(),
-         "Champ.Prelevement.SEROLOGIE.Libelle", "libelle", (List<Object>) protocoles, null, null, null, false, null,
-         false);
-      
+         "Champ.Prelevement.SEROLOGIE.Libelle", "libelle", (List<Object>) protocoles, null, null, null, false, null, false);
+
    }
-   
+
    @Override
-   public void updateLabelChanged(String champ, String printValue, boolean reset){
+   public void updateLabelChanged(final String champ, final String printValue, final boolean reset){
 
       super.updateLabelChanged(champ, printValue, reset);
 
       if("protocoles".equals(champ)){
          protocolesLabelChanged.setValue(printValue);
          protocolesLabelChanged.setVisible(!reset);
-      }
-      else if("libelle".equals(champ)) {
+      }else if("libelle".equals(champ)){
          complDiagLabelChanged.setValue(printValue);
          complDiagLabelChanged.setVisible(!reset);
       }
@@ -98,49 +98,47 @@ public class FicheModifMultiPrelevementSero extends FicheModifMultiPrelevement
    }
 
    /**
-    * Ajout des champs d'information spécifiques au contexte 
+    * Ajout des champs d'information spécifiques au contexte
     * Sérothèque
     * @since 2.2.1
     */
    @Override
-   protected boolean checkHasChanged(Prelevement current) {
+   protected boolean checkHasChanged(final Prelevement current){
 
       boolean hasAnyChange = super.checkHasChanged(current);
 
-     // maj de protocoles
-     if(!"".equals(protocolesLabelChanged.getValue())){
+      // maj de protocoles
+      if(!"".equals(protocolesLabelChanged.getValue())){
 
-        PrelevementSero delegate = null;
-        if(null == current.getDelegate()) {
-           delegate = new PrelevementSero();
-           current.setDelegate(delegate);
-           delegate.setDelegator(current);
-        }
-        else {
-           delegate = (PrelevementSero)current.getDelegate();
-        }
+         PrelevementSero delegate = null;
+         if(null == current.getDelegate()){
+            delegate = new PrelevementSero();
+            current.setDelegate(delegate);
+            delegate.setDelegator(current);
+         }else{
+            delegate = (PrelevementSero) current.getDelegate();
+         }
 
-        delegate.setProtocoles(((PrelevementSero)getObject().getDelegate()).getProtocoles());
-        hasAnyChange = true;
+         delegate.setProtocoles(((PrelevementSero) getObject().getDelegate()).getProtocoles());
+         hasAnyChange = true;
 
-     }
-     // maj de complément diagnostic
-     else if(!"".equals(complDiagLabelChanged.getValue())){
+      }
+      // maj de complément diagnostic
+      else if(!"".equals(complDiagLabelChanged.getValue())){
 
-        PrelevementSero delegate = null;
-        if(null == current.getDelegate()) {
-           delegate = new PrelevementSero();
-           current.setDelegate(delegate);
-           delegate.setDelegator(current);
-        }
-        else {
-           delegate = (PrelevementSero)current.getDelegate();
-        }
+         PrelevementSero delegate = null;
+         if(null == current.getDelegate()){
+            delegate = new PrelevementSero();
+            current.setDelegate(delegate);
+            delegate.setDelegator(current);
+         }else{
+            delegate = (PrelevementSero) current.getDelegate();
+         }
 
-        delegate.setLibelle(((PrelevementSero)getObject().getDelegate()).getLibelle());
-        hasAnyChange = true;
+         delegate.setLibelle(((PrelevementSero) getObject().getDelegate()).getLibelle());
+         hasAnyChange = true;
 
-     }
+      }
 
       return hasAnyChange;
 

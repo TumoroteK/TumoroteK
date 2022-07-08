@@ -62,24 +62,31 @@ public class FicheSaisieOperateurCritere extends AbstractFicheCombineController
    private String path;
 
    private Label operateurLabel;
+
    private Label operateurRequired;
+
    private Label critereLabel;
+
    private Label critereRequired;
+
    private Label errorLabel;
 
    private Listbox operateursBox;
+
    private Listbox criteresBox;
 
    /**
     *  Associations.
     */
    private List<String> operateurs;
+
    private List<CritereNode> criteres;
 
    /**
     * Objets principaux.
     */
    private String operateur;
+
    private CritereNode critereNode;
 
    @Override

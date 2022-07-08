@@ -81,6 +81,7 @@ public class Risque extends AbstractPfDependantThesaurusObject implements Serial
    private static final long serialVersionUID = 5495762619216759L;
 
    private Boolean infectieux;
+
    private Set<Prelevement> prelevements = new HashSet<>();
 
    /** Constructeur par défaut. */

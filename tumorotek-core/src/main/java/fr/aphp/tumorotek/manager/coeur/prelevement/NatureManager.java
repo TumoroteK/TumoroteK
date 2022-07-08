@@ -62,7 +62,7 @@ public interface NatureManager extends PfDependantTKThesaurusManager<Nature>
    /**
     * Recherche toutes les natures de prelevements dont la nature est egale
     * ou 'like' celui en parametre.
-    * @param nature 
+    * @param nature
     * @param boolean exactMatch
     * @return Liste de Nature.
     */

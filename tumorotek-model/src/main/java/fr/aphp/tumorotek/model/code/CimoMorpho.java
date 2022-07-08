@@ -68,8 +68,11 @@ public class CimoMorpho implements CodeCommon, Serializable
    private static final long serialVersionUID = 3570913607410757679L;
 
    private Integer cimoMorphoId;
+
    private String code;
+
    private String libelle;
+
    private String cimRef;
 
    private Set<Adicap> adicaps = new HashSet<>();
@@ -146,7 +149,7 @@ public class CimoMorpho implements CodeCommon, Serializable
          return true;
       }
       // instanceOf est utilise plutot que != a cause des instances
-      // CimoMorpho$$EnhancerByCGLIB qui sont crées par lors du fetch par 
+      // CimoMorpho$$EnhancerByCGLIB qui sont crées par lors du fetch par
       // la relation manyToAny
       if((obj == null) || !(obj instanceof CimoMorpho)){
          return false;

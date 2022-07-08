@@ -79,14 +79,19 @@ public class CederObjetManagerImpl implements CederObjetManager
 
    /** Bean Dao CederObjetDao. */
    private CederObjetDao cederObjetDao;
+
    /** Bean Dao EntiteDao. */
    private EntiteDao entiteDao;
+
    /** Bean Dao CessionDao. */
    private CessionDao cessionDao;
+
    /** Bean Dao UniteDao. */
    private UniteDao uniteDao;
+
    /** Bean Manager EntiteManager. */
    private EntiteManager entiteManager;
+
    /** Bean validator. */
    private CederObjetValidator cederObjetValidator;
 
@@ -240,7 +245,7 @@ public class CederObjetManagerImpl implements CederObjetManager
       }
       return new ArrayList<>();
    }
-   
+
    /**
     * Recherche tous les CederObjet pour l'objet passé en paramètre dans un statut précis
     * @param obj Objet pour lequel on recherche des CederObjets.

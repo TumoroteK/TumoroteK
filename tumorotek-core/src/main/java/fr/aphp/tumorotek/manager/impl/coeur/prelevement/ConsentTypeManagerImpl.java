@@ -68,7 +68,9 @@ public class ConsentTypeManagerImpl implements ConsentTypeManager
 
    /* Beans injectes par Spring*/
    private ConsentTypeDao consentTypeDao;
+
    private ConsentTypeValidator consentTypeValidator;
+
    private PlateformeDao plateformeDao;
 
    public ConsentTypeManagerImpl(){}

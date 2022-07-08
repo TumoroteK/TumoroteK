@@ -63,12 +63,16 @@ public class CouleurEntiteTypeManagerImpl implements CouleurEntiteTypeManager
 
    /** Bean Dao. */
    private CouleurEntiteTypeDao couleurEntiteTypeDao;
+
    /** Bean Dao. */
    private CouleurDao couleurDao;
+
    /** Bean Dao. */
    private BanqueDao banqueDao;
+
    /** Bean Dao. */
    private EchantillonTypeDao echantillonTypeDao;
+
    /** Bean Dao. */
    private ProdTypeDao prodTypeDao;
 

@@ -28,20 +28,30 @@ public class ResultatInjection
 {
 
    private Prelevement prelevement;
+
    private List<AnnotationValeur> annosPrelevement = new ArrayList<>();
+
    private List<AnnotationValeur> annosPatient = new ArrayList<>();
+
    private Echantillon echantillon;
+
    private List<AnnotationValeur> annosEchantillon = new ArrayList<>();
+
    private DossierExterne dossierExterne;
+
    private List<CodeAssigne> codesOrgane = new ArrayList<>();
+
    private List<CodeAssigne> codesMorpho = new ArrayList<>();
-   private Map<Echantillon, String> echanAdrls = new HashMap<Echantillon, String>();
+
+   private Map<Echantillon, String> echanAdrls = new HashMap<>();
 
    private Fichier crAnapath;
+
    private InputStream stream;
-   
+
    // @since 2.2.3-genno
    private ProdDerive prodDerive;
+
    private List<AnnotationValeur> annosDerive = new ArrayList<>();
 
    public ResultatInjection(){
@@ -128,27 +138,27 @@ public class ResultatInjection
       this.stream = i;
    }
 
-	public Map<Echantillon, String> getEchanAdrls() {
-		return echanAdrls;
-	}
-	
-	public void setEchanAdrls(Map<Echantillon, String> _e) {
-		this.echanAdrls = _e;
-	}
+   public Map<Echantillon, String> getEchanAdrls(){
+      return echanAdrls;
+   }
 
-	public ProdDerive getProdDerive() {
-		return prodDerive;
-	}
+   public void setEchanAdrls(final Map<Echantillon, String> _e){
+      this.echanAdrls = _e;
+   }
 
-	public void setProdDerive(ProdDerive _p) {
-		this.prodDerive = _p;
-	}
+   public ProdDerive getProdDerive(){
+      return prodDerive;
+   }
 
-	public List<AnnotationValeur> getAnnosDerive() {
-		return annosDerive;
-	}
+   public void setProdDerive(final ProdDerive _p){
+      this.prodDerive = _p;
+   }
 
-	public void setAnnosDerive(List<AnnotationValeur> _d) {
-		this.annosDerive = _d;
-	}
+   public List<AnnotationValeur> getAnnosDerive(){
+      return annosDerive;
+   }
+
+   public void setAnnosDerive(final List<AnnotationValeur> _d){
+      this.annosDerive = _d;
+   }
 }

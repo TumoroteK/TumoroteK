@@ -77,10 +77,15 @@ public class SModeleManagerImpl implements SModeleManager
    private final Log log = LogFactory.getLog(SModeleManager.class);
 
    private SModeleDao sModeleDao;
+
    private PlateformeDao plateformeDao;
+
    private SModeleValidator sModeleValidator;
+
    private SModeleIndicateurDao sModeleIndicateurDao;
+
    private BanqueDao banqueDao;
+
    private SubdivisionDao subdivisionDao;
 
    private static final List<SModele> NO_LIST = new ArrayList<>();
@@ -236,7 +241,7 @@ public class SModeleManagerImpl implements SModeleManager
    /**
     * Cette méthode met à jour les associations entre un modele et ses
     * statements.
-    * 
+    *
     * @param modele  IndicateurModele pour lequel on veut mettre à jour les
     *            associations.
     * @param statementToCreate Liste des statement a associer.

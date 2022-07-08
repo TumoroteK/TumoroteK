@@ -1,5 +1,5 @@
 /**
- * Copyright ou © ou Copr. Assistance Publique des Hôpitaux de 
+ * Copyright ou © ou Copr. Assistance Publique des Hôpitaux de
  * PARIS et SESAN
  * projet-tk@sesan.fr
  *
@@ -55,61 +55,60 @@ import fr.aphp.tumorotek.webapp.general.SessionUtils;
  * @author Mathieu BARTHELEMY
  * @version 2.3.0-gatsi
  */
-public class EchantillonRowRendererGatsbi extends EchantillonRowRenderer implements RowRendererGatsbi {
-	
-	private Contexte contexte;
+public class EchantillonRowRendererGatsbi extends EchantillonRowRenderer implements RowRendererGatsbi
+{
 
-	// par défaut les icones sont toujours dessinées car impact evt de stockage
-	private boolean iconesRendered = true;
-	
-	private boolean renderNbs = true;
-	
-	private boolean drawCheckbox = true;
+   private final Contexte contexte;
 
-	public EchantillonRowRendererGatsbi(final boolean select, final boolean cols, 
-			final boolean _c, final boolean _r) {
-		super(select, cols);
-		
-		this.drawCheckbox = _c;
-		this.renderNbs = _r;
-		
-		contexte = SessionUtils.getCurrentGatsbiContexteForEntiteId(3);
-	}
-	
-	@Override
-	public void render(final Row row, final Echantillon data, final int index) {
+   // par défaut les icones sont toujours dessinées car impact evt de stockage
+   private boolean iconesRendered = true;
 
-		if (drawCheckbox) {
-			// dessine le checkbox
-			super.render(row, data, index);
-		}
+   private boolean renderNbs = true;
 
-		renderObjets(row, data);
-	}
+   private boolean drawCheckbox = true;
 
-	@Override
-	protected void renderEchantillon(Row row, Echantillon echan) 
-		throws IllegalAccessException, InvocationTargetException, NoSuchMethodException, ParseException {
+   public EchantillonRowRendererGatsbi(final boolean select, final boolean cols, final boolean _c, final boolean _r){
+      super(select, cols);
 
-		for (Integer chpId : contexte.getChampEntiteInTableauOrdered()) {
-			GatsbiControllerEchantillon
-				.applyEchantillonChpRender(chpId, row, echan, isAnonyme(), isAccessStockage());
-		}
+      this.drawCheckbox = _c;
+      this.renderNbs = _r;
 
-		if (renderNbs) {
-			renderNbDerives(row, echan);
+      contexte = SessionUtils.getCurrentGatsbiContexteForEntiteId(3);
+   }
 
-			renderNbCessions(row, echan);
-		}
-	}
-	
-	@Override
-	public void setIconesRendered(boolean _i) {
-		this.iconesRendered = _i;
-	}
+   @Override
+   public void render(final Row row, final Echantillon data, final int index){
 
-	@Override
-	public boolean areIconesRendered() {
-		return iconesRendered;
-	}
+      if(drawCheckbox){
+         // dessine le checkbox
+         super.render(row, data, index);
+      }
+
+      renderObjets(row, data);
+   }
+
+   @Override
+   protected void renderEchantillon(final Row row, final Echantillon echan)
+      throws IllegalAccessException, InvocationTargetException, NoSuchMethodException, ParseException{
+
+      for(final Integer chpId : contexte.getChampEntiteInTableauOrdered()){
+         GatsbiControllerEchantillon.applyEchantillonChpRender(chpId, row, echan, isAnonyme(), isAccessStockage());
+      }
+
+      if(renderNbs){
+         renderNbDerives(row, echan);
+
+         renderNbCessions(row, echan);
+      }
+   }
+
+   @Override
+   public void setIconesRendered(final boolean _i){
+      this.iconesRendered = _i;
+   }
+
+   @Override
+   public boolean areIconesRendered(){
+      return iconesRendered;
+   }
 }

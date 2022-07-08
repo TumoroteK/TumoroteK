@@ -80,8 +80,11 @@ public class CouleurEntiteType implements Serializable
    private Integer couleurEntiteTypeId;
 
    private Couleur couleur;
+
    private Banque banque;
+
    private EchantillonType echantillonType;
+
    private ProdType prodType;
 
    /** Constructeur par défaut. */

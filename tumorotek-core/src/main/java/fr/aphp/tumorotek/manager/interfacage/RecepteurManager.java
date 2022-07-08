@@ -72,7 +72,7 @@ public interface RecepteurManager
    List<Recepteur> findAllObjectsManager();
 
    /**
-    * Incrémente le numéro d'envoi caractérisant l'unicité du nom de fichier 
+    * Incrémente le numéro d'envoi caractérisant l'unicité du nom de fichier
     * des messages produits.
     * @param Recepteur
     * @param reset si true, remet envoi_num à null

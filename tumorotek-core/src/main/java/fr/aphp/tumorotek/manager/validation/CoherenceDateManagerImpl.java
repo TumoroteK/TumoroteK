@@ -60,10 +60,15 @@ public class CoherenceDateManagerImpl implements CoherenceDateManager
 {
 
    private MaladieDao maladieDao;
+
    private PrelevementDao prelevementDao;
+
    private LaboInterDao laboInterDao;
+
    private EchantillonDao echantillonDao;
+
    private TransformationManager transformationManager;
+
    private EntiteManager entiteManager;
 
    public void setMaladieDao(final MaladieDao mDao){
@@ -144,8 +149,8 @@ public class CoherenceDateManagerImpl implements CoherenceDateManager
                   final List<LaboInter> list = new ArrayList<>(laboInterDao.findByPrelevementWithOrder(prels.get(i)));
 
                   int ordre;
-                  // utilisation de precedent 
-                  // car aucune certitude 
+                  // utilisation de precedent
+                  // car aucune certitude
                   // sur l'ordre
                   // des labos dans le set
                   int precedent = list.size() + 1;
@@ -284,8 +289,8 @@ public class CoherenceDateManagerImpl implements CoherenceDateManager
    }
 
    /**
-    * Parcoure de manière récursive les labos inter 
-    * du plus récent au plus ancien afin de trouver la première référence 
+    * Parcoure de manière récursive les labos inter
+    * du plus récent au plus ancien afin de trouver la première référence
     * de date antérieure parmi eux.
     * @param echantillon
     * @return date référence de date.

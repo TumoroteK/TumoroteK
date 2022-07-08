@@ -44,11 +44,11 @@ public class StudySubjectRefType
 
    /**
     * Gets the value of the label property.
-    * 
+    *
     * @return
     *     possible object is
     *     {@link String }
-    *     
+    *
     */
    public String getLabel(){
       return label;
@@ -56,11 +56,11 @@ public class StudySubjectRefType
 
    /**
     * Sets the value of the label property.
-    * 
+    *
     * @param value
     *     allowed object is
     *     {@link String }
-    *     
+    *
     */
    public void setLabel(final String value){
       this.label = value;

@@ -114,7 +114,7 @@ public interface RechercheManager
 
    /**
     * Recherche les Recherches dont l'utilisateur créateur est passé en
-    * paramètre. 
+    * paramètre.
     * @param util Utilisateur qui à créé les Recherches recherchées.
     * @return la liste de toutes les Recherches de l'Utilisateur.
     */
@@ -122,7 +122,7 @@ public interface RechercheManager
 
    /**
     * Recherche les Recherches dont l'intitulé est passé en paramètre.
-    * 
+    *
     * @param intitule Intitulé des Recherches recherchées.
     * @return la liste de toutes les Recherches de l'intitulé.
     */
@@ -130,7 +130,7 @@ public interface RechercheManager
 
    /**
     * Recherche les Recherches dont l'intitulé et l'utilisateur
-    * sont passés en paramètre. 
+    * sont passés en paramètre.
     * @param intitilé des Recherches recherchés.
     * @param util Utilisateur qui à créé les Recherches recherchés.
     * @return la liste de toutes les Recherches de l'intitulé.
@@ -139,7 +139,7 @@ public interface RechercheManager
 
    /**
     * Recherche les Recherches dont la Requête est passée en paramètre.
-    * 
+    *
     * @param requete Requete des Recherches recherchées.
     * @return la liste de toutes les Recherches comprenant la Requête.
     */
@@ -147,7 +147,7 @@ public interface RechercheManager
 
    /**
     * Recherche les Recherches dont l'Affichage est passé en paramètre.
-    * 
+    *
     * @param affichage Affichage des Recherches recherchées.
     * @return la liste de toutes les Recherches comprenant l'Affichage.
     */
@@ -184,7 +184,7 @@ public interface RechercheManager
 
    /**
     * Recherche les Recherches pour les Banques passées en
-    * paramètre. 
+    * paramètre.
     * @param banques Liste de Banques des Recherches recherchés.
     * @return la liste de tous les Recherches des Banques.
     */

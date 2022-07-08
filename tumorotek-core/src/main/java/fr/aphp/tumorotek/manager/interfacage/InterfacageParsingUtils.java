@@ -88,12 +88,12 @@ public interface InterfacageParsingUtils
     * @param boiteFtp Boite ftp ayant reçu le message.
     * @return Emetteur du message, retorune null s'il ne
     * trouve pas l'emetteur en BDD.
-    * @throws IOException 
+    * @throws IOException
     */
    Emetteur extractEmetteurFromFileToInjectInTk(String fileXml, String file, String boiteFtp) throws IOException;
 
    /**
-    * Renvoie un paramétrage attribué à la boite de réception (inbox) depuis le 
+    * Renvoie un paramétrage attribué à la boite de réception (inbox) depuis le
     * fichier de conf XML.
     * ex: le fichier XML à utiliser pour le fichier reçu à injecter dans TK.
     * @param fileXml Ficher XML de configuration.
@@ -102,7 +102,7 @@ public interface InterfacageParsingUtils
     * @param balise nom du paramétrage
     * @return valeur du paramétrage, null si absent
     * dans TK.
-    * @throws IOException 
+    * @throws IOException
     * @version 2.2.3-genno
     */
    String extractInboxParamFromFile(String fileXml, String file, String boiteFtp, String balise) throws IOException;
@@ -159,7 +159,7 @@ public interface InterfacageParsingUtils
    /**
     * Formate une valeur extraite en utilisant la fonction dont
     * le nom est passé en paramètres.
-    * @since 2.2.2-diamic, recoit la fonction en param afin d'utiliser certains attribut et les références vers le bloc permettant la concatenation 
+    * @since 2.2.2-diamic, recoit la fonction en param afin d'utiliser certains attribut et les références vers le bloc permettant la concatenation
     * avec d'autres valeurs issues de la ligne
     * @param fonction
     * @param value
@@ -171,8 +171,8 @@ public interface InterfacageParsingUtils
     * @return string formatted
     * @version 2.2.2-diamic
     */
-   String formateValueUsingFunction(Element fonction, String value, Hashtable<String, List<String>> contenu, ConfigurationParsing conf,
-			String bloc, StringBuilder emplacementAdrl, Hashtable<String, String> mappingValues);
+   String formateValueUsingFunction(Element fonction, String value, Hashtable<String, List<String>> contenu,
+      ConfigurationParsing conf, String bloc, StringBuilder emplacementAdrl, Hashtable<String, String> mappingValues);
 
    /**
     * Parse le fichier XML de conf et extrait les valeurs
@@ -187,9 +187,8 @@ public interface InterfacageParsingUtils
     * @throws Exception
     * @version 2.2.3-genno
     */
-   List<DossierExterne> parseInterfacageXmlFile(String xmlFile, String message, 
-		   				Emetteur emetteur, boolean delFile, int max, String sendingApp)
-      throws Exception;
+   List<DossierExterne> parseInterfacageXmlFile(String xmlFile, String message, Emetteur emetteur, boolean delFile, int max,
+      String sendingApp) throws Exception;
 
    /**
     * Parse un TS HL7 en une date JAVA.

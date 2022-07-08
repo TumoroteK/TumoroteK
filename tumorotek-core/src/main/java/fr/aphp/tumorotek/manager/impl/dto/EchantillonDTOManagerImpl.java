@@ -54,11 +54,17 @@ public class EchantillonDTOManagerImpl implements EchantillonDTOManager
 {
 
    private ProdDeriveDao prodDeriveDao;
+
    private CederObjetDao cederObjetDao;
+
    private EntiteDao entiteDao;
+
    private CodeAssigneManager codeAssigneManager;
+
    private OperationManager operationManager;
+
    private EchantillonManager echantillonManager;
+
    private ConteneurManager conteneurManager;
 
    public void setProdDeriveDao(final ProdDeriveDao _p){

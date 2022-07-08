@@ -62,8 +62,10 @@ public class GroupementManagerTest extends AbstractManagerTest4
 
    @Autowired
    private GroupementManager manager;
+
    @Autowired
    private CritereManager critereManager;
+
    @Autowired
    private ChampEntiteDao champEntiteDao;
 

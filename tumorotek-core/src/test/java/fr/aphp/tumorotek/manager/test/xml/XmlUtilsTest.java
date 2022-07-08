@@ -91,14 +91,17 @@ public class XmlUtilsTest extends AbstractManagerTest4
 
    @Autowired
    private XmlUtils xmlUtils;
+
    @Autowired
    private PrelevementManager prelevementManager;
+
    @Autowired
    private EchantillonManager echantillonManager;
+
    @Autowired
    private TerminaleManager terminaleManager;
- //  @Autowired
-  // private EmetteurDao emetteurDao;
+   //  @Autowired
+   // private EmetteurDao emetteurDao;
 
    public XmlUtilsTest(){
 

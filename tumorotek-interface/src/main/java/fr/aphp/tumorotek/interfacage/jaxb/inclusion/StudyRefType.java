@@ -42,15 +42,16 @@ public class StudyRefType
    @XmlElement(required = true)
    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
    protected String identifier;
+
    protected SiteRefType siteRef;
 
    /**
     * Gets the value of the identifier property.
-    * 
+    *
     * @return
     *     possible object is
     *     {@link String }
-    *     
+    *
     */
    public String getIdentifier(){
       return identifier;
@@ -58,11 +59,11 @@ public class StudyRefType
 
    /**
     * Sets the value of the identifier property.
-    * 
+    *
     * @param value
     *     allowed object is
     *     {@link String }
-    *     
+    *
     */
    public void setIdentifier(final String value){
       this.identifier = value;
@@ -70,11 +71,11 @@ public class StudyRefType
 
    /**
     * Gets the value of the siteRef property.
-    * 
+    *
     * @return
     *     possible object is
     *     {@link SiteRefType }
-    *     
+    *
     */
    public SiteRefType getSiteRef(){
       return siteRef;
@@ -82,11 +83,11 @@ public class StudyRefType
 
    /**
     * Sets the value of the siteRef property.
-    * 
+    *
     * @param value
     *     allowed object is
     *     {@link SiteRefType }
-    *     
+    *
     */
    public void setSiteRef(final SiteRefType value){
       this.siteRef = value;

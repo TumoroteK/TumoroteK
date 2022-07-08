@@ -82,8 +82,10 @@ public class GildaMessage implements SipMessage
 
    @XmlElement(name = "ENTETE", required = true)
    private GildaMessage.Entete entete;
+
    @XmlElement(name = "ID", required = true)
    private GildaMessage.Id id;
+
    @XmlElement(name = "FID", required = false)
    private GildaMessage.FId fid;
 
@@ -203,10 +205,13 @@ public class GildaMessage implements SipMessage
 
       @XmlElement(name = "CDEVT", required = true)
       private String codeEvt;
+
       @XmlElement(name = "NOEVT", required = true)
       private Long numEvt;
+
       @XmlElement(name = "DAMSG", required = true)
       private String dateMes;
+
       @XmlElement(name = "TYMSG", required = true)
       private Integer typeMes;
 
@@ -273,17 +278,23 @@ public class GildaMessage implements SipMessage
 
       @XmlElement(name = "NOIP", required = true)
       private String nip = null;
+
       @XmlElement(name = "NMMAL", required = true)
       private String nom = null;
+
       @XmlElement(name = "NMPATR")
       private String nomPatro;
+
       @XmlElement(name = "NMPMAL", required = true)
       private String prenom = null;
+
       @XmlElement(name = "DANAIS", required = true)
       @XmlJavaTypeAdapter(value = GildaDateAdapter.class)
       private Date dateNaissance = null;
+
       @XmlElement(name = "CDSEXM", required = true)
       private String sexe = null;
+
       @XmlElement(name = "CDMORT")
       private String etatPatient = null;
 
@@ -373,25 +384,33 @@ public class GildaMessage implements SipMessage
 
       @XmlElement(name = "NOIP", required = true)
       private String nipP = null;
+
       @XmlElement(name = "NMMAL", required = true)
       private String nomP = null;
+
       @XmlElement(name = "NMPMAL", required = true)
       private String prenomP = null;
+
       @XmlElement(name = "DANAIS", required = true)
       @XmlJavaTypeAdapter(value = GildaDateAdapter.class)
       private Date dateNaissanceP = null;
+
       @XmlElement(name = "CDSEXM", required = true)
       private String sexeP = null;
 
       @XmlElement(name = "NOIPFU", required = true)
       private String nipA = null;
+
       @XmlElement(name = "NMMALA", required = true)
       private String nomA = null;
+
       @XmlElement(name = "NMPMALA", required = true)
       private String prenomA = null;
+
       @XmlElement(name = "DANAISA", required = true)
       @XmlJavaTypeAdapter(value = GildaDateAdapter.class)
       private Date dateNaissanceA = null;
+
       @XmlElement(name = "CDSEXMA", required = true)
       private String sexeA = null;
 

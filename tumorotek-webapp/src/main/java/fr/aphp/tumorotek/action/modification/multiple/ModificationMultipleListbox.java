@@ -72,13 +72,17 @@ public class ModificationMultipleListbox extends AbstractModificationMultipleCom
     * Components.
     */
    private Listbox eraseListBox;
+
    private Listbox oneValueListBox;
+
    private Boolean isObligatoire;
 
    // Toutes les valeurs possibles du champ
    private final List<Object> allValues = new ArrayList<>();
+
    // Valeurs String correspondantes
    private final List<String> allStringValues = new ArrayList<>();
+
    // valeur string correspondante
    private String selectedStringValue = null;
 
@@ -172,29 +176,26 @@ public class ModificationMultipleListbox extends AbstractModificationMultipleCom
 
       // pour chaque objet du thésaurus, on va extraire la valeur du
       // champ à afficher
-      for(Object object : allValues) {
+      for(final Object object : allValues){
          try{
 
             boolean isDelegateProperty = false;
             TKDelegateObject<?> delegate = null;
 
-            if(object instanceof TKDelegetableObject) {
-               delegate = ((TKDelegetableObject<?>)object).getDelegate();
-               isDelegateProperty =  delegate != null && 
-            		 PropertyUtils.describe(delegate).keySet().contains(getChampThesaurus());
+            if(object instanceof TKDelegetableObject){
+               delegate = ((TKDelegetableObject<?>) object).getDelegate();
+               isDelegateProperty = delegate != null && PropertyUtils.describe(delegate).keySet().contains(getChampThesaurus());
             }
 
             String stringTmp = null;
 
-            if(null != object) {
-               
-               if(isDelegateProperty) {
+            if(null != object){
+
+               if(isDelegateProperty){
                   stringTmp = (String) PropertyUtils.getSimpleProperty(delegate, getChampThesaurus());
-               }
-               else if(!"bool".equals(getChamp()) && !"bool".equals(getChampThesaurus())) {
+               }else if(!"bool".equals(getChamp()) && !"bool".equals(getChampThesaurus())){
                   stringTmp = (String) PropertyUtils.getSimpleProperty(object, getChampThesaurus());
-               }
-               else{
+               }else{
                   stringTmp = ObjectTypesFormatters.booleanLitteralFormatter((Boolean) object);
                }
 
@@ -205,7 +206,7 @@ public class ModificationMultipleListbox extends AbstractModificationMultipleCom
          }catch(final IllegalAccessException | InvocationTargetException | NoSuchMethodException e){
             log.error(e);
          }
-         
+
       }
       if(!("sexe".equals(getChamp()) || "patientEtat".equals(getChamp())) && (isObligatoire == null || !isObligatoire)
          && !allValues.isEmpty()){
@@ -240,7 +241,7 @@ public class ModificationMultipleListbox extends AbstractModificationMultipleCom
          return obj;
       }else{
          if("sexe".equals(getChamp()) || "patientEtat".equals(getChamp())){
-            // recupere le LabelCodeItem 
+            // recupere le LabelCodeItem
             // (au masculin nécessairement pour etat en modif multiple)
             return PatientUtils.getLabelCodeItemFromValue((String) obj, true);
          }else{ // lateralite

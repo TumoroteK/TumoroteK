@@ -72,20 +72,31 @@ public class CimMaster implements CodeCommon, Serializable
    private static final long serialVersionUID = 2109336606347184982L;
 
    private Integer sid;
+
    private String code;
+
    private Integer level;
+
    private Integer id1;
+
    private Integer id2;
+
    private Integer id3;
+
    private Integer id4;
+
    private Integer id5;
+
    private Integer id6;
+
    private Integer id7;
+
    private Boolean cimo3;
 
    private String libelle;
 
    private Set<CimLibelle> cimLibelles = new HashSet<>();
+
    private Set<Adicap> adicaps = new HashSet<>();
 
    private CodeSelect codeSelect;
@@ -231,7 +242,7 @@ public class CimMaster implements CodeCommon, Serializable
          return true;
       }
       // instanceOf est utilise plutot que != a cause des instances
-      // CimMaster$$EnhancerByCGLIB qui sont crées par lors du fetch par 
+      // CimMaster$$EnhancerByCGLIB qui sont crées par lors du fetch par
       // la relation manyToAny
       if((obj == null) || !(obj instanceof CimMaster)){
          return false;

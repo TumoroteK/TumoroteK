@@ -68,20 +68,28 @@ public class TraitementQueryManagerTest extends AbstractManagerTest4
 
    @Autowired
    private TraitementQueryManager traitementQueryManager;
+
    @Autowired
    private ChampEntiteManager champEntiteManager;
+
    @Autowired
    private EntiteManager entiteManager;
+
    @Autowired
    private BanqueManager banqueManager;
+
    @Autowired
    private ChampAnnotationManager champAnnotationManager;
+
    @Autowired
    private ItemDao itemDao;
+
    @Autowired
    private EtablissementDao etablissementDao;
+
    @Autowired
    private ServiceDao serviceDao;
+
    @Autowired
    private CollaborateurDao collaborateurDao;
 
@@ -547,53 +555,45 @@ public class TraitementQueryManagerTest extends AbstractManagerTest4
       }
       assertTrue(catched);
    }
-   
+
    @Test
    public void testFindPrelevementIdsThroughLaboInterManager(){
       final List<Integer> res = new ArrayList<>();
-      
+
       List<Banque> banks = banqueManager.findAllObjectsManager();
-      
+
       // etablissements
-      res.addAll(traitementQueryManager
-    		  .findPrelevementIdsViaLaboInterManager(etablissementDao.findById(1), banks));
+      res.addAll(traitementQueryManager.findPrelevementIdsViaLaboInterManager(etablissementDao.findById(1), banks));
       assertTrue(res.size() == 1);
       assertTrue(res.get(0) == 1);
-      
+
       res.clear();
-      res.addAll(traitementQueryManager
-    		  .findPrelevementIdsViaLaboInterManager(etablissementDao.findById(2), banks));
+      res.addAll(traitementQueryManager.findPrelevementIdsViaLaboInterManager(etablissementDao.findById(2), banks));
       assertTrue(res.isEmpty());
-      
+
       // services
-      res.addAll(traitementQueryManager
-    		  .findPrelevementIdsViaLaboInterManager(serviceDao.findById(1), banks));
+      res.addAll(traitementQueryManager.findPrelevementIdsViaLaboInterManager(serviceDao.findById(1), banks));
       assertTrue(res.size() == 1);
       assertTrue(res.get(0) == 1);
-      
+
       res.clear();
-      res.addAll(traitementQueryManager
-    		  .findPrelevementIdsViaLaboInterManager(serviceDao.findById(4), banks));
+      res.addAll(traitementQueryManager.findPrelevementIdsViaLaboInterManager(serviceDao.findById(4), banks));
       assertTrue(res.isEmpty());
-      
+
       // operateur
-      res.addAll(traitementQueryManager
-    		  .findPrelevementIdsViaLaboInterManager(collaborateurDao.findById(2), banks));
+      res.addAll(traitementQueryManager.findPrelevementIdsViaLaboInterManager(collaborateurDao.findById(2), banks));
       assertTrue(res.size() == 1);
       assertTrue(res.get(0) == 1);
-      
+
       res.clear();
-      res.addAll(traitementQueryManager
-    		  .findPrelevementIdsViaLaboInterManager(collaborateurDao.findById(1), banks));
+      res.addAll(traitementQueryManager.findPrelevementIdsViaLaboInterManager(collaborateurDao.findById(1), banks));
       assertTrue(res.isEmpty());
-      
+
       // nulls
       res.clear();
-      res.addAll(traitementQueryManager
-    		  .findPrelevementIdsViaLaboInterManager(collaborateurDao.findById(1), null));
+      res.addAll(traitementQueryManager.findPrelevementIdsViaLaboInterManager(collaborateurDao.findById(1), null));
       assertTrue(res.isEmpty());
-      res.addAll(traitementQueryManager
-    		  .findPrelevementIdsViaLaboInterManager(null, banks));
+      res.addAll(traitementQueryManager.findPrelevementIdsViaLaboInterManager(null, banks));
       assertTrue(res.isEmpty());
    }
 }

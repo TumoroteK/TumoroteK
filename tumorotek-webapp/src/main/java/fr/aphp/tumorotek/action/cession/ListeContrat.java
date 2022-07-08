@@ -73,7 +73,6 @@ public class ListeContrat extends AbstractListeController2
       return this.listObjects;
    }
 
-   
    @Override
    public void setListObjects(final List<? extends TKdataObject> objs){
       this.listObjects = (List<ContratDecorator>) objs;
@@ -179,7 +178,7 @@ public class ListeContrat extends AbstractListeController2
          final Integer idUpdated = edit.getContrat().getContratId();
          if(idSelected.equals(idUpdated)){
             final int ind = getListObjects().indexOf(getCurrentObject());
-            // si c'est le cas, maj de la liste par 
+            // si c'est le cas, maj de la liste par
             // suppression/insertion
             if(ind > -1){
                getListObjects().remove(ind);

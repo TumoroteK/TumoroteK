@@ -79,8 +79,10 @@ public class FichierManagerTest extends AbstractManagerTest4
 
    @Autowired
    private FichierManager fichierManager;
+
    @Autowired
    private EchantillonDao echantillonDao;
+
    @Autowired
    private BanqueDao banqueDao;
 
@@ -409,7 +411,7 @@ public class FichierManagerTest extends AbstractManagerTest4
 
       testFindAll();
    }
-   
+
    /**
     * TODO Mock Jimfs est une bonne idée mais la methode
     * FichierManagerImpl.storeFile ne repose pas sur Java NIO
@@ -420,70 +422,69 @@ public class FichierManagerTest extends AbstractManagerTest4
     * @throws IOException
     */
    @Test
-	public void testSwitchBanqueManager() throws IOException {
-		FileSystem fs = null;
-		try {
-			fs = Jimfs.newFileSystem(Configuration.unix());
-			Path root = fs.getPath("/home/TK");
-			Files.createDirectories(root);	
-			Path coll77 = root.resolve("/pt_1/coll_77/anno/chp_12");
-			Files.createDirectories(coll77);
-			Path coll2 = root.resolve("/pt_1/coll_2/anno/chp_12");
-			Files.createDirectories(coll2);
+   public void testSwitchBanqueManager() throws IOException{
+      FileSystem fs = null;
+      try{
+         fs = Jimfs.newFileSystem(Configuration.unix());
+         Path root = fs.getPath("/home/TK");
+         Files.createDirectories(root);
+         Path coll77 = root.resolve("/pt_1/coll_77/anno/chp_12");
+         Files.createDirectories(coll77);
+         Path coll2 = root.resolve("/pt_1/coll_2/anno/chp_12");
+         Files.createDirectories(coll2);
 
-			
-			List<File> filesCreated = new ArrayList<File>();
-			Set<MvFichier> mvts = new HashSet<MvFichier>();
-			Fichier f = new Fichier();
-			f.setNom("fileToMove.pdf");
-			f.setEchantillon(echantillonDao.findById(1));
-			f.setPath("/home/TK/pt_1/coll_77/anno/chp_12/fileToMove.pdf");
-			InputStream is = new ByteArrayInputStream("TEST".getBytes());
-			fichierManager.createObjectManager(f, is, filesCreated);
-			
-			Integer id = f.getFichierId();
-			
-			assertTrue(f.getPath().startsWith("/home/TK/pt_1/coll_77/anno/chp_12/fileToMove.pdf"));
-			assertTrue(filesCreated.get(0).getName().equals("fileToMove.pdf_" + id));
-			
-			// Path file1 = coll77.resolve("fileToMove.pdf_" + id);
-			assertTrue(new File("/home/TK/pt_1/coll_77/anno/chp_12/fileToMove.pdf_" + id).exists());
-			
-			fichierManager.switchBanqueManager(f, banqueDao.findById(2), mvts);
-			assertTrue(f.getPath().startsWith("/home/TK/pt_1/coll_2/anno/chp_12/fileToMove.pdf"));
-			assertTrue(mvts.size() == 1);
-			assertTrue(mvts.iterator().next().toString()
-				.equals("/home/TK/pt_1/coll_77/anno/chp_12/fileToMove.pdf_"+ id 
-						+ " -> /home/TK/pt_1/coll_2/anno/chp_12/fileToMove.pdf_" + id));
-			
-			// mvt pas encore réalisé
-			// Path fileMoved = coll2.resolve("fileToMove.pdf_" + id);
-			assertFalse(new File("/home/TK/pt_1/coll_2/anno/chp_12/fileToMove.pdf_" + id).exists());
-			
-			// error
-			// boolean catched = false;
-			fichierManager.switchBanqueManager(f, banqueDao.findById(3), mvts);
-			
-			// nulls
-			fichierManager.switchBanqueManager(null, banqueDao.findById(2), mvts);
-			fichierManager.switchBanqueManager(f, null, mvts);
-			fichierManager.switchBanqueManager(f, banqueDao.findById(2), null);
+         List<File> filesCreated = new ArrayList<File>();
+         Set<MvFichier> mvts = new HashSet<MvFichier>();
+         Fichier f = new Fichier();
+         f.setNom("fileToMove.pdf");
+         f.setEchantillon(echantillonDao.findById(1));
+         f.setPath("/home/TK/pt_1/coll_77/anno/chp_12/fileToMove.pdf");
+         InputStream is = new ByteArrayInputStream("TEST".getBytes());
+         fichierManager.createObjectManager(f, is, filesCreated);
 
-			
-			assertTrue(f.getPath().startsWith("/home/TK/pt_1/coll_3/anno/chp_12/fileToMove.pdf"));			
-			assertFalse(new File("/home/TK/pt_1/coll_3/anno/chp_12/fileToMove.pdf_" + id).exists());
-			
-			// clean up
-			// List<File> filesToDelete = new ArrayList<File>();
-			f.setPath("/home/TK/pt_1/coll_77/anno/chp_12/fileToMove.pdf_" + id);
-			fichierManager.removeObjectManager(f, null);
-			assertFalse(new File("/home/TK/pt_1/coll_77/anno/chp_12/fileToMove.pdf_" + id).exists());
-			
-			testFindAll();
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		} finally {
-			if (fs != null) { fs.close(); }
-		}
-	}
+         Integer id = f.getFichierId();
+
+         assertTrue(f.getPath().startsWith("/home/TK/pt_1/coll_77/anno/chp_12/fileToMove.pdf"));
+         assertTrue(filesCreated.get(0).getName().equals("fileToMove.pdf_" + id));
+
+         // Path file1 = coll77.resolve("fileToMove.pdf_" + id);
+         assertTrue(new File("/home/TK/pt_1/coll_77/anno/chp_12/fileToMove.pdf_" + id).exists());
+
+         fichierManager.switchBanqueManager(f, banqueDao.findById(2), mvts);
+         assertTrue(f.getPath().startsWith("/home/TK/pt_1/coll_2/anno/chp_12/fileToMove.pdf"));
+         assertTrue(mvts.size() == 1);
+         assertTrue(mvts.iterator().next().toString().equals("/home/TK/pt_1/coll_77/anno/chp_12/fileToMove.pdf_" + id
+            + " -> /home/TK/pt_1/coll_2/anno/chp_12/fileToMove.pdf_" + id));
+
+         // mvt pas encore réalisé
+         // Path fileMoved = coll2.resolve("fileToMove.pdf_" + id);
+         assertFalse(new File("/home/TK/pt_1/coll_2/anno/chp_12/fileToMove.pdf_" + id).exists());
+
+         // error
+         // boolean catched = false;
+         fichierManager.switchBanqueManager(f, banqueDao.findById(3), mvts);
+
+         // nulls
+         fichierManager.switchBanqueManager(null, banqueDao.findById(2), mvts);
+         fichierManager.switchBanqueManager(f, null, mvts);
+         fichierManager.switchBanqueManager(f, banqueDao.findById(2), null);
+
+         assertTrue(f.getPath().startsWith("/home/TK/pt_1/coll_3/anno/chp_12/fileToMove.pdf"));
+         assertFalse(new File("/home/TK/pt_1/coll_3/anno/chp_12/fileToMove.pdf_" + id).exists());
+
+         // clean up
+         // List<File> filesToDelete = new ArrayList<File>();
+         f.setPath("/home/TK/pt_1/coll_77/anno/chp_12/fileToMove.pdf_" + id);
+         fichierManager.removeObjectManager(f, null);
+         assertFalse(new File("/home/TK/pt_1/coll_77/anno/chp_12/fileToMove.pdf_" + id).exists());
+
+         testFindAll();
+      }catch(Exception e){
+         throw new RuntimeException(e);
+      }finally{
+         if(fs != null){
+            fs.close();
+         }
+      }
+   }
 }

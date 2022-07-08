@@ -82,10 +82,15 @@ public class Recherche implements TKdataObject, Comparable<Recherche>
 {
 
    private Integer rechercheId;
+
    private String intitule;
+
    private Utilisateur createur;
+
    private Affichage affichage;
+
    private Requete requete;
+
    private List<Banque> banques = new ArrayList<>();
 
    public Recherche(){
@@ -171,7 +176,7 @@ public class Recherche implements TKdataObject, Comparable<Recherche>
    /**
     * 2 requetes sont considérées comme égales si elles ont le même intitule et
     * le même createur.
-    * 
+    *
     * @param obj
     *            est la requete à tester.
     * @return true si les requetes sont égales.
@@ -280,7 +285,7 @@ public class Recherche implements TKdataObject, Comparable<Recherche>
 
    /**
     * Le hashcode est calculé sur les attributs intitule et createur.
-    * 
+    *
     * @return la valeur du hashcode.
     */
    @Override

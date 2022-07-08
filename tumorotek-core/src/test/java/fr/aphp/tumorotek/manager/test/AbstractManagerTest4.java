@@ -53,108 +53,108 @@ import fr.aphp.tumorotek.model.TKFantomableObject;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(
-		locations = {"classpath:applicationContextDaoBase-test-mysql.xml", "classpath:applicationContextManagerBase.xml"})
+   locations = {"classpath:applicationContextDaoBase-test-mysql.xml", "classpath:applicationContextManagerBase.xml"})
 @TestExecutionListeners({DependencyInjectionTestExecutionListener.class})
 public abstract class AbstractManagerTest4
 {
 
-	// nv var
-	static {
-		System.setProperty("catalina.base", "src/test/resources/tomcat");
-	}
+   // nv var
+   static{
+      System.setProperty("catalina.base", "src/test/resources/tomcat");
+   }
 
-	@Autowired
-	private FantomeDao fantomeDao;
+   @Autowired
+   private FantomeDao fantomeDao;
 
-	@Autowired
-	private OperationManager operationManager;
+   @Autowired
+   private OperationManager operationManager;
 
-	public OperationManager getOperationManager(){
-		return operationManager;
-	}
+   public OperationManager getOperationManager(){
+      return operationManager;
+   }
 
-	public FantomeDao getFantomeDao(){
-		return fantomeDao;
-	}
+   public FantomeDao getFantomeDao(){
+      return fantomeDao;
+   }
 
-	public String createOverLength(final int length){
-		final StringBuilder sb = new StringBuilder();
+   public String createOverLength(final int length){
+      final StringBuilder sb = new StringBuilder();
 
-		for(int i = 0; i < length + 2; i++){
-			sb.append('a');
-		}
+      for(int i = 0; i < length + 2; i++){
+         sb.append('a');
+      }
 
-		return sb.toString();
-	}
+      return sb.toString();
+   }
 
-	/**
-	 * Generateur de valeurs Integer invalides, négatifs ou extremes 
-	 * pour la validation.
-	 * @param over valeur a dépasser
-	 * @return liste d'Integer invalides
-	 */
-	protected List<Integer> createNegativeAndOverIntegers(final Integer over){
-		final List<Integer> list = new ArrayList<>();
-		list.add(-1); // negative
-		if(over != null){ // cree des 'over values'
-			list.add(-over.intValue() - 1);
-			list.add(over.intValue() + 1);
-		}
-		return list;
-	}
+   /**
+    * Generateur de valeurs Integer invalides, négatifs ou extremes 
+    * pour la validation.
+    * @param over valeur a dépasser
+    * @return liste d'Integer invalides
+    */
+   protected List<Integer> createNegativeAndOverIntegers(final Integer over){
+      final List<Integer> list = new ArrayList<>();
+      list.add(-1); // negative
+      if(over != null){ // cree des 'over values'
+         list.add(-over.intValue() - 1);
+         list.add(over.intValue() + 1);
+      }
+      return list;
+   }
 
-	/**
-	 * Generateur de valeurs Float invalides, négatifs ou extremes 
-	 * pour la validation.
-	 * @param over valeur a dépasser
-	 * @return liste Float invalides
-	 */
-	protected List<Float> createNegativeAndOverFloats(final Float over){
-		final List<Float> list = new ArrayList<>();
-		list.add(new Float(-10.0)); // negative
-		if(over != null){ // cree des 'over values'
-			list.add(new Float(-over.floatValue() - 1.5));
-			list.add(new Float(over.floatValue() + 1.5));
-		}
-		return list;
-	}
+   /**
+    * Generateur de valeurs Float invalides, négatifs ou extremes 
+    * pour la validation.
+    * @param over valeur a dépasser
+    * @return liste Float invalides
+    */
+   protected List<Float> createNegativeAndOverFloats(final Float over){
+      final List<Float> list = new ArrayList<>();
+      list.add(new Float(-10.0)); // negative
+      if(over != null){ // cree des 'over values'
+         list.add(new Float(-over.floatValue() - 1.5));
+         list.add(new Float(over.floatValue() + 1.5));
+      }
+      return list;
+   }
 
-	/**
-	 * Generateur de valeurs String invalides, vides, espaces 
-	 * ou trop longue pour la validation.
-	 * @param over valeur a dépasser pour la longueur
-	 * @return liste String invalides
-	 */
-	protected List<String> createInvalideAndOverStrings(final int over){
-		final List<String> list = new ArrayList<>();
-		list.add("");
-		list.add("  ");
-		list.add("aaz{");
-		list.add("pojk$");
-		if(over > 0){ // cree des 'over values'
-			list.add(createOverLength(over));
-		}
-		return list;
-	}
+   /**
+    * Generateur de valeurs String invalides, vides, espaces 
+    * ou trop longue pour la validation.
+    * @param over valeur a dépasser pour la longueur
+    * @return liste String invalides
+    */
+   protected List<String> createInvalideAndOverStrings(final int over){
+      final List<String> list = new ArrayList<>();
+      list.add("");
+      list.add("  ");
+      list.add("aaz{");
+      list.add("pojk$");
+      if(over > 0){ // cree des 'over values'
+         list.add(createOverLength(over));
+      }
+      return list;
+   }
 
-	public void cleanUpFantomes(final List<TKFantomableObject> objs){
+   public void cleanUpFantomes(final List<TKFantomableObject> objs){
 
-		if(objs != null){
-			for(int i = 0; i < objs.size(); i++){
-				operationManager.removeObjectManager(
-						operationManager.findByObjectManager(fantomeDao.findByNom(objs.get(i).getPhantomData()).get(0)).get(0));
-			}
-		}
-		assertEquals(5, fantomeDao.findAll().size());
-		assertEquals(19, operationManager.findAllObjectsManager().size());
-	}
+      if(objs != null){
+         for(int i = 0; i < objs.size(); i++){
+            operationManager.removeObjectManager(
+               operationManager.findByObjectManager(fantomeDao.findByNom(objs.get(i).getPhantomData()).get(0)).get(0));
+         }
+      }
+      assertEquals(5, fantomeDao.findAll().size());
+      assertEquals(19, operationManager.findAllObjectsManager().size());
+   }
 
-	//    /**
-	//     * Spring will automatically inject the SessionFactory 
-	//     * instance on startup.
-	//     * Only necessary for Hibernate-backed DAO testing
-	//     */
-	//     public void setEntityManagerFactory(EntityManagerFactory factory) {
-	// 		this.entityManagerFactory = factory;
-	// 	}
+   //    /**
+   //     * Spring will automatically inject the SessionFactory 
+   //     * instance on startup.
+   //     * Only necessary for Hibernate-backed DAO testing
+   //     */
+   //     public void setEntityManagerFactory(EntityManagerFactory factory) {
+   // 		this.entityManagerFactory = factory;
+   // 	}
 }

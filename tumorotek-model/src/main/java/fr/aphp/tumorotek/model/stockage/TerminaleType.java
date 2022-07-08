@@ -77,11 +77,17 @@ public class TerminaleType implements TKdataObject, Serializable
    private static final long serialVersionUID = -6100807640651925022L;
 
    private Integer terminaleTypeId;
+
    private String type;
+
    private Integer nbPlaces;
+
    private Integer hauteur;
+
    private Integer longueur;
+
    private String scheme;
+
    private Boolean departNumHaut;
 
    private Set<Terminale> terminales = new HashSet<>();

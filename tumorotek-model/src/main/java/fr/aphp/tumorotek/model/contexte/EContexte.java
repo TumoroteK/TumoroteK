@@ -1,5 +1,5 @@
 /**
- * Copyright ou © ou Copr. Assistance Publique des Hôpitaux de 
+ * Copyright ou © ou Copr. Assistance Publique des Hôpitaux de
  * PARIS et SESAN
  * projet-tk@sesan.fr
  *
@@ -38,17 +38,16 @@ package fr.aphp.tumorotek.model.contexte;
 
 /**
  * Created by JDI on 27/11/2017.
- * 
+ *
  * @version 2.3.0-gatsbi
  */
 public enum EContexte
 {
-   DEFAUT("DEFAUT", "Anatomopathologie"), 
-   SEROLOGIE("SEROLOGIE", "Sérologie"), 
-   HEMATOLOGIE("HEMATOLOGIE", "Hématologie"),
+   DEFAUT("DEFAUT", "Anatomopathologie"), SEROLOGIE("SEROLOGIE", "Sérologie"), HEMATOLOGIE("HEMATOLOGIE", "Hématologie"),
    GATSBI("GATSBI", "Gatsbi");
 
    private String nom;
+
    private String libelle;
 
    EContexte(final String nom, final String libelle){
@@ -59,7 +58,6 @@ public enum EContexte
    public String getNom(){
       return nom;
    }
-
 
    public String getLibelle(){
       return libelle;

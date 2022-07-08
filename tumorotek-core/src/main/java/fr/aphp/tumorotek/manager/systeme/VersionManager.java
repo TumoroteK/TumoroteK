@@ -65,7 +65,7 @@ public interface VersionManager
    List<Version> findAllObjectsManager();
 
    /**
-    * Recherche toutes les Versions présentes dans la base, 
+    * Recherche toutes les Versions présentes dans la base,
     * ordonnées de manière chronologique.
     * @return Liste de Versions.
     */

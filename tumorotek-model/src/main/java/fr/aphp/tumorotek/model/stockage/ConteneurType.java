@@ -71,8 +71,7 @@ import fr.aphp.tumorotek.model.AbstractPfDependantThesaurusObject;
    @NamedQuery(name = "ConteneurType.findByExcludedId", query = "SELECT c FROM ConteneurType c " + "WHERE c.id != ?1"),
    @NamedQuery(name = "ConteneurType.findByPfOrder",
       query = "SELECT c FROM ConteneurType c " + "WHERE c.plateforme = ?1 ORDER BY c.nom"),
-   @NamedQuery(name = "ConteneurType.findByOrder",
-   query = "SELECT c FROM ConteneurType c ORDER BY c.nom")})
+   @NamedQuery(name = "ConteneurType.findByOrder", query = "SELECT c FROM ConteneurType c ORDER BY c.nom")})
 public class ConteneurType extends AbstractPfDependantThesaurusObject implements Serializable
 {
 

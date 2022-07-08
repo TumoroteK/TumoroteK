@@ -77,16 +77,24 @@ public class Profil implements TKdataObject, Serializable, Comparable<Profil>
 {
 
    private Integer profilId;
+
    private String nom;
+
    private Boolean anonyme;
+
    private Boolean admin;
+
    private Boolean accesAdministration;
+
    private Integer profilExport;
+
    // @since 2.1
    private Boolean archive = false;
+
    private Plateforme plateforme;
 
    private Set<DroitObjet> droitObjets = new HashSet<>();
+
    private Set<ProfilUtilisateur> profilUtilisateurs = new HashSet<>();
 
    private static final long serialVersionUID = 77874545646151L;

@@ -59,8 +59,10 @@ public class TableAnnotationTemplateManagerImpl implements TableAnnotationTempla
 
    /** Bean Dao. */
    private TableAnnotationTemplateDao tableAnnotationTemplateDao;
+
    /** Bean Dao. */
    private TemplateDao templateDao;
+
    /** Bean Dao. */
    private TableAnnotationDao tableAnnotationDao;
 

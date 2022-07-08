@@ -71,10 +71,13 @@ public class ProdTypeManagerImpl implements ProdTypeManager
 
    /** Bean Dao ProdQualiteDao. */
    private ProdTypeDao prodTypeDao;
+
    /** Bean Dao ProdDeriveDao. */
    private ProdDeriveDao prodDeriveDao;
+
    /** Bean Validator. */
    private ProdTypeValidator prodTypeValidator;
+
    private PlateformeDao plateformeDao;
 
    /**
@@ -102,7 +105,7 @@ public class ProdTypeManagerImpl implements ProdTypeManager
    }
 
    /**
-    * Recherche un type de produit dérivé dont l'identifiant est 
+    * Recherche un type de produit dérivé dont l'identifiant est
     * passé en paramètre.
     * @param prodTypeId Identifiant du type que l'on recherche.
     * @return Un ProdType.
@@ -191,8 +194,8 @@ public class ProdTypeManagerImpl implements ProdTypeManager
          log.warn("Objet utilisé lors de la suppression de l'objet " + "ProdType : " + type.toString());
          throw new ObjectUsedException("ProdType", "suppression");
       }
-         prodTypeDao.removeObject(type.getId());
-         log.info("Suppression de l'objet ProdType : " + type.toString());
+      prodTypeDao.removeObject(type.getId());
+      log.info("Suppression de l'objet ProdType : " + type.toString());
    }
 
    @Override

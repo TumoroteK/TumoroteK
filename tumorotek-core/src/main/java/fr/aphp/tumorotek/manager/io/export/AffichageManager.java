@@ -119,7 +119,7 @@ public interface AffichageManager
 
    /**
     * Recherche les Affichages dont l'utilisateur créateur est passé en
-    * paramètre. 
+    * paramètre.
     * @param util Utilisateur qui à créé les Affichages recherchés.
     * @return la liste de tous les Affichages de l'Utilisateur.
     */
@@ -127,7 +127,7 @@ public interface AffichageManager
 
    /**
     * Recherche les Affichages dont la Banque est passée en
-    * paramètre. 
+    * paramètre.
     * @param banque Banque qui à créé les Affichages recherchés.
     * @return la liste de tous les Affichages de la Banque.
     */
@@ -135,14 +135,14 @@ public interface AffichageManager
 
    /**
     * Recherche les Affichages pour les Banques passées en
-    * paramètre. 
+    * paramètre.
     * @param banques Liste de Banques des Affichages recherchés.
     * @return la liste de tous les Affichages des Banques.
     */
    List<Affichage> findByBanqueInLIstManager(List<Banque> banques);
 
    /**
-    * Recherche les Affichages dont l'intitulé est passé en paramètre. 
+    * Recherche les Affichages dont l'intitulé est passé en paramètre.
     * @param intitilé des Affichages recherchés.
     * @return la liste de tous les Affichages de l'intitulé.
     */
@@ -150,7 +150,7 @@ public interface AffichageManager
 
    /**
     * Recherche les Affichages dont l'intitulé et l'utilisateur
-    * sont passés en paramètre. 
+    * sont passés en paramètre.
     * @param intitilé des Affichages recherchés.
     * @param util Utilisateur qui à créé les Affichages recherchés.
     * @return la liste de tous les Affichages de l'intitulé.
@@ -161,7 +161,7 @@ public interface AffichageManager
     * Déplace un Résultat pour un Affichage.
     * @param affichage Affichage dont les résultats vont changer de position.
     * @param resultat Résultat à déplacer.
-    * @param nouvellePosition position à atteindre pour le Résultat.			
+    * @param nouvellePosition position à atteindre pour le Résultat.
     */
    void moveResultatManager(Affichage affichage, Resultat resultat, int nouvellePosition);
 

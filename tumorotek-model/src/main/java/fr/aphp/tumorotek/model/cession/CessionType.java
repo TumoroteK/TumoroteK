@@ -69,6 +69,7 @@ public class CessionType implements Serializable
    private static final long serialVersionUID = 8525570559901326749L;
 
    private Integer cessionTypeId;
+
    private String type;
 
    private Set<Cession> cessions = new HashSet<>();

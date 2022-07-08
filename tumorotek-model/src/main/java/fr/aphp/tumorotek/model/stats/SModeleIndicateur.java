@@ -74,6 +74,7 @@ public class SModeleIndicateur implements Serializable
    private static final long serialVersionUID = 1L;
 
    private Integer ordre;
+
    private SModeleIndicateurPK pk = new SModeleIndicateurPK();
 
    /** Constructeur par défaut. */

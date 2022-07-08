@@ -64,23 +64,31 @@ public class ListePatient extends AbstractListeController2
    private static final long serialVersionUID = -6167747099087709700L;
 
    private List<Patient> listObjects = new ArrayList<>();
+
    private List<Patient> selectedObjects = new ArrayList<>();
 
    // Critères de recherche.
    private Radio nomPatient;
+
    private Radio nipPatient;
+
    private Textbox nomBoxPatient;
+
    private Textbox nipBoxPatient;
 
    // Variables formulaire pour les critères.
    private String searchNomPatient;
+
    private String searchNipPatient;
 
    private Column maladiesCol;
+
    private Column nbPrelevementsColumn;
 
    private final PatientRowRenderer listObjectsRenderer = new PatientRowRenderer(true);
+
    private PatientsNbPrelevementsComparator comparatorAsc = new PatientsNbPrelevementsComparator(true);
+
    private PatientsNbPrelevementsComparator comparatorDesc = new PatientsNbPrelevementsComparator(false);
 
    /** Getters-setters. **/
@@ -124,7 +132,6 @@ public class ListePatient extends AbstractListeController2
       return this.listObjects;
    }
 
-   
    @Override
    public void setListObjects(final List<? extends TKdataObject> objs){
       clearSelection();
@@ -148,7 +155,6 @@ public class ListePatient extends AbstractListeController2
       getListObjects().remove(obj);
    }
 
-   
    @Override
    public void setSelectedObjects(final List<? extends TKdataObject> objs){
       this.selectedObjects = (List<Patient>) objs;

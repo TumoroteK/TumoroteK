@@ -44,8 +44,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import javax.naming.NamingException;
-
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
@@ -98,24 +96,39 @@ public class FicheSetCriteresValues extends GenericForwardComposer<Component>
    private static final long serialVersionUID = 6152666419852522833L;
 
    private Panel winPanel;
+
    private Component parent;
+
    private Row rowOneCollection;
+
    private Row rowToutesCollections;
+
    private Row rowSelectionCollections;
+
    private Label labelOneCollection;
+
    private Label labelToutesCollections;
+
    private Listbox banquesBox;
+
    private Html presentationLabel;
 
    private Column critereValueCol;
-   
+
    private List<Banque> banques = new ArrayList<>();
+
    private List<Banque> availableBanques = new ArrayList<>();
+
    private Recherche recherche;
+
    private AnnotateDataBinder binder;
+
    private Grid exportNodesGrid;
+
    private List<ExportNode> exportNodes = new ArrayList<>();
+
    private Hashtable<Integer, Object> criteresValues = new Hashtable<>();
+
    private Set<Listitem> selectedBanquesItem = new HashSet<>();
 
    //   private Div valueDureeBox; //FIXME Implémentation durée
@@ -141,9 +154,9 @@ public class FicheSetCriteresValues extends GenericForwardComposer<Component>
       final GroupementNode node = GroupementNode.convertFromGroupement(recherche.getRequete().getGroupementRacine(), null);
       exportNodes = node.getExportNodeList();
       this.exportNodesGrid.setModel(new SimpleListModel<Object>(exportNodes));
-      Rows rows = this.exportNodesGrid.getRows();
-      for(Component rowComp : rows.getChildren()){
-         Row row = (Row) rowComp;
+      final Rows rows = this.exportNodesGrid.getRows();
+      for(final Component rowComp : rows.getChildren()){
+         final Row row = (Row) rowComp;
          row.getChildren();
       }
 
@@ -255,7 +268,7 @@ public class FicheSetCriteresValues extends GenericForwardComposer<Component>
    public void onLaterExecuteSearch(){
       banques.addAll(findSelectedBanques());
 
-      String jdbcDialect = SessionUtils.getDbms();
+      final String jdbcDialect = SessionUtils.getDbms();
 
       final List<Object> objets = ManagerLocator.getTraitementRequeteManager().traitementRequeteManager(recherche.getRequete(),
          banques, criteresValues, jdbcDialect);
@@ -281,44 +294,44 @@ public class FicheSetCriteresValues extends GenericForwardComposer<Component>
       return bks;
    }
 
-   public void onCreate$decimalBox(Event event){
-      Decimalbox decimBox = (Decimalbox) event.getData();
+   public void onCreate$decimalBox(final Event event){
+      final Decimalbox decimBox = (Decimalbox) event.getData();
       decimBox.getParent();
    }
 
    /**
-    * Pour l'execution de la recherche, à la saisie des valeurs, 
+    * Pour l'execution de la recherche, à la saisie des valeurs,
     * remplace le champ de saisie numérique en un champ de saisie de durée
     * @param event
     */
-   public void onCreate$valueDecimalBox(Event event){ //FIXME Champ Duree Recherche - Trouver un meilleure moyen d'implémenter la box durée
+   public void onCreate$valueDecimalBox(final Event event){ //FIXME Champ Duree Recherche - Trouver un meilleure moyen d'implémenter la box durée
       // On récupère le critere node grace à la méthode magique
-      Object data = AbstractListeController2.getBindingData((ForwardEvent) event, false);
+      final Object data = AbstractListeController2.getBindingData((ForwardEvent) event, false);
       if(data instanceof CritereNode){
-         CritereNode cn = (CritereNode) data;
+         final CritereNode cn = (CritereNode) data;
          if("duree".equals(cn.getCritere().getChamp().dataType().getType())
             || ("calcule".equals(cn.getCritere().getChamp().dataType().getType())
                && "duree".equals(cn.getCritere().getChamp().getChampAnnotation().getChampCalcule().getDataType().getType()))){
             // On a besoin de la decimalBox qui contient la valeur décimale qui sera traitée pour ce champ
-            Decimalbox decimalBox = (Decimalbox) ((ForwardEvent) event).getOrigin().getTarget();
+            final Decimalbox decimalBox = (Decimalbox) ((ForwardEvent) event).getOrigin().getTarget();
 
             // On cache la box pour afficher la dureeBox
             decimalBox.setVisible(false);
-            DureeComponent dureeBox = drawDureeBox();
-            Component parent = decimalBox.getParent();
+            final DureeComponent dureeBox = drawDureeBox();
+            final Component parent = decimalBox.getParent();
             parent.appendChild(dureeBox);
 
-            /* 
+            /*
              * Afin de pouvoir enregistrer la saisie de la durée, dureeComponent étant un div on peut pas faire grand chose (pas d'évènements DOM)
              * L'idée c'est donc d'enregistrer la durée à chaque changement de valeur dans les champs
              */
-            for(Component compo : dureeBox.getChildren()){
+            for(final Component compo : dureeBox.getChildren()){
                if(compo instanceof Longbox){
-                  Longbox box = (Longbox) compo; // On récupère les box des champs de durée
+                  final Longbox box = (Longbox) compo; // On récupère les box des champs de durée
                   box.addEventListener("onChange", new EventListener<Event>()
                   {
                      @Override
-                     public void onEvent(Event event) throws Exception{
+                     public void onEvent(final Event event) throws Exception{
                         /*
                          * On enregistre la durée dans la decimalBox car elle est enregistree automatiquement
                          * dans le CritereNode (c.f. setCriteresValuesModale.zul)
@@ -328,7 +341,7 @@ public class FicheSetCriteresValues extends GenericForwardComposer<Component>
                   });
                }
             }
-            
+
             /* Rectification de l'affichage */
             critereValueCol.setHflex("1");
             exportNodesGrid.setHflex("1");

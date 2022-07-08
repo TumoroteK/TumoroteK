@@ -93,7 +93,7 @@ public interface EntiteManager
     * Filtre sur les banques si paramètre non null et non vide.
     * @param entite Classe de l'objet que l'on recherche.
     * @param liste objectId Identifiant les objet que l'on recherche.
-    * @param filtre sur les banques 
+    * @param filtre sur les banques
     * @return Une instance de la classe dont le nom correspond à l'entité
     * passée en paramètre.
     * @since 2.0.10

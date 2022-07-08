@@ -88,7 +88,7 @@ public class UtilisateurRowRenderer implements RowRenderer<Utilisateur>
             autorisationLabel.setClass("formArchiveValue");
          }
          autorisationLabel.setParent(vBox);
-         
+
          row.setSclass("gold");
       }
 
@@ -120,13 +120,13 @@ public class UtilisateurRowRenderer implements RowRenderer<Utilisateur>
          if(availableBanques.contains(profils.get(i).getBanque())){
             // on ajoute le nom de la banque et le role
             final StringBuffer sb = new StringBuffer();
-            
+
             // @since 2.2.1
             // ajoute la PF si pas la PF courante
-            if (profils.get(i).getBanque().getPlateforme().equals(SessionUtils.getCurrentPlateforme())) {
-            	sb.append(profils.get(i).getBanque().getNom());
-            } else {
-            	sb.append(profils.get(i).getBanque().getBanqueAndPlateformeNoms());
+            if(profils.get(i).getBanque().getPlateforme().equals(SessionUtils.getCurrentPlateforme())){
+               sb.append(profils.get(i).getBanque().getNom());
+            }else{
+               sb.append(profils.get(i).getBanque().getBanqueAndPlateformeNoms());
             }
             sb.append(" - ");
             sb.append(profils.get(i).getProfil().getNom());
@@ -139,11 +139,9 @@ public class UtilisateurRowRenderer implements RowRenderer<Utilisateur>
       }
       vBox.setParent(row);
 
-      new Label(utilisateur.getPlateformeOrig() != null ?   
-    		utilisateur.getPlateformeOrig().getNom() : "").setParent(row);
+      new Label(utilisateur.getPlateformeOrig() != null ? utilisateur.getPlateformeOrig().getNom() : "").setParent(row);
 
-      new Label(ObjectTypesFormatters.dateRenderer2(ManagerLocator
-    	.getOperationManager().findDateCreationManager(utilisateur)))
+      new Label(ObjectTypesFormatters.dateRenderer2(ManagerLocator.getOperationManager().findDateCreationManager(utilisateur)))
          .setParent(row);
 
       new Label(ObjectTypesFormatters.dateRenderer2(utilisateur.getTimeOut())).setParent(row);

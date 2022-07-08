@@ -84,18 +84,31 @@ public class PatientSip
 {
 
    private Integer patientSipId;
+
    private String nip;
+
    private String nom;
+
    private String nomNaissance;
+
    private String prenom;
+
    private String sexe;
+
    private Date dateNaissance;
+
    private String villeNaissance;
+
    private String paysNaissance;
+
    private String patientEtat = "V";
+
    private Date dateEtat;
+
    private Date dateDeces;
+
    private Calendar dateCreation;
+
    private Calendar dateModification;
 
    private Set<PatientSipSejour> sejours = new HashSet<>();

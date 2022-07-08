@@ -68,7 +68,9 @@ public class NatureManagerImpl implements NatureManager
 
    /* Beans injectes par Spring*/
    private NatureDao natureDao;
+
    private NatureValidator natureValidator;
+
    private PlateformeDao plateformeDao;
 
    public NatureManagerImpl(){}

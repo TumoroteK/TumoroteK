@@ -128,7 +128,7 @@ public class ThesaurusDataManager
    }
 
    /**
-    * Convertie la valeur en Object en String 
+    * Convertie la valeur en Object en String
     * en fonction de la classe Object
     *
     */

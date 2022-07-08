@@ -48,8 +48,11 @@ public class CoupleSimpleValeur
 {
 
    private String nomValeur;
+
    private String valeur;
+
    private Boolean anonyme = false;
+
    private Boolean obligatoire = false;
 
    public CoupleSimpleValeur(){

@@ -74,12 +74,16 @@ public class ModeleManagerImpl implements ModeleManager
 
    /** Bean Dao. */
    private ModeleDao modeleDao;
+
    /** Bean Dao. */
    private ModeleTypeDao modeleTypeDao;
+
    /** Bean Dao. */
    private PlateformeDao plateformeDao;
+
    /** Bean Validator. */
    private ModeleValidator modeleValidator;
+
    private LigneEtiquetteManager ligneEtiquetteManager;
 
    public void setModeleDao(final ModeleDao mDao){

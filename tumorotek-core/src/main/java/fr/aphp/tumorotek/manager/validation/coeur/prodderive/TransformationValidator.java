@@ -54,7 +54,6 @@ import fr.aphp.tumorotek.model.coeur.prodderive.Transformation;
 public class TransformationValidator implements Validator
 {
 
-   
    @Override
    public boolean supports(final Class<?> clazz){
       return Transformation.class.equals(clazz);

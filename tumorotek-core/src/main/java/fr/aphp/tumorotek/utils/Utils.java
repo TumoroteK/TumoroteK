@@ -127,7 +127,7 @@ public final class Utils
       if(baseDir == null || !new File(baseDir).exists()){
          throw new RuntimeException("error.filesystem.access");
       }
-      if (!baseDir.endsWith(File.separator)) {
+      if(!baseDir.endsWith(File.separator)){
          baseDir = baseDir + File.separator;
       }
       String path = baseDir + "pt_" + bank.getPlateforme().getPlateformeId() + File.separator + "coll_" + bank.getBanqueId();
@@ -135,7 +135,7 @@ public final class Utils
       if(chp != null){
          path = path + File.separator + "anno" + File.separator + "chp_" + chp.getId() + File.separator;
       }
-      //		
+      //
       //		if (obj != null) {
       //			path = path + "/" + obj.entiteNom() + "_";
       //			if (obj.listableObjectId() != null) {
@@ -143,7 +143,7 @@ public final class Utils
       //			} else {
       //				path = path + 0;
       //			}
-      //					
+      //
       //		}
       if(file != null && file.getNom() != null){
          path = path + file.getNom();
@@ -156,7 +156,7 @@ public final class Utils
       if(path.exists()){
          final File[] files = path.listFiles();
          if(null != files){
-            for(File file : files){
+            for(final File file : files){
                if(file.isDirectory()){
                   deleteDirectory(file);
                }else{
@@ -184,7 +184,7 @@ public final class Utils
 
    /**
     * Cette méthode formate un string en fct d'une expression régulière
-    * de la forme : >., <., ou [1,3]. 
+    * de la forme : >., <., ou [1,3].
     * @param value String à formater.
     * @param expReg Expression régulière.
     * @return String formaté.
@@ -317,16 +317,16 @@ public final class Utils
       }
       return null;
    }
-   
+
    /**
     * Concatene strings
     * @param value
     * @return
     * @version 2.2.2-diamic
     */
-   public static String concat(final String sep, final String ... vals){
-      if (vals != null) {
-    	  return Arrays.stream(vals).collect(Collectors.joining(sep));
+   public static String concat(final String sep, final String... vals){
+      if(vals != null){
+         return Arrays.stream(vals).collect(Collectors.joining(sep));
       }
       return null;
    }
@@ -346,7 +346,7 @@ public final class Utils
    }
 
    /**
-    * Obtient la ReadableProperty exploitable par introspection PropertyUtils 
+    * Obtient la ReadableProperty exploitable par introspection PropertyUtils
     * pour un objet à partir de l'objet ChampEntite.
     * @param chpE
     * @return readable property
@@ -379,7 +379,7 @@ public final class Utils
    }
 
    /**
-    * 
+    *
     * @return usernameDB
     */
    public static String getUsernameDB(){
@@ -387,7 +387,7 @@ public final class Utils
    }
 
    /**
-    * 
+    *
     * @return passwordDB
     */
    public static String getPasswordDB(){

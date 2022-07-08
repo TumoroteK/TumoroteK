@@ -66,36 +66,40 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
  */
 @Entity
 @Table(name = "CODE_DOSSIER")
-@NamedQueries(
-   value = {
-      @NamedQuery(name = "CodeDossier.findByNomLike",
-         query = "SELECT c FROM CodeDossier c WHERE c.nom like ?1 " + "AND c.banque = ?2"),
-      @NamedQuery(name = "CodeDossier.findByCodeDossierParent",
-         query = "SELECT c FROM CodeDossier c " + "WHERE c.dossierParent = ?1"),
-      @NamedQuery(name = "CodeDossier.findByRootCodeDossierUtilisateur",
-         query = "SELECT c FROM CodeDossier c " + "WHERE c.dossierParent is null " + "AND c.banque = ?1 AND c.codeSelect = 0"),
-      @NamedQuery(name = "CodeDossier.findByRootCodeDossierSelect",
-         query = "SELECT c FROM CodeDossier c " + "WHERE c.dossierParent is null " + "AND c.banque = ?2 AND c.utilisateur = ?1 "
-            + "AND c.codeSelect = 1"),
-      @NamedQuery(name = "CodeDossier.findBySelectUtilisateurAndBanque",
-         query = "SELECT c FROM CodeDossier c " + "WHERE c.utilisateur = ?1 AND c.banque = ?2 " + "AND c.codeSelect = 1"),
-      @NamedQuery(name = "CodeDossier.findByUtilisateurAndBanque",
-         query = "SELECT c FROM CodeDossier c " + "WHERE c.utilisateur = ?1 AND c.banque = ?2 " + "AND c.codeSelect = 0"),
-      @NamedQuery(name = "CodeDossier.findByRootDossierBanque",
-         query = "SELECT c FROM CodeDossier c " + "WHERE c.dossierParent is null " + "AND c.banque = ?1 "
-            + "AND c.codeSelect = ?2"),
-      @NamedQuery(name = "CodeDossier.findByExcludedId", query = "SELECT c FROM CodeDossier c " + "WHERE c.codeDossierId != ?1")})
+@NamedQueries(value = {
+   @NamedQuery(name = "CodeDossier.findByNomLike",
+      query = "SELECT c FROM CodeDossier c WHERE c.nom like ?1 " + "AND c.banque = ?2"),
+   @NamedQuery(name = "CodeDossier.findByCodeDossierParent",
+      query = "SELECT c FROM CodeDossier c " + "WHERE c.dossierParent = ?1"),
+   @NamedQuery(name = "CodeDossier.findByRootCodeDossierUtilisateur",
+      query = "SELECT c FROM CodeDossier c " + "WHERE c.dossierParent is null " + "AND c.banque = ?1 AND c.codeSelect = 0"),
+   @NamedQuery(name = "CodeDossier.findByRootCodeDossierSelect",
+      query = "SELECT c FROM CodeDossier c " + "WHERE c.dossierParent is null " + "AND c.banque = ?2 AND c.utilisateur = ?1 "
+         + "AND c.codeSelect = 1"),
+   @NamedQuery(name = "CodeDossier.findBySelectUtilisateurAndBanque",
+      query = "SELECT c FROM CodeDossier c " + "WHERE c.utilisateur = ?1 AND c.banque = ?2 " + "AND c.codeSelect = 1"),
+   @NamedQuery(name = "CodeDossier.findByUtilisateurAndBanque",
+      query = "SELECT c FROM CodeDossier c " + "WHERE c.utilisateur = ?1 AND c.banque = ?2 " + "AND c.codeSelect = 0"),
+   @NamedQuery(name = "CodeDossier.findByRootDossierBanque",
+      query = "SELECT c FROM CodeDossier c " + "WHERE c.dossierParent is null " + "AND c.banque = ?1 " + "AND c.codeSelect = ?2"),
+   @NamedQuery(name = "CodeDossier.findByExcludedId", query = "SELECT c FROM CodeDossier c " + "WHERE c.codeDossierId != ?1")})
 public class CodeDossier implements Serializable
 {
 
    private static final long serialVersionUID = 1L;
 
    private Integer codeDossierId;
+
    private String nom;
+
    private String description;
+
    private Boolean codeSelect;
+
    private CodeDossier dossierParent;
+
    private Utilisateur utilisateur;
+
    private Banque banque;
 
    public CodeDossier(){}

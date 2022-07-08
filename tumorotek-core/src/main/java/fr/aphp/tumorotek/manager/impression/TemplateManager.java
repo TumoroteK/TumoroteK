@@ -114,7 +114,7 @@ public interface TemplateManager
     * @param champs Liste de ChampImprime.
     * @param annotations Liste de TableAnnotation.
     * @param cles Liste des CleImpression
-    * 
+    *
     * @since 2.2.0
     */
    void createObjectManager(Template template, Banque banque, Entite entite, List<BlocImpressionTemplate> blocs,
@@ -148,7 +148,7 @@ public interface TemplateManager
    * @param annotations Liste de TableAnnotation.
    * @param annotationsToCreate Liste de TableAnnotation à créer.
    * @param cles Liste des CleImpression
-   * 
+   *
    * @since 2.2.0
    */
    void updateObjectManager(Template template, Banque banque, Entite entite, List<BlocImpressionTemplate> blocs,

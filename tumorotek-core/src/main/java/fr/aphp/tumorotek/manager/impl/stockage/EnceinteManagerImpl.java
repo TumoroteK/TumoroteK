@@ -89,7 +89,7 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
 import fr.aphp.tumorotek.utils.Utils;
 
 /**
- * 
+ *
  * @author Mathieu BARTHELEMY
  * @version 2.2.1
  */
@@ -99,19 +99,33 @@ public class EnceinteManagerImpl implements EnceinteManager
    private final Log log = LogFactory.getLog(EnceinteManager.class);
 
    private TerminaleDao terminaleDao;
+
    private EnceinteDao enceinteDao;
+
    private EnceinteTypeDao enceinteTypeDao;
+
    private ConteneurDao conteneurDao;
+
    private EntiteDao entiteDao;
+
    private BanqueDao banqueDao;
+
    private TerminaleManager terminaleManager;
+
    private EnceinteValidator enceinteValidator;
+
    private JpaTransactionManager txManager;
+
    private OperationManager operationManager;
+
    private OperationTypeDao operationTypeDao;
+
    private CheckPositionManager checkPositionManager;
+
    private CouleurDao couleurDao;
+
    private IncidentManager incidentManager;
+
    private IncidentValidator incidentValidator;
 
    public void setTerminaleDao(final TerminaleDao tDao){
@@ -279,7 +293,7 @@ public class EnceinteManagerImpl implements EnceinteManager
 
    @Override
    public Boolean checkEnceinteInEnceintePereLimitesManager(final Enceinte enceinte){
-      Boolean valide = true;
+      boolean valide = true;
       // on vérifie que l'enceinte n'est pas nulle
       if(enceinte != null){
          final Enceinte enceintePere = enceinte.getEnceintePere();
@@ -304,7 +318,7 @@ public class EnceinteManagerImpl implements EnceinteManager
 
    @Override
    public Boolean checkEnceinteInConteneurLimitesManager(final Enceinte enceinte){
-      Boolean valide = true;
+      boolean valide = true;
       // on vérifie que l'enceinte n'est pas nulle
       if(enceinte != null){
          final Conteneur conteneur = enceinte.getConteneur();
@@ -375,7 +389,7 @@ public class EnceinteManagerImpl implements EnceinteManager
     */
    @Override
    public Long getNumberEmplacementsLibres(final Enceinte enceinte){
-      Long nbLibres = (long) 0;
+      long nbLibres = (long) 0;
       if(enceinte != null && enceinte.getEnceinteId() != null){
 
          if(checkLastEnceinte(enceinte)){
@@ -858,7 +872,7 @@ public class EnceinteManagerImpl implements EnceinteManager
     * une liste de banques.
     * @param enceinte Enceinte pour laquelle on veut mettre à jour
     * les associations.
-    * @param banques Liste des banques que l'on veut associer à 
+    * @param banques Liste des banques que l'on veut associer à
     * l'enceinte.
     */
    public void updateBanques(final Enceinte enceinte, final List<Banque> banques){
@@ -937,9 +951,9 @@ public class EnceinteManagerImpl implements EnceinteManager
 
    @Override
    public Long getNbEmplacementsLibresByPS(final Enceinte enceinte){
-      Long result = (long) 0;
-      Long total = (long) 0;
-      Long totalPris = (long) 0;
+      long result = (long) 0;
+      long total = (long) 0;
+      long totalPris = (long) 0;
       if(enceinte != null && enceinte.getEnceinteId() != null){
          java.sql.Connection con = null;
          PreparedStatement pstmt = null;
@@ -961,7 +975,7 @@ public class EnceinteManagerImpl implements EnceinteManager
                + "= tt.terminale_type_id " + "where enceinte_id = ?";
             pstmt2 = con.prepareStatement(sql);
 
-            // requete qui récupère le nb d'emplacements occupés de ttes 
+            // requete qui récupère le nb d'emplacements occupés de ttes
             // les terminales d'une enceinte
             sql = "SELECT count(emplacement_id) from EMPLACEMENT e " + "join TERMINALE t on t.terminale_id = e.terminale_id "
                + "where t.enceinte_id = ? and e.vide=0";
@@ -983,7 +997,7 @@ public class EnceinteManagerImpl implements EnceinteManager
                total = total + totaux.get(i);
             }
 
-            // récupère le nb d'emplacements occupés de ttes 
+            // récupère le nb d'emplacements occupés de ttes
             // les terminales d'une enceinte
             final List<Long> pris = new ArrayList<>();
             for(int i = 0; i < enceintesId.size(); i++){
@@ -1033,7 +1047,7 @@ public class EnceinteManagerImpl implements EnceinteManager
 
    @Override
    public Long getNbEmplacementsOccupesByPS(final Enceinte enceinte){
-      Long totalPris = (long) 0;
+      long totalPris = (long) 0;
       if(enceinte != null && enceinte.getEnceinteId() != null){
          java.sql.Connection con = null;
          PreparedStatement pstmt = null;
@@ -1049,7 +1063,7 @@ public class EnceinteManagerImpl implements EnceinteManager
             String sql = "select ENCEINTE_ID FROM ENCEINTE " + "WHERE ENCEINTE_PERE_ID = ?";
             pstmt = con.prepareStatement(sql);
 
-            // requete qui récupère le nb d'emplacements occupés de ttes 
+            // requete qui récupère le nb d'emplacements occupés de ttes
             // les terminales d'une enceinte
             sql = "SELECT count(emplacement_id) from EMPLACEMENT e " + "join TERMINALE t on t.terminale_id = e.terminale_id "
                + "where t.enceinte_id = ? and e.vide=0";
@@ -1060,7 +1074,7 @@ public class EnceinteManagerImpl implements EnceinteManager
             enceintesId.add(enceinte.getEnceinteId());
             executeStatementForEnceintes(enceinte.getEnceinteId(), pstmt, enceintesId);
 
-            // récupère le nb d'emplacements occupés de ttes 
+            // récupère le nb d'emplacements occupés de ttes
             // les terminales d'une enceinte
             final List<Long> pris = new ArrayList<>();
             for(int i = 0; i < enceintesId.size(); i++){
@@ -1134,7 +1148,7 @@ public class EnceinteManagerImpl implements EnceinteManager
             enceintesId.add(enceinte.getEnceinteId());
             executeStatementForEnceintes(enceinte.getEnceinteId(), pstmt, enceintesId);
 
-            // récupère le nb d'emplacements occupés de ttes 
+            // récupère le nb d'emplacements occupés de ttes
             // les terminales d'une enceinte
             for(int i = 0; i < enceintesId.size(); i++){
                executeStatementForIds(enceintesId.get(i), entite.getEntiteId(), pstmt3, ids);
@@ -1176,7 +1190,7 @@ public class EnceinteManagerImpl implements EnceinteManager
    }
 
    /**
-    * Exécute un preparde statement récupérant les enceintes filles 
+    * Exécute un preparde statement récupérant les enceintes filles
     * d'une enceinte.
     * @param id Identifiant de l'enceinte mère.
     * @param ps PreparedStatement.
@@ -1370,7 +1384,7 @@ public class EnceinteManagerImpl implements EnceinteManager
    }
 
    /**
-    * Implémente la recursivité permettant de 
+    * Implémente la recursivité permettant de
     * trouver le conteneur contenant l'enceinte.
     * @param enceinte
     * @return Conteneur parent.
@@ -1434,7 +1448,7 @@ public class EnceinteManagerImpl implements EnceinteManager
          enceinte.setNbPlaces(newNbPlaces);
          enceinte = enceinteDao.mergeObject(enceinte);
 
-         // reordonne les enceintes contenues si la dernière position de 
+         // reordonne les enceintes contenues si la dernière position de
          // dépasse la taille totale de l'enceinte
          int i = 1;
          final List<Enceinte> contenues = new ArrayList<>(getEnceintesManager(enceinte));
@@ -1447,7 +1461,7 @@ public class EnceinteManagerImpl implements EnceinteManager
             }
          }
 
-         // reordonne les terminales contenues si la dernière position de 
+         // reordonne les terminales contenues si la dernière position de
          // dépasse la taille totale de l'enceinte
          final List<Terminale> terminales = new ArrayList<>(getTerminalesManager(enceinte));
          if(!terminales.isEmpty() && terminales.get(terminales.size() - 1).getPosition() > newNbPlaces){
@@ -1466,18 +1480,17 @@ public class EnceinteManagerImpl implements EnceinteManager
 
       return enceinte;
    }
-   
+
    @Override
-   public List<Banque> getDistinctBanquesFromTkObjectsManager(Enceinte enc) {
-	   List<Banque> banks = new ArrayList<Banque>();
-	   
-	   if (enc != null) {
-		   List<Terminale> terms = getAllTerminalesInArborescenceManager(enc);
-		   banks.addAll(terms.stream().map(t -> terminaleManager.getDistinctBanquesFromTkObjectsManager(t))
-				   .flatMap(List::stream)
-				   .distinct().collect(Collectors.toList()));
-	   }
-	   
-	   return banks;
+   public List<Banque> getDistinctBanquesFromTkObjectsManager(final Enceinte enc){
+      final List<Banque> banks = new ArrayList<>();
+
+      if(enc != null){
+         final List<Terminale> terms = getAllTerminalesInArborescenceManager(enc);
+         banks.addAll(terms.stream().map(t -> terminaleManager.getDistinctBanquesFromTkObjectsManager(t)).flatMap(List::stream)
+            .distinct().collect(Collectors.toList()));
+      }
+
+      return banks;
    }
 }

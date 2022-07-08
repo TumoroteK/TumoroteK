@@ -43,6 +43,7 @@ public class ChampImpressionDecorator
 {
 
    private ChampEntite champEntite;
+
    private Boolean imprimer = true;
 
    public ChampImpressionDecorator(final ChampEntite champ){
@@ -82,7 +83,7 @@ public class ChampImpressionDecorator
 
       return iProperty.toString();
    }
-   
+
    @Override
    public boolean equals(final Object obj){
       if(this == obj){
@@ -94,18 +95,18 @@ public class ChampImpressionDecorator
       final ChampImpressionDecorator test = (ChampImpressionDecorator) obj;
       return Objects.equals(test.getChampEntite(), champEntite);
    }
-   
+
    @Override
    public int hashCode(){
       int hash = 7;
       int hashChampEntite = 0;
-      
+
       if(this.champEntite != null){
-    	  hashChampEntite = this.champEntite.hashCode();
+         hashChampEntite = this.champEntite.hashCode();
       }
 
       hash = 7 * hash + hashChampEntite;
-      
+
       return hash;
    }
 

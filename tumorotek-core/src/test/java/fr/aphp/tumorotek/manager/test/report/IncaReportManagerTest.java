@@ -80,18 +80,25 @@ public class IncaReportManagerTest extends AbstractManagerTest4
 
    @Autowired
    private IncaReportManager incaReportManager;
+
    @Autowired
    private EtablissementDao etablissementDao;
+
    @Autowired
    private BanqueDao banqueDao;
+
    @Autowired
    private CessionTypeDao cessionTypeDao;
+
    @Autowired
    private NatureDao natureDao;
+
    @Autowired
    private EchantillonTypeDao echantillonTypeDao;
+
    @Autowired
    private ConsentTypeDao consentTypeDao;
+
    @Autowired
    private CimMasterDao cimMasterDao;
 

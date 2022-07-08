@@ -54,7 +54,6 @@ import fr.aphp.tumorotek.model.contexte.Coordonnee;
 public class CoordonneeValidator implements Validator
 {
 
-   
    @Override
    public boolean supports(final Class<?> clazz){
       return Coordonnee.class.equals(clazz);

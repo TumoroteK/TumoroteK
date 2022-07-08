@@ -58,6 +58,7 @@ public interface SpecialiteManager extends CrudManager<Specialite>, TKThesaurusM
     * @param specialiteId Identifiant de la specialite que l'on recherche.
     * @return Une Specialite.
     */
+   @Override
    Specialite findByIdManager(Integer specialiteId);
 
    /**

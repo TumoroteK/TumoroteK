@@ -71,12 +71,16 @@ public class AffectationImprimanteManagerImpl implements AffectationImprimanteMa
 
    /** Bean Dao. */
    private AffectationImprimanteDao affectationImprimanteDao;
+
    /** Bean Dao. */
    private ImprimanteDao imprimanteDao;
+
    /** Bean Dao. */
    private UtilisateurDao utilisateurDao;
+
    /** Bean Dao. */
    private BanqueDao banqueDao;
+
    /** Bean Dao. */
    private ModeleDao modeleDao;
 
@@ -116,16 +120,16 @@ public class AffectationImprimanteManagerImpl implements AffectationImprimanteMa
       if(utilisateur != null && banque != null){
          return affectationImprimanteDao.findByBanqueUtilisateur(banque, utilisateur);
       }
-         return new ArrayList<>();
-      }
+      return new ArrayList<>();
+   }
 
    @Override
    public List<AffectationImprimante> findByExcludedPKManager(final AffectationImprimantePK pk){
       if(pk != null){
          return affectationImprimanteDao.findByExcludedPK(pk);
       }
-         return affectationImprimanteDao.findAll();
-      }
+      return affectationImprimanteDao.findAll();
+   }
 
    @Override
    public Boolean findDoublonManager(final Utilisateur utilisateur, final Banque banque, final Imprimante imprimante){

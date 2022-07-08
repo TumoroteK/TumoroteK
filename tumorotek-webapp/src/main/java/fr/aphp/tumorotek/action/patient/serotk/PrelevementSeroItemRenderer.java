@@ -36,9 +36,9 @@
 package fr.aphp.tumorotek.action.patient.serotk;
 
 import org.zkoss.zul.Hlayout;
-import org.zkoss.zul.Label;
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
+
 import fr.aphp.tumorotek.action.patient.PrelevementItemRenderer;
 import fr.aphp.tumorotek.action.utils.PrelevementUtils;
 import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
@@ -61,9 +61,9 @@ public class PrelevementSeroItemRenderer extends PrelevementItemRenderer
 {
 
    @Override
-   public void render(final Listitem li, final Prelevement data, final int index) {
+   public void render(final Listitem li, final Prelevement data, final int index){
 
-      final Prelevement prel = (Prelevement) data;
+      final Prelevement prel = data;
 
       // icones
       final Listcell rCell = new Listcell();
@@ -73,7 +73,7 @@ public class PrelevementSeroItemRenderer extends PrelevementItemRenderer
 
       // date prelevement
       new Listcell(ObjectTypesFormatters.dateRenderer2(prel.getDatePrelevement())).setParent(li);
-      
+
       // code prelevement
       final Listcell codeCell = new Listcell(prel.getCode());
       codeCell.setParent(li);
@@ -81,12 +81,12 @@ public class PrelevementSeroItemRenderer extends PrelevementItemRenderer
          codeCell.addForward(null, li.getParent(), "onClickPrelevementCode", prel);
          codeCell.setClass("formLink");
       }
-      
+
       // foreign bank
       if(getOtherConsultBanks() != null){ // mode otherBank prelevement
          new Listcell(prel.getBanque().getNom()).setParent(li);
       }
-      
+
       // nature
       if(prel.getNature() != null){
          new Listcell(prel.getNature().getNom()).setParent(li);
@@ -100,22 +100,22 @@ public class PrelevementSeroItemRenderer extends PrelevementItemRenderer
       }else{
          new Listcell().setParent(li);
       }
-      
-      	// @since 2.2.3-rc1 diagnostic
-   		// protocoles : liste des protocoles
-   		if(prel.getDelegate() != null) {
-   			ObjectTypesFormatters.drawComplementDiagnosticLabel(((PrelevementSero) prel.getDelegate()).getLibelle(), null, li);
-   		}else{
-   			new Listcell().setParent(li);
-   		}
 
-      // protocole serotheque 
-      if(getOtherConsultBanks() == null){   	
-		 if(prel.getDelegate() != null){
-	         ObjectTypesFormatters.drawProtocolesLabel(((PrelevementSero) prel.getDelegate()).getProtocoles(), null, li);
-	      }else{
-	         new Listcell().setParent(li);
-	      }
+      // @since 2.2.3-rc1 diagnostic
+      // protocoles : liste des protocoles
+      if(prel.getDelegate() != null){
+         ObjectTypesFormatters.drawComplementDiagnosticLabel(((PrelevementSero) prel.getDelegate()).getLibelle(), null, li);
+      }else{
+         new Listcell().setParent(li);
+      }
+
+      // protocole serotheque
+      if(getOtherConsultBanks() == null){
+         if(prel.getDelegate() != null){
+            ObjectTypesFormatters.drawProtocolesLabel(((PrelevementSero) prel.getDelegate()).getProtocoles(), null, li);
+         }else{
+            new Listcell().setParent(li);
+         }
       }else{ // pour foreign bank, le service preleveur
          new Listcell(prel.getServicePreleveur() != null ? prel.getServicePreleveur().getEtablissement().getNom() : "")
             .setParent(li);

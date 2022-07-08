@@ -58,7 +58,7 @@ public interface AnnotationValeurDao extends GenericDaoJpa<AnnotationValeur, Int
 {
 
    /**
-    * Recherche les valeurs assignées a l'objet pour le champ spécifiés 
+    * Recherche les valeurs assignées a l'objet pour le champ spécifiés
     * en paramètre.
     * @param champAnnotation
     * @param objetId
@@ -67,7 +67,7 @@ public interface AnnotationValeurDao extends GenericDaoJpa<AnnotationValeur, Int
    List<AnnotationValeur> findByChampAndObjetId(ChampAnnotation champ, Integer objetId);
 
    /**
-    * Recherche toutes les valeurs pour le champ et l'objet 
+    * Recherche toutes les valeurs pour le champ et l'objet
     * sauf celle dont l'id est passé en paramètre.
     * @param champAnnotation
     * @param objetId
@@ -79,7 +79,7 @@ public interface AnnotationValeurDao extends GenericDaoJpa<AnnotationValeur, Int
 
    /**
     * Recherche toutes les valeurs spécifiées pour une table d'annotations
-    * et pour une banque. 
+    * et pour une banque.
     * Cette requete a pour objectif de retourner toutes les valeurs qui seront
     * supprimées avec la suppression de la référence de ta table vers la
     * banque.
@@ -106,7 +106,7 @@ public interface AnnotationValeurDao extends GenericDaoJpa<AnnotationValeur, Int
    List<Long> findCountByItem(Item item);
 
    /**
-    * Compte les valeurs d'annotations renseignée pour une banque et une 
+    * Compte les valeurs d'annotations renseignée pour une banque et une
     * table annotation passées en paramètres.
     * @param tab TableAnnotation
     * @param banque Banque

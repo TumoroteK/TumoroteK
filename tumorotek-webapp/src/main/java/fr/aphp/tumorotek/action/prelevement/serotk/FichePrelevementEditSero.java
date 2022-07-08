@@ -71,6 +71,7 @@ public class FichePrelevementEditSero extends FichePrelevementEdit
    private static final long serialVersionUID = 2627927168895414292L;
 
    private Listbox protocolesBox;
+
    private final List<Protocole> protocoles = new ArrayList<>();
 
    private PrelevementSero delegate = null;
@@ -102,17 +103,15 @@ public class FichePrelevementEditSero extends FichePrelevementEdit
       }
    }
 
-   
    @Override
    public void initLists(){
       super.initLists();
-      protocoles.addAll(
-         ManagerLocator.getProtocoleManager().findByOrderManager(SessionUtils.getPlateforme(sessionScope)));
+      protocoles.addAll(ManagerLocator.getProtocoleManager().findByOrderManager(SessionUtils.getPlateforme(sessionScope)));
    }
 
    private Set<Protocole> findSelectedProtocoles(){
       final Set<Protocole> rs = new HashSet<>();
-      for(Listitem listitem : protocolesBox.getSelectedItems()){
+      for(final Listitem listitem : protocolesBox.getSelectedItems()){
          rs.add(protocoles.get(protocolesBox.getItems().indexOf(listitem)));
       }
       return rs;

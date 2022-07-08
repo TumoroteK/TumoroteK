@@ -65,18 +65,31 @@ public class FicheChampThesaurus extends AbstractFicheCombineController
    private static final long serialVersionUID = 7626936673907542566L;
 
    private String newValue = "";
+
    private String newSecondValue = "";
+
    private boolean booleanValue = false;
+
    private TKThesaurusObject valeurThesaurus;
+
    private String path = "";
+
    private Label presentationLabel;
+
    private Textbox valueTextbox;
+
    private Textbox secondValueTextbox;
+
    private Checkbox valueCheckbox;
+
    private boolean creationMode = false;
+
    private Row rowSecondValue;
+
    private Row rowBooleanValue;
+
    private Label labelSecondValue;
+
    private Label labelBooleanValue;
 
    @Override
@@ -94,9 +107,9 @@ public class FicheChampThesaurus extends AbstractFicheCombineController
     */
    public void init(final String pathToPage, final Object oldValue, final Constraint constr, final Constraint constr2,
       final String title, final boolean creation){
-      
-      TKThesaurusObject oldValeurThesaurus = (TKThesaurusObject)oldValue;
-      
+
+      final TKThesaurusObject oldValeurThesaurus = (TKThesaurusObject) oldValue;
+
       this.path = pathToPage;
       this.creationMode = creation;
       this.valeurThesaurus = oldValeurThesaurus;
@@ -195,24 +208,24 @@ public class FicheChampThesaurus extends AbstractFicheCombineController
       }
 
       valeurThesaurus.setNom(newValue);
-      
+
       //Alimentation des champs supplémentaires
-      if(valeurThesaurus instanceof Risque) {
+      if(valeurThesaurus instanceof Risque){
          ((Risque) valeurThesaurus).setInfectieux(valueCheckbox.isChecked());
-      } else if (valeurThesaurus instanceof EnceinteType) {
-    	  newSecondValue = newSecondValue.toUpperCase().trim();
-    	 ((EnceinteType) valeurThesaurus).setPrefixe(newSecondValue);
+      }else if(valeurThesaurus instanceof EnceinteType){
+         newSecondValue = newSecondValue.toUpperCase().trim();
+         ((EnceinteType) valeurThesaurus).setPrefixe(newSecondValue);
       }
-      
+
       try{
-         
-         TKThesaurusManager<? extends TKThesaurusObject> manager = ManagerLocator.getThesaurusManager(valeurThesaurus.getClass());
-         
-         if(creationMode) {
-            ((TKThesaurusManager<TKThesaurusObject>)manager).createObjectManager(valeurThesaurus);
-         }
-         else {
-            ((TKThesaurusManager<TKThesaurusObject>)manager).updateObjectManager(valeurThesaurus);
+
+         final TKThesaurusManager<? extends TKThesaurusObject> manager =
+            ManagerLocator.getThesaurusManager(valeurThesaurus.getClass());
+
+         if(creationMode){
+            ((TKThesaurusManager<TKThesaurusObject>) manager).createObjectManager(valeurThesaurus);
+         }else{
+            ((TKThesaurusManager<TKThesaurusObject>) manager).updateObjectManager(valeurThesaurus);
          }
 
          // ferme wait message
@@ -225,11 +238,11 @@ public class FicheChampThesaurus extends AbstractFicheCombineController
          Clients.clearBusy();
          Messagebox.show(handleExceptionMessage(re), "Error", Messagebox.OK, Messagebox.ERROR);
       }
-      
+
    }
 
    /**
-    * Méthode qui ferme la modale et appelle la méthode 
+    * Méthode qui ferme la modale et appelle la méthode
     * onGetSaveDoneOnValue de la FicheThesaurus.
     */
    public void detachWindow(){
@@ -250,7 +263,7 @@ public class FicheChampThesaurus extends AbstractFicheCombineController
    }
 
    /**
-    * Sauvegarde la modification apportée au thésaurus 
+    * Sauvegarde la modification apportée au thésaurus
     * Diagnostic.
     */
    public void saveDiagnostic(){

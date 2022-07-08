@@ -63,8 +63,11 @@ public class ItemComponent extends HtmlMacroComponent
    private Item item = new Item();
 
    private boolean isCreate = true;
+
    private boolean disableDefaut = false;
+
    private boolean isDefaut = false;
+
    private boolean defautChged = false;
 
    private Component backComp;
@@ -139,7 +142,7 @@ public class ItemComponent extends HtmlMacroComponent
     * Recupere les valeurs specifiée pour les assigner à l'Item.
     * Ferme la modale.
     * Post back un event pour rafraichir la liste d'item
-    * dans la modale defaut. 
+    * dans la modale defaut.
     * Post back un event pour rafraichir la liste de valeurs par defaut.
     */
    private void recordItem(){
@@ -169,8 +172,8 @@ public class ItemComponent extends HtmlMacroComponent
       Events.postEvent(new Event("onClose", getParent()));
    }
 
-   /** 
-    * Ferme la modale. 
+   /**
+    * Ferme la modale.
     */
    private void cancelItem(){
       Events.postEvent(new Event("onClose", getParent()));

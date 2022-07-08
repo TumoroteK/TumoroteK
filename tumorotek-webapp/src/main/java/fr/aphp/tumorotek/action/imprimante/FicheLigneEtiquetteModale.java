@@ -84,7 +84,7 @@ import fr.aphp.tumorotek.webapp.general.SessionUtils;
  * Classe gérant la création et l'édition des lignes d'une étiquette.
  * Créée le 15/06/2011.
  * @author Pierre VENTADOUR.
- * 
+ *
  * @version 2.3.0-gatsbi
  *
  */
@@ -95,48 +95,88 @@ public class FicheLigneEtiquetteModale extends AbstractFicheCombineController
 
    // Components
    private Radio texteRadio;
+
    private Radio codeRadio;
+
    private Grid champsGrid;
+
    private Listbox entitesBox;
+
    private Listbox champsBox;
+
    private Listbox entitesToPrintBox;
+
    private Listbox formatagesBox;
+
    private Listbox fontsBox;
+
    private Listbox stylesBox;
+
    private Listbox sizesBox;
+
    private Textbox caractereBox;
+
    private Hbox positionDiv;
+
    private Intbox premierBox;
+
    private Intbox dernierBox;
+
    private Row fontRow;
+
    private Row styleRow;
+
    private Row sizeRow;
+
    private Row contenuTitleRow;
+
    private Row enteteRow;
+
    private Row contenuRow;
 
    // Objets principaux
    private LigneEtiquette ligneEtiquette;
+
    private ListModelList<ChampLigneEtiquette> champs = new ListModelList<>();
+
    private List<ChampLigneEtiquette> champsToRemove = new ArrayList<>();
+
    private Component parent;
+
    private ChampLigneEtiquetteRowRenderer champsRowRenderer = new ChampLigneEtiquetteRowRenderer();
+
    private ListModelList<Entite> entites = new ListModelList<>();
+
    private Entite selectedEntite;
+
    private ListModelList<Entite> entitesToPrint = new ListModelList<>();
+
    private Entite selectedEntiteToPrint;
+
    private ListModelList<ImportChampDecorator> champsDecorator = new ListModelList<>();
+
    private ImportChampDecorator selectedChamp;
+
    private ListModelList<String> formatages = new ListModelList<>();
+
    private String selectedFormatage = "";
+
    private String caractere = "";
+
    private Integer premier;
+
    private Integer dernier;
+
    private List<String> fonts = new ArrayList<>();
+
    private String selectedFont = "";
+
    private List<String> styles = new ArrayList<>();
+
    private String selectedStyle = "";
+
    private List<Integer> sizes = new ArrayList<>();
+
    private Integer selectedSize;
 
    //qrcode
@@ -487,13 +527,13 @@ public class FicheLigneEtiquetteModale extends AbstractFicheCombineController
          final List<ChampDelegue> chDelegueList = ManagerLocator.getManager(ChampDelegueManager.class)
             .findByEntiteAndContexte(selectedEntite, SessionUtils.getCurrentContexte());
 
-
          //Ajout du champ banqueId (collection) s'il existe pour l'entité sélectionnée
-         List<ChampEntite> champCollectionList = ManagerLocator.getManager(ChampEntiteManager.class).findByEntiteAndNomManager(selectedEntite, "BanqueId");
-         if(!champCollectionList.isEmpty()) {
+         final List<ChampEntite> champCollectionList =
+            ManagerLocator.getManager(ChampEntiteManager.class).findByEntiteAndNomManager(selectedEntite, "BanqueId");
+         if(!champCollectionList.isEmpty()){
             ces.add(champCollectionList.get(0));
          }
-         
+
          listChamps.addAll(ces);
          listChamps.addAll(chAnnoList);
          listChamps.addAll(chDelegueList);
@@ -609,10 +649,7 @@ public class FicheLigneEtiquetteModale extends AbstractFicheCombineController
 
       if(selectedFormatage != null){
          if(selectedFormatage.equals(Labels.getLabel("fiche.ligne.etiquette.formatage.avant"))){
-            if(caractere == null){
-               throw new WrongValueException(caractereBox, Labels.getLabel("validation.syntax.empty"));
-            }
-            if(caractere != null && caractere.equals("")){
+            if((caractere == null) || (caractere != null && caractere.equals(""))){
                throw new WrongValueException(caractereBox, Labels.getLabel("validation.syntax.empty"));
             }
             final StringBuffer sb = new StringBuffer();
@@ -620,10 +657,7 @@ public class FicheLigneEtiquetteModale extends AbstractFicheCombineController
             sb.append(caractere);
             cle.setExpReg(sb.toString());
          }else if(selectedFormatage.equals(Labels.getLabel("fiche.ligne.etiquette.formatage.apres"))){
-            if(caractere == null){
-               throw new WrongValueException(caractereBox, Labels.getLabel("validation.syntax.empty"));
-            }
-            if(caractere != null && caractere.equals("")){
+            if((caractere == null) || (caractere != null && caractere.equals(""))){
                throw new WrongValueException(caractereBox, Labels.getLabel("validation.syntax.empty"));
             }
             final StringBuffer sb = new StringBuffer();

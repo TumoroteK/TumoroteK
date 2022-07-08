@@ -61,29 +61,30 @@ public abstract class AbstractEchantillonDelegate extends TKDelegateObject<Echan
 {
 
    private Integer echantillonId;
+
    private Echantillon delegator;
 
    @Id
    @Column(name = "ECHANTILLON_DELEGATE_ID", unique = true, nullable = false)
    @GeneratedValue(generator = "autoincrement")
    @GenericGenerator(name = "autoincrement", strategy = "increment")
-   public Integer getEchantillonId() {
+   public Integer getEchantillonId(){
       return this.echantillonId;
    }
-   
-   public void setEchantillonId(Integer id) {
+
+   public void setEchantillonId(final Integer id){
       this.echantillonId = id;
    }
-   
+
    @Override
    @OneToOne
-   @JoinColumn(name = "ECHANTILLON_ID", nullable=false, unique = true)
+   @JoinColumn(name = "ECHANTILLON_ID", nullable = false, unique = true)
    public Echantillon getDelegator(){
       return this.delegator;
    }
 
    @Override
-   public void setDelegator(Echantillon _d){
+   public void setDelegator(final Echantillon _d){
       this.delegator = _d;
    }
 

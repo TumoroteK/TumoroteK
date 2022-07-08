@@ -69,14 +69,19 @@ public class AffichageManagerTest extends AbstractManagerTest4
 
    @Autowired
    private AffichageManager manager;
+
    @Autowired
    private ResultatManager resultatManager;
+
    @Autowired
    private UtilisateurDao utilisateurDao;
+
    @Autowired
    private ResultatDao resultatDao;
+
    @Autowired
    private ChampEntiteDao champEntiteDao;
+
    @Autowired
    private BanqueDao banqueDao;
 

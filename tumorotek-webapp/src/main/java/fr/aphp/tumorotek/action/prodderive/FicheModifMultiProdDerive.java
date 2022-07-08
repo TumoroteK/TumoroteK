@@ -68,14 +68,23 @@ public class FicheModifMultiProdDerive extends AbstractFicheModifMultiController
    private static final long serialVersionUID = 4384639895874573764L;
 
    private Label codeLaboLabelChanged;
+
    private Label typeLabelChanged;
+
    private Label qualiteLabelChanged;
+
    private Label collaborateurLabelChanged;
+
    private Label dateStockageLabelChanged;
+
    private Label volumeLabelChanged;
+
    private Label concentrationLabelChanged;
+
    private Label quantiteLabelChanged;
+
    private Label nonConformeTraitementLabelChanged;
+
    private Label nonConformeCessionLabelChanged;
 
    private List<NonConformite> nonConformitesTraitement = null;
@@ -133,7 +142,6 @@ public class FicheModifMultiProdDerive extends AbstractFicheModifMultiController
       }
    }
 
-   
    @Override
    public void updateMultiObjects(){
 
@@ -149,7 +157,7 @@ public class FicheModifMultiProdDerive extends AbstractFicheModifMultiController
             hasAnyChange = true;
          }
 
-         // maj du code labo 
+         // maj du code labo
          if(!codeLaboLabelChanged.getValue().equals("")){
             current.setCodeLabo(getObject().getCodeLabo());
             hasAnyChange = true;
@@ -241,7 +249,6 @@ public class FicheModifMultiProdDerive extends AbstractFicheModifMultiController
          null);
    }
 
-   
    public void onClick$typeMultiLabel(){
       final List<? extends Object> types =
          ManagerLocator.getProdTypeManager().findByOrderManager(SessionUtils.getPlateforme(sessionScope));
@@ -255,7 +262,6 @@ public class FicheModifMultiProdDerive extends AbstractFicheModifMultiController
          "Champ.ProdDerive.DateStock", "dateStock", null, null, null, null, false, null, null);
    }
 
-   
    public void onClick$collaborateurMultiLabel(){
       final List<? extends Object> ops = ManagerLocator.getCollaborateurManager().findAllActiveObjectsWithOrderManager();
 
@@ -263,7 +269,6 @@ public class FicheModifMultiProdDerive extends AbstractFicheModifMultiController
          "Champ.ProdDerive.Collaborateur", "collaborateur", (List<Object>) ops, "nomAndPrenom", null, null, false, null, false);
    }
 
-   
    public void onClick$qualiteMultiLabel(){
       final List<? extends Object> quals =
          ManagerLocator.getProdQualiteManager().findByOrderManager(SessionUtils.getPlateforme(sessionScope));
@@ -272,7 +277,6 @@ public class FicheModifMultiProdDerive extends AbstractFicheModifMultiController
          "Champ.ProdDerive.ProdQualite", "prodQualite", (List<Object>) quals, "prodQualite", null, null, false, null, false);
    }
 
-   
    public void onClick$quantiteMultiLabel(){
 
       final List<Unite> quantiteUnites = ManagerLocator.getUniteManager().findByTypeLikeManager("masse", true);
@@ -284,7 +288,6 @@ public class FicheModifMultiProdDerive extends AbstractFicheModifMultiController
          "Champ.ProdDerive.QuantiteInit", "quantiteInit", (List<Object>) units, "unite", null, null, false, null, false);
    }
 
-   
    public void onClick$volumeMultiLabel(){
 
       final List<Unite> quantiteUnites = ManagerLocator.getUniteManager().findByTypeLikeManager("volume", true);
@@ -295,7 +298,6 @@ public class FicheModifMultiProdDerive extends AbstractFicheModifMultiController
          "Champ.ProdDerive.VolumeInit", "volumeInit", (List<Object>) units, "unite", null, null, false, null, false);
    }
 
-   
    public void onClick$concentrationMultiLabel(){
 
       final List<Unite> quantiteUnites = ManagerLocator.getUniteManager().findByTypeLikeManager("concentration", true);
@@ -306,7 +308,6 @@ public class FicheModifMultiProdDerive extends AbstractFicheModifMultiController
          "Champ.ProdDerive.Conc", "conc", (List<Object>) units, "unite", null, null, false, null, false);
    }
 
-   
    public void onClick$nonConformeTraitementMultiLabel(){
 
       final List<? extends Object> nonConfs = ManagerLocator.getNonConformiteManager().findByPlateformeEntiteAndTypeStringManager(
@@ -317,7 +318,6 @@ public class FicheModifMultiProdDerive extends AbstractFicheModifMultiController
          null, false);
    }
 
-   
    public void onClick$nonConformeCessionMultiLabel(){
 
       final List<? extends Object> nonConfs = ManagerLocator.getNonConformiteManager().findByPlateformeEntiteAndTypeStringManager(
@@ -337,8 +337,8 @@ public class FicheModifMultiProdDerive extends AbstractFicheModifMultiController
    public void setParentObject(final TKdataObject obj){}
 
    /**
-    * Surcharge la méthode pour court-circuiter la reception de 
-    * l'event te gérer les modifications sur le sexe et l'état. 
+    * Surcharge la méthode pour court-circuiter la reception de
+    * l'event te gérer les modifications sur le sexe et l'état.
     * Si l'etat change alors nullify date Etat ou date Deces.
     */
    @Override

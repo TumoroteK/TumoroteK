@@ -74,15 +74,21 @@ public class BlocImpression implements Serializable
    private static final long serialVersionUID = -401351001870593573L;
 
    private Integer blocImpressionId;
+
    private String nom;
+
    private Integer ordre;
+
    private Boolean isListe;
+
    private Boolean imprime = true;
 
    private Entite entite;
 
    private Set<ChampEntiteBloc> champEntiteBlocs = new HashSet<>();
+
    private Set<BlocImpressionTemplate> blocImpressionTemplates = new HashSet<>();
+
    private Set<ChampImprime> champImprimes = new HashSet<>();
 
    public BlocImpression(){

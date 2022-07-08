@@ -66,6 +66,7 @@ public class Temperature implements Serializable
    private static final long serialVersionUID = 7889751373831810664L;
 
    private Integer temperatureId;
+
    private Float temperature;
 
    /** Constructeur par défaut. */

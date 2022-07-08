@@ -81,6 +81,7 @@ public class AffectationImprimante implements Serializable
    private static final long serialVersionUID = 1136473047454996768L;
 
    private AffectationImprimantePK pk = new AffectationImprimantePK();
+
    private Modele modele;
 
    public AffectationImprimante(){
@@ -138,7 +139,7 @@ public class AffectationImprimante implements Serializable
    }
 
    /**
-    * 2 profils sont considérés comme égaux s'ils ont la 
+    * 2 profils sont considérés comme égaux s'ils ont la
     * même clé embedded et le même admin.
     * @param obj est le profil à tester.
     * @return true si les profils sont égaux.

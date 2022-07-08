@@ -483,12 +483,12 @@ public final class ManagerLocator
    public static ChampEntiteManager getChampEntiteManager(){
       return (ChampEntiteManager) (ContextLoader.getCurrentWebApplicationContext()).getBean("champEntiteManager");
    }
-   
+
    /**
     * @since 2.2.1
     */
    public static ChampDelegueManager getChampDelegueManager(){
-	   return (ChampDelegueManager) (ContextLoader.getCurrentWebApplicationContext()).getBean("champDelegueManager");
+      return (ChampDelegueManager) (ContextLoader.getCurrentWebApplicationContext()).getBean("champDelegueManager");
    }
 
    public static ChampManager getChampManager(){
@@ -917,7 +917,7 @@ public final class ManagerLocator
    public static EchantillonDTOManager getEchantillonDTOManager(){
       return (EchantillonDTOManager) (ContextLoader.getCurrentWebApplicationContext()).getBean("echantillonDTOManager");
    }
-   
+
    /**
     * @since 2.30-gatsbi
     */

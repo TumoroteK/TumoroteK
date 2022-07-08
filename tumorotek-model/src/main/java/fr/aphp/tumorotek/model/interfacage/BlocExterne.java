@@ -73,12 +73,15 @@ public class BlocExterne implements java.io.Serializable
    private static final long serialVersionUID = 1035198779653396102L;
 
    private Integer blocExterneId;
+
    private Integer entiteId;
+
    private Integer ordre;
+
    private DossierExterne dossierExterne;
 
-   // Transient 
-   // @since 2.1 Camel JDBC sgl view 
+   // Transient
+   // @since 2.1 Camel JDBC sgl view
    private final List<ValeurExterne> valeurs = new ArrayList<>();
 
    public BlocExterne(){

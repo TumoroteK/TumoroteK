@@ -53,6 +53,7 @@ public class TumoBarcodePrinterImpl implements TumoBarcodePrinter
 {
 
    private TumoPrinterUtilsManager tumoPrinterUtilsManager;
+
    // private LigneEtiquetteManager ligneEtiquetteManager;
    private final ComponentPrinter componentPrinter = new ComponentPrinter();
 
@@ -87,14 +88,14 @@ public class TumoBarcodePrinterImpl implements TumoBarcodePrinter
    //	/**
    //	 * Fonction qui effectue l'impression des etiquettes codes a barres d'une
    //	 * liste d'echantillons.
-   //	 * 
+   //	 *
    //	 * @param List
    //	 *            la liste des echantillons a imprimer
    //	 * @param int nb le nombre d impressions a effectuer par echantillon
    //	 * @return int le code retour pour savoir si l impression s est correctement
    //	 *         deroulee si codeRetour = 0, l impression s est mal passee si
    //	 *         codeRetour = 1, l impression s est bien passee
-   //	 * @throws PrinterException 
+   //	 * @throws PrinterException
    //	 */
    //	public int printEchantillon(List<Echantillon> echantillons, int nb,
    //			Imprimante imprimante, Modele modele, String rawLang) throws PrinterException {
@@ -131,10 +132,10 @@ public class TumoBarcodePrinterImpl implements TumoBarcodePrinter
    //	/**
    //	 * Fonction qui effectue l'impression des etiquettes codes a barres d'une
    //	 * liste de derives.
-   //	 * @throws PrinterException 
+   //	 * @throws PrinterException
    //	 */
    //	public int printDerive(List<ProdDerive> derives, int nb,
-   //			Imprimante imprimante, Modele modele, String rawLang) 
+   //			Imprimante imprimante, Modele modele, String rawLang)
    //					throws PrinterException {
    //		boolean isDefault = true;
    //		List<LigneEtiquette> lignes = null;
@@ -185,11 +186,11 @@ public class TumoBarcodePrinterImpl implements TumoBarcodePrinter
    //
    //		return codeRetour;
    //	}
-   //	
+   //
    //
    //	@Override
    //	public int printListData(List<List<LigneEtiquette>> l,
-   //			Imprimante imprimante, Modele modele, String rawLang) 
+   //			Imprimante imprimante, Modele modele, String rawLang)
    //					throws PrinterException {
    //		int codeRetour = 0;
    //
@@ -245,7 +246,7 @@ public class TumoBarcodePrinterImpl implements TumoBarcodePrinter
             components.add(ComponentPrinter.getComponent(lignes, imp, mod, obj.getCode()));
          }
       }
-      codeRetour = componentPrinter.printComponents(components, //nb, 
+      codeRetour = componentPrinter.printComponents(components, //nb,
          imp, rawLang, by);
       return codeRetour;
    }

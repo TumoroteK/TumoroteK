@@ -73,9 +73,13 @@ public class IncidentManagerImpl implements IncidentManager
    private final Log log = LogFactory.getLog(IncidentManager.class);
 
    private IncidentDao incidentDao;
+
    private ConteneurDao conteneurDao;
+
    private EnceinteDao enceinteDao;
+
    private TerminaleDao terminaleDao;
+
    private IncidentValidator incidentValidator;
 
    /**
@@ -96,7 +100,7 @@ public class IncidentManagerImpl implements IncidentManager
 
    public void setEnceinteDao(final EnceinteDao ec){
       this.enceinteDao = ec;
-      ;
+
    }
 
    public void setTerminaleDao(final TerminaleDao terminaleDao){

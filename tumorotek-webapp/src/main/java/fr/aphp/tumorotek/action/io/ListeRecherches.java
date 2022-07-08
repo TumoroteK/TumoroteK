@@ -63,7 +63,7 @@ public class ListeRecherches extends AbstractListeController2
       super.doAfterCompose(comp);
 
       listPanel.setHeight(getMainWindow().getListPanelHeight() + 35 + "px");
-      //objectsListGrid.setHeight(getMainWindow().getListPanelHeight() 
+      //objectsListGrid.setHeight(getMainWindow().getListPanelHeight()
       //		+ 38 + "px");
       //listPanel.setHeight("100%");
       // listObjects = (List<Recherche>) ManagerLocator.getRechercheManager()
@@ -196,7 +196,6 @@ public class ListeRecherches extends AbstractListeController2
    @Override
    public void removeFromSelectedObjects(final TKdataObject obj){}
 
-   
    @Override
    public void setListObjects(final List<? extends TKdataObject> objs){
       this.listObjects = (List<Recherche>) objs;

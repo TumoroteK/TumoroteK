@@ -48,11 +48,13 @@ import fr.aphp.tumorotek.action.controller.AbstractController;
  * @version 2.2.0
  * @since 2.2.0
  */
-public class ChartsController extends AbstractController {
+public class ChartsController extends AbstractController
+{
 
    private static final long serialVersionUID = -641893140687268981L;
-   
+
    private Tabbox statTabbox;
+
    private Tabbox statBox;
 
    @Override

@@ -63,12 +63,17 @@ public class ListeUtilisateur extends AbstractListeController2
    private static final long serialVersionUID = 295074764171509054L;
 
    private List<Utilisateur> listObjects = new ArrayList<>();
+
    private List<Plateforme> pfs = new ArrayList<>();
+
    boolean findArchive = false;
 
    private Textbox findLoginBox;
+
    private Checkbox comptesActifsBox;
+
    private Checkbox availPfsBox;
+
    private Column pfCol;
 
    private UtilisateurRowRenderer utilisateurRenderer = new UtilisateurRowRenderer();
@@ -84,7 +89,7 @@ public class ListeUtilisateur extends AbstractListeController2
    @Override
    public void doAfterCompose(final Component comp) throws Exception{
       modificationItem = new Menuitem();
-      // plateforme courante par défaut pour filtrer les 
+      // plateforme courante par défaut pour filtrer les
       // utilisateurs
       super.doAfterCompose(comp);
 
@@ -99,7 +104,6 @@ public class ListeUtilisateur extends AbstractListeController2
       return this.listObjects;
    }
 
-   
    @Override
    public void setListObjects(final List<? extends TKdataObject> objs){
       this.listObjects.clear();
@@ -125,11 +129,10 @@ public class ListeUtilisateur extends AbstractListeController2
       if(pfs.isEmpty()){
          pfs.add(SessionUtils.getPlateforme(sessionScope));
       }
-      
+
       // TK-252
       // affichage des comptes superadmin
-      final List<Utilisateur> utilisateurs = ManagerLocator.getUtilisateurManager()
-    		  .findByArchiveManager(findArchive, pfs, true);
+      final List<Utilisateur> utilisateurs = ManagerLocator.getUtilisateurManager().findByArchiveManager(findArchive, pfs, true);
 
       listObjects = utilisateurs;
       setCurrentRow(null);
@@ -199,34 +202,34 @@ public class ListeUtilisateur extends AbstractListeController2
       getFiche().setObject(edit);
       getFiche().switchToStaticMode();
    }
-   
+
    /**
-    * 
+    *
     * Colore la ligne en doré si superadmin
     * @since 2.2.1
     */
    @Override
    public void selectRow(final Row row, final TKdataObject obj){
-	   super.selectRow(row, obj);
-	   
-	   if (((Utilisateur) obj).isSuperAdmin()) {
-		   getCurrentRow().setStyle("background-color : #FFA500");
-	   }
+      super.selectRow(row, obj);
+
+      if(((Utilisateur) obj).isSuperAdmin()){
+         getCurrentRow().setStyle("background-color : #FFA500");
+      }
    }
-   
+
    @Override
-	public void deselectRow() {
-	   // on vérifie qu'une ligne est bien sélectionnée
+   public void deselectRow(){
+      // on vérifie qu'une ligne est bien sélectionnée
       if(getCurrentObject() != null && getCurrentRow() != null){
          final int ind = getListObjects().indexOf(getCurrentObject());
          // on lui spécifie une couleur en fonction de son
          // numéro de ligne
          if(ind > -1){
-        	if (!((Utilisateur) getCurrentObject()).isSuperAdmin()) {
-        		getCurrentRow().setStyle("background-color : #e2e9fe");
-        	} else {
-        		getCurrentRow().setStyle("background-color : #FFD700");
-        	}
+            if(!((Utilisateur) getCurrentObject()).isSuperAdmin()){
+               getCurrentRow().setStyle("background-color : #e2e9fe");
+            }else{
+               getCurrentRow().setStyle("background-color : #FFD700");
+            }
             /*
              * if (ind % 2 == 0) {
              * currentRow.setStyle("background-color : #FFFFFF"); } else {
@@ -236,7 +239,7 @@ public class ListeUtilisateur extends AbstractListeController2
             setCurrentObject(null);
          }
       }
-	}
+   }
 
    @Override
    public void onClick$addNew(final Event event) throws Exception{

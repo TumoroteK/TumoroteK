@@ -65,6 +65,7 @@ public class NatureManagerTest extends AbstractManagerTest4
 
    @Autowired
    private NatureManager natureManager;
+
    @Autowired
    private PlateformeDao plateformeDao;
 

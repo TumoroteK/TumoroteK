@@ -65,8 +65,11 @@ public class CimLibelle implements Serializable
    private static final long serialVersionUID = -5425665238563681260L;
 
    private Integer lid;
+
    private String source;
+
    private String valid;
+
    private String libelle;
 
    private CimMaster cimMaster;

@@ -54,7 +54,7 @@ public interface ConditTypeDao extends GenericDaoJpa<ConditType, Integer>, PfDep
 {
 
    /**
-    * Recherche les types de conditionnement dont le type 
+    * Recherche les types de conditionnement dont le type
     * est 'like' le paramètre.
     * @param type Type des conditionnements recherchés.
     * @return Liste des types de conditionnement.

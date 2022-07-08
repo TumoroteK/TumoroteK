@@ -1,5 +1,5 @@
 /**
- * Copyright ou © ou Copr. Assistance Publique des Hôpitaux de 
+ * Copyright ou © ou Copr. Assistance Publique des Hôpitaux de
  * PARIS et SESAN
  * projet-tk@sesan.fr
  *
@@ -37,25 +37,26 @@
 package fr.aphp.tumorotek.manager.validation;
 
 import org.springframework.validation.Errors;
+
 import fr.aphp.tumorotek.model.TKdataObject;
 
-
 /**
- * Interface fonctionnelle type Consumer. 
- * 
- * Application de la fonction de validation 
- * du caractère obligatoire d'une propriété d'une entité TK 
+ * Interface fonctionnelle type Consumer.
+ *
+ * Application de la fonction de validation
+ * du caractère obligatoire d'une propriété d'une entité TK
  * (Patient, prélèvement, échantillon...).
- * 
+ *
  * Ajoute l'erreur de validation à la liste Errors
- * 
+ *
  * @author Mathieu BARTHELEMY
  * @version 2.3.0-gatsbi
  *
  */
 @FunctionalInterface
-public interface ValidateField {
-	
-	public boolean validate(TKdataObject tkObj, Errors errs);
+public interface ValidateField
+{
+
+   public boolean validate(TKdataObject tkObj, Errors errs);
 
 }

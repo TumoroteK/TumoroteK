@@ -75,6 +75,7 @@ public class TableAnnotationBanque implements Serializable
    private static final long serialVersionUID = 1L;
 
    private Integer ordre;
+
    private TableAnnotationBanquePK pk = new TableAnnotationBanquePK();
 
    /** Constructeur par défaut. */

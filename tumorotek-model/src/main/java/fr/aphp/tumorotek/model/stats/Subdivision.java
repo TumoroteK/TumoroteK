@@ -72,9 +72,13 @@ public class Subdivision implements Serializable
 {
 
    private static final long serialVersionUID = 73708959544594320L;
+
    private Integer subdivisionId;
+
    private String nom;
+
    private List<Indicateur> indicateurs = new ArrayList<>();
+
    private ChampEntite champEntite;
 
    public Subdivision(){

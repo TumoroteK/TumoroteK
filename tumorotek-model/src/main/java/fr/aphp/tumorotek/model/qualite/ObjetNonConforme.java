@@ -77,8 +77,11 @@ public class ObjetNonConforme implements java.io.Serializable
    private static final long serialVersionUID = 1284782619042960165L;
 
    private Integer objetNonConformeId;
+
    private NonConformite nonConformite;
+
    private Integer objetId;
+
    private Entite entite;
 
    public ObjetNonConforme(){

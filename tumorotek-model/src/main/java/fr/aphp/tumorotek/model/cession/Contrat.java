@@ -87,20 +87,33 @@ public class Contrat implements TKdataObject, TKFantomableObject, Serializable
    private static final long serialVersionUID = -1166135996929457768L;
 
    private Integer contratId;
+
    private String numero;
+
    private Date dateDemandeCession;
+
    private Date dateValidation;
+
    private Date dateDemandeRedaction;
+
    private Date dateEnvoiContrat;
+
    private Date dateSignature;
+
    private String titreProjet;
+
    private String description;
+
    private Float montant;
 
    private Plateforme plateforme;
+
    private ProtocoleType protocoleType;
+
    private Service service;
+
    private Collaborateur collaborateur;
+
    private Etablissement etablissement;
 
    private Set<Cession> cessions = new HashSet<>();

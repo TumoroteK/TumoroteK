@@ -62,13 +62,21 @@ public class EnceinteNode extends TumoTreeNode
 {
 
    private Enceinte enceinte;
+
    private String libelle = "";
+
    private Long nbEmplacementsLibres = (long) 0;
+
    private Long nbEmplacementsOccupes = (long) 0;
+
    private Float pourcentage = (float) 0;
+
    private boolean vide;
+
    private Conteneur conteneur;
+
    private Integer niveau;
+
    private Banque selectedBanque;
 
    public EnceinteNode(final Enceinte enc, final Long nbLibres, final Long nbOccupes, final Banque bank){
@@ -102,7 +110,7 @@ public class EnceinteNode extends TumoTreeNode
 
          final Long total = nbEmplacementsLibres + nbEmplacementsOccupes;
          if(total != 0){
-            final Float puiss = nbEmplacementsOccupes.floatValue() * 100;
+            final float puiss = nbEmplacementsOccupes.floatValue() * 100;
             pourcentage = puiss / total.floatValue();
             sb.append(" - ");
             sb.append(ObjectTypesFormatters.floor(pourcentage, 1));
@@ -118,7 +126,7 @@ public class EnceinteNode extends TumoTreeNode
    }
 
    /**
-    * Recherche toutes les enceintes du conteneur et crée un 
+    * Recherche toutes les enceintes du conteneur et crée un
     * EnceinteNode pour chacun.
     */
    @Override
@@ -147,7 +155,7 @@ public class EnceinteNode extends TumoTreeNode
 
                // Terminale non vide
                final TerminaleNode node = new TerminaleNode(term, selectedBanque);
-               // n'ajoute pas le node si hideComplete et si la 
+               // n'ajoute pas le node si hideComplete et si la
                // boite n'est pas pleine
                if(!isHideComplete() || node.isNotFull()){
                   // transmet l'information hideComplete au noeuds

@@ -86,7 +86,7 @@ import fr.aphp.tumorotek.model.systeme.Entite;
    @NamedQuery(name = "TableAnnotation" + ".findMaxOrdreForBanqueAndEntite",
       query = "SELECT max(b.ordre) FROM TableAnnotationBanque b" + " JOIN b.pk.tableAnnotation t"
          + " WHERE t.entite = ?1 AND b.pk.banque = ?2"),
-   //			@NamedQuery(name = "TableAnnotation.findDoublon", 
+   //			@NamedQuery(name = "TableAnnotation.findDoublon",
    //				query = "SELECT t FROM TableAnnotation t WHERE t.nom = ?1 "
    //							+ "AND t.entite = ?2")
    @NamedQuery(name = "TableAnnotation.findByExcludedId",
@@ -108,14 +108,21 @@ public class TableAnnotation implements TKFantomableObject, TKdataObject, Serial
    private static final long serialVersionUID = 1L;
 
    private Integer tableAnnotationId;
+
    private String nom;
+
    private String description;
+
    private Entite entite;
+
    private Catalogue catalogue;
+
    private Plateforme plateforme;
 
    private Set<ChampAnnotation> champAnnotations = new HashSet<>();
+
    private Set<TableAnnotationBanque> tableAnnotationBanques = new HashSet<>();
+
    private Set<TableAnnotationTemplate> tableAnnotationTemplates = new HashSet<>();
 
    /**

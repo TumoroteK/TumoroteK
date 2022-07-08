@@ -73,11 +73,15 @@ public class ProdDeriveDecorator2
 {
 
    private final boolean isNew;
+
    private ProdDerive prodDerive;
+
    private Boolean checkedProdDerive;
+
    private String adrlTmp;
 
    private List<NonConformite> nonConformiteTraitements = new ArrayList<>();
+
    private List<NonConformite> nonConformiteCessions = new ArrayList<>();
 
    public ProdDeriveDecorator2(final ProdDerive derive){
@@ -374,7 +378,7 @@ public class ProdDeriveDecorator2
 
    public String getEtatIncomplet(){
       if(this.prodDerive.getEtatIncomplet() != null){
-         if(this.prodDerive.getEtatIncomplet().booleanValue() == true){
+         if(this.prodDerive.getEtatIncomplet().booleanValue()){
             return "oui";
          }
          return "non";

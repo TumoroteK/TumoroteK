@@ -75,11 +75,11 @@ public class PrelevementXeno extends AbstractPrelevementDelegate
    public boolean isEmpty(){
       return getSouris() == null;
    }
-   
+
    @Override
-	public TKDelegateObject<Prelevement> clone() {
-	   PrelevementXeno clone = new PrelevementXeno();
-		clone.setSouris(getSouris());
-		return clone;
-	}
+   public TKDelegateObject<Prelevement> clone(){
+      final PrelevementXeno clone = new PrelevementXeno();
+      clone.setSouris(getSouris());
+      return clone;
+   }
 }

@@ -60,6 +60,7 @@ public abstract class AbstractPatientDelegate extends TKDelegateObject<Patient>
 {
 
    private Integer patientId;
+
    private Patient delegator;
 
    @Id
@@ -70,7 +71,7 @@ public abstract class AbstractPatientDelegate extends TKDelegateObject<Patient>
       return patientId;
    }
 
-   public void setPatientId(Integer id){
+   public void setPatientId(final Integer id){
       this.patientId = id;
    }
 
@@ -88,7 +89,7 @@ public abstract class AbstractPatientDelegate extends TKDelegateObject<Patient>
     * @see fr.aphp.tumorotek.model.TKDelegateObject#setDelegator(java.lang.Object)
     */
    @Override
-   public void setDelegator(Patient delegator){
+   public void setDelegator(final Patient delegator){
       this.delegator = delegator;
    }
 

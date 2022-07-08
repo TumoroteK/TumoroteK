@@ -1,5 +1,5 @@
 /**
- * Copyright ou © ou Copr. Assistance Publique des Hôpitaux de 
+ * Copyright ou © ou Copr. Assistance Publique des Hôpitaux de
  * PARIS et SESAN
  * projet-tk@sesan.fr
  *
@@ -49,82 +49,76 @@ import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
 /**
  *
- * Controller gérant la fiche static d'un échantillon sous le gestionnaire GATSBI. 
+ * Controller gérant la fiche static d'un échantillon sous le gestionnaire GATSBI.
  * Controller créé le 02/05/2022
- * 
+ *
  * @author mathieu BARTHELEMY
  * @version 2.3.0-gatsbi
  *
  */
-public class FicheEchantillonStaticGatsbi extends FicheEchantillonStatic {
+public class FicheEchantillonStaticGatsbi extends FicheEchantillonStatic
+{
 
-	private static final long serialVersionUID = -7612780578022559022L;
+   private static final long serialVersionUID = -7612780578022559022L;
 
-	private Groupbox groupEchantillon;
-	private Groupbox groupInfosCompEchan;
+   private Groupbox groupEchantillon;
 
-	private Contexte c;
+   private Groupbox groupInfosCompEchan;
 
-	@Override
-	public void doAfterCompose(final Component comp) throws Exception {
-		super.doAfterCompose(comp);
+   private Contexte c;
 
-		c = GatsbiController.initWireAndDisplay(this, 
-			3, 
-			false, null, null, null,
-			groupEchantillon, groupInfosCompEchan);
-		
-		// affichage conditionnel infos prelevement 
-		GatsbiController.initWireAndDisplayForIds(this, 2, "natureDiv");
-	}
-	
-	/**
-	 * Gatsbi surcharge pour intercaler une modale de sélection des parametrages
-	 * proposés par le contexte.
-	 * 
-	 * @param click event
-	 */
-	@Override
-	public void onClick$addNew() {		
-		GatsbiController.addNewObjectForContext(c, self, 
-			e -> {
-				try {
-					super.onClick$addNew();
-				} catch (Exception ex) {
-					Messagebox.show(handleExceptionMessage(ex), 
-							"Error", Messagebox.OK, Messagebox.ERROR);
-				}
-			}, null, null);
-	}
+   @Override
+   public void doAfterCompose(final Component comp) throws Exception{
+      super.doAfterCompose(comp);
 
-	/**
-	 * Un parametrage a été sélectionné.
-	 * 
-	 * @param param
-	 * @throws Exception
-	 */
-	public void onGetSelectedParametrage(ForwardEvent evt) throws Exception {
+      c = GatsbiController.initWireAndDisplay(this, 3, false, null, null, null, groupEchantillon, groupInfosCompEchan);
 
-		try {
-			
-			GatsbiController.getSelectedParametrageFromSelectEvent(c, 
-				SessionUtils.getCurrentBanque(sessionScope), 
-				getObjectTabController(), null, 
-				() -> {
-					try {
-						super.onClick$addNew();
-					} catch (Exception ex) {
-						Messagebox.show(handleExceptionMessage(ex), 
-								"Error", Messagebox.OK, Messagebox.ERROR);
-					}
-				}, evt);	
-		} catch (GatsbiException e) {
-			Messagebox.show(handleExceptionMessage(e), "Error", Messagebox.OK, Messagebox.ERROR);
-		}
-	}
-	
-	@Override
-	protected void setGroupInfosCompEchanOpen(boolean b) {
-		((Groupbox) groupInfosCompEchan).setOpen(b);
-	}
+      // affichage conditionnel infos prelevement
+      GatsbiController.initWireAndDisplayForIds(this, 2, "natureDiv");
+   }
+
+   /**
+    * Gatsbi surcharge pour intercaler une modale de sélection des parametrages
+    * proposés par le contexte.
+    *
+    * @param click event
+    */
+   @Override
+   public void onClick$addNew(){
+      GatsbiController.addNewObjectForContext(c, self, e -> {
+         try{
+            super.onClick$addNew();
+         }catch(final Exception ex){
+            Messagebox.show(handleExceptionMessage(ex), "Error", Messagebox.OK, Messagebox.ERROR);
+         }
+      }, null, null);
+   }
+
+   /**
+    * Un parametrage a été sélectionné.
+    *
+    * @param param
+    * @throws Exception
+    */
+   public void onGetSelectedParametrage(final ForwardEvent evt) throws Exception{
+
+      try{
+
+         GatsbiController.getSelectedParametrageFromSelectEvent(c, SessionUtils.getCurrentBanque(sessionScope),
+            getObjectTabController(), null, () -> {
+               try{
+                  super.onClick$addNew();
+               }catch(final Exception ex){
+                  Messagebox.show(handleExceptionMessage(ex), "Error", Messagebox.OK, Messagebox.ERROR);
+               }
+            }, evt);
+      }catch(final GatsbiException e){
+         Messagebox.show(handleExceptionMessage(e), "Error", Messagebox.OK, Messagebox.ERROR);
+      }
+   }
+
+   @Override
+   protected void setGroupInfosCompEchanOpen(final boolean b){
+      groupInfosCompEchan.setOpen(b);
+   }
 }

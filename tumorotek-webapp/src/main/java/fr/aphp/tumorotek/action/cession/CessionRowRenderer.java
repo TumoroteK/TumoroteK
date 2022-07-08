@@ -181,7 +181,7 @@ public class CessionRowRenderer extends TKSelectObjectRenderer<Cession>
 
       final List<String> codes = ManagerLocator.getCederObjetManager().findCodesByCessionEntiteManager(cession,
          ManagerLocator.getEntiteManager().findByNomManager("Echantillon").get(0));
-      
+
       final Integer echansCount = codes.size();
 
       if(echansCount > 0){
@@ -194,25 +194,24 @@ public class CessionRowRenderer extends TKSelectObjectRenderer<Cession>
              * {@link ListeCession#onClickNbEchantillons(Cession, org.zkoss.zul.Row)}
              */
             @Override
-            public void onEvent(Event event) throws Exception{
+            public void onEvent(final Event event) throws Exception{
                // TODO être sûr de ce qu'on récupère avec les getarent()
-               Events.postEvent("onClickNbEchantillons", row.getParent().getParent().getParent().getParent().getParent(),
-                  codes);
+               Events.postEvent("onClickNbEchantillons", row.getParent().getParent().getParent().getParent().getParent(), codes);
             }
          });
-         // dessine le label avec un lien vers popup 
+         // dessine le label avec un lien vers popup
          final Hbox labelAndLinkBox = new Hbox();
          labelAndLinkBox.setSpacing("5px");
          labelAndLinkBox.appendChild(label1);
          if(echansCount < 50){
-            
+
             final Label moreLabel = new Label("...");
             moreLabel.setClass("formLink");
             final Popup popUp = new Popup();
             popUp.setParent(row.getParent().getParent().getParent()); // TODO etre sûr de ce qu'on récupère avec les getarent()
             Label libelleStaticLabel = null;
             final Vbox popupVbox = new Vbox();
-            for(String code : codes){
+            for(final String code : codes){
                libelleStaticLabel = new Label(code);
                libelleStaticLabel.setSclass("formLink");
                libelleStaticLabel.addEventListener("onClick", new EventListener<Event>()
@@ -222,8 +221,8 @@ public class CessionRowRenderer extends TKSelectObjectRenderer<Cession>
                    * {@link ListeCession#onClickEchantillonCode(Cession, org.zkoss.zul.Row)}
                    */
                   @Override
-                  public void onEvent(Event event) throws Exception{
-                      // TODO être sûr de ce qu'on récupère avec les getarent()
+                  public void onEvent(final Event event) throws Exception{
+                     // TODO être sûr de ce qu'on récupère avec les getarent()
                      Events.postEvent("onClickEchantillonCode", row.getParent().getParent().getParent().getParent().getParent(),
                         code);
                   }
@@ -244,7 +243,7 @@ public class CessionRowRenderer extends TKSelectObjectRenderer<Cession>
 
       final List<String> codes = ManagerLocator.getCederObjetManager().findCodesByCessionEntiteManager(cession,
          ManagerLocator.getEntiteManager().findByNomManager("ProdDerive").get(0));
-      
+
       final Integer prodsCount = codes.size();
 
       if(prodsCount > 0){
@@ -257,13 +256,12 @@ public class CessionRowRenderer extends TKSelectObjectRenderer<Cession>
              * {@link ListeCession#onClickNbProdDerives(Cession, org.zkoss.zul.Row)}
              */
             @Override
-            public void onEvent(Event event) throws Exception{
+            public void onEvent(final Event event) throws Exception{
                // TODO être sûr de ce qu'on récupère avec les getarent()
-               Events.postEvent("onClickNbProdDerives", row.getParent().getParent().getParent().getParent().getParent(),
-                  codes);
+               Events.postEvent("onClickNbProdDerives", row.getParent().getParent().getParent().getParent().getParent(), codes);
             }
          });
-         // dessine le label avec un lien vers popup 
+         // dessine le label avec un lien vers popup
          final Hbox labelAndLinkBox = new Hbox();
          labelAndLinkBox.setSpacing("5px");
          labelAndLinkBox.appendChild(label1);
@@ -274,7 +272,7 @@ public class CessionRowRenderer extends TKSelectObjectRenderer<Cession>
             popUp.setParent(row.getParent().getParent().getParent()); //TODO être sûr de ce qu'on récupère avec les getarent()
             Label libelleStaticLabel = null;
             final Vbox popupVbox = new Vbox();
-            for(String code : codes){
+            for(final String code : codes){
                libelleStaticLabel = new Label(code);
                libelleStaticLabel.setSclass("formLink");
                libelleStaticLabel.addEventListener("onClick", new EventListener<Event>()
@@ -284,7 +282,7 @@ public class CessionRowRenderer extends TKSelectObjectRenderer<Cession>
                    * {@link ListeCession#onClickProdDeriveCode(Cession, org.zkoss.zul.Row)}
                    */
                   @Override
-                  public void onEvent(Event event) throws Exception{
+                  public void onEvent(final Event event) throws Exception{
                      // TODO être sûr de ce qu'on récupère avec les getarent()
                      Events.postEvent("onClickProdDeriveCode", row.getParent().getParent().getParent().getParent().getParent(),
                         code);

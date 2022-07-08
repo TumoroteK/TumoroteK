@@ -83,20 +83,28 @@ public class TemplateManagerTest extends AbstractManagerTest4
 
    @Autowired
    private TemplateManager templateManager;
+
    @Autowired
    private BanqueDao banqueDao;
+
    @Autowired
    private EntiteDao entiteDao;
+
    @Autowired
    private BlocImpressionDao blocImpressionDao;
+
    @Autowired
    private ChampEntiteDao champEntiteDao;
+
    @Autowired
    private BlocImpressionTemplateManager blocImpressionTemplateManager;
+
    @Autowired
    private ChampImprimeManager champImprimeManager;
+
    @Autowired
    private TableAnnotationManager tableAnnotationManager;
+
    @Autowired
    private TableAnnotationTemplateManager tableAnnotationTemplateManager;
 

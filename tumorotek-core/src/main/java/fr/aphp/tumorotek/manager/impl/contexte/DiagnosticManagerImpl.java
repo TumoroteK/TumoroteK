@@ -68,7 +68,9 @@ public class DiagnosticManagerImpl implements DiagnosticManager
    private final Log log = LogFactory.getLog(DiagnosticManager.class);
 
    private DiagnosticDao diagnosticDao;
+
    private DiagnosticValidator diagnosticValidator;
+
    private PlateformeDao plateformeDao;
 
    public DiagnosticManagerImpl(){}

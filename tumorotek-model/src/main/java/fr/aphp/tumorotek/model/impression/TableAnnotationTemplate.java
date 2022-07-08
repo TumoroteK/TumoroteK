@@ -81,6 +81,7 @@ public class TableAnnotationTemplate implements Serializable
    private static final long serialVersionUID = 7015726441690587506L;
 
    private Integer ordre;
+
    private TableAnnotationTemplatePK pk = new TableAnnotationTemplatePK();
 
    public TableAnnotationTemplate(){

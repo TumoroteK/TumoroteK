@@ -80,6 +80,7 @@ public class CessionExamen extends AbstractPfDependantThesaurusObject implements
    private static final long serialVersionUID = -6437415927205983957L;
 
    private String examenEn;
+
    private Set<Cession> cessions = new HashSet<>();
 
    /**

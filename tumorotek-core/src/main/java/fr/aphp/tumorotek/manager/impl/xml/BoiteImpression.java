@@ -52,17 +52,29 @@ public class BoiteImpression
 {
 
    private Terminale boite;
+
    private String titreIntermediaire;
+
    private String titreModelisation;
+
    private String titreInstructions;
+
    private String nom;
+
    private List<String> instructions;
+
    private List<String> elements = new ArrayList<>();
+
    private String titreListe;
+
    private List<Integer> positions = new ArrayList<>();
+
    private String legendeVide;
+
    private String legendePris;
+
    private String legendeSelectionne;
+
    private Boolean separateur = false;
 
    public BoiteImpression(){

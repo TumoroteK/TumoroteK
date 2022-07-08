@@ -55,7 +55,7 @@ public interface EchantillonTypeManager extends PfDependantTKThesaurusManager<Ec
 {
 
    /**
-    * Recherche un type d'échantillon dont l'identifiant est 
+    * Recherche un type d'échantillon dont l'identifiant est
     * passé en paramètre.
     * @param echantillonTypeId Identifiant du type que l'on recherche.
     * @return Un EchantillonType.
@@ -93,14 +93,14 @@ public interface EchantillonTypeManager extends PfDependantTKThesaurusManager<Ec
    //	 * @return True s'il existe des doublons.
    //	 */
    //	Boolean findDoublonManager(EchantillonType type);
-   //	
+   //
    //	/**
    //	 * Test si un type d'échantillons est lié à des échantillons.
    //	 * @param type EchantillonType que l'on souhaite tester.
    //	 * @return Vrai si le type est utilisé.
    //	 */
    //	Boolean isUsedObjectManager(EchantillonType type);
-   //	
+   //
    //	/**
    //	 * Persist une instance d'EchantillonType dans la base de données.
    //	 * @param type Nouvelle instance de l'objet à créer.
@@ -108,7 +108,7 @@ public interface EchantillonTypeManager extends PfDependantTKThesaurusManager<Ec
    //	 * l'objet à créer se trouve déjà dans la base.
    //	 */
    //	void createObjectManager(EchantillonType type);
-   //	
+   //
    //	/**
    //	 * Sauvegarde les modifications apportées à un objet persistant.
    //	 * @param type Objet à mettre à jour dans la base.
@@ -116,7 +116,7 @@ public interface EchantillonTypeManager extends PfDependantTKThesaurusManager<Ec
    //	 * l'objet à créer se trouve déjà dans la base.
    //	 */
    //	void updateObjectManager(EchantillonType type);
-   //	
+   //
    //	/**
    //	 * Supprime un EchantillonType de la base de données.
    //	 * @param type EchantillonType à supprimer de la base de données.

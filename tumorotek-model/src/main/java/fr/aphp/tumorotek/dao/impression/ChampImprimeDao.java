@@ -56,7 +56,7 @@ public interface ChampImprimeDao extends GenericDaoJpa<ChampImprime, ChampImprim
 {
 
    /**
-    * Recherche les ChampImprimes dont le template 
+    * Recherche les ChampImprimes dont le template
     * est égal au paramètre.
     * @param template Template du ChampImprime recherché.
     * @return une liste de ChampImprimes.

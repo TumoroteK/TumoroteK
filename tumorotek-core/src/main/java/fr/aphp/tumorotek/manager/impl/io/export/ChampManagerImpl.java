@@ -69,17 +69,19 @@ public class ChampManagerImpl implements ChampManager
 
    /** Bean Dao ChampDao. */
    private ChampDao champDao = null;
-   
+
    private ChampEntiteManager champEntiteManager;
+
    private ChampDelegueManager champDelegueManager;
+
    private AnnotationValeurManager annotationValeurManager;
-   
+
    public ChampManagerImpl(){
       super();
    }
 
    /**
-    * Setter du bean ChampDao. 
+    * Setter du bean ChampDao.
     * @param cDao
     *            est le bean Dao.
     */
@@ -89,14 +91,14 @@ public class ChampManagerImpl implements ChampManager
 
    /**
     * Créé un Champ en BDD.
-    * 
+    *
     * @param champ
     *            Champ à créer.
     * @param parent
     *            Champ parent du champ à créer.
     */
    @Override
-   public void createObjectManager(final Champ champ, Champ parent){
+   public void createObjectManager(final Champ champ, final Champ parent){
       // On vérifie que le groupement n'est pas nul
       if(champ == null){
          log.warn("Objet obligatoire Champ manquant lors " + "de la création d'un objet Champ");
@@ -113,7 +115,7 @@ public class ChampManagerImpl implements ChampManager
 
    /**
     * Créé un Champ en BDD.
-    * 
+    *
     * @param champ Champ à créer.
     */
    @Override
@@ -131,24 +133,23 @@ public class ChampManagerImpl implements ChampManager
       champDao.createObject(champ);
    }
 
-
    /**
     * Met à jour un Champ en BDD.
-    * 
+    *
     * @param champ
     *            Champ à créer.
     * @param parent
     *            Champ parent du champ à mettre à jour.
     */
    @Override
-   public void updateObjectManager(final Champ champ, Champ parent){
+   public void updateObjectManager(final Champ champ, final Champ parent){
       //On vérifie que le groupement n'est pas nul
       if(champ == null){
          log.warn("Objet obligatoire Champ manquant lors " + "de la modification d'un objet Champ");
          throw new RequiredObjectIsNullException("Champ", "modification", "Champ");
       }
       //On met à jour le parent d'abord
-      Champ oldChampParent = champDao.findById(champ.getChampId()).getChampParent();
+      final Champ oldChampParent = champDao.findById(champ.getChampId()).getChampParent();
       updateParent(parent, oldChampParent);
 
       champ.setChampParent(parent);
@@ -157,7 +158,7 @@ public class ChampManagerImpl implements ChampManager
 
    /**
     * Met à jour un Champ en BDD.
-    * 
+    *
     * @param champ Champ à mettre à jour.
     */
    @Override
@@ -168,7 +169,7 @@ public class ChampManagerImpl implements ChampManager
          throw new RequiredObjectIsNullException("Champ", "modification", "Champ");
       }
       //On met à jour le parent d'abord
-      Champ oldChampParent = champDao.findById(champ.getChampId()).getChampParent();
+      final Champ oldChampParent = champDao.findById(champ.getChampId()).getChampParent();
       updateParent(champ.getChampParent(), oldChampParent);
 
       champDao.updateObject(champ);
@@ -179,7 +180,7 @@ public class ChampManagerImpl implements ChampManager
     * @param newChampParent l'ancien champ
     * @param oldChampParent le nouveau champ
     */
-   private void updateParent(Champ newChampParent, Champ oldChampParent){
+   private void updateParent(final Champ newChampParent, final Champ oldChampParent){
       if(null == newChampParent && null != oldChampParent){ // Suppression du champ
          removeObjectManager(oldChampParent);
       }else if(null != newChampParent && null == oldChampParent){ // Nouveau champ
@@ -192,7 +193,7 @@ public class ChampManagerImpl implements ChampManager
 
    /**
     * Supprime un Champ et son parent d'abord.
-    * 
+    *
     * @param groupement
     *            Champ à supprimer.
     */
@@ -218,7 +219,7 @@ public class ChampManagerImpl implements ChampManager
 
    /**
     * Copie un Champ en BDD.
-    * 
+    *
     * @param champ
     *            Champ à copier.
     */
@@ -247,7 +248,7 @@ public class ChampManagerImpl implements ChampManager
 
    /**
     * Chercher les Champs enfants du Champ passé en paramètre.
-    * 
+    *
     * @param groupement
     *            Champ dont on souhaite obtenir la liste d'enfants.
     * @return liste des enfants (Champs) d'un Champ.
@@ -264,7 +265,7 @@ public class ChampManagerImpl implements ChampManager
 
    /**
     * Recherche un Champ dont l'identifiant est passé en paramètre.
-    * 
+    *
     * @param champId
     *            Identifiant du Champ que l'on recherche.
     * @return un Champ.
@@ -281,7 +282,7 @@ public class ChampManagerImpl implements ChampManager
 
    /**
     * Recherche tous les Champs présents dans la BDD.
-    * 
+    *
     * @return Liste de Champs.
     */
    @Override
@@ -293,33 +294,31 @@ public class ChampManagerImpl implements ChampManager
    public <T> Object getValueForObjectManager(final Champ champ, final T obj, final boolean prettyFormat){
 
       Object res = null;
-      
+
       if(champ != null && obj != null){
          // si le champ est bien un champ interne à TK
          if(null != champ.getChampEntite()){
             res = champEntiteManager.getValueForObjectManager(champ.getChampEntite(), obj, prettyFormat);
-         }
-         else if(null != champ.getChampAnnotation() && obj instanceof TKAnnotableObject) {
-            res = annotationValeurManager.findByChampAndObjetManager(champ.getChampAnnotation(), (TKAnnotableObject)obj).get(0);
-         }
-         else if( null != champ.getChampDelegue() && obj instanceof TKDelegetableObject) {
+         }else if(null != champ.getChampAnnotation() && obj instanceof TKAnnotableObject){
+            res = annotationValeurManager.findByChampAndObjetManager(champ.getChampAnnotation(), (TKAnnotableObject) obj).get(0);
+         }else if(null != champ.getChampDelegue() && obj instanceof TKDelegetableObject){
             res = champDelegueManager.getValueForEntite(champ.getChampDelegue(), (TKDelegetableObject<T>) obj);
          }
       }
-      
+
       return res;
-      
+
    }
 
-   public void setChampEntiteManager(ChampEntiteManager champEntiteManager){
+   public void setChampEntiteManager(final ChampEntiteManager champEntiteManager){
       this.champEntiteManager = champEntiteManager;
    }
 
-   public void setChampDelegueManager(ChampDelegueManager champDelegueManager){
+   public void setChampDelegueManager(final ChampDelegueManager champDelegueManager){
       this.champDelegueManager = champDelegueManager;
    }
 
-   public void setAnnotationValeurManager(AnnotationValeurManager annotationValeurManager){
+   public void setAnnotationValeurManager(final AnnotationValeurManager annotationValeurManager){
       this.annotationValeurManager = annotationValeurManager;
    }
 

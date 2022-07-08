@@ -73,8 +73,7 @@ import fr.aphp.tumorotek.model.AbstractPfDependantThesaurusObject;
       @NamedQuery(name = "EchanQualite.findByExcludedId", query = "SELECT e FROM EchanQualite e " + "WHERE e.id != ?1"),
       @NamedQuery(name = "EchanQualite.findByPfOrder",
          query = "SELECT e FROM EchanQualite e " + "WHERE e.plateforme = ?1 ORDER BY e.nom"),
-      @NamedQuery(name = "EchanQualite.findByOrder",
-      query = "SELECT e FROM EchanQualite e ORDER BY e.nom")})
+      @NamedQuery(name = "EchanQualite.findByOrder", query = "SELECT e FROM EchanQualite e ORDER BY e.nom")})
 public class EchanQualite extends AbstractPfDependantThesaurusObject implements java.io.Serializable
 {
 

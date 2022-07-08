@@ -58,10 +58,13 @@ public class ValeurDecimaleModale extends GenericForwardComposer<Component>
 {
 
    private static final long serialVersionUID = -1418399743820656530L;
+
    private static final Float DEFAULT_VALUE = 0f;
 
    private Label decimalBoxLabel;
+
    private Decimalbox decimalBox;
+
    private Button cancelBtn;
 
    /**
@@ -69,7 +72,7 @@ public class ValeurDecimaleModale extends GenericForwardComposer<Component>
     * @param defaultValue valeur par défaut à afficher dans la popup
     * @param onCloseListener listener de fermeture de la popup
     */
-   public static void show(final String titre, final String label, final Float defaultValue, boolean closable,
+   public static void show(final String titre, final String label, final Float defaultValue, final boolean closable,
       final EventListener<Event> onCloseListener){
 
       final Map<String, Object> args = new HashMap<>();
@@ -77,7 +80,6 @@ public class ValeurDecimaleModale extends GenericForwardComposer<Component>
       args.put("label", label);
       args.put("defaultValue", Optional.ofNullable(defaultValue).orElse(DEFAULT_VALUE));
       args.put("closable", closable);
-      
 
       Executions.getCurrent().setAttribute(Composition.PARENT, null);
       Component parent = Executions.createComponents("/zuls/modales/ValeurDecimaleModale.zul", null, args);
@@ -97,13 +99,13 @@ public class ValeurDecimaleModale extends GenericForwardComposer<Component>
    }
 
    @Override
-   public void doAfterCompose(Component comp) throws Exception{
+   public void doAfterCompose(final Component comp) throws Exception{
 
       super.doAfterCompose(comp);
 
       final Window window = (Window) comp;
-      boolean closable = (Boolean)arg.get("closable");
-      
+      final boolean closable = (Boolean) arg.get("closable");
+
       window.setVisible(false);
       window.setClosable(closable);
       window.setId("temperatureEventStockageWindow");
@@ -116,7 +118,7 @@ public class ValeurDecimaleModale extends GenericForwardComposer<Component>
       window.setPosition("center, top");
 
       cancelBtn.setVisible(closable);
-      
+
       decimalBoxLabel.setValue((String) arg.get("label"));
       decimalBox.setValue(String.valueOf(arg.get("defaultValue")));
 
@@ -139,5 +141,5 @@ public class ValeurDecimaleModale extends GenericForwardComposer<Component>
    public void onClick$cancel(){
       Events.postEvent(Events.ON_CLOSE, self.getRoot(), null);
    }
-   
+
 }

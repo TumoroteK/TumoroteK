@@ -1,5 +1,5 @@
 /**
- * Copyright ou © ou Copr. Assistance Publique des Hôpitaux de 
+ * Copyright ou © ou Copr. Assistance Publique des Hôpitaux de
  * PARIS et SESAN
  * projet-tk@sesan.fr
  *
@@ -37,7 +37,8 @@
 package fr.aphp.tumorotek.manager.validation;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;import java.util.Collection;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -51,86 +52,90 @@ import org.springframework.validation.Validator;
 
 import fr.aphp.tumorotek.model.TKdataObject;
 
-
 /**
- * Gatsbi validor appliquant de manière dynamique une validation sur les 
+ * Gatsbi validor appliquant de manière dynamique une validation sur les
  * champs obligatoires définis par un contexte.
- * 
+ *
  * @author Mathieu BARTHELEMY
  * @version 2.3.0-gatsbi
  *
  */
-public abstract class RequiredValueValidator implements Validator {
-	
-	private final Log log = LogFactory.getLog(RequiredValueValidator.class);
-	
-	protected Map<Integer, String> chpIdNameMap = new HashMap<Integer, String>();
-	private String eNom;
-	private List<Integer> requiredFieldChpIds = new ArrayList<Integer>();
-	
-	protected Map<Integer, ValidateField> validations = new HashMap<Integer, ValidateField>();
+public abstract class RequiredValueValidator implements Validator
+{
 
-	public RequiredValueValidator(String _e, List<Integer> _f) {
-		super();
-		this.eNom = _e != null ? _e.toLowerCase() : null;
-		requiredFieldChpIds.addAll(_f);
-		initChpIdNameMap();
-		initFunctionalValidationMap();
-	}
+   private final Log log = LogFactory.getLog(RequiredValueValidator.class);
 
-	@Override
-	public boolean supports(Class<?> clazz) {
-		return false;
-	}
-	
-	// surchargée par les validators spécifiques par entite
-	protected abstract void initChpIdNameMap();
-	protected abstract void initFunctionalValidationMap();	
-	protected abstract String correctFieldNameIfNeeded(String n);	
+   protected Map<Integer, String> chpIdNameMap = new HashMap<>();
 
-	@Override
-	public void validate(Object target, Errors errs) {
-		
-		for(Integer chpId : requiredFieldChpIds) {
-			if (chpIdNameMap.containsKey(chpId)) {
+   private final String eNom;
 
-				String fName = chpIdNameMap.get(chpId);
+   private final List<Integer> requiredFieldChpIds = new ArrayList<>();
 
-				if (!validations.keySet().contains(chpId)) { // simple getProperty validation
-					log.debug("validating field " + fName + " through getProperty validation");
-					try {
-						if (!Collection.class.isAssignableFrom(PropertyUtils.getPropertyType(target, fName))) { // not collection
-						     ValidationUtils.rejectIfEmptyOrWhitespace(errs, fName, eNom + "." + fName + ".empty");
-						} else if (((Collection<?>) PropertyUtils.getProperty(target, fName)).isEmpty()) {
-							errs.rejectValue(fName, eNom + "." + fName + ".empty");
-						}
-					} catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-						log.warn(e.getMessage());
-						log.debug(e);
-					}
-				} else { // validation through functional interface
-					log.debug("validating field " + fName + " through functional validation");
-					
-					if (!validations.get(chpId).validate((TKdataObject) target, errs)) {
-						errs.rejectValue(correctFieldNameIfNeeded(fName), eNom + "." + fName + ".empty");
-					}
-				}
-			}
-		}
-	}
-	
-	/**
-	 * Transforme le chpId en nom de la propriété de l'objet 
-	 * dont la presénce obligatoire d'une valeur sera vérifiée;
-	 * @return liste des noms des propriétés obligatoires.
-	 */
-	public List<String> translateChpIdToFieldName() {
-		List<String> fNames = new ArrayList<String>();
-		for(Integer chpId : requiredFieldChpIds) {
-			if (chpIdNameMap.containsKey(chpId)) {
-				fNames.add(chpIdNameMap.get(chpId));
-			}
-		}
-		return fNames;
-	}
+   protected Map<Integer, ValidateField> validations = new HashMap<>();
+
+   public RequiredValueValidator(final String _e, final List<Integer> _f){
+      super();
+      this.eNom = _e != null ? _e.toLowerCase() : null;
+      requiredFieldChpIds.addAll(_f);
+      initChpIdNameMap();
+      initFunctionalValidationMap();
+   }
+
+   @Override
+   public boolean supports(final Class<?> clazz){
+      return false;
+   }
+
+   // surchargée par les validators spécifiques par entite
+   protected abstract void initChpIdNameMap();
+
+   protected abstract void initFunctionalValidationMap();
+
+   protected abstract String correctFieldNameIfNeeded(String n);
+
+   @Override
+   public void validate(final Object target, final Errors errs){
+
+      for(final Integer chpId : requiredFieldChpIds){
+         if(chpIdNameMap.containsKey(chpId)){
+
+            final String fName = chpIdNameMap.get(chpId);
+
+            if(!validations.keySet().contains(chpId)){ // simple getProperty validation
+               log.debug("validating field " + fName + " through getProperty validation");
+               try{
+                  if(!Collection.class.isAssignableFrom(PropertyUtils.getPropertyType(target, fName))){ // not collection
+                     ValidationUtils.rejectIfEmptyOrWhitespace(errs, fName, eNom + "." + fName + ".empty");
+                  }else if(((Collection<?>) PropertyUtils.getProperty(target, fName)).isEmpty()){
+                     errs.rejectValue(fName, eNom + "." + fName + ".empty");
+                  }
+               }catch(IllegalAccessException | InvocationTargetException | NoSuchMethodException e){
+                  log.warn(e.getMessage());
+                  log.debug(e);
+               }
+            }else{ // validation through functional interface
+               log.debug("validating field " + fName + " through functional validation");
+
+               if(!validations.get(chpId).validate((TKdataObject) target, errs)){
+                  errs.rejectValue(correctFieldNameIfNeeded(fName), eNom + "." + fName + ".empty");
+               }
+            }
+         }
+      }
+   }
+
+   /**
+    * Transforme le chpId en nom de la propriété de l'objet 
+    * dont la presénce obligatoire d'une valeur sera vérifiée;
+    * @return liste des noms des propriétés obligatoires.
+    */
+   public List<String> translateChpIdToFieldName(){
+      final List<String> fNames = new ArrayList<>();
+      for(final Integer chpId : requiredFieldChpIds){
+         if(chpIdNameMap.containsKey(chpId)){
+            fNames.add(chpIdNameMap.get(chpId));
+         }
+      }
+      return fNames;
+   }
 }

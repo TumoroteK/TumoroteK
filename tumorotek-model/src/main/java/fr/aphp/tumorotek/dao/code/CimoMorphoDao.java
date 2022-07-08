@@ -53,7 +53,7 @@ public interface CimoMorphoDao extends GenericDaoJpa<CimoMorpho, Integer>
 {
 
    /**
-    * Recherche les codes CimoMorphos dont le code est like celui passé 
+    * Recherche les codes CimoMorphos dont le code est like celui passé
     * en paramètre.
     * @param code Code pour lequel on recherche des codes CimoMorphos.
     * @return une liste de codes CimoMorphos.
@@ -69,7 +69,7 @@ public interface CimoMorphoDao extends GenericDaoJpa<CimoMorpho, Integer>
    List<CimoMorpho> findByLibelleLike(String libelle);
 
    /**
-    * Recherche les codes CimoMorphos dont la référence est like celle 
+    * Recherche les codes CimoMorphos dont la référence est like celle
     * passée en paramètre.
     * @param cimRef Référence des codes CimoMorphos que l'on recherche.
     * @return une liste de codes CimoMorphos.

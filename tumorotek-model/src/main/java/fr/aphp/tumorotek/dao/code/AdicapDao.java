@@ -94,14 +94,14 @@ public interface AdicapDao extends GenericDaoJpa<Adicap, Integer>
 
    /**
     * Recherche les enfants du code Adicap passé en paramètre.
-    * @param parent code Adicap pour lequel on 
+    * @param parent code Adicap pour lequel on
     * recherche les enfants.
     * @return une liste de codes Adicap.
     */
    List<Adicap> findByAdicapParentAndCodeOrLibelle(Adicap parent, String codeOrLibelle);
 
    /**
-    * Recherche les codes ADICAP dans un dictionnaire par son code 
+    * Recherche les codes ADICAP dans un dictionnaire par son code
     * ou son libellé LIKE.
     * @param grp Dico ADICAP
     * @param codeOrLibelle

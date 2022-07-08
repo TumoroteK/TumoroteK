@@ -39,6 +39,7 @@ public class LigneBoite
 {
 
    private String nom;
+
    private Integer nbEmplacements;
 
    public LigneBoite(){
@@ -75,10 +76,7 @@ public class LigneBoite
       if(this == obj){
          return true;
       }
-      if(obj == null){
-         return false;
-      }
-      if(getClass() != obj.getClass()){
+      if((obj == null) || (getClass() != obj.getClass())){
          return false;
       }
       final LigneBoite other = (LigneBoite) obj;

@@ -73,9 +73,13 @@ public class Importation implements java.io.Serializable
    private static final long serialVersionUID = -3174470852163902048L;
 
    private Integer importationId;
+
    private Integer objetId;
+
    private Entite entite;
+
    private ImportHistorique importHistorique;
+
    private Boolean isUpdate = false;
 
    public Importation(){

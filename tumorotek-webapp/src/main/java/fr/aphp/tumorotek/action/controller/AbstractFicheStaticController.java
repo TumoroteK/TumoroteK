@@ -90,18 +90,28 @@ public abstract class AbstractFicheStaticController extends AbstractFicheControl
 
    //Composants
    protected Grid formGrid;
+
    protected Button edit;
+
    protected Button delete;
+
    protected Button addNew;
+
    protected Menuitem print;
+
    protected Menuitem historique;
 
    // Variable de droits.
    private boolean canEdit;
+
    private boolean canDelete;
+
    private boolean canNew;
+
    private boolean canSeeHistorique;
+
    private boolean isAnonyme;
+
    private boolean isAdmin;
 
    private String deletionMessage;
@@ -129,7 +139,7 @@ public abstract class AbstractFicheStaticController extends AbstractFicheControl
 
    /**
     * Passe la fiche en formulaire editable.
-    * Active les boutons validate et revert.	
+    * Active les boutons validate et revert.
     */
    public void onClick$edit(){
       getObjectTabController().switchToEditMode(getObject());
@@ -149,8 +159,8 @@ public abstract class AbstractFicheStaticController extends AbstractFicheControl
    }
 
    /**
-    * Recoit l'evenement envoyé depuis la modale pour 
-    * commander la suppression. L'evenement contient en data 
+    * Recoit l'evenement envoyé depuis la modale pour
+    * commander la suppression. L'evenement contient en data
     * les commentaires liés à la suppression.
     * @param event
     */
@@ -281,7 +291,7 @@ public abstract class AbstractFicheStaticController extends AbstractFicheControl
    /************************** ABSTRACTS ************************************/
    /*************************************************************************/
    /**
-    * Prepare la méthode de suppression de l'objet. Verifie si ce dernier 
+    * Prepare la méthode de suppression de l'objet. Verifie si ce dernier
     * est utilisé ou référencé.
     */
    public abstract void prepareDeleteObject();
@@ -328,7 +338,7 @@ public abstract class AbstractFicheStaticController extends AbstractFicheControl
    }
 
    /**
-    * Rend les boutons d'actions cliquables, rend les liens accessibles en 
+    * Rend les boutons d'actions cliquables, rend les liens accessibles en
     * fonction des droits.
     */
    public void applyDroitsOnFiche(){
@@ -350,7 +360,7 @@ public abstract class AbstractFicheStaticController extends AbstractFicheControl
     * des droits de l'utilisateur.
     * @param nomEntite Entite (ex.:ProdDerive).
     */
-   
+
    public void drawActionsButtons(final String nomEntite){
       Boolean admin = false;
       if(sessionScope.containsKey("AdminPF")){
@@ -465,7 +475,6 @@ public abstract class AbstractFicheStaticController extends AbstractFicheControl
    public void setAdmin(final boolean isA){
       this.isAdmin = isA;
    }
-
 
    public boolean getTtesCollections(){
       return SessionUtils.getSelectedBanques(sessionScope).size() > 1;

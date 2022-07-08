@@ -109,7 +109,7 @@ public class ContratValidator implements Validator
 
    /**
     * Vérifie la cohérence de la date de demande de collaboration avec les
-    * dates de validation, rédaction, envoi et signature. 
+    * dates de validation, rédaction, envoi et signature.
     * @param contrat
     * @return Errors
     */
@@ -137,7 +137,7 @@ public class ContratValidator implements Validator
 
    /**
     * Vérifie la cohérence de la date de validation du projet avec les
-    * dates de demande, rédaction, envoi et signature. 
+    * dates de demande, rédaction, envoi et signature.
     * @param contrat
     * @return Errors
     */
@@ -157,7 +157,7 @@ public class ContratValidator implements Validator
 
    /**
     * Vérifie la cohérence de la date de rédaction du projet avec les
-    * dates de demande, validation, envoi et signature. 
+    * dates de demande, validation, envoi et signature.
     * @param contrat
     * @return Errors
     */
@@ -186,7 +186,7 @@ public class ContratValidator implements Validator
 
    /**
     * Vérifie la cohérence de la date d'envoi du contra avec les
-    * dates de demande, validation, rédaction et signature. 
+    * dates de demande, validation, rédaction et signature.
     * @param contrat
     * @return Errors
     */
@@ -215,7 +215,7 @@ public class ContratValidator implements Validator
 
    /**
     * Vérifie la cohérence de la date de signature avec les
-    * dates de demande, validation, rédaction et d'envoi. 
+    * dates de demande, validation, rédaction et d'envoi.
     * @param contrat
     * @return Errors
     */

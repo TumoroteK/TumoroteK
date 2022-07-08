@@ -69,7 +69,9 @@ public class ObjetStatutManagerImpl implements ObjetStatutManager
    private final Log log = LogFactory.getLog(ObjetStatutManager.class);
 
    private ObjetStatutDao objetStatutDao;
+
    private ObjetStatutValidator objetStatutValidator;
+
    private CederObjetManager cederObjetManager;
 
    public void setObjetStatutDao(final ObjetStatutDao oDao){
@@ -105,7 +107,7 @@ public class ObjetStatutManagerImpl implements ObjetStatutManager
    }
 
    /**
-    * Recherche tous les ObjetStatuts dont le statut commence comme celui 
+    * Recherche tous les ObjetStatuts dont le statut commence comme celui
     * passé en paramètre.
     * @param statut Statut que l'on recherche.
     * @param exactMatch True si l'on souhaite seulement récuéprer les matchs
@@ -143,7 +145,7 @@ public class ObjetStatutManagerImpl implements ObjetStatutManager
     */
    @Override
    public Boolean isUsedObjectManager(ObjetStatut statut){
-      Integer nb = 0;
+      int nb = 0;
       statut = objetStatutDao.mergeObject(statut);
 
       nb = nb + statut.getEchantillons().size();

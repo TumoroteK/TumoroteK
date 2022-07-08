@@ -71,7 +71,7 @@ public interface ProdDeriveDao extends GenericDaoJpa<ProdDerive, Integer>
    List<ProdDerive> findByCode(String code);
 
    /**
-    * Recherche les produits dérivés dont le code ou le code labo est 
+    * Recherche les produits dérivés dont le code ou le code labo est
     * égal au paramètre.
     * @param code Code pour lequel on recherche des produits dérivés.
     * @param banque Banque à laquelle appartient le dérivé.
@@ -80,7 +80,7 @@ public interface ProdDeriveDao extends GenericDaoJpa<ProdDerive, Integer>
    List<ProdDerive> findByCodeOrLaboWithBanque(String code, Banque banque);
 
    /**
-    * Recherche les dérivés dont le code 
+    * Recherche les dérivés dont le code
     * est 'like' le paramètre pour la plateforme spécifiée.
     * @param code Code pour lequel on recherche des dérivés.
     * @param pf Plateforme.
@@ -90,7 +90,7 @@ public interface ProdDeriveDao extends GenericDaoJpa<ProdDerive, Integer>
    List<ProdDerive> findByCodeInPlateforme(String code, Plateforme pf);
 
    /**
-    * Recherche les Ids de produits dérivés dont le code ou le code labo est 
+    * Recherche les Ids de produits dérivés dont le code ou le code labo est
     * égal au paramètre.
     * @param code Code pour lequel on recherche des produits dérivés.
     * @param banque Banque à laquelle appartient le dérivé.
@@ -114,7 +114,7 @@ public interface ProdDeriveDao extends GenericDaoJpa<ProdDerive, Integer>
    List<ProdDerive> findByDateStockAfterDate(Calendar date);
 
    /**
-    * Recherche les produits dérivés dont la date de transformation est 
+    * Recherche les produits dérivés dont la date de transformation est
     * plus récente que celle passée en paramètre.
     * @param date Calendar pour laquelle on recherche des produits dérivés.
     * @return Liste de produits dérivés.
@@ -122,7 +122,7 @@ public interface ProdDeriveDao extends GenericDaoJpa<ProdDerive, Integer>
    List<ProdDerive> findByDateTransformationAfterDate(Calendar date);
 
    /**
-    * Recherche les produits dérivés dont la date de transformation est 
+    * Recherche les produits dérivés dont la date de transformation est
     * plus récente que celle passée en paramètre.
     * @param date Calendar pour laquelle on recherche des produits dérivés.
     * @param banque Banque à laquelle appartient le dérivé.
@@ -131,7 +131,7 @@ public interface ProdDeriveDao extends GenericDaoJpa<ProdDerive, Integer>
    List<ProdDerive> findByDateTransformationAfterDateWithBanque(Calendar date, Banque banque);
 
    /**
-    * Recherche tous les codes ProdDerives, sauf celui dont l'id est passé 
+    * Recherche tous les codes ProdDerives, sauf celui dont l'id est passé
     * en paramètre.
     * @param prodDeriveId Identifiant du ProdDerive que l'on souhaite
     * exclure de la liste retournée.
@@ -162,7 +162,7 @@ public interface ProdDeriveDao extends GenericDaoJpa<ProdDerive, Integer>
    List<ProdDerive> findByProdQualite(ProdQualite qualite);
 
    /**
-    * Recherche les produits dérivés dont la préparation est 
+    * Recherche les produits dérivés dont la préparation est
     * passé en paramètre.
     * @param mode ModePrepaDerive des produits dérivés que l'on recherche.
     * @return une liste de produits dérivés.
@@ -170,16 +170,16 @@ public interface ProdDeriveDao extends GenericDaoJpa<ProdDerive, Integer>
    List<ProdDerive> findByModePrepaDerive(ModePrepaDerive mode);
 
    /**
-    * Recherche les produits dérivés dont la transformation est passée 
+    * Recherche les produits dérivés dont la transformation est passée
     * en paramètre.
-    * @param transformation Transformation des produits dérivés que 
+    * @param transformation Transformation des produits dérivés que
     * l'on recherche.
     * @return une liste de produits dérivés.
     */
    List<ProdDerive> findByTransformation(Transformation transformation);
 
    /**
-    * Recherche les codes de produits dérivés dont la banque est passée en 
+    * Recherche les codes de produits dérivés dont la banque est passée en
     * paramètre.
     * @param banque Banque des produits dérivés que l'on recherche.
     * @return une liste de codes de produits dérivés.
@@ -220,7 +220,7 @@ public interface ProdDeriveDao extends GenericDaoJpa<ProdDerive, Integer>
    List<ProdDerive> findByTerminaleDirect(Terminale terminale);
 
    /**
-    * Recherche les codes de dérivés dont la banque est passée en 
+    * Recherche les codes de dérivés dont la banque est passée en
     * paramètre et la quantité est non égale à 0.
     * @param banque Banque des dérivés que l'on recherche.
     * @return une liste de codes de dérivés.
@@ -228,13 +228,13 @@ public interface ProdDeriveDao extends GenericDaoJpa<ProdDerive, Integer>
    List<String> findByBanqueAndQuantiteSelectCode(Banque banque);
 
    /**
-    * Recherche les codes de dérivés dont la banque est passée en 
+    * Recherche les codes de dérivés dont la banque est passée en
     * paramètre et la quantité est non égale à 0 OU dérivé faisant partie d'une cession de type traitement
     * @param banque Banque des échantillons que l'on recherche.
     * @return une liste de codes de dérivés.
     */
    List<String> findAllCodesByBanqueAndQuantiteNotNullOrInCessionTraitement(Banque banque);
-   
+
    /**
     * Recherche les ProdDerives pour une liste de collections spécifiées.
     * @param banks liste de collections
@@ -291,7 +291,7 @@ public interface ProdDeriveDao extends GenericDaoJpa<ProdDerive, Integer>
    List<ProdDerive> findByParent(Integer objetId, Entite entite);
 
    /**
-    * Recherche les Ids de produits dérivés dont le code est 
+    * Recherche les Ids de produits dérivés dont le code est
     * dans la liste passée en paramètres.
     * @param criteres Codes pour lequel on recherche des produits dérivés.
     * @param banques Banques auxquelles appartiennent les dérivés.
@@ -309,7 +309,7 @@ public interface ProdDeriveDao extends GenericDaoJpa<ProdDerive, Integer>
    List<Integer> findByEchantillonPatientNomInListReturnIds(List<String> criteres, List<Banque> banques);
 
    /**
-    * Recherche les dérivés issus de plusieurs patients 
+    * Recherche les dérivés issus de plusieurs patients
     * en passant par la liason avec un prelevement.
     * @param criteres Noms ou NIP des patients.
     * @return Liste de ProdDerives.
@@ -324,9 +324,9 @@ public interface ProdDeriveDao extends GenericDaoJpa<ProdDerive, Integer>
    List<ProdDerive> findByCollaborateur(Collaborateur collaborateur);
 
    /**
-    * Recherche les dérivés pour cet emplacement, caractérisé par une position 
+    * Recherche les dérivés pour cet emplacement, caractérisé par une position
     * dans une terminale (car l'emplacement peut ne pas être créé).
-    * Cette recherche a pour objectif un contrôle de validation à la 
+    * Cette recherche a pour objectif un contrôle de validation à la
     * création des nouveaux objets.
     * @param Terminale
     * @param Integer position
@@ -335,7 +335,7 @@ public interface ProdDeriveDao extends GenericDaoJpa<ProdDerive, Integer>
    List<ProdDerive> findByEmplacement(Terminale terminale, Integer position);
 
    /**
-    * Compte les produits dérivés créés par un collaborateur 
+    * Compte les produits dérivés créés par un collaborateur
     * passée en paramètre.
     * @param collaborateur
     * @return long
@@ -343,7 +343,7 @@ public interface ProdDeriveDao extends GenericDaoJpa<ProdDerive, Integer>
    List<Long> findCountCreatedByCollaborateur(Collaborateur colla);
 
    /**
-    * Compte les produits dérivés dont l'operateur est le collaborateur 
+    * Compte les produits dérivés dont l'operateur est le collaborateur
     * passée en paramètre.
     * @param collaborateur
     * @return long
@@ -351,7 +351,7 @@ public interface ProdDeriveDao extends GenericDaoJpa<ProdDerive, Integer>
    List<Long> findCountByOperateur(Collaborateur colla);
 
    /**
-    * Compte les produits dérivés dont le parent est passé  
+    * Compte les produits dérivés dont le parent est passé
     * passée en paramètre sous la forme id + entite
     * @param parent id Integer
     * @param Entite
@@ -359,13 +359,13 @@ public interface ProdDeriveDao extends GenericDaoJpa<ProdDerive, Integer>
     * since 2.1.1
     */
    List<Long> findCountByParent(Integer pId, Entite entite);
-   
+
    /**
     * Recherche sur une plateforme les dérivés dont le code est contenu dans la liste passée en paramètre
     * @param listCodes liste des codes recherchés
     * @param pf plateforme sur laquelle la recherche est effectuée
-    * @since 2.2.0 
+    * @since 2.2.0
     */
    List<ProdDerive> findByListCodeWithPlateforme(List<String> listCodes, Plateforme pf);
-   
+
 }

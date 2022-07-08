@@ -81,7 +81,7 @@ public interface ObjetNonConformeDao extends GenericDaoJpa<ObjetNonConforme, Int
    List<ObjetNonConforme> findByNonConformite(NonConformite nonConformite);
 
    /**
-    * Renvoie tous les ids objets qui référencent au moins une des 
+    * Renvoie tous les ids objets qui référencent au moins une des
     * non conformites passées dans la liste en paramètre
     * @param noconfs
     * @return liste integer

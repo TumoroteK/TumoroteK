@@ -24,6 +24,7 @@ import org.w3c.dom.Element;
 public class XMLUtils
 {
    private static String ROOT_NODE_NAME = "results";
+
    private static String ROW_NODE_NAME = "row";
 
    static Connection con;

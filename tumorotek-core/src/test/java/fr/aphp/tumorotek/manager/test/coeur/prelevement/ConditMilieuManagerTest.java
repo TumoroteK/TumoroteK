@@ -65,6 +65,7 @@ public class ConditMilieuManagerTest extends AbstractManagerTest4
 
    @Autowired
    private ConditMilieuManager conditMilieuManager;
+
    @Autowired
    private PlateformeDao plateformeDao;
 

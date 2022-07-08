@@ -70,7 +70,9 @@ public class DataType implements Serializable
    private static final long serialVersionUID = 4677080789317418835L;
 
    private Integer dataTypeId;
+
    private String type;
+
    private Set<ChampAnnotation> champAnnotations = new HashSet<>();
 
    /** Constructeur par défaut. */

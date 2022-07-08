@@ -60,7 +60,6 @@ import fr.aphp.tumorotek.model.io.export.Recherche;
 public class RechercheValidator implements Validator
 {
 
-   
    @Override
    public boolean supports(final Class<?> clazz){
       return Recherche.class.equals(clazz);

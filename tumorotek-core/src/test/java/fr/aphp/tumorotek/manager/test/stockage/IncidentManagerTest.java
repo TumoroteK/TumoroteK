@@ -73,10 +73,13 @@ public class IncidentManagerTest extends AbstractManagerTest4
 
    @Autowired
    private IncidentManager incidentManager;
+
    @Autowired
    private ConteneurDao conteneurDao;
+
    @Autowired
    private EnceinteDao enceinteDao;
+
    @Autowired
    private TerminaleDao terminaleDao;
 

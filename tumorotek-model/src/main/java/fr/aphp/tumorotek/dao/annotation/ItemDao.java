@@ -63,7 +63,7 @@ public interface ItemDao extends GenericDaoJpa<Item, Integer>
    List<Item> findByChamp(ChampAnnotation champ);
 
    /**
-    * Recherche tous les items sauf celui dont l'id est passé 
+    * Recherche tous les items sauf celui dont l'id est passé
     * en paramètre.
     * @param itemId Identifiant de l'item que l'on souhaite
     * exclure de la liste retournée.
@@ -72,12 +72,12 @@ public interface ItemDao extends GenericDaoJpa<Item, Integer>
    List<Item> findByExcludedId(Integer itemId);
 
    /**
-    * Recherche tous les items pour le champ et la plateforme 
-    * passées en paramètres. Méthode utilisée pour les thesaurus 
-    * catalogues modifiables par l'utilisateur. Renvoie aussi les items 
+    * Recherche tous les items pour le champ et la plateforme
+    * passées en paramètres. Méthode utilisée pour les thesaurus
+    * catalogues modifiables par l'utilisateur. Renvoie aussi les items
     * associée à ce champ et a une plateforme null.
     * @param champ annotation
-    * @param plateforme 
+    * @param plateforme
     * @return une liste de Item.
     */
    List<Item> findByChampAndPlateforme(ChampAnnotation chp, Plateforme pf);

@@ -12,88 +12,87 @@ import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.annotate.JsonPropertyOrder;
 
-@JsonPropertyOrder({
-	"etudeId",
-	"titre",
-	"acronyme",
-	"archive",
-	"rContextes"
-})
+@JsonPropertyOrder({"etudeId", "titre", "acronyme", "archive", "rContextes"})
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class EtudeDTO implements Serializable {
+public class EtudeDTO implements Serializable
+{
 
-	private static final long serialVersionUID = 1L;
-	
-	private Integer etudeId;
-	private String titre;
-	private String acronyme;
-	private Boolean archive;
-	private List<ContexteDTO> contextes = new ArrayList<ContexteDTO>();
-	
-	@JsonProperty
-	public Integer getEtudeId() {
-		return etudeId;
-	}
+   private static final long serialVersionUID = 1L;
 
-	public void setEtudeId(Integer _i) {
-		this.etudeId = _i;
-	}
+   private Integer etudeId;
 
-	@JsonProperty
-	public String getTitre() {
-		return titre;
-	}
+   private String titre;
 
-	public void setTitre(String _t) {
-		this.titre = _t;
-	}
+   private String acronyme;
 
-	@JsonProperty
-	public String getAcronyme() {
-		return acronyme;
-	}
+   private Boolean archive;
 
-	public void setAcronyme(String _a) {
-		this.acronyme = _a;
-	}
+   private List<ContexteDTO> contextes = new ArrayList<>();
 
-	@JsonProperty
-	public Boolean getArchive() {
-		return archive;
-	}
+   @JsonProperty
+   public Integer getEtudeId(){
+      return etudeId;
+   }
 
-	public void setArchive(Boolean _a) {
-		this.archive = _a;
-	}
+   public void setEtudeId(final Integer _i){
+      this.etudeId = _i;
+   }
 
-	@JsonProperty("rContextes")
-	public List<ContexteDTO> getrContextes() {
-		return contextes;
-	}
+   @JsonProperty
+   public String getTitre(){
+      return titre;
+   }
 
-	public void setContextes(List<ContexteDTO> _r) {
-		this.contextes = _r;
-	}
-	
-	@Override
-	public boolean equals(Object obj) {
-		if (obj == this) {
-            return true;
-        }
-        if (obj == null || obj.getClass() != this.getClass()) {
-            return false;
-        }
+   public void setTitre(final String _t){
+      this.titre = _t;
+   }
 
-        EtudeDTO etude = (EtudeDTO) obj;
+   @JsonProperty
+   public String getAcronyme(){
+      return acronyme;
+   }
 
-        return Objects.equals(titre, etude.getTitre());
-	}
-	
-	@Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-    	result = prime * result + ((titre == null) ? 0 : titre.hashCode());
-    	return result;
-	}
+   public void setAcronyme(final String _a){
+      this.acronyme = _a;
+   }
+
+   @JsonProperty
+   public Boolean getArchive(){
+      return archive;
+   }
+
+   public void setArchive(final Boolean _a){
+      this.archive = _a;
+   }
+
+   @JsonProperty("rContextes")
+   public List<ContexteDTO> getrContextes(){
+      return contextes;
+   }
+
+   public void setContextes(final List<ContexteDTO> _r){
+      this.contextes = _r;
+   }
+
+   @Override
+   public boolean equals(final Object obj){
+      if(obj == this){
+         return true;
+      }
+      if(obj == null || obj.getClass() != this.getClass()){
+         return false;
+      }
+
+      final EtudeDTO etude = (EtudeDTO) obj;
+
+      return Objects.equals(titre, etude.getTitre());
+   }
+
+   @Override
+   public int hashCode(){
+      final int prime = 31;
+      int result = 1;
+      result = prime * result + ((titre == null) ? 0 : titre.hashCode());
+      return result;
+   }
 }

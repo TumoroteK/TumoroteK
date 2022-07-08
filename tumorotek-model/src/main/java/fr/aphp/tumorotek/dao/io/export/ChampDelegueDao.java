@@ -32,7 +32,9 @@
  * Le fait que vous puissiez accéder à cet en-tête signifie que vous
  * avez pris connaissance de la licence CeCILL, et que vous en avez
  * accepté les termes.
- **/package fr.aphp.tumorotek.dao.io.export;
+ **/
+package fr.aphp.tumorotek.dao.io.export;
+
 import java.util.List;
 
 import fr.aphp.tumorotek.model.contexte.EContexte;
@@ -47,7 +49,7 @@ public interface ChampDelegueDao
 {
 
    List<ChampDelegue> findByEntiteAndContexte(Entite entite, EContexte contexte);
-   
+
    List<ChampDelegue> findByNomAndEntiteAndContexte(String nom, Entite entite, EContexte contexte);
-   
+
 }

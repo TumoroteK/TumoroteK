@@ -99,7 +99,7 @@ public interface UtilisateurDao extends GenericDaoJpa<Utilisateur, Integer>
    List<Utilisateur> findByTimeOut(Date timeOut);
 
    /**
-    * Recherche les utilisateurs non archivés dont le timeout avant celui 
+    * Recherche les utilisateurs non archivés dont le timeout avant celui
     * passé en paramètre.
     * @param timeOut Date.
     * @return une liste d'utilisateurs.
@@ -108,7 +108,7 @@ public interface UtilisateurDao extends GenericDaoJpa<Utilisateur, Integer>
    List<Utilisateur> findByTimeOutBefore(Date timeOut);
 
    /**
-    * Recherche les utilisateurs dont le timeout après celui 
+    * Recherche les utilisateurs dont le timeout après celui
     * passé en paramètre.
     * @param timeOut Date.
     * @return une liste d'utilisateurs.
@@ -124,7 +124,7 @@ public interface UtilisateurDao extends GenericDaoJpa<Utilisateur, Integer>
 
    /**
     * Recherche l'utilisateur dont l'identifiant passé en paramètre.
-    * L'association avec la table COLLABORATEUR sera chargée par 
+    * L'association avec la table COLLABORATEUR sera chargée par
     * l'intermédiaire d'un fetch.
     * @param utilisateurId Identifiant de l'utilisateur recherché.
     * @return un utilisateur.
@@ -146,7 +146,7 @@ public interface UtilisateurDao extends GenericDaoJpa<Utilisateur, Integer>
     * @return une liste d'utilisateurs.
     */
    List<Utilisateur> findByOrderWithArchiveExcludeSuperAdmin(boolean archive, List<Plateforme> pfs);
-   
+
    /**
     * Recherche les utilisateurs en incluant les super-administrateurs.
     * @param archive True ou false.
@@ -154,16 +154,16 @@ public interface UtilisateurDao extends GenericDaoJpa<Utilisateur, Integer>
     * @return une liste d'utilisateurs.
     */
    List<Utilisateur> findByOrderWithArchiveIncludeSuperAdmin(boolean archive, List<Plateforme> pfs);
-   
+
    /**
-    * Recherche les utilisateurs dont le login et le mdp sont égaux 
+    * Recherche les utilisateurs dont le login et le mdp sont égaux
     * aux paramètres.
     * @param login Login pour lequel on recherche des utilisateurs.
     * @param password Mdp pour lequel on recherche des utilisateurs.
     * @return une liste d'utilisateurs.
     */
    List<Utilisateur> findByLoginPassAndArchive(String login, String password, boolean archive);
-   
+
    /**
     * Recherche les utilisateurs superadmin.
     * @param boolean archive ou non
@@ -172,6 +172,5 @@ public interface UtilisateurDao extends GenericDaoJpa<Utilisateur, Integer>
     * @since 2.2.1
     */
    List<Utilisateur> findBySuperAndArchive(boolean archive, boolean isSuper);
-
 
 }

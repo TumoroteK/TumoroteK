@@ -81,7 +81,9 @@ public class CessionController extends AbstractObjectTabController
    private static final long serialVersionUID = 5668387010539952631L;
 
    private Div divCessionStatic;
+
    private Div divCessionEdit;
+
    private Component listeCession;
 
    @Override

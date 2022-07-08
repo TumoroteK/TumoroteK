@@ -37,7 +37,6 @@ package fr.aphp.tumorotek.manager.test.patient;
 
 import static org.junit.Assert.*;
 
-
 import java.util.List;
 
 import org.junit.Test;

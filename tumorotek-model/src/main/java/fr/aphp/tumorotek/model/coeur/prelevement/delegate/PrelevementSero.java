@@ -66,6 +66,7 @@ public class PrelevementSero extends AbstractPrelevementDelegate
 {
 
    private String libelle;
+
    private Set<Protocole> protocoles = new HashSet<>();
 
    // Constructeur
@@ -97,11 +98,11 @@ public class PrelevementSero extends AbstractPrelevementDelegate
       return (getLibelle() == null || getLibelle().equals("")) && (getProtocoles() == null || getProtocoles().isEmpty());
    }
 
-	@Override
-	public TKDelegateObject<Prelevement> clone() {
-		PrelevementSero clone = new PrelevementSero();
-		clone.setLibelle(getLibelle());
-		clone.getProtocoles().addAll(getProtocoles());
-		return clone;
-	}
+   @Override
+   public TKDelegateObject<Prelevement> clone(){
+      final PrelevementSero clone = new PrelevementSero();
+      clone.setLibelle(getLibelle());
+      clone.getProtocoles().addAll(getProtocoles());
+      return clone;
+   }
 }

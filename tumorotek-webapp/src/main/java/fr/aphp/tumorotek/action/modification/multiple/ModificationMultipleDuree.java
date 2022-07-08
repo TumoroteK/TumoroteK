@@ -80,6 +80,7 @@ public class ModificationMultipleDuree extends AbstractModificationMultipleCompo
     * Traitement de la duree
     */
    private Duree duree;
+
    /**
     * Si une valeur est obligatoire
     */
@@ -91,15 +92,15 @@ public class ModificationMultipleDuree extends AbstractModificationMultipleCompo
       dureeBox = new DureeComponent();
       dureeOneDiv.appendChild(dureeBox);
    }
-   
+
    /**
     * Méthode intialisant le composant, spécifique au composant Duree
     * @param pathToPage Chemin vers la page qui demande une modif.
     * @param methodToCall Méthode à appeler
     * @param objs Liste des objets à modifier
-    * @param label Code pour label du champ dans .properties 
+    * @param label Code pour label du champ dans .properties
     * internationalisation.
-    * @param entiteToEdit Nom de l'entité à modifier. 
+    * @param entiteToEdit Nom de l'entité à modifier.
     * @param champToEdit Champ de l'entité à modifier.
     * @param ent nom de l'entite a afficher dans l'intitulé
     * @param Constraint à appliquer
@@ -146,7 +147,7 @@ public class ModificationMultipleDuree extends AbstractModificationMultipleCompo
 
    @Override
    public Object extractValueFromMultiBox(){
-      Long temps = dureeBox.getDuree().getTemps(Duree.SECONDE);
+      final Long temps = dureeBox.getDuree().getTemps(Duree.SECONDE);
       if(null != temps && 0 != temps){
          return dureeBox.getDuree().getTemps(Duree.SECONDE).toString();
       }
@@ -161,7 +162,7 @@ public class ModificationMultipleDuree extends AbstractModificationMultipleCompo
    @Override
    public void passValueToEraserBox(){
       if(null != getSelectedValue()){
-         Duree duree = new Duree(new Long(getSelectedValue().toString()), Duree.SECONDE);
+         final Duree duree = new Duree(new Long(getSelectedValue().toString()), Duree.SECONDE);
          dureeBox.setDuree(duree);
       }else{
          dureeBox.setDuree(null);

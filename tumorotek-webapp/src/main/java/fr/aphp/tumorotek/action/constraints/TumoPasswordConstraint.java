@@ -51,6 +51,7 @@ public class TumoPasswordConstraint
 {
 
    private Integer minSize;
+
    private Integer maxSize;
 
    public TumoPasswordConstraint(){

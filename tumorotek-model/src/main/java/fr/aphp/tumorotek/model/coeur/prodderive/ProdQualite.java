@@ -74,8 +74,7 @@ import fr.aphp.tumorotek.model.AbstractPfDependantThesaurusObject;
       @NamedQuery(name = "ProdQualite.findByExcludedId", query = "SELECT p FROM ProdQualite p " + "WHERE p.id != ?1"),
       @NamedQuery(name = "ProdQualite.findByPfOrder",
          query = "SELECT p FROM ProdQualite p " + "WHERE p.plateforme = ?1 ORDER BY p.nom"),
-      @NamedQuery(name = "ProdQualite.findByOrder",
-      query = "SELECT p FROM ProdQualite p ORDER BY p.nom")})
+      @NamedQuery(name = "ProdQualite.findByOrder", query = "SELECT p FROM ProdQualite p ORDER BY p.nom")})
 public class ProdQualite extends AbstractPfDependantThesaurusObject implements Serializable
 {
 

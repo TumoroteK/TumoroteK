@@ -92,22 +92,31 @@ public class CodeAssigneManagerTest extends AbstractManagerTest4
 
    @Autowired
    private CodeAssigneManager codeAssigneManager;
+
    @Autowired
    private OperationManager operationManager;
+
    @Autowired
    private CodeCommonValidator codeCommonValidator;
+
    @Autowired
    private EchantillonDao echantillonDao;
+
    @Autowired
    private TableCodageDao tableCodageDao;
+
    @Autowired
    private UtilisateurDao utilisateurDao;
+
    @Autowired
    private PrelevementDao prelevementDao;
+
    @Autowired
    private PatientDao patientDao;
+
    @Autowired
    private OperationTypeDao operationTypeDao;
+
    @Autowired
    @Qualifier("dataSource")
    private DataSource dataSource;

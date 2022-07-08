@@ -1,5 +1,5 @@
 /**
- * Copyright ou © ou Copr. Assistance Publique des Hôpitaux de 
+ * Copyright ou © ou Copr. Assistance Publique des Hôpitaux de
  * PARIS et SESAN
  * projet-tk@sesan.fr
  *
@@ -39,8 +39,6 @@ package fr.aphp.tumorotek.action.echantillon.gatsbi;
 import java.util.List;
 
 import org.zkoss.zk.ui.Component;
-import org.zkoss.zk.ui.event.Event;
-import org.zkoss.zk.ui.event.ForwardEvent;
 import org.zkoss.zul.Constraint;
 
 import fr.aphp.tumorotek.action.echantillon.FicheModifMultiEchantillon;
@@ -51,39 +49,38 @@ import fr.aphp.tumorotek.webapp.gatsbi.GatsbiController;
 /**
  *
  * Controller gérant la fiche de modification multiple des échantillons sous le
- * gestionnaire GATSBI. 
+ * gestionnaire GATSBI.
  *
  * @author Mathieu BARTHELEMY
  * @version 2.3.0-gatsbi
  *
  */
-public class FicheModifMultiEchantillonGatsbi extends FicheModifMultiEchantillon {
+public class FicheModifMultiEchantillonGatsbi extends FicheModifMultiEchantillon
+{
 
-	private static final long serialVersionUID = 1L;
-	
-	private Contexte c;
+   private static final long serialVersionUID = 1L;
 
-	@Override
-	public void doAfterCompose(Component comp) throws Exception {
-		super.doAfterCompose(comp);
+   private Contexte c;
 
-		c = GatsbiController.initWireAndDisplay(this, 
-				3, 
-				false, null, null, null);
-	}
+   @Override
+   public void doAfterCompose(final Component comp) throws Exception{
+      super.doAfterCompose(comp);
 
-	@Override
-	protected List<Object> applyAnyThesaurusRestriction(List<Object> thObjs, Integer chpId) throws TKException {
-		return GatsbiController.filterExistingListModel(c, thObjs, chpId);
-	}
+      c = GatsbiController.initWireAndDisplay(this, 3, false, null, null, null);
+   }
 
-	@Override
-	protected Constraint muteAnyRequiredConstraint(Constraint cstr, Integer chpId) {
-		return GatsbiController.muteConstraintFromContexte(cstr, c.isChampIdRequired(chpId));
-	}
+   @Override
+   protected List<Object> applyAnyThesaurusRestriction(final List<Object> thObjs, final Integer chpId) throws TKException{
+      return GatsbiController.filterExistingListModel(c, thObjs, chpId);
+   }
 
-	@Override
-	protected boolean switchAnyRequiredFlag(Boolean flag, Integer chpId) {
-		return c.isChampIdRequired(chpId);
-	}
+   @Override
+   protected Constraint muteAnyRequiredConstraint(final Constraint cstr, final Integer chpId){
+      return GatsbiController.muteConstraintFromContexte(cstr, c.isChampIdRequired(chpId));
+   }
+
+   @Override
+   protected boolean switchAnyRequiredFlag(final Boolean flag, final Integer chpId){
+      return c.isChampIdRequired(chpId);
+   }
 }

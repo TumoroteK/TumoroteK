@@ -50,7 +50,9 @@ public class EntiteObjectIdNotExistException extends TKException
    private static final long serialVersionUID = 1L;
 
    private String entite;
+
    private String nomEntite;
+
    private Integer objectId;
 
    public EntiteObjectIdNotExistException(){

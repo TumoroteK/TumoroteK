@@ -77,8 +77,10 @@ public class AdministrationController extends AbstractObjectTabController
 {
 
    private static final long serialVersionUID = -464747901091918362L;
+
    //private Borderlayout mainBorder;
    private Tabbox adminTabbox;
+
    // liste contenant les noms des tabs
    private final List<String> availableTabsNames = new ArrayList<>();
 
@@ -218,7 +220,7 @@ public class AdministrationController extends AbstractObjectTabController
          tabPf.setVisible(true);
          availableTabsNames.add("parametresTab");
       }
-      
+
       availableTabsNames.add("annotationsTab");
       availableTabsNames.add("banquesTab");
       availableTabsNames.add("utilisateursTab");
@@ -296,7 +298,7 @@ public class AdministrationController extends AbstractObjectTabController
 
    /**
     * Méthode récupérant le controller du panel des protocolesExt.
-    * @return ContratController classe gérant le panel 
+    * @return ContratController classe gérant le panel
     * des ProtocoleExt.
     */
    public ContratController getContratController(){
@@ -308,7 +310,7 @@ public class AdministrationController extends AbstractObjectTabController
 
    /**
     * Méthode récupérant le controller du panel des collaborations.
-    * @return ContratController classe gérant le panel 
+    * @return ContratController classe gérant le panel
     * des ProtocoleExt.
     */
    public CollaborationsController getCollaborationsController(){
@@ -321,7 +323,7 @@ public class AdministrationController extends AbstractObjectTabController
 
    /**
     * Méthode récupérant le controller du panel des profils.
-    * @return ContratController classe gérant le panel 
+    * @return ContratController classe gérant le panel
     * des ProtocoleExt.
     */
    public ProfilController getProfilController(){
@@ -333,7 +335,7 @@ public class AdministrationController extends AbstractObjectTabController
 
    /**
     * Méthode récupérant le controller du panel des utilisateurs.
-    * @return ContratController classe gérant le panel 
+    * @return ContratController classe gérant le panel
     * des ProtocoleExt.
     */
    public UtilisateurController getUtilisateurController(){
@@ -376,7 +378,7 @@ public class AdministrationController extends AbstractObjectTabController
 
    /**
     * Méthode récupérant le controller du panel des impressions.
-    * @return ImpressionController classe gérant le panel 
+    * @return ImpressionController classe gérant le panel
     * des Impressions.
     */
    public ImpressionController getImpressionController(){
@@ -388,7 +390,7 @@ public class AdministrationController extends AbstractObjectTabController
 
    /**
     * Méthode récupérant le controller du panel des thésaurus.
-    * @return ThesaurusController classe gérant le panel 
+    * @return ThesaurusController classe gérant le panel
     * des Thesaurus.
     */
    public ThesaurusController getThesaurusController(){
@@ -400,7 +402,7 @@ public class AdministrationController extends AbstractObjectTabController
 
    /**
     * Méthode récupérant le controller du panel des utilisateurs.
-    * @return TerminaleTypeController classe gérant le panel 
+    * @return TerminaleTypeController classe gérant le panel
     * des TerminaleTypes.
     */
    public TerminaleTypeController getTerminaleTypeController(){
@@ -412,7 +414,7 @@ public class AdministrationController extends AbstractObjectTabController
 
    /**
     * Méthode récupérant le controller du panel des codifications.
-    * @return CodeController classe gérant le panel 
+    * @return CodeController classe gérant le panel
     */
    public CodesController getCodesController(){
 
@@ -423,7 +425,7 @@ public class AdministrationController extends AbstractObjectTabController
 
    /**
     * Méthode récupérant le controller du panel des utilisateurs.
-    * @return TerminaleTypeController classe gérant le panel 
+    * @return TerminaleTypeController classe gérant le panel
     * des TerminaleTypes.
     */
    public ImportController getImportController(){
@@ -450,7 +452,7 @@ public class AdministrationController extends AbstractObjectTabController
    /**
     * Sélection d'un panel. Cette méthode n'est utilisée que pour les
     * panels quidoivent être accédés à partir d'autres panels.
-    * 
+    *
     * @version 2.1
     */
    public void onSelect$adminTabbox(){

@@ -62,8 +62,10 @@ public class ResultatManagerTest extends AbstractManagerTest4
 
    @Autowired
    private ResultatManager manager;
+
    @Autowired
    private ChampEntiteDao champEntiteDao;
+
    @Autowired
    private AffichageDao affichageDao;
 

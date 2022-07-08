@@ -91,14 +91,23 @@ public class ServiceManagerImpl implements ServiceManager
    private final Log log = LogFactory.getLog(ServiceManager.class);
 
    private ServiceDao serviceDao;
+
    private CollaborateurDao collaborateurDao;
+
    private EtablissementDao etablissementDao;
+
    private CoordonneeDao coordonneeDao;
+
    private CoordonneeManager coordonneeManager;
+
    private CollaborateurManager collaborateurManager;
+
    private ServiceValidator serviceValidator;
+
    private CoordonneeValidator coordonneeValidator;
+
    private OperationManager operationManager;
+
    private OperationTypeDao operationTypeDao;
 
    public void setServiceDao(final ServiceDao sDao){
@@ -264,7 +273,7 @@ public class ServiceManagerImpl implements ServiceManager
    }
 
    /**
-    * Recherche les collaborateurs non archivés liés au service passé 
+    * Recherche les collaborateurs non archivés liés au service passé
     * en paramètre.
     * @param service Service pour lequel on recherche des
     * collaborateurs.
@@ -306,7 +315,7 @@ public class ServiceManagerImpl implements ServiceManager
    public void createObjectManager(final Service service, final Coordonnee coordonnee, final Etablissement etablissement,
       final List<Collaborateur> collaborateurs, final Utilisateur utilisateur, final boolean cascadeArchive){
 
-      // On vérifie que l'établissement n'est pas null. Si c'est le 
+      // On vérifie que l'établissement n'est pas null. Si c'est le
       // cas on envoie une exception
       if(etablissement == null){
          log.warn("Objet obligatoire Etablissement manquant lors de " + "la creation " + "d'un objet Service");
@@ -365,7 +374,7 @@ public class ServiceManagerImpl implements ServiceManager
       final List<Collaborateur> collaborateurs, final Utilisateur utilisateur, final boolean cascadeArchive,
       final boolean doValidation){
 
-      // On vérifie que l'établissement n'est pas null. Si c'est le 
+      // On vérifie que l'établissement n'est pas null. Si c'est le
       // cas on envoie une exception
       if(etablissement == null){
          log.warn("Objet obligatoire Etablissement manquant lors de " + "la modification " + "d'un objet Service");
@@ -467,7 +476,7 @@ public class ServiceManagerImpl implements ServiceManager
     * une liste de collabs.
     * @param service Service pour lequel on veut mettre à jour
     * les associations.
-    * @param collabs Liste des Collaborateurs que l'on veut associer au 
+    * @param collabs Liste des Collaborateurs que l'on veut associer au
     * service.
     */
    public void updateCollaborateurs(final Service service, final List<Collaborateur> collabs){

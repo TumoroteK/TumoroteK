@@ -64,7 +64,7 @@ public class TumoTreeModel extends AbstractTreeModel<TumoTreeNode>
 
    //@Override
    /**
-    * Renvoie l'enfant d'un item placé la position arg1. 
+    * Renvoie l'enfant d'un item placé la position arg1.
     */
    @Override
    public TumoTreeNode getChild(final TumoTreeNode arg0, final int arg1){

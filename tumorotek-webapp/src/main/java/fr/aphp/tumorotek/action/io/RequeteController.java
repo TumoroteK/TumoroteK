@@ -54,6 +54,7 @@ public class RequeteController extends AbstractObjectTabController
    private static final long serialVersionUID = 4935823085963165549L;
 
    private Requete requete;
+
    private RechercheComplexeController topController;
 
    public Requete getRequete(){

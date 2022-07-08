@@ -55,7 +55,7 @@ public interface BlocImpressionTemplateDao extends GenericDaoJpa<BlocImpressionT
 {
 
    /**
-    * Recherche les BlocImpressionTemplates dont le template 
+    * Recherche les BlocImpressionTemplates dont le template
     * est égal au paramètre.
     * @param template Template du bloc recherché.
     * @return une liste de BlocImpressionTemplates.

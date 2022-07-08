@@ -56,7 +56,7 @@ public interface CatalogueDao extends GenericDaoJpa<Catalogue, Integer>
    List<String> findNoms();
 
    /**
-    * Recherche les catalogues dont les tables d'annotations systeme 
+    * Recherche les catalogues dont les tables d'annotations systeme
     * ont été assignées à la banque passée en paramètre.
     * @param b Banque
     * @return liste de Catalogue

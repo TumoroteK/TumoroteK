@@ -43,6 +43,9 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import ca.uhn.hl7v2.HL7Exception;
+import ca.uhn.hl7v2.model.AbstractMessage;
+import ca.uhn.hl7v2.parser.PipeParser;
 import fr.aphp.tumorotek.interfacage.jaxb.SipMessage;
 import fr.aphp.tumorotek.interfacage.jaxb.inclusion.StudySubjectType;
 import fr.aphp.tumorotek.manager.coeur.patient.PatientManager;
@@ -52,10 +55,6 @@ import fr.aphp.tumorotek.model.coeur.patient.Maladie;
 import fr.aphp.tumorotek.model.coeur.patient.Patient;
 import fr.aphp.tumorotek.model.interfacage.PatientSip;
 import fr.aphp.tumorotek.model.interfacage.PatientSipSejour;
-
-import ca.uhn.hl7v2.HL7Exception;
-import ca.uhn.hl7v2.model.AbstractMessage;
-import ca.uhn.hl7v2.parser.PipeParser;
 
 /**
  * CLasse de manipulation des messages venant des SIPs routés par
@@ -74,7 +73,9 @@ public class PatientHandler
    private Integer maxSipTableSize = 1000000;
 
    private PatientSipManager patientSipManager;
+
    private PatientManager patientManager;
+
    private UtilisateurManager utilisateurManager;
 
    private final PipeParser pipe = new PipeParser();

@@ -53,7 +53,7 @@ public interface EchanQualiteManager extends PfDependantTKThesaurusManager<Echan
 {
 
    /**
-    * Recherche une qualité d'échantillon dont l'identifiant est 
+    * Recherche une qualité d'échantillon dont l'identifiant est
     * passé en paramètre.
     * @param echanQualiteId Identifiant de la qualité que l'on recherche.
     * @return Une EchanQualite.
@@ -77,14 +77,14 @@ public interface EchanQualiteManager extends PfDependantTKThesaurusManager<Echan
    //	 * @return True s'il existe des doublons.
    //	 */
    //	Boolean findDoublonManager(EchanQualite qualite);
-   //	
+   //
    //	/**
    //	 * Test si une qualité d'échantillons est liée à des échantillons.
    //	 * @param qualite EchanQualite que l'on souhaite tester.
    //	 * @return Vrai si la qualité est utilisée.
    //	 */
    //	Boolean isUsedObjectManager(EchanQualite qualite);
-   //	
+   //
    //	/**
    //	 * Persist une instance d'EchanQualite dans la base de données.
    //	 * @param qualite Nouvelle instance de l'objet à créer.
@@ -92,7 +92,7 @@ public interface EchanQualiteManager extends PfDependantTKThesaurusManager<Echan
    //	 * l'objet à créer se trouve déjà dans la base.
    //	 */
    //	void createObjectManager(EchanQualite qualite);
-   //	
+   //
    //	/**
    //	 * Sauvegarde les modifications apportées à un objet persistant.
    //	 * @param qualite Objet à mettre à jour dans la base.
@@ -100,7 +100,7 @@ public interface EchanQualiteManager extends PfDependantTKThesaurusManager<Echan
    //	 * l'objet à créer se trouve déjà dans la base.
    //	 */
    //	void updateObjectManager(EchanQualite qualite);
-   //	
+   //
    //	/**
    //	 * Supprime une EchanQualite de la base de données.
    //	 * @param qualite EchanQualite à supprimer de la base de données.

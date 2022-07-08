@@ -61,7 +61,7 @@ public class EtablissementNode extends TumoTreeNode
    }
 
    /**
-    * Recherche tous les services de l'établissement et crée un 
+    * Recherche tous les services de l'établissement et crée un
     * ServiceNode pour chacun.
     */
    @Override

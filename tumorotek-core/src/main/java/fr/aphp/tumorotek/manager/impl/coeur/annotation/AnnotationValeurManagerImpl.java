@@ -91,14 +91,23 @@ public class AnnotationValeurManagerImpl implements AnnotationValeurManager
 
    /* Beans injectes par Spring*/
    private AnnotationValeurDao annotationValeurDao;
+
    private AnnotationCommonValidator annotationCommonValidator;
+
    private OperationManager operationManager;
+
    private OperationTypeDao operationTypeDao;
+
    private ChampAnnotationDao champAnnotationDao;
+
    private BanqueDao banqueDao;
+
    private FichierManager fichierManager;
+
    private EntiteManager entiteManager;
+
    private TableAnnotationDao tableAnnotationDao;
+
    private ChampCalculeManager champCalculeManager;
 
    public AnnotationValeurManagerImpl(){}
@@ -144,12 +153,12 @@ public class AnnotationValeurManagerImpl implements AnnotationValeurManager
    }
 
    @Override
-   public void createObject(AnnotationValeur annoVal){
+   public void createObject(final AnnotationValeur annoVal){
       annotationValeurDao.createObject(annoVal);
    }
 
    @Override
-   public void updateObject(AnnotationValeur annoVal){
+   public void updateObject(final AnnotationValeur annoVal){
       annotationValeurDao.updateObject(annoVal);
    }
 
@@ -229,7 +238,7 @@ public class AnnotationValeurManagerImpl implements AnnotationValeurManager
       final List<AnnotationValeur> valeursCreatedUpdated = new ArrayList<>();
       if(valeurs != null){
          AnnotationValeur clone;
-         for(AnnotationValeur valeur : valeurs){
+         for(final AnnotationValeur valeur : valeurs){
             clone = valeur.clone();
             if(operation == null){
                if(clone.getAnnotationValeurId() != null){
@@ -239,8 +248,8 @@ public class AnnotationValeurManagerImpl implements AnnotationValeurManager
                }
             }
             // clone permet de conserver l'etat transient en cas d'erreur
-            // et rollback transaction... 
-            // attention, de fait l'objet 
+            // et rollback transaction...
+            // attention, de fait l'objet
             // dans l'interface conserve id = null
             createOrUpdateObjectManager(clone, null, obj, null, clone.getFichier(), utilisateur, annotOperation, baseDir,
                filesCreated, filesToDelete);
@@ -334,8 +343,8 @@ public class AnnotationValeurManagerImpl implements AnnotationValeurManager
       List<AnnotationValeur> valeurs = new ArrayList<>();
       if(obj != null && champ != null && obj.getClass().getSimpleName().equals(champ.getTableAnnotation().getEntite().getNom())){
          if("calcule".equals(champ.getDataType().getType())){
-            AnnotationValeur av = new AnnotationValeur();
-            Object valeur = champCalculeManager.getValueForObjectManager(champ.getChampCalcule(), obj);
+            final AnnotationValeur av = new AnnotationValeur();
+            final Object valeur = champCalculeManager.getValueForObjectManager(champ.getChampCalcule(), obj);
             if(null != valeur){
                av.setValeur(valeur);
             }
@@ -349,7 +358,7 @@ public class AnnotationValeurManagerImpl implements AnnotationValeurManager
 
    @Override
    public List<AnnotationValeur> findByChampAndObjetManager(final ChampAnnotation champ, final TKAnnotableObject obj,
-      Boolean discardCalcule){
+      final Boolean discardCalcule){
       log.debug("Recherche des AnnotationValeur par champ et Objet");
       List<AnnotationValeur> valeurs = new ArrayList<>();
       if(obj != null && champ != null && obj.getClass().getSimpleName().equals(champ.getTableAnnotation().getEntite().getNom())){
@@ -389,7 +398,7 @@ public class AnnotationValeurManagerImpl implements AnnotationValeurManager
    }
 
    /**
-    * Verifie que les Objets devant etre obligatoirement associes 
+    * Verifie que les Objets devant etre obligatoirement associes
     * sont non nulls et lance la validation via le Validator.
     * @param valeur
     * @param champ champAnnotation
@@ -461,7 +470,7 @@ public class AnnotationValeurManagerImpl implements AnnotationValeurManager
    @Override
    public void removeAnnotationValeurListManager(final List<AnnotationValeur> valeurs, final List<File> filesToDelete){
       if(valeurs != null){
-         for(AnnotationValeur valeur : valeurs){
+         for(final AnnotationValeur valeur : valeurs){
             removeObjectManager(valeur, filesToDelete);
          }
       }
@@ -471,7 +480,7 @@ public class AnnotationValeurManagerImpl implements AnnotationValeurManager
    public Object getValueForAnnotationValeur(final AnnotationValeur valeur){
       Object obj = null;
       if(valeur != null && valeur.getChampAnnotation() != null){
-         String dataType = valeur.getChampAnnotation().getDataType().getType();
+         final String dataType = valeur.getChampAnnotation().getDataType().getType();
          switch(dataType){
             default:
                break;
@@ -518,8 +527,8 @@ public class AnnotationValeurManagerImpl implements AnnotationValeurManager
    }
 
    @Override
-   public void switchBanqueManager(final TKAnnotableObject obj, final Banque bank, final List<File> filesToDelete, 
-		   final Set<MvFichier> filesToMove){
+   public void switchBanqueManager(final TKAnnotableObject obj, final Banque bank, final List<File> filesToDelete,
+      final Set<MvFichier> filesToMove){
       if(bank != null && obj != null){
 
          final Collection<?> sharedByBanques = CollectionUtils.intersection(
@@ -531,13 +540,12 @@ public class AnnotationValeurManagerImpl implements AnnotationValeurManager
             if(sharedByBanques.contains(annos.get(i).getChampAnnotation().getTableAnnotation())){
                annos.get(i).setBanque(bank);
                annotationValeurDao.updateObject(annos.get(i));
-               
+
                // fichier?
-               if (filesToMove != null && annos.get(i)
-            		   .getChampAnnotation().getDataType().getType().equalsIgnoreCase("fichier")) {
-            	   fichierManager.switchBanqueManager(annos.get(i).getFichier(), bank, filesToMove);
+               if(filesToMove != null && annos.get(i).getChampAnnotation().getDataType().getType().equalsIgnoreCase("fichier")){
+                  fichierManager.switchBanqueManager(annos.get(i).getFichier(), bank, filesToMove);
                }
-               
+
             }else{
                removeObjectManager(annos.get(i), filesToDelete);
             }

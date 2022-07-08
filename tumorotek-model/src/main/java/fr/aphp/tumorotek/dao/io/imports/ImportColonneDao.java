@@ -69,7 +69,7 @@ public interface ImportColonneDao extends GenericDaoJpa<ImportColonne, Integer>
     * @return Liste d'ImportColonnes.
     */
    List<ImportColonne> findByTemplateAndEntite(ImportTemplate importTemplate, Entite entite);
-   
+
    /**
     * Recherche les ImportColonnes de l'ImportTemplate et de l'entité pour les champs delegues
     * contextuels.

@@ -60,7 +60,9 @@ public class ProfilUtilisateurPK implements Serializable
    private static final long serialVersionUID = -5029452269080724892L;
 
    private Profil profil;
+
    private Utilisateur utilisateur;
+
    private Banque banque;
 
    /** Constructeur par défaut. */
@@ -100,7 +102,7 @@ public class ProfilUtilisateurPK implements Serializable
    }
 
    /**
-    * 2 PKs sont considérés comme égales si elles sont composees 
+    * 2 PKs sont considérés comme égales si elles sont composees
     * des mêmes clés.
     * @param obj est la PK à tester.
     * @return true si les PK sont egales.

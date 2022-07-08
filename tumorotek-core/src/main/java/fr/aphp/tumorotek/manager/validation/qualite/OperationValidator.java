@@ -55,7 +55,6 @@ import fr.aphp.tumorotek.model.qualite.Operation;
 public class OperationValidator implements Validator
 {
 
-   
    @Override
    public boolean supports(final Class<?> clazz){
       return Operation.class.equals(clazz);

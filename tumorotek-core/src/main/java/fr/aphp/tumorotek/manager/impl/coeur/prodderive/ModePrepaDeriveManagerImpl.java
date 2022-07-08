@@ -70,10 +70,13 @@ public class ModePrepaDeriveManagerImpl implements ModePrepaDeriveManager
 
    /** Bean Dao ModePrepaDeriveDao. */
    private ModePrepaDeriveDao modePrepaDeriveDao;
+
    /** Bean Dao EchantillonDao. */
    private ProdDeriveDao prodDeriveDao;
+
    /** Bean Validator. */
    private ModePrepaDeriveValidator modePrepaDeriveValidator;
+
    private PlateformeDao plateformeDao;
 
    public void setPlateformeDao(final PlateformeDao pDao){
@@ -155,9 +158,9 @@ public class ModePrepaDeriveManagerImpl implements ModePrepaDeriveManager
          log.warn("Doublon lors de la modification de l'objet " + "ModePrepaDerive : " + mode.toString());
          throw new DoublonFoundException("ModePrepaDerive", "modification");
       }
-         BeanValidator.validateObject(mode, new Validator[] {modePrepaDeriveValidator});
-         modePrepaDeriveDao.updateObject(mode);
-         log.info("Modification de l'objet ModePrepaDerive : " + mode.toString());
+      BeanValidator.validateObject(mode, new Validator[] {modePrepaDeriveValidator});
+      modePrepaDeriveDao.updateObject(mode);
+      log.info("Modification de l'objet ModePrepaDerive : " + mode.toString());
    }
 
    @Override

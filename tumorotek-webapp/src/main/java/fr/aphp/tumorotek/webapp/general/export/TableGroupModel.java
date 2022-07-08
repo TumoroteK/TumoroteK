@@ -63,7 +63,9 @@ public class TableGroupModel extends GroupsModelArray<TableAnnotation, TableGrou
    public static class TableInfo
    {
       private final TableAnnotation firstChild;
+
       private final int groupIndex;
+
       private final int colIndex;
 
       public TableInfo(final TableAnnotation firstChild, final int groupIndex, final int colIndex){

@@ -61,162 +61,158 @@ import fr.aphp.tumorotek.model.contexte.gatsbi.Etude;
 public class PrelevementGatsbiValidatorTests extends AbstractManagerTest4
 {
 
-	private Prelevement p;
-	private Contexte contexte;
+   private Prelevement p;
 
-	@Autowired
-	private PrelevementManager prelevementManager;
+   private Contexte contexte;
 
-	@Before
-	public void setUp() {
-		contexte = new Contexte();  
-		contexte.setContexteType(ContexteType.PRELEVEMENT);
-		contexte.setNom("test_contexte");
-		Banque bank = new Banque();
-		Etude etude = new Etude();
-		etude.addToContextes(contexte);
-		bank.setEtude(etude);
-		p = new Prelevement();
-		p.setBanque(bank);
-	}
+   @Autowired
+   private PrelevementManager prelevementManager;
 
-	@Test
-	public void checkRequiredObjectsAndValidate_shouldNotFailIfNatureAndConsentTypeAreNotRequiredAnymore_whenGastbiApplies() {
+   @Before
+   public void setUp(){
+      contexte = new Contexte();
+      contexte.setContexteType(ContexteType.PRELEVEMENT);
+      contexte.setNom("test_contexte");
+      Banque bank = new Banque();
+      Etude etude = new Etude();
+      etude.addToContextes(contexte);
+      bank.setEtude(etude);
+      p = new Prelevement();
+      p.setBanque(bank);
+   }
 
-		// given
-		ChampEntite nature = new ChampEntite();
-		nature.setChampEntiteId(24);
-		nature.setObligatoire(false);
-		contexte.getChampEntites().add(nature);	   
-		ChampEntite consentType = new ChampEntite();
-		consentType.setChampEntiteId(26);
-		consentType.setObligatoire(false);
-		contexte.getChampEntites().add(consentType);	      
-		boolean caught = false;
+   @Test
+   public void checkRequiredObjectsAndValidate_shouldNotFailIfNatureAndConsentTypeAreNotRequiredAnymore_whenGastbiApplies(){
 
-		// when
-		try {
-			prelevementManager
-			.checkRequiredObjectsAndValidate(p, null, null, null, null, null, null, null, false, null);
-		} catch (RequiredObjectIsNullException re) {
-			caught = true;
-		}
+      // given
+      ChampEntite nature = new ChampEntite();
+      nature.setChampEntiteId(24);
+      nature.setObligatoire(false);
+      contexte.getChampEntites().add(nature);
+      ChampEntite consentType = new ChampEntite();
+      consentType.setChampEntiteId(26);
+      consentType.setObligatoire(false);
+      contexte.getChampEntites().add(consentType);
+      boolean caught = false;
 
-		// then
-		assertFalse(caught);
-	}
+      // when
+      try{
+         prelevementManager.checkRequiredObjectsAndValidate(p, null, null, null, null, null, null, null, false, null);
+      }catch(RequiredObjectIsNullException re){
+         caught = true;
+      }
 
-	@Test
-	public void checkRequiredObjectsAndValidate_shouldFailIfNatureIsRequired_whenGastbiApplies() {
-		// given
-		ChampEntite nature = new ChampEntite();
-		nature.setChampEntiteId(24);
-		nature.setObligatoire(true);
-		contexte.getChampEntites().add(nature);
-		boolean caught = false;
+      // then
+      assertFalse(caught);
+   }
 
-		// when
-		try {
-			prelevementManager
-			.checkRequiredObjectsAndValidate(p, null, null, null, null, null, null, null, false, null);
-		} catch (RequiredObjectIsNullException re) {
-			caught = true;
-			assertTrue(re.getRequiredObject().equals("Nature"));
-		}
+   @Test
+   public void checkRequiredObjectsAndValidate_shouldFailIfNatureIsRequired_whenGastbiApplies(){
+      // given
+      ChampEntite nature = new ChampEntite();
+      nature.setChampEntiteId(24);
+      nature.setObligatoire(true);
+      contexte.getChampEntites().add(nature);
+      boolean caught = false;
 
-		// then
-		assertTrue(caught);
-	}
+      // when
+      try{
+         prelevementManager.checkRequiredObjectsAndValidate(p, null, null, null, null, null, null, null, false, null);
+      }catch(RequiredObjectIsNullException re){
+         caught = true;
+         assertTrue(re.getRequiredObject().equals("Nature"));
+      }
 
-	@Test
-	public void checkRequiredObjectsAndValidate_shouldFailIfConsentTypeIsRequired_whenGastbiApplies() {
-		// given
-		ChampEntite consentType = new ChampEntite();
-		consentType.setChampEntiteId(26);
-		consentType.setObligatoire(true);
-		contexte.getChampEntites().add(consentType);	 
-		boolean caught = false;
+      // then
+      assertTrue(caught);
+   }
 
-		// when
-		try {
-			prelevementManager
-			.checkRequiredObjectsAndValidate(p, null, null, null, null, null, null, null, false, null);
-		} catch (RequiredObjectIsNullException re) {
-			caught = true;
-			assertTrue(re.getRequiredObject().equals("ConsentType"));
-		}
+   @Test
+   public void checkRequiredObjectsAndValidate_shouldFailIfConsentTypeIsRequired_whenGastbiApplies(){
+      // given
+      ChampEntite consentType = new ChampEntite();
+      consentType.setChampEntiteId(26);
+      consentType.setObligatoire(true);
+      contexte.getChampEntites().add(consentType);
+      boolean caught = false;
 
-		// then
-		assertTrue(caught);
-	}
+      // when
+      try{
+         prelevementManager.checkRequiredObjectsAndValidate(p, null, null, null, null, null, null, null, false, null);
+      }catch(RequiredObjectIsNullException re){
+         caught = true;
+         assertTrue(re.getRequiredObject().equals("ConsentType"));
+      }
 
-	@Test
-	public void checkRequiredObjectsAndValidate_shouldFailAndThrowErrorForEachRequiredField_whenGastbiApplies() {
-		// given
-		List<Integer> ids = Arrays.asList(45, 44, 30, 31, 249, 29, 28, 32, 34, 33, 27, 35, 36, 37, 38, 39, 40, 256);
-		addChampEntiteAsObligatoireToContexte(ids);  
-		ValidationException ve = null;
-		p.setCode("TESTPREL");
+      // then
+      assertTrue(caught);
+   }
 
-		// when 
-		try {
-			prelevementManager
-			.checkRequiredObjectsAndValidate(p, null, null, null, null, null, null, null, true, null);
-		} catch (ValidationException e) {
-			ve = e;
-		}
+   @Test
+   public void checkRequiredObjectsAndValidate_shouldFailAndThrowErrorForEachRequiredField_whenGastbiApplies(){
+      // given
+      List<Integer> ids = Arrays.asList(45, 44, 30, 31, 249, 29, 28, 32, 34, 33, 27, 35, 36, 37, 38, 39, 40, 256);
+      addChampEntiteAsObligatoireToContexte(ids);
+      ValidationException ve = null;
+      p.setCode("TESTPREL");
 
-		// then
-		assertTrue(ve != null);
-		List<FieldError> errs = ve.getErrors().get(0).getFieldErrors();
-		assertTrue(errs.get(0).getField().equals("numeroLabo"));
-		assertTrue(errs.get(0).getCode().equals("prelevement.numeroLabo.empty"));
-		assertTrue(errs.get(1).getField().equals("patientNda"));
-		assertTrue(errs.get(1).getCode().equals("prelevement.patientNda.empty"));
-		assertTrue(errs.get(2).getField().equals("datePrelevement"));
-		assertTrue(errs.get(2).getCode().equals("prelevement.datePrelevement.empty"));
-		assertTrue(errs.get(3).getField().equals("prelevementType"));
-		assertTrue(errs.get(3).getCode().equals("prelevement.prelevementType.empty"));
-		assertTrue(errs.get(4).getField().equals("risques"));
-		assertTrue(errs.get(4).getCode().equals("prelevement.risques.empty"));
-		assertTrue(errs.get(5).getField().equals("servicePreleveur"));
-		assertTrue(errs.get(5).getCode().equals("prelevement.servicePreleveur.empty"));
-		assertTrue(errs.get(6).getField().equals("preleveur"));
-		assertTrue(errs.get(6).getCode().equals("prelevement.preleveur.empty"));
-		assertTrue(errs.get(7).getField().equals("conditType"));
-		assertTrue(errs.get(7).getCode().equals("prelevement.conditType.empty"));
-		assertTrue(errs.get(8).getField().equals("conditNbr"));
-		assertTrue(errs.get(8).getCode().equals("prelevement.conditNbr.empty"));
-		assertTrue(errs.get(9).getField().equals("conditMilieu"));
-		assertTrue(errs.get(9).getCode().equals("prelevement.conditMilieu.empty"));
-		assertTrue(errs.get(10).getField().equals("consentDate"));
-		assertTrue(errs.get(10).getCode().equals("prelevement.consentDate.empty"));
-		assertTrue(errs.get(11).getField().equals("dateDepart"));
-		assertTrue(errs.get(11).getCode().equals("prelevement.dateDepart.empty"));
-		assertTrue(errs.get(12).getField().equals("transporteur"));
-		assertTrue(errs.get(12).getCode().equals("prelevement.transporteur.empty"));
-		assertTrue(errs.get(13).getField().equals("transportTemp"));
-		assertTrue(errs.get(13).getCode().equals("prelevement.transportTemp.empty"));
-		assertTrue(errs.get(14).getField().equals("dateArrivee"));
-		assertTrue(errs.get(14).getCode().equals("prelevement.dateArrivee.empty"));
-		assertTrue(errs.get(15).getField().equals("operateur"));
-		assertTrue(errs.get(15).getCode().equals("prelevement.operateur.empty"));
-		assertTrue(errs.get(16).getField().equals("quantite"));
-		assertTrue(errs.get(16).getCode().equals("prelevement.quantite.empty"));
-		assertTrue(errs.get(17).getField().equals("conformeArrivee"));
-		assertTrue(errs.get(17).getCode().equals("prelevement.conformeArrivee.empty"));
+      // when 
+      try{
+         prelevementManager.checkRequiredObjectsAndValidate(p, null, null, null, null, null, null, null, true, null);
+      }catch(ValidationException e){
+         ve = e;
+      }
 
-		assertTrue(ve.getErrors().get(0).getAllErrors().size() == ids.size());
-	}
+      // then
+      assertTrue(ve != null);
+      List<FieldError> errs = ve.getErrors().get(0).getFieldErrors();
+      assertTrue(errs.get(0).getField().equals("numeroLabo"));
+      assertTrue(errs.get(0).getCode().equals("prelevement.numeroLabo.empty"));
+      assertTrue(errs.get(1).getField().equals("patientNda"));
+      assertTrue(errs.get(1).getCode().equals("prelevement.patientNda.empty"));
+      assertTrue(errs.get(2).getField().equals("datePrelevement"));
+      assertTrue(errs.get(2).getCode().equals("prelevement.datePrelevement.empty"));
+      assertTrue(errs.get(3).getField().equals("prelevementType"));
+      assertTrue(errs.get(3).getCode().equals("prelevement.prelevementType.empty"));
+      assertTrue(errs.get(4).getField().equals("risques"));
+      assertTrue(errs.get(4).getCode().equals("prelevement.risques.empty"));
+      assertTrue(errs.get(5).getField().equals("servicePreleveur"));
+      assertTrue(errs.get(5).getCode().equals("prelevement.servicePreleveur.empty"));
+      assertTrue(errs.get(6).getField().equals("preleveur"));
+      assertTrue(errs.get(6).getCode().equals("prelevement.preleveur.empty"));
+      assertTrue(errs.get(7).getField().equals("conditType"));
+      assertTrue(errs.get(7).getCode().equals("prelevement.conditType.empty"));
+      assertTrue(errs.get(8).getField().equals("conditNbr"));
+      assertTrue(errs.get(8).getCode().equals("prelevement.conditNbr.empty"));
+      assertTrue(errs.get(9).getField().equals("conditMilieu"));
+      assertTrue(errs.get(9).getCode().equals("prelevement.conditMilieu.empty"));
+      assertTrue(errs.get(10).getField().equals("consentDate"));
+      assertTrue(errs.get(10).getCode().equals("prelevement.consentDate.empty"));
+      assertTrue(errs.get(11).getField().equals("dateDepart"));
+      assertTrue(errs.get(11).getCode().equals("prelevement.dateDepart.empty"));
+      assertTrue(errs.get(12).getField().equals("transporteur"));
+      assertTrue(errs.get(12).getCode().equals("prelevement.transporteur.empty"));
+      assertTrue(errs.get(13).getField().equals("transportTemp"));
+      assertTrue(errs.get(13).getCode().equals("prelevement.transportTemp.empty"));
+      assertTrue(errs.get(14).getField().equals("dateArrivee"));
+      assertTrue(errs.get(14).getCode().equals("prelevement.dateArrivee.empty"));
+      assertTrue(errs.get(15).getField().equals("operateur"));
+      assertTrue(errs.get(15).getCode().equals("prelevement.operateur.empty"));
+      assertTrue(errs.get(16).getField().equals("quantite"));
+      assertTrue(errs.get(16).getCode().equals("prelevement.quantite.empty"));
+      assertTrue(errs.get(17).getField().equals("conformeArrivee"));
+      assertTrue(errs.get(17).getCode().equals("prelevement.conformeArrivee.empty"));
 
-	private void addChampEntiteAsObligatoireToContexte(List<Integer> chpIds) {
-		for (Integer i : chpIds) {
-			ChampEntite chpE = new ChampEntite();
-			chpE.setChampEntiteId(i);
-			chpE.setObligatoire(true);
-			contexte.getChampEntites().add(chpE);	
-		}
-	}
+      assertTrue(ve.getErrors().get(0).getAllErrors().size() == ids.size());
+   }
 
+   private void addChampEntiteAsObligatoireToContexte(List<Integer> chpIds){
+      for(Integer i : chpIds){
+         ChampEntite chpE = new ChampEntite();
+         chpE.setChampEntiteId(i);
+         chpE.setObligatoire(true);
+         contexte.getChampEntites().add(chpE);
+      }
+   }
 
 }

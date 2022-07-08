@@ -59,7 +59,9 @@ public class GroupementNode extends ExportNode
     * Liste des enfants du noeud.
     */
    ExportNode node1 = null;
+
    ExportNode node2 = null;
+
    Integer operateur = null;
 
    Groupement groupement = null;
@@ -116,7 +118,7 @@ public class GroupementNode extends ExportNode
    }
 
    /**
-    * @return Nombre d'enfant du noeud. 
+    * @return Nombre d'enfant du noeud.
     */
    public int getChildCount(){
       int cpt = 0;

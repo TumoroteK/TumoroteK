@@ -63,13 +63,19 @@ public class DeleteModale extends GenericForwardComposer<Component>
    private static final long serialVersionUID = -8704338228969541559L;
 
    private Component parent;
+
    private String comments;
 
    private Html warnLabel;
+
    private Image warnImg;
+
    private Image stopImg;
+
    private Row commentsRow;
+
    private Row commentsRowBox;
+
    private Button delete;
 
    @Override
@@ -82,7 +88,7 @@ public class DeleteModale extends GenericForwardComposer<Component>
    /**
     * Initialise le composant à partir des paramètres d'affichage.
     * @param message avertissement affiché à l'utilisateur
-    * @param fantomable indique si le textbox de commentaire doit 
+    * @param fantomable indique si le textbox de commentaire doit
     * être affiché.
     * @param deletable inique si l'avertissement seul doit être affiché.
     * @param component parent ayant demandé la modale.

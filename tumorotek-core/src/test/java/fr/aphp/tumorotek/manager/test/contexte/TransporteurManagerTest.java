@@ -70,8 +70,10 @@ public class TransporteurManagerTest extends AbstractManagerTest4
 
    @Autowired
    private TransporteurManager transporteurManager;
+
    @Autowired
    private CoordonneeManager coordonneeManager;
+
    @Autowired
    private UtilisateurDao utilisateurDao;
 

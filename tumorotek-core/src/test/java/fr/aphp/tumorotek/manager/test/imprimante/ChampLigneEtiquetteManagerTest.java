@@ -70,12 +70,16 @@ public class ChampLigneEtiquetteManagerTest extends AbstractManagerTest4
 
    @Autowired
    private ChampLigneEtiquetteManager champLigneEtiquetteManager;
+
    @Autowired
    private LigneEtiquetteDao ligneEtiquetteDao;
+
    @Autowired
    private EntiteDao entiteDao;
+
    @Autowired
    private ChampManager champManager;
+
    @Autowired
    private ChampEntiteDao champEntiteDao;
 

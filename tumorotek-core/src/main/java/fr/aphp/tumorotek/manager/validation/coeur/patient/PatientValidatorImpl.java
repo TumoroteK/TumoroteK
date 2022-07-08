@@ -157,7 +157,7 @@ public class PatientValidatorImpl implements PatientValidator
       //prenom valide
       if(patient.getPrenom() != null){
          //			ValidationUtils
-         //			.rejectIfEmptyOrWhitespace(errs, "prenom", 
+         //			.rejectIfEmptyOrWhitespace(errs, "prenom",
          //										"patient.prenom.empty");
          if(!patient.getPrenom().matches(ValidationUtilities.MOTREGEXP)){
             errs.rejectValue("prenom", "patient.prenom.illegal");
@@ -172,7 +172,7 @@ public class PatientValidatorImpl implements PatientValidator
       //sexe valide
       if(patient.getSexe() != null){
          //			ValidationUtils
-         //			.rejectIfEmptyOrWhitespace(errs, "sexe", 
+         //			.rejectIfEmptyOrWhitespace(errs, "sexe",
          //										"patient.sexe.empty");
          if(!patient.getSexe().matches(ValidationUtilities.SEXEREGEXP)){
             errs.rejectValue("sexe", "patient.sexe.illegal");
@@ -245,7 +245,7 @@ public class PatientValidatorImpl implements PatientValidator
    }
 
    /**
-    * Vérifie la cohérence de la date de l'état. 
+    * Vérifie la cohérence de la date de l'état.
     * @param patient
     * @return Errors
     */
@@ -270,7 +270,7 @@ public class PatientValidatorImpl implements PatientValidator
 
    /**
     * Vérifie la cohérence de la date de deces.
-    * Verifie la coherence avec l'état du patient. 
+    * Verifie la coherence avec l'état du patient.
     * @param patient
     * @return Errors
     */
@@ -305,12 +305,12 @@ public class PatientValidatorImpl implements PatientValidator
    //		Object previous = null;
    //		String codePrevious = null;
    //		Object[] dateAndCodeForEchan;
-   //		
+   //
    //		// boucle utilisée lors update uniquement
    //		if (patient.getPatientId() != null) {
-   //			
+   //
    //			// trouve les maladies
-   //			List<Maladie> maladies = 
+   //			List<Maladie> maladies =
    //					new ArrayList<Maladie>(maladieManager
    //											.getMaladiesManager(patient));
    //			for (int j = 0; j < maladies.size(); j++) {
@@ -333,11 +333,11 @@ public class PatientValidatorImpl implements PatientValidator
    //					}
    //				}
    //			}
-   //					
+   //
    //			// trouve les prelevements
    //			List<Prelevement> prels = prelevementManager
    //									.findAllPrelevementsManager(patient);
-   //			
+   //
    //			// trouve la date de reference
    //			for (int i = 0; i < prels.size(); i++) {
    //				if (!prels.get(i).getArchive()) {
@@ -353,11 +353,11 @@ public class PatientValidatorImpl implements PatientValidator
    //						List<LaboInter> list =
    //							new ArrayList<LaboInter>(prelevementManager
    //								.getLaboIntersWithOrderManager(prels.get(i)));
-   //							
+   //
    //						if (list != null) {
    //							int ordre;
-   //							// utilisation de precedent 
-   //							// car aucune certitude 
+   //							// utilisation de precedent
+   //							// car aucune certitude
    //							// sur l'ordre
    //							// des labos dans le set
    //							int precedent = list.size() + 1;
@@ -386,7 +386,7 @@ public class PatientValidatorImpl implements PatientValidator
    //								ref = prels.get(i).getDateArrivee();
    //								code = "date.validation"
    //											+ ".supDateDepartUnPrelevement";
-   //							}						
+   //							}
    //						}
    //						if (ref == null) {
    //							// trouve parmi les echantillons
@@ -398,12 +398,12 @@ public class PatientValidatorImpl implements PatientValidator
    //							}
    //						}
    //					}
-   //					
+   //
    //					if (ref != null) {
    //						if (previous != null) {
    //							if (ValidationUtilities
-   //									.checkWithDate(ref, null, 
-   //										previous, null, null, null, 
+   //									.checkWithDate(ref, null,
+   //										previous, null, null, null,
    //														null, true)) {
    //								previous = ref;
    //								codePrevious = code;
@@ -423,7 +423,7 @@ public class PatientValidatorImpl implements PatientValidator
    //			dateAndCode[0] = Utils.getCurrentSystemDate();
    //			dateAndCode[1] = "date.validation.supDateActuelle";
    //		}
-   //		
+   //
    //		return dateAndCode;
    //	}
 }

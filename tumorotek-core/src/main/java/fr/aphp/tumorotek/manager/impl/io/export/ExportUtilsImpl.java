@@ -90,20 +90,33 @@ public class ExportUtilsImpl implements ExportUtils
    // private Log log = LogFactory.getLog(ExportUtils.class);
 
    private MaladieManager maladieManager;
+
    private PatientManager patientManager;
+
    private PrelevementManager prelevementManager;
+
    private EchantillonManager echantillonManager;
+
    private ProdDeriveManager prodDeriveManager;
+
    private CederObjetManager cederObjetManager;
+
    private EntiteManager entiteManager;
+
    private AnnotationValeurManager annotationValeurManager;
+
    private OperationManager operationManager;
+
    private CodeAssigneManager codeAssigneManager;
+
    private ObjetStatutManager objetStatutManager;
+
    private OperationTypeDao operationTypeDao;
+
    private ObjetNonConformeManager objetNonConformeManager;
 
    private static short CELLSTYLEDATESHORT = 22;
+
    private static short CELLSTYLEDATELONG = 21;
 
    public void setMaladieManager(final MaladieManager mManager){
@@ -427,7 +440,7 @@ public class ExportUtilsImpl implements ExportUtils
    /**
     * Cree et ajoute les cellules contenant les valeurs d'annotations pour un
     * objet donné et les champs passés en paramètres.
-    * 
+    *
     * @param row
     * @param wb
     * @param indCell
@@ -616,10 +629,10 @@ public class ExportUtilsImpl implements ExportUtils
          if(pat.getDateNaissance() != null && prelevement.getDatePrelevement() != null){
             final Calendar calPat = Calendar.getInstance();
             calPat.setTime(pat.getDateNaissance());
-            final Long diffMillis = prelevement.getDatePrelevement().getTimeInMillis() - calPat.getTimeInMillis();
+            final long diffMillis = prelevement.getDatePrelevement().getTimeInMillis() - calPat.getTimeInMillis();
             // ie 31536000000 = 365*24*60*60*1000
             // soit le nb de millisecondes dans une année
-            final Long div = new Long(31536000000L);
+            final long div = 31536000000L;
             final int annees = (int) (diffMillis / div);
             age = new Integer(annees);
          }
@@ -1072,7 +1085,7 @@ public class ExportUtilsImpl implements ExportUtils
       // statut
       if(cession.getCessionStatut() != null){
          indCell = addCell(indCell, row, cession.getCessionStatut().getStatut());
-         ;
+
       }else{
          indCell = addCell(indCell, row, null);
       }

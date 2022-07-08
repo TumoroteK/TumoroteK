@@ -56,6 +56,7 @@ public class ScannedTerminaleNotUniqueException extends TKException
    private static final long serialVersionUID = -3562772083927549441L;
 
    private List<String> enceinteAdrls;
+
    private String code;
 
    public ScannedTerminaleNotUniqueException(){

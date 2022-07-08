@@ -73,10 +73,15 @@ public class LaboInterManagerImpl implements LaboInterManager
 
    /* Beans injectes par Spring*/
    private LaboInterDao laboInterDao;
+
    private PrelevementDao prelevementDao;
+
    private ServiceDao serviceDao;
+
    private CollaborateurDao collaborateurDao;
+
    private TransporteurDao transporteurDao;
+
    private LaboInterValidator laboInterValidator;
 
    public LaboInterManagerImpl(){}

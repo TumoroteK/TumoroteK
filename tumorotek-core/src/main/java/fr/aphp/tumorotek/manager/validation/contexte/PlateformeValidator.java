@@ -52,7 +52,6 @@ import fr.aphp.tumorotek.model.contexte.Plateforme;
 public class PlateformeValidator implements Validator
 {
 
-   
    @Override
    public boolean supports(final Class<?> clazz){
       return Plateforme.class.equals(clazz);

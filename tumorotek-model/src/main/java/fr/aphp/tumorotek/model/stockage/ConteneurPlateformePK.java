@@ -60,6 +60,7 @@ public class ConteneurPlateformePK implements Serializable
    private static final long serialVersionUID = 1L;
 
    private Conteneur conteneur;
+
    private Plateforme plateforme;
 
    /** Constructeur par défaut. */
@@ -89,7 +90,7 @@ public class ConteneurPlateformePK implements Serializable
    }
 
    /**
-    * 2 PKs sont considérés comme égales si elles sont composees 
+    * 2 PKs sont considérés comme égales si elles sont composees
     * des mêmes clés.
     * @param obj est la PK à tester.
     * @return true si les PK sont egales.

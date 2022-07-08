@@ -63,20 +63,24 @@ import org.hibernate.annotations.GenericGenerator;
 @Table(name = "VALEUR_EXTERNE")
 @NamedQueries(value = {
    @NamedQuery(name = "ValeurExterne.findByBlocExterne", query = "SELECT v FROM ValeurExterne v " + "WHERE v.blocExterne = ?1"),
-   @NamedQuery(name = "ValeurExterne.findByDossierChampEntiteIdAndBlocEntiteId", 
-   		query = "SELECT v FROM ValeurExterne v JOIN v.blocExterne b join b.dossierExterne d "
-   				+ "WHERE d = ?1  AND v.champEntiteId = ?2 AND b.entiteId = ?3") 
-})
+   @NamedQuery(name = "ValeurExterne.findByDossierChampEntiteIdAndBlocEntiteId",
+      query = "SELECT v FROM ValeurExterne v JOIN v.blocExterne b join b.dossierExterne d "
+         + "WHERE d = ?1  AND v.champEntiteId = ?2 AND b.entiteId = ?3")})
 public class ValeurExterne implements java.io.Serializable
 {
 
    private static final long serialVersionUID = -3980792978462083437L;
 
    private Integer valeurExterneId;
+
    private String valeur;
+
    private Integer champEntiteId;
+
    private Integer champAnnotationId;
+
    private BlocExterne blocExterne;
+
    private byte[] contenu;
 
    public ValeurExterne(){

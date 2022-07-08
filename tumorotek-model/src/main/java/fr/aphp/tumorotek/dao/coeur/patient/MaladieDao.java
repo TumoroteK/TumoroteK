@@ -60,9 +60,9 @@ public interface MaladieDao extends GenericDaoJpa<Maladie, Integer>
     * @return Liste de Maladies.
     */
    List<Maladie> findByLibelle(String libelle);
-   
+
    /**
-    * Recherche les maladies dont le libelle correspond à celui 
+    * Recherche les maladies dont le libelle correspond à celui
     * fourni en paramètre pour un patient donnée.
     * @param libelle Libelle des maladies recherchées.
     * @param patient Patient
@@ -79,7 +79,7 @@ public interface MaladieDao extends GenericDaoJpa<Maladie, Integer>
    List<Maladie> findByCode(String code);
 
    /**
-    * Recherche toutes les maladies sauf celle dont l'id est passé 
+    * Recherche toutes les maladies sauf celle dont l'id est passé
     * en paramètre.
     * @param maladieId Identifiant de la maladie que l'on souhaite
     * exclure de la liste retournée.
@@ -96,7 +96,7 @@ public interface MaladieDao extends GenericDaoJpa<Maladie, Integer>
    List<Maladie> findByPatient(Patient patient);
 
    /**
-    * Recherche les maladies assignées au patient uniquement 
+    * Recherche les maladies assignées au patient uniquement
     * par l'utilisateur, et non pas par le systeme dans le cadre
     * de collection de prélèvements qui ne définissent pas de maladies.
     * @param patient
@@ -108,7 +108,7 @@ public interface MaladieDao extends GenericDaoJpa<Maladie, Integer>
 
    /**
     * Compte les maladies pour le médecin référent passé en paramètre.
-    * @param Collaborateur 
+    * @param Collaborateur
     * @return long
     */
    List<Long> findCountByReferent(Collaborateur referent);

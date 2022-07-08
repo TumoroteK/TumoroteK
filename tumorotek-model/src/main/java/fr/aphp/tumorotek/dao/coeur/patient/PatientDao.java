@@ -113,7 +113,7 @@ public interface PatientDao extends GenericDaoJpa<Patient, Integer>
    List<Patient> findByEtatIncomplet();
 
    /**
-    * Recherche tous les patients sauf celui dont l'id est passé 
+    * Recherche tous les patients sauf celui dont l'id est passé
     * en paramètre.
     * @param patientId Identifiant du patient que l'on souhaite
     * exclure de la liste retournée.
@@ -166,7 +166,7 @@ public interface PatientDao extends GenericDaoJpa<Patient, Integer>
    /**
     * Compte les patient qui ont été enregistrés par le système suite
     * à un prélèvements enregistré dans une des banques passées en paramètres.
-    * La date utilisée comme référence est celle d'enregistrement du patient 
+    * La date utilisée comme référence est celle d'enregistrement du patient
     * dans le système.
     * @param cal1
     * @param cal2
@@ -189,11 +189,11 @@ public interface PatientDao extends GenericDaoJpa<Patient, Integer>
    /**
     * Compte les patient qui ont été enregistrés par le système suite
     * à un prélèvements enregistré dans une des banques passées en paramètres.
-    * La date utilisée comme référence est celle d'enregistrement du patient 
+    * La date utilisée comme référence est celle d'enregistrement du patient
     * dans le système.
-    * Une liste d'établissement est passée en paramètre 
-    * pour exclure tous les échantillons techniqués dans ces derniers (pour 
-    * compter les échantillons extérieurs aux établissement 
+    * Une liste d'établissement est passée en paramètre
+    * pour exclure tous les échantillons techniqués dans ces derniers (pour
+    * compter les échantillons extérieurs aux établissement
     * locaux par exemple).
     * @param cal1
     * @param cal2
@@ -207,9 +207,9 @@ public interface PatientDao extends GenericDaoJpa<Patient, Integer>
     * Compte les patient qui ont été enregistrés par le système suite
     * à un prélèvements enregistré dans une des banques passées en paramètres.
     * La date utilisée comme référence est celle de prélèvement.
-    * Une liste d'établissement est passée en paramètre 
-    * pour exclure tous les échantillons techniqués dans ces derniers (pour 
-    * compter les échantillons extérieurs aux établissement 
+    * Une liste d'établissement est passée en paramètre
+    * pour exclure tous les échantillons techniqués dans ces derniers (pour
+    * compter les échantillons extérieurs aux établissement
     * locaux par exemple).
     * @param cal1
     * @param cal2
@@ -251,7 +251,7 @@ public interface PatientDao extends GenericDaoJpa<Patient, Integer>
 
    /**
     * Compte les patients pour le médecin référent passé en paramètre.
-    * @param Collaborateur 
+    * @param Collaborateur
     * @return long
     */
    List<Long> findCountByReferent(Collaborateur referent);

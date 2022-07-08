@@ -89,17 +89,27 @@ public class Plateforme implements java.io.Serializable, TKFantomableObject, TKd
    private static final long serialVersionUID = 54873512464151L;
 
    private Integer plateformeId;
+
    private String nom;
+
    private String alias;
 
    private Collaborateur collaborateur;
+
    private Set<Banque> banques = new HashSet<>();
+
    private Set<ConteneurPlateforme> conteneurPlateformes = new HashSet<>();
+
    private Set<Utilisateur> utilisateurs = new HashSet<>();
+
    private Set<Imprimante> imprimantes = new HashSet<>();
+
    private Set<Modele> modeles = new HashSet<>();
+
    private Set<SModele> sModeles = new HashSet<>();
+
    private Set<Contrat> contrats = new HashSet<>();
+
    private Set<NonConformite> nonConformites = new HashSet<>();
 
    /**

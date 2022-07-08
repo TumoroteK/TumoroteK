@@ -73,8 +73,11 @@ public class RisqueManagerImpl implements RisqueManager
 
    /* Beans injectes par Spring*/
    private RisqueDao risqueDao;
+
    private RisqueValidator risqueValidator;
+
    private PlateformeDao plateformeDao;
+
    private EntityManagerFactory entityManagerFactory;
 
    public RisqueManagerImpl(){}

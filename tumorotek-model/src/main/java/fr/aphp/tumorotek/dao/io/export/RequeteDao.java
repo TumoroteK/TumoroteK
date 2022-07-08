@@ -75,7 +75,7 @@ public interface RequeteDao extends GenericDaoJpa<Requete, Integer>
    List<Requete> findByBanqueInList(List<Banque> banques);
 
    /**
-   * Recherche toutes les Requetes, sauf celle dont l'id est passé 
+   * Recherche toutes les Requetes, sauf celle dont l'id est passé
    * en paramètre.
    * @param requeteId Identifiant de la Requete que l'on souhaite
    * exclure de la liste retournée.

@@ -67,6 +67,7 @@ public abstract class AbstractPrelevementDelegate extends TKDelegateObject<Prele
 {
 
    private Integer prelevementDelegateId;
+
    private Prelevement delegator;
 
    public AbstractPrelevementDelegate(){}

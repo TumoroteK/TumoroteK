@@ -54,7 +54,6 @@ import fr.aphp.tumorotek.model.io.export.Champ;
 public class ChampValidator implements Validator
 {
 
-   
    @Override
    public boolean supports(final Class<?> clazz){
       return Champ.class.equals(clazz);

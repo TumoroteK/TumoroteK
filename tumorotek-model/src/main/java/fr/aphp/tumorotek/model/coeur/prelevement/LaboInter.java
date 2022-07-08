@@ -72,18 +72,18 @@ import fr.aphp.tumorotek.model.contexte.Transporteur;
    value = {@NamedQuery(name = "LaboInter.findByExcludedId", query = "SELECT l FROM LaboInter l " + "WHERE l.laboInterId != ?1"),
       //		@NamedQuery(name = "LaboInter.findByOrdre",
       //			query = "SELECT l FROM LaboInter l WHERE l.ordre = ?1"),
-      //		@NamedQuery(name = "LaboInter.findByDateArrivee", 
+      //		@NamedQuery(name = "LaboInter.findByDateArrivee",
       //			query = "SELECT l FROM LaboInter l WHERE l.dateArrivee = ?1"),
-      //		@NamedQuery(name = "LaboInter.findByDateDepart", 
-      //				query = "SELECT l FROM LaboInter l " 
-      //					+ "WHERE l.dateDepart = ?1"), 
-      //		@NamedQuery(name = "LaboInter.findByConservTemp", 
+      //		@NamedQuery(name = "LaboInter.findByDateDepart",
+      //				query = "SELECT l FROM LaboInter l "
+      //					+ "WHERE l.dateDepart = ?1"),
+      //		@NamedQuery(name = "LaboInter.findByConservTemp",
       //				query = "SELECT l FROM LaboInter l WHERE l.conservTemp = ?1"),
-      //		@NamedQuery(name = "LaboInter.findByTransportTemp", 
-      //				query = "SELECT l FROM LaboInter l " 
+      //		@NamedQuery(name = "LaboInter.findByTransportTemp",
+      //				query = "SELECT l FROM LaboInter l "
       //					+ "WHERE l.transportTemp = ?1"),
-      //		@NamedQuery(name = "LaboInter.findBySterile", 
-      //				query = "SELECT l FROM LaboInter l " 
+      //		@NamedQuery(name = "LaboInter.findBySterile",
+      //				query = "SELECT l FROM LaboInter l "
       //					+ "WHERE l.sterile = ?1"),
       @NamedQuery(name = "LaboInter.findByService", query = "SELECT l FROM LaboInter l " + "WHERE l.service = ?1"),
       @NamedQuery(name = "LaboInter.findByTransporteur", query = "SELECT l FROM LaboInter l " + "WHERE l.transporteur = ?1"),
@@ -94,13 +94,13 @@ import fr.aphp.tumorotek.model.contexte.Transporteur;
          query = "SELECT l.ordre FROM LaboInter l " + "WHERE l.prelevement = ?1 "),
       @NamedQuery(name = "LaboInter.findByPrelevementWithOnlyOrderAndExcludedId",
          query = "SELECT l.ordre FROM LaboInter l " + "WHERE l.prelevement = ?1 " + "AND l.laboInterId != ?2")
-   //		@NamedQuery(name = "LaboInter.findByProprietaire", 
-   //				query = "SELECT l FROM LaboInter l " 
+   //		@NamedQuery(name = "LaboInter.findByProprietaire",
+   //				query = "SELECT l FROM LaboInter l "
    //					+ "WHERE l.prelevement = ?1"),
-   //		@NamedQuery(name = "LaboInter.findByIdWithFetch", 
-   //				query = "SELECT l FROM LaboInter l LEFT JOIN FETCH " 
-   //					+ "l.collaborateur LEFT JOIN FETCH l.service " 
-   //					+ "LEFT JOIN FETCH l.transporteur LEFT JOIN FETCH " 
+   //		@NamedQuery(name = "LaboInter.findByIdWithFetch",
+   //				query = "SELECT l FROM LaboInter l LEFT JOIN FETCH "
+   //					+ "l.collaborateur LEFT JOIN FETCH l.service "
+   //					+ "LEFT JOIN FETCH l.transporteur LEFT JOIN FETCH "
    //					+ "l.prelevement WHERE l.laboInterId = ?1"),
    })
 public class LaboInter implements Serializable
@@ -109,17 +109,27 @@ public class LaboInter implements Serializable
    private static final long serialVersionUID = 548676135486746L;
 
    private Integer laboInterId;
+
    private Integer ordre;
+
    private Calendar dateArrivee;
+
    private Float conservTemp;
+
    private Boolean sterile;
+
    private Boolean congelation;
+
    private Float transportTemp;
+
    private Calendar dateDepart;
 
    private Prelevement prelevement;
+
    private Collaborateur collaborateur;
+
    private Transporteur transporteur;
+
    private Service service;
 
    /** Constructeur par défaut. */
@@ -274,7 +284,7 @@ public class LaboInter implements Serializable
    }
 
    /**
-    * 2 labos intermedaires sont considérés comme égaux 
+    * 2 labos intermedaires sont considérés comme égaux
     * s'ils ont le même ordre et si ils associes au même prélèvement.
     * @param obj est le labo à tester.
     * @return true si les labos sont égaux.

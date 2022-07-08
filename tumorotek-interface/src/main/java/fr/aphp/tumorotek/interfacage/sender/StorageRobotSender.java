@@ -38,10 +38,11 @@ package fr.aphp.tumorotek.interfacage.sender;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.List;
+
 import fr.aphp.tumorotek.interfacage.storageRobot.StorageMovement;
-import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
 import fr.aphp.tumorotek.manager.interfacage.ExtMessageSender;
 import fr.aphp.tumorotek.model.interfacage.Recepteur;
+import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
 
 /**
  *
@@ -56,37 +57,33 @@ import fr.aphp.tumorotek.model.interfacage.Recepteur;
 public interface StorageRobotSender extends ExtMessageSender
 {
 
-	/**
-	 * Formate les emplacements/mouvements en une liste d'échantillon dans un .CSV
-	 * @param mvts dans le système de stockage robotisé
-	 * @param recepteur interfacages
-	 * @param utilisateur Utilisateur
-	 */
-	void sendEmplacements(Recepteur re, List<StorageMovement> storageMvts, 
-											Utilisateur u);
+   /**
+    * Formate les emplacements/mouvements en une liste d'échantillon dans un .CSV
+    * @param mvts dans le système de stockage robotisé
+    * @param recepteur interfacages
+    * @param utilisateur Utilisateur
+    */
+   void sendEmplacements(Recepteur re, List<StorageMovement> storageMvts, Utilisateur u);
 
-	/**
-	 * Produit le CSV qui sera déposé à l'attention du robot.
-	 * @param baos OutputStream contenu du fichier
-	 * @param mvts dans le système de stockage robotisé
+   /**
+    * Produit le CSV qui sera déposé à l'attention du robot.
+    * @param baos OutputStream contenu du fichier
+    * @param mvts dans le système de stockage robotisé
 
-	 * @param separator utilisé pour le CSV
-	 * @param recepteur interfacages
-	 * @throws IOException
-	 */
-	void makeCSVfromMap(Recepteur re, ByteArrayOutputStream baos, 
-			List<StorageMovement> stoE,
-			String separator) throws IOException;
+    * @param separator utilisé pour le CSV
+    * @param recepteur interfacages
+    * @throws IOException
+    */
+   void makeCSVfromMap(Recepteur re, ByteArrayOutputStream baos, List<StorageMovement> stoE, String separator) throws IOException;
 
-	/**
-	 * Ecrit une ligne dans le fichier NomRecette.csv
-	 * @param baos OutputStream contenu du fichier
-	 * @param filename nom fichier Recette à écrire
-	 * @param user login à écrire
-	 * @param separator utilisé pour le CSV
-	 * @throws IOException
-	 */
-	void writeOneRecetteLine(ByteArrayOutputStream baos, String filename, Utilisateur user, String separator)
-			throws IOException;
+   /**
+    * Ecrit une ligne dans le fichier NomRecette.csv
+    * @param baos OutputStream contenu du fichier
+    * @param filename nom fichier Recette à écrire
+    * @param user login à écrire
+    * @param separator utilisé pour le CSV
+    * @throws IOException
+    */
+   void writeOneRecetteLine(ByteArrayOutputStream baos, String filename, Utilisateur user, String separator) throws IOException;
 
 }

@@ -68,6 +68,7 @@ public class ImprimanteApi implements Serializable
    private static final long serialVersionUID = -1697659518925168511L;
 
    private Integer imprimanteApiId;
+
    private String nom;
 
    private Set<Imprimante> imprimantes = new HashSet<>();

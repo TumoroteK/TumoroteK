@@ -57,7 +57,9 @@ public class Login extends AbstractController
    private static final long serialVersionUID = 1L;
 
    private Label errorLabel;
+
    private Image imgLogo;
+
    private Html htmlMsg;
 
    @Override
@@ -66,11 +68,11 @@ public class Login extends AbstractController
       super.doAfterCompose(comp);
 
       final ParametresManager parametresManager = ManagerLocator.getManager(ParametresManager.class);
-      
+
       //Chargement du message d'accueil personnalisé
       String msgAccueil = parametresManager.getMessageAccueil(false);
-      
-      if(StringUtils.isEmpty(msgAccueil)) {
+
+      if(StringUtils.isEmpty(msgAccueil)){
          msgAccueil = Labels.getLabel("login.welcome");
       }
 

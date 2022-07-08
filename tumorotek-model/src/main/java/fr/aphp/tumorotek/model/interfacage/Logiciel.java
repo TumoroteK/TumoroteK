@@ -68,8 +68,11 @@ public class Logiciel implements java.io.Serializable
    private static final long serialVersionUID = -4470742699649897698L;
 
    private Integer logicielId;
+
    private String nom;
+
    private String editeur;
+
    private String version;
 
    private Set<Emetteur> emetteurs = new HashSet<>();

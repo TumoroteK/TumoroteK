@@ -71,10 +71,13 @@ public class DroitObjetManagerTest extends AbstractManagerTest4
 
    @Autowired
    private DroitObjetManager droitObjetManager;
+
    @Autowired
    private ProfilDao profilDao;
+
    @Autowired
    private EntiteDao entiteDao;
+
    @Autowired
    private OperationTypeDao operationTypeDao;
 

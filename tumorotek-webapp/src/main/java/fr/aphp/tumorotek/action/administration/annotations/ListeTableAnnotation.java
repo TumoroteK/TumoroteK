@@ -73,10 +73,15 @@ public class ListeTableAnnotation extends AbstractListeController2
    private Rows gridRows;
 
    private Group patientTablesGroup;
+
    private Group prelevementTablesGroup;
+
    private Group echantillonTablesGroup;
+
    private Group deriveTablesGroup;
+
    private Group cessionTablesGroup;
+
    private Group cataloguesGroup;
 
    private List<TableAnnotation> listObjects = new ArrayList<>();
@@ -143,7 +148,6 @@ public class ListeTableAnnotation extends AbstractListeController2
       return this.listObjects;
    }
 
-   
    @Override
    public void setListObjects(final List<? extends TKdataObject> objs){
       this.listObjects = (List<TableAnnotation>) objs;
@@ -210,7 +214,7 @@ public class ListeTableAnnotation extends AbstractListeController2
    @Override
    public void initObjectsBox(){
       // affiche dans la liste les tables assignées aux banques pour
-      // lesquelles l'utilisateur loggé a les droits d'admin ou 
+      // lesquelles l'utilisateur loggé a les droits d'admin ou
       // les banques appartenant à la plateforme dont l'utilisateur
       // loggé est admin.
       if(SessionUtils.getLoggedUser(sessionScope).isSuperAdmin()){
@@ -333,8 +337,8 @@ public class ListeTableAnnotation extends AbstractListeController2
    public void updateMultiObjectsGridListFromOtherPage(final List<TKdataObject> objects){}
 
    /**
-    * Surcharge la methode deselect pour realiser deselection 
-    * particuliere car le grid n'utilise pas model de decorators 
+    * Surcharge la methode deselect pour realiser deselection
+    * particuliere car le grid n'utilise pas model de decorators
     * donc ind = -1 si modification du nom.
     */
    @Override
@@ -404,7 +408,7 @@ public class ListeTableAnnotation extends AbstractListeController2
 
    /**
     * Dessine une ligne pour chaque Catalogue.
-    * Ajoute l'evenement onClick et la table d'annotation composite qui 
+    * Ajoute l'evenement onClick et la table d'annotation composite qui
     * est associée aux champs éditables par l'utilisateur.
     * @return row Row dessinée (pour pouvoir la selectionner).
     */

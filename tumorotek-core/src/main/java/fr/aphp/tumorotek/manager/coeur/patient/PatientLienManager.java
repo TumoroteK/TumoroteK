@@ -60,8 +60,8 @@ public interface PatientLienManager
     * Persiste une instance afin de l'enregistrer dans la base de données.
     * @param patientLien à créer
     * @param patient1 Patient1 associé (non null)
-    * @param patient2 Patient2 associé (non null)	 
-    * @param lienFamilial lien familial associé (non null)	 
+    * @param patient2 Patient2 associé (non null)
+    * @param lienFamilial lien familial associé (non null)
     * @param operation String creation / modification
     */
    void createOrUpdateObjectManager(PatientLien patientLien, Patient patient1, Patient patient2, LienFamilial lienFamilial,
@@ -69,7 +69,7 @@ public interface PatientLienManager
 
    /**
     * Cherche les doublons en se basant sur la methode equals()
-    * surchargee par les entites. 
+    * surchargee par les entites.
     * @param patientLien PatientLien dont on cherche la presence dans la base
     * @return true/false
     */

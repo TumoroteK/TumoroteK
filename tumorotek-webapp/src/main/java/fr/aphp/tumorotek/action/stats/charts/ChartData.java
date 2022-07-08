@@ -62,26 +62,39 @@ public class ChartData
 {
 
    GraphesModele patientPfModel = null;
+
    GraphesModele prelevementPfModel = null;
+
    GraphesModele echanPfModel = null;
+
    GraphesModele derivePfModel = null;
+
    GraphesModele cessionPfModel = null;
 
    GraphesModele patientCollModel = null;
+
    GraphesModele prelevementCollModel = null;
+
    GraphesModele echanCollModel = null;
+
    GraphesModele deriveCollModel = null;
+
    GraphesModele cessionCollModel = null;
 
    GraphesModele echansCedesCollModel = null;
+
    GraphesModele derivesCedesCollModel = null;
 
    GraphesModele prelTypeCollModel = null;
+
    GraphesModele prelEtabCollModel = null;
+
    GraphesModele prelConsentCollModel = null;
 
    GraphesModele echanTypeCollModel = null;
+
    GraphesModele echanCimCollModel = null;
+
    GraphesModele echanOrgCollModel = null;
 
    GraphesModele deriveTypeCollModel = null;
@@ -95,7 +108,7 @@ public class ChartData
    /**
     * A la construction initialise les comptes pour les pfs.
     * Ces comptes ne seront pas mis à jours.
-    * @param pfs Liste des pfs actuellement accessible lors de 
+    * @param pfs Liste des pfs actuellement accessible lors de
     * la session par l'utilisateur
     */
    public ChartData(final Date date_debut, final Date date_fin, final Set<Plateforme> pfs, final ChartDataTriggers trgs,
@@ -133,7 +146,7 @@ public class ChartData
          patientCollModel =
             ManagerLocator.getGraphesModeleManager().collectionViewByPatientManager(date_debut, date_fin, pfNom, isOracle);
       }
-      //--- 
+      //---
       if(triggers.getPrelevementPfModelTrg()){
          prelevementPfModel =
             ManagerLocator.getGraphesModeleManager().platformeViewByPrelevementManager(date_debut, date_fin, isOracle);
@@ -217,7 +230,7 @@ public class ChartData
    }
 
    /**
-    * Mets à jour les comptes pour les collections quand un 
+    * Mets à jour les comptes pour les collections quand un
     * changement de pf est demandé.
     * @param pfNom
     */
@@ -254,7 +267,7 @@ public class ChartData
    }
 
    /**
-    * Mets à jour les comptes pour les collection pour les propriétés 
+    * Mets à jour les comptes pour les collection pour les propriétés
     * spécifiques de l'entité passé en paramètre
     * @param bNom
     * @param entiteNom (Prelevement/Echantillon/ProdDerive/Cession)
@@ -322,8 +335,8 @@ public class ChartData
    }
 
    /**
-    * Filtre les résultats obtenus lors des requêtes de comptes de 
-    * plateformes pour ne conserver que ceux concernant les pfs 
+    * Filtre les résultats obtenus lors des requêtes de comptes de
+    * plateformes pour ne conserver que ceux concernant les pfs
     * de la liste passée en paramètre
     * @param grM modèle à filtrer
     * @param pfs Liste de plateformes accessibles

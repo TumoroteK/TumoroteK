@@ -70,10 +70,13 @@ public class ModePrepaManagerImpl implements ModePrepaManager
 
    /** Bean Dao ModePrepaDao. */
    private ModePrepaDao modePrepaDao;
+
    /** Bean Dao EchantillonDao. */
    private EchantillonDao echantillonDao;
+
    /** Bean Validator. */
    private ModePrepaValidator modePrepaValidator;
+
    private PlateformeDao plateformeDao;
 
    /**
@@ -101,7 +104,7 @@ public class ModePrepaManagerImpl implements ModePrepaManager
    }
 
    /**
-    * Recherche un mode de préparation dont l'identifiant est 
+    * Recherche un mode de préparation dont l'identifiant est
     * passé en paramètre.
     * @param modePrepaId Identifiant du mode de préparation que l'on recherche.
     * @return Un ModePrepa.
@@ -170,15 +173,15 @@ public class ModePrepaManagerImpl implements ModePrepaManager
       if(mode.getPlateforme() == null){
          throw new RequiredObjectIsNullException("ModePrepa", "creation", "Plateforme");
       }
-         mode.setPlateforme(plateformeDao.mergeObject(mode.getPlateforme()));
+      mode.setPlateforme(plateformeDao.mergeObject(mode.getPlateforme()));
 
       if(findDoublonManager(mode)){
          log.warn("Doublon lors de la creation de l'objet ModePrepa : " + mode.toString());
          throw new DoublonFoundException("ModePrepa", "creation");
       }
-         BeanValidator.validateObject(mode, new Validator[] {modePrepaValidator});
-         modePrepaDao.createObject(mode);
-         log.info("Enregistrement de l'objet ModePrepa : " + mode.toString());
+      BeanValidator.validateObject(mode, new Validator[] {modePrepaValidator});
+      modePrepaDao.createObject(mode);
+      log.info("Enregistrement de l'objet ModePrepa : " + mode.toString());
    }
 
    @Override
@@ -190,9 +193,9 @@ public class ModePrepaManagerImpl implements ModePrepaManager
          log.warn("Doublon lors de la modification de l'objet ModePrepa : " + mode.toString());
          throw new DoublonFoundException("ModePrepa", "modification");
       }
-         BeanValidator.validateObject(mode, new Validator[] {modePrepaValidator});
-         modePrepaDao.updateObject(mode);
-         log.info("Modification de l'objet ModePrepa : " + mode.toString());
+      BeanValidator.validateObject(mode, new Validator[] {modePrepaValidator});
+      modePrepaDao.updateObject(mode);
+      log.info("Modification de l'objet ModePrepa : " + mode.toString());
    }
 
    @Override

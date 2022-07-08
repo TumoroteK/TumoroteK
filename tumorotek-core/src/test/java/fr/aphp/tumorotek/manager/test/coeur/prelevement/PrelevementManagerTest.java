@@ -155,84 +155,124 @@ public class PrelevementManagerTest extends AbstractManagerTest4
 
    @Autowired
    private PrelevementManager prelevementManager;
+
    @Autowired
    private MaladieManager maladieManager;
+
    @Autowired
    private PatientManager patientManager;
+
    @Autowired
    private BanqueDao banqueDao;
+
    @Autowired
    private NatureDao natureDao;
+
    @Autowired
    private MaladieDao maladieDao;
+
    @Autowired
    private ConsentTypeDao consentTypeDao;
+
    @Autowired
    private CollaborateurDao collaborateurDao;
+
    @Autowired
    private ServiceDao serviceDao;
+
    @Autowired
    private PrelevementTypeDao prelevementTypeDao;
+
    @Autowired
    private ConditTypeDao conditTypeDao;
+
    @Autowired
    private ConditMilieuDao conditMilieuDao;
+
    @Autowired
    private UniteDao uniteDao;
+
    @Autowired
    private TransporteurDao transporteurDao;
+
    @Autowired
    private UtilisateurDao utilisateurDao;
+
    @Autowired
    private EchantillonDao echantillonDao;
+
    @Autowired
    private LaboInterDao laboInterDao;
+
    @Autowired
    private PrelevementValidator prelevementValidator;
+
    @Autowired
    private ChampAnnotationDao champAnnotationDao;
+
    @Autowired
    private AnnotationValeurManager annotationValeurManager;
+
    @Autowired
    private EchantillonTypeManager echantillonTypeManager;
+
    @Autowired
    private PatientDao patientDao;
+
    @Autowired
    private EntiteDao entiteDao;
+
    @Autowired
    private TransformationManager transformationManager;
+
    @Autowired
    private ProdDeriveManager prodDeriveManager;
+
    @Autowired
    private ProdTypeDao prodTypeDao;
+
    @Autowired
    private CessionDao cessionDao;
+
    @Autowired
    private CederObjetManager cederObjetManager;
+
    @Autowired
    private RisqueDao risqueDao;
+
    @Autowired
    private ConteneurManager conteneurManager;
+
    @Autowired
    private EnceinteManager enceinteManager;
+
    @Autowired
    private TerminaleManager terminaleManager;
+
    @Autowired
    private EmplacementManager emplacementManager;
+
    @Autowired
    private BanqueManager banqueManager;
+
    @Autowired
    private EchantillonManager echantillonManager;
+
    @Autowired
    private EnceinteTypeDao enceinteTypeDao;
+
    @Autowired
    private EmetteurDao emetteurDao;
+
    @Autowired
    private ObjetStatutDao objetStatutDao;
+
    @Autowired
    private NonConformiteDao nonConformiteDao;
+
    @Autowired
    private ObjetNonConformeDao objetNonConformeDao;
+
    @Autowired
    private PlateformeDao plateformeDao;
 
@@ -1132,7 +1172,6 @@ public class PrelevementManagerTest extends AbstractManagerTest4
       cleanUpFantomes(fs);
    }
 
-   
    @Test
    public void testValidation(){
       final Prelevement p = new Prelevement();
@@ -2754,14 +2793,10 @@ public class PrelevementManagerTest extends AbstractManagerTest4
       emp.setPosition(55);
       emp.setVide(false);
       emp.setObjetId(derive.getProdDeriveId());
-      final Terminale t1 =
-         enceinteManager
-            .getTerminalesManager(
-               enceinteManager
-                  .getEnceintesManager(enceinteManager
-                     .getEnceintesManager(conteneurManager.getEnceintesManager(c).iterator().next()).iterator().next())
-                  .iterator().next())
-            .iterator().next();
+      final Terminale t1 = enceinteManager.getTerminalesManager(enceinteManager
+         .getEnceintesManager(
+            enceinteManager.getEnceintesManager(conteneurManager.getEnceintesManager(c).iterator().next()).iterator().next())
+         .iterator().next()).iterator().next();
       emplacementManager.createObjectManager(emp, t1, entiteDao.findById(8));
       prodDeriveManager.updateObjectManager(derive, derive.getBanque(), derive.getProdType(), null, null, emp, null, null, null,
          null, null, derive.getTransformation(), null, null, null, null, u, false, null, "/tmp/");

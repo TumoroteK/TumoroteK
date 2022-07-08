@@ -40,21 +40,32 @@ public class ConnexionCrf extends GenericForwardComposer<Component>
    private final Log log = LogFactory.getLog(ConnexionCrf.class);
 
    private Row rowWait;
+
    private Row rowError;
+
    private Row rowInactive;
 
    // variables POST
    private String login = null;
+
    private String pass = null;
+
    private String banque = null;
+
    private String nip = null;
+
    private String nom = null;
+
    private String nomNaissance = null;
+
    private String prenom = null;
+
    private String sexe = null;
+
    private String dateNaissance = null;
 
    private Banque selectedBanque = null;
+
    private Utilisateur user = null;
 
    @Override
@@ -101,7 +112,7 @@ public class ConnexionCrf extends GenericForwardComposer<Component>
       ResourceBundle res = null;
       if(ManagerLocator.getResourceBundleTumo().doesResourceBundleExists(TumorotekProperties.TUMO_PROPERTIES_FILENAME)){
          res = ManagerLocator.getResourceBundleTumo().getResourceBundle(TumorotekProperties.TUMO_PROPERTIES_FILENAME);
-      // on récupère la propriété définissant les interfaçages
+         // on récupère la propriété définissant les interfaçages
          String connexion = null;
          if(res.containsKey(TkParam.CONNEXION_CRF.getKey())){
             connexion = res.getString(TkParam.CONNEXION_CRF.getKey());
@@ -252,8 +263,7 @@ public class ConnexionCrf extends GenericForwardComposer<Component>
          final List<Banque> bks = new ArrayList<>();
          bks.add(selectedBanque);
          ConnexionUtils.setSessionCatalogues(bks, sessionScope);
-         ConnexionUtils.generateDroitsForSelectedBanque(selectedBanque, 
-        		 selectedBanque.getPlateforme(), user, sessionScope);
+         ConnexionUtils.generateDroitsForSelectedBanque(selectedBanque, selectedBanque.getPlateforme(), user, sessionScope);
          sessionScope.remove("ToutesCollections");
 
          // gestion des interfaçages
@@ -290,8 +300,7 @@ public class ConnexionCrf extends GenericForwardComposer<Component>
          final SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
          try{
             date = sdf.parse(dateNaissance);
-         }catch(final ParseException e){
-         }
+         }catch(final ParseException e){}
       }
       pat.setDateNaissance(date);
 

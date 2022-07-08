@@ -29,13 +29,13 @@ public class ObjectFactory
 
    /**
     * Create a new ObjectFactory that can be used to create new instances of schema derived classes for package: fr.aphp.tumorotek.interfacage.jaxb.inclusion
-    * 
+    *
     */
    public ObjectFactory(){}
 
    /**
     * Create an instance of {@link CreateResponse }
-    * 
+    *
     */
    public CreateResponse createCreateResponse(){
       return new CreateResponse();
@@ -43,7 +43,7 @@ public class ObjectFactory
 
    /**
     * Create an instance of {@link CreateRequest }
-    * 
+    *
     */
    public CreateRequest createCreateRequest(){
       return new CreateRequest();
@@ -51,7 +51,7 @@ public class ObjectFactory
 
    /**
     * Create an instance of {@link StudySubjectType }
-    * 
+    *
     */
    public StudySubjectType createStudySubjectType(){
       return new StudySubjectType();
@@ -59,7 +59,7 @@ public class ObjectFactory
 
    /**
     * Create an instance of {@link SiteRefType }
-    * 
+    *
     */
    public SiteRefType createSiteRefType(){
       return new SiteRefType();
@@ -67,7 +67,7 @@ public class ObjectFactory
 
    /**
     * Create an instance of {@link StudySubjectRefType }
-    * 
+    *
     */
    public StudySubjectRefType createStudySubjectRefType(){
       return new StudySubjectRefType();
@@ -75,7 +75,7 @@ public class ObjectFactory
 
    /**
     * Create an instance of {@link SubjectType }
-    * 
+    *
     */
    public SubjectType createSubjectType(){
       return new SubjectType();
@@ -83,7 +83,7 @@ public class ObjectFactory
 
    /**
     * Create an instance of {@link EventType }
-    * 
+    *
     */
    public EventType createEventType(){
       return new EventType();
@@ -91,7 +91,7 @@ public class ObjectFactory
 
    /**
     * Create an instance of {@link StudyRefType }
-    * 
+    *
     */
    public StudyRefType createStudyRefType(){
       return new StudyRefType();

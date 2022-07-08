@@ -66,6 +66,7 @@ public class ProdQualiteManagerTest extends AbstractManagerTest4
 
    @Autowired
    private ProdQualiteManager prodQualiteManager;
+
    @Autowired
    private PlateformeDao plateformeDao;
 

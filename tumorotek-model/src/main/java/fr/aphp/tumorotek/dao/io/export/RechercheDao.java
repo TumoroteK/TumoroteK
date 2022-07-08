@@ -63,7 +63,7 @@ public interface RechercheDao extends GenericDaoJpa<Recherche, Integer>
 
    /**
    * Recherche les Recherches d'une banque.
-   * @param banqueId Id de la banque dont on veut connaître 
+   * @param banqueId Id de la banque dont on veut connaître
    * les Recherches.
    * @return la liste des Recherches de la banque.
    */
@@ -71,7 +71,7 @@ public interface RechercheDao extends GenericDaoJpa<Recherche, Integer>
 
    /**
    * Recherche les Recherches pour plusieurs Banques.
-   * @param banquesId Liste d'Ids de Banques dont on veut 
+   * @param banquesId Liste d'Ids de Banques dont on veut
    * connaître les Recherches.
    * @return la liste des Recherches des Banques.
    */
@@ -107,7 +107,7 @@ public interface RechercheDao extends GenericDaoJpa<Recherche, Integer>
    List<Recherche> findByRequete(Requete requete);
 
    /**
-   * Recherche toutes les Recherches, sauf celle dont l'id est passé 
+   * Recherche toutes les Recherches, sauf celle dont l'id est passé
    * en paramètre.
    * @param rechercheId Identifiant de la Recherche que l'on souhaite
    * exclure de la liste retournée.

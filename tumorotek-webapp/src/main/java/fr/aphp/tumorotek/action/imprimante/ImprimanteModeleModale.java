@@ -80,23 +80,32 @@ public class ImprimanteModeleModale
 
    @Wire("#fwinImprimanteModele")
    private Window fwinImprimanteModele;
+
    @Wire("#modelesBox")
    private Listbox modelesBox;
 
    private Boolean disabled = true;
+
    private boolean isTest = false;
 
    private List<? extends TKStockableObject> objects;
+
    private final List<Imprimante> imprimantes = new ArrayList<>();
+
    private final List<Modele> modeles = new ArrayList<>();
 
    private Imprimante selectedImprimante = null;
+
    private Modele selectedModele = null;
+
    private String selectedRawLang = null;
+
    private AffectationImprimante affectation = null;
+
    private List<LigneEtiquette> lignes = null;
 
    private BarcodeFieldDefault barcodeByZPL = new BarcodeFieldDefault();
+
    private BarcodeFieldDefault barcodeByJS = new BarcodeFieldDefault(new Float(1.5), new Float(5.0), 7);
 
    @AfterCompose
@@ -110,7 +119,7 @@ public class ImprimanteModeleModale
       @ExecutionArgParam("affectation") final AffectationImprimante aff,
       @ExecutionArgParam("lignes") final List<LigneEtiquette> _ligs){
 
-      // passe en mode test de modele si une mock affectation est 
+      // passe en mode test de modele si une mock affectation est
       // passée en paramètre
       isTest = aff != null && aff.getImprimante() == null;
 
@@ -338,7 +347,7 @@ public class ImprimanteModeleModale
    }
 
    /**
-    * Renvoie true et disable la liste de modele si l'imprimante choisie et 
+    * Renvoie true et disable la liste de modele si l'imprimante choisie et
     * de tyme mbio ou si le modele est en test d'impression.
     * @return
     */

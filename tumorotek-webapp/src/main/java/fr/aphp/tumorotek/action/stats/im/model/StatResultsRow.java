@@ -54,11 +54,15 @@ public class StatResultsRow
 {
 
    private Integer subDivId;
+
    private String subDivNom;
+
    private Banque banque;
+
    // private Boolean isSelected = false;
    // private String calling;
    private final List<Number> values = new ArrayList<>();
+
    private final List<Number> valuesPourcentage = new ArrayList<>();
 
    private String value;
@@ -73,7 +77,7 @@ public class StatResultsRow
    //		this.collection = collection;
    //		setThObj(o);
    //	}
-   //	
+   //
    //	public StatResultsRow(Collection collection, TKThesaurusObject o, Number v) {
    //		this.collection = collection;
    //		setThObj(o);

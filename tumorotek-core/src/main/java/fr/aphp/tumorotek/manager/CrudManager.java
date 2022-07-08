@@ -36,8 +36,8 @@
 package fr.aphp.tumorotek.manager;
 
 /**
- * 
- * @author 
+ *
+ * @author
  * @since 2.0
  * @version 2.2.0
  *
@@ -75,7 +75,7 @@ public interface CrudManager<T>
 
    /**
     * Verifie avant la suppression que d'autres objets ne referencent
-    * pas cet objet. 
+    * pas cet objet.
     * @param obj Objet a supprimer de la base de donnees.
     * @return true/false
     */

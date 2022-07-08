@@ -75,6 +75,7 @@ import org.zkoss.zul.Row;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Timer;
 import org.zkoss.zul.Window;
+
 import fr.aphp.tumorotek.action.CustomSimpleListModel;
 import fr.aphp.tumorotek.action.ManagerLocator;
 import fr.aphp.tumorotek.action.administration.AdministrationController;
@@ -116,41 +117,71 @@ public class FicheUtilisateur extends AbstractFicheCombineController
 
    // Static Components pour le mode static.
    private Label loginLabel;
+
    private Label passwordLabel;
+
    private Label emailLabel;
+
    private Label collaborateurLabel;
+
    private Label archiveLabel;
+
    private Label timeoutLabel;
+
    private Row rowPfsAdmin;
+
    private Menubar menuBar;
+
    private Group affectationsGroup;
+
    private Row affectationsRow;
+
    private Grid affectationsGrid;
+
    private Button addAffectations;
+
    private Button editPassword;
 
    // Editable components : mode d'édition ou de création.
    private Label loginRequired;
+
    private Label passwordRequired;
+
    private Textbox loginBox;
+
    private Textbox passwordBox;
+
    private Textbox emailBox;
+
    private Checkbox archiveBox;
+
    // private Row timeoutRow;
    private Datebox timeoutBox;
+
    // private Row timeoutHelpRow;
    private Row passwordRow;
+
    private Row rowConfirmationPassword;
+
    private Textbox confirmPasswordBox;
+
    private Combobox collabBox;
+
    private Label collabAideSaisieUser;
+
    private Column deleteRoleColumn;
+
    private Row rowAddRoleTitle;
+
    private Row rowAddRole;
+
    private Grid rolesGrid;
- //  private Listbox collectionsBox;
+
+   //  private Listbox collectionsBox;
    private Listbox profilsBox;
+
    private Label authLdapLabel;
+
    private Checkbox authLdapCheckbox;
 
    // @since 2.1
@@ -158,8 +189,10 @@ public class FicheUtilisateur extends AbstractFicheCombineController
 
    // composant pour le mode admin de collection
    private Component[] objAdminCollectionComponents;
+
    // component pour le mode modif de son propre compte
    private Component[] objModifPersoComponents;
+
    private Component[] labelModifPersoComponents;
 
    // Objets Principaux.
@@ -167,25 +200,40 @@ public class FicheUtilisateur extends AbstractFicheCombineController
 
    // Associations.
    private List<ProfilUtilisateur> profilUtilisateurs = new ArrayList<>();
+
    private List<ProfilUtilisateur> profilUtilisateursOtherBanques = new ArrayList<>();
+
    private final List<Plateforme> plateformes = new ArrayList<>();
+
    private List<Collaborateur> collaborateurs = new ArrayList<>();
+
    private Collaborateur selectedCollaborateur;
+
    private List<String> nomsAndPrenoms = new ArrayList<>();
+
    private ListModelList<Banque> banques;
+
    private List<Banque> selectedBanques = new ArrayList<>();
+
    private final List<Profil> profils = new ArrayList<>();
+
    private Profil selectedProfil;
+
    private Hashtable<Banque, ProfilUtilisateur> banquesDefined = new Hashtable<>();
+
    private List<AffectationDecorator> affectationDecorators = new ArrayList<>();
+
    private static AffectationRowRenderer affectationRenderer;
 
    // Variables formulaire.
    private String plateformesFormated = "";
+
    private Integer nbMoisMdp = null;
-   private Date defaultTimeoutDate; 
+
+   private Date defaultTimeoutDate;
 
    private boolean isAdminPF = false;
+
    private boolean isAdmin = false;
 
    @Override
@@ -225,7 +273,7 @@ public class FicheUtilisateur extends AbstractFicheCombineController
       }
 
       nbMoisMdp = ObjectTypesFormatters.getNbMoisMdp();
-      
+
       if(nbMoisMdp != null){
          final Calendar cal = Calendar.getInstance();
          cal.add(Calendar.MONTH, nbMoisMdp);
@@ -309,20 +357,20 @@ public class FicheUtilisateur extends AbstractFicheCombineController
       plateformesFormated = sb.toString();
 
       super.setObject(user);
-      
+
       // desactive le bouton d'édition de mot de passe
       // si le compte est vide, lié à un compté ldap
       // ou si l'utilisateur courant n'as pas le droit d'édition
       editPassword.setDisabled(!isCanEdit() || user.isLdap() || user.getUtilisateurId() == null);
-      
+
       // TK-252
       // toolbar active pour les comptes non superadmin
-      // obligé 
-      if (!this.user.isSuperAdmin()) {
-    	  disableToolBar(false);
-      } else { // superadmin -> non modifiable, que par lui
-    	  disableToolBar(!this.user.equals(SessionUtils.getLoggedUser(sessionScope)));
-          editPassword.setDisabled(!this.user.equals(SessionUtils.getLoggedUser(sessionScope)));
+      // obligé
+      if(!this.user.isSuperAdmin()){
+         disableToolBar(false);
+      }else{ // superadmin -> non modifiable, que par lui
+         disableToolBar(!this.user.equals(SessionUtils.getLoggedUser(sessionScope)));
+         editPassword.setDisabled(!this.user.equals(SessionUtils.getLoggedUser(sessionScope)));
       }
    }
 
@@ -365,12 +413,12 @@ public class FicheUtilisateur extends AbstractFicheCombineController
       collabBox.setValue(null);
 
       final boolean ldapAuthActivated = isLdapAuthActivated();
-      
+
       authLdapCheckbox.setChecked(ldapAuthActivated);
       passwordRow.setVisible(!ldapAuthActivated);
-      
+
       displayPasswordEdition(!ldapAuthActivated);
-      
+
       // lors de la création, on fixe par défaut la date de
       // desactivation du MDP à 6 mois
       if(defaultTimeoutDate != null){
@@ -422,9 +470,9 @@ public class FicheUtilisateur extends AbstractFicheCombineController
             }
          }
       }
-      
+
       passwordRow.setVisible(!getObject().isLdap());
-      
+
       displayPasswordEdition(false);
 
       // Initialisation du mode (listes, valeurs...)
@@ -469,14 +517,14 @@ public class FicheUtilisateur extends AbstractFicheCombineController
       tmp.addAll(profilUtilisateursOtherBanques);
 
       user.setLdap(authLdapCheckbox.isChecked());
-      
-      if (!user.isLdap()) {
-	      // encodage du password
-	      if (passwordBox.getValue() != null && !passwordBox.getValue().trim().isEmpty()) {
-	    	  user.setPassword(ObjectTypesFormatters.getEncodedPassword(passwordBox.getValue()));
-	      } 
-      } else {
-    	  user.setPassword(null);
+
+      if(!user.isLdap()){
+         // encodage du password
+         if(passwordBox.getValue() != null && !passwordBox.getValue().trim().isEmpty()){
+            user.setPassword(ObjectTypesFormatters.getEncodedPassword(passwordBox.getValue()));
+         }
+      }else{
+         user.setPassword(null);
       }
 
       // update de l'objet
@@ -509,7 +557,7 @@ public class FicheUtilisateur extends AbstractFicheCombineController
       if(!authLdapCheckbox.isChecked() && !confirmPasswordBox.getValue().equals(passwordBox.getValue())){
          throw new WrongValueException(confirmPasswordBox, Labels.getLabel("utilisateur.bad.password"));
       }
-      
+
       Clients.showBusy(Labels.getLabel("utilisateur.creation.encours"));
       Events.echoEvent("onLaterCreate", self, null);
    }
@@ -610,7 +658,7 @@ public class FicheUtilisateur extends AbstractFicheCombineController
                // suppression du contrat
                ManagerLocator.getUtilisateurManager().removeObjectManager(user);
 
-               // on vérifie que l'on retrouve bien la page 
+               // on vérifie que l'on retrouve bien la page
                // contenant la liste des contrats
                if(getListeUtilisateur() != null){
                   // on enlève le contrat de la liste
@@ -662,12 +710,12 @@ public class FicheUtilisateur extends AbstractFicheCombineController
 
    @Override
    public void onClick$validateC(){
-      
-      if(!authLdapCheckbox.isChecked() 
-    		  && rowConfirmationPassword.isVisible() && !confirmPasswordBox.getValue().equals(passwordBox.getValue())){
+
+      if(!authLdapCheckbox.isChecked() && rowConfirmationPassword.isVisible()
+         && !confirmPasswordBox.getValue().equals(passwordBox.getValue())){
          throw new WrongValueException(confirmPasswordBox, Labels.getLabel("utilisateur.bad.password"));
       }
-            
+
       Clients.showBusy(Labels.getLabel("utilisateur.creation.encours"));
       Events.echoEvent("onLaterUpdate", self, null);
    }
@@ -719,9 +767,9 @@ public class FicheUtilisateur extends AbstractFicheCombineController
       if(this.user.getEmail() != null && this.user.getEmail().trim().equals("")){
          this.user.setEmail(null);
       }
-  //    if(this.user.getPassword().equals("")){
-  //        this.user.setPassword(null);
-  //    }
+      //    if(this.user.getPassword().equals("")){
+      //        this.user.setPassword(null);
+      //    }
    }
 
    @Override
@@ -749,12 +797,12 @@ public class FicheUtilisateur extends AbstractFicheCombineController
       }
 
       // encrypt only if new password
-      if (passwordBox.isVisible()) {
-    	  user.setPassword(ObjectTypesFormatters.getEncodedPassword(passwordBox.getValue()));
+      if(passwordBox.isVisible()){
+         user.setPassword(ObjectTypesFormatters.getEncodedPassword(passwordBox.getValue()));
       }
-      
+
       user.setLdap(authLdapCheckbox.isChecked());
-      
+
       // Gestion du collaborateur
       final String selectedNomAndPremon = this.collabBox.getValue().toUpperCase();
       this.collabBox.setValue(selectedNomAndPremon);
@@ -925,7 +973,7 @@ public class FicheUtilisateur extends AbstractFicheCombineController
       archiveBox.setChecked(this.user.isArchive());
 
       selectedBanques.clear();
-      banques = new ListModelList<Banque>(
+      banques = new ListModelList<>(
          ManagerLocator.getUtilisateurManager().getAvailableBanquesAsAdminManager(SessionUtils.getLoggedUser(sessionScope)));
       // ((Selectable<Banque>) collectionsBox.getModel())
       // .setSelection(ncfCess);
@@ -1053,7 +1101,7 @@ public class FicheUtilisateur extends AbstractFicheCombineController
    public void onClickValidateAffectation(final ForwardEvent event){
       // on récupère les donneés : la listbox contenant les imprimantes,
       // celle contenant es modèles et le decorator d'affectation
-      final List<Object> datas = new ArrayList<Object>();
+      final List<Object> datas = new ArrayList<>();
       datas.addAll((List<?>) event.getData());
       final Listbox liImp = (Listbox) datas.get(0);
       final Listbox liMod = (Listbox) datas.get(1);
@@ -1467,7 +1515,7 @@ public class FicheUtilisateur extends AbstractFicheCombineController
       final ProfilUtilisateur pf = (ProfilUtilisateur) event.getData();
       getAdministrationController().selectProfilInController(pf.getProfil());
    }
-   
+
    /**
     * @since 2.1
     */
@@ -1485,7 +1533,7 @@ public class FicheUtilisateur extends AbstractFicheCombineController
 
    public void onCheck$authLdapCheckbox(){
 
-//       final boolean createMode = (null == user.getUtilisateurId());
+      //       final boolean createMode = (null == user.getUtilisateurId());
       final boolean ldapUser = authLdapCheckbox.isChecked();
 
       //Affichage/masquage des lignes du formulaires selon que l'authentification
@@ -1493,35 +1541,34 @@ public class FicheUtilisateur extends AbstractFicheCombineController
       passwordRow.setVisible(!ldapUser);
       // timeoutRow.setVisible(!ldapUser);
       // timeoutHelpRow.setVisible(!ldapUser);
-      
+
       displayPasswordEdition(getObject().getPassword() == null && !ldapUser);
-      
+
       //Si création de compte ou bascule d'un utilisateur LDAP existant en non LDAP
-//      if(createMode || user.isLdap()){
-//
-//         passwordLabel.setVisible(false);
-//         passwordBox.setVisible(!ldapUser);
-//         rowConfirmationPassword.setVisible(!ldapUser);
-//         if(user.getTimeOut() == null) {
-//            user.setTimeOut(defaultTimeoutDate);
-//         }
-//         
-//         //Suppression/activation des contraintes sur le mot de passe selon que l'authentification
-//         //LDAP est activée ou non pour l'utilisateur
-//         if(ldapUser){
-//            Clients.clearWrongValue(Arrays.asList(passwordBox, confirmPasswordBox));
-//            passwordBox.clearErrorMessage();
-//            confirmPasswordBox.clearErrorMessage();
-//            passwordBox.setConstraint("");
-//            confirmPasswordBox.setConstraint("");
-//         }else{
-//            passwordBox.setConstraint(getPasswordConstraint());
-//            confirmPasswordBox.setConstraint("no empty");
-//         }
-//     }
+      //      if(createMode || user.isLdap()){
+      //
+      //         passwordLabel.setVisible(false);
+      //         passwordBox.setVisible(!ldapUser);
+      //         rowConfirmationPassword.setVisible(!ldapUser);
+      //         if(user.getTimeOut() == null) {
+      //            user.setTimeOut(defaultTimeoutDate);
+      //         }
+      //
+      //         //Suppression/activation des contraintes sur le mot de passe selon que l'authentification
+      //         //LDAP est activée ou non pour l'utilisateur
+      //         if(ldapUser){
+      //            Clients.clearWrongValue(Arrays.asList(passwordBox, confirmPasswordBox));
+      //            passwordBox.clearErrorMessage();
+      //            confirmPasswordBox.clearErrorMessage();
+      //            passwordBox.setConstraint("");
+      //            confirmPasswordBox.setConstraint("");
+      //         }else{
+      //            passwordBox.setConstraint(getPasswordConstraint());
+      //            confirmPasswordBox.setConstraint("no empty");
+      //         }
+      //     }
    }
 
-   
    @Override
    public void setFieldsToUpperCase(){}
 
@@ -1533,10 +1580,12 @@ public class FicheUtilisateur extends AbstractFicheCombineController
       this.isAdminPF = isA;
    }
 
+   @Override
    public boolean isAdmin(){
       return isAdmin;
    }
 
+   @Override
    public void setAdmin(final boolean isA){
       this.isAdmin = isA;
    }
@@ -1582,15 +1631,15 @@ public class FicheUtilisateur extends AbstractFicheCombineController
    }
 
    public boolean isLdapAuthActivated(){
-	   return Boolean.valueOf(LDAP_AUTHENTICATION.getValue());
+      return Boolean.valueOf(LDAP_AUTHENTICATION.getValue());
    }
-   
-   public boolean isAuthLdapRowVisible() {
-      return isLdapAuthActivated() || (user!=null && user.isLdap());
+
+   public boolean isAuthLdapRowVisible(){
+      return isLdapAuthActivated() || (user != null && user.isLdap());
    }
-   
+
    /**
-    * 
+    *
     * @since 2.1
     */
    public AdministrationController getAdministrationController(){
@@ -1599,38 +1648,38 @@ public class FicheUtilisateur extends AbstractFicheCombineController
          //.getParent()
          .getAttributeOrFellow("winAdministration$composer", true);
    }
-   
+
    /**
-    * Affiche ou non les champs dédiés à l'initialisation d'un mot de passe 
+    * Affiche ou non les champs dédiés à l'initialisation d'un mot de passe
     * (et sa confirmation) pour un compte à authentification locale
     * @param display
     * @since 2.2.1
     */
-   private void displayPasswordEdition(boolean display) {
-	   if (display) {
+   private void displayPasswordEdition(final boolean display){
+      if(display){
 
-		   passwordLabel.setVisible(false);
-		   passwordBox.setVisible(true);
-		   rowConfirmationPassword.setVisible(true);
+         passwordLabel.setVisible(false);
+         passwordBox.setVisible(true);
+         rowConfirmationPassword.setVisible(true);
 
-		   // on ajoute les contraintes sur les
-		   // mots de passe
-		   passwordBox.setMaxlength(20);
-		   passwordBox.setConstraint(getPasswordConstraint());
-		   confirmPasswordBox.setMaxlength(20);
-		   confirmPasswordBox.setConstraint("no empty");      
-	   } else {
-		   passwordLabel.setVisible(true);
-		   passwordBox.setVisible(false);
-		   rowConfirmationPassword.setVisible(false);	
+         // on ajoute les contraintes sur les
+         // mots de passe
+         passwordBox.setMaxlength(20);
+         passwordBox.setConstraint(getPasswordConstraint());
+         confirmPasswordBox.setMaxlength(20);
+         confirmPasswordBox.setConstraint("no empty");
+      }else{
+         passwordLabel.setVisible(true);
+         passwordBox.setVisible(false);
+         rowConfirmationPassword.setVisible(false);
 
-		   Clients.clearWrongValue(Arrays.asList(passwordBox, confirmPasswordBox));
-		   passwordBox.clearErrorMessage();
-		   confirmPasswordBox.clearErrorMessage();
+         Clients.clearWrongValue(Arrays.asList(passwordBox, confirmPasswordBox));
+         passwordBox.clearErrorMessage();
+         confirmPasswordBox.clearErrorMessage();
 
-		   passwordBox.setConstraint("");
-		   confirmPasswordBox.setConstraint("");
-	   }
+         passwordBox.setConstraint("");
+         confirmPasswordBox.setConstraint("");
+      }
    }
 
 }

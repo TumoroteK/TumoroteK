@@ -73,6 +73,7 @@ public interface SpecialiteDao extends GenericDaoJpa<Specialite, Integer>, TKThe
     * Recherche toutes les Specialites ordonnées.
     * @return Liste ordonnée de Specialites.
     */
+   @Override
    List<Specialite> findByOrder();
 
    /**

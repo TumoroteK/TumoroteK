@@ -57,7 +57,6 @@ import fr.aphp.tumorotek.model.stockage.TerminaleType;
 public class TerminaleTypeValidator implements Validator
 {
 
-   
    @Override
    public boolean supports(final Class<?> clazz){
       return TerminaleType.class.equals(clazz);

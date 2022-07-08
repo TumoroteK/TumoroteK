@@ -67,6 +67,7 @@ public class EntiteManagerImpl implements EntiteManager
 
    /** Bean Dao EntiteDao. */
    private EntiteDao entiteDao;
+
    /** Bean Dao EntityManagerFactory. */
    private EntityManagerFactory entityManagerFactory;
 
@@ -127,14 +128,14 @@ public class EntiteManagerImpl implements EntiteManager
       if(objectId != null && entite != null){
          log.debug("Recherche l'objet correspondant au couple Entite : " + entite.toString() + " - ObjetId : " + objectId);
          final String nomTable = entite.getNom();
-         
+
          String nomAttribut = "id";
-         
-         if (!entite.getNom().matches("ChampAnnotation|ChampDelegue|ChampEntite")) { 
-	         final String first = nomTable.substring(0, 1);
-	         final String end = nomTable.substring(1);
-	         nomAttribut = first.toLowerCase().concat(end);
-	         nomAttribut = nomAttribut.concat("Id");
+
+         if(!entite.getNom().matches("ChampAnnotation|ChampDelegue|ChampEntite")){
+            final String first = nomTable.substring(0, 1);
+            final String end = nomTable.substring(1);
+            nomAttribut = first.toLowerCase().concat(end);
+            nomAttribut = nomAttribut.concat("Id");
          }
 
          final StringBuffer sb = new StringBuffer();

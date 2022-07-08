@@ -61,6 +61,7 @@ public interface NonConformiteManager extends PfDependantTKThesaurusManager<NonC
     * @param nonConformiteId Identifiant du NonConformite que l'on recherche.
     * @return Un NonConformite.
     */
+   @Override
    NonConformite findByIdManager(Integer nonConformiteId);
 
    /**
@@ -90,8 +91,8 @@ public interface NonConformiteManager extends PfDependantTKThesaurusManager<NonC
 
    /**
     * Extrait les non conformités à partir d'une liste d'objets
-    * ObjetNonConforme. 
-    * (Mauvais design JPA? entre objets et non conformités, voir 
+    * ObjetNonConforme.
+    * (Mauvais design JPA? entre objets et non conformités, voir
     * Operation)
     * @param objs
     * @return liste des non conformités

@@ -61,13 +61,11 @@ public class EtudeManagerTest extends AbstractManagerTest4
 
    @Autowired
    private EtudeManager etudeManager;
-   
+
    @Autowired
    private PlateformeDao plateformeDao;
 
-
    public EtudeManagerTest(){}
-
 
    @Test
    public void testFindByPfOrderManager(){

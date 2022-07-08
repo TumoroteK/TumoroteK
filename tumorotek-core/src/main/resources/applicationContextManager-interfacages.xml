@@ -1,99 +1,121 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	   xmlns:aop="http://www.springframework.org/schema/aop"
-	   xmlns:tx="http://www.springframework.org/schema/tx"
-	   xsi:schemaLocation="
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="
 			http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
 			http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
 			http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
 
-	 <import resource="applicationContextAOP-interfacages.xml" />
- 	
+	<import resource="applicationContextAOP-interfacages.xml" />
+
 	<bean id="patientSipManager" parent="txProxyTemplateInterfacages">
-  		<property name="target">
-   	 		<bean class="fr.aphp.tumorotek.manager.impl.interfacage.PatientSipManagerImpl">
-		 		 <property name="patientSipDao" ref="patientSipDao" />
-		 		 <property name="patientManager" ref="patientManager" />
-		 		  <property name="interfacageParsingUtils" ref="interfacageParsingUtils" />
-		 	</bean>
+		<property name="target">
+			<bean
+				class="fr.aphp.tumorotek.manager.impl.interfacage.PatientSipManagerImpl">
+				<property name="patientSipDao" ref="patientSipDao" />
+				<property name="patientManager" ref="patientManager" />
+				<property name="interfacageParsingUtils"
+					ref="interfacageParsingUtils" />
+			</bean>
 		</property>
 	</bean>
 
-	<bean id="valeurExterneValidator" class="fr.aphp.tumorotek.manager.validation.interfacage.ValeurExterneValidator" />
-	
-	<bean id="valeurExterneManager" parent="txProxyTemplateInterfacages">
-  		<property name="target">
-   	 		<bean class="fr.aphp.tumorotek.manager.impl.interfacage.ValeurExterneManagerImpl">
-   	 			<property name="valeurExterneDao" ref="valeurExterneDao" />
-   	 			<property name="champEntiteDao" ref="champEntiteDao" />
-   	 			<property name="blocExterneDao" ref="blocExterneDao" />
-   	 			<property name="champAnnotationDao" ref="champAnnotationDao" />
-   	 			<property name="valeurExterneValidator" ref="valeurExterneValidator" />
-    		</bean>
-  		</property>
+	<bean id="valeurExterneValidator"
+		class="fr.aphp.tumorotek.manager.validation.interfacage.ValeurExterneValidator" />
+
+	<bean id="valeurExterneManager"
+		parent="txProxyTemplateInterfacages">
+		<property name="target">
+			<bean
+				class="fr.aphp.tumorotek.manager.impl.interfacage.ValeurExterneManagerImpl">
+				<property name="valeurExterneDao" ref="valeurExterneDao" />
+				<property name="champEntiteDao" ref="champEntiteDao" />
+				<property name="blocExterneDao" ref="blocExterneDao" />
+				<property name="champAnnotationDao"
+					ref="champAnnotationDao" />
+				<property name="valeurExterneValidator"
+					ref="valeurExterneValidator" />
+			</bean>
+		</property>
 	</bean>
-	
+
 	<bean id="blocExterneManager" parent="txProxyTemplateInterfacages">
-  		<property name="target">
-   	 		<bean class="fr.aphp.tumorotek.manager.impl.interfacage.BlocExterneManagerImpl">
-   	 			<property name="blocExterneDao" ref="blocExterneDao" />
-   	 			<property name="dossierExterneDao" ref="dossierExterneDao" />
-   	 			<property name="entiteDao" ref="entiteDao" />
-   	 			<property name="valeurExterneManager" ref="valeurExterneManager" />
-    		</bean>
-  		</property>
+		<property name="target">
+			<bean
+				class="fr.aphp.tumorotek.manager.impl.interfacage.BlocExterneManagerImpl">
+				<property name="blocExterneDao" ref="blocExterneDao" />
+				<property name="dossierExterneDao" ref="dossierExterneDao" />
+				<property name="entiteDao" ref="entiteDao" />
+				<property name="valeurExterneManager"
+					ref="valeurExterneManager" />
+			</bean>
+		</property>
 	</bean>
-	
-	<bean id="dossierExterneValidator" class="fr.aphp.tumorotek.manager.validation.interfacage.DossierExterneValidator" />
-	
-	<bean id="dossierExterneManager" parent="txProxyTemplateInterfacages">
-  		<property name="target">
-   	 		<bean class="fr.aphp.tumorotek.manager.impl.interfacage.DossierExterneManagerImpl">
-   	 			<property name="dossierExterneDao" ref="dossierExterneDao" />
-   	 			<property name="emetteurDao" ref="emetteurDao" />
-   	 			<property name="blocExterneManager" ref="blocExterneManager" />
-   	 			<property name="valeurExterneManager" ref="valeurExterneManager" />
-   	 			<property name="dossierExterneValidator" ref="dossierExterneValidator" />
-    		</bean>
-  		</property>
+
+	<bean id="dossierExterneValidator"
+		class="fr.aphp.tumorotek.manager.validation.interfacage.DossierExterneValidator" />
+
+	<bean id="dossierExterneManager"
+		parent="txProxyTemplateInterfacages">
+		<property name="target">
+			<bean
+				class="fr.aphp.tumorotek.manager.impl.interfacage.DossierExterneManagerImpl">
+				<property name="dossierExterneDao" ref="dossierExterneDao" />
+				<property name="emetteurDao" ref="emetteurDao" />
+				<property name="blocExterneManager"
+					ref="blocExterneManager" />
+				<property name="valeurExterneManager"
+					ref="valeurExterneManager" />
+				<property name="dossierExterneValidator"
+					ref="dossierExterneValidator" />
+			</bean>
+		</property>
 	</bean>
-	
+
 	<bean id="emetteurManager" parent="txProxyTemplateInterfacages">
-  		<property name="target">
-   	 		<bean class="fr.aphp.tumorotek.manager.impl.interfacage.EmetteurManagerImpl">
-   	 			<property name="emetteurDao" ref="emetteurDao" />
-    		</bean>
-  		</property>
+		<property name="target">
+			<bean
+				class="fr.aphp.tumorotek.manager.impl.interfacage.EmetteurManagerImpl">
+				<property name="emetteurDao" ref="emetteurDao" />
+			</bean>
+		</property>
 	</bean>
-	
+
 	<bean id="recepteurManager" parent="txProxyTemplateInterfacages">
-  		<property name="target">
-   	 		<bean class="fr.aphp.tumorotek.manager.impl.interfacage.RecepteurManagerImpl">
-   	 			<property name="recepteurDao" ref="recepteurDao" />
-    		</bean>
-  		</property>
+		<property name="target">
+			<bean
+				class="fr.aphp.tumorotek.manager.impl.interfacage.RecepteurManagerImpl">
+				<property name="recepteurDao" ref="recepteurDao" />
+			</bean>
+		</property>
 	</bean>
-	
+
 	<bean id="logicielManager" parent="txProxyTemplateInterfacages">
-  		<property name="target">
-   	 		<bean class="fr.aphp.tumorotek.manager.impl.interfacage.LogicielManagerImpl">
-   	 			<property name="logicielDao" ref="logicielDao" />
-    		</bean>
-  		</property>
+		<property name="target">
+			<bean
+				class="fr.aphp.tumorotek.manager.impl.interfacage.LogicielManagerImpl">
+				<property name="logicielDao" ref="logicielDao" />
+			</bean>
+		</property>
 	</bean>
-	
-	<bean id="scanTerminaleManager" parent="txProxyTemplateInterfacages">
-  		<property name="target">
-   	 		<bean class="fr.aphp.tumorotek.manager.impl.interfacage.scan.ScanTerminaleManagerImpl">
-   	 			<property name="scanTerminaleDao" ref="scanTerminaleDao" />
-   	 			<property name="scanDeviceDao" ref="scanDeviceDao" />
-   	 			<property name="echantillonManager" ref="echantillonManager" />
+
+	<bean id="scanTerminaleManager"
+		parent="txProxyTemplateInterfacages">
+		<property name="target">
+			<bean
+				class="fr.aphp.tumorotek.manager.impl.interfacage.scan.ScanTerminaleManagerImpl">
+				<property name="scanTerminaleDao" ref="scanTerminaleDao" />
+				<property name="scanDeviceDao" ref="scanDeviceDao" />
+				<property name="echantillonManager"
+					ref="echantillonManager" />
 				<property name="prodDeriveManager" ref="prodDeriveManager" />
 				<property name="terminaleManager" ref="terminaleManager" />
-				<property name="emplacementManager" ref="emplacementManager" />
-    		</bean>
-  		</property>
+				<property name="emplacementManager"
+					ref="emplacementManager" />
+			</bean>
+		</property>
 	</bean>
-	
+
 </beans>

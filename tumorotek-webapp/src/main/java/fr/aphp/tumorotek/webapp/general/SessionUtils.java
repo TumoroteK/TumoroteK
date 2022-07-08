@@ -60,14 +60,15 @@ import fr.aphp.tumorotek.utils.Utils;
  * @version 2.2.0
  * @since 2.0
  */
-public final class SessionUtils {
+public final class SessionUtils
+{
 
-   private SessionUtils(){
-   }
+   private SessionUtils(){}
 
    private static String databasePathClass = null;
 
    private final static String MYSQL_DB = "mysql";
+
    private final static String ORACLE_DB = "oracle";
 
    /**
@@ -121,7 +122,7 @@ public final class SessionUtils {
     * @return boolean true/false
     */
    public static boolean isAnyDefMaladieInBanques(final List<Banque> banks){
-      for(Banque bank : banks){
+      for(final Banque bank : banks){
          if(bank.getDefMaladies()){
             return true;
          }
@@ -211,47 +212,47 @@ public final class SessionUtils {
       EContexte contexte = EContexte.DEFAUT;
       if(null != Sessions.getCurrent().getAttribute("Banque")){
          contexte = EContexte.valueOf(((Banque) Sessions.getCurrent().getAttribute("Banque")).getContexte().getNom());
+      }else if(null != Sessions.getCurrent().getAttribute("ToutesCollections")){
+         contexte = EContexte
+            .valueOf(((List<Banque>) Sessions.getCurrent().getAttribute("ToutesCollections")).get(0).getContexte().getNom());
       }
       return contexte;
    }
-   
+
    /**
     * @version 2.3.0-gatsbi
     * @return Contexte gatsbi
     */
-   public static List<Contexte> getGatsbiContextes() {
-	   List<Contexte> contextes = new ArrayList<Contexte>();
-	   if (null != Sessions.getCurrent().getAttribute("Banque") 
-			   && ((Banque) Sessions.getCurrent().getAttribute("Banque")).getEtude() != null) {
-		   contextes.addAll(((Banque) Sessions.getCurrent().getAttribute("Banque"))
-	        		 .getEtude().getContextes());
-	   }
-	  return contextes;
+   public static List<Contexte> getGatsbiContextes(){
+      final List<Contexte> contextes = new ArrayList<>();
+      if(null != Sessions.getCurrent().getAttribute("Banque")
+         && ((Banque) Sessions.getCurrent().getAttribute("Banque")).getEtude() != null){
+         contextes.addAll(((Banque) Sessions.getCurrent().getAttribute("Banque")).getEtude().getContextes());
+      }
+      return contextes;
    }
-   
+
    /**
-	* Rnvoie le contexte à appliquer pour une entité/onglet.
+   * Rnvoie le contexte à appliquer pour une entité/onglet.
     * @version 2.3.0-gatsbi
     * @return Contexte gatsbi
     */
    @SuppressWarnings("unchecked")
-   public static Contexte getCurrentGatsbiContexteForEntiteId(Integer eId) {
-	   Contexte gatsbiContexte = null;
-	   
-	   // trouve le contexte depuis l'étude GATSBI, venant de la banque sélectionnée, 
-	   // ou la première banque de la liste si 'Toutes collections' sélectionné
-	   if (Sessions.getCurrent().getAttribute("Banque") != null
-			   && ((Banque) Sessions.getCurrent().getAttribute("Banque")).getEtude() != null) {
-		   gatsbiContexte = ((Banque) Sessions.getCurrent().getAttribute("Banque"))
-	        	.getEtude().getContexteForEntite(eId);
-	   } else if (Sessions.getCurrent().getAttribute("ToutesCollections") != null 
-			   && ((List<Banque>) Sessions.getCurrent()
-					.getAttribute("ToutesCollections")).get(0).getEtude() != null) {
-			gatsbiContexte = ((List<Banque>) Sessions.getCurrent().getAttribute("ToutesCollections"))
-				.get(0).getEtude().getContexteForEntite(eId);
-	   }
+   public static Contexte getCurrentGatsbiContexteForEntiteId(final Integer eId){
+      Contexte gatsbiContexte = null;
 
-	  return gatsbiContexte;
+      // trouve le contexte depuis l'étude GATSBI, venant de la banque sélectionnée,
+      // ou la première banque de la liste si 'Toutes collections' sélectionné
+      if(Sessions.getCurrent().getAttribute("Banque") != null
+         && ((Banque) Sessions.getCurrent().getAttribute("Banque")).getEtude() != null){
+         gatsbiContexte = ((Banque) Sessions.getCurrent().getAttribute("Banque")).getEtude().getContexteForEntite(eId);
+      }else if(Sessions.getCurrent().getAttribute("ToutesCollections") != null
+         && ((List<Banque>) Sessions.getCurrent().getAttribute("ToutesCollections")).get(0).getEtude() != null){
+         gatsbiContexte =
+            ((List<Banque>) Sessions.getCurrent().getAttribute("ToutesCollections")).get(0).getEtude().getContexteForEntite(eId);
+      }
+
+      return gatsbiContexte;
    }
 
    /**
@@ -279,7 +280,7 @@ public final class SessionUtils {
     * @param reset
     *            si manager change
     */
-//   private static CrudManager<?> thesManager = null;
+   //   private static CrudManager<?> thesManager = null;
 
    /*public static List<?> getThesaurusListeValeurs(final String typeThesaurus){
       List<?> listValeurs = new ArrayList<>();

@@ -54,8 +54,8 @@ public interface PatientValidator extends Validator
 {
 
    /**
-    * Parcoure les dates des objets issus d'un patient et des 
-    * maladies jusqu'a la date actuelle, pour trouver la date de référence 
+    * Parcoure les dates des objets issus d'un patient et des
+    * maladies jusqu'a la date actuelle, pour trouver la date de référence
     * la moins récente.
     * Permet la récursivite sur les dérivés de dérivés.
     * @param patient
@@ -65,7 +65,7 @@ public interface PatientValidator extends Validator
    //Object[] findPostRefDateForPatient(Patient patient);
 
    /**
-    * Vérifie la cohérence de la date de naissance. 
+    * Vérifie la cohérence de la date de naissance.
     * @param patient
     * @return Errors
     */

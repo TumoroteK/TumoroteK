@@ -89,22 +89,31 @@ public class ChampAnnotationManagerTest extends AbstractManagerTest4
    /* Managers injectes par Spring*/
    @Autowired
    private ChampAnnotationManager champAnnotationManager;
+
    @Autowired
    private ChampAnnotationValidator champAnnotationValidator;
+
    @Autowired
    private TableAnnotationDao tableAnnotationDao;
+
    @Autowired
    private DataTypeDao dataTypeDao;
+
    @Autowired
    private UtilisateurDao utilisateurDao;
+
    @Autowired
    private ItemDao itemDao;
+
    @Autowired
    private AnnotationDefautDao annotationDefautDao;
+
    @Autowired
    private ItemValidator itemValidator;
+
    @Autowired
    private BanqueDao banqueDao;
+
    @Autowired
    private OperationTypeDao operationTypeDao;
 
@@ -345,8 +354,7 @@ public class ChampAnnotationManagerTest extends AbstractManagerTest4
       // references vers items
       final List<Item> its = new ArrayList<>(champAnnotationManager.getItemsManager(c, null));
       // references vers defauts
-      final List<AnnotationDefaut> defauts =
-         new ArrayList<>(champAnnotationManager.getAnnotationDefautsManager(c));
+      final List<AnnotationDefaut> defauts = new ArrayList<>(champAnnotationManager.getAnnotationDefautsManager(c));
       defauts.remove(0);
       assertFalse(defauts.iterator().next().getObligatoire());
       final AnnotationDefaut def1 = defauts.get(0);

@@ -77,9 +77,9 @@ public interface SModeleManager
    List<SModele> findByPlateformeManager(Plateforme plateforme);
 
    /**
-    * Recherche toutes les collections associées 
+    * Recherche toutes les collections associées
     * à ce modele
-    * 
+    *
     * @param im
     * @return Liste des banques
     */
@@ -141,8 +141,8 @@ public interface SModeleManager
 
    /**
     * Retourne la subdivision associée au sModele.
-    * La subdivision est obtenue à partir des indicateurs qui composent 
-    * le sModele. Si plusieurs subdivisons sont trouvées, throws une 
+    * La subdivision est obtenue à partir des indicateurs qui composent
+    * le sModele. Si plusieurs subdivisons sont trouvées, throws une
     * RuntimeException pour lever cette incoherence.
     * @param sM
     * @return la Subdivision attribuée au modèle, ou null si comptes totaux

@@ -64,9 +64,12 @@ public class ConteneurTypeManagerImpl implements ConteneurTypeManager
 {
 
    private final Log log = LogFactory.getLog(ConteneurTypeManager.class);
+
    /** Bean Dao ConteneurTypeDao. */
    private ConteneurTypeDao conteneurTypeDao;
+
    private ConteneurTypeValidator conteneurTypeValidator;
+
    private PlateformeDao plateformeDao;
 
    public void setPlateformeDao(final PlateformeDao pDao){
@@ -115,7 +118,7 @@ public class ConteneurTypeManagerImpl implements ConteneurTypeManager
       if(obj.getPlateforme() == null){
          throw new RequiredObjectIsNullException("Nature", "creation", "Plateforme");
       }
-         obj.setPlateforme(plateformeDao.mergeObject(obj.getPlateforme()));
+      obj.setPlateforme(plateformeDao.mergeObject(obj.getPlateforme()));
       BeanValidator.validateObject(obj, new Validator[] {conteneurTypeValidator});
       if(!findDoublonManager(obj)){
          conteneurTypeDao.createObject(obj);

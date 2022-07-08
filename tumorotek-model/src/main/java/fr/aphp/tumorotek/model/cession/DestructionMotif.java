@@ -69,12 +69,10 @@ import fr.aphp.tumorotek.model.AbstractPfDependantThesaurusObject;
 @GenericGenerator(name = "autoincrement", strategy = "increment")
 @NamedQueries(
    value = {@NamedQuery(name = "DestructionMotif.findByMotif", query = "SELECT d FROM DestructionMotif d WHERE d.nom like ?1"),
-      @NamedQuery(name = "DestructionMotif.findByExcludedId",
-         query = "SELECT d FROM DestructionMotif d " + "WHERE d.id != ?1"),
+      @NamedQuery(name = "DestructionMotif.findByExcludedId", query = "SELECT d FROM DestructionMotif d " + "WHERE d.id != ?1"),
       @NamedQuery(name = "DestructionMotif.findByPfOrder",
          query = "SELECT d FROM DestructionMotif d " + "WHERE d.plateforme = ?1 ORDER BY d.nom"),
-      @NamedQuery(name = "DestructionMotif.findByOrder",
-      query = "SELECT d FROM DestructionMotif d ORDER BY d.nom")})
+      @NamedQuery(name = "DestructionMotif.findByOrder", query = "SELECT d FROM DestructionMotif d ORDER BY d.nom")})
 public class DestructionMotif extends AbstractPfDependantThesaurusObject implements Serializable
 {
 

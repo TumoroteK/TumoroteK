@@ -90,24 +90,30 @@ import fr.aphp.tumorotek.model.contexte.Collaborateur;
    @NamedQuery(name = "Maladie.findByCollaborateurId",
       query = "SELECT m FROM Maladie m " + "LEFT JOIN m.collaborateurs o " + "WHERE o.collaborateurId = ?1"),
    @NamedQuery(name = "Maladie.findCountByReferent",
-      query = "SELECT count(m) FROM Maladie m " + "JOIN m.collaborateurs c " + "WHERE c = ?1"), 
-   @NamedQuery(name = "Maladie.findByLibelleAndPatient", query = "SELECT m FROM Maladie m WHERE m.libelle like ?1 " 
-		 + 	"AND m.patient = ?2")
-})
+      query = "SELECT count(m) FROM Maladie m " + "JOIN m.collaborateurs c " + "WHERE c = ?1"),
+   @NamedQuery(name = "Maladie.findByLibelleAndPatient",
+      query = "SELECT m FROM Maladie m WHERE m.libelle like ?1 " + "AND m.patient = ?2")})
 public class Maladie extends TKDelegetableObject<Maladie> implements TKdataObject, TKFantomableObject, Serializable
 {
 
    private static final long serialVersionUID = 4092522013404060267L;
 
    private Integer maladieId;
+
    private Patient patient;
+
    private String libelle;
+
    private String code;
+
    private Date dateDiagnostic;
+
    private Date dateDebut;
+
    private Boolean systemeDefaut = false;
 
    private Set<Prelevement> prelevements = new HashSet<>();
+
    private Set<Collaborateur> collaborateurs = new HashSet<>();
 
    private TKDelegateObject<Maladie> delegate;
@@ -291,7 +297,7 @@ public class Maladie extends TKDelegetableObject<Maladie> implements TKdataObjec
       clone.setSystemeDefaut(getSystemeDefaut());
 
       clone.setDelegate(getDelegate());
-      
+
       return clone;
    }
 
@@ -306,14 +312,15 @@ public class Maladie extends TKDelegetableObject<Maladie> implements TKdataObjec
       return "Maladie";
    }
 
+   @Override
    @OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "delegator",
-		      targetEntity = AbstractMaladieDelegate.class)
+      targetEntity = AbstractMaladieDelegate.class)
    public TKDelegateObject<Maladie> getDelegate(){
       return delegate;
    }
-   
+
    @Override
-   public void setDelegate(TKDelegateObject<Maladie> delegate){
+   public void setDelegate(final TKDelegateObject<Maladie> delegate){
       this.delegate = delegate;
    }
 

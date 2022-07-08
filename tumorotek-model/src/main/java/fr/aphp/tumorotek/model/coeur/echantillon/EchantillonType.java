@@ -76,8 +76,7 @@ import fr.aphp.tumorotek.model.systeme.CouleurEntiteType;
       @NamedQuery(name = "EchantillonType.findByExcludedId", query = "SELECT e FROM EchantillonType e " + "WHERE e.id != ?1"),
       @NamedQuery(name = "EchantillonType.findByPfOrder",
          query = "SELECT e FROM EchantillonType e " + "WHERE e.plateforme = ?1 ORDER BY e.nom"),
-      @NamedQuery(name = "EchantillonType.findByOrder",
-      query = "SELECT e FROM EchantillonType e ORDER BY e.nom")})
+      @NamedQuery(name = "EchantillonType.findByOrder", query = "SELECT e FROM EchantillonType e ORDER BY e.nom")})
 public class EchantillonType extends AbstractPfDependantThesaurusObject implements Serializable
 {
 
@@ -86,6 +85,7 @@ public class EchantillonType extends AbstractPfDependantThesaurusObject implemen
    private String incaCat;
 
    private Set<Echantillon> echantillons;
+
    private Set<CouleurEntiteType> couleurEntiteTypes = new HashSet<>();
 
    /** Constructeur. */

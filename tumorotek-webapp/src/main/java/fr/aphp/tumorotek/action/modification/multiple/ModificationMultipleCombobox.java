@@ -65,13 +65,17 @@ public class ModificationMultipleCombobox extends AbstractModificationMultipleCo
    private static final long serialVersionUID = 3551763682958457361L;
 
    private Combobox eraseListBox;
+
    private Combobox oneValueListBox;
+
    private Boolean isObligatoire;
 
    // Toutes les valeurs possibles du champ
    private final List<Object> allValues = new ArrayList<>();
+
    // Valeurs String correspondantes
    private final List<String> allStringValues = new ArrayList<>();
+
    // valeur string correspondante
    private String selectedStringValue = null;
 
@@ -116,7 +120,6 @@ public class ModificationMultipleCombobox extends AbstractModificationMultipleCo
    public void passNullToEraserBox(){
       eraseListBox.setSelectedItem(null);
    }
-
 
    private Comboitem findItemForValue(final Object value){
       final Iterator<Comboitem> its = eraseListBox.getItems().iterator();
@@ -167,33 +170,31 @@ public class ModificationMultipleCombobox extends AbstractModificationMultipleCo
 
       // pour chaque objet du thésaurus, on va extraire la valeur du
       // champ à afficher
-      for(Object object : allValues){
+      for(final Object object : allValues){
 
          try{
 
             boolean isDelegateProperty = false;
             TKDelegateObject<?> delegate = null;
 
-            if(object instanceof TKDelegetableObject) {
-               delegate = ((TKDelegetableObject<?>)object).getDelegate();
-               isDelegateProperty = delegate != null 
-            		  && PropertyUtils.describe(delegate).keySet().contains(getChampThesaurus());
+            if(object instanceof TKDelegetableObject){
+               delegate = ((TKDelegetableObject<?>) object).getDelegate();
+               isDelegateProperty = delegate != null && PropertyUtils.describe(delegate).keySet().contains(getChampThesaurus());
             }
 
             if(null != object){
 
                String stringTmp = null;
-               if(isDelegateProperty) {
-                  stringTmp = (String)PropertyUtils.getSimpleProperty(delegate, getChampThesaurus());
-               }
-               else {
-                  stringTmp = (String)PropertyUtils.getSimpleProperty(object, getChampThesaurus());
+               if(isDelegateProperty){
+                  stringTmp = (String) PropertyUtils.getSimpleProperty(delegate, getChampThesaurus());
+               }else{
+                  stringTmp = (String) PropertyUtils.getSimpleProperty(object, getChampThesaurus());
                }
 
                allStringValues.add(stringTmp);
 
             }
-            
+
          }catch(final IllegalAccessException | InvocationTargetException | NoSuchMethodException e){
             log.error(e);
          }

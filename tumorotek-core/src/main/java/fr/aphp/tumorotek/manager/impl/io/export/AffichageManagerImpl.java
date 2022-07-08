@@ -75,14 +75,19 @@ public class AffichageManagerImpl implements AffichageManager
 
    /** Liste des affichages du manager. */
    private final List<Affichage> affichages = new ArrayList<>();
+
    /** Bean Dao AffichageDao. */
    private AffichageDao affichageDao = null;
+
    /** Bean Dao ResultatDao. */
    private ResultatDao resultatDao = null;
+
    /** Bean Manager ResultatManager. */
    private ResultatManager resultatManager = null;
+
    /** Bean Validator. */
    private AffichageValidator affichageValidator;
+
    private RechercheDao rechercheDao;
 
    public AffichageManagerImpl(){
@@ -318,7 +323,7 @@ public class AffichageManagerImpl implements AffichageManager
    			if (temp.getResultatId() != null) {
    				resultatsAff.add(resultatDao.mergeObject(temp));
    			} else {
-   				resultatManager.createObjectManager(temp, affichage, 
+   				resultatManager.createObjectManager(temp, affichage,
    						temp.getChamp());
    				resultatsAff.add(temp);
    			}
@@ -332,7 +337,7 @@ public class AffichageManagerImpl implements AffichageManager
    			resultatManager.removeObjectManager(temp);
    		}
    	}
-   	
+   
    	affichage.setResultats(resultatsAff);
    }*/
 
@@ -440,7 +445,7 @@ public class AffichageManagerImpl implements AffichageManager
 
    /**
     * Recherche les Affichages dont l'utilisateur créateur est passé en
-    * paramètre. 
+    * paramètre.
     * @param util Utilisateur qui à créé les Affichages recherchés.
     * @return la liste de tous les Affichages de l'Utilisateur.
     */
@@ -455,7 +460,7 @@ public class AffichageManagerImpl implements AffichageManager
    }
 
    /**
-    * Recherche les Affichages dont l'intitulé est passé en paramètre. 
+    * Recherche les Affichages dont l'intitulé est passé en paramètre.
     * @param intitilé des Affichages recherchés.
     * @return la liste de tous les Affichages de l'intitulé.
     */
@@ -481,7 +486,7 @@ public class AffichageManagerImpl implements AffichageManager
     * Déplace un Résultat pour un Affichage.
     * @param affichage Affichage dont les résultats vont changer de position.
     * @param resultat Résultat à déplacer.
-    * @param nouvellePosition position à atteindre pour le Résultat.			
+    * @param nouvellePosition position à atteindre pour le Résultat.
     */
    @Override
    public void moveResultatManager(final Affichage affichage, final Resultat resultat, final int nouvellePosition){

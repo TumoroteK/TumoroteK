@@ -62,10 +62,11 @@ import fr.aphp.tumorotek.utils.ConversionUtils;
 public class ConversionUtilsTest
 {
 
-   public static class TestsNonParametres{
+   public static class TestsNonParametres
+   {
 
       //Test de conversion non supportés
-      @Test(expected=TKException.class)
+      @Test(expected = TKException.class)
       public void testConvertNotSupported(){
          Object o = "test";
          ConversionUtils.convert(o, List.class);
@@ -89,7 +90,7 @@ public class ConversionUtilsTest
          Object o = Integer.valueOf(10);
          Float converted = ConversionUtils.convertToFloat(o);
 
-         assertEquals( Float.valueOf(10) , converted);
+         assertEquals(Float.valueOf(10), converted);
 
       }
 
@@ -100,7 +101,7 @@ public class ConversionUtilsTest
          Object o = Double.valueOf(10.32d);
          Float converted = ConversionUtils.convertToFloat(o);
 
-         assertEquals( new Float(10.32d) , converted);
+         assertEquals(new Float(10.32d), converted);
 
       }
 
@@ -116,7 +117,7 @@ public class ConversionUtilsTest
       }
 
       //Test conversion String non-numérique -> Float
-      @Test(expected=TKException.class)
+      @Test(expected = TKException.class)
       public void testConvertNotNumericStringToFloat(){
 
          Object o = "toto";
@@ -125,8 +126,8 @@ public class ConversionUtilsTest
       }
 
       //Test conversion Float non supportée
-      @Test(expected=TKException.class)
-      public void testUnsupportedToFloat() {
+      @Test(expected = TKException.class)
+      public void testUnsupportedToFloat(){
 
          Object o = new Date();
          ConversionUtils.convertToFloat(o);
@@ -178,7 +179,7 @@ public class ConversionUtilsTest
       }
 
       //Test conversion String non-numérique -> Double
-      @Test(expected=TKException.class)
+      @Test(expected = TKException.class)
       public void testConvertNotNumericStringToDouble(){
 
          Object o = "toto";
@@ -187,8 +188,8 @@ public class ConversionUtilsTest
       }
 
       //Test conversion Double non supportée
-      @Test(expected=TKException.class)
-      public void testUnsupportedToDouble() {
+      @Test(expected = TKException.class)
+      public void testUnsupportedToDouble(){
 
          Object o = new Date();
          ConversionUtils.convertToDouble(o);
@@ -204,7 +205,7 @@ public class ConversionUtilsTest
 
          Integer expected = Float.valueOf(10.2f).intValue();
 
-         assertEquals(expected , converted);
+         assertEquals(expected, converted);
 
       }
 
@@ -244,7 +245,7 @@ public class ConversionUtilsTest
       }
 
       //Test conversion String non-numérique -> Integer
-      @Test(expected=TKException.class)
+      @Test(expected = TKException.class)
       public void testConvertNotNumericStringToInteger(){
 
          Object o = "toto";
@@ -253,8 +254,8 @@ public class ConversionUtilsTest
       }
 
       //Test conversion Integer non supportée
-      @Test(expected=TKException.class)
-      public void testUnsupportedToInteger() {
+      @Test(expected = TKException.class)
+      public void testUnsupportedToInteger(){
 
          Object o = new Date();
          ConversionUtils.convertToInteger(o);
@@ -268,7 +269,7 @@ public class ConversionUtilsTest
          Object o = Boolean.TRUE;
          Boolean converted = ConversionUtils.convertToBoolean(o);
 
-         assertEquals(Boolean.TRUE , converted);
+         assertEquals(Boolean.TRUE, converted);
 
       }
 
@@ -317,8 +318,8 @@ public class ConversionUtilsTest
       }
 
       //Test conversion Boolean non supportée
-      @Test(expected=TKException.class)
-      public void testUnsupportedToBoolean() {
+      @Test(expected = TKException.class)
+      public void testUnsupportedToBoolean(){
 
          Object o = new Date();
          ConversionUtils.convertToInteger(o);
@@ -327,7 +328,7 @@ public class ConversionUtilsTest
 
       //Test conversion Date -> Date
       @Test
-      public void testConvertDateToDate() {
+      public void testConvertDateToDate(){
 
          Object o = new Date();
          Date converted = ConversionUtils.convertToDate(o);
@@ -338,7 +339,7 @@ public class ConversionUtilsTest
 
       //Test conversion Calendar -> Date
       @Test
-      public void testConvertCalendarToDate() {
+      public void testConvertCalendarToDate(){
 
          Calendar o = Calendar.getInstance();
          Date converted = ConversionUtils.convertToDate(o);
@@ -348,8 +349,8 @@ public class ConversionUtilsTest
       }
 
       //Test conversion String (format de date non prévu) -> Date
-      @Test(expected=TKException.class)
-      public void testConvertUnexpectedFormatDateStringToDate() {
+      @Test(expected = TKException.class)
+      public void testConvertUnexpectedFormatDateStringToDate(){
 
          Date date = new Date();
          Object o = new SimpleDateFormat("EEE, MMM d, ''yy").format(date);
@@ -360,7 +361,7 @@ public class ConversionUtilsTest
 
       //Test conversion Calendar -> Calendar
       @Test
-      public void testConvertCalendarToCalendar() {
+      public void testConvertCalendarToCalendar(){
 
          Object o = Calendar.getInstance();
          Calendar converted = ConversionUtils.convertToCalendar(o);
@@ -371,7 +372,7 @@ public class ConversionUtilsTest
 
       //Test conversion Date -> Calendar
       @Test
-      public void testConvertDateToCalendar() {
+      public void testConvertDateToCalendar(){
 
          Date o = new Date();
          Calendar converted = ConversionUtils.convertToCalendar(o);
@@ -384,8 +385,8 @@ public class ConversionUtilsTest
       }
 
       //Test conversion String (format de date non prévu) -> Calendar
-      @Test(expected=TKException.class)
-      public void testConvertUnexpectedFormatDateStringToCalendar() {
+      @Test(expected = TKException.class)
+      public void testConvertUnexpectedFormatDateStringToCalendar(){
 
          Date date = new Date();
          Object o = new SimpleDateFormat("EEE, MMM d, ''yy").format(date);
@@ -395,8 +396,8 @@ public class ConversionUtilsTest
       }
 
       //Test conversion String (format de date non prévu) -> Date
-      @Test(expected=TKException.class)
-      public void testConvertUnexpectedFormatDateStringGetDateFormat() {
+      @Test(expected = TKException.class)
+      public void testConvertUnexpectedFormatDateStringGetDateFormat(){
 
          ConversionUtils.getDateFormat("Wed, Jul 4, '01");
 
@@ -405,31 +406,28 @@ public class ConversionUtilsTest
    }
 
    @RunWith(Parameterized.class)
-   public static class TestsDateParametre{
+   public static class TestsDateParametre
+   {
 
-      @Parameter(value=0)
+      @Parameter(value = 0)
       public String dateString;
 
-      @Parameter(value=1)
+      @Parameter(value = 1)
       public String dateFormat;
 
       @Parameters
-      public static Collection<Object[]> dateFormats() {
+      public static Collection<Object[]> dateFormats(){
 
-         return Arrays.asList(new Object[][] {
-            {"31/12/2000 02:32:54", "dd/MM/yyyy HH:mm:ss"},
-            {"31/12/2000 02:32", "dd/MM/yyyy HH:mm"},
-            {"31/12/2000", "dd/MM/yyyy"},
-            {"2000/12/31 02:32:54", "yyyy/MM/dd HH:mm:ss"},
-            {"2000/12/31 02:32", "yyyy/MM/dd HH:mm"},
-            {"2000/12/31", "yyyy/MM/dd"}
-         });
+         return Arrays
+            .asList(new Object[][] {{"31/12/2000 02:32:54", "dd/MM/yyyy HH:mm:ss"}, {"31/12/2000 02:32", "dd/MM/yyyy HH:mm"},
+               {"31/12/2000", "dd/MM/yyyy"}, {"2000/12/31 02:32:54", "yyyy/MM/dd HH:mm:ss"},
+               {"2000/12/31 02:32", "yyyy/MM/dd HH:mm"}, {"2000/12/31", "yyyy/MM/dd"}});
 
       }
 
       //Test conversion String -> Date
       @Test
-      public void testConvertStringToDate() {
+      public void testConvertStringToDate(){
 
          SimpleDateFormat sdf = new SimpleDateFormat(dateFormat);
 
@@ -445,7 +443,7 @@ public class ConversionUtilsTest
 
       //Test conversion String -> Date
       @Test
-      public void testConvertStringToCalendar() {
+      public void testConvertStringToCalendar(){
 
          SimpleDateFormat sdf = new SimpleDateFormat(dateFormat);
 

@@ -57,10 +57,13 @@ public class TumoPrinterUtilsManagerTest extends AbstractManagerTest4
 
    @Autowired
    private EchantillonManager echantillonManager;
+
    @Autowired
    private ProdDeriveManager prodDeriveManager;
+
    @Autowired
    private TumoPrinterUtilsManager tumoPrinterUtilsManager;
+
    @Autowired
    private ModeleManager modeleManager;
 

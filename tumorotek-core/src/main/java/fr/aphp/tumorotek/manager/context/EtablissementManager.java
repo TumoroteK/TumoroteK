@@ -101,7 +101,7 @@ public interface EtablissementManager
    List<Service> getServicesWithOrderManager(Etablissement etablissement);
 
    /**
-    * Recherche les services actifs liés à l'établissement passé en 
+    * Recherche les services actifs liés à l'établissement passé en
     * paramètre.
     * @param etablissement Etablissement pour lequel on recherche des
     * services.
@@ -126,7 +126,7 @@ public interface EtablissementManager
    List<Collaborateur> getCollaborateursWithOrderManager(Etablissement etablissement);
 
    /**
-    * Recherche les collaborateurs non archivés liés à l'établissement 
+    * Recherche les collaborateurs non archivés liés à l'établissement
     * passé en paramètre.
     * @param etablissement Etablissement pour lequel on recherche des
     * collaborateurs.
@@ -200,7 +200,7 @@ public interface EtablissementManager
     * @param etablissement Etablissement à supprimer de la base de données.
     * @param comments commentaires liés à la suppression
     * @param Utilisateur réalisant la suppression.
-    * @throws ObjectUsedException si etablissement reference des services 
+    * @throws ObjectUsedException si etablissement reference des services
     * ou des collaborateurs isolés.
     * @throws ObjectReferencedException si etablissement est référencé par des
     * contrats.
@@ -208,27 +208,27 @@ public interface EtablissementManager
    void removeObjectManager(Etablissement etablissement, String comments, Utilisateur user);
 
    /**
-    * Verifie si l'etablissement contient des services ou des 
-    * collborateurs. 
+    * Verifie si l'etablissement contient des services ou des
+    * collborateurs.
     * @param et Etablisement
     * @return boolean true si l'etablissement a des enfants.
     */
    boolean isUsedObjectManager(Etablissement et);
 
    /**
-    * Verifie si l'etablissement est référencé par d'autres objets 
+    * Verifie si l'etablissement est référencé par d'autres objets
     * (contrats)
     * et donc ne peut être supprimé (peut être inactivé en attendant).
     * @param et Etablisement
-    * @return boolean true si l'établissement est référencé 
+    * @return boolean true si l'établissement est référencé
     * par au moins un objet.
     */
    boolean isReferencedObjectManager(Etablissement et);
 
    /**
-    * Supprime un objet de la base de données et en cascade tous les objets 
-    * dont il est le parent, deletion cascadant à leur tour sur les objets 
-    * en descendant la hierarchie. 
+    * Supprime un objet de la base de données et en cascade tous les objets
+    * dont il est le parent, deletion cascadant à leur tour sur les objets
+    * en descendant la hierarchie.
     * @param etablissement Etablissement à supprimer de la base de données.
     * @param comments commentaires liés à la suppression
     * @param Utilisateur réalisant la suppression.
@@ -237,8 +237,8 @@ public interface EtablissementManager
 
    /**
     * Fusionne deux Etablissements enregistrés dans le système.
-    * Le premier etablissement passé en paramètre est celui qui sera conservé 
-    * dans le système et qui recevra les associations attribuées au 
+    * Le premier etablissement passé en paramètre est celui qui sera conservé
+    * dans le système et qui recevra les associations attribuées au
     * etablissement passif passé en deuxième paramètre.
     * Association à récupérer:<br>
     *		-Collaborateur

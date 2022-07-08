@@ -56,13 +56,13 @@ public interface DataTypeManager
     * @return Liste de DataType.
     */
    List<DataType> findAllObjectsManager();
-   
+
    /**
     * Recherche le datatype selon le type
     * @return Liste de DataType.
     */
    DataType findByTypeManager(String type);
-   
+
    /**
     * Recherche les datatype selon les types
     * @return Liste de DataType.

@@ -55,8 +55,11 @@ public class HmMessageSenderImpl implements HmMessageSender
 {
 
    private ProducerTemplate camelTemplate;
+
    private EchantillonManager echantillonManager;
+
    private RecepteurManager recepteurManager;
+
    private final Integer recepteurId = 2;
 
    public void setCamelTemplate(final ProducerTemplate ct){

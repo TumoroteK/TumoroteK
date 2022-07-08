@@ -1,5 +1,5 @@
 /**
- * Copyright ou © ou Copr. Assistance Publique des Hôpitaux de 
+ * Copyright ou © ou Copr. Assistance Publique des Hôpitaux de
  * PARIS et SESAN
  * projet-tk@sesan.fr
  *
@@ -45,51 +45,53 @@ import fr.aphp.tumorotek.model.contexte.gatsbi.Etude;
  * @author Mathieu BARTHELEMY
  *
  */
-public class ProfilByEtudeCount {
-	
-	private Etude etude;
-	private Long count;
-	
-	public ProfilByEtudeCount(Etude _e, Long _c) {
-		this.etude = _e;
-		this.count = _c;
-	}
+public class ProfilByEtudeCount
+{
 
-	public Etude getEtude() {
-		return etude;
-	}
+   private Etude etude;
 
-	public void setEtude(Etude _e) {
-		this.etude = _e;
-	}
+   private Long count;
 
-	public Long getCount() {
-		return count;
-	}
+   public ProfilByEtudeCount(final Etude _e, final Long _c){
+      this.etude = _e;
+      this.count = _c;
+   }
 
-	public void setCount(Long _c) {
-		this.count = _c;
-	}
-	
-	@Override
-	public boolean equals(Object obj) {
-		if (obj == this) {
-            return true;
-        }
-        if (obj == null || obj.getClass() != this.getClass()) {
-            return false;
-        }
+   public Etude getEtude(){
+      return etude;
+   }
 
-        ProfilByEtudeCount pbec = (ProfilByEtudeCount) obj;
+   public void setEtude(final Etude _e){
+      this.etude = _e;
+   }
 
-        return Objects.equals(etude, pbec.getEtude());
-	}
-	
-	@Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((etude == null) ? 0 : etude.hashCode());
-        return result;
-    }
+   public Long getCount(){
+      return count;
+   }
+
+   public void setCount(final Long _c){
+      this.count = _c;
+   }
+
+   @Override
+   public boolean equals(final Object obj){
+      if(obj == this){
+         return true;
+      }
+      if(obj == null || obj.getClass() != this.getClass()){
+         return false;
+      }
+
+      final ProfilByEtudeCount pbec = (ProfilByEtudeCount) obj;
+
+      return Objects.equals(etude, pbec.getEtude());
+   }
+
+   @Override
+   public int hashCode(){
+      final int prime = 31;
+      int result = 1;
+      result = prime * result + ((etude == null) ? 0 : etude.hashCode());
+      return result;
+   }
 }

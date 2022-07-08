@@ -49,6 +49,7 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import ch.qos.logback.core.joran.spi.ActionException;
 import fr.aphp.tumorotek.model.coeur.patient.Patient;
 
 public class PatientServeurIdentite implements Sip
@@ -59,21 +60,33 @@ public class PatientServeurIdentite implements Sip
    ServeurIdentitesFileBean serveurIdentitesFileBean;
 
    public String DBMS;
+
    public String HOST;
+
    public String DRIVER;
+
    public String DATABASE;
+
    public String LOGIN;
+
    public String PASSWORD;
 
    public String TABLE_PATIENT;
+
    public String NIP;
+
    public String NOM;
+
    public String NOM_PATRON;
+
    public String PRENOM;
+
    public String SEXE;
 
    public String SEXE_TYPE;
+
    public String SEXE_FEMME;
+
    public String SEXE_HOMME;
 
    public String DATE_NAISS;
@@ -83,10 +96,13 @@ public class PatientServeurIdentite implements Sip
    public String NUM_DOSSIER;
 
    public final String LIKE = "LIKE";
+
    public final String EQUAL = "=";
 
    private Connection connection = null;
+
    private PreparedStatement prepaStmt = null;
+
    //private Statement stmt = null;
    private ResultSet resultSet = null;
 
@@ -189,7 +205,7 @@ public class PatientServeurIdentite implements Sip
    }
 
    /**
-    * Methode de connexion et d'accès à la base de données 
+    * Methode de connexion et d'accès à la base de données
     * du serveur d'identités des patients.
     * @param column
     * @param value
@@ -199,9 +215,9 @@ public class PatientServeurIdentite implements Sip
    private List<Patient> getPatientsServeur(final String column, final String value){
       final List<Patient> listPatient = new ArrayList<>();
       try{
-         // Oracle 8 load specific driver Hack		
+         // Oracle 8 load specific driver Hack
          //	URLClassLoader classLoader;
-         //	classLoader = new URLClassLoader(new URL[]{new URL("jar:file:/home/mathieu2/apache-tomcat-7.0.40/conf/Catalina/localhost/sip/ojdbc14.jar!/")}, 
+         //	classLoader = new URLClassLoader(new URL[]{new URL("jar:file:/home/mathieu2/apache-tomcat-7.0.40/conf/Catalina/localhost/sip/ojdbc14.jar!/")},
          //				this.getClass().getClassLoader());
 
          //	Driver driver = (Driver) Class.forName(DRIVER, true, classLoader).newInstance();
@@ -280,7 +296,7 @@ public class PatientServeurIdentite implements Sip
    }
 
    /**
-    * Methode de connexion et d'accès à la base de données 
+    * Methode de connexion et d'accès à la base de données
     * du serveur d'identités des patients.
     * @param nip
     * @throws ActionException
@@ -299,7 +315,7 @@ public class PatientServeurIdentite implements Sip
    }
 
    /**
-    * Methode de connexion et d'accès à la base de 
+    * Methode de connexion et d'accès à la base de
     * données du serveur d'identités des patients.
     * @param nom
     * @throws ActionException
@@ -311,7 +327,7 @@ public class PatientServeurIdentite implements Sip
    }
 
    /**
-    * Methode de connexion et d'accès à la base de 
+    * Methode de connexion et d'accès à la base de
     * données du serveur d'identités des patients.
     * @param numDossier
     * @throws ActionException

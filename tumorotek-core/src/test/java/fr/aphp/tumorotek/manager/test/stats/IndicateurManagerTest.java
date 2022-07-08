@@ -59,8 +59,10 @@ public class IndicateurManagerTest extends AbstractManagerTest4
 
    @Autowired
    private IndicateurManager indicateurManager;
+
    @Autowired
    private IndicateurDao indicateurDao;
+
    @Autowired
    private SModeleDao sModeleDao;
 

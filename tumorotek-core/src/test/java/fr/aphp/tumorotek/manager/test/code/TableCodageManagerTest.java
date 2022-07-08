@@ -75,16 +75,22 @@ public class TableCodageManagerTest extends AbstractManagerTest4
 
    @Autowired
    private TableCodageManager tableCodageManager;
+
    @Autowired
    private BanqueDao banqueDao;
+
    @Autowired
    private AdicapManager adicapManager;
+
    @Autowired
    private CimMasterManager cimMasterManager;
+
    @Autowired
    private CimoMorphoManager cimoMorphoManager;
+
    @Autowired
    private CodeUtilisateurManager codeUtilisateurManager;
+
    @Autowired
    private CommonUtilsManager commonUtilsManager;
 

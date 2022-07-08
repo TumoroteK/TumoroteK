@@ -85,6 +85,7 @@ public class ChampImprime implements Serializable
    private static final long serialVersionUID = -1771108515647963005L;
 
    private Integer ordre;
+
    private ChampImprimePK pk = new ChampImprimePK();
 
    public ChampImprime(){

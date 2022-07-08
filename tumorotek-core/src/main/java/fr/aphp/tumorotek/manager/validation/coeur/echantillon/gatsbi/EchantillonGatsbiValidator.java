@@ -1,5 +1,5 @@
 /**
- * Copyright ou © ou Copr. Assistance Publique des Hôpitaux de 
+ * Copyright ou © ou Copr. Assistance Publique des Hôpitaux de
  * PARIS et SESAN
  * projet-tk@sesan.fr
  *
@@ -48,84 +48,82 @@ import fr.aphp.tumorotek.model.code.CodeAssigne;
 import fr.aphp.tumorotek.model.coeur.echantillon.Echantillon;
 
 /**
- * Gatsbi validor appliquant de manière dynamique une validation sur les 
+ * Gatsbi validor appliquant de manière dynamique une validation sur les
  * champs obligatoires définis par un contexte.
- * 
+ *
  * @author Mathieu BARTHELEMY
  * @version 2.3.0-gatsbi
  *
  */
-public class EchantillonGatsbiValidator extends RequiredValueValidator {
-	
-	private List<CodeAssigne> codes = new ArrayList<CodeAssigne>();
-	
-	// permet de retirer la validation obligatoire du chmp crAnapath (id=255)
-	// uniquement pour l'import fichier excel
-	private boolean isImport = false;
+public class EchantillonGatsbiValidator extends RequiredValueValidator
+{
 
-	public EchantillonGatsbiValidator(String _e, List<Integer> _f, List<CodeAssigne> _c, boolean _i) {
-		super(_e, _f);
-		
-		if (_c != null) {
-			codes.addAll(_c);
-		}
-		this.isImport = _i;
-	}
+   private final List<CodeAssigne> codes = new ArrayList<>();
 
-	@Override
-	public boolean supports(final Class<?> clazz){
-		return Echantillon.class.equals(clazz);
-	}
+   // permet de retirer la validation obligatoire du chmp crAnapath (id=255)
+   // uniquement pour l'import fichier excel
+   private boolean isImport = false;
 
-	@Override
-	protected void initChpIdNameMap() {
-		chpIdNameMap.put(53, "collaborateur");
-		// chpIdNameMap.put(54, "code"); 
-		// chpIdNameMap.put(58, "echantillonType"); // validé par défaut dans checkrequired
-		// TODO vérifier avec CORINNE si besoin validation fonctionnelle ici
-		chpIdNameMap.put(61, "quantite");
-		chpIdNameMap.put(62, "quantiteInit"); // logiquement rempli si quantite remplie
-		chpIdNameMap.put(63, "quantiteUnite"); // logiquement rempli si quantite remplie
-		chpIdNameMap.put(70, "modePrepa");
-		// sterile id=72 (boolean) ne peut être obligatoire
-		chpIdNameMap.put(56, "dateStock");
-		chpIdNameMap.put(67, "delaiCgl");
-		chpIdNameMap.put(53, "collaborateur");
-		// chpIdNameMap.put(55, "statut"); // validé par défaut dans checkrequired
-		// emplacement id=57 ne peut être obligatoire
-		chpIdNameMap.put(68, "echanQualite");
-		chpIdNameMap.put(243, "conformeTraitement");
-		chpIdNameMap.put(244, "conformeCession");
-		if (!isImport) {
-			chpIdNameMap.put(255, "crAnapath");
-		}
-		// tumoral id=69 (boolean) ne peut être obligatoire
-		chpIdNameMap.put(229, "codeOrganes");
-		chpIdNameMap.put(60, "lateralite");
-		chpIdNameMap.put(230, "codeMorphos");
-	}
-	
-	@Override
-	protected void initFunctionalValidationMap() {
+   public EchantillonGatsbiValidator(final String _e, final List<Integer> _f, final List<CodeAssigne> _c, final boolean _i){
+      super(_e, _f);
 
-		validations.put(255, (TKdataObject e, Errors r) -> 
-			(isImport || ((Echantillon) e).getAnapathStream() != null 
-				|| ((Echantillon) e).getCrAnapath() != null));
-		
-		validations.put(229, (TKdataObject e, Errors r) -> 
-			codes.stream().anyMatch(c -> c.getIsOrgane()));
-		validations.put(230, (TKdataObject e, Errors r) -> 
-			codes.stream().anyMatch(c -> c.getIsMorpho()));
-	}
+      if(_c != null){
+         codes.addAll(_c);
+      }
+      this.isImport = _i;
+   }
 
-	/**
-	 * Echantillon impose la transformation des noms de certaines propriétés/champs.
-	 */
-	@Override
-	protected String correctFieldNameIfNeeded(String n) {
-		if (n != null && Arrays.asList("codeOrganes", "codeMorphos").contains(n)) {
-			return "codesAssignes";
-		}
-		return n;
-	}
+   @Override
+   public boolean supports(final Class<?> clazz){
+      return Echantillon.class.equals(clazz);
+   }
+
+   @Override
+   protected void initChpIdNameMap(){
+      chpIdNameMap.put(53, "collaborateur");
+      // chpIdNameMap.put(54, "code"); 
+      // chpIdNameMap.put(58, "echantillonType"); // validé par défaut dans checkrequired
+      // TODO vérifier avec CORINNE si besoin validation fonctionnelle ici
+      chpIdNameMap.put(61, "quantite");
+      chpIdNameMap.put(62, "quantiteInit"); // logiquement rempli si quantite remplie
+      chpIdNameMap.put(63, "quantiteUnite"); // logiquement rempli si quantite remplie
+      chpIdNameMap.put(70, "modePrepa");
+      // sterile id=72 (boolean) ne peut être obligatoire
+      chpIdNameMap.put(56, "dateStock");
+      chpIdNameMap.put(67, "delaiCgl");
+      chpIdNameMap.put(53, "collaborateur");
+      // chpIdNameMap.put(55, "statut"); // validé par défaut dans checkrequired
+      // emplacement id=57 ne peut être obligatoire
+      chpIdNameMap.put(68, "echanQualite");
+      chpIdNameMap.put(243, "conformeTraitement");
+      chpIdNameMap.put(244, "conformeCession");
+      if(!isImport){
+         chpIdNameMap.put(255, "crAnapath");
+      }
+      // tumoral id=69 (boolean) ne peut être obligatoire
+      chpIdNameMap.put(229, "codeOrganes");
+      chpIdNameMap.put(60, "lateralite");
+      chpIdNameMap.put(230, "codeMorphos");
+   }
+
+   @Override
+   protected void initFunctionalValidationMap(){
+
+      validations.put(255, (final TKdataObject e, final Errors r) -> (isImport || ((Echantillon) e).getAnapathStream() != null
+         || ((Echantillon) e).getCrAnapath() != null));
+
+      validations.put(229, (final TKdataObject e, final Errors r) -> codes.stream().anyMatch(c -> c.getIsOrgane()));
+      validations.put(230, (final TKdataObject e, final Errors r) -> codes.stream().anyMatch(c -> c.getIsMorpho()));
+   }
+
+   /**
+    * Echantillon impose la transformation des noms de certaines propriétés/champs.
+    */
+   @Override
+   protected String correctFieldNameIfNeeded(final String n){
+      if(n != null && Arrays.asList("codeOrganes", "codeMorphos").contains(n)){
+         return "codesAssignes";
+      }
+      return n;
+   }
 }

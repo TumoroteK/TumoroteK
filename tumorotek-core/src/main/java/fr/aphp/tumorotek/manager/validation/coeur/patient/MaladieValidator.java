@@ -148,7 +148,7 @@ public class MaladieValidator implements Validator
 
    /**
     * Vérifie la cohérence de la date de diagnostic de la maladie avec les
-    * dates de début de la maladie, naissance et décès. 
+    * dates de début de la maladie, naissance et décès.
     * @param maladie
     * @return Errors
     */

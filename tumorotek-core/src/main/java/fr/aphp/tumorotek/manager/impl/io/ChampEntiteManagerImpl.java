@@ -146,18 +146,18 @@ public class ChampEntiteManagerImpl implements ChampEntiteManager
       }
       return new ArrayList<>();
    }
-   
+
    @Override
    public List<ChampEntite> findByEntiteAndImportManagerAndDatatype(final Entite entite, final Boolean canImport,
       final List<DataType> dataTypeList, final Boolean excludeIds){
       List<ChampEntite> champEntiteList = new ArrayList<>();
-      if(false == excludeIds)
-      {
+      if(!excludeIds){
          champEntiteList = findByEntiteAndImportManagerAndDatatype(entite, canImport, dataTypeList);
       }else if(entite != null && canImport != null && null != dataTypeList){
-         List<ChampEntite> champEntiteList2 = champEntiteDao.findByEntiteAndImportAndDataType(entite, canImport, dataTypeList);
-         for(ChampEntite champEntite : champEntiteList2){
-            if(!"Id".equals(champEntite.getNom().substring(champEntite.getNom().length()-2))){
+         final List<ChampEntite> champEntiteList2 =
+            champEntiteDao.findByEntiteAndImportAndDataType(entite, canImport, dataTypeList);
+         for(final ChampEntite champEntite : champEntiteList2){
+            if(!"Id".equals(champEntite.getNom().substring(champEntite.getNom().length() - 2))){
                champEntiteList.add(champEntite);
             }
          }
@@ -175,12 +175,11 @@ public class ChampEntiteManagerImpl implements ChampEntiteManager
    }
 
    @Override
-   public Object getValueForObjectManager(ChampEntite champ, Object obj, boolean prettyFormat){
+   public Object getValueForObjectManager(final ChampEntite champ, final Object obj, final boolean prettyFormat){
       Object res = null;
       String value = null;
       // on formate le nom du champ
-      String nomChamp =
-         champ.getNom().replaceFirst(".", (champ.getNom().charAt(0) + "").toLowerCase());
+      String nomChamp = champ.getNom().replaceFirst(".", (champ.getNom().charAt(0) + "").toLowerCase());
       if(nomChamp.endsWith("Id")){
          nomChamp = nomChamp.substring(0, nomChamp.length() - 2);
       }
@@ -264,8 +263,8 @@ public class ChampEntiteManagerImpl implements ChampEntiteManager
                // extraire la valeur sous forme de string
 
                // on formate le nom du champ de thesaurus
-               String nomChampThes = champ.getQueryChamp().getNom().replaceFirst(".",
-                  (champ.getQueryChamp().getNom().charAt(0) + "").toLowerCase());
+               String nomChampThes =
+                  champ.getQueryChamp().getNom().replaceFirst(".", (champ.getQueryChamp().getNom().charAt(0) + "").toLowerCase());
                if(nomChampThes.endsWith("Id")){
                   nomChampThes = nomChampThes.substring(0, nomChampThes.length() - 2);
                }
@@ -290,6 +289,5 @@ public class ChampEntiteManagerImpl implements ChampEntiteManager
       }
       return res;
    }
-   
-   
+
 }

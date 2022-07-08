@@ -50,18 +50,29 @@ public class EmplacementDecorator
 {
 
    private Emplacement emplacement;
+
    private Boolean vide;
+
    //	private Echantillon echantillon;
    //	private ProdDerive prodDerive;
    private TKStockableObject tkStockObj;
+
    private Integer position;
+
    private Terminale terminale;
+
    private String libelle;
+
    private String code = "";
+
    private String adrl = "";
+
    private String adrlDestination;
+
    private EmplacementDecorator emplDestination;
+
    private Boolean emplacementDepart = false;
+
    private String type = "";
 
    public EmplacementDecorator(final Emplacement emp){

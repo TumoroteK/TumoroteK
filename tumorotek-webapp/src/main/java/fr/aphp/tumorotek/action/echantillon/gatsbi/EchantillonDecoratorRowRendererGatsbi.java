@@ -51,39 +51,39 @@ import fr.aphp.tumorotek.webapp.general.SessionUtils;
  * @author Mathieu BARTHELEMY.
  * @version 2.3.0-gatsbi
  */
-public class EchantillonDecoratorRowRendererGatsbi extends AbstractEchantillonDecoratorRowRenderer {
+public class EchantillonDecoratorRowRendererGatsbi extends AbstractEchantillonDecoratorRowRenderer
+{
 
-	private boolean iconesRendered = false;
-	
-	private Contexte contexte;
-	
-	public EchantillonDecoratorRowRendererGatsbi() {
-		contexte = SessionUtils.getCurrentGatsbiContexteForEntiteId(3);
-	}
+   private boolean iconesRendered = false;
 
-	@Override
-	public void render(final Row row, final EchantillonDTO deco, final int index) {
-		super.render(row, deco, index);
-	}
+   private final Contexte contexte;
 
-	@Override
-	protected void renderEchantillon(Row row, EchantillonDTO deco) 
-			throws IllegalAccessException, InvocationTargetException, NoSuchMethodException, ParseException {	
-		for (Integer chpId : contexte.getChampEntiteInTableauOrdered()) {
-			if (!chpId.equals(55) && !chpId.equals(57)) { // statut et emplacement toujours rendus
-				GatsbiControllerEchantillon
-					.applyEchantillonDecoratorChpRender(chpId, row, deco, false, false);
-			}
-		}
-	}
+   public EchantillonDecoratorRowRendererGatsbi(){
+      contexte = SessionUtils.getCurrentGatsbiContexteForEntiteId(3);
+   }
 
-	@Override
-	public void setIconesRendered(boolean _i) {
-		this.iconesRendered = _i;
-	}
+   @Override
+   public void render(final Row row, final EchantillonDTO deco, final int index){
+      super.render(row, deco, index);
+   }
 
-	@Override
-	public boolean areIconesRendered() {
-		return iconesRendered;
-	}
+   @Override
+   protected void renderEchantillon(final Row row, final EchantillonDTO deco)
+      throws IllegalAccessException, InvocationTargetException, NoSuchMethodException, ParseException{
+      for(final Integer chpId : contexte.getChampEntiteInTableauOrdered()){
+         if(!chpId.equals(55) && !chpId.equals(57)){ // statut et emplacement toujours rendus
+            GatsbiControllerEchantillon.applyEchantillonDecoratorChpRender(chpId, row, deco, false, false);
+         }
+      }
+   }
+
+   @Override
+   public void setIconesRendered(final boolean _i){
+      this.iconesRendered = _i;
+   }
+
+   @Override
+   public boolean areIconesRendered(){
+      return iconesRendered;
+   }
 }

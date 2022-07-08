@@ -48,8 +48,11 @@ public class CategoryDetails implements Comparable<CategoryDetails>
 {
 
    private boolean checkAffichage;
+
    private String category;
+
    private Integer value;
+
    private Integer nonStockValue;
 
    private Color color;

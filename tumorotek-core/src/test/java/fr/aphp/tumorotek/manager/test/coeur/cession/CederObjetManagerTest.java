@@ -76,16 +76,22 @@ public class CederObjetManagerTest extends AbstractManagerTest4
 
    @Autowired
    private CederObjetManager cederObjetManager;
+
    @Autowired
    private CessionDao cessionDao;
+
    @Autowired
    private EntiteDao entiteDao;
+
    @Autowired
    private UniteDao uniteDao;
+
    @Autowired
    private EchantillonDao echantillonDao;
+
    @Autowired
    private ProdDeriveDao prodDeriveDao;
+
    @Autowired
    private PatientDao patientDao;
 

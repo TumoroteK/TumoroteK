@@ -58,10 +58,10 @@ public interface ExportCatalogueManager
 {
 
    /**
-    * Pour un echantillon, recupere toutes les informations 
-    * spécifiées par le catalogue sous la forme d'une table de 
+    * Pour un echantillon, recupere toutes les informations
+    * spécifiées par le catalogue sous la forme d'une table de
     * hachage item-resultat.
-    * Renvoie une table avec une seule entrée si une erreur se 
+    * Renvoie une table avec une seule entrée si une erreur se
     * produit lors de la récupération des données.
     * @param echan
     * @param connection database
@@ -70,7 +70,7 @@ public interface ExportCatalogueManager
    Map<String, String> objetExport(Echantillon echan, Connection con);
 
    /**
-    * Créee le fichier Excel contenant l'export vers un catalogue 
+    * Créee le fichier Excel contenant l'export vers un catalogue
     * à partir d'une liste d'échantillons.
     * @param echans
     * @param utilisateur réalisant l'export
@@ -85,7 +85,7 @@ public interface ExportCatalogueManager
    void initExportObjectsManager();
 
    /**
-    * Exporte les données d'un echantillon sous la forme d'une ligne 
+    * Exporte les données d'un echantillon sous la forme d'une ligne
     * dans le fichier Excel passé en paramètre.
     * Enregistre l'opération d'export pour l'échantillon.
     * @param conn
@@ -105,7 +105,7 @@ public interface ExportCatalogueManager
    List<String> getHeaders();
 
    /**
-    * Methode qui imprime une ligne de sortie par échantillon. 
+    * Methode qui imprime une ligne de sortie par échantillon.
     * @param obj qui va recevoir la ligne ie HSSFSheet ou BufferedWriter
     * @param index colonne à laquelle débuter
     * @param nbRow ligne à laquelle ecrire (HSSFSheet uniquement)

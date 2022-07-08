@@ -65,7 +65,6 @@ import fr.aphp.tumorotek.model.code.CodeAssigne;
 import fr.aphp.tumorotek.model.coeur.echantillon.Echantillon;
 import fr.aphp.tumorotek.model.qualite.NonConformite;
 import fr.aphp.tumorotek.model.systeme.Fichier;
-import fr.aphp.tumorotek.webapp.gatsbi.GatsbiController;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
 /**
@@ -83,25 +82,42 @@ public class FicheModifMultiEchantillon extends AbstractFicheModifMultiControlle
    private static final long serialVersionUID = 4384639895874573764L;
 
    private Label echantillonTypeLabelChanged;
+
    //private Label quantiteLabelChanged;
    private Label quantiteInitLabelChanged;
+
    private Label modePrepaLabelChanged;
+
    private Label sterileLabelChanged;
+
    private Label dateStockLabelChanged;
+
    private Label delaiCglLabelChanged;
+
    private Label operateurLabelChanged;
+
    private Label qualiteLabelChanged;
+
    private Label crAnapathLabelChanged;
+
    private Label tumoralLabelChanged;
+
    private Label organeLabelChanged;
+
    private Label lateraliteLabelChanged;
+
    private Label codeLesLabelChanged;
+
    private Label nonConformeTraitementLabelChanged;
+
    private Label nonConformeCessionLabelChanged;
+
    protected Label qualiteEchanLabel;
+
    protected Div qualiteEchanValue;
-   
+
    protected Row infosComplementairesRow;
+
    protected Row lateraliteRow;
 
    private List<NonConformite> nonConformitesTraitement = null;
@@ -350,7 +366,7 @@ public class FicheModifMultiEchantillon extends AbstractFicheModifMultiControlle
       if(null != anapathStream){
          try{
             anapathStream.close();
-         }catch(IOException e){
+         }catch(final IOException e){
             log.error(e);
          }
       }
@@ -361,47 +377,44 @@ public class FicheModifMultiEchantillon extends AbstractFicheModifMultiControlle
    /*************************************************************************/
 
    public void onClick$echantillonTypeMultiLabel(){
-      List<Object> types = new ArrayList<Object>();
+      List<Object> types = new ArrayList<>();
       types.addAll(ManagerLocator.getEchantillonTypeManager().findByOrderManager(SessionUtils.getPlateforme(sessionScope)));
-      
-		// since gatsbi
-		types = applyAnyThesaurusRestriction(types, 58);
+
+      // since gatsbi
+      types = applyAnyThesaurusRestriction(types, 58);
 
       openModificationMultipleWindow(page, Path.getPath(self), "onGetChangeOnChamp", "Listbox", getObjsToEdit(),
-         "Champ.Echantillon.EchantillonType.Type", "echantillonType", types, "type", null, null, false, null,     
+         "Champ.Echantillon.EchantillonType.Type", "echantillonType", types, "type", null, null, false, null,
          switchAnyRequiredFlag(true, 58));
    }
 
    public void onClick$quantiteInitMultiLabel(){
 
-      List<Object> quantiteUnites = new ArrayList<Object>();
-    quantiteUnites.addAll(ManagerLocator.getUniteManager().findByTypeLikeManager("masse", true));
+      List<Object> quantiteUnites = new ArrayList<>();
+      quantiteUnites.addAll(ManagerLocator.getUniteManager().findByTypeLikeManager("masse", true));
       quantiteUnites.addAll(ManagerLocator.getUniteManager().findByTypeLikeManager("discret", true));
       quantiteUnites.addAll(ManagerLocator.getUniteManager().findByTypeLikeManager("volume", true));
-      
-      quantiteUnites =  applyAnyThesaurusRestriction(quantiteUnites, 61);
+
+      quantiteUnites = applyAnyThesaurusRestriction(quantiteUnites, 61);
 
       openModificationMultipleWindow(page, Path.getPath(self), "onGetChangeOnChamp", "Quantification", getObjsToEdit(),
-         "Champ.Echantillon.QuantiteInit", "quantiteInit", quantiteUnites, "unite", null, muteAnyRequiredConstraint(null, 61), 
-         false, null, 
-         switchAnyRequiredFlag(false, 61));
+         "Champ.Echantillon.QuantiteInit", "quantiteInit", quantiteUnites, "unite", null, muteAnyRequiredConstraint(null, 61),
+         false, null, switchAnyRequiredFlag(false, 61));
    }
 
    public void onClick$modePrepaMultiLabel(){
-      List<Object> prepas = new ArrayList<Object>();
+      List<Object> prepas = new ArrayList<>();
       prepas.addAll(ManagerLocator.getModePrepaManager().findByOrderManager(SessionUtils.getPlateforme(sessionScope)));
-      
+
       prepas = applyAnyThesaurusRestriction(prepas, 70);
 
-
       openModificationMultipleWindow(page, Path.getPath(self), "onGetChangeOnChamp", "Listbox", getObjsToEdit(),
-         "Champ.Echantillon.ModePrepa", "modePrepa", prepas, "nom", null, null, false, null, 
-         switchAnyRequiredFlag(false, 70));
+         "Champ.Echantillon.ModePrepa", "modePrepa", prepas, "nom", null, null, false, null, switchAnyRequiredFlag(false, 70));
    }
 
    public void onClick$sterileMultiLabel(){
 
-      List<Object> bools = new ArrayList<>();
+      final List<Object> bools = new ArrayList<>();
       bools.add(new Boolean(true));
       bools.add(new Boolean(false));
 
@@ -411,15 +424,14 @@ public class FicheModifMultiEchantillon extends AbstractFicheModifMultiControlle
 
    public void onClick$dateStockMultiLabel(){
       openModificationMultipleWindow(page, Path.getPath(self), "onGetChangeOnChamp", "Calendarbox", getObjsToEdit(),
-         "Champ.Echantillon.DateStock", "dateStock", null, null, null, null, false, null, 
-         switchAnyRequiredFlag(false, 56));
+         "Champ.Echantillon.DateStock", "dateStock", null, null, null, null, false, null, switchAnyRequiredFlag(false, 56));
    }
 
    public void onClick$delaiCglMultiLabel(){
       openModificationMultipleWindow(page, Path.getPath(self), "onGetChangeOnChamp", "Floatbox", getObjsToEdit(),
-         "Champ.Echantillon.DelaiCgl", "delaiCgl", null, null, null, 
-         	muteAnyRequiredConstraint(new SimpleConstraint(SimpleConstraint.NO_NEGATIVE), 67), false,
-         null, switchAnyRequiredFlag(false, 67));
+         "Champ.Echantillon.DelaiCgl", "delaiCgl", null, null, null,
+         muteAnyRequiredConstraint(new SimpleConstraint(SimpleConstraint.NO_NEGATIVE), 67), false, null,
+         switchAnyRequiredFlag(false, 67));
    }
 
    public void onClick$operateurMultiLabel(){
@@ -427,32 +439,31 @@ public class FicheModifMultiEchantillon extends AbstractFicheModifMultiControlle
       ops.addAll(ManagerLocator.getCollaborateurManager().findAllActiveObjectsWithOrderManager());
 
       openModificationMultipleWindow(page, Path.getPath(self), "onGetChangeOnChamp", "Combobox", getObjsToEdit(),
-         "Champ.Echantillon.Collaborateur", "collaborateur", (List<Object>) ops, "nomAndPrenom", null, null, false, null, 
+         "Champ.Echantillon.Collaborateur", "collaborateur", ops, "nomAndPrenom", null, null, false, null,
          switchAnyRequiredFlag(false, 53));
    }
 
    public void onClick$qualiteMultiLabel(){
-      List<Object> quals = new ArrayList<Object>();
+      List<Object> quals = new ArrayList<>();
       quals.addAll(ManagerLocator.getEchanQualiteManager().findByOrderManager(SessionUtils.getPlateforme(sessionScope)));
 
-		// since gatsbi
-		quals = applyAnyThesaurusRestriction(quals, 68);
-      
+      // since gatsbi
+      quals = applyAnyThesaurusRestriction(quals, 68);
+
       openModificationMultipleWindow(page, Path.getPath(self), "onGetChangeOnChamp", "Listbox", getObjsToEdit(),
-         "Champ.Echantillon.EchanQualite", "echanQualite", quals, "echanQualite", null, null, false, null, 
+         "Champ.Echantillon.EchanQualite", "echanQualite", quals, "echanQualite", null, null, false, null,
          switchAnyRequiredFlag(false, 68));
    }
 
    public void onClick$crAnapathMultiLabel(){
 
       openModificationMultipleWindow(page, Path.getPath(self), "onGetChangeOnChamp", "Filebox", getObjsToEdit(),
-         "ficheEchantillon.crAnapathLabel", "crAnapath", null, null, null, null, false, null, 
-         switchAnyRequiredFlag(false, 255));
+         "ficheEchantillon.crAnapathLabel", "crAnapath", null, null, null, null, false, null, switchAnyRequiredFlag(false, 255));
    }
 
    public void onClick$tumoralMultiLabel(){
 
-      List<Object> bools = new ArrayList<>();
+      final List<Object> bools = new ArrayList<>();
       bools.add(new Boolean(true));
       bools.add(new Boolean(false));
 
@@ -462,47 +473,46 @@ public class FicheModifMultiEchantillon extends AbstractFicheModifMultiControlle
 
    public void onClick$organeMultiLabel(){
       openModificationMultipleWindow(page, Path.getPath(self), "onGetChangeOnChamp", "CodesBox", getObjsToEdit(),
-         "Champ.Echantillon.Organe", "codeOrganes", null, null, null, null, false, null, 
-         switchAnyRequiredFlag(false, 229));
+         "Champ.Echantillon.Organe", "codeOrganes", null, null, null, null, false, null, switchAnyRequiredFlag(false, 229));
    }
 
    public void onClick$lateraliteMultiLabel(){
 
       openModificationMultipleWindow(page, Path.getPath(self), "onGetChangeOnChamp", "Listbox", getObjsToEdit(),
-         "Champ.Echantillon.Lateralite", "lateralite", (List<Object>) getLats(), "label", null, null, false, null, 
+         "Champ.Echantillon.Lateralite", "lateralite", (List<Object>) getLats(), "label", null, null, false, null,
          switchAnyRequiredFlag(false, 60));
    }
 
    public void onClick$codeLesMultiLabel(){
       openModificationMultipleWindow(page, Path.getPath(self), "onGetChangeOnChamp", "CodesBox", getObjsToEdit(),
-         "ficheEchantillon.codeLesionelLabel", "codeMorphos", null, null, null, null, false, null, 
+         "ficheEchantillon.codeLesionelLabel", "codeMorphos", null, null, null, null, false, null,
          switchAnyRequiredFlag(false, 230));
    }
 
    public void onClick$nonConformeTraitementMultiLabel(){
 
-	  List<Object> nonConfs = new ArrayList<Object>();
+      List<Object> nonConfs = new ArrayList<>();
 
-	   nonConfs.addAll(ManagerLocator.getNonConformiteManager().findByPlateformeEntiteAndTypeStringManager(
+      nonConfs.addAll(ManagerLocator.getNonConformiteManager().findByPlateformeEntiteAndTypeStringManager(
          SessionUtils.getPlateforme(sessionScope), "Traitement", getObjectTabController().getEntiteTab()));
-      
-		// since gatsbi
-	   nonConfs = applyAnyThesaurusRestriction(nonConfs, 243);
+
+      // since gatsbi
+      nonConfs = applyAnyThesaurusRestriction(nonConfs, 243);
 
       openModificationMultipleWindow(page, Path.getPath(self), "onGetChangeOnChamp", "Conformitebox", getObjsToEdit(),
-         "Champ.Echantillon.ConformeTraitement", "conformeTraitement", nonConfs, "Traitement", null, null, false,
-         null, switchAnyRequiredFlag(false, 243));
+         "Champ.Echantillon.ConformeTraitement", "conformeTraitement", nonConfs, "Traitement", null, null, false, null,
+         switchAnyRequiredFlag(false, 243));
    }
 
    public void onClick$nonConformeCessionMultiLabel(){
-	   
-	   List<Object> nonConfs = new ArrayList<Object>();
 
-	   nonConfs.addAll(ManagerLocator.getNonConformiteManager().findByPlateformeEntiteAndTypeStringManager(
-		         SessionUtils.getPlateforme(sessionScope), "Cession", getObjectTabController().getEntiteTab()));
-      
-		// since gatsbi
-	   nonConfs = applyAnyThesaurusRestriction(nonConfs, 244);
+      List<Object> nonConfs = new ArrayList<>();
+
+      nonConfs.addAll(ManagerLocator.getNonConformiteManager().findByPlateformeEntiteAndTypeStringManager(
+         SessionUtils.getPlateforme(sessionScope), "Cession", getObjectTabController().getEntiteTab()));
+
+      // since gatsbi
+      nonConfs = applyAnyThesaurusRestriction(nonConfs, 244);
 
       openModificationMultipleWindow(page, Path.getPath(self), "onGetChangeOnChamp", "Conformitebox", getObjsToEdit(),
          "Champ.Echantillon.ConformeCession", "conformeCession", nonConfs, "Cession", null, null, false, null,
@@ -518,8 +528,8 @@ public class FicheModifMultiEchantillon extends AbstractFicheModifMultiControlle
    public void setParentObject(final TKdataObject obj){}
 
    /**
-    * Surcharge la méthode pour court-circuiter la reception de 
-    * l'event te gérer les modifications sur le sexe et l'état. 
+    * Surcharge la méthode pour court-circuiter la reception de
+    * l'event te gérer les modifications sur le sexe et l'état.
     * Si l'etat change alors nullify date Etat ou date Deces.
     */
    @Override

@@ -79,21 +79,27 @@ public class Unite extends AbstractThesaurusObject implements java.io.Serializab
 
    private static final long serialVersionUID = 468743654364634L;
 
-//   private Integer uniteId;
-//   private String unite;
+   //   private Integer uniteId;
+   //   private String unite;
    private String type;
 
    private Set<Prelevement> prelevementQuantites = new HashSet<>();
+
    //private Set<Prelevement> prelevementVolumes = new HashSet<Prelevement>();
    private Set<Echantillon> echantillonQuantites = new HashSet<>();
+
    //private Set<Echantillon> echantillonVolumes = new HashSet<Echantillon>();
    private Set<ProdDerive> prodDeriveQuantites = new HashSet<>();
+
    private Set<ProdDerive> prodDeriveConcs = new HashSet<>();
+
    private Set<ProdDerive> prodDeriveVolumes = new HashSet<>();
+
    private Set<CederObjet> cederObjetQuantites = new HashSet<>();
+
    //private Set<CederObjet> cederObjetVolumes = new HashSet<CederObjet>();
    private Set<Transformation> transformationQuantites = new HashSet<>();
-   /*private Set<Transformation> transformationVolumes = 
+   /*private Set<Transformation> transformationVolumes =
    	new HashSet<Transformation>();*/
 
    /** Constructeur par défaut. */
@@ -101,7 +107,7 @@ public class Unite extends AbstractThesaurusObject implements java.io.Serializab
       type = "masse";
    }
 
-   /** 
+   /**
     * Constructeur avec paramètres.
     * @param id .
     * @param u .
@@ -137,7 +143,6 @@ public class Unite extends AbstractThesaurusObject implements java.io.Serializab
       return this.getNom();
    }
 
-   
    public void setUnite(final String u){
       this.setNom(u);
    }
@@ -303,7 +308,7 @@ public class Unite extends AbstractThesaurusObject implements java.io.Serializab
       if(this.type != null && this.getNom() != null){
          return "{" + this.getNom() + ", " + this.type + "}";
       }
-         return "{Empty Unite}";
+      return "{Empty Unite}";
    }
 
 }

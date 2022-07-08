@@ -50,6 +50,7 @@ public class RequeteModel extends AbstractTreeModel<Object>
 {
 
    private static final long serialVersionUID = 8424733434898377031L;
+
    private final GroupementNode racine;
 
    /**
@@ -64,7 +65,7 @@ public class RequeteModel extends AbstractTreeModel<Object>
 
    @Override
    /**
-    * Renvoie l'enfant d'un item placé la position arg1. 
+    * Renvoie l'enfant d'un item placé la position arg1.
     */
    public Object getChild(final Object arg0, final int arg1){
       return ((GroupementNode) arg0).getChild(arg1);

@@ -69,18 +69,29 @@ public class FicheModifMultiPatient extends AbstractFicheModifMultiController
    private static final long serialVersionUID = 4384639895874573764L;
 
    private Label nipLabelChanged;
+
    private Label nomLabelChanged;
+
    private Label nomNaissanceLabelChanged;
+
    private Label prenomLabelChanged;
+
    private Label sexeLabelChanged;
+
    private Label dateNaissanceLabelChanged;
+
    private Label paysNaissanceLabelChanged;
+
    private Label villeNaissanceLabelChanged;
+
    private Label etatLabelChanged;
+
    private Label dateEtatLabelChanged;
+
    private Label dateDecesLabelChanged;
 
    private Row dateEtatRow;
+
    private Row dateDecesRow;
 
    @Override
@@ -142,7 +153,6 @@ public class FicheModifMultiPatient extends AbstractFicheModifMultiController
       }
    }
 
-   
    @Override
    public void updateMultiObjects(){
 
@@ -267,7 +277,6 @@ public class FicheModifMultiPatient extends AbstractFicheModifMultiController
          "Champ.Patient.Prenom", "prenom", null, null, null, PatientConstraints.getNomNullConstraint(), false, true, null);
    }
 
-   
    public void onClick$sexeMultiLabel(){
 
       final List<? extends Object> sexes = PatientUtils.getSexes();
@@ -276,13 +285,11 @@ public class FicheModifMultiPatient extends AbstractFicheModifMultiController
          "Champ.Patient.Sexe", "sexe", (List<Object>) sexes, "label", null, null, false, null, true);
    }
 
-   
    public void onClick$dateNaissanceMultiLabel(){
       openModificationMultipleWindow(page, Path.getPath(self), "onGetChangeOnChamp", "Datebox", getObjsToEdit(),
          "Champ.Patient.DateNaissance", "dateNaissance", null, null, null, null, false, null, null);
    }
 
-   
    public void onClick$paysNaissanceMultiLabel(){
       openModificationMultipleWindow(page, Path.getPath(self), "onGetChangeOnChamp", "Textbox", getObjsToEdit(),
          "Champ.Patient.PaysNaissance", "paysNaissance", null, null, null, ContexteConstraints.getVillePaysConstraint(), false,
@@ -290,7 +297,7 @@ public class FicheModifMultiPatient extends AbstractFicheModifMultiController
    }
 
    /*** ville Naissance. ***/
-   
+
    public void onClick$villeNaissanceMultiLabel(){
       openModificationMultipleWindow(page, Path.getPath(self), "onGetChangeOnChamp", "Textbox", getObjsToEdit(),
          "Champ.Patient.VilleNaissance", "villeNaissance", null, null, null, ContexteConstraints.getVillePaysConstraint(), false,
@@ -298,7 +305,7 @@ public class FicheModifMultiPatient extends AbstractFicheModifMultiController
    }
 
    /*** Etat. ***/
-   
+
    public void onClick$etatMultiLabel(){
 
       dateDecesRow.setVisible(true);
@@ -313,21 +320,19 @@ public class FicheModifMultiPatient extends AbstractFicheModifMultiController
          "Champ.Patient.PatientEtat", "patientEtat", (List<Object>) etats, "label", null, null, false, null, true);
    }
 
-   
    public void onClick$dateEtatMultiLabel(){
       openModificationMultipleWindow(page, Path.getPath(self), "onGetChangeOnChamp", "Datebox", getObjsToEdit(),
          "Champ.Patient.DateEtat", "dateEtat", null, null, null, null, false, null, null);
    }
 
-   
    public void onClick$dateDecesMultiLabel(){
       openModificationMultipleWindow(page, Path.getPath(self), "onGetChangeOnChamp", "Datebox", getObjsToEdit(),
          "Champ.Patient.DateDeces", "dateDeces", null, null, null, null, false, null, null);
    }
 
    /**
-    * Surcharge la méthode pour court-circuiter la reception de 
-    * l'event te gérer les modifications sur le sexe et l'état. 
+    * Surcharge la méthode pour court-circuiter la reception de
+    * l'event te gérer les modifications sur le sexe et l'état.
     * Si l'etat change alors nullify date Etat ou date Deces.
     */
    @Override

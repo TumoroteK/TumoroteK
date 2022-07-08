@@ -73,6 +73,7 @@ public class EnteteMessage
 
    @XmlElement(name = "identifiantMessage", required = true)
    private Long numEvt;
+
    @XmlElement(name = "dateHeureProduction", required = true)
    private String dateMes;
 

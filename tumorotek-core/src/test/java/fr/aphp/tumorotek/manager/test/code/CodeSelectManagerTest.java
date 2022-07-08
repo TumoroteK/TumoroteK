@@ -72,16 +72,22 @@ public class CodeSelectManagerTest extends AbstractManagerTest4
 
    @Autowired
    private CodeSelectManager codeSelectManager;
+
    @Autowired
    private CodeDossierDao codeDossierDao;
+
    @Autowired
    private UtilisateurDao utilisateurDao;
+
    @Autowired
    private BanqueDao banqueDao;
+
    @Autowired
    private OperationManager operationManager;
+
    @Autowired
    private TableCodageDao tableCodageDao;
+
    @Autowired
    private OperationTypeDao operationTypeDao;
 

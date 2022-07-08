@@ -1,5 +1,5 @@
 /**
- * Copyright ou © ou Copr. Assistance Publique des Hôpitaux de 
+ * Copyright ou © ou Copr. Assistance Publique des Hôpitaux de
  * PARIS et SESAN
  * projet-tk@sesan.fr
  *
@@ -38,21 +38,22 @@ package fr.aphp.tumorotek.action.prelevement.gatsbi.exception;
 
 /**
 *
-* Exception générique problème de connexion GATSBI. 
+* Exception générique problème de connexion GATSBI.
 *
 * @author mathieu BARTHELEMY
 * @version 2.3.0-gatsbi
 *
 */
-public class GatsbiException extends Exception {
+public class GatsbiException extends Exception
+{
 
-	private static final long serialVersionUID = 1L;
+   private static final long serialVersionUID = 1L;
 
-	public GatsbiException(String message) {
-		super(message);
-	}
-	
-	public GatsbiException(Exception e) {
-		super(e);
-	}
+   public GatsbiException(final String message){
+      super(message);
+   }
+
+   public GatsbiException(final Exception e){
+      super(e);
+   }
 }

@@ -84,8 +84,8 @@ public interface PlateformeDao extends GenericDaoJpa<Plateforme, Integer>
 
    /**
     * Recherche la plateforme dont l'identifiant passé en paramètre.
-    * L'association avec la table COLLABORATEUR sera chargée par 
-    * l'intermédiaire 
+    * L'association avec la table COLLABORATEUR sera chargée par
+    * l'intermédiaire
     * d'un fetch.
     * @param plateformeId est l'identifiant de la plateforme recherchée.
     * @return une plateforme.

@@ -74,12 +74,16 @@ public class ValeurExterneManagerImpl implements ValeurExterneManager
 
    /** Bean Dao. */
    private ValeurExterneDao valeurExterneDao;
+
    /** Bean Dao. */
    private BlocExterneDao blocExterneDao;
+
    /** Bean Dao. */
    private ChampEntiteDao champEntiteDao;
+
    /** Bean Dao. */
    private ChampAnnotationDao champAnnotationDao;
+
    /** Bean validator. */
    private ValeurExterneValidator valeurExterneValidator;
 
@@ -123,13 +127,12 @@ public class ValeurExterneManagerImpl implements ValeurExterneManager
          return new ArrayList<>();
       }
    }
-   
-   @Override
-   public List<ValeurExterne> findByDossierChampEntiteIdAndBlocEntiteIdManager(DossierExterne dos, 
-		   Integer chpId, Integer eId) {
-	   return valeurExterneDao.findByDossierChampEntiteIdAndBlocEntiteId(dos, chpId, eId);
-   }
 
+   @Override
+   public List<ValeurExterne> findByDossierChampEntiteIdAndBlocEntiteIdManager(final DossierExterne dos, final Integer chpId,
+      final Integer eId){
+      return valeurExterneDao.findByDossierChampEntiteIdAndBlocEntiteId(dos, chpId, eId);
+   }
 
    @Override
    public ChampEntite getChampEntiteManager(final ValeurExterne valeurExterne){

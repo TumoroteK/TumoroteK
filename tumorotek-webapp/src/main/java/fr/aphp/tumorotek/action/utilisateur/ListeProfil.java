@@ -66,6 +66,7 @@ public class ListeProfil extends AbstractListeController2
 
    // @since 2.1
    private final ProfilRowRenderer profilRowRenderer = new ProfilRowRenderer();
+
    private Checkbox profilsActifsBox;
 
    @Override
@@ -81,7 +82,6 @@ public class ListeProfil extends AbstractListeController2
       return this.listObjects;
    }
 
-   
    @Override
    public void setListObjects(final List<? extends TKdataObject> objs){
       this.listObjects.clear();

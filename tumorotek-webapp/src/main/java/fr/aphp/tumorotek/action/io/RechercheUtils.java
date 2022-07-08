@@ -64,7 +64,6 @@ import fr.aphp.tumorotek.model.io.export.Resultat;
 public class RechercheUtils
 {
 
-  
    /**
     * Charge la matrice (table) des résultats de recherche
     * @param matObjs ??
@@ -87,7 +86,8 @@ public class RechercheUtils
             String champValue = "-";
             if(res != null){
                if(res.getChamp() != null){
-                  final String champValueTmp = ObjectTypesFormatters.formatObject(RechercheUtilsManager.getChampValueFromObjectList(res.getChamp(), listeObjets));
+                  final String champValueTmp = ObjectTypesFormatters
+                     .formatObject(RechercheUtilsManager.getChampValueFromObjectList(res.getChamp(), listeObjets));
                   if(!"".equals(champValueTmp)){
                      champValue = champValueTmp;
                   }
@@ -98,7 +98,6 @@ public class RechercheUtils
          matAfs.add(listeStrings);
       }
    }
-
 
    /**
     * Construit un tableau EXCEL d'objets

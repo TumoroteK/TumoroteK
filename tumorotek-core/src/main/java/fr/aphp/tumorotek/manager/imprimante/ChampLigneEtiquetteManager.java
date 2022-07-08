@@ -55,7 +55,7 @@ public interface ChampLigneEtiquetteManager
 {
 
    /**
-    * Recherche un ChampLigneEtiquette dont l'identifiant 
+    * Recherche un ChampLigneEtiquette dont l'identifiant
     * est passé en paramètre.
     * @param champLigneEtiquetteId Id que l'on recherche.
     * @return Un ChampLigneEtiquette.
@@ -112,7 +112,7 @@ public interface ChampLigneEtiquetteManager
 
    /**
     * Supprime un ChampLigneEtiquette de la base de données.
-    * @param champLigneEtiquette ChampLigneEtiquette à 
+    * @param champLigneEtiquette ChampLigneEtiquette à
     * supprimer de la base de données.
     */
    void removeObjectManager(ChampLigneEtiquette champLigneEtiquette);

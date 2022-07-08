@@ -64,9 +64,13 @@ public class ImportColonneManagerImpl implements ImportColonneManager
 
    /** Beans. */
    private ImportColonneDao importColonneDao;
+
    private ImportTemplateDao importTemplateDao;
+
    private ChampManager champManager;
+
    private ImportColonneValidator importColonneValidator;
+
    private DataTypeDao dataTypeDao;
 
    public void setImportColonneDao(final ImportColonneDao iDao){
@@ -176,7 +180,7 @@ public class ImportColonneManagerImpl implements ImportColonneManager
 
    @Override
    public Boolean findDoublonInListManager(final List<ImportColonne> colonnes){
-      Boolean doublon = false;
+      boolean doublon = false;
 
       if(colonnes != null){
          int i = 0;

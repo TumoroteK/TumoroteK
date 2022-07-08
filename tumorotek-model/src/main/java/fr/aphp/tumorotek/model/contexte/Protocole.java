@@ -79,6 +79,7 @@ public class Protocole extends AbstractPfDependantThesaurusObject implements Ser
    private static final long serialVersionUID = 54864135646414L;
 
    private String description;
+
    private Set<Prelevement> prelevements = new HashSet<>();
 
    /** Constructeur par défaut. */

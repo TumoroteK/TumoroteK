@@ -145,72 +145,106 @@ public class ProdDeriveManagerTest extends AbstractManagerTest4
 
    @Autowired
    private ProdDeriveManager prodDeriveManager;
+
    @Autowired
    private BanqueManager banqueManager;
+
    @Autowired
    private ProdTypeManager prodTypeManager;
+
    @Autowired
    private ObjetStatutManager objetStatutManager;
+
    @Autowired
    private CollaborateurManager collaborateurManager;
+
    @Autowired
    private UniteManager uniteManager;
+
    @Autowired
    private ProdQualiteManager prodQualiteManager;
+
    @Autowired
    private TransformationManager transformationManager;
+
    @Autowired
    private EchantillonManager echantillonManager;
+
    @Autowired
    private UtilisateurDao utilisateurDao;
+
    @Autowired
    private EntiteManager entiteManager;
+
    @Autowired
    private ProdDeriveValidator prodDeriveValidator;
+
    @Autowired
    private ChampAnnotationDao champAnnotationDao;
+
    @Autowired
    private AnnotationValeurManager annotationValeurManager;
+
    @Autowired
    private BanqueDao banqueDao;
+
    @Autowired
    private PrelevementDao prelevementDao;
+
    @Autowired
    private OperationTypeManager operationTypeManager;
+
    @Autowired
    private CederObjetManager cederObjetManager;
+
    @Autowired
    private CessionDao cessionDao;
+
    @Autowired
    private ModePrepaDeriveDao modePrepaDeriveDao;
+
    @Autowired
    private TerminaleDao terminaleDao;
+
    @Autowired
    private ConteneurManager conteneurManager;
+
    @Autowired
    private EnceinteManager enceinteManager;
+
    @Autowired
    private TerminaleManager terminaleManager;
+
    @Autowired
    private EnceinteTypeDao enceinteTypeDao;
+
    @Autowired
    private EmplacementManager emplacementManager;
+
    @Autowired
    private ChampEntiteDao champEntiteDao;
+
    @Autowired
    private ExtractValueFromChampManager extractValueFromChampManager;
+
    @Autowired
    private OperationTypeDao operationTypeDao;
+
    @Autowired
    private RetourManager retourManager;
+
    @Autowired
    private NonConformiteDao nonConformiteDao;
+
    @Autowired
    private ObjetNonConformeDao objetNonConformeDao;
+
    @Autowired
    private ConformiteTypeDao conformiteTypeDao;
+
    @Autowired
    private PrelevementManager prelevementManager;
+
    @Autowired
    private PlateformeDao plateformeDao;
 
@@ -911,8 +945,8 @@ public class ProdDeriveManagerTest extends AbstractManagerTest4
       Boolean catched = false;
       // on test l'insertion avec la banque nulle
       try{
-         prodDeriveManager.createObjectManager(derive1, null, type, null, null, null, null, null, null, null, null, null, 
-            null, null, null, true, "/tmp/", false);
+         prodDeriveManager.createObjectManager(derive1, null, type, null, null, null, null, null, null, null, null, null, null,
+            null, null, true, "/tmp/", false);
       }catch(final Exception e){
          if(e.getClass().getSimpleName().equals("RequiredObjectIsNullException")){
             catched = true;
@@ -922,8 +956,8 @@ public class ProdDeriveManagerTest extends AbstractManagerTest4
       catched = false;
       // on test l'insertion avec le type nul
       try{
-         prodDeriveManager.createObjectManager(derive1, banque, null, null, null, null, null, null, null, null, null, null,
-            null, null, null, true, "/tmp/", false);
+         prodDeriveManager.createObjectManager(derive1, banque, null, null, null, null, null, null, null, null, null, null, null,
+            null, null, true, "/tmp/", false);
       }catch(final Exception e){
          if(e.getClass().getSimpleName().equals("RequiredObjectIsNullException")){
             catched = true;
@@ -934,8 +968,8 @@ public class ProdDeriveManagerTest extends AbstractManagerTest4
 
       // on test l'insertion avec un statut nul
       try{
-         prodDeriveManager.createObjectManager(derive1, banque, type, null, null, null, null, null, null, null, null, null,
-            null, null, null, true, "/tmp/", false);
+         prodDeriveManager.createObjectManager(derive1, banque, type, null, null, null, null, null, null, null, null, null, null,
+            null, null, true, "/tmp/", false);
       }catch(final Exception e){
          if(e.getClass().getSimpleName().equals("RequiredObjectIsNullException")){
             catched = true;
@@ -948,8 +982,8 @@ public class ProdDeriveManagerTest extends AbstractManagerTest4
       // On teste l'insertion d'un doublon pour vérifier que l'exception
       // est lancée
       try{
-         prodDeriveManager.createObjectManager(derive1, banque, type, statut, null, null, null, null, null, null, null,
-            null, null, null, null, true, "/tmp/", false);
+         prodDeriveManager.createObjectManager(derive1, banque, type, statut, null, null, null, null, null, null, null, null,
+            null, null, null, true, "/tmp/", false);
       }catch(final Exception e){
          if(e.getClass().getSimpleName().equals("DoublonFoundException")){
             catched = true;
@@ -962,8 +996,8 @@ public class ProdDeriveManagerTest extends AbstractManagerTest4
       Emplacement empl = emplacementManager.findByIdManager(3);
       catched = false;
       try{
-         prodDeriveManager.createObjectManager(derive1, banque, type, statut, null, empl, null, null, null, null, null,
-            null, null, null, null, true, "/tmp/", false);
+         prodDeriveManager.createObjectManager(derive1, banque, type, statut, null, empl, null, null, null, null, null, null,
+            null, null, null, true, "/tmp/", false);
       }catch(final TKException ex){
          catched = true;
          assertTrue(ex.getMessage().equals("PTRA.1.3 : error.emplacement.notEmpty"));
@@ -976,8 +1010,8 @@ public class ProdDeriveManagerTest extends AbstractManagerTest4
       empl = emplacementManager.findByIdManager(2);
       catched = false;
       try{
-         prodDeriveManager.createObjectManager(derive1, banque, type, statut, null, empl, null, null, null, null, null,
-            null, null, null, null, true, "/tmp/", false);
+         prodDeriveManager.createObjectManager(derive1, banque, type, statut, null, empl, null, null, null, null, null, null,
+            null, null, null, true, "/tmp/", false);
       }catch(final TKException ex){
          catched = true;
          assertTrue(ex.getMessage().equals("PTRA.1.3 : error.emplacement.notEmpty"));
@@ -1015,8 +1049,8 @@ public class ProdDeriveManagerTest extends AbstractManagerTest4
       newT.setObjetId(2);
       newT.setQuantite((float) 15.6);
       newT.setQuantiteUnite(quantite);
-      prodDeriveManager.createObjectManager(derive1, banque, type, statut, null, null, null, null, null, null, null, newT,
-         null, null, utilisateur, false, "/tmp/", false);
+      prodDeriveManager.createObjectManager(derive1, banque, type, statut, null, null, null, null, null, null, null, newT, null,
+         null, utilisateur, false, "/tmp/", false);
       final int id1 = derive1.getProdDeriveId();
       assertTrue(derive1.getProdDeriveId() == id1);
       assertTrue(getOperationManager().findByObjectManager(derive1).size() == 1);
@@ -1357,8 +1391,8 @@ public class ProdDeriveManagerTest extends AbstractManagerTest4
       derive.setQuantiteInit(negative);
       catchedInsert = false;
       try{
-         prodDeriveManager.createObjectManager(derive, banque, type, null, null, null, null, null, null, null, null, null,
-            null, null, utilisateur, true, "/tmp/", false);
+         prodDeriveManager.createObjectManager(derive, banque, type, null, null, null, null, null, null, null, null, null, null,
+            null, utilisateur, true, "/tmp/", false);
       }catch(final Exception e){
          if(e.getClass().getSimpleName().equals("ValidationException")){
             catchedInsert = true;
@@ -1371,8 +1405,8 @@ public class ProdDeriveManagerTest extends AbstractManagerTest4
       derive.setQuantite(negative);
       catchedInsert = false;
       try{
-         prodDeriveManager.createObjectManager(derive, banque, type, null, null, null, null, null, null, null, null, null,
-            null, null, utilisateur, true, "/tmp/", false);
+         prodDeriveManager.createObjectManager(derive, banque, type, null, null, null, null, null, null, null, null, null, null,
+            null, utilisateur, true, "/tmp/", false);
       }catch(final Exception e){
          if(e.getClass().getSimpleName().equals("ValidationException")){
             catchedInsert = true;
@@ -1388,8 +1422,8 @@ public class ProdDeriveManagerTest extends AbstractManagerTest4
       derive.setQuantiteInit(q2);
       catchedInsert = false;
       try{
-         prodDeriveManager.createObjectManager(derive, banque, type, null, null, null, null, null, null, null, null, null,
-            null, null, utilisateur, true, "/tmp/", false);
+         prodDeriveManager.createObjectManager(derive, banque, type, null, null, null, null, null, null, null, null, null, null,
+            null, utilisateur, true, "/tmp/", false);
       }catch(final Exception e){
          if(e.getClass().getSimpleName().equals("ValidationException")){
             catchedInsert = true;
@@ -1403,8 +1437,8 @@ public class ProdDeriveManagerTest extends AbstractManagerTest4
       derive.setVolumeInit(negative);
       catchedInsert = false;
       try{
-         prodDeriveManager.createObjectManager(derive, banque, type, null, null, null, null, null, null, null, null, null,
-            null, null, utilisateur, true, "/tmp/", false);
+         prodDeriveManager.createObjectManager(derive, banque, type, null, null, null, null, null, null, null, null, null, null,
+            null, utilisateur, true, "/tmp/", false);
       }catch(final Exception e){
          if(e.getClass().getSimpleName().equals("ValidationException")){
             catchedInsert = true;
@@ -1417,8 +1451,8 @@ public class ProdDeriveManagerTest extends AbstractManagerTest4
       derive.setVolume(negative);
       catchedInsert = false;
       try{
-         prodDeriveManager.createObjectManager(derive, banque, type, null, null, null, null, null, null, null, null, null,
-            null, null, utilisateur, true, "/tmp/", false);
+         prodDeriveManager.createObjectManager(derive, banque, type, null, null, null, null, null, null, null, null, null, null,
+            null, utilisateur, true, "/tmp/", false);
       }catch(final Exception e){
          if(e.getClass().getSimpleName().equals("ValidationException")){
             catchedInsert = true;
@@ -1432,8 +1466,8 @@ public class ProdDeriveManagerTest extends AbstractManagerTest4
       derive.setVolumeInit(q2);
       catchedInsert = false;
       try{
-         prodDeriveManager.createObjectManager(derive, banque, type, null, null, null, null, null, null, null, null, null,
-            null, null, utilisateur, true, "/tmp/", false);
+         prodDeriveManager.createObjectManager(derive, banque, type, null, null, null, null, null, null, null, null, null, null,
+            null, utilisateur, true, "/tmp/", false);
       }catch(final Exception e){
          if(e.getClass().getSimpleName().equals("ValidationException")){
             catchedInsert = true;
@@ -1447,8 +1481,8 @@ public class ProdDeriveManagerTest extends AbstractManagerTest4
       derive.setConc(negative);
       catchedInsert = false;
       try{
-         prodDeriveManager.createObjectManager(derive, banque, type, null, null, null, null, null, null, null, null, null,
-            null, null, utilisateur, true, "/tmp/", false);
+         prodDeriveManager.createObjectManager(derive, banque, type, null, null, null, null, null, null, null, null, null, null,
+            null, utilisateur, true, "/tmp/", false);
       }catch(final Exception e){
          if(e.getClass().getSimpleName().equals("ValidationException")){
             catchedInsert = true;
@@ -1470,8 +1504,8 @@ public class ProdDeriveManagerTest extends AbstractManagerTest4
       derive.setDateTransformation(transfo);
       catchedInsert = false;
       try{
-         prodDeriveManager.createObjectManager(derive, banque, type, null, null, null, null, null, null, null, null, null,
-            null, null, utilisateur, true, "/tmp/", false);
+         prodDeriveManager.createObjectManager(derive, banque, type, null, null, null, null, null, null, null, null, null, null,
+            null, utilisateur, true, "/tmp/", false);
       }catch(final Exception e){
          if(e.getClass().getSimpleName().equals("ValidationException")){
             catchedInsert = true;
@@ -1491,8 +1525,8 @@ public class ProdDeriveManagerTest extends AbstractManagerTest4
       derive.setConc(conc1);
       catchedInsert = false;
       try{
-         prodDeriveManager.createObjectManager(derive, banque, type, null, null, null, null, null, null, null, null, null,
-            null, null, utilisateur, true, "/tmp/", false);
+         prodDeriveManager.createObjectManager(derive, banque, type, null, null, null, null, null, null, null, null, null, null,
+            null, utilisateur, true, "/tmp/", false);
       }catch(final Exception e){
          if(e.getClass().getSimpleName().equals("ValidationException")){
             catchedInsert = true;
@@ -1509,8 +1543,8 @@ public class ProdDeriveManagerTest extends AbstractManagerTest4
       final Unite conc = uniteManager.findByIdManager(2);
       catchedInsert = false;
       try{
-         prodDeriveManager.createObjectManager(derive, banque, type, null, null, null, volume, conc, quantite, null, null,
-            null, null, null, utilisateur, true, "/tmp/", false);
+         prodDeriveManager.createObjectManager(derive, banque, type, null, null, null, volume, conc, quantite, null, null, null,
+            null, null, utilisateur, true, "/tmp/", false);
       }catch(final Exception e){
          if(e.getClass().getSimpleName().equals("ValidationException")){
             catchedInsert = true;
@@ -1535,8 +1569,8 @@ public class ProdDeriveManagerTest extends AbstractManagerTest4
                derive.setCode(codes[i]);
                derive.setCodeLabo(codesLabos[j]);
                if(i != 5 || j != 4){ //car creation valide
-                  prodDeriveManager.updateObjectManager(derive, banque, type, null, null, null, null, null, null, null,
-                     null, null, null, null, null, null, utilisateur, true, null, "/tmp/");
+                  prodDeriveManager.updateObjectManager(derive, banque, type, null, null, null, null, null, null, null, null,
+                     null, null, null, null, null, utilisateur, true, null, "/tmp/");
                }
             }catch(final Exception e){
                if(e.getClass().getSimpleName().equals("ValidationException")){
@@ -1555,8 +1589,8 @@ public class ProdDeriveManagerTest extends AbstractManagerTest4
       derive.setQuantiteInit(negative);
       catchedUpdate = false;
       try{
-         prodDeriveManager.updateObjectManager(derive, banque, type, null, null, null, null, null, null, null, null, null,
-            null, null, null, null, utilisateur, true, null, "/tmp/");
+         prodDeriveManager.updateObjectManager(derive, banque, type, null, null, null, null, null, null, null, null, null, null,
+            null, null, null, utilisateur, true, null, "/tmp/");
       }catch(final Exception e){
          if(e.getClass().getSimpleName().equals("ValidationException")){
             catchedUpdate = true;
@@ -1569,8 +1603,8 @@ public class ProdDeriveManagerTest extends AbstractManagerTest4
       derive.setQuantite(negative);
       catchedUpdate = false;
       try{
-         prodDeriveManager.updateObjectManager(derive, banque, type, null, null, null, null, null, null, null, null, null,
-            null, null, null, null, utilisateur, true, null, "/tmp/");
+         prodDeriveManager.updateObjectManager(derive, banque, type, null, null, null, null, null, null, null, null, null, null,
+            null, null, null, utilisateur, true, null, "/tmp/");
       }catch(final Exception e){
          if(e.getClass().getSimpleName().equals("ValidationException")){
             catchedUpdate = true;
@@ -1586,8 +1620,8 @@ public class ProdDeriveManagerTest extends AbstractManagerTest4
       derive.setQuantiteInit(q2);
       catchedUpdate = false;
       try{
-         prodDeriveManager.updateObjectManager(derive, banque, type, null, null, null, null, null, null, null, null, null,
-            null, null, null, null, utilisateur, true, null, "/tmp/");
+         prodDeriveManager.updateObjectManager(derive, banque, type, null, null, null, null, null, null, null, null, null, null,
+            null, null, null, utilisateur, true, null, "/tmp/");
       }catch(final Exception e){
          if(e.getClass().getSimpleName().equals("ValidationException")){
             catchedUpdate = true;
@@ -1601,8 +1635,8 @@ public class ProdDeriveManagerTest extends AbstractManagerTest4
       derive.setVolumeInit(negative);
       catchedUpdate = false;
       try{
-         prodDeriveManager.updateObjectManager(derive, banque, type, null, null, null, null, null, null, null, null, null,
-            null, null, null, null, utilisateur, true, null, "/tmp/");
+         prodDeriveManager.updateObjectManager(derive, banque, type, null, null, null, null, null, null, null, null, null, null,
+            null, null, null, utilisateur, true, null, "/tmp/");
       }catch(final Exception e){
          if(e.getClass().getSimpleName().equals("ValidationException")){
             catchedUpdate = true;
@@ -1615,8 +1649,8 @@ public class ProdDeriveManagerTest extends AbstractManagerTest4
       derive.setVolume(negative);
       catchedUpdate = false;
       try{
-         prodDeriveManager.updateObjectManager(derive, banque, type, null, null, null, null, null, null, null, null, null,
-            null, null, null, null, utilisateur, true, null, "/tmp/");
+         prodDeriveManager.updateObjectManager(derive, banque, type, null, null, null, null, null, null, null, null, null, null,
+            null, null, null, utilisateur, true, null, "/tmp/");
       }catch(final Exception e){
          if(e.getClass().getSimpleName().equals("ValidationException")){
             catchedUpdate = true;
@@ -1630,8 +1664,8 @@ public class ProdDeriveManagerTest extends AbstractManagerTest4
       derive.setVolumeInit(q2);
       catchedUpdate = false;
       try{
-         prodDeriveManager.updateObjectManager(derive, banque, type, null, null, null, null, null, null, null, null, null,
-            null, null, null, null, utilisateur, true, null, "/tmp/");
+         prodDeriveManager.updateObjectManager(derive, banque, type, null, null, null, null, null, null, null, null, null, null,
+            null, null, null, utilisateur, true, null, "/tmp/");
       }catch(final Exception e){
          if(e.getClass().getSimpleName().equals("ValidationException")){
             catchedUpdate = true;
@@ -1645,8 +1679,8 @@ public class ProdDeriveManagerTest extends AbstractManagerTest4
       derive.setConc(negative);
       catchedUpdate = false;
       try{
-         prodDeriveManager.updateObjectManager(derive, banque, type, null, null, null, null, null, null, null, null, null,
-            null, null, null, null, utilisateur, true, null, "/tmp/");
+         prodDeriveManager.updateObjectManager(derive, banque, type, null, null, null, null, null, null, null, null, null, null,
+            null, null, null, utilisateur, true, null, "/tmp/");
       }catch(final Exception e){
          if(e.getClass().getSimpleName().equals("ValidationException")){
             catchedUpdate = true;
@@ -1668,8 +1702,8 @@ public class ProdDeriveManagerTest extends AbstractManagerTest4
       derive.setDateTransformation(transfo);
       catchedUpdate = false;
       try{
-         prodDeriveManager.updateObjectManager(derive, banque, type, null, null, null, null, null, null, null, null, null,
-            null, null, null, null, utilisateur, true, null, "/tmp/");
+         prodDeriveManager.updateObjectManager(derive, banque, type, null, null, null, null, null, null, null, null, null, null,
+            null, null, null, utilisateur, true, null, "/tmp/");
       }catch(final Exception e){
          if(e.getClass().getSimpleName().equals("ValidationException")){
             catchedUpdate = true;
@@ -1689,8 +1723,8 @@ public class ProdDeriveManagerTest extends AbstractManagerTest4
       derive.setConc(conc1);
       catchedUpdate = false;
       try{
-         prodDeriveManager.updateObjectManager(derive, banque, type, null, null, null, null, null, null, null, null, null,
-            null, null, null, null, utilisateur, true, null, "/tmp/");
+         prodDeriveManager.updateObjectManager(derive, banque, type, null, null, null, null, null, null, null, null, null, null,
+            null, null, null, utilisateur, true, null, "/tmp/");
       }catch(final Exception e){
          if(e.getClass().getSimpleName().equals("ValidationException")){
             catchedUpdate = true;
@@ -1707,8 +1741,8 @@ public class ProdDeriveManagerTest extends AbstractManagerTest4
       final Unite conc = uniteManager.findByIdManager(2);
       catchedUpdate = false;
       try{
-         prodDeriveManager.updateObjectManager(derive, banque, type, null, null, null, volume, conc, quantite, null, null,
-            null, null, null, null, null, utilisateur, true, null, "/tmp/");
+         prodDeriveManager.updateObjectManager(derive, banque, type, null, null, null, volume, conc, quantite, null, null, null,
+            null, null, null, null, utilisateur, true, null, "/tmp/");
       }catch(final Exception e){
          if(e.getClass().getSimpleName().equals("ValidationException")){
             catchedUpdate = true;
@@ -2264,8 +2298,8 @@ public class ProdDeriveManagerTest extends AbstractManagerTest4
       final ProdType pType = prodTypeManager.findByIdManager(1);
       final ObjetStatut st = objetStatutManager.findByIdManager(4);
 
-      prodDeriveManager.createObjectManager(p, b, pType, st, null, null, null, null, null, null, null, null, null, null, u,
-         false, "/tmp/", false);
+      prodDeriveManager.createObjectManager(p, b, pType, st, null, null, null, null, null, null, null, null, null, null, u, false,
+         "/tmp/", false);
 
       final Retour r = new Retour();
       /*Champs obligatoires*/
@@ -2629,14 +2663,10 @@ public class ProdDeriveManagerTest extends AbstractManagerTest4
       emp.setPosition(55);
       emp.setVide(false);
       emp.setObjetId(derive.getProdDeriveId());
-      final Terminale t1 =
-         enceinteManager
-            .getTerminalesManager(
-               enceinteManager
-                  .getEnceintesManager(enceinteManager
-                     .getEnceintesManager(conteneurManager.getEnceintesManager(c).iterator().next()).iterator().next())
-                  .iterator().next())
-            .iterator().next();
+      final Terminale t1 = enceinteManager.getTerminalesManager(enceinteManager
+         .getEnceintesManager(
+            enceinteManager.getEnceintesManager(conteneurManager.getEnceintesManager(c).iterator().next()).iterator().next())
+         .iterator().next()).iterator().next();
       emplacementManager.createObjectManager(emp, t1, entite);
       prodDeriveManager.updateObjectManager(derive, derive.getBanque(), derive.getProdType(), null, null, emp, null, null, null,
          null, null, derive.getTransformation(), null, null, null, null, u, false, null, "/tmp/");
@@ -2658,8 +2688,8 @@ public class ProdDeriveManagerTest extends AbstractManagerTest4
       emp.getTerminale().getEnceinte();
       prodDeriveManager.updateObjectManager(derive, derive.getBanque(), derive.getProdType(), null, null, null, null, null, null,
          null, null, transfo1, null, null, null, null, u, false, null, "/tmp/");
-      prodDeriveManager.updateObjectManager(p, p.getBanque(), p.getProdType(), null, null, emp, null, null, null, null,
-         null, null, null, null, null, null, u, false, null, "/tmp/");
+      prodDeriveManager.updateObjectManager(p, p.getBanque(), p.getProdType(), null, null, emp, null, null, null, null, null,
+         null, null, null, null, null, u, false, null, "/tmp/");
       // e = echantillonManager.findByIdManager(e.getEchantillonId());
 
       try{
@@ -2752,9 +2782,9 @@ public class ProdDeriveManagerTest extends AbstractManagerTest4
 
       // test sur le risque
       final Champ c249 = new Champ(champEntiteDao.findById(249));
-      final String[] expected = new String[]{"HIV", "LEUCEMIE"};
+      final String[] expected = new String[] {"HIV", "LEUCEMIE"};
       String value = extractValueFromChampManager.extractValueForChampManager(p1, c249);
-      List<String> actual = Stream.of(value.split(",")).map( token -> token.trim() ).collect(Collectors.toList());
+      List<String> actual = Stream.of(value.split(",")).map(token -> token.trim()).collect(Collectors.toList());
       assertTrue(actual.size() == 2 && actual.containsAll(Arrays.asList(expected)));
 
       // test sur l'emplacement
@@ -2879,8 +2909,8 @@ public class ProdDeriveManagerTest extends AbstractManagerTest4
       p2.setCode("p2");
 
       prodDeriveManager.createObjectWithNonConformitesManager(p2, banqueDao.findById(1), prodTypeManager.findByIdManager(1),
-         objetStatutManager.findByIdManager(4), null, null, null, null, null, null, null, null, null, u, false, null, false,
-         null, null);
+         objetStatutManager.findByIdManager(4), null, null, null, null, null, null, null, null, null, u, false, null, false, null,
+         null);
 
       assertTrue(objetNonConformeDao.findByObjetAndEntite(p2.getProdDeriveId(), entiteManager.findByIdManager(8)).size() == 0);
 
@@ -2888,8 +2918,8 @@ public class ProdDeriveManagerTest extends AbstractManagerTest4
       assertNull(p2.getConformeCession());
 
       prodDeriveManager.updateObjectWithNonConformitesManager(p1, banqueDao.findById(1), prodTypeManager.findByIdManager(1),
-         objetStatutManager.findByIdManager(4), null, null, null, null, null, null, null, null, null, null, u, false, null,
-         null, ncfsTrait, ncfsCess);
+         objetStatutManager.findByIdManager(4), null, null, null, null, null, null, null, null, null, null, u, false, null, null,
+         ncfsTrait, ncfsCess);
 
       p1 = prodDeriveManager.findByCodeLikeManager("p1", true).get(0);
 
@@ -2901,8 +2931,8 @@ public class ProdDeriveManagerTest extends AbstractManagerTest4
       p1.setConformeTraitement(true);
 
       prodDeriveManager.updateObjectWithNonConformitesManager(p1, banqueDao.findById(1), prodTypeManager.findByIdManager(1),
-         objetStatutManager.findByIdManager(4), null, null, null, null, null, null, null, null, null, null, u, false, null,
-         null, ncfsTrait, ncfsCess);
+         objetStatutManager.findByIdManager(4), null, null, null, null, null, null, null, null, null, null, u, false, null, null,
+         ncfsTrait, ncfsCess);
 
       assertTrue(objetNonConformeDao.findByObjetAndEntite(p1.getProdDeriveId(), entiteManager.findByIdManager(8)).size() == 0);
 
@@ -2913,8 +2943,8 @@ public class ProdDeriveManagerTest extends AbstractManagerTest4
       ncfsCess.add(nonConformiteDao.findById(11));
 
       prodDeriveManager.updateObjectWithNonConformitesManager(p1, banqueDao.findById(1), prodTypeManager.findByIdManager(1),
-         objetStatutManager.findByIdManager(4), null, null, null, null, null, null, null, null, null, null, u, false, null,
-         null, ncfsTrait, ncfsCess);
+         objetStatutManager.findByIdManager(4), null, null, null, null, null, null, null, null, null, null, u, false, null, null,
+         ncfsTrait, ncfsCess);
 
       assertFalse(p1.getConformeTraitement());
       assertFalse(p1.getConformeCession());
@@ -3385,8 +3415,8 @@ public class ProdDeriveManagerTest extends AbstractManagerTest4
       Echantillon ech2 = new Echantillon();
       ech2.setCode("ECHTOTRANSFORM2");
       echantillonManager.createObjectManager(ech2, b2, null, null,
-         objetStatutManager.findByStatutLikeManager("NON STOCKE", true).get(0), null, e1.getEchantillonType(), null, null,
-         null, null, null, null, u2, false, "/tmp/", false);
+         objetStatutManager.findByStatutLikeManager("NON STOCKE", true).get(0), null, e1.getEchantillonType(), null, null, null,
+         null, null, null, u2, false, "/tmp/", false);
 
       ech2 = echantillonManager.findByIdManager(ech2.getEchantillonId());
       assertTrue(ech2.getObjetStatut().getStatut().equals("NON STOCKE"));

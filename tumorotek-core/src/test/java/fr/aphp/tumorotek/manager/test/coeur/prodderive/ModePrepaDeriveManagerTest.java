@@ -66,6 +66,7 @@ public class ModePrepaDeriveManagerTest extends AbstractManagerTest4
 
    @Autowired
    private ModePrepaDeriveManager modePrepaDeriveManager;
+
    @Autowired
    private PlateformeDao plateformeDao;
 

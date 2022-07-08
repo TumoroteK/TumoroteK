@@ -65,7 +65,7 @@ import fr.aphp.tumorotek.utils.ConversionUtils;
  *
  * Implémentation du manager du bean de domaine ChampCalcule.
  * Classe créée le 06/03/2018.
- * 
+ *
  * @author Answald Bournique
  * @version 2.2.0
  * @since 2.2.0
@@ -79,7 +79,7 @@ public class ChampCalculeManagerImpl implements ChampCalculeManager, Application
    private final Log log = LogFactory.getLog(GroupementManager.class);
 
    private ApplicationContext context;
-   
+
    /** Bean Dao ChampCalculeDao. */
    private ChampCalculeDao champCalculeDao;
 
@@ -93,7 +93,7 @@ public class ChampCalculeManagerImpl implements ChampCalculeManager, Application
    }
 
    /**
-    * Setter du bean ChampCalculeDao. 
+    * Setter du bean ChampCalculeDao.
     * @param cDao est le bean Dao.
     */
    public void setChampCalculeDao(final ChampCalculeDao cDao){
@@ -101,10 +101,10 @@ public class ChampCalculeManagerImpl implements ChampCalculeManager, Application
    }
 
    /**
-    * Setter du bean ChampManager. 
+    * Setter du bean ChampManager.
     * @param champManager est le bean champManager.
     */
-   public void setChampManager(ChampManager champManager){
+   public void setChampManager(final ChampManager champManager){
       this.champManager = champManager;
    }
 
@@ -126,7 +126,7 @@ public class ChampCalculeManagerImpl implements ChampCalculeManager, Application
     * Creer les champs associés au Champ Calculé
     * @param champCalcule
     */
-   private void createChampsAssocies(ChampCalcule champCalcule){
+   private void createChampsAssocies(final ChampCalcule champCalcule){
       if(null != champCalcule.getChamp1()){
          champManager.createObjectManager(champCalcule.getChamp1());
       }
@@ -153,7 +153,7 @@ public class ChampCalculeManagerImpl implements ChampCalculeManager, Application
     * Met à jour les champs liés au ChampCalcule
     * @param champCalcule le champCalcule
     */
-   private void updateChampsAssocies(ChampCalcule champCalcule){
+   private void updateChampsAssocies(final ChampCalcule champCalcule){
       final Champ oldChamp1 = champCalculeDao.findById(champCalcule.getChampCalculeId()).getChamp1();
       updateChampAssocie(champCalcule.getChamp1(), oldChamp1);
 
@@ -166,7 +166,7 @@ public class ChampCalculeManagerImpl implements ChampCalculeManager, Application
     * @param newChamp l'ancien champ
     * @param oldChamp le nouveau champ
     */
-   private void updateChampAssocie(Champ newChamp, Champ oldChamp){
+   private void updateChampAssocie(final Champ newChamp, final Champ oldChamp){
       if(null == newChamp && null != oldChamp){ // Suppression du champ
          champManager.removeObjectManager(oldChamp);
       }else if(null != newChamp && null == oldChamp){ // Nouveau champ
@@ -199,7 +199,7 @@ public class ChampCalculeManagerImpl implements ChampCalculeManager, Application
     * Supprimes les champs associés au champCalcule
     * @param champCalcule
     */
-   private void removeChampsAssocies(ChampCalcule champCalcule){
+   private void removeChampsAssocies(final ChampCalcule champCalcule){
       if(null != champCalcule.getChamp1()){
          champManager.removeObjectManager(champCalcule.getChamp1());
          //         champCalcule.setChamp1(champDao.mergeObject(champCalcule.getChamp1()));
@@ -230,7 +230,7 @@ public class ChampCalculeManagerImpl implements ChampCalculeManager, Application
          throw new RequiredObjectIsNullException("ChampCalcule", "recherche par champAnnotation", "champAnnotation");
       }
       ChampCalcule champCalcule = null;
-      List<ChampCalcule> champCalcules = champCalculeDao.findByChampAnnotation(champAnnotation);
+      final List<ChampCalcule> champCalcules = champCalculeDao.findByChampAnnotation(champAnnotation);
       if(null != champCalcules){
          if(champCalcules.size() == 1){
             champCalcule = champCalcules.get(0);
@@ -255,18 +255,20 @@ public class ChampCalculeManagerImpl implements ChampCalculeManager, Application
 
       // Récupère la valeur du champ1
       if(null != champCalcule.getChamp1()){
-         List<Object> objetsAssocies = RechercheUtilsManager.getListeObjetsCorrespondants(obj, champCalcule.getChamp1(), null);
+         final List<Object> objetsAssocies =
+            RechercheUtilsManager.getListeObjetsCorrespondants(obj, champCalcule.getChamp1(), null);
          val1 = RechercheUtilsManager.getChampValueFromObjectList(champCalcule.getChamp1(), objetsAssocies);
       }
       // Récupère la valeur du champ2 ou de la valeur saisie
       if(null != champCalcule.getChamp2()){
-         List<Object> objetsAssocies = RechercheUtilsManager.getListeObjetsCorrespondants(obj, champCalcule.getChamp2(), null);
+         final List<Object> objetsAssocies =
+            RechercheUtilsManager.getListeObjetsCorrespondants(obj, champCalcule.getChamp2(), null);
          val2 = RechercheUtilsManager.getChampValueFromObjectList(champCalcule.getChamp2(), objetsAssocies);
       }else if(null != champCalcule.getValeur()){
          val2 = champCalcule.getValeur();
       }
 
-      String operateur = champCalcule.getOperateur();
+      final String operateur = champCalcule.getOperateur();
 
       if(null != val1 && !"".equals(val1) && null != val2 && !"".equals(val2) && null != operateur && !"".equals(operateur)){
          DataType champ1DataType = champCalcule.getChamp1().dataType();
@@ -287,7 +289,7 @@ public class ChampCalculeManagerImpl implements ChampCalculeManager, Application
     * @param champ1DataType le datatype du champ1
     * @return le résultat
     */
-   private Object calculate(Object val1, Object val2, String operateur, DataType champ1DataType){
+   private Object calculate(final Object val1, final Object val2, final String operateur, final DataType champ1DataType){
       Object res = null;
       switch(operateur){
          case "+":
@@ -332,19 +334,19 @@ public class ChampCalculeManagerImpl implements ChampCalculeManager, Application
    }
 
    /**
-    * Addition pour type Date 
+    * Addition pour type Date
     * @param val1 Objet Date ou Calendar
     * @param val2 Objet Date ou Calendar
     * @return Calendar
     */
-   private Calendar addDate(Object val1, Object val2){
+   private Calendar addDate(final Object val1, final Object val2){
       Calendar date1 = null;
       Calendar result = null;
 
       if(Calendar.class.isInstance(val1)){
          date1 = Calendar.class.cast(val1);
       }else if(Date.class.isInstance(val1)){
-         Calendar cal = Calendar.getInstance();
+         final Calendar cal = Calendar.getInstance();
          cal.setTime(Date.class.cast(val1));
          date1 = cal;
       }else if(String.class.isInstance(val1)){
@@ -352,17 +354,17 @@ public class ChampCalculeManagerImpl implements ChampCalculeManager, Application
       }
 
       if(null != date1 && null != val2){
-         Long secondes = new Long(val2.toString());
-         Duree duree = new Duree(secondes, Duree.SECONDE);
-         Long annees = duree.getTemps(Duree.ANNEE);
+         final Long secondes = new Long(val2.toString());
+         final Duree duree = new Duree(secondes, Duree.SECONDE);
+         final Long annees = duree.getTemps(Duree.ANNEE);
          duree.addTemps(-annees, Duree.ANNEE);
-         Long mois = duree.getTemps(Duree.MOIS);
+         final Long mois = duree.getTemps(Duree.MOIS);
          duree.addTemps(-mois, Duree.MOIS);
-         Long jours = duree.getTemps(Duree.JOUR);
+         final Long jours = duree.getTemps(Duree.JOUR);
          duree.addTemps(-jours, Duree.JOUR);
-         Long heures = duree.getTemps(Duree.HEURE);
+         final Long heures = duree.getTemps(Duree.HEURE);
          duree.addTemps(-heures, Duree.HEURE);
-         Long minutes = duree.getTemps(Duree.MINUTE);
+         final Long minutes = duree.getTemps(Duree.MINUTE);
          result = date1;
          result.add(Calendar.MINUTE, new Integer(minutes.toString()));
          result.add(Calendar.HOUR_OF_DAY, new Integer(heures.toString()));
@@ -373,11 +375,11 @@ public class ChampCalculeManagerImpl implements ChampCalculeManager, Application
       return result;
    }
 
-   private Float addNum(Object val1, Object val2){
+   private Float addNum(final Object val1, final Object val2){
       return new Float(val1.toString()) + new Float(val2.toString());
    }
 
-   private Float substractNum(Object val1, Object val2){
+   private Float substractNum(final Object val1, final Object val2){
       return new Float(val1.toString()) - new Float(val2.toString());
    }
 
@@ -387,7 +389,7 @@ public class ChampCalculeManagerImpl implements ChampCalculeManager, Application
     * @param val2 Objet Date, Calendar ou Number
     * @return Calendar ou Durée
     */
-   private Object substractDate(Object val1, Object val2){
+   private Object substractDate(final Object val1, final Object val2){
       Calendar date1 = null;
       Calendar date2 = null;
       Integer secondes = null;
@@ -395,7 +397,7 @@ public class ChampCalculeManagerImpl implements ChampCalculeManager, Application
       if(Calendar.class.isInstance(val1)){
          date1 = Calendar.class.cast(val1);
       }else if(Date.class.isInstance(val1)){
-         Calendar cal = Calendar.getInstance();
+         final Calendar cal = Calendar.getInstance();
          cal.setTime(Date.class.cast(val1));
          date1 = cal;
       }else if(String.class.isInstance(val1)){
@@ -405,7 +407,7 @@ public class ChampCalculeManagerImpl implements ChampCalculeManager, Application
       if(Calendar.class.isInstance(val2)){
          date2 = Calendar.class.cast(val2);
       }else if(Date.class.isInstance(val2)){
-         Calendar cal = Calendar.getInstance();
+         final Calendar cal = Calendar.getInstance();
          cal.setTime(Date.class.cast(val2));
          date2 = cal;
       }else if(Number.class.isInstance(val2)){
@@ -413,10 +415,10 @@ public class ChampCalculeManagerImpl implements ChampCalculeManager, Application
       }else if(String.class.isInstance(val2)){
          try{
             date2 = ConversionUtils.convertToCalendar(val2);
-         }catch(Exception e){
+         }catch(final Exception e){
             try{
                secondes = new Integer(val2.toString());
-            }catch(Exception e2){
+            }catch(final Exception e2){
                log.error(e);
                log.error(e2);
                throw new TKException("Mauvais format de retour pour la deuxème opérande");
@@ -426,7 +428,7 @@ public class ChampCalculeManagerImpl implements ChampCalculeManager, Application
 
       if(null != date1){
          if(null != date2){ //Soustraction de deux dates donne une durée
-            Duree duree = new Duree(0L, Duree.SECONDE);
+            final Duree duree = new Duree(0L, Duree.SECONDE);
             duree.addTemps(new Long(date1.get(Calendar.YEAR) - date2.get(Calendar.YEAR)), Duree.ANNEE);
             duree.addTemps(new Long(date1.get(Calendar.MONTH) - date2.get(Calendar.MONTH)), Duree.MOIS);
             duree.addTemps(new Long(date1.get(Calendar.HOUR_OF_DAY) - date2.get(Calendar.HOUR_OF_DAY)), Duree.HEURE);
@@ -434,16 +436,16 @@ public class ChampCalculeManagerImpl implements ChampCalculeManager, Application
             duree.addTemps(new Long(date1.get(Calendar.DAY_OF_MONTH) - date2.get(Calendar.DAY_OF_MONTH)), Duree.JOUR);
             result = duree.getTemps(Duree.SECONDE);
          }else if(null != secondes){ // Soustraction d'une date à une durée donne une date
-            Duree duree = new Duree(new Long(secondes), Duree.SECONDE);
-            Long annees = duree.getTemps(Duree.ANNEE);
+            final Duree duree = new Duree(new Long(secondes), Duree.SECONDE);
+            final Long annees = duree.getTemps(Duree.ANNEE);
             duree.addTemps(-annees, Duree.ANNEE);
-            Long mois = duree.getTemps(Duree.MOIS);
+            final Long mois = duree.getTemps(Duree.MOIS);
             duree.addTemps(-mois, Duree.MOIS);
-            Long jours = duree.getTemps(Duree.JOUR);
+            final Long jours = duree.getTemps(Duree.JOUR);
             duree.addTemps(-jours, Duree.JOUR);
-            Long heures = duree.getTemps(Duree.HEURE);
+            final Long heures = duree.getTemps(Duree.HEURE);
             duree.addTemps(-heures, Duree.HEURE);
-            Long minutes = duree.getTemps(Duree.MINUTE);
+            final Long minutes = duree.getTemps(Duree.MINUTE);
             date1.add(Calendar.MINUTE, -new Integer(minutes.toString()));
             date1.add(Calendar.HOUR_OF_DAY, -new Integer(heures.toString()));
             date1.add(Calendar.DAY_OF_MONTH, -new Integer(jours.toString()));
@@ -459,16 +461,16 @@ public class ChampCalculeManagerImpl implements ChampCalculeManager, Application
 
    /**
     * Addition de deux Duree
-    * @param val1 
+    * @param val1
     * @param val2
     * @return duree
     */
-   private Long addDuree(Object val1, Object val2){
+   private Long addDuree(final Object val1, final Object val2){
       try{
-         Long duree1 = new Long(val1.toString());
-         Long duree2 = new Long(val2.toString());
+         final long duree1 = Long.parseLong(val1.toString());
+         final long duree2 = Long.parseLong(val2.toString());
          return duree1 + duree2;
-      }catch(Exception e){
+      }catch(final Exception e){
          log.error(e);
       }
       return null;
@@ -480,12 +482,12 @@ public class ChampCalculeManagerImpl implements ChampCalculeManager, Application
     * @param val2
     * @return duree
     */
-   private Long substractDuree(Object val1, Object val2){
+   private Long substractDuree(final Object val1, final Object val2){
       try{
-         Long duree1 = new Long(val1.toString());
-         Long duree2 = new Long(val2.toString());
+         final long duree1 = Long.parseLong(val1.toString());
+         final long duree2 = Long.parseLong(val2.toString());
          return duree1 - duree2;
-      }catch(Exception e){
+      }catch(final Exception e){
          log.error(e);
       }
       return null;
@@ -499,7 +501,7 @@ public class ChampCalculeManagerImpl implements ChampCalculeManager, Application
    }
 
    @Override
-   public void setApplicationContext(ApplicationContext context) throws BeansException{
+   public void setApplicationContext(final ApplicationContext context) throws BeansException{
       this.context = context;
    }
 

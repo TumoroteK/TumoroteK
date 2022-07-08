@@ -66,6 +66,7 @@ public class PatientRowRenderer extends TKSelectObjectRenderer<Patient>
 {
 
    private List<Banque> banques = new ArrayList<>();
+
    private Patient patient;
 
    public PatientRowRenderer(final boolean select){
@@ -118,7 +119,7 @@ public class PatientRowRenderer extends TKSelectObjectRenderer<Patient>
       new Label(PatientUtils.setEtatFromDBValue(pat)).setParent(row);
       new Label(PatientUtils.getDateDecesOrEtat(pat)).setParent(row);
 
-      // Consentements	    
+      // Consentements
 
       // affiche la maladie si maladie non defaut et liens vers popUps
       // si autre maladies
@@ -134,7 +135,7 @@ public class PatientRowRenderer extends TKSelectObjectRenderer<Patient>
    }
 
    /**
-    * Dessine dans un label le ou les libelles de maladies 
+    * Dessine dans un label le ou les libelles de maladies
     * l'utilisation d'un tooltip pour afficher la totalité.
     * @param
     * @param row Parent
@@ -152,7 +153,7 @@ public class PatientRowRenderer extends TKSelectObjectRenderer<Patient>
 
       if(!maladies.isEmpty()){
          final Label mal1Label = new Label(maladies.get(0).getLibelle());
-         // dessine le label avec un lien vers popup 
+         // dessine le label avec un lien vers popup
          if(maladies.size() > 1){
             final Hbox labelAndLinkBox = new Hbox();
             labelAndLinkBox.setSpacing("5px");

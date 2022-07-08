@@ -108,42 +108,61 @@ public class TerminaleManagerTest extends AbstractManagerTest4
 
    @Autowired
    private TerminaleManager terminaleManager;
+
    @Autowired
    private EnceinteDao enceinteDao;
+
    @Autowired
    private TerminaleTypeDao terminaleTypeDao;
+
    @Autowired
    private BanqueDao banqueDao;
+
    @Autowired
    private EntiteDao entiteDao;
+
    @Autowired
    private TerminaleNumerotationDao terminaleNumerotationDao;
+
    @Autowired
    private ConteneurDao conteneurDao;
+
    @Autowired
    private EmplacementManager emplacementManager;
+
    @Autowired
    private UtilisateurDao utilisateurDao;
+
    @Autowired
    private OperationTypeManager operationTypeManager;
+
    @Autowired
    private ConteneurManager conteneurManager;
+
    @Autowired
    private EnceinteManager enceinteManager;
+
    @Autowired
    private ConteneurTypeDao conteneurTypeDao;
+
    @Autowired
    private EnceinteTypeDao enceinteTypeDao;
+
    @Autowired
    private ServiceDao serviceDao;
+
    @Autowired
    private PlateformeDao plateformeDao;
+
    @Autowired
    private CouleurDao couleurDao;
+
    @Autowired
    private EchantillonDao echantillonDao;
+
    @Autowired
    private ProdDeriveDao prodDeriveDao;
+
    @Autowired
    private IncidentManager incidentManager;
 
@@ -218,7 +237,7 @@ public class TerminaleManagerTest extends AbstractManagerTest4
       list = terminaleManager.findByEnceinteAndNomManager(e3, null);
       assertTrue(list.size() == 0);
    }
-   
+
    @Test
    public void testFindByAliasManager(){
 
@@ -1840,18 +1859,18 @@ public class TerminaleManagerTest extends AbstractManagerTest4
       ids.addAll(terminaleManager.findTerminaleIdsFromNomManager("BT2", enceinteDao.findById(4), conts));
       assertTrue(ids.isEmpty());
    }
-   
+
    // @since 2.2.1
    @Test
-   public void testGetDistinctBanquesFromTkObjectsManager() {
-	   List<Banque> banks = terminaleManager.getDistinctBanquesFromTkObjectsManager(terminaleManager.findByIdManager(1));
-	   assertTrue(banks.size() == 1);
-	   assertTrue(banks.contains(banqueDao.findById(1)));
-	   
-	   banks = terminaleManager.getDistinctBanquesFromTkObjectsManager(terminaleManager.findByIdManager(2));
-	   assertTrue(banks.isEmpty());
+   public void testGetDistinctBanquesFromTkObjectsManager(){
+      List<Banque> banks = terminaleManager.getDistinctBanquesFromTkObjectsManager(terminaleManager.findByIdManager(1));
+      assertTrue(banks.size() == 1);
+      assertTrue(banks.contains(banqueDao.findById(1)));
 
-	   banks = terminaleManager.getDistinctBanquesFromTkObjectsManager(null);
-	   assertTrue(banks.isEmpty());
+      banks = terminaleManager.getDistinctBanquesFromTkObjectsManager(terminaleManager.findByIdManager(2));
+      assertTrue(banks.isEmpty());
+
+      banks = terminaleManager.getDistinctBanquesFromTkObjectsManager(null);
+      assertTrue(banks.isEmpty());
    }
 }

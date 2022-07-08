@@ -66,6 +66,7 @@ public class AdicapManagerImpl implements AdicapManager
    private final Log log = LogFactory.getLog(AdicapManager.class);
 
    private AdicapDao adicapDao;
+
    private AdicapGroupeDao adicapGroupeDao;
 
    public void setAdicapDao(final AdicapDao aDao){
@@ -130,7 +131,7 @@ public class AdicapManagerImpl implements AdicapManager
                }
             }
          }else{
-            // affiche les codes lesionnels dans l'aroborescence des 
+            // affiche les codes lesionnels dans l'aroborescence des
             // codes topos.
             for(int i = 0; i < ads.size(); i++){
                if(ads.get(i).getAdicapGroupe().getNom().equals("D8") || (ads.get(i).getAdicapGroupe().getNom().equals("D3")
@@ -223,16 +224,16 @@ public class AdicapManagerImpl implements AdicapManager
          // codeOrLibelle = ".*" + codeOrLibelle + ".*";
          codeOrLibelle = "%" + codeOrLibelle + "%";
       }
-      //Iterator<Adicap> aIt = 
+      //Iterator<Adicap> aIt =
       return findChildrenCodesManager(null, grp, codeOrLibelle);
       // .iterator();
       //		Adicap next;
       //		while (aIt.hasNext()) {
       //			next = aIt.next();
       //			if (next.getCode().matches(codeOrLibelle)
-      //				|| (next.getLibelle() != null 
+      //				|| (next.getLibelle() != null
       //							&& next.getLibelle().matches(codeOrLibelle))) {
-      //				res.add(next);		
+      //				res.add(next);
       //			}
       //		}
       //		return new ArrayList<Adicap>(res);

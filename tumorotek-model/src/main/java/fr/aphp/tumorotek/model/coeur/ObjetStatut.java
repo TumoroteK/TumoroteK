@@ -75,10 +75,13 @@ public class ObjetStatut implements java.io.Serializable
    private static final long serialVersionUID = 33315464531548613L;
 
    private Integer objetStatutId;
+
    private String statut;
 
    private Set<Echantillon> echantillons = new HashSet<>();
+
    private Set<ProdDerive> prodDerives = new HashSet<>();
+
    private List<Retour> retours = new ArrayList<>();
 
    /** Constructeur par défaut. */

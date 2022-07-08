@@ -55,7 +55,6 @@ import fr.aphp.tumorotek.model.coeur.ObjetStatut;
 public class ObjetStatutValidator implements Validator
 {
 
-   
    @Override
    public boolean supports(final Class<?> clazz){
       return ObjetStatut.class.equals(clazz);

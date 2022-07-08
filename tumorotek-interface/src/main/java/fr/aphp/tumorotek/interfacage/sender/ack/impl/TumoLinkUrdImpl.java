@@ -44,17 +44,16 @@ import org.apache.camel.ProducerTemplate;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import fr.aphp.tumorotek.interfacage.sender.ack.TumoLinkUrd;
-import fr.aphp.tumorotek.model.TKAnnotableObject;
-import fr.aphp.tumorotek.model.coeur.prelevement.Prelevement;
-import fr.aphp.tumorotek.model.interfacage.Recepteur;
-
 import ca.uhn.hl7v2.HL7Exception;
 import ca.uhn.hl7v2.model.v24.datatype.XCN;
 import ca.uhn.hl7v2.model.v24.message.UDM_Q05;
 import ca.uhn.hl7v2.model.v24.segment.DSP;
 import ca.uhn.hl7v2.model.v24.segment.MSH;
 import ca.uhn.hl7v2.model.v24.segment.URD;
+import fr.aphp.tumorotek.interfacage.sender.ack.TumoLinkUrd;
+import fr.aphp.tumorotek.model.TKAnnotableObject;
+import fr.aphp.tumorotek.model.coeur.prelevement.Prelevement;
+import fr.aphp.tumorotek.model.interfacage.Recepteur;
 
 public class TumoLinkUrdImpl implements TumoLinkUrd
 {
@@ -119,7 +118,7 @@ public class TumoLinkUrdImpl implements TumoLinkUrd
       //DSP
       final DSP dspSegment = udm.getDSP();
       dspSegment.getDataLine().setValue(url);
-      
+
       System.out.println(dspSegment.getDataLine().getValue());
 
       log.debug(udm);

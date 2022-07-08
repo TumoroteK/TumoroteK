@@ -57,7 +57,7 @@ public interface CodeUtilisateurDao extends GenericDaoJpa<CodeUtilisateur, Integ
 {
 
    /**
-    * Recherche les codes utilisateurs dont le code est like celui 
+    * Recherche les codes utilisateurs dont le code est like celui
     * passé en paramètre.
     * @param code Code pour lequel on recherche des codes utilisateurs.
     * @param liste de banques
@@ -66,7 +66,7 @@ public interface CodeUtilisateurDao extends GenericDaoJpa<CodeUtilisateur, Integ
    List<CodeUtilisateur> findByCodeLike(String code, List<Banque> banks);
 
    /**
-    * Recherche les codes utilisateurs dont le libelle est like celui 
+    * Recherche les codes utilisateurs dont le libelle est like celui
     * passé en paramètre.
     * @param libelle pour lequel on recherche des codes utilisateurs.
     * @param banque
@@ -75,7 +75,7 @@ public interface CodeUtilisateurDao extends GenericDaoJpa<CodeUtilisateur, Integ
    List<CodeUtilisateur> findByLibelleLike(String libelle, List<Banque> banks);
 
    /**
-    * Recherche les codes utilisateurs pour l'utilisateur et la banque 
+    * Recherche les codes utilisateurs pour l'utilisateur et la banque
     * passées en paramètres.
     * @param l'utilisateur pour lequel on recherche des codes.
     * @param la banque
@@ -91,7 +91,7 @@ public interface CodeUtilisateurDao extends GenericDaoJpa<CodeUtilisateur, Integ
    List<CodeUtilisateur> findByCodeDossier(CodeDossier codeDossier);
 
    /**
-    * Recherche tous les codes utilisateurs non contenu dans un dossier 
+    * Recherche tous les codes utilisateurs non contenu dans un dossier
     * pour la banque spécifiée.
     * @param banque
     * @return une liste de CodeUtilisateurs.
@@ -106,7 +106,7 @@ public interface CodeUtilisateurDao extends GenericDaoJpa<CodeUtilisateur, Integ
    List<CodeUtilisateur> findByCodeParent(CodeUtilisateur parent);
 
    /**
-    * Recherche tous les codes utilisateurs sauf celui dont l'id est passé 
+    * Recherche tous les codes utilisateurs sauf celui dont l'id est passé
     * en paramètre.
     * @param codeUtilisateurId Identifiant du code que l'on souhaite
     * exclure de la liste retournée.
@@ -115,9 +115,9 @@ public interface CodeUtilisateurDao extends GenericDaoJpa<CodeUtilisateur, Integ
    List<CodeUtilisateur> findByExcludedId(Integer codeUtilisateurId);
 
    /**
-    * Recherche les codes utilisateurs issus du transcodage 
-    * en passant la table et le codeId du code dont on cherche 
-    * les transcodes enregistrés dans les 
+    * Recherche les codes utilisateurs issus du transcodage
+    * en passant la table et le codeId du code dont on cherche
+    * les transcodes enregistrés dans les
     * codes utilisateurs.
     * @param table
     * @param codeId

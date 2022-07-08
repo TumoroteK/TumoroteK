@@ -75,10 +75,13 @@ public class CodeBrowserComponent extends GenericForwardComposer<Component>
    private static final long serialVersionUID = 1L;
 
    private TableCodage codification;
+
    private Boolean isOrgane;
+
    private Boolean isMorpho;
 
    private Tree mainTreeContext;
+
    private TumoTreeModel ttm;
 
    private Treeitem currentItem;
@@ -150,13 +153,13 @@ public class CodeBrowserComponent extends GenericForwardComposer<Component>
 
       List<? extends CodeCommon> codes = new ArrayList<>();
 
-      // root node 
+      // root node
       final CodeNode root = new CodeNode();
       root.setCodification(codification);
 
       if("ADICAP".equals(codification.getNom())){
          final List<AdicapGroupe> dicos = ManagerLocator.getAdicapManager().findDictionnairesManager();
-         if(isMorpho){ // D4-D5-D6-D7 UNIQUEMENT		
+         if(isMorpho){ // D4-D5-D6-D7 UNIQUEMENT
             for(int i = 3; i < 7; i++){
                final CodeNode node = new CodeNode(dicos.get(i), codification);
                children.add(node);

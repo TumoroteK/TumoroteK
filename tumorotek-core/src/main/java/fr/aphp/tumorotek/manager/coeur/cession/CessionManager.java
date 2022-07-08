@@ -117,7 +117,7 @@ public interface CessionManager
    /**
     * Recherche une liste de Cessions dont le statut est égal à
     * celui passé en paramètre.
-    * @param statut Valeur du CessionStatut pour lequel on recherche 
+    * @param statut Valeur du CessionStatut pour lequel on recherche
     * des Cessions.
     * @param banques Banques auxquelles appartiennent les Cession.
     * @return Liste de Cessions.
@@ -149,7 +149,7 @@ public interface CessionManager
    Set<CederObjet> getCederObjetsManager(Cession cession);
 
    /**
-    * Recherche les doublons (= toute cession appartenant à la même PF 
+    * Recherche les doublons (= toute cession appartenant à la même PF
     * partageant le même numéro) de la Cession passée en paramètre.
     * @param cession Un Cession pour laquelle on cherche des doublons.
     * @return True s'il existe des doublons.
@@ -165,7 +165,7 @@ public interface CessionManager
    Boolean isUsedObjectManager(Cession cession);
 
    /**
-    * Recherche toutes les Cessions dont la date de creation systeme est 
+    * Recherche toutes les Cessions dont la date de creation systeme est
     * posterieure ou egale a celle passee en parametre.
     * @param date
     * @param banques Banques auxquelles appartiennent les Cessions.
@@ -174,7 +174,7 @@ public interface CessionManager
    List<Integer> findAfterDateCreationReturnIdsManager(Calendar date, List<Banque> banques);
 
    /**
-    * Recherche toutes les Cessions dont la date de modification systeme est 
+    * Recherche toutes les Cessions dont la date de modification systeme est
     * posterieure ou egale a celle passee en parametre.
     * @param date
     * @param banque Banque à laquelle appartient la Cession.
@@ -208,7 +208,7 @@ public interface CessionManager
     * @param filesCreated liste de fichier créés
     * @param utilisateur Utilisateur ayant créé la cession.
     * @param cederObjets Liste de CederObjet.
-    * @param base directory pour enregistrer un fichier associé 
+    * @param base directory pour enregistrer un fichier associé
     * dans le file system
     */
    void createObjectManager(Cession cession, Banque banque, CessionType cessionType, CessionExamen cessionExamen, Contrat mta,
@@ -236,7 +236,7 @@ public interface CessionManager
     * @param filesToDelete liste de fichier à supprimer
     * @param utilisateur Utilisateur ayant créé la cession.
     * @param cederObjets Liste de CederObjet.
-    * @param base directory pour enregistrer un fichier associé 
+    * @param base directory pour enregistrer un fichier associé
     * dans le file system
     */
    void updateObjectManager(Cession cession, Banque banque, CessionType cessionType, CessionExamen cessionExamen, Contrat mta,
@@ -262,9 +262,9 @@ public interface CessionManager
    List<Cession> findByIdsInListManager(List<Integer> ids);
 
    /**
-    * Calcules les comptes / types echantillon/derive pour 
-    * l'impression du bon de livraison de 
-    * la cession passée en paramètre. 
+    * Calcules les comptes / types echantillon/derive pour
+    * l'impression du bon de livraison de
+    * la cession passée en paramètre.
     * Les natures des échantillons apparaissent en premier, suivies des natures
     * @param cession
     * @return Map<String,Number>
@@ -273,7 +273,7 @@ public interface CessionManager
    Map<String, Number> getTypesAndCountsManager(Cession cession);
 
    /**
-    * Compte le nombre de cessions dont le demandeur est le 
+    * Compte le nombre de cessions dont le demandeur est le
     * collaborateur passé en param
     * @param collaborateur
     * @return
@@ -281,7 +281,7 @@ public interface CessionManager
    public Long findCountByDemandeurManager(Collaborateur colla);
 
    /**
-    * Compte le nombre de cessions dont le destinataire est le 
+    * Compte le nombre de cessions dont le destinataire est le
     * collaborateur passé en param
     * @param collaborateur
     * @return
@@ -289,7 +289,7 @@ public interface CessionManager
    public Long findCountByDestinataireManager(Collaborateur colla);
 
    /**
-    * Compte le nombre de cessions dont l'executant est le 
+    * Compte le nombre de cessions dont l'executant est le
     * collaborateur passé en param
     * @param collaborateur
     * @return
@@ -297,7 +297,7 @@ public interface CessionManager
    public Long findCountByExecutantManager(Collaborateur colla);
 
    /**
-    * Supprime les prélèvements et en cascade les échantillons/dérivés dont 
+    * Supprime les prélèvements et en cascade les échantillons/dérivés dont
     * ils sont parents à partir des ids passés en paramètres.
     * @param ids
     * @param String fantome commentaire
@@ -307,7 +307,7 @@ public interface CessionManager
    void removeListFromIdsManager(List<Integer> ids, String comment, Utilisateur u);
 
    /**
-    * Renvoie toutes les cessions pour un numéro spécifié dans toutes 
+    * Renvoie toutes les cessions pour un numéro spécifié dans toutes
     * les collections d'une plateforme passée en paramètre.
     * @param code
     * @param pf Plateforme
@@ -317,8 +317,8 @@ public interface CessionManager
    List<Cession> findByNumeroInPlateformeManager(String numero, Plateforme pf);
 
    /**
-    * Estampille la cession passée en paramètre avec la date correspondant 
-    * à la dernière validation du contenu de la cession obtenue par scan(s) des 
+    * Estampille la cession passée en paramètre avec la date correspondant
+    * à la dernière validation du contenu de la cession obtenue par scan(s) des
     * boites de transfert.
     * @param cess
     * @param date complete full scan check Calendar

@@ -84,12 +84,19 @@ public class CodeAssigneManagerImpl implements CodeAssigneManager
    private final Log log = LogFactory.getLog(CodeAssigneManager.class);
 
    private CodeAssigneDao codeAssigneDao;
+
    private EchantillonDao echantillonDao;
+
    private TableCodageDao tableCodageDao;
+
    private OperationManager operationManager;
+
    private OperationTypeDao operationTypeDao;
+
    private CodeCommonValidator codeCommonValidator;
+
    private BanqueTableCodageDao banqueTableCodageDao;
+
    private PrelevementDao prelevementDao;
 
    public void setCodeAssigneDao(final CodeAssigneDao cUDao){
@@ -192,7 +199,7 @@ public class CodeAssigneManagerImpl implements CodeAssigneManager
                CreateOrUpdateUtilities.createAssociateOperation(code, operationManager,
                   operationTypeDao.findByNom("Creation").get(0), utilisateur);
             }else{
-               // enregistre une modification si code ou libelle 
+               // enregistre une modification si code ou libelle
                // a changé
                final CodeAssigne inBase = codeAssigneDao.findById(code.getCodeAssigneId());
 
@@ -217,7 +224,7 @@ public class CodeAssigneManagerImpl implements CodeAssigneManager
    }
 
    /**
-    * Verifie que les Objets devant etre obligatoirement associes 
+    * Verifie que les Objets devant etre obligatoirement associes
     * sont non nulls et lance la validation via le Validator.
     * @param code CodeAssigne
     * @param echantillon
@@ -243,13 +250,13 @@ public class CodeAssigneManagerImpl implements CodeAssigneManager
          // nullify oneToOne relationship
          //			if (code.getEchanExpOrg() != null
          //					&& code.getEchanExpOrg()
-         //						.getCodeOrganeExport() != null 
+         //						.getCodeOrganeExport() != null
          //					&& code.getEchanExpOrg()
          //						.getCodeOrganeExport().equals(code)) {
          //				code.getEchanExpOrg().setCodeOrganeExport(null);
          ////				echantillonDao.mergeObject(code.getEchanExpOrg());
          //			}
-         //			if (code.getEchanExpLes() != null 
+         //			if (code.getEchanExpLes() != null
          //					&& code.getEchanExpLes()
          //							.getCodeLesExport() != null
          //					&& code.getEchanExpLes()
@@ -384,18 +391,18 @@ public class CodeAssigneManagerImpl implements CodeAssigneManager
             //				rs2.first();
             //				maxCdId = rs2.getInt(1);
 
-            //				String sql = "insert into CODE_ASSIGNE (CODE_ASSIGNE_ID, ECHANTILLON_ID, " 
+            //				String sql = "insert into CODE_ASSIGNE (CODE_ASSIGNE_ID, ECHANTILLON_ID, "
             //						+ "CODE, LIBELLE, CODE_REF_ID, TABLE_CODAGE_ID, IS_ORGANE, "
             //						+ "IS_MORPHO, ORDRE, EXPORT) "
             //						+ "values (?,?,?,?,?,?,?,?,?,?)";
-            //				
+            //
             //				pstmtCd = DataSourceUtils.getConnection(dataSource)
             //						.prepareStatement(sql);
-            //				
-            //				String sql2 = "insert into OPERATION (UTILISATEUR_ID, " 
+            //
+            //				String sql2 = "insert into OPERATION (UTILISATEUR_ID, "
             //						+ "OBJET_ID, ENTITE_ID, OPERATION_TYPE_ID, "
             //						+ "DATE_, V1)"
-            //						+ "values (?,?,?,?,?,?)";		
+            //						+ "values (?,?,?,?,?,?)";
             //				pstmtOp = DataSourceUtils.getConnection(dataSource)
             //						.prepareStatement(sql2);
 
@@ -459,7 +466,7 @@ public class CodeAssigneManagerImpl implements CodeAssigneManager
                jdbcSuite.getPstmtOp().setTimestamp(5, new java.sql.Timestamp(Utils.getCurrentSystemCalendar().getTimeInMillis()));
                jdbcSuite.getPstmtOp().setBoolean(6, false);
                jdbcSuite.getPstmtOp().addBatch();
-               //					} 
+               //					}
                //					else {
                //						throwDoublonException();
                //					}
@@ -474,19 +481,19 @@ public class CodeAssigneManagerImpl implements CodeAssigneManager
             throw e;
          }finally{
             ////				if (stmt != null) {
-            //					try { stmt.close(); 
+            //					try { stmt.close();
             //					} catch (Exception e) { stmt = null; }
             //				}
             //				if (pstmtCd != null) {
-            //					try { pstmtCd.close(); 
+            //					try { pstmtCd.close();
             //					} catch (Exception e) { pstmtCd = null; }
             //				}
             //				if (pstmtOp != null) {
-            //					try { pstmtOp.close(); 
+            //					try { pstmtOp.close();
             //					} catch (Exception e) { pstmtOp = null; }
             //				}
             //				if (rs2 != null) {
-            //					try { rs2.close(); 
+            //					try { rs2.close();
             //					} catch (Exception e) { rs2 = null; }
             //				}
          }

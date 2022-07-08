@@ -1,5 +1,5 @@
 /**
- * Copyright ou © ou Copr. Assistance Publique des Hôpitaux de 
+ * Copyright ou © ou Copr. Assistance Publique des Hôpitaux de
  * PARIS et SESAN
  * projet-tk@sesan.fr
  *
@@ -54,7 +54,7 @@ import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
 /**
  *
- * Controller gérant le formulaire de recherche avancée 
+ * Controller gérant le formulaire de recherche avancée
  * sous le gestionnaire GATSBI.
  * Controller créé le 26/06/2021.
  *
@@ -62,88 +62,87 @@ import fr.aphp.tumorotek.webapp.general.SessionUtils;
  * @version 2.3.0-gatsbi
  *
  */
-public class FicheRechercheAvanceeGatsbi extends FicheRechercheAvancee {
+public class FicheRechercheAvanceeGatsbi extends FicheRechercheAvancee
+{
 
-	private static final long serialVersionUID = -7186817237148944889L;
+   private static final long serialVersionUID = -7186817237148944889L;
 
-	private Grid gatsbiContainer;
-	
-	List<Div> itemDivs = new ArrayList<Div>();
+   private Grid gatsbiContainer;
 
-	@Override
-	public void doAfterCompose(final Component comp) throws Exception{
-		super.doAfterCompose(comp);
-		
-		List<Div> contexteItemDivs = new ArrayList<Div>();
-		List<Div> contexteBlockDivs = new ArrayList<Div>();
-		
-		for (Contexte contexte : SessionUtils.getGatsbiContextes()) {
-			contexteItemDivs.clear();
-			contexteBlockDivs.clear();
-			
-			contexteItemDivs.addAll(GatsbiController
-				.wireItemDivsFromMainComponent(contexte.getContexteType(), gatsbiContainer));
-			contexteBlockDivs.addAll(GatsbiController
-				.wireBlockDivsFromMainComponent(contexte.getContexteType(), gatsbiContainer));
+   List<Div> itemDivs = new ArrayList<>();
 
-			GatsbiController.showOrhideItems(contexteItemDivs, contexteBlockDivs, contexte);
-			
-			// add itemDiv to all items div list, so that thesaurus restriction applies once
-			itemDivs.addAll(contexteItemDivs);
-		}
-		
-		// hide group labo Inter
-		if (groupLaboInters != null) {
-			groupLaboInters.setVisible(SessionUtils.getCurrentGatsbiContexteForEntiteId(2) != null 
-					&& SessionUtils.getCurrentGatsbiContexteForEntiteId(2).getSiteIntermediaire());
-		}
-	}
-	
-	/**
-	 * Gatsbi surcharge cette méthode pour restreindre les valeurs 
-	 * de thésaurus après leur initialisation.
-	 */
-	@Override
-	protected void applyThesaurusRestrictions() {
-		try {
-			GatsbiController.appliThesaurusValues(itemDivs, SessionUtils.getGatsbiContextes(), this);
-		} catch (Exception e) {
-			log.debug(e);
-			Messagebox.show(handleExceptionMessage(e), "Error", Messagebox.OK, Messagebox.ERROR);
-		}
-	}
+   @Override
+   public void doAfterCompose(final Component comp) throws Exception{
+      super.doAfterCompose(comp);
 
-	/**
-	 * Gatsbi modifie cette liste et implémente donc le setter
-	 * @param risks
-	 */
-	public void setRisquesModel(ListModelList<Risque> risks) {
-		getRisquesModel().clear();
-		getRisquesModel().addAll(risks);
-	}
-	
-	/**** Gastbi setter/getter surcharges pour apache's PropertyUtils.g/setProperty ******/
-	public List<NonConformite> getNcarrivee() {
-		return getNCarrivee();
-	}
-	
-	public void setNcarrivee(List<NonConformite> _ncs) {
-		setNCarrivee(_ncs);
-	}
-	
-	public List<NonConformite> getNctraitement() {
-		return getNCechanTraitement();
-	}
-	
-	public void setNctraitement(List<NonConformite> _ncs) {
-		setNCechanTraitement(_ncs);
-	}
-	
-	public List<NonConformite> getNccession() {
-		return getNCechanCession();
-	}
-	
-	public void setNccession(List<NonConformite> _ncs) {
-		setNCechanCession(_ncs);
-	}
+      final List<Div> contexteItemDivs = new ArrayList<>();
+      final List<Div> contexteBlockDivs = new ArrayList<>();
+
+      for(final Contexte contexte : SessionUtils.getGatsbiContextes()){
+         contexteItemDivs.clear();
+         contexteBlockDivs.clear();
+
+         contexteItemDivs.addAll(GatsbiController.wireItemDivsFromMainComponent(contexte.getContexteType(), gatsbiContainer));
+         contexteBlockDivs.addAll(GatsbiController.wireBlockDivsFromMainComponent(contexte.getContexteType(), gatsbiContainer));
+
+         GatsbiController.showOrhideItems(contexteItemDivs, contexteBlockDivs, contexte);
+
+         // add itemDiv to all items div list, so that thesaurus restriction applies once
+         itemDivs.addAll(contexteItemDivs);
+      }
+
+      // hide group labo Inter
+      if(groupLaboInters != null){
+         groupLaboInters.setVisible(SessionUtils.getCurrentGatsbiContexteForEntiteId(2) != null
+            && SessionUtils.getCurrentGatsbiContexteForEntiteId(2).getSiteIntermediaire());
+      }
+   }
+
+   /**
+    * Gatsbi surcharge cette méthode pour restreindre les valeurs
+    * de thésaurus après leur initialisation.
+    */
+   @Override
+   protected void applyThesaurusRestrictions(){
+      try{
+         GatsbiController.appliThesaurusValues(itemDivs, SessionUtils.getGatsbiContextes(), this);
+      }catch(final Exception e){
+         log.debug(e);
+         Messagebox.show(handleExceptionMessage(e), "Error", Messagebox.OK, Messagebox.ERROR);
+      }
+   }
+
+   /**
+    * Gatsbi modifie cette liste et implémente donc le setter
+    * @param risks
+    */
+   public void setRisquesModel(final ListModelList<Risque> risks){
+      getRisquesModel().clear();
+      getRisquesModel().addAll(risks);
+   }
+
+   /**** Gastbi setter/getter surcharges pour apache's PropertyUtils.g/setProperty ******/
+   public List<NonConformite> getNcarrivee(){
+      return getNCarrivee();
+   }
+
+   public void setNcarrivee(final List<NonConformite> _ncs){
+      setNCarrivee(_ncs);
+   }
+
+   public List<NonConformite> getNctraitement(){
+      return getNCechanTraitement();
+   }
+
+   public void setNctraitement(final List<NonConformite> _ncs){
+      setNCechanTraitement(_ncs);
+   }
+
+   public List<NonConformite> getNccession(){
+      return getNCechanCession();
+   }
+
+   public void setNccession(final List<NonConformite> _ncs){
+      setNCechanCession(_ncs);
+   }
 }

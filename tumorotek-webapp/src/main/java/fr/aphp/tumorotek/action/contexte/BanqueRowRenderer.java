@@ -88,26 +88,26 @@ public class BanqueRowRenderer extends TKSelectObjectRenderer<Banque>
    }
 
    //	/**
-   //	 * Dessine dans un label le membre du premier objet et 
-   //	 * l'utilisation d'un tooltip pour afficher la totalité de la liste 
+   //	 * Dessine dans un label le membre du premier objet et
+   //	 * l'utilisation d'un tooltip pour afficher la totalité de la liste
    //	 * des autres.
    //	 * @param liste des objets
    //	 * @param champ a afficher (String)
    //	 * @param row Parent
    //	 */
-   //	private void drawObjectListLabel(List< ? extends Object> objs, 
+   //	private void drawObjectListLabel(List< ? extends Object> objs,
    //													String champ,  Row row) {
-   //		
+   //
    //		Label label1 = new Label();
-   //		
+   //
    //		try {
    //			if (!objs.isEmpty()) {
    //				Object tmp = PropertyUtils
    //										.getSimpleProperty(objs.get(0), champ);
    //				if (tmp != null) {
    //					label1.setValue((String) tmp);
-   //				} 
-   //				// dessine le label avec un lien vers popup 
+   //				}
+   //				// dessine le label avec un lien vers popup
    //				if (objs.size() > 1) {
    //					Hbox labelAndLinkBox = new Hbox();
    //					labelAndLinkBox.setSpacing("5px");
@@ -121,15 +121,15 @@ public class BanqueRowRenderer extends TKSelectObjectRenderer<Banque>
    //					Label labelNext = null;
    //					Vbox popupVbox = new Vbox();
    //					while (it.hasNext()) {
-   //						next = (Object) it.next(); 
+   //						next = (Object) it.next();
    //						tmp2 = PropertyUtils
    //									.getSimpleProperty(next, champ);
    //						if (tmp2 != null) {
    //							labelNext = new Label((String) tmp2);
    //							labelNext.setSclass("formValue");
    //							popupVbox.appendChild(labelNext);
-   //						}						
-   //						
+   //						}
+   //
    //					}
    //					malPopUp.appendChild(popupVbox);
    //					moreLabel.setTooltip(malPopUp);

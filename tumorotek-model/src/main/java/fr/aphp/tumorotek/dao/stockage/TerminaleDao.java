@@ -114,7 +114,7 @@ public interface TerminaleDao extends GenericDaoJpa<Terminale, Integer>
     * @return Liste de terminales.
     */
    List<Terminale> findByTwoExcludedIdsWithEnceinte(Integer terminaleId, Integer terminaleId2, Enceinte enceinte);
-   
+
    /**
     * Recherche les terminales dont l'alias égale la valeur passée en paramètre
     * @param alias

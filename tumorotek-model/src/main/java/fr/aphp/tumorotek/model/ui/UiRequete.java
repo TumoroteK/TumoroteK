@@ -79,9 +79,13 @@ public class UiRequete implements java.io.Serializable //FIXME Class non utilis√
    private static final long serialVersionUID = -7133884479005275879L;
 
    private Integer uiRequeteId;
+
    private String nom;
+
    private Utilisateur utilisateur;
+
    private Entite entite;
+
    private Integer ordre;
 
    private Set<UiCompValue> uiCompValues = new HashSet<>();

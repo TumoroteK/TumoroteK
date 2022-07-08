@@ -114,64 +114,94 @@ public class ServiceManagerTest extends AbstractManagerTest4
 
    @Autowired
    private ServiceManager serviceManager;
+
    @Autowired
    private EtablissementManager etablissementManager;
+
    @Autowired
    private EtablissementDao etablissementDao;
+
    @Autowired
    private CoordonneeManager coordonneeManager;
+
    @Autowired
    private CollaborateurDao collaborateurDao;
+
    @Autowired
    private SpecialiteManager specialiteManager;
+
    @Autowired
    private TitreManager titreManager;
+
    @Autowired
    private CollaborateurManager collaborateurManager;
+
    @Autowired
    private UtilisateurDao utilisateurDao;
+
    @Autowired
    private PrelevementManager prelevementManager;
+
    @Autowired
    private PrelevementDao prelevementDao;
+
    @Autowired
    private LaboInterDao laboInterDao;
+
    @Autowired
    private BanqueManager banqueManager;
+
    @Autowired
    private BanqueDao banqueDao;
+
    @Autowired
    private PlateformeDao plateformeDao;
+
    @Autowired
    private ContratManager contratManager;
+
    @Autowired
    private ContratDao contratDao;
+
    @Autowired
    private ContexteDao contexteDao;
+
    @Autowired
    private CessionDao cessionDao;
+
    @Autowired
    private CessionTypeDao cessionTypeDao;
+
    @Autowired
    private CessionStatutDao cessionStatutDao;
+
    @Autowired
    private CessionManager cessionManager;
+
    @Autowired
    private NatureDao natureDao;
+
    @Autowired
    private MaladieDao maladieDao;
+
    @Autowired
    private ConsentTypeDao consentTypeDao;
+
    @Autowired
    private ConteneurDao conteneurDao;
+
    @Autowired
    private ConteneurManager conteneurManager;
+
    @Autowired
    private ConteneurTypeDao conteneurTypeDao;
+
    @Autowired
    private EntiteDao entiteDao;
+
    @Autowired
    private OperationTypeDao operationTypeDao;
+
    @Autowired
    private OperationDao operationDao;
 

@@ -53,7 +53,7 @@ public interface ModePrepaManager extends PfDependantTKThesaurusManager<ModePrep
 {
 
    /**
-    * Recherche un mode de préparation dont l'identifiant est 
+    * Recherche un mode de préparation dont l'identifiant est
     * passé en paramètre.
     * @param modePrepaId Identifiant du mode de préparation que l'on recherche.
     * @return Un ModePrepa.
@@ -84,7 +84,7 @@ public interface ModePrepaManager extends PfDependantTKThesaurusManager<ModePrep
    //	 * @return Vrai si le mode est utilisé.
    //	 */
    //	Boolean isUsedObjectManager(ModePrepa mode);
-   //	
+   //
    //	/**
    //	 * Persist une instance de ModePrepa dans la base de données.
    //	 * @param mode Nouvelle instance de l'objet à créer.
@@ -92,7 +92,7 @@ public interface ModePrepaManager extends PfDependantTKThesaurusManager<ModePrep
    //	 * l'objet à créer se trouve déjà dans la base.
    //	 */
    //	void createObjectManager(ModePrepa mode);
-   //	
+   //
    //	/**
    //	 * Sauvegarde les modifications apportées à un objet persistant.
    //	 * @param mode Objet à mettre à jour dans la base.
@@ -100,7 +100,7 @@ public interface ModePrepaManager extends PfDependantTKThesaurusManager<ModePrep
    //	 * l'objet à créer se trouve déjà dans la base.
    //	 */
    //	void updateObjectManager(ModePrepa mode);
-   //	
+   //
    //	/**
    //	 * Supprime un EchantillonType de la base de données.
    //	 * @param mode EchantillonType à supprimer de la base de données.

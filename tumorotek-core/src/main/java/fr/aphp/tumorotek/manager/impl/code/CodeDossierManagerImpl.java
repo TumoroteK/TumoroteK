@@ -76,12 +76,19 @@ public class CodeDossierManagerImpl implements CodeDossierManager
    private final Log log = LogFactory.getLog(CodeDossierManager.class);
 
    private CodeDossierDao codeDossierDao;
+
    private CodeUtilisateurManager codeUtilisateurManager;
+
    private OperationManager operationManager;
+
    private OperationTypeDao operationTypeDao;
+
    private BanqueDao banqueDao;
+
    private UtilisateurDao utilisateurDao;
+
    private CodeDossierValidator codeDossierValidator;
+
    private CodeSelectManager codeSelectManager;
 
    public void setCodeDossierValidator(final CodeDossierValidator cDValidator){
@@ -236,7 +243,7 @@ public class CodeDossierManagerImpl implements CodeDossierManager
    }
 
    /**
-    * Verifie que les Objets devant etre obligatoirement associes 
+    * Verifie que les Objets devant etre obligatoirement associes
     * sont non nulls et lance la validation via le Validator.
     * @param dos CodeDossier
     * @param bank

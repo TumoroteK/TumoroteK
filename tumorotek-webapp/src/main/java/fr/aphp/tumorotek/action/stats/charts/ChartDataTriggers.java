@@ -38,30 +38,44 @@ package fr.aphp.tumorotek.action.stats.charts;
 public class ChartDataTriggers
 {
    Boolean patientPfModelTrg;
+
    Boolean prelevementPfModelTrg;
+
    Boolean echanPfModelTrg;
+
    Boolean derivePfModelTrg;
+
    Boolean cessionPfModelTrg;
 
    Boolean patientCollModelTrg;
+
    Boolean prelevementCollModelTrg;
+
    Boolean echanCollModelTrg;
+
    Boolean deriveCollModelTrg;
+
    Boolean cessionCollModelTrg;
 
    Boolean prelTypeCollModelTrg;
+
    Boolean prelEtabCollModelTrg;
+
    Boolean prelConsentCollModelTrg;
 
    Boolean echanTypeCollModelTrg;
+
    Boolean echanCimCollModelTrg;
+
    Boolean echanOrgCollModelTrg;
 
    Boolean deriveTypeCollModelTrg;
 
    Boolean echansCedesCollModelTrg;
+
    //
    Boolean derivesCedesCollModelTrg;
+
    Boolean cessionTypeCollModelTrg;
 
    public Boolean getPatientPfModelTrg(){
@@ -231,7 +245,7 @@ public class ChartDataTriggers
    //	GraphesModele echanCollModel;
    //	GraphesModele deriveCollModel;
    //	GraphesModele cessionCollModel;
-   //	
+   //
    //	GraphesModele echansCedesCollModel;
    //	GraphesModele derivesCedesCollModel;
    //

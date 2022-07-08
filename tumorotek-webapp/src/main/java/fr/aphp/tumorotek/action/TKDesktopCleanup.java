@@ -57,17 +57,17 @@ import fr.aphp.tumorotek.webapp.general.export.Export;
 public class TKDesktopCleanup implements DesktopCleanup
 {
 
-   // 	private Log log = LogFactory.getLog(TKDesktopCleanup.class); 
+   // 	private Log log = LogFactory.getLog(TKDesktopCleanup.class);
 
    @Override
    public void cleanup(final Desktop desk) throws Exception{
       //		deleteTmpFiles();
       //		if (d.getRequestPath().contains("main.zul")) {
       //			 new SecurityContextLogoutHandler()
-      //			 	.logout((HttpServletRequest) 
-      //			 			Executions.getCurrent().getNativeRequest(), 
-      //					 (HttpServletResponse) 
-      //					 	Executions.getCurrent().getNativeResponse(), 
+      //			 	.logout((HttpServletRequest)
+      //			 			Executions.getCurrent().getNativeRequest(),
+      //					 (HttpServletResponse)
+      //					 	Executions.getCurrent().getNativeResponse(),
       //					 ((SecurityContext)
       //								SecurityContextHolder.getContext())
       //								.getAuthentication());
@@ -79,19 +79,19 @@ public class TKDesktopCleanup implements DesktopCleanup
    //	 * Nettoie l'arborescence en supprimant les _tmp qui auraient persisté.
    //	 */
    //	private void deleteTmpFiles() {
-   //		
+   //
    //		File dir = new File(SessionUtils.getSystemBaseDir());
-   //		
-   //		if (dir != null) {	
-   //			FilenameFilter filter = new FilenameFilter() { 
-   //				public boolean accept(File dir, String name) { 
-   //					return name.endsWith("_tmp"); 
-   //				} 
-   //			};  
-   //			
+   //
+   //		if (dir != null) {
+   //			FilenameFilter filter = new FilenameFilter() {
+   //				public boolean accept(File dir, String name) {
+   //					return name.endsWith("_tmp");
+   //				}
+   //			};
+   //
    //			List<File> tmps = new ArrayList<File>();
    //			traverseDirectoriesToFindTemps(dir, tmps, filter);
-   //			
+   //
    //			Iterator<File> tmpsIt = tmps.iterator();
    //			File next;
    //			while (tmpsIt.hasNext()) {
@@ -113,8 +113,8 @@ public class TKDesktopCleanup implements DesktopCleanup
    //	 * @param tmps
    //	 * @param filter
    //	 */
-   //	private void traverseDirectoriesToFindTemps(File dir, 
-   //											List<File> tmps, 
+   //	private void traverseDirectoriesToFindTemps(File dir,
+   //											List<File> tmps,
    //											FilenameFilter filter) {
    //		if (dir.isDirectory()) {
    //			// ajoute _tmp
@@ -122,16 +122,16 @@ public class TKDesktopCleanup implements DesktopCleanup
    //			for (int j = 0; j < tmpsArray.length; j++) {
    //				tmps.add(tmpsArray[j]);
    //			}
-   //			
-   //			String[] children = dir.list(); 
-   //			for (int i = 0; i < children.length; i++) { 
-   //				traverseDirectoriesToFindTemps(new File(dir, children[i]), 
-   //															tmps, filter); 
-   //			} 
-   //		} 
+   //
+   //			String[] children = dir.list();
+   //			for (int i = 0; i < children.length; i++) {
+   //				traverseDirectoriesToFindTemps(new File(dir, children[i]),
+   //															tmps, filter);
+   //			}
+   //		}
    //	}
-   //	
-   
+   //
+
    private void destroyExportAliveThreads(final Desktop desk){
       if(desk.hasAttribute("threads")){
          final List<Export> thrs = (List<Export>) desk.getAttribute("threads");

@@ -67,7 +67,7 @@ public interface ConsultationIntfDao extends GenericDaoJpa<ConsultationIntf, Int
    List<ConsultationIntf> findByEmetteurInDates(String e, Calendar date1, Calendar date2);
 
    /**
-    * Recherche les Consultations par emetteur et utilisateur 
+    * Recherche les Consultations par emetteur et utilisateur
     * dans une fourchette de date.
     * @return Une liste de consultations.
     */

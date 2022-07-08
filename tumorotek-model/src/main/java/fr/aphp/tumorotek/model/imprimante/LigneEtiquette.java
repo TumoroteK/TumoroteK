@@ -74,15 +74,23 @@ public class LigneEtiquette implements TKdataObject, Serializable
    private static final long serialVersionUID = 865826802338181646L;
 
    private Integer ligneEtiquetteId;
+
    private Integer ordre;
+
    private Boolean isBarcode;
+
    private String entete;
+
    private String contenu;
+
    private String font;
+
    private String style;
+
    private Integer size;
 
    private Modele modele;
+
    private Set<ChampLigneEtiquette> champLigneEtiquettes = new HashSet<>();
 
    public LigneEtiquette(){}

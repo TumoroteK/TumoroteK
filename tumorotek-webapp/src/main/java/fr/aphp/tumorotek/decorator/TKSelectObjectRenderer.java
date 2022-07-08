@@ -73,320 +73,323 @@ import fr.aphp.tumorotek.model.systeme.Unite;
 public class TKSelectObjectRenderer<T extends TKdataObject> implements RowRenderer<T>
 {
 
-	private boolean selectionMode = true;
-	private boolean checkAll = false;
-	protected boolean anonyme = false;
-	private boolean ttesCollections = false;
-	private List<? extends Object> selectedObjects;
+   private boolean selectionMode = true;
 
-	public TKSelectObjectRenderer(){
-		super();
-	}
+   private boolean checkAll = false;
 
-	@Override
-	public void render(final Row row, final TKdataObject data, final int index){
-		drawCheckbox(row, data, index);
-	}
+   protected boolean anonyme = false;
 
-	/**
-	 * Dessine la checkbox
-	 * @param row
-	 * @param data
-	 * @param index
-	 * @since 2.2.0
-	 */
-	protected void drawCheckbox(final Row row, final TKdataObject data, final int index){
-		if(selectionMode){
-			// checkbox
-			final Checkbox check = new Checkbox();
-			if(checkAll || (selectedObjects != null && selectedObjects.contains(data))){
-				check.setChecked(true);
-			}
-			check.addForward("onCheck", check.getParent(), "onCheckObject", data);
-			check.setParent(row);
-		}
-	}
+   private boolean ttesCollections = false;
 
-	/**
-	 * Récupère la date de création système du patient.
-	 * @param Parent
-	 * @return Date de création.
-	 */
-	protected String getDateCreation(final Object obj){
-		final Calendar date = ManagerLocator.getOperationManager().findDateCreationManager(obj);
-		if(date != null){
-			return ObjectTypesFormatters.dateRenderer2(date);
-		}
-		return null;
-	}
+   private List<? extends Object> selectedObjects;
 
-	/**
-	 * Crée un bloc anonyme pour cacher la valeur d'un champ.
-	 * @return
-	 */
-	public static Label createAnonymeBlock(){
-		final Label anonymeLabel = new Label();
-		AbstractController.makeLabelAnonyme(anonymeLabel, false);
+   public TKSelectObjectRenderer(){
+      super();
+   }
 
-		return anonymeLabel;
-	}
+   @Override
+   public void render(final Row row, final TKdataObject data, final int index){
+      drawCheckbox(row, data, index);
+   }
 
-	/**
-	 * Crée un lien anonyme pour cacher la valeur d'un champ.
-	 * @return
-	 */
-	protected Label createAnonymeLink(){
+   /**
+    * Dessine la checkbox
+    * @param row
+    * @param data
+    * @param index
+    * @since 2.2.0
+    */
+   protected void drawCheckbox(final Row row, final TKdataObject data, final int index){
+      if(selectionMode){
+         // checkbox
+         final Checkbox check = new Checkbox();
+         if(checkAll || (selectedObjects != null && selectedObjects.contains(data))){
+            check.setChecked(true);
+         }
+         check.addForward("onCheck", check.getParent(), "onCheckObject", data);
+         check.setParent(row);
+      }
+   }
 
-		final Label anonymeLabel = new Label();
-		AbstractController.makeLabelAnonyme(anonymeLabel, true);
+   /**
+    * Récupère la date de création système du patient.
+    * @param Parent
+    * @return Date de création.
+    */
+   protected String getDateCreation(final Object obj){
+      final Calendar date = ManagerLocator.getOperationManager().findDateCreationManager(obj);
+      if(date != null){
+         return ObjectTypesFormatters.dateRenderer2(date);
+      }
+      return null;
+   }
 
-		return anonymeLabel;
-	}
+   /**
+    * Crée un bloc anonyme pour cacher la valeur d'un champ.
+    * @return
+    */
+   public static Label createAnonymeBlock(){
+      final Label anonymeLabel = new Label();
+      AbstractController.makeLabelAnonyme(anonymeLabel, false);
 
-	/**
-	 * Dessine dans un label le ou les libelles 
-	 * l'utilisation d'un tooltip pour afficher la totalité.
-	 * @param
-	 * @param row Parent
-	 */
-	protected void drawListLabel(final List<String> liste, final Row row, final Component parent){
+      return anonymeLabel;
+   }
 
-		if(!liste.isEmpty()){
-			final Label label1 = new Label(liste.get(0));
-			// dessine le label avec un lien vers popup 
-			if(liste.size() > 1){
-				final Hbox labelAndLinkBox = new Hbox();
-				labelAndLinkBox.setSpacing("5px");
-				final Label moreLabel = new Label("...");
-				moreLabel.setClass("formLink");
-				final Popup popUp = new Popup();
-				popUp.setParent(parent);
-				final Iterator<String> it = liste.iterator();
-				String label = null;
-				Label libelleStaticLabel = null;
-				final Vbox popupVbox = new Vbox();
-				while(it.hasNext()){
-					label = it.next();
-					libelleStaticLabel = new Label(label);
-					libelleStaticLabel.setSclass("formValue");
+   /**
+    * Crée un lien anonyme pour cacher la valeur d'un champ.
+    * @return
+    */
+   protected Label createAnonymeLink(){
 
-					popupVbox.appendChild(libelleStaticLabel);
-				}
-				popUp.appendChild(popupVbox);
-				moreLabel.setTooltip(popUp);
-				labelAndLinkBox.appendChild(label1);
-				labelAndLinkBox.appendChild(moreLabel);
-				labelAndLinkBox.setParent(row);
-			}else{
-				label1.setParent(row);
-			}
-		}else{
-			new Label().setParent(row);
-		}
-	}
+      final Label anonymeLabel = new Label();
+      AbstractController.makeLabelAnonyme(anonymeLabel, true);
 
-	public boolean isSelectionMode(){
-		return selectionMode;
-	}
+      return anonymeLabel;
+   }
 
-	public void setSelectionMode(final boolean selection){
-		this.selectionMode = selection;
-	}
+   /**
+    * Dessine dans un label le ou les libelles
+    * l'utilisation d'un tooltip pour afficher la totalité.
+    * @param
+    * @param row Parent
+    */
+   protected void drawListLabel(final List<String> liste, final Row row, final Component parent){
 
-	public boolean isCheckAll(){
-		return checkAll;
-	}
+      if(!liste.isEmpty()){
+         final Label label1 = new Label(liste.get(0));
+         // dessine le label avec un lien vers popup
+         if(liste.size() > 1){
+            final Hbox labelAndLinkBox = new Hbox();
+            labelAndLinkBox.setSpacing("5px");
+            final Label moreLabel = new Label("...");
+            moreLabel.setClass("formLink");
+            final Popup popUp = new Popup();
+            popUp.setParent(parent);
+            final Iterator<String> it = liste.iterator();
+            String label = null;
+            Label libelleStaticLabel = null;
+            final Vbox popupVbox = new Vbox();
+            while(it.hasNext()){
+               label = it.next();
+               libelleStaticLabel = new Label(label);
+               libelleStaticLabel.setSclass("formValue");
 
-	public void setCheckAll(final boolean check){
-		this.checkAll = check;
-	}
+               popupVbox.appendChild(libelleStaticLabel);
+            }
+            popUp.appendChild(popupVbox);
+            moreLabel.setTooltip(popUp);
+            labelAndLinkBox.appendChild(label1);
+            labelAndLinkBox.appendChild(moreLabel);
+            labelAndLinkBox.setParent(row);
+         }else{
+            label1.setParent(row);
+         }
+      }else{
+         new Label().setParent(row);
+      }
+   }
 
-	public boolean isAnonyme(){
-		return anonyme;
-	}
+   public boolean isSelectionMode(){
+      return selectionMode;
+   }
 
-	public void setAnonyme(final boolean ano){
-		this.anonyme = ano;
-	}
+   public void setSelectionMode(final boolean selection){
+      this.selectionMode = selection;
+   }
 
-	public boolean isTtesCollections(){
-		return ttesCollections;
-	}
+   public boolean isCheckAll(){
+      return checkAll;
+   }
 
-	public void setTtesCollections(final boolean c){
-		this.ttesCollections = c;
-	}
+   public void setCheckAll(final boolean check){
+      this.checkAll = check;
+   }
 
-	public void setSelectedObjects(final List<? extends Object> s){
-		this.selectedObjects = s;
-	}
+   public boolean isAnonyme(){
+      return anonyme;
+   }
 
-	/**
-	 * Methode de rendu générique d'une proprité d'un objet de type 
-	 * alphanumérique sous la forme d'une chaine de caractère, 
-	 * sans formatage
-	 * @param row
-	 * @param TK data POJO / decorator
-	 * @param propName
-	 * @throws IllegalAccessException
-	 * @throws InvocationTargetException
-	 * @throws NoSuchMethodException
-	 * @since 2.3.0-gatsbi
-	 */
-	public static void renderAlphanumPropertyAsStringNoFormat(Row row, Object obj, String propName) 
-			throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
-		String value = (String) PropertyUtils.getSimpleProperty(obj, propName);
-		if (value != null) {
-			new Label(value).setParent(row);
-		} else {
-			new Label().setParent(row);
-		}
-	}
+   public void setAnonyme(final boolean ano){
+      this.anonyme = ano;
+   }
 
-	/**
-	 * Methode de rendu générique d'une proprité d'un objet de type 
-	 * datetime sous la forme d'une chaine de caractère, 
-	 * @param row
-	 * @param TK data POJO / decorator
-	 * @param propName
-	 * @throws IllegalAccessException
-	 * @throws InvocationTargetException
-	 * @throws NoSuchMethodException
-	 * @since 2.3.0-gatsbi
-	 */
-	public static void renderDateProperty(Row row, Object obj, String propName) 
-			throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
-		Object dateValue = PropertyUtils.getSimpleProperty(obj, propName);
-		if (dateValue != null) {
-			new Label(ObjectTypesFormatters.dateRenderer2(dateValue)).setParent(row);
-		} else {
-			new Label().setParent(row);
-		}
-	}
+   public boolean isTtesCollections(){
+      return ttesCollections;
+   }
 
-	/**
-	 * Methode de rendu générique d'une proprité d'un objet de type 
-	 * TKThesaurusObject sous la forme d'une chaine de caractère, 
-	 * @param row
-	 * @param TK data POJO / decorator
-	 * @param propName
-	 * @throws IllegalAccessException
-	 * @throws InvocationTargetException
-	 * @throws NoSuchMethodException
-	 * @since 2.3.0-gatsbi
-	 */
-	public static void renderThesObjectProperty(Row row, Object obj, String propName) 
-			throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
-		TKThesaurusObject thesObjValue = (TKThesaurusObject) PropertyUtils.getSimpleProperty(obj, propName);
-		if (thesObjValue != null) {
-			new Label(thesObjValue.getNom()).setParent(row);
-		} else {
-			new Label().setParent(row);
-		}
-	}
-	
-	/**
-	 * Methode de rendu générique d'une proprité d'un objet de type 
-	 * Booléen sous la forme d'une chaine de caractère, 
-	 * @param row
-	 * @param TK data object
-	 * @param propName
-	 * @throws IllegalAccessException
-	 * @throws InvocationTargetException
-	 * @throws NoSuchMethodException
-	 * @since 2.3.0-gatsbi
-	 */
-	public static void renderBoolProperty(Row row, TKdataObject obj, String propName) 
-			throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
-		Boolean boolValue = (Boolean) PropertyUtils.getSimpleProperty(obj, propName);
-		if (boolValue != null) {
-			new Label(ObjectTypesFormatters.booleanLitteralFormatter(boolValue)).setParent(row);
-		} else {
-			new Label().setParent(row);
-		}
-	}
-	
-	/**
-	 * Methode de rendu générique d'une proprité d'un objet de type 
-	 * Number sous la forme d'une chaine de caractère, 
-	 * @param row
-	 * @param TK data POJO / decorator
-	 * @param propName
-	 * @throws IllegalAccessException
-	 * @throws InvocationTargetException
-	 * @throws NoSuchMethodException
-	 * @throws ParseException 
-	 * @since 2.3.0-gatsbi
-	 */
-	public static void renderNumberProperty(Row row, Object obj, String propName) 
-			throws IllegalAccessException, InvocationTargetException, NoSuchMethodException, ParseException {
-		Number numValue = (Number) PropertyUtils.getSimpleProperty(obj, propName);
-		if (numValue != null) {
-			new Label(ObjectTypesFormatters.formatAnyNumber(numValue)).setParent(row);
-		} else {
-			new Label().setParent(row);
-		}
-	}
-	
-	/**
-	 * Methode de rendu générique d'une proprité d'un objet de type 
-	 * Collaborateur sous la forme d'une chaine de caractère, 
-	 * @param row
-	 * @param TK data POJO / decorator
-	 * @param propName
-	 * @throws IllegalAccessException
-	 * @throws InvocationTargetException
-	 * @throws NoSuchMethodException
-	 * @since 2.3.0-gatsbi
-	 */
-	public static void renderCollaborateurProperty(Row row, Object obj, String propName) 
-			throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
-		Collaborateur collValue = (Collaborateur) PropertyUtils.getSimpleProperty(obj, propName);
-		if (collValue != null) {
-			new Label(collValue.getNomAndPrenom()).setParent(row);
-		} else {
-			new Label().setParent(row);
-		}
-	}
-	
-	/**
-	 * Methode de rendu générique d'une proprité d'un objet de type 
-	 * Quantite (Number) + Unite sous la forme d'une chaine de caractère, 
-	 * @param row
-	 * @param TK data POJO / decorator
-	 * @param propName
-	 * @param unite propName
-	 * @throws IllegalAccessException
-	 * @throws InvocationTargetException
-	 * @throws NoSuchMethodException
-	 * @throws ParseException 
-	 * @since 2.3.0-gatsbi
-	 */
-	public static void renderQuantiteProperty(Row row, Object obj, String propName, String unitePropName) 
-			throws IllegalAccessException, InvocationTargetException, NoSuchMethodException, ParseException {
+   public void setTtesCollections(final boolean c){
+      this.ttesCollections = c;
+   }
 
-		Number qteValue = (Number) PropertyUtils.getSimpleProperty(obj, propName);
-		Unite uValue = (Unite) PropertyUtils.getSimpleProperty(obj, unitePropName);
-		
-		if (qteValue != null) {
-			new Label(ObjectTypesFormatters.formatAnyNumber(qteValue)
-				.concat(uValue != null ? " ".concat(uValue.getNom()) : "")).setParent(row);
-		} else {
-			new Label().setParent(row);
-		}
-	}
-	
-	/**
-	 * Sera surchargée par Gatsbi pour ne pas dessiner les icones 
-	 * quand les champs correspondants ne sont plus affichés dans les 
-	 * formulaires 
-	 * @since 2.3.0-gatsbi
-	 * @return true si les icones doivent être dessinées
-	 */
-	protected boolean areIconesRendered() {
-		return true;
-	}
-	
-	public void setIconesRendered(boolean _i) {
-	}
+   public void setSelectedObjects(final List<? extends Object> s){
+      this.selectedObjects = s;
+   }
+
+   /**
+    * Methode de rendu générique d'une proprité d'un objet de type
+    * alphanumérique sous la forme d'une chaine de caractère,
+    * sans formatage
+    * @param row
+    * @param TK data POJO / decorator
+    * @param propName
+    * @throws IllegalAccessException
+    * @throws InvocationTargetException
+    * @throws NoSuchMethodException
+    * @since 2.3.0-gatsbi
+    */
+   public static void renderAlphanumPropertyAsStringNoFormat(final Row row, final Object obj, final String propName)
+      throws IllegalAccessException, InvocationTargetException, NoSuchMethodException{
+      final String value = (String) PropertyUtils.getSimpleProperty(obj, propName);
+      if(value != null){
+         new Label(value).setParent(row);
+      }else{
+         new Label().setParent(row);
+      }
+   }
+
+   /**
+    * Methode de rendu générique d'une proprité d'un objet de type
+    * datetime sous la forme d'une chaine de caractère,
+    * @param row
+    * @param TK data POJO / decorator
+    * @param propName
+    * @throws IllegalAccessException
+    * @throws InvocationTargetException
+    * @throws NoSuchMethodException
+    * @since 2.3.0-gatsbi
+    */
+   public static void renderDateProperty(final Row row, final Object obj, final String propName)
+      throws IllegalAccessException, InvocationTargetException, NoSuchMethodException{
+      final Object dateValue = PropertyUtils.getSimpleProperty(obj, propName);
+      if(dateValue != null){
+         new Label(ObjectTypesFormatters.dateRenderer2(dateValue)).setParent(row);
+      }else{
+         new Label().setParent(row);
+      }
+   }
+
+   /**
+    * Methode de rendu générique d'une proprité d'un objet de type
+    * TKThesaurusObject sous la forme d'une chaine de caractère,
+    * @param row
+    * @param TK data POJO / decorator
+    * @param propName
+    * @throws IllegalAccessException
+    * @throws InvocationTargetException
+    * @throws NoSuchMethodException
+    * @since 2.3.0-gatsbi
+    */
+   public static void renderThesObjectProperty(final Row row, final Object obj, final String propName)
+      throws IllegalAccessException, InvocationTargetException, NoSuchMethodException{
+      final TKThesaurusObject thesObjValue = (TKThesaurusObject) PropertyUtils.getSimpleProperty(obj, propName);
+      if(thesObjValue != null){
+         new Label(thesObjValue.getNom()).setParent(row);
+      }else{
+         new Label().setParent(row);
+      }
+   }
+
+   /**
+    * Methode de rendu générique d'une proprité d'un objet de type
+    * Booléen sous la forme d'une chaine de caractère,
+    * @param row
+    * @param TK data object
+    * @param propName
+    * @throws IllegalAccessException
+    * @throws InvocationTargetException
+    * @throws NoSuchMethodException
+    * @since 2.3.0-gatsbi
+    */
+   public static void renderBoolProperty(final Row row, final TKdataObject obj, final String propName)
+      throws IllegalAccessException, InvocationTargetException, NoSuchMethodException{
+      final Boolean boolValue = (Boolean) PropertyUtils.getSimpleProperty(obj, propName);
+      if(boolValue != null){
+         new Label(ObjectTypesFormatters.booleanLitteralFormatter(boolValue)).setParent(row);
+      }else{
+         new Label().setParent(row);
+      }
+   }
+
+   /**
+    * Methode de rendu générique d'une proprité d'un objet de type
+    * Number sous la forme d'une chaine de caractère,
+    * @param row
+    * @param TK data POJO / decorator
+    * @param propName
+    * @throws IllegalAccessException
+    * @throws InvocationTargetException
+    * @throws NoSuchMethodException
+    * @throws ParseException
+    * @since 2.3.0-gatsbi
+    */
+   public static void renderNumberProperty(final Row row, final Object obj, final String propName)
+      throws IllegalAccessException, InvocationTargetException, NoSuchMethodException, ParseException{
+      final Number numValue = (Number) PropertyUtils.getSimpleProperty(obj, propName);
+      if(numValue != null){
+         new Label(ObjectTypesFormatters.formatAnyNumber(numValue)).setParent(row);
+      }else{
+         new Label().setParent(row);
+      }
+   }
+
+   /**
+    * Methode de rendu générique d'une proprité d'un objet de type
+    * Collaborateur sous la forme d'une chaine de caractère,
+    * @param row
+    * @param TK data POJO / decorator
+    * @param propName
+    * @throws IllegalAccessException
+    * @throws InvocationTargetException
+    * @throws NoSuchMethodException
+    * @since 2.3.0-gatsbi
+    */
+   public static void renderCollaborateurProperty(final Row row, final Object obj, final String propName)
+      throws IllegalAccessException, InvocationTargetException, NoSuchMethodException{
+      final Collaborateur collValue = (Collaborateur) PropertyUtils.getSimpleProperty(obj, propName);
+      if(collValue != null){
+         new Label(collValue.getNomAndPrenom()).setParent(row);
+      }else{
+         new Label().setParent(row);
+      }
+   }
+
+   /**
+    * Methode de rendu générique d'une proprité d'un objet de type
+    * Quantite (Number) + Unite sous la forme d'une chaine de caractère,
+    * @param row
+    * @param TK data POJO / decorator
+    * @param propName
+    * @param unite propName
+    * @throws IllegalAccessException
+    * @throws InvocationTargetException
+    * @throws NoSuchMethodException
+    * @throws ParseException
+    * @since 2.3.0-gatsbi
+    */
+   public static void renderQuantiteProperty(final Row row, final Object obj, final String propName, final String unitePropName)
+      throws IllegalAccessException, InvocationTargetException, NoSuchMethodException, ParseException{
+
+      final Number qteValue = (Number) PropertyUtils.getSimpleProperty(obj, propName);
+      final Unite uValue = (Unite) PropertyUtils.getSimpleProperty(obj, unitePropName);
+
+      if(qteValue != null){
+         new Label(ObjectTypesFormatters.formatAnyNumber(qteValue).concat(uValue != null ? " ".concat(uValue.getNom()) : ""))
+            .setParent(row);
+      }else{
+         new Label().setParent(row);
+      }
+   }
+
+   /**
+    * Sera surchargée par Gatsbi pour ne pas dessiner les icones
+    * quand les champs correspondants ne sont plus affichés dans les
+    * formulaires
+    * @since 2.3.0-gatsbi
+    * @return true si les icones doivent être dessinées
+    */
+   protected boolean areIconesRendered(){
+      return true;
+   }
+
+   public void setIconesRendered(final boolean _i){}
 }

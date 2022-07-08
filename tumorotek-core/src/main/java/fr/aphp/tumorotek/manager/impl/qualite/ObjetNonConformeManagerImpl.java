@@ -66,8 +66,11 @@ public class ObjetNonConformeManagerImpl implements ObjetNonConformeManager
    private final Log log = LogFactory.getLog(ObjetNonConformeManager.class);
 
    private ObjetNonConformeDao objetNonConformeDao;
+
    private NonConformiteDao nonConformiteDao;
+
    private ConformiteTypeDao conformiteTypeDao;
+
    private EntiteDao entiteDao;
 
    public void setObjetNonConformeDao(final ObjetNonConformeDao oDao){
@@ -157,7 +160,7 @@ public class ObjetNonConformeManagerImpl implements ObjetNonConformeManager
       if(obj != null && type != null){
          // on va tester si une non conformité est déjà
          // définie pour cet objet
-         // List<ObjetNonConforme> list = findByObjetAndTypeManager(obj, 
+         // List<ObjetNonConforme> list = findByObjetAndTypeManager(obj,
          //		type);
 
          // si la nonConformite est null, on cherchera les obj
@@ -204,20 +207,20 @@ public class ObjetNonConformeManagerImpl implements ObjetNonConformeManager
             // création
             objetNonConformeDao.createObject(newObj);
             log.info("Enregistrement de l'objet ObjetNonConforme : " + newObj.toString());
-            //				} 
+            //				}
             //				else {
             //					// sinon, on va mettre à jour l'objet non conforme
             //					// (si ça non conformité a changer
             //					ObjetNonConforme upObj = list.get(0);
-            //					
+            //
             //					// si la non conf a changée => update
             //					if (!nonConformite.equals(upObj.getNonConformite())) {
             //						upObj.setNonConformite(nonConformiteDao.mergeObject(
             //								nonConformite));
-            //						
+            //
             //						// update
             //						objetNonConformeDao.updateObject(upObj);
-            //						log.info("Modification de l'objet ObjetNonConforme : " 
+            //						log.info("Modification de l'objet ObjetNonConforme : "
             //								+ upObj.toString());
             //					}
             //				}
@@ -251,10 +254,10 @@ public class ObjetNonConformeManagerImpl implements ObjetNonConformeManager
                // rs2.first();
                // maxNcId = rs2.getInt(1);
 
-               //					String sql = "insert into OBJET_NON_CONFORME (OBJET_NON_CONFORME_ID, " 
+               //					String sql = "insert into OBJET_NON_CONFORME (OBJET_NON_CONFORME_ID, "
                //							+ "OBJET_ID, ENTITE_ID, NON_CONFORMITE_ID) "
                //							+ "values (?,?,?,?)";
-               //					
+               //
                //					pstmtNc = DataSourceUtils.getConnection(dataSource)
                //							.prepareStatement(sql);
 
@@ -297,15 +300,15 @@ public class ObjetNonConformeManagerImpl implements ObjetNonConformeManager
                throw e;
             }finally{
                //					if (stmt != null) {
-               //						try { stmt.close(); 
+               //						try { stmt.close();
                //						} catch (Exception e) { stmt = null; }
                //					}
                //					if (pstmtNc != null) {
-               //						try { pstmtNc.close(); 
+               //						try { pstmtNc.close();
                //						} catch (Exception e) { pstmtNc = null; }
                //					}
                //					if (rs2 != null) {
-               //						try { rs2.close(); 
+               //						try { rs2.close();
                //						} catch (Exception e) { rs2 = null; }
                //					}
             }

@@ -67,105 +67,104 @@ import fr.aphp.tumorotek.webapp.gatsbi.GatsbiController;
 public class FicheMultiEchantillonsGatsbi extends FicheMultiEchantillons
 {
 
-	private static final long serialVersionUID = 3863329092781960062L;
-	
-	private Contexte contexte;
-	
-	private List<Listbox> reqListboxes = new ArrayList<Listbox>();
-	private List<Combobox> reqComboboxes = new ArrayList<Combobox>();
-	private List<Div> reqDivs = new ArrayList<Div>(); // contient conformite Div et crAnapath
-	
-	// @wire
-	private Groupbox groupEchantillon;
-	private Groupbox groupInfosCompEchan;
-	
-	private final AbstractEchantillonDecoratorRowRenderer echanDecoRendererGatsbi = 
-			new EchantillonDecoratorRowRendererGatsbi();
+   private static final long serialVersionUID = 3863329092781960062L;
 
-	@Override
-	public void doAfterCompose(final Component comp) throws Exception{
-		super.doAfterCompose(comp);
+   private Contexte contexte;
 
-		contexte = GatsbiController.initWireAndDisplay(this, 
-				3, 
-				true, reqListboxes, reqComboboxes, reqDivs,
-				groupEchantillon, groupInfosCompEchan);
-		
-		// affichage conditionnel infos prelevement 
-		GatsbiController.initWireAndDisplayForIds(this, 2, "natureDiv");
-		
-		// inner list
-		// deletable
-		// force pas affichage emplacement et statut stockage en fin de grid
-		GatsbiControllerEchantillon
-			.drawColumnsForEchantillons(contexte, echantillonsList, echanDecoRendererGatsbi, true, true);
-	}
-	
-	@Override
-	protected void setGroupInfosCompEchanOpen(boolean b) {
-		((Groupbox) groupInfosCompEchan).setOpen(b);
-	}
-	
-	@Override
-	protected void scrollToTop() {
-		Clients.scrollIntoView(this.getSelfComponent());
-	}
-	
-	/*********** switch required ******************/
+   private final List<Listbox> reqListboxes = new ArrayList<>();
 
-	/**
-	 * Surcharge Gastbi pour conserver sélectivement la
-	 * contrainte de sélection obligatiure des listes nature et statut juridique 
-	 * dans le contexte TK historique
-	 */
-	@Override
-	protected void checkRequiredListboxes() {
-		GatsbiController.checkRequiredNonInputComponents(reqListboxes, null, null);
-	}
+   private final List<Combobox> reqComboboxes = new ArrayList<>();
 
-	/**
-	 * Plus d'obligation
-	 */
-	@Override
-	public void onSelect$typesBoxEchan() {
-	}	
-	
-	@Override
-	protected void prepareCrAnapath() {
-		if (crAnapathNomBox.getValue() != null && !crAnapathNomBox.getValue().equals("")) {
-			getCrAnapath().setNom(crAnapathNomBox.getValue());
-		} else { // empty value, check required
-			Div crAnapathDiv = reqDivs.stream().filter(d -> d.getId().equals("crAnapathDiv")).findFirst().orElse(null);
-			if (crAnapathDiv != null) { // required value
-				throw new WrongValueException(crAnapathDiv, Labels.getLabel("validation.syntax.empty"));
-			} else { // emptyallowed
-				setCrAnapath(null);
-				setAnapathStream(null);
-			}
-		}
-	}
-	
-	@Override
-	public void onClick$addEchantillons(Event event) {
-		
-		GatsbiController.checkRequiredNonInputComponents(reqListboxes, reqComboboxes, reqDivs);
-		
-		super.onClick$addEchantillons(event);
-	}
-	
-	/*********** inner lists ******************/
-	
-	public AbstractEchantillonDecoratorRowRenderer getEchanDecoRenderer() {
-		return echanDecoRendererGatsbi;
-	}
-	
-	/*********** Paramétrages ******************/
-	
-	/**
-	 * Redirection d'évènement lors du choix d'un paramétrage
-	 */
-	public void onGetInjectionDossierExterneDone(ForwardEvent e) {
-		final ResultatInjection res = (ResultatInjection) e.getOrigin().getData();
-		injectEchantillon(res.getEchantillon());
-	}
+   private final List<Div> reqDivs = new ArrayList<>(); // contient conformite Div et crAnapath
+
+   // @wire
+   private Groupbox groupEchantillon;
+
+   private Groupbox groupInfosCompEchan;
+
+   private final AbstractEchantillonDecoratorRowRenderer echanDecoRendererGatsbi = new EchantillonDecoratorRowRendererGatsbi();
+
+   @Override
+   public void doAfterCompose(final Component comp) throws Exception{
+      super.doAfterCompose(comp);
+
+      contexte = GatsbiController.initWireAndDisplay(this, 3, true, reqListboxes, reqComboboxes, reqDivs, groupEchantillon,
+         groupInfosCompEchan);
+
+      // affichage conditionnel infos prelevement
+      GatsbiController.initWireAndDisplayForIds(this, 2, "natureDiv");
+
+      // inner list
+      // deletable
+      // force pas affichage emplacement et statut stockage en fin de grid
+      GatsbiControllerEchantillon.drawColumnsForEchantillons(contexte, echantillonsList, echanDecoRendererGatsbi, true, true);
+   }
+
+   @Override
+   protected void setGroupInfosCompEchanOpen(final boolean b){
+      groupInfosCompEchan.setOpen(b);
+   }
+
+   @Override
+   protected void scrollToTop(){
+      Clients.scrollIntoView(this.getSelfComponent());
+   }
+
+   /*********** switch required ******************/
+
+   /**
+    * Surcharge Gastbi pour conserver sélectivement la
+    * contrainte de sélection obligatiure des listes nature et statut juridique
+    * dans le contexte TK historique
+    */
+   @Override
+   protected void checkRequiredListboxes(){
+      GatsbiController.checkRequiredNonInputComponents(reqListboxes, null, null);
+   }
+
+   /**
+    * Plus d'obligation
+    */
+   @Override
+   public void onSelect$typesBoxEchan(){}
+
+   @Override
+   protected void prepareCrAnapath(){
+      if(crAnapathNomBox.getValue() != null && !crAnapathNomBox.getValue().equals("")){
+         getCrAnapath().setNom(crAnapathNomBox.getValue());
+      }else{ // empty value, check required
+         final Div crAnapathDiv = reqDivs.stream().filter(d -> d.getId().equals("crAnapathDiv")).findFirst().orElse(null);
+         if(crAnapathDiv != null){ // required value
+            throw new WrongValueException(crAnapathDiv, Labels.getLabel("validation.syntax.empty"));
+         }else{ // emptyallowed
+            setCrAnapath(null);
+            setAnapathStream(null);
+         }
+      }
+   }
+
+   @Override
+   public void onClick$addEchantillons(final Event event){
+
+      GatsbiController.checkRequiredNonInputComponents(reqListboxes, reqComboboxes, reqDivs);
+
+      super.onClick$addEchantillons(event);
+   }
+
+   /*********** inner lists ******************/
+
+   @Override
+   public AbstractEchantillonDecoratorRowRenderer getEchanDecoRenderer(){
+      return echanDecoRendererGatsbi;
+   }
+
+   /*********** Paramétrages ******************/
+
+   /**
+    * Redirection d'évènement lors du choix d'un paramétrage
+    */
+   public void onGetInjectionDossierExterneDone(final ForwardEvent e){
+      final ResultatInjection res = (ResultatInjection) e.getOrigin().getData();
+      injectEchantillon(res.getEchantillon());
+   }
 }

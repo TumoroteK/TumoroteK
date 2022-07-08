@@ -56,6 +56,7 @@ public class FicheFusionModale extends GenericForwardComposer<Component>
    private static final long serialVersionUID = -8520698021023338194L;
 
    private Component parent;
+
    private String comments;
 
    private Label warnLabel;

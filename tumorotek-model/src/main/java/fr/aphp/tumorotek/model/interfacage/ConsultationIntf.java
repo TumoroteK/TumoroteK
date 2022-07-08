@@ -83,9 +83,13 @@ public class ConsultationIntf implements Serializable
    private static final long serialVersionUID = 1L;
 
    private Integer consultationIntfId;
+
    private Calendar date;
+
    private String identification;
+
    private Utilisateur utilisateur;
+
    private String emetteurIdent;
 
    /** Constructeur par défaut. */
@@ -160,9 +164,9 @@ public class ConsultationIntf implements Serializable
    }
 
    /**
-    * 2 consultations sont considerees egales si elles portent 
+    * 2 consultations sont considerees egales si elles portent
     * sur la même identification
-    * et si elles sont effectue par le meme utilisateur 
+    * et si elles sont effectue par le meme utilisateur
     * sur le meme objet a la meme date.
     * @param obj est la consultation à tester.
     * @return true si les consultations sont egales.

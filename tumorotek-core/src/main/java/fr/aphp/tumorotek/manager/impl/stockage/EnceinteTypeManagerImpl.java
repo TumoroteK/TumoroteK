@@ -67,7 +67,9 @@ public class EnceinteTypeManagerImpl implements EnceinteTypeManager
 
    /** Bean Dao EnceinteTypeDao. */
    private EnceinteTypeDao enceinteTypeDao;
+
    private EnceinteTypeValidator enceinteTypeValidator;
+
    private final Log log = LogFactory.getLog(EnceinteTypeManager.class);
 
    private PlateformeDao plateformeDao;

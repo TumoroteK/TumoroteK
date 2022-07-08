@@ -79,10 +79,10 @@ public interface PatientSipDao extends GenericDaoJpa<PatientSip, Integer>
    List<PatientSip> findFirst();
 
    /**
-    * Recherche les patients temporaire associé au numéro 
+    * Recherche les patients temporaire associé au numéro
     * de séjour passé en paramètre.
     * @param String numero de sejour.
-    * @return Liste de PatientSips. 
+    * @return Liste de PatientSips.
     */
    List<PatientSip> findByNumeroSejour(String numero);
 }

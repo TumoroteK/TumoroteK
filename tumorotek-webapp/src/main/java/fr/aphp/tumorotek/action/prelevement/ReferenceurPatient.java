@@ -99,33 +99,55 @@ public class ReferenceurPatient extends GenericForwardComposer<Component>
 
    // composants
    private Radiogroup radioGroup;
+
    private Grid existingPatientGrid;
+
    private Textbox nomNipNdaBox;
+
    private Listbox patientsBox;
+
    private Row noPatientRow;
+
    private Listbox maladiesBox;
+
    private Row noMaladieRow;
+
    private Button embedMaladieButton;
+
    private Row embeddedFicheMaladieRow;
+
    private Div embeddedFicheMaladieDiv;
+
    private Radio newRadio;
+
    private Radio findRadio;
+
    private Radio noRadio;
+
    private Div fichePatientDiv;
+
    private Div ficheMaladieWithPatientDiv;
+
    private Textbox ndaBox;
+
    private Row ndaRow;
+
    private boolean banqueDefMaladies;
 
    // patientBox items
    private List<Patient> patients = new ArrayList<>();
+
    private Patient selectedPatient;
 
    // maladiesBox items
    private List<MaladieDecorator> maladies = new ArrayList<>();
+
    private MaladieDecorator selectedMaladie;
+
    private MaladieDecorator selectedMaladieByNda = null;
+
    private static ListitemRenderer<Patient> patientRenderer = new PatientItemRenderer(true);
+
    private AnnotateDataBinder referenceurBinder;
 
    @Override
@@ -272,7 +294,7 @@ public class ReferenceurPatient extends GenericForwardComposer<Component>
             radioGroup.setSelectedItem(newRadio);
             displayEmbeddedPatient(true, patSel);
 
-            FichePrelevementEdit fichePrelevementEdit = getFichePrelevementEditFromContexte();
+            final FichePrelevementEdit fichePrelevementEdit = getFichePrelevementEditFromContexte();
 
             fichePrelevementEdit.clearRisques();
             fichePrelevementEdit.clearProtocoles();
@@ -368,8 +390,8 @@ public class ReferenceurPatient extends GenericForwardComposer<Component>
     */
    private void selectPatientAuto(final Patient selected){
 
-      FichePrelevementEdit fichePrelevementEdit = getFichePrelevementEditFromContexte();
-     
+      final FichePrelevementEdit fichePrelevementEdit = getFichePrelevementEditFromContexte();
+
       if(this.banqueDefMaladies){
 
          final List<Maladie> res = new ArrayList<>(ManagerLocator.getMaladieManager().findByPatientNoSystemManager(selected));
@@ -421,22 +443,21 @@ public class ReferenceurPatient extends GenericForwardComposer<Component>
    }
 
    /**
-    * Factorisation de la méthode de récupération du controller 
+    * Factorisation de la méthode de récupération du controller
     * FichePrelevementEdit en fonction du contexte collection.
     * @return
     */
-   private FichePrelevementEdit getFichePrelevementEditFromContexte() {
-	   switch(SessionUtils.getCurrentContexte()){
-       case SEROLOGIE:
-          return (FichePrelevementEditSero) self.getParent().getParent()
-             .getAttributeOrFellow("fwinPrelevementEditSero$composer", true);
-       default:
-          return (FichePrelevementEdit) self.getParent()
-        		  .getParent().getAttributeOrFellow("fwinPrelevementEdit$composer", true);
-	   }
+   private FichePrelevementEdit getFichePrelevementEditFromContexte(){
+      switch(SessionUtils.getCurrentContexte()){
+         case SEROLOGIE:
+            return (FichePrelevementEditSero) self.getParent().getParent()
+               .getAttributeOrFellow("fwinPrelevementEditSero$composer", true);
+         default:
+            return (FichePrelevementEdit) self.getParent().getParent().getAttributeOrFellow("fwinPrelevementEdit$composer", true);
+      }
    }
 
-/**
+   /**
     * Assigne la référence vers la maladie à la fiche prélèvement.
     */
    public void onSelect$maladiesBox(){
@@ -470,7 +491,7 @@ public class ReferenceurPatient extends GenericForwardComposer<Component>
                .getAttributeOrFellow("fwinMaladie$composer", true);
             break;
          default:
-           ficheMaladie =
+            ficheMaladie =
                (FicheMaladie) embeddedFicheMaladieDiv.getFellow("fwinMaladie").getAttributeOrFellow("fwinMaladie$composer", true);
             break;
       }

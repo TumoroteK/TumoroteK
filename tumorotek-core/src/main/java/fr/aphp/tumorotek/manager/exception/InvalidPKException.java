@@ -41,6 +41,7 @@ public class InvalidPKException extends TKException
    private static final long serialVersionUID = 1L;
 
    private String entite;
+
    private String operation;
 
    public InvalidPKException(){

@@ -50,7 +50,9 @@ public class RequiredObjectIsNullException extends TKException
    private static final long serialVersionUID = 1L;
 
    private String entite;
+
    private String operation;
+
    private String requiredObject;
 
    public RequiredObjectIsNullException(){

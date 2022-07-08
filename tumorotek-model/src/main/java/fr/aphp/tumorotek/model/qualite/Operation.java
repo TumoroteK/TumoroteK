@@ -91,11 +91,17 @@ public class Operation implements Serializable
    private static final long serialVersionUID = 1L;
 
    private Integer operationId;
+
    private Calendar date;
+
    private Integer objetId;
+
    private OperationType operationType;
+
    private Entite entite;
+
    private Utilisateur utilisateur;
+
    private Boolean v1 = false;
 
    // since 2.0.13.1
@@ -203,7 +209,7 @@ public class Operation implements Serializable
 
    /**
     * 2 operations sont considerees egales s'ils sont de meme type
-    * et si elles sont effectue par le meme utilisateur 
+    * et si elles sont effectue par le meme utilisateur
     * sur le meme objet a la meme date.
     * @param obj est l'operation à tester.
     * @return true si les operations sont egales.

@@ -82,30 +82,43 @@ public class EnceinteManagerTest extends AbstractManagerTest4
 
    @Autowired
    private EnceinteManager enceinteManager;
+
    @Autowired
    private ConteneurDao conteneurDao;
+
    @Autowired
    private EnceinteTypeDao enceinteTypeDao;
+
    @Autowired
    private BanqueDao banqueDao;
+
    @Autowired
    private EntiteDao entiteDao;
+
    @Autowired
    private TerminaleTypeDao terminaleTypeDao;
+
    @Autowired
    private TerminaleNumerotationDao terminaleNumerotationDao;
+
    @Autowired
    private TerminaleManager terminaleManager;
+
    @Autowired
    private ConteneurManager conteneurManager;
+
    @Autowired
    private UtilisateurDao utilisateurDao;
+
    @Autowired
    private OperationTypeManager operationTypeManager;
+
    @Autowired
    private CheckPositionManager checkPositionManager;
+
    @Autowired
    private CouleurDao couleurDao;
+
    @Autowired
    private IncidentManager incidentManager;
 
@@ -2744,25 +2757,25 @@ public class EnceinteManagerTest extends AbstractManagerTest4
       fs.addAll(terminales);
       cleanUpFantomes(fs);
    }
-   
+
    // @since 2.2.1
    @Test
-   public void testGetDistinctBanquesFromTkObjectsManager() {
-	   List<Banque> banks = enceinteManager.getDistinctBanquesFromTkObjectsManager(enceinteManager.findByIdManager(1));
-	   
-	   // enceinte premier niveau -> contient la terminale
-	   assertTrue(banks.size() == 1);
-	   assertTrue(banks.contains(banqueDao.findById(1)));
-	   
-	   // enceinte deuxième niveau -> contient la terminale
-	   banks = enceinteManager.getDistinctBanquesFromTkObjectsManager(enceinteManager.findByIdManager(3));
-	   assertTrue(banks.size() == 1);
-	   assertTrue(banks.contains(banqueDao.findById(1)));
-	   
-	   banks = enceinteManager.getDistinctBanquesFromTkObjectsManager(enceinteManager.findByIdManager(2));
-	   assertTrue(banks.isEmpty());
+   public void testGetDistinctBanquesFromTkObjectsManager(){
+      List<Banque> banks = enceinteManager.getDistinctBanquesFromTkObjectsManager(enceinteManager.findByIdManager(1));
 
-	   banks = enceinteManager.getDistinctBanquesFromTkObjectsManager(null);
-	   assertTrue(banks.isEmpty());
+      // enceinte premier niveau -> contient la terminale
+      assertTrue(banks.size() == 1);
+      assertTrue(banks.contains(banqueDao.findById(1)));
+
+      // enceinte deuxième niveau -> contient la terminale
+      banks = enceinteManager.getDistinctBanquesFromTkObjectsManager(enceinteManager.findByIdManager(3));
+      assertTrue(banks.size() == 1);
+      assertTrue(banks.contains(banqueDao.findById(1)));
+
+      banks = enceinteManager.getDistinctBanquesFromTkObjectsManager(enceinteManager.findByIdManager(2));
+      assertTrue(banks.isEmpty());
+
+      banks = enceinteManager.getDistinctBanquesFromTkObjectsManager(null);
+      assertTrue(banks.isEmpty());
    }
 }

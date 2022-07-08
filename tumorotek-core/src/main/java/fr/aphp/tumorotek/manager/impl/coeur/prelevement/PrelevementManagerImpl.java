@@ -138,37 +138,67 @@ public class PrelevementManagerImpl implements PrelevementManager
    private final Log log = LogFactory.getLog(PrelevementManager.class);
 
    private PrelevementDao prelevementDao;
+
    private PatientManager patientManager;
+
    private MaladieManager maladieManager;
+
    private BanqueDao banqueDao;
+
    private NatureDao natureDao;
+
    private MaladieDao maladieDao;
+
    private ConsentTypeDao consentTypeDao;
+
    private CollaborateurDao collaborateurDao;
+
    private ServiceDao serviceDao;
+
    private PrelevementTypeDao prelevementTypeDao;
+
    private ConditTypeDao conditTypeDao;
+
    private ConditMilieuDao conditMilieuDao;
+
    private TransporteurDao transporteurDao;
+
    private UniteDao uniteDao;
+
    private PrelevementValidator prelevementValidator;
+
    private OperationTypeDao operationTypeDao;
+
    private OperationManager operationManager;
+
    private EntityManagerFactory entityManagerFactory;
+
    private EntiteDao entiteDao;
+
    private TransformationManager transformationManager;
+
    private TransformationDao transformationDao;
+
    private LaboInterManager laboInterManager;
+
    private LaboInterValidator laboInterValidator;
+
    private EchantillonDao echantillonDao;
+
    private EchantillonManager echantillonManager;
+
    private AnnotationValeurManager annotationValeurManager;
+
    private ImportHistoriqueManager importHistoriqueManager;
+
    private ProdDeriveManager prodDeriveManager;
+
    private CederObjetManager cederObjetManager;
+
    private DossierExterneDao dossierExterneDao;
+
    private ObjetNonConformeManager objetNonConformeManager;
-//   private PrelevementDelegateDao prelevementDelegateDao;
+   //   private PrelevementDelegateDao prelevementDelegateDao;
 
    public PrelevementManagerImpl(){}
 
@@ -323,16 +353,15 @@ public class PrelevementManagerImpl implements PrelevementManager
       }
 
       try{
-    	  mergeNonRequiredObjects(prelevement, /*maladie,*/ preleveur, servicePreleveur, prelevementType, conditType,
-                  conditMilieu, transporteur, operateur, quantiteUnite);
-    	  
+         mergeNonRequiredObjects(prelevement, /*maladie,*/ preleveur, servicePreleveur, prelevementType, conditType, conditMilieu,
+            transporteur, operateur, quantiteUnite);
+
          // Verifie required Objects associes et validation
          checkRequiredObjectsAndValidate(prelevement, banque, nature, consentType, maladie, laboInters, "creation", utilisateur,
             doValidation, baseDir);
 
          // Doublon
          if(!findDoublonManager(prelevement)){
-
 
             prelevementDao.createObject(prelevement);
             log.info("Enregistrement objet Prelevement " + prelevement.toString());
@@ -390,7 +419,7 @@ public class PrelevementManagerImpl implements PrelevementManager
     * Enregistre les labos ou les modifications portant sur eux. La validation
     * a été faite dans la validation du prelevement et est donc inutile dans
     * cette methode.
-    * 
+    *
     * @param laboInters
     */
    private void updateLaboInters(final List<LaboInter> laboInters, final Prelevement prelevement){
@@ -420,9 +449,9 @@ public class PrelevementManagerImpl implements PrelevementManager
       final List<File> filesCreated, final List<File> filesToDelete, final Utilisateur utilisateur,
       final Integer cascadeNonSterile, final boolean doValidation, final String baseDir, final boolean multiple){
 
-	   mergeNonRequiredObjects(prelevement, /*maladie,*/ preleveur, servicePreleveur, prelevementType, conditType, conditMilieu,
-	            transporteur, operateur, quantiteUnite);
-	   
+      mergeNonRequiredObjects(prelevement, /*maladie,*/ preleveur, servicePreleveur, prelevementType, conditType, conditMilieu,
+         transporteur, operateur, quantiteUnite);
+
       // Verifie required Objects associes et validation
       checkRequiredObjectsAndValidate(prelevement, banque, nature, consentType, maladie, laboInters, "modification", null,
          doValidation, baseDir);
@@ -592,7 +621,7 @@ public class PrelevementManagerImpl implements PrelevementManager
 
    /**
     * Recherche un prélèvement dont l'identifiant est passé en paramètre.
-    * 
+    *
     * @param prelevementId
     *            Identifiant du prélèvement que l'on recherche.
     * @return Un Prelevement.
@@ -608,7 +637,7 @@ public class PrelevementManagerImpl implements PrelevementManager
     * d'une date a laquelle la date d'enregistrement de l'operation doit etre
     * superieure ou egale. Dans un premier temps, recupere la liste des
     * objetIds qui sont ensuite utilises pour recuperer les prelevements.
-    * 
+    *
     * @param oType
     *            OperationType
     * @param date
@@ -650,7 +679,7 @@ public class PrelevementManagerImpl implements PrelevementManager
     * et d'une date a laquelle la date d'enregistrement de l'operation doit
     * etre superieure ou egale. Dans un premier temps, recupere la liste des
     * objetIds qui sont ensuite utilises pour recuperer les prelevements.
-    * 
+    *
     * @param oType
     *            OperationType
     * @param date
@@ -747,7 +776,7 @@ public class PrelevementManagerImpl implements PrelevementManager
 
    /**
     * Recherche la maladie dont le prelevement est passé en paramètre.
-    * 
+    *
     * @param prelevement
     *            Prelevement pour lequel on recherche une maladie.
     * @return Une Maladie.
@@ -824,7 +853,7 @@ public class PrelevementManagerImpl implements PrelevementManager
    /**
     * Recherche la liste des codes utilisés par les prélèvements liés à la
     * banque passée en paramètre.
-    * 
+    *
     * @param banque
     *            Banque pour laquelle on recherche les codes.
     * @return Liste de codes.
@@ -859,7 +888,7 @@ public class PrelevementManagerImpl implements PrelevementManager
    /**
     * Recherche une liste d'échantillons dont le prélèvement est passé en
     * paramètre.
-    * 
+    *
     * @param prelevement
     *            Prelevement pour lequel on recherche des échantillons.
     * @return List de Echantillon.
@@ -880,7 +909,7 @@ public class PrelevementManagerImpl implements PrelevementManager
    /**
     * Recherche une liste de labo inters dont le prélèvement est passé en
     * paramètre.
-    * 
+    *
     * @param prelevement
     *            Prelevement pour lequel on recherche des labos.
     * @return Set de LaboInter.
@@ -901,7 +930,7 @@ public class PrelevementManagerImpl implements PrelevementManager
    /**
     * Recherche une liste de labo inters dont le prélèvement est passé en
     * paramètre. Ces labos sont ordonnés par ordre.
-    * 
+    *
     * @param prelevement
     *            Prelevement pour lequel on recherche des labos.
     * @return Liste ordonnée de LaboInter.
@@ -917,7 +946,7 @@ public class PrelevementManagerImpl implements PrelevementManager
    /**
     * Recherche une liste de dérivés dont le prélèvement est passé en
     * paramètre.
-    * 
+    *
     * @param prelevement
     *            Prelevement pour lequel on recherche des dérivés.
     * @return List de ProdDerive.
@@ -947,9 +976,9 @@ public class PrelevementManagerImpl implements PrelevementManager
       return new ArrayList<>();
    }
 
-//   public void setPrelevementDelegateDao(PrelevementDelegateDao prelevementDelegateDao){
-//      this.prelevementDelegateDao = prelevementDelegateDao;
-//   }
+   //   public void setPrelevementDelegateDao(PrelevementDelegateDao prelevementDelegateDao){
+   //      this.prelevementDelegateDao = prelevementDelegateDao;
+   //   }
 
    @Override
    public void removeObjectManager(final Prelevement prelevement, final String comments, final Utilisateur u,
@@ -1013,7 +1042,6 @@ public class PrelevementManagerImpl implements PrelevementManager
       return prel.getEchantillons().size() > 0 || transformationManager.findByParentManager(prelevement).size() > 0;
    }
 
-   
    @Override
    public void checkRequiredObjectsAndValidate(final Prelevement prelevement, final Banque banque, final Nature nature,
       final ConsentType consentType, final Maladie maladie, final List<LaboInter> laboInters, final String operation,
@@ -1025,41 +1053,41 @@ public class PrelevementManagerImpl implements PrelevementManager
          log.warn("Objet obligatoire Banque manquant" + " lors de la " + operation + " d'un Prelevement");
          throw new RequiredObjectIsNullException("Prelevement", operation, "Banque");
       }
-      
+
       // Gatsbi required
-      List<Integer> requiredChampEntiteId = new ArrayList<Integer>();
-      if (prelevement.getBanque().getEtude() != null) {
-    	  Contexte prelContexte = prelevement.getBanque().getEtude().getContexteForEntite(2);
-    	  if (prelContexte != null) {
-    		  requiredChampEntiteId.addAll(prelContexte.getRequiredChampEntiteIds());
-    	  }
-      }
-      
-      if(nature != null){
-         prelevement.setNature(natureDao.mergeObject(nature));
-      }else { // valeur passée est nulle
-    	 if (prelevement.getBanque().getEtude() == null || requiredChampEntiteId.contains(24)) { // obligatoire! 
-    		 if (prelevement.getNature() == null) {
-    			 log.warn("Objet obligatoire Nature manquant" + " lors de la " + operation + " d'un Prelevement");
-    			 throw new RequiredObjectIsNullException("Prelevement", operation, "Nature");
-    		 }
-    	 } else { // gastbi contexte non obligatoire
-    		 prelevement.setNature(null);
-    	 }
+      final List<Integer> requiredChampEntiteId = new ArrayList<>();
+      if(prelevement.getBanque().getEtude() != null){
+         final Contexte prelContexte = prelevement.getBanque().getEtude().getContexteForEntite(2);
+         if(prelContexte != null){
+            requiredChampEntiteId.addAll(prelContexte.getRequiredChampEntiteIds());
+         }
       }
 
-      if(consentType != null) {
+      if(nature != null){
+         prelevement.setNature(natureDao.mergeObject(nature));
+      }else{ // valeur passée est nulle
+         if(prelevement.getBanque().getEtude() == null || requiredChampEntiteId.contains(24)){ // obligatoire! 
+            if(prelevement.getNature() == null){
+               log.warn("Objet obligatoire Nature manquant" + " lors de la " + operation + " d'un Prelevement");
+               throw new RequiredObjectIsNullException("Prelevement", operation, "Nature");
+            }
+         }else{ // gastbi contexte non obligatoire
+            prelevement.setNature(null);
+         }
+      }
+
+      if(consentType != null){
          prelevement.setConsentType(consentTypeDao.mergeObject(consentType));
-      } else { // valeur passée est nulle
-    	  if(prelevement.getBanque().getEtude() == null || requiredChampEntiteId.contains(26)) { // obligatoire!
-    		  if (prelevement.getConsentType() == null) {
-    			  log.warn("Objet obligatoire ConsentType manquant" + " lors de la " + operation + " d'un Prelevement");
-    		      throw new RequiredObjectIsNullException("Prelevement", operation, "ConsentType");
-    		  }
-    	  } else { // gastbi contexte non obligatoire
-        	  prelevement.setConsentType(null);
-          }
-      } 
+      }else{ // valeur passée est nulle
+         if(prelevement.getBanque().getEtude() == null || requiredChampEntiteId.contains(26)){ // obligatoire!
+            if(prelevement.getConsentType() == null){
+               log.warn("Objet obligatoire ConsentType manquant" + " lors de la " + operation + " d'un Prelevement");
+               throw new RequiredObjectIsNullException("Prelevement", operation, "ConsentType");
+            }
+         }else{ // gastbi contexte non obligatoire
+            prelevement.setConsentType(null);
+         }
+      }
 
       // Maladie non required mais utilise dans validation
       if(maladie != null){
@@ -1098,24 +1126,23 @@ public class PrelevementManagerImpl implements PrelevementManager
       }
 
       // Validation
-      if(doValidation) {
-    	 Validator[] validators;
-    	 if (requiredChampEntiteId.isEmpty()) { // pas de restriction gatsbi
-    		 validators = new Validator[] {prelevementValidator} ;
-    	 } else { // gatsbi définit certain champs obligatoires
-    		 PrelevementGatsbiValidator gValidator = 
-    				new PrelevementGatsbiValidator("prelevement", requiredChampEntiteId);
-    		 validators = new Validator[] {gValidator, prelevementValidator} ;
-    	 }
-   
-         BeanValidator.validateObject(prelevement, validators);      
+      if(doValidation){
+         Validator[] validators;
+         if(requiredChampEntiteId.isEmpty()){ // pas de restriction gatsbi
+            validators = new Validator[] {prelevementValidator};
+         }else{ // gatsbi définit certain champs obligatoires
+            final PrelevementGatsbiValidator gValidator = new PrelevementGatsbiValidator("prelevement", requiredChampEntiteId);
+            validators = new Validator[] {gValidator, prelevementValidator};
+         }
+
+         BeanValidator.validateObject(prelevement, validators);
       }
    }
 
    /**
     * Merge et assigne tous les objects associes non obligatoires au
     * prelevement (sauf maladie car utilisé dans validation).
-    * 
+    *
     * @param prelevement
     * @param preleveur
     * @param servicePreleveur
@@ -1290,8 +1317,7 @@ public class PrelevementManagerImpl implements PrelevementManager
             echantillonManager.createObjectWithCrAnapathManager(newEchan, banque, prelevement, newEchan.getCollaborateur(),
                newEchan.getObjetStatut(), newEchan.getEmplacement(), newEchan.getEchantillonType(), null,
                newEchan.getQuantiteUnite(), newEchan.getEchanQualite(), newEchan.getModePrepa(), newEchan.getCrAnapath(),
-               newEchan.getAnapathStream(), filesCreated, annosEchan, user, doValidation, baseDir,
-               false);
+               newEchan.getAnapathStream(), filesCreated, annosEchan, user, doValidation, baseDir, false);
          }
       }catch(final RuntimeException re){
          if(revertMaladie){
@@ -1372,40 +1398,38 @@ public class PrelevementManagerImpl implements PrelevementManager
       final Utilisateur u){
 
       final List<File> filesToDelete = new ArrayList<>();
-      Set<MvFichier> dpcts = new HashSet<MvFichier>();
+      final Set<MvFichier> dpcts = new HashSet<>();
 
       if(prlvts != null){
          for(final Prelevement p : prlvts){
             switchBanqueCascadeManager(p, bank, doValidation, u, filesToDelete, dpcts);
          }
       }
-      
+
       // dpcts
       // Correctif bug TK-155
       MvFichier mvFichier = null;
-      try {
-    	  for (MvFichier mv : dpcts) {
-    		  mvFichier = mv;
-    		  mv.move();
-    	  }
-      } catch (IOException ioe) { // problème survenu lors du déplacement
-    	  log.error("un problème est survenu dans un déplacement de fichier: " 
-    			  + mvFichier.toString());
+      try{
+         for(final MvFichier mv : dpcts){
+            mvFichier = mv;
+            mv.move();
+         }
+      }catch(final IOException ioe){ // problème survenu lors du déplacement
+         log.error("un problème est survenu dans un déplacement de fichier: " + mvFichier.toString());
 
-    	  log.error(ioe);
+         log.error(ioe);
 
-    	  // rollback
-    	  try {
-    		  for (MvFichier mv : dpcts) {
-    			  mv.revert();
-    		  }
-    	  } catch (IOException ioe2) { // problème survenu lors du rollback du déplacement
-    		  log.error("un problème est survenu dans un rollabck de déplacement de fichier: " 
-    				  + mvFichier.toString());
+         // rollback
+         try{
+            for(final MvFichier mv : dpcts){
+               mv.revert();
+            }
+         }catch(final IOException ioe2){ // problème survenu lors du rollback du déplacement
+            log.error("un problème est survenu dans un rollabck de déplacement de fichier: " + mvFichier.toString());
 
-    		  log.error(ioe2);
-    	  }
-    	  throw new RuntimeException("switch.banque.filesystem.error");
+            log.error(ioe2);
+         }
+         throw new RuntimeException("switch.banque.filesystem.error");
       }
 
       //      if(filesToDelete != null){
@@ -1417,48 +1441,46 @@ public class PrelevementManagerImpl implements PrelevementManager
 
    @Override
    public void switchBanqueCascadeManager(Prelevement prel, final Banque bank, final boolean doValidation, final Utilisateur u,
-		   final List<File> filesToDelete, final Set<MvFichier> filesToMove) {
-	   if(bank != null && prel != null && !bank.equals(prel.getBanque())){
+      final List<File> filesToDelete, final Set<MvFichier> filesToMove){
+      if(bank != null && prel != null && !bank.equals(prel.getBanque())){
 
-		   final Iterator<Echantillon> echansIt = getEchantillonsManager(prel).iterator();
+         final Iterator<Echantillon> echansIt = getEchantillonsManager(prel).iterator();
 
-		   while(echansIt.hasNext()){
-			   echantillonManager.switchBanqueCascadeManager(echansIt.next(), bank, 
-					   doValidation, u, filesToDelete, filesToMove);
-		   }
+         while(echansIt.hasNext()){
+            echantillonManager.switchBanqueCascadeManager(echansIt.next(), bank, doValidation, u, filesToDelete, filesToMove);
+         }
 
-		   final Iterator<ProdDerive> derivesIt = getProdDerivesManager(prel).iterator();
-		   while(derivesIt.hasNext()){
-			   prodDeriveManager.switchBanqueCascadeManager(derivesIt.next(), bank, 
-					   doValidation, u, filesToDelete, filesToMove);
-		   }
+         final Iterator<ProdDerive> derivesIt = getProdDerivesManager(prel).iterator();
+         while(derivesIt.hasNext()){
+            prodDeriveManager.switchBanqueCascadeManager(derivesIt.next(), bank, doValidation, u, filesToDelete, filesToMove);
+         }
 
-		   //Suppression du délégué si la banque de destination n'est pas dans le même contexte que la banque d'origine
-		   if(!bank.getContexte().equals(prel.getBanque().getContexte())){
-			   prel.setDelegate(null);
-		   }
+         //Suppression du délégué si la banque de destination n'est pas dans le même contexte que la banque d'origine
+         if(!bank.getContexte().equals(prel.getBanque().getContexte())){
+            prel.setDelegate(null);
+         }
 
-		   prel.setBanque(bank);
+         prel.setBanque(bank);
 
-		   //Si le délégué présente des informations de validation, on 
+         //Si le délégué présente des informations de validation, on 
 
-		   if(doValidation && findDoublonManager(prel)){
-			   log.warn("Doublon lors creation objet Prelevement " + prel.toString());
-			   throw new DoublonFoundException("Prelevement", "switchBanque", prel.getCode(), null);
-		   }
-		   prel = prelevementDao.mergeObject(prel);
+         if(doValidation && findDoublonManager(prel)){
+            log.warn("Doublon lors creation objet Prelevement " + prel.toString());
+            throw new DoublonFoundException("Prelevement", "switchBanque", prel.getCode(), null);
+         }
+         prel = prelevementDao.mergeObject(prel);
 
-		   // annotations
-		   annotationValeurManager.switchBanqueManager(prel, bank, filesToDelete,filesToMove);
-		   // if (prel.getMaladie() != null) {
-		   // annotationValeurManager
-		   // .switchBanqueManager(prel.getMaladie().getPatient(), bank);
-		   // }
+         // annotations
+         annotationValeurManager.switchBanqueManager(prel, bank, filesToDelete, filesToMove);
+         // if (prel.getMaladie() != null) {
+         // annotationValeurManager
+         // .switchBanqueManager(prel.getMaladie().getPatient(), bank);
+         // }
 
-		   final Operation creationOp = new Operation();
-		   creationOp.setDate(Utils.getCurrentSystemCalendar());
-		   operationManager.createObjectManager(creationOp, u, operationTypeDao.findByNom("ChangeCollection").get(0), prel);
-	   }
+         final Operation creationOp = new Operation();
+         creationOp.setDate(Utils.getCurrentSystemCalendar());
+         operationManager.createObjectManager(creationOp, u, operationTypeDao.findByNom("ChangeCollection").get(0), prel);
+      }
    }
 
    @Override
@@ -1524,9 +1546,9 @@ public class PrelevementManagerImpl implements PrelevementManager
          annotationValeurManager.removeAnnotationValeurListManager(listAnnoToDelete, filesToDelete);
 
          if(listAnnoToCreateOrUpdate != null){
-            // traite en premier et retire les annotations 
-            // création de fichiers pour 
-            // enregistrement en batch 
+            // traite en premier et retire les annotations
+            // création de fichiers pour
+            // enregistrement en batch
             final List<AnnotationValeur> fileVals = new ArrayList<>();
             for(final AnnotationValeur val : listAnnoToCreateOrUpdate){
                if(val.getFichier() != null && val.getStream() != null){

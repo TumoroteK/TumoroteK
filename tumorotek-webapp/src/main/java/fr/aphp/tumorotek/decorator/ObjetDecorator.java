@@ -66,6 +66,7 @@ public class ObjetDecorator implements Comparable<Object>
 {
 
    private final Object objet;
+
    private final Affichage affichage;
 
    public ObjetDecorator(final Object obj, final Affichage affichage){
@@ -82,7 +83,7 @@ public class ObjetDecorator implements Comparable<Object>
    }
 
    /**
-    * Méthode qui ajoute dans une liste d'objets les champs d'un objet à 
+    * Méthode qui ajoute dans une liste d'objets les champs d'un objet à
     * afficher.
     * @return Liste d'objets affichables.
     */
@@ -338,8 +339,8 @@ public class ObjetDecorator implements Comparable<Object>
                      liste.add(prodDeco.getTransformation());
                   }else if(nomChampEntite.equals("DateTransformation")){
                      liste.add(prodDeco.getFormattedDateTransformation());
-//                  }else if(nomChampEntite.equals("ReservationId")){
-//                     liste.add(prodDeco.getReservation());
+                     //                  }else if(nomChampEntite.equals("ReservationId")){
+                     //                     liste.add(prodDeco.getReservation());
                   }else if(nomChampEntite.equals("EtatIncomplet")){
                      liste.add(prodDeco.getEtatIncomplet());
                   }else if(nomChampEntite.equals("Archive")){
@@ -363,7 +364,7 @@ public class ObjetDecorator implements Comparable<Object>
 
    /**
     * Decore une liste d'objets.
-    * 
+    *
     * @param objets
     * @return objets décorés.
     */

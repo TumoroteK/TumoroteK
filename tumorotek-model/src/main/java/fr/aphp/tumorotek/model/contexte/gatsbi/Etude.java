@@ -1,5 +1,5 @@
 /**
- * Copyright ou © ou Copr. Assistance Publique des Hôpitaux de 
+ * Copyright ou © ou Copr. Assistance Publique des Hôpitaux de
  * PARIS et SESAN
  * projet-tk@sesan.fr
  *
@@ -40,6 +40,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -59,143 +60,145 @@ import fr.aphp.tumorotek.model.contexte.Plateforme;
  * Objet persistant mappant la table GASTBY_ETUDE.
  * Classe créée le 12/07/2021.
  *
- * 
+ *
  * @version 2.3.0-gatsbi
  *
  */
 @Entity
 @Immutable
 @Table(name = "GATSBI_ETUDE")
-@NamedQueries(value = {
-	@NamedQuery(name = "Etude.findByPfOrder", 
-		query = "SELECT e FROM Etude e " + "WHERE e.plateforme = ?1 AND archive = 0 ORDER BY e.titre")
-})
-public class Etude implements Serializable {
+@NamedQueries(value = {@NamedQuery(name = "Etude.findByPfOrder",
+   query = "SELECT e FROM Etude e " + "WHERE e.plateforme = ?1 AND archive = 0 ORDER BY e.titre")})
+public class Etude implements Serializable
+{
 
-	private static final long serialVersionUID = 86784231547511654L;
+   private static final long serialVersionUID = 86784231547511654L;
 
-	private Integer etudeId;
-	
+   private Integer etudeId;
 
-	private Plateforme plateforme;
-	private String titre;
-	private String acronyme;
-	private Boolean archive;
-	private List<Contexte> contextes = new ArrayList<Contexte>();
+   private Plateforme plateforme;
 
-	public Etude(){}
-	
-	@Id
-	@Column(name = "GATSBI_ETUDE_ID", unique = true, nullable = false)
-	public Integer getEtudeId() {
-		return etudeId;
-	}
-	
-	public void setEtudeId(Integer etudeId) {
-		this.etudeId = etudeId;
-	}
+   private String titre;
 
-	@ManyToOne
-	@JoinColumn(name = "PLATEFORME_ID")
-	public Plateforme getPlateforme() {
-		return plateforme;
-	}
-	
-	public void setPlateforme(Plateforme plateforme) {
-		this.plateforme = plateforme;
-	}
+   private String acronyme;
 
-	@Column(name = "TITRE")
-	public String getTitre() {
-		return titre;
-	}
-	
-	public void setTitre(String titre) {
-		this.titre = titre;
-	}
+   private Boolean archive;
 
-	@Column(name = "ACRONYME")
-	public String getAcronyme() {
-		return acronyme;
-	}
-	
-	public void setAcronyme(String acronyme) {
-		this.acronyme = acronyme;
-	}
+   private final List<Contexte> contextes = new ArrayList<>();
 
-	public Boolean getArchive() {
-		return archive;
-	}
+   public Etude(){}
 
-	public void setArchive(Boolean _a) {
-		this.archive = _a;
-	}
+   @Id
+   @Column(name = "GATSBI_ETUDE_ID", unique = true, nullable = false)
+   public Integer getEtudeId(){
+      return etudeId;
+   }
 
-	@Transient
-	public List<Contexte> getContextes() {
-		return contextes;
-	}
+   public void setEtudeId(final Integer etudeId){
+      this.etudeId = etudeId;
+   }
 
-	@Transient
-	public void addToContextes(Contexte c) {
-		if (!this.contextes.contains(c)) {
-			contextes.add(c);
-		}
-	}
+   @ManyToOne
+   @JoinColumn(name = "PLATEFORME_ID")
+   public Plateforme getPlateforme(){
+      return plateforme;
+   }
 
-	/**
-	 * 2 etudes sont considérées comme égales si elles ont le même titre.
-	 * @param obj est l'étude à tester.
-	 * @return true si les études sont égales.
-	 */
-	@Override
-	public boolean equals(final Object obj){
+   public void setPlateforme(final Plateforme plateforme){
+      this.plateforme = plateforme;
+   }
 
-		if(this == obj){
-			return true;
-		}
-		if((obj == null) || obj.getClass() != this.getClass()){
-			return false;
-		}
-		final Etude test = (Etude) obj;
-		return Objects.equals(getTitre(), test.getTitre());
-	}
+   @Column(name = "TITRE")
+   public String getTitre(){
+      return titre;
+   }
 
-	/**
-	 * Le hashcode est calculé sur l'attribut titre.
-	 * @return la valeur du hashcode.
-	 */
-	@Override
-	public int hashCode(){
+   public void setTitre(final String titre){
+      this.titre = titre;
+   }
 
-		int hash = 7;
-		int hashTitre = 0;
+   @Column(name = "ACRONYME")
+   public String getAcronyme(){
+      return acronyme;
+   }
 
-		if(this.getTitre() != null){
-			hashTitre = this.getTitre().hashCode();
-		}
+   public void setAcronyme(final String acronyme){
+      this.acronyme = acronyme;
+   }
 
-		hash = 31 * hash + hashTitre;
+   public Boolean getArchive(){
+      return archive;
+   }
 
-		return hash;
+   public void setArchive(final Boolean _a){
+      this.archive = _a;
+   }
 
-	}
+   @Transient
+   public List<Contexte> getContextes(){
+      return contextes;
+   }
 
-	/**
-	 * Méthode surchargeant le toString() de l'objet.
-	 */
-	@Override
-	public String toString(){
-		return "{" + this.getTitre() + "}";
-	}
-	
-	@Transient
-	public Contexte getContexteForEntite(Integer entiteId) {
-		for (Contexte c : contextes) {
-			if (c.getContexteType().getEntiteId().equals(entiteId)) {
-				return c;
-			}
-		}
-		return null;
-	}
+   @Transient
+   public void addToContextes(final Contexte c){
+      if(!this.contextes.contains(c)){
+         contextes.add(c);
+      }
+   }
+
+   /**
+    * 2 etudes sont considérées comme égales si elles ont le même titre.
+    * @param obj est l'étude à tester.
+    * @return true si les études sont égales.
+    */
+   @Override
+   public boolean equals(final Object obj){
+
+      if(this == obj){
+         return true;
+      }
+      if((obj == null) || obj.getClass() != this.getClass()){
+         return false;
+      }
+      final Etude test = (Etude) obj;
+      return Objects.equals(getTitre(), test.getTitre());
+   }
+
+   /**
+    * Le hashcode est calculé sur l'attribut titre.
+    * @return la valeur du hashcode.
+    */
+   @Override
+   public int hashCode(){
+
+      int hash = 7;
+      int hashTitre = 0;
+
+      if(this.getTitre() != null){
+         hashTitre = this.getTitre().hashCode();
+      }
+
+      hash = 31 * hash + hashTitre;
+
+      return hash;
+
+   }
+
+   /**
+    * Méthode surchargeant le toString() de l'objet.
+    */
+   @Override
+   public String toString(){
+      return "{" + this.getTitre() + "}";
+   }
+
+   @Transient
+   public Contexte getContexteForEntite(final Integer entiteId){
+      for(final Contexte c : contextes){
+         if(c.getContexteType().getEntiteId().equals(entiteId)){
+            return c;
+         }
+      }
+      return null;
+   }
 }

@@ -67,7 +67,7 @@ public class DataTypeManagerImpl implements DataTypeManager
 
    @Override
    public DataType findByTypeManager(final String type){
-      List<DataType> dataTypeList = dataTypeDao.findByType(type);
+      final List<DataType> dataTypeList = dataTypeDao.findByType(type);
       DataType dataType = null;
       if(dataTypeList.size() == 1){
          dataType = dataTypeList.get(0);
@@ -78,7 +78,7 @@ public class DataTypeManagerImpl implements DataTypeManager
    }
 
    @Override
-   public List<DataType> findByTypesManager(List<String> typeList){
+   public List<DataType> findByTypesManager(final List<String> typeList){
       return dataTypeDao.findByTypes(typeList);
    }
 }

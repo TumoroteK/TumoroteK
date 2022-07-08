@@ -81,297 +81,309 @@ import fr.aphp.tumorotek.model.imprimante.AffectationImprimante;
 @Entity
 @Table(name = "UTILISATEUR")
 @NamedQueries(value = {
-		@NamedQuery(name = "Utilisateur.findByLogin", query = "SELECT u FROM Utilisateur u WHERE u.login = ?1 " + "ORDER BY archive"),
-		@NamedQuery(name = "Utilisateur.findByLoginAndArchive",
-		query = "SELECT u FROM Utilisateur u " + "WHERE u.login = ?1 AND u.archive = ?2 AND u.superAdmin = 0 "
-				+ "AND u.plateformeOrig in (?3)"),
-		@NamedQuery(name = "Utilisateur.findByArchive",
-		query = "SELECT u FROM Utilisateur u " + "WHERE u.archive = ?1 AND u.superAdmin = 0 " + "AND u.plateformeOrig in (?2)"),
-		@NamedQuery(name = "Utilisateur.findByEmail", query = "SELECT u FROM Utilisateur u WHERE u.email = ?1"),
-		@NamedQuery(name = "Utilisateur.findByTimeOut", query = "SELECT u FROM Utilisateur u WHERE u.timeOut = ?1"),
-		@NamedQuery(name = "Utilisateur.findByTimeOutBefore",
-		query = "SELECT u FROM Utilisateur u WHERE u.archive = 0 " + "and u.timeOut < ?1"),
-		@NamedQuery(name = "Utilisateur.findByTimeOutAfter", query = "SELECT u FROM Utilisateur u WHERE u.timeOut > ?1"),
-		@NamedQuery(name = "Utilisateur.findByCollaborateur", query = "SELECT u FROM Utilisateur u " + "WHERE u.collaborateur = ?1"),
-		@NamedQuery(name = "Utilisateur.findByIdWithFetch",
-		query = "SELECT u FROM Utilisateur u LEFT JOIN FETCH " + "u.collaborateur WHERE u.utilisateurId = ?1"),
-		@NamedQuery(name = "Utilisateur.findByExcludedId", query = "SELECT u FROM Utilisateur u " + "WHERE u.utilisateurId != ?1"),
-		@NamedQuery(name = "Utilisateur.findByOrder",
-		query = "SELECT u FROM Utilisateur u WHERE superAdmin = 0 " + "ORDER BY u.login"),
-		@NamedQuery(name = "Utilisateur.findByOrderWithArchiveExcludeSuperAdmin",
-		query = "SELECT u FROM Utilisateur u " + "WHERE u.archive = ?1 and u.superAdmin = 0 " + "AND u.plateformeOrig in (?2) "
-				+ "ORDER BY u.login"),
-		@NamedQuery(name = "Utilisateur.findByOrderWithArchiveIncludeSuperAdmin",
-		query = "SELECT u FROM Utilisateur u " + "WHERE u.archive = ?1 and ( u.plateformeOrig in (?2) OR (u.superAdmin = 1 ))"
-				+ "ORDER BY u.login"),
-		@NamedQuery(name = "Utilisateur.findByLoginPassAndArchive",
-		query = "SELECT u FROM Utilisateur u " + "WHERE u.login = ?1 " + "AND u.password = ?2 " + "AND u.archive = ?3"),
-		@NamedQuery(name = "Utilisateur.findBySuperAndArchive",
-		query = "SELECT u FROM Utilisateur u " + "WHERE  u.archive = ?1 and u.superAdmin = ?2 order by u.login")
-})
+   @NamedQuery(name = "Utilisateur.findByLogin", query = "SELECT u FROM Utilisateur u WHERE u.login = ?1 " + "ORDER BY archive"),
+   @NamedQuery(name = "Utilisateur.findByLoginAndArchive",
+      query = "SELECT u FROM Utilisateur u " + "WHERE u.login = ?1 AND u.archive = ?2 AND u.superAdmin = 0 "
+         + "AND u.plateformeOrig in (?3)"),
+   @NamedQuery(name = "Utilisateur.findByArchive",
+      query = "SELECT u FROM Utilisateur u " + "WHERE u.archive = ?1 AND u.superAdmin = 0 " + "AND u.plateformeOrig in (?2)"),
+   @NamedQuery(name = "Utilisateur.findByEmail", query = "SELECT u FROM Utilisateur u WHERE u.email = ?1"),
+   @NamedQuery(name = "Utilisateur.findByTimeOut", query = "SELECT u FROM Utilisateur u WHERE u.timeOut = ?1"),
+   @NamedQuery(name = "Utilisateur.findByTimeOutBefore",
+      query = "SELECT u FROM Utilisateur u WHERE u.archive = 0 " + "and u.timeOut < ?1"),
+   @NamedQuery(name = "Utilisateur.findByTimeOutAfter", query = "SELECT u FROM Utilisateur u WHERE u.timeOut > ?1"),
+   @NamedQuery(name = "Utilisateur.findByCollaborateur", query = "SELECT u FROM Utilisateur u " + "WHERE u.collaborateur = ?1"),
+   @NamedQuery(name = "Utilisateur.findByIdWithFetch",
+      query = "SELECT u FROM Utilisateur u LEFT JOIN FETCH " + "u.collaborateur WHERE u.utilisateurId = ?1"),
+   @NamedQuery(name = "Utilisateur.findByExcludedId", query = "SELECT u FROM Utilisateur u " + "WHERE u.utilisateurId != ?1"),
+   @NamedQuery(name = "Utilisateur.findByOrder",
+      query = "SELECT u FROM Utilisateur u WHERE superAdmin = 0 " + "ORDER BY u.login"),
+   @NamedQuery(name = "Utilisateur.findByOrderWithArchiveExcludeSuperAdmin",
+      query = "SELECT u FROM Utilisateur u " + "WHERE u.archive = ?1 and u.superAdmin = 0 " + "AND u.plateformeOrig in (?2) "
+         + "ORDER BY u.login"),
+   @NamedQuery(name = "Utilisateur.findByOrderWithArchiveIncludeSuperAdmin",
+      query = "SELECT u FROM Utilisateur u " + "WHERE u.archive = ?1 and ( u.plateformeOrig in (?2) OR (u.superAdmin = 1 ))"
+         + "ORDER BY u.login"),
+   @NamedQuery(name = "Utilisateur.findByLoginPassAndArchive",
+      query = "SELECT u FROM Utilisateur u " + "WHERE u.login = ?1 " + "AND u.password = ?2 " + "AND u.archive = ?3"),
+   @NamedQuery(name = "Utilisateur.findBySuperAndArchive",
+      query = "SELECT u FROM Utilisateur u " + "WHERE  u.archive = ?1 and u.superAdmin = ?2 order by u.login")})
 public class Utilisateur implements TKdataObject, java.io.Serializable, Comparable<Utilisateur>
 {
 
-	private static final long serialVersionUID = 225451547843654684L;
+   private static final long serialVersionUID = 225451547843654684L;
 
-	private Integer utilisateurId;
-	private String login;
-	private String password;
-	private Boolean archive = false;
-	private boolean ldap;
-	private String email;
-	private Date timeOut;
-	private boolean superAdmin;
-	private Plateforme plateformeOrig;
+   private Integer utilisateurId;
 
-	private Collaborateur collaborateur;
-	private Set<CodeSelect> codeSelects = new HashSet<>();
-	private Set<CodeUtilisateur> codeUtilisateurs = new HashSet<>();
-	private Set<ProfilUtilisateur> profilUtilisateurs = new HashSet<>();
-	private Set<Plateforme> plateformes = new HashSet<>();
-	private Set<AffectationImprimante> affectationImprimantes = new HashSet<>();
+   private String login;
 
-	/** Constructeur par défaut. */
-	public Utilisateur(){}
+   private String password;
 
-	@Id
-	@Column(name = "UTILISATEUR_ID", unique = true, nullable = false)
-	@GeneratedValue(generator = "autoincrement")
-	@GenericGenerator(name = "autoincrement", strategy = "increment")
-	public Integer getUtilisateurId(){
-		return utilisateurId;
-	}
+   private Boolean archive = false;
 
-	public void setUtilisateurId(final Integer id){
-		this.utilisateurId = id;
-	}
+   private boolean ldap;
 
-	@Column(name = "LOGIN", nullable = false, length = 100)
-	public String getLogin(){
-		return login;
-	}
+   private String email;
 
-	public void setLogin(final String log){
-		this.login = log;
-	}
+   private Date timeOut;
 
-	@Column(name = "PASSWORD", nullable = true, length = 100)
-	public String getPassword(){
-		return password;
-	}
+   private boolean superAdmin;
 
-	public void setPassword(final String pass){
-		this.password = pass;
-	}
+   private Plateforme plateformeOrig;
 
-	@Column(name = "ARCHIVE", nullable = false)
-	public boolean isArchive(){
-		return archive;
-	}
+   private Collaborateur collaborateur;
 
-	public void setArchive(final boolean arch){
-		this.archive = arch;
-	}
+   private Set<CodeSelect> codeSelects = new HashSet<>();
 
-	@Column(name = "LDAP", nullable = false)
-	public boolean isLdap(){
-		return ldap;
-	}
+   private Set<CodeUtilisateur> codeUtilisateurs = new HashSet<>();
 
-	public void setLdap(final boolean ldap){
-		this.ldap = ldap;
-	}
+   private Set<ProfilUtilisateur> profilUtilisateurs = new HashSet<>();
 
-	@Column(name = "EMAIL", nullable = true, length = 50)
-	public String getEmail(){
-		return email;
-	}
+   private Set<Plateforme> plateformes = new HashSet<>();
 
-	public void setEmail(final String mail){
-		this.email = mail;
-	}
+   private Set<AffectationImprimante> affectationImprimantes = new HashSet<>();
 
-	@Column(name = "TIMEOUT", nullable = true)
-	public Date getTimeOut(){
-		if(timeOut != null){
-			return new Date(timeOut.getTime());
-		}else{
-			return null;
-		}
-	}
+   /** Constructeur par défaut. */
+   public Utilisateur(){}
 
-	public void setTimeOut(final Date time){
-		if(time != null){
-			this.timeOut = new Date(time.getTime());
-		}else{
-			this.timeOut = null;
-		}
-	}
+   @Id
+   @Column(name = "UTILISATEUR_ID", unique = true, nullable = false)
+   @GeneratedValue(generator = "autoincrement")
+   @GenericGenerator(name = "autoincrement", strategy = "increment")
+   public Integer getUtilisateurId(){
+      return utilisateurId;
+   }
 
-	@Column(name = "SUPER", nullable = false)
-	public boolean isSuperAdmin(){
-		return superAdmin;
-	}
+   public void setUtilisateurId(final Integer id){
+      this.utilisateurId = id;
+   }
 
-	public void setSuperAdmin(final boolean superA){
-		this.superAdmin = superA;
-	}
+   @Column(name = "LOGIN", nullable = false, length = 100)
+   public String getLogin(){
+      return login;
+   }
 
-	@ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-	@JoinColumn(name = "COLLABORATEUR_ID", nullable = true)
-	public Collaborateur getCollaborateur(){
-		return collaborateur;
-	}
+   public void setLogin(final String log){
+      this.login = log;
+   }
 
-	public void setCollaborateur(final Collaborateur c){
-		this.collaborateur = c;
-	}
+   @Column(name = "PASSWORD", nullable = true, length = 100)
+   public String getPassword(){
+      return password;
+   }
 
-	@OneToMany(mappedBy = "utilisateur")
-	public Set<CodeSelect> getCodeSelects(){
-		return codeSelects;
-	}
+   public void setPassword(final String pass){
+      this.password = pass;
+   }
 
-	public void setCodeSelects(final Set<CodeSelect> codes){
-		this.codeSelects = codes;
-	}
+   @Column(name = "ARCHIVE", nullable = false)
+   public boolean isArchive(){
+      return archive;
+   }
 
-	@OneToMany(mappedBy = "utilisateur")
-	public Set<CodeUtilisateur> getCodeUtilisateurs(){
-		return codeUtilisateurs;
-	}
+   public void setArchive(final boolean arch){
+      this.archive = arch;
+   }
 
-	public void setCodeUtilisateurs(final Set<CodeUtilisateur> codes){
-		this.codeUtilisateurs = codes;
-	}
+   @Column(name = "LDAP", nullable = false)
+   public boolean isLdap(){
+      return ldap;
+   }
 
-	@OneToMany(mappedBy = "pk.utilisateur", fetch=FetchType.EAGER)
-	public Set<ProfilUtilisateur> getProfilUtilisateurs(){
-		return profilUtilisateurs;
-	}
+   public void setLdap(final boolean ldap){
+      this.ldap = ldap;
+   }
 
-	public void setProfilUtilisateurs(final Set<ProfilUtilisateur> profils){
-		this.profilUtilisateurs = profils;
-	}
+   @Column(name = "EMAIL", nullable = true, length = 50)
+   public String getEmail(){
+      return email;
+   }
 
-	@ManyToMany(targetEntity = Plateforme.class, fetch=FetchType.EAGER)
-	@JoinTable(name = "PLATEFORME_ADMINISTRATEUR", joinColumns = @JoinColumn(name = "UTILISATEUR_ID"),
-	inverseJoinColumns = @JoinColumn(name = "PLATEFORME_ID"))
-	public Set<Plateforme> getPlateformes(){
-		return this.plateformes;
-	}
+   public void setEmail(final String mail){
+      this.email = mail;
+   }
 
-	public void setPlateformes(final Set<Plateforme> pfs){
-		this.plateformes = pfs;
-	}
+   @Column(name = "TIMEOUT", nullable = true)
+   public Date getTimeOut(){
+      if(timeOut != null){
+         return new Date(timeOut.getTime());
+      }else{
+         return null;
+      }
+   }
 
-	@OneToMany(mappedBy = "pk.utilisateur", cascade = {CascadeType.REMOVE})
-	public Set<AffectationImprimante> getAffectationImprimantes(){
-		return affectationImprimantes;
-	}
+   public void setTimeOut(final Date time){
+      if(time != null){
+         this.timeOut = new Date(time.getTime());
+      }else{
+         this.timeOut = null;
+      }
+   }
 
-	public void setAffectationImprimantes(final Set<AffectationImprimante> aImprimantes){
-		this.affectationImprimantes = aImprimantes;
-	}
+   @Column(name = "SUPER", nullable = false)
+   public boolean isSuperAdmin(){
+      return superAdmin;
+   }
 
-	@ManyToOne
-	@JoinColumn(name = "PLATEFORME_ORIG_ID", nullable = true)
-	public Plateforme getPlateformeOrig(){
-		return plateformeOrig;
-	}
+   public void setSuperAdmin(final boolean superA){
+      this.superAdmin = superA;
+   }
 
-	public void setPlateformeOrig(final Plateforme p){
-		this.plateformeOrig = p;
-	}
+   @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+   @JoinColumn(name = "COLLABORATEUR_ID", nullable = true)
+   public Collaborateur getCollaborateur(){
+      return collaborateur;
+   }
 
-	/**
-	 * 2 utilisateurs sont considérées comme égaux s'ils ont le même login.
-	 * @param obj est la utilisateur à tester.
-	 * @return true si les utilisateurs sont égaux.
-	 */
-	@Override
-	public boolean equals(final Object obj){
+   public void setCollaborateur(final Collaborateur c){
+      this.collaborateur = c;
+   }
 
-		if(this == obj){
-			return true;
-		}
-		if((obj == null) || obj.getClass() != this.getClass()){
-			return false;
-		}
-		final Utilisateur test = (Utilisateur) obj;
-		return ((this.login == test.login || (this.login != null && this.login.equals(test.login))));
-	}
+   @OneToMany(mappedBy = "utilisateur")
+   public Set<CodeSelect> getCodeSelects(){
+      return codeSelects;
+   }
 
-	/**
-	 * Le hashcode est calculé sur les attributs login.
-	 * @return la valeur du hashcode.
-	 */
-	@Override
-	public int hashCode(){
+   public void setCodeSelects(final Set<CodeSelect> codes){
+      this.codeSelects = codes;
+   }
 
-		int hash = 7;
-		int hashLogin = 0;
+   @OneToMany(mappedBy = "utilisateur")
+   public Set<CodeUtilisateur> getCodeUtilisateurs(){
+      return codeUtilisateurs;
+   }
 
-		if(this.login != null){
-			hashLogin = this.login.hashCode();
-		}
+   public void setCodeUtilisateurs(final Set<CodeUtilisateur> codes){
+      this.codeUtilisateurs = codes;
+   }
 
-		hash = 31 * hash + hashLogin;
+   @OneToMany(mappedBy = "pk.utilisateur", fetch = FetchType.EAGER)
+   public Set<ProfilUtilisateur> getProfilUtilisateurs(){
+      return profilUtilisateurs;
+   }
 
-		return hash;
-	}
+   public void setProfilUtilisateurs(final Set<ProfilUtilisateur> profils){
+      this.profilUtilisateurs = profils;
+   }
 
-	/**
-	 * Méthode surchargeant le toString() de l'objet.
-	 */
-	@Override
-	public String toString(){
-		if(this.login != null){
-			return "{" + this.login + "}";
-		}else{
-			return "{Empty Utilisateur}";
-		}
-	}
+   @ManyToMany(targetEntity = Plateforme.class, fetch = FetchType.EAGER)
+   @JoinTable(name = "PLATEFORME_ADMINISTRATEUR", joinColumns = @JoinColumn(name = "UTILISATEUR_ID"),
+      inverseJoinColumns = @JoinColumn(name = "PLATEFORME_ID"))
+   public Set<Plateforme> getPlateformes(){
+      return this.plateformes;
+   }
 
-	/**
-	 * Cree un clone de l'objet.
-	 * @return clone Utilisateur.
-	 */
-	@Override
-	public Utilisateur clone(){
-		final Utilisateur clone = new Utilisateur();
+   public void setPlateformes(final Set<Plateforme> pfs){
+      this.plateformes = pfs;
+   }
 
-		clone.setUtilisateurId(this.utilisateurId);
-		clone.setLogin(this.login);
-		clone.setPassword(this.password);
-		clone.setArchive(this.archive);
-		clone.setLdap(this.ldap);
-		clone.setEmail(this.email);
-		clone.setTimeOut(this.timeOut);
-		clone.setCollaborateur(this.collaborateur);
-		clone.setSuperAdmin(this.superAdmin);
-		clone.setCodeSelects(this.codeSelects);
-		clone.setCodeUtilisateurs(this.codeUtilisateurs);
-		clone.setProfilUtilisateurs(this.profilUtilisateurs);
-		clone.setPlateformes(this.plateformes);
-		clone.setAffectationImprimantes(this.affectationImprimantes);
-		clone.setPlateformeOrig(getPlateformeOrig());
+   @OneToMany(mappedBy = "pk.utilisateur", cascade = {CascadeType.REMOVE})
+   public Set<AffectationImprimante> getAffectationImprimantes(){
+      return affectationImprimantes;
+   }
 
-		return clone;
-	}
+   public void setAffectationImprimantes(final Set<AffectationImprimante> aImprimantes){
+      this.affectationImprimantes = aImprimantes;
+   }
 
-	@Override
-	public Integer listableObjectId(){
-		return getUtilisateurId();
-	}
+   @ManyToOne
+   @JoinColumn(name = "PLATEFORME_ORIG_ID", nullable = true)
+   public Plateforme getPlateformeOrig(){
+      return plateformeOrig;
+   }
 
-	@Override
-	public int compareTo(final Utilisateur us){
-		return this.getLogin().compareToIgnoreCase(us.getLogin());
-	}
-	
-	@Transient	
-	public Boolean getRegular(){
-		return !superAdmin;
-	}
+   public void setPlateformeOrig(final Plateforme p){
+      this.plateformeOrig = p;
+   }
+
+   /**
+    * 2 utilisateurs sont considérées comme égaux s'ils ont le même login.
+    * @param obj est la utilisateur à tester.
+    * @return true si les utilisateurs sont égaux.
+    */
+   @Override
+   public boolean equals(final Object obj){
+
+      if(this == obj){
+         return true;
+      }
+      if((obj == null) || obj.getClass() != this.getClass()){
+         return false;
+      }
+      final Utilisateur test = (Utilisateur) obj;
+      return ((this.login == test.login || (this.login != null && this.login.equals(test.login))));
+   }
+
+   /**
+    * Le hashcode est calculé sur les attributs login.
+    * @return la valeur du hashcode.
+    */
+   @Override
+   public int hashCode(){
+
+      int hash = 7;
+      int hashLogin = 0;
+
+      if(this.login != null){
+         hashLogin = this.login.hashCode();
+      }
+
+      hash = 31 * hash + hashLogin;
+
+      return hash;
+   }
+
+   /**
+    * Méthode surchargeant le toString() de l'objet.
+    */
+   @Override
+   public String toString(){
+      if(this.login != null){
+         return "{" + this.login + "}";
+      }else{
+         return "{Empty Utilisateur}";
+      }
+   }
+
+   /**
+    * Cree un clone de l'objet.
+    * @return clone Utilisateur.
+    */
+   @Override
+   public Utilisateur clone(){
+      final Utilisateur clone = new Utilisateur();
+
+      clone.setUtilisateurId(this.utilisateurId);
+      clone.setLogin(this.login);
+      clone.setPassword(this.password);
+      clone.setArchive(this.archive);
+      clone.setLdap(this.ldap);
+      clone.setEmail(this.email);
+      clone.setTimeOut(this.timeOut);
+      clone.setCollaborateur(this.collaborateur);
+      clone.setSuperAdmin(this.superAdmin);
+      clone.setCodeSelects(this.codeSelects);
+      clone.setCodeUtilisateurs(this.codeUtilisateurs);
+      clone.setProfilUtilisateurs(this.profilUtilisateurs);
+      clone.setPlateformes(this.plateformes);
+      clone.setAffectationImprimantes(this.affectationImprimantes);
+      clone.setPlateformeOrig(getPlateformeOrig());
+
+      return clone;
+   }
+
+   @Override
+   public Integer listableObjectId(){
+      return getUtilisateurId();
+   }
+
+   @Override
+   public int compareTo(final Utilisateur us){
+      return this.getLogin().compareToIgnoreCase(us.getLogin());
+   }
+
+   @Transient
+   public Boolean getRegular(){
+      return !superAdmin;
+   }
 }

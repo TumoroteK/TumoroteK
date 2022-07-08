@@ -57,9 +57,11 @@ public class AnnoTablesAssociees extends OneToManyComponent<TableAnnotation>
    private static final long serialVersionUID = 1L;
 
    private Listheader upHeader;
+
    private Listheader downHeader;
 
    private Entite entite;
+
    private List<TableAnnotation> objects = new ArrayList<>();
 
    public Entite getEntite(){
@@ -82,7 +84,6 @@ public class AnnoTablesAssociees extends OneToManyComponent<TableAnnotation>
       getBinder().loadComponent(objectsList);
    }
 
-   
    @Override
    public void setObjects(final List<TableAnnotation> objs){
       this.objects = objs;
@@ -121,10 +122,10 @@ public class AnnoTablesAssociees extends OneToManyComponent<TableAnnotation>
       //if (objLinkLabel.getSclass().equals("formLink")) {
       // recupere le TableAnnotation
       //			Object tab = AbstractListeController2
-      //							.getBindingData((ForwardEvent) event, false); 
+      //							.getBindingData((ForwardEvent) event, false);
 
       // ouvre l'onglet TableAnnotation;
-      // StockageController controller = 
+      // StockageController controller =
       //	StockageController.backToMe(getMainWindow(), page);
       // controller
       //	.switchToFicheTableAnnotationMode((TableAnnotation) cont);
@@ -169,7 +170,7 @@ public class AnnoTablesAssociees extends OneToManyComponent<TableAnnotation>
       //			objLinkLabel.setSclass("formValue");
       //		} else {
       //			objLinkLabel.setSclass("formLink");
-      //		}	
+      //		}
    }
 
    /**

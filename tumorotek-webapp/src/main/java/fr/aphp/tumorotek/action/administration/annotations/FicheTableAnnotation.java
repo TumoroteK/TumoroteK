@@ -106,27 +106,38 @@ public class FicheTableAnnotation extends AbstractFicheCombineController
    private Button addChamp;
 
    private Grid champsGrid;
+
    private Column editColumn;
+
    private Column deleteColumn;
+
    private Column upColumn;
+
    private Column downColumn;
 
    // Labels
    private Label nomLabel;
+
    private Label descriptionLabel;
+
    private Label entiteLabel;
 
    // Editable components : mode d'édition ou de création.
    private Label nomRequired;
+
    private Textbox nomBox;
+
    private Textbox descriptionBox;
+
    private Listbox entiteBox;
 
    // banque
    private Group groupBanques;
+
    private Div banquesAssociees;
 
    private Menubar menuBar;
+
    private Rows rows;
 
    // Objets Principaux.
@@ -134,30 +145,43 @@ public class FicheTableAnnotation extends AbstractFicheCombineController
 
    // Champ annotations decorators.
    private final List<ChampAnnotationDecorator> champs = new ArrayList<>();
+
    private final List<ChampAnnotationDecorator> copyChamps = new ArrayList<>();
+
    private final List<ChampAnnotationDecorator> champsToCreateOrEdit = new ArrayList<>();
+
    private final List<ChampAnnotation> champsToDelete = new ArrayList<>();
+
    private ChampAnnotation beforeEditClone;
+
    private ChampAnnotationDecorator currentChampEdited;
+
    private int ordreMax = 0;
 
    // Associations.
    private final List<Banque> banques = new ArrayList<>();
+
    private final List<Banque> copyBanques = new ArrayList<>();
+
    private final List<Entite> entites = new ArrayList<>();
+
    private Entite selectedEntite;
+
    //private List<Catalogue> catalogues = new ArrayList<Catalogue>();
    //private Catalogue selectedCatalogue;
    //private Catalogue emptyCatalogue = new Catalogue();
    private final List<DataType> types = new ArrayList<>();
+
    private List<String> booleanValue = new ArrayList<>();
 
    private DataType selectedDataType;
 
    private static I3listBoxItemRenderer entiteRenderer = new I3listBoxItemRenderer("nom");
+
    private static I3listBoxItemRenderer typeRenderer = new I3listBoxItemRenderer("type");
 
    private boolean isCatalogueTable = false;
+
    private String selectedBooleanValue;
 
    @Override
@@ -1155,8 +1179,7 @@ public class FicheTableAnnotation extends AbstractFicheCombineController
       obligBox.getNextSibling().setVisible(false);
       obligBox.setChecked(false);
       // affiche le label non italic et efface checkbox
-      if(this.selectedDataType.getType().equals("fichier") || 
-    	this.selectedDataType.getType().equals("boolean")
+      if(this.selectedDataType.getType().equals("fichier") || this.selectedDataType.getType().equals("boolean")
          || this.selectedDataType.getType().equals("calcule")){
          combiBox.getNextSibling().setVisible(true);
          combiBox.setVisible(false);

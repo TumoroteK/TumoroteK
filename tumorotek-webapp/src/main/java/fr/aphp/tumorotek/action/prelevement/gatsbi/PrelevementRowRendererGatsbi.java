@@ -1,5 +1,5 @@
 /**
- * Copyright ou © ou Copr. Assistance Publique des Hôpitaux de 
+ * Copyright ou © ou Copr. Assistance Publique des Hôpitaux de
  * PARIS et SESAN
  * projet-tk@sesan.fr
  *
@@ -57,173 +57,174 @@ import fr.aphp.tumorotek.webapp.general.SessionUtils;
  * @author Mathieu BARTHELEMY
  * @version 2.3.0-gatsi
  */
-public class PrelevementRowRendererGatsbi extends PrelevementRowRenderer implements RowRendererGatsbi {
+public class PrelevementRowRendererGatsbi extends PrelevementRowRenderer implements RowRendererGatsbi
+{
 
-	private Contexte contexte;
+   private final Contexte contexte;
 
-	// flag passe à true si la cellule congelation est déja rendue
-	// afin d'éviter que cette cellule soit rendue deux fois
-	private boolean congCellRendered;
+   // flag passe à true si la cellule congelation est déja rendue
+   // afin d'éviter que cette cellule soit rendue deux fois
+   private boolean congCellRendered;
 
-	// par défaut les icones ne sont pas dessinées
-	private boolean iconesRendered = false;
+   // par défaut les icones ne sont pas dessinées
+   private boolean iconesRendered = false;
 
-	public PrelevementRowRendererGatsbi(final boolean select, final boolean cols) {
-		super(select, cols);
+   public PrelevementRowRendererGatsbi(final boolean select, final boolean cols){
+      super(select, cols);
 
-		contexte = SessionUtils.getCurrentGatsbiContexteForEntiteId(2);
-	}
+      contexte = SessionUtils.getCurrentGatsbiContexteForEntiteId(2);
+   }
 
-	@Override
-	protected void renderPrelevement(Row row, Prelevement prel)
-			throws IllegalAccessException, InvocationTargetException, NoSuchMethodException, ParseException {
+   @Override
+   protected void renderPrelevement(final Row row, final Prelevement prel)
+      throws IllegalAccessException, InvocationTargetException, NoSuchMethodException, ParseException{
 
-		congCellRendered = false;
+      congCellRendered = false;
 
-		for (Integer chpId : contexte.getChampEntiteInTableauOrdered()) {
-			applyPrelevementChpRender(chpId, row, prel);
-		}
+      for(final Integer chpId : contexte.getChampEntiteInTableauOrdered()){
+         applyPrelevementChpRender(chpId, row, prel);
+      }
 
-		renderNbEchans(row, prel);
-	}
+      renderNbEchans(row, prel);
+   }
 
-	/**
-	 * Applique la methode de rendering correspondant au champEntité id passé en
-	 * paramètre
-	 * 
-	 * @param chpId
-	 * @throws NoSuchMethodException
-	 * @throws InvocationTargetException
-	 * @throws IllegalAccessException
-	 * @throws ParseException
-	 */
-	private void applyPrelevementChpRender(Integer chpId, Row row, Prelevement prel)
-			throws IllegalAccessException, InvocationTargetException, NoSuchMethodException, ParseException {
+   /**
+    * Applique la methode de rendering correspondant au champEntité id passé en
+    * paramètre
+    *
+    * @param chpId
+    * @throws NoSuchMethodException
+    * @throws InvocationTargetException
+    * @throws IllegalAccessException
+    * @throws ParseException
+    */
+   private void applyPrelevementChpRender(final Integer chpId, final Row row, final Prelevement prel)
+      throws IllegalAccessException, InvocationTargetException, NoSuchMethodException, ParseException{
 
-		switch (chpId) {
-		case 23:
-			// "code" toujours rendu par défaut
-			break;
-		case 45: // numero labo
-			renderNumeroLabo(row, prel);
-			break;
-		case 24: // nature
-			renderThesObjectProperty(row, prel, "nature");
-			break;
-		case 44: // nda
-			renderAlphanumPropertyAsStringNoFormat(row, prel, "patientNda");
-			break;
-		case 30: // date prelevement
-			renderDateProperty(row, prel, "datePrelevement");
-			break;
-		case 31: // prelevement type
-			renderThesObjectProperty(row, prel, "prelevementType");
-			break;
-		case 47: // sterile
-			renderBoolProperty(row, prel, "sterile");
-			break;
-		case 249: // risques -> rendu sous la forme d'une icône
-			break;
-		case 29: // service preleveur
-			renderServicePreleveur(row, prel);
-			break;
-		case 28: // preleveur
-			renderCollaborateurProperty(row, prel, "preleveur");
-			break;
-		case 32: // condit type
-			renderThesObjectProperty(row, prel, "conditType");
-			break;
-		case 34: // condit Nbr
-			renderNumberProperty(row, prel, "conditNbr");
-			break;
-		case 33: // condit milieu
-			renderThesObjectProperty(row, prel, "conditMilieu");
-			break;
-		case 26: // consent type
-			renderThesObjectProperty(row, prel, "consentType");
-			break;
-		case 27: // consent date
-			renderDateProperty(row, prel, "consentDate");
-			break;
-		case 35: // date depart
-			renderDateProperty(row, prel, "dateDepart");
-			break;
-		case 36: // transporteur
-			renderTransporteurProperty(row, prel);
-			break;
-		case 37: // transport temperature
-			renderNumberProperty(row, prel, "transportTemp");
-			break;
-		case 269: // cong depart
-			renderCongProperty(row, prel);
-			break;
-		case 38: // date arrivee
-			renderDateProperty(row, prel, "dateArrivee");
-			break;
-		case 39: // operateur
-			renderCollaborateurProperty(row, prel, "operateur");
-			break;
-		case 40: // quantite
-			renderQuantiteProperty(row, prel, "quantite", "quantiteUnite");
-			break;
-		case 270: // cong arrivee
-			renderCongProperty(row, prel);
-			break;
-		case 256: // conforme arrivee -> rendu sous la forme d'une icône
-			break;
-		default:
-			break;
-		}
-	}
+      switch(chpId){
+         case 23:
+            // "code" toujours rendu par défaut
+            break;
+         case 45: // numero labo
+            renderNumeroLabo(row, prel);
+            break;
+         case 24: // nature
+            renderThesObjectProperty(row, prel, "nature");
+            break;
+         case 44: // nda
+            renderAlphanumPropertyAsStringNoFormat(row, prel, "patientNda");
+            break;
+         case 30: // date prelevement
+            renderDateProperty(row, prel, "datePrelevement");
+            break;
+         case 31: // prelevement type
+            renderThesObjectProperty(row, prel, "prelevementType");
+            break;
+         case 47: // sterile
+            renderBoolProperty(row, prel, "sterile");
+            break;
+         case 249: // risques -> rendu sous la forme d'une icône
+            break;
+         case 29: // service preleveur
+            renderServicePreleveur(row, prel);
+            break;
+         case 28: // preleveur
+            renderCollaborateurProperty(row, prel, "preleveur");
+            break;
+         case 32: // condit type
+            renderThesObjectProperty(row, prel, "conditType");
+            break;
+         case 34: // condit Nbr
+            renderNumberProperty(row, prel, "conditNbr");
+            break;
+         case 33: // condit milieu
+            renderThesObjectProperty(row, prel, "conditMilieu");
+            break;
+         case 26: // consent type
+            renderThesObjectProperty(row, prel, "consentType");
+            break;
+         case 27: // consent date
+            renderDateProperty(row, prel, "consentDate");
+            break;
+         case 35: // date depart
+            renderDateProperty(row, prel, "dateDepart");
+            break;
+         case 36: // transporteur
+            renderTransporteurProperty(row, prel);
+            break;
+         case 37: // transport temperature
+            renderNumberProperty(row, prel, "transportTemp");
+            break;
+         case 269: // cong depart
+            renderCongProperty(row, prel);
+            break;
+         case 38: // date arrivee
+            renderDateProperty(row, prel, "dateArrivee");
+            break;
+         case 39: // operateur
+            renderCollaborateurProperty(row, prel, "operateur");
+            break;
+         case 40: // quantite
+            renderQuantiteProperty(row, prel, "quantite", "quantiteUnite");
+            break;
+         case 270: // cong arrivee
+            renderCongProperty(row, prel);
+            break;
+         case 256: // conforme arrivee -> rendu sous la forme d'une icône
+            break;
+         default:
+            break;
+      }
+   }
 
-	private void renderCongProperty(Row row, Prelevement prel) {
-		if (!congCellRendered) {
-			if (prel.getCongDepart() != null && prel.getCongDepart()) {
-				new Label(Labels.getLabel("prelevement.cong.DEPART")).setParent(row);
-			} else if (prel.getCongArrivee() != null && prel.getCongArrivee()) {
-				new Label(Labels.getLabel("prelevement.cong.ARRIVEE")).setParent(row);
-			} else {
-				new Label().setParent(row);
-			}
-			congCellRendered = true;
-		}
-	}
+   private void renderCongProperty(final Row row, final Prelevement prel){
+      if(!congCellRendered){
+         if(prel.getCongDepart() != null && prel.getCongDepart()){
+            new Label(Labels.getLabel("prelevement.cong.DEPART")).setParent(row);
+         }else if(prel.getCongArrivee() != null && prel.getCongArrivee()){
+            new Label(Labels.getLabel("prelevement.cong.ARRIVEE")).setParent(row);
+         }else{
+            new Label().setParent(row);
+         }
+         congCellRendered = true;
+      }
+   }
 
-	private void renderNumeroLabo(Row row, Prelevement prel) {
-		if (prel.getNumeroLabo() != null) {
-			final Label numeroLabel = new Label(prel.getNumeroLabo());
-			numeroLabel.addForward(null, numeroLabel.getParent(), "onClickObject", prel);
-			numeroLabel.setClass("formLink");
-			numeroLabel.setParent(row);
-		} else {
-			new Label().setParent(row);
-		}
-	}
+   private void renderNumeroLabo(final Row row, final Prelevement prel){
+      if(prel.getNumeroLabo() != null){
+         final Label numeroLabel = new Label(prel.getNumeroLabo());
+         numeroLabel.addForward(null, numeroLabel.getParent(), "onClickObject", prel);
+         numeroLabel.setClass("formLink");
+         numeroLabel.setParent(row);
+      }else{
+         new Label().setParent(row);
+      }
+   }
 
-	private void renderServicePreleveur(Row row, Prelevement prel) {
-		if (prel.getServicePreleveur() != null) {
-			new Label(prel.getServicePreleveur().getEtablissement().getNom().concat(" ")
-					.concat(prel.getServicePreleveur().getNom())).setParent(row);
-		} else {
-			new Label().setParent(row);
-		}
-	}
+   private void renderServicePreleveur(final Row row, final Prelevement prel){
+      if(prel.getServicePreleveur() != null){
+         new Label(prel.getServicePreleveur().getEtablissement().getNom().concat(" ").concat(prel.getServicePreleveur().getNom()))
+            .setParent(row);
+      }else{
+         new Label().setParent(row);
+      }
+   }
 
-	private void renderTransporteurProperty(Row row, Prelevement prel) {
-		if (prel.getTransporteur() != null) {
-			new Label(prel.getTransporteur().getNom()).setParent(row);
-		} else {
-			new Label().setParent(row);
-		}
-	}
+   private void renderTransporteurProperty(final Row row, final Prelevement prel){
+      if(prel.getTransporteur() != null){
+         new Label(prel.getTransporteur().getNom()).setParent(row);
+      }else{
+         new Label().setParent(row);
+      }
+   }
 
-	@Override
-	public void setIconesRendered(boolean _i) {
-		this.iconesRendered = _i;
-	}
+   @Override
+   public void setIconesRendered(final boolean _i){
+      this.iconesRendered = _i;
+   }
 
-	@Override
-	public boolean areIconesRendered() {
-		return iconesRendered;
-	}
+   @Override
+   public boolean areIconesRendered(){
+      return iconesRendered;
+   }
 }

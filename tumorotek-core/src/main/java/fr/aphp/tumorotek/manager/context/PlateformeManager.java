@@ -88,7 +88,7 @@ public interface PlateformeManager
 
    /**
     * Recherche les doublons de la plateforme passée en paramètre.
-    * @param plateforme Une plateforme pour laquelle on cherche 
+    * @param plateforme Une plateforme pour laquelle on cherche
     * des doublons.
     * @return True s'il existe des doublons.
     */
@@ -117,22 +117,22 @@ public interface PlateformeManager
     * @return plateforme créée
     */
    Plateforme createObjectManager(Plateforme plateforme, Collaborateur collaborateur, List<Utilisateur> utilisateurs,
-		Utilisateur admin, String baseDir);
+      Utilisateur admin, String baseDir);
 
    /**
     * Vérifie les dépendances d'une plateforme avant délétion.
     * @since 2.2.1
     * @param plateforme
-    * 
+    *
    	*/
    boolean isReferencedObjectManager(Plateforme pf);
 
    /**
-    * Supprime une plateforme si elle ne définit aucune banque et qu'elle n'est plus associée à 
+    * Supprime une plateforme si elle ne définit aucune banque et qu'elle n'est plus associée à
     * aucun conteneur
     * @since 2.2.1
     * @param plateforme
-    * 
+    *
    	*/
    void removeObjectManager(Plateforme pf, String comments, Utilisateur user, String basedir);
 }

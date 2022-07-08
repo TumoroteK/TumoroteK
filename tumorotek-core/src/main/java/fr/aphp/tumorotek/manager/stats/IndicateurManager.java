@@ -90,7 +90,7 @@ public interface IndicateurManager
 
    /**
     * Recherche un Indicateur dont l'identifiant est passé en paramètre.
-    * 
+    *
     * @param IndicateurId
     *            Id du Indicateur recherche.
     * @return Un Indicateur.
@@ -99,21 +99,21 @@ public interface IndicateurManager
 
    /**
     * Recherche tous les Indicateurs présentes dans la base.
-    * 
+    *
     * @return Liste de Indicateurs.
     */
    List<Indicateur> findAllObjectsManager();
 
    /**
     * Recherche les Indicateurs associés à aucune subdivision.
-    * 
+    *
     * @return Une liste de Indicateurs.
     */
    List<Indicateur> findNullSubdivisionIndicateursManager();
 
    /**
     * Recherche les Indicateurs dont le modèle est passé en paramètre.
-    * 
+    *
     * @param modele
     *            Modele des Indicateurs que l'on recherche.
     * @return Une liste de Indicateurs.
@@ -122,7 +122,7 @@ public interface IndicateurManager
 
    /**
     * Recherche les Indicateurs dont la subdivision est passée en paramètre.
-    * 
+    *
     * @param subdivision
     *            subdivision des Indicateurs que l'on recherche.
     * @return Une liste de Indicateurs.
@@ -138,7 +138,7 @@ public interface IndicateurManager
 
    /**
     * Persist une instance de Indicateur dans la base de données.
-    * 
+    *
     * @param Indicateur
     *            Nouvelle instance de l'objet à créer.
     * @param modele
@@ -148,7 +148,7 @@ public interface IndicateurManager
 
    /**
     * Persist une instance de Indicateur dans la base de données.
-    * 
+    *
     * @param Indicateur
     *            Instance de l'objet à maj.
     */
@@ -156,7 +156,7 @@ public interface IndicateurManager
 
    /**
     * Supprime une Indicateur de la base de données.
-    * 
+    *
     * @param Indicateur
     *            requete à supprimer de la base de données.
     */
