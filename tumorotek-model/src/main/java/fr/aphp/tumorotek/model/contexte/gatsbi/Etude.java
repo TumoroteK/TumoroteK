@@ -86,7 +86,7 @@ public class Etude implements Serializable {
 	public Etude(){}
 	
 	@Id
-	@Column(name = "GATSBI_ETUDE_ID", unique = true, nullable = false)
+	@Column(name = "ETUDE_ID", unique = true, nullable = false)
 	public Integer getEtudeId() {
 		return etudeId;
 	}

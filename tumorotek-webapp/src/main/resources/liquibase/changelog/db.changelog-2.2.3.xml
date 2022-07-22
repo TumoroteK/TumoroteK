@@ -101,7 +101,7 @@
     	<comment>nettoyage date depart LaboInter car zeroDateTimeBehavior ne semble plus fonctionner MySQL 8</comment>
        	<update tableName="LABO_INTER">
 			<column name="DATE_DEPART" value="NULL" />
-			<where>DATE_DEPART = '0000-00-00 12:00:00'</where>
+			<where>DATE_DEPART = 0</where>
 		</update>
     </changeSet>
     <changeSet id="${project.artifactId}-12" author="MB" runAlways="false" context="*">
@@ -109,7 +109,7 @@
     	<comment>nettoyage date depart LaboInter car zeroDateTimeBehavior ne semble plus fonctionner MySQL 8</comment>
        	<update tableName="LABO_INTER">
 			<column name="DATE_ARRIVEE" value="NULL" />
-			<where>DATE_ARRIVEE = '0000-00-00 12:00:00'</where>
+			<where>DATE_ARRIVEE = 0</where>
 		</update>
     </changeSet>
     <changeSet id="${project.artifactId}-13" author="MB" runAlways="false" context="*">

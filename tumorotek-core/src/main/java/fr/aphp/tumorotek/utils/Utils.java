@@ -123,17 +123,18 @@ public final class Utils
     * @param file TKAnnotableObject
     * @return path
     */
+   //TK-298 : https://tumorotek.myjetbrains.com/youtrack/issue/TK-298
    public static String writeAnnoFilePath(String baseDir, final Banque bank, final ChampAnnotation chp, final Fichier file){
       if(baseDir == null || !new File(baseDir).exists()){
          throw new RuntimeException("error.filesystem.access");
       }
       if (!baseDir.endsWith(File.separator)) {
-         baseDir = baseDir + File.separator;
+         baseDir = baseDir + "/";
       }
-      String path = baseDir + "pt_" + bank.getPlateforme().getPlateformeId() + File.separator + "coll_" + bank.getBanqueId();
+      String path = baseDir + "pt_" + bank.getPlateforme().getPlateformeId() + "/" + "coll_" + bank.getBanqueId();
 
       if(chp != null){
-         path = path + File.separator + "anno" + File.separator + "chp_" + chp.getId() + File.separator;
+         path = path + "/" + "anno" + "/" + "chp_" + chp.getId() + "/";
       }
       //		
       //		if (obj != null) {

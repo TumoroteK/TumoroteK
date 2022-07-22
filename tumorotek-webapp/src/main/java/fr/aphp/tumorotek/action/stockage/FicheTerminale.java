@@ -140,8 +140,11 @@ public class FicheTerminale extends AbstractFicheCombineStockageController
 
 	private Component[] objRowsComponents;
 	// private Button deplacer;
+	///!\ Menu bar "Mouvements"
 	private Menubar menuBarActionsTerminale;
+	//Menu bar "Sélections"
 	private Menubar menuBarSelectionsTerminale;
+	///!\ Menu bar "Actions"
 	private Menubar menuBar;
 	private Menuitem deplacer;
 	private Menuitem contenu;
@@ -364,30 +367,34 @@ public class FicheTerminale extends AbstractFicheCombineStockageController
 	 * from foreign platforme.
 	 * @since 2.2.1
 	 */
+	//TK-314 : adaptation
 	private void updateButtonActionsWithPlateformeOrigine() {
+	   boolean disable = false;
 
-		final Conteneur cont = terminale != null ?
-				ManagerLocator.getEnceinteManager().getConteneurManager(terminale.getEnceinte()) : null;
-				final boolean orig = cont != null ? cont.getPlateformeOrig()
-						.equals(SessionUtils.getCurrentPlateforme()) : false;
-
-						if (orig) { // fall back to profile rights
-							editC.setDisabled(!isCanEdit());
-							deleteC.setDisabled(!isCanDelete());
-							addIncidentItem.setDisabled(!isCanEdit());
-							deplacer.setDisabled(!isCanEdit());
-							contenu.setDisabled(!isCanEdit());
-							deplacerEmplacements.setDisabled(!isCanEdit());
-							destockerEmplacements.setDisabled(!isCanEdit());
-						} else { // equals! -> fall back to profile rights (may be edited later)
-							editC.setDisabled(!isCanEdit());
-							deleteC.setDisabled(!isCanDelete());
-							addIncidentItem.setDisabled(!isCanEdit());
-							deplacer.setDisabled(!isCanEdit());
-							contenu.setDisabled(!isCanEdit());
-							deplacerEmplacements.setDisabled(!isCanEdit());
-							destockerEmplacements.setDisabled(!isCanEdit());
-						}
+     //application de la visibilité des boutons communs à Enceinte en tenant compte des règles sur les 
+	  //conteneurs partagés 
+     final Conteneur conteneur = terminale != null ?
+        ManagerLocator.getEnceinteManager().getConteneurManager(terminale.getEnceinte()) : null;
+     disable = disableActionsForForeignPlateformeConteneur(conteneur);
+      
+       
+     //Menu Mouvements :
+     //ajout de la contrainte une seule collection sélectionnée
+     //NB : le test SessionUtils.getSelectedBanques(sessionScope).size() != 1 est plus pertinent que sessionScope.containsKey("ToutesCollections")
+     //car dans l'avenir, il se pourrait qu'un utilisateur puisse sélectionner plusieurs collections. Il faudrait alors que le déplacement soit bloqué
+     disable = disable || SessionUtils.getSelectedBanques(sessionScope).size() != 1 || !isCanEdit();
+     if(deplacer != null){
+        deplacer.setDisabled(disable);
+     }
+     if(contenu != null){
+        contenu.setDisabled(disable);
+     }
+     if(deplacerEmplacements != null){
+        deplacerEmplacements.setDisabled(disable);
+     }
+     if(destockerEmplacements != null){
+        destockerEmplacements.setDisabled(disable);
+     }
 	}
 
 	@Override
@@ -526,7 +533,7 @@ public class FicheTerminale extends AbstractFicheCombineStockageController
 		rowNumerotation.setVisible(false);
 		typeLabel.setVisible(true);
 		typesBox.setVisible(false);
-
+		
 		getBinder().loadComponent(self);
 	}
 
@@ -722,7 +729,7 @@ public class FicheTerminale extends AbstractFicheCombineStockageController
 		getBinder().loadComponent(self);
 		switchToStaticMode();
 		rowErreurDestination.setVisible(false);
-		getObjectTabController().getListeStockages().switchToNormalMode();
+		getObjectTabController().getListeStockages().switchToNormalMode(false);
 	}
 
 	public void onClick$revertContenu(){
@@ -2166,39 +2173,29 @@ public class FicheTerminale extends AbstractFicheCombineStockageController
 	 * Rend les boutons d'actions cliquables ou non.
 	 */
 	public void drawActionsForTerminale(){
-		drawActionsButtons("Stockage");
-
-		boolean canDeplace = false;
-
-		if(!sessionScope.containsKey("ToutesCollections")){
-			canDeplace = drawActionOnOneButton("Stockage", "Modification");
-		}
-		if(deplacer != null){
-			deplacer.setDisabled(!canDeplace);
-		}
-		if(contenu != null){
-			contenu.setDisabled(!canDeplace);
-		}
-		if(deplacerEmplacements != null){
-			deplacerEmplacements.setDisabled(!canDeplace);
-		}
-		if(destockerEmplacements != null){
-			destockerEmplacements.setDisabled(!canDeplace);
-		}
-		if(afficherEchantillons != null){
-			if(getDroitOnAction("Echantillon", "Consultation")){
-				afficherEchantillons.setDisabled(false);
-			}else{
-				afficherEchantillons.setDisabled(true);
-			}
-		}
-		if(afficherDerives != null){
-			if(getDroitOnAction("ProdDerive", "Consultation")){
-				afficherDerives.setDisabled(false);
-			}else{
-				afficherDerives.setDisabled(true);
-			}
-		}
+		//initialisation des boutons à partir des droits :
+	   drawActionsButtons("Stockage");
+      //gestion des boutons dont l'affichage est exclusivement lié aux droits (ça ne change pas en fonction de la navigation)
+		//Menu Sélections :
+      if(afficherEchantillons != null){
+         if(getDroitOnAction("Echantillon", "Consultation")){
+            afficherEchantillons.setDisabled(false);
+         }else{
+            afficherEchantillons.setDisabled(true);
+         }
+      }
+      if(afficherDerives != null){
+         if(getDroitOnAction("ProdDerive", "Consultation")){
+            afficherDerives.setDisabled(false);
+         }else{
+            afficherDerives.setDisabled(true);
+         }
+      }
+      //
+		
+      //TK-314
+		//gestion des boutons dont l'affichage peut changer car il dépend de la terminale (de la plateforme du conteneur de celle-ci)
+      updateButtonActionsWithPlateformeOrigine();
 	}
 
 	public void onClick$print(){

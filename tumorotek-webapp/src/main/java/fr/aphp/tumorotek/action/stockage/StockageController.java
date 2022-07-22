@@ -418,8 +418,7 @@ public class StockageController extends AbstractObjectTabController
     * Detache le contenu de la div édition.
     */
    public void onDeplacementDone(){
-      getListeStockages().switchToNormalMode();
-      getListeStockages().updateAllConteneurs(false);
+      getListeStockages().switchToNormalMode(true);
       if(actuelleTerminale != null){
          divDeplacerEmplacements.setVisible(false);
          Components.removeAllChildren(divDeplacerEmplacements);

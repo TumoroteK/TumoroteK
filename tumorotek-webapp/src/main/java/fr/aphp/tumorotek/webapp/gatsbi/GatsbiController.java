@@ -688,12 +688,12 @@ public class GatsbiController {
 			Etude etude = banks[0].getEtude(); // même en toutes collections, une seule étude !!
 			
 			UriComponentsBuilder etudeURIBld = UriComponentsBuilder
-					.fromUriString(TkParam.GATSBI_URL_BASE.getValue()
-							.concat(TkParam.GATSBI_URL_ETUDE_PATH.getValue()));
+					.fromUriString(TkParam.GATSBI_API_URL_BASE.getValue()
+							.concat(TkParam.GATSBI_API_URL_ETUDE_PATH.getValue()));
 	
 			UriComponentsBuilder contexteURIBld = UriComponentsBuilder
-					.fromUriString(TkParam.GATSBI_URL_BASE.getValue()
-						.concat(TkParam.GATSBI_URL_CONTEXTE_PATH.getValue()));
+					.fromUriString(TkParam.GATSBI_API_URL_BASE.getValue()
+						.concat(TkParam.GATSBI_API_URL_CONTEXTE_PATH.getValue()));
 			
 			log.debug("fetch etude from URL:"
 					+ (etudeURIBld.build(false).expand(etude.getEtudeId())).toUriString());
@@ -762,7 +762,7 @@ public class GatsbiController {
 	public static boolean doesGatsbiRespond() {
 		
 		UriComponentsBuilder headURIBld = UriComponentsBuilder
-				.fromUriString(TkParam.GATSBI_URL_BASE.getValue());
+				.fromUriString(TkParam.GATSBI_API_URL_BASE.getValue());
 		
 		log.debug("check if GATSBI URL HEAD responds");
 
@@ -786,8 +786,10 @@ public class GatsbiController {
 
 		try {
 			UriComponentsBuilder parametrageURIBld = UriComponentsBuilder.fromUriString(
-					TkParam.GATSBI_URL_BASE.getValue().concat(TkParam.GATSBI_URL_PARAMETRAGE_PATH.getValue()));
-	
+					TkParam.GATSBI_API_URL_BASE.getValue().concat(TkParam.GATSBI_API_URL_PARAMETRAGE_PATH.getValue()));
+
+			log.debug("fetch parametrage from URL:" + (parametrageURIBld.build(false).expand(pId)).toUriString());
+			
 			RestTemplate restTemplate = new RestTemplate();
 			return restTemplate.getForObject(parametrageURIBld.build(false).expand(pId).toUri(), ParametrageDTO.class);
 		} catch (ResourceAccessException e) { // gatsbi inaccessible
@@ -844,7 +846,7 @@ public class GatsbiController {
 				for (ParametrageValueDTO value : param.getParametrageValueDTOs()) {
 					if (!contexte.getHiddenChampEntiteIds().contains(value.getChampEntiteId()) 
 							&& !StringUtils.isBlank(value.getDefaultValue())) {
-						if (value.getThesaurusTableNom() != null) { // thesaurus value check!
+						if (value.getThesaurusTableNom() != null && value.getThesaurusTableNom().trim().length()!=0) { // thesaurus value check!
 							for (String defvalue : value.getDefaultValue().split(";")) {
 								if (!contexte.getThesaurusValuesForChampEntiteId(value.getChampEntiteId())
 										.stream().anyMatch(v -> v.getThesaurusValue().equalsIgnoreCase(defvalue))) {

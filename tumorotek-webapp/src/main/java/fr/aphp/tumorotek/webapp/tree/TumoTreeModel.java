@@ -40,6 +40,8 @@ import java.util.List;
 
 import org.zkoss.zul.AbstractTreeModel;
 
+import fr.aphp.tumorotek.webapp.tree.stockage.ConteneurNode;
+
 /**
  * Classe gérant les trees qui utilisés dans TK. Elle reprend les
  * méthodes de base de la classe AbstractTreeModel.
@@ -121,5 +123,26 @@ public class TumoTreeModel extends AbstractTreeModel<TumoTreeNode>
          }
       }
       return false;
+   }
+
+
+   //TK-314
+   /**
+   * optimisation de la méthode getPath à utiliser pour les conteneurs (1er niveau de l'arborescence).
+   * Cette méthode évite de parcourir toutes les branches jusqu'aux boîtes
+   * @param conteneurNode conteneur recherché
+   * @return int[] : path du conteneur, au même format que getPath()
+   **/
+   public int[] getConteneurPath(ConteneurNode conteneurNode){
+      int[] path = new int[1];
+      for(int i = 0, size = getRoot().getChildCount(); i < size; i++){
+         if(getChild(getRoot(), i).equals(conteneurNode)) {
+            path[0]=i;
+            
+            break;
+         }
+      }
+      
+      return path;
    }
 }

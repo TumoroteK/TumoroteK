@@ -846,6 +846,7 @@ public class FicheCessionStatic extends AbstractFicheStaticController
 				ManagerLocator.getEntiteManager().findByNomManager("Echantillon").get(0));
 	}
 
+	//TK-320 : pas d'adaptation du code car dans ce cas, la fenêtre de filtre des annotations est systématiquement affiché
 	public void onClick$exportItem() throws ClassNotFoundException, NoSuchMethodException, SecurityException,
 	InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException{
 		if(getObjectTabController().getListe().getRestrictedTableIds() != null){

@@ -185,6 +185,10 @@ public class FicheRechercheAvancee extends AbstractFicheRechercheAvancee {
 	private Textbox codeLesionnelBox;
 	private Textbox codeOrganeBox;
 	private Listbox crAnapathFilebox;
+	// impact since 2.3
+	private Checkbox impactEchanTBox;
+	private Checkbox impactEchanFBox;
+	
 	// Components dérivés
 	private Textbox codeProdDeriveBox;
 	private Textbox codeLaboProdDeriveBox;
@@ -202,6 +206,9 @@ public class FicheRechercheAvancee extends AbstractFicheRechercheAvancee {
 	// temp Stock since 2.0.13
 	private Decimalbox tempStockDeriveBox;
 	private Listbox operateursTempStockDeriveBox;
+	  // impact since 2.3
+   private Checkbox impactDeriveTBox;
+   private Checkbox impactDeriveFBox;
 
 	// Groupes
 	private Group groupPatients;
@@ -281,13 +288,13 @@ public class FicheRechercheAvancee extends AbstractFicheRechercheAvancee {
 				this.dateStock1Box, this.dateStock2Box, this.tempStockEchantillonBox,
 				this.modePreparationEchantillonBox, this.codeLesionnelBox, this.codeOrganeBox, this.conformeEchanTraitementBoolBox,
 				this.nonConformitesEchanTraitementBox, this.conformeEchanCessionBoolBox, this.nonConformitesEchanCessionBox,
-				this.crAnapathFilebox};
+				this.crAnapathFilebox, this.impactEchanFBox, this.impactEchanTBox};
 
 		objProdDeriveComponents = new Component[] {this.codeProdDeriveBox, this.typeProdDeriveBox, this.codeLaboProdDeriveBox,
 				this.qualiteProdDeriveBox, this.statutProdDeriveBox, this.volumeDeriveBox, this.quantiteDeriveBox,
 				this.dateStockDerive1Box, this.dateStockDerive2Box, this.tempStockDeriveBox, 
 				this.conformeDeriveTraitementBoolBox, this.nonConformitesDeriveTraitementBox,
-				this.conformeDeriveCessionBoolBox, this.nonConformitesDeriveCessionBox};
+				this.conformeDeriveCessionBoolBox, this.nonConformitesDeriveCessionBox, this.impactDeriveTBox, this.impactDeriveFBox};
 
 		objAnonymeComponents = new Component[] {this.nipPatientBox, this.nomPatientBox, this.ndaPatientBox,
 				this.nomNaissancePatientBox, this.dateNaissance1Box, this.dateNaissance2Box};
@@ -1507,6 +1514,7 @@ public class FicheRechercheAvancee extends AbstractFicheRechercheAvancee {
 	 */
 	public void executeQueriesForEchantillons(){
 		// pour chaque champ interrogeable pour les échantillons
+	   final List<Boolean> impacts = new ArrayList<>();
 		for(int i = 0; i < objEchantillonComponents.length; i++){
 			if(objEchantillonComponents[i] != null){
 				// si c'est un textbox
@@ -1651,9 +1659,34 @@ public class FicheRechercheAvancee extends AbstractFicheRechercheAvancee {
 
 						oneValueEntered = true;
 					}
-				}
+				} else if(objEchantillonComponents[i].getClass().getSimpleName().equals("Checkbox")){
+               final Checkbox current = (Checkbox) objEchantillonComponents[i];
+               // si une valeur a été saisie
+               if(current.isChecked()){
+                  if (("impactEchanTBox").equals(current.getId())){
+                     critereOnEchantillon = true;
+                     // execution de la requête
+                     impacts.add(true);
+                  }
+                  if (("impactEchanFBox").equals(current.getId())){
+                     critereOnEchantillon = true;
+                     // execution de la requête
+                     impacts.add(false);
+                  }
+                  final RechercheCompValues rcv = new RechercheCompValues();
+                  rcv.setCompClass(Textbox.class);
+                  rcv.setCompId(current.getId());
+                  rcv.setCheckedValue(current.isChecked());
+                  getUsedComponents().add(rcv);
+                  //oneValueEntered = true;
+               }
+            }
 			}
 		}
+      if(impacts.size() > 0){
+         executeImpactQuery("Echantillon", impacts);
+         oneValueEntered = true;
+      }
 	}
 
 	/**
@@ -1661,6 +1694,7 @@ public class FicheRechercheAvancee extends AbstractFicheRechercheAvancee {
 	 */
 	public void executeQueriesForProdDerives(){
 		// pour chaque champ interrogeable pour les dérivés
+	   final List<Boolean> impacts = new ArrayList<>();
 		for(int i = 0; i < objProdDeriveComponents.length; i++){
 			if(objProdDeriveComponents[i] != null){
 				// si c'est un textbox
@@ -1793,9 +1827,28 @@ public class FicheRechercheAvancee extends AbstractFicheRechercheAvancee {
 
 						oneValueEntered = true;
 					}
-				}
-			}
-		}
+				}else if(objProdDeriveComponents[i].getClass().getSimpleName().equals("Checkbox")){
+               final Checkbox current = (Checkbox) objProdDeriveComponents[i];
+               if(current.isChecked()){
+                  if (("impactDeriveTBox").equals(current.getId())){
+                     impacts.add(true);
+                  }
+                  if (("impactDeriveFBox").equals(current.getId())){
+                     impacts.add(false);
+                  }
+                  final RechercheCompValues rcv = new RechercheCompValues();
+                  rcv.setCompClass(Textbox.class);
+                  rcv.setCompId(current.getId());
+                  rcv.setCheckedValue(current.isChecked());
+                  getUsedComponents().add(rcv);
+               }
+            }
+         }
+      }
+      if(impacts.size() > 0){
+         executeImpactQuery("ProdDerive", impacts);
+         oneValueEntered = true;
+      }
 	}
 
 	/**
@@ -2110,6 +2163,23 @@ public class FicheRechercheAvancee extends AbstractFicheRechercheAvancee {
 		rcv.setTextValue(current.getText());
 		getUsedComponents().add(rcv);
 	}
+	
+	/**
+    * Exécute la requête permettant de récupérer tous les échantillons ayant une dégradation possible du matériel
+    * @param impact
+    * @return La liste de résultats mise à jour.
+    */
+
+   public void executeImpactQuery(final String nomEntite, List<Boolean> impact){
+      final List<Banque> banques = SessionUtils.getSelectedBanques(sessionScope);
+      if ("Echantillon".equals(nomEntite)) {
+         executeQueryForEntityToSearch(ManagerLocator.getEntiteManager().findByIdManager(3), ManagerLocator.getEchantillonManager().findByBanksAndImpact(banques, impact));
+      }
+      if ("ProdDerive".equals(nomEntite)) {
+         executeQueryForEntityToSearch(ManagerLocator.getEntiteManager().findByIdManager(8), ManagerLocator.getProdDeriveManager().findByBanksAndImpact(banques, impact));
+      }
+      
+   }
 
 	@Override
 	public void cloneObject(){}

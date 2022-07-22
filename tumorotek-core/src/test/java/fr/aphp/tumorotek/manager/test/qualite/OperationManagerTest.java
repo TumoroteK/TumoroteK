@@ -526,7 +526,8 @@ public class OperationManagerTest extends AbstractManagerTest4
 	}
 
 	@Test
-	public void testBatchSaveManager(){
+	public void testBatchSaveManager() throws ParseException{    
+      
 		final List<Integer> ids = new ArrayList<>();
 		ids.add(1);
 		ids.add(2);
@@ -534,7 +535,10 @@ public class OperationManagerTest extends AbstractManagerTest4
 		final Utilisateur u = utilisateurDao.findById(1);
 		final Entite e = entiteDao.findById(3);
 		final OperationType oT = operationTypeDao.findById(2);
-		final Calendar cal = Calendar.getInstance();
+		
+		Date date = new SimpleDateFormat("dd/MM/yyyy").parse("07/06/2021");
+      Calendar cal = Calendar.getInstance();
+      cal.setTime(date);
 
 		final int count = operationManager.findAllObjectsManager().size();
 

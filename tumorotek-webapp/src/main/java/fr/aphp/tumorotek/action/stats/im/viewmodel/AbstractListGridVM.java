@@ -40,6 +40,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.zkoss.bind.annotation.Command;
@@ -56,6 +58,7 @@ import fr.aphp.tumorotek.action.ManagerLocator;
 import fr.aphp.tumorotek.action.stats.im.export.ValueToExport;
 import fr.aphp.tumorotek.action.stats.im.model.StatResultsRow;
 import fr.aphp.tumorotek.manager.PfDependantTKThesaurusManager;
+import fr.aphp.tumorotek.manager.qualite.NonConformiteManager;
 import fr.aphp.tumorotek.model.TKThesaurusObject;
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.stats.Indicateur;
@@ -240,13 +243,29 @@ public abstract class AbstractListGridVM
             manager = ManagerLocator.getEchantillonTypeManager();
          }else if(getGridSubdivision().getChampEntite().getEntite().getNom().equals("ProdType")){
             manager = ManagerLocator.getProdTypeManager();
-         }
-
-         // si c'est un thes de non conformité
+         }else if(getGridSubdivision().getChampEntite().getNom().matches("Conforme.*Raison")){ // non conformite prelevement
+             manager = ManagerLocator.getNonConformiteManager();
+          }
+         
+         
          if(manager != null){
-            for(final TKThesaurusObject thObj : manager.findByOrderManager(SessionUtils.getCurrentPlateforme())){
-               getSubdivMap().put(thObj.getId(), thObj.getNom());
-            }
+        	 final List<TKThesaurusObject> thObjs = new ArrayList<TKThesaurusObject>();
+        	 if (!(manager instanceof NonConformiteManager)) {
+	            thObjs.addAll(manager.findByOrderManager(SessionUtils.getCurrentPlateforme()));
+        	 } else { // thes de non conformité
+        		 final Pattern p = Pattern.compile("Conforme(.*)\\.Raison");
+ 				final Matcher m = p.matcher(getGridSubdivision().getChampEntite().getNom());
+ 				final boolean b = m.matches();
+ 				if(b && m.groupCount() > 0){
+ 					final String cNom = m.group(1);
+ 					thObjs.addAll(((NonConformiteManager) manager)
+ 						.findByPlateformeEntiteAndTypeStringManager(SessionUtils.getCurrentPlateforme(), 
+ 								cNom, getGridSubdivision().getChampEntite().getEntite()));
+ 				}
+        	 }
+        	 for(final TKThesaurusObject o: thObjs){
+	               getSubdivMap().put(o.getId(), o.getNom());
+	            }
          }
       }
    }

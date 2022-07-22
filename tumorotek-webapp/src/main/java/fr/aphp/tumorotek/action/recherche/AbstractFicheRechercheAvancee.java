@@ -1212,6 +1212,33 @@ public abstract class AbstractFicheRechercheAvancee extends AbstractFicheCombine
 		getUsedComponents().add(rcv);
 		return rcv;
 	}
+	
+	
+	/**
+    * Exécute une requête sur n'importe quelle entité
+    * 
+    * @version 2.3.0
+    */
+   public void executeQueryForEntityToSearch(final Entite fromEntite, List<Integer> ids){
+      // exécution de la requête
+      // on récupère la ou les banques sélectionnée(s)
+      final List<Banque> banques = SessionUtils.getSelectedBanques(sessionScope);
+
+      // target Entite
+      if(fromEntite != null && entiteToSearch != null && !fromEntite.equals(entiteToSearch)){
+         ids = ManagerLocator.getCorrespondanceIdManager().findTargetIdsFromIdsManager(ids, fromEntite, entiteToSearch, banques,
+               true);
+      }
+
+      // si c'est la 1ère requête les résultats vont directement
+      // dans la liste
+      if(!otherQuery){
+         resultatsIds = ids;
+      }else{
+         resultatsIds = ListUtils.intersection(resultatsIds, ids);
+      }
+      otherQuery = true;
+   }
 
 	/*************************************************************************/
 	/********************* GESTION DES RESULTATS *****************************/

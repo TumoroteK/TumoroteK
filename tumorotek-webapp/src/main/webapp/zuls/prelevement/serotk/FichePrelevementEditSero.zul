@@ -245,11 +245,14 @@
 							<label value="${c:l('Champ.Prelevement.ConsentType')}" sclass="formLabel" />
 							<label id="requiredConsentTypePrlvt" value="*" sclass="requiredMark" />
 						</hbox>
-						<listbox id="consentTypesBoxPrlvt" mold="select" rows="1" model="@{fwinPrelevementEditSero$composer.consentTypes}" selectedItem="@{fwinPrelevementEditSero$composer.selectedConsentType}">
-							<listitem self="@{each='consentTypePrlvt'}" value="@{consentTypePrlvt}">
-								<listcell label="@{consentTypePrlvt.type}" />
-							</listitem>
-						</listbox>
+						<hlayout>
+							<div id="typeUsedBulb" sclass="bulb" width="12px" height="12px" />
+							<listbox id="consentTypesBoxPrlvt" mold="select" rows="1" model="@{fwinPrelevementEditSero$composer.consentTypes}" selectedItem="@{fwinPrelevementEditSero$composer.selectedConsentType}">
+								<listitem self="@{each='consentTypePrlvt'}" value="@{consentTypePrlvt}">
+									<listcell label="@{consentTypePrlvt.type}" />
+								</listitem>
+							</listbox>
+						</hlayout>
 
 						<!-- Date de consentement -->
 						<label value="${c:l('fichePrelevement.date.statut')}" sclass="formLabel" />

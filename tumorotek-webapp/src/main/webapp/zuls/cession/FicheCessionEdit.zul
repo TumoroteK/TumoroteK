@@ -115,6 +115,13 @@
 				 			<label id="echantillonsNonStockesLabel" sclass="formErrorValue" 
 				 				visible="false"
 				 				value="${c:l('cession.echantillons.non.stocke')}"/>
+							<label id="echantillonsDansConteneurInterditLabel" sclass="formErrorValue" 
+				 				visible="false"
+				 				value="${c:l('cession.echantillons.dans.conteneur.interdit')}"/>				 				
+							<label id="echantillonsNonStockesEtDansConteneurInterditLabel" sclass="formErrorValue" 
+				 				visible="false"
+				 				value="${c:l('cession.echantillons.non.stocke.et.conteneur.interdit')}"/>				 				
+				 				
 							<!-- Echantillons en mode edition -->
 							<grid id="echantillonsList" mold="paging"
 								hflex="1"
@@ -280,6 +287,12 @@
 			 			<label id="prodDerivesNonStockesLabel" sclass="formErrorValue" 
 			 				visible="false"
 			 				value="${c:l('cession.prodDerives.non.stocke')}"/>
+			 			<label id="prodDerivesDansConteneurInterditLabel" sclass="formErrorValue" 
+			 				visible="false"
+			 				value="${c:l('cession.prodDerives.dans.conteneur.interdit')}"/>
+			 			<label id="prodDerivesNonStockesEtDansConteneurInterditLabel" sclass="formErrorValue" 
+			 				visible="false"
+			 				value="${c:l('cession.prodDerives.non.stocke.et.conteneur.interdit')}"/>			 							 				
 						<grid id="derivesList" mold="paging" 
 							span="true"
 							hflex="1"

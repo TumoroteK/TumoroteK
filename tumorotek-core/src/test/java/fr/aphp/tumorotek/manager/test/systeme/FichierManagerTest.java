@@ -419,7 +419,7 @@ public class FichierManagerTest extends AbstractManagerTest4
     * /home/TK/pt_1/coll_77/anno/chp_12 existent.
     * @throws IOException
     */
-   @Test
+   /*@Test
 	public void testSwitchBanqueManager() throws IOException {
 		FileSystem fs = null;
 		try {
@@ -485,5 +485,5 @@ public class FichierManagerTest extends AbstractManagerTest4
 		} finally {
 			if (fs != null) { fs.close(); }
 		}
-	}
+	}*/
 }

@@ -368,4 +368,12 @@ public interface ProdDeriveDao extends GenericDaoJpa<ProdDerive, Integer>
     */
    List<ProdDerive> findByListCodeWithPlateforme(List<String> listCodes, Plateforme pf);
    
+   
+   /**
+    * Recherche les dérivés ayant eu une dégradation possible du matériel
+    * @param banque
+    * @param impact
+    * @return une liste d'ids.
+    */
+   List<Integer> findByBanksAndImpact(List<Banque> banks, List<Boolean> impact);
 }

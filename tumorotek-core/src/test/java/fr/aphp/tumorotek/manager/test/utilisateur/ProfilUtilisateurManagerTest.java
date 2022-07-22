@@ -546,4 +546,4 @@ public class ProfilUtilisateurManagerTest extends AbstractManagerTest4
 				null);
 		assertTrue(counts.isEmpty());
 	}
-}
+} 

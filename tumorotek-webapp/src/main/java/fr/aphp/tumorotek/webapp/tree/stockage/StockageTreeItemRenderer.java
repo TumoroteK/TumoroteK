@@ -35,6 +35,9 @@
  **/
 package fr.aphp.tumorotek.webapp.tree.stockage;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -47,6 +50,7 @@ import org.zkoss.zul.Treerow;
 
 import fr.aphp.tumorotek.action.ManagerLocator;
 import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
+import fr.aphp.tumorotek.utils.AffichageUtils;
 
 /**
  * Classe gérant l'affichage des informations dans un arbre de type
@@ -58,15 +62,25 @@ public class StockageTreeItemRenderer implements TreeitemRenderer<Object>
 {
 
    private static String imageSrc = "/images/icones/boites/pastille";
-
+   
    @Override
    public void render(final Treeitem item, final Object data, final int index) throws Exception{
       item.setValue(data);
-
-      item.addEventListener("onClick", new EventListener<Event>()
+      //TK-314 : annulation d'une désactivation précédente éventuelle du composant
+      item.setDisabled(false);
+      //  
+      item.addEventListener("onOpen", new EventListener<Event>()
       {
          @Override
-         public void onEvent(final Event event) throws Exception{}
+         public void onEvent(final Event event) throws Exception{
+             //TK-314
+             if(item.isDisabled()) {
+                //on force la fermeture de l'arborescence
+                item.setOpen(false);
+                //la ligne passe en rouge
+                AffichageUtils.colorateRowInRed(item.getTreerow());
+              }
+         }
       });
 
       // Construct treecells
@@ -85,12 +99,15 @@ public class StockageTreeItemRenderer implements TreeitemRenderer<Object>
 
       if(data instanceof ConteneurNode){
          final ConteneurNode node = (ConteneurNode) data;
-
+            
          // on affiche le nom du conteneur
          final org.zkoss.zul.Label nomLabel = new org.zkoss.zul.Label();
          nomLabel.setValue(node.getLibelle());
          nomLabel.setParent(tcNamn);
          nomLabel.setStyle("font-weight:bold;");
+                 
+         //TK-314 : nettoyage du conteneur passé éventuellement sur fond rouge (conteneur partagé sélectionné)
+         AffichageUtils.unColorateRow(tr);
 
       }else if(data instanceof EnceinteNode){
          final EnceinteNode node = (EnceinteNode) data;
@@ -234,12 +251,14 @@ public class StockageTreeItemRenderer implements TreeitemRenderer<Object>
          public void onEvent(final Event event) throws Exception{
             final Treeitem item = (Treeitem) event.getTarget().getParent().getParent();
 
-            if(item.isOpen()){
-               item.setOpen(false);
-            }else{
-               item.setOpen(true);
+           //TK-314
+            if(item.isDisabled()){
+               AffichageUtils.colorateRowInRed(item.getTreerow());
             }
-         }
+            else {
+               item.setOpen(!item.isOpen());
+            }
+          }
       });
    }
 

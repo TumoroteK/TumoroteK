@@ -24,7 +24,7 @@
                 WHERE NOM = 'congDepart'
             </sqlCheck>
         </preConditions>
-        <comment>AJout champ entite prélévement congelé site préleveur</comment>
+        <comment>Ajout champ entite prélévement congelé site préleveur</comment>
         <insert tableName="CHAMP_ENTITE">
             <column name="CHAMP_ENTITE_ID" value="269"/>
             <column name="NOM" value="congDepart"/>
@@ -52,6 +52,7 @@
             <column name="CAN_IMPORT" value="0"/>
         </insert>
     </changeSet>
+    <!-- les scripts ci-dessous sont pris en charge par le projet Gatsbi
     <changeSet id="${project.artifactId}-7" author="MB" runAlways="true" context="*"> 
     	<preConditions onFail="MARK_RAN">
             <sqlCheck expectedResult="0">SELECT COUNT(1) FROM CONTEXTE
@@ -65,6 +66,7 @@
             <column name="LIBELLE" value="Gatsbi"/>
         </insert>
     </changeSet>
+
   	<changeSet id="${project.artifactId}-8" author="MB" runAlways="true" context="*">
         <preConditions onFail="MARK_RAN">
             <not>
@@ -109,4 +111,5 @@
         <addForeignKeyConstraint constraintName="FK_BANQUE_ETUDE_ID" referencedTableName="GATSBI_ETUDE" baseColumnNames="GATSBI_ETUDE_ID" baseTableName="BANQUE"
                                  referencedColumnNames="GATSBI_ETUDE_ID"/>
     </changeSet> 
+    -->
 </databaseChangeLog>

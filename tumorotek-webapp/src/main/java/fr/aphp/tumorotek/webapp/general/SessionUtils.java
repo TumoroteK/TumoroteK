@@ -251,6 +251,11 @@ public final class SessionUtils {
 				.get(0).getEtude().getContexteForEntite(eId);
 	   }
 
+	   //CHT : gérer le cas où il n'y a pas de contexte pour l'étude et l'entite_id concerné 
+	   //dans certains cas c'est fonctionnellement possible : méthode appelée par FichePrelevementStaticGatsbi 
+	   //mais sur les échantillons
+	   //=> dans ces cas, aller chercher la configuration par défaut (correspondant au contexte anapat' ?)
+	  	   
 	  return gatsbiContexte;
    }
 

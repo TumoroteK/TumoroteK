@@ -60,6 +60,7 @@
 	<tabbox id="adminTabbox" orient="vertical" sclass="vertTabBox" >
 		<tabs width="125px">
 			<tab label="${c:l('general.annotations')}" id="annotationsTab"/>
+			<tab label="${c:l('admin.tabbox.gatsbi')}" id="gatsbiTab" style="text-align:center"/>
 			<tab label="${c:l('Champ.Banque.Codifications')}" id="codesTab" style="text-align:center"/>
 			<tab label="${c:l('admin.tabbox.collaborations')}" id="collaborationsTab" style="text-align:center"/>
 			<tab label="${c:l('admin.tabbox.banques')}" id="banquesTab"/>
@@ -83,6 +84,7 @@
 			<tabpanel id="annotationsPanel" hflex="1" vflex="1" >
 				<annotations id="annotationsMacro" hflex="1" vflex="1" />
 			</tabpanel>
+			<tabpanel id="gatsbiPanel" hflex="1" vflex="1" />
 			<tabpanel id="codesPanel" fulfill="codesTab.onSelect" hflex="1" vflex="1">
 				<codes id="codesMacro" hflex="1" vflex="1"/>
 			</tabpanel>

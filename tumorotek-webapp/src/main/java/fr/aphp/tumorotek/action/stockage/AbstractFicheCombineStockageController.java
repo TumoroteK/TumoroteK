@@ -18,7 +18,6 @@ import org.zkoss.zul.Menuitem;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Row;
 
-import fr.aphp.tumorotek.model.contexte.Plateforme;
 import fr.aphp.tumorotek.action.ManagerLocator;
 import fr.aphp.tumorotek.action.controller.AbstractFicheCombineController;
 import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
@@ -233,25 +232,35 @@ public abstract class AbstractFicheCombineStockageController extends AbstractFic
 		getBinder().loadComponent(self);
 	}
 
-	/**
-	 * desactive tous les boutons édition/modifcation 
-	 * de la fiche si le conteneur/enceinte n'appartient 
-	 * pas à la PF et si l'utilisateur n'est pas admin PF de la plateforme d'origine
-	 * Convient aux spec Grenoble IRELEC.
-	 * @param pOrig Plateforme d'origine de l'objet
-	 * @return enable true si auhtorisation de modifier le conteneur
-	 * @since 2.2.1-IRELEC
-	 */
-	public boolean disableActionsForForeignPlateformeConteneur(Plateforme pOrig) {
-		boolean enable = isCurrentPFOrUserAtLeastAdminfPF(pOrig);
-		editC.setDisabled(!isCanEdit() || !enable);
-		deleteC.setDisabled(!isCanDelete() || !enable);
-		// if (addIncidentItem != null) {
-			addIncidentItem.setDisabled(!isCanEdit() || !enable);
-		//}
-		return enable;
-	}
-
+	//TK-314
+    /**
+    * active / désactive les boutons édition/modification/ajout incident en fonction : 
+    * - des droits de l'utilisateur
+    * - de l'autorisation sur le conteneur passé en paramètre : la désactivation est forcée quelque soit les droits de l'utilisateur si :
+    *    - le conteneur passé en paramètre n'appartient pas à la PF courante 
+    *    - le stockage y est restreint à l'administrateur  
+    *    - et l'utilisateur connecté n'est pas admin PF de la plateforme d'origine du conteneur
+    * Convient aux spec Grenoble IRELEC.
+    * @param conteneur Conteneur concerné
+    * @return true si la désactivation est forcée
+    * @since 2.2.1-IRELEC
+    */
+   public boolean disableActionsForForeignPlateformeConteneur(Conteneur conteneur) {
+      boolean disable = !isAccessibleConteneurForCurrentPlateform(conteneur);
+       
+      if (editC !=null) {
+         editC.setDisabled(disable || !isCanEdit());
+      }
+      if (deleteC != null) {
+         deleteC.setDisabled(disable || !isCanDelete());
+      }
+      if (addIncidentItem != null) {
+         addIncidentItem.setDisabled(disable || !isCanEdit());
+      }   
+    
+      return disable;
+   }	
+	
 	public List<Incident> getIncidents(){
 		return incidents;
 	}

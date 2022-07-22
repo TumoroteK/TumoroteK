@@ -850,6 +850,21 @@
 										</listbox>
 									</div>
 								</row>
+								<!-- Dégradation possible du matériel (impact) -->
+								<row>
+									<label value="${c:l('Champ.Retour.Impact')}" sclass="formLabel" />
+									<hbox>
+										<div>
+											<checkbox id="impactEchanTBox"></checkbox>
+											<label value="${c:l('general.checkbox.true')}" sclass="formLabel" />
+										</div>
+										<separator width="10px" />
+										<div>
+											<checkbox id="impactEchanFBox"></checkbox>
+											<label value="${c:l('general.checkbox.false')}" sclass="formLabel" />
+										</div>
+									</hbox>
+								</row>
 
 								<!-- Groupe dérivé -->
 								<group id="groupProdDerives"
@@ -1067,6 +1082,22 @@
 										</listbox>
 									</div>
 								</row>
+								<!-- Dégradation possible du matériel (impact) -->
+								<row>
+									<label value="${c:l('Champ.Retour.Impact')}" sclass="formLabel" />
+									<hbox>
+										<div>
+											<checkbox id="impactDeriveTBox"></checkbox>
+											<label value="${c:l('general.checkbox.true')}" sclass="formLabel" />
+										</div>
+										<separator width="10px" />
+										<div>
+											<checkbox id="impactDeriveFBox"></checkbox>
+											<label value="${c:l('general.checkbox.false')}" sclass="formLabel" />
+										</div>
+									</hbox>
+								</row>
+								
 								<!-- Groupe annotations -->
 								<group id="groupAnnotations" open="false" />
 							</rows>

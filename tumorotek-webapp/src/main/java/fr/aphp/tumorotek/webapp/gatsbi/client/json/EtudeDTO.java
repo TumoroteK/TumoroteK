@@ -17,7 +17,7 @@ import org.codehaus.jackson.annotate.JsonPropertyOrder;
 	"titre",
 	"acronyme",
 	"archive",
-	"rContextes"
+	"listContexte"
 })
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class EtudeDTO implements Serializable {
@@ -66,7 +66,7 @@ public class EtudeDTO implements Serializable {
 		this.archive = _a;
 	}
 
-	@JsonProperty("rContextes")
+	@JsonProperty("listContexte")
 	public List<ContexteDTO> getrContextes() {
 		return contextes;
 	}

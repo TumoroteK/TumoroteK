@@ -67,6 +67,7 @@ import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.utilisateur.Profil;
 import fr.aphp.tumorotek.model.utilisateur.ProfilUtilisateur;
 import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
+import fr.aphp.tumorotek.param.TkParam;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
 /**
@@ -209,6 +210,7 @@ public class AdministrationController extends AbstractObjectTabController
          availableTabsNames.add("plateformesTab");
       }
 
+      // Tab Paramètres
       if(!SessionUtils.getLoggedUser(sessionScope).isSuperAdmin() && !sessionScope.containsKey("AdminPF")){
          final Tab tabPf = (Tab) adminTabbox.getFellow("parametresTab");
          tabPf.setDisabled(true);
@@ -218,6 +220,18 @@ public class AdministrationController extends AbstractObjectTabController
          tabPf.setVisible(true);
          availableTabsNames.add("parametresTab");
       }
+      
+      //Tab Gatsbi
+      if(!SessionUtils.getLoggedUser(sessionScope).isSuperAdmin() && !sessionScope.containsKey("AdminPF")){
+         final Tab tabPf = (Tab) adminTabbox.getFellow("gatsbiTab");
+         tabPf.setDisabled(true);
+         tabPf.setVisible(false);
+      }else{
+         final Tab tabPf = (Tab) adminTabbox.getFellow("gatsbiTab");
+         tabPf.setVisible(true);
+         availableTabsNames.add("gatsbiTab");
+      }
+      
       
       availableTabsNames.add("annotationsTab");
       availableTabsNames.add("banquesTab");
@@ -471,6 +485,11 @@ public class AdministrationController extends AbstractObjectTabController
       if(item != null && item.getId().equals("profilsPanel")){
          getMainWindow().createMacroComponent("/zuls/utilisateur/Profil.zul", "winProfil", item);
       }
+      
+      // @since 2.3.0 (Gatsbi)
+      if(item != null && item.getId().equals("gatsbiPanel")){
+         execution.sendRedirect(TkParam.GATSBI_APPLI_URL_PATH.getValue(), "_blank");
+      }      
    }
 
    @Override
