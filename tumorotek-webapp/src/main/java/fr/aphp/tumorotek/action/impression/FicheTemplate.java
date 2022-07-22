@@ -91,7 +91,7 @@ import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
 /**
  * Controlleur de la fiche template d'impression dans l'Administration
- * @author 
+ * @author
  * @since
  * @version 2.3.0-gatsbi
  */
@@ -214,6 +214,7 @@ public class FicheTemplate extends AbstractImpressionController
     * Liste des CleImpression présentes dans le document du Template
     */
    private List<CleImpression> cleImpressionList = new ArrayList<>();
+
    /**
     * Liste des décorateur de cleImpression (affichage)
     */
@@ -321,26 +322,26 @@ public class FicheTemplate extends AbstractImpressionController
             // on ajoute à la liste finale celui qui a le +
             // petit ordre
             if(anno.getOrdre() < bloc.getOrdre()){
-               final BlocImpressionDecorator deco = new BlocImpressionDecorator(null, anno.getTableAnnotation(), 
-            		   template, SessionUtils.getCurrentContexte());
+               final BlocImpressionDecorator deco =
+                  new BlocImpressionDecorator(null, anno.getTableAnnotation(), template, SessionUtils.getCurrentContexte());
                blocImpressionsDecorated.add(deco);
                ++j;
             }else{
-               final BlocImpressionDecorator deco = new BlocImpressionDecorator(bloc.getBlocImpression(), null, 
-            		   template, SessionUtils.getCurrentContexte());
+               final BlocImpressionDecorator deco =
+                  new BlocImpressionDecorator(bloc.getBlocImpression(), null, template, SessionUtils.getCurrentContexte());
                blocImpressionsDecorated.add(deco);
                ++i;
             }
          }else if(bloc != null){
             // s'il ne reste que des blocs
-            final BlocImpressionDecorator deco = new BlocImpressionDecorator(bloc.getBlocImpression(), null, 
-            		template, SessionUtils.getCurrentContexte());
+            final BlocImpressionDecorator deco =
+               new BlocImpressionDecorator(bloc.getBlocImpression(), null, template, SessionUtils.getCurrentContexte());
             blocImpressionsDecorated.add(deco);
             ++i;
          }else if(anno != null){
             // s'il ne reste que des annotations
-            final BlocImpressionDecorator deco = new BlocImpressionDecorator(null, anno.getTableAnnotation(), 
-            		template, SessionUtils.getCurrentContexte());
+            final BlocImpressionDecorator deco =
+               new BlocImpressionDecorator(null, anno.getTableAnnotation(), template, SessionUtils.getCurrentContexte());
             blocImpressionsDecorated.add(deco);
             ++j;
          }
@@ -496,7 +497,7 @@ public class FicheTemplate extends AbstractImpressionController
        * TODO N'afficher que les formats pris en charge dans la boite de dialogue de sélection du fichier
        * FIXME --> Pas possible sous ZK 7
        */
-      Media newUploadedMedia = Fileupload.get();
+      final Media newUploadedMedia = Fileupload.get();
 
       if(newUploadedMedia == null){
          return;
@@ -524,24 +525,24 @@ public class FicheTemplate extends AbstractImpressionController
     * @param fileExtension extension du fichier
     * @since 2.2.0
     */
-   private void traitementFichierUpload(String fileExtension){
+   private void traitementFichierUpload(final String fileExtension){
       List<String> clesDocListe = null;
       switch(fileExtension){
          case ".docx":
             try{
-               XWPFDocument document = new XWPFDocument(uploadedMedia.getStreamData());
+               final XWPFDocument document = new XWPFDocument(uploadedMedia.getStreamData());
                //Extraction des clefs du document
                clesDocListe = new ArrayList<>(TemplateUtils.extractStringsInFileFromPattern(document));
-            }catch(IOException e){
+            }catch(final IOException e){
                log.error(e);
             }
             break;
          case ".doc":
             try{
-               HWPFDocument document = new HWPFDocument(uploadedMedia.getStreamData());
+               final HWPFDocument document = new HWPFDocument(uploadedMedia.getStreamData());
                //Extraction des clefs du document
                clesDocListe = new ArrayList<>(TemplateUtils.extractStringsInFileFromPattern(document));
-            }catch(Exception e){
+            }catch(final Exception e){
                log.error(e);
             }
             break;
@@ -557,7 +558,7 @@ public class FicheTemplate extends AbstractImpressionController
     * @param clesDocListe liste des noms de clés
     * @since 2.2.0
     */
-   private void createClesImpression(List<String> clesDocListe){
+   private void createClesImpression(final List<String> clesDocListe){
       // Création de cleImpressions et ajout au template
       final List<CleImpression> newCleImpressionList = new ArrayList<>();
 
@@ -565,7 +566,7 @@ public class FicheTemplate extends AbstractImpressionController
          CleImpression cleImpr = new CleImpression();
          cleImpr.setNom(cleStr);
 
-         Boolean keyFound = false;
+         boolean keyFound = false;
          //Itération sur les anciennes clés d'impression du template
          for(final CleImpression oldCleImpr : this.cleImpressionList){
             if(oldCleImpr.getNom().equals(cleStr)){
@@ -577,7 +578,7 @@ public class FicheTemplate extends AbstractImpressionController
 
          if(!keyFound && !newCleImpressionList.contains(cleImpr)){
             //Recherche en base si cette clé existe
-            CleImpression cleImpressionBase = ManagerLocator.getCleImpressionManager().findByNameManager(cleStr);
+            final CleImpression cleImpressionBase = ManagerLocator.getCleImpressionManager().findByNameManager(cleStr);
             if(null != cleImpressionBase){
                cleImpr = cleImpressionBase;
             }
@@ -968,8 +969,8 @@ public class FicheTemplate extends AbstractImpressionController
       // on récupère tous les blocs pour l'entité
       final List<BlocImpression> blocImpressions = ManagerLocator.getBlocImpressionManager().findByEntiteManager(selectedEntite);
       for(int i = 0; i < blocImpressions.size(); i++){
-         final BlocImpressionDecorator deco = new BlocImpressionDecorator(blocImpressions.get(i), null, 
-        		 template, SessionUtils.getCurrentContexte());
+         final BlocImpressionDecorator deco =
+            new BlocImpressionDecorator(blocImpressions.get(i), null, template, SessionUtils.getCurrentContexte());
          if(!blocImpressionsDecorated.contains(deco)){
             deco.setImprimer(false);
             blocImpressionsDecorated.add(deco);
@@ -981,7 +982,8 @@ public class FicheTemplate extends AbstractImpressionController
       final List<TableAnnotation> tables = ManagerLocator.getTableAnnotationManager().findByEntiteAndBanqueManager(selectedEntite,
          SessionUtils.getSelectedBanques(sessionScope).get(0));
       for(int i = 0; i < tables.size(); i++){
-         final BlocImpressionDecorator deco = new BlocImpressionDecorator(null, tables.get(i), template, SessionUtils.getCurrentContexte());
+         final BlocImpressionDecorator deco =
+            new BlocImpressionDecorator(null, tables.get(i), template, SessionUtils.getCurrentContexte());
          if(!blocImpressionsDecorated.contains(deco)){
             deco.setImprimer(false);
             blocImpressionsDecorated.add(deco);
@@ -1067,23 +1069,22 @@ public class FicheTemplate extends AbstractImpressionController
       final List<BlocImpression> blocImpressions = ManagerLocator.getBlocImpressionManager().findByEntiteManager(selectedEntite);
 
       for(int i = 0; i < blocImpressions.size(); i++){
-         final BlocImpressionDecorator deco = new BlocImpressionDecorator(blocImpressions.get(i), null, 
-        		 template, SessionUtils.getCurrentContexte());
-         
+         final BlocImpressionDecorator deco =
+            new BlocImpressionDecorator(blocImpressions.get(i), null, template, SessionUtils.getCurrentContexte());
+
          // @since gatsbi, n'ajoute pas un bloc impression duquel tous les champs seraient invisibles
-         if (!deco.isEmpty()) {
-        	 blocImpressionsDecorated.add(deco);
+         if(!deco.isEmpty()){
+            blocImpressionsDecorated.add(deco);
          }
       }
-      
 
       // on récupère toutes les tables d'annotations pour
       // l'entité et la banque
       final List<TableAnnotation> tables = ManagerLocator.getTableAnnotationManager().findByEntiteAndBanqueManager(selectedEntite,
          SessionUtils.getSelectedBanques(sessionScope).get(0));
       for(int i = 0; i < tables.size(); i++){
-         final BlocImpressionDecorator deco = new BlocImpressionDecorator(null, tables.get(i), 
-        		 template, SessionUtils.getCurrentContexte());
+         final BlocImpressionDecorator deco =
+            new BlocImpressionDecorator(null, tables.get(i), template, SessionUtils.getCurrentContexte());
          blocImpressionsDecorated.add(deco);
       }
    }
@@ -1165,7 +1166,7 @@ public class FicheTemplate extends AbstractImpressionController
    }
 
    public EntiteDecorator getSelectedEntite(){
-      for(EntiteDecorator entiteDeco : entites){
+      for(final EntiteDecorator entiteDeco : entites){
          if(entiteDeco.getEntite() == selectedEntite){
             return entiteDeco;
          }

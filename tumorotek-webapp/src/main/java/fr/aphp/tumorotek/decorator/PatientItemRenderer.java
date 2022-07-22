@@ -76,6 +76,7 @@ public class PatientItemRenderer implements ListitemRenderer<Patient>
    }
 
    private boolean showMedecin = false;
+
    private boolean isFusion = false;
 
    @Override
@@ -113,7 +114,7 @@ public class PatientItemRenderer implements ListitemRenderer<Patient>
    }
 
    public Integer getNbPrelevements(final Patient pat){
-      Integer nb = 0;
+      int nb = 0;
       final List<Maladie> maladies = ManagerLocator.getMaladieManager().findByPatientNoSystemManager(pat);
       for(int i = 0; i < maladies.size(); i++){
          nb += ManagerLocator.getMaladieManager().getPrelevementsManager(maladies.get(i)).size();
@@ -152,7 +153,7 @@ public class PatientItemRenderer implements ListitemRenderer<Patient>
       if(!values.isEmpty()){
          final Label label1 = new Label(values.get(0));
          label1.setSclass("formValue");
-         // dessine le label avec un lien vers popup 
+         // dessine le label avec un lien vers popup
          if(values.size() > 1){
             final Hbox labelAndLinkBox = new Hbox();
             labelAndLinkBox.setSpacing("5px");
@@ -195,8 +196,8 @@ public class PatientItemRenderer implements ListitemRenderer<Patient>
    }
 
    /**
-    * Dessine dans un label le nom (et prenom) des medecins referents. 
-    * Utilisation d'un tooltip pour afficher la totalité des medecines 
+    * Dessine dans un label le nom (et prenom) des medecins referents.
+    * Utilisation d'un tooltip pour afficher la totalité des medecines
     * suivant cette même règle.
     * @param Listiem li
     * @param Component Parent
@@ -206,7 +207,7 @@ public class PatientItemRenderer implements ListitemRenderer<Patient>
       if(meds != null && !meds.isEmpty()){
 
          final Label c1Label = new Label(meds.get(0).getNom());
-         // dessine le label avec un lien vers popup 
+         // dessine le label avec un lien vers popup
          if(meds.size() > 1){
             final Hlayout labelAndLinkBox = new Hlayout();
             labelAndLinkBox.setSpacing("5px");

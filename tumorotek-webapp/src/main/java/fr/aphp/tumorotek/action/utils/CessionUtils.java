@@ -76,9 +76,9 @@ public class CessionUtils
 
       Document doc = null;
 
-      //		List<CederObjetDecorator> echantillonsCedesDecores = 
+      //		List<CederObjetDecorator> echantillonsCedesDecores =
       //				cedeObjFactory.decorateListe(echantillonsCedes);
-      //		List<CederObjetDecorator> derivesCedesDecores = 
+      //		List<CederObjetDecorator> derivesCedesDecores =
       //				cedeObjFactory.decorateListe(derivesCedes);
 
       // s'il y a des éléments a céder
@@ -171,10 +171,10 @@ public class CessionUtils
 
                      // ajout de l'échantillon et de sa position aux
                      // éléments à extraire
-                     final Integer pos = bi.getPositions().size() + 1;
+                     final int pos = bi.getPositions().size() + 1;
                      bi.getPositions().add(emp.getPosition());
                      bi.getElements().add(ObjectTypesFormatters.getLabel("impression.boite.numero.echantillon",
-                        new String[] {pos.toString(), echan.getCode()}));
+                        new String[] {Integer.toString(pos), echan.getCode()}));
                   }
                }
             }
@@ -263,10 +263,10 @@ public class CessionUtils
 
                   // ajout du dérivé et de sa position aux
                   // éléments à extraire
-                  final Integer pos = bi.getPositions().size() + 1;
+                  final int pos = bi.getPositions().size() + 1;
                   bi.getPositions().add(emp.getPosition());
                   bi.getElements().add(ObjectTypesFormatters.getLabel("impression.boite.numero.prodDerive",
-                     new String[] {pos.toString(), derive.getCode()}));
+                     new String[] {Integer.toString(pos), derive.getCode()}));
                }
             }
 

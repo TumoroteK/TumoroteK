@@ -84,7 +84,7 @@ public interface ImportTemplateManager
 
    /**
     * Recherche les doublons du ImportTemplate passé en paramètre.
-    * @param importTemplate Un Template pour lequel on 
+    * @param importTemplate Un Template pour lequel on
     * cherche des doublons.
     * @return True s'il existe des doublons.
     */

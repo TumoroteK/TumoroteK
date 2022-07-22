@@ -65,6 +65,7 @@ public class ConsentTypeManagerTest extends AbstractManagerTest4
 
    @Autowired
    private ConsentTypeManager consentTypeManager;
+
    @Autowired
    private PlateformeDao plateformeDao;
 

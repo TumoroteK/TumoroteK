@@ -67,6 +67,7 @@ public class ProtocoleTypeManagerTest extends AbstractManagerTest4
 
    @Autowired
    private ProtocoleTypeManager protocoleTypeManager;
+
    @Autowired
    private PlateformeDao plateformeDao;
 

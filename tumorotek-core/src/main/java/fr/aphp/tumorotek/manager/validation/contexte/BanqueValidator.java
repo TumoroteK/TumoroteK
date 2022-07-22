@@ -99,7 +99,7 @@ public class BanqueValidator implements Validator
             errors.rejectValue("description", "banque.description.empty");
          }
          //			if (bank.getDescription().length() > 250) {
-         //				errors.rejectValue("description", 
+         //				errors.rejectValue("description",
          //									"banque.description.tooLong");
          //			}
       }

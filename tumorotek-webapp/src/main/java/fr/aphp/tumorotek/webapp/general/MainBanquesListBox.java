@@ -50,9 +50,9 @@ public class MainBanquesListBox extends Listbox
 {
 
    private static final long serialVersionUID = -8780717656148814516L;
-   
+
    /**
-    * Méthode appelée lors de la sélection d'une banque : tous les 
+    * Méthode appelée lors de la sélection d'une banque : tous les
     * formulaires, listes... seront ré-initialisés.
     */
    public void onSelect(){
@@ -66,17 +66,17 @@ public class MainBanquesListBox extends Listbox
       Clients.clearBusy();
    }
 
-   //	
+   //
    //	/**
    //	 * Méthode récupérant le controller du panel des protocolesExt.
-   //	 * @return ContratController classe gérant le panel 
+   //	 * @return ContratController classe gérant le panel
    //	 * des ProtocoleExt.
    //	 */
    //	public AnnotationsController getAnnotationsController() {
-   //		
+   //
    //		Tabbox mainTabbox = getMainTabbox();
    //		Tabpanels panels = mainTabbox.getTabpanels();
-   //		
+   //
    //		return (AnnotationsController) panels
    //				.getFellow("administrationPanel")
    //				.getFellow("winAdministration")
@@ -85,19 +85,19 @@ public class MainBanquesListBox extends Listbox
    //				.getFellow("annotationsMacro")
    //				.getFellow("winAnnotations")
    //				.getAttributeOrFellow("winAnnotations$composer", true);
-   //		
+   //
    //	}
-   //	
+   //
    //	/**
    //	 * Méthode récupérant le controller du panel des protocolesExt.
-   //	 * @return ContratController classe gérant le panel 
+   //	 * @return ContratController classe gérant le panel
    //	 * des ProtocoleExt.
    //	 */
    //	public ContratController getContratController() {
-   //		
+   //
    //		Tabbox mainTabbox = getMainTabbox();
    //		Tabpanels panels = mainTabbox.getTabpanels();
-   //		
+   //
    //		return (ContratController) panels
    //				.getFellow("administrationPanel")
    //				.getFellow("winAdministration")
@@ -106,19 +106,19 @@ public class MainBanquesListBox extends Listbox
    //				.getFellow("contratMacro")
    //				.getFellow("winContrat")
    //				.getAttributeOrFellow("winContrat$composer", true);
-   //		
+   //
    //	}
-   //	
+   //
    //	/**
    //	 * Méthode récupérant le controller du panel des collaborations.
-   //	 * @return ContratController classe gérant le panel 
+   //	 * @return ContratController classe gérant le panel
    //	 * des ProtocoleExt.
    //	 */
    //	public CollaborationsController getCollaborationsController() {
-   //		
+   //
    //		Tabbox mainTabbox = getMainTabbox();
    //		Tabpanels panels = mainTabbox.getTabpanels();
-   //		
+   //
    //		return (CollaborationsController) panels
    //				.getFellow("administrationPanel")
    //				.getFellow("winAdministration")
@@ -127,19 +127,19 @@ public class MainBanquesListBox extends Listbox
    //				.getFellow("collaborationsMacro")
    //				.getFellow("winCollaborations")
    //				.getAttributeOrFellow("winCollaborations$composer", true);
-   //		
+   //
    //	}
-   //	
+   //
    //	/**
    //	 * Méthode récupérant le controller du panel des profils.
-   //	 * @return ContratController classe gérant le panel 
+   //	 * @return ContratController classe gérant le panel
    //	 * des ProtocoleExt.
    //	 */
    //	public ProfilController getProfilController() {
-   //		
+   //
    //		Tabbox mainTabbox = getMainTabbox();
    //		Tabpanels panels = mainTabbox.getTabpanels();
-   //		
+   //
    //		return (ProfilController) panels
    //				.getFellow("administrationPanel")
    //				.getFellow("winAdministration")
@@ -148,19 +148,19 @@ public class MainBanquesListBox extends Listbox
    //				.getFellow("profilsMacro")
    //				.getFellow("winProfil")
    //				.getAttributeOrFellow("winProfil$composer", true);
-   //		
+   //
    //	}
-   //	
+   //
    //	/**
    //	 * Méthode récupérant le controller du panel des utilisateurs.
-   //	 * @return ContratController classe gérant le panel 
+   //	 * @return ContratController classe gérant le panel
    //	 * des ProtocoleExt.
    //	 */
    //	public UtilisateurController getUtilisateurController() {
-   //		
+   //
    //		Tabbox mainTabbox = getMainTabbox();
    //		Tabpanels panels = mainTabbox.getTabpanels();
-   //		
+   //
    //		return (UtilisateurController) panels
    //				.getFellow("administrationPanel")
    //				.getFellow("winAdministration")
@@ -169,7 +169,7 @@ public class MainBanquesListBox extends Listbox
    //				.getFellow("utilisateursMacro")
    //				.getFellow("winUtilisateur")
    //				.getAttributeOrFellow("winUtilisateur$composer", true);
-   //		
+   //
    //	}
 
    public MainWindow getMainWindow(){

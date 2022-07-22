@@ -66,21 +66,30 @@ public class CorrespondanceManagerTest extends AbstractManagerTest4
 
    @Autowired
    private PatientManager patientManager;
+
    @Autowired
    private MaladieManager maladieManager;
+
    @Autowired
    private PrelevementManager prelevementManager;
+
    @Autowired
    private EchantillonManager echantillonManager;
+
    @Autowired
    private ProdDeriveManager prodDeriveManager;
+
    @Autowired
    private CorrespondanceManager correspondanceManager;
 
    private List<Patient> allPatients = null;
+
    private List<Maladie> allMaladies = null;
+
    private List<Prelevement> allPrelevements = null;
+
    private List<Echantillon> allEchantillons = null;
+
    private List<ProdDerive> allDerives = null;
 
    @Autowired

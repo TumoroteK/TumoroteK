@@ -1,114 +1,116 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-    <groupId>fr.aphp.tumorotek</groupId>
-    <artifactId>tumorotek-parent</artifactId>
-    <packaging>pom</packaging>
-    <version>2.3.0-gatsbi</version>
-    <name>APHP :: TumoroteK</name>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>fr.aphp.tumorotek</groupId>
+	<artifactId>tumorotek-parent</artifactId>
+	<packaging>pom</packaging>
+	<version>2.3.0-gatsbi</version>
+	<name>APHP :: TumoroteK</name>
 
 
-    <properties>
-        <webapp.name>tumorotek</webapp.name>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
-        <maven.javadoc.skip>true</maven.javadoc.skip>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <org.hibernate.version>3.6.10.Final</org.hibernate.version>
-        <!--<spring.version>3.2.4.RELEASE</spring.version>-->
-        <spring.version>3.2.18.RELEASE</spring.version>
-        <maven-surefire-plugin.version>2.21.0</maven-surefire-plugin.version>
-        <mysql-connector-java.version>8.0.11</mysql-connector-java.version>
-        <webapp.packaging.finalName>${webapp.name}##${project.version}</webapp.packaging.finalName>
+	<properties>
+		<webapp.name>tumorotek</webapp.name>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
+		<maven.javadoc.skip>true</maven.javadoc.skip>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<org.hibernate.version>3.6.10.Final</org.hibernate.version>
+		<!--<spring.version>3.2.4.RELEASE</spring.version> -->
+		<spring.version>3.2.18.RELEASE</spring.version>
+		<maven-surefire-plugin.version>2.21.0</maven-surefire-plugin.version>
+		<mysql-connector-java.version>8.0.11</mysql-connector-java.version>
+		<webapp.packaging.finalName>${webapp.name}##${project.version}</webapp.packaging.finalName>
 
-        <!-- Tests -->
-        <test.database.host>localhost</test.database.host>
-        <test.database.username>root</test.database.username>
-        <test.database.password>root</test.database.password>
-        <test.database.tumorotek.name>test_tumorotek</test.database.tumorotek.name>
-        <test.database.tumorotek_codes.name>test_tumorotek_codes</test.database.tumorotek_codes.name>
-        <test.database.tumorotek_interfacages.name>test_tumorotek_interfacages</test.database.tumorotek_interfacages.name>
-    </properties>
+		<!-- Tests -->
+		<test.database.host>localhost</test.database.host>
+		<test.database.username>root</test.database.username>
+		<test.database.password>root</test.database.password>
+		<test.database.tumorotek.name>test_tumorotek</test.database.tumorotek.name>
+		<test.database.tumorotek_codes.name>test_tumorotek_codes</test.database.tumorotek_codes.name>
+		<test.database.tumorotek_interfacages.name>test_tumorotek_interfacages</test.database.tumorotek_interfacages.name>
+	</properties>
 
-    <modules>
-        <module>tumorotek-test</module>
-        <module>tumorotek-model</module>
-        <module>tumorotek-core</module>
-        <module>tumorotek-interface</module>
-        <module>tumorotek-webapp</module>
-        <module>tumorotek-install</module>
-        <module>tumorotek-dashboard</module>
-    </modules>
+	<modules>
+		<module>tumorotek-test</module>
+		<module>tumorotek-model</module>
+		<module>tumorotek-core</module>
+		<module>tumorotek-interface</module>
+		<module>tumorotek-webapp</module>
+		<module>tumorotek-install</module>
+		<module>tumorotek-dashboard</module>
+	</modules>
 
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>commons-io</groupId>
-                <artifactId>commons-io</artifactId>
-                <version>2.6</version>
-            </dependency>
-            <dependency>
-                <groupId>mysql</groupId>
-                <artifactId>mysql-connector-java</artifactId>
-                <version>${mysql-connector-java.version}</version>
-            </dependency>
-            <!-- ORACLE -->
-            <dependency>
-                <groupId>oracle</groupId>
-                <artifactId>ojdbc6</artifactId>
-                <version>11.2.0.4</version>
-                <scope>provided</scope>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>commons-io</groupId>
+				<artifactId>commons-io</artifactId>
+				<version>2.6</version>
+			</dependency>
+			<dependency>
+				<groupId>mysql</groupId>
+				<artifactId>mysql-connector-java</artifactId>
+				<version>${mysql-connector-java.version}</version>
+			</dependency>
+			<!-- ORACLE -->
+			<dependency>
+				<groupId>oracle</groupId>
+				<artifactId>ojdbc6</artifactId>
+				<version>11.2.0.4</version>
+				<scope>provided</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-enforcer-plugin</artifactId>
-                <version>3.0.0-M1</version>
-                <executions>
-                    <execution>
-                        <id>enforce-maven</id>
-                        <goals>
-                            <goal>enforce</goal>
-                        </goals>
-                        <configuration>
-                            <rules>
-                                <requireMavenVersion>
-                                    <version>[3.0.5,)</version>
-                                </requireMavenVersion>
-                                <requireJavaVersion>
-                                    <version>[1.8,)</version>
-                                </requireJavaVersion>
-                            </rules>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-release-plugin</artifactId>
-                <version>2.5.3</version>
-                <configuration>
-                    <autoVersionSubmodules>true</autoVersionSubmodules>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-enforcer-plugin</artifactId>
+				<version>3.0.0-M1</version>
+				<executions>
+					<execution>
+						<id>enforce-maven</id>
+						<goals>
+							<goal>enforce</goal>
+						</goals>
+						<configuration>
+							<rules>
+								<requireMavenVersion>
+									<version>[3.0.5,)</version>
+								</requireMavenVersion>
+								<requireJavaVersion>
+									<version>[1.8,)</version>
+								</requireJavaVersion>
+							</rules>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-release-plugin</artifactId>
+				<version>2.5.3</version>
+				<configuration>
+					<autoVersionSubmodules>true</autoVersionSubmodules>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
 
-    <distributionManagement>
-        <repository>
-            <id>${deploymentRepositoryId}</id>
-            <url>${deployementRepositoryUrl}</url>
-        </repository>
-    </distributionManagement>
-    <!-- ============== -->
-    <!-- Connection SCM -->
-    <!-- ============== -->
-    <scm>
+	<distributionManagement>
+		<repository>
+			<id>${deploymentRepositoryId}</id>
+			<url>${deployementRepositoryUrl}</url>
+		</repository>
+	</distributionManagement>
+	<!-- ============== -->
+	<!-- Connection SCM -->
+	<!-- ============== -->
+	<scm>
 		<developerConnection>scm:svn:svn://svneai.aphp.fr/tumorotek/trunk</developerConnection>
-    </scm>
+	</scm>
 </project>

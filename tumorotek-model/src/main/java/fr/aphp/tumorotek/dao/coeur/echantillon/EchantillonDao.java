@@ -91,7 +91,7 @@ public interface EchantillonDao extends GenericDaoJpa<Echantillon, Integer>
    List<Echantillon> findByCodeWithBanque(String code, Banque banque);
 
    /**
-    * Recherche les échantillons dont le code 
+    * Recherche les échantillons dont le code
     * est 'like' le paramètre pour la plateforme spécifiée.
     * @param code Code pour lequel on recherche des échantillons.
     * @param pf Plateforme.
@@ -126,7 +126,7 @@ public interface EchantillonDao extends GenericDaoJpa<Echantillon, Integer>
    List<Echantillon> findByDateStockAfterDate(Calendar date);
 
    /**
-    * Recherche tous les codes Echantillons, sauf celui dont l'id est passé 
+    * Recherche tous les codes Echantillons, sauf celui dont l'id est passé
     * en paramètre.
     * @param echantillonId Identifiant de l'Echantillon que l'on souhaite
     * exclure de la liste retournée.
@@ -172,7 +172,7 @@ public interface EchantillonDao extends GenericDaoJpa<Echantillon, Integer>
    List<Echantillon> findByModePrepa(ModePrepa modePrepa);
 
    /**
-    * Recherche les échantillons dont le prélèvement est passé en 
+    * Recherche les échantillons dont le prélèvement est passé en
     * paramètre.
     * @param prelevement Prelevement des échantillons que l'on recherche.
     * @return une liste d'échantillons.
@@ -180,7 +180,7 @@ public interface EchantillonDao extends GenericDaoJpa<Echantillon, Integer>
    List<Echantillon> findByPrelevement(Prelevement prelevement);
 
    /**
-    * Recherche les échantillons restants dont le prélèvement est passé en 
+    * Recherche les échantillons restants dont le prélèvement est passé en
     * paramètre et dont la quantite est supérieure à O.
     * @param prelevement Prelevement des échantillons que l'on recherche.
     * @return une liste d'échantillons.
@@ -197,7 +197,7 @@ public interface EchantillonDao extends GenericDaoJpa<Echantillon, Integer>
    List<Echantillon> findByPrelevementAndStatut(Prelevement prelevement, ObjetStatut statut);
 
    /**
-    * Recherche les codes d'échantillons dont la banque est passée en 
+    * Recherche les codes d'échantillons dont la banque est passée en
     * paramètre.
     * @param banque Banque des échantillons que l'on recherche.
     * @return une liste de codes d'échantillons.
@@ -205,7 +205,7 @@ public interface EchantillonDao extends GenericDaoJpa<Echantillon, Integer>
    List<String> findByBanqueSelectCode(Banque banque);
 
    /**
-    * Recherche les codes d'échantillons dont la banque est passée en 
+    * Recherche les codes d'échantillons dont la banque est passée en
     * paramètre et la quantité est non égale à 0.
     * @param banque Banque des échantillons que l'on recherche.
     * @return une liste de codes d'échantillons.
@@ -213,7 +213,7 @@ public interface EchantillonDao extends GenericDaoJpa<Echantillon, Integer>
    List<String> findByBanqueAndQuantiteSelectCode(Banque banque);
 
    /**
-    * Recherche les codes d'échantillons dont la banque est passée en 
+    * Recherche les codes d'échantillons dont la banque est passée en
     * paramètre et la quantité est non égale à 0 OU l'échantillon faisant partie d'une cession de type traitement
     * @param banque Banque des échantillons que l'on recherche.
     * @return une liste de codes d'échantillons.
@@ -232,7 +232,7 @@ public interface EchantillonDao extends GenericDaoJpa<Echantillon, Integer>
    /**
     * Recherche les codes d'échantillons dont la banque et le statut
     * sont passés en paramètres.
-    * @param banques Liste des Banques des échantillons que 
+    * @param banques Liste des Banques des échantillons que
     * l'on recherche.
     * @param objetStatut ObjetStatut des échantillons.
     * @return une liste de codes d'échantillons.
@@ -270,39 +270,39 @@ public interface EchantillonDao extends GenericDaoJpa<Echantillon, Integer>
    List<Integer> findByPatientNomReturnIds(String nom, Banque banque);
 
    /**
-    * INCa reporting: compte les echantillons dont la date de congélation 
+    * INCa reporting: compte les echantillons dont la date de congélation
     * est incluse dans les dates passées en paramètres et qui appartiennent
-    * à la banque. Une liste d'établissement peut être passée en paramètre 
-    * pour exclure tous les échantillons techniqués dans ces derniers (pour 
-    * compter les échantillons extérieurs aux établissement 
+    * à la banque. Une liste d'établissement peut être passée en paramètre
+    * pour exclure tous les échantillons techniqués dans ces derniers (pour
+    * compter les échantillons extérieurs aux établissement
     * locaux par exemple).
     * @param d1 date limite inf
     * @param d2 date limite sup
-    * @param banks liste de Banque 
+    * @param banks liste de Banque
     * @return Integer compte sous la forme d'une liste
     */
    List<Long> findCountSamplesByDates(Calendar d1, Calendar d2, List<Banque> banks);
 
    /**
-    * INCa reporting: compte les echantillons dont la date de congélation 
+    * INCa reporting: compte les echantillons dont la date de congélation
     * est incluse dans les dates passées en paramètres et qui appartiennent
-    * à la banque. Une liste d'établissement est passée en paramètre 
-    * pour exclure tous les échantillons techniqués dans ces derniers (pour 
-    * compter les échantillons extérieurs aux établissement 
+    * à la banque. Une liste d'établissement est passée en paramètre
+    * pour exclure tous les échantillons techniqués dans ces derniers (pour
+    * compter les échantillons extérieurs aux établissement
     * locaux par exemple).
     * @param d1 date limite inf
     * @param d2 date limite sup
-    * @param banks liste de Banque 
-    * @param exts liste d'Etablissement 
+    * @param banks liste de Banque
+    * @param exts liste d'Etablissement
     * @return Integer compte sous la forme d'une liste
     */
    List<Long> findCountSamplesByDatesExt(Calendar d1, Calendar d2, List<Banque> banks, List<Etablissement> exts);
 
    /**
-    * Compte les échantillons cédés dans le cadre de cession dont 
-    * le type est passé en paramètre et dont la date de 
-    * validation/destruction et incluses entre les dates passées 
-    * en paramètres. Les échantillons comptés doivent appartenir 
+    * Compte les échantillons cédés dans le cadre de cession dont
+    * le type est passé en paramètre et dont la date de
+    * validation/destruction et incluses entre les dates passées
+    * en paramètres. Les échantillons comptés doivent appartenir
     * à la liste de banque passée en paramètres.
     * @param cType
     * @param d1
@@ -314,7 +314,7 @@ public interface EchantillonDao extends GenericDaoJpa<Echantillon, Integer>
 
    /**
    <<<<<<< .working
-    * Compte les échantillons auxquels est affecté un collaborateur 
+    * Compte les échantillons auxquels est affecté un collaborateur
     * passée en paramètres.
     * @param collaborateur
     * @return long
@@ -322,7 +322,7 @@ public interface EchantillonDao extends GenericDaoJpa<Echantillon, Integer>
    List<Long> findCountByCollaborateur(Collaborateur colla);
 
    /**
-    * Compte les échantillons auxquels est affecté un collaborateur 
+    * Compte les échantillons auxquels est affecté un collaborateur
     * passée en paramètres.
     * @param collaborateur
     * @return long
@@ -330,7 +330,7 @@ public interface EchantillonDao extends GenericDaoJpa<Echantillon, Integer>
    List<Long> findCountCreatedByCollaborateur(Collaborateur colla);
 
    /**
-    * Compte les échantillons dont l'opérateur est le collaborateur 
+    * Compte les échantillons dont l'opérateur est le collaborateur
     * passée en paramètres.
     * @param collaborateur
     * @return long
@@ -339,10 +339,10 @@ public interface EchantillonDao extends GenericDaoJpa<Echantillon, Integer>
 
    /**
    
-    * Recherche parmis les échantillons d'une maladie ceux dont le type 
-    * est un de ceux passé en paramètre et appartenant à une des banques 
-    * de la liste passée en paramètre. En cas de maladie nulle, utilise le 
-    * critère prélèvement. 
+    * Recherche parmis les échantillons d'une maladie ceux dont le type
+    * est un de ceux passé en paramètre et appartenant à une des banques
+    * de la liste passée en paramètre. En cas de maladie nulle, utilise le
+    * critère prélèvement.
     * @param maladie
     * @param types
     * @param banks
@@ -353,7 +353,7 @@ public interface EchantillonDao extends GenericDaoJpa<Echantillon, Integer>
       Prelevement prelevement);
 
    /**
-    * Recherche les Echantillons pour une maladie et un type donnés, issus 
+    * Recherche les Echantillons pour une maladie et un type donnés, issus
     * d'un prélèvement à la date passée en paramètre.
     * @param maladie Maladie.
     * @param type EchantillonType.
@@ -407,16 +407,16 @@ public interface EchantillonDao extends GenericDaoJpa<Echantillon, Integer>
    List<Echantillon> findByCollaborateur(Collaborateur cP);
 
    /**
-    * Recherche les échantillons pour cet emplacement, caractérisé par une position 
+    * Recherche les échantillons pour cet emplacement, caractérisé par une position
     * dans une terminale (car l'emplacement peut ne pas être créé).
-    * Cette recherche a pour objectif un contrôle de validation à la 
+    * Cette recherche a pour objectif un contrôle de validation à la
     * création des nouveaux objets.
     * @param Terminale
     * @param Integer position
     * @return liste Echantillons
     */
    List<Echantillon> findByEmplacement(Terminale terminale, Integer position);
-   
+
    /**
     * Recherche des échnatillons correspondant à une liste de code dans une plateforme donnée
     * @param codes liste des codes à rechercher

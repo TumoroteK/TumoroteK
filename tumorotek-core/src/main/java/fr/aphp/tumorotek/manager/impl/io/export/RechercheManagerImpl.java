@@ -77,18 +77,25 @@ public class RechercheManagerImpl implements RechercheManager
 
    /** Liste des recherches du manager. */
    private List<Recherche> recherches = new ArrayList<>();
+
    /** Bean Dao RechercheDao. */
    private RechercheDao rechercheDao = null;
+
    /** Bean Dao AffichageDao. */
    private AffichageDao affichageDao = null;
+
    /** Bean Dao RequeteDao. */
    private RequeteDao requeteDao = null;
+
    /** Bean Dao BanqueDao. */
    private BanqueDao banqueDao = null;
+
    /** Bean Manager RequeteManager. */
    private RequeteManager requeteManager = null;
+
    /** Bean Manager AffichageManager. */
    private AffichageManager affichageManager = null;
+
    /** Bean Validator. */
    private RechercheValidator rechercheValidator = null;
 
@@ -98,7 +105,7 @@ public class RechercheManagerImpl implements RechercheManager
 
    /**
     * Setter du bean RechercheDao.
-    * 
+    *
     * @param recDao
     *            est le bean Dao.
     */
@@ -108,7 +115,7 @@ public class RechercheManagerImpl implements RechercheManager
 
    /**
     * Setter du bean AffichageDao.
-    * 
+    *
     * @param affDao
     *            est le bean Dao.
     */
@@ -118,7 +125,7 @@ public class RechercheManagerImpl implements RechercheManager
 
    /**
     * Setter du bean RequeteDao.
-    * 
+    *
     * @param reqDao
     *            est le bean Dao.
     */
@@ -128,7 +135,7 @@ public class RechercheManagerImpl implements RechercheManager
 
    /**
     * Setter du bean BanqueDao.
-    * 
+    *
     * @param bDao
     *            est le bean Dao.
     */
@@ -138,7 +145,7 @@ public class RechercheManagerImpl implements RechercheManager
 
    /**
     * Setter du bean RequeteManager.
-    * 
+    *
     * @param rManager
     *            est le bean Manager
     */
@@ -148,7 +155,7 @@ public class RechercheManagerImpl implements RechercheManager
 
    /**
     * Setter du bean AffichageManager.
-    * 
+    *
     * @param aManager
     *            est le bean Manager
     */
@@ -158,7 +165,7 @@ public class RechercheManagerImpl implements RechercheManager
 
    /**
     * Setter du bean RechercheValidator.
-    * 
+    *
     * @param rechercheValidator
     *            est le bean Validator.
     */
@@ -168,7 +175,7 @@ public class RechercheManagerImpl implements RechercheManager
 
    /**
     * Recherche une Recherche dont l'identifiant est passé en paramètre.
-    * 
+    *
     * @param id
     *            Identifiant de la Recherche que l'on recherche.
     * @return une Recherche.
@@ -185,7 +192,7 @@ public class RechercheManagerImpl implements RechercheManager
 
    /**
     * Recherche toutes les Recherches présentes dans la BDD.
-    * 
+    *
     * @return Liste de Recherches.
     */
    @Override
@@ -195,7 +202,7 @@ public class RechercheManagerImpl implements RechercheManager
 
    /**
     * Renomme une Recherche (change son intitulé).
-    * 
+    *
     * @param recherche
     *            Recherche à renommer.
     * @param intitule
@@ -224,7 +231,7 @@ public class RechercheManagerImpl implements RechercheManager
 
    /**
    //	 * Copie une Recherche en BDD.
-   //	 * 
+   //	 *
    //	 * @param recherche
    //	 *            Recherche à copier.
    //	 * @param copieur
@@ -296,7 +303,7 @@ public class RechercheManagerImpl implements RechercheManager
 
    /**
     * Créé une nouvelle Recherche en BDD.
-    * 
+    *
     * @param recherche
     *            Recherche à créer.
     * @param createur
@@ -355,7 +362,7 @@ public class RechercheManagerImpl implements RechercheManager
 
    /**
     * Met à jour une Recherche en BDD.
-    * 
+    *
     * @param recherche
     *            Recherche à mettre à jour.
     * @param createur
@@ -415,7 +422,7 @@ public class RechercheManagerImpl implements RechercheManager
 
    /**
     * Supprime une Recherche en BDD.
-    * 
+    *
     * @param recherche
     *            Recherche à supprimer
     */
@@ -446,7 +453,7 @@ public class RechercheManagerImpl implements RechercheManager
    /**
     * Recherche les Recherches dont l'utilisateur créateur est passé en
     * paramètre.
-    * 
+    *
     * @param util
     *            Utilisateur qui à créé les Recherches recherchées.
     * @return la liste de toutes les Recherches de l'Utilisateur.
@@ -463,7 +470,7 @@ public class RechercheManagerImpl implements RechercheManager
 
    /**
     * Recherche les Recherches dont l'intitulé est passé en paramètre.
-    * 
+    *
     * @param intitule Intitulé des Recherches recherchées.
     * @return la liste de toutes les Recherches de l'intitulé.
     */
@@ -487,7 +494,7 @@ public class RechercheManagerImpl implements RechercheManager
 
    /**
     * Recherche les Recherches dont la Requête est passée en paramètre.
-    * 
+    *
     * @param requete Requete des Recherches recherchées.
     * @return la liste de toutes les Recherches comprenant la Requête.
     */
@@ -503,7 +510,7 @@ public class RechercheManagerImpl implements RechercheManager
 
    /**
     * Recherche les Recherches dont l'Affichage est passé en paramètre.
-    * 
+    *
     * @param affichage Affichage des Recherches recherchées.
     * @return la liste de toutes les Recherches comprenant l'Affichage.
     */
@@ -535,7 +542,7 @@ public class RechercheManagerImpl implements RechercheManager
 
    /**
     * Recherche les doublons d'une Recherche passée en paramètre.
-    * 
+    *
     * @param recherche
     *            une Recherche pour laquelle on cherche des doublons.
     * @return True s'il existe des doublons.
@@ -555,7 +562,7 @@ public class RechercheManagerImpl implements RechercheManager
 
    /**
     * Méthode qui permet de vérifier que 2 Recherches sont des copies.
-    * 
+    *
     * @param r
     *            Recherche première Recherche à vérifier.
     * @param copie
@@ -606,7 +613,7 @@ public class RechercheManagerImpl implements RechercheManager
    /**
     * Cette méthode met à jour les associations entre une recherche et une
     * liste de banques.
-    * 
+    *
     * @param recherche
     *            Recherche pour laquelle on veut mettre à jour les
     *            associations.

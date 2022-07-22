@@ -64,6 +64,7 @@ public class EchantillonDTOManagerTest extends AbstractManagerTest4
 
    @Autowired
    private EchantillonDTOManager echantillonDTOManager;
+
    @Autowired
    private EchantillonDao echantillonDao;
 

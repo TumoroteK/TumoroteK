@@ -143,7 +143,7 @@ public interface TerminaleManager
    Boolean findDoublonWithoutTwoTerminalesManager(Terminale terminale, Terminale terminaleDestination);
 
    /**
-    * Teste si la Terminale passée en paramètre est utilisée par 
+    * Teste si la Terminale passée en paramètre est utilisée par
     * d'autres objets.
     * @param terminale Terminale que l'on test.
     * @return True si l'objet est utilisé.
@@ -220,7 +220,7 @@ public interface TerminaleManager
       Utilisateur utilisateur);
 
    /**
-    * Crée un ensemble de terminales de type visotube 
+    * Crée un ensemble de terminales de type visotube
     * pour une enceinte.
     * @param enceinte Enceinte des Terminales.
     * @param terminale terminaleque l'on va persister.
@@ -228,7 +228,7 @@ public interface TerminaleManager
     * @param firstPosition Index de la première terminale.
     * @param nameFromColor Si true, le nom de la terminale sera
     * @param size contenance du visotube 16 ou 12
-    * @param utilisateur 
+    * @param utilisateur
     * créé à partir de sa couleur.
     * @version 2.0.10
     */
@@ -281,8 +281,8 @@ public interface TerminaleManager
    /**
     * Extrait d'une terminale une Map contenant les TKStockableObjects et leurs
     * emplacements respectifs.
-    * L'objectif est d'optimiser la récupération de ces informations à partir du 
-    * système de stockage car elles sont indispensables à la création des 
+    * L'objectif est d'optimiser la récupération de ces informations à partir du
+    * système de stockage car elles sont indispensables à la création des
     * évènements de stockage lors de déplacements/incidents.
     * @version 2.0.10
     * @param term
@@ -291,10 +291,10 @@ public interface TerminaleManager
    Map<TKStockableObject, Emplacement> getTkObjectsAndEmplacementsManager(Terminale term);
 
    /**
-    * Renvoie les ids des terminales dont le nom/alias correspond au critère passé en paramètre, 
+    * Renvoie les ids des terminales dont le nom/alias correspond au critère passé en paramètre,
     * et appartenant à l'arborescence spécifiée par l'enceinte et/ou le conteneur.
-    * Conteneur et enceinte peuvent être nulls, ne limitant pas à la requête. Si l'enceinte est passée en 
-    * paramètre, le paramètre conteneur est pris en compte, et la fonction renvoie null si l'enceinte 
+    * Conteneur et enceinte peuvent être nulls, ne limitant pas à la requête. Si l'enceinte est passée en
+    * paramètre, le paramètre conteneur est pris en compte, et la fonction renvoie null si l'enceinte
     * n'appartient pas au conteneur.
     * @param nom nom/alias LIKE des Terminale
     * @param enc Enceinte parente
@@ -321,7 +321,7 @@ public interface TerminaleManager
    List<Terminale> findByAliasManager(String _a);
 
    /**
-    * Renvoie une trace emplacement de tous les échantillons/dérivés contenus 
+    * Renvoie une trace emplacement de tous les échantillons/dérivés contenus
     * dans une terminale.
     * Voir https://tumorotek.myjetbrains.com/youtrack/issue/TK-291
     * @param term

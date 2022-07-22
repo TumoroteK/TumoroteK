@@ -1,5 +1,5 @@
 /**
- * Copyright ou © ou Copr. Assistance Publique des Hôpitaux de 
+ * Copyright ou © ou Copr. Assistance Publique des Hôpitaux de
  * PARIS et SESAN
  * projet-tk@sesan.fr
  *
@@ -39,64 +39,67 @@ package fr.aphp.tumorotek.model.contexte.gatsbi;
 import java.io.Serializable;
 import java.util.Objects;
 
-public class ParametrageValue implements Serializable {
+public class ParametrageValue implements Serializable
+{
 
-	private static final long serialVersionUID = 1L;
-	
-	private Integer champEntiteId;
-	private String thesaurusTableNom;
-	private String defaultValue;
-	
-	public ParametrageValue(Integer _c, String _v, String _t) {
-		super();
-		this.champEntiteId = _c;
-		this.thesaurusTableNom = _t;
-		this.defaultValue = _v;
-	}
+   private static final long serialVersionUID = 1L;
 
-	public Integer getChampEntiteId() {
-		return champEntiteId;
-	}
+   private Integer champEntiteId;
 
-	public void setChampEntiteId(Integer _c) {
-		this.champEntiteId = _c;
-	}
+   private String thesaurusTableNom;
 
-	public String getDefaultValue() {
-		return defaultValue;
-	}
+   private String defaultValue;
 
-	public void setDefaultValue(String _v) {
-		this.defaultValue = _v;
-	}
-	
-	public String getThesaurusTableNom() {
-		return thesaurusTableNom;
-	}
+   public ParametrageValue(final Integer _c, final String _v, final String _t){
+      super();
+      this.champEntiteId = _c;
+      this.thesaurusTableNom = _t;
+      this.defaultValue = _v;
+   }
 
-	public void setThesaurusTableNom(String _t) {
-		this.thesaurusTableNom = _t;
-	}
+   public Integer getChampEntiteId(){
+      return champEntiteId;
+   }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (obj == this) {
-            return true;
-        }
-        if (obj == null || obj.getClass() != this.getClass()) {
-            return false;
-        }
+   public void setChampEntiteId(final Integer _c){
+      this.champEntiteId = _c;
+   }
 
-        ParametrageValue param = (ParametrageValue) obj;
+   public String getDefaultValue(){
+      return defaultValue;
+   }
 
-        return Objects.equals(champEntiteId, param.getChampEntiteId());
-	}
-	
-	@Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-    	result = prime * result + ((champEntiteId == null) ? 0 : champEntiteId.hashCode());
-    	return result;
-	}
+   public void setDefaultValue(final String _v){
+      this.defaultValue = _v;
+   }
+
+   public String getThesaurusTableNom(){
+      return thesaurusTableNom;
+   }
+
+   public void setThesaurusTableNom(final String _t){
+      this.thesaurusTableNom = _t;
+   }
+
+   @Override
+   public boolean equals(final Object obj){
+      if(obj == this){
+         return true;
+      }
+      if(obj == null || obj.getClass() != this.getClass()){
+         return false;
+      }
+
+      final ParametrageValue param = (ParametrageValue) obj;
+
+      return Objects.equals(champEntiteId, param.getChampEntiteId());
+   }
+
+   @Override
+   public int hashCode(){
+      final int prime = 31;
+      int result = 1;
+      result = prime * result + ((champEntiteId == null) ? 0 : champEntiteId.hashCode());
+      return result;
+   }
 }

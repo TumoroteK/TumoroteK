@@ -68,381 +68,376 @@ import fr.aphp.tumorotek.model.coeur.prelevement.Risque;
  * @author Pierre Ventadour.
  * @version 2.0
  */
-public class EchantillonRowRenderer extends TKSelectObjectRenderer<Echantillon> {
+public class EchantillonRowRenderer extends TKSelectObjectRenderer<Echantillon>
+{
 
-	private final Log log = LogFactory.getLog(EchantillonRowRenderer.class);
+   private final Log log = LogFactory.getLog(EchantillonRowRenderer.class);
 
-	private boolean accessible = true;
-	private boolean isEmbedded = false;
+   private boolean accessible = true;
 
-	private boolean accessStockage = true;
+   private boolean isEmbedded = false;
 
-	public void setAccessStockage(final boolean ac) {
-		this.accessStockage = ac;
-	}
+   private boolean accessStockage = true;
 
-	public EchantillonRowRenderer(final boolean select, final boolean cols) {
-		setSelectionMode(select);
-		setTtesCollections(cols);
-	}
+   public void setAccessStockage(final boolean ac){
+      this.accessStockage = ac;
+   }
 
-	@Override
-	public void render(final Row row, final Echantillon data, final int index) {
+   public EchantillonRowRenderer(final boolean select, final boolean cols){
+      setSelectionMode(select);
+      setTtesCollections(cols);
+   }
 
-		// dessine le checkbox
-		super.render(row, data, index);
+   @Override
+   public void render(final Row row, final Echantillon data, final int index){
 
-		renderObjets(row, data);
-	}
+      // dessine le checkbox
+      super.render(row, data, index);
 
-	public void renderObjets(final Row row, final Object data) {
+      renderObjets(row, data);
+   }
 
-		final Echantillon echan = (Echantillon) data;
+   public void renderObjets(final Row row, final Object data){
 
-		// @since gatsbi, icones peuvent ne jamais s'afficher
-		// icones
-		if (areIconesRendered()) {
-			final Hlayout icones = TKStockableObjectUtils.drawListIcones(echan, null, null);
+      final Echantillon echan = (Echantillon) data;
 
-			// infectieux
-			final Prelevement prel = ManagerLocator.getEchantillonManager().getPrelevementManager(echan);
-			if (prel != null) {
-				final Iterator<Risque> risksIt = ManagerLocator.getPrelevementManager().getRisquesManager(prel)
-						.iterator();
-				final Div bioHzd = new Div();
-				boolean risky = false;
-				String risks = "";
-				Risque risque;
-				while (risksIt.hasNext()) {
-					risque = risksIt.next();
-					if (risque.getInfectieux()) {
-						risky = true;
-						risks = risks + " " + risque.getNom();
-					}
-				}
-				if (risky) {
-					bioHzd.setWidth("18px");
-					bioHzd.setHeight("18px");
-					bioHzd.setSclass("biohazard");
-					bioHzd.setTooltiptext(ObjectTypesFormatters.getLabel("tooltip.risque", new String[] { risks }));
-				}
+      // @since gatsbi, icones peuvent ne jamais s'afficher
+      // icones
+      if(areIconesRendered()){
+         final Hlayout icones = TKStockableObjectUtils.drawListIcones(echan, null, null);
 
-				icones.insertBefore(bioHzd, icones.getFirstChild());
-			}
-			icones.setParent(row);
-		}
+         // infectieux
+         final Prelevement prel = ManagerLocator.getEchantillonManager().getPrelevementManager(echan);
+         if(prel != null){
+            final Iterator<Risque> risksIt = ManagerLocator.getPrelevementManager().getRisquesManager(prel).iterator();
+            final Div bioHzd = new Div();
+            boolean risky = false;
+            String risks = "";
+            Risque risque;
+            while(risksIt.hasNext()){
+               risque = risksIt.next();
+               if(risque.getInfectieux()){
+                  risky = true;
+                  risks = risks + " " + risque.getNom();
+               }
+            }
+            if(risky){
+               bioHzd.setWidth("18px");
+               bioHzd.setHeight("18px");
+               bioHzd.setSclass("biohazard");
+               bioHzd.setTooltiptext(ObjectTypesFormatters.getLabel("tooltip.risque", new String[] {risks}));
+            }
 
-		// identifiant
-		// code
-		final Label codeLabel = new Label(echan.getCode());
-		if (accessible) {
-			codeLabel.addForward(null, codeLabel.getParent(), "onClickObject", echan);
-			codeLabel.setClass("formLink");
-		}
-		codeLabel.setParent(row);
-		log.debug("code");
+            icones.insertBefore(bioHzd, icones.getFirstChild());
+         }
+         icones.setParent(row);
+      }
 
-		if (isTtesCollections()) {
-			new Label(echan.getBanque().getNom()).setParent(row);
-		} else if (!isEmbedded) {
-			new Label().setParent(row);
-		}
+      // identifiant
+      // code
+      final Label codeLabel = new Label(echan.getCode());
+      if(accessible){
+         codeLabel.addForward(null, codeLabel.getParent(), "onClickObject", echan);
+         codeLabel.setClass("formLink");
+      }
+      codeLabel.setParent(row);
+      log.debug("code");
 
-		// patient
-		if (!isEmbedded) {
-			if (!anonyme) {
-				new Label(getPatient(echan)).setParent(row);
-			} else {
-				createAnonymeBlock().setParent(row);
-			}
-		}
+      if(isTtesCollections()){
+         new Label(echan.getBanque().getNom()).setParent(row);
+      }else if(!isEmbedded){
+         new Label().setParent(row);
+      }
 
-		// @since gatsbi
-		try {
-			renderEchantillon(row, echan);
-		} catch (Exception e) {
-			// une erreur inattendue levée dans la récupération
-			// ou le rendu d'une propriété prel
-			// va arrêter le rendu du reste du tableau
-			throw new RuntimeException(e);
-		}
+      // patient
+      if(!isEmbedded){
+         if(!anonyme){
+            new Label(getPatient(echan)).setParent(row);
+         }else{
+            createAnonymeBlock().setParent(row);
+         }
+      }
 
-	}
+      // @since gatsbi
+      try{
+         renderEchantillon(row, echan);
+      }catch(final Exception e){
+         // une erreur inattendue levée dans la récupération
+         // ou le rendu d'une propriété prel
+         // va arrêter le rendu du reste du tableau
+         throw new RuntimeException(e);
+      }
 
-	public boolean isAccessible() {
-		return accessible;
-	}
+   }
 
-	public void setAccessible(final boolean a) {
-		this.accessible = a;
-	}
+   public boolean isAccessible(){
+      return accessible;
+   }
 
-	public boolean isAccessStockage() {
-		return accessStockage;
-	}
+   public void setAccessible(final boolean a){
+      this.accessible = a;
+   }
 
-	public String getPatient(final Echantillon echan) {
-		final Prelevement prlvt = ManagerLocator.getEchantillonManager().getPrelevementManager(echan);
+   public boolean isAccessStockage(){
+      return accessStockage;
+   }
 
-		if (prlvt != null) {
-			return PrelevementUtils.getPatientNomAndPrenom(prlvt);
-		}
-		return "";
-	}
+   public String getPatient(final Echantillon echan){
+      final Prelevement prlvt = ManagerLocator.getEchantillonManager().getPrelevementManager(echan);
 
-	public boolean isEmbedded() {
-		return isEmbedded;
-	}
+      if(prlvt != null){
+         return PrelevementUtils.getPatientNomAndPrenom(prlvt);
+      }
+      return "";
+   }
 
-	public void setEmbedded(final boolean isE) {
-		this.isEmbedded = isE;
-	}
+   public boolean isEmbedded(){
+      return isEmbedded;
+   }
 
-	/**
-	 * Rendu des colonnes spécifiques échantillon, sera surchargé par Gatsbi.
-	 * 
-	 * @param row
-	 * @param echan
-	 * @throws NoSuchMethodException
-	 * @throws InvocationTargetException
-	 * @throws IllegalAccessException
-	 */
-	protected void renderEchantillon(Row row, Echantillon echan)
-			throws IllegalAccessException, InvocationTargetException, NoSuchMethodException, ParseException {
+   public void setEmbedded(final boolean isE){
+      this.isEmbedded = isE;
+   }
 
-		renderDateProperty(row, echan, "dateStock");
+   /**
+    * Rendu des colonnes spécifiques échantillon, sera surchargé par Gatsbi.
+    *
+    * @param row
+    * @param echan
+    * @throws NoSuchMethodException
+    * @throws InvocationTargetException
+    * @throws IllegalAccessException
+    */
+   protected void renderEchantillon(final Row row, final Echantillon echan)
+      throws IllegalAccessException, InvocationTargetException, NoSuchMethodException, ParseException{
 
-		renderCodeAssignes(row, ManagerLocator.getCodeAssigneManager()
-							.findCodesOrganeByEchantillonManager(echan));
+      renderDateProperty(row, echan, "dateStock");
 
-		renderCodeAssignes(row, ManagerLocator.getCodeAssigneManager()
-							.findCodesMorphoByEchantillonManager(echan));
+      renderCodeAssignes(row, ManagerLocator.getCodeAssigneManager().findCodesOrganeByEchantillonManager(echan));
 
-		renderThesObjectProperty(row, echan, "echantillonType");
+      renderCodeAssignes(row, ManagerLocator.getCodeAssigneManager().findCodesMorphoByEchantillonManager(echan));
 
-		renderQuantite(row, echan);
+      renderThesObjectProperty(row, echan, "echantillonType");
 
-		renderObjetStatut(row, echan);
+      renderQuantite(row, echan);
 
-		renderEmplacement(row, echan, isAnonyme(), isAccessStockage());
+      renderObjetStatut(row, echan);
 
-		renderNbDerives(row, echan);
+      renderEmplacement(row, echan, isAnonyme(), isAccessStockage());
 
-		renderNbCessions(row, echan);
-	}
-	
-	// codes lésionnels : liste des codes exportés pour l'échantillon
-	public static void renderCodeAssignes(Row row, List<CodeAssigne> codes) {
-		ObjectTypesFormatters.drawCodesExpLabel(codes, row, null, false);
-	}
-	
-	/**
-	 * Arrondi d'un double avec n éléments après la virgule.
-	 * 
-	 * @param a La valeur à convertir.
-	 * @param n Le nombre de décimales à conserver.
-	 * @return La valeur arrondi à n décimales.
-	 */
-	public static float floor(final float a, final int n) {
-		final double p = Math.pow(10.0, n);
-		return (float) (Math.floor((a * p) + 0.5) / p);
-	}
+      renderNbDerives(row, echan);
 
-	/**
-	 * Concatène la quantité et son unité et écris dans la row
-	 * 
-	 * @param row
-	 * @param echantillon Echantillon pour lequel on veut la quantité.
-	 * @return String.
-	 */
-	public static void renderQuantite(Row row, Echantillon echantillon) {
-		new Label(formatQuantite(echantillon)).setParent(row);
-	}
-	
-	public static String formatQuantite(Echantillon echan) {
-		final StringBuffer sb = new StringBuffer();
-		if (echan.getQuantite() != null) {
-			sb.append(floor(echan.getQuantite(), 4));
-		} else {
-			sb.append("-");
-		}
+      renderNbCessions(row, echan);
+   }
 
-		sb.append(" / ");
+   // codes lésionnels : liste des codes exportés pour l'échantillon
+   public static void renderCodeAssignes(final Row row, final List<CodeAssigne> codes){
+      ObjectTypesFormatters.drawCodesExpLabel(codes, row, null, false);
+   }
 
-		if (echan.getQuantiteInit() != null) {
-			sb.append(floor(echan.getQuantiteInit(), 4));
-		} else {
-			sb.append("-");
-		}
+   /**
+    * Arrondi d'un double avec n éléments après la virgule.
+    *
+    * @param a La valeur à convertir.
+    * @param n Le nombre de décimales à conserver.
+    * @return La valeur arrondi à n décimales.
+    */
+   public static float floor(final float a, final int n){
+      final double p = Math.pow(10.0, n);
+      return (float) (Math.floor((a * p) + 0.5) / p);
+   }
 
-		if (echan.getQuantiteUnite() != null) {
-			sb.append(" ");
-			sb.append(echan.getQuantiteUnite().getNom());
-		}
-		return sb.toString();
-	}
+   /**
+    * Concatène la quantité et son unité et écris dans la row
+    *
+    * @param row
+    * @param echantillon Echantillon pour lequel on veut la quantité.
+    * @return String.
+    */
+   public static void renderQuantite(final Row row, final Echantillon echantillon){
+      new Label(formatQuantite(echantillon)).setParent(row);
+   }
 
-	/**
-	 * Colorie le statut suivant la valeur
-	 * 
-	 * @param row
-	 * @param echan
-	 */
-	public static void renderObjetStatut(Row row, Echantillon echan) {
-		if (echan.getObjetStatut() != null) {
+   public static String formatQuantite(final Echantillon echan){
+      final StringBuffer sb = new StringBuffer();
+      if(echan.getQuantite() != null){
+         sb.append(floor(echan.getQuantite(), 4));
+      }else{
+         sb.append("-");
+      }
 
-			final Label statut = new Label(ObjectTypesFormatters.ILNObjectStatut(echan.getObjetStatut()));
-			if (echan.getObjetStatut().getStatut().equals("ENCOURS")) {
-				statut.setStyle("color: red");
-			}
-			statut.setParent(row);
-		} else {
-			new Label().setParent(row);
-		}
-	}
+      sb.append(" / ");
 
-	public static void renderEmplacement(Row row, Echantillon echan, boolean anonyme, boolean accessStockage) {
-		// emplacement
-		if (!anonyme && accessStockage) {
-			final Label emplLabel = new Label(getEmplacementAdrl(echan));
-			if (accessStockage) {
-				emplLabel.setSclass("formLink");
-				emplLabel.addForward(null, emplLabel.getParent(), "onClickObjectEmplacement",
-						ManagerLocator.getEchantillonManager().getEmplacementManager(echan));
-			}
-			emplLabel.setParent(row);
-		} else {
-			createAnonymeBlock().setParent(row);
-		}
-	}
+      if(echan.getQuantiteInit() != null){
+         sb.append(floor(echan.getQuantiteInit(), 4));
+      }else{
+         sb.append("-");
+      }
 
-	public static String getEmplacementAdrl(final Echantillon echantillon) {
-		if (echantillon != null && echantillon.getEchantillonId() != null) {
-			return ManagerLocator.getEchantillonManager().getEmplacementAdrlManager(echantillon);
-		}
-		return "-";
-	}
+      if(echan.getQuantiteUnite() != null){
+         sb.append(" ");
+         sb.append(echan.getQuantiteUnite().getNom());
+      }
+      return sb.toString();
+   }
 
-	public static void renderNbDerives(Row row, Echantillon echan) {
-		new Label(String.valueOf(ManagerLocator.getEchantillonManager().getProdDerivesManager(echan).size()))
-				.setParent(row);
-	}
+   /**
+    * Colorie le statut suivant la valeur
+    *
+    * @param row
+    * @param echan
+    */
+   public static void renderObjetStatut(final Row row, final Echantillon echan){
+      if(echan.getObjetStatut() != null){
 
-	public static void renderNbCessions(Row row, Echantillon echan) {
-		new Label(String.valueOf(ManagerLocator.getCederObjetManager().findByObjetManager(echan).size()))
-				.setParent(row);
-	}
-	
-	public static void renderDelaiCgl(Row row, Echantillon echan) {
-		if (echan.getDelaiCgl() != null) {
-			new Label(formatDelaiCgl(echan)).setParent(row);
-		} else {
-			new Label().setParent(row);
-		}		
-	}
-		
-	public static String formatDelaiCgl(final Echantillon echantillon) {
-		final StringBuffer sb = new StringBuffer();
-		String heureLabel = "";
-		String minLabel = "";
-		if (echantillon.getDelaiCgl() != null && echantillon.getDelaiCgl() > -1) {
-			final Float heure = echantillon.getDelaiCgl() / 60;
-			Integer heureDelai = 0;
-			Integer minDelai = 0;
-			if (heure > 0) {
-				heureDelai = heure.intValue();
-				minDelai = echantillon.getDelaiCgl().intValue() - (heureDelai * 60);
-				heureLabel = heureDelai.toString();
-				minLabel = minDelai.toString();
-			} else {
-				heureDelai = 0;
-				minDelai = echantillon.getDelaiCgl().intValue();
-				heureLabel = heureDelai.toString();
-				minLabel = minDelai.toString();
-			}
+         final Label statut = new Label(ObjectTypesFormatters.ILNObjectStatut(echan.getObjetStatut()));
+         if(echan.getObjetStatut().getStatut().equals("ENCOURS")){
+            statut.setStyle("color: red");
+         }
+         statut.setParent(row);
+      }else{
+         new Label().setParent(row);
+      }
+   }
 
-			sb.append(heureLabel);
-			sb.append("h ");
-			sb.append(minLabel);
-			sb.append("min");
-		} else {
-			sb.append(Labels.getLabel("ficheEchantillon.delaiCgl.inconnu"));
-		}
+   public static void renderEmplacement(final Row row, final Echantillon echan, final boolean anonyme,
+      final boolean accessStockage){
+      // emplacement
+      if(!anonyme && accessStockage){
+         final Label emplLabel = new Label(getEmplacementAdrl(echan));
+         if(accessStockage){
+            emplLabel.setSclass("formLink");
+            emplLabel.addForward(null, emplLabel.getParent(), "onClickObjectEmplacement",
+               ManagerLocator.getEchantillonManager().getEmplacementManager(echan));
+         }
+         emplLabel.setParent(row);
+      }else{
+         createAnonymeBlock().setParent(row);
+      }
+   }
 
-		return sb.toString();
-	}
+   public static String getEmplacementAdrl(final Echantillon echantillon){
+      if(echantillon != null && echantillon.getEchantillonId() != null){
+         return ManagerLocator.getEchantillonManager().getEmplacementAdrlManager(echantillon);
+      }
+      return "-";
+   }
 
-	/**
-	 * Récupère la date de création système de l'échantillon.
-	 * 
-	 * @return Date de création.
-	 */
-	public static String getDateCreation(final Echantillon echantillon) {
-		final Calendar date = ManagerLocator.getOperationManager().findDateCreationManager(echantillon);
-		if (date != null) {
-			return ObjectTypesFormatters.dateRenderer2(date);
-		}
-		return null;
-	}
-	
-	public static String getCodeAssigneInString(final Echantillon echantillon, final boolean isOrg) {
-		List<CodeAssigne> codes;
-		if (isOrg) {
-			codes = ManagerLocator.getCodeAssigneManager().findCodesOrganeByEchantillonManager(echantillon);
-		} else {
-			codes = ManagerLocator.getCodeAssigneManager().findCodesMorphoByEchantillonManager(echantillon);
-		}
+   public static void renderNbDerives(final Row row, final Echantillon echan){
+      new Label(String.valueOf(ManagerLocator.getEchantillonManager().getProdDerivesManager(echan).size())).setParent(row);
+   }
 
-		final StringBuffer sb = new StringBuffer();
-		if (!codes.isEmpty()) {
-			for (int i = 0; i < codes.size(); i++) {
-				if (isOrg) {
-					sb.append(codes.get(0).getLibelle());
-					sb.append(" [");
-					sb.append(codes.get(0).getCode());
-					sb.append("]");
-				} else {
-					sb.append(codes.get(0).getCode());
-					sb.append(" [");
-					sb.append(codes.get(0).getLibelle());
-					sb.append("]");
-				}
+   public static void renderNbCessions(final Row row, final Echantillon echan){
+      new Label(String.valueOf(ManagerLocator.getCederObjetManager().findByObjetManager(echan).size())).setParent(row);
+   }
 
-				if (i < codes.size() - 1) {
-					sb.append(", ");
-				}
-			}
-		} else {
-			sb.append("-");
-		}
+   public static void renderDelaiCgl(final Row row, final Echantillon echan){
+      if(echan.getDelaiCgl() != null){
+         new Label(formatDelaiCgl(echan)).setParent(row);
+      }else{
+         new Label().setParent(row);
+      }
+   }
 
-		return sb.toString();
-	}
-	
-	public static void renderLateralite(Row row, Echantillon echan) {
-		if (echan.getLateralite() != null) {
-			new Label(Labels.getLabel("echantillon.lateralite."
-					.concat(echan.getLateralite()))).setParent(row);
-		} else {
-			new Label().setParent(row);
-		}
-	}
-	
-	public static void renderCrAnapath(Row row, Echantillon echan, boolean anonyme) {
-		if (echan.getCrAnapath() != null) {
-			Label crAnapathLabel = 
-					new Label(echan.getCrAnapath().getNom());
-			
-			// clickable -> download			
-			if(!anonyme){
-				crAnapathLabel.setClass("formLink");
-				crAnapathLabel.addForward("onClick", row.getParent(), "onClickCrAnapathLabel", echan.getCrAnapath());
-		      }
-			
-			
-			crAnapathLabel.setParent(row);
-		} else {
-			new Label().setParent(row);
-		}
-	}
+   public static String formatDelaiCgl(final Echantillon echantillon){
+      final StringBuffer sb = new StringBuffer();
+      String heureLabel = "";
+      String minLabel = "";
+      if(echantillon.getDelaiCgl() != null && echantillon.getDelaiCgl() > -1){
+         final Float heure = echantillon.getDelaiCgl() / 60;
+         Integer heureDelai = 0;
+         Integer minDelai = 0;
+         if(heure > 0){
+            heureDelai = heure.intValue();
+            minDelai = echantillon.getDelaiCgl().intValue() - (heureDelai * 60);
+            heureLabel = heureDelai.toString();
+            minLabel = minDelai.toString();
+         }else{
+            heureDelai = 0;
+            minDelai = echantillon.getDelaiCgl().intValue();
+            heureLabel = heureDelai.toString();
+            minLabel = minDelai.toString();
+         }
+
+         sb.append(heureLabel);
+         sb.append("h ");
+         sb.append(minLabel);
+         sb.append("min");
+      }else{
+         sb.append(Labels.getLabel("ficheEchantillon.delaiCgl.inconnu"));
+      }
+
+      return sb.toString();
+   }
+
+   /**
+    * Récupère la date de création système de l'échantillon.
+    *
+    * @return Date de création.
+    */
+   public static String getDateCreation(final Echantillon echantillon){
+      final Calendar date = ManagerLocator.getOperationManager().findDateCreationManager(echantillon);
+      if(date != null){
+         return ObjectTypesFormatters.dateRenderer2(date);
+      }
+      return null;
+   }
+
+   public static String getCodeAssigneInString(final Echantillon echantillon, final boolean isOrg){
+      List<CodeAssigne> codes;
+      if(isOrg){
+         codes = ManagerLocator.getCodeAssigneManager().findCodesOrganeByEchantillonManager(echantillon);
+      }else{
+         codes = ManagerLocator.getCodeAssigneManager().findCodesMorphoByEchantillonManager(echantillon);
+      }
+
+      final StringBuffer sb = new StringBuffer();
+      if(!codes.isEmpty()){
+         for(int i = 0; i < codes.size(); i++){
+            if(isOrg){
+               sb.append(codes.get(0).getLibelle());
+               sb.append(" [");
+               sb.append(codes.get(0).getCode());
+               sb.append("]");
+            }else{
+               sb.append(codes.get(0).getCode());
+               sb.append(" [");
+               sb.append(codes.get(0).getLibelle());
+               sb.append("]");
+            }
+
+            if(i < codes.size() - 1){
+               sb.append(", ");
+            }
+         }
+      }else{
+         sb.append("-");
+      }
+
+      return sb.toString();
+   }
+
+   public static void renderLateralite(final Row row, final Echantillon echan){
+      if(echan.getLateralite() != null){
+         new Label(Labels.getLabel("echantillon.lateralite.".concat(echan.getLateralite()))).setParent(row);
+      }else{
+         new Label().setParent(row);
+      }
+   }
+
+   public static void renderCrAnapath(final Row row, final Echantillon echan, final boolean anonyme){
+      if(echan.getCrAnapath() != null){
+         final Label crAnapathLabel = new Label(echan.getCrAnapath().getNom());
+
+         // clickable -> download
+         if(!anonyme){
+            crAnapathLabel.setClass("formLink");
+            crAnapathLabel.addForward("onClick", row.getParent(), "onClickCrAnapathLabel", echan.getCrAnapath());
+         }
+
+         crAnapathLabel.setParent(row);
+      }else{
+         new Label().setParent(row);
+      }
+   }
 }

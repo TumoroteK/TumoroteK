@@ -62,16 +62,16 @@ public interface ModePrepaDao extends GenericDaoJpa<ModePrepa, Integer>, PfDepen
 
    /**
     * Recherche les mode de préparation dont le nom est égal au paramètre.
-    * @param nomEn Nom anglais pour lequel on recherche des modes 
+    * @param nomEn Nom anglais pour lequel on recherche des modes
     * de préparation.
     * @return une liste de modes de préparation.
     */
    List<ModePrepa> findByNomEn(String nomEn);
 
    /**
-    * Recherche le mode de préparation qui est lié à l'échantillon passé 
-    * en paramètre. 
-    * @param echantillonId Identifiant de l'échantillon pour lequel 
+    * Recherche le mode de préparation qui est lié à l'échantillon passé
+    * en paramètre.
+    * @param echantillonId Identifiant de l'échantillon pour lequel
     * on recherche un mode de préparation.
     * @return une liste de ModePrepas.
     */

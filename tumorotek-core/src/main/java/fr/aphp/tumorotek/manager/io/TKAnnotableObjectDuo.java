@@ -67,13 +67,17 @@ public class TKAnnotableObjectDuo
 {
 
    private Entite entite;
+
    private TKAnnotableObject firstObj;
+
    private TKAnnotableObject secondObj;
-   private final Map<ChampAnnotation, List<AnnotationValeur>> firstAnnoValsMap =
-      new HashMap<>();
-   private final Map<ChampAnnotation, List<AnnotationValeur>> secondAnnoValsMap =
-      new HashMap<>();
+
+   private final Map<ChampAnnotation, List<AnnotationValeur>> firstAnnoValsMap = new HashMap<>();
+
+   private final Map<ChampAnnotation, List<AnnotationValeur>> secondAnnoValsMap = new HashMap<>();
+
    private final List<NonConformite> firstNoConfs = new ArrayList<>();
+
    private final List<NonConformite> secondNoConfs = new ArrayList<>();
 
    public Entite getEntite(){

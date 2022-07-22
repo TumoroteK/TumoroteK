@@ -225,23 +225,23 @@ public class LigneEtiquetteRowRenderer implements RowRenderer<Object>
    }
 
    public Component formateChampsForLigne(final LigneEtiquetteDecorator deco, final Row row, final Component parent){
-      
+
       final List<String> valuesEchans = new ArrayList<>();
       final List<String> valuesDerives = new ArrayList<>();
-      
-      for(ChampLigneEtiquette champLigneEtiquette : deco.getChamps()) {
-         
+
+      for(final ChampLigneEtiquette champLigneEtiquette : deco.getChamps()){
+
          final Champ champ = champLigneEtiquette.getChamp();
          final String labelChamp = ObjectTypesFormatters.getLabelForChamp(champ);
-         
-         if("Echantillon".equals(champLigneEtiquette.getEntite().getNom())) {
+
+         if("Echantillon".equals(champLigneEtiquette.getEntite().getNom())){
             valuesEchans.add(labelChamp);
-         }else if("ProdDerive".equals(champLigneEtiquette.getEntite().getNom())) {
+         }else if("ProdDerive".equals(champLigneEtiquette.getEntite().getNom())){
             valuesDerives.add(labelChamp);
          }
-         
+
       }
-      
+
       if(valuesEchans.size() + valuesDerives.size() > 0){
          final String italicStyle = "font-style : italic;";
          final String boldStyle = "font-weight : bold;";

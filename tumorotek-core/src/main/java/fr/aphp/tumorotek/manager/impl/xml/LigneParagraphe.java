@@ -47,6 +47,7 @@ public class LigneParagraphe
 {
 
    private CoupleValeur[] valeurs;
+
    private String id;
 
    public LigneParagraphe(){

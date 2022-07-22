@@ -61,6 +61,7 @@ public class BlocImpressionRowRenderer implements RowRenderer<Object>
 {
 
    private Boolean edit = false;
+
    private Template template;
 
    public BlocImpressionRowRenderer(final Boolean isEdit){
@@ -120,7 +121,7 @@ public class BlocImpressionRowRenderer implements RowRenderer<Object>
    }
 
    /**
-    * Méthode qui crée la partie détail de la grille. 
+    * Méthode qui crée la partie détail de la grille.
     * @param row Ligne actuelle.
     * @param bloc Bloc actuel.
     */

@@ -39,6 +39,7 @@ public class LabelCodeItem
 {
 
    private String label;
+
    private String code;
 
    public LabelCodeItem(final String l, final String c){

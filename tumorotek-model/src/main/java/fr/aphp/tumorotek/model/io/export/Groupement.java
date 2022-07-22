@@ -62,9 +62,13 @@ public class Groupement
 {
 
    private Integer groupementId;
+
    private Critere critere1;
+
    private Critere critere2;
+
    private String operateur;
+
    private Groupement parent;
 
    public Groupement(){
@@ -132,7 +136,7 @@ public class Groupement
    /**
     * 2 groupements sont considérés comme égaux si ils ont le même opérateur,
     * le même critere 1, le même critere 2 et le même parent.
-    * 
+    *
     * @param obj
     *            est le groupement à tester.
     * @return true si les groupements sont égaux.
@@ -255,7 +259,7 @@ public class Groupement
    /**
     * Le hashcode est calculé sur les attributs opérateur, critere1, critere2
     * et parent.
-    * 
+    *
     * @return la valeur du hashcode.
     */
    @Override

@@ -59,7 +59,7 @@ public interface ChampCalculeManager
     * @return un Champ.
     */
    ChampCalcule findByIdManager(Integer champId);
-   
+
    /**
     * recherche le champCalcule lié à un champAnnotation
     * @param champAnnotation le champÂnnotation
@@ -92,7 +92,6 @@ public interface ChampCalculeManager
     * @param champ Champ à supprimer.
     */
    void removeObjectManager(ChampCalcule champ);
-
 
    /**
     * Renvoie la valeur (typée) du champ pour l'objet.

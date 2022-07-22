@@ -112,32 +112,46 @@ public class AnnotationValeurManagerTest extends AbstractManagerTest4
 
    @Autowired
    private AnnotationValeurManager annotationValeurManager;
+
    @Autowired
    private AnnotationValeurDao annotationValeurDao;
+
    @Autowired
    private ChampAnnotationDao champAnnotationDao;
+
    @Autowired
    private PatientDao patientDao;
+
    @Autowired
    private PrelevementDao prelevementDao;
+
    @Autowired
    private EchantillonDao echantillonDao;
+
    @Autowired
    private TableAnnotationDao tableAnnotationDao;
+
    @Autowired
    private BanqueDao banqueDao;
+
    @Autowired
    private UtilisateurDao utilisateurDao;
+
    @Autowired
    private AnnotationCommonValidator annotationCommonValidator;
+
    @Autowired
    private TableAnnotationManager tableAnnotationManager;
+
    @Autowired
    private FichierDao fichierDao;
+
    @Autowired
    private ItemDao itemDao;
+
    @Autowired
    private OperationTypeDao operationTypeDao;
+
    @Autowired
    @Qualifier("dataSource")
    private DataSource dataSource;

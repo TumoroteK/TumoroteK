@@ -54,7 +54,7 @@ public interface ConditMilieuDao extends GenericDaoJpa<ConditMilieu, Integer>, P
 {
 
    /**
-    * Recherche les milieux de conditionnement dont le milieu 
+    * Recherche les milieux de conditionnement dont le milieu
     * est 'like' le paramètre.
     * @param milieu Milieu des conditionnements recherchés.
     * @return Liste de conditionnements de milieu.

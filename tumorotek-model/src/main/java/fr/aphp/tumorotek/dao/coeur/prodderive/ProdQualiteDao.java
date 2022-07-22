@@ -54,7 +54,7 @@ public interface ProdQualiteDao extends GenericDaoJpa<ProdQualite, Integer>, PfD
 {
 
    /**
-    * Recherche les qualité de produits dérivés dont la 
+    * Recherche les qualité de produits dérivés dont la
     * valeur est égale au paramètre.
     * @param qualite est la qualite du produit dérivé.
     * @return une liste de qualités.
@@ -62,9 +62,9 @@ public interface ProdQualiteDao extends GenericDaoJpa<ProdQualite, Integer>, PfD
    List<ProdQualite> findByProdQualite(String qualite);
 
    /**
-    * Recherche la qualité qui est liée au produit dérivé passé 
-    * en paramètre. 
-    * @param prodDeriveId Identifiant du produit dérivé pour lequel 
+    * Recherche la qualité qui est liée au produit dérivé passé
+    * en paramètre.
+    * @param prodDeriveId Identifiant du produit dérivé pour lequel
     * on recherche une qualité.
     * @return une liste de qualités.
     */

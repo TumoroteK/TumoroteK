@@ -37,7 +37,6 @@ package fr.aphp.tumorotek.manager.test.io.imports;
 
 import static org.junit.Assert.*;
 
-
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
@@ -71,552 +70,557 @@ import fr.aphp.tumorotek.model.systeme.Entite;
 public class ImportTemplateManagerTest extends AbstractManagerTest4
 {
 
-	@Autowired
-	private ImportTemplateManager importTemplateManager;
-	@Autowired
-	private BanqueDao banqueDao;
-	@Autowired
-	private EntiteDao entiteDao;
-	@Autowired
-	private ImportColonneManager importColonneManager;
-	@Autowired
-	private ChampEntiteDao champEntiteDao;
-	@Autowired
-	private ChampManager champManager;
+   @Autowired
+   private ImportTemplateManager importTemplateManager;
 
-	public ImportTemplateManagerTest(){
+   @Autowired
+   private BanqueDao banqueDao;
 
-	}
+   @Autowired
+   private EntiteDao entiteDao;
 
-	/**
-	 * Test la méthode findById.
-	 */
-	@Test
-	public void testFindById(){
-		final ImportTemplate temp = importTemplateManager.findByIdManager(1);
-		assertNotNull(temp);
+   @Autowired
+   private ImportColonneManager importColonneManager;
 
-		final ImportTemplate tempNull = importTemplateManager.findByIdManager(10);
-		assertNull(tempNull);
-	}
+   @Autowired
+   private ChampEntiteDao champEntiteDao;
 
-	/**
-	 * Test la méthode findAllObjects.
-	 */
-	@Test
-	public void testFindAll(){
-		final List<ImportTemplate> list = importTemplateManager.findAllObjectsManager();
-		assertEquals(4, list.size());
-	}
+   @Autowired
+   private ChampManager champManager;
 
-	/**
-	 * Test la méthode findByBanqueManager.
-	 */
-	@Test
-	public void testFindByBanqueManager(){
-		final Banque b1 = banqueDao.findById(1);
-		final Banque b3 = banqueDao.findById(3);
+   public ImportTemplateManagerTest(){
 
-		List<ImportTemplate> list = importTemplateManager.findByBanqueManager(b1);
-		assertEquals(3, list.size());
+   }
 
-		list = importTemplateManager.findByBanqueManager(b3);
-		assertTrue(list.size() == 0);
+   /**
+    * Test la méthode findById.
+    */
+   @Test
+   public void testFindById(){
+      final ImportTemplate temp = importTemplateManager.findByIdManager(1);
+      assertNotNull(temp);
 
-		list = importTemplateManager.findByBanqueManager(null);
-		assertTrue(list.size() == 0);
-	}
+      final ImportTemplate tempNull = importTemplateManager.findByIdManager(10);
+      assertNull(tempNull);
+   }
 
-	/**
-	 * Test de la méthode getEntiteManager().
-	 */
-	@Test
-	public void testGetEntiteManager(){
-		final Entite e = entiteDao.findById(2);
+   /**
+    * Test la méthode findAllObjects.
+    */
+   @Test
+   public void testFindAll(){
+      final List<ImportTemplate> list = importTemplateManager.findAllObjectsManager();
+      assertEquals(4, list.size());
+   }
 
-		final ImportTemplate it1 = importTemplateManager.findByIdManager(1);
-		Set<Entite> liste = importTemplateManager.getEntiteManager(it1);
-		assertTrue(liste.size() == 5);
-		assertTrue(liste.contains(e));
+   /**
+    * Test la méthode findByBanqueManager.
+    */
+   @Test
+   public void testFindByBanqueManager(){
+      final Banque b1 = banqueDao.findById(1);
+      final Banque b3 = banqueDao.findById(3);
 
-		final ImportTemplate it3 = importTemplateManager.findByIdManager(3);
-		liste = importTemplateManager.getEntiteManager(it3);
-		assertTrue(liste.size() == 1);
-		assertFalse(liste.contains(e));
+      List<ImportTemplate> list = importTemplateManager.findByBanqueManager(b1);
+      assertEquals(3, list.size());
 
-		liste = importTemplateManager.getEntiteManager(new ImportTemplate());
-		assertTrue(liste.size() == 0);
+      list = importTemplateManager.findByBanqueManager(b3);
+      assertTrue(list.size() == 0);
 
-		liste = importTemplateManager.getEntiteManager(null);
-		assertTrue(liste.size() == 0);
-	}
+      list = importTemplateManager.findByBanqueManager(null);
+      assertTrue(list.size() == 0);
+   }
 
-	/**
-	 * Test la méthode findDoublon.
-	 */
-	@Test
-	public void testFindDoublon(){
+   /**
+    * Test de la méthode getEntiteManager().
+    */
+   @Test
+   public void testGetEntiteManager(){
+      final Entite e = entiteDao.findById(2);
 
-		final Banque b1 = banqueDao.findById(1);
-		final Banque b3 = banqueDao.findById(3);
-		final ImportTemplate it1 = new ImportTemplate();
-		it1.setNom("IMPORT");
-		assertFalse(importTemplateManager.findDoublonManager(it1));
-		it1.setBanque(b1);
-		assertFalse(importTemplateManager.findDoublonManager(it1));
+      final ImportTemplate it1 = importTemplateManager.findByIdManager(1);
+      Set<Entite> liste = importTemplateManager.getEntiteManager(it1);
+      assertTrue(liste.size() == 5);
+      assertTrue(liste.contains(e));
 
-		it1.setNom("IMPORT AUTO");
-		assertTrue(importTemplateManager.findDoublonManager(it1));
-		it1.setBanque(b3);
-		assertFalse(importTemplateManager.findDoublonManager(it1));
+      final ImportTemplate it3 = importTemplateManager.findByIdManager(3);
+      liste = importTemplateManager.getEntiteManager(it3);
+      assertTrue(liste.size() == 1);
+      assertFalse(liste.contains(e));
 
-		final ImportTemplate it2 = importTemplateManager.findByIdManager(1);
-		assertFalse(importTemplateManager.findDoublonManager(it2));
+      liste = importTemplateManager.getEntiteManager(new ImportTemplate());
+      assertTrue(liste.size() == 0);
 
-		it2.setNom("IMPORT AUTO");
-		assertTrue(importTemplateManager.findDoublonManager(it2));
+      liste = importTemplateManager.getEntiteManager(null);
+      assertTrue(liste.size() == 0);
+   }
 
-		assertFalse(importTemplateManager.findDoublonManager(null));
-	}
+   /**
+    * Test la méthode findDoublon.
+    */
+   @Test
+   public void testFindDoublon(){
 
-	@Test
-	public void testCrud() throws ParseException{
-		createObjectManager();
-		updateObjectManager();
-	}
+      final Banque b1 = banqueDao.findById(1);
+      final Banque b3 = banqueDao.findById(3);
+      final ImportTemplate it1 = new ImportTemplate();
+      it1.setNom("IMPORT");
+      assertFalse(importTemplateManager.findDoublonManager(it1));
+      it1.setBanque(b1);
+      assertFalse(importTemplateManager.findDoublonManager(it1));
 
-	/**
-	 * Teste la methode createObjectManager. 
-	 * @throws ParseException 
-	 */
-	public void createObjectManager() throws ParseException{
+      it1.setNom("IMPORT AUTO");
+      assertTrue(importTemplateManager.findDoublonManager(it1));
+      it1.setBanque(b3);
+      assertFalse(importTemplateManager.findDoublonManager(it1));
 
-		final ImportTemplate it1 = new ImportTemplate();
-		final Banque b1 = banqueDao.findById(1);
-		final Entite e1 = entiteDao.findById(1);
-		final Entite e2 = entiteDao.findById(2);
-		final ImportColonne ic1 = importColonneManager.findByIdManager(1);
-		List<ImportColonne> colonnes = new ArrayList<>();
+      final ImportTemplate it2 = importTemplateManager.findByIdManager(1);
+      assertFalse(importTemplateManager.findDoublonManager(it2));
 
-		final int tots = importTemplateManager.findAllObjectsManager().size();
-		final int cTots = importColonneManager.findAllObjectsManager().size();
-		final int aTots = champManager.findAllObjectsManager().size();
+      it2.setNom("IMPORT AUTO");
+      assertTrue(importTemplateManager.findDoublonManager(it2));
 
-		Boolean catched = false;
-		// on test l'insertion avec la banque null
-		try{
-			importTemplateManager.createObjectManager(it1, null, null, null);
-		}catch(final Exception e){
-			if(e.getClass().getSimpleName().equals("RequiredObjectIsNullException")){
-				catched = true;
-			}
-		}
-		assertTrue(catched);
-		catched = false;
-		assertTrue(importTemplateManager.findAllObjectsManager().size() == tots);
+      assertFalse(importTemplateManager.findDoublonManager(null));
+   }
 
-		// on test l'insertion d'un doublon
-		it1.setNom("IMPORT AUTO");
-		try{
-			importTemplateManager.createObjectManager(it1, b1, null, null);
-		}catch(final Exception e){
-			if(e.getClass().getSimpleName().equals("DoublonFoundException")){
-				catched = true;
-			}
-		}
-		assertTrue(catched);
-		catched = false;
-		assertTrue(importTemplateManager.findAllObjectsManager().size() == tots);
+   @Test
+   public void testCrud() throws ParseException{
+      createObjectManager();
+      updateObjectManager();
+   }
 
-		// doublon sur une colonne
-		colonnes.add(ic1);
-		colonnes.add(ic1);
-		try{
-			importTemplateManager.createObjectManager(it1, b1, null, colonnes);
-		}catch(final Exception e){
-			if(e.getClass().getSimpleName().equals("DoublonFoundException")){
-				catched = true;
-			}
-		}
-		assertTrue(catched);
-		catched = false;
-		assertTrue(importTemplateManager.findAllObjectsManager().size() == tots);
-		assertTrue(importColonneManager.findAllObjectsManager().size() == cTots);
+   /**
+    * Teste la methode createObjectManager. 
+    * @throws ParseException 
+    */
+   public void createObjectManager() throws ParseException{
 
-		// validation d'une colonne
-		colonnes = new ArrayList<>();
-		final ImportColonne ic2 = new ImportColonne();
-		ic2.setNom("COL");
-		colonnes.add(ic2);
-		try{
-			importTemplateManager.createObjectManager(it1, b1, null, colonnes);
-		}catch(final Exception e){
-			if(e.getClass().getSimpleName().equals("RequiredObjectIsNullException")){
-				catched = true;
-			}
-		}
-		assertTrue(catched);
-		catched = false;
-		assertTrue(importTemplateManager.findAllObjectsManager().size() == tots);
-		assertTrue(importColonneManager.findAllObjectsManager().size() == cTots);
+      final ImportTemplate it1 = new ImportTemplate();
+      final Banque b1 = banqueDao.findById(1);
+      final Entite e1 = entiteDao.findById(1);
+      final Entite e2 = entiteDao.findById(2);
+      final ImportColonne ic1 = importColonneManager.findByIdManager(1);
+      List<ImportColonne> colonnes = new ArrayList<>();
 
-		// Test de la validation lors de la création
-		it1.setNom("Template de test");
-		try{
-			validationInsert(it1);
-		}catch(final ParseException e){
-			e.printStackTrace();
-		}
-		assertTrue(importTemplateManager.findAllObjectsManager().size() == tots);
-		assertTrue(importColonneManager.findAllObjectsManager().size() == cTots);
+      final int tots = importTemplateManager.findAllObjectsManager().size();
+      final int cTots = importColonneManager.findAllObjectsManager().size();
+      final int aTots = champManager.findAllObjectsManager().size();
 
-		// insertion valide avec les assos à null
-		it1.setNom("Template de test");
-		it1.setDescription("DESC");
-		it1.setIsEditable(true);
-		importTemplateManager.createObjectManager(it1, b1, null, null);
-		assertTrue(importTemplateManager.findAllObjectsManager().size() == tots + 1);
-		assertTrue(importColonneManager.findAllObjectsManager().size() == cTots);
-		final Integer idT1 = it1.getImportTemplateId();
+      Boolean catched = false;
+      // on test l'insertion avec la banque null
+      try{
+         importTemplateManager.createObjectManager(it1, null, null, null);
+      }catch(final Exception e){
+         if(e.getClass().getSimpleName().equals("RequiredObjectIsNullException")){
+            catched = true;
+         }
+      }
+      assertTrue(catched);
+      catched = false;
+      assertTrue(importTemplateManager.findAllObjectsManager().size() == tots);
 
-		// Vérification
-		final ImportTemplate itTest = importTemplateManager.findByIdManager(idT1);
-		assertNotNull(itTest);
-		assertTrue(itTest.getNom().equals("Template de test"));
-		assertTrue(itTest.getDescription().equals("DESC"));
-		assertTrue(itTest.getIsEditable());
-		assertNotNull(itTest.getBanque());
+      // on test l'insertion d'un doublon
+      it1.setNom("IMPORT AUTO");
+      try{
+         importTemplateManager.createObjectManager(it1, b1, null, null);
+      }catch(final Exception e){
+         if(e.getClass().getSimpleName().equals("DoublonFoundException")){
+            catched = true;
+         }
+      }
+      assertTrue(catched);
+      catched = false;
+      assertTrue(importTemplateManager.findAllObjectsManager().size() == tots);
 
-		// insertion valide avec les assos
-		final ImportTemplate it2 = new ImportTemplate();
-		it2.setNom("Autre template");
-		final List<Entite> entites = new ArrayList<>();
-		entites.add(e1);
-		entites.add(e2);
+      // doublon sur une colonne
+      colonnes.add(ic1);
+      colonnes.add(ic1);
+      try{
+         importTemplateManager.createObjectManager(it1, b1, null, colonnes);
+      }catch(final Exception e){
+         if(e.getClass().getSimpleName().equals("DoublonFoundException")){
+            catched = true;
+         }
+      }
+      assertTrue(catched);
+      catched = false;
+      assertTrue(importTemplateManager.findAllObjectsManager().size() == tots);
+      assertTrue(importColonneManager.findAllObjectsManager().size() == cTots);
 
-		final Champ ch1 = new Champ();
-		ch1.setChampEntite(champEntiteDao.findById(1));
-		final Champ ch2 = new Champ();
-		ch2.setChampEntite(champEntiteDao.findById(2));
-		ic2.setOrdre(1);
-		ic2.setChamp(ch1);
-		ic2.setImportTemplate(it2);
-		final ImportColonne ic3 = new ImportColonne();
-		ic3.setNom("COL2");
-		ic3.setOrdre(2);
-		ic3.setChamp(ch2);
-		ic3.setImportTemplate(it2);
-		colonnes = new ArrayList<>();
-		colonnes.add(ic2);
-		colonnes.add(ic3);
+      // validation d'une colonne
+      colonnes = new ArrayList<>();
+      final ImportColonne ic2 = new ImportColonne();
+      ic2.setNom("COL");
+      colonnes.add(ic2);
+      try{
+         importTemplateManager.createObjectManager(it1, b1, null, colonnes);
+      }catch(final Exception e){
+         if(e.getClass().getSimpleName().equals("RequiredObjectIsNullException")){
+            catched = true;
+         }
+      }
+      assertTrue(catched);
+      catched = false;
+      assertTrue(importTemplateManager.findAllObjectsManager().size() == tots);
+      assertTrue(importColonneManager.findAllObjectsManager().size() == cTots);
 
-		importTemplateManager.createObjectManager(it2, b1, entites, colonnes);
-		assertTrue(importTemplateManager.findAllObjectsManager().size() == tots + 2);
-		assertTrue(importColonneManager.findAllObjectsManager().size() == cTots + 2);
-		assertTrue(champManager.findAllObjectsManager().size() == aTots + 2);
-		final Integer idT2 = it2.getImportTemplateId();
+      // Test de la validation lors de la création
+      it1.setNom("Template de test");
+      try{
+         validationInsert(it1);
+      }catch(final ParseException e){
+         e.printStackTrace();
+      }
+      assertTrue(importTemplateManager.findAllObjectsManager().size() == tots);
+      assertTrue(importColonneManager.findAllObjectsManager().size() == cTots);
 
-		// Vérification
-		final ImportTemplate itTest2 = importTemplateManager.findByIdManager(idT2);
-		assertNotNull(itTest2);
-		assertTrue(itTest2.getNom().equals("Autre template"));
-		assertNull(itTest2.getDescription());
-		assertNull(itTest2.getIsEditable());
-		assertNotNull(itTest2.getBanque());
-		assertTrue(importTemplateManager.getEntiteManager(itTest2).size() == 2);
-		final List<ImportColonne> cols = importColonneManager.findByImportTemplateManager(itTest2);
-		assertTrue(cols.size() == 2);
-		assertTrue(cols.get(0).getNom().equals("COL"));
-		assertTrue(cols.get(0).getChamp().equals(ch1));
+      // insertion valide avec les assos à null
+      it1.setNom("Template de test");
+      it1.setDescription("DESC");
+      it1.setIsEditable(true);
+      importTemplateManager.createObjectManager(it1, b1, null, null);
+      assertTrue(importTemplateManager.findAllObjectsManager().size() == tots + 1);
+      assertTrue(importColonneManager.findAllObjectsManager().size() == cTots);
+      final Integer idT1 = it1.getImportTemplateId();
 
-		importTemplateManager.removeObjectManager(itTest);
-		importTemplateManager.removeObjectManager(itTest2);
-		assertTrue(importTemplateManager.findAllObjectsManager().size() == tots);
-		assertTrue(importColonneManager.findAllObjectsManager().size() == cTots);
-		assertTrue(champManager.findAllObjectsManager().size() == aTots);
-	}
+      // Vérification
+      final ImportTemplate itTest = importTemplateManager.findByIdManager(idT1);
+      assertNotNull(itTest);
+      assertTrue(itTest.getNom().equals("Template de test"));
+      assertTrue(itTest.getDescription().equals("DESC"));
+      assertTrue(itTest.getIsEditable());
+      assertNotNull(itTest.getBanque());
 
-	/**
-	 * Teste la methode updateObjectManager. 
-	 * @throws ParseException 
-	 */
-	public void updateObjectManager() throws ParseException{
+      // insertion valide avec les assos
+      final ImportTemplate it2 = new ImportTemplate();
+      it2.setNom("Autre template");
+      final List<Entite> entites = new ArrayList<>();
+      entites.add(e1);
+      entites.add(e2);
 
-		final ImportTemplate it = new ImportTemplate();
-		final Banque b1 = banqueDao.findById(1);
-		final Entite e1 = entiteDao.findById(1);
-		final Entite e2 = entiteDao.findById(2);
-		final Entite e3 = entiteDao.findById(3);
+      final Champ ch1 = new Champ();
+      ch1.setChampEntite(champEntiteDao.findById(1));
+      final Champ ch2 = new Champ();
+      ch2.setChampEntite(champEntiteDao.findById(2));
+      ic2.setOrdre(1);
+      ic2.setChamp(ch1);
+      ic2.setImportTemplate(it2);
+      final ImportColonne ic3 = new ImportColonne();
+      ic3.setNom("COL2");
+      ic3.setOrdre(2);
+      ic3.setChamp(ch2);
+      ic3.setImportTemplate(it2);
+      colonnes = new ArrayList<>();
+      colonnes.add(ic2);
+      colonnes.add(ic3);
 
-		final int tots = importTemplateManager.findAllObjectsManager().size();
-		final int cTots = importColonneManager.findAllObjectsManager().size();
-		final int aTots = champManager.findAllObjectsManager().size();
+      importTemplateManager.createObjectManager(it2, b1, entites, colonnes);
+      assertTrue(importTemplateManager.findAllObjectsManager().size() == tots + 2);
+      assertTrue(importColonneManager.findAllObjectsManager().size() == cTots + 2);
+      assertTrue(champManager.findAllObjectsManager().size() == aTots + 2);
+      final Integer idT2 = it2.getImportTemplateId();
 
-		List<ImportColonne> colonnes = new ArrayList<>();
-		final Champ ch1 = new Champ();
-		ch1.setChampEntite(champEntiteDao.findById(1));
-		final Champ ch2 = new Champ();
-		ch2.setChampEntite(champEntiteDao.findById(2));
-		final Champ ch3 = new Champ();
-		ch3.setChampEntite(champEntiteDao.findById(3));
-		final ImportColonne ic1 = new ImportColonne();
-		ic1.setNom("COL1");
-		ic1.setOrdre(1);
-		ic1.setChamp(ch1);
-		ic1.setImportTemplate(it);
-		final ImportColonne ic2 = new ImportColonne();
-		ic2.setNom("COL2");
-		ic2.setOrdre(2);
-		ic2.setChamp(ch2);
-		ic2.setImportTemplate(it);
-		final ImportColonne ic3 = new ImportColonne();
-		ic3.setNom("COL3");
-		ic3.setOrdre(2);
-		ic3.setChamp(ch3);
-		ic3.setImportTemplate(it);
-		colonnes = new ArrayList<>();
-		colonnes.add(ic1);
-		colonnes.add(ic2);
-		colonnes.add(ic3);
+      // Vérification
+      final ImportTemplate itTest2 = importTemplateManager.findByIdManager(idT2);
+      assertNotNull(itTest2);
+      assertTrue(itTest2.getNom().equals("Autre template"));
+      assertNull(itTest2.getDescription());
+      assertNull(itTest2.getIsEditable());
+      assertNotNull(itTest2.getBanque());
+      assertTrue(importTemplateManager.getEntiteManager(itTest2).size() == 2);
+      final List<ImportColonne> cols = importColonneManager.findByImportTemplateManager(itTest2);
+      assertTrue(cols.size() == 2);
+      assertTrue(cols.get(0).getNom().equals("COL"));
+      assertTrue(cols.get(0).getChamp().equals(ch1));
 
-		it.setNom("TEST");
-		importTemplateManager.createObjectManager(it, b1, null, colonnes);
-		assertTrue(importTemplateManager.findAllObjectsManager().size() == tots + 1);
-		assertTrue(importColonneManager.findAllObjectsManager().size() == cTots + 3);
-		assertTrue(champManager.findAllObjectsManager().size() == aTots + 3);
-		final Integer idT = it.getImportTemplateId();
+      importTemplateManager.removeObjectManager(itTest);
+      importTemplateManager.removeObjectManager(itTest2);
+      assertTrue(importTemplateManager.findAllObjectsManager().size() == tots);
+      assertTrue(importColonneManager.findAllObjectsManager().size() == cTots);
+      assertTrue(champManager.findAllObjectsManager().size() == aTots);
+   }
 
-		final ImportTemplate itUp = importTemplateManager.findByIdManager(idT);
-		Boolean catched = false;
-		// on test l'update avec la banque null
-		try{
-			importTemplateManager.updateObjectManager(itUp, null, null, null, null);
-		}catch(final Exception e){
-			if(e.getClass().getSimpleName().equals("RequiredObjectIsNullException")){
-				catched = true;
-			}
-		}
-		assertTrue(catched);
-		catched = false;
-		assertTrue(importTemplateManager.findAllObjectsManager().size() == tots + 1);
+   /**
+    * Teste la methode updateObjectManager. 
+    * @throws ParseException 
+    */
+   public void updateObjectManager() throws ParseException{
 
-		// on test l'update d'un doublon
-		itUp.setNom("IMPORT AUTO");
-		try{
-			importTemplateManager.updateObjectManager(itUp, b1, null, null, null);
-		}catch(final Exception e){
-			if(e.getClass().getSimpleName().equals("DoublonFoundException")){
-				catched = true;
-			}
-		}
-		assertTrue(catched);
-		catched = false;
-		assertTrue(importTemplateManager.findAllObjectsManager().size() == tots + 1);
+      final ImportTemplate it = new ImportTemplate();
+      final Banque b1 = banqueDao.findById(1);
+      final Entite e1 = entiteDao.findById(1);
+      final Entite e2 = entiteDao.findById(2);
+      final Entite e3 = entiteDao.findById(3);
 
-		// doublon sur une colonne
-		final ImportColonne icE = importColonneManager.findByIdManager(1);
-		colonnes = new ArrayList<>();
-		colonnes.add(icE);
-		colonnes.add(icE);
-		try{
-			importTemplateManager.updateObjectManager(itUp, b1, null, colonnes, null);
-		}catch(final Exception e){
-			if(e.getClass().getSimpleName().equals("DoublonFoundException")){
-				catched = true;
-			}
-		}
-		assertTrue(catched);
-		catched = false;
-		assertTrue(importTemplateManager.findAllObjectsManager().size() == tots + 1);
-		assertTrue(importColonneManager.findAllObjectsManager().size() == cTots + 3);
+      final int tots = importTemplateManager.findAllObjectsManager().size();
+      final int cTots = importColonneManager.findAllObjectsManager().size();
+      final int aTots = champManager.findAllObjectsManager().size();
 
-		// validation d'une colonne
-		colonnes = new ArrayList<>();
-		final ImportColonne ic4 = new ImportColonne();
-		ic4.setNom("COL4");
-		colonnes.add(ic4);
-		ic4.setImportTemplate(itUp);
-		try{
-			importTemplateManager.updateObjectManager(itUp, b1, null, colonnes, null);
-		}catch(final Exception e){
-			if(e.getClass().getSimpleName().equals("RequiredObjectIsNullException")){
-				catched = true;
-			}
-		}
-		assertTrue(catched);
-		catched = false;
-		assertTrue(importTemplateManager.findAllObjectsManager().size() == tots + 1);
-		assertTrue(importColonneManager.findAllObjectsManager().size() == cTots + 3);
+      List<ImportColonne> colonnes = new ArrayList<>();
+      final Champ ch1 = new Champ();
+      ch1.setChampEntite(champEntiteDao.findById(1));
+      final Champ ch2 = new Champ();
+      ch2.setChampEntite(champEntiteDao.findById(2));
+      final Champ ch3 = new Champ();
+      ch3.setChampEntite(champEntiteDao.findById(3));
+      final ImportColonne ic1 = new ImportColonne();
+      ic1.setNom("COL1");
+      ic1.setOrdre(1);
+      ic1.setChamp(ch1);
+      ic1.setImportTemplate(it);
+      final ImportColonne ic2 = new ImportColonne();
+      ic2.setNom("COL2");
+      ic2.setOrdre(2);
+      ic2.setChamp(ch2);
+      ic2.setImportTemplate(it);
+      final ImportColonne ic3 = new ImportColonne();
+      ic3.setNom("COL3");
+      ic3.setOrdre(2);
+      ic3.setChamp(ch3);
+      ic3.setImportTemplate(it);
+      colonnes = new ArrayList<>();
+      colonnes.add(ic1);
+      colonnes.add(ic2);
+      colonnes.add(ic3);
 
-		// Test de la validation lors de la création
-		itUp.setNom("Template de test");
-		try{
-			validationUpdate(itUp);
-		}catch(final ParseException e){
-			e.printStackTrace();
-		}
-		assertTrue(importTemplateManager.findAllObjectsManager().size() == tots + 1);
+      it.setNom("TEST");
+      importTemplateManager.createObjectManager(it, b1, null, colonnes);
+      assertTrue(importTemplateManager.findAllObjectsManager().size() == tots + 1);
+      assertTrue(importColonneManager.findAllObjectsManager().size() == cTots + 3);
+      assertTrue(champManager.findAllObjectsManager().size() == aTots + 3);
+      final Integer idT = it.getImportTemplateId();
 
-		// update valide avec les assos à null
-		itUp.setNom("Template de test");
-		itUp.setDescription("DESC");
-		itUp.setIsEditable(true);
-		importTemplateManager.updateObjectManager(itUp, b1, null, null, null);
-		assertTrue(importTemplateManager.findAllObjectsManager().size() == tots + 1);
+      final ImportTemplate itUp = importTemplateManager.findByIdManager(idT);
+      Boolean catched = false;
+      // on test l'update avec la banque null
+      try{
+         importTemplateManager.updateObjectManager(itUp, null, null, null, null);
+      }catch(final Exception e){
+         if(e.getClass().getSimpleName().equals("RequiredObjectIsNullException")){
+            catched = true;
+         }
+      }
+      assertTrue(catched);
+      catched = false;
+      assertTrue(importTemplateManager.findAllObjectsManager().size() == tots + 1);
 
-		// Vérification
-		final ImportTemplate itTest = importTemplateManager.findByIdManager(idT);
-		assertNotNull(itTest);
-		assertTrue(itTest.getNom().equals("Template de test"));
-		assertTrue(itTest.getDescription().equals("DESC"));
-		assertTrue(itTest.getIsEditable());
-		assertNotNull(itTest.getBanque());
+      // on test l'update d'un doublon
+      itUp.setNom("IMPORT AUTO");
+      try{
+         importTemplateManager.updateObjectManager(itUp, b1, null, null, null);
+      }catch(final Exception e){
+         if(e.getClass().getSimpleName().equals("DoublonFoundException")){
+            catched = true;
+         }
+      }
+      assertTrue(catched);
+      catched = false;
+      assertTrue(importTemplateManager.findAllObjectsManager().size() == tots + 1);
 
-		// update valide avec les assos
-		List<Entite> entites = new ArrayList<>();
-		entites.add(e1);
-		entites.add(e2);
-		importTemplateManager.updateObjectManager(itTest, b1, entites, null, null);
-		assertTrue(importTemplateManager.findAllObjectsManager().size() == tots + 1);
+      // doublon sur une colonne
+      final ImportColonne icE = importColonneManager.findByIdManager(1);
+      colonnes = new ArrayList<>();
+      colonnes.add(icE);
+      colonnes.add(icE);
+      try{
+         importTemplateManager.updateObjectManager(itUp, b1, null, colonnes, null);
+      }catch(final Exception e){
+         if(e.getClass().getSimpleName().equals("DoublonFoundException")){
+            catched = true;
+         }
+      }
+      assertTrue(catched);
+      catched = false;
+      assertTrue(importTemplateManager.findAllObjectsManager().size() == tots + 1);
+      assertTrue(importColonneManager.findAllObjectsManager().size() == cTots + 3);
 
-		// Vérification
-		final ImportTemplate itTest2 = importTemplateManager.findByIdManager(idT);
-		assertNotNull(itTest2);
-		assertTrue(importTemplateManager.getEntiteManager(itTest2).size() == 2);
+      // validation d'une colonne
+      colonnes = new ArrayList<>();
+      final ImportColonne ic4 = new ImportColonne();
+      ic4.setNom("COL4");
+      colonnes.add(ic4);
+      ic4.setImportTemplate(itUp);
+      try{
+         importTemplateManager.updateObjectManager(itUp, b1, null, colonnes, null);
+      }catch(final Exception e){
+         if(e.getClass().getSimpleName().equals("RequiredObjectIsNullException")){
+            catched = true;
+         }
+      }
+      assertTrue(catched);
+      catched = false;
+      assertTrue(importTemplateManager.findAllObjectsManager().size() == tots + 1);
+      assertTrue(importColonneManager.findAllObjectsManager().size() == cTots + 3);
 
-		// update valide avec d'autres assos
-		entites = new ArrayList<>();
-		entites.add(e1);
-		entites.add(e3);
-		colonnes = new ArrayList<>();
-		ic2.setNom("TT2");
-		ic2.getChamp().setChampEntite(champEntiteDao.findById(4));
-		ic2.setImportTemplate(itTest2);
-		final Champ ch5 = new Champ();
-		ch5.setChampEntite(champEntiteDao.findById(5));
-		ic4.setNom("COL4");
-		ic4.setOrdre(4);
-		ic4.setChamp(ch5);
-		ic4.setImportTemplate(itTest2);
-		colonnes.add(ic1);
-		colonnes.add(ic2);
-		colonnes.add(ic4);
-		final List<ImportColonne> colsToRemove = new ArrayList<>();
-		colsToRemove.add(ic3);
+      // Test de la validation lors de la création
+      itUp.setNom("Template de test");
+      try{
+         validationUpdate(itUp);
+      }catch(final ParseException e){
+         e.printStackTrace();
+      }
+      assertTrue(importTemplateManager.findAllObjectsManager().size() == tots + 1);
 
-		itTest2.setNom("TEST");
-		importTemplateManager.updateObjectManager(itTest2, b1, entites, colonnes, colsToRemove);
-		assertTrue(importTemplateManager.findAllObjectsManager().size() == tots + 1);
-		assertTrue(importColonneManager.findAllObjectsManager().size() == cTots + 3);
-		assertTrue(champManager.findAllObjectsManager().size() == aTots + 3);
+      // update valide avec les assos à null
+      itUp.setNom("Template de test");
+      itUp.setDescription("DESC");
+      itUp.setIsEditable(true);
+      importTemplateManager.updateObjectManager(itUp, b1, null, null, null);
+      assertTrue(importTemplateManager.findAllObjectsManager().size() == tots + 1);
 
-		// Vérification
-		final ImportTemplate itTest3 = importTemplateManager.findByIdManager(idT);
-		assertNotNull(itTest3);
-		assertTrue(importTemplateManager.getEntiteManager(itTest3).size() == 2);
-		assertTrue(importTemplateManager.getEntiteManager(itTest3).contains(e3));
-		assertFalse(importTemplateManager.getEntiteManager(itTest3).contains(e2));
+      // Vérification
+      final ImportTemplate itTest = importTemplateManager.findByIdManager(idT);
+      assertNotNull(itTest);
+      assertTrue(itTest.getNom().equals("Template de test"));
+      assertTrue(itTest.getDescription().equals("DESC"));
+      assertTrue(itTest.getIsEditable());
+      assertNotNull(itTest.getBanque());
 
-		final List<ImportColonne> cols = importColonneManager.findByImportTemplateManager(itTest3);
-		assertTrue(cols.size() == 3);
-		assertTrue(cols.get(0).getNom().equals("COL1"));
-		assertTrue(cols.get(0).getChamp().equals(ch1));
-		assertTrue(cols.get(1).getNom().equals("TT2"));
-		assertTrue(cols.get(1).getChamp().equals(ch2));
-		assertTrue(cols.get(1).getChamp().getChampEntite().equals(champEntiteDao.findById(4)));
-		assertTrue(cols.get(2).getNom().equals("COL4"));
-		assertTrue(cols.get(2).getChamp().equals(ch5));
+      // update valide avec les assos
+      List<Entite> entites = new ArrayList<>();
+      entites.add(e1);
+      entites.add(e2);
+      importTemplateManager.updateObjectManager(itTest, b1, entites, null, null);
+      assertTrue(importTemplateManager.findAllObjectsManager().size() == tots + 1);
 
-		importTemplateManager.removeObjectManager(itTest3);
-		assertTrue(importTemplateManager.findAllObjectsManager().size() == tots);
-		assertTrue(importColonneManager.findAllObjectsManager().size() == cTots);
-		assertTrue(champManager.findAllObjectsManager().size() == aTots);
-	}
+      // Vérification
+      final ImportTemplate itTest2 = importTemplateManager.findByIdManager(idT);
+      assertNotNull(itTest2);
+      assertTrue(importTemplateManager.getEntiteManager(itTest2).size() == 2);
 
-	/**
-	 * Test la validation d'un template lors de sa création.
-	 * @param template à tester.
-	 * @throws ParseException 
-	 */
-	public void validationInsert(final ImportTemplate template) throws ParseException{
+      // update valide avec d'autres assos
+      entites = new ArrayList<>();
+      entites.add(e1);
+      entites.add(e3);
+      colonnes = new ArrayList<>();
+      ic2.setNom("TT2");
+      ic2.getChamp().setChampEntite(champEntiteDao.findById(4));
+      ic2.setImportTemplate(itTest2);
+      final Champ ch5 = new Champ();
+      ch5.setChampEntite(champEntiteDao.findById(5));
+      ic4.setNom("COL4");
+      ic4.setOrdre(4);
+      ic4.setChamp(ch5);
+      ic4.setImportTemplate(itTest2);
+      colonnes.add(ic1);
+      colonnes.add(ic2);
+      colonnes.add(ic4);
+      final List<ImportColonne> colsToRemove = new ArrayList<>();
+      colsToRemove.add(ic3);
 
-		final Banque b1 = banqueDao.findById(1);
-		boolean catchedInsert = false;
+      itTest2.setNom("TEST");
+      importTemplateManager.updateObjectManager(itTest2, b1, entites, colonnes, colsToRemove);
+      assertTrue(importTemplateManager.findAllObjectsManager().size() == tots + 1);
+      assertTrue(importColonneManager.findAllObjectsManager().size() == cTots + 3);
+      assertTrue(champManager.findAllObjectsManager().size() == aTots + 3);
 
-		// On teste une insertion avec un attribut nom non valide
-		String[] emptyValues = new String[] {null, "", "  ", "%¢¢kjs", createOverLength(50)};
-		for(int i = 0; i < emptyValues.length; i++){
-			catchedInsert = false;
-			try{
-				template.setNom(emptyValues[i]);
-				importTemplateManager.createObjectManager(template, b1, null, null);
-			}catch(final Exception e){
-				if(e.getClass().getSimpleName().equals("ValidationException")){
-					catchedInsert = true;
-				}
-			}
-			assertTrue(catchedInsert);
-		}
-		template.setNom("TEST");
+      // Vérification
+      final ImportTemplate itTest3 = importTemplateManager.findByIdManager(idT);
+      assertNotNull(itTest3);
+      assertTrue(importTemplateManager.getEntiteManager(itTest3).size() == 2);
+      assertTrue(importTemplateManager.getEntiteManager(itTest3).contains(e3));
+      assertFalse(importTemplateManager.getEntiteManager(itTest3).contains(e2));
 
-		// On teste une insertion avec un attribut description non valide
-		emptyValues = new String[] {"", "  ", createOverLength(250)};
-		for(int i = 0; i < emptyValues.length; i++){
-			catchedInsert = false;
-			try{
-				template.setDescription(emptyValues[i]);
-				importTemplateManager.createObjectManager(template, b1, null, null);
-			}catch(final Exception e){
-				if(e.getClass().getSimpleName().equals("ValidationException")){
-					catchedInsert = true;
-				}
-			}
-			assertTrue(catchedInsert);
-		}
-		template.setDescription("TEST");
-	}
+      final List<ImportColonne> cols = importColonneManager.findByImportTemplateManager(itTest3);
+      assertTrue(cols.size() == 3);
+      assertTrue(cols.get(0).getNom().equals("COL1"));
+      assertTrue(cols.get(0).getChamp().equals(ch1));
+      assertTrue(cols.get(1).getNom().equals("TT2"));
+      assertTrue(cols.get(1).getChamp().equals(ch2));
+      assertTrue(cols.get(1).getChamp().getChampEntite().equals(champEntiteDao.findById(4)));
+      assertTrue(cols.get(2).getNom().equals("COL4"));
+      assertTrue(cols.get(2).getChamp().equals(ch5));
 
-	/**
-	 * Test la validation d'un template lors de sa modif.
-	 * @param template à tester.
-	 * @throws ParseException 
-	 */
-	public void validationUpdate(final ImportTemplate template) throws ParseException{
+      importTemplateManager.removeObjectManager(itTest3);
+      assertTrue(importTemplateManager.findAllObjectsManager().size() == tots);
+      assertTrue(importColonneManager.findAllObjectsManager().size() == cTots);
+      assertTrue(champManager.findAllObjectsManager().size() == aTots);
+   }
 
-		final Banque b1 = banqueDao.findById(1);
-		boolean catchedInsert = false;
+   /**
+    * Test la validation d'un template lors de sa création.
+    * @param template à tester.
+    * @throws ParseException 
+    */
+   public void validationInsert(final ImportTemplate template) throws ParseException{
 
-		// On teste un update avec un attribut nom non valide
-		String[] emptyValues = new String[] {null, "", "  ", "%¢¢kjs", createOverLength(50)};
-		for(int i = 0; i < emptyValues.length; i++){
-			catchedInsert = false;
-			try{
-				template.setNom(emptyValues[i]);
-				importTemplateManager.updateObjectManager(template, b1, null, null, null);
-			}catch(final Exception e){
-				if(e.getClass().getSimpleName().equals("ValidationException")){
-					catchedInsert = true;
-				}
-			}
-			assertTrue(catchedInsert);
-		}
-		template.setNom("TEST");
+      final Banque b1 = banqueDao.findById(1);
+      boolean catchedInsert = false;
 
-		// On teste un update avec un attribut description non valide
-		emptyValues = new String[] {"", "  ", createOverLength(250)};
-		for(int i = 0; i < emptyValues.length; i++){
-			catchedInsert = false;
-			try{
-				template.setDescription(emptyValues[i]);
-				importTemplateManager.updateObjectManager(template, b1, null, null, null);
-			}catch(final Exception e){
-				if(e.getClass().getSimpleName().equals("ValidationException")){
-					catchedInsert = true;
-				}
-			}
-			assertTrue(catchedInsert);
-		}
-		template.setDescription("TEST");
-	}
+      // On teste une insertion avec un attribut nom non valide
+      String[] emptyValues = new String[] {null, "", "  ", "%¢¢kjs", createOverLength(50)};
+      for(int i = 0; i < emptyValues.length; i++){
+         catchedInsert = false;
+         try{
+            template.setNom(emptyValues[i]);
+            importTemplateManager.createObjectManager(template, b1, null, null);
+         }catch(final Exception e){
+            if(e.getClass().getSimpleName().equals("ValidationException")){
+               catchedInsert = true;
+            }
+         }
+         assertTrue(catchedInsert);
+      }
+      template.setNom("TEST");
+
+      // On teste une insertion avec un attribut description non valide
+      emptyValues = new String[] {"", "  ", createOverLength(250)};
+      for(int i = 0; i < emptyValues.length; i++){
+         catchedInsert = false;
+         try{
+            template.setDescription(emptyValues[i]);
+            importTemplateManager.createObjectManager(template, b1, null, null);
+         }catch(final Exception e){
+            if(e.getClass().getSimpleName().equals("ValidationException")){
+               catchedInsert = true;
+            }
+         }
+         assertTrue(catchedInsert);
+      }
+      template.setDescription("TEST");
+   }
+
+   /**
+    * Test la validation d'un template lors de sa modif.
+    * @param template à tester.
+    * @throws ParseException 
+    */
+   public void validationUpdate(final ImportTemplate template) throws ParseException{
+
+      final Banque b1 = banqueDao.findById(1);
+      boolean catchedInsert = false;
+
+      // On teste un update avec un attribut nom non valide
+      String[] emptyValues = new String[] {null, "", "  ", "%¢¢kjs", createOverLength(50)};
+      for(int i = 0; i < emptyValues.length; i++){
+         catchedInsert = false;
+         try{
+            template.setNom(emptyValues[i]);
+            importTemplateManager.updateObjectManager(template, b1, null, null, null);
+         }catch(final Exception e){
+            if(e.getClass().getSimpleName().equals("ValidationException")){
+               catchedInsert = true;
+            }
+         }
+         assertTrue(catchedInsert);
+      }
+      template.setNom("TEST");
+
+      // On teste un update avec un attribut description non valide
+      emptyValues = new String[] {"", "  ", createOverLength(250)};
+      for(int i = 0; i < emptyValues.length; i++){
+         catchedInsert = false;
+         try{
+            template.setDescription(emptyValues[i]);
+            importTemplateManager.updateObjectManager(template, b1, null, null, null);
+         }catch(final Exception e){
+            if(e.getClass().getSimpleName().equals("ValidationException")){
+               catchedInsert = true;
+            }
+         }
+         assertTrue(catchedInsert);
+      }
+      template.setDescription("TEST");
+   }
 
 }

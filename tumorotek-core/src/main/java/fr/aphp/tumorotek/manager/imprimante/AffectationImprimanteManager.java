@@ -57,7 +57,7 @@ public interface AffectationImprimanteManager
 {
 
    /**
-    * Recherche une AffectationImprimante dont l'identifiant est 
+    * Recherche une AffectationImprimante dont l'identifiant est
     * passé en paramètre.
     * @param pk Identifiant de l'AffectationImprimante que l'on recherche.
     * @return Une AffectationImprimante.
@@ -71,7 +71,7 @@ public interface AffectationImprimanteManager
    List<AffectationImprimante> findAllObjectsManager();
 
    /**
-    * Recherche les AffectationImprimantes sauf celle dont la clé 
+    * Recherche les AffectationImprimantes sauf celle dont la clé
     * primaire est passée en paramètre.
     * @param pk AffectationImprimantePK.
     * @return Liste de AffectationImprimantes.
@@ -79,7 +79,7 @@ public interface AffectationImprimanteManager
    List<AffectationImprimante> findByExcludedPKManager(AffectationImprimantePK pk);
 
    /**
-    * Recherche toutes les AffectationImprimantes pour un couple de 
+    * Recherche toutes les AffectationImprimantes pour un couple de
     * valeurs Banque et utilisateur.
     * @param utilisateur Utilisateur des AffectationImprimantes recherchées.
     * @param banque Banque des AffectationImprimantes recherchées.
@@ -117,7 +117,7 @@ public interface AffectationImprimanteManager
 
    /**
     * Supprime une AffectationImprimante de la base de données.
-    * @param affectationImprimante AffectationImprimante à supprimer 
+    * @param affectationImprimante AffectationImprimante à supprimer
     * de la base de données.
     */
    void removeObjectManager(AffectationImprimante affectationImprimante);

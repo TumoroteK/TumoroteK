@@ -67,6 +67,7 @@ public class LienFamilialManagerImpl implements LienFamilialManager
 
    /* Beans injectes par Spring*/
    private LienFamilialDao lienFamilialDao;
+
    private LienFamilialValidator lienFamilialValidator;
 
    public LienFamilialManagerImpl(){}

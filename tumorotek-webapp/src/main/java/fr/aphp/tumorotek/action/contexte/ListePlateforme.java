@@ -74,7 +74,6 @@ public class ListePlateforme extends AbstractListeController2
       return this.listObjects;
    }
 
-   
    @Override
    public void setListObjects(final List<? extends TKdataObject> objs){
       this.listObjects.clear();
@@ -196,15 +195,15 @@ public class ListePlateforme extends AbstractListeController2
    public List<? extends TKdataObject> extractLastObjectsCreated(){
       return null;
    }
-   
+
    @Override
    public void updateListResultsLabel(final Integer nbResults){
-	      if(getObjectTabController() != null && getObjectTabController().getListeRegion() != null){
-	         getObjectTabController().getListeRegion()
-	            //.getCaption().setLabel
-	            .setTitle(Labels.getLabel("liste.plateforme.titre") + " ("
-	               + (nbResults != null ? nbResults : getListObjects() != null ? getListObjects().size() : 0) + ")");
-	      }
-	   }
+      if(getObjectTabController() != null && getObjectTabController().getListeRegion() != null){
+         getObjectTabController().getListeRegion()
+            //.getCaption().setLabel
+            .setTitle(Labels.getLabel("liste.plateforme.titre") + " ("
+               + (nbResults != null ? nbResults : getListObjects() != null ? getListObjects().size() : 0) + ")");
+      }
+   }
 
 }

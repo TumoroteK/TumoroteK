@@ -75,14 +75,21 @@ public class Couleur implements Serializable
    private static final long serialVersionUID = 5511266910422376116L;
 
    private Integer couleurId;
+
    private String couleur;
+
    private String hexa;
+
    private Integer ordreVisotube;
 
    private Set<Banque> banquesEchantillons = new HashSet<>();
+
    private Set<Banque> banquesProdDerives = new HashSet<>();
+
    private Set<CouleurEntiteType> couleurEntiteTypes = new HashSet<>();
+
    private Set<Enceinte> enceintes = new HashSet<>();
+
    private Set<Terminale> terminales = new HashSet<>();
 
    /** Constructeur par défaut. */

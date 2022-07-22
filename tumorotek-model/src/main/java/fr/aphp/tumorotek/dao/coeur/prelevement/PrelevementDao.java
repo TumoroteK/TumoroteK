@@ -68,7 +68,7 @@ public interface PrelevementDao extends GenericDaoJpa<Prelevement, Integer>
 {
 
    /**
-    * Recherche tous les codes prelevements sauf celui dont l'id est passé 
+    * Recherche tous les codes prelevements sauf celui dont l'id est passé
     * en paramètre.
     * @param prelevementId Identifiant du prelevement que l'on souhaite
     * exclure de la liste retournée.
@@ -94,7 +94,7 @@ public interface PrelevementDao extends GenericDaoJpa<Prelevement, Integer>
    List<Prelevement> findByCodeOrNumLaboWithBanque(String code, Banque banque);
 
    /**
-    * Recherche les prelevements dont le code 
+    * Recherche les prelevements dont le code
     * est 'like' le paramètre pour la plateforme spécifiée.
     * @param code Code pour lequel on recherche des prelevements.
     * @param pf Plateforme à laquelle appartient le prélèvement.
@@ -182,7 +182,7 @@ public interface PrelevementDao extends GenericDaoJpa<Prelevement, Integer>
    List<Prelevement> findByNdaLike(String nda);
 
    /**
-    * Recherche les codes de prelevements dont la banque est passée en 
+    * Recherche les codes de prelevements dont la banque est passée en
     * paramètre.
     * @param banque Banque des prelevements que l'on recherche.
     * @return une liste de codes de prelevements.
@@ -190,7 +190,7 @@ public interface PrelevementDao extends GenericDaoJpa<Prelevement, Integer>
    List<String> findByBanqueSelectCode(Banque banque);
 
    /**
-    * Recherche les ndas des prelevements dont la banque est passée en 
+    * Recherche les ndas des prelevements dont la banque est passée en
     * paramètre.
     * @param banque Banque des prelevements que l'on recherche.
     * @return une liste de ndas
@@ -215,7 +215,7 @@ public interface PrelevementDao extends GenericDaoJpa<Prelevement, Integer>
    List<Prelevement> findByMaladieAndOtherBanques(Maladie mal, Banque bank);
 
    /**
-    * Compte les prelevements créés par un collaborateur 
+    * Compte les prelevements créés par un collaborateur
     * passée en paramètre.
     * @param collaborateur
     * @return long
@@ -223,7 +223,7 @@ public interface PrelevementDao extends GenericDaoJpa<Prelevement, Integer>
    List<Long> findCountCreatedByCollaborateur(Collaborateur colla);
 
    /**
-    * Compte les prelevements dont le collaborateur est le preleveur 
+    * Compte les prelevements dont le collaborateur est le preleveur
     * passée en paramètre.
     * @param collaborateur
     * @return long
@@ -231,7 +231,7 @@ public interface PrelevementDao extends GenericDaoJpa<Prelevement, Integer>
    List<Long> findCountByPreleveur(Collaborateur colla);
 
    /**
-    * Compte les prelevements auxquels est affecté un service 
+    * Compte les prelevements auxquels est affecté un service
     * passée en paramètres.
     * @param service
     * @return long
@@ -267,10 +267,10 @@ public interface PrelevementDao extends GenericDaoJpa<Prelevement, Integer>
    List<Prelevement> findByNumberEchantillons(Long nb);
 
    /**
-    * Compte les prélèvements enregistrés dans le système dans 
-    * l'intervalle inclusif de dates passées, associés à un des 
-    * types de consentement et appartenant à une des banque 
-    * passés en paramètres. 
+    * Compte les prélèvements enregistrés dans le système dans
+    * l'intervalle inclusif de dates passées, associés à un des
+    * types de consentement et appartenant à une des banque
+    * passés en paramètres.
     * @param types
     * @param cal1
     * @param cal2
@@ -280,11 +280,11 @@ public interface PrelevementDao extends GenericDaoJpa<Prelevement, Integer>
    List<Long> findCountEclConsentByDates(List<ConsentType> types, Calendar cal1, Calendar cal2, List<Banque> banks);
 
    /**
-    * Compte les prélèvements enregistrés dans le système dans 
-    * l'intervalle inclusif de dates passées, dont un échantillon  
-    * est associé à un code/libelle organe et appartenant à une des banque 
-    * passés en paramètres. 
-    * @param liste de codes ou de libelles organe 
+    * Compte les prélèvements enregistrés dans le système dans
+    * l'intervalle inclusif de dates passées, dont un échantillon
+    * est associé à un code/libelle organe et appartenant à une des banque
+    * passés en paramètres.
+    * @param liste de codes ou de libelles organe
     * @param cal1
     * @param cal2
     * @param banks
@@ -293,12 +293,12 @@ public interface PrelevementDao extends GenericDaoJpa<Prelevement, Integer>
    List<Prelevement> findByOrganeByDates(List<String> codeOrLibelle, Calendar cal1, Calendar cal2, List<Banque> banks);
 
    /**
-    * Recherche les prélèvements enregistrés dans le système dans 
-    * l'intervalle inclusif de dates passées, dont un échantillon  
-    * est associé à un code/libelle organe, appartenant à une des banque 
-    * passés en paramètres et associés à un des consentements spécifiés 
-    * dans la liste. 
-    * @param liste de codes ou de libelles organe 
+    * Recherche les prélèvements enregistrés dans le système dans
+    * l'intervalle inclusif de dates passées, dont un échantillon
+    * est associé à un code/libelle organe, appartenant à une des banque
+    * passés en paramètres et associés à un des consentements spécifiés
+    * dans la liste.
+    * @param liste de codes ou de libelles organe
     * @param cal1
     * @param cal2
     * @param banks
@@ -309,7 +309,7 @@ public interface PrelevementDao extends GenericDaoJpa<Prelevement, Integer>
       List<ConsentType> consents);
 
    /**
-    * Recherche les prélèvements associés à la maladie, à un des types 
+    * Recherche les prélèvements associés à la maladie, à un des types
     * de prélèvements, et appartenant à une des banques passées en paramètres.
     * @param maladie
     * @param nats
@@ -319,8 +319,8 @@ public interface PrelevementDao extends GenericDaoJpa<Prelevement, Integer>
    List<Prelevement> findAssociatePrelsOfType(Maladie maladie, List<Nature> nats, List<Banque> banks);
 
    /**
-    * Recherche les prelevements 
-    * pour une maladie donnée et une nature enregistrés 
+    * Recherche les prelevements
+    * pour une maladie donnée et une nature enregistrés
     * à une date précise.
     * @param Maladie maladie
     * @param nature Nature.
@@ -351,7 +351,7 @@ public interface PrelevementDao extends GenericDaoJpa<Prelevement, Integer>
    List<Prelevement> findByEchantillonId(Integer echan);
 
    /**
-    * Recherche les prélèvements dont le code et la banque sont présents 
+    * Recherche les prélèvements dont le code et la banque sont présents
     * dans les listes passées en paramètres.
     * @param banques Banques des prlvts.
     * @param codes Codes des prlvts.
@@ -360,8 +360,8 @@ public interface PrelevementDao extends GenericDaoJpa<Prelevement, Integer>
    List<Prelevement> findByCodesAndBanquesInList(List<String> codes, List<Banque> banques);
 
    /**
-    * Recherche les prélèvements d'un contexte serotheque pour 
-    * une valeur de libelle de diagnostic. 
+    * Recherche les prélèvements d'un contexte serotheque pour
+    * une valeur de libelle de diagnostic.
     * @param libelle diagnostic complementaire
     * @param banques
     * @return Liste de prélèvements.
@@ -387,8 +387,8 @@ public interface PrelevementDao extends GenericDaoJpa<Prelevement, Integer>
    List<Integer> findByCodeOrNumLaboInListWithBanque(List<String> criteres, List<Banque> banques);
 
    /**
-    * Recherche une liste de prélèvements en fonction du nom de 
-    * l'établissement auquel appartient le service préleveur ou le 
+    * Recherche une liste de prélèvements en fonction du nom de
+    * l'établissement auquel appartient le service préleveur ou le
     * medecin preleveur.
     * @param nom
     * @param banks
@@ -398,7 +398,7 @@ public interface PrelevementDao extends GenericDaoJpa<Prelevement, Integer>
    List<Prelevement> findByEtablissementNom(String nom, List<Banque> banks);
 
    /**
-    * Recherche une liste de prélèvements non attribuable à un 
+    * Recherche une liste de prélèvements non attribuable à un
     * établissement prélèveur.
     * @param banks
     * @return liste de prélèvements
@@ -428,7 +428,7 @@ public interface PrelevementDao extends GenericDaoJpa<Prelevement, Integer>
    List<Prelevement> findByService(Service service);
 
    /**
-    * Recherche les prélèvements existants pour un patient et pour une liste de 
+    * Recherche les prélèvements existants pour un patient et pour une liste de
     * banques consultables
     * @param Patient patient
     * @param List<Banque> banks
@@ -436,27 +436,27 @@ public interface PrelevementDao extends GenericDaoJpa<Prelevement, Integer>
     * @since 2.0.13
     */
    List<Prelevement> findByPatientAndBanques(Patient p, List<Banque> banks);
-   
+
    /**
-    * Recherche les prelevements dont l'établissement du site intermédaire 
+    * Recherche les prelevements dont l'établissement du site intermédaire
     * est passé en param
     * @param etablissement
     * @param List<Banque> banks
     * @return liste de prélèvements
     */
    List<Prelevement> findByEtablissementLaboInter(Etablissement etab, List<Banque> banks);
-   
+
    /**
-    * Recherche les prelevements dont le service du site intermédaire 
+    * Recherche les prelevements dont le service du site intermédaire
     * est passé en param
     * @param service
     * @param List<Banque> banks
     * @return liste de prélèvements
     */
    List<Prelevement> findByServiceLaboInter(Service service, List<Banque> banks);
-   
+
    /**
-    * Recherche les prelevements dont l'opérateur du site intermédaire 
+    * Recherche les prelevements dont l'opérateur du site intermédaire
     * est passé en param
     * @param operateur
     * @param List<Banque> banks

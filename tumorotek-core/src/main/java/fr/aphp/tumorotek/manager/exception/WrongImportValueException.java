@@ -52,6 +52,7 @@ public class WrongImportValueException extends TKException
    private static final long serialVersionUID = 8025460498347186777L;
 
    private ImportColonne colonne;
+
    private String valeurAttendue;
 
    public WrongImportValueException(){

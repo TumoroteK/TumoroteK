@@ -87,37 +87,50 @@ public class TraitementRequeteManagerTest extends AbstractManagerTest4
 
    @Autowired
    private TraitementRequeteManager traitementRequeteManager;
+
    @Autowired
    private TraitementQueryManager traitementQueryManager;
 
    @Autowired
    private MaladieManager maladieManager;
+
    @Autowired
    private PrelevementManager prelevementManager;
+
    @Autowired
    private ProdDeriveManager prodDeriveManager;
+
    @Autowired
    private EntiteManager entiteManager;
+
    @Autowired
    private CollaborateurDao collaborateurDao;
+
    @Autowired
    private PlateformeDao plateformeDao;
+
    @Autowired
    private ConformiteTypeDao conformiteTypeDao;
 
    @Autowired
    private ChampEntiteDao champEntiteDao;
+
    @Autowired
    private ChampAnnotationDao champAnnotationDao;
+
    @Autowired
    private BanqueDao banqueDao;
+
    @Autowired
    private ServiceDao serviceDao;
+
    @Autowired
    private ObjetStatutDao objetStatutDao;
 
    private List<Maladie> allMaladies = null;
+
    private List<Prelevement> allPrelevements = null;
+
    private List<ProdDerive> allDerives = null;
 
    private List<Maladie> getMaladies(){

@@ -55,21 +55,21 @@ public interface TraitementRequeteManager
     * @param banques Liste de banques à passer dans la requête.
     * @param criteresValues Valeurs à donner aux criteres.
     * @return Liste d'objets correspondant au résultat de la requête.
-    * (objets correspondant au niveau le plus bas (-> ProdDerive) des critères 
+    * (objets correspondant au niveau le plus bas (-> ProdDerive) des critères
     * de la requête)
     */
    List<Object> traitementRequeteManager(Requete requete, List<Banque> banques, Hashtable<Integer, Object> criteresValues,
       String jdbcDialect);
 
    /**
-    * Retourne une liste d'objets correspondant au résultat de l'exécution de 
+    * Retourne une liste d'objets correspondant au résultat de l'exécution de
     * l'arbre de groupement dont la racine est fournie en paramètre.
     * @param noeud Groupement racine de l'arbre à exécuter.
     * @param banques Liste de banques à passer dans la requête.
     * @param criteresValues Valeurs à donner aux criteres.
     * @return Liste d'objets correspondant au résultat de l'arbre de groupement
     *  issu du noeud racine en paramètre.
-    * (objets correspondant au niveau le plus haut (-> ProdDerive) des critères 
+    * (objets correspondant au niveau le plus haut (-> ProdDerive) des critères
     * de la requête)
     */
    List<Object> traitementArbreGroupementManager(Groupement noeud, List<Banque> banques,
@@ -86,7 +86,7 @@ public interface TraitementRequeteManager
    List<Object> traitementCritereManager(Critere critere, List<Banque> banques, Object value, String jdbcDialect);
 
    /**
-    * Additionne deux listes d'objets et renvoie une liste d'objets d'entités 
+    * Additionne deux listes d'objets et renvoie une liste d'objets d'entités
     * la plus haute des deux (-> ProdDerive).
     * @param liste1 Première liste d'objets à additionner.
     * @param liste2 Seconde liste d'objets à additionner.
@@ -95,7 +95,7 @@ public interface TraitementRequeteManager
    List<Object> additionnerListesManager(List<Object> liste1, List<Object> liste2);
 
    /**
-    * Fusionne deux listes d'objets et renvoie une liste d'objets d'entités 
+    * Fusionne deux listes d'objets et renvoie une liste d'objets d'entités
     * la plus haute des deux (-> ProdDerive).
     * @param liste1 Première liste d'objets à fusionner.
     * @param liste2 Seconde liste d'objets à fusionner.

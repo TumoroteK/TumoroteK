@@ -68,184 +68,188 @@ import fr.aphp.tumorotek.model.interfacage.ValeurExterne;
 public class DossierExterneManagerImpl implements DossierExterneManager
 {
 
-	private final Log log = LogFactory.getLog(DossierExterneManager.class);
+   private final Log log = LogFactory.getLog(DossierExterneManager.class);
 
-	private DossierExterneDao dossierExterneDao;
-	private EmetteurDao emetteurDao;
-	private BlocExterneManager blocExterneManager;
-	private ValeurExterneManager valeurExterneManager;
-	private DossierExterneValidator dossierExterneValidator;
+   private DossierExterneDao dossierExterneDao;
 
-	public void setDossierExterneDao(final DossierExterneDao dDao){
-		this.dossierExterneDao = dDao;
-	}
+   private EmetteurDao emetteurDao;
 
-	public void setEmetteurDao(final EmetteurDao eDao){
-		this.emetteurDao = eDao;
-	}
+   private BlocExterneManager blocExterneManager;
 
-	public void setBlocExterneManager(final BlocExterneManager bManager){
-		this.blocExterneManager = bManager;
-	}
+   private ValeurExterneManager valeurExterneManager;
 
-	public void setValeurExterneManager(final ValeurExterneManager vManager){
-		this.valeurExterneManager = vManager;
-	}
+   private DossierExterneValidator dossierExterneValidator;
 
-	public void setDossierExterneValidator(final DossierExterneValidator dValidator){
-		this.dossierExterneValidator = dValidator;
-	}
+   public void setDossierExterneDao(final DossierExterneDao dDao){
+      this.dossierExterneDao = dDao;
+   }
 
-	@Override
-	public DossierExterne findByIdManager(final Integer dossierExterneId){
-		return dossierExterneDao.findById(dossierExterneId);
-	}
+   public void setEmetteurDao(final EmetteurDao eDao){
+      this.emetteurDao = eDao;
+   }
 
-	@Override
-	public List<DossierExterne> findAllObjectsManager(){
-		log.debug("Recherche de tous les BlocExternes");
-		return dossierExterneDao.findAll();
-	}
+   public void setBlocExterneManager(final BlocExterneManager bManager){
+      this.blocExterneManager = bManager;
+   }
 
-	@Override
-	public List<DossierExterne> findByEmetteurManager(final Emetteur emetteur){
-		log.debug("Recherche de tous les DossierExternes d'un emetteur");
-		if(emetteur != null){
-			return dossierExterneDao.findByEmetteur(emetteur);
-		}
-		return new ArrayList<>();
-	}
+   public void setValeurExterneManager(final ValeurExterneManager vManager){
+      this.valeurExterneManager = vManager;
+   }
 
-	@Override
-	public List<DossierExterne> findByEmetteurAndIdentificationManager(final Emetteur emetteur, final String numero){
-		log.debug("Recherche de tous les DossierExternes d'un emetteur " + "pour un numéro donné");
-		if(emetteur != null && numero != null){
-			return dossierExterneDao.findByEmetteurAndIdentification(emetteur, numero);
-		}
-		return new ArrayList<>();
-	}
+   public void setDossierExterneValidator(final DossierExterneValidator dValidator){
+      this.dossierExterneValidator = dValidator;
+   }
 
-	@Override
-	public List<DossierExterne> findByEmetteurInListAndIdentificationManager(final List<Emetteur> emetteurs,
-			final String identification){
+   @Override
+   public DossierExterne findByIdManager(final Integer dossierExterneId){
+      return dossierExterneDao.findById(dossierExterneId);
+   }
 
-		final List<DossierExterne> dossiers = new ArrayList<>();
+   @Override
+   public List<DossierExterne> findAllObjectsManager(){
+      log.debug("Recherche de tous les BlocExternes");
+      return dossierExterneDao.findAll();
+   }
 
-		if(emetteurs != null && emetteurs.size() > 0 && identification != null){
-			dossiers.addAll(dossierExterneDao.findByEmetteurInListAndIdentification(emetteurs, identification));
-		}
-		return dossiers;
-	}
+   @Override
+   public List<DossierExterne> findByEmetteurManager(final Emetteur emetteur){
+      log.debug("Recherche de tous les DossierExternes d'un emetteur");
+      if(emetteur != null){
+         return dossierExterneDao.findByEmetteur(emetteur);
+      }
+      return new ArrayList<>();
+   }
 
-	@Override
-	public List<DossierExterne> findByIdentificationManager(final String numero){
-		log.debug("Recherche de tous les DossierExternes pour un numéro");
-		if(numero != null){
-			return dossierExterneDao.findByIdentification(numero);
-		}
-		return new ArrayList<>();
-	}
+   @Override
+   public List<DossierExterne> findByEmetteurAndIdentificationManager(final Emetteur emetteur, final String numero){
+      log.debug("Recherche de tous les DossierExternes d'un emetteur " + "pour un numéro donné");
+      if(emetteur != null && numero != null){
+         return dossierExterneDao.findByEmetteurAndIdentification(emetteur, numero);
+      }
+      return new ArrayList<>();
+   }
 
-	@Override
-	public boolean findDoublonManager(final DossierExterne dossierExterne){
-		if(dossierExterne != null){
-			return dossierExterneDao.findByEmetteur(dossierExterne.getEmetteur()).contains(dossierExterne);
-		}
-		return false;
-	}
+   @Override
+   public List<DossierExterne> findByEmetteurInListAndIdentificationManager(final List<Emetteur> emetteurs,
+      final String identification){
 
-	@Override
-	public void validateDossierExterneManager(final DossierExterne dossierExterne, final Emetteur emetteur,
-			final List<BlocExterne> blocExternes, final Hashtable<BlocExterne, List<ValeurExterne>> valeurExternes){
-		// emetteur required
-		if(emetteur == null){
-			log.warn("Objet obligatoire Emetteur manquant" + " lors de la création d'un DossierExterne");
-			throw new RequiredObjectIsNullException("DossierExterne", "creation", "Emetteur");
-		}
+      final List<DossierExterne> dossiers = new ArrayList<>();
 
-		// validation du dossier
-		BeanValidator.validateObject(dossierExterne, new Validator[] {dossierExterneValidator});
+      if(emetteurs != null && emetteurs.size() > 0 && identification != null){
+         dossiers.addAll(dossierExterneDao.findByEmetteurInListAndIdentification(emetteurs, identification));
+      }
+      return dossiers;
+   }
 
-		// validation des blocs
-		if(blocExternes != null){
-			for(int i = 0; i < blocExternes.size(); i++){
-				blocExterneManager.validateBlocExterneManager(blocExternes.get(i), dossierExterne);
+   @Override
+   public List<DossierExterne> findByIdentificationManager(final String numero){
+      log.debug("Recherche de tous les DossierExternes pour un numéro");
+      if(numero != null){
+         return dossierExterneDao.findByIdentification(numero);
+      }
+      return new ArrayList<>();
+   }
 
-				// validation des valeurs du bloc
-				if(valeurExternes != null && valeurExternes.containsKey(blocExternes.get(i))){
-					final List<ValeurExterne> listVals = valeurExternes.get(blocExternes.get(i));
+   @Override
+   public boolean findDoublonManager(final DossierExterne dossierExterne){
+      if(dossierExterne != null){
+         return dossierExterneDao.findByEmetteur(dossierExterne.getEmetteur()).contains(dossierExterne);
+      }
+      return false;
+   }
 
-					for(int j = 0; j < listVals.size(); j++){
-						valeurExterneManager.validateValeurExterneManager(listVals.get(j), blocExternes.get(i));
-					}
-				}
-			}
-		}
-	}
+   @Override
+   public void validateDossierExterneManager(final DossierExterne dossierExterne, final Emetteur emetteur,
+      final List<BlocExterne> blocExternes, final Hashtable<BlocExterne, List<ValeurExterne>> valeurExternes){
+      // emetteur required
+      if(emetteur == null){
+         log.warn("Objet obligatoire Emetteur manquant" + " lors de la création d'un DossierExterne");
+         throw new RequiredObjectIsNullException("DossierExterne", "creation", "Emetteur");
+      }
 
-	@Override
-	public void createObjectManager(final DossierExterne dossierExterne, final Emetteur emetteur,
-			final List<BlocExterne> blocExternes, final Hashtable<BlocExterne, List<ValeurExterne>> valeurExternes, final int max){
-		// Validation du dossier
-		validateDossierExterneManager(dossierExterne, emetteur, blocExternes, valeurExternes);
+      // validation du dossier
+      BeanValidator.validateObject(dossierExterne, new Validator[] {dossierExterneValidator});
 
-		dossierExterne.setEmetteur(emetteurDao.mergeObject(emetteur));
+      // validation des blocs
+      if(blocExternes != null){
+         for(int i = 0; i < blocExternes.size(); i++){
+            blocExterneManager.validateBlocExterneManager(blocExternes.get(i), dossierExterne);
 
-		if(findDoublonManager(dossierExterne)){
-			removeObjectManager(
-					dossierExterneDao.findByEmetteur(emetteur).get(dossierExterneDao.findByEmetteur(emetteur).indexOf(dossierExterne)));
-		}
+            // validation des valeurs du bloc
+            if(valeurExternes != null && valeurExternes.containsKey(blocExternes.get(i))){
+               final List<ValeurExterne> listVals = valeurExternes.get(blocExternes.get(i));
 
-		dossierExterneDao.createObject(dossierExterne);
-		log.info("Enregistrement de l'objet DossierExterne : " + dossierExterne.toString());
+               for(int j = 0; j < listVals.size(); j++){
+                  valeurExterneManager.validateValeurExterneManager(listVals.get(j), blocExternes.get(i));
+               }
+            }
+         }
+      }
+   }
 
-		// création des blocs et des valeurs
-		if(blocExternes != null){
-			for(int i = 0; i < blocExternes.size(); i++){
-				List<ValeurExterne> valeurs = null;
-				// validation des valeurs du bloc
-				if(valeurExternes != null && valeurExternes.containsKey(blocExternes.get(i))){
-					valeurs = valeurExternes.get(blocExternes.get(i));
-				}
-				blocExterneManager.createObjectManager(blocExternes.get(i), dossierExterne, valeurs);
-			}
-		}
+   @Override
+   public void createObjectManager(final DossierExterne dossierExterne, final Emetteur emetteur,
+      final List<BlocExterne> blocExternes, final Hashtable<BlocExterne, List<ValeurExterne>> valeurExternes, final int max){
+      // Validation du dossier
+      validateDossierExterneManager(dossierExterne, emetteur, blocExternes, valeurExternes);
 
-		if(dossierExterneDao.findCountAll().get(0) > max){
-			final List<DossierExterne> dos = dossierExterneDao.findFirst();
-			if(!dos.isEmpty()){
-				removeObjectManager(dos.get(0));
-				log.debug("Suppression FIRST IN " + dos.get(0).getIdentificationDossier() + " pour maintenir la taille "
-						+ " de la table temporaire à " + max);
-			}
-		}
-	}
+      dossierExterne.setEmetteur(emetteurDao.mergeObject(emetteur));
 
-	@Override
-	public void removeObjectManager(final DossierExterne dossierExterne){
-		if(dossierExterne != null && dossierExterne.getDossierExterneId() != null){
+      if(findDoublonManager(dossierExterne)){
+         removeObjectManager(
+            dossierExterneDao.findByEmetteur(emetteur).get(dossierExterneDao.findByEmetteur(emetteur).indexOf(dossierExterne)));
+      }
 
-			// suppression des blocs
-			final List<BlocExterne> blocs = blocExterneManager.findByDossierExterneManager(dossierExterne);
-			for(int i = 0; i < blocs.size(); i++){
-				blocExterneManager.removeObjectManager(blocs.get(i));
-			}
+      dossierExterneDao.createObject(dossierExterne);
+      log.info("Enregistrement de l'objet DossierExterne : " + dossierExterne.toString());
 
-			dossierExterneDao.removeObject(dossierExterne.getDossierExterneId());
-			log.info("Suppression de l'objet DossierExterne : " + dossierExterne.toString());
-		}else{
-			log.warn("Suppression d'une DossierExterne null");
-		}
-	}
+      // création des blocs et des valeurs
+      if(blocExternes != null){
+         for(int i = 0; i < blocExternes.size(); i++){
+            List<ValeurExterne> valeurs = null;
+            // validation des valeurs du bloc
+            if(valeurExternes != null && valeurExternes.containsKey(blocExternes.get(i))){
+               valeurs = valeurExternes.get(blocExternes.get(i));
+            }
+            blocExterneManager.createObjectManager(blocExternes.get(i), dossierExterne, valeurs);
+         }
+      }
 
-	@Override
-	public List<DossierExterne> findChildrenByEmetteurValeurManager(Emetteur emet, 
-											Integer champEntiteId, String valeur) {
-		return dossierExterneDao.findChildrenByEmetteurValeur(emet, champEntiteId, valeur) ;
-	}
-	
-	@Override
-	public List<DossierExterne> findByEmetteurAndEntiteNullManager(Emetteur emet) {
-		return dossierExterneDao.findByEmetteurAndEntiteNull(emet) ;
-	}
+      if(dossierExterneDao.findCountAll().get(0) > max){
+         final List<DossierExterne> dos = dossierExterneDao.findFirst();
+         if(!dos.isEmpty()){
+            removeObjectManager(dos.get(0));
+            log.debug("Suppression FIRST IN " + dos.get(0).getIdentificationDossier() + " pour maintenir la taille "
+               + " de la table temporaire à " + max);
+         }
+      }
+   }
+
+   @Override
+   public void removeObjectManager(final DossierExterne dossierExterne){
+      if(dossierExterne != null && dossierExterne.getDossierExterneId() != null){
+
+         // suppression des blocs
+         final List<BlocExterne> blocs = blocExterneManager.findByDossierExterneManager(dossierExterne);
+         for(int i = 0; i < blocs.size(); i++){
+            blocExterneManager.removeObjectManager(blocs.get(i));
+         }
+
+         dossierExterneDao.removeObject(dossierExterne.getDossierExterneId());
+         log.info("Suppression de l'objet DossierExterne : " + dossierExterne.toString());
+      }else{
+         log.warn("Suppression d'une DossierExterne null");
+      }
+   }
+
+   @Override
+   public List<DossierExterne> findChildrenByEmetteurValeurManager(final Emetteur emet, final Integer champEntiteId,
+      final String valeur){
+      return dossierExterneDao.findChildrenByEmetteurValeur(emet, champEntiteId, valeur);
+   }
+
+   @Override
+   public List<DossierExterne> findByEmetteurAndEntiteNullManager(final Emetteur emet){
+      return dossierExterneDao.findByEmetteurAndEntiteNull(emet);
+   }
 }

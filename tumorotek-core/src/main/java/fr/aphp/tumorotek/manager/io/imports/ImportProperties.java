@@ -55,31 +55,37 @@ public class ImportProperties
     * Template de l'import.
     */
    private ImportTemplate importTemplate;
+
    /**
     * Hashtable contenant l'indice des colonnes en fct de leur nom.
     */
    private Hashtable<String, Integer> colonnesHeaders = new Hashtable<>();
+
    /**
     * Hashtable contenant la liste des colonnes en fct de leur entité.
     */
    private Hashtable<Entite, List<ImportColonne>> colonnesForEntites = new Hashtable<>();
+
    /**
     * Hashtable contenant les valeurs des thésaurus en fct de leur
     * ebtité.
     */
    private Hashtable<Object, Hashtable<String, Object>> thesaurusValues = new Hashtable<>();
+
    /**
-    * hashtable contenant les valeurs des annotations thésaurus en fct 
+    * hashtable contenant les valeurs des annotations thésaurus en fct
     * de leur ChampAnnotation.
     */
-   private Hashtable<ChampAnnotation, Hashtable<String, Object>> annotationThesaurusValues =
-      new Hashtable<>();
+   private Hashtable<ChampAnnotation, Hashtable<String, Object>> annotationThesaurusValues = new Hashtable<>();
+
    /**
     * Hashtable contenant les AnnotationsValeurs à enregistrer en fct
     * de l'entité.
     */
    private Hashtable<Entite, List<AnnotationValeur>> annotationsEntite = new Hashtable<>();
+
    private Banque banque;
+
    private FormulaEvaluator evaluator;
 
    private final List<ImportColonne> subDerivesCols = new ArrayList<>();

@@ -77,6 +77,7 @@ public class HistoriqueRenderer implements RowRenderer<Operation>
 {
 
    private String identifiant;
+
    private String collection;
 
    @Override

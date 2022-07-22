@@ -59,6 +59,7 @@ public class IndicateurManagerImpl implements IndicateurManager
    private final List<Indicateur> NO_LIST = new ArrayList<>();
 
    private IndicateurDao indicateurDao;
+
    // private SModeleDao sModeleDao;
    private IndicateurValidator indicateurValidator;
 

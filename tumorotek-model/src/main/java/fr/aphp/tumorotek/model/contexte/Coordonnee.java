@@ -66,13 +66,13 @@ import org.hibernate.annotations.GenericGenerator;
    @NamedQuery(name = "Coordonnee.findByCp", query = "SELECT c FROM Coordonnee c WHERE c.cp = ?1"),
    @NamedQuery(name = "Coordonnee.findByVille", query = "SELECT c FROM Coordonnee c WHERE c.ville = ?1"),
    @NamedQuery(name = "Coordonnee.findByPays", query = "SELECT c FROM Coordonnee c WHERE c.pays = ?1"),
-   //		@NamedQuery(name = "Coordonnee.findByEtablissement", 
+   //		@NamedQuery(name = "Coordonnee.findByEtablissement",
    //			query = "SELECT c FROM Coordonnee c WHERE c.etablissement = ?1"),
-   //		@NamedQuery(name = "Coordonnee.findByService", 
-   //			query = "SELECT c FROM Coordonnee c WHERE " 
+   //		@NamedQuery(name = "Coordonnee.findByService",
+   //			query = "SELECT c FROM Coordonnee c WHERE "
    //				+ "c.service = ?1"),
-   //		@NamedQuery(name = "Coordonnee.findByTransporteur", 
-   //			query = "SELECT c FROM Coordonnee c WHERE " 
+   //		@NamedQuery(name = "Coordonnee.findByTransporteur",
+   //			query = "SELECT c FROM Coordonnee c WHERE "
    //				+ "c.transporteur = ?1"),
    @NamedQuery(name = "Coordonnee.findByCollaborateurId",
       query = "SELECT c FROM Coordonnee c " + "left join c.collaborateurs o " + "WHERE o.collaborateurId = ?1"),
@@ -86,18 +86,27 @@ public class Coordonnee implements java.io.Serializable
    private static final long serialVersionUID = 54687944563647L;
 
    private Integer coordonneeId;
+
    private String adresse;
+
    private String cp;
+
    private String ville;
+
    private String pays;
+
    private String tel;
+
    private String fax;
+
    private String mail;
 
    //private Set<Etablissement> etablissements = new HashSet<Etablissement>();
    private Etablissement etablissement;
+
    //private Set<Service> services = new HashSet<Service>();
    private Service service;
+
    //private Set<Transporteur> transporteurs = new HashSet<Transporteur>();
    private Transporteur transporteur;
 
@@ -119,7 +128,7 @@ public class Coordonnee implements java.io.Serializable
    //	 * @param newFax .
    //	 * @param newMail .
    //	 */
-   //	public Coordonnee(Integer id, String adr, String newCp, String newVille, 
+   //	public Coordonnee(Integer id, String adr, String newCp, String newVille,
    //			String newPays, String newTel, String newFax, String newMail) {
    //		this.coordonneeId = id;
    //		this.adresse = adr;

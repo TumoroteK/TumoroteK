@@ -58,9 +58,13 @@ public class FileBatch
 {
 
    private List<TKAnnotableObject> objs = new ArrayList<>();
+
    private InputStream stream;
+
    private Fichier file;
+
    private ChampAnnotation champ;
+
    private Boolean completed = false;
 
    public List<TKAnnotableObject> getObjs(){

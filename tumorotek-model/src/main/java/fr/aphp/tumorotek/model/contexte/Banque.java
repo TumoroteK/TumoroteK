@@ -101,8 +101,8 @@ import fr.aphp.tumorotek.model.utilisateur.ProfilUtilisateur;
    @NamedQuery(name = "Banque.findByArchive", query = "SELECT b FROM Banque b WHERE b.archive = ?1"),
    @NamedQuery(name = "Banque.findByCollaborateur", query = "SELECT b FROM Banque b " + "WHERE b.collaborateur = ?1"),
    @NamedQuery(name = "Banque.findByProprietaire", query = "SELECT b FROM Banque b " + "WHERE b.proprietaire = ?1"),
-   //		@NamedQuery(name = "Banque.findByServiceId", 
-   //				query = "SELECT b FROM Banque b " 
+   //		@NamedQuery(name = "Banque.findByServiceId",
+   //				query = "SELECT b FROM Banque b "
    //					+ "WHERE b.services.serviceId = ?1"),
    @NamedQuery(name = "Banque.findByPlateformeAndArchive",
       query = "SELECT b FROM Banque b " + "WHERE b.plateforme = ?1 AND b.archive = ?2 " + "ORDER BY b.nom"),
@@ -138,10 +138,8 @@ import fr.aphp.tumorotek.model.utilisateur.ProfilUtilisateur;
    @NamedQuery(name = "Banque.findByExcludedId", query = "SELECT b FROM Banque b " + "WHERE b.banqueId != ?1"),
    @NamedQuery(name = "Banque.findByTableAnnotation",
       query = "SELECT b FROM Banque b " + "JOIN b.tableAnnotationBanques t " + "WHERE t.pk.tableAnnotation = ?1"),
-	@NamedQuery(name = "Banque.findByConteneur",
-		query = "SELECT b FROM Banque b " + "JOIN b.conteneurs c " + "WHERE c = ?1"),
-	@NamedQuery(name = "Banque.findByEtude",
-		query = "SELECT b FROM Banque b WHERE b.etude = ?1")
+   @NamedQuery(name = "Banque.findByConteneur", query = "SELECT b FROM Banque b " + "JOIN b.conteneurs c " + "WHERE c = ?1"),
+   @NamedQuery(name = "Banque.findByEtude", query = "SELECT b FROM Banque b WHERE b.etude = ?1")
 
 })
 public class Banque implements TKFantomableObject, TKdataObject, java.io.Serializable, Comparable<Object>
@@ -150,50 +148,86 @@ public class Banque implements TKFantomableObject, TKdataObject, java.io.Seriali
    private static final long serialVersionUID = 33315464531548613L;
 
    private Integer banqueId;
+
    private String nom;
+
    private String identification;
+
    private String description;
+
    private Boolean autoriseCrossPatient;
+
    private Boolean archive = false;
+
    private Boolean defMaladies = true;
+
    private String defautMaladie;
+
    private String defautMaladieCode;
 
    private Collaborateur collaborateur;
+
    private Collaborateur contact;
+
    private Service proprietaire;
+
    private Plateforme plateforme;
+
    private Contexte contexte;
+
    private Couleur echantillonCouleur;
+
    private Couleur prodDeriveCouleur;
-   
+
    // @since 2.3.0-gatsbi
    private Etude etude;
 
    //private Set<Service> services = new HashSet<Service>();
    private Set<Conteneur> conteneurs = new HashSet<>();
+
    private Set<Enceinte> enceintes = new HashSet<>();
+
    private Set<Terminale> terminales = new HashSet<>();
+
    private Set<Prelevement> prelevements = new HashSet<>();
+
    private Set<Cession> cessions = new HashSet<>();
+
    private Set<CodeSelect> codeSelects = new HashSet<>();
+
    private Set<CodeUtilisateur> codeUtilisateurs = new HashSet<>();
+
    private Set<ProfilUtilisateur> profilUtilisateurs = new HashSet<>();
+
    private Set<Echantillon> echantillons = new HashSet<>();
+
    private Set<ProdDerive> prodDerives = new HashSet<>();
+
    private Set<TableAnnotationBanque> tableAnnotationBanques = new HashSet<>();
+
    private Set<Recherche> recherches = new HashSet<>();
+
    private Set<CouleurEntiteType> couleurEntiteTypes = new HashSet<>();
+
    //private Set<TableCodage> tablesCodage = new HashSet<TableCodage>();
    private Set<BanqueTableCodage> banqueTableCodages = new HashSet<>();
+
    private Set<ImportTemplate> importTemplate = new HashSet<>();
+
    private Set<AffectationImprimante> affectationImprimantes = new HashSet<>();
+
    private Set<Affichage> affichages = new HashSet<>();
+
    private Set<Requete> requetes = new HashSet<>();
+
    private Set<AnnotationDefaut> annotationDefauts = new HashSet<>();
+
    private Set<Numerotation> numerotations = new HashSet<>();
+
    private Set<Template> templates = new HashSet<>();
+
    private Set<Catalogue> catalogues = new HashSet<>();
+
    private Set<SModele> sModeles = new HashSet<>();
 
    /** Constructeur par défaut. */
@@ -595,7 +629,7 @@ public class Banque implements TKFantomableObject, TKdataObject, java.io.Seriali
    public void setSModeles(final Set<SModele> sim){
       this.sModeles = sim;
    }
-   
+
    @ManyToOne
    @JoinColumn(name = "ETUDE_ID", nullable = true)
    public Etude getEtude(){
@@ -714,15 +748,13 @@ public class Banque implements TKFantomableObject, TKdataObject, java.io.Seriali
    public String getPhantomData(){
       return getNom();
    }
-   
+
    /**
     * @since 2.2.1
     * @return le nom de la banque et de la pf entre crochets
     */
    @Transient
-   public String getBanqueAndPlateformeNoms() {
-      return getNom().concat(" [")
-    	.concat(plateforme.getNom())
-    	.concat("]");
+   public String getBanqueAndPlateformeNoms(){
+      return getNom().concat(" [").concat(plateforme.getNom()).concat("]");
    }
 }

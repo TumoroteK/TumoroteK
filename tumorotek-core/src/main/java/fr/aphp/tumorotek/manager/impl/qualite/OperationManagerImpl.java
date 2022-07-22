@@ -90,12 +90,19 @@ public class OperationManagerImpl implements OperationManager
 
    /* Beans injectes par Spring*/
    private OperationDao operationDao;
+
    private UtilisateurDao utilisateurDao;
+
    private EntiteDao entiteDao;
+
    private OperationTypeDao operationTypeDao;
+
    private OperationValidator operationValidator;
+
    private FantomeDao fantomeDao;
+
    private EntityManagerFactory entityManagerFactory;
+
    private DataSource dataSource;
 
    public OperationManagerImpl(){}
@@ -322,7 +329,7 @@ public class OperationManagerImpl implements OperationManager
     * @param obj Bean du domaine
     */
    private Integer getObjetIdFromObject(final Object obj){
-      //recupere l'objetId pour l'assigner a l'operation	 
+      //recupere l'objetId pour l'assigner a l'operation
       try{
          final Class<?> targetClass = obj.getClass();
          final Method targetmethod = targetClass.getMethod("get" + targetClass.getSimpleName() + "Id", new Class[] {});
@@ -509,7 +516,7 @@ public class OperationManagerImpl implements OperationManager
       final Entite e){
       if(u != null && oT != null && e != null && cal != null && objsId != null && !objsId.isEmpty()){
          PreparedStatement pst = null;
-//         Connection conn = null;
+         //         Connection conn = null;
          try{
             // conn = DataSourceUtils.getConnection(dataSource);
             // Calendar curr = Utils.getCurrentSystemCalendar();
@@ -526,7 +533,7 @@ public class OperationManagerImpl implements OperationManager
             }
             pst.executeBatch();
             // DataSourceUtils.getConnection(dataSource).commit();
-            //entityManagerFactory.getCache().evict(getClass());			
+            //entityManagerFactory.getCache().evict(getClass());
 
          }catch(final CannotGetJdbcConnectionException e1){
             throw new RuntimeException(e1);
@@ -540,13 +547,13 @@ public class OperationManagerImpl implements OperationManager
                   pst = null;
                }
             }
-//            if(conn != null){
-//               try{
-//                  conn.close();
-//               }catch(final SQLException qe){}finally{
-//                  conn = null;
-//               }
-//            }
+            //            if(conn != null){
+            //               try{
+            //                  conn.close();
+            //               }catch(final SQLException qe){}finally{
+            //                  conn = null;
+            //               }
+            //            }
          }
       }else{
          throw new NullPointerException();

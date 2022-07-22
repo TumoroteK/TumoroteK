@@ -70,15 +70,20 @@ public class ChampAnnotationDecorator extends SmallObjDecorator
 {
 
    private ChampAnnotation champ;
+
    private final LinkedHashSet<AnnotationDefaut> defauts = new LinkedHashSet<>();
+
    private final LinkedHashSet<AnnotationDefaut> defautsCopy = new LinkedHashSet<>();
 
    private List<Item> items = new ArrayList<>();
+
    private AnnotationDefaut defaut;
+
    // flag qui specifie si l'objet a ete valide (ou en cours de creation)
    private boolean validated = false;
 
    private boolean edition = false;
+
    // flag qui permet de ne pas d'afficher typeBox en modification
    private boolean creation = false;
 
@@ -154,7 +159,7 @@ public class ChampAnnotationDecorator extends SmallObjDecorator
       return champCalcule;
    }
 
-   public void setChampCalcule(ChampCalcule champCalcule){
+   public void setChampCalcule(final ChampCalcule champCalcule){
       this.champCalcule = champCalcule;
    }
 
@@ -277,7 +282,8 @@ public class ChampAnnotationDecorator extends SmallObjDecorator
 
    public boolean getIsCombinable(){
       if(this.champ != null && this.champ.getDataType() != null){
-         return (!"fichier".equals(this.champ.getDataType().getType()) && !"boolean".equals(this.champ.getDataType().getType()) && !"calcule".equals(this.champ.getDataType().getType()));
+         return (!"fichier".equals(this.champ.getDataType().getType()) && !"boolean".equals(this.champ.getDataType().getType())
+            && !"calcule".equals(this.champ.getDataType().getType()));
       }
       return !catalogueChp;
    }
@@ -318,7 +324,7 @@ public class ChampAnnotationDecorator extends SmallObjDecorator
    }
 
    /**
-    * Rend le sTring "details" cliquable pour afficher le details des 
+    * Rend le sTring "details" cliquable pour afficher le details des
     * items dans la modale.
     * @return String style classe cliquable ou vide.
     */
@@ -457,7 +463,7 @@ public class ChampAnnotationDecorator extends SmallObjDecorator
    }
 
    /**
-    * Retrouve la liste de champs a partir de la liste de decorateurs en 
+    * Retrouve la liste de champs a partir de la liste de decorateurs en
     * conservant l'ordre.
     * @param decorateurs
     * @return champs ChampAnnotation dans le même ordre
@@ -505,7 +511,7 @@ public class ChampAnnotationDecorator extends SmallObjDecorator
    /**
     * Comparator permettant le sort dans la liste en fonction de l'ordre
     * specifié pour le champ.
-    * @return int négatif si ordre1 < ordre2, 0 si ordre1 = ordre2, 
+    * @return int négatif si ordre1 < ordre2, 0 si ordre1 = ordre2,
     * positif si ordre1 > ordre 2.
     */
    public static class ChampAnnotationDecoratorComparator implements Comparator<Object>

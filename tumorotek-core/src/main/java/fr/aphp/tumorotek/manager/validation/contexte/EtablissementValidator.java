@@ -56,7 +56,6 @@ import fr.aphp.tumorotek.model.contexte.Etablissement;
 public class EtablissementValidator implements Validator
 {
 
-   
    @Override
    public boolean supports(final Class<?> clazz){
       return Etablissement.class.equals(clazz);

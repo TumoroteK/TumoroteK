@@ -1,5 +1,5 @@
 /**
- * Copyright ou © ou Copr. Assistance Publique des Hôpitaux de 
+ * Copyright ou © ou Copr. Assistance Publique des Hôpitaux de
  * PARIS et SESAN
  * projet-tk@sesan.fr
  *
@@ -36,53 +36,62 @@
  **/
 package fr.aphp.tumorotek.model.contexte.gatsbi;
 
-public enum ContexteType {
-	
-	PATIENT(1, Values.PATIENT), 
-	PRELEVEMENT(2, Values.PRELEVEMENT),
-	ECHANTILLON(3, Values.ECHANTILLON),
-	PROD_DERIVE(8, Values.PROD_DERIVE);
-    
-	private Integer entiteId;
-	private String type;
+public enum ContexteType
+{
 
-	ContexteType(Integer _i, String _t) {
-        this.entiteId = _i;
-        this.type = _t;
-    }
+   PATIENT(1, Values.PATIENT), PRELEVEMENT(2, Values.PRELEVEMENT), ECHANTILLON(3, Values.ECHANTILLON),
+   PROD_DERIVE(8, Values.PROD_DERIVE);
 
-	private ContexteType (String val) {
-	     if (!this.type.equals(val))
-	        throw new IllegalArgumentException();
-	  }
+   private Integer entiteId;
 
-    public static class Values {
-        public static final String PATIENT = "Patient";
-        public static final String PRELEVEMENT = "Prelevement";
-        public static final String ECHANTILLON = "Echantillon";
-        public static final String PROD_DERIVE = "ProdDerive";
+   private String type;
 
-    }
-    
-    public static ContexteType getById(Integer _i) {
-        for(ContexteType ref : values()) {
-            if(ref.entiteId.equals(_i)) return ref;
-        }
-        return null;
-    }
-    
-    public static ContexteType getByType(String _s) {
-        for(ContexteType ref : values()) {
-            if(ref.type.equalsIgnoreCase(_s)) return ref;
-        }
-        return null;
-    }
-    
-    public String getType() {
-        return type;
-    }
+   ContexteType(final Integer _i, final String _t){
+      this.entiteId = _i;
+      this.type = _t;
+   }
 
-    public Integer getEntiteId() {
-        return entiteId;
-    }
+   private ContexteType(final String val){
+      if(!this.type.equals(val)){
+         throw new IllegalArgumentException();
+      }
+   }
+
+   public static class Values
+   {
+      public static final String PATIENT = "Patient";
+
+      public static final String PRELEVEMENT = "Prelevement";
+
+      public static final String ECHANTILLON = "Echantillon";
+
+      public static final String PROD_DERIVE = "ProdDerive";
+
+   }
+
+   public static ContexteType getById(final Integer _i){
+      for(final ContexteType ref : values()){
+         if(ref.entiteId.equals(_i)){
+            return ref;
+         }
+      }
+      return null;
+   }
+
+   public static ContexteType getByType(final String _s){
+      for(final ContexteType ref : values()){
+         if(ref.type.equalsIgnoreCase(_s)){
+            return ref;
+         }
+      }
+      return null;
+   }
+
+   public String getType(){
+      return type;
+   }
+
+   public Integer getEntiteId(){
+      return entiteId;
+   }
 }

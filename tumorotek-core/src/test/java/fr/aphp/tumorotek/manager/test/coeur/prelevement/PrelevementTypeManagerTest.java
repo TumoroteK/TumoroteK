@@ -65,6 +65,7 @@ public class PrelevementTypeManagerTest extends AbstractManagerTest4
 
    @Autowired
    private PrelevementTypeManager prelevementTypeManager;
+
    @Autowired
    private PlateformeDao plateformeDao;
 

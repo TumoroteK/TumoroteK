@@ -82,9 +82,13 @@ public class Requete implements TKdataObject, Comparable<Requete>
 {
 
    private Integer requeteId;
+
    private String intitule;
+
    private Utilisateur createur;
+
    private Groupement groupementRacine;
+
    private Banque banque;
 
    private Set<Recherche> recherches = new HashSet<>();

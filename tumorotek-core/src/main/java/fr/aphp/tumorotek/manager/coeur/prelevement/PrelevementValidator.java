@@ -54,7 +54,7 @@ public interface PrelevementValidator extends Validator
 {
 
    /**
-    * Vérifie la cohérence de la date de prélèvement avec la date de 
+    * Vérifie la cohérence de la date de prélèvement avec la date de
     * naissance et la date actuelle.
     * @param prelevement
     * @return errors
@@ -62,7 +62,7 @@ public interface PrelevementValidator extends Validator
    Errors checkDatePrelevementCoherence(Prelevement prelevement);
 
    /**
-    * Vérifie la cohérence de la date de consentement avec la date de 
+    * Vérifie la cohérence de la date de consentement avec la date de
     * naissance et la date actuelle.
     * @param prelevement
     * @return errors
@@ -73,18 +73,18 @@ public interface PrelevementValidator extends Validator
     * Parcoure les dates de l'objet prelevement jusqu'a la date de naissance du
     * patient, pour trouver la date de référence la plus récente.
     * @param prelevement
-    * @param skipToDatePrel ne cherche pas la date reference 
-    * dans le cheminement du prélèvement, commence directement 
+    * @param skipToDatePrel ne cherche pas la date reference
+    * dans le cheminement du prélèvement, commence directement
     * par la date de prelevement
     * @return object[] couple (date reference, code qui sera utilisé pour l'
     * internationalisation du message d'erreur)
     */
-   //Object[] findAntRefDateInPrelevement(Prelevement prelevement, 
+   //Object[] findAntRefDateInPrelevement(Prelevement prelevement,
    //												boolean skipToDatePrel);
 
    /**
-    * Parcoure les dates des objets issus d'un prelevement jusqu'a la date 
-    * actuelle, pour trouver la date de référence la moins 
+    * Parcoure les dates des objets issus d'un prelevement jusqu'a la date
+    * actuelle, pour trouver la date de référence la moins
     * récente.
     * Permet la récursivite sur les dérivés de dérivés.
     * @param prelevement
@@ -94,7 +94,7 @@ public interface PrelevementValidator extends Validator
    //Object[] findPostRefDateInEchantillons(Prelevement prelevement);
 
    /**
-    * Vérifie la cohérence de la date de départ avec la date de 
+    * Vérifie la cohérence de la date de départ avec la date de
     * prélèvement ou avec la date de naissance, avec la date d'arrivee
     * ou la date actuelle.
     * @param prelevement
@@ -103,8 +103,8 @@ public interface PrelevementValidator extends Validator
    Errors checkDateDepartCoherence(Prelevement prelevement);
 
    /**
-    * Vérifie la cohérence de la date d'arrivee avec la date de 
-    * depart ou la date de prelevement ou la date de naissance, et avec 
+    * Vérifie la cohérence de la date d'arrivee avec la date de
+    * depart ou la date de prelevement ou la date de naissance, et avec
     * la date actuelle.
     * @param prelevement
     * @return errors
@@ -112,8 +112,8 @@ public interface PrelevementValidator extends Validator
    Errors checkDateArriveeCoherence(Prelevement prelevement);
 
    /**
-    * Parcoure les labos dans l'ordre chronologique pour 
-    * trouver la première date qui servira 
+    * Parcoure les labos dans l'ordre chronologique pour
+    * trouver la première date qui servira
     * de référence.
     * @param labos
     * @return object[] couple (date reference, code qui sera utilisé pour l'

@@ -36,39 +36,41 @@
 package fr.aphp.tumorotek.interfacage.storageRobot;
 
 /**
- * 
+ *
  * @author Mathieu BARTHELEMY
  * @version 2.2.1-IRELEC
  *
  */
-public class StorageEmplacement {
-	
-	private String barcode;
-	private String adrl;
-	
-	public StorageEmplacement(String barcode, String _a) {
-		super();
-		this.barcode = barcode;
-		this.adrl = _a;
-	}
-	
-	public String getBarcode() {
-		return barcode;
-	}
+public class StorageEmplacement
+{
 
-	public void setBarcode(String _b) {
-		this.barcode = _b;
-	}
+   private String barcode;
 
-	public String getAdrl() {
-		return adrl;
-	}
+   private String adrl;
 
-	public void setAdrl(String _a) {
-		this.adrl = _a;
-	}
+   public StorageEmplacement(final String barcode, final String _a){
+      super();
+      this.barcode = barcode;
+      this.adrl = _a;
+   }
 
-	public boolean isComplete() {
-		return getBarcode() != null && getAdrl() != null;
-	}
+   public String getBarcode(){
+      return barcode;
+   }
+
+   public void setBarcode(final String _b){
+      this.barcode = _b;
+   }
+
+   public String getAdrl(){
+      return adrl;
+   }
+
+   public void setAdrl(final String _a){
+      this.adrl = _a;
+   }
+
+   public boolean isComplete(){
+      return getBarcode() != null && getAdrl() != null;
+   }
 }

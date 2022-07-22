@@ -123,51 +123,83 @@ public class FichePrelevementEdit extends AbstractFicheEditController
    protected Log log = LogFactory.getLog(FichePrelevementEdit.class);
 
    protected static final long serialVersionUID = 2627927168895414292L;
+
    protected Textbox codeBoxPrlvt;
+
    protected Textbox numLaboBoxPrlvt;
+
    protected CalendarBox datePrelCalBox;
+
    protected Datebox dateConsentBoxPrlvt;
+
    protected boolean dateConsentBoxChanged;
+
    protected Listbox etabsBoxPrlvt;
+
    protected Listbox servicesBoxPrlvt;
+
    protected Listbox collaborateursBoxPrlvt;
+
    protected Checkbox sterileBoxPrlvt;
+
    protected Button next;
+
    protected Listbox naturesBoxPrlvt;
+
    protected Listbox consentTypesBoxPrlvt;
+
    protected Listbox risquesBox;
+
    protected Button interfacage;
 
    protected ResumePatient resumePatient;
+
    protected Textbox ndaBox;
-   
+
    // gatsbi overrides
    // protected Group groupPatient;
    protected HtmlBasedComponent groupPatient;
 
-   
    // Objets Principaux.
    protected Prelevement prelevement = new Prelevement();
+
    protected Maladie maladie;
 
    // Associations.
    protected List<Nature> natures = new ArrayList<>();
+
    protected Nature selectedNature;
+
    protected List<PrelevementType> modes = new ArrayList<>();
+
    protected PrelevementType selectedMode;
+
    protected List<ConditType> conditTypes = new ArrayList<>();
+
    protected ConditType selectedConditType;
+
    protected List<ConditMilieu> conditMilieus = new ArrayList<>();
+
    protected ConditMilieu selectedConditMilieu;
+
    protected List<ConsentType> consentTypes = new ArrayList<>();
+
    protected ConsentType selectedConsentType;
+
    protected List<Etablissement> etablissements = new ArrayList<>();
+
    protected Etablissement selectedEtablissement;
+
    protected List<Service> services = new ArrayList<>();
+
    protected Service selectedService;
+
    protected List<Collaborateur> collaborateurs = new ArrayList<>();
+
    protected Collaborateur selectedCollaborateur;
+
    protected List<LaboInter> oldLabos = new ArrayList<>();
+
    protected List<Risque> risques = new ArrayList<>();
 
    protected boolean isPatientAccessible = true;
@@ -177,12 +209,15 @@ public class FichePrelevementEdit extends AbstractFicheEditController
    //protected Boolean banqueOrgane;
    // boolean conditionnant l'affichage dans le group Patient
    protected boolean maladieEmbedded = false;
+
    protected boolean patientEmbedded = false;
 
    protected boolean sterileInit;
+
    protected boolean isAnonyme = false;
 
    protected Window referenceur;
+
    protected boolean isPatientMaladieStatic = false;
 
    protected ConsentTypeUsedTable consentTypeUsed = new ConsentTypeUsedTable();
@@ -221,12 +256,12 @@ public class FichePrelevementEdit extends AbstractFicheEditController
       // gatsbi overrides
       resumePatient = initResumePatient();
    }
-   
-   // gatsbi surcharge cette méthode 
-   // car le component group patient n'est pas 
+
+   // gatsbi surcharge cette méthode
+   // car le component group patient n'est pas
    // de même type group VS Groupbox
-   protected ResumePatient initResumePatient() {
-	  return new ResumePatient(groupPatient, false);
+   protected ResumePatient initResumePatient(){
+      return new ResumePatient(groupPatient, false);
    }
 
    @Override
@@ -265,7 +300,7 @@ public class FichePrelevementEdit extends AbstractFicheEditController
          referenceur = (Window) Executions.createComponents("/zuls/prelevement/ReferenceurPatient.zul", refPatientDiv, null);
          // initialize le referenceur
          ((ReferenceurPatient) referenceur.getAttributeOrFellow("winRefPatient$composer", true))
-         .initialize(SessionUtils.getSelectedBanques(sessionScope).get(0).getDefMaladies());
+            .initialize(SessionUtils.getSelectedBanques(sessionScope).get(0).getDefMaladies());
       }
    }
 
@@ -298,16 +333,16 @@ public class FichePrelevementEdit extends AbstractFicheEditController
       getObjectTabController().setCodeUpdated(false);
       getObjectTabController().setOldCode(null);
    }
-   
-   /** 
+
+   /**
     * Gatsbi surcharge cette méthode
     */
-   protected void enablePatientGroup(boolean b) {
-	   if (b) { // enable
-	        this.groupPatient.setClass("z-group");
-	   } else {
-		  this.groupPatient.setClass("z-group-dsd");
-	   }	
+   protected void enablePatientGroup(final boolean b){
+      if(b){ // enable
+         this.groupPatient.setClass("z-group");
+      }else{
+         this.groupPatient.setClass("z-group-dsd");
+      }
    }
 
    /**
@@ -618,11 +653,11 @@ public class FichePrelevementEdit extends AbstractFicheEditController
 
          // update de l'objet
          ManagerLocator.getPrelevementManager().createObjectManager(prelevement,
-        	GatsbiController.enrichesBanqueWithEtudeContextes(getBanque(), sessionScope), 
-            selectedNature, this.maladie, selectedConsentType,
-            selectedCollaborateur, selectedService, selectedMode, selectedConditType, selectedConditMilieu, transporteur,
-            operateur, quantiteUnite, null, getObjectTabController().getFicheAnnotation().getValeursToCreateOrUpdate(),
-            filesCreated, SessionUtils.getLoggedUser(sessionScope), true, SessionUtils.getSystemBaseDir(), false);
+            GatsbiController.enrichesBanqueWithEtudeContextes(getBanque(), sessionScope), selectedNature, this.maladie,
+            selectedConsentType, selectedCollaborateur, selectedService, selectedMode, selectedConditType, selectedConditMilieu,
+            transporteur, operateur, quantiteUnite, null,
+            getObjectTabController().getFicheAnnotation().getValeursToCreateOrUpdate(), filesCreated,
+            SessionUtils.getLoggedUser(sessionScope), true, SessionUtils.getSystemBaseDir(), false);
 
          // rafraichit la maladie pour avoir les references
          this.maladie = ManagerLocator.getPrelevementManager().getMaladieManager(this.prelevement);
@@ -650,13 +685,13 @@ public class FichePrelevementEdit extends AbstractFicheEditController
                if(getObjectTabController().getFromFichePatient()){
                   getObjectTabController().setFromFichePatient(false);
                   getObjectTabController().getReferencingObjectControllers().get(0)
-                  .switchToFicheStaticMode(this.maladie.getPatient());
+                     .switchToFicheStaticMode(this.maladie.getPatient());
 
                   PatientController.backToMe(getMainWindow(), page);
                   // ouvre le panel maladie et la liste de prelevements
                   if(getObjectTabController().getFromFicheMaladie()){
                      ((FichePatientStatic) getObjectTabController().getReferencingObjectControllers().get(0).getFicheStatic())
-                     .openMaladiePanel(maladie);
+                        .openMaladiePanel(maladie);
                      getObjectTabController().setFromFicheMaladie(false);
                   }
                }
@@ -678,8 +713,8 @@ public class FichePrelevementEdit extends AbstractFicheEditController
    @Override
    public void onClick$create(){
 
-	   // gatsbi overrides
-	   checkRequiredListboxes();
+      // gatsbi overrides
+      checkRequiredListboxes();
 
       // valide les dates donc
       validateAllDateComps();
@@ -695,8 +730,8 @@ public class FichePrelevementEdit extends AbstractFicheEditController
    @Override
    public void onClick$validate(){
 
-	   // gatsbi overrides
-	  checkRequiredListboxes();
+      // gatsbi overrides
+      checkRequiredListboxes();
 
       // valide les dates donc
       validateAllDateComps();
@@ -783,9 +818,8 @@ public class FichePrelevementEdit extends AbstractFicheEditController
          getObject().getRisques().addAll(findSelectedRisques());
 
          //Update de l'objet
-         ManagerLocator.getPrelevementManager().updateObjectManager(prelevement, 
-        	GatsbiController.enrichesBanqueWithEtudeContextes(prelevement.getBanque(), sessionScope), 
-        	selectedNature, maladie,
+         ManagerLocator.getPrelevementManager().updateObjectManager(prelevement,
+            GatsbiController.enrichesBanqueWithEtudeContextes(prelevement.getBanque(), sessionScope), selectedNature, maladie,
             selectedConsentType, selectedCollaborateur, selectedService, selectedMode, selectedConditType, selectedConditMilieu,
             transporteur, operateur, quantiteUnite, null,
             getObjectTabController().getFicheAnnotation().getValeursToCreateOrUpdate(),
@@ -880,7 +914,7 @@ public class FichePrelevementEdit extends AbstractFicheEditController
             // car les dates de naissance
             // et deces du patient ont pu être modifée à posteriori
             ((FicheMaladie) embeddedMaladie.getFellow("fwinMaladie").getAttributeOrFellow("fwinMaladie$composer", true))
-            .validateAllDateComps();
+               .validateAllDateComps();
 
             setMaladieFromEmbedded(embeddedMaladie);
 
@@ -907,7 +941,7 @@ public class FichePrelevementEdit extends AbstractFicheEditController
             }else if(((ReferenceurPatient) referenceur.getAttributeOrFellow("winRefPatient$composer", true)).getNoRadio()
                .isChecked()
                || ((ReferenceurPatient) referenceur.getAttributeOrFellow("winRefPatient$composer", true))
-               .getSelectedPatient() == null){
+                  .getSelectedPatient() == null){
                this.maladie = null;
                this.prelevement.setMaladie(null);
             }
@@ -924,10 +958,10 @@ public class FichePrelevementEdit extends AbstractFicheEditController
       // enregistre le formulaire dans le backing-bean
       // meme si il est vide...
       ((FicheMaladie) embedded.getFellow("fwinMaladie").getAttributeOrFellow("fwinMaladie$composer", true)).getBinder()
-      .saveComponent(embedded.getFellow("fwinMaladie"));
+         .saveComponent(embedded.getFellow("fwinMaladie"));
       // prepare les valeurs des attributs
       ((FicheMaladie) embedded.getFellow("fwinMaladie").getAttributeOrFellow("fwinMaladie$composer", true))
-      .prepareDataBeforeSave(true);
+         .prepareDataBeforeSave(true);
       // recupere la maladie meme si empty
       this.maladie =
          ((FicheMaladie) embedded.getFellow("fwinMaladie").getAttributeOrFellow("fwinMaladie$composer", true)).getObject();
@@ -963,9 +997,9 @@ public class FichePrelevementEdit extends AbstractFicheEditController
     * @version 2.3.0-gatsbi
     */
    public void onClick$next(){
-      
-	   // gatsbi overrides
-	   checkRequiredListboxes();
+
+      // gatsbi overrides
+      checkRequiredListboxes();
 
       // valide les dates donc
       validateAllDateComps();
@@ -1119,7 +1153,7 @@ public class FichePrelevementEdit extends AbstractFicheEditController
       codeBoxPrlvt.setValue(codeBoxPrlvt.getValue().toUpperCase().trim());
 
       //On ne contrôle le code que s'il s'agit d'un nouveau prélèvement ou si le code a été modifié
-      if(prelevement.getPrelevementId() == null || !codeBoxPrlvt.getValue().equals(prelevement.getCode())) {
+      if(prelevement.getPrelevementId() == null || !codeBoxPrlvt.getValue().equals(prelevement.getCode())){
          validatePrelevementCode(codeBoxPrlvt.getValue());
       }
 
@@ -1219,7 +1253,7 @@ public class FichePrelevementEdit extends AbstractFicheEditController
     * Validation "à la volée" du code prélèvement saisi
     * @param prltCode
     */
-   private void validatePrelevementCode(String prltCode){
+   private void validatePrelevementCode(final String prltCode){
 
       //Vérification de l'absence de doublons
       final List<Prelevement> doublons = ManagerLocator.getManager(PrelevementManager.class)
@@ -1270,7 +1304,7 @@ public class FichePrelevementEdit extends AbstractFicheEditController
       // remet à null le calcul du delai congelation au besoin
       if(getObjectTabController().getNextToEchanClicked()){
          ((EchantillonController) getObjectTabController().getReferencedObjectsControllers(true).get(0)).getMultiFicheEdit()
-         .resetDelaiCgl();
+            .resetDelaiCgl();
       }
    }
 
@@ -1279,14 +1313,14 @@ public class FichePrelevementEdit extends AbstractFicheEditController
     * les dates de references du Patient ont pu changer a posteriori.
     */
    public void validateAllDateComps(){
-	  if (datePrelCalBox.isVisible()) {
-		  datePrelCalBox.clearErrorMessage(datePrelCalBox.getValue());
-		  validateCoherenceDate(datePrelCalBox, datePrelCalBox.getValue());
-	  }
-	  if (dateConsentBoxPrlvt.isVisible()) {
-		  dateConsentBoxPrlvt.clearErrorMessage(true);
-		  validateCoherenceDate(dateConsentBoxPrlvt, dateConsentBoxPrlvt.getValue());
-	  }
+      if(datePrelCalBox.isVisible()){
+         datePrelCalBox.clearErrorMessage(datePrelCalBox.getValue());
+         validateCoherenceDate(datePrelCalBox, datePrelCalBox.getValue());
+      }
+      if(dateConsentBoxPrlvt.isVisible()){
+         dateConsentBoxPrlvt.clearErrorMessage(true);
+         validateCoherenceDate(dateConsentBoxPrlvt, dateConsentBoxPrlvt.getValue());
+      }
    }
 
    public List<Nature> getNatures(){
@@ -1428,10 +1462,10 @@ public class FichePrelevementEdit extends AbstractFicheEditController
    public List<Risque> getRisques(){
       return risques;
    }
-   
-   public void setRisques(List<Risque> _r){
-	   risques.clear();
-	   risques.addAll(_r);
+
+   public void setRisques(final List<Risque> _r){
+      risques.clear();
+      risques.addAll(_r);
    }
 
    /**
@@ -1542,18 +1576,18 @@ public class FichePrelevementEdit extends AbstractFicheEditController
             getObjectTabController().getFicheAnnotation().switchToStaticOrEditMode(false, false);
          }
 
-         if (newObj.getMaladie() != null) { // initialize le referenceur
-        	 ((ReferenceurPatient) referenceur.getAttributeOrFellow("winRefPatient$composer", true))
-        	 	.setPatientAndMaladieFromOutSideReferenceur(newPat, newObj.getMaladie(), newObj.getPatientNda());
+         if(newObj.getMaladie() != null){ // initialize le referenceur
+            ((ReferenceurPatient) referenceur.getAttributeOrFellow("winRefPatient$composer", true))
+               .setPatientAndMaladieFromOutSideReferenceur(newPat, newObj.getMaladie(), newObj.getPatientNda());
          }
 
          getBinder().loadComponent(self);
 
          // ajout opération consultation
-         if (res.getDossierExterne() != null) {
-	         ManagerLocator.getConsultationIntfManager().createObjectManager(res.getDossierExterne().getIdentificationDossier(),
-	            Calendar.getInstance(), res.getDossierExterne().getEmetteur().getIdentification(),
-	            SessionUtils.getLoggedUser(sessionScope));
+         if(res.getDossierExterne() != null){
+            ManagerLocator.getConsultationIntfManager().createObjectManager(res.getDossierExterne().getIdentificationDossier(),
+               Calendar.getInstance(), res.getDossierExterne().getEmetteur().getIdentification(),
+               SessionUtils.getLoggedUser(sessionScope));
          }
       }
    }
@@ -1564,7 +1598,7 @@ public class FichePrelevementEdit extends AbstractFicheEditController
 
       // initialize le referenceur
       ((ReferenceurPatient) referenceur.getAttributeOrFellow("winRefPatient$composer", true))
-      .setPatientAndMaladieFromOutSideReferenceur(pat, mal, null);
+         .setPatientAndMaladieFromOutSideReferenceur(pat, mal, null);
    }
 
    /**
@@ -1752,17 +1786,17 @@ public class FichePrelevementEdit extends AbstractFicheEditController
     * Gatsbi surcharge cette méthode
     * @since 2.3.0-gatsbi
     */
-   protected void checkRequiredListboxes() {
-	
-		      if(selectedNature == null){
-		         Clients.scrollIntoView(naturesBoxPrlvt);
-		         throw new WrongValueException(naturesBoxPrlvt, Labels.getLabel("fichePrelevement.error.nature"));
-		      }
-		      Clients.clearWrongValue(naturesBoxPrlvt);
-		      if(selectedConsentType == null){
-		         Clients.scrollIntoView(consentTypesBoxPrlvt);
-		         throw new WrongValueException(consentTypesBoxPrlvt, Labels.getLabel("fichePrelevement.error.consenType"));
-		      }
-		      Clients.clearWrongValue(consentTypesBoxPrlvt);	
+   protected void checkRequiredListboxes(){
+
+      if(selectedNature == null){
+         Clients.scrollIntoView(naturesBoxPrlvt);
+         throw new WrongValueException(naturesBoxPrlvt, Labels.getLabel("fichePrelevement.error.nature"));
+      }
+      Clients.clearWrongValue(naturesBoxPrlvt);
+      if(selectedConsentType == null){
+         Clients.scrollIntoView(consentTypesBoxPrlvt);
+         throw new WrongValueException(consentTypesBoxPrlvt, Labels.getLabel("fichePrelevement.error.consenType"));
+      }
+      Clients.clearWrongValue(consentTypesBoxPrlvt);
    }
 }

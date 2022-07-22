@@ -54,6 +54,7 @@ public class ExistingAnnotationValuesException extends TKException
    private static final long serialVersionUID = -6748880359935549123L;
 
    private TableAnnotation table;
+
    private Banque banque;
 
    public ExistingAnnotationValuesException(){

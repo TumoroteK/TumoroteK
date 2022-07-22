@@ -285,7 +285,7 @@ public class LaboInterValidatorImpl implements LaboInterValidator
    }
 
    /**
-    * Parcoure de manière récursive les labos précedents afin de trouver le 
+    * Parcoure de manière récursive les labos précedents afin de trouver le
     * labo n-1.
     * @param labo
     * @param liste labo inters
@@ -317,7 +317,7 @@ public class LaboInterValidatorImpl implements LaboInterValidator
    }
 
    /**
-    * Parcoure de manière récursive les labos suivants afin de trouver le 
+    * Parcoure de manière récursive les labos suivants afin de trouver le
     * labo n+1.
     * @param labo
     * @param liste labo inters

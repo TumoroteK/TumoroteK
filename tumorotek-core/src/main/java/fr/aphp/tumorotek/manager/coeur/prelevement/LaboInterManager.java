@@ -86,7 +86,7 @@ public interface LaboInterManager
 
    /**
     * Cherche les doublons en se basant sur la methode equals()
-    * surchargee par les entites. Si l'objet est modifie donc a un id 
+    * surchargee par les entites. Si l'objet est modifie donc a un id
     * attribue par le SGBD, ce dernier est retire de la liste findAll.
     * @param labo LaboInter dont on cherche la presence dans la base
     * @return true/false
@@ -108,7 +108,7 @@ public interface LaboInterManager
    /**
     * Recherche tous les labos intermediaires associes au service
     * passe en parametre.
-    * @param service Service 
+    * @param service Service
     * @return Liste de LaboInter.
     */
    List<LaboInter> findByServiceManager(Service service);
@@ -116,7 +116,7 @@ public interface LaboInterManager
    /**
     * Recherche tous les labos intermediaires associes au collaborateur
     * passe en parametre.
-    * @param collaborateur Collaborateur 
+    * @param collaborateur Collaborateur
     * @return Liste de LaboInter.
     */
    List<LaboInter> findByCollaborateurManager(Collaborateur collaborateur);

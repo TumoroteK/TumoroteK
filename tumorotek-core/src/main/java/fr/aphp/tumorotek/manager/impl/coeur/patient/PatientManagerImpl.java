@@ -105,17 +105,29 @@ public class PatientManagerImpl implements PatientManager
 
    /* Beans injectes par Spring*/
    private PatientDao patientDao;
+
    private MaladieDao maladieDao;
+
    private MaladieManager maladieManager;
+
    private PatientMedecinDao patientMedecinDao;
+
    private PatientLienDao patientLienDao;
+
    private PatientValidator patientValidator;
+
    private OperationTypeDao operationTypeDao;
+
    private OperationManager operationManager;
+
    private EntityManagerFactory entityManagerFactory;
+
    private EntiteDao entiteDao;
+
    private PrelevementDao prelevementDao;
+
    private AnnotationValeurManager annotationValeurManager;
+
    private ImportHistoriqueManager importHistoriqueManager;
    // private PatientDelegateDao patientDelegateDao;
 
@@ -193,7 +205,8 @@ public class PatientManagerImpl implements PatientManager
             throw new DoublonFoundException("Patient", operation, patient.getNip(), null);
          }
          if((operation.equals("creation") || operation.equals("modification")) || operation.equals("modifMulti")
-            || operation.equals("synchronisation") || operation.equals("fusion") || operation.equals("validation") || operation.equals("invalidation")){
+            || operation.equals("synchronisation") || operation.equals("fusion") || operation.equals("validation")
+            || operation.equals("invalidation")){
 
             OperationType oType;
 
@@ -248,13 +261,13 @@ public class PatientManagerImpl implements PatientManager
                }
 
                // update les annotations, null operation pour
-               // laisser la possibilité création/modification au sein 
+               // laisser la possibilité création/modification au sein
                // de la liste
                if(listAnnoToCreateOrUpdate != null){
                   annotationValeurManager.createAnnotationValeurListManager(listAnnoToCreateOrUpdate, patient, utilisateur, null,
                      baseDir, filesCreated, filesToDelete);
                }
-               // enregistre operation associee annotation 
+               // enregistre operation associee annotation
                // si il y a eu des deletes et pas d'updates
                if((listAnnoToCreateOrUpdate == null || listAnnoToCreateOrUpdate.isEmpty())
                   && (listAnnoToDelete != null && !listAnnoToDelete.isEmpty())){
@@ -283,7 +296,8 @@ public class PatientManagerImpl implements PatientManager
             }
 
          }else{
-            throw new IllegalArgumentException("Operation must match " + "'creation/modification/synchronisation/fusion/validation/invalidation' values");
+            throw new IllegalArgumentException(
+               "Operation must match " + "'creation/modification/synchronisation/fusion/validation/invalidation' values");
          }
       }
    }
@@ -372,7 +386,7 @@ public class PatientManagerImpl implements PatientManager
    }
 
    /**
-    * Recherche toutes les patients dont le nom est egal ou 'like' 
+    * Recherche toutes les patients dont le nom est egal ou 'like'
     * celui passé en parametre.
     * @param nom
     * @param boolean exactMatch
@@ -388,7 +402,7 @@ public class PatientManagerImpl implements PatientManager
    }
 
    /**
-    * Recherche toutes les patients dont le nom est egal ou 'like' 
+    * Recherche toutes les patients dont le nom est egal ou 'like'
     * celui passé en parametre.
     * @param nom
     * @param boolean exactMatch
@@ -559,7 +573,7 @@ public class PatientManagerImpl implements PatientManager
     * une liste de maladies.
     * @param patient pour lequel on veut mettre à jour
     * les associations.
-    * @param maladies Liste des maladies que l'on veut associer 
+    * @param maladies Liste des maladies que l'on veut associer
     * au patient.
     */
    private void updateMaladies(final Patient patient, final List<Maladie> maladies){
@@ -609,7 +623,7 @@ public class PatientManagerImpl implements PatientManager
     * une liste de patientMedecin.
     * @param patient pour lequel on veut mettre à jour
     * les associations.
-    * @param collaborateurs Liste ordonnée des medecins referents 
+    * @param collaborateurs Liste ordonnée des medecins referents
     * que l'on veut associer au patient.
     */
    private void updateMedecins(final Patient patient, final List<Collaborateur> collaborateurs){
@@ -667,7 +681,7 @@ public class PatientManagerImpl implements PatientManager
     * une liste de patientLien.
     * @param patient pour lequel on veut mettre à jour
     * les liens familiaux.
-    * @param patients Liste de patients que l'on veut que 
+    * @param patients Liste de patients que l'on veut que
     * l'on veut lier au patient.
     */
    private void updateLiens(final Patient patient, final List<PatientLien> liens){
@@ -723,7 +737,7 @@ public class PatientManagerImpl implements PatientManager
    }
 
    /**
-    * Recupere la liste de patients en fonction du type d'operation et 
+    * Recupere la liste de patients en fonction du type d'operation et
     * d'une date a laquelle la date d'enregistrement de l'operation doit
     * etre superieure ou egale.
     * Dans un premier temps, recupere la liste des objetIds qui sont ensuite
@@ -756,7 +770,7 @@ public class PatientManagerImpl implements PatientManager
    }
 
    /**
-    * Recupere la liste de patients en fonction du type d'operation et 
+    * Recupere la liste de patients en fonction du type d'operation et
     * d'une date a laquelle la date d'enregistrement de l'operation doit
     * etre superieure ou egale.
     * Dans un premier temps, recupere la liste des objetIds qui sont ensuite
@@ -860,9 +874,9 @@ public class PatientManagerImpl implements PatientManager
          annotationValeurManager.removeAnnotationValeurListManager(listAnnoToDelete, filesToDelete);
 
          if(listAnnoToCreateOrUpdate != null){
-            // traite en premier et retire les annotations 
-            // création de fichiers pour 
-            // enregistrement en batch 
+            // traite en premier et retire les annotations
+            // création de fichiers pour
+            // enregistrement en batch
             final List<AnnotationValeur> fileVals = new ArrayList<>();
             for(final AnnotationValeur val : listAnnoToCreateOrUpdate){
                if(val.getFichier() != null && val.getStream() != null){
@@ -874,7 +888,7 @@ public class PatientManagerImpl implements PatientManager
             listAnnoToCreateOrUpdate.removeAll(fileVals);
 
             // update les annotations, null operation pour
-            // laisser la possibilité création/modification au sein 
+            // laisser la possibilité création/modification au sein
             // de la liste
             annotationValeurManager.createAnnotationValeurListManager(listAnnoToCreateOrUpdate, null, utilisateur, null, baseDir,
                filesCreated, filesToDelete);
@@ -992,7 +1006,7 @@ public class PatientManagerImpl implements PatientManager
             // si le patient actif a déjà une annotation pour le
             // champ de l'annotation du passif
             if(champsValeurs.containsKey(valeursPassives.get(i).getChampAnnotation())){
-               // si cette valeur est pour la même collection : 
+               // si cette valeur est pour la même collection :
                // on va supprimer cette annotation
                valeursASupprimer.add(valeursPassives.get(i));
             }else{
@@ -1094,7 +1108,7 @@ public class PatientManagerImpl implements PatientManager
       }
    }
 
-//   public void setPatientDelegateDao(PatientDelegateDao patientDelegateDao){
-//      this.patientDelegateDao = patientDelegateDao;
-//   }
+   //   public void setPatientDelegateDao(PatientDelegateDao patientDelegateDao){
+   //      this.patientDelegateDao = patientDelegateDao;
+   //   }
 }

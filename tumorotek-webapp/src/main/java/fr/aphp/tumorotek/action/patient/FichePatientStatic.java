@@ -73,17 +73,21 @@ public class FichePatientStatic extends AbstractFicheStaticController
 
    // button
    protected Button addMaladie;
+
    private Button addPrelevement;
 
    // maladies
    private Div malaDiv;
 
    private String maladieGroupHeaderTemplate;
+
    private String maladieGroupHeader;
+
    private int lastPanelId;
 
    // referents
    private Group maladiesGroup;
+
    private Group referentsGroup;
 
    // Objets Principaux
@@ -96,16 +100,20 @@ public class FichePatientStatic extends AbstractFicheStaticController
 
    // Associations
    private List<Maladie> maladies = new ArrayList<>();
+
    private List<Collaborateur> medecins = new ArrayList<>();
 
    // Labels à cacher en cas de compte anonyme
    private Label nipLabel;
+
    private Label nomLabel;
+
    private Label nomNaisLabel;
+
    private Label prenomLabel;
 
    private final List<Prelevement> prelevementsFromOtherMaladies = new ArrayList<>();
-   
+
    // maladie systems -> contexte TK anapath par défaut
    private final PrelevementItemRenderer prelevementFromOtherMaladiesRenderer = new PrelevementItemRenderer();
 

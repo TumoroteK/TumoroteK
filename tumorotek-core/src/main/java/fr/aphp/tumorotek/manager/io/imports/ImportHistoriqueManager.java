@@ -130,7 +130,7 @@ public interface ImportHistoriqueManager
    void removeImportationManager(Importation importation);
 
    /**
-    * Renvoies les prélèvements importés lors de l'opération représentée 
+    * Renvoies les prélèvements importés lors de l'opération représentée
     * par l'historique.
     * @param ih1 ImportHistorique
     * @return liste Prelevement

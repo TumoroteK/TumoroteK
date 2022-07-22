@@ -85,18 +85,27 @@ public class Transporteur implements TKFantomableObject, TKdataObject, Serializa
    private static final long serialVersionUID = 3254564866454L;
 
    private Integer transporteurId;
+
    private String nom;
+
    private String contactNom;
+
    private String contactPrenom;
+
    private String contactTel;
+
    private String contactFax;
+
    private String contactMail;
+
    private Boolean archive = false;
 
    private Coordonnee coordonnee;
 
    private Set<Prelevement> prelevements = new HashSet<>();
+
    private Set<Cession> cessions = new HashSet<>();
+
    private Set<LaboInter> laboInters = new HashSet<>();
 
    /** Constructeur. */
@@ -113,8 +122,8 @@ public class Transporteur implements TKFantomableObject, TKdataObject, Serializa
    //	 * @param cMail .
    //	 * @param arch .
    //	 */
-   //	public Transporteur(Integer id, String n, String cNom, 
-   //			String cPrenom, String cTel, String cFax, 
+   //	public Transporteur(Integer id, String n, String cNom,
+   //			String cPrenom, String cTel, String cFax,
    //			String cMail, boolean arch) {
    //		this.transporteurId = id;
    //		this.nom = n;

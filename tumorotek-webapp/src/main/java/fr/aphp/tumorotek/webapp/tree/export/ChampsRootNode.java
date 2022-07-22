@@ -58,14 +58,17 @@ public class ChampsRootNode extends TumoTreeNode
 {
 
    private List<Champ> oldSelectedChamps = new ArrayList<>();
+
    /**
     * Liste des dataTypes à afficher
     */
    private List<DataType> dataTypeList;
+
    /**
     * Exclure les champs numérique de type Id
     */
    private Boolean excludeIds;
+
    private Banque banque;
 
    /**

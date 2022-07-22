@@ -49,7 +49,6 @@ import fr.aphp.tumorotek.action.utilisateur.ProfilExport;
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.contexte.EContexte;
 import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
-
 import oracle.sql.ARRAY;
 
 /**
@@ -62,7 +61,7 @@ public class Export_Oracle extends Export
 
    public Export_Oracle(final Desktop d, final int ent, final List<Integer> o, final List<Banque> b, final ProfilExport pE,
       final short type, final Utilisateur u, final List<Integer> rI, final HtmlMacroComponent htmlMacroComponent,
-      final Map<String, ?> params, EContexte contexte){
+      final Map<String, ?> params, final EContexte contexte){
       super(d, ent, o, b, pE, type, u, rI, htmlMacroComponent, params, contexte);
    }
 
@@ -92,11 +91,11 @@ public class Export_Oracle extends Export
       outParamIdx = 1;
       return "{call select_biocap_data(?)}";
    }
-   
+
    @Override
-   public String initPatientTableAnonymeSQL() {
-		return "{call create_tmp_patient_anonyme()}";
-	}
+   public String initPatientTableAnonymeSQL(){
+      return "{call create_tmp_patient_anonyme()}";
+   }
 
    @Override
    protected void fetchResultSet() throws SQLException{
@@ -152,7 +151,7 @@ public class Export_Oracle extends Export
    //			preparedStatement.close();
    //
    //			load_sequences();
-   //			
+   //
    //			if(exportType == ConfigManager.BIOCAP_EXPORT) {
    //				type_export = ConfigManager.BIOCAP_EXPORT;
    //				export_biocap_features();
@@ -180,7 +179,7 @@ public class Export_Oracle extends Export
    //				hasPrelevement = true;
    //			}
    //			connection.commit();
-   //			
+   //
    //			create_export();
    //
    //		} catch (SQLException e1) {

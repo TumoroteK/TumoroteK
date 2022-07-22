@@ -48,7 +48,9 @@ public class ImportError
 {
 
    private RuntimeException exception;
+
    private Row row;
+
    private Integer nbRow;
 
    public ImportError(){

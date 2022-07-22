@@ -72,11 +72,15 @@ public class FormulaireFusionVM
 {
 
    private ListModelList<DuoEntites> duoModel;
+
    private DuoEntites duoSelectedEntites;
 
    FusionDetailsBarChartEngine engine1;
+
    FusionDetailsBarChartEngine engine2;
+
    CategoryModel model;
+
    CategoryModel model2;
 
    ChartDataFusion cdf = new ChartDataFusion();
@@ -87,7 +91,9 @@ public class FormulaireFusionVM
    PatientManager patientManager;
 
    private int idASelected;
+
    private int idBSelected;
+
    private String entiteRecherche;
 
    private String commentaires;
@@ -98,9 +104,11 @@ public class FormulaireFusionVM
 
    // générique
    private String nomA;
+
    private String nomB;
 
    private String prenomA;
+
    private String prenomB;
 
    private boolean visibleCollaborateur = false;
@@ -108,44 +116,68 @@ public class FormulaireFusionVM
    // private boolean visibleEtablissement = false;
 
    private Collaborateur cA;
+
    private Collaborateur cB;
 
    private Service sA;
+
    private Service sB;
 
    private Etablissement eA;
+
    private Etablissement eB;
 
    private String nomChamp1;
+
    private String champ1A;
+
    private String champ1B;
 
    private String nomChamp2;
+
    private String champ2A;
+
    private String champ2B;
 
    private String nomChamp3;
+
    private String champ3A;
+
    private String champ3B;
 
    private String dateCreationA;
+
    private String dateCreationB;
+
    private String operateurCreationA;
+
    private String operateurCreationB;
+
    private String dateLastModificationA;
+
    private String dateLastModificationB;
+
    private String operateurLastModificationA;
+
    private String operateurLastModificationB;
 
    // info details pour chart
    private String nomInfoChartChamp1;
+
    private String nomInfoChartChamp2;
+
    private String nomInfoChartChamp3;
+
    private Long infoChartChamp1A;
+
    private long infoChartChamp2A;
+
    private long infoChartChamp3A;
+
    private long infoChartChamp1B;
+
    private long infoChartChamp2B;
+
    private long infoChartChamp3B;
 
    // private boolean sensFusion = false;
@@ -198,23 +230,17 @@ public class FormulaireFusionVM
       cdf.addValueTo1((cA.getNom() + " " + getIdASelectedString()),
          Labels.getLabel("fusion.collaborateur.nb.prelevements.preleves"),
          ManagerLocator.getPrelevementManager().findCountByPreleveurManager(cA));
-      cdf.addValueTo1((cA.getNom() + " " + getIdASelectedString()),
-         Labels.getLabel("fusion.collaborateur.nb.prodderives.operes"),
+      cdf.addValueTo1((cA.getNom() + " " + getIdASelectedString()), Labels.getLabel("fusion.collaborateur.nb.prodderives.operes"),
          ManagerLocator.getProdDeriveManager().findCountByOperateurManager(cA));
-      cdf.addValueTo1((cA.getNom() + " " + getIdASelectedString()),
-         Labels.getLabel("fusion.collaborateur.nb.maladies.referent"),
+      cdf.addValueTo1((cA.getNom() + " " + getIdASelectedString()), Labels.getLabel("fusion.collaborateur.nb.maladies.referent"),
          ManagerLocator.getMaladieManager().findCountByReferentManager(cA));
-      cdf.addValueTo1((cA.getNom() + " " + getIdASelectedString()),
-         Labels.getLabel("fusion.collaborateur.nb.patients.referent"),
+      cdf.addValueTo1((cA.getNom() + " " + getIdASelectedString()), Labels.getLabel("fusion.collaborateur.nb.patients.referent"),
          ManagerLocator.getPatientManager().findCountByReferentManager(cA));
-      cdf.addValueTo1((cA.getNom() + " " + getIdASelectedString()),
-         Labels.getLabel("fusion.collaborateur.nb.cessions.demandees"),
+      cdf.addValueTo1((cA.getNom() + " " + getIdASelectedString()), Labels.getLabel("fusion.collaborateur.nb.cessions.demandees"),
          ManagerLocator.getCessionManager().findCountByDemandeurManager(cA));
-      cdf.addValueTo1((cA.getNom() + " " + getIdASelectedString()),
-         Labels.getLabel("fusion.collaborateur.nb.cessions.executees"),
+      cdf.addValueTo1((cA.getNom() + " " + getIdASelectedString()), Labels.getLabel("fusion.collaborateur.nb.cessions.executees"),
          ManagerLocator.getCessionManager().findCountByExecutantManager(cA));
-      cdf.addValueTo1((cA.getNom() + " " + getIdASelectedString()),
-         Labels.getLabel("fusion.collaborateur.nb.cessions.destinees"),
+      cdf.addValueTo1((cA.getNom() + " " + getIdASelectedString()), Labels.getLabel("fusion.collaborateur.nb.cessions.destinees"),
          ManagerLocator.getCessionManager().findCountByDestinataireManager(cA));
 
       cdf.addValueTo2((cB.getNom() + " " + getIdBSelectedString()),
@@ -223,28 +249,22 @@ public class FormulaireFusionVM
       cdf.addValueTo2((cB.getNom() + " " + getIdBSelectedString()),
          Labels.getLabel("fusion.collaborateur.nb.prelevements.preleves"),
          ManagerLocator.getPrelevementManager().findCountByPreleveurManager(cB));
-      cdf.addValueTo2((cB.getNom() + " " + getIdBSelectedString()),
-         Labels.getLabel("fusion.collaborateur.nb.prodderives.operes"),
+      cdf.addValueTo2((cB.getNom() + " " + getIdBSelectedString()), Labels.getLabel("fusion.collaborateur.nb.prodderives.operes"),
          ManagerLocator.getProdDeriveManager().findCountByOperateurManager(cB));
-      cdf.addValueTo2((cB.getNom() + " " + getIdBSelectedString()),
-         Labels.getLabel("fusion.collaborateur.nb.maladies.referent"),
+      cdf.addValueTo2((cB.getNom() + " " + getIdBSelectedString()), Labels.getLabel("fusion.collaborateur.nb.maladies.referent"),
          ManagerLocator.getMaladieManager().findCountByReferentManager(cB));
-      cdf.addValueTo2((cB.getNom() + " " + getIdBSelectedString()),
-         Labels.getLabel("fusion.collaborateur.nb.patients.referent"),
+      cdf.addValueTo2((cB.getNom() + " " + getIdBSelectedString()), Labels.getLabel("fusion.collaborateur.nb.patients.referent"),
          ManagerLocator.getPatientManager().findCountByReferentManager(cB));
-      cdf.addValueTo2((cB.getNom() + " " + getIdBSelectedString()),
-         Labels.getLabel("fusion.collaborateur.nb.cessions.demandees"),
+      cdf.addValueTo2((cB.getNom() + " " + getIdBSelectedString()), Labels.getLabel("fusion.collaborateur.nb.cessions.demandees"),
          ManagerLocator.getCessionManager().findCountByDemandeurManager(cB));
-      cdf.addValueTo2((cB.getNom() + " " + getIdBSelectedString()),
-         Labels.getLabel("fusion.collaborateur.nb.cessions.executees"),
+      cdf.addValueTo2((cB.getNom() + " " + getIdBSelectedString()), Labels.getLabel("fusion.collaborateur.nb.cessions.executees"),
          ManagerLocator.getCessionManager().findCountByExecutantManager(cB));
-      cdf.addValueTo2((cB.getNom() + " " + getIdBSelectedString()),
-         Labels.getLabel("fusion.collaborateur.nb.cessions.destinees"),
+      cdf.addValueTo2((cB.getNom() + " " + getIdBSelectedString()), Labels.getLabel("fusion.collaborateur.nb.cessions.destinees"),
          ManagerLocator.getCessionManager().findCountByDestinataireManager(cB));
 
       fillGenericData(cA, cB);
    }
-   
+
    private void initDataService(final int id1, final int id2){
       this.sA = ManagerLocator.getServiceManager().findByIdManager(id1);
       this.sB = ManagerLocator.getServiceManager().findByIdManager(id2);
@@ -255,23 +275,19 @@ public class FormulaireFusionVM
       this.champ1A = sA.getEtablissement().getNom();
       this.champ1B = sB.getEtablissement().getNom();
 
-      cdf.addValueTo1((sA.getNom() + " " + getIdASelectedString()),
-         Labels.getLabel("fusion.service.nb.collaborateurs.affectes"),
+      cdf.addValueTo1((sA.getNom() + " " + getIdASelectedString()), Labels.getLabel("fusion.service.nb.collaborateurs.affectes"),
          ManagerLocator.getCollaborateurManager().findCountByServicedIdManager(sA));
-      cdf.addValueTo1((sA.getNom() + " " + getIdASelectedString()),
-         Labels.getLabel("fusion.service.nb.prelevements.affectes"),
+      cdf.addValueTo1((sA.getNom() + " " + getIdASelectedString()), Labels.getLabel("fusion.service.nb.prelevements.affectes"),
          ManagerLocator.getPrelevementManager().findCountByServiceManager(sA));
 
-      cdf.addValueTo2((sB.getNom() + " " + getIdBSelectedString()),
-         Labels.getLabel("fusion.service.nb.collaborateurs.affectes"),
+      cdf.addValueTo2((sB.getNom() + " " + getIdBSelectedString()), Labels.getLabel("fusion.service.nb.collaborateurs.affectes"),
          ManagerLocator.getCollaborateurManager().findCountByServicedIdManager(sB));
-      cdf.addValueTo2((sB.getNom() + " " + getIdBSelectedString()),
-         Labels.getLabel("fusion.service.nb.prelevements.affectes"),
+      cdf.addValueTo2((sB.getNom() + " " + getIdBSelectedString()), Labels.getLabel("fusion.service.nb.prelevements.affectes"),
          ManagerLocator.getPrelevementManager().findCountByServiceManager(sB));
 
       fillGenericData(sA, sB);
    }
-   
+
    private void initDataEtablissement(final int id1, final int id2){
       this.eA = ManagerLocator.getEtablissementManager().findByIdManager(id1);
       this.eB = ManagerLocator.getEtablissementManager().findByIdManager(id2);
@@ -279,15 +295,13 @@ public class FormulaireFusionVM
       this.nomA = eA.getNom();
       this.nomB = eB.getNom();
 
-      cdf.addValueTo1((eA.getNom() + " " + getIdASelectedString()),
-         Labels.getLabel("fusion.etablissement.nb.services.lies"),
+      cdf.addValueTo1((eA.getNom() + " " + getIdASelectedString()), Labels.getLabel("fusion.etablissement.nb.services.lies"),
          ManagerLocator.getServiceManager().findCountByEtablissementIdManager(eA));
       cdf.addValueTo1((eA.getNom() + " " + getIdASelectedString()),
          Labels.getLabel("fusion.etablissement.nb.collaborateurs.lies"),
          ManagerLocator.getCollaborateurManager().findCountByEtablissementManager(eA));
 
-      cdf.addValueTo2((eB.getNom() + " " + getIdBSelectedString()),
-         Labels.getLabel("fusion.etablissement.nb.services.lies"),
+      cdf.addValueTo2((eB.getNom() + " " + getIdBSelectedString()), Labels.getLabel("fusion.etablissement.nb.services.lies"),
          ManagerLocator.getServiceManager().findCountByEtablissementIdManager(eB));
       cdf.addValueTo2((eB.getNom() + " " + getIdBSelectedString()),
          Labels.getLabel("fusion.etablissement.nb.collaborateurs.lies"),
@@ -295,7 +309,7 @@ public class FormulaireFusionVM
 
       fillGenericData(eA, eB);
    }
-   
+
    public void initData(final int id1, final int id2){
       cdf.emptyIt();
 
@@ -369,7 +383,7 @@ public class FormulaireFusionVM
 
    /*
     * public void doAfterCompose(Component window) throws Exception {
-    * 
+    *
     * if (hm.containsKey("username ")) { String s = (String)
     * arg.get("username")); } }
     */

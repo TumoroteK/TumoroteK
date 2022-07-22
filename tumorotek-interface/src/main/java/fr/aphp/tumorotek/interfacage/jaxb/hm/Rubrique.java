@@ -75,6 +75,7 @@ public class Rubrique
 
    @XmlElement(name = "codRub", required = true)
    private String codRub;
+
    @XmlElementWrapper(name = "valeurs", required = true)
    @XmlElement(name = "valeur")
    protected List<String> valeurs;

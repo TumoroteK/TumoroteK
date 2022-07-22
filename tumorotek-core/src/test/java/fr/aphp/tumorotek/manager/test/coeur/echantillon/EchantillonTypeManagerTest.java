@@ -69,8 +69,10 @@ public class EchantillonTypeManagerTest extends AbstractManagerTest4
 
    @Autowired
    private EchantillonTypeManager echantillonTypeManager;
+
    @Autowired
    private EchantillonManager echantillonManager;
+
    @Autowired
    private PlateformeDao plateformeDao;
 

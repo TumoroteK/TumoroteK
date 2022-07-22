@@ -141,71 +141,103 @@ public class BanqueManagerTest extends AbstractManagerTest4
 
    @Autowired
    private BanqueManager banqueManager;
+
    @Autowired
    private UtilisateurDao utilisateurDao;
+
    @Autowired
    private EntiteDao entiteDao;
+
    @Autowired
    private PlateformeDao plateformeDao;
+
    @Autowired
    private ContexteDao contexteDao;
+
    @Autowired
    private TableCodageDao tableCodageDao;
+
    @Autowired
    private BanqueValidator banqueValidator;
+
    @Autowired
    private ServiceDao serviceDao;
+
    @Autowired
    private CollaborateurDao collaborateurDao;
+
    @Autowired
    private CouleurDao couleurDao;
+
    @Autowired
    private ConteneurDao conteneurDao;
+
    @Autowired
    private TableAnnotationDao tableAnnotationDao;
+
    @Autowired
    private EnceinteManager enceinteManager;
+
    @Autowired
    private EnceinteTypeManager enceinteTypeManager;
+
    @Autowired
    private ConteneurManager conteneurManager;
+
    @Autowired
    private TableAnnotationManager tableAnnotationManager;
+
    @Autowired
    private EchantillonTypeDao echantillonTypeDao;
+
    @Autowired
    private CouleurEntiteTypeManager couleurEntiteTypeManager;
+
    @Autowired
    private CodeSelectManager codeSelectManager;
+
    @Autowired
    private CodeUtilisateurManager codeUtilisateurManager;
+
    @Autowired
    private PrelevementManager prelevementManager;
+
    @Autowired
    private EchantillonManager echantillonManager;
+
    @Autowired
    private ProdDeriveManager prodDeriveManager;
+
    @Autowired
    private CessionManager cessionManager;
+
    @Autowired
    private CodeDossierManager codeDossierManager;
+
    @Autowired
    private AffichageManager affichageManager;
+
    @Autowired
    private CatalogueDao catalogueDao;
+
    @Autowired
    private ObjetStatutDao objetStatutDao;
+
    @Autowired
    private ProdTypeDao prodTypeDao;
+
    @Autowired
    private ProfilDao profilDao;
+
    @Autowired
    private ProfilUtilisateurDao profilUtilisateurDao;
+
    @Autowired
    private UtilisateurManager utilisateurManager;
+
    @Autowired
    private EtudeDao etudeDao;
-   
+
    public BanqueManagerTest(){}
 
    @Test
@@ -1162,18 +1194,18 @@ public class BanqueManagerTest extends AbstractManagerTest4
    public void testCreateOrUpdateBanqueWithProfilUtilisateur() throws IOException{
 
       //Suppression du FS
-      if(new File("/tmp/pt_1").exists()) {
+      if(new File("/tmp/pt_1").exists()){
          FileUtils.deleteDirectory(new File("/tmp/pt_1"));
       }
-      
+
       final Plateforme pf = plateformeDao.findById(1);
       final Contexte contexte = contexteDao.findById(1);
-      
+
       //Récupération des profils utilisé pour le test
       final Profil profilConsultation = profilDao.findById(1);
       final Profil profilGestionPatient = profilDao.findById(2);
       final Profil profilAdminBanque = profilDao.findById(4);
-      
+
       //Préparation de la banque
       final Utilisateur admin = utilisateurDao.findById(5);
       final Banque banque = new Banque();
@@ -1181,43 +1213,43 @@ public class BanqueManagerTest extends AbstractManagerTest4
       banque.setPlateforme(pf);
       banque.setDefMaladies(false);
       banque.setContexte(contexte);
-      
+
       //Préparation des utlisateurs
       Utilisateur user1 = new Utilisateur();
       user1.setLogin("USER_TEST_UTLISATEURPROFIL_1");
       user1.setPassword("passwd1");
       user1.setSuperAdmin(false);
-      
+
       Utilisateur user2 = new Utilisateur();
       user2.setLogin("USER_TEST_UTLISATEURPROFIL_2");
       user2.setPassword("passwd2");
       user2.setSuperAdmin(false);
-      
+
       utilisateurManager.createObjectManager(user1, null, null, null, admin, pf);
       utilisateurManager.createObjectManager(user2, null, null, null, admin, pf);
-      
+
       //Préparation des ProfilUtilisateur à ajouter à la création de la banque
       final ProfilUtilisateur profilUtilisateur1 = new ProfilUtilisateur();
       profilUtilisateur1.setUtilisateur(user1);
       profilUtilisateur1.setProfil(profilConsultation);
       profilUtilisateur1.setBanque(banque);
       user1.getProfilUtilisateurs().add(profilUtilisateur1);
-      
+
       final ProfilUtilisateur profilUtilisateur2 = new ProfilUtilisateur();
       profilUtilisateur2.setUtilisateur(user2);
       profilUtilisateur2.setProfil(profilAdminBanque);
       profilUtilisateur2.setBanque(banque);
       user2.getProfilUtilisateurs().add(profilUtilisateur2);
-      
+
       final Set<Utilisateur> banqueUsers = new HashSet<>(Arrays.asList(user1, user2));
-      
-      banqueManager.createOrUpdateObjectManager(banque, pf, contexte, null, null, null, null,
-         null, null, null, null, null, null, null, null, null, admin, banqueUsers, "creation", "/tmp");
-      
+
+      banqueManager.createOrUpdateObjectManager(banque, pf, contexte, null, null, null, null, null, null, null, null, null, null,
+         null, null, null, admin, banqueUsers, "creation", "/tmp");
+
       List<ProfilUtilisateur> listPuForBanque = profilUtilisateurDao.findByBanque(banque, false);
-      
+
       assertTrue(listPuForBanque.containsAll(Arrays.asList(profilUtilisateur1, profilUtilisateur2)));
-      
+
       //Préparation du ProfilUtilisateur à ajouter
       final ProfilUtilisateur profilUtilisateur3 = new ProfilUtilisateur();
       profilUtilisateur3.setUtilisateur(user1);
@@ -1226,22 +1258,22 @@ public class BanqueManagerTest extends AbstractManagerTest4
       user1.getProfilUtilisateurs().add(profilUtilisateur3);
 
       //Update de la banque (ajout de ProfilUtilisateur)
-      banqueManager.createOrUpdateObjectManager(banque, pf, contexte, null, null, null, null,
-         null, null, null, null, null, null, null, null, null, admin, banqueUsers, "modification", "/tmp");
+      banqueManager.createOrUpdateObjectManager(banque, pf, contexte, null, null, null, null, null, null, null, null, null, null,
+         null, null, null, admin, banqueUsers, "modification", "/tmp");
 
       listPuForBanque = profilUtilisateurDao.findByBanque(banque, false);
-      
+
       assertTrue(listPuForBanque.containsAll(Arrays.asList(profilUtilisateur1, profilUtilisateur2, profilUtilisateur3)));
-      
+
       //Suppression du profil de consultation pour le user1
       user1.getProfilUtilisateurs().remove(profilUtilisateur1);
-      
+
       //Update de la banque (suppression de ProfilUtilisateur)
-      banqueManager.createOrUpdateObjectManager(banque, pf, contexte, null, null, null, null,
-         null, null, null, null, null, null, null, null, null, admin, banqueUsers, "modification", "/tmp");
+      banqueManager.createOrUpdateObjectManager(banque, pf, contexte, null, null, null, null, null, null, null, null, null, null,
+         null, null, null, admin, banqueUsers, "modification", "/tmp");
 
       listPuForBanque = profilUtilisateurDao.findByBanque(banque, false);
-      
+
       assertFalse(listPuForBanque.contains(profilUtilisateur1));
       assertTrue(listPuForBanque.containsAll(Arrays.asList(profilUtilisateur2, profilUtilisateur3)));
 
@@ -1250,9 +1282,9 @@ public class BanqueManagerTest extends AbstractManagerTest4
       utilisateurManager.removeObjectManager(user2);
       banqueManager.removeObjectManager(banque, null, admin, "/tmp/", true);
       cleanUpFantomes(Arrays.asList(banque));
-      
+
    }
-   
+
    @Test
    public void testFindByProfilUtilisateurManager(){
       final Utilisateur u2 = utilisateurDao.findById(2);
@@ -1573,7 +1605,7 @@ public class BanqueManagerTest extends AbstractManagerTest4
 
       cleanUpFantomes(null);
    }
-   
+
    @Test
    public void testFindByConteneurManager(){
 
@@ -1584,14 +1616,14 @@ public class BanqueManagerTest extends AbstractManagerTest4
       final Conteneur c2 = conteneurDao.findById(2);
       banks = banqueManager.findByConteneurManager(c2);
       assertTrue(banks.size() == 2);
-      
+
       banks = banqueManager.findByConteneurManager(new Conteneur());
       assertTrue(banks.isEmpty());
 
       banks = banqueManager.findByConteneurManager(null);
       assertTrue(banks.isEmpty());
    }
-   
+
    @Test
    public void testFindByEtudeManager(){
 
@@ -1605,5 +1637,5 @@ public class BanqueManagerTest extends AbstractManagerTest4
 
       banks = banqueManager.findByEtudeManager(null);
       assertTrue(banks.isEmpty());
-   }  
+   }
 }

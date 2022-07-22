@@ -80,11 +80,17 @@ public class MaladieManagerImpl implements MaladieManager
 
    /* Beans injectes par Spring*/
    private MaladieDao maladieDao;
+
    private PatientDao patientDao;
+
    private CollaborateurDao collaborateurDao;
+
    private MaladieValidator maladieValidator;
+
    private PatientValidator patientValidator;
+
    private OperationTypeDao operationTypeDao;
+
    private OperationManager operationManager;
 
    public MaladieManagerImpl(){}
@@ -138,7 +144,7 @@ public class MaladieManagerImpl implements MaladieManager
                CreateOrUpdateUtilities.createAssociateOperation(maladie, operationManager,
                   operationTypeDao.findByNom("Creation").get(0), utilisateur);
             }else{
-               
+
                maladie = maladieDao.mergeObject(maladie);
                log.info("Modification objet Maladie " + maladie.toString());
                CreateOrUpdateUtilities.createAssociateOperation(maladie, operationManager,
@@ -159,24 +165,24 @@ public class MaladieManagerImpl implements MaladieManager
 
    @Override
    public boolean findDoublonManager(final Maladie maladie, final Patient patient){
-	   if (patient != null) { 
-		   if (patient.getPatientId() != null) { // si le patient n'est pas encore enregistré, doublon impossible
-	   		   List<Maladie> mals = maladieDao.findByLibelleAndPatient(maladie.getLibelle(), patient);
-			   if (mals.contains(maladie)) {
-				   if (maladie.getMaladieId() == null) {
-					   return true;
-				   } 
-				   return maladie.getMaladieId() != mals.get(mals.indexOf(maladie)).getMaladieId();
-			   }
-		   }
-	   } else { // ancienne recherche de doublons ne reposant pas sur le patient
-	      if(maladie.getMaladieId() == null){
-	    	return maladieDao.findByLibelle(maladie.getLibelle()).contains(maladie);
-	      } else {
-	    	  return maladieDao.findByExcludedId(maladie.getMaladieId(), maladie.getLibelle()).contains((maladie));
-	      }
-	   }
-	   return false;
+      if(patient != null){
+         if(patient.getPatientId() != null){ // si le patient n'est pas encore enregistré, doublon impossible
+            final List<Maladie> mals = maladieDao.findByLibelleAndPatient(maladie.getLibelle(), patient);
+            if(mals.contains(maladie)){
+               if(maladie.getMaladieId() == null){
+                  return true;
+               }
+               return maladie.getMaladieId() != mals.get(mals.indexOf(maladie)).getMaladieId();
+            }
+         }
+      }else{ // ancienne recherche de doublons ne reposant pas sur le patient
+         if(maladie.getMaladieId() == null){
+            return maladieDao.findByLibelle(maladie.getLibelle()).contains(maladie);
+         }else{
+            return maladieDao.findByExcludedId(maladie.getMaladieId(), maladie.getLibelle()).contains((maladie));
+         }
+      }
+      return false;
    }
 
    @Override
@@ -235,7 +241,7 @@ public class MaladieManagerImpl implements MaladieManager
    }
 
    /**
-    * Verifie que les Objets devant etre obligatoirement associes 
+    * Verifie que les Objets devant etre obligatoirement associes
     * sont non nulls et lance la validation via la Validator.
     * @param maladie
     * @param patient
@@ -281,7 +287,7 @@ public class MaladieManagerImpl implements MaladieManager
     * une liste de collaborateurs.
     * @param maladie pour laquelle on veut mettre à jour
     * les associations.
-    * @param collaborateurs Liste des collaborateur que l'on veut associer 
+    * @param collaborateurs Liste des collaborateur que l'on veut associer
     * a la maladie.
     */
    private void updateCollaborateurs(final Maladie mal, final List<Collaborateur> collaborateurs){
@@ -343,8 +349,8 @@ public class MaladieManagerImpl implements MaladieManager
       return new Long(0);
    }
 
-	@Override
-	public List<Maladie> findByLibelleAndPatientManager(String libelle, Patient patient) {
-		return maladieDao.findByLibelleAndPatient(libelle, patient);
-	}
+   @Override
+   public List<Maladie> findByLibelleAndPatientManager(final String libelle, final Patient patient){
+      return maladieDao.findByLibelleAndPatient(libelle, patient);
+   }
 }

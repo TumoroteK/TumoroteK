@@ -66,7 +66,6 @@ public class CataloguesRowRenderer implements RowRenderer<Catalogue>
 
    public CataloguesRowRenderer(){}
 
-   
    @Override
    public void render(final Row row, final Catalogue data, final int index){
 
@@ -81,7 +80,7 @@ public class CataloguesRowRenderer implements RowRenderer<Catalogue>
          final List<Catalogue> cats = new ArrayList<>();
          cats.add(catalogue);
          // checkCat.setDisabled(!ManagerLocator.getTableAnnotationManager()
-         //					.findByCataloguesManager(cats).isEmpty() 
+         //					.findByCataloguesManager(cats).isEmpty()
          //					&& checkCat.isChecked());
          checkCat.setParent(row);
       }

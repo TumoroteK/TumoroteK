@@ -95,7 +95,9 @@ public class EditModel extends AbstractListGridVM
    protected static Log log = LogFactory.getLog(EditModel.class);
 
    private Date dateDebut;
+
    private Date dateFin;
+
    private ExecuteModele executeModel;
 
    boolean percentDisplay = false;
@@ -115,7 +117,7 @@ public class EditModel extends AbstractListGridVM
 
    @Command
    @NotifyChange({"onUpdateModel", "rows", "modelList"})
-   public void onUpdateModel(@ContextParam(ContextType.VIEW) Component view){
+   public void onUpdateModel(@ContextParam(ContextType.VIEW) final Component view){
       init();
    }
 
@@ -139,7 +141,7 @@ public class EditModel extends AbstractListGridVM
          Events.echoEvent("onLaterGenerate", win, null);
          Clients.showBusy(Labels.getLabel("stats.report.busy"));
       }
-      // else {		
+      // else {
       //	// REMPLACER par bouton inactivé
       //	Messagebox.show("Sélectionnez un modèle !", "Error", Messagebox.OK,
       //															Messagebox.ERROR);
@@ -205,7 +207,6 @@ public class EditModel extends AbstractListGridVM
             if(d1 == null){
                d1 = new Date(0);
             }
-            ;
             if(d2 == null){
                d2 = new Date();
             }
@@ -283,7 +284,7 @@ public class EditModel extends AbstractListGridVM
       for(final IndicateurDecorator indic : getGridIndicateurs()){
          cell = row.createCell(currColl);
          cell.setCellType(CellType.STRING);
-         
+
          cell.setCellValue(indic.getNom());
          currColl++;
       }
@@ -351,12 +352,12 @@ public class EditModel extends AbstractListGridVM
          Filedownload.save(media);
       }catch(final IOException e){
          e.printStackTrace();
-      } finally {
-    	  try {
-			wb.close();
-		} catch (IOException e) {
-			log.error(e.getMessage());
-		}
+      }finally{
+         try{
+            wb.close();
+         }catch(final IOException e){
+            log.error(e.getMessage());
+         }
       }
    }
 }

@@ -44,11 +44,11 @@ public class SiteRefType
 
    /**
     * Gets the value of the identifier property.
-    * 
+    *
     * @return
     *     possible object is
     *     {@link String }
-    *     
+    *
     */
    public String getIdentifier(){
       return identifier;
@@ -56,11 +56,11 @@ public class SiteRefType
 
    /**
     * Sets the value of the identifier property.
-    * 
+    *
     * @param value
     *     allowed object is
     *     {@link String }
-    *     
+    *
     */
    public void setIdentifier(final String value){
       this.identifier = value;

@@ -71,7 +71,7 @@ import fr.aphp.tumorotek.model.AbstractThesaurusObject;
       query = "SELECT c FROM Categorie c " + "left join c.etablissements e " + "WHERE e.etablissementId = ?1"),
    @NamedQuery(name = "Categorie.findByExcludedId", query = "SELECT c FROM Categorie c " + "WHERE c.id != ?1"),
    @NamedQuery(name = "Categorie.findByOrder", query = "SELECT c FROM Categorie c ORDER BY c.nom")})
-public class Categorie  extends AbstractThesaurusObject implements Serializable
+public class Categorie extends AbstractThesaurusObject implements Serializable
 {
 
    private static final long serialVersionUID = 86784231547511654L;
@@ -82,7 +82,7 @@ public class Categorie  extends AbstractThesaurusObject implements Serializable
     * Constructeur par défaut.
     */
    public Categorie(){}
-   
+
    /**
     * @deprecated Utiliser {@link #getId()}
     * @return

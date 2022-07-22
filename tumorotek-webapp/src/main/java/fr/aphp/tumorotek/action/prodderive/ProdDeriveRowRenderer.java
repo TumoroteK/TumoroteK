@@ -65,8 +65,11 @@ public class ProdDeriveRowRenderer extends TKSelectObjectRenderer<ProdDerive>
 {
 
    private boolean accessible = true;
+
    private boolean accessPrelevement = true;
+
    private boolean accessEchantillon = true;
+
    private boolean isEmbedded = false;
 
    private boolean accessStockage = true;

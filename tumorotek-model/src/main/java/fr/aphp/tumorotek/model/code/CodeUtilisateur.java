@@ -94,11 +94,17 @@ public class CodeUtilisateur implements CodeCommon, Serializable
    private static final long serialVersionUID = 1L;
 
    private Integer codeUtilisateurId;
+
    private String code;
+
    private String libelle;
+
    private Utilisateur utilisateur;
+
    private Banque banque;
+
    private CodeDossier codeDossier;
+
    private CodeUtilisateur codeParent;
 
    private Set<CodeUtilisateur> codesUtilisateur = new HashSet<>();

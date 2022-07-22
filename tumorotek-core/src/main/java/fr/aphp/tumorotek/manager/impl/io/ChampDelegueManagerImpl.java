@@ -63,18 +63,18 @@ public class ChampDelegueManagerImpl implements ChampDelegueManager
     * @see fr.aphp.tumorotek.manager.io.ChampDelegueManager#findByEntiteAndContexte(fr.aphp.tumorotek.model.systeme.Entite, fr.aphp.tumorotek.model.contexte.EContexte)
     */
    @Override
-   public List<ChampDelegue> findByEntiteAndContexte(Entite entite, EContexte contexte){
+   public List<ChampDelegue> findByEntiteAndContexte(final Entite entite, final EContexte contexte){
       return champDelegueDao.findByEntiteAndContexte(entite, contexte);
    }
 
    @Override
-   public <T> Object getValueForEntite(ChampDelegue cd, TKDelegetableObject<T> entite){
+   public <T> Object getValueForEntite(final ChampDelegue cd, final TKDelegetableObject<T> entite){
 
       Object value = null;
-      TKDelegateObject<T> delegate = entite.getDelegate();
+      final TKDelegateObject<T> delegate = entite.getDelegate();
 
-      String nomChamp = StringUtils.uncapitalize(cd.getNom());
-      
+      final String nomChamp = StringUtils.uncapitalize(cd.getNom());
+
       if(null != delegate && PropertyUtils.isReadable(delegate, nomChamp)){
          try{
             value = PropertyUtils.getProperty(delegate, nomChamp);
@@ -89,11 +89,11 @@ public class ChampDelegueManagerImpl implements ChampDelegueManager
    }
 
    @Override
-   public List<ChampDelegue> findByNomAndEntiteAndContexte(String nom, Entite entite, EContexte contexte){
+   public List<ChampDelegue> findByNomAndEntiteAndContexte(final String nom, final Entite entite, final EContexte contexte){
       return champDelegueDao.findByNomAndEntiteAndContexte(nom, entite, contexte);
    }
-   
-   public void setChampDelegueDao(ChampDelegueDao champDelegueDao){
+
+   public void setChampDelegueDao(final ChampDelegueDao champDelegueDao){
       this.champDelegueDao = champDelegueDao;
    }
 

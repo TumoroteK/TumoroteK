@@ -72,10 +72,13 @@ public class EchantillonTypeManagerImpl implements EchantillonTypeManager
 
    /** Bean Dao EchantillonTypeDao. */
    private EchantillonTypeDao echantillonTypeDao;
+
    /** Bean Dao EchantillonDao. */
    private EchantillonDao echantillonDao;
+
    /** Bean Validator. */
    private EchantillonTypeValidator echantillonTypeValidator;
+
    private PlateformeDao plateformeDao;
 
    /**
@@ -103,7 +106,7 @@ public class EchantillonTypeManagerImpl implements EchantillonTypeManager
    }
 
    /**
-    * Recherche un type d'échantillon dont l'identifiant est 
+    * Recherche un type d'échantillon dont l'identifiant est
     * passé en paramètre.
     * @param echantillonTypeId Identifiant du type que l'on recherche.
     * @return Un EchantillonType.
@@ -134,7 +137,7 @@ public class EchantillonTypeManagerImpl implements EchantillonTypeManager
       if(types.size() == 0){
          return null;
       }
-         return types.get(0);
+      return types.get(0);
    }
 
    /**

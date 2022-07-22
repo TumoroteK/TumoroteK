@@ -62,7 +62,7 @@ public interface AnnotationDefautDao extends GenericDaoJpa<AnnotationDefaut, Int
    List<AnnotationDefaut> findByChamp(ChampAnnotation champ);
 
    /**
-    * Recherche toutes les valeurs défaut sauf celle dont l'id est passé 
+    * Recherche toutes les valeurs défaut sauf celle dont l'id est passé
     * en paramètre.
     * @param annotationDefautId Identifiant de la valeur que l'on souhaite
     * exclure de la liste retournée.

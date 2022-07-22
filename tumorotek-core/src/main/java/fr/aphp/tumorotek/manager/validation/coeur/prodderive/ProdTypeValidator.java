@@ -55,7 +55,6 @@ import fr.aphp.tumorotek.model.coeur.prodderive.ProdType;
 public class ProdTypeValidator implements Validator
 {
 
-   
    @Override
    public boolean supports(final Class<?> clazz){
       return ProdType.class.equals(clazz);

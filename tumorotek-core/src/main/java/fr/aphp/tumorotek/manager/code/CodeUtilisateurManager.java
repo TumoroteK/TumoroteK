@@ -107,14 +107,14 @@ public interface CodeUtilisateurManager
    /**
     * Recherche les codes pour un utilisateur et une banque.
     * @param utilisateur Utilisateur
-    * @param banque Banque 
+    * @param banque Banque
     * @return une liste de codes CodeUtilisateur.
     */
    List<CodeUtilisateur> findByUtilisateurAndBanqueManager(Utilisateur u, Banque b);
 
    /**
     * Cherche les doublons en se basant sur la methode equals()
-    * surchargee par les entites. Si l'objet est modifie donc a un id 
+    * surchargee par les entites. Si l'objet est modifie donc a un id
     * attribue par le SGBD, ce dernier est retire de la liste findAll.
     * @param table CodeUtilisateur dont on cherche la presence dans la base
     * @return true/false
@@ -122,7 +122,7 @@ public interface CodeUtilisateurManager
    boolean findDoublonManager(CodeUtilisateur code);
 
    /**
-    * Enregsitre ou modifie un code utilisateur. 
+    * Enregsitre ou modifie un code utilisateur.
     * @param code
     * @param dos
     * @param banque
@@ -135,7 +135,7 @@ public interface CodeUtilisateurManager
       Set<CodeCommon> transcodes, String operation);
 
    /**
-    * Supprime un objet de la base de données ainsi que tous les codes 
+    * Supprime un objet de la base de données ainsi que tous les codes
     * dont il est le parent en cascade.
     * @param code CodeUtilisateur à supprimer de la base de données.
     */
@@ -158,8 +158,8 @@ public interface CodeUtilisateurManager
    Set<CodeCommon> getTranscodesManager(CodeUtilisateur code, List<TableCodage> tables);
 
    /**
-    * Recherche les codes utilisateurs issus du transcodage du code 
-    * passé en paramètre. 
+    * Recherche les codes utilisateurs issus du transcodage du code
+    * passé en paramètre.
     * @param code
     * @param liste de banques auxquelles appartiennent codes utilisateurs.
     * @return liste de codes utilisateurs.

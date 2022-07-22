@@ -70,10 +70,13 @@ public class DroitObjetManagerImpl implements DroitObjetManager
 
    /** Bean Dao. */
    private DroitObjetDao droitObjetDao;
+
    /** Bean Dao. */
    private ProfilDao profilDao;
+
    /** Bean Dao. */
    private EntiteDao entiteDao;
+
    /** Bean Dao. */
    private OperationTypeDao operationTypeDao;
 

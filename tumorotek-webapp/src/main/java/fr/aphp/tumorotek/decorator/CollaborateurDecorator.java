@@ -74,15 +74,15 @@ public class CollaborateurDecorator
    }
 
    public String getNomPrenom(){
-      
-      StringBuilder sb = new StringBuilder();
-      
-      sb.append( this.collaborateur.getTitre() != null ? this.collaborateur.getTitre().getTitre() + " " : "" );
-      sb.append( this.collaborateur.getNom().toUpperCase() );
-      sb.append( this.collaborateur.getPrenom() != null ? " " + this.collaborateur.getPrenom() : "" );
-      
+
+      final StringBuilder sb = new StringBuilder();
+
+      sb.append(this.collaborateur.getTitre() != null ? this.collaborateur.getTitre().getTitre() + " " : "");
+      sb.append(this.collaborateur.getNom().toUpperCase());
+      sb.append(this.collaborateur.getPrenom() != null ? " " + this.collaborateur.getPrenom() : "");
+
       return sb.toString();
-      
+
    }
 
    /**

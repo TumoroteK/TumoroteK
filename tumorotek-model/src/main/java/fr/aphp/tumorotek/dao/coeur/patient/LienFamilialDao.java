@@ -53,7 +53,7 @@ public interface LienFamilialDao extends GenericDaoJpa<LienFamilial, Integer>
 {
 
    /**
-    * Recherche tous les liens sauf celui dont l'id est passé 
+    * Recherche tous les liens sauf celui dont l'id est passé
     * en paramètre.
     * @param lienFamilialId Identifiant du lien que l'on souhaite
     * exclure de la liste retournée.

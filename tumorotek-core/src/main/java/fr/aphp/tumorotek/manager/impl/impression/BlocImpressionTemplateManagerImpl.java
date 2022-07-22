@@ -59,8 +59,10 @@ public class BlocImpressionTemplateManagerImpl implements BlocImpressionTemplate
 
    /** Bean Dao. */
    private BlocImpressionTemplateDao blocImpressionTemplateDao;
+
    /** Bean Dao. */
    private BlocImpressionDao blocImpressionDao;
+
    /** Bean Dao. */
    private TemplateDao templateDao;
 

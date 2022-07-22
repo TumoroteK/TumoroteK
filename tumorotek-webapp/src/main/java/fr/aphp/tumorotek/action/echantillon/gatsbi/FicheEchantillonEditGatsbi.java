@@ -1,5 +1,5 @@
 /**
- * Copyright ou © ou Copr. Assistance Publique des Hôpitaux de 
+ * Copyright ou © ou Copr. Assistance Publique des Hôpitaux de
  * PARIS et SESAN
  * projet-tk@sesan.fr
  *
@@ -46,6 +46,7 @@ import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Groupbox;
 import org.zkoss.zul.Listbox;
+
 import fr.aphp.tumorotek.action.echantillon.FicheEchantillonEdit;
 import fr.aphp.tumorotek.webapp.gatsbi.GatsbiController;
 
@@ -58,71 +59,72 @@ import fr.aphp.tumorotek.webapp.gatsbi.GatsbiController;
  * @version 2.3.0-gatsbi
  *
  */
-public class FicheEchantillonEditGatsbi extends FicheEchantillonEdit {
+public class FicheEchantillonEditGatsbi extends FicheEchantillonEdit
+{
 
-	private static final long serialVersionUID = 1L;
-	
-	private List<Listbox> reqListboxes = new ArrayList<Listbox>();
-	private List<Combobox> reqComboboxes = new ArrayList<Combobox>();
-	private List<Div> reqDivs = new ArrayList<Div>(); // contient conformite Div et crAnapath
+   private static final long serialVersionUID = 1L;
 
-	// @wire
-	private Groupbox groupEchantillon;
-	private Groupbox groupInfosCompEchan;
+   private final List<Listbox> reqListboxes = new ArrayList<>();
 
-	@Override
-	public void doAfterCompose(final Component comp) throws Exception {
-		super.doAfterCompose(comp);
+   private final List<Combobox> reqComboboxes = new ArrayList<>();
 
-		GatsbiController.initWireAndDisplay(this, 
-				3, 
-				true, reqListboxes, reqComboboxes, reqDivs,
-				groupEchantillon, groupInfosCompEchan);
-		
-		// affichage conditionnel infos prelevement 
-		GatsbiController.initWireAndDisplayForIds(this, 2, "natureDiv");
-	}
+   private final List<Div> reqDivs = new ArrayList<>(); // contient conformite Div et crAnapath
 
-	/**
-	 * Surcharge Gastbi pour conserver sélectivement la
-	 * contrainte de sélection obligatiure des listes nature et statut juridique 
-	 * dans le contexte TK historique
-	 */
-	@Override
-	protected void checkRequiredListboxes() {
-		GatsbiController.checkRequiredNonInputComponents(reqListboxes, null, null);
-	}
+   // @wire
+   private Groupbox groupEchantillon;
 
-	/**
-	 * Plus d'obligation
-	 */
-	@Override
-	public void onSelect$typesBoxEchan() {
-	}	
-	
-	@Override
-	protected void setGroupInfosCompEchanOpen(boolean b) {
-		((Groupbox) groupInfosCompEchan).setOpen(b);
-	}
-	
-	@Override
-	protected void prepareCrAnapath() {
-		if (crAnapathNomBox.getValue() != null && !crAnapathNomBox.getValue().equals("")) {
-			getCrAnapath().setNom(crAnapathNomBox.getValue());
-		} else { // empty value, check required
-			Div crAnapathDiv = reqDivs.stream().filter(d -> d.getId().equals("crAnapathDiv")).findFirst().orElse(null);
-			if (crAnapathDiv != null) { // required value
-				throw new WrongValueException(crAnapathDiv, Labels.getLabel("validation.syntax.empty"));
-			} else { // emptyallowed
-				setCrAnapath(null);
-				setAnapathStream(null);
-			}
-		}
-	}
-	
-	@Override
-	public void onClick$validate() {
-		GatsbiController.checkRequiredNonInputComponents(reqListboxes, reqComboboxes, reqDivs);
-		super.onClick$validate();
-	}
+   private Groupbox groupInfosCompEchan;
+
+   @Override
+   public void doAfterCompose(final Component comp) throws Exception{
+      super.doAfterCompose(comp);
+
+      GatsbiController.initWireAndDisplay(this, 3, true, reqListboxes, reqComboboxes, reqDivs, groupEchantillon,
+         groupInfosCompEchan);
+
+      // affichage conditionnel infos prelevement
+      GatsbiController.initWireAndDisplayForIds(this, 2, "natureDiv");
+   }
+
+   /**
+    * Surcharge Gastbi pour conserver sélectivement la
+    * contrainte de sélection obligatiure des listes nature et statut juridique
+    * dans le contexte TK historique
+    */
+   @Override
+   protected void checkRequiredListboxes(){
+      GatsbiController.checkRequiredNonInputComponents(reqListboxes, null, null);
+   }
+
+   /**
+    * Plus d'obligation
+    */
+   @Override
+   public void onSelect$typesBoxEchan(){}
+
+   @Override
+   protected void setGroupInfosCompEchanOpen(final boolean b){
+      groupInfosCompEchan.setOpen(b);
+   }
+
+   @Override
+   protected void prepareCrAnapath(){
+      if(crAnapathNomBox.getValue() != null && !crAnapathNomBox.getValue().equals("")){
+         getCrAnapath().setNom(crAnapathNomBox.getValue());
+      }else{ // empty value, check required
+         final Div crAnapathDiv = reqDivs.stream().filter(d -> d.getId().equals("crAnapathDiv")).findFirst().orElse(null);
+         if(crAnapathDiv != null){ // required value
+            throw new WrongValueException(crAnapathDiv, Labels.getLabel("validation.syntax.empty"));
+         }else{ // emptyallowed
+            setCrAnapath(null);
+            setAnapathStream(null);
+         }
+      }
+   }
+
+   @Override
+   public void onClick$validate(){
+      GatsbiController.checkRequiredNonInputComponents(reqListboxes, reqComboboxes, reqDivs);
+      super.onClick$validate();
+   }
 }

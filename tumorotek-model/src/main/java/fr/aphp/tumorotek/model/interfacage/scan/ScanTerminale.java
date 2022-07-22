@@ -72,9 +72,9 @@ import org.hibernate.annotations.GenericGenerator;
       query = "SELECT s FROM ScanTerminale s WHERE s.scanDevice = ? " + "order by s.dateScan DESC"),
    @NamedQuery(name = "ScanTerminale.findTKObjectCodes",
       query = "SELECT t.code FROM ScanTube t WHERE t.scanTerminale = ? " + "and t.code is not null order by t.code")
-   //	@NamedQuery(name = "ScanTerminale.findTKObjectEmplacements", 
-   //		query = "SELECT e FROM Emplacement e WHERE t.scanTerminale = ? "
-   //		+ "and t.code is not null order by t.code"),
+//	@NamedQuery(name = "ScanTerminale.findTKObjectEmplacements", 
+//		query = "SELECT e FROM Emplacement e WHERE t.scanTerminale = ? "
+//		+ "and t.code is not null order by t.code"),
 })
 public class ScanTerminale implements java.io.Serializable
 {
@@ -82,11 +82,15 @@ public class ScanTerminale implements java.io.Serializable
    private static final long serialVersionUID = 1035198779653396102L;
 
    private Integer scanTerminaleId;
+
    private ScanDevice scanDevice;
+
    private String name;
+
    private Calendar dateScan;
 
    private Integer width;
+
    private Integer height;
 
    private List<ScanTube> scanTubes = new ArrayList<>();

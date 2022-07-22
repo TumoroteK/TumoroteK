@@ -44,7 +44,17 @@ import org.zkoss.zhtml.Text;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
-import org.zkoss.zul.*;
+import org.zkoss.zul.Cell;
+import org.zkoss.zul.Column;
+import org.zkoss.zul.Columns;
+import org.zkoss.zul.Div;
+import org.zkoss.zul.Grid;
+import org.zkoss.zul.Html;
+import org.zkoss.zul.ListModelList;
+import org.zkoss.zul.Row;
+import org.zkoss.zul.Rows;
+import org.zkoss.zul.Selectbox;
+import org.zkoss.zul.Textbox;
 
 import fr.aphp.tumorotek.action.ManagerLocator;
 import fr.aphp.tumorotek.action.io.FicheAffichage;
@@ -78,14 +88,17 @@ public class ChampCalculeComponent extends Div
     * ChampCalculé lié au composant
     */
    private ChampCalcule champCalcule = new ChampCalcule();
+
    /**
     * Banque utilisée lors de la récupération des champs sélectionnables sur la {@link FicheChampsAffichageModale}
     */
    private Banque banque;
+
    /**
     * DataTypes filtres sur les champs sélectionnables appliqués sur la {@link FicheChampsAffichageModale}
     */
    private List<DataType> allowedDataTypeList = new ArrayList<>();
+
    /**
     * le champ reçu après sélection sur la modale {@link FicheChampsAffichageModale}
     */
@@ -98,9 +111,13 @@ public class ChampCalculeComponent extends Div
    private final Columns cols = new Columns();
 
    private final Column champ1Col = new Column(Labels.getLabel("annotation.champCalcule.champ1"));
+
    private final Column operateurCol = new Column(Labels.getLabel("annotation.champCalcule.operateur"));
+
    private final Column champ2Col = new Column(Labels.getLabel("annotation.champCalcule.champ2"));
+
    private final Column valeurCol = new Column(Labels.getLabel("annotation.champCalcule.valeur"));
+
    private final Column dureeCol = new Column(Labels.getLabel("annotation.champCalcule.duree"));
 
    private final Rows rows = new Rows();
@@ -108,13 +125,17 @@ public class ChampCalculeComponent extends Div
    private final Row row = new Row();
 
    private final Cell champ1Cell = new Cell();
+
    private final Text champ1Value = new Text(Labels.getLabel("annotation.champCalcule.selectionner"));
 
    private final Cell operateurCell = new Cell();
+
    private final ListModelList<String> lm = new ListModelList<>(Arrays.asList("+", "-"));
+
    private final Selectbox operateurBox = new Selectbox();
 
    private final Cell champ2Cell = new Cell();
+
    private final Text champ2Value = new Text(Labels.getLabel("annotation.champCalcule.selectionner"));
 
    private final Textbox valeurCell = new Textbox();
@@ -132,7 +153,7 @@ public class ChampCalculeComponent extends Div
    /**
     * Initialise le composant ChampCalculé en le liant avec le champCalcule passé en paramètre
     */
-   public ChampCalculeComponent(ChampCalcule champCalcule){
+   public ChampCalculeComponent(final ChampCalcule champCalcule){
       super();
       this.setChampCalcule(champCalcule);
    }
@@ -141,9 +162,9 @@ public class ChampCalculeComponent extends Div
     * Création du squelette d'affichage du composent
     */
    private void buildComponent(){
-      String descriptionLabel = Labels.getLabel("annotation.champCalcule.description");
+      final String descriptionLabel = Labels.getLabel("annotation.champCalcule.description");
 
-      Html html = new Html();
+      final Html html = new Html();
       html.setContent(descriptionLabel);
       description.setStyle("font-family: arial, sans-serif");
       description.appendChild(html);
@@ -280,8 +301,8 @@ public class ChampCalculeComponent extends Div
       }
    }
 
-   private void generateAllowedDataTypeList(ChampCalcule champCalcule){
-      DataType champ1DataType = champCalcule.getChamp1().dataType();
+   private void generateAllowedDataTypeList(final ChampCalcule champCalcule){
+      final DataType champ1DataType = champCalcule.getChamp1().dataType();
 
       if("calcule".equals(champ1DataType.getType())){
          generateAllowedDataTypeList(champCalcule.getChamp1().getChampAnnotation().getChampCalcule());
@@ -290,7 +311,7 @@ public class ChampCalculeComponent extends Div
       }
    }
 
-   private void generateAllowedDataTypeList(DataType dataType){
+   private void generateAllowedDataTypeList(final DataType dataType){
       switch(dataType.getType()){
          case "num":
             allowedDataTypeList = Arrays.asList(ManagerLocator.getDataTypeManager().findByTypeManager("num"));
@@ -444,7 +465,7 @@ public class ChampCalculeComponent extends Div
             }
          }
          if(null != champCalcule.getDataType() && null != champCalcule.getValeur() && !"".equals(champCalcule.getValeur())){
-            String dataType = champCalcule.getDataType().getType();
+            final String dataType = champCalcule.getDataType().getType();
             if("duree".equals(dataType) || "date".equals(dataType) || "datetime".equals(dataType)){
                dureeCell.setDuree(new Duree(new Long(champCalcule.getValeur()), Duree.SECONDE));
             }else{
@@ -471,16 +492,17 @@ public class ChampCalculeComponent extends Div
       }
    }
 
-   private void generateChampCalculeType(ChampCalcule champCalcule){
+   private void generateChampCalculeType(final ChampCalcule champCalcule){
       if("calcule".equals(champCalcule.getChamp1().dataType().getType())){
          generateChampCalculeType(champCalcule.getChamp1().getChampAnnotation().getChampCalcule());
       }else{
-         generateChampCalculeType(champCalcule.getChamp1(), champCalcule.getChamp2(), champCalcule.getValeur(), champCalcule.getOperateur());
+         generateChampCalculeType(champCalcule.getChamp1(), champCalcule.getChamp2(), champCalcule.getValeur(),
+            champCalcule.getOperateur());
       }
    }
 
-   private void generateChampCalculeType(Champ champ1, Champ champ2, String valeur, String operateur){
-      String champ1Type = champ1.dataType().getType();
+   private void generateChampCalculeType(final Champ champ1, final Champ champ2, final String valeur, final String operateur){
+      final String champ1Type = champ1.dataType().getType();
       String champ2Type = null;
       if(null != champ2){
          champ2Type = champ2.dataType().getType();

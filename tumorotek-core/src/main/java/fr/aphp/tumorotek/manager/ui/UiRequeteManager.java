@@ -64,7 +64,7 @@ public interface UiRequeteManager
    UiRequete findByIdManager(Integer fichierId);
 
    /**
-    * Recherche les requetes enregistrées par un utilisateur pour un 
+    * Recherche les requetes enregistrées par un utilisateur pour un
     * onglet (entite)
     * @param u Utilisateur
     * @param e Entite
@@ -83,7 +83,7 @@ public interface UiRequeteManager
     * Persist une instance de UiRequete dans la base de données.
     * Cree une requete dans le systeme.
     * @param String nom de la nouvelle requête à créer.
-    * @param utilisateur 
+    * @param utilisateur
     * @param entite
     * @param ordre
     * @param  liste UiCompValues

@@ -75,14 +75,17 @@ import javax.xml.bind.annotation.XmlValue;
 public class ActionPatient
 {
 
-   // attribut action= {création, modification, 
+   // attribut action= {création, modification,
    // remplacement, fusion, defusion, suppression}
    @XmlAttribute(name = "action", required = true)
    private String action = null;
+
    @XmlElement(name = "patient", required = true)
    private Patient patient;
+
    @XmlElement(name = "patientElimine", required = false)
    private Patient patientElimine;
+
    @XmlElement(required = false)
    private ActionPatient.Venue venue;
 

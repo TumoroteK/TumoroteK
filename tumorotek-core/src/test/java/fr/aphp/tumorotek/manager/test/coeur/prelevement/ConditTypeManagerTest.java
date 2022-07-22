@@ -65,6 +65,7 @@ public class ConditTypeManagerTest extends AbstractManagerTest4
 
    @Autowired
    private ConditTypeManager conditTypeManager;
+
    @Autowired
    private PlateformeDao plateformeDao;
 

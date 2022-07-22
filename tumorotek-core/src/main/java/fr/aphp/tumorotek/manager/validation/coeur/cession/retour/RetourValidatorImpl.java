@@ -54,7 +54,9 @@ public class RetourValidatorImpl implements RetourValidator
 {
 
    private RetourDao retourDao;
+
    private EntiteDao entiteDao;
+
    private EntiteManager entiteManager;
 
    public void setEntiteManager(final EntiteManager r){

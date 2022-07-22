@@ -68,6 +68,7 @@ public class CoordonneeManagerImpl implements CoordonneeManager
 
    /** Bean Dao CollaborateurDao. */
    private CoordonneeDao coordonneeDao;
+
    /** Bean Dao CollaborateurDao. */
    private CollaborateurDao collaborateurDao;
 

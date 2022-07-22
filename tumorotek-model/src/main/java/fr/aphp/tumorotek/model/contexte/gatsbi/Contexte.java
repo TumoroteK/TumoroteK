@@ -1,5 +1,5 @@
 /**
- * Copyright ou © ou Copr. Assistance Publique des Hôpitaux de 
+ * Copyright ou © ou Copr. Assistance Publique des Hôpitaux de
  * PARIS et SESAN
  * projet-tk@sesan.fr
  *
@@ -42,244 +42,252 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-public class Contexte implements Serializable {
+public class Contexte implements Serializable
+{
 
-	private static final long serialVersionUID = 1L;
+   private static final long serialVersionUID = 1L;
 
-	private Integer contexteId;
-	private String nom;
-	private ContexteType contexteType;
-	private Boolean archive;
-	private Boolean siteIntermediaire = true;
-	protected List<Parametrage> parametrages = new ArrayList<Parametrage>();
-	protected List<ChampEntite> champEntites = new ArrayList<ChampEntite>();
-	
-	public Contexte() {
-	}
-	
-	public Contexte(Integer contexteId, String nom, ContexteType contexteType, Boolean archive,
-			Boolean siteInter, List<Parametrage> parametrages, List<ChampEntite> champEntites) {
-		super();
-		this.contexteId = contexteId;
-		this.nom = nom;
-		this.contexteType = contexteType;
-		this.archive = archive;
-		this.siteIntermediaire = siteInter;
-		this.parametrages = parametrages;
-		this.champEntites = champEntites;
-	}
+   private Integer contexteId;
 
-	public Integer getContexteId() {
-		return contexteId;
-	}
+   private String nom;
 
-	public void setContexteId(Integer contexteId) {
-		this.contexteId = contexteId;
-	}
+   private ContexteType contexteType;
 
-	public String getNom() {
-		return nom;
-	}
+   private Boolean archive;
 
-	public void setNom(String _l) {
-		this.nom = _l;
-	}
+   private Boolean siteIntermediaire = true;
 
-	public ContexteType getContexteType() {
-		return contexteType;
-	}
+   protected List<Parametrage> parametrages = new ArrayList<>();
 
-	public void setContexteType(ContexteType _t) {
-		this.contexteType = _t;
-	}
+   protected List<ChampEntite> champEntites = new ArrayList<>();
 
-	public Boolean getArchive() {
-		return archive;
-	}
+   public Contexte(){}
 
-	public void setArchive(Boolean _a) {
-		this.archive = _a;
-	}
-	
-	public Boolean getSiteIntermediaire() {
-		return siteIntermediaire;
-	}
+   public Contexte(final Integer contexteId, final String nom, final ContexteType contexteType, final Boolean archive,
+      final Boolean siteInter, final List<Parametrage> parametrages, final List<ChampEntite> champEntites){
+      super();
+      this.contexteId = contexteId;
+      this.nom = nom;
+      this.contexteType = contexteType;
+      this.archive = archive;
+      this.siteIntermediaire = siteInter;
+      this.parametrages = parametrages;
+      this.champEntites = champEntites;
+   }
 
-	public void setSiteIntermediaire(Boolean _s) {
-		this.siteIntermediaire = _s;
-	}
+   public Integer getContexteId(){
+      return contexteId;
+   }
 
-	public List<Parametrage> getParametrages() {
-		return parametrages;
-	}
+   public void setContexteId(final Integer contexteId){
+      this.contexteId = contexteId;
+   }
 
-	public void setParametrages(List<Parametrage> parametrages) {
-		this.parametrages = parametrages;
-	}
+   public String getNom(){
+      return nom;
+   }
 
-	public List<ChampEntite> getChampEntites() {
-		return champEntites;
-	}
+   public void setNom(final String _l){
+      this.nom = _l;
+   }
 
-	public void setChampEntites(List<ChampEntite> champEntites) {
-		this.champEntites = champEntites;
-	}
+   public ContexteType getContexteType(){
+      return contexteType;
+   }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (obj == this) {
-           return true;
-       }
-       if (obj == null || obj.getClass() != this.getClass()) {
-           return false;
-       }
+   public void setContexteType(final ContexteType _t){
+      this.contexteType = _t;
+   }
 
-       Contexte contexte = (Contexte) obj;
+   public Boolean getArchive(){
+      return archive;
+   }
 
-       return Objects.equals(nom, contexte.getNom())
-       	&& Objects.equals(contexteType, contexte.getContexteType());
-	}
-	
-	@Override
-   public int hashCode() {
-       final int prime = 31;
-       int result = 1;
-   	result = prime * result + ((nom == null) ? 0 : nom.hashCode());
-   	result = prime * result + ((contexteType == null) ? 0 : contexteType.hashCode());
-   	return result;
-	}
-	
-	public List<Integer> getHiddenChampEntiteIds() {
-		List<Integer> ids = new ArrayList<Integer>();
-		for (ChampEntite c : champEntites) {
-			if (!c.getVisible()) {
-				ids.add(c.getChampEntiteId());
-			}
-		}
-		
-		// dependances entite specifiques
-		addPrelevementComplementaryVisibleIds(ids);
-		addEchantillonComplementaryVisibleChpIds(ids);
-		
-		return ids;
-	}
-	
-	/**
-	 * Dependances visibilité entre champs prélèvement
-	 * @param ids
-	 */
-	private void addPrelevementComplementaryVisibleIds(List<Integer> ids) {
+   public void setArchive(final Boolean _a){
+      this.archive = _a;
+   }
 
-		if (ids.contains(40))
-			ids.add(41); // unite adds unite id
-		if (ids.contains(256))
-			ids.add(257); // non conformite adds raisons no conf
-	}
-	
-	/**
-	 * Dependances visibilité entre champs echantillons 
-	 * @param ids
-	 */
-	private void addEchantillonComplementaryVisibleChpIds(List<Integer> ids) {
+   public Boolean getSiteIntermediaire(){
+      return siteIntermediaire;
+   }
 
-		if (ids.contains(229))
-			ids.add(59); // adicap organe id
-		if (ids.contains(230))
-			ids.add(216); // code assigne id
-		if (ids.contains(61)) { // quantite
-			ids.add(62); // quantité init
-			ids.add(63); // unite id
-		}
-		if (ids.contains(243)) // non conformite traitement
-			ids.add(261); // raisons no conf traitement
-		if (ids.contains(244)) // non conformite cession
-			ids.add(262); // raisons no conf cession
-	}
-	
-	
-	
-	public List<Integer> getRequiredChampEntiteIds() {
-		List<Integer> ids = new ArrayList<Integer>();
-		for (ChampEntite c : champEntites) {
-			if (c.getVisible() && c.getObligatoire()) {
-				ids.add(c.getChampEntiteId());
-			}
-		}
-		
-		addEchantillonComplementaryRequiredIds(ids);
-		
-		return ids;
-	}
-	
-	
-	/**
-	 * Dependances obligatoire entre champs echantillons 
-	 * @param ids
-	 */
-	private void addEchantillonComplementaryRequiredIds(List<Integer> ids) {
-		// echantillon
-		if (ids.contains(61)) // quantite
-			ids.add(63); // quantité unite
-	}
-	
-	/**
-	 * Collecte et renvoie les champs de contexte considérés comme un thésaurus dont les 
-	 * valeurs sont à filtrer. Contient les champs:
-	 *  - les thesaurus (IsChampReferToThesaurus = true)
-	 *  - les champs présentant des valeurs de thésaurus (ex: quantite, thésaurus des unités à filtrer)
-	 * @return liste champs entite ids
-	 */
-	public List<Integer> getThesaurusChampEntiteIds() {
-		List<Integer> ids = new ArrayList<Integer>();
-		for (ChampEntite c : champEntites) {
-			if (c.getVisible() && (c.getThesaurusTableNom() != null 
-					|| !c.getThesaurusValues().isEmpty())) {  
-				ids.add(c.getChampEntiteId());
-			}
-		}
-		return ids;
-	}
-	
-	public List<ThesaurusValue> getThesaurusValuesForChampEntiteId(Integer id) {
-		
-		List<ThesaurusValue> tValues = new ArrayList<ThesaurusValue>();
-		for (ChampEntite c : champEntites) {
-			if (c.getChampEntiteId().equals(id)) {
-				tValues.addAll(c.getThesaurusValues());
-			}
-		}
-		return tValues;
-	}
-	
-	public boolean isChampIdRequired(Integer id) {
-		for (ChampEntite c : champEntites) {
-			if (c.getChampEntiteId().equals(id)) {
-				return c.getVisible() && c.getObligatoire();
-			}
-		}
-		return false;
-	}
-	
-	public boolean isChampIdVisible(Integer id) {
-		for (ChampEntite c : champEntites) {
-			if (c.getChampEntiteId().equals(id)) {
-				return c.getVisible();
-			}
-		}
-		return true;
-	}	
-	
-	public List<Integer> getChampEntiteInTableauOrdered() {	
-		List<Integer> ids = new ArrayList<Integer>();
-		
-		Collections.sort(champEntites);
-		
-		for (ChampEntite c : champEntites) {
-			if (c.getVisible() && c.getInTableau()) {
-				ids.add(c.getChampEntiteId());
-			}
-		}		
-		return ids;
-	}
-	
+   public void setSiteIntermediaire(final Boolean _s){
+      this.siteIntermediaire = _s;
+   }
+
+   public List<Parametrage> getParametrages(){
+      return parametrages;
+   }
+
+   public void setParametrages(final List<Parametrage> parametrages){
+      this.parametrages = parametrages;
+   }
+
+   public List<ChampEntite> getChampEntites(){
+      return champEntites;
+   }
+
+   public void setChampEntites(final List<ChampEntite> champEntites){
+      this.champEntites = champEntites;
+   }
+
+   @Override
+   public boolean equals(final Object obj){
+      if(obj == this){
+         return true;
+      }
+      if(obj == null || obj.getClass() != this.getClass()){
+         return false;
+      }
+
+      final Contexte contexte = (Contexte) obj;
+
+      return Objects.equals(nom, contexte.getNom()) && Objects.equals(contexteType, contexte.getContexteType());
+   }
+
+   @Override
+   public int hashCode(){
+      final int prime = 31;
+      int result = 1;
+      result = prime * result + ((nom == null) ? 0 : nom.hashCode());
+      result = prime * result + ((contexteType == null) ? 0 : contexteType.hashCode());
+      return result;
+   }
+
+   public List<Integer> getHiddenChampEntiteIds(){
+      final List<Integer> ids = new ArrayList<>();
+      for(final ChampEntite c : champEntites){
+         if(!c.getVisible()){
+            ids.add(c.getChampEntiteId());
+         }
+      }
+
+      // dependances entite specifiques
+      addPrelevementComplementaryVisibleIds(ids);
+      addEchantillonComplementaryVisibleChpIds(ids);
+
+      return ids;
+   }
+
+   /**
+    * Dependances visibilité entre champs prélèvement
+    * @param ids
+    */
+   private void addPrelevementComplementaryVisibleIds(final List<Integer> ids){
+
+      if(ids.contains(40)){
+         ids.add(41); // unite adds unite id
+      }
+      if(ids.contains(256)){
+         ids.add(257); // non conformite adds raisons no conf
+      }
+   }
+
+   /**
+    * Dependances visibilité entre champs echantillons 
+    * @param ids
+    */
+   private void addEchantillonComplementaryVisibleChpIds(final List<Integer> ids){
+
+      if(ids.contains(229)){
+         ids.add(59); // adicap organe id
+      }
+      if(ids.contains(230)){
+         ids.add(216); // code assigne id
+      }
+      if(ids.contains(61)){ // quantite
+         ids.add(62); // quantité init
+         ids.add(63); // unite id
+      }
+      if(ids.contains(243)){ // non conformite traitement
+         ids.add(261); // raisons no conf traitement
+      }
+      if(ids.contains(244)){ // non conformite cession
+         ids.add(262); // raisons no conf cession
+      }
+   }
+
+   public List<Integer> getRequiredChampEntiteIds(){
+      final List<Integer> ids = new ArrayList<>();
+      for(final ChampEntite c : champEntites){
+         if(c.getVisible() && c.getObligatoire()){
+            ids.add(c.getChampEntiteId());
+         }
+      }
+
+      addEchantillonComplementaryRequiredIds(ids);
+
+      return ids;
+   }
+
+   /**
+    * Dependances obligatoire entre champs echantillons 
+    * @param ids
+    */
+   private void addEchantillonComplementaryRequiredIds(final List<Integer> ids){
+      // echantillon
+      if(ids.contains(61)){ // quantite
+         ids.add(63); // quantité unite
+      }
+   }
+
+   /**
+    * Collecte et renvoie les champs de contexte considérés comme un thésaurus dont les 
+    * valeurs sont à filtrer. Contient les champs:
+    *  - les thesaurus (IsChampReferToThesaurus = true)
+    *  - les champs présentant des valeurs de thésaurus (ex: quantite, thésaurus des unités à filtrer)
+    * @return liste champs entite ids
+    */
+   public List<Integer> getThesaurusChampEntiteIds(){
+      final List<Integer> ids = new ArrayList<>();
+      for(final ChampEntite c : champEntites){
+         if(c.getVisible() && (c.getThesaurusTableNom() != null || !c.getThesaurusValues().isEmpty())){
+            ids.add(c.getChampEntiteId());
+         }
+      }
+      return ids;
+   }
+
+   public List<ThesaurusValue> getThesaurusValuesForChampEntiteId(final Integer id){
+
+      final List<ThesaurusValue> tValues = new ArrayList<>();
+      for(final ChampEntite c : champEntites){
+         if(c.getChampEntiteId().equals(id)){
+            tValues.addAll(c.getThesaurusValues());
+         }
+      }
+      return tValues;
+   }
+
+   public boolean isChampIdRequired(final Integer id){
+      for(final ChampEntite c : champEntites){
+         if(c.getChampEntiteId().equals(id)){
+            return c.getVisible() && c.getObligatoire();
+         }
+      }
+      return false;
+   }
+
+   public boolean isChampIdVisible(final Integer id){
+      for(final ChampEntite c : champEntites){
+         if(c.getChampEntiteId().equals(id)){
+            return c.getVisible();
+         }
+      }
+      return true;
+   }
+
+   public List<Integer> getChampEntiteInTableauOrdered(){
+      final List<Integer> ids = new ArrayList<>();
+
+      Collections.sort(champEntites);
+
+      for(final ChampEntite c : champEntites){
+         if(c.getVisible() && c.getInTableau()){
+            ids.add(c.getChampEntiteId());
+         }
+      }
+      return ids;
+   }
+
 }

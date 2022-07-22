@@ -69,7 +69,6 @@ public class CodesSelectedRowRenderer implements RowRenderer<Object>
       this.upAndDown = b;
    }
 
-   
    @Override
    public void render(final Row row, final Object data, final int index){
 

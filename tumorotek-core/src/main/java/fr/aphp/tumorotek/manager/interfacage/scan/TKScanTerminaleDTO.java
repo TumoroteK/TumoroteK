@@ -61,9 +61,13 @@ public class TKScanTerminaleDTO
 {
 
    private ScanTerminale scanTerminale;
+
    private Terminale terminale;
+
    private Map<ScanTube, Emplacement> emplacementsToFill = new HashMap<>();
+
    private Map<ScanTube, TKStockableObject> emplacementsToFree = new HashMap<>();
+
    private Map<ScanTube, TKStockableObject> emplacementsMismatch = new HashMap<>();
 
    public TKScanTerminaleDTO(){}

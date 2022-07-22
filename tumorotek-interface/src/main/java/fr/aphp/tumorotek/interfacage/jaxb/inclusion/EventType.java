@@ -52,29 +52,36 @@ public class EventType
 
    @XmlElement(required = true)
    protected StudySubjectRefType studySubjectRef;
+
    @XmlElement(required = true)
    protected StudyRefType studyRef;
+
    @XmlElement(required = true)
    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
    protected String eventDefinitionOID;
+
    @XmlElement(required = true)
    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
    protected String location;
+
    @XmlElement(required = true)
    @XmlSchemaType(name = "date")
    protected XMLGregorianCalendar startDate;
+
    protected BigInteger startTime;
+
    @XmlSchemaType(name = "date")
    protected XMLGregorianCalendar endDate;
+
    protected BigInteger endTime;
 
    /**
     * Gets the value of the studySubjectRef property.
-    * 
+    *
     * @return
     *     possible object is
     *     {@link StudySubjectRefType }
-    *     
+    *
     */
    public StudySubjectRefType getStudySubjectRef(){
       return studySubjectRef;
@@ -82,11 +89,11 @@ public class EventType
 
    /**
     * Sets the value of the studySubjectRef property.
-    * 
+    *
     * @param value
     *     allowed object is
     *     {@link StudySubjectRefType }
-    *     
+    *
     */
    public void setStudySubjectRef(final StudySubjectRefType value){
       this.studySubjectRef = value;
@@ -94,11 +101,11 @@ public class EventType
 
    /**
     * Gets the value of the studyRef property.
-    * 
+    *
     * @return
     *     possible object is
     *     {@link StudyRefType }
-    *     
+    *
     */
    public StudyRefType getStudyRef(){
       return studyRef;
@@ -106,11 +113,11 @@ public class EventType
 
    /**
     * Sets the value of the studyRef property.
-    * 
+    *
     * @param value
     *     allowed object is
     *     {@link StudyRefType }
-    *     
+    *
     */
    public void setStudyRef(final StudyRefType value){
       this.studyRef = value;
@@ -118,11 +125,11 @@ public class EventType
 
    /**
     * Gets the value of the eventDefinitionOID property.
-    * 
+    *
     * @return
     *     possible object is
     *     {@link String }
-    *     
+    *
     */
    public String getEventDefinitionOID(){
       return eventDefinitionOID;
@@ -130,11 +137,11 @@ public class EventType
 
    /**
     * Sets the value of the eventDefinitionOID property.
-    * 
+    *
     * @param value
     *     allowed object is
     *     {@link String }
-    *     
+    *
     */
    public void setEventDefinitionOID(final String value){
       this.eventDefinitionOID = value;
@@ -142,11 +149,11 @@ public class EventType
 
    /**
     * Gets the value of the location property.
-    * 
+    *
     * @return
     *     possible object is
     *     {@link String }
-    *     
+    *
     */
    public String getLocation(){
       return location;
@@ -154,11 +161,11 @@ public class EventType
 
    /**
     * Sets the value of the location property.
-    * 
+    *
     * @param value
     *     allowed object is
     *     {@link String }
-    *     
+    *
     */
    public void setLocation(final String value){
       this.location = value;
@@ -166,11 +173,11 @@ public class EventType
 
    /**
     * Gets the value of the startDate property.
-    * 
+    *
     * @return
     *     possible object is
     *     {@link XMLGregorianCalendar }
-    *     
+    *
     */
    public XMLGregorianCalendar getStartDate(){
       return startDate;
@@ -178,11 +185,11 @@ public class EventType
 
    /**
     * Sets the value of the startDate property.
-    * 
+    *
     * @param value
     *     allowed object is
     *     {@link XMLGregorianCalendar }
-    *     
+    *
     */
    public void setStartDate(final XMLGregorianCalendar value){
       this.startDate = value;
@@ -190,11 +197,11 @@ public class EventType
 
    /**
     * Gets the value of the startTime property.
-    * 
+    *
     * @return
     *     possible object is
     *     {@link BigInteger }
-    *     
+    *
     */
    public BigInteger getStartTime(){
       return startTime;
@@ -202,11 +209,11 @@ public class EventType
 
    /**
     * Sets the value of the startTime property.
-    * 
+    *
     * @param value
     *     allowed object is
     *     {@link BigInteger }
-    *     
+    *
     */
    public void setStartTime(final BigInteger value){
       this.startTime = value;
@@ -214,11 +221,11 @@ public class EventType
 
    /**
     * Gets the value of the endDate property.
-    * 
+    *
     * @return
     *     possible object is
     *     {@link XMLGregorianCalendar }
-    *     
+    *
     */
    public XMLGregorianCalendar getEndDate(){
       return endDate;
@@ -226,11 +233,11 @@ public class EventType
 
    /**
     * Sets the value of the endDate property.
-    * 
+    *
     * @param value
     *     allowed object is
     *     {@link XMLGregorianCalendar }
-    *     
+    *
     */
    public void setEndDate(final XMLGregorianCalendar value){
       this.endDate = value;
@@ -238,11 +245,11 @@ public class EventType
 
    /**
     * Gets the value of the endTime property.
-    * 
+    *
     * @return
     *     possible object is
     *     {@link BigInteger }
-    *     
+    *
     */
    public BigInteger getEndTime(){
       return endTime;
@@ -250,11 +257,11 @@ public class EventType
 
    /**
     * Sets the value of the endTime property.
-    * 
+    *
     * @param value
     *     allowed object is
     *     {@link BigInteger }
-    *     
+    *
     */
    public void setEndTime(final BigInteger value){
       this.endTime = value;

@@ -121,7 +121,7 @@ public class CessionValidator implements Validator
 
    /**
     * Vérifie la cohérence de la date de demande de la cession avec les
-    * dates de validation, depart, arrivee, destruction. 
+    * dates de validation, depart, arrivee, destruction.
     * @param maladie
     * @return Errors
     */
@@ -148,7 +148,7 @@ public class CessionValidator implements Validator
 
    /**
     * Vérifie la cohérence de la date de validation de la cession avec les
-    * dates de depart, demande, arrivee. 
+    * dates de depart, demande, arrivee.
     * @param maladie
     * @return Errors
     */
@@ -178,7 +178,7 @@ public class CessionValidator implements Validator
 
    /**
     * Vérifie la cohérence de la date de départ de la cession avec les
-    * dates de validation, demande, arrivee. 
+    * dates de validation, demande, arrivee.
     * @param maladie
     * @return Errors
     */
@@ -208,7 +208,7 @@ public class CessionValidator implements Validator
 
    /**
     * Vérifie la cohérence de la date d'Arrivee de la cession avec les
-    * dates de validation, demande, depart. 
+    * dates de validation, demande, depart.
     * @param maladie
     * @return Errors
     */
@@ -239,7 +239,7 @@ public class CessionValidator implements Validator
 
    /**
     * Vérifie la cohérence de la date de destruction de la cession avec les
-    * dates de validation, demande, depart, arrivee. 
+    * dates de validation, demande, depart, arrivee.
     * @param maladie
     * @return Errors
     */

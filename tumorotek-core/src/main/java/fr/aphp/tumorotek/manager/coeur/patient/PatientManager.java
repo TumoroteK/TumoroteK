@@ -82,14 +82,14 @@ public interface PatientManager
     * @param patient Patient a creer
     * @param maladies liste de Maladies
     * @param medecins liste de Collaborateur medecins referents ordonnée
-    * @param patientLiens liste de PatientLien liens familiaux 
+    * @param patientLiens liste de PatientLien liens familiaux
     * @param liste des valeurs d'annotation à enregistrer
-    * @param liste des valeurs d'annotation à supprimer. 
+    * @param liste des valeurs d'annotation à supprimer.
     * @param filesCreated liste de fichier créés
     * @param filesToDelete liste de fichier à supprimer
     * @param utilisateur Utilisateur realisant la creation
     * @param operation String creation / modification
-    * @param base directory pour enregistrer un fichier associé 
+    * @param base directory pour enregistrer un fichier associé
     * dans le file system
     */
    void createOrUpdateObjectManager(Patient patient, List<Maladie> maladies, List<Collaborateur> medecins,
@@ -99,7 +99,7 @@ public interface PatientManager
 
    /**
     * Cherche les doublons en se basant sur la methode equals()
-    * surchargee par les entites. Si l'objet est modifie donc a un id 
+    * surchargee par les entites. Si l'objet est modifie donc a un id
     * attribue par le SGBD, ce dernier est retire de la liste findAll.
     * @param patient Patient dont on cherche la presence dans la base
     * @return true/false
@@ -162,7 +162,7 @@ public interface PatientManager
    List<Integer> findAllObjectsIdsWithBanquesManager(List<Banque> banques);
 
    /**
-    * Recherche toutes les patients dont le nom est egal ou 'like' 
+    * Recherche toutes les patients dont le nom est egal ou 'like'
     * celui passé en parametre.
     * @param nom
     * @param boolean exactMatch
@@ -180,7 +180,7 @@ public interface PatientManager
    List<Patient> findByNipLikeManager(String nip, boolean exactMatch);
 
    /**
-    * Recherche toutes les patients dont le nom est egal ou 'like' 
+    * Recherche toutes les patients dont le nom est egal ou 'like'
     * celui passé en parametre.
     * @param nom
     * @param boolean exactMatch
@@ -189,7 +189,7 @@ public interface PatientManager
    List<Patient> findByNomLikeBothSideManager(String nom, boolean exactMatch);
 
    /**
-    * Recherche toutes les patients dont le nom est egal ou 'like' 
+    * Recherche toutes les patients dont le nom est egal ou 'like'
     * celui passé en parametre et ayant
     * des prélèvements dans les banques passées en paramètre.
     * @param nom
@@ -223,7 +223,7 @@ public interface PatientManager
    List<Patient> findByEtatIncompletManager();
 
    /**
-    * Recherche tous les patients dont la date de creation systeme est 
+    * Recherche tous les patients dont la date de creation systeme est
     * posterieure ou egale a celle passee en parametre et ayant des prlvts
     * dans les banques passées en paramètres.
     * @param date
@@ -232,7 +232,7 @@ public interface PatientManager
    List<Integer> findAfterDateCreationReturnIdsManager(Calendar date, List<Banque> banques);
 
    /**
-    * Recherche tous les patients dont la date de modification systeme est 
+    * Recherche tous les patients dont la date de modification systeme est
     * posterieure ou egale a celle passee en parametre.
     * @param date
     * @return Liste de Patient.
@@ -291,13 +291,13 @@ public interface PatientManager
    /**
     * Réalise la modification multiple d'une liste de patients.
     * @param patients Liste des patients à mettre à jour.
-    * @param Liste patients à la base de la modification multiple, cette liste est 
+    * @param Liste patients à la base de la modification multiple, cette liste est
     * utilisée pour la création des annotations Fichier en batch
     * @param list Annotations associées à mettre à jour ou créer
     * (doivent donc avoir objet, champ, et banque referencees)
     * @param list Annotations associées à supprimer
     * @param utilisateur Utilisateur voulant modifier les patients.
-    * @param base directory pour enregistrer un fichier associé 
+    * @param base directory pour enregistrer un fichier associé
     * dans le file system
     */
    void updateMultipleObjectsManager(List<Patient> patients, List<Patient> basePatients,
@@ -305,9 +305,9 @@ public interface PatientManager
       String baseDir);
 
    /**
-    * Verifie avant la suppression que le patient ne référence pas de 
+    * Verifie avant la suppression que le patient ne référence pas de
     * prélèvements avant d'être supprimé.
-    * pas cet objet. 
+    * pas cet objet.
     * @param patient Patient a supprimer de la base de donnees.
     * @return true/false
     */
@@ -321,7 +321,7 @@ public interface PatientManager
    List<Patient> findByIdsInListManager(List<Integer> ids);
 
    /**
-    * Verifie si le patient doit être modifié (de manière automatique 
+    * Verifie si le patient doit être modifié (de manière automatique
     * par synchronisation avec le serveur d'identité patient).
     * @param Patient venant du SIP
     * @param Patient venant du système
@@ -330,15 +330,15 @@ public interface PatientManager
 
    /**
     * Fusionne deux patients enregistrés dans le système.
-    * Le premier patient passé en paramètre est celui qui sera conservé 
-    * dans le système et qui recevra les associations attribuées au 
+    * Le premier patient passé en paramètre est celui qui sera conservé
+    * dans le système et qui recevra les associations attribuées au
     * patient passif passé en deuxième paramètres.
     * Association à récupérer:<br>
-    *  - maladies (si nouvelle, sinon récupérer juste prelevements)<br> 
+    *  - maladies (si nouvelle, sinon récupérer juste prelevements)<br>
     *  - medecins referents (si nouveaux)<br>
     *  - liens familiaux (si nouveaux)<br>
-    *  Crée une operation de fusion et enregistre un fantome pour le patient 
-    *  passif avec un commentaire sur l'operation de fusion (venant du sip ou 
+    *  Crée une operation de fusion et enregistre un fantome pour le patient
+    *  passif avec un commentaire sur l'operation de fusion (venant du sip ou
     *  de l'utilisateur...)
     * @param actif celui qui restera
     * @param passif celui qui sera supprimé
@@ -367,7 +367,7 @@ public interface PatientManager
    /**
     * Compte le nombre de maladies pour le référent passé en param
     * @param collaborateur
-    * @return Long compte 
+    * @return Long compte
     */
    public Long findCountByReferentManager(Collaborateur colla);
 
@@ -390,7 +390,7 @@ public interface PatientManager
    /**
     * Trouve le patient en base correspondant au patient passé en paramètre,
     * sur la base de la méthode équals.
-    * Méthode équivalente à la findDoublonManager, mais avec pour objectif de 
+    * Méthode équivalente à la findDoublonManager, mais avec pour objectif de
     * renvoyer l'objet lui même dans le cadre d'un import en modification.
     * @param pat Patient
     * @return patient si existe, null sinon

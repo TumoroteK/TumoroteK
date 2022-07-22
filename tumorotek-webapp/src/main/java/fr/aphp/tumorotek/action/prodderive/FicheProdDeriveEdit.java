@@ -115,109 +115,191 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
    private static final long serialVersionUID = 4384639895874573764L;
 
    protected Textbox codePrefixeLabelDerive;
+
    protected Textbox codeBoxDerive;
+
    protected Textbox codeLaboBoxDerive;
+
    protected Label volumeBoxDerive;
+
    protected Decimalbox volumeInitBoxDerive;
+
    protected Decimalbox concentrationBoxDerive;
+
    protected Label quantiteBoxDerive;
+
    protected Decimalbox quantiteInitBoxDerive;
+
    protected Label transfoQuantiteLabel;
+
    protected Div transfoQuantiteDiv;
+
    protected Decimalbox transfoQuantiteBoxDerive;
+
    protected CalendarBox dateStockCalBox;
+
    protected CalendarBox dateTransfoCalBox;
+
    protected Listbox typesBoxDerive;
+
    protected Listbox volumeUnitesBoxDerive;
+
    protected Listbox concentrationUnitesBoxDerive;
+
    protected Listbox quantiteUnitesBoxDerive;
+
    protected Listbox qualitesBoxDerive;
+
    protected Listbox modePrepaBoxDerive;
+
    //	private Label transfoQuantiteUnitesBoxDerive;
    protected Combobox collabBoxDerive;
+
    protected Label operateurAideSaisieDerive;
 
    // Composants pour le parent
    private Group groupPrlvtDerive;
+
    private Group groupEchanDerive;
+
    private Group groupDeriveDerive;
+
    protected Row row1EchanDerive;
+
    protected Row row2EchanDerive;
+
    private Row row3EchanDerive;
+
    private Row row4EchanDerive;
+
    protected Row row1PrlvtDerive;
+
    protected Row row2PrlvtDerive;
+
    private Row row3PrlvtDerive;
+
    private Row row4PrlvtDerive;
+
    protected Row row1DeriveDerive;
+
    protected Row row2DeriveDerive;
+
    private Row row3DeriveDerive;
+
    private Row row4DeriveDerive;
 
    protected Checkbox conformeTraitementBoxOui;
+
    protected Checkbox conformeTraitementBoxNon;
+
    protected Div conformeTraitementBox;
+
    protected Checkbox conformeCessionBoxOui;
+
    protected Checkbox conformeCessionBoxNon;
+
    protected Div conformeCessionBox;
+
    protected Listbox nonConformitesTraitementBox;
+
    protected Listbox nonConformitesCessionBox;
 
    // Lignes pour la transformation
    protected Row rowTransformation1;
+
    protected Row rowTransformation2;
+
    protected Row transformationInconnueLabel;
+
    private Component[] objLabelsPrlvtParent;
+
    private Component[] objLabelsEchanParent;
+
    private Component[] objLabelsDeriveParent;
+
    private Component[] objLabelsTransformation;
 
    // Objets Principaux.
    private ProdDerive prodDerive = new ProdDerive();
+
    private TKdataObject parentObj;
+
    private Transformation transformation = new Transformation();
+
    // copie de la transformation, utilisée en cas de reverse
    private final Transformation copyTransformation = new Transformation();
 
    // Objets pour le parent
    private String typeParent = null;
+
    private Emplacement oldEmplacement = null;
 
    // Associations.
    private List<ProdType> types = new ArrayList<>();
+
    private ProdType selectedType;
+
    private List<Unite> quantiteUnites = new ArrayList<>();
+
    private Unite selectedQuantiteUnite;
+
    private List<Unite> volumeUnites = new ArrayList<>();
+
    private Unite selectedVolumeUnite;
+
    private List<Unite> concUnites = new ArrayList<>();
+
    private Unite selectedConcUnite;
+
    private Unite selectedTransfoQuantiteUnite;
+
    private List<ProdQualite> qualites = new ArrayList<>();
+
    private ProdQualite selectedQualite;
+
    private List<Collaborateur> collaborateurs = new ArrayList<>();
+
    private List<Collaborateur> multiCollaborateurs = new ArrayList<>();
+
    private Collaborateur selectedCollaborateur;
+
    private List<String> nomsAndPrenoms = new ArrayList<>();
+
    private List<ModePrepaDerive> modePrepaDerives = new ArrayList<>();
+
    private ModePrepaDerive selectedModePrepaDerive;
+
    private List<NonConformite> nonConformitesTraitement = new ArrayList<>();
+
    private NonConformite selectedNonConformiteTraitement;
+
    private List<NonConformite> nonConformitesCession = new ArrayList<>();
+
    private NonConformite selectedNonConformiteCession;
+
    private Set<Listitem> selectedNonConformitesTraitementItem = new HashSet<>();
+
    private Set<Listitem> selectedNonConformitesCessionItem = new HashSet<>();
 
    // Variables formulaire.
    private String valeurQuantite = "";
+
    private String valeurQuantiteRestante = "";
+
    private String valeurVolume = "";
+
    private String valeurVolumeRestant = "";
+
    private String valeurConcentration = "";
+
    private String valeurTransfoQuantite = "";
+
    private String codePrefixe = "";
+
    private String codeSuffixe = "";
+
    private String codeParent = "";
+
    private String emplacementAdrl = "";
 
    //Labels anonymisables
@@ -225,16 +307,23 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
 
    /**
     * Gestion des contraintes sur les quantités et volumes .
-    * Variables conservant les valeurs saisies dans les champs. 
+    * Variables conservant les valeurs saisies dans les champs.
     */
    private Float volume;
+
    private Float volumeInit;
+
    private Float quantite;
+
    private Float quantiteInit;
+
    // quantite max que peut saisir l'utilisateur pour la transformation
    private Float quantiteMax;
+
    private Float quantiteTransformation;
+
    private Date dateCongelation;
+
    private Date dateTransformation;
 
    @Override
@@ -286,7 +375,7 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
 
       // on récupère les objets associés
       // if(!this.prodDerive.equals(new ProdDerive())){
-      if (this.prodDerive.getProdDeriveId() != null) {
+      if(this.prodDerive.getProdDeriveId() != null){
          // on extrait les dérivés et on initialise le nombre à afficher
          emplacementAdrl = ManagerLocator.getProdDeriveManager().getEmplacementAdrlManager(prodDerive);
       }
@@ -423,9 +512,9 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
       }
 
       // final Emplacement emp = prodDerive.getEmplacement();
-      // TK-225 echantillon en modification peux avoir son statut de stockage 
+      // TK-225 echantillon en modification peux avoir son statut de stockage
       // modifié par un autre utilisateur
-      // -> refresh emplacement depuis la base de données 
+      // -> refresh emplacement depuis la base de données
       final Emplacement emp = ManagerLocator.getEmplacementManager().findByTKStockableObjectManager(prodDerive);
       prodDerive.setEmplacement(emp);
 
@@ -456,8 +545,8 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
          selectedType, findStatutForTKStockableObject(prodDerive), selectedCollaborateur, emp, selectedVolumeUnite,
          selectedConcUnite, selectedQuantiteUnite, selectedModePrepaDerive, selectedQualite, prodDerive.getTransformation(),
          getObjectTabController().getFicheAnnotation().getValeursToCreateOrUpdate(),
-         getObjectTabController().getFicheAnnotation().getValeursToDelete(), SessionUtils.getLoggedUser(sessionScope), true,
-         null, SessionUtils.getSystemBaseDir(), noconfsT, noconfsC);
+         getObjectTabController().getFicheAnnotation().getValeursToDelete(), SessionUtils.getLoggedUser(sessionScope), true, null,
+         SessionUtils.getSystemBaseDir(), noconfsT, noconfsC);
 
       // s'il n'y a pas d'erreurs, on met à jour le parent : modif
       // de sa quantité et de son volume
@@ -561,8 +650,7 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
          ((Echantillon) getParentObject()).getBanque(), prlvt, ((Echantillon) getParentObject()).getCollaborateur(), statut,
          ((Echantillon) getParentObject()).getEmplacement(), ((Echantillon) getParentObject()).getEchantillonType(), null, null,
          ((Echantillon) getParentObject()).getQuantiteUnite(), ((Echantillon) getParentObject()).getEchanQualite(),
-         ((Echantillon) getParentObject()).getModePrepa(),
-         null, null, null, null, SessionUtils.getLoggedUser(sessionScope),
+         ((Echantillon) getParentObject()).getModePrepa(), null, null, null, null, SessionUtils.getLoggedUser(sessionScope),
          false, ops, null);
 
       // on vérifie que l'on retrouve bien la page contenant la liste
@@ -593,7 +681,7 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
          if(((ProdDerive) getParentObject()).getQuantiteInit() != null
             && !((ProdDerive) getParentObject()).getQuantiteInit().equals(new Float(0.0))){
             if(((ProdDerive) getParentObject()).getVolumeInit() != null){
-               final Float rapport =
+               final float rapport =
                   ((ProdDerive) getParentObject()).getQuantite() / ((ProdDerive) getParentObject()).getQuantiteInit();
                final Float newVol = ((ProdDerive) getParentObject()).getVolumeInit() * rapport;
                ((ProdDerive) getParentObject()).setVolume(newVol);
@@ -642,8 +730,7 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
          ((ProdDerive) getParentObject()).getVolumeUnite(), ((ProdDerive) getParentObject()).getConcUnite(),
          ((ProdDerive) getParentObject()).getQuantiteUnite(), ((ProdDerive) getParentObject()).getModePrepaDerive(),
          ((ProdDerive) getParentObject()).getProdQualite(), ((ProdDerive) getParentObject()).getTransformation(), null, null,
-         null, null, SessionUtils.getLoggedUser(sessionScope), false, ops,
-         null);
+         null, null, SessionUtils.getLoggedUser(sessionScope), false, ops, null);
 
       // on vérifie que l'on retrouve bien la page contenant la liste
       // des derives
@@ -953,7 +1040,7 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
       // la banque
       final List<Object> list = new ArrayList<>();
 
-      // choix de la banque si toutes collections, modification 
+      // choix de la banque si toutes collections, modification
       // reste possible
       if(getBanque() == null){ // echantillon en creation
          if(SessionUtils.getSelectedBanques(sessionScope).get(0).getProprietaire() != null){
@@ -1017,11 +1104,11 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
     * codePrefixeLabelDerive. Cette valeur sera mise en majuscules.
     */
    public void onBlur$codePrefixeLabelDerive(){
-      
+
       codePrefixeLabelDerive.setValue(codePrefixeLabelDerive.getValue().toUpperCase().trim());
 
       //On ne contrôle le code que s'il s'agit d'un nouveau prélèvement ou si le code a été modifié
-      if(prodDerive.getCode() == null || !codePrefixeLabelDerive.getValue().equals(prodDerive.getCode())) {
+      if(prodDerive.getCode() == null || !codePrefixeLabelDerive.getValue().equals(prodDerive.getCode())){
          validateProdDeriveCode(codePrefixeLabelDerive.getValue());
       }
 
@@ -1031,7 +1118,7 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
     * Validation "à la volée" du code produit dérivé saisi
     * @param prodDeriveCode
     */
-   private void validateProdDeriveCode(String prodDeriveCode){
+   private void validateProdDeriveCode(final String prodDeriveCode){
 
       //Vérification de l'absence de doublons
       final List<ProdDerive> doublons = ManagerLocator.getManager(ProdDeriveManager.class)
@@ -1210,8 +1297,8 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
    }
 
    /**
-    * Méthode appelée lors de la sélection d'un volume dans la liste 
-    * volumeUnitesBoxDerive. Les unités de concentration et quantité 
+    * Méthode appelée lors de la sélection d'un volume dans la liste
+    * volumeUnitesBoxDerive. Les unités de concentration et quantité
     * seront mises à jour en fonction de cette sélection.
     */
    public void onSelect$volumeUnitesBoxDerive(){
@@ -1236,8 +1323,8 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
    }
 
    /**
-    * Méthode appelée lors de la sélection d'une concentration dans la liste 
-    * concentrationUnitesBoxDerive. Les unités de volume et de quantité 
+    * Méthode appelée lors de la sélection d'une concentration dans la liste
+    * concentrationUnitesBoxDerive. Les unités de volume et de quantité
     * seront mises à jour en fonction de cette sélection.
     */
    public void onSelect$concentrationUnitesBoxDerive(){
@@ -1273,8 +1360,8 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
    }
 
    /**
-    * Méthode appelée lors de la sélection d'une quantité dans la liste 
-    * quantiteUnitesBoxDerive. Les unités de concentration et de volume 
+    * Méthode appelée lors de la sélection d'une quantité dans la liste
+    * quantiteUnitesBoxDerive. Les unités de concentration et de volume
     * seront mises à jour en fonction de cette sélection.
     */
    public void onSelect$quantiteUnitesBoxDerive(){
@@ -1840,9 +1927,13 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
    /********************** VALIDATION ***********************/
    /*********************************************************/
    private final Constraint cttVolume = new ConstVolume();
+
    private final Constraint cttVolumeInit = new ConstVolumeInit();
+
    private Constraint cttQuantite = new ConstQuantite();
+
    private final Constraint cttQuantiteInit = new ConstQuantiteInit();
+
    private final Constraint cttQuantiteTransfo = new ConstQuantiteTransformation();
 
    public Constraint getCttVolume(){
@@ -1977,13 +2068,13 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
             // volumeInit
             if(getCopy().getVolume() != null && getCopy().getVolumeInit() != null){
 
-               final Float diff = volumeInitValue.floatValue() - getCopy().getVolumeInit();
-               final Float restant = getCopy().getVolume() + diff;
+               final float diff = volumeInitValue.floatValue() - getCopy().getVolumeInit();
+               final float restant = getCopy().getVolume() + diff;
                final Float zero = new Float(0.0);
                // si le volume restant est négatif
                if(restant < zero){
                   // on calcule le volumeInit minimal autorisé
-                  final Float min = getCopy().getVolumeInit() - getCopy().getVolume();
+                  final float min = getCopy().getVolumeInit() - getCopy().getVolume();
                   throw new WrongValueException(comp, Labels.getLabel("validation.invalid.volume.init") + " " + min);
                }
             }
@@ -2100,13 +2191,13 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
             // quantiteInit
             if(getCopy().getQuantite() != null && getCopy().getQuantiteInit() != null){
 
-               final Float diff = quantiteInitValue.floatValue() - getCopy().getQuantiteInit();
-               final Float restant = getCopy().getQuantite() + diff;
+               final float diff = quantiteInitValue.floatValue() - getCopy().getQuantiteInit();
+               final float restant = getCopy().getQuantite() + diff;
                final Float zero = new Float(0.0);
                // si la Quantite restante est négative
                if(restant < zero){
                   // on calcule la quantiteInit minimale autorisée
-                  final Float min = getCopy().getQuantiteInit() - getCopy().getQuantite();
+                  final float min = getCopy().getQuantiteInit() - getCopy().getQuantite();
                   throw new WrongValueException(comp, Labels.getLabel("validation.invalid.quantite.init") + " " + min);
                }
                // la quantité init doit respecter la formule :
@@ -2117,8 +2208,7 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
                   res = ObjectTypesFormatters.floor(res, 3);
 
                   // TK-290 arrondi peut être supérieur ou inférieur = OK
-                  if((quantiteInit.floatValue() > (res + 0.001f)) 
-                 		|| (quantiteInit.floatValue() < (res - 0.001f)) ){
+                  if((quantiteInit.floatValue() > (res + 0.001f)) || (quantiteInit.floatValue() < (res - 0.001f))){
                      throw new WrongValueException(comp, Labels.getLabel("validation.invalid.formule" + ".quantite.init"));
                   }
                }
@@ -2128,7 +2218,7 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
    }
 
    /**
-    * Contrainte vérifiant que la quantite de transformation n'est 
+    * Contrainte vérifiant que la quantite de transformation n'est
     * pas inférieure à 0 et n'est pas supérieure à celle du parent.
     * @author Pierre Ventadour.
     *
@@ -2315,7 +2405,7 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
    /**
     * Recupere l'entite en fonction du type du parent et assigne l'Id
     * du parent a la transformation.
-    * Renvoie null si le type parent n'est pas specifie. Utile pour 
+    * Renvoie null si le type parent n'est pas specifie. Utile pour
     * la validation des dates.
     * @return Entite du parent
     */
@@ -2387,8 +2477,7 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
       concUnites = ManagerLocator.getUniteManager().findByTypeLikeManager("concentration", true);
       concUnites.add(0, null);
 
-      qualites =
-         ManagerLocator.getManager(ProdQualiteManager.class).findByOrderManager(SessionUtils.getPlateforme(sessionScope));
+      qualites = ManagerLocator.getManager(ProdQualiteManager.class).findByOrderManager(SessionUtils.getPlateforme(sessionScope));
       qualites.add(0, null);
 
       // init des collaborateurs

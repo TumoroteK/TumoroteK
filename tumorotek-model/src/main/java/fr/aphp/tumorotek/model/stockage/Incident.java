@@ -91,12 +91,17 @@ public class Incident implements Serializable
    private static final long serialVersionUID = -4770356034470081995L;
 
    private Integer incidentId;
+
    private String nom;
+
    private Date date;
+
    private String description;
 
    private Conteneur conteneur;
+
    private Enceinte enceinte;
+
    private Terminale terminale;
 
    private Set<Retour> retours = new HashSet<>();

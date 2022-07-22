@@ -36,6 +36,7 @@
 package fr.aphp.tumorotek.dao.utilisateur;
 
 import java.util.List;
+
 import fr.aphp.tumorotek.dao.GenericDaoJpa;
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.contexte.Plateforme;
@@ -52,7 +53,7 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
  *
  * @author Pierre Ventadour
  * @author Mathieu BARTHELEMY
- * 
+ *
  * @version 2.3.0-gatsbi
  *
  */
@@ -60,7 +61,7 @@ public interface ProfilUtilisateurDao extends GenericDaoJpa<ProfilUtilisateur, P
 {
 
    /**
-    * Recherche les ProfilUtilisateurs sauf celui dont la clé 
+    * Recherche les ProfilUtilisateurs sauf celui dont la clé
     * primaire est passée en paramètre.
     * @param pk ProfilUtilisateurPK.
     * @return une liste de ProfilUtilisateurs.
@@ -68,7 +69,7 @@ public interface ProfilUtilisateurDao extends GenericDaoJpa<ProfilUtilisateur, P
    List<ProfilUtilisateur> findByExcludedPK(ProfilUtilisateurPK pk);
 
    /**
-    * Recherche les ProfilUtilisateurs dont le Profil est égal au 
+    * Recherche les ProfilUtilisateurs dont le Profil est égal au
     * paramètre.
     * @param profil Profil des ProfilUtilisateurs recherchés.
     * @return une liste de ProfilUtilisateurs.
@@ -77,7 +78,7 @@ public interface ProfilUtilisateurDao extends GenericDaoJpa<ProfilUtilisateur, P
    List<ProfilUtilisateur> findByProfil(Profil profil, boolean archive);
 
    /**
-    * Recherche les ProfilUtilisateurs dont l'Utilisateur est égal au 
+    * Recherche les ProfilUtilisateurs dont l'Utilisateur est égal au
     * paramètre.
     * @param utilisateur Utilisateur des ProfilUtilisateurs recherchés.
     * @param filtre statut archivé des banques
@@ -87,10 +88,10 @@ public interface ProfilUtilisateurDao extends GenericDaoJpa<ProfilUtilisateur, P
    List<ProfilUtilisateur> findByUtilisateur(Utilisateur utilisateur, boolean archive);
 
    /**
-    * Recherche les ProfilUtilisateurs dont la Banque est égale au 
+    * Recherche les ProfilUtilisateurs dont la Banque est égale au
     * paramètre.
     * @param banque Banque des ProfilUtilisateurs recherchés.
-    * @param Boolean utilisateur archivé oui/non 
+    * @param Boolean utilisateur archivé oui/non
     * @return une liste de ProfilUtilisateurs.
     * @version 2.1
     */
@@ -122,9 +123,9 @@ public interface ProfilUtilisateurDao extends GenericDaoJpa<ProfilUtilisateur, P
     * @return Liste ordonnée de ProfilUtilisateurs.
     */
    List<ProfilUtilisateur> findByBanqueProfil(Banque banque, Profil profil);
-   
+
    /**
-    * Compte pour un utilisateur le nombre de profils différents qui lui sont attribués 
+    * Compte pour un utilisateur le nombre de profils différents qui lui sont attribués
     * pour accéder aux banques (de contexte non GATSBI) pour une plateforme donnée.
     * Cette méthode permet de visualiser rapidement, si le nombre de profils est supérieur à 1,
     * si l'utilisateur pourra accéder en mode 'toutes collections'.
@@ -134,9 +135,9 @@ public interface ProfilUtilisateurDao extends GenericDaoJpa<ProfilUtilisateur, P
     * @since 2.2.4.1
     */
    List<Long> findCountDistinctProfilForUserAndPlateformeGroupedByContexte(Utilisateur u, Plateforme p);
-   
+
    /**
-    * Compte pour un utilisateur le nombre de profils différents qui lui sont attribués 
+    * Compte pour un utilisateur le nombre de profils différents qui lui sont attribués
     * pour accéder aux banques d'une même étude (donc de contexte GATSBI) pour une plateforme donnée.
     * Cette méthode permet de visualiser rapidement, si le nombre de profils est supérieur à 1,
     * si l'utilisateur pourra accéder en mode 'toutes collections' pour chacune de ces études

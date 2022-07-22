@@ -69,6 +69,7 @@ public class Titre implements java.io.Serializable
    private static final long serialVersionUID = 78644354386453143L;
 
    private Integer titreId;
+
    private String titre;
 
    private Set<Collaborateur> collaborateurs = new HashSet<>();

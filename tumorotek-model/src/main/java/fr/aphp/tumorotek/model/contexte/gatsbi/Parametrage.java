@@ -1,5 +1,5 @@
 /**
- * Copyright ou © ou Copr. Assistance Publique des Hôpitaux de 
+ * Copyright ou © ou Copr. Assistance Publique des Hôpitaux de
  * PARIS et SESAN
  * projet-tk@sesan.fr
  *
@@ -41,76 +41,79 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class Parametrage implements Serializable {
+public class Parametrage implements Serializable
+{
 
-	private static final long serialVersionUID = 1L;
-	
-	private Integer contexteParametrageId;
-	private String nom;
-	private List<ParametrageValue> parametrageValues = new ArrayList<ParametrageValue>();
-	
-	public Parametrage(Integer parametrageId, String nom, List<ParametrageValue> _v) {
-		super();
-		this.contexteParametrageId = parametrageId;
-		this.nom = nom;
-		if (_v != null) {
-			this.parametrageValues.addAll(_v);
-		}
-	}
+   private static final long serialVersionUID = 1L;
 
-	public Integer getContexteParametrageId() {
-		return contexteParametrageId;
-	}
-	
-	public void setContexteParametrageId(Integer _i) {
-		this.contexteParametrageId = _i;
-	}
-	
-	public String getNom() {
-		return nom;
-	}
-	
-	public void setNom(String _l) {
-		this.nom = _l;
-	}
+   private Integer contexteParametrageId;
 
-	public List<ParametrageValue> getParametrageValues() {
-		return parametrageValues;
-	}
+   private String nom;
 
-	public void setParametrageValues(List<ParametrageValue> _v) {
-		this.parametrageValues = _v;
-	}
+   private List<ParametrageValue> parametrageValues = new ArrayList<>();
 
-	@Override
-	public boolean equals(Object obj) {
-		if (obj == this) {
-            return true;
-        }
-        if (obj == null || obj.getClass() != this.getClass()) {
-            return false;
-        }
+   public Parametrage(final Integer parametrageId, final String nom, final List<ParametrageValue> _v){
+      super();
+      this.contexteParametrageId = parametrageId;
+      this.nom = nom;
+      if(_v != null){
+         this.parametrageValues.addAll(_v);
+      }
+   }
 
-        Parametrage param = (Parametrage) obj;
+   public Integer getContexteParametrageId(){
+      return contexteParametrageId;
+   }
 
-        return Objects.equals(contexteParametrageId, param.getContexteParametrageId());
-	}
-	
-	@Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-    	result = prime * result + ((contexteParametrageId == null) ? 0 : contexteParametrageId.hashCode());
-    	return result;
-	}
-	
-	public String getDefaultValuesForChampEntiteId(Integer id) {
-		
-		for (ParametrageValue v : parametrageValues) {
-			if (v.getChampEntiteId().equals(id)) {
-				return v.getDefaultValue();
-			}
-		}
-		return null;
-	}
+   public void setContexteParametrageId(final Integer _i){
+      this.contexteParametrageId = _i;
+   }
+
+   public String getNom(){
+      return nom;
+   }
+
+   public void setNom(final String _l){
+      this.nom = _l;
+   }
+
+   public List<ParametrageValue> getParametrageValues(){
+      return parametrageValues;
+   }
+
+   public void setParametrageValues(final List<ParametrageValue> _v){
+      this.parametrageValues = _v;
+   }
+
+   @Override
+   public boolean equals(final Object obj){
+      if(obj == this){
+         return true;
+      }
+      if(obj == null || obj.getClass() != this.getClass()){
+         return false;
+      }
+
+      final Parametrage param = (Parametrage) obj;
+
+      return Objects.equals(contexteParametrageId, param.getContexteParametrageId());
+   }
+
+   @Override
+   public int hashCode(){
+      final int prime = 31;
+      int result = 1;
+      result = prime * result + ((contexteParametrageId == null) ? 0 : contexteParametrageId.hashCode());
+      return result;
+   }
+
+   public String getDefaultValuesForChampEntiteId(final Integer id){
+
+      for(final ParametrageValue v : parametrageValues){
+         if(v.getChampEntiteId().equals(id)){
+            return v.getDefaultValue();
+         }
+      }
+      return null;
+   }
 }

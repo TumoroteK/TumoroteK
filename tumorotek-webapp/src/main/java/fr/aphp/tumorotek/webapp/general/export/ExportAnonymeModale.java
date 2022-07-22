@@ -46,37 +46,38 @@ import org.zkoss.zk.ui.select.annotation.Wire;
 import org.zkoss.zul.Window;
 
 /**
- * Custom Message box pour orienter l'utilisateur vers un export 
+ * Custom Message box pour orienter l'utilisateur vers un export
  * anonymisé.
  *
  * @author Mathieu BARTHELEMY
  * @version 2.2.3-genno
  *
  */
-public class ExportAnonymeModale {
+public class ExportAnonymeModale
+{
 
-	@Wire("#fwinExportAnonymeModale")
-	private Window fwinExportAnonymeModale;
+   @Wire("#fwinExportAnonymeModale")
+   private Window fwinExportAnonymeModale;
 
-	@AfterCompose
-	public void afterCompose(@ContextParam(ContextType.VIEW) final Component view){
-		Selectors.wireComponents(view, this, false);
-		fwinExportAnonymeModale.setAttribute("anonymize", true);
-	}
+   @AfterCompose
+   public void afterCompose(@ContextParam(ContextType.VIEW) final Component view){
+      Selectors.wireComponents(view, this, false);
+      fwinExportAnonymeModale.setAttribute("anonymize", true);
+   }
 
-	private void cancel() {
-		Events.postEvent("onClose", fwinExportAnonymeModale, null);
-	}
+   private void cancel(){
+      Events.postEvent("onClose", fwinExportAnonymeModale, null);
+   }
 
-	@Command
-	public void nomivativeExport() {
-		fwinExportAnonymeModale.setAttribute("anonymize", false);
-		cancel();
-	}
+   @Command
+   public void nomivativeExport(){
+      fwinExportAnonymeModale.setAttribute("anonymize", false);
+      cancel();
+   }
 
-	@Command
-	public void anonymize() {
-		fwinExportAnonymeModale.setAttribute("anonymize", true);
-		cancel();
-	}
+   @Command
+   public void anonymize(){
+      fwinExportAnonymeModale.setAttribute("anonymize", true);
+      cancel();
+   }
 }

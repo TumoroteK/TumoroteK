@@ -55,9 +55,9 @@ public interface BlocImpressionTemplateManager
 {
 
    /**
-    * Recherche un BlocImpressionTemplate dont l'identifiant est 
+    * Recherche un BlocImpressionTemplate dont l'identifiant est
     * passé en paramètre.
-    * @param pk Identifiant du BlocImpressionTemplate que 
+    * @param pk Identifiant du BlocImpressionTemplate que
     * l'on recherche.
     * @return Un BlocImpressionTemplate.
     */
@@ -70,7 +70,7 @@ public interface BlocImpressionTemplateManager
    List<BlocImpressionTemplate> findAllObjectsManager();
 
    /**
-    * Recherche les BlocImpressionTemplates sauf celui dont la clé 
+    * Recherche les BlocImpressionTemplates sauf celui dont la clé
     * primaire est passée en paramètre.
     * @param pk BlocImpressionTemplatePK.
     * @return Liste de BlocImpressionTemplates.
@@ -78,7 +78,7 @@ public interface BlocImpressionTemplateManager
    List<BlocImpressionTemplate> findByExcludedPKManager(BlocImpressionTemplatePK pk);
 
    /**
-    * Recherche les BlocImpressionTemplates dont le Template est égal au 
+    * Recherche les BlocImpressionTemplates dont le Template est égal au
     * paramètre.
     * @param template Template des BlocImpressionTemplate recherchés.
     * @return une liste de BlocImpressionTemplate.

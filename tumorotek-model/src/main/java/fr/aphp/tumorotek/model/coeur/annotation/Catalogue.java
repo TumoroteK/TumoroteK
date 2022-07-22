@@ -72,12 +72,17 @@ public class Catalogue implements Serializable
    private static final long serialVersionUID = 1L;
 
    private Integer catalogueId;
+
    private String nom;
+
    private String description;
+
    private String icone;
 
    private Set<TableAnnotation> tableAnnotations = new HashSet<>();
+
    private Set<Contexte> contextes = new HashSet<>();
+
    private Set<Banque> banques = new HashSet<>();
 
    /** Constructeur par défaut. */

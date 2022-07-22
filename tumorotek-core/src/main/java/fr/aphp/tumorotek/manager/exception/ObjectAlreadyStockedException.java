@@ -50,21 +50,21 @@ public class ObjectAlreadyStockedException extends TKException
 
    public ObjectAlreadyStockedException(final TKStockableObject _s){
       this.obj = _s;
-      if (_s != null) {
-    	  setIdentificationObjetException(_s.getCode());
+      if(_s != null){
+         setIdentificationObjetException(_s.getCode());
       }
    }
 
-   public TKStockableObject getObj() {
-	return obj;
-}
+   public TKStockableObject getObj(){
+      return obj;
+   }
 
-	public void setObj(TKStockableObject _o) {
-		this.obj = _o;
-	}
+   public void setObj(final TKStockableObject _o){
+      this.obj = _o;
+   }
 
-	@Override
-	public String getMessage(){
+   @Override
+   public String getMessage(){
       return "objet.already.stocked.error";
-	}
+   }
 }

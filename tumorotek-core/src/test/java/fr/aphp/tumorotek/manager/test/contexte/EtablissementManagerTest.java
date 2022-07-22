@@ -95,34 +95,49 @@ public class EtablissementManagerTest extends AbstractManagerTest4
 
    @Autowired
    private EtablissementManager etablissementManager;
+
    @Autowired
    private CoordonneeManager coordonneeManager;
+
    @Autowired
    private CategorieDao categorieDao;
+
    @Autowired
    private ServiceManager serviceManager;
+
    @Autowired
    private SpecialiteManager specialiteManager;
+
    @Autowired
    private TitreManager titreManager;
+
    @Autowired
    private CollaborateurManager collaborateurManager;
+
    @Autowired
    private UtilisateurDao utilisateurDao;
+
    @Autowired
    private CessionManager cessionManager;
+
    @Autowired
    private ContratManager contratManager;
+
    @Autowired
    private PlateformeDao plateformeDao;
+
    @Autowired
    private CollaborateurDao collaborateurDao;
+
    @Autowired
    private ContratDao contratDao;
+
    @Autowired
    private OperationDao operationDao;
+
    @Autowired
    private EntiteDao entiteDao;
+
    @Autowired
    private OperationTypeDao operationTypeDao;
 

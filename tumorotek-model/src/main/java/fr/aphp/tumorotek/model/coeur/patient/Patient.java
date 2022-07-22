@@ -83,25 +83,25 @@ import fr.aphp.tumorotek.model.contexte.Banque;
    @NamedQuery(name = "Patient.findByNomReturnIds",
       query = "SELECT distinct(p.patientId) FROM Patient p " + "JOIN p.maladies m " + "JOIN m.prelevements prlvts "
          + "WHERE (p.nom like ?1 " + "OR p.nomNaissance like ?1) " + "AND prlvts.banque in (?2)"),
-   //		@NamedQuery(name = "Patient.findByNomNaissance", 
+   //		@NamedQuery(name = "Patient.findByNomNaissance",
    //			query = "SELECT p FROM Patient p WHERE p.nomNaissance = ?1"),
-   //		@NamedQuery(name = "Patient.findByPrenom", 
+   //		@NamedQuery(name = "Patient.findByPrenom",
    //			query = "SELECT p FROM Patient p WHERE p.prenom = ?1"),
-   //		@NamedQuery(name = "Patient.findBySexe", 
+   //		@NamedQuery(name = "Patient.findBySexe",
    //			query = "SELECT p FROM Patient p WHERE p.sexe = ?1"),
    @NamedQuery(name = "Patient.findByDateNaissance", query = "SELECT p FROM Patient p WHERE p.dateNaissance = ?1"),
-   //		@NamedQuery(name = "Patient.findByVilleNaissance", 
+   //		@NamedQuery(name = "Patient.findByVilleNaissance",
    //			query = "SELECT p FROM Patient p WHERE p.villeNaissance = ?1"),
-   //		@NamedQuery(name = "Patient.findByPaysNaissance", 
+   //		@NamedQuery(name = "Patient.findByPaysNaissance",
    //			query = "SELECT p FROM Patient p WHERE p.paysNaissance = ?1"),
-   //		@NamedQuery(name = "Patient.findByPatientEtat", 
+   //		@NamedQuery(name = "Patient.findByPatientEtat",
    //			query = "SELECT p FROM Patient p WHERE p.patientEtat = ?1"),
-   //		@NamedQuery(name = "Patient.findByDateEtat", 
+   //		@NamedQuery(name = "Patient.findByDateEtat",
    //			query = "SELECT p FROM Patient p WHERE p.dateEtat = ?1"),
-   //		@NamedQuery(name = "Patient.findByDateDeces", 
+   //		@NamedQuery(name = "Patient.findByDateDeces",
    //			query = "SELECT p FROM Patient p WHERE p.dateDeces = ?1"),
    @NamedQuery(name = "Patient.findByEtatIncomplet", query = "SELECT p FROM Patient p WHERE p.etatIncomplet = true"),
-   //		@NamedQuery(name = "Patient.findByArchive", 
+   //		@NamedQuery(name = "Patient.findByArchive",
    //			query = "SELECT p FROM Patient p WHERE p.archive = ?1")
    @NamedQuery(name = "Patient.findAllNips", query = "SELECT p.nip FROM Patient p where p.nip is not null " + "ORDER BY p.nip"),
    @NamedQuery(name = "Patient.findAllNoms", query = "SELECT p.nom FROM Patient p ORDER BY p.nom"),
@@ -146,24 +146,41 @@ public class Patient extends TKDelegetableObject<Patient> implements TKAnnotable
    private static final long serialVersionUID = -2015746269357055625L;
 
    private Integer patientId;
+
    private String nip;
+
    private String nom;
+
    private String nomNaissance;
+
    private String prenom;
+
    private String sexe;
+
    private Date dateNaissance;
+
    private String villeNaissance;
+
    private String paysNaissance;
+
    private String patientEtat;
+
    private Date dateEtat;
+
    private Date dateDeces;
+
    private Boolean etatIncomplet;
+
    private Boolean archive = false;
+
    private TKDelegateObject<Patient> delegate;
 
    private Set<PatientLien> patientLiens = new HashSet<>();
+
    private Set<PatientLien> patientLiens2 = new HashSet<>();
+
    private Set<Maladie> maladies = new HashSet<>();
+
    private Set<PatientMedecin> patientMedecins = new LinkedHashSet<>();
 
    /** Constructeur par défaut. */
@@ -335,19 +352,20 @@ public class Patient extends TKDelegetableObject<Patient> implements TKAnnotable
       this.archive = arch;
    }
 
-   @OneToOne(mappedBy="delegator", cascade=CascadeType.ALL, orphanRemoval=true,
+   @Override
+   @OneToOne(mappedBy = "delegator", cascade = CascadeType.ALL, orphanRemoval = true,
       targetEntity = AbstractPatientDelegate.class)
-//   public AbstractPatientDelegate getDelegate(){
+   //   public AbstractPatientDelegate getDelegate(){
    public TKDelegateObject<Patient> getDelegate(){
       return delegate;
    }
 
    @Override
-   public void setDelegate(TKDelegateObject<Patient> delegate){
+   public void setDelegate(final TKDelegateObject<Patient> delegate){
       this.delegate = delegate;
    }
-   
-   public void setDelegate(AbstractPatientDelegate delegate){
+
+   public void setDelegate(final AbstractPatientDelegate delegate){
       this.delegate = delegate;
    }
 
@@ -474,7 +492,7 @@ public class Patient extends TKDelegetableObject<Patient> implements TKAnnotable
       clone.setMaladies(this.maladies);
 
       clone.setDelegate(getDelegate());
-      
+
       return clone;
    }
 

@@ -93,10 +93,10 @@ public class ChampDecorator implements Comparable<Object>
       }else{
          final String nomEntiteParent;
          final String nomChampEntite;
-         if(this.champ.getChampParent().getChampEntite() != null) {
+         if(this.champ.getChampParent().getChampEntite() != null){
             nomEntiteParent = this.champ.getChampParent().getChampEntite().getEntite().getNom();
             nomChampEntite = getLabelForChampEntite(this.champ.getChampParent().getChampEntite());
-         }else {
+         }else{
             nomEntiteParent = this.champ.getChampParent().getChampDelegue().getEntite().getNom();
             nomChampEntite = getLabelForChampDelegue(this.champ.getChampParent().getChampDelegue());
          }
@@ -137,7 +137,7 @@ public class ChampDecorator implements Comparable<Object>
 
       return Labels.getLabel(iProperty.toString());
    }
-   
+
    public String getLabel(){
       String label = null;
       label = Labels.getLabel("Champ." + champ.toString());

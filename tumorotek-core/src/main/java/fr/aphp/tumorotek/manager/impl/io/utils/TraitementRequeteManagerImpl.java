@@ -66,8 +66,10 @@ public class TraitementRequeteManagerImpl implements TraitementRequeteManager
 
    /** Bean Manager. */
    private GroupementManager groupementManager = null;
+
    /** Bean Manager. */
    private CorrespondanceManager correspondanceManager = null;
+
    /** Bean Manager. */
    private TraitementQueryManager traitementQueryManager = null;
 
@@ -115,7 +117,7 @@ public class TraitementRequeteManagerImpl implements TraitementRequeteManager
     * Retourne une liste d'objets correspondant au résultat de la requête.
     * @param requete Requete à exécuter.
     * @return Liste d'objets correspondant au résultat de la requête.
-    * (objets correspondant au niveau le plus bas (-> ProdDerive) des critères 
+    * (objets correspondant au niveau le plus bas (-> ProdDerive) des critères
     * de la requête)
     */
    @Override
@@ -134,7 +136,7 @@ public class TraitementRequeteManagerImpl implements TraitementRequeteManager
    /**
     * Retourne une liste d'objets correspondant au résultat de l'exécution de
     * l'arbre de groupement dont la racine est fournie en paramètre.
-    * 
+    *
     * @param noeud
     *            Groupement racine de l'arbre à exécuter.
     * @return Liste d'objets correspondant au résultat de l'arbre de groupement
@@ -229,7 +231,7 @@ public class TraitementRequeteManagerImpl implements TraitementRequeteManager
    }
 
    /**
-    * Additionne deux listes d'objets et renvoie une liste d'objets d'entités 
+    * Additionne deux listes d'objets et renvoie une liste d'objets d'entités
     * la plus haute des deux (-> Cession).
     * @param liste1 Première liste d'objets à additionner.
     * @param liste2 Seconde liste d'objets à additionner.
@@ -807,14 +809,14 @@ public class TraitementRequeteManagerImpl implements TraitementRequeteManager
    }
 
    /**
-    * Fusionne deux listes d'objets et renvoie une liste d'objets d'entités 
+    * Fusionne deux listes d'objets et renvoie une liste d'objets d'entités
     * la plus haute des deux (-> Cession).
     * @param liste1 Première liste d'objets à fusionner.
     * @param liste2 Seconde liste d'objets à fusionner.
     * @return Liste d'objets d'entité la plus haute des deux listes.
     */
    @Override
-   
+
    public List<Object> fusionnerListesManager(final List<Object> liste1, final List<Object> liste2){
       /**
        * On doit retourner la liste dont le type d'objet (Entite) est la plus
@@ -1027,7 +1029,7 @@ public class TraitementRequeteManagerImpl implements TraitementRequeteManager
                      liste3.addAll(correspondanceManager.recupereEntitesViaDAutres(liste1, "Prelevement"));
                      /*
                       * On ajoute tous les prélèvements de la liste 3
-                      * dans la liste résultante s'ils sont dans la 
+                      * dans la liste résultante s'ils sont dans la
                       * liste 2.
                       */
                      listeResultante = ListUtils.intersection(liste3, liste2);
@@ -1115,7 +1117,7 @@ public class TraitementRequeteManagerImpl implements TraitementRequeteManager
                      liste3.addAll(correspondanceManager.recupereEntitesViaDAutres(liste1, "Prelevement"));
                      /*
                       * On ajoute tous les prélèvements de la liste 3
-                      * dans la liste résultante s'ils sont dans la 
+                      * dans la liste résultante s'ils sont dans la
                       * liste 2.
                       */
                      listeResultante = ListUtils.intersection(liste3, liste2);
@@ -1280,7 +1282,8 @@ public class TraitementRequeteManagerImpl implements TraitementRequeteManager
             }
             /* On récupère les entités au plus bas. */
             if(listeResultante != null && listeResultante.size() > 0
-               && !listeResultante.get(0).getClass().getSimpleName().equals(entiteBasse) && null != entiteBasse && !entiteBasse.equals("Cession")){
+               && !listeResultante.get(0).getClass().getSimpleName().equals(entiteBasse) && null != entiteBasse
+               && !entiteBasse.equals("Cession")){
                listeResultante = correspondanceManager.recupereEntitesViaDAutres(listeResultante, entiteBasse);
                if(liste1.size() > 0 && liste1.get(0).getClass().getSimpleName().equals(entiteBasse)){
                   listeResultante = fusionnerListesManager(liste1, listeResultante);

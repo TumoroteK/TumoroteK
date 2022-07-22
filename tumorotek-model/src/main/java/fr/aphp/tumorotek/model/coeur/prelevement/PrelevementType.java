@@ -70,18 +70,17 @@ import fr.aphp.tumorotek.model.AbstractPfDependantThesaurusObject;
 @NamedQueries(
    value = {@NamedQuery(name = "PrelevementType.findByIncaCat", query = "SELECT p FROM PrelevementType p WHERE p.incaCat = ?1"),
       @NamedQuery(name = "PrelevementType.findByType", query = "SELECT p FROM PrelevementType p WHERE p.nom like ?1"),
-      @NamedQuery(name = "PrelevementType.findByExcludedId",
-         query = "SELECT p FROM PrelevementType p " + "WHERE p.id != ?1"),
-      @NamedQuery(name = "PrelevementType.findByOrder",
-         query = "SELECT p FROM PrelevementType p " + "ORDER BY p.nom"),
+      @NamedQuery(name = "PrelevementType.findByExcludedId", query = "SELECT p FROM PrelevementType p " + "WHERE p.id != ?1"),
+      @NamedQuery(name = "PrelevementType.findByOrder", query = "SELECT p FROM PrelevementType p " + "ORDER BY p.nom"),
       @NamedQuery(name = "PrelevementType.findByPfOrder",
-      query = "SELECT p FROM PrelevementType p WHERE p.plateforme = ?1 ORDER BY p.nom")})
+         query = "SELECT p FROM PrelevementType p WHERE p.plateforme = ?1 ORDER BY p.nom")})
 public class PrelevementType extends AbstractPfDependantThesaurusObject implements Serializable
 {
 
    private static final long serialVersionUID = -2564474300703034012L;
 
    private String incaCat;
+
    private Set<Prelevement> prelevements = new HashSet<>();
 
    /** Constructeur par défaut. */

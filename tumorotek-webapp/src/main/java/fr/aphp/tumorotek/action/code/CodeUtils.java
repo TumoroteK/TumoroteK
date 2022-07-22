@@ -68,7 +68,7 @@ public class CodeUtils
     * @param res List<CodeCommon>
     * @param table
     * @param exactMact
-    * @param banques accessibles (ne concerne que les recherches portant sur 
+    * @param banques accessibles (ne concerne que les recherches portant sur
     * la classification UTILISATEUR)
     */
    public static void findCodes(final String codeOrLibelle, final boolean isOrgane, final boolean isMorpho,

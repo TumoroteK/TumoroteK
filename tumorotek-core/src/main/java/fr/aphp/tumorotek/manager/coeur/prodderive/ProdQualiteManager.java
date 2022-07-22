@@ -53,7 +53,7 @@ public interface ProdQualiteManager extends PfDependantTKThesaurusManager<ProdQu
 {
 
    /**
-    * Recherche une qualité de produit dérivé dont l'identifiant est 
+    * Recherche une qualité de produit dérivé dont l'identifiant est
     * passé en paramètre.
     * @param prodQualiteId Identifiant de la qualité que l'on recherche.
     * @return Un ProdQualite.

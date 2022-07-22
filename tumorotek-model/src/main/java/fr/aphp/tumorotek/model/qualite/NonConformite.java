@@ -68,21 +68,22 @@ import fr.aphp.tumorotek.model.AbstractPfDependantThesaurusObject;
 @Table(name = "NON_CONFORMITE")
 @AttributeOverrides({@AttributeOverride(name = "id", column = @Column(name = "NON_CONFORMITE_ID"))})
 @GenericGenerator(name = "autoincrement", strategy = "increment")
-@NamedQueries(
-   value = {@NamedQuery(name = "NonConformite.findByPfOrder", query = "FROM NonConformite n WHERE n.plateforme=?1 ORDER BY n.nom"),
-      @NamedQuery(name = "NonConformite.findByOrder", query = "FROM NonConformite n ORDER BY n.nom"),
-      @NamedQuery(name = "NonConformite.findByTypeAndPf",
-         query = "SELECT n FROM NonConformite n " + "WHERE n.conformiteType = ?1 " + "AND n.plateforme = ?2 " + "ORDER BY n.nom"),
-      @NamedQuery(name = "NonConformite.findByTypePfAndNom",
-         query = "SELECT n FROM NonConformite n " + "WHERE n.conformiteType = ?1 " + "AND n.plateforme = ?2 "
-            + "AND n.nom like ?3 " + "ORDER BY n.nom"),
-      @NamedQuery(name = "NonConformite.findByExcludedId", query = "SELECT n FROM NonConformite n " + "WHERE n.id != ?1")})
+@NamedQueries(value = {
+   @NamedQuery(name = "NonConformite.findByPfOrder", query = "FROM NonConformite n WHERE n.plateforme=?1 ORDER BY n.nom"),
+   @NamedQuery(name = "NonConformite.findByOrder", query = "FROM NonConformite n ORDER BY n.nom"),
+   @NamedQuery(name = "NonConformite.findByTypeAndPf",
+      query = "SELECT n FROM NonConformite n " + "WHERE n.conformiteType = ?1 " + "AND n.plateforme = ?2 " + "ORDER BY n.nom"),
+   @NamedQuery(name = "NonConformite.findByTypePfAndNom",
+      query = "SELECT n FROM NonConformite n " + "WHERE n.conformiteType = ?1 " + "AND n.plateforme = ?2 " + "AND n.nom like ?3 "
+         + "ORDER BY n.nom"),
+   @NamedQuery(name = "NonConformite.findByExcludedId", query = "SELECT n FROM NonConformite n " + "WHERE n.id != ?1")})
 public class NonConformite extends AbstractPfDependantThesaurusObject implements Serializable
 {
 
    private static final long serialVersionUID = -6139596888096490682L;
 
    private ConformiteType conformiteType;
+
    private Set<ObjetNonConforme> objetNonConformes = new HashSet<>();
 
    public NonConformite(){
@@ -118,7 +119,6 @@ public class NonConformite extends AbstractPfDependantThesaurusObject implements
       this.conformiteType = c;
    }
 
-
    @OneToMany(mappedBy = "nonConformite")
    public Set<ObjetNonConforme> getObjetNonConformes(){
       return objetNonConformes;
@@ -141,7 +141,8 @@ public class NonConformite extends AbstractPfDependantThesaurusObject implements
       return ((this.getNom() == test.getNom() || (this.getNom() != null && this.getNom().equals(test.getNom())))
          && (this.conformiteType == test.conformiteType
             || (this.conformiteType != null && this.conformiteType.equals(test.conformiteType)))
-         && (this.getPlateforme() == test.getPlateforme() || (this.getPlateforme() != null && this.getPlateforme().equals(test.getPlateforme()))));
+         && (this.getPlateforme() == test.getPlateforme()
+            || (this.getPlateforme() != null && this.getPlateforme().equals(test.getPlateforme()))));
    }
 
    @Override

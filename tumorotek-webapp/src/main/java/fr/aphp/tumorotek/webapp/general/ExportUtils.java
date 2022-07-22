@@ -81,7 +81,7 @@ public final class ExportUtils
 
    /**
     * Gère le download d'un fichier d'export xls.
-    * 
+    *
     * @param wb
     *            workbook
     * @param fileName
@@ -166,7 +166,7 @@ public final class ExportUtils
 
    /**
     * Ajoute les entêtes du fichier d'export.
-    * 
+    *
     * @param sheet
     *            Sheet du fichier excell.
     * @param key
@@ -199,7 +199,7 @@ public final class ExportUtils
 
    /**
     * Récupère la liste des champs d'annotations.
-    * 
+    *
     * @param banques
     * @param entite
     * @return
@@ -229,7 +229,7 @@ public final class ExportUtils
 
    /**
     * Ajoute à une liste les entêtes des colonnes pour l'export d'un patient.
-    * 
+    *
     * @param entetes
     *            Liste des entêtes.
     * @return Liste complétée des entêtes.
@@ -269,7 +269,7 @@ public final class ExportUtils
 
    /**
     * Ajoute à une liste les entêtes des colonnes pour l'export d'un prlvt.
-    * 
+    *
     * @param entetes
     *            Liste des entêtes.
     * @return Liste complétée des entêtes.
@@ -310,29 +310,29 @@ public final class ExportUtils
 
       return entetes;
    }
-   
+
    /**
-    * Renvoie l'enum correspondant à la valeur (integer) 
+    * Renvoie l'enum correspondant à la valeur (integer)
     * passée en paramètre
     * @since 2.2.3-rc1
     * @param _v valeur
-    * @return ProfilExport 
+    * @return ProfilExport
     */
-   public static ProfilExport getProfilExportFromValue(Integer _v) {
-	   if (_v != null) {
-			switch (_v) {
-			case 0: 
-				return ProfilExport.NO;
+   public static ProfilExport getProfilExportFromValue(final Integer _v){
+      if(_v != null){
+         switch(_v){
+            case 0:
+               return ProfilExport.NO;
 
-			case 1: 
-				return ProfilExport.ANONYME;
+            case 1:
+               return ProfilExport.ANONYME;
 
-			case 3:
-				return ProfilExport.ANONYMESTOCK;
-			case 2: 
-				return ProfilExport.NOMINATIF;
-			}            
-		}
-	   return ProfilExport.NO; // defaut
+            case 3:
+               return ProfilExport.ANONYMESTOCK;
+            case 2:
+               return ProfilExport.NOMINATIF;
+         }
+      }
+      return ProfilExport.NO; // defaut
    }
 }

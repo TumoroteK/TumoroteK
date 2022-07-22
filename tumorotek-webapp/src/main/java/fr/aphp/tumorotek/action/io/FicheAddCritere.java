@@ -91,29 +91,47 @@ public class FicheAddCritere extends GenericForwardComposer<Component>
    private static final long serialVersionUID = 7394049019102721264L;
 
    private Panel winPanel;
+
    private Component parent;
+
    private Banque banque;
+
    private AnnotateDataBinder binder;
 
    // components
    private Row rowSousChamp;
+
    private Row rowChamp;
+
    private Row rowOperateur;
+
    private Row rowValeur;
+
    private Listbox entitesBox;
+
    private Listbox sousChampsBox;
+
    private Listbox champsBox;
+
    private Listbox operateursBox;
+
    private Button addCritere;
 
    // variables
    private List<EntiteDecorator> entites = new ArrayList<>();
+
    private List<ChampDecorator> sousChamps;
+
    private List<ChampDecorator> champs;
+
    private List<String> operateurs;
+
    private Entite entite;
+
    private Champ sousChamp;
+
    private Champ champ;
+
    private String operateur;
 
    @Override
@@ -169,8 +187,8 @@ public class FicheAddCritere extends GenericForwardComposer<Component>
          // @since gatsbi
          // final Stream<ChampEntite> champEntiteStream =
          //   ManagerLocator.getManager(ChampEntiteManager.class).findByEntiteAndImportManager(entite, true).stream();
-         final Stream<ChampEntite> champEntiteStream = 
-       		  GatsbiController.findByEntiteImportAndIsNullableManager(entite, true, null).stream();
+         final Stream<ChampEntite> champEntiteStream =
+            GatsbiController.findByEntiteImportAndIsNullableManager(entite, true, null).stream();
          final Stream<ChampEntite> customChampsEntiteStream = getCustomChampEntite().stream();
 
          //Ajout des champs entité
@@ -325,9 +343,9 @@ public class FicheAddCritere extends GenericForwardComposer<Component>
                }else if("QuantiteUniteId".equals(nomChamp)){
                   nomEntiteReel = "Unite";
                }
-//               else if("Protocoles".equals(nomChamp)){
-//                  nomEntiteReel = "Protocole";
-//               }
+               //               else if("Protocoles".equals(nomChamp)){
+               //                  nomEntiteReel = "Protocole";
+               //               }
             }else if("Echantillon".equals(nomEntiteChamp)){
                if("QuantiteUniteId".equals(nomChamp)){
                   nomEntiteReel = "Unite";
@@ -521,10 +539,10 @@ public class FicheAddCritere extends GenericForwardComposer<Component>
       switch(entite.getNom()){
          case "Prelevement":
             //EtablissementId
-        	// since 2.3.0-gatsbi etablissement depend de service preleveur
-            if (SessionUtils.getCurrentGatsbiContexteForEntiteId(entite.getEntiteId()) == null 
-             		|| SessionUtils.getCurrentGatsbiContexteForEntiteId(entite.getEntiteId()).isChampIdVisible(29)) {
-            	customChampsEntite.add(ManagerLocator.getManager(ChampEntiteManager.class).findByIdManager(193));
+            // since 2.3.0-gatsbi etablissement depend de service preleveur
+            if(SessionUtils.getCurrentGatsbiContexteForEntiteId(entite.getEntiteId()) == null
+               || SessionUtils.getCurrentGatsbiContexteForEntiteId(entite.getEntiteId()).isChampIdVisible(29)){
+               customChampsEntite.add(ManagerLocator.getManager(ChampEntiteManager.class).findByIdManager(193));
             }
             //Age au prélèvement
             customChampsEntite.add(ManagerLocator.getManager(ChampEntiteManager.class).findByIdManager(254));

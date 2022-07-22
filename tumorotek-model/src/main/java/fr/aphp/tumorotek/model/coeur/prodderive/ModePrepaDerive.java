@@ -71,13 +71,13 @@ import fr.aphp.tumorotek.model.AbstractPfDependantThesaurusObject;
       @NamedQuery(name = "ModePrepaDerive.findByExcludedId", query = "SELECT m FROM ModePrepaDerive m " + "WHERE m.id != ?1"),
       @NamedQuery(name = "ModePrepaDerive.findByPfOrder",
          query = "SELECT m FROM ModePrepaDerive m " + "WHERE m.plateforme = ?1 ORDER BY m.nom"),
-   @NamedQuery(name = "ModePrepaDerive.findByOrder",
-      query = "SELECT m FROM ModePrepaDerive m ORDER BY m.nom")})
+      @NamedQuery(name = "ModePrepaDerive.findByOrder", query = "SELECT m FROM ModePrepaDerive m ORDER BY m.nom")})
 public class ModePrepaDerive extends AbstractPfDependantThesaurusObject implements Serializable
 {
    private static final long serialVersionUID = 5348645345465465L;
 
    private String nomEn;
+
    private Set<ProdDerive> prodDerives;
 
    /** Constructeur par défaut. */

@@ -180,7 +180,7 @@ public class PrelevementDecorator2
       /*String totalNb = String
       	.valueOf(ManagerLocator.getPrelevementManager()
       				.getEchantillonsManager(this.prelevement).size());
-      return totalNb + " (" + String.valueOf(getNbEchanRestants()) + " " 
+      return totalNb + " (" + String.valueOf(getNbEchanRestants()) + " "
       		+ Labels.getLabel("prelevement.echantillons.restants") + ")";*/
 
       final StringBuffer sb = new StringBuffer();
@@ -338,7 +338,7 @@ public class PrelevementDecorator2
 
    public String getSterile(){
       if(this.prelevement.getSterile() != null){
-         if(this.prelevement.getSterile().booleanValue() == true){
+         if(this.prelevement.getSterile().booleanValue()){
             return "oui";
          }else{
             return "non";
@@ -350,7 +350,7 @@ public class PrelevementDecorator2
 
    public String getEtatIncomplet(){
       if(this.prelevement.getEtatIncomplet() != null){
-         if(this.prelevement.getEtatIncomplet().booleanValue() == true){
+         if(this.prelevement.getEtatIncomplet().booleanValue()){
             return "oui";
          }else{
             return "non";
@@ -362,7 +362,7 @@ public class PrelevementDecorator2
 
    public String getArchive(){
       if(this.prelevement.getArchive() != null){
-         if(this.prelevement.getArchive().booleanValue() == true){
+         if(this.prelevement.getArchive().booleanValue()){
             return "oui";
          }else{
             return "non";

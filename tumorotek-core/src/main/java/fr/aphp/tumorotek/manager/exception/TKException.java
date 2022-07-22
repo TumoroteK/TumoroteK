@@ -19,8 +19,11 @@ public class TKException extends RuntimeException
    private static final long serialVersionUID = 9081275137758719319L;
 
    private String entiteObjetException;
+
    private String identificationObjetException;
+
    private String message;
+
    private TKdataObject tkObj;
 
    public TKException(){

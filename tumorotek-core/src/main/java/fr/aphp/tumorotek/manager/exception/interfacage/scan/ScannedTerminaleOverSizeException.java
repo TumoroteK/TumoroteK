@@ -56,6 +56,7 @@ public class ScannedTerminaleOverSizeException extends TKException
    private static final long serialVersionUID = -3562772083927549441L;
 
    private Terminale terminale;
+
    private ScanTube scanTube;
 
    public ScannedTerminaleOverSizeException(){

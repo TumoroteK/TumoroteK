@@ -63,8 +63,11 @@ public class ModificationMultipleModal extends AbstractModificationMultipleCompo
     * Components specific textbox.
     */
    private Label oneValueLabel;
+
    private Label eraseModalLink;
+
    private Image delete;
+
    private Label eraseValueLabel;
 
    private Object backFromModal;

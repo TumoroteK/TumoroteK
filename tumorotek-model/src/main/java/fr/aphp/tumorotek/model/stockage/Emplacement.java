@@ -88,8 +88,8 @@ import fr.aphp.tumorotek.model.systeme.Entite;
    @NamedQuery(name = "Emplacement.findDouplon", query = "SELECT e FROM Emplacement e WHERE e.adrl = ?1"),
    @NamedQuery(name = "Emplacement.findByIdWithFetch",
       query = "SELECT e FROM Emplacement e LEFT JOIN FETCH " + "e.terminale WHERE e.emplacementId = ?1")
-   // @NamedQuery(name = "Emplacement.getAdrl", 
-   //	query = "SELECT function('get_adrl', 1)")
+// @NamedQuery(name = "Emplacement.getAdrl", 
+//	query = "SELECT function('get_adrl', 1)")
 })
 public class Emplacement implements Serializable
 {
@@ -97,16 +97,24 @@ public class Emplacement implements Serializable
    private static final long serialVersionUID = -2139186761577452739L;
 
    private Integer emplacementId;
+
    private Terminale terminale;
+
    private Integer position;
+
    private Integer objetId;
+
    private Entite entite;
+
    private Boolean vide = true;
+
    private String adrp;
+
    private String adrl;
 
    //private Set<Retour> retours = new HashSet<Retour>();
    private Set<ProdDerive> prodDerives = new HashSet<>();
+
    private Set<Echantillon> echantillons = new HashSet<>();
 
    /** Constructeur par défaut. */

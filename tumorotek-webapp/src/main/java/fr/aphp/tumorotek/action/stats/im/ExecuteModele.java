@@ -66,7 +66,9 @@ public class ExecuteModele
    protected static Log log = LogFactory.getLog(ExportToExcel.class);
 
    private SModele model;
+
    private Date date_debut;
+
    private Date date_fin;
 
    private static Map<Indicateur, ArrayList<ValueToExport>> dataMap = new HashMap<>();
@@ -78,7 +80,7 @@ public class ExecuteModele
     * indicateurs et la transposition des résultats dans les objets
     * ValueToExport qui serviront à l'affichage dans la vue et la production
     * des fichiers tabulés. Date: 12/05/2015
-    * 
+    *
     * @author Julien HUSSON, Marc DESCHAMPS, Mathieu BARTHELEMY
     * @version 2.1
     *

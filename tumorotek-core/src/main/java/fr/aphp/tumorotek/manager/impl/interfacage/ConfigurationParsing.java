@@ -47,8 +47,11 @@ public class ConfigurationParsing
 {
 
    private String separateurChamps;
+
    private String separateurComposants;
+
    private String separateurSousComposants;
+
    private String blocLibreKey;
 
    public ConfigurationParsing(){

@@ -106,24 +106,34 @@ public class FichePrelevementStatic extends AbstractFicheStaticController
    private static final long serialVersionUID = -7612780578022559022L;
 
    protected Menuitem addDerive;
+
    protected Menuitem addEchan;
+
    protected Menuitem changeCollection;
+
    protected Menuitem changeMaladie;
+
    protected Grid echantillonsGrid;
+
    protected Grid prodDerivesGrid;
+
    protected Grid laboIntersGrid;
-   
+
    // gatsbi overrides
    // protected Grid gridFormPrlvtComp;
    // protected Group groupPatient;
    // protected Group groupLaboInter;
    // protected Group groupEchans;
    // protected Group groupDerivesPrlvt;
-   
+
    protected HtmlBasedComponent gridFormPrlvtComp;
+
    protected HtmlBasedComponent groupPatient;
+
    protected HtmlBasedComponent groupLaboInter;
+
    protected HtmlBasedComponent groupEchans;
+
    protected HtmlBasedComponent groupDerivesPrlvt;
 
    private ResumePatient resumePatient;
@@ -131,34 +141,50 @@ public class FichePrelevementStatic extends AbstractFicheStaticController
    protected Vbox risquesBox;
 
    protected Label congDepartLabel;
+
    protected Div congDepartImg;
+
    protected Label congArriveeLabel;
+
    protected Div congArriveeImg;
 
    private Image imgDossierInbox;
+
    private Menuitem importDossier;
 
    /**
     *  Objets Principaux.
     */
    protected Prelevement prelevement = new Prelevement();
+
    protected Maladie maladie;
+
    protected Patient patient;
+
    protected List<LaboInterDecorator> laboInters = new ArrayList<>();
+
    protected List<Echantillon> echantillons = new ArrayList<>();
+
    protected List<ProdDerive> derives = new ArrayList<>();
 
    protected String valeurQuantite = "";
+
    protected String echantillonsGroupHeader;
+
    protected String prodDerivesGroupHeader;
+
    protected ProdDeriveRowRenderer prodDeriveRenderer = new ProdDeriveRowRenderer(false, false);
+
    protected EchantillonRowRenderer echantillonRenderer = new EchantillonRowRenderer(false, false);
 
    protected boolean isPatientAccessible = true;
+
    protected boolean canChangeCollection = false;
+
    protected boolean canChangeMaladie = false;
 
    protected boolean canAccessEchantillons = true;
+
    protected boolean canAccessDerives = true;
 
    @Override
@@ -173,20 +199,20 @@ public class FichePrelevementStatic extends AbstractFicheStaticController
       addDerive.setDisabled(true);
 
       // **************** gastbi
-      if (groupLaboInter instanceof Group) {
-    	  ((Group) groupLaboInter).setOpen(false);
+      if(groupLaboInter instanceof Group){
+         ((Group) groupLaboInter).setOpen(false);
       }
-      if (groupEchans instanceof Group) {
-    	  ((Group) groupEchans).setOpen(false);
-      } else {
-    	  ((Groupbox) groupEchans).setOpen(false);
+      if(groupEchans instanceof Group){
+         ((Group) groupEchans).setOpen(false);
+      }else{
+         ((Groupbox) groupEchans).setOpen(false);
       }
-      if (groupDerivesPrlvt instanceof Group) {
-    	  ((Group) groupDerivesPrlvt).setOpen(false);
-      } else {
-    	  ((Groupbox) groupDerivesPrlvt).setOpen(false);
+      if(groupDerivesPrlvt instanceof Group){
+         ((Group) groupDerivesPrlvt).setOpen(false);
+      }else{
+         ((Groupbox) groupDerivesPrlvt).setOpen(false);
       }
-      // gatsbi **************** 
+      // gatsbi ****************
 
       getEchantillonRenderer().setEmbedded(true);
       getEchantillonRenderer().setTtesCollections(getTtesCollections());
@@ -200,11 +226,11 @@ public class FichePrelevementStatic extends AbstractFicheStaticController
       resumePatient = initResumePatient();
    }
 
-   // gatsbi surcharge cette méthode 
-   // car le component group patient n'est pas 
+   // gatsbi surcharge cette méthode
+   // car le component group patient n'est pas
    // de même type group VS Groupbox
-   protected ResumePatient initResumePatient() {
-	  return new ResumePatient(groupPatient, false);
+   protected ResumePatient initResumePatient(){
+      return new ResumePatient(groupPatient, false);
    }
 
    @Override
@@ -243,10 +269,9 @@ public class FichePrelevementStatic extends AbstractFicheStaticController
 
       // gridFormPrlvtComp.setVisible(true);
       // grise le libelle car pas de reference vers patient/maladie
-      
+
       // gatsbi override
-      enablePatientGroup(this.maladie != null 
-    		  || this.prelevement.equals(new Prelevement()));
+      enablePatientGroup(this.maladie != null || this.prelevement.equals(new Prelevement()));
 
       // dessine le resume si la maladie est non nulle
       if(maladie != null){
@@ -309,18 +334,18 @@ public class FichePrelevementStatic extends AbstractFicheStaticController
 
    }
 
-   /** 
+   /**
     * Gatsbi surcharge cette méthode
     */
-   protected void enablePatientGroup(boolean b) {
-	   if (b) { // enable
-	        this.groupPatient.setClass("z-group");
-	   } else {
-		  this.groupPatient.setClass("z-group-dsd");
-	   }	
+   protected void enablePatientGroup(final boolean b){
+      if(b){ // enable
+         this.groupPatient.setClass("z-group");
+      }else{
+         this.groupPatient.setClass("z-group-dsd");
+      }
    }
 
-@Override
+   @Override
    public TKdataObject getParentObject(){
       if(this.maladie != null){
          return this.maladie.getPatient();
@@ -784,6 +809,7 @@ public class FichePrelevementStatic extends AbstractFicheStaticController
    /************************** DROITS ***************************************/
    /*************************************************************************/
    private boolean canCreateDerive = false;
+
    private boolean canCreateEchan = false;
 
    public boolean isCanCreateEchan(){
@@ -827,7 +853,7 @@ public class FichePrelevementStatic extends AbstractFicheStaticController
          getEchantillonRenderer().setAccessible(false);
          canAccessEchantillons = false;
       }else{
-    	  getEchantillonRenderer().setAccessible(true);
+         getEchantillonRenderer().setAccessible(true);
          canAccessEchantillons = true;
       }
 

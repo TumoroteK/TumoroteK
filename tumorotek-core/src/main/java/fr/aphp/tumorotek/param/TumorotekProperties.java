@@ -58,11 +58,15 @@ public final class TumorotekProperties
    private static final Log log = LogFactory.getLog(TumorotekProperties.class);
 
    public static final String TUMO_PROPERTIES_FILENAME = "tumorotek.properties";
+
    public static final String TUMO_PROPERTIES_DIR = System.getProperty("catalina.base") + "/conf/Catalina/localhost/";
+
    public static final String TUMO_PROPERTIES_PATH = TUMO_PROPERTIES_DIR + TUMO_PROPERTIES_FILENAME;
 
    private static final Properties TUMOROTEK_PROPERTIES = new Properties();
+
    private static final String PLACEHOLDER_START_DELIMITER = "${";
+
    private static final String PLACEHOLDER_END_DELIMITER = "}";
 
    static{

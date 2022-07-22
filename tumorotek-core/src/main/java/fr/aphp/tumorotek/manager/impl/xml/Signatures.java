@@ -39,7 +39,9 @@ public class Signatures
 {
 
    private String titre1;
+
    private String titre2;
+
    private ListeSignature[] liste;
 
    public Signatures(){

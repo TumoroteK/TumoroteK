@@ -75,7 +75,9 @@ public class ParametresController extends AbstractController
 
    //Composants ZK
    private Image accueilImg;
+
    private Label noImgLabel;
+
    private Html accueilHtml;
 
    @Override
@@ -83,8 +85,8 @@ public class ParametresController extends AbstractController
 
       super.doAfterCompose(comp);
 
-      ParametresManager parametresManager = ManagerLocator.getManager(ParametresManager.class);
-      
+      final ParametresManager parametresManager = ManagerLocator.getManager(ParametresManager.class);
+
       updateLogo(parametresManager.getLogoFile());
 
       String accueilMsg = parametresManager.getMessageAccueil(false);
@@ -145,31 +147,29 @@ public class ParametresController extends AbstractController
       }
 
       if(mediaTypeValide){
-         
+
          boolean saved = false;
-         
+
          File tmpLogoFile = null;
          try{
             tmpLogoFile = File.createTempFile("logo", ".tmp");
             FileUtils.writeByteArrayToFile(tmpLogoFile, uploadedMedia.getByteData());
             saved = parametresManager.saveLogo(tmpLogoFile);
-         }catch(IOException e){
+         }catch(final IOException e){
             log.error("Erreur lors de la conversion du media en fichier", e);
-         }
-         finally {
-            if(null != tmpLogoFile && tmpLogoFile.exists()) {
+         }finally{
+            if(null != tmpLogoFile && tmpLogoFile.exists()){
                tmpLogoFile.delete();
             }
          }
-         
-         if(saved) {
+
+         if(saved){
             updateLogo(parametresManager.getLogoFile());
-         }
-         else {
+         }else{
             Messagebox.show(Labels.getLabel("error.params.image.update"), Labels.getLabel("general.error"), Messagebox.OK,
                Messagebox.ERROR);
          }
-         
+
       }else{
          Messagebox.show(Labels.getLabel("error.params.image.format"), Labels.getLabel("general.error"), Messagebox.OK,
             Messagebox.ERROR);
@@ -187,8 +187,8 @@ public class ParametresController extends AbstractController
 
       if(confirmation == Messagebox.YES){
 
-         boolean deleted = ManagerLocator.getManager(ParametresManager.class).deleteLogo();
-         
+         final boolean deleted = ManagerLocator.getManager(ParametresManager.class).deleteLogo();
+
          if(deleted){
             updateLogo(null);
          }else{
@@ -227,16 +227,16 @@ public class ParametresController extends AbstractController
          "Suppression du message d'accueil", Messagebox.YES | Messagebox.NO, Messagebox.EXCLAMATION);
 
       if(confirmation == Messagebox.YES){
-         
-         boolean deleted = ManagerLocator.getManager(ParametresManager.class).deleteMessageAccueil();
-         
+
+         final boolean deleted = ManagerLocator.getManager(ParametresManager.class).deleteMessageAccueil();
+
          if(deleted){
             accueilHtml.setContent(Labels.getLabel("params.message.empty"));
          }else{
             Messagebox.show(Labels.getLabel("error.params.message.update"), Labels.getLabel("general.error"), Messagebox.OK,
                Messagebox.ERROR);
          }
-         
+
       }
 
    }
@@ -247,7 +247,7 @@ public class ParametresController extends AbstractController
     */
    private void storeNewMsgAccueil(final String msgAccueil){
 
-      ParametresManager paramsMgr = ManagerLocator.getManager(ParametresManager.class);
+      final ParametresManager paramsMgr = ManagerLocator.getManager(ParametresManager.class);
 
       final boolean saved = paramsMgr.saveMessageAccueil(msgAccueil);
 

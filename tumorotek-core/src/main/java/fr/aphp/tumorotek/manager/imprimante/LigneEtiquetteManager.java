@@ -54,7 +54,7 @@ public interface LigneEtiquetteManager
 {
 
    /**
-    * Recherche une LigneEtiquette dont l'identifiant est 
+    * Recherche une LigneEtiquette dont l'identifiant est
     * passé en paramètre.
     * @param ligneEtiquetteId Id de la ligne que l'on recherche.
     * @return Une LigneEtiquette.
@@ -95,9 +95,9 @@ public interface LigneEtiquetteManager
     * Persist une instance de LigneEtiquette dans la base de données.
     * @param ligneEtiquette Instance de l'objet à maj.
     * @param modele Modele.
-    * @param champLigneEtiquettestoCreate ChampLigneEtiquettes 
+    * @param champLigneEtiquettestoCreate ChampLigneEtiquettes
     * à persister.
-    * @param champLigneEtiquettesToremove ChampLigneEtiquettes 
+    * @param champLigneEtiquettesToremove ChampLigneEtiquettes
     * à supprimer.
     */
    void updateObjectManager(LigneEtiquette ligneEtiquette, Modele modele, List<ChampLigneEtiquette> champLigneEtiquettesToCreate,

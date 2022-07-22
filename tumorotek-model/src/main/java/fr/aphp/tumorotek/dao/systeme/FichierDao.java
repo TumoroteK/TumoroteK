@@ -62,9 +62,9 @@ public interface FichierDao extends GenericDaoJpa<Fichier, Integer>
    List<Fichier> findByPath(String path);
 
    /**
-    * Recherche le Fichier dont qui est lié à léchantillon passé 
-    * en paramètre. 
-    * @param echantillonId Identifiant de l'échantillon pour lequel 
+    * Recherche le Fichier dont qui est lié à léchantillon passé
+    * en paramètre.
+    * @param echantillonId Identifiant de l'échantillon pour lequel
     * on recherche un Fichier.
     * @return une liste de Fichiers.
     */
@@ -77,7 +77,7 @@ public interface FichierDao extends GenericDaoJpa<Fichier, Integer>
    List<Fichier> findByOrder();
 
    /**
-    * Recherche tous les fichiers sauf celui dont l'id est passé 
+    * Recherche tous les fichiers sauf celui dont l'id est passé
     * en paramètre.
     * @param fichierId Identifiant du fichier que l'on souhaite
     * exclure de la liste retournée.

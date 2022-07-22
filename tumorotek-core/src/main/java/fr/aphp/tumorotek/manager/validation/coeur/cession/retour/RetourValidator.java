@@ -28,25 +28,25 @@ public interface RetourValidator extends Validator
 {
 
    /**
-    * Vérifie la cohérence de la date de sortie. 
+    * Vérifie la cohérence de la date de sortie.
     * @param retour
     * @return Errors
     */
    public abstract Errors checkDateSortieCoherence(Retour retour);
 
    /**
-    * Vérifie la cohérence de la date de retour. 
+    * Vérifie la cohérence de la date de retour.
     * @param retour
     * @return Errors
     */
    public abstract Errors checkDateRetourCoherence(Retour retour);
 
    /**
-    * Trouve pour l'objet passé en paramètre un (ou plusieurs) retours qui 
+    * Trouve pour l'objet passé en paramètre un (ou plusieurs) retours qui
     * inclus dans son intervalle de dates la date passée en paramètre.
-    * @param cal Date 
+    * @param cal Date
     * @param obj TKStockableObject
-    * @param exclId id du retour à exclure (si modification du retour, il sortira 
+    * @param exclId id du retour à exclure (si modification du retour, il sortira
     * automatiquement dans la requête)
     * @return liste retours
     * @since 2.0.10
@@ -54,13 +54,13 @@ public interface RetourValidator extends Validator
    List<Retour> findByObjDatesManager(Calendar cal, TKStockableObject obj, Integer exclId);
 
    /**
-    * Trouve pour l'objet passé en paramètre un (ou plusieurs) retours qui 
-    * sont inclus dans l'intervalle de dates composés par les deux dates 
+    * Trouve pour l'objet passé en paramètre un (ou plusieurs) retours qui
+    * sont inclus dans l'intervalle de dates composés par les deux dates
     * passées en paramètres.
     * @param cal1 limite inf
     * @param cal2 limite sup
     * @param obj TKStockableObjetc
-    * @param exclId id du retour à exclure (si modification du retour, il sortira 
+    * @param exclId id du retour à exclure (si modification du retour, il sortira
     * automatiquement dans la requête)
     * @return liste retours
     * @since 2.0.10

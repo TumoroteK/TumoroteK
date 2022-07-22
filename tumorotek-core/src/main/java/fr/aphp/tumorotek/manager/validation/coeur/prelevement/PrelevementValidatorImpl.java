@@ -96,7 +96,7 @@ public class PrelevementValidatorImpl implements PrelevementValidator
    //	private PrelevementManager prelevementManager;
    //	private EchantillonManager echantillonManager;
    //	private ProdDeriveValidator prodDeriveValidator;
-   //	
+   //
    //	public void setPrelevementManager(PrelevementManager pManager) {
    //		this.prelevementManager = pManager;
    //	}
@@ -214,8 +214,8 @@ public class PrelevementValidatorImpl implements PrelevementValidator
          if(prelevement.getDateDepart() != null){
             ValidationUtilities.checkWithDate(prelevement.getDatePrelevement(), "datePrelevement", prelevement.getDateDepart(),
                "date", "validation", "DateDepartPrelevement", errs, true);
-         }else if(prelevement.getLaboInters() != null && coherenceDateManager
-            .findPostRefDateInLabosManager(new ArrayList<>(prelevement.getLaboInters()))[0] != null){
+         }else if(prelevement.getLaboInters() != null
+            && coherenceDateManager.findPostRefDateInLabosManager(new ArrayList<>(prelevement.getLaboInters()))[0] != null){
             final Object[] dateAndCode =
                coherenceDateManager.findPostRefDateInLabosManager(new ArrayList<>(prelevement.getLaboInters()));
             if(dateAndCode[0] != null){
@@ -275,8 +275,8 @@ public class PrelevementValidatorImpl implements PrelevementValidator
             }
          }
          // limites sup
-         if(prelevement.getLaboInters() != null && coherenceDateManager
-            .findPostRefDateInLabosManager(new ArrayList<>(prelevement.getLaboInters()))[0] != null){
+         if(prelevement.getLaboInters() != null
+            && coherenceDateManager.findPostRefDateInLabosManager(new ArrayList<>(prelevement.getLaboInters()))[0] != null){
             final Object[] dateAndCode =
                coherenceDateManager.findPostRefDateInLabosManager(new ArrayList<>(prelevement.getLaboInters()));
             if(dateAndCode[0] != null){
@@ -336,7 +336,7 @@ public class PrelevementValidatorImpl implements PrelevementValidator
    }
 
    //	@Override
-   //	public Object[] findAntRefDateInPrelevement(Prelevement prelevement, 
+   //	public Object[] findAntRefDateInPrelevement(Prelevement prelevement,
    //													boolean skipToDatePrel) {
    //		Object[] dateAndCode = new Object[]{null, null};
    //		Object ref = null;
@@ -345,7 +345,7 @@ public class PrelevementValidatorImpl implements PrelevementValidator
    //			if (prelevement.getDateArrivee() != null) {
    //				ref = prelevement.getDateArrivee();
    //				code = "date.validation.infDateArriveePrelevement";
-   //			} else { 
+   //			} else {
    //				Object laboInterRef = findLaboInterReferenceDate(prelevement);
    //				if (laboInterRef != null) {
    //					ref = laboInterRef;
@@ -355,7 +355,7 @@ public class PrelevementValidatorImpl implements PrelevementValidator
    //					code = "date.validation.infDateDepartPrelevement";
    //				}
    //			}
-   //		} 
+   //		}
    //		if (skipToDatePrel || ref == null) {
    //			if (prelevement.getDatePrelevement() != null) {
    //				ref = prelevement.getDatePrelevement();
@@ -370,13 +370,13 @@ public class PrelevementValidatorImpl implements PrelevementValidator
    //		}
    //		dateAndCode[0] = ref;
    //		dateAndCode[1] = code;
-   //		
+   //
    //		return dateAndCode;
    //	}
 
    //	/**
-   //	 * Parcoure de manière récursive les labos inter 
-   //	 * du plus récent au plus ancien afin de trouver la première référence 
+   //	 * Parcoure de manière récursive les labos inter
+   //	 * du plus récent au plus ancien afin de trouver la première référence
    //	 * de date antérieure parmi eux.
    //	 * @param echantillon
    //	 * @return date référence de date.
@@ -391,7 +391,7 @@ public class PrelevementValidatorImpl implements PrelevementValidator
    //			} else {
    //				list.addAll(prelevement.getLaboInters());
    //			}
-   //		
+   //
    //			int ordre;
    //			// utilisation de previous car aucune certitude sur l'ordre
    //			// des labos dans le set
@@ -411,8 +411,8 @@ public class PrelevementValidatorImpl implements PrelevementValidator
    //				}
    //			}
    //		}
-   //		
-   //		return ref;	
+   //
+   //		return ref;
    //	}
 
    //	@Override
@@ -423,7 +423,7 @@ public class PrelevementValidatorImpl implements PrelevementValidator
    //		Object previous = null;
    //		String codePrevious = null;
    //		Object[] dateAndCodeForEchan;
-   //		
+   //
    //		// trouve les echantillons
    //		List<Echantillon> echans = new ArrayList<Echantillon>();
    //		if (prelevement.getPrelevementId() != null) {
@@ -432,14 +432,14 @@ public class PrelevementValidatorImpl implements PrelevementValidator
    //		} else {
    //			echans.addAll(prelevement.getEchantillons());
    //		}
-   //		
+   //
    //		// trouve la date de reference
    //		for (int i = 0; i < echans.size(); i++) {
    //			if (!echans.get(i).getArchive()) {
    //				if (echans.get(i).getDateStock() != null) {
    //					ref = echans.get(i).getDateStock();
    //					code = "date.validation.supDateStockEchanEnfant";
-   //					
+   //
    //				} else {
    //					dateAndCodeForEchan = prodDeriveValidator
    //								.findPostRefDateInDerives(echans.get(i));
@@ -448,10 +448,10 @@ public class PrelevementValidatorImpl implements PrelevementValidator
    //						code = (String) dateAndCodeForEchan[1];
    //					}
    //				}
-   //				
+   //
    //				if (ref != null) {
    //					if (previous != null) {
-   //						if (ValidationUtilities.checkWithDate(ref, null, 
+   //						if (ValidationUtilities.checkWithDate(ref, null,
    //								previous, null, null, null, null, true)) {
    //							previous = ref;
    //							codePrevious = code;
@@ -463,16 +463,16 @@ public class PrelevementValidatorImpl implements PrelevementValidator
    //				}
    //			}
    //		}
-   //		
+   //
    //		// trouve parmi les derives
    //		Object[] dateAndCodeForDerives = prodDeriveValidator
    //									.findPostRefDateInDerives(prelevement);
    //		ref = dateAndCodeForDerives[0];
    //		code = (String) dateAndCodeForDerives[1];
-   //			
+   //
    //		if (ref != null) {
    //			if (previous != null) {
-   //				if (ValidationUtilities.checkWithDate(ref, null, 
+   //				if (ValidationUtilities.checkWithDate(ref, null,
    //						previous, null, null, null, null, true)) {
    //					previous = ref;
    //					codePrevious = code;
@@ -482,7 +482,7 @@ public class PrelevementValidatorImpl implements PrelevementValidator
    //				codePrevious = code;
    //			}
    //		}
-   //		
+   //
    //		if (previous != null) {
    //			dateAndCode[0] = previous;
    //			dateAndCode[1] = codePrevious;
@@ -490,19 +490,19 @@ public class PrelevementValidatorImpl implements PrelevementValidator
    //			dateAndCode[0] = Utils.getCurrentSystemDate();
    //			dateAndCode[1] = "date.validation.supDateActuelle";
    //		}
-   //		
+   //
    //		return dateAndCode;
    //	}
-   //	
-   //	
+   //
+   //
    //	@Override
    //	public Object[] findPostRefDateInLabos(List<LaboInter> labos) {
    //		Object[] dateAndCode = new Object[]{null, null};
    //		Object ref = null;
    //		String code = null;
-   //		
+   //
    //		Collections.sort(labos, new LaboInterComparator());
-   //		
+   //
    //		for (int i = 0; i < labos.size(); i++) {
    //			if (labos.get(i).getDateArrivee() != null) {
    //				ref = labos.get(i).getDateArrivee();
@@ -516,7 +516,7 @@ public class PrelevementValidatorImpl implements PrelevementValidator
    //		}
    //		 dateAndCode[0] = ref;
    //		 dateAndCode[1] = code;
-   //		
+   //
    //		return dateAndCode;
    //	}
 

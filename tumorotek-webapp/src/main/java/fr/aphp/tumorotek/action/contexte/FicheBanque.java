@@ -141,19 +141,33 @@ public class FicheBanque extends AbstractFicheCombineController
 
    // Labels.
    private Label nomLabel;
+
    private Label idLabel;
+
    private Label descrLabel;
+
    private Label proprioLabel;
+
    private Label respLabel;
+
    private Label contactLabel;
+
    private Label defMaladieLabel;
+
    private Label defautLibLabel;
+
    private Label defautCodeLabel;
+
    private Label autoCrossLabel;
+
    private Label contexteLabel;
+
    private Label etudeLabel;
+
    private Label couleurEchanLabel;
+
    private Label couleurDeriveLabel;
+
    private Menubar menuBar;
 
    // since 2.1
@@ -161,57 +175,90 @@ public class FicheBanque extends AbstractFicheCombineController
 
    // Editable components : mode d'édition ou de création.
    private Label nomRequired;
+
    private Label contexteRequired;
+
    private Textbox nomBox;
+
    private Textbox idBox;
+
    private Textbox descrBox;
+
    private Combobox proprioBox;
+
    private Div respBoxDiv;
+
    private Combobox collabBox;
+
    private Combobox contactBox;
+
    private Div contactBoxDiv;
+
    private Checkbox defMaladieBox;
+
    private Textbox defautLibBox;
+
    private Textbox defautCodeBox;
+
    private Checkbox autoCrossBox;
+
    private Listbox contexteBox;
+
    private Listbox etudeBox;
+
    private Label etudeRequired;
+
    private Listbox couleurEchanBox;
+
    private Listbox couleurDeriveBox;
 
    // @since 2.1
    private Checkbox utilisateursArchiveBox;
+
    private Checkbox archiveBox;
 
    // catalogues
    private Rows catRows;
+
    private Grid gridCatalogues;
+
    private Grid cataloguesBox;
 
    private Row maladieRow;
 
    // utilisateurs
    private Group groupProfilUtilisateurs;
+
    private Hlayout utilisateursArchiveLayout;
+
    private Grid gridProfilUtilisateur;
+
    private Grid gridAjoutUtilisateur;
+
    private Listbox listboxUtilisateurs;
+
    private Listbox listboxProfils;
+
    private BindingListModelSet<Utilisateur> utilisateursData;
+
    private BindingListModelSet<Profil> profilsData;
 
    // conteneurs
    private Group groupConteneurs;
+
    private Div conteneursAssocies;
+
    // codification
    private Group groupCodifications;
+
    private Div codificationsAssociees;
+
    // annotations
    private Group groupAnnotations;
 
    // couleurs
    private Window coulTypesEchanWin;
+
    private Window coulTypesDeriveWin;
 
    // Objets Principaux.
@@ -219,47 +266,77 @@ public class FicheBanque extends AbstractFicheCombineController
 
    // Associations.
    private final List<Service> services = new ArrayList<>();
+
    private Service selectedService;
+
    private List<String> nomsServices = new ArrayList<>();
+
    private List<String> nomsAndPrenoms = new ArrayList<>();
+
    private List<Collaborateur> collaborateurs = new ArrayList<>();
+
    private Collaborateur selectedCollaborateur;
+
    private Collaborateur selectedContact;
+
    private final List<Contexte> contextes = new ArrayList<>();
+
    private Contexte selectedContexte;
+
    private final List<Catalogue> catalogues = new ArrayList<>();
+
    private final List<Catalogue> selectedCatalogues = new ArrayList<>();
-   
-   private List<Etude> etudes = new ArrayList<Etude>();
+
+   private final List<Etude> etudes = new ArrayList<>();
+
    private Etude selectedEtude;
 
-   
    private final List<ProfilUtilisateur> profilUtilisateurs = new ArrayList<>();
+
    private final Set<Utilisateur> updatedUtilisateurs = new HashSet<>();
+
    private ProfilUtilisateurRowRenderer profilUtilisateurRowRenderer = new ProfilUtilisateurRowRenderer(false);
+
    private ServiceWithEtablissementRenderer serviceRenderer = new ServiceWithEtablissementRenderer();
 
    private final List<Couleur> couleurs = new ArrayList<>();
+
    private Couleur selectedEchanCouleur;
+
    private Couleur selectedDeriveCouleur;
 
    private final List<ConteneurDecorator> conteneurs = new ArrayList<>();
+
    private final List<ConteneurDecorator> copyConteneurs = new ArrayList<>();
+
    private final List<BanqueTableCodage> codifications = new ArrayList<>();
+
    private List<TableAnnotation> tablesAnnoPat = new ArrayList<>();
+
    private List<TableAnnotation> tablesAnnoPrel = new ArrayList<>();
+
    private List<TableAnnotation> tablesAnnoEchan = new ArrayList<>();
+
    private List<TableAnnotation> tablesAnnoDerive = new ArrayList<>();
+
    private List<TableAnnotation> tablesAnnoCess = new ArrayList<>();
+
    private final List<CouleurEntiteType> coulTypesEchan = new ArrayList<>();
+
    private final List<CouleurEntiteType> copyCoulTypesEchan = new ArrayList<>();
+
    private final List<CouleurEntiteType> coulTypesDerives = new ArrayList<>();
+
    private final List<CouleurEntiteType> copyCoulTypesDerives = new ArrayList<>();
+
    private final I3listBoxItemRenderer contexteRenderer = new I3listBoxItemRenderer("nom");
+
    private final CouleurItemRenderer couleurRenderer = new CouleurItemRenderer();
+
    private final CataloguesRowRenderer catalogueRenderer = new CataloguesRowRenderer();
 
    private String hautPage;
+
    private String piedPage;
 
    @Override
@@ -270,16 +347,14 @@ public class FicheBanque extends AbstractFicheCombineController
       setCascadable(false);
 
       // Initialisation des listes de composants
-      setObjLabelsComponents(
-         new Component[] {this.nomLabel, this.idLabel, this.descrLabel, this.proprioLabel, this.respLabel, this.contactLabel,
-            this.defMaladieLabel, this.defautLibLabel, this.defautCodeLabel, this.autoCrossLabel, 
-            this.contexteLabel, this.etudeLabel,
-            this.couleurEchanLabel, this.couleurDeriveLabel, this.menuBar, this.gridCatalogues, this.archiveLabel});
+      setObjLabelsComponents(new Component[] {this.nomLabel, this.idLabel, this.descrLabel, this.proprioLabel, this.respLabel,
+         this.contactLabel, this.defMaladieLabel, this.defautLibLabel, this.defautCodeLabel, this.autoCrossLabel,
+         this.contexteLabel, this.etudeLabel, this.couleurEchanLabel, this.couleurDeriveLabel, this.menuBar, this.gridCatalogues,
+         this.archiveLabel});
 
       setObjBoxsComponents(new Component[] {this.nomBox, this.idBox, this.descrBox, this.proprioBox, this.respBoxDiv,
-         this.contactBoxDiv, this.defMaladieBox, this.defautLibBox, this.defautCodeBox, this.autoCrossBox, 
-         this.contexteBox, this.etudeBox,
-         this.couleurEchanBox, this.couleurDeriveBox,
+         this.contactBoxDiv, this.defMaladieBox, this.defautLibBox, this.defautCodeBox, this.autoCrossBox, this.contexteBox,
+         this.etudeBox, this.couleurEchanBox, this.couleurDeriveBox,
          //this.checkCataCol,
          this.cataloguesBox, this.archiveBox});
 
@@ -297,14 +372,14 @@ public class FicheBanque extends AbstractFicheCombineController
       Executions.createComponents("/zuls/contexte/CodificationsAssociees.zul", codificationsAssociees, null);
       getCodificationsAssociees().setGroupHeader(groupCodifications);
 
-      final Map<String, Object> coulTypesEchanArgs = new HashMap<String, Object>();
+      final Map<String, Object> coulTypesEchanArgs = new HashMap<>();
       coulTypesEchanArgs.put("isEchantillonTyped", Boolean.TRUE);
       Executions.createComponents("/zuls/contexte/CoulEntiteTypesAssociees.zul", coulTypesEchanWin, coulTypesEchanArgs);
-      
-      final Map<String, Object> coulTypesProdArgs = new HashMap<String, Object>();
+
+      final Map<String, Object> coulTypesProdArgs = new HashMap<>();
       coulTypesProdArgs.put("isEchantillonTyped", Boolean.FALSE);
       Executions.createComponents("/zuls/contexte/CoulEntiteTypesAssociees.zul", coulTypesDeriveWin, coulTypesProdArgs);
-      
+
       final ListitemRenderer<Utilisateur> utilisateurRenderer = (li, utilisateur, index) -> {
          li.setValue(utilisateur);
          li.setLabel(utilisateur.getLogin());
@@ -498,7 +573,7 @@ public class FicheBanque extends AbstractFicheCombineController
       // empeche modification contexte
       contexteLabel.setVisible(true);
       contexteBox.setVisible(false);
-      
+
       // empeche modification etude
       etudeLabel.setVisible(true);
       etudeBox.setVisible(false);
@@ -578,9 +653,9 @@ public class FicheBanque extends AbstractFicheCombineController
       final List<CouleurEntiteType> coulTypes = new ArrayList<>();
       coulTypes.addAll(coulTypesEchan);
       coulTypes.addAll(coulTypesDerives);
-      
-      if (getGatsbiSelected()) {
-    	  this.banque.setEtude(selectedEtude);
+
+      if(getGatsbiSelected()){
+         this.banque.setEtude(selectedEtude);
       }
 
       ManagerLocator.getBanqueManager().createOrUpdateObjectManager(banque, SessionUtils.getPlateforme(sessionScope),
@@ -630,16 +705,15 @@ public class FicheBanque extends AbstractFicheCombineController
          throw new WrongValueException(contexteBox, Labels.getLabel("validation.syntax.empty"));
       }
 
-      if(getGatsbiSelected()) {
-    	  if (selectedEtude != null && selectedEtude.getEtudeId() != null) {
-    		  Clients.clearWrongValue(etudeBox);
-	       } else {
-	          Clients.scrollIntoView(etudeBox);
-	          throw new WrongValueException(etudeBox, Labels.getLabel("validation.syntax.empty"));
-	       }
+      if(getGatsbiSelected()){
+         if(selectedEtude != null && selectedEtude.getEtudeId() != null){
+            Clients.clearWrongValue(etudeBox);
+         }else{
+            Clients.scrollIntoView(etudeBox);
+            throw new WrongValueException(etudeBox, Labels.getLabel("validation.syntax.empty"));
+         }
       }
 
-      
       Clients.showBusy(Labels.getLabel("ficheBanque.modification.encours"));
       Events.echoEvent("onLaterCreate", self, null);
    }
@@ -824,9 +898,9 @@ public class FicheBanque extends AbstractFicheCombineController
       final Set<Utilisateur> selectedUsers = utilisateursData.getSelection();
 
       if(!selectedUsers.isEmpty() && !profilsData.getSelection().isEmpty()){
-         
+
          final Profil selectedProfil = (Profil) listboxProfils.getSelectedItem().getValue();
-         
+
          for(final Utilisateur user : selectedUsers){
 
             final Optional<ProfilUtilisateur> optionalPu =
@@ -852,7 +926,7 @@ public class FicheBanque extends AbstractFicheCombineController
             updatedUtilisateurs.add(user);
 
          }
-         
+
       }
 
    }
@@ -923,10 +997,10 @@ public class FicheBanque extends AbstractFicheCombineController
       if(selectedContexte != null && selectedContexte.getContexteId() == null){
          selectedContexte = null;
       }
-      
+
       if(selectedEtude != null && selectedEtude.getEtudeId() == null){
-    	  selectedEtude = null;
-       }
+         selectedEtude = null;
+      }
 
       // Catalogues
       banque.getCatalogues().clear();
@@ -1020,7 +1094,7 @@ public class FicheBanque extends AbstractFicheCombineController
       coulTypes.addAll(coulTypesDerives);
 
       coulTypes.forEach(ct -> ct.setBanque(banque));
-      
+
       ManagerLocator.getBanqueManager().createOrUpdateObjectManager(banque, null, selectedContexte, selectedService,
          selectedCollaborateur, selectedContact, ConteneurDecorator.extractConteneursFromDecos(conteneurs), codifications,
          tabsPat, tabsPrel, tabsEchan, tabsDerive, tabsCess, coulTypes, selectedEchanCouleur, selectedDeriveCouleur,
@@ -1076,11 +1150,10 @@ public class FicheBanque extends AbstractFicheCombineController
          couleurs.add(new Couleur());
          couleurs.addAll(ManagerLocator.getCouleurManager().findAllObjectsManager());
       }
-      
+
       // gatsbi etude
-      if (etudes.isEmpty()) {
-    	  etudes.addAll(ManagerLocator.getEtudeManager()
-    			  .findByPfOrderManager(SessionUtils.getCurrentPlateforme()));
+      if(etudes.isEmpty()){
+         etudes.addAll(ManagerLocator.getEtudeManager().findByPfOrderManager(SessionUtils.getCurrentPlateforme()));
       }
 
       initAssociations();
@@ -1137,7 +1210,7 @@ public class FicheBanque extends AbstractFicheCombineController
             catalogues.addAll(ManagerLocator.getContexteManager().getCataloguesManager(selectedContexte));
          }
          selectedCatalogues.addAll(ManagerLocator.getCatalogueManager().findByAssignedBanqueManager(banque));
-         
+
          selectedEtude = this.banque.getEtude();
 
          if(this.banque.getCollaborateur() != null){
@@ -2343,32 +2416,30 @@ public class FicheBanque extends AbstractFicheCombineController
    }
 
    /********************** Gatsbi ************************/
-	public List<Etude> getEtudes() {
-		return etudes;
-	}
-	
-	public boolean getGatsbiSelected() {
-		return selectedContexte != null 
-			&& selectedContexte.getNom() != null 
-			&& selectedContexte.getNom().equals("GATSBI");
-	}
-	
-	public boolean getNotGatsbiSelected() {
-		return !getGatsbiSelected();
-	}
-	
-	public String getEtude(){
-	      if(banque != null && banque.getEtude() != null){
-	         return banque.getEtude().getTitre();
-	      }
-	      return null;
-	   }
+   public List<Etude> getEtudes(){
+      return etudes;
+   }
 
-	public Etude getSelectedEtude() {
-		return selectedEtude;
-	}
+   public boolean getGatsbiSelected(){
+      return selectedContexte != null && selectedContexte.getNom() != null && selectedContexte.getNom().equals("GATSBI");
+   }
 
-	public void setSelectedEtude(Etude _e) {
-		this.selectedEtude = _e;
-	}
+   public boolean getNotGatsbiSelected(){
+      return !getGatsbiSelected();
+   }
+
+   public String getEtude(){
+      if(banque != null && banque.getEtude() != null){
+         return banque.getEtude().getTitre();
+      }
+      return null;
+   }
+
+   public Etude getSelectedEtude(){
+      return selectedEtude;
+   }
+
+   public void setSelectedEtude(final Etude _e){
+      this.selectedEtude = _e;
+   }
 }

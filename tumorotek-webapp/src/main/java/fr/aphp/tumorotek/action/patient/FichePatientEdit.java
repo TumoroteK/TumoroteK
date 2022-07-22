@@ -82,18 +82,28 @@ public class FichePatientEdit extends AbstractFicheEditController
 
    // boxes
    protected Textbox nipBox;
+
    protected Textbox nomBox;
+
    protected Textbox nomNaisBox;
+
    protected Textbox prenomBox;
+
    protected Datebox dateNaisBox;
+
    protected Textbox villeNaisBox;
+
    protected Textbox paysNaisBox;
+
    protected Datebox dateEtatDecesBox;
+
    protected Listbox sexeBox;
+
    protected Toolbar toolbar;
 
    // included ndaBox (embedded in Prelevement mode only)
    protected Label ndaFieldLabel;
+
    protected Textbox ndaBox;
 
    // referents
@@ -104,10 +114,12 @@ public class FichePatientEdit extends AbstractFicheEditController
 
    // dateEtatDeces
    protected Label dateEtatDecesField;
+
    protected Date dateEtatDeces;
 
    // traduction pour affichage
    protected LabelCodeItem selectedSexe;
+
    protected LabelCodeItem selectedEtat;
 
    // Associations

@@ -73,18 +73,27 @@ public class ModificationMultipleNonConformites extends AbstractModificationMult
     * Components.
     */
    private Checkbox conformeCheckOne;
+
    private Checkbox nonconformeCheckOne;
+
    private Listbox nonConformitesBoxOne;
+
    private Div nonConformeDivOne;
+
    private Checkbox conformeCheckErase;
+
    private Checkbox nonconformeCheckErase;
+
    private Listbox nonConformitesBoxErase;
+
    private Div nonConformeDivErase;
 
    private final List<NonConformite> nonConformites = new ArrayList<>();
+
    private Set<Listitem> selectedNonConformitesItem = new HashSet<>();
+
    private Set<Listitem> selectedNonConformitesEraseItem = new HashSet<>();
-   
+
    // @since 2.2.3-gatsbi
    private Boolean isOblig = false;
 
@@ -114,17 +123,17 @@ public class ModificationMultipleNonConformites extends AbstractModificationMult
    public void setConstraintsToBoxes(final Constraint constr){}
 
    /**
-    * Surcharge de la méthode init pour déclencher la récupération 
+    * Surcharge de la méthode init pour déclencher la récupération
     * des non conformités.
-    * Surcharge de champNameThesaurus pour paramétrer le type de 
+    * Surcharge de champNameThesaurus pour paramétrer le type de
     * non conformité.
     */
    public void init(final String pathToPage, final String methodToCall, final List<? extends Object> objs, final String label,
       final String champToEdit, final List<? extends Object> allValuesThesaurus, final String champNameThesaurus,
       final String entiteNom, final Boolean isOblig){
 
-	  this.isOblig = isOblig;
-	   
+      this.isOblig = isOblig;
+
       // copie la liste pour eviter la modification de la liste originale
       this.nonConformites.clear();
       final Iterator<? extends Object> iT = allValuesThesaurus.iterator();
@@ -283,13 +292,13 @@ public class ModificationMultipleNonConformites extends AbstractModificationMult
    }
 
    //	/**
-   //	 * Prépare la liste de selectedItemps à partir de la liste de 
+   //	 * Prépare la liste de selectedItemps à partir de la liste de
    //	 * non conformites.
    //	 * @param box
    //	 * @param ncfs List<NonConformite>
    //	 * @return Set<Listitem> selectedItems
    //	 */
-   //	private List<Listitem> getSelectedItemsFromValues(Listbox box, 
+   //	private List<Listitem> getSelectedItemsFromValues(Listbox box,
    //			List<NonConformite> selNcfs) {
    //		List<Listitem> values = new ArrayList<Listitem>();
    //		Iterator<NonConformite> it = selNcfs.iterator();
@@ -367,21 +376,18 @@ public class ModificationMultipleNonConformites extends AbstractModificationMult
          li.setParent(nonConformitesBoxOne);
       }
    }
-   
+
    @Override
-	public void onClick$validate() {
-	    // @since 2.2.3-gatsbi apply required check
-	   if (isOblig) {
-		   if (rowOneValue.isVisible() 
-				 && !conformeCheckOne.isChecked() && !nonconformeCheckOne.isChecked()) {
-			   throw new WrongValueException(rowOneValue.getLastChild().getFirstChild(), 
-					   Labels.getLabel("validation.syntax.empty"));
-		   } else if (eraseDiv.isVisible() 
-				&& !conformeCheckErase.isChecked() && !nonconformeCheckErase.isChecked()) {
-			   throw new WrongValueException(eraseDiv.getFirstChild().getFirstChild(), Labels.getLabel("validation.syntax.empty"));
-		   }
-	   }
-	  
-	   super.onClick$validate();
-	}
+   public void onClick$validate(){
+      // @since 2.2.3-gatsbi apply required check
+      if(isOblig){
+         if(rowOneValue.isVisible() && !conformeCheckOne.isChecked() && !nonconformeCheckOne.isChecked()){
+            throw new WrongValueException(rowOneValue.getLastChild().getFirstChild(), Labels.getLabel("validation.syntax.empty"));
+         }else if(eraseDiv.isVisible() && !conformeCheckErase.isChecked() && !nonconformeCheckErase.isChecked()){
+            throw new WrongValueException(eraseDiv.getFirstChild().getFirstChild(), Labels.getLabel("validation.syntax.empty"));
+         }
+      }
+
+      super.onClick$validate();
+   }
 }

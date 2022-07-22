@@ -149,7 +149,7 @@ public interface ConteneurManager
    Boolean findDoublonManager(Conteneur conteneur, List<Banque> banques);
 
    /**
-    * Teste si le Conteneur passé en paramètre est utilisé par 
+    * Teste si le Conteneur passé en paramètre est utilisé par
     * d'autres objets.
     * @param conteneur Conteneur que l'on test.
     * @return True si l'objet est utilisé.
@@ -163,7 +163,7 @@ public interface ConteneurManager
     * @param service Service du Conteneur.
     * @param banques Banques du Conteneur.
     * @param plateformes Plateformes du Conteneur.
-    * @param Utilisateur 
+    * @param Utilisateur
     * @param pf Plateforme origine
     * @version 2.0.10
     */
@@ -187,8 +187,8 @@ public interface ConteneurManager
     * @param conteneur Conteneur à supprimer de la base de données.
     * @param comments commentaires liés à la suppression
     * @param Utilisateur réalisant la suppression.
-    * 
-    * @since 2.0.10 si le conteneur fait reference à des évènements de 
+    *
+    * @since 2.0.10 si le conteneur fait reference à des évènements de
     * stockage, il est automatiquement archivé.
     */
    void removeObjectManager(Conteneur conteneur, String comments, Utilisateur user);
@@ -222,9 +222,9 @@ public interface ConteneurManager
    List<Enceinte> getContainingEnceinteManager(Conteneur conteneur);
 
    /**
-    * Supprime l'association manytomany entre le conteneur et la 
-    * banque ainsi que toute 
-    * reservation associant une enceinte appartenant au conteneur et cette 
+    * Supprime l'association manytomany entre le conteneur et la
+    * banque ainsi que toute
+    * reservation associant une enceinte appartenant au conteneur et cette
     * même banque.
     * @param conteneur
     * @param banque
@@ -232,7 +232,7 @@ public interface ConteneurManager
    void removeBanqueFromContAndEncManager(Conteneur conteneur, Banque banque);
 
    /**
-    * Trouve le conteneur à l'origine de 
+    * Trouve le conteneur à l'origine de
     * l'emplacement passé en paramètres.
     * @param empl Emplacement
     * @return Conteneur
@@ -240,7 +240,7 @@ public interface ConteneurManager
    Conteneur findFromEmplacementManager(Emplacement empl);
 
    /**
-    * Vérifies si des évènements de stockage sont associés à ce 
+    * Vérifies si des évènements de stockage sont associés à ce
     * conteneur.
     * @param conteneur
     * @return true si oui.
@@ -248,7 +248,7 @@ public interface ConteneurManager
    boolean hasRetoursManager(Conteneur conteneur);
 
    /**
-    * Recherche tous les conteneurs qui sont accessibles à partir 
+    * Recherche tous les conteneurs qui sont accessibles à partir
     * d'une plateforme, et si ils sont actuellement déja assignés en partage ou pas.
     * @param Plateforme pf
     * @param partage true/false
@@ -264,28 +264,28 @@ public interface ConteneurManager
     * @return Float
     */
    Float findTempForEmplacementManager(Emplacement emplacement);
-   
-	/**
-	 * Surcharge le manager de modification pour passer en paramètre des associations 
-	 * ConteneurPlateformes
-	 * @since 2.2.1-IRELEC
-	 * @param conteneur
-	 * @param conteneurType
-	 * @param service
-	 * @param banques
-	 * @param plateformes
-	 * @param incidents
-	 * @param utilisateur
-	 */
-	void updateObjectWithConteneurPlateformesManager(Conteneur conteneur, ConteneurType conteneurType, Service service,
-			List<Banque> banques, List<ConteneurPlateforme> plateformes, List<Incident> incidents, Utilisateur utilisateur);
 
-	/**
-	 * Trouve l'association représentée par un conteneur et une plateforme
-	 * @param conteneur
-	 * @param pf
-	 * @return
-	 * @since 2.2.1-IRELEC
-	 */
-	ConteneurPlateforme getOneConteneurPlateformeManager(Conteneur conteneur, Plateforme pf);
+   /**
+    * Surcharge le manager de modification pour passer en paramètre des associations 
+    * ConteneurPlateformes
+    * @since 2.2.1-IRELEC
+    * @param conteneur
+    * @param conteneurType
+    * @param service
+    * @param banques
+    * @param plateformes
+    * @param incidents
+    * @param utilisateur
+    */
+   void updateObjectWithConteneurPlateformesManager(Conteneur conteneur, ConteneurType conteneurType, Service service,
+      List<Banque> banques, List<ConteneurPlateforme> plateformes, List<Incident> incidents, Utilisateur utilisateur);
+
+   /**
+    * Trouve l'association représentée par un conteneur et une plateforme
+    * @param conteneur
+    * @param pf
+    * @return
+    * @since 2.2.1-IRELEC
+    */
+   ConteneurPlateforme getOneConteneurPlateformeManager(Conteneur conteneur, Plateforme pf);
 }

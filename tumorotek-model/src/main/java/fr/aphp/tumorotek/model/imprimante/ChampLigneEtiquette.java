@@ -74,11 +74,15 @@ public class ChampLigneEtiquette implements Serializable
    private static final long serialVersionUID = -4039125555257317668L;
 
    private Integer champLigneEtiquetteId;
+
    private Integer ordre;
+
    private String expReg;
 
    private LigneEtiquette ligneEtiquette;
+
    private Champ champ;
+
    private Entite entite;
 
    public ChampLigneEtiquette(){

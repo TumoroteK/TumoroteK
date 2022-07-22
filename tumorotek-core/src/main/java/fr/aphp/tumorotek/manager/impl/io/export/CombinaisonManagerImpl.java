@@ -68,10 +68,13 @@ public class CombinaisonManagerImpl implements CombinaisonManager
 
    /** Bean Dao CombinaisonDao. */
    private CombinaisonDao combinaisonDao = null;
+
    /** Bean Dao ChampDao. */
    private ChampDao champDao = null;
+
    /** Bean Dao ChampManager. */
    private ChampManager champManager = null;
+
    /** Bean Validator. */
    private CombinaisonValidator combinaisonValidator = null;
 
@@ -115,7 +118,7 @@ public class CombinaisonManagerImpl implements CombinaisonManager
     * Copie une combinaison en BDD.
     * @param combinaison Combinaison à copier.
     * @return la Combinaison copiée
-    * @throws RequiredObjectIsNullException la Combinaison passée en paramètre 
+    * @throws RequiredObjectIsNullException la Combinaison passée en paramètre
     * doit être valide.
     */
    @Override
@@ -146,7 +149,7 @@ public class CombinaisonManagerImpl implements CombinaisonManager
     * @param combinaison Combinaison à créer.
     * @param champ1 Premier champ de la Combinaison.
     * @param champ2 Deuxième champ de la Combinaison.
-    * @throws RequiredObjectIsNullException aucun des paramètres ne doit pas 
+    * @throws RequiredObjectIsNullException aucun des paramètres ne doit pas
     * être null.
     */
    @Override
@@ -187,7 +190,7 @@ public class CombinaisonManagerImpl implements CombinaisonManager
     * @param combinaison Combinaison à mettre à jour.
     * @param champ1 Premier champ de la Combinaison.
     * @param champ2 Deuxième champ de la Combinaison.
-    * @throws RequiredObjectIsNullException aucun des paramètres ne doit pas 
+    * @throws RequiredObjectIsNullException aucun des paramètres ne doit pas
     * être null.
     */
    @Override
@@ -246,7 +249,7 @@ public class CombinaisonManagerImpl implements CombinaisonManager
    /**
     * Supprime une Combinaison en BDD.
     * @param combinaison Combinaison à supprimer.
-    * @throws RequiredObjectIsNullException la Combinaison passée en paramètre 
+    * @throws RequiredObjectIsNullException la Combinaison passée en paramètre
     * ne doit pas être null.
     */
    @Override

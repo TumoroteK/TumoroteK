@@ -1,5 +1,5 @@
 /**
- * Copyright ou © ou Copr. Assistance Publique des Hôpitaux de 
+ * Copyright ou © ou Copr. Assistance Publique des Hôpitaux de
  * PARIS et SESAN
  * projet-tk@sesan.fr
  *
@@ -39,88 +39,90 @@ package fr.aphp.tumorotek.model.contexte.gatsbi;
 import java.io.Serializable;
 import java.util.Objects;
 
-public class ThesaurusValue implements Serializable {
+public class ThesaurusValue implements Serializable
+{
 
-	private static final long serialVersionUID = 1L;
-	
-	private Integer champEntiteId;
-	private Integer thesaurusId;
-	private String thesaurusValue;
-	private Integer position;
-	
-	public ThesaurusValue() {
-	}
-	
-	public ThesaurusValue(Integer champEntiteId, 
-			Integer thesaurusId, String thesaurusValue,
-			Integer position) {
-		super();
-		this.champEntiteId = champEntiteId;
-		// this.templateThesaurusId = templateThesaurusId;
-		this.thesaurusId = thesaurusId;
-		this.thesaurusValue = thesaurusValue;
-		this.position = position;
-	}
+   private static final long serialVersionUID = 1L;
 
-	public Integer getChampEntiteId() {
-		return champEntiteId;
-	}
-	
-	public void setChampEntiteId(Integer _i) {
-		this.champEntiteId = _i;
-	}
-	
-//	public Integer getTemplateThesaurusId() {
-//		return templateThesaurusId;
-//	}
-//	
-//	public void setTemplateThesaurusId(Integer _i) {
-//		this.templateThesaurusId = _i;
-//	}
+   private Integer champEntiteId;
 
-	public Integer getThesaurusId() {
-		return thesaurusId;
-	}
-	
-	public void setThesaurusId(Integer _i) {
-		this.thesaurusId = _i;
-	}
-	
-	public String getThesaurusValue() {
-		return thesaurusValue;
-	}
-	
-	public void setThesaurusValue(String _v) {
-		this.thesaurusValue = _v;
-	}
+   private Integer thesaurusId;
 
-	public Integer getPosition() {
-		return position;
-	}
+   private String thesaurusValue;
 
-	public void setPosition(Integer _p) {
-		this.position = _p;
-	}
+   private Integer position;
 
-	@Override
-	public boolean equals(Object obj) {
-		if (obj == this) {
-            return true;
-        }
-        if (obj == null || obj.getClass() != this.getClass()) {
-            return false;
-        }
+   public ThesaurusValue(){}
 
-        ThesaurusValue val = (ThesaurusValue) obj;
+   public ThesaurusValue(final Integer champEntiteId, final Integer thesaurusId, final String thesaurusValue,
+      final Integer position){
+      super();
+      this.champEntiteId = champEntiteId;
+      // this.templateThesaurusId = templateThesaurusId;
+      this.thesaurusId = thesaurusId;
+      this.thesaurusValue = thesaurusValue;
+      this.position = position;
+   }
 
-        return Objects.equals(thesaurusId, val.getThesaurusId());
-	}
-	
-	@Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-    	result = prime * result + ((thesaurusId == null) ? 0 : thesaurusId.hashCode());
-    	return result;
-	}
+   public Integer getChampEntiteId(){
+      return champEntiteId;
+   }
+
+   public void setChampEntiteId(final Integer _i){
+      this.champEntiteId = _i;
+   }
+
+   //	public Integer getTemplateThesaurusId() {
+   //		return templateThesaurusId;
+   //	}
+   //	
+   //	public void setTemplateThesaurusId(Integer _i) {
+   //		this.templateThesaurusId = _i;
+   //	}
+
+   public Integer getThesaurusId(){
+      return thesaurusId;
+   }
+
+   public void setThesaurusId(final Integer _i){
+      this.thesaurusId = _i;
+   }
+
+   public String getThesaurusValue(){
+      return thesaurusValue;
+   }
+
+   public void setThesaurusValue(final String _v){
+      this.thesaurusValue = _v;
+   }
+
+   public Integer getPosition(){
+      return position;
+   }
+
+   public void setPosition(final Integer _p){
+      this.position = _p;
+   }
+
+   @Override
+   public boolean equals(final Object obj){
+      if(obj == this){
+         return true;
+      }
+      if(obj == null || obj.getClass() != this.getClass()){
+         return false;
+      }
+
+      final ThesaurusValue val = (ThesaurusValue) obj;
+
+      return Objects.equals(thesaurusId, val.getThesaurusId());
+   }
+
+   @Override
+   public int hashCode(){
+      final int prime = 31;
+      int result = 1;
+      result = prime * result + ((thesaurusId == null) ? 0 : thesaurusId.hashCode());
+      return result;
+   }
 }

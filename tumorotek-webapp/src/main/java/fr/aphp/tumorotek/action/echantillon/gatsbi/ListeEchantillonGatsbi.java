@@ -1,5 +1,5 @@
 /**
- * Copyright ou © ou Copr. Assistance Publique des Hôpitaux de 
+ * Copyright ou © ou Copr. Assistance Publique des Hôpitaux de
  * PARIS et SESAN
  * projet-tk@sesan.fr
  *
@@ -44,6 +44,7 @@ import org.zkoss.zk.ui.event.ForwardEvent;
 import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Filedownload;
 import org.zkoss.zul.Messagebox;
+
 import fr.aphp.tumorotek.action.echantillon.ListeEchantillon;
 import fr.aphp.tumorotek.action.prelevement.gatsbi.exception.GatsbiException;
 import fr.aphp.tumorotek.model.coeur.prelevement.Prelevement;
@@ -53,127 +54,118 @@ import fr.aphp.tumorotek.webapp.gatsbi.GatsbiController;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
 /**
- * @version 2.3.0-gatsbi 
+ * @version 2.3.0-gatsbi
  * @author Mathieu BARTHELEMY
  *
  */
-public class ListeEchantillonGatsbi extends ListeEchantillon {
+public class ListeEchantillonGatsbi extends ListeEchantillon
+{
 
-	private static final long serialVersionUID = 1L;
+   private static final long serialVersionUID = 1L;
 
-	private Contexte contexte;
+   private Contexte contexte;
 
-	public ListeEchantillonGatsbi() {
-		setListObjectsRenderer(new EchantillonRowRendererGatsbi(true, false, true, true));
-	}
+   public ListeEchantillonGatsbi(){
+      setListObjectsRenderer(new EchantillonRowRendererGatsbi(true, false, true, true));
+   }
 
-	public void onCheckAll$gridColumns() {
-		onCheck$checkAll();
-	}
+   public void onCheckAll$gridColumns(){
+      onCheck$checkAll();
+   }
 
-	@Override
-	protected void drawColumnsForVisibleChampEntites()
-			throws ClassNotFoundException, InstantiationException, IllegalAccessException {
+   @Override
+   protected void drawColumnsForVisibleChampEntites()
+      throws ClassNotFoundException, InstantiationException, IllegalAccessException{
 
-		contexte = SessionUtils.getCurrentGatsbiContexteForEntiteId(3);
-		
-		// check box first column, toujours affichée
-		Checkbox cbox = new Checkbox();
-		cbox.setId("checkAll");
-		cbox.addForward("onCheck", objectsListGrid.getColumns(), "onCheckAll");
-		GatsbiController.addColumn(objectsListGrid, null, "40px", null, cbox, null, true);
-		
-		// icones column, toujours visible car impact evt de stockage
-		GatsbiController.addColumn(objectsListGrid, null, 
-			GatsbiControllerEchantillon.getIconesColWidthFrom(30, contexte), "center", null, null, true);
+      contexte = SessionUtils.getCurrentGatsbiContexteForEntiteId(3);
 
-		// code prel column, toujours affichée
-		GatsbiControllerEchantillon.drawCodeColumn(objectsListGrid);
+      // check box first column, toujours affichée
+      final Checkbox cbox = new Checkbox();
+      cbox.setId("checkAll");
+      cbox.addForward("onCheck", objectsListGrid.getColumns(), "onCheckAll");
+      GatsbiController.addColumn(objectsListGrid, null, "40px", null, cbox, null, true);
 
-		// ttes collection
-		GatsbiControllerEchantillon.drawBanqueColumn(objectsListGrid, isTtesCollection());
+      // icones column, toujours visible car impact evt de stockage
+      GatsbiController.addColumn(objectsListGrid, null, GatsbiControllerEchantillon.getIconesColWidthFrom(30, contexte), "center",
+         null, null, true);
 
-		// patient, colonne toujours affichée
-		GatsbiControllerEchantillon.drawPatientColumn(objectsListGrid);
+      // code prel column, toujours affichée
+      GatsbiControllerEchantillon.drawCodeColumn(objectsListGrid);
 
-		// variable columns
-		for (Integer chpId : contexte.getChampEntiteInTableauOrdered()) {
-			GatsbiControllerEchantillon.addColumnForChpId(chpId, objectsListGrid);
-		}
+      // ttes collection
+      GatsbiControllerEchantillon.drawBanqueColumn(objectsListGrid, isTtesCollection());
 
-		// nb dérivés
-		nbProdDerivesColumn = GatsbiControllerEchantillon.drawNbDerivesColumn(objectsListGrid);
+      // patient, colonne toujours affichée
+      GatsbiControllerEchantillon.drawPatientColumn(objectsListGrid);
 
+      // variable columns
+      for(final Integer chpId : contexte.getChampEntiteInTableauOrdered()){
+         GatsbiControllerEchantillon.addColumnForChpId(chpId, objectsListGrid);
+      }
 
-		// nb cessions
-		nbCessionsColumn = GatsbiControllerEchantillon.drawNbCessionsColumn(objectsListGrid);
-	}
+      // nb dérivés
+      nbProdDerivesColumn = GatsbiControllerEchantillon.drawNbDerivesColumn(objectsListGrid);
 
-	/**
-	 * Gatsbi surcharge pour intercaler une modale de sélection des parametrages
-	 * proposés par le contexte.
-	 * 
-	 * @param click event
-	 */
-	@Override
-	public void onClick$addNew(final Event event) throws Exception {		
-		GatsbiController.addNewObjectForContext(contexte, self, 
-			e -> {
-				try {
-					super.onClick$addNew(e);
-				} catch (Exception ex) {
-					Messagebox.show(handleExceptionMessage(ex), 
-							"Error", Messagebox.OK, Messagebox.ERROR);
-				}
-			}, event, null);
-	}
+      // nb cessions
+      nbCessionsColumn = GatsbiControllerEchantillon.drawNbCessionsColumn(objectsListGrid);
+   }
 
-	/**
-	 * Un parametrage a été sélectionné.
-	 * 
-	 * @param param
-	 * @throws Exception
-	 */
-	public void onGetSelectedParametrage(ForwardEvent evt) throws Exception {
-		try {
-			
-			GatsbiController.getSelectedParametrageFromSelectEvent(contexte, 
-				SessionUtils.getCurrentBanque(sessionScope), 
-				getObjectTabController(), null, 
-				() -> {
-					try {
-						if (((Map<?, ?>) 
-							evt.getOrigin().getData()).get("parentObj") == null) {
-							super.onClick$addNew(null);
-						} else {
-							getObjectTabController().switchToCreateMode((Prelevement) 
-								((Map<?, ?>) 
-									evt.getOrigin().getData()).get("parentObj"));
-						}
-					} catch (Exception ex) {
-						Messagebox.show(handleExceptionMessage(ex), 
-								"Error", Messagebox.OK, Messagebox.ERROR);
-					}
-				}, evt);	
-		} catch (GatsbiException e) {
-			Messagebox.show(handleExceptionMessage(e), "Error", Messagebox.OK, Messagebox.ERROR);
-		}
-	}
-	
-	/**
-	 * Download le cr anapath d'un échantillon depuis la liste 
-	 * @param forward event dont l'event origine transporte l'objet CrAnapath
-	 */
-	public void onClickCrAnapathLabel$echantillonRows(final ForwardEvent event) {
-		if (event.getOrigin().getData() != null) {
-			try{
-	            Filedownload.save(new FileInputStream(
-            		((Fichier) event.getOrigin().getData()).getPath()), 
-            		((Fichier) event.getOrigin().getData()).getMimeType(),
-            		((Fichier) event.getOrigin().getData()).getNom());
-	         }catch(final Exception e) {
-	            log.error(e);
-	         }
-		}	
-	}
+   /**
+    * Gatsbi surcharge pour intercaler une modale de sélection des parametrages
+    * proposés par le contexte.
+    *
+    * @param click event
+    */
+   @Override
+   public void onClick$addNew(final Event event) throws Exception{
+      GatsbiController.addNewObjectForContext(contexte, self, e -> {
+         try{
+            super.onClick$addNew(e);
+         }catch(final Exception ex){
+            Messagebox.show(handleExceptionMessage(ex), "Error", Messagebox.OK, Messagebox.ERROR);
+         }
+      }, event, null);
+   }
+
+   /**
+    * Un parametrage a été sélectionné.
+    *
+    * @param param
+    * @throws Exception
+    */
+   public void onGetSelectedParametrage(final ForwardEvent evt) throws Exception{
+      try{
+
+         GatsbiController.getSelectedParametrageFromSelectEvent(contexte, SessionUtils.getCurrentBanque(sessionScope),
+            getObjectTabController(), null, () -> {
+               try{
+                  if(((Map<?, ?>) evt.getOrigin().getData()).get("parentObj") == null){
+                     super.onClick$addNew(null);
+                  }else{
+                     getObjectTabController()
+                        .switchToCreateMode((Prelevement) ((Map<?, ?>) evt.getOrigin().getData()).get("parentObj"));
+                  }
+               }catch(final Exception ex){
+                  Messagebox.show(handleExceptionMessage(ex), "Error", Messagebox.OK, Messagebox.ERROR);
+               }
+            }, evt);
+      }catch(final GatsbiException e){
+         Messagebox.show(handleExceptionMessage(e), "Error", Messagebox.OK, Messagebox.ERROR);
+      }
+   }
+
+   /**
+    * Download le cr anapath d'un échantillon depuis la liste
+    * @param forward event dont l'event origine transporte l'objet CrAnapath
+    */
+   public void onClickCrAnapathLabel$echantillonRows(final ForwardEvent event){
+      if(event.getOrigin().getData() != null){
+         try{
+            Filedownload.save(new FileInputStream(((Fichier) event.getOrigin().getData()).getPath()),
+               ((Fichier) event.getOrigin().getData()).getMimeType(), ((Fichier) event.getOrigin().getData()).getNom());
+         }catch(final Exception e){
+            log.error(e);
+         }
+      }
+   }
 }

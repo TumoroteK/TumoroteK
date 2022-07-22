@@ -36,30 +36,31 @@
 package fr.aphp.tumorotek.model;
 
 /**
- * 
+ *
  * @version 2.2.3-rc1
  * @author mathieu BARTHELEMY *
  */
 public abstract class TKDelegetableObject<T>
 {
 
-  public abstract TKDelegateObject<T> getDelegate();
-  public abstract void setDelegate(TKDelegateObject<T> delegate);
-   
+   public abstract TKDelegateObject<T> getDelegate();
+
+   public abstract void setDelegate(TKDelegateObject<T> delegate);
+
    /**
     * Attribut au clone un clone de son délégué.
     * @since 2.2.3-rc1
     * @return clone du délgué
-    */   
-   public TKDelegateObject<T> cloneDelegateTo(T obj){
+    */
+   public TKDelegateObject<T> cloneDelegateTo(final T obj){
 
-	   TKDelegateObject<T> delegateClone = null; 
-	   
-	  if (getDelegate() != null && obj != null) { 
-		  delegateClone = getDelegate().clone();
-		  delegateClone.setDelegator(obj);
-	  }
-	  
+      TKDelegateObject<T> delegateClone = null;
+
+      if(getDelegate() != null && obj != null){
+         delegateClone = getDelegate().clone();
+         delegateClone.setDelegator(obj);
+      }
+
       return delegateClone;
    }
 }

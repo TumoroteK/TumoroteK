@@ -50,6 +50,7 @@ public class SearchedObjectIdNotExistException extends TKException
    private static final long serialVersionUID = 1L;
 
    private String nomEntite;
+
    private Integer objectId;
 
    public SearchedObjectIdNotExistException(){

@@ -49,6 +49,7 @@ public class CheckPositionManagerImpl implements CheckPositionManager
 {
 
    private TerminaleDao terminaleDao;
+
    private EnceinteDao enceinteDao;
 
    public void setTerminaleDao(final TerminaleDao tDao){

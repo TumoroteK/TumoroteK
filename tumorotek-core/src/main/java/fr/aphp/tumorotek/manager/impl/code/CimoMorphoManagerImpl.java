@@ -75,7 +75,7 @@ public class CimoMorphoManagerImpl implements CimoMorphoManager
 
    @Override
    /**
-    * Parcours egalement le champ CIM_REF qui represente l'equivalent en 
+    * Parcours egalement le champ CIM_REF qui represente l'equivalent en
     * code CIM_MASTER.
     */
    public List<CimoMorpho> findByCodeLikeManager(String code, final boolean exactMatch){

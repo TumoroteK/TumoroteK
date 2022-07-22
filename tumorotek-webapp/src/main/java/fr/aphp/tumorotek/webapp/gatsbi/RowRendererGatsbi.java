@@ -1,5 +1,5 @@
 /**
- * Copyright ou © ou Copr. Assistance Publique des Hôpitaux de 
+ * Copyright ou © ou Copr. Assistance Publique des Hôpitaux de
  * PARIS et SESAN
  * projet-tk@sesan.fr
  *
@@ -36,9 +36,10 @@
  **/
 package fr.aphp.tumorotek.webapp.gatsbi;
 
-public interface RowRendererGatsbi {
-	
-	public boolean areIconesRendered();
+public interface RowRendererGatsbi
+{
 
-	public void setIconesRendered(boolean _i);
+   public boolean areIconesRendered();
+
+   public void setIconesRendered(boolean _i);
 }

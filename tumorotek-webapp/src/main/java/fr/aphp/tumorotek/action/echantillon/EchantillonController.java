@@ -89,7 +89,9 @@ public class EchantillonController extends AbstractObjectTabController
    private static final long serialVersionUID = -3799945305452822008L;
 
    private Div divEchantillonStatic;
+
    private Div divEchantillonEdit;
+
    private Div modifMultiDiv;
 
    private String createZulPath = "/zuls/echantillon/FicheMultiEchantillons.zul";
@@ -116,19 +118,19 @@ public class EchantillonController extends AbstractObjectTabController
             setListZulPath("/zuls/echantillon/serotk/ListeEchantillonSero.zul");
             break;
          default:
- 			if (SessionUtils.getCurrentGatsbiContexteForEntiteId(3) == null) {
- 	            createZulPath = "/zuls/echantillon/FicheMultiEchantillons.zul";
- 				setEditZulPath("/zuls/echantillon/FicheEchantillonEdit.zul");
- 				setMultiEditZulPath("/zuls/echantillon/FicheModifMultiEchantillon.zul");
- 				setStaticZulPath("/zuls/echantillon/FicheEchantillonStatic.zul");
- 	            setListZulPath("/zuls/echantillon/ListeEchantillon.zul");
- 			} else {
- 	            createZulPath = "/zuls/echantillon/gatsbi/FicheMultiEchantillonsGatsbi.zul";
- 				setEditZulPath("/zuls/echantillon/gatsbi/FicheEchantillonEditGatsbi.zul");
- 				setStaticZulPath("/zuls/echantillon/gatsbi/FicheEchantillonStaticGatsbi.zul");
-				setMultiEditZulPath("/zuls/echantillon/gatsbi/FicheModifMultiEchantillonGatsbi.zul");
-	            setListZulPath("/zuls/echantillon/gatsbi/ListeEchantillonGatsbi.zul");
- 			}
+            if(SessionUtils.getCurrentGatsbiContexteForEntiteId(3) == null){
+               createZulPath = "/zuls/echantillon/FicheMultiEchantillons.zul";
+               setEditZulPath("/zuls/echantillon/FicheEchantillonEdit.zul");
+               setMultiEditZulPath("/zuls/echantillon/FicheModifMultiEchantillon.zul");
+               setStaticZulPath("/zuls/echantillon/FicheEchantillonStatic.zul");
+               setListZulPath("/zuls/echantillon/ListeEchantillon.zul");
+            }else{
+               createZulPath = "/zuls/echantillon/gatsbi/FicheMultiEchantillonsGatsbi.zul";
+               setEditZulPath("/zuls/echantillon/gatsbi/FicheEchantillonEditGatsbi.zul");
+               setStaticZulPath("/zuls/echantillon/gatsbi/FicheEchantillonStaticGatsbi.zul");
+               setMultiEditZulPath("/zuls/echantillon/gatsbi/FicheModifMultiEchantillonGatsbi.zul");
+               setListZulPath("/zuls/echantillon/gatsbi/ListeEchantillonGatsbi.zul");
+            }
             break;
       }
 
@@ -173,11 +175,10 @@ public class EchantillonController extends AbstractObjectTabController
    @Override
    public ListeEchantillon getListe(){
       if(SEROLOGIE.equals(getCurrentContexte())){
-         return ((ListeEchantillonSero) self.getFellow("lwinEchantillonSero")
-            .getAttributeOrFellow("lwinEchantillonSero$composer", true));
+         return ((ListeEchantillonSero) self.getFellow("lwinEchantillonSero").getAttributeOrFellow("lwinEchantillonSero$composer",
+            true));
       }
-      return ((ListeEchantillon) self.getFellow("lwinEchantillon")
-         .getAttributeOrFellow("lwinEchantillon$composer", true));
+      return ((ListeEchantillon) self.getFellow("lwinEchantillon").getAttributeOrFellow("lwinEchantillon$composer", true));
    }
 
    @Override
@@ -380,13 +381,13 @@ public class EchantillonController extends AbstractObjectTabController
 
       showStatic(false);
    }
-   
-//	public void populateFicheEdit(){
-//		if(isStaticEditMode()){
-//			clearEditDiv();
-//			Executions.createComponents(createZulPath, getEditDiv(), null);
-//		}
-//	}
+
+   //	public void populateFicheEdit(){
+   //		if(isStaticEditMode()){
+   //			clearEditDiv();
+   //			Executions.createComponents(createZulPath, getEditDiv(), null);
+   //		}
+   //	}
 
    public void switchToPrelevementEditMode(final Object obj){
 

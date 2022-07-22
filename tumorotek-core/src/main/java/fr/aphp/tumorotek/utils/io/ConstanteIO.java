@@ -40,6 +40,7 @@ public class ConstanteIO
 
    //CONDITION
    public static final String CONDITION_ET = "and";
+
    public static final String CONDITION_OU = "or";
 
    //ENTITE
@@ -180,30 +181,47 @@ public class ConstanteIO
 
    //TYPE
    public static final int TYPE_VARCHAR = 1;
+
    public static final int TYPE_DATETIME = 2;
+
    public static final int TYPE_FLOAT = 3;
+
    public static final int TYPE_BOOLEAN = 4;
+
    public static final int TYPE_INTEGER = 5;
+
    public static final int TYPE_NUMBER = 6;
+
    public static final int TYPE_THESAURUS = 7;
 
    //OPERATEUR
    public static final int OPERATEUR_INFERIEUR = 1;
+
    public static final int OPERATEUR_SUPERIEUR = 2;
+
    public static final int OPERATEUR_INFEGALE = 3;
+
    public static final int OPERATEUR_SUPEGALE = 4;
+
    public static final int OPERATEUR_DIFFERENT = 5;
+
    public static final int OPERATEUR_EGALE = 6;
+
    public static final int OPERATEUR_DANS = 7;
+
    public static final int OPERATEUR_PASDANS = 8;
 
    public static final int OPERATEUR_MOINS = 9;
+
    public static final int OPERATEUR_PLUS = 10;
+
    public static final int OPERATEUR_MULTIPLIE = 11;
+
    public static final int OPERATEUR_DIVISE = 12;
 
    //TRI
    public static final boolean TRI_ASC = true;
+
    public static final boolean TRI_DESC = false;
 
 }

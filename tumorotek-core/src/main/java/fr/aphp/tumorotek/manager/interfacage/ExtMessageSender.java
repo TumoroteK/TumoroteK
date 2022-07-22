@@ -77,18 +77,18 @@ public interface ExtMessageSender
    void sendMessage(TKAnnotableObject obj, String dosExtId, String url);
 
    /**
-    * Production et envoi d'un ou plusieurs messages à partir d'une liste d'objets TK.	 
+    * Production et envoi d'un ou plusieurs messages à partir d'une liste d'objets TK.
     * @param objs liste de'objets qui serviront de base à la création de(s) message(s).
     * @param b nombre d'objets à grouper par message
     */
    void sendMessages(List<TKAnnotableObject> objs, Integer b);
 
    /**
-    * Formatage du nom de fichier à partir de l'obj. 
+    * Formatage du nom de fichier à partir de l'obj.
     * @param obj
     * @param si true, correspond au fichier .ok associé au fichier envoyé
-    * @param part si non null, suffixe par l'indice message lors de l'envoi plusieurs 
-    * @param date de production du message au bon format 
+    * @param part si non null, suffixe par l'indice message lors de l'envoi plusieurs
+    * @param date de production du message au bon format
     * objs groupés
     * @return String filename
     */

@@ -52,9 +52,9 @@ public interface OperationTypeManager
 {
 
    /**
-    * Recherche une OperationType dont l'identifiant est passé 
+    * Recherche une OperationType dont l'identifiant est passé
     * en paramètre.
-    * @param operationTypeId Identifiant de l'OperationType que 
+    * @param operationTypeId Identifiant de l'OperationType que
     * l'on recherche.
     * @return Une OperationType.
     */

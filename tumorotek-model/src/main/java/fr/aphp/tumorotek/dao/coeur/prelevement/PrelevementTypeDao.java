@@ -54,7 +54,7 @@ public interface PrelevementTypeDao extends GenericDaoJpa<PrelevementType, Integ
 {
 
    /**
-    * Recherche les types de prelevement dont le type 
+    * Recherche les types de prelevement dont le type
     * est 'like' le paramètre.
     * @param type Type de prelevement recherchés.
     * @return Liste des types de prelevement.
@@ -70,7 +70,7 @@ public interface PrelevementTypeDao extends GenericDaoJpa<PrelevementType, Integ
    List<PrelevementType> findByIncaCat(String cat);
 
    /**
-    * Recherche tous les PrelevementType de prelevement sauf 
+    * Recherche tous les PrelevementType de prelevement sauf
     * celui dont l'identifiant est passé en paramètre.
     * @param id Identifiant du PrelevementType à exclure.
     * @return Liste de PrelevementTypes de prelevements.

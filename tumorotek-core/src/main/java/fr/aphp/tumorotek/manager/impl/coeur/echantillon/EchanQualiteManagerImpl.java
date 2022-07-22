@@ -70,10 +70,13 @@ public class EchanQualiteManagerImpl implements EchanQualiteManager
 
    /** Bean Dao EchanQualiteDao. */
    private EchanQualiteDao echanQualiteDao;
+
    /** Bean Dao EchantillonDao. */
    private EchantillonDao echantillonDao;
+
    /** Bean Validator. */
    private EchanQualiteValidator echanQualiteValidator;
+
    private PlateformeDao plateformeDao;
 
    /**
@@ -101,7 +104,7 @@ public class EchanQualiteManagerImpl implements EchanQualiteManager
    }
 
    /**
-    * Recherche une qualité d'échantillon dont l'identifiant est 
+    * Recherche une qualité d'échantillon dont l'identifiant est
     * passé en paramètre.
     * @param echanQualiteId Identifiant de la qualité que l'on recherche.
     * @return Une EchanQualite.

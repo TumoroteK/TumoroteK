@@ -105,17 +105,29 @@ public class ChampAnnotationManagerImpl implements ChampAnnotationManager
 
    /** Bean Dao AffichageDao. */
    private ChampAnnotationDao champAnnotationDao;
+
    private ChampAnnotationValidator champAnnotationValidator;
+
    private DataTypeDao dataTypeDao;
+
    private OperationManager operationManager;
+
    private OperationTypeDao operationTypeDao;
+
    private ItemDao itemDao;
+
    private AnnotationDefautDao annotationDefautDao;
+
    private AnnotationValeurDao annotationValeurDao;
+
    private ItemValidator itemValidator;
+
    private AnnotationCommonValidator annotationCommonValidator;
+
    private TableAnnotationDao tableAnnotationDao;
+
    private BanqueDao banqueDao;
+
    private ChampCalculeManager champCalculeManager;
 
    /** Bean Dao EntityManagerFactory. */
@@ -203,8 +215,7 @@ public class ChampAnnotationManagerImpl implements ChampAnnotationManager
    public List<AnnotationValeur> findAnnotationValeurByChampAnnotationManager(final ChampAnnotation ca){
       List<AnnotationValeur> objets = null;
       final StringBuffer sb = new StringBuffer("");
-      sb.append("SELECT va FROM AnnotationValeur as av " + "join av.champAnnotation as ca where ca.id = "
-         + ca.getId());
+      sb.append("SELECT va FROM AnnotationValeur as av " + "join av.champAnnotation as ca where ca.id = " + ca.getId());
       /* On exécute la requête. */
       log.debug("findAnnotationValeurByChampAnnotationManager : " + "Exécution de la requête : \n" + sb.toString());
       final EntityManager em = entityManagerFactory.createEntityManager();
@@ -460,7 +471,7 @@ public class ChampAnnotationManagerImpl implements ChampAnnotationManager
    }
 
    /**
-    * Verifie que les Objets devant etre obligatoirement associes 
+    * Verifie que les Objets devant etre obligatoirement associes
     * sont non nulls et lance la validation via le Validator.
     * @param champ
     * @param table
@@ -493,7 +504,7 @@ public class ChampAnnotationManagerImpl implements ChampAnnotationManager
       //Validation
       BeanValidator.validateObject(champ, new Validator[] {champAnnotationValidator});
 
-      // on parcourt une premiere fois la liste d'items et de defauts pour 
+      // on parcourt une premiere fois la liste d'items et de defauts pour
       // appliquer la validation
       if(items != null){
          for(int i = 0; i < items.size(); i++){
@@ -511,7 +522,7 @@ public class ChampAnnotationManagerImpl implements ChampAnnotationManager
    /**
     * Cette méthode met à jour les associations entre un champ et
     * une liste de Item.
-    * @param champ 
+    * @param champ
     * @param liste d'items
     * @param banque courante
     */
@@ -564,7 +575,7 @@ public class ChampAnnotationManagerImpl implements ChampAnnotationManager
    /**
     * Cette méthode met à jour les associations entre un champ et
     * une liste de valeurs par défaut.
-    * @param champ 
+    * @param champ
     * @param liste d'AnnotationDefaut
     */
    private void updateDefauts(final ChampAnnotation champAnno, final List<AnnotationDefaut> defauts){
@@ -718,10 +729,10 @@ public class ChampAnnotationManagerImpl implements ChampAnnotationManager
                }
 
             }catch(final RuntimeException re){
-               // en cas d'erreur lors enregistrement d'un champ du a 
+               // en cas d'erreur lors enregistrement d'un champ du a
                // l'acces au filesystem
                // le rollback se fera mais objet aura un id assigne
-               // qui déclenchera une TransientException si on essaie 
+               // qui déclenchera une TransientException si on essaie
                // d'enregistrer a nouveau.
                if(operation.equals("creation")){
                   champ.setId(null);

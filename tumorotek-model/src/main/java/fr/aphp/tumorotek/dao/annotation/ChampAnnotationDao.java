@@ -75,7 +75,7 @@ public interface ChampAnnotationDao extends GenericDaoJpa<ChampAnnotation, Integ
     * @return Liste de ChampAnnotation.
     */
    List<ChampAnnotation> findByTable(TableAnnotation table);
-   
+
    /**
     * Recherche les champs dont la table et les datatypes sont passés en paramètre.
     * Les champs retournés sont triés par leur ordre.
@@ -86,7 +86,7 @@ public interface ChampAnnotationDao extends GenericDaoJpa<ChampAnnotation, Integ
    List<ChampAnnotation> findByTableAndDataType(TableAnnotation table, List<DataType> dataTypeList);
 
    /**
-    * Recherche tous les champs sauf celui dont l'id est passé 
+    * Recherche tous les champs sauf celui dont l'id est passé
     * en paramètre.
     * @param champAnnotationId Identifiant du champ que l'on souhaite
     * exclure de la liste retournée.
@@ -95,7 +95,7 @@ public interface ChampAnnotationDao extends GenericDaoJpa<ChampAnnotation, Integ
    List<ChampAnnotation> findByExcludedId(Integer champAnnotationId);
 
    /**
-    * Recherche tous les champs qui sont editables par l'utilisateur 
+    * Recherche tous les champs qui sont editables par l'utilisateur
     * pour la table passée en paramètre.
     * @param tableAnnotation
     * @return une liste de Champs.
@@ -139,7 +139,7 @@ public interface ChampAnnotationDao extends GenericDaoJpa<ChampAnnotation, Integ
    List<ImportColonne> findImportColonnesByChampAnnotation(ChampAnnotation chp);
 
    /**
-    * Recherche tous les champs annotations associés à un template 
+    * Recherche tous les champs annotations associés à un template
     * d'importation pour une entité.
     * @param template
     * @param entite

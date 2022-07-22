@@ -104,7 +104,7 @@ public interface RequeteManager
 
    /**
     * Recherche les Requêtes dont l'utilisateur créateur est passé en
-    * paramètre. 
+    * paramètre.
     * @param util Utilisateur qui à créé les Requêtes recherchées.
     * @return la liste de toutes les Requêtes de l'Utilisateur.
     */
@@ -112,7 +112,7 @@ public interface RequeteManager
 
    /**
     * Recherche les Requêtes dont la Banque est passée en
-    * paramètre. 
+    * paramètre.
     * @param banque Banque qui à créé les Requêtes recherchées.
     * @return la liste de toutes les Requêtes de la Banque.
     */
@@ -120,14 +120,14 @@ public interface RequeteManager
 
    /**
     * Recherche les Requetes pour les Banques passées en
-    * paramètre. 
+    * paramètre.
     * @param banques Liste de Banques des Requetes recherchés.
     * @return la liste de tous les Requetes des Banques.
     */
    List<Requete> findByBanqueInLIstManager(List<Banque> banques);
 
    /**
-    * Recherche les Requêtes dont l'intitulé est passé en paramètre. 
+    * Recherche les Requêtes dont l'intitulé est passé en paramètre.
     * @param intitule Intitulé des Requêtes recherchées.
     * @return la liste de toutes les Requêtes de l'intitulé.
     */
@@ -135,7 +135,7 @@ public interface RequeteManager
 
    /**
     * Recherche les Requetes dont l'intitulé et l'utilisateur
-    * sont passés en paramètre. 
+    * sont passés en paramètre.
     * @param intitilé des Requetes recherchées.
     * @param util Utilisateur qui à créé les Requetes recherchées.
     * @return la liste de toutes les Requetes de l'intitulé.

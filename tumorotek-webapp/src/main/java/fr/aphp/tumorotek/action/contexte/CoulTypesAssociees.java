@@ -68,6 +68,7 @@ public class CoulTypesAssociees extends OneToManyComponent<CouleurEntiteType>
    private static final long serialVersionUID = 1L;
 
    private Listbox couleurBox;
+
    private Listbox typeBox;
 
    private List<CouleurEntiteType> objects = new ArrayList<>();

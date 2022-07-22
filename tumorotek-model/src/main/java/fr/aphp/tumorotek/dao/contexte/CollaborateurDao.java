@@ -83,7 +83,7 @@ public interface CollaborateurDao extends GenericDaoJpa<Collaborateur, Integer>
    List<Collaborateur> findByArchive(boolean archive);
 
    //	/**
-   //	 * Recherche les collaborateurs dont les coordonnées sont 
+   //	 * Recherche les collaborateurs dont les coordonnées sont
    //	 * passées en paramètre.
    //	 * @param coordonneeId pour lesquelles on recherche des collaborateurs.
    //	 * @return une liste de collaborateurs.
@@ -91,7 +91,7 @@ public interface CollaborateurDao extends GenericDaoJpa<Collaborateur, Integer>
    //	List<Collaborateur> findByCoordonneeId(Integer coordonneeId);
 
    /**
-    * Recherche tous les collaborateurs sauf celui dont l'id est passé 
+    * Recherche tous les collaborateurs sauf celui dont l'id est passé
     * en paramètre.
     * @param collaborateurId Identifiant du collaborateur que l'on souhaite
     * exclure de la liste retournée.
@@ -101,25 +101,25 @@ public interface CollaborateurDao extends GenericDaoJpa<Collaborateur, Integer>
 
    /**
     * Recherche les collaborateurs dont l'établissement est passé en paramètre.
-    * @param etablissement Etablissement pour lequel on recherche 
+    * @param etablissement Etablissement pour lequel on recherche
     * des collaborateurs.
     * @return une liste de collaborateurs.
     */
    List<Collaborateur> findByEtablissement(Etablissement etablissement);
 
    /**
-    * Recherche les collaborateurs ordonnées par nom dont l'établissement 
+    * Recherche les collaborateurs ordonnées par nom dont l'établissement
     * est passé en paramètre.
-    * @param etablissement Etablissement pour lequel on recherche 
+    * @param etablissement Etablissement pour lequel on recherche
     * des collaborateurs.
     * @return une liste ordonnée de collaborateurs.
     */
    List<Collaborateur> findByEtablissementWithOrder(Etablissement etablissement);
 
    /**
-    * Recherche les collaborateurs ordonnées par nom dont l'établissement 
+    * Recherche les collaborateurs ordonnées par nom dont l'établissement
     * est passé en paramètre et sont archivés ou non.
-    * @param etablissement Etablissement pour lequel on recherche 
+    * @param etablissement Etablissement pour lequel on recherche
     * des collaborateurs.
     * @param archive True si le collaborateur est inactif.
     * @return une liste ordonnée de collaborateurs.
@@ -155,7 +155,7 @@ public interface CollaborateurDao extends GenericDaoJpa<Collaborateur, Integer>
    List<Long> findCountByServiceId(Integer serviceId);
 
    /**
-    * Recherche les collaborateurs ordonnés par nom et prénom 
+    * Recherche les collaborateurs ordonnés par nom et prénom
     * dont un service est passé en paramètre.
     * @param serviceId pour lequel on recherche des collaborateurs.
     * @return une liste ordonnée de collaborateurs.
@@ -163,7 +163,7 @@ public interface CollaborateurDao extends GenericDaoJpa<Collaborateur, Integer>
    List<Collaborateur> findByServiceIdWithOrder(Integer serviceId);
 
    /**
-    * Recherche les collaborateurs ordonnés par nom et prénom 
+    * Recherche les collaborateurs ordonnés par nom et prénom
     * dont un service est passé en paramètre qui sont archivés ou non.
     * @param serviceId pour lequel on recherche des collaborateurs.
     * @param archive True si le collaborateur est inactif.
@@ -216,7 +216,7 @@ public interface CollaborateurDao extends GenericDaoJpa<Collaborateur, Integer>
    List<Collaborateur> findByCollaborateurWithoutServiceAndArchive(boolean archive);
 
    /**
-    * Recherche les collaborateurs qui n'ont pas de services pour 
+    * Recherche les collaborateurs qui n'ont pas de services pour
     * un établissement donné.
     * @param établissement
     * @return une liste de collaborateurs.

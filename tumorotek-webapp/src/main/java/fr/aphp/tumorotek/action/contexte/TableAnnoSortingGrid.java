@@ -55,6 +55,7 @@ public class TableAnnoSortingGrid extends SmallObjsEditableGrid
    private static final long serialVersionUID = 1L;
 
    private Column upCol;
+
    private Column downCol;
 
    @Override

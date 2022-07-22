@@ -61,7 +61,7 @@ public class ServiceNode extends TumoTreeNode
    }
 
    /**
-    * Recherche tous les collaborateurs du service et crée un 
+    * Recherche tous les collaborateurs du service et crée un
     * CollaborateurNode pour chacun.
     */
    @Override

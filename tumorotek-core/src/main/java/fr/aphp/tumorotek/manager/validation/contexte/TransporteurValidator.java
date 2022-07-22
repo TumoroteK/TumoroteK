@@ -55,7 +55,6 @@ import fr.aphp.tumorotek.model.contexte.Transporteur;
 public class TransporteurValidator implements Validator
 {
 
-   
    @Override
    public boolean supports(final Class<?> clazz){
       return Transporteur.class.equals(clazz);

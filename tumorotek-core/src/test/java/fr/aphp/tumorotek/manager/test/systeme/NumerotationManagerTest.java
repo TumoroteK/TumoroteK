@@ -69,8 +69,10 @@ public class NumerotationManagerTest extends AbstractManagerTest4
 
    @Autowired
    private NumerotationManager numerotationManager;
+
    @Autowired
    private BanqueDao banqueDao;
+
    @Autowired
    private EntiteDao entiteDao;
 

@@ -64,7 +64,7 @@ public class EmplacementDiv extends Div
     * @param int w Width px
     * @param int h Height px
     * @param tString ootltiptext
-    * 
+    *
     */
    public EmplacementDiv(final int w, final int h, final String tttext){
       // Div main
@@ -85,7 +85,7 @@ public class EmplacementDiv extends Div
    }
 
    /**
-    * Applique le style directement à la Div 'img' pour 
+    * Applique le style directement à la Div 'img' pour
     * spécifier la background url qui dessine l'image
     * @param bckCss String
     */
@@ -94,7 +94,7 @@ public class EmplacementDiv extends Div
    }
 
    /**
-    * Renvoie le style de la Div 'img' cad 
+    * Renvoie le style de la Div 'img' cad
     * le background url qui dessine l'image
     * @return bckCss String
     */
@@ -103,7 +103,7 @@ public class EmplacementDiv extends Div
    }
 
    /**
-    * Applique la classe de style directement à la Div 'overlay'  
+    * Applique la classe de style directement à la Div 'overlay'
     * pour spécifier le calque à appliquer sur l'image
     * @param cssCl String overlay sClass
     */
@@ -112,7 +112,7 @@ public class EmplacementDiv extends Div
    }
 
    /**
-    * Renvoie la classe de style appliquée à la Div 'overlay'  
+    * Renvoie la classe de style appliquée à la Div 'overlay'
     * pour spécifier le calque à appliquer sur l'image
     * @retunr cssCl String overlay sClass
     */

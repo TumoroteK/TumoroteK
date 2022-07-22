@@ -41,7 +41,9 @@ public class InvalidParentException extends TKException
    private static final long serialVersionUID = 6642387077579941896L;
 
    private String entite;
+
    private String operation;
+
    private Boolean allParentsAreNull;
 
    public InvalidParentException(){

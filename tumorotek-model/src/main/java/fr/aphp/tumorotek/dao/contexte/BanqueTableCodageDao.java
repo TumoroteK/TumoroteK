@@ -55,7 +55,7 @@ public interface BanqueTableCodageDao extends GenericDaoJpa<BanqueTableCodage, B
 {
 
    /**
-    * Recherche toutes les associations entre une banque et les tables de 
+    * Recherche toutes les associations entre une banque et les tables de
     * codifications qui lui ont été associées.
     * @param banque
     * @return liste BanqueTableCodage.

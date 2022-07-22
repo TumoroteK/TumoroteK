@@ -80,7 +80,7 @@ public interface OperationManager
 
    /**
     * Cherche les doublons en se basant sur la methode equals()
-    * surchargee par les entites. 
+    * surchargee par les entites.
     * @param objet Operation dont on cherche la presence dans la base
     * @return true/false
     */
@@ -110,7 +110,7 @@ public interface OperationManager
 
    /**
     * Recherche tous les Operations associes a un Object de domaine
-    * passe en parametre afin d'afficher sopn historique : les 
+    * passe en parametre afin d'afficher sopn historique : les
     * opérations de type login et logout sont exclues.
     * @param obj Objet de domaine
     * @return Liste de Operation.
@@ -162,7 +162,7 @@ public interface OperationManager
    List<Operation> findBetweenDatesOperationManager(Calendar date1, Calendar date2);
 
    /**
-    * Crée un objet phantom et l'opération de suppression 
+    * Crée un objet phantom et l'opération de suppression
     * qui lui est associée.
     * @param obj
     * @param comments Commentaires associé à l'objet.
@@ -187,7 +187,7 @@ public interface OperationManager
       OperationType operationType, List<Utilisateur> users, boolean showLogin);
 
    /**
-    * Trouve les operations d'un type donné pour l'objet 
+    * Trouve les operations d'un type donné pour l'objet
     * passé en paramètres.
     * @param obj
     * @param oType
@@ -196,20 +196,20 @@ public interface OperationManager
    List<Operation> findByObjetIdEntiteAndOpeTypeManager(Object obj, OperationType oType);
 
    /**
-    * Trouve une opération effectuée par un utilisateur pour un type 
-    * donnée. Utilise le positionnement dans la liste parmi les opérations 
+    * Trouve une opération effectuée par un utilisateur pour un type
+    * donnée. Utilise le positionnement dans la liste parmi les opérations
     * renvoyées. Ex: 2 avec un ordre DESC sur date renvoie l'avant dernière.
     * @param operationType
     * @param user
-    * @param pos 
+    * @param pos
     * @return la dernière Operation
     */
    Operation findLastByUtilisateurAndTypeManager(OperationType operationType, Utilisateur user, int pos);
 
    /**
-    * Sauve en batch mode une liste d'operations de type identique pour une liste d'objets 
+    * Sauve en batch mode une liste d'operations de type identique pour une liste d'objets
     * identifiés par leurs ids et leur entite.
-    * Utilise jdbc dans une JPA transaction pour plus de rapidité grace 
+    * Utilise jdbc dans une JPA transaction pour plus de rapidité grace
     * au JPATransactionManager
     * @see http://static.springsource.org/spring/docs/3.0.x/javadoc-api/org/springframework/orm/jpa/JpaTransactionManager.html
     * @param objsId ids des objets

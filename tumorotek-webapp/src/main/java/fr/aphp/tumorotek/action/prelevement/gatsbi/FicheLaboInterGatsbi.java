@@ -1,5 +1,5 @@
 /**
- * Copyright ou © ou Copr. Assistance Publique des Hôpitaux de 
+ * Copyright ou © ou Copr. Assistance Publique des Hôpitaux de
  * PARIS et SESAN
  * projet-tk@sesan.fr
  *
@@ -38,6 +38,7 @@ package fr.aphp.tumorotek.action.prelevement.gatsbi;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.ForwardEvent;
 import org.zkoss.zk.ui.util.Clients;
@@ -61,113 +62,108 @@ import fr.aphp.tumorotek.webapp.general.SessionUtils;
  * @version 2.3.0-gatsbi
  *
  */
-public class FicheLaboInterGatsbi extends FicheLaboInter {
+public class FicheLaboInterGatsbi extends FicheLaboInter
+{
 
-	private static final long serialVersionUID = 1L;
+   private static final long serialVersionUID = 1L;
 
-	private Div gatsbiContainer;
+   private Div gatsbiContainer;
 
-	private List<Listbox> reqListboxes = new ArrayList<Listbox>();
-	private List<Combobox> reqComboboxes = new ArrayList<Combobox>();
-	private List<Div> reqConformeDivs = new ArrayList<Div>();
+   private final List<Listbox> reqListboxes = new ArrayList<>();
 
-	private Contexte contexte;
+   private final List<Combobox> reqComboboxes = new ArrayList<>();
 
-	@Override
-	public void doAfterCompose(final Component comp) throws Exception {
-		super.doAfterCompose(comp);
+   private final List<Div> reqConformeDivs = new ArrayList<>();
 
-		contexte = GatsbiController.initWireAndDisplay(this, 2, 
-				true, reqListboxes, reqComboboxes, reqConformeDivs);
-		
-		// labo inter specific
-		// Show/hide groupLaboInter
-		((Div) gatsbiContainer.getFellowIfAny("groupLaboInter")).setVisible(contexte.getSiteIntermediaire());
-	}
+   private Contexte contexte;
 
-	@Override
-	public void switchToCreateMode() {
+   @Override
+   public void doAfterCompose(final Component comp) throws Exception{
+      super.doAfterCompose(comp);
 
-		log.debug("Surcharge Gastbi pour supprimer le bouton ajout de sites intermédiaires si besoin");
+      contexte = GatsbiController.initWireAndDisplay(this, 2, true, reqListboxes, reqComboboxes, reqConformeDivs);
 
-		super.switchToCreateMode();
+      // labo inter specific
+      // Show/hide groupLaboInter
+      ((Div) gatsbiContainer.getFellowIfAny("groupLaboInter")).setVisible(contexte.getSiteIntermediaire());
+   }
 
-		addLabo.setVisible(contexte.getSiteIntermediaire());
+   @Override
+   public void switchToCreateMode(){
 
-		// scroll up pour se placer en haut de la page
-		Clients.scrollIntoView(gatsbiContainer);
+      log.debug("Surcharge Gastbi pour supprimer le bouton ajout de sites intermédiaires si besoin");
 
-	}
+      super.switchToCreateMode();
 
-	@Override
-	public void switchToEditMode() {
+      addLabo.setVisible(contexte.getSiteIntermediaire());
 
-		log.debug("Surcharge Gastbi pour supprimer le bouton ajout de sites intermédiaires si besoin");
+      // scroll up pour se placer en haut de la page
+      Clients.scrollIntoView(gatsbiContainer);
 
-		super.switchToEditMode();
+   }
 
-		addLabo.setVisible(contexte.getSiteIntermediaire());
-	}
+   @Override
+   public void switchToEditMode(){
 
-	@Override
-	public void onClick$next() {
-		GatsbiController.checkRequiredNonInputComponents(reqListboxes, reqComboboxes, reqConformeDivs);
-		super.onClick$next();
-	}
-	
-	@Override
-	public void onLaterNextStep() {
-		
-		Clients.clearBusy();
-		
-		GatsbiController.addNewObjectForContext(SessionUtils
-			.getCurrentGatsbiContexteForEntiteId(3), self, 
-				e -> {
-					try {
-						super.onLaterNextStep();
-					} catch (Exception ex) {
-						Messagebox.show(handleExceptionMessage(ex), 
-								"Error", Messagebox.OK, Messagebox.ERROR);
-					}
-				}, null, this.prelevement);
-	}
+      log.debug("Surcharge Gastbi pour supprimer le bouton ajout de sites intermédiaires si besoin");
 
-	@Override
-	public void onClick$validate() {
-		GatsbiController.checkRequiredNonInputComponents(reqListboxes, reqComboboxes, reqConformeDivs);
-		super.onClick$validate();
-	}
+      super.switchToEditMode();
 
-	@Override
-	public void onClick$create() {
-		GatsbiController.checkRequiredNonInputComponents(reqListboxes, reqComboboxes, reqConformeDivs);
-		super.onClick$create();
-	}
-	
-	/**
-	 * Un parametrage échantillon a été sélectionné.
-	 * 
-	 * @param param
-	 * @throws Exception
-	 */
-	public void onGetSelectedParametrage(ForwardEvent evt) throws Exception {
-		try {
-			
-			GatsbiController.getSelectedParametrageFromSelectEvent(
-				SessionUtils
-					.getCurrentGatsbiContexteForEntiteId(3), 
-				SessionUtils.getCurrentBanque(sessionScope), 
-				getObjectTabController().getReferencedObjectsControllers(true).get(0), null, 
-				() -> {
-					try {
-						super.onLaterNextStep();
-					} catch (Exception ex) {
-						Messagebox.show(handleExceptionMessage(ex), 
-								"Error", Messagebox.OK, Messagebox.ERROR);
-					}
-				}, evt);	
-		} catch (GatsbiException e) {
-			Messagebox.show(handleExceptionMessage(e), "Error", Messagebox.OK, Messagebox.ERROR);
-		}
-	}
+      addLabo.setVisible(contexte.getSiteIntermediaire());
+   }
+
+   @Override
+   public void onClick$next(){
+      GatsbiController.checkRequiredNonInputComponents(reqListboxes, reqComboboxes, reqConformeDivs);
+      super.onClick$next();
+   }
+
+   @Override
+   public void onLaterNextStep(){
+
+      Clients.clearBusy();
+
+      GatsbiController.addNewObjectForContext(SessionUtils.getCurrentGatsbiContexteForEntiteId(3), self, e -> {
+         try{
+            super.onLaterNextStep();
+         }catch(final Exception ex){
+            Messagebox.show(handleExceptionMessage(ex), "Error", Messagebox.OK, Messagebox.ERROR);
+         }
+      }, null, this.prelevement);
+   }
+
+   @Override
+   public void onClick$validate(){
+      GatsbiController.checkRequiredNonInputComponents(reqListboxes, reqComboboxes, reqConformeDivs);
+      super.onClick$validate();
+   }
+
+   @Override
+   public void onClick$create(){
+      GatsbiController.checkRequiredNonInputComponents(reqListboxes, reqComboboxes, reqConformeDivs);
+      super.onClick$create();
+   }
+
+   /**
+    * Un parametrage échantillon a été sélectionné.
+    *
+    * @param param
+    * @throws Exception
+    */
+   public void onGetSelectedParametrage(final ForwardEvent evt) throws Exception{
+      try{
+
+         GatsbiController.getSelectedParametrageFromSelectEvent(SessionUtils.getCurrentGatsbiContexteForEntiteId(3),
+            SessionUtils.getCurrentBanque(sessionScope), getObjectTabController().getReferencedObjectsControllers(true).get(0),
+            null, () -> {
+               try{
+                  super.onLaterNextStep();
+               }catch(final Exception ex){
+                  Messagebox.show(handleExceptionMessage(ex), "Error", Messagebox.OK, Messagebox.ERROR);
+               }
+            }, evt);
+      }catch(final GatsbiException e){
+         Messagebox.show(handleExceptionMessage(e), "Error", Messagebox.OK, Messagebox.ERROR);
+      }
+   }
 }

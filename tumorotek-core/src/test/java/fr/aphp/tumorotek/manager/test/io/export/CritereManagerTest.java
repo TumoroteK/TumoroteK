@@ -61,6 +61,7 @@ public class CritereManagerTest extends AbstractManagerTest4
 
    @Autowired
    private CritereManager manager;
+
    @Autowired
    private ChampEntiteDao champEntiteDao;
 

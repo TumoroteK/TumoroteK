@@ -102,8 +102,8 @@ import fr.aphp.tumorotek.model.utils.Utils;
       query = "SELECT p FROM Prelevement p " + "WHERE p.datePrelevement >= ?1"),
    @NamedQuery(name = "Prelevement" + ".findByDatePrelevementAfterDateWithBanque",
       query = "SELECT p FROM Prelevement p " + "WHERE p.datePrelevement >= ?1 " + "AND p.banque = ?2"),
-   //		@NamedQuery(name = "Prelevement.findByDateCongelationAfterDate", 
-   //			query = "SELECT p FROM Prelevement p " 
+   //		@NamedQuery(name = "Prelevement.findByDateCongelationAfterDate",
+   //			query = "SELECT p FROM Prelevement p "
    @NamedQuery(name = "Prelevement.findByNature", query = "SELECT p FROM Prelevement p WHERE p.nature = ?1"),
    @NamedQuery(name = "Prelevement.findByPrelevementType",
       query = "SELECT p FROM Prelevement p " + "WHERE p.prelevementType = ?1"),
@@ -183,53 +183,81 @@ import fr.aphp.tumorotek.model.utils.Utils;
    @NamedQuery(name = "Prelevement.findByService", query = "SELECT e FROM Prelevement e " + "WHERE e.servicePreleveur = (?1)"),
    @NamedQuery(name = "Prelevement.findByPatientAndBanques",
       query = "SELECT e FROM Prelevement e " + "WHERE e.maladie.patient = ?1 AND e.banque in (?2)"),
-   @NamedQuery(name = "Prelevement.findByEtablissementLaboInter", 
-   		query = "SELECT DISTINCT e FROM Prelevement e JOIN e.laboInters l where l.service.etablissement = (?1) AND e.banque in (?2)"),
-   @NamedQuery(name = "Prelevement.findByServiceLaboInter", 
-		query = "SELECT DISTINCT e FROM Prelevement e JOIN e.laboInters l where l.service = (?1) AND e.banque in (?2)"), 
-   @NamedQuery(name = "Prelevement.findByCollaborateurLaboInter", 
-		query = "SELECT DISTINCT e FROM Prelevement e JOIN e.laboInters l where l.collaborateur = (?1) AND e.banque in (?2)")})
+   @NamedQuery(name = "Prelevement.findByEtablissementLaboInter",
+      query = "SELECT DISTINCT e FROM Prelevement e JOIN e.laboInters l where l.service.etablissement = (?1) AND e.banque in (?2)"),
+   @NamedQuery(name = "Prelevement.findByServiceLaboInter",
+      query = "SELECT DISTINCT e FROM Prelevement e JOIN e.laboInters l where l.service = (?1) AND e.banque in (?2)"),
+   @NamedQuery(name = "Prelevement.findByCollaborateurLaboInter",
+      query = "SELECT DISTINCT e FROM Prelevement e JOIN e.laboInters l where l.collaborateur = (?1) AND e.banque in (?2)")})
 public class Prelevement extends TKDelegetableObject<Prelevement> implements TKAnnotableObject, Serializable
 {
 
    private static final long serialVersionUID = 6737874055478715763L;
 
    private Integer prelevementId;
+
    private String code;
+
    private Date consentDate;
+
    private Calendar datePrelevement;
+
    private Integer conditNbr;
+
    private Calendar dateDepart;
+
    private Float transportTemp;
+
    private Calendar dateArrivee;
+
    private Float quantite;
+
    //private Float volume;
    private String patientNda;
+
    private String numeroLabo;
+
    private Boolean sterile;
+
    private Boolean congDepart;
+
    private Boolean congArrivee;
+
    private Boolean conformeArrivee;
+
    private Boolean etatIncomplet;
 
    private Boolean archive = false;
 
    private Nature nature;
+
    private PrelevementType prelevementType;
+
    private ConditType conditType;
+
    private ConditMilieu conditMilieu;
+
    private Banque banque;
+
    private Collaborateur preleveur;
+
    private Service servicePreleveur;
+
    private Transporteur transporteur;
+
    private Collaborateur operateur;
+
    private Unite quantiteUnite;
+
    //private Unite volumeUnite;
    private ConsentType consentType;
+
    private Maladie maladie;
 
    private Set<LaboInter> laboInters = new HashSet<>();
+
    private Set<Echantillon> echantillons = new HashSet<>();
+
    private Set<Risque> risques = new HashSet<>();
 
    private TKDelegateObject<Prelevement> delegate;
@@ -600,7 +628,7 @@ public class Prelevement extends TKDelegetableObject<Prelevement> implements TKA
       this.echantillons = echants;
    }
 
-   @ManyToMany(targetEntity = Risque.class, fetch=FetchType.EAGER)
+   @ManyToMany(targetEntity = Risque.class, fetch = FetchType.EAGER)
    @JoinTable(name = "PRELEVEMENT_RISQUE", joinColumns = @JoinColumn(name = "PRELEVEMENT_ID"),
       inverseJoinColumns = @JoinColumn(name = "RISQUE_ID"))
    public Set<Risque> getRisques(){
@@ -692,9 +720,9 @@ public class Prelevement extends TKDelegetableObject<Prelevement> implements TKA
       clone.setEtatIncomplet(this.getEtatIncomplet());
       clone.setArchive(this.getArchive());
       clone.setRisques(getRisques());
-      
+
       clone.setDelegate(getDelegate());
-      
+
       return clone;
    }
 
@@ -714,6 +742,7 @@ public class Prelevement extends TKDelegetableObject<Prelevement> implements TKA
       return code;
    }
 
+   @Override
    @OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "delegator",
       targetEntity = AbstractPrelevementDelegate.class)
    public TKDelegateObject<Prelevement> getDelegate(){
@@ -729,7 +758,7 @@ public class Prelevement extends TKDelegetableObject<Prelevement> implements TKA
    }
 
    @Override
-   public void setDelegate(TKDelegateObject<Prelevement> delegate){
+   public void setDelegate(final TKDelegateObject<Prelevement> delegate){
       this.delegate = delegate;
    }
 }

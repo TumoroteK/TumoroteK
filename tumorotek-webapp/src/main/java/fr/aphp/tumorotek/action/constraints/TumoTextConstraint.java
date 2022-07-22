@@ -60,6 +60,7 @@ public class TumoTextConstraint
 {
 
    private Integer size;
+
    private Boolean nullable = false;
 
    public TumoTextConstraint(){}

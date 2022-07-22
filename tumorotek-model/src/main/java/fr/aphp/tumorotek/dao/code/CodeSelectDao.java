@@ -56,7 +56,7 @@ public interface CodeSelectDao extends GenericDaoJpa<CodeSelect, Integer>
 {
 
    /**
-    * Recherche les CodeSelects dont l'utilisateur et la banque sont 
+    * Recherche les CodeSelects dont l'utilisateur et la banque sont
     * passés en paramètres.
     * @param l'utilisateur pour lequel on recherche des CodeSelects.
     * @param la banque pour laquelle on recherche des CodeSelects.
@@ -65,7 +65,7 @@ public interface CodeSelectDao extends GenericDaoJpa<CodeSelect, Integer>
    List<CodeSelect> findByUtilisateurAndBanque(Utilisateur u, Banque b);
 
    /**
-    * Recherche les CodeSelects dont la banque est 
+    * Recherche les CodeSelects dont la banque est
     * est passée en paramètre.
     * @param la banque pour laquelle on recherche des CodeSelects.
     * @return une liste de CodeSelects.
@@ -80,9 +80,9 @@ public interface CodeSelectDao extends GenericDaoJpa<CodeSelect, Integer>
    List<CodeSelect> findByCodeDossier(CodeDossier codeDossier);
 
    /**
-    * Recherche tous les codes favoris non contenu dans un dossier 
+    * Recherche tous les codes favoris non contenu dans un dossier
     * pour la banque spécifiée.
-    * Par defaut un utilisateur enregistre des favoris pour une 
+    * Par defaut un utilisateur enregistre des favoris pour une
     * banque donnée.
     * @param utilisateur
     * @param banque
@@ -91,7 +91,7 @@ public interface CodeSelectDao extends GenericDaoJpa<CodeSelect, Integer>
    List<CodeSelect> findByRootDossier(Utilisateur u, Banque bank);
 
    /**
-    * Recherche tous les codes favoris sauf celui dont l'id est passé 
+    * Recherche tous les codes favoris sauf celui dont l'id est passé
     * en paramètre.
     * @param codeSelectId Identifiant du code que l'on souhaite
     * exclure de la liste retournée.

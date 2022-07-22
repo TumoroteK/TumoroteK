@@ -56,9 +56,9 @@ public interface CouleurEntiteTypeManager
 {
 
    /**
-    * Recherche une CouleurEntiteType dont l'identifiant 
+    * Recherche une CouleurEntiteType dont l'identifiant
     * est passé en paramètre.
-    * @param couleurEntiteTypeId Identifiant de la 
+    * @param couleurEntiteTypeId Identifiant de la
     * CouleurEntiteType que l'on recherche.
     * @return Une CouleurEntiteType.
     */

@@ -56,16 +56,17 @@ public abstract class TKDelegateObject<T>
    public abstract void setDelegator(T obj);
 
    /**
-    * Renvoie true si le delegate est vide et doit être 
-    * supprimé en passant la property delegate à null à l'objet 
+    * Renvoie true si le delegate est vide et doit être
+    * supprimé en passant la property delegate à null à l'objet
     * déléguant.
     * @return true/false
     */
    public abstract boolean isEmpty();
-   
+
    /**
     * @since 2.2.3-rc1
     */
+   @Override
    public abstract TKDelegateObject<T> clone();
 
    @Override
@@ -79,24 +80,24 @@ public abstract class TKDelegateObject<T>
    @Override
    public int hashCode(){
       final int prime = 31;
-   //   int result = super.hashCode();
+      //   int result = super.hashCode();
       int result = 1;
       result = prime * result + ((getDelegator() == null) ? 0 : getDelegator().hashCode());
       return result;
    }
 
    @Override
-   public boolean equals(Object obj){
-		if (obj == this) {
-            return true;
-        }
-        if (obj == null || obj.getClass() != this.getClass()) {
-            return false;
-        }
+   public boolean equals(final Object obj){
+      if(obj == this){
+         return true;
+      }
+      if(obj == null || obj.getClass() != this.getClass()){
+         return false;
+      }
 
-        @SuppressWarnings("unchecked")
-		TKDelegateObject<T> del = (TKDelegateObject<T>) obj;
+      @SuppressWarnings("unchecked")
+      final TKDelegateObject<T> del = (TKDelegateObject<T>) obj;
 
-        return (Objects.equals(getDelegator(), del.getDelegator()));
+      return (Objects.equals(getDelegator(), del.getDelegator()));
    }
 }

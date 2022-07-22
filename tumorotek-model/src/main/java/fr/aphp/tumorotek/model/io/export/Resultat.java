@@ -66,12 +66,19 @@ public class Resultat implements Comparable<Resultat>
 {
 
    private Integer resultatId;
+
    private String nomColonne;
+
    private Champ champ;
+
    private Boolean tri;
+
    private Integer ordreTri;
+
    private Integer position;
+
    private String format;
+
    private Affichage affichage;
 
    public Resultat(){

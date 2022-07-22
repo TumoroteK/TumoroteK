@@ -80,7 +80,7 @@ public interface ChampEntiteDao extends GenericDaoJpa<ChampEntite, Integer>
     * @return Liste de ChampEntités.
     */
    List<ChampEntite> findByEntiteAndImport(Entite entite, Boolean canImport);
-   
+
    /**
     * Recherche les champs importables (ou non) dont l'entité est
     * passée en paramètre et dont le datatype correspond à la liste
@@ -103,7 +103,7 @@ public interface ChampEntiteDao extends GenericDaoJpa<ChampEntite, Integer>
    List<ChampEntite> findByEntiteImportObligatoire(Entite entite, Boolean canImport, Boolean isNullable);
 
    /**
-    * Recherche tous les champs entités associés à un template 
+    * Recherche tous les champs entités associés à un template
     * d'importation pour une entité.
     * @param template
     * @param entite

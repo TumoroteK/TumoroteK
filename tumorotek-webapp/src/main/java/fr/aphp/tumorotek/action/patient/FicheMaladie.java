@@ -112,25 +112,36 @@ public class FicheMaladie extends AbstractFicheCombineController
 
    //Panel
    protected Panel container;
+
    protected Grid formGrid;
 
    protected Label codeDiagFormLabel;
+
    protected Label dateDiagFormLabel;
 
    // Labels
    protected Label libelleLabel;
+
    protected Label libelleRequired;
+
    protected Label codeDiagLabel;
+
    protected Label dateDebutLabel;
+
    protected Label dateDiagLabel;
+
    // Editable components
    protected Textbox libelleBox;
+
    protected Textbox codeDiagBox;
+
    protected Datebox dateDebutBox;
+
    protected Datebox dateDiagBox;
 
    // inca
    private Image pop1;
+
    private Image pop2;
 
    protected Button codeAssistantButton;
@@ -141,15 +152,20 @@ public class FicheMaladie extends AbstractFicheCombineController
    protected Maladie maladie = new Maladie();
 
    protected Button addPrelevement;
+
    protected Toolbar toolbar;
 
    // Composants Prélèvements
    protected Group prelevementsMaladieGroup;
+
    protected Listbox prelevementsMaladieBox;
+
    protected Listbox prelevementsFromOtherBanksMaladieBox;
+
    protected boolean canCreatePrelevement;
 
    protected Button selectAllprelevementsButton;
+
    private Button historique;
 
    // true si create/edit mode
@@ -159,19 +175,20 @@ public class FicheMaladie extends AbstractFicheCombineController
    protected Group referentsGroup;
 
    protected List<Prelevement> prelevements = new ArrayList<>();
+
    protected Prelevement selectedPrelevement;
+
    protected List<Prelevement> prelevementsFromOtherBanks = new ArrayList<>();
+
    protected Prelevement selectedPrelevementFromOtherBank;
 
    protected List<Collaborateur> medecins = new ArrayList<>();
 
    // defaut contexte TK renderer
-   protected PrelevementItemRenderer prelevementRenderer = 
-		   new PrelevementItemRenderer();
+   protected PrelevementItemRenderer prelevementRenderer = new PrelevementItemRenderer();
 
    // other banks -> contexte defaut TK
-   protected PrelevementItemRenderer prelevementFromOtherBanksRenderer = 
-		   new PrelevementItemRenderer();
+   protected PrelevementItemRenderer prelevementFromOtherBanksRenderer = new PrelevementItemRenderer();
 
    public Panel getContainer(){
       return container;
@@ -235,8 +252,8 @@ public class FicheMaladie extends AbstractFicheCombineController
 
    @Override
    public void doAfterCompose(final Component comp) throws Exception{
-      	   
-	  super.doAfterCompose(comp);
+
+      super.doAfterCompose(comp);
 
       setDeletionMessage("message.deletion.maladie");
 
@@ -266,28 +283,28 @@ public class FicheMaladie extends AbstractFicheCombineController
          }
       });
    }
-   
-//   /**
-//    * Fixe le contexte de la banque courante, ou si mode toutes collections, le contexte 
-//    * commun à toutes les collections.
-//    * Si pas de contexte commun alors contexte 'null' = anapath par défaut
-//    * @since 2.2.1
-//    * @return
-//    */
-//   private Contexte initContexte() {
-//	   // une seule collection en cours
-//	   if(SessionUtils.getSelectedBanques(sessionScope).size() == 1) { 
-//		   return SessionUtils.getSelectedBanques(sessionScope).get(0).getContexte();
-//	   } else { // toutes collections
-//		   List<Contexte> conts = SessionUtils.getSelectedBanques(sessionScope).stream().map(b -> b.getContexte())
-//				   .distinct().collect(Collectors.toList());
-//		   if (conts.size() == 1) { // 1 seul contexte pour toutes les banques
-//			   return conts.get(0);
-//		   } else { // contexte TK par défaut > null
-//			   return null;
-//		   }
-//	   }
-//   }
+
+   //   /**
+   //    * Fixe le contexte de la banque courante, ou si mode toutes collections, le contexte
+   //    * commun à toutes les collections.
+   //    * Si pas de contexte commun alors contexte 'null' = anapath par défaut
+   //    * @since 2.2.1
+   //    * @return
+   //    */
+   //   private Contexte initContexte() {
+   //	   // une seule collection en cours
+   //	   if(SessionUtils.getSelectedBanques(sessionScope).size() == 1) {
+   //		   return SessionUtils.getSelectedBanques(sessionScope).get(0).getContexte();
+   //	   } else { // toutes collections
+   //		   List<Contexte> conts = SessionUtils.getSelectedBanques(sessionScope).stream().map(b -> b.getContexte())
+   //				   .distinct().collect(Collectors.toList());
+   //		   if (conts.size() == 1) { // 1 seul contexte pour toutes les banques
+   //			   return conts.get(0);
+   //		   } else { // contexte TK par défaut > null
+   //			   return null;
+   //		   }
+   //	   }
+   //   }
 
    public void setPatient(final Patient pat){
       this.maladie.setPatient(pat);
@@ -317,7 +334,7 @@ public class FicheMaladie extends AbstractFicheCombineController
 
    /**
     * Setter appelé par fichePatient lors du dessin des panels.
-    * Cette méthode est donc appelée avec des maladies existantes et 
+    * Cette méthode est donc appelée avec des maladies existantes et
     * une nouvelle maladie (empty) potentiellement.
     * Récupère les prélèvements pour la banque courante et les prèlèvements
     * pour une autre banque dans deux listes séparées.
@@ -341,7 +358,7 @@ public class FicheMaladie extends AbstractFicheCombineController
                SessionUtils.getPlateforme(sessionScope));
             banks.remove(SessionUtils.getSelectedBanques(sessionScope).get(0));
 
-            // configure le renderer pour inactiver les liens des 
+            // configure le renderer pour inactiver les liens des
             // prélèvements non consultables
             prelevementFromOtherBanksRenderer.setFromOtherConsultBanks(banks);
 
@@ -396,8 +413,8 @@ public class FicheMaladie extends AbstractFicheCombineController
    }
 
    /**
-    * Passe les listes de prélèvements en mold paging si ces listes 
-    * contiennent plus de 5 prelevements. 
+    * Passe les listes de prélèvements en mold paging si ces listes
+    * contiennent plus de 5 prelevements.
     */
    public void setListBoxesMold(){
       /*if (prelevements.size() > 5) {
@@ -539,7 +556,7 @@ public class FicheMaladie extends AbstractFicheCombineController
 
    /**
     * Envoie un evenement à la fiche patient lui spécifiant que la manipulation
-    * sur la maladie est terminée. La fiche patient peut alors reprendre le 
+    * sur la maladie est terminée. La fiche patient peut alors reprendre le
     * contrôle en activant les boutons de sa toolbar.
     * @param maladie Maladie manipulée, peut être null (revert/cancel)
     */
@@ -585,7 +602,7 @@ public class FicheMaladie extends AbstractFicheCombineController
    }
 
    /**
-    * Prepare les valeurs des attributs qui seront sauvées avec le 
+    * Prepare les valeurs des attributs qui seront sauvées avec le
     * bean patient.
     * Recupere la liste de referents depuis le composant embarqué.
     * @param boolean specifiant si la liste de medecins doit être passée
@@ -726,7 +743,7 @@ public class FicheMaladie extends AbstractFicheCombineController
 
    /**
     * Méthode appelée après la saisie d'une valeur dans le champ
-    * codeDiagBox. Cette valeur sera mise en majuscules et une recherche 
+    * codeDiagBox. Cette valeur sera mise en majuscules et une recherche
     * automatique du libelle correspondant est lancée.
     */
    public void onBlur$codeDiagBox(){
@@ -857,7 +874,7 @@ public class FicheMaladie extends AbstractFicheCombineController
    }
 
    /**
-    * Lance la validation de toutes les dates de maladie car 
+    * Lance la validation de toutes les dates de maladie car
     * les dates de references du Patient ont pu changer a posteriori.
     */
    public void validateAllDateComps(){
@@ -926,14 +943,14 @@ public class FicheMaladie extends AbstractFicheCombineController
    }
 
    /**
-    * Forward Event. 
+    * Forward Event.
     */
    public void onSelectAllPrelevements(){
       onClickPrelevementCode(null);
    }
 
    /**
-    * Ouvre le panel et le groupe de prélèvements. 
+    * Ouvre le panel et le groupe de prélèvements.
     */
    public void openAll(){
       container.setOpen(true);
@@ -956,7 +973,7 @@ public class FicheMaladie extends AbstractFicheCombineController
    }
 
    /**
-    * Ouvre la modale contenant l'assistant deployant les 
+    * Ouvre la modale contenant l'assistant deployant les
     * codifications pré-filtrées pour les codes diagnostic.
     */
    public void onClick$codeAssistantButton(){
@@ -978,7 +995,7 @@ public class FicheMaladie extends AbstractFicheCombineController
    /**
     * la fiche est embarquée donc en mode création uniquement sans affichage
     * des boutons.
-    * @param withPatient indique si la fiche est embarquée avec la fiche 
+    * @param withPatient indique si la fiche est embarquée avec la fiche
     * patient.
     */
    public void setEmbedded(final boolean withPatient){

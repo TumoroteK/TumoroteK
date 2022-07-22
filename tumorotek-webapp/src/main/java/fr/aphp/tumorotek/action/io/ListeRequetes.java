@@ -64,7 +64,7 @@ public class ListeRequetes extends AbstractListeController2
       super.doAfterCompose(comp);
 
       listPanel.setHeight(getMainWindow().getListPanelHeight() + 35 + "px");
-      //objectsListGrid.setHeight(getMainWindow().getListPanelHeight() 
+      //objectsListGrid.setHeight(getMainWindow().getListPanelHeight()
       //		+ 38 + "px");
 
       listObjects = ManagerLocator.getRequeteManager().findByBanqueManager(SessionUtils.getCurrentBanque(sessionScope));
@@ -202,7 +202,6 @@ public class ListeRequetes extends AbstractListeController2
    @Override
    public void removeFromSelectedObjects(final TKdataObject obj){}
 
-   
    @Override
    public void setListObjects(final List<? extends TKdataObject> objs){
       this.listObjects = (List<Requete>) objs;

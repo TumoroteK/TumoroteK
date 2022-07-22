@@ -1,5 +1,5 @@
 /**
- * Copyright ou © ou Copr. Assistance Publique des Hôpitaux de 
+ * Copyright ou © ou Copr. Assistance Publique des Hôpitaux de
  * PARIS et SESAN
  * projet-tk@sesan.fr
  *
@@ -48,52 +48,49 @@ import org.codehaus.jackson.annotate.JsonPropertyOrder;
 
 import fr.aphp.tumorotek.model.contexte.gatsbi.Parametrage;
 
-@JsonPropertyOrder({
-	"contexteParametrageId",
-	"nom",
-	"listContexteParametrageItem"
-})
+@JsonPropertyOrder({"contexteParametrageId", "nom", "listContexteParametrageItem"})
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ParametrageDTO implements Serializable {
+public class ParametrageDTO implements Serializable
+{
 
-	private static final long serialVersionUID = 1L;
-	
-	private Integer contexteParametrageId;
-	private String nom;
-	private List<ParametrageValueDTO> parametrageValueDTOs = 
-							new ArrayList<ParametrageValueDTO>();
-	
-	@JsonProperty
-	public Integer getContexteParametrageIdId() {
-		return this.contexteParametrageId;
-	}
-	
-	public void setContexteParametrageId(Integer parametrageId) {
-		this.contexteParametrageId = parametrageId;
-	}
-	
-	@JsonProperty
-	public String getNom() {
-		return this.nom;
-	}
-	
-	public void setNom(String _n) {
-		this.nom = _n;
-	}
-	
-	@JsonProperty("listContexteParametrageItem")
-	public List<ParametrageValueDTO> getParametrageValueDTOs() {
-		return parametrageValueDTOs;
-	}
+   private static final long serialVersionUID = 1L;
 
-	public void setParametrageValueDTOs(List<ParametrageValueDTO> parametrageValueDTOs) {
-		this.parametrageValueDTOs = parametrageValueDTOs;
-	}
+   private Integer contexteParametrageId;
 
-	@JsonIgnore
-	public Parametrage toParametrage() {
-		return new Parametrage(contexteParametrageId, nom, 
-			parametrageValueDTOs.stream().map(v -> v.toParametrageValue())
-					.collect(Collectors.toList()));
-	}
+   private String nom;
+
+   private List<ParametrageValueDTO> parametrageValueDTOs = new ArrayList<>();
+
+   @JsonProperty
+   public Integer getContexteParametrageIdId(){
+      return this.contexteParametrageId;
+   }
+
+   public void setContexteParametrageId(final Integer parametrageId){
+      this.contexteParametrageId = parametrageId;
+   }
+
+   @JsonProperty
+   public String getNom(){
+      return this.nom;
+   }
+
+   public void setNom(final String _n){
+      this.nom = _n;
+   }
+
+   @JsonProperty("listContexteParametrageItem")
+   public List<ParametrageValueDTO> getParametrageValueDTOs(){
+      return parametrageValueDTOs;
+   }
+
+   public void setParametrageValueDTOs(final List<ParametrageValueDTO> parametrageValueDTOs){
+      this.parametrageValueDTOs = parametrageValueDTOs;
+   }
+
+   @JsonIgnore
+   public Parametrage toParametrage(){
+      return new Parametrage(contexteParametrageId, nom,
+         parametrageValueDTOs.stream().map(v -> v.toParametrageValue()).collect(Collectors.toList()));
+   }
 }

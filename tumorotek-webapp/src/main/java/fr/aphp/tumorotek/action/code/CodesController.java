@@ -100,52 +100,83 @@ public class CodesController extends AbstractController
    private Borderlayout mainBorder;
 
    private boolean isModal = false;
+
    private String fromComponentPath;
+
    private boolean isOrgane = false;
+
    private boolean isMorpho = false;
+
    private boolean isDiagnostic = false;
+
    private boolean toCims = false;
 
    private Listbox codifBox;
+
    private Hbox resHBox;
+
    private Textbox codeBox;
+
    private Textbox libelleBox;
+
    private Textbox dosNomBox;
+
    private Textbox dosDescrBox;
 
    private Textbox codeOrLibelleBox;
+
    private Checkbox exactMatchBox;
 
    private Label currLabel;
+
    private Label currLabel2;
 
    private Panel selPanel;
+
    private Rows selCodesRows;
+
    private Grid selGrid;
 
    private Rows transCodesRows;
+
    private Panel transPanel;
+
    private Grid transGrid;
+
    private Column transboxCheckboxColumn;
+
    private Column transCodesDeleteColumn;
 
    private Button validate;
+
    private Button validateDos;
+
    private Button cancel;
+
    private Menuitem newCodeButton;
+
    private Menuitem newDossierButton;
+
    private Menuitem transcodeButton;
+
    private Menuitem editButton;
+
    private Menuitem deleteButton;
+
    private Menuitem addToListButton;
+
    private Button addTranscodeToSelectedButton;
+
    private Button addSelectedToTranscodeButton;
+
    private Button addSelectedToBookmarksButton;
+
    private Button returnSelCodesButton;
 
    private boolean isCreation = true;
 
    private final I3listBoxItemRenderer codageRenderer = new I3listBoxItemRenderer("nom");
+
    private static CodesSelectedRowRenderer selCodesRenderer = new CodesSelectedRowRenderer();
 
    private static CodesSelectedRowRenderer transCodesRenderer = new CodesSelectedRowRenderer();
@@ -154,27 +185,37 @@ public class CodesController extends AbstractController
    }
 
    private List<TableCodage> tableCodages = new ArrayList<>();
+
    private TableCodage selectedTableCodage;
+
    private String codeOrLibelle;
+
    private Boolean exactMatch = false;
 
    private CodeCommon currCode;
+
    private CodeDossier currDossier;
+
    private TableCodage currTable;
 
    private CodeNode selectedNode;
 
    private final List<CodeCommon> selectedCodes = new ArrayList<>();
+
    private List<CodeCommon> transCodes = new ArrayList<>();
 
    private final List<CodeCommon> selTransCodes = new ArrayList<>();
+
    private final List<CodeCommon> selSelectedCodes = new ArrayList<>();
+
    private final List<CodeCommon> res = new ArrayList<>();
 
    private boolean isInEdition = false;
+
    private boolean isBrowsing = true;
 
    private Label currLabelValue1;
+
    private Label currLabelValue2;
 
    private Utilisateur utilisateur;
@@ -469,8 +510,8 @@ public class CodesController extends AbstractController
    }
 
    /**
-    * Rend inutilisables les classifications 
-    * non utilisables pour assigner un code 
+    * Rend inutilisables les classifications
+    * non utilisables pour assigner un code
     * organe. CIMO moprho pour l'instant.
     */
    private void disableTables(){
@@ -535,7 +576,7 @@ public class CodesController extends AbstractController
 
    /**
     * Dessine le panel affichant les resultats d'une recherche ou
-    * d'un transcodage. Prépare les paramètres qui seront passés 
+    * d'un transcodage. Prépare les paramètres qui seront passés
     * au panel.
     * @param res Liste de codes résultat
     * @param Component dans laquelle le Panel sera dessiné.
@@ -565,9 +606,9 @@ public class CodesController extends AbstractController
     * Recherche tous les codes associés par transcodage.
     * Affiche les codes dans un CodeResultPanel qui sera placé
     * dans le deuxième div.
-    * Si modale alors transcode uniquement pour les tables codages associées à 
+    * Si modale alors transcode uniquement pour les tables codages associées à
     * la collection
-    * Sinon administration transcode donc pour toutes les codifications et les 
+    * Sinon administration transcode donc pour toutes les codifications et les
     * banques (codes Utilisateurs) pour lesquelles l'utilisateur est admin.
     * @return liste de codes résultat du transcodage.
     */
@@ -577,14 +618,14 @@ public class CodesController extends AbstractController
       if(isModal){ // ne transcode que pour les codifs associées à la banque
          return ManagerLocator.getTableCodageManager().transcodeManager(currCode, getTablesForBanques(),
             SessionUtils.getSelectedBanques(applicationScope));
-      } // administration -> transcode sur toutes les tables 
+      } // administration -> transcode sur toutes les tables
       return ManagerLocator.getTableCodageManager().transcodeManager(currCode,
          ManagerLocator.getTableCodageManager().findAllObjectsManager(), ManagerLocator.getBanqueManager()
             .findByUtilisateurIsAdminManager(SessionUtils.getLoggedUser(sessionScope), SessionUtils.getPlateforme(sessionScope)));
    }
 
    /**
-    * Affiche le browser de la codification quand la liste 
+    * Affiche le browser de la codification quand la liste
     * est changée.
     */
    public void onSelect$codifBox(){
@@ -644,7 +685,7 @@ public class CodesController extends AbstractController
    }
 
    /**
-    * Dessine le browser et lui assigne la codification, et les 
+    * Dessine le browser et lui assigne la codification, et les
     * filtres éventuels portant sur l'utilisation (topo, diagMaladie, diag)
     * et sur un noeud de départ.
     * @param isorgane
@@ -653,8 +694,8 @@ public class CodesController extends AbstractController
    private void browseClassification(){
 
       Executions.createComponents("/zuls/code/CodeBrowserComponent.zul", resHBox, null);
-      //		
-      //		((CodeBrowserComponent) 
+      //
+      //		((CodeBrowserComponent)
       //				resHBox.getFellow("winCodeTree")
       //					.getAttributeOrFellow("winCodeTree$composer", true))
       //						.setIsInModale(isModal);
@@ -923,13 +964,13 @@ public class CodesController extends AbstractController
    }
 
    /**
-    * Supprime un code ou un dossier (ainsi que tout leur 
+    * Supprime un code ou un dossier (ainsi que tout leur
     * contenu ou codes hérités) de la codification utilisateur.
     */
    public void onClick$deleteButton(){
       CodeCommon codeToDelete = null;
       CodeDossier dossierToDelete = null;
-      // recupere l'objet a supprimer 
+      // recupere l'objet a supprimer
       if(isBrowsing){
          selectedNode = getSelectedNodeFromBrowser();
          if(selectedNode != null){
@@ -995,7 +1036,7 @@ public class CodesController extends AbstractController
    public void onClick$editButton(){
       CodeCommon codeToEdit = null;
       CodeDossier dossierToEdit = null;
-      // recupere l'objet a editer 
+      // recupere l'objet a editer
       if(isBrowsing){
          selectedNode = getSelectedNodeFromBrowser();
          if(selectedNode != null){
@@ -1116,10 +1157,10 @@ public class CodesController extends AbstractController
    }
 
    /**
-    * Renvoie la liste de 
+    * Renvoie la liste de
     * code common selectionnés. Ferme la modale et renvoie la liste
     * au controller demandant l'assistant.
-    * 
+    *
     * @since 2.0.10
     */
    public void onClick$returnSelCodesButton(){
@@ -1293,8 +1334,8 @@ public class CodesController extends AbstractController
    }
 
    /**
-    * Gere le clique sur la checkbox au sein d'une liste 
-    * de transcodes ou de codes selectionnés. 
+    * Gere le clique sur la checkbox au sein d'une liste
+    * de transcodes ou de codes selectionnés.
     * Ajoute ou supprime le code de la liste si la box est
     * respectivement cochée ou décochée.
     * @param event

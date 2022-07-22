@@ -70,10 +70,13 @@ public class ProdQualiteManagerImpl implements ProdQualiteManager
 
    /** Bean Dao ProdQualiteDao. */
    private ProdQualiteDao prodQualiteDao;
+
    /** Bean Dao ProdDeriveDao. */
    private ProdDeriveDao prodDeriveDao;
+
    /** Bean Validator. */
    private ProdQualiteValidator prodQualiteValidator;
+
    private PlateformeDao plateformeDao;
 
    public void setPlateformeDao(final PlateformeDao pDao){
@@ -101,7 +104,7 @@ public class ProdQualiteManagerImpl implements ProdQualiteManager
    }
 
    /**
-    * Recherche une qualité de produit dérivé dont l'identifiant est 
+    * Recherche une qualité de produit dérivé dont l'identifiant est
     * passé en paramètre.
     * @param prodQualiteId Identifiant de la qualité que l'on recherche.
     * @return Un ProdQualite.
@@ -187,9 +190,9 @@ public class ProdQualiteManagerImpl implements ProdQualiteManager
          log.warn("Doublon lors de la modification de l'objet " + "ProdQualite : " + qualite.toString());
          throw new DoublonFoundException("ProdQualite", "modification");
       }
-         BeanValidator.validateObject(qualite, new Validator[] {prodQualiteValidator});
-         prodQualiteDao.updateObject(qualite);
-         log.info("Modification de l'objet ProdQualite : " + qualite.toString());
+      BeanValidator.validateObject(qualite, new Validator[] {prodQualiteValidator});
+      prodQualiteDao.updateObject(qualite);
+      log.info("Modification de l'objet ProdQualite : " + qualite.toString());
    }
 
    @Override

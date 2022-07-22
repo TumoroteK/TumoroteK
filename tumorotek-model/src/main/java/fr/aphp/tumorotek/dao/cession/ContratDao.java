@@ -70,7 +70,7 @@ public interface ContratDao extends GenericDaoJpa<Contrat, Integer>
    List<Contrat> findByOrder();
 
    /**
-    * Recherche tous les Contrats sauf celui dont 
+    * Recherche tous les Contrats sauf celui dont
     * l'identifiant est passé en paramètre.
     * @param mtaId Identifiant du Contrat que l'on souhaite exclure.
     * @return une liste de Contrats.

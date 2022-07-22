@@ -68,8 +68,10 @@ public class BlocImpressionTemplateManagerTest extends AbstractManagerTest4
 
    @Autowired
    private BlocImpressionTemplateManager blocImpressionTemplateManager;
+
    @Autowired
    private TemplateDao templateDao;
+
    @Autowired
    private BlocImpressionDao blocImpressionDao;
 

@@ -53,7 +53,7 @@ public class FicheEchantillonStaticSero extends FicheEchantillonStatic
 {
 
    /**
-    * 
+    *
     */
    private static final long serialVersionUID = -8531983997204957057L;
 
@@ -64,6 +64,5 @@ public class FicheEchantillonStaticSero extends FicheEchantillonStatic
       qualiteEchanValue.setVisible(false);
       groupInfosCompEchan.setVisible(false);
    }
-   
-   
+
 }

@@ -77,7 +77,7 @@ public interface MaladieManager
 
    /**
     * Cherche les doublons en se basant sur la methode equals()
-    * surchargee par les entites. Si l'objet est modifie donc a un id 
+    * surchargee par les entites. Si l'objet est modifie donc a un id
     * attribue par le SGBD, ce dernier est retire de la liste findAll.
     * @param maladie Maladie dont on cherche la presence dans la base
     * @return true/false
@@ -87,7 +87,7 @@ public interface MaladieManager
 
    /**
     * Verifie avant la suppression que d'autres objets ne referencent
-    * pas cet objet. 
+    * pas cet objet.
     * @param maladie Maladie a supprimer de la base de donnees.
     * @return true/false
     */
@@ -131,9 +131,9 @@ public interface MaladieManager
     * @return Liste de Maladie.
     */
    List<Maladie> findByLibelleLikeManager(String libelle, boolean exactMatch);
-   
+
    /**
-    * Recherche les maladies dont le libelle correspond à celui 
+    * Recherche les maladies dont le libelle correspond à celui
     * fourni en paramètre pour un patient donnée.
     * @param libelle Libelle des maladies recherchées.
     * @param patient Patient
@@ -141,7 +141,6 @@ public interface MaladieManager
     * @since 2.2.3-genno
     */
    List<Maladie> findByLibelleAndPatientManager(String libelle, Patient pat);
-
 
    /**
     * Recherche toutes les maladies dont le code est egal
@@ -160,7 +159,7 @@ public interface MaladieManager
    Set<Maladie> getMaladiesManager(Patient patient);
 
    /**
-    * Recherche les maladies assignées au patient uniquement 
+    * Recherche les maladies assignées au patient uniquement
     * par l'utilisateur, et non pas par le systeme dans le cadre
     * de collection de prélèvements qui ne définissent pas de maladies.
     * @param patient
@@ -178,7 +177,7 @@ public interface MaladieManager
    /**
     * Compte le nombre de maladies pour le référent passé en param
     * @param collaborateur
-    * @return Long compte 
+    * @return Long compte
     */
    public Long findCountByReferentManager(Collaborateur colla);
 

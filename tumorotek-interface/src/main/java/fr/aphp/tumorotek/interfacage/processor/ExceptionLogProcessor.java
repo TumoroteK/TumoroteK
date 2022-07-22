@@ -54,7 +54,7 @@ public class ExceptionLogProcessor implements Processor
    private Log log;
 
    /**
-    * Instancie le logger en fonction de la route renvoyant 
+    * Instancie le logger en fonction de la route renvoyant
     * l'exception.
     */
    @Override

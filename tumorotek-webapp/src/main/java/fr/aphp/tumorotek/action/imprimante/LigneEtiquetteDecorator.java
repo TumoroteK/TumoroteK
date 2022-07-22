@@ -47,7 +47,9 @@ public class LigneEtiquetteDecorator
 {
 
    private LigneEtiquette ligneEtiquette;
+
    private List<ChampLigneEtiquette> champs = new ArrayList<>();
+
    private List<ChampLigneEtiquette> champsToRemove = new ArrayList<>();
 
    public LigneEtiquetteDecorator(final LigneEtiquette le, final List<ChampLigneEtiquette> c){

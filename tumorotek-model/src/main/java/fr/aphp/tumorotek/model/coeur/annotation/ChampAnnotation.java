@@ -70,8 +70,8 @@ import fr.aphp.tumorotek.model.io.export.Champ;
  */
 @Entity
 @Table(name = "CHAMP_ANNOTATION")
-@GenericGenerator(name="seqGenerator", strategy="increment")
-@AttributeOverride(name="id", column=@Column(name = "CHAMP_ANNOTATION_ID", unique = true, nullable = false))
+@GenericGenerator(name = "seqGenerator", strategy = "increment")
+@AttributeOverride(name = "id", column = @Column(name = "CHAMP_ANNOTATION_ID", unique = true, nullable = false))
 @NamedQueries(value = {
    @NamedQuery(name = "ChampAnnotation.findByNom",
       query = "SELECT c FROM ChampAnnotation c WHERE c.nom like ?1" + " ORDER BY c.nom"),
@@ -79,8 +79,7 @@ import fr.aphp.tumorotek.model.io.export.Champ;
       query = "SELECT c FROM ChampAnnotation c " + "WHERE c.tableAnnotation = ?1 ORDER BY c.ordre"),
    @NamedQuery(name = "ChampAnnotation.findByTableAndType",
       query = "SELECT c FROM ChampAnnotation c " + "WHERE c.tableAnnotation = ?1 " + "ANd c.dataType = ?2 ORDER BY c.ordre"),
-   @NamedQuery(name = "ChampAnnotation.findByExcludedId",
-      query = "SELECT c FROM ChampAnnotation c WHERE " + "c.id != ?1"),
+   @NamedQuery(name = "ChampAnnotation.findByExcludedId", query = "SELECT c FROM ChampAnnotation c WHERE " + "c.id != ?1"),
    @NamedQuery(name = "ChampAnnotation.findByEditByCatalogue",
       query = "SELECT c FROM ChampAnnotation c " + "WHERE c.edit = 1 " + "AND c.tableAnnotation = ?1 " + "ORDER BY c.ordre"),
    @NamedQuery(name = "ChampAnnotation.findImportColonnesByChampAnnotation",
@@ -91,30 +90,37 @@ import fr.aphp.tumorotek.model.io.export.Champ;
       query = "SELECT c FROM Critere c WHERE " + "c.champ.champAnnotation = ?1"),
    @NamedQuery(name = "ChampAnnotation.findResultatsByChampAnnotation",
       query = "SELECT r FROM Resultat r WHERE " + "r.champ.champAnnotation = ?1"),
-   @NamedQuery(name = "ChampAnnotation.findByImportTemplateAndEntite", query = "SELECT c.champAnnotation FROM ImportColonne i "
-      + "JOIN i.champ c WHERE i.importTemplate = ?1 " + "AND c.champAnnotation.tableAnnotation.entite = ?2"),
+   @NamedQuery(name = "ChampAnnotation.findByImportTemplateAndEntite",
+      query = "SELECT c.champAnnotation FROM ImportColonne i " + "JOIN i.champ c WHERE i.importTemplate = ?1 "
+         + "AND c.champAnnotation.tableAnnotation.entite = ?2"),
    @NamedQuery(name = "ChampAnnotation.findByTableAndDataType",
-   query = "SELECT c FROM ChampAnnotation c " + "WHERE c.tableAnnotation = ?1 AND c.dataType in ?2 ORDER BY c.ordre")})
+      query = "SELECT c FROM ChampAnnotation c " + "WHERE c.tableAnnotation = ?1 AND c.dataType in ?2 ORDER BY c.ordre")})
 public class ChampAnnotation extends AbstractTKChamp implements TKFantomableObject, Serializable
 {
 
    private static final long serialVersionUID = 1L;
 
    private Boolean combine;
+
    private Integer ordre;
+
    private Boolean edit = true;
+
    private TableAnnotation tableAnnotation;
+
    private ChampCalcule champCalcule;
 
    private Set<AnnotationDefaut> annotationDefauts = new HashSet<>();
+
    private Set<Item> items = new HashSet<>();
+
    private Set<AnnotationValeur> annotationValeurs = new HashSet<>();
+
    private Set<Champ> champs = new HashSet<>();
 
    /** Constructeur par défaut. */
    public ChampAnnotation(){}
 
-   
    /**
     * @deprecated
     * Utiliser {@link #getId()}
@@ -176,7 +182,7 @@ public class ChampAnnotation extends AbstractTKChamp implements TKFantomableObje
       return this.champCalcule;
    }
 
-   public void setChampCalcule(ChampCalcule champCalcule){
+   public void setChampCalcule(final ChampCalcule champCalcule){
       this.champCalcule = champCalcule;
    }
 
@@ -219,10 +225,10 @@ public class ChampAnnotation extends AbstractTKChamp implements TKFantomableObje
 
    /**
     * 2 champs sont consideres comme egaux si ils ont le même nom
-    * et la même reference vers la table d'annotation à 
-    * laquelle ils appartiennent. Le systeme bloquera l'enregistrement 
+    * et la même reference vers la table d'annotation à
+    * laquelle ils appartiennent. Le systeme bloquera l'enregistrement
     * de deux champ de même nom (quelque soit leur type)
-    * dans une même table. 
+    * dans une même table.
     * @param obj est le champ à tester.
     * @return true si les champs sont égaux.
     */
@@ -243,7 +249,7 @@ public class ChampAnnotation extends AbstractTKChamp implements TKFantomableObje
    }
 
    /**
-    * Le hashcode est calculé sur le nom du champ_annotation et sur 
+    * Le hashcode est calculé sur le nom du champ_annotation et sur
     * la reference vers la table d'annotation.
     * @return la valeur du hashcode.
     */
@@ -272,7 +278,7 @@ public class ChampAnnotation extends AbstractTKChamp implements TKFantomableObje
       if(this.tableAnnotation != null && this.getNom() != null){
          return "{ChampAnnotation: " + this.tableAnnotation.getNom() + "." + this.getNom() + "}";
       }
-      
+
       return "{Empty ChampAnnotation}";
    }
 

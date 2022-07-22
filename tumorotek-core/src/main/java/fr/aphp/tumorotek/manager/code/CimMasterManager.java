@@ -72,7 +72,7 @@ public interface CimMasterManager extends CodeCommonManager<CimMaster>
    Set<Adicap> getAdicapsManager(CimMaster cim);
 
    /**
-    * Renvoie les codes CIM contenu dans l'arborescence dont la 
+    * Renvoie les codes CIM contenu dans l'arborescence dont la
     * racine est le code passé en paramètre.
     * @param code CIM
     * @return liste codes 'enfants'.

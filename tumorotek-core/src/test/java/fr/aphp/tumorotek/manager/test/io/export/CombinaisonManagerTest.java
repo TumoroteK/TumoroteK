@@ -60,6 +60,7 @@ public class CombinaisonManagerTest extends AbstractManagerTest4
 
    @Autowired
    private CombinaisonManager manager;
+
    @Autowired
    private ChampEntiteDao champEntiteDao;
 

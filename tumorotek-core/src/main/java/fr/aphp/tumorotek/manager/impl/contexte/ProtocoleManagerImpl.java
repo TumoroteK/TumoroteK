@@ -67,7 +67,9 @@ public class ProtocoleManagerImpl implements ProtocoleManager
    private final Log log = LogFactory.getLog(ProtocoleManager.class);
 
    private ProtocoleDao protocoleDao;
+
    private ProtocoleValidator protocoleValidator;
+
    private PlateformeDao plateformeDao;
 
    public ProtocoleManagerImpl(){}

@@ -70,6 +70,7 @@ public class ExportRechercheComplexe extends Export
    public ExportRechercheComplexe(){}
 
    private Affichage affichage;
+
    private String nomRecherche;
 
    private List<? extends Object> objs;

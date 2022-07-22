@@ -54,6 +54,7 @@ public class AffichageController extends AbstractObjectTabController
    private static final long serialVersionUID = 4935823085963165549L;
 
    private Affichage affichage;
+
    private RechercheComplexeController topController;
 
    public Affichage getAffichage(){

@@ -120,7 +120,7 @@ public interface ValeurExterneManager
    void removeObjectManager(ValeurExterne valeurExterne);
 
    /**
-    * Recherche les valeurs externes d'un dossier pour un bloc dont l'entite id est 
+    * Recherche les valeurs externes d'un dossier pour un bloc dont l'entite id est
     * passé en paramètre et le champ entite id
     * @param dossier
     * @param champ entite id

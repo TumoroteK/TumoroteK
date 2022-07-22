@@ -79,6 +79,7 @@ public class BlocImpressionTemplate implements Serializable
    private static final long serialVersionUID = 2267453255577378323L;
 
    private Integer ordre;
+
    private BlocImpressionTemplatePK pk = new BlocImpressionTemplatePK();
 
    public BlocImpressionTemplate(){

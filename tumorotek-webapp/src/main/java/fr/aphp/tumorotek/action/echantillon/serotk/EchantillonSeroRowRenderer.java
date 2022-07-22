@@ -37,6 +37,7 @@ package fr.aphp.tumorotek.action.echantillon.serotk;
 
 import java.lang.reflect.InvocationTargetException;
 import java.text.ParseException;
+
 import org.zkoss.zul.Row;
 
 import fr.aphp.tumorotek.action.echantillon.EchantillonRowRenderer;
@@ -54,46 +55,47 @@ import fr.aphp.tumorotek.model.coeur.echantillon.Echantillon;
  */
 public class EchantillonSeroRowRenderer extends EchantillonRowRenderer
 {
-   
-   public EchantillonSeroRowRenderer(boolean select, boolean cols){
+
+   public EchantillonSeroRowRenderer(final boolean select, final boolean cols){
       super(select, cols);
    }
 
-	@Override
-	public void render(final Row row, final Echantillon data, final int index) {
+   @Override
+   public void render(final Row row, final Echantillon data, final int index){
 
-		// dessine le checkbox
-		super.render(row, data, index);
+      // dessine le checkbox
+      super.render(row, data, index);
 
-		renderObjets(row, data);
-	}
-	
-	/**
-	 * Rendu des colonnes spécifiques échantillon seroTK.
-	 * 
-	 * @param row
-	 * @param echan
-	 * @throws NoSuchMethodException
-	 * @throws InvocationTargetException
-	 * @throws IllegalAccessException
-	 */
-	protected void renderEchantillon(Row row, Echantillon echan)
-			throws IllegalAccessException, InvocationTargetException, NoSuchMethodException, ParseException {
+      renderObjets(row, data);
+   }
 
-		renderDateProperty(row, echan, "dateStock");
+   /**
+    * Rendu des colonnes spécifiques échantillon seroTK.
+    *
+    * @param row
+    * @param echan
+    * @throws NoSuchMethodException
+    * @throws InvocationTargetException
+    * @throws IllegalAccessException
+    */
+   @Override
+   protected void renderEchantillon(final Row row, final Echantillon echan)
+      throws IllegalAccessException, InvocationTargetException, NoSuchMethodException, ParseException{
 
-		renderDelaiCgl(row, echan);
+      renderDateProperty(row, echan, "dateStock");
 
-		renderThesObjectProperty(row, echan, "echantillonType");
+      renderDelaiCgl(row, echan);
 
-		renderQuantite(row, echan);
+      renderThesObjectProperty(row, echan, "echantillonType");
 
-		renderObjetStatut(row, echan);
+      renderQuantite(row, echan);
 
-		renderEmplacement(row, echan, isAnonyme(), isAccessStockage());
+      renderObjetStatut(row, echan);
 
-		renderNbDerives(row, echan);
+      renderEmplacement(row, echan, isAnonyme(), isAccessStockage());
 
-		renderNbCessions(row, echan);
+      renderNbDerives(row, echan);
+
+      renderNbCessions(row, echan);
    }
 }

@@ -54,14 +54,15 @@ import fr.aphp.tumorotek.model.coeur.prodderive.ProdDerive;
  * @author Gille Chapelot
  */
 @Entity
-@Table(name="PROD_DERIVE_DELEGATE")
-@Inheritance(strategy=InheritanceType.JOINED)
+@Table(name = "PROD_DERIVE_DELEGATE")
+@Inheritance(strategy = InheritanceType.JOINED)
 public abstract class AbstractProdDeriveDelegate extends TKDelegateObject<ProdDerive>
 {
 
    private Integer prodDeriveId;
+
    private ProdDerive delegator;
-   
+
    @Id
    @Column(name = "PROD_DERIVE_DELEGATE_ID", unique = true, nullable = false)
    @GeneratedValue(generator = "autoincrement")
@@ -70,19 +71,19 @@ public abstract class AbstractProdDeriveDelegate extends TKDelegateObject<ProdDe
       return prodDeriveId;
    }
 
-   public void setProdDeriveId(Integer id){
+   public void setProdDeriveId(final Integer id){
       this.prodDeriveId = id;
    }
 
    @Override
    @OneToOne
-   @JoinColumn(name="PROD_DERIVE_ID", nullable=false, unique=true)
+   @JoinColumn(name = "PROD_DERIVE_ID", nullable = false, unique = true)
    public ProdDerive getDelegator(){
       return this.delegator;
    }
 
    @Override
-   public void setDelegator(ProdDerive delegator){
+   public void setDelegator(final ProdDerive delegator){
       this.delegator = delegator;
    }
 

@@ -35,12 +35,7 @@
  **/
 package fr.aphp.tumorotek.manager.coeur;
 
-import java.util.List;
-
-import fr.aphp.tumorotek.manager.exception.DoublonFoundException;
 import fr.aphp.tumorotek.model.TKAnnotableObject;
-import fr.aphp.tumorotek.model.TKStockableObject;
-import fr.aphp.tumorotek.model.coeur.ObjetStatut;
 
 /**
  *

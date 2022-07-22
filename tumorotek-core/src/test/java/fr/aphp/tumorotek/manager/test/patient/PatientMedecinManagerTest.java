@@ -65,12 +65,15 @@ import fr.aphp.tumorotek.model.contexte.Collaborateur;
 public class PatientMedecinManagerTest extends AbstractManagerTest4
 {
 
-@Autowired
+   @Autowired
    private PatientMedecinManager patientMedecinManager;
-@Autowired
+
+   @Autowired
    private PatientMedecinDao patientmedecinDao;
-@Autowired
+
+   @Autowired
    private CollaborateurDao collaborateurDao;
+
    @Autowired
    private PatientDao patientDao;
 

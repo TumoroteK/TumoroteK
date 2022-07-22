@@ -55,6 +55,7 @@ public class PatientsNbPrelevementsComparator implements Comparator<Patient>
 {
 
    private List<Banque> banques = new ArrayList<>();
+
    private Boolean asc;
 
    public PatientsNbPrelevementsComparator(final Boolean a){

@@ -56,7 +56,8 @@ import fr.aphp.tumorotek.model.stats.GraphesModele;
  * @author Marc DESCHAMPS
  */
 
-public class GraphesModeleManagerImpl implements GraphesModeleManager {
+public class GraphesModeleManagerImpl implements GraphesModeleManager
+{
 
    private DataSource dataSource;
 
@@ -64,8 +65,7 @@ public class GraphesModeleManagerImpl implements GraphesModeleManager {
       this.dataSource = d;
    }
 
-   GraphesModeleManagerImpl(){
-   }
+   GraphesModeleManagerImpl(){}
 
    @Override
    public GraphesModele platformeViewByPatientManager(final Date date_debut, final Date date_fin, final boolean isOracle){
@@ -94,86 +94,86 @@ public class GraphesModeleManagerImpl implements GraphesModeleManager {
 
    @Override
    public GraphesModele collectionViewByPatientManager(final Date date_debut, final Date date_fin, final String pfNom,
-                                                       final boolean isOracle){
+      final boolean isOracle){
       return callOnDBManager("collectionViewByPatient", date_debut, date_fin, pfNom, null, isOracle);
    }
 
    @Override
    public GraphesModele collectionViewByPrelevementManager(final Date date_debut, final Date date_fin, final String pfNom,
-                                                           final boolean isOracle){
+      final boolean isOracle){
       return callOnDBManager("collectionViewByPrelevement", date_debut, date_fin, pfNom, null, isOracle);
    }
 
    @Override
    public GraphesModele collectionViewByEchantillonManager(final Date date_debut, final Date date_fin, final String pfNom,
-                                                           final boolean isOracle){
+      final boolean isOracle){
       return callOnDBManager("collectionViewByEchantillon", date_debut, date_fin, pfNom, null, isOracle);
    }
 
    @Override
    public GraphesModele collectionViewByDeriveManager(final Date date_debut, final Date date_fin, final String pfNom,
-                                                      final boolean isOracle){
+      final boolean isOracle){
       return callOnDBManager("collectionViewByDerive", date_debut, date_fin, pfNom, null, isOracle);
    }
 
    @Override
    public GraphesModele collectionViewByCessionManager(final Date date_debut, final Date date_fin, final String pfNom,
-                                                       final boolean isOracle){
+      final boolean isOracle){
       return callOnDBManager("collectionViewByCession", date_debut, date_fin, pfNom, null, isOracle);
    }
 
    @Override
    public GraphesModele prelevementTypeByCollectionManager(final Date date_debut, final Date date_fin, final String banqueNom,
-                                                           final String pfNom, final boolean isOracle){
+      final String pfNom, final boolean isOracle){
       return callOnDBManager("prelTypeByCollection", date_debut, date_fin, banqueNom, pfNom, isOracle);
    }
 
    @Override
    public GraphesModele prelevementByEtablissementByCollectionManager(final Date date_debut, final Date date_fin,
-                                                                      final String banqueNom, final String pfNom, final boolean isOracle){
+      final String banqueNom, final String pfNom, final boolean isOracle){
       return callOnDBManager("prelByEtabByCollection", date_debut, date_fin, banqueNom, pfNom, isOracle);
    }
 
    @Override
    public GraphesModele prelevementByConsentementByCollectionManager(final Date date_debut, final Date date_fin,
-                                                                     final String banqueNom, final String pfNom, final boolean isOracle){
+      final String banqueNom, final String pfNom, final boolean isOracle){
       return callOnDBManager("prelByConsentByCollection", date_debut, date_fin, banqueNom, pfNom, isOracle);
    }
 
    @Override
    public GraphesModele echantillonTypeByCollectionManager(final Date date_debut, final Date date_fin, final String banqueNom,
-                                                           final String pfNom, final boolean isOracle){
+      final String pfNom, final boolean isOracle){
       return callOnDBManager("echanTypeByCollection", date_debut, date_fin, banqueNom, pfNom, isOracle);
    }
 
    @Override
    public GraphesModele echantillonsCIM10ByCollectionManager(final Date date_debut, final Date date_fin, final String banqueNom,
-                                                             final String pfNom, final boolean isOracle){
+      final String pfNom, final boolean isOracle){
       return callOnDBManager("echanCIMByCollection", date_debut, date_fin, banqueNom, pfNom, isOracle);
    }
 
    @Override
    public GraphesModele echantillonsADICAPByCollectionManager(final Date date_debut, final Date date_fin, final String banqueNom,
-                                                              final String pfNom, final boolean isOracle){
+      final String pfNom, final boolean isOracle){
       return callOnDBManager("echanADICAPByCollection", date_debut, date_fin, banqueNom, pfNom, isOracle);
    }
 
    @Override
    public GraphesModele deriveTypeByCollectionManager(final Date date_debut, final Date date_fin, final String banqueNom,
-                                                      final String pfNom, final boolean isOracle){
+      final String pfNom, final boolean isOracle){
       return callOnDBManager("deriveTypeByCollection", date_debut, date_fin, banqueNom, pfNom, isOracle);
    }
 
    @Override
    public GraphesModele cessionTypeByCollectionManager(final Date date_debut, final Date date_fin, final String banqueNom,
-                                                       final String pfNom, final boolean isOracle){
+      final String pfNom, final boolean isOracle){
 
       return callOnDBManager("cessionTypeByCollection", date_debut, date_fin, banqueNom, pfNom, isOracle);
    }
 
    @Override
    public GraphesModele callOnDBManager(final String procName, final Date date_debut, final Date date_fin, final String param1,
-                                        final String param2, final boolean isOracle){
+      final String param2, final boolean isOracle){
 
       // DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -266,7 +266,7 @@ public class GraphesModeleManagerImpl implements GraphesModeleManager {
                if(null != call){
                   call.close();
                }
-            }catch(SQLException e){
+            }catch(final SQLException e){
                e.printStackTrace();
             }
          }
@@ -277,13 +277,13 @@ public class GraphesModeleManagerImpl implements GraphesModeleManager {
 
    @Override
    public GraphesModele collectionViewByEchansCedesManager(final Date date_debut, final Date date_fin, final String pfNom,
-                                                           final boolean isOracle){
+      final boolean isOracle){
       return callOnDBManager("echansCedesByCollection", date_debut, date_fin, pfNom, null, isOracle);
    }
 
    @Override
    public GraphesModele collectionViewByDerivesCedesManager(final Date date_debut, final Date date_fin, final String pfNom,
-                                                            final boolean isOracle){
+      final boolean isOracle){
       return callOnDBManager("derivesCedesByCollection", date_debut, date_fin, pfNom, null, isOracle);
 
    }

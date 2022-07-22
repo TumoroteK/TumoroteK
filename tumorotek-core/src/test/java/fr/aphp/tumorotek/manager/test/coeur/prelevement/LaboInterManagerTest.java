@@ -77,14 +77,19 @@ public class LaboInterManagerTest extends AbstractManagerTest4
 
    @Autowired
    private LaboInterManager laboInterManager;
+
    @Autowired
    private ServiceDao serviceDao;
+
    @Autowired
    private CollaborateurDao collaborateurDao;
+
    @Autowired
    private TransporteurDao transporteurDao;
+
    @Autowired
    private PrelevementDao prelevementDao;
+
    @Autowired
    private LaboInterValidator laboInterValidator;
 

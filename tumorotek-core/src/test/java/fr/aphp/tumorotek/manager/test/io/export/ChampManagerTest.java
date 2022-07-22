@@ -64,10 +64,13 @@ public class ChampManagerTest extends AbstractManagerTest4
 
    @Autowired
    private ChampManager manager;
+
    @Autowired
    private ChampEntiteDao champEntiteDao;
+
    @Autowired
    private PatientDao patientDao;
+
    @Autowired
    private PrelevementDao prelevementDao;
 

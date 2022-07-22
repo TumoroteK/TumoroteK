@@ -47,8 +47,11 @@ public class SipFactory
 {
 
    public static final String SIP_AUCUN = "aucun";
+
    public static final String SIP_DIRECT = "direct";
+
    public static final String SIP_IDEOPASS = "ideopass";
+
    public static final String SIP_MESSAGES = "messages";
 
    public static Sip getSip(final String identificationPlateforme){
@@ -85,7 +88,7 @@ public class SipFactory
    }
 
    /**
-    * Renvoie true si un interfacage sip par messages est 
+    * Renvoie true si un interfacage sip par messages est
     * spécifié dans tumorotek.properties par la valeur messages.
     * @return true/false
     */

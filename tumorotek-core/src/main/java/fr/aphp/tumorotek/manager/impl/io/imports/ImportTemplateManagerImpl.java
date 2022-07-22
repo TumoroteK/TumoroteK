@@ -66,11 +66,15 @@ public class ImportTemplateManagerImpl implements ImportTemplateManager
 
    /** Bean Dao. */
    private ImportTemplateDao importTemplateDao;
+
    /** Bean Dao. */
    private BanqueDao banqueDao;
+
    /** Bean Dao. */
    private EntiteDao entiteDao;
+
    private ImportTemplateValidator importTemplateValidator;
+
    private ImportColonneManager importColonneManager;
 
    public void setImportTemplateDao(final ImportTemplateDao iDao){
@@ -251,10 +255,10 @@ public class ImportTemplateManagerImpl implements ImportTemplateManager
     * et une liste d'entites.
     * @param utilisateur Utilisateur pour lequel on veut mettre à jour
     * les associations.
-    * @param profils Liste de tous les profils de l'utilisateur : ceux 
+    * @param profils Liste de tous les profils de l'utilisateur : ceux
     * déjà existant et ceux a creer.
     * @param profilsToCreate Liste des profils a creer.
-    * @param plateformes Liste des plateformes que l'on veut associer a 
+    * @param plateformes Liste des plateformes que l'on veut associer a
     * l'utilisateur.
     */
    public void updateAssociations(final ImportTemplate template, final List<Entite> entites,

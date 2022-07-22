@@ -14,29 +14,45 @@ public class ConfigManager
 {
 
    public static final String ENTETE_PRELEVEMENT = "Prel:";
+
    public static final String ENTETE_TUBE = "Tube:";
+
    public static final String ENTETE_TYPE = "Type:";
+
    public static final String ENTETE_PATIENT = "Patient:";
+
    public static final String ENTETE_DATE_CONGELATION = "Date Cong:";
+
    public static final String ENTETE_QUANTITE = "Quantite:";
 
    public static final String G2D_FONT_FAMILY = "DejaVu Serif";
+
    public static final String BOLD_FONT_STYLE = "DejaVu Serif";
 
    // ------------ DATABASE -------------
    public static final String DB_ORACLE = "oracle";
+
    public static final String DB_MYSQL = "mysql";
+
    // ------------ EXPORT ---------------
    public static final short ENTITE_ID_PATIENT = 1;
+
    public static final short ENTITE_ID_PRELEVEMENT = 2;
+
    public static final short ENTITE_ID_ECHANTILLON = 3;
+
    public static final short ENTITE_ID_DERIVE = 8;
+
    public static final short ENTITE_ID_CESSION = 5;
 
    public static final short DEFAULT_EXPORT = 1;
+
    public static final short INCA_EXPORT = 2;
+
    public static final short TVGSO_EXPORT = 3;
+
    public static final short BIOCAP_EXPORT = 4;
+
    public static final short BIOBANQUES_EXPORT = 5; //@since 2.1
 
    // BIOCAP
@@ -46,8 +62,11 @@ public class ConfigManager
 
    public static final String[] aSheetName =
       {"Patient List", "Prelevement List", "Echantillon List", "Derive List", "Cession List"};
+
    public static final String OFFICE_OPENXML_MIME_TYPE = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+
    public static final String OFFICE_EXCEL_MIME_TYPE = "application/vnd.ms-excel";
+
    public static final String UNICODE_CHARSET = "UTF-8";
 
    // STATS INDICATEURS

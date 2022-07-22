@@ -79,10 +79,13 @@ public class PatientSipManagerTest extends AbstractManagerTest4
 
    @Autowired
    private PatientSipManager patientSipManager;
+
    @Autowired
    private PatientSipDao patientSipDao;
+
    @Autowired
    private PatientManager patientManager;
+
    @Autowired
    private UtilisateurDao utilisateurDao;
 

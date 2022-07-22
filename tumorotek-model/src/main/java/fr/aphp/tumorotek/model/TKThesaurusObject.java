@@ -47,9 +47,9 @@ public interface TKThesaurusObject
 {
 
    String getNom();
-   
+
    void setNom(String nom);
 
    Integer getId();
-   
+
 }

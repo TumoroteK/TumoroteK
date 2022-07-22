@@ -70,10 +70,13 @@ public class ChampImprimeManagerImpl implements ChampImprimeManager
 
    /** Bean Dao. */
    private ChampImprimeDao champImprimeDao;
+
    /** Bean Dao. */
    private TemplateDao templateDao;
+
    /** Bean Dao. */
    private ChampEntiteDao champEntiteDao;
+
    /** Bean Dao. */
    private BlocImpressionDao blocImpressionDao;
 

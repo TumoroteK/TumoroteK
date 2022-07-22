@@ -1,48 +1,52 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	   xmlns:aop="http://www.springframework.org/schema/aop"
-	   xmlns:tx="http://www.springframework.org/schema/tx"
-	   xsi:schemaLocation="
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="
 			http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
 			http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
 			http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
-	
-	<bean id="txManager" class="org.springframework.orm.jpa.JpaTransactionManager">
-     	<property name="entityManagerFactory" ref="entityManagerFactory" />
-   </bean>
-   
-   <!-- AOP-managed transactions -->
-   <bean id="txProxyTemplate" abstract="true"
-        class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
-  		<property name="transactionManager" ref="txManager"/>
-  		<property name="transactionAttributes">
-	    	<props>
-	      		<prop key="find*">PROPAGATION_REQUIRED, readOnly</prop>
-	      		<prop key="get*">PROPAGATION_REQUIRED, readOnly</prop>
-	      		<prop key="count*">PROPAGATION_REQUIRED, readOnly</prop>
-	      		<prop key="is*">PROPAGATION_REQUIRED, readOnly</prop>
-	      		<prop key="*">PROPAGATION_REQUIRED</prop>
-	    	</props>
-  		</property>
+
+	<bean id="txManager"
+		class="org.springframework.orm.jpa.JpaTransactionManager">
+		<property name="entityManagerFactory"
+			ref="entityManagerFactory" />
 	</bean>
-  
-<!--   <tx:advice id="serviceTxAdvice" transaction-manager="txManager">-->
-<!--     <tx:attributes>-->
-<!--       <tx:method name="find*" propagation="REQUIRED" read-only="true" />-->
-<!--       <tx:method name="get*" propagation="REQUIRED" read-only="true" />-->
-<!--       <tx:method name="count*" propagation="REQUIRED" read-only="true" />-->
-<!--       <tx:method name="is*" propagation="REQUIRED" read-only="true" />-->
-<!--       <tx:method name="*" propagation="REQUIRED" />-->
-<!--     </tx:attributes>-->
-<!--   </tx:advice>-->
+
+	<!-- AOP-managed transactions -->
+	<bean id="txProxyTemplate" abstract="true"
+		class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+		<property name="transactionManager" ref="txManager" />
+		<property name="transactionAttributes">
+			<props>
+				<prop key="find*">PROPAGATION_REQUIRED, readOnly</prop>
+				<prop key="get*">PROPAGATION_REQUIRED, readOnly</prop>
+				<prop key="count*">PROPAGATION_REQUIRED, readOnly</prop>
+				<prop key="is*">PROPAGATION_REQUIRED, readOnly</prop>
+				<prop key="*">PROPAGATION_REQUIRED</prop>
+			</props>
+		</property>
+	</bean>
+
+	<!-- <tx:advice id="serviceTxAdvice" transaction-manager="txManager"> -->
+	<!-- <tx:attributes> -->
+	<!-- <tx:method name="find*" propagation="REQUIRED" read-only="true" /> -->
+	<!-- <tx:method name="get*" propagation="REQUIRED" read-only="true" /> -->
+	<!-- <tx:method name="count*" propagation="REQUIRED" read-only="true" /> -->
+	<!-- <tx:method name="is*" propagation="REQUIRED" read-only="true" /> -->
+	<!-- <tx:method name="*" propagation="REQUIRED" /> -->
+	<!-- </tx:attributes> -->
+	<!-- </tx:advice> -->
 <!---->
-<!--	<aop:config> -->
-<!--    	<aop:pointcut id="serviceMethods" expression="execution(* fr.aphp.tumorotek.manager..*.*Manager(..))" />-->
-<!--      	<aop:advisor advice-ref="serviceTxAdvice" pointcut-ref="serviceMethods" order="1"/>-->
-<!--      	  <aop:aspect id="loggingAspect" ref="monLogger">-->
-<!--		    <aop:before method="logMethodEntry"  pointcut-ref="serviceMethods"/>    		-->
-<!--		    <aop:after-returning method="logMethodExit" returning="result" pointcut-ref="serviceMethods"/>-->
-<!--	 	</aop:aspect>  -->
-<!--   </aop:config> -->
+	<!-- <aop:config> -->
+	<!-- <aop:pointcut id="serviceMethods" expression="execution(* fr.aphp.tumorotek.manager..*.*Manager(..))" 
+		/> -->
+	<!-- <aop:advisor advice-ref="serviceTxAdvice" pointcut-ref="serviceMethods" 
+		order="1"/> -->
+	<!-- <aop:aspect id="loggingAspect" ref="monLogger"> -->
+	<!-- <aop:before method="logMethodEntry" pointcut-ref="serviceMethods"/> -->
+	<!-- <aop:after-returning method="logMethodExit" returning="result" pointcut-ref="serviceMethods"/> -->
+	<!-- </aop:aspect> -->
+	<!-- </aop:config> -->
 </beans>

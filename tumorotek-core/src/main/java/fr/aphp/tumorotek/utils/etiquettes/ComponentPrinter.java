@@ -66,7 +66,8 @@ public class ComponentPrinter
     * @param printerTumoFileBean
     * @return
     */
-   public static int printComponents(final List<? extends Component> componentsToBePrinted, final int nb, final Imprimante imprimante){
+   public static int printComponents(final List<? extends Component> componentsToBePrinted, final int nb,
+      final Imprimante imprimante){
       int codeRetour = 0;
       final PrinterJob printJob = PrinterJob.getPrinterJob();
       //--- Create a new book to add pages to
@@ -136,10 +137,10 @@ public class ComponentPrinter
 
       return codeRetour;
    }
-   
+
    /**
     * fonction qui lance l impression d une liste d etiquette.
-    * @param ArrayList liste des etiquettes 
+    * @param ArrayList liste des etiquettes
     * @param int nb
     * @param ImprimanteBean
     * @param ModeleEtiquetteBean
@@ -151,46 +152,47 @@ public class ComponentPrinter
       return codeRetour;
    }
 
-//   /**
-//    * fonction qui lance l impression d une liste d etiquette.
-//    * @param ArrayList liste des etiquettes 
-//    * @param int nb
-//    * @param ImprimanteBean
-//    * @param ModeleEtiquetteBean
-//    * @return
-//    */
-//   public static int print(final List<Vector<?>> liste, final int nb, final Imprimante imprimanteBean, final String texte){
-//      final List<ComponentBarcodeLabel> components = getComponents(liste, imprimanteBean, texte);
-//      final int codeRetour = printComponents(components, nb, imprimanteBean);
-//      return codeRetour;
-//   }
+   //   /**
+   //    * fonction qui lance l impression d une liste d etiquette.
+   //    * @param ArrayList liste des etiquettes 
+   //    * @param int nb
+   //    * @param ImprimanteBean
+   //    * @param ModeleEtiquetteBean
+   //    * @return
+   //    */
+   //   public static int print(final List<Vector<?>> liste, final int nb, final Imprimante imprimanteBean, final String texte){
+   //      final List<ComponentBarcodeLabel> components = getComponents(liste, imprimanteBean, texte);
+   //      final int codeRetour = printComponents(components, nb, imprimanteBean);
+   //      return codeRetour;
+   //   }
 
-//   /**
-//    * 
-//    * @param liste
-//    * @param printerTumoFileBean
-//    * @return
-//    */
-//   public static List<ComponentBarcodeLabel> getComponents(final List<Vector<?>> liste, final Imprimante imprimanteBean, final String texte){
-//      final List<ComponentBarcodeLabel> components = new ArrayList<>();
-//
-//      for(int i = 0; i < liste.size(); i++){
-//         final Vector<?> aData = liste.get(i);
-//         final ComponentBarcodeLabel aBarcodeLabel =
-//            new ComponentBarcodeLabel(aData, texte, imprimanteBean.getAbscisse(), imprimanteBean.getOrdonnee());
-//         components.add(aBarcodeLabel);
-//      }
-//
-//      return components;
-//   }
-   
+   //   /**
+   //    * 
+   //    * @param liste
+   //    * @param printerTumoFileBean
+   //    * @return
+   //    */
+   //   public static List<ComponentBarcodeLabel> getComponents(final List<Vector<?>> liste, final Imprimante imprimanteBean, final String texte){
+   //      final List<ComponentBarcodeLabel> components = new ArrayList<>();
+   //
+   //      for(int i = 0; i < liste.size(); i++){
+   //         final Vector<?> aData = liste.get(i);
+   //         final ComponentBarcodeLabel aBarcodeLabel =
+   //            new ComponentBarcodeLabel(aData, texte, imprimanteBean.getAbscisse(), imprimanteBean.getOrdonnee());
+   //         components.add(aBarcodeLabel);
+   //      }
+   //
+   //      return components;
+   //   }
+
    /**
-    * 
+    *
     * @param liste
     * @param printerTumoFileBean
     * @return
     */
-   public static <T> List<ComponentBarcodeLabel> getComponents(final List<Vector<T>> liste, final Imprimante imprimanteBean, final String texte){
+   public static <T> List<ComponentBarcodeLabel> getComponents(final List<Vector<T>> liste, final Imprimante imprimanteBean,
+      final String texte){
       final List<ComponentBarcodeLabel> components = new ArrayList<>();
 
       for(int i = 0; i < liste.size(); i++){

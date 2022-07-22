@@ -91,10 +91,10 @@ public abstract class ChampUtils
 
       if(champ.getChampAnnotation() != null){
          dataType = champ.getChampAnnotation().getDataType();
-         if("calcule".equals(dataType.getType())) {
+         if("calcule".equals(dataType.getType())){
             dataType = champ.getChampAnnotation().getChampCalcule().getDataType();
          }
-      }else if(champ.getChampDelegue() != null) {
+      }else if(champ.getChampDelegue() != null){
          dataType = champ.getChampDelegue().getDataType();
       }else if(champ.getChampEntite().getQueryChamp() == null){
          dataType = champ.getChampEntite().getDataType();
@@ -117,7 +117,7 @@ public abstract class ChampUtils
 
       if(champ.getChampAnnotation() != null){
          nom = champ.getChampAnnotation().getNom();
-      }else if(champ.getChampDelegue() != null) {
+      }else if(champ.getChampDelegue() != null){
          nom = champ.getChampDelegue().getNom();
       }else if(champ.getChampEntite().getQueryChamp() == null){
          nom = champ.getChampEntite().getNom();
@@ -128,15 +128,15 @@ public abstract class ChampUtils
       return nom;
 
    }
-   
-   public static String getNomEntiteAncetre(Champ champ) {
-      
+
+   public static String getNomEntiteAncetre(final Champ champ){
+
       String nomEntiteAncetre = null;
       Champ parent = champ.getChampParent();
       AbstractTKChamp ceParent = null;
-      
+
       while(parent != null && (parent.getChampEntite() != null || parent.getChampDelegue() != null)){
-         
+
          if(null != parent.getChampEntite()){
             ceParent = parent.getChampEntite();
             nomEntiteAncetre = parent.getChampEntite().getEntite().getNom();
@@ -144,12 +144,12 @@ public abstract class ChampUtils
             ceParent = parent.getChampDelegue();
             nomEntiteAncetre = parent.getChampDelegue().getEntite().getNom();
          }
-         
+
          parent = parent.getChampParent();
       }
-      
+
       return nomEntiteAncetre.replaceFirst(".", (ceParent.getNom().charAt(0) + "").toLowerCase());
-      
+
    }
-   
+
 }

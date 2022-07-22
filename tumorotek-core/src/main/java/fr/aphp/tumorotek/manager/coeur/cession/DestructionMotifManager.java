@@ -54,7 +54,7 @@ public interface DestructionMotifManager extends PfDependantTKThesaurusManager<D
 
    /**
     * Recherche un DestructionMotif dont l'identifiant est passé en paramètre.
-    * @param destructionMotifId Identifiant du DestructionMotif que 
+    * @param destructionMotifId Identifiant du DestructionMotif que
     * l'on recherche.
     * @return Un DestructionMotif.
     */

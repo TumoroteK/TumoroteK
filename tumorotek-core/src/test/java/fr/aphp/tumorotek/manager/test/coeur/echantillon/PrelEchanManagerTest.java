@@ -97,57 +97,87 @@ public class PrelEchanManagerTest extends AbstractManagerTest4
 
    @Autowired
    private PrelEchansManager prelEchansManager;
+
    @Autowired
    private PrelevementManager prelevementManager;
+
    @Autowired
    private EchantillonManager echantillonManager;
+
    @Autowired
    private EchantillonDTOManager echantillonDTOManager;
+
    @Autowired
    private BanqueDao banqueDao;
+
    @Autowired
    private UtilisateurDao utilisateurDao;
+
    @Autowired
    private EchantillonTypeDao echantillonTypeDao;
+
    @Autowired
    private NatureDao natureDao;
+
    @Autowired
    private ConsentTypeDao consentTypeDao;
+
    @Autowired
    private EmplacementManager emplacementManager;
+
    @Autowired
    private MaladieManager maladieManager;
+
    @Autowired
    private PatientManager patientManager;
+
    @Autowired
    private CodeAssigneManager codeAssigneManager;
+
    @Autowired
    private NonConformiteDao nonConformiteDao;
+
    @Autowired
    private ObjetNonConformeManager objetNonConformeManager;
+
    @Autowired
    private TerminaleDao terminaleDao;
+
    // @Autowired
    // private EntiteDao entiteDao;
    @Autowired
    private FichierManager fichierManager;
 
    private Patient pat;
+
    private Maladie mal;
+
    private Prelevement prel;
+
    private Echantillon e1, e2, e3, e4, e5;
+
    private final List<EchantillonDTO> dtos = new ArrayList<>();
+
    private final List<CodeAssigne> cOrgs1 = new ArrayList<>();
+
    private final List<CodeAssigne> cOrgs2 = new ArrayList<>();
+
    private final List<CodeAssigne> cLes1 = new ArrayList<>();
+
    private final List<CodeAssigne> cLes2 = new ArrayList<>();
 
    private int nbPatsBeforeTests;
+
    private int nbMalsBeforeTests;
+
    private int nbPrelsBeforeTests;
+
    private int nbEchansBeforeTests;
+
    private int nbEmplBeforeTests;
+
    private int nbEmplOccupeBeforeTests;
+
    private int nbFichiersBeforeTests;
 
    private final String bDir = "/tmp/pt_1/coll_1";

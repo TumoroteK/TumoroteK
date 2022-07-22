@@ -65,6 +65,7 @@ public class SpecialiteManagerImpl implements SpecialiteManager
 
    /** Bean Dao SpecialiteDao. */
    private SpecialiteDao specialiteDao;
+
    private SpecialiteValidator specialiteValidator;
 
    /**
@@ -174,5 +175,5 @@ public class SpecialiteManagerImpl implements SpecialiteManager
    public List<Specialite> findByOrderManager(){
       return specialiteDao.findByOrder();
    }
-   
+
 }

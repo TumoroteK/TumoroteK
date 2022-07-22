@@ -69,16 +69,25 @@ public class AffectationCollectionsModale extends GenericForwardComposer<Compone
    private static final long serialVersionUID = 105656812700726498L;
 
    private Panel winPanel;
+
    private Listbox imprimantesBox;
 
    private Component parent;
+
    private List<Banque> banques = new ArrayList<>();
+
    private Utilisateur utilisateur;
+
    private Plateforme plateforme;
+
    private AnnotateDataBinder binder;
+
    private List<Imprimante> imprimantes = new ArrayList<>();
+
    private Imprimante selectedImprimante;
+
    private List<Modele> modeles = new ArrayList<>();
+
    private Modele selectedModele;
 
    @Override

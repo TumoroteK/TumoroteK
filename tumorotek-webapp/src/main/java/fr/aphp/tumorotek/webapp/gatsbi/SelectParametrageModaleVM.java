@@ -1,5 +1,5 @@
 /**
- * Copyright ou © ou Copr. Assistance Publique des Hôpitaux de 
+ * Copyright ou © ou Copr. Assistance Publique des Hôpitaux de
  * PARIS et SESAN
  * projet-tk@sesan.fr
  *
@@ -67,48 +67,51 @@ import fr.aphp.tumorotek.model.contexte.gatsbi.Parametrage;
  * @author Mathieu BARTHELEMY
  *
  */
-public class SelectParametrageModaleVM {
+public class SelectParametrageModaleVM
+{
 
-	private String entiteLabel;
-	private Component parent;
-	private TKAnnotableObject parentObj;
-	private SimpleListModel<Parametrage> parametrages;
+   private String entiteLabel;
 
-	@Wire
-	private Window selectParametrageModale;
+   private Component parent;
 
-	@AfterCompose
-	public void afterCompose(@ContextParam(ContextType.VIEW) final Component view){
-		Selectors.wireComponents(view, this, false);
-	}
+   private TKAnnotableObject parentObj;
 
-	@Init
-	public void init(@ExecutionArgParam("contexte") Contexte _c, 
-			@ExecutionArgParam("parent") final Component _p, 
-			@ExecutionArgParam("parentObj") TKAnnotableObject _o){
-		List<Parametrage> params = new ArrayList<Parametrage>();
-		params.add(0, new Parametrage(null, Labels.getLabel("general.new"), null));
-		params.addAll(_c.getParametrages());
-		parametrages = new SimpleListModel<Parametrage>(params);
-		entiteLabel = Labels.getLabel("Entite.".concat(_c.getContexteType().getType()));
-		parent = _p;
-		parentObj = _o;
-	}
+   private SimpleListModel<Parametrage> parametrages;
 
-	@Command
-	public void onSelectParametrage(@BindingParam("paramId") Integer paramId){
-		Map<String, Object> args = new HashMap<String, Object>();
-		args.put("paramId", paramId);
-		args.put("parentObj", parentObj);
-		Events.postEvent("onSelectParametrage", parent, args);
-		Events.postEvent("onClose", selectParametrageModale, null);
-	}
+   @Wire
+   private Window selectParametrageModale;
 
-	public SimpleListModel<Parametrage> getParametrages() {
-		return parametrages;
-	}
-	
-	public String getTitle() {
-		return Labels.getLabel("gatsbi.parametrages", new String[]{entiteLabel});
-	}
+   @AfterCompose
+   public void afterCompose(@ContextParam(ContextType.VIEW) final Component view){
+      Selectors.wireComponents(view, this, false);
+   }
+
+   @Init
+   public void init(@ExecutionArgParam("contexte") final Contexte _c, @ExecutionArgParam("parent") final Component _p,
+      @ExecutionArgParam("parentObj") final TKAnnotableObject _o){
+      final List<Parametrage> params = new ArrayList<>();
+      params.add(0, new Parametrage(null, Labels.getLabel("general.new"), null));
+      params.addAll(_c.getParametrages());
+      parametrages = new SimpleListModel<>(params);
+      entiteLabel = Labels.getLabel("Entite.".concat(_c.getContexteType().getType()));
+      parent = _p;
+      parentObj = _o;
+   }
+
+   @Command
+   public void onSelectParametrage(@BindingParam("paramId") final Integer paramId){
+      final Map<String, Object> args = new HashMap<>();
+      args.put("paramId", paramId);
+      args.put("parentObj", parentObj);
+      Events.postEvent("onSelectParametrage", parent, args);
+      Events.postEvent("onClose", selectParametrageModale, null);
+   }
+
+   public SimpleListModel<Parametrage> getParametrages(){
+      return parametrages;
+   }
+
+   public String getTitle(){
+      return Labels.getLabel("gatsbi.parametrages", new String[] {entiteLabel});
+   }
 }

@@ -1,5 +1,5 @@
 /**
- * Copyright ou © ou Copr. Assistance Publique des Hôpitaux de 
+ * Copyright ou © ou Copr. Assistance Publique des Hôpitaux de
  * PARIS et SESAN
  * projet-tk@sesan.fr
  *
@@ -62,116 +62,113 @@ import fr.aphp.tumorotek.webapp.general.SessionUtils;
  * @version 2.3.0-gatsbi
  *
  */
-public class FichePrelevementStaticGatsbi extends FichePrelevementStatic {
+public class FichePrelevementStaticGatsbi extends FichePrelevementStatic
+{
 
-	private static final long serialVersionUID = -7612780578022559022L;
+   private static final long serialVersionUID = -7612780578022559022L;
 
-	private Groupbox groupPrlvt;
+   private Groupbox groupPrlvt;
 
-	private Contexte contexte;
-	
-	private final EchantillonRowRendererGatsbi echantillonRendererGatsbi = 
-			new EchantillonRowRendererGatsbi(false, false, false, false);
+   private Contexte contexte;
 
-	@Override
-	public void doAfterCompose(final Component comp) throws Exception {
-		super.doAfterCompose(comp);
+   private final EchantillonRowRendererGatsbi echantillonRendererGatsbi =
+      new EchantillonRowRendererGatsbi(false, false, false, false);
 
-		contexte = GatsbiController.initWireAndDisplay(this, 2, false, null, null, null, groupPrlvt,
-				(Groupbox) gridFormPrlvtComp);
+   @Override
+   public void doAfterCompose(final Component comp) throws Exception{
+      super.doAfterCompose(comp);
 
-		// prelevement specific
-		if (groupLaboInter != null) {
-			groupLaboInter.setVisible(contexte != null && contexte.getSiteIntermediaire());
-		}
-		
-		// inner list
-		// non deletable
-		// ne force pas affichage emplacement et statut stockage en fin de grid
-		GatsbiControllerEchantillon
-			.drawColumnsForEchantillons(SessionUtils.getCurrentGatsbiContexteForEntiteId(3), 
-					echantillonsGrid, echantillonRendererGatsbi, false, false);
-	}
+      contexte = GatsbiController.initWireAndDisplay(this, 2, false, null, null, null, groupPrlvt, (Groupbox) gridFormPrlvtComp);
 
-	@Override
-	protected ResumePatient initResumePatient() {
-		return new ResumePatient(groupPatient, true);
-	}
+      // prelevement specific
+      if(groupLaboInter != null){
+         groupLaboInter.setVisible(contexte != null && contexte.getSiteIntermediaire());
+      }
 
-	@Override
-	protected void enablePatientGroup(boolean b) {
-		((Groupbox) this.groupPatient).setOpen(b);
-		((Groupbox) this.groupPatient).setClosable(b);
-	}
+      // inner list
+      // non deletable
+      // ne force pas affichage emplacement et statut stockage en fin de grid
+      GatsbiControllerEchantillon.drawColumnsForEchantillons(SessionUtils.getCurrentGatsbiContexteForEntiteId(3),
+         echantillonsGrid, echantillonRendererGatsbi, false, false);
+   }
 
-	/**
-	 * Gatsbi surcharge pour intercaler une modale de sélection des parametrages
-	 * proposés par le contexte.
-	 * 
-	 * @param click event
-	 */
-	@Override
-	public void onClick$addNew() {
-		GatsbiController.addNewObjectForContext(contexte, self, e -> {
-			try {
-				super.onClick$addNew();
-			} catch (Exception ex) {
-				Messagebox.show(handleExceptionMessage(ex), "Error", Messagebox.OK, Messagebox.ERROR);
-			}
-		}, null, null);
-	}
+   @Override
+   protected ResumePatient initResumePatient(){
+      return new ResumePatient(groupPatient, true);
+   }
 
-	/**
-	 * Un parametrage a été sélectionné.
-	 * 
-	 * @param param
-	 * @throws Exception
-	 */
-	public void onGetSelectedParametrage(ForwardEvent evt) throws Exception {
+   @Override
+   protected void enablePatientGroup(final boolean b){
+      ((Groupbox) this.groupPatient).setOpen(b);
+      ((Groupbox) this.groupPatient).setClosable(b);
+   }
 
-		try {
+   /**
+    * Gatsbi surcharge pour intercaler une modale de sélection des parametrages
+    * proposés par le contexte.
+    *
+    * @param click event
+    */
+   @Override
+   public void onClick$addNew(){
+      GatsbiController.addNewObjectForContext(contexte, self, e -> {
+         try{
+            super.onClick$addNew();
+         }catch(final Exception ex){
+            Messagebox.show(handleExceptionMessage(ex), "Error", Messagebox.OK, Messagebox.ERROR);
+         }
+      }, null, null);
+   }
 
-			GatsbiController.getSelectedParametrageFromSelectEvent(contexte,
-					SessionUtils.getCurrentBanque(sessionScope), getObjectTabController(), p -> {
-						// cong depart OU cong arrivee
-						if (p.getDefaultValuesForChampEntiteId(269) != null
-								&& p.getDefaultValuesForChampEntiteId(269).contentEquals("1")
-								&& p.getDefaultValuesForChampEntiteId(270) != null
-								&& p.getDefaultValuesForChampEntiteId(270).contentEquals("1")) {
-							throw new TKException("gatsbi.illegal.parametrage.prelevement.cong");
-						}
-					}, () -> {
-						try {
-							super.onClick$addNew();
-						} catch (Exception ex) {
-							Messagebox.show(handleExceptionMessage(ex), "Error", Messagebox.OK, Messagebox.ERROR);
-						}
-					}, evt);
-		} catch (GatsbiException e) {
-			Messagebox.show(handleExceptionMessage(e), "Error", Messagebox.OK, Messagebox.ERROR);
-		}
-	}
+   /**
+    * Un parametrage a été sélectionné.
+    *
+    * @param param
+    * @throws Exception
+    */
+   public void onGetSelectedParametrage(final ForwardEvent evt) throws Exception{
 
-	@Override
-	public void onClick$addEchan(final Event event) throws Exception {
+      try{
 
-		final EchantillonController tabController = (EchantillonController) EchantillonController
-				.backToMe(getMainWindow(), page);
+         GatsbiController.getSelectedParametrageFromSelectEvent(contexte, SessionUtils.getCurrentBanque(sessionScope),
+            getObjectTabController(), p -> {
+               // cong depart OU cong arrivee
+               if(p.getDefaultValuesForChampEntiteId(269) != null && p.getDefaultValuesForChampEntiteId(269).contentEquals("1")
+                  && p.getDefaultValuesForChampEntiteId(270) != null
+                  && p.getDefaultValuesForChampEntiteId(270).contentEquals("1")){
+                  throw new TKException("gatsbi.illegal.parametrage.prelevement.cong");
+               }
+            }, () -> {
+               try{
+                  super.onClick$addNew();
+               }catch(final Exception ex){
+                  Messagebox.show(handleExceptionMessage(ex), "Error", Messagebox.OK, Messagebox.ERROR);
+               }
+            }, evt);
+      }catch(final GatsbiException e){
+         Messagebox.show(handleExceptionMessage(e), "Error", Messagebox.OK, Messagebox.ERROR);
+      }
+   }
 
-		GatsbiController.addNewObjectForContext(SessionUtils.getCurrentGatsbiContexteForEntiteId(3),
-				tabController.getListe().getSelfComponent(), e -> {
-					try {
-						super.onClick$addEchan(event);
-					} catch (Exception ex) {
-						Messagebox.show(handleExceptionMessage(ex), "Error", Messagebox.OK, Messagebox.ERROR);
-					}
-				}, event, this.prelevement);
-	}
+   @Override
+   public void onClick$addEchan(final Event event) throws Exception{
 
-	/*********** inner lists ******************/
+      final EchantillonController tabController = (EchantillonController) EchantillonController.backToMe(getMainWindow(), page);
 
-	@Override
-	public EchantillonRowRenderer getEchantillonRenderer() {
-		return echantillonRendererGatsbi;
-	}
+      GatsbiController.addNewObjectForContext(SessionUtils.getCurrentGatsbiContexteForEntiteId(3),
+         tabController.getListe().getSelfComponent(), e -> {
+            try{
+               super.onClick$addEchan(event);
+            }catch(final Exception ex){
+               Messagebox.show(handleExceptionMessage(ex), "Error", Messagebox.OK, Messagebox.ERROR);
+            }
+         }, event, this.prelevement);
+   }
+
+   /*********** inner lists ******************/
+
+   @Override
+   public EchantillonRowRenderer getEchantillonRenderer(){
+      return echantillonRendererGatsbi;
+   }
 }

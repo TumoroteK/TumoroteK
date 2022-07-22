@@ -83,10 +83,15 @@ public class XmlUtilsImpl implements XmlUtils
    private final Log log = LogFactory.getLog(XmlUtils.class);
 
    private Resource xslPdfMainResource;
+
    private Resource xslHtmlMainResource;
+
    private Resource xslHtmlBoiteResource;
+
    private Resource xslHtmlContenuResource;
+
    private Resource xslPdfAccordTransfert;
+
    private EmplacementManager emplacementManager;
 
    public void setXslPdfMainResource(final Resource xResource){
@@ -379,8 +384,8 @@ public class XmlUtilsImpl implements XmlUtils
          root.addContent(page);
          return page;
       }
-         return null;
-      }
+      return null;
+   }
 
    @Override
    public void addTitreForDocument(final Element root, final String titre){
@@ -432,7 +437,7 @@ public class XmlUtilsImpl implements XmlUtils
 
          //On utilise ici un affichage classique avec getPrettyFormat()
          final XMLOutputter sortie = new XMLOutputter(Format.getPrettyFormat());
-         FileOutputStream fis = new FileOutputStream(xml);
+         final FileOutputStream fis = new FileOutputStream(xml);
          sortie.output(doc, fis);
          fis.close();
       }catch(final IOException e){
@@ -531,7 +536,7 @@ public class XmlUtilsImpl implements XmlUtils
          // Setup input for XSLT transformation
          final Source src = new DOMSource(transformed);
 
-         // Resulting SAX events (the generated FO) must 
+         // Resulting SAX events (the generated FO) must
          // be piped through to FOP
          final Result res = new SAXResult(fop.getDefaultHandler());
 
@@ -569,8 +574,8 @@ public class XmlUtilsImpl implements XmlUtils
          root.addContent(page);
          return page;
       }
-         return null;
-      }
+      return null;
+   }
 
    @Override
    public void addTitreIntermediaire(final Element elt, final String titre){
@@ -1022,8 +1027,8 @@ public class XmlUtilsImpl implements XmlUtils
          root.addContent(page);
          return page;
       }
-         return null;
-      }
+      return null;
+   }
 
    @Override
    public void addListeParents(final Element elt, final List<String> listeParents){
@@ -1261,8 +1266,8 @@ public class XmlUtilsImpl implements XmlUtils
       if(terminale.getTerminaleNumerotation().getColonne().equals("CAR")){
          return Utils.createListChars(num, null, new ArrayList<String>()).get(num - 1);
       }
-         return String.valueOf(num);
-      }
+      return String.valueOf(num);
+   }
 
    /**
     * Retourne la valeur à afficher pour une ordonnée.
@@ -1271,8 +1276,8 @@ public class XmlUtilsImpl implements XmlUtils
       if(terminale.getTerminaleNumerotation().getLigne().equals("CAR")){
          return Utils.createListChars(num, null, new ArrayList<String>()).get(num - 1);
       }
-         return String.valueOf(num);
-      }
+      return String.valueOf(num);
+   }
 
    @Override
    public void addBoiteContenu(final Element elt, final BoiteContenu boite, final String adrImages,
@@ -1495,7 +1500,7 @@ public class XmlUtilsImpl implements XmlUtils
          // Setup input for XSLT transformation
          final Source src = new DOMSource(transformed);
 
-         // Resulting SAX events (the generated FO) must 
+         // Resulting SAX events (the generated FO) must
          // be piped through to FOP
          final Result res = new SAXResult(fop.getDefaultHandler());
 

@@ -58,6 +58,7 @@ public class ResultSetToCsv extends ResultSetToExcel
 {
 
    private static final NumberFormat decimalFormat = new DecimalFormat("####.##");
+
    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm");
 
    private final OutputStream outStream;
@@ -92,17 +93,17 @@ public class ResultSetToCsv extends ResultSetToExcel
             && getExport().getMapCorrespondanceAnnotationName().containsKey(title)){
             title = getExport().getMapCorrespondanceAnnotationName().get(title);
          }
-		
+
          // @since 2.2.3-genno anonyme -> 3 etats possibles (nominatif, anonyme, anonymestock)
-         if(getProfilExport() != null && !getProfilExport().equals(ProfilExport.NOMINATIF)) {
-				// ces traits seront toujours masqués
-            if (title.equalsIgnoreCase("patient_nda")
-               || title.equalsIgnoreCase("patient_id") || title.equalsIgnoreCase("nip") || title.equalsIgnoreCase("nom_naissance")
-               || title.equalsIgnoreCase("nom") || title.equalsIgnoreCase("prenom") || title.equalsIgnoreCase("date_naissance")){
+         if(getProfilExport() != null && !getProfilExport().equals(ProfilExport.NOMINATIF)){
+            // ces traits seront toujours masqués
+            if(title.equalsIgnoreCase("patient_nda") || title.equalsIgnoreCase("patient_id") || title.equalsIgnoreCase("nip")
+               || title.equalsIgnoreCase("nom_naissance") || title.equalsIgnoreCase("nom") || title.equalsIgnoreCase("prenom")
+               || title.equalsIgnoreCase("date_naissance")){
                getAnonymeColumn().add(i);
-            } else if (title.equalsIgnoreCase("emplacement") && getProfilExport().equals(ProfilExport.ANONYME)) { // anonyme strict (sans accès stockage)
-            	getAnonymeColumn().add(i);
-			}
+            }else if(title.equalsIgnoreCase("emplacement") && getProfilExport().equals(ProfilExport.ANONYME)){ // anonyme strict (sans accès stockage)
+               getAnonymeColumn().add(i);
+            }
          }
 
          final Class<?> _class = Class.forName(resultSetMetaData.getColumnClassName(i + 1));
@@ -123,7 +124,7 @@ public class ResultSetToCsv extends ResultSetToExcel
          //				entite = "Cession";
          //			}
 
-         // writeCell(row, i, isAnno ? title : labelPrintTitle(title, entite), 
+         // writeCell(row, i, isAnno ? title : labelPrintTitle(title, entite),
          //								formatTypes[i], boldStyle);
       }
 

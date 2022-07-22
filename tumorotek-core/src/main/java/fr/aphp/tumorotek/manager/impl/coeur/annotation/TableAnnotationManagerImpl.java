@@ -93,15 +93,25 @@ public class TableAnnotationManagerImpl implements TableAnnotationManager
 
    /* Beans injectes par Spring*/
    private TableAnnotationDao tableAnnotationDao;
+
    private TableAnnotationValidator tableAnnotationValidator;
+
    private OperationManager operationManager;
+
    private OperationTypeDao operationTypeDao;
+
    private TableAnnotationBanqueDao tableAnnotationBanqueDao;
+
    private AnnotationValeurManager annotationValeurManager;
+
    private ChampAnnotationDao champAnnotationDao;
+
    private ChampAnnotationManager champAnnotationManager;
+
    private EntiteDao entiteDao;
+
    private CatalogueDao catalogueDao;
+
    private PlateformeDao plateformeDao;
 
    public TableAnnotationManagerImpl(){}
@@ -202,7 +212,7 @@ public class TableAnnotationManagerImpl implements TableAnnotationManager
                // en cas d'erreur lors enregistrement d'un champ lors de
                // la creation de la table
                // le rollback se fera mais la table aura un id assigne
-               // qui déclenchera une TransientException si on essaie 
+               // qui déclenchera une TransientException si on essaie
                // d'enregistrer a nouveau.
                if(table.getTableAnnotationId() != null && operation.equals("creation")){
                   final List<TableAnnotationBanque> tabs = new ArrayList<>(table.getTableAnnotationBanques());
@@ -257,8 +267,8 @@ public class TableAnnotationManagerImpl implements TableAnnotationManager
       if(table.getTableAnnotationId() == null){
          return tableAnnotationDao.findAll().contains(table);
       }
-         return tableAnnotationDao.findByExcludedId(table.getTableAnnotationId()).contains(table);
-      }
+      return tableAnnotationDao.findByExcludedId(table.getTableAnnotationId()).contains(table);
+   }
 
    @Override
    public Set<Banque> getBanquesManager(final TableAnnotation tab){
@@ -316,13 +326,12 @@ public class TableAnnotationManagerImpl implements TableAnnotationManager
       }
    }
 
-
    /**
     * Cette méthode met à jour les associations entre une table et
     * une liste de TableAnnotationBanque.
-    * @param table 
+    * @param table
     * @param liste de banques
-    * @param base Directory utilisé pour mettre à jour les associations 
+    * @param base Directory utilisé pour mettre à jour les associations
     * entre les chps de type fichier de la table et le file system.
     */
    private void updateBanques(final TableAnnotation tableAnno, final List<Banque> banques, final String baseDir){
@@ -389,7 +398,7 @@ public class TableAnnotationManagerImpl implements TableAnnotationManager
    }
 
    /**
-    * Supprime en cascade toutes les valeurs d'annotations lors de la 
+    * Supprime en cascade toutes les valeurs d'annotations lors de la
     * suppression de l'assignation d'une table vers une banque.
     * @param tab TableAnnotationBanque
     * @param base Directory
@@ -417,7 +426,7 @@ public class TableAnnotationManagerImpl implements TableAnnotationManager
    }
 
    /**
-    * Verifie que les Objets devant etre obligatoirement associes 
+    * Verifie que les Objets devant etre obligatoirement associes
     * sont non nulls et lance la validation via le Validator.
     * @param table
     * @param entite
@@ -474,7 +483,7 @@ public class TableAnnotationManagerImpl implements TableAnnotationManager
                defs.addAll(champs.get(i).getAnnotationDefauts());
                champs.get(i).setAnnotationDefauts(new HashSet<AnnotationDefaut>());
             }
-            
+
             if(null != champs.get(i).getChampCalcule()){
                cc = champs.get(i).getChampCalcule();
                champs.get(i).setChampCalcule(null);
@@ -488,8 +497,8 @@ public class TableAnnotationManagerImpl implements TableAnnotationManager
             }
          }
       }catch(final RuntimeException re){
-         // en cas d'erreur lors creation d'un champ, recupere 
-         // les ids enregistre avant creation/modification pour 
+         // en cas d'erreur lors creation d'un champ, recupere
+         // les ids enregistre avant creation/modification pour
          // retrouver etat initial au niveau des ids
          // et des valeurs defauts?
          for(int i = 0; i < champs.size(); i++){

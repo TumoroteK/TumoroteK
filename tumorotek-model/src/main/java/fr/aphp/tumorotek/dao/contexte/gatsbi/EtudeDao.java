@@ -1,5 +1,5 @@
 /**
- * Copyright ou © ou Copr. Assistance Publique des Hôpitaux de 
+ * Copyright ou © ou Copr. Assistance Publique des Hôpitaux de
  * PARIS et SESAN
  * projet-tk@sesan.fr
  *
@@ -47,14 +47,15 @@ import fr.aphp.tumorotek.model.contexte.gatsbi.Etude;
  * @version 2.3.0
  *
  */
-public interface EtudeDao extends GenericDaoJpa<Etude, Integer> {
-	
-	/**
-	 * Recherche toutes les études définies pour la 
-	 * plateforme passée en paramètre.
-	 * Ordonnée par leur titre
-	 * @param pf
-	 * @return liste etude
-	 */
-	List<Etude> findByPfOrder(Plateforme pf);
+public interface EtudeDao extends GenericDaoJpa<Etude, Integer>
+{
+
+   /**
+    * Recherche toutes les études définies pour la 
+    * plateforme passée en paramètre.
+    * Ordonnée par leur titre
+    * @param pf
+    * @return liste etude
+    */
+   List<Etude> findByPfOrder(Plateforme pf);
 }

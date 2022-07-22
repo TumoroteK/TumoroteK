@@ -43,6 +43,7 @@ public class ChartDataFusion
 {
 
    static CategoryModel model = new SimpleCategoryModel();
+
    static CategoryModel model2 = new SimpleCategoryModel();
 
    public void emptyIt(){

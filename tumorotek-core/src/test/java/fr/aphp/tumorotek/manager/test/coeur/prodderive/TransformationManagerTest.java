@@ -76,16 +76,22 @@ public class TransformationManagerTest extends AbstractManagerTest4
 
    @Autowired
    private TransformationManager transformationManager;
+
    @Autowired
    private EntiteManager entiteManager;
+
    @Autowired
    private EchantillonManager echantillonManager;
+
    @Autowired
    private EchantillonTypeManager echantillonTypeManager;
+
    @Autowired
    private UniteManager uniteManager;
+
    @Autowired
    private ProdDeriveManager prodDeriveManager;
+
    @Autowired
    private UtilisateurDao utilisateurDao;
 

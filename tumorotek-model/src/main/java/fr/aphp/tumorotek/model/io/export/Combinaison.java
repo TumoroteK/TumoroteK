@@ -61,8 +61,11 @@ public class Combinaison
 {
 
    private Integer combinaisonId;
+
    private String operateur;
+
    private Champ champ1;
+
    private Champ champ2;
 
    public Combinaison(){

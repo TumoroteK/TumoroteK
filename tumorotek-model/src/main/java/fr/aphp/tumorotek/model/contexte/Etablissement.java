@@ -93,16 +93,23 @@ public class Etablissement implements TKdataObject, TKFantomableObject, java.io.
    private static final long serialVersionUID = 1235484325153L;
 
    private Integer etablissementId;
+
    private String nom;
+
    private String finess;
+
    private boolean local;
+
    private Boolean archive = false;
 
    private Coordonnee coordonnee;
+
    private Categorie categorie;
 
    private Set<Service> services = new HashSet<>();
+
    private Set<Collaborateur> collaborateurs = new HashSet<>();
+
    private Set<Contrat> contrats = new HashSet<>();
 
    /**

@@ -1,5 +1,5 @@
 /**
- * Copyright ou © ou Copr. Assistance Publique des Hôpitaux de 
+ * Copyright ou © ou Copr. Assistance Publique des Hôpitaux de
  * PARIS et SESAN
  * projet-tk@sesan.fr
  *
@@ -48,6 +48,7 @@ import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Groupbox;
 import org.zkoss.zul.Listbox;
+
 import fr.aphp.tumorotek.action.patient.ResumePatient;
 import fr.aphp.tumorotek.action.prelevement.FichePrelevementEdit;
 import fr.aphp.tumorotek.model.coeur.prelevement.LaboInter;
@@ -63,108 +64,104 @@ import fr.aphp.tumorotek.webapp.gatsbi.GatsbiController;
  * @version 2.3.0-gatsbi
  *
  */
-public class FichePrelevementEditGatsbi extends FichePrelevementEdit {
+public class FichePrelevementEditGatsbi extends FichePrelevementEdit
+{
 
-	private static final long serialVersionUID = 1L;
+   private static final long serialVersionUID = 1L;
 
-	private List<Listbox> reqListboxes = new ArrayList<Listbox>();
-	private List<Combobox> reqComboboxes = new ArrayList<Combobox>();
-	private List<Div> reqConformeDivs = new ArrayList<Div>();
-	
+   private final List<Listbox> reqListboxes = new ArrayList<>();
 
-	// @wire
-	private Groupbox groupPrlvt;
+   private final List<Combobox> reqComboboxes = new ArrayList<>();
 
-	private Contexte c;
+   private final List<Div> reqConformeDivs = new ArrayList<>();
 
-	@Override
-	public void doAfterCompose(final Component comp) throws Exception {
-		super.doAfterCompose(comp);
+   // @wire
+   private Groupbox groupPrlvt;
 
-		c = GatsbiController.initWireAndDisplay(this, 
-					2, 
-					true, reqListboxes, reqComboboxes, reqConformeDivs,
-					groupPrlvt, groupPrlvt);
+   private Contexte c;
 
+   @Override
+   public void doAfterCompose(final Component comp) throws Exception{
+      super.doAfterCompose(comp);
 
-		// setRows ne marche pas ?
-		// seul moyen trouvé pour augmenter hauteur et voir tous les items de la listbox
-		risquesBox.setHeight(c.getThesaurusValuesForChampEntiteId(249).size() * 25 + "px");
-	}
+      c = GatsbiController.initWireAndDisplay(this, 2, true, reqListboxes, reqComboboxes, reqConformeDivs, groupPrlvt,
+         groupPrlvt);
 
-	@Override
-	protected ResumePatient initResumePatient() {
-		return new ResumePatient(groupPatient, true);
-	}
+      // setRows ne marche pas ?
+      // seul moyen trouvé pour augmenter hauteur et voir tous les items de la listbox
+      risquesBox.setHeight(c.getThesaurusValuesForChampEntiteId(249).size() * 25 + "px");
+   }
 
-	@Override
-	protected void enablePatientGroup(boolean b) {
-		((Groupbox) this.groupPatient).setOpen(b);
-		((Groupbox) this.groupPatient).setClosable(b);
-	}
+   @Override
+   protected ResumePatient initResumePatient(){
+      return new ResumePatient(groupPatient, true);
+   }
 
-	/**
-	 * Surcharge Gastbi pour conserver sélectivement la
-	 * contrainte de sélection obligatiure des listes nature et statut juridique 
-	 * dans le contexte TK historique
-	 */
-	@Override
-	protected void checkRequiredListboxes() {
-		GatsbiController.checkRequiredNonInputComponents(reqListboxes, null, null);
-	}
+   @Override
+   protected void enablePatientGroup(final boolean b){
+      ((Groupbox) this.groupPatient).setOpen(b);
+      ((Groupbox) this.groupPatient).setClosable(b);
+   }
 
-	/**
-	 * Processing echoEvent. Gatsbi surcharge... si aucun champ de formulaire dans
-	 * la page de transfert vers le site de stockage, passe directement à
-	 * l'échantillon.
-	 *
-	 * @see onClick$next
-	 */
-	@Override
-	public void onLaterNextStep() {
+   /**
+    * Surcharge Gastbi pour conserver sélectivement la
+    * contrainte de sélection obligatiure des listes nature et statut juridique
+    * dans le contexte TK historique
+    */
+   @Override
+   protected void checkRequiredListboxes(){
+      GatsbiController.checkRequiredNonInputComponents(reqListboxes, null, null);
+   }
 
-		log.debug("Surcharge Gastbi pour vérifier que la page de transfert des sites intermédiaire est affichée");
+   /**
+    * Processing echoEvent. Gatsbi surcharge... si aucun champ de formulaire dans
+    * la page de transfert vers le site de stockage, passe directement à
+    * l'échantillon.
+    *
+    * @see onClick$next
+    */
+   @Override
+   public void onLaterNextStep(){
 
-		// vérifie si au moins un des champs de formulaires est affiché
-		boolean oneDivVisible = c.getChampEntites().stream()
-				.filter(c -> Arrays.asList(35, 36, 37, 38, 39, 40, 256, 267, 268).contains(c.getChampEntiteId()))
-				.anyMatch(c -> c.getVisible());
+      log.debug("Surcharge Gastbi pour vérifier que la page de transfert des sites intermédiaire est affichée");
 
-		if (oneDivVisible || c.getSiteIntermediaire()) {
-			super.onLaterNextStep();
-		} else { // aucun formulaire n'est affiché -> passage direct à l'onglet échantillon
-			log.debug("Aucun formulaire à affiché dans la page transfert vers le site préleveur...");
-			if (this.prelevement.getPrelevementId() != null) {
-				getObjectTabController().switchToMultiEchantillonsEditMode(this.prelevement, new ArrayList<LaboInter>(),
-						new ArrayList<LaboInter>());
-			} else {
-				// si nous sommes dans une action de création, on
-				// appelle la page FicheMultiEchantillons en mode create
-				getObjectTabController().switchToMultiEchantillonsCreateMode(this.prelevement,
-						new ArrayList<LaboInter>());
-			}
+      // vérifie si au moins un des champs de formulaires est affiché
+      final boolean oneDivVisible = c.getChampEntites().stream()
+         .filter(c -> Arrays.asList(35, 36, 37, 38, 39, 40, 256, 267, 268).contains(c.getChampEntiteId()))
+         .anyMatch(c -> c.getVisible());
 
-			Clients.clearBusy();
-		}
-	}
+      if(oneDivVisible || c.getSiteIntermediaire()){
+         super.onLaterNextStep();
+      }else{ // aucun formulaire n'est affiché -> passage direct à l'onglet échantillon
+         log.debug("Aucun formulaire à affiché dans la page transfert vers le site préleveur...");
+         if(this.prelevement.getPrelevementId() != null){
+            getObjectTabController().switchToMultiEchantillonsEditMode(this.prelevement, new ArrayList<LaboInter>(),
+               new ArrayList<LaboInter>());
+         }else{
+            // si nous sommes dans une action de création, on
+            // appelle la page FicheMultiEchantillons en mode create
+            getObjectTabController().switchToMultiEchantillonsCreateMode(this.prelevement, new ArrayList<LaboInter>());
+         }
 
-	/**
-	 * Surcharge pour gérer la redirection d'évènement lors du choix d'un paramétrage
-	 */
-	@Override
-	public void onGetInjectionDossierExterneDone(Event e) {
-		super.onGetInjectionDossierExterneDone(((ForwardEvent) e).getOrigin());
-	}
+         Clients.clearBusy();
+      }
+   }
 
-	/**
-	 * Plus d'obligation
-	 */
-	@Override
-	public void onSelect$naturesBoxPrlvt() {
-	}
+   /**
+    * Surcharge pour gérer la redirection d'évènement lors du choix d'un paramétrage
+    */
+   @Override
+   public void onGetInjectionDossierExterneDone(final Event e){
+      super.onGetInjectionDossierExterneDone(((ForwardEvent) e).getOrigin());
+   }
 
-	@Override
-	public void onSelect$consentTypesBoxPrlvt() {
-	}
+   /**
+    * Plus d'obligation
+    */
+   @Override
+   public void onSelect$naturesBoxPrlvt(){}
+
+   @Override
+   public void onSelect$consentTypesBoxPrlvt(){}
 
 }

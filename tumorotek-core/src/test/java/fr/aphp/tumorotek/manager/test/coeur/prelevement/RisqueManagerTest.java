@@ -68,8 +68,10 @@ public class RisqueManagerTest extends AbstractManagerTest4
 
    @Autowired
    private RisqueManager risqueManager;
+
    @Autowired
    private PlateformeDao plateformeDao;
+
    @Autowired
    private PatientDao patientDao;
 

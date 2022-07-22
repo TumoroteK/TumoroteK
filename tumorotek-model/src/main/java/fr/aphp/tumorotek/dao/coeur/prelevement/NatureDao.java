@@ -54,7 +54,7 @@ public interface NatureDao extends GenericDaoJpa<Nature, Integer>, PfDependantTK
 {
 
    /**
-    * Recherche les natures de prelevement dont la nature 
+    * Recherche les natures de prelevement dont la nature
     * est 'like' le paramètre.
     * @param nature Nature de prelevements recherchées.
     * @return Liste de natures de prelevements.

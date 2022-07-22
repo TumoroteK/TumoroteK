@@ -65,130 +65,132 @@ import fr.aphp.tumorotek.model.coeur.patient.PatientLienPK;
 public class PatientLienManagerTest extends AbstractManagerTest4
 {
 
-	@Autowired
-	private PatientLienManager patientLienManager;
-	@Autowired
-	private PatientLienDao patientLienDao;
-	@Autowired
-	private LienFamilialDao lienFamilialDao;
-	@Autowired
-	private PatientDao patientDao;
+   @Autowired
+   private PatientLienManager patientLienManager;
 
-	public PatientLienManagerTest(){}
+   @Autowired
+   private PatientLienDao patientLienDao;
 
+   @Autowired
+   private LienFamilialDao lienFamilialDao;
 
-	@Test
-	public void testCRUD() throws ParseException{
-		createObjectManagerTest();
-		updateObjectManagerTest();
-		removeObjectManagerTest();
-	}
+   @Autowired
+   private PatientDao patientDao;
 
-	private void createObjectManagerTest() throws ParseException{
-		//Insertion nouvel enregistrement
-		final PatientLien pl = new PatientLien();
-		/*Champs obligatoires*/
-		final Patient p1 = patientDao.findById(1);
-		final Patient p2 = patientDao.findById(2);
-		final LienFamilial l = lienFamilialDao.findById(1);
-		//insertion
-		patientLienManager.createOrUpdateObjectManager(pl, p1, p2, l, "creation");
-		assertNotNull(patientLienDao.findById(new PatientLienPK(p1, p2)));
+   public PatientLienManagerTest(){}
 
-		//Insertion d'un doublon engendrant une exception
-		PatientLien pl2 = new PatientLien();
-		Boolean catched = false;
-		try{
-			patientLienManager.createOrUpdateObjectManager(pl2, p2, p1, l, "creation");
-		}catch(final Exception e){
-			if(e.getClass().getSimpleName().equals("DoublonFoundException")){
-				catched = true;
-			}
-		}
-		assertTrue(catched);
-		assertTrue(patientLienDao.findAll().size() == 3);
+   @Test
+   public void testCRUD() throws ParseException{
+      createObjectManagerTest();
+      updateObjectManagerTest();
+      removeObjectManagerTest();
+   }
 
-		//validation test Type
-		final Patient[] patients = new Patient[] {null, p1, p2};
-		final LienFamilial[] liens = new LienFamilial[] {null, l};
+   private void createObjectManagerTest() throws ParseException{
+      //Insertion nouvel enregistrement
+      final PatientLien pl = new PatientLien();
+      /*Champs obligatoires*/
+      final Patient p1 = patientDao.findById(1);
+      final Patient p2 = patientDao.findById(2);
+      final LienFamilial l = lienFamilialDao.findById(1);
+      //insertion
+      patientLienManager.createOrUpdateObjectManager(pl, p1, p2, l, "creation");
+      assertNotNull(patientLienDao.findById(new PatientLienPK(p1, p2)));
 
-		int i = 0, j = 0;
-		final int k = 0;
+      //Insertion d'un doublon engendrant une exception
+      PatientLien pl2 = new PatientLien();
+      Boolean catched = false;
+      try{
+         patientLienManager.createOrUpdateObjectManager(pl2, p2, p1, l, "creation");
+      }catch(final Exception e){
+         if(e.getClass().getSimpleName().equals("DoublonFoundException")){
+            catched = true;
+         }
+      }
+      assertTrue(catched);
+      assertTrue(patientLienDao.findAll().size() == 3);
 
-		pl2 = new PatientLien();
-		for(i = 0; i < patients.length; i++){
-			validationTest(pl2, patients[i], patients[j], liens[k], false);
-		}
-		i--;
-		for(j = 0; j < patients.length; j++){
-			validationTest(pl2, patients[i], patients[j], liens[k], false);
-		}
-		j--;
-		validationTest(pl2, patients[i], patients[j], liens[k], false);
+      //validation test Type
+      final Patient[] patients = new Patient[] {null, p1, p2};
+      final LienFamilial[] liens = new LienFamilial[] {null, l};
 
-		// teste operation mal renseigne
-		try{
-			patientLienManager.createOrUpdateObjectManager(pl2, null, null, null, null);
-		}catch(final NullPointerException ne){
-			assertTrue(true);
-		}
-		try{
-			patientLienManager.createOrUpdateObjectManager(pl2, null, null, l, "dummy");
-		}catch(final IllegalArgumentException ie){
-			assertTrue(true);
-		}
-		assertTrue(patientLienDao.findAll().size() == 3);
-	}
+      int i = 0, j = 0;
+      final int k = 0;
 
-	private void validationTest(final PatientLien pl, final Patient p1, final Patient p2, final LienFamilial lien,
-			final boolean isValide){
-		try{
-			if(!isValide){ //car creation valide
-				patientLienManager.createOrUpdateObjectManager(pl, p1, p2, lien, "creation");
-			}
-		}catch(final Exception e){
-			assertTrue(e.getClass().getSimpleName().equals("RequiredObjectIsNullException"));
-		}
-	}
+      pl2 = new PatientLien();
+      for(i = 0; i < patients.length; i++){
+         validationTest(pl2, patients[i], patients[j], liens[k], false);
+      }
+      i--;
+      for(j = 0; j < patients.length; j++){
+         validationTest(pl2, patients[i], patients[j], liens[k], false);
+      }
+      j--;
+      validationTest(pl2, patients[i], patients[j], liens[k], false);
 
-	private void updateObjectManagerTest() throws ParseException{
-		final PatientLienPK pk = new PatientLienPK();
-		pk.setPatient1(patientDao.findById(1));
-		pk.setPatient2(patientDao.findById(2));
-		//Modification d'un enregistrement
-		final PatientLien pl = patientLienDao.findById(pk);
-		pl.setLienFamilial(lienFamilialDao.findById(2));
-		patientLienManager.createOrUpdateObjectManager(pl, null, null, null, "modification");
-		assertTrue(patientLienDao.findById(pk).getLienFamilial().equals(lienFamilialDao.findById(2)));
-		// Modification d'un membre de la clef = cree un nouvel object
-		//Patient p3 = patientDao.findById(3);
-		//		patientLienManager.createOrUpdateObjectManager(pl, null, p3, 
-		//														null, "modification");
-		//		pk.setPatient2(p3);
-		//		assertNotNull(patientLienDao.findById(pk));
+      // teste operation mal renseigne
+      try{
+         patientLienManager.createOrUpdateObjectManager(pl2, null, null, null, null);
+      }catch(final NullPointerException ne){
+         assertTrue(true);
+      }
+      try{
+         patientLienManager.createOrUpdateObjectManager(pl2, null, null, l, "dummy");
+      }catch(final IllegalArgumentException ie){
+         assertTrue(true);
+      }
+      assertTrue(patientLienDao.findAll().size() == 3);
+   }
 
-		//Modification en un doublon engendrant une exception
-		Boolean catched = false;
-		try{
-			patientLienManager.createOrUpdateObjectManager(pl, patientDao.findById(2), patientDao.findById(5),
-					lienFamilialDao.findById(3), "modification");
-		}catch(final DoublonFoundException e){
-			catched = true;
-		}
-		assertTrue(catched);
-		assertNotNull(patientLienDao.findById(pk));
+   private void validationTest(final PatientLien pl, final Patient p1, final Patient p2, final LienFamilial lien,
+      final boolean isValide){
+      try{
+         if(!isValide){ //car creation valide
+            patientLienManager.createOrUpdateObjectManager(pl, p1, p2, lien, "creation");
+         }
+      }catch(final Exception e){
+         assertTrue(e.getClass().getSimpleName().equals("RequiredObjectIsNullException"));
+      }
+   }
 
-		//test validation inutile car teste dans le create
-	}
+   private void updateObjectManagerTest() throws ParseException{
+      final PatientLienPK pk = new PatientLienPK();
+      pk.setPatient1(patientDao.findById(1));
+      pk.setPatient2(patientDao.findById(2));
+      //Modification d'un enregistrement
+      final PatientLien pl = patientLienDao.findById(pk);
+      pl.setLienFamilial(lienFamilialDao.findById(2));
+      patientLienManager.createOrUpdateObjectManager(pl, null, null, null, "modification");
+      assertTrue(patientLienDao.findById(pk).getLienFamilial().equals(lienFamilialDao.findById(2)));
+      // Modification d'un membre de la clef = cree un nouvel object
+      //Patient p3 = patientDao.findById(3);
+      //		patientLienManager.createOrUpdateObjectManager(pl, null, p3, 
+      //														null, "modification");
+      //		pk.setPatient2(p3);
+      //		assertNotNull(patientLienDao.findById(pk));
 
-	private void removeObjectManagerTest(){
-		final PatientLienPK pk = new PatientLienPK(patientDao.findById(1), patientDao.findById(2));
-		//Suppression de l'enregistrement precedemment insere
-		final PatientLien pl1 = patientLienDao.findById(pk);
-		patientLienManager.removeObjectManager(pl1);
-		assertNull(patientLienDao.findById(pk));
+      //Modification en un doublon engendrant une exception
+      Boolean catched = false;
+      try{
+         patientLienManager.createOrUpdateObjectManager(pl, patientDao.findById(2), patientDao.findById(5),
+            lienFamilialDao.findById(3), "modification");
+      }catch(final DoublonFoundException e){
+         catched = true;
+      }
+      assertTrue(catched);
+      assertNotNull(patientLienDao.findById(pk));
 
-		patientLienManager.removeObjectManager(null);
-		assertTrue(patientLienDao.findAll().size() == 2);
-	}
+      //test validation inutile car teste dans le create
+   }
+
+   private void removeObjectManagerTest(){
+      final PatientLienPK pk = new PatientLienPK(patientDao.findById(1), patientDao.findById(2));
+      //Suppression de l'enregistrement precedemment insere
+      final PatientLien pl1 = patientLienDao.findById(pk);
+      patientLienManager.removeObjectManager(pl1);
+      assertNull(patientLienDao.findById(pk));
+
+      patientLienManager.removeObjectManager(null);
+      assertTrue(patientLienDao.findAll().size() == 2);
+   }
 }

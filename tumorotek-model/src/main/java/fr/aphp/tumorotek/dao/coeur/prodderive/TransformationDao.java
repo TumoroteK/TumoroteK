@@ -62,9 +62,9 @@ public interface TransformationDao extends GenericDaoJpa<Transformation, Integer
    List<Transformation> findByEntiteObjet(Entite entite, Integer objetId);
 
    /**
-    * Recherche toutes les Transformations, sauf celle dont l'id est passé 
+    * Recherche toutes les Transformations, sauf celle dont l'id est passé
     * en paramètre.
-    * @param transformationId Identifiant de la Transformation que l'on 
+    * @param transformationId Identifiant de la Transformation que l'on
     * souhaite exclure de la liste retournée.
     * @return une liste de Transformation.
     */

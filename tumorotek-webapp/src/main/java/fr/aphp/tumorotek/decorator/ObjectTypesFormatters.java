@@ -154,28 +154,28 @@ public final class ObjectTypesFormatters
    public static String doubleLitteralFormatter(final Double d){
       return dF.format(d);
    }
-   
-   public static String doubleLitteralFormatter(final Double d, DecimalFormatSymbols dfs){
-      DecimalFormat dEn = new DecimalFormat("###.###", dfs);
+
+   public static String doubleLitteralFormatter(final Double d, final DecimalFormatSymbols dfs){
+      final DecimalFormat dEn = new DecimalFormat("###.###", dfs);
       return dEn.format(d);
    }
-   
+
    /**
     * @since 2.3.0-gatsbi
     * @param number
     * @return
     * @throws ParseException
     */
-	public static String formatAnyNumber(Number number) throws ParseException {
-		if (number != null) {
-			if (number instanceof Integer) {
-				return ((Integer) number).toString();
-			} else if (number instanceof Double) {
-				return doubleLitteralFormatter((Double) number);
-			}
-		}
-		return new NumberFormatter().valueToString(number);
-	}
+   public static String formatAnyNumber(final Number number) throws ParseException{
+      if(number != null){
+         if(number instanceof Integer){
+            return ((Integer) number).toString();
+         }else if(number instanceof Double){
+            return doubleLitteralFormatter((Double) number);
+         }
+      }
+      return new NumberFormatter().valueToString(number);
+   }
 
    /**
     * Arrondi d'un double avec n éléments après la virgule.
@@ -402,9 +402,9 @@ public final class ObjectTypesFormatters
             labelAndLinkBox.appendChild(c1Label);
             labelAndLinkBox.appendChild(moreLabel);
             if(row != null){
-               int idx = pos == null ? row.getChildren().size() : pos;
+               final int idx = pos == null ? row.getChildren().size() : pos;
                row.getChildren().add(idx, labelAndLinkBox);
-//               labelAndLinkBox.setParent(row);
+               //               labelAndLinkBox.setParent(row);
             }else{
                final Listcell cell = new Listcell();
                labelAndLinkBox.setParent(cell);
@@ -412,9 +412,9 @@ public final class ObjectTypesFormatters
             }
          }else{
             if(row != null){
-               int idx = pos == null ? row.getChildren().size() : pos;
+               final int idx = pos == null ? row.getChildren().size() : pos;
                row.getChildren().add(idx, c1Label);
-//               c1Label.setParent(row);
+               //               c1Label.setParent(row);
             }else{
                final Listcell cell = new Listcell();
                c1Label.setParent(cell);
@@ -423,9 +423,9 @@ public final class ObjectTypesFormatters
          }
       }else{
          if(row != null){
-            int idx = pos == null ? row.getChildren().size() : pos;
+            final int idx = pos == null ? row.getChildren().size() : pos;
             row.getChildren().add(idx, new Label());
-//            new Label().setParent(row);
+            //            new Label().setParent(row);
          }else{
             final Listcell cell = new Listcell();
             cell.setParent(li);
@@ -437,7 +437,7 @@ public final class ObjectTypesFormatters
       final boolean addCodeEchan){
       drawCodesExpLabel(codes, row, li, addCodeEchan, null);
    }
-   
+
    //	/**
    //	 * Place le code exporté en premier dans la liste.
    //	 * @param codes
@@ -514,13 +514,13 @@ public final class ObjectTypesFormatters
          String nomChamp = null;
 
          String propertyKey = "Champ.";
-         
+
          if(champ.getChampEntite() != null){
             nomEntite = champ.getChampEntite().getEntite().getNom();
             nomChamp = champ.getChampEntite().getNom().replace("Id", "");
             propertyKey += nomEntite + "." + nomChamp;
          }else if(champ.getChampDelegue() != null){
-            EContexte contexte = champ.getChampDelegue().getContexte();
+            final EContexte contexte = champ.getChampDelegue().getContexte();
             nomEntite = champ.getChampDelegue().getEntite().getNom();
             nomChamp = champ.getChampDelegue().getNom().replace("Id", "");
             propertyKey += nomEntite + "." + contexte.getNom() + "." + StringUtils.capitalize(nomChamp);
@@ -628,12 +628,12 @@ public final class ObjectTypesFormatters
     * @return Délai en heure/min.
     */
    public static String getHeureMinuteLabel(final Integer minuteValue){
-      final Integer heure = minuteValue / 60;
+      final int heure = minuteValue / 60;
       Integer heureDelai = 0;
       Integer minDelai = 0;
       String resultat = "";
       if(heure > 0){
-         heureDelai = heure.intValue();
+         heureDelai = heure;
          minDelai = minuteValue - (heureDelai * 60);
          final StringBuffer sb = new StringBuffer();
          sb.append(heureDelai.toString());
@@ -791,11 +791,11 @@ public final class ObjectTypesFormatters
          champNom = champ.nom().substring(0, champNom.length() - 2);
       }
       final String entiteNom = champ.entite().getNom();
-      
-      if(champ.getChampEntite() != null) {
+
+      if(champ.getChampEntite() != null){
          labelChamp = Labels.getLabel("Champ." + entiteNom + "." + champNom);
-      } else if(champ.getChampDelegue() != null){
-         EContexte contexte = champ.getChampDelegue().getContexte();
+      }else if(champ.getChampDelegue() != null){
+         final EContexte contexte = champ.getChampDelegue().getContexte();
          labelChamp = Labels.getLabel("Champ." + entiteNom + "." + contexte.getNom() + "." + StringUtils.capitalize(champNom));
       }
 
@@ -942,70 +942,70 @@ public final class ObjectTypesFormatters
       }
       return null;
    }
-   
+
    /**
-	 * Dessine dans un label le complément diagnostic propre à un p
-	 * prélèvement dans une collection sérothèque. N'affiche que les 
-	 * caractères avant un espace.
-	 * Utilisation d'un tooltip pour afficher la totalité du texte
-	 * S'adapate au grid (Row) ou a listbox (Listitem)
-	 * @param Row row
-	 * @param Listiem li
-	 * @param Component Parent
-	 * @param ecrit le [code echantillon]
-	 * @since 2.2.3-rc1
-	 */
-	public static void drawComplementDiagnosticLabel(final String compDiag, final Row row, final Listitem li){
+    * Dessine dans un label le complément diagnostic propre à un p
+    * prélèvement dans une collection sérothèque. N'affiche que les
+    * caractères avant un espace.
+    * Utilisation d'un tooltip pour afficher la totalité du texte
+    * S'adapate au grid (Row) ou a listbox (Listitem)
+    * @param Row row
+    * @param Listiem li
+    * @param Component Parent
+    * @param ecrit le [code echantillon]
+    * @since 2.2.3-rc1
+    */
+   public static void drawComplementDiagnosticLabel(final String compDiag, final Row row, final Listitem li){
 
-		if(!StringUtils.isEmpty(compDiag)){
+      if(!StringUtils.isEmpty(compDiag)){
 
-			String[] strs = compDiag.trim().split(" ");
-			final Label c1Label = new Label(strs[0]);
-			// dessine le label avec un lien vers popup
-			if(strs.length > 1) {
-				final Hlayout labelAndLinkBox = new Hlayout();
-				labelAndLinkBox.setSpacing("5px");
-				final Label moreLabel = new Label("...");
-				moreLabel.setClass("formLink");
-				final Popup diagPopUp = new Popup();
-				if(row != null){
-					diagPopUp.setParent(row.getParent().getParent().getParent());
-				}else{
-					diagPopUp.setParent(li.getParent().getParent().getParent());
-	            }
+         final String[] strs = compDiag.trim().split(" ");
+         final Label c1Label = new Label(strs[0]);
+         // dessine le label avec un lien vers popup
+         if(strs.length > 1){
+            final Hlayout labelAndLinkBox = new Hlayout();
+            labelAndLinkBox.setSpacing("5px");
+            final Label moreLabel = new Label("...");
+            moreLabel.setClass("formLink");
+            final Popup diagPopUp = new Popup();
+            if(row != null){
+               diagPopUp.setParent(row.getParent().getParent().getParent());
+            }else{
+               diagPopUp.setParent(li.getParent().getParent().getParent());
+            }
 
-				// contenu de la popup = tout le texte
-				Label lab = new Label(compDiag.trim());
-				lab.setSclass("formValue");
+            // contenu de la popup = tout le texte
+            final Label lab = new Label(compDiag.trim());
+            lab.setSclass("formValue");
 
-				diagPopUp.appendChild(lab);
-				moreLabel.setTooltip(diagPopUp);
-				labelAndLinkBox.appendChild(c1Label);
-				labelAndLinkBox.appendChild(moreLabel);
+            diagPopUp.appendChild(lab);
+            moreLabel.setTooltip(diagPopUp);
+            labelAndLinkBox.appendChild(c1Label);
+            labelAndLinkBox.appendChild(moreLabel);
 
-				if (row != null) {
-					labelAndLinkBox.setParent(row);
-				} else { 
-					final Listcell cell = new Listcell();
-					labelAndLinkBox.setParent(cell);
-		            cell.setParent(li);
-				}
-			} else { // 1 seul mot à afficher
-				if (row != null) {
-					c1Label.setParent(row);
-				} else {
-					final Listcell cell = new Listcell();
-					c1Label.setParent(cell);
-		            cell.setParent(li);
-				}
-			}
-		} else { // empty
-			if (row != null) {
-				new Label().setParent(row);
-			} else {
-				final Listcell cell = new Listcell();
-	            cell.setParent(li);
-			}
-		}
-	}
+            if(row != null){
+               labelAndLinkBox.setParent(row);
+            }else{
+               final Listcell cell = new Listcell();
+               labelAndLinkBox.setParent(cell);
+               cell.setParent(li);
+            }
+         }else{ // 1 seul mot à afficher
+            if(row != null){
+               c1Label.setParent(row);
+            }else{
+               final Listcell cell = new Listcell();
+               c1Label.setParent(cell);
+               cell.setParent(li);
+            }
+         }
+      }else{ // empty
+         if(row != null){
+            new Label().setParent(row);
+         }else{
+            final Listcell cell = new Listcell();
+            cell.setParent(li);
+         }
+      }
+   }
 }

@@ -97,9 +97,9 @@ public interface DossierExterneManager
     * @param dossierExterne Dossier à supprimer.
     */
    void removeObjectManager(DossierExterne dossierExterne);
-   
+
    /**
-    * Recherche tous les DossierExternes contenant une valeur externe 'like" la valeur 
+    * Recherche tous les DossierExternes contenant une valeur externe 'like" la valeur
     * passée en paramètre pour le champ spécifié
     * @param emetteur
     * @param champ entite Id
@@ -110,7 +110,7 @@ public interface DossierExterneManager
    List<DossierExterne> findChildrenByEmetteurValeurManager(Emetteur emet, Integer champEntiteId, String valeur);
 
    /**
-    * Recherche les dossiers externes 'parent' = entite Id is null 
+    * Recherche les dossiers externes 'parent' = entite Id is null
     * pour un émetteur passé en paramètre
     * @param emetteur
     * @return liste dossiers externes

@@ -78,11 +78,15 @@ public class Fichier implements java.io.Serializable
    private static final long serialVersionUID = 786784651431543113L;
 
    private Integer fichierId;
+
    private String path;
+
    private String nom;
+
    private String mimeType;
 
    private Echantillon echantillon;
+
    private AnnotationValeur valeur;
 
    /** Constructeur par défaut. */

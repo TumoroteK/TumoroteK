@@ -66,7 +66,9 @@ public class SelectScanModaleVM
 {
 
    private ScanDevice device;
+
    private Component main;
+
    private final ListModelList<ScanTerminale> scansModel = new ListModelList<>();
 
    private Boolean deleteOnSelect = true;

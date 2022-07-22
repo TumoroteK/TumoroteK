@@ -96,7 +96,7 @@ public interface PrelevementManager
     * @param filesCreated liste de fichier créés
     * @param utilisateur Utilisateur realisant la creation
     * @param doValidation True : la validation sera faite.
-    * @param base directory pour enregistrer un fichier associé 
+    * @param base directory pour enregistrer un fichier associé
     * dans le file system
     */
    void createObjectManager(Prelevement prelevement, Banque banque, Nature nature, Maladie maladie, ConsentType consentType,
@@ -122,14 +122,14 @@ public interface PrelevementManager
     * @param quantiteUnite Unite quantite associee
     * @param List liste des laboInters
     * @param liste des valeurs d'annotation à enregistrer
-    * @param liste des valeurs d'annotation à supprimer. 
+    * @param liste des valeurs d'annotation à supprimer.
     * @param filesCreated liste de fichier créés
     * @param filesToDelete liste de fichier à supprimer
     * @param utilisateur Utilisateur realisant la modification
-    * @param cascadeNonSterile indique a partir de quel LaboInter (ordre) 
+    * @param cascadeNonSterile indique a partir de quel LaboInter (ordre)
     * inclu on applique non-sterile en cascade
     * @param doValidation True : la validation sera faite.
-    * @param base directory pour enregistrer un fichier associé 
+    * @param base directory pour enregistrer un fichier associé
     * dans le file system
     * @param boolean multiple si modification multiple
     */
@@ -141,8 +141,8 @@ public interface PrelevementManager
       String baseDir, boolean multiple);
 
    /**
-    * Cherche les doublons en se basant sur le code du prélèvement 
-    * et l'appartenance à la plateforme de la banque à laquelle le prélèvement 
+    * Cherche les doublons en se basant sur le code du prélèvement
+    * et l'appartenance à la plateforme de la banque à laquelle le prélèvement
     * doit être attribué.
     * @param prelevement Prelevement dont on cherche la presence dans la base
     * @return true/false
@@ -152,7 +152,7 @@ public interface PrelevementManager
 
    /**
     * Verifie avant la suppression que d'autres objets ne referencent
-    * pas cet objet. 
+    * pas cet objet.
     * @param prelevement Prelevement a supprimer de la base de donnees.
     * @return true/false
     */
@@ -169,9 +169,9 @@ public interface PrelevementManager
    void removeObjectManager(Prelevement prelevement, String comments, Utilisateur u, List<File> filesToDelete);
 
    /**
-    * Supprime un objet de la base de données et en cascade tous les objets 
-    * dont il est le parent, deletion cascadant à leur tour sur les objets 
-    * en descendant la hierarchie. 
+    * Supprime un objet de la base de données et en cascade tous les objets
+    * dont il est le parent, deletion cascadant à leur tour sur les objets
+    * en descendant la hierarchie.
     * @param prelevement Prelevement à supprimer de la base de données.
     * @param comments commentaires liés à la suppression
     * @param Utilisateur réalisant la suppression
@@ -215,7 +215,7 @@ public interface PrelevementManager
    List<Integer> findByCodeOrNumLaboLikeBothSideWithBanqueReturnIdsManager(String code, List<Banque> banques, boolean exactMatch);
 
    /**
-    * Recherche tous les prelevements dont la date de prelevement est 
+    * Recherche tous les prelevements dont la date de prelevement est
     * posterieure ou egale a celle passee en parametre.
     * @param date
     * @return Liste de Prelevement.
@@ -230,7 +230,7 @@ public interface PrelevementManager
    Long findCountCreatedByCollaborateurManager(Collaborateur colla);
 
    /**
-    * Compte le nombre de prelevement dont le preleveur est le collaborateur 
+    * Compte le nombre de prelevement dont le preleveur est le collaborateur
     * passé en param
     * @param collaborateur
     * @return
@@ -245,7 +245,7 @@ public interface PrelevementManager
    Long findCountByServiceManager(Service serv);
 
    /**
-    * Recherche tous les prelevements dont la date de prelevement est 
+    * Recherche tous les prelevements dont la date de prelevement est
     * posterieure ou egale a celle passee en parametre.
     * @param date
     * @param banque liste de Banque auxquelles appartiennent les prélèvements.
@@ -261,7 +261,7 @@ public interface PrelevementManager
    Maladie getMaladieManager(Prelevement prelevement);
 
    /**
-    * Recherche tous les prelevements dont la date de consentement est 
+    * Recherche tous les prelevements dont la date de consentement est
     * posterieure ou egale a celle passee en parametre.
     * @param date
     * @return Liste de Prelevement.
@@ -269,7 +269,7 @@ public interface PrelevementManager
    List<Prelevement> findAfterDateConsentementManager(Date date);
 
    /**
-    * Recherche tous les prelevements dont la date de creation systeme est 
+    * Recherche tous les prelevements dont la date de creation systeme est
     * posterieure ou egale a celle passee en parametre.
     * @param date
     * @param banques liste de  Banques auxquelles appartiennent le prlvt.
@@ -278,7 +278,7 @@ public interface PrelevementManager
    List<Integer> findAfterDateCreationReturnIdsManager(Calendar date, List<Banque> banques);
 
    /**
-    * Recherche tous les prelevements dont la date de modification systeme est 
+    * Recherche tous les prelevements dont la date de modification systeme est
     * posterieure ou egale a celle passee en parametre.
     * @param date
     * @param banque Banque à laquelle appartient le prlvt.
@@ -325,7 +325,7 @@ public interface PrelevementManager
    List<Prelevement> findByConsentTypeManager(ConsentType consentType);
 
    /**
-    * Recherche tous les prelevements dont le libelle de la maladie 
+    * Recherche tous les prelevements dont le libelle de la maladie
     * associe est egale ou 'like' celui en parametre.
     * @param String libelle
     * @param boolean exactMatch
@@ -341,7 +341,7 @@ public interface PrelevementManager
    List<Prelevement> findByNdaLikeManager(String nda);
 
    /**
-    * Recherche la liste des codes utilisés par les prelevements liés à 
+    * Recherche la liste des codes utilisés par les prelevements liés à
     * la banque passée en paramètre.
     * @param banque Banque pour laquelle on recherche les codes.
     * @return Liste de codes.
@@ -349,7 +349,7 @@ public interface PrelevementManager
    List<String> findAllCodesForBanqueManager(Banque banque);
 
    /**
-    * Recherche la liste des ndas utilisés par les prelevements liés à 
+    * Recherche la liste des ndas utilisés par les prelevements liés à
     * la banque passée en paramètre.
     * @param banque Banque pour laquelle on recherche les ndas.
     * @return Liste de ndas.
@@ -357,7 +357,7 @@ public interface PrelevementManager
    List<String> findAllNdasForBanqueManager(Banque banque);
 
    /**
-    * Recherche une liste d'échantillons dont le prélèvement est 
+    * Recherche une liste d'échantillons dont le prélèvement est
     * passé en paramètre.
     * @param prelevement Prelevement pour lequel on recherche des
     * échantillons.
@@ -366,7 +366,7 @@ public interface PrelevementManager
    Set<Echantillon> getEchantillonsManager(Prelevement prelevement);
 
    /**
-    * Recherche une liste de labo inters dont le prélèvement est 
+    * Recherche une liste de labo inters dont le prélèvement est
     * passé en paramètre.
     * @param prelevement Prelevement pour lequel on recherche des
     * labos.
@@ -375,7 +375,7 @@ public interface PrelevementManager
    Set<LaboInter> getLaboIntersManager(Prelevement prelevement);
 
    /**
-    * Recherche une liste de labo inters dont le prélèvement est 
+    * Recherche une liste de labo inters dont le prélèvement est
     * passé en paramètre. Ces labos sont ordonnés par ordre.
     * @param prelevement Prelevement pour lequel on recherche des
     * labos.
@@ -384,7 +384,7 @@ public interface PrelevementManager
    List<LaboInter> getLaboIntersWithOrderManager(Prelevement prelevement);
 
    /**
-    * Recherche une liste de dérivés dont le prélèvement est 
+    * Recherche une liste de dérivés dont le prélèvement est
     * passé en paramètre.
     * @param prelevement Prelevement pour lequel on recherche des
     * dérivés.
@@ -393,7 +393,7 @@ public interface PrelevementManager
    List<ProdDerive> getProdDerivesManager(Prelevement prelevement);
 
    /**
-    * Recherche tous les prelevements d'un patient en passant par ses 
+    * Recherche tous les prelevements d'un patient en passant par ses
     * maladies.
     * @param patient
     * @return Liste de Prelevements.
@@ -409,8 +409,8 @@ public interface PrelevementManager
    List<Prelevement> findLastCreationManager(List<Banque> banques, int nbResults);
 
    /**
-    * Applique la condition non-stérile en cascade sur les laboInter et les 
-    * echantillons. N'entraine pas l'enregistrement d'une opération de 
+    * Applique la condition non-stérile en cascade sur les laboInter et les
+    * echantillons. N'entraine pas l'enregistrement d'une opération de
     * modification pour les echantillons.
     * @param prelevement
     * @param labos liste des laboInters
@@ -487,10 +487,10 @@ public interface PrelevementManager
    List<Integer> findByPatientNomOrNipInListManager(List<String> criteres, List<Banque> banks);
 
    /**
-    * Enregistre un l a création d'un prélèvement avec tous ses objets 
-    * associés (LaboInter, Annotations) et ses échantillons avec leurs 
+    * Enregistre un l a création d'un prélèvement avec tous ses objets
+    * associés (LaboInter, Annotations) et ses échantillons avec leurs
     * objets associés (Annotations, crAnapath). Implique que les objets
-    *  prelevement et échantillons passés en paramètres contiennent toutes 
+    *  prelevement et échantillons passés en paramètres contiennent toutes
     *  les références vers objets associés.
     * @param prelevement
     * @param annosPrel annotations du prelevement
@@ -499,7 +499,7 @@ public interface PrelevementManager
     * @param banque
     * @param utilisateur
     * @param doValidation
-    * @param base directory pour enregistrer un fichier associé 
+    * @param base directory pour enregistrer un fichier associé
     * dans le file system
     */
    void createPrelAndEchansManager(Prelevement prelevement, List<AnnotationValeur> annosPrel, List<Echantillon> echantillons,
@@ -513,7 +513,7 @@ public interface PrelevementManager
    Set<Risque> getRisquesManager(Prelevement prelevement);
 
    /**
-    * Trouve tous les objets dérivant d'un prélèvement, echantillons et 
+    * Trouve tous les objets dérivant d'un prélèvement, echantillons et
     * dérivés de manière récursives.
     * @param p prelevement
     * @return liste de TKAnnotableObject
@@ -521,7 +521,7 @@ public interface PrelevementManager
    List<TKAnnotableObject> getPrelevementChildrenManager(Prelevement p);
 
    /**
-    * Estime si le prelevement est à l'origine d'au moins un echantillon 
+    * Estime si le prelevement est à l'origine d'au moins un echantillon
     * ou un dérivé qui a fait l'objet d'une cession.
     * Empêche tout changement de collection dans ce cas.
     * @param p
@@ -532,23 +532,22 @@ public interface PrelevementManager
    public void switchBanqueMultiplePrelevementManager(Prelevement[] prlvts, Banque bank, boolean doValidation, Utilisateur usr);
 
    /**
-    * Attribue à la banque passée en paramètre le prélèvement ainsi que 
-    * tous les objets issus de ce prélèvement, si aucun objet ne fait l'objet 
-    * d'une cession et si conteneurs de stockage sont compatibles entre 
+    * Attribue à la banque passée en paramètre le prélèvement ainsi que
+    * tous les objets issus de ce prélèvement, si aucun objet ne fait l'objet
+    * d'une cession et si conteneurs de stockage sont compatibles entre
     * la banque de départ et celle d'arrivée.
     * @param prel
     * @param banque d'arrivée
     * @param doValidation false si validation non requises.
     * @param utilisateur
-    * @param filesToDelete liste de fichier à supprimer. Les suppressions seront 
+    * @param filesToDelete liste de fichier à supprimer. Les suppressions seront
     * réalisées dans la méthode parente switchBanqueMultiple
     * @param liste de déplacements (uniques) de fichiers à programmer. Les déplacements
-	* seront réalisées dans la méthode parente switchBanqueMultiple [Correctif bug TK-155]
-	* @verison 2.2.0
-	*/
-	void switchBanqueCascadeManager(Prelevement prel, Banque bank, 
-									boolean doValidation, Utilisateur usr, 
-									List<File> filesToDelete, Set<MvFichier> filesToMove);
+   * seront réalisées dans la méthode parente switchBanqueMultiple [Correctif bug TK-155]
+   * @verison 2.2.0
+   */
+   void switchBanqueCascadeManager(Prelevement prel, Banque bank, boolean doValidation, Utilisateur usr, List<File> filesToDelete,
+      Set<MvFichier> filesToMove);
 
    /**
     * Attribue à la maladie passée en paramètre le prélèvement.
@@ -559,7 +558,7 @@ public interface PrelevementManager
    void switchMaladieManager(Prelevement prel, Maladie maladie, Utilisateur usr);
 
    /**
-    * Pour un prélèvement trouve la date qui a été attribuée à la congélation 
+    * Pour un prélèvement trouve la date qui a été attribuée à la congélation
     * (date départ, date départ site interm, date arrivé biothèque).
     * @param prel
     * @return Calendar cal
@@ -569,16 +568,16 @@ public interface PrelevementManager
    /**
     * Réalise la modification multiple d'une liste de prélèvements.
     * @param prelevements Liste des prelevements à mettre à jour
-    * @param Liste prélèvements à la base de la modification multiple, cette liste est 
+    * @param Liste prélèvements à la base de la modification multiple, cette liste est
     * utilisée pour la création des annotations Fichier en batch
     * @param list Annotations associées à mettre à jour ou créer
     * (doivent donc avoir objet, champ, et banque referencees)
     * @param list Annotations associées à supprimmer
     * @param list des non conformites à associer
-    * @param boolean cascadeNonSterile pour modifier les prelevements et 
+    * @param boolean cascadeNonSterile pour modifier les prelevements et
     * tous les objets issus comme non stériles
     * @param utilisateur Utilisateur voulant modifier les patients.
-    * @param base directory pour enregistrer un fichier associé 
+    * @param base directory pour enregistrer un fichier associé
     * dans le file system
     */
    void updateMultipleObjectsManager(List<Prelevement> prelevements, List<Prelevement> basePrelevements,
@@ -587,7 +586,7 @@ public interface PrelevementManager
 
    /**
     * Recherche les prélèvements dont le code correspond à
-    * l'identification d'un dossier externe, en fct d'une liste de 
+    * l'identification d'un dossier externe, en fct d'une liste de
     * banques et d'emetteurs.
     * @param banques Banques des prlvts.
     * @param emetteurs Emetteurs des dossiers.
@@ -596,7 +595,7 @@ public interface PrelevementManager
    List<Prelevement> findByDossierExternesManager(List<Banque> banques, List<Emetteur> emetteurs);
 
    /**
-    * Surcharge du manager createObject pour lui ajouter les non 
+    * Surcharge du manager createObject pour lui ajouter les non
     * conformites.
     * @param prelevement
     * @param banque
@@ -626,7 +625,7 @@ public interface PrelevementManager
       String baseDir, boolean isImport, List<NonConformite> noconfs);
 
    /**
-    * Surcharge du manager updateObject pour lui ajouter les non 
+    * Surcharge du manager updateObject pour lui ajouter les non
     * conformites.
     * @param prelevement
     * @param banque
@@ -659,7 +658,7 @@ public interface PrelevementManager
       List<NonConformite> noconfs);
 
    /**
-    * Supprime les prélèvements et en cascade les échantillons/dérivés dont 
+    * Supprime les prélèvements et en cascade les échantillons/dérivés dont
     * ils sont parents à partir des ids passés en paramètres.
     * @param ids
     * @param String fantome commentaire
@@ -669,7 +668,7 @@ public interface PrelevementManager
    void removeListFromIdsManager(List<Integer> ids, String comments, Utilisateur u);
 
    /**
-    * Recherche les prélèvements existants pour un patient consultables par un utilisateur 
+    * Recherche les prélèvements existants pour un patient consultables par un utilisateur
     * connecté à une plateforme passés en paramètres.
     * @param Patient patient
     * @param Utilisateur utilisateur
@@ -679,7 +678,7 @@ public interface PrelevementManager
    List<Prelevement> findByPatientAndAuthorisationsManager(Patient pat, Plateforme pf, Utilisateur utilisateur);
 
    /**
-    * Renvoie tous les prélèvements pour un code spécifié dans toutes 
+    * Renvoie tous les prélèvements pour un code spécifié dans toutes
     * les collections d'une plateforme passée en paramètre.
     * @param code
     * @param pf Plateforme
@@ -692,7 +691,7 @@ public interface PrelevementManager
     * Verifie que les Objets devant etre obligatoirement associes sont non
     * nulls et lance la validation via le Validator. Set la maladie et le
     * patient en cascade car utilisée dans la validation.
-    * 
+    *
     * @param prelevement
     * @param banque
     * @param nature
@@ -703,6 +702,6 @@ public interface PrelevementManager
     * @param utilisateur
     */
    void checkRequiredObjectsAndValidate(Prelevement prelevement, Banque banque, Nature nature, ConsentType consentType,
-		Maladie maladie, List<LaboInter> laboInters, String operation, Utilisateur utilisateur, boolean doValidation,
-		String baseDir);
+      Maladie maladie, List<LaboInter> laboInters, String operation, Utilisateur utilisateur, boolean doValidation,
+      String baseDir);
 }

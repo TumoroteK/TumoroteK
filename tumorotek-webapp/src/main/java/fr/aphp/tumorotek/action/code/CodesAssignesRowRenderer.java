@@ -75,7 +75,7 @@ public class CodesAssignesRowRenderer implements RowRenderer<Object>
 
       final CodeAssigne code = (CodeAssigne) data;
 
-      // code	
+      // code
       final Label codeLabel = new Label(code.getCode());
       final Label libelleLabel = new Label(code.getLibelle());
 

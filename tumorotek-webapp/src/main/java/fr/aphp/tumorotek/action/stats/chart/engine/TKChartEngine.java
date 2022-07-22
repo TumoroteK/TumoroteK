@@ -49,6 +49,7 @@ public class TKChartEngine extends JFreeChartEngine
    private static final long serialVersionUID = 1L;
 
    private final ChartColors colors = new ChartColors(1.0f);
+
    private Color[] colorSet = colors.getColorsSet();
 
    @Override
@@ -96,7 +97,7 @@ public class TKChartEngine extends JFreeChartEngine
       renderer.setShadowVisible(false);
 
       final CategoryAxis domainAxis = plot.getDomainAxis();
-      //Rotation 
+      //Rotation
       domainAxis.setCategoryLabelPositions(CategoryLabelPositions.createUpRotationLabelPositions(Math.PI / 7.0));
       domainAxis.setLowerMargin(0.01);
       domainAxis.setUpperMargin(0.01);
@@ -192,7 +193,7 @@ public class TKChartEngine extends JFreeChartEngine
       r1.setSeriesPaint(1, Color.GRAY);
 
       final CategoryAxis domainAxis = plot.getDomainAxis();
-      //Rotation 
+      //Rotation
       domainAxis.setCategoryLabelPositions(CategoryLabelPositions.createUpRotationLabelPositions(Math.PI / 7.0));
       domainAxis.setLowerMargin(0.01);
       domainAxis.setUpperMargin(0.01);
@@ -224,6 +225,7 @@ public class TKChartEngine extends JFreeChartEngine
       private static final long serialVersionUID = 1L;
 
       private final Color[] colorSet = getColorSet();
+
       private final Color[] colorSetA = colors.addAlphaToColorSet(getColorSet(), 128);
 
       @Override

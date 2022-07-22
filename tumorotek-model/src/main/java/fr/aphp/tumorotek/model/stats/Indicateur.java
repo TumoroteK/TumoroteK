@@ -77,12 +77,19 @@ public class Indicateur implements Serializable, Comparable<Object>
 {
 
    private static final long serialVersionUID = 1184655618045474785L;
+
    private Integer indicateurId;
+
    private String nom;
+
    private String callingProcedure;
+
    private String description;
+
    private Entite entite;
+
    private Subdivision subdivision;
+
    //	private String nature;
    private Set<SModeleIndicateur> sModeleIndicateurs = new HashSet<>();
 
@@ -176,7 +183,7 @@ public class Indicateur implements Serializable, Comparable<Object>
 
    /**
     * Méthode surchargeant le toString() de l'objet.
-    * 
+    *
     */
    @Override
    public String toString(){
@@ -200,7 +207,7 @@ public class Indicateur implements Serializable, Comparable<Object>
    /**
     * 2 requetes sont considérées comme égales si tous leurs attributs sont
     * égaux. 2 requete egales ne peuvent pas avoir le même ordre.
-    * 
+    *
     * @param obj
     *            est le statement à tester.
     * @return true si les statement sont égales.

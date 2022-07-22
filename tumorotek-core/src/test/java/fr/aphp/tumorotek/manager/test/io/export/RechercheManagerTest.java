@@ -76,18 +76,25 @@ public class RechercheManagerTest extends AbstractManagerTest4
    /** Bean Manager. */
    @Autowired
    private RechercheManager manager;
+
    @Autowired
    private AffichageManager affichageManager;
+
    @Autowired
    private RequeteManager requeteManager;
+
    @Autowired
    private UtilisateurDao utilisateurDao;
+
    @Autowired
    private ChampEntiteDao champEntiteDao;
+
    @Autowired
    private AffichageDao affichageDao;
+
    @Autowired
    private RequeteDao requeteDao;
+
    @Autowired
    private BanqueDao banqueDao;
 

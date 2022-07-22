@@ -56,9 +56,13 @@ public class TerminaleNode extends TumoTreeNode
 {
 
    private Terminale terminale;
+
    private String libelle = "";
+
    private boolean vide;
+
    private Conteneur conteneur;
+
    private Banque selectedBanque;
 
    public TerminaleNode(final Terminale term, final Banque banque){

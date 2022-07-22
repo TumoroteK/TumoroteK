@@ -65,13 +65,13 @@ public interface CleImpressionManager
     */
    CleImpression findByNameManager(String name);
 
-//   /**
-//    * Recherche les CleImpression dont le Template est égal au
-//    * paramètre.
-//    * @param template Template des CleImpression recherchées.
-//    * @return une liste de CleImpression.
-//    */
-//   List<CleImpression> findByTemplateManager(Template template);
+   //   /**
+   //    * Recherche les CleImpression dont le Template est égal au
+   //    * paramètre.
+   //    * @param template Template des CleImpression recherchées.
+   //    * @return une liste de CleImpression.
+   //    */
+   //   List<CleImpression> findByTemplateManager(Template template);
 
    /**
     * Recherche toutes les cleImpression présentes dans la BDD.

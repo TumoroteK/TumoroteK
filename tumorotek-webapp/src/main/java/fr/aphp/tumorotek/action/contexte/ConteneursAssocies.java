@@ -58,7 +58,9 @@ public class ConteneursAssocies extends OneToManyComponent<ConteneurDecorator>
    private static final long serialVersionUID = 1L;
 
    private List<ConteneurDecorator> objects = new ArrayList<>();
+
    private boolean conteneursDeBanque = true;
+
    private Plateforme plateforme;
 
    @Override
@@ -72,7 +74,6 @@ public class ConteneursAssocies extends OneToManyComponent<ConteneurDecorator>
       return this.objects;
    }
 
-   
    @Override
    public void setObjects(final List<ConteneurDecorator> objs){
       this.objects = objs;
@@ -173,9 +174,9 @@ public class ConteneursAssocies extends OneToManyComponent<ConteneurDecorator>
    }
 
    /**
-    * Vérifies qu'aucun référencement sur ce conteneur, impliquant un 
-    * probable stockage de matériel, n'a été établi à partir de la 
-    * ConteneurPlateforme.	 
+    * Vérifies qu'aucun référencement sur ce conteneur, impliquant un
+    * probable stockage de matériel, n'a été établi à partir de la
+    * ConteneurPlateforme.
     **/
    @Override
    public void onClick$deleteImage(final Event event){

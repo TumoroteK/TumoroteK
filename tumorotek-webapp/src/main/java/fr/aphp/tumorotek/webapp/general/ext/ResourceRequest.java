@@ -44,57 +44,60 @@ import fr.aphp.tumorotek.model.coeur.prelevement.Prelevement;
 import fr.aphp.tumorotek.model.contexte.Banque;
 
 /**
- * POJO contenant la banque et la liste de resource à afficher depuis 
- * un lien externe 
+ * POJO contenant la banque et la liste de resource à afficher depuis
+ * un lien externe
  * Date: 15/10/2019
  *
  * @author Mathieu BARTHELEMY.
  * @version 2.2.2-diamic
  *
  */
-public class ResourceRequest<T extends TKAnnotableObject> implements Serializable {
+public class ResourceRequest<T extends TKAnnotableObject> implements Serializable
+{
 
    private static final long serialVersionUID = -8614022656257785986L;
 
-   private Class<T> type;
+   private final Class<T> type;
+
    private Banque banque;
-   private List<TKAnnotableObject> tkObjs = new ArrayList<TKAnnotableObject>();
-   
-   public ResourceRequest(Class<T> _t, Banque _b) {
-	   this.type = _t;
-	   this.banque = _b;
-   }
-   
-   public ResourceRequest(Class<T> _t, Banque _b, List<? extends TKAnnotableObject> _o) {
-	   this.type = _t;
-	   this.banque = _b;
-	   this.tkObjs.addAll(_o);
+
+   private final List<TKAnnotableObject> tkObjs = new ArrayList<>();
+
+   public ResourceRequest(final Class<T> _t, final Banque _b){
+      this.type = _t;
+      this.banque = _b;
    }
 
-	public Banque getBanque() {
-		return banque;
-	}
-	
-	public void setBanque(Banque _b) {
-		this.banque = _b;
-	}
-	
-	public List<TKAnnotableObject> getTkObjs() {
-		return (List<TKAnnotableObject>) tkObjs;
-	}
+   public ResourceRequest(final Class<T> _t, final Banque _b, final List<? extends TKAnnotableObject> _o){
+      this.type = _t;
+      this.banque = _b;
+      this.tkObjs.addAll(_o);
+   }
 
-	public void addToTkObjs(T o) {
-		if (o != null) {
-			tkObjs.add(o);
-		}
-	}
-	
-	public boolean isEmpty() {
-		return tkObjs.isEmpty();
-	}
-	
-	public boolean isPrelevement() {
-		return type.equals(Prelevement.class);
-	}
-   
+   public Banque getBanque(){
+      return banque;
+   }
+
+   public void setBanque(final Banque _b){
+      this.banque = _b;
+   }
+
+   public List<TKAnnotableObject> getTkObjs(){
+      return tkObjs;
+   }
+
+   public void addToTkObjs(final T o){
+      if(o != null){
+         tkObjs.add(o);
+      }
+   }
+
+   public boolean isEmpty(){
+      return tkObjs.isEmpty();
+   }
+
+   public boolean isPrelevement(){
+      return type.equals(Prelevement.class);
+   }
+
 }

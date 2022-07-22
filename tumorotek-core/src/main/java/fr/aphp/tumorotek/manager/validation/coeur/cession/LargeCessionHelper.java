@@ -56,10 +56,15 @@ public class LargeCessionHelper
 {
 
    Integer entiteId;
+
    List<Integer> idsFound = new ArrayList<>();
+
    List<String> codesNotFound = new ArrayList<>();
+
    List<String> objsNonStockes = new ArrayList<>();
+
    List<String> dateStockIncompatible = new ArrayList<>();
+
    List<String> evtsStockIncompatible = new ArrayList<>();
 
    public LargeCessionHelper(final Integer _i){

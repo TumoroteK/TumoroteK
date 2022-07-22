@@ -53,6 +53,7 @@ public abstract class AbstractThesaurusObject implements TKThesaurusObject
 {
 
    private Integer id;
+
    private String nom;
 
    @Id
@@ -62,7 +63,7 @@ public abstract class AbstractThesaurusObject implements TKThesaurusObject
       return this.id;
    }
 
-   public void setId(Integer id){
+   public void setId(final Integer id){
       this.id = id;
    }
 
@@ -73,7 +74,7 @@ public abstract class AbstractThesaurusObject implements TKThesaurusObject
    }
 
    @Override
-   public void setNom(String nom){
+   public void setNom(final String nom){
       this.nom = nom;
    }
 
@@ -86,19 +87,21 @@ public abstract class AbstractThesaurusObject implements TKThesaurusObject
    }
 
    @Override
-   public boolean equals(Object obj){
-      if(this == obj)
+   public boolean equals(final Object obj){
+      if(this == obj){
          return true;
-      if(obj == null)
+      }
+      if((obj == null) || (getClass() != obj.getClass())){
          return false;
-      if(getClass() != obj.getClass())
-         return false;
-      AbstractThesaurusObject other = (AbstractThesaurusObject) obj;
+      }
+      final AbstractThesaurusObject other = (AbstractThesaurusObject) obj;
       if(nom == null){
-         if(other.nom != null)
+         if(other.nom != null){
             return false;
-      }else if(!nom.equals(other.nom))
+         }
+      }else if(!nom.equals(other.nom)){
          return false;
+      }
       return true;
    }
 

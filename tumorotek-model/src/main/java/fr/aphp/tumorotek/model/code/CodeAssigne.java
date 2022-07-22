@@ -90,14 +90,23 @@ public class CodeAssigne implements CodeCommon, Serializable
    private static final long serialVersionUID = 1L;
 
    private Integer codeAssigneId;
+
    private String code;
+
    private String libelle;
+
    private Boolean isMorpho;
+
    private Integer codeRefId;
+
    private Boolean isOrgane;
+
    private TableCodage tableCodage;
+
    private Echantillon echantillon;
+
    private Integer ordre = 1;
+
    private Boolean export = false;
 
    //private Echantillon echanExpOrg;
@@ -340,16 +349,16 @@ public class CodeAssigne implements CodeCommon, Serializable
    //	public Echantillon getEchanExpOrg() {
    //		return echanExpOrg;
    //	}
-   //	
+   //
    //	public void setEchanExpOrg(Echantillon e) {
    //		this.echanExpOrg = e;
    //	}
-   //	
+   //
    //	@OneToOne(mappedBy = "codeLesExport", optional = true)
    //	public Echantillon getEchanExpLes() {
    //		return echanExpLes;
    //	}
-   //	
+   //
    //	public void setEchanExpLes(Echantillon e) {
    //		this.echanExpLes = e;
    //	}

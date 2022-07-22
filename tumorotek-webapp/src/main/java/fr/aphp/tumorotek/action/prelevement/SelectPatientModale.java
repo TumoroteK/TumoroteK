@@ -79,15 +79,25 @@ public class SelectPatientModale
    private final Log log = LogFactory.getLog(SelectPatientModale.class);
 
    private Boolean isFusionPatients = false;
+
    private String critereValue = "";
+
    private String path = "";
+
    private String returnMethode = "";
+
    private List<Patient> patients = new ArrayList<>();
+
    private List<Patient> patientsSip = new ArrayList<>();
+
    private Patient selectedPatient;
+
    private Patient currentPatient;
+
    private Listitem currentIten;
+
    private final PatientItemRenderer patientRenderer = new PatientItemRenderer(false);
+
    @Wire
    private Listbox patientsBox;
 
@@ -98,6 +108,7 @@ public class SelectPatientModale
 
    @Wire
    private Row legendeInTk;
+
    @Wire
    private Row legendeInSip;
 
@@ -137,7 +148,7 @@ public class SelectPatientModale
 
    /**
     * Recherche sur le numéro de séjour
-    * @since 2.0.9 
+    * @since 2.0.9
     */
    public void searchForPatients(){
       // recherche des patients dans la base TK
@@ -158,7 +169,7 @@ public class SelectPatientModale
             log.info("->Debut traitement recherche de patients " + "dans serveur d'identités");
 
             // plusieurs fichiers de connexion au Sip peuvent être
-            // définis ils doivent etre de la forme pt1_serveur_Identites, 
+            // définis ils doivent etre de la forme pt1_serveur_Identites,
             // pt2_serveur_Identites... ou serveur_Identites
             boolean found = true;
             int idx = 1;
@@ -300,9 +311,9 @@ public class SelectPatientModale
          //			if (isDoublonPatient()) {
          //				// on récupère le patient de TK
          //				List<Patient> liste = ManagerLocator.getPatientManager()
-         //						.findByNomLikeManager(getCurrentPatient().getNom(), 
+         //						.findByNomLikeManager(getCurrentPatient().getNom(),
          //								true);
-         //				
+         //
          //				Patient pat = null;
          //				for (int i = 0; i < liste.size(); i++) {
          //					Patient p = liste.get(i);
@@ -407,12 +418,12 @@ public class SelectPatientModale
    //	 * @param path Chemin vers la page ayant appelée cette modale.
    //	 * @param critere Critere de recherche des patients.
    //	 */
-   //	public void openDoublonPatientWindow(Page page, 
+   //	public void openDoublonPatientWindow(Page page,
    //			Patient patient) {
    //		 if (!isBlockModal()) {
-   //				
+   //
    //			 setBlockModal(true);
-   //		
+   //
    //			// nouvelle fenêtre
    //			final Window win = new Window();
    //			win.setVisible(false);
@@ -426,34 +437,34 @@ public class SelectPatientModale
    //			// int height = 470;
    //			// win.setHeight(height + "px");
    //			win.setClosable(false);
-   //			
+   //
    //			final HtmlMacroComponent ua = populateDoublonPatientModal(
    //					win, page, path, patient);
    //			ua.setVisible(false);
-   //			
+   //
    //			win.addEventListener("onTimed", new EventListener<Event>() {
    //				public void onEvent(Event event) throws Exception {
    //					//progress.detach();
    //					ua.setVisible(true);
    //				}
    //			});
-   //			
+   //
    //			Timer timer = new Timer();
    //			timer.setDelay(500);
    //			timer.setRepeats(false);
    //			timer.addForward("onTimer", timer.getParent(), "onTimed");
    //			win.appendChild(timer);
    //			timer.start();
-   //			
+   //
    //			try {
    //				win.onModal();
    //				setBlockModal(false);
-   //	
+   //
    //			} catch (SuspendNotAllowedException e) { log.error(e);
    //			}
    //		 }
    //	}
-   //	
+   //
    //	private static HtmlMacroComponent populateDoublonPatientModal(
    //			Window win, Page page,
    //			String path, Patient patient) {
@@ -466,12 +477,12 @@ public class SelectPatientModale
    //		ua.setParent(win);
    //		ua.setId("openDoublonPatientModale");
    //		ua.applyProperties();
-   //		ua.afterCompose(); 
-   //		
+   //		ua.afterCompose();
+   //
    //		((FicheDoublonPatientModale) ua.getFellow("fwinDoublonPatientModale")
    //				.getAttributeOrFellow("fwinDoublonPatientModale$composer", true))
    //				.init(patient, path);
-   //		
+   //
    //		return ua;
    //	}
 
@@ -607,7 +618,7 @@ public class SelectPatientModale
    //	}
    //
    //	@Override
-   //	public void setParentObject(Object obj) {		
+   //	public void setParentObject(Object obj) {
    //	}
    //
    //	@Override
@@ -621,7 +632,7 @@ public class SelectPatientModale
    //	}
    //
    //	@Override
-   //	public void removeObject(String comments) {		
+   //	public void removeObject(String comments) {
    //	}
 
    public Boolean isFusionPatients(){

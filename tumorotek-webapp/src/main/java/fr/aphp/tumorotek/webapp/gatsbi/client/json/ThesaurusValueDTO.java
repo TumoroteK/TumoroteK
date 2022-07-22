@@ -12,76 +12,69 @@ import org.codehaus.jackson.annotate.JsonPropertyOrder;
 
 import fr.aphp.tumorotek.model.contexte.gatsbi.ThesaurusValue;
 
-
-@JsonPropertyOrder({
-	"champEntiteId",
-	"thesaurusId",
-	"thesaurusValue",
-	"position"
-})
+@JsonPropertyOrder({"champEntiteId", "thesaurusId", "thesaurusValue", "position"})
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ThesaurusValueDTO implements Serializable {
+public class ThesaurusValueDTO implements Serializable
+{
 
-	private static final long serialVersionUID = 1L;
-	
-	private Integer champEntiteId;
-	private Integer thesaurusId;
-	private String thesaurusValue;
-	private Integer position;
-	
-	@JsonProperty
-	public Integer getChampEntiteId() {
-		return champEntiteId;
-	}
-	
-	public void setChampEntiteId(Integer _i) {
-		this.champEntiteId = _i;
-	}
-	
-//	@JsonProperty
-//	public Integer getTemplateThesaurusId() {
-//		return templateThesaurusId;
-//	}
-//	
-//	public void setTemplateThesaurusId(Integer _t) {
-//		this.templateThesaurusId = _t;
-//	}
-	
-	@JsonProperty
-	public Integer getThesaurusId() {
-		return thesaurusId;
-	}
+   private static final long serialVersionUID = 1L;
 
-	public void setThesaurusId(Integer _t) {
-		this.thesaurusId = _t;
-	}
-	
-	@JsonProperty
-	public String getThesaurusValue() {
-		return thesaurusValue;
-	}
-	
-	public void setThesaurusValue(String _v) {
-		this.thesaurusValue = _v;
-	}
-	
-	@JsonProperty
-	public Integer getPosition() {
-		return position;
-	}
-	
-	public void setPosition(Integer _p) {
-		this.position = _p;
-	}
-	
-	@JsonIgnore
-	public ThesaurusValue toThesaurusValue() {
-		return new ThesaurusValue(champEntiteId, 
-			thesaurusId, thesaurusValue, position);
-	}
-	
-	
-	
-	
-	
+   private Integer champEntiteId;
+
+   private Integer thesaurusId;
+
+   private String thesaurusValue;
+
+   private Integer position;
+
+   @JsonProperty
+   public Integer getChampEntiteId(){
+      return champEntiteId;
+   }
+
+   public void setChampEntiteId(final Integer _i){
+      this.champEntiteId = _i;
+   }
+
+   //	@JsonProperty
+   //	public Integer getTemplateThesaurusId() {
+   //		return templateThesaurusId;
+   //	}
+   //
+   //	public void setTemplateThesaurusId(Integer _t) {
+   //		this.templateThesaurusId = _t;
+   //	}
+
+   @JsonProperty
+   public Integer getThesaurusId(){
+      return thesaurusId;
+   }
+
+   public void setThesaurusId(final Integer _t){
+      this.thesaurusId = _t;
+   }
+
+   @JsonProperty
+   public String getThesaurusValue(){
+      return thesaurusValue;
+   }
+
+   public void setThesaurusValue(final String _v){
+      this.thesaurusValue = _v;
+   }
+
+   @JsonProperty
+   public Integer getPosition(){
+      return position;
+   }
+
+   public void setPosition(final Integer _p){
+      this.position = _p;
+   }
+
+   @JsonIgnore
+   public ThesaurusValue toThesaurusValue(){
+      return new ThesaurusValue(champEntiteId, thesaurusId, thesaurusValue, position);
+   }
+
 }

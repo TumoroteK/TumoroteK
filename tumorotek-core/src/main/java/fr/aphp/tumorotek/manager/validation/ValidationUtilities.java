@@ -46,13 +46,13 @@ import org.springframework.validation.Errors;
  *
  * @author mathieu
  * @version 2.2.1
- * 
+ *
  * @since 2.2.1 ajout contrainte xls/x workbook sheet names
  *
  */
 public final class ValidationUtilities
 {
-   //	public static final String MOTREGEXP = 
+   //	public static final String MOTREGEXP =
    //			"[a-z_A-Z0-9'öÖôÔàâéèêôùûçîïÀÂÉÈÔÙÛÇ\\s\\.+\\-:();?]+";
    public static final String MOTREGEXP = "[\\p{L}|\\p{P}|\\p{N}|\\p{Z}|\\p{M}|\\+\\-@/<=>$%°~]+";
 
@@ -84,26 +84,26 @@ public final class ValidationUtilities
 
    public static final String IPREGEXP =
       "^\\b(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}" + "(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\b$";
-   
+
    public static final String SHEETNAME_INFAMOUSCHARS = "\\\\|\\/|\\*|\\[|\\]|:|\\?";
 
    private ValidationUtilities(){}
 
    /**
-    * Medthode généraliste de qui compare deux dates assignées aux objets au 
-    * coeur de TK. Cette méthode tient compte du fait que les dates peuvent 
-    * être de type Date ou Calendar et doivent pouvoir se comparer 
-    * malgré leur type. Si l'objetBindingError est null alors execute la 
+    * Medthode généraliste de qui compare deux dates assignées aux objets au
+    * coeur de TK. Cette méthode tient compte du fait que les dates peuvent
+    * être de type Date ou Calendar et doivent pouvoir se comparer
+    * malgré leur type. Si l'objetBindingError est null alors execute la
     * comparaison des dates est renvoie false si la comparaison ne renvoie
     * pas le résultat attendu.
     * @param date Date ou Calendar à comparer
-    * @param champ champ correspondant a la date (pour Errors) 
+    * @param champ champ correspondant a la date (pour Errors)
     * @param dateRef Date ou Calendar de référence
     * @param prefixe initiant le message d'erreur
     * @param mid partie interm du message d'erreur localisé
     * @param suffixe pour compléter le message d'erreur
     * @param errs
-    * @param before 
+    * @param before
     * @return false si check -> error
     */
    public static boolean checkWithDate(final Object date, final String champ, final Object dateRef, final String prefixe,
@@ -113,7 +113,7 @@ public final class ValidationUtilities
       Date date2 = new Date();
 
       // prepare les dates a la comparaison.
-      // si deux calendar dont un a heure-min-ss non renseignée alors on 
+      // si deux calendar dont un a heure-min-ss non renseignée alors on
       // met tout a O.
       if(date instanceof Calendar && dateRef instanceof Calendar){
          if(((Calendar) date).get(Calendar.HOUR) == 0 && ((Calendar) date).get(Calendar.HOUR_OF_DAY) == 0

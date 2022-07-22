@@ -72,7 +72,7 @@ public interface TableAnnotationManager
    /**
     * Persiste une instance afin de l'enregistrer dans la base de données.
     * @param table TableAnnotation à creer
-    * @param entite 
+    * @param entite
     * @param catalogue
     * @param champs List des champs à créer ou a modifier
     * @param banques liste de Banques
@@ -86,7 +86,7 @@ public interface TableAnnotationManager
 
    /**
     * Cherche les doublons en se basant sur la methode equals()
-    * surchargee par les entites. Si l'objet est modifie donc a un id 
+    * surchargee par les entites. Si l'objet est modifie donc a un id
     * attribue par le SGBD, ce dernier est retire de la liste findAll.
     * @param table TableAnnotation dont on cherche la presence dans la base
     * @return true/false
@@ -95,7 +95,7 @@ public interface TableAnnotationManager
 
    //	/**
    //	 * Verifie avant la suppression que d'autres objets ne referencent
-   //	 * pas cet objet. 
+   //	 * pas cet objet.
    //	 * @param table TableAnnotation a supprimer de la base de donnees.
    //	 * @return true/false
    //	 */
@@ -118,7 +118,7 @@ public interface TableAnnotationManager
    Set<ChampAnnotation> getChampAnnotationsManager(TableAnnotation table);
 
    /**
-    * Recherche les banques auxquelles la table passée en paramètres est 
+    * Recherche les banques auxquelles la table passée en paramètres est
     * assignée.
     * @param table TableAnnotation pour laquelle on recherche les banques.
     * @return Liste de Banque.
@@ -140,7 +140,7 @@ public interface TableAnnotationManager
    List<TableAnnotation> findAllObjectsManager();
 
    /**
-    * Recherche toutes les tables dont le nom est egal ou 'like' 
+    * Recherche toutes les tables dont le nom est egal ou 'like'
     * celui passé en parametre.
     * @param nom
     * @param boolean exactMatch
@@ -149,7 +149,7 @@ public interface TableAnnotationManager
    List<TableAnnotation> findByNomLikeManager(String nom, boolean exactMatch);
 
    /**
-    * Recherche toutes les tables dont l'entite et la banque sont passées en 
+    * Recherche toutes les tables dont l'entite et la banque sont passées en
     * en parametres.
     * @param Entite entite
     * @param Banque bank
@@ -159,7 +159,7 @@ public interface TableAnnotationManager
 
    /**
     * Recherche toutes les tables dont l'entite, la banque et le
-    * catalogue sont passées en 
+    * catalogue sont passées en
     * en parametres.
     * @param Entite entite
     * @param Banque bank
@@ -169,7 +169,7 @@ public interface TableAnnotationManager
    List<TableAnnotation> findByEntiteBanqueAndCatalogueManager(Entite entite, Banque bank, String catalogue);
 
    /**
-    * Recherche toutes les tables assignables pour une entité 
+    * Recherche toutes les tables assignables pour une entité
     * et une plateforme.
     * @param Entite entite
     * @param Plateforme pf
@@ -178,13 +178,13 @@ public interface TableAnnotationManager
    List<TableAnnotation> findByEntiteAndPlateformeManager(Entite entite, Plateforme pf);
 
    //	/**
-   //	 * Monte ou descend l'ordre d'une table pour une banque spécifiée 
+   //	 * Monte ou descend l'ordre d'une table pour une banque spécifiée
    //	 * d'une unité. Modifie les TableAnnotationBanque a l'intérieur de leur
    //	 * liste.
-   //	 * @param liste TableAnnotationBanque 
+   //	 * @param liste TableAnnotationBanque
    //	 * @param boolean specifiant up si true
    //	 */
-   //	void moveTableOrderUpDownManager(TableAnnotation table, Banque banque, 
+   //	void moveTableOrderUpDownManager(TableAnnotation table, Banque banque,
    //																boolean up);
 
    /**
@@ -201,8 +201,8 @@ public interface TableAnnotationManager
       String baseDir);
 
    /**
-    * Applique l'ordre d'appartion des champs à partir de la liste 
-    * ordonnée des champs. Ne passe pas par ChampAnnotationManager 
+    * Applique l'ordre d'appartion des champs à partir de la liste
+    * ordonnée des champs. Ne passe pas par ChampAnnotationManager
     * pour ne pas enregistrer de modifications associées dans la base.
     * Remplace moveTableOrderUpDownManager.
     * @param chps liste ordonnée des champs.
@@ -226,8 +226,8 @@ public interface TableAnnotationManager
    List<TableAnnotation> findByCataloguesManager(List<Catalogue> catas);
 
    /**
-    * Recherche les tables associées au catalogue passé en paramètre 
-    * et contenant au moins un champ annotation dont editable 
+    * Recherche les tables associées au catalogue passé en paramètre
+    * et contenant au moins un champ annotation dont editable
     * par l'utilisateur.
     * @param catalogue
     * @return une liste de TableAnnotation.

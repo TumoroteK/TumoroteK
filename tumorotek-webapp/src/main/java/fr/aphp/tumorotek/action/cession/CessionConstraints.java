@@ -35,23 +35,14 @@
  **/
 package fr.aphp.tumorotek.action.cession;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
-import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zul.Constraint;
 
-import fr.aphp.tumorotek.action.ManagerLocator;
 import fr.aphp.tumorotek.action.constraints.ConstCode;
 import fr.aphp.tumorotek.action.constraints.ConstDateLimit;
 import fr.aphp.tumorotek.action.constraints.ConstText;
 import fr.aphp.tumorotek.action.constraints.ConstWord;
-import fr.aphp.tumorotek.manager.coeur.cession.CessionManager;
-import fr.aphp.tumorotek.model.cession.Cession;
-import fr.aphp.tumorotek.model.contexte.Banque;
-import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
 /**
  * Utility class fournissant les contraintes qui seront appliquées dans
@@ -74,7 +65,7 @@ public final class CessionConstraints
 
          setNullable(false);
          setSize(100);
-         
+
          super.validate(comp, value);
 
       }

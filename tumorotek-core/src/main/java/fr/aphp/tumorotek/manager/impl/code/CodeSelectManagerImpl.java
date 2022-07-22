@@ -74,11 +74,17 @@ public class CodeSelectManagerImpl implements CodeSelectManager
    private final Log log = LogFactory.getLog(CodeSelectManager.class);
 
    private CodeSelectDao codeSelectDao;
+
    private CodeDossierDao codeDossierDao;
+
    private OperationManager operationManager;
+
    private OperationTypeDao operationTypeDao;
+
    private BanqueDao banqueDao;
+
    private UtilisateurDao utilisateurDao;
+
    private CommonUtilsManager commonUtilsManager;
 
    public void setCodeSelectDao(final CodeSelectDao cDao){
@@ -187,7 +193,7 @@ public class CodeSelectManagerImpl implements CodeSelectManager
    }
 
    /**
-    * Verifie que les Objets devant etre obligatoirement associes 
+    * Verifie que les Objets devant etre obligatoirement associes
     * sont non nulls.
     * @param code CodeSelect
     * @param bank
@@ -246,7 +252,7 @@ public class CodeSelectManagerImpl implements CodeSelectManager
    }
 
    /**
-    * Extrait les codes (CodeCommon) pour affichage 
+    * Extrait les codes (CodeCommon) pour affichage
     * a partir d'une liste de code favoris.
     * Filtre eventuellement sur le code et libelle.
     * Embarque une back reference vers l'objet code select.

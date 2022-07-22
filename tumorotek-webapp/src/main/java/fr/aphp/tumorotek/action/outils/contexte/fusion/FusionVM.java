@@ -83,9 +83,11 @@ public class FusionVM
    private DuoEntites duoSelectedEntites;
 
    private int idASelected;
+
    private int idBSelected;
 
    private String entiteRecherche = "";
+
    private String critereRecherche = "";
 
    //taux de base modifié par l'interface

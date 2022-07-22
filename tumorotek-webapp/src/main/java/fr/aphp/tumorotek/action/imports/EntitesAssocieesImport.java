@@ -63,6 +63,7 @@ public class EntitesAssocieesImport extends OneToManyComponent<EntiteDecorator>
    private static final long serialVersionUID = -8965931524670323917L;
 
    private List<EntiteDecorator> objects = new ArrayList<>();
+
    private String pathToRespond;
 
    @Override
@@ -76,7 +77,6 @@ public class EntitesAssocieesImport extends OneToManyComponent<EntiteDecorator>
       return this.objects;
    }
 
-   
    @Override
    public void setObjects(final List<EntiteDecorator> objs){
       this.objects = objs;

@@ -89,16 +89,27 @@ public class ConteneurManagerImpl implements ConteneurManager
    private final Log log = LogFactory.getLog(ConteneurManager.class);
 
    private ConteneurDao conteneurDao;
+
    private ConteneurTypeDao conteneurTypeDao;
+
    private ServiceDao serviceDao;
+
    private BanqueDao banqueDao;
+
    private EnceinteManager enceinteManager;
+
    private TerminaleManager terminaleManager;
+
    private IncidentManager incidentManager;
+
    private ConteneurValidator conteneurValidator;
+
    private IncidentValidator incidentValidator;
+
    private OperationManager operationManager;
+
    private OperationTypeDao operationTypeDao;
+
    private ConteneurPlateformeDao conteneurPlateformeDao;
 
    public void setConteneurDao(final ConteneurDao cDao){
@@ -466,9 +477,9 @@ public class ConteneurManagerImpl implements ConteneurManager
     * une liste de banques et une liste de plateformes.
     * @param conteneur Conteneur pour lequel on veut mettre à jour
     * les associations.
-    * @param banques Liste des banques que l'on veut associer au 
+    * @param banques Liste des banques que l'on veut associer au
     * conteneur.
-    * @param plateformes Liste des plateformes auxquels l'accès au  
+    * @param plateformes Liste des plateformes auxquels l'accès au
     * conteneur pourra être partagé.
     */
    public void updateBanquesAndPlateformes(final Conteneur conteneur, final List<Banque> banques,
@@ -638,7 +649,7 @@ public class ConteneurManagerImpl implements ConteneurManager
    }
 
    /**
-    * Parcoure les enceintes de manière récursives afin de 
+    * Parcoure les enceintes de manière récursives afin de
     * toutes les récupérer.
     * @param encs liste d'enceintes à partir desquelles on cherche
     * @param res liste d'enceintes resultats
@@ -695,38 +706,37 @@ public class ConteneurManagerImpl implements ConteneurManager
       }
       return null;
    }
-   
-	@Override
-	public void updateObjectWithConteneurPlateformesManager(Conteneur conteneur,
-			ConteneurType conteneurType, Service service, List<Banque> banques,
-			List<ConteneurPlateforme> conteneurPlateformes,
-			List<Incident> incidents, Utilisateur utilisateur) {
-		
-		List<Plateforme> plateformes = null;
-		if (conteneurPlateformes != null) {
-			plateformes = new ArrayList<Plateforme>();
-			for (ConteneurPlateforme cp : conteneurPlateformes) {
-				plateformes.add(cp.getPlateforme());
-			}
-		}
-		
-		updateObjectManager(conteneur, conteneurType, service, banques, plateformes, incidents, utilisateur);
-		
-		// met à jour les informations spécifiques au conteneurPlateforme (ex: restrictStock)
-		if (conteneurPlateformes != null) {
-			for (ConteneurPlateforme cp : conteneurPlateformes) {
-				conteneurPlateformeDao.mergeObject(cp);
-			}
-		}
-	}
-	
-	@Override
-	public ConteneurPlateforme getOneConteneurPlateformeManager(Conteneur conteneur, Plateforme pf) {
-		for (ConteneurPlateforme cpf : getConteneurPlateformesManager(conteneur)) {
-			if (cpf.getPlateforme().equals(pf)) {
-				return cpf;
-			}
-		}
-		return null;
-	}
+
+   @Override
+   public void updateObjectWithConteneurPlateformesManager(final Conteneur conteneur, final ConteneurType conteneurType,
+      final Service service, final List<Banque> banques, final List<ConteneurPlateforme> conteneurPlateformes,
+      final List<Incident> incidents, final Utilisateur utilisateur){
+
+      List<Plateforme> plateformes = null;
+      if(conteneurPlateformes != null){
+         plateformes = new ArrayList<>();
+         for(final ConteneurPlateforme cp : conteneurPlateformes){
+            plateformes.add(cp.getPlateforme());
+         }
+      }
+
+      updateObjectManager(conteneur, conteneurType, service, banques, plateformes, incidents, utilisateur);
+
+      // met à jour les informations spécifiques au conteneurPlateforme (ex: restrictStock)
+      if(conteneurPlateformes != null){
+         for(final ConteneurPlateforme cp : conteneurPlateformes){
+            conteneurPlateformeDao.mergeObject(cp);
+         }
+      }
+   }
+
+   @Override
+   public ConteneurPlateforme getOneConteneurPlateformeManager(final Conteneur conteneur, final Plateforme pf){
+      for(final ConteneurPlateforme cpf : getConteneurPlateformesManager(conteneur)){
+         if(cpf.getPlateforme().equals(pf)){
+            return cpf;
+         }
+      }
+      return null;
+   }
 }

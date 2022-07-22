@@ -76,7 +76,7 @@ public class FusionDetailsBarChartEngine extends JFreeChartEngine
       renderer.setSeriesPaint(0, baseColor);
 
       final CategoryAxis domainAxis = plot.getDomainAxis();
-      //Rotation 
+      //Rotation
       // domainAxis.setCategoryLabelPositions(
       //    CategoryLabelPositions.createUpRotationLabelPositions(Math.PI / 7.0)
       //);

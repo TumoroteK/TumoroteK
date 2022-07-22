@@ -44,7 +44,6 @@ import fr.aphp.tumorotek.model.imprimante.LigneEtiquette;
 public class LigneEtiquetteValidator implements Validator
 {
 
-   
    @Override
    public boolean supports(final Class<?> clazz){
       return LigneEtiquette.class.equals(clazz);

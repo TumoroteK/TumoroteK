@@ -74,7 +74,7 @@ import fr.aphp.tumorotek.model.interfacage.Emetteur;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
 /**
- * 
+ *
  * @author Mathieu BARTHELEMY
  * @version 2.2.3-genno
  */
@@ -86,20 +86,28 @@ public class SelectDossierExterneModale extends AbstractFicheCombineController
    private static final long serialVersionUID = 5225330380328203307L;
 
    private Listbox dossiersBox;
+
    private Button select;
 
    private String path = "";
+
    private String numDossier = "";
+
    private List<DossierExterne> dossierExternes = new ArrayList<>();
+
    private DossierExterne selectedDossierExterne;
+
    private DossierExterneRenderer dossierExterneRenderer = new DossierExterneRenderer();
+
    private Listitem currentIten;
+
    private DossierExterne currentDossierExterne;
 
    // mode edition d'un prélèvement
    private boolean edit = false;
+
    private Prelevement prelevement;
-   
+
    // @since 2.2.3-genno
    private boolean derive = false;
 
@@ -138,8 +146,8 @@ public class SelectDossierExterneModale extends AbstractFicheCombineController
     * @param prelevement
     * @param boolean derive interfacage
     */
-   public void init(final String pathToPage, final String critere, final boolean isEdit, 
-		   										final Prelevement prlvt, final boolean _d){
+   public void init(final String pathToPage, final String critere, final boolean isEdit, final Prelevement prlvt,
+      final boolean _d){
       this.path = pathToPage;
       this.numDossier = critere;
       this.edit = isEdit;
@@ -180,17 +188,15 @@ public class SelectDossierExterneModale extends AbstractFicheCombineController
       });
 
       // view
-	  Banque currBank = SessionUtils.getCurrentBanque(sessionScope);
+      final Banque currBank = SessionUtils.getCurrentBanque(sessionScope);
       DossierExterne dExt;
       for(final Emetteur emet : emetteurs){
-         dExt = ManagerLocator.getViewHandlerFactory()
-        		 .sendQuery(emet, numDossier, currBank);
+         dExt = ManagerLocator.getViewHandlerFactory().sendQuery(emet, numDossier, currBank);
          if(dExt != null){
             dossierExternes.add(dExt);
          }
          if(prelevement != null){
-            dExt = ManagerLocator.getViewHandlerFactory()
-            		.sendQuery(emet, prelevement.getNumeroLabo(), currBank);
+            dExt = ManagerLocator.getViewHandlerFactory().sendQuery(emet, prelevement.getNumeroLabo(), currBank);
             if(dExt != null){
                dossierExternes.add(dExt);
             }
@@ -257,11 +263,11 @@ public class SelectDossierExterneModale extends AbstractFicheCombineController
       // la fiche du prélèvement
       if(!edit){
          try{
-            final ResultatInjection resultat = !derive ? 
-            	ManagerLocator.getInjectionManager().injectDossierManager(selectedDossierExterne,
-            				SessionUtils.getSelectedBanques(sessionScope).get(0)) 
-            	: ManagerLocator.getInjectionManager().injectDossierDeriveManager(selectedDossierExterne,
-        				SessionUtils.getSelectedBanques(sessionScope).get(0));
+            final ResultatInjection resultat = !derive
+               ? ManagerLocator.getInjectionManager().injectDossierManager(selectedDossierExterne,
+                  SessionUtils.getSelectedBanques(sessionScope).get(0))
+               : ManagerLocator.getInjectionManager().injectDossierDeriveManager(selectedDossierExterne,
+                  SessionUtils.getSelectedBanques(sessionScope).get(0));
             resultat.setDossierExterne(selectedDossierExterne);
 
             // si le chemin d'accès à la page est correcte

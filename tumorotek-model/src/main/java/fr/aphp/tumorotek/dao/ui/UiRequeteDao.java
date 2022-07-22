@@ -55,7 +55,7 @@ public interface UiRequeteDao extends GenericDaoJpa<UiRequete, Integer> //FIXME 
 {
 
    /**
-    * Recherche les requetes enregistrées par un utilisateur pour un 
+    * Recherche les requetes enregistrées par un utilisateur pour un
     * onglet (entite)
     * @param u Utilisateur
     * @param e Entite
@@ -64,12 +64,12 @@ public interface UiRequeteDao extends GenericDaoJpa<UiRequete, Integer> //FIXME 
    public List<UiRequete> findByUtilisateurAndEntite(Utilisateur u, Entite e);
 
    /**
-    * Recherche les requetes enregistrées par un utilisateur pour un 
+    * Recherche les requetes enregistrées par un utilisateur pour un
     * onglet (entite) et un nom spécifiés.
     * Methode utilisée dans la recherche de doublons.
     * @param u Utilisateur
     * @param e Entite
-    * @param String nom 
+    * @param String nom
     * @return liste de UiRequetes
     */
    public List<UiRequete> findByNomUtilisateurAndEntite(Utilisateur u, Entite e, String nom);

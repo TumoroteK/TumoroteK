@@ -56,19 +56,23 @@ public class ComponentBarcodeLabel extends Component
 
    // private data;
    private List<LigneEtiquette> lignes = new ArrayList<>();
+
    private int abscisse;
+
    private int ordonnee;
+
    private int maxWidth;
 
    private Boolean isQRCode = false;
+
    private String code;
 
    /**
     * Instanciation d un objet imprimable a partir de donnees.
-    * 
+    *
     * @param isQRCode
-    * @param code 
-    * 
+    * @param code
+    *
     * @param Vector
     *            <String>_data
     * @param String
@@ -135,7 +139,7 @@ public class ComponentBarcodeLabel extends Component
 
    /**
     * Method: paint
-    *  
+    *
     * @param g a value of type Graphics
     * @return void
     */

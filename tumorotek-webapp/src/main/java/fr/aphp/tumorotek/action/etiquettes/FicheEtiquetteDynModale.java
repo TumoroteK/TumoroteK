@@ -79,19 +79,26 @@ public class FicheEtiquetteDynModale extends FicheEtiquetteModale
 
    @Wire("#fwinEtiquetteDynModale")
    private Window fwinEtiquetteDynModale;
+
    @Wire("#copiesCheckbox")
    private Checkbox copiesCheckbox;
+
    @Wire("#listeCheckbox")
    private Checkbox listeCheckbox;
+
    @Wire("#premierNumeroBox")
    private Intbox premierNumeroBox;
+
    @Wire("#dernierNumeroBox")
    private Intbox dernierNumeroBox;
+
    @Wire("#rowsEtiquette")
    private Rows rowsEtiquette;
 
    private List<Textbox> textboxes = new ArrayList<>();
+
    private List<Checkbox> checkboxes = new ArrayList<>();
+
    private List<Label> labels = new ArrayList<>();
 
    private List<LigneEtiquette> lignes = new ArrayList<>();
@@ -429,11 +436,11 @@ public class FicheEtiquetteDynModale extends FicheEtiquetteModale
    //
    //					if (copiesRadio.isChecked()) {
    //						completed = ManagerLocator.getTumoBarcodePrinter()
-   //								.printData(lignes, getNbrCopies(), 
+   //								.printData(lignes, getNbrCopies(),
    //										getSelectedImprimante(), getModele());
    //					} else if (listeRadio.isChecked()) {
    //						completed = ManagerLocator.getTumoBarcodePrinter()
-   //								.printListData(dataListeEtiquette, getSelectedImprimante(), 
+   //								.printListData(dataListeEtiquette, getSelectedImprimante(),
    //										getModele());
    //					}
    //
@@ -455,7 +462,7 @@ public class FicheEtiquetteDynModale extends FicheEtiquetteModale
    //								Messagebox.OK, Messagebox.INFORMATION);
    //					}
    //				} catch (RuntimeException re) {
-   //					Messagebox.show(AbstractController.handleExceptionMessage(re), 
+   //					Messagebox.show(AbstractController.handleExceptionMessage(re),
    //							"Error", Messagebox.OK, Messagebox.ERROR);
    //
    //				} catch (Exception e) {

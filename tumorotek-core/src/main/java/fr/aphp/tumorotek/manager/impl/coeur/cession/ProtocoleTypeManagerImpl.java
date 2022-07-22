@@ -68,7 +68,9 @@ public class ProtocoleTypeManagerImpl implements ProtocoleTypeManager
 
    /** Bean Dao CategorieDao. */
    private ProtocoleTypeDao protocoleTypeDao;
+
    private ProtocoleTypeValidator protocoleTypeValidator;
+
    private PlateformeDao plateformeDao;
 
    public void setPlateformeDao(final PlateformeDao pDao){

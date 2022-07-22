@@ -72,7 +72,7 @@ public interface CodeAssigneDao extends GenericDaoJpa<CodeAssigne, Integer>
    List<CodeAssigne> findByLibelleLike(String code);
 
    /**
-    * Recherche les codes qui sont assignes comme type lésionnel/morpho 
+    * Recherche les codes qui sont assignes comme type lésionnel/morpho
     * pour l'échantillon.
     * @param echantillon.
     * @return une liste de codes assignes.
@@ -80,7 +80,7 @@ public interface CodeAssigneDao extends GenericDaoJpa<CodeAssigne, Integer>
    List<CodeAssigne> findCodesMorphoByEchantillon(Echantillon echan);
 
    /**
-    * Recherche les codes qui sont assignes pour definir l'organes 
+    * Recherche les codes qui sont assignes pour definir l'organes
     * dont est issu l'échantillon.
     * @param echantillon.
     * @return une liste de codes assignes.
@@ -99,7 +99,7 @@ public interface CodeAssigneDao extends GenericDaoJpa<CodeAssigne, Integer>
    List<CodeAssigne> findByExcludedId(Integer codeAssigneId, String code, Echantillon echan);
 
    /**
-    * Recherche les codes lésionels assignes exportes pour 
+    * Recherche les codes lésionels assignes exportes pour
     * chacun des echantillons issus du prélèvement passé en paramètre.
     * Ordonne les codes suivant id des échantillons.
     * @param prel Prelevement
@@ -108,7 +108,7 @@ public interface CodeAssigneDao extends GenericDaoJpa<CodeAssigne, Integer>
    List<CodeAssigne> findCodesLesExportedByPrelevement(Prelevement prel);
 
    /**
-    * Recherche les codes organes assignes exportes pour 
+    * Recherche les codes organes assignes exportes pour
     * chacun des echantillons issus du prélèvement passé en paramètre.
     * Ordonne les codes suivant id des échantillons.
     * @param prel Prelevement
@@ -117,7 +117,7 @@ public interface CodeAssigneDao extends GenericDaoJpa<CodeAssigne, Integer>
    List<CodeAssigne> findCodesOrgExportedByPrelevement(Prelevement prel);
 
    /**
-    * Recherche les codes organes assignes exportes pour 
+    * Recherche les codes organes assignes exportes pour
     * chacun des echantillons issus du patient passé en paramètre.
     * Ordonne les codes suivant id des échantillons.
     * @param pat Patient
@@ -126,7 +126,7 @@ public interface CodeAssigneDao extends GenericDaoJpa<CodeAssigne, Integer>
    List<CodeAssigne> findCodesOrgExportedByPatient(Patient pat);
 
    /**
-    * Recherche tous les codes assignes pour un code et un echantillon. 
+    * Recherche tous les codes assignes pour un code et un echantillon.
     * Permet une recherche de doublons efficace.
     * @param code pour filtrer le nombre de codes retournés
     * @param echantillon pour filtrer le nombre de codes retournés

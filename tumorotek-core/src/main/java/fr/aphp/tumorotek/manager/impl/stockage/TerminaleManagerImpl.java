@@ -97,7 +97,6 @@ import fr.aphp.tumorotek.model.systeme.Couleur;
 import fr.aphp.tumorotek.model.systeme.Entite;
 import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
 import fr.aphp.tumorotek.utils.Utils;
-import oracle.jdbc.internal.OracleTypes;
 
 /**
  *
@@ -114,22 +113,39 @@ public class TerminaleManagerImpl implements TerminaleManager
    private final Log log = LogFactory.getLog(TerminaleManager.class);
 
    private TerminaleDao terminaleDao;
+
    private EnceinteDao enceinteDao;
+
    private TerminaleTypeDao terminaleTypeDao;
+
    private BanqueDao banqueDao;
+
    private EntiteDao entiteDao;
+
    private TerminaleNumerotationDao terminaleNumerotationDao;
+
    private EmplacementDao emplacementDao;
+
    private EchantillonDao echantillonDao;
+
    private ProdDeriveDao prodDeriveDao;
+
    private CheckPositionManager checkPositionManager;
+
    private TerminaleValidator terminaleValidator;
+
    private OperationManager operationManager;
+
    private OperationTypeDao operationTypeDao;
+
    private CouleurDao couleurDao;
+
    private IncidentManager incidentManager;
+
    private IncidentValidator incidentValidator;
+
    private EmplacementManager emplacementManager;
+
    // @since 2.1
    private DataSource dataSource;
 
@@ -201,11 +217,11 @@ public class TerminaleManagerImpl implements TerminaleManager
       this.dataSource = dataSource;
    }
 
-   public void setEmplacementManager(EmplacementManager _e) {
-	this.emplacementManager = _e;
-}
+   public void setEmplacementManager(final EmplacementManager _e){
+      this.emplacementManager = _e;
+   }
 
-@Override
+   @Override
    public Terminale findByIdManager(final Integer terminaleId){
       return terminaleDao.findById(terminaleId);
    }
@@ -249,7 +265,7 @@ public class TerminaleManagerImpl implements TerminaleManager
 
    @Override
    public Boolean checkTerminaleInEnceinteLimitesManager(final Terminale terminale){
-      Boolean valide = true;
+      boolean valide = true;
       // on vérifie que la terminale n'est pas nulle
       if(terminale != null){
          final Enceinte enceinte = terminale.getEnceinte();
@@ -283,7 +299,7 @@ public class TerminaleManagerImpl implements TerminaleManager
       if(terminale != null && terminale.getTerminaleId() != null){
          final List<Long> nbPris = emplacementDao.findByCountTerminaleAndVide(terminale, false);
 
-         final Long libres = terminale.getTerminaleType().getNbPlaces() - nbPris.get(0);
+         final long libres = terminale.getTerminaleType().getNbPlaces() - nbPris.get(0);
 
          return libres;
 
@@ -865,10 +881,10 @@ public class TerminaleManagerImpl implements TerminaleManager
 
       return res;
    }
-   
+
    @Override
    public List<OldEmplTrace> getTkObjectsEmplacementTracesManager(final Terminale term){
-      final List<OldEmplTrace> traces = new ArrayList<OldEmplTrace>();
+      final List<OldEmplTrace> traces = new ArrayList<>();
 
       final List<Emplacement> emps = emplacementDao.findByTerminaleAndVide(term, false);
       final List<Echantillon> echans = getEchantillonsManager(term);
@@ -883,8 +899,8 @@ public class TerminaleManagerImpl implements TerminaleManager
          if(emp.getEntite().getNom().equals("Echantillon")){
             echanLoop: for(final Echantillon e : echans){
                if(e.getEchantillonId().equals(emp.getObjetId())){
-                  traces.add(new OldEmplTrace(e, emplacementManager
-                		.getAdrlManager(emp, false), emplacementManager.getConteneurManager(emp), emp));
+                  traces.add(new OldEmplTrace(e, emplacementManager.getAdrlManager(emp, false),
+                     emplacementManager.getConteneurManager(emp), emp));
                   echans.remove(e);
                   break echanLoop;
                }
@@ -892,8 +908,8 @@ public class TerminaleManagerImpl implements TerminaleManager
          }else{
             derivesLoop: for(final ProdDerive p : derives){
                if(p.getProdDeriveId().equals(emp.getObjetId())){
-            	   traces.add(new OldEmplTrace(p, emplacementManager
-                   		.getAdrlManager(emp, false), emplacementManager.getConteneurManager(emp), emp));
+                  traces.add(new OldEmplTrace(p, emplacementManager.getAdrlManager(emp, false),
+                     emplacementManager.getConteneurManager(emp), emp));
                   derives.remove(p);
                   break derivesLoop;
                }
@@ -903,24 +919,23 @@ public class TerminaleManagerImpl implements TerminaleManager
 
       return traces;
    }
-   
+
    @Override
-   public List<Banque> getDistinctBanquesFromTkObjectsManager(final Terminale term) {
-	   List<Banque> banks = new ArrayList<Banque>();
-	   
-	   if (term != null) {
-		   List<TKStockableObject> tkObjs = new ArrayList<TKStockableObject>();
-		   tkObjs.addAll(getEchantillonsManager(term));
-		   tkObjs.addAll(getProdDerivesManager(term));
-		   
-		   banks.addAll(tkObjs.stream().map(o -> o.getBanque())
-				   .distinct().collect(Collectors.toList()));
-	   }
-	   return banks;
+   public List<Banque> getDistinctBanquesFromTkObjectsManager(final Terminale term){
+      final List<Banque> banks = new ArrayList<>();
+
+      if(term != null){
+         final List<TKStockableObject> tkObjs = new ArrayList<>();
+         tkObjs.addAll(getEchantillonsManager(term));
+         tkObjs.addAll(getProdDerivesManager(term));
+
+         banks.addAll(tkObjs.stream().map(o -> o.getBanque()).distinct().collect(Collectors.toList()));
+      }
+      return banks;
    }
-   
+
    @Override
-   public List<Terminale> findByAliasManager(String _a){
+   public List<Terminale> findByAliasManager(final String _a){
       return terminaleDao.findByAlias(_a);
    }
 
@@ -935,39 +950,39 @@ public class TerminaleManagerImpl implements TerminaleManager
          ResultSet rset = null;
          try{
             conn = DataSourceUtils.getConnection(dataSource);
-            
+
             // DBMS
-			if (Utils.isOracleDBMS()) {
-				stmt = conn.prepareCall("call get_term_by_nom_and_parent(?,?,?,?)");
-				stmt.registerOutParameter(4, OracleTypes.CURSOR);
-			} else {
-				stmt = conn.prepareCall("call get_term_by_nom_and_parent(?,?,?)");
-			}
-			
-			for (final Conteneur cont : conts) {
-				stmt.clearParameters();
-				stmt.setString(1, nom);
-				if (enc != null) {
-					stmt.setInt(2, enc.getEnceinteId());
-				} else {
-					stmt.setNull(2, Types.INTEGER);
-				}
-				stmt.setInt(3, cont.getConteneurId());
-									
-				// DBMS
-				if (Utils.isOracleDBMS()) {
-					stmt.executeQuery();
-					rset = (ResultSet) stmt.getObject(4);
-				} else {
-					if (stmt.execute()) {
-						rset = stmt.getResultSet();
-					}
-				}
-									
-				while (rset.next()) {
-					ids.add(rset.getInt(1));
-				}
-			}
+            if(Utils.isOracleDBMS()){
+               stmt = conn.prepareCall("call get_term_by_nom_and_parent(?,?,?,?)");
+               stmt.registerOutParameter(4, oracle.jdbc.OracleTypes.CURSOR);
+            }else{
+               stmt = conn.prepareCall("call get_term_by_nom_and_parent(?,?,?)");
+            }
+
+            for(final Conteneur cont : conts){
+               stmt.clearParameters();
+               stmt.setString(1, nom);
+               if(enc != null){
+                  stmt.setInt(2, enc.getEnceinteId());
+               }else{
+                  stmt.setNull(2, Types.INTEGER);
+               }
+               stmt.setInt(3, cont.getConteneurId());
+
+               // DBMS
+               if(Utils.isOracleDBMS()){
+                  stmt.executeQuery();
+                  rset = (ResultSet) stmt.getObject(4);
+               }else{
+                  if(stmt.execute()){
+                     rset = stmt.getResultSet();
+                  }
+               }
+
+               while(rset.next()){
+                  ids.add(rset.getInt(1));
+               }
+            }
          }catch(final Exception e){
             log.error(e.getMessage());
          }finally{

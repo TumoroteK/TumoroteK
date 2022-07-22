@@ -52,15 +52,15 @@ import org.apache.camel.ProducerTemplate;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import fr.aphp.tumorotek.interfacage.sender.StorageRobotSender;
 import fr.aphp.tumorotek.interfacage.storageRobot.StorageMovement;
 import fr.aphp.tumorotek.manager.exception.TKException;
-import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
-import fr.aphp.tumorotek.interfacage.sender.StorageRobotSender;
 import fr.aphp.tumorotek.model.TKAnnotableObject;
 import fr.aphp.tumorotek.model.interfacage.Recepteur;
+import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
 
 /**
- * 
+ *
  * @author Mathieu BARTHELEMY
  * @version 2.2.1-IRELEC
  *
@@ -68,309 +68,317 @@ import fr.aphp.tumorotek.model.interfacage.Recepteur;
 public class StorageRobotSenderImpl implements StorageRobotSender
 {
 
-private Log log = LogFactory.getLog(StorageRobotSender.class);
-	
-	private ProducerTemplate camelTemplate;
-	private String camelConfigLocation;
+   private final Log log = LogFactory.getLog(StorageRobotSender.class);
 
-	public void setCamelTemplate(ProducerTemplate ct) {
-		this.camelTemplate = ct;
-	}
-	
-	public void setCamelConfigLocation(String _c) {
-		this.camelConfigLocation = _c;
-	}
+   private ProducerTemplate camelTemplate;
 
-	public void sendEmplacements(Recepteur re, List<StorageMovement> stoE,  
-			Utilisateur u) {
-		if (re != null && stoE != null && u != null) {		
-			InnerEnvVariables vars = new InnerEnvVariables();
-			
-			initVarFromStorageRobotBundle(vars);
-			
-			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			ByteArrayOutputStream baosM = new ByteArrayOutputStream();
-			
-			try {
-				makeCSVfromMap(re, baos, stoE, vars.getSeparator());
-				
-				String filename = vars.getFilename() + new SimpleDateFormat("_yyyy_MM_dd_HH_mm_ss")
-						.format(Calendar.getInstance().getTime()) + ".csv";
-				
-				writeOneRecetteLine(baosM, filename, u, vars.getSeparator());
-				
-				// depot du fichier
-				camelTemplate.sendBodyAndHeader("direct:storage-robot-recette", baos, 
-									"CamelFileName",  filename);
-				
-				// append to master
-				camelTemplate.sendBody("direct:storage-robot-master", baosM);
-				
-			} catch (Exception e) {
-				log.error(e.getMessage());
-				throw new TKException(e.getMessage());
-			} finally {
-				if (baos != null) {
-					try { baos.close(); } catch (IOException e) {}
-				}
-				if (baosM != null) {
-					try { baosM.close(); } catch (IOException e) {}
-				}
-			}
-		}
-	}
-	
-	@Override
-	public void writeOneRecetteLine(ByteArrayOutputStream baos, String filename, Utilisateur user,
-			String separator) throws IOException {
-		
-		if (filename != null && user != null) {
-			baos.write(filename.getBytes());
-			baos.write(separator.getBytes());
-			baos.write(user.getLogin().getBytes());
-			baos.write("\n".getBytes());
-		}		
-	}
-	
-	@Override
-	public void makeCSVfromMap(Recepteur re, ByteArrayOutputStream baos, 
-			List<StorageMovement> storageMvts, 
-			String separator) throws IOException {
-			
-		int currentRow = 0;
-		
-		for (StorageMovement stE : storageMvts) {
-			log.debug(stE);
-			currentRow++;
-			// 1st col = increment
-			baos.write(String.valueOf(currentRow).getBytes());				
-			baos.write(separator.getBytes());
-			// 2nd col = barcode
-			baos.write(stE.getBarcode().getBytes());
-			baos.write(separator.getBytes());
-			// adrl split
-			printAdrl(stE.getAdrl(), re, baos, separator);
-			baos.write(separator.getBytes());
-			// dest adrl split
-			printAdrl(stE.getDestAdrl(), re, baos, separator);
-			baos.write(separator.getBytes());
-			baos.write("\n".getBytes());
-		}
-		
-		// complete to 1000 as IRELEC demands
-//		if (nbLinesToBeProvide > 0) {
-//			log.debug("providing additive lines: " + (nbLinesToBeProvide - currentRow));
-//			while (currentRow < nbLinesToBeProvide) {
-//				currentRow++;
-//				baos.write(String.valueOf(currentRow).getBytes());
-//				// writes separators for increment and barcodes
-//				baos.write(writeEmptySeparators(separator, 2).getBytes());
-//				// writes separators for empty adrls
-//				printAdrl(null, re, baos, separator);
-//				baos.write(separator.getBytes());
-//				printAdrl(null, re, baos, separator);
-//				baos.write("\n".getBytes());
-//			}
-//		}		
-	}
-	
-	/**
-	 * Checks adrl is coherent with recepteur and prints it. 
-	 * If adrl matches single integer = transport rack position -> completes with leading 0.0.0. 
-	 * according to IRELEC specs.
-	 * @param _a adrl
-	 * @param re recepteur
-	 * @param baos stream
-	 * @param separator
-	 * @throws IOException
-	 */
-	private void printAdrl(String _a, Recepteur re, ByteArrayOutputStream baos, 
-				String separator) throws IOException {
-		if (_a != null) {
-			log.debug("print adr: " + _a);
-			if (_a.matches("[0-9]+")) { // rack transport integer position
-				_a = "0.0.0." + _a;
-			}
-			String[] splitted = _a.split("\\.");
-			// IRELEC check
-			if (splitted.length != 4 && re.getLogiciel().getNom().equals("IRELEC")) {
-				throw new RuntimeException("storage.robot.emplacement.adrl.incompatible");
-			}
-			for (int i = 0; i < splitted.length; i++) {
-				baos.write(splitted[i].getBytes());
-				if (i < splitted.length - 1) { // skip last separator
-					baos.write(separator.getBytes());
-				}
-			}
-		} else {
-			baos.write(writeEmptySeparators(separator, 3).getBytes());
-		}
-	}
-	
-//	@Override
-//	public void makeCSVfromDeplacementMap(Recepteur re, ByteArrayOutputStream baos, 
-//			Map<TKStockableObject, EmplacementDecorator> tkEmpls, OperationType oType, 
-//			String separator, int nbLinesToBeProvide) throws IOException {
-//		
-//		List<StorageEmplacement> stoEmplacements = new ArrayList<StorageEmplacement>();
-//		Iterator<TKStockableObject> it = tkEmpls.keySet().iterator();
-//		TKStockableObject tko;
-//		Emplacement emp;
-//		StorageEmplacement stoEmp;
-//		String[] posAddr;
-//		while (it.hasNext()) {
-//			tko = it.next();
-//			emp = tkEmpls.get(tko);
-//			if (emp != null) {
-//				posAddr = emplacementManager.getAdrlManager(emp, true).split("\\.");
-//				if (posAddr.length < 4 && re.getLogiciel().getNom().equals("IRELEC")) {
-//					throw new RuntimeException("storage.robot.emplacement.adrl.incompatible");
-//				}
-//				stoEmp = new StorageEmplacement(tko.getCode(), posAddr[0], posAddr[1], 
-//						posAddr[posAddr.length - 2], posAddr[posAddr.length - 1]);
-//				stoEmplacements.add(stoEmp);
-//			}
-//		}
-//		
-//		// sort by adrl to facilitate
-//		// robot handle
-//		Collections.sort(stoEmplacements);
-//		int currentRow = 0;
-//		
-//		boolean isStockage = oType == null || oType.getNom().equals("Stockage");
-//		
-//		for (StorageEmplacement stE : stoEmplacements) {
-//			if (stE.isComplete()) {
-//				currentRow++;
-//				baos.write(String.valueOf(currentRow).getBytes());				
-//				baos.write(separator.getBytes());
-//				if (!isStockage) { // destockage
-//					baos.write(writeEmptySeparators(separator, 5).getBytes());
-//				}
-//				baos.write(stE.getBarcode().getBytes());
-//				baos.write(separator.getBytes());
-//				baos.write(stE.getConteneurCode().getBytes());
-//				baos.write(separator.getBytes());
-//				baos.write(stE.getRack().getBytes());
-//				baos.write(separator.getBytes());
-//				baos.write(stE.getBoite().getBytes());
-//				baos.write(separator.getBytes());
-//				baos.write(stE.getPosition().getBytes());
-//				baos.write("\n".getBytes());
-//			}
-//		}
-//		// complete to 1000 as IRELEC demands
-//		if (nbLinesToBeProvide > 0) {
-//			while (currentRow < nbLinesToBeProvide) {
-//				currentRow++;
-//				baos.write(String.valueOf(currentRow).getBytes());
-//				baos.write(separator.getBytes());
-//				if (!isStockage) { // destockage
-//					baos.write(writeEmptySeparators(separator, 5).getBytes());
-//				}
-//				baos.write(separator.getBytes());
-//				baos.write(separator.getBytes());
-//				baos.write(separator.getBytes());
-//				baos.write(separator.getBytes());
-//				baos.write("\n".getBytes());
-//			}
-//		}		
-//	}
+   private String camelConfigLocation;
 
-	private String writeEmptySeparators(String s, int x) {
-		String out = "";
-		int i = 0;
-		while (i < x) {
-			out = out + s;
-			i++;
-		}
-		return out;
-	}
+   public void setCamelTemplate(final ProducerTemplate ct){
+      this.camelTemplate = ct;
+   }
 
-	@Override
-	public void sendMessages(List<TKAnnotableObject> objs, Integer b) {
-	}
-	
-	@Override
-	public String setFileName(TKAnnotableObject prel, boolean isOkFile, Integer part, 
-			String currtime) {
-		// ResourceBundle storageRobotBundle = getStorageRobotBundle("storageRobot.properties");
-		// if (storageRobotBundle != null) {
-		// 	return storageRobotBundle.getString("csvname");
-		// }
-		return "storageRobotCsv.csv";
-	}
+   public void setCamelConfigLocation(final String _c){
+      this.camelConfigLocation = _c;
+   }
 
-	@Override
-	public boolean useRecepteur(Recepteur r) {
-		if (r != null && r.getLogiciel() != null 
-				&& r.getLogiciel().getNom().equals("IRELEC")
-				&& r.getIdentification().matches(".*STORAGE.*")) {
-			return true;
-		}
-		return false;
-	}
+   @Override
+   public void sendEmplacements(final Recepteur re, final List<StorageMovement> stoE, final Utilisateur u){
+      if(re != null && stoE != null && u != null){
+         final InnerEnvVariables vars = new InnerEnvVariables();
 
-	@Override
-	public void sendMessage(TKAnnotableObject obj, String dosExtId, String url) {		
-	}
-	
-	private void initVarFromStorageRobotBundle(InnerEnvVariables vars) {
-		
-		String propFileName = "storage_robot.properties";
-		
-		if (camelConfigLocation != null && propFileName != null) {
-			File file = new File(camelConfigLocation + propFileName);
-			FileInputStream fis = null;
-			InputStreamReader reader = null;
-			ResourceBundle bundle = null;
+         initVarFromStorageRobotBundle(vars);
 
-			if (file.isFile()) { // Also checks for existance
-				try {
-					fis = new FileInputStream(file);
-					reader = new InputStreamReader(fis, 
-							Charset.forName("UTF-8"));
-					bundle = new PropertyResourceBundle(reader);
-					
-					// vars.setMasterfile(bundle.getString("masterfile"));
-					vars.setFilename(bundle.getString("csvname"));
-					vars.setSeparator(bundle.getString("csv.separator"));
-					// vars.setNbLinesToBeProvide(Integer.valueOf(bundle.getString("nb.lines.tofill")));
-					
-				} catch (FileNotFoundException e) {
-					e.printStackTrace();
-				} catch (IOException e) {
-					e.printStackTrace();
-				} finally {
-					try { reader.close(); } catch (IOException e) { reader = null; }
-					try { fis.close();} catch (IOException e) { fis = null; }
-				}
-			} else {
-				throw new RuntimeException("storageRobot.properties.not.found");
-			}
-		}
-	}
-	
-	private class InnerEnvVariables {
-		// private String masterfile = "NomRecette.csv";
-		private String separator = "|";
-		private String filename = "Recette_";
-//		private Integer nbLinesToBeProvide = -1;
+         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+         final ByteArrayOutputStream baosM = new ByteArrayOutputStream();
 
-		public String getSeparator() {
-			return separator;
-		}
-		
-		public void setSeparator(String _s) {
-			this.separator = _s;
-		}
-		
-		public String getFilename() {
-			return filename;
-		}
-		
-		public void setFilename(String _f) {
-			this.filename = _f;
-		}
-	}
+         try{
+            makeCSVfromMap(re, baos, stoE, vars.getSeparator());
+
+            final String filename = vars.getFilename()
+               + new SimpleDateFormat("_yyyy_MM_dd_HH_mm_ss").format(Calendar.getInstance().getTime()) + ".csv";
+
+            writeOneRecetteLine(baosM, filename, u, vars.getSeparator());
+
+            // depot du fichier
+            camelTemplate.sendBodyAndHeader("direct:storage-robot-recette", baos, "CamelFileName", filename);
+
+            // append to master
+            camelTemplate.sendBody("direct:storage-robot-master", baosM);
+
+         }catch(final Exception e){
+            log.error(e.getMessage());
+            throw new TKException(e.getMessage());
+         }finally{
+            if(baos != null){
+               try{
+                  baos.close();
+               }catch(final IOException e){}
+            }
+            if(baosM != null){
+               try{
+                  baosM.close();
+               }catch(final IOException e){}
+            }
+         }
+      }
+   }
+
+   @Override
+   public void writeOneRecetteLine(final ByteArrayOutputStream baos, final String filename, final Utilisateur user,
+      final String separator) throws IOException{
+
+      if(filename != null && user != null){
+         baos.write(filename.getBytes());
+         baos.write(separator.getBytes());
+         baos.write(user.getLogin().getBytes());
+         baos.write("\n".getBytes());
+      }
+   }
+
+   @Override
+   public void makeCSVfromMap(final Recepteur re, final ByteArrayOutputStream baos, final List<StorageMovement> storageMvts,
+      final String separator) throws IOException{
+
+      int currentRow = 0;
+
+      for(final StorageMovement stE : storageMvts){
+         log.debug(stE);
+         currentRow++;
+         // 1st col = increment
+         baos.write(String.valueOf(currentRow).getBytes());
+         baos.write(separator.getBytes());
+         // 2nd col = barcode
+         baos.write(stE.getBarcode().getBytes());
+         baos.write(separator.getBytes());
+         // adrl split
+         printAdrl(stE.getAdrl(), re, baos, separator);
+         baos.write(separator.getBytes());
+         // dest adrl split
+         printAdrl(stE.getDestAdrl(), re, baos, separator);
+         baos.write(separator.getBytes());
+         baos.write("\n".getBytes());
+      }
+
+      // complete to 1000 as IRELEC demands
+      //		if (nbLinesToBeProvide > 0) {
+      //			log.debug("providing additive lines: " + (nbLinesToBeProvide - currentRow));
+      //			while (currentRow < nbLinesToBeProvide) {
+      //				currentRow++;
+      //				baos.write(String.valueOf(currentRow).getBytes());
+      //				// writes separators for increment and barcodes
+      //				baos.write(writeEmptySeparators(separator, 2).getBytes());
+      //				// writes separators for empty adrls
+      //				printAdrl(null, re, baos, separator);
+      //				baos.write(separator.getBytes());
+      //				printAdrl(null, re, baos, separator);
+      //				baos.write("\n".getBytes());
+      //			}
+      //		}
+   }
+
+   /**
+    * Checks adrl is coherent with recepteur and prints it.
+    * If adrl matches single integer = transport rack position -> completes with leading 0.0.0.
+    * according to IRELEC specs.
+    * @param _a adrl
+    * @param re recepteur
+    * @param baos stream
+    * @param separator
+    * @throws IOException
+    */
+   private void printAdrl(String _a, final Recepteur re, final ByteArrayOutputStream baos, final String separator)
+      throws IOException{
+      if(_a != null){
+         log.debug("print adr: " + _a);
+         if(_a.matches("[0-9]+")){ // rack transport integer position
+            _a = "0.0.0." + _a;
+         }
+         final String[] splitted = _a.split("\\.");
+         // IRELEC check
+         if(splitted.length != 4 && re.getLogiciel().getNom().equals("IRELEC")){
+            throw new RuntimeException("storage.robot.emplacement.adrl.incompatible");
+         }
+         for(int i = 0; i < splitted.length; i++){
+            baos.write(splitted[i].getBytes());
+            if(i < splitted.length - 1){ // skip last separator
+               baos.write(separator.getBytes());
+            }
+         }
+      }else{
+         baos.write(writeEmptySeparators(separator, 3).getBytes());
+      }
+   }
+
+   //	@Override
+   //	public void makeCSVfromDeplacementMap(Recepteur re, ByteArrayOutputStream baos,
+   //			Map<TKStockableObject, EmplacementDecorator> tkEmpls, OperationType oType,
+   //			String separator, int nbLinesToBeProvide) throws IOException {
+   //
+   //		List<StorageEmplacement> stoEmplacements = new ArrayList<StorageEmplacement>();
+   //		Iterator<TKStockableObject> it = tkEmpls.keySet().iterator();
+   //		TKStockableObject tko;
+   //		Emplacement emp;
+   //		StorageEmplacement stoEmp;
+   //		String[] posAddr;
+   //		while (it.hasNext()) {
+   //			tko = it.next();
+   //			emp = tkEmpls.get(tko);
+   //			if (emp != null) {
+   //				posAddr = emplacementManager.getAdrlManager(emp, true).split("\\.");
+   //				if (posAddr.length < 4 && re.getLogiciel().getNom().equals("IRELEC")) {
+   //					throw new RuntimeException("storage.robot.emplacement.adrl.incompatible");
+   //				}
+   //				stoEmp = new StorageEmplacement(tko.getCode(), posAddr[0], posAddr[1],
+   //						posAddr[posAddr.length - 2], posAddr[posAddr.length - 1]);
+   //				stoEmplacements.add(stoEmp);
+   //			}
+   //		}
+   //
+   //		// sort by adrl to facilitate
+   //		// robot handle
+   //		Collections.sort(stoEmplacements);
+   //		int currentRow = 0;
+   //
+   //		boolean isStockage = oType == null || oType.getNom().equals("Stockage");
+   //
+   //		for (StorageEmplacement stE : stoEmplacements) {
+   //			if (stE.isComplete()) {
+   //				currentRow++;
+   //				baos.write(String.valueOf(currentRow).getBytes());
+   //				baos.write(separator.getBytes());
+   //				if (!isStockage) { // destockage
+   //					baos.write(writeEmptySeparators(separator, 5).getBytes());
+   //				}
+   //				baos.write(stE.getBarcode().getBytes());
+   //				baos.write(separator.getBytes());
+   //				baos.write(stE.getConteneurCode().getBytes());
+   //				baos.write(separator.getBytes());
+   //				baos.write(stE.getRack().getBytes());
+   //				baos.write(separator.getBytes());
+   //				baos.write(stE.getBoite().getBytes());
+   //				baos.write(separator.getBytes());
+   //				baos.write(stE.getPosition().getBytes());
+   //				baos.write("\n".getBytes());
+   //			}
+   //		}
+   //		// complete to 1000 as IRELEC demands
+   //		if (nbLinesToBeProvide > 0) {
+   //			while (currentRow < nbLinesToBeProvide) {
+   //				currentRow++;
+   //				baos.write(String.valueOf(currentRow).getBytes());
+   //				baos.write(separator.getBytes());
+   //				if (!isStockage) { // destockage
+   //					baos.write(writeEmptySeparators(separator, 5).getBytes());
+   //				}
+   //				baos.write(separator.getBytes());
+   //				baos.write(separator.getBytes());
+   //				baos.write(separator.getBytes());
+   //				baos.write(separator.getBytes());
+   //				baos.write("\n".getBytes());
+   //			}
+   //		}
+   //	}
+
+   private String writeEmptySeparators(final String s, final int x){
+      String out = "";
+      int i = 0;
+      while(i < x){
+         out = out + s;
+         i++;
+      }
+      return out;
+   }
+
+   @Override
+   public void sendMessages(final List<TKAnnotableObject> objs, final Integer b){}
+
+   @Override
+   public String setFileName(final TKAnnotableObject prel, final boolean isOkFile, final Integer part, final String currtime){
+      // ResourceBundle storageRobotBundle = getStorageRobotBundle("storageRobot.properties");
+      // if (storageRobotBundle != null) {
+      // 	return storageRobotBundle.getString("csvname");
+      // }
+      return "storageRobotCsv.csv";
+   }
+
+   @Override
+   public boolean useRecepteur(final Recepteur r){
+      if(r != null && r.getLogiciel() != null && r.getLogiciel().getNom().equals("IRELEC")
+         && r.getIdentification().matches(".*STORAGE.*")){
+         return true;
+      }
+      return false;
+   }
+
+   @Override
+   public void sendMessage(final TKAnnotableObject obj, final String dosExtId, final String url){}
+
+   private void initVarFromStorageRobotBundle(final InnerEnvVariables vars){
+
+      final String propFileName = "storage_robot.properties";
+
+      if(camelConfigLocation != null && propFileName != null){
+         final File file = new File(camelConfigLocation + propFileName);
+         FileInputStream fis = null;
+         InputStreamReader reader = null;
+         ResourceBundle bundle = null;
+
+         if(file.isFile()){ // Also checks for existance
+            try{
+               fis = new FileInputStream(file);
+               reader = new InputStreamReader(fis, Charset.forName("UTF-8"));
+               bundle = new PropertyResourceBundle(reader);
+
+               // vars.setMasterfile(bundle.getString("masterfile"));
+               vars.setFilename(bundle.getString("csvname"));
+               vars.setSeparator(bundle.getString("csv.separator"));
+               // vars.setNbLinesToBeProvide(Integer.valueOf(bundle.getString("nb.lines.tofill")));
+
+            }catch(final FileNotFoundException e){
+               e.printStackTrace();
+            }catch(final IOException e){
+               e.printStackTrace();
+            }finally{
+               try{
+                  reader.close();
+               }catch(final IOException e){
+                  reader = null;
+               }
+               try{
+                  fis.close();
+               }catch(final IOException e){
+                  fis = null;
+               }
+            }
+         }else{
+            throw new RuntimeException("storageRobot.properties.not.found");
+         }
+      }
+   }
+
+   private class InnerEnvVariables
+   {
+      // private String masterfile = "NomRecette.csv";
+      private String separator = "|";
+
+      private String filename = "Recette_";
+      //		private Integer nbLinesToBeProvide = -1;
+
+      public String getSeparator(){
+         return separator;
+      }
+
+      public void setSeparator(final String _s){
+         this.separator = _s;
+      }
+
+      public String getFilename(){
+         return filename;
+      }
+
+      public void setFilename(final String _f){
+         this.filename = _f;
+      }
+   }
 }

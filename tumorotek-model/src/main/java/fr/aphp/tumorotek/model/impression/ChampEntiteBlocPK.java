@@ -60,6 +60,7 @@ public class ChampEntiteBlocPK implements Serializable
    private static final long serialVersionUID = 4932675709255221762L;
 
    private BlocImpression blocImpression;
+
    private ChampEntite champEntite;
 
    public ChampEntiteBlocPK(){
@@ -90,7 +91,7 @@ public class ChampEntiteBlocPK implements Serializable
    }
 
    /**
-    * 2 PKs sont considérés comme égales si elles sont composees 
+    * 2 PKs sont considérés comme égales si elles sont composees
     * des mêmes clés.
     * @param obj est la PK à tester.
     * @return true si les PK sont egales.

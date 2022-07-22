@@ -47,8 +47,11 @@ public class SousParagraphe
 {
 
    private String titre;
+
    private Object[] lignes;
+
    private String inconnu;
+
    private ListeElement liste;
 
    public SousParagraphe(){

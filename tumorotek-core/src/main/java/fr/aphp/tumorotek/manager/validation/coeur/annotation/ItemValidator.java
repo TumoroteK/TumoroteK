@@ -58,7 +58,6 @@ import fr.aphp.tumorotek.model.coeur.annotation.Item;
 public class ItemValidator implements Validator
 {
 
-   
    @Override
    public boolean supports(final Class<?> clazz){
       return Item.class.equals(clazz);

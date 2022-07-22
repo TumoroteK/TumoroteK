@@ -41,10 +41,13 @@ import fr.aphp.tumorotek.action.ManagerLocator;
 import fr.aphp.tumorotek.param.TkParam;
 import fr.aphp.tumorotek.param.TumorotekProperties;
 
-public abstract class LoadPropertiesInitTumoFile {
+public abstract class LoadPropertiesInitTumoFile
+{
    /* declaration des noms des variables dans le fichier */
    private static final String MAX_PATIENTS = TkParam.MAX_PATIENTS.getKey();
+
    private static final String LONGUEUR_NIP = TkParam.LONGUEUR_NIP.getKey();
+
    private static final String SIP = TkParam.MODULE_SIP.getKey();
 
    /* accesseurs */

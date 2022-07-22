@@ -56,7 +56,7 @@ public interface RetourDao extends GenericDaoJpa<Retour, Integer>
 {
 
    /**
-    * Recherche tous les retour sauf celui dont l'id est passé 
+    * Recherche tous les retour sauf celui dont l'id est passé
     * en paramètre, l'objet et l'entite
     * @param retourId Identifiant du retour que l'on souhaite
     * exclure de la liste retournée.
@@ -81,10 +81,10 @@ public interface RetourDao extends GenericDaoJpa<Retour, Integer>
    List<Integer> findByMaxId();
 
    /**
-    * Recherche les retours pour un objet donné dont l'intervalle de dates 
+    * Recherche les retours pour un objet donné dont l'intervalle de dates
     * composé par DateSortie - DateRetour contient la date passée en paramètre.
     * Cette méthode sera appelée lors du contrôle de cohérence de dates.
-    * @param dt date 
+    * @param dt date
     * @param objId Id de l'objet
     * @param e Entite (Echantillon ou ProdDerive)
     * @param rId id du retour en cours de modification (afin de l'exclure du resultat)
@@ -94,8 +94,8 @@ public interface RetourDao extends GenericDaoJpa<Retour, Integer>
    List<Retour> findByObjDates(Calendar dt, Integer objId, Entite e, Integer rId);
 
    /**
-    * Recherche les retours pour un objet donné dont l'intervalle de dates 
-    * composé par DateSortie - DateRetour est inclu dans l'intervalle de dates 
+    * Recherche les retours pour un objet donné dont l'intervalle de dates
+    * composé par DateSortie - DateRetour est inclu dans l'intervalle de dates
     * composé par les dates passées en paramètres.
     * Cette méthode sera appelée lors du contrôle de cohérence de dates.
     * @param dt date limite inf
@@ -109,9 +109,9 @@ public interface RetourDao extends GenericDaoJpa<Retour, Integer>
    List<Retour> findByObjInsideDates(Calendar dt, Calendar dt2, Integer objId, Entite e, Integer rId);
 
    /**
-    * Recherche tous les objets ids dont les retours formant l'intervalle de dates 
+    * Recherche tous les objets ids dont les retours formant l'intervalle de dates
     * composé par DateSortie - DateRetour contient la date passée en paramètre.
-    * Cette méthode sera appelée lors du contrôle de cohérence de dates pour 
+    * Cette méthode sera appelée lors du contrôle de cohérence de dates pour
     * optimiser l'insertion en batch mode.
     * @param dt
     * @param e
@@ -121,10 +121,10 @@ public interface RetourDao extends GenericDaoJpa<Retour, Integer>
    List<Integer> findObjIdsByDatesAndEntite(Calendar dt, Entite e);
 
    /**
-    * Recherche objets ids dont les retours formant l'intervalle de dates 
-    * composé par DateSortie - DateRetour est inclu dans l'intervalle de dates 
+    * Recherche objets ids dont les retours formant l'intervalle de dates
+    * composé par DateSortie - DateRetour est inclu dans l'intervalle de dates
     * composé par les dates passées en paramètres.
-    * Cette méthode sera appelée lors du contrôle de cohérence de dates pour 
+    * Cette méthode sera appelée lors du contrôle de cohérence de dates pour
     * optimiser l'insertion en batch mode.
     * @param dt date limite inf
     * @param dt2 date limite sup
@@ -144,18 +144,18 @@ public interface RetourDao extends GenericDaoJpa<Retour, Integer>
    List<Retour> findByObjectsDateRetourEmpty(List<Integer> objectIds, Entite entite);
 
    /**
-    * Recherche les Retours pour l'objet sous la forme découplée objetId et Entite 
+    * Recherche les Retours pour l'objet sous la forme découplée objetId et Entite
     * et pour une valeur d'impact sur qualité true/false.
     * @param objectId
     * @param entite
     * @param impact
     * @return list Retours.
-    * @since 2.0.10	 
+    * @since 2.0.10
     * */
    List<Retour> findByObjectAndImpact(Integer objectId, Entite entite, Boolean impact);
 
    /**
-    * Recherche les Retours dont le Collaborateur est passé en param 
+    * Recherche les Retours dont le Collaborateur est passé en param
     * @param Collaborateur
     * @return list Retours.
     * */

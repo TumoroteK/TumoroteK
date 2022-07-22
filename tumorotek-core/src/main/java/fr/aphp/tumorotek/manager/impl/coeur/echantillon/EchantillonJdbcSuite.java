@@ -55,14 +55,21 @@ public class EchantillonJdbcSuite
 {
 
    private Integer maxEchantillonId = 0;
+
    private Integer maxAnnotationValeurId = 0;
+
    private Integer maxCodeAssigneId = 0;
+
    private Integer maxObjetNonConformeId = 0;
 
    private PreparedStatement pstmt;
+
    private PreparedStatement pstmtAnno;
+
    private PreparedStatement pstmtCd;
+
    private PreparedStatement pstmtNc;
+
    private PreparedStatement pstmtOp;
 
    public Integer getMaxEchantillonId(){

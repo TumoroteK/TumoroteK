@@ -86,12 +86,17 @@ public class Affichage implements TKdataObject, Comparable<Affichage>
 {
 
    private Integer affichageId;
+
    private String intitule;
+
    private Utilisateur createur;
+
    private Integer nbLignes;
+
    private Banque banque;
 
    private List<Resultat> resultats = new ArrayList<>();
+
    private Set<Recherche> recherches = new HashSet<>();
 
    public Affichage(){
@@ -256,7 +261,7 @@ public class Affichage implements TKdataObject, Comparable<Affichage>
    @Override
    public int hashCode(){
 
-      Integer hash = 7;
+      int hash = 7;
       Integer hashIntitule = 0;
       Integer hashCreateur = 0;
 

@@ -66,6 +66,7 @@ public class EchanQualiteManagerTest extends AbstractManagerTest4
 
    @Autowired
    private EchanQualiteManager echanQualiteManager;
+
    @Autowired
    private PlateformeDao plateformeDao;
 

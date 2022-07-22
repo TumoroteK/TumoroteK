@@ -72,7 +72,9 @@ public class ConformiteType implements java.io.Serializable
    private static final long serialVersionUID = -8531615889506970231L;
 
    private Integer conformiteTypeId;
+
    private String conformiteType;
+
    private Entite entite;
 
    private Set<NonConformite> nonConformites = new HashSet<>();

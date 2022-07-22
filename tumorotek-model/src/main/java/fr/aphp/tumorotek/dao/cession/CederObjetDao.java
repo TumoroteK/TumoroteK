@@ -79,7 +79,7 @@ public interface CederObjetDao extends GenericDaoJpa<CederObjet, CederObjetPK>
     * @return Liste ordonnée de CederObjets.
     */
    List<CederObjet> findByEntiteObjet(Entite entite, Integer objetId);
-   
+
    /**
     * Recherche touss les CederObjet ppur un couple de valeurs entité
     * et objetId.
@@ -109,7 +109,7 @@ public interface CederObjetDao extends GenericDaoJpa<CederObjet, CederObjetPK>
    /**
     * Compte les echantillons ou dérivés impliqués dans la session.
     * @param cess
-    * @param entite 
+    * @param entite
     * @return le compte
     * @since 2.0.10
     */
@@ -132,7 +132,7 @@ public interface CederObjetDao extends GenericDaoJpa<CederObjet, CederObjetPK>
    List<String> findCodesDeriveByCession(Cession cess);
 
    /**
-    * Compte les cession auxquelles a participé l'objet passé  
+    * Compte les cession auxquelles a participé l'objet passé
     * passée en paramètre sous la forme id + entite
     * @param parent id Integer
     * @param Entite

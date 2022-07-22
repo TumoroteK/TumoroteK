@@ -7,6 +7,7 @@ public class InclusionServiceClientImpl implements InclusionServiceClient
 {
 
    private final Logger log = Logger.getLogger(InclusionServiceClient.class);
+
    private static final ObjectFactory WS_CLIENT_FACTORY = new ObjectFactory();
 
    private WebServiceTemplate webServiceTemplate;

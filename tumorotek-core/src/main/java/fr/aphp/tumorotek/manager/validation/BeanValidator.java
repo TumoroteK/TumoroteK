@@ -53,7 +53,8 @@ import fr.aphp.tumorotek.manager.validation.exception.ValidationException;
  * @author jbriscoe
  * @see <a href="http://javaboutique.internet.com/tutorials/validation/index-3.html">http://javaboutique.internet.com/tutorials/validation/index-3.html</a>
  */
-public final class BeanValidator {
+public final class BeanValidator
+{
 
    private static Log log = LogFactory.getLog(BeanValidator.class);
 
@@ -66,8 +67,7 @@ public final class BeanValidator {
    /**
     * Constructeur.
     */
-   private BeanValidator(){
-   }
+   private BeanValidator(){}
 
    public static void validateObject(final Object arg, final Validator[] vals){
       final List<Errors> errors = new ArrayList<>();

@@ -80,16 +80,22 @@ public class SModele implements Serializable, Comparable<SModele>
    private static final long serialVersionUID = 336055468641245917L;
 
    private Integer smodeleId;
+
    private String nom;
+
    // private ModeleType modeleType;
    private Plateforme plateforme;
+
    //	private Boolean isSubdivised;
    //	private Boolean isDefault;
    //	private String subdivisionType;
    //	private String subdivisionName;
    private Set<SModeleIndicateur> sModeleIndicateurs = new HashSet<>();
+
    private Set<Banque> banques = new HashSet<>();
+
    private String description;
+
    private Subdivision subdivision;
 
    public SModele(){
@@ -174,7 +180,7 @@ public class SModele implements Serializable, Comparable<SModele>
 
    /**
     * Méthode surchargeant le toString() de l'objet.
-    * 
+    *
     */
    @Override
    public String toString(){
@@ -189,7 +195,7 @@ public class SModele implements Serializable, Comparable<SModele>
    /**
     * 2 requetes sont considérées comme égales si tous leurs attributs sont
     * égaux. 2 requete egales ne peuvent pas avoir le même ordre.
-    * 
+    *
     * @param obj
     *            est le statement à tester.
     * @return true si les statement sont égales.

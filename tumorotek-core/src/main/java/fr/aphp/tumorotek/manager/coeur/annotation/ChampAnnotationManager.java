@@ -67,7 +67,7 @@ public interface ChampAnnotationManager
 
    /**
     * Recherche un ChampAnnotation dont l'identifiant est passé en paramètre.
-    * @param champAnnotationId Identifiant du ChampAnnotation 
+    * @param champAnnotationId Identifiant du ChampAnnotation
     * que l'on recherche.
     * @return Un ChampAnnotation.
     */
@@ -153,7 +153,7 @@ public interface ChampAnnotationManager
 
    /**
     * Cherche les doublons en se basant sur la methode equals()
-    * surchargee par les entites. Si l'objet est modifie donc a un id 
+    * surchargee par les entites. Si l'objet est modifie donc a un id
     * attribue par le SGBD, ce dernier est retire de la liste findAll.
     * @param champ ChampAnnotation dont on cherche la presence dans la base
     * @return true/false
@@ -186,7 +186,7 @@ public interface ChampAnnotationManager
    /**
     * Recherche les items liés au champ thesaurus passé en paramètres.
     * @param champs pour lequel on recherche les items.
-    * @param banque pour laquelle on recherche les items associé à 
+    * @param banque pour laquelle on recherche les items associé à
     * ce champ de catalogue.
     * @return Liste de Item.
     */
@@ -206,7 +206,7 @@ public interface ChampAnnotationManager
    List<ChampAnnotation> findAllObjectsManager();
 
    /**
-    * Recherche toutes les champs dont le nom est egal ou 'like' 
+    * Recherche toutes les champs dont le nom est egal ou 'like'
     * celui passé en parametre.
     * @param nom
     * @param boolean exactMatch
@@ -215,14 +215,14 @@ public interface ChampAnnotationManager
    List<ChampAnnotation> findByNomLikeManager(String nom, boolean exactMatch);
 
    /**
-    * Monte ou descend l'ordre d'un champ au sein d'une table. 
+    * Monte ou descend l'ordre d'un champ au sein d'une table.
     * @param champ ChampAnnotationBanque
     * @param boolean specifiant up si true
     */
    void moveChampOrderUpDownManager(ChampAnnotation champ, boolean up);
 
    /**
-    * Calcule la taille du plus long label pour les Items associés à ce 
+    * Calcule la taille du plus long label pour les Items associés à ce
     * champ.
     * @param liste d'items
     * @return taille du label
@@ -230,12 +230,12 @@ public interface ChampAnnotationManager
    Integer findMaxItemLength(Set<Item> items);
 
    /**
-    * Cree ou supprime l'arborescence de fichier qui accueillera 
-    * les annotations de type fichier. Si l'arborescence existe deja, 
-    * cree uniquement le dossier final. 
-    * Supprime uniquement le dossier du champ qui recueille les fichiers 
+    * Cree ou supprime l'arborescence de fichier qui accueillera
+    * les annotations de type fichier. Si l'arborescence existe deja,
+    * cree uniquement le dossier final.
+    * Supprime uniquement le dossier du champ qui recueille les fichiers
     * et son contenu.
-    * @param base directory pour créer dossier sytème associé au champ 
+    * @param base directory pour créer dossier sytème associé au champ
     * annotation de type fichier.
     * @param champ
     * @param boolean indiquant deletion ou non.
@@ -261,7 +261,7 @@ public interface ChampAnnotationManager
    Set<ChampAnnotation> getAllChampsFromTableManager(ChampAnnotation chp);
 
    /**
-    * Recherche tous les champs qui sont editables par l'utilisateur 
+    * Recherche tous les champs qui sont editables par l'utilisateur
     * pour la table passée en paramètre.
     * @param tableAnnotation
     * @return une liste de Champs.
@@ -269,8 +269,8 @@ public interface ChampAnnotationManager
    List<ChampAnnotation> findByEditByCatalogueManager(TableAnnotation table);
 
    /**
-    * Verifie si un item du thesaurus est utilisé au moins une fois 
-    * par une valeur d'annotation. Si c'est le cas l'item 
+    * Verifie si un item du thesaurus est utilisé au moins une fois
+    * par une valeur d'annotation. Si c'est le cas l'item
     * ne peut être supprimé.
     * @param item
     * @return true si l'item utilisé.
@@ -278,7 +278,7 @@ public interface ChampAnnotationManager
    boolean isUsedItemManager(Item item);
 
    /**
-    * Vérifie si le champ annotation est référencée à un objet 
+    * Vérifie si le champ annotation est référencée à un objet
     * CHAMP vers d'autres objets (critère, résultat, import, étiquette).
     * @param ChampAnnotation c
     * @return liste d'objets qui référencent le champ annotation
@@ -286,7 +286,7 @@ public interface ChampAnnotationManager
    List<? extends Object> isUsedObjectManager(ChampAnnotation c);
 
    /**
-    * Trouve tous les champs de type fichier pour la table passée en 
+    * Trouve tous les champs de type fichier pour la table passée en
     * paramètre.
     * @param table annotation
     * @return liste de champ annotation type fichier.
@@ -294,7 +294,7 @@ public interface ChampAnnotationManager
    List<ChampAnnotation> findChampsFichiersByTableManager(TableAnnotation table);
 
    /**
-    * Recherche tous les champs annotations associés à un template 
+    * Recherche tous les champs annotations associés à un template
     * d'importation pour une entité.
     * @param template
     * @param entite

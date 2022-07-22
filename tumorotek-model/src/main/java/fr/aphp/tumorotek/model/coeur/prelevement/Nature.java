@@ -98,7 +98,7 @@ public class Nature extends AbstractPfDependantThesaurusObject implements Serial
    @Deprecated
    public void setNatureId(final Integer id){
       this.setId(id);
-      ;
+
    }
 
    /**

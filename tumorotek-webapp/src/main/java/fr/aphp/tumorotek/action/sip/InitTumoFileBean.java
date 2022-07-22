@@ -46,9 +46,12 @@ import java.io.Serializable;
 public class InitTumoFileBean implements Serializable
 {
    private static final long serialVersionUID = 3232887929072603527L;
+
    /* declaration des variables locales */
    private int maxPatients;
+
    private int longueurNip;
+
    private String sip;
 
    /* constructeur par defaut */

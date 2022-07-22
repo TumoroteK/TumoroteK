@@ -62,7 +62,7 @@ public interface IndicateurDao extends GenericDaoJpa<Indicateur, Integer>
    List<Indicateur> findBySModele(SModele modele);
 
    /**
-    * Recherche les requetes/indicateur qui seront proposés par defaut 
+    * Recherche les requetes/indicateur qui seront proposés par defaut
     * car non associés à une subdivision
     * @return Une liste de indicateur.
     */

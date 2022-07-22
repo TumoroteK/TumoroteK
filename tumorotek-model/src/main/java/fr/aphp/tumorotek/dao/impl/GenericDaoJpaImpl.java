@@ -101,7 +101,7 @@ public class GenericDaoJpaImpl<T, PK extends Serializable> extends JpaDaoSupport
    //		this.em = em;
    //	}
 
-   /** 
+   /**
     * Persist une instance d'objet dans la base de données.
     * @param o est  une instance de l'objet à créer.
     */
@@ -117,7 +117,7 @@ public class GenericDaoJpaImpl<T, PK extends Serializable> extends JpaDaoSupport
       }
    }
 
-   /** 
+   /**
     *   Retrouve un objet qui était persistant dans la base de données en
     *   utilisant sa clé primaire.
     *   @param id est la clé primaire de l'objet.
@@ -132,14 +132,14 @@ public class GenericDaoJpaImpl<T, PK extends Serializable> extends JpaDaoSupport
          return getJpaTemplate().find(type, id);
       }
 
-         log.debug("FindById avec PK null");
+      log.debug("FindById avec PK null");
       return null;
    }
 
    /**
     * Sauvegarde les modifications apportées à un objet persistant.
     * @param o est l'objet à mettre à jour dans la base
-    * de données. 
+    * de données.
     */
    @Override
    public void updateObject(final T o){
@@ -158,13 +158,13 @@ public class GenericDaoJpaImpl<T, PK extends Serializable> extends JpaDaoSupport
          return getJpaTemplate().merge(o);
       }
 
-         log.debug("Tentative de merge d'un objet null");
+      log.debug("Tentative de merge d'un objet null");
       return null;
    }
 
-   /**  
+   /**
     * Supprime un objet de la base de données.
-    * @param id est la clé primaire de l'objet à supprimer. 
+    * @param id est la clé primaire de l'objet à supprimer.
     */
    @Override
    public void removeObject(final PK id){
@@ -190,14 +190,14 @@ public class GenericDaoJpaImpl<T, PK extends Serializable> extends JpaDaoSupport
     */
    @Override
    public List<T> findAll(){
-      
+
       final List<T> list = getJpaTemplate().find("select p from " + type.getSimpleName() + " p");
       /**
        * Essai avec JpaCallBack mais getJpaTemplate().
        * find(query) est tout aussi efficace!
        */
       /*List<T> list = (List<T>) getJpaTemplate().execute(new JpaCallback() {
-      	public Object doInJpa(final EntityManager em) 
+      	public Object doInJpa(final EntityManager em)
       		throws javax.persistence.PersistenceException {
       		StringBuilder queryStr = new StringBuilder();
       		queryStr.append("SELECT em FROM ");
@@ -206,11 +206,11 @@ public class GenericDaoJpaImpl<T, PK extends Serializable> extends JpaDaoSupport
       		//if (ordClause.length() > 0) {
       		//	queryStr.append(" em ORDER BY ");
       		//}
-      		
+      
       		logger.debug(queryStr.toString());
-      		
+      
       		System.out.println(em.getDelegate().getClass().getName());
-      		
+      
       		final Query query = em.createQuery(queryStr.toString());
       		return query.getResultList();
       	}
@@ -225,11 +225,11 @@ public class GenericDaoJpaImpl<T, PK extends Serializable> extends JpaDaoSupport
     * @param queryArgs sont les arguments de a requête.
     * @return une liste d'objets résultants de la requête.
     */
-   
+
    @Override
    public List<T> executeFinder(final Method method, final Object[] queryArgs){
       final String queryName = queryNameFromMethod(method);
-      
+
       final List<T> list = (List<T>) getJpaTemplate().execute(new JpaCallback<Object>()
       {
          @Override

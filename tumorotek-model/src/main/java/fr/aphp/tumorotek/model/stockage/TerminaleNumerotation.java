@@ -71,7 +71,9 @@ public class TerminaleNumerotation implements Serializable
    private static final long serialVersionUID = -6067095158709656961L;
 
    private Integer terminaleNumerotationId;
+
    private String ligne;
+
    private String colonne;
 
    private Set<Terminale> terminales = new HashSet<>();

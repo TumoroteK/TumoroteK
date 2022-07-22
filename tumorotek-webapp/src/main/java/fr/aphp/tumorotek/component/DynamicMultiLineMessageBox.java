@@ -47,6 +47,7 @@ import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.select.Selectors;
 import org.zkoss.zk.ui.select.annotation.Wire;
 
+import bsh.org.objectweb.asm.Label;
 import fr.aphp.tumorotek.action.ManagerLocator;
 import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
 import fr.aphp.tumorotek.manager.exception.DoublonFoundException;
@@ -56,8 +57,6 @@ import fr.aphp.tumorotek.model.coeur.patient.Patient;
 import fr.aphp.tumorotek.model.coeur.prelevement.Prelevement;
 import fr.aphp.tumorotek.model.coeur.prodderive.ProdDerive;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
-
-import bsh.org.objectweb.asm.Label;
 
 /**
  * Window modale representant une custom MessageBox permettant d'afficher
@@ -73,7 +72,9 @@ public class DynamicMultiLineMessageBox
 {
 
    private String title;
+
    private String message;
+
    private Exception exception;
 
    private String exceptionDetails = null;
@@ -93,7 +94,7 @@ public class DynamicMultiLineMessageBox
       this.message = _m;
       this.exception = _e;
       details();
-      
+
    }
 
    private void details(){

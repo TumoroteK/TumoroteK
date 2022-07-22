@@ -61,10 +61,11 @@ public class ModificationMultipleTextbox extends AbstractModificationMultipleCom
     * Components specific textbox.
     */
    private Textbox eraseMultiTextbox;
+
    private Textbox multiTextbox;
 
    /**
-    * Si upperCaseOnBlur est assigné à true, alors ajoute des handlers 
+    * Si upperCaseOnBlur est assigné à true, alors ajoute des handlers
     * onBlur sur les textboxes pour upperCase automatique.
     * @param up
     */

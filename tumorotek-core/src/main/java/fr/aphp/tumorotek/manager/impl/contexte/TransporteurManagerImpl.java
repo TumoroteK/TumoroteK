@@ -75,15 +75,21 @@ public class TransporteurManagerImpl implements TransporteurManager
 
    /** Bean Dao TransporteurDao. */
    private TransporteurDao transporteurDao;
+
    /** Bean Dao. */
    private CoordonneeDao coordonneeDao;
+
    /** Bean Manager. */
    private CoordonneeManager coordonneeManager;
+
    /** Bean validator. */
    private TransporteurValidator transporteurValidator;
+
    /** Bean validator. */
    private CoordonneeValidator coordonneeValidator;
+
    private OperationManager operationManager;
+
    private OperationTypeDao operationTypeDao;
 
    /**

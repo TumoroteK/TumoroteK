@@ -1,5 +1,5 @@
 /**
- * Copyright ou © ou Copr. Assistance Publique des Hôpitaux de 
+ * Copyright ou © ou Copr. Assistance Publique des Hôpitaux de
  * PARIS et SESAN
  * projet-tk@sesan.fr
  *
@@ -47,121 +47,117 @@ import org.codehaus.jackson.annotate.JsonPropertyOrder;
 
 import fr.aphp.tumorotek.model.contexte.gatsbi.ChampEntite;
 
-@JsonPropertyOrder({
-	"champEntiteId",
-	"champEntiteOrdre",
-	"dateFormat",
-	"thesaurusTableNom",
-	"obligatoire",
-	"visible", 
-	"inTableau",
-	"ordreTableau",
-	"listContexteThesaurusItem"
-})
+@JsonPropertyOrder({"champEntiteId", "champEntiteOrdre", "dateFormat", "thesaurusTableNom", "obligatoire", "visible", "inTableau",
+   "ordreTableau", "listContexteThesaurusItem"})
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ChampEntiteDTO implements Serializable {
+public class ChampEntiteDTO implements Serializable
+{
 
-	private static final long serialVersionUID = 1L;
-	
-	private Integer champEntiteId;
-	private Integer champEntiteOrdre;
-	private String dateFormat;
-	private String thesaurusTableNom;
-	private Boolean obligatoire = false;
-	private Boolean visible = true;
-	private Boolean inTableau = false;
-	private Integer ordreTableau;
-	private List<ThesaurusValueDTO> thesaurusValueDTOs = new ArrayList<ThesaurusValueDTO>();
-	
-	@JsonProperty
-	public Integer getChampEntiteId() {
-		return champEntiteId;
-	}
-	
-	public void setChampEntiteId(Integer _i) {
-		this.champEntiteId = _i;
-	}
-	
-	@JsonProperty
-	public Integer getChampEntiteOrdre() {
-		return champEntiteOrdre;
-	}
-	
-	public void setChampEntiteOrdre(Integer _o) {
-		this.champEntiteOrdre = _o;
-	}
-	
-	@JsonProperty
-	public String getDateFormat() {
-		return dateFormat;
-	}
+   private static final long serialVersionUID = 1L;
 
-	public void setDateFormat(String _d) {
-		this.dateFormat = _d;
-	}
+   private Integer champEntiteId;
 
-	@JsonProperty
-	public String getThesaurusTableNom() {
-		return thesaurusTableNom;
-	}
-	
-	public void setThesaurusTableNom(String _f) {
-		this.thesaurusTableNom = _f;
-	}
-	
-	@JsonProperty
-	public Boolean getObligatoire() {
-		return obligatoire;
-	}
-	
-	public void setObligatoire(Boolean _o) {
-		this.obligatoire = _o;
-	}
-	
-	@JsonProperty
-	public Boolean getVisible() {
-		return visible;
-	}
-	
-	public void setVisible(Boolean _v) {
-		this.visible = _v;
-	}
-	
-	@JsonProperty
-	public Boolean getInTableau() {
-		return inTableau;
-	}
+   private Integer champEntiteOrdre;
 
-	public void setInTableau(Boolean _t) {
-		this.inTableau = _t;
-	}
+   private String dateFormat;
 
-	@JsonProperty
-	public Integer getOrdreTableau() {
-		return ordreTableau;
-	}
+   private String thesaurusTableNom;
 
-	public void setOrdreTableau(Integer _o) {
-		this.ordreTableau = _o;
-	}
+   private Boolean obligatoire = false;
 
-	@JsonProperty("listContexteThesaurusItem")
-	public List<ThesaurusValueDTO> getThesaurusValueDTOs() {
-		return thesaurusValueDTOs;
-	}
-	
-	public void setThesaurusValueDTOs(List<ThesaurusValueDTO> _v) {
-		this.thesaurusValueDTOs = _v;
-	}
-	
-	public ChampEntite toChampEntite() {
-		return new ChampEntite(champEntiteId, champEntiteOrdre, 
-			// contexteChampEntiteId, 
-			dateFormat, thesaurusTableNom, obligatoire, visible, 
-			inTableau, ordreTableau,
-			thesaurusValueDTOs
-				.stream().map(v -> v.toThesaurusValue())
-				.collect(Collectors.toList())
-			);
-	}
+   private Boolean visible = true;
+
+   private Boolean inTableau = false;
+
+   private Integer ordreTableau;
+
+   private List<ThesaurusValueDTO> thesaurusValueDTOs = new ArrayList<>();
+
+   @JsonProperty
+   public Integer getChampEntiteId(){
+      return champEntiteId;
+   }
+
+   public void setChampEntiteId(final Integer _i){
+      this.champEntiteId = _i;
+   }
+
+   @JsonProperty
+   public Integer getChampEntiteOrdre(){
+      return champEntiteOrdre;
+   }
+
+   public void setChampEntiteOrdre(final Integer _o){
+      this.champEntiteOrdre = _o;
+   }
+
+   @JsonProperty
+   public String getDateFormat(){
+      return dateFormat;
+   }
+
+   public void setDateFormat(final String _d){
+      this.dateFormat = _d;
+   }
+
+   @JsonProperty
+   public String getThesaurusTableNom(){
+      return thesaurusTableNom;
+   }
+
+   public void setThesaurusTableNom(final String _f){
+      this.thesaurusTableNom = _f;
+   }
+
+   @JsonProperty
+   public Boolean getObligatoire(){
+      return obligatoire;
+   }
+
+   public void setObligatoire(final Boolean _o){
+      this.obligatoire = _o;
+   }
+
+   @JsonProperty
+   public Boolean getVisible(){
+      return visible;
+   }
+
+   public void setVisible(final Boolean _v){
+      this.visible = _v;
+   }
+
+   @JsonProperty
+   public Boolean getInTableau(){
+      return inTableau;
+   }
+
+   public void setInTableau(final Boolean _t){
+      this.inTableau = _t;
+   }
+
+   @JsonProperty
+   public Integer getOrdreTableau(){
+      return ordreTableau;
+   }
+
+   public void setOrdreTableau(final Integer _o){
+      this.ordreTableau = _o;
+   }
+
+   @JsonProperty("listContexteThesaurusItem")
+   public List<ThesaurusValueDTO> getThesaurusValueDTOs(){
+      return thesaurusValueDTOs;
+   }
+
+   public void setThesaurusValueDTOs(final List<ThesaurusValueDTO> _v){
+      this.thesaurusValueDTOs = _v;
+   }
+
+   public ChampEntite toChampEntite(){
+      return new ChampEntite(champEntiteId, champEntiteOrdre,
+         // contexteChampEntiteId,
+         dateFormat, thesaurusTableNom, obligatoire, visible, inTableau, ordreTableau,
+         thesaurusValueDTOs.stream().map(v -> v.toThesaurusValue()).collect(Collectors.toList()));
+   }
 }

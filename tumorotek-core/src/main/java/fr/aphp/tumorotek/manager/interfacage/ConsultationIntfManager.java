@@ -56,14 +56,14 @@ public interface ConsultationIntfManager
 {
 
    /**
-    * Recherche les Consultations par emetteur et utilisateur 
+    * Recherche les Consultations par emetteur et utilisateur
     * dans une fourchette de date.
     * @return Une liste de consultations.
     */
    List<ConsultationIntf> findByUtilisateurOrEmetteurInDatesManager(Utilisateur u, String e, Calendar date1, Calendar date2);
 
    /**
-    * Créé une historique de consultation dans la table Consultation pour les 
+    * Créé une historique de consultation dans la table Consultation pour les
     * arguments passés en paramètres
     * @param _i identification du dossier
     * @param _c date de consultation

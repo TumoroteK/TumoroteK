@@ -77,10 +77,15 @@ public class ProfilManagerImpl implements ProfilManager
    private final Log log = LogFactory.getLog(ProfilManager.class);
 
    private ProfilDao profilDao;
+
    private DroitObjetManager droitObjetManager;
+
    private ProfilUtilisateurManager profilUtilisateurManager;
+
    private ProfilValidator profilValidator;
+
    private OperationTypeDao operationTypeDao;
+
    private OperationManager operationManager;
 
    public void setProfilDao(final ProfilDao pDao){

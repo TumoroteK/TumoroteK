@@ -39,6 +39,7 @@ public class ValeursSignatures
 {
 
    private String valeur1;
+
    private String valeur2;
 
    public ValeursSignatures(){}

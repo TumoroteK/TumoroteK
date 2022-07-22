@@ -79,15 +79,21 @@ public class Modele implements TKdataObject, Serializable
    private static final long serialVersionUID = 5436849527391012790L;
 
    private Integer modeleId;
+
    private String nom;
+
    private Boolean isDefault;
+
    private String texteLibre;
+
    private Boolean isQRCode = false;
 
    private ModeleType modeleType;
+
    private Plateforme plateforme;
 
    private Set<AffectationImprimante> affectationImprimantes = new HashSet<>();
+
    private Set<LigneEtiquette> ligneEtiquettes = new HashSet<>();
 
    public Modele(){

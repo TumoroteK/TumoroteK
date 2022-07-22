@@ -72,8 +72,7 @@ import fr.aphp.tumorotek.model.AbstractPfDependantThesaurusObject;
       @NamedQuery(name = "ConditMilieu.findByExcludedId", query = "SELECT c FROM ConditMilieu c " + "WHERE c.id != ?1"),
       @NamedQuery(name = "ConditMilieu.findByPfOrder",
          query = "SELECT c FROM ConditMilieu c " + "WHERE c.plateforme = ?1 ORDER BY c.nom"),
-      @NamedQuery(name = "ConditMilieu.findByOrder",
-         query = "FROM ConditMilieu c ORDER BY c.nom")})
+      @NamedQuery(name = "ConditMilieu.findByOrder", query = "FROM ConditMilieu c ORDER BY c.nom")})
 
 public class ConditMilieu extends AbstractPfDependantThesaurusObject implements Serializable
 {

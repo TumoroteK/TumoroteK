@@ -84,18 +84,28 @@ public class ImprimanteController extends AbstractObjectTabController
 
    // components
    private Group imprimantesGroup;
+
    private Group modelesGroup;
+
    private Group affectationsGroup;
+
    private Grid imprimantesGrid;
+
    private Grid modelesGrid;
+
    private Grid affectationsGrid;
 
    // objects
    private List<Imprimante> imprimantes = new ArrayList<>();
+
    private List<Modele> modeles = new ArrayList<>();
+
    private List<AffectationDecorator> affectationDecorators = new ArrayList<>();
+
    private static ImprimanteRowRenderer imprimanteRenderer = new ImprimanteRowRenderer();
+
    private static ModeleRowRenderer modeleRenderer = new ModeleRowRenderer();
+
    private static AffectationRowRenderer affectationRenderer;
 
    @Override

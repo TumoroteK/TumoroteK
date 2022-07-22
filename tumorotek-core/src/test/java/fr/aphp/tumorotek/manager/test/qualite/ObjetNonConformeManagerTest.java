@@ -82,18 +82,25 @@ public class ObjetNonConformeManagerTest extends AbstractManagerTest4
 
    @Autowired
    private ObjetNonConformeManager objetNonConformeManager;
+
    @Autowired
    private NonConformiteDao nonConformiteDao;
+
    @Autowired
    private ConformiteTypeDao conformiteTypeDao;
+
    @Autowired
    private PrelevementDao prelevementDao;
+
    @Autowired
    private EchantillonDao echantillonDao;
+
    @Autowired
    private ProdDeriveDao prodDeriveDao;
+
    @Autowired
    private CessionDao cessionDao;
+
    @Autowired
    @Qualifier("dataSource")
    private DataSource dataSource;

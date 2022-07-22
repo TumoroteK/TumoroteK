@@ -61,8 +61,8 @@ public interface IncaReportManager
 {
 
    /**
-    * Compte les échantillons traites en fonction de leur 
-    * date de creation sans tenir compte de leur provenance. 
+    * Compte les échantillons traites en fonction de leur
+    * date de creation sans tenir compte de leur provenance.
     * Le compte est incrémenté suivant un intervalle de temps.
     * @param cal1 Date limite inf
     * @param cal2 Date limite sup
@@ -74,24 +74,24 @@ public interface IncaReportManager
    List<Long> countSamplesManager(Calendar cal1, Calendar cal2, Integer interv, List<Banque> banks, boolean cumulative);
 
    /**
-    * Compte les échantillons traites en fonction de leur 
+    * Compte les échantillons traites en fonction de leur
     * date de creation et de leur provenance.
     * Le compte est incrémenté suivant un intervalle de temps.
     * @param cal1 Date limite inf
     * @param cal2 Date limite sup
     * @param interv en jours
     * @param banks
-    * @param exts Etablissements prélèveurs dont les échantillons doivent 
+    * @param exts Etablissements prélèveurs dont les échantillons doivent
     * être exclus.
     * @return
     */
    List<Long> countSamplesExtManager(Calendar cal1, Calendar cal2, Integer interv, List<Banque> banks, List<Etablissement> exts);
 
    /**
-    * Compte les échantillons cédés dans le cadre de cession dont 
-    * le type est passé en paramètre et dont la date de 
-    * validation/destruction et incluses entre les dates passées 
-    * en paramètres. Les échantillons comptés doivent appartenir 
+    * Compte les échantillons cédés dans le cadre de cession dont
+    * le type est passé en paramètre et dont la date de
+    * validation/destruction et incluses entre les dates passées
+    * en paramètres. Les échantillons comptés doivent appartenir
     * à la liste de banque passée en paramètres.
     * @param cType
     * @param d1
@@ -103,16 +103,16 @@ public interface IncaReportManager
    List<Long> countEchansByCessTypesManager(CessionType cType, Date d1, Date d2, Integer interv, List<Banque> banks);
 
    /**
-    * Compte les prélèvements (et toutes les données qui 
-    * lui sont associées suivant les demandes de l'INCa) enregistrés 
-    * dans le système dans l'intervalle défini par les deux dates 
-    * passées en paramètres, appartenant à une des banques passées 
-    * dans la liste, et dont un échantillon correspond au code organe passé en 
-    * paramètre. 
-    * Le compte se fait sur tous les codes CIM contenu 
-    * dans l'arborescence du code passé en paramètre sous la forme de l'objet 
+    * Compte les prélèvements (et toutes les données qui
+    * lui sont associées suivant les demandes de l'INCa) enregistrés
+    * dans le système dans l'intervalle défini par les deux dates
+    * passées en paramètres, appartenant à une des banques passées
+    * dans la liste, et dont un échantillon correspond au code organe passé en
+    * paramètre.
+    * Le compte se fait sur tous les codes CIM contenu
+    * dans l'arborescence du code passé en paramètre sous la forme de l'objet
     * code d'un String (cofr ou libelle).
-    * Le compte du matériel sain associé se fait sur les prèlevements 
+    * Le compte du matériel sain associé se fait sur les prèlevements
     * ainsi que sur tous les échantillons issus de la même maladie.
     * @param code CIM code organe
     * @param value libre
@@ -133,7 +133,7 @@ public interface IncaReportManager
    /**
     * Compte les patient qui ont été enregistrés par le système suite
     * à un prélèvements enregistré dans une des banques passées en paramètres.
-    * La date utilisée comme référence peut être est celle d'enregistrement 
+    * La date utilisée comme référence peut être est celle d'enregistrement
     * du patient dans le système ou la date de prélèvement.
     * Le compte est incrémenté suivant un intervalle de temps.
     * @param cal1
@@ -150,15 +150,15 @@ public interface IncaReportManager
    /**
     * Compte les patient qui ont été enregistrés par le système suite
     * à un prélèvements enregistré dans une des banques passées en paramètres.
-    * La date utilisée comme référence peut être celle 
-    * d'enregistrement du patient 
+    * La date utilisée comme référence peut être celle
+    * d'enregistrement du patient
     * dans le système ou la date de prélèvement
     * Le compte est incrémenté suivant un intervalle de temps.
     * @param cal1
     * @param cal2
     * @param interv en jours
     * @param banks
-    * @param exts Etablissements prélèveurs dont les échantillons doivent 
+    * @param exts Etablissements prélèveurs dont les échantillons doivent
     * être exclus.
     * @param datePrel si date utilisée est la date de prélèvement
     * @return compte
@@ -167,10 +167,10 @@ public interface IncaReportManager
       List<Etablissement> exts, boolean datePrel);
 
    /**
-    * Compte les prélèvements enregistrés dans le système dans 
-    * l'intervalle inclusif de dates passées, associés à un des 
-    * types de consentement et appartenant à une des banque 
-    * passés en paramètres. 
+    * Compte les prélèvements enregistrés dans le système dans
+    * l'intervalle inclusif de dates passées, associés à un des
+    * types de consentement et appartenant à une des banque
+    * passés en paramètres.
     * Le compte est incrémenté suivant un intervalle de temps.
     * @param types
     * @param cal1

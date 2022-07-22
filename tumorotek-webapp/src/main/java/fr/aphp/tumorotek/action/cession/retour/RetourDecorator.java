@@ -60,6 +60,7 @@ public class RetourDecorator implements TKdataObject
 {
 
    private Retour retour;
+
    private final ObjetStatut statut;
 
    public RetourDecorator(final Retour r, final ObjetStatut statut){
@@ -102,7 +103,7 @@ public class RetourDecorator implements TKdataObject
    }
 
    /**
-    * Affiche l'objet de la sortie si il existe sous la forme 
+    * Affiche l'objet de la sortie si il existe sous la forme
     * entite: identifiant de la sortie.
     * Pour transformation, l'identifiant est la liste des dérivés.
     * @return objet de la sortie formatté
@@ -116,9 +117,9 @@ public class RetourDecorator implements TKdataObject
          return Labels.getLabel("Entite.Incident") + ": " + retour.getIncident().getNom();
       }
       //		else if (retour.getOldEmplacementAdrl() != null) {
-      //			return Labels.getLabel("ficheRetour.deplacement") + ": " 
+      //			return Labels.getLabel("ficheRetour.deplacement") + ": "
       //				+ retour.getOldEmplacementAdrl();
-      //		} 
+      //		}
       else{
          return retour.getObservations();
       }
@@ -126,7 +127,7 @@ public class RetourDecorator implements TKdataObject
 
    /**
     * Retourne le temps de sorti en mins, arrondi à la valeur inférieure
-    * calculé entre la date de sortie et la date de retour. Le calcul n'est 
+    * calculé entre la date de sortie et la date de retour. Le calcul n'est
     * réalisé que si heure:mins sont renseignées.
     * @return Integer le délai en nb de mins
     */
@@ -226,12 +227,12 @@ public class RetourDecorator implements TKdataObject
     * @return Délai en heure/min.
     */
    public String getHeureMinuteLabel(final Integer minuteValue){
-      final Integer heure = minuteValue / 60;
+      final int heure = minuteValue / 60;
       Integer heureDelai = 0;
       Integer minDelai = 0;
       String resultat = "";
       if(heure > 0){
-         heureDelai = heure.intValue();
+         heureDelai = heure;
          minDelai = minuteValue - (heureDelai * 60);
          final StringBuffer sb = new StringBuffer();
          sb.append(heureDelai.toString());

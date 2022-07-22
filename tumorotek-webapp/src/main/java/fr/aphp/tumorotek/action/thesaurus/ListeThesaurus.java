@@ -90,7 +90,6 @@ public class ListeThesaurus extends AbstractListeController2
       return this.listObjects;
    }
 
-   
    @Override
    public void setListObjects(final List<? extends TKdataObject> objs){
       this.listObjects.clear();
@@ -149,21 +148,23 @@ public class ListeThesaurus extends AbstractListeController2
       // nature des prlvts
       listObjects.add(new Thesaurus<>(Nature.class, Labels.getLabel("thesaurus.liste.nature.prelevement")));
       // Non conformite a l'arrivee
-      listObjects.add(new Thesaurus<>(NonConformite.class, "NonConformiteArrivee", Labels.getLabel("thesaurus.liste.nonConformite.arrivee")));
+      listObjects.add(
+         new Thesaurus<>(NonConformite.class, "NonConformiteArrivee", Labels.getLabel("thesaurus.liste.nonConformite.arrivee")));
       // Non conformite apres traitement Echantillon
-      listObjects
-         .add(new Thesaurus<>(NonConformite.class, "NonConformiteTraitementEchan", Labels.getLabel("thesaurus.liste.nonConformite.traitement.echan")));
+      listObjects.add(new Thesaurus<>(NonConformite.class, "NonConformiteTraitementEchan",
+         Labels.getLabel("thesaurus.liste.nonConformite.traitement.echan")));
       // Non conformite a la cession Echantillon
-      listObjects.add(new Thesaurus<>(NonConformite.class, "NonConformiteCessionEchan", Labels.getLabel("thesaurus.liste.nonConformite.cession.echan")));
+      listObjects.add(new Thesaurus<>(NonConformite.class, "NonConformiteCessionEchan",
+         Labels.getLabel("thesaurus.liste.nonConformite.cession.echan")));
       // Non conformite apres traitement Derive
-      listObjects
-         .add(new Thesaurus<>(NonConformite.class, "NonConformiteTraitementDerive", Labels.getLabel("thesaurus.liste.nonConformite.traitement.derive")));
+      listObjects.add(new Thesaurus<>(NonConformite.class, "NonConformiteTraitementDerive",
+         Labels.getLabel("thesaurus.liste.nonConformite.traitement.derive")));
       // Non conformite a la cession Derive
-      listObjects
-         .add(new Thesaurus<>(NonConformite.class, "NonConformiteCessionDerive", Labels.getLabel("thesaurus.liste.nonConformite.cession.derive")));
+      listObjects.add(new Thesaurus<>(NonConformite.class, "NonConformiteCessionDerive",
+         Labels.getLabel("thesaurus.liste.nonConformite.cession.derive")));
       // Protocole SerotK
       listObjects.add(new Thesaurus<>(Protocole.class, Labels.getLabel("thesaurus.liste.serotk.protocole")));
-   // Diagnostic SerotK
+      // Diagnostic SerotK
       listObjects.add(new Thesaurus<>(Diagnostic.class, Labels.getLabel("thesaurus.liste.serotk.diagnostic")));
       // Qualité de l'échantillon
       listObjects.add(new Thesaurus<>(EchanQualite.class, Labels.getLabel("thesaurus.liste.qualite.echantillon")));

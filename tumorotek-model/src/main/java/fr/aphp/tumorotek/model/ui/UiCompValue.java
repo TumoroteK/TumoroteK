@@ -66,12 +66,19 @@ public class UiCompValue implements java.io.Serializable
    private static final long serialVersionUID = 1L;
 
    private Integer uiCompValueId;
+
    private UiRequete uiRequete;
+
    private String idComponent;
+
    private String componentClass;
+
    private Integer indexValue;
+
    private String textValue;
+
    private Boolean checkValue;
+
    private Calendar calendarValue;
 
    public UiCompValue(){}
@@ -177,7 +184,7 @@ public class UiCompValue implements java.io.Serializable
    }
 
    /**
-    * 2 uiCompValues sont considérées comme égales si elles appartiennent 
+    * 2 uiCompValues sont considérées comme égales si elles appartiennent
     * à la même uiRequete et si elles concerne le même composant id
     * @param obj est l'objet à tester.
     * @return true si les objets sont égaux.

@@ -73,16 +73,16 @@ public interface RetourManager
 
    /**
     * Persiste une instance afin de l'enregistrer dans la base de données.
-    * Utilise l'emplacement directement référencé par l'objet ou celui passé en 
-    * paramètre (dans le cas d'un déplacement) pour enregistrer 
+    * Utilise l'emplacement directement référencé par l'objet ou celui passé en
+    * paramètre (dans le cas d'un déplacement) pour enregistrer
     * l'adresse logique et le conteneur associé à l'évènement de stockage.
     * @param retour Retour a creer
     * @param objet Object echantillon ou dérivé sur lequel porte le Retour
     * @param emplacement précédent (ne concerne donc que les mouvements)
     * @param collaborateur enregistrant le Retour
-    * @param cession associée au Retour 
-    * @param transformation associée au Retour 
-    * @param incident associée au Retour 
+    * @param cession associée au Retour
+    * @param transformation associée au Retour
+    * @param incident associée au Retour
     * @param utilisateur Utilisateur realisant la creation
     * @param operation String creation / modification
     */
@@ -91,7 +91,7 @@ public interface RetourManager
 
    /**
     * Cherche les doublons en se basant sur la methode equals()
-    * surchargee par les entites. Si l'objet est modifie donc a un id 
+    * surchargee par les entites. Si l'objet est modifie donc a un id
     * attribue par le SGBD, ce dernier est retire de la liste findAll.
     * @param patient Retour dont on cherche la presence dans la base
     * @return true/false
@@ -119,10 +119,10 @@ public interface RetourManager
    List<Retour> getRetoursForObjectManager(TKStockableObject objet);
 
    /**
-    * Cree à partir d'un retour une liste de retour identiques 
+    * Cree à partir d'un retour une liste de retour identiques
     * (avec les mêmes informations) pour chaque objet echantillon/dérivé.
-    * Si la liste des emplacements précédents est null, les emplacements 
-    * actuels référencés directement par les objets sont utilisés. 
+    * Si la liste des emplacements précédents est null, les emplacements
+    * actuels référencés directement par les objets sont utilisés.
     * passé dans la liste.
     * @param objects
     * @param table Emplacements + conteneur avt dpct associés aux objets
@@ -135,16 +135,16 @@ public interface RetourManager
     * @version 2.2.3-genno
     * @deprecated
     */
-   void createRetourListManager(List<TKStockableObject> objects, List<OldEmplTrace> oldEmpAdrls,
-      Retour retour, Collaborateur collaborateur, Cession cession, Transformation transformation, Incident incident,
-      Utilisateur utilisateur);
+   @Deprecated
+   void createRetourListManager(List<TKStockableObject> objects, List<OldEmplTrace> oldEmpAdrls, Retour retour,
+      Collaborateur collaborateur, Cession cession, Transformation transformation, Incident incident, Utilisateur utilisateur);
 
    /**
-    * Cree à partir d'un retour une liste de retour identiques 
-    * (avec les mêmes informations) pour chaque objet echantillon/dérivé 
+    * Cree à partir d'un retour une liste de retour identiques
+    * (avec les mêmes informations) pour chaque objet echantillon/dérivé
     * passé dans la liste.
-    * Si la liste des emplacements précédents est null, les emplacements 
-    * actuels référencés directement par les objets sont utilisés. 
+    * Si la liste des emplacements précédents est null, les emplacements
+    * actuels référencés directement par les objets sont utilisés.
     * passé dans la liste.
     * @param objects
     * @param table Emplacements + conteneur avt dpct associés aux objets
@@ -157,11 +157,10 @@ public interface RetourManager
     * @return True si l'insert s'est bien passé.
     * @version 2.2.3-genno
     */
-   boolean createRetourHugeListManager(List<TKStockableObject> objects, List<OldEmplTrace> oldEmpAdrls,
-      Retour retour, Collaborateur collaborateur, Cession cession, Transformation transformation, Incident incident,
-      Utilisateur utilisateur);
+   boolean createRetourHugeListManager(List<TKStockableObject> objects, List<OldEmplTrace> oldEmpAdrls, Retour retour,
+      Collaborateur collaborateur, Cession cession, Transformation transformation, Incident incident, Utilisateur utilisateur);
    /*
-   void createRetourHugeListByTxManager(List<TKStockableObject> objects, 
+   void createRetourHugeListByTxManager(List<TKStockableObject> objects,
    		Hashtable<TKStockableObject, String> oldEmpAdrls,
    		Retour retour,
    		Collaborateur collaborateur, Cession cession,
@@ -179,7 +178,7 @@ public interface RetourManager
    /**
     * Recherche les Retours dont les objets sont passés en paramètres sous
     * la fome découplée objetId et Entite et dont la date de retour est nulle.
-    * [Envoie une exception si plusieurs évènements incomplets pour un objet. 
+    * [Envoie une exception si plusieurs évènements incomplets pour un objet.
     * Un seul attendu ou aucun -- commenté dans le code]
     * @param liste objectIds ids des objets.
     * @return Retour ou null
@@ -189,9 +188,9 @@ public interface RetourManager
 
    /**
     * Modification multiple d'une liste d'évènments de stockage.
-    * Tous les champs à l'exception de l'objet et de son emplacement de stockage 
+    * Tous les champs à l'exception de l'objet et de son emplacement de stockage
     * peuvent être modifiés.
-    * Méthode appelée notamment pour compléter la date de retour de plusieurs 
+    * Méthode appelée notamment pour compléter la date de retour de plusieurs
     * évènements incomplets.
     * @param retours
     * @param collaborateur
@@ -204,7 +203,7 @@ public interface RetourManager
       Transformation transformation, Incident incident, Utilisateur utilisateur);
 
    /**
-    * Recherche les Retours pour l'objet 
+    * Recherche les Retours pour l'objet
     * et pour une valeur d'impact sur qualité true/false.
     * @param TKStockableObject
     * @param impact

@@ -50,16 +50,18 @@ import fr.aphp.tumorotek.model.TKdataObject;
 public class Thesaurus<T extends TKThesaurusObject> implements TKdataObject
 {
 
-   private Class<T> thesaurusObjectClass;
+   private final Class<T> thesaurusObjectClass;
+
    private String label;
+
    private String qualifier;
 
-   public Thesaurus(final Class<T> clazz, String qualifier, final String label){
+   public Thesaurus(final Class<T> clazz, final String qualifier, final String label){
       this.thesaurusObjectClass = clazz;
       this.label = label;
       this.qualifier = qualifier;
    }
-   
+
    public String getQualifier(){
       return qualifier;
    }
@@ -68,7 +70,7 @@ public class Thesaurus<T extends TKThesaurusObject> implements TKdataObject
       this.thesaurusObjectClass = clazz;
       this.label = label;
    }
-   
+
    @Override
    public Integer listableObjectId(){
       return null;
@@ -88,7 +90,7 @@ public class Thesaurus<T extends TKThesaurusObject> implements TKdataObject
 
    @Override
    public TKdataObject clone(){
-      return new Thesaurus<T>(this.thesaurusObjectClass, this.qualifier, this.label);
+      return new Thesaurus<>(this.thesaurusObjectClass, this.qualifier, this.label);
    }
 
    @Override

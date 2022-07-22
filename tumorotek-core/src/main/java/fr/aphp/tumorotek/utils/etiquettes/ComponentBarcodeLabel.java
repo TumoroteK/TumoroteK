@@ -66,8 +66,11 @@ public class ComponentBarcodeLabel extends Component
    private static Log log = LogFactory.getLog(ComponentBarcodeLabel.class);
 
    private final Vector<?> data;
+
    private final String nomEtablissement;
+
    private final int abscisse;
+
    private final int ordonnee;
 
    /**

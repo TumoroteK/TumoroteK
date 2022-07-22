@@ -81,11 +81,17 @@ public class FicheBonLivraisonModale extends AbstractFicheCombineController
    private static final long serialVersionUID = -8704338228969541559L;
 
    private String entete;
+
    private String piedPage;
+
    private Cession cession;
+
    private Collaborateur expediteur;
+
    private Collaborateur destinataire;
+
    private List<Collaborateur> collabs = new ArrayList<>();
+
    private String langue = "FR";
 
    @Override
@@ -396,7 +402,7 @@ public class FicheBonLivraisonModale extends AbstractFicheCombineController
             new LigneAccord[] {li4, li4Bis, li5, li6});
 
          final Map<String, Number> nbNatures = ManagerLocator.getCessionManager().getTypesAndCountsManager(getCession());
-         //		
+         //
          //		for (int i = 0; i < echantillonsCedesDecores.size(); i++) {
          //			Echantillon echan = echantillonsCedesDecores.get(i)
          //				.getEchantillon();
@@ -410,7 +416,7 @@ public class FicheBonLivraisonModale extends AbstractFicheCombineController
          //				nbNatures.put(echan.getEchantillonType().getType(), nb);
          //			}
          //		}
-         //		
+         //
          //		for (int i = 0; i < derivesCedesDecores.size(); i++) {
          //			ProdDerive derive = derivesCedesDecores.get(i)
          //				.getProdDerive();

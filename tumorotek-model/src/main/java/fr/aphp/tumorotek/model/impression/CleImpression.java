@@ -56,7 +56,7 @@ import fr.aphp.tumorotek.model.io.export.Champ;
  * Objet persistant mappant la table CLE_IMPRESSION.
  * Une cleImpression est associée à un Champ.
  * Utilisée pour remplacer le nom de la clé par la valeur du champ, dans du texte ou un document.
- * 
+ *
  * Classe créée le 16/01/2018.
  *
  * @author Answald Bournique
@@ -66,7 +66,7 @@ import fr.aphp.tumorotek.model.io.export.Champ;
 @Entity
 @Table(name = "CLE_IMPRESSION")
 @NamedQueries(value = {@NamedQuery(name = "CleImpression.findByName", query = "SELECT c FROM CleImpression c WHERE c.nom = ?1"),
-//   @NamedQuery(name = "CleImpression.findByTemplate", query = "SELECT c FROM CleImpression c WHERE c.template = ?1"),
+   //   @NamedQuery(name = "CleImpression.findByTemplate", query = "SELECT c FROM CleImpression c WHERE c.template = ?1"),
    @NamedQuery(name = "CleImpression.findByChamp", query = "SELECT c FROM CleImpression c WHERE c.champ = ?1")})
 public class CleImpression implements Serializable
 {
@@ -91,7 +91,7 @@ public class CleImpression implements Serializable
    /**
     * Template associé
     */
-//   private Template template;
+   //   private Template template;
 
    public CleImpression(){
 
@@ -110,7 +110,7 @@ public class CleImpression implements Serializable
    }
 
    /**
-    * Id de la clé 
+    * Id de la clé
     * @param id Id de la clé
     */
    public void setCleId(final Integer id){
@@ -156,19 +156,19 @@ public class CleImpression implements Serializable
     * Template associé
     * @return Template associé
     */
-//   @ManyToOne(targetEntity = Template.class)
-//   @JoinColumn(name = "TEMPLATE_ID")
-//   public Template getTemplate(){
-//      return template;
-//   }
+   //   @ManyToOne(targetEntity = Template.class)
+   //   @JoinColumn(name = "TEMPLATE_ID")
+   //   public Template getTemplate(){
+   //      return template;
+   //   }
 
    /**
     * Template associé
     * @param template Template associé
     */
-//   public void setTemplate(final Template template){
-//      this.template = template;
-//   }
+   //   public void setTemplate(final Template template){
+   //      this.template = template;
+   //   }
 
    @Override
    public String toString(){
@@ -182,7 +182,7 @@ public class CleImpression implements Serializable
       result = prime * result + ((champ == null) ? 0 : champ.hashCode());
       result = prime * result + ((cleId == null) ? 0 : cleId.hashCode());
       result = prime * result + ((nom == null) ? 0 : nom.hashCode());
-//      result = prime * result + ((template == null) ? 0 : template.hashCode());
+      //      result = prime * result + ((template == null) ? 0 : template.hashCode());
       return result;
    }
 
@@ -191,10 +191,7 @@ public class CleImpression implements Serializable
       if(this == obj){
          return true;
       }
-      if(obj == null){
-         return false;
-      }
-      if(getClass() != obj.getClass()){
+      if((obj == null) || (getClass() != obj.getClass())){
          return false;
       }
       final CleImpression other = (CleImpression) obj;
@@ -212,13 +209,13 @@ public class CleImpression implements Serializable
       }else if(!nom.equals(other.nom)){
          return false;
       }
-//      if(template == null){
-//         if(other.template != null){
-//            return false;
-//         }
-//      }else if(!template.equals(other.template)){
-//         return false;
-//      }
+      //      if(template == null){
+      //         if(other.template != null){
+      //            return false;
+      //         }
+      //      }else if(!template.equals(other.template)){
+      //         return false;
+      //      }
       return true;
    }
 

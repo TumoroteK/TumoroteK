@@ -79,9 +79,13 @@ public class Emetteur implements java.io.Serializable
    private static final long serialVersionUID = -4548757508672995006L;
 
    private Integer emetteurId;
+
    private String identification;
+
    private String service;
+
    private String observations;
+
    private Logiciel logiciel;
 
    private Set<DossierExterne> dossierExternes = new HashSet<>();

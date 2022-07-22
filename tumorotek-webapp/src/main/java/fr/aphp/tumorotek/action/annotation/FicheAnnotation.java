@@ -87,10 +87,13 @@ public class FicheAnnotation extends AbstractFicheController
 
    // Static Components
    protected Panel annoPanel;
+
    private Rows annoRows;
 
    private Button edit;
+
    private Button validate;
+
    private Button revert;
 
    // variables droits
@@ -98,23 +101,32 @@ public class FicheAnnotation extends AbstractFicheController
 
    // Objets Principaux
    protected TKAnnotableObject obj = null;
+
    protected Entite entite;
+
    private Banque bankUsedToDrawChamps = null;
 
    protected List<AnnotationComponent> champControllers = new ArrayList<>();
+
    public List<TableAnnotation> tables = new ArrayList<>();
+
    private final List<AnnotationValeur> valeursToCreateOrUpdate = new ArrayList<>();
+
    private final List<AnnotationValeur> valeursToDelete = new ArrayList<>();
 
    // modification multiple
    protected List<TKAnnotableObject> multiObjs;
+
    protected Boolean isMultipleMode = false;
 
    protected int tableNum = 0;
 
    private final List<Group> collapGroups = new ArrayList<>();
+
    private final List<Group> openedGroups = new ArrayList<>();
+
    protected boolean isStatic;
+
    private boolean showButtons;
 
    public void setObj(final TKAnnotableObject o){

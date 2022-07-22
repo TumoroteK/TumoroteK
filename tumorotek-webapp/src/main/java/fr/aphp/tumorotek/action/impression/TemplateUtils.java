@@ -47,7 +47,7 @@ import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
 /**
  * Classe fournissant les méthodes et propriétés statiques pour les Templates
- * Classe créée le 
+ * Classe créée le
  * @author Answald Bournique
  * @since 2.2.0
  * @version 2.2.0
@@ -71,11 +71,11 @@ public class TemplateUtils
    /**
     * Retourne l'extension du fichier du template
     */
-   public static String getFileExtension(Template template){
+   public static String getFileExtension(final Template template){
       return getFileExtension(template.getFichier());
    }
 
-   public static String getFileExtension(String nomFichier){
+   public static String getFileExtension(final String nomFichier){
       if(null != nomFichier){
          return nomFichier.substring(nomFichier.lastIndexOf("."));
       }
@@ -175,14 +175,14 @@ public class TemplateUtils
 
       final List<String> cles = new ArrayList<>();
 
-      Range r = document.getRange();
+      final Range r = document.getRange();
       for(int i = 0; i < r.numSections(); ++i){
-         Section s = r.getSection(i);
+         final Section s = r.getSection(i);
          for(int j = 0; j < s.numParagraphs(); j++){
-            Paragraph p = s.getParagraph(j);
+            final Paragraph p = s.getParagraph(j);
             for(int k = 0; k < p.numCharacterRuns(); k++){
-               CharacterRun run = p.getCharacterRun(k);
-               String text = run.text();
+               final CharacterRun run = p.getCharacterRun(k);
+               final String text = run.text();
                final Matcher m = CLE_PATTERN.matcher(text);
                if(m.find()){
                   for(int l = 0; l < m.groupCount(); l++){
@@ -251,15 +251,15 @@ public class TemplateUtils
     * @param keyValueMap la map Clé à remplacer/valeur de remplacement
     */
    static void replaceKeysByValues(final HWPFDocument document, final Map<String, String> keyValueMap){
-      Range r = document.getRange();
+      final Range r = document.getRange();
       for(int i = 0; i < r.numSections(); ++i){
-         Section s = r.getSection(i);
+         final Section s = r.getSection(i);
          for(int j = 0; j < s.numParagraphs(); j++){
-            Paragraph p = s.getParagraph(j);
+            final Paragraph p = s.getParagraph(j);
             for(int k = 0; k < p.numCharacterRuns(); k++){
-               CharacterRun run = p.getCharacterRun(k);
-               String text = run.text();
-               for(String cle : keyValueMap.keySet()){
+               final CharacterRun run = p.getCharacterRun(k);
+               final String text = run.text();
+               for(final String cle : keyValueMap.keySet()){
                   if(text.contains(cle)){
                      run.replaceText(cle, keyValueMap.get(cle));
                   }
@@ -354,7 +354,7 @@ public class TemplateUtils
     * @param champValeur valeur retournée du champ
     * @return la valeur formaté si durée, la valeur de départ si non.
     */
-   private static String formatDuree(Champ champ, String champValeur){
+   private static String formatDuree(final Champ champ, final String champValeur){
       String dataType = champ.dataType().getType();
       if("calcule".equals(dataType)){
          dataType = champ.getChampAnnotation().getChampCalcule().getDataType().getType();

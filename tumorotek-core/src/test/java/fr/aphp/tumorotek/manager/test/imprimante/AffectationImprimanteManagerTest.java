@@ -72,12 +72,16 @@ public class AffectationImprimanteManagerTest extends AbstractManagerTest4
 
    @Autowired
    private AffectationImprimanteManager affectationImprimanteManager;
+
    @Autowired
    private ImprimanteDao imprimanteDao;
+
    @Autowired
    private UtilisateurDao utilisateurDao;
+
    @Autowired
    private BanqueDao banqueDao;
+
    @Autowired
    private ModeleDao modeleDao;
 

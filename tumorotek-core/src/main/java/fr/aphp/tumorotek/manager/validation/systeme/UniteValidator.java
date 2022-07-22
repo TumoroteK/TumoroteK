@@ -56,7 +56,6 @@ import fr.aphp.tumorotek.model.systeme.Unite;
 public class UniteValidator implements Validator
 {
 
-   
    @Override
    public boolean supports(final Class<?> clazz){
       return Unite.class.equals(clazz);

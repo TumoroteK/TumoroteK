@@ -78,8 +78,11 @@ public class PatientController extends AbstractObjectTabController
    private static final long serialVersionUID = -5315034328095152785L;
 
    private Div divPatientStatic;
+
    private Div divPatientEdit;
+
    private Div modifMultiDiv;
+
    private Component listePatient;
 
    @Override

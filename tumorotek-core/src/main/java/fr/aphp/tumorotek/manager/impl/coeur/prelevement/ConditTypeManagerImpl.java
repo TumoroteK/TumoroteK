@@ -67,7 +67,9 @@ public class ConditTypeManagerImpl implements ConditTypeManager
 
    /* Beans injectes par Spring*/
    private ConditTypeDao conditTypeDao;
+
    private ConditTypeValidator conditTypeValidator;
+
    private PlateformeDao plateformeDao;
 
    public ConditTypeManagerImpl(){}

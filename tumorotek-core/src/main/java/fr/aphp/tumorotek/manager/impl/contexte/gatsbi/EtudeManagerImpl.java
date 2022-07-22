@@ -1,5 +1,5 @@
 /**
- * Copyright ou © ou Copr. Assistance Publique des Hôpitaux de 
+ * Copyright ou © ou Copr. Assistance Publique des Hôpitaux de
  * PARIS et SESAN
  * projet-tk@sesan.fr
  *
@@ -49,16 +49,17 @@ import fr.aphp.tumorotek.model.contexte.gatsbi.Etude;
  * @version 2.3.0-gatsbi
  *
  */
-public class EtudeManagerImpl implements EtudeManager {
+public class EtudeManagerImpl implements EtudeManager
+{
 
-	private EtudeDao etudeDao;
+   private EtudeDao etudeDao;
 
-	public void setEtudeDao(EtudeDao _e) {
-		this.etudeDao = _e;
-	}
+   public void setEtudeDao(final EtudeDao _e){
+      this.etudeDao = _e;
+   }
 
-	@Override
-	public List<Etude> findByPfOrderManager(Plateforme pf) {
-		return etudeDao.findByPfOrder(pf);
-	}
+   @Override
+   public List<Etude> findByPfOrderManager(final Plateforme pf){
+      return etudeDao.findByPfOrder(pf);
+   }
 }

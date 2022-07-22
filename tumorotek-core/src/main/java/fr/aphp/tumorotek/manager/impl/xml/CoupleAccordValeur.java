@@ -39,6 +39,7 @@ public class CoupleAccordValeur
 {
 
    private String nomValeur;
+
    private String[] valeurs;
 
    public CoupleAccordValeur(){}

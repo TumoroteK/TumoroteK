@@ -52,9 +52,9 @@ public interface TerminaleNumerotationManager
 {
 
    /**
-    * Recherche un TerminaleNumerotation dont l'identifiant est 
+    * Recherche un TerminaleNumerotation dont l'identifiant est
     * passé en paramètre.
-    * @param terminaleNumerotationId Identifiant du 
+    * @param terminaleNumerotationId Identifiant du
     * TerminaleNumerotation que l'on recherche.
     * @return Un TerminaleNumerotation.
     */

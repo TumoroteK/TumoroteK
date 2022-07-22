@@ -64,17 +64,17 @@ public class PrelevementItemRenderer implements ListitemRenderer<Prelevement>
 {
 
    private List<Banque> otherConsultBanks = null;
+
    private boolean accessible = false;
-   
 
    public void setFromOtherConsultBanks(final List<Banque> oBks){
       this.otherConsultBanks = oBks;
    }
 
    @Override
-   public void render(final Listitem li, final Prelevement data, final int index) {
+   public void render(final Listitem li, final Prelevement data, final int index){
 
-      final Prelevement prel = (Prelevement) data;
+      final Prelevement prel = data;
 
       // icones
       final Listcell rCell = new Listcell();
@@ -84,7 +84,7 @@ public class PrelevementItemRenderer implements ListitemRenderer<Prelevement>
 
       // date prelevement
       new Listcell(ObjectTypesFormatters.dateRenderer2(prel.getDatePrelevement())).setParent(li);
-      
+
       // code prelevement
       final Listcell codeCell = new Listcell(prel.getCode());
       codeCell.setParent(li);
@@ -92,12 +92,12 @@ public class PrelevementItemRenderer implements ListitemRenderer<Prelevement>
          codeCell.addForward(null, li.getParent(), "onClickPrelevementCode", prel);
          codeCell.setClass("formLink");
       }
-      
+
       // foreign bank
       if(getOtherConsultBanks() != null){ // mode otherBank prelevement
          new Listcell(prel.getBanque().getNom()).setParent(li);
       }
-      
+
       // nature
       if(prel.getNature() != null){
          new Listcell(prel.getNature().getNom()).setParent(li);
@@ -112,8 +112,8 @@ public class PrelevementItemRenderer implements ListitemRenderer<Prelevement>
          new Listcell().setParent(li);
       }
 
-      // affiche diagnostic anapath 
-      if(getOtherConsultBanks() == null){  	  
+      // affiche diagnostic anapath
+      if(getOtherConsultBanks() == null){
          // organe
          ObjectTypesFormatters.drawCodesExpLabel(
             ManagerLocator.getCodeAssigneManager().findFirstCodesOrgByPrelevementManager(prel), null, li, true);
@@ -121,7 +121,7 @@ public class PrelevementItemRenderer implements ListitemRenderer<Prelevement>
          // diagnostic
          ObjectTypesFormatters.drawCodesExpLabel(
             ManagerLocator.getCodeAssigneManager().findFirstCodesLesByPrelevementManager(prel), null, li, true);
-    
+
       }else{ // pour foreign bank, le service preleveur
          new Listcell(prel.getServicePreleveur() != null ? prel.getServicePreleveur().getEtablissement().getNom() : "")
             .setParent(li);

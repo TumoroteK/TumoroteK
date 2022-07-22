@@ -46,6 +46,7 @@ public class RechercheComplexeController extends AbstractController
    private static final long serialVersionUID = 1L;
 
    private Tabbox exportTabbox;
+
    private Tabbox modelisationTabbox;
 
    @Override

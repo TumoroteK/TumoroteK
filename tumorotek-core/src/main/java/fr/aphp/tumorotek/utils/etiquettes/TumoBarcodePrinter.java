@@ -51,7 +51,9 @@ public class TumoBarcodePrinter
 {
 
    private final Banque banqueDb;
+
    private final Imprimante imprimante;
+
    private final String texte;
 
    /**
@@ -65,14 +67,14 @@ public class TumoBarcodePrinter
    }
 
    /**
-    * Fonction qui effectue l'impression des etiquettes codes a barres d'une liste de patients. 
+    * Fonction qui effectue l'impression des etiquettes codes a barres d'une liste de patients.
     */
    public int printPatient(final List<Patient> patients, final int nb){
       return 0;
    }
 
    /**
-    * Fonction qui effectue l'impression des etiquettes codes a barres d'une liste de prelevements. 
+    * Fonction qui effectue l'impression des etiquettes codes a barres d'une liste de prelevements.
     */
    public int printPrelevement(final List<Prelevement> prelevements, final int nb){
       return 0;
@@ -91,7 +93,7 @@ public class TumoBarcodePrinter
    }
 
    /**
-    * Fonction qui effectue l'impression des etiquettes codes a barres d'une liste de derives. 
+    * Fonction qui effectue l'impression des etiquettes codes a barres d'une liste de derives.
     */
    public int printDerive(final List<ProdDerive> derives, final int nb){
 
@@ -99,14 +101,14 @@ public class TumoBarcodePrinter
    }
 
    /**
-    * Fonction qui effectue l'impression des etiquettes codes a barres d'une liste de cessions. 
+    * Fonction qui effectue l'impression des etiquettes codes a barres d'une liste de cessions.
     */
    public int printCession(final List<Cession> cessions, final int nb){
       return 0;
    }
 
    /**
-    * Fonction qui effectue l'impression des etiquettes codes a barres d'une liste de (6) parametres. 
+    * Fonction qui effectue l'impression des etiquettes codes a barres d'une liste de (6) parametres.
     */
    public int printData(final Vector<String> data, final int nb){
       int codeRetour = 0;

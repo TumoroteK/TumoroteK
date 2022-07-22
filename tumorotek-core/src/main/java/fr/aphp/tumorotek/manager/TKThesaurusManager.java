@@ -53,7 +53,7 @@ public interface TKThesaurusManager<T extends TKThesaurusObject> extends CrudMan
 {
 
    T findByIdManager(Integer id);
-   
+
    List<T> findByOrderManager();
-   
+
 }

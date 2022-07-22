@@ -36,17 +36,18 @@
 package fr.aphp.tumorotek.interfacage.sender.impl;
 
 import java.util.List;
-import fr.aphp.tumorotek.interfacage.storageRobot.StorageMovement;
-import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
+
 import fr.aphp.tumorotek.interfacage.sender.SenderFactory;
 import fr.aphp.tumorotek.interfacage.sender.StorageRobotSender;
 import fr.aphp.tumorotek.interfacage.sender.ack.HmMessageSender;
 import fr.aphp.tumorotek.interfacage.sender.ack.TumoLinkUrd;
+import fr.aphp.tumorotek.interfacage.storageRobot.StorageMovement;
 import fr.aphp.tumorotek.model.TKAnnotableObject;
 import fr.aphp.tumorotek.model.interfacage.Recepteur;
+import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
 
 /**
- * 
+ *
  * @author Mathieu BARTHELEMY
  * @version 2.2.1-IRELEC
  */
@@ -54,7 +55,9 @@ public class SenderFactoryImpl implements SenderFactory
 {
 
    private HmMessageSender hmMessageSender;
+
    private TumoLinkUrd tumoLinkUrd;
+
    private StorageRobotSender storageRobotSender;
 
    public void setHmMessageSender(final HmMessageSender h){
@@ -70,31 +73,29 @@ public class SenderFactoryImpl implements SenderFactory
    }
 
    @Override
-	public void sendMessage(Recepteur re, TKAnnotableObject tkObj,
-			String dosExtId, String url) {
+   public void sendMessage(final Recepteur re, final TKAnnotableObject tkObj, final String dosExtId, final String url){
 
-		if (tumoLinkUrd.useRecepteur(re)) {
-			tumoLinkUrd.sendMessage(tkObj, dosExtId, url);
-		}
-		if (hmMessageSender.useRecepteur(re)) {
-			hmMessageSender.sendMessage(tkObj, dosExtId, url);
-		}
-	}
-
-   @Override
-	public void sendMessages(Recepteur re, List<TKAnnotableObject> tkObjs,
-			Integer b) {
-		// seul Hopital Manager DME n'est concerné pour l'instant
-		if (hmMessageSender.useRecepteur(re)) {
-			hmMessageSender.sendMessages(tkObjs, b);
-		}		
-	}
+      if(tumoLinkUrd.useRecepteur(re)){
+         tumoLinkUrd.sendMessage(tkObj, dosExtId, url);
+      }
+      if(hmMessageSender.useRecepteur(re)){
+         hmMessageSender.sendMessage(tkObj, dosExtId, url);
+      }
+   }
 
    @Override
-	public void sendEmplacements(Recepteur re, List<StorageMovement> movs, Utilisateur u) {
-		// seul le système IRELEC-Grenoble concerné pour l'instant
-		if (storageRobotSender.useRecepteur(re)) {
-			storageRobotSender.sendEmplacements(re, movs, u);
-		}
-	}
+   public void sendMessages(final Recepteur re, final List<TKAnnotableObject> tkObjs, final Integer b){
+      // seul Hopital Manager DME n'est concerné pour l'instant
+      if(hmMessageSender.useRecepteur(re)){
+         hmMessageSender.sendMessages(tkObjs, b);
+      }
+   }
+
+   @Override
+   public void sendEmplacements(final Recepteur re, final List<StorageMovement> movs, final Utilisateur u){
+      // seul le système IRELEC-Grenoble concerné pour l'instant
+      if(storageRobotSender.useRecepteur(re)){
+         storageRobotSender.sendEmplacements(re, movs, u);
+      }
+   }
 }

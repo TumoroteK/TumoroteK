@@ -40,25 +40,40 @@ import java.io.Serializable;
 public class ServeurIdentitesFileBean implements Serializable
 {
    private static final long serialVersionUID = -1944513535946572185L;
-   
+
    /* declaration des variables locales */
    private String dbms;
+
    private String host;
+
    private String driver;
+
    private String database;
+
    private String login;
+
    private String password;
 
    private String tablePatient;
+
    private String nip;
+
    private String nipType;
+
    private String nom;
+
    private String nomPatron;
+
    private String prenom;
+
    private String sexe;
+
    private String sexeType;
+
    private String sexeFemme;
+
    private String sexeHomme;
+
    private String dateNaiss;
 
    private String numDossier;

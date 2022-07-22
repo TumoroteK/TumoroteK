@@ -68,8 +68,11 @@ public class Fantome
 {
 
    private Integer fantomeId;
+
    private String nom;
+
    private String commentaires;
+
    private Entite entite;
 
    public Fantome(){}
@@ -124,7 +127,7 @@ public class Fantome
 
    /**
     * 2 operations sont considerees egales s'ils sont de meme type
-    * et si elles sont effectue par le meme utilisateur 
+    * et si elles sont effectue par le meme utilisateur
     * sur le meme objet a la meme date.
     * @param obj est l'operation à tester.
     * @return true si les operations sont egales.

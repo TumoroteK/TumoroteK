@@ -76,16 +76,22 @@ public class ProfilManagerTest extends AbstractManagerTest4
 
    @Autowired
    private ProfilManager profilManager;
+
    @Autowired
    private EntiteManager entiteManager;
+
    @Autowired
    private OperationTypeDao operationTypeDao;
+
    @Autowired
    private DroitObjetManager droitObjetManager;
+
    @Autowired
    private UtilisateurDao utilisateurDao;
+
    @Autowired
    private OperationManager operationManager;
+
    @Autowired
    private PlateformeDao plateformeDao;
 

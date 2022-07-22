@@ -52,8 +52,11 @@ public class ObjectReferencedException extends TKException
    private static final long serialVersionUID = -6748880359935549123L;
 
    private String entite;
+
    private String operation;
+
    private String key;
+
    private boolean cascadable = false;
 
    public ObjectReferencedException(){

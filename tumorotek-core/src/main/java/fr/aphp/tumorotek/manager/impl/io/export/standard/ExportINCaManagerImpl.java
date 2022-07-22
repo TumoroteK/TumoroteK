@@ -3,7 +3,6 @@ package fr.aphp.tumorotek.manager.impl.io.export.standard;
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class ExportINCaManagerImpl extends ExportCatalogueManagerImpl
 {
 

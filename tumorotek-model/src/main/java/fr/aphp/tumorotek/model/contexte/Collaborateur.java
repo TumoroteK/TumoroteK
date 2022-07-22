@@ -88,8 +88,8 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
       query = "SELECT c FROM Collaborateur c " + "WHERE c.collaborateurId != ?1"),
    @NamedQuery(name = "Collaborateur.findCountByServiceId",
       query = "SELECT count(c) FROM Collaborateur c " + "left join c.services s " + "WHERE s.serviceId = ?1"),
-   //		@NamedQuery(name = "Collaborateur.findByCoordonnee", 
-   //				query = "SELECT c FROM Collaborateur c " 
+   //		@NamedQuery(name = "Collaborateur.findByCoordonnee",
+   //				query = "SELECT c FROM Collaborateur c "
    //					+ "WHERE c.coordonnee = ?1"),
    @NamedQuery(name = "Collaborateur.findByEtablissement",
       query = "SELECT c FROM Collaborateur c " + "WHERE c.etablissement = ?1"),
@@ -125,9 +125,9 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
          + "LEFT JOIN FETCH c.specialite LEFT JOIN FETCH c.titre " + "WHERE c.collaborateurId = ?1"),
    @NamedQuery(name = "Collaborateur.findCountByEtablissement",
       query = "SELECT count(c) FROM Collaborateur c " + "WHERE c.etablissement = (?1)"),
-   /*	@NamedQuery(name = "Collaborateur.findByVilleLikeManager", 
-   				query = "SELECT c FROM Collaborateur c " 
-   					+ "WHERE c.coordonnee.ville like ?1 " 
+   /*	@NamedQuery(name = "Collaborateur.findByVilleLikeManager",
+   				query = "SELECT c FROM Collaborateur c "
+   					+ "WHERE c.coordonnee.ville like ?1 "
    					+ "ORDER BY c.nom")*/
    @NamedQuery(name = "Collaborateur.findByVille",
       query = "SELECT c FROM Collaborateur c " + "left join c.coordonnees s " + "WHERE s.ville like ?1 " + "ORDER BY c.nom")})
@@ -137,31 +137,53 @@ public class Collaborateur implements TKdataObject, TKFantomableObject, java.io.
    private static final long serialVersionUID = 8764349963544695L;
 
    private Integer collaborateurId;
+
    private String nom;
+
    private String prenom;
+
    private Boolean archive = false;
 
    private Etablissement etablissement;
+
    private Specialite specialite;
+
    private Titre titre;
 
    private Set<Coordonnee> coordonnees = new HashSet<>();
+
    private Set<Service> services = new HashSet<>();
+
    private Set<Plateforme> plateformes = new HashSet<>();
+
    private Set<Banque> banques = new HashSet<>();
+
    private Set<Banque> contactBanques = new HashSet<>();
+
    private Set<Utilisateur> utilisateurs = new HashSet<>();
+
    private Set<Maladie> maladies = new HashSet<>();
+
    private Set<Prelevement> prelevementsPreleveur = new HashSet<>();
+
    private Set<Prelevement> prelevementsOperateur = new HashSet<>();
+
    private Set<Echantillon> echantillons = new HashSet<>();
+
    private Set<ProdDerive> prodDerives = new HashSet<>();
+
    private Set<Cession> cessionDestinataires = new HashSet<>();
+
    private Set<Cession> cessionDemandeurs = new HashSet<>();
+
    private Set<Cession> cessionExecutants = new HashSet<>();
+
    private Set<Contrat> contrats = new HashSet<>();
+
    private Set<LaboInter> laboInters = new HashSet<>();
+
    private Set<PatientMedecin> patientMedecins = new HashSet<>();
+
    private Set<Retour> retours = new HashSet<>();
 
    /** Constructeur. */

@@ -80,7 +80,7 @@ public class FinderIntroductionInterceptor implements IntroductionInterceptor
    public boolean implementsInterface(final Class<?> intf){
       //logger.debug("Intercepted class type: " + intf.getCanonicalName());
       //logger.debug("intf.isInterface() = " + intf.isInterface());
-      //logger.debug("FinderExecutor.class.isAssignableFrom(intf) = 
+      //logger.debug("FinderExecutor.class.isAssignableFrom(intf) =
       //" + FinderExecutor.class.isAssignableFrom(intf));
       return intf.isInterface() && FinderExecutor.class.isAssignableFrom(intf);
 

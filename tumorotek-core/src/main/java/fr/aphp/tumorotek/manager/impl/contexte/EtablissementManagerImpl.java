@@ -88,28 +88,38 @@ public class EtablissementManagerImpl implements EtablissementManager
    private final Log log = LogFactory.getLog(EtablissementManager.class);
 
    private EtablissementDao etablissementDao;
+
    private ServiceDao serviceDao;
+
    private CollaborateurDao collaborateurDao;
+
    /** Bean Dao CoordonneeDao. */
    private CoordonneeDao coordonneeDao;
+
    /** Bean Dao CategorieDao. */
    private CategorieDao categorieDao;
+
    /** Bean Manager CoordonneeManager. */
    private CoordonneeManager coordonneeManager;
+
    /** Bean Manager CoordonneeManager. */
    private ServiceManager serviceManager;
+
    private OperationManager operationManager;
+
    private OperationTypeDao operationTypeDao;
+
    private CollaborateurManager collaborateurManager;
 
    /** Bean validator. */
    private EtablissementValidator etablissementValidator;
+
    /** Bean Validator CoordonneeValidator. */
    private CoordonneeValidator coordonneeValidator;
 
    /**
     * Setter du bean EtablissementDao.
-    * 
+    *
     * @param eDao
     *            est le bean Dao.
     */
@@ -163,7 +173,7 @@ public class EtablissementManagerImpl implements EtablissementManager
 
    /**
     * Recherche un Etablissement dont l'identifiant est passé en paramètre.
-    * 
+    *
     * @param etablissementId
     *            Identifiant du Etablissement que l'on recherche.
     * @return Un Etablissement.
@@ -175,7 +185,7 @@ public class EtablissementManagerImpl implements EtablissementManager
 
    /**
     * Recherche tous les Etablissements présents dans la base.
-    * 
+    *
     * @return Liste d'Etablissement.
     */
    @Override
@@ -185,7 +195,7 @@ public class EtablissementManagerImpl implements EtablissementManager
 
    /**
     * Recherche tous les Etablissements présents dans la base.
-    * 
+    *
     * @return Liste ordonnée d'Etablissement.
     */
    @Override
@@ -195,7 +205,7 @@ public class EtablissementManagerImpl implements EtablissementManager
 
    /**
     * Recherche tous les Etablissements présents dans la base.
-    * 
+    *
     * @return Liste ordonnée d'Etablissement.
     */
    @Override
@@ -206,7 +216,7 @@ public class EtablissementManagerImpl implements EtablissementManager
    /**
     * Recherche une liste d'Etablissement dont le nom commence comme celui
     * passé en paramètre.
-    * 
+    *
     * @param nom
     *            Nom pour lequel on recherche des Etablissements.
     * @param exactMatch
@@ -251,7 +261,7 @@ public class EtablissementManagerImpl implements EtablissementManager
    /**
     * Recherche une liste d'Etablissement dont le finess commence comme celui
     * passé en paramètre.
-    * 
+    *
     * @param finess
     *            Finess pour lequel on recherche des Etablissements.
     * @param exactMatch
@@ -273,7 +283,7 @@ public class EtablissementManagerImpl implements EtablissementManager
 
    /**
     * Recherche les services liés à l'établissement passé en paramètre.
-    * 
+    *
     * @param etablissement
     *            Etablissement pour lequel on recherche des services.
     * @return Liste de Services.
@@ -289,7 +299,7 @@ public class EtablissementManagerImpl implements EtablissementManager
 
    /**
     * Recherche les services liés à l'établissement passé en paramètre.
-    * 
+    *
     * @param etablissement
     *            Etablissement pour lequel on recherche des services.
     * @return Liste ordonnéev de Services.
@@ -304,7 +314,7 @@ public class EtablissementManagerImpl implements EtablissementManager
 
    /**
     * Recherche les services liés à l'établissement passé en paramètre.
-    * 
+    *
     * @param etablissement
     *            Etablissement pour lequel on recherche des services.
     * @return Liste ordonnéev de Services.
@@ -319,7 +329,7 @@ public class EtablissementManagerImpl implements EtablissementManager
 
    /**
     * Recherche les collaborateurs liés à l'établissement passé en paramètre.
-    * 
+    *
     * @param etablissement
     *            Etablissement pour lequel on recherche des collaborateurs.
     * @return Liste de Collaborateurs.
@@ -335,7 +345,7 @@ public class EtablissementManagerImpl implements EtablissementManager
 
    /**
     * Recherche les collaborateurs liés à l'établissement passé en paramètre.
-    * 
+    *
     * @param etablissement
     *            Etablissement pour lequel on recherche des collaborateurs.
     * @return Liste ordonnée de Collaborateurs.
@@ -351,7 +361,7 @@ public class EtablissementManagerImpl implements EtablissementManager
    /**
     * Recherche les collaborateurs non archivés liés à l'établissement passé en
     * paramètre.
-    * 
+    *
     * @param etablissement
     *            Etablissement pour lequel on recherche des collaborateurs.
     * @return Liste ordonnée de Collaborateurs.
@@ -366,7 +376,7 @@ public class EtablissementManagerImpl implements EtablissementManager
 
    /**
     * Recherche les doublons de l'Etablissement passé en paramètre.
-    * 
+    *
     * @param etablissement
     *            Etablissement pour lequel on cherche des doublons.
     * @return True s'il existe des doublons.
@@ -381,7 +391,7 @@ public class EtablissementManagerImpl implements EtablissementManager
 
    /**
     * Persist une instance de Etablissement dans la base de données.
-    * 
+    *
     * @param etablissement
     *            Nouvelle instance de l'objet à créer.
     * @param coordonnee
@@ -427,7 +437,7 @@ public class EtablissementManagerImpl implements EtablissementManager
 
    /**
     * Sauvegarde les modifications apportées à un objet persistant.
-    * 
+    *
     * @param etablissement
     *            Objet à mettre à jour dans la base.
     * @param coordonnee
@@ -510,7 +520,7 @@ public class EtablissementManagerImpl implements EtablissementManager
 
    /**
     * Supprime un Etablissement de la base de données.
-    * 
+    *
     * @param etablissement
     *            Etablissement à supprimer de la base de données.
     */

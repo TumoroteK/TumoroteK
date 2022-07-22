@@ -61,7 +61,7 @@ public interface ContexteDao extends GenericDaoJpa<Contexte, Integer>
 
    /**
     * Recherche les contextes dont la banque est égale au paramètre.
-    * @param banqueId est la clé primaire de la banque pour laquelle on 
+    * @param banqueId est la clé primaire de la banque pour laquelle on
     * recherche des contextes.
     * @return une liste de contextes.
     */

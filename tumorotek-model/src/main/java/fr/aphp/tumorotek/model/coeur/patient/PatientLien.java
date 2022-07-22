@@ -76,6 +76,7 @@ public class PatientLien implements Serializable
    private static final long serialVersionUID = 1L;
 
    private LienFamilial lienFamilial;
+
    private PatientLienPK pk = new PatientLienPK();
 
    /** Constructeur par défaut. */

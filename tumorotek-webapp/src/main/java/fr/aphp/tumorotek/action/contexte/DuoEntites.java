@@ -6,11 +6,17 @@ public class DuoEntites
 {
 
    private int idEntiteA;
+
    private int idEntiteB;
+
    private String nomEntiteA;
+
    private String nomEntiteB;
+
    private String taux;
+
    private String infoEntiteA;
+
    private String infoEntiteB;
 
    //pour arrondir le taux

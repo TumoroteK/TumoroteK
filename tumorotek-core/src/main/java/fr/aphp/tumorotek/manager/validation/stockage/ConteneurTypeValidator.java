@@ -55,7 +55,6 @@ import fr.aphp.tumorotek.model.stockage.ConteneurType;
 public class ConteneurTypeValidator implements Validator
 {
 
-   
    @Override
    public boolean supports(final Class<?> clazz){
       return ConteneurType.class.equals(clazz);

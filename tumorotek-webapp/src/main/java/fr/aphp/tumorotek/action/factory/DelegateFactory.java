@@ -53,36 +53,33 @@ public final class DelegateFactory
    /**
     * Constructeur privé
     */
-   private DelegateFactory(){
-   }
+   private DelegateFactory(){}
 
-   public static TKDelegateObject<? extends TKdataObject> getDelegate(TKdataObject tkDataObj, EContexte contexte){
-      
-      final TKDelegateObject<? extends TKdataObject> delegate; 
+   public static TKDelegateObject<? extends TKdataObject> getDelegate(final TKdataObject tkDataObj, final EContexte contexte){
+
+      final TKDelegateObject<? extends TKdataObject> delegate;
       final Class<?> objectClass = tkDataObj.getClass();
-      
+
       switch(contexte){
          case SEROLOGIE:
-            
-            if(Prelevement.class.equals(objectClass)) {
+
+            if(Prelevement.class.equals(objectClass)){
                delegate = new PrelevementSero();
-            }
-            else if(Maladie.class.equals(objectClass)) {
+            }else if(Maladie.class.equals(objectClass)){
                delegate = new MaladieSero();
-            }
-            else {
+            }else{
                delegate = null;
             }
-            
+
             break;
 
          default:
             delegate = null;
             break;
       }
-      
+
       return delegate;
-      
+
    }
-   
+
 }

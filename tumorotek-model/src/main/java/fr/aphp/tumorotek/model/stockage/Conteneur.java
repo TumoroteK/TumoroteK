@@ -100,8 +100,8 @@ import fr.aphp.tumorotek.model.contexte.Service;
       @NamedQuery(name = "Conteneur.findByArchive", query = "SELECT c FROM Conteneur c WHERE c.archive = ?1"),
       @NamedQuery(name = "Conteneur.findByConteneurType",
          query = "SELECT c FROM Conteneur c " + "WHERE c.conteneurType = ?1 AND c.archive = 0"),
-      /*@NamedQuery(name = "Conteneur.findByService", 
-      	query = "SELECT c FROM Conteneur c " 
+      /*@NamedQuery(name = "Conteneur.findByService",
+      	query = "SELECT c FROM Conteneur c "
       		+ "WHERE c.service= ?1 AND c.archive = 0"),*/
       @NamedQuery(name = "Conteneur.findDoublon",
          query = "SELECT c FROM Conteneur c " + "WHERE c.code = ?1 AND c.service= ?2 AND c.archive = 0"),
@@ -120,23 +120,37 @@ public class Conteneur implements TKdataObject, TKFantomableObject, Serializable
    private static final long serialVersionUID = 5584298407090931404L;
 
    private Integer conteneurId;
+
    private String code;
+
    private String nom;
+
    private Float temp;
+
    private String piece;
+
    private Integer nbrNiv;
+
    private Integer nbrEnc;
+
    private String description;
+
    private Boolean archive = false;
 
    private ConteneurType conteneurType;
+
    private Service service;
+
    private Plateforme plateformeOrig;
 
    private Set<Incident> incidents = new HashSet<>();
+
    private Set<Enceinte> enceintes = new HashSet<>();
+
    private Set<Banque> banques = new HashSet<>();
+
    private Set<ConteneurPlateforme> conteneurPlateformes = new HashSet<>();
+
    private Set<Retour> retours = new HashSet<>();
 
    /** Constructeur par défaut. */
@@ -403,7 +417,7 @@ public class Conteneur implements TKdataObject, TKFantomableObject, Serializable
    /**
     * Comparator permettant d'ordonner une liste de conteneurs par leur noms.
     * Date: 02/12/2013
-    * 
+    *
     * @author Mathieu BARTHELEMY
     * @version 2.0.10
     *

@@ -59,95 +59,97 @@ import fr.aphp.tumorotek.model.systeme.Entite;
  */
 @Entity
 @Table(name = "CHAMP_DELEGUE")
-@GenericGenerator(name="seqGenerator", strategy="increment")
-@AttributeOverrides({@AttributeOverride(name="id", column=@Column(name="CHAMP_DELEGUE_ID"))})
-@NamedQueries({@NamedQuery(name = "ChampDelegue.findByEntiteAndContexte",
-query = "FROM ChampDelegue cd WHERE cd.entite=?1 AND cd.contexte=?2"),
-	@NamedQuery(name = "ChampDelegue.findByNomAndEntiteAndContexte",
-	query = "FROM ChampDelegue cd WHERE cd.nom=?1 AND cd.entite=?2 AND cd.contexte=?3")})
+@GenericGenerator(name = "seqGenerator", strategy = "increment")
+@AttributeOverrides({@AttributeOverride(name = "id", column = @Column(name = "CHAMP_DELEGUE_ID"))})
+@NamedQueries({
+   @NamedQuery(name = "ChampDelegue.findByEntiteAndContexte",
+      query = "FROM ChampDelegue cd WHERE cd.entite=?1 AND cd.contexte=?2"),
+   @NamedQuery(name = "ChampDelegue.findByNomAndEntiteAndContexte",
+      query = "FROM ChampDelegue cd WHERE cd.nom=?1 AND cd.entite=?2 AND cd.contexte=?3")})
 public class ChampDelegue extends AbstractTKChamp
 {
 
-	private Entite entite;
-	private EContexte contexte;
+   private Entite entite;
 
-	@ManyToOne
-	@JoinColumn(name = "ENTITE_ID", nullable = false)
-	public Entite getEntite(){
-		return entite;
-	}
+   private EContexte contexte;
 
-	public void setEntite(Entite entite){
-		this.entite = entite;
-	}
+   @ManyToOne
+   @JoinColumn(name = "ENTITE_ID", nullable = false)
+   public Entite getEntite(){
+      return entite;
+   }
 
-	@Enumerated(EnumType.STRING)
-	@Column(name = "CONTEXTE", nullable = false)
-	public EContexte getContexte(){
-		return contexte;
-	}
+   public void setEntite(final Entite entite){
+      this.entite = entite;
+   }
 
-	public void setContexte(EContexte contexte){
-		this.contexte = contexte;
-	}
+   @Enumerated(EnumType.STRING)
+   @Column(name = "CONTEXTE", nullable = false)
+   public EContexte getContexte(){
+      return contexte;
+   }
 
-	/*
-	 * (non-Javadoc)
-	 * @see java.lang.Object#hashCode()
-	 */
-	@Override
-	public int hashCode(){
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((contexte == null) ? 0 : contexte.hashCode());
-		result = prime * result + ((entite == null) ? 0 : entite.hashCode());
-		result = prime * result + ((this.getNom() == null) ? 0 : this.getNom().hashCode());
-		return result;
-	}
+   public void setContexte(final EContexte contexte){
+      this.contexte = contexte;
+   }
 
-	/*
-	 * (non-Javadoc)
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
-	@Override
-	public boolean equals(Object obj){
-		if(this == obj)
-			return true;
-		if(obj == null)
-			return false;
-		if(getClass() != obj.getClass())
-			return false;
-		ChampDelegue other = (ChampDelegue) obj;
-		if(contexte != other.contexte)
-			return false;
-		if(entite == null){
-			if(other.entite != null)
-				return false;
-		}else if(!entite.equals(other.entite))
-			return false;
-		if(this.getNom() == null){
-			if(other.getNom() != null)
-				return false;
-		}else if(!this.getNom().equals(other.getNom()))
-			return false;
-		return true;
-	}
+   /*
+    * (non-Javadoc)
+    * @see java.lang.Object#hashCode()
+    */
+   @Override
+   public int hashCode(){
+      final int prime = 31;
+      int result = 1;
+      result = prime * result + ((contexte == null) ? 0 : contexte.hashCode());
+      result = prime * result + ((entite == null) ? 0 : entite.hashCode());
+      result = prime * result + ((this.getNom() == null) ? 0 : this.getNom().hashCode());
+      return result;
+   }
 
-	@Transient
-	public String getILNLabelForChampDelegue(final EContexte ctx){
+   /*
+    * (non-Javadoc)
+    * @see java.lang.Object#equals(java.lang.Object)
+    */
+   @Override
+   public boolean equals(final Object obj){
+      if(this == obj){
+         return true;
+      }
+      if((obj == null) || (getClass() != obj.getClass())){
+         return false;
+      }
+      final ChampDelegue other = (ChampDelegue) obj;
+      if(contexte != other.contexte){
+         return false;
+      }
+      if(entite == null){
+         if(other.entite != null){
+            return false;
+         }
+      }else if(!entite.equals(other.entite)){
+         return false;
+      }
+      if(this.getNom() == null){
+         if(other.getNom() != null){
+            return false;
+         }
+      }else if(!this.getNom().equals(other.getNom())){
+         return false;
+      }
+      return true;
+   }
 
-		if (ctx != null && getEntite() != null && getNom() != null) {		  
-			final StringBuffer iProperty = new StringBuffer()
-					.append("Champ.")
-					.append(getEntite().getNom())
-					.append(".")
-					.append(ctx)
-					.append(".")
-					.append(getNom().replaceAll("Id$", ""));
+   @Transient
+   public String getILNLabelForChampDelegue(final EContexte ctx){
 
-			// on ajoute la valeur du champ
-			return iProperty.toString();
-		}
-		return null;
-	}
+      if(ctx != null && getEntite() != null && getNom() != null){
+         final StringBuffer iProperty = new StringBuffer().append("Champ.").append(getEntite().getNom()).append(".").append(ctx)
+            .append(".").append(getNom().replaceAll("Id$", ""));
+
+         // on ajoute la valeur du champ
+         return iProperty.toString();
+      }
+      return null;
+   }
 }

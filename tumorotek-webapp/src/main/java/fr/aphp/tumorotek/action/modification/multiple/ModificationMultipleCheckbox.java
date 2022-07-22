@@ -60,7 +60,9 @@ public class ModificationMultipleCheckbox extends AbstractModificationMultipleCo
     * Components specific checkbox.
     */
    private Checkbox multiCheckbox;
+
    private Radiogroup eraseMultiCheckbox;
+
    private Image delete;
 
    private boolean nullified = false;

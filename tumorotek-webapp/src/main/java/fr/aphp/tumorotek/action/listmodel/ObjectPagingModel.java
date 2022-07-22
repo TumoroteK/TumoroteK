@@ -28,7 +28,9 @@ public class ObjectPagingModel extends AbstractListModel<Object>
    private TKDecoratorFactory decoFactory;
 
    protected int _startPageNumber;
+
    protected int _pageSize;
+
    protected int _itemStartNumber;
 
    private Affichage affichage;
