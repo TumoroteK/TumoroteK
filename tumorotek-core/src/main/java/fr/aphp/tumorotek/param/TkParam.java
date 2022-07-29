@@ -85,11 +85,13 @@ public enum TkParam
 	// @since 2.2.3-genno
 	GENNO_DERIVES_NATURES("genno.derives.natures"),
 	// @since 2.3.0-gatsbi
+	GATSBI_INSTALLATION("gatsbi.installation"),
+   GATSBI_APPLI_URL_PATH("gatsbi.appli.url.path"),
 	GATSBI_API_URL_BASE("gatsbi.api.url.base"),
 	GATSBI_API_URL_ETUDE_PATH("gatsbi.api.url.etude.path"),
 	GATSBI_API_URL_CONTEXTE_PATH("gatsbi.api.url.contexte.path"),
-	GATSBI_API_URL_PARAMETRAGE_PATH("gatsbi.api.url.parametrage.path"),
-   GATSBI_APPLI_URL_PATH("gatsbi.appli.url.path");
+	GATSBI_API_URL_PARAMETRAGE_PATH("gatsbi.api.url.parametrage.path");
+;
 
 	private String paramKey;
 
