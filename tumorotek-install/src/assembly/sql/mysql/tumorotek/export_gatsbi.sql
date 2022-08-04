@@ -80,7 +80,7 @@ END&&
 DROP PROCEDURE IF EXISTS `fill_tmp_table_prel_gatsbi`&&
 CREATE PROCEDURE `fill_tmp_table_prel_gatsbi`(IN prel_id INTEGER, IN etude_id INTEGER)
   BEGIN
-    SET @sql = CONCAT(' INSERT INTO TMP_PRELEVEMENT_EXPORT SELECT ', 
+    SET @sql = CONCAT('INSERT INTO TMP_PRELEVEMENT_EXPORT SELECT ', 
         'p.prelevement_id, ',
         'b.nom, ',
         'p.code, ',
@@ -159,8 +159,169 @@ CREATE PROCEDURE `fill_tmp_table_prel_gatsbi`(IN prel_id INTEGER, IN etude_id IN
     WHERE p.banque_id = b.banque_id
       AND ent.ENTITE_ID = 2
       AND p.prelevement_id = ', prel_id);
+      	
+    PREPARE stmt FROM @sql;
+    EXECUTE stmt;
+    DEALLOCATE PREPARE stmt;
 
+END&&
+
+DROP PROCEDURE IF EXISTS `create_tmp_echantillon_table_gatsbi`&&
+CREATE PROCEDURE `create_tmp_echantillon_table_gatsbi`(IN etude_id INTEGER)
+  BEGIN
+
+    DROP TEMPORARY TABLE IF EXISTS TMP_ECHANTILLON_EXPORT;
+    
+    SET @sql = CONCAT('CREATE TEMPORARY TABLE TMP_ECHANTILLON_EXPORT (',
+      'ECHANTILLON_ID int(10), 
+		',
+      'BANQUE varchar(300), 
+		',
+      'CODE varchar(50), 
+		',
+      IF ((is_chp_visible(58, etude_id)), 'ECHANTILLON_TYPE varchar(300), 
+		', ''),
+      IF ((is_chp_visible(61, etude_id)), 
+          'QUANTITE decimal(12, 3), QUANTITE_INIT decimal(12, 3), QUANTITE_UNITE varchar(25), 
+		', ''),
+      IF ((is_chp_visible(56, etude_id)), 'DATE_STOCK datetime, 
+		', ''),
+      IF ((is_chp_visible(67, etude_id)), 'DELAI_CGL DECIMAL(12, 3), 
+		', ''),
+      IF ((is_chp_visible(53, etude_id)), 'COLLABORATEUR varchar(50), 
+		', ''),
+      'EMPLACEMENT varchar(100), 
+		',
+      IF ((is_chp_visible(265, etude_id)), 'TEMP_STOCK decimal(12, 3), 
+		', ''),
+      IF ((is_chp_visible(55, etude_id)), 'OBJET_STATUT varchar(20), 
+		', ''),
+      IF ((is_chp_visible(68, etude_id)), 'ECHAN_QUALITE varchar(200), 
+		', ''),
+      IF ((is_chp_visible(70, etude_id)), 'MODE_PREPA varchar(200), 
+		', ''),
+      IF ((is_chp_visible(72, etude_id)), 'STERILE boolean, 
+		', ''),
+      IF ((is_chp_visible(243, etude_id)), 'CONFORME_TRAITEMENT boolean, RAISON_NC_TRAITEMENT varchar(1000), 
+		', ''),
+      IF ((is_chp_visible(244, etude_id)), 'CONFORME_CESSION boolean, RAISON_NC_CESSION varchar(1000), 
+		', ''),
+      IF ((is_chp_visible(69, etude_id)), 'TUMORAL boolean, ', ''),
+      IF ((is_chp_visible(60, etude_id)), 'LATERALITE char(1), 
+		', ''),
+      IF ((is_chp_visible(229, etude_id)), 'CODE_ORGANES varchar(300), 
+		', ''),
+      IF ((is_chp_visible(230, etude_id)), 'CODE_MORPHOS varchar(300), 
+		', ''),
+      'NOMBRE_DERIVES int(4),
+      EVTS_STOCK_E varchar(3),
+      DATE_HEURE_SAISIE datetime,
+      UTILISATEUR_SAISIE varchar(100),
+      PRELEVEMENT_ID int(10),
+      PRIMARY KEY (ECHANTILLON_ID),
+      INDEX (PRELEVEMENT_ID)
+      ) ENGINE = MYISAM, default character SET = utf8');
+      
     SELECT @sql;
+   
+    PREPARE stmt FROM @sql;
+    EXECUTE stmt;
+    DEALLOCATE PREPARE stmt;
+
+END&&
+
+DROP PROCEDURE IF EXISTS `fill_tmp_table_echan_gatsbi`&&
+CREATE PROCEDURE `fill_tmp_table_echan_gatsbi`(IN echan_id INTEGER, IN etude_id INTEGER)
+  BEGIN
+    SET @sql = CONCAT('INSERT INTO TMP_ECHANTILLON_EXPORT SELECT 
+			', 
+    	'e.echantillon_id, 
+			',
+        'b.nom, 
+			',
+        'e.code, 
+			',
+        IF ((is_chp_visible(58, etude_id)), 'et.type, 
+			', ''),
+     	IF ((is_chp_visible(61, etude_id)), 'quantite, 
+			quantite_init, 
+			u.unite, 
+			', ''),
+        IF ((is_chp_visible(56, etude_id)), 'date_stock, 
+			', ''),
+        IF ((is_chp_visible(67, etude_id)), 'delai_cgl, 
+			', ''),
+        IF ((is_chp_visible(53, etude_id)), 'co.nom, 
+			', ''),
+        'get_adrl(e.emplacement_id), 
+			',
+        IF ((is_chp_visible(265, etude_id)), '(SELECT temp FROM CONTENEUR WHERE conteneur_id = get_conteneur(e.emplacement_id)), 
+			', ''),
+        IF ((is_chp_visible(55, etude_id)), 'os.statut, 
+			', ''),
+        IF ((is_chp_visible(68, etude_id)), 'eq.echan_qualite, 
+			', ''),
+        IF ((is_chp_visible(70, etude_id)), 'mp.nom, 
+			', ''),
+        IF ((is_chp_visible(72, etude_id)), 'e.sterile, 
+			', ''),
+        IF ((is_chp_visible(243, etude_id)), 
+        	'conforme_traitement,
+           	LEFT((select GROUP_CONCAT(nc.nom)
+            	FROM OBJET_NON_CONFORME onc
+                   LEFT JOIN NON_CONFORMITE nc ON onc.non_conformite_id = nc.non_conformite_id
+                   LEFT JOIN CONFORMITE_TYPE ct ON nc.conformite_type_id = ct.conformite_type_id
+           		WHERE ct.conformite_type_id = 2
+              	AND e.echantillon_id = onc.objet_id), 200), 
+			', ''),
+        IF ((is_chp_visible(244, etude_id)), 
+        	'conforme_cession,
+	        LEFT((select GROUP_CONCAT(nc.nom)
+	        	FROM OBJET_NON_CONFORME onc
+	                   LEFT JOIN NON_CONFORMITE nc ON onc.non_conformite_id = nc.non_conformite_id
+	                   LEFT JOIN CONFORMITE_TYPE ct ON nc.conformite_type_id = ct.conformite_type_id
+	            WHERE ct.conformite_type_id = 3
+	            AND e.echantillon_id = onc.objet_id), 200), 
+			', ''), 
+		IF ((is_chp_visible(69, etude_id)), 'tumoral, 
+			', ''),
+        IF ((is_chp_visible(60, etude_id)), 'lateralite, 
+			', ''),
+        IF ((is_chp_visible(229, etude_id)), 
+        	CONCAT('LEFT((SELECT GROUP_CONCAT(ca.code ORDER BY ca.ordre) 
+				FROM CODE_ASSIGNE ca WHERE ca.IS_ORGANE = 1 AND ca.echantillon_id = ', echan_id, '), 500), 
+			'), ''),
+		IF ((is_chp_visible(230, etude_id)), 
+           	CONCAT('LEFT((SELECT GROUP_CONCAT(ca.code ORDER BY ca.ordre) 
+				FROM CODE_ASSIGNE ca WHERE ca.IS_MORPHO = 1 AND ca.echantillon_id = ', echan_id, '), 500), 
+			'), ''),
+        '(SELECT COUNT(tr.objet_id)
+            FROM TRANSFORMATION tr
+                   INNER JOIN PROD_DERIVE pd ON tr.TRANSFORMATION_ID = pd.TRANSFORMATION_ID
+            WHERE tr.OBJET_ID = ', echan_id, ' and tr.entite_id = 3),
+        COUNT(r.retour_id), 
+        (SELECT op.date_ FROM OPERATION op WHERE op.OPERATION_TYPE_ID = 3
+                                                AND op.entite_id = 3
+                                                AND op.objet_id = ', echan_id, '),
+        (SELECT ut.login FROM UTILISATEUR ut
+                   JOIN OPERATION op ON ut.utilisateur_id = op.utilisateur_id
+            WHERE op.OPERATION_TYPE_ID = 3
+              AND op.entite_id = 3
+              AND op.objet_id = ', echan_id, '),
+           e.prelevement_id
+    	FROM ECHANTILLON e
+           INNER JOIN BANQUE b
+           INNER JOIN ENTITE ent
+           LEFT JOIN ECHANTILLON_TYPE et ON e.ECHANTILLON_TYPE_ID = et.ECHANTILLON_TYPE_ID
+           LEFT JOIN UNITE u ON e.quantite_unite_id = u.unite_id
+           LEFT JOIN COLLABORATEUR co ON e.collaborateur_id = co.collaborateur_id
+           LEFT JOIN OBJET_STATUT os ON e.objet_statut_id = os.objet_statut_id
+           LEFT JOIN ECHAN_QUALITE eq ON e.echan_qualite_id = eq.echan_qualite_id
+           LEFT JOIN MODE_PREPA mp ON e.mode_prepa_id = mp.mode_prepa_id -- LEFT JOIN OBJET_NON_CONFORME onc ON e.echantillon_id = onc.objet_id
+           LEFT JOIN RETOUR r on r.objet_id = e.echantillon_id AND r.entite_id = 3
+    WHERE e.banque_id = b.banque_id
+      AND ent.ENTITE_ID = 3
+      AND e.echantillon_id = ', echan_id, ' GROUP BY e.echantillon_id');
       	
     PREPARE stmt FROM @sql;
     EXECUTE stmt;
