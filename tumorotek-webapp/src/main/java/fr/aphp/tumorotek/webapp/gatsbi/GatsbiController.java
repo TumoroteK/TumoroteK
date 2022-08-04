@@ -703,7 +703,7 @@ public class GatsbiController {
 				EtudeDTO etudeDTO = restTemplate
 					.getForObject(etudeURIBld.build(false).expand(etude.getEtudeId()).toUri(), EtudeDTO.class);
 		
-				for (ContexteDTO rCont : etudeDTO.getrContextes()) {
+				for (ContexteDTO rCont : etudeDTO.getContextes()) {
 					log.debug("fetch contexte from URL:"
 							+ (contexteURIBld.build(false).expand(etude.getEtudeId(), rCont.getType()))
 									.toUriString());
