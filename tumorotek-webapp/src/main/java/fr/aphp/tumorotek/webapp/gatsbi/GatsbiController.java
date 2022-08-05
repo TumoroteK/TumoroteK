@@ -56,6 +56,7 @@ import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.DeserializationConfig.Feature;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -719,6 +720,8 @@ public class GatsbiController {
 				}
 			} catch (ResourceAccessException e) { // gatsbi inaccessible
 				throw new GatsbiException("gatsbi.connexion.error");
+			} catch (HttpClientErrorException e) { // étude inexistante
+            throw new GatsbiException("gatsbi.resource.notfound");	
 			} catch (Exception e) {
 				throw new GatsbiException(e.getMessage());
 			}

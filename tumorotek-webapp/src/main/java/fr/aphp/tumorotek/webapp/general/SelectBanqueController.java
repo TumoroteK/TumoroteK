@@ -61,6 +61,7 @@ import org.zkoss.zul.Label;
 import org.zkoss.zul.Row;
 
 import fr.aphp.tumorotek.action.ManagerLocator;
+import fr.aphp.tumorotek.action.controller.AbstractController;
 import fr.aphp.tumorotek.action.prelevement.gatsbi.exception.GatsbiException;
 import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
 import fr.aphp.tumorotek.model.contexte.Banque;
@@ -313,7 +314,7 @@ public class SelectBanqueController extends GenericForwardComposer<Component>
             ConnexionUtils.selectConnection(user, selectedPlateforme, selectedBanque, banques, session);
             Executions.sendRedirect("/zuls/main/main.zul");
          }catch(final GatsbiException e){
-            throw new WrongValueException(rowBanque.getFirstChild(), e.getMessage());
+            throw new WrongValueException(rowBanque.getFirstChild(), AbstractController.handleExceptionMessage(e));
          }
       }else{
          // cas admin première installation aucune collection
