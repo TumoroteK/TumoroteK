@@ -871,6 +871,20 @@
 													</listbox>
 												</div>
 											</div>
+											<div class="item item-wide" id="impactDiv"><!-- Dégradation possible du matériel (impact) -->
+												<label value="${c:l('Champ.Retour.Impact')}" sclass="chpLabel formLabel" />
+												<div class="row-container">
+													<div>
+														<checkbox id="impactEchanTBox"></checkbox>
+														<label value="${c:l('general.checkbox.true')}" sclass="formLabel" />
+													</div>
+													<separator width="10px" />
+													<div>
+														<checkbox id="impactEchanFBox"></checkbox>
+														<label value="${c:l('general.checkbox.false')}" sclass="formLabel" />
+													</div>
+												</div>
+											</div>
 										</div>
 									</cell>
 								</row>
@@ -1097,6 +1111,20 @@
 															<listcell label="@{nc.nom}" />
 														</listitem>
 													</listbox>
+												</div>
+											</div>
+											<div class="item item-wide" id="impactDeriveDiv"><!-- Dégradation possible du matériel (impact) -->
+												<label value="${c:l('Champ.Retour.Impact')}" sclass="chpLabel formLabel" />
+												<div class="row-container">
+													<div>
+														<checkbox id="impactDeriveTBox"></checkbox>
+														<label value="${c:l('general.checkbox.true')}" sclass="formLabel" />
+													</div>
+													<separator width="10px" />
+													<div>
+														<checkbox id="impactDeriveFBox"></checkbox>
+														<label value="${c:l('general.checkbox.false')}" sclass="formLabel" />
+													</div>
 												</div>
 											</div>
 										</div>
