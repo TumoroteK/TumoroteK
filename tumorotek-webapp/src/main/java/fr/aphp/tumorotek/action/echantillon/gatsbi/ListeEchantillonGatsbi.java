@@ -65,7 +65,10 @@ public class ListeEchantillonGatsbi extends ListeEchantillon
 
    private Contexte contexte;
 
-   public ListeEchantillonGatsbi(){
+   public ListeEchantillonGatsbi() {
+      
+      contexte = SessionUtils.getCurrentGatsbiContexteForEntiteId(3);
+      
       setListObjectsRenderer(new EchantillonRowRendererGatsbi(true, false, true, true));
    }
 
@@ -76,8 +79,6 @@ public class ListeEchantillonGatsbi extends ListeEchantillon
    @Override
    protected void drawColumnsForVisibleChampEntites()
       throws ClassNotFoundException, InstantiationException, IllegalAccessException{
-
-      contexte = SessionUtils.getCurrentGatsbiContexteForEntiteId(3);
 
       // check box first column, toujours affichée
       final Checkbox cbox = new Checkbox();

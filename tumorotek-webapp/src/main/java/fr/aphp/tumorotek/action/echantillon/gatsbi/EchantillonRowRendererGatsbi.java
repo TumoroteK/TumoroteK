@@ -58,7 +58,7 @@ import fr.aphp.tumorotek.webapp.general.SessionUtils;
 public class EchantillonRowRendererGatsbi extends EchantillonRowRenderer implements RowRendererGatsbi
 {
 
-   private final Contexte contexte;
+   private Contexte contexte;
 
    // par défaut les icones sont toujours dessinées car impact evt de stockage
    private boolean iconesRendered = true;
@@ -67,7 +67,8 @@ public class EchantillonRowRendererGatsbi extends EchantillonRowRenderer impleme
 
    private boolean drawCheckbox = true;
 
-   public EchantillonRowRendererGatsbi(final boolean select, final boolean cols, final boolean _c, final boolean _r){
+   public EchantillonRowRendererGatsbi(final boolean select, final boolean cols, 
+                     final boolean _c, final boolean _r) {
       super(select, cols);
 
       this.drawCheckbox = _c;
@@ -110,5 +111,9 @@ public class EchantillonRowRendererGatsbi extends EchantillonRowRenderer impleme
    @Override
    public boolean areIconesRendered(){
       return iconesRendered;
+   }
+
+   public void setContexte(Contexte _c){
+      this.contexte = _c;
    }
 }
