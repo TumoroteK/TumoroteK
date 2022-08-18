@@ -33,7 +33,7 @@
  * avez pris connaissance de la licence CeCILL, et que vous en avez
  * accepté les termes.
  **/
-package fr.aphp.tumorotek.manager.test.patient;
+package fr.aphp.tumorotek.manager.test.coeur.patient;
 
 import static org.junit.Assert.*;
 
@@ -558,14 +558,14 @@ public class PatientManagerTest extends AbstractManagerTest4
       assertTrue(patientManager.findByNomLikeManager("2 MAKOUN", false).size() == 1);
 
       //validation test Type
-      final String[] noms = new String[] {"", "  ", null, "12}.4", createOverLength(50), "Mr Jean-2Pierre"};
+      final String[] noms = new String[] {"", "  ", "12}.4", createOverLength(50), "Mr Jean-2Pierre"};
       final String[] prenoms = new String[] {"", "  ", "e456$$", createOverLength(50), null, "Jeff-you Jr"};
       final String[] nips = new String[] {"", "  ", "12%$.4", createOverLength(20), null, "55.8-7"};
       final String[] sexes = new String[] {"", "  ", "Test", "Masc", "M"};
       final String[] nomNais = new String[] {"", "  ", "*kII$$", createOverLength(50), null, "YAYA"};
       final String[] villes = new String[] {"", "  ", "{ERE", createOverLength(100), null, "lOUISI"};
       final String[] pays = new String[] {"", "  ", "kllo==$$", createOverLength(100), null, "les Açores"};
-      final String[] etats = new String[] {"", "  ", null, "Decede", "D"};
+      final String[] etats = new String[] {"", "  ", "Decede", "D"};
 
       int i = 0, j = 0, k = 0, l = 0, o = 0, n = 0, q = 0, r = 0;
       //boolean isValide = (i > 3 && j == 5 && k > 3 && l > 3 
