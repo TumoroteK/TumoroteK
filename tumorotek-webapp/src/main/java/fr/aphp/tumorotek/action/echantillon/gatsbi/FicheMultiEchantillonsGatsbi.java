@@ -97,7 +97,7 @@ public class FicheMultiEchantillonsGatsbi extends FicheMultiEchantillons
       // inner list
       // deletable
       // force pas affichage emplacement et statut stockage en fin de grid
-      GatsbiControllerEchantillon.drawColumnsForEchantillons(contexte, echantillonsList, echanDecoRendererGatsbi, true, true);
+      GatsbiControllerEchantillon.drawColumnsForEchantillons(contexte, echantillonsList, echanDecoRendererGatsbi, true, true, false);
    }
 
    @Override

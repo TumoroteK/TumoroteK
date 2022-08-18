@@ -428,7 +428,7 @@ public class GatsbiControllerEchantillon
     * @throws IllegalAccessException
     */
    public static void drawColumnsForEchantillons(final Contexte contexte, final Grid grid, final RowRendererGatsbi rowRenderer,
-      final boolean deletable, final boolean forceEmplacementAndStatut)
+      final boolean deletable, final boolean forceEmplacementAndStatut, final boolean ttesCollections)
       throws ClassNotFoundException, InstantiationException, IllegalAccessException{
 
       // icones column, visible si non conformites OU risque est visible
@@ -453,9 +453,11 @@ public class GatsbiControllerEchantillon
 
       // code echan column, toujours affichée
       GatsbiControllerEchantillon.drawCodeColumn(grid);
+      
+      // ttes collection
+      GatsbiControllerEchantillon.drawBanqueColumn(grid, ttesCollections);
 
       // variable columns
-
       for(final Integer chpId : contexte.getChampEntiteInTableauOrdered()){
          // statut et emplacement toujours affichés
          if(!forceEmplacementAndStatut || (chpId != 55 && chpId != 57)){

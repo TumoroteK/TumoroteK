@@ -99,7 +99,7 @@ public class FichePrelevementStaticGatsbi extends FichePrelevementStatic
       // non deletable
       // ne force pas affichage emplacement et statut stockage en fin de grid
       GatsbiControllerEchantillon.drawColumnsForEchantillons(echanContexte,
-         echantillonsGrid, echantillonRendererGatsbi, false, false);
+         echantillonsGrid, echantillonRendererGatsbi, false, false, getTtesCollections());
    }
 
    @Override
