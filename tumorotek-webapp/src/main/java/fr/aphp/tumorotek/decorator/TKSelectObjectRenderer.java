@@ -128,21 +128,9 @@ public class TKSelectObjectRenderer<T extends TKdataObject> implements RowRender
     * Crée un bloc anonyme pour cacher la valeur d'un champ.
     * @return
     */
-   public static Label createAnonymeBlock(){
+   public static Label createAnonymeLabel(){
       final Label anonymeLabel = new Label();
       AbstractController.makeLabelAnonyme(anonymeLabel, false);
-
-      return anonymeLabel;
-   }
-
-   /**
-    * Crée un lien anonyme pour cacher la valeur d'un champ.
-    * @return
-    */
-   protected Label createAnonymeLink(){
-
-      final Label anonymeLabel = new Label();
-      AbstractController.makeLabelAnonyme(anonymeLabel, true);
 
       return anonymeLabel;
    }
@@ -237,14 +225,20 @@ public class TKSelectObjectRenderer<T extends TKdataObject> implements RowRender
     * @throws NoSuchMethodException
     * @since 2.3.0-gatsbi
     */
-   public static void renderAlphanumPropertyAsStringNoFormat(final Row row, final Object obj, final String propName)
+   public static Label renderAlphanumPropertyAsStringNoFormat(final Row row, final Object obj, final String propName)
       throws IllegalAccessException, InvocationTargetException, NoSuchMethodException{
+      
+      Label label = null;
+      
       final String value = (String) PropertyUtils.getSimpleProperty(obj, propName);
       if(value != null){
-         new Label(value).setParent(row);
+         label = new Label(value);
       }else{
-         new Label().setParent(row);
+         new Label();
       }
+      label.setParent(row);
+      
+      return label;
    }
 
    /**
@@ -377,6 +371,41 @@ public class TKSelectObjectRenderer<T extends TKdataObject> implements RowRender
             .setParent(row);
       }else{
          new Label().setParent(row);
+      }
+   }
+   
+   /**
+    * Methode de rendu générique d'une proprité d'un objet de type
+    * alphanumérique sous la forme d'une chaine de caractère,
+    * sans formatage, qui peut être anonyme et cliquable
+    * @param row
+    * @param TK data POJO / decorator
+    * @param propName
+    * @param anonyme true/false
+    * @param evtName event name
+    * @param evtDate data event
+    * @throws IllegalAccessException
+    * @throws InvocationTargetException
+    * @throws NoSuchMethodException
+    * @since 2.3.0-gatsbi
+    */
+   public static void renderAnonymisableAndClickableAlphanumProperty(final Row row, final Object obj, 
+      final String propName, final boolean anonyme, final String evtName, 
+      final Object evtData)
+      throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+      
+      Label label= null;
+      if (anonyme) { 
+         label = createAnonymeLabel();
+         label.setParent(row);
+      } else { // regular alphanum rendering
+         label = renderAlphanumPropertyAsStringNoFormat(row, obj, propName);
+      }
+      
+      // clickable -> event target is always parent
+      if (evtName != null) {
+         label.addForward(null, label.getParent(), evtName, evtData);
+         label.setClass("formLink");
       }
    }
 

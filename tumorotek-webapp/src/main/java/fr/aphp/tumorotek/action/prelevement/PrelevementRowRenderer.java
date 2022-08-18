@@ -62,7 +62,7 @@ import fr.aphp.tumorotek.model.interfacage.Emetteur;
  * Date: 17/04/2010
  *
  * @author Mathieu BARTHELEMY
- * @version 2.0.10
+ * @version 2.3.0-gatsbi
  */
 public class PrelevementRowRenderer extends TKSelectObjectRenderer<Prelevement>
 {
@@ -174,14 +174,14 @@ public class PrelevementRowRenderer extends TKSelectObjectRenderer<Prelevement>
       if(prel.getMaladie() != null){
          if(anonyme){
             if(getAccessPatient()){
-               final Label link = createAnonymeLink();
+               final Label link = createAnonymeLabel();
                link.addForward(null, link.getParent(), "onClickPatient", prel);
                link.setParent(row);
             }else{
-               createAnonymeBlock().setParent(row);
+               createAnonymeLabel().setParent(row);
             }
             // nip @version 2.0.12
-            createAnonymeBlock().setParent(row);
+            createAnonymeLabel().setParent(row);
          }else{
             final Label patientLabel = new Label(PrelevementUtils.getPatientNomAndPrenom(prel));
             if(getAccessPatient()){

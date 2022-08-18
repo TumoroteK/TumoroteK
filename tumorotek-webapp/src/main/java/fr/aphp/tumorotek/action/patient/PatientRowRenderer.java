@@ -35,6 +35,8 @@
  **/
 package fr.aphp.tumorotek.action.patient;
 
+import java.lang.reflect.InvocationTargetException;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -60,14 +62,12 @@ import fr.aphp.tumorotek.model.contexte.Banque;
  * Date: 14/04/2010
  *
  * @author Mathieu BARTHELEMY
- * @version 2.0
+ * @version 2.3.0-gatsbi
  */
 public class PatientRowRenderer extends TKSelectObjectRenderer<Patient>
 {
 
    private List<Banque> banques = new ArrayList<>();
-
-   private Patient patient;
 
    public PatientRowRenderer(final boolean select){
       setSelectionMode(select);
@@ -81,58 +81,94 @@ public class PatientRowRenderer extends TKSelectObjectRenderer<Patient>
    public void render(final Row row, final Patient data, final int index){
       // dessine le checkbox
       super.render(row, data, index);
+      
+      renderObjets(row, data);
+   }
+   
+   public void renderObjets(final Row row, final Object data){
 
-      // dessine les champs spécifiques Patient
-      final Patient pat = data;
-      patient = pat;
-
-      if(anonyme){
-         final Label nomLabel = createAnonymeLink();
-         nomLabel.addForward(null, nomLabel.getParent(), "onClickObject", pat);
-         nomLabel.setParent(row);
-         createAnonymeBlock().setParent(row);
-         createAnonymeBlock().setParent(row);
-      }else{
-         final Label nomLabel = new Label(pat.getNom());
-         nomLabel.addForward(null, nomLabel.getParent(), "onClickObject", pat);
-         nomLabel.setClass("formLink");
-         nomLabel.setParent(row);
-         new Label(pat.getPrenom()).setParent(row);
-         new Label(pat.getNip()).setParent(row);
+      final Patient pat = (Patient) data;
+      
+      // @since gatsbi
+      try{
+         renderPatient(row, pat);
+      }catch(final Exception e){
+         // une erreur inattendue levée dans la récupération
+         // ou le rendu d'une propriété patient
+         // va arrêter le rendu du reste du tableau
+         throw new RuntimeException(e);
       }
-
-      new Label(PatientUtils.setSexeFromDBValue(pat)).setParent(row);
-
-      if(anonyme){
-         createAnonymeBlock().setParent(row);
-      }else{
-         new Label(ObjectTypesFormatters.dateRenderer2(pat.getDateNaissance())).setParent(row);
-         //	    	String dateN = null;
-         //	    	if (this.patient.getDateNaissance() != null) {
-         //				Calendar c = Calendar.getInstance();
-         //				c.setTime(this.patient.getDateNaissance());
-         //				dateN = String.valueOf(c.get(Calendar.YEAR));
-         //			}
-         //			new Label(dateN).setParent(row);
-      }
-      // Etat
-      new Label(PatientUtils.setEtatFromDBValue(pat)).setParent(row);
-      new Label(PatientUtils.getDateDecesOrEtat(pat)).setParent(row);
-
-      // Consentements
-
+      
       // affiche la maladie si maladie non defaut et liens vers popUps
       // si autre maladies
-      drawMaladieLabel(pat, row);
-
+      renderMaladies(pat, row);
+      
       // affiche le compte de prélèvements consultables
-      new Label(getNbPrelevements()).setParent(row);
+      renderNbPrels(row, pat);
+   }
+   
+   protected void renderNbPrels(Row row, Patient pat){
+      new Label(getNbPrelevements(pat)).setParent(row);      
+   }
+
+   /**
+    * Rendu des colonnes spécifiques patient, sera surchargé par Gatsbi.
+    * @param row
+    * @param patient
+    * @throws NoSuchMethodException
+    * @throws InvocationTargetException
+    * @throws IllegalAccessException
+    */
+   protected void renderPatient(final Row row, final Patient pat)
+      throws IllegalAccessException, InvocationTargetException, NoSuchMethodException, ParseException{
+      
+      // nom
+      renderAnonymisableAndClickableAlphanumProperty(row, pat, "nom", anonyme, "onClickObject", pat);
+      
+      // prenom 
+      renderAnonymisableAndClickableAlphanumProperty(row, pat, "prenom", anonyme, null, null);
+
+      // nip
+      renderAnonymisableAndClickableAlphanumProperty(row, pat, "nip", anonyme, "onClickObject", pat);
+
+      // sexe
+      new Label(PatientUtils.setSexeFromDBValue(pat)).setParent(row);
+
+      // date de naissance
+      renderDateNaissance(row, pat, anonyme);
+      
+      // Etat
+      renderPatientEtat(row, pat);
+      
+      // date état
+      renderPatientDateEtat(row, pat);
 
       // codes organes : liste des codes exportés pour échantillons
-      ObjectTypesFormatters.drawCodesExpLabel(ManagerLocator.getCodeAssigneManager().findFirstCodesOrgByPatientManager(pat), row,
-         null, true);
-
+      renderFirstCodeOrganeForPatient(row, pat);
    }
+
+   protected void renderDateNaissance(Row row, Patient pat, boolean anonyme) 
+            throws IllegalAccessException, InvocationTargetException, NoSuchMethodException{
+      if(anonyme){
+         createAnonymeLabel().setParent(row);
+      }else{
+         renderDateProperty(row, pat, "dateNaissance");
+      }      
+   }
+
+   protected void renderPatientEtat(final Row row, final Patient pat){
+      new Label(PatientUtils.setEtatFromDBValue(pat)).setParent(row);      
+   }
+   
+   protected void renderPatientDateEtat(Row row, Patient pat){
+      new Label(PatientUtils.getDateDecesOrEtat(pat)).setParent(row);      
+   }
+   
+   protected void renderFirstCodeOrganeForPatient(Row row, Patient pat){
+      ObjectTypesFormatters.drawCodesExpLabel(ManagerLocator.getCodeAssigneManager().findFirstCodesOrgByPatientManager(pat), row,
+         null, true);      
+   }
+
 
    /**
     * Dessine dans un label le ou les libelles de maladies
@@ -140,58 +176,62 @@ public class PatientRowRenderer extends TKSelectObjectRenderer<Patient>
     * @param
     * @param row Parent
     */
-   private void drawMaladieLabel(final Patient pat, final Row row){
+   private void renderMaladies(final Patient pat, final Row row){
 
       final List<Maladie> mals = ManagerLocator.getMaladieManager().findByPatientNoSystemManager(pat);
 
       // on va afficher les maladies de la plus récente
       // à la plus ancienne
-      final List<Maladie> maladies = new ArrayList<>();
+      final List<String> maladies = new ArrayList<String>();
       for(int i = 0; i < mals.size(); i++){
-         maladies.add(0, mals.get(i));
+         maladies.add(0, i == 0 ?
+           mals.get(i).getLibelle() : 
+           mals.get(i).getLibelle().concat( 
+              (mals.get(i).getCode() != null ? " [" + mals.get(i).getCode() + "]" : "")
+           ));
       }
-
-      if(!maladies.isEmpty()){
-         final Label mal1Label = new Label(maladies.get(0).getLibelle());
+      
+      drawListStringLabel(row, maladies);
+   }
+   
+   /**
+    * Dessines une liste sous la forme <first String>...
+    * @param row
+    * @param str
+    */
+   protected void drawListStringLabel(final Row row, List<String> str) {
+      if(!str.isEmpty()){
+         final Label str1Label = new Label(str.get(0));
          // dessine le label avec un lien vers popup
-         if(maladies.size() > 1){
+         if(str.size() > 1){
             final Hbox labelAndLinkBox = new Hbox();
             labelAndLinkBox.setSpacing("5px");
             final Label moreLabel = new Label("...");
             moreLabel.setClass("formLink");
-            final Popup malPopUp = new Popup();
-            malPopUp.setParent(row.getParent().getParent().getParent());
-            final Iterator<Maladie> it = maladies.iterator();
-            Maladie next;
-            String label = null;
+            final Popup popUp = new Popup();
+            popUp.setParent(row.getParent().getParent().getParent());
+            final Iterator<String> it = str.iterator();
             Label libelleStaticLabel = null;
             final Vbox popupVbox = new Vbox();
             while(it.hasNext()){
-               next = it.next();
-               if(next.getCode() != null){
-                  label = next.getLibelle() + " [" + next.getCode() + "]";
-               }else{
-                  label = next.getLibelle();
-               }
-               libelleStaticLabel = new Label(label);
+               libelleStaticLabel = new Label(it.next());
                libelleStaticLabel.setSclass("formValue");
-
                popupVbox.appendChild(libelleStaticLabel);
             }
-            malPopUp.appendChild(popupVbox);
-            moreLabel.setTooltip(malPopUp);
-            labelAndLinkBox.appendChild(mal1Label);
+            popUp.appendChild(popupVbox);
+            moreLabel.setTooltip(popUp);
+            labelAndLinkBox.appendChild(str1Label);
             labelAndLinkBox.appendChild(moreLabel);
             labelAndLinkBox.setParent(row);
          }else{
-            mal1Label.setParent(row);
+            str1Label.setParent(row);
          }
       }else{
          new Label().setParent(row);
       }
    }
 
-   public String getNbPrelevements(){
+   public String getNbPrelevements(Patient patient){
       return String.valueOf(PatientUtils.getNbPrelsForPatientAndUser(patient, banques));
    }
 }

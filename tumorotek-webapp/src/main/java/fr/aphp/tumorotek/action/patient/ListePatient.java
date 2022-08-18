@@ -85,7 +85,7 @@ public class ListePatient extends AbstractListeController2
 
    private Column nbPrelevementsColumn;
 
-   private final PatientRowRenderer listObjectsRenderer = new PatientRowRenderer(true);
+   private PatientRowRenderer listObjectsRenderer = new PatientRowRenderer(true);
 
    private PatientsNbPrelevementsComparator comparatorAsc = new PatientsNbPrelevementsComparator(true);
 
@@ -112,6 +112,16 @@ public class ListePatient extends AbstractListeController2
    @Override
    public void doAfterCompose(final Component comp) throws Exception{
       super.doAfterCompose(comp);
+      
+      // @since gatsbi
+      try{
+         drawColumnsForVisibleChampEntites();
+      }catch(final Exception e){
+         // une erreur inattendue levée dans la récupération
+         // ou le rendu d'une propriété prel
+         // va arrêter le rendu du reste du tableau
+         throw new RuntimeException(e);
+      }
 
       this.listObjectsRenderer.setBanques(PatientUtils.getBanquesConsultForPrelevement(sessionScope));
 
@@ -125,6 +135,17 @@ public class ListePatient extends AbstractListeController2
       comparatorDesc.setBanques(PatientUtils.getBanquesConsultForPrelevement(sessionScope));
 
       setOnGetEventName("onGetPatientsFromSelection");
+   }
+   
+   /**
+    * Cette méthode de dessin dynamique des colonnes est surchargée par Gatsbi
+    * @since 2.3.0-gatsbi
+    */
+   protected void drawColumnsForVisibleChampEntites()
+      throws ClassNotFoundException, InstantiationException, IllegalAccessException{}
+
+   public void setListObjectsRenderer(final TKSelectObjectRenderer<? extends TKdataObject> listObjectsRenderer){
+      this.listObjectsRenderer = (PatientRowRenderer) listObjectsRenderer;
    }
 
    @Override
