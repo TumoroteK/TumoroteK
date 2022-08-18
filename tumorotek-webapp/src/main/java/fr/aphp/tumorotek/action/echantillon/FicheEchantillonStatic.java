@@ -2176,6 +2176,10 @@ public class FicheEchantillonStatic extends AbstractFicheStaticController
    }
 
    protected void setGroupInfosCompEchanOpen(final boolean b){
-      ((Group) groupInfosCompEchan).setOpen(b);
+      if(groupInfosCompEchan instanceof Group){
+         ((Group) groupInfosCompEchan).setOpen(b);
+      }else{
+         ((Groupbox) groupInfosCompEchan).setOpen(b);
+      }      
    }
 }
