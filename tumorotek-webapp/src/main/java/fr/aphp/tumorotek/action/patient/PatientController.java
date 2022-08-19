@@ -69,7 +69,7 @@ import fr.aphp.tumorotek.webapp.general.SessionUtils;
  * Date: 01/12/2009
  *
  * @author Mathieu BARTHELEMY
- * @version 2.0
+ * @version 2.3.0-gatsbi
  *
  */
 public class PatientController extends AbstractObjectTabController
@@ -83,29 +83,46 @@ public class PatientController extends AbstractObjectTabController
 
    private Div modifMultiDiv;
 
-   private Component listePatient;
-
    @Override
    public void doAfterCompose(final Component comp) throws Exception{
 
       setEntiteTab(ManagerLocator.getEntiteManager().findByNomManager("Patient").get(0));
 
       super.doAfterCompose(comp);
-      listePatient.setVisible(true);
 
       setStaticDiv(divPatientStatic);
       setEditDiv(divPatientEdit);
       setModifMultiDiv(modifMultiDiv);
-      setStaticZulPath("/zuls/patient/FichePatientStatic.zul");
-      setEditZulPath("/zuls/patient/FichePatientEdit.zul");
 
-      setMultiEditZulPath("/zuls/patient/FicheModifMultiPatient.zul");
+      if(SessionUtils.getCurrentGatsbiContexteForEntiteId(1) == null){
+         setStaticZulPath("/zuls/patient/FichePatientStatic.zul");
+         setEditZulPath("/zuls/patient/FichePatientEdit.zul");
+         setMultiEditZulPath("/zuls/patient/FicheModifMultiPatient.zul");
+         setListZulPath("/zuls/patient/ListePatient.zul");
+      } else {
+         setStaticZulPath("/zuls/patient/gatsbi/FichePatientStaticGatsbi.zul");
+         setEditZulPath("/zuls/patient/gatsbi/FichePatientEditGatsbi.zul");
+         setMultiEditZulPath("/zuls/patient/gatsbi/FicheModifMultiPatientGatsbi.zul");
+         setListZulPath("/zuls/patient/gatsbi/ListePatientGatsbi.zul");
+      }
+      
+      drawListe();
 
       initFicheStatic();
 
       switchToOnlyListeMode();
       orderAnnotationDraw(false);
    }
+   
+//   @Override
+//   public void populateFicheStatic(){
+//      if(SessionUtils.getCurrentGatsbiContexteForEntiteId(2) == null){
+//         setStaticZulPath("/zuls/patient/FichePatientStatic.zul");
+//      }else{
+//         setStaticZulPath("/zuls/patient/gatsbi/FichePatientStaticGatsbi.zul");
+//      }
+//      super.populateFicheStatic();
+//   }
 
    @Override
    public TKdataObject loadById(final Integer id){
@@ -126,8 +143,7 @@ public class PatientController extends AbstractObjectTabController
 
    @Override
    public ListePatient getListe(){
-      return ((ListePatient) self.getFellow("listePatient").getFellow("lwinPatient").getAttributeOrFellow("lwinPatient$composer",
-         true));
+      return ((ListePatient) self.getFellow("lwinPatient").getAttributeOrFellow("lwinPatient$composer", true));
    }
 
    @Override
@@ -203,7 +219,8 @@ public class PatientController extends AbstractObjectTabController
 
          window.createMacroComponent("/zuls/patient/Patient.zul", "winPatient", panel);
 
-         tabController = ((PatientController) panel.getFellow("winPatient").getAttributeOrFellow("winPatient$composer", true));
+         tabController = ((PatientController) 
+            panel.getFellow("winPatient").getAttributeOrFellow("winPatient$composer", true));
 
          panels.setSelectedPanel(panel);
       }

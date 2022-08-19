@@ -60,7 +60,7 @@ import fr.aphp.tumorotek.webapp.general.SessionUtils;
 public class PrelevementRowRendererGatsbi extends PrelevementRowRenderer implements RowRendererGatsbi
 {
 
-   private final Contexte contexte;
+   private Contexte contexte;
 
    // flag passe à true si la cellule congelation est déja rendue
    // afin d'éviter que cette cellule soit rendue deux fois
@@ -226,5 +226,9 @@ public class PrelevementRowRendererGatsbi extends PrelevementRowRenderer impleme
    @Override
    public boolean areIconesRendered(){
       return iconesRendered;
+   }
+
+   public void setContexte(Contexte _c){
+      this.contexte = _c;
    }
 }

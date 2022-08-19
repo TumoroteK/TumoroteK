@@ -174,14 +174,16 @@ public class PrelevementRowRenderer extends TKSelectObjectRenderer<Prelevement>
       if(prel.getMaladie() != null){
          if(anonyme){
             if(getAccessPatient()){
-               final Label link = createAnonymeLabel();
+               final Label link = createAnonymeLabelIsClickable(true);
+               // attention piège ici, link.getParent est null
+               // donc l'évènement est remonté jusq'au liste controller
                link.addForward(null, link.getParent(), "onClickPatient", prel);
                link.setParent(row);
             }else{
-               createAnonymeLabel().setParent(row);
+               createAnonymeLabelIsClickable(false).setParent(row);
             }
             // nip @version 2.0.12
-            createAnonymeLabel().setParent(row);
+            createAnonymeLabelIsClickable(false).setParent(row);
          }else{
             final Label patientLabel = new Label(PrelevementUtils.getPatientNomAndPrenom(prel));
             if(getAccessPatient()){

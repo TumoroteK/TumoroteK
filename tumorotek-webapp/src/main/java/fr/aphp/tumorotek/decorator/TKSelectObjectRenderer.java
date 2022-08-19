@@ -128,9 +128,9 @@ public class TKSelectObjectRenderer<T extends TKdataObject> implements RowRender
     * Crée un bloc anonyme pour cacher la valeur d'un champ.
     * @return
     */
-   public static Label createAnonymeLabel(){
+   public static Label createAnonymeLabelIsClickable(boolean link){
       final Label anonymeLabel = new Label();
-      AbstractController.makeLabelAnonyme(anonymeLabel, false);
+      AbstractController.makeLabelAnonyme(anonymeLabel, link);
 
       return anonymeLabel;
    }
@@ -234,7 +234,7 @@ public class TKSelectObjectRenderer<T extends TKdataObject> implements RowRender
       if(value != null){
          label = new Label(value);
       }else{
-         new Label();
+         label = new Label();
       }
       label.setParent(row);
       
@@ -396,16 +396,17 @@ public class TKSelectObjectRenderer<T extends TKdataObject> implements RowRender
       
       Label label= null;
       if (anonyme) { 
-         label = createAnonymeLabel();
+         label = createAnonymeLabelIsClickable(evtName != null);
          label.setParent(row);
       } else { // regular alphanum rendering
          label = renderAlphanumPropertyAsStringNoFormat(row, obj, propName);
       }
       
       // clickable -> event target is always parent
+      Component parent = null; // -> remonte l'évènement jusqu'au ListeController
       if (evtName != null) {
-         label.addForward(null, label.getParent(), evtName, evtData);
-         label.setClass("formLink");
+         label.addForward(null, parent, evtName, evtData);
+         if (!anonyme) label.setClass("formLink");
       }
    }
 

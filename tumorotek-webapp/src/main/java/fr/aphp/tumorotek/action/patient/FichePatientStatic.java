@@ -43,12 +43,14 @@ import java.util.List;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Components;
+import org.zkoss.zk.ui.HtmlBasedComponent;
 import org.zkoss.zk.ui.HtmlMacroComponent;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Group;
+import org.zkoss.zul.Groupbox;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Panel;
@@ -74,10 +76,10 @@ public class FichePatientStatic extends AbstractFicheStaticController
    // button
    protected Button addMaladie;
 
-   private Button addPrelevement;
+   protected Button addPrelevement;
 
    // maladies
-   private Div malaDiv;
+   protected Div malaDiv;
 
    private String maladieGroupHeaderTemplate;
 
@@ -85,18 +87,19 @@ public class FichePatientStatic extends AbstractFicheStaticController
 
    private int lastPanelId;
 
+   // @since gatsbi 
+   // gatsbi overrides group -> groupboxes
    // referents
-   private Group maladiesGroup;
-
-   private Group referentsGroup;
+   protected HtmlBasedComponent groupMaladies;
+   protected HtmlBasedComponent groupMedecins;
 
    // Objets Principaux
-   private Patient patient;
+   protected Patient patient;
 
    // dateEtatDeces
    private Label dateEtatDecesField;
 
-   private Listbox prelevementsFromOtherMaladiesBox;
+   protected Listbox prelevementsFromOtherMaladiesBox;
 
    // Associations
    private List<Maladie> maladies = new ArrayList<>();
@@ -104,13 +107,13 @@ public class FichePatientStatic extends AbstractFicheStaticController
    private List<Collaborateur> medecins = new ArrayList<>();
 
    // Labels à cacher en cas de compte anonyme
-   private Label nipLabel;
+   protected Label nipLabel;
 
-   private Label nomLabel;
+   protected Label nomLabel;
 
-   private Label nomNaisLabel;
+   protected Label nomNaisLabel;
 
-   private Label prenomLabel;
+   protected Label prenomLabel;
 
    private final List<Prelevement> prelevementsFromOtherMaladies = new ArrayList<>();
 
@@ -232,7 +235,7 @@ public class FichePatientStatic extends AbstractFicheStaticController
       redrawMaladies();
 
       getReferents().setMedecins(this.medecins);
-      referentsGroup.setOpen(false);
+      setGroupMedecinsOpen(false);
 
       // annotations
       super.setObject(patient);
@@ -297,10 +300,12 @@ public class FichePatientStatic extends AbstractFicheStaticController
     * gère ces deux valeurs en base).
     */
    private void accordDateToEtat(){
-      if(!"D".equals(this.patient.getPatientEtat())){
-         this.dateEtatDecesField.setValue(Labels.getLabel("Champ.Patient.DateEtat"));
-      }else{
-         this.dateEtatDecesField.setValue(Labels.getLabel("Champ.Patient.DateDeces"));
+      if (dateEtatDecesField != null) {
+         if(!"D".equals(this.patient.getPatientEtat())){
+            this.dateEtatDecesField.setValue(Labels.getLabel("Champ.Patient.DateEtat"));
+         }else{
+            this.dateEtatDecesField.setValue(Labels.getLabel("Champ.Patient.DateDeces"));
+         }
       }
    }
 
@@ -595,7 +600,7 @@ public class FichePatientStatic extends AbstractFicheStaticController
       this.maladieGroupHeader = (maladieGroupHeaderTemplate.replaceFirst("\\{1\\}", String.valueOf(this.maladies.size())))
          .replaceFirst("\\{2\\}", nbPrelevements);
 
-      getBinder().loadAttribute(maladiesGroup, "label");
+      getBinder().loadAttribute(groupMaladies, "label");
    }
 
    /*************************************************************************/
@@ -740,6 +745,23 @@ public class FichePatientStatic extends AbstractFicheStaticController
 
    public Patient getPatient(){
       return this.patient;
+   }
+   
+   // @since 2.3.0-gatsbi  
+   protected void setGroupMedecinsOpen(final boolean b){
+      if(groupMedecins instanceof Group){
+         ((Group) groupMedecins).setOpen(b);
+      }else{
+         ((Groupbox) groupMedecins).setOpen(b);
+      }      
+   }
+   
+   protected void setGroupMaladiesOpen(final boolean b){
+      if(groupMaladies instanceof Group){
+         ((Group) groupMaladies).setOpen(b);
+      }else{
+         ((Groupbox) groupMaladies).setOpen(b);
+      }      
    }
 
 }

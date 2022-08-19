@@ -68,22 +68,22 @@ public class ListePatient extends AbstractListeController2
    private List<Patient> selectedObjects = new ArrayList<>();
 
    // Critères de recherche.
-   private Radio nomPatient;
+   protected Radio nomPatient;
 
-   private Radio nipPatient;
+   protected Radio nipPatient;
 
-   private Textbox nomBoxPatient;
+   protected Textbox nomBoxPatient;
 
-   private Textbox nipBoxPatient;
+   protected Textbox nipBoxPatient;
 
    // Variables formulaire pour les critères.
    private String searchNomPatient;
 
    private String searchNipPatient;
 
-   private Column maladiesCol;
+   protected Column maladiesCol;
 
-   private Column nbPrelevementsColumn;
+   protected Column nbPrelevementsColumn;
 
    private PatientRowRenderer listObjectsRenderer = new PatientRowRenderer(true);
 
@@ -133,6 +133,11 @@ public class ListePatient extends AbstractListeController2
 
       comparatorAsc.setBanques(PatientUtils.getBanquesConsultForPrelevement(sessionScope));
       comparatorDesc.setBanques(PatientUtils.getBanquesConsultForPrelevement(sessionScope));
+      
+      if (nbPrelevementsColumn != null) {
+         nbPrelevementsColumn.setSortAscending(comparatorAsc);
+         nbPrelevementsColumn.setSortDescending(comparatorDesc);
+      }
 
       setOnGetEventName("onGetPatientsFromSelection");
    }
@@ -231,9 +236,6 @@ public class ListePatient extends AbstractListeController2
       this.listObjects = patients;
       setCurrentRow(null);
       setCurrentObject(null);
-
-      nbPrelevementsColumn.setSortAscending(comparatorAsc);
-      nbPrelevementsColumn.setSortDescending(comparatorDesc);
 
       getBinder().loadAttribute(self.getFellow("objectsListGrid"), "model");
 

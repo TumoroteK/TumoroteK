@@ -36,12 +36,8 @@
  **/
 package fr.aphp.tumorotek.action.patient.gatsbi;
 
-import org.zkoss.zk.ui.event.Event;
-import org.zkoss.zk.ui.event.ForwardEvent;
 import org.zkoss.zul.Checkbox;
-import org.zkoss.zul.Messagebox;
 import fr.aphp.tumorotek.action.patient.ListePatient;
-import fr.aphp.tumorotek.action.prelevement.gatsbi.exception.GatsbiException;
 import fr.aphp.tumorotek.model.contexte.gatsbi.Contexte;
 import fr.aphp.tumorotek.webapp.gatsbi.GatsbiController;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
@@ -84,115 +80,60 @@ public class ListePatientGatsbi extends ListePatient
       cbox.addForward("onCheck", objectsListGrid.getColumns(), "onCheckAll");
       GatsbiController.addColumn(objectsListGrid, null, "40px", null, cbox, null, true);
 
-      // ,om
-      GatsbiController.addColumn(objectsListGrid, "general.code", null, null, null, "auto(code)", true);
-
       // variable columns
       for(final Integer chpId : contexte.getChampEntiteInTableauOrdered()){
-         addColumnForChpId(chpId);
+         GatsbiControllerPatient.addColumnForChpId(chpId, objectsListGrid);
       }
       
       // nb prels
-      GatsbiController.addColumn(objectsListGrid, "patient.nbPrelevements", 
+      nbPrelevementsColumn = GatsbiController.addColumn(objectsListGrid, "patient.nbPrelevements", 
                                              null, null, null, "auto", true);
       
       // premier code organe
-      GatsbiController.addColumn(objectsListGrid, "Champ.Echantillon.Organe", 
-                                    null, null, null, null, firstOrganeCode);
-   }
-
-   private void addColumnForChpId(final Integer chpId)
-      throws ClassNotFoundException, InstantiationException, IllegalAccessException{
-      switch(chpId){
-         case 2: // nip
-            GatsbiController.addColumn(objectsListGrid, "Champ.Patient.Nip", null, null, null, null,
-               true);
-            break;
-         case 3: // nom
-            GatsbiController.addColumn(objectsListGrid, "Champ.Patient.Nom", null, null, null, "auto(nom)",
-               true);
-            break;
-         case 4: // nom naissance
-            GatsbiController.addColumn(objectsListGrid, "Champ.Patient.NomNaissance", null, null, null, null,
-               true);
-            break;
-         case 5: // prenom
-            GatsbiController.addColumn(objectsListGrid, "Champ.Patient.Prenom", null, null, null, null,
-               true);
-            break;
-         case 6: // sexe
-            GatsbiController.addColumn(objectsListGrid, "Champ.Patient.Sexe", null, null, null, "auto(sexe)",
-               true);
-            break;
-         case 7: // date naissance
-            GatsbiController.addColumn(objectsListGrid, "Champ.Patient.DateNaissance", null, null, null, "auto(dateNaissance)",
-               true);
-            break;
-         case 8: // ville naissance
-            GatsbiController.addColumn(objectsListGrid, "Champ.Patient.VilleNaissance", null, null, null, null,
-               true);
-            break;           
-         case 9: // pays naissance
-            GatsbiController.addColumn(objectsListGrid, "Champ.Patient.PaysNaissance", null, null, null, null,
-               true);
-            break;
-         case 10: // patient état
-            GatsbiController.addColumn(objectsListGrid, "Champ.Patient.PatientEtat", null, null, null, null,
-               true);
-            break;
-         case 11: // date état
-            GatsbiController.addColumn(objectsListGrid, "Champ.Patient.DateEtat", null, null, null, "auto(dateEtat)",
-               true);
-            break;
-         case 12: // date décès
-            GatsbiController.addColumn(objectsListGrid, "Champ.Patient.DateDeces", null, null, null, "auto(dateDeces)",
-               true);
-            break;
-         case 227: // medecins
-            GatsbiController.addColumn(objectsListGrid, "patient.medecins", null, null, null, null,
-               true);
-            break;       
-         default:
-            break;
+      if (firstOrganeCode) {
+         GatsbiController.addColumn(objectsListGrid, "Champ.Echantillon.Organe", 
+                                    null, null, null, null, true);
       }
    }
+   
+// PAS DE PARAMETRAGES pour les patients
 
-   /**
-    * Gatsbi surcharge pour intercaler une modale de sélection des parametrages
-    * proposés par le contexte.
-    *
-    * @param click event
-    */
-   @Override
-   public void onClick$addNew(final Event event) throws Exception{
-      GatsbiController.addNewObjectForContext(contexte, self, e -> {
-         try{
-            super.onClick$addNew(e);
-         }catch(final Exception ex){
-            Messagebox.show(handleExceptionMessage(ex), "Error", Messagebox.OK, Messagebox.ERROR);
-         }
-      }, event, null);
-   }
-
-   /**
-    * Un parametrage a été sélectionné.
-    *
-    * @param param
-    * @throws Exception
-    */
-   public void onGetSelectedParametrage(final ForwardEvent evt) throws Exception{
-
-      try{
-         GatsbiController.getSelectedParametrageFromSelectEvent(contexte, SessionUtils.getCurrentBanque(sessionScope),
-            getObjectTabController(), null, () -> {
-               try{
-                  super.onClick$addNew(null);
-               }catch(final Exception ex){
-                  Messagebox.show(handleExceptionMessage(ex), "Error", Messagebox.OK, Messagebox.ERROR);
-               }
-            }, evt);
-      }catch(final GatsbiException e){
-         Messagebox.show(handleExceptionMessage(e), "Error", Messagebox.OK, Messagebox.ERROR);
-      }
-   }
+//   /**
+//    * Gatsbi surcharge pour intercaler une modale de sélection des parametrages
+//    * proposés par le contexte.
+//    *
+//    * @param click event
+//    */
+//   @Override
+//   public void onClick$addNew(final Event event) throws Exception{
+//      GatsbiController.addNewObjectForContext(contexte, self, e -> {
+//         try{
+//            super.onClick$addNew(e);
+//         }catch(final Exception ex){
+//            Messagebox.show(handleExceptionMessage(ex), "Error", Messagebox.OK, Messagebox.ERROR);
+//         }
+//      }, event, null);
+//   }
+//
+//   /**
+//    * Un parametrage a été sélectionné.
+//    *
+//    * @param param
+//    * @throws Exception
+//    */
+//   public void onGetSelectedParametrage(final ForwardEvent evt) throws Exception{
+//
+//      try{
+//         GatsbiController.getSelectedParametrageFromSelectEvent(contexte, SessionUtils.getCurrentBanque(sessionScope),
+//            getObjectTabController(), null, () -> {
+//               try{
+//                  super.onClick$addNew(null);
+//               }catch(final Exception ex){
+//                  Messagebox.show(handleExceptionMessage(ex), "Error", Messagebox.OK, Messagebox.ERROR);
+//               }
+//            }, evt);
+//      }catch(final GatsbiException e){
+//         Messagebox.show(handleExceptionMessage(e), "Error", Messagebox.OK, Messagebox.ERROR);
+//      }
+//   }
 }

@@ -1814,7 +1814,7 @@ public abstract class AbstractListeController2 extends AbstractController
 			.initRechercheAvancee(entiteToSearch, path, anonyme, listeController);
 		}else if(entiteToSearch.getNom().equals("Echantillon")){
 			// since gatsbi
-			String pageDef = SessionUtils.getCurrentGatsbiContexteForEntiteId(2) == null ? 
+			String pageDef = SessionUtils.getCurrentGatsbiContexteForEntiteId(3) == null ? 
 					"ficheRechercheAvanceeEchantillon": "ficheRechercheAvanceeEchantillonGatsbi";					
 			String winDef = "fwinRechercheAvanceeEchantillon";
 			if(SessionUtils.getCurrentContexte() == EContexte.SEROLOGIE){

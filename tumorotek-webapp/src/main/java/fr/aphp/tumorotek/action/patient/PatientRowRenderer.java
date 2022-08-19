@@ -147,24 +147,24 @@ public class PatientRowRenderer extends TKSelectObjectRenderer<Patient>
       renderFirstCodeOrganeForPatient(row, pat);
    }
 
-   protected void renderDateNaissance(Row row, Patient pat, boolean anonyme) 
+   public static void renderDateNaissance(Row row, Patient pat, boolean anonyme) 
             throws IllegalAccessException, InvocationTargetException, NoSuchMethodException{
       if(anonyme){
-         createAnonymeLabel().setParent(row);
+         createAnonymeLabelIsClickable(false).setParent(row);
       }else{
          renderDateProperty(row, pat, "dateNaissance");
       }      
    }
 
-   protected void renderPatientEtat(final Row row, final Patient pat){
+   public static void renderPatientEtat(final Row row, final Patient pat){
       new Label(PatientUtils.setEtatFromDBValue(pat)).setParent(row);      
    }
    
-   protected void renderPatientDateEtat(Row row, Patient pat){
+   public static void renderPatientDateEtat(Row row, Patient pat){
       new Label(PatientUtils.getDateDecesOrEtat(pat)).setParent(row);      
    }
    
-   protected void renderFirstCodeOrganeForPatient(Row row, Patient pat){
+   public static void renderFirstCodeOrganeForPatient(Row row, Patient pat){
       ObjectTypesFormatters.drawCodesExpLabel(ManagerLocator.getCodeAssigneManager().findFirstCodesOrgByPatientManager(pat), row,
          null, true);      
    }
@@ -176,7 +176,7 @@ public class PatientRowRenderer extends TKSelectObjectRenderer<Patient>
     * @param
     * @param row Parent
     */
-   private void renderMaladies(final Patient pat, final Row row){
+   public static void renderMaladies(final Patient pat, final Row row){
 
       final List<Maladie> mals = ManagerLocator.getMaladieManager().findByPatientNoSystemManager(pat);
 
@@ -199,7 +199,7 @@ public class PatientRowRenderer extends TKSelectObjectRenderer<Patient>
     * @param row
     * @param str
     */
-   protected void drawListStringLabel(final Row row, List<String> str) {
+   public static void drawListStringLabel(final Row row, List<String> str) {
       if(!str.isEmpty()){
          final Label str1Label = new Label(str.get(0));
          // dessine le label avec un lien vers popup

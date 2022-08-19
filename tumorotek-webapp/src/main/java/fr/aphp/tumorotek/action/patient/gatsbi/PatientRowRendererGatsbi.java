@@ -38,14 +38,9 @@ package fr.aphp.tumorotek.action.patient.gatsbi;
 
 import java.lang.reflect.InvocationTargetException;
 import java.text.ParseException;
-import java.util.stream.Collectors;
-
-import org.zkoss.zul.Label;
 import org.zkoss.zul.Row;
 
-import fr.aphp.tumorotek.action.ManagerLocator;
 import fr.aphp.tumorotek.action.patient.PatientRowRenderer;
-import fr.aphp.tumorotek.action.patient.PatientUtils;
 import fr.aphp.tumorotek.model.coeur.patient.Patient;
 import fr.aphp.tumorotek.model.contexte.gatsbi.Contexte;
 import fr.aphp.tumorotek.webapp.gatsbi.RowRendererGatsbi;
@@ -80,7 +75,7 @@ public class PatientRowRendererGatsbi extends PatientRowRenderer implements RowR
       throws IllegalAccessException, InvocationTargetException, NoSuchMethodException, ParseException{
 
       for(final Integer chpId : contexte.getChampEntiteInTableauOrdered()){
-         applyPatientChpRender(chpId, row, pat);
+         GatsbiControllerPatient.applyPatientChpRender(chpId, row, pat, anonyme);
       }
 
       renderNbPrels(row, pat);
@@ -88,77 +83,6 @@ public class PatientRowRendererGatsbi extends PatientRowRenderer implements RowR
       if (organes) {
          renderFirstCodeOrganeForPatient(row, pat);
       }
-   }
-
-   /**
-    * Applique la methode de rendering correspondant au champEntité id passé en
-    * paramètre
-    *
-    * @param chpId
-    * @throws NoSuchMethodException
-    * @throws InvocationTargetException
-    * @throws IllegalAccessException
-    * @throws ParseException
-    */
-   private void applyPatientChpRender(final Integer chpId, final Row row, final Patient pat)
-      throws IllegalAccessException, InvocationTargetException, NoSuchMethodException, ParseException{
-
-      switch(chpId){
-         case 2: // nip
-            renderAnonymisableAndClickableAlphanumProperty(row, pat, "nip", anonyme, "onClickObject", pat);
-            break;
-         case 3: // nom
-            renderAnonymisableAndClickableAlphanumProperty(row, pat, "nom", anonyme, "onClickObject", pat);
-            break;
-         case 4: // nom naissance
-            renderAnonymisableAndClickableAlphanumProperty(row, pat, "nomNaissance", anonyme, null, null);
-            break;
-         case 5: // prenom
-            renderAnonymisableAndClickableAlphanumProperty(row, pat, "prenom", anonyme, null, null);
-            break;
-         case 6: // sexe
-            renderSexe(row, pat);
-            break;
-         case 7: // date naissance
-            renderDateNaissance(row, pat, anonyme);
-            break;
-         case 8: // ville naissance
-            renderAlphanumPropertyAsStringNoFormat(row, pat, "villeNaissance");
-            break;
-         case 9: // pays naissance
-            renderAlphanumPropertyAsStringNoFormat(row, pat, "villeNaissance");
-            break;
-         case 10: // état
-            renderPatientEtat(row, pat);
-            break;
-         case 11: // date état
-            renderDateProperty(row, pat, "dateEtat");
-            break;
-         case 12: // date décès
-            renderDateProperty(row, pat, "dateDeces");
-            break;
-         case 227: // médecins
-            renderMedecinsProperty(row, pat);
-            break;
-
-         default:
-            break;
-      }
-   }
-
-   private void renderSexe(Row row, Patient pat){
-      if(pat.getSexe() != null){
-         new Label(PatientUtils.setSexeFromDBValue(pat)).setParent(row);
-      }else{
-         new Label().setParent(row);
-      }
-   }
-
-   private void renderMedecinsProperty(Row row, Patient pat){
-      drawListStringLabel(row, 
-         ManagerLocator.getPatientManager().getMedecinsManager(pat)
-            .stream().map(c -> c.getNomAndPrenom())
-            .collect(Collectors.toList()));
    }
    
    @Override

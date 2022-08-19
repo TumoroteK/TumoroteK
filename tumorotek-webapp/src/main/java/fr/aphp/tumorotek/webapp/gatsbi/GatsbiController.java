@@ -129,6 +129,8 @@ public class GatsbiController
    {
       private static final long serialVersionUID = 1L;
       {
+         put(ContexteType.PATIENT, new String[] {"patientBlockDiv"});
+         
          put(ContexteType.PRELEVEMENT, new String[] {"identifiantBlockDiv", "patientBlockDiv", "infoPrelBlockDiv",
             "conditBlockDiv", "consentBlockDiv", "departBlockDiv", "arriveeBlockDiv"});
 
@@ -141,7 +143,8 @@ public class GatsbiController
       private static final long serialVersionUID = 1L;
       {
          // patient
-         put(ContexteType.PATIENT, new String[] {"nipDiv", "nomDiv", "prenomDiv", "dateNaisDiv", "sexeDiv",
+         put(ContexteType.PATIENT, new String[] {"nipDiv", "nomDiv", "nomNaissanceDiv", "prenomDiv", "sexeDiv", 
+            "dateNaissanceDiv", "paysNaissanceDiv", "villeNaissanceDiv", "etatDiv", "dateEtatDiv", "dateDecesDiv",
             // maladie
             "libelleDiv", "codeMaladieDiv"});
          // prelevement

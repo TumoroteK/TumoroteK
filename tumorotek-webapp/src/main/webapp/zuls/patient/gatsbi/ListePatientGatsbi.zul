@@ -35,8 +35,7 @@
  * accepté les termes.
 -->
 <window id="lwinPatient" border="none"
-	apply="fr.aphp.tumorotek.action.patient.gatsbi.ListePatientGatsbi"
-	forward="onSelectParametrage=onGetSelectedParametrage">
+	apply="fr.aphp.tumorotek.action.patient.gatsbi.ListePatientGatsbi">
 	<panel border="none" sclass="fichePanelv2" collapsible="true"
 		id="listPanel">
 		<panelchildren id="scrollPan">
