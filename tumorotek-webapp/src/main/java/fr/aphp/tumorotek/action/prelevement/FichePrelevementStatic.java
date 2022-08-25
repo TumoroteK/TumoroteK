@@ -199,19 +199,9 @@ public class FichePrelevementStatic extends AbstractFicheStaticController
       addDerive.setDisabled(true);
 
       // **************** gastbi
-      if(groupLaboInter instanceof Group){
-         ((Group) groupLaboInter).setOpen(false);
-      }
-      if(groupEchans instanceof Group){
-         ((Group) groupEchans).setOpen(false);
-      }else{
-         ((Groupbox) groupEchans).setOpen(false);
-      }
-      if(groupDerivesPrlvt instanceof Group){
-         ((Group) groupDerivesPrlvt).setOpen(false);
-      }else{
-         ((Groupbox) groupDerivesPrlvt).setOpen(false);
-      }
+      setGroupLaboInterOpen(false);
+      setGroupEchansOpen(false);
+      setGroupDerivesPrlvtOpen(false);
       // gatsbi ****************
 
       getEchantillonRenderer().setEmbedded(true);
@@ -397,6 +387,12 @@ public class FichePrelevementStatic extends AbstractFicheStaticController
             derives = ManagerLocator.getPrelevementManager().getProdDerivesManager(prelevement);
          }
       }
+      
+      // **************** gastbi
+      setGroupLaboInterOpen(laboInters.size() > 0);
+      setGroupEchansOpen(echantillons.size() > 0);
+      setGroupDerivesPrlvtOpen(derives.size() > 0);
+      // gatsbi ****************    
    }
 
    @Override
@@ -1223,5 +1219,27 @@ public class FichePrelevementStatic extends AbstractFicheStaticController
          // commande le passage en mode statique
          getObjectTabController().onEditDone(getObject());
       }
+   }
+   
+   protected void setGroupLaboInterOpen(final boolean b){
+      if(groupLaboInter instanceof Group){
+         ((Group) groupLaboInter).setOpen(b);
+      } 
+   }
+   
+   protected void setGroupEchansOpen(final boolean b){
+      if(groupEchans instanceof Group){
+         ((Group) groupEchans).setOpen(b);
+      }else{
+         ((Groupbox) groupEchans).setOpen(b);
+      }      
+   }
+   
+   protected void setGroupDerivesPrlvtOpen(final boolean b){
+      if(groupDerivesPrlvt instanceof Group){
+         ((Group) groupDerivesPrlvt).setOpen(b);
+      }else{
+         ((Groupbox) groupDerivesPrlvt).setOpen(b);
+      }      
    }
 }

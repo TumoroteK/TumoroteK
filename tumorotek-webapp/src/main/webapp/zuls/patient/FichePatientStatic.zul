@@ -110,7 +110,7 @@
 						<label id="dateEtatDecesLabel" value="@{fwinPatientStatic$composer.dateEtatDecesFormatted}" sclass="formValue" />
 					</row>
 					<!-- Referents -->
-					<group id="referentsGroup" label="@{fwinPatientStatic$composer.referentsGroupHeader}"
+					<group id="groupMedecins" label="@{fwinPatientStatic$composer.referentsGroupHeader}"
 						style="border-bottom-width : 0px;"/>
 					<row spans="4">
 						<div id="referentsDiv">
@@ -118,7 +118,7 @@
 						</div>
 					</row>			
 					<!-- Maladies -->
-					<group id="maladiesGroup" label="@{fwinPatientStatic$composer.maladiesGroupHeader}"
+					<group id="groupMaladies" label="@{fwinPatientStatic$composer.maladiesGroupHeader}"
 							style="border-bottom-width : 0px;"/>
 					<row spans="4">
 						<div id="malaDiv">

@@ -33,7 +33,7 @@
  * avez pris connaissance de la licence CeCILL, et que vous en avez
  * accepté les termes.
  **/
-package fr.aphp.tumorotek.manager.test.patient;
+package fr.aphp.tumorotek.manager.test.coeur.patient;
 
 import static org.junit.Assert.*;
 

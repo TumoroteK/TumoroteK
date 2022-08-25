@@ -77,6 +77,7 @@ import org.zkoss.zul.Tabpanels;
 import org.zkoss.zul.Timer;
 import org.zkoss.zul.Window;
 
+import fr.aphp.tumorotek.action.controller.AbstractController;
 import fr.aphp.tumorotek.action.controller.AbstractObjectTabController;
 import fr.aphp.tumorotek.action.io.AffichageController;
 import fr.aphp.tumorotek.action.io.RechercheComplexeController;
@@ -369,16 +370,18 @@ public class MainWindow extends GenericForwardComposer<Component>
          setSelectedBanque(previousBanque); // previous ne peut pas être nulle
          mainBinder.loadAttribute(self.getFellow("main").getFellow("mainBanquesListBox"), "selectedItem");
          Clients.clearBusy();
-         throw new WrongValueException(mainBanquesListBox, e.getMessage());
+         throw new WrongValueException(mainBanquesListBox, AbstractController.handleExceptionMessage(e));
       }
 
       // met à jour la pf si update banque cross-plateforme
       if(!selectedBanque.getPlateforme().equals(SessionUtils.getPlateforme(sessionScope))){
          sessionScope.put("Plateforme", selectedBanque.getPlateforme());
          prepareListBanques();
-         mainBinder.loadComponent(self.getFellow("main").getFellow("mainBanquesListBox"));
+         // mainBinder.loadComponent(self.getFellow("main").getFellow("mainBanquesListBox"));
       }
 
+      resetMainBanquesListBox();
+      
       resetControllers();
       initAvailableTabsNames();
       initDroitsConsultation();

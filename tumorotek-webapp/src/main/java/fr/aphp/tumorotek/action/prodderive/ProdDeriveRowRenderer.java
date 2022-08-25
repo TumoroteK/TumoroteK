@@ -112,7 +112,7 @@ public class ProdDeriveRowRenderer extends TKSelectObjectRenderer<ProdDerive>
          if(!anonyme){
             new Label(getPatient(derive)).setParent(row);
          }else{
-            createAnonymeBlock().setParent(row);
+            createAnonymeLabelIsClickable(true).setParent(row);
          }
       }
 
@@ -165,7 +165,7 @@ public class ProdDeriveRowRenderer extends TKSelectObjectRenderer<ProdDerive>
          }
          emplLabel.setParent(row);
       }else{
-         createAnonymeBlock().setParent(row);
+         createAnonymeLabelIsClickable(false).setParent(row);
       }
 
       // nb derives

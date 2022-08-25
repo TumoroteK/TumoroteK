@@ -276,6 +276,15 @@ public class Contexte implements Serializable
       }
       return true;
    }
+   
+   public boolean isChampInTableau(final Integer id){
+      for(final ChampEntite c : champEntites){
+         if(c.getChampEntiteId().equals(id)){
+            return c.getVisible() && c.getInTableau();
+         }
+      }
+      return true;
+   }
 
    public List<Integer> getChampEntiteInTableauOrdered(){
       final List<Integer> ids = new ArrayList<>();

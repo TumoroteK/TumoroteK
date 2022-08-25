@@ -51,6 +51,7 @@ import fr.aphp.tumorotek.action.prelevement.FichePrelevementStatic;
 import fr.aphp.tumorotek.action.prelevement.gatsbi.exception.GatsbiException;
 import fr.aphp.tumorotek.manager.exception.TKException;
 import fr.aphp.tumorotek.model.contexte.gatsbi.Contexte;
+import fr.aphp.tumorotek.model.contexte.gatsbi.ContexteType;
 import fr.aphp.tumorotek.webapp.gatsbi.GatsbiController;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
@@ -84,12 +85,21 @@ public class FichePrelevementStaticGatsbi extends FichePrelevementStatic
       if(groupLaboInter != null){
          groupLaboInter.setVisible(contexte != null && contexte.getSiteIntermediaire());
       }
+      
+      // Injection contexte echantillon pour inner list
+      // ce contexte peut être (null) non paramétré pour l'étude
+      // donc GET le contexte defaut pour le ContexteType Echantillon
+      Contexte echanContexte = SessionUtils.getCurrentGatsbiContexteForEntiteId(3);
+      if (echanContexte == null) {
+         echanContexte = GatsbiController.getGastbiDefautContexteForType(ContexteType.ECHANTILLON);
+         echantillonRendererGatsbi.setContexte(echanContexte);
+      }
 
       // inner list
       // non deletable
       // ne force pas affichage emplacement et statut stockage en fin de grid
-      GatsbiControllerEchantillon.drawColumnsForEchantillons(SessionUtils.getCurrentGatsbiContexteForEntiteId(3),
-         echantillonsGrid, echantillonRendererGatsbi, false, false);
+      GatsbiControllerEchantillon.drawColumnsForEchantillons(echanContexte,
+         echantillonsGrid, echantillonRendererGatsbi, false, false, getTtesCollections());
    }
 
    @Override

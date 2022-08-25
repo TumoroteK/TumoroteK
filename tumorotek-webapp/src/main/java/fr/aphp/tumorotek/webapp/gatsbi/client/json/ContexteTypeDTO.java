@@ -36,7 +36,7 @@
  **/
 package fr.aphp.tumorotek.webapp.gatsbi.client.json;
 
-import org.codehaus.jackson.annotate.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonCreator;
 
 public enum ContexteTypeDTO
 {

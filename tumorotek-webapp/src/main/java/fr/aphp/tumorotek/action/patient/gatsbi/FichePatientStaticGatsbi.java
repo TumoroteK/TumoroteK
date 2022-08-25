@@ -34,81 +34,62 @@
  * avez pris connaissance de la licence CeCILL, et que vous en avez
  * accepté les termes.
  **/
-package fr.aphp.tumorotek.action.echantillon.gatsbi;
+package fr.aphp.tumorotek.action.patient.gatsbi;
 
-import java.io.FileInputStream;
-import java.util.Map;
-
-import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.ForwardEvent;
-import org.zkoss.zul.Checkbox;
-import org.zkoss.zul.Filedownload;
+import org.zkoss.zul.Groupbox;
 import org.zkoss.zul.Messagebox;
 
-import fr.aphp.tumorotek.action.echantillon.ListeEchantillon;
+import fr.aphp.tumorotek.action.patient.FichePatientStatic;
+import fr.aphp.tumorotek.action.prelevement.PrelevementController;
+import fr.aphp.tumorotek.action.prelevement.PrelevementRowRenderer;
+import fr.aphp.tumorotek.action.prelevement.gatsbi.PrelevementRowRendererGatsbi;
 import fr.aphp.tumorotek.action.prelevement.gatsbi.exception.GatsbiException;
-import fr.aphp.tumorotek.model.coeur.prelevement.Prelevement;
+import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
 import fr.aphp.tumorotek.model.contexte.gatsbi.Contexte;
-import fr.aphp.tumorotek.model.systeme.Fichier;
+import fr.aphp.tumorotek.model.contexte.gatsbi.ContexteType;
 import fr.aphp.tumorotek.webapp.gatsbi.GatsbiController;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
 /**
+ *
+ * Controller gérant la fiche static d'un prélèvement GATSBI.
+ *
+ * @author mathieu BARTHELEMY
  * @version 2.3.0-gatsbi
- * @author Mathieu BARTHELEMY
  *
  */
-public class ListeEchantillonGatsbi extends ListeEchantillon
+public class FichePatientStaticGatsbi extends FichePatientStatic
 {
 
-   private static final long serialVersionUID = 1L;
+   private static final long serialVersionUID = -7612780578022559022L;
 
    private Contexte contexte;
-
-   public ListeEchantillonGatsbi() {
-      
-      contexte = SessionUtils.getCurrentGatsbiContexteForEntiteId(3);
-      
-      setListObjectsRenderer(new EchantillonRowRendererGatsbi(true, false, true, true));
-   }
-
-   public void onCheckAll$gridColumns(){
-      onCheck$checkAll();
-   }
+   
+   private final PrelevementRowRendererGatsbi prelevementRendererGatsbi =
+      new PrelevementRowRendererGatsbi(false, false);
 
    @Override
-   protected void drawColumnsForVisibleChampEntites()
-      throws ClassNotFoundException, InstantiationException, IllegalAccessException{
+   public void doAfterCompose(final Component comp) throws Exception{
+      super.doAfterCompose(comp);
 
-      // check box first column, toujours affichée
-      final Checkbox cbox = new Checkbox();
-      cbox.setId("checkAll");
-      cbox.addForward("onCheck", objectsListGrid.getColumns(), "onCheckAll");
-      GatsbiController.addColumn(objectsListGrid, null, "40px", null, cbox, null, true);
-
-      // icones column, toujours visible car impact evt de stockage
-      GatsbiController.addColumn(objectsListGrid, null, GatsbiControllerEchantillon.getIconesColWidthFrom(30, contexte), "center",
-         null, null, true);
-
-      // code prel column, toujours affichée
-      GatsbiControllerEchantillon.drawCodeColumn(objectsListGrid);
-
-      // ttes collection
-      GatsbiControllerEchantillon.drawBanqueColumn(objectsListGrid, isTtesCollection());
-
-      // patient, colonne toujours affichée
-      GatsbiControllerEchantillon.drawPatientColumn(objectsListGrid);
-
-      // variable columns
-      for(final Integer chpId : contexte.getChampEntiteInTableauOrdered()){
-         GatsbiControllerEchantillon.addColumnForChpId(chpId, objectsListGrid);
+      contexte = GatsbiController.initWireAndDisplay(this, 1, false, null, null, null, new Groupbox[]{});
+      
+      // Injection contexte prélèvement pour inner list maladies
+      // ce contexte peut être (null) non paramétré pour l'étude
+      // donc GET le contexte defaut pour le ContexteType Prélèvement
+      Contexte prelContexte = SessionUtils.getCurrentGatsbiContexteForEntiteId(2);
+      if (prelContexte == null) {
+         prelContexte = GatsbiController.getGastbiDefautContexteForType(ContexteType.PRELEVEMENT);
+         prelevementRendererGatsbi.setContexte(prelContexte);
       }
 
-      // nb dérivés
-      nbProdDerivesColumn = GatsbiControllerEchantillon.drawNbDerivesColumn(objectsListGrid);
-
-      // nb cessions
-      nbCessionsColumn = GatsbiControllerEchantillon.drawNbCessionsColumn(objectsListGrid);
+      // inner list
+      // non deletable
+      // ne force pas affichage emplacement et statut stockage en fin de grid
+      // GatsbiControllerPrelevement.drawColumnsForPrelevements(prelContexte,
+      //   echantillonsGrid, echantillonRendererGatsbi, false, false, getTtesCollections());
    }
 
    /**
@@ -118,14 +99,14 @@ public class ListeEchantillonGatsbi extends ListeEchantillon
     * @param click event
     */
    @Override
-   public void onClick$addNew(final Event event) throws Exception{
+   public void onClick$addNew(){
       GatsbiController.addNewObjectForContext(contexte, self, e -> {
          try{
-            super.onClick$addNew(e);
+            super.onClick$addNew();
          }catch(final Exception ex){
             Messagebox.show(handleExceptionMessage(ex), "Error", Messagebox.OK, Messagebox.ERROR);
          }
-      }, event, null);
+      }, null, null);
    }
 
    /**
@@ -135,17 +116,13 @@ public class ListeEchantillonGatsbi extends ListeEchantillon
     * @throws Exception
     */
    public void onGetSelectedParametrage(final ForwardEvent evt) throws Exception{
+
       try{
 
          GatsbiController.getSelectedParametrageFromSelectEvent(contexte, SessionUtils.getCurrentBanque(sessionScope),
             getObjectTabController(), null, () -> {
                try{
-                  if(((Map<?, ?>) evt.getOrigin().getData()).get("parentObj") == null){
-                     super.onClick$addNew(null);
-                  }else{
-                     getObjectTabController()
-                        .switchToCreateMode((Prelevement) ((Map<?, ?>) evt.getOrigin().getData()).get("parentObj"));
-                  }
+                  super.onClick$addNew();
                }catch(final Exception ex){
                   Messagebox.show(handleExceptionMessage(ex), "Error", Messagebox.OK, Messagebox.ERROR);
                }
@@ -155,18 +132,32 @@ public class ListeEchantillonGatsbi extends ListeEchantillon
       }
    }
 
-   /**
-    * Download le cr anapath d'un échantillon depuis la liste
-    * @param forward event dont l'event origine transporte l'objet CrAnapath
-    */
-   public void onClickCrAnapathLabel$echantillonRows(final ForwardEvent event){
-      if(event.getOrigin().getData() != null){
-         try{
-            Filedownload.save(new FileInputStream(((Fichier) event.getOrigin().getData()).getPath()),
-               ((Fichier) event.getOrigin().getData()).getMimeType(), ((Fichier) event.getOrigin().getData()).getNom());
-         }catch(final Exception e){
-            log.error(e);
-         }
-      }
+   @Override
+   public void onClick$addPrelevement(){
+
+      final PrelevementController tabController = (PrelevementController) PrelevementController.backToMe(getMainWindow(), page);
+
+      GatsbiController.addNewObjectForContext(SessionUtils.getCurrentGatsbiContexteForEntiteId(2),
+         tabController.getListe().getSelfComponent(), e -> {
+            try{
+               super.onClick$addPrelevement();
+            }catch(final Exception ex){
+               Messagebox.show(handleExceptionMessage(ex), "Error", Messagebox.OK, Messagebox.ERROR);
+            }
+         }, null, getPatient());
+   }
+
+   /*********** inner lists ******************/
+
+   public PrelevementRowRenderer getPrelevementRenderer(){
+      return prelevementRendererGatsbi;
+   }
+   
+   public String getDateEtatFormatted(){
+      return ObjectTypesFormatters.dateRenderer2(patient.getDateEtat());
+   }
+   
+   public String getDateDecesFormatted(){
+      return ObjectTypesFormatters.dateRenderer2(patient.getDateDeces());
    }
 }

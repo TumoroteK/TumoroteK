@@ -39,6 +39,7 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
+import java.util.Objects;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -68,7 +69,7 @@ import fr.aphp.tumorotek.model.contexte.Banque;
  * Classe créée le 14/09/09.
  *
  * @author Maxime Gousseau
- * @version 2.0
+ * @version 2.3.0-gatsbi
  *
  */
 @Entity
@@ -83,26 +84,8 @@ import fr.aphp.tumorotek.model.contexte.Banque;
    @NamedQuery(name = "Patient.findByNomReturnIds",
       query = "SELECT distinct(p.patientId) FROM Patient p " + "JOIN p.maladies m " + "JOIN m.prelevements prlvts "
          + "WHERE (p.nom like ?1 " + "OR p.nomNaissance like ?1) " + "AND prlvts.banque in (?2)"),
-   //		@NamedQuery(name = "Patient.findByNomNaissance",
-   //			query = "SELECT p FROM Patient p WHERE p.nomNaissance = ?1"),
-   //		@NamedQuery(name = "Patient.findByPrenom",
-   //			query = "SELECT p FROM Patient p WHERE p.prenom = ?1"),
-   //		@NamedQuery(name = "Patient.findBySexe",
-   //			query = "SELECT p FROM Patient p WHERE p.sexe = ?1"),
    @NamedQuery(name = "Patient.findByDateNaissance", query = "SELECT p FROM Patient p WHERE p.dateNaissance = ?1"),
-   //		@NamedQuery(name = "Patient.findByVilleNaissance",
-   //			query = "SELECT p FROM Patient p WHERE p.villeNaissance = ?1"),
-   //		@NamedQuery(name = "Patient.findByPaysNaissance",
-   //			query = "SELECT p FROM Patient p WHERE p.paysNaissance = ?1"),
-   //		@NamedQuery(name = "Patient.findByPatientEtat",
-   //			query = "SELECT p FROM Patient p WHERE p.patientEtat = ?1"),
-   //		@NamedQuery(name = "Patient.findByDateEtat",
-   //			query = "SELECT p FROM Patient p WHERE p.dateEtat = ?1"),
-   //		@NamedQuery(name = "Patient.findByDateDeces",
-   //			query = "SELECT p FROM Patient p WHERE p.dateDeces = ?1"),
    @NamedQuery(name = "Patient.findByEtatIncomplet", query = "SELECT p FROM Patient p WHERE p.etatIncomplet = true"),
-   //		@NamedQuery(name = "Patient.findByArchive",
-   //			query = "SELECT p FROM Patient p WHERE p.archive = ?1")
    @NamedQuery(name = "Patient.findAllNips", query = "SELECT p.nip FROM Patient p where p.nip is not null " + "ORDER BY p.nip"),
    @NamedQuery(name = "Patient.findAllNoms", query = "SELECT p.nom FROM Patient p ORDER BY p.nom"),
    @NamedQuery(name = "Patient.findByExcludedId", query = "SELECT p FROM Patient p WHERE p.patientId != ?1" + " and p.nom = ?2"),
@@ -148,6 +131,9 @@ public class Patient extends TKDelegetableObject<Patient> implements TKAnnotable
    private Integer patientId;
 
    private String nip;
+   
+   // @since 2.3.0-gatsbi
+   // private String identifiant;
 
    private String nom;
 
@@ -188,12 +174,17 @@ public class Patient extends TKDelegetableObject<Patient> implements TKAnnotable
 
    @Override
    public String toString(){
-      if(this.nom != null){
+     
+     if(this.nom != null){
          if(this.prenom != null){
             return "{" + this.nom + " " + this.prenom + "}";
          }else{
             return "{" + this.nom + " prenom inconnu}";
          }
+      }else if(this.nip != null){
+         return "{" + this.nip + "}";
+         //  }else if(this.identifiant != null){
+         //    return "{" + this.identifiant + "}";
       }else{
          return "{Empty Patient}";
       }
@@ -220,7 +211,16 @@ public class Patient extends TKDelegetableObject<Patient> implements TKAnnotable
       this.nip = n;
    }
 
-   @Column(name = "NOM", nullable = false, length = 50)
+//   @Column(name = "IDENTIFIANT", nullable = true, length = 50)
+//   public String getIdentifiant(){
+//      return identifiant;
+//   }
+//
+//   public void setIdentifiant(String identifiant){
+//      this.identifiant = identifiant;
+//   }
+
+   @Column(name = "NOM", nullable = true, length = 50)
    public String getNom(){
       return this.nom;
    }
@@ -291,7 +291,7 @@ public class Patient extends TKDelegetableObject<Patient> implements TKAnnotable
       this.paysNaissance = pays;
    }
 
-   @Column(name = "PATIENT_ETAT", nullable = false, length = 10)
+   @Column(name = "PATIENT_ETAT", nullable = true, length = 10)
    public String getPatientEtat(){
       return this.patientEtat;
    }
@@ -355,7 +355,6 @@ public class Patient extends TKDelegetableObject<Patient> implements TKAnnotable
    @Override
    @OneToOne(mappedBy = "delegator", cascade = CascadeType.ALL, orphanRemoval = true,
       targetEntity = AbstractPatientDelegate.class)
-   //   public AbstractPatientDelegate getDelegate(){
    public TKDelegateObject<Patient> getDelegate(){
       return delegate;
    }
@@ -424,11 +423,11 @@ public class Patient extends TKDelegetableObject<Patient> implements TKAnnotable
          return false;
       }
       final Patient test = (Patient) obj;
-      // 2 coordonnees sont egales si toutes leurs valeurs le sont
-      final boolean eq = (((this.nom != null && this.nom.equalsIgnoreCase(test.nom)) || this.nom == test.nom)
-         && ((this.prenom != null && this.prenom.equalsIgnoreCase(test.prenom)) || this.prenom == test.prenom)
-         && ((this.dateNaissance != null && this.dateNaissance.equals(test.dateNaissance))
-            || this.dateNaissance == test.dateNaissance));
+
+      final boolean eq = Objects.equals(nom, test.getNom())
+         && Objects.equals(prenom, test.getPrenom())
+         && Objects.equals(dateNaissance, test.getDateNaissance());
+        // && Objects.equals(identifiant, test.getIdentifiant());
 
       // verif supp sur la ville de naissance
       if(this.villeNaissance != null && test.villeNaissance != null){
@@ -449,7 +448,7 @@ public class Patient extends TKDelegetableObject<Patient> implements TKAnnotable
       int hashNom = 0;
       int hashPrenom = 0;
       int hashDate = 0;
-      //int hashVille = 0;
+      int hashIdentifiant = 0;
 
       if(this.nom != null){
          hashNom = this.nom.hashCode();
@@ -460,14 +459,14 @@ public class Patient extends TKDelegetableObject<Patient> implements TKAnnotable
       if(this.dateNaissance != null){
          hashDate = this.dateNaissance.hashCode();
       }
-      // if (this.villeNaissance != null) {
-      //	hashVille = this.villeNaissance.hashCode();
-      //}
+//      if (this.identifiant != null) {
+//          hashIdentifiant = this.identifiant.hashCode();
+//      }
 
       hash = 7 * hash + hashNom;
       hash = 7 * hash + hashPrenom;
       hash = 7 * hash + hashDate;
-      //hash = 7 * hash + hashVille;
+      hash = 7 * hash + hashIdentifiant;
 
       return hash;
    }
@@ -492,6 +491,8 @@ public class Patient extends TKDelegetableObject<Patient> implements TKAnnotable
       clone.setMaladies(this.maladies);
 
       clone.setDelegate(getDelegate());
+      
+//      clone.setIdentifiant(getIdentifiant());
 
       return clone;
    }

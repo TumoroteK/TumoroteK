@@ -68,6 +68,9 @@ public class ListePrelevementGatsbi extends ListePrelevement
    private boolean congColRendered = false;
 
    public ListePrelevementGatsbi(){
+      
+      contexte = SessionUtils.getCurrentGatsbiContexteForEntiteId(2);
+      
       setListObjectsRenderer(new PrelevementRowRendererGatsbi(true, false));
    }
 
@@ -78,8 +81,6 @@ public class ListePrelevementGatsbi extends ListePrelevement
    @Override
    protected void drawColumnsForVisibleChampEntites()
       throws ClassNotFoundException, InstantiationException, IllegalAccessException{
-
-      contexte = SessionUtils.getCurrentGatsbiContexteForEntiteId(2);
 
       // check box first column, toujours affichée
       final Checkbox cbox = new Checkbox();

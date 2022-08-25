@@ -34,86 +34,59 @@
  * avez pris connaissance de la licence CeCILL, et que vous en avez
  * accepté les termes.
  **/
-package fr.aphp.tumorotek.action.echantillon.gatsbi;
+package fr.aphp.tumorotek.action.patient.gatsbi;
 
 import java.lang.reflect.InvocationTargetException;
 import java.text.ParseException;
-
 import org.zkoss.zul.Row;
 
-import fr.aphp.tumorotek.action.echantillon.EchantillonRowRenderer;
-import fr.aphp.tumorotek.model.coeur.echantillon.Echantillon;
+import fr.aphp.tumorotek.action.patient.PatientRowRenderer;
+import fr.aphp.tumorotek.model.coeur.patient.Patient;
 import fr.aphp.tumorotek.model.contexte.gatsbi.Contexte;
 import fr.aphp.tumorotek.webapp.gatsbi.RowRendererGatsbi;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
 /**
- * Controller gérant le rendu dynamique des lignes du tableau échantillon sous
+ * Controller gérant le rendu dynamique des lignes du tableau prélèvement sous
  * le gestionnaire GATSBI. Ecris donc toutes les colonnes possibles, mais dans
  * l'ordre spécifié par le contexte Gatsbi.
  *
  * @author Mathieu BARTHELEMY
  * @version 2.3.0-gatsi
  */
-public class EchantillonRowRendererGatsbi extends EchantillonRowRenderer implements RowRendererGatsbi
+public class PatientRowRendererGatsbi extends PatientRowRenderer implements RowRendererGatsbi
 {
 
-   private Contexte contexte;
+   private final Contexte contexte;
+   
+   // si true, dessine le premier code organe exporté pour un patient 
+   private boolean organes = true;
 
-   // par défaut les icones sont toujours dessinées car impact evt de stockage
-   private boolean iconesRendered = true;
+   public PatientRowRendererGatsbi(final boolean select, final boolean _o){
+      super(select);
+      
+      this.organes = _o;
 
-   private boolean renderNbs = true;
-
-   private boolean drawCheckbox = true;
-
-   public EchantillonRowRendererGatsbi(final boolean select, final boolean cols, 
-                     final boolean _c, final boolean _r) {
-      super(select, cols);
-
-      this.drawCheckbox = _c;
-      this.renderNbs = _r;
-
-      contexte = SessionUtils.getCurrentGatsbiContexteForEntiteId(3);
+      contexte = SessionUtils.getCurrentGatsbiContexteForEntiteId(1);
    }
 
    @Override
-   public void render(final Row row, final Echantillon data, final int index){
-
-      if(drawCheckbox){
-         // dessine le checkbox
-         super.render(row, data, index);
-      }
-
-      renderObjets(row, data);
-   }
-
-   @Override
-   protected void renderEchantillon(final Row row, final Echantillon echan)
+   protected void renderPatient(final Row row, final Patient pat)
       throws IllegalAccessException, InvocationTargetException, NoSuchMethodException, ParseException{
 
       for(final Integer chpId : contexte.getChampEntiteInTableauOrdered()){
-         GatsbiControllerEchantillon.applyEchantillonChpRender(chpId, row, echan, isAnonyme(), isAccessStockage());
+         GatsbiControllerPatient.applyPatientChpRender(chpId, row, pat, anonyme);
       }
 
-      if(renderNbs){
-         renderNbDerives(row, echan);
-
-         renderNbCessions(row, echan);
+      renderNbPrels(row, pat);
+      
+      if (organes) {
+         renderFirstCodeOrganeForPatient(row, pat);
       }
    }
-
-   @Override
-   public void setIconesRendered(final boolean _i){
-      this.iconesRendered = _i;
-   }
-
+   
    @Override
    public boolean areIconesRendered(){
-      return iconesRendered;
-   }
-
-   public void setContexte(Contexte _c){
-      this.contexte = _c;
+      return false;
    }
 }

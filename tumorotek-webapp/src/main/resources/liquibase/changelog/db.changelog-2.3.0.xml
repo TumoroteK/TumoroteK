@@ -52,8 +52,43 @@
             <column name="CAN_IMPORT" value="0"/>
         </insert>
     </changeSet>
-
-    <changeSet id="${project.artifactId}-7" author="CH" runAlways="true" context="*"> 
+    <changeSet id="${project.artifactId}-7" author="MB" runAlways="true" context="*">
+    	<comment>Gastbi patient nom peut être nul</comment>
+       	<dropNotNullConstraint tableName="PATIENT" columnName="NOM" columnDataType="varchar(50)"/>
+    </changeSet>
+    <changeSet id="${project.artifactId}-8" author="MB" runAlways="true" context="*">
+    	<comment>Gastbi patient nip peut être nul</comment>
+       	<dropNotNullConstraint tableName="PATIENT" columnName="NIP" columnDataType="varchar(20)"/>
+    </changeSet>
+    <changeSet id="${project.artifactId}-9" author="MB" runAlways="true" context="*">
+    	<comment>Gastbi patient etat peut être nul</comment>
+       	<dropNotNullConstraint tableName="PATIENT" columnName="PATIENT_ETAT" columnDataType="char(3)"/>
+    </changeSet>
+    <!-- 
+    <changeSet id="${project.artifactId}-10" author="MB" runAlways="true" context="*">
+    	<preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="PATIENT" columnName="IDENTIFIANT" />
+            </not>
+        </preConditions>
+        <comment>Ajout colonne identifiant</comment>
+        <addColumn tableName="PATIENT">
+            <column name="IDENTIFIANT" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+   		<insert tableName="CHAMP_ENTITE">
+            <column name="CHAMP_ENTITE_ID" value="271"/>
+            <column name="NOM" value="Identifiant"/>
+             <column name="DATA_TYPE_ID" value="1" />
+            <column name="IS_NULL" value="1"/>
+            <column name="IS_UNIQUE" value="0"/>
+            <column name="ENTITE_ID" value="1"/>
+            <column name="CAN_IMPORT" value="1"/>
+        </insert>    
+    </changeSet>
+    -->
+    <changeSet id="${project.artifactId}-20" author="CH" runAlways="true" context="*"> 
     	<preConditions onFail="MARK_RAN">
             <sqlCheck expectedResult="0">SELECT COUNT(1) FROM CHAMP_ENTITE
                 WHERE NOM = 'CodeOrganes' and ENTITE_ID=2
@@ -72,7 +107,7 @@
     </changeSet>
 
     
-  	<changeSet id="${project.artifactId}-8" author="CH" runAlways="true" context="*">
+  	<changeSet id="${project.artifactId}-21" author="CH" runAlways="true" context="*">
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="CONFIG_ITEM"/>

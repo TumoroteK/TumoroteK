@@ -34,14 +34,14 @@
  * accepté les termes. 
 -->
 <window id="winReferents" apply="fr.aphp.tumorotek.action.patient.MedecinReferents">
-	<hbox>
+	<hlayout>
 		<listbox id="referentsList"
-			span="true"
 			model="@{winReferents$composer.medecins load-after='addMed.onClick'}"
 			selectedItem="@{winReferents$composer.selectedMedecin}"
-			sclass="listBox">
+			sclass="listBox"
+			sizedByContent="true">
 			<listhead sizable="true">
-				<listheader width="25px"/>
+				<listheader width="40px"/>
 				<listheader />
 				<listheader />
 				<listheader />
@@ -64,5 +64,5 @@
 		<button id="addMed" label="${c:l('patient.button.newMedecin')}" height="24px" 
 				 image="/images/icones/addCollaborateur.png" sclass="buttonv2" visible="false"
 				 use="fr.aphp.tumorotek.component.TKDisablableButton" />
-	</hbox>
+	</hlayout>
 </window>

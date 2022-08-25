@@ -36,8 +36,6 @@
 <?page id="patientPage" title="Patient Page" contentType="text/html;charset=UTF-8" ?>
 <?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
 <zk>
-<?component name="listePatient" macroURI="/zuls/patient/ListePatient.zul" ?>
-<?component name="fichePatientStatic" macroURI="/zuls/patient/FichePatientStatic.zul" ?>
 <?component name="ficheAnnotation" macroURI="/zuls/annotation/FicheAnnotation.zul" ?>
 
 <window id="winPatient" border="none" apply="fr.aphp.tumorotek.action.patient.PatientController">
@@ -45,19 +43,12 @@
 		<west title="${c:l('general.recherche')}" size="30%"
 				border="normal" splittable="true" 
 				collapsible="true" id="listeRegion">
-			<div >
-				<listePatient visible="false" id="listePatient" hflex="1" />
-			</div>
 		</west>
 		<center id="ficheRegion">
 			<div>
-				<div id="divPatientStatic" visible="true">
-					<!-- <fichePatientStatic id="fichePatient"/> -->
-				</div>
-				<div id="divPatientEdit" visible="false">
-				</div>
-				<div id="modifMultiDiv">
-				</div>
+				<div id="divPatientStatic" visible="true"></div>
+				<div id="divPatientEdit" visible="false"></div>
+				<div id="modifMultiDiv"></div>
 			</div>
 		</center>
 		<east id="annoRegion" title="${c:l('general.annotations')}" splittable="true" 

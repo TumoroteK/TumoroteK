@@ -37,14 +37,6 @@
 
 <?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
 <zk>
-	<?component name="listePrelevement" macroURI="/zuls/prelevement/ListePrelevement.zul" ?>
-	<?component name="fichePrelevementStatic" macroURI="/zuls/prelevement/FichePrelevementStatic.zul" ?>
-
-	<?component name="listePrelevementSero" macroURI="/zuls/prelevement/serotk/ListePrelevementSero.zul" ?>
-	<?component name="fichePrelevementStaticSero" macroURI="/zuls/prelevement/serotk/FichePrelevementStaticSero.zul" ?>
-
-	<?component name="ficheLaboInter" macroURI="/zuls/prelevement/FicheLaboInter.zul" ?>
-	<?component name="ficheMultiEchantillons" macroURI="/zuls/echantillon/FicheMultiEchantillons.zul" ?>
 	<?component name="ficheAnnotation" macroURI="/zuls/annotation/FicheAnnotation.zul" ?>
 
 	<window id="winPrelevement" border="none" apply="fr.aphp.tumorotek.action.prelevement.PrelevementController">

@@ -145,7 +145,8 @@ public class EchantillonRowRenderer extends TKSelectObjectRenderer<Echantillon>
 
       if(isTtesCollections()){
          new Label(echan.getBanque().getNom()).setParent(row);
-      }else if(!isEmbedded){
+      // }else if(!isEmbedded){
+      } else {
          new Label().setParent(row);
       }
 
@@ -154,7 +155,7 @@ public class EchantillonRowRenderer extends TKSelectObjectRenderer<Echantillon>
          if(!anonyme){
             new Label(getPatient(echan)).setParent(row);
          }else{
-            createAnonymeBlock().setParent(row);
+            createAnonymeLabelIsClickable(true).setParent(row);
          }
       }
 
@@ -312,7 +313,7 @@ public class EchantillonRowRenderer extends TKSelectObjectRenderer<Echantillon>
          }
          emplLabel.setParent(row);
       }else{
-         createAnonymeBlock().setParent(row);
+         createAnonymeLabelIsClickable(false).setParent(row);
       }
    }
 

@@ -52,7 +52,7 @@ import fr.aphp.tumorotek.utils.Utils;
  * Regles de validation:<br>
  *  - le champ nip doit null ou non vide et valide litteralement et
  * 		de taille inferieure à 20<br>
- * 	- le champ nom doit etre non vide, non null, et valide litteralement et
+ * 	- le champ nom doit etre valide litteralement et
  * 		de taille inferieure à 50<br>
  *  - le champ nom de naissance doit etre non vide et valide
  * 		litteralement et de taille inferieure à 50<br>
@@ -63,7 +63,7 @@ import fr.aphp.tumorotek.utils.Utils;
  * 		valide litteralement et de taille inferieure à 100<br>
  * 	- le champ pays de naissance doit etre null ou non vide et
  * 		valide litteralement et de taille inferieure à 100<br>
- * 	- le champ etat patient doit etre non null ou egal à V, D  ou Inconnu<br>
+ * 	- le champ etat patient doit etre null ou egal à V, D  ou Inconnu<br>
  * 	- le champ date etat doit etre null, ou supérieure à la date de naissance
  * 		et inférieure ou égale à la date actuelle<br>
  *  - la date de naissance doit être null ou
@@ -77,29 +77,13 @@ import fr.aphp.tumorotek.utils.Utils;
  *  	et cohérente avec l'état décédé<br>
  *
  * @since 2.0.9 prenom, sexe, date naissance NOT NULL
- *
+ * @since 2.3.0-gatsbi nom et patient etat sont nullable
  *
  * @author Mathieu BARTHELEMY
- * @version 2.0.9
+ * @version 2.3.0-gatsbi
  */
 public class PatientValidatorImpl implements PatientValidator
 {
-
-   //	private PrelevementManager prelevementManager;
-   //	private PrelevementValidator prelevementValidator;
-   //	private MaladieManager maladieManager;
-
-   //	public void setPrelevementManager(PrelevementManager pManager) {
-   //		this.prelevementManager = pManager;
-   //	}
-   //
-   //	public void setPrelevementValidator(PrelevementValidator pValidator) {
-   //		this.prelevementValidator = pValidator;
-   //	}
-   //
-   //	public void setMaladieManager(MaladieManager mManager) {
-   //		this.maladieManager = mManager;
-   //	}
 
    private CoherenceDateManager coherenceDateManager;
 
@@ -128,8 +112,8 @@ public class PatientValidatorImpl implements PatientValidator
          }
       }
 
-      //Nom non null
-      ValidationUtils.rejectIfEmptyOrWhitespace(errs, "nom", "patient.nom.empty");
+      // @since 2.3.0-gatsbi
+      // ValidationUtils.rejectIfEmptyOrWhitespace(errs, "nom", "patient.nom.empty");
       //nom valide
       if(patient.getNom() != null){
          if(!patient.getNom().matches(ValidationUtilities.MOTREGEXP)){
@@ -201,9 +185,8 @@ public class PatientValidatorImpl implements PatientValidator
          }
       }
 
-      //etat non null
-      ValidationUtils.rejectIfEmptyOrWhitespace(errs, "patientEtat", "patient.patientEtat.empty");
-
+      // @since 2.3.0-gatsbi
+      // ValidationUtils.rejectIfEmptyOrWhitespace(errs, "patientEtat", "patient.patientEtat.empty");
       //etat valide
       if(patient.getPatientEtat() != null){
          if(!patient.getPatientEtat().matches(ValidationUtilities.PATIENT_ETAT_REGEXP)){
