@@ -34,16 +34,13 @@
  * avez pris connaissance de la licence CeCILL, et que vous en avez
  * accepté les termes.
  **/
-package fr.aphp.tumorotek.utils;
+package fr.aphp.tumorotek.manager.administration;
 
-import java.security.SecureRandom;
+import fr.aphp.tumorotek.model.config.ConfigItem;
 
-public class TokenGenerator
+public interface ConfigItemManager
 {
-   public static String generateToken() {
-      SecureRandom random = new SecureRandom();
-      byte bytes[] = new byte[20];
-      random.nextBytes(bytes);
-      return bytes.toString();
-   }
+   public ConfigItem findByKey(String key);
+   public void createObjectManager(ConfigItem configItem);
 }
+

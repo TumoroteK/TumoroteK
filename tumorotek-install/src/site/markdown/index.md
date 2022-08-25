@@ -1,6 +1,6 @@
 #### Notes de version
 
-##### Version 2.3.0-gatsbi - Publiée le 22/07/2022
+##### Version 2.3.0-gatsbi - Publiée le 08/08/2022
 
 ##### Version 2.2.5 - Publiée le 13/04/2022
 ###### Corrections

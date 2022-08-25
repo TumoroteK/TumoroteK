@@ -1954,5 +1954,19 @@
 			</bean>
 		</property>
 	</bean>
-	
+
+	<bean id="configItemDao" parent="abstractDao">
+		<property name="proxyInterfaces">
+			<value>fr.aphp.tumorotek.dao.administration.ConfigItemDao
+			</value>
+		</property>
+		<property name="target">
+			<bean parent="abstractDaoTarget">
+				<constructor-arg>
+					<value>fr.aphp.tumorotek.model.config.ConfigItem
+					</value>
+				</constructor-arg>
+			</bean>
+		</property>
+	</bean>	
 </beans>

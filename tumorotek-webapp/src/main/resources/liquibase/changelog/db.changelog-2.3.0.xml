@@ -21,13 +21,13 @@
     <changeSet id="${project.artifactId}-5" author="MB" runAlways="true" context="*"> 
     	<preConditions onFail="MARK_RAN">
             <sqlCheck expectedResult="0">SELECT COUNT(1) FROM CHAMP_ENTITE
-                WHERE NOM = 'congDepart'
+                WHERE NOM = 'CongDepart'
             </sqlCheck>
         </preConditions>
         <comment>Ajout champ entite prélévement congelé site préleveur</comment>
         <insert tableName="CHAMP_ENTITE">
             <column name="CHAMP_ENTITE_ID" value="269"/>
-            <column name="NOM" value="congDepart"/>
+            <column name="NOM" value="CongDepart"/>
              <column name="DATA_TYPE_ID" value="2" />
             <column name="IS_NULL" value="1"/>
             <column name="IS_UNIQUE" value="0"/>
@@ -35,16 +35,16 @@
             <column name="CAN_IMPORT" value="0"/>
         </insert>
     </changeSet>
-     <changeSet id="${project.artifactId}-6" author="MB" runAlways="true" context="*"> 
+    <changeSet id="${project.artifactId}-6" author="MB" runAlways="true" context="*"> 
     	<preConditions onFail="MARK_RAN">
             <sqlCheck expectedResult="0">SELECT COUNT(1) FROM CHAMP_ENTITE
-                WHERE NOM = 'congArrivee'
+                WHERE NOM = 'CongArrivee'
             </sqlCheck>
         </preConditions>
-        <comment>AJout champ entite prélévement congelé arrivee</comment>
+        <comment>Ajout champ entite prélévement congelé arrivee</comment>
         <insert tableName="CHAMP_ENTITE">
             <column name="CHAMP_ENTITE_ID" value="270"/>
-            <column name="NOM" value="congArrivee"/>
+            <column name="NOM" value="CongArrivee"/>
             <column name="DATA_TYPE_ID" value="2" />
             <column name="IS_NULL" value="1"/>
             <column name="IS_UNIQUE" value="0"/>
@@ -52,64 +52,41 @@
             <column name="CAN_IMPORT" value="0"/>
         </insert>
     </changeSet>
-    <!-- les scripts ci-dessous sont pris en charge par le projet Gatsbi
-    <changeSet id="${project.artifactId}-7" author="MB" runAlways="true" context="*"> 
+
+    <changeSet id="${project.artifactId}-7" author="CH" runAlways="true" context="*"> 
     	<preConditions onFail="MARK_RAN">
-            <sqlCheck expectedResult="0">SELECT COUNT(1) FROM CONTEXTE
-                WHERE NOM = 'GATSBI'
+            <sqlCheck expectedResult="0">SELECT COUNT(1) FROM CHAMP_ENTITE
+                WHERE NOM = 'CodeOrganes' and ENTITE_ID=2
             </sqlCheck>
         </preConditions>
-        <comment>Ajout contexte nommé GATBSI</comment>
-        <insert tableName="CONTEXTE">
-        	<column name="CONTEXTE_ID" value="4"/>
-            <column name="NOM" value="GATSBI"/>
-            <column name="LIBELLE" value="Gatsbi"/>
+        <comment>Ajout champ entite prélévement Organes en plus de celui présent côté échantillon pour un besoin Gatsbi</comment>
+        <insert tableName="CHAMP_ENTITE">
+            <column name="CHAMP_ENTITE_ID" value="271"/>
+            <column name="NOM" value="CodeOrganes"/>
+            <column name="DATA_TYPE_ID" value="1" />
+            <column name="IS_NULL" value="1"/>
+            <column name="IS_UNIQUE" value="0"/>
+            <column name="ENTITE_ID" value="2"/>
+            <column name="CAN_IMPORT" value="0"/>
         </insert>
     </changeSet>
 
-  	<changeSet id="${project.artifactId}-8" author="MB" runAlways="true" context="*">
+    
+  	<changeSet id="${project.artifactId}-8" author="CH" runAlways="true" context="*">
         <preConditions onFail="MARK_RAN">
             <not>
-                <tableExists tableName="GATSBI_ETUDE"/>
+                <tableExists tableName="CONFIG_ITEM"/>
             </not>
         </preConditions>
-        <comment>Création de la table GATSBI_ETUDE, si nécessaire, pour les tests principalement ou les installations 
-        	qui n'utiliseraient pas GATSBi
+        <comment>Création de la table CONFIG_ITEM, qui permettra de gérer certaines conf en base de données : 
+        	1er besoin la clé de sécurité permettant de générer le JWT pour communiquer avec Gatsbi
         </comment>
-        <createTable tableName="GATSBI_ETUDE">
-            <column name="GATSBI_ETUDE_ID" type="INT">
+        <createTable tableName="CONFIG_ITEM">
+            <column name="CLE" type="CHAR(15)">
                 <constraints nullable="false"/>
             </column>
-            <column name="TITRE" type="VARCHAR(100)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="ACRONYME" type="VARCHAR(5)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="ARCHIVE" type="BOOLEAN">
-                <constraints nullable="false"/>
-            </column>
-            <column name="PLATEFORME_ID" type="INT"/>
+            <column name="VALEUR" type="VARCHAR(100)" />
         </createTable>
-
-        <addPrimaryKey tableName="GATSBI_ETUDE" columnNames="GATSBI_ETUDE_ID"/>
-        <addForeignKeyConstraint constraintName="FK_GATSBI_ETUDE_PLATEFORME_ID" referencedTableName="PLATEFORME" baseColumnNames="PLATEFORME_ID" baseTableName="GATSBI_ETUDE"
-                                 referencedColumnNames="PLATEFORME_ID"/>
+        <addPrimaryKey tableName="CONFIG_ITEM" columnNames="CLE"/>
     </changeSet>
-   <changeSet id="${project.artifactId}-9" author="MBA" runAlways="true" context="*">
-        <preConditions onFail="MARK_RAN">
-            <not>
-                <columnExists tableName="BANQUE" columnName="GATSBI_ETUDE_ID"/>
-            </not>
-        </preConditions>
-        <comment>Ajout de la référence BANQUE vers GATSBI_ETUDE_ID</comment>
-        <addColumn tableName="BANQUE">
-            <column name="GATSBI_ETUDE_ID" type="INT(100)">
-                <constraints nullable="true"/>
-            </column>
-        </addColumn>
-        <addForeignKeyConstraint constraintName="FK_BANQUE_ETUDE_ID" referencedTableName="GATSBI_ETUDE" baseColumnNames="GATSBI_ETUDE_ID" baseTableName="BANQUE"
-                                 referencedColumnNames="GATSBI_ETUDE_ID"/>
-    </changeSet> 
-    -->
-</databaseChangeLog>
+ </databaseChangeLog>

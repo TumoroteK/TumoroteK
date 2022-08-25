@@ -34,16 +34,68 @@
  * avez pris connaissance de la licence CeCILL, et que vous en avez
  * accepté les termes.
  **/
-package fr.aphp.tumorotek.utils;
+package fr.aphp.tumorotek.model.config;
 
-import java.security.SecureRandom;
+import java.io.Serializable;
+import java.util.Objects;
 
-public class TokenGenerator
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "CONFIG_ITEM")
+@NamedQueries(
+   value = {
+      @NamedQuery(name = "Config.findByKey",
+         query = "SELECT c FROM ConfigItem c WHERE c.key = ?1"),
+   })
+public class ConfigItem implements Serializable
 {
-   public static String generateToken() {
-      SecureRandom random = new SecureRandom();
-      byte bytes[] = new byte[20];
-      random.nextBytes(bytes);
-      return bytes.toString();
+
+   private static final long serialVersionUID = 7492722604171504354L;
+
+   private String key;
+
+   private String value;
+
+   @Id
+   @Column(name = "CLE", unique = true, nullable = false)
+   public String getKey(){
+      return key;
+   }
+
+   public void setKey(String key){
+      this.key = key;
+   }
+
+   @Column(name = "VALEUR")
+   public String getValue(){
+      return value;
+   }
+
+   public void setValue(String value){
+      this.value = value;
+   }
+
+
+   @Override
+   public int hashCode(){
+      return Objects.hash(key);
+   }
+
+   @Override
+   public boolean equals(Object obj){
+      if(this == obj)
+         return true;
+      if(obj == null)
+         return false;
+      if(getClass() != obj.getClass())
+         return false;
+      ConfigItem other = (ConfigItem) obj;
+      return Objects.equals(key, other.key);
    }
 }

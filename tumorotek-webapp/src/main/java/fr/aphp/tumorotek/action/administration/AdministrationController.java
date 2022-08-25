@@ -491,14 +491,14 @@ public class AdministrationController extends AbstractObjectTabController
       if(item != null && item.getId().equals("gatsbiPanel")){
          //Attribution d'un rôle à l'utilisateur pour faciliter les contrôles côté Gatsbi
          String role = null;
-         if(sessionScope.containsKey("AdminPF")) {
-            role = GatsbiAuthenticationUtils.ROLE_ADMIN_PLATEFORME;
+         if(SessionUtils.getLoggedUser(sessionScope).isSuperAdmin()) {
+            role = GatsbiAuthenticationUtils.ROLE__SUPER_ADMIN;
+         }
+         else if(sessionScope.containsKey("AdminPF")) {
+            role = GatsbiAuthenticationUtils.ROLE__ADMIN_PLATEFORME;
          }
          else if(sessionScope.containsKey("Admin")) {
-            role = GatsbiAuthenticationUtils.ROLE_ADMIN_COLLECTION;
-         }
-         else if(SessionUtils.getLoggedUser(sessionScope).isSuperAdmin()) {
-            role = GatsbiAuthenticationUtils.ROLE_SUPER_ADMIN;
+            role = GatsbiAuthenticationUtils.ROLE__ADMIN_COLLECTION;
          }
          
          GatsbiAuthenticationUtils gatsbiAuthenticationUtils = new GatsbiAuthenticationUtils(execution);

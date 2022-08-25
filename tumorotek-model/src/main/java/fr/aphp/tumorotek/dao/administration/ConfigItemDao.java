@@ -34,16 +34,12 @@
  * avez pris connaissance de la licence CeCILL, et que vous en avez
  * accepté les termes.
  **/
-package fr.aphp.tumorotek.utils;
+package fr.aphp.tumorotek.dao.administration;
 
-import java.security.SecureRandom;
 
-public class TokenGenerator
+import fr.aphp.tumorotek.dao.GenericDaoJpa;
+import fr.aphp.tumorotek.model.config.ConfigItem;
+
+public interface ConfigItemDao extends GenericDaoJpa<ConfigItem, String>
 {
-   public static String generateToken() {
-      SecureRandom random = new SecureRandom();
-      byte bytes[] = new byte[20];
-      random.nextBytes(bytes);
-      return bytes.toString();
-   }
 }

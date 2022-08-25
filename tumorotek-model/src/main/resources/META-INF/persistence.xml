@@ -261,6 +261,7 @@
         <class>fr.aphp.tumorotek.model.coeur.patient.delegate.AbstractPatientDelegate</class>
         <class>fr.aphp.tumorotek.model.io.export.ChampDelegue</class>
         <class>fr.aphp.tumorotek.model.contexte.gatsbi.Etude</class>
+        <class>fr.aphp.tumorotek.model.config.ConfigItem</class>
         <exclude-unlisted-classes>true</exclude-unlisted-classes>
     </persistence-unit>
     <persistence-unit name="pCodes">

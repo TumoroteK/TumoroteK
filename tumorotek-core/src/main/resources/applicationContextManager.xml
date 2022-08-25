@@ -2565,6 +2565,25 @@
 	<!-- Package administration -->
 	<bean id="parametresManager"
 		class="fr.aphp.tumorotek.manager.impl.administration.ParametresManagerImpl" />
+  
+	<bean id="configItemManager" parent="txProxyTemplate">
+		<property name="target">
+			<bean
+				class="fr.aphp.tumorotek.manager.impl.administration.ConfigItemManagerImpl">
+				<property name="configItemDao" ref="configItemDao" />
+			</bean>
+		</property>
+	</bean>
+	
+
+	<bean id="jwtGenerator" parent="txProxyTemplate">
+		<property name="target">
+			<bean
+				class="fr.aphp.tumorotek.utils.JWTGenerator">
+				<property name="configItemManager" ref="configItemManager" /> 
+			</bean>
+		</property>
+	</bean>
 
 	<!-- gatsbi -->
 	<!-- Package procedure -->

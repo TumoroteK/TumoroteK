@@ -34,16 +34,29 @@
  * avez pris connaissance de la licence CeCILL, et que vous en avez
  * accepté les termes.
  **/
-package fr.aphp.tumorotek.utils;
+package fr.aphp.tumorotek.manager.impl.administration;
 
-import java.security.SecureRandom;
+import fr.aphp.tumorotek.dao.administration.ConfigItemDao;
+import fr.aphp.tumorotek.manager.administration.ConfigItemManager;
+import fr.aphp.tumorotek.model.config.ConfigItem;
 
-public class TokenGenerator
+public class ConfigItemManagerImpl implements ConfigItemManager
 {
-   public static String generateToken() {
-      SecureRandom random = new SecureRandom();
-      byte bytes[] = new byte[20];
-      random.nextBytes(bytes);
-      return bytes.toString();
+   private ConfigItemDao configItemDao;
+   
+   public void setConfigItemDao(ConfigItemDao configItemDao){
+      this.configItemDao = configItemDao;
+   }
+
+   @Override
+   public ConfigItem findByKey(String key) {
+      return configItemDao.findById(key);
+   }
+ 
+   @Override
+   public void createObjectManager(ConfigItem configItem) {
+      if(configItem != null && configItem.getKey() != null && configItem.getKey().length() > 0) {
+         configItemDao.createObject(configItem);
+      }
    }
 }
