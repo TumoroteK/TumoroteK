@@ -90,8 +90,9 @@ public enum TkParam
 	GATSBI_API_URL_BASE("gatsbi.api.url.base"),
 	GATSBI_API_URL_ETUDE_PATH("gatsbi.api.url.etude.path"),
 	GATSBI_API_URL_CONTEXTE_PATH("gatsbi.api.url.contexte.path"),
-	GATSBI_API_URL_PARAMETRAGE_PATH("gatsbi.api.url.parametrage.path");
-;
+	GATSBI_API_URL_PARAMETRAGE_PATH("gatsbi.api.url.parametrage.path"),
+	//durée de vie en millisecondes - la clé est facultative : une valeur par défaut est gérée dans le code
+	GATSBI_JWT_EXPIRATION("gatsbi.jwt.expiration");
 
 	private String paramKey;
 
