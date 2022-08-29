@@ -1,6 +1,8 @@
 #### Notes de version
 
 ##### Version ${project.version} - Publiée le ${timestamp}
+- Adaptations pour le module Gatsbi
+
 
 ##### Version 2.2.5 - Publiée le 13/04/2022
 ###### Corrections
