@@ -98,7 +98,11 @@ public class GatsbiAuthenticationUtils
          if(role != null){
             mapPrivateClaim.put(KEY__CLAIM_ROLE, role);
          }
-         return ManagerLocator.getManager(JWTGenerator.class).generate("Gatsbi", login, DUREE_VIE__JWT, tokenCSRF, mapPrivateClaim);
+         int dureeVieJwt = DUREE_VIE__JWT;//valeur par défaut qui peut être surchargée par la conf
+         if(TkParam.GATSBI_JWT_EXPIRATION.getValue() != null) {
+            dureeVieJwt = Integer.parseInt(TkParam.GATSBI_JWT_EXPIRATION.getValue());
+         }
+         return ManagerLocator.getManager(JWTGenerator.class).generate("Gatsbi", login, dureeVieJwt, tokenCSRF, mapPrivateClaim);
       }catch(JWTCreationException e){
          log.error(e);
          //le cookie sera invalide donc l'authentication échouera
