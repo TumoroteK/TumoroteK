@@ -970,6 +970,17 @@ public class GatsbiController
             GatsbiController.doGastbiParametrage(((Map<String, Integer>) evt.getOrigin().getData()).get("paramId"));
 
          inject = GatsbiController.injectGatsbiObject(contexte, parametrageDTO, banque, validator);
+         
+         // parent object
+         if (evt != null && evt.getOrigin() != null && evt.getOrigin().getData() != null 
+              && ((Map<String, Object>) evt.getOrigin().getData()).get("parentObj") != null) {
+            // prelevement => PrelevementController.createAnotherPrelevement 
+            if (((Map<String, Object>) evt.getOrigin().getData()).get("parentObj") instanceof Prelevement) {
+               inject.getPrelevement()
+                  .setMaladie(((Prelevement) ((Map<String, Object>) evt.getOrigin().getData()).get("parentObj"))
+                     .getMaladie());
+            }
+         }         
       }
 
       elseMethod.run();

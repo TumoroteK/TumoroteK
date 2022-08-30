@@ -36,6 +36,8 @@
  **/
 package fr.aphp.tumorotek.action.prelevement.gatsbi;
 
+import java.util.Map;
+
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.ForwardEvent;
@@ -47,6 +49,7 @@ import org.zkoss.zul.Vbox;
 import fr.aphp.tumorotek.action.prelevement.ListePrelevement;
 import fr.aphp.tumorotek.action.prelevement.gatsbi.exception.GatsbiException;
 import fr.aphp.tumorotek.manager.exception.TKException;
+import fr.aphp.tumorotek.model.coeur.prelevement.Prelevement;
 import fr.aphp.tumorotek.model.contexte.gatsbi.Contexte;
 import fr.aphp.tumorotek.webapp.gatsbi.GatsbiController;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
@@ -255,6 +258,7 @@ public class ListePrelevementGatsbi extends ListePrelevement
     * @param param
     * @throws Exception
     */
+   @SuppressWarnings("unchecked")
    public void onGetSelectedParametrage(final ForwardEvent evt) throws Exception{
 
       try{
@@ -269,7 +273,14 @@ public class ListePrelevementGatsbi extends ListePrelevement
                }
             }, () -> {
                try{
-                  super.onClick$addNew(null);
+                  if (evt == null || evt.getOrigin() == null || evt.getOrigin().getData() == null 
+                        || ((Map<String, Object>) evt.getOrigin().getData()).get("parentObj") == null) {
+                     super.onClick$addNew(null);
+                  } else { // parentObj = premier prelevement créé pour le patient
+                     // createAnotherPrelevement
+                     getObjectTabController().swithToCreatedModeFromCopy((Prelevement) 
+                        ((Map<String, Object>) evt.getOrigin().getData()).get("parentObj"));
+                  }
                }catch(final Exception ex){
                   Messagebox.show(handleExceptionMessage(ex), "Error", Messagebox.OK, Messagebox.ERROR);
                }

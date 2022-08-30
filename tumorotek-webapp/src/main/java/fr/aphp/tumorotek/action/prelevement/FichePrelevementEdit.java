@@ -1576,7 +1576,7 @@ public class FichePrelevementEdit extends AbstractFicheEditController
             getObjectTabController().getFicheAnnotation().switchToStaticOrEditMode(false, false);
          }
 
-         if(newObj.getMaladie() != null){ // initialize le referenceur
+         if(newObj.getMaladie() != null && referenceur != null){ // initialize le referenceur
             ((ReferenceurPatient) referenceur.getAttributeOrFellow("winRefPatient$composer", true))
                .setPatientAndMaladieFromOutSideReferenceur(newPat, newObj.getMaladie(), newObj.getPatientNda());
          }
