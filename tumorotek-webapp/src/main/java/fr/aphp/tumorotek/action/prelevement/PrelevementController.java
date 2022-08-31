@@ -82,8 +82,10 @@ import fr.aphp.tumorotek.model.coeur.echantillon.Echantillon;
 import fr.aphp.tumorotek.model.coeur.patient.Maladie;
 import fr.aphp.tumorotek.model.coeur.prelevement.LaboInter;
 import fr.aphp.tumorotek.model.coeur.prelevement.Prelevement;
+import fr.aphp.tumorotek.model.contexte.gatsbi.Contexte;
 import fr.aphp.tumorotek.model.interfacage.PatientSip;
 import fr.aphp.tumorotek.model.systeme.Entite;
+import fr.aphp.tumorotek.webapp.gatsbi.GatsbiController;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
 /**
@@ -179,24 +181,22 @@ public class PrelevementController extends AbstractObjectTabController
 
       switch(getCurrentContexte()){
          case SEROLOGIE:
-            // listePrelevementSero.setVisible(true);
-            setEditZulPath("/zuls/prelevement/serotk/FichePrelevementEditSero.zul");
             setListZulPath("/zuls/prelevement/serotk/ListePrelevementSero.zul");
             setMultiEditZulPath("/zuls/prelevement/serotk/FicheModifMultiPrelevementSero.zul");
             break;
          default:
-            // listePrelevement.setVisible(true);
             if(SessionUtils.getCurrentGatsbiContexteForEntiteId(2) == null){
-               setEditZulPath("/zuls/prelevement/FichePrelevementEdit.zul");
                setListZulPath("/zuls/prelevement/ListePrelevement.zul");
                setMultiEditZulPath("/zuls/prelevement/FicheModifMultiPrelevement.zul");
             }else{
-               setEditZulPath("/zuls/prelevement/gatsbi/FichePrelevementEditGatsbi.zul");
                setListZulPath("/zuls/prelevement/gatsbi/ListePrelevementGatsbi.zul");
                setMultiEditZulPath("/zuls/prelevement/gatsbi/FicheModifMultiPrelevementGatsbi.zul");
             }
             break;
       }
+
+      // seul le choix du composant pour edit est factorisé
+      setEditZulPath(getFichePrelevementEditZulPath());
 
       drawListe();
 
@@ -204,6 +204,25 @@ public class PrelevementController extends AbstractObjectTabController
 
       switchToOnlyListeMode();
       orderAnnotationDraw(false);
+   }
+   
+   /**
+    * Factorisation du choix du zul path, car le choix de 
+    * du composant d'édition est utilisé par plusieurs 
+    * fonctionalités.
+    * @return FichePrelevementEdit zul path
+    */
+   private String getFichePrelevementEditZulPath() {
+      switch(getCurrentContexte()){
+         case SEROLOGIE:
+            return "/zuls/prelevement/serotk/FichePrelevementEditSero.zul";
+         default:
+            if(SessionUtils.getCurrentGatsbiContexteForEntiteId(2) == null){
+               return "/zuls/prelevement/FichePrelevementEdit.zul";
+            }else{
+               return "/zuls/prelevement/gatsbi/FichePrelevementEditGatsbi.zul";
+            }
+      }
    }
 
    @Override
@@ -618,37 +637,70 @@ public class PrelevementController extends AbstractObjectTabController
       super.onRevert();
    }
 
+   /**
+    * @version 2.3.0-gatsbi
+    * @param prlvt
+    */
    public void createAnotherPrelevement(final Prelevement prlvt){
       if(Messagebox.show(Labels.getLabel("fichePrelevement.create.another.prelevement"),
-         Labels.getLabel("message.new.prelevement.title"), Messagebox.YES | Messagebox.NO,
-         Messagebox.QUESTION) == Messagebox.YES){
+            Labels.getLabel("message.new.prelevement.title"), Messagebox.YES | Messagebox.NO,
+            Messagebox.QUESTION) == Messagebox.YES){
+         
+         
          backToMe(getMainWindow(), page);
+         
+         Contexte contexte = SessionUtils.getCurrentGatsbiContexteForEntiteId(2);
 
-         // si il y eu edit avant et addNew depuis liste
-         clearEditDiv();
-         if(SEROLOGIE.equals(getCurrentContexte())){
-            Executions.createComponents("/zuls/prelevement/serotk/FichePrelevementEditSero.zul", divPrelevementEdit, null);
-         }else{
-            Executions.createComponents("/zuls/prelevement/FichePrelevementEdit.zul", divPrelevementEdit, null);
+         
+         // @since 2.3.0-gatsbi
+         if (contexte != null) {
+         
+            GatsbiController.addNewObjectForContext(contexte, 
+                              getListe().getSelfComponent(), e -> {
+               try{
+                  swithToCreatedModeFromCopy(prlvt);
+               }catch(final Exception ex){
+                  Messagebox.show(handleExceptionMessage(ex), "Error", Messagebox.OK, Messagebox.ERROR);
+               }
+            }, null, prlvt); 
+          // prlvt utilisé comme 'parentObject' pour être renvoyé à ListePrelevement 
+          // et ainsi commander l'appel de swithToCreatedModeFromCopy 
+         } else {
+            swithToCreatedModeFromCopy(prlvt);
          }
-         getFicheEdit().setObjectTabController(this);
-         getFicheEdit().setNewObjectByCopy(prlvt);
-         getFicheEdit().setParentObject(prlvt.getMaladie());
-         getFicheEdit().switchToCreateMode();
-         getFicheEdit().initSelectedInLists();
-
-         if(canUpdateAnnotation()){
-            getFicheAnnotation().switchToStaticOrEditMode(false, false);
-         }
-
-         if(!annoRegion.isOpen() && annoRegion.isVisible()){
-            annoRegion.setOpen(true);
-         }
-
-         getListeRegion().setOpen(false);
-
-         showStatic(false);
       }
+   }
+   
+   /**
+    * Ouvre le formulaire de création prélèvement à partir d'informations 
+    * prélèvement précédemment créé (notamment patient/maladie).
+    * @since 2.3.0-gatsbi
+    * @version 2.3.0-gatsbi
+    * @param prlvt
+    * 
+    */
+   public void swithToCreatedModeFromCopy(Prelevement prlvt) { 
+      // si il y eu edit avant et addNew depuis liste
+      clearEditDiv();
+      Executions.createComponents(getFichePrelevementEditZulPath(), divPrelevementEdit, null);
+
+      getFicheEdit().setObjectTabController(this);
+      getFicheEdit().setNewObjectByCopy(prlvt);
+      getFicheEdit().setParentObject(prlvt.getMaladie());
+      getFicheEdit().switchToCreateMode();
+      getFicheEdit().initSelectedInLists();
+
+      if(canUpdateAnnotation()){
+         getFicheAnnotation().switchToStaticOrEditMode(false, false);
+      }
+
+      if(!annoRegion.isOpen() && annoRegion.isVisible()){
+         annoRegion.setOpen(true);
+      }
+
+      getListeRegion().setOpen(false);
+
+      showStatic(false);
    }
 
    /**
