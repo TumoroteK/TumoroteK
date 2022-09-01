@@ -48,6 +48,7 @@ import java.util.Set;
 import org.springframework.validation.Errors;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.HtmlBasedComponent;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -74,6 +75,7 @@ import fr.aphp.tumorotek.model.coeur.patient.Patient;
 import fr.aphp.tumorotek.model.coeur.patient.PatientLien;
 import fr.aphp.tumorotek.model.coeur.patient.PatientMedecin;
 import fr.aphp.tumorotek.model.contexte.Collaborateur;
+import fr.aphp.tumorotek.webapp.gatsbi.GatsbiController;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
 public class FichePatientEdit extends AbstractFicheEditController
@@ -102,7 +104,8 @@ public class FichePatientEdit extends AbstractFicheEditController
    protected Toolbar toolbar;
 
    // included ndaBox (embedded in Prelevement mode only)
-   protected Label ndaFieldLabel;
+   // @since 2.3.0-gatsbi peut être label / div
+   protected HtmlBasedComponent ndaFieldLabel;
 
    protected Textbox ndaBox;
 
@@ -231,7 +234,6 @@ public class FichePatientEdit extends AbstractFicheEditController
       for(int i = 0; i < annotationValue.size(); i++){
          if(annotationValue.get(i).getChampAnnotation() != null){
             annotationRow = annotationValue.get(i).getChampAnnotation().toString();
-            System.out.println(annotationRow);
             if(annotationRow.contains("Antécédent_Médicaux.Conforme") || annotationRow.contains("Consentement.Conforme}")){
 
                mMap.put(annotationRow, annotationValue.get(i).getValeur());
@@ -319,6 +321,14 @@ public class FichePatientEdit extends AbstractFicheEditController
          }
          patient.setSexe(this.selectedSexe.getCode());
       }
+      
+      setEmptyToNullEtat();
+   }
+   
+   /**
+    * @since 2.3.0-gatsbi état peut être null
+    */   
+   protected void setEmptyToNullEtat() {
       if(this.selectedEtat != null){
          this.patient.setPatientEtat(this.selectedEtat.getCode());
       }else{ //set 'Inconnu' par defaut
@@ -334,6 +344,9 @@ public class FichePatientEdit extends AbstractFicheEditController
     * par le setter (utile si fiche embarquée dans prélèvement)
     */
    public void prepareDataBeforeSave(final boolean setMedecins){
+      
+      checkRequiredListboxes();
+      
       setEmptyToNulls();
       setFieldsToUpperCase();
       recordDateEtatDeces();
@@ -352,6 +365,12 @@ public class FichePatientEdit extends AbstractFicheEditController
          }
          this.patient.setPatientMedecins(pmeds);
       }
+   }
+   
+   /**
+    * To be overriden by gatsbi
+    */
+   protected void checkRequiredListboxes(){
    }
 
    @Override
@@ -593,37 +612,20 @@ public class FichePatientEdit extends AbstractFicheEditController
     * Applique la validation sur la date et la date dependante.
     */
    public void onBlur$dateNaisBox(){
-      //		boolean badDateFormat = false;
-      //		if (dateNaisBox.getErrorMessage() != null
-      //				&& dateNaisBox.getErrorMessage().contains(
-      //						dateNaisBox.getFormat())) {
-      //			badDateFormat = true;
-      //		}
-      //		if (!badDateFormat) {
       Clients.clearWrongValue(dateNaisBox);
       validateCoherenceDate(dateNaisBox, dateNaisBox.getValue());
       Clients.clearWrongValue(dateEtatDecesBox);
       validateCoherenceDate(dateEtatDecesBox, dateEtatDecesBox.getValue());
-      //		}
    }
 
    /**
     * Applique la validation sur la date et la date dependante.
     */
    public void onBlur$dateEtatDecesBox(){
-      //		boolean badDateFormat = false;
-      //		if (dateEtatDecesBox.getErrorMessage() != null
-      //				&& dateEtatDecesBox.getErrorMessage().contains(
-      //						dateEtatDecesBox.getFormat())) {
-      //			badDateFormat = true;
-      //		}
-      //		if (!badDateFormat) {
       Clients.clearWrongValue(dateEtatDecesBox);
       validateCoherenceDate(dateEtatDecesBox, dateEtatDecesBox.getValue());
       Clients.clearWrongValue(dateNaisBox);
       validateCoherenceDate(dateNaisBox, dateNaisBox.getValue());
-      //		}
-
    }
 
    @Override
