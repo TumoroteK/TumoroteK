@@ -131,7 +131,7 @@
 									<label id="slashLabelEchan" value=" / " style="font-weight:bold;" />
 									<decimalbox id="quantiteInitBoxEchan"
 										width="75px"
-										constraint="@{fwinEchantillonEdit$composer.cttQuantiteInit}"
+										constraint="${fwinEchantillonEdit$composer.cttQuantiteInit}"
 										value="@{fwinEchantillonEdit$composer.object.quantiteInit,
 													save-when='validate.onClick, create.onClick'}"
 										format="#,##0.###" scale="3"

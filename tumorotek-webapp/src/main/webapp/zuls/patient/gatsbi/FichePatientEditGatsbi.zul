@@ -39,7 +39,7 @@
 <?component name="referents" macroURI="/zuls/patient/MedecinsReferents.zul" ?>
 
 <window id="fwinPatientEdit" border="none" 
-		apply="fr.aphp.tumorotek.action.patient.gatsbi.FichePatientStaticGatsbi"
+		apply="fr.aphp.tumorotek.action.patient.gatsbi.FichePatientEditGatsbi"
 		forward="onSelectParametrage=onGetSelectedParametrage">
 	<panel id="winPanel" title="${c:l('fichePatient.panel.title')}"
 	 	sclass="fichePanelv2" closable="true">
@@ -56,16 +56,16 @@
 							<textbox id="nipBox" 
 								value="@{fwinPatientEdit$composer.object.nip save-when='validate.onClick, create.onClick'}" 
 								width="100px" 
-								constraint="@{fwinPatientEdit$composer.codeNullConstraint}" />
+								constraint="${fwinPatientEdit$composer.codeNullConstraint}" />
 						</div>
-						<div class="item item-mid" id="ndaDiv"><!-- Nip -->
+						<div class="item item-mid" id="ndaDiv"><!-- NDA -->
 							<custom-attributes champId="2" />
-							<div id="ndaFieldLabel" class="row-container chpLabel">
+							<div id="ndaFieldLabel" class="row-container chpLabel" visible="false">
 								<label value="${c:l('Champ.Prelevement.PatientNda')}" sclass="formLabel" />
 								<label value="*" sclass="requiredMark" />
 							</div>
 							<textbox id="ndaBox" width="100px" visible="false"
-									constraint="@{fwinPatientEdit$composer.codeNullConstraint}" />
+									constraint="${fwinPatientEdit$composer.codeNullConstraint}" />
 						</div>
 						<div class="item item-mid" id="nomDiv"><!-- Nom -->	
 							<custom-attributes champId="3" />
@@ -76,7 +76,7 @@
 							<textbox id="nomBox" 
 								value="@{fwinPatientEdit$composer.object.nom, save-when='validate.onClick, create.onClick'}" 
 								width="100px" 
-								constraint="@{fwinPatientEdit$composer.nomConstraint}" />
+								constraint="${fwinPatientEdit$composer.nomConstraint}" />
 						</div>
 						<div class="item item-mid" id="nomNaissanceDiv"><!-- Nom Naissance-->	
 							<custom-attributes champId="4" />
@@ -88,7 +88,7 @@
 								value="@{fwinPatientEdit$composer.object.nomNaissance,
 			        								 save-when='validate.onClick, create.onClick'}" 
 								width="100px" 
-								constraint="@{fwinPatientEdit$composer.nomNullConstraint}" />							
+								constraint="${fwinPatientEdit$composer.nomNullConstraint}" />							
 						</div>
 						<div class="item item-mid" id="prenomDiv"><!-- Prénom -->	
 							<custom-attributes champId="5" />
@@ -99,7 +99,7 @@
 							<textbox id="prenomBox" value="@{fwinPatientEdit$composer.object.prenom,
 		        								 save-when='validate.onClick, create.onClick'}"
 								width="100px" 
-								constraint="@{fwinPatientEdit$composer.nomConstraint}" />
+								constraint="${fwinPatientEdit$composer.nomConstraint}" />
 						</div>
 						<div class="item item-mid" id="sexeDiv"><!-- Sexe -->	
 							<custom-attributes champId="6" />
@@ -123,8 +123,7 @@
 							</div>	
 							<datebox id="dateNaisBox" format="${c:l('validation.date.format.simple')}"
 								value="@{fwinPatientEdit$composer.object.dateNaissance,
-								save-when='validate.onClick, create.onClick'}" 
-								constraint="no empty" lenient="true"/>
+								save-when='validate.onClick, create.onClick'}" lenient="true"/>
 						</div>
 						<div class="item item-mid" id="paysNaissanceDiv"><!-- Pays naissance -->	
 							<custom-attributes champId="9" />
@@ -135,7 +134,7 @@
 							<textbox id="paysNaisBox" value="@{fwinPatientEdit$composer.object.paysNaissance,
 		        								 save-when='validate.onClick, create.onClick'}" 
 								width="100px" 
-								constraint="@{fwinPatientEdit$composer.villePaysConstraint}" />
+								constraint="${fwinPatientEdit$composer.villePaysConstraint}" />
 						</div>
 						<div class="item item-mid" id="villeNaissanceDiv"><!-- Ville naissance -->	
 							<custom-attributes champId="8" />
@@ -146,7 +145,7 @@
 							<textbox id="villeNaisBox" value="@{fwinPatientEdit$composer.object.villeNaissance,
 			        								 save-when='validate.onClick, create.onClick'}" 
 								width="100px" 
-								constraint="@{fwinPatientEdit$composer.villePaysConstraint}" />
+								constraint="${fwinPatientEdit$composer.villePaysConstraint}" />
 						</div>
 						<div class="item item-mid" id="etatDiv"><!-- Etat -->	
 							<custom-attributes champId="10" />
@@ -169,7 +168,7 @@
 								<label value="*" sclass="requiredMark" />
 							</div>	
 							<datebox id="dateEtatDecesBox" format="${c:l('validation.date.format.simple')}" 
-								value="@{fwinPatientEdit$composer.dateEtatDeces,
+								value="@{fwinPatientEdit$composer.object.dateEtat,
 									save-when='validate.onClick, create.onClick'}" lenient="true"/>
 						</div>
 						<div class="item item-mid" id="dateDecesDiv"><!-- Date deces -->	
@@ -177,15 +176,18 @@
 							<div class="row-container chpLabel">
 								<label value="${c:l('Champ.Patient.DateDeces')}" sclass="formLabel" />
 								<label value="*" sclass="requiredMark" />
-							</div>	
-							<label id="decesLabel" value="@{fwinPatientStatic$composer.dateDecesFormatted}" sclass="formValue" />
+							</div>
+							<datebox id="dateDecesBox" format="${c:l('validation.date.format.simple')}" 
+								value="@{fwinPatientEdit$composer.object.dateDeces,
+									save-when='validate.onClick, create.onClick'}" lenient="true" />
 						</div>
 					</div>
 				</div>
 				<div class="block-separator" />
 				<!-- Médecins -->
-				<groupbox id="groupMedecins">
-					<caption label="@{fwinPatientStatic$composer.referentsGroupHeader}" />
+				<groupbox id="referentsGroup">
+					<caption label="@{fwinPatientEdit$composer.referentsGroupHeader, load-after='onRefreshHeader'}"
+						style="border-bottom-width : 0px;"/>
 					<div id="referentsDiv">
 						<referents id="referents" width="100%" />
 					</div>

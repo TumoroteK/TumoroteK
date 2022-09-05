@@ -265,36 +265,37 @@ public class GatsbiController
          if(!required.isEmpty()){
             boolean isReq;
             for(Div div : items){
-               if(div.isVisible()){
-                  isReq =
-                     (div.hasAttribute("champId") && required.contains(Integer.valueOf((String) div.getAttribute("champId"))));
-                  if(isReq){ // required
-                     div.setSclass(div.getSclass().concat(" item-required"));
+               isReq =
+                  (div.hasAttribute("champId") && required.contains(Integer.valueOf((String) div.getAttribute("champId"))));
+               
+               Component formElement = null;
+               formElement = findInputOrListboxElement(div);
+               
+               if(div.isVisible() && isReq){ // required
+                  div.setSclass(div.getSclass().concat(" item-required"));
 
-                     Component formElement = null;
-
-                     formElement = findInputOrListboxElement(div);
-
-                     if(formElement != null){
-                        if(formElement instanceof Combobox){
-                           cboxes.add(((Combobox) formElement));
-                        }else if(formElement instanceof Listbox){
-                           lboxes.add(((Listbox) formElement));
-                        }else if(formElement instanceof InputElement){
-                           ((InputElement) formElement)
-                              .setConstraint(muteConstraintFromContexte(((InputElement) formElement).getConstraint(), isReq));
-                        }else if(formElement instanceof CalendarBox){
-                           ((CalendarBox) formElement).setConstraint("no empty");
-                        }
-                     }else if(div.getId().startsWith("conforme") || div.getId().startsWith("crAnapath")
-                        || div.getId().equals("cOrganesDiv") || div.getId().equals("cMorphosDiv")
-                        || div.getId().equals("echanQteDiv")){
-                        reqDivs.add(div);
+                  if(formElement != null){
+                     if(formElement instanceof Combobox){
+                        cboxes.add(((Combobox) formElement));
+                     }else if(formElement instanceof Listbox){
+                        lboxes.add(((Listbox) formElement));
+                     }else if(formElement instanceof InputElement){
+                        ((InputElement) formElement)
+                           .setConstraint(muteConstraintFromContexte(((InputElement) formElement).getConstraint(), true));
+                     }else if(formElement instanceof CalendarBox){
+                        ((CalendarBox) formElement).setConstraint("no empty");
                      }
+                  }else if(div.getId().startsWith("conforme") || div.getId().startsWith("crAnapath")
+                     || div.getId().equals("cOrganesDiv") || div.getId().equals("cMorphosDiv")
+                     || div.getId().equals("echanQteDiv")){
+                     reqDivs.add(div);
                   }
-
-                  log.debug("switching ".concat(div.getId()).concat(" ").concat(!isReq ? "not" : "").concat("required"));
+               } else if(formElement instanceof InputElement) { // non required ou invisible -> modifie la contrainte 'non required' sur un champ input
+                  ((InputElement) formElement)
+                     .setConstraint(muteConstraintFromContexte(((InputElement) formElement).getConstraint(), false));
                }
+
+               log.debug("switching ".concat(div.getId()).concat(" ").concat(!isReq ? "not" : "").concat("required"));
             }
          }
       }

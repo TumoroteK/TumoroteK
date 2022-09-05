@@ -45,6 +45,8 @@ import org.zkoss.zul.Listbox;
 
 import fr.aphp.tumorotek.action.patient.FichePatientEdit;
 import fr.aphp.tumorotek.action.patient.LabelCodeItem;
+import fr.aphp.tumorotek.action.patient.PatientUtils;
+import fr.aphp.tumorotek.model.coeur.patient.Patient;
 import fr.aphp.tumorotek.model.contexte.gatsbi.Contexte;
 import fr.aphp.tumorotek.webapp.gatsbi.GatsbiController;
 
@@ -70,16 +72,33 @@ public class FichePatientEditGatsbi extends FichePatientEdit
    public void doAfterCompose(final Component comp) throws Exception{
       super.doAfterCompose(comp);
 
-      contexte = GatsbiController.initWireAndDisplay(this, 2, true, reqListboxes, null, null, new Groupbox[]{});
+      contexte = GatsbiController.initWireAndDisplay(this, 1, true, reqListboxes, null, null, new Groupbox[]{});
    }
    
    @Override
-   public List<LabelCodeItem> getEtats(){
-      List<LabelCodeItem> etats = super.getEtats();
-      if (!contexte.isChampIdRequired(10)) {
-         etats.add(0, null);
+   public LabelCodeItem setSexeItemFromDBValue(final Patient pat){
+      if(pat.getSexe() == null) {
+         if (contexte.isChampIdRequired(6)) { // null mais champ obligatoire -> valeur par défaut
+            return PatientUtils.SEXE_IND;
+         } else {
+            return null;
+         }
+      } else {
+         return super.setSexeItemFromDBValue(pat);
       }
-      return etats;
+   }
+   
+   @Override
+   public LabelCodeItem setPatientEtatFromValue(final Patient pat){
+      if(pat.getPatientEtat() == null) { 
+         if (contexte.isChampIdRequired(10)) { // null mais champ obligatoire -> valeur par défaut
+            return PatientUtils.ETAT_I;
+         } else {
+            return null;
+         }
+      } else {
+         return super.setPatientEtatFromValue(pat);
+      }
    }
    
    /**
@@ -91,7 +110,7 @@ public class FichePatientEditGatsbi extends FichePatientEdit
          this.patient.setPatientEtat(this.selectedEtat.getCode());
       }
    }
-  
+   
    /**
     * Surcharge Gastbi pour conserver sélectivement la
     * contrainte de sélection obligatoire des listes nature et statut juridique
@@ -112,5 +131,10 @@ public class FichePatientEditGatsbi extends FichePatientEdit
    
    @Override
    protected void recordDateEtatDeces() {
+   }
+   
+   @Override
+   protected void setReferentsGroupOpen(boolean _o) {
+      ((Groupbox) referentsGroup).setOpen(_o);
    }
 }

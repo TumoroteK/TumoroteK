@@ -558,14 +558,14 @@ public class PatientManagerTest extends AbstractManagerTest4
       assertTrue(patientManager.findByNomLikeManager("2 MAKOUN", false).size() == 1);
 
       //validation test Type
-      final String[] noms = new String[] {"", "  ", "12}.4", createOverLength(50), "Mr Jean-2Pierre"};
-      final String[] prenoms = new String[] {"", "  ", "e456$$", createOverLength(50), null, "Jeff-you Jr"};
+      final String[] noms = new String[] {"", "  ", "¤¤¯¯˛¿°", createOverLength(50), null, "Mr Jean-2Pierre"};
+      final String[] prenoms = new String[] {"", "  ", "¤¤¯¯˛¿°", createOverLength(50), null, "Jeff-you Jr"};
       final String[] nips = new String[] {"", "  ", "12%$.4", createOverLength(20), null, "55.8-7"};
-      final String[] sexes = new String[] {"", "  ", "Test", "Masc", "M"};
-      final String[] nomNais = new String[] {"", "  ", "*kII$$", createOverLength(50), null, "YAYA"};
-      final String[] villes = new String[] {"", "  ", "{ERE", createOverLength(100), null, "lOUISI"};
-      final String[] pays = new String[] {"", "  ", "kllo==$$", createOverLength(100), null, "les Açores"};
-      final String[] etats = new String[] {"", "  ", "Decede", "D"};
+      final String[] sexes = new String[] {"", "  ", "Test", "Masc", null, "M"};
+      final String[] etats = new String[] {"", "  ", "Decede", null, "D"};
+      final String[] nomNais = new String[] {"", "  ", "¤¤¯¯˛¿°", createOverLength(50), null, "YAYA"};
+      final String[] villes = new String[] {"", "  ", "¤¤¯¯˛¿°", createOverLength(100), null, "lOUISI"};
+      final String[] pays = new String[] {"", "  ", "¤¤¯¯˛¿°", createOverLength(100), null, "les Açores"};
 
       int i = 0, j = 0, k = 0, l = 0, o = 0, n = 0, q = 0, r = 0;
       //boolean isValide = (i > 3 && j == 5 && k > 3 && l > 3 
@@ -591,17 +591,18 @@ public class PatientManagerTest extends AbstractManagerTest4
          validationTest(p2, nips[i], noms[j], nomNais[l], prenoms[k], sexes[q], villes[o], pays[n], etats[r], false);
       }
       q--;
+      for(r = 0; r < etats.length; r++){
+         validationTest(p2, nips[i], noms[j], nomNais[l], prenoms[k], sexes[q], villes[o], pays[n], etats[r], false);
+      }
+      r--;
       for(o = 0; o < villes.length; o++){
          validationTest(p2, nips[i], noms[j], nomNais[l], prenoms[k], sexes[q], villes[o], pays[n], etats[r], false);
       }
       o--;
       for(n = 0; n < pays.length; n++){
-         validationTest(p2, nips[i], noms[j], nomNais[l], prenoms[k], sexes[q], villes[o], pays[n], etats[r], false);
+         validationTest(p2, nips[i], noms[j], nomNais[l], prenoms[k], sexes[q], villes[o], pays[n], etats[r], n > 3);
       }
       n--;
-      for(r = 0; r < etats.length; r++){
-         validationTest(p2, nips[i], noms[j], nomNais[l], prenoms[k], sexes[q], villes[o], pays[n], etats[r], (r == 4));
-      }
 
       //concordance des dates
       final Date avant = new SimpleDateFormat("dd/MM/yyyy").parse("01/11/2008");
@@ -735,14 +736,14 @@ public class PatientManagerTest extends AbstractManagerTest4
       assertTrue(maladieManager.getMaladiesManager(p).size() == 2);
       assertTrue((patientManager.getPatientMedecinsManager(p)).size() == 2);
       assertTrue((patientManager.getPatientLiensManager(p)).size() == 2);
-      //Modification en un doublon engendrant une exception
       Boolean catched = false;
-      // date naissance null
+      // pays naissance invalide
       try{
          p.setNom("DELPHINO");
          p.setPrenom("Mike");
          p.setDateNaissance(null);
          p.setVilleNaissance(null);
+         p.setPaysNaissance("¨¤");
          patientManager.createOrUpdateObjectManager(p, null, null, null, null, null, null, null, u, "modification", null, false);
       }catch(final ValidationException e){
          catched = true;
@@ -750,14 +751,16 @@ public class PatientManagerTest extends AbstractManagerTest4
       assertTrue(catched);
       assertTrue(patientManager.findByNomLikeManager("DELPHINO", true).size() == 1);
 
+      //Modification en un doublon engendrant une exception
       // doublon
-      catched = true;
+      catched = false;
       try{
          final Patient mayer = patientDao.findById(1);
          p.setNom(mayer.getNom());
          p.setPrenom(mayer.getPrenom());
          p.setVilleNaissance(mayer.getVilleNaissance());
          p.setDateNaissance(mayer.getDateNaissance());
+         p.setPaysNaissance(null);
          patientManager.createOrUpdateObjectManager(p, null, null, null, null, null, null, null, u, "modification", null, false);
       }catch(final DoublonFoundException e){
          catched = true;
@@ -821,14 +824,15 @@ public class PatientManagerTest extends AbstractManagerTest4
    public void testDateNaissanceCoherence() throws ParseException{
       Patient p = new Patient();
 
+      // @since 2.3.0-gatsbi gatsbi
       // null validation
-      p.setDateNaissance(null);
-      Errors errs = patientValidator.checkDateNaissanceCoherence(p);
-      assertEquals("patient.dateNaissance.empty", errs.getFieldError().getCode());
+      // p.setDateNaissance(null);
+      // Errors errs = patientValidator.checkDateNaissanceCoherence(p);
+      // assertEquals("patient.dateNaissance.empty", errs.getFieldError().getCode());
 
       // limites sup
       p.setDateNaissance(new SimpleDateFormat("dd/MM/yyyy").parse("01/01/1970"));
-      errs = patientValidator.checkDateNaissanceCoherence(p);
+      Errors errs = patientValidator.checkDateNaissanceCoherence(p);
       assertTrue(errs.getAllErrors().size() == 0);
 
       p.setDateDeces(new SimpleDateFormat("dd/MM/yyyy").parse("01/01/1969"));
