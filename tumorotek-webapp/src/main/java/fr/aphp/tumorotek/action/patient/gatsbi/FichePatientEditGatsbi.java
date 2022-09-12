@@ -40,6 +40,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zul.Div;
 import org.zkoss.zul.Groupbox;
 import org.zkoss.zul.Listbox;
 
@@ -47,8 +48,10 @@ import fr.aphp.tumorotek.action.patient.FichePatientEdit;
 import fr.aphp.tumorotek.action.patient.LabelCodeItem;
 import fr.aphp.tumorotek.action.patient.PatientUtils;
 import fr.aphp.tumorotek.model.coeur.patient.Patient;
+import fr.aphp.tumorotek.model.coeur.patient.gatsbi.PatientIdentifiant;
 import fr.aphp.tumorotek.model.contexte.gatsbi.Contexte;
 import fr.aphp.tumorotek.webapp.gatsbi.GatsbiController;
+import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
 /**
  *
@@ -67,6 +70,8 @@ public class FichePatientEditGatsbi extends FichePatientEdit
    private final List<Listbox> reqListboxes = new ArrayList<>();
 
    private Contexte contexte;
+   
+   private Div ndaDiv;
 
    @Override
    public void doAfterCompose(final Component comp) throws Exception{
@@ -136,5 +141,25 @@ public class FichePatientEditGatsbi extends FichePatientEdit
    @Override
    protected void setReferentsGroupOpen(boolean _o) {
       ((Groupbox) referentsGroup).setOpen(_o);
+   }
+   
+   @Override
+   public void setEmbedded(Patient pat){
+      super.setEmbedded(pat);
+      ndaDiv.setVisible(true);
+   }
+   
+   // TODO toutes collections ? Afficher une liste ?
+   public String getIdentifiant() {
+      return patient.getIdentifiantAsString(SessionUtils.getCurrentBanque(sessionScope));
+   }
+   
+   // TODO toutes collections = non modifiable
+   public void setIdentifiant(String identifiant) {
+      PatientIdentifiant currPatIdent = patient.getIdentifiant(SessionUtils.getCurrentBanque(sessionScope));
+      currPatIdent.setIdentifiant(identifiant);
+      
+      // met à jour (si nécessaire) la relation patient-banque-identifiant
+      patient.addToIdentifiants(currPatIdent);
    }
 }

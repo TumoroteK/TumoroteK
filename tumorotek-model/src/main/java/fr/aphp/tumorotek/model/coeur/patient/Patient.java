@@ -61,6 +61,7 @@ import fr.aphp.tumorotek.model.TKAnnotableObject;
 import fr.aphp.tumorotek.model.TKDelegateObject;
 import fr.aphp.tumorotek.model.TKDelegetableObject;
 import fr.aphp.tumorotek.model.coeur.patient.delegate.AbstractPatientDelegate;
+import fr.aphp.tumorotek.model.coeur.patient.gatsbi.PatientIdentifiant;
 import fr.aphp.tumorotek.model.contexte.Banque;
 
 /**
@@ -131,9 +132,6 @@ public class Patient extends TKDelegetableObject<Patient> implements TKAnnotable
    private Integer patientId;
 
    private String nip;
-   
-   // @since 2.3.0-gatsbi
-   // private String identifiant;
 
    private String nom;
 
@@ -168,6 +166,10 @@ public class Patient extends TKDelegetableObject<Patient> implements TKAnnotable
    private Set<Maladie> maladies = new HashSet<>();
 
    private Set<PatientMedecin> patientMedecins = new LinkedHashSet<>();
+   
+   // @since 2.3.0-gatsbi
+   private Set<PatientIdentifiant> patientIdentifiants = new LinkedHashSet<PatientIdentifiant>();
+
 
    /** Constructeur par défaut. */
    public Patient(){}
@@ -210,15 +212,6 @@ public class Patient extends TKDelegetableObject<Patient> implements TKAnnotable
    public void setNip(final String n){
       this.nip = n;
    }
-
-//   @Column(name = "IDENTIFIANT", nullable = true, length = 50)
-//   public String getIdentifiant(){
-//      return identifiant;
-//   }
-//
-//   public void setIdentifiant(String identifiant){
-//      this.identifiant = identifiant;
-//   }
 
    @Column(name = "NOM", nullable = true, length = 50)
    public String getNom(){
@@ -406,6 +399,44 @@ public class Patient extends TKDelegetableObject<Patient> implements TKAnnotable
       this.patientMedecins = patientMeds;
    }
 
+   @OneToMany(mappedBy = "pk.patient", cascade = {CascadeType.ALL})
+   @OrderBy("identifiant")
+   public Set<PatientIdentifiant> getPatientIdentifiants(){
+      return patientIdentifiants;
+   }
+
+   public void setPatientIdentifiants(Set<PatientIdentifiant> _i){
+      this.patientIdentifiants = _i;
+   }
+   
+   @Transient
+   public PatientIdentifiant getIdentifiant(Banque _b) {
+      return patientIdentifiants.stream()
+         .filter(i -> i.getBanque().equals(_b)).findFirst()
+         .orElse(new PatientIdentifiant(this, _b));
+   }
+   
+   @Transient
+   public String getIdentifiantAsString(Banque _b) {
+      return getIdentifiant(_b).getIdentifiant();
+   }
+   
+   public void addToIdentifiants(PatientIdentifiant ident) {
+      // suppr tout identifiant existant dont la valeur 'identifiant' 
+      // diffère de celui passé en paramètre
+ //     if (patientIdentifiants.stream()
+ //           .anyMatch(i -> i.equals(ident) && !i.getIdentifiant().equals(ident.getIdentifiant()))) {
+ //        patientIdentifiants.remove(ident); 
+ //     }  
+      
+      // soit identifiant n'existe plus pour la banque
+      // soit la valeur 'identifiant' n'a pas été modifiée
+      if (!patientIdentifiants.contains(ident)) { // ajoute identifiant si nécessaire
+         this.patientIdentifiants.add(ident);
+      }
+
+   }
+
    /**
     * 2 patients sont considérés comme égaux s'ils ont les mêmes nom,
     * prénom, date de naissance.
@@ -492,7 +523,7 @@ public class Patient extends TKDelegetableObject<Patient> implements TKAnnotable
 
       clone.setDelegate(getDelegate());
       
-//      clone.setIdentifiant(getIdentifiant());
+      clone.getPatientIdentifiants().addAll(this.getPatientIdentifiants());
 
       return clone;
    }

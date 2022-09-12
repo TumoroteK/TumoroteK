@@ -105,8 +105,6 @@
             <column name="CAN_IMPORT" value="0"/>
         </insert>
     </changeSet>
-
-    
   	<changeSet id="${project.artifactId}-21" author="CH" runAlways="true" context="*">
         <preConditions onFail="MARK_RAN">
             <not>
@@ -123,5 +121,36 @@
             <column name="VALEUR" type="VARCHAR(100)" />
         </createTable>
         <addPrimaryKey tableName="CONFIG_ITEM" columnNames="CLE"/>
+    </changeSet>
+    <changeSet id="${project.artifactId}-22" author="MB" runAlways="true" context="*">
+       <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="PATIENT_IDENTIFIANT"/>
+            </not>
+        </preConditions>
+       <createTable tableName="PATIENT_IDENTIFIANT">
+			<column name="IDENTIFIANT" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="PATIENT_ID" type="INT(10)">
+                <constraints nullable="false" foreignKeyName="FK_PAT_IDENT_PAT_ID" referencedTableName="PATIENT"
+                             referencedColumnNames="PATIENT_ID"/>
+            </column>
+            <column name="BANQUE_ID" type="INT(10)">
+                <constraints nullable="false" foreignKeyName="FK_PAT_IDENT_BANQUE_ID" referencedTableName="BANQUE"
+                             referencedColumnNames="BANQUE_ID"/>
+            </column>       
+        </createTable>
+        <addPrimaryKey tableName="PATIENT_IDENTIFIANT" columnNames="PATIENT_ID,BANQUE_ID"/>
+        <comment>Ajout champ entite identifiant</comment>
+        <insert tableName="CHAMP_ENTITE">
+            <column name="CHAMP_ENTITE_ID" value="272"/>
+            <column name="NOM" value="Identifiant"/>
+            <column name="DATA_TYPE_ID" value="1" />
+            <column name="IS_NULL" value="0"/>
+            <column name="IS_UNIQUE" value="0"/>
+            <column name="ENTITE_ID" value="1"/>
+            <column name="CAN_IMPORT" value="1"/>
+        </insert>
     </changeSet>
  </databaseChangeLog>

@@ -184,11 +184,11 @@ public class GatsbiControllerPatient
       switch(chpId){
          case 2: // nip
             TKSelectObjectRenderer
-               .renderAnonymisableAndClickableAlphanumProperty(row, pat, "nip", anonyme, "onClickObject", pat);
+               .renderAnonymisableAndClickableAlphanumProperty(row, pat, "nip", anonyme, null, null);
             break;
          case 3: // nom
             TKSelectObjectRenderer
-               .renderAnonymisableAndClickableAlphanumProperty(row, pat, "nom", anonyme, "onClickObject", pat);
+               .renderAnonymisableAndClickableAlphanumProperty(row, pat, "nom", anonyme, null, null);
             break;
          case 4: // nom naissance
             TKSelectObjectRenderer

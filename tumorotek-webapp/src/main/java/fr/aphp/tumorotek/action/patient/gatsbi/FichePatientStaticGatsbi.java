@@ -160,4 +160,9 @@ public class FichePatientStaticGatsbi extends FichePatientStatic
    public String getDateDecesFormatted(){
       return ObjectTypesFormatters.dateRenderer2(patient.getDateDeces());
    }
+   
+   // TODO toutes collections ? Afficher une liste ?
+   public String getPatientIdentifiant() {
+      return patient.getIdentifiantAsString(SessionUtils.getCurrentBanque(sessionScope));
+   }
 }

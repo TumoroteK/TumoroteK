@@ -47,6 +47,16 @@
 			<div id="gatsbiContainer" class="main-container gridForm1">
 				<div id="patientBlockDiv" style="padding-left: 5px">
 					<div id="patientBlockDivContainer" class="block-container">
+						<div class="item item-wide" id="identifiantDiv"><!-- Identifiant -->
+							<custom-attributes champId="272" />
+							<div class="row-container chpLabel">
+								<label value="${c:l('Champ.Patient.Identifiant')}" sclass="formLabel" />
+								<label value="*" sclass="requiredMark" />
+							</div>
+							<textbox id="identifiantBox" 
+								value="@{fwinPatientEdit$composer.identifiant save-when='validate.onClick, create.onClick'}" 
+								width="100px" constraint="${fwinPatientEdit$composer.codeNullConstraint}" />
+						</div>
 						<div class="item item-mid" id="nipDiv"><!-- Nip -->
 							<custom-attributes champId="2" />
 							<div class="row-container chpLabel">
@@ -58,7 +68,7 @@
 								width="100px" 
 								constraint="${fwinPatientEdit$composer.codeNullConstraint}" />
 						</div>
-						<div class="item item-mid" id="ndaDiv"><!-- NDA -->
+						<div class="item item-mid" id="ndaDiv" visible="false"><!-- NDA -->
 							<custom-attributes champId="2" />
 							<div id="ndaFieldLabel" class="row-container chpLabel" visible="false">
 								<label value="${c:l('Champ.Prelevement.PatientNda')}" sclass="formLabel" />

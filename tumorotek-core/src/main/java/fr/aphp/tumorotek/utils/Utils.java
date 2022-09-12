@@ -240,6 +240,7 @@ public final class Utils
       return resultat;
    }
 
+   // PF_1:R1,R2,R3;PF_2:R1,R2;
    public static Hashtable<Integer, List<Integer>> extractAssosPlateformesEmetteursRecepteurs(String value){
       final Hashtable<Integer, List<Integer>> associations = new Hashtable<>();
 

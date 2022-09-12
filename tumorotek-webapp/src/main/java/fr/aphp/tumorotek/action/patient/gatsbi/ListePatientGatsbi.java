@@ -36,6 +36,7 @@
  **/
 package fr.aphp.tumorotek.action.patient.gatsbi;
 
+import org.zkoss.zk.ui.Component;
 import org.zkoss.zul.Checkbox;
 import fr.aphp.tumorotek.action.patient.ListePatient;
 import fr.aphp.tumorotek.model.contexte.gatsbi.Contexte;
@@ -65,6 +66,13 @@ public class ListePatientGatsbi extends ListePatient
       
       setListObjectsRenderer(new PatientRowRendererGatsbi(true, firstOrganeCode));
    }
+   
+   @Override
+   public void doAfterCompose(Component comp) throws Exception{
+      super.doAfterCompose(comp);
+      ((PatientRowRendererGatsbi) getListObjectsRenderer())
+                  .setCurBanque(SessionUtils.getCurrentBanque(sessionScope));
+   }
 
    public void onCheckAll$gridColumns(){
       onCheck$checkAll();
@@ -79,6 +87,9 @@ public class ListePatientGatsbi extends ListePatient
       cbox.setId("checkAll");
       cbox.addForward("onCheck", objectsListGrid.getColumns(), "onCheckAll");
       GatsbiController.addColumn(objectsListGrid, null, "40px", null, cbox, null, true);
+      
+      // identifiant column, toujours affichée
+      GatsbiController.addColumn(objectsListGrid, "Champ.Patient.Identifiant", null, null, null, "auto(identifiant)", true);
 
       // variable columns
       for(final Integer chpId : contexte.getChampEntiteInTableauOrdered()){
@@ -96,44 +107,5 @@ public class ListePatientGatsbi extends ListePatient
       }
    }
    
-// PAS DE PARAMETRAGES pour les patients
-
-//   /**
-//    * Gatsbi surcharge pour intercaler une modale de sélection des parametrages
-//    * proposés par le contexte.
-//    *
-//    * @param click event
-//    */
-//   @Override
-//   public void onClick$addNew(final Event event) throws Exception{
-//      GatsbiController.addNewObjectForContext(contexte, self, e -> {
-//         try{
-//            super.onClick$addNew(e);
-//         }catch(final Exception ex){
-//            Messagebox.show(handleExceptionMessage(ex), "Error", Messagebox.OK, Messagebox.ERROR);
-//         }
-//      }, event, null);
-//   }
-//
-//   /**
-//    * Un parametrage a été sélectionné.
-//    *
-//    * @param param
-//    * @throws Exception
-//    */
-//   public void onGetSelectedParametrage(final ForwardEvent evt) throws Exception{
-//
-//      try{
-//         GatsbiController.getSelectedParametrageFromSelectEvent(contexte, SessionUtils.getCurrentBanque(sessionScope),
-//            getObjectTabController(), null, () -> {
-//               try{
-//                  super.onClick$addNew(null);
-//               }catch(final Exception ex){
-//                  Messagebox.show(handleExceptionMessage(ex), "Error", Messagebox.OK, Messagebox.ERROR);
-//               }
-//            }, evt);
-//      }catch(final GatsbiException e){
-//         Messagebox.show(handleExceptionMessage(e), "Error", Messagebox.OK, Messagebox.ERROR);
-//      }
-//   }
+   // PAS DE PARAMETRAGES pour les patients
 }

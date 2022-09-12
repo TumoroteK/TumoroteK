@@ -47,6 +47,11 @@
 			<div id="gatsbiContainer" class="main-container gridForm1">
 				<div id="patientBlockDiv" style="padding-left: 5px">
 					<div id="patientBlockDivContainer" class="block-container">
+						<div class="item item-wide" id="identifiantDiv"><!-- Identifiant -->
+							<custom-attributes champId="272" />
+							<label value="${c:l('Champ.Patient.Identifiant')}" sclass="chpLabel formLabel" />
+							<label id="identifiantLabel" value="@{fwinPatientStatic$composer.patientIdentifiant}" sclass="formValue" />
+						</div>
 						<div class="item item-wide" id="nipDiv"><!-- Nip -->
 							<custom-attributes champId="2" />
 							<label value="${c:l('Champ.Patient.Nip')}" sclass="chpLabel formLabel" />
