@@ -41,7 +41,8 @@
         mode="modal" title="@load(vm.title)" closable="true"
         action="hide: slideUp"
 		apply="org.zkoss.bind.BindComposer" 
-		viewModel="@id('vm') @init('fr.aphp.tumorotek.webapp.gatsbi.SelectParametrageModaleVM')">
+		viewModel="@id('vm') @init('fr.aphp.tumorotek.webapp.gatsbi.SelectParametrageModaleVM')"
+		onClose="@command('close')">
 		<listbox id="listbox" model="@load(vm.parametrages)" hflex="1" vflex="1" 
 			multiple="false" checkmark="false" style="padding: 2px 15px 2px 2px"
 			onSelect="@command('onSelectParametrage', paramId=self.selectedItem.value)">

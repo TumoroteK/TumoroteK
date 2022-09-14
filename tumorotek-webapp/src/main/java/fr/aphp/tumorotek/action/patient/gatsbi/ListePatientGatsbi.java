@@ -36,9 +36,19 @@
  **/
 package fr.aphp.tumorotek.action.patient.gatsbi;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zul.Checkbox;
+import org.zkoss.zul.Messagebox;
+import org.zkoss.zul.Radio;
+import org.zkoss.zul.Textbox;
+
+import fr.aphp.tumorotek.action.ManagerLocator;
 import fr.aphp.tumorotek.action.patient.ListePatient;
+import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
 import fr.aphp.tumorotek.model.contexte.gatsbi.Contexte;
 import fr.aphp.tumorotek.webapp.gatsbi.GatsbiController;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
@@ -56,6 +66,11 @@ public class ListePatientGatsbi extends ListePatient
    private Contexte contexte;
    
    private boolean firstOrganeCode = false;
+   
+   // Critères de recherche.
+   private Radio identifiantPatient;
+   private Textbox identifiantBoxPatient;
+   private String searchIdentifiantPatient;
 
    public ListePatientGatsbi(){
       
@@ -104,8 +119,89 @@ public class ListePatientGatsbi extends ListePatient
       if (firstOrganeCode) {
          GatsbiController.addColumn(objectsListGrid, "Champ.Echantillon.Organe", 
                                     null, null, null, null, true);
-      }
+      }      
    }
    
-   // PAS DE PARAMETRAGES pour les patients
+   @Override
+   protected void drawQuickSearchForVisibleChampEntites() {
+      // nom visible
+      if (!contexte.isChampIdVisible(3)) {
+         nomPatient.getParent().setVisible(false);
+      }
+      // nip visible
+      if (!contexte.isChampIdVisible(2)) {
+         nipPatient.getParent().setVisible(false);
+      }
+      
+   }
+   
+   /********** recherches par identifiant ********************/
+   
+   /**
+    * Méthode appelée après lors du focus sur le champ
+    * identifiantBoxPatient. Le radiobutton correspondant sera
+    * automatiquement sélectionné.
+    */
+   public void onFocus$identifiantBoxPatient(){
+      identifiantPatient.setChecked(true);
+   }
+   
+   @Override
+   public void applyDroitsOnListe(){
+      super.applyDroitsOnListe();
+      
+      identifiantPatient.setDisabled(isAnonyme());
+      identifiantBoxPatient.setDisabled(isAnonyme());
+   }
+   
+   @Override
+   public List<Integer> doFindObjects(){
+      List<Integer> patients = new ArrayList<>();
+
+       if(identifiantPatient.isChecked()){
+         if(!searchIdentifiantPatient.equals("")){
+            if(searchIdentifiantPatient.contains(",")){
+               final List<String> pats = ObjectTypesFormatters.formateStringToList(searchIdentifiantPatient);
+               patients =
+                  ManagerLocator.getPatientManager()
+                     .findByIdentifiantsInListManager(pats, SessionUtils.getSelectedBanques(sessionScope));
+            }else{
+               patients = ManagerLocator.getPatientManager().findByIdentifiantLikeBothSideReturnIdsManager(searchIdentifiantPatient,
+                  SessionUtils.getSelectedBanques(sessionScope), true);
+            }
+         }else{
+            if(Messagebox.show(ObjectTypesFormatters.getLabel("message.research.message", new String[] {"Patient"}),
+               Labels.getLabel("message.research.title"), Messagebox.YES | Messagebox.NO, Messagebox.QUESTION) == Messagebox.YES){
+               patients = ManagerLocator.getPatientManager()
+                  .findAllObjectsIdsWithBanquesManager(SessionUtils.getSelectedBanques(sessionScope));
+            }
+         }
+      } else {
+         patients = super.doFindObjects();
+      }
+      return patients;
+   }
+   
+   /**
+    * Lance la recherche des patients en fournissant un fichier
+    * Excel contenant une liste d'identifiants.
+    */
+   public void onClick$findByListPatientIdentifiants(){
+      // récupère les nips des patients présents dans le
+      // fichier excel que l'utilisateur va uploader
+      final List<String> identifiants = getListStringToSearch();
+      final List<Integer> patients =
+         ManagerLocator.getPatientManager()
+            .findByIdentifiantsInListManager(identifiants, SessionUtils.getSelectedBanques(sessionScope));
+      // affichage de ces résultats
+      showResultsAfterSearchByList(patients);
+   }
+
+   public String getSearchIdentifiantPatient(){
+      return searchIdentifiantPatient;
+   }
+
+   public void setSearchIdentifiantPatient(String _i){
+      this.searchIdentifiantPatient = _i;
+   }
 }

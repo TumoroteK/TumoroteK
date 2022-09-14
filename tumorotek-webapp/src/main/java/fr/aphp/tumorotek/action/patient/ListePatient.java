@@ -77,9 +77,9 @@ public class ListePatient extends AbstractListeController2
    protected Textbox nipBoxPatient;
 
    // Variables formulaire pour les critères.
-   private String searchNomPatient;
+   protected String searchNomPatient;
 
-   private String searchNipPatient;
+   protected String searchNipPatient;
 
    protected Column maladiesCol;
 
@@ -116,6 +116,7 @@ public class ListePatient extends AbstractListeController2
       // @since gatsbi
       try{
          drawColumnsForVisibleChampEntites();
+         drawQuickSearchForVisibleChampEntites();
       }catch(final Exception e){
          // une erreur inattendue levée dans la récupération
          // ou le rendu d'une propriété prel
@@ -147,6 +148,13 @@ public class ListePatient extends AbstractListeController2
     * @since 2.3.0-gatsbi
     */
    protected void drawColumnsForVisibleChampEntites()
+      throws ClassNotFoundException, InstantiationException, IllegalAccessException{}
+   
+   /**
+    * Cette méthode de dessin dynamique des champs de recherche rapide est surchargée par Gatsbi
+    * @since 2.3.0-gatsbi
+    */
+   protected void drawQuickSearchForVisibleChampEntites()
       throws ClassNotFoundException, InstantiationException, IllegalAccessException{}
 
    public void setListObjectsRenderer(final TKSelectObjectRenderer<? extends TKdataObject> listObjectsRenderer){
@@ -318,7 +326,7 @@ public class ListePatient extends AbstractListeController2
             }
          }
 
-      }else if(nipPatient.isChecked()){
+      }else if(nipPatient != null && nipPatient.isChecked()){
          if(!searchNipPatient.equals("")){
             if(searchNipPatient.contains(",")){
                final List<String> pats = ObjectTypesFormatters.formateStringToList(searchNipPatient);
@@ -382,16 +390,12 @@ public class ListePatient extends AbstractListeController2
       super.applyDroitsOnListe();
       listObjectsRenderer.setAnonyme(isAnonyme());
 
-      if(isAnonyme()){
-         nomPatient.setDisabled(true);
-         nomBoxPatient.setDisabled(true);
-         nipPatient.setDisabled(true);
-         nipBoxPatient.setDisabled(true);
-      }else{
-         nomPatient.setDisabled(false);
-         nomBoxPatient.setDisabled(false);
-         nipPatient.setDisabled(false);
-         nipBoxPatient.setDisabled(false);
+      nomPatient.setDisabled(isAnonyme());
+      nomBoxPatient.setDisabled(isAnonyme());
+      
+      if(nipPatient != null){ // peut être null pour collections gatsbi
+         nipPatient.setDisabled(isAnonyme());
+         nipBoxPatient.setDisabled(isAnonyme());
       }
    }
 

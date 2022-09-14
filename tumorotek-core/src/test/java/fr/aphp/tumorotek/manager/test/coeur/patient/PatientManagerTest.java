@@ -91,7 +91,7 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
  * Classe créée le 30/10/09.
  *
  * @author Mathieu BARTHELEMY.
- * @version 2.0
+ * @version 2.3.0-gatsbi
  *
  */
 public class PatientManagerTest extends AbstractManagerTest4
@@ -1663,5 +1663,25 @@ public class PatientManagerTest extends AbstractManagerTest4
       p1.setPrenom("MIKE");
       assertTrue(patientManager.getExistingPatientManager(p1).getPatientId() == 3);
 
+   }
+   
+   @Test
+   public void testFindByIdentifiantLikeBothSideReturnIdsManager(){
+      final List<Banque> bks = new ArrayList<>();
+      bks.add(banqueManager.findByIdManager(1));
+      //teste une recherche exactMatch
+      List<Integer> pats = patientManager.findByIdentifiantLikeBothSideReturnIdsManager("SLS-1234", bks, true);
+      assertTrue(pats.size() == 1);
+      //teste une recherche non exactMatch
+      pats = patientManager.findByIdentifiantLikeBothSideReturnIdsManager("SLS-1", bks, false);
+      assertTrue(pats.size() == 2);
+      //teste une recherche infructueuse
+      pats = patientManager.findByIdentifiantLikeBothSideReturnIdsManager("13.3", bks, true);
+      assertTrue(pats.size() == 0);
+      //null recherche
+      pats = patientManager.findByIdentifiantLikeBothSideReturnIdsManager(null, bks, false);
+      assertTrue(pats.size() == 0);
+      pats = patientManager.findByIdentifiantLikeBothSideReturnIdsManager("87", null, false);
+      assertTrue(pats.size() == 0);
    }
 }

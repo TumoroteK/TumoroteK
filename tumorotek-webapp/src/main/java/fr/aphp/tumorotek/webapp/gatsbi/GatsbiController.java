@@ -376,18 +376,26 @@ public class GatsbiController
    public static <T> List<T> filterExistingListModel(Contexte contexte, List<T> lModel, Integer chpId) throws TKException{
 
       List<ThesaurusValue> values = contexte.getThesaurusValuesForChampEntiteId(chpId);
+      
       Collections.sort(values,
          Comparator.comparing(ThesaurusValue::getPosition, Comparator.nullsLast(Comparator.naturalOrder())));
 
       List<T> thesObjs = new ArrayList<T>();
-      if(lModel.contains(null)){
-         thesObjs.add(null);
-      }
-      for(ThesaurusValue val : values){
-         thesObjs.add(lModel.stream().filter(
-            v -> v != null && (((v instanceof TKThesaurusObject) && ((TKThesaurusObject) v).getId().equals(val.getThesaurusId()))
-               || ((v instanceof Unite) && ((Unite) v).getNom().equals(val.getThesaurusValue()))))
-            .findAny().orElseThrow(() -> new TKException("gatsbi.thesaurus.value.notfound", val.getThesaurusValue())));
+      
+      if (!values.isEmpty()) {  
+         
+         if(lModel.contains(null)){
+            thesObjs.add(null);
+         }
+         
+         for(ThesaurusValue val : values){
+            thesObjs.add(lModel.stream().filter(
+               v -> v != null && (((v instanceof TKThesaurusObject) && ((TKThesaurusObject) v).getId().equals(val.getThesaurusId()))
+                  || ((v instanceof Unite) && ((Unite) v).getNom().equals(val.getThesaurusValue()))))
+               .findAny().orElseThrow(() -> new TKException("gatsbi.thesaurus.value.notfound", val.getThesaurusValue())));
+         }
+      } else { // adds all thesaurus values
+         thesObjs.addAll(lModel);
       }
 
       return thesObjs;
@@ -976,7 +984,8 @@ public class GatsbiController
          if (evt != null && evt.getOrigin() != null && evt.getOrigin().getData() != null 
               && ((Map<String, Object>) evt.getOrigin().getData()).get("parentObj") != null) {
             // prelevement => PrelevementController.createAnotherPrelevement 
-            if (((Map<String, Object>) evt.getOrigin().getData()).get("parentObj") instanceof Prelevement) {
+            if (((Map<String, Object>) evt.getOrigin().getData()).get("parentObj") instanceof Prelevement 
+               && ((Map<String, Integer>) evt.getOrigin().getData()).get("paramId").equals(2)) {
                inject.getPrelevement()
                   .setMaladie(((Prelevement) ((Map<String, Object>) evt.getOrigin().getData()).get("parentObj"))
                      .getMaladie());

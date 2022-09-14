@@ -75,6 +75,11 @@ import fr.aphp.tumorotek.model.coeur.prelevement.Prelevement;
 import fr.aphp.tumorotek.model.systeme.Entite;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
+/**
+ * @version 2.3.0-gatsbi
+ * @author Mathieu BARTHELEMY
+ *
+ */
 public class ListePrelevement extends AbstractListeController2
 {
 
@@ -374,10 +379,20 @@ public class ListePrelevement extends AbstractListeController2
       // récupère les codes des prlvts présents dans le
       // fichier excel que l'utilisateur va uploader
       final List<String> pats = getListStringToSearch();
-      final List<Integer> prelevements = ManagerLocator.getPrelevementManager().findByPatientNomOrNipInListManager(pats,
-         SessionUtils.getSelectedBanques(sessionScope));
+      final List<Integer> prelevements = findPrelevementsByPatientCodes(pats);
       // affichage de ces résultats
       showResultsAfterSearchByList(prelevements);
+   }
+
+   /**
+    * Sera surchargée par GATSBI.
+    * @since 2.3.0-gatsbi
+    * @param pats
+    * @return
+    */
+   protected List<Integer> findPrelevementsByPatientCodes(List<String> pats){
+      return ManagerLocator.getPrelevementManager().findByPatientNomOrNipInListManager(pats,
+         SessionUtils.getSelectedBanques(sessionScope));
    }
 
    /**

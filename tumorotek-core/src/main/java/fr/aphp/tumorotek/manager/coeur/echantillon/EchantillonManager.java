@@ -811,4 +811,14 @@ public interface EchantillonManager
     */
    void checkRequiredObjectsAndValidate(Echantillon echantillon, Banque banque, EchantillonType type, ObjetStatut statut,
       String operation, Utilisateur utilisateur, List<CodeAssigne> codes, boolean doValidation, boolean isImport);
+
+   /**
+    * Recherche tous les échantillons ids issus des patients dont les valeurs passées 
+    * en paramètres correspondent à un identifiant, un nip, ou un nom.
+    * @param idsNipsNoms Liste des identifiants noms ou nips de patients.
+    * @param banks Liste des banques des échantillons.
+    * @return Liste d'ids échantillons.
+    * @since 2.3.0-gatsbi
+    */
+   List<Integer> findByPatientIdentifiantOrNomOrNipInListManager(List<String> idsNipsNoms, List<Banque> selectedBanques);
 }

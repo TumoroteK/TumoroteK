@@ -704,4 +704,14 @@ public interface PrelevementManager
    void checkRequiredObjectsAndValidate(Prelevement prelevement, Banque banque, Nature nature, ConsentType consentType,
       Maladie maladie, List<LaboInter> laboInters, String operation, Utilisateur utilisateur, boolean doValidation,
       String baseDir);
+
+   /**
+    * Recherche tous les prélèvements ids issus des patients dont les valeurs passées 
+    * en paramètres correspondent à un identifiant, un nip, ou un nom.
+    * @param idsNipsNoms Liste des identifiants noms ou nips de patients.
+    * @param banks Liste des banques des prélèvements.
+    * @return Liste d'ids prélèvements.
+    * @since 2.3.0-gatsbi
+    */
+   List<Integer> findByPatientIdentifiantOrNomOrNipInListManager(List<String> idsNipsNoms, List<Banque> selectedBanques);
 }

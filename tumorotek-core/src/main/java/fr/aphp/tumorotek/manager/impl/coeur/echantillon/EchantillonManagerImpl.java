@@ -2031,4 +2031,12 @@ public class EchantillonManagerImpl implements EchantillonManager
          }
       }
    }
+
+   @Override
+   public List<Integer> findByPatientIdentifiantOrNomOrNipInListManager(List<String> idsNipsNoms, List<Banque> selectedBanques){
+      if(idsNipsNoms != null && !idsNipsNoms.isEmpty() && selectedBanques != null && !selectedBanques.isEmpty()){
+         return echantillonDao.findByPatientIdentifiantOrNomOrNipInList(idsNipsNoms, selectedBanques);
+      }
+      return new ArrayList<>();
+   }
 }

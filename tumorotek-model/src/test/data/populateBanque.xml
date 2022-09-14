@@ -12281,4 +12281,24 @@
 			<value>0</value>
 		</row>
 	</table>
+	<table name="PATIENT_IDENTIFIANT">
+		<column>PATIENT_ID</column>
+		<column>BANQUE_ID</column>
+		<column>IDENTIFIANT</column>
+		<row>
+			<value>1</value>
+			<value>1</value>
+			<value>SLS-1234</value>
+		</row>
+		<row>
+			<value>1</value>
+			<value>2</value>
+			<value>MEL-889</value>
+		</row>
+		<row>
+			<value>2</value>
+			<value>1</value>
+			<value>SLS-1255</value>
+		</row>
+	</table>
 </dataset>

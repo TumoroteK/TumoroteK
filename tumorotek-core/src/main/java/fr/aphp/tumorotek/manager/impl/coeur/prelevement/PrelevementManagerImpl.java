@@ -1732,4 +1732,12 @@ public class PrelevementManagerImpl implements PrelevementManager
    public List<Prelevement> findByCodeInPlateformeManager(final String code, final Plateforme pf){
       return prelevementDao.findByCodeInPlateforme(code, pf);
    }
+
+   @Override
+   public List<Integer> findByPatientIdentifiantOrNomOrNipInListManager(List<String> idsNipsNoms, List<Banque> selectedBanques){
+      if(idsNipsNoms != null && !idsNipsNoms.isEmpty() && selectedBanques != null && !selectedBanques.isEmpty()){
+         return prelevementDao.findByPatientIdentifiantOrNomOrNipInList(idsNipsNoms, selectedBanques);
+      }
+      return new ArrayList<>();
+   }
 }

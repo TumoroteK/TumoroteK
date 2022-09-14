@@ -90,6 +90,14 @@
 								<row>
 									<cell colspan="4">
 										<div class="block-container" style="padding-left: 5px">
+											<div class="item item-wide" id="identifiantDiv"><!-- Identifiant -->
+												<custom-attributes champId="272" />
+												<label value="${c:l('Champ.Patient.Identifiant')}" sclass="chpLabel formLabel" />
+												<textbox id="identifiantPatientBox" width="150px">
+												<custom-attributes
+													attribut="Identifiant" entite="Patient" />
+												</textbox>
+											</div>
 											<div class="item item-wide" id="nipDiv"><!-- Nip -->
 												<custom-attributes champId="2" />
 												<label value="${c:l('Champ.Patient.Nip')}" sclass="chpLabel formLabel" />

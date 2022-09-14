@@ -77,7 +77,7 @@ import fr.aphp.tumorotek.webapp.general.SessionUtils;
  * @since 2.1 export biobanques
  *
  * @author Pierre Ventadour
- * @version 2.2.1-IRELEC
+ * @version 2.3.0-gatsbi
  *
  */
 public class ListeEchantillon extends AbstractListeController2
@@ -450,11 +450,21 @@ public class ListeEchantillon extends AbstractListeController2
 		// récupère les patients présents dans le
 		// fichier excel que l'utilisateur va uploader
 		final List<String> pats = getListStringToSearch();
-		final List<Integer> echantillons = ManagerLocator.getEchantillonManager().findByPatientNomOrNipInListManager(pats,
-				SessionUtils.getSelectedBanques(sessionScope));
+		final List<Integer> echantillons = findEchantillonByPatientCodes(pats);
 		// affichage de ces résultats
 		showResultsAfterSearchByList(echantillons);
 	}
+	
+   /**
+    * Sera surchargée par GATSBI.
+    * @since 2.3.0-gatsbi
+    * @param pats
+    * @return
+    */
+   protected List<Integer> findEchantillonByPatientCodes(List<String> pats){
+      return ManagerLocator.getPrelevementManager().findByPatientNomOrNipInListManager(pats,
+         SessionUtils.getSelectedBanques(sessionScope));
+   }
 
 	/**
 	 * Méthode appelée lors du clic sur le bouton de menu newCessionItem. Une

@@ -101,6 +101,7 @@ public class FicheRechercheAvancee extends AbstractFicheRechercheAvancee {
 	
 	// Components patient
 	private Checkbox searchPatientsBox;
+   private Textbox identifiantPatientBox;
 	private Textbox nipPatientBox;
 	private Textbox nomPatientBox;
 	private Textbox nomNaissancePatientBox;
@@ -271,9 +272,9 @@ public class FicheRechercheAvancee extends AbstractFicheRechercheAvancee {
 	public void doAfterCompose(final Component comp) throws Exception{
 		super.doAfterCompose(comp);
 
-		objPatientComponents = new Component[] {this.nipPatientBox, this.nomPatientBox, this.nomNaissancePatientBox,
-				this.prenomPatientBox, this.dateNaissance1Box, this.dateNaissance2Box, this.sexeFBox, this.sexeHBox, this.sexeIndBox,
-				this.etatVBox, this.etatDBox, this.etatIncBox, this.medecinsBox};
+		objPatientComponents = new Component[] {this.identifiantPatientBox, this.nipPatientBox, this.nomPatientBox, 
+		      this.nomNaissancePatientBox, this.prenomPatientBox, this.dateNaissance1Box, this.dateNaissance2Box, 
+		      this.sexeFBox, this.sexeHBox, this.sexeIndBox, this.etatVBox, this.etatDBox, this.etatIncBox, this.medecinsBox};
 
 		objMaladieComponents = new Component[] {this.libelleMaladieBox, this.codeMaladieBox, this.dateDebutMaladie1Box,
 				this.dateDebutMaladie2Box, this.dateDiagnosticMaladie1Box, this.dateDiagnosticMaladie2Box, this.medecinsMaPatBox};
@@ -1035,8 +1036,19 @@ public class FicheRechercheAvancee extends AbstractFicheRechercheAvancee {
 					// si une valeur a été saisie
 					if(current.getValue() != null && !current.getValue().equals("")){
 
-						// exécution de la requête
-						executeSimpleQueryForTextbox(current, parent1ToQueryPatient, parent2ToQueryPatient,  false);
+	                // exécution de la requête
+					   if (!current.getId().equals("identifiantPatientBox")) {
+					      executeSimpleQueryForTextbox(current, parent1ToQueryPatient, parent2ToQueryPatient,  false);
+					   } else { // identifiant (gatsbi)
+					      executeIdentifiantQuery(current.getValue());
+					            
+					      // ajout du composant à l'historique
+					      final RechercheCompValues rcv = new RechercheCompValues();
+					      rcv.setCompClass(Textbox.class);
+					      rcv.setCompId(current.getId());
+					      rcv.setTextValue(current.getText());
+					      getUsedComponents().add(rcv);
+					   }
 
 						oneValueEntered = true;
 					}
@@ -2177,8 +2189,18 @@ public class FicheRechercheAvancee extends AbstractFicheRechercheAvancee {
       }
       if ("ProdDerive".equals(nomEntite)) {
          executeQueryForEntityToSearch(ManagerLocator.getEntiteManager().findByIdManager(8), ManagerLocator.getProdDeriveManager().findByBanksAndImpact(banques, impact));
-      }
-      
+      }   
+   }
+   
+   /**
+    * Exécute la requête permettant de récupérer tous les échantillons ayant une dégradation possible du matériel
+    * @param impact
+    * @return La liste de résultats mise à jour.
+    */
+   public void executeIdentifiantQuery(final String identifiant){
+      final List<Banque> banques = SessionUtils.getSelectedBanques(sessionScope);
+      executeQueryForEntityToSearch(ManagerLocator.getEntiteManager().findByIdManager(1), 
+         ManagerLocator.getPatientManager().findByIdentifiantLikeBothSideReturnIdsManager(identifiant, banques, false)); 
    }
 
 	@Override

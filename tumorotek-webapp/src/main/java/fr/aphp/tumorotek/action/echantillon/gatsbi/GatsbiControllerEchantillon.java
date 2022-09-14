@@ -455,7 +455,11 @@ public class GatsbiControllerEchantillon
       GatsbiControllerEchantillon.drawCodeColumn(grid);
       
       // ttes collection
-      GatsbiControllerEchantillon.drawBanqueColumn(grid, ttesCollections);
+      // colonne ne doit pas être écrite invisible dans ficheMultiEchantillons inner list car jamais affichée
+      // et produit un décalage
+      if (!deletable && !forceEmplacementAndStatut) { 
+         GatsbiControllerEchantillon.drawBanqueColumn(grid, ttesCollections);
+      }
 
       // variable columns
       for(final Integer chpId : contexte.getChampEntiteInTableauOrdered()){

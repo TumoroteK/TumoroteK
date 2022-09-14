@@ -61,7 +61,7 @@ import fr.aphp.tumorotek.model.contexte.Service;
  *
  * @author Pierre Ventadour
  * @author Mathieu BARTHELEMY
- * @version 2.2.1
+ * @version 2.3.0-gatsbi
  *
  */
 public interface PrelevementDao extends GenericDaoJpa<Prelevement, Integer>
@@ -463,4 +463,14 @@ public interface PrelevementDao extends GenericDaoJpa<Prelevement, Integer>
     * @return liste de prélèvements
     */
    List<Prelevement> findByCollaborateurLaboInter(Collaborateur operateur, List<Banque> banks);
+   
+   /**
+    * Recherche tous les prélèvements ids issus des patients dont les valeurs passées 
+    * en paramètres correspondent à un identifiant, un nip, ou un nom.
+    * @param idsNipsNoms Liste des identifiants noms ou nips de patients.
+    * @param banks Liste des banques des prélèvements.
+    * @return Liste d'ids échantillons.
+    * @since 2.3.0-gatsbi
+    */
+   List<Integer> findByPatientIdentifiantOrNomOrNipInList(List<String> idsNipsNoms, List<Banque> selectedBanques);
 }

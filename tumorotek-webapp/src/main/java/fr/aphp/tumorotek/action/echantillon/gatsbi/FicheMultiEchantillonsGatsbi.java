@@ -48,12 +48,15 @@ import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Groupbox;
 import org.zkoss.zul.Listbox;
+import org.zkoss.zul.Messagebox;
 
 import fr.aphp.tumorotek.action.echantillon.AbstractEchantillonDecoratorRowRenderer;
 import fr.aphp.tumorotek.action.echantillon.FicheMultiEchantillons;
+import fr.aphp.tumorotek.action.prelevement.gatsbi.exception.GatsbiException;
 import fr.aphp.tumorotek.manager.impl.interfacage.ResultatInjection;
 import fr.aphp.tumorotek.model.contexte.gatsbi.Contexte;
 import fr.aphp.tumorotek.webapp.gatsbi.GatsbiController;
+import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
 /**
 *
@@ -107,7 +110,14 @@ public class FicheMultiEchantillonsGatsbi extends FicheMultiEchantillons
 
    @Override
    protected void scrollToTop(){
-      Clients.scrollIntoView(this.getSelfComponent());
+      // ne remonte le scroll que suite ajout échantillon
+      if (!getAddedEchantillons().isEmpty()) {
+         Clients.scrollIntoView(this.getSelfComponent().getFellow("gatsbiContainer"));
+      }
+   }
+   
+   @Override
+   protected void scrollToBottom(){
    }
 
    /*********** switch required ******************/
@@ -165,6 +175,37 @@ public class FicheMultiEchantillonsGatsbi extends FicheMultiEchantillons
     */
    public void onGetInjectionDossierExterneDone(final ForwardEvent e){
       final ResultatInjection res = (ResultatInjection) e.getOrigin().getData();
-      injectEchantillon(res.getEchantillon());
+      injectEchantillon(res.getEchantillon());      
+   }
+   
+  /**
+    * Si pas de paramétrage, applique le scrollToBottom non surchargé
+    * pour scroller en bas de la liste vers le bouton stockage
+    */
+   @Override
+   protected void prepareNextEchantillons() {
+      GatsbiController.addNewObjectForContext(SessionUtils.getCurrentGatsbiContexteForEntiteId(3), self, 
+         e -> { super.scrollToBottom(); }, null, getPrelevement());
+   }   
+   
+   /**
+    * Un parametrage échantillon a été sélectionné.
+    *
+    * @param param
+    * @throws Exception
+    */
+   public void onGetSelectedParametrage(final ForwardEvent evt) throws Exception{
+      try{
+
+         GatsbiController.getSelectedParametrageFromSelectEvent(SessionUtils.getCurrentGatsbiContexteForEntiteId(3),
+            SessionUtils.getCurrentBanque(sessionScope), getObjectTabController(),
+            null, () -> { scrollToTop(); }, evt);
+      }catch(final GatsbiException e){
+         Messagebox.show(handleExceptionMessage(e), "Error", Messagebox.OK, Messagebox.ERROR);
+      }
+   }
+   
+   public void onSelectParametrageClose(){
+      super.scrollToBottom();    
    }
 }

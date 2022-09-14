@@ -68,7 +68,7 @@
 								width="100px" 
 								constraint="${fwinPatientEdit$composer.codeNullConstraint}" />
 						</div>
-						<div class="item item-mid" id="ndaDiv" visible="false"><!-- NDA -->
+						<div class="item item-wide" id="ndaDiv" visible="false"><!-- NDA -->
 							<custom-attributes champId="2" />
 							<div id="ndaFieldLabel" class="row-container chpLabel" visible="false">
 								<label value="${c:l('Champ.Prelevement.PatientNda')}" sclass="formLabel" />
