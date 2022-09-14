@@ -83,7 +83,7 @@ import fr.aphp.tumorotek.model.systeme.Entite;
  * Classe de test créée le 22/09/09.
  *
  * @author Pierre Ventadour
- * @version 2.1
+ * @version 2.3.0-gatsbi
  *
  */
 public class EchantillonDaoTest extends AbstractDaoTest
@@ -1260,5 +1260,35 @@ public class EchantillonDaoTest extends AbstractDaoTest
       assertTrue(echans.isEmpty());
       echans = echantillonDao.findByEmplacement(terminaleDao.findById(1), null);
       assertTrue(echans.isEmpty());
+   }
+   
+   public void testFindByPatientIdentifiantOrNomOrNipInList(){
+      List<String> criteres = new ArrayList<>();
+      criteres.add("876");
+      criteres.add("SOLIS");
+      criteres.add("SLS-1234");
+      final List<Banque> bks = new ArrayList<>();
+      bks.add(banqueDao.findById(1));
+      bks.add(banqueDao.findById(2));
+
+      // les échantillons patients 876 (DELPHINO) et SOLIS
+      // ne seront pas pris en compte car ils n'ont pas d'identifiant (donc pas Gatsbi !)
+      List<Integer> liste = echantillonDao.findByPatientIdentifiantOrNomOrNipInList(criteres, bks);
+      assertTrue(liste.size() == 1);
+      assertTrue(liste.get(0).equals(4));
+
+      // NOM
+      criteres.clear();
+      criteres.add("MAYER");
+      liste = echantillonDao.findByPatientIdentifiantOrNomOrNipInList(criteres, bks);
+      assertTrue(liste.size() == 1);
+      assertTrue(liste.get(0).equals(4));
+      
+      // NIP
+      criteres.clear();
+      criteres.add("12");
+      liste = echantillonDao.findByPatientIdentifiantOrNomOrNipInList(criteres, bks);
+      assertTrue(liste.size() == 1);
+      assertTrue(liste.get(0).equals(4));
    }
 }

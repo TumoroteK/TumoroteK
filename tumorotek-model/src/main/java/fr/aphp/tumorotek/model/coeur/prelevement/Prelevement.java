@@ -190,7 +190,7 @@ import fr.aphp.tumorotek.model.utils.Utils;
    @NamedQuery(name = "Prelevement.findByCollaborateurLaboInter",
       query = "SELECT DISTINCT e FROM Prelevement e JOIN e.laboInters l where l.collaborateur = (?1) AND e.banque in (?2)"), 
    @NamedQuery(name = "Prelevement.findByPatientIdentifiantOrNomOrNipInList",
-      query = "SELECT p.prelevementId FROM Prelevement p JOIN p.maladie as m  JOIN m.patient as pat "
+      query = "SELECT DISTINCT p.prelevementId FROM Prelevement p JOIN p.maladie as m  JOIN m.patient as pat "
       + "JOIN pat.patientIdentifiants i WHERE (pat.nom in (?1) or pat.nip in (?1) or i.identifiant in (?1)) "
       + "AND i.pk.banque in (?2) AND p.banque in (?2)")
 })
