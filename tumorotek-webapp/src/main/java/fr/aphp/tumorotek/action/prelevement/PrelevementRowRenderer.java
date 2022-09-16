@@ -159,7 +159,7 @@ public class PrelevementRowRenderer extends TKSelectObjectRenderer<Prelevement>
          icones.setParent(row);
       }
 
-      // identifiant
+      // code prelevement
       final Label codeLabel = new Label(prel.getCode());
       codeLabel.addForward(null, codeLabel.getParent(), "onClickObject", prel);
       codeLabel.setClass("formLink");
@@ -171,35 +171,7 @@ public class PrelevementRowRenderer extends TKSelectObjectRenderer<Prelevement>
          new Label().setParent(row);
       }
 
-      if(prel.getMaladie() != null){
-         if(anonyme){
-            if(getAccessPatient()){
-               final Label link = createAnonymeLabelIsClickable(true);
-               // attention piège ici, link.getParent est null
-               // donc l'évènement est remonté jusq'au liste controller
-               link.addForward(null, link.getParent(), "onClickPatient", prel);
-               link.setParent(row);
-            }else{
-               createAnonymeLabelIsClickable(false).setParent(row);
-            }
-            // nip @version 2.0.12
-            createAnonymeLabelIsClickable(false).setParent(row);
-         }else{
-            final Label patientLabel = new Label(PrelevementUtils.getPatientNomAndPrenom(prel));
-            if(getAccessPatient()){
-               patientLabel.addForward(null, patientLabel.getParent(), "onClickPatient", prel);
-               patientLabel.setClass("formLink");
-            }
-            patientLabel.setParent(row);
-            // nip @version 2.0.12
-            final Label nipLabel = new Label(prel.getMaladie().getPatient().getNip());
-            nipLabel.setParent(row);
-         }
-      }else{
-         new Label().setParent(row);
-         // nip @version 2.0.12
-         new Label().setParent(row);
-      }
+      renderPatient(prel, row); // 2 colonnes nom + prenom et nip
 
       if(prel.getMaladie() != null){
          final Label maladieLabel = new Label(prel.getMaladie().getLibelle());
@@ -250,6 +222,69 @@ public class PrelevementRowRenderer extends TKSelectObjectRenderer<Prelevement>
       renderNbEchans(row, prel);
 
       renderThesObjectProperty(row, prel, "consentType");
+   }
+   
+   /**
+    * Rendu des colonnes identifiants un patient, sera surchargé par Gatsbi.
+    * Soit par défaut | Nom + prenom | Nip 
+    */
+   protected void renderPatient(Prelevement prel, Row row) {
+      renderPatientNomAndNip(prel, row, true, true);
+   }
+   
+   /**
+    * Rendu des colonnes | Nom + prenom | Nip | appliquant droit accès et 
+    * anonymisation.
+    * @param row
+    * @param prel
+    * @param renderNom si true affiche nom + prenom
+    * @param renderNip si true affiche nip
+    */
+   protected void renderPatientNomAndNip(Prelevement prel, Row row, boolean renderNom, boolean renderNip){
+      if(prel.getMaladie() != null){
+         if(anonyme){
+            if (renderNom) { // affiche nom + prenom demandé
+               if(getAccessPatient()){
+                  final Label link = createAnonymeLabelIsClickable(true);
+                  // attention piège ici, link.getParent est null
+                  // donc l'évènement est remonté jusq'au liste controller
+                  link.addForward(null, link.getParent(), "onClickPatient", prel);
+                  link.setParent(row);
+               }else{
+                  createAnonymeLabelIsClickable(false).setParent(row);
+               }
+            }
+            
+            if (renderNip) { // affichage nip demandé
+               // nip @version 2.0.12
+               createAnonymeLabelIsClickable(false).setParent(row);
+            }
+         }else{
+            if (renderNom) { // affiche nom + prenom demandé
+               final Label patientLabel = new Label(PrelevementUtils.getPatientNomAndPrenom(prel));
+               if(getAccessPatient()){
+                  patientLabel.addForward(null, patientLabel.getParent(), "onClickPatient", prel);
+                  patientLabel.setClass("formLink");
+               }
+               patientLabel.setParent(row);
+            }
+            
+            if (renderNip) { // affichage nip demandé
+               // nip @version 2.0.12
+               final Label nipLabel = new Label(prel.getMaladie().getPatient().getNip());
+               nipLabel.setParent(row);
+            }
+         }
+      }else{
+         if (renderNom) { // affiche nom + prenom demandé
+            new Label().setParent(row);
+         }
+         
+         if (renderNip) { // affichage nip demandé
+            // nip @version 2.0.12
+            new Label().setParent(row);
+         }
+      }
    }
 
    /*********** prelevement specific rendering information methods ***********/

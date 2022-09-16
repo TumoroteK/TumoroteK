@@ -71,7 +71,7 @@ public class ListePrelevementGatsbi extends ListePrelevement
    // flag passe à true si la colonne congelation est déja rendue
    // afin d'éviter que cette colonne soit rendue deux fois
    private boolean congColRendered = false;
-
+   
    public ListePrelevementGatsbi(){
       
       contexte = SessionUtils.getCurrentGatsbiContexteForEntiteId(2);
@@ -109,11 +109,26 @@ public class ListePrelevementGatsbi extends ListePrelevement
       // ttes collection
       GatsbiController.addColumn(objectsListGrid, "Entite.Banque", null, null, null, "auto(code)", isTtesCollection());
 
-      // patient, colonne toujours affichée
-      GatsbiController.addColumn(objectsListGrid, "prelevement.patient", null, null, null, "auto(maladie.patient.nom)", true);
+      // patient, identifiant colonne toujours affichée
+      GatsbiController.addColumn(objectsListGrid, "Champ.Patient.Identifiant", null, null, null, null, true);
 
-      // nip, colonne non visible par défaut
-      GatsbiController.addColumn(objectsListGrid, "Champ.Patient.Nip", null, null, null, "auto(maladie.patient.nom)", false);
+      // patient
+      Contexte patientContexte = SessionUtils.getCurrentGatsbiContexteForEntiteId(1);
+      
+      // nom + prenom s'affichent dans une seule colonne si pas contexte Gatsbi
+      // ou si spécifié par contexte Gatsbi (visible par défaut)
+      if (patientContexte == null 
+            || (patientContexte.isChampIdVisible(3) && patientContexte.isChampInTableau(3))) {
+         GatsbiController.addColumn(objectsListGrid, "prelevement.patient", 
+                        null, null, null, "auto(maladie.patient.nom)", true);
+      }
+      
+      // nip s'affiche dans une colonne si spécifié par contexte Gatsbi (invisible par défaut)
+      if (patientContexte != null 
+            && patientContexte.isChampIdVisible(2) && patientContexte.isChampInTableau(2)) {
+         GatsbiController.addColumn(objectsListGrid, "Champ.Patient.Nip", 
+                        null, null, null, "auto(maladie.patient.nip)", false);
+      }
 
       // maladie, colonne visible si banque définit le niveau
       GatsbiController.addColumn(objectsListGrid, "prelevement.maladie", "150px", null, null, "auto(maladie.patient.nom)",
