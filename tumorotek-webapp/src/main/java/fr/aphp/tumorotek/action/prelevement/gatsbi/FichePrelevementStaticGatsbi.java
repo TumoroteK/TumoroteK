@@ -36,9 +36,12 @@
  **/
 package fr.aphp.tumorotek.action.prelevement.gatsbi;
 
+import java.util.List;
+
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.ForwardEvent;
+import org.zkoss.zul.Div;
 import org.zkoss.zul.Groupbox;
 import org.zkoss.zul.Messagebox;
 
@@ -80,17 +83,25 @@ public class FichePrelevementStaticGatsbi extends FichePrelevementStatic
       super.doAfterCompose(comp);
 
       contexte = GatsbiController.initWireAndDisplay(this, 2, false, null, null, null, groupPrlvt, (Groupbox) gridFormPrlvtComp);
+      
+      // affichage conditionnel des champs patients
+      List<Div> items = GatsbiController.wireItemDivsFromMainComponent(ContexteType.PATIENT, groupPatient);
+      GatsbiController.showOrhideItems(items, null, SessionUtils.getCurrentGatsbiContexteForEntiteId(1));
+      
+      // nda appartient au contexe prelevement
+      // groupPatient.getFellowIfAny("ndaDiv").setVisible(SessionUtils.getCurrentGatsbiContexteForEntiteId(2) == null
+      //   || SessionUtils.getCurrentGatsbiContexteForEntiteId(2).isChampIdVisible(44));
 
       // prelevement specific
       if(groupLaboInter != null){
          groupLaboInter.setVisible(contexte != null && contexte.getSiteIntermediaire());
       }
-      
+
       // Injection contexte echantillon pour inner list
       // ce contexte peut être (null) non paramétré pour l'étude
       // donc GET le contexte defaut pour le ContexteType Echantillon
       Contexte echanContexte = SessionUtils.getCurrentGatsbiContexteForEntiteId(3);
-      if (echanContexte == null) {
+      if(echanContexte == null){
          echanContexte = GatsbiController.getGastbiDefautContexteForType(ContexteType.ECHANTILLON);
          echantillonRendererGatsbi.setContexte(echanContexte);
       }
@@ -98,13 +109,13 @@ public class FichePrelevementStaticGatsbi extends FichePrelevementStatic
       // inner list
       // non deletable
       // ne force pas affichage emplacement et statut stockage en fin de grid
-      GatsbiControllerEchantillon.drawColumnsForEchantillons(echanContexte,
-         echantillonsGrid, echantillonRendererGatsbi, false, false, getTtesCollections());
+      GatsbiControllerEchantillon.drawColumnsForEchantillons(echanContexte, echantillonsGrid, echantillonRendererGatsbi, false,
+         false, getTtesCollections());
    }
 
    @Override
    protected ResumePatient initResumePatient(){
-      return new ResumePatient(groupPatient, true);
+      return new ResumePatient(groupPatient, SessionUtils.getCurrentGatsbiContexteForEntiteId(1));
    }
 
    @Override

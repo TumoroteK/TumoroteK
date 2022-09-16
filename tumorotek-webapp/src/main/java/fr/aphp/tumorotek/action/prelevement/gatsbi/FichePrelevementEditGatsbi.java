@@ -54,6 +54,7 @@ import fr.aphp.tumorotek.action.prelevement.FichePrelevementEdit;
 import fr.aphp.tumorotek.model.coeur.prelevement.LaboInter;
 import fr.aphp.tumorotek.model.contexte.gatsbi.Contexte;
 import fr.aphp.tumorotek.webapp.gatsbi.GatsbiController;
+import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
 /**
  *
@@ -94,7 +95,8 @@ public class FichePrelevementEditGatsbi extends FichePrelevementEdit
 
    @Override
    protected ResumePatient initResumePatient(){
-      return new ResumePatient(groupPatient, true);
+      return new ResumePatient(groupPatient, 
+         SessionUtils.getCurrentGatsbiContexteForEntiteId(1));
    }
 
    @Override
