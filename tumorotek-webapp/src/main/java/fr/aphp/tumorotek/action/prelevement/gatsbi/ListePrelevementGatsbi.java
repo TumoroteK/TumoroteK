@@ -297,4 +297,10 @@ public class ListePrelevementGatsbi extends ListePrelevement
       return ManagerLocator.getPrelevementManager().findByPatientIdentifiantOrNomOrNipInListManager(pats,
          SessionUtils.getSelectedBanques(sessionScope));
    }
+   
+   @Override
+   protected List<Integer> searchPrelevementByPatientInfos(String search){
+      return ManagerLocator.getPrelevementManager().findByPatientIdentifiantOrNomOrNipReturnIdsManager(search,
+         SessionUtils.getSelectedBanques(sessionScope), true);
+   }
 }

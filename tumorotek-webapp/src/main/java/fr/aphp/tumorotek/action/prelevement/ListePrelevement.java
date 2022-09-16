@@ -339,11 +339,9 @@ public class ListePrelevement extends AbstractListeController2
       }else if(patientPrlvt.isChecked()){
          if(searchNomPatient.contains(",")){
             final List<String> pats = ObjectTypesFormatters.formateStringToList(searchNomPatient);
-            prelevements = ManagerLocator.getPrelevementManager().findByPatientNomOrNipInListManager(pats,
-               SessionUtils.getSelectedBanques(sessionScope));
+            prelevements = findPrelevementsByPatientCodes(pats);
          }else{
-            prelevements = ManagerLocator.getPrelevementManager().findByPatientNomReturnIdsManager(searchNomPatient,
-               SessionUtils.getSelectedBanques(sessionScope), true);
+            prelevements = searchPrelevementByPatientInfos(searchNomPatient);
          }
       }
       return prelevements;
@@ -388,13 +386,24 @@ public class ListePrelevement extends AbstractListeController2
     * Sera surchargée par GATSBI.
     * @since 2.3.0-gatsbi
     * @param pats
-    * @return
+    * @return liste prelevements
     */
    protected List<Integer> findPrelevementsByPatientCodes(List<String> pats){
       return ManagerLocator.getPrelevementManager().findByPatientNomOrNipInListManager(pats,
          SessionUtils.getSelectedBanques(sessionScope));
    }
 
+   /**
+    * Sera surchargée par GATSBI.
+    * @since 2.3.0-gatsbi
+    * @param pats
+    * @return liste prelevements
+    */
+   protected List<Integer> searchPrelevementByPatientInfos(String searchNomPatient){
+      return ManagerLocator.getPrelevementManager().findByPatientNomReturnIdsManager(searchNomPatient,
+         SessionUtils.getSelectedBanques(sessionScope), true);
+   }
+   
    /**
     * Forwarded Event. Sélectionne le patient concerné pour l'afficher dans la
     * fiche.

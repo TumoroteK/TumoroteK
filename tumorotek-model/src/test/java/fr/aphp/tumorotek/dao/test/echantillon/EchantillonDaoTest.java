@@ -1291,4 +1291,34 @@ public class EchantillonDaoTest extends AbstractDaoTest
       assertTrue(liste.size() == 1);
       assertTrue(liste.get(0).equals(4));
    }
+   
+   public void testFindByPatientIdentifiantOrNomOrNipReturnIds(){
+      
+      // IDENTIFIANT
+      String search = "SLS-1234";
+      final List<Banque> bks = new ArrayList<>();
+      bks.add(banqueDao.findById(1));
+      bks.add(banqueDao.findById(2));
+
+      List<Integer> liste = echantillonDao.findByPatientIdentifiantOrNomOrNipReturnIds(search, bks);
+      assertTrue(liste.size() == 1);
+      assertTrue(liste.get(0).equals(4));
+
+      // NOM
+      search = "MAYER";
+      liste = echantillonDao.findByPatientIdentifiantOrNomOrNipReturnIds(search, bks);
+      assertTrue(liste.size() == 1);
+      assertTrue(liste.get(0).equals(4));
+      
+      // NIP
+      search = "12";
+      liste = echantillonDao.findByPatientIdentifiantOrNomOrNipReturnIds(search, bks);
+      assertTrue(liste.size() == 1);
+      assertTrue(liste.get(0).equals(4));
+      
+      // FAIL
+      search = "NOO";
+      liste = echantillonDao.findByPatientIdentifiantOrNomOrNipReturnIds(search, bks);
+      assertTrue(liste.isEmpty());
+   }
 }

@@ -387,11 +387,9 @@ public class ListeEchantillon extends AbstractListeController2
 		}else if(patientEchantillon.isChecked()){
 			if(searchPatientNom.contains(",")){
 				final List<String> pats = ObjectTypesFormatters.formateStringToList(searchPatientNom);
-				echantillons = ManagerLocator.getEchantillonManager().findByPatientNomOrNipInListManager(pats,
-						SessionUtils.getSelectedBanques(sessionScope));
+				echantillons = findEchantillonByPatientCodes(pats);
 			}else{
-				echantillons = ManagerLocator.getEchantillonManager().findByPatientNomReturnIdsManager(searchPatientNom,
-						SessionUtils.getSelectedBanques(sessionScope), true);
+				echantillons = searchEchantillonByPatientInfos(searchPatientNom);
 			}
 		}
 		return echantillons;
@@ -464,6 +462,17 @@ public class ListeEchantillon extends AbstractListeController2
    protected List<Integer> findEchantillonByPatientCodes(List<String> pats){
       return ManagerLocator.getPrelevementManager().findByPatientNomOrNipInListManager(pats,
          SessionUtils.getSelectedBanques(sessionScope));
+   }
+
+   /**
+    * Sera surchargée par GATSBI.
+    * @since 2.3.0-gatsbi
+    * @param pats
+    * @return
+    */
+   protected List<Integer> searchEchantillonByPatientInfos(String search){
+      return ManagerLocator.getEchantillonManager().findByPatientNomReturnIdsManager(searchPatientNom,
+         SessionUtils.getSelectedBanques(sessionScope), true);
    }
 
 	/**

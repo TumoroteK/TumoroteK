@@ -57,6 +57,7 @@ import javax.persistence.TypedQuery;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.Validator;
 
 import fr.aphp.tumorotek.dao.coeur.ObjetStatutDao;
@@ -137,32 +138,58 @@ public class EchantillonManagerImpl implements EchantillonManager
    private final Log log = LogFactory.getLog(EchantillonManager.class);
 
    private EchantillonDao echantillonDao;
+
    // private EchantillonDelegateDao delegateDao;
    private TransformationManager transformationManager;
+
    private TransformationDao transformationDao;
+
    private BanqueDao banqueDao;
+
    private PrelevementDao prelevementDao;
+
    private CollaborateurDao collaborateurDao;
+
    private ObjetStatutDao objetStatutDao;
+
    private EmplacementDao emplacementDao;
+
    private EchantillonTypeDao echantillonTypeDao;
+
    private UniteDao uniteDao;
+
    private EchanQualiteDao echanQualiteDao;
+
    private ModePrepaDao modePrepaDao;
+
    private EchantillonValidator echantillonValidator;
+
    private OperationTypeDao operationTypeDao;
+
    private OperationManager operationManager;
+
    private EntityManagerFactory entityManagerFactory;
+
    private EntiteDao entiteDao;
+
    private EmplacementManager emplacementManager;
+
    private CodeAssigneManager codeAssigneManager;
+
    private AnnotationValeurManager annotationValeurManager;
+
    private FichierManager fichierManager;
+
    private ProdDeriveManager prodDeriveManager;
+
    private CederObjetManager cederObjetManager;
+
    private ImportHistoriqueManager importHistoriqueManager;
+
    private ConteneurManager conteneurManager;
+
    private RetourManager retourManager;
+
    private ObjetNonConformeManager objetNonConformeManager;
 
    public void setEchantillonDao(final EchantillonDao eDao){
@@ -273,9 +300,9 @@ public class EchantillonManagerImpl implements EchantillonManager
       this.objetNonConformeManager = oM;
    }
 
-//   public void setDelegateDao(EchantillonDelegateDao delegateDao){
-//      this.delegateDao = delegateDao;
-//   }
+   //   public void setDelegateDao(EchantillonDelegateDao delegateDao){
+   //      this.delegateDao = delegateDao;
+   //   }
 
    @Override
    public Echantillon findByIdManager(final Integer echantillonId){
@@ -478,7 +505,7 @@ public class EchantillonManagerImpl implements EchantillonManager
    public Emplacement getEmplacementManager(Echantillon echantillon){
       if(echantillon != null){
          echantillon = echantillonDao.mergeObject(echantillon);
-         
+
          final Emplacement empl = echantillon.getEmplacement();
 
          if(empl != null){
@@ -535,7 +562,7 @@ public class EchantillonManagerImpl implements EchantillonManager
       }
       return new ArrayList<>();
    }
-   
+
    @Override
    public List<String> findAllCodesForDerivesByBanque(final Banque banque){
       if(banque != null){
@@ -715,8 +742,8 @@ public class EchantillonManagerImpl implements EchantillonManager
    public void createObjectManager(final Echantillon echantillon, final Banque banque, final Prelevement prelevement,
       final Collaborateur collaborateur, final ObjetStatut statut, final Emplacement emplacement, final EchantillonType type,
       final List<CodeAssigne> codes, final Unite quantite, final EchanQualite qualite, final ModePrepa preparation,
-      final List<AnnotationValeur> listAnnoToCreateOrUpdate, final List<File> filesCreated,
-      final Utilisateur utilisateur, final boolean doValidation, final String baseDir, final boolean isImport){
+      final List<AnnotationValeur> listAnnoToCreateOrUpdate, final List<File> filesCreated, final Utilisateur utilisateur,
+      final boolean doValidation, final String baseDir, final boolean isImport){
 
       try{
 
@@ -1193,8 +1220,8 @@ public class EchantillonManagerImpl implements EchantillonManager
 
       try{
          updateObjectManager(echantillon, banque, prelevement, collaborateur, statut, emplacement, type, codes, codesToDelete,
-            quantite, qualite, preparation, listAnnoToCreateOrUpdate, listAnnoToDelete, filesCreated, filesToDelete,
-            utilisateur, doValidation, operations, baseDir);
+            quantite, qualite, preparation, listAnnoToCreateOrUpdate, listAnnoToDelete, filesCreated, filesToDelete, utilisateur,
+            doValidation, operations, baseDir);
 
          fichierManager.createOrUpdateFileForObject(echantillon, anapath, anapathStream,
             writeCrAnapathFilePath(baseDir, echantillon.getBanque(), anapath), filesCreated, filesToDelete);
@@ -1463,8 +1490,7 @@ public class EchantillonManagerImpl implements EchantillonManager
 
          final Iterator<ProdDerive> derivesIt = getProdDerivesManager(echan).iterator();
          while(derivesIt.hasNext()){
-            prodDeriveManager.switchBanqueCascadeManager(derivesIt.next(), bank, doValidation, u, 
-            		filesToDelete, filesToMove);
+            prodDeriveManager.switchBanqueCascadeManager(derivesIt.next(), bank, doValidation, u, filesToDelete, filesToMove);
          }
 
          //Suppression du délégué si la banque de destination n'est pas dans le même contexte que la banque d'origine
@@ -1535,8 +1561,8 @@ public class EchantillonManagerImpl implements EchantillonManager
 
             updateObjectManager(echan, echan.getBanque(), echan.getPrelevement(), echan.getCollaborateur(),
                echan.getObjetStatut(), echan.getEmplacement(), echan.getEchantillonType(), codes, null, echan.getQuantiteUnite(),
-               echan.getEchanQualite(), echan.getModePrepa(), null, null, filesCreated, filesToDelete,
-               utilisateur, true, operations, baseDir);
+               echan.getEchanQualite(), echan.getModePrepa(), null, null, filesCreated, filesToDelete, utilisateur, true,
+               operations, baseDir);
 
             // enregistrement de la conformité
             objetNonConformeManager.createUpdateOrRemoveListObjectManager(echan, ncfsTrait, "Traitement");
@@ -1767,10 +1793,9 @@ public class EchantillonManagerImpl implements EchantillonManager
       final Prelevement prelevement, final Collaborateur collaborateur, final ObjetStatut statut, final Emplacement emplacement,
       final EchantillonType type, final List<CodeAssigne> codes, final List<CodeAssigne> codesToDelete, final Unite quantite,
       final EchanQualite qualite, final ModePrepa preparation, final Fichier anapath, final InputStream anapathStream,
-      final List<AnnotationValeur> listAnnoToCreateOrUpdate,
-      final List<AnnotationValeur> listAnnoToDelete, final Utilisateur utilisateur, final boolean doValidation,
-      final List<OperationType> operations, final String baseDir, final List<NonConformite> noconfsTraitement,
-      final List<NonConformite> noconfsCession){
+      final List<AnnotationValeur> listAnnoToCreateOrUpdate, final List<AnnotationValeur> listAnnoToDelete,
+      final Utilisateur utilisateur, final boolean doValidation, final List<OperationType> operations, final String baseDir,
+      final List<NonConformite> noconfsTraitement, final List<NonConformite> noconfsCession){
 
       if(noconfsTraitement != null && !noconfsTraitement.isEmpty()){
          echantillon.setConformeTraitement(false);
@@ -1874,10 +1899,8 @@ public class EchantillonManagerImpl implements EchantillonManager
       long milli = -1;
 
       // on vérifie que la date de prlvt est exploitables
-      if(prel != null && prel.getDatePrelevement() != null
-         && (prel.getDatePrelevement().get(Calendar.HOUR_OF_DAY) != 0
-         || prel.getDatePrelevement().get(Calendar.MINUTE) != 0
-         || prel.getDatePrelevement() .get(Calendar.SECOND) != 0)) {
+      if(prel != null && prel.getDatePrelevement() != null && (prel.getDatePrelevement().get(Calendar.HOUR_OF_DAY) != 0
+         || prel.getDatePrelevement().get(Calendar.MINUTE) != 0 || prel.getDatePrelevement().get(Calendar.SECOND) != 0)){
 
          // creation ou update dans procedure
          //			if (getLaboInters() != null) { 
@@ -1897,21 +1920,19 @@ public class EchantillonManagerImpl implements EchantillonManager
          //							.getDatePrelevement().getTimeInMillis();
          //				}			
          //			} else
-    	  
-         if(echan.getDateStock() != null) {
-            if(echan.getDateStock().get(Calendar.HOUR_OF_DAY) != 0
-               || echan.getDateStock().get(Calendar.MINUTE) != 0
-               || echan.getDateStock().get(Calendar.SECOND) != 0) {
-               milli =
-                  echan.getDateStock().getTimeInMillis() - prel.getDatePrelevement().getTimeInMillis();
+
+         if(echan.getDateStock() != null){
+            if(echan.getDateStock().get(Calendar.HOUR_OF_DAY) != 0 || echan.getDateStock().get(Calendar.MINUTE) != 0
+               || echan.getDateStock().get(Calendar.SECOND) != 0){
+               milli = echan.getDateStock().getTimeInMillis() - prel.getDatePrelevement().getTimeInMillis();
             }
-         }        
+         }
       }
-      
+
       return milli;
 
    }
-   
+
    @Override
    public List<Integer> findByBanksAndImpact(List<Banque> banks, List<Boolean> impact){
       if(banks.size() > 0){
@@ -2038,5 +2059,19 @@ public class EchantillonManagerImpl implements EchantillonManager
          return echantillonDao.findByPatientIdentifiantOrNomOrNipInList(idsNipsNoms, selectedBanques);
       }
       return new ArrayList<>();
+   }
+
+   @Override
+   public List<Integer> findByPatientIdentifiantOrNomOrNipReturnIdsManager(String search, List<Banque> selectedBanques,
+         boolean exactMatch){
+      final List<Integer> res = new ArrayList<>();
+      if(!StringUtils.isEmpty(search) && selectedBanques != null && !selectedBanques.isEmpty()){
+         if(!exactMatch){
+            search = "%" + search + "%";
+         }
+         return echantillonDao.findByPatientIdentifiantOrNomOrNipReturnIds(search, selectedBanques);
+      }
+
+      return res;
    }
 }

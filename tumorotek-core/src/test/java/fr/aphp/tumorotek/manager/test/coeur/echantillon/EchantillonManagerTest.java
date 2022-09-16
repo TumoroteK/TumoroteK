@@ -4413,4 +4413,50 @@ public class EchantillonManagerTest extends AbstractManagerTest4
       liste = echantillonManager.findByPatientIdentifiantOrNomOrNipInListManager(criteres, new ArrayList<Banque>());
       assertTrue(liste.size() == 0);
    }
+   
+   @Test
+   public void testFindByPatientIdentifiantOrNomOrNipReturnIdsManager(){
+      // IDENTIFIANT exact = true
+      String search = "SLS-1234";
+      final List<Banque> bks = new ArrayList<>();
+      bks.add(banqueDao.findById(1));
+      bks.add(banqueDao.findById(2));
+      
+      List<Integer> liste = echantillonManager
+         .findByPatientIdentifiantOrNomOrNipReturnIdsManager(search, bks, true);
+      assertTrue(liste.size() == 1);
+      assertTrue(liste.get(0).equals(4));
+      
+      // IDENTIFIANT exact = false
+      search = "LS-123";
+      liste = echantillonManager.findByPatientIdentifiantOrNomOrNipReturnIdsManager(search, bks, false);
+      assertTrue(liste.size() == 1);
+      assertTrue(liste.get(0).equals(4));
+
+      // NOM exact = false
+      search = "MAYER";
+      liste = echantillonManager.findByPatientIdentifiantOrNomOrNipReturnIdsManager(search, bks, false);
+      assertTrue(liste.size() == 1);
+      assertTrue(liste.get(0).equals(4));
+      
+      // NIP exact = true
+      search = "12";
+      liste = echantillonManager.findByPatientIdentifiantOrNomOrNipReturnIdsManager(search, bks, true);
+      assertTrue(liste.size() == 1);
+      assertTrue(liste.get(0).equals(4));
+      
+      // IDENTIFIANT exact = true FAIL
+      search = "LS-123";
+      liste = echantillonManager.findByPatientIdentifiantOrNomOrNipReturnIdsManager(search, bks, true);
+      assertTrue(liste.isEmpty());
+
+      liste = echantillonManager.findByPatientIdentifiantOrNomOrNipReturnIdsManager(null, bks, false);
+      assertTrue(liste.size() == 0);
+      liste = echantillonManager.findByPatientIdentifiantOrNomOrNipReturnIdsManager(search, null, false);
+      assertTrue(liste.size() == 0);
+      liste = echantillonManager.findByPatientIdentifiantOrNomOrNipReturnIdsManager("", bks, false);
+      assertTrue(liste.size() == 0);
+      liste = echantillonManager.findByPatientIdentifiantOrNomOrNipReturnIdsManager(search, new ArrayList<Banque>(), false);
+      assertTrue(liste.size() == 0);
+   }
 }

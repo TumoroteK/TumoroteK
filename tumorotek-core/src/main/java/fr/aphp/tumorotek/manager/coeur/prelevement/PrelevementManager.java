@@ -714,4 +714,14 @@ public interface PrelevementManager
     * @since 2.3.0-gatsbi
     */
    List<Integer> findByPatientIdentifiantOrNomOrNipInListManager(List<String> idsNipsNoms, List<Banque> selectedBanques);
+   
+   /**
+    * Recherche tous les prélèvements ids issus des patients dont l'identifiant, nip ou nom 
+    * correspond au critère passé en paramètre 
+    * @param search critere
+    * @param banks Liste des banques des prélèvements.
+    * @return Liste d'ids prélèvements.
+    * @since 2.3.0-gatsbi
+    */
+   List<Integer> findByPatientIdentifiantOrNomOrNipReturnIdsManager(String search, List<Banque> banks, boolean exactMatch);
 }

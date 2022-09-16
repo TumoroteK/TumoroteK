@@ -821,4 +821,14 @@ public interface EchantillonManager
     * @since 2.3.0-gatsbi
     */
    List<Integer> findByPatientIdentifiantOrNomOrNipInListManager(List<String> idsNipsNoms, List<Banque> selectedBanques);
+
+   /**
+    * Recherche tous les échantillons ids issus des patients dont l'identifiant, nip ou nom 
+    * correspond au critère passé en paramètre 
+    * @param search critere
+    * @param banks Liste des banques des échantillons.
+    * @return Liste d'ids échantillons.
+    * @since 2.3.0-gatsbi
+    */
+   List<Integer> findByPatientIdentifiantOrNomOrNipReturnIdsManager(String search, List<Banque> selectedBanques, boolean b);
 }

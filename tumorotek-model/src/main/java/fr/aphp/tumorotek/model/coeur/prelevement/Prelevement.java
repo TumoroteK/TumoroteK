@@ -192,6 +192,10 @@ import fr.aphp.tumorotek.model.utils.Utils;
    @NamedQuery(name = "Prelevement.findByPatientIdentifiantOrNomOrNipInList",
       query = "SELECT DISTINCT p.prelevementId FROM Prelevement p JOIN p.maladie as m  JOIN m.patient as pat "
       + "JOIN pat.patientIdentifiants i WHERE (pat.nom in (?1) or pat.nip in (?1) or i.identifiant in (?1)) "
+      + "AND i.pk.banque in (?2) AND p.banque in (?2)"),
+   @NamedQuery(name = "Prelevement.findByPatientIdentifiantOrNomOrNipReturnIds",
+      query = "SELECT DISTINCT p.prelevementId FROM Prelevement p JOIN p.maladie as m  JOIN m.patient as pat "
+      + "JOIN pat.patientIdentifiants i WHERE (pat.nom like ?1 OR pat.nip like ?1 or i.identifiant like ?1) "
       + "AND i.pk.banque in (?2) AND p.banque in (?2)")
 })
 public class Prelevement extends TKDelegetableObject<Prelevement> implements TKAnnotableObject, Serializable

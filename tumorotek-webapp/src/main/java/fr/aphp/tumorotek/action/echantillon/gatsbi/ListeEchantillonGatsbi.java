@@ -177,4 +177,10 @@ public class ListeEchantillonGatsbi extends ListeEchantillon
       return ManagerLocator.getEchantillonManager().findByPatientIdentifiantOrNomOrNipInListManager(pats,
          SessionUtils.getSelectedBanques(sessionScope));
    }
+   
+   @Override
+   protected List<Integer> searchEchantillonByPatientInfos(String search){
+      return ManagerLocator.getEchantillonManager().findByPatientIdentifiantOrNomOrNipReturnIdsManager(search,
+         SessionUtils.getSelectedBanques(sessionScope), true);
+   }
 }

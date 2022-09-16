@@ -190,6 +190,10 @@ import fr.aphp.tumorotek.model.utils.Utils;
    @NamedQuery(name = "Echantillon.findByPatientIdentifiantOrNomOrNipInList",
       query = "SELECT distinct(e.echantillonId) FROM Echantillon e JOIN e.prelevement as p JOIN p.maladie as m JOIN m.patient as pat "
          + "JOIN pat.patientIdentifiants i WHERE (pat.nom in (?1) or pat.nip in (?1) or i.identifiant in (?1)) "
+         + "AND i.pk.banque in (?2) AND e.banque in (?2)"),
+   @NamedQuery(name = "Echantillon.findByPatientIdentifiantOrNomOrNipReturnIds",
+      query = "SELECT distinct(e.echantillonId) FROM Echantillon e JOIN e.prelevement as p JOIN p.maladie as m JOIN m.patient as pat "
+         + "JOIN pat.patientIdentifiants i WHERE (pat.nom like ?1 or pat.nip like ?1 or i.identifiant like ?1) "
          + "AND i.pk.banque in (?2) AND e.banque in (?2)")
 })
 public class Echantillon extends TKDelegetableObject<Echantillon> implements TKStockableObject, Serializable, TKFileSettableObject
