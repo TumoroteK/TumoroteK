@@ -282,4 +282,14 @@ public interface PatientDao extends GenericDaoJpa<Patient, Integer>
     */
    List<Integer> findByIdentifiantReturnIds(String identifiant, List<Banque> selectedBanques);
 
+   /**
+    * Recherche toutes les patients dont l'identifiant est egal
+    * ou 'like' celui en parametre pour une liste de banques.
+    * @param identifiant
+    * @param boolean exactMatch
+    * @param banques
+    * @return Liste de Patient.
+    */
+   List<Patient> findByIdentifiant(String ident, List<Banque> selectedBanques);
+
 }

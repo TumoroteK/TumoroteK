@@ -36,6 +36,7 @@
 package fr.aphp.tumorotek.action.prelevement;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -71,8 +72,15 @@ import fr.aphp.tumorotek.action.sip.Sip;
 import fr.aphp.tumorotek.action.sip.SipFactory;
 import fr.aphp.tumorotek.decorator.PatientItemRenderer;
 import fr.aphp.tumorotek.model.coeur.patient.Patient;
+import fr.aphp.tumorotek.model.contexte.Banque;
+import fr.aphp.tumorotek.model.contexte.gatsbi.Contexte;
 import fr.aphp.tumorotek.model.interfacage.PatientSip;
 
+/**
+ * 
+ * @author Mathieu BARTHELEMY
+ * @version 2.3.0-gatsbi
+ */
 public class SelectPatientModale
 {
 
@@ -96,7 +104,7 @@ public class SelectPatientModale
 
    private Listitem currentIten;
 
-   private final PatientItemRenderer patientRenderer = new PatientItemRenderer(false);
+   private PatientItemRenderer patientRenderer = new PatientItemRenderer(false);
 
    @Wire
    private Listbox patientsBox;
@@ -115,6 +123,11 @@ public class SelectPatientModale
    @Wire("#fwinSelectPatientModale")
    private Window fwinSelectPatientModale;
 
+   // @since 2.3.0-gatsbi
+   private Contexte contexte; 
+   private Banque banque;
+
+
    @AfterCompose
    public void afterCompose(@ContextParam(ContextType.VIEW) final Component view){
       Selectors.wireComponents(view, this, false);
@@ -130,25 +143,31 @@ public class SelectPatientModale
          setCurrentPatient(getPatients().get(0));
          select();
       }
-
    }
 
    @Init
    public void init(@ExecutionArgParam("path") final String pathToPage, @ExecutionArgParam("methode") final String methode,
       @ExecutionArgParam("isFusion") final Boolean isFusion, @ExecutionArgParam("critere") final String critere,
-      @ExecutionArgParam("patAExclure") final Patient patAExclure){
+      @ExecutionArgParam("patAExclure") final Patient patAExclure, 
+      @ExecutionArgParam("contexte") Contexte _c, @ExecutionArgParam("banque") Banque _b){
       this.path = pathToPage;
       this.returnMethode = methode;
       this.isFusionPatients = isFusion;
       this.critereValue = critere;
       this.patientAExclure = patAExclure;
+      this.contexte = _c;
+      this.banque = _b;
+      
+      patientRenderer.setContexte(contexte);
+      patientRenderer.setBanque(banque);
 
       searchForPatients();
    }
 
    /**
-    * Recherche sur le numéro de séjour
-    * @since 2.0.9
+    * @since 2.0.9 Recherche sur le numéro de séjour
+    * @since 2.3.0 recherche sur l'identifiant
+    * @version 2.3.0
     */
    public void searchForPatients(){
       // recherche des patients dans la base TK
@@ -157,13 +176,21 @@ public class SelectPatientModale
          res.addAll(ManagerLocator.getPatientManager().findByNipLikeManager(critereValue, false));
          res.addAll(ManagerLocator.getPatientManager().findByNomLikeManager(critereValue, false));
          res.addAll(ManagerLocator.getPatientManager().findByNdaLikeManager(critereValue, false));
+         if (getIsGatsbiContexte()) {
+            // clean empty identifiant
+            res.removeIf(p -> p.getIdentifiant(banque).getIdentifiant() == null);
+            
+            res.addAll(ManagerLocator.getPatientManager()
+               .findByIdentifiantLikeManager(critereValue, false, Arrays.asList(banque)));            
+         }
       }
       this.patients = new ArrayList<>(res);
 
       // si nous sommes dans le cas d'une recherche de patients pour une
       // fusion, on ne va pas les chercher dans le serveur d'identités
       // patient
-      if(!isFusionPatients){
+      // @since 2.3.0-gatsbi ne recherche pas non plus si contexte Gatsbi
+      if(!isFusionPatients && !getIsGatsbiContexte()){
          //recherche dans le serveur identite patient si il est actif
          if(SipFactory.isDirectSip()){
             log.info("->Debut traitement recherche de patients " + "dans serveur d'identités");
@@ -335,14 +362,8 @@ public class SelectPatientModale
       }
       //		}
       // fermeture de la fenêtre
-      // Events.postEvent(new Event("onClose", self.getRoot()));
       cancel();
    }
-
-   //	public void onClick$cancel() {
-   //		// fermeture de la fenêtre
-   //		Events.postEvent(new Event("onClose", self.getRoot()));
-   //	}
 
    @Command
    public void cancel(){
@@ -410,122 +431,6 @@ public class SelectPatientModale
       }
    }
 
-   //	/**
-   //	 * Méthode appelée lorsque l'utilisateur clique sur le lien
-   //	 * pour voir recherché les patients existants lors de la
-   //	 * création d'un nouveau prélèvement.
-   //	 * @param page dans laquelle inclure la modale
-   //	 * @param path Chemin vers la page ayant appelée cette modale.
-   //	 * @param critere Critere de recherche des patients.
-   //	 */
-   //	public void openDoublonPatientWindow(Page page,
-   //			Patient patient) {
-   //		 if (!isBlockModal()) {
-   //
-   //			 setBlockModal(true);
-   //
-   //			// nouvelle fenêtre
-   //			final Window win = new Window();
-   //			win.setVisible(false);
-   //			win.setId("doublonPatientWindow");
-   //			win.setPage(page);
-   //			win.setMaximizable(true);
-   //			win.setSizable(true);
-   //			win.setTitle(Labels.getLabel("patient.doublon.title"));
-   //			win.setBorder("normal");
-   //			win.setWidth("650px");
-   //			// int height = 470;
-   //			// win.setHeight(height + "px");
-   //			win.setClosable(false);
-   //
-   //			final HtmlMacroComponent ua = populateDoublonPatientModal(
-   //					win, page, path, patient);
-   //			ua.setVisible(false);
-   //
-   //			win.addEventListener("onTimed", new EventListener<Event>() {
-   //				public void onEvent(Event event) throws Exception {
-   //					//progress.detach();
-   //					ua.setVisible(true);
-   //				}
-   //			});
-   //
-   //			Timer timer = new Timer();
-   //			timer.setDelay(500);
-   //			timer.setRepeats(false);
-   //			timer.addForward("onTimer", timer.getParent(), "onTimed");
-   //			win.appendChild(timer);
-   //			timer.start();
-   //
-   //			try {
-   //				win.onModal();
-   //				setBlockModal(false);
-   //
-   //			} catch (SuspendNotAllowedException e) { log.error(e);
-   //			}
-   //		 }
-   //	}
-   //
-   //	private static HtmlMacroComponent populateDoublonPatientModal(
-   //			Window win, Page page,
-   //			String path, Patient patient) {
-   //		// HtmlMacroComponent contenu dans la fenêtre : il correspond
-   //		// au composant des collaborations.
-   //		HtmlMacroComponent ua;
-   //		ua = (HtmlMacroComponent)
-   //		page.getComponentDefinition("doublonPatientModale", false)
-   //			.newInstance(page, null);
-   //		ua.setParent(win);
-   //		ua.setId("openDoublonPatientModale");
-   //		ua.applyProperties();
-   //		ua.afterCompose();
-   //
-   //		((FicheDoublonPatientModale) ua.getFellow("fwinDoublonPatientModale")
-   //				.getAttributeOrFellow("fwinDoublonPatientModale$composer", true))
-   //				.init(patient, path);
-   //
-   //		return ua;
-   //	}
-
-   //	@Override
-   //	public void cloneObject() {
-   //	}
-   //
-   //	@Override
-   //	public void createNewObject() {
-   //	}
-   //
-   //	@Override
-   //	public void onClick$addNewC() {
-   //	}
-   //
-   //	@Override
-   //	public void onClick$editC() {
-   //	}
-   //
-   //	@Override
-   //	public void setEmptyToNulls() {
-   //	}
-   //
-   //	@Override
-   //	public void setFieldsToUpperCase() {
-   //	}
-   //
-   //	@Override
-   //	public void setFocusOnElement() {
-   //	}
-   //
-   //	@Override
-   //	public void switchToStaticMode() {
-   //	}
-   //
-   //	@Override
-   //	public void updateObject() {
-   //	}
-   //
-   //	@Override
-   //	public Object getObject() {
-   //		return null;
-   //	}
 
    /**
     * Retourne la taille de la colonne contenant le Nom.
@@ -669,5 +574,9 @@ public class SelectPatientModale
 
    public void setPatientsSip(final List<Patient> p){
       this.patientsSip = p;
+   }
+   
+   public boolean getIsGatsbiContexte() {
+      return contexte != null;
    }
 }

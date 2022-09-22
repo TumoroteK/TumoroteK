@@ -62,6 +62,7 @@
 						mold="paging" pageSize="10"
 						onDoubleClick="@command('onDoubleClicked')" >
 						<listhead>
+							<listheader label="${c:l('Champ.Patient.Identifiant')}" visible="@load(vm.isGatsbiContexte)" />
 							<listheader label="${c:l('Champ.Patient.Nip')}"/>
 							<listheader label="${c:l('Champ.Patient.Nom')}"  
 								width="@load(vm.nomHeaderWidth)" />

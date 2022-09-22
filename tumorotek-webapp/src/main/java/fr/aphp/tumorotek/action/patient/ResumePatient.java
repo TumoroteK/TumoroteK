@@ -35,8 +35,6 @@
  **/
 package fr.aphp.tumorotek.action.patient;
 
-import java.util.List;
-
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Page;
@@ -54,10 +52,8 @@ import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
 import fr.aphp.tumorotek.model.coeur.patient.Maladie;
 import fr.aphp.tumorotek.model.coeur.patient.Patient;
 import fr.aphp.tumorotek.model.coeur.prelevement.Prelevement;
+import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.contexte.gatsbi.Contexte;
-import fr.aphp.tumorotek.model.contexte.gatsbi.ContexteType;
-import fr.aphp.tumorotek.webapp.gatsbi.GatsbiController;
-import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
 /**
  * HtmlMacroComponent de la fiche résumé Patient.
@@ -101,12 +97,13 @@ public class ResumePatient
 
    // @since 2.3.0-gatsbi
    private Contexte patientContexte = null;
+   private Banque curBanque;
 
    private Div mainContainer;
 
    private Component linkMaladie;
 
-   public ResumePatient(final Component resumePatientGroup, final Contexte _c){
+   public ResumePatient(final Component resumePatientGroup, final Contexte _c, final Banque _b){
 
       this.patientContexte = _c;
       page = resumePatientGroup.getPage();
@@ -138,10 +135,12 @@ public class ResumePatient
          row5 = (Row) resumePatientGroup.getNextSibling().getNextSibling().getNextSibling().getNextSibling().getNextSibling();
          linkMaladieLabel = (Label) row5.getFellowIfAny("linkMaladieLabel");
          codeDiagLabel = (Label) row5.getFellowIfAny("codeDiagLabel");
-      }else{ // gatsbi contexte
+      }else{ // gatsbi context
+         
+         this.curBanque = _b;
                   
          // labels mapping
-         mainContainer = (Div) resumePatientGroup.getFellowIfAny("patientBlockDivContainer");
+         mainContainer = (Div) resumePatientGroup.getFellowIfAny("mainPatientContainer");
          
          identifiantLabel = (Label) resumePatientGroup.getFellowIfAny("identifiantLabel");        
          nipLabel = (Label) resumePatientGroup.getFellowIfAny("nipLabel");
@@ -262,7 +261,9 @@ public class ResumePatient
       
       // @since 2.3.0-gatsbi
       if (patientContexte != null) { // identifiant must be set
-         identifiantLabel.setValue(patient.getIdentifiantAsString(prelevement.getBanque()));
+         identifiantLabel.setValue(patient
+            .getIdentifiantAsString(prelevement != null && prelevement.getBanque() != null ? 
+               prelevement.getBanque() : curBanque));
       }
       
       if(!anonyme){

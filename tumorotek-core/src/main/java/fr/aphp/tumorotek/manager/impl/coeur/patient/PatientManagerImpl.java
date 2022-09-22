@@ -1126,6 +1126,18 @@ public class PatientManagerImpl implements PatientManager
       if(selectedBanques != null && !selectedBanques.isEmpty()){
          return patientDao.findByIdentifiantReturnIds(identifiant, selectedBanques);
       }
-      return new ArrayList<>();
+      return new ArrayList<Integer>();
+   }
+
+   @Override
+   public List<Patient> findByIdentifiantLikeManager(String ident, boolean exactMatch, List<Banque> selectedBanques){
+      if(!exactMatch){
+         ident = "%" + ident + "%";
+      }
+      log.debug("Recherche Patient par identifiant: " + ident + " exactMatch " + String.valueOf(exactMatch));
+      if(selectedBanques != null && !selectedBanques.isEmpty()){
+         return patientDao.findByIdentifiant(ident, selectedBanques);
+      }
+      return new ArrayList<Patient>();
    }
 }

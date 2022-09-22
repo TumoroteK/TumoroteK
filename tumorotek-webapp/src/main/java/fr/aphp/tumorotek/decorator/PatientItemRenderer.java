@@ -53,7 +53,9 @@ import fr.aphp.tumorotek.action.patient.PatientUtils;
 import fr.aphp.tumorotek.model.coeur.patient.Maladie;
 import fr.aphp.tumorotek.model.coeur.patient.Patient;
 import fr.aphp.tumorotek.model.coeur.prelevement.Prelevement;
+import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.contexte.Collaborateur;
+import fr.aphp.tumorotek.model.contexte.gatsbi.Contexte;
 
 /**
  * PatientRenderer affiche dans le listitem
@@ -62,7 +64,7 @@ import fr.aphp.tumorotek.model.contexte.Collaborateur;
  * Date: 14/04/2010
  *
  * @author Mathieu BARTHELEMY
- * @version 2.0
+ * @version 2.3.0-gatsbi
  */
 public class PatientItemRenderer implements ListitemRenderer<Patient>
 {
@@ -76,6 +78,10 @@ public class PatientItemRenderer implements ListitemRenderer<Patient>
    }
 
    private boolean showMedecin = false;
+   
+   // @since 2.3.0-gastbi
+   private Banque banque;
+   private Contexte contexte;
 
    private boolean isFusion = false;
 
@@ -83,22 +89,16 @@ public class PatientItemRenderer implements ListitemRenderer<Patient>
    public void render(final Listitem li, final Patient data, final int index){
 
       final Patient pat = data;
+      if (contexte != null) {
+         new Listcell(pat.getIdentifiantAsString(banque)).setParent(li);
+      }
       new Listcell(pat.getNip()).setParent(li);
       new Listcell(pat.getNom()).setParent(li);
       new Listcell(pat.getPrenom()).setParent(li);
       new Listcell(PatientUtils.setSexeFromDBValue(pat)).setParent(li);
       new Listcell(ObjectTypesFormatters.dateRenderer2(pat.getDateNaissance())).setParent(li);
-      //        String dateN = null;
-      //    	if (pat.getDateNaissance() != null) {
-      //			Calendar c = Calendar.getInstance();
-      //			c.setTime(pat.getDateNaissance());
-      //			dateN = String.valueOf(c.get(Calendar.YEAR));
-      //		}
-      //		new Listcell(dateN).setParent(li);
 
       if(isFusion){
-         //new Listcell(String.valueOf(getNbPrelevements(pat)))
-         //.setParent(li);
          drawPrelevementsLabelWithPopup(li, pat);
       }
 
@@ -244,5 +244,13 @@ public class PatientItemRenderer implements ListitemRenderer<Patient>
          final Listcell cell = new Listcell();
          cell.setParent(li);
       }
+   }
+
+   public void setBanque(Banque _b){
+      this.banque = _b;
+   }
+
+   public void setContexte(Contexte _c){
+      this.contexte = _c;
    }
 }

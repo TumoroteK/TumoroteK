@@ -220,7 +220,7 @@ public class FichePrelevementStatic extends AbstractFicheStaticController
    // car le component group patient n'est pas
    // de même type group VS Groupbox
    protected ResumePatient initResumePatient(){
-      return new ResumePatient(groupPatient, null);
+      return new ResumePatient(groupPatient, null, null);
    }
 
    @Override

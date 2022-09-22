@@ -126,6 +126,7 @@ import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.contexte.BanqueTableCodage;
 import fr.aphp.tumorotek.model.contexte.Collaborateur;
 import fr.aphp.tumorotek.model.contexte.Plateforme;
+import fr.aphp.tumorotek.model.contexte.gatsbi.Contexte;
 import fr.aphp.tumorotek.model.imprimante.AffectationImprimante;
 import fr.aphp.tumorotek.model.imprimante.Imprimante;
 import fr.aphp.tumorotek.model.imprimante.LigneEtiquette;
@@ -299,9 +300,11 @@ public abstract class AbstractController extends GenericForwardComposer<Componen
 	 * @param path Chemin vers la page ayant appelée cette modale.
 	 * @param critere Critere de recherche des patients.
 	 * @param patient à exclure en cas de fusion
+	 * @param contexte Gatsbi
+	 * @version 2.3.0-gatsbi
 	 */
 	public void openSelectPatientWindow(final String path, final String returnMethode, final Boolean isFusionPatients,
-			final String critere, final Patient patAExclure){
+			final String critere, final Patient patAExclure, final Contexte contexte, final Banque banque){
 
 		final HashMap<String, Object> map = new HashMap<>();
 		map.put("path", path);
@@ -309,6 +312,8 @@ public abstract class AbstractController extends GenericForwardComposer<Componen
 		map.put("isFusion", isFusionPatients);
 		map.put("critere", critere);
 		map.put("patAExclure", patAExclure);
+		map.put("contexte", contexte);
+		map.put("banque", banque);
 
 		final Window window = (Window) Executions.createComponents("/zuls/prelevement/SelectPatientModale.zul", null, map);
 		window.doModal();

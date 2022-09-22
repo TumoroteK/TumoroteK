@@ -985,7 +985,7 @@ public class GatsbiController
               && ((Map<String, Object>) evt.getOrigin().getData()).get("parentObj") != null) {
             // prelevement => PrelevementController.createAnotherPrelevement 
             if (((Map<String, Object>) evt.getOrigin().getData()).get("parentObj") instanceof Prelevement 
-               && ((Map<String, Integer>) evt.getOrigin().getData()).get("paramId").equals(2)) {
+               && contexte.getContexteType().equals(ContexteType.PRELEVEMENT)) {
                inject.getPrelevement()
                   .setMaladie(((Prelevement) ((Map<String, Object>) evt.getOrigin().getData()).get("parentObj"))
                      .getMaladie());

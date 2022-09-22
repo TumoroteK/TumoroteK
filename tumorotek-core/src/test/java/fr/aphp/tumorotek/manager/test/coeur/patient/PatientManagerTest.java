@@ -1684,4 +1684,32 @@ public class PatientManagerTest extends AbstractManagerTest4
       pats = patientManager.findByIdentifiantLikeBothSideReturnIdsManager("87", null, false);
       assertTrue(pats.size() == 0);
    }
+   
+   @Test
+   public void testFindByIdentifiantManager(){
+      
+      //teste une recherche exactMatch
+      final List<Banque> banks = new ArrayList<>();
+      banks.add(banqueManager.findByIdManager(1));  
+      List<Patient> patients = patientManager.findByIdentifiantLikeManager("SLS-1234", true, banks);
+      assertTrue(patients.size() == 1);
+      assertTrue(patients.get(0).getPatientId() == 1);
+      
+      //teste une recherche non exactMatch
+      patients = patientManager.findByIdentifiantLikeManager("SLS-12", false, banks);
+      assertTrue(patients.size() == 2);
+      
+      //teste une recherche infructueuse
+      patients = patientManager.findByIdentifiantLikeManager("LUX-12", false, banks);
+      assertTrue(patients.isEmpty());
+      
+      //null recherche
+      patients = patientManager.findByIdentifiantLikeManager(null, false, banks);
+      assertTrue(patients.isEmpty());
+      patients = patientManager.findByIdentifiantLikeManager("LUX-12", false, null);
+      assertTrue(patients.isEmpty());
+      banks.clear();
+      patients = patientManager.findByIdentifiantLikeManager("LUX-12", false, banks);
+      assertTrue(patients.isEmpty()); 
+   }
 }

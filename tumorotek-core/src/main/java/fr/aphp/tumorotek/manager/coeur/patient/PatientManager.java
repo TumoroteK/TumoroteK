@@ -417,4 +417,14 @@ public interface PatientManager
     */
    List<Integer> findByIdentifiantLikeBothSideReturnIdsManager(String identifiant, List<Banque> selectedBanques,
       boolean exactMatch);
+   
+   /**
+    * Recherche toutes les patients dont l'identifiant est egal
+    * ou 'like' celui en parametre pour une liste de banques.
+    * @param identifiant
+    * @param boolean exactMatch
+    * @param banques
+    * @return Liste de Patient.
+    */
+   List<Patient> findByIdentifiantLikeManager(String nip, boolean exactMatch, List<Banque> selectedBanques);
 }

@@ -115,7 +115,7 @@ public class FichePrelevementStaticGatsbi extends FichePrelevementStatic
 
    @Override
    protected ResumePatient initResumePatient(){
-      return new ResumePatient(groupPatient, SessionUtils.getCurrentGatsbiContexteForEntiteId(1));
+      return new ResumePatient(groupPatient, SessionUtils.getCurrentGatsbiContexteForEntiteId(1), null);
    }
 
    @Override

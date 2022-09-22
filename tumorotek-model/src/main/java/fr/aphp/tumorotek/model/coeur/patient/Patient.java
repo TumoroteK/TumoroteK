@@ -45,6 +45,7 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
@@ -111,7 +112,7 @@ import fr.aphp.tumorotek.model.contexte.Banque;
       query = "SELECT count(distinct p) FROM Patient p " + "JOIN p.maladies m " + "JOIN m.prelevements r "
          + "WHERE r.datePrelevement >= ?1 " + "AND r.datePrelevement <= ?2 " + "AND r.banque in (?3) "
          + "AND (r.servicePreleveur is null " + "OR r.servicePreleveur.etablissement not in (?4))"),
-   @NamedQuery(name = "Patient.findByIdInList", query = "SELECT p FROM Patient p JOIN FETCH p.patientIdentifiants WHERE p.patientId in (?1)"),
+   @NamedQuery(name = "Patient.findByIdInList", query = "SELECT p FROM Patient p JOIN p.patientIdentifiants WHERE p.patientId in (?1)"),
    @NamedQuery(name = "Patient.findByAllIds", query = "SELECT p.patientId FROM Patient p"),
    @NamedQuery(name = "Patient.findByAllIdsWithBanques",
       query = "SELECT distinct(p.patientId) FROM Patient p " + "JOIN p.maladies m " + "JOIN m.prelevements prlvts "
@@ -129,6 +130,8 @@ import fr.aphp.tumorotek.model.contexte.Banque;
          + "JOIN p.patientIdentifiants i WHERE i.identifiant in (?1) AND i.pk.banque in (?2)"),
    @NamedQuery(name = "Patient.findByIdentifiantReturnIds",
       query = "SELECT distinct(p.patientId) FROM Patient p JOIN p.patientIdentifiants i "
+         + "WHERE i.identifiant like ?1 AND i.pk.banque in (?2)"),
+   @NamedQuery(name = "Patient.findByIdentifiant", query = "SELECT distinct p FROM Patient p JOIN p.patientIdentifiants i "
          + "WHERE i.identifiant like ?1 AND i.pk.banque in (?2)")
 })
 public class Patient extends TKDelegetableObject<Patient> implements TKAnnotableObject, Serializable
@@ -406,7 +409,7 @@ public class Patient extends TKDelegetableObject<Patient> implements TKAnnotable
       this.patientMedecins = patientMeds;
    }
 
-   @OneToMany(mappedBy = "pk.patient", cascade = {CascadeType.ALL})
+   @OneToMany(mappedBy = "pk.patient", cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
    @OrderBy("identifiant")
    public Set<PatientIdentifiant> getPatientIdentifiants(){
       return patientIdentifiants;
