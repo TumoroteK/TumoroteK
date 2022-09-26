@@ -83,7 +83,6 @@ import org.zkoss.zul.SimpleListModel;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.event.PagingEvent;
 
-import fr.aphp.tumorotek.model.interfacage.Recepteur;
 import fr.aphp.tumorotek.action.CustomSimpleListModel;
 import fr.aphp.tumorotek.action.ManagerLocator;
 import fr.aphp.tumorotek.action.constraints.ConstText;
@@ -1159,9 +1158,6 @@ public class FicheCessionEdit extends AbstractFicheEditController
 				getStockageController().switchToFicheTerminaleMode(terminaleDestockage, null);
 			}
 
-			// storage robotisé
-			proposeStorageRobotItem();
-
 			return true;
 		}catch(final RuntimeException re){
 			// ferme wait message
@@ -1201,9 +1197,6 @@ public class FicheCessionEdit extends AbstractFicheEditController
 							Labels.getLabel("ficheRetour.observations.cession"), getSelectedExecutant());
 				}
 			}
-
-			// storage robotisé
-			proposeStorageRobotItem();
 
 			return true;
 		}catch(final RuntimeException re){
@@ -3306,34 +3299,6 @@ public class FicheCessionEdit extends AbstractFicheEditController
 			.setVisible(!cederMultiProdDeriveBanquesLabel.getParent().getNextSibling().isVisible());
 	}
 	
-
-	/***** Recepteur interfacage stockage automatisé -> portoir de transfert *******/
-
-	/**
-	 * @since 2.2.1-IRELEC
-	 */
-	public void proposeStorageRobotItem() {
-		// set storageRobotItem visible ssi IRELEC
-		// && cession validée
-		boolean isStorageRobotEnabled = false;
-		for (Recepteur recept : SessionUtils.getRecepteursInterfacages(sessionScope)) {
-			if (recept.getLogiciel().getNom().equals("IRELEC")) {
-				isStorageRobotEnabled = true;
-				break;
-			}
-		}
-
-		if (isStorageRobotEnabled && getObject() != null 
-				&& getObject().getCessionStatut() != null 
-				&& getObject().getCessionStatut().getCessionStatutId().equals(2)) {
-			List<Integer> echanIds = new ArrayList<Integer>();
-			for (CederObjet cObj : echantillonsCedes) {
-				echanIds.add(cObj.getObjetId());
-			}
-			postStorageData(ManagerLocator.getEchantillonManager()
-					.findByIdsInListManager(echanIds), true);
-		}
-	}
 
 	public ListModel<Banque> getAvailableBanquesForEchantillonModel() {
 		return availableBanquesForEchantillonModel;
