@@ -53,9 +53,7 @@ import fr.aphp.tumorotek.action.patient.PatientUtils;
 import fr.aphp.tumorotek.model.coeur.patient.Maladie;
 import fr.aphp.tumorotek.model.coeur.patient.Patient;
 import fr.aphp.tumorotek.model.coeur.prelevement.Prelevement;
-import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.contexte.Collaborateur;
-import fr.aphp.tumorotek.model.contexte.gatsbi.Contexte;
 
 /**
  * PatientRenderer affiche dans le listitem
@@ -69,6 +67,10 @@ import fr.aphp.tumorotek.model.contexte.gatsbi.Contexte;
 public class PatientItemRenderer implements ListitemRenderer<Patient>
 {
 
+   private boolean showMedecin = false;
+
+   private boolean isFusion = false;
+   
    /**
     * Constructeur.
     * @param show pour afficher le medecin referents dans la row.
@@ -77,27 +79,13 @@ public class PatientItemRenderer implements ListitemRenderer<Patient>
       this.showMedecin = show;
    }
 
-   private boolean showMedecin = false;
-   
-   // @since 2.3.0-gastbi
-   private Banque banque;
-   private Contexte contexte;
-
-   private boolean isFusion = false;
-
    @Override
    public void render(final Listitem li, final Patient data, final int index){
 
       final Patient pat = data;
-      if (contexte != null) {
-         new Listcell(pat.getIdentifiantAsString(banque)).setParent(li);
-      }
-      new Listcell(pat.getNip()).setParent(li);
-      new Listcell(pat.getNom()).setParent(li);
-      new Listcell(pat.getPrenom()).setParent(li);
-      new Listcell(PatientUtils.setSexeFromDBValue(pat)).setParent(li);
-      new Listcell(ObjectTypesFormatters.dateRenderer2(pat.getDateNaissance())).setParent(li);
-
+      
+      renderPatient(li, pat);
+      
       if(isFusion){
          drawPrelevementsLabelWithPopup(li, pat);
       }
@@ -110,8 +98,42 @@ public class PatientItemRenderer implements ListitemRenderer<Patient>
          li.setStyle("background-color : #e2e9fe");
       }else{
          li.setStyle("background-color : #beff96");
-      }
+      } 
    }
+
+   protected void renderPatient(Listitem li, Patient pat){
+
+      renderNip(li, pat);
+      
+      renderNom(li, pat);
+      
+      renderPrenom(li, pat);
+
+      renderSexe(li, pat);
+      
+      renderDateNais(li, pat);     
+   }
+   
+   protected void renderNip(Listitem li, Patient pat) {
+      new Listcell(pat.getNip()).setParent(li);
+   }
+   
+   protected void renderNom(Listitem li, Patient pat) {
+      new Listcell(pat.getNom()).setParent(li);
+   }
+   
+   protected void renderPrenom(Listitem li, Patient pat) {
+      new Listcell(pat.getPrenom()).setParent(li);
+   }
+   
+   protected void renderSexe(Listitem li, Patient pat) {
+      new Listcell(PatientUtils.setSexeFromDBValue(pat)).setParent(li);
+   }
+   
+   protected void renderDateNais(Listitem li, Patient pat) {
+      new Listcell(ObjectTypesFormatters.dateRenderer2(pat.getDateNaissance())).setParent(li);
+   }
+
 
    public Integer getNbPrelevements(final Patient pat){
       int nb = 0;
@@ -245,12 +267,8 @@ public class PatientItemRenderer implements ListitemRenderer<Patient>
          cell.setParent(li);
       }
    }
-
-   public void setBanque(Banque _b){
-      this.banque = _b;
-   }
-
-   public void setContexte(Contexte _c){
-      this.contexte = _c;
+   
+   public void setShowMedecin(boolean _s){
+      this.showMedecin = _s;
    }
 }

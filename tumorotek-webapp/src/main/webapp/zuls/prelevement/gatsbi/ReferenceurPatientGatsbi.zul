@@ -60,15 +60,7 @@
 					selectedItem="@{winRefPatient$composer.selectedPatient}" mold="paging"
 					itemRenderer="${winRefPatient$composer.patientRenderer}"
 					sclass="listBox" width="100%" visible="false">
-					<listhead>
-						<listheader label="${c:l('Champ.Patient.Identifiant')}" />
-						<listheader label="${c:l('Champ.Patient.Nip')}" />
-						<listheader label="${c:l('Champ.Patient.Nom')}"/>
-						<listheader label="${c:l('Champ.Patient.Prenom')}"/>
-						<listheader label="${c:l('Champ.Patient.Sexe')}" width="50px"/>
-						<listheader label="${c:l('Champ.Patient.DateNaissance')}"/>
-						<listheader id= "listMedcinRef" label="${c:l('patient.medecins')}"/>
-					</listhead>
+					<listhead />
 					<listitem self="@{each='currPatient'}" value="currPatient"/>
 				</listbox>
 			</row>

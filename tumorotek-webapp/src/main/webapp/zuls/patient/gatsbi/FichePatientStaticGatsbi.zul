@@ -111,12 +111,15 @@
 				</div>
 				<div class="block-separator" />
 				<!-- Médecins -->
-				<groupbox id="groupMedecins">
-					<caption label="@{fwinPatientStatic$composer.referentsGroupHeader}" />
-					<div id="referentsDiv">
-						<referents id="referents" width="100%" />
-					</div>
-				</groupbox>
+				<div class="item item-wide" id="patientMedecinsDiv">	
+					<custom-attributes champId="227" />
+					<groupbox id="groupMedecins">
+						<caption label="@{fwinPatientStatic$composer.referentsGroupHeader}" />
+						<div id="referentsDiv">
+							<referents id="referents" width="100%" />
+						</div>
+					</groupbox>
+				</div>
 				<div class="block-separator" />
 				<!-- Maladies -->
 				<groupbox id="groupMaladies">

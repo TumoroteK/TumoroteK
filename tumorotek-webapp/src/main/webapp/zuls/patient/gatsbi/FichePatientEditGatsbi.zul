@@ -195,13 +195,16 @@
 				</div>
 				<div class="block-separator" />
 				<!-- Médecins -->
-				<groupbox id="referentsGroup">
-					<caption label="@{fwinPatientEdit$composer.referentsGroupHeader, load-after='onRefreshHeader'}"
-						style="border-bottom-width : 0px;"/>
-					<div id="referentsDiv">
-						<referents id="referents" width="100%" />
-					</div>
-				</groupbox>
+				<div class="item item-wide" id="patientMedecinsDiv">	
+					<custom-attributes champId="227" />
+					<groupbox id="referentsGroup">
+						<caption label="@{fwinPatientEdit$composer.referentsGroupHeader, load-after='onRefreshHeader'}"
+							style="border-bottom-width : 0px;"/>
+						<div id="referentsDiv" >
+							<referents id="referents" width="100%" />
+						</div>
+					</groupbox>
+				</div>
 			</div>
 		</panelchildren>
 		<toolbar height="100%" id="toolbar" align="end">

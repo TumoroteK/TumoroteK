@@ -107,6 +107,17 @@ public class FichePatientEditGatsbi extends FichePatientEdit
    }
    
    /**
+    * Nom peut être null
+    */
+   @Override
+   protected void setEmptyToNulls(){
+      super.setEmptyToNulls();
+      if(this.patient.getNom().equals("")){
+         this.patient.setNom(null);
+      }
+   }
+   
+   /**
     * Etat peut être null
     */
    @Override

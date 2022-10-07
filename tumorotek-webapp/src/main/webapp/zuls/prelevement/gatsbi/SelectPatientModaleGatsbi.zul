@@ -41,7 +41,7 @@
 		width="650px" height="auto" border="normal" minimizable="false"
         maximizable="false" closable="true"
         action="hide: slideUp" apply="org.zkoss.bind.BindComposer"
-		viewModel="@id('vm') @init('fr.aphp.tumorotek.action.prelevement.SelectPatientModale')">
+		viewModel="@id('vm') @init('fr.aphp.tumorotek.action.prelevement.gatsbi.SelectPatientModaleGatsbi')">
 	<panel collapsible="false" sclass="fichePanelv2" id="winPanel" >
 		<panelchildren id="panelChildrenWithScroll">
 			<grid fixedLayout="true" sclass="gridForm1" id="gridFormPrlvt" >
@@ -61,17 +61,7 @@
 						sclass="listBox" hflex="1" visible="true"
 						mold="paging" pageSize="10"
 						onDoubleClick="@command('onDoubleClicked')" >
-						<listhead>
-							<listheader label="${c:l('Champ.Patient.Nip')}"/>
-							<listheader label="${c:l('Champ.Patient.Nom')}"  
-								width="@load(vm.nomHeaderWidth)" />
-							<listheader label="${c:l('Champ.Patient.Prenom')}" 
-								width="@load(vm.prenomHeaderWidth)" />
-							<listheader label="${c:l('Champ.Patient.Sexe')}" width="50px"/>
-							<listheader label="${c:l('Champ.Patient.DateNaissance')}"/>
-							<listheader label="${c:l('patients.prelevements.short')}" 
-								visible="@load(vm.fusionPatients)"/>
-						</listhead>
+						<listhead />
 					</listbox>
 				</row>
 				<row id="legendeInTk">

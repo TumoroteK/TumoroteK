@@ -35,8 +35,18 @@
  **/
 package fr.aphp.tumorotek.action.prelevement.gatsbi;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Path;
+import org.zkoss.zul.ListitemRenderer;
+
+import fr.aphp.tumorotek.action.patient.gatsbi.GatsbiControllerPatient;
 import fr.aphp.tumorotek.action.prelevement.ReferenceurPatient;
+import fr.aphp.tumorotek.decorator.gatsbi.PatientItemRendererGatsbi;
+import fr.aphp.tumorotek.model.coeur.patient.Patient;
+import fr.aphp.tumorotek.model.contexte.gatsbi.Contexte;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
 /**
@@ -50,6 +60,26 @@ public class ReferenceurPatientGatsbi extends ReferenceurPatient
 {
 
    private static final long serialVersionUID = 1L;
+   
+   private Contexte contextePatient;
+   
+   private PatientItemRendererGatsbi patientRendererGatsbi = 
+      new PatientItemRendererGatsbi(true);
+   
+   @Override
+   public void doAfterCompose(Component comp) throws Exception{
+      super.doAfterCompose(comp);
+       
+      contextePatient = SessionUtils.getCurrentGatsbiContexteForEntiteId(1);
+      
+      Map<Integer, String> widths = new HashMap<Integer, String>();
+      widths.put(6, "50px"); // sexe listheader 50px
+      
+      GatsbiControllerPatient.drawListheadersForPatients(contextePatient, patientsBox, false, widths);  
+      
+      patientRendererGatsbi.setContexte(contextePatient);
+      patientRendererGatsbi.setBanque(SessionUtils.getCurrentBanque(sessionScope));
+   }
 
    public void onClick$goForIt(){
 
@@ -60,7 +90,12 @@ public class ReferenceurPatientGatsbi extends ReferenceurPatient
 
       fichePrelevementEdit.getObjectTabController().setPatientSip(null);
       fichePrelevementEdit.openSelectPatientWindow(Path.getPath(self), "onGetPatientFromSelection", 
-         false, critereValue, null, fichePrelevementEdit.getContexte(), SessionUtils.getCurrentBanque(sessionScope));
+         false, critereValue, null, contextePatient, SessionUtils.getCurrentBanque(sessionScope));
 
+   }
+   
+   @Override
+   public ListitemRenderer<Patient> getPatientRenderer(){
+      return patientRendererGatsbi;
    }
 }

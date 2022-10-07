@@ -78,6 +78,7 @@ import org.zkoss.zul.Grid;
 import org.zkoss.zul.Groupbox;
 import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Listbox;
+import org.zkoss.zul.Listheader;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.SimpleConstraint;
 import org.zkoss.zul.Textbox;
@@ -145,6 +146,7 @@ public class GatsbiController
          // patient
          put(ContexteType.PATIENT, new String[] {"nipDiv", "nomDiv", "nomNaissanceDiv", "prenomDiv", "sexeDiv", 
             "dateNaissanceDiv", "paysNaissanceDiv", "villeNaissanceDiv", "etatDiv", "dateEtatDiv", "dateDecesDiv",
+            "patientMedecinsDiv",
             // maladie
             "libelleDiv", "codeMaladieDiv"});
          // prelevement
@@ -951,6 +953,30 @@ public class GatsbiController
       col.setParent(grid.getColumns());
 
       return col;
+   }
+   
+   /**
+    * Dessine un listbox header.
+    * @param listbox composant parent
+    * @param nameKey
+    * @param width
+    * @param align
+    * @param visible
+    * @return composant column dessiné.
+    */
+   public static Listheader addListHeader(Listbox listbox, String nameKey, String width, String align,
+      Boolean visible) {
+      // check box first immutable column
+      Listheader header = new Listheader();
+      header.setLabel(Labels.getLabel(nameKey));
+      if(width != null){
+         header.setWidth(width);
+      }
+      header.setAlign(align);
+      header.setVisible(visible);
+      header.setParent(listbox.getListhead());
+
+      return header;
    }
 
    // add new refactor

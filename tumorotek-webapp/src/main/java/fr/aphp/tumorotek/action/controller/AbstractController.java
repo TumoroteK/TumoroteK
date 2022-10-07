@@ -315,7 +315,9 @@ public abstract class AbstractController extends GenericForwardComposer<Componen
 		map.put("contexte", contexte);
 		map.put("banque", banque);
 
-		final Window window = (Window) Executions.createComponents("/zuls/prelevement/SelectPatientModale.zul", null, map);
+		final Window window = (Window) Executions.createComponents(
+		   contexte == null ? "/zuls/prelevement/SelectPatientModale.zul" : "/zuls/prelevement/gatsbi/SelectPatientModaleGatsbi.zul", 
+		   null, map);
 		window.doModal();
 	}
 

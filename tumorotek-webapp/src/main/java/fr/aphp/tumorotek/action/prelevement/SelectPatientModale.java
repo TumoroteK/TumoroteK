@@ -36,7 +36,6 @@
 package fr.aphp.tumorotek.action.prelevement;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -72,8 +71,6 @@ import fr.aphp.tumorotek.action.sip.Sip;
 import fr.aphp.tumorotek.action.sip.SipFactory;
 import fr.aphp.tumorotek.decorator.PatientItemRenderer;
 import fr.aphp.tumorotek.model.coeur.patient.Patient;
-import fr.aphp.tumorotek.model.contexte.Banque;
-import fr.aphp.tumorotek.model.contexte.gatsbi.Contexte;
 import fr.aphp.tumorotek.model.interfacage.PatientSip;
 
 /**
@@ -86,47 +83,42 @@ public class SelectPatientModale
 
    private final Log log = LogFactory.getLog(SelectPatientModale.class);
 
-   private Boolean isFusionPatients = false;
+   protected Boolean isFusionPatients = false;
 
-   private String critereValue = "";
+   protected String critereValue = "";
 
-   private String path = "";
+   protected String path = "";
 
-   private String returnMethode = "";
+   protected String returnMethode = "";
 
-   private List<Patient> patients = new ArrayList<>();
+   protected List<Patient> patients = new ArrayList<>();
 
-   private List<Patient> patientsSip = new ArrayList<>();
+   protected List<Patient> patientsSip = new ArrayList<>();
 
-   private Patient selectedPatient;
+   protected Patient selectedPatient;
 
-   private Patient currentPatient;
+   protected Patient currentPatient;
 
-   private Listitem currentIten;
+   protected Listitem currentIten;
 
    private PatientItemRenderer patientRenderer = new PatientItemRenderer(false);
 
    @Wire
-   private Listbox patientsBox;
+   protected Listbox patientsBox;
 
-   private Patient patientAExclure;
-
-   @Wire
-   private Button select;
+   protected Patient patientAExclure;
 
    @Wire
-   private Row legendeInTk;
+   protected Button select;
 
    @Wire
-   private Row legendeInSip;
+   protected Row legendeInTk;
+
+   @Wire
+   protected Row legendeInSip;
 
    @Wire("#fwinSelectPatientModale")
-   private Window fwinSelectPatientModale;
-
-   // @since 2.3.0-gatsbi
-   private Contexte contexte; 
-   private Banque banque;
-
+   protected Window fwinSelectPatientModale;
 
    @AfterCompose
    public void afterCompose(@ContextParam(ContextType.VIEW) final Component view){
@@ -148,18 +140,12 @@ public class SelectPatientModale
    @Init
    public void init(@ExecutionArgParam("path") final String pathToPage, @ExecutionArgParam("methode") final String methode,
       @ExecutionArgParam("isFusion") final Boolean isFusion, @ExecutionArgParam("critere") final String critere,
-      @ExecutionArgParam("patAExclure") final Patient patAExclure, 
-      @ExecutionArgParam("contexte") Contexte _c, @ExecutionArgParam("banque") Banque _b){
+      @ExecutionArgParam("patAExclure") final Patient patAExclure){
       this.path = pathToPage;
       this.returnMethode = methode;
       this.isFusionPatients = isFusion;
       this.critereValue = critere;
       this.patientAExclure = patAExclure;
-      this.contexte = _c;
-      this.banque = _b;
-      
-      patientRenderer.setContexte(contexte);
-      patientRenderer.setBanque(banque);
 
       searchForPatients();
    }
@@ -171,26 +157,13 @@ public class SelectPatientModale
     */
    public void searchForPatients(){
       // recherche des patients dans la base TK
-      final LinkedHashSet<Patient> res = new LinkedHashSet<>();
-      if(critereValue != null && !critereValue.equals("")){
-         res.addAll(ManagerLocator.getPatientManager().findByNipLikeManager(critereValue, false));
-         res.addAll(ManagerLocator.getPatientManager().findByNomLikeManager(critereValue, false));
-         res.addAll(ManagerLocator.getPatientManager().findByNdaLikeManager(critereValue, false));
-         if (getIsGatsbiContexte()) {
-            // clean empty identifiant
-            res.removeIf(p -> p.getIdentifiant(banque).getIdentifiant() == null);
-            
-            res.addAll(ManagerLocator.getPatientManager()
-               .findByIdentifiantLikeManager(critereValue, false, Arrays.asList(banque)));            
-         }
-      }
+      final LinkedHashSet<Patient> res = searchPatientInTK();
       this.patients = new ArrayList<>(res);
 
       // si nous sommes dans le cas d'une recherche de patients pour une
       // fusion, on ne va pas les chercher dans le serveur d'identités
       // patient
-      // @since 2.3.0-gatsbi ne recherche pas non plus si contexte Gatsbi
-      if(!isFusionPatients && !getIsGatsbiContexte()){
+      if(!isFusionPatients){
          //recherche dans le serveur identite patient si il est actif
          if(SipFactory.isDirectSip()){
             log.info("->Debut traitement recherche de patients " + "dans serveur d'identités");
@@ -262,6 +235,21 @@ public class SelectPatientModale
       }
       // on va trier les patients extraits en fct de leur nom
       Collections.sort(patients, new PatientNomComparator(true));
+   }
+   
+   /**
+    * Sera surchargé par Gatsbi
+    * @since 2.3.0-gatsbi
+    * @return liste de patient trouvé dans TK
+    */
+   protected LinkedHashSet<Patient> searchPatientInTK() {
+      LinkedHashSet<Patient> res = new LinkedHashSet<>();
+      if(critereValue != null && !critereValue.equals("")){
+         res.addAll(ManagerLocator.getPatientManager().findByNipLikeManager(critereValue, false));
+         res.addAll(ManagerLocator.getPatientManager().findByNomLikeManager(critereValue, false));
+         res.addAll(ManagerLocator.getPatientManager().findByNdaLikeManager(critereValue, false));
+      }
+      return res;
    }
 
    public void searchPatientsInSip(final String filePropertiesName){
@@ -574,9 +562,5 @@ public class SelectPatientModale
 
    public void setPatientsSip(final List<Patient> p){
       this.patientsSip = p;
-   }
-   
-   public boolean getIsGatsbiContexte() {
-      return contexte != null;
    }
 }

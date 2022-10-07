@@ -144,7 +144,7 @@ public class ReferenceurPatient extends GenericForwardComposer<Component>
 
    private MaladieDecorator selectedMaladieByNda = null;
 
-   protected static ListitemRenderer<Patient> patientRenderer = new PatientItemRenderer(true);
+   private ListitemRenderer<Patient> patientRenderer = new PatientItemRenderer(true);
 
    protected AnnotateDataBinder referenceurBinder;
 
