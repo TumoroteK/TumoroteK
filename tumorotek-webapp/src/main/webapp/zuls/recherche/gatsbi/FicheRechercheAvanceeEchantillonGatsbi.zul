@@ -286,7 +286,7 @@
 												</listbox>
 											</div>
 											<div class="item item-wide" id="conformeTraitementDiv"><!-- Conforme après traitement  -->
-												<custom-attributes champId="243" listmodel="nctraitement" />
+												<custom-attributes champId="243" listmodel="nctraitement" thesChampId="261" />
 												<label value="${c:l('Champ.Echantillon.ConformeTraitement')}"
 													sclass="chpLabel formLabel" />
 												<listbox 
@@ -311,7 +311,7 @@
 												</div>
 											</div>							
 											<div class="item item-wide" id="conformeCessionDiv"><!-- Conforme à la cession  -->
-												<custom-attributes champId="244" listmodel="nccession" />
+												<custom-attributes champId="244" listmodel="nccession" thesChampId="262" />
 												<label value="${c:l('Champ.Echantillon.ConformeCession')}"
 													sclass="chpLabel formLabel" />
 												<listbox 

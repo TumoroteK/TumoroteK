@@ -239,7 +239,7 @@
 								</listbox>
 							</div>
 							<div class="item item-mid" id="echanQteDiv"><!-- Quantité / QuantitéInit de l'échantillon -->
-								<custom-attributes champId="61" listmodel="quantiteUnites" />
+								<custom-attributes champId="61" listmodel="quantiteUnites" thesChampId="63" />
 								<div class="row-container chpLabel">
 									<label value="${c:l('ficheEchantillon.quantiteLabel')}" sclass="formLabel" />
 									<label value="*" sclass="requiredMark" />
@@ -348,7 +348,7 @@
 								</listbox>
 							</div>
 							<div class="item item-wide" id="conformeTraitementDiv"><!-- Conforme après traitement  -->
-								<custom-attributes champId="243" listmodel="nonConformitesTraitement" />
+								<custom-attributes champId="243" listmodel="nonConformitesTraitement" thesChampId="261" />
 								<div class="row-container chpLabel">
 									<label value="${c:l('Champ.Echantillon.ConformeTraitement')}" sclass="formLabel" />
 									<label value="*" sclass="requiredMark" />
@@ -370,7 +370,7 @@
 								</div>
 							</div>
 							<div class="item item-wide" id="conformeCessionDiv"><!-- Conforme à la cession  -->
-								<custom-attributes champId="244" listmodel="nonConformitesCession" />
+								<custom-attributes champId="244" listmodel="nonConformitesCession" thesChampId="262" />
 								<div class="row-container chpLabel">
 									<label value="${c:l('Champ.Echantillon.ConformeCession')}" sclass="formLabel" />
 									<label value="*" sclass="requiredMark" />

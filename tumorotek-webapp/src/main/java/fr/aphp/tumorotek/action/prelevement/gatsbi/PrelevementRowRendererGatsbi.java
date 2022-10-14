@@ -185,7 +185,7 @@ public class PrelevementRowRendererGatsbi extends PrelevementRowRenderer impleme
          case 270: // cong arrivee
             renderCongProperty(row, prel);
             break;
-         case 256: // conforme arrivee -> rendu sous la forme d'une icône
+         case 256: // conforme arrivee -> rendu sous la forme d'une icône (chpId=257 raisons, ignore)
             break;
          default:
             break;

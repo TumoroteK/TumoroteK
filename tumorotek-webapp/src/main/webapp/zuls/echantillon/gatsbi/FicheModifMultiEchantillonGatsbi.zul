@@ -73,7 +73,7 @@
 					</div>
 					<div class="block-container" id="infoEchanBlockDivContainer">
 						<div class="item item-wide" id="echanQteDiv"><!-- QuantiteInit -->
-							<custom-attributes champId="61" listmodel="quantiteUnites" />
+							<custom-attributes champId="61" listmodel="quantiteUnites" thesChampId="63" />
 							<label value="${c:l('Champ.Echantillon.QuantiteInit')}" sclass="chpLabel formLabel"/>
 							<div class="row-container changedValue">				
 								<label id="quantiteInitLabelChanged" 
@@ -171,7 +171,7 @@
 							</div>
 						</div>
 						<div class="item item-wide" id="conformeTraitementDiv"><!-- Conforme après traitement -->
-							<custom-attributes champId="243" />
+							<custom-attributes champId="243" thesChampId="261" />
 							<label id="nonconformeTraitementLabel" value="${c:l('Champ.Echantillon.ConformeTraitement')}" sclass="chpLabel formLabel"/>
 							<div class="row-container changedValue">				
 								<label id="nonConformeTraitementLabelChanged" 
@@ -185,7 +185,7 @@
 							</div>
 						</div>
 						<div class="item item-wide" id="conformeCessionDiv"><!-- Conforme à la cession  -->
-							<custom-attributes champId="244" />
+							<custom-attributes champId="244" thesChampId="262" />
 							<label id="nonconformeCessionLabel" value="${c:l('Champ.Echantillon.ConformeCession')}" sclass="chpLabel formLabel"/>
 							<div class="row-container changedValue">				
 								<label id="nonConformeCessionLabelChanged" 

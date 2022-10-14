@@ -245,7 +245,7 @@ public class ListePrelevementGatsbi extends ListePrelevement
                congColRendered = true;
             }
             break;
-         case 256: // conforme arrivee -> rendu sous la forme d'une icône
+         case 256: // conforme arrivee -> rendu sous la forme d'une icône (chpId=257 raisons, ignore)
             break;
          default:
             break;

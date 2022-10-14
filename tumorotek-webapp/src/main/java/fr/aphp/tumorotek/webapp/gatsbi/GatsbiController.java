@@ -186,10 +186,13 @@ public class GatsbiController
       if(c != null){
          hiddenIds.addAll(c.getHiddenChampEntiteIds());
       }
+      
+      // correctif spécifique champs associés
+      addAssociatedChampEntite(c, hiddenIds);
 
       return hiddenIds;
-   }
-
+   }  
+      
    /**
     * Récupére tous les ids des champs obligatoires.
     * @param contexte 
@@ -200,8 +203,55 @@ public class GatsbiController
       if(c != null){
          requiredIds.addAll(c.getRequiredChampEntiteIds());
       }
+      
+      // correctif spécifique champs associés
+      addAssociatedChampEntite(c, requiredIds);
 
       return requiredIds;
+   }
+   
+   /**
+    * Ajoute les champs entites associés au comportement hidden/required 
+    * si nécessaire afin d'éviter toute incohérence
+    * @param c contexte
+    * @param hiddenIds
+    */
+   private static void addAssociatedChampEntite(Contexte c, List<Integer> ids){
+      // prelevement: nonconfs
+      if (c.getContexteType().equals(ContexteType.PRELEVEMENT)) {
+         // ncfs arrive
+         if (ids.contains(256)) {
+            if (!ids.contains(257)) ids.add(257); // raisons   
+         } else {
+            ids.remove(Integer.valueOf(257));
+         }
+      }
+      
+      // echantillon: quantite et nonconfs
+      if (c.getContexteType().equals(ContexteType.ECHANTILLON)) {
+         // quantite
+         if (ids.contains(61)) {
+            if (!ids.contains(62)) ids.add(62); // quantite_init    
+            if (!ids.contains(63)) ids.add(63); // quantite_unite    
+         } else {
+            ids.remove(Integer.valueOf(62));
+            ids.remove(Integer.valueOf(63));
+         }
+         
+         // ncfs traitement
+         if (ids.contains(243)) {
+            if (!ids.contains(261)) ids.add(261); // raisons   
+         } else {
+            ids.remove(Integer.valueOf(261));
+         }
+         
+         // ncfs cession
+         if (ids.contains(244)) {
+            if (!ids.contains(262)) ids.add(262); // raisons   
+         } else {
+            ids.remove(Integer.valueOf(262));
+         }
+      }
    }
 
    public static List<Div> wireBlockDivsFromMainComponent(ContexteType type, Component main){
@@ -329,17 +379,27 @@ public class GatsbiController
 
          if(!thesaurii.isEmpty()){
             for(Div div : items){
-               if(div.hasAttribute("champId") && div.hasAttribute("listmodel")
-                  && thesaurii.contains(Integer.valueOf((String) div.getAttribute("champId")))){
+               if(div.hasAttribute("listmodel")) {
+                  
                   log.debug("applying thesaurus values for ".concat(div.getId()));
-
+                  
                   // Model
                   log.debug("finding thesaurus values for model ".concat((String) div.getAttribute("listmodel")));
                   List<TKThesaurusObject> lModel =
                      (List<TKThesaurusObject>) PropertyUtils.getProperty(controller, (String) div.getAttribute("listmodel"));
+                  
+                  // le champ peut être un thésaurus (champId) ex: nature
+                  // ou un thésaurus lié (thesChampId) ex: quantité unité, dans ce cas le thésaurus doit être 'visible'
+                  // sinon toutes les valeurs sont affichées par défaut
+                  Integer thesaurusChampId = null;
+                  if (thesaurii.contains(Integer.valueOf((String) div.getAttribute("champId")))) {
+                     thesaurusChampId = Integer.valueOf((String) div.getAttribute("champId"));
+                  } else if (div.hasAttribute("thesChampId") 
+                        && thesaurii.contains(Integer.valueOf((String) div.getAttribute("thesChampId")))) {
+                     thesaurusChampId = Integer.valueOf((String) div.getAttribute("thesChampId"));
+                  }
 
-                  List<TKThesaurusObject> thesObjs =
-                     filterExistingListModel(contexte, lModel, Integer.valueOf((String) div.getAttribute("champId")));
+                  List<TKThesaurusObject> thesObjs =  filterExistingListModel(contexte, lModel, thesaurusChampId);
 
                   // ListModelList conversion
                   if(!((String) div.getAttribute("listmodel")).matches(".*Model")){

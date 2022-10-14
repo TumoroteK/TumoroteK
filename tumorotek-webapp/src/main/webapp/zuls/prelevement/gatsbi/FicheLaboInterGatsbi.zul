@@ -441,7 +441,7 @@
 								</div>
 							</div>
 							<div class="item item-wide" id="conformeArriveeDiv"><!-- Conforme à l'arrivée -->
-								<custom-attributes champId="256" listmodel="nonConformites" />
+								<custom-attributes champId="256" listmodel="nonConformites" thesChampId="257" />
 								<div class="row-container chpLabel">
 									<label id="conformeArriveeLabel"
 										value="${c:l('Champ.Prelevement.ConformeArrivee')}"
