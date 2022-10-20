@@ -53,6 +53,7 @@ import javax.persistence.TypedQuery;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.collection.PersistentSet;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.Validator;
 
 import fr.aphp.tumorotek.dao.coeur.echantillon.EchantillonDao;
@@ -1731,5 +1732,26 @@ public class PrelevementManagerImpl implements PrelevementManager
    @Override
    public List<Prelevement> findByCodeInPlateformeManager(final String code, final Plateforme pf){
       return prelevementDao.findByCodeInPlateforme(code, pf);
+   }
+
+   @Override
+   public List<Integer> findByPatientIdentifiantOrNomOrNipInListManager(List<String> idsNipsNoms, List<Banque> selectedBanques){
+      if(idsNipsNoms != null && !idsNipsNoms.isEmpty() && selectedBanques != null && !selectedBanques.isEmpty()){
+         return prelevementDao.findByPatientIdentifiantOrNomOrNipInList(idsNipsNoms, selectedBanques);
+      }
+      return new ArrayList<>();
+   }
+
+   @Override
+   public List<Integer> findByPatientIdentifiantOrNomOrNipReturnIdsManager(String search, List<Banque> banks, boolean exactMatch){
+      final List<Integer> res = new ArrayList<>();
+      if(!StringUtils.isEmpty(search) && banks != null && !banks.isEmpty()){
+         if(!exactMatch){
+            search = "%" + search + "%";
+         }
+         return prelevementDao.findByPatientIdentifiantOrNomOrNipReturnIds(search, banks);
+      }
+
+      return res;   
    }
 }

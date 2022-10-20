@@ -136,7 +136,7 @@ public class FichePrelevementStatic extends AbstractFicheStaticController
 
    protected HtmlBasedComponent groupDerivesPrlvt;
 
-   private ResumePatient resumePatient;
+   protected ResumePatient resumePatient;
 
    protected Vbox risquesBox;
 
@@ -220,7 +220,7 @@ public class FichePrelevementStatic extends AbstractFicheStaticController
    // car le component group patient n'est pas
    // de même type group VS Groupbox
    protected ResumePatient initResumePatient(){
-      return new ResumePatient(groupPatient, false);
+      return new ResumePatient(groupPatient, null, null);
    }
 
    @Override
@@ -267,8 +267,8 @@ public class FichePrelevementStatic extends AbstractFicheStaticController
       if(maladie != null){
          resumePatient.setVisible(true);
          resumePatient.setAnonyme(isAnonyme());
-         resumePatient.setMaladie(maladie);
          resumePatient.setPrelevement(prelevement);
+         resumePatient.setMaladie(maladie);
          resumePatient.setPatientAccessible(isPatientAccessible);
          resumePatient.hideMaladieRows(SessionUtils.isAnyDefMaladieInBanques(SessionUtils.getSelectedBanques(sessionScope)));
       }else if(this.prelevement.getPrelevementId() != null){

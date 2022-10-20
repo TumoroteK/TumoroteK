@@ -93,6 +93,11 @@
 					<div id="mainPatientContainer">
 						<div id="patientBlockDiv"><!-- Patient -->
 							<div id="patientBlockDivContainer" class="block-container">
+							    <div class="item item-mid" id="identifiantDiv"><!-- Identifiant patient -->
+									<custom-attributes champId="272" />
+									<label value="${c:l('Champ.Patient.Identifiant')}" sclass="chpLabel formLabel"/>
+									<label id="identifiantLabel" sclass="formLink" />
+								</div>
 								<div class="item item-mid" id="nipDiv"><!-- Nip patient -->
 									<custom-attributes champId="2" />
 									<label value="${c:l('Champ.Patient.Nip')}" sclass="chpLabel formLabel"/>
@@ -109,14 +114,14 @@
 								<div class="item item-mid" id="nomDiv"><!-- Nom -->
 									<custom-attributes champId="3" />
 									<label value="${c:l('Champ.Patient.Nom')}" sclass="chpLabel formLabel" />
-									<label id="linkPatientLabel" sclass="formLink" />
+									<label id="linkPatientLabel" sclass="formValue" />
 								</div>
 								<div class="item item-mid" id="prenomDiv"><!-- Prenom -->
 									<custom-attributes champId="5" />
 									<label value="${c:l('Champ.Patient.Prenom')}" sclass="chpLabel formLabel" />
 									<label id="prenomLabel" sclass="formValue" />
 								</div>
-								<div class="item item-mid" id="dateNaisDiv"><!-- Date de naissance -->
+								<div class="item item-mid" id="dateNaissanceDiv"><!-- Date de naissance -->
 									<custom-attributes champId="7" />
 									<label value="${c:l('Champ.Patient.DateNaissance')}" sclass="chpLabel formLabel" />
 									<label id="dateNaisLabel" sclass="formValue" />
@@ -130,18 +135,20 @@
 						</div>
 						<div class="block-separator" />
 						<!-- Maladie -->
-						<div class="block-container"
-							id="linkMaladie" 
-							style="border-top-style: solid; border-top-color: #6ca1e6; border-top-width: 1px"> 
-							<div class="item item-mid" id="libelleDiv"><!-- Libelle -->
-								<custom-attributes champId="17" />
-								<label value="${c:l('Champ.Maladie.Libelle')}" sclass="chpLabel formLabel" />
-								<label id="linkMaladieLabel" sclass="formLink" />
-							</div>
-							<div class="item item-mid" id="codeMaladieDiv"><!-- Code -->
-								<custom-attributes champId="18" />
-								<label value="${c:l('Champ.Maladie.Code')}" sclass="chpLabel formLabel" />
-								<label id="codeDiagLabel" sclass="formValue" />
+						<div id="maladieBlockDiv">
+							<div class="block-container"
+								id="linkMaladie" 
+								style="border-top-style: solid; border-top-color: #6ca1e6; border-top-width: 1px"> 
+								<div class="item item-mid" id="libelleDiv"><!-- Libelle -->
+									<custom-attributes champId="17" />
+									<label value="${c:l('Champ.Maladie.Libelle')}" sclass="chpLabel formLabel" />
+									<label id="linkMaladieLabel" sclass="formLink" />
+								</div>
+								<div class="item item-mid" id="codeMaladieDiv"><!-- Code -->
+									<custom-attributes champId="18" />
+									<label value="${c:l('Champ.Maladie.Code')}" sclass="chpLabel formLabel" />
+									<label id="codeDiagLabel" sclass="formValue" />
+								</div>
 							</div>
 						</div>
 					</div>

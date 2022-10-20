@@ -106,6 +106,7 @@ import fr.aphp.tumorotek.model.contexte.Collaborateur;
 import fr.aphp.tumorotek.model.contexte.Etablissement;
 import fr.aphp.tumorotek.model.contexte.Service;
 import fr.aphp.tumorotek.model.contexte.Transporteur;
+import fr.aphp.tumorotek.model.contexte.gatsbi.Contexte;
 import fr.aphp.tumorotek.model.systeme.Unite;
 import fr.aphp.tumorotek.webapp.gatsbi.GatsbiController;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
@@ -115,7 +116,7 @@ import fr.aphp.tumorotek.webapp.general.SessionUtils;
  * Controller créé le 23/06/2010.
  *
  * @author Pierre Ventadour
- * @version 2.0.13
+ * @version 2.3.0-gatsbi
  */
 public class FichePrelevementEdit extends AbstractFicheEditController
 {
@@ -261,7 +262,7 @@ public class FichePrelevementEdit extends AbstractFicheEditController
    // car le component group patient n'est pas
    // de même type group VS Groupbox
    protected ResumePatient initResumePatient(){
-      return new ResumePatient(groupPatient, false);
+      return new ResumePatient(groupPatient, null, null);
    }
 
    @Override
@@ -297,7 +298,7 @@ public class FichePrelevementEdit extends AbstractFicheEditController
 
       }else{
          resumePatient.setVisible(false);
-         referenceur = (Window) Executions.createComponents("/zuls/prelevement/ReferenceurPatient.zul", refPatientDiv, null);
+         referenceur = (Window) Executions.createComponents(getRefPatientCompPath(), refPatientDiv, null);
          // initialize le referenceur
          ((ReferenceurPatient) referenceur.getAttributeOrFellow("winRefPatient$composer", true))
             .initialize(SessionUtils.getSelectedBanques(sessionScope).get(0).getDefMaladies());
@@ -311,8 +312,8 @@ public class FichePrelevementEdit extends AbstractFicheEditController
       if(getMaladie() != null){
          resumePatient.setVisible(true);
          resumePatient.setAnonyme(isAnonyme());
-         resumePatient.setMaladie(getMaladie());
          resumePatient.setPrelevement(getObject());
+         resumePatient.setMaladie(getMaladie());
          resumePatient.setPatientAccessible(false);
          resumePatient.hideMaladieRows(SessionUtils.isAnyDefMaladieInBanques(SessionUtils.getSelectedBanques(sessionScope)));
          resumePatient.setNdaBoxVisible(true);
@@ -1775,8 +1776,8 @@ public class FichePrelevementEdit extends AbstractFicheEditController
     */
    @Override
    public void openSelectPatientWindow(final String path, final String returnMethode, final Boolean isFusionPatients,
-      final String critere, final Patient patAExclure){
-      super.openSelectPatientWindow(path, returnMethode, isFusionPatients, critere, patAExclure);
+      final String critere, final Patient patAExclure, final Contexte contexte, final Banque banque){
+      super.openSelectPatientWindow(path, returnMethode, isFusionPatients, critere, patAExclure, contexte, banque);
       consentTypeUsed.clear();
       colorConsentTypeItem(true);
    }
@@ -1798,5 +1799,10 @@ public class FichePrelevementEdit extends AbstractFicheEditController
          throw new WrongValueException(consentTypesBoxPrlvt, Labels.getLabel("fichePrelevement.error.consenType"));
       }
       Clients.clearWrongValue(consentTypesBoxPrlvt);
+   }
+   
+   // @since 2.3.0-gatsbi,sera rédéfinie
+   protected String getRefPatientCompPath() {
+      return "/zuls/prelevement/ReferenceurPatient.zul";
    }
 }

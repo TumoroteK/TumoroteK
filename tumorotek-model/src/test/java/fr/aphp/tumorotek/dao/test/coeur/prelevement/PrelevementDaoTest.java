@@ -88,7 +88,7 @@ import fr.aphp.tumorotek.model.systeme.Unite;
  * Classe de test créée le 29/09/09.
  *
  * @author Mathieu BARTHELEMY
- * @version 2.2.1
+ * @version 2.3.0-gatsbi
  *
  */
 public class PrelevementDaoTest extends AbstractDaoTest
@@ -1499,5 +1499,65 @@ public void testFindByNumberEchantillons(){
 	   
 	   prels = prelevementDao.findByCollaborateurLaboInter(null, banks);
 	   assertTrue(prels.isEmpty());
+   }
+   
+   public void testFindByPatientIdentifiantOrNomOrNipInList(){
+      List<String> criteres = new ArrayList<>();
+      criteres.add("876");
+      criteres.add("SOLIS");
+      criteres.add("SLS-1234");
+      final List<Banque> bks = new ArrayList<>();
+      bks.add(banqueDao.findById(1));
+      bks.add(banqueDao.findById(2));
+
+      // les prélèvements patients 876 (DELPHINO) et SOLIS
+      // ne seront pas pris en compte car ils n'ont pas d'identifiant (donc pas Gatsbi !)
+      List<Integer> liste = prelevementDao.findByPatientIdentifiantOrNomOrNipInList(criteres, bks);
+      assertTrue(liste.size() == 1);
+      assertTrue(liste.get(0).equals(3));
+
+      // NOM
+      criteres.clear();
+      criteres.add("MAYER");
+      liste = prelevementDao.findByPatientIdentifiantOrNomOrNipInList(criteres, bks);
+      assertTrue(liste.size() == 1);
+      assertTrue(liste.get(0).equals(3));
+      
+      // NIP
+      criteres.clear();
+      criteres.add("12");
+      liste = prelevementDao.findByPatientIdentifiantOrNomOrNipInList(criteres, bks);
+      assertTrue(liste.size() == 1);
+      assertTrue(liste.get(0).equals(3));
+   }
+   
+   public void testFindByPatientIdentifiantOrNomOrNipReturnIds(){
+      
+      // IDENTIFIANT
+      String search = "SLS-1234";
+      final List<Banque> bks = new ArrayList<>();
+      bks.add(banqueDao.findById(1));
+      bks.add(banqueDao.findById(2));
+
+      List<Integer> liste = prelevementDao.findByPatientIdentifiantOrNomOrNipReturnIds(search, bks);
+      assertTrue(liste.size() == 1);
+      assertTrue(liste.get(0).equals(3));
+
+      // NOM
+      search = "MAYER";
+      liste = prelevementDao.findByPatientIdentifiantOrNomOrNipReturnIds(search, bks);
+      assertTrue(liste.size() == 1);
+      assertTrue(liste.get(0).equals(3));
+      
+      // NIP
+      search = "12";
+      liste = prelevementDao.findByPatientIdentifiantOrNomOrNipReturnIds(search, bks);
+      assertTrue(liste.size() == 1);
+      assertTrue(liste.get(0).equals(3));
+      
+      // FAIL
+      search = "NOO";
+      liste = prelevementDao.findByPatientIdentifiantOrNomOrNipReturnIds(search, bks);
+      assertTrue(liste.isEmpty());
    }
 }

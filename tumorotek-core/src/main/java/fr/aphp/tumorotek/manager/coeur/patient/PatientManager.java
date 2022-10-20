@@ -395,6 +395,36 @@ public interface PatientManager
     * @param pat Patient
     * @return patient si existe, null sinon
     * @since 2.0.13
-   =	 */
+    */
    Patient getExistingPatientManager(Patient pat);
+
+   /**
+    * Recherche les patients dont les identifiants sont passés en paramètres, pour 
+    * une liste de collections.
+    * @param identifiants
+    * @param collections
+    * @return liste patient ids
+    */
+   List<Integer> findByIdentifiantsInListManager(List<String> identifiants, List<Banque> selectedBanques);
+
+   /**
+    * Recherche les patients pour un identifiant passé en paramètres, pour 
+    * une liste de collections.
+    * @param identifiant
+    * @param collections
+    * @param boolean exactMatch if true
+    * @return liste patient ids
+    */
+   List<Integer> findByIdentifiantLikeBothSideReturnIdsManager(String identifiant, List<Banque> selectedBanques,
+      boolean exactMatch);
+   
+   /**
+    * Recherche toutes les patients dont l'identifiant est egal
+    * ou 'like' celui en parametre pour une liste de banques.
+    * @param identifiant
+    * @param boolean exactMatch
+    * @param banques
+    * @return Liste de Patient.
+    */
+   List<Patient> findByIdentifiantLikeManager(String nip, boolean exactMatch, List<Banque> selectedBanques);
 }

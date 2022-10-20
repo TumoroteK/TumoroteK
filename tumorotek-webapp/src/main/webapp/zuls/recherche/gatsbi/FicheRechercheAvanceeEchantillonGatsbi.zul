@@ -286,7 +286,7 @@
 												</listbox>
 											</div>
 											<div class="item item-wide" id="conformeTraitementDiv"><!-- Conforme après traitement  -->
-												<custom-attributes champId="243" listmodel="nctraitement" />
+												<custom-attributes champId="243" listmodel="nctraitement" thesChampId="261" />
 												<label value="${c:l('Champ.Echantillon.ConformeTraitement')}"
 													sclass="chpLabel formLabel" />
 												<listbox 
@@ -311,7 +311,7 @@
 												</div>
 											</div>							
 											<div class="item item-wide" id="conformeCessionDiv"><!-- Conforme à la cession  -->
-												<custom-attributes champId="244" listmodel="nccession" />
+												<custom-attributes champId="244" listmodel="nccession" thesChampId="262" />
 												<label value="${c:l('Champ.Echantillon.ConformeCession')}"
 													sclass="chpLabel formLabel" />
 												<listbox 
@@ -357,8 +357,7 @@
 									label="${c:l('recherche.avancee.informations.prelevement')}" />
 								<row>
 									<cell colspan="4">
-										<div id="prelevementBlockDiv" class="block-container"
-											style="padding-left: 5px">
+										<div class="block-container" style="padding-left: 5px">
 											<div class="item item-mid" id="codeDiv"><!-- Code du prélèvement -->
 												<custom-attributes champId="23" />
 												<label value="${c:l('Champ.Prelevement.Code')}"
@@ -813,7 +812,15 @@
 								<row>
 									<cell colspan="4">
 										<div class="block-container" style="padding-left: 5px">
-											<div class="item item-mid" id="nipDiv"><!-- Nip patient -->
+											<div class="item item-wide" id="identifiantDiv"><!-- Identifiant -->
+												<custom-attributes champId="272" />
+												<label value="${c:l('Champ.Patient.Identifiant')}" sclass="chpLabel formLabel" />
+												<textbox id="identifiantPatientBox" width="150px">
+												<custom-attributes
+													attribut="Identifiant" entite="Patient" />
+												</textbox>
+											</div>
+											<div class="item item-wide" id="nipDiv"><!-- Nip patient -->
 												<custom-attributes champId="2" />
 												<label value="${c:l('Champ.Patient.Nip')}"
 													sclass="chpLabel formLabel" />

@@ -112,10 +112,11 @@ public class PatientValidatorImpl implements PatientValidator
          }
       }
 
-      // @since 2.3.0-gatsbi
+      // @since 2.3.0-gatsbi -> null est possible (pas empty)
       // ValidationUtils.rejectIfEmptyOrWhitespace(errs, "nom", "patient.nom.empty");
       //nom valide
       if(patient.getNom() != null){
+         ValidationUtils.rejectIfEmptyOrWhitespace(errs, "nom", "patient.nom.empty");
          if(!patient.getNom().matches(ValidationUtilities.MOTREGEXP)){
             errs.rejectValue("nom", "patient.nom.illegal");
          }
@@ -135,14 +136,11 @@ public class PatientValidatorImpl implements PatientValidator
          }
       }
 
-      //prenom non null
-      ValidationUtils.rejectIfEmptyOrWhitespace(errs, "prenom", "patient.prenom.empty");
-
+      // @since 2.3.0-gatsbi -> null est possible (pas empty)
+      // ValidationUtils.rejectIfEmptyOrWhitespace(errs, "prenom", "patient.prenom.empty");
       //prenom valide
       if(patient.getPrenom() != null){
-         //			ValidationUtils
-         //			.rejectIfEmptyOrWhitespace(errs, "prenom",
-         //										"patient.prenom.empty");
+         ValidationUtils.rejectIfEmptyOrWhitespace(errs, "prenom", "patient.prenom.empty");
          if(!patient.getPrenom().matches(ValidationUtilities.MOTREGEXP)){
             errs.rejectValue("prenom", "patient.prenom.illegal");
          }
@@ -151,13 +149,11 @@ public class PatientValidatorImpl implements PatientValidator
          }
       }
 
-      //sexe non null
-      ValidationUtils.rejectIfEmptyOrWhitespace(errs, "sexe", "patient.sexe.empty");
+      // @since 2.3.0-gatsbi -> null est possible (pas empty)
+      // ValidationUtils.rejectIfEmptyOrWhitespace(errs, "sexe", "patient.sexe.empty");
       //sexe valide
       if(patient.getSexe() != null){
-         //			ValidationUtils
-         //			.rejectIfEmptyOrWhitespace(errs, "sexe",
-         //										"patient.sexe.empty");
+         ValidationUtils.rejectIfEmptyOrWhitespace(errs, "sexe", "patient.sexe.empty");
          if(!patient.getSexe().matches(ValidationUtilities.SEXEREGEXP)){
             errs.rejectValue("sexe", "patient.sexe.illegal");
          }
@@ -185,10 +181,11 @@ public class PatientValidatorImpl implements PatientValidator
          }
       }
 
-      // @since 2.3.0-gatsbi
+      // @since 2.3.0-gatsbi -> null est possible (pas empty)
       // ValidationUtils.rejectIfEmptyOrWhitespace(errs, "patientEtat", "patient.patientEtat.empty");
       //etat valide
       if(patient.getPatientEtat() != null){
+         ValidationUtils.rejectIfEmptyOrWhitespace(errs, "patientEtat", "patient.patientEtat.empty");
          if(!patient.getPatientEtat().matches(ValidationUtilities.PATIENT_ETAT_REGEXP)){
             errs.rejectValue("patientEtat", "patient.patientEtat.illegal");
          }
@@ -221,9 +218,11 @@ public class PatientValidatorImpl implements PatientValidator
          if(ValidationUtilities.checkWithDate(patient.getDateNaissance(), null, dateAndCode[0], null, null, null, null, false)){
             errs.rejectValue("dateNaissance", (String) dateAndCode[1]);
          }
-      }else{
-         errs.rejectValue("dateNaissance", "patient.dateNaissance.empty");
-      }
+      } 
+      // @since gatsbi
+      // else{
+      //   errs.rejectValue("dateNaissance", "patient.dateNaissance.empty");
+      // }
       return errs;
    }
 

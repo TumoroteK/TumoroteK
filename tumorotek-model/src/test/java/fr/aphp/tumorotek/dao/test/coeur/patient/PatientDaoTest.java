@@ -728,5 +728,69 @@ public class PatientDaoTest extends AbstractDaoTest
       res = patientDao.findCountPrelevedByDatesPrelExt(d1, d2, banks, null);
       assertTrue(res.get(0) == 0);
    }
+   
+   public void testFindByIdentifiantReturnIds(){
+      final List<Banque> bks = new ArrayList<>();
+      bks.add(banqueDao.findById(1));
+      List<Integer> patients = patientDao.findByIdentifiantReturnIds("SLS-1234", bks);
+      assertTrue(patients.size() == 1);
 
+      patients = patientDao.findByIdentifiantReturnIds("K12", bks);
+      assertTrue(patients.size() == 0);
+
+      patients = patientDao.findByIdentifiantReturnIds("SLS-123%", bks);
+      assertTrue(patients.size() == 1);
+
+      bks.add(banqueDao.findById(2));
+      patients = patientDao.findByIdentifiantReturnIds("%", bks);
+      assertTrue(patients.size() == 2);
+
+      patients = patientDao.findByIdentifiantReturnIds(null, bks);
+      assertTrue(patients.size() == 0);
+
+      patients = patientDao.findByIdentifiantReturnIds("%", null);
+      assertTrue(patients.size() == 0);
+   }
+   
+   public void testFindByIdentifiantInList(){
+      List<String> identifiants = new ArrayList<>();
+      identifiants.add("SLS-1234");
+      identifiants.add("MEL-889");
+      identifiants.add("SLS-1255");
+      final List<Banque> banks = new ArrayList<>();
+      banks.add(banqueDao.findById(1));
+      banks.add(banqueDao.findById(2));
+
+      List<Integer> liste = patientDao.findByIdentifiantInList(identifiants, banks);
+      assertTrue(liste.size() == 2);
+
+      identifiants.clear();
+      identifiants.add("MEL-889");
+      liste = patientDao.findByIdentifiantInList(identifiants, banks);
+      assertTrue(liste.size() == 1);
+   }
+   
+   public void testFindByIdentifiant(){
+      String identifiant = "SLS-1234";
+      final List<Banque> banks = new ArrayList<>();
+      banks.add(banqueDao.findById(1));
+
+      List<Patient> patients = patientDao.findByIdentifiant(identifiant, banks);
+      assertTrue(patients.size() == 1);
+      assertTrue(patients.get(0).getPatientId() == 1);
+      
+      identifiant = "SLS-12%";
+      patients = patientDao.findByIdentifiant(identifiant, banks);
+      assertTrue(patients.size() == 2);
+
+
+      banks.add(banqueDao.findById(2));
+      identifiant = "%";
+      patients = patientDao.findByIdentifiant(identifiant, banks);
+      assertTrue(patients.size() == 2);
+      
+      identifiant = "UNK";
+      patients = patientDao.findByIdentifiant(identifiant, banks);
+      assertTrue(patients.isEmpty());
+   }
 }

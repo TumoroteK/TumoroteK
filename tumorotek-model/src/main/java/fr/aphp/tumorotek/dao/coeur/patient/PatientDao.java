@@ -255,5 +255,41 @@ public interface PatientDao extends GenericDaoJpa<Patient, Integer>
     * @return long
     */
    List<Long> findCountByReferent(Collaborateur referent);
+   
+//   /**
+//    * Recherche les patients dont le IDENTIFIANT est 'like' le paramètre.
+//    * @param identifiant des patients recherchés.
+//    * @return Liste de Patients.
+//    */
+//   List<Patient> findByIdentifiant(String identifiant);
+
+   /**
+    * Recherche les patients dont les identifiants sont passés en paramètres sous la 
+    * forme d'une liste, pour une liste de collections.
+    * @param identifiants
+    * @param collections
+    * @return liste patient ids
+    */
+   List<Integer> findByIdentifiantInList(List<String> identifiants, List<Banque> selectedBanques);
+
+   /**
+    * Recherche les patients pour un identifiant passé en paramètres, pour 
+    * une liste de collections.
+    * @param identifiant
+    * @param collections
+    * @param boolean exactMatch if true
+    * @return liste patient ids
+    */
+   List<Integer> findByIdentifiantReturnIds(String identifiant, List<Banque> selectedBanques);
+
+   /**
+    * Recherche toutes les patients dont l'identifiant est egal
+    * ou 'like' celui en parametre pour une liste de banques.
+    * @param identifiant
+    * @param boolean exactMatch
+    * @param banques
+    * @return Liste de Patient.
+    */
+   List<Patient> findByIdentifiant(String ident, List<Banque> selectedBanques);
 
 }

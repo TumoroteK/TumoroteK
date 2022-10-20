@@ -33,8 +33,8 @@
  * avez pris connaissance de la licence CeCILL, et que vous en avez 
  * accepté les termes. 
 -->
-<window id="winReferents" apply="fr.aphp.tumorotek.action.patient.MedecinReferents">
-	<hlayout>
+<window id="winReferents" apply="fr.aphp.tumorotek.action.patient.MedecinReferents" width="100%">
+	<hlayout style="white-space: normal">
 		<listbox id="referentsList"
 			model="@{winReferents$composer.medecins load-after='addMed.onClick'}"
 			selectedItem="@{winReferents$composer.selectedMedecin}"

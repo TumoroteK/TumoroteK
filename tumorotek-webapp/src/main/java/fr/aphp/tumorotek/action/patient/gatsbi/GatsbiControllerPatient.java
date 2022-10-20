@@ -38,11 +38,14 @@ package fr.aphp.tumorotek.action.patient.gatsbi;
 
 import java.lang.reflect.InvocationTargetException;
 import java.text.ParseException;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.zkoss.zul.Column;
 import org.zkoss.zul.Grid;
 import org.zkoss.zul.Label;
+import org.zkoss.zul.Listbox;
+import org.zkoss.zul.Listheader;
 import org.zkoss.zul.Row;
 
 import fr.aphp.tumorotek.action.ManagerLocator;
@@ -50,6 +53,7 @@ import fr.aphp.tumorotek.action.patient.PatientRowRenderer;
 import fr.aphp.tumorotek.action.patient.PatientUtils;
 import fr.aphp.tumorotek.decorator.TKSelectObjectRenderer;
 import fr.aphp.tumorotek.model.coeur.patient.Patient;
+import fr.aphp.tumorotek.model.contexte.gatsbi.Contexte;
 import fr.aphp.tumorotek.webapp.gatsbi.GatsbiController;
 
 /**
@@ -184,11 +188,11 @@ public class GatsbiControllerPatient
       switch(chpId){
          case 2: // nip
             TKSelectObjectRenderer
-               .renderAnonymisableAndClickableAlphanumProperty(row, pat, "nip", anonyme, "onClickObject", pat);
+               .renderAnonymisableAndClickableAlphanumProperty(row, pat, "nip", anonyme, null, null);
             break;
          case 3: // nom
             TKSelectObjectRenderer
-               .renderAnonymisableAndClickableAlphanumProperty(row, pat, "nom", anonyme, "onClickObject", pat);
+               .renderAnonymisableAndClickableAlphanumProperty(row, pat, "nom", anonyme, null, null);
             break;
          case 4: // nom naissance
             TKSelectObjectRenderer
@@ -244,4 +248,89 @@ public class GatsbiControllerPatient
             .stream().map(c -> c.getNomAndPrenom())
             .collect(Collectors.toList()));
    } 
+   
+   public static void addListHeadForChpId(final Integer chpId, final Listbox listbox, Map<Integer,String> widths) {
+      switch(chpId){
+         case 2: // nip
+            drawNipListheader(listbox, widths != null ? widths.get(2) : null);
+            break;
+         case 3: // nom
+            drawNomListheader(listbox, widths != null ? widths.get(3) : null);
+            break;
+         case 4: // nom naissance
+            break;
+         case 5: // prenom
+            drawPrenomListheader(listbox, widths != null ? widths.get(5) : null);
+            break;
+         case 6: // sexe
+            drawSexeListheader(listbox, widths != null ? widths.get(6) : null);
+            break;
+         case 7: // date naissance
+            drawDateNaissanceListheader(listbox, widths != null ? widths.get(7) : null);
+            break;
+         case 8: // ville naissance
+            break;           
+         case 9: // pays naissance
+            break;
+         case 10: // patient état
+            break;
+         case 11: // date état
+            break;
+         case 12: // date décès
+            break;
+         case 227: // medecins
+            drawPatientMedecinsListheader(listbox, widths != null ? widths.get(227) : null);
+            break;       
+         default:
+            break;
+      }
+   }
+   
+   public static Listheader drawIdentifiantListheader(final Listbox listbox, final String width) {
+      return GatsbiController.addListHeader(listbox, "Champ.Patient.Identifiant", width, null, true);   
+   }
+
+   public static Listheader drawNipListheader(final Listbox listbox, final String width) {
+      return GatsbiController.addListHeader(listbox, "Champ.Patient.Nip", width, null, true);   
+   }
+
+   public static Listheader drawNomListheader(final Listbox listbox, final String width) {
+      return GatsbiController.addListHeader(listbox, "Champ.Patient.Nom", width, null, true);
+   }
+   
+   public static Listheader drawPrenomListheader(final Listbox listbox, final String width) {
+      return GatsbiController.addListHeader(listbox, "Champ.Patient.Prenom", width, null, true);
+   }
+   
+   public static Listheader drawSexeListheader(final Listbox listbox, final String width) {
+      return GatsbiController.addListHeader(listbox, "Champ.Patient.Sexe", width, null, true);
+   }
+   
+   public static Listheader drawDateNaissanceListheader(final Listbox listbox, final String width) {
+      return GatsbiController.addListHeader(listbox, "Champ.Patient.DateNaissance", width, null, true);
+   }
+   
+   public static Listheader drawPatientMedecinsListheader(final Listbox listbox, final String width) {
+      return GatsbiController.addListHeader(listbox, "patient.medecins", width, null, true);
+   }
+   
+   /**
+    * Dessines les listbox headers d'une listbox passée en paramètre, suivant un contexte Gatsbi.
+    * @param contexte
+    * @param listbox
+    */
+   public static void drawListheadersForPatients(final Contexte contexte, final Listbox listbox, 
+      final boolean isFusion, Map<Integer,String> widths) {
+
+      // identifiant header, toujours affichée
+      drawIdentifiantListheader(listbox, widths != null ? widths.get(272) : null);
+
+      // variable columns
+      for(final Integer chpId : contexte.getChampEntiteInTableauOrdered()){
+         addListHeadForChpId(chpId, listbox, widths);
+      }
+      
+      // fusion -> prelevements
+      GatsbiController.addListHeader(listbox, "patients.prelevements.short", null, null, isFusion);
+   }
 }

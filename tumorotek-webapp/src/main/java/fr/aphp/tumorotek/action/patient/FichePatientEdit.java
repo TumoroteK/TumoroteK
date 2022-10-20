@@ -48,6 +48,7 @@ import java.util.Set;
 import org.springframework.validation.Errors;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.HtmlBasedComponent;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -76,6 +77,11 @@ import fr.aphp.tumorotek.model.coeur.patient.PatientMedecin;
 import fr.aphp.tumorotek.model.contexte.Collaborateur;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
+/**
+ * @version 2.3.0-gatsbi
+ * @author Mathieu BARTHELEMY
+ *
+ */
 public class FichePatientEdit extends AbstractFicheEditController
 {
    protected static final long serialVersionUID = 7781723391910786070L;
@@ -102,12 +108,14 @@ public class FichePatientEdit extends AbstractFicheEditController
    protected Toolbar toolbar;
 
    // included ndaBox (embedded in Prelevement mode only)
-   protected Label ndaFieldLabel;
+   // @since 2.3.0-gatsbi peut être label / div
+   protected HtmlBasedComponent ndaFieldLabel;
 
    protected Textbox ndaBox;
 
    // referents
-   protected Group referentsGroup;
+   // @since 2.3.0-gatsbi peut être Group / groupbox
+   protected HtmlBasedComponent referentsGroup;
 
    // Objets Principaux
    protected Patient patient = new Patient();
@@ -137,14 +145,14 @@ public class FichePatientEdit extends AbstractFicheEditController
    @Override
    public void switchToCreateMode(){
       super.switchToCreateMode();
-      referentsGroup.setOpen(true);
+      setReferentsGroupOpen(true);
       getReferents().switchToCreateMode();
    }
 
    @Override
    public void switchToEditMode(){
       super.switchToEditMode();
-      referentsGroup.setOpen(true);
+      setReferentsGroupOpen(true);
       getReferents().switchToEditMode();
    }
 
@@ -161,29 +169,7 @@ public class FichePatientEdit extends AbstractFicheEditController
    public void setObject(final TKdataObject obj){
       this.patient = (Patient) obj;
       this.selectedSexe = setSexeItemFromDBValue(this.patient);
-      if(patient.getPatientEtat() != null){
-         if(patient.getPatientEtat().equals("V")){
-            if(!"F".equals(patient.getSexe())){
-               this.selectedEtat = PatientUtils.ETAT_V;
-            }else{
-               this.selectedEtat = PatientUtils.ETAT_VF;
-            }
-         }else if(patient.getPatientEtat().equals("D")){
-            if(!"F".equals(patient.getSexe())){
-               this.selectedEtat = PatientUtils.ETAT_D;
-            }else{
-               this.selectedEtat = PatientUtils.ETAT_DF;
-            }
-         }else{
-            this.selectedEtat = PatientUtils.ETAT_I;
-         }
-      }else{ // si new Patient
-         if(!"F".equals(patient.getSexe())){
-            this.selectedEtat = PatientUtils.ETAT_V;
-         }else{
-            this.selectedEtat = PatientUtils.ETAT_VF;
-         }
-      }
+      this.selectedEtat = setPatientEtatFromValue(this.patient);
 
       accordDateToEtat();
 
@@ -195,7 +181,7 @@ public class FichePatientEdit extends AbstractFicheEditController
       }
 
       getReferents().setMedecins(this.medecins);
-      referentsGroup.setOpen(false);
+      setReferentsGroupOpen(false);
 
       super.setObject(obj);
 
@@ -231,7 +217,6 @@ public class FichePatientEdit extends AbstractFicheEditController
       for(int i = 0; i < annotationValue.size(); i++){
          if(annotationValue.get(i).getChampAnnotation() != null){
             annotationRow = annotationValue.get(i).getChampAnnotation().toString();
-            System.out.println(annotationRow);
             if(annotationRow.contains("Antécédent_Médicaux.Conforme") || annotationRow.contains("Consentement.Conforme}")){
 
                mMap.put(annotationRow, annotationValue.get(i).getValeur());
@@ -319,6 +304,14 @@ public class FichePatientEdit extends AbstractFicheEditController
          }
          patient.setSexe(this.selectedSexe.getCode());
       }
+      
+      setEmptyToNullEtat();
+   }
+   
+   /**
+    * @since 2.3.0-gatsbi état peut être null
+    */   
+   protected void setEmptyToNullEtat() {
       if(this.selectedEtat != null){
          this.patient.setPatientEtat(this.selectedEtat.getCode());
       }else{ //set 'Inconnu' par defaut
@@ -334,6 +327,9 @@ public class FichePatientEdit extends AbstractFicheEditController
     * par le setter (utile si fiche embarquée dans prélèvement)
     */
    public void prepareDataBeforeSave(final boolean setMedecins){
+      
+      checkRequiredListboxes();
+      
       setEmptyToNulls();
       setFieldsToUpperCase();
       recordDateEtatDeces();
@@ -352,6 +348,12 @@ public class FichePatientEdit extends AbstractFicheEditController
          }
          this.patient.setPatientMedecins(pmeds);
       }
+   }
+   
+   /**
+    * To be overriden by gatsbi
+    */
+   protected void checkRequiredListboxes(){
    }
 
    @Override
@@ -373,7 +375,7 @@ public class FichePatientEdit extends AbstractFicheEditController
     * @param pat
     * @return LabelCodeItem sexe
     */
-   public static LabelCodeItem setSexeItemFromDBValue(final Patient pat){
+   public LabelCodeItem setSexeItemFromDBValue(final Patient pat){
       if(pat.getSexe() != null){
          if(pat.getSexe().equals("M")){
             return PatientUtils.SEXE_M;
@@ -400,6 +402,33 @@ public class FichePatientEdit extends AbstractFicheEditController
 
    public void setSelectedEtat(final LabelCodeItem et){
       this.selectedEtat = et;
+   }
+   
+   // @since 2.3.0-gatsbi, sera sur chargée
+   public LabelCodeItem setPatientEtatFromValue(Patient pat){
+      if(pat.getPatientEtat() != null){
+         if(pat.getPatientEtat().equals("V")){
+            if(!"F".equals(patient.getSexe())){
+               return PatientUtils.ETAT_V;
+            }else{
+               return PatientUtils.ETAT_VF;
+            }
+         }else if(pat.getPatientEtat().equals("D")){
+            if(!"F".equals(pat.getSexe())){
+               return PatientUtils.ETAT_D;
+            }else{
+               return PatientUtils.ETAT_DF;
+            }
+         }else{
+            return PatientUtils.ETAT_I;
+         }
+      }else{ // si new Patient
+         if(!"F".equals(pat.getSexe())){
+            return PatientUtils.ETAT_V;
+         }else{
+            return PatientUtils.ETAT_VF;
+         }
+      }
    }
 
    public List<LabelCodeItem> getSexes(){
@@ -585,7 +614,7 @@ public class FichePatientEdit extends AbstractFicheEditController
       return PatientConstraints.getNomNullConstraint();
    }
 
-   public static ConstWord getVillePaysConstraint(){
+   public ConstWord getVillePaysConstraint(){
       return ContexteConstraints.getVillePaysConstraint();
    }
 
@@ -593,37 +622,20 @@ public class FichePatientEdit extends AbstractFicheEditController
     * Applique la validation sur la date et la date dependante.
     */
    public void onBlur$dateNaisBox(){
-      //		boolean badDateFormat = false;
-      //		if (dateNaisBox.getErrorMessage() != null
-      //				&& dateNaisBox.getErrorMessage().contains(
-      //						dateNaisBox.getFormat())) {
-      //			badDateFormat = true;
-      //		}
-      //		if (!badDateFormat) {
       Clients.clearWrongValue(dateNaisBox);
       validateCoherenceDate(dateNaisBox, dateNaisBox.getValue());
       Clients.clearWrongValue(dateEtatDecesBox);
       validateCoherenceDate(dateEtatDecesBox, dateEtatDecesBox.getValue());
-      //		}
    }
 
    /**
     * Applique la validation sur la date et la date dependante.
     */
    public void onBlur$dateEtatDecesBox(){
-      //		boolean badDateFormat = false;
-      //		if (dateEtatDecesBox.getErrorMessage() != null
-      //				&& dateEtatDecesBox.getErrorMessage().contains(
-      //						dateEtatDecesBox.getFormat())) {
-      //			badDateFormat = true;
-      //		}
-      //		if (!badDateFormat) {
       Clients.clearWrongValue(dateEtatDecesBox);
       validateCoherenceDate(dateEtatDecesBox, dateEtatDecesBox.getValue());
       Clients.clearWrongValue(dateNaisBox);
       validateCoherenceDate(dateNaisBox, dateNaisBox.getValue());
-      //		}
-
    }
 
    @Override
@@ -689,20 +701,16 @@ public class FichePatientEdit extends AbstractFicheEditController
     */
    public void setEmbedded(final Patient pat){
       // mode embarqué
-      //setNewObject();
       setObject(pat);
       switchToCreateMode();
       this.ndaFieldLabel.setVisible(true);
       this.ndaBox.setVisible(true);
-      // this.create.setVisible(false);
-      // this.cancel.setVisible(false);
       toolbar.detach();
-      referentsGroup.setOpen(true);
+      setReferentsGroupOpen(true);
       this.winPanel.setTitle(Labels.getLabel("patient.reference.nouveau"));
       this.winPanel.setCollapsible(false);
       this.winPanel.setClosable(false);
       this.winPanel.setHeight("100%");
-      //this.container.setWidth("100%");
       this.winPanel.setClass("fichePanelv2Embedded");
       this.panelChildrenWithScroll.setStyle("overflow: visible");
       this.formGrid.setStyle("border-top-style: none");
@@ -740,5 +748,14 @@ public class FichePatientEdit extends AbstractFicheEditController
    public Textbox getNdaBox(){
       return ndaBox;
    }
-
+   
+   /**
+    * Sera surhcargée par gatsbi, dans lequel le composant 
+    * referentsGroup est un groupbox
+    * @since 2.3.0-gatsbi
+    * @param _o
+    */
+   protected void setReferentsGroupOpen(boolean _o) {
+      ((Group) referentsGroup).setOpen(true);
+   }
 }

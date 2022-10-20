@@ -68,11 +68,26 @@ public class PrelevementRowRendererGatsbi extends PrelevementRowRenderer impleme
 
    // par défaut les icones ne sont pas dessinées
    private boolean iconesRendered = false;
+   
+   // nom + prenom s'affichent dans une seule colonne si pas contexte Gatsbi
+   // ou si spécifié par contexte Gatsbi
+   private boolean nomPrenomPatientInTableau = false;
+   
+   // nip s'affiche dans une colonne si spécifié par contexte Gatsbi
+   private boolean nipInTableau = false;
 
    public PrelevementRowRendererGatsbi(final boolean select, final boolean cols){
       super(select, cols);
 
       contexte = SessionUtils.getCurrentGatsbiContexteForEntiteId(2);
+      
+      
+      Contexte patientContexte = SessionUtils.getCurrentGatsbiContexteForEntiteId(1);
+      
+      nomPrenomPatientInTableau = patientContexte == null 
+         || (patientContexte.isChampIdVisible(3) && patientContexte.isChampInTableau(3));
+      nipInTableau = patientContexte != null 
+         && patientContexte.isChampIdVisible(2) && patientContexte.isChampInTableau(2);
    }
 
    @Override
@@ -170,7 +185,7 @@ public class PrelevementRowRendererGatsbi extends PrelevementRowRenderer impleme
          case 270: // cong arrivee
             renderCongProperty(row, prel);
             break;
-         case 256: // conforme arrivee -> rendu sous la forme d'une icône
+         case 256: // conforme arrivee -> rendu sous la forme d'une icône (chpId=257 raisons, ignore)
             break;
          default:
             break;
@@ -189,7 +204,31 @@ public class PrelevementRowRendererGatsbi extends PrelevementRowRenderer impleme
          congCellRendered = true;
       }
    }
-
+   
+   /**
+    * Affiche toujours l'identifiant du patient pour la banque du prélèvement.
+    * Et affiche en plus de manière conditionnelle nom + prenom et nip si besoin.
+    * @param row
+    * @param prel
+    */
+   @Override
+   protected void renderPatient(Prelevement prel, Row row){
+      if(prel.getMaladie() != null){
+         final Label identifiantLabel = 
+            new Label(prel.getMaladie().getPatient().getIdentifiantAsString(prel.getBanque()));
+         if(getAccessPatient()){
+            identifiantLabel.addForward(null, identifiantLabel.getParent(), "onClickPatient", prel);
+            identifiantLabel.setClass("formLink");
+         }
+         identifiantLabel.setParent(row);  
+      }else{
+         new Label().setParent(row);
+      }
+      
+      // nom + prenom
+      renderPatientNomAndNip(prel, row, nomPrenomPatientInTableau, nipInTableau);
+   }
+   
    private void renderNumeroLabo(final Row row, final Prelevement prel){
       if(prel.getNumeroLabo() != null){
          final Label numeroLabel = new Label(prel.getNumeroLabo());

@@ -38,10 +38,14 @@ package fr.aphp.tumorotek.action.patient.gatsbi;
 
 import java.lang.reflect.InvocationTargetException;
 import java.text.ParseException;
+
+import org.zkoss.zk.ui.Component;
+import org.zkoss.zul.Label;
 import org.zkoss.zul.Row;
 
 import fr.aphp.tumorotek.action.patient.PatientRowRenderer;
 import fr.aphp.tumorotek.model.coeur.patient.Patient;
+import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.contexte.gatsbi.Contexte;
 import fr.aphp.tumorotek.webapp.gatsbi.RowRendererGatsbi;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
@@ -58,6 +62,7 @@ public class PatientRowRendererGatsbi extends PatientRowRenderer implements RowR
 {
 
    private final Contexte contexte;
+   private Banque curBanque;
    
    // si true, dessine le premier code organe exporté pour un patient 
    private boolean organes = true;
@@ -74,6 +79,15 @@ public class PatientRowRendererGatsbi extends PatientRowRenderer implements RowR
    protected void renderPatient(final Row row, final Patient pat)
       throws IllegalAccessException, InvocationTargetException, NoSuchMethodException, ParseException{
 
+      // identifiant / clickable
+      // TODO toutes collections ? Quel identifiant afficher ? 
+      Label identifiant = new Label(pat.getIdentifiantAsString(curBanque));
+      
+      Component parent = null; // -> remonte l'évènement jusqu'au ListeController
+      identifiant.addForward(null, parent, "onClickObject", pat);
+      identifiant.setClass("formLink");    
+      identifiant.setParent(row);
+      
       for(final Integer chpId : contexte.getChampEntiteInTableauOrdered()){
          GatsbiControllerPatient.applyPatientChpRender(chpId, row, pat, anonyme);
       }
@@ -88,5 +102,9 @@ public class PatientRowRendererGatsbi extends PatientRowRenderer implements RowR
    @Override
    public boolean areIconesRendered(){
       return false;
+   }
+
+   public void setCurBanque(Banque curBanque){
+      this.curBanque = curBanque;
    }
 }

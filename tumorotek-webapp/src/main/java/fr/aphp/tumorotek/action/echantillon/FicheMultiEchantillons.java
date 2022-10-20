@@ -1345,7 +1345,8 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
 
          getEchanDecoRenderer().setUsedCodes(usedCodesEchantillons);
 
-         Clients.scrollIntoView(stockageEchantillons);
+         // @since 2.3.0-gatsi
+         scrollToBottom();
 
          clearForm(true);
 
@@ -1359,10 +1360,26 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
          if(!echantillons.isEmpty()){
             stockageEchantillons.setDisabled(false);
          }
+         
+         // @since 2.3.0-gatsbi
+         prepareNextEchantillons();
+         
       }catch(final ValidationException ve){
          Messagebox.show(handleExceptionMessage(ve), "Error", Messagebox.OK, Messagebox.ERROR);
       }
 
+   }
+
+   /**
+    * sera surchargée par gatsbi
+    * @since 2.3.0-gatsbi
+    */
+   protected void scrollToBottom(){
+      Clients.scrollIntoView(stockageEchantillons);      
+   }
+
+   // sera surchargée par Gatsbi
+   protected void prepareNextEchantillons(){
    }
 
    /**

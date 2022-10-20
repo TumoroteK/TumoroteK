@@ -1779,7 +1779,8 @@ public abstract class AbstractListeController2 extends AbstractController
 		HtmlMacroComponent ua = null;
 
 		if(entiteToSearch.getNom().equals("Patient")){
-			String pageDef = "ficheRechercheAvanceePatient";
+		   String pageDef = SessionUtils.getCurrentGatsbiContexteForEntiteId(1) == null ? 
+            "ficheRechercheAvanceePatient": "ficheRechercheAvanceePatientGatsbi";    
 			String winDef = "fwinRechercheAvanceePatient";
 			if(SessionUtils.getCurrentContexte() == EContexte.SEROLOGIE){
 				pageDef = "ficheRechercheAvanceePatientSero";

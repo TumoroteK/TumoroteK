@@ -36,6 +36,7 @@
  **/
 package fr.aphp.tumorotek.action.prelevement.gatsbi;
 
+import java.util.List;
 import java.util.Map;
 
 import org.zkoss.util.resource.Labels;
@@ -46,6 +47,7 @@ import org.zkoss.zul.Label;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Vbox;
 
+import fr.aphp.tumorotek.action.ManagerLocator;
 import fr.aphp.tumorotek.action.prelevement.ListePrelevement;
 import fr.aphp.tumorotek.action.prelevement.gatsbi.exception.GatsbiException;
 import fr.aphp.tumorotek.manager.exception.TKException;
@@ -69,7 +71,7 @@ public class ListePrelevementGatsbi extends ListePrelevement
    // flag passe à true si la colonne congelation est déja rendue
    // afin d'éviter que cette colonne soit rendue deux fois
    private boolean congColRendered = false;
-
+   
    public ListePrelevementGatsbi(){
       
       contexte = SessionUtils.getCurrentGatsbiContexteForEntiteId(2);
@@ -107,11 +109,26 @@ public class ListePrelevementGatsbi extends ListePrelevement
       // ttes collection
       GatsbiController.addColumn(objectsListGrid, "Entite.Banque", null, null, null, "auto(code)", isTtesCollection());
 
-      // patient, colonne toujours affichée
-      GatsbiController.addColumn(objectsListGrid, "prelevement.patient", null, null, null, "auto(maladie.patient.nom)", true);
+      // patient, identifiant colonne toujours affichée
+      GatsbiController.addColumn(objectsListGrid, "Champ.Patient.Identifiant", null, null, null, null, true);
 
-      // nip, colonne non visible par défaut
-      GatsbiController.addColumn(objectsListGrid, "Champ.Patient.Nip", null, null, null, "auto(maladie.patient.nom)", false);
+      // patient
+      Contexte patientContexte = SessionUtils.getCurrentGatsbiContexteForEntiteId(1);
+      
+      // nom + prenom s'affichent dans une seule colonne si pas contexte Gatsbi
+      // ou si spécifié par contexte Gatsbi (visible par défaut)
+      if (patientContexte == null 
+            || (patientContexte.isChampIdVisible(3) && patientContexte.isChampInTableau(3))) {
+         GatsbiController.addColumn(objectsListGrid, "prelevement.patient", 
+                        null, null, null, "auto(maladie.patient.nom)", true);
+      }
+      
+      // nip s'affiche dans une colonne si spécifié par contexte Gatsbi (invisible par défaut)
+      if (patientContexte != null 
+            && patientContexte.isChampIdVisible(2) && patientContexte.isChampInTableau(2)) {
+         GatsbiController.addColumn(objectsListGrid, "Champ.Patient.Nip", 
+                        null, null, null, "auto(maladie.patient.nip)", false);
+      }
 
       // maladie, colonne visible si banque définit le niveau
       GatsbiController.addColumn(objectsListGrid, "prelevement.maladie", "150px", null, null, "auto(maladie.patient.nom)",
@@ -228,7 +245,7 @@ public class ListePrelevementGatsbi extends ListePrelevement
                congColRendered = true;
             }
             break;
-         case 256: // conforme arrivee -> rendu sous la forme d'une icône
+         case 256: // conforme arrivee -> rendu sous la forme d'une icône (chpId=257 raisons, ignore)
             break;
          default:
             break;
@@ -290,43 +307,15 @@ public class ListePrelevementGatsbi extends ListePrelevement
       }
    }
 
-   //	/**
-   //	 * Un parametrage a été sélectionné.
-   //	 *
-   //	 * @param param
-   //	 * @throws Exception
-   //	 */
-   //	@SuppressWarnings("unchecked")
-   //	public void onGetSelectedParametrage(ForwardEvent evt) throws Exception {
-   //
-   //		try {
-   //			ResultatInjection inject = null;
-   //			if (((Map<String, Integer>) evt.getOrigin().getData()).get("paramId") != null) {
-   //				ParametrageDTO parametrageDTO = GatsbiController
-   //						.doGastbiParametrage(((Map<String, Integer>) evt.getOrigin().getData()).get("paramId"));
-   //
-   //				Consumer<Parametrage> validator = p -> {
-   //					// cong depart OU cong arrivee
-   //					if (p.getDefaultValuesForChampEntiteId(269) != null
-   //							&& p.getDefaultValuesForChampEntiteId(269).contentEquals("1")
-   //							&& p.getDefaultValuesForChampEntiteId(270) != null
-   //							&& p.getDefaultValuesForChampEntiteId(270).contentEquals("1")) {
-   //						throw new TKException("gatsbi.illegal.parametrage.prelevement.cong");
-   //					}
-   //				};
-   //
-   //				inject = GatsbiController.injectGatsbiObject(contexte, parametrageDTO,
-   //						SessionUtils.getCurrentBanque(sessionScope), validator);
-   //			}
-   //
-   //			super.onClick$addNew(null);
-   //
-   //			if (inject != null) {
-   //				Events.postEvent("onGatsbiParamSelected", getObjectTabController().getFicheEdit().getSelfComponent(),
-   //						inject);
-   //			}
-   //		} catch (Exception e) {
-   //			Messagebox.show(handleExceptionMessage(e), "Error", Messagebox.OK, Messagebox.ERROR);
-   //		}
-   //	}
+   @Override
+   protected List<Integer> findPrelevementsByPatientCodes(List<String> pats){
+      return ManagerLocator.getPrelevementManager().findByPatientIdentifiantOrNomOrNipInListManager(pats,
+         SessionUtils.getSelectedBanques(sessionScope));
+   }
+   
+   @Override
+   protected List<Integer> searchPrelevementByPatientInfos(String search){
+      return ManagerLocator.getPrelevementManager().findByPatientIdentifiantOrNomOrNipReturnIdsManager(search,
+         SessionUtils.getSelectedBanques(sessionScope), true);
+   }
 }

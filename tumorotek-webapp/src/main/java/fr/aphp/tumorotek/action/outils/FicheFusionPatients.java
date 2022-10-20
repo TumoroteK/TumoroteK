@@ -149,7 +149,10 @@ public class FicheFusionPatients extends AbstractFicheCombineController
     */
    public void onClick$searchFirstPatient(){
       final String critereValue = nomFirstBox.getValue();
-      openSelectPatientWindow(Path.getPath(self), "onGetFirstPatientFromSelection", true, critereValue, patientASupprimer);
+      
+      // TODO gatsbi contexte HERE
+      
+      openSelectPatientWindow(Path.getPath(self), "onGetFirstPatientFromSelection", true, critereValue, patientASupprimer, null, null);
    }
 
    /**
@@ -225,7 +228,10 @@ public class FicheFusionPatients extends AbstractFicheCombineController
     */
    public void onClick$searchSecondPatient(){
       final String critereValue = nomSecondBox.getValue();
-      openSelectPatientWindow(Path.getPath(self), "onGetSecondPatientFromSelection", true, critereValue, patientAConserver);
+      
+      // TODO gatsbi contexte HERE
+      
+      openSelectPatientWindow(Path.getPath(self), "onGetSecondPatientFromSelection", true, critereValue, patientAConserver, null, null);
    }
 
    /**

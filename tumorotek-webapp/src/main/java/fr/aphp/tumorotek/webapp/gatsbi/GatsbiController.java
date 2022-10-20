@@ -78,6 +78,7 @@ import org.zkoss.zul.Grid;
 import org.zkoss.zul.Groupbox;
 import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Listbox;
+import org.zkoss.zul.Listheader;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.SimpleConstraint;
 import org.zkoss.zul.Textbox;
@@ -145,6 +146,7 @@ public class GatsbiController
          // patient
          put(ContexteType.PATIENT, new String[] {"nipDiv", "nomDiv", "nomNaissanceDiv", "prenomDiv", "sexeDiv", 
             "dateNaissanceDiv", "paysNaissanceDiv", "villeNaissanceDiv", "etatDiv", "dateEtatDiv", "dateDecesDiv",
+            "patientMedecinsDiv",
             // maladie
             "libelleDiv", "codeMaladieDiv"});
          // prelevement
@@ -184,10 +186,13 @@ public class GatsbiController
       if(c != null){
          hiddenIds.addAll(c.getHiddenChampEntiteIds());
       }
+      
+      // correctif spécifique champs associés
+      addAssociatedChampEntite(c, hiddenIds);
 
       return hiddenIds;
-   }
-
+   }  
+      
    /**
     * Récupére tous les ids des champs obligatoires.
     * @param contexte 
@@ -198,8 +203,55 @@ public class GatsbiController
       if(c != null){
          requiredIds.addAll(c.getRequiredChampEntiteIds());
       }
+      
+      // correctif spécifique champs associés
+      addAssociatedChampEntite(c, requiredIds);
 
       return requiredIds;
+   }
+   
+   /**
+    * Ajoute les champs entites associés au comportement hidden/required 
+    * si nécessaire afin d'éviter toute incohérence
+    * @param c contexte
+    * @param hiddenIds
+    */
+   private static void addAssociatedChampEntite(Contexte c, List<Integer> ids){
+      // prelevement: nonconfs
+      if (c.getContexteType().equals(ContexteType.PRELEVEMENT)) {
+         // ncfs arrive
+         if (ids.contains(256)) {
+            if (!ids.contains(257)) ids.add(257); // raisons   
+         } else {
+            ids.remove(Integer.valueOf(257));
+         }
+      }
+      
+      // echantillon: quantite et nonconfs
+      if (c.getContexteType().equals(ContexteType.ECHANTILLON)) {
+         // quantite
+         if (ids.contains(61)) {
+            if (!ids.contains(62)) ids.add(62); // quantite_init    
+            if (!ids.contains(63)) ids.add(63); // quantite_unite    
+         } else {
+            ids.remove(Integer.valueOf(62));
+            ids.remove(Integer.valueOf(63));
+         }
+         
+         // ncfs traitement
+         if (ids.contains(243)) {
+            if (!ids.contains(261)) ids.add(261); // raisons   
+         } else {
+            ids.remove(Integer.valueOf(261));
+         }
+         
+         // ncfs cession
+         if (ids.contains(244)) {
+            if (!ids.contains(262)) ids.add(262); // raisons   
+         } else {
+            ids.remove(Integer.valueOf(262));
+         }
+      }
    }
 
    public static List<Div> wireBlockDivsFromMainComponent(ContexteType type, Component main){
@@ -265,36 +317,37 @@ public class GatsbiController
          if(!required.isEmpty()){
             boolean isReq;
             for(Div div : items){
-               if(div.isVisible()){
-                  isReq =
-                     (div.hasAttribute("champId") && required.contains(Integer.valueOf((String) div.getAttribute("champId"))));
-                  if(isReq){ // required
-                     div.setSclass(div.getSclass().concat(" item-required"));
+               isReq =
+                  (div.hasAttribute("champId") && required.contains(Integer.valueOf((String) div.getAttribute("champId"))));
+               
+               Component formElement = null;
+               formElement = findInputOrListboxElement(div);
+               
+               if(div.isVisible() && isReq){ // required
+                  div.setSclass(div.getSclass().concat(" item-required"));
 
-                     Component formElement = null;
-
-                     formElement = findInputOrListboxElement(div);
-
-                     if(formElement != null){
-                        if(formElement instanceof Combobox){
-                           cboxes.add(((Combobox) formElement));
-                        }else if(formElement instanceof Listbox){
-                           lboxes.add(((Listbox) formElement));
-                        }else if(formElement instanceof InputElement){
-                           ((InputElement) formElement)
-                              .setConstraint(muteConstraintFromContexte(((InputElement) formElement).getConstraint(), isReq));
-                        }else if(formElement instanceof CalendarBox){
-                           ((CalendarBox) formElement).setConstraint("no empty");
-                        }
-                     }else if(div.getId().startsWith("conforme") || div.getId().startsWith("crAnapath")
-                        || div.getId().equals("cOrganesDiv") || div.getId().equals("cMorphosDiv")
-                        || div.getId().equals("echanQteDiv")){
-                        reqDivs.add(div);
+                  if(formElement != null){
+                     if(formElement instanceof Combobox){
+                        cboxes.add(((Combobox) formElement));
+                     }else if(formElement instanceof Listbox){
+                        lboxes.add(((Listbox) formElement));
+                     }else if(formElement instanceof InputElement){
+                        ((InputElement) formElement)
+                           .setConstraint(muteConstraintFromContexte(((InputElement) formElement).getConstraint(), true));
+                     }else if(formElement instanceof CalendarBox){
+                        ((CalendarBox) formElement).setConstraint("no empty");
                      }
+                  }else if(div.getId().startsWith("conforme") || div.getId().startsWith("crAnapath")
+                     || div.getId().equals("cOrganesDiv") || div.getId().equals("cMorphosDiv")
+                     || div.getId().equals("echanQteDiv")){
+                     reqDivs.add(div);
                   }
-
-                  log.debug("switching ".concat(div.getId()).concat(" ").concat(!isReq ? "not" : "").concat("required"));
+               } else if(formElement instanceof InputElement) { // non required ou invisible -> modifie la contrainte 'non required' sur un champ input
+                  ((InputElement) formElement)
+                     .setConstraint(muteConstraintFromContexte(((InputElement) formElement).getConstraint(), false));
                }
+
+               log.debug("switching ".concat(div.getId()).concat(" ").concat(!isReq ? "not" : "").concat("required"));
             }
          }
       }
@@ -326,17 +379,27 @@ public class GatsbiController
 
          if(!thesaurii.isEmpty()){
             for(Div div : items){
-               if(div.hasAttribute("champId") && div.hasAttribute("listmodel")
-                  && thesaurii.contains(Integer.valueOf((String) div.getAttribute("champId")))){
+               if(div.hasAttribute("listmodel")) {
+                  
                   log.debug("applying thesaurus values for ".concat(div.getId()));
-
+                  
                   // Model
                   log.debug("finding thesaurus values for model ".concat((String) div.getAttribute("listmodel")));
                   List<TKThesaurusObject> lModel =
                      (List<TKThesaurusObject>) PropertyUtils.getProperty(controller, (String) div.getAttribute("listmodel"));
+                  
+                  // le champ peut être un thésaurus (champId) ex: nature
+                  // ou un thésaurus lié (thesChampId) ex: quantité unité, dans ce cas le thésaurus doit être 'visible'
+                  // sinon toutes les valeurs sont affichées par défaut
+                  Integer thesaurusChampId = null;
+                  if (thesaurii.contains(Integer.valueOf((String) div.getAttribute("champId")))) {
+                     thesaurusChampId = Integer.valueOf((String) div.getAttribute("champId"));
+                  } else if (div.hasAttribute("thesChampId") 
+                        && thesaurii.contains(Integer.valueOf((String) div.getAttribute("thesChampId")))) {
+                     thesaurusChampId = Integer.valueOf((String) div.getAttribute("thesChampId"));
+                  }
 
-                  List<TKThesaurusObject> thesObjs =
-                     filterExistingListModel(contexte, lModel, Integer.valueOf((String) div.getAttribute("champId")));
+                  List<TKThesaurusObject> thesObjs =  filterExistingListModel(contexte, lModel, thesaurusChampId);
 
                   // ListModelList conversion
                   if(!((String) div.getAttribute("listmodel")).matches(".*Model")){
@@ -375,18 +438,26 @@ public class GatsbiController
    public static <T> List<T> filterExistingListModel(Contexte contexte, List<T> lModel, Integer chpId) throws TKException{
 
       List<ThesaurusValue> values = contexte.getThesaurusValuesForChampEntiteId(chpId);
+      
       Collections.sort(values,
          Comparator.comparing(ThesaurusValue::getPosition, Comparator.nullsLast(Comparator.naturalOrder())));
 
       List<T> thesObjs = new ArrayList<T>();
-      if(lModel.contains(null)){
-         thesObjs.add(null);
-      }
-      for(ThesaurusValue val : values){
-         thesObjs.add(lModel.stream().filter(
-            v -> v != null && (((v instanceof TKThesaurusObject) && ((TKThesaurusObject) v).getId().equals(val.getThesaurusId()))
-               || ((v instanceof Unite) && ((Unite) v).getNom().equals(val.getThesaurusValue()))))
-            .findAny().orElseThrow(() -> new TKException("gatsbi.thesaurus.value.notfound", val.getThesaurusValue())));
+      
+      if (!values.isEmpty()) {  
+         
+         if(lModel.contains(null)){
+            thesObjs.add(null);
+         }
+         
+         for(ThesaurusValue val : values){
+            thesObjs.add(lModel.stream().filter(
+               v -> v != null && (((v instanceof TKThesaurusObject) && ((TKThesaurusObject) v).getId().equals(val.getThesaurusId()))
+                  || ((v instanceof Unite) && ((Unite) v).getNom().equals(val.getThesaurusValue()))))
+               .findAny().orElseThrow(() -> new TKException("gatsbi.thesaurus.value.notfound", val.getThesaurusValue())));
+         }
+      } else { // adds all thesaurus values
+         thesObjs.addAll(lModel);
       }
 
       return thesObjs;
@@ -943,6 +1014,30 @@ public class GatsbiController
 
       return col;
    }
+   
+   /**
+    * Dessine un listbox header.
+    * @param listbox composant parent
+    * @param nameKey
+    * @param width
+    * @param align
+    * @param visible
+    * @return composant column dessiné.
+    */
+   public static Listheader addListHeader(Listbox listbox, String nameKey, String width, String align,
+      Boolean visible) {
+      // check box first immutable column
+      Listheader header = new Listheader();
+      header.setLabel(Labels.getLabel(nameKey));
+      if(width != null){
+         header.setWidth(width);
+      }
+      header.setAlign(align);
+      header.setVisible(visible);
+      header.setParent(listbox.getListhead());
+
+      return header;
+   }
 
    // add new refactor
    public static void addNewObjectForContext(Contexte contexte, Component selfComponent, Consumer<Event> elseMethod, Event evt,
@@ -975,7 +1070,8 @@ public class GatsbiController
          if (evt != null && evt.getOrigin() != null && evt.getOrigin().getData() != null 
               && ((Map<String, Object>) evt.getOrigin().getData()).get("parentObj") != null) {
             // prelevement => PrelevementController.createAnotherPrelevement 
-            if (((Map<String, Object>) evt.getOrigin().getData()).get("parentObj") instanceof Prelevement) {
+            if (((Map<String, Object>) evt.getOrigin().getData()).get("parentObj") instanceof Prelevement 
+               && contexte.getContexteType().equals(ContexteType.PRELEVEMENT)) {
                inject.getPrelevement()
                   .setMaladie(((Prelevement) ((Map<String, Object>) evt.getOrigin().getData()).get("parentObj"))
                      .getMaladie());

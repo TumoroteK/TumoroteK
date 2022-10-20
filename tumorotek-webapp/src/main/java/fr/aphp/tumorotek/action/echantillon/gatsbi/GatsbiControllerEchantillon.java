@@ -87,7 +87,7 @@ public class GatsbiControllerEchantillon
          case 60: // lateralite
             drawLateraliteColumn(grid);
             break;
-         case 61: // quantite
+         case 61: // quantite (chpid=62 quantite_init & chpid=63 quantite unite, ignore)
             drawQuantiteColumn(grid);
             break;
          case 67: // delai cgl
@@ -301,7 +301,7 @@ public class GatsbiControllerEchantillon
          case 60: // lateralite
             EchantillonRowRenderer.renderLateralite(row, echan);
             break;
-         case 61: // quantite
+         case 61: // quantite (chpid=62 quantite_init & chpid=63 quantite unite, ignore)
             EchantillonRowRenderer.renderQuantite(row, echan);
             break;
          case 67: // delai cgl
@@ -327,9 +327,9 @@ public class GatsbiControllerEchantillon
             EchantillonRowRenderer.renderCodeAssignes(row,
                ManagerLocator.getCodeAssigneManager().findCodesMorphoByEchantillonManager(echan));
             break;
-         case 243: // conforme traitement -> rendu sous la forme d'une icône
+         case 243: // conforme traitement -> rendu sous la forme d'une icône (chpId=261 raisons, ignore)
             break;
-         case 244: // conforme cession -> rendu sous la forme d'une icône
+         case 244: // conforme cession -> rendu sous la forme d'une icône (chpId=262 raisons, ignore)
             break;
          case 255: // cr anapath
             EchantillonRowRenderer.renderCrAnapath(row, echan, anonyme);
@@ -378,7 +378,7 @@ public class GatsbiControllerEchantillon
          case 60: // lateralite
             EchantillonRowRenderer.renderLateralite(row, deco.getEchantillon());
             break;
-         case 61: // quantite
+         case 61: // quantite (chpid=62 quantite_init & chpid=63 quantite unite, ignore)
             TKSelectObjectRenderer.renderAlphanumPropertyAsStringNoFormat(row, deco, "quantite");
             break;
          case 67: // delai cgl
@@ -402,9 +402,9 @@ public class GatsbiControllerEchantillon
          case 230: // codes lesionnels
             EchantillonRowRenderer.renderCodeAssignes(row, deco.getCodesLesToCreateOrEdit());
             break;
-         case 243: // conforme traitement -> rendu sous la forme d'une icône
+         case 243: // conforme traitement -> rendu sous la forme d'une icône (chpId=261 raisons, ignore)
             break;
-         case 244: // conforme cession -> rendu sous la forme d'une icône
+         case 244: // conforme cession -> rendu sous la forme d'une icône (chpId=262 raisons, ignore)
             break;
          case 255: // cr anapath
             EchantillonRowRenderer.renderCrAnapath(row, deco.getEchantillon(), true); // non clickable
@@ -455,7 +455,11 @@ public class GatsbiControllerEchantillon
       GatsbiControllerEchantillon.drawCodeColumn(grid);
       
       // ttes collection
-      GatsbiControllerEchantillon.drawBanqueColumn(grid, ttesCollections);
+      // colonne ne doit pas être écrite invisible dans ficheMultiEchantillons inner list car jamais affichée
+      // et produit un décalage
+      if (!deletable && !forceEmplacementAndStatut) { 
+         GatsbiControllerEchantillon.drawBanqueColumn(grid, ttesCollections);
+      }
 
       // variable columns
       for(final Integer chpId : contexte.getChampEntiteInTableauOrdered()){

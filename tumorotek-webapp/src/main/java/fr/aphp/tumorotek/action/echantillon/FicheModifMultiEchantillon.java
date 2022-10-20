@@ -395,7 +395,7 @@ public class FicheModifMultiEchantillon extends AbstractFicheModifMultiControlle
       quantiteUnites.addAll(ManagerLocator.getUniteManager().findByTypeLikeManager("discret", true));
       quantiteUnites.addAll(ManagerLocator.getUniteManager().findByTypeLikeManager("volume", true));
 
-      quantiteUnites = applyAnyThesaurusRestriction(quantiteUnites, 61);
+      quantiteUnites = applyAnyThesaurusRestriction(quantiteUnites, 63); // unite champ_id = 63
 
       openModificationMultipleWindow(page, Path.getPath(self), "onGetChangeOnChamp", "Quantification", getObjsToEdit(),
          "Champ.Echantillon.QuantiteInit", "quantiteInit", quantiteUnites, "unite", null, muteAnyRequiredConstraint(null, 61),
@@ -497,7 +497,7 @@ public class FicheModifMultiEchantillon extends AbstractFicheModifMultiControlle
          SessionUtils.getPlateforme(sessionScope), "Traitement", getObjectTabController().getEntiteTab()));
 
       // since gatsbi
-      nonConfs = applyAnyThesaurusRestriction(nonConfs, 243);
+      nonConfs = applyAnyThesaurusRestriction(nonConfs, 261);
 
       openModificationMultipleWindow(page, Path.getPath(self), "onGetChangeOnChamp", "Conformitebox", getObjsToEdit(),
          "Champ.Echantillon.ConformeTraitement", "conformeTraitement", nonConfs, "Traitement", null, null, false, null,
@@ -512,7 +512,7 @@ public class FicheModifMultiEchantillon extends AbstractFicheModifMultiControlle
          SessionUtils.getPlateforme(sessionScope), "Cession", getObjectTabController().getEntiteTab()));
 
       // since gatsbi
-      nonConfs = applyAnyThesaurusRestriction(nonConfs, 244);
+      nonConfs = applyAnyThesaurusRestriction(nonConfs, 262);
 
       openModificationMultipleWindow(page, Path.getPath(self), "onGetChangeOnChamp", "Conformitebox", getObjsToEdit(),
          "Champ.Echantillon.ConformeCession", "conformeCession", nonConfs, "Cession", null, null, false, null,

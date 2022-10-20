@@ -37,6 +37,7 @@
 package fr.aphp.tumorotek.action.echantillon.gatsbi;
 
 import java.io.FileInputStream;
+import java.util.List;
 import java.util.Map;
 
 import org.zkoss.zk.ui.event.Event;
@@ -45,6 +46,7 @@ import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Filedownload;
 import org.zkoss.zul.Messagebox;
 
+import fr.aphp.tumorotek.action.ManagerLocator;
 import fr.aphp.tumorotek.action.echantillon.ListeEchantillon;
 import fr.aphp.tumorotek.action.prelevement.gatsbi.exception.GatsbiException;
 import fr.aphp.tumorotek.model.coeur.prelevement.Prelevement;
@@ -168,5 +170,17 @@ public class ListeEchantillonGatsbi extends ListeEchantillon
             log.error(e);
          }
       }
+   }
+   
+   @Override
+   protected List<Integer> findEchantillonByPatientCodes(List<String> pats){
+      return ManagerLocator.getEchantillonManager().findByPatientIdentifiantOrNomOrNipInListManager(pats,
+         SessionUtils.getSelectedBanques(sessionScope));
+   }
+   
+   @Override
+   protected List<Integer> searchEchantillonByPatientInfos(String search){
+      return ManagerLocator.getEchantillonManager().findByPatientIdentifiantOrNomOrNipReturnIdsManager(search,
+         SessionUtils.getSelectedBanques(sessionScope), true);
    }
 }

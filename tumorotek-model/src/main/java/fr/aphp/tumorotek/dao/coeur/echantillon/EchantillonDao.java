@@ -62,7 +62,7 @@ import fr.aphp.tumorotek.model.systeme.Entite;
  *
  * @author Pierre Ventadour
  *
- * @version 2.1
+ * @version 2.3.0-gatsbi
  *
  */
 public interface EchantillonDao extends GenericDaoJpa<Echantillon, Integer>
@@ -431,4 +431,24 @@ public interface EchantillonDao extends GenericDaoJpa<Echantillon, Integer>
     * @return une liste d'ids.
     */
    List<Integer> findByBanksAndImpact(List<Banque> banks, List<Boolean> impact);
+
+   /**
+    * Recherche tous les échantillons ids issus des patients dont les valeurs passées 
+    * en paramètres correspondent à un identifiant, un nip, ou un nom.
+    * @param idsNipsNoms Liste des identifiants noms ou nips de patients.
+    * @param banks Liste des banques des échantillons.
+    * @return Liste d'ids échantillons.
+    * @since 2.3.0-gatsbi
+    */
+   List<Integer> findByPatientIdentifiantOrNomOrNipInList(List<String> idsNipsNoms, List<Banque> selectedBanques);
+
+   /**
+    * Recherche tous les échantillons ids issus des patients dont l'identifiant, nip ou nom 
+    * correspond au critère passé en paramètre 
+    * @param search critere
+    * @param banks Liste des banques des échantillons.
+    * @return Liste d'ids échantillons.
+    * @since 2.3.0-gatsbi
+    */
+   List<Integer> findByPatientIdentifiantOrNomOrNipReturnIds(String search, List<Banque> selectedBanques);
 }

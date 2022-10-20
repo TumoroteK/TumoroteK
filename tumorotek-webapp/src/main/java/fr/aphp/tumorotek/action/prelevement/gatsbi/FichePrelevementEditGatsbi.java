@@ -54,6 +54,7 @@ import fr.aphp.tumorotek.action.prelevement.FichePrelevementEdit;
 import fr.aphp.tumorotek.model.coeur.prelevement.LaboInter;
 import fr.aphp.tumorotek.model.contexte.gatsbi.Contexte;
 import fr.aphp.tumorotek.webapp.gatsbi.GatsbiController;
+import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
 /**
  *
@@ -78,23 +79,30 @@ public class FichePrelevementEditGatsbi extends FichePrelevementEdit
    // @wire
    private Groupbox groupPrlvt;
 
-   private Contexte c;
+   private Contexte contexte;
 
    @Override
    public void doAfterCompose(final Component comp) throws Exception{
       super.doAfterCompose(comp);
 
-      c = GatsbiController.initWireAndDisplay(this, 2, true, reqListboxes, reqComboboxes, reqConformeDivs, groupPrlvt,
+      contexte = GatsbiController.initWireAndDisplay(this, 2, true, reqListboxes, reqComboboxes, reqConformeDivs, groupPrlvt,
          groupPrlvt);
 
       // setRows ne marche pas ?
       // seul moyen trouvé pour augmenter hauteur et voir tous les items de la listbox
-      risquesBox.setHeight(c.getThesaurusValuesForChampEntiteId(249).size() * 25 + "px");
+      risquesBox.setHeight(contexte.getThesaurusValuesForChampEntiteId(249).size() * 25 + "px");
+   }
+   
+   @Override
+   protected String getRefPatientCompPath() {
+      return "/zuls/prelevement/gatsbi/ReferenceurPatientGatsbi.zul";
    }
 
    @Override
    protected ResumePatient initResumePatient(){
-      return new ResumePatient(groupPatient, true);
+      return new ResumePatient(groupPatient, 
+         SessionUtils.getCurrentGatsbiContexteForEntiteId(1), 
+         SessionUtils.getCurrentBanque(sessionScope));
    }
 
    @Override
@@ -126,11 +134,11 @@ public class FichePrelevementEditGatsbi extends FichePrelevementEdit
       log.debug("Surcharge Gastbi pour vérifier que la page de transfert des sites intermédiaire est affichée");
 
       // vérifie si au moins un des champs de formulaires est affiché
-      final boolean oneDivVisible = c.getChampEntites().stream()
+      final boolean oneDivVisible = contexte.getChampEntites().stream()
          .filter(c -> Arrays.asList(35, 36, 37, 38, 39, 40, 256, 267, 268).contains(c.getChampEntiteId()))
          .anyMatch(c -> c.getVisible());
 
-      if(oneDivVisible || c.getSiteIntermediaire()){
+      if(oneDivVisible || contexte.getSiteIntermediaire()){
          super.onLaterNextStep();
       }else{ // aucun formulaire n'est affiché -> passage direct à l'onglet échantillon
          log.debug("Aucun formulaire à affiché dans la page transfert vers le site préleveur...");
@@ -164,4 +172,7 @@ public class FichePrelevementEditGatsbi extends FichePrelevementEdit
    @Override
    public void onSelect$consentTypesBoxPrlvt(){}
 
+   public Contexte getContexte(){
+      return contexte;
+   }
 }

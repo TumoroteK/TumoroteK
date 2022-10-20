@@ -1,0 +1,224 @@
+<!--
+ * Copyright ou © ou Copr. Assistance Publique des Hôpitaux de 
+ * PARIS et SESAN
+ * projet-tk@sesan.fr
+ *
+ * Ce logiciel est un programme informatique servant à la gestion de
+ * l'activité de biobanques.
+ *
+ * Ce logiciel est régi par la licence CeCILL soumise au droit français
+ * et respectant les principes de diffusion des logiciels libres. Vous
+ * pouvez utiliser, modifier et/ou redistribuer ce programme sous les
+ * conditions de la licence CeCILL telle que diffusée par le CEA, le
+ * CNRS et l'INRIA sur le site "http://www.cecill.info".
+ * En contrepartie de l'accessibilité au code source et des droits de
+ * copie, de modification et de redistribution accordés par cette
+ * licence, il n'est offert aux utilisateurs qu'une garantie limitée.
+ * Pour les mêmes raisons, seule une responsabilité restreinte pèse sur
+ * l'auteur du programme, le titulaire des droits patrimoniaux et les
+ * concédants successifs.
+ *
+ * A cet égard  l'attention de l'utilisateur est attirée sur les
+ * risques associés au chargement,  à l'utilisation,  à la modification
+ * et/ou au  développement et à la reproduction du logiciel par
+ * l'utilisateur étant donné sa spécificité de logiciel libre, qui peut
+ * le rendre complexe à manipuler et qui le réserve donc à des
+ * développeurs et des professionnels  avertis possédant  des
+ * connaissances  informatiques approfondies.  Les utilisateurs sont
+ * donc invités à charger  et  tester  l'adéquation  du logiciel à leurs
+ * besoins dans des conditions permettant d'assurer la sécurité de leurs
+ * systèmes et ou de leurs données et, plus généralement, à l'utiliser
+ * et l'exploiter dans les mêmes conditions de sécurité.
+ *
+ * Le fait que vous puissiez accéder à cet en-tête signifie que vous
+ * avez pris connaissance de la licence CeCILL, et que vous en avez
+ * accepté les termes.
+-->
+<zk>
+
+<?component name="referents" macroURI="/zuls/patient/MedecinsReferents.zul" ?>
+
+<window id="fwinPatientEdit" border="none" 
+		apply="fr.aphp.tumorotek.action.patient.gatsbi.FichePatientEditGatsbi"
+		forward="onSelectParametrage=onGetSelectedParametrage">
+	<panel id="winPanel" title="${c:l('fichePatient.panel.title')}"
+	 	sclass="fichePanelv2" closable="true">
+		<panelchildren style="overflow-y:scroll" id="panelChildrenWithScroll">
+			<div id="gatsbiContainer" class="main-container gridForm1">
+				<div id="patientBlockDiv" style="padding-left: 5px">
+					<div id="patientBlockDivContainer" class="block-container">
+						<div class="item item-wide" id="identifiantDiv"><!-- Identifiant -->
+							<custom-attributes champId="272" />
+							<div class="row-container chpLabel">
+								<label value="${c:l('Champ.Patient.Identifiant')}" sclass="formLabel" />
+								<label value="*" sclass="requiredMark" />
+							</div>
+							<textbox id="identifiantBox" 
+								value="@{fwinPatientEdit$composer.identifiant save-when='validate.onClick, create.onClick'}" 
+								width="100px" constraint="${fwinPatientEdit$composer.codeNullConstraint}" />
+						</div>
+						<div class="item item-mid" id="nipDiv"><!-- Nip -->
+							<custom-attributes champId="2" />
+							<div class="row-container chpLabel">
+								<label value="${c:l('Champ.Patient.Nip')}" sclass="formLabel" />
+								<label value="*" sclass="requiredMark" />
+							</div>
+							<textbox id="nipBox" 
+								value="@{fwinPatientEdit$composer.object.nip save-when='validate.onClick, create.onClick'}" 
+								width="100px" 
+								constraint="${fwinPatientEdit$composer.codeNullConstraint}" />
+						</div>
+						<div class="item item-wide" id="ndaDiv" visible="false"><!-- NDA -->
+							<custom-attributes champId="2" />
+							<div id="ndaFieldLabel" class="row-container chpLabel" visible="false">
+								<label value="${c:l('Champ.Prelevement.PatientNda')}" sclass="formLabel" />
+								<label value="*" sclass="requiredMark" />
+							</div>
+							<textbox id="ndaBox" width="100px" visible="false"
+									constraint="${fwinPatientEdit$composer.codeNullConstraint}" />
+						</div>
+						<div class="item item-mid" id="nomDiv"><!-- Nom -->	
+							<custom-attributes champId="3" />
+							<div class="row-container chpLabel">
+								<label value="${c:l('Champ.Patient.Nom')}" sclass="formLabel" />
+								<label value="*" sclass="requiredMark" />
+							</div>
+							<textbox id="nomBox" 
+								value="@{fwinPatientEdit$composer.object.nom, save-when='validate.onClick, create.onClick'}" 
+								width="100px" 
+								constraint="${fwinPatientEdit$composer.nomConstraint}" />
+						</div>
+						<div class="item item-mid" id="nomNaissanceDiv"><!-- Nom Naissance-->	
+							<custom-attributes champId="4" />
+							<div class="row-container chpLabel">
+								<label value="${c:l('Champ.Patient.NomNaissance')}" sclass="formLabel" />
+								<label value="*" sclass="requiredMark" />
+							</div>
+							<textbox id="nomNaisBox" 
+								value="@{fwinPatientEdit$composer.object.nomNaissance,
+			        								 save-when='validate.onClick, create.onClick'}" 
+								width="100px" 
+								constraint="${fwinPatientEdit$composer.nomNullConstraint}" />							
+						</div>
+						<div class="item item-mid" id="prenomDiv"><!-- Prénom -->	
+							<custom-attributes champId="5" />
+							<div class="row-container chpLabel">
+								<label value="${c:l('Champ.Patient.Prenom')}" sclass="formLabel" />
+								<label value="*" sclass="requiredMark" />
+							</div>
+							<textbox id="prenomBox" value="@{fwinPatientEdit$composer.object.prenom,
+		        								 save-when='validate.onClick, create.onClick'}"
+								width="100px" 
+								constraint="${fwinPatientEdit$composer.nomConstraint}" />
+						</div>
+						<div class="item item-mid" id="sexeDiv"><!-- Sexe -->	
+							<custom-attributes champId="6" />
+							<div class="row-container chpLabel">
+								<label value="${c:l('Champ.Patient.Sexe')}" sclass="formLabel" />
+								<label value="*" sclass="requiredMark" />
+							</div>						
+							<listbox id="sexeBox" mold="select" rows="1"
+								model="@{fwinPatientEdit$composer.sexes}"
+								selectedItem="@{fwinPatientEdit$composer.selectedSexe}">	
+								<listitem self="@{each='sex'}" value="@{sex.code}">			
+									<listcell label="@{sex.label}"/>
+								</listitem>
+						</listbox>
+						</div>
+						<div class="item item-wide" id="dateNaissanceDiv"><!-- Date naissance -->	
+							<custom-attributes champId="7" />
+							<div class="row-container chpLabel">
+								<label value="${c:l('Champ.Patient.DateNaissance')}" sclass="formLabel" />
+								<label value="*" sclass="requiredMark" />
+							</div>	
+							<datebox id="dateNaisBox" format="${c:l('validation.date.format.simple')}"
+								value="@{fwinPatientEdit$composer.object.dateNaissance,
+								save-when='validate.onClick, create.onClick'}" lenient="true"/>
+						</div>
+						<div class="item item-mid" id="paysNaissanceDiv"><!-- Pays naissance -->	
+							<custom-attributes champId="9" />
+							<div class="row-container chpLabel">
+								<label value="${c:l('Champ.Patient.PaysNaissance')}" sclass="formLabel" />
+								<label value="*" sclass="requiredMark" />
+							</div>	
+							<textbox id="paysNaisBox" value="@{fwinPatientEdit$composer.object.paysNaissance,
+		        								 save-when='validate.onClick, create.onClick'}" 
+								width="100px" 
+								constraint="${fwinPatientEdit$composer.villePaysConstraint}" />
+						</div>
+						<div class="item item-mid" id="villeNaissanceDiv"><!-- Ville naissance -->	
+							<custom-attributes champId="8" />
+							<div class="row-container chpLabel">
+								<label value="${c:l('Champ.Patient.VilleNaissance')}" sclass="formLabel" />
+								<label value="*" sclass="requiredMark" />
+							</div>	
+							<textbox id="villeNaisBox" value="@{fwinPatientEdit$composer.object.villeNaissance,
+			        								 save-when='validate.onClick, create.onClick'}" 
+								width="100px" 
+								constraint="${fwinPatientEdit$composer.villePaysConstraint}" />
+						</div>
+						<div class="item item-mid" id="etatDiv"><!-- Etat -->	
+							<custom-attributes champId="10" />
+							<div class="row-container chpLabel">
+								<label value="${c:l('Champ.Patient.PatientEtat')}" sclass="formLabel" />
+								<label value="*" sclass="requiredMark" />
+							</div>	
+							<listbox id="etatBox" mold="select" rows="1" multiple="false"
+								model="@{fwinPatientEdit$composer.etats load-after='sexeBox.onSelect'}"
+								selectedItem="@{fwinPatientEdit$composer.selectedEtat}">	
+								<listitem self="@{each='etat'}" value="etat.code">			
+									<listcell label="@{etat.label}"/>
+								</listitem>
+							</listbox>
+						</div>
+						<div class="item item-mid" id="dateEtatDiv"><!-- Date etat -->	
+							<custom-attributes champId="11" />
+							<div class="row-container chpLabel">
+								<label value="${c:l('Champ.Patient.DateEtat')}" sclass="formLabel" />
+								<label value="*" sclass="requiredMark" />
+							</div>	
+							<datebox id="dateEtatDecesBox" format="${c:l('validation.date.format.simple')}" 
+								value="@{fwinPatientEdit$composer.object.dateEtat,
+									save-when='validate.onClick, create.onClick'}" lenient="true"/>
+						</div>
+						<div class="item item-mid" id="dateDecesDiv"><!-- Date deces -->	
+							<custom-attributes champId="12" />
+							<div class="row-container chpLabel">
+								<label value="${c:l('Champ.Patient.DateDeces')}" sclass="formLabel" />
+								<label value="*" sclass="requiredMark" />
+							</div>
+							<datebox id="dateDecesBox" format="${c:l('validation.date.format.simple')}" 
+								value="@{fwinPatientEdit$composer.object.dateDeces,
+									save-when='validate.onClick, create.onClick'}" lenient="true" />
+						</div>
+					</div>
+				</div>
+				<div class="block-separator" />
+				<!-- Médecins -->
+				<div class="item item-wide" id="patientMedecinsDiv">	
+					<custom-attributes champId="227" />
+					<groupbox id="referentsGroup">
+						<caption label="@{fwinPatientEdit$composer.referentsGroupHeader, load-after='onRefreshHeader'}"
+							style="border-bottom-width : 0px;"/>
+						<div id="referentsDiv" >
+							<referents id="referents" width="100%" />
+						</div>
+					</groupbox>
+				</div>
+			</div>
+		</panelchildren>
+		<toolbar height="100%" id="toolbar" align="end">
+			<hbox spacing="5">
+				<button id="validate" label="${c:l('general.validate')}" height="24px"
+					image="/images/icones/save.png" sclass="buttonv2"/>
+				<button id="revert" label="${c:l('general.cancel')}" height="24px"
+					image="/images/icones/cancel.png" sclass="buttonv2"/>
+				<button id="create" label="${c:l('general.create')}" height="24px"
+					image="/images/icones/save.png" sclass="buttonv2"/>
+				<button id="cancel" label="${c:l('general.cancel')}"  height="24px"
+					image="/images/icones/cancel.png" sclass="buttonv2"/>
+			</hbox>
+		</toolbar>
+	</panel>
+</window>
+</zk>

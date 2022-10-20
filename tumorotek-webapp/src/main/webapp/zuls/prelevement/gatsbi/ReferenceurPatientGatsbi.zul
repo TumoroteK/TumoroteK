@@ -1,0 +1,130 @@
+<!--
+ * Copyright ou © ou Copr. Ministère de la santé, FRANCE (01/01/2011)
+ * dsi-projet.tk@aphp.fr
+ * 
+ * Ce logiciel est un programme informatique servant à la gestion de 
+ * l'activité de biobanques. 
+ *
+ * Ce logiciel est régi par la licence CeCILL soumise au droit français
+ * et respectant les principes de diffusion des logiciels libres. Vous 
+ * pouvez utiliser, modifier et/ou redistribuer ce programme sous les 
+ * conditions de la licence CeCILL telle que diffusée par le CEA, le 
+ * CNRS et l'INRIA sur le site "http://www.cecill.info". 
+ * En contrepartie de l'accessibilité au code source et des droits de   
+ * copie, de modification et de redistribution accordés par cette 
+ * licence, il n'est offert aux utilisateurs qu'une garantie limitée. 
+ * Pour les mêmes raisons, seule une responsabilité restreinte pèse sur 
+ * l'auteur du programme, le titulaire des droits patrimoniaux et les 
+ * concédants successifs.
+ *
+ * A cet égard  l'attention de l'utilisateur est attirée sur les 
+ * risques associés au chargement,  à l'utilisation,  à la modification 
+ * et/ou au  développement et à la reproduction du logiciel par 
+ * l'utilisateur étant donné sa spécificité de logiciel libre, qui peut 
+ * le rendre complexe à manipuler et qui le réserve donc à des 	
+ * développeurs et des professionnels  avertis possédant  des 
+ * connaissances  informatiques approfondies.  Les utilisateurs sont 
+ * donc invités à charger  et  tester  l'adéquation  du logiciel à leurs
+ * besoins dans des conditions permettant d'assurer la sécurité de leurs
+ * systèmes et ou de leurs données et, plus généralement, à l'utiliser 
+ * et l'exploiter dans les mêmes conditions de sécurité. 
+ *	
+ * Le fait que vous puissiez accéder à cet en-tête signifie que vous 
+ * avez pris connaissance de la licence CeCILL, et que vous en avez 
+ * accepté les termes. 
+-->
+<window id="winRefPatient" apply="fr.aphp.tumorotek.action.prelevement.gatsbi.ReferenceurPatientGatsbi">
+	<div id="selectPatientDiv" align="center" width="100%">
+		<radiogroup id="radioGroup" orient="horizontal">
+			<radio id="noRadio" value="no" sclass="radiov2" label="${c:l('general.aucun')}"/>	
+			<radio id="newRadio" value="new" sclass="radiov2" label="${c:l('general.new')}" />
+			<radio id="findRadio" value="find" sclass="radiov2" label="${c:l('general.find')}" selected="true" />	
+		</radiogroup>
+	</div>
+	<grid id="existingPatientGrid" fixedLayout="true" sclass="gridForm1">
+		<columns>
+			<column />
+		</columns>
+		<rows>
+			<row id="findPatientRow">
+				<box orient="horizontal" pack="center">	
+					<label value="${c:l('patient.reference.recherche')}" sclass="formLabel" />
+					<textbox id="nomNipNdaBox" />
+		 			<image id="goForIt" src="/images/icones/player_play.png"/>
+				</box>
+			</row>
+			<!-- Liste résultats Patients-->
+			<row id="resultsRow">
+				<listbox id="patientsBox" multiple="true" 
+					model="@{winRefPatient$composer.patients}"
+					selectedItem="@{winRefPatient$composer.selectedPatient}" mold="paging"
+					itemRenderer="${winRefPatient$composer.patientRenderer}"
+					sclass="listBox" width="100%" visible="false">
+					<listhead />
+					<listitem self="@{each='currPatient'}" value="currPatient"/>
+				</listbox>
+			</row>
+			<row id="noPatientRow" align="center" visible="false">
+				<label value="${c:l('general.recherche.aucunResultat')}" sclass="infoLabel" />
+			</row>
+			<!-- Liste Maladies associées au patient-->
+			<row id="resultsMaladiesRow" >
+				<listbox id="maladiesBox"
+					model="@{winRefPatient$composer.maladies}"
+					selectedItem="@{winRefPatient$composer.selectedMaladie}" mold="paging"
+					sclass="listBox" width="100%" visible="false">
+					<listhead>
+						<listheader label="${c:l('Champ.Maladie.Libelle')}" />
+						<listheader label="${c:l('Champ.Maladie.Code')}" />
+						<listheader label="${c:l('patient.maladie.dateDiag')}" />
+						<listheader label="${c:l('ficheMaladie.prelevements')}"/>
+					</listhead>
+					<listitem id="itemMaladie" self="@{each='decoMaladie'}" value="@{decoMaladie}">			
+						<listcell label="@{decoMaladie.libelle}" />
+						<listcell label="@{decoMaladie.code}" />
+						<listcell label="@{decoMaladie.formattedDateDiag}" />
+						<listcell label="@{decoMaladie.nbPrelevements}" />
+					</listitem>
+				</listbox>
+			</row>
+			<row align="center" id="noMaladieRow" visible="false">
+				<label value="${c:l('patient.maladies.aucune')}" sclass="infoLabel"/>
+			</row>
+			<row align="right">
+				<button id="embedMaladieButton" label="${c:l('patient.ajouter.maladie')}"
+						 visible="false" image="/images/icones/new.png" sclass="buttonv2"/>
+			</row>
+			<row id="ndaRow" visible="false">
+				<hbox>
+					<label id="ndaFieldLabel" value="${c:l('Champ.Prelevement.PatientNda')}"
+												 sclass="formLabel" />
+						
+					<textbox id="ndaBox" width="100px" 
+							constraint="@{fwinPatient$composer.codeNullConstraint}" />
+				</hbox>		
+			</row>
+			<row id="embeddedFicheMaladieRow" visible="false">
+				<vbox>
+					<div>
+						<label value="${c:l('patient.ajouter.maladie')}" sclass="formSubTitle"/>
+						<label id="closeMaladieLink" value="${c:cat3('[', c:l('general.close'), ']')}" 
+							forward="onClick=onCloseMaladieClick" sclass="formLink"
+							style="font-weight : normal" />
+					</div>
+					<image src="/images/pixelble.gif" style="background-repeat: repeat-x;"/>
+					<div id="embeddedFicheMaladieDiv" />
+				</vbox>
+			</row>
+		</rows>
+	</grid>
+	<!-- Nouveau patient -->
+	<div id="newPatientDiv" visible="false">
+		<div id="fichePatientDiv" />
+		
+		<vbox id="newMaladieBox" >
+			<label value="${c:l('patient.ajouter.maladie')}" sclass="formSubTitle"/>
+			<image src="/images/pixelble.gif" style="background-repeat: repeat-x;"/>
+			<div id="ficheMaladieWithPatientDiv" />
+		</vbox>	
+	</div>
+</window>

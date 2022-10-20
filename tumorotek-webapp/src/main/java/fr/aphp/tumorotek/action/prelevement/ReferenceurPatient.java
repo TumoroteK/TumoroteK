@@ -93,44 +93,42 @@ import fr.aphp.tumorotek.webapp.general.SessionUtils;
 public class ReferenceurPatient extends GenericForwardComposer<Component>
 {
 
-   // private Log log = LogFactory.getLog(ReferenceurPatient.class);
-
    private static final long serialVersionUID = 1L;
 
    // composants
-   private Radiogroup radioGroup;
+   protected Radiogroup radioGroup;
 
-   private Grid existingPatientGrid;
+   protected Grid existingPatientGrid;
 
-   private Textbox nomNipNdaBox;
+   protected Textbox nomNipNdaBox;
 
-   private Listbox patientsBox;
+   protected Listbox patientsBox;
 
-   private Row noPatientRow;
+   protected Row noPatientRow;
 
-   private Listbox maladiesBox;
+   protected Listbox maladiesBox;
 
-   private Row noMaladieRow;
+   protected Row noMaladieRow;
 
-   private Button embedMaladieButton;
+   protected Button embedMaladieButton;
 
-   private Row embeddedFicheMaladieRow;
+   protected Row embeddedFicheMaladieRow;
 
-   private Div embeddedFicheMaladieDiv;
+   protected Div embeddedFicheMaladieDiv;
 
-   private Radio newRadio;
+   protected Radio newRadio;
 
-   private Radio findRadio;
+   protected Radio findRadio;
 
-   private Radio noRadio;
+   protected Radio noRadio;
 
-   private Div fichePatientDiv;
+   protected Div fichePatientDiv;
 
-   private Div ficheMaladieWithPatientDiv;
+   protected Div ficheMaladieWithPatientDiv;
 
-   private Textbox ndaBox;
+   protected Textbox ndaBox;
 
-   private Row ndaRow;
+   protected Row ndaRow;
 
    private boolean banqueDefMaladies;
 
@@ -146,9 +144,9 @@ public class ReferenceurPatient extends GenericForwardComposer<Component>
 
    private MaladieDecorator selectedMaladieByNda = null;
 
-   private static ListitemRenderer<Patient> patientRenderer = new PatientItemRenderer(true);
+   private ListitemRenderer<Patient> patientRenderer = new PatientItemRenderer(true);
 
-   private AnnotateDataBinder referenceurBinder;
+   protected AnnotateDataBinder referenceurBinder;
 
    @Override
    public void doAfterCompose(final Component comp) throws Exception{
@@ -259,7 +257,8 @@ public class ReferenceurPatient extends GenericForwardComposer<Component>
       final FichePrelevementEdit fichePrelevementEdit = getFichePrelevementEditFromContexte();
 
       fichePrelevementEdit.getObjectTabController().setPatientSip(null);
-      fichePrelevementEdit.openSelectPatientWindow(Path.getPath(self), "onGetPatientFromSelection", false, critereValue, null);
+      fichePrelevementEdit.openSelectPatientWindow(Path.getPath(self), 
+                  "onGetPatientFromSelection", false, critereValue, null, null, null);
 
    }
 
@@ -447,7 +446,7 @@ public class ReferenceurPatient extends GenericForwardComposer<Component>
     * FichePrelevementEdit en fonction du contexte collection.
     * @return
     */
-   private FichePrelevementEdit getFichePrelevementEditFromContexte(){
+   protected FichePrelevementEdit getFichePrelevementEditFromContexte(){
       switch(SessionUtils.getCurrentContexte()){
          case SEROLOGIE:
             return (FichePrelevementEditSero) self.getParent().getParent()

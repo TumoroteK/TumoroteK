@@ -52,6 +52,8 @@ import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
 import fr.aphp.tumorotek.model.coeur.patient.Maladie;
 import fr.aphp.tumorotek.model.coeur.patient.Patient;
 import fr.aphp.tumorotek.model.coeur.prelevement.Prelevement;
+import fr.aphp.tumorotek.model.contexte.Banque;
+import fr.aphp.tumorotek.model.contexte.gatsbi.Contexte;
 
 /**
  * HtmlMacroComponent de la fiche résumé Patient.
@@ -62,8 +64,8 @@ import fr.aphp.tumorotek.model.coeur.prelevement.Prelevement;
  *
  * Date: 01/12/0209
  *
- * @author mathieu
- * @version 2.0
+ * @author Mathieu BARTHELEMY
+ * @version 2.3.0-gatsbi
  *
  */
 public class ResumePatient
@@ -76,48 +78,40 @@ public class ResumePatient
    private Prelevement prelevement;
 
    private final Textbox ndaBox;
-
    private final Label ndaLabel;
-
    private final Label linkMaladieLabel;
-
    private final Label codeDiagLabel;
-
    private final Label linkPatientLabel;
-
    private final Label nipLabel;
-
+   private final Label identifiantLabel;
    public String nip;
-
    private final Label prenomLabel;
-
    private final Label dateNaisLabel;
-
    private final Label sexeLabel;
-
    private Row row1;
-
    private Row row2;
-
    private Row row3;
-
    private Row row5;
 
    private boolean anonyme = false;
 
-   // ******** Gatsbi
-   private boolean gatsbi = false;
+   // @since 2.3.0-gatsbi
+   private Contexte patientContexte = null;
+   private Banque curBanque;
 
    private Div mainContainer;
 
    private Component linkMaladie;
 
-   public ResumePatient(final Component resumePatientGroup, final boolean _g){
+   public ResumePatient(final Component resumePatientGroup, final Contexte _c, final Banque _b){
 
-      this.gatsbi = _g;
+      this.patientContexte = _c;
       page = resumePatientGroup.getPage();
 
-      if(!gatsbi){
+      if(patientContexte == null){
+         
+         identifiantLabel = null;
+         
          // first row
          row1 = (Row) resumePatientGroup.getNextSibling();
          nipLabel = (Label) row1.getFellowIfAny("nipLabel");
@@ -141,8 +135,14 @@ public class ResumePatient
          row5 = (Row) resumePatientGroup.getNextSibling().getNextSibling().getNextSibling().getNextSibling().getNextSibling();
          linkMaladieLabel = (Label) row5.getFellowIfAny("linkMaladieLabel");
          codeDiagLabel = (Label) row5.getFellowIfAny("codeDiagLabel");
-      }else{
+      }else{ // gatsbi context
+         
+         this.curBanque = _b;
+                  
+         // labels mapping
          mainContainer = (Div) resumePatientGroup.getFellowIfAny("mainPatientContainer");
+         
+         identifiantLabel = (Label) resumePatientGroup.getFellowIfAny("identifiantLabel");        
          nipLabel = (Label) resumePatientGroup.getFellowIfAny("nipLabel");
          ndaBox = (Textbox) resumePatientGroup.getFellowIfAny("ndaBox");
          ndaLabel = (Label) resumePatientGroup.getFellowIfAny("ndaLabel");
@@ -152,7 +152,7 @@ public class ResumePatient
          sexeLabel = (Label) resumePatientGroup.getFellowIfAny("sexeLabel");
          linkMaladie = resumePatientGroup.getFellowIfAny("linkMaladie");
          linkMaladieLabel = (Label) resumePatientGroup.getFellowIfAny("linkMaladieLabel");
-         codeDiagLabel = (Label) resumePatientGroup.getFellowIfAny("codeDiagLabel");
+         codeDiagLabel = (Label) resumePatientGroup.getFellowIfAny("codeDiagLabel");         
       }
    }
 
@@ -211,18 +211,30 @@ public class ResumePatient
 
    public void setPatientAccessible(final boolean accessible){
       if(accessible){
-         if(!anonyme){
+         if(!anonyme && patientContexte == null){
             linkPatientLabel.setSclass("formLink");
          }
          linkMaladieLabel.setSclass("formLink");
+         
          // Events listeners
-         linkPatientLabel.addEventListener("onClick", new EventListener<Event>()
-         {
-            @Override
-            public void onEvent(final Event event) throws Exception{
-               showPatientPanel(false);
-            }
-         });
+         if (patientContexte == null) { // pas de lien sur ce champ dans Contexte Gatsbi
+            linkPatientLabel.addEventListener("onClick", new EventListener<Event>()
+            {
+               @Override
+               public void onEvent(final Event event) throws Exception{
+                  showPatientPanel(false);
+               }
+            });
+         } else { //link ajouté sur identifiant
+            identifiantLabel.addEventListener("onClick", new EventListener<Event>()
+            {
+               @Override
+               public void onEvent(final Event event) throws Exception{
+                  showPatientPanel(false);
+               }
+            });
+         }
+         
          linkMaladieLabel.addEventListener("onClick", new EventListener<Event>()
          {
             @Override
@@ -246,13 +258,31 @@ public class ResumePatient
     * @param patient
     */
    public void setPatientProperties(final Patient patient){
+      
+      // @since 2.3.0-gatsbi
+      if (patientContexte != null) { // identifiant must be set
+         identifiantLabel.setValue(patient
+            .getIdentifiantAsString(prelevement != null && prelevement.getBanque() != null ? 
+               prelevement.getBanque() : curBanque));
+      }
+      
       if(!anonyme){
-         if(patient != null){
-            nipLabel.setValue(patient.getNip());
-            linkPatientLabel.setValue(patient.getNom());
-            prenomLabel.setValue(patient.getPrenom());
-            dateNaisLabel.setValue(ObjectTypesFormatters.dateRenderer2(patient.getDateNaissance()));
-            sexeLabel.setValue(PatientUtils.setSexeFromDBValue(patient));
+         if(patient != null){        
+            if (nipLabel.getParent().isVisible()) {
+                nipLabel.setValue(patient.getNip());
+            }
+            if (linkPatientLabel.getParent().isVisible()) {
+               linkPatientLabel.setValue(patient.getNom());
+            }
+            if (prenomLabel.getParent().isVisible()) {
+               prenomLabel.setValue(patient.getPrenom());
+            }
+            if (dateNaisLabel.getParent().isVisible()) {
+               dateNaisLabel.setValue(ObjectTypesFormatters.dateRenderer2(patient.getDateNaissance()));
+            }
+            if (sexeLabel.getParent().isVisible()) {
+               sexeLabel.setValue(PatientUtils.setSexeFromDBValue(patient));
+            }
          }else{ //efface les propriétés du résumé
             nipLabel.setValue(null);
             linkPatientLabel.setValue(null);
@@ -261,15 +291,29 @@ public class ResumePatient
             sexeLabel.setValue(null);
          }
       }else{
-         AbstractController.makeLabelAnonyme(nipLabel, false);
-         AbstractController.makeLabelAnonyme(prenomLabel, false);
-         AbstractController.makeLabelAnonyme(dateNaisLabel, false);
+         if (nipLabel.getParent().isVisible()) {
+            AbstractController.makeLabelAnonyme(nipLabel, false);
+         }
+         if (prenomLabel.getParent().isVisible()) {
+            AbstractController.makeLabelAnonyme(prenomLabel, false);
+         }
+         if (dateNaisLabel.getParent().isVisible()) {
+            AbstractController.makeLabelAnonyme(dateNaisLabel, false);
+         }
          if(patient != null){
-            sexeLabel.setValue(PatientUtils.setSexeFromDBValue(patient));
-            AbstractController.makeLabelAnonyme(linkPatientLabel, true);
+            if (sexeLabel.getParent().isVisible()) {
+               sexeLabel.setValue(PatientUtils.setSexeFromDBValue(patient));
+            }
+            if (linkPatientLabel.getParent().isVisible()) {
+               AbstractController.makeLabelAnonyme(linkPatientLabel, patientContexte == null); // lien non cliquable si contexte gatsbi
+            }
          }else{ //efface les propriétés du résumé
-            sexeLabel.setValue(null);
-            AbstractController.makeLabelAnonyme(linkPatientLabel, false);
+            if (sexeLabel.getParent().isVisible()) {  
+               sexeLabel.setValue(null);
+            }
+            if (linkPatientLabel.getParent().isVisible()) {
+               AbstractController.makeLabelAnonyme(linkPatientLabel, false);
+            }
          }
       }
    }
@@ -308,7 +352,7 @@ public class ResumePatient
 
    public void hideMaladieRows(final boolean visible){
       linkMaladie.setVisible(visible);
-      if(!gatsbi){
+      if(patientContexte == null){
          linkMaladie.getNextSibling().setVisible(visible);
       }
    }
@@ -347,13 +391,13 @@ public class ResumePatient
    }
 
    public void setVisible(final boolean b){
-      if(!gatsbi){
+      if(patientContexte == null){
          row1.setVisible(b);
          row2.setVisible(b);
          row3.setVisible(b);
          linkMaladie.setVisible(b);
          row5.setVisible(b);
-      }else{
+      }else{ // contexte gatsbi
          if(mainContainer != null){
             mainContainer.setVisible(b);
          }

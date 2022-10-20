@@ -147,7 +147,7 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
  * Classe de test pour le manager PrelevementManager. Classe créée le 14/10/09.
  *
  * @author Mathieu BARTHELEMY.
- * @version 2.1
+ * @version 2.3.0-gatsbi
  *
  */
 public class PrelevementManagerTest extends AbstractManagerTest4
@@ -3735,4 +3735,89 @@ public class PrelevementManagerTest extends AbstractManagerTest4
       assertTrue(prels.size() == 0);
    }
 
+   @Test
+   public void testFindByPatientIdentifiantOrNomOrNipInListManager(){
+      List<String> criteres = new ArrayList<>();
+      criteres.add("876");
+      criteres.add("SOLIS");
+      criteres.add("SLS-1234");
+      final List<Banque> bks = new ArrayList<>();
+      bks.add(banqueDao.findById(1));
+      bks.add(banqueDao.findById(2));
+      
+      // les prélèvements patients 876 (DELPHINO) et SOLIS
+      // ne seront pas pris en compte car ils n'ont pas d'identifiant (donc pas Gatsbi !)
+      List<Integer> liste = prelevementManager.findByPatientIdentifiantOrNomOrNipInListManager(criteres, bks);
+      assertTrue(liste.size() == 1);
+      assertTrue(liste.get(0).equals(3));
+
+      // NOM
+      criteres.clear();
+      criteres.add("MAYER");
+      liste = prelevementManager.findByPatientIdentifiantOrNomOrNipInListManager(criteres, bks);
+      assertTrue(liste.size() == 1);
+      assertTrue(liste.get(0).equals(3));
+      
+      // NIP
+      criteres.clear();
+      criteres.add("12");
+      liste = prelevementManager.findByPatientIdentifiantOrNomOrNipInListManager(criteres, bks);
+      assertTrue(liste.size() == 1);
+      assertTrue(liste.get(0).equals(3));
+
+      liste = prelevementManager.findByPatientIdentifiantOrNomOrNipInListManager(null, bks);
+      assertTrue(liste.size() == 0);
+      liste = prelevementManager.findByPatientIdentifiantOrNomOrNipInListManager(criteres, null);
+      assertTrue(liste.size() == 0);
+      liste = prelevementManager.findByPatientIdentifiantOrNomOrNipInListManager(new ArrayList<String>(), bks);
+      assertTrue(liste.size() == 0);
+      liste = prelevementManager.findByPatientIdentifiantOrNomOrNipInListManager(criteres, new ArrayList<Banque>());
+      assertTrue(liste.size() == 0);
+   }
+   
+   @Test
+   public void testFindByPatientIdentifiantOrNomOrNipReturnIdsManager(){
+      // IDENTIFIANT exact = true
+      String search = "SLS-1234";
+      final List<Banque> bks = new ArrayList<>();
+      bks.add(banqueDao.findById(1));
+      bks.add(banqueDao.findById(2));
+      
+      List<Integer> liste = prelevementManager
+         .findByPatientIdentifiantOrNomOrNipReturnIdsManager(search, bks, true);
+      assertTrue(liste.size() == 1);
+      assertTrue(liste.get(0).equals(3));
+      
+      // IDENTIFIANT exact = false
+      search = "LS-123";
+      liste = prelevementManager.findByPatientIdentifiantOrNomOrNipReturnIdsManager(search, bks, false);
+      assertTrue(liste.size() == 1);
+      assertTrue(liste.get(0).equals(3));
+
+      // NOM exact = false
+      search = "MAYER";
+      liste = prelevementManager.findByPatientIdentifiantOrNomOrNipReturnIdsManager(search, bks, false);
+      assertTrue(liste.size() == 1);
+      assertTrue(liste.get(0).equals(3));
+      
+      // NIP exact = true
+      search = "12";
+      liste = prelevementManager.findByPatientIdentifiantOrNomOrNipReturnIdsManager(search, bks, true);
+      assertTrue(liste.size() == 1);
+      assertTrue(liste.get(0).equals(3));
+      
+      // IDENTIFIANT exact = true FAIL
+      search = "LS-123";
+      liste = prelevementManager.findByPatientIdentifiantOrNomOrNipReturnIdsManager(search, bks, true);
+      assertTrue(liste.isEmpty());
+
+      liste = prelevementManager.findByPatientIdentifiantOrNomOrNipReturnIdsManager(null, bks, false);
+      assertTrue(liste.size() == 0);
+      liste = prelevementManager.findByPatientIdentifiantOrNomOrNipReturnIdsManager(search, null, false);
+      assertTrue(liste.size() == 0);
+      liste = prelevementManager.findByPatientIdentifiantOrNomOrNipReturnIdsManager("", bks, false);
+      assertTrue(liste.size() == 0);
+      liste = prelevementManager.findByPatientIdentifiantOrNomOrNipReturnIdsManager(search, new ArrayList<Banque>(), false);
+      assertTrue(liste.size() == 0);
+   }
 }

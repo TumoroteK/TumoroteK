@@ -44,7 +44,9 @@
 				fixedLayout="false" span="true"
 				sizedByContent="true" sclass="gridListStyle"		
 				model="@{lwinPatient$composer.listObjects 
-					load-after='findByListPatientNoms.onClick, findByListPatientNips.onClick'}"
+					load-after='findByListPatientNoms.onClick, 
+						findByListPatientNips.onClick, 
+						findByListPatientIdentifiants.onClick'}"
 				rowRenderer="${lwinPatient$composer.listObjectsRenderer}">
 				<columns id="gridColumns" menupopup="auto" sizable="true" width="100%" />
 				<rows>
@@ -55,7 +57,7 @@
 	</panel>
 	<panel title="${c:l('general.recherche.rapide')}"
 		collapsible="false" height="150px" sclass="panelv2">
-		<panelchildren>
+		<panelchildren style="overflow-y:scroll">
 			<radiogroup id="criteresRadioGroup">
 				<vlayout>
 					<hlayout sclass="z-valign-bottom">
@@ -70,6 +72,23 @@
 								<listcell label="@{date}" />
 							</listitem>
 						</listbox>
+					</hlayout>
+					<hlayout sclass="z-valign-bottom">
+						<radio id="identifiantPatient"/>
+						<div width="150px">
+							<label value="${c:l('Champ.Patient.Identifiant')}" 
+							sclass="formLabel"/>
+						</div>
+						<textbox id="identifiantBoxPatient" 
+						value="@{lwinPatient$composer.searchIdentifiantPatient,
+						save-when='find.onClick, self.onOK'}"
+						width="100px"
+						forward="onOK=onPressEnterKey()"
+						/>
+						<button id="findByListPatientIdentifiants" height="20px"
+							image="/images/icones/small_add.png" sclass="buttonv2"
+							tooltiptext="${c:l('tooltip.recherche.liste.identifiant')}"
+						/>
 					</hlayout>
 					<hlayout sclass="z-valign-bottom">
 						<radio id="nipPatient"/>

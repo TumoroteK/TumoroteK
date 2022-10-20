@@ -95,7 +95,7 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
  * Classe créée le 30/10/09.
  *
  * @author Mathieu BARTHELEMY
- * @version 2.0
+ * @version 2.3.0-gatsbi
  *
  */
 public class PatientManagerImpl implements PatientManager
@@ -1108,7 +1108,36 @@ public class PatientManagerImpl implements PatientManager
       }
    }
 
-   //   public void setPatientDelegateDao(PatientDelegateDao patientDelegateDao){
-   //      this.patientDelegateDao = patientDelegateDao;
-   //   }
+   @Override
+   public List<Integer> findByIdentifiantsInListManager(List<String> identifiants, List<Banque> selectedBanques){
+      if(identifiants != null && !identifiants.isEmpty() && selectedBanques != null && !selectedBanques.isEmpty()){
+         return patientDao.findByIdentifiantInList(identifiants, selectedBanques);
+      }
+      return new ArrayList<>();
+   }
+
+   @Override
+   public List<Integer> findByIdentifiantLikeBothSideReturnIdsManager(String identifiant,
+      List<Banque> selectedBanques, boolean exactMatch){
+      if(!exactMatch){
+         identifiant = "%" + identifiant + "%";
+      }
+      log.debug("Recherche Patient par identifiant: " + identifiant + " exactMatch " + String.valueOf(exactMatch));
+      if(selectedBanques != null && !selectedBanques.isEmpty()){
+         return patientDao.findByIdentifiantReturnIds(identifiant, selectedBanques);
+      }
+      return new ArrayList<Integer>();
+   }
+
+   @Override
+   public List<Patient> findByIdentifiantLikeManager(String ident, boolean exactMatch, List<Banque> selectedBanques){
+      if(!exactMatch){
+         ident = "%" + ident + "%";
+      }
+      log.debug("Recherche Patient par identifiant: " + ident + " exactMatch " + String.valueOf(exactMatch));
+      if(selectedBanques != null && !selectedBanques.isEmpty()){
+         return patientDao.findByIdentifiant(ident, selectedBanques);
+      }
+      return new ArrayList<Patient>();
+   }
 }

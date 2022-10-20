@@ -47,6 +47,11 @@
 			<div id="gatsbiContainer" class="main-container gridForm1">
 				<div id="patientBlockDiv" style="padding-left: 5px">
 					<div id="patientBlockDivContainer" class="block-container">
+						<div class="item item-wide" id="identifiantDiv"><!-- Identifiant -->
+							<custom-attributes champId="272" />
+							<label value="${c:l('Champ.Patient.Identifiant')}" sclass="chpLabel formLabel" />
+							<label id="identifiantLabel" value="@{fwinPatientStatic$composer.patientIdentifiant}" sclass="formValue" />
+						</div>
 						<div class="item item-wide" id="nipDiv"><!-- Nip -->
 							<custom-attributes champId="2" />
 							<label value="${c:l('Champ.Patient.Nip')}" sclass="chpLabel formLabel" />
@@ -106,12 +111,15 @@
 				</div>
 				<div class="block-separator" />
 				<!-- Médecins -->
-				<groupbox id="groupMedecins">
-					<caption label="@{fwinPatientStatic$composer.referentsGroupHeader}" />
-					<div id="referentsDiv">
-						<referents id="referents" width="100%" />
-					</div>
-				</groupbox>
+				<div class="item item-wide" id="patientMedecinsDiv">	
+					<custom-attributes champId="227" />
+					<groupbox id="groupMedecins">
+						<caption label="@{fwinPatientStatic$composer.referentsGroupHeader}" />
+						<div id="referentsDiv">
+							<referents id="referents" width="100%" />
+						</div>
+					</groupbox>
+				</div>
 				<div class="block-separator" />
 				<!-- Maladies -->
 				<groupbox id="groupMaladies">

@@ -99,12 +99,14 @@ public class SelectParametrageModaleVM
    }
 
    @Command
-   public void onSelectParametrage(@BindingParam("paramId") final Integer paramId){
+   public void onSelectParametrage(@ContextParam(ContextType.VIEW) final Window comp, @BindingParam("paramId") final Integer paramId){
       final Map<String, Object> args = new HashMap<>();
       args.put("paramId", paramId);
       args.put("parentObj", parentObj);
       Events.postEvent("onSelectParametrage", parent, args);
-      Events.postEvent("onClose", selectParametrageModale, null);
+      comp.detach();
+
+      // Events.postEvent("onClose", selectParametrageModale, null);
    }
 
    public SimpleListModel<Parametrage> getParametrages(){
@@ -113,5 +115,13 @@ public class SelectParametrageModaleVM
 
    public String getTitle(){
       return Labels.getLabel("gatsbi.parametrages", new String[] {entiteLabel});
+   }
+   
+   @Command
+   public void close(@ContextParam(ContextType.VIEW) final Window comp){
+      final Map<String, Object> args = new HashMap<>();
+      args.put("parentObj", parentObj);
+      Events.postEvent("onSelectParametrageClose", parent, args);
+      comp.detach();
    }
 }
