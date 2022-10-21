@@ -592,6 +592,7 @@ public class GatsbiController
 
    // Interceptions
    // imports
+   // recherche > affichages
    public static List<ChampEntite> findByEntiteImportAndIsNullableManager(final Entite entite, final Boolean canImport,
       final Boolean isNullable){
 
@@ -600,8 +601,13 @@ public class GatsbiController
       final Contexte contexte = SessionUtils.getCurrentGatsbiContexteForEntiteId(entite.getEntiteId());
 
       if(contexte == null){ // TK defaut
-         chpE
-            .addAll(ManagerLocator.getChampEntiteManager().findByEntiteImportAndIsNullableManager(entite, canImport, isNullable));
+         if(isNullable != null){
+            chpE
+               .addAll(ManagerLocator.getChampEntiteManager().findByEntiteImportAndIsNullableManager(entite, canImport, isNullable));
+         } else {
+            chpE
+               .addAll(ManagerLocator.getChampEntiteManager().findByEntiteAndImportManager(entite, true));
+         }
       }else{ // surcharge gatsbi
          chpE.addAll(ManagerLocator.getChampEntiteManager().findByEntiteAndImportManager(entite, canImport));
 
@@ -627,6 +633,7 @@ public class GatsbiController
 
       return chpE;
    }
+
 
    public static List<ImportColonneDecorator> decorateImportColonnes(final List<ImportColonne> cols, final boolean isSubderive){
 
