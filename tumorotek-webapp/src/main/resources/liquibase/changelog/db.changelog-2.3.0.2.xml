@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    
+    <changeSet id="${project.artifactId}-22" author="MB" runAlways="true" context="*">
+       <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="PATIENT_IDENTIFIANT"/>
+            </not>
+        </preConditions>
+       <createTable tableName="PATIENT_IDENTIFIANT">
+			<column name="IDENTIFIANT" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="PATIENT_ID" type="INT(10)">
+                <constraints nullable="false" foreignKeyName="FK_PAT_IDENT_PAT_ID" referencedTableName="PATIENT"
+                             referencedColumnNames="PATIENT_ID"/>
+            </column>
+            <column name="BANQUE_ID" type="INT(10)">
+                <constraints nullable="false" foreignKeyName="FK_PAT_IDENT_BANQUE_ID" referencedTableName="BANQUE"
+                             referencedColumnNames="BANQUE_ID"/>
+            </column>       
+        </createTable>
+        <addPrimaryKey tableName="PATIENT_IDENTIFIANT" columnNames="PATIENT_ID,BANQUE_ID"/>
+        <comment>Ajout champ entite identifiant</comment>
+        <insert tableName="CHAMP_ENTITE">
+            <column name="CHAMP_ENTITE_ID" value="272"/>
+            <column name="NOM" value="Identifiant"/>
+            <column name="DATA_TYPE_ID" value="1" />
+            <column name="IS_NULL" value="0"/>
+            <column name="IS_UNIQUE" value="0"/>
+            <column name="ENTITE_ID" value="1"/>
+            <column name="CAN_IMPORT" value="1"/>
+        </insert>
+    </changeSet>
+    
+    <changeSet id="${project.artifactId}-23" author="MB" runAlways="true" context="*">
+    	<comment>Gastbi patient etat passe de char a varchar</comment>
+    	<modifyDataType tableName="PATIENT" columnName="PATIENT_ETAT" newDataType="varchar(10)"/>
+    </changeSet>
+    <changeSet id="${project.artifactId}-30" author="CH" runAlways="true" context="*">
+    	<comment>Stats_indicateur, champ description passé de 250 à 600</comment>
+    	<modifyDataType tableName="STATS_INDICATEUR" columnName="DESCRIPTION" newDataType="varchar(600)"/>
+    </changeSet>
+    
+	<changeSet id="${project.artifactId}-31" author="CH" runAlways="true" context="*">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<tableExists
+					tableName="ORGANISME_PROMOTEUR" />
+			</not>
+		</preConditions>
+		<createTable tableName="ORGANISME_PROMOTEUR">
+			<column autoIncrement="true" name="ORGANISME_PROMOTEUR_ID"
+				type="INT">
+				<constraints nullable="false" primaryKey="true" />
+			</column>
+			<column name="NOM" type="VARCHAR(200)">
+				<constraints nullable="false" />
+			</column>
+			<column name="PLATEFORME_ID" type="INT">
+				<constraints nullable="false" 
+					foreignKeyName="FK_ORGANISME_PROMOTEUR_PLATEFORME_ID" 
+						referencedTableName="PLATEFORME" referencedColumnNames="PLATEFORME_ID" />
+			</column>	
+		</createTable>
+		<modifySql dbms="mysql">
+   			<append value="ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4"/>
+ 		</modifySql>		
+	</changeSet>	    
+</databaseChangeLog>

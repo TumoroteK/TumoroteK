@@ -68,6 +68,10 @@ public class FinderIntroductionInterceptor implements IntroductionInterceptor
          final Object[] arguments = methodInvocation.getArguments();
          return genericDao.executeFinder(methodInvocation.getMethod(), arguments);
       }
+      else if(methodName.startsWith("count")) {
+         final Object[] arguments = methodInvocation.getArguments();
+         return genericDao.executeCounter(methodInvocation.getMethod(), arguments);         
+      }
       return methodInvocation.proceed();
    }
 

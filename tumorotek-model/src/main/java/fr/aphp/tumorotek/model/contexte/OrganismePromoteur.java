@@ -33,35 +33,38 @@
  * avez pris connaissance de la licence CeCILL, et que vous en avez
  * accepté les termes.
  **/
-package fr.aphp.tumorotek.manager.context;
+package fr.aphp.tumorotek.model.contexte;
 
-import java.util.List;
+import java.io.Serializable;
 
-import fr.aphp.tumorotek.manager.PfDependantTKThesaurusManager;
-import fr.aphp.tumorotek.model.contexte.Protocole;
+import javax.persistence.AttributeOverride;
+import javax.persistence.AttributeOverrides;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
 
-/**
- *
- * Interface pour le manager du bean de domaine Protocole.<br>
- * Interface créée le 07/02/12.<br>
- * <br>
- * Actions:<br>
- * 	- Enregistrer un protocole (controle de doublons)<br>
- * 	- Modifier un protocole (controle de doublons)<br>
- * 	- Retourner les protocoles, ordonnées ou non, avec un filtre sur le nom...
- * 	- Supprimer un protocole<br>
- *
- * @author Mathieu BARTHELEMY
- * @version 2.0.6
- *
- */
-public interface ProtocoleManager extends PfDependantTKThesaurusManager<Protocole>
+import org.hibernate.annotations.GenericGenerator;
+
+import fr.aphp.tumorotek.model.AbstractPfDependantThesaurusObject;
+
+@Entity
+@Table(name = "ORGANISME_PROMOTEUR")
+@AttributeOverrides({@AttributeOverride(name = "id", column = @Column(name = "ORGANISME_PROMOTEUR_ID"))})
+@GenericGenerator(name = "autoincrement", strategy = "increment")
+@NamedQueries(value = {
+   @NamedQuery(name = "OrganismePromoteur.findById", query = "SELECT o FROM OrganismePromoteur o WHERE o.id = ?1 " + "order by o.nom"),
+   @NamedQuery(name = "OrganismePromoteur.findByPfOrder", query = "SELECT o FROM OrganismePromoteur o WHERE o.plateforme = ?1 ORDER BY o.nom"),
+   @NamedQuery(name = "OrganismePromoteur.findByPfExcludedId", query = "SELECT o FROM OrganismePromoteur o WHERE o.plateforme = ?1 and o.id != ?2"),
+   @NamedQuery(name = "OrganismePromoteur.findByOrder", query = "SELECT o FROM OrganismePromoteur o ORDER BY o.nom")
+})
+public class OrganismePromoteur extends AbstractPfDependantThesaurusObject implements Serializable
 {
 
    /**
-    * Recherche toutes les instances présentes dans la base.
-    * @return List contenant les Protocole.
+    * 
     */
-   List<Protocole> findAllObjectsManager();
+   private static final long serialVersionUID = 515419214596959502L;
 
 }

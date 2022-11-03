@@ -58,4 +58,14 @@ public interface EtudeDao extends GenericDaoJpa<Etude, Integer>
     * @return liste etude
     */
    List<Etude> findByPfOrder(Plateforme pf);
+   
+   
+   /**
+    * Compte le nombre d'études de la plateforme passée en paramètre
+    * rattachées à l'organisme promoteur id
+    * @param pf
+    * @param organismePromoteurId
+    * @return le nombre d'études concernées
+    */
+   Long countByPfAndOrganismePromoteurId(Plateforme pf, Integer OrganismePromoteurId);
 }

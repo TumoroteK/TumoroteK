@@ -244,6 +244,26 @@ public class GenericDaoJpaImpl<T, PK extends Serializable> extends JpaDaoSupport
       return list;
    }
 
+   
+   public Long executeCounter(final Method method, final Object[] queryArgs){
+      final String queryName = queryNameFromMethod(method);
+
+      final Long nb = (Long) getJpaTemplate().execute(new JpaCallback<Object>()
+      {
+         @Override
+         public Long doInJpa(final EntityManager em){
+            final Query query = em.createNamedQuery(queryName);
+            for(int i = 0; i < queryArgs.length; ++i){
+               query.setParameter(i + 1, queryArgs[i]);
+            }
+            return (Long) query.getSingleResult();
+         }
+      });
+      return nb;
+   }
+   
+   
+   
    /**
     * Renvoie le nom de la NamedQuery pour la méthode passée en paramètre.
     * @param finderMethod est la méthode qui contient la requête.

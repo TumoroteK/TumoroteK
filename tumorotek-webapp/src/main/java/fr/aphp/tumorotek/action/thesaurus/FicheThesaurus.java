@@ -75,6 +75,7 @@ import fr.aphp.tumorotek.model.coeur.prodderive.ProdQualite;
 import fr.aphp.tumorotek.model.coeur.prodderive.ProdType;
 import fr.aphp.tumorotek.model.contexte.Categorie;
 import fr.aphp.tumorotek.model.contexte.Diagnostic;
+import fr.aphp.tumorotek.model.contexte.OrganismePromoteur;
 import fr.aphp.tumorotek.model.contexte.Protocole;
 import fr.aphp.tumorotek.model.contexte.Specialite;
 import fr.aphp.tumorotek.model.qualite.NonConformite;
@@ -457,8 +458,10 @@ public class FicheThesaurus extends AbstractFicheCombineController
          constraint = ThesaurusConstraints.getEnceinteTypeConstraint();
       }else if(NonConformite.class.equals(typeThesaurus.getThesaurusObjectClass())){
          constraint = ThesaurusConstraints.getNonConformiteConstraint();
+      }else if(OrganismePromoteur.class.equals(typeThesaurus.getThesaurusObjectClass())){
+         constraint = ThesaurusConstraints.getOrganismePromoteurConstraint();
       }
-
+      
       return constraint;
    }
 

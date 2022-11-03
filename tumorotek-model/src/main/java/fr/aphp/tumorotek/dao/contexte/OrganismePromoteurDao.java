@@ -33,35 +33,17 @@
  * avez pris connaissance de la licence CeCILL, et que vous en avez
  * accepté les termes.
  **/
-package fr.aphp.tumorotek.manager.context;
+package fr.aphp.tumorotek.dao.contexte;
 
 import java.util.List;
 
-import fr.aphp.tumorotek.manager.PfDependantTKThesaurusManager;
-import fr.aphp.tumorotek.model.contexte.Protocole;
+import fr.aphp.tumorotek.dao.GenericDaoJpa;
+import fr.aphp.tumorotek.dao.PfDependantTKThesaurusDao;
+import fr.aphp.tumorotek.model.contexte.OrganismePromoteur;
+import fr.aphp.tumorotek.model.contexte.Plateforme;
 
-/**
- *
- * Interface pour le manager du bean de domaine Protocole.<br>
- * Interface créée le 07/02/12.<br>
- * <br>
- * Actions:<br>
- * 	- Enregistrer un protocole (controle de doublons)<br>
- * 	- Modifier un protocole (controle de doublons)<br>
- * 	- Retourner les protocoles, ordonnées ou non, avec un filtre sur le nom...
- * 	- Supprimer un protocole<br>
- *
- * @author Mathieu BARTHELEMY
- * @version 2.0.6
- *
- */
-public interface ProtocoleManager extends PfDependantTKThesaurusManager<Protocole>
+public interface OrganismePromoteurDao extends GenericDaoJpa<OrganismePromoteur, Integer>, PfDependantTKThesaurusDao<OrganismePromoteur>
 {
-
-   /**
-    * Recherche toutes les instances présentes dans la base.
-    * @return List contenant les Protocole.
-    */
-   List<Protocole> findAllObjectsManager();
+   List<OrganismePromoteur> findByPfExcludedId(Plateforme plateforme, Integer id);
 
 }
