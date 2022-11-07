@@ -1494,9 +1494,11 @@ div.z-grid {
 }
 .vertTabBox.z-tabbox-ver .z-tab-ver-hl {
 	background-image : url(${c:encodeURL('/images/themes/blue/tab-v-corner.png')});
+	padding-top: 6px;
 }
 .vertTabBox.z-tabbox-ver .z-tab-ver-hr {
 	background-image : url(${c:encodeURL('/images/themes/blue/tab-v-corner.png')});
+	padding-bottom: 7px;
 }
 .vertTabBox.z-tabbox-ver .z-tab-ver-hm {
 	background-image : url(${c:encodeURL('/images/themes/blue/tab-v-hm.png')});
