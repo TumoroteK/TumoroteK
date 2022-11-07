@@ -64,7 +64,7 @@ import fr.aphp.tumorotek.model.coeur.prodderive.ProdQualite;
 import fr.aphp.tumorotek.model.coeur.prodderive.ProdType;
 import fr.aphp.tumorotek.model.contexte.Categorie;
 import fr.aphp.tumorotek.model.contexte.Diagnostic;
-import fr.aphp.tumorotek.model.contexte.OrganismePromoteur;
+import fr.aphp.tumorotek.model.contexte.Organisme;
 import fr.aphp.tumorotek.model.contexte.Protocole;
 import fr.aphp.tumorotek.model.contexte.Specialite;
 import fr.aphp.tumorotek.model.qualite.NonConformite;
@@ -163,8 +163,8 @@ public class ListeThesaurus extends AbstractListeController2
       // Non conformite a la cession Derive
       listObjects.add(new Thesaurus<>(NonConformite.class, "NonConformiteCessionDerive",
          Labels.getLabel("thesaurus.liste.nonConformite.cession.derive")));
-      // Organisme Promoteur
-      listObjects.add(new Thesaurus<>(OrganismePromoteur.class, Labels.getLabel("thesaurus.liste.organismePromoteur")));
+      // Organisme
+      listObjects.add(new Thesaurus<>(Organisme.class, Labels.getLabel("thesaurus.liste.organisme")));
       // Protocole SerotK
       listObjects.add(new Thesaurus<>(Protocole.class, Labels.getLabel("thesaurus.liste.serotk.protocole")));
       // Diagnostic SerotK

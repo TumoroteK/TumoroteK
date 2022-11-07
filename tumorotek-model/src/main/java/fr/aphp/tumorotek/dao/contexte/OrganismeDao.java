@@ -33,29 +33,17 @@
  * avez pris connaissance de la licence CeCILL, et que vous en avez
  * accepté les termes.
  **/
-package fr.aphp.tumorotek.manager.validation.contexte;
+package fr.aphp.tumorotek.dao.contexte;
 
-import org.springframework.validation.Errors;
-import org.springframework.validation.ValidationUtils;
-import org.springframework.validation.Validator;
+import java.util.List;
 
-import fr.aphp.tumorotek.model.contexte.OrganismePromoteur;
+import fr.aphp.tumorotek.dao.GenericDaoJpa;
+import fr.aphp.tumorotek.dao.PfDependantTKThesaurusDao;
+import fr.aphp.tumorotek.model.contexte.Organisme;
+import fr.aphp.tumorotek.model.contexte.Plateforme;
 
-public class OrganismePromoteurValidator implements Validator
+public interface OrganismeDao extends GenericDaoJpa<Organisme, Integer>, PfDependantTKThesaurusDao<Organisme>
 {
-   @Override
-   public boolean supports(final Class<?> clazz){
-      return OrganismePromoteur.class.equals(clazz);
-   }
+   List<Organisme> findByPfExcludedId(Plateforme plateforme, Integer id);
 
-   @Override
-   public void validate(final Object obj, final Errors errs){
-
-      final OrganismePromoteur organismePromoteur = (OrganismePromoteur) obj;
-      //nom non vide
-      //ceci est une double sécurité pour éviter d'ajouter "vide" dans la table (vérif "côté back").
-      //côté front, le contrôle est fait par ThesaurusConstraints => c'est lui qui gère le message affiché à l'utilisateur
-      //=> le clé organismePromoteur.nom.empty n'est pas définie dans les properties (comme pour les autres thesaurus : risque, protocole....)
-      ValidationUtils.rejectIfEmptyOrWhitespace(errs, "nom", "organismePromoteur.nom.empty");
-   }
 }

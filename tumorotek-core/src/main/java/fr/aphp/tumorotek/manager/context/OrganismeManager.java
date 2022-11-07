@@ -33,38 +33,12 @@
  * avez pris connaissance de la licence CeCILL, et que vous en avez
  * accepté les termes.
  **/
-package fr.aphp.tumorotek.model.contexte;
+package fr.aphp.tumorotek.manager.context;
 
-import java.io.Serializable;
+import fr.aphp.tumorotek.manager.PfDependantTKThesaurusManager;
+import fr.aphp.tumorotek.model.contexte.Organisme;
 
-import javax.persistence.AttributeOverride;
-import javax.persistence.AttributeOverrides;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.Table;
-
-import org.hibernate.annotations.GenericGenerator;
-
-import fr.aphp.tumorotek.model.AbstractPfDependantThesaurusObject;
-
-@Entity
-@Table(name = "ORGANISME_PROMOTEUR")
-@AttributeOverrides({@AttributeOverride(name = "id", column = @Column(name = "ORGANISME_PROMOTEUR_ID"))})
-@GenericGenerator(name = "autoincrement", strategy = "increment")
-@NamedQueries(value = {
-   @NamedQuery(name = "OrganismePromoteur.findById", query = "SELECT o FROM OrganismePromoteur o WHERE o.id = ?1 " + "order by o.nom"),
-   @NamedQuery(name = "OrganismePromoteur.findByPfOrder", query = "SELECT o FROM OrganismePromoteur o WHERE o.plateforme = ?1 ORDER BY o.nom"),
-   @NamedQuery(name = "OrganismePromoteur.findByPfExcludedId", query = "SELECT o FROM OrganismePromoteur o WHERE o.plateforme = ?1 and o.id != ?2"),
-   @NamedQuery(name = "OrganismePromoteur.findByOrder", query = "SELECT o FROM OrganismePromoteur o ORDER BY o.nom")
-})
-public class OrganismePromoteur extends AbstractPfDependantThesaurusObject implements Serializable
+public interface OrganismeManager extends PfDependantTKThesaurusManager<Organisme>
 {
-
-   /**
-    * 
-    */
-   private static final long serialVersionUID = 515419214596959502L;
 
 }

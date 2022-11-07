@@ -48,11 +48,11 @@
 		<preConditions onFail="MARK_RAN">
 			<not>
 				<tableExists
-					tableName="ORGANISME_PROMOTEUR" />
+					tableName="ORGANISME" />
 			</not>
 		</preConditions>
-		<createTable tableName="ORGANISME_PROMOTEUR">
-			<column autoIncrement="true" name="ORGANISME_PROMOTEUR_ID"
+		<createTable tableName="ORGANISME">
+			<column autoIncrement="true" name="ORGANISME_ID"
 				type="INT">
 				<constraints nullable="false" primaryKey="true" />
 			</column>
@@ -61,7 +61,7 @@
 			</column>
 			<column name="PLATEFORME_ID" type="INT">
 				<constraints nullable="false" 
-					foreignKeyName="FK_ORGANISME_PROMOTEUR_PLATEFORME_ID" 
+					foreignKeyName="FK_ORGANISME_PLATEFORME_ID" 
 						referencedTableName="PLATEFORME" referencedColumnNames="PLATEFORME_ID" />
 			</column>	
 		</createTable>

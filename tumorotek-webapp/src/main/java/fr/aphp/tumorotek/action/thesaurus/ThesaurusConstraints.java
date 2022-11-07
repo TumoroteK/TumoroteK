@@ -182,10 +182,10 @@ public final class ThesaurusConstraints
       nonConformiteConstraint.setSize(200);
    }
 
-   private static ConstWord organismePromoteurConstraint = new ConstWord();
+   private static ConstWord organismeConstraint = new ConstWord();
    static{
-      organismePromoteurConstraint.setNullable(false);
-      organismePromoteurConstraint.setSize(200);
+      organismeConstraint.setNullable(false);
+      organismeConstraint.setSize(200);
    }
    
    public static ConstWord getNatureConstraint(){
@@ -276,7 +276,7 @@ public final class ThesaurusConstraints
       return diagnosticConstraint;
    }
 
-   public static ConstWord getOrganismePromoteurConstraint(){
-      return organismePromoteurConstraint;
+   public static ConstWord getOrganismeConstraint(){
+      return organismeConstraint;
    }
 }

@@ -33,12 +33,52 @@
  * avez pris connaissance de la licence CeCILL, et que vous en avez
  * accepté les termes.
  **/
-package fr.aphp.tumorotek.manager.context;
+package fr.aphp.tumorotek.model.contexte;
 
-import fr.aphp.tumorotek.manager.PfDependantTKThesaurusManager;
-import fr.aphp.tumorotek.model.contexte.OrganismePromoteur;
+import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 
-public interface OrganismePromoteurManager extends PfDependantTKThesaurusManager<OrganismePromoteur>
+import javax.persistence.AttributeOverride;
+import javax.persistence.AttributeOverrides;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+
+import org.hibernate.annotations.GenericGenerator;
+
+import fr.aphp.tumorotek.model.AbstractPfDependantThesaurusObject;
+import fr.aphp.tumorotek.model.contexte.gatsbi.Etude;
+
+@Entity
+@Table(name = "ORGANISME")
+@AttributeOverrides({@AttributeOverride(name = "id", column = @Column(name = "ORGANISME_ID"))})
+@GenericGenerator(name = "autoincrement", strategy = "increment")
+@NamedQueries(value = {
+   @NamedQuery(name = "Organisme.findById", query = "SELECT o FROM Organisme o WHERE o.id = ?1 " + "order by o.nom"),
+   @NamedQuery(name = "Organisme.findByPfOrder", query = "SELECT o FROM Organisme o WHERE o.plateforme = ?1 ORDER BY o.nom"),
+   @NamedQuery(name = "Organisme.findByPfExcludedId", query = "SELECT o FROM Organisme o WHERE o.plateforme = ?1 and o.id != ?2"),
+   @NamedQuery(name = "Organisme.findByOrder", query = "SELECT o FROM Organisme o ORDER BY o.nom")
+})
+public class Organisme extends AbstractPfDependantThesaurusObject implements Serializable
 {
 
+   /**
+    * 
+    */
+   private static final long serialVersionUID = 515419214596959502L;
+   
+ 
+   @Override
+   public String toString(){
+      if(this.getNom() != null){
+         return "{" + this.getNom() + "}";
+      }else{
+         return "{Empty Organisme}";
+      }
+   }
+   
 }
