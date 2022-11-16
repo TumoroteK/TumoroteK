@@ -57,5 +57,7 @@ public interface FinderExecutor
     */
    //
    List<?> executeFinder(Method m, Object[] arguments);
+   
+   Long executeCounter(Method m, Object[] arguments);
 
 }

@@ -100,6 +100,7 @@ import fr.aphp.tumorotek.manager.context.ContexteManager;
 import fr.aphp.tumorotek.manager.context.CoordonneeManager;
 import fr.aphp.tumorotek.manager.context.DiagnosticManager;
 import fr.aphp.tumorotek.manager.context.EtablissementManager;
+import fr.aphp.tumorotek.manager.context.OrganismeManager;
 import fr.aphp.tumorotek.manager.context.PlateformeManager;
 import fr.aphp.tumorotek.manager.context.ProtocoleManager;
 import fr.aphp.tumorotek.manager.context.ServiceManager;
@@ -207,6 +208,7 @@ import fr.aphp.tumorotek.model.coeur.prodderive.ProdQualite;
 import fr.aphp.tumorotek.model.coeur.prodderive.ProdType;
 import fr.aphp.tumorotek.model.contexte.Categorie;
 import fr.aphp.tumorotek.model.contexte.Diagnostic;
+import fr.aphp.tumorotek.model.contexte.Organisme;
 import fr.aphp.tumorotek.model.contexte.Protocole;
 import fr.aphp.tumorotek.model.contexte.Specialite;
 import fr.aphp.tumorotek.model.qualite.NonConformite;
@@ -247,6 +249,8 @@ public final class ManagerLocator
       THESAURUS_MANAGER_MAP.put(ConteneurType.class, ConteneurTypeManager.class);
       THESAURUS_MANAGER_MAP.put(EnceinteType.class, EnceinteTypeManager.class);
       THESAURUS_MANAGER_MAP.put(NonConformite.class, NonConformiteManager.class);
+      THESAURUS_MANAGER_MAP.put(Organisme.class, OrganismeManager.class);
+      
    }
 
    // private static final Log logger =

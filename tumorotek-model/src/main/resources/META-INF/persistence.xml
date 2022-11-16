@@ -19,6 +19,8 @@
         </class>
         <class>fr.aphp.tumorotek.model.contexte.Etablissement
         </class>
+        <class>fr.aphp.tumorotek.model.contexte.Organisme
+        </class>        
         <class>fr.aphp.tumorotek.model.contexte.Plateforme
         </class>
         <class>fr.aphp.tumorotek.model.contexte.Service

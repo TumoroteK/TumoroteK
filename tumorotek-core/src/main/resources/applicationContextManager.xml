@@ -878,6 +878,22 @@
 		</property>
 	</bean>
 
+	<bean id="organismeValidator"
+		class="fr.aphp.tumorotek.manager.validation.contexte.OrganismeValidator" />
+
+	<bean id="organismeManager" parent="txProxyTemplate">
+		<property name="target">
+			<bean
+				class="fr.aphp.tumorotek.manager.impl.contexte.OrganismeManagerImpl">
+				<property name="organismeDao" ref="organismeDao" />
+				<property name="plateformeDao" ref="plateformeDao" />
+				<property name="etudeDao" ref="etudeDao" />
+				<property name="organismeValidator"
+					ref="organismeValidator" />
+			</bean>
+		</property>
+	</bean>
+
 	<bean id="plateformeValidator"
 		class="fr.aphp.tumorotek.manager.validation.contexte.PlateformeValidator" />
 

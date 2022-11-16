@@ -68,7 +68,9 @@ import fr.aphp.tumorotek.model.contexte.Plateforme;
 @Table(name = "GATSBI_ETUDE")
 @NamedQueries(value = {
 	@NamedQuery(name = "Etude.findByPfOrder", 
-		query = "SELECT e FROM Etude e " + "WHERE e.plateforme = ?1 AND archive = 0 ORDER BY e.titre")
+		query = "SELECT e FROM Etude e " + "WHERE e.plateforme = ?1 AND archive = 0 ORDER BY e.titre"),
+	@NamedQuery(name = "Etude.countByPfAndOrganismePromoteurId",
+	query = "SELECT count(e) from Etude e WHERE e.plateforme = ?1 and e.organismePromoteurId = ?2")
 })
 public class Etude implements Serializable {
 
@@ -81,6 +83,7 @@ public class Etude implements Serializable {
 	private String titre;
 	private String acronyme;
 	private Boolean archive;
+	private Integer organismePromoteurId;
 	private List<Contexte> contextes = new ArrayList<Contexte>();
 
 	public Etude(){}
@@ -123,6 +126,15 @@ public class Etude implements Serializable {
 		this.acronyme = acronyme;
 	}
 
+   @Column(name = "ORGANISME_PROMOTEUR_ID")
+   public Integer getOrganismePromoteurId() {
+      return organismePromoteurId;
+   }
+   
+   public void setOrganismePromoteurId(Integer organismePromoteurId) {
+      this.organismePromoteurId = organismePromoteurId;
+   }	
+	
 	public Boolean getArchive() {
 		return archive;
 	}

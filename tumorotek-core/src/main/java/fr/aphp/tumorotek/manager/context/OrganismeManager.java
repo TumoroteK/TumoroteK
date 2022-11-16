@@ -35,33 +35,10 @@
  **/
 package fr.aphp.tumorotek.manager.context;
 
-import java.util.List;
-
 import fr.aphp.tumorotek.manager.PfDependantTKThesaurusManager;
-import fr.aphp.tumorotek.model.contexte.Protocole;
+import fr.aphp.tumorotek.model.contexte.Organisme;
 
-/**
- *
- * Interface pour le manager du bean de domaine Protocole.<br>
- * Interface créée le 07/02/12.<br>
- * <br>
- * Actions:<br>
- * 	- Enregistrer un protocole (controle de doublons)<br>
- * 	- Modifier un protocole (controle de doublons)<br>
- * 	- Retourner les protocoles, ordonnées ou non, avec un filtre sur le nom...
- * 	- Supprimer un protocole<br>
- *
- * @author Mathieu BARTHELEMY
- * @version 2.0.6
- *
- */
-public interface ProtocoleManager extends PfDependantTKThesaurusManager<Protocole>
+public interface OrganismeManager extends PfDependantTKThesaurusManager<Organisme>
 {
-
-   /**
-    * Recherche toutes les instances présentes dans la base.
-    * @return List contenant les Protocole.
-    */
-   List<Protocole> findAllObjectsManager();
 
 }

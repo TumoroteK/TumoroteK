@@ -33,35 +33,28 @@
  * avez pris connaissance de la licence CeCILL, et que vous en avez
  * accepté les termes.
  **/
-package fr.aphp.tumorotek.manager.context;
+package fr.aphp.tumorotek.manager.validation.contexte;
 
-import java.util.List;
+import org.springframework.validation.Errors;
+import org.springframework.validation.ValidationUtils;
+import org.springframework.validation.Validator;
 
-import fr.aphp.tumorotek.manager.PfDependantTKThesaurusManager;
-import fr.aphp.tumorotek.model.contexte.Protocole;
+import fr.aphp.tumorotek.model.contexte.Organisme;
 
-/**
- *
- * Interface pour le manager du bean de domaine Protocole.<br>
- * Interface créée le 07/02/12.<br>
- * <br>
- * Actions:<br>
- * 	- Enregistrer un protocole (controle de doublons)<br>
- * 	- Modifier un protocole (controle de doublons)<br>
- * 	- Retourner les protocoles, ordonnées ou non, avec un filtre sur le nom...
- * 	- Supprimer un protocole<br>
- *
- * @author Mathieu BARTHELEMY
- * @version 2.0.6
- *
- */
-public interface ProtocoleManager extends PfDependantTKThesaurusManager<Protocole>
+public class OrganismeValidator implements Validator
 {
+   @Override
+   public boolean supports(final Class<?> clazz){
+      return Organisme.class.equals(clazz);
+   }
 
-   /**
-    * Recherche toutes les instances présentes dans la base.
-    * @return List contenant les Protocole.
-    */
-   List<Protocole> findAllObjectsManager();
+   @Override
+   public void validate(final Object obj, final Errors errs){
 
+      //nom non vide
+      //ceci est une double sécurité pour éviter d'ajouter "vide" dans la table (vérif "côté back").
+      //côté front, le contrôle est fait par ThesaurusConstraints => c'est lui qui gère le message affiché à l'utilisateur
+      //=> le clé organisme.nom.empty n'est pas définie dans les properties (comme pour les autres thesaurus : risque, protocole....)
+      ValidationUtils.rejectIfEmptyOrWhitespace(errs, "nom", "organisme.nom.empty");
+   }
 }
