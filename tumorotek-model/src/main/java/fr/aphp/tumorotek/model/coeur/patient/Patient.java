@@ -112,7 +112,7 @@ import fr.aphp.tumorotek.model.contexte.Banque;
       query = "SELECT count(distinct p) FROM Patient p " + "JOIN p.maladies m " + "JOIN m.prelevements r "
          + "WHERE r.datePrelevement >= ?1 " + "AND r.datePrelevement <= ?2 " + "AND r.banque in (?3) "
          + "AND (r.servicePreleveur is null " + "OR r.servicePreleveur.etablissement not in (?4))"),
-   @NamedQuery(name = "Patient.findByIdInList", query = "SELECT p FROM Patient p JOIN p.patientIdentifiants WHERE p.patientId in (?1)"),
+   @NamedQuery(name = "Patient.findByIdInList", query = "SELECT p FROM Patient p WHERE p.patientId in (?1)"),
    @NamedQuery(name = "Patient.findByAllIds", query = "SELECT p.patientId FROM Patient p"),
    @NamedQuery(name = "Patient.findByAllIdsWithBanques",
       query = "SELECT distinct(p.patientId) FROM Patient p " + "JOIN p.maladies m " + "JOIN m.prelevements prlvts "

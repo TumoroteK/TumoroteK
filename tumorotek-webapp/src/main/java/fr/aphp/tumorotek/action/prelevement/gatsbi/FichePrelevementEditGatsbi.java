@@ -87,6 +87,9 @@ public class FichePrelevementEditGatsbi extends FichePrelevementEdit
 
       contexte = GatsbiController.initWireAndDisplay(this, 2, true, reqListboxes, reqComboboxes, reqConformeDivs, groupPrlvt,
          groupPrlvt);
+      
+      // affichage conditionnel des champs patients
+      GatsbiControllerPrelevement.applyPatientContext(groupPatient, true);
 
       // setRows ne marche pas ?
       // seul moyen trouvé pour augmenter hauteur et voir tous les items de la listbox
@@ -102,7 +105,7 @@ public class FichePrelevementEditGatsbi extends FichePrelevementEdit
    protected ResumePatient initResumePatient(){
       return new ResumePatient(groupPatient, 
          SessionUtils.getCurrentGatsbiContexteForEntiteId(1), 
-         SessionUtils.getCurrentBanque(sessionScope));
+         SessionUtils.getCurrentBanque(sessionScope));      
    }
 
    @Override
@@ -154,6 +157,16 @@ public class FichePrelevementEditGatsbi extends FichePrelevementEdit
          Clients.clearBusy();
       }
    }
+   
+   @Override
+   protected void setEmptyToNulls(){
+      if(prelevement.getNumeroLabo().equals("")){
+         prelevement.setNumeroLabo(null);
+      }
+      if(prelevement.getPatientNda().equals("")){
+         prelevement.setPatientNda(null);
+      }
+   }
 
    /**
     * Surcharge pour gérer la redirection d'évènement lors du choix d'un paramétrage
@@ -161,6 +174,16 @@ public class FichePrelevementEditGatsbi extends FichePrelevementEdit
    @Override
    public void onGetInjectionDossierExterneDone(final Event e){
       super.onGetInjectionDossierExterneDone(((ForwardEvent) e).getOrigin());
+   }
+   
+   @Override
+   public void switchToCreateMode(){
+      super.switchToCreateMode();
+      
+      // supprimer toute contrainte sur ndaDiv 
+      // car ce champ ne s'affiche plus
+      GatsbiControllerPrelevement.removePatientNdaRequired(refPatientDiv);
+      
    }
 
    /**

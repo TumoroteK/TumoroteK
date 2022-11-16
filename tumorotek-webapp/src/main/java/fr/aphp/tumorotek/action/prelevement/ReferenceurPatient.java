@@ -57,6 +57,7 @@ import org.zkoss.zul.Row;
 import org.zkoss.zul.Textbox;
 
 import fr.aphp.tumorotek.action.ManagerLocator;
+import fr.aphp.tumorotek.action.constraints.ConstCode;
 import fr.aphp.tumorotek.action.patient.FicheMaladie;
 import fr.aphp.tumorotek.action.patient.FichePatientEdit;
 import fr.aphp.tumorotek.action.patient.PatientController;
@@ -85,7 +86,7 @@ import fr.aphp.tumorotek.webapp.general.SessionUtils;
  * séléctionner une maladie ou d'en créer une nouvelle.
  *
  * @author mathieu
- * @version 2.0.6
+ * @version 2.3.0-gatsbi
  * @see <a href="http://docs.zkoss.org/wiki/Macro_Component">Macro_Component</a>
  * <p>
  * Date: 01/12/2009
@@ -286,7 +287,7 @@ public class ReferenceurPatient extends GenericForwardComposer<Component>
 
             this.patientsBox.setVisible(true);
             this.noPatientRow.setVisible(false);
-            this.ndaRow.setVisible(true);
+            setVisibleNdaRow(true);
 
          }else{
 
@@ -338,7 +339,7 @@ public class ReferenceurPatient extends GenericForwardComposer<Component>
 
          this.patientsBox.setVisible(true);
          this.noPatientRow.setVisible(false);
-         this.ndaRow.setVisible(true);
+         setVisibleNdaRow(true);
 
          // nda DIAMIC-TK 2.0.13 fix
          ndaBox.setValue(nda);
@@ -571,7 +572,7 @@ public class ReferenceurPatient extends GenericForwardComposer<Component>
 
          Components.removeAllChildren(fichePatientDiv);
 
-         Executions.createComponents("/zuls/patient/FichePatientEdit.zul", fichePatientDiv, null);
+         Executions.createComponents(getFichePatientComponent(), fichePatientDiv, null);
          final FichePatientEdit fichePatient = (FichePatientEdit) fichePatientDiv.getFellow("fwinPatientEdit")
             .getAttributeOrFellow("fwinPatientEdit$composer", true);
 
@@ -621,7 +622,11 @@ public class ReferenceurPatient extends GenericForwardComposer<Component>
       final FichePrelevementEdit fichePrelevementEdit = getFichePrelevementEditFromContexte();
 
       fichePrelevementEdit.setPatientEmbedded(show);
-
+   }
+   
+   // sera surchargé par gatsbi
+   protected String getFichePatientComponent() {
+      return "/zuls/patient/FichePatientEdit.zul";
    }
 
    /**
@@ -635,12 +640,12 @@ public class ReferenceurPatient extends GenericForwardComposer<Component>
       this.existingPatientGrid.setVisible(show);
 
       if(show && selectedPatient != null){
-         ndaRow.setVisible(true);
+         setVisibleNdaRow(true);
       }else{
-         ndaRow.setVisible(false);
+         setVisibleNdaRow(false);
       }
 
-      ndaBox.setValue(null);
+//      ndaBox.setValue(null);
 
       final FichePrelevementEdit fichePrelevementEdit = getFichePrelevementEditFromContexte();
 
@@ -743,6 +748,14 @@ public class ReferenceurPatient extends GenericForwardComposer<Component>
       if(div.getChildren().isEmpty()){
          Executions.createComponents(zulPath, div, null);
       }
-
+   }
+   
+   // sera surchargé par gatsbi
+   public void setVisibleNdaRow(boolean b) {
+      ndaRow.setVisible(b);
+   }
+   
+   public ConstCode getNdaConstraint(){
+      return PrelevementConstraints.getNdaConstraint();
    }
 }

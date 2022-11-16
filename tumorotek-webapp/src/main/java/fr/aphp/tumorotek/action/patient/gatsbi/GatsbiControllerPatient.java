@@ -58,7 +58,7 @@ import fr.aphp.tumorotek.webapp.gatsbi.GatsbiController;
 
 /**
  * Gatsbi controller regroupant les fonctionalités de modification dynamique de
- * l'interface spécifique aux échantillons
+ * l'interface spécifique aux patients
  *
  * @author Mathieu BARTHELEMY
  * @version 2.3.0-gatsbi

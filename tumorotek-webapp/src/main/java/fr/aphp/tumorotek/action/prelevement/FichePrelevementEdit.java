@@ -931,7 +931,7 @@ public class FichePrelevementEdit extends AbstractFicheEditController
                true)).prepareDataBeforeSave(true);
 
             // re-assigne la reference ndaBox vers le composant embedded
-            this.ndaBox = (Textbox) embeddedPatient.getFellow("fwinPatientEdit").getFellow("ndaBox");
+            this.ndaBox = (Textbox) embeddedPatient.getFellow("fwinPatientEdit").getFellow("patientNdaBox");
 
             // vérifie la présence du formulaire embarqué maladie
          }else{

@@ -95,13 +95,14 @@
 						 visible="false" image="/images/icones/new.png" sclass="buttonv2"/>
 			</row>
 			<row id="ndaRow" visible="false">
-				<hbox>
-					<label id="ndaFieldLabel" value="${c:l('Champ.Prelevement.PatientNda')}"
-												 sclass="formLabel" />
-						
-					<textbox id="ndaBox" width="100px" 
-							constraint="@{fwinPatient$composer.codeNullConstraint}" />
-				</hbox>		
+				<div class="item item-mid" id="refNdaDiv"><!-- nda patient -->
+					<custom-attributes champId="44" />
+					<div class="row-container chpLabel">
+						<label value="${c:l('Champ.Prelevement.PatientNda')}" sclass="formLabel" />
+						<label value="*" sclass="requiredMark" />
+					</div>
+					<textbox id="ndaBox" width="100px" constraint="${winRefPatient$composer.ndaConstraint}" />
+				</div>	
 			</row>
 			<row id="embeddedFicheMaladieRow" visible="false">
 				<vbox>

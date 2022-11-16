@@ -608,6 +608,9 @@ public class GatsbiController
             chpE
                .addAll(ManagerLocator.getChampEntiteManager().findByEntiteAndImportManager(entite, true));
          }
+         
+         // removes patient identifiant !!
+         chpE.removeIf(c -> c.getId().equals(272));       
       }else{ // surcharge gatsbi
          chpE.addAll(ManagerLocator.getChampEntiteManager().findByEntiteAndImportManager(entite, canImport));
 

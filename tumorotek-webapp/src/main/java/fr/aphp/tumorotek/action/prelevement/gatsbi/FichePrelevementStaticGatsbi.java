@@ -36,12 +36,9 @@
  **/
 package fr.aphp.tumorotek.action.prelevement.gatsbi;
 
-import java.util.List;
-
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.ForwardEvent;
-import org.zkoss.zul.Div;
 import org.zkoss.zul.Groupbox;
 import org.zkoss.zul.Messagebox;
 
@@ -85,12 +82,7 @@ public class FichePrelevementStaticGatsbi extends FichePrelevementStatic
       contexte = GatsbiController.initWireAndDisplay(this, 2, false, null, null, null, groupPrlvt, (Groupbox) gridFormPrlvtComp);
       
       // affichage conditionnel des champs patients
-      List<Div> items = GatsbiController.wireItemDivsFromMainComponent(ContexteType.PATIENT, groupPatient);
-      GatsbiController.showOrhideItems(items, null, SessionUtils.getCurrentGatsbiContexteForEntiteId(1));
-      
-      // nda appartient au contexe prelevement
-      // groupPatient.getFellowIfAny("ndaDiv").setVisible(SessionUtils.getCurrentGatsbiContexteForEntiteId(2) == null
-      //   || SessionUtils.getCurrentGatsbiContexteForEntiteId(2).isChampIdVisible(44));
+      GatsbiControllerPrelevement.applyPatientContext(groupPatient, false);
 
       // prelevement specific
       if(groupLaboInter != null){

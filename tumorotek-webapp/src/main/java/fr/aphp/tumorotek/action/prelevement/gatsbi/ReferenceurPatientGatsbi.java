@@ -40,6 +40,7 @@ import java.util.Map;
 
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Path;
+import org.zkoss.zul.Div;
 import org.zkoss.zul.ListitemRenderer;
 
 import fr.aphp.tumorotek.action.patient.gatsbi.GatsbiControllerPatient;
@@ -63,6 +64,10 @@ public class ReferenceurPatientGatsbi extends ReferenceurPatient
    
    private Contexte contextePatient;
    
+   protected String getFichePatientComponent() {
+      return "/zuls/patient/gatsbi/FichePatientEditGatsbi.zul";
+   }
+   
    private PatientItemRendererGatsbi patientRendererGatsbi = 
       new PatientItemRendererGatsbi(true);
    
@@ -79,6 +84,12 @@ public class ReferenceurPatientGatsbi extends ReferenceurPatient
       
       patientRendererGatsbi.setContexte(contextePatient);
       patientRendererGatsbi.setBanque(SessionUtils.getCurrentBanque(sessionScope));
+      
+      // ndaBox est contextualisé par prélèvement
+      Contexte contextePrelevement = SessionUtils.getCurrentGatsbiContexteForEntiteId(2);
+      Div ndaDiv = (Div) ndaRow.getFellowIfAny("refNdaDiv");
+      ndaDiv.setVisible(contextePrelevement == null || contextePrelevement.isChampIdVisible(44));      
+      GatsbiControllerPrelevement.applyPatientNdaRequired(ndaDiv);
    }
 
    public void onClick$goForIt(){
@@ -98,4 +109,15 @@ public class ReferenceurPatientGatsbi extends ReferenceurPatient
    public ListitemRenderer<Patient> getPatientRenderer(){
       return patientRendererGatsbi;
    }
+   
+   public void setVisibleNdaRow(boolean visible) {
+      super.setVisibleNdaRow(visible);
+      
+      if (!visible) {
+         // supprimer toute contrainte sur ndaDiv 
+         // car ce champ ne s'affiche plus
+         GatsbiControllerPrelevement.removePatientNdaRequired((Div) ndaRow.getFellowIfAny("refNdaDiv"));
+      } 
+   }
+   
 }

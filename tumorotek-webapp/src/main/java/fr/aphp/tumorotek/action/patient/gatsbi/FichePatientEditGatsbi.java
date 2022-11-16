@@ -37,6 +37,7 @@
 package fr.aphp.tumorotek.action.patient.gatsbi;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.zkoss.zk.ui.Component;
@@ -71,7 +72,8 @@ public class FichePatientEditGatsbi extends FichePatientEdit
 
    private Contexte contexte;
    
-   private Div ndaDiv;
+   private Div identifiantDiv;
+   private Div patientNdaDiv;
 
    @Override
    public void doAfterCompose(final Component comp) throws Exception{
@@ -157,7 +159,19 @@ public class FichePatientEditGatsbi extends FichePatientEdit
    @Override
    public void setEmbedded(Patient pat){
       super.setEmbedded(pat);
-      ndaDiv.setVisible(true);
+      
+      // nda contextualisé par prélèvement
+      Contexte contextePrelevement = SessionUtils.getCurrentGatsbiContexteForEntiteId(2);
+      if (contextePrelevement != null) { // gatsbi peut rendre ndaDiv invisible 
+         patientNdaDiv.setVisible(contextePrelevement.isChampIdVisible(44));
+         GatsbiController.switchItemsRequiredOrNot(Arrays.asList(patientNdaDiv), contextePrelevement, null, null, null);
+      } else {
+         patientNdaDiv.setVisible(true);
+      }
+      
+      if (patientNdaDiv.isVisible()) {
+         identifiantDiv.setSclass("item item-mid item-required");
+      }
    }
    
    // TODO toutes collections ? Afficher une liste ?

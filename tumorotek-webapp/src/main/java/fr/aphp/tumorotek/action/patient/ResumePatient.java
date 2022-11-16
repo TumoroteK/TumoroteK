@@ -152,7 +152,9 @@ public class ResumePatient
          sexeLabel = (Label) resumePatientGroup.getFellowIfAny("sexeLabel");
          linkMaladie = resumePatientGroup.getFellowIfAny("linkMaladie");
          linkMaladieLabel = (Label) resumePatientGroup.getFellowIfAny("linkMaladieLabel");
-         codeDiagLabel = (Label) resumePatientGroup.getFellowIfAny("codeDiagLabel");         
+         codeDiagLabel = (Label) resumePatientGroup.getFellowIfAny("codeDiagLabel");
+         
+         
       }
    }
 
@@ -362,11 +364,13 @@ public class ResumePatient
     * @param visible
     */
    public void setNdaBoxVisible(final boolean visible){
-      if(ndaBox != null){
-         ndaBox.setVisible(visible);
-      }
-      if(ndaLabel != null){
-         ndaLabel.setVisible(!visible);
+      if (patientContexte != null) {
+         if(ndaBox != null){
+            ndaBox.setVisible(visible);
+         }
+         if(ndaLabel != null){
+            ndaLabel.setVisible(!visible);
+         }
       }
    }
 
