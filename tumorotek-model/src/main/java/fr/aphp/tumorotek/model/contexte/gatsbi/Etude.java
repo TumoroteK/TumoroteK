@@ -85,6 +85,8 @@ public class Etude implements Serializable {
 	private Boolean archive;
 	private Integer organismePromoteurId;
 	private List<Contexte> contextes = new ArrayList<Contexte>();
+	
+	private SchemaVisites schemaVisites;
 
 	public Etude(){}
 	
@@ -155,7 +157,17 @@ public class Etude implements Serializable {
 		}
 	}
 
-	/**
+	@Transient
+	public SchemaVisites getSchemaVisites(){
+      return schemaVisites;
+   }
+
+	@Transient
+   public void setSchemaVisites(SchemaVisites schemaVisites){
+      this.schemaVisites = schemaVisites;
+   }
+
+   /**
 	 * 2 etudes sont considérées comme égales si elles ont le même titre.
 	 * @param obj est l'étude à tester.
 	 * @return true si les études sont égales.

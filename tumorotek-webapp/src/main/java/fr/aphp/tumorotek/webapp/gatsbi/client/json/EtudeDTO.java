@@ -30,7 +30,7 @@ public class EtudeDTO implements Serializable {
 	private String acronyme;
 	private Boolean archive;
 	private List<ContexteDTO> contextes = new ArrayList<ContexteDTO>();
-	
+		
 	@JsonProperty
 	public Integer getEtudeId() {
 		return etudeId;
@@ -75,8 +75,8 @@ public class EtudeDTO implements Serializable {
 	public void setContextes(List<ContexteDTO> _r) {
 		this.contextes = _r;
 	}
-	
-	@Override
+
+   @Override
 	public boolean equals(Object obj) {
 		if (obj == this) {
             return true;

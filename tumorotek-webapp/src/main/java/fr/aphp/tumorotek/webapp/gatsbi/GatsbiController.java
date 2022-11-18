@@ -119,6 +119,7 @@ import fr.aphp.tumorotek.webapp.gatsbi.client.json.ContexteDTO;
 import fr.aphp.tumorotek.webapp.gatsbi.client.json.EtudeDTO;
 import fr.aphp.tumorotek.webapp.gatsbi.client.json.ParametrageDTO;
 import fr.aphp.tumorotek.webapp.gatsbi.client.json.ParametrageValueDTO;
+import fr.aphp.tumorotek.webapp.gatsbi.client.json.SchemaVisitesDTO;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
 public class GatsbiController
@@ -747,6 +748,12 @@ public class GatsbiController
                   restTemplate.getForObject(contexteURIBld.build(false).expand(etude.getEtudeId(), rCont.getType()).toUri(),
                      ContexteDTO.class).toContexte());
             }
+            
+            // schéma de visite: 1 par étude
+            SchemaVisitesDTO schemaDTO = doGastbiSchemaVisite(etude.getEtudeId());
+            if (schemaDTO != null) {
+               etude.setSchemaVisites(schemaDTO.toSchemaVisites());
+            }
 
             for(Banque bq : banks){ // applique l'étude enrichie des contextes à toutes les banques
                bq.setEtude(etude);
@@ -811,9 +818,7 @@ public class GatsbiController
    }
 
    /**
-    * Sera remplacée par HttpClient
-    * 
-    * @param bank
+    * @param parametrage id
     * @throws GatsbiException 
     */
    public static ParametrageDTO doGastbiParametrage(Integer pId) throws GatsbiException{
@@ -833,6 +838,27 @@ public class GatsbiController
       }
    }
 
+   /**
+    * @param etudeId
+    * @throws GatsbiException 
+    */
+   public static SchemaVisitesDTO doGastbiSchemaVisite(Integer eId) throws GatsbiException{
+
+      try{
+         UriComponentsBuilder schemaVisiteURIBld = UriComponentsBuilder
+            .fromUriString(TkParam.GATSBI_API_URL_BASE.getValue().concat(TkParam.GATSBI_API_URL_SCHEMAVISITES_PATH.getValue()));
+
+         log.debug("fetch schema visites from URL:" + (schemaVisiteURIBld.build(false).expand(eId)).toUriString());
+
+         RestTemplate restTemplate = new RestTemplate();
+         return restTemplate.getForObject(schemaVisiteURIBld.build(false).expand(eId).toUri(), SchemaVisitesDTO.class);
+      }catch(ResourceAccessException e){ // gatsbi inaccessible
+         throw new GatsbiException("gatsbi.connexion.error");
+      }catch(Exception e){
+         throw new GatsbiException(e.getMessage());
+      }
+   }
+   
    /**
     * Transforme la liste des valeurs par défaut d'un paramétrage
     * 
