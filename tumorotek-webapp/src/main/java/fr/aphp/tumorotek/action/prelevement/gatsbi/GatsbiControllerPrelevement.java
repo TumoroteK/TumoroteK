@@ -36,7 +36,6 @@
  **/
 package fr.aphp.tumorotek.action.prelevement.gatsbi;
 
-import java.util.Arrays;
 import java.util.List;
 
 import org.zkoss.zk.ui.Component;
@@ -68,22 +67,27 @@ public class GatsbiControllerPrelevement {
          // identifiantDiv partage la ligne avec ndaDiv
          ((Div) ndaDiv.getPreviousSibling()).setSclass("item item-mid");
       }
-//
-//      if (edit) {  // ndaDiv peut devenir obligatoire
-//         applyPatientNdaRequired(ndaDiv);
-//      }
    }
    
    public static void applyPatientNdaRequired(Div ndaDiv) {  
       if (ndaDiv.isVisible()) {
-         GatsbiController.switchItemsRequiredOrNot(Arrays.asList(ndaDiv), 
-            SessionUtils.getCurrentGatsbiContexteForEntiteId(2), null, null, null);
+         if (SessionUtils.getCurrentGatsbiContexteForEntiteId(2).isChampIdRequired(44)) {
+            ((ConstCode) ((Textbox) ndaDiv.getLastChild()).getConstraint()).setNullable(false);         
+            applyPatientNdaRequiredLabel(ndaDiv);
+         } else {
+            removePatientNdaRequired(ndaDiv);
+         }
+      }
+   }
+   
+   public static void applyPatientNdaRequiredLabel(Div ndaDiv) { 
+      if (ndaDiv.isVisible() && SessionUtils.getCurrentGatsbiContexteForEntiteId(2).isChampIdRequired(44)
+           && !ndaDiv.getSclass().contains("item-required")) {
+           ndaDiv.setSclass(ndaDiv.getSclass().concat(" item-required"));
       }
    }
    
    public static void removePatientNdaRequired(Div ndaDiv) {  
-      if (!ndaDiv.isVisible()) {
-         ((ConstCode) ((Textbox) ndaDiv.getLastChild()).getConstraint()).setNullable(true);
-      }
+      ((ConstCode) ((Textbox) ndaDiv.getLastChild()).getConstraint()).setNullable(true);
    }
 }

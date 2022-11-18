@@ -88,8 +88,8 @@ public class ReferenceurPatientGatsbi extends ReferenceurPatient
       // ndaBox est contextualisé par prélèvement
       Contexte contextePrelevement = SessionUtils.getCurrentGatsbiContexteForEntiteId(2);
       Div ndaDiv = (Div) ndaRow.getFellowIfAny("refNdaDiv");
-      ndaDiv.setVisible(contextePrelevement == null || contextePrelevement.isChampIdVisible(44));      
-      GatsbiControllerPrelevement.applyPatientNdaRequired(ndaDiv);
+      ndaDiv.setVisible(contextePrelevement == null || contextePrelevement.isChampIdVisible(44)); 
+      GatsbiControllerPrelevement.applyPatientNdaRequiredLabel(ndaDiv);
    }
 
    public void onClick$goForIt(){
@@ -109,15 +109,4 @@ public class ReferenceurPatientGatsbi extends ReferenceurPatient
    public ListitemRenderer<Patient> getPatientRenderer(){
       return patientRendererGatsbi;
    }
-   
-   public void setVisibleNdaRow(boolean visible) {
-      super.setVisibleNdaRow(visible);
-      
-      if (!visible) {
-         // supprimer toute contrainte sur ndaDiv 
-         // car ce champ ne s'affiche plus
-         GatsbiControllerPrelevement.removePatientNdaRequired((Div) ndaRow.getFellowIfAny("refNdaDiv"));
-      } 
-   }
-   
 }

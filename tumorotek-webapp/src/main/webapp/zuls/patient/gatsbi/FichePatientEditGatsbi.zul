@@ -63,8 +63,7 @@
 								<label value="${c:l('Champ.Prelevement.PatientNda')}" sclass="formLabel" />
 								<label value="*" sclass="requiredMark" />
 							</div>
-							<textbox id="patientNdaBox" width="100px"
-									constraint="${fwinPatientEdit$composer.ndaConstraint}" />
+							<textbox id="patientNdaBox" width="100px" constraint="${fwinPatientEdit$composer.ndaConstraint}" />
 						</div>
 						<div class="item item-mid" id="nipDiv"><!-- Nip -->
 							<custom-attributes champId="2" />

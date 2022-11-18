@@ -645,7 +645,6 @@ public class ReferenceurPatient extends GenericForwardComposer<Component>
          setVisibleNdaRow(false);
       }
 
-//      ndaBox.setValue(null);
 
       final FichePrelevementEdit fichePrelevementEdit = getFichePrelevementEditFromContexte();
 

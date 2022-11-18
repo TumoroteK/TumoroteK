@@ -37,7 +37,6 @@
 package fr.aphp.tumorotek.action.patient.gatsbi;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.zkoss.zk.ui.Component;
@@ -48,6 +47,7 @@ import org.zkoss.zul.Listbox;
 import fr.aphp.tumorotek.action.patient.FichePatientEdit;
 import fr.aphp.tumorotek.action.patient.LabelCodeItem;
 import fr.aphp.tumorotek.action.patient.PatientUtils;
+import fr.aphp.tumorotek.action.prelevement.gatsbi.GatsbiControllerPrelevement;
 import fr.aphp.tumorotek.model.coeur.patient.Patient;
 import fr.aphp.tumorotek.model.coeur.patient.gatsbi.PatientIdentifiant;
 import fr.aphp.tumorotek.model.contexte.gatsbi.Contexte;
@@ -74,7 +74,7 @@ public class FichePatientEditGatsbi extends FichePatientEdit
    
    private Div identifiantDiv;
    private Div patientNdaDiv;
-
+   
    @Override
    public void doAfterCompose(final Component comp) throws Exception{
       super.doAfterCompose(comp);
@@ -164,7 +164,7 @@ public class FichePatientEditGatsbi extends FichePatientEdit
       Contexte contextePrelevement = SessionUtils.getCurrentGatsbiContexteForEntiteId(2);
       if (contextePrelevement != null) { // gatsbi peut rendre ndaDiv invisible 
          patientNdaDiv.setVisible(contextePrelevement.isChampIdVisible(44));
-         GatsbiController.switchItemsRequiredOrNot(Arrays.asList(patientNdaDiv), contextePrelevement, null, null, null);
+         GatsbiControllerPrelevement.applyPatientNdaRequiredLabel(patientNdaDiv);
       } else {
          patientNdaDiv.setVisible(true);
       }

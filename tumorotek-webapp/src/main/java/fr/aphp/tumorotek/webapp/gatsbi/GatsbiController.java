@@ -151,13 +151,14 @@ public class GatsbiController
             "libelleDiv", "codeMaladieDiv"});
          // prelevement
          put(ContexteType.PRELEVEMENT,
-            new String[] {"codeDiv", "codeLaboDiv", "natureDiv", "ndaDiv", "datePrelDiv", "typeDiv", "sterileDiv", "risquesDiv",
+            new String[] {"codeDiv", "codeLaboDiv", "natureDiv", //"ndaDiv", 
+               "datePrelDiv", "typeDiv", "sterileDiv", "risquesDiv",
                "etabPreleveurDiv", "servicePreleveurDiv", "preleveurDiv", "conditTypeDiv", "conditNbrDiv", "conditMilieuDiv",
                "consentTypeDiv", "consentDateDiv",
                // transfert site stockage
                "dateDepartDiv", "transporteurDiv", "tempTranspDiv", "congPrelDiv", "dateArriveeDiv", "operateurDiv",
                "quantiteDiv", "conformeArriveeDiv", "congBiothequeDiv"});
-         // echantillon dans l'ordre fiche recherche TODO reordonner!
+         // echantillon dans l'ordre fiche recherche
          put(ContexteType.ECHANTILLON,
             new String[] {"codeEchanDiv", "echantillonTypeDiv", "echanQteDiv", "echanModePrepaDiv", "echanSterileDiv",
                "echanRisquesDiv", "echanDateStockDiv", "delaiCglDiv", "echanOperateurDiv", "echanQualiteDiv", "echanStatutDiv",

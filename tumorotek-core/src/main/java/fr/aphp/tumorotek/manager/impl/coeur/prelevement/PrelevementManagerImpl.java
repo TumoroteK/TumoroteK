@@ -1128,11 +1128,18 @@ public class PrelevementManagerImpl implements PrelevementManager
 
       // Validation
       if(doValidation){
+         
+         // retire validation obligatoire sur nda
+         if (prelevement.getMaladie() == null) {
+            requiredChampEntiteId.removeIf(i -> i.equals(44));
+         }
+         
          Validator[] validators;
          if(requiredChampEntiteId.isEmpty()){ // pas de restriction gatsbi
             validators = new Validator[] {prelevementValidator};
          }else{ // gatsbi définit certain champs obligatoires
-            final PrelevementGatsbiValidator gValidator = new PrelevementGatsbiValidator("prelevement", requiredChampEntiteId);
+            final PrelevementGatsbiValidator gValidator = 
+               new PrelevementGatsbiValidator("prelevement", requiredChampEntiteId);
             validators = new Validator[] {gValidator, prelevementValidator};
          }
 

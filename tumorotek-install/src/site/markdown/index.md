@@ -1,6 +1,6 @@
 #### Notes de version
 
-##### Version 2.3.0.2-SNAPSHOT - Publiée le 01/09/2022
+##### Version 2.3.0.2-SNAPSHOT - Publiée le 17/11/2022
 - Adaptations pour le module Gatsbi
 
 
@@ -19,13 +19,13 @@
 
 ##### Version 2.2.3-fix305 - Publiée le 21/09/2021
 ###### Corrections
-- YouTrack [TKB-305](https://tumorotek.myjetbrains.com/youtrack/issue/TKB-305)
-- YouTrack [TKB-302](https://tumorotek.myjetbrains.com/youtrack/issue/TKB-302)
-- YouTrack [TKB-299](https://tumorotek.myjetbrains.com/youtrack/issue/TKB-299)
+- YouTrack [TK-305](https://tumorotek.myjetbrains.com/youtrack/issue/TK-305)
+- YouTrack [TK-302](https://tumorotek.myjetbrains.com/youtrack/issue/TK-302)
+- YouTrack [TK-299](https://tumorotek.myjetbrains.com/youtrack/issue/TK-299)
 
 ##### Version 2.2.3 - Publiée le 09/06/2021
 ###### Nouveautés
-- YouTrack [TKB-4](https://tumorotek.myjetbrains.com/youtrack/issue/TKB-4) : <span class="badge badge-prelevement">Prélèvement</span> Amélioration de la signification : congélation à l'arrivé à la biothèque
+- YouTrack [TK-4](https://tumorotek.myjetbrains.com/youtrack/issue/TKB-4) : <span class="badge badge-prelevement">Prélèvement</span> Amélioration de la signification : congélation à l'arrivé à la biothèque
 - YouTrack [TK-14](https://tumorotek.myjetbrains.com/youtrack/issue/TK-14) : Evolution de la partie Numérotation
 - YouTrack [TK-61](https://tumorotek.myjetbrains.com/youtrack/issue/TK-61) : <span class="badge badge-impression-doc">Impression (modèle DOC)</span> Pouvoir créer un modèle de document DOCx contenant des placeholders (clé) correspondants des champs et les remplacer par leur valeur à l'impression.
 - YouTrack [TK-98](https://tumorotek.myjetbrains.com/youtrack/issue/TK-98) : <span class="badge badge-annotation-champ-calcule">Annotation (Champ calculé)</span> Mise en place des champs calculés.
@@ -42,7 +42,7 @@
 
 ###### Corrections
 - YouTrack [TK-111](https://tumorotek.myjetbrains.com/youtrack/issue/TK-111) : <span class="badge badge-statistiques">Statistiques</span> Modifier le libellé DGOS... en Totaux des prélèvements
-- YouTrack [TK-155](https://tumorotek.myjetbrains.com/youtrack/issue/TK-155) : Correction de la fonctionalité de déplacement de prélèvement/échantillon/dérivé de collection afin de mettre à jour les liens vers les fichiers associés
+- YouTrack [TK-155](https://tumorotek.myjetbrains.com/youtrack/issue/TK-155) : Correction de la fonctionnalité de déplacement de prélèvement/échantillon/dérivé de collection afin de mettre à jour les liens vers les fichiers associés
 - YouTrack [TK-159](https://tumorotek.myjetbrains.com/youtrack/issue/TK-159) : Suppression de l'erreur au remplissage d'un composant datebox au format d/M/yy.
 - YouTrack [TK-173](https://tumorotek.myjetbrains.com/youtrack/issue/TK-173) : <span class="badge badge-statistiques">Statistiques</span> Renommer les indicateurs MERRI en enlevant la notion DGOS
 - YouTrack [TK-204](https://tumorotek.myjetbrains.com/youtrack/issue/TK-204) : Il manque des pastilles de couleur lors de l'impression du contenu d'une boîte
