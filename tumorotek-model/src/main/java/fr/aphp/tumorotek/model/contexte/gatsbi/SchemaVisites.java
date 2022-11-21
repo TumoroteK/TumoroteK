@@ -37,9 +37,15 @@
 package fr.aphp.tumorotek.model.contexte.gatsbi;
 
 import java.io.Serializable;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+
+import fr.aphp.tumorotek.model.coeur.patient.Maladie;
+import fr.aphp.tumorotek.model.coeur.patient.Patient;
 
 public class SchemaVisites implements Serializable
 {
@@ -81,5 +87,38 @@ private static final long serialVersionUID = 1L;
         int result = 1;
       result = prime * result + ((visites == null) ? 0 : visites.hashCode());
       return result;
+   }
+   
+   public List<Maladie> produceMaladiesFromSchema(Patient patient, LocalDate fromDate) {
+      List<Maladie> maladies = new ArrayList<Maladie>();
+      
+      if (patient != null && fromDate != null) {
+         Maladie maladie;
+         LocalDate visiteDate = fromDate;
+         for(Visite visite : visites){
+            maladie = new Maladie();
+            maladie.setVisite(visite);
+            maladie.setPatient(patient);
+            maladie.setLibelle(visite.getNom());
+            switch(visite.getIntervalleType()){
+               case JOURS:
+                  visiteDate = fromDate.plusDays(visite.getIntervalleDepuisInitiale());
+                  break;
+               case MOIS:
+                  visiteDate = fromDate.plusMonths(visite.getIntervalleDepuisInitiale());
+                  break;
+               case ANNEES:
+                  visiteDate = fromDate.plusYears(visite.getIntervalleDepuisInitiale());
+                  break;
+               default:
+                  break;
+            }
+            maladie.setDateDebut(Date.from(    
+               visiteDate.atStartOfDay(ZoneId.systemDefault()).toInstant()));
+            maladies.add(maladie);
+            patient.getMaladies().add(maladie);
+         }
+      }
+      return maladies;
    }
 }

@@ -106,12 +106,6 @@ div.gridForm1 .z-group-box{
 	border-top-color : #E03F06; /*PRO*/
 }
 
-
-/* required field */
-span.requiredMark {
-	display: none;
-}
-
 div.item-required span.requiredMark {
 	display: inline;
 	width: 5px;

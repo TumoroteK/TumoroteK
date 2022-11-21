@@ -36,10 +36,14 @@
  **/
 package fr.aphp.tumorotek.action.patient.gatsbi;
 
+import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Groupbox;
 import org.zkoss.zul.Listbox;
@@ -48,11 +52,14 @@ import fr.aphp.tumorotek.action.patient.FichePatientEdit;
 import fr.aphp.tumorotek.action.patient.LabelCodeItem;
 import fr.aphp.tumorotek.action.patient.PatientUtils;
 import fr.aphp.tumorotek.action.prelevement.gatsbi.GatsbiControllerPrelevement;
+import fr.aphp.tumorotek.modales.DateModale;
+import fr.aphp.tumorotek.model.coeur.patient.Maladie;
 import fr.aphp.tumorotek.model.coeur.patient.Patient;
 import fr.aphp.tumorotek.model.coeur.patient.gatsbi.PatientIdentifiant;
 import fr.aphp.tumorotek.model.contexte.gatsbi.Contexte;
 import fr.aphp.tumorotek.webapp.gatsbi.GatsbiController;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
+import org.zkoss.util.resource.Labels;
 
 /**
  *
@@ -74,6 +81,10 @@ public class FichePatientEditGatsbi extends FichePatientEdit
    
    private Div identifiantDiv;
    private Div patientNdaDiv;
+   private Groupbox groupVisites;
+   
+   private VisiteItemRenderer visiteItemRenderer = new VisiteItemRenderer();
+   private List<Maladie> visites = new ArrayList<Maladie>();
    
    @Override
    public void doAfterCompose(final Component comp) throws Exception{
@@ -159,7 +170,7 @@ public class FichePatientEditGatsbi extends FichePatientEdit
    @Override
    public void setEmbedded(Patient pat){
       super.setEmbedded(pat);
-      
+            
       // nda contextualisé par prélèvement
       Contexte contextePrelevement = SessionUtils.getCurrentGatsbiContexteForEntiteId(2);
       if (contextePrelevement != null) { // gatsbi peut rendre ndaDiv invisible 
@@ -186,5 +197,58 @@ public class FichePatientEditGatsbi extends FichePatientEdit
       
       // met à jour (si nécessaire) la relation patient-banque-identifiant
       patient.addToIdentifiants(currPatIdent);
+   }
+   
+   @Override
+   public void switchToCreateMode(){
+      super.switchToCreateMode();
+      
+      groupVisites.setVisible(getSchemaVisitesDefinedByEtude());
+      
+      // ouverture d'une modale de saisie de date baseline
+      // une fois le composant FicheEditPatient rendu visible
+      Events.echoEvent("onLaterSwitchToCreateMode", self, null);
+   }
+   
+   /**
+    * Une fois la fiche Patient Edit affichée en create mode, 
+    * si un schéma de visite pour l'étude est définin, il implique la saisie d'une date baseline
+    * donc l'affichage de la modale de saisie de la date.
+    */
+   public void onLaterSwitchToCreateMode() {
+      if (getSchemaVisitesDefinedByEtude()) {
+         DateModale.show(Labels.getLabel("gatsbi.schema.visites.title"), 
+            Labels.getLabel("gatsbi.schema.visites.label"), null, true, self);
+      }   
+   }
+   
+   /**
+    * Une date d'inclusion (baseline) est renvoyée par la modale, 
+    * la liste des visites peut être produite
+    * @param e forwardEvent contenant la date
+    */
+   public void onFromDateProvided(final Event e){  
+      
+      visites.clear();
+      
+      // production du schéma de visites
+      visites.addAll(GatsbiControllerPatient.produceSchemaVisitesForPatient(SessionUtils.getCurrentBanque(sessionScope), patient, 
+         ((Date) e.getData()).toInstant().atZone(ZoneId.systemDefault()).toLocalDate()));
+   }
+   
+   public String getVisitesGroupHeader() {
+      return Labels.getLabel("gatsbi.schema.visites", new String[] { String.valueOf(patient.getMaladies().size())});
+   }
+   
+   public boolean getSchemaVisitesDefinedByEtude() {
+      return SessionUtils.getCurrentBanque(sessionScope).getEtude().getSchemaVisites() != null;
+   }
+
+   public VisiteItemRenderer getVisiteItemRenderer(){
+      return visiteItemRenderer;
+   }  
+   
+   public List<Maladie> getVisites() {
+      return visites;
    }
 }

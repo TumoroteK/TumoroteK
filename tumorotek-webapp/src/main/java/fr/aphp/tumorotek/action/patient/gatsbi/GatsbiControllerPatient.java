@@ -38,6 +38,9 @@ package fr.aphp.tumorotek.action.patient.gatsbi;
 
 import java.lang.reflect.InvocationTargetException;
 import java.text.ParseException;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -52,7 +55,9 @@ import fr.aphp.tumorotek.action.ManagerLocator;
 import fr.aphp.tumorotek.action.patient.PatientRowRenderer;
 import fr.aphp.tumorotek.action.patient.PatientUtils;
 import fr.aphp.tumorotek.decorator.TKSelectObjectRenderer;
+import fr.aphp.tumorotek.model.coeur.patient.Maladie;
 import fr.aphp.tumorotek.model.coeur.patient.Patient;
+import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.contexte.gatsbi.Contexte;
 import fr.aphp.tumorotek.webapp.gatsbi.GatsbiController;
 
@@ -332,5 +337,26 @@ public class GatsbiControllerPatient
       
       // fusion -> prelevements
       GatsbiController.addListHeader(listbox, "patients.prelevements.short", null, null, isFusion);
+   }
+   
+   /**
+    * Produits la liste des maladies = visites correspondant au schéma de visites définie par l'étude 
+    * pour le patient en cours de création passé en paramètre, à partir de la date d'inclusion fournie. 
+    * @param contexte
+    * @param patient en cours de création
+    * @param fromDate date inclusion patient (=baseline)
+    * @return
+    */
+   public static List<Maladie> produceSchemaVisitesForPatient(final Banque banque, final Patient patient, 
+      final LocalDate fromDate) {
+      
+      List<Maladie> visites = new ArrayList<Maladie>();
+      
+      if (banque != null && banque.getEtude() != null && banque.getEtude().getSchemaVisites() != null) {
+         visites.addAll(banque.getEtude().getSchemaVisites().produceMaladiesFromSchema(patient, fromDate));
+      }
+      
+      return visites;
+      
    }
 }

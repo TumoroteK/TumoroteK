@@ -39,8 +39,7 @@
 <?component name="referents" macroURI="/zuls/patient/MedecinsReferents.zul" ?>
 
 <window id="fwinPatientEdit" border="none" 
-		apply="fr.aphp.tumorotek.action.patient.gatsbi.FichePatientEditGatsbi"
-		forward="onSelectParametrage=onGetSelectedParametrage">
+		apply="fr.aphp.tumorotek.action.patient.gatsbi.FichePatientEditGatsbi">
 	<panel id="winPanel" title="${c:l('fichePatient.panel.title')}"
 	 	sclass="fichePanelv2" closable="true">
 		<panelchildren style="overflow-y:scroll" id="panelChildrenWithScroll">
@@ -204,6 +203,29 @@
 						</div>
 					</groupbox>
 				</div>
+				<div class="block-separator" />
+				<!-- Visites -->
+				<groupbox id="groupVisites" visible="false">
+					<caption label="@{fwinPatientEdit$composer.visitesGroupHeader}" />
+					<listbox id="visitesList" 
+						hflex="1"
+						fixedLayout="true"
+						span="true"
+						sizedByContent="false"
+						model="@{fwinPatientEdit$composer.visites, load-after='fwinPatientEdit.onFromDateProvided'}"
+						sclass="listBox noselect"
+						itemRenderer="@{fwinPatientEdit$composer.visiteItemRenderer}">
+						<listhead sizable="true">
+							<listheader label="${c:l('Champ.Maladie.Libelle')}" />
+							<listheader label="${c:l('gatsbi.visite.date')}"   />
+							<listheader label="${c:l('gatsbi.visite.prelevements.schema')}"   />
+						</listhead>
+						<listitem self="@{each='visite'}">
+							<listcell label="@{visite.libelle}" />
+							<listcell label="@{visite.dateDebut}" />
+						</listitem>
+					</listbox>
+				</groupbox>
 			</div>
 		</panelchildren>
 		<toolbar height="100%" id="toolbar" align="end">

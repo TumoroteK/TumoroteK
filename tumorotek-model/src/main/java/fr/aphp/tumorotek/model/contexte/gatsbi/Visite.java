@@ -38,6 +38,7 @@ package fr.aphp.tumorotek.model.contexte.gatsbi;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 
@@ -62,7 +63,9 @@ public class Visite implements Serializable
       this.ordre = ordre;
       this.intervalleDepuisInitiale = intervalleDepuisInitiale;
       this.intervalleType = intervalleType;
-      this.visitePrelevements.addAll(visitePrelevements);
+      if (visitePrelevements != null) {
+         this.visitePrelevements.addAll(visitePrelevements);
+      }
    }
 
    public String getNom(){
@@ -125,5 +128,25 @@ public class Visite implements Serializable
       int result = 1;
       result = prime * result + ((nom == null) ? 0 : nom.hashCode());
       return result;
+   }
+   
+   public String writePrelSchema() {
+      StringBuilder bld = new StringBuilder();
+      Iterator<VisitePrelevement> vpIt = visitePrelevements.iterator();
+      VisitePrelevement vp;
+      while (vpIt.hasNext()){
+         vp = vpIt.next();
+         bld.append(vp.getParametrage().getNom());
+         bld.append("[");
+         bld.append(vp.getNbPrelevementMin() != null ? vp.getNbPrelevementMin().toString() : "0");
+         bld.append(",");
+         bld.append(vp.getNbPrelevementMax() != null 
+            && vp.getNbPrelevementMax() > 0 ? vp.getNbPrelevementMax().toString() : "~");
+         bld.append("]");
+         if (vpIt.hasNext()) {
+            bld.append(", ");
+         }
+      }
+      return bld.toString();
    }
 }

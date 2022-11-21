@@ -1836,3 +1836,17 @@ margin-right: 10px;
 	display: block;
 	height: inherit;
 }
+
+.noselect .z-listitem {
+	background: none;
+}
+
+.noselect .z-listbox-odd:hover {
+	background: none;
+	background-color: none;
+}
+
+.noselect div.z-listbox-body .z-listcell {
+	cursor: default;
+	background: none;
+}

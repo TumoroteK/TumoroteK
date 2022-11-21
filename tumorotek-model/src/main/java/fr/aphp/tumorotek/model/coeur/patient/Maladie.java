@@ -66,6 +66,7 @@ import fr.aphp.tumorotek.model.TKdataObject;
 import fr.aphp.tumorotek.model.coeur.patient.serotk.AbstractMaladieDelegate;
 import fr.aphp.tumorotek.model.coeur.prelevement.Prelevement;
 import fr.aphp.tumorotek.model.contexte.Collaborateur;
+import fr.aphp.tumorotek.model.contexte.gatsbi.Visite;
 
 /**
  *
@@ -117,6 +118,8 @@ public class Maladie extends TKDelegetableObject<Maladie> implements TKdataObjec
    private Set<Collaborateur> collaborateurs = new HashSet<>();
 
    private TKDelegateObject<Maladie> delegate;
+   
+   private Visite visite;
 
    /** Constructeur par défaut. */
    public Maladie(){}
@@ -327,5 +330,15 @@ public class Maladie extends TKDelegetableObject<Maladie> implements TKdataObjec
    @Override
    public Integer listableObjectId(){
       return getMaladieId();
+   }
+   
+   @Transient
+   public Visite getVisite(){
+      return visite;
+   }
+
+   @Transient
+   public void setVisite(Visite visite){
+      this.visite = visite;
    }
 }
