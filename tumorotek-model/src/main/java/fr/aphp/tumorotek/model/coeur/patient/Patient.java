@@ -179,7 +179,8 @@ public class Patient extends TKDelegetableObject<Patient> implements TKAnnotable
    
    // @since 2.3.0-gatsbi
    private Set<PatientIdentifiant> patientIdentifiants = new LinkedHashSet<PatientIdentifiant>();
-
+// transient car si gatsbi, banque peut être fournie pour associer avec identifiant lors create/update
+   private Banque banque = null; 
 
    /** Constructeur par défaut. */
    public Patient(){}
@@ -551,12 +552,14 @@ public class Patient extends TKDelegetableObject<Patient> implements TKAnnotable
    @Override
    @Transient
    public Banque getBanque(){
-      return null;
+      return banque;
    }
 
    @Override
    @Transient
-   public void setBanque(final Banque b){}
+   public void setBanque(final Banque _b){
+      this.banque = _b;
+   }
 
    @Override
    @Transient

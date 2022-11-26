@@ -114,7 +114,7 @@ public class MaladieValidator implements Validator
     * @param maladie
     * @return errors
     */
-   public static Errors checkDateDebutCoherence(final Maladie maladie){
+   public Errors checkDateDebutCoherence(final Maladie maladie){
 
       final BindException errs = new BindException(maladie, "fr.aphp.tumorotek.model.coeur.patient.Maladie");
 

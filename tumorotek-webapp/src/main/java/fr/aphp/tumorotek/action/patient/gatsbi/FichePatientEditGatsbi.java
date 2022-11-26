@@ -94,6 +94,13 @@ public class FichePatientEditGatsbi extends FichePatientEdit
    }
    
    @Override
+   public void setNewObject(){
+      super.setNewObject();
+      // banque (transient) utilisée pour la validation
+      getObject().setBanque(SessionUtils.getCurrentBanque(sessionScope));
+   }
+   
+   @Override
    public LabelCodeItem setSexeItemFromDBValue(final Patient pat){
       if(pat.getSexe() == null) {
          if (contexte.isChampIdRequired(6)) { // null mais champ obligatoire -> valeur par défaut

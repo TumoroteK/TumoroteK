@@ -58,10 +58,14 @@ import fr.aphp.tumorotek.manager.impl.coeur.CreateOrUpdateUtilities;
 import fr.aphp.tumorotek.manager.qualite.OperationManager;
 import fr.aphp.tumorotek.manager.validation.BeanValidator;
 import fr.aphp.tumorotek.manager.validation.coeur.patient.MaladieValidator;
+import fr.aphp.tumorotek.manager.validation.coeur.patient.gatsbi.MaladieGatsbiValidator;
+import fr.aphp.tumorotek.manager.validation.coeur.patient.gatsbi.MaladieValidatorDateDebutOverride;
+import fr.aphp.tumorotek.manager.validation.coeur.prelevement.gastbi.PrelevementGatsbiValidator;
 import fr.aphp.tumorotek.model.coeur.patient.Maladie;
 import fr.aphp.tumorotek.model.coeur.patient.Patient;
 import fr.aphp.tumorotek.model.coeur.prelevement.Prelevement;
 import fr.aphp.tumorotek.model.contexte.Collaborateur;
+import fr.aphp.tumorotek.model.contexte.gatsbi.Contexte;
 import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
 
 /**
@@ -86,6 +90,9 @@ public class MaladieManagerImpl implements MaladieManager
    private CollaborateurDao collaborateurDao;
 
    private MaladieValidator maladieValidator;
+   
+   //@since 2.3.0-gatsbi
+   private MaladieValidatorDateDebutOverride maladieValidatorDateDebutOverride;
 
    private PatientValidator patientValidator;
 
@@ -110,6 +117,10 @@ public class MaladieManagerImpl implements MaladieManager
 
    public void setMaladieValidator(final MaladieValidator mValidator){
       this.maladieValidator = mValidator;
+   }
+
+   public void setMaladieValidatorDateDebutOverride(MaladieValidatorDateDebutOverride _v){
+      this.maladieValidatorDateDebutOverride = _v;
    }
 
    public void setPatientValidator(final PatientValidator pValidator){
@@ -246,12 +257,15 @@ public class MaladieManagerImpl implements MaladieManager
     * @param maladie
     * @param patient
     * @param operation demandant la verification
+    * @version 2.3.0-gatsbi
     */
    private void checkRequiredObjectsAndValidate(final Maladie maladie, final Patient patient, final String operation){
       //Patient required
       if(patient != null){
          if(patient.getPatientId() == null){ // creation conjointe
             // validation patient
+            // TODO cette création conjointe n'est jamais appliquée !?
+            // sinon pas de trace de création patient dans table Operation
             BeanValidator.validateObject(patient, new Validator[] {patientValidator});
          }
          maladie.setPatient(patientDao.mergeObject(patient));
@@ -259,9 +273,27 @@ public class MaladieManagerImpl implements MaladieManager
          log.warn("Objet obligatoire Patient manquant" + " lors de la " + operation + " d'une Maladie");
          throw new RequiredObjectIsNullException("Maladie", operation, "Patient");
       }
+      
+      // Gatsbi required
+      final List<Integer> requiredChampEntiteId = new ArrayList<>();
+      if(patient.getBanque() != null && patient.getBanque().getEtude() != null){
+         final Contexte maladieContexte = patient.getBanque().getEtude().getContexteForEntite(7);
+         if(maladieContexte != null){
+            requiredChampEntiteId.addAll(maladieContexte.getRequiredChampEntiteIds());
+         }
+      }
 
       //Validation maladie
-      BeanValidator.validateObject(maladie, new Validator[] {maladieValidator});
+      Validator[] validators;
+      if(requiredChampEntiteId.isEmpty()){ // pas de restriction gatsbi
+         validators = new Validator[] {maladieValidator};
+      }else{ // gatsbi définit certain champs obligatoires
+         final MaladieGatsbiValidator gValidator = 
+            new MaladieGatsbiValidator("maladie", requiredChampEntiteId);
+         validators = new Validator[] {gValidator, maladieValidatorDateDebutOverride};
+      }
+
+      BeanValidator.validateObject(maladie, validators);   
    }
 
    @Override

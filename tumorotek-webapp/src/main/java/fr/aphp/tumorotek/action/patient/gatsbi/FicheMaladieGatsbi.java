@@ -41,6 +41,7 @@ import org.zkoss.zk.ui.event.ForwardEvent;
 import org.zkoss.zul.Groupbox;
 import org.zkoss.zul.Messagebox;
 
+import fr.aphp.tumorotek.action.patient.FicheMaladie;
 import fr.aphp.tumorotek.action.patient.FichePatientStatic;
 import fr.aphp.tumorotek.action.prelevement.PrelevementController;
 import fr.aphp.tumorotek.action.prelevement.PrelevementRowRenderer;
@@ -60,7 +61,7 @@ import fr.aphp.tumorotek.webapp.general.SessionUtils;
  * @version 2.3.0-gatsbi
  *
  */
-public class FichePatientStaticGatsbi extends FichePatientStatic
+public class FicheMaladieGatsbi extends FicheMaladie
 {
 
    private static final long serialVersionUID = -7612780578022559022L;

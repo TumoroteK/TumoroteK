@@ -74,6 +74,7 @@ import fr.aphp.tumorotek.manager.impl.coeur.CreateOrUpdateUtilities;
 import fr.aphp.tumorotek.manager.io.imports.ImportHistoriqueManager;
 import fr.aphp.tumorotek.manager.qualite.OperationManager;
 import fr.aphp.tumorotek.manager.validation.BeanValidator;
+import fr.aphp.tumorotek.manager.validation.coeur.patient.gatsbi.PatientGatsbiValidator;
 import fr.aphp.tumorotek.model.coeur.annotation.AnnotationValeur;
 import fr.aphp.tumorotek.model.coeur.annotation.ChampAnnotation;
 import fr.aphp.tumorotek.model.coeur.patient.Maladie;
@@ -85,6 +86,7 @@ import fr.aphp.tumorotek.model.coeur.patient.PatientMedecinPK;
 import fr.aphp.tumorotek.model.coeur.prelevement.Prelevement;
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.contexte.Collaborateur;
+import fr.aphp.tumorotek.model.contexte.gatsbi.Contexte;
 import fr.aphp.tumorotek.model.interfacage.PatientSip;
 import fr.aphp.tumorotek.model.qualite.OperationType;
 import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
@@ -197,8 +199,27 @@ public class PatientManagerImpl implements PatientManager
          if(operation == null){
             throw new NullPointerException("operation cannot be " + "set to null for createorUpdateMethod");
          }
+         
+         // @since 2.3.0-gatsbi 
+         final List<Integer> requiredChampEntiteId = new ArrayList<>();
+         if(patient.getBanque() != null){ // creation / edition en contexte Gatsbi
+            final Contexte patContexte = patient.getBanque().getEtude().getContexteForEntite(1);
+            if(patContexte != null){
+               requiredChampEntiteId.addAll(patContexte.getRequiredChampEntiteIds());
+            }
+         }
+         Validator[] validators;
+         if(requiredChampEntiteId.isEmpty()){ // pas de restriction gatsbi
+            validators = new Validator[] {patientValidator};
+         }else{ // gatsbi définit certain champs obligatoires
+            final PatientGatsbiValidator gValidator = 
+               new PatientGatsbiValidator("patient", requiredChampEntiteId);
+            validators = new Validator[] {gValidator, patientValidator};
+         }
+         
          //Validation
-         BeanValidator.validateObject(patient, new Validator[] {patientValidator});
+         BeanValidator.validateObject(patient, validators);
+         
          //Doublon
          if(!operation.equals("fusion") && findDoublonManager(patient)){
             log.warn("Doublon lors " + operation + " objet Patient " + patient.toString());
