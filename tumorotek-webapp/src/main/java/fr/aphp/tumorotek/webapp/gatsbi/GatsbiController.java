@@ -147,9 +147,10 @@ public class GatsbiController
          // patient
          put(ContexteType.PATIENT, new String[] {"nipDiv", "nomDiv", "nomNaissanceDiv", "prenomDiv", "sexeDiv", 
             "dateNaissanceDiv", "paysNaissanceDiv", "villeNaissanceDiv", "etatDiv", "dateEtatDiv", "dateDecesDiv",
-            "patientMedecinsDiv",
-            // maladie
-            "libelleDiv", "codeMaladieDiv"});
+            "patientMedecinsDiv"});
+            // "libelleDiv", "codeMaladieDiv"});
+      // maladie
+         put(ContexteType.MALADIE, new String[] {"codeDiv", "dateDiagnosticDiv", "visiteMedecinsDiv"});
          // prelevement
          put(ContexteType.PRELEVEMENT,
             new String[] {"codeDiv", "codeLaboDiv", "natureDiv", //"ndaDiv", 

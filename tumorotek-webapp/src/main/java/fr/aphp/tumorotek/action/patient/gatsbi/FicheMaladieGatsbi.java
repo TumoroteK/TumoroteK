@@ -37,16 +37,12 @@
 package fr.aphp.tumorotek.action.patient.gatsbi;
 
 import org.zkoss.zk.ui.Component;
-import org.zkoss.zk.ui.event.ForwardEvent;
+import org.zkoss.zul.Div;
 import org.zkoss.zul.Groupbox;
 import org.zkoss.zul.Messagebox;
 
 import fr.aphp.tumorotek.action.patient.FicheMaladie;
-import fr.aphp.tumorotek.action.patient.FichePatientStatic;
 import fr.aphp.tumorotek.action.prelevement.PrelevementController;
-import fr.aphp.tumorotek.action.prelevement.PrelevementRowRenderer;
-import fr.aphp.tumorotek.action.prelevement.gatsbi.PrelevementRowRendererGatsbi;
-import fr.aphp.tumorotek.action.prelevement.gatsbi.exception.GatsbiException;
 import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
 import fr.aphp.tumorotek.model.contexte.gatsbi.Contexte;
 import fr.aphp.tumorotek.model.contexte.gatsbi.ContexteType;
@@ -66,16 +62,15 @@ public class FicheMaladieGatsbi extends FicheMaladie
 
    private static final long serialVersionUID = -7612780578022559022L;
 
-   private Contexte contexte;
-   
-   private final PrelevementRowRendererGatsbi prelevementRendererGatsbi =
-      new PrelevementRowRendererGatsbi(false, false);
-
    @Override
    public void doAfterCompose(final Component comp) throws Exception{
-      super.doAfterCompose(comp);
 
-      contexte = GatsbiController.initWireAndDisplay(this, 1, false, null, null, null, new Groupbox[]{});
+      super.doAfterCompose(comp);
+      
+      // devenu inutile
+      setRequiredMarks(new Component[] {});
+
+      GatsbiController.initWireAndDisplay(this, 7, false, null, null, null, new Groupbox[]{});
       
       // Injection contexte prélèvement pour inner list maladies
       // ce contexte peut être (null) non paramétré pour l'étude
@@ -83,54 +78,18 @@ public class FicheMaladieGatsbi extends FicheMaladie
       Contexte prelContexte = SessionUtils.getCurrentGatsbiContexteForEntiteId(2);
       if (prelContexte == null) {
          prelContexte = GatsbiController.getGastbiDefautContexteForType(ContexteType.PRELEVEMENT);
-         prelevementRendererGatsbi.setContexte(prelContexte);
+         // TODO PrelevementItemRenderer -> passer en mode Gatsbi
+         // prelevementRendererGatsbi.setContexte(prelContexte);
+         // prelevementFromOtherBanksRendererGatsbi.setContexte(prelContexte);
+         // setPrelevementFromOtherBanksRenderer(prelevementFromOtherBanksRendererGatsbi);
       }
+      
 
       // inner list
       // non deletable
       // ne force pas affichage emplacement et statut stockage en fin de grid
       // GatsbiControllerPrelevement.drawColumnsForPrelevements(prelContexte,
       //   echantillonsGrid, echantillonRendererGatsbi, false, false, getTtesCollections());
-   }
-   
-   /**
-    * Gatsbi surcharge pour intercaler une modale de sélection des parametrages
-    * proposés par le contexte.
-    *
-    * @param click event
-    */
-   @Override
-   public void onClick$addNew(){
-      GatsbiController.addNewObjectForContext(contexte, self, e -> {
-         try{
-            super.onClick$addNew();
-         }catch(final Exception ex){
-            Messagebox.show(handleExceptionMessage(ex), "Error", Messagebox.OK, Messagebox.ERROR);
-         }
-      }, null, null);
-   }
-
-   /**
-    * Un parametrage a été sélectionné.
-    *
-    * @param param
-    * @throws Exception
-    */
-   public void onGetSelectedParametrage(final ForwardEvent evt) throws Exception{
-
-      try{
-
-         GatsbiController.getSelectedParametrageFromSelectEvent(contexte, SessionUtils.getCurrentBanque(sessionScope),
-            getObjectTabController(), null, () -> {
-               try{
-                  super.onClick$addNew();
-               }catch(final Exception ex){
-                  Messagebox.show(handleExceptionMessage(ex), "Error", Messagebox.OK, Messagebox.ERROR);
-               }
-            }, evt);
-      }catch(final GatsbiException e){
-         Messagebox.show(handleExceptionMessage(e), "Error", Messagebox.OK, Messagebox.ERROR);
-      }
    }
 
    @Override
@@ -145,25 +104,23 @@ public class FicheMaladieGatsbi extends FicheMaladie
             }catch(final Exception ex){
                Messagebox.show(handleExceptionMessage(ex), "Error", Messagebox.OK, Messagebox.ERROR);
             }
-         }, null, getPatient());
+         }, null, this.maladie.getPatient());
+   }
+   
+   public String getVisiteLibelle() {
+      return maladie.getLibelle()
+         .concat(" - ")
+         .concat(ObjectTypesFormatters.dateRenderer2(maladie.getDateDebut()));
+   }
+   
+   @Override
+   protected void setIncaLabelStyle() {
+   }
+   
+   @Override
+   protected void setRegularLabelStyle(){
    }
 
    /*********** inner lists ******************/
 
-   public PrelevementRowRenderer getPrelevementRenderer(){
-      return prelevementRendererGatsbi;
-   }
-   
-   public String getDateEtatFormatted(){
-      return ObjectTypesFormatters.dateRenderer2(patient.getDateEtat());
-   }
-   
-   public String getDateDecesFormatted(){
-      return ObjectTypesFormatters.dateRenderer2(patient.getDateDeces());
-   }
-   
-   // TODO toutes collections ? Afficher une liste ?
-   public String getPatientIdentifiant() {
-      return patient.getIdentifiantAsString(SessionUtils.getCurrentBanque(sessionScope));
-   }
 }

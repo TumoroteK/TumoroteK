@@ -35,7 +35,7 @@
 -->
 <?component name="referents" macroURI="/zuls/patient/MedecinsReferents.zul" ?>
 
-<window id="fwinMaladie" apply="fr.aphp.tumorotek.action.patient.FicheMaladie">
+<window id="fwinMaladie" apply="fr.aphp.tumorotek.action.patient.gatsbi.FicheMaladieGatsbi">
 	<panel id="container" sclass="innerPanel" use="fr.aphp.tumorotek.component.InnerPanel"
 			collapsible="true" open="false" closable="true" 
 			title="@{fwinMaladie$composer.visiteLibelle}">
@@ -43,34 +43,46 @@
 			<div id="gatsbiContainer" class="main-container gridForm1">
 				<div id="maladieBlockDiv" style="padding-left: 5px">
 					<div id="maladieBlockDivContainer" class="block-container">
-						<div class="item item-mid item-required" id="libelleDiv"><!-- Libelle -->
-							<custom-attributes champId="17" />
-							<label value="${c:l('Champ.Maladie.Libelle')}" sclass="chpLabel formLabel" />
-							<label id="libelleLabel" value="@{fwinMaladie$FicheMaladie.object.libelle}" sclass="formValue" />
-							<textbox id="libelleBox" value="@{fwinMaladie$composer.object.libelle,
-			        								 save-when='validateC.onClick, createC.onClick'
-			        								 load-after='editC.onClick, createC.onClick, 
-			        								 fwinMaladie.onGetCodeFromAssist'}" 
-								hflex="1"
-								constraint="${fwinMaladie$composer.libelleConstraint}"
-								visible="false"/>
-						</div>
-						<div class="item item-mid item-required" id="dateVisiteDiv"><!-- date de visite -->
-							<custom-attributes champId="20" />
-							<label value="${c:l('gatsbi.visite.date')}" sclass="chpLabel formLabel" />
-							<label id="dateDebutLabel" 
-								value="@{fwinMaladie$composer.dateDebutFormatted, load-after='validateC.onClick, createC.onClick'}"  
-								sclass="formValue" />
-							<datebox id="dateDebutBox" format="${c:l('validation.date.format.simple')}" 
-								value="@{fwinMaladie$composer.object.dateDebut, save-when='validateC.onClick, createC.onClick'}"
-								visible="false" lenient="true" />
-							<label id="validationDateDebutLabel" visible="false" />
-						</div>
+						<div id="libelleRow" class="row-container" style="width: 100%">
+							<div class="item item-mid item-required" id="libelleDiv"><!-- Libelle -->
+								<custom-attributes champId="17" />
+								<div class="row-container chpLabel">
+									<label id="dateDiagFormLabel" value="${c:l('Champ.Maladie.Libelle')}" sclass="formLabel" />
+									<label value="*" sclass="requiredMark" />
+								</div>
+								<div>						
+									<label id="libelleLabel" value="@{fwinMaladie$FicheMaladie.object.libelle}" sclass="formValue" />
+									<textbox id="libelleBox" value="@{fwinMaladie$composer.object.libelle,
+					        								 save-when='validateC.onClick, createC.onClick'
+					        								 load-after='editC.onClick, createC.onClick, 
+					        								 fwinMaladie.onGetCodeFromAssist'}" 
+										hflex="1"
+										constraint="${fwinMaladie$composer.libelleConstraint}"
+										visible="false"/>
+								</div>
+							</div>
+							<div class="item item-mid item-required" id="dateVisiteDiv"><!-- date de visite -->
+								<custom-attributes champId="20" />
+								<div class="row-container chpLabel">
+									<label value="${c:l('gatsbi.visite.date')}" sclass="formLabel" />
+									<label value="*" sclass="requiredMark" />
+								</div>
+								<div>
+									<label id="dateDebutLabel" 
+										value="@{fwinMaladie$composer.dateDebutFormatted, load-after='validateC.onClick, createC.onClick'}"  
+										sclass="formValue" />
+									<datebox id="dateDebutBox" format="${c:l('validation.date.format.simple')}" 
+										value="@{fwinMaladie$composer.object.dateDebut, save-when='validateC.onClick, createC.onClick'}"
+										visible="false" lenient="true" />
+									<label id="validationDateDebutLabel" visible="false" />
+								</div>
+							</div>
+						</div> <!-- end of libelleRow -->
 						<div class="item item-mid" id="codeDiv"><!-- Code -->
 							<custom-attributes champId="18" />
 							<label id="codeDiagFormLabel" value="${c:l('Champ.Maladie.Code')}" sclass="chpLabel formLabel" />
 							<hlayout sclass="z-valign-middle">
-								<label id="nipLabel" value="@{fwinMaladie$composer.object.code}" sclass="formValue" />
+								<label id="codeDiagLabel" value="@{fwinMaladie$composer.object.code}" sclass="formValue" />
 								<textbox id="codeDiagBox" value="@{fwinMaladie$composer.object.code,
 					        								 save-when='validateC.onClick, createC.onClick'
 					        								 load-after='editC.onClick, createC.onClick, 
@@ -78,6 +90,11 @@
 									width="80px" 
 									constraint="@{fwinMaladie$composer.codeNullConstraint}"
 									visible="false"/>
+								<button id="codeAssistantButton" height="24px"
+										label="${c:l('patient.maladie.codeAssist')}"
+										image="/images/icones/codeassist.png"
+										sclass="buttonv2"
+										visible="false" />
 							</hlayout>
 						</div>
 						<div class="item item-mid" id="dateDiagnosticDiv"><!-- date de diagnostic -->
@@ -109,10 +126,9 @@
 					<groupbox id="prelevementsMaladieGroup" 
 							style="border-bottom-style: none" open="true">
 						<caption label="@{fwinMaladie$composer.prelevementsGroupLabel}" />
-						<vlayout align="center" hflex="1"  vflex="1">
+						<div>
 							<listbox id="prelevementsMaladieBox" 
 								fixedLayout="true"
-								hflex="1"
 								span="true"
 								sizedByContent="false"
 								model="@{fwinMaladie$composer.prelevements}"
@@ -139,13 +155,13 @@
 								</listhead>
 								<listitem self="@{each='currPrelevement'}" value="currPrelevement"/>
 							</listbox>
-							<hlayout>
+							<div align="center">
 								<button id="selectAllprelevementsButton" sclass="buttonv2" label="${c:l('general.selectAll')}"  
 									height="24px" visible="@{fwinMaladie$composer.prelevementsListSizeSupOne}"
 									image="/images/icones/selectall.png" forward="onClick=onSelectAllPrelevements(all)" />	
-							</hlayout>
-						</vlayout>
-						<vlayout align="center" hflex="1"  vflex="1">
+							</div>
+						</div>
+						<vlayout hflex="1"  vflex="1">
 							<listbox id="prelevementsFromOtherBanksMaladieBox"
 								fixedLayout="true"
 								span="true"

@@ -119,6 +119,9 @@
 <?component name="ficheRechercheAvanceePrelevementSero" macroURI="/zuls/recherche/serotk/FicheRechercheAvanceePrelevementSero.zul"?>
 <?component name="ficheRechercheAvanceeEchantillonSero" macroURI="/zuls/recherche/serotk/FicheRechercheAvanceeEchantillonSero.zul"?>
 <?component name="ficheRechercheAvanceeProdDeriveSero" macroURI="/zuls/recherche/serotk/FicheRechercheAvanceeProdDeriveSero.zul"?>
+<!-- Gatsbi -->
+<?component name="maladieGatsbiPanel" macroURI="/zuls/patient/gatsbi/FicheMaladieGatsbi.zul" ?>
+
 
 	<!-- <script type="text/javascript">
 		zk.afterMount(function () {
