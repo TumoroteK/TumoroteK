@@ -497,11 +497,9 @@ public class ReferenceurPatient extends GenericForwardComposer<Component>
       }
 
       // informe la fiche prelevement de la presence du formulaire
-      // TODO : A quoi ça sert? - JDI
       ficheMaladie.setEmbedded(true);
       ficheMaladie.getObject().setPatient(selectedPatient);
       fichePrelevementEdit.setMaladieEmbedded(true);
-
    }
 
    /**
@@ -731,7 +729,7 @@ public class ReferenceurPatient extends GenericForwardComposer<Component>
     * Injection contexte dans la creation du formulaire
     * maladie.
     */
-   private void createMaladieComponent(final Div div){
+   protected void createMaladieComponent(final Div div){
 
       final String zulPath;
 

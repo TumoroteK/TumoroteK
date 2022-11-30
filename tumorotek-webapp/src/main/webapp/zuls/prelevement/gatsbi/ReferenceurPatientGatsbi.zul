@@ -75,14 +75,12 @@
 					sclass="listBox" width="100%" visible="false">
 					<listhead>
 						<listheader label="${c:l('Champ.Maladie.Libelle')}" />
-						<listheader label="${c:l('Champ.Maladie.Code')}" />
-						<listheader label="${c:l('patient.maladie.dateDiag')}" />
+						<listheader label="${c:l('gatsbi.visite.date')}" />
 						<listheader label="${c:l('ficheMaladie.prelevements')}"/>
 					</listhead>
 					<listitem id="itemMaladie" self="@{each='decoMaladie'}" value="@{decoMaladie}">			
 						<listcell label="@{decoMaladie.libelle}" />
-						<listcell label="@{decoMaladie.code}" />
-						<listcell label="@{decoMaladie.formattedDateDiag}" />
+						<listcell label="@{decoMaladie.formattedDateDebut}" />
 						<listcell label="@{decoMaladie.nbPrelevements}" />
 					</listitem>
 				</listbox>

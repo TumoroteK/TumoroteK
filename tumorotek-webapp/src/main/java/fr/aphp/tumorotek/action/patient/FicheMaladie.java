@@ -411,7 +411,7 @@ public class FicheMaladie extends AbstractFicheCombineController
             this.maladie.setLibelle(SessionUtils.getSelectedBanques(sessionScope).get(0).getDefautMaladie());
             this.maladie.setCode(SessionUtils.getSelectedBanques(sessionScope).get(0).getDefautMaladieCode());
          }else{
-            this.maladie.setLibelle(Labels.getLabel("maladie.indeterminee"));
+            setLibelleIndeterminee();
          }
       }
 
@@ -421,6 +421,12 @@ public class FicheMaladie extends AbstractFicheCombineController
 
       // clone er reload
       super.setObject(maladie);
+   }
+   
+   // @since 2.3.0-gatsbi
+   // sera surchargée
+   protected void setLibelleIndeterminee() {
+      this.maladie.setLibelle(Labels.getLabel("maladie.indeterminee"));
    }
 
    /**
@@ -1029,7 +1035,9 @@ public class FicheMaladie extends AbstractFicheCombineController
       this.selectAllprelevementsButton.setVisible(false);
       this.container.setStyle("border: none");
       this.container.getPanelchildren().setStyle("border-top-style: none");
-      this.formGrid.setStyle("border-top-style: none");
+      if (this.formGrid != null) {
+         this.formGrid.setStyle("border-top-style: none");
+      }
       this.isEmbeddedWithPatient = withPatient;
    }
 

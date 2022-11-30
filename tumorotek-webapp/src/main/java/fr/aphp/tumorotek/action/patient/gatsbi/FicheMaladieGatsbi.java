@@ -36,6 +36,7 @@
  **/
 package fr.aphp.tumorotek.action.patient.gatsbi;
 
+import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zul.Groupbox;
@@ -112,9 +113,18 @@ public class FicheMaladieGatsbi extends FicheMaladie
    }
    
    public String getVisiteLibelle() {
-      return maladie.getLibelle()
-         .concat(" - ")
-         .concat(ObjectTypesFormatters.dateRenderer2(maladie.getDateDebut()));
+      
+      if (maladie.getDateDebut() != null) {
+         return maladie.getLibelle().concat(" - ")
+            .concat(ObjectTypesFormatters.dateRenderer2(maladie.getDateDebut()));
+      }
+      
+      return maladie.getLibelle();
+   }
+   
+   @Override
+   protected void setLibelleIndeterminee(){
+      maladie.setLibelle(Labels.getLabel("gatsbi.visite.new").toUpperCase());
    }
    
    @Override

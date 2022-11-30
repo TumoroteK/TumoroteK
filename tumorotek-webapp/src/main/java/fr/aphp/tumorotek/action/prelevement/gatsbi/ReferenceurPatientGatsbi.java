@@ -39,6 +39,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Path;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.ListitemRenderer;
@@ -108,5 +109,13 @@ public class ReferenceurPatientGatsbi extends ReferenceurPatient
    @Override
    public ListitemRenderer<Patient> getPatientRenderer(){
       return patientRendererGatsbi;
+   }
+   
+   @Override
+   protected void createMaladieComponent(Div div){
+
+      if(div.getChildren().isEmpty()){
+         Executions.createComponents("/zuls/patient/gatsbi/FicheMaladieGatsbi.zul", div, null);
+      }
    }
 }
