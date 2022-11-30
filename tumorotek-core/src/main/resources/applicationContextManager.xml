@@ -63,6 +63,10 @@
 	<bean id="maladieValidator"
 		class="fr.aphp.tumorotek.manager.validation.coeur.patient.MaladieValidator" />
 
+	<bean id="maladieValidatorDateCoherenceOverride"
+		class="fr.aphp.tumorotek.manager.validation.coeur.patient.gatsbi.MaladieValidatorDateCoherenceOverride" />
+	
+
 	<bean id="maladieManager" parent="txProxyTemplate">
 		<property name="target">
 			<bean
@@ -71,6 +75,8 @@
 				<property name="patientDao" ref="patientDao" />
 				<property name="collaborateurDao" ref="collaborateurDao" />
 				<property name="maladieValidator" ref="maladieValidator" />
+				<property name="maladieValidatorDateCoherenceOverride" 
+								ref="maladieValidatorDateCoherenceOverride" />
 				<property name="patientValidator" ref="patientValidator" />
 				<property name="operationManager" ref="operationManager" />
 				<property name="operationTypeDao" ref="operationTypeDao" />

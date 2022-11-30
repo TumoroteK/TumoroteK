@@ -106,7 +106,7 @@ public class FichePatientStatic extends AbstractFicheStaticController
    protected Listbox prelevementsFromOtherMaladiesBox;
 
    // Associations
-   private List<Maladie> maladies = new ArrayList<>();
+   protected List<Maladie> maladies = new ArrayList<>();
 
    private List<Collaborateur> medecins = new ArrayList<>();
 

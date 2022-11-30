@@ -47,6 +47,8 @@ import fr.aphp.tumorotek.action.prelevement.PrelevementRowRenderer;
 import fr.aphp.tumorotek.action.prelevement.gatsbi.PrelevementRowRendererGatsbi;
 import fr.aphp.tumorotek.action.prelevement.gatsbi.exception.GatsbiException;
 import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
+import fr.aphp.tumorotek.model.TKdataObject;
+import fr.aphp.tumorotek.model.coeur.patient.Patient;
 import fr.aphp.tumorotek.model.contexte.gatsbi.Contexte;
 import fr.aphp.tumorotek.model.contexte.gatsbi.ContexteType;
 import fr.aphp.tumorotek.webapp.gatsbi.GatsbiController;
@@ -70,6 +72,14 @@ public class FichePatientStaticGatsbi extends FichePatientStatic
    private final PrelevementRowRendererGatsbi prelevementRendererGatsbi =
       new PrelevementRowRendererGatsbi(false, false);
 
+   @Override
+   public void setObject(TKdataObject pat){
+      super.setObject(pat);
+      // TODO attention mode toutes collections
+      ((Patient) pat).setBanque(SessionUtils.getCurrentBanque(sessionScope));
+      maladies.forEach(m -> m.getPatient().setBanque(SessionUtils.getCurrentBanque(sessionScope)));
+   }
+   
    @Override
    public void doAfterCompose(final Component comp) throws Exception{
       super.doAfterCompose(comp);

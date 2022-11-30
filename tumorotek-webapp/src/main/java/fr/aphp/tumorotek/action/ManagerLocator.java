@@ -186,6 +186,8 @@ import fr.aphp.tumorotek.manager.utilisateur.ProfilManager;
 import fr.aphp.tumorotek.manager.utilisateur.ProfilUtilisateurManager;
 import fr.aphp.tumorotek.manager.utilisateur.UtilisateurManager;
 import fr.aphp.tumorotek.manager.validation.coeur.cession.retour.RetourValidator;
+import fr.aphp.tumorotek.manager.validation.coeur.patient.MaladieValidator;
+import fr.aphp.tumorotek.manager.validation.coeur.patient.gatsbi.MaladieValidatorDateCoherenceOverride;
 import fr.aphp.tumorotek.manager.xml.XmlUtils;
 import fr.aphp.tumorotek.model.TKThesaurusObject;
 import fr.aphp.tumorotek.model.bundles.ResourceBundleMbio;
@@ -343,6 +345,15 @@ public final class ManagerLocator
 
    public static MaladieManager getMaladieManager(){
       return (MaladieManager) (ContextLoader.getCurrentWebApplicationContext()).getBean("maladieManager");
+   }
+   
+   public static MaladieValidator getMaladieValidator(){
+      return (MaladieValidator) (ContextLoader.getCurrentWebApplicationContext()).getBean("maladieValidator");
+   }
+   
+   public static MaladieValidatorDateCoherenceOverride getMaladieValidatorDateCoherenceOverride(){
+      return (MaladieValidatorDateCoherenceOverride) 
+         (ContextLoader.getCurrentWebApplicationContext()).getBean("maladieValidatorDateCoherenceOverride");
    }
 
    /* Managers du package echantillon */

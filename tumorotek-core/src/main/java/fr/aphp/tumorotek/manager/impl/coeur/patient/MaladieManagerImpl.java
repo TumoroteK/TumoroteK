@@ -59,8 +59,7 @@ import fr.aphp.tumorotek.manager.qualite.OperationManager;
 import fr.aphp.tumorotek.manager.validation.BeanValidator;
 import fr.aphp.tumorotek.manager.validation.coeur.patient.MaladieValidator;
 import fr.aphp.tumorotek.manager.validation.coeur.patient.gatsbi.MaladieGatsbiValidator;
-import fr.aphp.tumorotek.manager.validation.coeur.patient.gatsbi.MaladieValidatorDateDebutOverride;
-import fr.aphp.tumorotek.manager.validation.coeur.prelevement.gastbi.PrelevementGatsbiValidator;
+import fr.aphp.tumorotek.manager.validation.coeur.patient.gatsbi.MaladieValidatorDateCoherenceOverride;
 import fr.aphp.tumorotek.model.coeur.patient.Maladie;
 import fr.aphp.tumorotek.model.coeur.patient.Patient;
 import fr.aphp.tumorotek.model.coeur.prelevement.Prelevement;
@@ -92,7 +91,7 @@ public class MaladieManagerImpl implements MaladieManager
    private MaladieValidator maladieValidator;
    
    //@since 2.3.0-gatsbi
-   private MaladieValidatorDateDebutOverride maladieValidatorDateDebutOverride;
+   private MaladieValidatorDateCoherenceOverride maladieValidatorDateCoherenceOverride;
 
    private PatientValidator patientValidator;
 
@@ -119,8 +118,8 @@ public class MaladieManagerImpl implements MaladieManager
       this.maladieValidator = mValidator;
    }
 
-   public void setMaladieValidatorDateDebutOverride(MaladieValidatorDateDebutOverride _v){
-      this.maladieValidatorDateDebutOverride = _v;
+   public void setMaladieValidatorDateCoherenceOverride(MaladieValidatorDateCoherenceOverride _v){
+      this.maladieValidatorDateCoherenceOverride = _v;
    }
 
    public void setPatientValidator(final PatientValidator pValidator){
@@ -276,8 +275,8 @@ public class MaladieManagerImpl implements MaladieManager
       
       // Gatsbi required
       final List<Integer> requiredChampEntiteId = new ArrayList<>();
-      if(patient.getBanque() != null && patient.getBanque().getEtude() != null){
-         final Contexte maladieContexte = patient.getBanque().getEtude().getContexteForEntite(7);
+      if(maladie.getPatient().getBanque() != null && maladie.getPatient().getBanque().getEtude() != null){
+         final Contexte maladieContexte = maladie.getPatient().getBanque().getEtude().getContexteForEntite(7);
          if(maladieContexte != null){
             requiredChampEntiteId.addAll(maladieContexte.getRequiredChampEntiteIds());
          }
@@ -290,7 +289,7 @@ public class MaladieManagerImpl implements MaladieManager
       }else{ // gatsbi définit certain champs obligatoires
          final MaladieGatsbiValidator gValidator = 
             new MaladieGatsbiValidator("maladie", requiredChampEntiteId);
-         validators = new Validator[] {gValidator, maladieValidatorDateDebutOverride};
+         validators = new Validator[] {gValidator, maladieValidatorDateCoherenceOverride};
       }
 
       BeanValidator.validateObject(maladie, validators);   

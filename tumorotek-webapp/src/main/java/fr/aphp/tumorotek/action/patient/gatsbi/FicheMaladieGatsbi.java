@@ -37,13 +37,15 @@
 package fr.aphp.tumorotek.action.patient.gatsbi;
 
 import org.zkoss.zk.ui.Component;
-import org.zkoss.zul.Div;
+import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zul.Groupbox;
 import org.zkoss.zul.Messagebox;
 
+import fr.aphp.tumorotek.action.ManagerLocator;
 import fr.aphp.tumorotek.action.patient.FicheMaladie;
 import fr.aphp.tumorotek.action.prelevement.PrelevementController;
 import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
+import fr.aphp.tumorotek.model.code.CodeCommon;
 import fr.aphp.tumorotek.model.contexte.gatsbi.Contexte;
 import fr.aphp.tumorotek.model.contexte.gatsbi.ContexteType;
 import fr.aphp.tumorotek.webapp.gatsbi.GatsbiController;
@@ -69,8 +71,10 @@ public class FicheMaladieGatsbi extends FicheMaladie
       
       // devenu inutile
       setRequiredMarks(new Component[] {});
+      
+      setMaladieValidator(ManagerLocator.getMaladieValidatorDateCoherenceOverride());
 
-      GatsbiController.initWireAndDisplay(this, 7, false, null, null, null, new Groupbox[]{});
+      // GatsbiController.initWireAndDisplay(this, 7, false, null, null, null, new Groupbox[]{});
       
       // Injection contexte prélèvement pour inner list maladies
       // ce contexte peut être (null) non paramétré pour l'étude
@@ -119,6 +123,40 @@ public class FicheMaladieGatsbi extends FicheMaladie
    
    @Override
    protected void setRegularLabelStyle(){
+   }
+   
+   /**
+    * N'applique plus le libelle issu de la codification CIM-10 
+    * lors de la saisie du code diagnostic
+    */
+   @Override
+   public void onGetCodeFromAssist(final Event event){
+      if(event.getData() != null){
+         this.maladie.setCode(((CodeCommon) event.getData()).getCode());
+      }
+   }
+   
+   @Override
+   public void onBlur$codeDiagBox(){
+   }
+   
+   @Override
+   public void switchToCreateMode(){
+      super.switchToCreateMode();
+      GatsbiController.initWireAndDisplay(this, 7, true, null, null, null, new Groupbox[]{});
+   }
+   
+   @Override
+   public void switchToEditMode(){
+      super.switchToEditMode();
+      GatsbiController.initWireAndDisplay(this, 7, true, null, null, null, new Groupbox[]{});
+   }
+   
+   @Override
+   public void switchToStaticMode(){
+      super.switchToStaticMode();
+      GatsbiController.initWireAndDisplay(this, 7, false, null, null, null, new Groupbox[]{});
+
    }
 
    /*********** inner lists ******************/

@@ -48,7 +48,7 @@ import fr.aphp.tumorotek.model.coeur.patient.Maladie;
  * @author Mathieu BARTHELEMY
  * @version 2.3.0-gatsbi
  */
-public class MaladieValidatorDateDebutOverride extends MaladieValidator
+public class MaladieValidatorDateCoherenceOverride extends MaladieValidator
 {
 
 
@@ -60,6 +60,14 @@ public class MaladieValidatorDateDebutOverride extends MaladieValidator
       if(maladie.getDateDebut() == null){
          errs.rejectValue("dateDebut", "visite.date.empty");
       }
+      return errs;
+   }
+   
+   @Override
+   public Errors checkDateDiagCoherence(final Maladie maladie){
+
+      final BindException errs = new BindException(maladie, "fr.aphp.tumorotek.model.coeur.patient.Maladie");
+
       return errs;
    }
 }

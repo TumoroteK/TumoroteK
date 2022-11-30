@@ -192,6 +192,10 @@ public class FicheMaladie extends AbstractFicheCombineController
 
    // other banks -> contexte defaut TK
    protected PrelevementItemRenderer prelevementFromOtherBanksRenderer = new PrelevementItemRenderer();
+   
+   // @since 2.3.0-gatsbi
+   // sera surchargé
+   protected MaladieValidator maladieValidator;
 
    public Panel getContainer(){
       return container;
@@ -285,6 +289,10 @@ public class FicheMaladie extends AbstractFicheCombineController
             onClickPrelevementCode(event);
          }
       });
+      
+      // @since 2.3.0-gatsbi
+      // regular Maladie Validator, sera surchargé par Gatsbi
+      setMaladieValidator(ManagerLocator.getMaladieValidator());
    }
 
    //   /**
@@ -831,14 +839,14 @@ public class FicheMaladie extends AbstractFicheCombineController
          if(comp.getId().equals("dateDiagBox")){
             field = "dateDiagnostic";
             this.maladie.setDateDiagnostic(dateValue);
-            errs = MaladieValidator.checkDateDiagCoherence(this.maladie);
+            errs = getMaladieValidator().checkDateDiagCoherence(this.maladie);
          }
 
          // date début
          if(comp.getId().equals("dateDebutBox")){
             field = "dateDebut";
             this.maladie.setDateDebut(dateValue);
-            errs = new MaladieValidator().checkDateDebutCoherence(this.maladie);
+            errs = getMaladieValidator().checkDateDebutCoherence(this.maladie);
          }
 
          if(errs != null && errs.hasErrors()){
@@ -1102,6 +1110,16 @@ public class FicheMaladie extends AbstractFicheCombineController
       }else{
          ((Groupbox) prelevementsMaladieGroup).setOpen(b);
       }      
+   }
+
+   // @since 2.3.0-gatsbi  
+   public MaladieValidator getMaladieValidator(){
+      return maladieValidator;
+   }
+
+   // @since 2.3.0-gatsbi  
+   public void setMaladieValidator(MaladieValidator maladieValidator){
+      this.maladieValidator = maladieValidator;
    }
    
 }
