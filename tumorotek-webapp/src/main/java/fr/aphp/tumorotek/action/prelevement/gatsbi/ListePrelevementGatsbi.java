@@ -51,6 +51,8 @@ import fr.aphp.tumorotek.action.ManagerLocator;
 import fr.aphp.tumorotek.action.prelevement.ListePrelevement;
 import fr.aphp.tumorotek.action.prelevement.gatsbi.exception.GatsbiException;
 import fr.aphp.tumorotek.manager.exception.TKException;
+import fr.aphp.tumorotek.model.TKdataObject;
+import fr.aphp.tumorotek.model.coeur.patient.Maladie;
 import fr.aphp.tumorotek.model.coeur.prelevement.Prelevement;
 import fr.aphp.tumorotek.model.contexte.gatsbi.Contexte;
 import fr.aphp.tumorotek.webapp.gatsbi.GatsbiController;
@@ -293,10 +295,17 @@ public class ListePrelevementGatsbi extends ListePrelevement
                   if (evt == null || evt.getOrigin() == null || evt.getOrigin().getData() == null 
                         || ((Map<String, Object>) evt.getOrigin().getData()).get("parentObj") == null) {
                      super.onClick$addNew(null);
-                  } else { // parentObj = premier prelevement créé pour le patient
-                     // createAnotherPrelevement
-                     getObjectTabController().swithToCreatedModeFromCopy((Prelevement) 
-                        ((Map<String, Object>) evt.getOrigin().getData()).get("parentObj"));
+                  } else { 
+                     // parentObj, si = Prelevement alors premier prelevement créé pour le patient
+                     //   -> createAnotherPrelevement
+                     // si = Maladie, alors création prélèvement
+                     TKdataObject parent = (TKdataObject) 
+                        ((Map<String, Object>) evt.getOrigin().getData()).get("parentObj");
+                     if (parent instanceof Prelevement) { // createAnotherPrelevement
+                        getObjectTabController().swithToCreatedModeFromCopy((Prelevement) parent);
+                     } else if (parent instanceof Maladie) { // 
+                        getObjectTabController().switchToCreateMode(parent);
+                     } 
                   }
                }catch(final Exception ex){
                   Messagebox.show(handleExceptionMessage(ex), "Error", Messagebox.OK, Messagebox.ERROR);

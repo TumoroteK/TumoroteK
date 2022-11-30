@@ -108,7 +108,7 @@ public class FicheMaladieGatsbi extends FicheMaladie
             }catch(final Exception ex){
                Messagebox.show(handleExceptionMessage(ex), "Error", Messagebox.OK, Messagebox.ERROR);
             }
-         }, null, this.maladie.getPatient());
+         }, null, this.maladie);
    }
    
    public String getVisiteLibelle() {

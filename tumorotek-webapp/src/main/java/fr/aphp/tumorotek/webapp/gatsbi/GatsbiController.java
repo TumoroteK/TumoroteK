@@ -98,8 +98,10 @@ import fr.aphp.tumorotek.manager.exception.TKException;
 import fr.aphp.tumorotek.manager.impl.interfacage.ResultatInjection;
 import fr.aphp.tumorotek.model.TKAnnotableObject;
 import fr.aphp.tumorotek.model.TKThesaurusObject;
+import fr.aphp.tumorotek.model.TKdataObject;
 import fr.aphp.tumorotek.model.coeur.annotation.AnnotationValeur;
 import fr.aphp.tumorotek.model.coeur.echantillon.Echantillon;
+import fr.aphp.tumorotek.model.coeur.patient.Maladie;
 import fr.aphp.tumorotek.model.coeur.patient.Patient;
 import fr.aphp.tumorotek.model.coeur.prelevement.Prelevement;
 import fr.aphp.tumorotek.model.contexte.Banque;
@@ -1079,7 +1081,7 @@ public class GatsbiController
 
    // add new refactor
    public static void addNewObjectForContext(Contexte contexte, Component selfComponent, Consumer<Event> elseMethod, Event evt,
-      TKAnnotableObject parentObj){
+      TKdataObject parentObj){
       if(!contexte.getParametrages().isEmpty()){
          final Map<String, Object> args = new HashMap<String, Object>();
          args.put("contexte", contexte);
@@ -1107,12 +1109,14 @@ public class GatsbiController
          // parent object
          if (evt != null && evt.getOrigin() != null && evt.getOrigin().getData() != null 
               && ((Map<String, Object>) evt.getOrigin().getData()).get("parentObj") != null) {
-            // prelevement => PrelevementController.createAnotherPrelevement 
-            if (((Map<String, Object>) evt.getOrigin().getData()).get("parentObj") instanceof Prelevement 
-               && contexte.getContexteType().equals(ContexteType.PRELEVEMENT)) {
-               inject.getPrelevement()
-                  .setMaladie(((Prelevement) ((Map<String, Object>) evt.getOrigin().getData()).get("parentObj"))
-                     .getMaladie());
+            TKdataObject parent = (TKdataObject) ((Map<String, Object>) evt.getOrigin().getData()).get("parentObj");
+            if (contexte.getContexteType().equals(ContexteType.PRELEVEMENT)) {
+               if (parent instanceof Prelevement) { // PrelevementController.createAnotherPrelevement 
+                  inject.getPrelevement()
+                     .setMaladie(((Prelevement) parent).getMaladie());
+               } else if (parent instanceof Maladie) { // maladie => prelevement.switchToCreateMode 
+                  inject.getPrelevement().setMaladie((Maladie)  parent);                
+               }
             }
          }         
       }
