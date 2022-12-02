@@ -35,18 +35,27 @@
  **/
 package fr.aphp.tumorotek.action.prelevement.gatsbi;
 
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Path;
+import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.ListitemRenderer;
+import org.zkoss.zul.Row;
+import org.zkoss.zul.Vbox;
 
+import fr.aphp.tumorotek.action.patient.FichePatientEdit;
 import fr.aphp.tumorotek.action.patient.gatsbi.GatsbiControllerPatient;
 import fr.aphp.tumorotek.action.prelevement.ReferenceurPatient;
+import fr.aphp.tumorotek.decorator.MaladieDecorator;
 import fr.aphp.tumorotek.decorator.gatsbi.PatientItemRendererGatsbi;
+import fr.aphp.tumorotek.modales.DateModale;
 import fr.aphp.tumorotek.model.coeur.patient.Patient;
 import fr.aphp.tumorotek.model.contexte.gatsbi.Contexte;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
@@ -64,6 +73,13 @@ public class ReferenceurPatientGatsbi extends ReferenceurPatient
    private static final long serialVersionUID = 1L;
    
    private Contexte contextePatient;
+   
+   private Row resultsRow;
+   private Row findPatientRow;
+   private Row resultsMaladiesRow;
+   private Vbox newMaladieBox;
+   
+   private Patient newPatient;
    
    protected String getFichePatientComponent() {
       return "/zuls/patient/gatsbi/FichePatientEditGatsbi.zul";
@@ -104,6 +120,45 @@ public class ReferenceurPatientGatsbi extends ReferenceurPatient
       fichePrelevementEdit.openSelectPatientWindow(Path.getPath(self), "onGetPatientFromSelection", 
          false, critereValue, null, contextePatient, SessionUtils.getCurrentBanque(sessionScope));
 
+   }
+   
+   /**
+    * Surcharge pour appliquer schéma de visites
+    */
+   @Override
+   protected void embedFicheMaladie(FichePatientEdit fichePatient, Patient pat){
+      if (GatsbiControllerPatient.getSchemaVisitesDefinedByEtude(sessionScope)) {
+         
+         // affiche uniquement la liste des maladies 
+         // du composant patient existant
+         existingPatientGrid.setVisible(true);
+         resultsRow.setVisible(false);
+         findPatientRow.setVisible(false);
+         resultsMaladiesRow.setVisible(true);
+         newMaladieBox.setVisible(false);
+         
+         this.newPatient = pat;
+         
+         DateModale.show(Labels.getLabel("gatsbi.schema.visites.title"), 
+            Labels.getLabel("gatsbi.schema.visites.label"), null, true, self);
+      } else {
+         super.embedFicheMaladie(fichePatient, pat);
+      }
+   }
+   
+   /**
+    * Une date d'inclusion (baseline) est renvoyée par la modale, 
+    * la liste des visites peut être produite
+    * @param e forwardEvent contenant la date
+    */
+   public void onFromDateProvided(final Event e){ 
+      
+      getMaladies().clear();
+      
+      // production du schéma de visites
+      getMaladies().addAll(MaladieDecorator.decorateListe(GatsbiControllerPatient
+            .produceSchemaVisitesForPatient(SessionUtils.getCurrentBanque(sessionScope), newPatient, 
+         ((Date) e.getData()).toInstant().atZone(ZoneId.systemDefault()).toLocalDate())));
    }
    
    @Override

@@ -41,6 +41,16 @@
 			<radio id="findRadio" value="find" sclass="radiov2" label="${c:l('general.find')}" selected="true" />	
 		</radiogroup>
 	</div>
+	<!-- Nouveau patient -->
+	<div id="newPatientDiv" visible="false">
+		<div id="fichePatientDiv" />
+		
+		<vbox id="newMaladieBox" >
+			<label value="${c:l('patient.ajouter.maladie')}" sclass="formSubTitle"/>
+			<image src="/images/pixelble.gif" style="background-repeat: repeat-x;"/>
+			<div id="ficheMaladieWithPatientDiv" />
+		</vbox>	
+	</div>
 	<grid id="existingPatientGrid" fixedLayout="true" sclass="gridForm1">
 		<columns>
 			<column />
@@ -116,14 +126,4 @@
 			</row>
 		</rows>
 	</grid>
-	<!-- Nouveau patient -->
-	<div id="newPatientDiv" visible="false">
-		<div id="fichePatientDiv" />
-		
-		<vbox id="newMaladieBox" >
-			<label value="${c:l('patient.ajouter.maladie')}" sclass="formSubTitle"/>
-			<image src="/images/pixelble.gif" style="background-repeat: repeat-x;"/>
-			<div id="ficheMaladieWithPatientDiv" />
-		</vbox>	
-	</div>
 </window>

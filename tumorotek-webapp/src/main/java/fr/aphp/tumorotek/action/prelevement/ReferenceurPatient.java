@@ -576,38 +576,8 @@ public class ReferenceurPatient extends GenericForwardComposer<Component>
 
          fichePatient.setEmbedded(pat);
 
-         Components.removeAllChildren(embeddedFicheMaladieDiv);
-         createMaladieComponent(ficheMaladieWithPatientDiv);
-
-         final FicheMaladie ficheMaladie;
-         switch(SessionUtils.getCurrentContexte()){
-            case SEROLOGIE:
-               ficheMaladie = (FicheMaladieSero) ficheMaladieWithPatientDiv.getFellow("fwinMaladie")
-                  .getAttributeOrFellow("fwinMaladie$composer", true);
-               break;
-            default:
-               ficheMaladie = (FicheMaladie) ficheMaladieWithPatientDiv.getFellow("fwinMaladie")
-                  .getAttributeOrFellow("fwinMaladie$composer", true);
-               break;
-         }
-
-         ficheMaladie.setEmbedded(true);
-
-         if(SessionUtils.getSelectedBanques(sessionScope).get(0).getDefMaladies()){
-            self.getFellow("newPatientDiv").getFellow("newMaladieBox").setVisible(true);
-         }else{
-            // efface le bloc div
-            self.getFellow("newPatientDiv").getFellow("newMaladieBox").setVisible(false);
-            // cree la maladie sous-jacente
-            ((Textbox) ficheMaladieWithPatientDiv.getFellow("fwinMaladie").getFellow("libelleBox"))
-               .setValue((SessionUtils.getSelectedBanques(sessionScope).get(0).getNom() + "-defaut"));
-            ficheMaladie.getObject().setSystemeDefaut(true);
-
-         }
-
-         // attribution du patient a la maladie embedded
-         ficheMaladie.getObject().setPatient(fichePatient.getObject());
-
+         embedFicheMaladie(fichePatient, pat);
+         
          // efface la grid existing patient
          displayExistingPatient(false);
 
@@ -620,6 +590,41 @@ public class ReferenceurPatient extends GenericForwardComposer<Component>
       final FichePrelevementEdit fichePrelevementEdit = getFichePrelevementEditFromContexte();
 
       fichePrelevementEdit.setPatientEmbedded(show);
+   }
+   
+   // @since 2.3.0-gatsbi, sera surchargée
+   protected void embedFicheMaladie(FichePatientEdit fichePatient, Patient pat) {
+      Components.removeAllChildren(embeddedFicheMaladieDiv);
+      createMaladieComponent(ficheMaladieWithPatientDiv);
+
+      final FicheMaladie ficheMaladie;
+      switch(SessionUtils.getCurrentContexte()){
+         case SEROLOGIE:
+            ficheMaladie = (FicheMaladieSero) ficheMaladieWithPatientDiv.getFellow("fwinMaladie")
+               .getAttributeOrFellow("fwinMaladie$composer", true);
+            break;
+         default:
+            ficheMaladie = (FicheMaladie) ficheMaladieWithPatientDiv.getFellow("fwinMaladie")
+               .getAttributeOrFellow("fwinMaladie$composer", true);
+            break;
+      }
+
+      ficheMaladie.setEmbedded(true);
+
+      if(SessionUtils.getSelectedBanques(sessionScope).get(0).getDefMaladies()){
+         self.getFellow("newPatientDiv").getFellow("newMaladieBox").setVisible(true);
+      }else{
+         // efface le bloc div
+         self.getFellow("newPatientDiv").getFellow("newMaladieBox").setVisible(false);
+         // cree la maladie sous-jacente
+         ((Textbox) ficheMaladieWithPatientDiv.getFellow("fwinMaladie").getFellow("libelleBox"))
+            .setValue((SessionUtils.getSelectedBanques(sessionScope).get(0).getNom() + "-defaut"));
+         ficheMaladie.getObject().setSystemeDefaut(true);
+
+      }
+
+      // attribution du patient a la maladie embedded
+      ficheMaladie.getObject().setPatient(fichePatient.getObject());
    }
    
    // sera surchargé par gatsbi

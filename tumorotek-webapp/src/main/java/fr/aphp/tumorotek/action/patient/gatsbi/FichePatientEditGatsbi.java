@@ -210,7 +210,7 @@ public class FichePatientEditGatsbi extends FichePatientEdit
    public void switchToCreateMode(){
       super.switchToCreateMode();
       
-      groupVisites.setVisible(getSchemaVisitesDefinedByEtude());
+      groupVisites.setVisible(GatsbiControllerPatient.getSchemaVisitesDefinedByEtude(sessionScope));
       
       // ouverture d'une modale de saisie de date baseline
       // une fois le composant FicheEditPatient rendu visible
@@ -223,7 +223,7 @@ public class FichePatientEditGatsbi extends FichePatientEdit
     * donc l'affichage de la modale de saisie de la date.
     */
    public void onLaterSwitchToCreateMode() {
-      if (getSchemaVisitesDefinedByEtude()) {
+      if (GatsbiControllerPatient.getSchemaVisitesDefinedByEtude(sessionScope)) {
          DateModale.show(Labels.getLabel("gatsbi.schema.visites.title"), 
             Labels.getLabel("gatsbi.schema.visites.label"), null, true, self);
       }   
@@ -245,10 +245,6 @@ public class FichePatientEditGatsbi extends FichePatientEdit
    
    public String getVisitesGroupHeader() {
       return Labels.getLabel("gatsbi.schema.visites", new String[] { String.valueOf(patient.getMaladies().size())});
-   }
-   
-   public boolean getSchemaVisitesDefinedByEtude() {
-      return SessionUtils.getCurrentBanque(sessionScope).getEtude().getSchemaVisites() != null;
    }
 
    public VisiteItemRenderer getVisiteItemRenderer(){

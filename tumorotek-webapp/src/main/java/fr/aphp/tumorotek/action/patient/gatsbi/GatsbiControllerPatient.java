@@ -60,6 +60,7 @@ import fr.aphp.tumorotek.model.coeur.patient.Patient;
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.contexte.gatsbi.Contexte;
 import fr.aphp.tumorotek.webapp.gatsbi.GatsbiController;
+import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
 /**
  * Gatsbi controller regroupant les fonctionalités de modification dynamique de
@@ -358,5 +359,9 @@ public class GatsbiControllerPatient
       
       return visites;
       
+   }
+
+   public static boolean getSchemaVisitesDefinedByEtude(Map<String, Object> sessionScope){
+      return SessionUtils.getCurrentBanque(sessionScope).getEtude().getSchemaVisites() != null;
    }
 }
