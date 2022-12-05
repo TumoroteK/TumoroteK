@@ -39,6 +39,7 @@ import java.io.File;
 import java.lang.reflect.Field;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
@@ -331,7 +332,33 @@ public class PatientManagerImpl implements PatientManager
 
    @Override
    public boolean findDoublonManager(final Patient patient){
+      if (patient.getBanque() == null) {
+         return findPatientDoublonOnIdentityOrNip(patient);
+      } else { // gatsbi 
+         // recherche d'abord par identifiant si existe pour la banque
+         if (findPatientDoublonOnIdentifiant(patient)) {
+            return true;
+         }
+         
+         // sinon vérifie quand même les traits d'identités et le NIP
+         return findPatientDoublonOnIdentityOrNip(patient);
+      }  
+   }
+   
+   private boolean findPatientDoublonOnIdentifiant(final Patient patient) {
+      // un seul patient avec l'identifiant au max doit exister 
+      List<Patient> existings = patientDao
+         .findByIdentifiant(patient.getIdentifiantAsString(), Arrays.asList(patient.getBanque()));
+      if(patient.getPatientId() == null){ // nouveau, aucun patient avec cet identifiant ne doit exister
+         return !existings.isEmpty();
+      }else{ // en modification, seul LE patient avec LE même id peut exister
+         return !existings.isEmpty() && !patient.getPatientId().equals(existings.get(0).getPatientId());
+      }
+   }
+      
+   private boolean findPatientDoublonOnIdentityOrNip(final Patient patient) {
       boolean doublon = false;
+
       if(patient.getPatientId() == null){
          doublon = patientDao.findByNom(patient.getNom()).contains(patient);
       }else{
@@ -1119,8 +1146,8 @@ public class PatientManagerImpl implements PatientManager
          Patient p;
          for(final Integer id : ids){
             p = findByIdManager(id);
-            p.setBanque(b); // @since 2.3.0-gasbi, si banque non nulle alors identifiant sera chois comme phantomData
             if(p != null){
+               p.setBanque(b); // @since 2.3.0-gasbi, si banque non nulle alors identifiant sera chois comme phantomData
                removeObjectManager(p, comment, u, filesToDelete);
             }
          }

@@ -432,6 +432,18 @@ public class Patient extends TKDelegetableObject<Patient> implements TKAnnotable
       return getIdentifiant(_b).getIdentifiant();
    }
    
+   @Transient
+   public PatientIdentifiant getIdentifiant() {
+      return patientIdentifiants.stream()
+         .filter(i -> i.getBanque().equals(banque)).findFirst()
+         .orElse(new PatientIdentifiant(this, banque));
+   }
+   
+   @Transient
+   public String getIdentifiantAsString() {
+      return getIdentifiant(banque).getIdentifiant();
+   }
+   
    public void addToIdentifiants(PatientIdentifiant ident) {
       // suppr tout identifiant existant dont la valeur 'identifiant' 
       // diffère de celui passé en paramètre
@@ -445,7 +457,10 @@ public class Patient extends TKDelegetableObject<Patient> implements TKAnnotable
       if (!patientIdentifiants.contains(ident)) { // ajoute identifiant si nécessaire
          this.patientIdentifiants.add(ident);
       }
-
+   }
+   
+   public void addToIdentifiants(String ident, Banque bank) {
+      addToIdentifiants(new PatientIdentifiant(this, bank, ident));
    }
 
    /**
@@ -469,7 +484,6 @@ public class Patient extends TKDelegetableObject<Patient> implements TKAnnotable
       final boolean eq = Objects.equals(nom, test.getNom())
          && Objects.equals(prenom, test.getPrenom())
          && Objects.equals(dateNaissance, test.getDateNaissance());
-        // && Objects.equals(identifiant, test.getIdentifiant());
 
       // verif supp sur la ville de naissance
       if(this.villeNaissance != null && test.villeNaissance != null){

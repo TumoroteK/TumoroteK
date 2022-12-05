@@ -1712,4 +1712,54 @@ public class PatientManagerTest extends AbstractManagerTest4
       patients = patientManager.findByIdentifiantLikeManager("LUX-12", false, banks);
       assertTrue(patients.isEmpty()); 
    }
+   
+   /**
+    * @since 2.3.0-gatsbi
+    */
+   @Test
+   public void testFindDoublonGatsbiIdentifiant(){
+      
+      Banque b1 = banqueManager.findByIdManager(1);
+      
+      // patient avec banque
+      final Patient pNew = new Patient();
+      pNew.setBanque(b1);
+      
+      // doublon sur identifiant
+      pNew.addToIdentifiants("SLS-1234", b1);
+      assertTrue(patientManager.findDoublonManager(pNew));
+      
+      // edition, même patient id
+      pNew.setPatientId(1);
+      assertFalse(patientManager.findDoublonManager(pNew));
+
+      // si edit différent
+      pNew.setPatientId(12);
+      assertTrue(patientManager.findDoublonManager(pNew));
+      
+      // identantifiant est différent 
+      // mais traits d'identités nom / nip existant
+      final Patient p1 = patientManager.findByNipLikeManager("12", true).get(0);
+
+      pNew.setPatientId(null);
+      pNew.getPatientIdentifiants().clear();
+      pNew.addToIdentifiants("SLS-NEW0001", b1);
+      assertFalse(patientManager.findDoublonManager(pNew));
+      
+      // nom
+      // ssi tout le reste de l'identité correspond TODO !?
+      pNew.setNom(p1.getNom());
+      assertFalse(patientManager.findDoublonManager(pNew));
+
+      pNew.setPrenom(p1.getPrenom());
+      pNew.setDateNaissance(p1.getDateNaissance());
+      assertTrue(patientManager.findDoublonManager(pNew));
+
+      // nip
+      pNew.setNom("NEWPATIENT");
+      assertFalse(patientManager.findDoublonManager(pNew));
+
+      pNew.setNip(p1.getNip());
+      assertTrue(patientManager.findDoublonManager(pNew));
+   }
 }

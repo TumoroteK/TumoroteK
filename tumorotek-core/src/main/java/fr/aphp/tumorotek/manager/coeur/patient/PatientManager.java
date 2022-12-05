@@ -71,7 +71,7 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
  * 	- Supprimer un patient
  *
  * @author Mathieu BARTHELEMY
- * @version 2.0.12
+ * @version 2.3.0-gatsbi
  *
  */
 public interface PatientManager
@@ -101,8 +101,13 @@ public interface PatientManager
     * Cherche les doublons en se basant sur la methode equals()
     * surchargee par les entites. Si l'objet est modifie donc a un id
     * attribue par le SGBD, ce dernier est retire de la liste findAll.
+    * 
+    * Gatsbi: patient dont on cherche le doublon a banque non nulle (transient) 
+    * ce qui permet de rechercher si l'identifiant existe dans la collection
+    * 
     * @param patient Patient dont on cherche la presence dans la base
     * @return true/false
+    * @version 2.3.0-gatsbi
     */
    boolean findDoublonManager(Patient patient);
 
