@@ -64,7 +64,6 @@ import org.zkoss.zul.Toolbar;
 import fr.aphp.tumorotek.action.ManagerLocator;
 import fr.aphp.tumorotek.action.constraints.ConstCode;
 import fr.aphp.tumorotek.action.constraints.ConstWord;
-import fr.aphp.tumorotek.action.contexte.ContexteConstraints;
 import fr.aphp.tumorotek.action.controller.AbstractFicheEditController;
 import fr.aphp.tumorotek.action.prelevement.PrelevementConstraints;
 import fr.aphp.tumorotek.component.CalendarBox;
@@ -615,8 +614,12 @@ public class FichePatientEdit extends AbstractFicheEditController
       return PatientConstraints.getNomNullConstraint();
    }
 
-   public ConstWord getVillePaysConstraint(){
-      return ContexteConstraints.getVillePaysConstraint();
+   public ConstWord getVilleNaissanceConstraint(){
+      return PatientConstraints.getVilleNaissanceConstraint();
+   }
+   
+   public ConstWord getPaysNaissanceConstraint(){
+      return PatientConstraints.getPaysNaissanceConstraint();
    }
 
    /**

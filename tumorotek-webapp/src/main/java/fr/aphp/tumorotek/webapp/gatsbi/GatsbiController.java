@@ -570,7 +570,7 @@ public class GatsbiController
 
    public static Constraint muteConstraintFromContexte(Constraint constraint, boolean required){
       if(constraint != null){
-         log.debug("Constraint " + constraint.toString() + " being switched to " + (required ? "" : " not ") + "required");
+         log.debug("Constraint " + constraint.toString() + " being switched to " + (required ? "" : "not ") + "required");
 
          if(constraint instanceof TumoTextConstraint){
             ((TumoTextConstraint) constraint).setNullable(!required);

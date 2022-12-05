@@ -70,6 +70,8 @@ import fr.aphp.tumorotek.action.controller.AbstractFicheModifMultiController;
 import fr.aphp.tumorotek.action.controller.AbstractObjectTabController;
 import fr.aphp.tumorotek.action.echantillon.EchantillonController;
 import fr.aphp.tumorotek.action.echantillon.FicheMultiEchantillons;
+import fr.aphp.tumorotek.action.patient.MaladieConstraints;
+import fr.aphp.tumorotek.action.patient.PatientConstraints;
 import fr.aphp.tumorotek.action.patient.PatientController;
 import fr.aphp.tumorotek.action.prelevement.serotk.FichePrelevementEditSero;
 import fr.aphp.tumorotek.action.prelevement.serotk.FichePrelevementStaticSero;
@@ -204,6 +206,12 @@ public class PrelevementController extends AbstractObjectTabController
 
       switchToOnlyListeMode();
       orderAnnotationDraw(false);
+      
+      // @since 2.3.0-gatsbi
+      // force constraints reset des status nullable
+      PatientConstraints.resetNullableProps();
+      MaladieConstraints.resetNullableProps();
+      PrelevementConstraints.resetNullableProps();
    }
    
    /**

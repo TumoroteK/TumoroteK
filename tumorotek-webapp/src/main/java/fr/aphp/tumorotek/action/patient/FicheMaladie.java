@@ -1044,24 +1044,14 @@ public class FicheMaladie extends AbstractFicheCombineController
    /*************************************************************************/
    /************************** VALIDATION ***********************************/
    /*************************************************************************/
-   private static ConstWord libelleConstraint = new ConstWord();
-   {
-      libelleConstraint.setNullable(false);
-      libelleConstraint.setSize(300);
-   }
 
-   private static ConstWord codeNullConstraint = new ConstWord();
-   {
-      codeNullConstraint.setNullable(true);
-      codeNullConstraint.setSize(50);
-   }
 
    public ConstWord getCodeNullConstraint(){
-      return codeNullConstraint;
+      return MaladieConstraints.getCodeNullConstraint();
    }
 
    public ConstWord getLibelleConstraint(){
-      return libelleConstraint;
+      return MaladieConstraints.getLibelleConstraint();
    }
 
    public Maladie getMaladie(){

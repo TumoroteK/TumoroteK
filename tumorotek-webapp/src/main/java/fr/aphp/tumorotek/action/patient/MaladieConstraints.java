@@ -33,75 +33,47 @@
  * avez pris connaissance de la licence CeCILL, et que vous en avez
  * accepté les termes.
  **/
-package fr.aphp.tumorotek.action.echantillon;
+package fr.aphp.tumorotek.action.patient;
 
-import fr.aphp.tumorotek.action.constraints.ConstCode;
-import fr.aphp.tumorotek.action.constraints.ConstFilename;
+import fr.aphp.tumorotek.action.constraints.ConstWord;
 
 /**
  * Utility class fournissant les contraintes qui seront appliquées dans
  * l'interface par zk.
- * Date: 26/07/2010.
  *
  * @author Mathieu BARTHELEMY
  * @version 2.3.0-gatsbi
  */
-public final class EchantillonConstraints
+public final class MaladieConstraints
 {
 
-   private EchantillonConstraints(){}
+   private MaladieConstraints(){}
    
-// @since 2.3.0-gatsbi reset nullable 
+   // @since 2.3.0-gatsbi reset nullable 
    public static void resetNullableProps() {
-      codePrefixConstraint.setNullable(false);
-      codePrefixNullableConstraint.setNullable(true);
-      codeSuffixConstraint.setNullable(false);
-      crAnapathConstraint.setNullable(true);
+      libelleConstraint.setNullable(false);
+      codeNullConstraint.setNullable(true);
    }
 
-   private static ConstCode codePrefixConstraint = new ConstCode();
-   static{
-      codePrefixConstraint.setNullable(false);
-      codePrefixConstraint.setSize(50);
+   private static ConstWord libelleConstraint = new ConstWord();
+   {
+      libelleConstraint.setNullable(false);
+      libelleConstraint.setSize(300);
    }
 
-   private static ConstCode codePrefixNullableConstraint = new ConstCode();
-   static{
-      codePrefixNullableConstraint.setNullable(true);
-      codePrefixNullableConstraint.setSize(50);
+   private static ConstWord codeNullConstraint = new ConstWord();
+   {
+      codeNullConstraint.setNullable(true);
+      codeNullConstraint.setSize(50);
    }
 
-   private static ConstCode codeSuffixConstraint = new ConstCode();
-   static{
-      codeSuffixConstraint.setNullable(false);
-      codeSuffixConstraint.setSize(30);
+   public static ConstWord getCodeNullConstraint(){
+      return codeNullConstraint;
    }
 
-   private static ConstFilename crAnapathConstraint = new ConstFilename();
-   static{
-      crAnapathConstraint.setNullable(true);
-      crAnapathConstraint.setSize(50);
+   public static ConstWord getLibelleConstraint(){
+      return libelleConstraint;
    }
 
-   private static final int SIZELIMIT = 10000;
-
-   public static int getSizeLimit(){
-      return SIZELIMIT;
-   }
-
-   public static ConstCode getCodePrefixConstraint(){
-      return codePrefixConstraint;
-   }
-
-   public static ConstCode getCodePrefixNullableConstraint(){
-      return codePrefixNullableConstraint;
-   }
-
-   public static ConstCode getCodeSuffixConstraint(){
-      return codeSuffixConstraint;
-   }
-
-   public static ConstFilename getCrAnapathConstraint(){
-      return crAnapathConstraint;
-   }
+  
 }

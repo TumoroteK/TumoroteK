@@ -52,10 +52,12 @@ public final class PatientConstraints
    private PatientConstraints(){}
    
    // @since 2.3.0-gatsbi reset nullable 
-   public void resetNullableProps() {
+   public static void resetNullableProps() {
       codeNullConstraint.setNullable(true);
       nomConstraint.setNullable(false);
       nomNullConstraint.setNullable(true);
+      paysNaissanceConstraint.setNullable(true);
+      villeNaissanceConstraint.setNullable(true);
    }
 
    private static ConstCode codeNullConstraint = new ConstCode();
@@ -75,6 +77,18 @@ public final class PatientConstraints
       nomNullConstraint.setNullable(true);
       nomNullConstraint.setSize(50);
    }
+   
+   private static ConstWord paysNaissanceConstraint = new ConstWord();
+   static{
+      paysNaissanceConstraint.setNullable(true);
+      paysNaissanceConstraint.setSize(100);
+   }
+   
+   private static ConstWord villeNaissanceConstraint = new ConstWord();
+   static{
+      villeNaissanceConstraint.setNullable(true);
+      villeNaissanceConstraint.setSize(100);
+   }
 
    public static ConstCode getCodeNullConstraint(){
       return codeNullConstraint;
@@ -88,4 +102,11 @@ public final class PatientConstraints
       return nomNullConstraint;
    }
 
+   public static ConstWord getVilleNaissanceConstraint(){
+      return villeNaissanceConstraint;
+   }
+
+   public static ConstWord getPaysNaissanceConstraint(){
+      return paysNaissanceConstraint;
+   }
 }
