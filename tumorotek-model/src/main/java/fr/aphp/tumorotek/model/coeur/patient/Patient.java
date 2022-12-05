@@ -564,10 +564,17 @@ public class Patient extends TKDelegetableObject<Patient> implements TKAnnotable
    @Override
    @Transient
    public String getPhantomData(){
-      if(getPrenom() != null){
-         return getNom() + " " + getPrenom();
-      }else{
-         return getNom();
+      // @since gatsbi
+      // se base sur identifiant si banque (transient)
+      // attribuée au patient
+      if (getIdentifiantAsString(banque) == null) {
+         if(getPrenom() != null){
+            return getNom() + " " + getPrenom();
+         }else{
+            return getNom();
+         }
+      } else { // supprime patient créé depuis collection étude gatsbi
+         return getIdentifiantAsString(banque);
       }
    }
 

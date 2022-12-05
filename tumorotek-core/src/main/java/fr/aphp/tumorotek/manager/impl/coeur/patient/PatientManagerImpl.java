@@ -1113,12 +1113,13 @@ public class PatientManagerImpl implements PatientManager
    }
 
    @Override
-   public void removeListFromIdsManager(final List<Integer> ids, final String comment, final Utilisateur u){
+   public void removeListFromIdsManager(final List<Integer> ids, final String comment, final Utilisateur u, final Banque b){
       if(ids != null){
          final List<File> filesToDelete = new ArrayList<>();
          Patient p;
          for(final Integer id : ids){
             p = findByIdManager(id);
+            p.setBanque(b); // @since 2.3.0-gasbi, si banque non nulle alors identifiant sera chois comme phantomData
             if(p != null){
                removeObjectManager(p, comment, u, filesToDelete);
             }

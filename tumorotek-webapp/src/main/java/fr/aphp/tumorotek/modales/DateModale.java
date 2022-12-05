@@ -78,7 +78,7 @@ public class DateModale implements Serializable
    private String label;
    private Date value;
    private Boolean closable = true;
-   
+      
    /**
     * Affiche de la popup de choix d'une date
     * @param defaultValue valeur par défaut à afficher dans la popup
@@ -87,7 +87,7 @@ public class DateModale implements Serializable
    public static void show(final String titre, final String label, final Date defaultValue, 
                                                    final boolean closable, final Component parent)
    {
-
+      
       final Map<String, Object> args = new HashMap<>();
       args.put("title", titre);
       args.put("label", label);
@@ -110,7 +110,7 @@ public class DateModale implements Serializable
       fwinDateModale.setBorder("normal");
       fwinDateModale.setWidth("280px");
       fwinDateModale.setPosition("center, center");
-
+      
       cancelBtn.setVisible(closable);
    }
 

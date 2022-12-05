@@ -376,9 +376,11 @@ public interface PatientManager
     * @param ids
     * @param String fantome commentaire
     * @param u Utilisateur (opération suppr)
-    * @since 2.0.12
+    * @param b banque
+    * @since 2.3.0-gatsbi banque permet de choisir identifiant gatsbi pour fantôme (car nom, prénom peuvent être nulls)
+    * @version 2.3.0-gatsbi 
     */
-   void removeListFromIdsManager(List<Integer> ids, String comment, Utilisateur u);
+   void removeListFromIdsManager(List<Integer> ids, String comment, Utilisateur u, Banque b);
 
    /**
     * Find by Id

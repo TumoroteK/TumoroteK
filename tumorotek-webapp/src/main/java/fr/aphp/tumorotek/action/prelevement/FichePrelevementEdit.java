@@ -911,13 +911,18 @@ public class FichePrelevementEdit extends AbstractFicheEditController
             final Component embeddedMaladie = referenceur.getFellow("winRefPatient").getFellow("newPatientDiv")
                .getFellow("ficheMaladieWithPatientDiv").getFirstChild();
 
-            // force la validation des dates maladies
-            // car les dates de naissance
-            // et deces du patient ont pu être modifée à posteriori
-            ((FicheMaladie) embeddedMaladie.getFellow("fwinMaladie").getAttributeOrFellow("fwinMaladie$composer", true))
-               .validateAllDateComps();
-
-            setMaladieFromEmbedded(embeddedMaladie);
+            if (embeddedMaladie != null) {
+               // force la validation des dates maladies
+               // car les dates de naissance
+               // et deces du patient ont pu être modifée à posteriori
+               ((FicheMaladie) embeddedMaladie.getFellow("fwinMaladie").getAttributeOrFellow("fwinMaladie$composer", true))
+                  .validateAllDateComps();
+               setMaladieFromEmbedded(embeddedMaladie);
+            } else if (this.maladieEmbedded){ // @since gatsbi, nouveau patient, nouvelle maladie (visite) hors schema
+               final Component embedded = referenceur.getFellow("winRefPatient").getFellow("embeddedFicheMaladieRow")
+                  .getFellow("embeddedFicheMaladieDiv");
+               setMaladieFromEmbedded(embedded);
+            }
 
             final Component embeddedPatient =
                referenceur.getFellow("winRefPatient").getFellow("newPatientDiv").getFellow("fichePatientDiv").getFirstChild();

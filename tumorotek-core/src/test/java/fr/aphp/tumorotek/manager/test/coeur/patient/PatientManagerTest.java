@@ -1574,13 +1574,13 @@ public class PatientManagerTest extends AbstractManagerTest4
       final List<Integer> ids = new ArrayList<>();
 
       // null list
-      patientManager.removeListFromIdsManager(null, null, u2);
+      patientManager.removeListFromIdsManager(null, null, u2, null);
       // empty list
-      patientManager.removeListFromIdsManager(ids, "test", u2);
+      patientManager.removeListFromIdsManager(ids, "test", u2, null);
       // non existing ids
       ids.add(22);
       ids.add(33);
-      patientManager.removeListFromIdsManager(ids, "", u2);
+      patientManager.removeListFromIdsManager(ids, "", u2, null);
 
       testFindAllObjectsManager();
 
@@ -1622,7 +1622,7 @@ public class PatientManagerTest extends AbstractManagerTest4
       // rollback used object Exception
       boolean catched = false;
       try{
-         patientManager.removeListFromIdsManager(ids, "suppr list ids", u2);
+         patientManager.removeListFromIdsManager(ids, "suppr list ids", u2, null);
       }catch(final ObjectUsedException oe){
          catched = true;
          assertTrue(oe.getMessage().equals("patient.deletion.isUsed"));
@@ -1631,7 +1631,7 @@ public class PatientManagerTest extends AbstractManagerTest4
       assertTrue(patientDao.findByNom("PAT_").size() == 3);
 
       ids.remove(patUsedObject);
-      patientManager.removeListFromIdsManager(ids, "suppr list ids", u2);
+      patientManager.removeListFromIdsManager(ids, "suppr list ids", u2, null);
       assertTrue(patientDao.findByNom("PAT_").isEmpty());
 
       assertTrue(getFantomeDao().findByNom("PAT2 Jean").get(0).getCommentaires().equals("suppr list ids"));

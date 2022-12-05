@@ -44,12 +44,19 @@ import fr.aphp.tumorotek.action.constraints.ConstWord;
  * Date: 26/07/2010.
  *
  * @author Mathieu BARTHELEMY
- * @version 2.0
+ * @version 2.3.0-gatsbi
  */
 public final class PatientConstraints
 {
 
    private PatientConstraints(){}
+   
+   // @since 2.3.0-gatsbi reset nullable 
+   public void resetNullableProps() {
+      codeNullConstraint.setNullable(true);
+      nomConstraint.setNullable(false);
+      nomNullConstraint.setNullable(true);
+   }
 
    private static ConstCode codeNullConstraint = new ConstCode();
    static{

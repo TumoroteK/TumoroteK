@@ -269,7 +269,7 @@ public class ReferenceurPatient extends GenericForwardComposer<Component>
     *
     * @param e Event contenant le patient sélectionné.
     */
-   public void onGetPatientFromSelection(final Event e){
+   public Patient onGetPatientFromSelection(final Event e){
 
       if(e.getData() != null){
 
@@ -315,7 +315,11 @@ public class ReferenceurPatient extends GenericForwardComposer<Component>
 
             }
          }
+         
+         return patSel;
       }
+      
+      return null;
    }
 
    /**
@@ -478,7 +482,7 @@ public class ReferenceurPatient extends GenericForwardComposer<Component>
     * Efface le bouton et le message 'noMaladies', et rend la liste de
     * maladies inacessible.
     */
-   public void onClick$embedMaladieButton(){
+   public FicheMaladie onClick$embedMaladieButton(){
 
       createMaladieComponent(embeddedFicheMaladieDiv);
       setEmbeddedMaladieVisible(true);
@@ -500,6 +504,8 @@ public class ReferenceurPatient extends GenericForwardComposer<Component>
       ficheMaladie.setEmbedded(true);
       ficheMaladie.getObject().setPatient(selectedPatient);
       fichePrelevementEdit.setMaladieEmbedded(true);
+      
+      return ficheMaladie;
    }
 
    /**
@@ -527,7 +533,7 @@ public class ReferenceurPatient extends GenericForwardComposer<Component>
     *
     * @param bool
     */
-   private void setEmbeddedMaladieVisible(final boolean bool){
+   protected void setEmbeddedMaladieVisible(final boolean bool){
       this.embeddedFicheMaladieRow.setVisible(bool);
       this.embedMaladieButton.setVisible(!bool);
 
@@ -575,11 +581,11 @@ public class ReferenceurPatient extends GenericForwardComposer<Component>
             .getAttributeOrFellow("fwinPatientEdit$composer", true);
 
          fichePatient.setEmbedded(pat);
-
-         embedFicheMaladie(fichePatient, pat);
          
          // efface la grid existing patient
          displayExistingPatient(false);
+         
+         embedFicheMaladie(fichePatient, pat);
 
       }else{
          // detache les composants
@@ -638,7 +644,7 @@ public class ReferenceurPatient extends GenericForwardComposer<Component>
     *
     * @param show
     */
-   private void displayExistingPatient(final boolean show){
+   protected void displayExistingPatient(final boolean show){
 
       this.existingPatientGrid.setVisible(show);
 

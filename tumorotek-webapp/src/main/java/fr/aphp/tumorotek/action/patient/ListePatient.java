@@ -415,8 +415,13 @@ public class ListePatient extends AbstractListeController2
       this.comparatorDesc = c;
    }
 
+   // @since gatsbi current banque est utilisée pour identifier le patient 
+   // TODO attention mode toutes collections
    @Override
    public void batchDelete(final List<Integer> ids, final String comment){
-      ManagerLocator.getPatientManager().removeListFromIdsManager(ids, comment, SessionUtils.getLoggedUser(sessionScope));
+      ManagerLocator.getPatientManager()
+         .removeListFromIdsManager(ids, comment, 
+            SessionUtils.getLoggedUser(sessionScope), 
+            SessionUtils.getCurrentBanque(sessionScope));
    }
 }

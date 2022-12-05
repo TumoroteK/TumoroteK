@@ -603,10 +603,9 @@ div.z-listbox.listBox {
 
 div.z-listbox.listBox tr.z-listbox-odd{
 	background-color : #FFFFFF;
-	background-image : none;
 }
 
-div.z-listbox.listBox tr.z-list-item-seld{
+div.z-listbox.listBox tr.z-list-item-seld {
 	background-color : #e8b3c8;
 }
 
@@ -622,4 +621,9 @@ div.z-listbox.listBox tr.z-list-item-seld{
 	border-style : solid;
 	border-width : 1px;
 	border-color : #FFFFFF;
+}
+
+div.z-listbox.listBox tr.z-listbox-odd:hover{
+	background-color : #d2d8f3;
+	background-image : none;
 }

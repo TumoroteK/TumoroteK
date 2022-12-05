@@ -83,6 +83,11 @@ public class FichePatientEditGatsbi extends FichePatientEdit
    private Div patientNdaDiv;
    private Groupbox groupVisites;
    
+   // utilisé pour gérer l'evt de retour de la provision 
+   // de la date d'inclusion du schéma de visite
+   // si true, c'est le ReferenceurPatient qui gère l'evt
+   private boolean embedded  = false;
+   
    private VisiteItemRenderer visiteItemRenderer = new VisiteItemRenderer();
    private List<Maladie> visites = new ArrayList<Maladie>();
    
@@ -177,6 +182,9 @@ public class FichePatientEditGatsbi extends FichePatientEdit
    @Override
    public void setEmbedded(Patient pat){
       super.setEmbedded(pat);
+      
+      groupVisites.setVisible(false);
+      this.embedded = true;
             
       // nda contextualisé par prélèvement
       Contexte contextePrelevement = SessionUtils.getCurrentGatsbiContexteForEntiteId(2);
@@ -223,7 +231,7 @@ public class FichePatientEditGatsbi extends FichePatientEdit
     * donc l'affichage de la modale de saisie de la date.
     */
    public void onLaterSwitchToCreateMode() {
-      if (GatsbiControllerPatient.getSchemaVisitesDefinedByEtude(sessionScope)) {
+      if (!embedded && GatsbiControllerPatient.getSchemaVisitesDefinedByEtude(sessionScope)) {
          DateModale.show(Labels.getLabel("gatsbi.schema.visites.title"), 
             Labels.getLabel("gatsbi.schema.visites.label"), null, true, self);
       }   

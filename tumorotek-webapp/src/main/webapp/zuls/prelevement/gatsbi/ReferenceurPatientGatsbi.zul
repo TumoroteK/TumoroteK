@@ -78,9 +78,9 @@
 				<label value="${c:l('general.recherche.aucunResultat')}" sclass="infoLabel" />
 			</row>
 			<!-- Liste Maladies associées au patient-->
-			<row id="resultsMaladiesRow" >
-				<listbox id="maladiesBox"
-					model="@{winRefPatient$composer.maladies}"
+			<row id="resultsMaladiesRow">
+				<listbox id="maladiesBox" style="border: 1px solid"
+					model="@{winRefPatient$composer.maladies, load-after='winRefPatient.onFromDateProvided, radioGroup.onCheck'}"
 					selectedItem="@{winRefPatient$composer.selectedMaladie}" mold="paging"
 					sclass="listBox" width="100%" visible="false">
 					<listhead>

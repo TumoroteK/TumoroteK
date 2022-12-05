@@ -1093,26 +1093,34 @@ public class PrelevementManagerImpl implements PrelevementManager
       // Maladie non required mais utilise dans validation
       if(maladie != null){
          if(maladie.getMaladieId() == null){ // creation conjointe
-            if(maladie.getPatient().getPatientId() == null){
-               patientManager.createOrUpdateObjectManager(maladie.getPatient(), null, null, null, null, null, null, null,
-                  utilisateur, "creation", baseDir, false);
+            
+            // @since gatsbi list maladies may be provided
+            List<Maladie> visites =  new ArrayList<Maladie>();
+            
+            if(maladie.getPatient().getPatientId() == null){               
+               // les visites sont toutes à créer en même temps que le patient
+               visites.addAll(maladie.getPatient().getMaladies()); 
+               patientManager.createOrUpdateObjectManager(maladie.getPatient(), 
+                  visites.isEmpty() ? null : visites, 
+                  null, null, null, null, null, null,
+                  utilisateur, "creation", baseDir, false);              
             }
-            maladieManager.createOrUpdateObjectManager(maladie, null, null, utilisateur, "creation");
+            
+            // @since gatsbi, creation de la visite si n'a pas été créé auparavant 
+            // dans la liste de visites
+            if (visites.isEmpty() || maladie.getPatient().getMaladies().stream()
+                  .noneMatch(v -> v.getLibelle().equals(maladie.getLibelle()))) { 
+               maladieManager.createOrUpdateObjectManager(maladie, null, null, utilisateur, "creation");
+               maladieManager.getMaladiesManager(maladie.getPatient()).add(maladie);
+               prelevement.setMaladie(maladie);
+            } else { // la maladie a été créée comme une visite
+               prelevement.setMaladie(maladie.getPatient().getMaladies().stream()
+                  .filter(v -> v.getLibelle().equals(maladie.getLibelle())).findFirst().get());
+            }
 
-            maladieManager.getMaladiesManager(maladie.getPatient()).add(maladie);
-
-            // // validation maladie
-            // BeanValidator.validateObject(maladie,
-            // new Validator[]{maladieValidator});
-            // // creation conjointe maladie - patient
-            // if (maladie.getPatient().getPatientId() == null) {
-            // BeanValidator.validateObject(maladie.getPatient(),
-            // new Validator[]{patientValidator});
-            // maladie.setPatient(patientDao
-            // .mergeObject(maladie.getPatient()));
-            // }
+         } else { // maladie existante
+            prelevement.setMaladie(maladie);
          }
-         prelevement.setMaladie(maladie);
       }
       if(laboInters != null){
          prelevement.setLaboInters(new HashSet<>(laboInters));
