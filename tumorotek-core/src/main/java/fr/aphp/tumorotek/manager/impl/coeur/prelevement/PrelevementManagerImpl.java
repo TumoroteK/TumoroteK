@@ -1541,7 +1541,7 @@ public class PrelevementManagerImpl implements PrelevementManager
       for(int i = 0; i < prelevements.size(); i++){
          final Prelevement prel = prelevements.get(i);
          try{
-            updateObjectManager(prel, prel.getBanque(), null, null, null, prel.getPreleveur(), prel.getServicePreleveur(),
+            updateObjectManager(prel, prel.getBanque(), prel.getNature(), null, prel.getConsentType(), prel.getPreleveur(), prel.getServicePreleveur(),
                prel.getPrelevementType(), prel.getConditType(), prel.getConditMilieu(), prel.getTransporteur(),
                prel.getOperateur(), prel.getQuantiteUnite(), null, null, null, filesCreated, filesToDelete, utilisateur,
                nosterile, true, baseDir, true);
