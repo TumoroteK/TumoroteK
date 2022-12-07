@@ -1574,13 +1574,13 @@ public class PatientManagerTest extends AbstractManagerTest4
       final List<Integer> ids = new ArrayList<>();
 
       // null list
-      patientManager.removeListFromIdsManager(null, null, u2);
+      patientManager.removeListFromIdsManager(null, null, u2, null);
       // empty list
-      patientManager.removeListFromIdsManager(ids, "test", u2);
+      patientManager.removeListFromIdsManager(ids, "test", u2, null);
       // non existing ids
       ids.add(22);
       ids.add(33);
-      patientManager.removeListFromIdsManager(ids, "", u2);
+      patientManager.removeListFromIdsManager(ids, "", u2, null);
 
       testFindAllObjectsManager();
 
@@ -1622,7 +1622,7 @@ public class PatientManagerTest extends AbstractManagerTest4
       // rollback used object Exception
       boolean catched = false;
       try{
-         patientManager.removeListFromIdsManager(ids, "suppr list ids", u2);
+         patientManager.removeListFromIdsManager(ids, "suppr list ids", u2, null);
       }catch(final ObjectUsedException oe){
          catched = true;
          assertTrue(oe.getMessage().equals("patient.deletion.isUsed"));
@@ -1631,7 +1631,7 @@ public class PatientManagerTest extends AbstractManagerTest4
       assertTrue(patientDao.findByNom("PAT_").size() == 3);
 
       ids.remove(patUsedObject);
-      patientManager.removeListFromIdsManager(ids, "suppr list ids", u2);
+      patientManager.removeListFromIdsManager(ids, "suppr list ids", u2, null);
       assertTrue(patientDao.findByNom("PAT_").isEmpty());
 
       assertTrue(getFantomeDao().findByNom("PAT2 Jean").get(0).getCommentaires().equals("suppr list ids"));
@@ -1711,5 +1711,55 @@ public class PatientManagerTest extends AbstractManagerTest4
       banks.clear();
       patients = patientManager.findByIdentifiantLikeManager("LUX-12", false, banks);
       assertTrue(patients.isEmpty()); 
+   }
+   
+   /**
+    * @since 2.3.0-gatsbi
+    */
+   @Test
+   public void testFindDoublonGatsbiIdentifiant(){
+      
+      Banque b1 = banqueManager.findByIdManager(1);
+      
+      // patient avec banque
+      final Patient pNew = new Patient();
+      pNew.setBanque(b1);
+      
+      // doublon sur identifiant
+      pNew.addToIdentifiants("SLS-1234", b1);
+      assertTrue(patientManager.findDoublonManager(pNew));
+      
+      // edition, même patient id
+      pNew.setPatientId(1);
+      assertFalse(patientManager.findDoublonManager(pNew));
+
+      // si edit différent
+      pNew.setPatientId(12);
+      assertTrue(patientManager.findDoublonManager(pNew));
+      
+      // identantifiant est différent 
+      // mais traits d'identités nom / nip existant
+      final Patient p1 = patientManager.findByNipLikeManager("12", true).get(0);
+
+      pNew.setPatientId(null);
+      pNew.getPatientIdentifiants().clear();
+      pNew.addToIdentifiants("SLS-NEW0001", b1);
+      assertFalse(patientManager.findDoublonManager(pNew));
+      
+      // nom
+      // ssi tout le reste de l'identité correspond TODO !?
+      pNew.setNom(p1.getNom());
+      assertFalse(patientManager.findDoublonManager(pNew));
+
+      pNew.setPrenom(p1.getPrenom());
+      pNew.setDateNaissance(p1.getDateNaissance());
+      assertTrue(patientManager.findDoublonManager(pNew));
+
+      // nip
+      pNew.setNom("NEWPATIENT");
+      assertFalse(patientManager.findDoublonManager(pNew));
+
+      pNew.setNip(p1.getNip());
+      assertTrue(patientManager.findDoublonManager(pNew));
    }
 }

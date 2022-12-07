@@ -81,7 +81,7 @@ import fr.aphp.tumorotek.webapp.general.SessionUtils;
  * Controller créé le 02/11/2009.
  *
  * @author Pierre Ventadour
- * @version 2.2.0
+ * @version 2.3.0-gasbi
  * @since 2.1.0
  */
 public class EchantillonController extends AbstractObjectTabController
@@ -140,7 +140,10 @@ public class EchantillonController extends AbstractObjectTabController
 
       switchToOnlyListeMode();
       orderAnnotationDraw(false);
-
+      
+      // @since 2.3.0-gatsbi
+      // force constraints reset des status nullable
+      EchantillonConstraints.resetNullableProps();
    }
 
    @Override

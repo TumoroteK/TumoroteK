@@ -1,0 +1,232 @@
+<!--
+ * Copyright ou © ou Copr. Ministère de la santé, FRANCE (01/01/2011)
+ * dsi-projet.tk@aphp.fr
+ * 
+ * Ce logiciel est un programme informatique servant à la gestion de 
+ * l'activité de biobanques. 
+ *
+ * Ce logiciel est régi par la licence CeCILL soumise au droit français
+ * et respectant les principes de diffusion des logiciels libres. Vous 
+ * pouvez utiliser, modifier et/ou redistribuer ce programme sous les 
+ * conditions de la licence CeCILL telle que diffusée par le CEA, le 
+ * CNRS et l'INRIA sur le site "http://www.cecill.info". 
+ * En contrepartie de l'accessibilité au code source et des droits de   
+ * copie, de modification et de redistribution accordés par cette 
+ * licence, il n'est offert aux utilisateurs qu'une garantie limitée. 
+ * Pour les mêmes raisons, seule une responsabilité restreinte pèse sur 
+ * l'auteur du programme, le titulaire des droits patrimoniaux et les 
+ * concédants successifs.
+ *
+ * A cet égard  l'attention de l'utilisateur est attirée sur les 
+ * risques associés au chargement,  à l'utilisation,  à la modification 
+ * et/ou au  développement et à la reproduction du logiciel par 
+ * l'utilisateur étant donné sa spécificité de logiciel libre, qui peut 
+ * le rendre complexe à manipuler et qui le réserve donc à des 	
+ * développeurs et des professionnels  avertis possédant  des 
+ * connaissances  informatiques approfondies.  Les utilisateurs sont 
+ * donc invités à charger  et  tester  l'adéquation  du logiciel à leurs
+ * besoins dans des conditions permettant d'assurer la sécurité de leurs
+ * systèmes et ou de leurs données et, plus généralement, à l'utiliser 
+ * et l'exploiter dans les mêmes conditions de sécurité. 
+ *	
+ * Le fait que vous puissiez accéder à cet en-tête signifie que vous 
+ * avez pris connaissance de la licence CeCILL, et que vous en avez 
+ * accepté les termes. 
+-->
+<?component name="referents" macroURI="/zuls/patient/MedecinsReferents.zul" ?>
+
+<window id="fwinMaladie" apply="fr.aphp.tumorotek.action.patient.gatsbi.FicheMaladieGatsbi">
+	<panel id="container" sclass="innerPanel" use="fr.aphp.tumorotek.component.InnerPanel"
+			collapsible="true" open="false" closable="true" 
+			title="@{fwinMaladie$composer.visiteLibelle}">
+		<panelchildren style="overflow:none">
+			<div id="gatsbiContainer" class="main-container gridForm1">
+				<div id="maladieBlockDiv" style="padding-left: 5px">
+					<div id="maladieBlockDivContainer" class="block-container">
+						<div id="libelleRow" class="row-container" style="width: 100%">
+							<div class="item item-mid item-required" id="libelleDiv"><!-- Libelle -->
+								<custom-attributes champId="17" />
+								<div class="row-container chpLabel">
+									<label id="dateDiagFormLabel" value="${c:l('Champ.Maladie.Libelle')}" sclass="formLabel" />
+									<label value="*" sclass="requiredMark" />
+								</div>
+								<div>						
+									<label id="libelleLabel" value="@{fwinMaladie$FicheMaladie.object.libelle}" sclass="formValue" />
+									<textbox id="libelleBox" value="@{fwinMaladie$composer.object.libelle,
+					        								 save-when='validateC.onClick, createC.onClick'
+					        								 load-after='editC.onClick, createC.onClick, 
+					        								 fwinMaladie.onGetCodeFromAssist'}" 
+										hflex="1"
+										constraint="${fwinMaladie$composer.libelleConstraint}"
+										visible="false"/>
+								</div>
+							</div>
+							<div class="item item-mid item-required" id="dateVisiteDiv"><!-- date de visite -->
+								<custom-attributes champId="20" />
+								<div class="row-container chpLabel">
+									<label value="${c:l('gatsbi.visite.date')}" sclass="formLabel" />
+									<label value="*" sclass="requiredMark" />
+								</div>
+								<div>
+									<label id="dateDebutLabel" 
+										value="@{fwinMaladie$composer.dateDebutFormatted, load-after='validateC.onClick, createC.onClick'}"  
+										sclass="formValue" />
+									<datebox id="dateDebutBox" format="${c:l('validation.date.format.simple')}" 
+										value="@{fwinMaladie$composer.object.dateDebut, save-when='validateC.onClick, createC.onClick'}"
+										visible="false" lenient="true" constraint="no empty" />
+								</div>
+							</div>
+						</div> <!-- end of libelleRow -->
+						<div class="item item-mid" id="codeDiv"><!-- Code -->
+							<custom-attributes champId="18" />
+							<div class="row-container chpLabel">
+								<label id="codeDiagFormLabel" value="${c:l('Champ.Maladie.Code')}" sclass="formLabel" />
+								<label value="*" sclass="requiredMark"/>
+							</div>
+							<div class="row-container">
+								<label id="codeDiagLabel" value="@{fwinMaladie$composer.object.code}" sclass="formValue" />
+								<textbox id="codeDiagBox" value="@{fwinMaladie$composer.object.code,
+					        								 save-when='validateC.onClick, createC.onClick'
+					        								 load-after='editC.onClick, createC.onClick, 
+					        								 fwinMaladie.onGetCodeFromAssist'}" 
+									width="80px" 
+									constraint="@{fwinMaladie$composer.codeNullConstraint}"
+									visible="false"/>
+								<button id="codeAssistantButton" height="24px"
+										label="${c:l('patient.maladie.codeAssist')}"
+										image="/images/icones/codeassist.png"
+										sclass="buttonv2"
+										visible="false" />
+							</div>
+						</div>
+						<div class="item item-mid" id="dateDiagnosticDiv"><!-- date de diagnostic -->
+							<custom-attributes champId="19" />
+							<div class="row-container chpLabel">
+								<label value="${c:l('Champ.Maladie.DateDiagnostic')}" sclass="formLabel" />
+								<label value="*" sclass="requiredMark"/>
+							</div>
+							<div>
+								<label id="dateDiagLabel" sclass="formValue"
+									value="@{fwinMaladie$composer.dateDiagFormatted  
+										load-after='validateC.onClick, createC.onClick'}"  />
+								<datebox id="dateDiagBox" format="${c:l('validation.date.format.simple')}"
+									 cols="8" lenient="true"
+									value="@{fwinMaladie$composer.object.dateDiagnostic, save-when='validateC.onClick, createC.onClick'}"
+									visible="false" />
+							</div>
+						</div>
+					</div>
+					<div class="block-separator" />
+					<!-- Referents -->
+					<div class="item item-wide" id="visiteMedecinsDiv">
+						<custom-attributes champId="250" />
+						<groupbox id="referentsGroup">
+							<caption label="@{fwinMaladie$composer.referentsGroupHeader
+								load-after='validateC.onClick, createC.onClick, cancelC.onClick, onRefreshHeader'}" />
+							<div id="maladieReferentsDiv">
+								<referents id="maladieReferents" width="100%" />
+							</div>
+						</groupbox>
+					</div>
+					<div class="block-separator" />
+					<groupbox id="prelevementsMaladieGroup" 
+							style="border-bottom-style: none" open="true">
+						<caption label="@{fwinMaladie$composer.prelevementsGroupLabel}" />
+						<div>
+							<listbox id="prelevementsMaladieBox" 
+								fixedLayout="true"
+								span="true"
+								sizedByContent="false"
+								model="@{fwinMaladie$composer.prelevements}"
+								selectedItem="@{fwinMaladie$composer.selectedPrelevement}"
+								itemRenderer="${fwinMaladie$composer.prelevementRenderer}"
+								sclass="listBox">
+								<listhead sizable="true" visible="@{fwinMaladie$composer.hasPrelevements}">
+									<listheader width="50px" />
+									<listheader label="${c:l('prelevement.datePrelevementCourt')}" />
+									<listheader label="${c:l('general.code')}"  />
+									<listheader label="${c:l('Champ.Prelevement.Nature')}" />
+									<listheader label="${c:l('general.type')}" />
+									<listheader label="${c:l('Champ.Echantillon.Organe')}" />
+									<listheader label="${c:l('general.diagnostic')}" />
+									<listheader label="${c:l('Champ.Prelevement.ConsentType')}" />
+									<listheader>
+										<vbox align="center" hflex="1">
+											<label value="${c:l('prelevement.nbEchantillons')}" 
+												style="font-weight : bold;"/>
+											<label value="${c:l('prelevement.restants.total.stockes')}" 
+												style="font-weight : bold;"/>
+										</vbox>
+									</listheader>
+								</listhead>
+								<listitem self="@{each='currPrelevement'}" value="currPrelevement"/>
+							</listbox>
+							<div align="center">
+								<button id="selectAllprelevementsButton" sclass="buttonv2" label="${c:l('general.selectAll')}"  
+									height="24px" visible="@{fwinMaladie$composer.prelevementsListSizeSupOne}"
+									image="/images/icones/selectall.png" forward="onClick=onSelectAllPrelevements(all)" />	
+							</div>
+						</div>
+						<vlayout hflex="1"  vflex="1">
+							<listbox id="prelevementsFromOtherBanksMaladieBox"
+								fixedLayout="true"
+								span="true"
+								hflex="1"
+								sizedByContent="false"
+								model="@{fwinMaladie$composer.prelevementsFromOtherBanks}"
+								selectedItem="@{fwinMaladie$composer.selectedPrelevementFromOtherBank}"
+								itemRenderer="${fwinMaladie$composer.prelevementFromOtherBanksRenderer}"
+								sclass="listBox"
+								style="font-style: italic">
+								<listhead sizable="true" visible="@{fwinMaladie$composer.hasPrelevementsFromOtherBanks}">
+									<listheader width="50px" />
+									<listheader label="${c:l('prelevement.datePrelevementCourt')}" />
+									<listheader label="${c:l('general.code')}" />
+									<listheader label="${c:l('Entite.Banque')}" />
+									<listheader label="${c:l('Champ.Prelevement.Nature')}" />
+									<listheader label="${c:l('general.type')}" />
+									<listheader label="${c:l('prelevement.etablissement')}" />
+									<!-- <listheader label="${c:l('Champ.Echantillon.Organe')}" width="100px"/> -->
+									<!-- <listheader label="${c:l('general.diagnostic')}" width="100px"/> -->
+									<listheader label="${c:l('Champ.Prelevement.ConsentType')}"
+									 />
+									<listheader width="100px">
+										<vbox align="center" hflex="1">
+											<label value="${c:l('prelevement.nbEchantillons')}" 
+												style="font-weight : bold;"/>
+											<label value="${c:l('prelevement.restants.total.stockes')}" 
+												style="font-weight : bold;"/>
+										</vbox>
+									</listheader>
+								</listhead>
+								<listitem self="@{each='currPrelevementFob'}" value="currPrelevementFob"/>
+							</listbox>
+						</vlayout>
+					</groupbox>
+				</div>
+			</div>
+		</panelchildren>
+		<toolbar hflex="max" height="50px" id="toolbar" >
+			<hlayout sclass="buttonsBox" height="30px" width="100%">						
+				<button id="createC" sclass="buttonv2" label="${c:l('general.create')}" 
+					image="/images/icones/save.png"  height="24px" visible="false"/>
+				<button id="cancelC" sclass="buttonv2" label="${c:l('general.cancel')}"
+					image="/images/icones/cancel.png" height="24px" visible="false"/>	
+				<button id="validateC" sclass="buttonv2" label="${c:l('general.validate')}"
+					image="/images/icones/save.png" height="24px" visible="false"/>
+				<button id="revertC" sclass="buttonv2" label="${c:l('general.cancel')}" 
+					image="/images/icones/cancel.png" height="24px" visible="false"/>
+				<button id="editC" sclass="buttonv2" label="${c:l('general.edit')}" 
+					image="/images/icones/edit_maladie.png" height="24px" visible="true"/>
+				<button id="addPrelevement" label="${c:l('patient.ajouter.prelevement')}" height="24px"
+					image="/images/icones/sample.png" visible="false" sclass="buttonv2" />
+				<div visible="false">
+					<button id="addNewC" />
+					<button id="deleteC" />
+				</div>
+				<button id="historique" image="/images/icones/history.png" 
+						label="${c:l('general.historique')}" visible="false" sclass="buttonv2" />
+			</hlayout>	
+		</toolbar>
+	</panel>
+</window>

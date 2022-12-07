@@ -64,8 +64,8 @@ import org.zkoss.zul.Toolbar;
 import fr.aphp.tumorotek.action.ManagerLocator;
 import fr.aphp.tumorotek.action.constraints.ConstCode;
 import fr.aphp.tumorotek.action.constraints.ConstWord;
-import fr.aphp.tumorotek.action.contexte.ContexteConstraints;
 import fr.aphp.tumorotek.action.controller.AbstractFicheEditController;
+import fr.aphp.tumorotek.action.prelevement.PrelevementConstraints;
 import fr.aphp.tumorotek.component.CalendarBox;
 import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
 import fr.aphp.tumorotek.manager.validation.coeur.patient.PatientValidatorImpl;
@@ -111,7 +111,7 @@ public class FichePatientEdit extends AbstractFicheEditController
    // @since 2.3.0-gatsbi peut être label / div
    protected HtmlBasedComponent ndaFieldLabel;
 
-   protected Textbox ndaBox;
+   protected Textbox patientNdaBox;
 
    // referents
    // @since 2.3.0-gatsbi peut être Group / groupbox
@@ -614,8 +614,12 @@ public class FichePatientEdit extends AbstractFicheEditController
       return PatientConstraints.getNomNullConstraint();
    }
 
-   public ConstWord getVillePaysConstraint(){
-      return ContexteConstraints.getVillePaysConstraint();
+   public ConstWord getVilleNaissanceConstraint(){
+      return PatientConstraints.getVilleNaissanceConstraint();
+   }
+   
+   public ConstWord getPaysNaissanceConstraint(){
+      return PatientConstraints.getPaysNaissanceConstraint();
    }
 
    /**
@@ -704,7 +708,7 @@ public class FichePatientEdit extends AbstractFicheEditController
       setObject(pat);
       switchToCreateMode();
       this.ndaFieldLabel.setVisible(true);
-      this.ndaBox.setVisible(true);
+      this.patientNdaBox.setVisible(true);
       toolbar.detach();
       setReferentsGroupOpen(true);
       this.winPanel.setTitle(Labels.getLabel("patient.reference.nouveau"));
@@ -713,7 +717,9 @@ public class FichePatientEdit extends AbstractFicheEditController
       this.winPanel.setHeight("100%");
       this.winPanel.setClass("fichePanelv2Embedded");
       this.panelChildrenWithScroll.setStyle("overflow: visible");
-      this.formGrid.setStyle("border-top-style: none");
+      if (this.formGrid != null) { // formGrid absent du composant gatsbi
+         this.formGrid.setStyle("border-top-style: none");
+      }
 
       dateNaisBox.addEventListener("onBlur", new EventListener<Event>()
       {
@@ -736,7 +742,7 @@ public class FichePatientEdit extends AbstractFicheEditController
     */
    @Override
    public void onOK(){
-      if(!ndaBox.isVisible()){
+      if(!patientNdaBox.isVisible()){
          if(validate.isVisible()){
             Events.postEvent(new Event("onClick", validate));
          }else if(create.isVisible()){
@@ -746,7 +752,7 @@ public class FichePatientEdit extends AbstractFicheEditController
    }
 
    public Textbox getNdaBox(){
-      return ndaBox;
+      return patientNdaBox;
    }
    
    /**
@@ -757,5 +763,9 @@ public class FichePatientEdit extends AbstractFicheEditController
     */
    protected void setReferentsGroupOpen(boolean _o) {
       ((Group) referentsGroup).setOpen(true);
+   }
+   
+   public ConstCode getNdaConstraint(){
+      return PrelevementConstraints.getNdaConstraint();
    }
 }

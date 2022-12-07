@@ -832,13 +832,6 @@ div.z-grid.gridError1 .z-row.z-detail-faker{
 	border-right-color : #6F7C9D;
 }
 
-
-
-div.z-listbox.listBox tr.z-listbox-odd:hover{
-	background-color : #d2d8f3;
-	background-image : none;
-}
-
 .z-menubar-hor.menuBarV2:hover .z-menu-inner-l
 , .z-menubar-hor.menuBarV2:hover .z-menu-inner-r
 , .z-menubar-hor.menuBarV2:hover .z-menu-inner-m
@@ -1835,4 +1828,18 @@ margin-right: 10px;
 .rechWindow .z-window-modal-cnt > span {
 	display: block;
 	height: inherit;
+}
+
+.noselect .z-listitem {
+	background: none;
+}
+
+.noselect .z-listbox-odd:hover {
+	background: none;
+	background-color: none;
+}
+
+.noselect div.z-listbox-body .z-listcell {
+	cursor: default;
+	background: none;
 }

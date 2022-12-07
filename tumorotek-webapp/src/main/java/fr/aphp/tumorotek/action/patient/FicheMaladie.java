@@ -46,6 +46,7 @@ import java.util.Set;
 import org.springframework.validation.Errors;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.HtmlBasedComponent;
 import org.zkoss.zk.ui.Path;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
@@ -56,13 +57,13 @@ import org.zkoss.zul.Button;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Grid;
 import org.zkoss.zul.Group;
+import org.zkoss.zul.Groupbox;
 import org.zkoss.zul.Image;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.ListitemRenderer;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Panel;
-import org.zkoss.zul.Row;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Toolbar;
 
@@ -146,7 +147,9 @@ public class FicheMaladie extends AbstractFicheCombineController
 
    protected Button codeAssistantButton;
 
-   protected Row libelleRow;
+   // @since 2.3.0-gatsbi 
+   // Row devient Div dans fiche Gatsbi
+   protected HtmlBasedComponent libelleRow;
 
    // Objets Principaux
    protected Maladie maladie = new Maladie();
@@ -155,8 +158,11 @@ public class FicheMaladie extends AbstractFicheCombineController
 
    protected Toolbar toolbar;
 
-   // Composants Prélèvements
-   protected Group prelevementsMaladieGroup;
+   // @since 2.3.0-gatsbi
+   // group deviennent generic HtmlBasedComponent
+   // car dans Gatsbi ce sont des groupboxes
+   protected HtmlBasedComponent prelevementsMaladieGroup;
+   protected HtmlBasedComponent referentsGroup;
 
    protected Listbox prelevementsMaladieBox;
 
@@ -170,9 +176,6 @@ public class FicheMaladie extends AbstractFicheCombineController
 
    // true si create/edit mode
    protected boolean isInEdition = false;
-
-   // referents
-   protected Group referentsGroup;
 
    protected List<Prelevement> prelevements = new ArrayList<>();
 
@@ -189,6 +192,10 @@ public class FicheMaladie extends AbstractFicheCombineController
 
    // other banks -> contexte defaut TK
    protected PrelevementItemRenderer prelevementFromOtherBanksRenderer = new PrelevementItemRenderer();
+   
+   // @since 2.3.0-gatsbi
+   // sera surchargé
+   protected MaladieValidator maladieValidator;
 
    public Panel getContainer(){
       return container;
@@ -282,6 +289,10 @@ public class FicheMaladie extends AbstractFicheCombineController
             onClickPrelevementCode(event);
          }
       });
+      
+      // @since 2.3.0-gatsbi
+      // regular Maladie Validator, sera surchargé par Gatsbi
+      setMaladieValidator(ManagerLocator.getMaladieValidator());
    }
 
    //   /**
@@ -321,7 +332,7 @@ public class FicheMaladie extends AbstractFicheCombineController
       maladie.setLibelle(null);
       container.setOpen(true);
       container.setSclass(null);
-      prelevementsMaladieGroup.setOpen(true);
+      setGroupPrelevementsOpen(true);
       prelevementsMaladieGroup.setVisible(false);
       toolbar.setVisible(false);
 
@@ -391,7 +402,7 @@ public class FicheMaladie extends AbstractFicheCombineController
          // medecins referents
          this.medecins = new ArrayList<>(ManagerLocator.getMaladieManager().getCollaborateursManager(this.maladie));
          getReferents().setMedecins(this.medecins);
-         referentsGroup.setOpen(false);
+         setGroupMedecinsOpen(false);
 
       }else{
          // maladie en creation
@@ -400,7 +411,7 @@ public class FicheMaladie extends AbstractFicheCombineController
             this.maladie.setLibelle(SessionUtils.getSelectedBanques(sessionScope).get(0).getDefautMaladie());
             this.maladie.setCode(SessionUtils.getSelectedBanques(sessionScope).get(0).getDefautMaladieCode());
          }else{
-            this.maladie.setLibelle(Labels.getLabel("maladie.indeterminee"));
+            setLibelleIndeterminee();
          }
       }
 
@@ -410,6 +421,12 @@ public class FicheMaladie extends AbstractFicheCombineController
 
       // clone er reload
       super.setObject(maladie);
+   }
+   
+   // @since 2.3.0-gatsbi
+   // sera surchargée
+   protected void setLibelleIndeterminee() {
+      this.maladie.setLibelle(Labels.getLabel("maladie.indeterminee"));
    }
 
    /**
@@ -641,8 +658,7 @@ public class FicheMaladie extends AbstractFicheCombineController
             pop1.setVisible(((Map<String, Boolean>) sessionScope.get("catalogues")).containsKey("INCa"));
             pop2.setVisible(((Map<String, Boolean>) sessionScope.get("catalogues")).containsKey("INCa"));
          }
-         codeDiagFormLabel.setSclass("formLabel");
-         dateDiagFormLabel.setSclass("formLabel");
+         setRegularLabelStyle();
       }
       isInEdition = false;
    }
@@ -655,10 +671,7 @@ public class FicheMaladie extends AbstractFicheCombineController
       historique.setVisible(false);
       getReferents().switchToEditMode();
 
-      //pop1.setVisible(false);
-      codeDiagFormLabel.setSclass("incaLabel");
-      //pop2.setVisible(false);
-      dateDiagFormLabel.setSclass("incaLabel");
+      setIncaLabelStyle();
 
       isInEdition = true;
    }
@@ -669,12 +682,23 @@ public class FicheMaladie extends AbstractFicheCombineController
       this.libelleRow.setVisible(true);
       getReferents().switchToCreateMode();
 
-      //pop1.setVisible(false);
-      codeDiagFormLabel.setSclass("incaLabel");
-      //pop2.setVisible(false);
-      dateDiagFormLabel.setSclass("incaLabel");
+      setIncaLabelStyle();
 
       isInEdition = true;
+   }
+   
+   // @since 2.3.0-gatsbi, sera surchargée par gatsbi
+   // car devenu inutile
+   protected void setIncaLabelStyle() {
+      codeDiagFormLabel.setSclass("incaLabel");
+      dateDiagFormLabel.setSclass("incaLabel");
+   }
+   
+   // @since 2.3.0-gatsbi, sera surchargée par gatsbi
+   // car devenu inutile
+   protected void setRegularLabelStyle() {
+      codeDiagFormLabel.setSclass("formLabel");
+      dateDiagFormLabel.setSclass("formLabel");
    }
 
    @Override
@@ -821,14 +845,14 @@ public class FicheMaladie extends AbstractFicheCombineController
          if(comp.getId().equals("dateDiagBox")){
             field = "dateDiagnostic";
             this.maladie.setDateDiagnostic(dateValue);
-            errs = MaladieValidator.checkDateDiagCoherence(this.maladie);
+            errs = getMaladieValidator().checkDateDiagCoherence(this.maladie);
          }
 
          // date début
          if(comp.getId().equals("dateDebutBox")){
             field = "dateDebut";
             this.maladie.setDateDebut(dateValue);
-            errs = MaladieValidator.checkDateDebutCoherence(this.maladie);
+            errs = getMaladieValidator().checkDateDebutCoherence(this.maladie);
          }
 
          if(errs != null && errs.hasErrors()){
@@ -954,8 +978,7 @@ public class FicheMaladie extends AbstractFicheCombineController
     */
    public void openAll(){
       container.setOpen(true);
-      //Clients.scrollIntoView(container);
-      prelevementsMaladieGroup.setOpen(true);
+      setGroupPrelevementsOpen(true);
    }
 
    public void reloadListePrelevements(){
@@ -1012,31 +1035,23 @@ public class FicheMaladie extends AbstractFicheCombineController
       this.selectAllprelevementsButton.setVisible(false);
       this.container.setStyle("border: none");
       this.container.getPanelchildren().setStyle("border-top-style: none");
-      this.formGrid.setStyle("border-top-style: none");
+      if (this.formGrid != null) {
+         this.formGrid.setStyle("border-top-style: none");
+      }
       this.isEmbeddedWithPatient = withPatient;
    }
 
    /*************************************************************************/
    /************************** VALIDATION ***********************************/
    /*************************************************************************/
-   private static ConstWord libelleConstraint = new ConstWord();
-   {
-      libelleConstraint.setNullable(false);
-      libelleConstraint.setSize(300);
-   }
 
-   private static ConstWord codeNullConstraint = new ConstWord();
-   {
-      codeNullConstraint.setNullable(true);
-      codeNullConstraint.setSize(50);
-   }
 
    public ConstWord getCodeNullConstraint(){
-      return codeNullConstraint;
+      return MaladieConstraints.getCodeNullConstraint();
    }
 
    public ConstWord getLibelleConstraint(){
-      return libelleConstraint;
+      return MaladieConstraints.getLibelleConstraint();
    }
 
    public Maladie getMaladie(){
@@ -1076,4 +1091,33 @@ public class FicheMaladie extends AbstractFicheCombineController
    public String getDeleteWaitLabel(){
       return Labels.getLabel("maaldie.suppression.encours");
    }
+   
+   // @since 2.3.0-gatsbi  
+   protected void setGroupMedecinsOpen(final boolean b){
+      if(referentsGroup instanceof Group){
+         ((Group) referentsGroup).setOpen(b);
+      }else{
+         ((Groupbox) referentsGroup).setOpen(b);
+      }      
+   }
+   
+   // @since 2.3.0-gatsbi  
+   protected void setGroupPrelevementsOpen(final boolean b){
+      if(prelevementsMaladieGroup instanceof Group){
+         ((Group) prelevementsMaladieGroup).setOpen(b);
+      }else{
+         ((Groupbox) prelevementsMaladieGroup).setOpen(b);
+      }      
+   }
+
+   // @since 2.3.0-gatsbi  
+   public MaladieValidator getMaladieValidator(){
+      return maladieValidator;
+   }
+
+   // @since 2.3.0-gatsbi  
+   public void setMaladieValidator(MaladieValidator maladieValidator){
+      this.maladieValidator = maladieValidator;
+   }
+   
 }

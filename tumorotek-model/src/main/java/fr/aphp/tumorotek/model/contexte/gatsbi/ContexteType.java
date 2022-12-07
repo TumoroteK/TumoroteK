@@ -39,7 +39,10 @@ package fr.aphp.tumorotek.model.contexte.gatsbi;
 public enum ContexteType
 {
 
-   PATIENT(1, Values.PATIENT), PRELEVEMENT(2, Values.PRELEVEMENT), ECHANTILLON(3, Values.ECHANTILLON),
+   PATIENT(1, Values.PATIENT), 
+   MALADIE(7, Values.MALADIE),
+   PRELEVEMENT(2, Values.PRELEVEMENT), 
+   ECHANTILLON(3, Values.ECHANTILLON),
    PROD_DERIVE(8, Values.PROD_DERIVE);
 
    private Integer entiteId;
@@ -60,6 +63,8 @@ public enum ContexteType
    public static class Values
    {
       public static final String PATIENT = "Patient";
+      
+      public static final String MALADIE = "Maladie";
 
       public static final String PRELEVEMENT = "Prelevement";
 

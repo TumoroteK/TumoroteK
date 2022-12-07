@@ -39,6 +39,7 @@ import java.io.File;
 import java.lang.reflect.Field;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
@@ -74,6 +75,7 @@ import fr.aphp.tumorotek.manager.impl.coeur.CreateOrUpdateUtilities;
 import fr.aphp.tumorotek.manager.io.imports.ImportHistoriqueManager;
 import fr.aphp.tumorotek.manager.qualite.OperationManager;
 import fr.aphp.tumorotek.manager.validation.BeanValidator;
+import fr.aphp.tumorotek.manager.validation.coeur.patient.gatsbi.PatientGatsbiValidator;
 import fr.aphp.tumorotek.model.coeur.annotation.AnnotationValeur;
 import fr.aphp.tumorotek.model.coeur.annotation.ChampAnnotation;
 import fr.aphp.tumorotek.model.coeur.patient.Maladie;
@@ -85,6 +87,7 @@ import fr.aphp.tumorotek.model.coeur.patient.PatientMedecinPK;
 import fr.aphp.tumorotek.model.coeur.prelevement.Prelevement;
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.contexte.Collaborateur;
+import fr.aphp.tumorotek.model.contexte.gatsbi.Contexte;
 import fr.aphp.tumorotek.model.interfacage.PatientSip;
 import fr.aphp.tumorotek.model.qualite.OperationType;
 import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
@@ -197,8 +200,27 @@ public class PatientManagerImpl implements PatientManager
          if(operation == null){
             throw new NullPointerException("operation cannot be " + "set to null for createorUpdateMethod");
          }
+         
+         // @since 2.3.0-gatsbi 
+         final List<Integer> requiredChampEntiteId = new ArrayList<>();
+         if(patient.getBanque() != null){ // creation / edition en contexte Gatsbi
+            final Contexte patContexte = patient.getBanque().getEtude().getContexteForEntite(1);
+            if(patContexte != null){
+               requiredChampEntiteId.addAll(patContexte.getRequiredChampEntiteIds());
+            }
+         }
+         Validator[] validators;
+         if(requiredChampEntiteId.isEmpty()){ // pas de restriction gatsbi
+            validators = new Validator[] {patientValidator};
+         }else{ // gatsbi définit certain champs obligatoires
+            final PatientGatsbiValidator gValidator = 
+               new PatientGatsbiValidator("patient", requiredChampEntiteId);
+            validators = new Validator[] {gValidator, patientValidator};
+         }
+         
          //Validation
-         BeanValidator.validateObject(patient, new Validator[] {patientValidator});
+         BeanValidator.validateObject(patient, validators);
+         
          //Doublon
          if(!operation.equals("fusion") && findDoublonManager(patient)){
             log.warn("Doublon lors " + operation + " objet Patient " + patient.toString());
@@ -310,7 +332,33 @@ public class PatientManagerImpl implements PatientManager
 
    @Override
    public boolean findDoublonManager(final Patient patient){
+      if (patient.getBanque() == null) {
+         return findPatientDoublonOnIdentityOrNip(patient);
+      } else { // gatsbi 
+         // recherche d'abord par identifiant si existe pour la banque
+         if (findPatientDoublonOnIdentifiant(patient)) {
+            return true;
+         }
+         
+         // sinon vérifie quand même les traits d'identités et le NIP
+         return findPatientDoublonOnIdentityOrNip(patient);
+      }  
+   }
+   
+   private boolean findPatientDoublonOnIdentifiant(final Patient patient) {
+      // un seul patient avec l'identifiant au max doit exister 
+      List<Patient> existings = patientDao
+         .findByIdentifiant(patient.getIdentifiantAsString(), Arrays.asList(patient.getBanque()));
+      if(patient.getPatientId() == null){ // nouveau, aucun patient avec cet identifiant ne doit exister
+         return !existings.isEmpty();
+      }else{ // en modification, seul LE patient avec LE même id peut exister
+         return !existings.isEmpty() && !patient.getPatientId().equals(existings.get(0).getPatientId());
+      }
+   }
+      
+   private boolean findPatientDoublonOnIdentityOrNip(final Patient patient) {
       boolean doublon = false;
+
       if(patient.getPatientId() == null){
          doublon = patientDao.findByNom(patient.getNom()).contains(patient);
       }else{
@@ -1092,13 +1140,14 @@ public class PatientManagerImpl implements PatientManager
    }
 
    @Override
-   public void removeListFromIdsManager(final List<Integer> ids, final String comment, final Utilisateur u){
+   public void removeListFromIdsManager(final List<Integer> ids, final String comment, final Utilisateur u, final Banque b){
       if(ids != null){
          final List<File> filesToDelete = new ArrayList<>();
          Patient p;
          for(final Integer id : ids){
             p = findByIdManager(id);
             if(p != null){
+               p.setBanque(b); // @since 2.3.0-gasbi, si banque non nulle alors identifiant sera chois comme phantomData
                removeObjectManager(p, comment, u, filesToDelete);
             }
          }

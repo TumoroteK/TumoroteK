@@ -112,7 +112,7 @@ import fr.aphp.tumorotek.model.contexte.Banque;
       query = "SELECT count(distinct p) FROM Patient p " + "JOIN p.maladies m " + "JOIN m.prelevements r "
          + "WHERE r.datePrelevement >= ?1 " + "AND r.datePrelevement <= ?2 " + "AND r.banque in (?3) "
          + "AND (r.servicePreleveur is null " + "OR r.servicePreleveur.etablissement not in (?4))"),
-   @NamedQuery(name = "Patient.findByIdInList", query = "SELECT p FROM Patient p JOIN p.patientIdentifiants WHERE p.patientId in (?1)"),
+   @NamedQuery(name = "Patient.findByIdInList", query = "SELECT p FROM Patient p WHERE p.patientId in (?1)"),
    @NamedQuery(name = "Patient.findByAllIds", query = "SELECT p.patientId FROM Patient p"),
    @NamedQuery(name = "Patient.findByAllIdsWithBanques",
       query = "SELECT distinct(p.patientId) FROM Patient p " + "JOIN p.maladies m " + "JOIN m.prelevements prlvts "
@@ -179,7 +179,8 @@ public class Patient extends TKDelegetableObject<Patient> implements TKAnnotable
    
    // @since 2.3.0-gatsbi
    private Set<PatientIdentifiant> patientIdentifiants = new LinkedHashSet<PatientIdentifiant>();
-
+// transient car si gatsbi, banque peut être fournie pour associer avec identifiant lors create/update
+   private Banque banque = null; 
 
    /** Constructeur par défaut. */
    public Patient(){}
@@ -431,6 +432,18 @@ public class Patient extends TKDelegetableObject<Patient> implements TKAnnotable
       return getIdentifiant(_b).getIdentifiant();
    }
    
+   @Transient
+   public PatientIdentifiant getIdentifiant() {
+      return patientIdentifiants.stream()
+         .filter(i -> i.getBanque().equals(banque)).findFirst()
+         .orElse(new PatientIdentifiant(this, banque));
+   }
+   
+   @Transient
+   public String getIdentifiantAsString() {
+      return getIdentifiant(banque).getIdentifiant();
+   }
+   
    public void addToIdentifiants(PatientIdentifiant ident) {
       // suppr tout identifiant existant dont la valeur 'identifiant' 
       // diffère de celui passé en paramètre
@@ -444,7 +457,10 @@ public class Patient extends TKDelegetableObject<Patient> implements TKAnnotable
       if (!patientIdentifiants.contains(ident)) { // ajoute identifiant si nécessaire
          this.patientIdentifiants.add(ident);
       }
-
+   }
+   
+   public void addToIdentifiants(String ident, Banque bank) {
+      addToIdentifiants(new PatientIdentifiant(this, bank, ident));
    }
 
    /**
@@ -468,7 +484,6 @@ public class Patient extends TKDelegetableObject<Patient> implements TKAnnotable
       final boolean eq = Objects.equals(nom, test.getNom())
          && Objects.equals(prenom, test.getPrenom())
          && Objects.equals(dateNaissance, test.getDateNaissance());
-        // && Objects.equals(identifiant, test.getIdentifiant());
 
       // verif supp sur la ville de naissance
       if(this.villeNaissance != null && test.villeNaissance != null){
@@ -551,20 +566,29 @@ public class Patient extends TKDelegetableObject<Patient> implements TKAnnotable
    @Override
    @Transient
    public Banque getBanque(){
-      return null;
+      return banque;
    }
 
    @Override
    @Transient
-   public void setBanque(final Banque b){}
+   public void setBanque(final Banque _b){
+      this.banque = _b;
+   }
 
    @Override
    @Transient
    public String getPhantomData(){
-      if(getPrenom() != null){
-         return getNom() + " " + getPrenom();
-      }else{
-         return getNom();
+      // @since gatsbi
+      // se base sur identifiant si banque (transient)
+      // attribuée au patient
+      if (getIdentifiantAsString(banque) == null) {
+         if(getPrenom() != null){
+            return getNom() + " " + getPrenom();
+         }else{
+            return getNom();
+         }
+      } else { // supprime patient créé depuis collection étude gatsbi
+         return getIdentifiantAsString(banque);
       }
    }
 

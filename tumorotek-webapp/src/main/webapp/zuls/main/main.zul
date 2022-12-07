@@ -119,6 +119,9 @@
 <?component name="ficheRechercheAvanceePrelevementSero" macroURI="/zuls/recherche/serotk/FicheRechercheAvanceePrelevementSero.zul"?>
 <?component name="ficheRechercheAvanceeEchantillonSero" macroURI="/zuls/recherche/serotk/FicheRechercheAvanceeEchantillonSero.zul"?>
 <?component name="ficheRechercheAvanceeProdDeriveSero" macroURI="/zuls/recherche/serotk/FicheRechercheAvanceeProdDeriveSero.zul"?>
+<!-- Gatsbi -->
+<?component name="maladieGatsbiPanel" macroURI="/zuls/patient/gatsbi/FicheMaladieGatsbi.zul" ?>
+
 
 	<!-- <script type="text/javascript">
 		zk.afterMount(function () {
@@ -139,7 +142,7 @@
 <style src="/css/newstyle.css.dsp" />
 <style src="/css/stats/chart.css" />
 
-<style src="/css/gatsbi.css" />
+<style src="/css/gatsbi.css.dsp" />
 
 
 <!-- <html><![CDATA[

@@ -68,6 +68,10 @@ import fr.aphp.tumorotek.model.contexte.Collaborateur;
 import fr.aphp.tumorotek.model.contexte.EContexte;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
+/**
+ * @version 2.3.0-gatsbi
+ * @author Mathieu BARTHELEMY
+ */
 public class FichePatientStatic extends AbstractFicheStaticController
 {
 
@@ -102,7 +106,7 @@ public class FichePatientStatic extends AbstractFicheStaticController
    protected Listbox prelevementsFromOtherMaladiesBox;
 
    // Associations
-   private List<Maladie> maladies = new ArrayList<>();
+   protected List<Maladie> maladies = new ArrayList<>();
 
    private List<Collaborateur> medecins = new ArrayList<>();
 
@@ -488,7 +492,11 @@ public class FichePatientStatic extends AbstractFicheStaticController
 
       // Injection des contextes
       String compDef = "maladiePanel";
-      if(SessionUtils.getCurrentContexte() == EContexte.SEROLOGIE){
+      
+      // @since gatsbi
+      if (SessionUtils.getCurrentGatsbiContexteForEntiteId(7) != null) {
+         compDef = "maladieGatsbiPanel";
+      } else if(SessionUtils.getCurrentContexte() == EContexte.SEROLOGIE){
          compDef = "maladieSeroPanel";
       }
 

@@ -45,12 +45,22 @@ import fr.aphp.tumorotek.action.constraints.ConstWord;
  * Date: 26/07/2010.
  *
  * @author Mathieu BARTHELEMY
- * @version 2.0
+ * @version 2.3.0-gatsbi
  */
 public final class PrelevementConstraints
 {
 
    private PrelevementConstraints(){}
+   
+   // @since 2.3.0-gatsbi reset nullable 
+   public static void resetNullableProps() {
+      codeConstraint.setNullable(false);
+      codeNullConstraint.setNullable(true);
+      nomConstraint.setNullable(false);
+      nomNullConstraint.setNullable(true);
+      ndaConstraint.setNullable(true);
+      nbConditConstraint.setNullable(true);
+   }
 
    private static ConstCode codeConstraint = new ConstCode();
    static{

@@ -112,17 +112,13 @@ public class PatientController extends AbstractObjectTabController
 
       switchToOnlyListeMode();
       orderAnnotationDraw(false);
+      
+      // @since 2.3.0-gatsbi
+      // force constraints reset des status nullable
+      PatientConstraints.resetNullableProps();
+      MaladieConstraints.resetNullableProps();
    }
    
-//   @Override
-//   public void populateFicheStatic(){
-//      if(SessionUtils.getCurrentGatsbiContexteForEntiteId(2) == null){
-//         setStaticZulPath("/zuls/patient/FichePatientStatic.zul");
-//      }else{
-//         setStaticZulPath("/zuls/patient/gatsbi/FichePatientStaticGatsbi.zul");
-//      }
-//      super.populateFicheStatic();
-//   }
 
    @Override
    public TKdataObject loadById(final Integer id){

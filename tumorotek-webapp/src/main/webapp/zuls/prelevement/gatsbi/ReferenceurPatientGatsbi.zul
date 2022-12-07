@@ -41,6 +41,16 @@
 			<radio id="findRadio" value="find" sclass="radiov2" label="${c:l('general.find')}" selected="true" />	
 		</radiogroup>
 	</div>
+	<!-- Nouveau patient -->
+	<div id="newPatientDiv" visible="false">
+		<div id="fichePatientDiv" />
+		
+		<vbox id="newMaladieBox" >
+			<label value="${c:l('patient.ajouter.maladie')}" sclass="formSubTitle"/>
+			<image src="/images/pixelble.gif" style="background-repeat: repeat-x;"/>
+			<div id="ficheMaladieWithPatientDiv" />
+		</vbox>	
+	</div>
 	<grid id="existingPatientGrid" fixedLayout="true" sclass="gridForm1">
 		<columns>
 			<column />
@@ -68,21 +78,19 @@
 				<label value="${c:l('general.recherche.aucunResultat')}" sclass="infoLabel" />
 			</row>
 			<!-- Liste Maladies associées au patient-->
-			<row id="resultsMaladiesRow" >
-				<listbox id="maladiesBox"
-					model="@{winRefPatient$composer.maladies}"
+			<row id="resultsMaladiesRow">
+				<listbox id="maladiesBox" style="border: 1px solid"
+					model="@{winRefPatient$composer.maladies, load-after='winRefPatient.onFromDateProvided, radioGroup.onCheck'}"
 					selectedItem="@{winRefPatient$composer.selectedMaladie}" mold="paging"
 					sclass="listBox" width="100%" visible="false">
 					<listhead>
 						<listheader label="${c:l('Champ.Maladie.Libelle')}" />
-						<listheader label="${c:l('Champ.Maladie.Code')}" />
-						<listheader label="${c:l('patient.maladie.dateDiag')}" />
+						<listheader label="${c:l('gatsbi.visite.date')}" />
 						<listheader label="${c:l('ficheMaladie.prelevements')}"/>
 					</listhead>
 					<listitem id="itemMaladie" self="@{each='decoMaladie'}" value="@{decoMaladie}">			
 						<listcell label="@{decoMaladie.libelle}" />
-						<listcell label="@{decoMaladie.code}" />
-						<listcell label="@{decoMaladie.formattedDateDiag}" />
+						<listcell label="@{decoMaladie.formattedDateDebut}" />
 						<listcell label="@{decoMaladie.nbPrelevements}" />
 					</listitem>
 				</listbox>
@@ -95,13 +103,14 @@
 						 visible="false" image="/images/icones/new.png" sclass="buttonv2"/>
 			</row>
 			<row id="ndaRow" visible="false">
-				<hbox>
-					<label id="ndaFieldLabel" value="${c:l('Champ.Prelevement.PatientNda')}"
-												 sclass="formLabel" />
-						
-					<textbox id="ndaBox" width="100px" 
-							constraint="@{fwinPatient$composer.codeNullConstraint}" />
-				</hbox>		
+				<div class="item item-mid" id="refNdaDiv"><!-- nda patient -->
+					<custom-attributes champId="44" />
+					<div class="row-container chpLabel">
+						<label value="${c:l('Champ.Prelevement.PatientNda')}" sclass="formLabel" />
+						<label value="*" sclass="requiredMark" />
+					</div>
+					<textbox id="ndaBox" width="100px" constraint="${winRefPatient$composer.ndaConstraint}" />
+				</div>	
 			</row>
 			<row id="embeddedFicheMaladieRow" visible="false">
 				<vbox>
@@ -117,14 +126,4 @@
 			</row>
 		</rows>
 	</grid>
-	<!-- Nouveau patient -->
-	<div id="newPatientDiv" visible="false">
-		<div id="fichePatientDiv" />
-		
-		<vbox id="newMaladieBox" >
-			<label value="${c:l('patient.ajouter.maladie')}" sclass="formSubTitle"/>
-			<image src="/images/pixelble.gif" style="background-repeat: repeat-x;"/>
-			<div id="ficheMaladieWithPatientDiv" />
-		</vbox>	
-	</div>
 </window>

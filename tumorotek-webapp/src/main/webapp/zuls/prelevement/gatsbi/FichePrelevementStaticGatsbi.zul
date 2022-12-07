@@ -80,20 +80,20 @@
 					<div>
 						<div id="patientBlockDiv"><!-- Patient -->
 							<div id="patientBlockDivContainer" class="block-container">
-								<div class="item item-mid" id="identifiantDiv"><!-- Identifiant patient -->
+								<div class="item item-wide" id="identifiantDiv"><!-- Identifiant patient -->
 									<custom-attributes champId="272" />
 									<label value="${c:l('Champ.Patient.Identifiant')}" sclass="chpLabel formLabel"/>
 									<label id="identifiantLabel" sclass="formLink" />
-								</div>
-								<div class="item item-mid" id="nipDiv"><!-- Nip patient -->
-									<custom-attributes champId="2" />
-									<label value="${c:l('Champ.Patient.Nip')}" sclass="chpLabel formLabel"/>
-									<label id="nipLabel" sclass="formValue" />
 								</div>
 								<div class="item item-mid" id="ndaDiv"><!-- nda patient -->
 									<custom-attributes champId="44" />
 									<label value="${c:l('Champ.Prelevement.PatientNda')}" sclass="chpLabel formLabel" />
 									<label id="ndaLabel" sclass="formValue" />
+								</div>
+								<div class="item item-mid" id="nipDiv"><!-- Nip patient -->
+									<custom-attributes champId="2" />
+									<label value="${c:l('Champ.Patient.Nip')}" sclass="chpLabel formLabel"/>
+									<label id="nipLabel" sclass="formValue" />
 								</div>
 								<div class="item item-mid" id="nomDiv"><!-- Nom -->
 									<custom-attributes champId="3" />

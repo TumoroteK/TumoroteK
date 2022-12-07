@@ -35,16 +35,28 @@
  **/
 package fr.aphp.tumorotek.action.prelevement.gatsbi;
 
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Path;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zul.Div;
 import org.zkoss.zul.ListitemRenderer;
+import org.zkoss.zul.Row;
+import org.zkoss.zul.Vbox;
 
+import fr.aphp.tumorotek.action.patient.FicheMaladie;
+import fr.aphp.tumorotek.action.patient.FichePatientEdit;
 import fr.aphp.tumorotek.action.patient.gatsbi.GatsbiControllerPatient;
 import fr.aphp.tumorotek.action.prelevement.ReferenceurPatient;
+import fr.aphp.tumorotek.decorator.MaladieDecorator;
 import fr.aphp.tumorotek.decorator.gatsbi.PatientItemRendererGatsbi;
+import fr.aphp.tumorotek.modales.DateModale;
 import fr.aphp.tumorotek.model.coeur.patient.Patient;
 import fr.aphp.tumorotek.model.contexte.gatsbi.Contexte;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
@@ -63,6 +75,17 @@ public class ReferenceurPatientGatsbi extends ReferenceurPatient
    
    private Contexte contextePatient;
    
+   private Row resultsRow;
+   private Row findPatientRow;
+   private Row resultsMaladiesRow;
+   private Vbox newMaladieBox;
+   
+   private Patient newPatient;
+   
+   protected String getFichePatientComponent() {
+      return "/zuls/patient/gatsbi/FichePatientEditGatsbi.zul";
+   }
+   
    private PatientItemRendererGatsbi patientRendererGatsbi = 
       new PatientItemRendererGatsbi(true);
    
@@ -79,8 +102,31 @@ public class ReferenceurPatientGatsbi extends ReferenceurPatient
       
       patientRendererGatsbi.setContexte(contextePatient);
       patientRendererGatsbi.setBanque(SessionUtils.getCurrentBanque(sessionScope));
+      
+      // ndaBox est contextualisé par prélèvement
+      Contexte contextePrelevement = SessionUtils.getCurrentGatsbiContexteForEntiteId(2);
+      Div ndaDiv = (Div) ndaRow.getFellowIfAny("refNdaDiv");
+      ndaDiv.setVisible(contextePrelevement == null || contextePrelevement.isChampIdVisible(44)); 
+      GatsbiControllerPrelevement.applyPatientNdaRequiredLabel(ndaDiv);
    }
+   
+   @Override
+   public void onCheck$radioGroup(){
+      
+      this.newPatient = null; // clear patient
+      getMaladies().clear();
 
+      super.onCheck$radioGroup();
+   }
+   
+   @Override
+   public Patient onGetPatientFromSelection(final Event e){
+      Patient patSel = super.onGetPatientFromSelection(e);
+      patSel.setBanque(SessionUtils.getCurrentBanque(sessionScope));
+      return patSel;
+   }
+   
+   @Override
    public void onClick$goForIt(){
 
       final String critereValue = nomNipNdaBox.getValue();
@@ -95,7 +141,78 @@ public class ReferenceurPatientGatsbi extends ReferenceurPatient
    }
    
    @Override
+   public FicheMaladie onClick$embedMaladieButton(){
+      FicheMaladie ficheMaladie = super.onClick$embedMaladieButton();
+      
+      if (ficheMaladie.getObject().getPatient() == null) { // embedded new Patient
+         ficheMaladie.getObject().setPatient(newPatient);
+      }
+      
+      return ficheMaladie;
+   }
+
+   
+   /**
+    * Surcharge pour appliquer schéma de visites
+    */
+   @Override
+   protected void embedFicheMaladie(FichePatientEdit fichePatient, Patient pat){
+      if (GatsbiControllerPatient.getSchemaVisitesDefinedByEtude(sessionScope)) {
+         
+         // affiche uniquement la liste des maladies 
+         // du composant patient existant
+         existingPatientGrid.setVisible(true);
+         findPatientRow.setVisible(false);
+         resultsRow.setVisible(false);
+         resultsMaladiesRow.setVisible(true);
+         // maladiesBox.setVisible(true);
+         newMaladieBox.setVisible(false);
+                  
+         this.newPatient = pat;
+         pat.setBanque(SessionUtils.getCurrentBanque(sessionScope));
+         
+         DateModale.show(Labels.getLabel("gatsbi.schema.visites.title"), 
+            Labels.getLabel("gatsbi.schema.visites.label"), null, true, self);
+      } else {
+         super.embedFicheMaladie(fichePatient, pat);
+      }
+   }
+   
+   @Override
+   protected void displayExistingPatient(boolean show){
+      super.displayExistingPatient(show);
+      
+      findPatientRow.setVisible(true);
+      resultsRow.setVisible(true);
+   }
+   
+   /**
+    * Une date d'inclusion (baseline) est renvoyée par la modale, 
+    * la liste des visites peut être produite
+    * @param e forwardEvent contenant la date
+    */
+   public void onFromDateProvided(final Event e){ 
+      
+      getMaladies().clear();
+      
+      // production du schéma de visites
+      getMaladies().addAll(MaladieDecorator.decorateListe(GatsbiControllerPatient
+            .produceSchemaVisitesForPatient(SessionUtils.getCurrentBanque(sessionScope), newPatient, 
+         ((Date) e.getData()).toInstant().atZone(ZoneId.systemDefault()).toLocalDate())));
+      
+      setEmbeddedMaladieVisible(false);
+   }
+   
+   @Override
    public ListitemRenderer<Patient> getPatientRenderer(){
       return patientRendererGatsbi;
+   }
+   
+   @Override
+   protected void createMaladieComponent(Div div){
+
+      if(div.getChildren().isEmpty()){
+         Executions.createComponents("/zuls/patient/gatsbi/FicheMaladieGatsbi.zul", div, null);
+      }
    }
 }

@@ -40,7 +40,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
+import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.ForwardEvent;
 import org.zkoss.zk.ui.util.Clients;
@@ -80,6 +83,8 @@ public class FichePrelevementEditGatsbi extends FichePrelevementEdit
    private Groupbox groupPrlvt;
 
    private Contexte contexte;
+   
+   private Div ndaDiv;
 
    @Override
    public void doAfterCompose(final Component comp) throws Exception{
@@ -87,6 +92,9 @@ public class FichePrelevementEditGatsbi extends FichePrelevementEdit
 
       contexte = GatsbiController.initWireAndDisplay(this, 2, true, reqListboxes, reqComboboxes, reqConformeDivs, groupPrlvt,
          groupPrlvt);
+      
+      // affichage conditionnel des champs patients
+      GatsbiControllerPrelevement.applyPatientContext(groupPatient, true);
 
       // setRows ne marche pas ?
       // seul moyen trouvé pour augmenter hauteur et voir tous les items de la listbox
@@ -102,7 +110,7 @@ public class FichePrelevementEditGatsbi extends FichePrelevementEdit
    protected ResumePatient initResumePatient(){
       return new ResumePatient(groupPatient, 
          SessionUtils.getCurrentGatsbiContexteForEntiteId(1), 
-         SessionUtils.getCurrentBanque(sessionScope));
+         SessionUtils.getCurrentBanque(sessionScope));      
    }
 
    @Override
@@ -154,6 +162,38 @@ public class FichePrelevementEditGatsbi extends FichePrelevementEdit
          Clients.clearBusy();
       }
    }
+   
+   @Override
+   protected void setEmptyToNulls(){
+      if(prelevement.getNumeroLabo().equals("")){
+         prelevement.setNumeroLabo(null);
+      }
+      
+      // patientNda required constraint
+      // s'applique directement sur FichePrelevementEdit
+      // sinon impossible d'appliquer constraint côté client 
+      // sur ReferenceurPatient et FichePatientEdit
+      // car pas de binding sur evenement possible
+      if(ndaBox != null) { // concerne ReferenceurPatient et FichePatientEdit
+         if (prelevement.getMaladie() != null || maladie != null) { // pas de bloc patient, le nda est toujours null
+            if (!StringUtils.isEmpty(ndaBox.getValue())) {
+               this.prelevement.setPatientNda(ndaBox.getValue());
+            }else if (contexte.isChampIdRequired(44) 
+                  && ndaBox.getParent().isVisible() && ndaBox.getParent().getParent().isVisible()) {
+               throw new WrongValueException(ndaBox, Labels.getLabel("anno.alphanum.empty"));
+            }else{
+               this.prelevement.setPatientNda(null);
+            }
+         } else {
+            prelevement.setPatientNda(null);
+         }  
+      }
+      
+      // nettoyage ancienne données si besoin
+      if(prelevement.getPatientNda() != null && prelevement.getPatientNda().equals("")){
+         prelevement.setPatientNda(null);
+      }
+   }
 
    /**
     * Surcharge pour gérer la redirection d'évènement lors du choix d'un paramétrage
@@ -161,6 +201,28 @@ public class FichePrelevementEditGatsbi extends FichePrelevementEdit
    @Override
    public void onGetInjectionDossierExterneDone(final Event e){
       super.onGetInjectionDossierExterneDone(((ForwardEvent) e).getOrigin());
+   }
+   
+   @Override
+   public void switchToCreateMode(){
+      super.switchToCreateMode();
+      
+      // supprimer toute contrainte sur ndaDiv 
+      // car ce champ ne s'affiche plus
+      GatsbiControllerPrelevement.removePatientNdaRequired(ndaDiv);
+      
+   }
+   
+   @Override
+   public void switchToEditMode(){
+      super.switchToEditMode();
+      
+      // nda n'est visible que si bloc patient
+      if (prelevement.getMaladie() != null) {
+         // applique une éventuelle contrainte d'obligation sur ndaDiv 
+         GatsbiControllerPrelevement.applyPatientNdaRequired(ndaDiv);
+      }
+      
    }
 
    /**

@@ -58,8 +58,8 @@
 							constraint="@{fwinPatientEdit$composer.codeNullConstraint}" />
 						<label id="ndaFieldLabel" value="${c:l('Champ.Prelevement.PatientNda')}"
 												 sclass="formLabel" visible="false"/>
-						<textbox id="ndaBox" width="100px" visible="false"
-									constraint="@{fwinPatientEdit$composer.codeNullConstraint}" />
+						<textbox id="patientNdaBox" width="100px" visible="false"
+									constraint="@{fwinPatientEdit$composer.ndaConstraint}" />
 					</row>
 					<row>
 					<!-- Nom -->
@@ -127,13 +127,13 @@
 						<textbox id="paysNaisBox" value="@{fwinPatientEdit$composer.object.paysNaissance,
 		        								 save-when='validate.onClick, create.onClick'}" 
 							width="100px" 
-							constraint="@{fwinPatientEdit$composer.villePaysConstraint}" />
+							constraint="@{fwinPatientEdit$composer.paysNaissanceConstraint}" />
 					<!-- Ville de naissance -->
 						<label value="${c:l('Champ.Patient.VilleNaissance')}" sclass="formLabel" />
 						<textbox id="villeNaisBox" value="@{fwinPatientEdit$composer.object.villeNaissance,
 			        								 save-when='validate.onClick, create.onClick'}" 
 							width="100px" 
-							constraint="@{fwinPatientEdit$composer.villePaysConstraint}" />
+							constraint="@{fwinPatientEdit$composer.villeNaissanceConstraint}" />
 					</row>
 					<row>
 				<!-- Etat patient -->

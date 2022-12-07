@@ -107,7 +107,7 @@
 												 sclass="formLabel" />
 						
 					<textbox id="ndaBox" width="100px" 
-							constraint="@{fwinPatient$composer.codeNullConstraint}" />
+							constraint="@{winRefPatient$composer.ndaConstraint}" />
 				</hbox>		
 			</row>
 			<row id="embeddedFicheMaladieRow" visible="false">

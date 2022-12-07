@@ -85,6 +85,12 @@ public class PatientIdentifiant implements Serializable
       pk.setPatient(p);
       pk.setBanque(b);
    }
+   
+   public PatientIdentifiant(Patient p, Banque b, String _id){
+      pk.setPatient(p);
+      pk.setBanque(b);
+      this.identifiant = _id;
+   }
 
    @Override
    public String toString(){

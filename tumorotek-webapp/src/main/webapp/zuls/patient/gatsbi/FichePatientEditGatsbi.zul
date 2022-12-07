@@ -39,15 +39,14 @@
 <?component name="referents" macroURI="/zuls/patient/MedecinsReferents.zul" ?>
 
 <window id="fwinPatientEdit" border="none" 
-		apply="fr.aphp.tumorotek.action.patient.gatsbi.FichePatientEditGatsbi"
-		forward="onSelectParametrage=onGetSelectedParametrage">
+		apply="fr.aphp.tumorotek.action.patient.gatsbi.FichePatientEditGatsbi">
 	<panel id="winPanel" title="${c:l('fichePatient.panel.title')}"
 	 	sclass="fichePanelv2" closable="true">
 		<panelchildren style="overflow-y:scroll" id="panelChildrenWithScroll">
 			<div id="gatsbiContainer" class="main-container gridForm1">
 				<div id="patientBlockDiv" style="padding-left: 5px">
 					<div id="patientBlockDivContainer" class="block-container">
-						<div class="item item-wide" id="identifiantDiv"><!-- Identifiant -->
+						<div class="item item-wide item-required" id="identifiantDiv"><!-- Identifiant -->
 							<custom-attributes champId="272" />
 							<div class="row-container chpLabel">
 								<label value="${c:l('Champ.Patient.Identifiant')}" sclass="formLabel" />
@@ -56,6 +55,14 @@
 							<textbox id="identifiantBox" 
 								value="@{fwinPatientEdit$composer.identifiant save-when='validate.onClick, create.onClick'}" 
 								width="100px" constraint="${fwinPatientEdit$composer.codeNullConstraint}" />
+						</div>
+						<div class="item item-mid" id="patientNdaDiv" visible="false"><!-- NDA -->
+							<custom-attributes champId="44" />
+							<div id="ndaFieldLabel" class="row-container chpLabel">
+								<label value="${c:l('Champ.Prelevement.PatientNda')}" sclass="formLabel" />
+								<label value="*" sclass="requiredMark" />
+							</div>
+							<textbox id="patientNdaBox" width="100px" constraint="${fwinPatientEdit$composer.ndaConstraint}" />
 						</div>
 						<div class="item item-mid" id="nipDiv"><!-- Nip -->
 							<custom-attributes champId="2" />
@@ -67,15 +74,6 @@
 								value="@{fwinPatientEdit$composer.object.nip save-when='validate.onClick, create.onClick'}" 
 								width="100px" 
 								constraint="${fwinPatientEdit$composer.codeNullConstraint}" />
-						</div>
-						<div class="item item-wide" id="ndaDiv" visible="false"><!-- NDA -->
-							<custom-attributes champId="2" />
-							<div id="ndaFieldLabel" class="row-container chpLabel" visible="false">
-								<label value="${c:l('Champ.Prelevement.PatientNda')}" sclass="formLabel" />
-								<label value="*" sclass="requiredMark" />
-							</div>
-							<textbox id="ndaBox" width="100px" visible="false"
-									constraint="${fwinPatientEdit$composer.codeNullConstraint}" />
 						</div>
 						<div class="item item-mid" id="nomDiv"><!-- Nom -->	
 							<custom-attributes champId="3" />
@@ -144,7 +142,7 @@
 							<textbox id="paysNaisBox" value="@{fwinPatientEdit$composer.object.paysNaissance,
 		        								 save-when='validate.onClick, create.onClick'}" 
 								width="100px" 
-								constraint="${fwinPatientEdit$composer.villePaysConstraint}" />
+								constraint="${fwinPatientEdit$composer.paysNaissanceConstraint}" />
 						</div>
 						<div class="item item-mid" id="villeNaissanceDiv"><!-- Ville naissance -->	
 							<custom-attributes champId="8" />
@@ -155,7 +153,7 @@
 							<textbox id="villeNaisBox" value="@{fwinPatientEdit$composer.object.villeNaissance,
 			        								 save-when='validate.onClick, create.onClick'}" 
 								width="100px" 
-								constraint="${fwinPatientEdit$composer.villePaysConstraint}" />
+								constraint="${fwinPatientEdit$composer.villeNaissanceConstraint}" />
 						</div>
 						<div class="item item-mid" id="etatDiv"><!-- Etat -->	
 							<custom-attributes champId="10" />
@@ -205,6 +203,29 @@
 						</div>
 					</groupbox>
 				</div>
+				<div class="block-separator" />
+				<!-- Visites -->
+				<groupbox id="groupVisites" visible="false">
+					<caption label="@{fwinPatientEdit$composer.visitesGroupHeader}" />
+					<listbox id="visitesList" 
+						hflex="1"
+						fixedLayout="true"
+						span="true"
+						sizedByContent="false"
+						model="@{fwinPatientEdit$composer.visites, load-after='fwinPatientEdit.onFromDateProvided'}"
+						sclass="listBox noselect"
+						itemRenderer="@{fwinPatientEdit$composer.visiteItemRenderer}">
+						<listhead sizable="true">
+							<listheader label="${c:l('Champ.Maladie.Libelle')}" />
+							<listheader label="${c:l('gatsbi.visite.date')}"   />
+							<listheader label="${c:l('gatsbi.visite.prelevements.schema')}"   />
+						</listhead>
+						<listitem self="@{each='visite'}">
+							<listcell label="@{visite.libelle}" />
+							<listcell label="@{visite.dateDebut}" />
+						</listitem>
+					</listbox>
+				</groupbox>
 			</div>
 		</panelchildren>
 		<toolbar height="100%" id="toolbar" align="end">

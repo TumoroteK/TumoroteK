@@ -98,8 +98,10 @@ import fr.aphp.tumorotek.manager.exception.TKException;
 import fr.aphp.tumorotek.manager.impl.interfacage.ResultatInjection;
 import fr.aphp.tumorotek.model.TKAnnotableObject;
 import fr.aphp.tumorotek.model.TKThesaurusObject;
+import fr.aphp.tumorotek.model.TKdataObject;
 import fr.aphp.tumorotek.model.coeur.annotation.AnnotationValeur;
 import fr.aphp.tumorotek.model.coeur.echantillon.Echantillon;
+import fr.aphp.tumorotek.model.coeur.patient.Maladie;
 import fr.aphp.tumorotek.model.coeur.patient.Patient;
 import fr.aphp.tumorotek.model.coeur.prelevement.Prelevement;
 import fr.aphp.tumorotek.model.contexte.Banque;
@@ -119,6 +121,7 @@ import fr.aphp.tumorotek.webapp.gatsbi.client.json.ContexteDTO;
 import fr.aphp.tumorotek.webapp.gatsbi.client.json.EtudeDTO;
 import fr.aphp.tumorotek.webapp.gatsbi.client.json.ParametrageDTO;
 import fr.aphp.tumorotek.webapp.gatsbi.client.json.ParametrageValueDTO;
+import fr.aphp.tumorotek.webapp.gatsbi.client.json.SchemaVisitesDTO;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
 public class GatsbiController
@@ -146,18 +149,20 @@ public class GatsbiController
          // patient
          put(ContexteType.PATIENT, new String[] {"nipDiv", "nomDiv", "nomNaissanceDiv", "prenomDiv", "sexeDiv", 
             "dateNaissanceDiv", "paysNaissanceDiv", "villeNaissanceDiv", "etatDiv", "dateEtatDiv", "dateDecesDiv",
-            "patientMedecinsDiv",
-            // maladie
-            "libelleDiv", "codeMaladieDiv"});
+            "patientMedecinsDiv"});
+            // "libelleDiv", "codeMaladieDiv"});
+      // maladie
+         put(ContexteType.MALADIE, new String[] {"codeDiv", "dateDiagnosticDiv", "visiteMedecinsDiv"});
          // prelevement
          put(ContexteType.PRELEVEMENT,
-            new String[] {"codeDiv", "codeLaboDiv", "natureDiv", "ndaDiv", "datePrelDiv", "typeDiv", "sterileDiv", "risquesDiv",
+            new String[] {"codeDiv", "codeLaboDiv", "natureDiv", //"ndaDiv", 
+               "datePrelDiv", "typeDiv", "sterileDiv", "risquesDiv",
                "etabPreleveurDiv", "servicePreleveurDiv", "preleveurDiv", "conditTypeDiv", "conditNbrDiv", "conditMilieuDiv",
                "consentTypeDiv", "consentDateDiv",
                // transfert site stockage
                "dateDepartDiv", "transporteurDiv", "tempTranspDiv", "congPrelDiv", "dateArriveeDiv", "operateurDiv",
                "quantiteDiv", "conformeArriveeDiv", "congBiothequeDiv"});
-         // echantillon dans l'ordre fiche recherche TODO reordonner!
+         // echantillon dans l'ordre fiche recherche
          put(ContexteType.ECHANTILLON,
             new String[] {"codeEchanDiv", "echantillonTypeDiv", "echanQteDiv", "echanModePrepaDiv", "echanSterileDiv",
                "echanRisquesDiv", "echanDateStockDiv", "delaiCglDiv", "echanOperateurDiv", "echanQualiteDiv", "echanStatutDiv",
@@ -565,7 +570,7 @@ public class GatsbiController
 
    public static Constraint muteConstraintFromContexte(Constraint constraint, boolean required){
       if(constraint != null){
-         log.debug("Constraint " + constraint.toString() + " being switched to " + (required ? "" : " not ") + "required");
+         log.debug("Constraint " + constraint.toString() + " being switched to " + (required ? "" : "not ") + "required");
 
          if(constraint instanceof TumoTextConstraint){
             ((TumoTextConstraint) constraint).setNullable(!required);
@@ -608,6 +613,9 @@ public class GatsbiController
             chpE
                .addAll(ManagerLocator.getChampEntiteManager().findByEntiteAndImportManager(entite, true));
          }
+         
+         // removes patient identifiant !!
+         chpE.removeIf(c -> c.getId().equals(272));       
       }else{ // surcharge gatsbi
          chpE.addAll(ManagerLocator.getChampEntiteManager().findByEntiteAndImportManager(entite, canImport));
 
@@ -743,6 +751,12 @@ public class GatsbiController
                   restTemplate.getForObject(contexteURIBld.build(false).expand(etude.getEtudeId(), rCont.getType()).toUri(),
                      ContexteDTO.class).toContexte());
             }
+            
+            // schéma de visite: 1 par étude
+            SchemaVisitesDTO schemaDTO = doGastbiSchemaVisite(etude.getEtudeId());
+            if (schemaDTO != null) {
+               etude.setSchemaVisites(schemaDTO.toSchemaVisites());
+            }
 
             for(Banque bq : banks){ // applique l'étude enrichie des contextes à toutes les banques
                bq.setEtude(etude);
@@ -807,9 +821,7 @@ public class GatsbiController
    }
 
    /**
-    * Sera remplacée par HttpClient
-    * 
-    * @param bank
+    * @param parametrage id
     * @throws GatsbiException 
     */
    public static ParametrageDTO doGastbiParametrage(Integer pId) throws GatsbiException{
@@ -829,6 +841,27 @@ public class GatsbiController
       }
    }
 
+   /**
+    * @param etudeId
+    * @throws GatsbiException 
+    */
+   public static SchemaVisitesDTO doGastbiSchemaVisite(Integer eId) throws GatsbiException{
+
+      try{
+         UriComponentsBuilder schemaVisiteURIBld = UriComponentsBuilder
+            .fromUriString(TkParam.GATSBI_API_URL_BASE.getValue().concat(TkParam.GATSBI_API_URL_SCHEMAVISITES_PATH.getValue()));
+
+         log.debug("fetch schema visites from URL:" + (schemaVisiteURIBld.build(false).expand(eId)).toUriString());
+
+         RestTemplate restTemplate = new RestTemplate();
+         return restTemplate.getForObject(schemaVisiteURIBld.build(false).expand(eId).toUri(), SchemaVisitesDTO.class);
+      }catch(ResourceAccessException e){ // gatsbi inaccessible
+         throw new GatsbiException("gatsbi.connexion.error");
+      }catch(Exception e){
+         throw new GatsbiException(e.getMessage());
+      }
+   }
+   
    /**
     * Transforme la liste des valeurs par défaut d'un paramétrage
     * 
@@ -1048,7 +1081,7 @@ public class GatsbiController
 
    // add new refactor
    public static void addNewObjectForContext(Contexte contexte, Component selfComponent, Consumer<Event> elseMethod, Event evt,
-      TKAnnotableObject parentObj){
+      TKdataObject parentObj){
       if(!contexte.getParametrages().isEmpty()){
          final Map<String, Object> args = new HashMap<String, Object>();
          args.put("contexte", contexte);
@@ -1076,12 +1109,14 @@ public class GatsbiController
          // parent object
          if (evt != null && evt.getOrigin() != null && evt.getOrigin().getData() != null 
               && ((Map<String, Object>) evt.getOrigin().getData()).get("parentObj") != null) {
-            // prelevement => PrelevementController.createAnotherPrelevement 
-            if (((Map<String, Object>) evt.getOrigin().getData()).get("parentObj") instanceof Prelevement 
-               && contexte.getContexteType().equals(ContexteType.PRELEVEMENT)) {
-               inject.getPrelevement()
-                  .setMaladie(((Prelevement) ((Map<String, Object>) evt.getOrigin().getData()).get("parentObj"))
-                     .getMaladie());
+            TKdataObject parent = (TKdataObject) ((Map<String, Object>) evt.getOrigin().getData()).get("parentObj");
+            if (contexte.getContexteType().equals(ContexteType.PRELEVEMENT)) {
+               if (parent instanceof Prelevement) { // PrelevementController.createAnotherPrelevement 
+                  inject.getPrelevement()
+                     .setMaladie(((Prelevement) parent).getMaladie());
+               } else if (parent instanceof Maladie) { // maladie => prelevement.switchToCreateMode 
+                  inject.getPrelevement().setMaladie((Maladie)  parent);                
+               }
             }
          }         
       }
