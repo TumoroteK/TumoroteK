@@ -1318,22 +1318,19 @@ public class ImportManagerImpl implements ImportManager
             }
          }
          // on regarde si le patient existe deja en base
-         if(patientManager.findDoublonManager(patient)){
+         if(patientManager.findDoublonManager(patient).isPresent()){
 
             final Patient existingPat = patientManager.getExistingPatientManager(patient);
 
             if(patient.equals(existingPat)){
                patient = existingPat;
             }
-            // }
-
             // update en modification -> creation du duo
             duo.setSecondObj(existingPat);
 
             for(final ChampAnnotation chpA : duo.getFirstAnnoValsMap().keySet()){
                duo.getSecondAnnoValsMap().put(chpA, annotationValeurManager.findByChampAndObjetManager(chpA, existingPat));
             }
-            /*************************/
          }
       }
 

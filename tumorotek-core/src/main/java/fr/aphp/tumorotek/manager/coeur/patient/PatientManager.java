@@ -40,8 +40,10 @@ import java.lang.reflect.Field;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
+import fr.aphp.tumorotek.manager.impl.coeur.patient.PatientDoublonFound;
 import fr.aphp.tumorotek.model.coeur.annotation.AnnotationValeur;
 import fr.aphp.tumorotek.model.coeur.patient.Maladie;
 import fr.aphp.tumorotek.model.coeur.patient.Patient;
@@ -106,10 +108,10 @@ public interface PatientManager
     * ce qui permet de rechercher si l'identifiant existe dans la collection
     * 
     * @param patient Patient dont on cherche la presence dans la base
-    * @return true/false
+    * @return optional patient doublon found
     * @version 2.3.0-gatsbi
     */
-   boolean findDoublonManager(Patient patient);
+   Optional<PatientDoublonFound> findDoublonManager(Patient patient);
 
    /**
     * Supprime un objet de la base de données.

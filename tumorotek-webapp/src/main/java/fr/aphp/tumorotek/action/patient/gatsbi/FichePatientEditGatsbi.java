@@ -237,6 +237,10 @@ public class FichePatientEditGatsbi extends FichePatientEdit
       }   
    }
    
+   @Override
+   public void setInconnus(Patient patient){
+   }
+   
    /**
     * Une date d'inclusion (baseline) est renvoyée par la modale, 
     * la liste des visites peut être produite

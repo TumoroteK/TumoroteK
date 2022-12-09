@@ -1177,6 +1177,8 @@ public class MainWindow extends GenericForwardComposer<Component>
    /**
     * Lance la procédure d'import d'un nouveau patient depuis une appli tiers :
     * ouverture de la page nouveau prlvt avec le patient intégré à celle-ci.
+    * 
+    * Méthode jamais appelée ?
     *
     * @param patient
     */
@@ -1184,18 +1186,29 @@ public class MainWindow extends GenericForwardComposer<Component>
       Maladie maladie = new Maladie();
       maladie.setLibelle(SessionUtils.getSelectedBanques(sessionScope).get(0).getDefautMaladie());
       maladie.setCode(SessionUtils.getSelectedBanques(sessionScope).get(0).getDefautMaladieCode());
+      
+      // @since 2.3.0-gatsbi
+      if (SessionUtils.getCurrentBanque(sessionScope).getEtude() != null) { // gastbi
+         patient.setBanque(SessionUtils.getCurrentBanque(sessionScope));
+      }
 
       // récupération du patient et de sa maladie s'ils existaient déjà
       // doublon patient
       // on regarde si le patient existe deja en base
-      if(ManagerLocator.getPatientManager().findDoublonManager(patient)){
-         final List<Patient> liste = ManagerLocator.getPatientManager().findByNomLikeManager(patient.getNom(), true);
+      if(ManagerLocator.getPatientManager().findDoublonManager(patient).isPresent()){
+//         final List<Patient> liste = ManagerLocator.getPatientManager().findByNomLikeManager(patient.getNom(), true);
+//
+//         for(int i = 0; i < liste.size(); i++){
+//            final Patient p = liste.get(i);
+//            if(patient.equals(p)){
+//               patient = p;
+//            }
+//         }
+         // @since 2.3.0-gatsbi, patient existant peut être par identifiant
+         Patient existingPat = ManagerLocator.getPatientManager().getExistingPatientManager(patient);
 
-         for(int i = 0; i < liste.size(); i++){
-            final Patient p = liste.get(i);
-            if(patient.equals(p)){
-               patient = p;
-            }
+         if(patient.equals(existingPat)){
+            patient = existingPat;
          }
 
          maladie.setPatient(patient);

@@ -47,6 +47,7 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import javax.persistence.EntityManager;
@@ -222,9 +223,10 @@ public class PatientManagerImpl implements PatientManager
          BeanValidator.validateObject(patient, validators);
          
          //Doublon
-         if(!operation.equals("fusion") && findDoublonManager(patient)){
+         Optional<PatientDoublonFound> optDbf = findDoublonManager(patient);
+         if(!operation.equals("fusion") && optDbf.isPresent()){
             log.warn("Doublon lors " + operation + " objet Patient " + patient.toString());
-            throw new DoublonFoundException("Patient", operation, patient.getNip(), null);
+            throw new DoublonFoundException("Patient", operation, optDbf.get());
          }
          if((operation.equals("creation") || operation.equals("modification")) || operation.equals("modifMulti")
             || operation.equals("synchronisation") || operation.equals("fusion") || operation.equals("validation")
@@ -331,13 +333,15 @@ public class PatientManagerImpl implements PatientManager
    }
 
    @Override
-   public boolean findDoublonManager(final Patient patient){
+   public Optional<PatientDoublonFound> findDoublonManager(final Patient patient){
       if (patient.getBanque() == null) {
          return findPatientDoublonOnIdentityOrNip(patient);
       } else { // gatsbi 
          // recherche d'abord par identifiant si existe pour la banque
          if (findPatientDoublonOnIdentifiant(patient)) {
-            return true;
+            PatientDoublonFound df = new PatientDoublonFound();
+            df.setIdentifiant(patient.getIdentifiantAsString());
+            return Optional.of(df);
          }
          
          // sinon vérifie quand même les traits d'identités et le NIP
@@ -356,40 +360,59 @@ public class PatientManagerImpl implements PatientManager
       }
    }
       
-   private boolean findPatientDoublonOnIdentityOrNip(final Patient patient) {
-      boolean doublon = false;
+   private Optional<PatientDoublonFound> findPatientDoublonOnIdentityOrNip(final Patient patient) {
 
-      if(patient.getPatientId() == null){
+      PatientDoublonFound df = new PatientDoublonFound();
+      
+      boolean doublon = false;
+      if(patient.getPatientId() == null){ // creation
          doublon = patientDao.findByNom(patient.getNom()).contains(patient);
-      }else{
+      }else{ // modification
          doublon = patientDao.findByExcludedId(patient.getPatientId(), patient.getNom()).contains((patient));
       }
 
-      // s'il n'y a pas de doublon sur le EQUALS du Patient, on va
-      // vérifier qu'il n'y a aucun patient ayant le même NIP
+      // il y un doublon sur les traits d'identité nom, prenom, date naissance
+      // traits EQUALS du patient
       if(doublon){
-         return doublon;
+         df.setNom(patient.getNom());
+         return Optional.of(df);
       }
-      if(patient.getPatientId() == null){
-         return patientDao.findByNip(patient.getNip()).size() > 0;
+      
+      // sinon érifier qu'il n'y a aucun patient ayant le même NIP
+      if(patient.getPatientId() == null){ // creation
+         doublon = patientDao.findByNip(patient.getNip()).size() > 0;
+      } else { // modification
+         doublon = patientDao.findByNipWithExcludedId(patient.getNip(), patient.getPatientId()).size() > 0;
       }
-
-      return patientDao.findByNipWithExcludedId(patient.getNip(), patient.getPatientId()).size() > 0;
+      
+      if(doublon){
+         df.setNip(patient.getNip());
+         return Optional.of(df);
+      }
+      return Optional.empty();
    }
 
    @Override
    public Patient getExistingPatientManager(final Patient pat){
       if(pat != null){
-         // recherche par identité
-         final List<Patient> patients = patientDao.findByNom(pat.getNom());
-
-         // renvoie patient si contenu dans la liste
-         if(patients.contains(pat)){
-            return patients.get(patients.indexOf(pat));
+         
+         final List<Patient> patients = new ArrayList<Patient>();
+         // @since gatsbi
+         // recherche si le patient existant correspond à un identifiant
+         if (pat.getBanque() != null) {
+            patients.addAll(patientDao
+               .findByIdentifiant(pat.getIdentifiantAsString(), Arrays.asList(pat.getBanque())));
+            return patients.get(0); // un seul patient possible par identifiant par banque
          }
-
-         patients.clear();
-
+         
+         // le patient existant porte sur l'identité
+         if (patients.isEmpty()) {
+            patients.addAll(patientDao.findByNom(pat.getNom()));
+            // renvoie patient si contenu dans la liste
+            if(patients.contains(pat)){
+               return patients.get(patients.indexOf(pat));
+            }
+         }
       }
       return null;
    }

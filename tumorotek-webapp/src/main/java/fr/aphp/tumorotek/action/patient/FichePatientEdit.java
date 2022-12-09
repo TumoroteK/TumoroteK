@@ -232,17 +232,7 @@ public class FichePatientEdit extends AbstractFicheEditController
 
       try{
          prepareDataBeforeSave(false);
-         if(patient != null){
-            if(patient.getNom() == null || patient.getNom() == ""){
-               patient.setNom("Inconnu");
-            }
-            if(patient.getPrenom() == null){
-               patient.setPrenom("Inconnu");
-            }
-            if(patient.getNomNaissance() == null){
-               patient.setNomNaissance("Inconnu");
-            }
-         }
+         setInconnus(patient);
 
          ManagerLocator.getPatientManager().createOrUpdateObjectManager(patient, null, medecins, liens,
             getObjectTabController().getFicheAnnotation().getValeursToCreateOrUpdate(), null, filesCreated, null,
@@ -253,6 +243,20 @@ public class FichePatientEdit extends AbstractFicheEditController
             f.delete();
          }
          throw (re);
+      }
+   }
+   
+   public void setInconnus(Patient patient) {
+      if(patient != null){
+         if(patient.getNom() == null || patient.getNom() == ""){
+            patient.setNom("Inconnu");
+         }
+         if(patient.getPrenom() == null){
+            patient.setPrenom("Inconnu");
+         }
+         if(patient.getNomNaissance() == null){
+            patient.setNomNaissance("Inconnu");
+         }
       }
    }
 
