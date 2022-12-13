@@ -48,7 +48,7 @@ import fr.aphp.tumorotek.webapp.general.SessionUtils;
 /**
  * Decorateur ImportColonne pour affichage ImportTemplate.
  *
- * @version 2.0.12
+ * @version 2.3.0-gatsbi
  * @author Mathieu BARTHELEMY
  *
  */
@@ -62,9 +62,20 @@ public class ImportColonneDecorator
    private Boolean canMove = true;
 
    private Boolean disableEditLabel = false;
+   
+   // decorateur s'applique dans un contexte gatsbi?
+   private boolean visiteGatsbi = false;
 
    public ImportColonneDecorator(final ImportColonne ic){
       colonne = ic;
+   }
+   
+   /*
+    * @since 2.3.0-gatsbi
+    */
+   public ImportColonneDecorator(final ImportColonne ic, final boolean _g){
+      colonne = ic;
+      visiteGatsbi = _g;
    }
 
    public ImportColonne getColonne(){
@@ -79,7 +90,11 @@ public class ImportColonneDecorator
       String champ = "";
       if(colonne.getChamp() != null){
          if(colonne.getChamp().getChampEntite() != null){
-            champ = getLabelForChampEntite(colonne.getChamp().getChampEntite());
+            if (!visiteGatsbi || colonne.getChamp().getChampEntite().getId() != 20) {
+               champ = getLabelForChampEntite(colonne.getChamp().getChampEntite());
+            } else { // rendu date debut -> date de visite
+               champ = Labels.getLabel("gatsbi.visite.date");
+            }
          }else if(colonne.getChamp().getChampDelegue() != null){
             champ = Labels
                .getLabel(colonne.getChamp().getChampDelegue().getILNLabelForChampDelegue(SessionUtils.getCurrentContexte()));
@@ -130,7 +145,11 @@ public class ImportColonneDecorator
       String entite = "";
       if(colonne.getChamp() != null){
          if(colonne.getChamp().getChampEntite() != null){
-            entite = Labels.getLabel("Entite." + colonne.getChamp().getChampEntite().getEntite().getNom());
+            if (!visiteGatsbi) {
+               entite = Labels.getLabel("Entite." + colonne.getChamp().getChampEntite().getEntite().getNom());
+            } else { // rendu entite Maladie -> Visite
+               entite = Labels.getLabel("gatsbi.visite");
+            }
          }else if(colonne.getChamp().getChampDelegue() != null){
             entite = Labels.getLabel("Entite." + colonne.getChamp().getChampDelegue().getEntite().getNom());
          }else{
@@ -263,4 +282,7 @@ public class ImportColonneDecorator
       this.canDelete = canDelete;
    }
 
+   public void setVisiteGatsbi(boolean _v){
+      this.visiteGatsbi = _v;
+   }
 }

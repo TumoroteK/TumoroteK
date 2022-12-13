@@ -101,6 +101,7 @@ import fr.aphp.tumorotek.model.qualite.OperationType;
 import fr.aphp.tumorotek.model.systeme.CouleurEntiteType;
 import fr.aphp.tumorotek.model.utilisateur.Profil;
 import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
+import fr.aphp.tumorotek.webapp.gatsbi.GatsbiController;
 import fr.aphp.tumorotek.webapp.general.ConnexionUtils;
 import fr.aphp.tumorotek.webapp.general.MainTabbox;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
@@ -1188,7 +1189,7 @@ public class MainWindow extends GenericForwardComposer<Component>
       maladie.setCode(SessionUtils.getSelectedBanques(sessionScope).get(0).getDefautMaladieCode());
       
       // @since 2.3.0-gatsbi
-      if (SessionUtils.getCurrentBanque(sessionScope).getEtude() != null) { // gastbi
+      if (GatsbiController.isInGatsbiContexte(SessionUtils.getCurrentBanque(sessionScope))) { // gastbi
          patient.setBanque(SessionUtils.getCurrentBanque(sessionScope));
       }
 

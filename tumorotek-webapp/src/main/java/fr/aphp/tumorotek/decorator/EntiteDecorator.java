@@ -49,7 +49,7 @@ import fr.aphp.tumorotek.model.systeme.Entite;
  * pour les afficher dans la liste associée.
  * Decorator créé le 26/05/2010.
  *
- * @version 2.0.13.2
+ * @version 2.3.0-gatsbi
  * @author GOUSSEAU Maxime
  *
  */
@@ -57,9 +57,15 @@ public class EntiteDecorator
 {
 
    private Entite entite;
+   private boolean gatsbi = false;
 
    public EntiteDecorator(final Entite e){
       this.entite = e;
+   }
+   
+   public EntiteDecorator(final Entite e, final boolean _g){
+      this.entite = e;
+      this.gatsbi = _g;
    }
 
    public Entite getEntite(){
@@ -76,7 +82,11 @@ public class EntiteDecorator
 
    public String getLabel(){
       String label = null;
-      label = Labels.getLabel("Entite." + entite.getNom());
+      if (!gatsbi || entite.getEntiteId() != 7) {
+         label = Labels.getLabel("Entite." + entite.getNom());
+      } else { // gatsbi visite
+         label = Labels.getLabel("gatsbi.visite");
+      }
       if(null == label || "".equals(label)){
          label = getNom();
       }
@@ -87,12 +97,13 @@ public class EntiteDecorator
     * Decore une liste d'Entites.
     * @param entites
     * @return Entites décorés.
+    * @since 2.3.0-gatsbi, modifie Maladie -> Visite dans la décoration
     */
-   public static List<EntiteDecorator> decorateListe(final Collection<Entite> entites){
+   public static List<EntiteDecorator> decorateListe(final Collection<Entite> entites, final boolean gatsbi){
       final List<EntiteDecorator> liste = new ArrayList<>();
       final Iterator<Entite> it = entites.iterator();
       while(it.hasNext()){
-         liste.add(new EntiteDecorator(it.next()));
+         liste.add(new EntiteDecorator(it.next(), gatsbi));
       }
       return liste;
    }
@@ -141,5 +152,4 @@ public class EntiteDecorator
 
       return hash;
    }
-
 }
