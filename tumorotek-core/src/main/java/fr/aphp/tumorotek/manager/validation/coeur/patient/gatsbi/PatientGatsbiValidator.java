@@ -38,7 +38,11 @@ package fr.aphp.tumorotek.manager.validation.coeur.patient.gatsbi;
 
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.validation.Errors;
+
 import fr.aphp.tumorotek.manager.validation.RequiredValueValidator;
+import fr.aphp.tumorotek.manager.validation.ValidationUtilities;
 import fr.aphp.tumorotek.model.coeur.patient.Patient;
 
 /**
@@ -59,6 +63,25 @@ public class PatientGatsbiValidator extends RequiredValueValidator
    @Override
    public boolean supports(final Class<?> clazz){
       return Patient.class.equals(clazz);
+   }
+   
+   @Override
+   public void validate(Object target, Errors errs){
+
+      final Patient patient = (Patient) target;
+
+      //identifiant obligatoire
+      if (patient.getIdentifiant() == null || StringUtils.isBlank(patient.getIdentifiantAsString())) {
+         errs.rejectValue("identifiant", "patient.identifiant.empty");
+      } else { //identifiant valide
+         if(!patient.getIdentifiantAsString().matches(ValidationUtilities.CODEREGEXP)){
+            errs.rejectValue("identifiant", "patient.identifiant.illegal");
+         }
+         if(patient.getIdentifiantAsString().length() > 20){
+            errs.rejectValue("identifiant", "patient.identifiant.tooLong");
+         }
+      }
+      super.validate(target, errs);
    }
 
    @Override

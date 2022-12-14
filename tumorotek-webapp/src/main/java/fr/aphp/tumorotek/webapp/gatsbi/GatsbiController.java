@@ -639,7 +639,7 @@ public class GatsbiController
       Collections.sort(chpE, Comparator.comparing(ChampEntite::getId));
 
       // ajout identifiant au début
-      if (contexte.getContexteType().equals(ContexteType.PATIENT)) {
+      if (contexte != null && contexte.getContexteType().equals(ContexteType.PATIENT)) {
          Optional<ChampEntite> patientIdentifiantChpOpt = 
             chpE.stream().filter(c -> c.getId().equals(272)).findFirst();
          if (patientIdentifiantChpOpt.isPresent()) {
