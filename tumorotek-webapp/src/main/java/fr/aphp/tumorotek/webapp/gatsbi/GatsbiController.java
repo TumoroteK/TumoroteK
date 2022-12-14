@@ -55,6 +55,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
@@ -865,6 +866,12 @@ public class GatsbiController
 
          RestTemplate restTemplate = new RestTemplate();
          return restTemplate.getForObject(schemaVisiteURIBld.build(false).expand(eId).toUri(), SchemaVisitesDTO.class);
+      }catch(HttpClientErrorException he) {
+         if (he.getStatusCode().equals(HttpStatus.NOT_FOUND)) {
+            return null; // 404 -> pas de schéma de visite défini, OK
+         } else {
+            throw new GatsbiException(he.getMessage());
+         }
       }catch(ResourceAccessException e){ // gatsbi inaccessible
          throw new GatsbiException("gatsbi.connexion.error");
       }catch(Exception e){
