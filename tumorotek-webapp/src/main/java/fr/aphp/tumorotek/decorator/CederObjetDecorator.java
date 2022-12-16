@@ -502,7 +502,7 @@ public class CederObjetDecorator
          prlvt = ManagerLocator.getProdDeriveManager().getPrelevementParent(prodDerive);
       }
 
-      if(prlvt != null){
+      if(prlvt != null && prlvt.getConsentType() != null){
          return prlvt.getConsentType().getNom();
       }
       return "";

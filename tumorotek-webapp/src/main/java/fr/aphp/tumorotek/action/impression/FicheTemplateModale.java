@@ -2872,7 +2872,9 @@ public class FicheTemplateModale extends AbstractImpressionController
                   val.append("-");
                }
             }else if(champs.get(j).getNom().equals("NatureId")){
-               val.append(prlvt.getNature().getNom());
+               if(prlvt.getNature() != null){
+                  val.append(prlvt.getNature().getNom());
+               }
             }else if(champs.get(j).getNom().equals("PrelevementTypeId")){
                if(prlvt.getPrelevementType() != null){
                   val.append(prlvt.getPrelevementType().getNom());
@@ -2880,7 +2882,9 @@ public class FicheTemplateModale extends AbstractImpressionController
                   val.append("-");
                }
             }else if(champs.get(j).getNom().equals("ConsentTypeId")){
-               val.append(prlvt.getConsentType().getNom());
+               if(prlvt.getConsentType() != null){
+                  val.append(prlvt.getConsentType().getNom());
+               }
             }else if(champs.get(j).getNom().equals("NbEchantillons")){
                val.append(PrelevementUtils.getNbEchanRestants(prlvt) + "/"
                   + ManagerLocator.getPrelevementManager().getEchantillonsManager(prlvt).size());
