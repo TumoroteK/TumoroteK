@@ -45,6 +45,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -53,9 +54,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.codehaus.jackson.JsonParseException;
-import org.codehaus.jackson.map.DeserializationConfig.Feature;
 import org.codehaus.jackson.map.JsonMappingException;
-import org.codehaus.jackson.map.ObjectMapper;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
@@ -639,6 +639,16 @@ public class GatsbiController
 
       Collections.sort(chpE, Comparator.comparing(ChampEntite::getId));
 
+      // ajout identifiant au début
+      if (contexte != null && contexte.getContexteType().equals(ContexteType.PATIENT)) {
+         Optional<ChampEntite> patientIdentifiantChpOpt = 
+            chpE.stream().filter(c -> c.getId().equals(272)).findFirst();
+         if (patientIdentifiantChpOpt.isPresent()) {
+            chpE.remove(patientIdentifiantChpOpt.get());
+            chpE.add(0, patientIdentifiantChpOpt.get());
+         }
+      }
+
       return chpE;
    }
 
@@ -655,32 +665,33 @@ public class GatsbiController
          if(c != null){
             deco.setCanDelete(
                !getRequiredChampEntiteIdsForContexte(c).contains(deco.getColonne().getChamp().getChampEntite().getId()));
+            deco.setVisiteGatsbi(c.getContexteType().equals(ContexteType.MALADIE));
          }
       }
       return decos;
    }
 
    // test only
-   public static ContexteDTO mockOneContexteTEST() throws JsonParseException, JsonMappingException, IOException{
-
-      ObjectMapper mapper = new ObjectMapper();
-      mapper.configure(Feature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-
-      ContexteDTO cont = mapper.readValue(GatsbiController.class.getResourceAsStream("contexte.json"), ContexteDTO.class);
-
-      return cont;
-   }
-
-   // test only
-   public static ParametrageDTO mockOneParametrageTEST(Integer pId) throws JsonParseException, JsonMappingException, IOException{
-
-      ObjectMapper mapper = new ObjectMapper();
-      mapper.configure(Feature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-
-      return mapper.readValue(GatsbiController.class.getResourceAsStream("parametrage".concat(pId.toString()).concat(".json")),
-         ParametrageDTO.class);
-
-   }
+//   public static ContexteDTO mockOneContexteTEST() throws JsonParseException, JsonMappingException, IOException{
+//
+//      ObjectMapper mapper = new ObjectMapper();
+//      mapper.configure(Feature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+//
+//      ContexteDTO cont = mapper.readValue(GatsbiController.class.getResourceAsStream("contexte.json"), ContexteDTO.class);
+//
+//      return cont;
+//   }
+//
+//   // test only
+//   public static ParametrageDTO mockOneParametrageTEST(Integer pId) throws JsonParseException, JsonMappingException, IOException{
+//
+//      ObjectMapper mapper = new ObjectMapper();
+//      mapper.configure(Feature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+//
+//      return mapper.readValue(GatsbiController.class.getResourceAsStream("parametrage".concat(pId.toString()).concat(".json")),
+//         ParametrageDTO.class);
+//
+//   }
 
    /**
     * Vérifie la visibilité d'un champ entité en - retrouvant le contexte - puis la
@@ -855,6 +866,12 @@ public class GatsbiController
 
          RestTemplate restTemplate = new RestTemplate();
          return restTemplate.getForObject(schemaVisiteURIBld.build(false).expand(eId).toUri(), SchemaVisitesDTO.class);
+      }catch(HttpClientErrorException he) {
+         if (he.getStatusCode().equals(HttpStatus.NOT_FOUND)) {
+            return null; // 404 -> pas de schéma de visite défini, OK
+         } else {
+            throw new GatsbiException(he.getMessage());
+         }
       }catch(ResourceAccessException e){ // gatsbi inaccessible
          throw new GatsbiException("gatsbi.connexion.error");
       }catch(Exception e){
@@ -1155,5 +1172,9 @@ public class GatsbiController
       }catch(Exception e){
          throw new GatsbiException(e.getMessage());
       }
+   }
+   
+   public static boolean isInGatsbiContexte(Banque banque) {
+      return banque.getEtude() != null;
    }
 }

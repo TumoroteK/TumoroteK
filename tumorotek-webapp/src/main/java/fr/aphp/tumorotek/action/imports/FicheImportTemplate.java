@@ -234,8 +234,12 @@ public class FicheImportTemplate extends AbstractFicheCombineController
       Executions.createComponents("/zuls/imports/EntitesAssocieesImport.zul", entitesAssocieesImport, null);
       getEntitesAssocieesImport().setGroupHeader(groupEntites);
       getEntitesAssocieesImport().setPathToRespond(Path.getPath(self));
-
-      colonnesRenderer = new ImportColonneRowRenderer();
+      
+      // gatsbi 
+      boolean isGatsbi = GatsbiController
+                     .isInGatsbiContexte(SessionUtils.getCurrentBanque(sessionScope));
+      getEntitesAssocieesImport().setGatsbi(isGatsbi);
+      colonnesRenderer = new ImportColonneRowRenderer(isGatsbi);
 
       getBinder().loadAll();
    }
@@ -251,7 +255,8 @@ public class FicheImportTemplate extends AbstractFicheCombineController
       if(this.importTemplate != null && this.importTemplate.getImportTemplateId() != null){
          entites.clear();
          entites
-            .addAll(EntiteDecorator.decorateListe(ManagerLocator.getImportTemplateManager().getEntiteManager(importTemplate)));
+            .addAll(EntiteDecorator.decorateListe(ManagerLocator.getImportTemplateManager().getEntiteManager(importTemplate), 
+               GatsbiController.isInGatsbiContexte(SessionUtils.getCurrentBanque(sessionScope))));
 
          importColonnes.clear();
          // subderive
@@ -589,11 +594,18 @@ public class FicheImportTemplate extends AbstractFicheCombineController
          final List<ChampEntite> ces =
             GatsbiController.findByEntiteImportAndIsNullableManager(entiteDeco.getEntite(), true, false);
 
+         /*
+          * @since 2.3.0 les labels des lignes Maladie deviennent Visite 
+          * pour les contextes Gatsbi
+          * (ne concerne pas les champ entites non obligatoires
+          */
          for(int i = 0; i < ces.size(); i++){
             final ImportColonne ic = new ImportColonne();
             ic.setImportTemplate(importTemplate);
             ic.setChamp(new Champ(ces.get(i)));
-            importColonnesDecorator.add(new ImportColonneDecorator(ic));
+            importColonnesDecorator.add(new ImportColonneDecorator(ic, 
+               entiteDeco.getEntite().getEntiteId() == 7 && 
+               GatsbiController.isInGatsbiContexte(SessionUtils.getCurrentBanque(sessionScope))));
          }
 
          if(entitesAssociees.size() == 1){

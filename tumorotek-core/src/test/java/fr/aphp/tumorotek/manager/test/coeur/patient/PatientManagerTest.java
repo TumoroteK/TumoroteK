@@ -428,23 +428,29 @@ public class PatientManagerTest extends AbstractManagerTest4
       // Doublon sur le EQUALS avec nouveau patient
       final Patient p1 = patientManager.findByNipLikeManager("12", true).get(0);
       final Patient pNew = new Patient();
-      assertFalse(patientManager.findDoublonManager(pNew));
+      assertFalse(patientManager.findDoublonManager(pNew).isPresent());
       pNew.setNom(p1.getNom());
       pNew.setPrenom(p1.getPrenom());
       pNew.setDateNaissance(p1.getDateNaissance());
       pNew.setVilleNaissance(p1.getVilleNaissance());
       assertTrue(pNew.equals(p1));
-      assertTrue(patientManager.findDoublonManager(pNew));
+      assertTrue(patientManager.findDoublonManager(pNew).isPresent());
+      assertTrue(patientManager.findDoublonManager(pNew).get().getNom().equals(p1.getNom()));
+      assertTrue(patientManager.findDoublonManager(pNew).get().getNip() == null);
+      assertTrue(patientManager.findDoublonManager(pNew).get().getIdentifiant() == null);
 
       // Doublon sur le EQUALS avec patient existant
       Patient p2 = patientManager.findByNipLikeManager("0987", true).get(0);
-      assertFalse(patientManager.findDoublonManager(p2));
+      assertFalse(patientManager.findDoublonManager(p2).isPresent());
       p2.setNom(p1.getNom());
       p2.setPrenom(p1.getPrenom());
       p2.setDateNaissance(p1.getDateNaissance());
       p2.setVilleNaissance(p1.getVilleNaissance());
       assertTrue(p2.equals(p1));
-      assertTrue(patientManager.findDoublonManager(p2));
+      assertTrue(patientManager.findDoublonManager(p2).isPresent());
+      assertTrue(patientManager.findDoublonManager(p2).get().getNom().equals(p1.getNom()));
+      assertTrue(patientManager.findDoublonManager(p2).get().getNip() == null);
+      assertTrue(patientManager.findDoublonManager(p2).get().getIdentifiant() == null);
 
       // Doublon sur le NIP avec nouveau patient
       final Patient pNew2 = new Patient();
@@ -452,15 +458,21 @@ public class PatientManagerTest extends AbstractManagerTest4
       pNew2.setPrenom("Prenom");
       pNew2.setDateNaissance(p1.getDateNaissance());
       pNew2.setVilleNaissance("PARIS");
-      assertFalse(patientManager.findDoublonManager(pNew2));
+      assertFalse(patientManager.findDoublonManager(pNew2).isPresent());
       pNew2.setNip(p1.getNip());
-      assertTrue(patientManager.findDoublonManager(pNew2));
+      assertTrue(patientManager.findDoublonManager(pNew2).isPresent());
+      assertTrue(patientManager.findDoublonManager(pNew2).get().getNip().equals(p1.getNip()));
+      assertTrue(patientManager.findDoublonManager(pNew2).get().getNom() == null);
+      assertTrue(patientManager.findDoublonManager(pNew2).get().getIdentifiant() == null);
 
       // Doublon sur le NIP avec patient existant
       p2 = patientManager.findByNipLikeManager("0987", true).get(0);
-      assertFalse(patientManager.findDoublonManager(p2));
+      assertFalse(patientManager.findDoublonManager(p2).isPresent());
       p2.setNip(p1.getNip());
-      assertTrue(patientManager.findDoublonManager(p2));
+      assertTrue(patientManager.findDoublonManager(p2).isPresent());
+      assertTrue(patientManager.findDoublonManager(p2).get().getNip().equals(p1.getNip()));
+      assertTrue(patientManager.findDoublonManager(p2).get().getNom() == null);
+      assertTrue(patientManager.findDoublonManager(p2).get().getIdentifiant() == null);
    }
 
    @Test
@@ -1662,7 +1674,12 @@ public class PatientManagerTest extends AbstractManagerTest4
 
       p1.setPrenom("MIKE");
       assertTrue(patientManager.getExistingPatientManager(p1).getPatientId() == 3);
-
+      
+      // @since 2.3.0-gatsbi
+      // patient existant par identifiant
+      p1.setBanque(banqueManager.findByIdManager(1));
+      p1.addToIdentifiants("SLS-1234", banqueManager.findByIdManager(1));
+      assertTrue(patientManager.getExistingPatientManager(p1).getPatientId() == 1);
    }
    
    @Test
@@ -1727,15 +1744,21 @@ public class PatientManagerTest extends AbstractManagerTest4
       
       // doublon sur identifiant
       pNew.addToIdentifiants("SLS-1234", b1);
-      assertTrue(patientManager.findDoublonManager(pNew));
+      assertTrue(patientManager.findDoublonManager(pNew).isPresent());
+      assertTrue(patientManager.findDoublonManager(pNew).get().getNip() == null);
+      assertTrue(patientManager.findDoublonManager(pNew).get().getNom() == null);
+      assertTrue(patientManager.findDoublonManager(pNew).get().getIdentifiant().equals("SLS-1234"));
       
       // edition, même patient id
       pNew.setPatientId(1);
-      assertFalse(patientManager.findDoublonManager(pNew));
+      assertFalse(patientManager.findDoublonManager(pNew).isPresent());
 
       // si edit différent
       pNew.setPatientId(12);
-      assertTrue(patientManager.findDoublonManager(pNew));
+      assertTrue(patientManager.findDoublonManager(pNew).isPresent());
+      assertTrue(patientManager.findDoublonManager(pNew).get().getNip() == null);
+      assertTrue(patientManager.findDoublonManager(pNew).get().getNom() == null);
+      assertTrue(patientManager.findDoublonManager(pNew).get().getIdentifiant().equals("SLS-1234"));
       
       // identantifiant est différent 
       // mais traits d'identités nom / nip existant
@@ -1744,22 +1767,28 @@ public class PatientManagerTest extends AbstractManagerTest4
       pNew.setPatientId(null);
       pNew.getPatientIdentifiants().clear();
       pNew.addToIdentifiants("SLS-NEW0001", b1);
-      assertFalse(patientManager.findDoublonManager(pNew));
+      assertFalse(patientManager.findDoublonManager(pNew).isPresent());
       
       // nom
       // ssi tout le reste de l'identité correspond TODO !?
       pNew.setNom(p1.getNom());
-      assertFalse(patientManager.findDoublonManager(pNew));
+      assertFalse(patientManager.findDoublonManager(pNew).isPresent());
 
       pNew.setPrenom(p1.getPrenom());
       pNew.setDateNaissance(p1.getDateNaissance());
-      assertTrue(patientManager.findDoublonManager(pNew));
+      assertTrue(patientManager.findDoublonManager(pNew).isPresent());
+      assertTrue(patientManager.findDoublonManager(pNew).get().getNip() == null);
+      assertTrue(patientManager.findDoublonManager(pNew).get().getNom().equals(p1.getNom()));
+      assertTrue(patientManager.findDoublonManager(pNew).get().getIdentifiant() == null);
 
       // nip
       pNew.setNom("NEWPATIENT");
-      assertFalse(patientManager.findDoublonManager(pNew));
+      assertFalse(patientManager.findDoublonManager(pNew).isPresent());
 
       pNew.setNip(p1.getNip());
-      assertTrue(patientManager.findDoublonManager(pNew));
+      assertTrue(patientManager.findDoublonManager(pNew).isPresent());
+      assertTrue(patientManager.findDoublonManager(pNew).get().getNip().equals(p1.getNip()));
+      assertTrue(patientManager.findDoublonManager(pNew).get().getNom() == null);
+      assertTrue(patientManager.findDoublonManager(pNew).get().getIdentifiant() == null);
    }
 }

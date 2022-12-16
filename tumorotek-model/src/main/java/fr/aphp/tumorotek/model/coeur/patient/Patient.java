@@ -549,7 +549,10 @@ public class Patient extends TKDelegetableObject<Patient> implements TKAnnotable
       clone.setDelegate(getDelegate());
       
       clone.getPatientIdentifiants().addAll(this.getPatientIdentifiants());
-
+      
+      // @since gatsbi
+      clone.setBanque(getBanque());
+      
       return clone;
    }
 

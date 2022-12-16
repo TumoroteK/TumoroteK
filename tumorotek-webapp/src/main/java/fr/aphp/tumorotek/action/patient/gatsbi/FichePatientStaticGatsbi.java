@@ -36,6 +36,7 @@
  **/
 package fr.aphp.tumorotek.action.patient.gatsbi;
 
+import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.ForwardEvent;
 import org.zkoss.zul.Groupbox;
@@ -100,6 +101,10 @@ public class FichePatientStaticGatsbi extends FichePatientStatic
       // ne force pas affichage emplacement et statut stockage en fin de grid
       // GatsbiControllerPrelevement.drawColumnsForPrelevements(prelContexte,
       //   echantillonsGrid, echantillonRendererGatsbi, false, false, getTtesCollections());
+   }
+   
+   protected String getMaladieHeaderBase(){
+      return Labels.getLabel("gatsbi.visites");
    }
    
    /**

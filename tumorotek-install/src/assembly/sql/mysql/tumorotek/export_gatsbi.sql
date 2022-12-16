@@ -14,6 +14,135 @@ BEGIN
 
 END&&
 
+
+DROP PROCEDURE IF EXISTS `create_tmp_patient_table_gatsbi`&&
+CREATE PROCEDURE `create_tmp_patient_table_gatsbi`(IN etude_id INTEGER)
+  BEGIN
+
+    DROP TEMPORARY TABLE IF EXISTS TMP_PATIENT_EXPORT;
+    
+    SET @sql = CONCAT('CREATE TEMPORARY TABLE TMP_PATIENT_EXPORT (',
+		'PATIENT_ID int(10), ',
+		'IDENTIFIANT varchar(20), ', 	
+	    IF ((is_chp_visible(2, etude_id)), 'NIP varchar(20), ', ''),
+	    IF ((is_chp_visible(4, etude_id)), 'NOM_NAISSANCE varchar(50), ', ''),
+	    IF ((is_chp_visible(3, etude_id)), 'NOM varchar(50), ', ''),
+	    IF ((is_chp_visible(5, etude_id)), 'PRENOM varchar(50), ', ''),
+	    IF ((is_chp_visible(6, etude_id)), 'SEXE char(3), ', ''),
+	    IF ((is_chp_visible(7, etude_id)), 'DATE_NAISSANCE date, ', ''),
+	    IF ((is_chp_visible(8, etude_id)), 'VILLE_NAISSANCE varchar(100), ', ''),
+	    IF ((is_chp_visible(9, etude_id)), 'PAYS_NAISSANCE varchar(100), ', ''),
+	    IF ((is_chp_visible(10, etude_id)), 'PATIENT_ETAT char(10), ', ''),
+	    IF ((is_chp_visible(11, etude_id)), 'DATE_ETAT date, ', ''),
+	    IF ((is_chp_visible(12, etude_id)), 'DATE_DECES date, ', ''),
+	    IF ((is_chp_visible(227, etude_id)), 'MEDECIN_PATIENT varchar(300), ', ''),
+	   'NOMBRE_PRELEVEMENT int(4), 
+        DATE_HEURE_SAISIE    datetime,
+        UTILISATEUR_SAISIE   varchar(100),
+        MALADIE_ID           varchar(100),
+        PRIMARY KEY (PATIENT_ID),
+        INDEX (PATIENT_ID),
+        ) ENGINE = MYISAM, default character SET = utf8');
+      
+      SELECT @sql;
+  
+    PREPARE stmt FROM @sql;
+    EXECUTE stmt;
+    DEALLOCATE PREPARE stmt;
+
+END&&
+
+DROP PROCEDURE IF EXISTS `fill_tmp_table_patient_gatsbi`&&
+CREATE PROCEDURE `fill_tmp_table_patient_gatsbi`(IN pat_id INTEGER, IN banque_id INTEGER IN etude_id INTEGER)
+  BEGIN
+
+    SET @sql = CONCAT('INSERT INTO TMP_PATIENT_EXPORT SELECT ',
+    	'p.patient_id, ', 
+    	'pi.identifiant',
+    	IF ((is_chp_visible(2, etude_id)), 'p.nip, ', ''),
+		IF ((is_chp_visible(4, etude_id)), 'p.nom_naissance, ', ''),
+		IF ((is_chp_visible(3, etude_id)), 'p.nom, ', ''),
+		IF ((is_chp_visible(5, etude_id)), 'prenom, ', ''),
+		IF ((is_chp_visible(6, etude_id)), 'sexe, ', ''),
+		IF ((is_chp_visible(7, etude_id)), 'date_naissance, ', ''),
+		IF ((is_chp_visible(8, etude_id)), 'ville_naissance, ', ''),
+		IF ((is_chp_visible(9, etude_id)), 'pays_naissance, ', ''),
+		IF ((is_chp_visible(10, etude_id)), 'patient_etat, ', ''),
+		IF ((is_chp_visible(11, etude_id)), 'date_etat, ', ''),
+		IF ((is_chp_visible(12, etude_id)), 'date_deces, ', ''),
+		IF ((is_chp_visible(227, etude_id)), 
+			'LEFT((SELECT GROUP_CONCAT(c.nom) FROM PATIENT_MEDECIN pm  JOIN COLLABORATEUR c WHERE pm.COLLABORATEUR_ID = c.COLLABORATEUR_ID AND pm.PATIENT_id = ', pat_id, '), 200), ', ''),
+		'(SELECT count(*) FROM PRELEVEMENT pr
+                INNER JOIN MALADIE m 
+                WHERE pr.maladie_id = m.maladie_id AND m.patient_id = id),
+           (SELECT ut.login
+            FROM UTILISATEUR ut
+                   JOIN OPERATION op ON ut.utilisateur_id = op.utilisateur_id
+            WHERE op.OPERATION_TYPE_ID = 3
+              AND op.entite_id = 1
+              AND op.objet_id = id),
+           (SELECT op.date_ FROM OPERATION op WHERE op.OPERATION_TYPE_ID = 3
+                                                AND op.entite_id = 1
+                                                AND op.objet_id = id),
+           LEFT((SELECT GROUP_CONCAT(maladie_id) FROM MALADIE m WHERE m.patient_id = ', pat_id, '), 100)
+    FROM PATIENT p JOIN PATIENT_IDENTIFIANT pi on p.patient_id = pi.patient_id
+    WHERE patient_id = ', pat_id, ' AND pi.banque_id = ', banque_id);
+      	
+    PREPARE stmt FROM @sql;
+    EXECUTE stmt;
+    DEALLOCATE PREPARE stmt;
+
+END&&
+
+DROP PROCEDURE IF EXISTS `create_tmp_maladie_table_gatsbi`&&
+CREATE PROCEDURE `create_tmp_maladie_table_gatsbi`(IN etude_id INTEGER)
+  BEGIN
+
+    DROP TEMPORARY TABLE IF EXISTS TMP_MALADIE_EXPORT;
+        
+    SET @sql = CONCAT('CREATE TEMPORARY TABLE TMP_MALADIE_EXPORT (', 
+      'LIBELLE varchar(1000)',
+      'DATE_VISITE varchar(1000)',
+	  IF ((is_chp_visible(18, etude_id)), 'CODE_MALADIE varchar(1000), ', ''),
+	  IF ((is_chp_visible(19, etude_id)), 'DATE_DIAGNOSTIC varchar(1000), ', ''),
+      'PATIENT_ID int(10),
+      PRIMARY KEY (PATIENT_ID)
+    ) INDEX (PATIENT_ID),
+    ) ENGINE = MYISAM, default character SET = utf8');
+      
+    SELECT @sql;
+  
+    PREPARE stmt FROM @sql;
+    EXECUTE stmt;
+    DEALLOCATE PREPARE stmt;
+
+END&&
+
+-- delimiter &&
+
+DROP PROCEDURE IF EXISTS `fill_tmp_table_maladie_gatsbi`&&
+CREATE PROCEDURE `fill_tmp_table_maladie_gatsbi`(IN pat_id INTEGER, IN etude_id INTEGER)
+  BEGIN
+    SET @sql = CONCAT('INSERT INTO TMP_MALADIE_EXPORT SELECT', 
+		'LEFT(GROUP_CONCAT(libelle SEPARATOR ' ; '), 200), ',
+    	'LEFT(GROUP_CONCAT(date_debut SEPARATOR ' ; '), 200), ',
+		IF ((is_chp_visible(18, etude_id)), 
+           'LEFT(GROUP_CONCAT(code SEPARATOR ' ; '), 200), ', ''),
+        IF ((is_chp_visible(19, etude_id)), 
+           'LEFT(GROUP_CONCAT(date_diagnostic SEPARATOR ' ; '), 200), ', ''),
+         'patient_id
+    FROM MALADIE
+    WHERE patient_id = ', pat_id,  'group by patient_id');
+
+    SELECT @sql;
+  
+    PREPARE stmt FROM @sql;
+    EXECUTE stmt;
+    DEALLOCATE PREPARE stmt;
+
+END&&
+
+
 DROP PROCEDURE IF EXISTS `create_tmp_prelevement_table_gatsbi`&&
 CREATE PROCEDURE `create_tmp_prelevement_table_gatsbi`(IN etude_id INTEGER)
   BEGIN
@@ -59,10 +188,10 @@ CREATE PROCEDURE `create_tmp_prelevement_table_gatsbi`(IN etude_id INTEGER)
         UTILISATEUR_SAISIE   varchar(100),
         MALADIE_ID           int(10),
         LIBELLE              varchar(300),
-        CODE_MALADIE         varchar(50),
-        DATE_DIAGNOSTIC      date,
-        DATE_DEBUT           date,
-        MEDECIN_MALADIE      varchar(300),
+		DATE_VISITE          date, ',
+        IF ((is_chp_visible(18, etude_id)), 'CODE_MALADIE varchar(50), ', ''),
+        IF ((is_chp_visible(19, etude_id)), 'DATE_DIAGNOSTIC date, ', ''),
+        IF ((is_chp_visible(250, etude_id)), 'MEDECIN_MALADIE varchar(300), ', ''),
         PATIENT_ID           int(10),
         PRIMARY KEY (PRELEVEMENT_ID),
         INDEX (PATIENT_ID),
@@ -133,14 +262,12 @@ CREATE PROCEDURE `fill_tmp_table_prel_gatsbi`(IN prel_id INTEGER, IN etude_id IN
               AND op.objet_id = ', prel_id, '), 
            p.maladie_id,
            m.libelle,
-           m.code,
-           m.date_diagnostic,
-           m.date_debut,
-           LEFT((select GROUP_CONCAT(c.nom)
-            FROM MALADIE_MEDECIN mm
-                   JOIN COLLABORATEUR c ON mm.collaborateur_id = c.collaborateur_id
-            WHERE p.maladie_id = mm.maladie_id), 200),
-           pat.patient_id
+           m.date_debut, ',
+		IF ((is_chp_visible(18, etude_id)), 'm.code, ', ''),
+		IF ((is_chp_visible(19, etude_id)), 'm.date_diagnostic, ', ''),
+		IF ((is_chp_visible(250, etude_id)), 
+			'LEFT((select GROUP_CONCAT(c.nom) FROM MALADIE_MEDECIN mm JOIN COLLABORATEUR c ON mm.collaborateur_id = c.collaborateur_id WHERE p.maladie_id = mm.maladie_id), 200),', ''),   
+        'pat.patient_id
     FROM PRELEVEMENT p
            INNER JOIN BANQUE b
            INNER JOIN ENTITE ent 

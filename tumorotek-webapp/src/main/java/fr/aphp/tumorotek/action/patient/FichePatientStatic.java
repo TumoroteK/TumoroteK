@@ -147,7 +147,7 @@ public class FichePatientStatic extends AbstractFicheStaticController
       // cree maladie groupHeaderTemplate avec slots 1 et 2
       this.maladieGroupHeaderTemplate = "";
       if(SessionUtils.isAnyDefMaladieInBanques(SessionUtils.getSelectedBanques(sessionScope))){
-         this.maladieGroupHeaderTemplate = Labels.getLabel("patient.maladies") + "({1}) - ";
+         this.maladieGroupHeaderTemplate = getMaladieHeaderBase() + "({1}) - ";
       }
       this.maladieGroupHeaderTemplate = this.maladieGroupHeaderTemplate + Labels.getLabel("ficheMaladie.prelevements") + "({2})";
 
@@ -165,6 +165,11 @@ public class FichePatientStatic extends AbstractFicheStaticController
             onClickPrelevementCode(event);
          }
       });
+   }
+
+   // @since 2.3.0-gatsbi, sera surchargée dans contexte gatsbi
+   protected String getMaladieHeaderBase(){
+      return Labels.getLabel("patient.maladies");
    }
 
    public List<FicheMaladie> getMaladiePanels(){

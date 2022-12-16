@@ -37,10 +37,15 @@
 package fr.aphp.tumorotek.model.contexte.gatsbi;
 
 import java.io.Serializable;
+import java.util.AbstractMap;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class Contexte implements Serializable
 {
@@ -60,7 +65,16 @@ public class Contexte implements Serializable
    protected List<Parametrage> parametrages = new ArrayList<>();
 
    protected List<ChampEntite> champEntites = new ArrayList<>();
-
+   
+   // gatsbi clefs naturelles pour chaque onglet
+   private Map<ContexteType, List<Integer>> nkIds = Stream.of(
+         new AbstractMap.SimpleEntry<>(ContexteType.PATIENT, Arrays.asList(272)), // identifiant patient  
+         new AbstractMap.SimpleEntry<>(ContexteType.MALADIE, Arrays.asList(17, 20)), // libelle, date visite
+         new AbstractMap.SimpleEntry<>(ContexteType.PRELEVEMENT, Arrays.asList(23)), // code prelevement
+         new AbstractMap.SimpleEntry<>(ContexteType.ECHANTILLON, Arrays.asList(54)), // code échantillon
+         new AbstractMap.SimpleEntry<>(ContexteType.PROD_DERIVE, Arrays.asList(79))) // code dérivé
+      .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+   
    public Contexte(){}
 
    public Contexte(final Integer contexteId, final String nom, final ContexteType contexteType, final Boolean archive,
@@ -161,12 +175,30 @@ public class Contexte implements Serializable
             ids.add(c.getChampEntiteId());
          }
       }
+      
+      // clef naturelles sont retirés 
+      // par securite
+      removeNaturalKeys(ids);
 
       // dependances entite specifiques
       addPrelevementComplementaryVisibleIds(ids);
       addEchantillonComplementaryVisibleChpIds(ids);
 
       return ids;
+   }
+   
+   /**
+    * Supprime par sécurité des champs invisible les 
+    * clefs naturelles imposées par Gatsbi:
+    *  - patient identifiant
+    *  - maladie/visite libelle + date debut
+    *  - prelevement code
+    *  - echantillon code 
+    *  - derive code
+    * @param ids
+    */
+   private void removeNaturalKeys(List<Integer> ids) {
+      ids.removeAll(nkIds.get(contexteType));
    }
 
    /**
@@ -214,10 +246,32 @@ public class Contexte implements Serializable
             ids.add(c.getChampEntiteId());
          }
       }
+      
+      // ajouter par sécurité 
+      // les clefs naturelles gatsbi
+      addNaturalKeys(ids);
 
       addEchantillonComplementaryRequiredIds(ids);
 
       return ids;
+   }
+   
+   /**
+    * Ajoute par sécurité des champs obligatoires les 
+    * clefs naturelles imposées par Gatsbi:
+    *  - patient identifiant
+    *  - maladie/visite libelle + date debut
+    *  - prelevement code
+    *  - echantillon code 
+    *  - derive code
+    * @param ids
+    */
+   private void addNaturalKeys(List<Integer> ids) {
+      for(Integer nk : nkIds.get(contexteType)){
+         if (!ids.contains(nk)){
+            ids.add(nk);
+         }
+      }
    }
 
    /**
@@ -260,6 +314,12 @@ public class Contexte implements Serializable
    }
 
    public boolean isChampIdRequired(final Integer id){
+      
+      // clefs naturelles toujours obligatoires
+      if (nkIds.get(contexteType).contains(id)) {
+         return true;
+      }
+      
       for(final ChampEntite c : champEntites){
          if(c.getChampEntiteId().equals(id)){
             return c.getVisible() && c.getObligatoire();
@@ -269,6 +329,12 @@ public class Contexte implements Serializable
    }
 
    public boolean isChampIdVisible(final Integer id){
+      
+      // clefs naturelles toujours visibles
+      if (nkIds.get(contexteType).contains(id)) {
+         return true;
+      }
+      
       for(final ChampEntite c : champEntites){
          if(c.getChampEntiteId().equals(id)){
             return c.getVisible();
@@ -278,6 +344,12 @@ public class Contexte implements Serializable
    }
    
    public boolean isChampInTableau(final Integer id){
+      
+      // clefs naturelles toujours dans le tableau
+      if (nkIds.get(contexteType).contains(id)) {
+         return true;
+      }
+      
       for(final ChampEntite c : champEntites){
          if(c.getChampEntiteId().equals(id)){
             return c.getVisible() && c.getInTableau();

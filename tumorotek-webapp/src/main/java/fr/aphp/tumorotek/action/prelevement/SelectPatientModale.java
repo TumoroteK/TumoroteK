@@ -411,13 +411,13 @@ public class SelectPatientModale
       }
    }
 
-   public boolean isDoublonPatient(){
-      if(getCurrentPatient().getPatientId() == null){
-         return ManagerLocator.getPatientManager().findDoublonManager(getCurrentPatient());
-      }else{
-         return false;
-      }
-   }
+//   public boolean isDoublonPatient(){
+//      if(getCurrentPatient().getPatientId() == null){
+//         return ManagerLocator.getPatientManager().findDoublonManager(getCurrentPatient()).isPresent();
+//      }else{
+//         return false;
+//      }
+//   }
 
 
    /**

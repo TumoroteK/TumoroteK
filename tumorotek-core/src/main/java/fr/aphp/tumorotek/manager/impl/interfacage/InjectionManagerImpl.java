@@ -732,7 +732,10 @@ public class InjectionManagerImpl implements InjectionManager
 
          // doublon patient
          // on regarde si le patient existe deja en base
-         if(patientManager.findDoublonManager(patient)){
+         if(patientManager.findDoublonManager(patient).isPresent()){
+            
+            // TODO Gatsbi patient getNom peut être null ! Ou PAS si interfacagae ?!
+            // Faut-il pouvoir injecter par identifiant ?
             final List<Patient> liste = patientManager.findByNomLikeManager(patient.getNom(), true);
 
             for(int i = 0; i < liste.size(); i++){

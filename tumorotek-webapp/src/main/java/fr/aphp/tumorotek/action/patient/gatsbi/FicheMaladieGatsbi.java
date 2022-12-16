@@ -75,7 +75,7 @@ public class FicheMaladieGatsbi extends FicheMaladie
       
       setMaladieValidator(ManagerLocator.getMaladieValidatorDateCoherenceOverride());
 
-      // GatsbiController.initWireAndDisplay(this, 7, false, null, null, null, new Groupbox[]{});
+      GatsbiController.initWireAndDisplay(this, 7, false, null, null, null, new Groupbox[]{});
       
       // Injection contexte prélèvement pour inner list maladies
       // ce contexte peut être (null) non paramétré pour l'étude

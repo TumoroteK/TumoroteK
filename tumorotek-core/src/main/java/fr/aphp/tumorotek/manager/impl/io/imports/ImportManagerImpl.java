@@ -67,6 +67,7 @@ import javax.persistence.TypedQuery;
 import javax.sql.DataSource;
 
 import org.apache.commons.beanutils.PropertyUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
@@ -1304,7 +1305,18 @@ public class ImportManagerImpl implements ImportManager
                // si la colonne correspond à un attribut
                // de l'objet
                if(colonnes.get(i).getChamp().getChampEntite() != null){
-                  setPropertyForImportColonne(patient, colonnes.get(i), row, properties);
+                  if (colonnes.get(i).getChamp().getChampEntite().getId() != 272) {
+                     setPropertyForImportColonne(patient, colonnes.get(i), row, properties);
+                  } else { // else gatsbi identifiant
+                    String identifiant = getCellContent(
+                       row.getCell(properties.getColonnesHeaders().get(colonnes.get(i).getNom())), 
+                          false, properties.getEvaluator());
+                    if (!StringUtils.isBlank(identifiant)) {
+                       log.debug("identifiant gatsbi pour le patient à importer: " + identifiant);
+                       patient.addToIdentifiants(identifiant.trim(), properties.getBanque());
+                    }
+                    patient.setBanque(properties.getBanque()); // le patient est importé dans le cadre d'un contexte gatsbi
+                  }
                }else if(colonnes.get(i).getChamp().getChampAnnotation() != null){
                   // si la colonne correspond à une annotation
                   final List<AnnotationValeur> avs = setPropertyForAnnotationColonne(colonnes.get(i), row, properties);
@@ -1318,22 +1330,19 @@ public class ImportManagerImpl implements ImportManager
             }
          }
          // on regarde si le patient existe deja en base
-         if(patientManager.findDoublonManager(patient)){
+         if(patientManager.findDoublonManager(patient).isPresent()){
 
             final Patient existingPat = patientManager.getExistingPatientManager(patient);
 
             if(patient.equals(existingPat)){
                patient = existingPat;
             }
-            // }
-
             // update en modification -> creation du duo
             duo.setSecondObj(existingPat);
 
             for(final ChampAnnotation chpA : duo.getFirstAnnoValsMap().keySet()){
                duo.getSecondAnnoValsMap().put(chpA, annotationValeurManager.findByChampAndObjetManager(chpA, existingPat));
             }
-            /*************************/
          }
       }
 
@@ -2242,7 +2251,9 @@ public class ImportManagerImpl implements ImportManager
                   saveObjectsRowManager(row, objectsToSave, importations, utilisateur, properties, jdbcSuite, derivesBatches);
                }
             }catch(final RuntimeException re){
-               re.printStackTrace();
+               
+               log.debug(re);
+               
                final ImportError error = new ImportError();
                error.setException(re);
                error.setRow(row);
