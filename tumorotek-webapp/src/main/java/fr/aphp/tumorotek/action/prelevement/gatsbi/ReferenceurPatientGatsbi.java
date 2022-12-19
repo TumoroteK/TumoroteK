@@ -38,7 +38,9 @@ package fr.aphp.tumorotek.action.prelevement.gatsbi;
 import java.time.ZoneId;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
@@ -50,6 +52,7 @@ import org.zkoss.zul.ListitemRenderer;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.Vbox;
 
+import fr.aphp.tumorotek.action.ManagerLocator;
 import fr.aphp.tumorotek.action.patient.FicheMaladie;
 import fr.aphp.tumorotek.action.patient.FichePatientEdit;
 import fr.aphp.tumorotek.action.patient.gatsbi.GatsbiControllerPatient;
@@ -80,7 +83,7 @@ public class ReferenceurPatientGatsbi extends ReferenceurPatient
    private Row resultsMaladiesRow;
    private Vbox newMaladieBox;
    
-   private Patient newPatient;
+   private Patient patient;
    
    protected String getFichePatientComponent() {
       return "/zuls/patient/gatsbi/FichePatientEditGatsbi.zul";
@@ -113,7 +116,7 @@ public class ReferenceurPatientGatsbi extends ReferenceurPatient
    @Override
    public void onCheck$radioGroup(){
       
-      this.newPatient = null; // clear patient
+      this.patient = null; // clear patient
       getMaladies().clear();
 
       super.onCheck$radioGroup();
@@ -145,7 +148,7 @@ public class ReferenceurPatientGatsbi extends ReferenceurPatient
       FicheMaladie ficheMaladie = super.onClick$embedMaladieButton();
       
       if (ficheMaladie.getObject().getPatient() == null) { // embedded new Patient
-         ficheMaladie.getObject().setPatient(newPatient);
+         ficheMaladie.getObject().setPatient(patient);
       }
       
       return ficheMaladie;
@@ -168,7 +171,7 @@ public class ReferenceurPatientGatsbi extends ReferenceurPatient
          // maladiesBox.setVisible(true);
          newMaladieBox.setVisible(false);
                   
-         this.newPatient = pat;
+         this.patient = pat;
          pat.setBanque(SessionUtils.getCurrentBanque(sessionScope));
          
          DateModale.show(Labels.getLabel("gatsbi.schema.visites.title"), 
@@ -183,7 +186,34 @@ public class ReferenceurPatientGatsbi extends ReferenceurPatient
       super.displayExistingPatient(show);
       
       findPatientRow.setVisible(true);
-      resultsRow.setVisible(true);
+      resultsRow.setVisible(true);      
+   }
+   
+   @Override
+   protected void fetchAndDecorateMaladieForPatient(Patient pat){
+      
+      patient = pat;
+
+      // commence par ajouter les maladies communes à toutes les 
+      // collections
+      super.fetchAndDecorateMaladieForPatient(patient);
+      
+      // pour eviter Lazy
+      patient.setMaladies(getMaladies()
+         .stream().map(d -> d.getMaladie()).collect(Collectors.toSet()));
+      
+      patient.setBanque(SessionUtils.getCurrentBanque(sessionScope));
+  
+      // si patient n'a pas encore d'identifiant pour la collection, 
+      // ajout du schéma de visites
+      if (!patient.hasIdentifiant()) {
+         DateModale.show(Labels.getLabel("gatsbi.schema.visites.title"), 
+            Labels.getLabel("gatsbi.schema.visites.label"), null, true, self);
+      } else { // ajout des visites existantes
+         getMaladies().addAll(MaladieDecorator.decorateListe(
+               ManagerLocator.getMaladieManager()
+                  .findVisitesManager(patient, patient.getBanque())));
+      }
    }
    
    /**
@@ -193,12 +223,19 @@ public class ReferenceurPatientGatsbi extends ReferenceurPatient
     */
    public void onFromDateProvided(final Event e){ 
       
-      getMaladies().clear();
+//      getMaladies().clear();
       
       // production du schéma de visites
-      getMaladies().addAll(MaladieDecorator.decorateListe(GatsbiControllerPatient
-            .produceSchemaVisitesForPatient(SessionUtils.getCurrentBanque(sessionScope), newPatient, 
-         ((Date) e.getData()).toInstant().atZone(ZoneId.systemDefault()).toLocalDate())));
+      List<MaladieDecorator> visiteDecos = MaladieDecorator.decorateListe(GatsbiControllerPatient
+         .produceSchemaVisitesForPatient(SessionUtils.getCurrentBanque(sessionScope), patient, 
+      ((Date) e.getData()).toInstant().atZone(ZoneId.systemDefault()).toLocalDate()));
+      
+      getMaladies().addAll(visiteDecos);
+      
+      if (!visiteDecos.isEmpty()) {
+         setSelectedMaladie(visiteDecos.get(0));
+         setFichePrelevementMaladie(visiteDecos.get(0).getMaladie());
+      }
       
       setEmbeddedMaladieVisible(false);
    }

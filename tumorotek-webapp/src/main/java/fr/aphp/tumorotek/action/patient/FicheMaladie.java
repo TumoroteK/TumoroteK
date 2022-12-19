@@ -326,7 +326,9 @@ public class FicheMaladie extends AbstractFicheCombineController
     * concernant la maladie sous-jacente à la collection.
     */
    public void setPrelevementsOnly(){
-      formGrid.detach();
+      if (this.formGrid != null) {
+         formGrid.detach();
+      }
       container.setClosable(false);
       container.setCollapsible(false);
       maladie.setLibelle(null);

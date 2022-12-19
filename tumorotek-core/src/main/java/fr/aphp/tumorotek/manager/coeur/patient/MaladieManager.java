@@ -41,6 +41,7 @@ import java.util.Set;
 import fr.aphp.tumorotek.model.coeur.patient.Maladie;
 import fr.aphp.tumorotek.model.coeur.patient.Patient;
 import fr.aphp.tumorotek.model.coeur.prelevement.Prelevement;
+import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.contexte.Collaborateur;
 import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
 
@@ -168,11 +169,21 @@ public interface MaladieManager
    List<Maladie> findByPatientNoSystemManager(Patient patient);
 
    /**
-    * Recherche les maladies assignées au patient.
+    * Recherche toutes les maladies/visites assignées au patient.
     * @param patient
     * @return une liste de Maladie.
+    * @since 2.3.0-gatsbi
     */
-   List<Maladie> findByPatientManager(Patient patient);
+   List<Maladie> findAllByPatientManager(Patient patient);
+   
+   /**
+    * Recherche les maladies assignées au patient, excluant toutes 
+    * celles correspondant à des visites (banque_id not null)
+    * @param patient
+    * @return une liste de Maladie.
+    * @since 2.3.0-gatsbi
+    */
+   List<Maladie> findByPatientExcludingVisitesManager(Patient patient);
 
    /**
     * Compte le nombre de maladies pour le référent passé en param
@@ -181,4 +192,11 @@ public interface MaladieManager
     */
    public Long findCountByReferentManager(Collaborateur colla);
 
+   /**
+    * Liste les maladies/visites définie pour la collection pour le patient.
+    * @param patient
+    * @param banque
+    * @return une liste de Maladie/Visite.
+    */
+   List<Maladie> findVisitesManager(Patient patient, Banque banque);
 }

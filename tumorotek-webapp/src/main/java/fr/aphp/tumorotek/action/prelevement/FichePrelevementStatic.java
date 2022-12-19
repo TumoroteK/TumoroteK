@@ -307,7 +307,12 @@ public class FichePrelevementStatic extends AbstractFicheStaticController
          }else if(maladie == null){
             changeMaladie.setDisabled(true);
          }else{
-            final List<Maladie> mals = ManagerLocator.getMaladieManager().findByPatientManager(maladie.getPatient());
+            final List<Maladie> mals = 
+               ManagerLocator.getMaladieManager().findByPatientExcludingVisitesManager(maladie.getPatient());
+            if (prelevement.getBanque().getEtude() != null) { // gatsbi -> ajoutes les visites de la collection
+               mals.addAll(ManagerLocator.getMaladieManager()
+                  .findVisitesManager(maladie.getPatient(), prelevement.getBanque()));
+            }
             if(mals.size() > 1){
                changeMaladie.setDisabled(false);
             }else{

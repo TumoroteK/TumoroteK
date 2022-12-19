@@ -66,7 +66,6 @@ import fr.aphp.tumorotek.action.prelevement.serotk.FichePrelevementEditSero;
 import fr.aphp.tumorotek.action.sip.SipFactory;
 import fr.aphp.tumorotek.decorator.MaladieDecorator;
 import fr.aphp.tumorotek.decorator.PatientItemRenderer;
-import fr.aphp.tumorotek.manager.coeur.patient.MaladieManager;
 import fr.aphp.tumorotek.manager.coeur.prelevement.RisqueManager;
 import fr.aphp.tumorotek.model.coeur.patient.Maladie;
 import fr.aphp.tumorotek.model.coeur.patient.Patient;
@@ -398,16 +397,15 @@ public class ReferenceurPatient extends GenericForwardComposer<Component>
 
       if(this.banqueDefMaladies){
 
-         final List<Maladie> res = new ArrayList<>(ManagerLocator.getMaladieManager().findByPatientNoSystemManager(selected));
-
-         this.maladies = MaladieDecorator.decorateListe(res);
+         fetchAndDecorateMaladieForPatient(selected);
+         
          //selectionne automatiquement la premiere maladie
          if(maladies.size() > 0){
             if(selectedMaladieByNda == null){
 
                this.selectedMaladie = this.maladies.get(0);
 
-               fichePrelevementEdit.setMaladie(res.get(0));
+               fichePrelevementEdit.setMaladie(selectedMaladie.getMaladie());
 
             }else{
                this.selectedMaladie = this.maladies.get(maladies.indexOf(selectedMaladieByNda));
@@ -423,7 +421,7 @@ public class ReferenceurPatient extends GenericForwardComposer<Component>
       else{
 
          final List<Maladie> res =
-            new ArrayList<>(ManagerLocator.getManager(MaladieManager.class).findByPatientManager(selected));
+            new ArrayList<>(ManagerLocator.getMaladieManager().findByPatientExcludingVisitesManager(selected));
 
          // 2.0.13 fix ajout maladie defaut system
          Maladie maladie = res.stream().filter(Maladie::getSystemeDefaut).findFirst().orElse(null);
@@ -444,6 +442,16 @@ public class ReferenceurPatient extends GenericForwardComposer<Component>
          SessionUtils.getPlateforme(sessionScope));
       fichePrelevementEdit.selectRisques(risques);
 
+   }
+   
+   // @since 2.3.0-gatsbi, sera surchargée
+   protected void fetchAndDecorateMaladieForPatient(Patient patient) {
+ 
+      maladies.clear();
+      
+      maladies.addAll(MaladieDecorator.decorateListe(
+         new ArrayList<Maladie>(ManagerLocator.getMaladieManager()
+            .findByPatientNoSystemManager(patient))));      
    }
 
    /**
@@ -467,11 +475,12 @@ public class ReferenceurPatient extends GenericForwardComposer<Component>
    public void onSelect$maladiesBox(){
 
       final Maladie selected = ((MaladieDecorator) this.maladiesBox.getSelectedItem().getValue()).getMaladie();
-
+      setFichePrelevementMaladie(selected);
+   }
+   
+   public void setFichePrelevementMaladie(Maladie mal) {
       final FichePrelevementEdit fichePrelevement = getFichePrelevementEditFromContexte();
-
-      fichePrelevement.setMaladie(selected);
-
+      fichePrelevement.setMaladie(mal);
    }
 
    /**

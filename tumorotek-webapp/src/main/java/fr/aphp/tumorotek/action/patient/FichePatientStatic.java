@@ -39,6 +39,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
@@ -193,31 +194,9 @@ public class FichePatientStatic extends AbstractFicheStaticController
 
       if(patient.getPatientId() != null){
          List<Maladie> otherMaladies = new ArrayList<>();
-         if(sessionScope.containsKey("Banque")){
-            // banque définit maladies -> une liste de maladies,
-            // les autres sont maladies sytem
-            if(SessionUtils.getSelectedBanques(sessionScope).get(0).getDefMaladies()){
-               this.maladies = new ArrayList<>(ManagerLocator.getMaladieManager().findByPatientNoSystemManager(patient));
-               otherMaladies = ManagerLocator.getMaladieManager().findByPatientManager(patient);
-               otherMaladies.removeAll(maladies);
-            }else{
-               // banque définit pas maladies -> une maladie system,
-               // les autres sont maladies venant d'autres banques
-               this.maladies = ManagerLocator.getMaladieManager().findByPatientManager(patient);
-               otherMaladies = new ArrayList<>(ManagerLocator.getMaladieManager().findByPatientNoSystemManager(patient));
-               maladies.removeAll(otherMaladies);
-            }
-         }else{
-            // si au moins une banque définit une maladie
-            if(SessionUtils.isAnyDefMaladieInBanques(SessionUtils.getSelectedBanques(sessionScope))){
-               this.maladies = new ArrayList<>(ManagerLocator.getMaladieManager().findByPatientNoSystemManager(patient));
-               otherMaladies = ManagerLocator.getMaladieManager().findByPatientManager(patient);
-               otherMaladies.removeAll(maladies);
-            }else{
-               // n'affiche que des prelevements car maladies systems only
-               this.maladies = ManagerLocator.getMaladieManager().findByPatientManager(patient);
-            }
-         }
+         
+         // @since 2.3.0-gatsbi
+         populatesPatientMaladies(maladies, otherMaladies);
 
          // prepare la liste de prélèvements
          final Iterator<Maladie> mals = otherMaladies.iterator();
@@ -249,6 +228,52 @@ public class FichePatientStatic extends AbstractFicheStaticController
       // annotations
       super.setObject(patient);
 
+   }
+
+   // @since 2.3.0-gatsbi, sera surchargée
+   protected void populatesPatientMaladies(List<Maladie> maladies, List<Maladie> otherMaladies){
+      
+      maladies.clear();
+      otherMaladies.clear();
+      
+      if(sessionScope.containsKey("Banque")){
+         
+         List<Maladie> system = ManagerLocator.getMaladieManager()
+            .findByPatientExcludingVisitesManager(patient)
+            .stream().filter(m -> m.getSystemeDefaut()).collect(Collectors.toList());   
+         
+         // banque définit maladies -> une liste de maladies,
+         // les autres sont maladies sytem
+         if(SessionUtils.getSelectedBanques(sessionScope).get(0).getDefMaladies()){
+            // toutes les maladies non system, non visites gatsbi
+            // toutes les maladies communes et system, non visites 
+            maladies.addAll(new ArrayList<>(ManagerLocator.getMaladieManager().findByPatientExcludingVisitesManager(patient)));
+            
+            maladies.removeAll(system);
+       
+            // maladies 'system', correspondant aux collections no-def maladie
+            otherMaladies.addAll(system); // reste 
+         }else{
+            // banque définit pas maladies -> une maladie system,
+            // les autres sont maladies venant d'autres banques
+            
+            // toutes les maladies non visites
+            maladies.addAll(ManagerLocator.getMaladieManager().findByPatientExcludingVisitesManager(patient));
+            // toutes les maladies non system, non visites gatsbi
+            otherMaladies.addAll(new ArrayList<>(ManagerLocator.getMaladieManager().findByPatientNoSystemManager(patient)));
+            maladies.removeAll(otherMaladies); // reste maladies 'non system', hors visite gatsbi
+         }
+      }else{
+         // si au moins une banque définit une maladie
+         if(SessionUtils.isAnyDefMaladieInBanques(SessionUtils.getSelectedBanques(sessionScope))){
+            maladies.addAll(new ArrayList<>(ManagerLocator.getMaladieManager().findByPatientNoSystemManager(patient)));
+            otherMaladies.addAll(ManagerLocator.getMaladieManager().findByPatientExcludingVisitesManager(patient));
+            otherMaladies.removeAll(maladies);
+         }else{
+            // n'affiche que des prelevements car maladies systems only
+            maladies.addAll(ManagerLocator.getMaladieManager().findByPatientExcludingVisitesManager(patient));
+         }
+      }      
    }
 
    @Override

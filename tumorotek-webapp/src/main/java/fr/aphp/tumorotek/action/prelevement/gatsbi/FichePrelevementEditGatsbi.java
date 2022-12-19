@@ -51,9 +51,12 @@ import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Groupbox;
 import org.zkoss.zul.Listbox;
+import org.zkoss.zul.Textbox;
 
 import fr.aphp.tumorotek.action.patient.ResumePatient;
 import fr.aphp.tumorotek.action.prelevement.FichePrelevementEdit;
+import fr.aphp.tumorotek.decorator.gatsbi.PatientItemRendererGatsbi;
+import fr.aphp.tumorotek.model.coeur.patient.Patient;
 import fr.aphp.tumorotek.model.coeur.prelevement.LaboInter;
 import fr.aphp.tumorotek.model.contexte.gatsbi.Contexte;
 import fr.aphp.tumorotek.webapp.gatsbi.GatsbiController;
@@ -223,6 +226,30 @@ public class FichePrelevementEditGatsbi extends FichePrelevementEdit
          GatsbiControllerPrelevement.applyPatientNdaRequired(ndaDiv);
       }
       
+   }
+   
+   @Override
+   protected void setEmbeddedObjects(){
+      
+      // triggers identifiant textbox validation
+      if (referenceur != null) {
+         Textbox identifiantBox = ((PatientItemRendererGatsbi) 
+            ((ReferenceurPatientGatsbi) referenceur.getFellow("winRefPatient")
+                     .getAttributeOrFellow("winRefPatient$composer", true))
+         .getPatientRenderer()).getIdentifiantBox();
+         
+         if (identifiantBox != null) {
+            String identifiant = identifiantBox.getValue();
+            
+            if (StringUtils.isBlank(identifiant.trim())) {
+               throw new WrongValueException(identifiantBox, "no empty");
+            }
+            
+            ((Patient) identifiantBox.getAttribute("patient")).addToIdentifiants(identifiant.trim(), prelevement.getBanque());
+         }
+      }
+          
+      super.setEmbeddedObjects();
    }
 
    /**

@@ -36,12 +36,20 @@
  **/
 package fr.aphp.tumorotek.action.patient.gatsbi;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.ForwardEvent;
 import org.zkoss.zul.Groupbox;
 import org.zkoss.zul.Messagebox;
 
+import fr.aphp.tumorotek.action.ManagerLocator;
 import fr.aphp.tumorotek.action.patient.FichePatientStatic;
 import fr.aphp.tumorotek.action.prelevement.PrelevementController;
 import fr.aphp.tumorotek.action.prelevement.PrelevementRowRenderer;
@@ -49,7 +57,7 @@ import fr.aphp.tumorotek.action.prelevement.gatsbi.PrelevementRowRendererGatsbi;
 import fr.aphp.tumorotek.action.prelevement.gatsbi.exception.GatsbiException;
 import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
 import fr.aphp.tumorotek.model.TKdataObject;
-import fr.aphp.tumorotek.model.coeur.patient.Patient;
+import fr.aphp.tumorotek.model.coeur.patient.Maladie;
 import fr.aphp.tumorotek.model.contexte.gatsbi.Contexte;
 import fr.aphp.tumorotek.model.contexte.gatsbi.ContexteType;
 import fr.aphp.tumorotek.webapp.gatsbi.GatsbiController;
@@ -74,10 +82,9 @@ public class FichePatientStaticGatsbi extends FichePatientStatic
       new PrelevementRowRendererGatsbi(false, false);
 
    @Override
-   public void setObject(TKdataObject pat){
+   public void setObject(TKdataObject pat){    
       super.setObject(pat);
       // TODO attention mode toutes collections
-      ((Patient) pat).setBanque(SessionUtils.getCurrentBanque(sessionScope));
       maladies.forEach(m -> m.getPatient().setBanque(SessionUtils.getCurrentBanque(sessionScope)));
    }
    
@@ -105,6 +112,44 @@ public class FichePatientStaticGatsbi extends FichePatientStatic
    
    protected String getMaladieHeaderBase(){
       return Labels.getLabel("gatsbi.visites");
+   }
+   
+   protected void populatesPatientMaladies(List<Maladie> maladies, List<Maladie> otherMaladies){
+      
+      getPatient().setBanque(SessionUtils.getCurrentBanque(sessionScope));
+      
+      maladies.clear();
+      otherMaladies.clear();
+
+      if(sessionScope.containsKey("Banque")){
+         // affiche les maladies/visites spécifiques
+         // toutes les visites gatsbi
+         maladies.addAll(new ArrayList<>(ManagerLocator.getMaladieManager().findVisitesManager(patient, patient.getBanque())));
+         // toutes les maladies communes et system, non visites 
+         maladies.addAll(new ArrayList<>(ManagerLocator.getMaladieManager().findByPatientExcludingVisitesManager(patient)));
+         
+         maladies.sort(Comparator.comparing(Maladie::getDateDebut, 
+            Comparator.nullsLast(Date::compareTo)));
+         
+         List<Maladie> system = ManagerLocator.getMaladieManager()
+            .findByPatientExcludingVisitesManager(patient)
+            .stream().filter(m -> m.getSystemeDefaut()).collect(Collectors.toList());
+         
+         maladies.removeAll(system);
+
+         // toutes maladies 'system'
+         otherMaladies.addAll(system);
+      }else{ // TODO toutes collections
+         // si au moins une banque définit une maladie
+         if(SessionUtils.isAnyDefMaladieInBanques(SessionUtils.getSelectedBanques(sessionScope))){
+            maladies.addAll(new ArrayList<>(ManagerLocator.getMaladieManager().findByPatientNoSystemManager(patient)));
+            otherMaladies.addAll(ManagerLocator.getMaladieManager().findByPatientExcludingVisitesManager(patient));
+            otherMaladies.removeAll(maladies);
+         }else{
+            // n'affiche que des prelevements car maladies systems only
+            maladies.addAll(ManagerLocator.getMaladieManager().findByPatientExcludingVisitesManager(patient));
+         }
+      }      
    }
    
    /**

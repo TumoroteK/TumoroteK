@@ -96,6 +96,12 @@ public class FicheMaladieGatsbi extends FicheMaladie
       // GatsbiControllerPrelevement.drawColumnsForPrelevements(prelContexte,
       //   echantillonsGrid, echantillonRendererGatsbi, false, false, getTtesCollections());
    }
+   
+   @Override
+   public void setNewObject(){
+      super.setNewObject();
+      getMaladie().setBanque(SessionUtils.getCurrentBanque(sessionScope));
+   }
 
    @Override
    public void onClick$addPrelevement(){

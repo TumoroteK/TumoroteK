@@ -127,7 +127,15 @@ public class ChangeMaladieModale extends GenericForwardComposer<Component>
 
          // recherche des maladies disponibles : celles du patient
          // du prélèvement
-         maladies = ManagerLocator.getMaladieManager().findByPatientManager(currentMaladie.getPatient());
+         // toutes les maladies sauf visites
+         maladies = ManagerLocator.getMaladieManager()
+               .findByPatientExcludingVisitesManager(currentMaladie.getPatient());
+         
+         if (prelevement.getBanque().getEtude() != null) { // gatsbi -> ajoutes les visites de la collection
+            maladies.addAll(ManagerLocator.getMaladieManager()
+               .findVisitesManager(currentMaladie.getPatient(), prel.getBanque()));
+         }
+         
          maladies.remove(currentMaladie);
          maladiesBox.setModel(new SimpleListModel<>(maladies));
          if(!maladies.isEmpty()){

@@ -63,6 +63,7 @@ import fr.aphp.tumorotek.manager.validation.coeur.patient.gatsbi.MaladieValidato
 import fr.aphp.tumorotek.model.coeur.patient.Maladie;
 import fr.aphp.tumorotek.model.coeur.patient.Patient;
 import fr.aphp.tumorotek.model.coeur.prelevement.Prelevement;
+import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.contexte.Collaborateur;
 import fr.aphp.tumorotek.model.contexte.gatsbi.Contexte;
 import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
@@ -368,8 +369,13 @@ public class MaladieManagerImpl implements MaladieManager
    }
 
    @Override
-   public List<Maladie> findByPatientManager(final Patient patient){
-      return maladieDao.findByPatient(patient);
+   public List<Maladie> findAllByPatientManager(final Patient patient){
+      return maladieDao.findAllByPatient(patient);
+   }
+   
+   @Override
+   public List<Maladie> findByPatientExcludingVisitesManager(final Patient patient){
+      return maladieDao.findByPatientExcludingVisites(patient);
    }
 
    @Override
@@ -383,5 +389,10 @@ public class MaladieManagerImpl implements MaladieManager
    @Override
    public List<Maladie> findByLibelleAndPatientManager(final String libelle, final Patient patient){
       return maladieDao.findByLibelleAndPatient(libelle, patient);
+   }
+
+   @Override
+   public List<Maladie> findVisitesManager(Patient patient, Banque banque){
+      return maladieDao.findVisites(patient, banque);
    }
 }

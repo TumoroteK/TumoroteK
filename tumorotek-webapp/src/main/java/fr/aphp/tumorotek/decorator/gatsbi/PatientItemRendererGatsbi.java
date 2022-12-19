@@ -37,6 +37,9 @@ package fr.aphp.tumorotek.decorator.gatsbi;
 
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
+import org.zkoss.zul.Textbox;
+
+import fr.aphp.tumorotek.action.patient.PatientConstraints;
 import fr.aphp.tumorotek.decorator.PatientItemRenderer;
 import fr.aphp.tumorotek.model.coeur.patient.Patient;
 import fr.aphp.tumorotek.model.contexte.Banque;
@@ -56,7 +59,9 @@ public class PatientItemRendererGatsbi extends PatientItemRenderer
 
    private Banque banque;
    private Contexte contexte;
-   
+      
+   private Textbox identifiantBox;
+      
    /**
     * Constructeur.
     * @param show pour afficher le medecin referents dans la row.
@@ -68,7 +73,7 @@ public class PatientItemRendererGatsbi extends PatientItemRenderer
    @Override
    protected void renderPatient(Listitem li, Patient pat){
       
-      renderIdentifiantForBanque(li, pat);
+      identifiantBox = renderIdentifiantForBanque(li, pat);
       
       if (contexte.isChampIdVisible(2)) {
          renderNip(li, pat);
@@ -91,8 +96,41 @@ public class PatientItemRendererGatsbi extends PatientItemRenderer
       }
    }
 
-   private void renderIdentifiantForBanque(Listitem li, Patient pat) {
-      new Listcell(pat.getIdentifiantAsString(banque)).setParent(li);
+   private Textbox renderIdentifiantForBanque(Listitem li, Patient pat) {
+            
+      // textbox pour ajouter un identifiant
+      if(!pat.hasIdentifiant(banque)){
+         // tb.setInplace(true);
+        final Textbox tb = new Textbox();
+         tb.setAttribute("patient", pat);
+         tb.setConstraint(PatientConstraints.getCodeConstraint());
+//         tb.addEventListener(Events.ON_BLUR, new EventListener<Event>()
+//         {
+//            @Override
+//            public void onEvent(final Event event) throws Exception{
+//               pat.addToIdentifiants(tb.getValue(), banque);
+//            }
+//         });
+//         tb.addEventListener(Events.ON_OK, new EventListener<Event>()
+//         {
+//            @Override
+//            public void onEvent(final Event event) throws Exception{
+//               Events.postEvent(Events.ON_MOUSE_OUT, tb, null);
+//            }
+//         });
+         
+         
+
+         Listcell cell = new Listcell();
+         tb.setParent(cell);
+         cell.setParent(li);
+         
+         return tb;
+      }else{ // affichage identifiant
+         new Listcell(pat.getIdentifiantAsString(banque)).setParent(li);
+      }
+      
+      return null;
    }
 
    public Banque getBanque(){
@@ -110,5 +148,9 @@ public class PatientItemRendererGatsbi extends PatientItemRenderer
    public void setContexte(Contexte contexte){
       this.contexte = contexte;
       setShowMedecin(contexte.isChampIdVisible(227));
+   }
+
+   public Textbox getIdentifiantBox(){
+      return identifiantBox;
    }
 }

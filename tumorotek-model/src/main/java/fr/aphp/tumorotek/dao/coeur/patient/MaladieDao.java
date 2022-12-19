@@ -40,6 +40,7 @@ import java.util.List;
 import fr.aphp.tumorotek.dao.GenericDaoJpa;
 import fr.aphp.tumorotek.model.coeur.patient.Maladie;
 import fr.aphp.tumorotek.model.coeur.patient.Patient;
+import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.contexte.Collaborateur;
 
 /**
@@ -89,11 +90,21 @@ public interface MaladieDao extends GenericDaoJpa<Maladie, Integer>
    List<Maladie> findByExcludedId(Integer maladieId, String libelle);
 
    /**
-    * Recherche les maladies assignées au patient.
+    * Recherche toutes les maladies/visites assignées au patient.
     * @param patient
-    * @return une liste de Maladie.
+    * @return une liste de Maladie/Visites.
+    * @since 2.3.0-gatsbi
     */
-   List<Maladie> findByPatient(Patient patient);
+   List<Maladie> findAllByPatient(Patient patient);
+   
+   /**
+    * Recherche les maladies assignées au patient, excluant toutes 
+    * celles correspondant à des visites (banque_id not null)
+    * @param patient
+    * @return une liste de Maladie/Visites.
+    * @since 2.3.0-gatsbi
+    */
+   List<Maladie> findByPatientExcludingVisites(Patient patient);
 
    /**
     * Recherche les maladies assignées au patient uniquement
@@ -112,4 +123,12 @@ public interface MaladieDao extends GenericDaoJpa<Maladie, Integer>
     * @return long
     */
    List<Long> findCountByReferent(Collaborateur referent);
+   
+   /**
+    * Liste les maladies/visites définie pour la collection pour le patient.
+    * @param patient
+    * @param banque
+    * @return une liste de visites.
+    */
+   List<Maladie> findVisites(Patient patient, Banque banque);
 }

@@ -174,4 +174,9 @@ public class PatientIdentifiant implements Serializable
 
       return hash;
    }
+
+   @Transient
+   public boolean isEmpty(){
+      return identifiant == null;
+   }
 }

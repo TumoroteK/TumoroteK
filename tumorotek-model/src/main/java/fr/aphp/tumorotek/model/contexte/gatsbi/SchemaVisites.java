@@ -46,6 +46,7 @@ import java.util.Objects;
 
 import fr.aphp.tumorotek.model.coeur.patient.Maladie;
 import fr.aphp.tumorotek.model.coeur.patient.Patient;
+import fr.aphp.tumorotek.model.contexte.Banque;
 
 public class SchemaVisites implements Serializable
 {
@@ -89,15 +90,16 @@ private static final long serialVersionUID = 1L;
       return result;
    }
    
-   public List<Maladie> produceMaladiesFromSchema(Patient patient, LocalDate fromDate) {
+   public List<Maladie> produceMaladiesFromSchema(Patient patient, LocalDate fromDate, Banque banque) {
       List<Maladie> maladies = new ArrayList<Maladie>();
       
-      if (patient != null && fromDate != null) {
+      if (patient != null && fromDate != null && banque != null) {
          Maladie maladie;
          LocalDate visiteDate = fromDate;
          for(Visite visite : visites){
             maladie = new Maladie();
             maladie.setVisite(visite);
+            maladie.setBanque(banque);
             maladie.setPatient(patient);
             maladie.setLibelle(visite.getNom());
             switch(visite.getIntervalleType()){

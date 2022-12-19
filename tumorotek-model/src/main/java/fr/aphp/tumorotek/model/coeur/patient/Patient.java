@@ -181,6 +181,9 @@ public class Patient extends TKDelegetableObject<Patient> implements TKAnnotable
    private Set<PatientIdentifiant> patientIdentifiants = new LinkedHashSet<PatientIdentifiant>();
 // transient car si gatsbi, banque peut être fournie pour associer avec identifiant lors create/update
    private Banque banque = null; 
+   
+   // flag
+   private boolean newIdentifiantAdded = false;
 
    /** Constructeur par défaut. */
    public Patient(){}
@@ -444,6 +447,14 @@ public class Patient extends TKDelegetableObject<Patient> implements TKAnnotable
       return getIdentifiant(banque).getIdentifiant();
    }
    
+   public boolean hasIdentifiant() {
+      return getIdentifiant(banque) != null && !getIdentifiant(banque).isEmpty();
+   }
+   
+   public boolean hasIdentifiant(Banque bank) {
+      return getIdentifiant(bank) != null && !getIdentifiant(bank).isEmpty();
+   }
+   
    public void addToIdentifiants(PatientIdentifiant ident) {
       // suppr tout identifiant existant dont la valeur 'identifiant' 
       // diffère de celui passé en paramètre
@@ -457,6 +468,8 @@ public class Patient extends TKDelegetableObject<Patient> implements TKAnnotable
       if (!patientIdentifiants.contains(ident)) { // ajoute identifiant si nécessaire
          this.patientIdentifiants.add(ident);
       }
+      
+      newIdentifiantAdded = true;
    }
    
    public void addToIdentifiants(String ident, Banque bank) {
@@ -593,6 +606,11 @@ public class Patient extends TKDelegetableObject<Patient> implements TKAnnotable
       } else { // supprime patient créé depuis collection étude gatsbi
          return getIdentifiantAsString(banque);
       }
+   }
+
+   @Transient
+   public boolean isNewIdentifiantAdded(){
+      return newIdentifiantAdded;
    }
 
 }

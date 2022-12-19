@@ -111,7 +111,7 @@ public class CoherenceDateManagerImpl implements CoherenceDateManager
       if(patient.getPatientId() != null){
 
          // trouve les maladies
-         final List<Maladie> maladies = new ArrayList<>(maladieDao.findByPatient(patient));
+         final List<Maladie> maladies = new ArrayList<>(maladieDao.findAllByPatient(patient));
          for(int j = 0; j < maladies.size(); j++){
             if(maladies.get(j).getDateDebut() != null){
                ref = maladies.get(j).getDateDebut();

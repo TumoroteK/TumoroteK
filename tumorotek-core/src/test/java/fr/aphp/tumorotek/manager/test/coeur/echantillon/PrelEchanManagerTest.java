@@ -413,7 +413,7 @@ public class PrelEchanManagerTest extends AbstractManagerTest4
       assertTrue(maladieManager.findAllObjectsManager().size() == nbMalsBeforeTests + 1);
 
       assertTrue(patientManager.findByNomLikeManager("GRIMES", true).get(0).getPrenom().equals("RICK"));
-      assertTrue(maladieManager.findByPatientManager(pat).get(0).equals(mal));
+      assertTrue(maladieManager.findAllByPatientManager(pat).get(0).equals(mal));
       assertTrue(prelevementManager.findByMaladieLibelleLikeManager("LIB1", true).contains(prel));
 
       assertsPrelEchansOK(b1);

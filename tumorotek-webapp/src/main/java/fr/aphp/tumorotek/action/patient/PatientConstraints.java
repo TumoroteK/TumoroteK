@@ -65,6 +65,12 @@ public final class PatientConstraints
       codeNullConstraint.setNullable(true);
       codeNullConstraint.setSize(20);
    }
+   
+   private static ConstCode codeConstraint = new ConstCode();
+   static{
+      codeConstraint.setNullable(false);
+      codeConstraint.setSize(20);
+   }
 
    private static ConstWord nomConstraint = new ConstWord();
    static{
@@ -108,5 +114,9 @@ public final class PatientConstraints
 
    public static ConstWord getPaysNaissanceConstraint(){
       return paysNaissanceConstraint;
+   }
+
+   public static ConstCode getCodeConstraint(){
+      return codeConstraint;
    }
 }

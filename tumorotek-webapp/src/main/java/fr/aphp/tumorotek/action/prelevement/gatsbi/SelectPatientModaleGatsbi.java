@@ -109,7 +109,7 @@ public class SelectPatientModaleGatsbi extends SelectPatientModale
       
       if(critereValue != null && !critereValue.equals("")){
          // clean empty identifiant TODO ajouter tous les patients ?
-         res.removeIf(p -> p.getIdentifiant(banque).getIdentifiant() == null);
+         // res.removeIf(p -> p.getIdentifiant(banque).getIdentifiant() == null);
          
          res.addAll(ManagerLocator.getPatientManager()
             .findByIdentifiantLikeManager(critereValue, false, Arrays.asList(banque))); 
@@ -122,105 +122,4 @@ public class SelectPatientModaleGatsbi extends SelectPatientModale
    public ListitemRenderer<Patient> getPatientRenderer(){
       return patientRendererGatsbi;
    }
-
-//   /**
-//    * @since 2.0.9 Recherche sur le numéro de séjour
-//    * @since 2.3.0 recherche sur l'identifiant
-//    * @version 2.3.0
-//    */
-//   public void searchForPatients(){
-//      // recherche des patients dans la base TK
-//      final LinkedHashSet<Patient> res = new LinkedHashSet<>();
-//      if(critereValue != null && !critereValue.equals("")){
-//         res.addAll(ManagerLocator.getPatientManager().findByNipLikeManager(critereValue, false));
-//         res.addAll(ManagerLocator.getPatientManager().findByNomLikeManager(critereValue, false));
-//         res.addAll(ManagerLocator.getPatientManager().findByNdaLikeManager(critereValue, false));
-//         if (getIsGatsbiContexte()) {
-//            // clean empty identifiant
-//            res.removeIf(p -> p.getIdentifiant(banque).getIdentifiant() == null);
-//            
-//            res.addAll(ManagerLocator.getPatientManager()
-//               .findByIdentifiantLikeManager(critereValue, false, Arrays.asList(banque)));            
-//         }
-//      }
-//      this.patients = new ArrayList<>(res);
-//
-//      // si nous sommes dans le cas d'une recherche de patients pour une
-//      // fusion, on ne va pas les chercher dans le serveur d'identités
-//      // patient
-//      // @since 2.3.0-gatsbi TODO recherche PatientSIp si contexte Gatsbi ?!
-//      if(!isFusionPatients && !getIsGatsbiContexte()){
-//         //recherche dans le serveur identite patient si il est actif
-//         if(SipFactory.isDirectSip()){
-//            log.info("->Debut traitement recherche de patients " + "dans serveur d'identités");
-//
-//            // plusieurs fichiers de connexion au Sip peuvent être
-//            // définis ils doivent etre de la forme pt1_serveur_Identites,
-//            // pt2_serveur_Identites... ou serveur_Identites
-//            boolean found = true;
-//            int idx = 1;
-//            // on itère sur les noms possibles tant qu'on trouve
-//            // un fichier correspondant
-//            while(found){
-//               final StringBuffer nomFichier = new StringBuffer();
-//               nomFichier.append("pt");
-//               nomFichier.append(idx);
-//               nomFichier.append("_serveur_Identites.properties");
-//
-//               // on vérifie que le fichier existe
-//               found = ManagerLocator.getResourceBundleSip().doesResourceBundleExists(nomFichier.toString());
-//
-//               // s'il existe
-//               if(found){
-//                  // recherche
-//                  searchPatientsInSip(nomFichier.toString());
-//               }else{
-//                  // sinon on utilise le fichier par défaut
-//                  // "serveur_Identites"
-//                  if(ManagerLocator.getResourceBundleSip().doesResourceBundleExists("serveur_Identites.properties")){
-//                     searchPatientsInSip("serveur_Identites.properties");
-//                  }
-//               }
-//               ++idx;
-//            }
-//
-//         }else if(SipFactory.isMessagesSip()){
-//            log.debug("Recherche de patients par interfacage");
-//
-//            final Set<PatientSip> listPatientSip = new HashSet<>();
-//            listPatientSip.addAll(ManagerLocator.getPatientSipManager().findByNipLikeManager(critereValue, true));
-//            listPatientSip.addAll(ManagerLocator.getPatientSipManager().findByNomLikeManager(critereValue, true));
-//            listPatientSip.addAll(ManagerLocator.getPatientSipManager().findByNumeroSejourManager(critereValue, true));
-//
-//            final List<Patient> listPatientTmp = new ArrayList<>();
-//            final Iterator<PatientSip> it = listPatientSip.iterator();
-//            while(it.hasNext()){
-//               listPatientTmp.add(it.next().toPatient());
-//            }
-//
-//            fusionerNouvelleListeAvecPrincipale(listPatientTmp);
-//            log.info("->Fin recherche de patients interfacage");
-//         }
-//         patients.addAll(patientsSip);
-//
-//      }else{
-//      if (isFusionPatients) {
-//         // si un patient doit être exclu, on le retire de la liste
-//         if(patientAExclure != null){
-//            int idx = -1;
-//            for(int i = 0; i < patients.size(); i++){
-//               if(patients.get(i).getPatientId() != null && patientAExclure.getPatientId() != null
-//                  && patients.get(i).getPatientId().equals(patientAExclure.getPatientId())){
-//                  idx = i;
-//               }
-//            }
-//
-//            if(idx > -1){
-//               patients.remove(idx);
-//            }
-//         }
-//      }
-//      // on va trier les patients extraits en fct de leur nom
-//      Collections.sort(patients, new PatientNomComparator(true));
-//   }
 }

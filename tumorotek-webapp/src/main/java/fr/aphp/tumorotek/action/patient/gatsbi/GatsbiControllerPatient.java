@@ -343,22 +343,24 @@ public class GatsbiControllerPatient
    /**
     * Produits la liste des maladies = visites correspondant au schéma de visites définie par l'étude 
     * pour le patient en cours de création passé en paramètre, à partir de la date d'inclusion fournie. 
-    * @param contexte
+    * @param banque à laquelle appartiennent ces maladies/visites
     * @param patient en cours de création
     * @param fromDate date inclusion patient (=baseline)
     * @return
     */
-   public static List<Maladie> produceSchemaVisitesForPatient(final Banque banque, final Patient patient, 
+   public static List<Maladie> produceSchemaVisitesForPatient(final Banque banque, 
+      final Patient patient, 
       final LocalDate fromDate) {
       
       List<Maladie> visites = new ArrayList<Maladie>();
       
-      if (banque != null && banque.getEtude() != null && banque.getEtude().getSchemaVisites() != null) {
-         visites.addAll(banque.getEtude().getSchemaVisites().produceMaladiesFromSchema(patient, fromDate));
+      if (banque != null && banque.getEtude() != null 
+            && banque.getEtude().getSchemaVisites() != null) {
+         visites.addAll(banque.getEtude().getSchemaVisites()
+            .produceMaladiesFromSchema(patient, fromDate, banque));
       }
       
-      return visites;
-      
+      return visites;    
    }
 
    public static boolean getSchemaVisitesDefinedByEtude(Map<String, Object> sessionScope){

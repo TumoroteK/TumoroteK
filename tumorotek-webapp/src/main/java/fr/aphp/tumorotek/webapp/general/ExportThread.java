@@ -270,7 +270,7 @@ public class ExportThread extends Thread
                changeWaitMessage(pourcentage);
             }
             final Patient patient = (Patient) objs.get(i);
-            final List<Maladie> maladies = ManagerLocator.getMaladieManager().findByPatientManager(patient);
+            final List<Maladie> maladies = ManagerLocator.getMaladieManager().findAllByPatientManager(patient);
             for(int j = 0; j < maladies.size(); j++){
                // ajout de ses données dans une nouvelle ligne
                final HSSFRow row = sheet.createRow(nbRow);

@@ -46,6 +46,7 @@ import java.util.List;
 import org.junit.Test;
 import fr.aphp.tumorotek.model.coeur.patient.Maladie;
 import fr.aphp.tumorotek.model.coeur.patient.Patient;
+import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.contexte.gatsbi.IntervalleType;
 import fr.aphp.tumorotek.model.contexte.gatsbi.Parametrage;
 import fr.aphp.tumorotek.model.contexte.gatsbi.SchemaVisites;
@@ -82,7 +83,10 @@ public class SchemaVisitesTest
       Patient p1 = new Patient();
       p1.setPatientId(1);
       
-      List<Maladie> mals = schema.produceMaladiesFromSchema(p1, LocalDate.of(2022, 3, 14));
+      Banque b1 = new Banque();
+      b1.setNom("BANQUE1");
+      
+      List<Maladie> mals = schema.produceMaladiesFromSchema(p1, LocalDate.of(2022, 3, 14), b1);
       assertTrue(mals.size() == 3);
       assertTrue(mals.get(0).getPatient().getPatientId().equals(p1.getPatientId()));
       assertTrue(mals.get(0).getLibelle().equals("VIS1"));
@@ -96,10 +100,13 @@ public class SchemaVisitesTest
 
       
       // nulls
-      mals = schema.produceMaladiesFromSchema(p1, null);
+      mals = schema.produceMaladiesFromSchema(p1, null, b1);
       assertTrue(mals.isEmpty());
       
-      mals = schema.produceMaladiesFromSchema(null, LocalDate.of(2022, 3, 14));
+      mals = schema.produceMaladiesFromSchema(null, LocalDate.of(2022, 3, 14), b1);
+      assertTrue(mals.isEmpty());
+      
+      mals = schema.produceMaladiesFromSchema(p1, LocalDate.of(2022, 3, 14), null);
       assertTrue(mals.isEmpty());
    }
 }

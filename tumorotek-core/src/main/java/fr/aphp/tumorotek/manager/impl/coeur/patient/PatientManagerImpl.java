@@ -579,7 +579,7 @@ public class PatientManagerImpl implements PatientManager
          if(!isUsedObjectManager(patient)){
 
             // Supprime les maladies associées
-            final Iterator<Maladie> malsIt = maladieManager.findByPatientManager(patient).iterator();
+            final Iterator<Maladie> malsIt = maladieManager.findAllByPatientManager(patient).iterator();
             while(malsIt.hasNext()){
                maladieManager.removeObjectManager(malsIt.next(), comments, user);
             }

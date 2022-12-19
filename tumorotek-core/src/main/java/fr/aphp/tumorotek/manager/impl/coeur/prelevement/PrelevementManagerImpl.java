@@ -1092,20 +1092,28 @@ public class PrelevementManagerImpl implements PrelevementManager
 
       // Maladie non required mais utilise dans validation
       if(maladie != null){
-         if(maladie.getMaladieId() == null){ // creation conjointe
-            
-            // @since gatsbi list maladies may be provided
-            List<Maladie> visites =  new ArrayList<Maladie>();
-            
-            if(maladie.getPatient().getPatientId() == null){               
-               // les visites sont toutes à créer en même temps que le patient
-               visites.addAll(maladie.getPatient().getMaladies()); 
-               patientManager.createOrUpdateObjectManager(maladie.getPatient(), 
-                  visites.isEmpty() ? null : visites, 
-                  null, null, null, null, null, null,
-                  utilisateur, "creation", baseDir, false);              
-            }
-            
+         
+         // @since gatsbi list maladies may be provided
+         List<Maladie> visites =  new ArrayList<Maladie>();
+         
+         // creation patient
+         if(maladie.getPatient().getPatientId() == null){               
+            // les visites sont toutes à créer en même temps que le patient
+            visites.addAll(maladie.getPatient().getMaladies()); 
+            patientManager.createOrUpdateObjectManager(maladie.getPatient(), 
+               visites.isEmpty() ? null : visites, 
+               null, null, null, null, null, null,
+               utilisateur, "creation", baseDir, false);              
+         } else if (maladie.getPatient().isNewIdentifiantAdded()) { // update patient existant, ajout gatsbi
+            visites.addAll(maladie.getPatient().getMaladies());
+            patientManager.createOrUpdateObjectManager(maladie.getPatient(), null,
+              // visites.isEmpty() ? null : visites, null 
+               null, null, null, null, null, null,
+               utilisateur, "modification", baseDir, false);
+         }
+         
+         if(maladie.getMaladieId() == null){ // creation maladie conjointe
+                  
             // @since gatsbi, creation de la visite si n'a pas été créé auparavant 
             // dans la liste de visites
             if (visites.isEmpty() || maladie.getPatient().getMaladies().stream()
@@ -1114,7 +1122,7 @@ public class PrelevementManagerImpl implements PrelevementManager
                maladieManager.getMaladiesManager(maladie.getPatient()).add(maladie);
                prelevement.setMaladie(maladie);
             } else { // la maladie a été créée comme une visite
-               prelevement.setMaladie(maladie.getPatient().getMaladies().stream()
+               prelevement.setMaladie(maladieManager.findVisitesManager(maladie.getPatient(), banque).stream()
                   .filter(v -> v.getLibelle().equals(maladie.getLibelle())).findFirst().get());
             }
 
