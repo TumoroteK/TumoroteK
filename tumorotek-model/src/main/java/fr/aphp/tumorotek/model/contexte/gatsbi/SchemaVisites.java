@@ -37,9 +37,11 @@
 package fr.aphp.tumorotek.model.contexte.gatsbi;
 
 import java.io.Serializable;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -90,12 +92,12 @@ private static final long serialVersionUID = 1L;
       return result;
    }
    
-   public List<Maladie> produceMaladiesFromSchema(Patient patient, LocalDate fromDate, Banque banque) {
+   public List<Maladie> produceMaladiesFromSchema(Patient patient, LocalDateTime fromDate, Banque banque) {
       List<Maladie> maladies = new ArrayList<Maladie>();
       
       if (patient != null && fromDate != null && banque != null) {
          Maladie maladie;
-         LocalDate visiteDate = fromDate;
+         LocalDateTime visiteDate = fromDate;
          for(Visite visite : visites){
             maladie = new Maladie();
             maladie.setVisite(visite);
@@ -103,24 +105,30 @@ private static final long serialVersionUID = 1L;
             maladie.setPatient(patient);
             maladie.setLibelle(visite.getNom());
             switch(visite.getIntervalleType()){
-               case JOURS:
+               case JOUR:
                   visiteDate = fromDate.plusDays(visite.getIntervalleDepuisInitiale());
                   break;
                case MOIS:
                   visiteDate = fromDate.plusMonths(visite.getIntervalleDepuisInitiale());
                   break;
-               case ANNEES:
+               case ANNEE:
                   visiteDate = fromDate.plusYears(visite.getIntervalleDepuisInitiale());
+                  break;
+               case HEURE:
+                  visiteDate = fromDate.plusHours(visite.getIntervalleDepuisInitiale());
                   break;
                default:
                   break;
             }
             maladie.setDateDebut(Date.from(    
-               visiteDate.atStartOfDay(ZoneId.systemDefault()).toInstant()));
+               visiteDate.toLocalDate().atStartOfDay(ZoneId.systemDefault()).toInstant()));
             maladies.add(maladie);
             patient.getMaladies().add(maladie);
          }
       }
+      
+      Collections.sort(maladies, Comparator.comparing(Maladie::getDateDebut));
+      
       return maladies;
    }
 }

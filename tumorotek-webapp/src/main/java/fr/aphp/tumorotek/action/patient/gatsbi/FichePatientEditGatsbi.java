@@ -252,7 +252,7 @@ public class FichePatientEditGatsbi extends FichePatientEdit
       
       // production du schéma de visites
       visites.addAll(GatsbiControllerPatient.produceSchemaVisitesForPatient(SessionUtils.getCurrentBanque(sessionScope), patient, 
-         ((Date) e.getData()).toInstant().atZone(ZoneId.systemDefault()).toLocalDate()));
+         ((Date) e.getData()).toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime()));
    }
    
    public String getVisitesGroupHeader() {

@@ -38,6 +38,7 @@ package fr.aphp.tumorotek.model.test.contexte.gatsbi;
 import static org.junit.Assert.assertTrue;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -74,9 +75,9 @@ public class SchemaVisitesTest
       VisitePrelevement pTissu = new VisitePrelevement(1, 1, new Parametrage(1, "TISSU", null));
       
       List<Visite> visites = new ArrayList<Visite>();
-      visites.add(new Visite("VIS1", 1, 10, IntervalleType.JOURS, Arrays.asList(pSang, pTissu)));
+      visites.add(new Visite("VIS1", 1, 10, IntervalleType.JOUR, Arrays.asList(pSang, pTissu)));
       visites.add(new Visite("VIS2", 1, 3, IntervalleType.MOIS, Arrays.asList(pSang)));
-      visites.add(new Visite("VIS3", 1, 1, IntervalleType.ANNEES, null));
+      visites.add(new Visite("VIS3", 1, 1, IntervalleType.ANNEE, null));
       
       SchemaVisites schema = new SchemaVisites(visites);
       
@@ -86,7 +87,7 @@ public class SchemaVisitesTest
       Banque b1 = new Banque();
       b1.setNom("BANQUE1");
       
-      List<Maladie> mals = schema.produceMaladiesFromSchema(p1, LocalDate.of(2022, 3, 14), b1);
+      List<Maladie> mals = schema.produceMaladiesFromSchema(p1, LocalDateTime.of(2022, 3, 14, 13, 15), b1);
       assertTrue(mals.size() == 3);
       assertTrue(mals.get(0).getPatient().getPatientId().equals(p1.getPatientId()));
       assertTrue(mals.get(0).getLibelle().equals("VIS1"));
@@ -103,10 +104,10 @@ public class SchemaVisitesTest
       mals = schema.produceMaladiesFromSchema(p1, null, b1);
       assertTrue(mals.isEmpty());
       
-      mals = schema.produceMaladiesFromSchema(null, LocalDate.of(2022, 3, 14), b1);
+      mals = schema.produceMaladiesFromSchema(null, LocalDateTime.of(2022, 3, 14, 13, 15), b1);
       assertTrue(mals.isEmpty());
       
-      mals = schema.produceMaladiesFromSchema(p1, LocalDate.of(2022, 3, 14), null);
+      mals = schema.produceMaladiesFromSchema(p1, LocalDateTime.of(2022, 3, 14, 13, 15), null);
       assertTrue(mals.isEmpty());
    }
 }

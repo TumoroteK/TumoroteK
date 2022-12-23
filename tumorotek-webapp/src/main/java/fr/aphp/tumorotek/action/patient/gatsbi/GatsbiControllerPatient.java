@@ -38,7 +38,7 @@ package fr.aphp.tumorotek.action.patient.gatsbi;
 
 import java.lang.reflect.InvocationTargetException;
 import java.text.ParseException;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -350,7 +350,7 @@ public class GatsbiControllerPatient
     */
    public static List<Maladie> produceSchemaVisitesForPatient(final Banque banque, 
       final Patient patient, 
-      final LocalDate fromDate) {
+      final LocalDateTime fromDate) {
       
       List<Maladie> visites = new ArrayList<Maladie>();
       

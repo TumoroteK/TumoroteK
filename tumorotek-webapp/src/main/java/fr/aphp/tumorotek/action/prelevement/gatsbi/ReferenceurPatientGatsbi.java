@@ -228,7 +228,7 @@ public class ReferenceurPatientGatsbi extends ReferenceurPatient
       // production du schéma de visites
       List<MaladieDecorator> visiteDecos = MaladieDecorator.decorateListe(GatsbiControllerPatient
          .produceSchemaVisitesForPatient(SessionUtils.getCurrentBanque(sessionScope), patient, 
-      ((Date) e.getData()).toInstant().atZone(ZoneId.systemDefault()).toLocalDate()));
+      ((Date) e.getData()).toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime()));
       
       getMaladies().addAll(visiteDecos);
       
