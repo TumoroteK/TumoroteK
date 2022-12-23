@@ -71,6 +71,7 @@ import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
 import fr.aphp.tumorotek.manager.validation.coeur.patient.PatientValidatorImpl;
 import fr.aphp.tumorotek.model.TKdataObject;
 import fr.aphp.tumorotek.model.coeur.annotation.AnnotationValeur;
+import fr.aphp.tumorotek.model.coeur.patient.Maladie;
 import fr.aphp.tumorotek.model.coeur.patient.Patient;
 import fr.aphp.tumorotek.model.coeur.patient.PatientLien;
 import fr.aphp.tumorotek.model.coeur.patient.PatientMedecin;
@@ -267,8 +268,9 @@ public class FichePatientEdit extends AbstractFicheEditController
 
       try{
          prepareDataBeforeSave(false);
+         List<Maladie> maladies = prepareMaladies(patient);
 
-         ManagerLocator.getPatientManager().createOrUpdateObjectManager(patient, null, medecins, liens,
+         ManagerLocator.getPatientManager().createOrUpdateObjectManager(patient, maladies, medecins, liens,
             getObjectTabController().getFicheAnnotation().getValeursToCreateOrUpdate(),
             getObjectTabController().getFicheAnnotation().getValeursToDelete(), filesCreated, filesToDelete,
             SessionUtils.getLoggedUser(sessionScope), "modification", SessionUtils.getSystemBaseDir(), false);
@@ -283,6 +285,14 @@ public class FichePatientEdit extends AbstractFicheEditController
          }
          throw (re);
       }
+   }
+
+   /**
+    * @since 2.3.0-gatsbi sera surchargée
+    * @return
+    */
+   protected List<Maladie> prepareMaladies(Patient patient){
+      return null;
    }
 
    @Override

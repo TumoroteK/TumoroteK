@@ -137,7 +137,7 @@ public class PatientItemRenderer implements ListitemRenderer<Patient>
 
    public Integer getNbPrelevements(final Patient pat){
       int nb = 0;
-      final List<Maladie> maladies = ManagerLocator.getMaladieManager().findByPatientNoSystemManager(pat);
+      final List<Maladie> maladies = ManagerLocator.getMaladieManager().findByPatientNoSystemNorVisiteManager(pat);
       for(int i = 0; i < maladies.size(); i++){
          nb += ManagerLocator.getMaladieManager().getPrelevementsManager(maladies.get(i)).size();
       }
@@ -152,7 +152,7 @@ public class PatientItemRenderer implements ListitemRenderer<Patient>
     */
    private void drawPrelevementsLabelWithPopup(final Listitem li, final Patient pat){
       Integer nb = 0;
-      final List<Maladie> maladies = ManagerLocator.getMaladieManager().findByPatientNoSystemManager(pat);
+      final List<Maladie> maladies = ManagerLocator.getMaladieManager().findByPatientNoSystemNorVisiteManager(pat);
       for(int i = 0; i < maladies.size(); i++){
          nb += ManagerLocator.getMaladieManager().getPrelevementsManager(maladies.get(i)).size();
       }

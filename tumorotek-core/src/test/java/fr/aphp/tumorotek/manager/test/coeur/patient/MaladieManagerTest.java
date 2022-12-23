@@ -459,9 +459,9 @@ public class MaladieManagerTest extends AbstractManagerTest4
    }
 
    @Test
-   public void testFindByPatientNoSystemManager(){
+   public void testFindByPatientNoSystemNorVisiteManager(){
       final Patient p = patientDao.findById(1);
-      final List<Maladie> mals = maladieManager.findByPatientNoSystemManager(p);
+      final List<Maladie> mals = maladieManager.findByPatientNoSystemNorVisiteManager(p);
       assertTrue(mals.size() == 2);
       assertTrue(mals.contains(maladieManager.findByLibelleLikeManager("Non precise", true).get(0)));
       assertTrue(mals.contains(maladieManager.findByLibelleLikeManager("Fracture", true).get(0)));

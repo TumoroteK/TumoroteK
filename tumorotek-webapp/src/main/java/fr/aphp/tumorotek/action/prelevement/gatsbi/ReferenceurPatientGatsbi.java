@@ -90,7 +90,7 @@ public class ReferenceurPatientGatsbi extends ReferenceurPatient
    }
    
    private PatientItemRendererGatsbi patientRendererGatsbi = 
-      new PatientItemRendererGatsbi(true);
+      new PatientItemRendererGatsbi(true, true);
    
    @Override
    public void doAfterCompose(Component comp) throws Exception{
@@ -124,6 +124,7 @@ public class ReferenceurPatientGatsbi extends ReferenceurPatient
    
    @Override
    public Patient onGetPatientFromSelection(final Event e){
+      
       Patient patSel = super.onGetPatientFromSelection(e);
       patSel.setBanque(SessionUtils.getCurrentBanque(sessionScope));
       return patSel;
@@ -132,6 +133,10 @@ public class ReferenceurPatientGatsbi extends ReferenceurPatient
    @Override
    public void onClick$goForIt(){
 
+      // nettoie les visites éventuelles qui aurait été ajoutées
+      // à un autre patient
+      getMaladies().clear();
+      
       final String critereValue = nomNipNdaBox.getValue();
 
       final FichePrelevementEditGatsbi fichePrelevementEdit = 

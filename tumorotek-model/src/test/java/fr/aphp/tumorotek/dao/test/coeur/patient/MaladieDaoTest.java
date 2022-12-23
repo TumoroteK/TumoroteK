@@ -358,13 +358,13 @@ public class MaladieDaoTest extends AbstractDaoTest
 
    public void testFindByPatientNoSystem(){
       final Patient p = patientDao.findById(3);
-      List<Maladie> mals = maladieDao.findByPatientNoSystem(p);
+      List<Maladie> mals = maladieDao.findByPatientNoSystemNorVisite(p);
       assertTrue(mals.size() == 2);
       assertTrue(mals.contains(maladieDao.findById(3)));
       assertTrue(mals.contains(maladieDao.findById(4)));
-      mals = maladieDao.findByPatientNoSystem(patientDao.findById(2));
+      mals = maladieDao.findByPatientNoSystemNorVisite(patientDao.findById(2));
       assertTrue(mals.size() == 0);
-      mals = maladieDao.findByPatientNoSystem(null);
+      mals = maladieDao.findByPatientNoSystemNorVisite(null);
       assertTrue(mals.size() == 0);
    }
 

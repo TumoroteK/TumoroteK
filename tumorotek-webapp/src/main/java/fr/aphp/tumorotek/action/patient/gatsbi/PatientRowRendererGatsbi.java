@@ -39,6 +39,7 @@ package fr.aphp.tumorotek.action.patient.gatsbi;
 import java.lang.reflect.InvocationTargetException;
 import java.text.ParseException;
 
+import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Row;
@@ -81,7 +82,8 @@ public class PatientRowRendererGatsbi extends PatientRowRenderer implements RowR
 
       // identifiant / clickable
       // TODO toutes collections ? Quel identifiant afficher ? 
-      Label identifiant = new Label(pat.getIdentifiantAsString(curBanque));
+      Label identifiant = new Label(pat.hasIdentifiant(curBanque) ? 
+         (pat.getIdentifiantAsString(curBanque)) : Labels.getLabel("gatsbi.patient.include"));
       
       Component parent = null; // -> remonte l'évènement jusqu'au ListeController
       identifiant.addForward(null, parent, "onClickObject", pat);

@@ -166,7 +166,7 @@ public interface MaladieManager
     * @param patient
     * @return une liste de Maladie.
     */
-   List<Maladie> findByPatientNoSystemManager(Patient patient);
+   List<Maladie> findByPatientNoSystemNorVisiteManager(Patient patient);
 
    /**
     * Recherche toutes les maladies/visites assignées au patient.

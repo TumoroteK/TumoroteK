@@ -166,7 +166,7 @@ public class FicheFusionPatients extends AbstractFicheCombineController
          patientAConserver = (Patient) e.getData();
 
          // on dessine les maladies
-         final List<Maladie> maladies = ManagerLocator.getMaladieManager().findByPatientNoSystemManager(patientAConserver);
+         final List<Maladie> maladies = ManagerLocator.getMaladieManager().findByPatientNoSystemNorVisiteManager(patientAConserver);
          List<String> values = new ArrayList<>();
          for(int i = 0; i < maladies.size(); i++){
             final StringBuffer sb = new StringBuffer();
@@ -245,7 +245,7 @@ public class FicheFusionPatients extends AbstractFicheCombineController
          patientASupprimer = (Patient) e.getData();
 
          // on dessine les maladies
-         final List<Maladie> maladies = ManagerLocator.getMaladieManager().findByPatientNoSystemManager(patientASupprimer);
+         final List<Maladie> maladies = ManagerLocator.getMaladieManager().findByPatientNoSystemNorVisiteManager(patientASupprimer);
          List<String> values = new ArrayList<>();
          for(int i = 0; i < maladies.size(); i++){
             final StringBuffer sb = new StringBuffer();

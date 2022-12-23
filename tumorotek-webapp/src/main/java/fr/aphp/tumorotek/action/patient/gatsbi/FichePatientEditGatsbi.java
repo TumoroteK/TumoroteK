@@ -39,6 +39,7 @@ package fr.aphp.tumorotek.action.patient.gatsbi;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 
 import org.zkoss.zk.ui.Component;
@@ -48,6 +49,7 @@ import org.zkoss.zul.Div;
 import org.zkoss.zul.Groupbox;
 import org.zkoss.zul.Listbox;
 
+import fr.aphp.tumorotek.action.ManagerLocator;
 import fr.aphp.tumorotek.action.patient.FichePatientEdit;
 import fr.aphp.tumorotek.action.patient.LabelCodeItem;
 import fr.aphp.tumorotek.action.patient.PatientUtils;
@@ -218,27 +220,81 @@ public class FichePatientEditGatsbi extends FichePatientEdit
    public void switchToCreateMode(){
       super.switchToCreateMode();
       
-      groupVisites.setVisible(GatsbiControllerPatient.getSchemaVisitesDefinedByEtude(sessionScope));
-      
-      // ouverture d'une modale de saisie de date baseline
-      // une fois le composant FicheEditPatient rendu visible
-      Events.echoEvent("onLaterSwitchToCreateMode", self, null);
+      // schema de visites
+      if (GatsbiControllerPatient.getSchemaVisitesDefinedByEtude(sessionScope)) {
+         groupVisites.setVisible(true);
+         
+         // ouverture d'une modale de saisie de date baseline
+         // une fois le composant FicheEditPatient rendu visible
+         Events.echoEvent("onLaterSwitchToCreateMode", self, null);
+      }
    }
    
    /**
     * Une fois la fiche Patient Edit affichée en create mode, 
-    * si un schéma de visite pour l'étude est définin, il implique la saisie d'une date baseline
+    * si un schéma de visite pour l'étude est défini, il implique la saisie d'une date baseline
     * donc l'affichage de la modale de saisie de la date.
     */
    public void onLaterSwitchToCreateMode() {
-      if (!embedded && GatsbiControllerPatient.getSchemaVisitesDefinedByEtude(sessionScope)) {
+      if (!embedded) {
          DateModale.show(Labels.getLabel("gatsbi.schema.visites.title"), 
             Labels.getLabel("gatsbi.schema.visites.label"), null, true, self);
       }   
    }
    
    @Override
+   public void switchToEditMode(){
+      super.switchToEditMode();
+      
+      // inclusion d'un patient existant dans une collection gatsbi
+      if (!patient.hasIdentifiant(SessionUtils.getCurrentBanque(sessionScope)) 
+         && GatsbiControllerPatient.getSchemaVisitesDefinedByEtude(sessionScope)) {
+         
+         patient.setMaladies(new HashSet<Maladie>(
+            ManagerLocator.getMaladieManager().findByPatientNoSystemNorVisiteManager(patient)));
+         
+         groupVisites.setVisible(true);
+         
+         // ouverture d'une modale de saisie de date baseline
+         // une fois le composant FicheEditPatient rendu visible
+         Events.echoEvent("onLaterSwitchToEditMode", self, null);
+      }
+   }
+   
+   /**
+    * Une fois la fiche Patient Edit affichée en edition mode, si le patient n'est pas 
+    * inclu dans la collection gatsbi (pas d'identitifant trouvé pour la collection)
+    * et si un schéma de visite pour l'étude est défini, il implique la saisie d'une date baseline
+    * donc l'affichage de la modale de saisie de la date.
+    */
+   public void onLaterSwitchToEditMode() {
+      DateModale.show(Labels.getLabel("gatsbi.schema.visites.title"), 
+         Labels.getLabel("gatsbi.schema.visites.label"), null, true, self);
+   }
+   
+   @Override
    public void setInconnus(Patient patient){
+   }
+   
+   /**
+    * Si un schéma de visites a été ajouté, 
+    * prépare les objets patients et sa liste de maladies/visites 
+    * à être modifiés = maladies existantes + visites
+    * @return maladies
+    */
+   @Override
+   protected List<Maladie> prepareMaladies(Patient patient){
+      if (!visites.isEmpty()) {
+         
+         patient.getMaladies().removeIf(m -> m.getMaladieId() == null);
+         
+         List<Maladie> maladies = new ArrayList<Maladie>();
+         maladies.addAll(patient.getMaladies());
+         maladies.addAll(visites);
+         
+         return maladies;
+      }
+      return null;
    }
    
    /**
@@ -256,7 +312,10 @@ public class FichePatientEditGatsbi extends FichePatientEdit
    }
    
    public String getVisitesGroupHeader() {
-      return Labels.getLabel("gatsbi.schema.visites", new String[] { String.valueOf(patient.getMaladies().size())});
+      if (groupVisites.isVisible()) {
+         return Labels.getLabel("gatsbi.schema.visites", new String[] { String.valueOf(patient.getMaladies().size())});
+      }
+      return null;
    }
 
    public VisiteItemRenderer getVisiteItemRenderer(){
