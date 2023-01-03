@@ -1118,7 +1118,7 @@ public class PrelevementManagerImpl implements PrelevementManager
             // dans la liste de visites
             if (visites.isEmpty() || maladie.getPatient().getMaladies().stream()
                   .noneMatch(v -> v.getLibelle().equals(maladie.getLibelle()))) { 
-               maladieManager.createOrUpdateObjectManager(maladie, null, null, utilisateur, "creation");
+               maladieManager.createOrUpdateObjectManager(maladie, maladie.getPatient(), null, utilisateur, "creation");
                maladieManager.getMaladiesManager(maladie.getPatient()).add(maladie);
                prelevement.setMaladie(maladie);
             } else { // la maladie a été créée comme une visite

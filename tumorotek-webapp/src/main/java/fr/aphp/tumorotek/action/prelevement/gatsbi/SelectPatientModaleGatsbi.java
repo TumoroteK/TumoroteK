@@ -63,7 +63,7 @@ import fr.aphp.tumorotek.model.contexte.gatsbi.Contexte;
 public class SelectPatientModaleGatsbi extends SelectPatientModale
 {
 
-   private PatientItemRendererGatsbi patientRendererGatsbi = new PatientItemRendererGatsbi(false);
+   private PatientItemRendererGatsbi patientRendererGatsbi = new PatientItemRendererGatsbi(false, false);
 
    private Contexte contexte; 
    private Banque banque;

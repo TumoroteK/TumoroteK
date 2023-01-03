@@ -61,13 +61,12 @@ public class PatientItemRendererGatsbi extends PatientItemRenderer
    private Contexte contexte;
       
    private Textbox identifiantBox;
+   
+   private boolean isIdentifiantEditable = false;
       
-   /**
-    * Constructeur.
-    * @param show pour afficher le medecin referents dans la row.
-    */
-   public PatientItemRendererGatsbi(boolean showMedecin){
+   public PatientItemRendererGatsbi(boolean showMedecin, boolean _i){
       super(showMedecin);
+      this.isIdentifiantEditable = _i;
    }
 
    @Override
@@ -99,28 +98,11 @@ public class PatientItemRendererGatsbi extends PatientItemRenderer
    private Textbox renderIdentifiantForBanque(Listitem li, Patient pat) {
             
       // textbox pour ajouter un identifiant
-      if(!pat.hasIdentifiant(banque)){
+      if(isIdentifiantEditable && !pat.hasIdentifiant(banque)){
          // tb.setInplace(true);
         final Textbox tb = new Textbox();
          tb.setAttribute("patient", pat);
          tb.setConstraint(PatientConstraints.getCodeConstraint());
-//         tb.addEventListener(Events.ON_BLUR, new EventListener<Event>()
-//         {
-//            @Override
-//            public void onEvent(final Event event) throws Exception{
-//               pat.addToIdentifiants(tb.getValue(), banque);
-//            }
-//         });
-//         tb.addEventListener(Events.ON_OK, new EventListener<Event>()
-//         {
-//            @Override
-//            public void onEvent(final Event event) throws Exception{
-//               Events.postEvent(Events.ON_MOUSE_OUT, tb, null);
-//            }
-//         });
-         
-         
-
          Listcell cell = new Listcell();
          tb.setParent(cell);
          cell.setParent(li);

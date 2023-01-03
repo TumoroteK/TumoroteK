@@ -37,7 +37,6 @@
 package fr.aphp.tumorotek.action.patient.gatsbi;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
@@ -142,7 +141,7 @@ public class FichePatientStaticGatsbi extends FichePatientStatic
       }else{ // TODO toutes collections
          // si au moins une banque définit une maladie
          if(SessionUtils.isAnyDefMaladieInBanques(SessionUtils.getSelectedBanques(sessionScope))){
-            maladies.addAll(new ArrayList<>(ManagerLocator.getMaladieManager().findByPatientNoSystemManager(patient)));
+            maladies.addAll(new ArrayList<>(ManagerLocator.getMaladieManager().findByPatientNoSystemNorVisiteManager(patient)));
             otherMaladies.addAll(ManagerLocator.getMaladieManager().findByPatientExcludingVisitesManager(patient));
             otherMaladies.removeAll(maladies);
          }else{

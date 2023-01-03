@@ -38,7 +38,8 @@ package fr.aphp.tumorotek.model.contexte.gatsbi;
 
 public enum IntervalleType
 {
-   ANNEES,
+   ANNEE,
    MOIS, 
-   JOURS; 
+   JOUR,
+   HEURE; 
 }

@@ -17,7 +17,7 @@ import fr.aphp.tumorotek.model.contexte.gatsbi.VisitePrelevement;
 @JsonPropertyOrder({
    "nbPrelevementMin", 
    "nbPrelevementMax",
-   "contexteParametrageNom"
+   "contexteParametrage"
 })
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class VisitePrelevementDTO implements Serializable {
@@ -26,7 +26,7 @@ public class VisitePrelevementDTO implements Serializable {
 	
 	private Integer nbPrelevementMin;
 	private Integer nbPrelevementMax;
-	private ParametrageDTO contexteParametrageNom;
+	private ParametrageDTO contexteParametrage;
 		
 	@JsonProperty
 	public Integer getNbPrelevementMin(){
@@ -47,12 +47,12 @@ public class VisitePrelevementDTO implements Serializable {
    }
 
    @JsonProperty
-   public ParametrageDTO getContexteParametrageNom(){
-      return contexteParametrageNom;
+   public ParametrageDTO getContexteParametrage(){
+      return contexteParametrage;
    }
 
-   public void setContexteParametrageNom(ParametrageDTO contexteParametrageNom){
-      this.contexteParametrageNom = contexteParametrageNom;
+   public void setContexteParametrageNom(ParametrageDTO contexteParametrage){
+      this.contexteParametrage = contexteParametrage;
    }
 
    @Override
@@ -66,21 +66,21 @@ public class VisitePrelevementDTO implements Serializable {
 
         VisitePrelevementDTO visPrel = (VisitePrelevementDTO) obj;
 
-        return Objects.equals(contexteParametrageNom, visPrel.getContexteParametrageNom());
+        return Objects.equals(contexteParametrage, visPrel.getContexteParametrage());
 	}
 	
 	@Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-    	result = prime * result + ((contexteParametrageNom == null) ? 0 : contexteParametrageNom.hashCode());
+    	result = prime * result + ((contexteParametrage == null) ? 0 : contexteParametrage.hashCode());
     	return result;
 	}
 	
 	@JsonIgnore
 	public VisitePrelevement toVisitePrelevement() {
 	   return new VisitePrelevement(nbPrelevementMin, nbPrelevementMax, 
-	      contexteParametrageNom != null ? contexteParametrageNom.toParametrage() : null);
+	      contexteParametrage != null ? contexteParametrage.toParametrage() : null);
 	   
 	}
 }

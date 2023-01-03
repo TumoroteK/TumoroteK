@@ -49,7 +49,7 @@ import fr.aphp.tumorotek.model.contexte.Collaborateur;
  * Interface créée le 02/10/09.
  *
  * @author Mathieu BARTHELEMY
- * @version 2.2.3-genno
+ * @version 2.3.0-gatsbi
  *
  */
 public interface MaladieDao extends GenericDaoJpa<Maladie, Integer>
@@ -108,12 +108,13 @@ public interface MaladieDao extends GenericDaoJpa<Maladie, Integer>
 
    /**
     * Recherche les maladies assignées au patient uniquement
-    * par l'utilisateur, et non pas par le systeme dans le cadre
-    * de collection de prélèvements qui ne définissent pas de maladies.
+    * par l'utilisateur: excluant celles définies pas par le systeme dans le cadre
+    * de collection de prélèvements qui ne définissent pas de maladies, 
+    * et les visites gatsbi.
     * @param patient
     * @return une liste de Maladie.
     */
-   List<Maladie> findByPatientNoSystem(Patient patient);
+   List<Maladie> findByPatientNoSystemNorVisite(Patient patient);
 
    List<Maladie> findByCollaborateurId(Integer collaborateurId);
 

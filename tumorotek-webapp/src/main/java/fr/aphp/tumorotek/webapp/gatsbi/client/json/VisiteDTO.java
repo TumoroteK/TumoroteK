@@ -31,7 +31,7 @@ public class VisiteDTO implements Serializable {
 	
 	private String nom;
 	private Integer ordre;
-	private Integer intervalleDepuisInitiale;
+	private Integer intervalleDepuisInclusion;
 	private IntervalleUniteDTO intervalleUnite;
 	
 	private List<VisitePrelevementDTO> visitePrelevements = new ArrayList<VisitePrelevementDTO>();
@@ -55,12 +55,12 @@ public class VisiteDTO implements Serializable {
    }
 
    @JsonProperty
-   public Integer getIntervalleDepuisInitiale(){
-      return intervalleDepuisInitiale;
+   public Integer getIntervalleDepuisInclusion(){
+      return intervalleDepuisInclusion;
    }
 
-   public void setIntervalleDepuisInitiale(Integer intervalleDepuisInitiale){
-      this.intervalleDepuisInitiale = intervalleDepuisInitiale;
+   public void setIntervalleDepuisInclusion(Integer intervalleDepuisInclusion){
+      this.intervalleDepuisInclusion = intervalleDepuisInclusion;
    }
 
    @JsonProperty
@@ -105,7 +105,7 @@ public class VisiteDTO implements Serializable {
 	
 	@JsonIgnore
 	public Visite toVisite() {
-	   return new Visite(nom, ordre, intervalleDepuisInitiale, getIntervalleUnite().getCode(), 
+	   return new Visite(nom, ordre, intervalleDepuisInclusion, getIntervalleUnite().getCode(), 
 	      visitePrelevements.stream().map(vp -> vp.toVisitePrelevement()).collect(Collectors.toList()));
 	}
 }

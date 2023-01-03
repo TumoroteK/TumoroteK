@@ -178,7 +178,7 @@ public class PatientRowRenderer extends TKSelectObjectRenderer<Patient>
     */
    public static void renderMaladies(final Patient pat, final Row row){
 
-      final List<Maladie> mals = ManagerLocator.getMaladieManager().findByPatientNoSystemManager(pat);
+      final List<Maladie> mals = ManagerLocator.getMaladieManager().findByPatientNoSystemNorVisiteManager(pat);
 
       // on va afficher les maladies de la plus récente
       // à la plus ancienne
