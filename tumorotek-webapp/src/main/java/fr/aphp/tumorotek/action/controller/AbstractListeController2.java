@@ -1454,8 +1454,13 @@ public abstract class AbstractListeController2 extends AbstractController
       for(final TKdataObject obj : objs){
          objetIds.add(obj.listableObjectId());
          Banque collection = ((TKAnnotableObject)obj).getBanque();
-         if(!tempListCollection.contains(collection)) {
-            tempListCollection.add(collection);
+         //TK-357 : la banque est forcée à null dans le cas du patient qui n'est pas rattaché à une collection
+         //=> ce test est donc indispensable pour éviter un NullPointerException lors de l'export des patients
+         //la liste tempListCollection restera donc vide dans le cas des patients, ce qui forcera à utiliser la ou les collection(s) en session - pas d'optimisation possible
+         if(collection != null) {
+            if(!tempListCollection.contains(collection)) {
+               tempListCollection.add(collection);
+            }
          }
       }
       collections.addAll(tempListCollection);
