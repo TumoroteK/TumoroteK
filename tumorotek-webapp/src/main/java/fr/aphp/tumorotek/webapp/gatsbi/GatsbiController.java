@@ -118,7 +118,6 @@ import fr.aphp.tumorotek.model.systeme.Entite;
 import fr.aphp.tumorotek.model.systeme.Unite;
 import fr.aphp.tumorotek.param.TkParam;
 import fr.aphp.tumorotek.webapp.gatsbi.client.json.ContexteDTO;
-import fr.aphp.tumorotek.webapp.gatsbi.client.json.EtudeDTO;
 import fr.aphp.tumorotek.webapp.gatsbi.client.json.ParametrageDTO;
 import fr.aphp.tumorotek.webapp.gatsbi.client.json.ParametrageValueDTO;
 import fr.aphp.tumorotek.webapp.gatsbi.client.json.SchemaVisitesDTO;
@@ -751,15 +750,16 @@ public class GatsbiController
 
          try{
             RestTemplate restTemplate = new RestTemplate();
-            EtudeDTO etudeDTO =
-               restTemplate.getForObject(etudeURIBld.build(false).expand(etude.getEtudeId()).toUri(), EtudeDTO.class);
-
-            for(ContexteDTO rCont : etudeDTO.getContextes()){
+            
+            // EtudeDTO etudeDTO2 =
+            //   restTemplate.getForObject(etudeURIBld.build(false).expand(etude.getEtudeId()).toUri(), EtudeDTO.class);
+            
+            for(ContexteType cType : ContexteType.values()){
                log.debug("fetch contexte from URL:"
-                  + (contexteURIBld.build(false).expand(etude.getEtudeId(), rCont.getType())).toUriString());
+                  + (contexteURIBld.build(false).expand(etude.getEtudeId(), cType.getType())).toUriString());
 
                etude.addToContextes(
-                  restTemplate.getForObject(contexteURIBld.build(false).expand(etude.getEtudeId(), rCont.getType()).toUri(),
+                  restTemplate.getForObject(contexteURIBld.build(false).expand(etude.getEtudeId(), cType.getType()).toUri(),
                      ContexteDTO.class).toContexte());
             }
             

@@ -44,6 +44,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.zkoss.zul.Column;
 import org.zkoss.zul.Grid;
 import org.zkoss.zul.Label;
@@ -54,6 +56,7 @@ import org.zkoss.zul.Row;
 import fr.aphp.tumorotek.action.ManagerLocator;
 import fr.aphp.tumorotek.action.patient.PatientRowRenderer;
 import fr.aphp.tumorotek.action.patient.PatientUtils;
+import fr.aphp.tumorotek.action.prelevement.gatsbi.exception.GatsbiException;
 import fr.aphp.tumorotek.decorator.TKSelectObjectRenderer;
 import fr.aphp.tumorotek.model.coeur.patient.Maladie;
 import fr.aphp.tumorotek.model.coeur.patient.Patient;
@@ -72,6 +75,8 @@ import fr.aphp.tumorotek.webapp.general.SessionUtils;
  */
 public class GatsbiControllerPatient
 {
+   
+   private static final Log log = LogFactory.getLog(GatsbiController.class);
 
    public static void addColumnForChpId(final Integer chpId, final Grid grid)
       throws ClassNotFoundException, InstantiationException, IllegalAccessException{
@@ -347,20 +352,27 @@ public class GatsbiControllerPatient
     * @param patient en cours de création
     * @param fromDate date inclusion patient (=baseline)
     * @return
+    * @throws GatsbiException 
     */
    public static List<Maladie> produceSchemaVisitesForPatient(final Banque banque, 
       final Patient patient, 
-      final LocalDateTime fromDate) {
+      final LocalDateTime fromDate) throws GatsbiException {
       
-      List<Maladie> visites = new ArrayList<Maladie>();
-      
-      if (banque != null && banque.getEtude() != null 
-            && banque.getEtude().getSchemaVisites() != null) {
-         visites.addAll(banque.getEtude().getSchemaVisites()
-            .produceMaladiesFromSchema(patient, fromDate, banque));
+      try {
+         List<Maladie> visites = new ArrayList<Maladie>();
+         
+         if (banque != null && banque.getEtude() != null 
+               && banque.getEtude().getSchemaVisites() != null) {
+            visites.addAll(banque.getEtude().getSchemaVisites()
+               .produceMaladiesFromSchema(patient, fromDate, banque));
+         }
+         
+         return visites;
+      } catch (Exception e) {
+         log.error(e.getMessage());
+         log.debug(e.getMessage(), e);
+         throw new GatsbiException("gatsbi.schema.visites.error");
       }
-      
-      return visites;    
    }
 
    public static boolean getSchemaVisitesDefinedByEtude(Map<String, Object> sessionScope){

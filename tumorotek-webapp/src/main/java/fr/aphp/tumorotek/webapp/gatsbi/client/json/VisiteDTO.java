@@ -20,7 +20,7 @@ import fr.aphp.tumorotek.model.contexte.gatsbi.Visite;
 @JsonPropertyOrder({
    "nom",   
    "ordre",
-   "intervalleDepuisInitiale",
+   "intervalleDepuisInclusion",
    "intervalleUnite",
    "listVisitePrelevement"
 })
