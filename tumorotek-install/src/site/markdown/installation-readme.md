@@ -1,5 +1,6 @@
 #### Installation de TumoroteK version 2.3.0.2-SNAPSHOT
 ![TumoroteK version 2.3.0.2-SNAPSHOT](https://img.shields.io/badge/TumoroteK-2.3.0.2-SNAPSHOT-brightgreen.svg "TumoroteK version 2.3.0.2-SNAPSHOT")
+![Java version 8](https://img.shields.io/badge/Java->=_8-blue.svg "Java version 8")
 ![Apache Tomcat version 7](https://img.shields.io/badge/Apache_Tomcat->=_7-yellow.svg "Apache Tomcat version 7")
 
 ##### Voir le document d'exploitation détaillant l'architecture de l'environnement applicatif

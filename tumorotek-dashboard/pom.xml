@@ -5,11 +5,7 @@
     <parent>
         <artifactId>tumorotek-parent</artifactId>
         <groupId>fr.aphp.tumorotek</groupId>
-<<<<<<< HEAD
         <version>2.3.0.2-SNAPSHOT</version>
-=======
-        <version>2.2.7 SNAPSHOT</version>
->>>>>>> refs/remotes/origin/dev
     </parent>
 
     <artifactId>tumorotek-dashboard</artifactId>

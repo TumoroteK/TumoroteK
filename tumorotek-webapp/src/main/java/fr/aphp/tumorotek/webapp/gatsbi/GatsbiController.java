@@ -926,7 +926,8 @@ public class GatsbiController
             for(ParametrageValueDTO value : param.getParametrageValueDTOs()){
                if(!contexte.getHiddenChampEntiteIds().contains(value.getChampEntiteId())
                   && !StringUtils.isBlank(value.getDefaultValue())){
-                  if(value.getThesaurusTableNom() != null && value.getThesaurusTableNom().trim().length() != 0){ // thesaurus value check!
+                  if(value.getThesaurusTableNom() != null && value.getThesaurusTableNom().trim().length() != 0 
+                     && !contexte.getThesaurusValuesForChampEntiteId(value.getChampEntiteId()).isEmpty()){ // thesaurus value check!
                      for(String defvalue : value.getDefaultValue().split(";")){
                         if(!contexte.getThesaurusValuesForChampEntiteId(value.getChampEntiteId()).stream()
                            .anyMatch(v -> v.getThesaurusValue().equalsIgnoreCase(defvalue))){

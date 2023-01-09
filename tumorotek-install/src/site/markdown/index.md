@@ -1,6 +1,10 @@
 #### Notes de version
 
-##### Version 2.2.6 - Publiée le 26/09/2022
+##### Version 2.3.0.2-SNAPSHOT - Publiée le 09/01/2023
+- Adaptations pour le module Gatsbi
+
+
+##### Version 2.2.5 - Publiée le 13/04/2022
 ###### Adaptation pour projet IRELEC - CHU Grenoble
 - YouTrack [TK-339](https://tumorotek.myjetbrains.com/youtrack/issue/TK-339) : ROBOT Grenoble - accès bouton "Stockage automatisé" et "Déstockage automatisé"
 
