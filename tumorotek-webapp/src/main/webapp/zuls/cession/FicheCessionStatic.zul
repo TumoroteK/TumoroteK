@@ -381,7 +381,7 @@
 							<menuitem id="historique" image="/images/icones/history.png" label="${c:l('general.historique')}" />
 							<!-- since 2.2.1-IRELEC -->
 							<menuitem id="storageRobotItem" image="/images/icones/kstars.png" 
-									label="${c:l('storage.robot.stockage')}"
+									label="${c:l('storage.robot.destockage')}"
 									visible="false" />
 						</menupopup>
 					</menu>

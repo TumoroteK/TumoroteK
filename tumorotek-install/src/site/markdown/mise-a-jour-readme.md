@@ -1,5 +1,10 @@
+<<<<<<< HEAD
 #### Mise à jour de TumoroteK version 2.3.0.2-SNAPSHOT
 ![TumoroteK version 2.3.0.2-SNAPSHOT](https://img.shields.io/badge/TumoroteK-2.3.0.2-SNAPSHOT-brightgreen.svg "TumoroteK version 2.3.0.2-SNAPSHOT")
+=======
+#### Mise à jour de TumoroteK version 2.2.6
+![TumoroteK version 2.2.6](https://img.shields.io/badge/TumoroteK-2.2.6-brightgreen.svg "TumoroteK version 2.2.6")
+>>>>>>> refs/remotes/origin/dev
 ![Java version 8](https://img.shields.io/badge/Java->=_8-blue.svg "Java version 8")
 ![Apache Tomcat version 7](https://img.shields.io/badge/Apache_Tomcat->=_7-yellow.svg "Apache Tomcat version 7")
 
@@ -26,9 +31,17 @@
 2. **Dupliquer** le fichier `tumorotek##x.x.x.xml`.  
 Renommer la copie en :
     
+<<<<<<< HEAD
         tumorotek##2.3.0.2-SNAPSHOT.xml
+=======
+        tumorotek##2.2.6.xml
+>>>>>>> refs/remotes/origin/dev
         
+<<<<<<< HEAD
 3. Modifier dans ce même fichier `tumorotek##2.3.0.2-SNAPSHOT.xml`, les variables suivantes :
+=======
+3. Modifier dans ce même fichier `tumorotek##2.2.6.xml`, les variables suivantes :
+>>>>>>> refs/remotes/origin/dev
 
     - **/jdbc/driverClass**
     
@@ -138,14 +151,26 @@ Renommer la copie en :
                 ...
             </Context> 
 
+<<<<<<< HEAD
 4. Télécharger le [Dossier d'installation](https://github.com/TumoroteK/TumoroteK/releases/download/v2.3.0.2-SNAPSHOT/tumorotek-install-2.3.0.2-SNAPSHOT.zip)
+=======
+4. Télécharger le [Dossier d'installation](https://github.com/TumoroteK/TumoroteK/releases/download/v2.2.6/tumorotek-install-2.2.6.zip)
+>>>>>>> refs/remotes/origin/dev
 
 5. Dézipper le dossier
 
+<<<<<<< HEAD
 6. Copier/déplacer l'archive `tumorotek##2.3.0.2-SNAPSHOT.war` sur le serveur Tomcat dans le dossier `<PATH_TOMCAT>/webapps`
+=======
+6. Copier/déplacer l'archive `tumorotek##2.2.6.war` sur le serveur Tomcat dans le dossier `<PATH_TOMCAT>/webapps`
+>>>>>>> refs/remotes/origin/dev
 
     <span class="fas fa-exclamation-triangle" aria-hidden="true"></span> A partir de cette version, la configuration de l'application est portée par le fichier `<PATH_TOMCAT>/conf/Catalina/localhost/tumorotek.properties`.  
+<<<<<<< HEAD
     A cette étape de l'installation, le contenu du fichier `tumorotek##2.3.0.2-SNAPSHOT.xml` est automatiquement reporté dans `tumorotek.properties` et le fichier `tumorotek##2.3.0.2-SNAPSHOT.xml` est supprimé.
+=======
+    A cette étape de l'installation, le contenu du fichier `tumorotek##2.2.6.xml` est automatiquement reporté dans `tumorotek.properties` et le fichier `tumorotek##2.2.6.xml` est supprimé.
+>>>>>>> refs/remotes/origin/dev
 
 	<span class="fas fa-exclamation-triangle" aria-hidden="true"></span> Si l'authentification LDAP est utilisée, remplacer la ligne du fichier `<PATH_TOMCAT>/conf/Catalina/localhost/tumorotek.properties` suivante
     

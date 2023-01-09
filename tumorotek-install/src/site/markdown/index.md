@@ -1,10 +1,10 @@
 #### Notes de version
 
-##### Version 2.3.0.2-SNAPSHOT - Publiée le 17/11/2022
-- Adaptations pour le module Gatsbi
+##### Version 2.2.6 - Publiée le 26/09/2022
+###### Adaptation pour projet IRELEC - CHU Grenoble
+- YouTrack [TK-339](https://tumorotek.myjetbrains.com/youtrack/issue/TK-339) : ROBOT Grenoble - accès bouton "Stockage automatisé" et "Déstockage automatisé"
 
-
-##### Version 2.2.5 - Publiée le 13/04/2022
+##### Version 2.2.5 - Publiée le 06/07/2022
 ###### Corrections
 - YouTrack [TK-330](https://tumorotek.myjetbrains.com/youtrack/issue/TK-330) : Saisie d'un prélèvement en contexte sérologique : ajout de l'aide à la saisie du statut juridique comme pour le contexte anapath
 - YouTrack [TK-328](https://tumorotek.myjetbrains.com/youtrack/issue/TK-328) : Export : mauvaise gestion de l'anonymisation pour les profils "administrateur de collections" 
