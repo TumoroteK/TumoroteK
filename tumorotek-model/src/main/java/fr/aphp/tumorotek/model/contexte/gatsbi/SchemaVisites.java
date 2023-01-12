@@ -106,16 +106,16 @@ private static final long serialVersionUID = 1L;
             maladie.setLibelle(visite.getNom());
             switch(visite.getIntervalleType()){
                case JOUR:
-                  visiteDate = fromDate.plusDays(visite.getIntervalleDepuisInitiale());
+                  visiteDate = fromDate.plusDays(visite.getIntervalleDepuisInclusion());
                   break;
                case MOIS:
-                  visiteDate = fromDate.plusMonths(visite.getIntervalleDepuisInitiale());
+                  visiteDate = fromDate.plusMonths(visite.getIntervalleDepuisInclusion());
                   break;
                case ANNEE:
-                  visiteDate = fromDate.plusYears(visite.getIntervalleDepuisInitiale());
+                  visiteDate = fromDate.plusYears(visite.getIntervalleDepuisInclusion());
                   break;
                case HEURE:
-                  visiteDate = fromDate.plusHours(visite.getIntervalleDepuisInitiale());
+                  visiteDate = fromDate.plusHours(visite.getIntervalleDepuisInclusion());
                   break;
                default:
                   break;

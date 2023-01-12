@@ -49,10 +49,12 @@ import org.zkoss.zk.ui.Path;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.ListitemRenderer;
+import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.Vbox;
 
 import fr.aphp.tumorotek.action.ManagerLocator;
+import fr.aphp.tumorotek.action.controller.AbstractController;
 import fr.aphp.tumorotek.action.patient.FicheMaladie;
 import fr.aphp.tumorotek.action.patient.FichePatientEdit;
 import fr.aphp.tumorotek.action.patient.gatsbi.GatsbiControllerPatient;
@@ -231,15 +233,19 @@ public class ReferenceurPatientGatsbi extends ReferenceurPatient
 //      getMaladies().clear();
       
       // production du schéma de visites
-      List<MaladieDecorator> visiteDecos = MaladieDecorator.decorateListe(GatsbiControllerPatient
-         .produceSchemaVisitesForPatient(SessionUtils.getCurrentBanque(sessionScope), patient, 
-      ((Date) e.getData()).toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime()));
-      
-      getMaladies().addAll(visiteDecos);
-      
-      if (!visiteDecos.isEmpty()) {
-         setSelectedMaladie(visiteDecos.get(0));
-         setFichePrelevementMaladie(visiteDecos.get(0).getMaladie());
+      try {
+         List<MaladieDecorator> visiteDecos = MaladieDecorator.decorateListe(GatsbiControllerPatient
+            .produceSchemaVisitesForPatient(SessionUtils.getCurrentBanque(sessionScope), patient, 
+         ((Date) e.getData()).toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime()));
+         
+         getMaladies().addAll(visiteDecos);
+     
+         if (!visiteDecos.isEmpty()) {
+            setSelectedMaladie(visiteDecos.get(0));
+            setFichePrelevementMaladie(visiteDecos.get(0).getMaladie());
+         }
+      } catch (Exception ex) {
+         Messagebox.show(AbstractController.handleExceptionMessage(ex), "Error", Messagebox.OK, Messagebox.ERROR);
       }
       
       setEmbeddedMaladieVisible(false);

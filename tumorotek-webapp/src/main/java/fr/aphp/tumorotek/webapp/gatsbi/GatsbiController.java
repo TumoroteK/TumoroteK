@@ -118,7 +118,6 @@ import fr.aphp.tumorotek.model.systeme.Entite;
 import fr.aphp.tumorotek.model.systeme.Unite;
 import fr.aphp.tumorotek.param.TkParam;
 import fr.aphp.tumorotek.webapp.gatsbi.client.json.ContexteDTO;
-import fr.aphp.tumorotek.webapp.gatsbi.client.json.EtudeDTO;
 import fr.aphp.tumorotek.webapp.gatsbi.client.json.ParametrageDTO;
 import fr.aphp.tumorotek.webapp.gatsbi.client.json.ParametrageValueDTO;
 import fr.aphp.tumorotek.webapp.gatsbi.client.json.SchemaVisitesDTO;
@@ -751,15 +750,16 @@ public class GatsbiController
 
          try{
             RestTemplate restTemplate = new RestTemplate();
-            EtudeDTO etudeDTO =
-               restTemplate.getForObject(etudeURIBld.build(false).expand(etude.getEtudeId()).toUri(), EtudeDTO.class);
-
-            for(ContexteDTO rCont : etudeDTO.getContextes()){
+            
+            // EtudeDTO etudeDTO2 =
+            //   restTemplate.getForObject(etudeURIBld.build(false).expand(etude.getEtudeId()).toUri(), EtudeDTO.class);
+            
+            for(ContexteType cType : ContexteType.values()){
                log.debug("fetch contexte from URL:"
-                  + (contexteURIBld.build(false).expand(etude.getEtudeId(), rCont.getType())).toUriString());
+                  + (contexteURIBld.build(false).expand(etude.getEtudeId(), cType.getType())).toUriString());
 
                etude.addToContextes(
-                  restTemplate.getForObject(contexteURIBld.build(false).expand(etude.getEtudeId(), rCont.getType()).toUri(),
+                  restTemplate.getForObject(contexteURIBld.build(false).expand(etude.getEtudeId(), cType.getType()).toUri(),
                      ContexteDTO.class).toContexte());
             }
             
@@ -926,7 +926,8 @@ public class GatsbiController
             for(ParametrageValueDTO value : param.getParametrageValueDTOs()){
                if(!contexte.getHiddenChampEntiteIds().contains(value.getChampEntiteId())
                   && !StringUtils.isBlank(value.getDefaultValue())){
-                  if(value.getThesaurusTableNom() != null && value.getThesaurusTableNom().trim().length() != 0){ // thesaurus value check!
+                  if(value.getThesaurusTableNom() != null && value.getThesaurusTableNom().trim().length() != 0 
+                     && !contexte.getThesaurusValuesForChampEntiteId(value.getChampEntiteId()).isEmpty()){ // thesaurus value check!
                      for(String defvalue : value.getDefaultValue().split(";")){
                         if(!contexte.getThesaurusValuesForChampEntiteId(value.getChampEntiteId()).stream()
                            .anyMatch(v -> v.getThesaurusValue().equalsIgnoreCase(defvalue))){

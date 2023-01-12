@@ -49,19 +49,19 @@ public class Visite implements Serializable
    
    private String nom;
    private Integer ordre;
-   private Integer intervalleDepuisInitiale;
+   private Integer intervalleDepuisInclusion;
    private IntervalleType intervalleType;
    private List<VisitePrelevement> visitePrelevements = new ArrayList<VisitePrelevement>();
    
    public Visite(String nom, 
          Integer ordre, 
-         Integer intervalleDepuisInitiale, 
+         Integer intervalleDepuisInclusion, 
          IntervalleType intervalleType,
          List<VisitePrelevement> visitePrelevements){
       super();
       this.nom = nom;
       this.ordre = ordre;
-      this.intervalleDepuisInitiale = intervalleDepuisInitiale;
+      this.intervalleDepuisInclusion = intervalleDepuisInclusion;
       this.intervalleType = intervalleType;
       if (visitePrelevements != null) {
          this.visitePrelevements.addAll(visitePrelevements);
@@ -84,12 +84,12 @@ public class Visite implements Serializable
       this.ordre = ordre;
    }
 
-   public Integer getIntervalleDepuisInitiale(){
-      return intervalleDepuisInitiale;
+   public Integer getIntervalleDepuisInclusion(){
+      return intervalleDepuisInclusion;
    }
 
-   public void setIntervalleDepuisInitiale(Integer intervalleDepuisInitiale){
-      this.intervalleDepuisInitiale = intervalleDepuisInitiale;
+   public void setIntervalleDepuisInclusion(Integer intervalleDepuisInclusion){
+      this.intervalleDepuisInclusion = intervalleDepuisInclusion;
    }
 
    public IntervalleType getIntervalleType(){

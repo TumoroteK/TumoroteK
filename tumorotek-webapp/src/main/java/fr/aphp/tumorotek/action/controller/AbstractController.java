@@ -2416,11 +2416,12 @@ public abstract class AbstractController extends GenericForwardComposer<Componen
 	/**
 	 * Le bouton Storage robot item est visible:
 	 *  - si le recepteur IRELEC est  configuré
-	 *  - si l'utilisateur est au moins Admin PF
+	 *  - si l'utilisateur est Admin PF ou avec des droits de Consultation sur le stockage et en modification sur les échantillons (TK-339)
 	 * @return true si le bouton doit être affiché
 	 */
 	public boolean storageRobotItemVisible() {
-		if (sessionScope.containsKey("AdminPF")) {
+		if (sessionScope.containsKey("AdminPF") 
+		   || (getDroitOnAction("Echantillon", "Modification") && getDroitOnAction("Stockage", "Consultation")) ) {
 			for (fr.aphp.tumorotek.model.interfacage.Recepteur recept : 
 							SessionUtils.getRecepteursInterfacages(sessionScope)) {
 				if (recept.getLogiciel().getNom().equals("IRELEC")) {

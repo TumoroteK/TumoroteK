@@ -40,9 +40,8 @@ CREATE PROCEDURE `create_tmp_patient_table_gatsbi`(IN etude_id INTEGER)
         DATE_HEURE_SAISIE    datetime,
         UTILISATEUR_SAISIE   varchar(100),
         MALADIE_ID           varchar(100),
-        PRIMARY KEY (PATIENT_ID),
-        INDEX (PATIENT_ID)
-        ) ENGINE = MYISAM, default character SET = utf8');
+        PRIMARY KEY (PATIENT_ID)
+		) ENGINE = MYISAM, default character SET = utf8');
         
     PREPARE stmt FROM @sql;
     EXECUTE stmt;
@@ -149,17 +148,15 @@ CREATE PROCEDURE `create_tmp_maladie_table_gatsbi`(IN etude_id INTEGER)
     DROP TEMPORARY TABLE IF EXISTS TMP_MALADIE_EXPORT;
         
     SET @sql = CONCAT('CREATE TEMPORARY TABLE TMP_MALADIE_EXPORT (', 
-      'LIBELLE varchar(1000)',
-      'DATE_VISITE varchar(1000)',
+      'LIBELLE varchar(1000),',
+      'DATE_VISITE varchar(1000),',
 	  IF ((is_chp_visible(18, etude_id)), 'CODE_MALADIE varchar(1000), ', ''),
 	  IF ((is_chp_visible(19, etude_id)), 'DATE_DIAGNOSTIC varchar(1000), ', ''),
       'PATIENT_ID int(10),
-      PRIMARY KEY (PATIENT_ID)
-    ) INDEX (PATIENT_ID)
+      PRIMARY KEY (PATIENT_ID),
+      INDEX (PATIENT_ID)
     ) ENGINE = MYISAM, default character SET = utf8');
-      
-    SELECT @sql;
-  
+        
     PREPARE stmt FROM @sql;
     EXECUTE stmt;
     DEALLOCATE PREPARE stmt;
@@ -171,7 +168,7 @@ END&&
 DROP PROCEDURE IF EXISTS `fill_tmp_table_maladie_gatsbi`&&
 CREATE PROCEDURE `fill_tmp_table_maladie_gatsbi`(IN pat_id INTEGER, IN etude_id INTEGER)
   BEGIN
-    SET @sql = CONCAT('INSERT INTO TMP_MALADIE_EXPORT SELECT', 
+    SET @sql = CONCAT('INSERT INTO TMP_MALADIE_EXPORT SELECT ', 
 		'LEFT(GROUP_CONCAT(libelle SEPARATOR " ; "), 200), ',
     	'LEFT(GROUP_CONCAT(date_debut SEPARATOR " ; "), 200), ',
 		IF ((is_chp_visible(18, etude_id)), 
@@ -180,9 +177,7 @@ CREATE PROCEDURE `fill_tmp_table_maladie_gatsbi`(IN pat_id INTEGER, IN etude_id 
            'LEFT(GROUP_CONCAT(date_diagnostic SEPARATOR " ; "), 200), ', ''),
          'patient_id
     FROM MALADIE
-    WHERE patient_id = ', pat_id,  'group by patient_id');
-
-    SELECT @sql;
+    WHERE patient_id = ', pat_id,  ' group by patient_id');
   
     PREPARE stmt FROM @sql;
     EXECUTE stmt;

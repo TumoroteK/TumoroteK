@@ -48,8 +48,10 @@ import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Groupbox;
 import org.zkoss.zul.Listbox;
+import org.zkoss.zul.Messagebox;
 
 import fr.aphp.tumorotek.action.ManagerLocator;
+import fr.aphp.tumorotek.action.controller.AbstractController;
 import fr.aphp.tumorotek.action.patient.FichePatientEdit;
 import fr.aphp.tumorotek.action.patient.LabelCodeItem;
 import fr.aphp.tumorotek.action.patient.PatientUtils;
@@ -306,9 +308,13 @@ public class FichePatientEditGatsbi extends FichePatientEdit
       
       visites.clear();
       
-      // production du schéma de visites
-      visites.addAll(GatsbiControllerPatient.produceSchemaVisitesForPatient(SessionUtils.getCurrentBanque(sessionScope), patient, 
-         ((Date) e.getData()).toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime()));
+      try {
+         // production du schéma de visites
+         visites.addAll(GatsbiControllerPatient.produceSchemaVisitesForPatient(SessionUtils.getCurrentBanque(sessionScope), patient, 
+            ((Date) e.getData()).toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime()));
+      } catch (Exception ex) {
+         Messagebox.show(handleExceptionMessage(ex), "Error", Messagebox.OK, Messagebox.ERROR);
+      }
    }
    
    public String getVisitesGroupHeader() {

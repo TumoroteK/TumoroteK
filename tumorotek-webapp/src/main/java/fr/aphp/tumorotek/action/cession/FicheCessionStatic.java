@@ -258,7 +258,8 @@ public class FicheCessionStatic extends AbstractFicheStaticController
 		printCessionPlan.setDisabled(cession.getCessionStatut() == null || cession.getCessionStatut().getStatut().equals("VALIDEE")
 				|| (getEchantillonsCedes().isEmpty() && getDerivesCedes().isEmpty()));
 
-		// since 2.2.1-IRELEC automated storage si admin PF et cession en attente ou validée 
+		// since 2.2.1-IRELEC automated storage si admin PF ou (ou avec des droits de Consultation sur le stockage et en modification sur les échantillons (TK-339)) 
+		//et cession en attente 
 		storageRobotItem.setVisible(storageRobotItemVisible() 
 				&& getObject() != null && getObject().getCessionStatut() != null 
 				&& getObject().getCessionStatut().getCessionStatutId().equals(1));
