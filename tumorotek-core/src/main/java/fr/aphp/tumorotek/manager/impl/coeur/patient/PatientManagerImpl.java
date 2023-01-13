@@ -204,7 +204,7 @@ public class PatientManagerImpl implements PatientManager
          
          // @since 2.3.0-gatsbi 
          final List<Integer> requiredChampEntiteId = new ArrayList<>();
-         if(patient.getBanque() != null){ // creation / edition en contexte Gatsbi
+         if(patient.getBanque() != null && patient.getBanque().getEtude() != null){ // creation / edition en contexte Gatsbi
             final Contexte patContexte = patient.getBanque().getEtude().getContexteForEntite(1);
             if(patContexte != null){
                requiredChampEntiteId.addAll(patContexte.getRequiredChampEntiteIds());

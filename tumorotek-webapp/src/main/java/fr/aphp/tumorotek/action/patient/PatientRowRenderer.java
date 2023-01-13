@@ -105,6 +105,9 @@ public class PatientRowRenderer extends TKSelectObjectRenderer<Patient>
       
       // affiche le compte de prélèvements consultables
       renderNbPrels(row, pat);
+      
+      // codes organes : liste des codes exportés pour échantillons
+      renderFirstCodeOrganeForPatient(row, pat);
    }
    
    protected void renderNbPrels(Row row, Patient pat){
@@ -142,9 +145,6 @@ public class PatientRowRenderer extends TKSelectObjectRenderer<Patient>
       
       // date état
       renderPatientDateEtat(row, pat);
-
-      // codes organes : liste des codes exportés pour échantillons
-      renderFirstCodeOrganeForPatient(row, pat);
    }
 
    public static void renderDateNaissance(Row row, Patient pat, boolean anonyme) 
