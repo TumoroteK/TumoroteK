@@ -145,11 +145,9 @@ public class FichePrelevementEditGatsbi extends FichePrelevementEdit
       log.debug("Surcharge Gastbi pour vérifier que la page de transfert des sites intermédiaire est affichée");
 
       // vérifie si au moins un des champs de formulaires est affiché
-      final boolean oneDivVisible = contexte.getChampEntites().stream()
-         .filter(c -> Arrays.asList(35, 36, 37, 38, 39, 40, 256, 267, 268).contains(c.getChampEntiteId()))
-         .anyMatch(c -> c.getVisible());
+      final boolean oneDivVisible = GatsbiControllerPrelevement.isSitesIntermPageDisplayed(contexte);
 
-      if(oneDivVisible || contexte.getSiteIntermediaire()){
+      if(oneDivVisible){
          super.onLaterNextStep();
       }else{ // aucun formulaire n'est affiché -> passage direct à l'onglet échantillon
          log.debug("Aucun formulaire à affiché dans la page transfert vers le site préleveur...");

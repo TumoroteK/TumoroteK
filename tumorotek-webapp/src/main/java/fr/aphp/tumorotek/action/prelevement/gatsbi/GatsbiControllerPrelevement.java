@@ -36,6 +36,7 @@
  **/
 package fr.aphp.tumorotek.action.prelevement.gatsbi;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.zkoss.zk.ui.Component;
@@ -43,6 +44,7 @@ import org.zkoss.zul.Div;
 import org.zkoss.zul.Textbox;
 
 import fr.aphp.tumorotek.action.constraints.ConstCode;
+import fr.aphp.tumorotek.model.contexte.gatsbi.Contexte;
 import fr.aphp.tumorotek.model.contexte.gatsbi.ContexteType;
 import fr.aphp.tumorotek.webapp.gatsbi.GatsbiController;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
@@ -89,5 +91,24 @@ public class GatsbiControllerPrelevement {
    
    public static void removePatientNdaRequired(Div ndaDiv) {  
       ((ConstCode) ((Textbox) ndaDiv.getLastChild()).getConstraint()).setNullable(true);
+   }
+   
+   public static boolean isSitesIntermPageDisplayed(Contexte contexte) {
+      
+      if (contexte == null) {
+         return true;
+      }
+      
+      if (contexte.getSiteIntermediaire()) {
+         return true;
+      }
+      
+      // vérifie si au moins un des champs de formulaires est affiché
+      final boolean oneDivVisible = contexte.getChampEntites().stream()
+         .filter(c -> Arrays.asList(35, 36, 37, 38, 39, 40, 256, 267, 268).contains(c.getChampEntiteId()))
+         .anyMatch(c -> c.getVisible());
+
+      
+      return oneDivVisible;
    }
 }
