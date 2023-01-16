@@ -245,8 +245,8 @@ public class ProfilUtilisateurManagerImpl implements ProfilUtilisateurManager
     * @since 2.2.4.1
     */
    @Override
-   public Long countDistinctProfilForUserAndPlateformeGroupedByContexteManager(final Utilisateur u, final Plateforme p){
-      final Long count = profilUtilisateurDao.findCountDistinctProfilForUserAndPlateformeGroupedByContexte(u, p).get(0);
+   public Long countDistinctProfilForUserAndPlateformeManager(final Utilisateur u, final Plateforme p){
+      final Long count = profilUtilisateurDao.findCountDistinctProfilForUserAndPlateforme(u, p).get(0);
       return count;
    }
 

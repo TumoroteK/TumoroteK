@@ -181,7 +181,7 @@ public interface ProfilUtilisateurManager
     * @return nombre de profils d'accès distincts
     * @since 2.2.4.1
     */
-   Long countDistinctProfilForUserAndPlateformeGroupedByContexteManager(Utilisateur u, Plateforme p);
+   Long countDistinctProfilForUserAndPlateformeManager(Utilisateur u, Plateforme p);
 
    /**
     * Compte pour un utilisateur le nombre de profils différents qui lui sont attribués

@@ -354,7 +354,7 @@ public final class ConnexionUtils
     * Test si l'utilisateur a accès à l'option "Toutes collections".
     * @return True s'il a accès.
     * @since 2.2.4 méthode migrée en static utils car appelé par deux SelectBanqueController et MainWindow
-    * @since 2.3.0 GATSBI impose un lien Toutes collection potentiellement par étude
+    * @since 2.3.0 GATSBI ajoute un lien Toutes collection par étude
     */
    public static void initToutesCollectionsAccesses(final List<Banque> banques, final Plateforme pf, final Utilisateur user){
 
@@ -364,10 +364,12 @@ public final class ConnexionUtils
       // s'il y a plusieurs banques disponibles
       final long noGatsbiBanksCC = banques.stream().filter(b -> b.getEtude() == null).count();
 
+      boolean canTtesCollNoGATSBI = false;
+      
       if(noGatsbiBanksCC > 1){
 
-         boolean canTtesCollNoGATSBI = true;
-
+         canTtesCollNoGATSBI = true;
+         
          // si l'utilisateur n'est admin de la plateforme
          // compte les profils distincts pour contexte non GATSBI
          if(!pfs.contains(pf) && !user.isSuperAdmin()){
@@ -376,15 +378,10 @@ public final class ConnexionUtils
             // compte le nombre de profils d'accès différents par contexte cette plateforme
             // si les profils sont différents, il n'a pas accès à
             // l'option "Toutes collections"
-            if(ManagerLocator.getProfilUtilisateurManager().countDistinctProfilForUserAndPlateformeGroupedByContexteManager(user,
-               pf) != 1L){
+            if(ManagerLocator.getProfilUtilisateurManager()
+               .countDistinctProfilForUserAndPlateformeManager(user, pf) != 1L){
                canTtesCollNoGATSBI = false;
-            }
-         }
-
-         // ajout toutes collections non GATSBI
-         if(canTtesCollNoGATSBI){
-            banques.add(initFakeToutesCollBankItem(pf));
+            }         
          }
       } // else no gatsbi banques max one!
 
@@ -423,6 +420,11 @@ public final class ConnexionUtils
             }
          } // else gatsbi banques max one pour cette étude!
       }
+      
+      // ajout toutes collections non 
+      if(canTtesCollNoGATSBI){
+         banques.add(initFakeToutesCollBankItem(pf));
+      }
    }
 
    /**
@@ -453,11 +455,9 @@ public final class ConnexionUtils
          if(selectedBanque.getBanqueId() != null){ // choix d'une banque existantes (donc pas ttesColl)
             ConnexionUtils.initConnection(user, selectedPlateforme, selectedBanque, banques, session);
          }else if(selectedBanque.equals(toutesColl)){ // toutes collections hors GATSBI
-            final List<Banque> bksList = new ArrayList<>();
-            bksList.addAll(banques);
-            bksList.remove(toutesColl);
             ConnexionUtils.initConnection(user, selectedPlateforme, null,
-               banques.stream().filter(b -> b.getBanqueId() != null && b.getEtude() == null).collect(Collectors.toList()),
+               banques.stream().filter(b -> b.getBanqueId() != null).collect(Collectors.toList()), // retire les ttes colls items
+              //  banques.stream().filter(b -> b.getBanqueId() != null && b.getEtude() == null).collect(Collectors.toList()),
                session);
          }else{ // toutes collections etude GATSBI
             ConnexionUtils.initConnection(user, selectedPlateforme, null,

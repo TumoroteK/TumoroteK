@@ -52,7 +52,6 @@ import org.zkoss.zul.Messagebox;
 
 import fr.aphp.tumorotek.action.echantillon.AbstractEchantillonDecoratorRowRenderer;
 import fr.aphp.tumorotek.action.echantillon.FicheMultiEchantillons;
-import fr.aphp.tumorotek.action.prelevement.gatsbi.GatsbiControllerPrelevement;
 import fr.aphp.tumorotek.action.prelevement.gatsbi.exception.GatsbiException;
 import fr.aphp.tumorotek.manager.impl.interfacage.ResultatInjection;
 import fr.aphp.tumorotek.model.contexte.gatsbi.Contexte;
