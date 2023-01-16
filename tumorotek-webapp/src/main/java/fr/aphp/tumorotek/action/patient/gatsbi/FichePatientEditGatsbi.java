@@ -51,7 +51,6 @@ import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Messagebox;
 
 import fr.aphp.tumorotek.action.ManagerLocator;
-import fr.aphp.tumorotek.action.controller.AbstractController;
 import fr.aphp.tumorotek.action.patient.FichePatientEdit;
 import fr.aphp.tumorotek.action.patient.LabelCodeItem;
 import fr.aphp.tumorotek.action.patient.PatientUtils;
@@ -240,7 +239,7 @@ public class FichePatientEditGatsbi extends FichePatientEdit
    public void onLaterSwitchToCreateMode() {
       if (!embedded) {
          DateModale.show(Labels.getLabel("gatsbi.schema.visites.title"), 
-            Labels.getLabel("gatsbi.schema.visites.label"), null, true, self);
+            Labels.getLabel("gatsbi.schema.visites.label"), null, false, self);
       }   
    }
    
@@ -271,7 +270,7 @@ public class FichePatientEditGatsbi extends FichePatientEdit
     */
    public void onLaterSwitchToEditMode() {
       DateModale.show(Labels.getLabel("gatsbi.schema.visites.title"), 
-         Labels.getLabel("gatsbi.schema.visites.label"), null, true, self);
+         Labels.getLabel("gatsbi.schema.visites.label"), null, false, self);
    }
    
    @Override
