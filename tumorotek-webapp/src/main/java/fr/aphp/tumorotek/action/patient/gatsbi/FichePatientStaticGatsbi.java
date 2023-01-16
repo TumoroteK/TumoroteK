@@ -57,6 +57,7 @@ import fr.aphp.tumorotek.action.prelevement.gatsbi.exception.GatsbiException;
 import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
 import fr.aphp.tumorotek.model.TKdataObject;
 import fr.aphp.tumorotek.model.coeur.patient.Maladie;
+import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.contexte.gatsbi.Contexte;
 import fr.aphp.tumorotek.model.contexte.gatsbi.ContexteType;
 import fr.aphp.tumorotek.webapp.gatsbi.GatsbiController;
@@ -113,7 +114,8 @@ public class FichePatientStaticGatsbi extends FichePatientStatic
       return Labels.getLabel("gatsbi.visites");
    }
    
-   protected void populatesPatientMaladies(List<Maladie> maladies, List<Maladie> otherMaladies){
+   @Override
+   protected void populatesPatientMaladies(List<Maladie> maladies, List<Maladie> otherMaladies, List<Banque> consultableBanks){
       
       getPatient().setBanque(SessionUtils.getCurrentBanque(sessionScope));
       
@@ -138,6 +140,13 @@ public class FichePatientStaticGatsbi extends FichePatientStatic
 
          // toutes maladies 'system'
          otherMaladies.addAll(system);
+         
+         // plus les visites des autres collections gatsbi
+         for (Banque bank: consultableBanks) {
+            if (!bank.equals(SessionUtils.getCurrentBanque(sessionScope))) {
+               otherMaladies.addAll(ManagerLocator.getMaladieManager().findVisitesManager(patient, bank));
+            }
+         }
       }else{ // TODO toutes collections
          // si au moins une banque définit une maladie
          if(SessionUtils.isAnyDefMaladieInBanques(SessionUtils.getSelectedBanques(sessionScope))){

@@ -48,6 +48,8 @@ import org.zkoss.zk.ui.HtmlBasedComponent;
 import org.zkoss.zk.ui.HtmlMacroComponent;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Group;
@@ -195,19 +197,19 @@ public class FichePatientStatic extends AbstractFicheStaticController
       if(patient.getPatientId() != null){
          List<Maladie> otherMaladies = new ArrayList<>();
          
+         // Retrouve les collections de prelevements consultables
+         final List<Banque> banks = ManagerLocator.getBanqueManager().findByEntiteConsultByUtilisateurManager(
+            SessionUtils.getLoggedUser(sessionScope), ManagerLocator.getEntiteManager().findByNomManager("Prelevement").get(0),
+            SessionUtils.getPlateforme(sessionScope));
+         
          // @since 2.3.0-gatsbi
-         populatesPatientMaladies(maladies, otherMaladies);
+         populatesPatientMaladies(maladies, otherMaladies, banks);
 
          // prepare la liste de prélèvements
          final Iterator<Maladie> mals = otherMaladies.iterator();
          while(mals.hasNext()){
             this.prelevementsFromOtherMaladies.addAll(ManagerLocator.getMaladieManager().getPrelevementsManager(mals.next()));
          }
-
-         // Retrouve les collections de prelevements consultables
-         final List<Banque> banks = ManagerLocator.getBanqueManager().findByEntiteConsultByUtilisateurManager(
-            SessionUtils.getLoggedUser(sessionScope), ManagerLocator.getEntiteManager().findByNomManager("Prelevement").get(0),
-            SessionUtils.getPlateforme(sessionScope));
 
          // configure le renderer pour inactiver les liens des
          // prélèvements non consultables
@@ -231,7 +233,7 @@ public class FichePatientStatic extends AbstractFicheStaticController
    }
 
    // @since 2.3.0-gatsbi, sera surchargée
-   protected void populatesPatientMaladies(List<Maladie> maladies, List<Maladie> otherMaladies){
+   protected void populatesPatientMaladies(List<Maladie> maladies, List<Maladie> otherMaladies, List<Banque> consultableBanks){
       
       maladies.clear();
       otherMaladies.clear();
@@ -253,6 +255,11 @@ public class FichePatientStatic extends AbstractFicheStaticController
        
             // maladies 'system', correspondant aux collections no-def maladie
             otherMaladies.addAll(system); // reste 
+            
+            // ajout visites pour les banques accessibles
+            for (Banque bank: consultableBanks) {
+               otherMaladies.addAll(ManagerLocator.getMaladieManager().findVisitesManager(patient, bank));
+            }
          }else{
             // banque définit pas maladies -> une maladie system,
             // les autres sont maladies venant d'autres banques
@@ -262,6 +269,11 @@ public class FichePatientStatic extends AbstractFicheStaticController
             // toutes les maladies non system, non visites gatsbi
             otherMaladies.addAll(new ArrayList<>(ManagerLocator.getMaladieManager().findByPatientNoSystemNorVisiteManager(patient)));
             maladies.removeAll(otherMaladies); // reste maladies 'non system', hors visite gatsbi
+            
+            // ajout visites pour les banques accessibles
+            for (Banque bank: consultableBanks) {
+               otherMaladies.addAll(ManagerLocator.getMaladieManager().findVisitesManager(patient, bank));
+            }
          }
       }else{
          // si au moins une banque définit une maladie
@@ -701,15 +713,26 @@ public class FichePatientStatic extends AbstractFicheStaticController
    private void onClickPrelevementCode(final Event e){
 
       final PrelevementController tabController = (PrelevementController) PrelevementController.backToMe(getMainWindow(), page);
-
+   
       if(e != null){ // un seul element a afficher
          final Prelevement prel = (Prelevement) e.getData();
          // change la banque au besoin
          if(!SessionUtils.getSelectedBanques(sessionScope).contains(prel.getBanque())){
-            getMainWindow().updateSelectedBanque(prel.getBanque());
+   
+            Clients.showBusy(Labels.getLabel("fichePrelevement.switchBanque.encours"));
+   
+            Events.echoEvent("onLaterSwitchBanque", self, prel);
+         }else{
+            tabController.switchToFicheStaticMode(prel);
          }
-         tabController.switchToFicheStaticMode(prel);
       }
+      tabController.getListe().updateListResultsLabel(null);
+   }
+   
+   public void onLaterSwitchBanque(final Event evt){
+      getMainWindow().updateSelectedBanque(((Prelevement) evt.getData()).getBanque());
+   
+      Events.echoEvent("onSwitchBanqueFromMaladiePrelClick", getMainWindow().getSelfComponent(), evt.getData());
    }
 
    @Override
