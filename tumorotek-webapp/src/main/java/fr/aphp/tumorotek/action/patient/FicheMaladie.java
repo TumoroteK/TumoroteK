@@ -1099,6 +1099,8 @@ public class FicheMaladie extends AbstractFicheCombineController
 
       // empeche creation prelevements si toutes collections
       addPrelevement.setDisabled(!canCreatePrelevement || !sessionScope.containsKey("Banque"));
+      
+      setCanEdit(isCanEdit() && !SessionUtils.areToutesCollectionContainsOneGatsbi());
    }
 
    @Override

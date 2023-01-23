@@ -1709,6 +1709,12 @@ public abstract class AbstractListeController2 extends AbstractController
 			//			setCanEtiquette(imprimantes.size() > 0);
 			setCanEtiquette(
 					!ManagerLocator.getImprimanteManager().findByPlateformeManager(SessionUtils.getPlateforme(sessionScope)).isEmpty());
+			
+			
+			 // @since 2.3.0-gatsbi invalide les modifications
+         // si mélange de collections contextualisées par gatsbi ou non
+			setCanNew(isCanNew() && !SessionUtils.areToutesCollectionContainsOneGatsbi());
+			
 		}else{
 			setCanEtiquette(false);
 		}

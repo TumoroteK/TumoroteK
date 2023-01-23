@@ -674,8 +674,10 @@ public class FichePatientStatic extends AbstractFicheStaticController
       }else if(sessionScope.containsKey("ToutesCollections")){
          // donne les droits de creation/modification patient
          // car acune map de droits générée dans ce cas
-         setCanEdit(true);
-         setCanNew(true);
+         // @since 2.3.0-gatsbi invalide les creations / modification
+         // si mélange de collections contient une contextualisées par gatsbi 
+         setCanEdit(!SessionUtils.areToutesCollectionContainsOneGatsbi());
+         setCanNew(!SessionUtils.areToutesCollectionContainsOneGatsbi());
          canCreatePrel = false;
       }
 
