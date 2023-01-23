@@ -309,7 +309,7 @@ public final class ConnexionUtils
    }
 
    public static void initConnection(final Utilisateur user, final Plateforme pf, final Banque bank, final List<Banque> banques,
-      final Session session) throws GatsbiException{
+      final Session session, final Etude etude) throws GatsbiException{
       final Map<String, Object> sessionScp = session.getAttributes();
       if(user != null){
          sessionScp.put("User", user);
@@ -336,7 +336,7 @@ public final class ConnexionUtils
          // sur banques de différentes plateformes
 
          // gatsbi si bank est liée à une étude
-         if(banques.get(0).getEtude() != null){
+         if(etude != null){
             GatsbiController.doGastbiContexte(banques.toArray(new Banque[banques.size()]));
          }
 
@@ -453,18 +453,19 @@ public final class ConnexionUtils
          final Banque toutesColl = initFakeToutesCollBankItem(selectedPlateforme);
 
          if(selectedBanque.getBanqueId() != null){ // choix d'une banque existantes (donc pas ttesColl)
-            ConnexionUtils.initConnection(user, selectedPlateforme, selectedBanque, banques, session);
-         }else if(selectedBanque.equals(toutesColl)){ // toutes collections hors GATSBI
+            ConnexionUtils.initConnection(user, selectedPlateforme, selectedBanque, banques, session, null);
+         }else if(selectedBanque.equals(toutesColl)){ // toutes collections
             ConnexionUtils.initConnection(user, selectedPlateforme, null,
                banques.stream().filter(b -> b.getBanqueId() != null).collect(Collectors.toList()), // retire les ttes colls items
               //  banques.stream().filter(b -> b.getBanqueId() != null && b.getEtude() == null).collect(Collectors.toList()),
-               session);
+               session, null);
          }else{ // toutes collections etude GATSBI
             ConnexionUtils.initConnection(user, selectedPlateforme, null,
                banques.stream()
                   .filter(b -> b.getBanqueId() != null && b.getEtude() != null && b.getEtude().equals(selectedBanque.getEtude()))
                   .collect(Collectors.toList()),
-               session);
+               session, 
+               selectedBanque.getEtude()) ;
          }
       }else{ // collection ou Toutes collections GATSBI demandées mais URL inacessible
          throw new GatsbiException(Labels.getLabel("gatsbi.connexion.error"));

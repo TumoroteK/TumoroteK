@@ -49,6 +49,7 @@ import fr.aphp.tumorotek.model.coeur.patient.Maladie;
 import fr.aphp.tumorotek.model.coeur.patient.Patient;
 import fr.aphp.tumorotek.model.coeur.patient.PatientLien;
 import fr.aphp.tumorotek.model.coeur.patient.PatientMedecin;
+import fr.aphp.tumorotek.model.coeur.patient.gatsbi.PatientIdentifiant;
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.contexte.Collaborateur;
 import fr.aphp.tumorotek.model.interfacage.PatientSip;
@@ -436,4 +437,13 @@ public interface PatientManager
     * @return Liste de Patient.
     */
    List<Patient> findByIdentifiantLikeManager(String nip, boolean exactMatch, List<Banque> selectedBanques);
+
+   /**
+    * Recherche tous les identifiants attribués à un patient pour une liste de collections.
+    * @param patient
+    * @param banques
+    * @return liste d'identifiants
+    * @since 2.3.0-gatsbi
+    */
+   List<PatientIdentifiant> findIdentifiantsByPatientAndBanquesManager(Patient patient, List<Banque> banques);
 }

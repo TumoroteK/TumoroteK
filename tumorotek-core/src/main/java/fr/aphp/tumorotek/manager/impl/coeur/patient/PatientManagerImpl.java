@@ -85,6 +85,7 @@ import fr.aphp.tumorotek.model.coeur.patient.PatientLien;
 import fr.aphp.tumorotek.model.coeur.patient.PatientLienPK;
 import fr.aphp.tumorotek.model.coeur.patient.PatientMedecin;
 import fr.aphp.tumorotek.model.coeur.patient.PatientMedecinPK;
+import fr.aphp.tumorotek.model.coeur.patient.gatsbi.PatientIdentifiant;
 import fr.aphp.tumorotek.model.coeur.prelevement.Prelevement;
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.contexte.Collaborateur;
@@ -1211,5 +1212,14 @@ public class PatientManagerImpl implements PatientManager
          return patientDao.findByIdentifiant(ident, selectedBanques);
       }
       return new ArrayList<Patient>();
+   }
+   
+   @Override
+   public List<PatientIdentifiant> findIdentifiantsByPatientAndBanquesManager(Patient patient, List<Banque> banques) {
+      if(patient != null && banques != null && !banques.isEmpty()){
+         log.debug("Recherche les identifiants du patient: " + patient.getPatientId());
+         return patientDao.findIdentifiantsByPatientAndBanques(patient, banques);
+      }
+      return new ArrayList<PatientIdentifiant>();
    }
 }

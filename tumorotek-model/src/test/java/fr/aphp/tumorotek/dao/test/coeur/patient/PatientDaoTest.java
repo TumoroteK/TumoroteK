@@ -50,6 +50,7 @@ import fr.aphp.tumorotek.dao.contexte.EtablissementDao;
 import fr.aphp.tumorotek.dao.systeme.EntiteDao;
 import fr.aphp.tumorotek.dao.test.AbstractDaoTest;
 import fr.aphp.tumorotek.model.coeur.patient.Patient;
+import fr.aphp.tumorotek.model.coeur.patient.gatsbi.PatientIdentifiant;
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.contexte.Etablissement;
 
@@ -792,5 +793,35 @@ public class PatientDaoTest extends AbstractDaoTest
       identifiant = "UNK";
       patients = patientDao.findByIdentifiant(identifiant, banks);
       assertTrue(patients.isEmpty());
+   }
+   
+   public void testFindIdentifiantsByPatientAndBanques(){
+      final List<Banque> banks = new ArrayList<>();
+      banks.add(banqueDao.findById(1));
+
+      final List<PatientIdentifiant> identifiants = patientDao
+         .findIdentifiantsByPatientAndBanques(patientDao.findById(1), banks);
+      assertTrue(identifiants.size() == 1);
+      assertTrue(identifiants.get(0).getIdentifiant().equals("SLS-1234"));
+    
+      banks.add(banqueDao.findById(2));
+      identifiants.clear();
+      identifiants.addAll(patientDao
+         .findIdentifiantsByPatientAndBanques(patientDao.findById(1), banks));
+      assertTrue(identifiants.size() == 2);
+      assertTrue(identifiants.get(0).getIdentifiant().equals("SLS-1234"));
+      assertTrue(identifiants.get(1).getIdentifiant().equals("MEL-889"));
+      
+      identifiants.clear();
+      identifiants.addAll(patientDao
+         .findIdentifiantsByPatientAndBanques(patientDao.findById(2), banks));
+      assertTrue(identifiants.size() == 1);
+      assertTrue(identifiants.get(0).getIdentifiant().equals("SLS-1255"));
+
+      // nulls
+      identifiants.clear();
+      identifiants.addAll(patientDao
+         .findIdentifiantsByPatientAndBanques(null, banks));
+      assertTrue(identifiants.isEmpty());
    }
 }

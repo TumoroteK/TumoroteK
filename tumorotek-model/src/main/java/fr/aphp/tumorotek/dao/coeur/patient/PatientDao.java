@@ -41,6 +41,7 @@ import java.util.List;
 
 import fr.aphp.tumorotek.dao.GenericDaoJpa;
 import fr.aphp.tumorotek.model.coeur.patient.Patient;
+import fr.aphp.tumorotek.model.coeur.patient.gatsbi.PatientIdentifiant;
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.contexte.Collaborateur;
 import fr.aphp.tumorotek.model.contexte.Etablissement;
@@ -291,5 +292,14 @@ public interface PatientDao extends GenericDaoJpa<Patient, Integer>
     * @return Liste de Patient.
     */
    List<Patient> findByIdentifiant(String ident, List<Banque> selectedBanques);
+   
+   /**
+    * Recherche tous les identifiants attribués à un patient pour une liste de collections.
+    * @param patient
+    * @param banques
+    * @return liste d'identifiants
+    * @since 2.3.0-gatsbi
+    */
+   List<PatientIdentifiant> findIdentifiantsByPatientAndBanques(Patient patient, List<Banque> banques);
 
 }

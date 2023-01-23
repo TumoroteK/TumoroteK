@@ -120,12 +120,14 @@ public class FicheMaladieGatsbi extends FicheMaladie
    
    public String getVisiteLibelle() {
       
+      String libelle = getMaladieLibelle();
+      
       if (maladie.getDateDebut() != null) {
-         return maladie.getLibelle().concat(" - ")
+         return libelle.concat(" - ")
             .concat(ObjectTypesFormatters.dateRenderer2(maladie.getDateDebut()));
       }
       
-      return maladie.getLibelle();
+      return libelle;
    }
    
    @Override

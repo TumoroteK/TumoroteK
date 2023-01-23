@@ -78,6 +78,7 @@ import fr.aphp.tumorotek.model.coeur.patient.Patient;
 import fr.aphp.tumorotek.model.coeur.patient.PatientLien;
 import fr.aphp.tumorotek.model.coeur.patient.PatientLienPK;
 import fr.aphp.tumorotek.model.coeur.patient.PatientMedecinPK;
+import fr.aphp.tumorotek.model.coeur.patient.gatsbi.PatientIdentifiant;
 import fr.aphp.tumorotek.model.coeur.prelevement.Prelevement;
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.contexte.Collaborateur;
@@ -1770,7 +1771,7 @@ public class PatientManagerTest extends AbstractManagerTest4
       assertFalse(patientManager.findDoublonManager(pNew).isPresent());
       
       // nom
-      // ssi tout le reste de l'identité correspond TODO !?
+      // ssi tout le reste de l'identité correspond
       pNew.setNom(p1.getNom());
       assertFalse(patientManager.findDoublonManager(pNew).isPresent());
 
@@ -1790,5 +1791,30 @@ public class PatientManagerTest extends AbstractManagerTest4
       assertTrue(patientManager.findDoublonManager(pNew).get().getNip().equals(p1.getNip()));
       assertTrue(patientManager.findDoublonManager(pNew).get().getNom() == null);
       assertTrue(patientManager.findDoublonManager(pNew).get().getIdentifiant() == null);
+   }
+   
+   @Test
+   public void testFindIdentifiantsByPatientAndBanquesManager(){
+      final List<Banque> banks = new ArrayList<>();
+      banks.add(banqueManager.findByIdManager(1));
+
+      final List<PatientIdentifiant> identifiants = patientManager
+         .findIdentifiantsByPatientAndBanquesManager(patientDao.findById(1), banks);
+      assertTrue(identifiants.size() == 1);
+      assertTrue(identifiants.get(0).getIdentifiant().equals("SLS-1234"));
+    
+      // nulls
+      identifiants.clear();
+      identifiants.addAll(patientManager
+         .findIdentifiantsByPatientAndBanquesManager(null, banks));
+      assertTrue(identifiants.isEmpty());
+      
+      identifiants.addAll(patientManager
+         .findIdentifiantsByPatientAndBanquesManager(patientDao.findById(2), new ArrayList<Banque>()));
+      assertTrue(identifiants.isEmpty());
+      
+      identifiants.addAll(patientManager
+         .findIdentifiantsByPatientAndBanquesManager(patientDao.findById(2), null));
+      assertTrue(identifiants.isEmpty());
    }
 }

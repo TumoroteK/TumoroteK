@@ -246,9 +246,14 @@ public final class SessionUtils {
 	        	.getEtude().getContexteForEntite(eId);
 	   } else if (Sessions.getCurrent().getAttribute("ToutesCollections") != null 
 			   && ((List<Banque>) Sessions.getCurrent()
-					.getAttribute("ToutesCollections")).get(0).getEtude() != null) {
-			gatsbiContexte = ((List<Banque>) Sessions.getCurrent().getAttribute("ToutesCollections"))
-				.get(0).getEtude().getContexteForEntite(eId);
+					.getAttribute("ToutesCollections"))
+			      .stream().map(c -> c.getEtude()).distinct().count() == 1) {
+	      
+	      if (((List<Banque>) Sessions.getCurrent().getAttribute("ToutesCollections"))
+            .get(0).getEtude() != null) {
+               gatsbiContexte = ((List<Banque>) Sessions.getCurrent().getAttribute("ToutesCollections"))
+                  .get(0).getEtude().getContexteForEntite(eId);
+            }
 	   }
  	   
 	  return gatsbiContexte;

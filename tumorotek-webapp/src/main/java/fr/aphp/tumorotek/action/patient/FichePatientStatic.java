@@ -279,6 +279,10 @@ public class FichePatientStatic extends AbstractFicheStaticController
          // si au moins une banque définit une maladie
          if(SessionUtils.isAnyDefMaladieInBanques(SessionUtils.getSelectedBanques(sessionScope))){
             maladies.addAll(new ArrayList<>(ManagerLocator.getMaladieManager().findByPatientNoSystemNorVisiteManager(patient)));
+            // ajout des visites de toutes les collections
+            for (Banque bank : SessionUtils.getSelectedBanques(sessionScope)) {
+               maladies.addAll(new ArrayList<>(ManagerLocator.getMaladieManager().findVisitesManager(patient, bank)));
+            }
             otherMaladies.addAll(ManagerLocator.getMaladieManager().findByPatientExcludingVisitesManager(patient));
             otherMaladies.removeAll(maladies);
          }else{
