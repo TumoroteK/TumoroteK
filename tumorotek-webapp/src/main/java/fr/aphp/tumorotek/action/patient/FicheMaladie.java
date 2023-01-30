@@ -647,6 +647,7 @@ public class FicheMaladie extends AbstractFicheCombineController
    }
 
    @Override
+   @SuppressWarnings("unchecked")
    public void switchToStaticMode(){
       super.switchToStaticMode(this.maladie.equals(new Maladie()));
       libelleRow.setVisible(false);

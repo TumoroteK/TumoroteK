@@ -395,6 +395,11 @@ public abstract class AbstractFicheStaticController extends AbstractFicheControl
             setCanDelete(ops.contains(archivage));
          }
       }
+      
+      // @since 2.3.0-gatsbi
+      // desactive toute modification si toutes collections contient une collection GATSBI
+      setCanEdit(isCanEdit() && !SessionUtils.areToutesCollectionContainsOneGatsbi());
+
    }
 
    /************************ action methods. **************************/
