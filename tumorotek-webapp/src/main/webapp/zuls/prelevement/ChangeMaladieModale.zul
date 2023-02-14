@@ -121,7 +121,7 @@
 						<label value="${c:l('fichePrelevement.switchMaladie.maladiesCibles')}" sclass="formLabel" />
 						<listbox id="maladiesBox"  mold="select" rows="1">
 							<listitem self="@{each='maladieCible'}" value="@{maladieCible}">			
-								<listcell label="@{maladieCible.libelle}" />
+								<listcell label="@{maladieCible.maladieBanqueLibelle}" />
 							</listitem>
 						</listbox>
 					</row>

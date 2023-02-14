@@ -94,7 +94,7 @@
 						<label id="villeNaisLabel" value="@{fwinPatientStatic$composer.object.villeNaissance}" sclass="formValue" />
 					</row>
 					<row>
-				<!-- Etat patient -->
+					<!-- Etat patient -->
 						<box orient="horizontal">
 							<label value="${c:l('Champ.Patient.PatientEtat')}" sclass="formLabel" />
 							<image src="/images/icones/codif-export.png" visible="${sessionScope.catalogues['INCa'] != null}" 

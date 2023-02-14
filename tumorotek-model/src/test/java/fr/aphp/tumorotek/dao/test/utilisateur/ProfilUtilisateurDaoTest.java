@@ -471,33 +471,33 @@ public class ProfilUtilisateurDaoTest extends AbstractDaoTest
 	public void testFindCountDistinctProfilForUserAndPlateformeGroupedByContexte(){
 
 		List<Long> counts = profilUtilisateurDao
-				.findCountDistinctProfilForUserAndPlateformeGroupedByContexte(utilisateurDao.findById(1), 
+				.findCountDistinctProfilForUserAndPlateforme(utilisateurDao.findById(1), 
 						plateformeDao.findById(1));
 		assertTrue(counts.get(0) == 1L);
 
 		counts = profilUtilisateurDao
-				.findCountDistinctProfilForUserAndPlateformeGroupedByContexte(utilisateurDao.findById(3), 
+				.findCountDistinctProfilForUserAndPlateforme(utilisateurDao.findById(3), 
 						plateformeDao.findById(1));
 		assertTrue(counts.get(0) == 2L);
 
 		counts = profilUtilisateurDao
-				.findCountDistinctProfilForUserAndPlateformeGroupedByContexte(utilisateurDao.findById(3), 
+				.findCountDistinctProfilForUserAndPlateforme(utilisateurDao.findById(3), 
 						plateformeDao.findById(2));
 		assertTrue(counts.get(0) == 0L);
 
 		counts = profilUtilisateurDao
-				.findCountDistinctProfilForUserAndPlateformeGroupedByContexte(utilisateurDao.findById(4), 
+				.findCountDistinctProfilForUserAndPlateforme(utilisateurDao.findById(4), 
 						plateformeDao.findById(1));
 		assertTrue(counts.get(0) == 0L);
 
 		// nulls
 		counts = profilUtilisateurDao
-				.findCountDistinctProfilForUserAndPlateformeGroupedByContexte(null, 
+				.findCountDistinctProfilForUserAndPlateforme(null, 
 						plateformeDao.findById(1));
 		assertTrue(counts.get(0) == 0L);
 
 		counts = profilUtilisateurDao
-				.findCountDistinctProfilForUserAndPlateformeGroupedByContexte(utilisateurDao.findById(1), 
+				.findCountDistinctProfilForUserAndPlateforme(utilisateurDao.findById(1), 
 						null);
 		assertTrue(counts.get(0) == 0L);
 	}

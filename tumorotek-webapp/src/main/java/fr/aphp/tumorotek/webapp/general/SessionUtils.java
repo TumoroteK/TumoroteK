@@ -246,9 +246,14 @@ public final class SessionUtils {
 	        	.getEtude().getContexteForEntite(eId);
 	   } else if (Sessions.getCurrent().getAttribute("ToutesCollections") != null 
 			   && ((List<Banque>) Sessions.getCurrent()
-					.getAttribute("ToutesCollections")).get(0).getEtude() != null) {
-			gatsbiContexte = ((List<Banque>) Sessions.getCurrent().getAttribute("ToutesCollections"))
-				.get(0).getEtude().getContexteForEntite(eId);
+					.getAttribute("ToutesCollections"))
+			      .stream().map(c -> c.getEtude()).distinct().count() == 1) {
+	      
+	      if (((List<Banque>) Sessions.getCurrent().getAttribute("ToutesCollections"))
+            .get(0).getEtude() != null) {
+               gatsbiContexte = ((List<Banque>) Sessions.getCurrent().getAttribute("ToutesCollections"))
+                  .get(0).getEtude().getContexteForEntite(eId);
+            }
 	   }
  	   
 	  return gatsbiContexte;
@@ -274,112 +279,16 @@ public final class SessionUtils {
    }
 
    /**
-    * Initialise la liste des objets du thésaurus à afficher.
-    *
-    * @param reset
-    *            si manager change
+    * Renvoie true si l'affichage Toutes collections contiens un mélange de 
+    * collections contextualisées par Gatsbi, avec d'autres collections non contextualisé.
+    * Permet d'appliquer des désactivations sélectives des boutons de modification.
+    * @return boolean
     */
-//   private static CrudManager<?> thesManager = null;
+   @SuppressWarnings("unchecked")
+   public static boolean areToutesCollectionContainsOneGatsbi(){  
+      return Sessions.getCurrent().getAttribute("ToutesCollections") != null 
+         && ((List<Banque>) Sessions.getCurrent()
+            .getAttribute("ToutesCollections")).stream().anyMatch(b -> b.getEtude() != null);  
+   }
 
-   /*public static List<?> getThesaurusListeValeurs(final String typeThesaurus){
-      List<?> listValeurs = new ArrayList<>();
-
-      switch(typeThesaurus){
-         case "Nature":
-            thesManager = ManagerLocator.getNatureManager();
-            break;
-         case "PrelevementType":
-            thesManager = ManagerLocator.getPrelevementTypeManager();
-            break;
-         case "EchantillonType":
-            thesManager = ManagerLocator.getEchantillonTypeManager();
-            break;
-         case "EchanQualite":
-            thesManager = ManagerLocator.getEchanQualiteManager();
-            break;
-         case "ProdType":
-            thesManager = ManagerLocator.getProdTypeManager();
-            break;
-         case "ProdQualite":
-            thesManager = ManagerLocator.getProdQualiteManager();
-            break;
-         case "ConditType":
-            thesManager = ManagerLocator.getConditTypeManager();
-            break;
-         case "ConditMilieu":
-            thesManager = ManagerLocator.getConditMilieuManager();
-            break;
-         case "ConsentType":
-            thesManager = ManagerLocator.getConsentTypeManager();
-            break;
-         case "Risque":
-            thesManager = ManagerLocator.getRisqueManager();
-            break;
-         case "ModePrepa":
-            thesManager = ManagerLocator.getModePrepaManager();
-            break;
-         case "ModePrepaDerive":
-            thesManager = ManagerLocator.getModePrepaDeriveManager();
-            break;
-         case "CessionExamen":
-            thesManager = ManagerLocator.getCessionExamenManager();
-            break;
-         case "DestructionMotif":
-            thesManager = ManagerLocator.getDestructionMotifManager();
-            break;
-         case "ProtocoleType":
-            thesManager = ManagerLocator.getProtocoleTypeManager();
-            break;
-         case "Specialite":
-            thesManager = ManagerLocator.getSpecialiteManager();
-            break;
-         case "Categorie":
-            thesManager = ManagerLocator.getCategorieManager();
-            break;
-         case "ConteneurType":
-            thesManager = ManagerLocator.getConteneurTypeManager();
-            break;
-         case "EnceinteType":
-            thesManager = ManagerLocator.getEnceinteTypeManager();
-            break;
-         case "Protocole":
-            thesManager = ManagerLocator.getProtocoleManager();
-            break;
-      }
-
-      // si c'est un thes de non conformité
-      if(thesManager == null){
-         switch(typeThesaurus){
-            case "NonConformiteArrivee":
-               listValeurs = ManagerLocator.getNonConformiteManager()
-                  .findByPlateformeEntiteAndTypeStringManager(getCurrentPlateforme(), "Arrivee", null);
-               break;
-            case "NonConformiteTraitementEchan":
-               listValeurs = ManagerLocator.getNonConformiteManager()
-                  .findByPlateformeEntiteAndTypeStringManager(getCurrentPlateforme(), "Traitement", null);
-               break;
-            case "NonConformiteCessionEchan":
-               listValeurs = ManagerLocator.getNonConformiteManager()
-                  .findByPlateformeEntiteAndTypeStringManager(getCurrentPlateforme(), "Cession", null);
-               break;
-            case "NonConformiteTraitementDerive":
-               listValeurs = ManagerLocator.getNonConformiteManager()
-                  .findByPlateformeEntiteAndTypeStringManager(getCurrentPlateforme(), "TraitementDerive", null);
-               break;
-            case "NonConformiteCession":
-               listValeurs = ManagerLocator.getNonConformiteManager()
-                  .findByPlateformeEntiteAndTypeStringManager(getCurrentPlateforme(), "Cession", null);
-               break;
-         }
-      }else if(thesManager instanceof PfDependantTKThesaurusManager){
-         listValeurs = ((PfDependantTKThesaurusManager<?>) thesManager).findByOrderManager(getCurrentPlateforme());
-      }else{
-         if(typeThesaurus.equals("Specialite")){
-            listValeurs = ((SpecialiteManager) thesManager).findAllObjectsManager();
-         }else if(typeThesaurus.equals("Categorie")){
-            listValeurs = ((CategorieManager) thesManager).findAllObjectsManager();
-         }
-      }
-      return listValeurs;
-   }*/
 }

@@ -97,6 +97,7 @@ import fr.aphp.tumorotek.action.ManagerLocator;
 import fr.aphp.tumorotek.action.code.CodeAssigneDecorator;
 import fr.aphp.tumorotek.action.patient.PatientController;
 import fr.aphp.tumorotek.action.prelevement.PrelevementController;
+import fr.aphp.tumorotek.action.prelevement.gatsbi.GatsbiControllerPrelevement;
 import fr.aphp.tumorotek.action.stockage.StockageController;
 import fr.aphp.tumorotek.component.SmallObjDecorator;
 import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
@@ -1080,6 +1081,13 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
    public void onClick$previous(){
       clearConstraints();
       getPrelevementController().switchFromEchantillonsToLabo();
+      
+      // @since 2.3.0-gatsbi, retour direct à la première page 
+      // si pas d'affichage de page site intermédiaire
+      if (!GatsbiControllerPrelevement
+            .isSitesIntermPageDisplayed(SessionUtils.getCurrentGatsbiContexteForEntiteId(2))) {
+         getPrelevementController().switchFromLaboToPrelevement();
+      }
    }
 
    /**

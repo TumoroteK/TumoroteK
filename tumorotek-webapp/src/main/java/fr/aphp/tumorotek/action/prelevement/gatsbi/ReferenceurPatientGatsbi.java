@@ -182,7 +182,7 @@ public class ReferenceurPatientGatsbi extends ReferenceurPatient
          pat.setBanque(SessionUtils.getCurrentBanque(sessionScope));
          
          DateModale.show(Labels.getLabel("gatsbi.schema.visites.title"), 
-            Labels.getLabel("gatsbi.schema.visites.label"), null, true, self);
+            Labels.getLabel("gatsbi.schema.visites.label"), null, false, self);
       } else {
          super.embedFicheMaladie(fichePatient, pat);
       }
@@ -215,7 +215,7 @@ public class ReferenceurPatientGatsbi extends ReferenceurPatient
       // ajout du schéma de visites
       if (!patient.hasIdentifiant()) {
          DateModale.show(Labels.getLabel("gatsbi.schema.visites.title"), 
-            Labels.getLabel("gatsbi.schema.visites.label"), null, true, self);
+            Labels.getLabel("gatsbi.schema.visites.label"), null, false, self);
       } else { // ajout des visites existantes
          getMaladies().addAll(MaladieDecorator.decorateListe(
                ManagerLocator.getMaladieManager()

@@ -544,7 +544,7 @@ public abstract class AbstractFicheCombineController extends AbstractFicheContro
     * des droits de l'utilisateur.
     * @param nomEntite Entite (ex.:ProdDerive).
     */
-
+   @SuppressWarnings("unchecked")
    public void drawActionsButtons(final String nomEntite){
       Boolean admin = false;
       if(sessionScope.containsKey("AdminPF")){

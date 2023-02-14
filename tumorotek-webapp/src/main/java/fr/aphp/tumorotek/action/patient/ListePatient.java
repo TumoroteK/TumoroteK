@@ -126,7 +126,7 @@ public class ListePatient extends AbstractListeController2
 
       this.listObjectsRenderer.setBanques(PatientUtils.getBanquesConsultForPrelevement(sessionScope));
 
-      // retire le colonne maladies si aucune banque ne définit
+      // retire le colonne maladies si aucune banque ne définitsetBanques
       // de maladies
       if(!SessionUtils.isAnyDefMaladieInBanques(SessionUtils.getSelectedBanques(sessionScope))){
          maladiesCol.setVisible(false);

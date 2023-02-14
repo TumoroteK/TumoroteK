@@ -366,4 +366,9 @@ public class Maladie extends TKDelegetableObject<Maladie> implements TKdataObjec
    public void setVisite(Visite visite){
       this.visite = visite;
    }
+   
+   @Transient
+   public String getMaladieBanqueLibelle() {
+      return libelle.concat(banque != null ? " [".concat(banque.getNom().concat("]")) : "");
+   }
 }

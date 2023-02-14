@@ -500,28 +500,28 @@ public class ProfilUtilisateurManagerTest extends AbstractManagerTest4
 	public void testCountDistinctProfilForUserAndPlateformeGroupedByContexteManager(){
 
 		Long counts = profilUtilisateurManager
-			.countDistinctProfilForUserAndPlateformeGroupedByContexteManager(utilisateurDao.findById(1), 
+			.countDistinctProfilForUserAndPlateformeManager(utilisateurDao.findById(1), 
 				plateformeDao.findById(1));
 		assertTrue(counts == 1L);
 
 		counts = profilUtilisateurManager
-				.countDistinctProfilForUserAndPlateformeGroupedByContexteManager(utilisateurDao.findById(3), 
+				.countDistinctProfilForUserAndPlateformeManager(utilisateurDao.findById(3), 
 						plateformeDao.findById(1));
 		assertTrue(counts == 2L);
 
 		counts = profilUtilisateurManager
-				.countDistinctProfilForUserAndPlateformeGroupedByContexteManager(utilisateurDao.findById(3), 
+				.countDistinctProfilForUserAndPlateformeManager(utilisateurDao.findById(3), 
 						plateformeDao.findById(2));
 		assertTrue(counts == 0L);
 
 		// nulls
 		counts = profilUtilisateurManager
-				.countDistinctProfilForUserAndPlateformeGroupedByContexteManager(null, 
+				.countDistinctProfilForUserAndPlateformeManager(null, 
 						plateformeDao.findById(2));
 		assertTrue(counts == 0L);
 
 		counts = profilUtilisateurManager
-				.countDistinctProfilForUserAndPlateformeGroupedByContexteManager(utilisateurDao.findById(1), null);
+				.countDistinctProfilForUserAndPlateformeManager(utilisateurDao.findById(1), null);
 		assertTrue(counts == 0L);
 	}
 	

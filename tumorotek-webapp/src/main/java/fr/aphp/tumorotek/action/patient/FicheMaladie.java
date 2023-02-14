@@ -48,6 +48,7 @@ import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.HtmlBasedComponent;
 import org.zkoss.zk.ui.Path;
+import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -646,6 +647,7 @@ public class FicheMaladie extends AbstractFicheCombineController
    }
 
    @Override
+   @SuppressWarnings("unchecked")
    public void switchToStaticMode(){
       super.switchToStaticMode(this.maladie.equals(new Maladie()));
       libelleRow.setVisible(false);
@@ -718,10 +720,21 @@ public class FicheMaladie extends AbstractFicheCombineController
     * @return String libelle fiche maladie
     */
    public String getMaladieLibelle(){
+      
+      String libelle = null;
+      
       if(!this.maladie.getSystemeDefaut()){
-         return this.maladie.getLibelle() + " (" + String.valueOf(getTotPrelevementsCount()) + ")";
+         libelle =  this.maladie.getLibelle() + " (" + String.valueOf(getTotPrelevementsCount()) + ")";
+         
+         // @since 2.3.0-gatsbi
+         // en toutes collections ajoute collection au libelle visite
+         if (Sessions.getCurrent().getAttribute("ToutesCollections") != null 
+               && this.maladie.getBanque() != null) {
+            libelle = libelle.concat(" - ").concat(this.maladie.getBanque().getNom());
+         }        
       }
-      return null;
+     
+      return libelle;
    }
 
    public String getPrelevementsGroupLabel(){
@@ -1087,6 +1100,8 @@ public class FicheMaladie extends AbstractFicheCombineController
 
       // empeche creation prelevements si toutes collections
       addPrelevement.setDisabled(!canCreatePrelevement || !sessionScope.containsKey("Banque"));
+      
+      setCanEdit(isCanEdit() && !SessionUtils.areToutesCollectionContainsOneGatsbi());
    }
 
    @Override

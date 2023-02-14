@@ -85,6 +85,7 @@ import fr.aphp.tumorotek.model.coeur.patient.PatientLien;
 import fr.aphp.tumorotek.model.coeur.patient.PatientLienPK;
 import fr.aphp.tumorotek.model.coeur.patient.PatientMedecin;
 import fr.aphp.tumorotek.model.coeur.patient.PatientMedecinPK;
+import fr.aphp.tumorotek.model.coeur.patient.gatsbi.PatientIdentifiant;
 import fr.aphp.tumorotek.model.coeur.prelevement.Prelevement;
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.contexte.Collaborateur;
@@ -204,7 +205,7 @@ public class PatientManagerImpl implements PatientManager
          
          // @since 2.3.0-gatsbi 
          final List<Integer> requiredChampEntiteId = new ArrayList<>();
-         if(patient.getBanque() != null){ // creation / edition en contexte Gatsbi
+         if(patient.getBanque() != null && patient.getBanque().getEtude() != null){ // creation / edition en contexte Gatsbi
             final Contexte patContexte = patient.getBanque().getEtude().getContexteForEntite(1);
             if(patContexte != null){
                requiredChampEntiteId.addAll(patContexte.getRequiredChampEntiteIds());
@@ -1211,5 +1212,14 @@ public class PatientManagerImpl implements PatientManager
          return patientDao.findByIdentifiant(ident, selectedBanques);
       }
       return new ArrayList<Patient>();
+   }
+   
+   @Override
+   public List<PatientIdentifiant> findIdentifiantsByPatientAndBanquesManager(Patient patient, List<Banque> banques) {
+      if(patient != null && banques != null && !banques.isEmpty()){
+         log.debug("Recherche les identifiants du patient: " + patient.getPatientId());
+         return patientDao.findIdentifiantsByPatientAndBanques(patient, banques);
+      }
+      return new ArrayList<PatientIdentifiant>();
    }
 }

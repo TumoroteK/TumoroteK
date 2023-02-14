@@ -38,12 +38,16 @@ package fr.aphp.tumorotek.action.patient.gatsbi;
 
 import java.lang.reflect.InvocationTargetException;
 import java.text.ParseException;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Row;
 
+import fr.aphp.tumorotek.action.ManagerLocator;
 import fr.aphp.tumorotek.action.patient.PatientRowRenderer;
 import fr.aphp.tumorotek.model.coeur.patient.Patient;
 import fr.aphp.tumorotek.model.contexte.Banque;
@@ -81,14 +85,7 @@ public class PatientRowRendererGatsbi extends PatientRowRenderer implements RowR
       throws IllegalAccessException, InvocationTargetException, NoSuchMethodException, ParseException{
 
       // identifiant / clickable
-      // TODO toutes collections ? Quel identifiant afficher ? 
-      Label identifiant = new Label(pat.hasIdentifiant(curBanque) ? 
-         (pat.getIdentifiantAsString(curBanque)) : Labels.getLabel("gatsbi.patient.include"));
-      
-      Component parent = null; // -> remonte l'évènement jusqu'au ListeController
-      identifiant.addForward(null, parent, "onClickObject", pat);
-      identifiant.setClass("formLink");    
-      identifiant.setParent(row);
+      renderIdentifiant(pat, row, banques);
       
       for(final Integer chpId : contexte.getChampEntiteInTableauOrdered()){
          GatsbiControllerPatient.applyPatientChpRender(chpId, row, pat, anonyme);
@@ -99,6 +96,43 @@ public class PatientRowRendererGatsbi extends PatientRowRenderer implements RowR
       if (organes) {
          renderFirstCodeOrganeForPatient(row, pat);
       }
+   }
+   
+   /**
+    * Dessine dans un label l'identifiant, ou en toutes collections par étude, 
+    * l'utilisation d'un tooltip pour afficher la totalité. de la liste des identifiants
+    * @param
+    * @param row Parent
+    */
+   public void renderIdentifiant(final Patient pat, final Row row, final List<Banque> banks){
+      
+      Label identifiantLabel;
+      
+      // mode collection -> affiche identifiant / inclure
+      if (!Sessions.getCurrent().hasAttribute("ToutesCollections")) {
+         
+         identifiantLabel = new Label(pat.hasIdentifiant(curBanque) ? 
+            (pat.getIdentifiantAsString(curBanque)) : Labels.getLabel("gatsbi.patient.include"));
+        
+         identifiantLabel.setParent(row);
+
+      } else { // identifiants pour plusieurs collections
+
+         // on va afficher les maladies de la plus récente
+         // à la plus ancienne
+         final List<String> identifiants = 
+            ManagerLocator.getPatientManager()
+               .findIdentifiantsByPatientAndBanquesManager(pat, banks)
+               .stream().map(i -> i.getIdentifiant().concat(" [").concat(i.getBanque().getNom()).concat("]"))
+               .collect(Collectors.toList());
+         
+         identifiantLabel = drawListStringLabel(row, identifiants);
+      }
+      
+      // rend identifiant cliquable
+      Component parent = null; // -> remonte l'évènement jusqu'au ListeController
+      identifiantLabel.addForward(null, parent, "onClickObject", pat);
+      identifiantLabel.setClass("formLink");    
    }
    
    @Override

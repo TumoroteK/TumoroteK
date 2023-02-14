@@ -41,6 +41,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Popup;
@@ -67,7 +68,7 @@ import fr.aphp.tumorotek.model.contexte.Banque;
 public class PatientRowRenderer extends TKSelectObjectRenderer<Patient>
 {
 
-   private List<Banque> banques = new ArrayList<>();
+   protected List<Banque> banques = new ArrayList<>();
 
    public PatientRowRenderer(final boolean select){
       setSelectionMode(select);
@@ -101,10 +102,13 @@ public class PatientRowRenderer extends TKSelectObjectRenderer<Patient>
       
       // affiche la maladie si maladie non defaut et liens vers popUps
       // si autre maladies
-      renderMaladies(pat, row);
+      renderMaladies(pat, row, banques);
       
       // affiche le compte de prélèvements consultables
       renderNbPrels(row, pat);
+      
+      // codes organes : liste des codes exportés pour échantillons
+      renderFirstCodeOrganeForPatient(row, pat);
    }
    
    protected void renderNbPrels(Row row, Patient pat){
@@ -142,9 +146,6 @@ public class PatientRowRenderer extends TKSelectObjectRenderer<Patient>
       
       // date état
       renderPatientDateEtat(row, pat);
-
-      // codes organes : liste des codes exportés pour échantillons
-      renderFirstCodeOrganeForPatient(row, pat);
    }
 
    public static void renderDateNaissance(Row row, Patient pat, boolean anonyme) 
@@ -176,9 +177,15 @@ public class PatientRowRenderer extends TKSelectObjectRenderer<Patient>
     * @param
     * @param row Parent
     */
-   public static void renderMaladies(final Patient pat, final Row row){
+   public static void renderMaladies(final Patient pat, final Row row, final List<Banque> banks){
 
       final List<Maladie> mals = ManagerLocator.getMaladieManager().findByPatientNoSystemNorVisiteManager(pat);
+      
+      if (Sessions.getCurrent().getAttribute("ToutesCollections") != null) {
+         for (Banque bank : banks) {
+            mals.addAll(new ArrayList<>(ManagerLocator.getMaladieManager().findVisitesManager(pat, bank)));
+         }
+      }
 
       // on va afficher les maladies de la plus récente
       // à la plus ancienne
@@ -199,9 +206,12 @@ public class PatientRowRenderer extends TKSelectObjectRenderer<Patient>
     * @param row
     * @param str
     */
-   public static void drawListStringLabel(final Row row, List<String> str) {
+   public static Label drawListStringLabel(final Row row, List<String> str) {
+      
+      Label label = null;
+      
       if(!str.isEmpty()){
-         final Label str1Label = new Label(str.get(0));
+         label = new Label(str.get(0));
          // dessine le label avec un lien vers popup
          if(str.size() > 1){
             final Hbox labelAndLinkBox = new Hbox();
@@ -220,15 +230,17 @@ public class PatientRowRenderer extends TKSelectObjectRenderer<Patient>
             }
             popUp.appendChild(popupVbox);
             moreLabel.setTooltip(popUp);
-            labelAndLinkBox.appendChild(str1Label);
+            labelAndLinkBox.appendChild(label);
             labelAndLinkBox.appendChild(moreLabel);
             labelAndLinkBox.setParent(row);
          }else{
-            str1Label.setParent(row);
+            label.setParent(row);
          }
       }else{
-         new Label().setParent(row);
+         label = new Label();
+         label.setParent(row);
       }
+      return label;
    }
 
    public String getNbPrelevements(Patient patient){
