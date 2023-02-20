@@ -60,8 +60,6 @@ public class Contexte implements Serializable
 
    private Boolean archive;
 
-   private Boolean siteIntermediaire = true;
-
    protected List<Parametrage> parametrages = new ArrayList<>();
 
    protected List<ChampEntite> champEntites = new ArrayList<>();
@@ -78,13 +76,12 @@ public class Contexte implements Serializable
    public Contexte(){}
 
    public Contexte(final Integer contexteId, final String nom, final ContexteType contexteType, final Boolean archive,
-      final Boolean siteInter, final List<Parametrage> parametrages, final List<ChampEntite> champEntites){
+      final List<Parametrage> parametrages, final List<ChampEntite> champEntites){
       super();
       this.contexteId = contexteId;
       this.nom = nom;
       this.contexteType = contexteType;
       this.archive = archive;
-      this.siteIntermediaire = siteInter;
       this.parametrages = parametrages;
       this.champEntites = champEntites;
    }
@@ -122,11 +119,7 @@ public class Contexte implements Serializable
    }
 
    public Boolean getSiteIntermediaire(){
-      return siteIntermediaire;
-   }
-
-   public void setSiteIntermediaire(final Boolean _s){
-      this.siteIntermediaire = _s;
+      return isChampIdVisible(273);
    }
 
    public List<Parametrage> getParametrages(){

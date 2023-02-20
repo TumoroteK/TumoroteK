@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="${project.artifactId}-33" author="CH" runAlways="true" context="*"> 
+    	<preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">SELECT COUNT(1) FROM CHAMP_ENTITE
+                WHERE NOM = 'LaboInters' and ENTITE_ID=2
+            </sqlCheck>
+        </preConditions>
+        <comment>Ajout du champ entite prélèvement LaboInter (site intermediaire)</comment>
+        <insert tableName="CHAMP_ENTITE">
+            <column name="CHAMP_ENTITE_ID" value="273"/>
+            <column name="NOM" value="LaboInters"/>
+            <column name="DATA_TYPE_ID" value="10" />
+            <column name="IS_NULL" value="1"/>
+            <column name="IS_UNIQUE" value="1"/>
+            <column name="ENTITE_ID" value="2"/>
+            <column name="CAN_IMPORT" value="0"/>
+        </insert>
+    </changeSet>
+    	    
+</databaseChangeLog>

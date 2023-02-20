@@ -16,7 +16,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import fr.aphp.tumorotek.model.contexte.gatsbi.Contexte;
 import fr.aphp.tumorotek.model.contexte.gatsbi.ContexteType;
 
-@JsonPropertyOrder({"contexteId", "nom", "type", "archive", "siteIntermediaire", "listContexteParametrageNom",
+@JsonPropertyOrder({"contexteId", "nom", "type", "archive", "listContexteParametrageNom",
    "listContexteChampEntite"})
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ContexteDTO implements Serializable
@@ -31,8 +31,6 @@ public class ContexteDTO implements Serializable
    private String type;
 
    private Boolean archive;
-
-   private Boolean siteIntermediaire = true;
 
    private List<ParametrageDTO> parametrageDTOs = new ArrayList<>();
 
@@ -74,15 +72,6 @@ public class ContexteDTO implements Serializable
       this.archive = _a;
    }
 
-   @JsonProperty
-   public Boolean getSiteIntermediaire(){
-      return siteIntermediaire;
-   }
-
-   public void setSiteIntermediaire(final Boolean _s){
-      this.siteIntermediaire = _s;
-   }
-
    @JsonProperty("listContexteParametrageNom")
    public List<ParametrageDTO> getParametrageDTOs(){
       return parametrageDTOs;
@@ -104,7 +93,7 @@ public class ContexteDTO implements Serializable
 
    @JsonIgnore
    public Contexte toContexte(){
-      return new Contexte(contexteId, nom, ContexteType.getByType(type), archive, siteIntermediaire,
+      return new Contexte(contexteId, nom, ContexteType.getByType(type), archive,
          parametrageDTOs.stream().map(p -> p.toParametrage()).collect(Collectors.toList()),
          champEntiteDTOs.stream().map(c -> c.toChampEntite()).collect(Collectors.toList()));
    }
