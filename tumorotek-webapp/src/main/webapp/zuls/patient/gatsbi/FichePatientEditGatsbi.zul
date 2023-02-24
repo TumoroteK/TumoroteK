@@ -54,7 +54,7 @@
 							</div>
 							<textbox id="identifiantBox" 
 								value="@{fwinPatientEdit$composer.identifiant save-when='validate.onClick, create.onClick'}" 
-								width="100px" constraint="${fwinPatientEdit$composer.codeNullConstraint}" />
+								width="100px" constraint="${fwinPatientEdit$composer.identifiantConstraint}" />
 						</div>
 						<div class="item item-mid" id="patientNdaDiv" visible="false"><!-- NDA -->
 							<custom-attributes champId="44" />

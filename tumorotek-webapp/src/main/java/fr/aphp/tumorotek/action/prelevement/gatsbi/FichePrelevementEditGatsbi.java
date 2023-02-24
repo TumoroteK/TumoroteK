@@ -207,9 +207,13 @@ public class FichePrelevementEditGatsbi extends FichePrelevementEdit
    public void switchToCreateMode(){
       super.switchToCreateMode();
       
-      // supprimer toute contrainte sur ndaDiv 
-      // car ce champ ne s'affiche plus
-      GatsbiControllerPrelevement.removePatientNdaRequired(ndaDiv);
+      // nda n'est visible que si bloc patient
+      if (getMaladie() != null) {
+         // applique une éventuelle contrainte d'obligation sur ndaDiv 
+         GatsbiControllerPrelevement.applyPatientNdaRequired(ndaDiv);
+      } else {
+         GatsbiControllerPrelevement.removePatientNdaRequired(ndaDiv);
+      }
       
    }
    

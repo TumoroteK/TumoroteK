@@ -240,10 +240,15 @@ public class ReferenceurPatient extends GenericForwardComposer<Component>
       if(radioGroup.getSelectedItem().getValue().equals("find")){
          displayExistingPatient(true);
       }else if(radioGroup.getSelectedItem().getValue().equals("new")){
-         displayEmbeddedPatient(true, new Patient());
+         displayEmbeddedPatient(true, initNewPatient());
       }else{
          displayNone();
       }
+   }
+   
+   // @since 2.3.0-gatsbi sera surchargée
+   protected Patient initNewPatient() {
+      return new Patient();
    }
 
    public void onOK$nomNipNdaBox(){

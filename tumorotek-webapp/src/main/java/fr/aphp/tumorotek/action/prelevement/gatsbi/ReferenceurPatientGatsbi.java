@@ -125,6 +125,13 @@ public class ReferenceurPatientGatsbi extends ReferenceurPatient
    }
    
    @Override
+   protected Patient initNewPatient() {
+      Patient newPatient = super.initNewPatient();
+      newPatient.setBanque(SessionUtils.getCurrentBanque(sessionScope));
+      return newPatient;
+   }
+   
+   @Override
    public Patient onGetPatientFromSelection(final Event e){
       
       Patient patSel = super.onGetPatientFromSelection(e);

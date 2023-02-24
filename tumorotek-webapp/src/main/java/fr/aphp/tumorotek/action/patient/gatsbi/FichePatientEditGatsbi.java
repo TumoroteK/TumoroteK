@@ -51,8 +51,10 @@ import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Messagebox;
 
 import fr.aphp.tumorotek.action.ManagerLocator;
+import fr.aphp.tumorotek.action.constraints.ConstCode;
 import fr.aphp.tumorotek.action.patient.FichePatientEdit;
 import fr.aphp.tumorotek.action.patient.LabelCodeItem;
+import fr.aphp.tumorotek.action.patient.PatientConstraints;
 import fr.aphp.tumorotek.action.patient.PatientUtils;
 import fr.aphp.tumorotek.action.prelevement.gatsbi.GatsbiControllerPrelevement;
 import fr.aphp.tumorotek.modales.DateModale;
@@ -329,5 +331,9 @@ public class FichePatientEditGatsbi extends FichePatientEdit
    
    public List<Maladie> getVisites() {
       return visites;
+   }
+   
+   public ConstCode getIdentifiantConstraint(){
+      return PatientConstraints.getCodeConstraint();
    }
 }
