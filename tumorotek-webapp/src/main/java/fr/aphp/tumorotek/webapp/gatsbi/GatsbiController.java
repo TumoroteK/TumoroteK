@@ -154,7 +154,8 @@ public class GatsbiController
          put(ContexteType.MALADIE, new String[] {"codeDiv", "dateDiagnosticDiv", "visiteMedecinsDiv"});
          // prelevement
          put(ContexteType.PRELEVEMENT,
-            new String[] {"codeDiv", "codeLaboDiv", "natureDiv", //"ndaDiv", 
+            new String[] {"codeDiv", "codeLaboDiv", "natureDiv", 
+               "ndaDiv", 
                "datePrelDiv", "typeDiv", "sterileDiv", "risquesDiv",
                "etabPreleveurDiv", "servicePreleveurDiv", "preleveurDiv", "conditTypeDiv", "conditNbrDiv", "conditMilieuDiv",
                "consentTypeDiv", "consentDateDiv",
@@ -408,7 +409,7 @@ public class GatsbiController
                   // ListModelList conversion
                   if(!((String) div.getAttribute("listmodel")).matches(".*Model")){
                      PropertyUtils.setProperty(controller, (String) div.getAttribute("listmodel"), thesObjs);
-                  }else{ // ListModelList conversion
+                  }else{ // ListModelList conversion -> Recherche avancée prélèvement Risques
                      PropertyUtils.setProperty(controller, (String) div.getAttribute("listmodel"),
                         new ListModelList<Object>(thesObjs));
                   }
