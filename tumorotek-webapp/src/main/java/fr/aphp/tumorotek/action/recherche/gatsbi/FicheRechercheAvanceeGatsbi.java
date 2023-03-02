@@ -121,7 +121,8 @@ public class FicheRechercheAvanceeGatsbi extends FicheRechercheAvancee
       getRisquesModel().addAll(risks);
    }
 
-   /**** Gastbi setter/getter surcharges pour apache's PropertyUtils.g/setProperty ******/
+   /**** Gastbi setter/getter surcharges pour apache's PropertyUtils.g/setProperty : listModel ncarrivee comme custom-attributes 
+    * ******/
    public List<NonConformite> getNcarrivee(){
       return getNCarrivee();
    }
@@ -130,6 +131,25 @@ public class FicheRechercheAvanceeGatsbi extends FicheRechercheAvancee
       setNCarrivee(_ncs);
    }
 
+   //TG-143 : plantage lors de l'appel dans GatsbiController.appliThesaurusValues si listModel vaut nCderiveTraitement
+   public List<NonConformite> getNonConformiteDeriveTraitement(){
+      return getNCderiveTraitement();
+   }
+
+   public void setNonConformiteDeriveTraitement(final List<NonConformite> _ncs){
+      setNCderiveTraitement(_ncs);
+   }
+   
+   //TG-143 : plantage lors de l'appel dans GatsbiController.appliThesaurusValues si listModel vaut nCderiveCession
+   public List<NonConformite> getNonConformiteDeriveCession(){
+      return getNCderiveCession();
+   }
+
+   public void setNonConformiteDeriveCession(final List<NonConformite> _ncs){
+      setNCderiveCession(_ncs);
+   }
+   /////
+   
    public List<NonConformite> getNctraitement(){
       return getNCechanTraitement();
    }

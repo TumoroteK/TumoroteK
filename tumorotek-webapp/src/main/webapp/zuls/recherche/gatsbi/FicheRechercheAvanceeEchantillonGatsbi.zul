@@ -726,7 +726,7 @@
 											</div>
 											<div class="item item-wide" id="deriveConformeTraitDiv"><!-- conforme traitement -->
 												<custom-attributes champId="251"
-													listmodel="nCderiveTraitement" />
+													listmodel="nonConformiteDeriveTraitement" />
 												<label
 													value="${c:l('Champ.ProdDerive.ConformeTraitement')}"
 													sclass="chpLabel formLabel" />
@@ -759,7 +759,7 @@
 											</div>
 											<div class="item item-wide" id="deriveConformeCessionDiv"><!-- conforme cession -->
 												<custom-attributes champId="252"
-													listmodel="nCderiveCession" />
+													listmodel="nonConformiteDeriveCession" />
 												<label
 													value="${c:l('Champ.ProdDerive.ConformeCession')}"
 													sclass="chpLabel formLabel" />
