@@ -20,5 +20,9 @@
             <column name="CAN_IMPORT" value="0"/>
         </insert>
     </changeSet>
+	<changeSet id="${project.artifactId}-34" author="CH" runAlways="false" context="*">
+		<comment>Chargement des procédures d'export spécifiques à Gatsbi</comment>
+		<sqlFile encoding="utf8" path="../sql/mysql/tumorotek/export_gatsbi.sql" endDelimiter="&amp;&amp;" relativeToChangelogFile="true" stripComments="true"/>
+	</changeSet>
     	    
 </databaseChangeLog>

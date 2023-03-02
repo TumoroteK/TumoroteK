@@ -1,4 +1,4 @@
-delimiter &&
+-- delimiter &&
 
 DROP FUNCTION IF EXISTS `is_chp_visible`&&
 
@@ -9,7 +9,7 @@ READS SQL DATA
 
 BEGIN
    
-    SET @test = (SELECT count(*) from GATSBY_CONTEXTE c join GATSBY_CONTEXTE_CHAMP_ENTITE e on c.CONTEXTE_ID=e.CONTEXTE_ID where e.CHAMP_ENTITE_ID = chp_id and c.ETUDE_ID = etude_id and e.VISIBLE = 1);
+    SET @test = (SELECT count(*) from GATSBI_ETUDE_CONTEXTE ec join GATSBI_CONTEXTE_CHAMP_ENTITE e on ec.CONTEXTE_ID=e.CONTEXTE_ID where e.CHAMP_ENTITE_ID = chp_id and ec.ETUDE_ID = etude_id and e.VISIBLE = 1);
     RETURN @test;
 
 END&&
@@ -217,7 +217,7 @@ CREATE PROCEDURE `create_tmp_prelevement_table_gatsbi`(IN etude_id INTEGER)
 	    IF ((is_chp_visible(39, etude_id)), 'OPERATEUR varchar(50), ', ''),
 	    IF ((is_chp_visible(269, etude_id)), 'CONG_DEPART boolean, ', ''),
 	    IF ((is_chp_visible(270, etude_id)), 'CONG_ARRIVEE boolean, ', ''),
-	    IF ((SELECT site_inter > 0 from GATSBY_CONTEXTE c where c.etude_id = etude_id and c.type = 'PRELEVEMENT'), 'LABO_INTER varchar(3), ', ''),
+	    IF ((is_chp_visible(273, etude_id)), 'LABO_INTER varchar(3), ', ''),
 	    IF ((is_chp_visible(40, etude_id)), 'QUANTITE DECIMAL(12, 3), ', ''),
 	    IF ((is_chp_visible(44, etude_id)), 'PATIENT_NDA varchar(20), ', ''),
 	    IF ((is_chp_visible(229, etude_id)), 'CODE_ORGANE VARCHAR(500), ', ''),
@@ -279,7 +279,7 @@ CREATE PROCEDURE `fill_tmp_table_prel_gatsbi`(IN prel_id INTEGER, IN etude_id IN
         IF ((is_chp_visible(39, etude_id)), 'coco.nom, ', ''),
         IF ((is_chp_visible(269, etude_id)), 'p.cong_depart, ', ''),
         IF ((is_chp_visible(270, etude_id)), 'p.cong_arrivee, ', ''),
-        IF ((SELECT site_inter > 0 from GATSBY_CONTEXTE c where c.etude_id = etude_id and c.type = 'PRELEVEMENT'), CONCAT('(select count(l.labo_inter_id) FROM LABO_INTER l where l.prelevement_id = ', prel_id, '),'), ''),
+        IF ((is_chp_visible(273, etude_id)), CONCAT('(select count(l.labo_inter_id) FROM LABO_INTER l where l.prelevement_id = ', prel_id, '),'), ''),
         IF ((is_chp_visible(40, etude_id)), 'p.quantite, ', ''),
         IF ((is_chp_visible(44, etude_id)), 'p.patient_nda, ', ''),
         IF ((is_chp_visible(229, etude_id)), CONCAT('LEFT((SELECT GROUP_CONCAT(distinct(ca.code) ORDER BY ca.ordre) FROM CODE_ASSIGNE ca INNER JOIN ECHANTILLON e ON e.echantillon_id = ca.echantillon_id WHERE ca.IS_ORGANE = 1 AND e.prelevement_id = ', prel_id, '), 500), '), ''), 
