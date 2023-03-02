@@ -97,16 +97,17 @@
 							<label value="${c:l('Champ.Patient.PatientEtat')}" sclass="chpLabel formLabel" />
 							<label id="etatLabel" value="@{fwinPatientStatic$composer.etatFormatted}" sclass="formValue" />
 						</div>
-						<div class="item item-mid" id="dateEtatDiv"><!-- Date etat -->	
+						<div class="item item-mid" id="dateEtatDiv"><!-- Date etat ou deces -->	
 							<custom-attributes champId="11" />
-							<label value="${c:l('Champ.Patient.DateEtat')}" sclass="chpLabel formLabel" />
-							<label id="dateEtatLabel" value="@{fwinPatientStatic$composer.dateEtatFormatted}" sclass="formValue" />
+							<label id="dateEtatDecesField" value="${c:l('Champ.Patient.DateEtat')}" sclass="chpLabel formLabel" />
+							<label id="dateEtatDecesLabel" value="@{fwinPatientStatic$composer.dateEtatDecesFormatted}" sclass="formValue" />
 						</div>
-						<div class="item item-mid" id="dateDecesDiv"><!-- Date deces -->	
+						<!-- Date deces - TG-138 : la date de décès est finalement gérée avec la date d'état comme dans le standard TK
+						<div class="item item-mid" id="dateDecesDiv">	
 							<custom-attributes champId="12" />
 							<label value="${c:l('Champ.Patient.DateDeces')}" sclass="chpLabel formLabel" />
 							<label id="decesLabel" value="@{fwinPatientStatic$composer.dateDecesFormatted}" sclass="formValue" />
-						</div>
+						</div>-->
 					</div>
 				</div>
 				<div class="block-separator" />

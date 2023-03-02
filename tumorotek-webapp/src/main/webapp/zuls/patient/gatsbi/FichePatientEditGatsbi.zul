@@ -169,17 +169,18 @@
 								</listitem>
 							</listbox>
 						</div>
-						<div class="item item-mid" id="dateEtatDiv"><!-- Date etat -->	
+						<div class="item item-mid" id="dateEtatDiv"><!-- Date etat ou deces -->	
 							<custom-attributes champId="11" />
 							<div class="row-container chpLabel">
-								<label value="${c:l('Champ.Patient.DateEtat')}" sclass="formLabel" />
+								<label id="dateEtatDecesField" value="${c:l('Champ.Patient.DateEtat')}" sclass="formLabel" />
 								<label value="*" sclass="requiredMark" />
 							</div>	
 							<datebox id="dateEtatDecesBox" format="${c:l('validation.date.format.simple')}" 
-								value="@{fwinPatientEdit$composer.object.dateEtat,
+								value="@{fwinPatientEdit$composer.dateEtatDeces,
 									save-when='validate.onClick, create.onClick'}" lenient="true"/>
 						</div>
-						<div class="item item-mid" id="dateDecesDiv"><!-- Date deces -->	
+						<!-- Date deces - TG-138 : la date de décès est finalement gérée avec la date d'état comme dans le standard TK
+						<div class="item item-mid" id="dateDecesDiv">	
 							<custom-attributes champId="12" />
 							<div class="row-container chpLabel">
 								<label value="${c:l('Champ.Patient.DateDeces')}" sclass="formLabel" />
@@ -188,7 +189,7 @@
 							<datebox id="dateDecesBox" format="${c:l('validation.date.format.simple')}" 
 								value="@{fwinPatientEdit$composer.object.dateDeces,
 									save-when='validate.onClick, create.onClick'}" lenient="true" />
-						</div>
+						</div>-->
 					</div>
 				</div>
 				<div class="block-separator" />

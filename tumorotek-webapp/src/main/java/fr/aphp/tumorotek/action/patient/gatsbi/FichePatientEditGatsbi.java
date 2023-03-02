@@ -167,17 +167,19 @@ public class FichePatientEditGatsbi extends FichePatientEdit
       GatsbiController.checkRequiredNonInputComponents(reqListboxes, null, null);
    }
    
-   /**
-    * Surcharge Gastbi car accord affichage entre date état/décès et état 
-    * n'est plus applicable.
-    */
-   @Override
-   protected void accordDateToEtat() {
-   }
-   
-   @Override
-   protected void recordDateEtatDeces() {
-   }
+   //initialement, il était prévu de gérer les champs date d'état et date de décès séparément d'où la surchage ci-dessous
+   //mais Nathalie préfère que ce soit géré comme dans TK (TG-138) => mise en commentaire du bloc ci-dessous (au cas où l'idée de séparer revienne)
+//   /**
+//    * Surcharge Gastbi car accord affichage entre date état/décès et état 
+//    * n'est plus applicable.
+//    */
+//   @Override
+//   protected void accordDateToEtat() {
+//   }
+//   
+//   @Override
+//   protected void recordDateEtatDeces() {
+//   }
    
    @Override
    protected void setReferentsGroupOpen(boolean _o) {
