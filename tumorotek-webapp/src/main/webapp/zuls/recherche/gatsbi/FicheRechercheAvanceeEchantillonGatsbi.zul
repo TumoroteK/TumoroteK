@@ -374,7 +374,7 @@
 													sclass="chpLabel formLabel" />
 												<listbox id="natutePrelevementBox" mold="select"
 													rows="1"
-													model="@{fwinRechercheAvanceePrelevement$composer.natures}">
+													model="@{fwinRechercheAvanceeEchantillon$composer.natures}">
 													<listitem self="@{each='nature'}" value="nature">
 														<listcell label="@{nature.nature}" />
 													</listitem>
@@ -390,7 +390,7 @@
 													<hlayout hflex="1">
 														<listbox id="operateursDatePrlvtBox" mold="select"
 															rows="1"
-															model="@{fwinRechercheAvanceePrelevement$composer.operateursDates}">
+															model="@{fwinRechercheAvanceeEchantillon$composer.operateursDates}">
 															<listitem self="@{each='opDatePrlvt'}"
 																value="opDatePrlvt">
 																<listcell label="@{opDatePrlvt}" />
@@ -421,7 +421,7 @@
 													sclass="chpLabel formLabel" />
 												<listbox id="statutJuridiqueBox" mold="select"
 													rows="1"
-													model="@{fwinRechercheAvanceePrelevement$composer.consentTypes}">
+													model="@{fwinRechercheAvanceeEchantillon$composer.consentTypes}">
 													<listitem self="@{each='consentType'}"
 														value="consentType">
 														<listcell label="@{consentType.type}" />
@@ -436,7 +436,7 @@
 													sclass="chpLabel formLabel" />
 												<listbox id="etablissementPreleveurBox"
 													mold="select" rows="1"
-													model="@{fwinRechercheAvanceePrelevement$composer.etablissements}">
+													model="@{fwinRechercheAvanceeEchantillon$composer.etablissements}">
 													<listitem self="@{each='etabPrlvt'}"
 														value="etabPrlvt">
 														<listcell label="@{etabPrlvt.nom}" />
@@ -452,7 +452,7 @@
 													sclass="chpLabel formLabel" />
 												<listbox id="servicePreleveurBox" mold="select"
 													rows="1"
-													model="@{fwinRechercheAvanceePrelevement$composer.services}">
+													model="@{fwinRechercheAvanceeEchantillon$composer.services}">
 													<listitem self="@{each='servicePrlvt'}"
 														value="servicePrlvt">
 														<listcell label="@{servicePrlvt.nom}" />
@@ -486,7 +486,7 @@
 												<div>
 													<listbox id="operateursNbEchantillonBox"
 														mold="select" rows="1"
-														model="@{fwinRechercheAvanceePrelevement$composer.operateursDecimaux}">
+														model="@{fwinRechercheAvanceeEchantillon$composer.operateursDecimaux}">
 														<listitem self="@{each='opNbEchan'}"
 															value="opNbEchan">
 															<listcell label="@{opNbEchan}" />
@@ -501,7 +501,7 @@
 												<div>
 													<listbox id="operateursAgePrlvtBox" mold="select"
 														rows="1"
-														model="@{fwinRechercheAvanceePrelevement$composer.operateursDecimaux}">
+														model="@{fwinRechercheAvanceeEchantillon$composer.operateursDecimaux}">
 														<listitem self="@{each='opAgePrlvt'}"
 															value="opAgePrlvt">
 															<listcell label="@{opAgePrlvt}" />
@@ -518,7 +518,7 @@
 												<div>
 													<listbox id="risquesBox" checkmark="true"
 														multiple="true" rows="3" hflex="1"
-														model="@{fwinRechercheAvanceePrelevement$composer.risquesModel}">
+														model="@{fwinRechercheAvanceeEchantillon$composer.risquesModel}">
 														<listitem self="@{each='risque'}"
 															value="@{risque.nom}">
 															<listcell label="@{risque.nom}" />
@@ -554,7 +554,7 @@
 													</textbox>
 													<listbox id="nonConformitesArriveeBoxHelper"
 														mold="select" rows="1"
-														model="@{fwinRechercheAvanceePrelevement$composer.nCarrivee}">
+														model="@{fwinRechercheAvanceeEchantillon$composer.nCarrivee}">
 														<listitem self="@{each='nc'}" value="nc">
 															<listcell label="@{nc.nom}" />
 														</listitem>
@@ -586,7 +586,7 @@
 													sclass="chpLabel formLabel" />
 												<listbox id="typeProdDeriveBox" mold="select"
 													rows="1"
-													model="@{fwinRechercheAvanceePrelevement$composer.prodDeriveTypes}">
+													model="@{fwinRechercheAvanceeEchantillon$composer.prodDeriveTypes}">
 													<listitem self="@{each='prodDeriveType'}"
 														value="prodDeriveType">
 														<listcell label="@{prodDeriveType.type}" />
@@ -611,7 +611,7 @@
 													sclass="chpLabel formLabel" />
 												<listbox id="qualiteProdDeriveBox" mold="select"
 													rows="1"
-													model="@{fwinRechercheAvanceePrelevement$composer.deriveQualites}">
+													model="@{fwinRechercheAvanceeEchantillon$composer.deriveQualites}">
 													<listitem self="@{each='deriveQualite'}"
 														value="deriveQualite">
 														<listcell label="@{deriveQualite.prodQualite}" />
@@ -626,7 +626,7 @@
 													sclass="chpLabel formLabel" />
 												<listbox id="statutProdDeriveBox" mold="select"
 													rows="1"
-													model="@{fwinRechercheAvanceePrelevement$composer.objetStatuts}"
+													model="@{fwinRechercheAvanceeEchantillon$composer.objetStatuts}"
 													itemRenderer="fr.aphp.tumorotek.decorator.StatutItemRenderer">
 													<custom-attributes
 														attribut="ObjetStatutId" entite="ProdDerive" />
@@ -639,7 +639,7 @@
 												<div>
 													<listbox id="operateursVolumeDerivesBox"
 														mold="select" rows="1"
-														model="@{fwinRechercheAvanceePrelevement$composer.operateursDecimaux}">
+														model="@{fwinRechercheAvanceeEchantillon$composer.operateursDecimaux}">
 														<listitem self="@{each='opVolDerive'}"
 															value="opVolDerive">
 															<listcell label="@{opVolDerive}" />
@@ -659,7 +659,7 @@
 												<div>
 													<listbox id="operateursQuantiteDeriveBox"
 														mold="select" rows="1"
-														model="@{fwinRechercheAvanceePrelevement$composer.operateursDecimaux}">
+														model="@{fwinRechercheAvanceeEchantillon$composer.operateursDecimaux}">
 														<listitem self="@{each='opQteDerive'}"
 															value="opQteDerive">
 															<listcell label="@{opQteDerive}" />
@@ -680,7 +680,7 @@
 													<hlayout hflex="1">
 														<listbox id="operateursDateStockDeriveBox"
 															mold="select" rows="1"
-															model="@{fwinRechercheAvanceePrelevement$composer.operateursDates}">
+															model="@{fwinRechercheAvanceeEchantillon$composer.operateursDates}">
 															<listitem self="@{each='opDateStock'}"
 																value="opDateStock">
 																<listcell label="@{opDateStock}" />
@@ -711,7 +711,7 @@
 												<div>
 													<listbox id="operateursTempStockDeriveBox"
 														mold="select" rows="1"
-														model="@{fwinRechercheAvanceePrelevement$composer.operateursDecimaux}">
+														model="@{fwinRechercheAvanceeEchantillon$composer.operateursDecimaux}">
 														<listitem self="@{each='opTempStockDerive'}"
 															value="opTempStockDerive">
 															<listcell label="@{opTempStockDerive}" />
@@ -750,7 +750,7 @@
 													<listbox
 														id="nonConformitesDeriveTraitementBoxHelper" mold="select"
 														rows="1"
-														model="@{fwinRechercheAvanceePrelevement$composer.nCderiveTraitement}">
+														model="@{fwinRechercheAvanceeEchantillon$composer.nCderiveTraitement}">
 														<listitem self="@{each='nc'}" value="nc">
 															<listcell label="@{nc.nom}" />
 														</listitem>
@@ -782,7 +782,7 @@
 													<textbox id="nonConformitesDeriveCessionBox" />
 													<listbox id="nonConformitesDeriveCessionBoxHelper"
 														mold="select" rows="1"
-														model="@{fwinRechercheAvanceePrelevement$composer.nCderiveCession}">
+														model="@{fwinRechercheAvanceeEchantillon$composer.nCderiveCession}">
 														<listitem self="@{each='nc'}" value="nc">
 															<listcell label="@{nc.nom}" />
 														</listitem>
@@ -865,7 +865,7 @@
 														<div>
 															<listbox id="operateursDateNaissanceBox"
 																mold="select" rows="1"
-																model="@{fwinRechercheAvanceePrelevement$composer.operateursDates}">
+																model="@{fwinRechercheAvanceeEchantillon$composer.operateursDates}">
 																<listitem self="@{each='opDateNaiss'}"
 																	value="opDateNaiss">
 																	<listcell label="@{opDateNaiss}" />
@@ -959,7 +959,7 @@
 													sclass="chpLabel formLabel" />
 												<combobox id="medecinsBox" autodrop="true"
 													width="400px"
-													model="@{fwinRechercheAvanceePrelevement$composer.collaborateurs}">
+													model="@{fwinRechercheAvanceeEchantillon$composer.collaborateurs}">
 													<comboitem self="@{each=attrValue}"
 														label="@{attrValue.nomAndPrenom}" />
 													<custom-attributes
@@ -1002,7 +1002,7 @@
 														<div>
 															<listbox id="operateursDateDebutBox"
 																mold="select" rows="1"
-																model="@{fwinRechercheAvanceePrelevement$composer.operateursDates}">
+																model="@{fwinRechercheAvanceeEchantillon$composer.operateursDates}">
 																<listitem self="@{each='opDateDebut'}"
 																	value="opDateDebut">
 																	<listcell label="@{opDateDebut}" />
@@ -1039,7 +1039,7 @@
 														<div>
 															<listbox id="operateursDateDiagBox" mold="select"
 																rows="1"
-																model="@{fwinRechercheAvanceePrelevement$composer.operateursDates}">
+																model="@{fwinRechercheAvanceeEchantillon$composer.operateursDates}">
 																<listitem self="@{each='opDateDiag'}"
 																	value="opDateDiag">
 																	<listcell label="@{opDateDiag}" />
@@ -1073,7 +1073,7 @@
 													sclass="chpLabel formLabel" />
 												<combobox id="medecinsMaPatBox" autodrop="true"
 													width="400px"
-													model="@{fwinRechercheAvanceePrelevement$composer.collaborateurs}">
+													model="@{fwinRechercheAvanceeEchantillon$composer.collaborateurs}">
 													<comboitem self="@{each=attrValue}"
 														label="@{attrValue.nomAndPrenom}" />
 													<custom-attributes

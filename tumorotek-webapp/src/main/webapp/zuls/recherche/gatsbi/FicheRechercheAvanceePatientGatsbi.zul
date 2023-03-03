@@ -230,22 +230,18 @@
 													</div>
 												</hbox>
 											</div>
-										</div>
-									</cell>
-								</row>
-								<!-- Médecins -->
-								<row>
-									<cell colspan="4">
-										<div style="padding-left: 5px">
-											<label value="${c:l('patient.medecins')}" sclass="formLabel" />
+											<div class="item item-mid" id="patientMedecinsDiv"><!-- Médecins -->
+												<custom-attributes champId="227" />
+														<label value="${c:l('patient.medecins')}" sclass="formLabel" />
 												<combobox id="medecinsBox" autodrop="true" width="400px" 
 													model="@{fwinRechercheAvanceePatient$composer.collaborateurs}">
 						 							<comboitem self="@{each=attrValue}" label="@{attrValue.nomAndPrenom}"/>
 						 							<custom-attributes
 														attribut="Pk.collaborateur" entite="PatientMedecin" />
 						 						</combobox>
-						 				</div>
-						 			</cell>
+											</div>											
+										</div>
+									</cell>
 								</row>
 								<!-- Groupe maladie -->
 								<group id="groupMaladies" open="false"
