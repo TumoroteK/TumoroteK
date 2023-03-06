@@ -923,7 +923,7 @@
 													</div>
 												</hbox>
 											</div>
-											<div class="item item-mid" id="patientEtatDiv"><!-- Etat patient -->
+											<div class="item item-wide" id="patientEtatDiv"><!-- Etat patient -->
 												<custom-attributes champId="10" />
 												<label value="${c:l('Champ.Patient.PatientEtat')}"
 													sclass="chpLabel formLabel" />

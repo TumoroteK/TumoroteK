@@ -200,7 +200,7 @@
 													</hbox>
 												</vbox>
 											</div>
-											<div class="item item-mid" id="etatDiv"><!-- Etat -->	
+											<div class="item item-wide" id="etatDiv"><!-- Etat -->	
 												<custom-attributes champId="10" />
 												<label value="${c:l('Champ.Patient.PatientEtat')}" sclass="chpLabel formLabel" />
 												<hbox>
