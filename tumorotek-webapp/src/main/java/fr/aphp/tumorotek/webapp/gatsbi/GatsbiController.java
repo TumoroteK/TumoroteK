@@ -462,6 +462,9 @@ public class GatsbiController
                .findAny().orElseThrow(() -> new TKException("gatsbi.thesaurus.value.notfound", val.getThesaurusValue())));
          }
       } else { // adds all thesaurus values
+         //une évolution a été faite côté Gatsbi qui renvoie désormais toutes les valeurs du thesaurus si 
+         //l'utilisateur n'en a saisi aucun (TG-148) => on ne passe plus ici que si il n'y a aucune valeur pour la plateforme
+         //dans ce cas lModel est vide.
          thesObjs.addAll(lModel);
       }
 

@@ -100,8 +100,10 @@ public class FichePrelevementEditGatsbi extends FichePrelevementEdit
 
       // setRows ne marche pas ?
       // seul moyen trouvé pour augmenter hauteur et voir tous les items de la listbox
-      //correction bug TG-124 (getThesaurusValuesForChampEntiteId ne récupère pas tous les thesaurus quand l'utilisateur n'a rien défini dans Gatsbi) :
-      //risquesBox.setHeight(contexte.getThesaurusValuesForChampEntiteId(249).size() * 25 + "px");
+      //  correction bug TG-124 (getThesaurusValuesForChampEntiteId ne récupère pas tous les thesaurus quand l'utilisateur n'a rien défini dans Gatsbi) :
+      //  risquesBox.setHeight(contexte.getThesaurusValuesForChampEntiteId(249).size() * 25 + "px");
+      //  une évolution a été faite côté Gatsbi pour envoyer tous les thesaurus quand l'utilisateur n'en a sélectionné aucun (TG-148)
+      //  => la ligne ci-dessus fonctionnerait désormais...
       risquesBox.setHeight(reqListboxes.size() * 25 + "px");
    }
    
