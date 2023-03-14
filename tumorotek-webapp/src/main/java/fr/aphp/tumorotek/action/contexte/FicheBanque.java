@@ -60,7 +60,7 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.ForwardEvent;
 import org.zkoss.zk.ui.util.Clients;
-import org.zkoss.zkplus.databind.BindingListModelSet;
+import org.zkoss.zkplus.databind.*;
 import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Div;
@@ -194,7 +194,7 @@ public class FicheBanque extends AbstractFicheCombineController
    private Grid gridAjoutUtilisateur;
    private Listbox listboxUtilisateurs;
    private Listbox listboxProfils;
-   private BindingListModelSet<Utilisateur> utilisateursData;
+   private BindingListModelList<Utilisateur> utilisateursData;
    private BindingListModelSet<Profil> profilsData;
 
    // conteneurs
@@ -308,7 +308,7 @@ public class FicheBanque extends AbstractFicheCombineController
       listboxUtilisateurs.setItemRenderer(utilisateurRenderer);
       listboxProfils.setItemRenderer(profilRenderer);
 
-      utilisateursData = new BindingListModelSet<>(new HashSet<Utilisateur>(), true);
+      utilisateursData = new BindingListModelList<>(new ArrayList<Utilisateur>(), true);
       profilsData = new BindingListModelSet<>(new HashSet<Profil>(), true);
 
       utilisateursData.setMultiple(true);
@@ -327,7 +327,7 @@ public class FicheBanque extends AbstractFicheCombineController
       super.setObject(banque);
 
       //initialisation de la liste des utilisateurs
-      final Set<Utilisateur> utilisateursPlateforme = new HashSet<>(ManagerLocator.getManager(UtilisateurManager.class)
+      final List<Utilisateur> utilisateursPlateforme = new ArrayList<>(ManagerLocator.getManager(UtilisateurManager.class)
          .findByArchiveManager(false, Arrays.asList(SessionUtils.getCurrentPlateforme())));
       utilisateursData.clear();
       utilisateursData.addAll(utilisateursPlateforme);
@@ -2233,7 +2233,7 @@ public class FicheBanque extends AbstractFicheCombineController
       this.nomsServices = n;
    }
 
-   public BindingListModelSet<Utilisateur> getUtilisateursData(){
+   public BindingListModelList<Utilisateur> getUtilisateursData(){
       return utilisateursData;
    }
 
