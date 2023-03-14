@@ -1,5 +1,7 @@
 #### Notes de version
 
+##### Version ${project.version} - Publiée le ${timestamp}
+
 ##### Version 2.2.7 - Publiée le 13/03/2023
 ###### Correction
 - YouTrack [TK-357](https://tumorotek.myjetbrains.com/youtrack/issue/TK-357)
