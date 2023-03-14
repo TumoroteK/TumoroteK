@@ -117,7 +117,7 @@ public class FicheBonLivraisonModale extends AbstractFicheCombineController
 
    /**
     * Méthode intialisant le composant.
-    * @param pathToPage Chemin vers la page qui demande une modif.
+    * @param cessionToPrint Cession
     */
    public void init(final Cession cessionToPrint){
       // List<CederObjetDecorator> echans,
@@ -143,6 +143,9 @@ public class FicheBonLivraisonModale extends AbstractFicheCombineController
       Locale loc = null;
       if(langue.equals("EN")){
          loc = Locale.ENGLISH;
+      }
+      if(langue.equals("FR")){
+         loc = Locale.FRANCE;
       }
 
       // création du document XML contenant les données à imprimer
@@ -449,7 +452,7 @@ public class FicheBonLivraisonModale extends AbstractFicheCombineController
          // date
          String date = "";
          if(this.cession.getDepartDate() != null){
-            date = ObjectTypesFormatters.dateRenderer2(cession.getDepartDate());
+            date = ObjectTypesFormatters.dateLocaleRenderer(cession.getDepartDate(), locale);
          }
          final CoupleAccordValeur cv9 =
             new CoupleAccordValeur(Labels.getLabel("impression.accord.transfert.disposition"), new String[] {date});

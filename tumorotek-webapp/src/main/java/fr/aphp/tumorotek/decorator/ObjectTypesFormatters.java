@@ -45,7 +45,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.Set;
-
+import java.util.Locale;
+import java.text.DateFormat;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.security.authentication.encoding.Md5PasswordEncoder;
 import org.springframework.validation.Errors;
@@ -245,6 +246,32 @@ public final class ObjectTypesFormatters
       }
       return null;
    }
+
+   /**
+    Cette méthode permet de formater une date en fonction de la locale spécifiée.
+    Si la date est nulle, la méthode retourne également nulle.
+    Par défaut, le format court de la date est utilisé pour la locale spécifiée.
+    @param calendar un objet de type  Calendar à formater
+    @param locale la locale utilisée pour le formatage de la date
+    @return une chaîne représentant la date formatée en fonction de la locale spécifiée
+    */
+   public static String dateLocaleRenderer(final Calendar calendar, final Locale locale) {
+      if (calendar != null) {
+         DateFormat df = DateFormat.getDateInstance(DateFormat.SHORT, locale);;
+
+         if (calendar.get(Calendar.HOUR_OF_DAY) > 0 || calendar.get(Calendar.MINUTE) > 0
+                 || calendar.get(Calendar.SECOND) > 0) {
+            df = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT, locale);
+         }
+         return df.format(calendar.getTime());
+      }
+      return null;
+   }
+
+
+
+
+
 
    /**
     * Renvoie la classe css pour l'affichage d'un collaborateur (en fct
