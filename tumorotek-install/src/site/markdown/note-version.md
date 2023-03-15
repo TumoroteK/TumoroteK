@@ -1,6 +1,12 @@
 #### Notes de version
 
 ##### Version 2.2.8-SNAPSHOT - Publiée le 14/03/2023
+
+##### Version 2.2.7 - Publiée le 13/03/2023
+###### Correction
+- YouTrack [TK-357](https://tumorotek.myjetbrains.com/youtrack/issue/TK-357)
+
+##### Version 2.2.6 - Publiée le 29/09/2022
 ###### Adaptation pour projet IRELEC - CHU Grenoble
 - YouTrack [TK-339](https://tumorotek.myjetbrains.com/youtrack/issue/TK-339) : ROBOT Grenoble - accès bouton "Stockage automatisé" et "Déstockage automatisé"
 
