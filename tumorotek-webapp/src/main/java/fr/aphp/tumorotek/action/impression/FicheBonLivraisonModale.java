@@ -194,15 +194,6 @@ public class FicheBonLivraisonModale extends AbstractFicheCombineController
          document = ManagerLocator.getXmlUtils().createJDomAccordTranfert();
          final Element root = document.getRootElement();
 
-         // ajout de la date en pied de page
-         final StringBuilder sb = new StringBuilder();
-         if(piedPage != null && piedPage.equals("")){
-            sb.append(piedPage);
-            sb.append(" - ");
-         }
-         final Calendar cal = Calendar.getInstance();
-         final String dateFoot = new SimpleDateFormat("dd/MM/yyyy").format(cal.getTime());
-         sb.append(dateFoot);
          ManagerLocator.getXmlUtils().addBasDePage(root, piedPage);
          ManagerLocator.getXmlUtils().addHautDePage(root, entete, false, null);
 
