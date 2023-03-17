@@ -38,6 +38,7 @@ package fr.aphp.tumorotek.component;
 import java.util.Calendar;
 import java.util.Date;
 
+import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.HtmlMacroComponent;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Events;
@@ -73,10 +74,13 @@ public class CalendarBox extends HtmlMacroComponent
    @Override
    public void afterCompose(){
       super.afterCompose();
-
+      
+      ((Datebox) getFirstChild().getFirstChild()).setFormat(Labels.getLabel("validation.date.format.simple"));
+      
       ((Timebox) getFirstChild().getLastChild()).setButtonVisible(false);
       ((Datebox) getFirstChild().getFirstChild()).addForward("onBlur", this, "onBlur");
       ((Timebox) getFirstChild().getLastChild()).addForward("onBlur", this, "onBlurTimebox");
+      
    }
 
    /**
