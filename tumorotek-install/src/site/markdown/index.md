@@ -1,12 +1,18 @@
 #### Notes de version
 
+##### Version 2.2.8 - Publiée le 21/03/2023
+###### Corrections
+- YouTrack [TK-368](https://tumorotek.myjetbrains.com/youtrack/issue/TK-368) : Recherche : mauvaise actualisation du nombre de résultats de la recherche, dans le titre au dessus de la liste
+- YouTrack [TK-373](https://tumorotek.myjetbrains.com/youtrack/issue/TK-373) : Export Echantillon : heures des dates toujours à 00:00 au niveau des évènements de stockage
 
-##### Version 2.2.8-SNAPSHOT - Publiée le 14/03/2023
+###### Améliorations
+- YouTrack [TK-342](https://tumorotek.myjetbrains.com/youtrack/issue/TK-342) : Création collection : ajout d'un tri des utilisateurs par ordre alphabétique
+
 
 
 ##### Version 2.2.7 - Publiée le 13/03/2023
 ###### Correction
-- YouTrack [TK-357](https://tumorotek.myjetbrains.com/youtrack/issue/TK-357)
+- YouTrack [TK-357](https://tumorotek.myjetbrains.com/youtrack/issue/TK-357) : Export Patients : barre d'avancement bloquée à 0 %
 
 ##### Version 2.2.6 - Publiée le 29/09/2022
 ###### Adaptation pour projet IRELEC - CHU Grenoble
