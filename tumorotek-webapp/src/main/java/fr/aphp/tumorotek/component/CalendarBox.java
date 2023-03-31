@@ -42,6 +42,7 @@ import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.HtmlMacroComponent;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.select.annotation.*;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Timebox;
@@ -73,16 +74,14 @@ public class CalendarBox extends HtmlMacroComponent
    // flag indiquant si le Calendarbox a été modifié
    private boolean hasChanged = false;
 
-   Timebox timeBox;
 
-   Datebox dateBox;
 
    @Override
    public void afterCompose(){
       super.afterCompose();
 
-      timeBox = (Timebox) getFirstChild().getLastChild();
-      dateBox = (Datebox) getFirstChild().getFirstChild();
+      Timebox timeBox = (Timebox) getFirstChild().getLastChild();
+      Datebox dateBox = (Datebox) getFirstChild().getFirstChild();
 
       dateBox.setFormat(Labels.getLabel("validation.date.format.simple"));
       timeBox.setButtonVisible(false);
