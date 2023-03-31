@@ -42,7 +42,6 @@ import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.HtmlMacroComponent;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Events;
-import org.zkoss.zk.ui.select.annotation.*;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Timebox;
@@ -73,8 +72,6 @@ public class CalendarBox extends HtmlMacroComponent
 
    // flag indiquant si le Calendarbox a été modifié
    private boolean hasChanged = false;
-
-
 
    @Override
    public void afterCompose(){
@@ -154,8 +151,6 @@ public class CalendarBox extends HtmlMacroComponent
       return cal;
    }
 
-
-
    public boolean isHasChanged(){
       return hasChanged;
    }
@@ -167,8 +162,6 @@ public class CalendarBox extends HtmlMacroComponent
    public void clearErrorMessage(final Calendar value){
       Clients.clearWrongValue(this);
    }
-
-
 
    public void setConstraint(final String cst){
       this.dateConstraint = cst;
