@@ -1,6 +1,6 @@
 #### Notes de version
 
-##### Version 2.2.8 - Publiée le 21/03/2023
+##### Version 2.2.8 - Publiée le 30/03/2023
 ###### Corrections
 - YouTrack [TK-368](https://tumorotek.myjetbrains.com/youtrack/issue/TK-368) : Recherche : mauvaise actualisation du nombre de résultats de la recherche, dans le titre au dessus de la liste
 - YouTrack [TK-373](https://tumorotek.myjetbrains.com/youtrack/issue/TK-373) : Export Echantillon : heures des dates toujours à 00:00 au niveau des évènements de stockage
