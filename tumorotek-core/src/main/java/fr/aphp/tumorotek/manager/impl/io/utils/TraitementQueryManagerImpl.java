@@ -44,6 +44,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -515,6 +516,7 @@ public class TraitementQueryManagerImpl implements TraitementQueryManager
 		int cpt = 1;
 		int nbWhere = 1;
 		int nbBanquesInCriteres = 1;
+		//boolean banquesCritereAdded = false;
 		int nbChampAnnotations = 0;
 		boolean withAnno = false;
 		for(int k = 0; k < criteres.size(); k++){
@@ -823,24 +825,44 @@ public class TraitementQueryManagerImpl implements TraitementQueryManager
 								&& !parents.get(parents.size() - 1).getChampEntite().getNom().equals("ServicePreleveurId")
 								&& !parents.get(parents.size() - 1).getChampEntite().getNom().equals("Risques")){
 
-							Champ parentTest = parents.get(parents.size() - 1);
-							Boolean isFromDelegate = false;
-							while(!isFromDelegate && null != parentTest){
-								parentTest = parentTest.getChampParent();
-								if(null != parentTest && null != parentTest.getChampDelegue()){
-									isFromDelegate = true;
-									break;
-								}
-							}
+						   //2 types de champs peuvent être délégués :
+						   //- un champ "simple" (type primitive), dans ce cas, le critère porte bien sur ce champ
+						   //- un champ de type objet, dans ce cas, le critère saisi porte sur un champ de celui-ci, il faut donc remonter au parent
+						   //pour savoir s'il s'agit d'un champ délégué
+						   //initialisation du boolean isFromDelegate avec le premier cas :
+						   Boolean isFromDelegate = (champ.getChampDelegue() != null) ;
+						   //traitement des autres cas :
+						   Champ parentTest = parents.get(parents.size() - 1);
+						   while(!isFromDelegate && null != parentTest){
+						      parentTest = parentTest.getChampParent();
+						      if(null != parentTest && null != parentTest.getChampDelegue()){
+						         isFromDelegate = true;
+						         break;
+						      }
+						   }
+						   
 							if(!isFromDelegate){
-								where.append(" AND ");
-								prefixe = allParents.get(parents.get(parents.size() - 1));
-								where.append(prefixe);
-								where.append(".banque in (:list");
-								where.append(nbBanquesInCriteres);
-								where.append(")");
-								++nbBanquesInCriteres;
-							}
+							   //ajout de la condition sur la banque que si elle n'est pas déjà présente dans la liste des clauses where
+							   //en effet dans le cas d'une recherche sur plusieurs critères, on passe dans ce code pour chaque critère
+							   prefixe = allParents.get(parents.get(parents.size() - 1));
+							   StringBuilder champClauseBanque = new StringBuilder(prefixe);
+							   champClauseBanque.append(".banque");
+							   boolean clauseExistante = false;
+							   int i=0;
+							   while(!clauseExistante && i<wheres.size()) {
+							      clauseExistante = wheres.get(i).indexOf(champClauseBanque.toString()) != -1;
+							      i++;
+							   }
+							   //si clause non trouvée, ajout :
+							   if(!clauseExistante) {
+							      where.append(" AND ");
+	                        where.append(champClauseBanque);
+	                        where.append(" in (:list");
+	                        where.append(nbBanquesInCriteres);
+	                        where.append(")");
+	                        ++nbBanquesInCriteres;
+							   }
+						   }
 						}
 						wheres.add(where.toString());
 						++nbWhere;
@@ -887,18 +909,21 @@ public class TraitementQueryManagerImpl implements TraitementQueryManager
 		log.debug("findObjetByCritereManager : Exécution de la requête : \n" + sql.toString());
 
 		final EntityManager em = entityManagerFactory.createEntityManager();
+		log.debug(" query hql : " + sql.toString());
 		final TypedQuery<Integer> query = em.createQuery(sql.toString(), Integer.class);
 		values.removeAll(valuesChampsCalcules);
 		for(int i = 0; i < values.size(); i++){
 			final StringBuffer sb = new StringBuffer("valeur");
 			sb.append(i + 1);
 			query.setParameter(sb.toString(), values.get(i));
+			log.debug(sb.toString() + " : " + values.get(i));   
 		}
 
 		// si la liste n'est pas vide et que l'entité
 		// recherchée n'est pas un patient
 		if(sql.toString().contains("(:list)")){
 			query.setParameter("list", banques);
+			log.debug("banqueId : " + banques.stream().map(banque -> Integer.toString(banque.getBanqueId())).collect(Collectors.joining(",")));
 		}
 		for(int i = 1; i < nbBanquesInCriteres; i++){
 			final StringBuffer sb = new StringBuffer("list");

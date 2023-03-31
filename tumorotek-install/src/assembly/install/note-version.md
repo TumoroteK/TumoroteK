@@ -3,6 +3,7 @@
 ##### Version 2.2.8 - Publiée le ${timestamp}
 ###### Corrections
 - YouTrack [TK-342](https://tumorotek.myjetbrains.com/youtrack/issue/TK-342) : Création d'une collection : trier la liste des utilisateurs par ordre alphabétique
+- YouTrack [TK-358]https://tumorotek.myjetbrains.com/youtrack/issue/TK-358 : Recherche avancée : plantage si saisie d'un critère sur complément diagnostic
 - YouTrack [TK-368](https://tumorotek.myjetbrains.com/youtrack/issue/TK-368) : Recherche : mauvaise actualisation du nombre de résultats de la recherche, dans le titre au dessus de la liste
 - YouTrack [TK-373](https://tumorotek.myjetbrains.com/youtrack/issue/TK-373) : Export Echantillon : heures des dates toujours à 00:00 au niveau des évènements de stockage
 - YouTrack [TK-374](https://tumorotek.myjetbrains.com/youtrack/issue/TK-374) : Initialisation TK : contexte Sérologie non proposé
@@ -10,7 +11,7 @@
 
 ###### Améliorations
 - YouTrack [TK-342](https://tumorotek.myjetbrains.com/youtrack/issue/TK-342) : Création collection : ajout d'un tri des utilisateurs par ordre alphabétique
-
+- Youtrack [TK-365] (https://tumorotek.myjetbrains.com/youtrack/issue/TK-365) : Amélioration pour faciliter la saisie des heures, sur les champs de type date+heure
 
 
 ##### Version 2.2.7 - Publiée le 13/03/2023
