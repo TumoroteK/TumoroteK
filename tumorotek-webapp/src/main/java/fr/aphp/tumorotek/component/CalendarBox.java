@@ -76,9 +76,7 @@ public class CalendarBox extends HtmlMacroComponent
    @Override
    public void afterCompose(){
       super.afterCompose();
-
-super.afterCompose();
-      
+     
       ((Datebox) getFirstChild().getFirstChild()).setFormat(Labels.getLabel("validation.date.format.simple"));
       
       ((Timebox) getFirstChild().getLastChild()).setButtonVisible(false);
