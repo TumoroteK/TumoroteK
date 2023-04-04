@@ -77,14 +77,13 @@ public class CalendarBox extends HtmlMacroComponent
    public void afterCompose(){
       super.afterCompose();
 
-      Timebox timeBox = (Timebox) getFirstChild().getLastChild();
-      Datebox dateBox = (Datebox) getFirstChild().getFirstChild();
-
-      dateBox.setFormat(Labels.getLabel("validation.date.format.simple"));
-      timeBox.setButtonVisible(false);
-      dateBox.addEventListener(Events.ON_BLUR, event -> {
-         timeBox.select();
-      });
+super.afterCompose();
+      
+      ((Datebox) getFirstChild().getFirstChild()).setFormat(Labels.getLabel("validation.date.format.simple"));
+      
+      ((Timebox) getFirstChild().getLastChild()).setButtonVisible(false);
+      ((Datebox) getFirstChild().getFirstChild()).addForward("onBlur", this, "onBlur");
+      ((Timebox) getFirstChild().getLastChild()).addForward("onBlur", this, "onBlurTimebox");
 
    }
 
