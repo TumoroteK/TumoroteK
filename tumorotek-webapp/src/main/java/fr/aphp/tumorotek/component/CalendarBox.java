@@ -82,10 +82,17 @@ public class CalendarBox extends HtmlMacroComponent
 
       dateBox.setFormat(Labels.getLabel("validation.date.format.simple"));
       timeBox.setButtonVisible(false);
-      dateBox.addEventListener(Events.ON_BLUR, event -> {
-         timeBox.select();
-      });
+      
+      //définition d'un évènement pour gérer les sorties/entrées dans les éléments constituant le composant :
+      //la sortie par tabulation du champ date doit sélectionner le masque de saisie de l'heure pour que l'utilisateur
+      //puisse saisir l'heure sans reprendre la souris
+      ((Datebox) getFirstChild().getFirstChild()).addForward("onBlur", this, "onBlurDatebox");
 
+      //un onBlur sur l'un ou l'autre des éléments du composant doit générer un onBlur sur le composant lui-même
+      //(c'est évènement est utilisé par les pages contenant le composant)
+      //pour le dateBox, cela est fait à la fin de la méthode onBlurDatebox
+      //pour le timeBox, c'est fait ici
+      ((Timebox) getFirstChild().getLastChild()).addForward("onBlur", this, "onBlur");
    }
 
    /**
@@ -151,6 +158,12 @@ public class CalendarBox extends HtmlMacroComponent
       return cal;
    }
 
+   public void onBlurDatebox(){
+      ((Timebox) getFirstChild().getLastChild()).select();
+      //transmission de l'évenement onBlur fait sur le TimeBox, au composant composite (CalendarBox)
+      Events.postEvent("onBlur", this, null);
+   }   
+   
    public boolean isHasChanged(){
       return hasChanged;
    }
