@@ -65,9 +65,7 @@ public class CalendarBox extends HtmlMacroComponent
    private Calendar cal = null;
 
    private Date date = null;
-
    private Date dateShort = null;
-
    private String dateConstraint = null;
 
    // flag indiquant si le Calendarbox a été modifié
@@ -98,7 +96,7 @@ public class CalendarBox extends HtmlMacroComponent
    /**
     * Assigne les valeurs aux boxes en dissociant les différentes 
     * composantes du Calendar.
-    * @param c calendar
+    * @param maladie
     */
    public void setValue(final Calendar c){
 
@@ -113,6 +111,15 @@ public class CalendarBox extends HtmlMacroComponent
             date = cal.getTime();
             dateShort = new Date(cal.getTimeInMillis() - hours - minutes);
          }else{
+            /*cal = Calendar.getInstance();
+            cal.set(Calendar.YEAR, 1);
+            cal.set(Calendar.MONTH, 1);
+            cal.set(Calendar.DAY_OF_MONTH, 1);
+            cal.set(Calendar.HOUR_OF_DAY, 0);
+            cal.set(Calendar.MINUTE, 0);
+            cal.set(Calendar.SECOND, 0);
+            cal.set(Calendar.MILLISECOND, 0);
+            date = cal.getTime();*/
             date = null;
             dateShort = null;
          }
@@ -174,6 +181,26 @@ public class CalendarBox extends HtmlMacroComponent
 
    public void clearErrorMessage(final Calendar value){
       Clients.clearWrongValue(this);
+   }
+
+   /**
+    * Lors du focus sur la date, si aucune heure n'est spécifiée dans le
+    * TimeBox, on le remplit à 00:00. Ceci est utilisé pour IE8, afin que
+    * le curseur se positionne au début de la TimeBox lors de l'utilisation
+    * des tabulations.
+    */
+   public void onFocus$dateBox(){
+      if(((Timebox) getFirstChild().getLastChild()).getValue() == null){
+         final Calendar calTmp = Calendar.getInstance();
+         calTmp.set(Calendar.YEAR, 1);
+         calTmp.set(Calendar.MONTH, 1);
+         calTmp.set(Calendar.DAY_OF_MONTH, 1);
+         calTmp.set(Calendar.HOUR_OF_DAY, 0);
+         calTmp.set(Calendar.MINUTE, 0);
+         calTmp.set(Calendar.SECOND, 0);
+         calTmp.set(Calendar.MILLISECOND, 0);
+         ((Timebox) getFirstChild().getLastChild()).setValue(calTmp.getTime());
+      }
    }
 
    public void setConstraint(final String cst){
