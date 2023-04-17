@@ -841,7 +841,7 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
          try{
             dl = ManagerLocator.getXmlUtils().creerBoiteHtml(doc);
          }catch(final Exception e){
-            log.error(e);
+            log.error("An error occurred: {}", e.toString()); 
          }
 
          // envoie du fichier à imprimer à l'utilisateur

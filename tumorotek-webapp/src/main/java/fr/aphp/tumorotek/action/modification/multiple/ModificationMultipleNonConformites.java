@@ -337,11 +337,11 @@ public class ModificationMultipleNonConformites extends AbstractModificationMult
             }
 
          }catch(final IllegalAccessException e){
-            log.error(e);
+            log.error("An error occurred: {}", e.toString()); 
          }catch(final InvocationTargetException e){
-            log.error(e);
+            log.error("An error occurred: {}", e.toString()); 
          }catch(final NoSuchMethodException e){
-            log.error(e);
+            log.error("An error occurred: {}", e.toString()); 
          }
       }
    }

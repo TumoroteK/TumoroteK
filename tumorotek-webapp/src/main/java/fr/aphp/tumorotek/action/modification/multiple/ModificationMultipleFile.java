@@ -191,7 +191,7 @@ public class ModificationMultipleFile extends AbstractModificationMultipleCompon
             }
 
          }catch(final IllegalAccessException | InvocationTargetException | NoSuchMethodException e){
-            log.error(e);
+            log.error("An error occurred: {}", e.toString()); 
          }
 
       }

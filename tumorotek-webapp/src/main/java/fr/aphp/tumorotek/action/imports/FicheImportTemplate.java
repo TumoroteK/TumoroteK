@@ -1244,7 +1244,7 @@ public class FicheImportTemplate extends AbstractFicheCombineController
             errors = ((ErrorsInImportException) re).getErrors();
             ok = false;
             //			} catch (IOException ex) {
-            //				log.error(e);
+            //				log.error("An error occurred: {}", e.toString()); 
             //				ex.printStackTrace();
             //			} catch (InvalidFormatException ev) {
             //				ev.printStackTrace();
@@ -1307,7 +1307,7 @@ public class FicheImportTemplate extends AbstractFicheCombineController
          wb.write(out);
          Filedownload.save(out.toByteArray(), "application/vnd.ms-excel", "import.xls");
       }catch(final IOException e){
-         log.error(e);
+         log.error("An error occurred: {}", e.toString()); 
       }finally{
          try{
             out.close();

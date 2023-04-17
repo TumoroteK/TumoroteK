@@ -357,7 +357,7 @@ public abstract class AbstractFicheController extends AbstractController
             setBlockModal(false);
 
          }catch(final SuspendNotAllowedException e){
-            log.error(e);
+            log.error("An error occurred: {}", e.toString()); 
          }
       }
    }
@@ -885,7 +885,7 @@ public abstract class AbstractFicheController extends AbstractController
             setBlockModal(false);
 
          }catch(final SuspendNotAllowedException e){
-            log.error(e);
+            log.error("An error occurred: {}", e.toString()); 
          }
       }
    }
@@ -955,7 +955,7 @@ public abstract class AbstractFicheController extends AbstractController
             setBlockModal(false);
 
          }catch(final SuspendNotAllowedException e){
-            log.error(e);
+            log.error("An error occurred: {}", e.toString()); 
          }
       }
    }
@@ -1063,7 +1063,7 @@ public abstract class AbstractFicheController extends AbstractController
             setBlockModal(false);
 
          }catch(final SuspendNotAllowedException e){
-            log.error(e);
+            log.error("An error occurred: {}", e.toString()); 
          }
       }
    }
@@ -1135,7 +1135,7 @@ public abstract class AbstractFicheController extends AbstractController
             setBlockModal(false);
 
          }catch(final SuspendNotAllowedException e){
-            log.error(e);
+            log.error("An error occurred: {}", e.toString()); 
          }
       }
    }
@@ -1222,7 +1222,7 @@ public abstract class AbstractFicheController extends AbstractController
             win.onModal();
             setBlockModal(false);
          }catch(final SuspendNotAllowedException e){
-            log.error(e);
+            log.error("An error occurred: {}", e.toString()); 
          }
       }
 
@@ -1275,7 +1275,7 @@ public abstract class AbstractFicheController extends AbstractController
             setBlockModal(false);
 
          }catch(final SuspendNotAllowedException e){
-            log.error(e);
+            log.error("An error occurred: {}", e.toString()); 
          }
       }
    }
@@ -1341,7 +1341,7 @@ public abstract class AbstractFicheController extends AbstractController
             setBlockModal(false);
 
          }catch(final SuspendNotAllowedException e){
-            log.error(e);
+            log.error("An error occurred: {}", e.toString()); 
          }
       }
    }
@@ -1411,7 +1411,7 @@ public abstract class AbstractFicheController extends AbstractController
             setBlockModal(false);
 
          }catch(final SuspendNotAllowedException e){
-            log.error(e);
+            log.error("An error occurred: {}", e.toString()); 
          }
       }
    }

@@ -1019,7 +1019,7 @@ public class FicheCollaborateur extends AbstractFicheCombineController
          try{
             dl = ManagerLocator.getXmlUtils().creerPdf(document);
          }catch(final Exception e){
-            log.error(e);
+            log.error("An error occurred: {}", e.toString()); 
          }
 
          // envoie du fichier à imprimer à l'utilisateur

@@ -274,7 +274,7 @@ public class Export extends Thread
          }catch(DesktopUnavailableException | InterruptedException e1){}
       }
 		catch(final ClassNotFoundException e){
-			log.error(e);
+			log.error("An error occurred: {}", e.toString()); 
 		}catch(final DesktopUnavailableException e){
          log.warn(e);
 		}catch(final InterruptedException e){
@@ -306,7 +306,7 @@ public class Export extends Thread
 				getStatement().close();
 				// }
 			}catch(final SQLException e){
-				log.error(e);
+				log.error("An error occurred: {}", e.toString()); 
 			}finally{
 				setStatement(null);
 			}
@@ -319,7 +319,7 @@ public class Export extends Thread
 				getPreparedStatement().close();
 				//}
 			}catch(final SQLException e){
-				log.error(e);
+				log.error("An error occurred: {}", e.toString()); 
 			}finally{
 				setPreparedStatement(null);
 			}
@@ -330,7 +330,7 @@ public class Export extends Thread
 			try{
 				getMainRset().close();
 			}catch(final SQLException e){
-				log.error(e);
+				log.error("An error occurred: {}", e.toString()); 
 			}finally{
 				setMainRset(null);
 			}
@@ -339,7 +339,7 @@ public class Export extends Thread
 			try{
 				getLaboRset().close();
 			}catch(final SQLException e){
-				log.error(e);
+				log.error("An error occurred: {}", e.toString()); 
 			}finally{
 				setLaboRset(null);
 			}
@@ -348,7 +348,7 @@ public class Export extends Thread
 			try{
 				getIntermRset().close();
 			}catch(final SQLException e){
-				log.error(e);
+				log.error("An error occurred: {}", e.toString()); 
 			}finally{
 				setIntermRset(null);
 			}
@@ -361,7 +361,7 @@ public class Export extends Thread
 				getConnection().rollback();
 				getConnection().close();
 			}catch(final SQLException e){
-				log.error(e);
+				log.error("An error occurred: {}", e.toString()); 
 			}finally{
 				setConnection(null);
 			}
@@ -1114,9 +1114,9 @@ public class Export extends Thread
 	//					}
 	//					log.debug("----- BIOCAP TRANSFORMATION OK ------");
 	//				} catch (TransformerConfigurationException e) {
-	//					log.error(e);
+	//					log.error("An error occurred: {}", e.toString()); 
 	//				} catch (TransformerException e) {
-	//					log.error(e);
+	//					log.error("An error occurred: {}", e.toString()); 
 	//				} catch (ParserConfigurationException e) {
 	//					e.printStackTrace();
 	//				}
@@ -1124,7 +1124,7 @@ public class Export extends Thread
 	//				createXLS();
 	//			}
 	//		} catch (Exception e) {
-	//			log.error(e);
+	//			log.error("An error occurred: {}", e.toString()); 
 	//			throw new RuntimeException(e);
 	//		}
 	//	}
@@ -1268,7 +1268,7 @@ public class Export extends Thread
 	//				FileDownloadTumo.save(media, desktop);
 	//			}
 	//		} catch (FileNotFoundException e) {
-	//			log.error(e);
+	//			log.error("An error occurred: {}", e.toString()); 
 	//		}
 	//	}
 

@@ -459,11 +459,11 @@ public class XmlUtilsImpl implements XmlUtils
          transformed = export.output(docFo);
       }catch(final XSLTransformException e){
          log.error("Erreur dans la transformation du fichier " + e.getMessage());
-         log.error(e);
+         log.error("An error occurred: {}", e.toString()); 
       }catch(final JDOMException e){
          log.error("Erreur dans la création du fichier JDOM" + e.getMessage());
       }catch(final IOException e){
-         log.error(e);
+         log.error("An error occurred: {}", e.toString()); 
       }
 
       return transformed;
@@ -501,11 +501,11 @@ public class XmlUtilsImpl implements XmlUtils
 
          results = out.toByteArray();
       }catch(final TransformerConfigurationException e){
-         log.error(e);
+         log.error("An error occurred: {}", e.toString()); 
       }catch(final TransformerException e){
-         log.error(e);
+         log.error("An error occurred: {}", e.toString()); 
       }catch(final IOException e){
-         log.error(e);
+         log.error("An error occurred: {}", e.toString()); 
       }finally{
          out.close();
       }
@@ -992,11 +992,11 @@ public class XmlUtilsImpl implements XmlUtils
 
          results = out.toByteArray();
       }catch(final TransformerConfigurationException e){
-         log.error(e);
+         log.error("An error occurred: {}", e.toString()); 
       }catch(final TransformerException e){
-         log.error(e);
+         log.error("An error occurred: {}", e.toString()); 
       }catch(final IOException e){
-         log.error(e);
+         log.error("An error occurred: {}", e.toString()); 
       }finally{
          out.close();
       }
@@ -1329,11 +1329,11 @@ public class XmlUtilsImpl implements XmlUtils
 
          results = out.toByteArray();
       }catch(final TransformerConfigurationException e){
-         log.error(e);
+         log.error("An error occurred: {}", e.toString()); 
       }catch(final TransformerException e){
-         log.error(e);
+         log.error("An error occurred: {}", e.toString()); 
       }catch(final IOException e){
-         log.error(e);
+         log.error("An error occurred: {}", e.toString()); 
       }finally{
          out.close();
       }
@@ -1529,11 +1529,11 @@ public class XmlUtilsImpl implements XmlUtils
          transformed = export.output(docFo);
       }catch(final XSLTransformException e){
          log.error("Erreur dans la transformation du fichier " + e.getMessage());
-         log.error(e);
+         log.error("An error occurred: {}", e.toString()); 
       }catch(final JDOMException e){
          log.error("Erreur dans la création du fichier JDOM" + e.getMessage());
       }catch(final IOException e){
-         log.error(e);
+         log.error("An error occurred: {}", e.toString()); 
       }
 
       return transformed;

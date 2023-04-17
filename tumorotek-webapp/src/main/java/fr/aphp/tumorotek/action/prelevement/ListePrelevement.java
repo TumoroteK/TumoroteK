@@ -564,7 +564,7 @@ public class ListePrelevement extends AbstractListeController2
             setBlockModal(false);
 
          }catch(final SuspendNotAllowedException e){
-            log.error(e);
+            log.error("An error occurred: {}", e.toString()); 
          }
       }
    }

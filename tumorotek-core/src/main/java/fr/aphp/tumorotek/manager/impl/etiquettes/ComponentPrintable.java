@@ -196,7 +196,7 @@ public class ComponentPrintable implements Printable
                try{
                   imageBarcode = BarcodeImageHandler.getImage(barcode);
                }catch(final OutputException e){
-                  log.error(e);
+                  log.error("An error occurred: {}", e.toString()); 
                }
             }
 

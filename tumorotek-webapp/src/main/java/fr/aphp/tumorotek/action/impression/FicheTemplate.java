@@ -534,7 +534,7 @@ public class FicheTemplate extends AbstractImpressionController
                //Extraction des clefs du document
                clesDocListe = new ArrayList<>(TemplateUtils.extractStringsInFileFromPattern(document));
             }catch(final IOException e){
-               log.error(e);
+               log.error("An error occurred: {}", e.toString()); 
             }
             break;
          case ".doc":
@@ -543,7 +543,7 @@ public class FicheTemplate extends AbstractImpressionController
                //Extraction des clefs du document
                clesDocListe = new ArrayList<>(TemplateUtils.extractStringsInFileFromPattern(document));
             }catch(final Exception e){
-               log.error(e);
+               log.error("An error occurred: {}", e.toString()); 
             }
             break;
          default:
@@ -657,7 +657,7 @@ public class FicheTemplate extends AbstractImpressionController
          setObject(template);
          this.switchToStaticMode();
       }catch(final RuntimeException e){
-         log.error(e);
+         log.error("An error occurred: {}", e.toString()); 
          throw e;
       }finally{
          Clients.clearBusy();
@@ -676,7 +676,7 @@ public class FicheTemplate extends AbstractImpressionController
          setObject(template);
          this.switchToStaticMode();
       }catch(final RuntimeException e){
-         log.error(e);
+         log.error("An error occurred: {}", e.toString()); 
          throw e;
       }finally{
          Clients.clearBusy();

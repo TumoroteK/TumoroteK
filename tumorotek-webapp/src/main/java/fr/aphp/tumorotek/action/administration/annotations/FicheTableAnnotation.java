@@ -1086,7 +1086,7 @@ public class FicheTableAnnotation extends AbstractFicheCombineController
             win.onModal();
             win.setPosition("center");
          }catch(final SuspendNotAllowedException e){
-            log.error(e);
+            log.error("An error occurred: {}", e.toString()); 
          }
       }
    }

@@ -673,7 +673,7 @@ public class FicheProfil extends AbstractFicheCombineController
    //				Messagebox.show(handleExceptionMessage(re),
    //						"Error", Messagebox.OK, Messagebox.ERROR);
    //			} catch (InterruptedException e) {
-   //				log.error(e);
+   //				log.error("An error occurred: {}", e.toString()); 
    //			}
    //		} finally {
    //			// ferme wait message

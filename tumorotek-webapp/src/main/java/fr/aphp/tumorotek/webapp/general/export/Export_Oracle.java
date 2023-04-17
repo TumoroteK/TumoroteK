@@ -189,7 +189,7 @@ public class Export_Oracle extends Export
    //				drop_table();
    //				drop_sequence();
    //			} catch (SQLException e) {
-   //				log.error(e);
+   //				log.error("An error occurred: {}", e.toString()); 
    //			}
    //		}
    //	}
@@ -387,13 +387,13 @@ public class Export_Oracle extends Export
    //			preparedStatement.executeUpdate();
    //			preparedStatement.close();
    //		} catch (SQLException e) {
-   //			log.error(e);
+   //			log.error("An error occurred: {}", e.toString()); 
    //		} finally {
    //			if (rsp != null) {
    //				try {
    //					rsp.close();
    //				} catch (SQLException e) {
-   //					log.error(e);
+   //					log.error("An error occurred: {}", e.toString()); 
    //				}
    //			}
    //		}

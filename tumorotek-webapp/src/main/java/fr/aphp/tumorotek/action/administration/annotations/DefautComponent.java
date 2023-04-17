@@ -679,7 +679,7 @@ public class DefautComponent extends HtmlMacroComponent
             win.onModal();
 
          }catch(final SuspendNotAllowedException e){
-            log.error(e);
+            log.error("An error occurred: {}", e.toString()); 
          }
       }
    }

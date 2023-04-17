@@ -1010,7 +1010,7 @@ public class EnceinteManagerImpl implements EnceinteManager
 
             result = total - totalPris;
          }catch(final SQLException e){
-            log.error(e);
+            log.error("An error occurred: {}", e.toString()); 
          }finally{
             if(con != null){
                try{
@@ -1085,7 +1085,7 @@ public class EnceinteManagerImpl implements EnceinteManager
                totalPris = totalPris + pris.get(i);
             }
          }catch(final SQLException e){
-            log.error(e);
+            log.error("An error occurred: {}", e.toString()); 
          }finally{
             if(con != null){
                try{
@@ -1154,7 +1154,7 @@ public class EnceinteManagerImpl implements EnceinteManager
                executeStatementForIds(enceintesId.get(i), entite.getEntiteId(), pstmt3, ids);
             }
          }catch(final SQLException e){
-            log.error(e);
+            log.error("An error occurred: {}", e.toString()); 
          }finally{
             if(con != null){
                try{
@@ -1209,7 +1209,7 @@ public class EnceinteManagerImpl implements EnceinteManager
 
          }
       }catch(final SQLException e){
-         log.error(e);
+         log.error("An error occurred: {}", e.toString()); 
       }finally{
          if(results != null){
             try{
@@ -1242,7 +1242,7 @@ public class EnceinteManagerImpl implements EnceinteManager
             list.add(results.getLong(1));
          }
       }catch(final SQLException e){
-         log.error(e);
+         log.error("An error occurred: {}", e.toString()); 
       }finally{
          if(results != null){
             try{
@@ -1273,7 +1273,7 @@ public class EnceinteManagerImpl implements EnceinteManager
             list.add(results.getInt(1));
          }
       }catch(final SQLException e){
-         log.error(e);
+         log.error("An error occurred: {}", e.toString()); 
       }finally{
          if(results != null){
             try{

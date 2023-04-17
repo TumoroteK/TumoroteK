@@ -91,7 +91,7 @@ public class TemplateUtils
       try{
          Files.copy(dest, media.getStreamData());
       }catch(final Exception e){
-         log.error(e);
+         log.error("An error occurred: {}", e.toString()); 
       }
    }
 
@@ -112,7 +112,7 @@ public class TemplateUtils
          Files.copy(dest, media.getStreamData());
          template.setFichier(newFileName);
       }catch(final Exception e){
-         log.error(e);
+         log.error("An error occurred: {}", e.toString()); 
       }
    }
 
@@ -315,11 +315,11 @@ public class TemplateUtils
 
       }catch(final FileNotFoundException e){
          Clients.clearBusy();
-         log.error(e);
+         log.error("An error occurred: {}", e.toString()); 
          Messagebox.show(Labels.getLabel("template.messages.fichier.introuvable"), "Erreur", Messagebox.OK, Messagebox.ERROR);
       }catch(final Exception e){
          Clients.clearBusy();
-         log.error(e);
+         log.error("An error occurred: {}", e.toString()); 
          Messagebox.show(e.getMessage(), "Erreur", Messagebox.OK, Messagebox.ERROR);
       }
    }

@@ -419,10 +419,10 @@ public class ChampCalculeManagerImpl implements ChampCalculeManager, Application
             try{
                secondes = new Integer(val2.toString());
             }catch(final Exception e2){
-               log.error(e);
-               log.error(e2);
+               log.error("An error occurred: {}", e.toString()); 
+               log.error("An error occurred: {}", e2.toString());
                throw new TKException("Mauvais format de retour pour la deuxème opérande");
-            }
+            }git
          }
       }
 
@@ -471,7 +471,7 @@ public class ChampCalculeManagerImpl implements ChampCalculeManager, Application
          final long duree2 = Long.parseLong(val2.toString());
          return duree1 + duree2;
       }catch(final Exception e){
-         log.error(e);
+         log.error("An error occurred: {}", e.toString()); 
       }
       return null;
    }
@@ -488,7 +488,7 @@ public class ChampCalculeManagerImpl implements ChampCalculeManager, Application
          final long duree2 = Long.parseLong(val2.toString());
          return duree1 - duree2;
       }catch(final Exception e){
-         log.error(e);
+         log.error("An error occurred: {}", e.toString()); 
       }
       return null;
    }

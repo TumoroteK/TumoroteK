@@ -235,31 +235,31 @@ public class MBioBarcodePrinter
       }catch(final ClassNotFoundException e){
          log.error("mbio package not found");
          codeRetour = 0;
-         log.error(e);
+         log.error("An error occurred: {}", e.toString()); 
       }catch(final SecurityException e){
          codeRetour = 0;
-         log.error(e);
+         log.error("An error occurred: {}", e.toString()); 
          e.printStackTrace();
       }catch(final NoSuchMethodException e){
          codeRetour = 0;
-         log.error(e);
+         log.error("An error occurred: {}", e.toString()); 
          e.printStackTrace();
       }catch(final IllegalArgumentException e){
          codeRetour = 0;
-         log.error(e);
+         log.error("An error occurred: {}", e.toString()); 
          e.printStackTrace();
       }catch(final InstantiationException e){
          codeRetour = 0;
-         log.error(e);
+         log.error("An error occurred: {}", e.toString()); 
          e.printStackTrace();
       }catch(final IllegalAccessException e){
          codeRetour = 0;
-         log.error(e);
+         log.error("An error occurred: {}", e.toString()); 
          e.printStackTrace();
       }catch(final InvocationTargetException e){
          codeRetour = 0;
          e.printStackTrace();
-         log.error(e);
+         log.error("An error occurred: {}", e.toString()); 
          e.printStackTrace();
       }catch(final Exception e){
          codeRetour = 0;

@@ -435,11 +435,11 @@ public class InjectionManagerImpl implements InjectionManager
                PropertyUtils.setSimpleProperty(obj, nomChamp, null);
             }
          }catch(final IllegalAccessException e){
-            log.error(e);
+            log.error("An error occurred: {}", e.toString()); 
          }catch(final InvocationTargetException e){
-            log.error(e);
+            log.error("An error occurred: {}", e.toString()); 
          }catch(final NoSuchMethodException e){
-            log.error(e);
+            log.error("An error occurred: {}", e.toString()); 
          }
       }
    }
@@ -562,11 +562,11 @@ public class InjectionManagerImpl implements InjectionManager
                      }
                   }
                }catch(final IllegalAccessException e){
-                  log.error(e);
+                  log.error("An error occurred: {}", e.toString()); 
                }catch(final InvocationTargetException e){
-                  log.error(e);
+                  log.error("An error occurred: {}", e.toString()); 
                }catch(final NoSuchMethodException e){
-                  log.error(e);
+                  log.error("An error occurred: {}", e.toString()); 
                }
             }
          }else if(valeurExterne.getChampAnnotationId() != null){

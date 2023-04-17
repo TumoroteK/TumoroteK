@@ -223,7 +223,7 @@ public class SglHandler
 
          }catch(final Exception e){
             log.error("TK interfacage configuration: ");
-            log.error(e);
+            log.error("An error occurred: {}", e.toString()); 
             throw new RuntimeException(e);
          }
 

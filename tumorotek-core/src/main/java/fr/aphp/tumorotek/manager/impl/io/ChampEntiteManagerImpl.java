@@ -190,11 +190,11 @@ public class ChampEntiteManagerImpl implements ChampEntiteManager
             // extraction de la valeur
             res = PropertyUtils.getProperty(obj, nomChamp);
          }catch(final IllegalAccessException e){
-            log.error(e);
+            log.error("An error occurred: {}", e.toString()); 
          }catch(final InvocationTargetException e){
-            log.error(e);
+            log.error("An error occurred: {}", e.toString()); 
          }catch(final NoSuchMethodException e){
-            log.error(e);
+            log.error("An error occurred: {}", e.toString()); 
          }
          // si la valeur retournée n'est pas null
          if(res != null){
@@ -206,11 +206,11 @@ public class ChampEntiteManagerImpl implements ChampEntiteManager
                try{
                   type = PropertyUtils.getPropertyDescriptor(obj, nomChamp).getPropertyType().getSimpleName();
                }catch(final IllegalAccessException e){
-                  log.error(e);
+                  log.error("An error occurred: {}", e.toString()); 
                }catch(final InvocationTargetException e){
-                  log.error(e);
+                  log.error("An error occurred: {}", e.toString()); 
                }catch(final NoSuchMethodException e){
-                  log.error(e);
+                  log.error("An error occurred: {}", e.toString()); 
                }
                if(type != null && prettyFormat){
                   // set d'un string
@@ -276,11 +276,11 @@ public class ChampEntiteManagerImpl implements ChampEntiteManager
                      // extraction de la valeur
                      resThes = PropertyUtils.getProperty(res, nomChampThes);
                   }catch(final IllegalAccessException e){
-                     log.error(e);
+                     log.error("An error occurred: {}", e.toString()); 
                   }catch(final InvocationTargetException e){
-                     log.error(e);
+                     log.error("An error occurred: {}", e.toString()); 
                   }catch(final NoSuchMethodException e){
-                     log.error(e);
+                     log.error("An error occurred: {}", e.toString()); 
                   }
                   return (null != resThes) ? resThes.toString() : null;
                }

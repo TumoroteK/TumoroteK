@@ -196,7 +196,7 @@ public class ModificationMultipleCombobox extends AbstractModificationMultipleCo
             }
 
          }catch(final IllegalAccessException | InvocationTargetException | NoSuchMethodException e){
-            log.error(e);
+            log.error("An error occurred: {}", e.toString()); 
          }
 
       }
@@ -219,7 +219,7 @@ public class ModificationMultipleCombobox extends AbstractModificationMultipleCo
             out = (String) PropertyUtils.getSimpleProperty(obj, getChampThesaurus());
          }
       }catch(final Exception e){
-         log.error(e);
+         log.error("An error occurred: {}", e.toString()); 
       }
       return out;
    }

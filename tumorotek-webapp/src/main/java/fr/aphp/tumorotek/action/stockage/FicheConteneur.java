@@ -497,10 +497,10 @@ public class FicheConteneur extends AbstractFicheCombineStockageController
          		Messagebox.show(handleExceptionMessage(re), 
          				"Error", Messagebox.OK, Messagebox.ERROR);
          	} catch (InterruptedException e) {
-         		log.error(e);
+         		log.error("An error occurred: {}", e.toString()); 
          	}
          } catch (Exception e) {
-         	log.error(e);
+         	log.error("An error occurred: {}", e.toString()); 
          }*/
 		}
 	}

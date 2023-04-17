@@ -268,27 +268,27 @@ public class PatientServeurIdentite implements Sip
             try{
                resultSet.close(); //fermeture du resultset
             }catch(final Exception e){
-               log.error(e);
+               log.error("An error occurred: {}", e.toString()); 
             }
          }
          //if(stmt!=null){
          //try{
          //stmt.close();//fermeture du statement
          //}
-         //catch(Exception e){log.error(e);}
+         //catch(Exception e){log.error("An error occurred: {}", e.toString()); }
          //}
          if(prepaStmt != null){
             try{
                prepaStmt.close(); //fermeture du statement
             }catch(final Exception e){
-               log.error(e);
+               log.error("An error occurred: {}", e.toString()); 
             }
          }
          if(connection != null){
             try{
                connection.close(); //fermeture de la connexion
             }catch(final Exception e){
-               log.error(e);
+               log.error("An error occurred: {}", e.toString()); 
             }
          }
       }
@@ -431,7 +431,7 @@ public class PatientServeurIdentite implements Sip
       try{
          date = new SimpleDateFormat("dd/MM/yyyy").parse(getColumnDate(DATE_NAISS));
       }catch(final ParseException e){
-         log.error(e);
+         log.error("An error occurred: {}", e.toString()); 
       }
       patient.setDateNaissance(date);
       return patient;

@@ -104,7 +104,7 @@ public class ExportRechercheComplexe extends Export
       }catch(final DesktopUnavailableException e){
          e.printStackTrace();
       }catch(final IOException e){
-         log.error(e);
+         log.error("An error occurred: {}", e.toString()); 
       }finally{
          // updateUIBarThread.interrupt();
          // close progressBar

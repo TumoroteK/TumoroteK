@@ -204,7 +204,7 @@ public class ModificationMultipleListbox extends AbstractModificationMultipleCom
             }
 
          }catch(final IllegalAccessException | InvocationTargetException | NoSuchMethodException e){
-            log.error(e);
+            log.error("An error occurred: {}", e.toString()); 
          }
 
       }
@@ -230,7 +230,7 @@ public class ModificationMultipleListbox extends AbstractModificationMultipleCom
             }
          }
       }catch(final Exception e){
-         log.error(e);
+         log.error("An error occurred: {}", e.toString()); 
       }
       return out;
    }

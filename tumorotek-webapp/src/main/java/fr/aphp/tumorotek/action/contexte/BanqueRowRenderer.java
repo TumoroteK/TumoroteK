@@ -141,11 +141,11 @@ public class BanqueRowRenderer extends TKSelectObjectRenderer<Banque>
    //				}
    //			}
    //		} catch (IllegalAccessException e) {
-   //			log.error(e);
+   //			log.error("An error occurred: {}", e.toString()); 
    //		} catch (InvocationTargetException e) {
-   //			log.error(e);
+   //			log.error("An error occurred: {}", e.toString()); 
    //		} catch (NoSuchMethodException e) {
-   //			log.error(e);
+   //			log.error("An error occurred: {}", e.toString()); 
    //		}
    //	}
 }

@@ -484,11 +484,11 @@ public class ImportManagerImpl implements ImportManager
                      // extraction de la valeur de l'objet
                      value = (String) PropertyUtils.getSimpleProperty(objets.get(i), nomChamp);
                   }catch(final IllegalAccessException e){
-                     log.error(e);
+                     log.error("An error occurred: {}", e.toString()); 
                   }catch(final InvocationTargetException e){
-                     log.error(e);
+                     log.error("An error occurred: {}", e.toString()); 
                   }catch(final NoSuchMethodException e){
-                     log.error(e);
+                     log.error("An error occurred: {}", e.toString()); 
                   }
                }else if(champEntite.getEntite().getNom().equals("Collaborateur")){
                   // si c'est un collaborateur, on extrait une
@@ -826,11 +826,11 @@ public class ImportManagerImpl implements ImportManager
                PropertyUtils.setSimpleProperty(obj, nomChamp, null);
             }
          }catch(final IllegalAccessException e){
-            log.error(e);
+            log.error("An error occurred: {}", e.toString()); 
          }catch(final InvocationTargetException e){
-            log.error(e);
+            log.error("An error occurred: {}", e.toString()); 
          }catch(final NoSuchMethodException e){
-            log.error(e);
+            log.error("An error occurred: {}", e.toString()); 
          }
       }
    }
@@ -919,11 +919,11 @@ public class ImportManagerImpl implements ImportManager
                   type = PropertyUtils.getPropertyDescriptor(obj, nomChamp).getPropertyType().getSimpleName();
                }
             }catch(final IllegalAccessException e){
-               log.error(e);
+               log.error("An error occurred: {}", e.toString()); 
             }catch(final InvocationTargetException e){
-               log.error(e);
+               log.error("An error occurred: {}", e.toString()); 
             }catch(final NoSuchMethodException e){
-               log.error(e);
+               log.error("An error occurred: {}", e.toString()); 
             }
 
             // on regarde si c'est une date
@@ -2310,7 +2310,7 @@ public class ImportManagerImpl implements ImportManager
                rs.close();
             }catch(final SQLException e){
                rs = null;
-               log.error(e);
+               log.error("An error occurred: {}", e.toString()); 
             }
          }
          if(stmt != null){

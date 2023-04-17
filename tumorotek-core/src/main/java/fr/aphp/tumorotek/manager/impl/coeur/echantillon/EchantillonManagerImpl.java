@@ -845,7 +845,7 @@ public class EchantillonManagerImpl implements EchantillonManager
                   try{
                      anapathStream.reset();
                   }catch(final IOException e){
-                     log.error(e);
+                     log.error("An error occurred: {}", e.toString()); 
                   }
                }
                anapath = anapath.clone();
@@ -1249,7 +1249,7 @@ public class EchantillonManagerImpl implements EchantillonManager
                try{
                   anapathStream.reset();
                }catch(final IOException e){
-                  log.error(e);
+                  log.error("An error occurred: {}", e.toString()); 
                }
 
             }
@@ -1367,8 +1367,8 @@ public class EchantillonManagerImpl implements EchantillonManager
             }
             throw new RuntimeException("echantillon" + ".codesAssigne.organe.exportNbIllegal");
          }else if(les > 0 && expsLes != 1){
-            log.error(expsLes);
-            log.error(les);
+            log.error(String.valueOf(expsLes));
+            log.error(String.valueOf(les));
             for(int i = 0; i < codes.size(); i++){
                log.error(codes.get(i).getCode() + "--" + codes.get(i).getIsOrgane() + "--" + codes.get(i).getExport());
             }

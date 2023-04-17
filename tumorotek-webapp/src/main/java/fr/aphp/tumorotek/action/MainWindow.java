@@ -1144,7 +1144,7 @@ public class MainWindow extends GenericForwardComposer<Component>
             setBlockModal(false);
 
          }catch(final SuspendNotAllowedException e){
-            log.error(e);
+            log.error("An error occurred: {}", e.toString()); 
          }
       }
    }

@@ -286,7 +286,7 @@ public class EmplacementManagerImpl implements EmplacementManager
                   try{
                      pos = getPositionByAdrl(terminales.get(0), position);
                   }catch(final Exception e){
-                     log.error(e);
+                     log.error("An error occurred: {}", e.toString()); 
                   }
                   //						try {
                   //							// pos = Integer.parseInt(position);
@@ -423,7 +423,7 @@ public class EmplacementManagerImpl implements EmplacementManager
                   break;
                }
             }catch(final SQLException e){
-               log.error(e);
+               log.error("An error occurred: {}", e.toString()); 
             }finally{
                if(con != null){
                   try{
@@ -512,7 +512,7 @@ public class EmplacementManagerImpl implements EmplacementManager
                }
             }
          }catch(final SQLException e){
-            log.error(e);
+            log.error("An error occurred: {}", e.toString()); 
          }finally{
             if(con != null){
                try{
@@ -613,7 +613,7 @@ public class EmplacementManagerImpl implements EmplacementManager
                }
             }
          }catch(final SQLException e){
-            log.error(e);
+            log.error("An error occurred: {}", e.toString()); 
          }finally{
             if(con != null){
                try{
