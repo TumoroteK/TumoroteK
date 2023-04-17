@@ -56,8 +56,8 @@ import javax.print.PrintService;
 import javax.print.PrintServiceLookup;
 import javax.print.SimpleDoc;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import fr.aphp.tumorotek.manager.etiquettes.BarcodeFieldDefault;
 import fr.aphp.tumorotek.manager.exception.StringEtiquetteOverSizeException;
@@ -70,7 +70,7 @@ import fr.aphp.tumorotek.model.imprimante.Modele;
 public class ComponentPrinter
 {
 
-   private static Log log = LogFactory.getLog(ComponentPrinter.class);
+   private static Logger log = LoggerFactory.getLogger(ComponentPrinter.class);
 
    private Exception runtimeException = null;
 

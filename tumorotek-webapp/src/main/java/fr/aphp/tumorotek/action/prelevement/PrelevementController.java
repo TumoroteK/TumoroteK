@@ -44,8 +44,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Components;
@@ -101,7 +101,7 @@ import fr.aphp.tumorotek.webapp.general.SessionUtils;
 public class PrelevementController extends AbstractObjectTabController
 {
 
-   private final Log log = LogFactory.getLog(PrelevementController.class);
+   private final Logger log = LoggerFactory.getLogger(PrelevementController.class);
 
    private static final long serialVersionUID = -5315034328095152785L;
 

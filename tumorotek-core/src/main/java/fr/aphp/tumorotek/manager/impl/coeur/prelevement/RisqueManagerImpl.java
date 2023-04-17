@@ -41,8 +41,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.TypedQuery;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.orm.jpa.SharedEntityManagerCreator;
 import org.springframework.validation.Validator;
 
@@ -69,7 +69,7 @@ import fr.aphp.tumorotek.model.contexte.Plateforme;
 public class RisqueManagerImpl implements RisqueManager
 {
 
-   private final Log log = LogFactory.getLog(RisqueManager.class);
+   private final Logger log = LoggerFactory.getLogger(RisqueManager.class);
 
    /* Beans injectes par Spring*/
    private RisqueDao risqueDao;

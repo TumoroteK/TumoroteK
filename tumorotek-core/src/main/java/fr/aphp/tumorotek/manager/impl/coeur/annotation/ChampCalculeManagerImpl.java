@@ -39,8 +39,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationContext;
@@ -76,7 +76,7 @@ public class ChampCalculeManagerImpl implements ChampCalculeManager, Application
 
    //ODO Revoir les méthodes et typages.
 
-   private final Log log = LogFactory.getLog(GroupementManager.class);
+   private final Logger log = LoggerFactory.getLogger(GroupementManager.class);
 
    private ApplicationContext context;
 

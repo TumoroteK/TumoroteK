@@ -35,8 +35,8 @@
  **/
 package fr.aphp.tumorotek.manager.impl.coeur;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import fr.aphp.tumorotek.dao.cession.CessionDao;
@@ -59,7 +59,7 @@ import fr.aphp.tumorotek.model.TKAnnotableObject;
 public class TKAnnotableObjectManagerImpl implements TKAnnotableObjectManager
 {
 
-   private final Log log = LogFactory.getLog(TKAnnotableObjectManager.class);
+   private final Logger log = LoggerFactory.getLogger(TKAnnotableObjectManager.class);
 
    @Autowired
    private PatientDao patientDao;

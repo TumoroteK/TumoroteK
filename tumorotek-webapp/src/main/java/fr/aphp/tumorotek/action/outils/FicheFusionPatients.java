@@ -39,8 +39,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Components;
@@ -85,7 +85,7 @@ import fr.aphp.tumorotek.webapp.general.SessionUtils;
 public class FicheFusionPatients extends AbstractFicheCombineController
 {
 
-   private final Log log = LogFactory.getLog(FicheFusionPatients.class);
+   private final Logger log = LoggerFactory.getLogger(FicheFusionPatients.class);
 
    private static final long serialVersionUID = -6573663322216502290L;
 

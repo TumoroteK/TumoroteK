@@ -45,8 +45,8 @@ import java.util.Iterator;
 import java.util.Map;
 
 import org.apache.camel.Body;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -66,7 +66,7 @@ import fr.aphp.tumorotek.model.interfacage.scan.ScanTube;
 public class ExcelVMateParser
 {
 
-   private final static Log log = LogFactory.getLog(ExcelVMateParser.class);
+   private final static Logger log = LoggerFactory.getLogger(ExcelVMateParser.class);
 
    private ScanTerminaleManager scanTerminaleManager;
 

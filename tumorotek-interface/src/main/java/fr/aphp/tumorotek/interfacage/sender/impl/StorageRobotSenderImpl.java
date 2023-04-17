@@ -49,8 +49,8 @@ import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
 
 import org.apache.camel.ProducerTemplate;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import fr.aphp.tumorotek.interfacage.sender.StorageRobotSender;
 import fr.aphp.tumorotek.interfacage.storageRobot.StorageMovement;
@@ -68,7 +68,7 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
 public class StorageRobotSenderImpl implements StorageRobotSender
 {
 
-   private final Log log = LogFactory.getLog(StorageRobotSender.class);
+   private final Logger log = LoggerFactory.getLogger(StorageRobotSender.class);
 
    private ProducerTemplate camelTemplate;
 

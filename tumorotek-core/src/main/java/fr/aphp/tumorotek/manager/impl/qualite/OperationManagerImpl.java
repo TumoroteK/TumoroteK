@@ -50,8 +50,8 @@ import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.sql.DataSource;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.CannotGetJdbcConnectionException;
 import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.validation.Validator;
@@ -86,7 +86,7 @@ import fr.aphp.tumorotek.utils.Utils;
 public class OperationManagerImpl implements OperationManager
 {
 
-   private final Log log = LogFactory.getLog(OperationManager.class);
+   private final Logger log = LoggerFactory.getLogger(OperationManager.class);
 
    /* Beans injectes par Spring*/
    private OperationDao operationDao;

@@ -42,8 +42,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.TypedQuery;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.orm.jpa.SharedEntityManagerCreator;
 
 import fr.aphp.tumorotek.dao.systeme.EntiteDao;
@@ -63,7 +63,7 @@ import fr.aphp.tumorotek.model.systeme.Entite;
 public class EntiteManagerImpl implements EntiteManager
 {
 
-   private final Log log = LogFactory.getLog(EntiteManager.class);
+   private final Logger log = LoggerFactory.getLogger(EntiteManager.class);
 
    /** Bean Dao EntiteDao. */
    private EntiteDao entiteDao;

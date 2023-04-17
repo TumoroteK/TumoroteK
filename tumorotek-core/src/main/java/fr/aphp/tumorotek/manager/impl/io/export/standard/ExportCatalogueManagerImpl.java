@@ -49,8 +49,8 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.springframework.orm.jpa.JpaTransactionManager;
@@ -71,7 +71,7 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
 public class ExportCatalogueManagerImpl implements ExportCatalogueManager
 {
 
-   private static Log log = LogFactory.getLog(ExportCatalogueManager.class);
+   private static Logger log = LoggerFactory.getLogger(ExportCatalogueManager.class);
 
    private JpaTransactionManager txManager;
 

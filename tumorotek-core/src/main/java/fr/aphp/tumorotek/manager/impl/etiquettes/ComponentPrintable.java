@@ -55,8 +55,8 @@ import java.util.List;
 
 import javax.swing.RepaintManager;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.EncodeHintType;
@@ -88,7 +88,7 @@ public class ComponentPrintable implements Printable
 
    private ComponentPrinter componentPrinter;
 
-   private static Log log = LogFactory.getLog(ComponentBarcodeLabel.class);
+   private static Logger log = LoggerFactory.getLogger(ComponentBarcodeLabel.class);
 
    // private static final String BARCODE = "code barre ";
    // private static final int BARCODE_MAX_HEIGHT = 56;

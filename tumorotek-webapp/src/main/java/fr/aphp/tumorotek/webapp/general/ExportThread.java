@@ -47,8 +47,8 @@ import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -84,7 +84,7 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
 public class ExportThread extends Thread
 {
 
-   private static Log log = LogFactory.getLog(ExportThread.class);
+   private static Logger log = LoggerFactory.getLogger(ExportThread.class);
 
    private final Desktop desktop;
 

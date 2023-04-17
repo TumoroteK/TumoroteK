@@ -38,8 +38,8 @@ package fr.aphp.tumorotek.manager.impl.imprimante;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import fr.aphp.tumorotek.dao.imprimante.ChampLigneEtiquetteDao;
 import fr.aphp.tumorotek.dao.imprimante.LigneEtiquetteDao;
@@ -55,7 +55,7 @@ import fr.aphp.tumorotek.model.systeme.Entite;
 public class ChampLigneEtiquetteManagerImpl implements ChampLigneEtiquetteManager
 {
 
-   private final Log log = LogFactory.getLog(ChampLigneEtiquetteManager.class);
+   private final Logger log = LoggerFactory.getLogger(ChampLigneEtiquetteManager.class);
 
    /** Beans. */
    private ChampLigneEtiquetteDao champLigneEtiquetteDao;

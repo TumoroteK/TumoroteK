@@ -38,8 +38,8 @@ package fr.aphp.tumorotek.manager.impl.coeur.prodderive;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.validation.Validator;
 
 import fr.aphp.tumorotek.dao.coeur.prodderive.ProdDeriveDao;
@@ -73,7 +73,7 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
 public class TransformationManagerImpl implements TransformationManager
 {
 
-   private final Log log = LogFactory.getLog(TransformationManager.class);
+   private final Logger log = LoggerFactory.getLogger(TransformationManager.class);
 
    /** Bean Dao TransformationDao. */
    private TransformationDao transformationDao;

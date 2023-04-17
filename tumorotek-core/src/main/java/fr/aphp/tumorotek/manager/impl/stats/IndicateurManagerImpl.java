@@ -38,8 +38,8 @@ package fr.aphp.tumorotek.manager.impl.stats;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.validation.Validator;
 
 import fr.aphp.tumorotek.dao.stats.IndicateurDao;
@@ -54,7 +54,7 @@ import fr.aphp.tumorotek.model.stats.Subdivision;
 public class IndicateurManagerImpl implements IndicateurManager
 {
 
-   private final Log log = LogFactory.getLog(IndicateurManager.class);
+   private final Logger log = LoggerFactory.getLogger(IndicateurManager.class);
 
    private final List<Indicateur> NO_LIST = new ArrayList<>();
 

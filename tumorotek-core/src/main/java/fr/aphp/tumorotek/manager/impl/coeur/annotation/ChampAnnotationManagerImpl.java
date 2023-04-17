@@ -49,8 +49,8 @@ import javax.persistence.NoResultException;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.validation.Validator;
 
 import fr.aphp.tumorotek.dao.annotation.AnnotationDefautDao;
@@ -101,7 +101,7 @@ import fr.aphp.tumorotek.utils.Utils;
 public class ChampAnnotationManagerImpl implements ChampAnnotationManager
 {
 
-   private final Log log = LogFactory.getLog(ChampAnnotationManagerImpl.class);
+   private final Logger log = LoggerFactory.getLogger(ChampAnnotationManagerImpl.class);
 
    /** Bean Dao AffichageDao. */
    private ChampAnnotationDao champAnnotationDao;

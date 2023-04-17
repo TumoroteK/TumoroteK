@@ -49,8 +49,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import fr.aphp.tumorotek.action.ManagerLocator;
 import fr.aphp.tumorotek.action.stats.im.export.ExportToExcel;
@@ -63,7 +63,7 @@ import fr.aphp.tumorotek.utils.Utils;
 public class ExecuteModele
 {
 
-   protected static Log log = LogFactory.getLog(ExportToExcel.class);
+   protected static Logger log = LoggerFactory.getLogger(ExportToExcel.class);
 
    private SModele model;
 

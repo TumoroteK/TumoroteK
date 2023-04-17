@@ -38,8 +38,8 @@ package fr.aphp.tumorotek.manager.impl.code;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.validation.Validator;
 
 import fr.aphp.tumorotek.dao.code.CodeDossierDao;
@@ -73,7 +73,7 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
 public class CodeDossierManagerImpl implements CodeDossierManager
 {
 
-   private final Log log = LogFactory.getLog(CodeDossierManager.class);
+   private final Logger log = LoggerFactory.getLogger(CodeDossierManager.class);
 
    private CodeDossierDao codeDossierDao;
 

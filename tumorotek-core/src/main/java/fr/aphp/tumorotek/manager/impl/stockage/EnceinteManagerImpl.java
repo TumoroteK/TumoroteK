@@ -45,8 +45,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.validation.Validator;
 
@@ -96,7 +96,7 @@ import fr.aphp.tumorotek.utils.Utils;
 public class EnceinteManagerImpl implements EnceinteManager
 {
 
-   private final Log log = LogFactory.getLog(EnceinteManager.class);
+   private final Logger log = LoggerFactory.getLogger(EnceinteManager.class);
 
    private TerminaleDao terminaleDao;
 

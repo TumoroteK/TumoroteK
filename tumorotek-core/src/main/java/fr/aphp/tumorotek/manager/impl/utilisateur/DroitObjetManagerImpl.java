@@ -38,8 +38,8 @@ package fr.aphp.tumorotek.manager.impl.utilisateur;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import fr.aphp.tumorotek.dao.qualite.OperationTypeDao;
 import fr.aphp.tumorotek.dao.systeme.EntiteDao;
@@ -66,7 +66,7 @@ import fr.aphp.tumorotek.model.utilisateur.Profil;
 public class DroitObjetManagerImpl implements DroitObjetManager
 {
 
-   private final Log log = LogFactory.getLog(DroitObjetManager.class);
+   private final Logger log = LoggerFactory.getLogger(DroitObjetManager.class);
 
    /** Bean Dao. */
    private DroitObjetDao droitObjetDao;

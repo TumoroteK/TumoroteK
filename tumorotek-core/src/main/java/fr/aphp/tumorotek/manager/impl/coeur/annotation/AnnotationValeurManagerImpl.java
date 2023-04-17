@@ -45,8 +45,8 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.validation.Validator;
 
 import fr.aphp.tumorotek.dao.annotation.AnnotationValeurDao;
@@ -87,7 +87,7 @@ import fr.aphp.tumorotek.utils.Utils;
 public class AnnotationValeurManagerImpl implements AnnotationValeurManager
 {
 
-   private final Log log = LogFactory.getLog(AnnotationValeurManager.class);
+   private final Logger log = LoggerFactory.getLogger(AnnotationValeurManager.class);
 
    /* Beans injectes par Spring*/
    private AnnotationValeurDao annotationValeurDao;

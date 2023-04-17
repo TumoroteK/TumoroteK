@@ -43,8 +43,8 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.beanutils.PropertyUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import fr.aphp.tumorotek.dao.io.export.ChampEntiteDao;
 import fr.aphp.tumorotek.manager.exception.RequiredObjectIsNullException;
@@ -67,7 +67,7 @@ import fr.aphp.tumorotek.model.systeme.Fichier;
 public class ChampEntiteManagerImpl implements ChampEntiteManager
 {
 
-   private final Log log = LogFactory.getLog(AffichageManager.class);
+   private final Logger log = LoggerFactory.getLogger(AffichageManager.class);
 
    /** Bean Dao AffichageDao. */
    private ChampEntiteDao champEntiteDao = null;

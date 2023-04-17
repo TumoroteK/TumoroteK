@@ -46,8 +46,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import ch.qos.logback.core.joran.spi.ActionException;
 import fr.aphp.tumorotek.model.coeur.patient.Patient;
@@ -55,7 +55,7 @@ import fr.aphp.tumorotek.model.coeur.patient.Patient;
 public class PatientServeurIdentite implements Sip
 {
 
-   private final Log log = LogFactory.getLog(PatientServeurIdentite.class);
+   private final Logger log = LoggerFactory.getLogger(PatientServeurIdentite.class);
 
    ServeurIdentitesFileBean serveurIdentitesFileBean;
 

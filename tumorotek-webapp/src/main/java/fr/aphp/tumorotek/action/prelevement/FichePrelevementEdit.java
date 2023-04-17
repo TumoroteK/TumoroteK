@@ -46,8 +46,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.validation.Errors;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
@@ -121,7 +121,7 @@ import fr.aphp.tumorotek.webapp.general.SessionUtils;
 public class FichePrelevementEdit extends AbstractFicheEditController
 {
 
-   protected Log log = LogFactory.getLog(FichePrelevementEdit.class);
+   protected Logger log = LoggerFactory.getLogger(FichePrelevementEdit.class);
 
    protected static final long serialVersionUID = 2627927168895414292L;
 

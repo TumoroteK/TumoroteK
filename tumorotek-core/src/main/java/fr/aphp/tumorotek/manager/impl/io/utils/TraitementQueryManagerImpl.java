@@ -50,8 +50,8 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
 
 import fr.aphp.tumorotek.dao.coeur.prelevement.PrelevementDao;
@@ -83,7 +83,7 @@ import fr.aphp.tumorotek.model.systeme.Entite;
 public class TraitementQueryManagerImpl implements TraitementQueryManager
 {
 
-   private final Log log = LogFactory.getLog(TraitementQueryManagerImpl.class);
+   private final Logger log = LoggerFactory.getLogger(TraitementQueryManagerImpl.class);
 
    private EntityManagerFactory entityManagerFactory;
 

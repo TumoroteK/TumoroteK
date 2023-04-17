@@ -51,8 +51,8 @@ import java.util.Locale;
 import java.util.Set;
 
 import org.apache.commons.beanutils.PropertyUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.zkoss.util.media.AMedia;
 import org.zkoss.util.media.Media;
 import org.zkoss.util.resource.Labels;
@@ -134,7 +134,7 @@ public class AnnotationComponent extends GenericForwardComposer<Component>
 
    private static final long serialVersionUID = 1L;
 
-   private final Log log = LogFactory.getLog(AnnotationComponent.class);
+   private final Logger log = LoggerFactory.getLogger(AnnotationComponent.class);
 
    private Label annoLabel;
 

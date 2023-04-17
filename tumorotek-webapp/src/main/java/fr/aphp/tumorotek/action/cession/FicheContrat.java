@@ -41,8 +41,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.springframework.validation.Errors;
@@ -97,7 +97,7 @@ import fr.aphp.tumorotek.webapp.general.SessionUtils;
 public class FicheContrat extends AbstractFicheCombineController
 {
 
-   private final Log log = LogFactory.getLog(FicheContrat.class);
+   private final Logger log = LoggerFactory.getLogger(FicheContrat.class);
 
    private static final long serialVersionUID = 6300875937416491348L;
 

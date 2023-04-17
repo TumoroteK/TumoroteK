@@ -38,8 +38,8 @@ package fr.aphp.tumorotek.action.contexte;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.zkoss.util.resource.Labels;
@@ -91,7 +91,7 @@ import fr.aphp.tumorotek.webapp.general.SessionUtils;
 public class FicheEtablissement extends AbstractFicheCombineController
 {
 
-   private final Log log = LogFactory.getLog(FicheEtablissement.class);
+   private final Logger log = LoggerFactory.getLogger(FicheEtablissement.class);
 
    private static final long serialVersionUID = -8941746249248191447L;
 

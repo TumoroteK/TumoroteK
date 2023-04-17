@@ -43,8 +43,8 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.HtmlMacroComponent;
@@ -89,7 +89,7 @@ import fr.aphp.tumorotek.model.utils.Duree;
 public class DefautComponent extends HtmlMacroComponent
 {
 
-   private final Log log = LogFactory.getLog(DefautComponent.class);
+   private final Logger log = LoggerFactory.getLogger(DefautComponent.class);
 
    private static final long serialVersionUID = 1L;
 

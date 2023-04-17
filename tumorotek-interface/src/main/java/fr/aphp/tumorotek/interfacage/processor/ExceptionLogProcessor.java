@@ -37,12 +37,12 @@ package fr.aphp.tumorotek.interfacage.processor;
 
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Processor de l'echange issu du traitement d'une exception dans le
- * pipeline. Log le stack trace de l'exception.
+ * pipeline. Logger le stack trace de l'exception.
  * date: 11/05/11
  *
  * @author mathieu BARTHELEMY
@@ -51,7 +51,7 @@ import org.apache.commons.logging.LogFactory;
 public class ExceptionLogProcessor implements Processor
 {
 
-   private Log log;
+   private Logger log;
 
    /**
     * Instancie le logger en fonction de la route renvoyant
@@ -72,7 +72,7 @@ public class ExceptionLogProcessor implements Processor
       if(exchange.getFromRouteId().startsWith("inclusion")){
          logName = logName + "inclusion.dead";
       }
-      log = LogFactory.getLog(logName);
+      log = LoggerFactory.getLogger(logName);
 
       log.error("Error trace:", exchange.getProperty(Exchange.EXCEPTION_CAUGHT, Throwable.class));
    }

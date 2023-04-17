@@ -58,8 +58,8 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 
@@ -97,7 +97,7 @@ import fr.aphp.tumorotek.model.systeme.Fichier;
 public class AnnotationValeur extends AnnotationCommon implements Serializable, TKFileSettableObject
 {
 
-   private final Log log = LogFactory.getLog(AnnotationValeur.class);
+   private final Logger log = LoggerFactory.getLogger(AnnotationValeur.class);
 
    private static final long serialVersionUID = 1L;
 
@@ -404,7 +404,7 @@ public class AnnotationValeur extends AnnotationCommon implements Serializable, 
             setStream(new ByteArrayInputStream(ba));
             return new ByteArrayInputStream(ba);
          }catch(final IOException e){
-            log.error(e);
+            log.error(String.valueOf(e));
             return null;
          }
       }

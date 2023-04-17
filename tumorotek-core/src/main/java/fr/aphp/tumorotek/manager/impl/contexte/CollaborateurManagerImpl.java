@@ -41,8 +41,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.validation.Validator;
 
 import fr.aphp.tumorotek.dao.coeur.patient.PatientMedecinDao;
@@ -96,7 +96,7 @@ import fr.aphp.tumorotek.utils.Utils;
 public class CollaborateurManagerImpl implements CollaborateurManager
 {
 
-   private final Log log = LogFactory.getLog(CollaborateurManager.class);
+   private final Logger log = LoggerFactory.getLogger(CollaborateurManager.class);
 
    private CollaborateurDao collaborateurDao;
 

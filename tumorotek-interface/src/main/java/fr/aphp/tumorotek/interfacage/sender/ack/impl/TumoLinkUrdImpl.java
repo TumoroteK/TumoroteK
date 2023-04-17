@@ -41,8 +41,8 @@ import java.util.Calendar;
 import java.util.List;
 
 import org.apache.camel.ProducerTemplate;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import ca.uhn.hl7v2.HL7Exception;
 import ca.uhn.hl7v2.model.v24.datatype.XCN;
@@ -58,7 +58,7 @@ import fr.aphp.tumorotek.model.interfacage.Recepteur;
 public class TumoLinkUrdImpl implements TumoLinkUrd
 {
 
-   private final Log log = LogFactory.getLog(TumoLinkUrdImpl.class);
+   private final Logger log = LoggerFactory.getLogger(TumoLinkUrdImpl.class);
 
    private ProducerTemplate camelTemplate;
 

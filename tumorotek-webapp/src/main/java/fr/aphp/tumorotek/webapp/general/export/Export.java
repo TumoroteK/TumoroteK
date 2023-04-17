@@ -55,8 +55,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.zkoss.util.media.AMedia;
@@ -89,7 +89,7 @@ import fr.aphp.tumorotek.webapp.general.ResultSetToExcel;
  */
 public class Export extends Thread
 {
-	protected static Log log = LogFactory.getLog(Export.class);
+	protected static Logger log = LoggerFactory.getLogger(Export.class);
 
 	private static final Map<Integer, String> typeMap;
 	static{

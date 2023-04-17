@@ -9,13 +9,13 @@ import java.nio.charset.Charset;
 import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ResourceBundleTumoImpl implements ResourceBundleTumo
 {
 
-   private final Log log = LogFactory.getLog(ResourceBundleTumo.class);
+   private final Logger log = LoggerFactory.getLogger(ResourceBundleTumo.class);
 
    private String tumoPropertiesPath;
 

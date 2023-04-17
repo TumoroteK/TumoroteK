@@ -48,15 +48,15 @@ import java.util.Vector;
 import javax.print.PrintService;
 import javax.print.PrintServiceLookup;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import fr.aphp.tumorotek.model.imprimante.Imprimante;
 
 public class ComponentPrinter
 {
 
-   private static Log log = LogFactory.getLog(ComponentPrinter.class);
+   private static Logger log = LoggerFactory.getLogger(ComponentPrinter.class);
 
    /**
     * fonction d impression d etiquettes.

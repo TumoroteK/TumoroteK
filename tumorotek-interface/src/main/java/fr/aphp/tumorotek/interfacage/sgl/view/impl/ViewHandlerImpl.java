@@ -50,8 +50,8 @@ import java.util.Map;
 import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import fr.aphp.tumorotek.interfacage.sgl.SglHandler;
 import fr.aphp.tumorotek.interfacage.sgl.view.ViewHandler;
@@ -63,7 +63,7 @@ import fr.aphp.tumorotek.model.interfacage.Emetteur;
 public class ViewHandlerImpl implements ViewHandler
 {
 
-   private final Log log = LogFactory.getLog(SglHandler.class);
+   private final Logger log = LoggerFactory.getLogger(SglHandler.class);
 
    private String camelConfigLocation;
 

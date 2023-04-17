@@ -42,8 +42,8 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.orm.jpa.JpaCallback;
 import org.springframework.orm.jpa.support.JpaDaoSupport;
 
@@ -63,7 +63,7 @@ import fr.aphp.tumorotek.dao.GenericDaoJpa;
 public class GenericDaoJpaImpl<T, PK extends Serializable> extends JpaDaoSupport implements GenericDaoJpa<T, PK>, FinderExecutor
 {
 
-   private static Log log = LogFactory.getLog(GenericDaoJpa.class);
+   private static Logger log = LoggerFactory.getLogger(GenericDaoJpa.class);
 
    //@PersistenceContext
    //private EntityManager em;

@@ -55,8 +55,8 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.TypedQuery;
 
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.Validator;
 
@@ -135,7 +135,7 @@ import fr.aphp.tumorotek.utils.Utils;
 public class EchantillonManagerImpl implements EchantillonManager
 {
 
-   private final Log log = LogFactory.getLog(EchantillonManager.class);
+   private final Logger log = LoggerFactory.getLogger(EchantillonManager.class);
 
    private EchantillonDao echantillonDao;
 

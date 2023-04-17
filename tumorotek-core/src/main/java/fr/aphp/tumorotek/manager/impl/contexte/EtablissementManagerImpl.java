@@ -41,8 +41,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.validation.Validator;
 
 import fr.aphp.tumorotek.dao.contexte.CategorieDao;
@@ -85,7 +85,7 @@ import fr.aphp.tumorotek.utils.Utils;
 public class EtablissementManagerImpl implements EtablissementManager
 {
 
-   private final Log log = LogFactory.getLog(EtablissementManager.class);
+   private final Logger log = LoggerFactory.getLogger(EtablissementManager.class);
 
    private EtablissementDao etablissementDao;
 

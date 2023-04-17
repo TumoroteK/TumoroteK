@@ -45,8 +45,8 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.beanutils.PropertyUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import fr.aphp.tumorotek.action.utils.ChampUtils;
 import fr.aphp.tumorotek.model.cession.Cession;
@@ -81,7 +81,7 @@ public abstract class ExportNode
 
    private final static Set<String> NUMERIC_DATATYPES = new HashSet<>(Arrays.asList("num", "duree"));
 
-   private final Log log = LogFactory.getLog(ExportNode.class);
+   private final Logger log = LoggerFactory.getLogger(ExportNode.class);
 
    /**
     * Parent

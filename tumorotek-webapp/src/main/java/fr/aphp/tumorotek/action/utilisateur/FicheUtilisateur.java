@@ -44,8 +44,8 @@ import java.util.Date;
 import java.util.Hashtable;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.validation.Errors;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
@@ -111,7 +111,7 @@ import fr.aphp.tumorotek.webapp.general.SessionUtils;
 public class FicheUtilisateur extends AbstractFicheCombineController
 {
 
-   private final Log log = LogFactory.getLog(FicheUtilisateur.class);
+   private final Logger log = LoggerFactory.getLogger(FicheUtilisateur.class);
 
    private static final long serialVersionUID = 6626506501770467670L;
 

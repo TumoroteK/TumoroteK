@@ -68,8 +68,8 @@ import javax.sql.DataSource;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
@@ -152,7 +152,7 @@ import fr.aphp.tumorotek.utils.Utils;
 public class ImportManagerImpl implements ImportManager
 {
 
-   private final Log log = LogFactory.getLog(ImportManager.class);
+   private final Logger log = LoggerFactory.getLogger(ImportManager.class);
 
    private ImportTemplateManager importTemplateManager;
 

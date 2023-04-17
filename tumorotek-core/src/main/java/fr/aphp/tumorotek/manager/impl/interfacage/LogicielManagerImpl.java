@@ -37,8 +37,8 @@ package fr.aphp.tumorotek.manager.impl.interfacage;
 
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import fr.aphp.tumorotek.dao.interfacage.LogicielDao;
 import fr.aphp.tumorotek.manager.interfacage.LogicielManager;
@@ -56,7 +56,7 @@ import fr.aphp.tumorotek.model.interfacage.Logiciel;
 public class LogicielManagerImpl implements LogicielManager
 {
 
-   private final Log log = LogFactory.getLog(LogicielManager.class);
+   private final Logger log = LoggerFactory.getLogger(LogicielManager.class);
 
    /** Bean Dao. */
    private LogicielDao logicielDao;

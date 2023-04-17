@@ -38,8 +38,8 @@ package fr.aphp.tumorotek.manager.impl.coeur.prodderive;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.validation.Validator;
 
 import fr.aphp.tumorotek.dao.coeur.prodderive.ProdDeriveDao;
@@ -67,7 +67,7 @@ import fr.aphp.tumorotek.model.contexte.Plateforme;
 public class ProdTypeManagerImpl implements ProdTypeManager
 {
 
-   private final Log log = LogFactory.getLog(ProdTypeManager.class);
+   private final Logger log = LoggerFactory.getLogger(ProdTypeManager.class);
 
    /** Bean Dao ProdQualiteDao. */
    private ProdTypeDao prodTypeDao;

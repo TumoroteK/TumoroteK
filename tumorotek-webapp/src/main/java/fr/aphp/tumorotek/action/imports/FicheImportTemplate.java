@@ -45,8 +45,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
@@ -115,7 +115,7 @@ import fr.aphp.tumorotek.webapp.general.SessionUtils;
 public class FicheImportTemplate extends AbstractFicheCombineController
 {
 
-   private final Log log = LogFactory.getLog(FicheImportTemplate.class);
+   private final Logger log = LoggerFactory.getLogger(FicheImportTemplate.class);
 
    private static final long serialVersionUID = 3330210719922132352L;
 

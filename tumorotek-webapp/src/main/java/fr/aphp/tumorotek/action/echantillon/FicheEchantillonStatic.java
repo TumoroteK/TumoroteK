@@ -48,8 +48,8 @@ import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.zkoss.util.resource.Labels;
@@ -127,7 +127,7 @@ import fr.aphp.tumorotek.webapp.general.SessionUtils;
 public class FicheEchantillonStatic extends AbstractFicheStaticController
 {
 
-   private final Log log = LogFactory.getLog(FicheEchantillonStatic.class);
+   private final Logger log = LoggerFactory.getLogger(FicheEchantillonStatic.class);
 
    private static final long serialVersionUID = 4995144588806344858L;
 

@@ -42,8 +42,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.validation.Errors;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
@@ -109,7 +109,7 @@ import fr.aphp.tumorotek.webapp.general.SessionUtils;
 public class FicheLaboInter extends AbstractFicheEditController
 {
 
-   protected final Log log = LogFactory.getLog(FicheLaboInter.class);
+   protected final Logger log = LoggerFactory.getLogger(FicheLaboInter.class);
 
    private static final long serialVersionUID = -422768239086454672L;
 

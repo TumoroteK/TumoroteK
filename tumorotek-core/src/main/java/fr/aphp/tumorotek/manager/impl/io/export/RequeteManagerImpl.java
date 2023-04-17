@@ -39,8 +39,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.validation.Validator;
 
 import fr.aphp.tumorotek.dao.io.export.GroupementDao;
@@ -71,7 +71,7 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
 public class RequeteManagerImpl implements RequeteManager
 {
 
-   private final Log log = LogFactory.getLog(RequeteManager.class);
+   private final Logger log = LoggerFactory.getLogger(RequeteManager.class);
 
    /** Liste des requêtes du manager. */
    private List<Requete> requetes = new ArrayList<>();

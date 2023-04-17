@@ -42,8 +42,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-//import org.apache.commons.logging.Log;
-//import org.apache.commons.logging.LogFactory;
+//import org.slf4j.Logger;
+//import org.slf4j.LoggerFactory;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
@@ -101,7 +101,7 @@ import fr.aphp.tumorotek.webapp.tree.stockage.EnceinteNode;
 public class FicheEnceinte extends AbstractFicheCombineStockageController
 {
 
-	//private Log log = LogFactory.getLog(FicheEnceinte.class);
+	//private Logger log = LoggerFactory.getLogger(FicheEnceinte.class);
 
 	private static final long serialVersionUID = -7592543406710901340L;
 

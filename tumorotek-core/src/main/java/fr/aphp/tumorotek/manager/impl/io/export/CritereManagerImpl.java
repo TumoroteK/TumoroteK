@@ -37,8 +37,8 @@ package fr.aphp.tumorotek.manager.impl.io.export;
 
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.validation.Validator;
 
 import fr.aphp.tumorotek.dao.io.export.ChampDao;
@@ -67,7 +67,7 @@ import fr.aphp.tumorotek.model.io.export.Critere;
 public class CritereManagerImpl implements CritereManager
 {
 
-   private final Log log = LogFactory.getLog(CritereManager.class);
+   private final Logger log = LoggerFactory.getLogger(CritereManager.class);
 
    /** Bean Dao CritereDao. */
    private CritereDao critereDao = null;

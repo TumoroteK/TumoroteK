@@ -38,8 +38,8 @@ package fr.aphp.tumorotek.manager.impl.contexte;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import fr.aphp.tumorotek.dao.contexte.TitreDao;
 import fr.aphp.tumorotek.manager.context.TitreManager;
@@ -57,7 +57,7 @@ import fr.aphp.tumorotek.model.contexte.Titre;
 public class TitreManagerImpl implements TitreManager
 {
 
-   private final Log log = LogFactory.getLog(TitreManager.class);
+   private final Logger log = LoggerFactory.getLogger(TitreManager.class);
 
    /** Bean Dao TitreDao. */
    private TitreDao titreDao;

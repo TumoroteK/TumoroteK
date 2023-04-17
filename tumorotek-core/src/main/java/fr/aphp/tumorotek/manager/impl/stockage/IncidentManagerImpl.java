@@ -38,8 +38,8 @@ package fr.aphp.tumorotek.manager.impl.stockage;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.validation.Validator;
 
 import fr.aphp.tumorotek.dao.stockage.ConteneurDao;
@@ -70,7 +70,7 @@ import fr.aphp.tumorotek.model.stockage.Terminale;
 public class IncidentManagerImpl implements IncidentManager
 {
 
-   private final Log log = LogFactory.getLog(IncidentManager.class);
+   private final Logger log = LoggerFactory.getLogger(IncidentManager.class);
 
    private IncidentDao incidentDao;
 

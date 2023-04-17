@@ -50,8 +50,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.TypedQuery;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.hibernate.collection.PersistentSet;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.Validator;
@@ -136,7 +136,7 @@ import fr.aphp.tumorotek.utils.Utils;
 public class PrelevementManagerImpl implements PrelevementManager
 {
 
-   private final Log log = LogFactory.getLog(PrelevementManager.class);
+   private final Logger log = LoggerFactory.getLogger(PrelevementManager.class);
 
    private PrelevementDao prelevementDao;
 

@@ -39,8 +39,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import fr.aphp.tumorotek.dao.io.imports.ImportHistoriqueDao;
 import fr.aphp.tumorotek.dao.io.imports.ImportTemplateDao;
@@ -62,7 +62,7 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
 public class ImportHistoriqueManagerImpl implements ImportHistoriqueManager
 {
 
-   private final Log log = LogFactory.getLog(ImportHistoriqueManager.class);
+   private final Logger log = LoggerFactory.getLogger(ImportHistoriqueManager.class);
 
    private ImportHistoriqueDao importHistoriqueDao;
 

@@ -43,8 +43,8 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.zkoss.bind.annotation.AfterCompose;
 import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.ContextParam;
@@ -81,7 +81,7 @@ import fr.aphp.tumorotek.model.interfacage.PatientSip;
 public class SelectPatientModale
 {
 
-   private final Log log = LogFactory.getLog(SelectPatientModale.class);
+   private final Logger log = LoggerFactory.getLogger(SelectPatientModale.class);
 
    protected Boolean isFusionPatients = false;
 

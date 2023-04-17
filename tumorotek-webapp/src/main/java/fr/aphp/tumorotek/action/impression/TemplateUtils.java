@@ -17,8 +17,8 @@ import java.util.regex.Pattern;
 
 import javax.activation.MimetypesFileTypeMap;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.apache.poi.hwpf.HWPFDocument;
 import org.apache.poi.hwpf.usermodel.CharacterRun;
 import org.apache.poi.hwpf.usermodel.Paragraph;
@@ -61,7 +61,7 @@ public class TemplateUtils
     */
    public static String TEMPLATE_DOC_FOLDER = SessionUtils.getSystemBaseDir() + "/administration/templates/docs/";
 
-   private static Log log = LogFactory.getLog(TemplateUtils.class);
+   private static Logger log = LoggerFactory.getLogger(TemplateUtils.class);
 
    public static SimpleDateFormat FORMAT_DATE = new SimpleDateFormat("yyyy_MM_dd_HH.mm.ss");
 

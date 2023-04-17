@@ -38,8 +38,8 @@ package fr.aphp.tumorotek.manager.impl.interfacage;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import fr.aphp.tumorotek.dao.interfacage.EmetteurDao;
 import fr.aphp.tumorotek.manager.interfacage.EmetteurManager;
@@ -58,7 +58,7 @@ import fr.aphp.tumorotek.model.interfacage.Logiciel;
 public class EmetteurManagerImpl implements EmetteurManager
 {
 
-   private final Log log = LogFactory.getLog(EmetteurManager.class);
+   private final Logger log = LoggerFactory.getLogger(EmetteurManager.class);
 
    /** Bean Dao. */
    private EmetteurDao emetteurDao;
