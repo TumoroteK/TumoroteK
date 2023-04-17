@@ -276,7 +276,7 @@ public class Export extends Thread
 		catch(final ClassNotFoundException e){
 			log.error("An error occurred: {}", e.toString()); 
 		}catch(final DesktopUnavailableException e){
-         log.warn(e);
+         log.warn(String.valueOf(e));
 		}catch(final InterruptedException e){
 			log.warn(e.getMessage());
 		}catch(final Exception e){
@@ -1110,7 +1110,7 @@ public class Export extends Thread
 	//						downloadExportFileXls(f, desktop);
 	//						Executions.deactivate(desktop);
 	//					} catch (InterruptedException ex) {
-	//						log.error(ex);
+	//						log.error("Error {}: ", String.valueOf(ex));
 	//					}
 	//					log.debug("----- BIOCAP TRANSFORMATION OK ------");
 	//				} catch (TransformerConfigurationException e) {
@@ -1175,9 +1175,9 @@ public class Export extends Thread
 			try{
 				Executions.activate(desktop);
 			}catch(final DesktopUnavailableException e){
-				log.warn(e);
+				log.warn(String.valueOf(e));
 			}catch(final InterruptedException e){
-				log.warn(e);
+				log.warn(String.valueOf(e));
 			}
 			if(!progressBar.isError()){
 				progressBarComponent.getParent().detach();

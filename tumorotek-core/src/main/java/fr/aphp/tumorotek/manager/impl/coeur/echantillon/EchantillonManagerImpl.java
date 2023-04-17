@@ -1360,8 +1360,8 @@ public class EchantillonManagerImpl implements EchantillonManager
          }
          if(orgs > 0 && expsOrg != 1){
             // recherche bug exportNbIllegal
-            log.error(expsOrg);
-            log.error(orgs);
+            log.error("An error occurred {}:",expsOrg);
+            log.error("An error occurred {}:",orgs);
             for(int i = 0; i < codes.size(); i++){
                log.error(codes.get(i).getCode() + "--" + codes.get(i).getIsOrgane() + "--" + codes.get(i).getExport());
             }

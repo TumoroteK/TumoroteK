@@ -284,7 +284,7 @@ public class SelectDossierExterneModale extends AbstractFicheCombineController
 
          }catch(final RuntimeException re){
             re.printStackTrace();
-            log.error(re);
+            log.error(String.valueOf(re));
             // fermeture de la fenêtre
             Events.postEvent(new Event("onClose", self.getRoot()));
             // ferme wait message

@@ -1193,7 +1193,7 @@ public class FicheImportTemplate extends AbstractFicheCombineController
                Events.echoEvent("onLaterImport", self, null);
             }
          }catch(final IOException ex){
-            log.error(ex);
+            log.error("Error {}: ", String.valueOf(ex));
             ex.printStackTrace();
             Clients.clearBusy();
          }catch(final InvalidFormatException ev){

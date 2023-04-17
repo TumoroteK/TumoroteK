@@ -388,7 +388,7 @@ public class PrelevementManagerImpl implements PrelevementManager
             throw new DoublonFoundException("Prelevement", "creation", prelevement.getCode(), null);
          }
       }catch(final RuntimeException re){
-         log.error(re);
+         log.error(String.valueOf(re));
          if(filesCreated != null){
             for(final File f : filesCreated){
                f.delete();
@@ -1441,7 +1441,7 @@ public class PrelevementManagerImpl implements PrelevementManager
       }catch(final IOException ioe){ // problème survenu lors du déplacement
          log.error("un problème est survenu dans un déplacement de fichier: " + mvFichier.toString());
 
-         log.error(ioe);
+         log.error(String.valueOf(ioe));
 
          // rollback
          try{
@@ -1451,7 +1451,7 @@ public class PrelevementManagerImpl implements PrelevementManager
          }catch(final IOException ioe2){ // problème survenu lors du rollback du déplacement
             log.error("un problème est survenu dans un rollabck de déplacement de fichier: " + mvFichier.toString());
 
-            log.error(ioe2);
+            log.error(String.valueOf(ioe2));
          }
          throw new RuntimeException("switch.banque.filesystem.error");
       }

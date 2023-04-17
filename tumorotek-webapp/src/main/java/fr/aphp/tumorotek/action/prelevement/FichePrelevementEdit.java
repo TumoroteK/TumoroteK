@@ -755,7 +755,7 @@ public class FichePrelevementEdit extends AbstractFicheEditController
       }catch(final RuntimeException re){
          // ferme wait message
          Clients.clearBusy();
-         log.error(re);
+         log.error(String.valueOf(re));
          Messagebox.show(handleExceptionMessage(re), "Error", Messagebox.OK, Messagebox.ERROR);
          return false;
       }

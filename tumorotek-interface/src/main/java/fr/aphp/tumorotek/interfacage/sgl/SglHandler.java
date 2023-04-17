@@ -214,7 +214,7 @@ public class SglHandler
          Emetteur emet;
          try{
             emet = interfacageParsingUtils.extractEmetteurFromFileToInjectInTk(inboxesProp, body, sendingApp);
-            log.debug(emet);
+            log.debug("Emetteur: {}", emet);
             final String sglMap = interfacageParsingUtils.extractInboxParamFromFile(inboxesProp, body, sendingApp, "XML");
             // , emet);
             log.debug(sglMap);

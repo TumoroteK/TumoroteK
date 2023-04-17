@@ -323,7 +323,7 @@ public class ComponentPrinter
                //  outToServer.writeBytes(out.toString());
 
                codeRetour = 1;
-               log.debug(codeRetour);
+               log.debug("Code retour {}:", codeRetour);
             }catch(final Exception e){
                e.printStackTrace();
             }finally{

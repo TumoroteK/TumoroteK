@@ -226,7 +226,7 @@ public class ExportThread extends Thread
 
          Executions.deactivate(desktop);
       }catch(final InterruptedException ex){
-         log.error(ex);
+         log.error("Error {}: ", String.valueOf(ex));
       }finally{
          desktop.enableServerPush(false);
       }
@@ -292,7 +292,7 @@ public class ExportThread extends Thread
 
          Executions.deactivate(desktop);
       }catch(final InterruptedException ex){
-         log.error(ex);
+         log.error("Error {}: ", String.valueOf(ex));
       }finally{
          desktop.enableServerPush(false);
       }
@@ -398,7 +398,7 @@ public class ExportThread extends Thread
 
          Executions.deactivate(desktop);
       }catch(final InterruptedException ex){
-         log.error(ex);
+         log.error("Error {}: ", String.valueOf(ex));
       }
    }
 
@@ -501,9 +501,9 @@ public class ExportThread extends Thread
 
          Executions.deactivate(desktop);
       }catch(final InterruptedException ex){
-         log.error(ex);
+         log.error("Error {}: ", String.valueOf(ex));
       }catch(final IOException ioe){
-         log.error(ioe);
+         log.error("Error {}: ", String.valueOf(ioe));
       }catch(final Exception e){
          log.error("An error occurred: {}", e.toString()); 
       }finally{
@@ -676,7 +676,7 @@ public class ExportThread extends Thread
 
          Executions.deactivate(desktop);
       }catch(final InterruptedException ex){
-         log.error(ex);
+         log.error("Error {}: ", String.valueOf(ex));
       }finally{
          desktop.enableServerPush(false);
       }
@@ -736,7 +736,7 @@ public class ExportThread extends Thread
 
          Executions.deactivate(desktop);
       }catch(final InterruptedException ex){
-         log.error(ex);
+         log.error("Error {}: ", String.valueOf(ex));
       }finally{
          desktop.enableServerPush(false);
       }

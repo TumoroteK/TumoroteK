@@ -143,7 +143,7 @@ public class StorageRobotSenderImpl implements StorageRobotSender
       int currentRow = 0;
 
       for(final StorageMovement stE : storageMvts){
-         log.debug(stE);
+         log.debug("StorageMovement: {}", stE);
          currentRow++;
          // 1st col = increment
          baos.write(String.valueOf(currentRow).getBytes());

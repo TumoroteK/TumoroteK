@@ -111,10 +111,10 @@ public abstract class RequiredValueValidator implements Validator
                   }
                }catch(IllegalAccessException | InvocationTargetException | NoSuchMethodException e){
                   log.warn(e.getMessage());
-                  log.debug(e);
+                  log.debug(e.toString());
                }
             }else{ // validation through functional interface
-               log.debug("validating field " + fName + " through functional validation");
+               log.debug("validating field {} through functional validation", fName);
 
                if(!validations.get(chpId).validate((TKdataObject) target, errs)){
                   errs.rejectValue(correctFieldNameIfNeeded(fName), eNom + "." + fName + ".empty");

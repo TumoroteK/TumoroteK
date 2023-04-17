@@ -2252,7 +2252,7 @@ public class ImportManagerImpl implements ImportManager
                }
             }catch(final RuntimeException re){
                
-               log.debug(re);
+               log.debug(re.toString());
                
                final ImportError error = new ImportError();
                error.setException(re);

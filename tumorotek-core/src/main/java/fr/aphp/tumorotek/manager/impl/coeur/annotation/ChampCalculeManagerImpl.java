@@ -422,7 +422,7 @@ public class ChampCalculeManagerImpl implements ChampCalculeManager, Application
                log.error("An error occurred: {}", e.toString()); 
                log.error("An error occurred: {}", e2.toString());
                throw new TKException("Mauvais format de retour pour la deuxème opérande");
-            }git
+            }
          }
       }
 

@@ -469,7 +469,7 @@ public class ImportDossierExterneModale extends AbstractFicheCombineController
 
          // ferme wait message
          Clients.clearBusy();
-         log.error(re);
+         log.error(String.valueOf(re));
          Messagebox.show(handleExceptionMessage(re), "Error", Messagebox.OK, Messagebox.ERROR);
       }
 

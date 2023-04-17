@@ -373,7 +373,7 @@ public class FicheFusionPatients extends AbstractFicheCombineController
       }catch(final RuntimeException re){
          // ferme wait message
          Clients.clearBusy();
-         log.error(re);
+         log.error(String.valueOf(re));
          Messagebox.show(handleExceptionMessage(re), "Error", Messagebox.OK, Messagebox.ERROR);
       }
    }
