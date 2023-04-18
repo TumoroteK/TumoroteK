@@ -441,7 +441,7 @@ public class ExportToExcel extends ResultSetToExcel
          }catch(final Exception ex){
             System.out.println("Erreur generate");
             System.out.println(ex);
-            log.error("Error {}: ", String.valueOf(ex));
+            log.error(ex.getMessage(), ex);
          }finally{
             // Autosize columns
             ((SXSSFSheet) sh).trackAllColumnsForAutoSizing();

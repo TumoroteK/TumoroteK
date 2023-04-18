@@ -1110,7 +1110,7 @@ public class Export extends Thread
 	//						downloadExportFileXls(f, desktop);
 	//						Executions.deactivate(desktop);
 	//					} catch (InterruptedException ex) {
-	//						log.error("Error {}: ", String.valueOf(ex));
+	//						log.error(ex.getMessage(), ex);
 	//					}
 	//					log.debug("----- BIOCAP TRANSFORMATION OK ------");
 	//				} catch (TransformerConfigurationException e) {

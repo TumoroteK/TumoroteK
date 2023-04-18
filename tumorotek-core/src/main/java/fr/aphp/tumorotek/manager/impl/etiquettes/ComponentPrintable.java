@@ -186,7 +186,7 @@ public class ComponentPrintable implements Printable
                   barcode.setDrawingQuietSection(false);
                }
             }catch(final BarcodeException be){
-               log.error("BarcodeException: {}:", be);
+               log.error(be.getMessage(), be);
             }
 
             // création de l'image du code-barres
@@ -325,7 +325,7 @@ public class ComponentPrintable implements Printable
          }
 
       }catch(final Exception ex){
-         log.error("Error {}: ", String.valueOf(ex));
+         log.error(ex.getMessage(), ex);
       }
 
    }

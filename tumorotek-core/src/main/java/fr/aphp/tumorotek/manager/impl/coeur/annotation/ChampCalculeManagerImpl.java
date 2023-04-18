@@ -420,7 +420,7 @@ public class ChampCalculeManagerImpl implements ChampCalculeManager, Application
                secondes = new Integer(val2.toString());
             }catch(final Exception e2){
                log.error(e.getMessage(), e); 
-               log.error("An error occurred: {}", e2.toString());
+               log.error(e2.getMessage(), e);
                throw new TKException("Mauvais format de retour pour la deuxème opérande");
             }
          }
