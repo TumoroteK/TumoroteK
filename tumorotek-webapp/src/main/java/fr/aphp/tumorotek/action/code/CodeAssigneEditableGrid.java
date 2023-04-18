@@ -688,7 +688,7 @@ public class CodeAssigneEditableGrid extends SmallObjsEditableGrid
             assistCodeClicked = false;
 
          }catch(final SuspendNotAllowedException e){
-            log.error("An error occurred: {}", e.toString()); 
+            log.error(e.getMessage(), e); 
          }
       }
    }

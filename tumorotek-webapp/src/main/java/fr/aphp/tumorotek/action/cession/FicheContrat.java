@@ -901,7 +901,7 @@ public class FicheContrat extends AbstractFicheCombineController
          dl = ManagerLocator.getXmlUtils().creerPdf(document);
 
       }catch(final Exception e){
-         log.error("An error occurred: {}", e.toString()); 
+         log.error(e.getMessage(), e); 
       }
 
       // ferme wait message

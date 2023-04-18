@@ -136,7 +136,7 @@ public class IncaReportManagerImpl implements IncaReportManager
                calOrigin.setTime(new SimpleDateFormat("dd/MM/yyyy").parse("01/01/0001"));
                ant = echantillonDao.findCountSamplesByDates(calOrigin, interm1, banks).get(0);
             }catch(final ParseException e){
-               log.error("An error occurred: {}", e.toString()); 
+               log.error(e.getMessage(), e); 
             }
          }
 
@@ -465,7 +465,7 @@ public class IncaReportManagerImpl implements IncaReportManager
                   ant = patientDao.findCountPrelevedByDatesPrel(calOrigin, interm1, banks).get(0);
                }
             }catch(final ParseException e){
-               log.error("An error occurred: {}", e.toString()); 
+               log.error(e.getMessage(), e); 
             }
          }
 

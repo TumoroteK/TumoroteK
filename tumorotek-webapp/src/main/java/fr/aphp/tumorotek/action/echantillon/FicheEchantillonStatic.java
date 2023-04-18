@@ -694,7 +694,7 @@ public class FicheEchantillonStatic extends AbstractFicheStaticController
          dl = ManagerLocator.getXmlUtils().creerPdf(document);
 
       }catch(final Exception e){
-         log.error("An error occurred: {}", e.toString()); 
+         log.error(e.getMessage(), e); 
       }
 
       // ferme wait message
@@ -2011,7 +2011,7 @@ public class FicheEchantillonStatic extends AbstractFicheStaticController
             Filedownload.save(new FileInputStream(echantillon.getCrAnapath().getPath()), echantillon.getCrAnapath().getMimeType(),
                echantillon.getCrAnapath().getNom());
          }catch(final Exception e){
-            log.error("An error occurred: {}", e.toString()); 
+            log.error(e.getMessage(), e); 
          }
       }
    }

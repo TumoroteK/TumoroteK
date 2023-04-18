@@ -1022,7 +1022,7 @@ public class FicheLaboInter extends AbstractFicheEditController
                   }
                   currentSterileLaboBox = (Checkbox) target;
                }catch(final NullPointerException e){
-                  log.error("An error occurred: {}", e.toString()); 
+                  log.error(e.getMessage(), e); 
                }
             }
          }else if(lab.equals(cascadeNonSterileFrom)){

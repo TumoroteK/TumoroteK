@@ -467,7 +467,7 @@ public class ExportThread extends Thread
             conn.close();
          }catch(final Exception e){
             log.error(e.getMessage());
-            log.error("An error occurred: {}", e.toString()); 
+            log.error(e.getMessage(), e); 
          }finally{
             if(conn != null){
                try{
@@ -505,14 +505,14 @@ public class ExportThread extends Thread
       }catch(final IOException ioe){
          log.error("Error {}: ", String.valueOf(ioe));
       }catch(final Exception e){
-         log.error("An error occurred: {}", e.toString()); 
+         log.error(e.getMessage(), e); 
       }finally{
          desktop.enableServerPush(false);
          if(bouf != null){
             try{
                bouf.close();
             }catch(final Exception e){
-               log.error("An error occurred: {}", e.toString()); 
+               log.error(e.getMessage(), e); 
                bouf = null;
                throw new RuntimeException(e);
             }
@@ -521,7 +521,7 @@ public class ExportThread extends Thread
             try{
                ((BufferedWriter) wb).close();
             }catch(final Exception e){
-               log.error("An error occurred: {}", e.toString()); 
+               log.error(e.getMessage(), e); 
                wb = null;
                throw new RuntimeException(e);
             }
@@ -775,7 +775,7 @@ public class ExportThread extends Thread
          final AMedia media = new AMedia(fileName, "xls", "application/vnd.ms-excel", out.toByteArray());
          FileDownloadTumo.save(media, desktop);
       }catch(final Exception e){
-         log.error("An error occurred: {}", e.toString()); 
+         log.error(e.getMessage(), e); 
       }finally{
          if(out != null){
             try{

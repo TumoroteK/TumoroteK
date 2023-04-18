@@ -845,7 +845,7 @@ public class EchantillonManagerImpl implements EchantillonManager
                   try{
                      anapathStream.reset();
                   }catch(final IOException e){
-                     log.error("An error occurred: {}", e.toString()); 
+                     log.error(e.getMessage(), e); 
                   }
                }
                anapath = anapath.clone();
@@ -1249,7 +1249,7 @@ public class EchantillonManagerImpl implements EchantillonManager
                try{
                   anapathStream.reset();
                }catch(final IOException e){
-                  log.error("An error occurred: {}", e.toString()); 
+                  log.error(e.getMessage(), e); 
                }
 
             }

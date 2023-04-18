@@ -1020,7 +1020,7 @@ public class FichePrelevementStatic extends AbstractFicheStaticController
             setBlockModal(false);
 
          }catch(final SuspendNotAllowedException e){
-            log.error("An error occurred: {}", e.toString()); 
+            log.error(e.getMessage(), e); 
          }
       }
    }
@@ -1099,7 +1099,7 @@ public class FichePrelevementStatic extends AbstractFicheStaticController
             setBlockModal(false);
 
          }catch(final SuspendNotAllowedException e){
-            log.error("An error occurred: {}", e.toString()); 
+            log.error(e.getMessage(), e); 
          }
       }
    }

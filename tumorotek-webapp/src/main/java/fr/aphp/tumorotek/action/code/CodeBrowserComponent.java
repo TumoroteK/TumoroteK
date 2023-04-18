@@ -309,7 +309,7 @@ public class CodeBrowserComponent extends GenericForwardComposer<Component>
                renderer.render(currentItem, selectedNode, 0);
             }
          }catch(final Exception e){
-            log.error("An error occurred: {}", e.toString()); 
+            log.error(e.getMessage(), e); 
          }
       }
    }

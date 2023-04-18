@@ -2265,7 +2265,7 @@ public class FicheTerminale extends AbstractFicheCombineStockageController
 			try{
 				dl = ManagerLocator.getXmlUtils().creerContenuHtml(doc);
 			}catch(final Exception e){
-				log.error("An error occurred: {}", e.toString()); 
+				log.error(e.getMessage(), e); 
 			}
 
 			// envoie du fichier à imprimer à l'utilisateur

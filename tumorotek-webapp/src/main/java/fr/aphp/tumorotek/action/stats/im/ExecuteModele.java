@@ -104,7 +104,7 @@ public class ExecuteModele
          // printDataMap(); debug only
 
       }catch(final SQLException e){
-         log.error("An error occurred: {}", e.toString()); 
+         log.error(e.getMessage(), e); 
          e.printStackTrace();
          throw new RuntimeException(e.getMessage());
       }finally{
@@ -112,7 +112,7 @@ public class ExecuteModele
             try{
                connection.close();
             }catch(final SQLException e){
-               log.error("An error occurred: {}", e.toString()); 
+               log.error(e.getMessage(), e); 
             }
          }
       }
@@ -145,7 +145,7 @@ public class ExecuteModele
          endTime = System.nanoTime();
          log.debug("Total elapsed time in modele " + model.getNom() + " execution :" + ((endTime - startTime) / 1000000000.0));
       }catch(final Exception e){
-         log.error("An error occurred: {}", e.toString()); 
+         log.error(e.getMessage(), e); 
       }
    }
 
@@ -196,7 +196,7 @@ public class ExecuteModele
                   rSet.getInt(3), rSet.getInt(4)));
             }
          }catch(final SQLException e){
-            log.error("An error occurred: {}", e.toString()); 
+            log.error(e.getMessage(), e); 
             throw e;
          }finally{
             if(rSet != null){

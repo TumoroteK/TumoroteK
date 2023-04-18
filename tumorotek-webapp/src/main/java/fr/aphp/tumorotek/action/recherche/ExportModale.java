@@ -259,7 +259,7 @@ public class ExportModale extends AbstractFicheCombineController
          final AMedia media = new AMedia(fileName, "xls", "application/vnd.ms-excel", out.toByteArray());
          Filedownload.save(media);
       }catch(final Exception e){
-         log.error("An error occurred: {}", e.toString()); 
+         log.error(e.getMessage(), e); 
       }finally{
          if(out != null){
             try{

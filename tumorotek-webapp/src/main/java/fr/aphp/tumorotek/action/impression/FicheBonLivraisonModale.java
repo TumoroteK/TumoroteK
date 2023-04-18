@@ -160,7 +160,7 @@ public class FicheBonLivraisonModale extends AbstractFicheCombineController
          dl = ManagerLocator.getXmlUtils().creerAccordTransfertPdf(document);
 
       }catch(final Exception e){
-         log.error("An error occurred: {}", e.toString()); 
+         log.error(e.getMessage(), e); 
       }
 
       // ferme wait message

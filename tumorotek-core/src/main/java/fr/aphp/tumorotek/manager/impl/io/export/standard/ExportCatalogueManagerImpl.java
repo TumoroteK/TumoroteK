@@ -200,7 +200,7 @@ public class ExportCatalogueManagerImpl implements ExportCatalogueManager
             conn.close();
          }catch(final Exception e){
             log.error(e.getMessage());
-            log.error("An error occurred: {}", e.toString()); 
+            log.error(e.getMessage(), e); 
          }finally{
             if(conn != null){
                try{
@@ -259,7 +259,7 @@ public class ExportCatalogueManagerImpl implements ExportCatalogueManager
 
          return item;
       }catch(final SQLException e){
-         log.error("An error occurred: {}", e.toString()); 
+         log.error(e.getMessage(), e); 
       }finally{
          if(s != null){
             try{

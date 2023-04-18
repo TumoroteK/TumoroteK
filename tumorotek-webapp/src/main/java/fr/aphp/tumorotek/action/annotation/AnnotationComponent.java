@@ -2631,7 +2631,7 @@ public class AnnotationComponent extends GenericForwardComposer<Component>
                PropertyUtils.setSimpleProperty(cloneVal, "alphanum", value.getValue());
             }
          }catch(final Exception e){
-            log.error("An error occurred: {}", e.toString()); 
+            log.error(e.getMessage(), e); 
          }
          addValeursIntoActionLists(cloneVal);
       }

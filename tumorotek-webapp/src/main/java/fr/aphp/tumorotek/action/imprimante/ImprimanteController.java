@@ -476,7 +476,7 @@ public class ImprimanteController extends AbstractObjectTabController
             setBlockModal(false);
 
          }catch(final SuspendNotAllowedException e){
-            log.error("An error occurred: {}", e.toString()); 
+            log.error(e.getMessage(), e); 
          }
       }
    }
@@ -547,7 +547,7 @@ public class ImprimanteController extends AbstractObjectTabController
             setBlockModal(false);
 
          }catch(final SuspendNotAllowedException e){
-            log.error("An error occurred: {}", e.toString()); 
+            log.error(e.getMessage(), e); 
          }
       }
    }
@@ -618,7 +618,7 @@ public class ImprimanteController extends AbstractObjectTabController
             setBlockModal(false);
 
          }catch(final SuspendNotAllowedException e){
-            log.error("An error occurred: {}", e.toString()); 
+            log.error(e.getMessage(), e); 
          }
       }
    }

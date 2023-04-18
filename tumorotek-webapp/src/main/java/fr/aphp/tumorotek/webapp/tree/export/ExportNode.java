@@ -506,11 +506,11 @@ public abstract class ExportNode
             isCalendar = true;
          }
       }catch(final IllegalAccessException e){
-         log.error("An error occurred: {}", e.toString()); 
+         log.error(e.getMessage(), e); 
       }catch(final InvocationTargetException e){
-         log.error("An error occurred: {}", e.toString()); 
+         log.error(e.getMessage(), e); 
       }catch(final NoSuchMethodException e){
-         log.error("An error occurred: {}", e.toString()); 
+         log.error(e.getMessage(), e); 
       }
 
       return isCalendar;

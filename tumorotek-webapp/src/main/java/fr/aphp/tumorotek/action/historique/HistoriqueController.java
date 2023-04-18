@@ -351,7 +351,7 @@ public class HistoriqueController extends AbstractObjectTabController
          final AMedia media = new AMedia(sb.toString(), "xls", "application/vnd.ms-excel", out.toByteArray());
          FileDownloadTumo.save(media, desktop);
       }catch(final Exception e){
-         log.error("An error occurred: {}", e.toString()); 
+         log.error(e.getMessage(), e); 
       }finally{
          if(out != null){
             try{

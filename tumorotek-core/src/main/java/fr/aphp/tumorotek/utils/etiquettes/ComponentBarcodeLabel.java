@@ -157,7 +157,7 @@ public class ComponentBarcodeLabel extends Component
          try{
             imageBarcode1 = BarcodeImageHandler.getImage(barcode1);
          }catch(final OutputException e){
-            log.error("An error occurred: {}", e.toString()); 
+            log.error(e.getMessage(), e); 
          }
       }
 
@@ -167,7 +167,7 @@ public class ComponentBarcodeLabel extends Component
          try{
             imageBarcode2 = BarcodeImageHandler.getImage(barcode2);
          }catch(final OutputException e){
-            log.error("An error occurred: {}", e.toString()); 
+            log.error(e.getMessage(), e); 
          }
       }
 

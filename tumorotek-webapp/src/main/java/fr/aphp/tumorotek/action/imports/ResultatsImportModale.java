@@ -336,7 +336,7 @@ public class ResultatsImportModale extends GenericForwardComposer<Component>
                   warnDlRow.setVisible(false);
                }
             }catch(final IOException e){
-               log.error("An error occurred: {}", e.toString()); 
+               log.error(e.getMessage(), e); 
             }
          }
       }
@@ -522,9 +522,9 @@ public class ResultatsImportModale extends GenericForwardComposer<Component>
             workbook instanceof HSSFWorkbook ? ConfigManager.OFFICE_EXCEL_MIME_TYPE : ConfigManager.OFFICE_OPENXML_MIME_TYPE,
             "corrections." + (workbook instanceof HSSFWorkbook ? "xls" : "xlsx"));
       }catch(final FileNotFoundException e){
-         log.error("An error occurred: {}", e.toString()); 
+         log.error(e.getMessage(), e); 
       }catch(final IOException e){
-         log.error("An error occurred: {}", e.toString()); 
+         log.error(e.getMessage(), e); 
       }finally{
          if(fileStream != null){
             try{

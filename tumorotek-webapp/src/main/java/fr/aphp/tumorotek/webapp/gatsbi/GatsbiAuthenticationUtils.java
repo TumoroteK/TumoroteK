@@ -104,7 +104,7 @@ public class GatsbiAuthenticationUtils
          }
          return ManagerLocator.getManager(JWTGenerator.class).generate("Gatsbi", login, dureeVieJwt, tokenCSRF, mapPrivateClaim);
       }catch(JWTCreationException e){
-         log.error("An error occurred: {}", e.toString()); 
+         log.error(e.getMessage(), e); 
          //le cookie sera invalide donc l'authentication échouera
          return UNDEFINED_JWT;
       }

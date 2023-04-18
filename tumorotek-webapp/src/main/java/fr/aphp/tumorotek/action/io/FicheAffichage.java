@@ -475,7 +475,7 @@ public class FicheAffichage extends AbstractFicheCombineController
 
          updateAffichage(SessionUtils.getLoggedUser(sessionScope));
       }catch(final Exception e){
-         log.error("An error occurred: {}", e.toString()); 
+         log.error(e.getMessage(), e); 
          throw new RuntimeException(e.getMessage());
       }
    }
@@ -758,7 +758,7 @@ public class FicheAffichage extends AbstractFicheCombineController
             setBlockModal(false);
 
          }catch(final SuspendNotAllowedException e){
-            log.error("An error occurred: {}", e.toString()); 
+            log.error(e.getMessage(), e); 
          }
       }
    }
@@ -794,7 +794,7 @@ public class FicheAffichage extends AbstractFicheCombineController
             setBlockModal(false);
 
          }catch(final SuspendNotAllowedException e){
-            log.error("An error occurred: {}", e.toString()); 
+            log.error(e.getMessage(), e); 
          }
       }
    }

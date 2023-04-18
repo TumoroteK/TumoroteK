@@ -368,7 +368,7 @@ public class ListeStockages extends AbstractController
          }
       }
       catch(Exception e){
-         log.error("An error occurred: {}", e.toString()); 
+         log.error(e.getMessage(), e); 
       }
    }  
 	
@@ -687,7 +687,7 @@ public class ListeStockages extends AbstractController
 			ctr.render(item, node, 0);
 			item.setOpen(true);
 		}catch(final Exception e){
-			log.error("An error occurred: {}", e.toString()); 
+			log.error(e.getMessage(), e); 
 		}
 
 		// on met à jour en cascade les noeuds parents

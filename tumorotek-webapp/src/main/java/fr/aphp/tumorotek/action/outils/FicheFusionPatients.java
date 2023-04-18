@@ -487,7 +487,7 @@ public class FicheFusionPatients extends AbstractFicheCombineController
    //				win.onModal();
    //				setBlockModal(false);
    //
-   //			} catch (SuspendNotAllowedException e) { log.error("An error occurred: {}", e.toString()); 
+   //			} catch (SuspendNotAllowedException e) { log.error(e.getMessage(), e); 
    //			}
    //		 }
    //	}
@@ -573,7 +573,7 @@ public class FicheFusionPatients extends AbstractFicheCombineController
             setBlockModal(false);
 
          }catch(final SuspendNotAllowedException e){
-            log.error("An error occurred: {}", e.toString()); 
+            log.error(e.getMessage(), e); 
          }
       }
    }

@@ -40,7 +40,7 @@ public class ResourceBundleSipImpl implements ResourceBundleSip
             }catch(final FileNotFoundException e){
                exist = false;
             }catch(final IOException e){
-               log.error("An error occurred: {}", e.toString()); 
+               log.error(e.getMessage(), e); 
             }finally{
                if(null != reader){
                   try{
@@ -81,9 +81,9 @@ public class ResourceBundleSipImpl implements ResourceBundleSip
                reader = new InputStreamReader(fis, Charset.forName("UTF-8"));
                bundle = new PropertyResourceBundle(reader);
             }catch(final FileNotFoundException e){
-               log.error("An error occurred: {}", e.toString()); 
+               log.error(e.getMessage(), e); 
             }catch(final IOException e){
-               log.error("An error occurred: {}", e.toString()); 
+               log.error(e.getMessage(), e); 
             }finally{
                if(null != reader){
                   try{

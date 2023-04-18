@@ -717,9 +717,9 @@ public class ResultSetToExcel
    //				Filedownload.save(media);
    //			}
    //		} catch (FileNotFoundException e) {
-   //			log.error("An error occurred: {}", e.toString()); 
+   //			log.error(e.getMessage(), e); 
    //		} catch (Exception e) {
-   //			log.error("An error occurred: {}", e.toString()); 
+   //			log.error(e.getMessage(), e); 
    //		} finally {
    //			if (out != null) {
    //				try {

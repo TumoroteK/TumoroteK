@@ -388,7 +388,7 @@ public abstract class AbstractController extends GenericForwardComposer<Componen
 				blockModal = false;
 
 			}catch(final SuspendNotAllowedException e){
-				log.error("An error occurred: {}", e.toString()); 
+				log.error(e.getMessage(), e); 
 			}
 		}
 	}
@@ -495,7 +495,7 @@ public abstract class AbstractController extends GenericForwardComposer<Componen
 				blockModal = false;
 
 			}catch(final SuspendNotAllowedException e){
-				log.error("An error occurred: {}", e.toString()); 
+				log.error(e.getMessage(), e); 
 			}
 		}
 	}
@@ -561,8 +561,8 @@ public abstract class AbstractController extends GenericForwardComposer<Componen
 	// try {
 	// win.onModal();
 	//
-	// } catch (SuspendNotAllowedException e) { log.error("An error occurred: {}", e.toString()); 
-	// } catch (InterruptedException e) { log.error("An error occurred: {}", e.toString());  }
+	// } catch (SuspendNotAllowedException e) { log.error(e.getMessage(), e); 
+	// } catch (InterruptedException e) { log.error(e.getMessage(), e);  }
 	// }
 	//
 	// /**
@@ -663,7 +663,7 @@ public abstract class AbstractController extends GenericForwardComposer<Componen
 			// try {
 			throw (WrongValueException) ex;
 			//} catch (Exception e) {
-			//	log.error("An error occurred: {}", e.toString()); 
+			//	log.error(e.getMessage(), e); 
 			//}
 		}else if(ex instanceof PrinterException){
 			message = new StringBuilder(Labels.getLabel("validation.erreur.impression"));
@@ -793,7 +793,7 @@ public abstract class AbstractController extends GenericForwardComposer<Componen
 			final AMedia media = new AMedia(fileName, "xls", "application/vnd.ms-excel", out.toByteArray());
 			Filedownload.save(media);
 		}catch(final Exception e){
-			log.error("An error occurred: {}", e.toString()); 
+			log.error(e.getMessage(), e); 
 		}finally{
 			if(out != null){
 				try{
@@ -855,7 +855,7 @@ public abstract class AbstractController extends GenericForwardComposer<Componen
 				setBlockModal(false);
 
 			}catch(final SuspendNotAllowedException e){
-				log.error("An error occurred: {}", e.toString()); 
+				log.error(e.getMessage(), e); 
 			}
 		}
 	}
@@ -1159,7 +1159,7 @@ public abstract class AbstractController extends GenericForwardComposer<Componen
 				setBlockModal(false);
 
 			}catch(final SuspendNotAllowedException e){
-				log.error("An error occurred: {}", e.toString()); 
+				log.error(e.getMessage(), e); 
 			}
 		}
 	}
@@ -1389,7 +1389,7 @@ public abstract class AbstractController extends GenericForwardComposer<Componen
 				setBlockModal(false);
 
 			}catch(final SuspendNotAllowedException e){
-				log.error("An error occurred: {}", e.toString()); 
+				log.error(e.getMessage(), e); 
 			}
 		}
 	}
@@ -1467,7 +1467,7 @@ public abstract class AbstractController extends GenericForwardComposer<Componen
 		//				setBlockModal(false);
 		//
 		//			} catch (SuspendNotAllowedException e) {
-		//				log.error("An error occurred: {}", e.toString()); 
+		//				log.error(e.getMessage(), e); 
 		//			}
 		//		}
 	}
@@ -1533,7 +1533,7 @@ public abstract class AbstractController extends GenericForwardComposer<Componen
 				setBlockModal(false);
 
 			}catch(final SuspendNotAllowedException e){
-				log.error("An error occurred: {}", e.toString()); 
+				log.error(e.getMessage(), e); 
 			}
 		}
 	}
@@ -1652,7 +1652,7 @@ public abstract class AbstractController extends GenericForwardComposer<Componen
 				setBlockModal(false);
 
 			}catch(final SuspendNotAllowedException e){
-				log.error("An error occurred: {}", e.toString()); 
+				log.error(e.getMessage(), e); 
 			}
 		}
 	}
@@ -1888,7 +1888,7 @@ public abstract class AbstractController extends GenericForwardComposer<Componen
 	//				setBlockModal(false);
 	//
 	//			} catch (SuspendNotAllowedException e) {
-	//				log.error("An error occurred: {}", e.toString()); 
+	//				log.error(e.getMessage(), e); 
 	//			}
 	//		}
 	//	}
@@ -1949,7 +1949,7 @@ public abstract class AbstractController extends GenericForwardComposer<Componen
 				setBlockModal(false);
 
 			}catch(final SuspendNotAllowedException e){
-				log.error("An error occurred: {}", e.toString()); 
+				log.error(e.getMessage(), e); 
 			}
 		}
 	}
@@ -2320,7 +2320,7 @@ public abstract class AbstractController extends GenericForwardComposer<Componen
 				setBlockModal(false);
 
 			}catch(final SuspendNotAllowedException e){
-				log.error("An error occurred: {}", e.toString()); 
+				log.error(e.getMessage(), e); 
 			}
 		}
 	}

@@ -95,7 +95,7 @@ public class ExportTVGSOManagerImpl extends ExportCatalogueManagerImpl
       try{
          getExportUtils().addDataToRowCSV((BufferedWriter) obj, index, values, "|", "|\n");
       }catch(final IOException e){
-         log.error("An error occurred: {}", e.toString()); 
+         log.error(e.getMessage(), e); 
       }
    }
 }
