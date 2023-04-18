@@ -276,9 +276,9 @@ public class Export extends Thread
 		catch(final ClassNotFoundException e){
 			log.error(e.getMessage(), e); 
 		}catch(final DesktopUnavailableException e){
-         log.warn(String.valueOf(e));
+			log.warn(e.getMessage(), e);
 		}catch(final InterruptedException e){
-			log.warn(e.getMessage());
+			log.warn(e.getMessage(), e);
 		}catch(final Exception e){
 			log.error(e.getMessage(), e);
 			try{
@@ -1175,9 +1175,9 @@ public class Export extends Thread
 			try{
 				Executions.activate(desktop);
 			}catch(final DesktopUnavailableException e){
-				log.warn(String.valueOf(e));
+				log.warn(e.getMessage(), e);
 			}catch(final InterruptedException e){
-				log.warn(String.valueOf(e));
+				log.warn(e.getMessage(), e);
 			}
 			if(!progressBar.isError()){
 				progressBarComponent.getParent().detach();

@@ -477,7 +477,7 @@ public class XmlUtilsImpl implements XmlUtils
       try{
          docOut = outputter.output(doc);
       }catch(final JDOMException e1){
-         log.error(String.valueOf(e1));
+         log.error(e1.getMessage(), e1);
       }
       final Source source = new DOMSource(docOut);
 
@@ -968,7 +968,7 @@ public class XmlUtilsImpl implements XmlUtils
       try{
          docOut = outputter.output(doc);
       }catch(final JDOMException e1){
-         log.error(String.valueOf(e1));
+         log.error(e1.getMessage(), e1);
       }
       final Source source = new DOMSource(docOut);
 
@@ -1305,7 +1305,7 @@ public class XmlUtilsImpl implements XmlUtils
       try{
          docOut = outputter.output(doc);
       }catch(final JDOMException e1){
-         log.error(String.valueOf(e1));
+         log.error(e1.getMessage(), e1);
       }
       final Source source = new DOMSource(docOut);
 

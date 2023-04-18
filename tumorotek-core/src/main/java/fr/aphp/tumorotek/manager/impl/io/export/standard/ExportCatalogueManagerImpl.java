@@ -314,7 +314,7 @@ public class ExportCatalogueManagerImpl implements ExportCatalogueManager
             return df.format(item);
          }
       }catch(final SQLException sqle){
-         log.error(String.valueOf(sqle));
+         log.error(sqle.getMessage(), sqle);
       }finally{
          if(s != null){
             try{

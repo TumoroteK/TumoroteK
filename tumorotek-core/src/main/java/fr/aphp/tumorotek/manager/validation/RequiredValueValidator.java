@@ -111,7 +111,7 @@ public abstract class RequiredValueValidator implements Validator
                   }
                }catch(IllegalAccessException | InvocationTargetException | NoSuchMethodException e){
                   log.warn(e.getMessage());
-                  log.debug(e.toString());
+                  log.debug(e.getMessage(), e);
                }
             }else{ // validation through functional interface
                log.debug("validating field {} through functional validation", fName);
