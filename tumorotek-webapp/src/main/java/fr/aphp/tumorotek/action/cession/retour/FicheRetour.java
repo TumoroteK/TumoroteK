@@ -135,6 +135,7 @@ public class FicheRetour extends AbstractFicheCombineController
 
    // Objets Principaux.
    private Retour retour = new Retour();
+
    private TKStockableObject tkObject;
    private final ListModelList<TKStockableObject> objects = new ListModelList<>();
    // private Set<Listitem> selectedObjectsItem = new HashSet<Listitem>();
@@ -223,6 +224,7 @@ public class FicheRetour extends AbstractFicheCombineController
       }
    }
 
+
    @Override
    public void doAfterCompose(final Component comp) throws Exception{
 
@@ -251,7 +253,6 @@ public class FicheRetour extends AbstractFicheCombineController
       }
 
       drawActionsForRetours();
-
       getBinder().loadAll();
    }
 
@@ -346,6 +347,8 @@ public class FicheRetour extends AbstractFicheCombineController
       super.switchToCreateMode();
 
       retour.setObservations(obs);
+
+      retour.setSterile(true);
 
       // Initialisation du mode (listes, valeurs...)
       initEditableMode();
