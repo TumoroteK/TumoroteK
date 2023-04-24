@@ -347,7 +347,9 @@ public class FicheRetour extends AbstractFicheCombineController
       super.switchToCreateMode();
 
       retour.setObservations(obs);
-
+//      TK-333 : la case stérile est cochée par défaut pour éviter que la cascade de stérilité ne modifie par erreur la stérilité 
+//      des échantillons. En effet, lors que le champ stérile n'est pas coché dans la modale (valeur à false dans la table RETOUR),
+//      une règle de gestion redescend cette stérilité à false sur tous les échantillons concernés.
       retour.setSterile(true);
 
       // Initialisation du mode (listes, valeurs...)
