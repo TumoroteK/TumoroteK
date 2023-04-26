@@ -976,15 +976,21 @@ public class Export extends Thread
 				   selectInSb = selectInSb.append(collections.get(i).getBanqueId());
 				}
 
+				//TK-377
+				//Un ordre est défini sur le lien entre une table d'annotation et une collection: TABLE_ANNOTATION_BANQUE.ordre
+				//Dans le cas d'un export sur une seule collection, cet ordre doit être utilisé pour trier les champs.
+				//Par contre, il n'a pas de sens pour l'export en toutes collections car une table d'annotation ne doit être
+				//considérée qu'une seule fois donc aucun ordre ne peut être récupéré
+				//Pour garder les colonnes liées aux champs d'annotation, regroupées par table d'annotation, dans le cas
+				//des exports en "toutes collections", le tri sera fait par table_annotation_id.
 				String query_get_annotation = "";
-				query_get_annotation = "SELECT DISTINCT ca.CHAMP_ANNOTATION_ID, ca.nom, ca.data_type_id, "
-						+ "tab.ORDRE, ca.ordre " 
+				query_get_annotation = "SELECT DISTINCT ca.CHAMP_ANNOTATION_ID, ca.nom, ca.data_type_id "
 						+ "FROM CHAMP_ANNOTATION ca " + "JOIN TABLE_ANNOTATION ta ON ta.TABLE_ANNOTATION_ID = ca.TABLE_ANNOTATION_ID "
 						+ "JOIN TMP_TABLE_ANNOTATION_RESTRICT r ON ta.TABLE_ANNOTATION_ID = r.TABLE_ANNOTATION_ID "
-					   + "JOIN TABLE_ANNOTATION_BANQUE tab ON tab.TABLE_ANNOTATION_ID = r.TABLE_ANNOTATION_ID "
-						+ "WHERE ta.ENTITE_ID = " + entite_id + " AND tab.BANQUE_ID in (" + selectInSb.toString() + ") "
+					   + (nbCollections == 1 ? "JOIN TABLE_ANNOTATION_BANQUE tab ON tab.TABLE_ANNOTATION_ID = r.TABLE_ANNOTATION_ID AND tab.BANQUE_ID in (" + selectInSb.toString() + ") " : "")
+						+ "WHERE ta.ENTITE_ID = " + entite_id
 						+ " ORDER BY "
-						+ "tab.ORDRE, ca.ORDRE";
+						+ (nbCollections == 1 ? "tab.ORDRE" : "ta.TABLE_ANNOTATION_ID") + ", ca.ORDRE";
 										
 				final List<Integer> annodates_idx = new ArrayList<>();
 				final List<Integer> annoNums_idx = new ArrayList<>();
