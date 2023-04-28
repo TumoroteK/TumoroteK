@@ -11,5 +11,16 @@
 		<comment>remplacer le type de date par datetime en deux procédures stockées</comment>
 		<sqlFile encoding="utf8" path="../sql/mysql/tumorotek/export_mysql.sql" endDelimiter="&amp;&amp;" relativeToChangelogFile="true" stripComments="true"/>
 	</changeSet>
+	
+	<changeSet id="${project.artifactId}-3" author="CH" runAlways="false" context="*">
+        <preConditions onFail="MARK_RAN">
+	        <not>
+	            <indexExists indexName="OBJET_ID_IDX" tableName="OBJET_NON_CONFORME" />
+	        </not>
+    	</preConditions>
+        <createIndex indexName="OBJET_ID_IDX" tableName="OBJET_NON_CONFORME" unique="false">  
+        	<column name="OBJET_ID"/>  
+    	</createIndex>
+    </changeSet>
 
 </databaseChangeLog>
