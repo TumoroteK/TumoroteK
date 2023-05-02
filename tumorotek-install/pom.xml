@@ -27,11 +27,21 @@
         <!-- Macros pour la documentation -->
         <warning>&lt;span class="fas fa-exclamation-triangle" aria-hidden="true"&gt;&lt;/span&gt;</warning>
 
-        <annotation-champ-calcule>&lt;span class="badge badge-annotation-champ-calcule"&gt;Annotation (Champ calculé)&lt;/span&gt;</annotation-champ-calcule>
+		<administration>&lt;span class="badge badge-administration"&gt;Administration&lt;/span&gt;</administration>
+        <annotation-champ-calcule>&lt;span class="badge badge-annotation"&gt;Annotation (Champ calculé)&lt;/span&gt;</annotation-champ-calcule>
         <cession>&lt;span class="badge badge-cession"&gt;Cession&lt;/span&gt;</cession>
-        <impression-modele-doc>&lt;span class="badge badge-impression-doc"&gt;Impression (modèle DOC)&lt;/span&gt;</impression-modele-doc>
+        <echantillon>&lt;span class="badge badge-echantillon"&gt;Echantillon&lt;/span&gt;</echantillon>
+        <export>&lt;span class="badge badge-export"&gt;Export&lt;/span&gt;</export>
+        <impression-modele-doc>&lt;span class="badge badge-impression"&gt;Impression (modèle DOC)&lt;/span&gt;</impression-modele-doc>
+        <impression-bon-livraison>&lt;span class="badge badge-impression"&gt;Impression (bon de livraison)&lt;/span&gt;</impression-bon-livraison>
+        <patient>&lt;span class="badge badge-patient"&gt;Patient&lt;/span&gt;</patient>
         <prelevement>&lt;span class="badge badge-prelevement"&gt;Prélèvement&lt;/span&gt;</prelevement>
+        <produit-derive>&lt;span class="badge badge-produit-derive"&gt;Produit dérivé&lt;/span&gt;</produit-derive>
+        <recherche>&lt;span class="badge badge-recherche"&gt;Recherche&lt;/span&gt;</recherche>
+        <recherche-avancee>&lt;span class="badge badge-recherche"&gt;Recherche Avancée&lt;/span&gt;</recherche-avancee>
         <statistiques>&lt;span class="badge badge-statistiques"&gt;Statistiques&lt;/span&gt;</statistiques>
+        <stockage>&lt;span class="badge badge-stockage"&gt;Stockage&lt;/span&gt;</stockage>
+        <stockage-evenement>&lt;span class="badge badge-stockage"&gt;Evènement de stockage&lt;/span&gt;</stockage-evenement>
     </properties>
 
     <reporting>
@@ -56,6 +66,7 @@
     <!-- ============== -->
     <build>
         <plugins>
+        	<!-- suppression des fichiers précédemment générés -->
             <plugin>
                 <artifactId>maven-clean-plugin</artifactId>
                 <version>3.0.0</version>
@@ -70,6 +81,7 @@
                     </filesets>
                 </configuration>
             </plugin>
+            <!-- génération du site -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-site-plugin</artifactId>
