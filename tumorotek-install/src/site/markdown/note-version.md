@@ -1,6 +1,6 @@
 #### Notes de version
 
-##### Version 2.2.8 - Publiée le 21/04/2023
+##### Version 2.2.8 - Publiée le 02/05/2023
 ###### Corrections
 - YouTrack [TK-342](https://tumorotek.myjetbrains.com/youtrack/issue/TK-342) : Création d'une collection : trier la liste des utilisateurs par ordre alphabétique
 - YouTrack [TK-358]https://tumorotek.myjetbrains.com/youtrack/issue/TK-358 : Recherche avancée : plantage si saisie d'un critère sur complément diagnostic

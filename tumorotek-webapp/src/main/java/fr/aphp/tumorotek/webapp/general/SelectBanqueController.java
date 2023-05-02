@@ -86,279 +86,305 @@ import fr.aphp.tumorotek.webapp.general.ext.ResourceRequest;
 public class SelectBanqueController extends GenericForwardComposer<Component>
 {
 
-	private static final long serialVersionUID = 1L;
+   private static final long serialVersionUID = 1L;
 
-	private List<Banque> banques = new ArrayList<>();
-	private Banque selectedBanque;
-	private Banque toutesColl = null;
-	private List<Plateforme> plateformes = new ArrayList<>();
-	private Plateforme selectedPlateforme;
-	private Utilisateur user;
+   private List<Banque> banques = new ArrayList<>();
 
-	private Row rowPlateformeTitle;
-	private Row rowPlateforme;
-	private Row rowBanqueTitle;
-	private Row rowBanque;
-	private Row rowMdpWarning;
-	private Html labelMdpWarning;
-	private Label lastCxLabel;
-	private Button validate;
-	private Button logout;
-	private Component[] selectionComponents;
+   private Banque selectedBanque;
 
-	private Row rowMdpArchive1;
-	private Row rowMdpArchive2;
-	private Row rowMdpArchive3;
-	private Component[] archiveComponents;
-	private Row ldapErrorRow;
+   private Banque toutesColl = null;
 
-	private Row rowRedirect;
-	private Row rowResourceRedirect;
+   private List<Plateforme> plateformes = new ArrayList<>();
 
-	@Override
-	public void doAfterCompose(final Component comp) throws Exception{
-		super.doAfterCompose(comp);
+   private Plateforme selectedPlateforme;
 
-		selectionComponents =
-				new Component[] {this.rowPlateformeTitle, this.rowPlateforme, this.rowBanqueTitle, this.rowBanque, this.validate};
-		archiveComponents = new Component[] {this.rowMdpArchive1, this.rowMdpArchive2, this.rowMdpArchive3};
+   private Utilisateur user;
 
-		//user = getLoggedUtilisateur();
-		user = ConnexionUtils.getLoggedUtilisateur();
-		initWindow();
-		if(ConnexionUtils.canAccessToutesCollections(banques, selectedPlateforme, user)){
-			toutesColl = new Banque();
-			toutesColl.setNom(Labels.getLabel("select.banque.toutesCollection"));
-			banques.add(toutesColl);
-		}
-	}
+   private Row rowPlateformeTitle;
 
-	public void initWindow(){
-		boolean archive = false;
-		Integer nbJours = 0;
+   private Row rowPlateforme;
 
-		// since 2.0.11 
-		// Auth LDAP peux produire user == null car auth OK 
-		// mais pas login correspondant dans TK
-		if(user != null){
-			if(user.getTimeOut() != null){
-				final Calendar today = Calendar.getInstance();
-				final Calendar userCal = Calendar.getInstance();
-				userCal.setTime(user.getTimeOut());
+   private Row rowBanqueTitle;
 
-				archive = today.after(userCal);
+   private Row rowBanque;
 
-				if(!archive){
-					while(today.before(userCal) && nbJours < 31){
-						today.add(Calendar.DAY_OF_MONTH, 1);
-						nbJours++;
-					}
-				}
-			}
-			if(archive){
-				for(int i = 0; i < archiveComponents.length; i++){
-					archiveComponents[i].setVisible(true);
-				}
-				for(int i = 0; i < selectionComponents.length; i++){
-					selectionComponents[i].setVisible(false);
-				}
+   private Row rowMdpWarning;
 
-				// archivage de l'utilisateur
-				ManagerLocator.getUtilisateurManager().archiveUtilisateurManager(user, user);
-			}else{
+   private Html labelMdpWarning;
 
-				// on récupère le bundle de paramétrage de l'application
-				ResourceBundle res = null;
-				if(ManagerLocator.getResourceBundleTumo().doesResourceBundleExists(TumorotekProperties.TUMO_PROPERTIES_FILENAME)){
-					res = ManagerLocator.getResourceBundleTumo().getResourceBundle(TumorotekProperties.TUMO_PROPERTIES_FILENAME);
-				}
-				// on récupère la propriété définissant si on doit sauver
-				// les connexions
-				String lastCxValue = "";
-				if(null != res && res.containsKey(TkParam.SAUVER_CONNEXION.getKey()) && res.getString(TkParam.SAUVER_CONNEXION.getKey()) != null
-						&& res.getString(TkParam.SAUVER_CONNEXION.getKey()).equals("true")){
-					// last connection
-					final Operation lastCx = ManagerLocator.getOperationManager().findLastByUtilisateurAndTypeManager(
-							ManagerLocator.getOperationTypeManager().findByNomLikeManager("Login", true).get(0), user, 1);
-					if(lastCx != null){
-						lastCxValue = Labels.getLabel("login.last.date") + " "
-								+ new SimpleDateFormat("d MMM yyyy HH:mm:ss", Locale.getDefault()).format(lastCx.getDate().getTime());
-					}
-					// sauvegarde de la connexion
-					saveConnection();
-				}
-				lastCxLabel.setValue(lastCxValue);
+   private Label lastCxLabel;
 
-				initPlateformesAndBanques();
+   private Button validate;
 
-				for(int i = 0; i < archiveComponents.length; i++){
-					archiveComponents[i].setVisible(false);
-				}
-				for(int i = 0; i < selectionComponents.length; i++){
-					selectionComponents[i].setVisible(true);
-				}
+   private Button logout;
 
-				// s'il n'y a qu'une seule pf, on cache les lignes de
-				// sélection
-				if(plateformes.size() <= 1){
-					rowPlateforme.setVisible(false);
-					rowPlateformeTitle.setVisible(false);
-				}
+   private Component[] selectionComponents;
 
-				// si le mdp expire dans moins de 30 jours, on va afficher 
-				// un warning
-				if(nbJours < 31 && nbJours > 0){
-					labelMdpWarning
-					.setContent(ObjectTypesFormatters.getLabel("login.compte.warning", new String[] {String.valueOf(nbJours)}));
-					rowMdpWarning.setVisible(true);
-				}else{ // autoconnect si une seule collection et rien à afficher
-					if(plateformes.size() <= 1 && banques.size() == 1){
-						logout.setVisible(false);
-						for(int i = 0; i < selectionComponents.length; i++){
-							selectionComponents[i].setVisible(false);
-						}
-						rowRedirect.setVisible(true);
+   private Row rowMdpArchive1;
 
-						onClick$validate();
-					}
-				}
+   private Row rowMdpArchive2;
 
-				// redirect si demande resources extérieures
-				// @since 2.2.2-diamic, la redirection peux concerner plusieurs prélèvements 
-				if(sessionScope.containsKey("resourceRequest")){
-					if (!((ResourceRequest<?>) sessionScope.get("resourceRequest")).isEmpty()) {
+   private Row rowMdpArchive3;
 
-						// banque et plateforme
-						setSelectedBanque(((ResourceRequest<?>) 
-								sessionScope.get("resourceRequest")).getBanque());
-						setSelectedPlateforme(((ResourceRequest<?>) 
-								sessionScope.get("resourceRequest")).getBanque().getPlateforme());   
+   private Component[] archiveComponents;
 
-						for(int i = 0; i < selectionComponents.length; i++){
-							selectionComponents[i].setVisible(false);
-						}
-						rowResourceRedirect.setVisible(true);
-						Events.echoEvent("onClick$validate", self, null);
+   private Row ldapErrorRow;
 
-					}
-				}
-			}
-		}else{ // LDAP auth ok mais pas compte TK associe
-			for(int i = 0; i < selectionComponents.length; i++){
-				selectionComponents[i].setVisible(false);
-			}
-			for(int i = 0; i < archiveComponents.length; i++){
-				archiveComponents[i].setVisible(false);
-			}
-			ldapErrorRow.setVisible(true);
-			((Html) ldapErrorRow.getFirstChild())
-			.setContent(ObjectTypesFormatters.getLabel("login.ldap.nulluser", new String[] {ConnexionUtils.getLoggedLogin()}));
-		}
-	}
+   private Row rowRedirect;
 
-	public void initPlateformesAndBanques(){
-		// on récupère les plateformes accessibles
-		plateformes = ManagerLocator.getUtilisateurManager().getAvailablePlateformesManager(user);
+   private Row rowResourceRedirect;
 
-		if(plateformes.size() > 0){
-			selectedPlateforme = plateformes.get(0);
-		}else{
-			selectedPlateforme = null;
-		}
+   @Override
+   public void doAfterCompose(final Component comp) throws Exception{
+      super.doAfterCompose(comp);
 
-		// init des banques
-		banques = ManagerLocator.getUtilisateurManager().getAvailableBanquesByPlateformeManager(user, selectedPlateforme, false);
+      selectionComponents =
+         new Component[] {this.rowPlateformeTitle, this.rowPlateforme, this.rowBanqueTitle, this.rowBanque, this.validate};
+      archiveComponents = new Component[] {this.rowMdpArchive1, this.rowMdpArchive2, this.rowMdpArchive3};
 
-		if(banques.size() > 0){
-			selectedBanque = banques.get(0);
-		}else{
-			selectedBanque = null;
-		}
-	}
+      //user = getLoggedUtilisateur();
+      user = ConnexionUtils.getLoggedUtilisateur();
+      initWindow();
+      if(ConnexionUtils.canAccessToutesCollections(banques, selectedPlateforme, user)){
+         toutesColl = new Banque();
+         toutesColl.setNom(Labels.getLabel("select.banque.toutesCollection"));
+         banques.add(toutesColl);
+      }
+   }
 
-	/**
-	 * Méthode appelée lors de l'appui sur la touche ENTREE.
-	 */
-	public void onOK(){
-		onClick$validate();
-	}
+   public void initWindow(){
+      Integer nbJours = 0;
+      // since 2.0.11
+      // Auth LDAP peux produire user == null car auth OK, mais pas login correspondant dans TK
+      if(user != null){ //si un login exist dans la Base de donnés
+         if(!user.isArchive()){ //si l'utilisateur n'est pas archivé
+            //vérifie si l'utilisateur doit être archivé
+            final Calendar today = Calendar.getInstance();
+            final Calendar userCal = Calendar.getInstance();
+            boolean needTobeArchived = false;
+            if (user.getTimeOut() != null) {
+               userCal.setTime(user.getTimeOut());
+               // si la date d'aujourd'hui est supérieure au timeout de l'utilisateur, il faut l'archiver, needToBeArchive = true
+               needTobeArchived = today.after(userCal);
+            }
+            if(needTobeArchived){
+               archiveUser();
+            }else{
+               //                  l'utilisateur n'est pas null et n'est pas archivé,
+               while(today.before(userCal) && nbJours < 31){
+                  today.add(Calendar.DAY_OF_MONTH, 1);
+                  nbJours++;
+               }
+               // on récupère le bundle de paramétrage de l'application
+               ResourceBundle res = null;
+               if(ManagerLocator.getResourceBundleTumo().doesResourceBundleExists(TumorotekProperties.TUMO_PROPERTIES_FILENAME)){
+                  res = ManagerLocator.getResourceBundleTumo().getResourceBundle(TumorotekProperties.TUMO_PROPERTIES_FILENAME);
+               }
+               // on récupère la propriété définissant si on doit sauver
+               // les connexions
+               String lastCxValue = "";
+               if(null != res && res.containsKey(TkParam.SAUVER_CONNEXION.getKey()) && res.getString(
+                  TkParam.SAUVER_CONNEXION.getKey()) != null && res.getString(TkParam.SAUVER_CONNEXION.getKey()).equals("true")){
+                  // last connection
+                  final Operation lastCx = ManagerLocator.getOperationManager().findLastByUtilisateurAndTypeManager(
+                     ManagerLocator.getOperationTypeManager().findByNomLikeManager("Login", true).get(0), user, 1);
+                  if(lastCx != null){
+                     lastCxValue = Labels.getLabel("login.last.date") + " " + new SimpleDateFormat("d MMM yyyy HH:mm:ss",
+                        Locale.getDefault()).format(lastCx.getDate().getTime());
+                  }
+                  // sauvegarde de la connexion
+                  saveConnection();
+               }
+               lastCxLabel.setValue(lastCxValue);
 
-	/**
-	 * Recupere la banque selectionne et la passe en variable de session,
-	 * prepare les droits et les catalogues.
-	 * Si 'toutes collections' est choisi, passe en variable de session
-	 * la liste de banque pour lesquelles l'utilisateur a des droits 
-	 * d'admin.
-	 * Si aucune collection disponible (selectBanque = null) alors permet 
-	 * la connection que si l'utilisateur est superAdmin.
-	 */
-	public void onClick$validate(){
-		if(selectedBanque != null){
-			if(!selectedBanque.equals(toutesColl)){
-				ConnexionUtils.initConnection(user, selectedPlateforme, selectedBanque, banques, session);
-				//				sessionScope.put("Banque", selectedBanque);
-				//				//setSessionCatalogues(selectedBanque, sessionScope);		
-				//				//generateDroitsForSelectedBanque(selectedBanque);
-				//				ConnexionUtils.setSessionCatalogues(
-				//						selectedBanque, sessionScope);
-				//				ConnexionUtils.generateDroitsForSelectedBanque(
-				//						selectedBanque, user, sessionScope);
-				//				sessionScope.remove("ToutesCollections");
-			}else{
-				final List<Banque> bksList = new ArrayList<>();
-				bksList.addAll(banques);
-				bksList.remove(toutesColl);
-				ConnexionUtils.initConnection(user, selectedPlateforme, null, bksList, session);
-				//				// suppose que l'utilisateur ne peut pas être admin
-				//				// sur banques de différentes plateformes
-				//				List<Banque> bksList = new ArrayList<Banque>();
-				//				bksList.addAll(banques);
-				//				bksList.remove(toutesColl);
-				//				sessionScope.put("ToutesCollections", bksList);
-				//				//generateDroitsForSelectedBanque(banques.get(0));
-				//				ConnexionUtils.generateDroitsForSelectedBanque(
-				//						banques.get(0), user, sessionScope);
-				//				sessionScope.remove("Banque");
-			}
-			//			
-			//			// gestion des interfaçages
-			//			ConnexionUtils.initInterfacages(selectedPlateforme, sessionScope);
+               initPlateformesAndBanques();
 
-			   Executions.sendRedirect("/zuls/main/main.zul");
-	      }else{
-	         // cas admin première installation aucune collection
-	    	 // et TK-27 plateforme nouvellement créée par adminPF
-	         if(user.isSuperAdmin() || ManagerLocator
-	        		 .getUtilisateurManager().getPlateformesManager(user).contains(selectedPlateforme)){
-	            final Map<String, Object> sessionScp = session.getAttributes();
-	            sessionScp.put("User", user);
-	            sessionScp.put("Plateforme", selectedPlateforme);
-	            ConnexionUtils.generateDroitsForSelectedBanque(null, selectedPlateforme, user, sessionScope);
-	            Executions.sendRedirect("/zuls/main/main.zul");
-	         }
-	      }
-	}
+               for(int i = 0; i < archiveComponents.length; i++){
+                  archiveComponents[i].setVisible(false);
+               }
+               for(int i = 0; i < selectionComponents.length; i++){
+                  selectionComponents[i].setVisible(true);
+               }
 
-	public void onClientInfo$winSelectBanque(final ClientInfoEvent event){
-		sessionScope.put("screenWidth", event.getDesktopWidth());
-		sessionScope.put("screenHeight", event.getDesktopHeight());
-	}
+               // s'il n'y a qu'une seule plateforme, on cache les lignes de sélection
+               if(plateformes.size() <= 1){
+                  rowPlateforme.setVisible(false);
+                  rowPlateformeTitle.setVisible(false);
+               }
 
-	public List<Banque> getBanques(){
-		return banques;
-	}
+               // si le mdp expire dans moins de 30 jours, on va afficher un avertissement
+               if(nbJours < 31 && nbJours > 0){
+                  labelMdpWarning.setContent(
+                     ObjectTypesFormatters.getLabel("login.compte.warning", new String[] {String.valueOf(nbJours)}));
+                  rowMdpWarning.setVisible(true);
+               }else{ // autoconnect si une seule collection et rien à afficher
+                  if(plateformes.size() <= 1 && banques.size() == 1){
+                     logout.setVisible(false);
+                     for(int i = 0; i < selectionComponents.length; i++){
+                        selectionComponents[i].setVisible(false);
+                     }
+                     rowRedirect.setVisible(true);
 
-	public void setBanques(final List<Banque> b){
-		this.banques = b;
-	}
+                     onClick$validate();
+                  }
+               }
 
-	public Banque getSelectedBanque(){
-		return selectedBanque;
-	}
+               // redirect si demande resources extérieures
+               // @since 2.2.2-diamic, la redirection peux concerner plusieurs prélèvements
+               if(sessionScope.containsKey("resourceRequest")){
+                  if(!((ResourceRequest<?>) sessionScope.get("resourceRequest")).isEmpty()){
 
-	public void setSelectedBanque(final Banque selected){
-		this.selectedBanque = selected;
-	}
+                     // banque et plateforme
+                     setSelectedBanque(((ResourceRequest<?>) sessionScope.get("resourceRequest")).getBanque());
+                     setSelectedPlateforme(
+                        ((ResourceRequest<?>) sessionScope.get("resourceRequest")).getBanque().getPlateforme());
+
+                     for(int i = 0; i < selectionComponents.length; i++){
+                        selectionComponents[i].setVisible(false);
+                     }
+                     rowResourceRedirect.setVisible(true);
+                     Events.echoEvent("onClick$validate", self, null);
+
+                  }
+               }
+
+            }
+         }
+
+      }else{
+         // l'utilisateur est null / est archivé
+         showErrorMessage();
+      }
+
+   }
+
+   private void archiveUser(){
+      for(int i = 0; i < archiveComponents.length; i++){
+         archiveComponents[i].setVisible(true);
+      }
+      for(int i = 0; i < selectionComponents.length; i++){
+         selectionComponents[i].setVisible(false);
+      }
+
+      // archivage de l'utilisateur
+      ManagerLocator.getUtilisateurManager().archiveUtilisateurManager(user, user);
+   }
+
+   private void showErrorMessage(){
+      for(int i = 0; i < selectionComponents.length; i++){
+         selectionComponents[i].setVisible(false);
+      }
+      for(int i = 0; i < archiveComponents.length; i++){
+         archiveComponents[i].setVisible(false);
+      }
+      ldapErrorRow.setVisible(true);
+      ((Html) ldapErrorRow.getFirstChild()).setContent(
+         ObjectTypesFormatters.getLabel("login.ldap.nulluser", new String[] {ConnexionUtils.getLoggedLogin()}));
+   }
+
+   public void initPlateformesAndBanques(){
+      // on récupère les plateformes accessibles
+      plateformes = ManagerLocator.getUtilisateurManager().getAvailablePlateformesManager(user);
+
+      if(plateformes.size() > 0){
+         selectedPlateforme = plateformes.get(0);
+      }else{
+         selectedPlateforme = null;
+      }
+
+      // init des banques
+      banques = ManagerLocator.getUtilisateurManager().getAvailableBanquesByPlateformeManager(user, selectedPlateforme, false);
+
+      if(banques.size() > 0){
+         selectedBanque = banques.get(0);
+      }else{
+         selectedBanque = null;
+      }
+   }
+
+   /**
+    * Méthode appelée lors de l'appui sur la touche ENTREE.
+    */
+   public void onOK(){
+      onClick$validate();
+   }
+
+   /**
+    * Recupere la banque selectionne et la passe en variable de session,
+    * prepare les droits et les catalogues.
+    * Si 'toutes collections' est choisi, passe en variable de session
+    * la liste de banque pour lesquelles l'utilisateur a des droits
+    * d'admin.
+    * Si aucune collection disponible (selectBanque = null) alors permet
+    * la connection que si l'utilisateur est superAdmin.
+    */
+   public void onClick$validate(){
+      if(selectedBanque != null){
+         if(!selectedBanque.equals(toutesColl)){
+            ConnexionUtils.initConnection(user, selectedPlateforme, selectedBanque, banques, session);
+            //				sessionScope.put("Banque", selectedBanque);
+            //				//setSessionCatalogues(selectedBanque, sessionScope);
+            //				//generateDroitsForSelectedBanque(selectedBanque);
+            //				ConnexionUtils.setSessionCatalogues(
+            //						selectedBanque, sessionScope);
+            //				ConnexionUtils.generateDroitsForSelectedBanque(
+            //						selectedBanque, user, sessionScope);
+            //				sessionScope.remove("ToutesCollections");
+         }else{
+            final List<Banque> bksList = new ArrayList<>();
+            bksList.addAll(banques);
+            bksList.remove(toutesColl);
+            ConnexionUtils.initConnection(user, selectedPlateforme, null, bksList, session);
+            //				// suppose que l'utilisateur ne peut pas être admin
+            //				// sur banques de différentes plateformes
+            //				List<Banque> bksList = new ArrayList<Banque>();
+            //				bksList.addAll(banques);
+            //				bksList.remove(toutesColl);
+            //				sessionScope.put("ToutesCollections", bksList);
+            //				//generateDroitsForSelectedBanque(banques.get(0));
+            //				ConnexionUtils.generateDroitsForSelectedBanque(
+            //						banques.get(0), user, sessionScope);
+            //				sessionScope.remove("Banque");
+         }
+         //
+         //			// gestion des interfaçages
+         //			ConnexionUtils.initInterfacages(selectedPlateforme, sessionScope);
+
+         Executions.sendRedirect("/zuls/main/main.zul");
+      }else{
+         // cas admin première installation aucune collection
+         // et TK-27 plateforme nouvellement créée par adminPF
+         if(user.isSuperAdmin() || ManagerLocator.getUtilisateurManager().getPlateformesManager(user)
+            .contains(selectedPlateforme)){
+            final Map<String, Object> sessionScp = session.getAttributes();
+            sessionScp.put("User", user);
+            sessionScp.put("Plateforme", selectedPlateforme);
+            ConnexionUtils.generateDroitsForSelectedBanque(null, selectedPlateforme, user, sessionScope);
+            Executions.sendRedirect("/zuls/main/main.zul");
+         }
+      }
+   }
+
+   public void onClientInfo$winSelectBanque(final ClientInfoEvent event){
+      sessionScope.put("screenWidth", event.getDesktopWidth());
+      sessionScope.put("screenHeight", event.getDesktopHeight());
+   }
+
+   public List<Banque> getBanques(){
+      return banques;
+   }
+
+   public void setBanques(final List<Banque> b){
+      this.banques = b;
+   }
+
+   public Banque getSelectedBanque(){
+      return selectedBanque;
+   }
+
+   public void setSelectedBanque(final Banque selected){
+      this.selectedBanque = selected;
+   }
 
    /**
     * Filtre les banques par plateforme.
@@ -371,71 +397,71 @@ public class SelectBanqueController extends GenericForwardComposer<Component>
       }else{
          banques = new ArrayList<>();
       }
-      
-      if(ConnexionUtils.canAccessToutesCollections(banques, selectedPlateforme, user)) {
-			toutesColl = new Banque();
-			toutesColl.setNom(Labels.getLabel("select.banque.toutesCollection"));
-			banques.add(toutesColl);
-		}
 
-		if(banques.size() > 0){
-			selectedBanque = banques.get(0);
-		}else{
-			selectedBanque = null;
-		}
+      if(ConnexionUtils.canAccessToutesCollections(banques, selectedPlateforme, user)){
+         toutesColl = new Banque();
+         toutesColl.setNom(Labels.getLabel("select.banque.toutesCollection"));
+         banques.add(toutesColl);
+      }
+
+      if(banques.size() > 0){
+         selectedBanque = banques.get(0);
+      }else{
+         selectedBanque = null;
+      }
    }
 
-	public Utilisateur getUser(){
-		return user;
-	}
+   public Utilisateur getUser(){
+      return user;
+   }
 
-	public void setUser(final Utilisateur u){
-		this.user = u;
-	}
+   public void setUser(final Utilisateur u){
+      this.user = u;
+   }
 
-	public static void setTheme(final Execution exe, final String theme){
-		final Cookie cookie = new Cookie("zktheme", theme);
-		//store 30 days
-		cookie.setMaxAge(60 * 60 * 24 * 30);
-		String cp = exe.getContextPath();
-		// if path is empty, cookie path will be request path, 
-		// which causes problems
-		if(cp.length() == 0){
-			cp = "/";
-		}
-		cookie.setPath(cp);
-		((HttpServletResponse) exe.getNativeResponse()).addCookie(cookie);
-	}
+   public static void setTheme(final Execution exe, final String theme){
+      final Cookie cookie = new Cookie("zktheme", theme);
+      //store 30 days
+      cookie.setMaxAge(60 * 60 * 24 * 30);
+      String cp = exe.getContextPath();
+      // if path is empty, cookie path will be request path,
+      // which causes problems
+      if(cp.length() == 0){
+         cp = "/";
+      }
+      cookie.setPath(cp);
+      ((HttpServletResponse) exe.getNativeResponse()).addCookie(cookie);
+   }
 
-	/**
-	 * Cette méthode va sauvegarder en base l'opération de connexion
-	 * à TK (si l'application est paramétrée comme tel).
-	 */
-	public void saveConnection(){
+   /**
+    * Cette méthode va sauvegarder en base l'opération de connexion
+    * à TK (si l'application est paramétrée comme tel).
+    */
+   public void saveConnection(){
 
-		// sauvegarde de la connection
-		final Operation creationOp = new Operation();
-		creationOp.setDate(Utils.getCurrentSystemCalendar());
-		final List<OperationType> tmp = ManagerLocator.getOperationTypeManager().findByNomLikeManager("Login", true);
-		if(tmp.size() > 0){
-			ManagerLocator.getOperationManager().createObjectManager(creationOp, user, tmp.get(0), user);
+      // sauvegarde de la connection
+      final Operation creationOp = new Operation();
+      creationOp.setDate(Utils.getCurrentSystemCalendar());
+      final List<OperationType> tmp = ManagerLocator.getOperationTypeManager().findByNomLikeManager("Login", true);
+      if(tmp.size() > 0){
+         ManagerLocator.getOperationManager().createObjectManager(creationOp, user, tmp.get(0), user);
 
-		}
-	}
+      }
+   }
 
-	public List<Plateforme> getPlateformes(){
-		return plateformes;
-	}
+   public List<Plateforme> getPlateformes(){
+      return plateformes;
+   }
 
-	public void setPlateformes(final List<Plateforme> p){
-		this.plateformes = p;
-	}
+   public void setPlateformes(final List<Plateforme> p){
+      this.plateformes = p;
+   }
 
-	public Plateforme getSelectedPlateforme(){
-		return selectedPlateforme;
-	}
+   public Plateforme getSelectedPlateforme(){
+      return selectedPlateforme;
+   }
 
-	public void setSelectedPlateforme(final Plateforme sPlateforme){
-		this.selectedPlateforme = sPlateforme;
-	}
+   public void setSelectedPlateforme(final Plateforme sPlateforme){
+      this.selectedPlateforme = sPlateforme;
+   }
 }
