@@ -125,6 +125,11 @@ public class SelectBanqueController extends GenericForwardComposer<Component>
 
 		//user = getLoggedUtilisateur();
 		user = ConnexionUtils.getLoggedUtilisateur();
+		//Si l'utilisateur est archivé, il ne peut pas se connecter => on force à null comme si l'utilisateur n'existait pas
+		if(user != null && user.isArchive()) {
+		   user = null;
+		}
+
 		initWindow();
 		if(ConnexionUtils.canAccessToutesCollections(banques, selectedPlateforme, user)){
 			toutesColl = new Banque();
