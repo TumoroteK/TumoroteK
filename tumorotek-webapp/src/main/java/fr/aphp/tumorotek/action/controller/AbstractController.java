@@ -381,7 +381,7 @@ public abstract class AbstractController extends GenericForwardComposer<Componen
 				blockModal = false;
 
 			}catch(final SuspendNotAllowedException e){
-				log.error(e);
+				log.error(e.getMessage(), e);
 			}
 		}
 	}
@@ -488,7 +488,7 @@ public abstract class AbstractController extends GenericForwardComposer<Componen
 				blockModal = false;
 
 			}catch(final SuspendNotAllowedException e){
-				log.error(e);
+				log.error(e.getMessage(), e);
 			}
 		}
 	}
@@ -693,14 +693,12 @@ public abstract class AbstractController extends GenericForwardComposer<Componen
 			}else{
 				message = new StringBuilder(ex.getMessage());
 			}
-			log.error(ex);
-			ex.printStackTrace();
+			log.error(message, ex);
 		}
 		// aucun message n'a pu être généré -> exception inattendue
 		if(message == null){
 			message = new StringBuilder(ex.getClass().getSimpleName() + " : " + ex.getMessage());
-			log.error(ex);
-			ex.printStackTrace();
+			log.error(message, ex);
 		}
 
 		// si l'exception possède des infos sur l'objet qui l'a
@@ -793,7 +791,7 @@ public abstract class AbstractController extends GenericForwardComposer<Componen
 			final AMedia media = new AMedia(fileName, "xls", "application/vnd.ms-excel", out.toByteArray());
 			Filedownload.save(media);
 		}catch(final Exception e){
-			log.error(e);
+			log.error(e.getMessage(), e);
 		}finally{
 			if(out != null){
 				try{
@@ -855,7 +853,7 @@ public abstract class AbstractController extends GenericForwardComposer<Componen
 				setBlockModal(false);
 
 			}catch(final SuspendNotAllowedException e){
-				log.error(e);
+				log.error(e.getMessage(), e);
 			}
 		}
 	}
@@ -1159,7 +1157,7 @@ public abstract class AbstractController extends GenericForwardComposer<Componen
 				setBlockModal(false);
 
 			}catch(final SuspendNotAllowedException e){
-				log.error(e);
+				log.error(e.getMessage(), e);
 			}
 		}
 	}
@@ -1361,7 +1359,7 @@ public abstract class AbstractController extends GenericForwardComposer<Componen
 					((FicheRetour) ua.getFellow("fwinRetour").getAttributeOrFellow("fwinRetour$composer", true))
 					.setOldEmplacements(oldEmplacements);
 					((FicheRetour) ua.getFellow("fwinRetour").getAttributeOrFellow("fwinRetour$composer", true))
-					.switchToCreateMode(observation);
+					.switchToCreateMode(observation, (oldEmplacements != null && cession == null));
 
 					((FicheRetour) ua.getFellow("fwinRetour").getAttributeOrFellow("fwinRetour$composer", true))
 					.setInitDateSortie(dateSortie);
@@ -1389,7 +1387,7 @@ public abstract class AbstractController extends GenericForwardComposer<Componen
 				setBlockModal(false);
 
 			}catch(final SuspendNotAllowedException e){
-				log.error(e);
+				log.error(e.getMessage(), e);
 			}
 		}
 	}
@@ -1533,7 +1531,7 @@ public abstract class AbstractController extends GenericForwardComposer<Componen
 				setBlockModal(false);
 
 			}catch(final SuspendNotAllowedException e){
-				log.error(e);
+				log.error(e.getMessage(), e);
 			}
 		}
 	}
@@ -1652,7 +1650,7 @@ public abstract class AbstractController extends GenericForwardComposer<Componen
 				setBlockModal(false);
 
 			}catch(final SuspendNotAllowedException e){
-				log.error(e);
+				log.error(e.getMessage(), e);
 			}
 		}
 	}
@@ -1949,7 +1947,7 @@ public abstract class AbstractController extends GenericForwardComposer<Componen
 				setBlockModal(false);
 
 			}catch(final SuspendNotAllowedException e){
-				log.error(e);
+				log.error(e.getMessage(), e);
 			}
 		}
 	}
@@ -2320,7 +2318,7 @@ public abstract class AbstractController extends GenericForwardComposer<Componen
 				setBlockModal(false);
 
 			}catch(final SuspendNotAllowedException e){
-				log.error(e);
+				log.error(e.getMessage(), e);
 			}
 		}
 	}
