@@ -2,6 +2,7 @@
 
 ##### Version 2.2.8 - Publiée le ${timestamp}
 ###### Corrections
+- YouTrack [TK-322](https://tumorotek.myjetbrains.com/youtrack/issue/TK-322) : la désactivation d'un compte avec accès LDAP n'est pas prise en compte
 - YouTrack [TK-333](https://tumorotek.myjetbrains.com/youtrack/issue/TK-333) : ${stockage-evenement} Modification de la gestion de la stérilité (cochée par défaut lors de la création)
 - YouTrack [TK-358](https://tumorotek.myjetbrains.com/youtrack/issue/TK-358) : ${recherche-avancee} Plantage si saisie d'un critère sur complément diagnostic
 - YouTrack [TK-368](https://tumorotek.myjetbrains.com/youtrack/issue/TK-368) : ${recherche} Mauvaise actualisation du nombre de résultats de la recherche, dans le titre au dessus de la liste
@@ -11,12 +12,15 @@
 - YouTrack [TK-378](https://tumorotek.myjetbrains.com/youtrack/issue/TK-378) : ${export} En toutes collections, champs d'annotation non regroupés par table d'annotation
 - YouTrack [TK-379](https://tumorotek.myjetbrains.com/youtrack/issue/TK-379) : ${impression-bon-livraison} Afficher la date de mise à disposition au format anglais, si choix de la langue anglaise
 - YouTrack [TK-390](https://tumorotek.myjetbrains.com/youtrack/issue/TK-390) : ${export} Correction de l'erreur "Data truncated for column 'A1_1' at row 1"
+- YouTrack [TK-395](https://tumorotek.myjetbrains.com/youtrack/issue/TK-395) : ${stockage} Conteneur attribué automatiquement à des collections à tort
+- YouTrack [TK-398](https://tumorotek.myjetbrains.com/youtrack/issue/TK-398) : popup ${stockage-evenement} Correction du titre en fonction du cas courant (création ou modification)
 
 ###### Améliorations
 - YouTrack [TK-342](https://tumorotek.myjetbrains.com/youtrack/issue/TK-342) : ${administration} Création d'une collection : trier la liste des utilisateurs par ordre alphabétique
 - YouTrack [TK-365](https://tumorotek.myjetbrains.com/youtrack/issue/TK-365) : Amélioration pour faciliter la saisie des heures, sur les champs de type date+heure
 - YouTrack [TK-382](https://tumorotek.myjetbrains.com/youtrack/issue/TK-382) : ${export} Pose d'un index sur la table OBJET_NON_CONFORME
 - YouTrack [TK-383](https://tumorotek.myjetbrains.com/youtrack/issue/TK-383) : Page d'accueil : le bloc "nouvelles fonctionnalités" ne propose plus qu'un lien vers le site statique lié à la version installée
+- YouTrack [TK-399](https://tumorotek.myjetbrains.com/youtrack/issue/TK-333) : ${stockage-evenement} Optimisation du temps de création (pose d'un index)
 
 
 ##### Version 2.2.7 - Publiée le 13/03/2023
