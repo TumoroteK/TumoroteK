@@ -231,7 +231,7 @@ public class InitServlet extends HttpServlet
          // Pour faire un rollback
          //liquibase.rollback("2.1.4-SNAPSHOT", contexts);
       }catch(final LiquibaseException e){
-         log.error(e.toString());
+         log.error(e.getMessage(),e);
       }
 
       final Version currentVersion = ManagerLocator.getVersionManager().findByCurrentVersionManager();
