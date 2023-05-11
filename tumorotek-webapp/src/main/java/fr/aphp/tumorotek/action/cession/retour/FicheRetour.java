@@ -102,8 +102,8 @@ public class FicheRetour extends AbstractFicheCombineController
    private boolean dateRetourOblig = false;
 
    private Window fwinRetour;
-
-   // Labels.
+   
+   // Labels : valeur des champs en mode lecture
    private Label codeObjetLabel;
    // private Label entiteOperationLabel;
    // private Label entiteCodeLabel;
@@ -342,16 +342,20 @@ public class FicheRetour extends AbstractFicheCombineController
    @Override
    public void setParentObject(final TKdataObject obj){}
 
-   public void switchToCreateMode(final String obs){
+   public void switchToCreateMode(final String obs, final boolean initSteriliteToTrue, final boolean disableSterilite){
 
       super.switchToCreateMode();
 
       retour.setObservations(obs);
-//      TK-333 : la case stérile est cochée par défaut pour éviter que la cascade de stérilité ne modifie par erreur la stérilité 
-//      des échantillons. En effet, lors que le champ stérile n'est pas coché dans la modale (valeur à false dans la table RETOUR),
-//      une règle de gestion redescend cette stérilité à false sur tous les échantillons concernés.
-      retour.setSterile(true);
 
+      //TK-333 : gestion du champ stérilité en fonction des cas d'utilisation :
+      //sécurisation pour éviter que la cascade de non stérilité modifie à tort la stérilité des échantillons en cas "d'oubli" de l'utilisateur
+      if(retour != null) {
+         retour.setSterile(initSteriliteToTrue);
+      }
+      sterileBox.setDisabled(disableSterilite);
+      //
+      
       // Initialisation du mode (listes, valeurs...)
       initEditableMode();
 
