@@ -39,6 +39,7 @@
         <produit-derive>&lt;span class="badge badge-produit-derive"&gt;Produit dérivé&lt;/span&gt;</produit-derive>
         <recherche>&lt;span class="badge badge-recherche"&gt;Recherche&lt;/span&gt;</recherche>
         <recherche-avancee>&lt;span class="badge badge-recherche"&gt;Recherche Avancée&lt;/span&gt;</recherche-avancee>
+        <recherche-complexe>&lt;span class="badge badge-recherche"&gt;Recherche Complexe&lt;/span&gt;</recherche-complexe>
         <statistiques>&lt;span class="badge badge-statistiques"&gt;Statistiques&lt;/span&gt;</statistiques>
         <stockage>&lt;span class="badge badge-stockage"&gt;Stockage&lt;/span&gt;</stockage>
         <stockage-evenement>&lt;span class="badge badge-stockage"&gt;Evènement de stockage&lt;/span&gt;</stockage-evenement>

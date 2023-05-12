@@ -14,6 +14,7 @@
 - YouTrack [TK-390](https://tumorotek.myjetbrains.com/youtrack/issue/TK-390) : ${export} Correction de l'erreur "Data truncated for column 'A1_1' at row 1"
 - YouTrack [TK-395](https://tumorotek.myjetbrains.com/youtrack/issue/TK-395) : ${stockage} Conteneur attribué automatiquement à des collections à tort
 - YouTrack [TK-398](https://tumorotek.myjetbrains.com/youtrack/issue/TK-398) : popup ${stockage-evenement} Correction du titre en fonction du cas courant (création ou modification)
+- YouTrack [TK-400](https://tumorotek.myjetbrains.com/youtrack/issue/TK-400) : Exécution ${recherche-complexe} Ajout de la valeur "Toutes les collections" pour afficher toutes les requêtes quelque soit la collection de création (comme c'était le cas sur la version 2.1.4)
 
 ###### Améliorations
 - YouTrack [TK-342](https://tumorotek.myjetbrains.com/youtrack/issue/TK-342) : ${administration} Création d'une collection : trier la liste des utilisateurs par ordre alphabétique
