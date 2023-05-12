@@ -13,6 +13,7 @@
 - YouTrack [TK-379](https://tumorotek.myjetbrains.com/youtrack/issue/TK-379) : ${impression-bon-livraison} Afficher la date de mise à disposition au format anglais, si choix de la langue anglaise
 - YouTrack [TK-390](https://tumorotek.myjetbrains.com/youtrack/issue/TK-390) : ${export} Correction de l'erreur "Data truncated for column 'A1_1' at row 1"
 - YouTrack [TK-395](https://tumorotek.myjetbrains.com/youtrack/issue/TK-395) : ${stockage} Conteneur attribué automatiquement à des collections à tort
+- YouTrack [TK-397](https://tumorotek.myjetbrains.com/youtrack/issue/TK-397) : ${stockage-evenement} Sécurisation de la modification d'un évènement de stockage, rendue impossible pour ceux créés automatiquement lors d'une cession totale ou une transformation totale
 - YouTrack [TK-398](https://tumorotek.myjetbrains.com/youtrack/issue/TK-398) : popup ${stockage-evenement} Correction du titre en fonction du cas courant (création ou modification)
 - YouTrack [TK-400](https://tumorotek.myjetbrains.com/youtrack/issue/TK-400) : Exécution ${recherche-complexe} Ajout de la valeur "Toutes les collections" pour afficher toutes les requêtes quelque soit la collection de création (comme c'était le cas sur la version 2.1.4)
 
