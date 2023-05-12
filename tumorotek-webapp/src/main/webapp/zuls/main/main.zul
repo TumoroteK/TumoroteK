@@ -94,7 +94,6 @@
 <?component name="addCritereModale" macroURI="/zuls/io/AddCritereModale.zul"?>
 <?component name="setCriteresValuesModale" macroURI="/zuls/io/SetCriteresValuesModale.zul"?>
 <?component name="retourModale" macroURI="/zuls/cession/retour/FicheRetour.zul" ?>
-<?component name="listeRetoursModale" macroURI="/zuls/cession/retour/ListeRetour.zul" ?>
 <?component name="doublonPatientModale" macroURI="/zuls/prelevement/DoublonPatientModale.zul" ?>
 <?component name="ficheUtilisateurModale" macroURI="/zuls/utilisateur/FicheUtilisateurModale.zul" ?>
 <?component name="showEchantillonsModale" macroURI="/zuls/prelevement/ShowEchantillonsModale.zul" ?>
