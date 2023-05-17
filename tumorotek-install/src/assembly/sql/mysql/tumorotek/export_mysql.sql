@@ -1403,8 +1403,8 @@ CREATE PROCEDURE `fill_tmp_table_cession`(IN id INTEGER)
            t.nom,
            c.temperature,
            c.observations,
-           op.date_,
-           ut.login
+           GROUP_CONCAT(op.date_) as date_,
+           GROUP_CONCAT(ut.login) as login
     FROM CESSION c
            INNER JOIN BANQUE b
            INNER JOIN ENTITE ent

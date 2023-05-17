@@ -16,6 +16,7 @@
 - YouTrack [TK-397](https://tumorotek.myjetbrains.com/youtrack/issue/TK-397) : ${stockage-evenement} Sécurisation de la modification d'un évènement de stockage, rendue impossible pour ceux créés automatiquement lors d'une cession totale ou une transformation totale
 - YouTrack [TK-398](https://tumorotek.myjetbrains.com/youtrack/issue/TK-398) : popup ${stockage-evenement} Correction du titre en fonction du cas courant (création ou modification)
 - YouTrack [TK-400](https://tumorotek.myjetbrains.com/youtrack/issue/TK-400) : Exécution ${recherche-complexe} Ajout de la valeur "Toutes les collections" pour afficher toutes les requêtes quelque soit la collection de création (comme c'était le cas sur la version 2.1.4)
+- YouTrack [TK-402](https://tumorotek.myjetbrains.com/youtrack/issue/TK-402) : ${export} ${cession} impossible pour certaines installations mysql version 8
 
 ###### Améliorations
 - YouTrack [TK-342](https://tumorotek.myjetbrains.com/youtrack/issue/TK-342) : ${administration} Création d'une collection : trier la liste des utilisateurs par ordre alphabétique
