@@ -1,6 +1,6 @@
 #### Notes de version
 
-##### Version 2.2.8 - Publiée le 15/05/2023
+##### Version 2.2.8 - Publiée le 17/05/2023
 ###### Corrections
 - YouTrack [TK-322](https://tumorotek.myjetbrains.com/youtrack/issue/TK-322) : la désactivation d'un compte avec accès LDAP n'est pas prise en compte
 - YouTrack [TK-333](https://tumorotek.myjetbrains.com/youtrack/issue/TK-333) : <span class="badge badge-stockage">Evènement de stockage</span> Modification de la gestion de la stérilité (cochée par défaut lors de la création)
@@ -16,6 +16,7 @@
 - YouTrack [TK-397](https://tumorotek.myjetbrains.com/youtrack/issue/TK-397) : <span class="badge badge-stockage">Evènement de stockage</span> Sécurisation de la modification d'un évènement de stockage, rendue impossible pour ceux créés automatiquement lors d'une cession totale ou une transformation totale
 - YouTrack [TK-398](https://tumorotek.myjetbrains.com/youtrack/issue/TK-398) : popup <span class="badge badge-stockage">Evènement de stockage</span> Correction du titre en fonction du cas courant (création ou modification)
 - YouTrack [TK-400](https://tumorotek.myjetbrains.com/youtrack/issue/TK-400) : Exécution <span class="badge badge-recherche">Recherche Complexe</span> Ajout de la valeur "Toutes les collections" pour afficher toutes les requêtes quelque soit la collection de création (comme c'était le cas sur la version 2.1.4)
+- YouTrack [TK-402](https://tumorotek.myjetbrains.com/youtrack/issue/TK-402) : <span class="badge badge-export">Export</span> <span class="badge badge-cession">Cession</span> impossible pour certaines installations mysql version 8
 
 ###### Améliorations
 - YouTrack [TK-342](https://tumorotek.myjetbrains.com/youtrack/issue/TK-342) : <span class="badge badge-administration">Administration</span> Création d'une collection : trier la liste des utilisateurs par ordre alphabétique
