@@ -2383,12 +2383,11 @@ public class FicheDeplacerEmplacements extends FicheTerminale
       // pour chaque déplacement réalisé
       for(int i = 0; i < deplacements.size(); i++){
          final EmplacementDecorator deco = deplacements.get(i);
+         EmplacementDecorator emplacementDecoratorDestination = deco.getEmplDestination();
          // si l'emplacement a une destination
-         if(deco.getEmplDestination() != null){
+         if(emplacementDecoratorDestination != null){
 
-            // on récupère son emplacement et la boite
-            final Emplacement emp = deco.getEmplacement();
-            final Terminale term = emp.getTerminale();
+            final Terminale term = emplacementDecoratorDestination.getTerminale();
 
             // Boite d'arrivée
             final BoiteImpression newBiArr = new BoiteImpression();
@@ -2436,7 +2435,7 @@ public class FicheDeplacerEmplacements extends FicheTerminale
 
                // ajout de la position du dérivé
                final List<Integer> positions = new ArrayList<>();
-               positions.add(emp.getPosition());
+               positions.add(emplacementDecoratorDestination.getPosition());
                newBiArr.setPositions(positions);
 
                // ajout de la boite à la liste
@@ -2449,10 +2448,10 @@ public class FicheDeplacerEmplacements extends FicheTerminale
                // ajout du dérivé et de sa position aux
                // éléments à extraire
                final int pos = bi.getPositions().size() + 1;
-               bi.getPositions().add(emp.getPosition());
+               bi.getPositions().add(emplacementDecoratorDestination.getPosition());
                // si l'élément a deplacer est un echantillon
-               bi.getElements().add(ObjectTypesFormatters.getLabel("impression.boite.numero.objet",
-                  new String[] {Integer.toString(pos), deco.getCode()}));
+               bi.getElements().add(
+                  ObjectTypesFormatters.getLabel("impression.boite.numero.objet", new String[] {String.valueOf(pos), deco.getCode()}));
             }
          }
       }
@@ -2881,23 +2880,24 @@ public class FicheDeplacerEmplacements extends FicheTerminale
                if(empl.getEntite().getNom().equals("Echantillon")){
                   // getEmplForRetours().put(ManagerLocator.getEchantillonManager().findByIdManager(empl.getObjetId()),
                   //		empl.clone());
-                  getEmplForRetours()
-                     .add(new OldEmplTrace(ManagerLocator.getEchantillonManager().findByIdManager(empl.getObjetId()),
-                        ManagerLocator.getEmplacementManager().getAdrlManager(empl, false),
-                        ManagerLocator.getEmplacementManager().getConteneurManager(empl), empl.clone()));
+                  getEmplForRetours().add(new OldEmplTrace(ManagerLocator.getEchantillonManager().findByIdManager(empl.getObjetId()),
+                     ManagerLocator.getEmplacementManager().getAdrlManager(empl, false),
+                     ManagerLocator.getEmplacementManager().getConteneurManager(empl), empl.clone()));
                }else if(empl.getEntite().getNom().equals("ProdDerive")){
                   // getEmplForRetours().put(ManagerLocator.getProdDeriveManager().findByIdManager(empl.getObjetId()), empl.clone());
-                  getEmplForRetours()
-                     .add(new OldEmplTrace(ManagerLocator.getProdDeriveManager().findByIdManager(empl.getObjetId()),
-                        ManagerLocator.getEmplacementManager().getAdrlManager(empl, false),
-                        ManagerLocator.getEmplacementManager().getConteneurManager(empl), empl.clone()));
+                  getEmplForRetours().add(new OldEmplTrace(ManagerLocator.getProdDeriveManager().findByIdManager(empl.getObjetId()),
+                     ManagerLocator.getEmplacementManager().getAdrlManager(empl, false),
+                     ManagerLocator.getEmplacementManager().getConteneurManager(empl), empl.clone()));
                }
             }
-            // on maj son adresse
-            empl.setTerminale(deco.getEmplDestination().getTerminale());
-            empl.setPosition(deco.getEmplDestination().getPosition());
-            emplacementsFinaux.add(empl);
+            //l'emplacement de l'échantillon / dérivé doit être mis à jour
+            //Réutilisation de l'emplacement d'origine attaché à l'objet concerné et mise à jour de la position
+            Emplacement emplacementFinal = empl.clone();
+            emplacementFinal.setTerminale(deco.getEmplDestination().getTerminale());
+            emplacementFinal.setPosition(deco.getEmplDestination().getPosition());
+            emplacementsFinaux.add(emplacementFinal);
 
+            //Gestion du cas où la destination est vide : définition d'un emplacement final avec la position d'origine mais sans objet
             if(deco.getEmplDestination().getVide() && deco.getEmplDestination().getEmplacement().getEmplacementId() != null){
                final Emplacement vide = deco.getEmplDestination().getEmplacement();
                vide.setTerminale(deco.getTerminale());
