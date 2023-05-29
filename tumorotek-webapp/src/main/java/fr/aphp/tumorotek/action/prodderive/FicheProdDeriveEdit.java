@@ -1142,7 +1142,8 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
 
    @Override
    public void setFocusOnElement(){
-      codePrefixeLabelDerive.setFocus(true);
+//      depuis TK-404 la gestion des focus se fait dans FicheMultiProdDerive
+//      nous devons accéder à codesParentBoxDerive, qui n'est pas présent dans ce contrôleur
    }
 
    /**
