@@ -3,7 +3,7 @@
 ##### Version 2.2.8 - Publiée le ${timestamp}
 ###### Corrections
 - YouTrack [TK-322](https://tumorotek.myjetbrains.com/youtrack/issue/TK-322) : la désactivation d'un compte avec accès LDAP n'est pas prise en compte
-- YouTrack [TK-333](https://tumorotek.myjetbrains.com/youtrack/issue/TK-333) : ${stockage-evenement} Modification de la gestion de la stérilité (cochée par défaut lors de la création)
+- YouTrack [TK-333](https://tumorotek.myjetbrains.com/youtrack/issue/TK-333) : ${stockage-evenement} Sécurisation de  la gestion de l'attribut stérile lors d'un déplacement de boîte
 - YouTrack [TK-358](https://tumorotek.myjetbrains.com/youtrack/issue/TK-358) : ${recherche-avancee} Plantage si saisie d'un critère sur complément diagnostic
 - YouTrack [TK-368](https://tumorotek.myjetbrains.com/youtrack/issue/TK-368) : ${recherche} Mauvaise actualisation du nombre de résultats de la recherche, dans le titre au dessus de la liste
 - YouTrack [TK-373](https://tumorotek.myjetbrains.com/youtrack/issue/TK-373) : ${export} ${echantillon} Heures des dates toujours à 00:00 au niveau des évènements de stockage
