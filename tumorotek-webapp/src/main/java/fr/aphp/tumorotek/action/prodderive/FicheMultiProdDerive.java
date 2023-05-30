@@ -306,9 +306,6 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
          selectParent = false;
          setTypeParent(newParent.getClass().getSimpleName());
          removeSelectParentMode();
-//       TK-404: si le parent est Échantillon, l'accent sera mis sur Date de transformation
-         dateTransfoCalBox.setFocus(true);
-
       }else{
          // sinon, l'utilisateur devra sélectionner le parent
          addSelectParentMode();
@@ -1993,9 +1990,6 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
       // le filtre lorsque l'utilisateur saisit le code
       dictCodesModel = new CustomSimpleListModel(codesParent.toArray());
       codesParentBoxDerive.setModel(dictCodesModel);
-//      TK-404: si le parent est Derivé, l'accent sera mis sur Code du parent
-      codesParentBoxDerive.setFocus(true);
-
       setTypeParent("Echantillon");
    }
 
@@ -2682,4 +2676,14 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
          setSelectedCollaborateur(null);
       }
    }
+
+  @Override
+   public void setFocusOnElement(){
+     // si l'origine est liste dérivée le focus sera sur Code du parent
+      if (getParentObject() == null){
+         codesParentBoxDerive.setFocus(true);
+      } else {
+         dateTransfoCalBox.setFocus(true);
+      }
+  }
 }
