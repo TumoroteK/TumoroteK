@@ -114,7 +114,7 @@
 				<hlayout sclass="z-valign-bottom">
 					<radio id="patientDerive"/>
 					<div width="180px">
-						<label value="${c:l('prelevement.patient')}" 
+						<label value="${c:l('listePrelevement.critere.patient')}"
 						sclass="formLabel"/>
 					</div>
 					<textbox id="patientBoxDerive" 
