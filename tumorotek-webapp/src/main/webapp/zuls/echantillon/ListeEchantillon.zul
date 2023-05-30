@@ -80,7 +80,7 @@
 				<vlayout>
 					<hlayout sclass="z-valign-bottom">
 						<radio id="dateCreation"/>
-						<div width="150px">
+						<div width="180px">
 							<label value="${c:l('listeEchantillon.critere.date.creation')}"
 								sclass="formLabel"/>
 						</div>
@@ -93,7 +93,7 @@
 					</hlayout>
 					<hlayout sclass="z-valign-bottom">
 						<radio id="codeEchan"/>
-						<div width="150px">
+						<div width="180px">
 							<label value="${c:l('Champ.Echantillon.Code')}" sclass="formLabel"/>
 						</div>
 						<textbox id="codeBoxEchan" 
@@ -107,8 +107,8 @@
 						</hlayout>
 					<hlayout sclass="z-valign-bottom">
 						<radio id="patientEchantillon"/>
-						<div width="150px">
-							<label value="${c:l('prelevement.patient')}" 
+						<div width="180px">
+							<label value="${c:l('listePrelevement.critere.patient')}"
 								sclass="formLabel"/>
 						</div>
 						<textbox id="patientBoxEchan" 

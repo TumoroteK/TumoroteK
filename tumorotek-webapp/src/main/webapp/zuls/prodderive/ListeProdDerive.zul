@@ -85,25 +85,25 @@
 			<vlayout>
 				<hlayout sclass="z-valign-bottom">
 					<radio id="dateCreation"/>
-					<div width="200px">
+					<div width="180px">
 						<label value="${c:l('listeProdDerive.critere.date.creation')}"
 							sclass="formLabel"/>
 					</div>
 					<listbox id="dateCreationBox" mold="select" rows="1"
 					model="@{lwinProdDerive$composer.creationDates}">
-						<listitem self="@{each='date'}" value="@{date}">			
+						<listitem self="@{each='date'}" value="@{date}">
 							<listcell label="@{date}" />
 						</listitem>
 					</listbox>
 				</hlayout>
 				<hlayout sclass="z-valign-bottom">
 					<radio id="codeDerive"/>
-					<div width="150px">
+					<div width="180px">
 						<label value="${c:l('listeProdDerive.critere.code')}" sclass="formLabel"/>
 					</div>
-					<textbox id="codeBoxDerive" 
+					<textbox id="codeBoxDerive"
 						value="@{lwinProdDerive$composer.searchCode,
-	        			save-when='find.onClick, self.onOK'}" 
+	        			save-when='find.onClick, self.onOK'}"
 						forward="onOK=onPressEnterKey()"
 					/>
 					<button id="findByListCodesDerive" height="20px"
@@ -113,8 +113,8 @@
 				</hlayout>
 				<hlayout sclass="z-valign-bottom">
 					<radio id="patientDerive"/>
-					<div width="150px">
-						<label value="${c:l('prelevement.patient')}" 
+					<div width="180px">
+						<label value="${c:l('listePrelevement.critere.patient')}"
 						sclass="formLabel"/>
 					</div>
 					<textbox id="patientBoxDerive" 
