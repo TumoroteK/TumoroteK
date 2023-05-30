@@ -498,7 +498,3 @@ CREATE PROCEDURE `fill_tmp_table_echan_gatsbi`(IN echan_id INTEGER, IN etude_id 
     DEALLOCATE PREPARE stmt;
 
 END&&
-
-delimiter ;
-
--- insert into GATSBY_CONTEXTE_CHAMP_ENTITE select max(CONTEXTE_CHAMP_ENTITE_ID) + 1, 1, 229, 1, 1, null from GATSBY_CONTEXTE_CHAMP_ENTITE;

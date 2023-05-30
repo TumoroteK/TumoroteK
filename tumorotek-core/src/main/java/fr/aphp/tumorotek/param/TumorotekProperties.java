@@ -101,6 +101,9 @@ public final class TumorotekProperties
             new PropertyPlaceholderHelper(PLACEHOLDER_START_DELIMITER, PLACEHOLDER_END_DELIMITER, "#", false);
          res = pph.replacePlaceholders(value, TUMOROTEK_PROPERTIES);
       }
+      else {
+         log.error("la clé : " + key + "n'a pas été trouvée dans tumorotek.properties - renvoie null");
+      }
 
       return res;
    }
