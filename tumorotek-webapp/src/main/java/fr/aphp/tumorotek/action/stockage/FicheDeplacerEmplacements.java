@@ -2880,14 +2880,16 @@ public class FicheDeplacerEmplacements extends FicheTerminale
                if(empl.getEntite().getNom().equals("Echantillon")){
                   // getEmplForRetours().put(ManagerLocator.getEchantillonManager().findByIdManager(empl.getObjetId()),
                   //		empl.clone());
-                  getEmplForRetours().add(new OldEmplTrace(ManagerLocator.getEchantillonManager().findByIdManager(empl.getObjetId()),
-                     ManagerLocator.getEmplacementManager().getAdrlManager(empl, false),
-                     ManagerLocator.getEmplacementManager().getConteneurManager(empl), empl.clone()));
+                  getEmplForRetours()
+                     .add(new OldEmplTrace(ManagerLocator.getEchantillonManager().findByIdManager(empl.getObjetId()),
+                        ManagerLocator.getEmplacementManager().getAdrlManager(empl, false),
+                        ManagerLocator.getEmplacementManager().getConteneurManager(empl), empl.clone()));
                }else if(empl.getEntite().getNom().equals("ProdDerive")){
                   // getEmplForRetours().put(ManagerLocator.getProdDeriveManager().findByIdManager(empl.getObjetId()), empl.clone());
-                  getEmplForRetours().add(new OldEmplTrace(ManagerLocator.getProdDeriveManager().findByIdManager(empl.getObjetId()),
-                     ManagerLocator.getEmplacementManager().getAdrlManager(empl, false),
-                     ManagerLocator.getEmplacementManager().getConteneurManager(empl), empl.clone()));
+                  getEmplForRetours()
+                     .add(new OldEmplTrace(ManagerLocator.getProdDeriveManager().findByIdManager(empl.getObjetId()),
+                        ManagerLocator.getEmplacementManager().getAdrlManager(empl, false),
+                        ManagerLocator.getEmplacementManager().getConteneurManager(empl), empl.clone()));
                }
             }
             //l'emplacement de l'échantillon / dérivé doit être mis à jour
