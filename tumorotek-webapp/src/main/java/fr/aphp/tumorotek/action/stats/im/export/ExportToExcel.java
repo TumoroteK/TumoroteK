@@ -259,7 +259,6 @@ public class ExportToExcel extends ResultSetToExcel
          writeValues(collection, rowValue, currentCol, subValue, year, period);
          currentCol = 2;
          rowValue = sh.createRow(1 + currentRow++);
-         //System.err.println("1\\ " + rowValue.getRowNum() + " / " + currentRow);
       }
    }
 
@@ -272,7 +271,6 @@ public class ExportToExcel extends ResultSetToExcel
    			if (v.getUnitTemp().contentEquals(year)
    					&& v.getCollection() == collection.getBanqueId()
    					&& v.getSubValue().contentEquals(subValue)) {
-   				System.err.println("value rowCount : " + currentRow
    				 + " / col : " + currentCol);
    				writeCell(row, currentCol,
    						String.valueOf(v.getValue()),
@@ -291,7 +289,6 @@ public class ExportToExcel extends ResultSetToExcel
    					&& v.getSemestre().contentEquals(period)
    					&& v.getCollection() == collection.getBanqueId()
    					&& v.getSubValue().contentEquals(subValue)) {
-   				// System.err.println("value rowCount : " + currentRow
    				// + " / col : " + currentCol +" / " + year + " / " + period);
 
 
@@ -397,7 +394,6 @@ public class ExportToExcel extends ResultSetToExcel
    //         //					&& v.getCollection() == collection.getBanqueId()
    //         //					&& v.getSubValue() == subValue) {
    //         //
-   //         //				// System.err.println("value rowCount : " + currentRow
    //         //				// + " / col : " + currentCol +" / " + year + " / " + period);
    //         //				writeCell(row, currentCol, String.valueOf(v.getValue()), FormatType.NUMERIC,
    //         //						boldFont, null);
