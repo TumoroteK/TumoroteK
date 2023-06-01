@@ -429,8 +429,6 @@ public class ExportToExcel extends ResultSetToExcel
             sh.setHorizontallyCenter(true);
             sh.setVerticallyCenter(true);
          }catch(final Exception ex){
-            System.out.println("Erreur generate");
-            System.out.println(ex);
             log.error(ex.getMessage(), ex);
          }finally{
             // Autosize columns

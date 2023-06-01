@@ -144,7 +144,7 @@ public class ExportThread extends Thread
          exportCessions();
       }
       endTime = System.nanoTime();
-      System.out.println("Total elapsed time in execution of method is :" + ((endTime - startTime) / 1000000000.0));
+      log.debug("Total elapsed time in execution of method is :" + ((endTime - startTime) / 1000000000.0));
    }
 
    /*************************************************************************/
