@@ -126,7 +126,6 @@ public class GenericDaoJpaImpl<T, PK extends Serializable> extends JpaDaoSupport
    @Override
    public T findById(final PK id){
       //return (T) getSession().get(type, id);
-      //System.out.println("********---------"+em.isOpen());
       //return (T) em.find(type, id);
       if(id != null){
          return getJpaTemplate().find(type, id);
@@ -209,8 +208,7 @@ public class GenericDaoJpaImpl<T, PK extends Serializable> extends JpaDaoSupport
       
       		logger.debug(queryStr.toString());
       
-      		System.out.println(em.getDelegate().getClass().getName());
-      
+
       		final Query query = em.createQuery(queryStr.toString());
       		return query.getResultList();
       	}

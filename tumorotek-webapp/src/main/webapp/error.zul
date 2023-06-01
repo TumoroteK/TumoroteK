@@ -40,8 +40,7 @@
 
 <zscript><![CDATA[
 	 	   // import org.zkoss.lang.Exceptions;
-	 	   // System.out.println(requestScope);
-	  		// String simpleTrace = Exceptions.getBriefStackTrace((Throwable) 
+	  		// String simpleTrace = Exceptions.getBriefStackTrace((Throwable)
 		  	//		sessionScope.get("javax.servlet.error.exception"));
 	  		// ]]></zscript>
 

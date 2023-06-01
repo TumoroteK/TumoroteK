@@ -88,7 +88,6 @@ public class Test
 
    @org.junit.Before
    public void setUp(){
-      //    	System.out.println("SET UP");
       //		// creation patient system qui sera synchronizé avec SIP
       //    	Patient sys = new Patient();
       //    	sys.setNip("121212");

@@ -1427,7 +1427,6 @@ public class Export extends Thread
 			getConnection().commit();
 			// ---------------------------------------------- //
 			//	long endTime = System.nanoTime();
-			//	System.out.println("Total elapsed time in execution of method is :"
 			//			+ ((double) (endTime - startTime) / 1000000000.0));
 
 	       

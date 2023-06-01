@@ -93,7 +93,6 @@ public class TumoBarcodePrinterTest extends AbstractManagerTest4
    //			assertTrue(completed == 1);
    //		} catch (Exception e) {
    //			String msg = "ImprimerCodesBarres error! " + e.getMessage();
-   //			System.out.println(msg);
    //		}
    //		
    //		// ZPL driver
@@ -103,7 +102,6 @@ public class TumoBarcodePrinterTest extends AbstractManagerTest4
    //			assertTrue(completed == 1);
    //		} catch (Exception e) {
    //			String msg = "ImprimerCodesBarres error! " + e.getMessage();
-   //			System.out.println(msg);
    //		}
    //		
    //		// ZPL socket IP
@@ -115,7 +113,6 @@ public class TumoBarcodePrinterTest extends AbstractManagerTest4
    //			assertTrue(completed == -1);
    //		} catch (Exception e) {
    //			String msg = "ImprimerCodesBarres error! " + e.getMessage();
-   //			System.out.println(msg);
    //		}
    //	
    //	}
@@ -163,7 +160,6 @@ public class TumoBarcodePrinterTest extends AbstractManagerTest4
    //			assertTrue(completed == 1);
    //		} catch (Exception e) {
    //			String msg = "ImprimerCodesBarres error! " + e.getMessage();
-   //			System.out.println(msg);
    //		}
    //		
    //		// ZPL driver
@@ -173,7 +169,6 @@ public class TumoBarcodePrinterTest extends AbstractManagerTest4
    //			assertTrue(completed == 1);
    //		} catch (Exception e) {
    //			String msg = "ImprimerCodesBarres error! " + e.getMessage();
-   //			System.out.println(msg);
    //		}
    //		
    //		// ZPL socket IP
@@ -185,7 +180,6 @@ public class TumoBarcodePrinterTest extends AbstractManagerTest4
    //			assertTrue(completed == -1);
    //		} catch (Exception e) {
    //			String msg = "ImprimerCodesBarres error! " + e.getMessage();
-   //			System.out.println(msg);
    //		}
    //	}
 
@@ -285,13 +279,10 @@ public class TumoBarcodePrinterTest extends AbstractManagerTest4
    //			completed = tumoBarcodePrinter.printEchantillon(liste, 1, imp, mod, null);
    //
    //			if (completed == 1) {
-   //				System.out.println("Impression terminée");
    //			} else {
-   //				System.out.println("Erreur d'impression");
    //			}
    //		} catch (Exception e) {
    //			String msg = "ImprimerCodesBarres error! " + e.getMessage();
-   //			System.out.println(msg);
    //		}
    //	}
    //
@@ -318,13 +309,10 @@ public class TumoBarcodePrinterTest extends AbstractManagerTest4
    //			completed = tumoBarcodePrinter.printDerive(liste, 1, imp, mod, null);
    //
    //			if (completed == 1) {
-   //				System.out.println("Impression terminée");
    //			} else {
-   //				System.out.println("Erreur d'impression");
    //			}
    //		} catch (Exception e) {
    //			String msg = "ImprimerCodesBarres error! " + e.getMessage();
-   //			System.out.println(msg);
    //		}
    //	}
 

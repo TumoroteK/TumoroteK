@@ -291,7 +291,6 @@ public class TraitementRequeteManagerTest extends AbstractManagerTest4
       Iterator<Object> it = resultats.iterator();
       while(it.hasNext()){
          final ProdDerive derive = (ProdDerive) it.next();
-         // System.out.println(derive);
          assertTrue(derive.getCode().startsWith(codeP));
       }
 
@@ -354,7 +353,6 @@ public class TraitementRequeteManagerTest extends AbstractManagerTest4
       //		it = resultats.iterator();
       //		while (it.hasNext()) {
       //			Patient patient = (Patient) it.next();
-      //			System.out.println(patient);
       //			assertTrue(patient.getNom().equals("DELPHINO"));
       //		}
    }
@@ -840,8 +838,7 @@ public class TraitementRequeteManagerTest extends AbstractManagerTest4
    			= traitementQueryManager
    			.findObjetByCritereWithBanquesDeriveVersionManager(
    					critere, banques, "DEL%", true);
-   	System.out.println(resultats);
-   	
+
    	// Recherche des patients en fct du code des dérivés
    	ChampEntite champEntiteMaladies = champEntiteDao.findById(222);
    	Champ parentToQueryMaladie = new Champ(champEntiteMaladies);
@@ -861,7 +858,6 @@ public class TraitementRequeteManagerTest extends AbstractManagerTest4
    	resultats = traitementQueryManager
    		.findObjetByCritereWithBanquesDeriveVersionManager(
    			critere, banques, "PTR%", false);
-   	System.out.println(resultats);
    }*/
 
    @Test
@@ -937,7 +933,6 @@ public class TraitementRequeteManagerTest extends AbstractManagerTest4
       /* On traite le critère. */
       resultats = traitementQueryManager.findObjetByCriteresWithBanquesDeriveVersionManager(criteres, banques, values, false);
       assertTrue(!resultats.isEmpty());
-      //System.out.println(resultats);
    }
 
    /**
@@ -956,8 +951,7 @@ public class TraitementRequeteManagerTest extends AbstractManagerTest4
    //			new Hashtable<Critere, Object>();
    //		
    //		/* TEST 1 : Groupement simple. */
-   //		System.out.println("TEST 1 : Groupement simple.");
-   //		
+   //
    //		/* On crée un critère. */
    //		/* On récupère le champEntite correspondant au code prelevement (23). */
    //		ChampEntite codePrelevement = champEntiteDao.findById(23);
@@ -981,7 +975,6 @@ public class TraitementRequeteManagerTest extends AbstractManagerTest4
    //		Iterator<Object> it = resultats.iterator();
    //		while (it.hasNext()) {
    //			Prelevement prelevement = (Prelevement) it.next();
-   //			System.out.println(prelevement);
    //			assertTrue(prelevement.getCode().equals(codeP1)
    //					|| prelevement.getCode().equals(codeP2));
    //		}
@@ -991,8 +984,7 @@ public class TraitementRequeteManagerTest extends AbstractManagerTest4
    //		if (testLyon) {
    //			idP = "855";
    //		}
-   //		System.out.println("TEST 2 : Arbre de groupements.");
-   //		
+   //
    //		/* On récupère le champEntite correspondant à id patient (1). */
    //		ChampEntite idPatient = champEntiteDao.findById(1);
    //		/* On crée un arbre de groupement. */
@@ -1018,7 +1010,6 @@ public class TraitementRequeteManagerTest extends AbstractManagerTest4
    //		it = resultats.iterator();
    //		while (it.hasNext()) {
    //			Prelevement prelevement = (Prelevement) it.next();
-   //			System.out.println(prelevement);
    //			assertTrue(prelevement.getCode().equals(codeP1)
    //					|| prelevement.getCode().equals(codeP2));
    //			assertTrue(prelevement.getMaladie().getPatient().getPatientId()
@@ -1029,8 +1020,7 @@ public class TraitementRequeteManagerTest extends AbstractManagerTest4
    //		groupementManager.removeObjectManager(racine);
    //		
    //		/* TEST 3 : Requête uni critère. */
-   //		System.out.println("TEST 3 : Requête uni critère.");
-   //		
+   //
    //		String codeP3 = "PRLVT";
    //		if (testLyon) {
    //			codeP3 = "TUM132";
@@ -1058,7 +1048,6 @@ public class TraitementRequeteManagerTest extends AbstractManagerTest4
    //		it = resultats.iterator();
    //		while (it.hasNext()) {
    //			Prelevement prelevement = (Prelevement) it.next();
-   //			System.out.println(prelevement);
    //			assertTrue(prelevement.getCode().startsWith(codeP3));
    //		}
    //		
@@ -1067,8 +1056,7 @@ public class TraitementRequeteManagerTest extends AbstractManagerTest4
    //		
    //		
    //		/* TEST 4 : Requête dérivés. */
-   //		System.out.println("TEST 4 : Requête dérivés.");
-   //		
+   //
    //		String codeD = "PTRA.1.2";
    //		String codeP4 = "PRLVT1";
    //		if (testLyon) { 
@@ -1109,7 +1097,6 @@ public class TraitementRequeteManagerTest extends AbstractManagerTest4
    //			Object obj = prodDerive;
    //			boolean found = false;
    //			do {
-   //				System.out.println(obj);		
    //				/* On récupère l'objet parent. */
    //				if (obj.getClass().getSimpleName().equals("ProdDerive")) {
    //					obj = prodDeriveManager.findParent(
@@ -1130,7 +1117,6 @@ public class TraitementRequeteManagerTest extends AbstractManagerTest4
    //		groupementManager.removeObjectManager(groupement4);
    //
    //		/* TEST 5 : Requête avec date. */
-   //		System.out.println("TEST 5 : Requête avec date.");
    //
    //		/*
    //		 * On récupère le champEntite correspondant à la date du consentement
@@ -1167,7 +1153,6 @@ public class TraitementRequeteManagerTest extends AbstractManagerTest4
    //		it = resultats.iterator();
    //		while (it.hasNext()) {
    //			Prelevement prelevement = (Prelevement) it.next();
-   //			System.out.println(prelevement + " - consentDate : "
    //					+ prelevement.getConsentDate());
    //			assertTrue(prelevement.getConsentDate()
    //					.before(new java.util.Date(1983, 8, 10)));
@@ -1178,7 +1163,6 @@ public class TraitementRequeteManagerTest extends AbstractManagerTest4
    //		
    //		if (testLyon) {
    //			/* TEST 6 : Champ annotation. */
-   //			System.out.println("TEST 6 : ChampAnnotations.");
    //
    //			ChampAnnotation champAnno = champAnnotationDao.findById(72);
    //			
@@ -1211,7 +1195,6 @@ public class TraitementRequeteManagerTest extends AbstractManagerTest4
    //			it = resultats.iterator();
    //			while (it.hasNext()) {
    //				Echantillon echantillon = (Echantillon) it.next();
-   //				System.out.println(echantillon);
    //				//assertTrue();
    //			}
    //			
