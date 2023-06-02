@@ -72,7 +72,7 @@ public class GennoFixProcessor implements Processor
             sb.append(System.lineSeparator());
          }
       }catch(final Exception e){
-         log.error(e.getMessage(), e));
+         log.error(e.getMessage(), e);
          throw new RuntimeException("processor GennoFix error: ".concat(e.getMessage()));
       }
 
