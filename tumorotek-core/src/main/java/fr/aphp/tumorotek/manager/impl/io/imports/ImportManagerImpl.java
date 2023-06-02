@@ -2020,7 +2020,7 @@ public class ImportManagerImpl implements ImportManager
          }
 
       }catch(final Exception e){
-         e.printStackTrace();
+         log.error(e.getMessage(), e);
       }
       return res;
    }
@@ -2049,9 +2049,9 @@ public class ImportManagerImpl implements ImportManager
          //wb = new SXSSFWorkbook( new XSSFWorkbook(is), 100);
          return importFileManager(importTemplate, utilisateur, banque, wb.getSheetAt(0));
       }catch(final IOException e){
-         e.printStackTrace();
+         log.error(e.getMessage(), e);
       }catch(final InvalidFormatException e){
-         e.printStackTrace();
+         log.error(e.getMessage(), e);
       }
 
       return null;
@@ -2299,7 +2299,7 @@ public class ImportManagerImpl implements ImportManager
          error.setException(fe);
          errors.add(error);
       }catch(final Exception e){
-         e.printStackTrace();
+         log.error(e.getMessage(), e);
          final ImportError error = new ImportError();
          error.setException(new RuntimeException(e));
          error.setNbRow(row.getRowNum());
@@ -2488,7 +2488,7 @@ public class ImportManagerImpl implements ImportManager
          error.setException(fe);
          errors.add(error);
       }catch(final Exception e){
-         e.printStackTrace();
+         log.error(e.getMessage(), e);
          final ImportError error = new ImportError();
          error.setException(new RuntimeException(e));
          error.setNbRow(row.getRowNum());

@@ -167,7 +167,7 @@ public class ListeEchantillonGatsbi extends ListeEchantillon
             Filedownload.save(new FileInputStream(((Fichier) event.getOrigin().getData()).getPath()),
                ((Fichier) event.getOrigin().getData()).getMimeType(), ((Fichier) event.getOrigin().getData()).getNom());
          }catch(final Exception e){
-            log.error("An error occurred: {}", e.toString()); 
+            log.error(e.getMessage(), e);
          }
       }
    }

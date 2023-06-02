@@ -72,7 +72,6 @@ import fr.aphp.tumorotek.model.TKDelegetableObject;
 public abstract class AbstractModificationMultipleComponent extends AbstractController
 {
 
-   protected Logger log = LoggerFactory.getLogger(AbstractModificationMultipleComponent.class);
 
    /**
     * Components.

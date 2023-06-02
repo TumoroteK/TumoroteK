@@ -325,13 +325,13 @@ public class ComponentPrinter
                codeRetour = 1;
                log.debug("Code retour {}:", codeRetour);
             }catch(final Exception e){
-               e.printStackTrace();
+               log.error(e.getMessage(), e);
             }finally{
                if(clientSocket != null){
                   try{
                      clientSocket.close();
                   }catch(final IOException e){
-                     e.printStackTrace();
+                     log.error(e.getMessage(), e);
                   }
                }
             }
@@ -352,7 +352,7 @@ public class ComponentPrinter
                         job.print(bytesDoc, null);
                         codeRetour = 1;
                      }catch(final PrintException pe){
-                        pe.printStackTrace();
+                        log.error(pe.getMessage(), pe);
                         codeRetour = 0;
                      }
                      break;

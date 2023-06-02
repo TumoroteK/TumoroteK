@@ -351,7 +351,7 @@ public class EditModel extends AbstractListGridVM
             new AMedia(getSelectedModel().getNom() + "_" + date, "xls", "application/vnd.ms-excel", outStr.toByteArray());
          Filedownload.save(media);
       }catch(final IOException e){
-         e.printStackTrace();
+         log.error(e.getMessage(), e);
       }finally{
          try{
             wb.close();

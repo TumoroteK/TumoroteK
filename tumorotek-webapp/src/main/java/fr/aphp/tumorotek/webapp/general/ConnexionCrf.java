@@ -210,7 +210,7 @@ public class ConnexionCrf extends GenericForwardComposer<Component>
    }
 
    /**
-    * Logger un utilisateur et renvoie true si la connection s'est
+    * Log un utilisateur et renvoie true si la connection s'est
     * bien passée.
     * @param login
     * @param pass

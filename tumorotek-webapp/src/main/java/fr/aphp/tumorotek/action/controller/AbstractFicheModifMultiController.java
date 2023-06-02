@@ -151,7 +151,7 @@ public abstract class AbstractFicheModifMultiController extends AbstractFicheCon
          }
 
       }catch(final Exception ex){
-         log.error(String.valueOf(ex));
+         log.error(ex.getMessage(), ex);
       }
 
       final StringBuffer sb = new StringBuffer();

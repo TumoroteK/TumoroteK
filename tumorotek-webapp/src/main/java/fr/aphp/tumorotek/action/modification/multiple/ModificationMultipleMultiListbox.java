@@ -41,7 +41,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.WrongValueException;
@@ -72,6 +73,8 @@ import fr.aphp.tumorotek.model.coeur.annotation.AnnotationValeur;
  */
 public class ModificationMultipleMultiListbox extends AbstractModificationMultipleComponent
 {
+
+   private static final Logger log = LoggerFactory.getLogger(ModificationMultipleMultiListbox.class);
 
    private static final long serialVersionUID = 3551763682958457361L;
 
@@ -167,11 +170,11 @@ public class ModificationMultipleMultiListbox extends AbstractModificationMultip
             }
          }
       }catch(final IllegalAccessException e){
-         log.error("An error occurred: {}", e.toString()); 
+         log.error(e.getMessage(), e);
       }catch(final InvocationTargetException e){
-         log.error("An error occurred: {}", e.toString()); 
+         log.error(e.getMessage(), e);
       }catch(final NoSuchMethodException e){
-         log.error("An error occurred: {}", e.toString()); 
+         log.error(e.getMessage(), e);
       }
       return null;
    }
@@ -209,11 +212,11 @@ public class ModificationMultipleMultiListbox extends AbstractModificationMultip
                listLength = val.length();
             }
          }catch(final IllegalAccessException e){
-            log.error("An error occurred: {}", e.toString()); 
+            log.error(e.getMessage(), e);
          }catch(final InvocationTargetException e){
-            log.error("An error occurred: {}", e.toString()); 
+            log.error(e.getMessage(), e);
          }catch(final NoSuchMethodException e){
-            log.error("An error occurred: {}", e.toString()); 
+            log.error(e.getMessage(), e);
          }
       }
 
@@ -307,7 +310,7 @@ public class ModificationMultipleMultiListbox extends AbstractModificationMultip
                setHasNulls(true);
             }
          }catch(final IllegalAccessException | InvocationTargetException | NoSuchMethodException e){
-            log.error("An error occurred: {}", e.toString()); 
+            log.error(e.getMessage(), e);
          }
 
       }
@@ -323,11 +326,11 @@ public class ModificationMultipleMultiListbox extends AbstractModificationMultip
                allStringValues.add(stringTmp);
             }
          }catch(final IllegalAccessException e){
-            log.error("An error occurred: {}", e.toString()); 
+            log.error(e.getMessage(), e);
          }catch(final InvocationTargetException e){
-            log.error("An error occurred: {}", e.toString()); 
+            log.error(e.getMessage(), e);
          }catch(final NoSuchMethodException e){
-            log.error("An error occurred: {}", e.toString()); 
+            log.error(e.getMessage(), e);
          }
       }
    }
@@ -354,7 +357,7 @@ public class ModificationMultipleMultiListbox extends AbstractModificationMultip
             out = bld.toString();
          }
       }catch(final Exception e){
-         log.error("An error occurred: {}", e.toString()); 
+         log.error(e.getMessage(), e);
       }
       return out;
    }
@@ -397,11 +400,11 @@ public class ModificationMultipleMultiListbox extends AbstractModificationMultip
             li.setParent(oneValueMultiListBox);
          }
       }catch(final IllegalAccessException e){
-         log.error("An error occurred: {}", e.toString()); 
+         log.error(e.getMessage(), e);
       }catch(final InvocationTargetException e){
-         log.error("An error occurred: {}", e.toString()); 
+         log.error(e.getMessage(), e);
       }catch(final NoSuchMethodException e){
-         log.error("An error occurred: {}", e.toString()); 
+         log.error(e.getMessage(), e);
       }
       oneValueMultiListBox.setWidth(getListLength());
    }

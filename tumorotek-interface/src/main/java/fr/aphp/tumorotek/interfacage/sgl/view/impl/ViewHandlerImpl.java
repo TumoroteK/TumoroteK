@@ -170,9 +170,9 @@ public class ViewHandlerImpl implements ViewHandler
                reader = new InputStreamReader(fis, Charset.forName("UTF-8"));
                bundle = new PropertyResourceBundle(reader);
             }catch(final FileNotFoundException e){
-               e.printStackTrace();
+               log.error(e.getMessage(), e);
             }catch(final IOException e){
-               e.printStackTrace();
+               log.error(e.getMessage(), e);
             }finally{
                try{
                   reader.close();

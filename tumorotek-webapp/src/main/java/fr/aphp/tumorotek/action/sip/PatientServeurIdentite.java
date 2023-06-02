@@ -258,11 +258,11 @@ public class PatientServeurIdentite implements Sip
          log.error(msg);
 
          //		} catch (MalformedURLException e) {
-         //			e.printStackTrace();
+         //			log.error(e.getMessage(), e);
          //		} catch (InstantiationException e) {
-         //			e.printStackTrace();
+         //			log.error(e.getMessage(), e);
          //		} catch (IllegalAccessException e) {
-         //			e.printStackTrace();
+         //			log.error(e.getMessage(), e);
       }finally{
          if(resultSet != null){
             try{

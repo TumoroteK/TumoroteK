@@ -1168,7 +1168,6 @@ public class EmplacementManagerImpl implements EmplacementManager
                }
             }
          }catch(final Exception e){
-            e.printStackTrace();
             log.error(e.getMessage());
          }finally{
             if(conn != null){

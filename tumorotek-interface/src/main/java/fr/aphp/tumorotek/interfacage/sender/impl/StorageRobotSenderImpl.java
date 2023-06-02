@@ -336,9 +336,9 @@ public class StorageRobotSenderImpl implements StorageRobotSender
                // vars.setNbLinesToBeProvide(Integer.valueOf(bundle.getString("nb.lines.tofill")));
 
             }catch(final FileNotFoundException e){
-               e.printStackTrace();
+               log.error(e.getMessage(), e);
             }catch(final IOException e){
-               e.printStackTrace();
+               log.error(e.getMessage(), e);
             }finally{
                try{
                   reader.close();

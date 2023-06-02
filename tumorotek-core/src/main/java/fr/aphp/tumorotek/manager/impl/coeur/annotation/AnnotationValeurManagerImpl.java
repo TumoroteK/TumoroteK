@@ -319,7 +319,7 @@ public class AnnotationValeurManagerImpl implements AnnotationValeurManager
             }
 
          }catch(final Exception e){
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
             jdbcSuite.setMaxAnnotationValeurId(maxAnnoId);
             throw e;
          }finally{}

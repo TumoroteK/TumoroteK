@@ -367,7 +367,7 @@ public class FicheModifMultiEchantillon extends AbstractFicheModifMultiControlle
          try{
             anapathStream.close();
          }catch(final IOException e){
-            log.error("An error occurred: {}", e.toString()); 
+            log.error(e.getMessage(), e);
          }
       }
    }

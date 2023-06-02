@@ -365,7 +365,7 @@ public class PrelevementManagerImpl implements PrelevementManager
          if(!findDoublonManager(prelevement)){
 
             prelevementDao.createObject(prelevement);
-            log.info("Enregistrement objet Prelevement " + prelevement.toString());
+            log.info("Enregistrement objet Prelevement {}", prelevement.toString());
             // Enregistrement de l'operation associee
             final Operation creationOp = new Operation();
             creationOp.setDate(Utils.getCurrentSystemCalendar());
@@ -384,7 +384,7 @@ public class PrelevementManagerImpl implements PrelevementManager
             }
 
          }else{
-            log.warn("Doublon lors creation objet Prelevement " + prelevement.toString());
+            log.warn("Doublon lors creation objet Prelevement {}", prelevement.toString());
             throw new DoublonFoundException("Prelevement", "creation", prelevement.getCode(), null);
          }
       }catch(final RuntimeException re){
@@ -458,14 +458,14 @@ public class PrelevementManagerImpl implements PrelevementManager
          doValidation, baseDir);
       // Doublon
       if(findDoublonManager(prelevement)){
-         log.warn("Doublon lors modification objet Prelevement " + prelevement.toString());
+         log.warn("Doublon lors modification objet Prelevement {} ",prelevement.toString());
          throw new DoublonFoundException("Prelevement", "modification", prelevement.getCode(), null);
       }
 
       try{
 
          if(cascadeNonSterile != null){ // cascade non sterile condition
-            log.info("Applique la cascade de sterilite" + " depuis le prelevement " + prelevement.toString());
+            log.info("Applique la cascade de sterilite depuis le prelevement {}", prelevement);
             if(laboInters != null // aucune modif labos
                && laboInters.size() > 0){
                cascadeNonSterileManager(prelevement, laboInters, cascadeNonSterile, true);

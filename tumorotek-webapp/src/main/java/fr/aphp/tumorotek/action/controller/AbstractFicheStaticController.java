@@ -443,7 +443,7 @@ public abstract class AbstractFicheStaticController extends AbstractFicheControl
          win.onModal();
 
       }catch(final SuspendNotAllowedException e){
-         log.error("An error occurred: {}", e.toString()); 
+         log.error(e.getMessage(), e);
       }
    }
 

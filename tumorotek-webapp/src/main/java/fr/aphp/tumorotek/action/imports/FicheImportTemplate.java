@@ -1194,10 +1194,9 @@ public class FicheImportTemplate extends AbstractFicheCombineController
             }
          }catch(final IOException ex){
             log.error(ex.getMessage(), ex);
-            ex.printStackTrace();
             Clients.clearBusy();
          }catch(final InvalidFormatException ev){
-            ev.printStackTrace();
+            log.error(ev.getMessage(), ev);
             Clients.clearBusy();
          }finally{
             if(fileInputStream != null){
@@ -1245,9 +1244,8 @@ public class FicheImportTemplate extends AbstractFicheCombineController
             ok = false;
             //			} catch (IOException ex) {
             //				log.error(e.getMessage(), e); 
-            //				ex.printStackTrace();
             //			} catch (InvalidFormatException ev) {
-            //				ev.printStackTrace();
+            //				log.error(ev.getMessage(), ev);
             //			} finally {
             //				uploadedWb = null;
             //				fileInputStream = null;

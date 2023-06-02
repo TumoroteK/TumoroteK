@@ -195,7 +195,7 @@ public class ComponentBarcodeLabel extends Component
    //					try {
    //						imageBarcode = BarcodeImageHandler.getImage(barcode);
    //					} catch (OutputException e) {
-   //						log.error("An error occurred: {}", e.toString()); 
+   //						 log.error("An error occurred : ", e);
    //					}
    //				}
    //

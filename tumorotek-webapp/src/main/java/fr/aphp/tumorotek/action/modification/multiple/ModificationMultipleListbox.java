@@ -39,6 +39,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.zkoss.util.resource.Labels;
@@ -65,6 +67,7 @@ import fr.aphp.tumorotek.model.TKDelegetableObject;
  */
 public class ModificationMultipleListbox extends AbstractModificationMultipleComponent
 {
+   private static final Logger log = LoggerFactory.getLogger(ModificationMultipleListbox.class);
 
    private static final long serialVersionUID = 3551763682958457361L;
 
@@ -204,7 +207,7 @@ public class ModificationMultipleListbox extends AbstractModificationMultipleCom
             }
 
          }catch(final IllegalAccessException | InvocationTargetException | NoSuchMethodException e){
-            log.error("An error occurred: {}", e.toString()); 
+            log.error(e.getMessage(), e);
          }
 
       }
@@ -230,7 +233,7 @@ public class ModificationMultipleListbox extends AbstractModificationMultipleCom
             }
          }
       }catch(final Exception e){
-         log.error("An error occurred: {}", e.toString()); 
+         log.error(e.getMessage(), e);
       }
       return out;
    }

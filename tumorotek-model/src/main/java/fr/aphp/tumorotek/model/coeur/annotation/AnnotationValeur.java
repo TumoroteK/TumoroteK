@@ -404,7 +404,7 @@ public class AnnotationValeur extends AnnotationCommon implements Serializable, 
             setStream(new ByteArrayInputStream(ba));
             return new ByteArrayInputStream(ba);
          }catch(final IOException e){
-            log.error(String.valueOf(e));
+            log.error("An error occurred: {}", e.getMessage(), e);;
             return null;
          }
       }

@@ -104,8 +104,7 @@ public class ExecuteModele
          // printDataMap(); debug only
 
       }catch(final SQLException e){
-         log.error(e.getMessage(), e); 
-         e.printStackTrace();
+         log.error(e.getMessage(), e);
          throw new RuntimeException(e.getMessage());
       }finally{
          if(connection != null){

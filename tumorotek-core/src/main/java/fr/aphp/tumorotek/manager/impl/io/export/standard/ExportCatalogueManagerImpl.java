@@ -199,8 +199,7 @@ public class ExportCatalogueManagerImpl implements ExportCatalogueManager
             }
             conn.close();
          }catch(final Exception e){
-            log.error(e.getMessage());
-            log.error(e.getMessage(), e); 
+            log.error(e.getMessage(), e);
          }finally{
             if(conn != null){
                try{

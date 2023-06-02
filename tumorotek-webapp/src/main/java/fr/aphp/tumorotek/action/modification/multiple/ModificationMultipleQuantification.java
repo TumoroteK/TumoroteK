@@ -40,6 +40,9 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.apache.commons.beanutils.PropertyUtils;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.WrongValueException;
@@ -65,6 +68,7 @@ import fr.aphp.tumorotek.model.systeme.Unite;
  */
 public class ModificationMultipleQuantification extends AbstractModificationMultipleComponent
 {
+   private static final Logger log = LoggerFactory.getLogger(ModificationMultipleQuantification.class);
 
    private static final long serialVersionUID = -40186196122301556L;
 
@@ -181,11 +185,11 @@ public class ModificationMultipleQuantification extends AbstractModificationMult
             }
 
          }catch(final IllegalAccessException e){
-            log.error("An error occurred: {}", e.toString()); 
+            log.error(e.getMessage(), e);
          }catch(final InvocationTargetException e){
-            log.error("An error occurred: {}", e.toString()); 
+            log.error(e.getMessage(), e);
          }catch(final NoSuchMethodException e){
-            log.error("An error occurred: {}", e.toString()); 
+            log.error(e.getMessage(), e);
          }
       }
    }
@@ -224,11 +228,11 @@ public class ModificationMultipleQuantification extends AbstractModificationMult
                }
             }
          }catch(final IllegalAccessException e){
-            log.error("An error occurred: {}", e.toString()); 
+            log.error(e.getMessage(), e);
          }catch(final InvocationTargetException e){
-            log.error("An error occurred: {}", e.toString()); 
+            log.error(e.getMessage(), e);
          }catch(final NoSuchMethodException e){
-            log.error("An error occurred: {}", e.toString()); 
+            log.error(e.getMessage(), e);
          }
       }
 
@@ -248,11 +252,11 @@ public class ModificationMultipleQuantification extends AbstractModificationMult
                allStringUniteValues.add(stringTmp);
             }
          }catch(final IllegalAccessException e){
-            log.error("An error occurred: {}", e.toString()); 
+            log.error(e.getMessage(), e);
          }catch(final InvocationTargetException e){
-            log.error("An error occurred: {}", e.toString()); 
+            log.error(e.getMessage(), e);
          }catch(final NoSuchMethodException e){
-            log.error("An error occurred: {}", e.toString()); 
+            log.error(e.getMessage(), e);
          }
       }
    }

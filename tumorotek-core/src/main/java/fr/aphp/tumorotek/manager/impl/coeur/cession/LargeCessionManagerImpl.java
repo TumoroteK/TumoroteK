@@ -137,8 +137,7 @@ public class LargeCessionManagerImpl implements LargeCessionManager
                conn.commit();
 
             }catch(final Exception e){
-               e.printStackTrace();
-               log.error(e.getMessage());
+               log.error(e.getMessage(), e);
             }finally{
                if(conn != null){
                   try{

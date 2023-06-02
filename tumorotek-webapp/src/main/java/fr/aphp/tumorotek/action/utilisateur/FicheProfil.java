@@ -79,7 +79,6 @@ import fr.aphp.tumorotek.webapp.general.SessionUtils;
 public class FicheProfil extends AbstractFicheCombineController
 {
 
-   //private Log log = LogFactory.getLog(FicheProfil.class);
 
    private static final long serialVersionUID = 5480071795760704640L;
 
@@ -673,7 +672,7 @@ public class FicheProfil extends AbstractFicheCombineController
    //				Messagebox.show(handleExceptionMessage(re),
    //						"Error", Messagebox.OK, Messagebox.ERROR);
    //			} catch (InterruptedException e) {
-   //				log.error("An error occurred: {}", e.toString()); 
+    //        log.error(e.getMessage(), e);
    //			}
    //		} finally {
    //			// ferme wait message

@@ -1,3 +1,4 @@
+
 /**
  * Copyright ou © ou Copr. Ministère de la santé, FRANCE (01/01/2011)
  * dsi-projet.tk@aphp.fr
@@ -41,7 +42,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.Desktop;
 import org.zkoss.zk.ui.HtmlMacroComponent;
 
@@ -56,6 +58,9 @@ import oracle.sql.ARRAY;
  */
 public class Export_Oracle extends Export
 {
+
+   private static final Logger log = LoggerFactory.getLogger(Export_Oracle.class);
+
 
    private int outParamIdx = 2;
 
@@ -189,7 +194,7 @@ public class Export_Oracle extends Export
    //				drop_table();
    //				drop_sequence();
    //			} catch (SQLException e) {
-   //				log.error("An error occurred: {}", e.toString()); 
+   //         log.error(e.getMessage(), e);
    //			}
    //		}
    //	}
@@ -377,13 +382,13 @@ public class Export_Oracle extends Export
    //			preparedStatement.executeUpdate();
    //			preparedStatement.close();
    //		} catch (SQLException e) {
-   //			log.error("An error occurred: {}", e.toString()); 
+   //         log.error(e.getMessage(), e);
    //		} finally {
    //			if (rsp != null) {
    //				try {
    //					rsp.close();
    //				} catch (SQLException e) {
-   //					log.error("An error occurred: {}", e.toString()); 
+  //          log.error(e.getMessage(), e);
    //				}
    //			}
    //		}

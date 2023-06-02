@@ -239,32 +239,24 @@ public class MBioBarcodePrinter
       }catch(final SecurityException e){
          codeRetour = 0;
          log.error(e.getMessage(), e); 
-         e.printStackTrace();
       }catch(final NoSuchMethodException e){
          codeRetour = 0;
          log.error(e.getMessage(), e); 
-         e.printStackTrace();
       }catch(final IllegalArgumentException e){
          codeRetour = 0;
          log.error(e.getMessage(), e); 
-         e.printStackTrace();
       }catch(final InstantiationException e){
          codeRetour = 0;
          log.error(e.getMessage(), e); 
-         e.printStackTrace();
       }catch(final IllegalAccessException e){
          codeRetour = 0;
          log.error(e.getMessage(), e); 
-         e.printStackTrace();
       }catch(final InvocationTargetException e){
          codeRetour = 0;
-         e.printStackTrace();
-         log.error(e.getMessage(), e); 
-         e.printStackTrace();
+         log.error(e.getMessage(), e);
       }catch(final Exception e){
          codeRetour = 0;
-         log.error("printData:Exception," + e);
-         e.printStackTrace();
+         log.error(e.getMessage(), e);
       }
 
       return codeRetour;

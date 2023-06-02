@@ -501,7 +501,7 @@ public class FicheBonLivraisonModale extends AbstractFicheCombineController
          ManagerLocator.getXmlUtils().addSignatures(page, sign);
 
       }catch(final Exception e){
-         e.printStackTrace();
+         log.error(e.getMessage(), e);
       }finally{
          if(oldLocale != null){
             Locales.setThreadLocal(oldLocale);

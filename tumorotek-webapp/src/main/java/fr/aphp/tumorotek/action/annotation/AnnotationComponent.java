@@ -1399,7 +1399,7 @@ public class AnnotationComponent extends GenericForwardComposer<Component>
                   Filedownload.save(fMedia);
 
                }catch(final Exception e){
-                  e.printStackTrace();
+                  log.error(e.getMessage(), e);
                }
             }
          });
@@ -2254,7 +2254,7 @@ public class AnnotationComponent extends GenericForwardComposer<Component>
             stream = null;
          }
       }catch(final IOException e){
-         e.printStackTrace();
+         log.error(e.getMessage(), e);
       }
    }
 

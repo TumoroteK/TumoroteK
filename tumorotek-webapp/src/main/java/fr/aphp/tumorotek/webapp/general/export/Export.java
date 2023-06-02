@@ -267,8 +267,7 @@ public class Export extends Thread
 
 		}
 		catch(final SQLTooManyAnnotationException e){
-         log.error(e.getMessage(), e.getCause());
-         e.getCause().printStackTrace();
+         log.error(e.getMessage(), e.getCause(), e);
          try{
             setExportDetails(0, 0, 0, null, null, e);
          }catch(DesktopUnavailableException | InterruptedException e1){}
@@ -1072,8 +1071,7 @@ public class Export extends Thread
 					getPreparedStatement().close();
 				}
 			}catch(final Exception e){
-				log.error(e.getMessage());
-				e.printStackTrace();
+				log.error(e.getMessage(), e);
 				if(Thread.interrupted()){
 					throw new InterruptedException();
 				}
@@ -1118,7 +1116,7 @@ public class Export extends Thread
 	//				} catch (TransformerException e) {
 	//					log.error(e.getMessage(), e); 
 	//				} catch (ParserConfigurationException e) {
-	//					e.printStackTrace();
+	//					log.error(e.getMessage(), e);
 	//				}
 	//			} else {
 	//				createXLS();
@@ -1303,7 +1301,7 @@ public class Export extends Thread
 			try{
 				is = new ByteArrayInputStream(text.getBytes(ConfigManager.UNICODE_CHARSET));
 			}catch(final UnsupportedEncodingException e){
-				e.printStackTrace();
+				log.error(e.getMessage(), e);
 			}
 			return is;
 		}

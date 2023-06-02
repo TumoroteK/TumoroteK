@@ -985,7 +985,7 @@ public abstract class AbstractObjectTabController extends AbstractController
 
 			// getRestrictedTableIds().clear();
 		}catch(final Exception e){
-			e.printStackTrace();
+			log.error(e.getMessage(), e);
 		}
 	}
 

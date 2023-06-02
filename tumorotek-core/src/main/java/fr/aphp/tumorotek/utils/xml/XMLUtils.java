@@ -18,11 +18,16 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 public class XMLUtils
 {
+
+   private static final Logger log = LoggerFactory.getLogger(XMLUtils.class);
+
    private static String ROOT_NODE_NAME = "results";
 
    private static String ROW_NODE_NAME = "row";
@@ -59,7 +64,7 @@ public class XMLUtils
          }
 
       }catch(final Exception e){
-         e.printStackTrace();
+         log.error(e.getMessage(), e);
       }finally{
          try{
             if(con != null){

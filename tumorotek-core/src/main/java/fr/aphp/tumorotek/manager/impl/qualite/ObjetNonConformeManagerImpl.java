@@ -294,7 +294,7 @@ public class ObjetNonConformeManagerImpl implements ObjetNonConformeManager
                }
                // pstmtNc.executeBatch();
             }catch(final Exception e){
-               // e.printStackTrace();
+               // log.error(e.getMessage(), e);
                // rollback create operation
                jdbcSuite.setMaxObjetNonConformeId(maxNcId);
                throw e;

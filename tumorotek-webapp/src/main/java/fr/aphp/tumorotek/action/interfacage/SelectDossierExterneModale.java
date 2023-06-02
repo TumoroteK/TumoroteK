@@ -283,7 +283,6 @@ public class SelectDossierExterneModale extends AbstractFicheCombineController
             Clients.clearBusy();
 
          }catch(final RuntimeException re){
-            re.printStackTrace();
             log.error(re.getMessage(), re);
             // fermeture de la fenêtre
             Events.postEvent(new Event("onClose", self.getRoot()));

@@ -41,6 +41,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.zkoss.util.resource.Labels;
@@ -66,8 +68,9 @@ import fr.aphp.tumorotek.model.qualite.NonConformite;
  */
 public class ModificationMultipleNonConformites extends AbstractModificationMultipleComponent
 {
-
    private static final long serialVersionUID = 3551763682958457361L;
+   private static final Logger log = LoggerFactory.getLogger(ModificationMultipleNonConformites.class);
+
 
    /**
     * Components.
@@ -337,11 +340,11 @@ public class ModificationMultipleNonConformites extends AbstractModificationMult
             }
 
          }catch(final IllegalAccessException e){
-            log.error("An error occurred: {}", e.toString()); 
+            log.error(e.getMessage(), e);
          }catch(final InvocationTargetException e){
-            log.error("An error occurred: {}", e.toString()); 
+            log.error(e.getMessage(), e);
          }catch(final NoSuchMethodException e){
-            log.error("An error occurred: {}", e.toString()); 
+            log.error(e.getMessage(), e);
          }
       }
    }

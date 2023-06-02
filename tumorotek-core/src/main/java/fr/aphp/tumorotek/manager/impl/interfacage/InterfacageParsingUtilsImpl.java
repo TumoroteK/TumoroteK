@@ -202,7 +202,7 @@ public class InterfacageParsingUtilsImpl implements InterfacageParsingUtils
                }
             }
          }catch(final Exception e){
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
          }
 
       }else{
@@ -255,7 +255,7 @@ public class InterfacageParsingUtilsImpl implements InterfacageParsingUtils
                }
             }
          }catch(final Exception e){
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
          }
 
       }else{
@@ -1333,7 +1333,6 @@ public class InterfacageParsingUtilsImpl implements InterfacageParsingUtils
          }
       }catch(final Exception e){
          log.error(e.getMessage());
-         e.printStackTrace();
       }
       return dossiers;
    }
