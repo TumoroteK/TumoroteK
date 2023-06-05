@@ -191,7 +191,6 @@ public class ExportToExcel extends ResultSetToExcel
          for(final Banque collection : ManagerLocator.getSModeleManager().getBanquesManager(modele)){
             firstRow = currentRow;
             collectionRow = sh.createRow(rowCountCollection);
-            // + "/ row collection :" + rowCountCollection);
             writeCell(collectionRow, 0, collection.getNom(), null, boldFont, null);
 
             if(modele.getSubdivision() != null){
@@ -271,7 +270,6 @@ public class ExportToExcel extends ResultSetToExcel
    			if (v.getUnitTemp().contentEquals(year)
    					&& v.getCollection() == collection.getBanqueId()
    					&& v.getSubValue().contentEquals(subValue)) {
-   				 + " / col : " + currentCol);
    				writeCell(row, currentCol,
    						String.valueOf(v.getValue()),
    						null, boldFont, null);
@@ -289,9 +287,6 @@ public class ExportToExcel extends ResultSetToExcel
    					&& v.getSemestre().contentEquals(period)
    					&& v.getCollection() == collection.getBanqueId()
    					&& v.getSubValue().contentEquals(subValue)) {
-   				// + " / col : " + currentCol +" / " + year + " / " + period);
-
-
    				writeCell(row, currentCol, String.valueOf(v.getValue()), FormatType.NUMERIC,
    						boldFont, null);
    			}
@@ -393,8 +388,6 @@ public class ExportToExcel extends ResultSetToExcel
    //         //			if (v.getUnitTemp().contentEquals(year+"-"+period.substring(1))
    //         //					&& v.getCollection() == collection.getBanqueId()
    //         //					&& v.getSubValue() == subValue) {
-   //         //
-   //         //				// + " / col : " + currentCol +" / " + year + " / " + period);
    //         //				writeCell(row, currentCol, String.valueOf(v.getValue()), FormatType.NUMERIC,
    //         //						boldFont, null);
    //         //			}

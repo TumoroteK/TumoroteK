@@ -39,6 +39,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
@@ -79,6 +81,7 @@ import fr.aphp.tumorotek.webapp.general.SessionUtils;
 public class FicheProfil extends AbstractFicheCombineController
 {
 
+   private static final Logger log = LoggerFactory.getLogger(FicheProfil.class);
 
    private static final long serialVersionUID = 5480071795760704640L;
 

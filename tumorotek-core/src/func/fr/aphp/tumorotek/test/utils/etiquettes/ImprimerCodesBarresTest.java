@@ -109,6 +109,7 @@ public class ImprimerCodesBarresTest extends AbstractManagerTest4
 
 //         if(completed == 1){
 //         }else{
+//            System.out.println("Erreur d'impression");
 //         }
       }catch(final Exception e){
          final String msg = "ImprimerCodesBarres error! " + e.getMessage();

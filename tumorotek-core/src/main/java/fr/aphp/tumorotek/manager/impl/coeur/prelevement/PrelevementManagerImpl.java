@@ -365,7 +365,7 @@ public class PrelevementManagerImpl implements PrelevementManager
          if(!findDoublonManager(prelevement)){
 
             prelevementDao.createObject(prelevement);
-            log.info("Enregistrement objet Prelevement {}", prelevement.toString());
+            log.info("Enregistrement objet Prelevement {}", prelevement);
             // Enregistrement de l'operation associee
             final Operation creationOp = new Operation();
             creationOp.setDate(Utils.getCurrentSystemCalendar());
@@ -384,7 +384,7 @@ public class PrelevementManagerImpl implements PrelevementManager
             }
 
          }else{
-            log.warn("Doublon lors creation objet Prelevement {}", prelevement.toString());
+            log.warn("Doublon lors creation objet Prelevement {}", prelevement);
             throw new DoublonFoundException("Prelevement", "creation", prelevement.getCode(), null);
          }
       }catch(final RuntimeException re){
@@ -458,7 +458,7 @@ public class PrelevementManagerImpl implements PrelevementManager
          doValidation, baseDir);
       // Doublon
       if(findDoublonManager(prelevement)){
-         log.warn("Doublon lors modification objet Prelevement {} ",prelevement.toString());
+         log.warn("Doublon lors modification objet Prelevement {} ",prelevement);
          throw new DoublonFoundException("Prelevement", "modification", prelevement.getCode(), null);
       }
 
@@ -476,7 +476,7 @@ public class PrelevementManagerImpl implements PrelevementManager
          }
 
          prelevementDao.updateObject(prelevement);
-         log.info("Modification objet Prelevement " + prelevement.toString());
+         log.info("Modification objet Prelevement {}" , prelevement);
          // Enregistrement de l'operation associee
          final Operation creationOp = new Operation();
          creationOp.setDate(Utils.getCurrentSystemCalendar());
@@ -1000,10 +1000,9 @@ public class PrelevementManagerImpl implements PrelevementManager
             CreateOrUpdateUtilities.removeAssociateNonConformites(prelevement, objetNonConformeManager);
 
             prelevementDao.removeObject(prelevement.getPrelevementId());
-            log.info("Suppression objet Prelevement " + prelevement.toString());
+            log.info("Suppression objet Prelevement {}" , prelevement);
          }else{
-            log.warn("Suppression Prelevement " + prelevement.toString() + " impossible car Objet est reference "
-               + "(par echantillon/derive)");
+            log.warn("Suppression Prelevement {} impossible car Objet est reference (par echantillon/derive)", prelevement);
             throw new ObjectUsedException("prelevement.deletion.isUsedCascade", true);
          }
       }else{
@@ -1015,7 +1014,7 @@ public class PrelevementManagerImpl implements PrelevementManager
    public void removeObjectCascadeManager(final Prelevement prelevement, final String comments, final Utilisateur user,
       final List<File> filesToDelete){
       if(prelevement != null){
-         log.info("Suppression en cascade depuis objet Prelevement " + prelevement.toString());
+         log.info("Suppression en cascade depuis objet Prelevement {}", prelevement);
 
          // suppression echantillon en mode cascade
          final Iterator<Echantillon> echansIt = getEchantillonsManager(prelevement).iterator();

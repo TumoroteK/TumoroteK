@@ -1418,14 +1418,11 @@ public class Export extends Thread
 					getPreparedStatement().clearBatch();
 				}
 			}
-			// long startTime = System.nanoTime();
 			// ---------------------------------------------- //
 			getPreparedStatement().executeBatch();
 			getPreparedStatement().close();
 			getConnection().commit();
 			// ---------------------------------------------- //
-			//	long endTime = System.nanoTime();
-			//			+ ((double) (endTime - startTime) / 1000000000.0));
 
 	       
 		}

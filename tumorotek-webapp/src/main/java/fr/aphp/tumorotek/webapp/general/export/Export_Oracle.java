@@ -369,8 +369,6 @@ public class Export_Oracle extends Export
    //
    //			Statement stm1 = connection.createStatement();
    //			stm1.executeUpdate(tableTmpAnnotationCreation.toString());
-   //			// .println("INSERT INTO TMP_TABLE_ANNOTATION VALUES (annotation_id_seq.nextval"
-   //			// + tableTmpAnnotationValues + ")");
    //			stm1.executeUpdate("INSERT INTO TMP_TABLE_ANNOTATION VALUES (annotation_id_seq.nextval"
    //					+ tableTmpAnnotationValues + ")");
    //

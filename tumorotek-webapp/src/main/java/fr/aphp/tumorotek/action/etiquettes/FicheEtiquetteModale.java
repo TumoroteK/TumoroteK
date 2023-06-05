@@ -291,11 +291,7 @@ public class FicheEtiquetteModale
                      @Override
                      public void onEvent(final Event evt) throws InterruptedException{
                         if(evt.getName().equals("onOK")){
-                           log.debug("Data Saved !");
-                        }else if(evt.getName().equals("onIgnore")){
-                           log.debug("2",  evt.getName());
-                        }else{
-                           log.debug("3" , evt.getName());
+                           log.debug("Data Saved : évènement : {}", evt.getName());
                         }
                      }
                   });

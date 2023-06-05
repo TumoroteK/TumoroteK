@@ -244,8 +244,10 @@ public abstract class AbstractListeController2 extends AbstractController
 		 * try { searchDateCreation = new
 		 * SimpleDateFormat("dd/MM/yyyy HH:mm:ss")
 		 * .parse(sdf.format(today.getTime())); } catch (ParseException e) {
-		 * log.error("An error occurred: {}", e.toString());  }
+		 * log.error(e.getMessage(), e);
+		 *  }
 		 */
+
 		return searchDateCreation;
 	}
 
