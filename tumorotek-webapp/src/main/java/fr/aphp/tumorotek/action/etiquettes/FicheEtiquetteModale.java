@@ -290,7 +290,7 @@ public class FicheEtiquetteModale
                   {
                      @Override
                      public void onEvent(final Event evt) throws InterruptedException{
-                        log.debug(" nom évènement : {}", evt.getName());
+                        log.debug("nom évènement : {}", evt.getName());
                         if(evt.getName().equals("onOK")){
                            log.debug("Data Saved");
                         }
