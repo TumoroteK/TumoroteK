@@ -63,7 +63,7 @@
 				<vlayout>
 					<hlayout sclass="z-valign-bottom">
 						<radio id="dateCreation" />
-						<div width="200px">
+						<div width="250px">
 							<label
 								value="${c:l('listePrelevement.critere.date.creation')}"
 								sclass="formLabel" />
@@ -80,7 +80,7 @@
 					</hlayout>
 					<hlayout sclass="z-valign-bottom">
 						<radio id="codePrlvt" />
-						<div width="200px">
+						<div width="250px">
 							<label
 								value="${c:l('prelevement.search.code.labo')}"
 								sclass="formLabel" />
@@ -95,8 +95,8 @@
 					</hlayout>
 					<hlayout sclass="z-valign-bottom">
 						<radio id="patientPrlvt" />
-						<div width="200px">
-							<label value="${c:l('prelevement.patient')}"
+						<div width="250px">
+							<label value="${c:l('listePrelevement.critere.patient')}"
 								sclass="formLabel" />
 						</div>
 						<textbox id="nomPatientPrlvt"

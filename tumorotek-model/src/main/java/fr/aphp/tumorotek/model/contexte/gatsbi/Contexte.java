@@ -288,7 +288,14 @@ public class Contexte implements Serializable
    public List<Integer> getThesaurusChampEntiteIds(){
       final List<Integer> ids = new ArrayList<>();
       for(final ChampEntite c : champEntites){
-         if(c.getVisible() && (c.getThesaurusTableNom() != null || !c.getThesaurusValues().isEmpty())){
+         //bug TG-163 :
+         //Si l'utilisateur n'a pas sélectionné de valeur pour un thesaurus dans Gatsbi, Gatsbi renvoie toutes les valeurs
+         //présentes dans TK donc c.getThesaurusValues().isEmpty() ne peut pas être empty dans le cas d'un thesaurus
+         //on garde toutefois la sécurité implémentée dans TK : si aucune valeur transmise pour un champ associé à un thesaurus
+         //affichage de toutes les valeurs dans TK
+         if(c.getVisible() 
+               && ( (c.getThesaurusTableNom() != null && !c.getThesaurusTableNom().isEmpty()) 
+                     || !c.getThesaurusValues().isEmpty())){
             ids.add(c.getChampEntiteId());
          }
       }

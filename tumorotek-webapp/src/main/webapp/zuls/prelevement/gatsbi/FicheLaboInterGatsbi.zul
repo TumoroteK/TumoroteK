@@ -408,7 +408,7 @@
 								</div>
 							</div>
 							<div class="item item-wide" id="quantiteDiv"><!-- Quantite -->
-								<custom-attributes champId="40" />
+								<custom-attributes champId="40" listmodel="quantiteUnites" thesChampId="41" />
 								<div class="row-container chpLabel">
 									<label value="${c:l('Champ.Prelevement.Quantite')}" sclass="formLabel" />
 									<label value="*" sclass="requiredMark" />
