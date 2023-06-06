@@ -39,8 +39,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationContext;
@@ -76,7 +76,7 @@ public class ChampCalculeManagerImpl implements ChampCalculeManager, Application
 
    //ODO Revoir les méthodes et typages.
 
-   private final Log log = LogFactory.getLog(GroupementManager.class);
+   private final Logger log = LoggerFactory.getLogger(GroupementManager.class);
 
    private ApplicationContext context;
 
@@ -419,8 +419,8 @@ public class ChampCalculeManagerImpl implements ChampCalculeManager, Application
             try{
                secondes = new Integer(val2.toString());
             }catch(final Exception e2){
-               log.error(e);
-               log.error(e2);
+               log.error(e.getMessage(), e); 
+               log.error(e2.getMessage(), e2);
                throw new TKException("Mauvais format de retour pour la deuxème opérande");
             }
          }
@@ -471,7 +471,7 @@ public class ChampCalculeManagerImpl implements ChampCalculeManager, Application
          final long duree2 = Long.parseLong(val2.toString());
          return duree1 + duree2;
       }catch(final Exception e){
-         log.error(e);
+         log.error(e.getMessage(), e); 
       }
       return null;
    }
@@ -488,7 +488,7 @@ public class ChampCalculeManagerImpl implements ChampCalculeManager, Application
          final long duree2 = Long.parseLong(val2.toString());
          return duree1 - duree2;
       }catch(final Exception e){
-         log.error(e);
+         log.error(e.getMessage(), e); 
       }
       return null;
    }

@@ -37,8 +37,8 @@ package fr.aphp.tumorotek.manager.impl.contexte;
 
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.validation.Validator;
 
 import fr.aphp.tumorotek.dao.contexte.PlateformeDao;
@@ -64,7 +64,7 @@ import fr.aphp.tumorotek.model.contexte.Protocole;
 public class ProtocoleManagerImpl implements ProtocoleManager
 {
 
-   private final Log log = LogFactory.getLog(ProtocoleManager.class);
+   private final Logger log = LoggerFactory.getLogger(ProtocoleManager.class);
 
    private ProtocoleDao protocoleDao;
 

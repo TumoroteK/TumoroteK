@@ -43,8 +43,8 @@ import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -83,7 +83,7 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
 public class ExportModale extends AbstractFicheCombineController
 {
 
-   private static Log log = LogFactory.getLog(ExportModale.class);
+   private static Logger log = LoggerFactory.getLogger(ExportModale.class);
 
    private static final long serialVersionUID = 3224510698969716417L;
 
@@ -259,7 +259,7 @@ public class ExportModale extends AbstractFicheCombineController
          final AMedia media = new AMedia(fileName, "xls", "application/vnd.ms-excel", out.toByteArray());
          Filedownload.save(media);
       }catch(final Exception e){
-         log.error(e);
+         log.error(e.getMessage(), e); 
       }finally{
          if(out != null){
             try{

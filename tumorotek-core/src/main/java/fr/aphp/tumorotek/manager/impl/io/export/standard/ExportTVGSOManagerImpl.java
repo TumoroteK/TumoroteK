@@ -5,13 +5,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ExportTVGSOManagerImpl extends ExportCatalogueManagerImpl
 {
 
-   private final Log log = LogFactory.getLog(ExportTVGSOManagerImpl.class);
+   private final Logger log = LoggerFactory.getLogger(ExportTVGSOManagerImpl.class);
 
    @Override
    public List<String> getHeaders(){
@@ -95,7 +95,7 @@ public class ExportTVGSOManagerImpl extends ExportCatalogueManagerImpl
       try{
          getExportUtils().addDataToRowCSV((BufferedWriter) obj, index, values, "|", "|\n");
       }catch(final IOException e){
-         log.error(e);
+         log.error(e.getMessage(), e); 
       }
    }
 }

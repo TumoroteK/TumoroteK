@@ -37,8 +37,8 @@ package fr.aphp.tumorotek.manager.impl.coeur.prelevement;
 
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.validation.Validator;
 
 import fr.aphp.tumorotek.dao.coeur.prelevement.ConditTypeDao;
@@ -63,7 +63,7 @@ import fr.aphp.tumorotek.model.contexte.Plateforme;
 public class ConditTypeManagerImpl implements ConditTypeManager
 {
 
-   private final Log log = LogFactory.getLog(ConditTypeManager.class);
+   private final Logger log = LoggerFactory.getLogger(ConditTypeManager.class);
 
    /* Beans injectes par Spring*/
    private ConditTypeDao conditTypeDao;

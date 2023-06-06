@@ -43,8 +43,8 @@ import java.util.Map;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.Execution;
 
 import com.auth0.jwt.exceptions.JWTCreationException;
@@ -72,7 +72,7 @@ public class GatsbiAuthenticationUtils
    
    public static final String KEY__CLAIM_ROLE = "role";
 
-   private final Log log = LogFactory.getLog(GatsbiAuthenticationUtils.class);
+   private final Logger log = LoggerFactory.getLogger(GatsbiAuthenticationUtils.class);
 
    private Execution execution;
 
@@ -104,7 +104,7 @@ public class GatsbiAuthenticationUtils
          }
          return ManagerLocator.getManager(JWTGenerator.class).generate("Gatsbi", login, dureeVieJwt, tokenCSRF, mapPrivateClaim);
       }catch(JWTCreationException e){
-         log.error(e);
+         log.error(e.getMessage(), e); 
          //le cookie sera invalide donc l'authentication échouera
          return UNDEFINED_JWT;
       }

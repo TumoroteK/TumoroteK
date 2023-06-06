@@ -1,6 +1,6 @@
 #### Notes de version
 
-##### Version 2.3.0.3-SNAPSHOT - Publiée le 30/05/2023
+##### Version 2.3.0.3-SNAPSHOT - Publiée le 05/06/2023
 - Adaptations pour le module Gatsbi
 
 

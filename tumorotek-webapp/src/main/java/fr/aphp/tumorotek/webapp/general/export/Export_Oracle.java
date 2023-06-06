@@ -1,3 +1,4 @@
+
 /**
  * Copyright ou © ou Copr. Ministère de la santé, FRANCE (01/01/2011)
  * dsi-projet.tk@aphp.fr
@@ -41,7 +42,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.Desktop;
 import org.zkoss.zk.ui.HtmlMacroComponent;
 
@@ -56,6 +58,9 @@ import oracle.sql.ARRAY;
  */
 public class Export_Oracle extends Export
 {
+
+   private static final Logger log = LoggerFactory.getLogger(Export_Oracle.class);
+
 
    private int outParamIdx = 2;
 
@@ -189,13 +194,12 @@ public class Export_Oracle extends Export
    //				drop_table();
    //				drop_sequence();
    //			} catch (SQLException e) {
-   //				log.error(e);
+   //         log.error(e.getMessage(), e);
    //			}
    //		}
    //	}
 
    //	protected void export_echantillons() throws SQLException, DesktopUnavailableException, InterruptedException {
-   //		System.out.println("create echantillons export table");
    //
    //		// CREATION DE LA TABLE TEMPORAIRE ECHANTILLON
    //		String sql = "{call create_tmp_echantillon_table()}";
@@ -249,7 +253,6 @@ public class Export_Oracle extends Export
    //	}
    //
    //	protected void export_derives() throws SQLException, DesktopUnavailableException, InterruptedException {
-   //		System.out.println("create derives export table");
    //		// CREATION DE LA TABLE TEMPORAIRE PROD DERIVE
    //		String sql = "{call create_tmp_derive_table()}";
    //		// PreparedStatements can use variables and are more efficient
@@ -282,7 +285,6 @@ public class Export_Oracle extends Export
    //		// register the type of the out param - an Oracle specific type
    //		p.registerOutParameter(1, OracleTypes.ARRAY, "ID_LIST");
    //		p.registerOutParameter(2, OracleTypes.ARRAY, "ID_LIST");
-   //		System.out.println("... Get echan Ids ...");
    //		echantillonIds = new ArrayList<Integer>();
    //		p.executeQuery();
    //		ARRAY a = (ARRAY) p.getObject(1);
@@ -307,7 +309,6 @@ public class Export_Oracle extends Export
    //		// String query = "{call get_echanORPrelID_byProdD()}";
    //		// java.sql.PreparedStatement p = connection.prepareCall(query);
    //		// if (p.execute()) {
-   //		// System.out.println("... Get echan Ids ...");
    //		// echantillonIds = new ArrayList<Integer>();
    //		// resultSetId = p.getResultSet();
    //		// p.getMoreResults(Statement.KEEP_CURRENT_RESULT);
@@ -324,11 +325,7 @@ public class Export_Oracle extends Export
    //		// prelevementIds.add(resultat2.getInt(i + 1));
    //		// }
    //		// }
-   //		// System.out.println("prel id count > " + prelevementIds.size());
-   //		// System.out.println("echan id count > " + echantillonIds.size());
    //		// }
-   //		System.out.println("prel id count > " + prelevementIds.size());
-   //		System.out.println("echan id count > " + echantillonIds.size());
    //		p.close();
    //	}
    //
@@ -371,11 +368,7 @@ public class Export_Oracle extends Export
    //			tableTmpAnnotationCreation.append(")");
    //
    //			Statement stm1 = connection.createStatement();
-   //			// System.out.println(tableTmpAnnotationCreation.toString());
    //			stm1.executeUpdate(tableTmpAnnotationCreation.toString());
-   //			// System.out
-   //			// .println("INSERT INTO TMP_TABLE_ANNOTATION VALUES (annotation_id_seq.nextval"
-   //			// + tableTmpAnnotationValues + ")");
    //			stm1.executeUpdate("INSERT INTO TMP_TABLE_ANNOTATION VALUES (annotation_id_seq.nextval"
    //					+ tableTmpAnnotationValues + ")");
    //
@@ -387,20 +380,19 @@ public class Export_Oracle extends Export
    //			preparedStatement.executeUpdate();
    //			preparedStatement.close();
    //		} catch (SQLException e) {
-   //			log.error(e);
+   //         log.error(e.getMessage(), e);
    //		} finally {
    //			if (rsp != null) {
    //				try {
    //					rsp.close();
    //				} catch (SQLException e) {
-   //					log.error(e);
+  //          log.error(e.getMessage(), e);
    //				}
    //			}
    //		}
    //	}
    //
    //	private void drop_table() throws SQLException {
-   //		System.out.println("table dropped.");
    //		// Delete temporary table
    //		String drop_sequences = "{call DROP_EXPORT_TABLE()}";
    //		// PreparedStatements can use variables and are more efficient
@@ -411,7 +403,6 @@ public class Export_Oracle extends Export
    //	}
    //
    //	private void drop_sequence() throws SQLException {
-   //		System.out.println("sequences dropped.");
    //		// Delete Oracle SEquences
    //		String drop_sequences = "{call CREATE_OR_DROP_SEQUENCES(1)}";
    //		// PreparedStatements can use variables and are more efficient

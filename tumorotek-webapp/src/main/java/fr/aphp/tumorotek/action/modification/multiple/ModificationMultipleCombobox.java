@@ -50,6 +50,8 @@ import org.zkoss.zul.Constraint;
 import fr.aphp.tumorotek.model.TKDelegateObject;
 import fr.aphp.tumorotek.model.TKDelegetableObject;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 /**
  * Classe gérant une fenêtre modal pour la modification multiple d'une
  * Combobox.
@@ -61,6 +63,8 @@ import fr.aphp.tumorotek.model.TKDelegetableObject;
  */
 public class ModificationMultipleCombobox extends AbstractModificationMultipleComponent
 {
+   private static final Logger log = LoggerFactory.getLogger(ModificationMultipleCombobox.class);
+
 
    private static final long serialVersionUID = 3551763682958457361L;
 
@@ -196,7 +200,7 @@ public class ModificationMultipleCombobox extends AbstractModificationMultipleCo
             }
 
          }catch(final IllegalAccessException | InvocationTargetException | NoSuchMethodException e){
-            log.error(e);
+            log.error(e.getMessage(), e);
          }
 
       }
@@ -219,7 +223,7 @@ public class ModificationMultipleCombobox extends AbstractModificationMultipleCo
             out = (String) PropertyUtils.getSimpleProperty(obj, getChampThesaurus());
          }
       }catch(final Exception e){
-         log.error(e);
+         log.error(e.getMessage(), e);
       }
       return out;
    }

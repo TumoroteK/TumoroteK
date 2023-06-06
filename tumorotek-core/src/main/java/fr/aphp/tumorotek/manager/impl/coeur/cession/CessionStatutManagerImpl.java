@@ -38,8 +38,8 @@ package fr.aphp.tumorotek.manager.impl.coeur.cession;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import fr.aphp.tumorotek.dao.cession.CessionStatutDao;
 import fr.aphp.tumorotek.manager.coeur.cession.CessionStatutManager;
@@ -57,7 +57,7 @@ import fr.aphp.tumorotek.model.cession.CessionStatut;
 public class CessionStatutManagerImpl implements CessionStatutManager
 {
 
-   private final Log log = LogFactory.getLog(CessionStatutManager.class);
+   private final Logger log = LoggerFactory.getLogger(CessionStatutManager.class);
 
    /** Bean Dao CessionStatutDao. */
    private CessionStatutDao cessionStatutDao;

@@ -46,8 +46,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.jdom.Document;
 import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
@@ -138,7 +138,7 @@ import fr.aphp.tumorotek.webapp.general.SessionUtils;
 public class FicheCessionEdit extends AbstractFicheEditController
 {
 
-	private final Log log = LogFactory.getLog(FicheCessionEdit.class);
+	private final Logger log = LoggerFactory.getLogger(FicheCessionEdit.class);
 
 	private static final long serialVersionUID = 6300875937416491348L;
 
@@ -965,7 +965,7 @@ public class FicheCessionEdit extends AbstractFicheEditController
 				try{
 					dl = ManagerLocator.getXmlUtils().creerBoiteHtml(doc);
 				}catch(final Exception e){
-					log.error(e);
+					log.error(e.getMessage(), e); 
 				}
 
 				// envoie du fichier à imprimer à l'utilisateur
@@ -1080,7 +1080,7 @@ public class FicheCessionEdit extends AbstractFicheEditController
 					try{
 						dl = ManagerLocator.getXmlUtils().creerBoiteHtml(doc);
 					}catch(final Exception e){
-						log.error(e);
+						log.error(e.getMessage(), e); 
 					}
 
 					// envoie du fichier à imprimer à l'utilisateur

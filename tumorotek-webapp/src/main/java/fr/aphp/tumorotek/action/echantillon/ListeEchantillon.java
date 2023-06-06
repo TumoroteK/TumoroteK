@@ -705,7 +705,6 @@ public class ListeEchantillon extends AbstractListeController2
 	//							Messagebox.ERROR);
 	//				}
 	//			} else if (imp.getImprimanteApi().getNom().equals("mbio")) {
-	//				System.err.println("imprimante mbio");
 	//				// si on utilise l'API mbio
 	//				MBioFileProperties mBioFile = new MBioFileProperties(
 	//						imp.getMbioPrinter());

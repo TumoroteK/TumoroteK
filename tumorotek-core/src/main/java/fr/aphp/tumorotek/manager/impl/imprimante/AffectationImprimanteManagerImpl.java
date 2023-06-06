@@ -38,8 +38,8 @@ package fr.aphp.tumorotek.manager.impl.imprimante;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import fr.aphp.tumorotek.dao.contexte.BanqueDao;
 import fr.aphp.tumorotek.dao.imprimante.AffectationImprimanteDao;
@@ -67,7 +67,7 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
 public class AffectationImprimanteManagerImpl implements AffectationImprimanteManager
 {
 
-   private final Log log = LogFactory.getLog(AffectationImprimanteManager.class);
+   private final Logger log = LoggerFactory.getLogger(AffectationImprimanteManager.class);
 
    /** Bean Dao. */
    private AffectationImprimanteDao affectationImprimanteDao;

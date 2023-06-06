@@ -45,8 +45,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
@@ -115,7 +115,7 @@ import fr.aphp.tumorotek.webapp.general.SessionUtils;
 public class FicheImportTemplate extends AbstractFicheCombineController
 {
 
-   private final Log log = LogFactory.getLog(FicheImportTemplate.class);
+   private final Logger log = LoggerFactory.getLogger(FicheImportTemplate.class);
 
    private static final long serialVersionUID = 3330210719922132352L;
 
@@ -1193,11 +1193,10 @@ public class FicheImportTemplate extends AbstractFicheCombineController
                Events.echoEvent("onLaterImport", self, null);
             }
          }catch(final IOException ex){
-            log.error(ex);
-            ex.printStackTrace();
+            log.error(ex.getMessage(), ex);
             Clients.clearBusy();
          }catch(final InvalidFormatException ev){
-            ev.printStackTrace();
+            log.error(ev.getMessage(), ev);
             Clients.clearBusy();
          }finally{
             if(fileInputStream != null){
@@ -1244,10 +1243,9 @@ public class FicheImportTemplate extends AbstractFicheCombineController
             errors = ((ErrorsInImportException) re).getErrors();
             ok = false;
             //			} catch (IOException ex) {
-            //				log.error(e);
-            //				ex.printStackTrace();
+            //				log.error(e.getMessage(), e); 
             //			} catch (InvalidFormatException ev) {
-            //				ev.printStackTrace();
+            //				log.error(ev.getMessage(), ev);
             //			} finally {
             //				uploadedWb = null;
             //				fileInputStream = null;
@@ -1307,7 +1305,7 @@ public class FicheImportTemplate extends AbstractFicheCombineController
          wb.write(out);
          Filedownload.save(out.toByteArray(), "application/vnd.ms-excel", "import.xls");
       }catch(final IOException e){
-         log.error(e);
+         log.error(e.getMessage(), e); 
       }finally{
          try{
             out.close();

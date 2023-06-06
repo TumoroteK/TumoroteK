@@ -45,8 +45,8 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.collections.BidiMap;
 import org.apache.commons.collections.bidimap.DualHashBidiMap;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.springframework.transaction.TransactionDefinition;
@@ -111,7 +111,7 @@ import fr.aphp.tumorotek.webapp.tree.stockage.TerminaleNode;
 public class FicheDeplacerEmplacements extends FicheTerminale
 {
 
-   private final Log log = LogFactory.getLog(FicheDeplacerEmplacements.class);
+   private final Logger log = LoggerFactory.getLogger(FicheDeplacerEmplacements.class);
 
    private static final long serialVersionUID = -3813832001048689323L;
 
@@ -994,7 +994,7 @@ public class FicheDeplacerEmplacements extends FicheTerminale
          try{
             dl = ManagerLocator.getXmlUtils().creerBoiteHtml(doc);
          }catch(final Exception e){
-            log.error(e);
+            log.error(e.getMessage(), e); 
          }
 
          // envoie du fichier à imprimer à l'utilisateur

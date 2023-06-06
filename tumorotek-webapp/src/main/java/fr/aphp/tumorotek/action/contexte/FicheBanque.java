@@ -47,8 +47,8 @@ import java.util.Optional;
 import java.util.Set;
 
 import org.apache.commons.collections4.ListUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.zkoss.util.resource.Labels;
@@ -135,7 +135,7 @@ import fr.aphp.tumorotek.webapp.general.SessionUtils;
 public class FicheBanque extends AbstractFicheCombineController
 {
 
-   private final Log log = LogFactory.getLog(FicheBanque.class);
+   private final Logger log = LoggerFactory.getLogger(FicheBanque.class);
 
    private static final long serialVersionUID = 6300875937416491348L;
 
@@ -1404,7 +1404,7 @@ public class FicheBanque extends AbstractFicheCombineController
          dl = ManagerLocator.getXmlUtils().creerPdf(document);
 
       }catch(final Exception e){
-         log.error(e);
+         log.error(e.getMessage(), e); 
       }
 
       // ferme wait message

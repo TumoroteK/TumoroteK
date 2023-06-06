@@ -37,8 +37,8 @@ package fr.aphp.tumorotek.manager.impl.io.export;
 
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.validation.Validator;
 
 import fr.aphp.tumorotek.dao.io.export.ChampDao;
@@ -64,7 +64,7 @@ import fr.aphp.tumorotek.model.io.export.Combinaison;
 public class CombinaisonManagerImpl implements CombinaisonManager
 {
 
-   private final Log log = LogFactory.getLog(CombinaisonManager.class);
+   private final Logger log = LoggerFactory.getLogger(CombinaisonManager.class);
 
    /** Bean Dao CombinaisonDao. */
    private CombinaisonDao combinaisonDao = null;

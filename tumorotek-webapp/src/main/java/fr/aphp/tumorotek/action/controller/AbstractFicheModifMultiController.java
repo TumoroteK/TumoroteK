@@ -123,7 +123,7 @@ public abstract class AbstractFicheModifMultiController extends AbstractFicheCon
          try{
             isDelegateProperty = PropertyUtils.describe(delegate).keySet().contains(tmp.getChamp());
          }catch(final Exception ex){
-            log.error(ex);
+            log.error(ex.getMessage(), ex);
          }
 
       }
@@ -151,7 +151,7 @@ public abstract class AbstractFicheModifMultiController extends AbstractFicheCon
          }
 
       }catch(final Exception ex){
-         log.error(ex);
+         log.error(ex.getMessage(), ex);
       }
 
       final StringBuffer sb = new StringBuffer();
@@ -242,7 +242,7 @@ public abstract class AbstractFicheModifMultiController extends AbstractFicheCon
       }catch(final RuntimeException re){
          // ferme wait message
          Clients.clearBusy();
-         log.error(re);
+         log.error(re.getMessage(), re);
          Messagebox.show(handleExceptionMessage(re), "Error", Messagebox.OK, Messagebox.ERROR);
       }
    }

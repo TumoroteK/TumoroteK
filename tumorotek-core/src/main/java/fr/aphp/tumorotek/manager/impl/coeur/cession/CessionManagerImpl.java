@@ -51,8 +51,8 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.validation.Validator;
 
 import fr.aphp.tumorotek.dao.cession.CessionDao;
@@ -106,7 +106,7 @@ import fr.aphp.tumorotek.utils.Utils;
 public class CessionManagerImpl implements CessionManager
 {
 
-   private final Log log = LogFactory.getLog(CessionManager.class);
+   private final Logger log = LoggerFactory.getLogger(CessionManager.class);
 
    private CessionDao cessionDao;
 

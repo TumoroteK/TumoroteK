@@ -68,8 +68,8 @@ import javax.sql.DataSource;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
@@ -152,7 +152,7 @@ import fr.aphp.tumorotek.utils.Utils;
 public class ImportManagerImpl implements ImportManager
 {
 
-   private final Log log = LogFactory.getLog(ImportManager.class);
+   private final Logger log = LoggerFactory.getLogger(ImportManager.class);
 
    private ImportTemplateManager importTemplateManager;
 
@@ -484,11 +484,11 @@ public class ImportManagerImpl implements ImportManager
                      // extraction de la valeur de l'objet
                      value = (String) PropertyUtils.getSimpleProperty(objets.get(i), nomChamp);
                   }catch(final IllegalAccessException e){
-                     log.error(e);
+                     log.error(e.getMessage(), e); 
                   }catch(final InvocationTargetException e){
-                     log.error(e);
+                     log.error(e.getMessage(), e); 
                   }catch(final NoSuchMethodException e){
-                     log.error(e);
+                     log.error(e.getMessage(), e); 
                   }
                }else if(champEntite.getEntite().getNom().equals("Collaborateur")){
                   // si c'est un collaborateur, on extrait une
@@ -826,11 +826,11 @@ public class ImportManagerImpl implements ImportManager
                PropertyUtils.setSimpleProperty(obj, nomChamp, null);
             }
          }catch(final IllegalAccessException e){
-            log.error(e);
+            log.error(e.getMessage(), e); 
          }catch(final InvocationTargetException e){
-            log.error(e);
+            log.error(e.getMessage(), e); 
          }catch(final NoSuchMethodException e){
-            log.error(e);
+            log.error(e.getMessage(), e); 
          }
       }
    }
@@ -919,11 +919,11 @@ public class ImportManagerImpl implements ImportManager
                   type = PropertyUtils.getPropertyDescriptor(obj, nomChamp).getPropertyType().getSimpleName();
                }
             }catch(final IllegalAccessException e){
-               log.error(e);
+               log.error(e.getMessage(), e); 
             }catch(final InvocationTargetException e){
-               log.error(e);
+               log.error(e.getMessage(), e); 
             }catch(final NoSuchMethodException e){
-               log.error(e);
+               log.error(e.getMessage(), e); 
             }
 
             // on regarde si c'est une date
@@ -2020,7 +2020,7 @@ public class ImportManagerImpl implements ImportManager
          }
 
       }catch(final Exception e){
-         e.printStackTrace();
+         log.error(e.getMessage(), e);
       }
       return res;
    }
@@ -2049,9 +2049,9 @@ public class ImportManagerImpl implements ImportManager
          //wb = new SXSSFWorkbook( new XSSFWorkbook(is), 100);
          return importFileManager(importTemplate, utilisateur, banque, wb.getSheetAt(0));
       }catch(final IOException e){
-         e.printStackTrace();
+         log.error(e.getMessage(), e);
       }catch(final InvalidFormatException e){
-         e.printStackTrace();
+         log.error(e.getMessage(), e);
       }
 
       return null;
@@ -2252,7 +2252,7 @@ public class ImportManagerImpl implements ImportManager
                }
             }catch(final RuntimeException re){
                
-               log.debug(re);
+               log.debug(re.getMessage(), re);
                
                final ImportError error = new ImportError();
                error.setException(re);
@@ -2299,7 +2299,7 @@ public class ImportManagerImpl implements ImportManager
          error.setException(fe);
          errors.add(error);
       }catch(final Exception e){
-         e.printStackTrace();
+         log.error(e.getMessage(), e);
          final ImportError error = new ImportError();
          error.setException(new RuntimeException(e));
          error.setNbRow(row.getRowNum());
@@ -2310,7 +2310,7 @@ public class ImportManagerImpl implements ImportManager
                rs.close();
             }catch(final SQLException e){
                rs = null;
-               log.error(e);
+               log.error(e.getMessage(), e); 
             }
          }
          if(stmt != null){
@@ -2488,7 +2488,7 @@ public class ImportManagerImpl implements ImportManager
          error.setException(fe);
          errors.add(error);
       }catch(final Exception e){
-         e.printStackTrace();
+         log.error(e.getMessage(), e);
          final ImportError error = new ImportError();
          error.setException(new RuntimeException(e));
          error.setNbRow(row.getRowNum());

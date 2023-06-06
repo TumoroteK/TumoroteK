@@ -38,8 +38,8 @@ package fr.aphp.tumorotek.manager.impl.stockage;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.validation.Validator;
 
 import fr.aphp.tumorotek.dao.contexte.PlateformeDao;
@@ -70,7 +70,7 @@ public class EnceinteTypeManagerImpl implements EnceinteTypeManager
 
    private EnceinteTypeValidator enceinteTypeValidator;
 
-   private final Log log = LogFactory.getLog(EnceinteTypeManager.class);
+   private final Logger log = LoggerFactory.getLogger(EnceinteTypeManager.class);
 
    private PlateformeDao plateformeDao;
 

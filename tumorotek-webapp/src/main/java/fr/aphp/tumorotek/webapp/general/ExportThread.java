@@ -47,8 +47,8 @@ import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -84,7 +84,7 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
 public class ExportThread extends Thread
 {
 
-   private static Log log = LogFactory.getLog(ExportThread.class);
+   private static Logger log = LoggerFactory.getLogger(ExportThread.class);
 
    private final Desktop desktop;
 
@@ -144,7 +144,8 @@ public class ExportThread extends Thread
          exportCessions();
       }
       endTime = System.nanoTime();
-      System.out.println("Total elapsed time in execution of method is :" + ((endTime - startTime) / 1000000000.0));
+      double passedTime = (endTime - startTime) / 1000000000.0;
+      log.debug("Total elapsed time in execution of method is : {}", passedTime);
    }
 
    /*************************************************************************/
@@ -226,7 +227,7 @@ public class ExportThread extends Thread
 
          Executions.deactivate(desktop);
       }catch(final InterruptedException ex){
-         log.error(ex);
+         log.error(ex.getMessage(), ex);
       }finally{
          desktop.enableServerPush(false);
       }
@@ -292,7 +293,7 @@ public class ExportThread extends Thread
 
          Executions.deactivate(desktop);
       }catch(final InterruptedException ex){
-         log.error(ex);
+         log.error(ex.getMessage(), ex);
       }finally{
          desktop.enableServerPush(false);
       }
@@ -398,7 +399,7 @@ public class ExportThread extends Thread
 
          Executions.deactivate(desktop);
       }catch(final InterruptedException ex){
-         log.error(ex);
+         log.error(ex.getMessage(), ex);
       }
    }
 
@@ -467,7 +468,7 @@ public class ExportThread extends Thread
             conn.close();
          }catch(final Exception e){
             log.error(e.getMessage());
-            log.error(e);
+            log.error(e.getMessage(), e); 
          }finally{
             if(conn != null){
                try{
@@ -501,18 +502,18 @@ public class ExportThread extends Thread
 
          Executions.deactivate(desktop);
       }catch(final InterruptedException ex){
-         log.error(ex);
+         log.error(ex.getMessage(), ex);
       }catch(final IOException ioe){
-         log.error(ioe);
+         log.error(ioe.getMessage(), ioe);
       }catch(final Exception e){
-         log.error(e);
+         log.error(e.getMessage(), e); 
       }finally{
          desktop.enableServerPush(false);
          if(bouf != null){
             try{
                bouf.close();
             }catch(final Exception e){
-               log.error(e);
+               log.error(e.getMessage(), e); 
                bouf = null;
                throw new RuntimeException(e);
             }
@@ -521,7 +522,7 @@ public class ExportThread extends Thread
             try{
                ((BufferedWriter) wb).close();
             }catch(final Exception e){
-               log.error(e);
+               log.error(e.getMessage(), e); 
                wb = null;
                throw new RuntimeException(e);
             }
@@ -676,7 +677,7 @@ public class ExportThread extends Thread
 
          Executions.deactivate(desktop);
       }catch(final InterruptedException ex){
-         log.error(ex);
+         log.error(ex.getMessage(), ex);
       }finally{
          desktop.enableServerPush(false);
       }
@@ -736,7 +737,7 @@ public class ExportThread extends Thread
 
          Executions.deactivate(desktop);
       }catch(final InterruptedException ex){
-         log.error(ex);
+         log.error(ex.getMessage(), ex);
       }finally{
          desktop.enableServerPush(false);
       }
@@ -775,7 +776,7 @@ public class ExportThread extends Thread
          final AMedia media = new AMedia(fileName, "xls", "application/vnd.ms-excel", out.toByteArray());
          FileDownloadTumo.save(media, desktop);
       }catch(final Exception e){
-         log.error(e);
+         log.error(e.getMessage(), e); 
       }finally{
          if(out != null){
             try{

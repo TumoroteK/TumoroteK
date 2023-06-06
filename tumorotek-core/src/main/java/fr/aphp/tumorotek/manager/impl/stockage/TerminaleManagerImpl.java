@@ -49,8 +49,8 @@ import java.util.stream.Collectors;
 
 import javax.sql.DataSource;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.validation.Validator;
 
@@ -110,7 +110,7 @@ import fr.aphp.tumorotek.utils.Utils;
 public class TerminaleManagerImpl implements TerminaleManager
 {
 
-   private final Log log = LogFactory.getLog(TerminaleManager.class);
+   private final Logger log = LoggerFactory.getLogger(TerminaleManager.class);
 
    private TerminaleDao terminaleDao;
 

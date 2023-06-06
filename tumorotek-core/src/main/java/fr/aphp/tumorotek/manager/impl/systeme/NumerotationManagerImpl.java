@@ -41,8 +41,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import fr.aphp.tumorotek.dao.contexte.BanqueDao;
 import fr.aphp.tumorotek.dao.systeme.EntiteDao;
@@ -66,7 +66,7 @@ import fr.aphp.tumorotek.model.systeme.Numerotation;
 public class NumerotationManagerImpl implements NumerotationManager
 {
 
-   private final Log log = LogFactory.getLog(NumerotationManager.class);
+   private final Logger log = LoggerFactory.getLogger(NumerotationManager.class);
 
    /** Bean Dao. */
    private NumerotationDao numerotationDao;

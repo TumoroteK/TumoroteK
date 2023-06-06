@@ -71,10 +71,15 @@ import fr.aphp.tumorotek.model.imprimante.Imprimante;
 import fr.aphp.tumorotek.model.imprimante.LigneEtiquette;
 import fr.aphp.tumorotek.model.imprimante.Modele;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class ImprimanteModeleModale
 {
 
    //private static final long serialVersionUID = -3694035708012726832L;
+
+   private static final Logger log = LoggerFactory.getLogger(ImprimanteModeleModale.class);
 
    private boolean blockModal = false;
 
@@ -204,7 +209,7 @@ public class ImprimanteModeleModale
                }catch(final RuntimeException re){
                   Messagebox.show(AbstractController.handleExceptionMessage(re), "Error", Messagebox.OK, Messagebox.ERROR);
                }catch(final Exception e){
-                  e.printStackTrace();
+                  log.error(e.getMessage(), e);
                   Messagebox.show(AbstractController.handleExceptionMessage(e), "Error", Messagebox.OK, Messagebox.ERROR);
                }
             }else if(selectedImprimante.getImprimanteApi().getNom().equals("mbio")){

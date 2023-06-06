@@ -39,8 +39,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.validation.Validator;
 
 import fr.aphp.tumorotek.dao.io.export.CritereDao;
@@ -66,7 +66,7 @@ import fr.aphp.tumorotek.model.io.export.Groupement;
 public class GroupementManagerImpl implements GroupementManager
 {
 
-   private final Log log = LogFactory.getLog(GroupementManager.class);
+   private final Logger log = LoggerFactory.getLogger(GroupementManager.class);
 
    /** Bean Dao GroupementDao. */
    private GroupementDao groupementDao = null;

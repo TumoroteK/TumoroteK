@@ -38,8 +38,8 @@ package fr.aphp.tumorotek.manager.validation;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.validation.BindException;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
@@ -56,7 +56,7 @@ import fr.aphp.tumorotek.manager.validation.exception.ValidationException;
 public final class BeanValidator
 {
 
-   private static Log log = LogFactory.getLog(BeanValidator.class);
+   private static Logger log = LoggerFactory.getLogger(BeanValidator.class);
 
    private static List<Validator> validators = new ArrayList<>();
 

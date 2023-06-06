@@ -45,8 +45,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFDataFormat;
 import org.apache.poi.hssf.usermodel.HSSFRow;
@@ -92,7 +92,7 @@ import fr.aphp.tumorotek.model.stats.Indicateur;
 public class EditModel extends AbstractListGridVM
 {
 
-   protected static Log log = LogFactory.getLog(EditModel.class);
+   protected static Logger log = LoggerFactory.getLogger(EditModel.class);
 
    private Date dateDebut;
 
@@ -351,7 +351,7 @@ public class EditModel extends AbstractListGridVM
             new AMedia(getSelectedModel().getNom() + "_" + date, "xls", "application/vnd.ms-excel", outStr.toByteArray());
          Filedownload.save(media);
       }catch(final IOException e){
-         e.printStackTrace();
+         log.error(e.getMessage(), e);
       }finally{
          try{
             wb.close();

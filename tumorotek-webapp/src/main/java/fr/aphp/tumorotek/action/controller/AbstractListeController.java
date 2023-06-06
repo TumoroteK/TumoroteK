@@ -35,8 +35,8 @@
  **/
 package fr.aphp.tumorotek.action.controller;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.Component;
 
 /**
@@ -52,7 +52,7 @@ public abstract class AbstractListeController extends AbstractController
 
    private static final long serialVersionUID = -6167747099087709700L;
 
-   protected Log log = LogFactory.getLog(AbstractListeController.class);
+   protected Logger log = LoggerFactory.getLogger(AbstractListeController.class);
 
    @Override
    public void doAfterCompose(final Component comp) throws Exception{

@@ -37,8 +37,8 @@ package fr.aphp.tumorotek.manager.impl.io.export;
 
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import fr.aphp.tumorotek.dao.impression.CleImpressionDao;
 import fr.aphp.tumorotek.manager.exception.RequiredObjectIsNullException;
@@ -62,7 +62,7 @@ import fr.aphp.tumorotek.model.io.export.Champ;
 public class CleImpressionManagerImpl implements CleImpressionManager
 {
 
-   private final Log log = LogFactory.getLog(GroupementManager.class);
+   private final Logger log = LoggerFactory.getLogger(GroupementManager.class);
 
    /** Bean Dao CleDeao. */
    private CleImpressionDao cleImpressionDao;

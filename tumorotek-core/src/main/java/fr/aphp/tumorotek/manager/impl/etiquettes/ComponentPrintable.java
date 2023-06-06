@@ -55,8 +55,8 @@ import java.util.List;
 
 import javax.swing.RepaintManager;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.EncodeHintType;
@@ -88,7 +88,7 @@ public class ComponentPrintable implements Printable
 
    private ComponentPrinter componentPrinter;
 
-   private static Log log = LogFactory.getLog(ComponentBarcodeLabel.class);
+   private static Logger log = LoggerFactory.getLogger(ComponentBarcodeLabel.class);
 
    // private static final String BARCODE = "code barre ";
    // private static final int BARCODE_MAX_HEIGHT = 56;
@@ -186,7 +186,7 @@ public class ComponentPrintable implements Printable
                   barcode.setDrawingQuietSection(false);
                }
             }catch(final BarcodeException be){
-               log.error(be);
+               log.error(be.getMessage(), be);
             }
 
             // création de l'image du code-barres
@@ -196,7 +196,7 @@ public class ComponentPrintable implements Printable
                try{
                   imageBarcode = BarcodeImageHandler.getImage(barcode);
                }catch(final OutputException e){
-                  log.error(e);
+                  log.error(e.getMessage(), e); 
                }
             }
 
@@ -325,7 +325,7 @@ public class ComponentPrintable implements Printable
          }
 
       }catch(final Exception ex){
-         log.error(ex);
+         log.error(ex.getMessage(), ex);
       }
 
    }

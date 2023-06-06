@@ -38,8 +38,8 @@ package fr.aphp.tumorotek.manager.impl.imprimante;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.validation.Validator;
 
 import fr.aphp.tumorotek.dao.contexte.PlateformeDao;
@@ -66,7 +66,7 @@ import fr.aphp.tumorotek.model.imprimante.ImprimanteApi;
 public class ImprimanteManagerImpl implements ImprimanteManager
 {
 
-   private final Log log = LogFactory.getLog(ImprimanteManager.class);
+   private final Logger log = LoggerFactory.getLogger(ImprimanteManager.class);
 
    /** Bean Dao. */
    private ImprimanteDao imprimanteDao;

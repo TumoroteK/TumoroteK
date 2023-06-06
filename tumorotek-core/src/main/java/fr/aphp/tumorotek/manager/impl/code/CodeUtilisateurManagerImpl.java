@@ -42,8 +42,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.validation.Validator;
 
 import fr.aphp.tumorotek.dao.code.CodeDossierDao;
@@ -80,7 +80,7 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
 public class CodeUtilisateurManagerImpl implements CodeUtilisateurManager
 {
 
-   private final Log log = LogFactory.getLog(CodeUtilisateurManager.class);
+   private final Logger log = LoggerFactory.getLogger(CodeUtilisateurManager.class);
 
    private CodeUtilisateurDao codeUtilisateurDao;
 

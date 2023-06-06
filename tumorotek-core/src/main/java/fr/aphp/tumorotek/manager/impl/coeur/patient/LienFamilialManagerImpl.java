@@ -39,8 +39,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.validation.Validator;
 
 import fr.aphp.tumorotek.dao.coeur.patient.LienFamilialDao;
@@ -63,7 +63,7 @@ import fr.aphp.tumorotek.model.coeur.patient.LienFamilial;
 public class LienFamilialManagerImpl implements LienFamilialManager
 {
 
-   private final Log log = LogFactory.getLog(LienFamilialManager.class);
+   private final Logger log = LoggerFactory.getLogger(LienFamilialManager.class);
 
    /* Beans injectes par Spring*/
    private LienFamilialDao lienFamilialDao;

@@ -46,8 +46,8 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import fr.aphp.tumorotek.dao.coeur.echantillon.EchantillonDao;
 import fr.aphp.tumorotek.dao.coeur.patient.PatientDao;
@@ -72,7 +72,7 @@ import fr.aphp.tumorotek.utils.Utils;
 public class IncaReportManagerImpl implements IncaReportManager
 {
 
-   private final Log log = LogFactory.getLog(IncaReportManager.class);
+   private final Logger log = LoggerFactory.getLogger(IncaReportManager.class);
 
    private EchantillonDao echantillonDao;
 
@@ -136,7 +136,7 @@ public class IncaReportManagerImpl implements IncaReportManager
                calOrigin.setTime(new SimpleDateFormat("dd/MM/yyyy").parse("01/01/0001"));
                ant = echantillonDao.findCountSamplesByDates(calOrigin, interm1, banks).get(0);
             }catch(final ParseException e){
-               log.error(e);
+               log.error(e.getMessage(), e); 
             }
          }
 
@@ -465,7 +465,7 @@ public class IncaReportManagerImpl implements IncaReportManager
                   ant = patientDao.findCountPrelevedByDatesPrel(calOrigin, interm1, banks).get(0);
                }
             }catch(final ParseException e){
-               log.error(e);
+               log.error(e.getMessage(), e); 
             }
          }
 

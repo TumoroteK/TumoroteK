@@ -46,8 +46,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFRichTextString;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -113,7 +113,7 @@ import fr.aphp.tumorotek.model.systeme.Entite;
 public class ResultatsImportModale extends GenericForwardComposer<Component>
 {
 
-   private final Log log = LogFactory.getLog(ResultatsImportModale.class);
+   private final Logger log = LoggerFactory.getLogger(ResultatsImportModale.class);
 
    private static final long serialVersionUID = 462300734383948299L;
 
@@ -336,7 +336,7 @@ public class ResultatsImportModale extends GenericForwardComposer<Component>
                   warnDlRow.setVisible(false);
                }
             }catch(final IOException e){
-               log.error(e);
+               log.error(e.getMessage(), e); 
             }
          }
       }
@@ -522,9 +522,9 @@ public class ResultatsImportModale extends GenericForwardComposer<Component>
             workbook instanceof HSSFWorkbook ? ConfigManager.OFFICE_EXCEL_MIME_TYPE : ConfigManager.OFFICE_OPENXML_MIME_TYPE,
             "corrections." + (workbook instanceof HSSFWorkbook ? "xls" : "xlsx"));
       }catch(final FileNotFoundException e){
-         log.error(e);
+         log.error(e.getMessage(), e); 
       }catch(final IOException e){
-         log.error(e);
+         log.error(e.getMessage(), e); 
       }finally{
          if(fileStream != null){
             try{

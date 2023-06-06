@@ -54,8 +54,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.TypedQuery;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.validation.Validator;
 
 import fr.aphp.tumorotek.dao.coeur.patient.MaladieDao;
@@ -106,7 +106,7 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
 public class PatientManagerImpl implements PatientManager
 {
 
-   private final Log log = LogFactory.getLog(PatientManager.class);
+   private final Logger log = LoggerFactory.getLogger(PatientManager.class);
 
    /* Beans injectes par Spring*/
    private PatientDao patientDao;

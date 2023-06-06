@@ -47,8 +47,8 @@ import java.util.Set;
 
 import javax.sql.DataSource;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.CannotGetJdbcConnectionException;
 import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.validation.Errors;
@@ -101,7 +101,7 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
 public class RetourManagerImpl implements RetourManager
 {
 
-   private final Log log = LogFactory.getLog(RetourManager.class);
+   private final Logger log = LoggerFactory.getLogger(RetourManager.class);
 
    /* Beans injectes par Spring*/
    private RetourDao retourDao;

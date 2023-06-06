@@ -46,8 +46,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.validation.Validator;
 
 import eu.medsea.mimeutil.MimeUtil;
@@ -74,7 +74,7 @@ import fr.aphp.tumorotek.model.systeme.Fichier;
 public class FichierManagerImpl implements FichierManager
 {
 
-   private final Log log = LogFactory.getLog(FichierManager.class);
+   private final Logger log = LoggerFactory.getLogger(FichierManager.class);
 
    private FichierDao fichierDao;
 

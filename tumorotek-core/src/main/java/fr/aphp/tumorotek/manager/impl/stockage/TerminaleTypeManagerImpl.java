@@ -38,8 +38,8 @@ package fr.aphp.tumorotek.manager.impl.stockage;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.validation.Validator;
 
 import fr.aphp.tumorotek.dao.stockage.TerminaleTypeDao;
@@ -62,7 +62,7 @@ import fr.aphp.tumorotek.model.stockage.TerminaleType;
 public class TerminaleTypeManagerImpl implements TerminaleTypeManager
 {
 
-   private final Log log = LogFactory.getLog(TerminaleTypeManager.class);
+   private final Logger log = LoggerFactory.getLogger(TerminaleTypeManager.class);
 
    /** Bean Dao CessionStatutDao. */
    private TerminaleTypeDao terminaleTypeDao;

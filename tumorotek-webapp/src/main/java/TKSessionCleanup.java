@@ -34,15 +34,15 @@
  * avez pris connaissance de la licence CeCILL, et que vous en avez
  * accepté les termes.
  **/
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.Session;
 import org.zkoss.zk.ui.util.SessionCleanup;
 
 public class TKSessionCleanup implements SessionCleanup
 {
 
-   private final Log log = LogFactory.getLog(TKSessionCleanup.class);
+   private final Logger log = LoggerFactory.getLogger(TKSessionCleanup.class);
 
    @Override
    public void cleanup(final Session session) throws Exception{

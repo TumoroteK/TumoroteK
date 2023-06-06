@@ -1184,18 +1184,14 @@ public class CorrespondanceManagerTest extends AbstractManagerTest4
    	Iterator it = null;
    	it = objets.iterator();
    	while (it.hasNext()) {
-   		System.out.println(it.next());
    	}
-   	System.out.println("FIN AFFICHAGE OBJETS DE REQUETE");
    	objets = correspondanceManager.recupereEntitesPourAffichageManager(
    			objets, affichage);
    
    	it = objets.iterator();
    	while (it.hasNext()) {
-   		System.out.println(it.next());
    	}
-   	System.out.println("FIN AFFICHAGE OBJETS LE PLUS HAUTS POSSIBLE");
-   
+
    	it = objets.iterator();
    	while (it.hasNext()) {
    		Object objet = it.next();
@@ -1222,9 +1218,7 @@ public class CorrespondanceManagerTest extends AbstractManagerTest4
    				List<Object> lObj = new ArrayList<Object>();
    				lObj.add(objet);
    				Object recup = null;
-   				System.out.println("classe de l'objet : "
-   						+ objet.getClass().getSimpleName());
-   				System.out.println("nom de l'entité : " + entite.getNom());
+
    				if (objet.getClass().getSimpleName()
    						.equals(entite.getNom())) {
    					recup = objet;

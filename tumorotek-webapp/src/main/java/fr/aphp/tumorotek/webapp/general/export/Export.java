@@ -55,8 +55,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.zkoss.util.media.AMedia;
@@ -89,7 +89,7 @@ import fr.aphp.tumorotek.webapp.general.ResultSetToExcel;
  */
 public class Export extends Thread
 {
-	protected static Log log = LogFactory.getLog(Export.class);
+	protected static Logger log = LoggerFactory.getLogger(Export.class);
 
 	private static final Map<Integer, String> typeMap;
 	static{
@@ -267,18 +267,17 @@ public class Export extends Thread
 
 		}
 		catch(final SQLTooManyAnnotationException e){
-         log.error(e.getMessage(), e.getCause());
-         e.getCause().printStackTrace();
+         log.error(e.getMessage(), e.getCause(), e);
          try{
             setExportDetails(0, 0, 0, null, null, e);
          }catch(DesktopUnavailableException | InterruptedException e1){}
       }
 		catch(final ClassNotFoundException e){
-			log.error(e);
+			log.error(e.getMessage(), e); 
 		}catch(final DesktopUnavailableException e){
-         log.warn(e);
+			log.warn(e.getMessage(), e);
 		}catch(final InterruptedException e){
-			log.warn(e.getMessage());
+			log.warn(e.getMessage(), e);
 		}catch(final Exception e){
 			log.error(e.getMessage(), e);
 			try{
@@ -306,7 +305,7 @@ public class Export extends Thread
 				getStatement().close();
 				// }
 			}catch(final SQLException e){
-				log.error(e);
+				log.error(e.getMessage(), e); 
 			}finally{
 				setStatement(null);
 			}
@@ -319,7 +318,7 @@ public class Export extends Thread
 				getPreparedStatement().close();
 				//}
 			}catch(final SQLException e){
-				log.error(e);
+				log.error(e.getMessage(), e); 
 			}finally{
 				setPreparedStatement(null);
 			}
@@ -330,7 +329,7 @@ public class Export extends Thread
 			try{
 				getMainRset().close();
 			}catch(final SQLException e){
-				log.error(e);
+				log.error(e.getMessage(), e); 
 			}finally{
 				setMainRset(null);
 			}
@@ -339,7 +338,7 @@ public class Export extends Thread
 			try{
 				getLaboRset().close();
 			}catch(final SQLException e){
-				log.error(e);
+				log.error(e.getMessage(), e); 
 			}finally{
 				setLaboRset(null);
 			}
@@ -348,7 +347,7 @@ public class Export extends Thread
 			try{
 				getIntermRset().close();
 			}catch(final SQLException e){
-				log.error(e);
+				log.error(e.getMessage(), e); 
 			}finally{
 				setIntermRset(null);
 			}
@@ -361,7 +360,7 @@ public class Export extends Thread
 				getConnection().rollback();
 				getConnection().close();
 			}catch(final SQLException e){
-				log.error(e);
+				log.error(e.getMessage(), e); 
 			}finally{
 				setConnection(null);
 			}
@@ -1072,8 +1071,7 @@ public class Export extends Thread
 					getPreparedStatement().close();
 				}
 			}catch(final Exception e){
-				log.error(e.getMessage());
-				e.printStackTrace();
+				log.error(e.getMessage(), e);
 				if(Thread.interrupted()){
 					throw new InterruptedException();
 				}
@@ -1110,21 +1108,21 @@ public class Export extends Thread
 	//						downloadExportFileXls(f, desktop);
 	//						Executions.deactivate(desktop);
 	//					} catch (InterruptedException ex) {
-	//						log.error(ex);
+	//						log.error(ex.getMessage(), ex);
 	//					}
 	//					log.debug("----- BIOCAP TRANSFORMATION OK ------");
 	//				} catch (TransformerConfigurationException e) {
-	//					log.error(e);
+	//					log.error(e.getMessage(), e); 
 	//				} catch (TransformerException e) {
-	//					log.error(e);
+	//					log.error(e.getMessage(), e); 
 	//				} catch (ParserConfigurationException e) {
-	//					e.printStackTrace();
+	//					log.error(e.getMessage(), e);
 	//				}
 	//			} else {
 	//				createXLS();
 	//			}
 	//		} catch (Exception e) {
-	//			log.error(e);
+	//			log.error(e.getMessage(), e); 
 	//			throw new RuntimeException(e);
 	//		}
 	//	}
@@ -1175,9 +1173,9 @@ public class Export extends Thread
 			try{
 				Executions.activate(desktop);
 			}catch(final DesktopUnavailableException e){
-				log.warn(e);
+				log.warn(e.getMessage(), e);
 			}catch(final InterruptedException e){
-				log.warn(e);
+				log.warn(e.getMessage(), e);
 			}
 			if(!progressBar.isError()){
 				progressBarComponent.getParent().detach();
@@ -1268,7 +1266,7 @@ public class Export extends Thread
 	//				FileDownloadTumo.save(media, desktop);
 	//			}
 	//		} catch (FileNotFoundException e) {
-	//			log.error(e);
+	//			log.error(e.getMessage(), e); 
 	//		}
 	//	}
 
@@ -1303,7 +1301,7 @@ public class Export extends Thread
 			try{
 				is = new ByteArrayInputStream(text.getBytes(ConfigManager.UNICODE_CHARSET));
 			}catch(final UnsupportedEncodingException e){
-				e.printStackTrace();
+				log.error(e.getMessage(), e);
 			}
 			return is;
 		}
@@ -1420,15 +1418,11 @@ public class Export extends Thread
 					getPreparedStatement().clearBatch();
 				}
 			}
-			// long startTime = System.nanoTime();
 			// ---------------------------------------------- //
 			getPreparedStatement().executeBatch();
 			getPreparedStatement().close();
 			getConnection().commit();
 			// ---------------------------------------------- //
-			//	long endTime = System.nanoTime();
-			//	System.out.println("Total elapsed time in execution of method is :"
-			//			+ ((double) (endTime - startTime) / 1000000000.0));
 
 	       
 		}

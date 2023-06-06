@@ -46,8 +46,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.validation.Validator;
 
 import fr.aphp.tumorotek.dao.annotation.TableAnnotationBanqueDao;
@@ -128,7 +128,7 @@ import fr.aphp.tumorotek.utils.Utils;
 public class BanqueManagerImpl implements BanqueManager
 {
 
-   private final Log log = LogFactory.getLog(BanqueManager.class);
+   private final Logger log = LoggerFactory.getLogger(BanqueManager.class);
 
    private BanqueDao banqueDao;
 

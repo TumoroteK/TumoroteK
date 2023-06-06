@@ -37,8 +37,8 @@ package fr.aphp.tumorotek.manager.impl.stockage;
 
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.validation.Validator;
 
 import fr.aphp.tumorotek.dao.contexte.PlateformeDao;
@@ -63,7 +63,7 @@ import fr.aphp.tumorotek.model.stockage.ConteneurType;
 public class ConteneurTypeManagerImpl implements ConteneurTypeManager
 {
 
-   private final Log log = LogFactory.getLog(ConteneurTypeManager.class);
+   private final Logger log = LoggerFactory.getLogger(ConteneurTypeManager.class);
 
    /** Bean Dao ConteneurTypeDao. */
    private ConteneurTypeDao conteneurTypeDao;

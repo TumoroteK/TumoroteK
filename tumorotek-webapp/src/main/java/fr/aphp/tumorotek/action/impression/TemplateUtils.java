@@ -17,8 +17,8 @@ import java.util.regex.Pattern;
 
 import javax.activation.MimetypesFileTypeMap;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.apache.poi.hwpf.HWPFDocument;
 import org.apache.poi.hwpf.usermodel.CharacterRun;
 import org.apache.poi.hwpf.usermodel.Paragraph;
@@ -61,7 +61,7 @@ public class TemplateUtils
     */
    public static String TEMPLATE_DOC_FOLDER = SessionUtils.getSystemBaseDir() + "/administration/templates/docs/";
 
-   private static Log log = LogFactory.getLog(TemplateUtils.class);
+   private static Logger log = LoggerFactory.getLogger(TemplateUtils.class);
 
    public static SimpleDateFormat FORMAT_DATE = new SimpleDateFormat("yyyy_MM_dd_HH.mm.ss");
 
@@ -91,7 +91,7 @@ public class TemplateUtils
       try{
          Files.copy(dest, media.getStreamData());
       }catch(final Exception e){
-         log.error(e);
+         log.error(e.getMessage(), e); 
       }
    }
 
@@ -112,7 +112,7 @@ public class TemplateUtils
          Files.copy(dest, media.getStreamData());
          template.setFichier(newFileName);
       }catch(final Exception e){
-         log.error(e);
+         log.error(e.getMessage(), e); 
       }
    }
 
@@ -315,11 +315,11 @@ public class TemplateUtils
 
       }catch(final FileNotFoundException e){
          Clients.clearBusy();
-         log.error(e);
+         log.error(e.getMessage(), e); 
          Messagebox.show(Labels.getLabel("template.messages.fichier.introuvable"), "Erreur", Messagebox.OK, Messagebox.ERROR);
       }catch(final Exception e){
          Clients.clearBusy();
-         log.error(e);
+         log.error(e.getMessage(), e); 
          Messagebox.show(e.getMessage(), "Erreur", Messagebox.OK, Messagebox.ERROR);
       }
    }

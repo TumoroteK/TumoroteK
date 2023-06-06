@@ -45,8 +45,8 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.TypedQuery;
 
 import org.apache.commons.beanutils.PropertyUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import fr.aphp.tumorotek.dao.code.CimMasterDao;
 import fr.aphp.tumorotek.manager.code.CimMasterManager;
@@ -65,7 +65,7 @@ import fr.aphp.tumorotek.model.code.CimMaster;
 public class CimMasterManagerImpl implements CimMasterManager
 {
 
-   private final Log log = LogFactory.getLog(CimMasterManager.class);
+   private final Logger log = LoggerFactory.getLogger(CimMasterManager.class);
 
    private CimMasterDao cimMasterDao;
 

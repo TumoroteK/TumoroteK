@@ -38,8 +38,8 @@ package fr.aphp.tumorotek.manager.impl.impression;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import fr.aphp.tumorotek.dao.impression.ChampEntiteBlocDao;
 import fr.aphp.tumorotek.manager.impression.ChampEntiteBlocManager;
@@ -59,7 +59,7 @@ import fr.aphp.tumorotek.model.impression.ChampEntiteBlocPK;
 public class ChampEntiteBlocManagerImpl implements ChampEntiteBlocManager
 {
 
-   private final Log log = LogFactory.getLog(ChampEntiteBlocManager.class);
+   private final Logger log = LoggerFactory.getLogger(ChampEntiteBlocManager.class);
 
    /** Bean Dao. */
    private ChampEntiteBlocDao champEntiteBlocDao;

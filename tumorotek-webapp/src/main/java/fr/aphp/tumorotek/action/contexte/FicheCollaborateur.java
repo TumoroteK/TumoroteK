@@ -38,8 +38,8 @@ package fr.aphp.tumorotek.action.contexte;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.zkoss.util.resource.Labels;
@@ -100,7 +100,7 @@ import fr.aphp.tumorotek.webapp.general.SessionUtils;
 public class FicheCollaborateur extends AbstractFicheCombineController
 {
 
-   private final Log log = LogFactory.getLog(FicheCollaborateur.class);
+   private final Logger log = LoggerFactory.getLogger(FicheCollaborateur.class);
 
    private static final long serialVersionUID = -5288212654515739964L;
 
@@ -1019,7 +1019,7 @@ public class FicheCollaborateur extends AbstractFicheCombineController
          try{
             dl = ManagerLocator.getXmlUtils().creerPdf(document);
          }catch(final Exception e){
-            log.error(e);
+            log.error(e.getMessage(), e); 
          }
 
          // envoie du fichier à imprimer à l'utilisateur

@@ -244,8 +244,10 @@ public abstract class AbstractListeController2 extends AbstractController
 		 * try { searchDateCreation = new
 		 * SimpleDateFormat("dd/MM/yyyy HH:mm:ss")
 		 * .parse(sdf.format(today.getTime())); } catch (ParseException e) {
-		 * log.error(e); }
+		 * log.error(e.getMessage(), e);
+		 *  }
 		 */
+
 		return searchDateCreation;
 	}
 
@@ -927,7 +929,7 @@ public abstract class AbstractListeController2 extends AbstractController
 
 			getRestrictedTableIds().clear();
 		}catch(final Exception e){
-			e.printStackTrace();
+			log.error(e.getMessage(), e);
 		}
 	}
 
@@ -1780,7 +1782,7 @@ public abstract class AbstractListeController2 extends AbstractController
 				setBlockModal(false);
 
 			}catch(final SuspendNotAllowedException e){
-				log.error(e);
+				log.error(e.getMessage(), e);
 			}
 		}
 	}
@@ -1924,7 +1926,7 @@ public abstract class AbstractListeController2 extends AbstractController
 				setBlockModal(false);
 
 			}catch(final SuspendNotAllowedException e){
-				log.error(e);
+				log.error(e.getMessage(), e);
 			}
 		}
 	}
@@ -1997,7 +1999,7 @@ public abstract class AbstractListeController2 extends AbstractController
 				setBlockModal(false);
 
 			}catch(final SuspendNotAllowedException e){
-				log.error(e);
+				log.error(e.getMessage(), e);
 			}
 		}
 	}
@@ -2086,7 +2088,7 @@ public abstract class AbstractListeController2 extends AbstractController
 				setBlockModal(false);
 
 			}catch(final SuspendNotAllowedException e){
-				log.error(e);
+				log.error(e.getMessage(), e);
 			}
 		}
 	}
@@ -2140,7 +2142,7 @@ public abstract class AbstractListeController2 extends AbstractController
 			try{
 				fileInputStream.close();
 			}catch(final IOException e){
-				e.printStackTrace();
+				log.error(e.getMessage(), e);
 			}finally{
 				fileInputStream = null;
 			}

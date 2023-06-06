@@ -37,8 +37,8 @@ package fr.aphp.tumorotek.manager.impl.etiquettes;
 
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import fr.aphp.tumorotek.manager.etiquettes.BarcodeFieldDefault;
 import fr.aphp.tumorotek.model.imprimante.LigneEtiquette;
@@ -55,7 +55,7 @@ import fr.aphp.tumorotek.model.imprimante.LigneEtiquette;
 public class RawLanguageTranslater
 {
 
-   private static Log log = LogFactory.getLog(RawLanguageTranslater.class);
+   private static Logger log = LoggerFactory.getLogger(RawLanguageTranslater.class);
 
    public static String printZPL(final List<LigneEtiquette> l, final int x0, final int y0, final int dpiResolution,
       BarcodeFieldDefault by){

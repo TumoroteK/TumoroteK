@@ -41,8 +41,8 @@ import java.util.Calendar;
 import java.util.List;
 
 import org.apache.camel.ProducerTemplate;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import ca.uhn.hl7v2.HL7Exception;
 import ca.uhn.hl7v2.model.v24.datatype.XCN;
@@ -58,7 +58,7 @@ import fr.aphp.tumorotek.model.interfacage.Recepteur;
 public class TumoLinkUrdImpl implements TumoLinkUrd
 {
 
-   private final Log log = LogFactory.getLog(TumoLinkUrdImpl.class);
+   private final Logger log = LoggerFactory.getLogger(TumoLinkUrdImpl.class);
 
    private ProducerTemplate camelTemplate;
 
@@ -80,7 +80,7 @@ public class TumoLinkUrdImpl implements TumoLinkUrd
 
             log.debug("Message send: " + dosExtId);
          }catch(final Exception e){
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
             throw new RuntimeException(e.getMessage());
          }
       }
@@ -119,9 +119,8 @@ public class TumoLinkUrdImpl implements TumoLinkUrd
       final DSP dspSegment = udm.getDSP();
       dspSegment.getDataLine().setValue(url);
 
-      System.out.println(dspSegment.getDataLine().getValue());
-
-      log.debug(udm);
+      log.debug(dspSegment.getDataLine().getValue());
+      log.debug("UDM_Q05 {}:", udm);
 
       return udm;
 

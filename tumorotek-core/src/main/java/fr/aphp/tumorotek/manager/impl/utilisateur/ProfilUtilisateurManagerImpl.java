@@ -41,8 +41,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import fr.aphp.tumorotek.dao.contexte.BanqueDao;
 import fr.aphp.tumorotek.dao.utilisateur.ProfilDao;
@@ -71,7 +71,7 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
 public class ProfilUtilisateurManagerImpl implements ProfilUtilisateurManager
 {
 
-   private final Log log = LogFactory.getLog(ProfilUtilisateurManager.class);
+   private final Logger log = LoggerFactory.getLogger(ProfilUtilisateurManager.class);
 
    private ProfilUtilisateurDao profilUtilisateurDao;
 

@@ -50,8 +50,8 @@ import java.util.Map;
 import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import fr.aphp.tumorotek.interfacage.sgl.SglHandler;
 import fr.aphp.tumorotek.interfacage.sgl.view.ViewHandler;
@@ -63,7 +63,7 @@ import fr.aphp.tumorotek.model.interfacage.Emetteur;
 public class ViewHandlerImpl implements ViewHandler
 {
 
-   private final Log log = LogFactory.getLog(SglHandler.class);
+   private final Logger log = LoggerFactory.getLogger(SglHandler.class);
 
    private String camelConfigLocation;
 
@@ -170,9 +170,9 @@ public class ViewHandlerImpl implements ViewHandler
                reader = new InputStreamReader(fis, Charset.forName("UTF-8"));
                bundle = new PropertyResourceBundle(reader);
             }catch(final FileNotFoundException e){
-               e.printStackTrace();
+               log.error(e.getMessage(), e);
             }catch(final IOException e){
-               e.printStackTrace();
+               log.error(e.getMessage(), e);
             }finally{
                try{
                   reader.close();

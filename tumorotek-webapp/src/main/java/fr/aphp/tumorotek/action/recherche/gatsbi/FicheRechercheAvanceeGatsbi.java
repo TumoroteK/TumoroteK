@@ -107,7 +107,7 @@ public class FicheRechercheAvanceeGatsbi extends FicheRechercheAvancee
       try{
          GatsbiController.appliThesaurusValues(itemDivs, SessionUtils.getGatsbiContextes(), this);
       }catch(final Exception e){
-         log.debug(e);
+         log.debug(e.getMessage());
          Messagebox.show(handleExceptionMessage(e), "Error", Messagebox.OK, Messagebox.ERROR);
       }
    }

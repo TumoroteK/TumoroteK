@@ -39,8 +39,8 @@ import java.util.Scanner;
 
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
-import org.apache.log4j.Logger;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 /**
  * Processor qui ajoute à la fin des lignes des pipes manquants
  * comme messages depuis GENNO, car cela fait planter
@@ -53,7 +53,7 @@ import org.apache.log4j.Logger;
 public class GennoFixProcessor implements Processor
 {
 
-   private final Logger log = Logger.getLogger(GennoFixProcessor.class);
+   private final Logger log = LoggerFactory.getLogger(GennoFixProcessor.class);
 
    @Override
    public void process(final Exchange exchange) throws Exception{
@@ -72,7 +72,7 @@ public class GennoFixProcessor implements Processor
             sb.append(System.lineSeparator());
          }
       }catch(final Exception e){
-         log.debug(e);
+         log.error(e.getMessage(), e);
          throw new RuntimeException("processor GennoFix error: ".concat(e.getMessage()));
       }
 

@@ -52,8 +52,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.sql.DataSource;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
 import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
@@ -82,7 +82,7 @@ public class InitServlet extends HttpServlet
 {
    private static final long serialVersionUID = 1L;
 
-   private final Log log = LogFactory.getLog(InitServlet.class);
+   private final Logger log = LoggerFactory.getLogger(InitServlet.class);
 
    @Override
    public void init() throws ServletException{

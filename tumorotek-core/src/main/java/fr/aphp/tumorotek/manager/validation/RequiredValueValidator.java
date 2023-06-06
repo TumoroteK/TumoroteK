@@ -44,8 +44,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.beanutils.PropertyUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
@@ -63,7 +63,7 @@ import fr.aphp.tumorotek.model.TKdataObject;
 public abstract class RequiredValueValidator implements Validator
 {
 
-   private final Log log = LogFactory.getLog(RequiredValueValidator.class);
+   private final Logger log = LoggerFactory.getLogger(RequiredValueValidator.class);
 
    protected Map<Integer, String> chpIdNameMap = new HashMap<>();
 
@@ -111,10 +111,10 @@ public abstract class RequiredValueValidator implements Validator
                   }
                }catch(IllegalAccessException | InvocationTargetException | NoSuchMethodException e){
                   log.warn(e.getMessage());
-                  log.debug(e);
+                  log.debug(e.getMessage(), e);
                }
             }else{ // validation through functional interface
-               log.debug("validating field " + fName + " through functional validation");
+               log.debug("validating field {} through functional validation", fName);
 
                if(!validations.get(chpId).validate((TKdataObject) target, errs)){
                   errs.rejectValue(correctFieldNameIfNeeded(fName), eNom + "." + fName + ".empty");

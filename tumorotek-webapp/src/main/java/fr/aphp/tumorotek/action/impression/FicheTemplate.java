@@ -40,8 +40,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.apache.poi.hwpf.HWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.zkoss.util.media.Media;
@@ -98,7 +98,7 @@ import fr.aphp.tumorotek.webapp.general.SessionUtils;
 public class FicheTemplate extends AbstractImpressionController
 {
 
-   private final Log log = LogFactory.getLog(FicheTemplate.class);
+   private final Logger log = LoggerFactory.getLogger(FicheTemplate.class);
 
    private static final long serialVersionUID = -8743924081789346031L;
 
@@ -534,7 +534,7 @@ public class FicheTemplate extends AbstractImpressionController
                //Extraction des clefs du document
                clesDocListe = new ArrayList<>(TemplateUtils.extractStringsInFileFromPattern(document));
             }catch(final IOException e){
-               log.error(e);
+               log.error(e.getMessage(), e); 
             }
             break;
          case ".doc":
@@ -543,7 +543,7 @@ public class FicheTemplate extends AbstractImpressionController
                //Extraction des clefs du document
                clesDocListe = new ArrayList<>(TemplateUtils.extractStringsInFileFromPattern(document));
             }catch(final Exception e){
-               log.error(e);
+               log.error(e.getMessage(), e); 
             }
             break;
          default:
@@ -657,7 +657,7 @@ public class FicheTemplate extends AbstractImpressionController
          setObject(template);
          this.switchToStaticMode();
       }catch(final RuntimeException e){
-         log.error(e);
+         log.error(e.getMessage(), e); 
          throw e;
       }finally{
          Clients.clearBusy();
@@ -676,7 +676,7 @@ public class FicheTemplate extends AbstractImpressionController
          setObject(template);
          this.switchToStaticMode();
       }catch(final RuntimeException e){
-         log.error(e);
+         log.error(e.getMessage(), e); 
          throw e;
       }finally{
          Clients.clearBusy();

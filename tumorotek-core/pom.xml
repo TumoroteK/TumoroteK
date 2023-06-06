@@ -87,11 +87,7 @@
 			<artifactId>fop</artifactId>
 			<version>1.0</version>
 		</dependency>
-		<dependency>
-			<groupId>org.apache.excalibur.containerkit</groupId>
-			<artifactId>excalibur-logger</artifactId>
-			<version>2.2.1</version>
-		</dependency>
+
 		<dependency>
 			<groupId>org.apache.poi</groupId>
 			<artifactId>poi</artifactId>

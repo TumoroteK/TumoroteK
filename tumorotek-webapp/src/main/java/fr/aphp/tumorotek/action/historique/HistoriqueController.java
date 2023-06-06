@@ -44,8 +44,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.zkoss.util.media.AMedia;
@@ -85,7 +85,7 @@ import fr.aphp.tumorotek.webapp.general.SessionUtils;
 public class HistoriqueController extends AbstractObjectTabController
 {
 
-   private final Log log = LogFactory.getLog(HistoriqueController.class);
+   private final Logger log = LoggerFactory.getLogger(HistoriqueController.class);
 
    private static final long serialVersionUID = 527753922586818481L;
 
@@ -351,7 +351,7 @@ public class HistoriqueController extends AbstractObjectTabController
          final AMedia media = new AMedia(sb.toString(), "xls", "application/vnd.ms-excel", out.toByteArray());
          FileDownloadTumo.save(media, desktop);
       }catch(final Exception e){
-         log.error(e);
+         log.error(e.getMessage(), e); 
       }finally{
          if(out != null){
             try{

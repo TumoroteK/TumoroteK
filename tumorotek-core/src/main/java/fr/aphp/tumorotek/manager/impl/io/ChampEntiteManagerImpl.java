@@ -43,8 +43,8 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.beanutils.PropertyUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import fr.aphp.tumorotek.dao.io.export.ChampEntiteDao;
 import fr.aphp.tumorotek.manager.exception.RequiredObjectIsNullException;
@@ -67,7 +67,7 @@ import fr.aphp.tumorotek.model.systeme.Fichier;
 public class ChampEntiteManagerImpl implements ChampEntiteManager
 {
 
-   private final Log log = LogFactory.getLog(AffichageManager.class);
+   private final Logger log = LoggerFactory.getLogger(AffichageManager.class);
 
    /** Bean Dao AffichageDao. */
    private ChampEntiteDao champEntiteDao = null;
@@ -190,11 +190,11 @@ public class ChampEntiteManagerImpl implements ChampEntiteManager
             // extraction de la valeur
             res = PropertyUtils.getProperty(obj, nomChamp);
          }catch(final IllegalAccessException e){
-            log.error(e);
+            log.error(e.getMessage(), e); 
          }catch(final InvocationTargetException e){
-            log.error(e);
+            log.error(e.getMessage(), e); 
          }catch(final NoSuchMethodException e){
-            log.error(e);
+            log.error(e.getMessage(), e); 
          }
          // si la valeur retournée n'est pas null
          if(res != null){
@@ -206,11 +206,11 @@ public class ChampEntiteManagerImpl implements ChampEntiteManager
                try{
                   type = PropertyUtils.getPropertyDescriptor(obj, nomChamp).getPropertyType().getSimpleName();
                }catch(final IllegalAccessException e){
-                  log.error(e);
+                  log.error(e.getMessage(), e); 
                }catch(final InvocationTargetException e){
-                  log.error(e);
+                  log.error(e.getMessage(), e); 
                }catch(final NoSuchMethodException e){
-                  log.error(e);
+                  log.error(e.getMessage(), e); 
                }
                if(type != null && prettyFormat){
                   // set d'un string
@@ -276,11 +276,11 @@ public class ChampEntiteManagerImpl implements ChampEntiteManager
                      // extraction de la valeur
                      resThes = PropertyUtils.getProperty(res, nomChampThes);
                   }catch(final IllegalAccessException e){
-                     log.error(e);
+                     log.error(e.getMessage(), e); 
                   }catch(final InvocationTargetException e){
-                     log.error(e);
+                     log.error(e.getMessage(), e); 
                   }catch(final NoSuchMethodException e){
-                     log.error(e);
+                     log.error(e.getMessage(), e); 
                   }
                   return (null != resThes) ? resThes.toString() : null;
                }

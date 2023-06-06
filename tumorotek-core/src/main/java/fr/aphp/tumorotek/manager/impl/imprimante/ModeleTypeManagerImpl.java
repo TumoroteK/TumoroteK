@@ -37,8 +37,8 @@ package fr.aphp.tumorotek.manager.impl.imprimante;
 
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import fr.aphp.tumorotek.dao.imprimante.ModeleTypeDao;
 import fr.aphp.tumorotek.manager.imprimante.ModeleTypeManager;
@@ -56,7 +56,7 @@ import fr.aphp.tumorotek.model.imprimante.ModeleType;
 public class ModeleTypeManagerImpl implements ModeleTypeManager
 {
 
-   private final Log log = LogFactory.getLog(ModeleTypeManager.class);
+   private final Logger log = LoggerFactory.getLogger(ModeleTypeManager.class);
 
    /** Bean Dao. */
    private ModeleTypeDao modeleTypeDao;

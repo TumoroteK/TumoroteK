@@ -39,6 +39,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
+import fr.aphp.tumorotek.action.impression.*;
+import org.slf4j.*;
 import org.zkoss.bind.annotation.AfterCompose;
 import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.ContextParam;
@@ -79,6 +81,7 @@ public class FicheEtiquetteModale
 { // extends AbstractFicheCombineController {
 
    // private static final long serialVersionUID = 2519424454111578877L;
+   private final Logger log = LoggerFactory.getLogger(FicheEtiquetteModale.class);
 
    @Wire("#fwinEtiquetteModale")
    private Window fwinEtiquetteModale;
@@ -287,12 +290,9 @@ public class FicheEtiquetteModale
                   {
                      @Override
                      public void onEvent(final Event evt) throws InterruptedException{
+                        log.debug("nom évènement : {}", evt.getName());
                         if(evt.getName().equals("onOK")){
-                           System.out.println("Data Saved !");
-                        }else if(evt.getName().equals("onIgnore")){
-                           System.out.println("2");
-                        }else{
-                           System.out.println("3");
+                           log.debug("Data Saved");
                         }
                      }
                   });

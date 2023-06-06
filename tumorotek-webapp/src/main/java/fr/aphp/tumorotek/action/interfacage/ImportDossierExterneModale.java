@@ -9,6 +9,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
@@ -49,6 +51,8 @@ import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
 public class ImportDossierExterneModale extends AbstractFicheCombineController
 {
+
+   private static final Logger log = LoggerFactory.getLogger(ImportDossierExterneModale.class);
 
    private static final long serialVersionUID = -9000002907510692460L;
 
@@ -469,7 +473,7 @@ public class ImportDossierExterneModale extends AbstractFicheCombineController
 
          // ferme wait message
          Clients.clearBusy();
-         log.error(re);
+         log.error(re.getMessage(), re);
          Messagebox.show(handleExceptionMessage(re), "Error", Messagebox.OK, Messagebox.ERROR);
       }
 

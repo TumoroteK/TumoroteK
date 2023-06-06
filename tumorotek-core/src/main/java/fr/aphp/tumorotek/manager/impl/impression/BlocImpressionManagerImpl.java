@@ -38,8 +38,8 @@ package fr.aphp.tumorotek.manager.impl.impression;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import fr.aphp.tumorotek.dao.impression.BlocImpressionDao;
 import fr.aphp.tumorotek.manager.impression.BlocImpressionManager;
@@ -58,7 +58,7 @@ import fr.aphp.tumorotek.model.systeme.Entite;
 public class BlocImpressionManagerImpl implements BlocImpressionManager
 {
 
-   private final Log log = LogFactory.getLog(BlocImpressionManager.class);
+   private final Logger log = LoggerFactory.getLogger(BlocImpressionManager.class);
 
    /** Bean Dao. */
    private BlocImpressionDao blocImpressionDao;

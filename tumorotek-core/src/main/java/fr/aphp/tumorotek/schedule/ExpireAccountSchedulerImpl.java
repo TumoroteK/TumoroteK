@@ -38,8 +38,8 @@ package fr.aphp.tumorotek.schedule;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import fr.aphp.tumorotek.manager.utilisateur.UtilisateurManager;
 
@@ -55,7 +55,7 @@ import fr.aphp.tumorotek.manager.utilisateur.UtilisateurManager;
 public class ExpireAccountSchedulerImpl implements ExpireAccountScheduler
 {
 
-   private final Log log = LogFactory.getLog(ExpireAccountSchedulerImpl.class);
+   private final Logger log = LoggerFactory.getLogger(ExpireAccountSchedulerImpl.class);
 
    private UtilisateurManager utilisateurManager;
 

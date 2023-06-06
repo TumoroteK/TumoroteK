@@ -46,8 +46,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import ch.qos.logback.core.joran.spi.ActionException;
 import fr.aphp.tumorotek.model.coeur.patient.Patient;
@@ -55,7 +55,7 @@ import fr.aphp.tumorotek.model.coeur.patient.Patient;
 public class PatientServeurIdentite implements Sip
 {
 
-   private final Log log = LogFactory.getLog(PatientServeurIdentite.class);
+   private final Logger log = LoggerFactory.getLogger(PatientServeurIdentite.class);
 
    ServeurIdentitesFileBean serveurIdentitesFileBean;
 
@@ -258,37 +258,37 @@ public class PatientServeurIdentite implements Sip
          log.error(msg);
 
          //		} catch (MalformedURLException e) {
-         //			e.printStackTrace();
+         //			log.error(e.getMessage(), e);
          //		} catch (InstantiationException e) {
-         //			e.printStackTrace();
+         //			log.error(e.getMessage(), e);
          //		} catch (IllegalAccessException e) {
-         //			e.printStackTrace();
+         //			log.error(e.getMessage(), e);
       }finally{
          if(resultSet != null){
             try{
                resultSet.close(); //fermeture du resultset
             }catch(final Exception e){
-               log.error(e);
+               log.error(e.getMessage(), e); 
             }
          }
          //if(stmt!=null){
          //try{
          //stmt.close();//fermeture du statement
          //}
-         //catch(Exception e){log.error(e);}
+         //catch(Exception e){log.error(e.getMessage(), e); }
          //}
          if(prepaStmt != null){
             try{
                prepaStmt.close(); //fermeture du statement
             }catch(final Exception e){
-               log.error(e);
+               log.error(e.getMessage(), e); 
             }
          }
          if(connection != null){
             try{
                connection.close(); //fermeture de la connexion
             }catch(final Exception e){
-               log.error(e);
+               log.error(e.getMessage(), e); 
             }
          }
       }
@@ -431,7 +431,7 @@ public class PatientServeurIdentite implements Sip
       try{
          date = new SimpleDateFormat("dd/MM/yyyy").parse(getColumnDate(DATE_NAISS));
       }catch(final ParseException e){
-         log.error(e);
+         log.error(e.getMessage(), e); 
       }
       patient.setDateNaissance(date);
       return patient;

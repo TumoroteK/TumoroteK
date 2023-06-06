@@ -41,8 +41,8 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import fr.aphp.tumorotek.dao.qualite.ConformiteTypeDao;
 import fr.aphp.tumorotek.dao.qualite.NonConformiteDao;
@@ -63,7 +63,7 @@ import fr.aphp.tumorotek.model.systeme.Entite;
 public class ObjetNonConformeManagerImpl implements ObjetNonConformeManager
 {
 
-   private final Log log = LogFactory.getLog(ObjetNonConformeManager.class);
+   private final Logger log = LoggerFactory.getLogger(ObjetNonConformeManager.class);
 
    private ObjetNonConformeDao objetNonConformeDao;
 
@@ -294,7 +294,7 @@ public class ObjetNonConformeManagerImpl implements ObjetNonConformeManager
                }
                // pstmtNc.executeBatch();
             }catch(final Exception e){
-               // e.printStackTrace();
+               // log.error(e.getMessage(), e);
                // rollback create operation
                jdbcSuite.setMaxObjetNonConformeId(maxNcId);
                throw e;

@@ -55,8 +55,8 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.TypedQuery;
 
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.Validator;
 
@@ -135,7 +135,7 @@ import fr.aphp.tumorotek.utils.Utils;
 public class EchantillonManagerImpl implements EchantillonManager
 {
 
-   private final Log log = LogFactory.getLog(EchantillonManager.class);
+   private final Logger log = LoggerFactory.getLogger(EchantillonManager.class);
 
    private EchantillonDao echantillonDao;
 
@@ -356,8 +356,8 @@ public class EchantillonManagerImpl implements EchantillonManager
    public List<Echantillon> findByDateStockAfterDateManager(final Date date){
       Calendar cal = null;
       if(date != null){
-         log.debug(
-            "Recherche des Echantillons stockés après la date " + new SimpleDateFormat("dd/MM/yyyy hh:mm:ss").format(date));
+         log.debug("Recherche des Echantillons stockés après la date {}",
+            new SimpleDateFormat("dd/MM/yyyy hh:mm:ss").format(date));
          cal = Calendar.getInstance();
          cal.setTime(date);
       }
@@ -369,8 +369,9 @@ public class EchantillonManagerImpl implements EchantillonManager
       final List<Echantillon> echans = new ArrayList<>();
       Calendar cal = null;
       if(date != null && banques != null){
-         log.debug(
-            "Recherche des Echantillons stockés après la date " + new SimpleDateFormat("dd/MM/yyyy hh:mm:ss").format(date));
+         log.debug("Recherche des Echantillons stockés après la date {}",
+            new SimpleDateFormat("dd/MM/yyyy hh:mm:ss").format(date));
+
          cal = Calendar.getInstance();
          cal.setTime(date);
 
@@ -405,7 +406,7 @@ public class EchantillonManagerImpl implements EchantillonManager
     */
    @Override
    public List<Echantillon> findByCodeLikeManager(String code, final boolean exactMatch){
-      log.debug("Recherche Echantillon par " + code + " exactMatch " + String.valueOf(exactMatch));
+      log.debug("Recherche Echantillon par {} exactMatch {}", code, exactMatch);
       if(!exactMatch){
          code = code + "%";
       }
@@ -423,7 +424,8 @@ public class EchantillonManagerImpl implements EchantillonManager
     */
    @Override
    public List<Echantillon> findByCodeLikeWithBanqueManager(String code, final Banque banque, final boolean exactMatch){
-      log.debug("Recherche Echantillon par " + code + " exactMatch " + String.valueOf(exactMatch));
+      log.debug("Recherche Echantillon par {} exactMatch {}", code, exactMatch);
+
       if(banque != null){
          if(!exactMatch){
             code = code + "%";
@@ -436,8 +438,7 @@ public class EchantillonManagerImpl implements EchantillonManager
    @Override
    public List<Integer> findByCodeLikeBothSideWithBanqueReturnIdsManager(String code, final List<Banque> banques,
       final boolean exactMatch){
-
-      log.debug("Recherche Echantillon par " + code + " exactMatch " + String.valueOf(exactMatch));
+      log.debug("Recherche Echantillon par {} exactMatch {}", code, exactMatch);
       final List<Integer> echans = new ArrayList<>();
       if(banques != null){
          if(!exactMatch){
@@ -612,8 +613,8 @@ public class EchantillonManagerImpl implements EchantillonManager
    public List<Integer> findAfterDateCreationReturnIdsManager(final Calendar date, final List<Banque> banques){
       final List<Integer> liste = new ArrayList<>();
       if(date != null && banques != null){
-         log.debug("Recherche des Echantillons enregistres apres la date "
-            + new SimpleDateFormat("yyyy/MMM/dd HH:mm:ss").format(date.getTime()));
+         log.debug("Recherche des Echantillons enregistres apres la date {}",
+            new SimpleDateFormat("yyyy/MMM/dd HH:mm:ss").format(date.getTime()));
          final Iterator<Banque> it = banques.iterator();
          while(it.hasNext()){
             liste.addAll(findByOperationTypeAndDateReturnIds(operationTypeDao.findByNom("Creation").get(0), date, it.next()));
@@ -633,8 +634,8 @@ public class EchantillonManagerImpl implements EchantillonManager
    public List<Echantillon> findAfterDateModificationManager(final Calendar date, final Banque banque){
       List<Echantillon> liste = new ArrayList<>();
       if(date != null && banque != null){
-         log.debug("Recherche des Echantillons modifies apres la date "
-            + new SimpleDateFormat("yyyy/MMM/dd HH:mm:ss").format(date.getTime()));
+         log.debug("Recherche des Echantillons modifies apres la date {}",
+            new SimpleDateFormat("yyyy/MMM/dd HH:mm:ss").format(date.getTime()));
          liste = findByOperationTypeAndDate(operationTypeDao.findByNom("Modification").get(0), date, banque);
       }
       return liste;
@@ -723,7 +724,7 @@ public class EchantillonManagerImpl implements EchantillonManager
 
       final List<Echantillon> liste = new ArrayList<>();
       if(banques != null && banques.size() > 0 && nbResults > 0){
-         log.debug("Recherche des " + nbResults + " derniers Echantillons " + "enregistres.");
+         log.debug("Recherche des {}  derniers Echantillons enregistres", nbResults);
          final EntityManager em = entityManagerFactory.createEntityManager();
          final TypedQuery<Echantillon> query =
             em.createQuery("SELECT e " + "FROM Echantillon e " + "WHERE e.banque in (:banque) " + "ORDER BY e.echantillonId DESC",
@@ -755,7 +756,7 @@ public class EchantillonManagerImpl implements EchantillonManager
          if(!findDoublonManager(echantillon)){
 
             echantillonDao.createObject(echantillon);
-            log.info("Enregistrement de l'objet Echantillon : " + echantillon.toString());
+            log.info("Enregistrement de l'objet Echantillon :  {}", echantillon);
 
             // Enregistrement de l'operation associee
             final Operation creationOp = new Operation();
@@ -781,7 +782,7 @@ public class EchantillonManagerImpl implements EchantillonManager
                   baseDir, filesCreated, null);
             }
          }else{ // doublon
-            log.warn("Doublon lors de la creation de l'objet Echantillon : " + echantillon.toString());
+            log.warn("Doublon lors de la creation de l'objet Echantillon : {} ", echantillon);
             throw new DoublonFoundException("Echantillon", "creation", echantillon.getCode(), null);
          }
       }catch(final RuntimeException re){
@@ -845,7 +846,7 @@ public class EchantillonManagerImpl implements EchantillonManager
                   try{
                      anapathStream.reset();
                   }catch(final IOException e){
-                     log.error(e);
+                     log.error(e.getMessage(), e); 
                   }
                }
                anapath = anapath.clone();
@@ -920,7 +921,7 @@ public class EchantillonManagerImpl implements EchantillonManager
             prepaId = preparation.getId();
          }
          if(findDoublonManager(echantillon)){
-            log.warn("Doublon lors de la creation de l'objet Echantillon : " + echantillon.toString());
+            log.warn("Doublon lors de la creation de l'objet Echantillon : {} " , echantillon);
             throw new DoublonFoundException("Echantillon", "creation");
          }
 
@@ -1129,7 +1130,7 @@ public class EchantillonManagerImpl implements EchantillonManager
          if(!findDoublonManager(echantillon)){
 
             echantillonDao.updateObject(echantillon);
-            log.info("Modification de l'objet Echantillon : " + echantillon.toString());
+            log.info("Modification de l'objet Echantillon : {}" + echantillon);
 
             if(operations == null || !operations.contains(operationTypeDao.findByNom("ModifMultiple").get(0))){
                // Enregistrement de l'operation associee
@@ -1193,7 +1194,7 @@ public class EchantillonManagerImpl implements EchantillonManager
                }
             }
          }else{ // doublon
-            log.warn("Doublon lors de la modification de l'objet Echantillon : " + echantillon.toString());
+            log.warn("Doublon lors de la modification de l'objet Echantillon : {}" + echantillon);
             throw new DoublonFoundException("Echantillon", "modification", echantillon.getCode(), null);
          }
       }catch(final RuntimeException re){
@@ -1249,7 +1250,7 @@ public class EchantillonManagerImpl implements EchantillonManager
                try{
                   anapathStream.reset();
                }catch(final IOException e){
-                  log.error(e);
+                  log.error(e.getMessage(), e); 
                }
 
             }
@@ -1360,17 +1361,17 @@ public class EchantillonManagerImpl implements EchantillonManager
          }
          if(orgs > 0 && expsOrg != 1){
             // recherche bug exportNbIllegal
-            log.error(expsOrg);
-            log.error(orgs);
+            log.error("expsOrg: {}", expsOrg);
+            log.error("orgs: {}", orgs);
             for(int i = 0; i < codes.size(); i++){
-               log.error(codes.get(i).getCode() + "--" + codes.get(i).getIsOrgane() + "--" + codes.get(i).getExport());
+               log.error("{}--{}--{}", codes.get(i).getCode(), codes.get(i).getIsOrgane(), codes.get(i).getExport());
             }
             throw new RuntimeException("echantillon" + ".codesAssigne.organe.exportNbIllegal");
          }else if(les > 0 && expsLes != 1){
-            log.error(expsLes);
-            log.error(les);
+            log.error("expsLes: {}", expsLes);
+            log.error("les: {}", les);
             for(int i = 0; i < codes.size(); i++){
-               log.error(codes.get(i).getCode() + "--" + codes.get(i).getIsOrgane() + "--" + codes.get(i).getExport());
+               log.error("{}--{}--{}", codes.get(i).getCode(), codes.get(i).getIsOrgane(), codes.get(i).getExport());
             }
             throw new RuntimeException("echantillon" + ".codesAssigne.morpho.exportNbIllegal");
          }else{
@@ -1698,7 +1699,7 @@ public class EchantillonManagerImpl implements EchantillonManager
          }
 
          echantillonDao.updateObject(echantillon);
-         log.info("Modification de l'objet Echantillon : " + echantillon.toString());
+         log.info("Modification de l'objet Echantillon :  {}", echantillon);
 
          if(operations != null){
             for(int i = 0; i < operations.size(); i++){
@@ -1950,7 +1951,7 @@ public class EchantillonManagerImpl implements EchantillonManager
       if(banque != null){
          echantillon.setBanque(banque);
       }else if(echantillon.getBanque() == null){
-         log.warn("Objet obligatoire Banque manquant" + " lors de la " + operation + " d'un Echantillon");
+         log.warn("Objet obligatoire Banque manquant lors de la {} d'un Echantillon", operation);
          throw new RequiredObjectIsNullException("Prelevement", operation, "Banque");
       }
 
@@ -1972,7 +1973,7 @@ public class EchantillonManagerImpl implements EchantillonManager
       if(statut != null){
          echantillon.setObjetStatut(objetStatutDao.mergeObject(statut));
       }else if(echantillon.getObjetStatut() == null){
-         log.warn("Objet obligatoire ObjetStatut manquant lors " + "de la creation " + "d'un objet Echantillon");
+         log.warn("Objet obligatoire ObjetStatut manquant lors de la creation d'un objet Echantillon");
          throw new RequiredObjectIsNullException("Echantillon", "creation", "ObjetStatut");
       }
 
@@ -2044,7 +2045,7 @@ public class EchantillonManagerImpl implements EchantillonManager
       }else{ // valeur passée est nulle
          if(echantillon.getBanque().getEtude() == null || requiredChampEntiteIds.contains(58)){ // obligatoire!
             if(echantillon.getEchantillonType() == null){
-               log.warn("Objet obligatoire EchantillonType manquant" + " lors de la " + "creation" + " d'un Echantillon");
+               log.warn("Objet obligatoire EchantillonType manquant lors de la creation  d'un Echantillon");
                throw new RequiredObjectIsNullException("Echantillon", "creation", "EchantillonType");
             }
          }else{ // gastbi contexte non obligatoire

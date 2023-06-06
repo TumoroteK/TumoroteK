@@ -40,8 +40,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import fr.aphp.tumorotek.dao.code.AdicapDao;
 import fr.aphp.tumorotek.dao.code.AdicapGroupeDao;
@@ -63,7 +63,7 @@ import fr.aphp.tumorotek.model.code.CimoMorpho;
 public class AdicapManagerImpl implements AdicapManager
 {
 
-   private final Log log = LogFactory.getLog(AdicapManager.class);
+   private final Logger log = LoggerFactory.getLogger(AdicapManager.class);
 
    private AdicapDao adicapDao;
 

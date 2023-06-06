@@ -493,7 +493,7 @@ public abstract class AbstractFicheRechercheAvancee extends AbstractFicheCombine
 			try{
 				obj = PropertyUtils.getSimpleProperty(obj, prop);
 			}catch(final Exception e){
-				e.printStackTrace();
+				log.error(e.getMessage(), e);
 			}
 		}
 
@@ -550,7 +550,7 @@ public abstract class AbstractFicheRechercheAvancee extends AbstractFicheCombine
 			try{
 				obj = PropertyUtils.getSimpleProperty(obj, prop);
 			}catch(final Exception e){
-				e.printStackTrace();
+				log.error(e.getMessage(), e);
 			}
 		}
 

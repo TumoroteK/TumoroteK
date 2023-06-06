@@ -43,8 +43,8 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Set;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.validation.Validator;
 
 import fr.aphp.tumorotek.dao.annotation.CatalogueDao;
@@ -89,7 +89,7 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
 public class TableAnnotationManagerImpl implements TableAnnotationManager
 {
 
-   private final Log log = LogFactory.getLog(TableAnnotationManager.class);
+   private final Logger log = LoggerFactory.getLogger(TableAnnotationManager.class);
 
    /* Beans injectes par Spring*/
    private TableAnnotationDao tableAnnotationDao;

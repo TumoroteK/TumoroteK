@@ -38,8 +38,8 @@ package fr.aphp.tumorotek.manager.impl.qualite;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import fr.aphp.tumorotek.dao.qualite.OperationTypeDao;
 import fr.aphp.tumorotek.manager.qualite.OperationTypeManager;
@@ -48,7 +48,7 @@ import fr.aphp.tumorotek.model.qualite.OperationType;
 public class OperationTypeManagerImpl implements OperationTypeManager
 {
 
-   private final Log log = LogFactory.getLog(OperationTypeManager.class);
+   private final Logger log = LoggerFactory.getLogger(OperationTypeManager.class);
 
    /** Bean Dao. */
    private OperationTypeDao operationTypeDao;

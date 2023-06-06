@@ -50,8 +50,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.TypedQuery;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.hibernate.collection.PersistentSet;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.Validator;
@@ -136,7 +136,7 @@ import fr.aphp.tumorotek.utils.Utils;
 public class PrelevementManagerImpl implements PrelevementManager
 {
 
-   private final Log log = LogFactory.getLog(PrelevementManager.class);
+   private final Logger log = LoggerFactory.getLogger(PrelevementManager.class);
 
    private PrelevementDao prelevementDao;
 
@@ -365,7 +365,7 @@ public class PrelevementManagerImpl implements PrelevementManager
          if(!findDoublonManager(prelevement)){
 
             prelevementDao.createObject(prelevement);
-            log.info("Enregistrement objet Prelevement " + prelevement.toString());
+            log.info("Enregistrement objet Prelevement {}", prelevement);
             // Enregistrement de l'operation associee
             final Operation creationOp = new Operation();
             creationOp.setDate(Utils.getCurrentSystemCalendar());
@@ -384,11 +384,11 @@ public class PrelevementManagerImpl implements PrelevementManager
             }
 
          }else{
-            log.warn("Doublon lors creation objet Prelevement " + prelevement.toString());
+            log.warn("Doublon lors creation objet Prelevement {}", prelevement);
             throw new DoublonFoundException("Prelevement", "creation", prelevement.getCode(), null);
          }
       }catch(final RuntimeException re){
-         log.error(re);
+         log.error(re.getMessage(), re);
          if(filesCreated != null){
             for(final File f : filesCreated){
                f.delete();
@@ -458,14 +458,14 @@ public class PrelevementManagerImpl implements PrelevementManager
          doValidation, baseDir);
       // Doublon
       if(findDoublonManager(prelevement)){
-         log.warn("Doublon lors modification objet Prelevement " + prelevement.toString());
+         log.warn("Doublon lors modification objet Prelevement {} ",prelevement);
          throw new DoublonFoundException("Prelevement", "modification", prelevement.getCode(), null);
       }
 
       try{
 
          if(cascadeNonSterile != null){ // cascade non sterile condition
-            log.info("Applique la cascade de sterilite" + " depuis le prelevement " + prelevement.toString());
+            log.info("Applique la cascade de sterilite depuis le prelevement {}", prelevement);
             if(laboInters != null // aucune modif labos
                && laboInters.size() > 0){
                cascadeNonSterileManager(prelevement, laboInters, cascadeNonSterile, true);
@@ -476,7 +476,7 @@ public class PrelevementManagerImpl implements PrelevementManager
          }
 
          prelevementDao.updateObject(prelevement);
-         log.info("Modification objet Prelevement " + prelevement.toString());
+         log.info("Modification objet Prelevement {}" , prelevement);
          // Enregistrement de l'operation associee
          final Operation creationOp = new Operation();
          creationOp.setDate(Utils.getCurrentSystemCalendar());
@@ -1000,10 +1000,9 @@ public class PrelevementManagerImpl implements PrelevementManager
             CreateOrUpdateUtilities.removeAssociateNonConformites(prelevement, objetNonConformeManager);
 
             prelevementDao.removeObject(prelevement.getPrelevementId());
-            log.info("Suppression objet Prelevement " + prelevement.toString());
+            log.info("Suppression objet Prelevement {}" , prelevement);
          }else{
-            log.warn("Suppression Prelevement " + prelevement.toString() + " impossible car Objet est reference "
-               + "(par echantillon/derive)");
+            log.warn("Suppression Prelevement {} impossible car Objet est reference (par echantillon/derive)", prelevement);
             throw new ObjectUsedException("prelevement.deletion.isUsedCascade", true);
          }
       }else{
@@ -1015,7 +1014,7 @@ public class PrelevementManagerImpl implements PrelevementManager
    public void removeObjectCascadeManager(final Prelevement prelevement, final String comments, final Utilisateur user,
       final List<File> filesToDelete){
       if(prelevement != null){
-         log.info("Suppression en cascade depuis objet Prelevement " + prelevement.toString());
+         log.info("Suppression en cascade depuis objet Prelevement {}", prelevement);
 
          // suppression echantillon en mode cascade
          final Iterator<Echantillon> echansIt = getEchantillonsManager(prelevement).iterator();
@@ -1441,7 +1440,7 @@ public class PrelevementManagerImpl implements PrelevementManager
       }catch(final IOException ioe){ // problème survenu lors du déplacement
          log.error("un problème est survenu dans un déplacement de fichier: " + mvFichier.toString());
 
-         log.error(ioe);
+         log.error(ioe.getMessage(), ioe);
 
          // rollback
          try{
@@ -1451,7 +1450,7 @@ public class PrelevementManagerImpl implements PrelevementManager
          }catch(final IOException ioe2){ // problème survenu lors du rollback du déplacement
             log.error("un problème est survenu dans un rollabck de déplacement de fichier: " + mvFichier.toString());
 
-            log.error(ioe2);
+            log.error(ioe2.getMessage(), ioe2);
          }
          throw new RuntimeException("switch.banque.filesystem.error");
       }

@@ -39,8 +39,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.validation.Validator;
 
 import fr.aphp.tumorotek.dao.io.export.AffichageDao;
@@ -71,7 +71,7 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
 public class AffichageManagerImpl implements AffichageManager
 {
 
-   private final Log log = LogFactory.getLog(AffichageManager.class);
+   private final Logger log = LoggerFactory.getLogger(AffichageManager.class);
 
    /** Liste des affichages du manager. */
    private final List<Affichage> affichages = new ArrayList<>();

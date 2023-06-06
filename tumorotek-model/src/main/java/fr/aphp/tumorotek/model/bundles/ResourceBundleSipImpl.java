@@ -9,13 +9,13 @@ import java.nio.charset.Charset;
 import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ResourceBundleSipImpl implements ResourceBundleSip
 {
 
-   private final Log log = LogFactory.getLog(ResourceBundleSip.class);
+   private final Logger log = LoggerFactory.getLogger(ResourceBundleSip.class);
 
    private String sipPath;
 
@@ -40,7 +40,7 @@ public class ResourceBundleSipImpl implements ResourceBundleSip
             }catch(final FileNotFoundException e){
                exist = false;
             }catch(final IOException e){
-               log.error(e);
+               log.error(e.getMessage(), e); 
             }finally{
                if(null != reader){
                   try{
@@ -81,9 +81,9 @@ public class ResourceBundleSipImpl implements ResourceBundleSip
                reader = new InputStreamReader(fis, Charset.forName("UTF-8"));
                bundle = new PropertyResourceBundle(reader);
             }catch(final FileNotFoundException e){
-               log.error(e);
+               log.error(e.getMessage(), e); 
             }catch(final IOException e){
-               log.error(e);
+               log.error(e.getMessage(), e); 
             }finally{
                if(null != reader){
                   try{
