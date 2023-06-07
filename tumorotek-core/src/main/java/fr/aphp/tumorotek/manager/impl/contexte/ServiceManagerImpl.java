@@ -219,7 +219,7 @@ public class ServiceManagerImpl implements ServiceManager
    @Override
    public List<Service> findByNomLikeManager(String nom, final boolean exactMatch){
 
-      log.debug("Recherche Service par nom : " + nom + " exactMatch " + String.valueOf(exactMatch));
+      log.debug("Recherche Service par nom : {} exactMatch {}", nom, exactMatch);
       if(nom != null){
          if(!exactMatch){
             nom = nom + "%";

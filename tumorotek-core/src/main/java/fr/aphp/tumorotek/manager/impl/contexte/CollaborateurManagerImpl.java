@@ -290,7 +290,7 @@ public class CollaborateurManagerImpl implements CollaborateurManager
     */
    @Override
    public List<Collaborateur> findByNomLikeManager(String nom, final boolean exactMatch){
-      log.debug("Recherche Collaborateur par nom : " + nom + " exactMatch " + String.valueOf(exactMatch));
+      log.debug("Recherche Collaborateur par nom : {} exactMatch {}", nom, exactMatch);
       if(nom != null){
          if(!exactMatch){
             nom = nom + "%";
@@ -320,7 +320,7 @@ public class CollaborateurManagerImpl implements CollaborateurManager
     */
    @Override
    public List<Collaborateur> findByPrenomLikeManager(String prenom, final boolean exactMatch){
-      log.debug("Recherche Collaborateur par prenom : " + prenom + " exactMatch " + String.valueOf(exactMatch));
+      log.debug("Recherche Collaborateur par prenom : {} exactMatch {}", prenom, exactMatch);
       if(prenom != null){
          if(!exactMatch){
             prenom = prenom + "%";
@@ -659,7 +659,7 @@ public class CollaborateurManagerImpl implements CollaborateurManager
             // on retire la Coordonnee de chaque coté de l'association
             coll.getCoordonnees().remove(coord);
 
-            log.debug("Suppression de l'association entre le " + "collaborateur : " + coll.toString() + " et la coordonnée : "
+            log.debug("Suppression de l'association entre le collaborateur : " + coll.toString() + " et la coordonnée : "
                + coord.toString());
          }
 
@@ -671,7 +671,7 @@ public class CollaborateurManagerImpl implements CollaborateurManager
                final Coordonnee coord = coordonneeDao.mergeObject(coordonnees.get(i));
                coll.getCoordonnees().add(coord);
 
-               log.debug("Ajout de l'association entre le " + "collaborateur : " + coll.toString() + " et la coordonnee : "
+               log.debug("Ajout de l'association entre le collaborateur : " + coll.toString() + " et la coordonnee : "
                   + coordonnees.get(i).toString());
             }
          }
@@ -699,7 +699,7 @@ public class CollaborateurManagerImpl implements CollaborateurManager
             coll.getServices().remove(serv);
             serv.getCollaborateurs().remove(coll);
 
-            log.debug("Suppression de l'association entre le " + "collaborateur : " + coll.toString() + " et le service : "
+            log.debug("Suppression de l'association entre le collaborateur : " + coll.toString() + " et le service : "
                + serv.toString());
          }
 
@@ -711,7 +711,7 @@ public class CollaborateurManagerImpl implements CollaborateurManager
                coll.getServices().add(serviceDao.mergeObject(services.get(i)));
                serviceDao.mergeObject(services.get(i)).getCollaborateurs().add(coll);
 
-               log.debug("Ajout de l'association entre le " + "collaborateur : " + coll.toString() + " et le service : "
+               log.debug("Ajout de l'association entre le collaborateur : " + coll.toString() + " et le service : "
                   + services.get(i).toString());
             }
          }

@@ -226,7 +226,7 @@ public class EtablissementManagerImpl implements EtablissementManager
    @Override
    public List<Etablissement> findByNomLikeManager(String nom, final boolean exactMatch){
 
-      log.debug("Recherche Etablissement par nom : " + nom + " exactMatch " + String.valueOf(exactMatch));
+      log.debug("Recherche Etablissement par nom : {} exactMatch {}", nom, exactMatch);
       if(nom != null){
          if(!exactMatch){
             nom = nom + "%";
@@ -271,7 +271,7 @@ public class EtablissementManagerImpl implements EtablissementManager
    @Override
    public List<Etablissement> findByFinessLikeManager(String finess, final boolean exactMatch){
 
-      log.debug("Recherche Etablissement par finess : " + finess + " exactMatch " + String.valueOf(exactMatch));
+      log.debug("Recherche Etablissement par finess : {} exactMatch {}", finess, exactMatch);
       if(finess != null){
          if(!exactMatch){
             finess = finess + "%";

@@ -124,7 +124,7 @@ public class ConditTypeManagerImpl implements ConditTypeManager
       if(!exactMatch){
          type = type + "%";
       }
-      log.debug("Recherche ConditType par type: " + type + " exactMatch " + String.valueOf(exactMatch));
+      log.debug("Recherche ConditType par type: {} exactMatch {}", type, exactMatch);
       return conditTypeDao.findByType(type);
    }
 

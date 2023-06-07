@@ -112,7 +112,7 @@ public class UniteManagerImpl implements UniteManager
     */
    @Override
    public List<Unite> findByUniteLikeManager(String unite, final boolean exactMatch){
-      log.debug("Recherche Unite par unite " + unite + " exactMatch " + String.valueOf(exactMatch));
+      log.debug("Recherche Unite par unite {} exactMatch {}", unite, exactMatch);
       if(unite != null){
          if(!exactMatch){
             unite = unite + "%";
@@ -133,7 +133,7 @@ public class UniteManagerImpl implements UniteManager
     */
    @Override
    public List<Unite> findByTypeLikeManager(String type, final boolean exactMatch){
-      log.debug("Recherche Unite par type " + type + " exactMatch " + String.valueOf(exactMatch));
+      log.debug("Recherche Unite par type {} exactMatch {}", type, exactMatch);
       if(type != null){
          if(!exactMatch){
             type = type + "%";

@@ -655,7 +655,7 @@ public class BanqueManagerImpl implements BanqueManager
          //cont.getBanques().remove(bank);
          conteneurManager.removeBanqueFromContAndEncManager(cont, bank);
 
-         log.debug("Suppression de l'association entre la banque : " + bank.toString() + " et le conteneur : " + cont.toString());
+         log.debug("Suppression de l'association entre la banque : {} et le conteneur : {}", bank, cont);
       }
 
       // on parcourt la nouvelle liste de conteneurs

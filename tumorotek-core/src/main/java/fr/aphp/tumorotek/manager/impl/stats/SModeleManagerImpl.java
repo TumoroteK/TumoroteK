@@ -330,7 +330,7 @@ public class SModeleManagerImpl implements SModeleManager
                model.getBanques().add(banqueDao.mergeObject(b));
                banqueDao.mergeObject(b).getSModeles().add(model);
 
-               log.debug("Ajout de l'association entre le " + "Modele : " + model.toString() + " et la banque : " + b.toString());
+               log.debug("Ajout de l'association entre le Modele : {} et la banque : {}", model, b);
             }
          }
       }

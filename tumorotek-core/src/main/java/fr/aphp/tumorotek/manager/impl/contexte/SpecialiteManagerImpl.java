@@ -109,7 +109,7 @@ public class SpecialiteManagerImpl implements SpecialiteManager
     */
    @Override
    public List<Specialite> findByNomLikeManager(String nom, final boolean exactMatch){
-      log.debug("Recherche Specialite par " + nom + " exactMatch " + String.valueOf(exactMatch));
+      log.debug("Recherche Specialite par {} exactMatch {}", nom, exactMatch);
       if(nom != null){
          if(!exactMatch){
             nom = nom + "%";

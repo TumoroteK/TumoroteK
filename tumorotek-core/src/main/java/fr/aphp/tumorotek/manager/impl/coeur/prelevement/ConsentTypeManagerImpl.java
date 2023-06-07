@@ -125,7 +125,7 @@ public class ConsentTypeManagerImpl implements ConsentTypeManager
       if(!exactMatch){
          type = type + "%";
       }
-      log.debug("Recherche ConsentType par type: " + type + " exactMatch " + String.valueOf(exactMatch));
+      log.debug("Recherche ConsentType par type: {} exactMatch {}", type, exactMatch);
       return consentTypeDao.findByType(type);
    }
 

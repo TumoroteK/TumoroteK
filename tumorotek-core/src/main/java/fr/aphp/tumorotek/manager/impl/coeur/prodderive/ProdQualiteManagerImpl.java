@@ -133,7 +133,7 @@ public class ProdQualiteManagerImpl implements ProdQualiteManager
     */
    @Override
    public List<ProdQualite> findByQualiteLikeManager(String qualite, final boolean exactMatch){
-      log.debug("Recherche ProdQualite par " + qualite + " exactMatch " + String.valueOf(exactMatch));
+      log.debug("Recherche ProdQualite par {} exactMatch {}", qualite, exactMatch);
       if(qualite != null){
          if(!exactMatch){
             qualite = qualite + "%";

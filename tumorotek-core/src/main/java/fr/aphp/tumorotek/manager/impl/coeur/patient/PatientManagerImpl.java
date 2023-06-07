@@ -444,7 +444,7 @@ public class PatientManagerImpl implements PatientManager
       if(!exactMatch){
          nom = "%" + nom + "%";
       }
-      log.debug("Recherche Patient par nom: " + nom + " exactMatch " + String.valueOf(exactMatch));
+      log.debug("Recherche Patient par nom: {} exactMatch {}", nom, exactMatch);
       return patientDao.findByNom(nom);
    }
 
@@ -453,7 +453,7 @@ public class PatientManagerImpl implements PatientManager
       if(!exactMatch){
          nip = "%" + nip + "%";
       }
-      log.debug("Recherche Patient par nip: " + nip + " exactMatch " + String.valueOf(exactMatch));
+      log.debug("Recherche Patient par nip: {} exactMatch {}", nip, exactMatch);
       return patientDao.findByNip(nip);
    }
 
@@ -469,7 +469,7 @@ public class PatientManagerImpl implements PatientManager
       if(!exactMatch){
          nom = "%" + nom + "%";
       }
-      log.debug("Recherche Patient par nom: " + nom + " exactMatch " + String.valueOf(exactMatch));
+      log.debug("Recherche Patient par nom: {} exactMatch {}", nom, exactMatch);
       return patientDao.findByNom(nom);
    }
 
@@ -485,7 +485,7 @@ public class PatientManagerImpl implements PatientManager
       if(!exactMatch){
          nom = "%" + nom + "%";
       }
-      log.debug("Recherche Patient par nom: " + nom + " exactMatch " + String.valueOf(exactMatch));
+      log.debug("Recherche Patient par nom: {} exactMatch {}", nom, exactMatch);
       if(banques != null && banques.size() > 0){
          return patientDao.findByNomReturnIds(nom, banques);
       }
@@ -504,7 +504,7 @@ public class PatientManagerImpl implements PatientManager
       if(!exactMatch){
          nip = "%" + nip + "%";
       }
-      log.debug("Recherche Patient par nip: " + nip + " exactMatch " + String.valueOf(exactMatch));
+      log.debug("Recherche Patient par nip: {} exactMatch {}", nip, exactMatch);
       if(banques != null && banques.size() > 0){
          return patientDao.findByNipReturnIds(nip, banques);
       }
@@ -563,7 +563,7 @@ public class PatientManagerImpl implements PatientManager
       if(!exactMatch){
          nda = "%" + nda + "%";
       }
-      log.debug("Recherche Patient par nda: " + nda + " exactMatch " + String.valueOf(exactMatch));
+      log.debug("Recherche Patient par nda: {} exactMatch {}", nda, exactMatch);
       final List<Prelevement> prels = prelevementDao.findByNdaLike(nda);
       for(int i = 0; i < prels.size(); i++){
          if(prels.get(i).getMaladie() != null){
@@ -803,7 +803,7 @@ public class PatientManagerImpl implements PatientManager
             //				patientDao.mergeObject((liens.get(i).getPatient2()))
             //									.getPatientLiens2().add(liens.get(i));
 
-            log.debug("Ajout de l'association entre le patient : " + pat.toString() + " et le lien : " + liens.get(i).toString());
+            log.debug("Ajout de l'association entre le patient : {} et le lien : {}", pat, liens.get(i));
          }
       }
    }
@@ -890,7 +890,7 @@ public class PatientManagerImpl implements PatientManager
 
       final List<Patient> liste = new ArrayList<>();
       if(banques != null && banques.size() > 0 && nbResults > 0){
-         log.debug("Recherche des " + nbResults + " derniers Patients " + "enregistres.");
+         log.debug("Recherche des " + nbResults + " derniers Patients enregistres.");
          final EntityManager em = entityManagerFactory.createEntityManager();
          final TypedQuery<Patient> query = em.createQuery("SELECT distinct p " + "FROM Patient p " + "JOIN p.maladies m "
             + "JOIN m.prelevements prlvts " + "WHERE prlvts.banque in (:banques) " + "ORDER BY p.patientId DESC", Patient.class);
@@ -1195,7 +1195,7 @@ public class PatientManagerImpl implements PatientManager
       if(!exactMatch){
          identifiant = "%" + identifiant + "%";
       }
-      log.debug("Recherche Patient par identifiant: " + identifiant + " exactMatch " + String.valueOf(exactMatch));
+      log.debug("Recherche Patient par identifiant: {} exactMatch {}", identifiant, exactMatch);
       if(selectedBanques != null && !selectedBanques.isEmpty()){
          return patientDao.findByIdentifiantReturnIds(identifiant, selectedBanques);
       }
@@ -1207,7 +1207,7 @@ public class PatientManagerImpl implements PatientManager
       if(!exactMatch){
          ident = "%" + ident + "%";
       }
-      log.debug("Recherche Patient par identifiant: " + ident + " exactMatch " + String.valueOf(exactMatch));
+      log.debug("Recherche Patient par identifiant: {} exactMatch {}", ident, exactMatch);
       if(selectedBanques != null && !selectedBanques.isEmpty()){
          return patientDao.findByIdentifiant(ident, selectedBanques);
       }

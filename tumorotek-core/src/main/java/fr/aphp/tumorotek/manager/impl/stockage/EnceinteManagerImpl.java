@@ -899,7 +899,7 @@ public class EnceinteManagerImpl implements EnceinteManager
          // on retire la banque de chaque coté de l'association
          enc.getBanques().remove(bank);
 
-         log.debug("Suppression de l'association entre l'enceinte : " + enc.toString() + " et la banque : " + bank.toString());
+         log.debug("Suppression de l'association entre l'enceinte : {} et la banque : {}", enc, bank);
       }
 
       // on parcourt la nouvelle liste de banques

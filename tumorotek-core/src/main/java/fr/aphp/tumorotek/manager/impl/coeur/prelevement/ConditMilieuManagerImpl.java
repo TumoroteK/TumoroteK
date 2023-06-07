@@ -130,7 +130,7 @@ public class ConditMilieuManagerImpl implements ConditMilieuManager
       if(!exactMatch){
          milieu = milieu + "%";
       }
-      log.debug("Recherche ConditMilieu par milieu: " + milieu + " exactMatch " + String.valueOf(exactMatch));
+      log.debug("Recherche ConditMilieu par milieu: {} exactMatch {}", milieu, exactMatch);
       return conditMilieuDao.findByMilieu(milieu);
    }
 

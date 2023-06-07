@@ -101,7 +101,7 @@ public class FichierManagerImpl implements FichierManager
 
    @Override
    public List<Fichier> findByPathLikeManager(String path, final boolean exactMatch){
-      log.debug("Recherche Fichier par " + path + " exactMatch " + String.valueOf(exactMatch));
+      log.debug("Recherche Fichier par {} exactMatch {}", path, exactMatch);
       if(path != null){
          if(!exactMatch){
             path = path + "%";

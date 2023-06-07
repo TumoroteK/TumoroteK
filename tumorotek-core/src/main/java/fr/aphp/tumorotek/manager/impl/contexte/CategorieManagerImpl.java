@@ -110,7 +110,7 @@ public class CategorieManagerImpl implements CategorieManager
    @Override
    public List<Categorie> findByNomLikeManager(String nom, final boolean exactMatch){
 
-      log.debug("Recherche Categorie par " + nom + " exactMatch " + String.valueOf(exactMatch));
+      log.debug("Recherche Categorie par {} exactMatch {}", nom, exactMatch);
       if(nom != null){
          if(!exactMatch){
             nom = nom + "%";

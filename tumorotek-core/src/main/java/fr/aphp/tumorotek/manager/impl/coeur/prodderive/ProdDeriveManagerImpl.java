@@ -408,7 +408,7 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
     */
    @Override
    public List<ProdDerive> findByCodeLikeManager(String code, final boolean exactMatch){
-      log.debug("Recherche ProdDerive par " + code + " exactMatch " + String.valueOf(exactMatch));
+      log.debug("Recherche ProdDerive par {} exactMatch {}", code, exactMatch);
       if(!exactMatch){
          code = code + "%";
       }
@@ -426,7 +426,7 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
     */
    @Override
    public List<ProdDerive> findByCodeOrLaboWithBanqueManager(String code, final Banque banque, final boolean exactMatch){
-      log.debug("Recherche ProdDerive par " + code + " exactMatch " + String.valueOf(exactMatch));
+      log.debug("Recherche ProdDerive par {} exactMatch {}", code, exactMatch);
       if(banque != null){
          if(!exactMatch){
             code = code + "%";
@@ -796,7 +796,7 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
    public List<ProdDerive> findLastCreationManager(final List<Banque> banques, final int nbResults){
       final List<ProdDerive> liste = new ArrayList<>();
       if(banques != null && banques.size() > 0 && nbResults > 0){
-         log.debug("Recherche des " + nbResults + " derniers Dérivés " + "enregistres.");
+         log.debug("Recherche des " + nbResults + " derniers Dérivés enregistres.");
          //			EntityManager em = entityManagerFactory.createEntityManager();
          //			Query query = em.createQuery("SELECT p "
          //					+ "FROM ProdDerive p "

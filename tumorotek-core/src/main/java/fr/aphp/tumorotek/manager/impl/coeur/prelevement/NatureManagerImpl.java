@@ -125,7 +125,7 @@ public class NatureManagerImpl implements NatureManager
       if(!exactMatch){
          nature = nature + "%";
       }
-      log.debug("Recherche Nature par nature: " + nature + " exactMatch " + String.valueOf(exactMatch));
+      log.debug("Recherche Nature par nature: {} exactMatch {}", nature, exactMatch);
       return natureDao.findByNature(nature);
    }
 

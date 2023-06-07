@@ -145,7 +145,7 @@ public class RisqueManagerImpl implements RisqueManager
       if(!exactMatch){
          nom = nom + "%";
       }
-      log.debug("Recherche Risque par nom: " + nom + " exactMatch " + String.valueOf(exactMatch));
+      log.debug("Recherche Risque par nom: {} exactMatch {}", nom, exactMatch);
       return risqueDao.findByNom(nom);
    }
 

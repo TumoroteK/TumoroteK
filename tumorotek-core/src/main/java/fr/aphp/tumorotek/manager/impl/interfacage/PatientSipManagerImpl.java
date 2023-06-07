@@ -102,7 +102,7 @@ public class PatientSipManagerImpl implements PatientSipManager
       if(!exactMatch){
          nip = "%" + nip + "%";
       }
-      log.debug("Recherche Patient Sip par nip: " + nip + " exactMatch " + String.valueOf(exactMatch));
+      log.debug("Recherche Patient Sip par nip: {} exactMatch {}", nip, exactMatch);
       return patientSipDao.findByNip(nip);
    }
 
@@ -111,7 +111,7 @@ public class PatientSipManagerImpl implements PatientSipManager
       if(!exactMatch){
          nom = "%" + nom + "%";
       }
-      log.debug("Recherche Patient Sip par nom: " + nom + " exactMatch " + String.valueOf(exactMatch));
+      log.debug("Recherche Patient Sip par nom: {} exactMatch {}", nom, exactMatch);
       return patientSipDao.findByNom(nom);
    }
 

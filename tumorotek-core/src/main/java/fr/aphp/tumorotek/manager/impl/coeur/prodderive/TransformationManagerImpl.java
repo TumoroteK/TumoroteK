@@ -146,7 +146,7 @@ public class TransformationManagerImpl implements TransformationManager
     */
    @Override
    public List<Transformation> findByEntiteObjetManager(final Entite entite, final Integer objetId){
-      log.debug("Recherche Transformation par " + entite + " et " + objetId);
+      log.debug("Recherche Transformation par {} et {}", entite, objetId);
       return transformationDao.findByEntiteObjet(entite, objetId);
    }
 

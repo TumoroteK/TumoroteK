@@ -215,7 +215,7 @@ public class MaladieManagerImpl implements MaladieManager
       if(!exactMatch){
          libelle = libelle + "%";
       }
-      log.debug("Recherche Maladie par libelle: " + libelle + " exactMatch " + String.valueOf(exactMatch));
+      log.debug("Recherche Maladie par libelle: {} exactMatch {}", libelle, exactMatch);
       return maladieDao.findByLibelle(libelle);
    }
 
@@ -224,7 +224,7 @@ public class MaladieManagerImpl implements MaladieManager
       if(!exactMatch){
          code = code + "%";
       }
-      log.debug("Recherche Maladie par code: " + code + " exactMatch " + String.valueOf(exactMatch));
+      log.debug("Recherche Maladie par code: {} exactMatch {}", code, exactMatch);
       return maladieDao.findByCode(code);
    }
 

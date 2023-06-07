@@ -70,7 +70,7 @@ public class OperationTypeManagerImpl implements OperationTypeManager
 
    @Override
    public List<OperationType> findByNomLikeManager(String nom, final boolean exactMatch){
-      log.debug("Recherche OperationType par nom : " + nom + " exactMatch " + String.valueOf(exactMatch));
+      log.debug("Recherche OperationType par nom : {} exactMatch {}", nom, exactMatch);
       if(nom != null){
          if(!exactMatch){
             nom = nom + "%";

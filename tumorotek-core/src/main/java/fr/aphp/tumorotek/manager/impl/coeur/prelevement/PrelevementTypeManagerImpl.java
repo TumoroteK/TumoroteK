@@ -124,7 +124,7 @@ public class PrelevementTypeManagerImpl implements PrelevementTypeManager
       if(!exactMatch){
          type = type + "%";
       }
-      log.debug("Recherche PrelevementType par type: " + type + " exactMatch " + String.valueOf(exactMatch));
+      log.debug("Recherche PrelevementType par type: {} exactMatch {}", type, exactMatch);
       return prelevementTypeDao.findByType(type);
    }
 

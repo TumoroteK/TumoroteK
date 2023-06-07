@@ -125,7 +125,7 @@ public class ProdTypeManagerImpl implements ProdTypeManager
     */
    @Override
    public List<ProdType> findByTypeLikeManager(String type, final boolean exactMatch){
-      log.debug("Recherche ProdType par " + type + " exactMatch " + String.valueOf(exactMatch));
+      log.debug("Recherche ProdType par {} exactMatch {}", type, exactMatch);
       if(type != null){
          if(!exactMatch){
             type = type + "%";
