@@ -171,7 +171,7 @@ public class LaboInterManagerImpl implements LaboInterManager
    @Override
    public List<LaboInter> findByServiceManager(final Service service){
       if(service != null){
-         log.debug("Recherche LaboInter par service: " + service.toString());
+         log.debug("Recherche LaboInter par service: {}",  service);
       }
       return laboInterDao.findByService(service);
    }
@@ -179,7 +179,7 @@ public class LaboInterManagerImpl implements LaboInterManager
    @Override
    public List<LaboInter> findByCollaborateurManager(final Collaborateur collaborateur){
       if(collaborateur != null){
-         log.debug("Recherche LaboInter par collaborateur: " + collaborateur.toString());
+         log.debug("Recherche LaboInter par collaborateur: {}",  collaborateur);
       }
       return laboInterDao.findByCollaborateur(collaborateur);
    }
@@ -187,7 +187,7 @@ public class LaboInterManagerImpl implements LaboInterManager
    @Override
    public List<LaboInter> findByTransporteurManager(final Transporteur transporteur){
       if(transporteur != null){
-         log.debug("Recherche LaboInter par collaborateur: " + transporteur.toString());
+         log.debug("Recherche LaboInter par collaborateur: {}",  transporteur);
       }
       return laboInterDao.findByTransporteur(transporteur);
    }

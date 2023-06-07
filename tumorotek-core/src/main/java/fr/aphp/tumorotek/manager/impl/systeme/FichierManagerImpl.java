@@ -326,7 +326,7 @@ public class FichierManagerImpl implements FichierManager
    public void switchBanqueManager(final Fichier file, final Banque dest, final Set<MvFichier> filesToMove){
 
       if(file != null && dest != null && filesToMove != null){
-         log.debug("modification chemin et déplacement du fichier: " + file.getNom());
+         log.debug("modification chemin et déplacement du fichier: {}",  file.getNom());
          final String actualPathStr = file.getPath();
          final String destPathStr = actualPathStr.replaceFirst("coll_\\d+", "coll_" + dest.getBanqueId());
 

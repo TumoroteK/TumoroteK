@@ -322,7 +322,7 @@ public class PatientSipManagerImpl implements PatientSipManager
             log.error(e.getMessage());
          }
       }else{
-         log.debug("Aucun changement impliquant la synchronisation " + "du patient avec celui venant du SIP");
+         log.debug("Aucun changement impliquant la synchronisation du patient avec celui venant du SIP");
       }
    }
 

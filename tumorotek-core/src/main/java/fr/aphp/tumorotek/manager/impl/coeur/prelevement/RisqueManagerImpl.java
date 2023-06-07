@@ -151,7 +151,7 @@ public class RisqueManagerImpl implements RisqueManager
 
    @Override
    public List<Risque> findByInfectieuxManager(final Boolean infectieux){
-      log.debug("Recherche Risque par infectiosite: " + infectieux);
+      log.debug("Recherche Risque par infectiosite: {}",  infectieux);
       return risqueDao.findByInfectieux(infectieux);
    }
 

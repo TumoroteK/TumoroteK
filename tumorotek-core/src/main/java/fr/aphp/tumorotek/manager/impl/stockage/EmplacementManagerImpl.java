@@ -197,7 +197,7 @@ public class EmplacementManagerImpl implements EmplacementManager
 
    @Override
    public List<Emplacement> findByTerminaleAndVideManager(final Terminale terminale, final boolean vide){
-      log.debug("Recherche de tous les emplacements vides " + "ou non d'une terminale");
+      log.debug("Recherche de tous les emplacements vides  ou non d'une terminale");
       if(terminale != null){
          return emplacementDao.findByTerminaleAndVide(terminale, vide);
       }

@@ -239,7 +239,7 @@ public class EtablissementManagerImpl implements EtablissementManager
    @Override
    public List<Etablissement> findByNomLikeBothSideManager(String nom){
 
-      log.debug("Recherche Etablissement par nom : " + nom);
+      log.debug("Recherche Etablissement par nom : {}",  nom);
       if(nom != null){
          nom = "%" + nom + "%";
          return etablissementDao.findByNom(nom);
@@ -250,7 +250,7 @@ public class EtablissementManagerImpl implements EtablissementManager
    @Override
    public List<Etablissement> findByVilleLikeManager(String ville){
 
-      log.debug("Recherche Etablissement par ville : " + ville);
+      log.debug("Recherche Etablissement par ville : {}",  ville);
       if(ville != null){
          ville = "%" + ville + "%";
          return etablissementDao.findByVille(ville);

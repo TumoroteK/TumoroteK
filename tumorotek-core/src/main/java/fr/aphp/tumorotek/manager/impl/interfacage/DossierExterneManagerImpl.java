@@ -122,7 +122,7 @@ public class DossierExterneManagerImpl implements DossierExterneManager
 
    @Override
    public List<DossierExterne> findByEmetteurAndIdentificationManager(final Emetteur emetteur, final String numero){
-      log.debug("Recherche de tous les DossierExternes d'un emetteur " + "pour un numéro donné");
+      log.debug("Recherche de tous les DossierExternes d'un emetteur pour un numéro donné");
       if(emetteur != null && numero != null){
          return dossierExterneDao.findByEmetteurAndIdentification(emetteur, numero);
       }

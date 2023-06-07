@@ -100,7 +100,7 @@ public class TableAnnotationTemplateManagerImpl implements TableAnnotationTempla
 
    @Override
    public List<TableAnnotationTemplate> findByTemplateManager(final Template template){
-      log.debug("Recherche de tous les TableAnnotationTemplates d'un " + "Template.");
+      log.debug("Recherche de tous les TableAnnotationTemplates d'un  Template.");
       if(template != null){
          return tableAnnotationTemplateDao.findByTemplate(template);
       }else{

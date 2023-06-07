@@ -117,7 +117,7 @@ public class BlocExterneManagerImpl implements BlocExterneManager
 
    @Override
    public List<BlocExterne> findByDossierExterneAndEntiteManager(final DossierExterne dossierExterne, final Entite entite){
-      log.debug("Recherche de tous les BlocExternes pour un dossier " + "et une entité");
+      log.debug("Recherche de tous les BlocExternes pour un dossier  et une entité");
       if(dossierExterne != null && entite != null){
          return blocExterneDao.findByDossierExterneAndEntite(dossierExterne, entite.getEntiteId());
       }

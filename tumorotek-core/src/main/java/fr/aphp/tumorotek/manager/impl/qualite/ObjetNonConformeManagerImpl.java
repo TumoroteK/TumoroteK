@@ -102,7 +102,7 @@ public class ObjetNonConformeManagerImpl implements ObjetNonConformeManager
 
    @Override
    public List<ObjetNonConforme> findByObjetManager(final Object obj){
-      log.debug("Recherche de tous les ObjetNonConformes d'un " + "objet");
+      log.debug("Recherche de tous les ObjetNonConformes d'un  objet");
       if(obj != null){
          Entite entite = null;
          Integer id = null;
@@ -124,7 +124,7 @@ public class ObjetNonConformeManagerImpl implements ObjetNonConformeManager
 
    @Override
    public List<ObjetNonConforme> findByObjetAndTypeManager(final Object obj, final Object type){
-      log.debug("Recherche de tous les ObjetNonConformes d'un " + "objet en fonction du type de conformite");
+      log.debug("Recherche de tous les ObjetNonConformes d'un  objet en fonction du type de conformite");
       if(obj != null && type != null){
          Entite entite = null;
          Integer id = null;

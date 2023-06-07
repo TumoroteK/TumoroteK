@@ -175,7 +175,7 @@ public class OperationManagerImpl implements OperationManager
       BeanValidator.validateObject(obj, new Validator[] {operationValidator});
 
       operationDao.createObject(operation);
-      log.debug("Enregistrement objet Operation " + obj.toString());
+      log.debug("Enregistrement objet Operation {}",  obj);
 
    }
 
@@ -188,7 +188,7 @@ public class OperationManagerImpl implements OperationManager
    @Override
    public List<Operation> findByUtilisateurManager(final Utilisateur utilisateur){
       if(utilisateur != null){
-         log.debug("Recherche les operations pour l'utilisateur : " + utilisateur.toString());
+         log.debug("Recherche les operations pour l'utilisateur : {}",  utilisateur);
       }
       return operationDao.findByUtilisateur(utilisateur);
    }
@@ -215,7 +215,7 @@ public class OperationManagerImpl implements OperationManager
                entiteNom = "CodeDiagnostic";
             }
          }
-         log.debug("Recherche des Operation pour l'objet " + obj.toString());
+         log.debug("Recherche des Operation pour l'objet {}",  obj);
          entite = entiteDao.findByNom(entiteNom).get(0);
          objetId = getObjetIdFromObject(obj);
       }
@@ -239,7 +239,7 @@ public class OperationManagerImpl implements OperationManager
                entiteNom = "CodeDiagnostic";
             }
          }
-         log.debug("Recherche des Operation pour l'objet " + obj.toString());
+         log.debug("Recherche des Operation pour l'objet {}",  obj);
          entite = entiteDao.findByNom(entiteNom).get(0);
          objetId = getObjetIdFromObject(obj);
       }
@@ -309,7 +309,7 @@ public class OperationManagerImpl implements OperationManager
       if(obj != null){
          final OperationType creation = operationTypeDao.findByNom("Creation").get(0);
 
-         log.debug("Recherche l'opération de création pour l'objet " + obj.toString());
+         log.debug("Recherche l'opération de création pour l'objet {}",  obj);
          entite = entiteDao.findByNom(obj.getClass().getSimpleName()).get(0);
          objetId = getObjetIdFromObject(obj);
 

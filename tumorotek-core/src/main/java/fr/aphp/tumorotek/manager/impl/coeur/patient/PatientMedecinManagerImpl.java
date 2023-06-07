@@ -109,7 +109,7 @@ public class PatientMedecinManagerImpl implements PatientMedecinManager
          if(operation.equals("creation")){
             //if (operation.equals("creation")) {
             patientMedecinDao.createObject(medecin);
-            log.debug("Enregistrement objet PatientMedecin " + medecin.toString());
+            log.debug("Enregistrement objet PatientMedecin {}",  medecin);
             //				} else { //cree un nouvel objet car modification de la clef
             //					PatientMedecinDao.updateObject(PatientMedecin);
             //					log.info("Modification objet PatientMedecin "
@@ -122,7 +122,7 @@ public class PatientMedecinManagerImpl implements PatientMedecinManager
          if(operation.equals("modification")
             && !medecin.getOrdre().equals(patientMedecinDao.findById(medecin.getPk()).getOrdre())){
             patientMedecinDao.updateObject(medecin);
-            log.debug("Modification objet PatientMedecin " + medecin.toString());
+            log.debug("Modification objet PatientMedecin {}",  medecin);
          }else{
             log.warn("Doublon lors " + operation + " objet PatientMedecin " + medecin.toString());
             throw new DoublonFoundException("PatientMedecin", operation);
@@ -134,7 +134,7 @@ public class PatientMedecinManagerImpl implements PatientMedecinManager
    public void removeObjectManager(final PatientMedecin medecin){
       if(medecin != null){
          patientMedecinDao.removeObject(medecin.getPk());
-         log.debug("Suppression objet PatientMedecin " + medecin.toString());
+         log.debug("Suppression objet PatientMedecin {}",  medecin);
       }else{
          log.warn("Suppression d'un PatientMedecin null");
       }

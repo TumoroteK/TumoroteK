@@ -190,7 +190,7 @@ public class SModeleManagerImpl implements SModeleManager
 
       // updateBanquesAssociation(banques, modele);
 
-      log.debug("Enregistrement de l'objet Modele : " + modele.toString());
+      log.debug("Enregistrement de l'objet Modele : {}",  modele);
    }
 
    @Override
@@ -223,7 +223,7 @@ public class SModeleManagerImpl implements SModeleManager
 
       modele = updateAssociations(modele, indicateurs);
 
-      log.debug("Modification de l'objet Modele : " + modele.toString());
+      log.debug("Modification de l'objet Modele : {}",  modele);
 
       return modele;
    }

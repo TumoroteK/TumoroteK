@@ -432,7 +432,7 @@ public class PatientManagerImpl implements PatientManager
 
    @Override
    public List<Integer> findAllObjectsIdsWithBanquesManager(final List<Banque> banques){
-      log.debug("Recherche totalite des ids des Patients en" + "fonction d'une liste de banques");
+      log.debug("Recherche totalite des ids des Patients en fonction d'une liste de banques");
       if(banques != null && banques.size() > 0){
          return patientDao.findByAllIdsWithBanques(banques);
       }
@@ -536,7 +536,7 @@ public class PatientManagerImpl implements PatientManager
    @Override
    public List<Patient> findByDateNaissanceManager(final Date date){
       if(date != null){
-         log.debug("Recherche Patient par date de naissance: " + date.toString());
+         log.debug("Recherche Patient par date de naissance: {}",  date);
       }
       return patientDao.findByDateNaissance(date);
    }
@@ -1217,7 +1217,7 @@ public class PatientManagerImpl implements PatientManager
    @Override
    public List<PatientIdentifiant> findIdentifiantsByPatientAndBanquesManager(Patient patient, List<Banque> banques) {
       if(patient != null && banques != null && !banques.isEmpty()){
-         log.debug("Recherche les identifiants du patient: " + patient.getPatientId());
+         log.debug("Recherche les identifiants du patient: {}",  patient.getPatientId());
          return patientDao.findIdentifiantsByPatientAndBanques(patient, banques);
       }
       return new ArrayList<PatientIdentifiant>();

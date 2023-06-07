@@ -117,7 +117,7 @@ public class ChampImprimeManagerImpl implements ChampImprimeManager
 
    @Override
    public List<ChampImprime> findByTemplateManager(final Template template){
-      log.debug("Recherche de tous les ChampImprimes d'un " + "Template.");
+      log.debug("Recherche de tous les ChampImprimes d'un  Template.");
       if(template != null){
          return champImprimeDao.findByTemplate(template);
       }
@@ -126,7 +126,7 @@ public class ChampImprimeManagerImpl implements ChampImprimeManager
 
    @Override
    public List<ChampImprime> findByTemplateAndBlocManager(final Template template, final BlocImpression bloc){
-      log.debug("Recherche de tous les ChampImprimes d'un " + "Template.");
+      log.debug("Recherche de tous les ChampImprimes d'un  Template.");
       if(template != null && bloc != null){
          return champImprimeDao.findByTemplateAndBloc(template, bloc);
       }

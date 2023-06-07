@@ -99,7 +99,7 @@ public class BlocImpressionTemplateManagerImpl implements BlocImpressionTemplate
 
    @Override
    public List<BlocImpressionTemplate> findByTemplateManager(final Template template){
-      log.debug("Recherche de tous les BlocImpressionTemplates d'un " + "Template.");
+      log.debug("Recherche de tous les BlocImpressionTemplates d'un Template.");
       if(template != null){
          return blocImpressionTemplateDao.findByTemplate(template);
       }

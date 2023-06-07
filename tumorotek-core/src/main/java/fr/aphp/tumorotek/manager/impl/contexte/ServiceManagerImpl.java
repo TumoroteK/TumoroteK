@@ -199,7 +199,7 @@ public class ServiceManagerImpl implements ServiceManager
    @Override
    public List<Service> findByVilleLikeManager(final String ville){
 
-      log.debug("Recherche Service par ville : " + ville);
+      log.debug("Recherche Service par ville : {}",  ville);
       if(ville != null){
          //ville = "%" + ville + "%";
          return serviceDao.findByVille(ville);
@@ -233,7 +233,7 @@ public class ServiceManagerImpl implements ServiceManager
    @Override
    public List<Service> findByNomLikeBothSideManager(String nom){
 
-      log.debug("Recherche Service par nom : " + nom);
+      log.debug("Recherche Service par nom : {}",  nom);
       if(nom != null){
          nom = "%" + nom + "%";
          return serviceDao.findByNom(nom);

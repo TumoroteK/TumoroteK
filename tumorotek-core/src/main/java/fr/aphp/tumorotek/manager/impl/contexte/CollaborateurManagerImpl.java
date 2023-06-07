@@ -302,7 +302,7 @@ public class CollaborateurManagerImpl implements CollaborateurManager
 
    @Override
    public List<Collaborateur> findByNomLikeBothSideManager(String nom){
-      log.debug("Recherche Collaborateur par nom : " + nom);
+      log.debug("Recherche Collaborateur par nom : {}",  nom);
       if(nom != null){
          nom = "%" + nom + "%";
          return collaborateurDao.findByNom(nom);
@@ -757,7 +757,7 @@ public class CollaborateurManagerImpl implements CollaborateurManager
 
    @Override
    public List<Collaborateur> findByVilleLikeManager(final String ville){
-      log.debug("Recherche Collaborateur par ville : " + ville);
+      log.debug("Recherche Collaborateur par ville : {}",  ville);
       if(ville != null){
          //ville = "%" + ville + "%";
          return collaborateurDao.findByVille(ville);

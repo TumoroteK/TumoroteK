@@ -100,7 +100,7 @@ public class PatientLienManagerImpl implements PatientLienManager
          if(operation.equals("creation")){
             //if (operation.equals("creation")) {
             patientLienDao.createObject(patientLien);
-            log.debug("Enregistrement objet PatientLien " + patientLien.toString());
+            log.debug("Enregistrement objet PatientLien {}",  patientLien);
             //				} else { //cree un nouvel objet car modification de la clef
             //					patientLienDao.updateObject(patientLien);
             //					log.info("Modification objet PatientLien "
@@ -113,7 +113,7 @@ public class PatientLienManagerImpl implements PatientLienManager
          if(operation.equals("modification")
             && !patientLien.getLienFamilial().equals(patientLienDao.findById(patientLien.getPk()).getLienFamilial())){
             patientLienDao.updateObject(patientLien);
-            log.debug("Modification objet PatientLien " + patientLien.toString());
+            log.debug("Modification objet PatientLien {}",  patientLien);
          }else{
             log.warn("Doublon lors " + operation + " objet PatientLien " + patientLien.toString());
             throw new DoublonFoundException("PatientLien", operation);
@@ -125,7 +125,7 @@ public class PatientLienManagerImpl implements PatientLienManager
    public void removeObjectManager(final PatientLien patientLien){
       if(patientLien != null){
          patientLienDao.removeObject(patientLien.getPk());
-         log.debug("Suppression objet PatientLien " + patientLien.toString());
+         log.debug("Suppression objet PatientLien {}",  patientLien);
       }else{
          log.warn("Suppression d'un PatientLien null");
       }

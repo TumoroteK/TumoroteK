@@ -158,7 +158,7 @@ public class PrelevementTypeManagerImpl implements PrelevementTypeManager
 
    @Override
    public List<PrelevementType> findByIncaCatManager(final String incaCat){
-      log.debug("Recherche PrelevementType par categorie INCa: " + incaCat);
+      log.debug("Recherche PrelevementType par categorie INCa: {}",  incaCat);
       return prelevementTypeDao.findByIncaCat(incaCat);
    }
 

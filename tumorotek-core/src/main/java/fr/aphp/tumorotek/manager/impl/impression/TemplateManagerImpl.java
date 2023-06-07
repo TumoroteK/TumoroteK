@@ -149,7 +149,7 @@ public class TemplateManagerImpl implements TemplateManager
 
    @Override
    public List<Template> findByBanqueEntiteManager(final Banque banque, final Entite entite){
-      log.debug("Recherche de tous les templates d'une banque pour " + "une entité.");
+      log.debug("Recherche de tous les templates d'une banque pour une entité.");
       if(banque != null && entite != null){
          return templateDao.findByBanqueEntite(banque, entite);
       }
