@@ -231,8 +231,9 @@ public class PatientSipManagerImpl implements PatientSipManager
                final List<PatientSip> sips = patientSipDao.findFirst();
                if(!sips.isEmpty()){
                   patientSipDao.removeObject(sips.get(0).getPatientSipId());
-                  log.debug("Suppression FIRST IN " + sips.get(0).getNip() + " pour maintenir la taille "
-                     + " de la table temporaire à " + max);
+                  log.debug("Suppression FIRST IN {} pour maintenir la taille de la table temporaire à {}",
+                     sips.get(0).getNip(), max);
+;
                }
             }
 

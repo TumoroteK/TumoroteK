@@ -516,8 +516,8 @@ public class ServiceManagerImpl implements ServiceManager
             serv.getCollaborateurs().add(collaborateurDao.mergeObject(collabs.get(i)));
             collaborateurDao.mergeObject(collabs.get(i)).getServices().add(serv);
 
-            log.debug("Ajout de l'association entre le service : " + serv.toString() + " et le collaborateur : "
-               + collabs.get(i).toString());
+            log.debug("Ajout de l'association entre le service : {} et le collaborateur : {}", serv, collabs.get(i));
+;
          }
       }
    }

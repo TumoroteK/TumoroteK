@@ -357,8 +357,9 @@ public class MaladieManagerImpl implements MaladieManager
             mal.getCollaborateurs().add(collaborateurDao.mergeObject(collaborateurs.get(i)));
             collaborateurDao.mergeObject(collaborateurs.get(i)).getMaladies().add(mal);
 
-            log.debug("Ajout de l'association entre la maladie : " + mal.toString() + " et le collaborateur : "
-               + collaborateurs.get(i).toString());
+            log.debug("Ajout de l'association entre la maladie : {} et le collaborateur : {}",
+               mal, collaborateurs.get(i));
+
          }
       }
    }

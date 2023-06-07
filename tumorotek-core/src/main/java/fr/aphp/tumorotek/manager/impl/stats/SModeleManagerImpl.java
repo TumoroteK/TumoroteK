@@ -268,8 +268,8 @@ public class SModeleManagerImpl implements SModeleManager
             sModele.getSModeleIndicateurs().remove(sm);
             sModeleIndicateurDao.removeObject(sm.getPk());
 
-            log.debug("Suppression de l'association entre le sModele : " + sModele.toString() + " et l'indicateur : "
-               + sm.getIndicateur().toString());
+            log.debug("Suppression de l'association entre le sModele : {} et l'indicateur : {}", sModele, sm.getIndicateur());
+
          }
 
          for(int i = 0; i < indicateurs.size(); i++){
@@ -280,8 +280,8 @@ public class SModeleManagerImpl implements SModeleManager
             if(!sModele.getSModeleIndicateurs().contains(sm)){
                sModele.getSModeleIndicateurs().add(sModeleIndicateurDao.mergeObject(sm));
 
-               log.debug("Ajout de l'association entre le sModele : " + sModele.toString() + " et l'indicateur : "
-                  + indicateurs.get(i).toString());
+               log.debug("Ajout de l'association entre le sModele : {} et l'indicateur : {}", sModele, indicateurs.get(i));
+
             }else{ // on modifie l'ordre du medecin present avec la liste
                sm = sModeleIndicateurDao.findById(pk);
                sm.setOrdre(i + 1);

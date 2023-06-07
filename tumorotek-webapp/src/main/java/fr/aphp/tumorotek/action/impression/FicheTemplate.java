@@ -648,7 +648,7 @@ public class FicheTemplate extends AbstractImpressionController
    public void onLaterCreate(){
       try{
          createNewObject();
-         // log.debug("fiche: obj modifie: " + this.template.toString());
+         // log.debug("fiche: obj modifie: {}",  this.template);
 
          if(getObjectTabController().getListe() != null){
             // ajout du template à la liste
@@ -667,7 +667,7 @@ public class FicheTemplate extends AbstractImpressionController
    public void onLaterUpdate(){
       try{
          updateObject();
-         // log.debug("fiche: obj modifie: " + this.template.toString());
+         // log.debug("fiche: obj modifie: {}",  this.template);
 
          if(getObjectTabController().getListe() != null){
             // update du template dans la liste
@@ -699,7 +699,7 @@ public class FicheTemplate extends AbstractImpressionController
 
             // suppression de l'objet
             ManagerLocator.getTemplateManager().removeObjectManager(template);
-            // log.debug("fiche: obj supprime: " + this.template);
+            // log.debug("fiche: obj supprime: {}",  this.template);
 
             // on vérifie que l'on retrouve bien la page
             // contenant la liste des objets

@@ -665,8 +665,8 @@ public class BanqueManagerImpl implements BanqueManager
             // on ajoute le conteneur dans l'association
             bank.getConteneurs().add(conteneurDao.mergeObject(conteneurs.get(i)));
 
-            log.debug("Ajout de l'association entre la banque : " + bank.toString() + " et le conteneur : "
-               + conteneurs.get(i).toString());
+            log.debug("Ajout de l'association entre la banque : {} et le conteneur : {}", bank, conteneurs.get(i));
+
          }
       }
    }
@@ -717,8 +717,8 @@ public class BanqueManagerImpl implements BanqueManager
             // on ajoute la table dans l'association
             bank.getBanqueTableCodages().add(banqueTableCodageDao.mergeObject(codifications.get(i)));
 
-            log.debug("Ajout de l'association entre la banque : " + banque.toString() + " et la codification : "
-               + codifications.get(i).toString());
+            log.debug("Ajout de l'association entre la banque : {} et la codification : {}", banque, codifications.get(i));
+
          }
       }
    }
@@ -766,8 +766,8 @@ public class BanqueManagerImpl implements BanqueManager
          bank.getTableAnnotationBanques().remove(tab);
          tableAnnotationBanqueDao.removeObject(tab.getPk());
 
-         log.debug("Suppression de l'association entre la banque : " + bank.toString() + " et suppression de la table : "
-            + tab.toString());
+         log.debug("Suppression de l'association entre la banque : {} et suppression de la table : {}", bank, tab);
+
       }
 
       // on parcourt la nouvelle liste de tables
@@ -824,8 +824,8 @@ public class BanqueManagerImpl implements BanqueManager
          bank.getCouleurEntiteTypes().remove(coul);
          couleurEntiteTypeDao.removeObject(coul.getCouleurEntiteTypeId());
 
-         log.debug("Suppression de l'association entre la banque : " + bank.toString() + " et suppression de la couleur "
-            + " entite type : " + coul.toString());
+         log.debug("Suppression de l'association entre la banque : {} et suppression de la couleur entite type : {}", bank, coul);
+
       }
 
       // on parcourt la nouvelle liste de couleurs
@@ -836,8 +836,8 @@ public class BanqueManagerImpl implements BanqueManager
             coulTypes.get(i).setBanque(bank);
             bank.getCouleurEntiteTypes().add(couleurEntiteTypeDao.mergeObject(coulTypes.get(i)));
 
-            log.debug("Ajout de l'association entre la banque : " + bank.toString() + " et la couleur entite type : "
-               + coulTypes.get(i).toString());
+            log.debug("Ajout de l'association entre la banque : {} et la couleur entite type : {}", bank, coulTypes.get(i));
+
          }else{ // on modifie la couleur
             couleurEntiteTypeDao.mergeObject(coulTypes.get(i));
          }

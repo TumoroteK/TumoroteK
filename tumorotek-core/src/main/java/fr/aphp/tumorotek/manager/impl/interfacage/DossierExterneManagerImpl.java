@@ -219,8 +219,8 @@ public class DossierExterneManagerImpl implements DossierExterneManager
          final List<DossierExterne> dos = dossierExterneDao.findFirst();
          if(!dos.isEmpty()){
             removeObjectManager(dos.get(0));
-            log.debug("Suppression FIRST IN " + dos.get(0).getIdentificationDossier() + " pour maintenir la taille "
-               + " de la table temporaire à " + max);
+            log.debug("Suppression FIRST IN {} pour maintenir la taille de la table temporaire à {}", dos.get(0).getIdentificationDossier(), max);
+
          }
       }
    }

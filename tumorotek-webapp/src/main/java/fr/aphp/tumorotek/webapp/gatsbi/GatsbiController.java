@@ -575,7 +575,7 @@ public class GatsbiController
 
    public static Constraint muteConstraintFromContexte(Constraint constraint, boolean required){
       if(constraint != null){
-         log.debug("Constraint " + constraint.toString() + " being switched to " + (required ? "" : "not ") + "required");
+         log.debug("Constraint {} being switched to {} required", constraint, (required ? "" : "not "));
 
          if(constraint instanceof TumoTextConstraint){
             ((TumoTextConstraint) constraint).setNullable(!required);
@@ -752,7 +752,7 @@ public class GatsbiController
          UriComponentsBuilder contexteURIBld = UriComponentsBuilder
             .fromUriString(TkParam.GATSBI_API_URL_BASE.getValue().concat(TkParam.GATSBI_API_URL_CONTEXTE_PATH.getValue()));
 
-         log.debug("fetch etude from URL:" + (etudeURIBld.build(false).expand(etude.getEtudeId())).toUriString());
+         log.debug("fetch etude from URL:{}",  (etudeURIBld.build(false).expand(etude.getEtudeId())).toUriString());
 
          try{
             RestTemplate restTemplate = new RestTemplate();
@@ -847,7 +847,7 @@ public class GatsbiController
          UriComponentsBuilder parametrageURIBld = UriComponentsBuilder
             .fromUriString(TkParam.GATSBI_API_URL_BASE.getValue().concat(TkParam.GATSBI_API_URL_PARAMETRAGE_PATH.getValue()));
 
-         log.debug("fetch parametrage from URL:" + (parametrageURIBld.build(false).expand(pId)).toUriString());
+         log.debug("fetch parametrage from URL:{}",  (parametrageURIBld.build(false).expand(pId)).toUriString());
 
          RestTemplate restTemplate = new RestTemplate();
          return restTemplate.getForObject(parametrageURIBld.build(false).expand(pId).toUri(), ParametrageDTO.class);
@@ -868,7 +868,7 @@ public class GatsbiController
          UriComponentsBuilder schemaVisiteURIBld = UriComponentsBuilder
             .fromUriString(TkParam.GATSBI_API_URL_BASE.getValue().concat(TkParam.GATSBI_API_URL_SCHEMAVISITES_PATH.getValue()));
 
-         log.debug("fetch schema visites from URL:" + (schemaVisiteURIBld.build(false).expand(eId)).toUriString());
+         log.debug("fetch schema visites from URL:{}",  (schemaVisiteURIBld.build(false).expand(eId)).toUriString());
 
          RestTemplate restTemplate = new RestTemplate();
          return restTemplate.getForObject(schemaVisiteURIBld.build(false).expand(eId).toUri(), SchemaVisitesDTO.class);
@@ -1167,8 +1167,9 @@ public class GatsbiController
       try{
          RestTemplate restTemplate = new RestTemplate();
 
-         log.debug("fetch contexte from URL:" + (contexteURIBld.build(false).expand("defaut", 
-               type.getType().toLowerCase())).toUriString());
+         log.debug("fetch contexte from URL: {}", contexteURIBld.build(false)
+            .expand("defaut", type.getType().toLowerCase())
+            .toUriString());
 
          return restTemplate.getForObject(contexteURIBld.build(false)
             .expand("defaut", type.getType().toLowerCase()).toUri(), ContexteDTO.class)

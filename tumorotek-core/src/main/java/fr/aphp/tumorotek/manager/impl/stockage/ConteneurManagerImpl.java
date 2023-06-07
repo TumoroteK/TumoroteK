@@ -508,8 +508,8 @@ public class ConteneurManagerImpl implements ConteneurManager
             cont.getBanques().remove(bank);
             bank.getConteneurs().remove(cont);
 
-            log.debug("Suppression de l'association entre le conteneur : " + cont.toString() + " et la banque : "
-               + bank.toString());
+            log.debug("Suppression de l'association entre le conteneur : {} et la banque : {}", cont, bank);
+
          }
 
          // on parcourt la nouvelle liste de banques
@@ -520,8 +520,8 @@ public class ConteneurManagerImpl implements ConteneurManager
                cont.getBanques().add(banqueDao.mergeObject(banques.get(i)));
                banqueDao.mergeObject(banques.get(i)).getConteneurs().add(cont);
 
-               log.debug("Ajout de l'association entre le Conteneur : " + cont.toString() + " et la banque : "
-                  + banques.get(i).toString());
+               log.debug("Ajout de l'association entre le Conteneur : {} et la banque : {}", cont, banques.get(i));
+
             }
          }
       }
@@ -549,8 +549,8 @@ public class ConteneurManagerImpl implements ConteneurManager
             cont.getConteneurPlateformes().remove(cpf);
             conteneurPlateformeDao.removeObject(cpf.getPk());
 
-            log.debug("Suppression de l'association entre le conteneur : " + cont.toString() + " et la plateforme : "
-               + cpf.getPlateforme().toString());
+            log.debug("Suppression de l'association entre le conteneur : {} et la plateforme : {}", cont, cpf.getPlateforme());
+
          }
 
          // on parcourt la nouvelle liste de plateformes
@@ -562,8 +562,8 @@ public class ConteneurManagerImpl implements ConteneurManager
             if(!cont.getConteneurPlateformes().contains(cp)){
                cont.getConteneurPlateformes().add(conteneurPlateformeDao.mergeObject(cp));
 
-               log.debug("Ajout de l'association entre le conteneur : " + cont.toString() + " et la plateforme : "
-                  + plateformes.get(i).toString());
+               log.debug("Ajout de l'association entre le conteneur : {} et la plateforme : {}", cont, plateformes.get(i));
+
             }
          }
       }

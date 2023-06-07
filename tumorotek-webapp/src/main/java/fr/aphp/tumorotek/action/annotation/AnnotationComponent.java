@@ -614,7 +614,7 @@ public class AnnotationComponent extends GenericForwardComposer<Component>
       if(this.valeurs != null && this.valeurs.size() > 0){
          if(this.valeurs.get(0).getAnnotationValeurId() != null && (this.valeurs.get(0).getAlphanum() == newVal
             || (this.valeurs.get(0).getAlphanum() != null && this.valeurs.get(0).getAlphanum().equals(newVal)))){
-            log.debug("Annotation alphanum " + champAnnotation.toString() + " inchangée");
+            log.debug("Annotation alphanum {} inchangée", champAnnotation);
             return true;
          }
       }
@@ -692,7 +692,7 @@ public class AnnotationComponent extends GenericForwardComposer<Component>
       if(this.valeurs != null && this.valeurs.size() > 0){
          if(this.valeurs.get(0).getAnnotationValeurId() != null && (this.valeurs.get(0).getAlphanum() == newVal
             || (this.valeurs.get(0).getAlphanum() != null && this.valeurs.get(0).getAlphanum().equals(newVal)))){
-            log.debug("Annotation alphanum " + champAnnotation.toString() + " inchangée");
+            log.debug("Annotation alphanum {} inchangée", champAnnotation);
             return true;
          }
       }
@@ -744,7 +744,7 @@ public class AnnotationComponent extends GenericForwardComposer<Component>
       if(this.valeurs != null && this.valeurs.size() > 0){
          if(this.valeurs.get(0).getAnnotationValeurId() != null && (this.valeurs.get(0).getBool() == newVal
             || (this.valeurs.get(0).getBool() != null && this.valeurs.get(0).getBool().equals(newVal)))){
-            log.debug("Annotation thesaurus " + champAnnotation.toString() + " inchangée");
+            log.debug("Annotation thesaurus {} inchangée", champAnnotation);
             return true;
          }else if(newVal == null){ // suppression valeur existante
             this.valeursToDelete.add(this.valeurs.get(0).clone());
@@ -895,12 +895,12 @@ public class AnnotationComponent extends GenericForwardComposer<Component>
             if(this.valeurs.get(0).getAlphanum() == null && this.valeurs.get(0).getAnnotationValeurId() != null
                && (this.valeurs.get(0).getDate() == newVal || (this.valeurs.get(0).getDate() != null && newVal != null
                   && this.valeurs.get(0).getDate().compareTo(newVal) == 0))){
-               log.debug("Annotation date " + champAnnotation.toString() + " inchangée");
+               log.debug("Annotation date {} inchangée", champAnnotation);
                return true;
             }
          }else if(this.valeurs.get(0).getAlphanum() != null){
             // unknownExisting inchangee
-            log.debug("Annotation date system.tk.unknownExistingValue " + champAnnotation.toString() + " inchangée");
+            log.debug("Annotation date system.tk.unknownExistingValue {} inchangée", champAnnotation);
             return true;
          }
       }
@@ -935,12 +935,12 @@ public class AnnotationComponent extends GenericForwardComposer<Component>
             if(this.valeurs.get(0).getAlphanum() == null && this.valeurs.get(0).getAnnotationValeurId() != null
                && (this.valeurs.get(0).getDate() == newVal || (this.valeurs.get(0).getDate() != null && newVal != null
                   && this.valeurs.get(0).getDate().compareTo(newVal) == 0))){
-               log.debug("Annotation date " + champAnnotation.toString() + " inchangée");
+               log.debug("Annotation date {} inchangée", champAnnotation);
                return true;
             }
          }else if(this.valeurs.get(0).getAlphanum() != null){
             // unknownExisting inchangee
-            log.debug("Annotation date system.tk.unknownExistingValue " + champAnnotation.toString() + " inchangée");
+            log.debug("Annotation date system.tk.unknownExistingValue {} inchangée", champAnnotation);
             return true;
          }
       }
@@ -1032,7 +1032,7 @@ public class AnnotationComponent extends GenericForwardComposer<Component>
          if(this.valeurs.get(0).getAlphanum() == null && this.valeurs.get(0).getAnnotationValeurId() != null
             && (this.valeurs.get(0).getAlphanum() == newVal
                || (this.valeurs.get(0).getAlphanum() != null && this.valeurs.get(0).getAlphanum().equals(newVal)))){
-            log.debug("Annotation numerique " + champAnnotation.toString() + " inchangée");
+            log.debug("Annotation numerique {} inchangée", champAnnotation);
             return true;
          }
       }
@@ -1113,12 +1113,12 @@ public class AnnotationComponent extends GenericForwardComposer<Component>
             if(this.valeurs.get(0).getAlphanum() == null && this.valeurs.get(0).getAnnotationValeurId() != null
                && (this.valeurs.get(0).getTexte() == newVal
                   || (this.valeurs.get(0).getTexte() != null && this.valeurs.get(0).getTexte().equals(newVal)))){
-               log.debug("Annotation texte " + champAnnotation.toString() + " inchangée");
+               log.debug("Annotation texte {} inchangée", champAnnotation);
                return true;
             }
          }else if(this.valeurs.get(0).getAlphanum() != null){
             // unknownExisting inchangee
-            log.debug("Annotation date system.tk.unknownExistingValue " + champAnnotation.toString() + " inchangée");
+            log.debug("Annotation date system.tk.unknownExistingValue {} inchangée", champAnnotation);
             return true;
          }
       }
@@ -1209,7 +1209,7 @@ public class AnnotationComponent extends GenericForwardComposer<Component>
             if(this.valeurs.get(0).getAlphanum() == null && this.valeurs.get(0).getAnnotationValeurId() != null
                && (this.valeurs.get(0).getItem() == newVal
                   || (this.valeurs.get(0).getItem() != null && this.valeurs.get(0).getItem().equals(newVal)))){
-               log.debug("Annotation thesaurus " + champAnnotation.toString() + " inchangée");
+               log.debug("Annotation thesaurus {} inchangée", champAnnotation);
                return true;
             }else if(newVal == null){ // suppression valeur existante
                this.valeursToDelete.add(this.valeurs.get(0).clone());
@@ -1218,7 +1218,7 @@ public class AnnotationComponent extends GenericForwardComposer<Component>
             }
          }else if(this.valeurs.get(0).getAlphanum() != null){
             // unknownExisting inchangee
-            log.debug("Annotation thesaurus system.tk.unknownExistingValue " + champAnnotation.toString() + " inchangée");
+            log.debug("Annotation thesaurus system.tk.unknownExistingValue {} inchangée", champAnnotation);
             return true;
          }
       }
@@ -1325,12 +1325,12 @@ public class AnnotationComponent extends GenericForwardComposer<Component>
             // pas de valeur en plus des anciennes
             valsChanged = (valsChanged || this.valeurs.size() != newVals.size());
             if(!valsChanged){
-               log.debug("Annotation thesaurus multiple" + champAnnotation.toString() + " inchangée");
+               log.debug("Annotation thesaurus multiple {} inchangée", champAnnotation);
                return true;
             }
          }else if(this.valeurs.get(0).getAlphanum() != null){
             // unknownExisting inchangee
-            log.debug("Annotation thesaurus system.tk.unknownExistingValue " + champAnnotation.toString() + " inchangée");
+            log.debug("Annotation thesaurus system.tk.unknownExistingValue {} inchangée", champAnnotation);
             return true;
          }
       }
@@ -1432,7 +1432,7 @@ public class AnnotationComponent extends GenericForwardComposer<Component>
             || (this.valeurs.get(0).getFichier().getNom() != null && this.valeurs.get(0).getFichier().getNom().equals(newVal)))
             // && temp == null) {
             && stream == null){
-            log.debug("Annotation fichier " + champAnnotation.toString() + " inchangée");
+            log.debug("Annotation fichier {} inchangée", champAnnotation);
             return true;
          }
       }
@@ -2230,7 +2230,7 @@ public class AnnotationComponent extends GenericForwardComposer<Component>
    private void handleUploadFile(final Media file) throws Exception{
       if(file != null){
 
-         // log.debug("creation fichier temporaire " + temp.getAbsolutePath());
+         // log.debug("creation fichier temporaire {}",  temp.getAbsolutePath());
          if(stream != null){
             stream.close();
          }

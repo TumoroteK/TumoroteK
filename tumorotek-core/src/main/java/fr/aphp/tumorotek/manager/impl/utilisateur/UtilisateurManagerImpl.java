@@ -361,8 +361,8 @@ public class UtilisateurManagerImpl implements UtilisateurManager
 				util.getPlateformes().remove(pf);
 				pf.getUtilisateurs().remove(util);
 
-				log.debug("Suppression de l'association entre l'utilisateur : " + util.toString() + " et la plateforme : "
-						+ pf.toString());
+				log.debug("Suppression de l'association entre l'utilisateur : {} et la plateforme : {}", util, pf);
+
 			}
 
 			// on parcourt la nouvelle liste de plateformes
@@ -373,8 +373,8 @@ public class UtilisateurManagerImpl implements UtilisateurManager
 					util.getPlateformes().add(plateformeDao.mergeObject(plateformes.get(i)));
 					plateformeDao.mergeObject(plateformes.get(i)).getUtilisateurs().add(util);
 
-					log.debug("Ajout de l'association entre l'utilisateur : " + util.toString() + " et la plateforme : "
-							+ plateformes.get(i).toString());
+					log.debug("Ajout de l'association entre l'utilisateur : {} et la plateforme : {}", util, plateformes.get(i));
+
 				}
 			}
 		}

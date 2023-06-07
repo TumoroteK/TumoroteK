@@ -673,8 +673,8 @@ public class PatientManagerImpl implements PatientManager
          pat.getMaladies().remove(mal);
          maladieDao.removeObject(mal.getMaladieId());
 
-         log.debug("Suppression de l'association entre le patient : " + pat.toString() + " et suppression de la maladie : "
-            + mal.toString());
+         log.debug("Suppression de l'association entre le patient : {} et suppression de la maladie : {}", pat, mal);
+
       }
 
       // on parcourt la nouvelle liste de maladies
@@ -723,8 +723,8 @@ public class PatientManagerImpl implements PatientManager
          pat.getPatientMedecins().remove(med);
          patientMedecinDao.removeObject(med.getPk());
 
-         log.debug("Suppression de l'association entre le patient : " + pat.toString() + " et suppression du medecin : "
-            + med.toString());
+         log.debug("Suppression de l'association entre le patient : {} et suppression du medecin : {}", pat, med);
+
       }
 
       // on parcourt la nouvelle liste de medecins
@@ -738,8 +738,8 @@ public class PatientManagerImpl implements PatientManager
             // on ajoute le medecin dans l'association dans le bon ordre
             pat.getPatientMedecins().add(patientMedecinDao.mergeObject(pm));
 
-            log.debug("Ajout de l'association entre le patient : " + pat.toString() + " et le medecin : "
-               + collaborateurs.get(i).toString());
+            log.debug("Ajout de l'association entre le patient : {} et le medecin : {}", pat, collaborateurs.get(i));
+
          }else{ // on modifie l'ordre du medecin present avec la liste
             pm = patientMedecinDao.findById(pk);
             pm.setOrdre(i + 1);
@@ -890,7 +890,7 @@ public class PatientManagerImpl implements PatientManager
 
       final List<Patient> liste = new ArrayList<>();
       if(banques != null && banques.size() > 0 && nbResults > 0){
-         log.debug("Recherche des " + nbResults + " derniers Patients enregistres.");
+         log.debug("Recherche des {} derniers Patients enregistres.", nbResults);
          final EntityManager em = entityManagerFactory.createEntityManager();
          final TypedQuery<Patient> query = em.createQuery("SELECT distinct p " + "FROM Patient p " + "JOIN p.maladies m "
             + "JOIN m.prelevements prlvts " + "WHERE prlvts.banque in (:banques) " + "ORDER BY p.patientId DESC", Patient.class);

@@ -624,8 +624,8 @@ public class AffichageManagerImpl implements AffichageManager
                resultats.get(i).setAffichage(affichage);
                resultatDao.updateObject(resultats.get(i));
             }
-            log.debug("Ajout de l'association entre l'affichage : " + affichage.toString() + " et le resultat : "
-               + resultats.get(i).toString());
+            log.debug("Ajout de l'association entre l'affichage : {} et le resultat : {}", affichage, resultats.get(i));
+
          }else{
             //Si sa position ou son ordre de tri a changé, on l'update
             final Resultat r = resultats.get(i);

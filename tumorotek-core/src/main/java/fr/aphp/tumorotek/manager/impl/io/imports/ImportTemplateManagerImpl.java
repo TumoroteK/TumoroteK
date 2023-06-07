@@ -306,8 +306,8 @@ public class ImportTemplateManagerImpl implements ImportTemplateManager
             temp.getEntites().remove(e);
             e.getImportTemplates().remove(temp);
 
-            log.debug("Suppression de l'association entre l' ImportTemplate : " + temp.toString() + " et l'entité : "
-               + e.toString());
+            log.debug("Suppression de l'association entre l'ImportTemplate : {} et l'entité : {}", temp, e);
+
          }
 
          // on parcourt la nouvelle liste d'entites
@@ -318,8 +318,8 @@ public class ImportTemplateManagerImpl implements ImportTemplateManager
                temp.getEntites().add(entiteDao.mergeObject(entites.get(i)));
                entiteDao.mergeObject(entites.get(i)).getImportTemplates().add(temp);
 
-               log.debug("Ajout de l'association entre l' ImportTemplate : " + temp.toString() + " et l'entité : "
-                  + entites.get(i).toString());
+               log.debug("Ajout de l'association entre l'ImportTemplate : {} et l'entité : {}", temp, entites.get(i));
+
             }
          }
       }

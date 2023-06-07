@@ -618,8 +618,8 @@ public class CollaborateurManagerImpl implements CollaborateurManager
             coll.getServices().add(serviceDao.mergeObject(services.get(i)));
             serviceDao.mergeObject(services.get(i)).getCollaborateurs().add(coll);
 
-            log.debug("Ajout de l'association entre le collaborateur : " + coll.toString() + " et le service : "
-               + services.get(i).toString());
+            log.debug("Ajout de l'association entre le collaborateur : {} et le service : {}", coll, services.get(i));
+
          }
       }
    }
@@ -659,8 +659,8 @@ public class CollaborateurManagerImpl implements CollaborateurManager
             // on retire la Coordonnee de chaque coté de l'association
             coll.getCoordonnees().remove(coord);
 
-            log.debug("Suppression de l'association entre le collaborateur : " + coll.toString() + " et la coordonnée : "
-               + coord.toString());
+            log.debug("Suppression de l'association entre le collaborateur : {} et la coordonnée : {}", coll, coord);
+
          }
 
          // on parcourt la nouvelle liste de Coordonnees
@@ -671,8 +671,8 @@ public class CollaborateurManagerImpl implements CollaborateurManager
                final Coordonnee coord = coordonneeDao.mergeObject(coordonnees.get(i));
                coll.getCoordonnees().add(coord);
 
-               log.debug("Ajout de l'association entre le collaborateur : " + coll.toString() + " et la coordonnee : "
-                  + coordonnees.get(i).toString());
+               log.debug("Ajout de l'association entre le collaborateur : {} et la coordonnee : {}", coll, coordonnees.get(i));
+
             }
          }
       }
@@ -699,8 +699,8 @@ public class CollaborateurManagerImpl implements CollaborateurManager
             coll.getServices().remove(serv);
             serv.getCollaborateurs().remove(coll);
 
-            log.debug("Suppression de l'association entre le collaborateur : " + coll.toString() + " et le service : "
-               + serv.toString());
+            log.debug("Suppression de l'association entre le collaborateur : {} et le service : {}", coll, serv);
+
          }
 
          // on parcourt la nouvelle liste de services
@@ -711,8 +711,8 @@ public class CollaborateurManagerImpl implements CollaborateurManager
                coll.getServices().add(serviceDao.mergeObject(services.get(i)));
                serviceDao.mergeObject(services.get(i)).getCollaborateurs().add(coll);
 
-               log.debug("Ajout de l'association entre le collaborateur : " + coll.toString() + " et le service : "
-                  + services.get(i).toString());
+               log.debug("Ajout de l'association entre le collaborateur : {} et le service : {}", coll, services.get(i));
+
             }
          }
       }

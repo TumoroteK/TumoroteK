@@ -796,7 +796,7 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
    public List<ProdDerive> findLastCreationManager(final List<Banque> banques, final int nbResults){
       final List<ProdDerive> liste = new ArrayList<>();
       if(banques != null && banques.size() > 0 && nbResults > 0){
-         log.debug("Recherche des " + nbResults + " derniers Dérivés enregistres.");
+         log.debug("Recherche des {} derniers Dérivés enregistres.", nbResults);
          //			EntityManager em = entityManagerFactory.createEntityManager();
          //			Query query = em.createQuery("SELECT p "
          //					+ "FROM ProdDerive p "
