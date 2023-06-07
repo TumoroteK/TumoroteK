@@ -120,7 +120,7 @@ public class DestructionMotifManagerImpl implements DestructionMotifManager
    @Override
    public List<DestructionMotif> findByMotifLikeManager(String motif, final boolean exactMatch){
 
-      log.debug("Recherche DestructionMotif par " + motif + " exactMatch " + String.valueOf(exactMatch));
+      log.debug("Recherche DestructionMotif par {} exactMatch {}", motif, exactMatch);
       if(motif != null){
          if(!exactMatch){
             motif = motif + "%";

@@ -952,7 +952,7 @@ public class Export extends Thread
 				throw new InterruptedException();
 			}
 			try{
-				log.debug("fill tmp table annotation " + entite_id);
+				log.debug("fill tmp table annotation {}:",entite_id);
 
 				initAnnoTables();
 

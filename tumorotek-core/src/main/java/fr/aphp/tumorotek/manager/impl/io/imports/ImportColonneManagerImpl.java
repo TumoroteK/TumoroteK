@@ -107,7 +107,7 @@ public class ImportColonneManagerImpl implements ImportColonneManager
    @Override
    public List<ImportColonne> findByImportTemplateManager(final ImportTemplate template){
       if(template != null){
-         log.debug("Recherche de tous les ImportColonnes " + "d'un ImportTemplate.");
+         log.debug("Recherche de tous les ImportColonnes d'un ImportTemplate.");
          return importColonneDao.findByTemplateWithOrder(template);
       }else{
          return new ArrayList<>();

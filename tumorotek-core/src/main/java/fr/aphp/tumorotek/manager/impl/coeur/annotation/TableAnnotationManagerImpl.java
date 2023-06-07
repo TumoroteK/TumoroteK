@@ -249,7 +249,7 @@ public class TableAnnotationManagerImpl implements TableAnnotationManager
    @Override
    public List<TableAnnotation> findByEntiteBanqueAndCatalogueManager(final Entite entite, final Banque bank,
       final String catalogue){
-      log.debug("Recherche des TableAnnotation par Entite, Banque et " + "catalogue");
+      log.debug("Recherche des TableAnnotation par Entite, Banque et catalogue");
       return tableAnnotationDao.findByEntiteBanqueAndCatalogue(entite, bank, catalogue);
    }
 
@@ -258,7 +258,7 @@ public class TableAnnotationManagerImpl implements TableAnnotationManager
       if(!exactMatch){
          nom = nom + "%";
       }
-      log.debug("Recherche TableAnnotation par nom: " + nom + " exactMatch " + String.valueOf(exactMatch));
+      log.debug("Recherche TableAnnotation par nom: {} exactMatch {}", nom, exactMatch);
       return tableAnnotationDao.findByNom(nom);
    }
 
@@ -359,10 +359,8 @@ public class TableAnnotationManagerImpl implements TableAnnotationManager
          // on retire la TAB de l'association et on la supprime
          table.getTableAnnotationBanques().remove(tab);
          tableAnnotationBanqueDao.removeObject(tab.getPk());
-
-         log.debug("Suppression de l'association entre la table : " + table.toString() + " et suppression de la relation avec"
-            + " la banque: " + tab.getBanque().toString());
-
+         log.debug("Suppression de l'association entre la table : {} et suppression de la relation avec la banque: {}",
+            table, tab.getBanque());
          removeAnnotationValeursForTableAndBanque(tab, baseDir);
       }
 

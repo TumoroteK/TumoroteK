@@ -1312,7 +1312,7 @@ public class ImportManagerImpl implements ImportManager
                        row.getCell(properties.getColonnesHeaders().get(colonnes.get(i).getNom())), 
                           false, properties.getEvaluator());
                     if (!StringUtils.isBlank(identifiant)) {
-                       log.debug("identifiant gatsbi pour le patient à importer: " + identifiant);
+                       log.debug("identifiant gatsbi pour le patient à importer: {}", identifiant);
                        patient.addToIdentifiants(identifiant.trim(), properties.getBanque());
                     }
                     patient.setBanque(properties.getBanque()); // le patient est importé dans le cadre d'un contexte gatsbi

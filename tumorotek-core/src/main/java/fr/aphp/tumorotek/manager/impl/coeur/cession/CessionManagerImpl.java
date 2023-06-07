@@ -263,7 +263,7 @@ public class CessionManagerImpl implements CessionManager
     */
    @Override
    public List<Cession> findByNumeroLikeManager(String numero, final boolean exactMatch){
-      log.debug("Recherche Cession par numero : " + numero);
+      log.debug("Recherche Cession par numero : {}", numero);
       if(numero != null){
          if(!exactMatch){
             numero = numero + "%";
@@ -276,7 +276,7 @@ public class CessionManagerImpl implements CessionManager
    @Override
    public List<Integer> findByNumeroWithBanqueReturnIdsManager(String numero, final List<Banque> banques,
       final boolean exactMatch){
-      log.debug("Recherche Cession par numero : " + numero);
+      log.debug("Recherche Cession par numero : {}", numero);
       if(numero != null){
          if(!exactMatch){
             numero = "%" + numero + "%";
@@ -503,7 +503,7 @@ public class CessionManagerImpl implements CessionManager
 
       final List<Cession> liste = new ArrayList<>();
       if(banques != null && !banques.isEmpty() && nbResults > 0){
-         log.debug("Recherche des " + nbResults + " dernières Cessions " + "enregistrees.");
+         log.debug("Recherche des {} dernières Cessions enregistrees.", nbResults);
          // liste = findByLastOperationType(operationTypeDao
          //		.findByNom("Creation").get(0), banques, nbResults);
          final EntityManager em = entityManagerFactory.createEntityManager();

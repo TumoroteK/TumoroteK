@@ -186,7 +186,7 @@ public class CederObjetManagerImpl implements CederObjetManager
    public List<CederObjet> findByEntiteManager(final Entite entite){
       // si l'entite n'est pas nulle
       if(entite != null){
-         log.debug("Recherche CederObjet par entité : " + entite.toString());
+         log.debug("Recherche CederObjet par entité : {}", entite);
          // recherche par entité
          return cederObjetDao.findByEntite(entite);
       }
@@ -200,7 +200,7 @@ public class CederObjetManagerImpl implements CederObjetManager
    @Override
    public List<CederObjet> getAllEchantillonsCederObjetsManager(){
       final Entite entite = entiteDao.findByNom("Echantillon").get(0);
-      log.debug("Recherche CederObjet par entité : " + entite.toString());
+      log.debug("Recherche CederObjet par entité : {}", entite);
       return cederObjetDao.findByEntite(entite);
    }
 
@@ -211,7 +211,7 @@ public class CederObjetManagerImpl implements CederObjetManager
    @Override
    public List<CederObjet> getAllProdDerivesCederObjetsManager(){
       final Entite entite = entiteDao.findByNom("ProdDerive").get(0);
-      log.debug("Recherche CederObjet par entité : " + entite.toString());
+      log.debug("Recherche CederObjet par entité : {}",entite);
       return cederObjetDao.findByEntite(entite);
    }
 
@@ -458,7 +458,7 @@ public class CederObjetManagerImpl implements CederObjetManager
 
             cederObjetDao.createObject(cederObjet);
 
-            log.debug("Enregistrement objet CederObjet " + cederObjet.toString());
+            log.debug("Enregistrement objet CederObjet {}", cederObjet);
 
          }else{
             log.warn("Doublon lors creation objet CederObjet " + cederObjet.toString());
@@ -506,7 +506,7 @@ public class CederObjetManagerImpl implements CederObjetManager
 
             cederObjetDao.updateObject(cederObjet);
 
-            log.debug("Modification objet CederObjet " + cederObjet.toString());
+            log.debug("Modification objet CederObjet {}", cederObjet);
 
          }else{
             log.warn("PK inconnue lors de la modification du CederObjet " + cederObjet.toString());
@@ -527,7 +527,7 @@ public class CederObjetManagerImpl implements CederObjetManager
    public void removeObjectManager(final CederObjet cederObjet){
       if(cederObjet != null){
          cederObjetDao.removeObject(cederObjet.getPk());
-         log.debug("Suppression de l'objet CederObjet : " + cederObjet.toString());
+         log.debug("Suppression de l'objet CederObjet : {}", cederObjet);
       }else{
          log.warn("Suppression d'un cederObjet null");
       }

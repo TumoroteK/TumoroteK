@@ -116,7 +116,7 @@ public class ObjetStatutManagerImpl implements ObjetStatutManager
     */
    @Override
    public List<ObjetStatut> findByStatutLikeManager(String statut, final boolean exactMatch){
-      log.debug("Recherche ObjetStatut par " + statut + " exactMatch " + String.valueOf(exactMatch));
+      log.debug("Recherche ObjetStatut par {} exactMatch {}", statut, exactMatch);
       if(statut != null){
          if(!exactMatch){
             statut = statut + "%";
@@ -168,7 +168,7 @@ public class ObjetStatutManagerImpl implements ObjetStatutManager
       }else{
          BeanValidator.validateObject(statut, new Validator[] {objetStatutValidator});
          objetStatutDao.createObject(statut);
-         log.debug("Enregistrement de l'objet ObjetStatut : " + statut.toString());
+         log.debug("Enregistrement de l'objet ObjetStatut : {}", statut);
       }
    }
 
@@ -186,7 +186,7 @@ public class ObjetStatutManagerImpl implements ObjetStatutManager
       }else{
          BeanValidator.validateObject(statut, new Validator[] {objetStatutValidator});
          objetStatutDao.updateObject(statut);
-         log.debug("Modification de l'objet ObjetStatut : " + statut.toString());
+         log.debug("Modification de l'objet ObjetStatut : {}", statut);
       }
    }
 
@@ -203,7 +203,7 @@ public class ObjetStatutManagerImpl implements ObjetStatutManager
          throw new ObjectUsedException("ObjetStatut", "suppression");
       }else{
          objetStatutDao.removeObject(statut.getObjetStatutId());
-         log.debug("Suppression de l'objet ObjetStatut : " + statut.toString());
+         log.debug("Suppression de l'objet ObjetStatut : {}", statut);
       }
    }
 

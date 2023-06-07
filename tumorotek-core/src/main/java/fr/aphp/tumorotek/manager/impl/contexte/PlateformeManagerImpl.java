@@ -298,8 +298,7 @@ public class PlateformeManagerImpl implements PlateformeManager
             pf.getUtilisateurs().remove(u);
             u.getPlateformes().remove(pf);
 
-            log.debug("Suppression de l'association entre " + "l'utilisateur : " + u.toString() + " et la plateforme : "
-               + pf.toString());
+            log.debug("Suppression de l'association entre l'utilisateur : {} et la plateforme: {}", u, pf);
          }
 
          // on parcourt la nouvelle liste d'utilisateurs
@@ -309,9 +308,7 @@ public class PlateformeManagerImpl implements PlateformeManager
                // on ajoute l'utilisateur des deux cotés de l'association
                pf.getUtilisateurs().add(utilisateurDao.mergeObject(utilisateurs.get(i)));
                utilisateurDao.mergeObject(utilisateurs.get(i)).getPlateformes().add(pf);
-
-               log.debug("Ajout de l'association entre " + "l'utilisateur : " + utilisateurs.get(i).toString()
-                  + " et la plateforme : " + pf.toString());
+               log.debug("Ajout de l'association entre l'utilisateur : {} et la plateforme: {}", utilisateurs, pf);
             }
          }
       }
@@ -361,9 +358,7 @@ public class PlateformeManagerImpl implements PlateformeManager
             if(!pf.getConteneurPlateformes().contains(cp)){
                // on ajoute le conteneur dans l'association
                pf.getConteneurPlateformes().add(conteneurPlateformeDao.mergeObject(cp));
-
-               log.debug("Ajout de l'association entre la plateforme : " + pf.toString() + " et le conteneur : "
-                  + conteneurs.get(i).toString());
+               log.debug("Ajout de l'association entre la plateforme : {} et le conteneur : {} ", pf, conteneurs.get(i));
             }else{ // sinon on passe le partage a true
                cp = conteneurPlateformeDao.findById(pk);
                cp.setPartage(true);

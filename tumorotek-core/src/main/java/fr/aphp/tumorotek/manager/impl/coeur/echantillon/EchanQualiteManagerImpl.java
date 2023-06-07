@@ -133,7 +133,7 @@ public class EchanQualiteManagerImpl implements EchanQualiteManager
     */
    @Override
    public List<EchanQualite> findByQualiteLikeManager(String qualite, final boolean exactMatch){
-      log.debug("Recherche EchanQualite par " + qualite + " exactMatch " + String.valueOf(exactMatch));
+      log.debug("Recherche EchanQualite par {} exactMatch {}", qualite, exactMatch);
       if(qualite != null){
          if(!exactMatch){
             qualite = qualite + "%";

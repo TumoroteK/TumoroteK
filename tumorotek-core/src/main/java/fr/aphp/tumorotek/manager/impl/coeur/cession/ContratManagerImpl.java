@@ -224,7 +224,7 @@ public class ContratManagerImpl implements ContratManager
    @Override
    public List<Contrat> findByNumeroLikeManager(String numero, final boolean exactMatch){
 
-      log.debug("Recherche Contrat par numero : " + numero + " exactMatch " + String.valueOf(exactMatch));
+      log.debug("Recherche Contrat par numero : {} exactMatch {}", numero, exactMatch);
       if(numero != null){
          if(!exactMatch){
             numero = numero + "%";

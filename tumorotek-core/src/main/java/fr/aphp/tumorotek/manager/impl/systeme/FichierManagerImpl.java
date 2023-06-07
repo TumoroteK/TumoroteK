@@ -238,7 +238,7 @@ public class FichierManagerImpl implements FichierManager
             }
          }
          fichierDao.removeObject(path.getFichierId());
-         log.debug("Suppression de la reference vers l'objet Fichier : " + path.toString());
+         log.debug("Suppression de la reference vers l'objet Fichier : {}", path);
          //			} else {
          //				log.info("Référence vers fichier non supprimée");
          //			}

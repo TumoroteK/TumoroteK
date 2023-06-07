@@ -143,12 +143,12 @@ public class CodeDossierManagerImpl implements CodeDossierManager
          if((operation.equals("creation") || operation.equals("modification"))){
             if(operation.equals("creation")){
                codeDossierDao.createObject(dos);
-               log.debug("Enregistrement objet CodeDossier " + dos.toString());
+               log.debug("Enregistrement objet CodeDossier {}", dos);
                CreateOrUpdateUtilities.createAssociateOperation(dos, operationManager,
                   operationTypeDao.findByNom("Creation").get(0), dos.getUtilisateur());
             }else{
                codeDossierDao.updateObject(dos);
-               log.debug("Modification objet CodeDossier " + dos.toString());
+               log.debug("Modification objet CodeDossier ", dos);
                CreateOrUpdateUtilities.createAssociateOperation(dos, operationManager,
                   operationTypeDao.findByNom("Modification").get(0), dos.getUtilisateur());
             }
@@ -177,7 +177,7 @@ public class CodeDossierManagerImpl implements CodeDossierManager
       if(!exactMatch){
          nom = "%" + nom + "%";
       }
-      log.debug("Recherche CodeUtilisateur par code: " + nom + " exactMatch " + String.valueOf(exactMatch));
+      log.debug("Recherche CodeUtilisateur par code: {} exactMatch {}", nom, exactMatch);
       return codeDossierDao.findByNomLike(nom, bank);
    }
 

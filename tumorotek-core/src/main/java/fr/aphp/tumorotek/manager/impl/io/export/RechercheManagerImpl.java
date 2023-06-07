@@ -647,8 +647,7 @@ public class RechercheManagerImpl implements RechercheManager
          // on retire la banque de chaque coté de l'association
          rec.getBanques().remove(bank);
          bank.getRecherches().remove(rec);
-
-         log.debug("Suppression de l'association entre la banque : " + bank.toString() + " et la recherche : " + rec.toString());
+         log.debug("Suppression de l'association entre la banque : {} et la recherche : {}", bank, rec);
       }
 
       // on parcourt la nouvelle liste de banques

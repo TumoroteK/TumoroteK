@@ -373,7 +373,7 @@ public class AnnotationValeurManagerImpl implements AnnotationValeurManager
 
    @Override
    public List<AnnotationValeur> findByTableAndBanqueManager(final TableAnnotation table, final Banque bank){
-      log.debug("Recherche des AnnotationValeur par Table " + "et pour une banque");
+      log.debug("Recherche des AnnotationValeur par Table et pour une banque");
       return annotationValeurDao.findByTableAndBanque(table, bank);
    }
 
@@ -381,7 +381,7 @@ public class AnnotationValeurManagerImpl implements AnnotationValeurManager
    public List<AnnotationValeur> findByObjectManager(final TKAnnotableObject obj){
       List<AnnotationValeur> res = new ArrayList<>();
       if(obj != null){
-         log.debug("Recherche des AnnotationValeur pour l'objet " + obj.toString());
+         log.debug("Recherche des AnnotationValeur pour l'objet {}", obj);
          res = annotationValeurDao.findByObjectIdAndEntite(obj.listableObjectId(),
             entiteManager.findByNomManager(obj.entiteNom()).get(0));
       }

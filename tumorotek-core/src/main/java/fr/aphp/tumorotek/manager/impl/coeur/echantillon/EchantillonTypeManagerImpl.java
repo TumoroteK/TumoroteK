@@ -163,7 +163,7 @@ public class EchantillonTypeManagerImpl implements EchantillonTypeManager
     */
    @Override
    public List<EchantillonType> findByTypeLikeManager(String type, final boolean exactMatch){
-      log.debug("Recherche EchantillonType par " + type + " exactMatch " + String.valueOf(exactMatch));
+      log.debug("Recherche EchantillonType par {} exactMatch {}", type, exactMatch);
       if(type != null){
          if(!exactMatch){
             type = type + "%";

@@ -87,7 +87,7 @@ public class AdicapManagerImpl implements AdicapManager
       if(!exactMatch){
          code = "%" + code + "%";
       }
-      log.debug("Recherche Adicap par code: " + code + " exactMatch " + String.valueOf(exactMatch));
+      log.debug("Recherche Adicap par code: {} exactMatch {}", code, exactMatch);
       return adicapDao.findByCodeLike(code);
    }
 

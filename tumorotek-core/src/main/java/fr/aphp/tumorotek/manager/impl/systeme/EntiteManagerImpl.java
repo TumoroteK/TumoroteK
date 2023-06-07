@@ -109,7 +109,7 @@ public class EntiteManagerImpl implements EntiteManager
 
    @Override
    public List<Entite> findByNomManager(final String nom){
-      log.debug("Recherche Entite par " + nom);
+      log.debug("Recherche Entite par {}", nom);
       if(nom != null){
          return entiteDao.findByNom(nom);
       }

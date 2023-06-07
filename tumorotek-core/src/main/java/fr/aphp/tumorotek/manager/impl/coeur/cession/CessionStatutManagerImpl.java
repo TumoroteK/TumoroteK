@@ -100,7 +100,7 @@ public class CessionStatutManagerImpl implements CessionStatutManager
    @Override
    public List<CessionStatut> findByStatutLikeManager(String statut, final boolean exactMatch){
 
-      log.debug("Recherche CessionStatut par " + statut + " exactMatch " + String.valueOf(exactMatch));
+      log.debug("Recherche CessionStatut par {} exactMatch {}", statut, exactMatch);
       if(statut != null){
          if(!exactMatch){
             statut = statut + "%";

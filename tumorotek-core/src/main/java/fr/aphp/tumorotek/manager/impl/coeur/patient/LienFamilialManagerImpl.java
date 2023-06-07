@@ -121,7 +121,7 @@ public class LienFamilialManagerImpl implements LienFamilialManager
       if(!exactMatch){
          nom = nom + "%";
       }
-      log.debug("Recherche LienFamilial par nom: " + nom + " exactMatch " + String.valueOf(exactMatch));
+      log.debug("Recherche LienFamilial par nom: {} exactMatch {}", nom, exactMatch);
       return lienFamilialDao.findByNom(nom);
    }
 

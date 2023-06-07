@@ -600,8 +600,7 @@ public class AffichageManagerImpl implements AffichageManager
          final Resultat resultat = resultatDao.mergeObject(resToRemove.get(i));
          // on retire le collab de chaque coté de l'association
          affichage.getResultats().remove(resultat);
-         log.debug("Suppression de l'association entre le resultat : " + resultat.toString() + " et l'affichage : "
-            + affichage.toString());
+         log.debug("Suppression de l'association entre le resultat : {} et l'affichage : {}", resultat, affichage);
          resultatManager.removeObjectManager(resToRemove.get(i));
       }
 

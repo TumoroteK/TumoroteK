@@ -141,7 +141,7 @@ public class CodeAssigneManagerImpl implements CodeAssigneManager
       if(!exactMatch){
          code = "%" + code + "%";
       }
-      log.debug("Recherche CodeAssigne par code: " + code + " exactMatch " + String.valueOf(exactMatch));
+      log.debug("Recherche CodeAssigne par code: {} exactMatch {}", code, exactMatch);
       return codeAssigneDao.findByCodeLike(code);
    }
 
@@ -150,7 +150,7 @@ public class CodeAssigneManagerImpl implements CodeAssigneManager
       if(!exactMatch){
          libelle = "%" + libelle + "%";
       }
-      log.debug("Recherche CodeAssigne par libelle: " + libelle + " exactMatch " + String.valueOf(exactMatch));
+      log.debug("Recherche CodeAssigne par libelle: {} exactMatch {}", libelle, exactMatch);
       return codeAssigneDao.findByLibelleLike(libelle);
    }
 

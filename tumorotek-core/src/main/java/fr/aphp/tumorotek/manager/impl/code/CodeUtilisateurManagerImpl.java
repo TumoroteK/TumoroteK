@@ -351,8 +351,8 @@ public class CodeUtilisateurManagerImpl implements CodeUtilisateurManager
          final TranscodeUtilisateur toRemove = it.next();
          code.getTranscodes().remove(toRemove);
          transcodeUtilisateurDao.removeObject(toRemove.getTranscodeUtilisateurId());
-         log.debug("Suppression de l'association entre le code : " + code.toString() + " et le transcode : "
-            + getCodeCommonFromTransCode(toRemove).toString());
+         log.debug("Suppression de l'association entre le code : {} et le transcode : {}",code,
+            getCodeCommonFromTransCode(toRemove));
       }
 
       // on parcourt la nouvelle liste de transcodes
@@ -365,8 +365,8 @@ public class CodeUtilisateurManagerImpl implements CodeUtilisateurManager
 
          // on ajoute le transcode dans l'association
          code.getTranscodes().add(newTr);
+         log.debug("Ajout de l'association entre le code : {} et le transcode : {}", code, c);
 
-         log.debug("Ajout de l'association entre le code : " + code.toString() + " et le transcode : " + c.toString());
       }
       codeUtilisateurDao.updateObject(code);
    }

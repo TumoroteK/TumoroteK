@@ -133,7 +133,7 @@ public class ModePrepaManagerImpl implements ModePrepaManager
     */
    @Override
    public List<ModePrepa> findByModePrepaLikeManager(String mode, final boolean exactMatch){
-      log.debug("Recherche ModePrepa par " + mode + " exactMatch " + String.valueOf(exactMatch));
+      log.debug("Recherche ModePrepa par {} exactMatch {}", mode, exactMatch);
       if(mode != null){
          if(!exactMatch){
             mode = mode + "%";

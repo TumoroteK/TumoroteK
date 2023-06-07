@@ -890,7 +890,7 @@ public class TraitementQueryManagerImpl implements TraitementQueryManager
       }
 
       /* On exécute la requête. */
-      log.debug("findObjetByCritereManager : Exécution de la requête : \n" + sql.toString());
+      log.debug("findObjetByCritereManager : Exécution de la requête : \n{}", sql);
 
       final EntityManager em = entityManagerFactory.createEntityManager();
       final TypedQuery<Integer> query = em.createQuery(sql.toString(), Integer.class);

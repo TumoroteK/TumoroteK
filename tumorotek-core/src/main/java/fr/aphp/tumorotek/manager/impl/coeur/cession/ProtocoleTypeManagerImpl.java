@@ -110,7 +110,7 @@ public class ProtocoleTypeManagerImpl implements ProtocoleTypeManager
    @Override
    public List<ProtocoleType> findByTypeLikeManager(String type, final boolean exactMatch){
 
-      log.debug("Recherche ProtocoleType par " + type + " exactMatch " + String.valueOf(exactMatch));
+      log.debug("Recherche ProtocoleType par {} exactMatch {}", type, exactMatch);
       if(type != null){
          if(!exactMatch){
             type = type + "%";
