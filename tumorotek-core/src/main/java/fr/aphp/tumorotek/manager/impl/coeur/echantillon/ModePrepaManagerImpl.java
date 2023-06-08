@@ -176,7 +176,7 @@ public class ModePrepaManagerImpl implements ModePrepaManager
       mode.setPlateforme(plateformeDao.mergeObject(mode.getPlateforme()));
 
       if(findDoublonManager(mode)){
-         log.warn("Doublon lors de la creation de l'objet ModePrepa : " + mode.toString());
+         log.warn("Doublon lors de la creation de l'objet ModePrepa : {}",  mode);
          throw new DoublonFoundException("ModePrepa", "creation");
       }
       BeanValidator.validateObject(mode, new Validator[] {modePrepaValidator});
@@ -190,7 +190,7 @@ public class ModePrepaManagerImpl implements ModePrepaManager
       final ModePrepa mode = obj;
 
       if(findDoublonManager(mode)){
-         log.warn("Doublon lors de la modification de l'objet ModePrepa : " + mode.toString());
+         log.warn("Doublon lors de la modification de l'objet ModePrepa : {}",  mode);
          throw new DoublonFoundException("ModePrepa", "modification");
       }
       BeanValidator.validateObject(mode, new Validator[] {modePrepaValidator});

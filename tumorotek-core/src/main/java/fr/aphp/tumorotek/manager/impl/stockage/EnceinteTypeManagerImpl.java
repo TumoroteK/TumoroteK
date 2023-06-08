@@ -136,7 +136,7 @@ public class EnceinteTypeManagerImpl implements EnceinteTypeManager
          enceinteTypeDao.createObject(obj);
          log.info("Enregistrement objet EnceinteType " + obj.toString());
       }else{
-         log.warn("Doublon lors creation objet EnceinteType " + obj.toString());
+         log.warn("Doublon lors creation objet EnceinteType {}",  obj);
          throw new DoublonFoundException("EnceinteType", "creation");
       }
    }
@@ -148,7 +148,7 @@ public class EnceinteTypeManagerImpl implements EnceinteTypeManager
          enceinteTypeDao.updateObject(obj);
          log.info("Modification objet EnceinteType " + obj.toString());
       }else{
-         log.warn("Doublon lors modification objet EnceinteType " + obj.toString());
+         log.warn("Doublon lors modification objet EnceinteType {}",  obj);
          throw new DoublonFoundException("EnceinteType", "modification");
       }
    }

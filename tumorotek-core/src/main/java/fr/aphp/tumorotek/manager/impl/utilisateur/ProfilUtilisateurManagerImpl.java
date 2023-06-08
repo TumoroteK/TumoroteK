@@ -186,19 +186,19 @@ public class ProfilUtilisateurManagerImpl implements ProfilUtilisateurManager
 
       //profil required
       if(profil == null){
-         log.warn("Objet obligatoire Profil manquant" + " lors de la validation d'un ProfilUtilisateur");
+         log.warn("Objet obligatoire Profil manquant  lors de la validation d'un ProfilUtilisateur");
          throw new RequiredObjectIsNullException("ProfilUtilisateur", "creation", "Profil");
       }
 
       //utilisateur required
       if(utilisateur == null){
-         log.warn("Objet obligatoire Utilisateur manquant" + " lors de la validation d'un ProfilUtilisateur");
+         log.warn("Objet obligatoire Utilisateur manquant  lors de la validation d'un ProfilUtilisateur");
          throw new RequiredObjectIsNullException("ProfilUtilisateur", "creation", "Utilisateur");
       }
 
       //OperationType required
       if(banque == null){
-         log.warn("Objet obligatoire Banque manquant" + " lors de la validation d'un ProfilUtilisateur");
+         log.warn("Objet obligatoire Banque manquant  lors de la validation d'un ProfilUtilisateur");
          throw new RequiredObjectIsNullException("ProfilUtilisateur", "creation", "Banque");
       }
 

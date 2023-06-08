@@ -404,7 +404,7 @@ public class EtablissementManagerImpl implements EtablissementManager
       final Utilisateur utilisateur){
 
       if(findDoublonManager(etablissement)){
-         log.warn("Doublon lors de la creation de l'objet Etablissement : " + etablissement.toString());
+         log.warn("Doublon lors de la creation de l'objet Etablissement : {}",  etablissement);
          throw new DoublonFoundException("Etablissement", "creation");
       }
 
@@ -450,7 +450,7 @@ public class EtablissementManagerImpl implements EtablissementManager
       final Utilisateur utilisateur, final boolean cascadeArchive){
 
       if(findDoublonManager(etablissement)){
-         log.warn("Doublon lors de la modif de l'objet Etablissement : " + etablissement.toString());
+         log.warn("Doublon lors de la modif de l'objet Etablissement : {}",  etablissement);
          throw new DoublonFoundException("Etablissement", "modification");
       }
 

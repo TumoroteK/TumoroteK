@@ -167,7 +167,7 @@ public class ProdTypeManagerImpl implements ProdTypeManager
       type.setPlateforme(plateformeDao.mergeObject(type.getPlateforme()));
 
       if(findDoublonManager(type)){
-         log.warn("Doublon lors de la creation de l'objet ProdType : " + type.toString());
+         log.warn("Doublon lors de la creation de l'objet ProdType : {}",  type);
          throw new DoublonFoundException("ProdType", "creation");
       }
       BeanValidator.validateObject(type, new Validator[] {prodTypeValidator});
@@ -179,7 +179,7 @@ public class ProdTypeManagerImpl implements ProdTypeManager
    public void updateObjectManager(final ProdType obj){
       final ProdType type = obj;
       if(findDoublonManager(type)){
-         log.warn("Doublon lors de la modification de l'objet ProdType : " + type.toString());
+         log.warn("Doublon lors de la modification de l'objet ProdType : {}",  type);
          throw new DoublonFoundException("ProdType", "modification");
       }
       BeanValidator.validateObject(type, new Validator[] {prodTypeValidator});

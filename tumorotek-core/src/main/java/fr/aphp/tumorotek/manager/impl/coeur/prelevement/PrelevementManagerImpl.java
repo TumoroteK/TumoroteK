@@ -1488,7 +1488,7 @@ public class PrelevementManagerImpl implements PrelevementManager
          //Si le délégué présente des informations de validation, on 
 
          if(doValidation && findDoublonManager(prel)){
-            log.warn("Doublon lors creation objet Prelevement " + prel.toString());
+            log.warn("Doublon lors creation objet Prelevement {}",  prel);
             throw new DoublonFoundException("Prelevement", "switchBanque", prel.getCode(), null);
          }
          prel = prelevementDao.mergeObject(prel);

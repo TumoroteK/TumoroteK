@@ -280,7 +280,7 @@ public class ContratManagerImpl implements ContratManager
       if(plateforme != null){
          contrat.setPlateforme(plateformeDao.mergeObject(plateforme));
       }else{
-         log.warn("Objet obligatoire Plateforme manquant" + " lors de la création d'un Contrat");
+         log.warn("Objet obligatoire Plateforme manquant  lors de la création d'un Contrat");
          throw new RequiredObjectIsNullException("Contrat", "Creation", "Plateforme");
       }
 
@@ -291,7 +291,7 @@ public class ContratManagerImpl implements ContratManager
 
       // Test s'il y a des doublons
       if(findDoublonManager(contrat)){
-         log.warn("Doublon lors de la creation de l'objet Contrat : " + contrat.toString());
+         log.warn("Doublon lors de la creation de l'objet Contrat : {}",  contrat);
          throw new DoublonFoundException("Contrat", "creation");
       }
 
@@ -324,7 +324,7 @@ public class ContratManagerImpl implements ContratManager
       if(plateforme != null){
          contrat.setPlateforme(plateformeDao.mergeObject(plateforme));
       }else{
-         log.warn("Objet obligatoire Plateforme manquant" + " lors de la modification d'un Contrat");
+         log.warn("Objet obligatoire Plateforme manquant  lors de la modification d'un Contrat");
          throw new RequiredObjectIsNullException("Contrat", "modification", "Plateforme");
       }
 
@@ -335,7 +335,7 @@ public class ContratManagerImpl implements ContratManager
 
       // Test s'il y a des doublons
       if(findDoublonManager(contrat)){
-         log.warn("Doublon lors de la modification de l'objet Contrat : " + contrat.toString());
+         log.warn("Doublon lors de la modification de l'objet Contrat : {}",  contrat);
          throw new DoublonFoundException("Contrat", "modification");
       }
       // validation du Contrat

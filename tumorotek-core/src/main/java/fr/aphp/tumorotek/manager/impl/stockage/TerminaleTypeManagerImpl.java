@@ -116,7 +116,7 @@ public class TerminaleTypeManagerImpl implements TerminaleTypeManager
          terminaleTypeDao.createObject(obj);
          log.info("Enregistrement objet TerminaleType " + obj.toString());
       }else{
-         log.warn("Doublon lors creation objet TerminaleType " + obj.toString());
+         log.warn("Doublon lors creation objet TerminaleType {}",  obj);
          throw new DoublonFoundException("TerminaleType", "creation");
       }
    }
@@ -128,7 +128,7 @@ public class TerminaleTypeManagerImpl implements TerminaleTypeManager
          terminaleTypeDao.updateObject(obj);
          log.info("Modification objet TerminaleType " + obj.toString());
       }else{
-         log.warn("Doublon lors modification objet TerminaleType " + obj.toString());
+         log.warn("Doublon lors modification objet TerminaleType {}",  obj);
          throw new DoublonFoundException("TerminaleType", "modification");
       }
    }

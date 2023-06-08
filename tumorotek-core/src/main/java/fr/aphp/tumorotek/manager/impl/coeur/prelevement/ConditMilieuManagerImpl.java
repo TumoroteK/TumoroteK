@@ -102,7 +102,7 @@ public class ConditMilieuManagerImpl implements ConditMilieuManager
          conditMilieuDao.createObject(obj);
          log.info("Enregistrement objet ConditMilieu " + obj.toString());
       }else{
-         log.warn("Doublon lors creation objet ConditMilieu " + obj.toString());
+         log.warn("Doublon lors creation objet ConditMilieu {}",  obj);
          throw new DoublonFoundException("ConditMilieu", "creation");
       }
    }
@@ -114,7 +114,7 @@ public class ConditMilieuManagerImpl implements ConditMilieuManager
          conditMilieuDao.updateObject(obj);
          log.info("Modification objet ConditMilieu " + obj.toString());
       }else{
-         log.warn("Doublon lors modification objet ConditMilieu " + obj.toString());
+         log.warn("Doublon lors modification objet ConditMilieu {}",  obj);
          throw new DoublonFoundException("ConditMilieu", "modification");
       }
    }

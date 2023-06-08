@@ -253,7 +253,7 @@ public class UtilisateurManagerImpl implements UtilisateurManager
 			updateProfilsAndPlateformes(utilisateur, profils, profils, plateformes);
 
 		}else{
-			log.warn("Doublon lors creation objet Utilisateur " + utilisateur.toString());
+			log.warn("Doublon lors creation objet Utilisateur {}",  utilisateur);
 			throw new DoublonFoundException("Utilisateur", "creation");
 		}
 
@@ -296,7 +296,7 @@ public class UtilisateurManagerImpl implements UtilisateurManager
 			updateProfilsAndPlateformes(utilisateur, profils, profilsToCreate, plateformes);
 
 		}else{
-			log.warn("Doublon lors modification objet Utilisateur " + utilisateur.toString());
+			log.warn("Doublon lors modification objet Utilisateur {}",  utilisateur);
 			throw new DoublonFoundException("Utilisateur", "modification");
 		}
 	}

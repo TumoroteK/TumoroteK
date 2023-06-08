@@ -106,7 +106,7 @@ public class DiagnosticManagerImpl implements DiagnosticManager
          diagnosticDao.createObject(pt);
          log.info("Enregistrement objet Diagnostic " + pt.toString());
       }else{
-         log.warn("Doublon lors creation objet Diagnostic " + pt.toString());
+         log.warn("Doublon lors creation objet Diagnostic {}",  pt);
          throw new DoublonFoundException("Diagnostic", "creation");
       }
    }
@@ -118,7 +118,7 @@ public class DiagnosticManagerImpl implements DiagnosticManager
          diagnosticDao.updateObject(obj);
          log.info("Modification objet Diagnostic " + obj.toString());
       }else{
-         log.warn("Doublon lors modification objet Diagnostic " + obj.toString());
+         log.warn("Doublon lors modification objet Diagnostic {}",  obj);
          throw new DoublonFoundException("Diagnostic", "modification");
       }
    }

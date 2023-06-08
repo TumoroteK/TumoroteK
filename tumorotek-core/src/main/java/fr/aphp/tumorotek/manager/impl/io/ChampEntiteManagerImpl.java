@@ -93,7 +93,7 @@ public class ChampEntiteManagerImpl implements ChampEntiteManager
    public ChampEntite findByIdManager(final Integer id){
       //On vérifie que l'identifiant n'est pas nul
       if(id == null){
-         log.warn("Objet obligatoire identifiant manquant lors de la " + "recherche par l'identifiant d'un objet ChampEntite");
+         log.warn("Objet obligatoire identifiant manquant lors de la recherche par l'identifiant d'un objet ChampEntite");
          throw new RequiredObjectIsNullException("ChampEntite", "recherche par identifiant", "identifiant");
       }
       return champEntiteDao.findById(id);

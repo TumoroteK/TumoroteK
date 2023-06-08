@@ -175,7 +175,7 @@ public class ProdQualiteManagerImpl implements ProdQualiteManager
       qualite.setPlateforme(plateformeDao.mergeObject(qualite.getPlateforme()));
 
       if(findDoublonManager(qualite)){
-         log.warn("Doublon lors de la creation de l'objet ProdQualite : " + qualite.toString());
+         log.warn("Doublon lors de la creation de l'objet ProdQualite : {}",  qualite);
          throw new DoublonFoundException("ProdQualite", "creation");
       }
       BeanValidator.validateObject(qualite, new Validator[] {prodQualiteValidator});

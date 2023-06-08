@@ -163,7 +163,7 @@ public class ObjetStatutManagerImpl implements ObjetStatutManager
    @Override
    public void createObjectManager(final ObjetStatut statut){
       if(findDoublonManager(statut)){
-         log.warn("Doublon lors de la creation de l'objet ObjetStatut : " + statut.toString());
+         log.warn("Doublon lors de la creation de l'objet ObjetStatut : {}",  statut);
          throw new DoublonFoundException("ObjetStatut", "creation");
       }else{
          BeanValidator.validateObject(statut, new Validator[] {objetStatutValidator});
@@ -181,7 +181,7 @@ public class ObjetStatutManagerImpl implements ObjetStatutManager
    @Override
    public void updateObjectManager(final ObjetStatut statut){
       if(findDoublonManager(statut)){
-         log.warn("Doublon lors de la modif de l'objet ObjetStatut : " + statut.toString());
+         log.warn("Doublon lors de la modif de l'objet ObjetStatut : {}",  statut);
          throw new DoublonFoundException("ObjetStatut", "modification");
       }else{
          BeanValidator.validateObject(statut, new Validator[] {objetStatutValidator});

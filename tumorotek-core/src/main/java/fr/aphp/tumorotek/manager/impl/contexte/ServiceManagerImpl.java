@@ -325,7 +325,7 @@ public class ServiceManagerImpl implements ServiceManager
       }
 
       if(findDoublonManager(service)){
-         log.warn("Doublon lors de la creation de l'objet Service : " + service.toString());
+         log.warn("Doublon lors de la creation de l'objet Service : {}",  service);
          throw new DoublonFoundException("Service", "creation");
       }else{
          BeanValidator.validateObject(service, new Validator[] {serviceValidator});
@@ -384,7 +384,7 @@ public class ServiceManagerImpl implements ServiceManager
       }
 
       if(findDoublonManager(service)){
-         log.warn("Doublon lors de la modif de l'objet Service : " + service.toString());
+         log.warn("Doublon lors de la modif de l'objet Service : {}",  service);
          throw new DoublonFoundException("Service", "modification");
       }else{
          if(doValidation){

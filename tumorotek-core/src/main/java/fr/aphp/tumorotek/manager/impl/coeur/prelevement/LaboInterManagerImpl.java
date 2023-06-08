@@ -116,7 +116,7 @@ public class LaboInterManagerImpl implements LaboInterManager
       final Collaborateur collaborateur, final Transporteur transporteur, final boolean doValidation){
       //Prelevement required
       if(prelevement == null){
-         log.warn("Objet obligatoire Prelevement manquant" + " lors de la creation d'un LaboInter");
+         log.warn("Objet obligatoire Prelevement manquant  lors de la creation d'un LaboInter");
          throw new RequiredObjectIsNullException("LaboInter", "creation", "Prelevement");
       }
       obj.setPrelevement(prelevementDao.mergeObject(prelevement));
@@ -134,7 +134,7 @@ public class LaboInterManagerImpl implements LaboInterManager
          prelevementDao.mergeObject(prelevement).getLaboInters().add(obj);
 
       }else{
-         log.warn("Doublon lors creation objet LaboInter " + obj.toString());
+         log.warn("Doublon lors creation objet LaboInter {}",  obj);
          throw new DoublonFoundException("LaboInter", "creation");
       }
    }
@@ -157,7 +157,7 @@ public class LaboInterManagerImpl implements LaboInterManager
          laboInterDao.updateObject(obj);
          log.info("Modification objet LaboInter " + obj.toString());
       }else{
-         log.warn("Doublon lors modification objet LaboInter " + obj.toString());
+         log.warn("Doublon lors modification objet LaboInter {}",  obj);
          throw new DoublonFoundException("LaboInter", "modification");
       }
    }

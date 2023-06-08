@@ -91,7 +91,7 @@ public class LienFamilialManagerImpl implements LienFamilialManager
          log.info("Enregistrement objet LienFamilial " + obj.toString() + " et son reciproque " + reciproque.toString());
 
       }else{
-         log.warn("Doublon lors creation objet LienFamilial " + obj.toString());
+         log.warn("Doublon lors creation objet LienFamilial {}",  obj);
          throw new DoublonFoundException("LienFamilial", "creation");
       }
    }
@@ -105,7 +105,7 @@ public class LienFamilialManagerImpl implements LienFamilialManager
          lienFamilialDao.updateObject(obj);
          log.info("Modification objet LienFamilial " + obj.toString() + " et son reciproque " + reciproque.toString());
       }else{
-         log.warn("Doublon lors modification objet LienFamilial " + obj.toString());
+         log.warn("Doublon lors modification objet LienFamilial {}",  obj);
          throw new DoublonFoundException("LienFamilial", "modification");
       }
    }

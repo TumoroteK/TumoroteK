@@ -177,7 +177,7 @@ public class EchanQualiteManagerImpl implements EchanQualiteManager
       qualite.setPlateforme(plateformeDao.mergeObject(qualite.getPlateforme()));
 
       if(findDoublonManager(qualite)){
-         log.warn("Doublon lors de la creation de l'objet EchanQualite : " + qualite.toString());
+         log.warn("Doublon lors de la creation de l'objet EchanQualite : {}",  qualite);
          throw new DoublonFoundException("EchanQualite", "creation");
       }
       BeanValidator.validateObject(qualite, new Validator[] {echanQualiteValidator});

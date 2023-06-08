@@ -175,7 +175,7 @@ public class TemplateManagerImpl implements TemplateManager
       if(banque != null){
          template.setBanque(banqueDao.mergeObject(banque));
       }else{
-         log.warn("Objet obligatoire Banque manquant" + " lors de la création d'un Template");
+         log.warn("Objet obligatoire Banque manquant  lors de la création d'un Template");
          throw new RequiredObjectIsNullException("Template", "creation", "Banque");
       }
 
@@ -183,7 +183,7 @@ public class TemplateManagerImpl implements TemplateManager
       if(entite != null){
          template.setEntite(entiteDao.mergeObject(entite));
       }else{
-         log.warn("Objet obligatoire Entite manquant" + " lors de la création d'un Template");
+         log.warn("Objet obligatoire Entite manquant  lors de la création d'un Template");
          throw new RequiredObjectIsNullException("Template", "creation", "Entite");
       }
 
@@ -227,7 +227,7 @@ public class TemplateManagerImpl implements TemplateManager
          updateAssociations(template, blocs, blocs, champs, champs, annotations, annotations);
 
       }else{
-         log.warn("Doublon lors creation objet Template " + template.toString());
+         log.warn("Doublon lors creation objet Template {}",  template);
          throw new DoublonFoundException("Template", "creation");
       }
    }
@@ -241,7 +241,7 @@ public class TemplateManagerImpl implements TemplateManager
       if(banque != null){
          template.setBanque(banqueDao.mergeObject(banque));
       }else{
-         log.warn("Objet obligatoire Banque manquant" + " lors de la création d'un Template");
+         log.warn("Objet obligatoire Banque manquant  lors de la création d'un Template");
          throw new RequiredObjectIsNullException("Template", "creation", "Banque");
       }
 
@@ -249,7 +249,7 @@ public class TemplateManagerImpl implements TemplateManager
       if(entite != null){
          template.setEntite(entiteDao.mergeObject(entite));
       }else{
-         log.warn("Objet obligatoire Entite manquant" + " lors de la création d'un Template");
+         log.warn("Objet obligatoire Entite manquant  lors de la création d'un Template");
          throw new RequiredObjectIsNullException("Template", "creation", "Entite");
       }
 
@@ -297,7 +297,7 @@ public class TemplateManagerImpl implements TemplateManager
          updateAssociations(template, blocs, blocs, champs, champs, annotations, annotations, cles);
 
       }else{
-         log.warn("Doublon lors creation objet Template " + template.toString());
+         log.warn("Doublon lors creation objet Template {}",  template);
          throw new DoublonFoundException("Template", "creation");
       }
    }
@@ -312,7 +312,7 @@ public class TemplateManagerImpl implements TemplateManager
       if(banque != null){
          template.setBanque(banqueDao.mergeObject(banque));
       }else{
-         log.warn("Objet obligatoire Banque manquant" + " lors de la modification d'un Template");
+         log.warn("Objet obligatoire Banque manquant  lors de la modification d'un Template");
          throw new RequiredObjectIsNullException("Template", "modification", "Banque");
       }
 
@@ -320,7 +320,7 @@ public class TemplateManagerImpl implements TemplateManager
       if(entite != null){
          template.setEntite(entiteDao.mergeObject(entite));
       }else{
-         log.warn("Objet obligatoire Entite manquant" + " lors de la modification d'un Template");
+         log.warn("Objet obligatoire Entite manquant  lors de la modification d'un Template");
          throw new RequiredObjectIsNullException("Template", "modification", "Entite");
       }
 
@@ -364,7 +364,7 @@ public class TemplateManagerImpl implements TemplateManager
          updateAssociations(template, blocs, blocsToCreate, champs, champsToCreate, annotations, annotationsToCreate);
 
       }else{
-         log.warn("Doublon lors creation objet Template " + template.toString());
+         log.warn("Doublon lors creation objet Template {}",  template);
          throw new DoublonFoundException("Template", "modification");
       }
 
@@ -380,7 +380,7 @@ public class TemplateManagerImpl implements TemplateManager
       if(banque != null){
          template.setBanque(banqueDao.mergeObject(banque));
       }else{
-         log.warn("Objet obligatoire Banque manquant" + " lors de la modification d'un Template");
+         log.warn("Objet obligatoire Banque manquant  lors de la modification d'un Template");
          throw new RequiredObjectIsNullException("Template", "modification", "Banque");
       }
 
@@ -388,7 +388,7 @@ public class TemplateManagerImpl implements TemplateManager
       if(entite != null){
          template.setEntite(entiteDao.mergeObject(entite));
       }else{
-         log.warn("Objet obligatoire Entite manquant" + " lors de la modification d'un Template");
+         log.warn("Objet obligatoire Entite manquant  lors de la modification d'un Template");
          throw new RequiredObjectIsNullException("Template", "modification", "Entite");
       }
 
@@ -437,7 +437,7 @@ public class TemplateManagerImpl implements TemplateManager
          updateAssociations(template, blocs, blocsToCreate, champs, champsToCreate, annotations, annotationsToCreate);
 
       }else{
-         log.warn("Doublon lors creation objet Template " + template.toString());
+         log.warn("Doublon lors creation objet Template {}",  template);
          throw new DoublonFoundException("Template", "modification");
       }
 

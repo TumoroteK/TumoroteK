@@ -117,7 +117,7 @@ public class OrganismeManagerImpl implements OrganismeManager
          organismeDao.createObject(organisme);
          log.info("Enregistrement objet Organisme " + organisme.toString());
       }else{
-         log.warn("Doublon lors creation objet Organisme " + organisme.toString());
+         log.warn("Doublon lors creation objet Organisme {}",  organisme);
          throw new DoublonFoundException("Organisme", "creation");
       }
       
@@ -130,7 +130,7 @@ public class OrganismeManagerImpl implements OrganismeManager
          organismeDao.updateObject(obj);
          log.info("Modification objet Organisme " + obj.toString());
       }else{
-         log.warn("Doublon lors modification objet Organisme " + obj.toString());
+         log.warn("Doublon lors modification objet Organisme {}",  obj);
          throw new DoublonFoundException("Organisme", "modification");
       }
       

@@ -233,7 +233,7 @@ public class TransformationManagerImpl implements TransformationManager
       // On vérifie que l'entité n'est pas null. Si c'est le cas on envoie
       // une exception
       if(entite == null){
-         log.warn("Objet obligatoire Entite manquant lors de la creation " + "d'un objet Transformation");
+         log.warn("Objet obligatoire Entite manquant lors de la creation d'un objet Transformation");
          throw new RequiredObjectIsNullException("Transformation", "creation", "Entite");
       }else{
          transformation.setEntite(entiteDao.mergeObject(entite));
@@ -278,7 +278,7 @@ public class TransformationManagerImpl implements TransformationManager
       // On vérifie que l'entité n'est pas null. Si c'est le cas on envoie
       // une exception
       if(entite == null){
-         log.warn("Objet obligatoire Entite manquant lors de la modif " + "d'un objet Transformation");
+         log.warn("Objet obligatoire Entite manquant lors de la modif d'un objet Transformation");
          throw new RequiredObjectIsNullException("Transformation", "modification", "Entite");
       }else{
          transformation.setEntite(entiteDao.mergeObject(entite));

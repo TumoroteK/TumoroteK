@@ -117,7 +117,7 @@ public class RisqueManagerImpl implements RisqueManager
          risqueDao.createObject(rs);
          log.info("Enregistrement objet Risque " + rs.toString());
       }else{
-         log.warn("Doublon lors creation objet Risque " + rs.toString());
+         log.warn("Doublon lors creation objet Risque {}",  rs);
          throw new DoublonFoundException("Risque", "creation");
       }
    }
@@ -129,7 +129,7 @@ public class RisqueManagerImpl implements RisqueManager
          risqueDao.updateObject(obj);
          log.info("Modification objet Risque " + obj.toString());
       }else{
-         log.warn("Doublon lors modification objet Risque " + obj.toString());
+         log.warn("Doublon lors modification objet Risque {}",  obj);
          throw new DoublonFoundException("Risque", "modification");
       }
    }

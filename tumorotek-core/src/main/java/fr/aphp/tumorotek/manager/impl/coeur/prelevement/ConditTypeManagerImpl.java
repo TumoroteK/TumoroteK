@@ -102,7 +102,7 @@ public class ConditTypeManagerImpl implements ConditTypeManager
          conditTypeDao.createObject(obj);
          log.info("Enregistrement objet ConditType " + obj.toString());
       }else{
-         log.warn("Doublon lors creation objet ConditType " + obj.toString());
+         log.warn("Doublon lors creation objet ConditType {}",  obj);
          throw new DoublonFoundException("ConditType", "creation");
       }
    }
@@ -114,7 +114,7 @@ public class ConditTypeManagerImpl implements ConditTypeManager
          conditTypeDao.updateObject(obj);
          log.info("Modification objet ConditType " + obj.toString());
       }else{
-         log.warn("Doublon lors modification objet ConditType " + obj.toString());
+         log.warn("Doublon lors modification objet ConditType {}",  obj);
          throw new DoublonFoundException("ConditType", "modification");
       }
    }

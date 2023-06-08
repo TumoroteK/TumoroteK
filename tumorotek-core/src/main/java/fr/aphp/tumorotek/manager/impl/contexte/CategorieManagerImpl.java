@@ -145,7 +145,7 @@ public class CategorieManagerImpl implements CategorieManager
          categorieDao.createObject(obj);
          log.info("Enregistrement objet Categorie " + obj.toString());
       }else{
-         log.warn("Doublon lors creation objet Categorie " + obj.toString());
+         log.warn("Doublon lors creation objet Categorie {}",  obj);
          throw new DoublonFoundException("Categorie", "creation");
       }
    }
@@ -157,7 +157,7 @@ public class CategorieManagerImpl implements CategorieManager
          categorieDao.updateObject(obj);
          log.info("Modification objet Categorie " + obj.toString());
       }else{
-         log.warn("Doublon lors modification objet Categorie " + obj.toString());
+         log.warn("Doublon lors modification objet Categorie {}",  obj);
          throw new DoublonFoundException("Categorie", "modification");
       }
    }

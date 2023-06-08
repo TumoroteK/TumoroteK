@@ -204,13 +204,13 @@ public class ImportColonneManagerImpl implements ImportColonneManager
       final String operation){
       // ImportTemplate required
       if(template == null){
-         log.warn("Objet obligatoire ImportTemplate manquant" + " lors de la création d'un ImportColonne");
+         log.warn("Objet obligatoire ImportTemplate manquant  lors de la création d'un ImportColonne");
          throw new RequiredObjectIsNullException("ImportColonne", operation, "ImportTemplate");
       }
 
       // champ required
       if(champ == null){
-         log.warn("Objet obligatoire Champ manquant" + " lors de la création d'un ImportColonne");
+         log.warn("Objet obligatoire Champ manquant  lors de la création d'un ImportColonne");
          throw new RequiredObjectIsNullException("ImportColonne", operation, "Champ");
       }
 
@@ -221,7 +221,7 @@ public class ImportColonneManagerImpl implements ImportColonneManager
          BeanValidator.validateObject(importColonne, new Validator[] {importColonneValidator});
 
       }else{
-         log.warn("Doublon lors creation objet ImportColonne " + importColonne.toString());
+         log.warn("Doublon lors creation objet ImportColonne {}",  importColonne);
          throw new DoublonFoundException("ImportColonne", operation);
       }
    }

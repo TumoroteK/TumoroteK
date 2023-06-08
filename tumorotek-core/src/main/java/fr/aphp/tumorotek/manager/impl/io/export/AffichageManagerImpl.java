@@ -135,7 +135,7 @@ public class AffichageManagerImpl implements AffichageManager
    public Affichage findByIdManager(final Integer id){
       //On vérifie que l'identifiant n'est pas nul
       if(id == null){
-         log.warn("Objet obligatoire identifiant manquant lors de la " + "recherche par l'identifiant d'un objet Affichage");
+         log.warn("Objet obligatoire identifiant manquant lors de la recherche par l'identifiant d'un objet Affichage");
          throw new RequiredObjectIsNullException("Affichage", "recherche par identifiant", "identifiant");
       }
       return affichageDao.findById(id);
@@ -160,7 +160,7 @@ public class AffichageManagerImpl implements AffichageManager
    public void renameAffichageManager(final Affichage affichage, final String intitule){
       //On verifie que l'affichage n'est pas nul
       if(affichage == null){
-         log.warn("Objet obligatoire Affichage manquant lors " + "du renommage d'un objet Affichage");
+         log.warn("Objet obligatoire Affichage manquant lors du renommage d'un objet Affichage");
          throw new RequiredObjectIsNullException("Affichage", "modification", "Affichage");
       }
       if(findByIdManager(affichage.getAffichageId()) == null){
@@ -188,17 +188,17 @@ public class AffichageManagerImpl implements AffichageManager
    public Affichage copyAffichageManager(final Affichage affichage, final Utilisateur copieur, final Banque banque){
       //On vérifie que l'affichage n'est pas nul
       if(affichage == null){
-         log.warn("Objet obligatoire Affichage manquant lors " + "de la copie d'un objet Affichage");
+         log.warn("Objet obligatoire Affichage manquant lors de la copie d'un objet Affichage");
          throw new RequiredObjectIsNullException("Affichage", "copie", "Affichage");
       }
       //On vérifie que le créateur n'est pas nul
       if(copieur == null){
-         log.warn("Objet obligatoire Utilisateur manquant lors " + "de la copie d'un objet Affichage");
+         log.warn("Objet obligatoire Utilisateur manquant lors de la copie d'un objet Affichage");
          throw new RequiredObjectIsNullException("Affichage", "copie", "Utilisateur");
       }
       //On vérifie que la banque n'est pas nul
       if(banque == null){
-         log.warn("Objet obligatoire Banque manquant lors " + "de la création d'un objet Affichage");
+         log.warn("Objet obligatoire Banque manquant lors de la création d'un objet Affichage");
          throw new RequiredObjectIsNullException("Affichage", "création", "Banque");
       }
       final Affichage a = new Affichage();
@@ -237,19 +237,19 @@ public class AffichageManagerImpl implements AffichageManager
       final Banque banque){
       //On vérifie que l'affichage n'est pas nul
       if(affichage == null){
-         log.warn("Objet obligatoire Affichage manquant lors " + "de la création d'un objet Affichage");
+         log.warn("Objet obligatoire Affichage manquant lors de la création d'un objet Affichage");
          throw new RequiredObjectIsNullException("Affichage", "création", "Affichage");
       }
       //On vérifie que le créateur n'est pas nul
       if(createur == null){
-         log.warn("Objet obligatoire Utilisateur manquant lors " + "de la création d'un objet Affichage");
+         log.warn("Objet obligatoire Utilisateur manquant lors de la création d'un objet Affichage");
          throw new RequiredObjectIsNullException("Affichage", "création", "Utilisateur");
       }
       // On met l'utilisateur dans l'affichage
       affichage.setCreateur(createur);
       //On vérifie que la banque n'est pas nul
       if(banque == null){
-         log.warn("Objet obligatoire Banque manquant lors " + "de la création d'un objet Affichage");
+         log.warn("Objet obligatoire Banque manquant lors de la création d'un objet Affichage");
          throw new RequiredObjectIsNullException("Affichage", "création", "Banque");
       }
       // On met l'utilisateur dans l'affichage
@@ -257,7 +257,7 @@ public class AffichageManagerImpl implements AffichageManager
 
       // On enregistre l'affichage
       if(findDoublonManager(affichage)){
-         log.warn("Doublon lors de la creation de l'objet Affichage : " + affichage.toString());
+         log.warn("Doublon lors de la creation de l'objet Affichage : {}",  affichage);
          throw new DoublonFoundException("Affichage", "creation");
       }
       BeanValidator.validateObject(affichage, new Validator[] {affichageValidator});
@@ -281,7 +281,7 @@ public class AffichageManagerImpl implements AffichageManager
       final List<Resultat> resultatsToRemove){
       //On vérifie que l'affichage n'est pas nul
       if(affichage == null){
-         log.warn("Objet obligatoire Affichage manquant lors " + "de la modification d'un objet Affichage");
+         log.warn("Objet obligatoire Affichage manquant lors de la modification d'un objet Affichage");
          throw new RequiredObjectIsNullException("Affichage", "modification", "Affichage");
       }
       if(findByIdManager(affichage.getAffichageId()) == null){
@@ -453,7 +453,7 @@ public class AffichageManagerImpl implements AffichageManager
    public List<Affichage> findByUtilisateurManager(final Utilisateur util){
       //On vérifie que l'utilisateur n'est pas nul
       if(util == null){
-         log.warn("Objet obligatoire Utilisateur manquant lors de la " + "recherche par l'Utilisateur d'un objet Affichage");
+         log.warn("Objet obligatoire Utilisateur manquant lors de la recherche par l'Utilisateur d'un objet Affichage");
          throw new RequiredObjectIsNullException("Affichage", "recherche par Utilisateur", "Utilisateur");
       }
       return affichageDao.findByUtilisateur(util);
@@ -468,7 +468,7 @@ public class AffichageManagerImpl implements AffichageManager
    public List<Affichage> findByIntituleManager(final String intitule){
       //On vérifie que l'utilisateur n'est pas nul
       if(intitule == null){
-         log.warn("Objet obligatoire intitule manquant lors de la " + "recherche par l'intitulé d'un objet Affichage");
+         log.warn("Objet obligatoire intitule manquant lors de la recherche par l'intitulé d'un objet Affichage");
          throw new RequiredObjectIsNullException("Affichage", "recherche par Intitulé", "Intitulé");
       }
       return affichageDao.findByIntitule(intitule);
@@ -517,7 +517,7 @@ public class AffichageManagerImpl implements AffichageManager
    public Boolean findDoublonManager(final Affichage affichage){
       //On vérifie que l'affichage n'est pas nul
       if(affichage == null){
-         log.warn("Objet obligatoire Affichage manquant lors de la " + "recherche de doublon d'un objet Affichage");
+         log.warn("Objet obligatoire Affichage manquant lors de la recherche de doublon d'un objet Affichage");
          throw new RequiredObjectIsNullException("Affichage", "recherche de doublon", "Affichage");
       }
       if(affichage.getAffichageId() == null){

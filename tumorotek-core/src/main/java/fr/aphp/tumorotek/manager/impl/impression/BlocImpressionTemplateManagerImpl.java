@@ -118,13 +118,13 @@ public class BlocImpressionTemplateManagerImpl implements BlocImpressionTemplate
    public void validateObjectManager(final Template template, final BlocImpression blocImpression){
       //template required
       if(template == null){
-         log.warn("Objet obligatoire Template manquant" + " lors de la validation d'un BlocImpressionTemplate");
+         log.warn("Objet obligatoire Template manquant  lors de la validation d'un BlocImpressionTemplate");
          throw new RequiredObjectIsNullException("BlocImpressionTemplate", "creation", "Template");
       }
 
       //blocImpression required
       if(blocImpression == null){
-         log.warn("Objet obligatoire BlocImpression manquant" + " lors de la validation d'un BlocImpressionTemplate");
+         log.warn("Objet obligatoire BlocImpression manquant  lors de la validation d'un BlocImpressionTemplate");
          throw new RequiredObjectIsNullException("BlocImpressionTemplate", "creation", "BlocImpression");
       }
 
@@ -132,7 +132,7 @@ public class BlocImpressionTemplateManagerImpl implements BlocImpressionTemplate
       if(template.getTemplateId() != null){
          if(findDoublonManager(template, blocImpression)){
 
-            log.warn("Doublon lors validation objet " + "BlocImpressionTemplate");
+            log.warn("Doublon lors validation objet BlocImpressionTemplate");
             throw new DoublonFoundException("BlocImpressionTemplate", "creation");
          }
       }
@@ -161,14 +161,14 @@ public class BlocImpressionTemplateManagerImpl implements BlocImpressionTemplate
 
       //template required
       if(template == null){
-         log.warn("Objet obligatoire Template manquant" + " lors de la validation d'un BlocImpressionTemplate");
+         log.warn("Objet obligatoire Template manquant  lors de la validation d'un BlocImpressionTemplate");
          throw new RequiredObjectIsNullException("BlocImpressionTemplate", "modification", "Template");
       }
       blocImpressionTemplate.setTemplate(templateDao.mergeObject(template));
 
       //blocImpression required
       if(blocImpression == null){
-         log.warn("Objet obligatoire BlocImpression manquant" + " lors de la validation d'un BlocImpressionTemplate");
+         log.warn("Objet obligatoire BlocImpression manquant  lors de la validation d'un BlocImpressionTemplate");
          throw new RequiredObjectIsNullException("BlocImpressionTemplate", "modification", "BlocImpression");
       }
       blocImpressionTemplate.setBlocImpression(blocImpressionDao.mergeObject(blocImpression));

@@ -144,7 +144,7 @@ public class SpecialiteManagerImpl implements SpecialiteManager
          specialiteDao.createObject(obj);
          log.info("Enregistrement objet Specialite " + obj.toString());
       }else{
-         log.warn("Doublon lors creation objet Specialite " + obj.toString());
+         log.warn("Doublon lors creation objet Specialite {}",  obj);
          throw new DoublonFoundException("Specialite", "creation");
       }
    }
@@ -156,7 +156,7 @@ public class SpecialiteManagerImpl implements SpecialiteManager
          specialiteDao.updateObject(obj);
          log.info("Modification objet Specialite " + obj.toString());
       }else{
-         log.warn("Doublon lors modification objet Specialite " + obj.toString());
+         log.warn("Doublon lors modification objet Specialite {}",  obj);
          throw new DoublonFoundException("Specialite", "modification");
       }
    }

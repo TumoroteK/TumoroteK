@@ -330,7 +330,7 @@ public class ConteneurManagerImpl implements ConteneurManager
       if(service != null){
          conteneur.setService(serviceDao.mergeObject(service));
       }else{
-         log.warn("Objet obligatoire Service manquant" + " lors de la création d'un Conteneur");
+         log.warn("Objet obligatoire Service manquant  lors de la création d'un Conteneur");
          throw new RequiredObjectIsNullException("Conteneur", "creation", "Service");
       }
 
@@ -338,7 +338,7 @@ public class ConteneurManagerImpl implements ConteneurManager
       if(pfOrig != null){
          conteneur.setPlateformeOrig(pfOrig);
       }else{
-         log.warn("Objet obligatoire Plateforme manquant" + " lors de la création d'un Conteneur");
+         log.warn("Objet obligatoire Plateforme manquant  lors de la création d'un Conteneur");
          throw new RequiredObjectIsNullException("Conteneur", "creation", "Plateforme");
       }
 
@@ -346,7 +346,7 @@ public class ConteneurManagerImpl implements ConteneurManager
 
       // Test s'il y a des doublons
       if(findDoublonManager(conteneur, banques)){
-         log.warn("Doublon lors de la creation de l'objet Conteneur : " + conteneur.toString());
+         log.warn("Doublon lors de la creation de l'objet Conteneur : {}",  conteneur);
          throw new DoublonFoundException("Conteneur", "creation");
       }
 
@@ -375,7 +375,7 @@ public class ConteneurManagerImpl implements ConteneurManager
       if(service != null){
          conteneur.setService(serviceDao.mergeObject(service));
       }else{
-         log.warn("Objet obligatoire Service manquant" + " lors de la modification d'un Conteneur");
+         log.warn("Objet obligatoire Service manquant  lors de la modification d'un Conteneur");
          throw new RequiredObjectIsNullException("Conteneur", "modification", "Service");
       }
 
@@ -406,7 +406,7 @@ public class ConteneurManagerImpl implements ConteneurManager
 
       // Test s'il y a des doublons
       if(findDoublonManager(conteneur, banques)){
-         log.warn("Doublon lors de la modification de l'objet Conteneur : " + conteneur.toString());
+         log.warn("Doublon lors de la modification de l'objet Conteneur : {}",  conteneur);
          throw new DoublonFoundException("Conteneur", "modification");
       }
       // validation du Contrat

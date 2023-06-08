@@ -185,19 +185,19 @@ public class DroitObjetManagerImpl implements DroitObjetManager
    public void validateObjectManager(final Profil profil, final Entite entite, final OperationType type){
       //profil required
       if(profil == null){
-         log.warn("Objet obligatoire Profil manquant" + " lors de la validation d'un DroitObjet");
+         log.warn("Objet obligatoire Profil manquant  lors de la validation d'un DroitObjet");
          throw new RequiredObjectIsNullException("DroitObjet", "creation", "Profil");
       }
 
       //Entite required
       if(entite == null){
-         log.warn("Objet obligatoire Entite manquant" + " lors de la validation d'un DroitObjet");
+         log.warn("Objet obligatoire Entite manquant  lors de la validation d'un DroitObjet");
          throw new RequiredObjectIsNullException("DroitObjet", "creation", "Entite");
       }
 
       //OperationType required
       if(type == null){
-         log.warn("Objet obligatoire OperationType manquant" + " lors de la validation d'un DroitObjet");
+         log.warn("Objet obligatoire OperationType manquant  lors de la validation d'un DroitObjet");
          throw new RequiredObjectIsNullException("DroitObjet", "creation", "OperationType");
       }
 

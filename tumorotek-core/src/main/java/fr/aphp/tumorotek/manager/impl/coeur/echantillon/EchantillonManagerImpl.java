@@ -1194,7 +1194,7 @@ public class EchantillonManagerImpl implements EchantillonManager
                }
             }
          }else{ // doublon
-            log.warn("Doublon lors de la modification de l'objet Echantillon : {}" + echantillon);
+            log.warn("Doublon lors de la modification de l'objet Echantillon : {}",  echantillon);
             throw new DoublonFoundException("Echantillon", "modification", echantillon.getCode(), null);
          }
       }catch(final RuntimeException re){

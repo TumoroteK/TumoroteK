@@ -150,7 +150,7 @@ public class ProfilManagerImpl implements ProfilManager
       if(pf != null){
          profil.setPlateforme(pf);
       }else{
-         log.warn("Objet obligatoire Plateforme manquant" + " lors de la creation du profil");
+         log.warn("Objet obligatoire Plateforme manquant  lors de la creation du profil");
          throw new RequiredObjectIsNullException("Profil", "creation", "Plateforme");
       }
 
@@ -186,7 +186,7 @@ public class ProfilManagerImpl implements ProfilManager
          }
 
       }else{
-         log.warn("Doublon lors creation objet Profil " + profil.toString());
+         log.warn("Doublon lors creation objet Profil {}",  profil);
          throw new DoublonFoundException("Profil", "creation");
       }
    }
@@ -241,7 +241,7 @@ public class ProfilManagerImpl implements ProfilManager
          }
 
       }else{
-         log.warn("Doublon lors creation objet Profil " + profil.toString());
+         log.warn("Doublon lors creation objet Profil {}",  profil);
          throw new DoublonFoundException("Profil", "creation");
       }
    }

@@ -177,7 +177,7 @@ public class ImportHistoriqueManagerImpl implements ImportHistoriqueManager
       if(importTemplate != null){
          importHistorique.setImportTemplate(importTemplateDao.mergeObject(importTemplate));
       }else{
-         log.warn("Objet obligatoire ImportTemplate manquant" + " lors de la création d'un ImportHistorique");
+         log.warn("Objet obligatoire ImportTemplate manquant  lors de la création d'un ImportHistorique");
          throw new RequiredObjectIsNullException("ImportHistorique", "creation", "importTemplate");
       }
 
@@ -185,7 +185,7 @@ public class ImportHistoriqueManagerImpl implements ImportHistoriqueManager
       if(utilisateur != null){
          importHistorique.setUtilisateur(utilisateurDao.mergeObject(utilisateur));
       }else{
-         log.warn("Objet obligatoire Utilisateur manquant" + " lors de la création d'un ImportHistorique");
+         log.warn("Objet obligatoire Utilisateur manquant  lors de la création d'un ImportHistorique");
          throw new RequiredObjectIsNullException("Utilisateur", "creation", "importTemplate");
       }
 

@@ -160,7 +160,7 @@ public class FichierManagerImpl implements FichierManager
    @Override
    public void createObjectManager(final Fichier fichier, final InputStream stream, final List<File> filesCreated){
       if(findDoublonManager(fichier)){
-         log.warn("Doublon lors de la creation de l'objet Fichier : " + fichier.toString());
+         log.warn("Doublon lors de la creation de l'objet Fichier : {}",  fichier);
          throw new DoublonFoundException("Fichier", "creation");
       }
 
@@ -193,7 +193,7 @@ public class FichierManagerImpl implements FichierManager
    public Fichier updateObjectManager(final Fichier fichier, final InputStream stream, final List<File> filesCreated,
       final List<File> filesToDelete){
       if(findDoublonManager(fichier)){
-         log.warn("Doublon lors de la modification de l'objet Fichier : " + fichier.toString());
+         log.warn("Doublon lors de la modification de l'objet Fichier : {}",  fichier);
          throw new DoublonFoundException("Fichier", "modification");
       }
 

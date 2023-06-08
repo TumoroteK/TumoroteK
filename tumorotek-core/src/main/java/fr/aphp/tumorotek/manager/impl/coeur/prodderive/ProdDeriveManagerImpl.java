@@ -955,7 +955,7 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
       }
 
       if(findDoublonManager(prodDerive)){
-         log.warn("Doublon lors de la creation de l'objet ProdDerive : " + prodDerive.toString());
+         log.warn("Doublon lors de la creation de l'objet ProdDerive : {}",  prodDerive);
          throw new DoublonFoundException("ProdDerive", "creation", prodDerive.getCode(), null);
       }
 
@@ -1122,7 +1122,7 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
       }
 
       if(findDoublonManager(prodDerive)){
-         log.warn("Doublon lors de la modif de l'objet ProdDerive : " + prodDerive.toString());
+         log.warn("Doublon lors de la modif de l'objet ProdDerive : {}",  prodDerive);
          throw new DoublonFoundException("ProdDerive", "modification", prodDerive.getCode(), null);
       }
 

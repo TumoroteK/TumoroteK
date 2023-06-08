@@ -131,7 +131,7 @@ public class InterfacageParsingUtilsImpl implements InterfacageParsingUtils
             log.info("initConfigurationParsing : " + "Balise 'BlocLibreKey' absente du fichier.");
          }
       }else{
-         log.warn("initConfigurationParsing : " + "Balise 'Configuration' absente du fichier.");
+         log.warn("initConfigurationParsing : Balise 'Configuration' absente du fichier.");
       }
 
       return conf;
@@ -207,13 +207,13 @@ public class InterfacageParsingUtilsImpl implements InterfacageParsingUtils
 
       }else{
          if(file == null){
-            log.warn("extractEmetteurFromFileToInjectInTk : " + "Le fichier à injecter dans TK est NULL");
+            log.warn("extractEmetteurFromFileToInjectInTk : Le fichier à injecter dans TK est NULL");
          }
          if(fileXml == null){
-            log.warn("extractEmetteurFromFileToInjectInTk : " + "Le ficher XML de configuration est NULL");
+            log.warn("extractEmetteurFromFileToInjectInTk : Le ficher XML de configuration est NULL");
          }
          if(file == null){
-            log.warn("extractEmetteurFromFileToInjectInTk : " + "La boite ftp ayant reçu le message est NULL");
+            log.warn("extractEmetteurFromFileToInjectInTk : La boite ftp ayant reçu le message est NULL");
          }
       }
       return emetteurObj;
@@ -260,13 +260,13 @@ public class InterfacageParsingUtilsImpl implements InterfacageParsingUtils
 
       }else{
          if(file == null){
-            log.warn("extractXMLFIleFromFileToInjectInTk : " + "Le fichier à injecter dans TK est NULL");
+            log.warn("extractXMLFIleFromFileToInjectInTk : Le fichier à injecter dans TK est NULL");
          }
          if(fileXml == null){
-            log.warn("extractXMLFIleFromFileToInjectInTk : " + "Le ficher XML de configuration est NULL");
+            log.warn("extractXMLFIleFromFileToInjectInTk : Le ficher XML de configuration est NULL");
          }
          if(file == null){
-            log.warn("extractXMLFIleFromFileToInjectInTk : " + "La boite ftp ayant reçu le message est NULL");
+            log.warn("extractXMLFIleFromFileToInjectInTk : La boite ftp ayant reçu le message est NULL");
          }
       }
       return null;
@@ -776,7 +776,7 @@ public class InterfacageParsingUtilsImpl implements InterfacageParsingUtils
             log.warn("getValueFromBlocAndEmplacement : " + "Le bloc dans lequel extraire la valeur " + "est NULL");
          }
          if(contenu == null){
-            log.warn("getValueFromBlocAndEmplacement : " + "Le contenu du fichier est NULL");
+            log.warn("getValueFromBlocAndEmplacement : Le contenu du fichier est NULL");
          }
          if(emplacement == null){
             log.warn("getValueFromBlocAndEmplacement : " + "L'emplacement de la valeur à extraire " + "est NULL");
@@ -836,7 +836,7 @@ public class InterfacageParsingUtilsImpl implements InterfacageParsingUtils
             log.warn("getValueFromBlocLibre : " + "Le bloc dans lequel extraire la valeur " + "est NULL");
          }
          if(blocsLibres == null){
-            log.warn("getValueFromBlocLibre : " + "La liste des blocs libres est NULL");
+            log.warn("getValueFromBlocLibre : La liste des blocs libres est NULL");
          }
          if(emplacement == null){
             log.warn("getValueFromBlocLibre : " + "L'emplacement de la valeur à extraire " + "est NULL");

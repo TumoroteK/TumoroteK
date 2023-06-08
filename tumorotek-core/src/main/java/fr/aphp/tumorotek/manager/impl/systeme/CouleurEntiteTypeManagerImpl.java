@@ -163,10 +163,10 @@ public class CouleurEntiteTypeManagerImpl implements CouleurEntiteTypeManager
 
       // il faut qu'un seul type soit défini pour cette relation
       if(echantillonType != null && prodType != null){
-         log.warn("Deux types sont définis" + " lors de la création d'une CouleurEntiteType");
+         log.warn("Deux types sont définis  lors de la création d'une CouleurEntiteType");
          throw new InvalidMultipleAssociationException("CouleurEntiteType", "creation", false);
       }else if(echantillonType == null && prodType == null){
-         log.warn("Aucun type n'est défini" + " lors de la création d'une CouleurEntiteType");
+         log.warn("Aucun type n'est défini  lors de la création d'une CouleurEntiteType");
          throw new InvalidMultipleAssociationException("CouleurEntiteType", "creation", true);
       }
 
@@ -205,10 +205,10 @@ public class CouleurEntiteTypeManagerImpl implements CouleurEntiteTypeManager
 
       // il faut qu'un seul type soit défini pour cette relation
       if(echantillonType != null && prodType != null){
-         log.warn("Deux types sont définis" + " lors de la modification d'une CouleurEntiteType");
+         log.warn("Deux types sont définis  lors de la modification d'une CouleurEntiteType");
          throw new InvalidMultipleAssociationException("CouleurEntiteType", "modification", false);
       }else if(echantillonType == null && prodType == null){
-         log.warn("Aucun type n'est défini" + " lors de la modification d'une CouleurEntiteType");
+         log.warn("Aucun type n'est défini  lors de la modification d'une CouleurEntiteType");
          throw new InvalidMultipleAssociationException("CouleurEntiteType", "modification", true);
       }
 

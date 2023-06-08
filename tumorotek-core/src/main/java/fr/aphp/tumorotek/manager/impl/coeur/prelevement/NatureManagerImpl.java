@@ -103,7 +103,7 @@ public class NatureManagerImpl implements NatureManager
          natureDao.createObject(obj);
          log.info("Enregistrement objet Nature " + obj.toString());
       }else{
-         log.warn("Doublon lors creation objet Nature " + obj.toString());
+         log.warn("Doublon lors creation objet Nature {}",  obj);
          throw new DoublonFoundException("Nature", "creation");
       }
    }
@@ -115,7 +115,7 @@ public class NatureManagerImpl implements NatureManager
          natureDao.updateObject(obj);
          log.info("Modification objet Nature " + obj.toString());
       }else{
-         log.warn("Doublon lors modification objet Nature " + obj.toString());
+         log.warn("Doublon lors modification objet Nature {}",  obj);
          throw new DoublonFoundException("Nature", "modification");
       }
    }

@@ -392,14 +392,14 @@ public class CederObjetManagerImpl implements CederObjetManager
 
       //Cession required
       if(cession == null){
-         log.warn("Objet obligatoire Cession manquant" + " lors de la validation d'un CederObjet");
+         log.warn("Objet obligatoire Cession manquant  lors de la validation d'un CederObjet");
          throw new RequiredObjectIsNullException("CederObjet", operation, "Cession");
       }
       cederObjet.setCession(cession);
 
       //Entite required
       if(entite == null){
-         log.warn("Objet obligatoire Entite manquant" + " lors de la validation d'un CederObjet");
+         log.warn("Objet obligatoire Entite manquant  lors de la validation d'un CederObjet");
          throw new RequiredObjectIsNullException("CederObjet", operation, "Entite");
       }
       cederObjet.setEntite(entiteDao.mergeObject(entite));
@@ -412,13 +412,13 @@ public class CederObjetManagerImpl implements CederObjetManager
             //Doublon
             if(findDoublonManager(cederObjet)){
 
-               log.warn("Doublon lors validation objet CederObjet " + cederObjet.toString());
+               log.warn("Doublon lors validation objet CederObjet {}",  cederObjet);
                throw new DoublonFoundException("CederObjet", operation);
             }
          }
       }else{
 
-         log.warn("PK non valide lors de la validation d'un CederObjet " + cederObjet.toString());
+         log.warn("PK non valide lors de la validation d'un CederObjet {}",  cederObjet);
          throw new InvalidPKException("CederObjet", operation);
       }
    }
@@ -436,14 +436,14 @@ public class CederObjetManagerImpl implements CederObjetManager
 
       //Cession required
       if(cession == null){
-         log.warn("Objet obligatoire Cession manquant" + " lors de la creation d'un CederObjet");
+         log.warn("Objet obligatoire Cession manquant  lors de la creation d'un CederObjet");
          throw new RequiredObjectIsNullException("CederObjet", "creation", "Cession");
       }
       cederObjet.setCession(cessionDao.mergeObject(cession));
 
       //Entite required
       if(entite == null){
-         log.warn("Objet obligatoire Entite manquant" + " lors de la creation d'un CederObjet");
+         log.warn("Objet obligatoire Entite manquant  lors de la creation d'un CederObjet");
          throw new RequiredObjectIsNullException("CederObjet", "creation", "Entite");
       }
       cederObjet.setEntite(entiteDao.mergeObject(entite));
@@ -461,11 +461,11 @@ public class CederObjetManagerImpl implements CederObjetManager
             log.debug("Enregistrement objet CederObjet {}", cederObjet);
 
          }else{
-            log.warn("Doublon lors creation objet CederObjet " + cederObjet.toString());
+            log.warn("Doublon lors creation objet CederObjet {}",  cederObjet);
             throw new DoublonFoundException("ProtocoleExt", "creation");
          }
       }else{
-         log.warn("PK non valide lors de la création d'un CederObjet " + cederObjet.toString());
+         log.warn("PK non valide lors de la création d'un CederObjet {}",  cederObjet);
          throw new InvalidPKException("CederObjet", "creation");
       }
 
@@ -484,14 +484,14 @@ public class CederObjetManagerImpl implements CederObjetManager
 
       //Cession required
       if(cession == null){
-         log.warn("Objet obligatoire Cession manquant" + " lors de la modification d'un CederObjet");
+         log.warn("Objet obligatoire Cession manquant  lors de la modification d'un CederObjet");
          throw new RequiredObjectIsNullException("CederObjet", "modification", "Cession");
       }
       cederObjet.setCession(cessionDao.mergeObject(cession));
 
       //Entite required
       if(entite == null){
-         log.warn("Objet obligatoire Entite manquant" + " lors de la modification d'un CederObjet");
+         log.warn("Objet obligatoire Entite manquant  lors de la modification d'un CederObjet");
          throw new RequiredObjectIsNullException("CederObjet", "modification", "Entite");
       }
       cederObjet.setEntite(entiteDao.mergeObject(entite));
@@ -509,11 +509,11 @@ public class CederObjetManagerImpl implements CederObjetManager
             log.debug("Modification objet CederObjet {}", cederObjet);
 
          }else{
-            log.warn("PK inconnue lors de la modification du CederObjet " + cederObjet.toString());
+            log.warn("PK inconnue lors de la modification du CederObjet {}",  cederObjet);
             throw new PKNotFoundException("CederObjet", "modification");
          }
       }else{
-         log.warn("PK non valide lors de la modification d'un CederObjet " + cederObjet.toString());
+         log.warn("PK non valide lors de la modification d'un CederObjet {}",  cederObjet);
          throw new InvalidPKException("CederObjet", "modification");
       }
 

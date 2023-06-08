@@ -146,13 +146,13 @@ public class OperationManagerImpl implements OperationManager
       operation.setUtilisateur(utilisateurDao.mergeObject(utilisateur));
       //OperationType required
       if(operationType == null){
-         log.warn("Objet obligatoire OperationType manquant" + " lors de la creation d'une Operation");
+         log.warn("Objet obligatoire OperationType manquant  lors de la creation d'une Operation");
          throw new RequiredObjectIsNullException("Operation", "creation", "OperationType");
       }
       operation.setOperationType(operationTypeDao.mergeObject(operationType));
       //Obj required
       if(obj == null){
-         log.warn("Objet obligatoire Object manquant" + " lors de la creation d'une Operation");
+         log.warn("Objet obligatoire Object manquant  lors de la creation d'une Operation");
          throw new RequiredObjectIsNullException("Operation", "creation", "Object");
       }
       //recupere la reference vers entite a partir de la classe de obj

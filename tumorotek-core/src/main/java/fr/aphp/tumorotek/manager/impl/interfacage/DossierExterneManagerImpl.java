@@ -163,7 +163,7 @@ public class DossierExterneManagerImpl implements DossierExterneManager
       final List<BlocExterne> blocExternes, final Hashtable<BlocExterne, List<ValeurExterne>> valeurExternes){
       // emetteur required
       if(emetteur == null){
-         log.warn("Objet obligatoire Emetteur manquant" + " lors de la création d'un DossierExterne");
+         log.warn("Objet obligatoire Emetteur manquant  lors de la création d'un DossierExterne");
          throw new RequiredObjectIsNullException("DossierExterne", "creation", "Emetteur");
       }
 

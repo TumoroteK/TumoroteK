@@ -184,7 +184,7 @@ public class NumerotationManagerImpl implements NumerotationManager
       if(banque != null){
          numerotation.setBanque(banqueDao.mergeObject(banque));
       }else{
-         log.warn("Objet obligatoire Banque manquant" + " lors de la création d'une Numerotation");
+         log.warn("Objet obligatoire Banque manquant  lors de la création d'une Numerotation");
          throw new RequiredObjectIsNullException("Numerotation", "creation", "Banque");
       }
 
@@ -192,13 +192,13 @@ public class NumerotationManagerImpl implements NumerotationManager
       if(entite != null){
          numerotation.setEntite(entiteDao.mergeObject(entite));
       }else{
-         log.warn("Objet obligatoire Entite manquant" + " lors de la création d'une Numerotation");
+         log.warn("Objet obligatoire Entite manquant  lors de la création d'une Numerotation");
          throw new RequiredObjectIsNullException("Numerotation", "creation", "Entite");
       }
 
       // Test s'il y a des doublons
       if(findDoublonManager(numerotation)){
-         log.warn("Doublon lors de la creation de l'objet Numerotation : " + numerotation.toString());
+         log.warn("Doublon lors de la creation de l'objet Numerotation : {}",  numerotation);
          throw new DoublonFoundException("Numerotation", "creation");
       }else{
 
@@ -214,7 +214,7 @@ public class NumerotationManagerImpl implements NumerotationManager
       if(banque != null){
          numerotation.setBanque(banqueDao.mergeObject(banque));
       }else{
-         log.warn("Objet obligatoire Banque manquant" + " lors de la modification d'une Numerotation");
+         log.warn("Objet obligatoire Banque manquant  lors de la modification d'une Numerotation");
          throw new RequiredObjectIsNullException("Numerotation", "modification", "Banque");
       }
 
@@ -222,7 +222,7 @@ public class NumerotationManagerImpl implements NumerotationManager
       if(entite != null){
          numerotation.setEntite(entiteDao.mergeObject(entite));
       }else{
-         log.warn("Objet obligatoire Entite manquant" + " lors de la modification d'une Numerotation");
+         log.warn("Objet obligatoire Entite manquant  lors de la modification d'une Numerotation");
          throw new RequiredObjectIsNullException("Numerotation", "modification", "Entite");
       }
 

@@ -166,7 +166,7 @@ public class ValeurExterneManagerImpl implements ValeurExterneManager
 
       // blocExterne required
       if(blocExterne == null){
-         log.warn("Objet obligatoire BlocExterne manquant" + " lors de la création d'une ValeurExterne");
+         log.warn("Objet obligatoire BlocExterne manquant  lors de la création d'une ValeurExterne");
          throw new RequiredObjectIsNullException("ValeurExterne", "creation", "BlocExterne");
       }
 

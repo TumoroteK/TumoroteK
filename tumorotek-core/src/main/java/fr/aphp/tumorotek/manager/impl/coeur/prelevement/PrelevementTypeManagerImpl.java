@@ -102,7 +102,7 @@ public class PrelevementTypeManagerImpl implements PrelevementTypeManager
          prelevementTypeDao.createObject(obj);
          log.info("Enregistrement objet PrelevementType " + obj.toString());
       }else{
-         log.warn("Doublon lors creation objet PrelevementType " + obj.toString());
+         log.warn("Doublon lors creation objet PrelevementType {}",  obj);
          throw new DoublonFoundException("PrelevementType", "creation");
       }
    }
@@ -114,7 +114,7 @@ public class PrelevementTypeManagerImpl implements PrelevementTypeManager
          prelevementTypeDao.updateObject(obj);
          log.info("Modification objet PrelevementType " + obj.toString());
       }else{
-         log.warn("Doublon lors modification objet PrelevementType " + obj.toString());
+         log.warn("Doublon lors modification objet PrelevementType {}",  obj);
          throw new DoublonFoundException("PrelevementType", "modification");
       }
    }

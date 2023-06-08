@@ -168,13 +168,13 @@ public class SModeleManagerImpl implements SModeleManager
       if(plateforme != null){
          modele.setPlateforme(plateformeDao.mergeObject(plateforme));
       }else{
-         log.warn("Objet obligatoire Plateforme manquant" + " lors de la création d'un Indicateur Modele");
+         log.warn("Objet obligatoire Plateforme manquant  lors de la création d'un Indicateur Modele");
          throw new RequiredObjectIsNullException("IndicateurModele", "creation", "Plateforme");
       }
 
       // Test s'il y a des doublons
       if(findDoublonManager(modele)){
-         log.warn("Doublon lors de la creation de l'objet Modele : " + modele.toString());
+         log.warn("Doublon lors de la creation de l'objet Modele : {}",  modele);
          throw new DoublonFoundException("Modele", "creation");
       }
 
@@ -200,13 +200,13 @@ public class SModeleManagerImpl implements SModeleManager
       if(plateforme != null){
          modele.setPlateforme(plateformeDao.mergeObject(plateforme));
       }else{
-         log.warn("Objet obligatoire Plateforme manquant" + " lors de la modification d'un IndicateurModele");
+         log.warn("Objet obligatoire Plateforme manquant  lors de la modification d'un IndicateurModele");
          throw new RequiredObjectIsNullException("IndicateurModele", "modification", "Plateforme");
       }
 
       // Test s'il y a des doublons
       if(findDoublonManager(modele)){
-         log.warn("Doublon lors de la modification de l'objet IndicateurModele : " + modele.toString());
+         log.warn("Doublon lors de la modification de l'objet IndicateurModele : {}",  modele);
          throw new DoublonFoundException("IndicateurModele", "modification");
       }
 

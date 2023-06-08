@@ -161,7 +161,7 @@ public class DestructionMotifManagerImpl implements DestructionMotifManager
          destructionMotifDao.createObject(obj);
          log.info("Enregistrement objet DestructionMotif " + obj.toString());
       }else{
-         log.warn("Doublon lors creation objet DestructionMotif " + obj.toString());
+         log.warn("Doublon lors creation objet DestructionMotif {}",  obj);
          throw new DoublonFoundException("DestructionMotif", "creation");
       }
    }
@@ -173,7 +173,7 @@ public class DestructionMotifManagerImpl implements DestructionMotifManager
          destructionMotifDao.updateObject(obj);
          log.info("Modification objet DestructionMotif " + obj.toString());
       }else{
-         log.warn("Doublon lors modification objet DestructionMotif " + obj.toString());
+         log.warn("Doublon lors modification objet DestructionMotif {}",  obj);
          throw new DoublonFoundException("DestructionMotif", "modification");
       }
    }

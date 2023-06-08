@@ -122,7 +122,7 @@ public class IndicateurManagerImpl implements IndicateurManager
       // stmt.setsModeleIndicateurs(sModeleDao.mergeObject(modele).getSModeleIndicateurs());
       // Test s'il y a des doublons
       if(findDoublonManager(indic)){
-         log.warn("Doublon lors de la creation de l'objet Indicateur : " + indic.getNom());
+         log.warn("Doublon lors de la creation de l'objet Indicateur : {}",  indic.getNom());
          throw new DoublonFoundException("Indicateur", "creation");
       }else{ // validation de l'objet
          // validation

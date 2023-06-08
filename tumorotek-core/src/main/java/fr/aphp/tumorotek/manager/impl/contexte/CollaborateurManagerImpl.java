@@ -393,7 +393,7 @@ public class CollaborateurManagerImpl implements CollaborateurManager
 
       // on vérifie qu'il n'y a pas de doublons pour le collab
       if(findDoublonManager(collaborateur)){
-         log.warn("Doublon lors de la creation de l'objet Collaborateur : " + collaborateur.toString());
+         log.warn("Doublon lors de la creation de l'objet Collaborateur : {}",  collaborateur);
          throw new DoublonFoundException("Collaborateur", "creation");
       }
       // on vérifie la validité du collab

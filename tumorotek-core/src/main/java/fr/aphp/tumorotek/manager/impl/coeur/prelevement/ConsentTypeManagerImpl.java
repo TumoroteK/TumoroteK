@@ -103,7 +103,7 @@ public class ConsentTypeManagerImpl implements ConsentTypeManager
          consentTypeDao.createObject(obj);
          log.info("Enregistrement objet ConsentType " + obj.toString());
       }else{
-         log.warn("Doublon lors creation objet ConsentType " + obj.toString());
+         log.warn("Doublon lors creation objet ConsentType {}",  obj);
          throw new DoublonFoundException("ConsentType", "creation");
       }
    }
@@ -115,7 +115,7 @@ public class ConsentTypeManagerImpl implements ConsentTypeManager
          consentTypeDao.updateObject(obj);
          log.info("Modification objet ConsentType " + obj.toString());
       }else{
-         log.warn("Doublon lors modification objet ConsentType " + obj.toString());
+         log.warn("Doublon lors modification objet ConsentType {}",  obj);
          throw new DoublonFoundException("ConsentType", "modification");
       }
    }

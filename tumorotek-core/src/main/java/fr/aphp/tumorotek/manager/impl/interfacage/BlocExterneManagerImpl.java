@@ -144,13 +144,13 @@ public class BlocExterneManagerImpl implements BlocExterneManager
    public void validateBlocExterneManager(final BlocExterne blocExterne, final DossierExterne dossierExterne){
       // dossierExterne required
       if(dossierExterne == null){
-         log.warn("Objet obligatoire DossierExterne manquant" + " lors de la création d'un BlocExterne");
+         log.warn("Objet obligatoire DossierExterne manquant  lors de la création d'un BlocExterne");
          throw new RequiredObjectIsNullException("BlocExterne", "creation", "DossierExterne");
       }
 
       // entite required
       if(blocExterne.getEntiteId() == null){
-         log.warn("Objet obligatoire Entite manquant" + " lors de la création d'un BlocExterne");
+         log.warn("Objet obligatoire Entite manquant  lors de la création d'un BlocExterne");
          throw new RequiredObjectIsNullException("BlocExterne", "creation", "Entite");
       }
 
@@ -163,7 +163,7 @@ public class BlocExterneManagerImpl implements BlocExterneManager
 
       // ordre required
       if(blocExterne.getOrdre() == null){
-         log.warn("Objet obligatoire Ordre manquant" + " lors de la création d'un BlocExterne");
+         log.warn("Objet obligatoire Ordre manquant  lors de la création d'un BlocExterne");
          throw new RequiredObjectIsNullException("BlocExterne", "creation", "Ordre");
       }
    }

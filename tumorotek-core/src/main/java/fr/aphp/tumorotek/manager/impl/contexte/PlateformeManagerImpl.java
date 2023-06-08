@@ -224,7 +224,7 @@ public class PlateformeManagerImpl implements PlateformeManager
                plateforme);
 
          }else{
-            log.warn("Doublon lors modification objet Plateforme " + plateforme.toString());
+            log.warn("Doublon lors modification objet Plateforme {}",  plateforme);
             throw new DoublonFoundException("Plateforme", "modification");
          }
       }
@@ -256,7 +256,7 @@ public class PlateformeManagerImpl implements PlateformeManager
          updateConteneurs(plateforme, conteneurs);
 
       }else{
-         log.warn("Doublon lors modification objet Plateforme " + plateforme.toString());
+         log.warn("Doublon lors modification objet Plateforme {}",  plateforme);
          throw new DoublonFoundException("Plateforme", "modification");
       }
       return plateforme;

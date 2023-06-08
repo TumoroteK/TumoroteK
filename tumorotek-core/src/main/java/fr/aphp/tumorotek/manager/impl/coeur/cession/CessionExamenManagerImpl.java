@@ -150,7 +150,7 @@ public class CessionExamenManagerImpl implements CessionExamenManager
          cessionExamenDao.createObject(obj);
          log.debug("Enregistrement objet CessionExamen {}" ,  obj);
       }else{
-         log.warn("Doublon lors creation objet CessionExamen " + obj.toString());
+         log.warn("Doublon lors creation objet CessionExamen {}",  obj);
          throw new DoublonFoundException("CessionExamen", "creation");
       }
    }

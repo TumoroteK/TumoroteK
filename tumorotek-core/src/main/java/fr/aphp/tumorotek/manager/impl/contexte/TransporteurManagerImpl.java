@@ -164,7 +164,7 @@ public class TransporteurManagerImpl implements TransporteurManager
    @Override
    public void createObjectManager(final Transporteur transporteur, final Coordonnee coordonnee, final Utilisateur utilisateur){
       if(findDoublonManager(transporteur)){
-         log.warn("Doublon lors de la creation de l'objet Transporteur : " + transporteur.toString());
+         log.warn("Doublon lors de la creation de l'objet Transporteur : {}",  transporteur);
          throw new DoublonFoundException("Transporteur", "creation");
       }else{
 
@@ -197,7 +197,7 @@ public class TransporteurManagerImpl implements TransporteurManager
    @Override
    public void updateObjectManager(final Transporteur transporteur, final Coordonnee coordonnee, final Utilisateur utilisateur){
       if(findDoublonManager(transporteur)){
-         log.warn("Doublon lors de la modif de l'objet Transporteur : " + transporteur.toString());
+         log.warn("Doublon lors de la modif de l'objet Transporteur : {}",  transporteur);
          throw new DoublonFoundException("Transporteur", "modification");
       }else{
 

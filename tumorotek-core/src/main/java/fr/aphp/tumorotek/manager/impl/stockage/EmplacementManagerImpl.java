@@ -821,7 +821,7 @@ public class EmplacementManagerImpl implements EmplacementManager
       if(terminale != null){
          emplacement.setTerminale(terminaleDao.mergeObject(terminale));
       }else{
-         log.warn("Objet obligatoire Terminale manquant" + " lors de la création d'un Emplacement");
+         log.warn("Objet obligatoire Terminale manquant  lors de la création d'un Emplacement");
          throw new RequiredObjectIsNullException("Emplacement", "creation", "Terminale");
       }
 
@@ -829,7 +829,7 @@ public class EmplacementManagerImpl implements EmplacementManager
 
       // Test de la position
       if(!checkEmplacementInTerminale(emplacement)){
-         log.warn("La position n'est pas dans la limite des places de " + "la terminale");
+         log.warn("La position n'est pas dans la limite des places de la terminale");
          throw new InvalidPositionException("Emplacement", "creation", emplacement.getPosition());
       }
 
@@ -845,7 +845,7 @@ public class EmplacementManagerImpl implements EmplacementManager
 
       // Test s"il y a des doublons
       if(findDoublonManager(emplacement) != null){
-         log.warn("Doublon lors de la creation de l'objet Emplacement : " + emplacement.toString());
+         log.warn("Doublon lors de la creation de l'objet Emplacement : {}",  emplacement);
          final EmplacementDoublonFoundException dbe = new EmplacementDoublonFoundException("Emplacement", "creation");
          dbe.setMessage("error.emplacement.doublon");
          dbe.setTerminale(emplacement.getTerminale());
@@ -869,7 +869,7 @@ public class EmplacementManagerImpl implements EmplacementManager
       if(terminale != null){
          emplacement.setTerminale(terminaleDao.mergeObject(terminale));
       }else{
-         log.warn("Objet obligatoire Terminale manquant" + " lors de la modification d'un Emplacement");
+         log.warn("Objet obligatoire Terminale manquant  lors de la modification d'un Emplacement");
          throw new RequiredObjectIsNullException("Emplacement", "modification", "Terminale");
       }
 
@@ -877,7 +877,7 @@ public class EmplacementManagerImpl implements EmplacementManager
 
       // Test de la position
       if(!checkEmplacementInTerminale(emplacement)){
-         log.warn("La position n'est pas dans la limite des places de " + "la terminale");
+         log.warn("La position n'est pas dans la limite des places de la terminale");
          throw new InvalidPositionException("Emplacement", "modification", emplacement.getPosition());
       }
 
@@ -960,7 +960,7 @@ public class EmplacementManagerImpl implements EmplacementManager
          }
 
       }else{
-         log.warn("Objet obligatoire Terminale manquant" + " lors de la creation d'un Emplacement");
+         log.warn("Objet obligatoire Terminale manquant  lors de la creation d'un Emplacement");
          throw new RequiredObjectIsNullException("Emplacement", "creation", "Terminale");
       }
 
@@ -1021,7 +1021,7 @@ public class EmplacementManagerImpl implements EmplacementManager
 
                //Terminale required
                if(empl.getTerminale() == null){
-                  log.warn("Objet obligatoire Terminale manquant" + " lors de la création d'un Emplacement");
+                  log.warn("Objet obligatoire Terminale manquant  lors de la création d'un Emplacement");
                   throw new RequiredObjectIsNullException("Emplacement", "creation", "Terminale");
                }
 

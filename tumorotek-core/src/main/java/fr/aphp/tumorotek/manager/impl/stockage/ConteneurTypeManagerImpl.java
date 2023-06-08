@@ -124,7 +124,7 @@ public class ConteneurTypeManagerImpl implements ConteneurTypeManager
          conteneurTypeDao.createObject(obj);
          log.info("Enregistrement objet ConteneurType " + obj.toString());
       }else{
-         log.warn("Doublon lors creation objet ConteneurType " + obj.toString());
+         log.warn("Doublon lors creation objet ConteneurType {}",  obj);
          throw new DoublonFoundException("ConteneurType", "creation");
       }
    }
@@ -136,7 +136,7 @@ public class ConteneurTypeManagerImpl implements ConteneurTypeManager
          conteneurTypeDao.updateObject(obj);
          log.info("Modification objet ConteneurType " + obj.toString());
       }else{
-         log.warn("Doublon lors modification objet ConteneurType " + obj.toString());
+         log.warn("Doublon lors modification objet ConteneurType {}",  obj);
          throw new DoublonFoundException("ConteneurType", "modification");
       }
    }

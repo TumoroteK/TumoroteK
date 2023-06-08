@@ -167,7 +167,7 @@ public class ModeleManagerImpl implements ModeleManager
       if(plateforme != null){
          modele.setPlateforme(plateformeDao.mergeObject(plateforme));
       }else{
-         log.warn("Objet obligatoire Plateforme manquant" + " lors de la création d'un Modele");
+         log.warn("Objet obligatoire Plateforme manquant  lors de la création d'un Modele");
          throw new RequiredObjectIsNullException("Modele", "creation", "Plateforme");
       }
 
@@ -175,13 +175,13 @@ public class ModeleManagerImpl implements ModeleManager
       if(modeleType != null){
          modele.setModeleType(modeleTypeDao.mergeObject(modeleType));
       }else{
-         log.warn("Objet obligatoire ModeleType manquant" + " lors de la création d'un Modele");
+         log.warn("Objet obligatoire ModeleType manquant  lors de la création d'un Modele");
          throw new RequiredObjectIsNullException("Modele", "creation", "ModeleType");
       }
 
       // Test s'il y a des doublons
       if(findDoublonManager(modele)){
-         log.warn("Doublon lors de la creation de l'objet Modele : " + modele.toString());
+         log.warn("Doublon lors de la creation de l'objet Modele : {}",  modele);
          throw new DoublonFoundException("Modele", "creation");
       }else{
 
@@ -217,7 +217,7 @@ public class ModeleManagerImpl implements ModeleManager
       if(plateforme != null){
          modele.setPlateforme(plateformeDao.mergeObject(plateforme));
       }else{
-         log.warn("Objet obligatoire Plateforme manquant" + " lors de la modification d'un Modele");
+         log.warn("Objet obligatoire Plateforme manquant  lors de la modification d'un Modele");
          throw new RequiredObjectIsNullException("Modele", "modification", "Plateforme");
       }
 
@@ -225,13 +225,13 @@ public class ModeleManagerImpl implements ModeleManager
       if(modeleType != null){
          modele.setModeleType(modeleTypeDao.mergeObject(modeleType));
       }else{
-         log.warn("Objet obligatoire ModeleType manquant" + " lors de la modification d'un Modele");
+         log.warn("Objet obligatoire ModeleType manquant  lors de la modification d'un Modele");
          throw new RequiredObjectIsNullException("Modele", "modification", "ModeleType");
       }
 
       // Test s'il y a des doublons
       if(findDoublonManager(modele)){
-         log.warn("Doublon lors de la modification de l'objet Modele : " + modele.toString());
+         log.warn("Doublon lors de la modification de l'objet Modele : {}",  modele);
          throw new DoublonFoundException("Modele", "modification");
       }else{
 

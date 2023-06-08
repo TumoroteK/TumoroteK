@@ -117,25 +117,25 @@ public class ChampLigneEtiquetteManagerImpl implements ChampLigneEtiquetteManage
       final Entite entite, final Champ champ, final String operation){
       // LigneEtiquette required
       if(ligneEtiquette == null){
-         log.warn("Objet obligatoire LigneEtiquette manquant" + " lors de la création d'un ChampLigneEtiquette");
+         log.warn("Objet obligatoire LigneEtiquette manquant  lors de la création d'un ChampLigneEtiquette");
          throw new RequiredObjectIsNullException("ChampLigneEtiquette", operation, "LigneEtiquette");
       }
 
       // champ required
       if(champ == null){
-         log.warn("Objet obligatoire Champ manquant" + " lors de la création d'un ChampLigneEtiquette");
+         log.warn("Objet obligatoire Champ manquant  lors de la création d'un ChampLigneEtiquette");
          throw new RequiredObjectIsNullException("ChampLigneEtiquette", operation, "Champ");
       }
 
       // Entite required
       if(entite == null){
-         log.warn("Objet obligatoire Entite manquant" + " lors de la création d'un ChampLigneEtiquette");
+         log.warn("Objet obligatoire Entite manquant  lors de la création d'un ChampLigneEtiquette");
          throw new RequiredObjectIsNullException("ChampLigneEtiquette", operation, "Entite");
       }
 
       // Ordre required
       if(champLigneEtiquette.getOrdre() == null){
-         log.warn("Objet obligatoire Ordre manquant" + " lors de la création d'un ChampLigneEtiquette");
+         log.warn("Objet obligatoire Ordre manquant  lors de la création d'un ChampLigneEtiquette");
          throw new RequiredObjectIsNullException("ChampLigneEtiquette", operation, "Ordre");
       }
    }

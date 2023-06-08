@@ -105,7 +105,7 @@ public class ProtocoleManagerImpl implements ProtocoleManager
          protocoleDao.createObject(pt);
          log.info("Enregistrement objet Protocole " + pt.toString());
       }else{
-         log.warn("Doublon lors creation objet Protocole " + pt.toString());
+         log.warn("Doublon lors creation objet Protocole {}",  pt);
          throw new DoublonFoundException("Protocole", "creation");
       }
    }
@@ -117,7 +117,7 @@ public class ProtocoleManagerImpl implements ProtocoleManager
          protocoleDao.updateObject(obj);
          log.info("Modification objet Protocole " + obj.toString());
       }else{
-         log.warn("Doublon lors modification objet Protocole " + obj.toString());
+         log.warn("Doublon lors modification objet Protocole {}",  obj);
          throw new DoublonFoundException("Protocole", "modification");
       }
    }

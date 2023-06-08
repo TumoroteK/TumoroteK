@@ -165,7 +165,7 @@ public class ImprimanteManagerImpl implements ImprimanteManager
       if(plateforme != null){
          imprimante.setPlateforme(plateformeDao.mergeObject(plateforme));
       }else{
-         log.warn("Objet obligatoire Plateforme manquant" + " lors de la création d'une Imprimante");
+         log.warn("Objet obligatoire Plateforme manquant  lors de la création d'une Imprimante");
          throw new RequiredObjectIsNullException("Imprimante", "creation", "Plateforme");
       }
 
@@ -173,13 +173,13 @@ public class ImprimanteManagerImpl implements ImprimanteManager
       if(imprimanteApi != null){
          imprimante.setImprimanteApi(imprimanteApiDao.mergeObject(imprimanteApi));
       }else{
-         log.warn("Objet obligatoire ImprimanteApi manquant" + " lors de la création d'une Imprimante");
+         log.warn("Objet obligatoire ImprimanteApi manquant  lors de la création d'une Imprimante");
          throw new RequiredObjectIsNullException("Imprimante", "creation", "ImprimanteApi");
       }
 
       // Test s'il y a des doublons
       if(findDoublonManager(imprimante)){
-         log.warn("Doublon lors de la creation de l'objet Imprimante : " + imprimante.toString());
+         log.warn("Doublon lors de la creation de l'objet Imprimante : {}",  imprimante);
          throw new DoublonFoundException("Imprimante", "creation");
       }else{
 
@@ -198,7 +198,7 @@ public class ImprimanteManagerImpl implements ImprimanteManager
       if(plateforme != null){
          imprimante.setPlateforme(plateformeDao.mergeObject(plateforme));
       }else{
-         log.warn("Objet obligatoire Plateforme manquant" + " lors de la modification d'une Imprimante");
+         log.warn("Objet obligatoire Plateforme manquant  lors de la modification d'une Imprimante");
          throw new RequiredObjectIsNullException("Imprimante", "modification", "Plateforme");
       }
 
@@ -206,13 +206,13 @@ public class ImprimanteManagerImpl implements ImprimanteManager
       if(imprimanteApi != null){
          imprimante.setImprimanteApi(imprimanteApiDao.mergeObject(imprimanteApi));
       }else{
-         log.warn("Objet obligatoire ImprimanteApi manquant" + " lors de la modification d'une Imprimante");
+         log.warn("Objet obligatoire ImprimanteApi manquant  lors de la modification d'une Imprimante");
          throw new RequiredObjectIsNullException("Imprimante", "modification", "ImprimanteApi");
       }
 
       // Test s'il y a des doublons
       if(findDoublonManager(imprimante)){
-         log.warn("Doublon lors de la modification de l'objet Imprimante : " + imprimante.toString());
+         log.warn("Doublon lors de la modification de l'objet Imprimante : {}",  imprimante);
          throw new DoublonFoundException("Imprimante", "modification");
       }else{
 

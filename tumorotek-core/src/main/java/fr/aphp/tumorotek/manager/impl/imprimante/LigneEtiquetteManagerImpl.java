@@ -109,7 +109,7 @@ public class LigneEtiquetteManagerImpl implements LigneEtiquetteManager
       final List<ChampLigneEtiquette> champLigneEtiquettes, final String operation){
       // modele required
       if(modele == null){
-         log.warn("Objet obligatoire Modele manquant" + " lors de la création d'une LigneEtiquette");
+         log.warn("Objet obligatoire Modele manquant  lors de la création d'une LigneEtiquette");
          throw new RequiredObjectIsNullException("LigneEtiquette", operation, "Modele");
       }
 

@@ -150,7 +150,7 @@ public class ImportTemplateManagerImpl implements ImportTemplateManager
       if(banque != null){
          importTemplate.setBanque(banqueDao.mergeObject(banque));
       }else{
-         log.warn("Objet obligatoire Banque manquant" + " lors de la création d'un ImportTemplate");
+         log.warn("Objet obligatoire Banque manquant  lors de la création d'un ImportTemplate");
          throw new RequiredObjectIsNullException("ImportTemplate", "creation", "Banque");
       }
 
@@ -162,7 +162,7 @@ public class ImportTemplateManagerImpl implements ImportTemplateManager
                   colonnesToCreate.get(i).getChamp(), "creation");
             }
          }else{
-            log.warn("Doublon lors creation objet ImportColonne " + importTemplate.toString());
+            log.warn("Doublon lors creation objet ImportColonne {}",  importTemplate);
             throw new DoublonFoundException("ImportColonne", "creation");
          }
       }
@@ -180,7 +180,7 @@ public class ImportTemplateManagerImpl implements ImportTemplateManager
          log.info("Enregistrement objet ImportTemplate " + importTemplate.toString());
 
       }else{
-         log.warn("Doublon lors creation objet ImportTemplate " + importTemplate.toString());
+         log.warn("Doublon lors creation objet ImportTemplate {}",  importTemplate);
          throw new DoublonFoundException("ImportTemplate", "creation");
       }
    }
@@ -192,7 +192,7 @@ public class ImportTemplateManagerImpl implements ImportTemplateManager
       if(banque != null){
          importTemplate.setBanque(banqueDao.mergeObject(banque));
       }else{
-         log.warn("Objet obligatoire Banque manquant" + " lors de la modification d'un ImportTemplate");
+         log.warn("Objet obligatoire Banque manquant  lors de la modification d'un ImportTemplate");
          throw new RequiredObjectIsNullException("ImportTemplate", "modification", "Banque");
       }
 
@@ -204,7 +204,7 @@ public class ImportTemplateManagerImpl implements ImportTemplateManager
                   colonnesToCreate.get(i).getChamp(), "creation");
             }
          }else{
-            log.warn("Doublon lors creation objet ImportColonne " + importTemplate.toString());
+            log.warn("Doublon lors creation objet ImportColonne {}",  importTemplate);
             throw new DoublonFoundException("ImportColonne", "modification");
          }
       }
@@ -222,7 +222,7 @@ public class ImportTemplateManagerImpl implements ImportTemplateManager
          log.info("Enregistrement objet ImportTemplate " + importTemplate.toString());
 
       }else{
-         log.warn("Doublon lors modification objet ImportTemplate " + importTemplate.toString());
+         log.warn("Doublon lors modification objet ImportTemplate {}",  importTemplate);
          throw new DoublonFoundException("ImportTemplate", "modification");
       }
    }

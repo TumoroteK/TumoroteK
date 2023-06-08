@@ -487,7 +487,7 @@ public class TerminaleManagerImpl implements TerminaleManager
       if(enceinte != null){
          terminale.setEnceinte(enceinteDao.mergeObject(enceinte));
       }else{
-         log.warn("Objet obligatoire Enceinte manquant" + " lors de la création d'une Terminale");
+         log.warn("Objet obligatoire Enceinte manquant  lors de la création d'une Terminale");
          throw new RequiredObjectIsNullException("Terminale", "creation", "Enceinte");
       }
 
@@ -495,7 +495,7 @@ public class TerminaleManagerImpl implements TerminaleManager
       if(terminaleType != null){
          terminale.setTerminaleType(terminaleTypeDao.mergeObject(terminaleType));
       }else{
-         log.warn("Objet obligatoire TerminaleType manquant" + " lors de la création d'une Terminale");
+         log.warn("Objet obligatoire TerminaleType manquant  lors de la création d'une Terminale");
          throw new RequiredObjectIsNullException("Terminale", "creation", "TerminaleType");
       }
 
@@ -503,7 +503,7 @@ public class TerminaleManagerImpl implements TerminaleManager
       if(terminaleNumerotation != null){
          terminale.setTerminaleNumerotation(terminaleNumerotationDao.mergeObject(terminaleNumerotation));
       }else{
-         log.warn("Objet obligatoire TerminaleNumerotation manquant" + " lors de la création d'une Terminale");
+         log.warn("Objet obligatoire TerminaleNumerotation manquant  lors de la création d'une Terminale");
          throw new RequiredObjectIsNullException("Terminale", "creation", "TerminaleNumerotation");
       }
 
@@ -513,19 +513,19 @@ public class TerminaleManagerImpl implements TerminaleManager
 
       // Test de la position
       if(!checkTerminaleInEnceinteLimitesManager(terminale)){
-         log.warn("La position n'est pas dans la limite des places de " + "l'enceinte parent");
+         log.warn("La position n'est pas dans la limite des places de l'enceinte parent");
          throw new InvalidPositionException("Terminale", "creation", terminale.getPosition());
       }
 
       // Test de la position
       if(!checkPositionManager.checkPositionLibreInEnceinteManager(terminale.getEnceinte(), terminale.getPosition(), null, null)){
-         log.warn("La position est déjà occupée par un autre objet dans " + "l'enceinte parent");
+         log.warn("La position est déjà occupée par un autre objet dans l'enceinte parent");
          throw new UsedPositionException("Terminale", "creation", terminale.getPosition());
       }
 
       // Test s'il y a des doublons
       if(findDoublonManager(terminale)){
-         log.warn("Doublon lors de la creation de l'objet Terminale : " + terminale.toString());
+         log.warn("Doublon lors de la creation de l'objet Terminale : {}",  terminale);
          throw new DoublonFoundException("Terminale", "creation");
       }else{
 
@@ -553,7 +553,7 @@ public class TerminaleManagerImpl implements TerminaleManager
       if(enceinte != null){
          terminale.setEnceinte(enceinteDao.mergeObject(enceinte));
       }else{
-         log.warn("Objet obligatoire Enceinte manquant" + " lors de la modification d'une Terminale");
+         log.warn("Objet obligatoire Enceinte manquant  lors de la modification d'une Terminale");
          throw new RequiredObjectIsNullException("Terminale", "modification", "Enceinte");
       }
 
@@ -561,7 +561,7 @@ public class TerminaleManagerImpl implements TerminaleManager
       if(terminaleType != null){
          terminale.setTerminaleType(terminaleTypeDao.mergeObject(terminaleType));
       }else{
-         log.warn("Objet obligatoire TerminaleType manquant" + " lors de la modification d'une Terminale");
+         log.warn("Objet obligatoire TerminaleType manquant  lors de la modification d'une Terminale");
          throw new RequiredObjectIsNullException("Terminale", "modification", "TerminaleType");
       }
 
@@ -569,7 +569,7 @@ public class TerminaleManagerImpl implements TerminaleManager
       if(terminaleNumerotation != null){
          terminale.setTerminaleNumerotation(terminaleNumerotationDao.mergeObject(terminaleNumerotation));
       }else{
-         log.warn("Objet obligatoire TerminaleNumerotation manquant" + " lors de la modification d'une Terminale");
+         log.warn("Objet obligatoire TerminaleNumerotation manquant  lors de la modification d'une Terminale");
          throw new RequiredObjectIsNullException("Terminale", "modification", "TerminaleNumerotation");
       }
 
@@ -579,14 +579,14 @@ public class TerminaleManagerImpl implements TerminaleManager
 
       // Test de la position
       if(!checkTerminaleInEnceinteLimitesManager(terminale)){
-         log.warn("La position n'est pas dans la limite des places de " + "l'enceinte parent");
+         log.warn("La position n'est pas dans la limite des places de l'enceinte parent");
          throw new InvalidPositionException("Terminale", "modification", terminale.getPosition());
       }
 
       // Test de la position
       if(!checkPositionManager.checkPositionLibreInEnceinteManager(terminale.getEnceinte(), terminale.getPosition(),
          terminale.getTerminaleId(), null)){
-         log.warn("La position est déjà occupée par un autre objet dans " + "l'enceinte parent");
+         log.warn("La position est déjà occupée par un autre objet dans l'enceinte parent");
          throw new UsedPositionException("Terminale", "modification", terminale.getPosition());
       }
 
@@ -616,7 +616,7 @@ public class TerminaleManagerImpl implements TerminaleManager
 
       // Test s'il y a des doublons
       if(findDoublonManager(terminale)){
-         log.warn("Doublon lors de la modification de l'objet Terminale : " + terminale.toString());
+         log.warn("Doublon lors de la modification de l'objet Terminale : {}",  terminale);
          throw new DoublonFoundException("Terminale", "modification");
       }else{
 
@@ -704,7 +704,7 @@ public class TerminaleManagerImpl implements TerminaleManager
             }
 
          }else{
-            log.warn("Objet obligatoire Enceinte manquant" + " lors de la creation d'une Terminale");
+            log.warn("Objet obligatoire Enceinte manquant  lors de la creation d'une Terminale");
             throw new RequiredObjectIsNullException("Terminale", "creation", "Enceinte");
          }
       }
@@ -719,10 +719,10 @@ public class TerminaleManagerImpl implements TerminaleManager
 
          // Test s'il y a des doublons
          if(findDoublonWithoutTwoTerminalesManager(terminale1, terminale2)){
-            log.warn("Doublon lors du déplacement de l'objet Terminale : " + terminale1.toString());
+            log.warn("Doublon lors du déplacement de l'objet Terminale : {}",  terminale1);
             throw new DoublonFoundException("Terminale", "deplacement");
          }else if(findDoublonWithoutTwoTerminalesManager(terminale2, terminale1)){
-            log.warn("Doublon lors du déplacement de l'objet Terminale : " + terminale2.toString());
+            log.warn("Doublon lors du déplacement de l'objet Terminale : {}",  terminale2);
             throw new DoublonFoundException("Terminale", "deplacement");
          }else{
 
@@ -837,7 +837,7 @@ public class TerminaleManagerImpl implements TerminaleManager
             }
 
          }else{
-            log.warn("Objet obligatoire Enceinte manquant" + " lors de la creation d'une Terminale");
+            log.warn("Objet obligatoire Enceinte manquant  lors de la creation d'une Terminale");
             throw new RequiredObjectIsNullException("Terminale", "creation", "Enceinte");
          }
       }
