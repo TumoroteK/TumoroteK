@@ -912,10 +912,10 @@ public class TraitementQueryManagerImpl implements TraitementQueryManager
       }
 
       /* On exécute la requête. */
-      log.debug("findObjetByCritereManager : Exécution de la requête : {} \n",sql.toString());
+      log.debug("findObjetByCritereManager : Exécution de la requête : \n" + sql.toString());
 
       final EntityManager em = entityManagerFactory.createEntityManager();
-      log.debug(" query hql : {}", sql.toString());
+      log.debug(" query hql : " + sql.toString());
       final TypedQuery<Integer> query = em.createQuery(sql.toString(), Integer.class);
       values.removeAll(valuesChampsCalcules);
       for(int i = 0; i < values.size(); i++){
@@ -929,7 +929,7 @@ public class TraitementQueryManagerImpl implements TraitementQueryManager
       // recherchée n'est pas un patient
       if(sql.toString().contains("(:list)")){
          query.setParameter("list", banques);
-		 log.debug("banqueId : {}", banques.stream().map(banque -> Integer.toString(banque.getBanqueId())).collect(Collectors.joining(",")));
+         log.debug("banqueId : " + banques.stream().map(banque -> Integer.toString(banque.getBanqueId())).collect(Collectors.joining(",")));
       }
       for(int i = 1; i < nbBanquesInCriteres; i++){
          final StringBuffer sb = new StringBuffer("list");
