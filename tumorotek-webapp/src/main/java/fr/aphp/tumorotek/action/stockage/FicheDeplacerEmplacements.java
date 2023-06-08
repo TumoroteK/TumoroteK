@@ -955,18 +955,18 @@ public class FicheDeplacerEmplacements extends FicheTerminale
          ManagerLocator.getEmplacementManager().deplacerMultiEmplacementsManager(emplacementsFinaux,
             SessionUtils.getLoggedUser(sessionScope));
 
-         // pour chaque emplacement, on maj l'objet contenu
+         // pour chaque emplacement, on maj l'objet contenu dans la liste des Echantillons ou des produits dérivés
          for(int i = 0; i < emplacementsFinaux.size(); i++){
             final Emplacement empl = emplacementsFinaux.get(i);
             if(empl.getEntite() != null && empl.getObjetId() != null && empl.getEntite().getNom().equals("Echantillon")){
                final Echantillon echan = ManagerLocator.getEchantillonManager().findByIdManager(empl.getObjetId());
-               // on vérifie que l'on retrouve bien la page
+               // on vérifie que l'on retrouve bien la page (onglet)
                // contenant la liste
                // des échantillons
                if(getMainWindow().isFullfilledComponent("echantillonPanel", "winEchantillon")){
                   if(getObjectTabController().getEchantillonController() != null){
 
-                     // update de l'échantillon dans la liste
+                     // update de l'échantillon dans la liste de l'onglet Echantillon
                      getObjectTabController().getEchantillonController().getListe().updateObjectGridListFromOtherPage(echan,
                         false);
                   }

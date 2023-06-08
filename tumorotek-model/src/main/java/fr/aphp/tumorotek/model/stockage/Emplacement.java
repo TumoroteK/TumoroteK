@@ -108,10 +108,12 @@ public class Emplacement implements Serializable
 
    private Boolean vide = true;
 
+   //ces 2 attributs (adresses physique et logique de l'emplacement) sont obsolètes : 
+   //ils ne sont plus sauvegardés en base de données car ils peuvent être récupérés à partir d'autres données
    private String adrp;
-
    private String adrl;
-
+   //
+   
    //private Set<Retour> retours = new HashSet<Retour>();
    private Set<ProdDerive> prodDerives = new HashSet<>();
 
