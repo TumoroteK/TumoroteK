@@ -1438,7 +1438,7 @@ public class PrelevementManagerImpl implements PrelevementManager
             mv.move();
          }
       }catch(final IOException ioe){ // problème survenu lors du déplacement
-         log.error("un problème est survenu dans un déplacement de fichier: " + mvFichier.toString());
+         log.error("un problème est survenu dans un déplacement de fichier: {}",  mvFichier);
 
          log.error(ioe.getMessage(), ioe);
 
@@ -1448,7 +1448,7 @@ public class PrelevementManagerImpl implements PrelevementManager
                mv.revert();
             }
          }catch(final IOException ioe2){ // problème survenu lors du rollback du déplacement
-            log.error("un problème est survenu dans un rollabck de déplacement de fichier: " + mvFichier.toString());
+            log.error("un problème est survenu dans un rollabck de déplacement de fichier: {}",  mvFichier);
 
             log.error(ioe2.getMessage(), ioe2);
          }

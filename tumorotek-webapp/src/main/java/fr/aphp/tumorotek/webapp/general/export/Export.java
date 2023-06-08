@@ -1202,7 +1202,7 @@ public class Export extends Thread
 	{
 		@Override
 		public void uncaughtException(final Thread th, final Throwable ex){
-			log.error("Uncaught exception: " + ex);
+			log.error("Uncaught exception: {}",  ex);
 		}
 	};
 

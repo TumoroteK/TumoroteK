@@ -83,7 +83,7 @@ public class ParametresManagerImpl implements ParametresManager
       try( InputStream is = Files.newInputStream(Paths.get(TumorotekProperties.TUMO_PROPERTIES_PATH))){
          tumoProperties.load(is);
       }catch(final IOException e){
-         log.error("Erreur lors du chargement du fichier " + TumorotekProperties.TUMO_PROPERTIES_PATH, e);
+         log.error("Erreur lors du chargement du fichier {}",  TumorotekProperties.TUMO_PROPERTIES_PATH, e);
       }
 
       String msgAccueil = tumoProperties.getProperty(TkParam.MSG_ACCUEIL.getKey());
@@ -180,7 +180,7 @@ public class ParametresManagerImpl implements ParametresManager
 
          oldLogo.renameTo(logo);
 
-         log.error("Erreur lors de la sauvegarde du fichier " + LOGO_FILEPATH, e);
+         log.error("Erreur lors de la sauvegarde du fichier {}",  LOGO_FILEPATH, e);
 
       }finally{
 

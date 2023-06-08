@@ -267,7 +267,7 @@ public class FichierManagerImpl implements FichierManager
             log.info("Fichier existe déjà path: " + path);
          }
       }catch(final FileNotFoundException fe){
-         log.error("Annotation fichier: Erreur survenue dans la creation du fichier au chemin specifie: " + path);
+         log.error("Annotation fichier: Erreur survenue dans la creation du fichier au chemin specifie: {}",  path);
          throw new RuntimeException(fe);
       }catch(final java.io.IOException e){
          log.error("Annotation fichier: Erreur survenue dans l'ecriture fichier");

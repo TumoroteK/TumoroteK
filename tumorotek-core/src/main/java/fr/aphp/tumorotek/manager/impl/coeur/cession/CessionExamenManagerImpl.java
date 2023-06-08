@@ -171,7 +171,7 @@ public class CessionExamenManagerImpl implements CessionExamenManager
    public void removeObjectManager(final CessionExamen obj){
       if(obj != null){
          cessionExamenDao.removeObject(obj.getId());
-         log.debug("Suppression objet CessionExamen {}" , obj));
+         log.debug("Suppression objet CessionExamen {}" , obj);
       }else{
          log.warn("Suppression d'une CessionExamen null");
       }

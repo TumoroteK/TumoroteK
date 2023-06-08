@@ -200,8 +200,9 @@ public class PatientSipManagerImpl implements PatientSipManager
             if(pats.size() == 1){
                return pats.get(0);
             }else{ // message non traité
-               log.error("Synchronization SIP impossible! " + "Plusieurs patients "
-                  + "sont enregistrés dans le système pour ce nip " + sipPatient.getNip());
+               log.error("Synchronization SIP impossible! Plusieurs patients sont enregistrés dans le système " +
+                  "pour ce nip {}", sipPatient.getNip());
+
             }
          }
       }

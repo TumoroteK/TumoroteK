@@ -206,7 +206,7 @@ public class PlateformeManagerImpl implements PlateformeManager
             if(new File(path).mkdirs()){
                log.info("Creation file system " + path);
             }else{
-               log.error("Erreur dans la creation du systeme de fichier pour la pf " + plateforme.toString());
+               log.error("Erreur dans la creation du systeme de fichier pour la pf {}",  plateforme);
                throw new RuntimeException("plateforme.filesystem.error");
             }
 

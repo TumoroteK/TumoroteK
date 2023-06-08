@@ -335,15 +335,15 @@ public class OperationManagerImpl implements OperationManager
          final Method targetmethod = targetClass.getMethod("get" + targetClass.getSimpleName() + "Id", new Class[] {});
          return (Integer) targetmethod.invoke(obj, new Object[] {});
       }catch(final IllegalArgumentException e){
-         log.error("Creation Operation a echoue " + "car impossible de recupere ObjetId: " + e.getMessage());
+         log.error("Creation Operation a echoue car impossible de recupere ObjetId: {}",  e.getMessage());
       }catch(final IllegalAccessException e){
-         log.error("Creation Operation a echoue " + "car impossible de recupere ObjetId: " + e.getMessage());
+         log.error("Creation Operation a echoue car impossible de recupere ObjetId: {}",  e.getMessage());
       }catch(final InvocationTargetException e){
-         log.error("Creation Operation a echoue " + "car impossible de recupere ObjetId: " + e.getMessage());
+         log.error("Creation Operation a echoue car impossible de recupere ObjetId: {}",  e.getMessage());
       }catch(final SecurityException e){
-         log.error("Creation Operation a echoue " + "car impossible de recupere ObjetId: " + e.getMessage());
+         log.error("Creation Operation a echoue car impossible de recupere ObjetId: {}",  e.getMessage());
       }catch(final NoSuchMethodException e){
-         log.error("Creation Operation a echoue " + "car impossible de recupere ObjetId: " + e.getMessage());
+         log.error("Creation Operation a echoue car impossible de recupere ObjetId: {}",  e.getMessage());
       }
       return null;
    }

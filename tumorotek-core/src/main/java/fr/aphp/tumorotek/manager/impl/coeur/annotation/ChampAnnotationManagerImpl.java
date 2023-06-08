@@ -667,7 +667,7 @@ public class ChampAnnotationManagerImpl implements ChampAnnotationManager
                if(new File(path).mkdirs()){
                   log.debug("Creation file system {}",  path);
                }else{
-                  log.error("Erreur dans la creation du systeme " + "de fichier pour le champ " + chp.toString());
+                  log.error("Erreur dans la creation du systeme de fichier pour le champ {}",  chp);
                }
             }else{
                // supprime le contenu

@@ -239,7 +239,7 @@ public class TumorotekPropertiesInitializer
          Files.write(tumoPropertiesPath, sb.toString().getBytes(), StandardOpenOption.APPEND, StandardOpenOption.APPEND);
 
       }catch(NamingException | IOException e){
-         log.error("Erreur lors de l'écriture du fichier " + TumorotekProperties.TUMO_PROPERTIES_PATH, e);
+         log.error("Erreur lors de l'écriture du fichier {}",  TumorotekProperties.TUMO_PROPERTIES_PATH, e);
       }
 
    }
