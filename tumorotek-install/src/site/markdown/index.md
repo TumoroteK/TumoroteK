@@ -3,21 +3,57 @@
 ##### Version 2.3.0.3-SNAPSHOT - Publiée le 30/05/2023
 - Adaptations pour le module Gatsbi
 
+***
 
-##### Version 2.2.5 - Publiée le 13/04/2022
+##### Version 2.2.8 - Publiée le 17/05/2023
+###### Corrections
+- YouTrack [TK-322](https://tumorotek.myjetbrains.com/youtrack/issue/TK-322) : la désactivation d'un compte avec accès LDAP n'est pas prise en compte
+- YouTrack [TK-333](https://tumorotek.myjetbrains.com/youtrack/issue/TK-333) : <span class="badge badge-stockage">Evènement de stockage</span> Modification de la gestion de la stérilité (cochée par défaut lors de la création)
+- YouTrack [TK-358](https://tumorotek.myjetbrains.com/youtrack/issue/TK-358) : <span class="badge badge-recherche">Recherche Avancée</span> Plantage si saisie d'un critère sur complément diagnostic
+- YouTrack [TK-368](https://tumorotek.myjetbrains.com/youtrack/issue/TK-368) : <span class="badge badge-recherche">Recherche</span> Mauvaise actualisation du nombre de résultats de la recherche, dans le titre au dessus de la liste
+- YouTrack [TK-373](https://tumorotek.myjetbrains.com/youtrack/issue/TK-373) : <span class="badge badge-export">Export</span> <span class="badge badge-echantillon">Echantillon</span> Heures des dates toujours à 00:00 au niveau des évènements de stockage
+- YouTrack [TK-374](https://tumorotek.myjetbrains.com/youtrack/issue/TK-374) : <span class="badge badge-administration">Administration</span> Initialisation TK : contexte Sérologie non proposé
+- YouTrack [TK-377](https://tumorotek.myjetbrains.com/youtrack/issue/TK-377) : <span class="badge badge-export">Export</span> En toutes collections, champs d'annotation affichés plusieurs fois
+- YouTrack [TK-378](https://tumorotek.myjetbrains.com/youtrack/issue/TK-378) : <span class="badge badge-export">Export</span> En toutes collections, champs d'annotation non regroupés par table d'annotation
+- YouTrack [TK-379](https://tumorotek.myjetbrains.com/youtrack/issue/TK-379) : <span class="badge badge-impression">Impression (bon de livraison)</span> Afficher la date de mise à disposition au format anglais, si choix de la langue anglaise
+- YouTrack [TK-390](https://tumorotek.myjetbrains.com/youtrack/issue/TK-390) : <span class="badge badge-export">Export</span> Correction de l'erreur "Data truncated for column 'A1_1' at row 1"
+- YouTrack [TK-395](https://tumorotek.myjetbrains.com/youtrack/issue/TK-395) : <span class="badge badge-stockage">Stockage</span> Conteneur attribué automatiquement à des collections à tort
+- YouTrack [TK-397](https://tumorotek.myjetbrains.com/youtrack/issue/TK-397) : <span class="badge badge-stockage">Evènement de stockage</span> Sécurisation de la modification d'un évènement de stockage, rendue impossible pour ceux créés automatiquement lors d'une cession totale ou une transformation totale
+- YouTrack [TK-398](https://tumorotek.myjetbrains.com/youtrack/issue/TK-398) : popup <span class="badge badge-stockage">Evènement de stockage</span> Correction du titre en fonction du cas courant (création ou modification)
+- YouTrack [TK-400](https://tumorotek.myjetbrains.com/youtrack/issue/TK-400) : Exécution <span class="badge badge-recherche">Recherche Complexe</span> Ajout de la valeur "Toutes les collections" pour afficher toutes les requêtes quelque soit la collection de création (comme c'était le cas sur la version 2.1.4)
+- YouTrack [TK-402](https://tumorotek.myjetbrains.com/youtrack/issue/TK-402) : <span class="badge badge-export">Export</span> <span class="badge badge-cession">Cession</span> impossible pour certaines installations mysql version 8
+
+###### Améliorations
+- YouTrack [TK-342](https://tumorotek.myjetbrains.com/youtrack/issue/TK-342) : <span class="badge badge-administration">Administration</span> Création d'une collection : trier la liste des utilisateurs par ordre alphabétique
+- YouTrack [TK-365](https://tumorotek.myjetbrains.com/youtrack/issue/TK-365) : Amélioration pour faciliter la saisie des heures, sur les champs de type date+heure
+- YouTrack [TK-382](https://tumorotek.myjetbrains.com/youtrack/issue/TK-382) : <span class="badge badge-export">Export</span> Pose d'un index sur la table OBJET_NON_CONFORME
+- YouTrack [TK-383](https://tumorotek.myjetbrains.com/youtrack/issue/TK-383) : Page d'accueil : le bloc "nouvelles fonctionnalités" ne propose plus qu'un lien vers le site statique lié à la version installée
+- YouTrack [TK-399](https://tumorotek.myjetbrains.com/youtrack/issue/TK-333) : <span class="badge badge-stockage">Evènement de stockage</span> Optimisation du temps de création (pose d'un index)
+
+***
+
+##### Version 2.2.7 - Publiée le 13/03/2023
+###### Correction
+- YouTrack [TK-357](https://tumorotek.myjetbrains.com/youtrack/issue/TK-357) : <span class="badge badge-export">Export</span> <span class="badge badge-patient">Patient</span> Barre d'avancement bloquée à 0 %
+
+***
+
+##### Version 2.2.6 - Publiée le 29/09/2022
 ###### Adaptation pour projet IRELEC - CHU Grenoble
 - YouTrack [TK-339](https://tumorotek.myjetbrains.com/youtrack/issue/TK-339) : ROBOT Grenoble - accès bouton "Stockage automatisé" et "Déstockage automatisé"
 
+***
+
 ##### Version 2.2.5 - Publiée le 06/07/2022
 ###### Corrections
-- YouTrack [TK-330](https://tumorotek.myjetbrains.com/youtrack/issue/TK-330) : Saisie d'un prélèvement en contexte sérologique : ajout de l'aide à la saisie du statut juridique comme pour le contexte anapath
-- YouTrack [TK-328](https://tumorotek.myjetbrains.com/youtrack/issue/TK-328) : Export : mauvaise gestion de l'anonymisation pour les profils "administrateur de collections" 
-- YouTrack [TK-313](https://tumorotek.myjetbrains.com/youtrack/issue/TK-313) : Conteneurs partagés : mauvaise prise en compte de la restriction de stockage à l'administrateur - déplacements bloqués à tort
-- YouTrack [TK-314](https://tumorotek.myjetbrains.com/youtrack/issue/TK-314) : Conteneurs partagés : mauvaise prise en compte de la restriction de stockage à l'administrateur - problème d'affichage des conteneurs
-- YouTrack [TK-320](https://tumorotek.myjetbrains.com/youtrack/issue/TK-320) : Exports : Plantage systématique lors des exports en "Toutes collections".
-- YouTrack [TK-321](https://tumorotek.myjetbrains.com/youtrack/issue/TK-321) : Exports : Amélioration d'un message d'erreur pour le rendre plus parlant.
-- YouTrack [TK-325](https://tumorotek.myjetbrains.com/youtrack/issue/TK-325) : Administration > Fiche Plateforme : tri des conteneurs par ordre alphabétique du nom
-- YouTrack [TK-326](https://tumorotek.myjetbrains.com/youtrack/issue/TK-326) : Administration > Fiche Collection (mode édition) : dans la liste déroulante "assigner un conteneur", tri par ordre alphabétique du nom des conteneurs
+- YouTrack [TK-330](https://tumorotek.myjetbrains.com/youtrack/issue/TK-330) : <span class="badge badge-prelevement">Prélèvement</span> Saisie d'un prélèvement en contexte sérologique : ajout de l'aide à la saisie du statut juridique comme pour le contexte anapath
+- YouTrack [TK-328](https://tumorotek.myjetbrains.com/youtrack/issue/TK-328) : <span class="badge badge-export">Export</span> Mauvaise gestion de l'anonymisation pour les profils "administrateur de collections" 
+- YouTrack [TK-313](https://tumorotek.myjetbrains.com/youtrack/issue/TK-313) : <span class="badge badge-administration">Administration</span> Conteneurs partagés : mauvaise prise en compte de la restriction de stockage à l'administrateur - déplacements bloqués à tort
+- YouTrack [TK-314](https://tumorotek.myjetbrains.com/youtrack/issue/TK-314) : <span class="badge badge-administration">Administration</span> Conteneurs partagés : mauvaise prise en compte de la restriction de stockage à l'administrateur - problème d'affichage des conteneurs
+- YouTrack [TK-320](https://tumorotek.myjetbrains.com/youtrack/issue/TK-320) : <span class="badge badge-export">Export</span> Plantage systématique lors des exports en "Toutes collections".
+- YouTrack [TK-321](https://tumorotek.myjetbrains.com/youtrack/issue/TK-321) : <span class="badge badge-export">Export</span> Amélioration d'un message d'erreur pour le rendre plus parlant.
+- YouTrack [TK-325](https://tumorotek.myjetbrains.com/youtrack/issue/TK-325) : <span class="badge badge-administration">Administration</span> Fiche Plateforme : tri des conteneurs par ordre alphabétique du nom
+- YouTrack [TK-326](https://tumorotek.myjetbrains.com/youtrack/issue/TK-326) : <span class="badge badge-administration">Administration</span> Fiche Collection (mode édition) : dans la liste déroulante "assigner un conteneur", tri par ordre alphabétique du nom des conteneurs
 
 ***
 
@@ -27,19 +63,21 @@
 - YouTrack [TK-302](https://tumorotek.myjetbrains.com/youtrack/issue/TK-302)
 - YouTrack [TK-299](https://tumorotek.myjetbrains.com/youtrack/issue/TK-299)
 
+***
+
 ##### Version 2.2.3 - Publiée le 09/06/2021
 ###### Nouveautés
-- YouTrack [TK-4](https://tumorotek.myjetbrains.com/youtrack/issue/TKB-4) : <span class="badge badge-prelevement">Prélèvement</span> Amélioration de la signification : congélation à l'arrivé à la biothèque
-- YouTrack [TK-14](https://tumorotek.myjetbrains.com/youtrack/issue/TK-14) : Evolution de la partie Numérotation
-- YouTrack [TK-61](https://tumorotek.myjetbrains.com/youtrack/issue/TK-61) : <span class="badge badge-impression-doc">Impression (modèle DOC)</span> Pouvoir créer un modèle de document DOCx contenant des placeholders (clé) correspondants des champs et les remplacer par leur valeur à l'impression.
-- YouTrack [TK-98](https://tumorotek.myjetbrains.com/youtrack/issue/TK-98) : <span class="badge badge-annotation-champ-calcule">Annotation (Champ calculé)</span> Mise en place des champs calculés.
+- YouTrack [TKB-4](https://tumorotek.myjetbrains.com/youtrack/issue/TKB-4) : <span class="badge badge-prelevement">Prélèvement</span> Amélioration de la signification : congélation à l'arrivé à la biothèque
+- YouTrack [TK-14](https://tumorotek.myjetbrains.com/youtrack/issue/TK-14) : <span class="badge badge-administration">Administration</span> Evolution de la partie Numérotation
+- YouTrack [TK-61](https://tumorotek.myjetbrains.com/youtrack/issue/TK-61) : <span class="badge badge-impression">Impression (modèle DOC)</span> Pouvoir créer un modèle de document DOCx contenant des placeholders (clé) correspondants des champs et les remplacer par leur valeur à l'impression.
+- YouTrack [TK-98](https://tumorotek.myjetbrains.com/youtrack/issue/TK-98) : <span class="badge badge-annotation">Annotation (Champ calculé)</span> Mise en place des champs calculés.
 - YouTrack [TK-110](https://tumorotek.myjetbrains.com/youtrack/issue/TK-110) : <span class="badge badge-statistiques">Statistiques</span> Amélioration de la partie Statistiques/Indicateurs
-- YouTrack [TK-119](https://tumorotek.myjetbrains.com/youtrack/issue/TK-119) : Pouvoir affecter à plusieurs collections une même table d'annotation
+- YouTrack [TK-119](https://tumorotek.myjetbrains.com/youtrack/issue/TK-119) : <span class="badge badge-administration">Administration</span> Pouvoir affecter à plusieurs collections une même table d'annotation
 - YouTrack [TK-160](https://tumorotek.myjetbrains.com/youtrack/issue/TK-160) : <span class="badge badge-cession">Cession</span> Cessions de type Traitement permettant un retour d'objets cédés sous forme de produits dérivés
 - YouTrack [TK-172](https://tumorotek.myjetbrains.com/youtrack/issue/TK-172) : Afficher les actions du super utilisateur dans l'historique
 - YouTrack [TK-196](https://tumorotek.myjetbrains.com/youtrack/issue/TK-196) : Implémentation du contexte Sérologie
 - YouTrack [TK-199](https://tumorotek.myjetbrains.com/youtrack/issue/TK-199) : Choisir la température ou mettre la température de transport par défaut dans un évènement de stockage lié à une cession
-- YouTrack [TK-200](https://tumorotek.myjetbrains.com/youtrack/issue/TK-200) : Ajouter des accès utilisateur depuis l'onglet Administration > Collection
+- YouTrack [TK-200](https://tumorotek.myjetbrains.com/youtrack/issue/TK-200) : <span class="badge badge-administration">Administration</span> Ajouter des accès utilisateur depuis l'onglet Administration > Collection
 - YouTrack [TK-201](https://tumorotek.myjetbrains.com/youtrack/issue/TK-201) : Ajouter les champs annotations / maladie dans l'impression des étiquettes paramétrables
 - YouTrack [TK-203](https://tumorotek.myjetbrains.com/youtrack/issue/TK-203) : Pouvoir ajouter un logo et un message d'accueil sur la page de login
 - YouTrack [TK-210](https://tumorotek.myjetbrains.com/youtrack/issue/TK-210) : Possibilité de choisir le mode d'authentification à la création d'un compte utilisateur

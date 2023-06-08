@@ -1053,6 +1053,9 @@ public abstract class AbstractListeController2 extends AbstractController
 		getObjectTabController().clearStaticFiche();
 		// update de la grille
 		getBinder().loadAttribute(objectsListGrid, "model");
+		
+		updateListResultsLabel();
+		
 		clearSelection();
 	}
 
@@ -2431,4 +2434,9 @@ public abstract class AbstractListeController2 extends AbstractController
 					+ (nbResults != null ? nbResults : getListObjects() != null ? getListObjects().size() : 0) + ")");
 		}
 	}
+	
+	public void updateListResultsLabel(){
+	   updateListResultsLabel(null);
+	}
+	
 }

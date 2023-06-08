@@ -80,6 +80,7 @@ import fr.aphp.tumorotek.model.TKStockableObject;
 import fr.aphp.tumorotek.model.TKdataObject;
 import fr.aphp.tumorotek.model.cession.Cession;
 import fr.aphp.tumorotek.model.cession.Retour;
+import fr.aphp.tumorotek.model.coeur.ObjetStatut;
 import fr.aphp.tumorotek.model.coeur.echantillon.Echantillon;
 import fr.aphp.tumorotek.model.coeur.prodderive.ProdDerive;
 import fr.aphp.tumorotek.model.coeur.prodderive.Transformation;
@@ -230,6 +231,8 @@ public class RetourManagerImpl implements RetourManager
 
          // conserve le statut de l'objet en copie dans le retour
          // change le statut du StockableObject EVENEMENT EN COURS
+         // /!\ ce changement de statut ne doit être fait que lors de la création de l'évènement de stockage
+         //pour une cession partielle
          if(retour.getDateRetour() == null){
             if(!objet.getObjetStatut().getStatut().equals("ENCOURS")){
                retour.setObjetStatut(objet.getObjetStatut());
@@ -749,5 +752,23 @@ public class RetourManagerImpl implements RetourManager
          return retourDao.findByObjectAndImpact(obj.listableObjectId(), entiteDao.findByNom(obj.entiteNom()).get(0), impact);
       }
       return new ArrayList<>();
+   }
+   
+   @Override 
+   public boolean checkModificationPossible(ObjetStatut statut, Retour retour) {
+      boolean modifPossible=false;
+      if( statut != null) {
+         if(statut.getStatut().equals("ENCOURS")) {
+            //autoriser que pour l'évènement incomplet
+            if(retour != null && retour.getDateRetour() == null) {
+               modifPossible=true;
+            }
+         }
+         else if(retour.getSterile() != null) {
+            modifPossible=true;
+         }
+      }
+      
+      return modifPossible;
    }
 }
