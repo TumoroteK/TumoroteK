@@ -377,7 +377,7 @@ public class FicheBanque extends AbstractFicheCombineController
 
       final Map<String, Object> coulTypesProdArgs = new HashMap<>();
       coulTypesProdArgs.put("isEchantillonTyped", Boolean.FALSE);
-      Executions.createComponents("/zuls/contexte/CoulEntiteTypesAssociees.zuutilisateursDatal", coulTypesDeriveWin, coulTypesProdArgs);
+      Executions.createComponents("/zuls/contexte/CoulEntiteTypesAssociees.zul", coulTypesDeriveWin, coulTypesProdArgs);
 
       final ListitemRenderer<Utilisateur> utilisateurRenderer = (li, utilisateur, index) -> {
          li.setValue(utilisateur);
