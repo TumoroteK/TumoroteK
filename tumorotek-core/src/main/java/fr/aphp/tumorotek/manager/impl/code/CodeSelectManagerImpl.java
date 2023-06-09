@@ -187,7 +187,7 @@ public class CodeSelectManagerImpl implements CodeSelectManager
             throw new IllegalArgumentException("Operation must match " + "'creation/modification' values");
          }
       }else{
-         log.warn("Doublon lors " + operation + " objet CodeSelect " + code.toString());
+         log.warn("Doublon lors {} objet CodeSelect {}", operation, code);
          throw new DoublonFoundException("CodeSelect", operation);
       }
    }
@@ -207,7 +207,7 @@ public class CodeSelectManagerImpl implements CodeSelectManager
          // merge banque object
          code.setBanque(banqueDao.mergeObject(bank));
       }else if(code.getBanque() == null){
-         log.warn("Objet obligatoire Banque manquant" + " lors de la " + operation + " du code favori");
+         log.warn("Objet obligatoire Banque manquant lors de la {} du code favori", operation);
          throw new RequiredObjectIsNullException("CodeSelect", operation, "Banque");
       }
 
@@ -216,7 +216,7 @@ public class CodeSelectManagerImpl implements CodeSelectManager
          // merge utilisateur object
          code.setUtilisateur(utilisateurDao.mergeObject(utilisateur));
       }else if(code.getUtilisateur() == null){
-         log.warn("Objet obligatoire Utilisateur manquant" + " lors de la " + operation + " du code favori");
+         log.warn("Objet obligatoire Utilisateur manquant lors de la {} du code favori", operation);
          throw new RequiredObjectIsNullException("CodeSelect", operation, "Utilisateur");
       }
    }

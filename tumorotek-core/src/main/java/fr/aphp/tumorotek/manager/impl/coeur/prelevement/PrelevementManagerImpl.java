@@ -1050,7 +1050,7 @@ public class PrelevementManagerImpl implements PrelevementManager
       if(banque != null){
          prelevement.setBanque(banque);
       }else if(prelevement.getBanque() == null){
-         log.warn("Objet obligatoire Banque manquant" + " lors de la " + operation + " d'un Prelevement");
+         log.warn("Objet obligatoire Banque manquant lors de la {} d'un Prelevement", operation);
          throw new RequiredObjectIsNullException("Prelevement", operation, "Banque");
       }
 
@@ -1068,7 +1068,7 @@ public class PrelevementManagerImpl implements PrelevementManager
       }else{ // valeur passée est nulle
          if(prelevement.getBanque().getEtude() == null || requiredChampEntiteId.contains(24)){ // obligatoire! 
             if(prelevement.getNature() == null){
-               log.warn("Objet obligatoire Nature manquant" + " lors de la " + operation + " d'un Prelevement");
+               log.warn("Objet obligatoire Nature manquant lors de la {} d'un Prelevement", operation);
                throw new RequiredObjectIsNullException("Prelevement", operation, "Nature");
             }
          }else{ // gastbi contexte non obligatoire
@@ -1081,7 +1081,7 @@ public class PrelevementManagerImpl implements PrelevementManager
       }else{ // valeur passée est nulle
          if(prelevement.getBanque().getEtude() == null || requiredChampEntiteId.contains(26)){ // obligatoire!
             if(prelevement.getConsentType() == null){
-               log.warn("Objet obligatoire ConsentType manquant" + " lors de la " + operation + " d'un Prelevement");
+               log.warn("Objet obligatoire ConsentType manquant lors de la {} d'un Prelevement", operation);
                throw new RequiredObjectIsNullException("Prelevement", operation, "ConsentType");
             }
          }else{ // gastbi contexte non obligatoire

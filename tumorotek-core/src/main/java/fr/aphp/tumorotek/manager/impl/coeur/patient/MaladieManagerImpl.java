@@ -169,7 +169,7 @@ public class MaladieManagerImpl implements MaladieManager
             throw new IllegalArgumentException("Operation must match " + "'creation/modification' values");
          }
       }else{
-         log.warn("Doublon lors " + operation + " objet Maladie " + maladie.toString());
+         log.warn("Doublon lors {} objet Maladie {}", operation, maladie);
          throw new DoublonFoundException("Maladie", operation);
       }
    }
@@ -238,7 +238,7 @@ public class MaladieManagerImpl implements MaladieManager
             maladieDao.removeObject(maladie.getMaladieId());
             log.info("Suppression objet Maladie " + maladie.toString());
          }else{
-            log.warn("Suppression Maladie " + maladie.toString() + " impossible car Objet est reference " + "(par Prelevement)");
+            log.warn("Suppression Maladie {} impossible car Objet est reference (par Prelevement)", maladie);
             throw new ObjectUsedException("maladie.deletion.isUsed", false);
          }
       }else{
@@ -270,7 +270,7 @@ public class MaladieManagerImpl implements MaladieManager
          }
          maladie.setPatient(patientDao.mergeObject(patient));
       }else if(maladie.getPatient() == null){
-         log.warn("Objet obligatoire Patient manquant" + " lors de la " + operation + " d'une Maladie");
+         log.warn("Objet obligatoire Patient manquant lors de la {} d'une Maladie", operation);
          throw new RequiredObjectIsNullException("Maladie", operation, "Patient");
       }
       

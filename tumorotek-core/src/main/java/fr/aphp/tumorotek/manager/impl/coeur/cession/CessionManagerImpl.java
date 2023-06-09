@@ -581,7 +581,7 @@ public class CessionManagerImpl implements CessionManager
       if(banque != null){
          cession.setBanque(banqueDao.mergeObject(banque));
       }else{
-         log.warn("Objet obligatoire Banque manquant" + " lors de la " + operation + " d'une Cession");
+         log.warn("Objet obligatoire Banque manquant lors de la {} d'une Cession", operation);
          throw new RequiredObjectIsNullException("Cession", operation, "Banque");
       }
 
@@ -589,7 +589,7 @@ public class CessionManagerImpl implements CessionManager
       if(cessionType != null){
          cession.setCessionType(cessionTypeDao.mergeObject(cessionType));
       }else{
-         log.warn("Objet obligatoire CessionType manquant" + " lors de la " + operation + " d'une Cession");
+         log.warn("Objet obligatoire CessionType manquant lors de la {} d'une Cession", operation);
          throw new RequiredObjectIsNullException("Cession", operation, "CessionType");
       }
 
@@ -597,7 +597,7 @@ public class CessionManagerImpl implements CessionManager
       if(cessionStatut != null){
          cession.setCessionStatut(cessionStatutDao.mergeObject(cessionStatut));
       }else{
-         log.warn("Objet obligatoire CessionStatut manquant" + " lors de la " + operation + " d'une Cession");
+         log.warn("Objet obligatoire CessionStatut manquant lors de la {} d'une Cession", operation);
          throw new RequiredObjectIsNullException("Cession", operation, "CessionStatut");
       }
    }

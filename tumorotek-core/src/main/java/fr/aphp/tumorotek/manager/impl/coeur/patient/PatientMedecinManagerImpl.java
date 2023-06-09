@@ -124,7 +124,7 @@ public class PatientMedecinManagerImpl implements PatientMedecinManager
             patientMedecinDao.updateObject(medecin);
             log.debug("Modification objet PatientMedecin {}",  medecin);
          }else{
-            log.warn("Doublon lors " + operation + " objet PatientMedecin " + medecin.toString());
+            log.warn("Doublon lors {} objet PatientMedecin {}", operation, medecin);
             throw new DoublonFoundException("PatientMedecin", operation);
          }
       }
@@ -161,14 +161,14 @@ public class PatientMedecinManagerImpl implements PatientMedecinManager
       if(patient != null){
          medecin.setPatient(patientDao.mergeObject(patient));
       }else if(medecin.getPatient() == null){
-         log.warn("Objet obligatoire Patient manquant" + " lors de la " + operation + " d'un PatientMedecin");
+         log.warn("Objet obligatoire Patient manquant lors de la {} d'un PatientMedecin", operation);
          throw new RequiredObjectIsNullException("PatientMedecin", operation, "Patient");
       }
       //Collaborateur required
       if(collaborateur != null){
          medecin.setCollaborateur(collaborateurDao.mergeObject(collaborateur));
       }else if(medecin.getCollaborateur() == null){
-         log.warn("Objet obligatoire Collaborateur  manquant" + " lors de la " + operation + " d'un PatientMedecin");
+         log.warn("Objet obligatoire Collaborateur  manquant lors de la {} d'un PatientMedecin", operation);
          throw new RequiredObjectIsNullException("PatientMedecin", operation, "Collaborateur");
       }
 

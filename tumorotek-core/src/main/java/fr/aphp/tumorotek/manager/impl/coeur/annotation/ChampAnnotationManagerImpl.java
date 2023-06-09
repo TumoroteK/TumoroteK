@@ -488,7 +488,7 @@ public class ChampAnnotationManagerImpl implements ChampAnnotationManager
          // merge dataType object
          champ.setTableAnnotation(tableAnnotationDao.mergeObject(table));
       }else if(champ.getTableAnnotation() == null){
-         log.warn("Objet obligatoire TableAnnotation manquant" + " lors de la " + operation + " de champ");
+         log.warn("Objet obligatoire TableAnnotation manquant lors de la {} de champ", operation);
          throw new RequiredObjectIsNullException("ChampAnnotation", operation, "TableAnnotation");
       }
 
@@ -497,7 +497,7 @@ public class ChampAnnotationManagerImpl implements ChampAnnotationManager
          // merge dataType object
          champ.setDataType(dataTypeDao.mergeObject(dataType));
       }else if(champ.getDataType() == null){
-         log.warn("Objet obligatoire DataType manquant" + " lors de la " + operation + " de champ");
+         log.warn("Objet obligatoire DataType manquant lors de la {} de champ", operation);
          throw new RequiredObjectIsNullException("ChampAnnotation", operation, "DataType");
       }
 
@@ -741,7 +741,7 @@ public class ChampAnnotationManagerImpl implements ChampAnnotationManager
             throw new IllegalArgumentException("Operation must match " + "'creation/modification' values");
          }
       }else{
-         log.warn("Doublon lors " + operation + " objet ChampAnnotation " + champ.toString());
+         log.warn("Doublon lors {} objet ChampAnnotation {}", operation, champ);
          throw new DoublonFoundException("ChampAnnotation", operation);
       }
    }

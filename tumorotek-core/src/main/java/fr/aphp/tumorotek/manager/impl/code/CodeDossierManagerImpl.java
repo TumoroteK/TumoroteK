@@ -156,7 +156,7 @@ public class CodeDossierManagerImpl implements CodeDossierManager
             throw new IllegalArgumentException("Operation must match " + "'creation/modification' values");
          }
       }else{
-         log.warn("Doublon lors " + operation + " objet CodeDossier " + dos.toString());
+         log.warn("Doublon lors {} objet CodeDossier {}", operation, dos);
          throw new DoublonFoundException("CodeUtilisateur", operation);
       }
 
@@ -257,7 +257,7 @@ public class CodeDossierManagerImpl implements CodeDossierManager
          // merge banque object
          dos.setBanque(banqueDao.mergeObject(bank));
       }else if(dos.getBanque() == null){
-         log.warn("Objet obligatoire Banque manquant" + " lors de la " + operation + " du code dossier");
+         log.warn("Objet obligatoire Banque manquant lors de la {} du code dossier", operation);
          throw new RequiredObjectIsNullException("CodeDossier", operation, "Banque");
       }
 
@@ -266,7 +266,7 @@ public class CodeDossierManagerImpl implements CodeDossierManager
          // merge utilisateur object
          dos.setUtilisateur(utilisateurDao.mergeObject(utilisateur));
       }else if(dos.getUtilisateur() == null){
-         log.warn("Objet obligatoire Utilisateur manquant" + " lors de la " + operation + " du code utilisateur");
+         log.warn("Objet obligatoire Utilisateur manquant lors de la {} du code utilisateur", operation);
          throw new RequiredObjectIsNullException("CodeDossier", operation, "Utilisateur");
       }
 

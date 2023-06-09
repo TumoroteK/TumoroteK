@@ -160,7 +160,7 @@ public class EnceinteTypeManagerImpl implements EnceinteTypeManager
             enceinteTypeDao.removeObject(obj.getId());
             log.info("Suppression objet EnceinteType " + obj.toString());
          }else{
-            log.warn("Suppression objet EnceinteType " + obj.toString() + " impossible car est reference " + "(par Enceinte)");
+            log.warn("Suppression objet EnceinteType {} impossible car est reference (par Enceinte)", obj);
             throw new ObjectUsedException();
          }
       }else{

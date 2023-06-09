@@ -484,13 +484,13 @@ public class BanqueManagerImpl implements BanqueManager
       if(pf != null){
          banque.setPlateforme(plateformeDao.mergeObject(pf));
       }else if(banque.getPlateforme() == null){
-         log.warn("Objet obligatoire Plateforme manquant" + " lors de la " + operation + " d'une Banque");
+         log.warn("Objet obligatoire Plateforme manquant lors de la {} d'une Banque", operation);
          throw new RequiredObjectIsNullException("Banque", operation, "Plateforme");
       }
       if(contexte != null){
          banque.setContexte(contexteDao.mergeObject(contexte));
       }else if(banque.getContexte() == null){
-         log.warn("Objet obligatoire Contexte manquant" + " lors de la " + operation + " d'une Banque");
+         log.warn("Objet obligatoire Contexte manquant lors de la {} d'une Banque", operation);
          throw new RequiredObjectIsNullException("Banque", operation, "Contexte");
       }
 
@@ -614,7 +614,7 @@ public class BanqueManagerImpl implements BanqueManager
             throw new IllegalArgumentException("Operation must match " + "'creation/modification' values");
          }
       }else{
-         log.warn("Doublon lors " + operation + " objet Banque " + banque.toString());
+         log.warn("Doublon lors {} objet Banque {}", operation, banque);
          throw new DoublonFoundException("Banque", operation);
       }
    }

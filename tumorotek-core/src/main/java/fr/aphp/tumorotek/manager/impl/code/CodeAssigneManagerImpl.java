@@ -218,7 +218,7 @@ public class CodeAssigneManagerImpl implements CodeAssigneManager
             throw new IllegalArgumentException("Operation must match " + "'creation/modification' values");
          }
       }else{
-         log.warn("Doublon lors " + operation + " objet CodeUtilisateur " + code.toString());
+         log.warn("Doublon lors {} objet CodeUtilisateur {}", operation, code);
          throw new DoublonFoundException("CodeAssigne", operation);
       }
    }
@@ -236,7 +236,7 @@ public class CodeAssigneManagerImpl implements CodeAssigneManager
          // merge echantillon object
          code.setEchantillon(echantillonDao.mergeObject(echantillon));
       }else if(code.getEchantillon() == null){
-         log.warn("Objet obligatoire Echantillon manquant" + " lors de la " + operation + " du code assigne");
+         log.warn("Objet obligatoire Echantillon manquant lors de la {} du code assigne", operation);
          throw new RequiredObjectIsNullException("CodeAssigne", operation, "Echantillon");
       }
 

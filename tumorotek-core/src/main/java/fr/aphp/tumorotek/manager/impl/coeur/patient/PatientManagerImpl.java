@@ -226,7 +226,7 @@ public class PatientManagerImpl implements PatientManager
          //Doublon
          Optional<PatientDoublonFound> optDbf = findDoublonManager(patient);
          if(!operation.equals("fusion") && optDbf.isPresent()){
-            log.warn("Doublon lors " + operation + " objet Patient " + patient.toString());
+            log.warn("Doublon lors {} objet Patient {}", operation, patient);
             throw new DoublonFoundException("Patient", operation, optDbf.get());
          }
          if((operation.equals("creation") || operation.equals("modification")) || operation.equals("modifMulti")

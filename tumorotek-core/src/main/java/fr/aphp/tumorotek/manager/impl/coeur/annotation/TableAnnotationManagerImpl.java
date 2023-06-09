@@ -229,7 +229,7 @@ public class TableAnnotationManagerImpl implements TableAnnotationManager
             throw new IllegalArgumentException("Operation must match " + "'creation/modification' values");
          }
       }else{
-         log.warn("Doublon lors " + operation + " objet TableAnnotation " + table.toString());
+         log.warn("Doublon lors {} objet TableAnnotation {}", operation, table);
          throw new DoublonFoundException("TableAnnotation", operation);
       }
    }
@@ -436,7 +436,7 @@ public class TableAnnotationManagerImpl implements TableAnnotationManager
          // merge entite object
          table.setEntite(entiteDao.mergeObject(entite));
       }else if(table.getEntite() == null){
-         log.warn("Objet obligatoire Entite manquant" + " lors de la " + operation + " de table annotation");
+         log.warn("Objet obligatoire Entite manquant lors de la {} de table annotation", operation);
          throw new RequiredObjectIsNullException("TableAnnotation", operation, "Entite");
       }
 

@@ -115,7 +115,7 @@ public class PatientLienManagerImpl implements PatientLienManager
             patientLienDao.updateObject(patientLien);
             log.debug("Modification objet PatientLien {}",  patientLien);
          }else{
-            log.warn("Doublon lors " + operation + " objet PatientLien " + patientLien.toString());
+            log.warn("Doublon lors {} objet PatientLien {}", operation, patientLien);
             throw new DoublonFoundException("PatientLien", operation);
          }
       }
@@ -152,21 +152,21 @@ public class PatientLienManagerImpl implements PatientLienManager
       if(patient1 != null){
          patientLien.setPatient1(patientDao.mergeObject(patient1));
       }else if(patientLien.getPatient1() == null){
-         log.warn("Objet obligatoire Patient1 manquant" + " lors de la " + operation + " d'un PatientLien");
+         log.warn("Objet obligatoire Patient1 manquant lors de la {} d'un PatientLien", operation);
          throw new RequiredObjectIsNullException("PatientLien", operation, "Patient1");
       }
       //patient2 required
       if(patient2 != null){
          patientLien.setPatient2(patientDao.mergeObject(patient2));
       }else if(patientLien.getPatient2() == null){
-         log.warn("Objet obligatoire Patient2 manquant" + " lors de la " + operation + " d'un PatientLien");
+         log.warn("Objet obligatoire Patient2 manquant lors de la {} d'un PatientLien", operation);
          throw new RequiredObjectIsNullException("PatientLien", operation, "Patient2");
       }
       //LienFamilial required
       if(lienFamilial != null){
          patientLien.setLienFamilial(lienFamilialDao.mergeObject(lienFamilial));
       }else if(patientLien.getLienFamilial() == null){
-         log.warn("Objet obligatoire LienFamilial  manquant" + " lors de la " + operation + " d'un PatientLien");
+         log.warn("Objet obligatoire LienFamilial  manquant lors de la {} d'un PatientLien", operation);
          throw new RequiredObjectIsNullException("PatientLien", operation, "LienFamilial");
       }
 
