@@ -305,7 +305,7 @@ public class ListePrelevementGatsbi extends ListePrelevement
                         getObjectTabController().swithToCreatedModeFromCopy((Prelevement) parent);
                      } else if (parent instanceof Maladie) { // 
                         getObjectTabController().switchToCreateMode(parent);
-                     } 
+                     }
                   }
                }catch(final Exception ex){
                   Messagebox.show(handleExceptionMessage(ex), "Error", Messagebox.OK, Messagebox.ERROR);

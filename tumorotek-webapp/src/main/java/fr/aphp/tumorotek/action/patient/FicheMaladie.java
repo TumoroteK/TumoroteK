@@ -832,7 +832,7 @@ public class FicheMaladie extends AbstractFicheCombineController
       Errors errs = null;
       String field = "";
 
-      if(dateValue == null || dateValue.equals("")){
+      if(dateValue == null){
          // la contrainte est retiree
          //((Datebox) comp).setConstraint("");
          ((Datebox) comp).clearErrorMessage(true);
@@ -1106,7 +1106,7 @@ public class FicheMaladie extends AbstractFicheCombineController
 
    @Override
    public String getDeleteWaitLabel(){
-      return Labels.getLabel("maaldie.suppression.encours");
+      return Labels.getLabel("maladie.suppression.encours");
    }
    
    // @since 2.3.0-gatsbi  

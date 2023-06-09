@@ -174,7 +174,8 @@ public class ReferenceurPatientGatsbi extends ReferenceurPatient
     */
    @Override
    protected void embedFicheMaladie(FichePatientEdit fichePatient, Patient pat){
-      if (GatsbiControllerPatient.getSchemaVisitesDefinedByEtude(sessionScope)) {
+      if (SessionUtils.getCurrentBanque(sessionScope).getDefMaladies() 
+            && GatsbiControllerPatient.getSchemaVisitesDefinedByEtude(sessionScope)) {
          
          // affiche uniquement la liste des maladies 
          // du composant patient existant

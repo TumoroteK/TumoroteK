@@ -123,29 +123,33 @@ public class FichePatientStaticGatsbi extends FichePatientStatic
       otherMaladies.clear();
 
       if(sessionScope.containsKey("Banque")){
-         // affiche les maladies/visites spécifiques
-         // toutes les visites gatsbi
-         maladies.addAll(new ArrayList<>(ManagerLocator.getMaladieManager().findVisitesManager(patient, patient.getBanque())));
-         // toutes les maladies communes et system, non visites 
-         maladies.addAll(new ArrayList<>(ManagerLocator.getMaladieManager().findByPatientExcludingVisitesManager(patient)));
-         
-         maladies.sort(Comparator.comparing(Maladie::getDateDebut, 
-            Comparator.nullsLast(Date::compareTo)));
-         
-         List<Maladie> system = ManagerLocator.getMaladieManager()
-            .findByPatientExcludingVisitesManager(patient)
-            .stream().filter(m -> m.getSystemeDefaut()).collect(Collectors.toList());
-         
-         maladies.removeAll(system);
-
-         // toutes maladies 'system'
-         otherMaladies.addAll(system);
-         
-         // plus les visites des autres collections gatsbi
-         for (Banque bank: consultableBanks) {
-            if (!bank.equals(SessionUtils.getCurrentBanque(sessionScope))) {
-               otherMaladies.addAll(ManagerLocator.getMaladieManager().findVisitesManager(patient, bank));
+         if(SessionUtils.getCurrentBanque(sessionScope).getDefMaladies()) {
+            // affiche les maladies/visites spécifiques
+            // toutes les visites gatsbi
+            maladies.addAll(new ArrayList<>(ManagerLocator.getMaladieManager().findVisitesManager(patient, patient.getBanque())));
+            // toutes les maladies communes et system, non visites 
+            maladies.addAll(new ArrayList<>(ManagerLocator.getMaladieManager().findByPatientExcludingVisitesManager(patient)));
+            
+            maladies.sort(Comparator.comparing(Maladie::getDateDebut, 
+               Comparator.nullsLast(Date::compareTo)));
+            
+            List<Maladie> system = ManagerLocator.getMaladieManager()
+               .findByPatientExcludingVisitesManager(patient)
+               .stream().filter(m -> m.getSystemeDefaut()).collect(Collectors.toList());
+            
+            maladies.removeAll(system);
+   
+            // toutes maladies 'system'
+            otherMaladies.addAll(system);
+            
+            // plus les visites des autres collections gatsbi
+            for (Banque bank: consultableBanks) {
+               if (!bank.equals(SessionUtils.getCurrentBanque(sessionScope))) {
+                  otherMaladies.addAll(ManagerLocator.getMaladieManager().findVisitesManager(patient, bank));
+               }
             }
+         } else { // gatsbi sans maladie / visite !
+            super.populatesPatientMaladies(maladies, otherMaladies, consultableBanks);
          }
       }else{ 
          // si au moins une banque définit une maladie
@@ -216,7 +220,7 @@ public class FichePatientStaticGatsbi extends FichePatientStatic
             }catch(final Exception ex){
                Messagebox.show(handleExceptionMessage(ex), "Error", Messagebox.OK, Messagebox.ERROR);
             }
-         }, null, getPatient());
+         }, null, this.maladies.get(0));
    }
 
    /*********** inner lists ******************/

@@ -268,7 +268,7 @@ public class FichePatientStatic extends AbstractFicheStaticController
             maladies.addAll(ManagerLocator.getMaladieManager().findByPatientExcludingVisitesManager(patient));
             // toutes les maladies non system, non visites gatsbi
             otherMaladies.addAll(new ArrayList<>(ManagerLocator.getMaladieManager().findByPatientNoSystemNorVisiteManager(patient)));
-            maladies.removeAll(otherMaladies); // reste maladies 'non system', hors visite gatsbi
+            maladies.removeAll(otherMaladies); // reste maladies 'system', hors visite gatsbi
             
             // ajout visites pour les banques accessibles
             for (Banque bank: consultableBanks) {
@@ -423,29 +423,37 @@ public class FichePatientStatic extends AbstractFicheStaticController
       // si on arrive à récupérer le panel prelevement et son controller
       if(tabController != null){
          // maladies doit contenir au moins une maladie
-         if(this.maladies.size() == 0){ //cree la maladie sous-jacente
-            final Maladie maladieSJ = new Maladie();
-            if(SessionUtils.getSelectedBanques(sessionScope).get(0).getDefMaladies()){
-               if(SessionUtils.getSelectedBanques(sessionScope).get(0).getDefautMaladie() != null){
-                  maladieSJ.setLibelle(SessionUtils.getSelectedBanques(sessionScope).get(0).getDefautMaladie());
-                  maladieSJ.setCode(SessionUtils.getSelectedBanques(sessionScope).get(0).getDefautMaladieCode());
-               }else{
-                  maladieSJ.setLibelle(SessionUtils.getSelectedBanques(sessionScope).get(0).getNom() + "-defaut");
-                  maladieSJ.setSystemeDefaut(true);
-               }
-            }else{ // new Maladie system defaut à creer
-               maladieSJ.setLibelle(SessionUtils.getSelectedBanques(sessionScope).get(0).getNom() + "-defaut");
-               maladieSJ.setSystemeDefaut(true);
-            }
-
-            maladieSJ.setPatient(this.patient);
-            this.maladies.add(maladieSJ);
-         }
+         initMaladieDefaut();
          tabController.switchToCreateMode(this.maladies.get(0));
          tabController.setFromFichePatient(true);
 
          // on cache la liste
          tabController.getListeRegion().setOpen(false);
+      }
+   }
+   
+   /**
+    * @since 2.3.0-gatsbi
+    * @return defaut maladie
+    */
+   protected void initMaladieDefaut() {
+      if(this.maladies.size() == 0){ //cree la maladie sous-jacente
+         final Maladie maladieSJ = new Maladie();
+         if(SessionUtils.getSelectedBanques(sessionScope).get(0).getDefMaladies()){
+            if(SessionUtils.getSelectedBanques(sessionScope).get(0).getDefautMaladie() != null){
+               maladieSJ.setLibelle(SessionUtils.getSelectedBanques(sessionScope).get(0).getDefautMaladie());
+               maladieSJ.setCode(SessionUtils.getSelectedBanques(sessionScope).get(0).getDefautMaladieCode());
+            }else{
+               maladieSJ.setLibelle(SessionUtils.getSelectedBanques(sessionScope).get(0).getNom() + "-defaut");
+               maladieSJ.setSystemeDefaut(true);
+            }
+         }else{ // new Maladie system defaut à creer
+            maladieSJ.setLibelle(SessionUtils.getSelectedBanques(sessionScope).get(0).getNom() + "-defaut");
+            maladieSJ.setSystemeDefaut(true);
+         }
+         
+         maladieSJ.setPatient(this.patient);
+         this.maladies.add(maladieSJ);
       }
    }
 
@@ -540,7 +548,7 @@ public class FichePatientStatic extends AbstractFicheStaticController
       String compDef = "maladiePanel";
       
       // @since gatsbi
-      if (SessionUtils.getCurrentGatsbiContexteForEntiteId(7) != null) {
+      if (SessionUtils.getCurrentGatsbiContexteForEntiteId(7) != null && !prelevementsOnly) {
          compDef = "maladieGatsbiPanel";
       } else if(SessionUtils.getCurrentContexte() == EContexte.SEROLOGIE){
          compDef = "maladieSeroPanel";

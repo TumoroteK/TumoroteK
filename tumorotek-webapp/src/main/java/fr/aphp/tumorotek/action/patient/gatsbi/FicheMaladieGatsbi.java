@@ -73,7 +73,14 @@ public class FicheMaladieGatsbi extends FicheMaladie
       // devenu inutile
       setRequiredMarks(new Component[] {});
       
-      setMaladieValidator(ManagerLocator.getMaladieValidatorDateCoherenceOverride());
+      
+      // apply visite gatsbi validator
+      // else remove date debut (visite) no empty constraint if no maladie def
+      if (SessionUtils.getCurrentBanque(sessionScope).getDefMaladies()) {
+         setMaladieValidator(ManagerLocator.getMaladieValidatorDateCoherenceOverride());
+      } else {
+         dateDebutBox.setConstraint("");
+      }
 
       GatsbiController.initWireAndDisplay(this, 7, false, null, null, null, new Groupbox[]{});
       
@@ -100,7 +107,9 @@ public class FicheMaladieGatsbi extends FicheMaladie
    @Override
    public void setNewObject(){
       super.setNewObject();
-      getMaladie().setBanque(SessionUtils.getCurrentBanque(sessionScope));
+      if (SessionUtils.getCurrentBanque(sessionScope).getDefMaladies()) {
+         getMaladie().setBanque(SessionUtils.getCurrentBanque(sessionScope));
+      }
    }
 
    @Override
