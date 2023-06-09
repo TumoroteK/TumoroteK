@@ -96,7 +96,7 @@ public class DiagnosticManagerImpl implements DiagnosticManager
       // On vérifie que la pf n'est pas null. Si c'est le cas on envoie
       // une exception
       if(pt.getPlateforme() == null){
-         log.warn("Objet obligatoire Plateforme " + "manquant lors de la creation " + "d'un objet Diagnostic");
+         log.warn("Objet obligatoire Plateforme manquant lors de la creation d'un objet Diagnostic");
          throw new RequiredObjectIsNullException("Diagnostic", "creation", "Plateforme");
       }
       pt.setPlateforme(plateformeDao.mergeObject(pt.getPlateforme()));

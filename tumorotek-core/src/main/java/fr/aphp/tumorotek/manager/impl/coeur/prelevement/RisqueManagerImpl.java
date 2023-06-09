@@ -107,7 +107,7 @@ public class RisqueManagerImpl implements RisqueManager
       // On vérifie que la pf n'est pas null. Si c'est le cas on envoie
       // une exception
       if(rs.getPlateforme() == null){
-         log.warn("Objet obligatoire Plateforme " + "manquant lors de la creation " + "d'un objet Risque");
+         log.warn("Objet obligatoire Plateforme manquant lors de la creation d'un objet Risque");
          throw new RequiredObjectIsNullException("Risque", "creation", "Plateforme");
       }
       rs.setPlateforme(plateformeDao.mergeObject(rs.getPlateforme()));

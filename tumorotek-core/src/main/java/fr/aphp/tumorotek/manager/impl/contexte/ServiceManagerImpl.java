@@ -318,7 +318,7 @@ public class ServiceManagerImpl implements ServiceManager
       // On vérifie que l'établissement n'est pas null. Si c'est le
       // cas on envoie une exception
       if(etablissement == null){
-         log.warn("Objet obligatoire Etablissement manquant lors de " + "la creation " + "d'un objet Service");
+         log.warn("Objet obligatoire Etablissement manquant lors de la creation d'un objet Service");
          throw new RequiredObjectIsNullException("Service", "creation", "Etablissement");
       }else{
          service.setEtablissement(etablissementDao.mergeObject(etablissement));
@@ -377,7 +377,7 @@ public class ServiceManagerImpl implements ServiceManager
       // On vérifie que l'établissement n'est pas null. Si c'est le
       // cas on envoie une exception
       if(etablissement == null){
-         log.warn("Objet obligatoire Etablissement manquant lors de " + "la modification " + "d'un objet Service");
+         log.warn("Objet obligatoire Etablissement manquant lors de la modification d'un objet Service");
          throw new RequiredObjectIsNullException("Service", "modification", "Etablissement");
       }else{
          service.setEtablissement(etablissementDao.mergeObject(etablissement));
@@ -460,10 +460,10 @@ public class ServiceManagerImpl implements ServiceManager
             log.info("Suppression de l'objet Service : " + service.toString());
          }else{
             if(!isReferencedObjectManager(service)){ // suppr possible
-               log.warn("Objet utilisé lors de la suppression de l'objet " + "Service : " + service.toString());
+               log.warn("Objet utilisé lors de la suppression de l'objet Service : {}",  service);
                throw new ObjectUsedException("service.deletion." + "isUsedCascade", true);
             }else{
-               log.warn("Objet référencé lors de la suppression " + "de l'objet Service : " + service.toString());
+               log.warn("Objet référencé lors de la suppression de l'objet Service : {}",  service);
                throw new ObjectReferencedException("service" + ".deletion.isReferencedCascade", true);
             }
          }

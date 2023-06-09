@@ -426,7 +426,7 @@ public class UtilisateurManagerImpl implements UtilisateurManager
 	public void removeObjectManager(final Utilisateur utilisateur){
 		if(utilisateur != null){
 			if(isUsedObjectManager(utilisateur)){
-				log.warn("Objet utilisé lors de la suppression de l'objet " + "Utilisateur : " + utilisateur.toString());
+				log.warn("Objet utilisé lors de la suppression de l'objet Utilisateur : {}",  utilisateur);
 				throw new ObjectUsedException("utilisateur.suppression.impossible", false);
 			}else{
 				// utilisateur = utilisateurDao.mergeObject(utilisateur);

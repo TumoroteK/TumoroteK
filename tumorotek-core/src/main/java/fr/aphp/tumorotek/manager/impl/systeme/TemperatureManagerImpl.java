@@ -110,7 +110,7 @@ public class TemperatureManagerImpl implements TemperatureManager
    public void updateObjectManager(final Temperature temperature){
       // Test s'il y a des doublons
       if(findDoublonManager(temperature)){
-         log.warn("Doublon lors de la modification de " + "l'objet Temperature : " + temperature.toString());
+         log.warn("Doublon lors de la modification de l'objet Temperature : {}",  temperature);
          throw new DoublonFoundException("Temperature", "modification");
       }else{
 

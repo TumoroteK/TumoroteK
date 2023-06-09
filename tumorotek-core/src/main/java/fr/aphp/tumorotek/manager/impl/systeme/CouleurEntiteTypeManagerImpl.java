@@ -149,7 +149,7 @@ public class CouleurEntiteTypeManagerImpl implements CouleurEntiteTypeManager
       if(banque != null){
          couleurEntiteType.setBanque(banqueDao.mergeObject(banque));
       }else{
-         log.warn("Objet obligatoire Banque manquant" + " lors de la création d'une" + " CouleurEntiteType");
+         log.warn("Objet obligatoire Banque manquant  lors de la création d'une  CouleurEntiteType");
          throw new RequiredObjectIsNullException("CouleurEntiteType", "creation", "Banque");
       }
 
@@ -157,7 +157,7 @@ public class CouleurEntiteTypeManagerImpl implements CouleurEntiteTypeManager
       if(couleur != null){
          couleurEntiteType.setCouleur(couleurDao.mergeObject(couleur));
       }else{
-         log.warn("Objet obligatoire Couleur manquant" + " lors de la création d'une" + " CouleurEntiteType");
+         log.warn("Objet obligatoire Couleur manquant  lors de la création d'une  CouleurEntiteType");
          throw new RequiredObjectIsNullException("CouleurEntiteType", "creation", "Couleur");
       }
 
@@ -175,7 +175,7 @@ public class CouleurEntiteTypeManagerImpl implements CouleurEntiteTypeManager
 
       // Test s'il y a des doublons
       if(findDoublonManager(couleurEntiteType)){
-         log.warn("Doublon lors de la creation de l'objet " + "CouleurEntiteType : " + couleurEntiteType.toString());
+         log.warn("Doublon lors de la creation de l'objet CouleurEntiteType : {}",  couleurEntiteType);
          throw new DoublonFoundException("CouleurEntiteType", "creation");
       }
 
@@ -191,7 +191,7 @@ public class CouleurEntiteTypeManagerImpl implements CouleurEntiteTypeManager
       if(banque != null){
          couleurEntiteType.setBanque(banqueDao.mergeObject(banque));
       }else{
-         log.warn("Objet obligatoire Banque manquant" + " lors de la modification d'une" + " CouleurEntiteType");
+         log.warn("Objet obligatoire Banque manquant  lors de la modification d'une  CouleurEntiteType");
          throw new RequiredObjectIsNullException("CouleurEntiteType", "modification", "Banque");
       }
 
@@ -199,7 +199,7 @@ public class CouleurEntiteTypeManagerImpl implements CouleurEntiteTypeManager
       if(couleur != null){
          couleurEntiteType.setCouleur(couleurDao.mergeObject(couleur));
       }else{
-         log.warn("Objet obligatoire Couleur manquant" + " lors de la modification d'une" + " CouleurEntiteType");
+         log.warn("Objet obligatoire Couleur manquant  lors de la modification d'une  CouleurEntiteType");
          throw new RequiredObjectIsNullException("CouleurEntiteType", "modification", "Couleur");
       }
 
@@ -217,7 +217,7 @@ public class CouleurEntiteTypeManagerImpl implements CouleurEntiteTypeManager
 
       // Test s'il y a des doublons
       if(findDoublonManager(couleurEntiteType)){
-         log.warn("Doublon lors de la modification de l'objet " + "CouleurEntiteType : " + couleurEntiteType.toString());
+         log.warn("Doublon lors de la modification de l'objet CouleurEntiteType : {}",  couleurEntiteType);
          throw new DoublonFoundException("CouleurEntiteType", "modification");
       }
 

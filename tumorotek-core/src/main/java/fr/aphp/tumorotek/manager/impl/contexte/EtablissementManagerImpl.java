@@ -538,10 +538,10 @@ public class EtablissementManagerImpl implements EtablissementManager
 
          }else{
             if(!isReferencedObjectManager(etablissement)){
-               log.warn("Objet utilisé lors de la suppression de l'objet " + "Etablissement : " + etablissement.toString());
+               log.warn("Objet utilisé lors de la suppression de l'objet Etablissement : {}",  etablissement);
                throw new ObjectUsedException("etablissement.deletion." + "isUsedCascade", true);
             }
-            log.warn("Objet référencé lors de la suppression " + "de l'objet Etablissement : " + etablissement.toString());
+            log.warn("Objet référencé lors de la suppression de l'objet Etablissement : {}",  etablissement);
             throw new ObjectReferencedException("etablissement" + ".deletion.isReferencedCascade", true);
          }
       }

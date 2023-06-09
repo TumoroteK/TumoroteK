@@ -107,7 +107,7 @@ public class OrganismeManagerImpl implements OrganismeManager
       // une exception
       Plateforme plateforme = organisme.getPlateforme();
       if( plateforme == null){
-         log.warn("Objet obligatoire Plateforme " + "manquant lors de la creation " + "d'un objet Organisme");
+         log.warn("Objet obligatoire Plateforme manquant lors de la creation d'un objet Organisme");
          throw new RequiredObjectIsNullException("Organisme", "creation", "Plateforme");
       }
       organisme.setPlateforme(plateformeDao.mergeObject(plateforme));

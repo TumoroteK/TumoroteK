@@ -144,7 +144,7 @@ public class LaboInterManagerImpl implements LaboInterManager
       final Collaborateur collaborateur, final Transporteur transporteur, final boolean doValidation){
       //Prelevement required
       if(prelevement == null){
-         log.warn("Objet obligatoire Prelevement manquant lors" + " de la modification d'un LaboInter " + obj.toString());
+         log.warn("Objet obligatoire Prelevement manquant lors  de la modification d'un LaboInter {}",  obj);
          throw new RequiredObjectIsNullException("LaboInter", "modification", "Prelevement");
       }
       obj.setPrelevement(prelevementDao.mergeObject(prelevement));

@@ -228,7 +228,7 @@ public class NumerotationManagerImpl implements NumerotationManager
 
       // Test s'il y a des doublons
       if(findDoublonManager(numerotation)){
-         log.warn("Doublon lors de la modification de " + "l'objet Numerotation : " + numerotation.toString());
+         log.warn("Doublon lors de la modification de l'objet Numerotation : {}",  numerotation);
          throw new DoublonFoundException("Numerotation", "modification");
       }else{
 

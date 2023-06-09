@@ -466,7 +466,7 @@ public class CollaborateurManagerImpl implements CollaborateurManager
 
       // on vérifie qu'il n'y a pas de doublons pour le collab
       if(findDoublonManager(collaborateur)){
-         log.warn("Doublon lors de la modification de l'objet " + "Collaborateur : " + collaborateur.toString());
+         log.warn("Doublon lors de la modification de l'objet Collaborateur : {}",  collaborateur);
          throw new DoublonFoundException("Collaborateur", "modification");
       }
       // on vérifie la validité du collab
@@ -567,7 +567,7 @@ public class CollaborateurManagerImpl implements CollaborateurManager
             collaborateurDao.removeObject(collaborateur.getCollaborateurId());
             log.info("Suppression de l'objet Collaborateur : " + collaborateur.toString());
          }else{
-            log.warn("Objet référencé lors de la suppression " + "de l'objet Collaborateur : " + collaborateur.toString());
+            log.warn("Objet référencé lors de la suppression de l'objet Collaborateur : {}",  collaborateur);
             throw new ObjectReferencedException("collaborateur" + ".deletion.isReferencedCascade", false);
          }
       }

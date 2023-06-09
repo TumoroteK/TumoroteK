@@ -136,7 +136,7 @@ public class NatureManagerImpl implements NatureManager
             natureDao.removeObject(obj.getId());
             log.info("Suppression objet Nature " + obj.toString());
          }else{
-            log.warn("Suppression objet Nature " + obj.toString() + " impossible car est reference (par Prelevement)");
+            log.warn("Suppression objet Nature {} impossible car est reference (par Prelevement)", obj);
             throw new ObjectUsedException();
          }
       }else{

@@ -185,7 +185,7 @@ public class NonConformiteManagerImpl implements NonConformiteManager
       }
 
       if(findDoublonManager(nonConformite)){
-         log.warn("Doublon lors de la creation de l'objet " + "NonConformite : " + nonConformite.toString());
+         log.warn("Doublon lors de la creation de l'objet NonConformite : {}",  nonConformite);
          throw new DoublonFoundException("NonConformite", "creation");
       }else{
          BeanValidator.validateObject(nonConformite, new Validator[] {nonConformiteValidator});
@@ -214,7 +214,7 @@ public class NonConformiteManagerImpl implements NonConformiteManager
       }
 
       if(findDoublonManager(nonConformite)){
-         log.warn("Doublon lors de la modification de l'objet " + "NonConformite : " + nonConformite.toString());
+         log.warn("Doublon lors de la modification de l'objet NonConformite : {}",  nonConformite);
          throw new DoublonFoundException("NonConformite", "modification");
       }else{
          BeanValidator.validateObject(nonConformite, new Validator[] {nonConformiteValidator});

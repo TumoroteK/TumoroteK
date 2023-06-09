@@ -355,7 +355,7 @@ public class ContratManagerImpl implements ContratManager
    public void removeObjectManager(final Contrat contrat, final String comments, final Utilisateur u){
       if(contrat != null){
          if(isUsedObjectManager(contrat)){
-            log.warn("Objet utilisé lors de la suppression de l'objet " + "Contrat : " + contrat.toString());
+            log.warn("Objet utilisé lors de la suppression de l'objet Contrat : {}",  contrat);
             throw new ObjectUsedException("contrat.deletion.isReferenced", false);
          }
 

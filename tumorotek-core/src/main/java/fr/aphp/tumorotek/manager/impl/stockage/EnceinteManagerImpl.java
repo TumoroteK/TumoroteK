@@ -579,13 +579,13 @@ public class EnceinteManagerImpl implements EnceinteManager
       // Test de la position : vide
       if(enceinte.getConteneur() != null){
          if(!checkPositionManager.checkPositionLibreInConteneurManager(enceinte.getConteneur(), enceinte.getPosition(), null)){
-            log.warn("La position est déjà occupée par un " + "autre objet dans " + "le conteneur parent");
+            log.warn("La position est déjà occupée par un autre objet dans le conteneur parent");
             throw new UsedPositionException("Enceinte", "creation", enceinte.getPosition());
          }
       }else if(enceinte.getEnceintePere() != null){
          if(!checkPositionManager.checkPositionLibreInEnceinteManager(enceinte.getEnceintePere(), enceinte.getPosition(), null,
             null)){
-            log.warn("La position est déjà occupée par un " + "autre objet dans " + "l'enceinte parent");
+            log.warn("La position est déjà occupée par un autre objet dans l'enceinte parent");
             throw new UsedPositionException("Enceinte", "creation", enceinte.getPosition());
          }
       }
@@ -631,7 +631,7 @@ public class EnceinteManagerImpl implements EnceinteManager
          if(conteneur != null){
             if(number != null){
                if(number > conteneur.getNbrEnc()){
-                  log.warn("La position n'est pas dans la limite " + "des places du " + "conteneur");
+                  log.warn("La position n'est pas dans la limite des places du conteneur");
                   throw new InvalidPositionException("Enceinte", "creation", number);
                }
 
@@ -680,7 +680,7 @@ public class EnceinteManagerImpl implements EnceinteManager
          if(enceintePere != null){
             if(number != null){
                if(number > enceintePere.getNbPlaces()){
-                  log.warn("La position n'est pas dans la limite " + "des places de " + "l'enceinte parent");
+                  log.warn("La position n'est pas dans la limite des places de l'enceinte parent");
                   throw new InvalidPositionException("Enceinte", "creation", number);
                }
 
@@ -765,13 +765,13 @@ public class EnceinteManagerImpl implements EnceinteManager
       if(enceinte.getConteneur() != null){
          if(!checkPositionManager.checkPositionLibreInConteneurManager(enceinte.getConteneur(), enceinte.getPosition(),
             enceinte.getEnceinteId())){
-            log.warn("La position est déjà occupée par un " + "autre objet dans " + "le conteneur parent");
+            log.warn("La position est déjà occupée par un autre objet dans le conteneur parent");
             throw new UsedPositionException("Enceinte", "modification", enceinte.getPosition());
          }
       }else if(enceinte.getEnceintePere() != null){
          if(!checkPositionManager.checkPositionLibreInEnceinteManager(enceinte.getEnceintePere(), enceinte.getPosition(), null,
             enceinte.getEnceinteId())){
-            log.warn("La position est déjà occupée par un " + "autre objet dans " + "l'enceinte parent");
+            log.warn("La position est déjà occupée par un autre objet dans l'enceinte parent");
             throw new UsedPositionException("Enceinte", "modification", enceinte.getPosition());
          }
       }
@@ -841,7 +841,7 @@ public class EnceinteManagerImpl implements EnceinteManager
    public void removeObjectManager(final Enceinte enceinte, final String comments, final Utilisateur user){
       if(enceinte != null){
          if(isUsedObjectManager(enceinte)){
-            log.warn("Objet utilisé lors de la suppression de l'objet " + "Enceinte : " + enceinte.toString());
+            log.warn("Objet utilisé lors de la suppression de l'objet Enceinte : {}",  enceinte);
             throw new ObjectUsedException("enceinte.deletion.isUsed", false);
          }
          // suppression des enfants

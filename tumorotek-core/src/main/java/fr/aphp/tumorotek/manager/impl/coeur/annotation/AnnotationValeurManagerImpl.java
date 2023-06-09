@@ -414,7 +414,7 @@ public class AnnotationValeurManagerImpl implements AnnotationValeurManager
          // merge dataType object
          valeur.setChampAnnotation(champAnnotationDao.mergeObject(champ));
       }else if(valeur.getChampAnnotation() == null){
-         log.warn("Objet obligatoire ChampAnnotation manquant lors de la " + operation + " de valeur annotation");
+         log.warn("Objet obligatoire ChampAnnotation manquant lors de la {} de valeur annotation", operation);
          throw new RequiredObjectIsNullException("AnnotationValeur", operation, "ChampAnnotation");
       }
 
@@ -422,7 +422,7 @@ public class AnnotationValeurManagerImpl implements AnnotationValeurManager
       if(obj != null){
          valeur.setObjetId(obj.listableObjectId());
       }else if(valeur.getObjetId() == null){
-         log.warn("Objet obligatoire objetId manquant lors de la " + operation + " de valeur annotation");
+         log.warn("Objet obligatoire objetId manquant lors de la {} de valeur annotation", operation);
          throw new RequiredObjectIsNullException("AnnotationValeur", operation, "TKAnnotableObject");
       }
 
@@ -430,7 +430,7 @@ public class AnnotationValeurManagerImpl implements AnnotationValeurManager
       if(banque != null){
          valeur.setBanque(banqueDao.mergeObject(banque));
       }else if(valeur.getBanque() == null){
-         log.warn("Objet obligatoire Banque manquant lors de la " + operation + " de valeur annotation");
+         log.warn("Objet obligatoire Banque manquant lors de la {} de valeur annotation", operation);
          throw new RequiredObjectIsNullException("AnnotationValeur", operation, "Banque");
       }
 

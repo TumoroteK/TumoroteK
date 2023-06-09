@@ -143,7 +143,7 @@ public class ModePrepaDeriveManagerImpl implements ModePrepaDeriveManager
       mode.setPlateforme(plateformeDao.mergeObject(mode.getPlateforme()));
 
       if(findDoublonManager(mode)){
-         log.warn("Doublon lors de la creation de l'objet " + "ModePrepaDerive : " + mode.toString());
+         log.warn("Doublon lors de la creation de l'objet ModePrepaDerive : {}",  mode);
          throw new DoublonFoundException("ModePrepaDerive", "creation");
       }
       BeanValidator.validateObject(mode, new Validator[] {modePrepaDeriveValidator});
@@ -155,7 +155,7 @@ public class ModePrepaDeriveManagerImpl implements ModePrepaDeriveManager
    public void updateObjectManager(final ModePrepaDerive obj){
       final ModePrepaDerive mode = obj;
       if(findDoublonManager(mode)){
-         log.warn("Doublon lors de la modification de l'objet " + "ModePrepaDerive : " + mode.toString());
+         log.warn("Doublon lors de la modification de l'objet ModePrepaDerive : {}",  mode);
          throw new DoublonFoundException("ModePrepaDerive", "modification");
       }
       BeanValidator.validateObject(mode, new Validator[] {modePrepaDeriveValidator});

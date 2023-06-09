@@ -893,7 +893,7 @@ public class EmplacementManagerImpl implements EmplacementManager
 
       // Test s"il y a des doublons
       if(findDoublonManager(emplacement) != null){
-         log.warn("Doublon lors de la modification de l'objet " + "Emplacement : " + emplacement.toString());
+         log.warn("Doublon lors de la modification de l'objet Emplacement : {}",  emplacement);
          final EmplacementDoublonFoundException dbe = new EmplacementDoublonFoundException("Emplacement", "modification");
          dbe.setMessage("error.emplacement.doublon");
          dbe.setTerminale(emplacement.getTerminale());
@@ -914,7 +914,7 @@ public class EmplacementManagerImpl implements EmplacementManager
    public void removeObjectManager(final Emplacement emplacement){
       if(emplacement != null){
          if(isUsedObjectManager(emplacement)){
-            log.warn("Objet utilisé lors de la suppression de l'objet " + "Emplacement : " + emplacement.toString());
+            log.warn("Objet utilisé lors de la suppression de l'objet Emplacement : {}",  emplacement);
             throw new ObjectUsedException("Emplacement", "suppression");
          }
          emplacementDao.removeObject(emplacement.getEmplacementId());
@@ -933,7 +933,7 @@ public class EmplacementManagerImpl implements EmplacementManager
       if(terminale != null){
          if(number != null){
             if(number > terminale.getTerminaleType().getNbPlaces()){
-               log.warn("La position n'est pas dans la limite " + "des places de " + "la terminale");
+               log.warn("La position n'est pas dans la limite des places de la terminale");
                throw new InvalidPositionException("Emplacement", "creation", number);
             }
 
@@ -1027,7 +1027,7 @@ public class EmplacementManagerImpl implements EmplacementManager
 
                // Test de la position
                if(!checkEmplacementInTerminale(empl)){
-                  log.warn("La position n'est pas dans la " + "limite des places de " + "la terminale");
+                  log.warn("La position n'est pas dans la limite des places de la terminale");
                   throw new InvalidPositionException("Emplacement", "creation", empl.getPosition());
                }
 
@@ -1064,7 +1064,7 @@ public class EmplacementManagerImpl implements EmplacementManager
                      }
                   }
                   if(!skipErr){
-                     log.warn("Doublon lors de la creation de " + "l'objet Emplacement : " + empl.toString());
+                     log.warn("Doublon lors de la creation de l'objet Emplacement : {}",  empl);
                      final EmplacementDoublonFoundException dbe = new EmplacementDoublonFoundException("Emplacement", "creation");
                      dbe.setMessage("error.emplacement.doublon");
                      dbe.setTerminale(empl.getTerminale());

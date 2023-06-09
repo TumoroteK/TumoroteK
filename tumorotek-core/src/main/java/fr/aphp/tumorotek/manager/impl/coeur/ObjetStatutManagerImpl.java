@@ -199,7 +199,7 @@ public class ObjetStatutManagerImpl implements ObjetStatutManager
    @Override
    public void removeObjectManager(final ObjetStatut statut){
       if(isUsedObjectManager(statut)){
-         log.warn("Objet utilisé lors de la supperssion de l'objet " + "ObjetStatut : " + statut.toString());
+         log.warn("Objet utilisé lors de la supperssion de l'objet ObjetStatut : {}",  statut);
          throw new ObjectUsedException("ObjetStatut", "suppression");
       }else{
          objetStatutDao.removeObject(statut.getObjetStatutId());

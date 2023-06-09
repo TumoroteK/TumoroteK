@@ -191,7 +191,7 @@ public class ProdTypeManagerImpl implements ProdTypeManager
    public void removeObjectManager(final ProdType obj){
       final ProdType type = obj;
       if(isUsedObjectManager(type)){
-         log.warn("Objet utilisé lors de la suppression de l'objet " + "ProdType : " + type.toString());
+         log.warn("Objet utilisé lors de la suppression de l'objet ProdType : {}",  type);
          throw new ObjectUsedException("ProdType", "suppression");
       }
       prodTypeDao.removeObject(type.getId());

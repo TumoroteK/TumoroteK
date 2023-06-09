@@ -170,7 +170,7 @@ public class AffichageManagerImpl implements AffichageManager
       affichage.setIntitule(intitule);
       //On met a jour l'affichage
       if(findDoublonManager(affichage)){
-         log.warn("Doublon lors de la modification de l'objet " + "Affichage : " + affichage.toString());
+         log.warn("Doublon lors de la modification de l'objet Affichage : {}",  affichage);
          throw new DoublonFoundException("Affichage", "modification");
       }
       BeanValidator.validateObject(affichage, new Validator[] {affichageValidator});
@@ -209,7 +209,7 @@ public class AffichageManagerImpl implements AffichageManager
 
       // On vérifie que l'affichage est bien enregistré
       if(findDoublonManager(a)){
-         log.warn("Doublon lors de la modification de l'objet " + "Affichage : " + a.toString());
+         log.warn("Doublon lors de la modification de l'objet Affichage : {}",  a);
          throw new DoublonFoundException("Affichage", "modification");
       }
       final Iterator<Resultat> itR = resultatDao.findByAffichage(affichage).iterator();
@@ -289,7 +289,7 @@ public class AffichageManagerImpl implements AffichageManager
       }
       //On met à jour l'affichage
       if(findDoublonManager(affichage)){
-         log.warn("Doublon lors de la modification de l'objet " + "Affichage : " + affichage.toString());
+         log.warn("Doublon lors de la modification de l'objet Affichage : {}",  affichage);
          throw new DoublonFoundException("Affichage", "modification");
       }
       BeanValidator.validateObject(affichage, new Validator[] {affichageValidator});
@@ -356,7 +356,7 @@ public class AffichageManagerImpl implements AffichageManager
          throw new SearchedObjectIdNotExistException("Affichage", affichage.getAffichageId());
       }
       if(isUsedObjectManager(affichage)){
-         log.warn("Objet utilisé lors de la suppression de l'objet " + "Affichage : " + affichage.toString());
+         log.warn("Objet utilisé lors de la suppression de l'objet Affichage : {}",  affichage);
          throw new ObjectUsedException("Affichage", "suppression");
       }
       //suppression de l'affichage dans la liste

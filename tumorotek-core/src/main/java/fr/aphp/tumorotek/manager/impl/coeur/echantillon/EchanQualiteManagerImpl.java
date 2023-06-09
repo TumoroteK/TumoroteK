@@ -189,7 +189,7 @@ public class EchanQualiteManagerImpl implements EchanQualiteManager
    public void updateObjectManager(final EchanQualite obj){
       final EchanQualite qualite = obj;
       if(findDoublonManager(qualite)){
-         log.warn("Doublon lors de la modification de l'objet " + "EchanQualite : " + qualite.toString());
+         log.warn("Doublon lors de la modification de l'objet EchanQualite : {}",  qualite);
          throw new DoublonFoundException("EchanQualite", "modification");
       }
       BeanValidator.validateObject(qualite, new Validator[] {echanQualiteValidator});

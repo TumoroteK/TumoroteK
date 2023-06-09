@@ -1309,10 +1309,10 @@ public class EchantillonManagerImpl implements EchantillonManager
 
          }else{
             if(!isCessedObjectManager(echantillon)){
-               log.warn("Objet utilisé lors de la suppression de l'objet " + "Echantillon : " + echantillon.toString());
+               log.warn("Objet utilisé lors de la suppression de l'objet Echantillon : {}",  echantillon);
                throw new ObjectUsedException("echantillon.deletion." + "isUsedCascade", true);
             }
-            log.warn("Objet cédé lors de la suppression de l'objet " + "Echantillon : " + echantillon.toString());
+            log.warn("Objet cédé lors de la suppression de l'objet Echantillon : {}",  echantillon);
             throw new ObjectUsedException("echantillon.deletion." + "isUsedNonCascade", false);
          }
       }
@@ -1694,7 +1694,7 @@ public class EchantillonManagerImpl implements EchantillonManager
          if(statut != null){
             echantillon.setObjetStatut(objetStatutDao.mergeObject(statut));
          }else if(echantillon.getObjetStatut() == null){
-            log.warn("Objet obligatoire ObjetStatut manquant lors " + "de la creation " + "d'un objet Echantillon");
+            log.warn("Objet obligatoire ObjetStatut manquant lors de la creation d'un objet Echantillon");
             throw new RequiredObjectIsNullException("Echantillon", "creation", "ObjetStatut");
          }
 

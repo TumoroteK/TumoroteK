@@ -428,7 +428,7 @@ public class ConteneurManagerImpl implements ConteneurManager
    public void removeObjectManager(final Conteneur conteneur, final String comments, final Utilisateur user){
       if(conteneur != null){
          if(isUsedObjectManager(conteneur)){
-            log.warn("Objet utilisé lors de la suppression de l'objet " + "Conteneur : " + conteneur.toString());
+            log.warn("Objet utilisé lors de la suppression de l'objet Conteneur : {}",  conteneur);
             throw new ObjectUsedException("conteneur.deletion.isUsed", false);
          }
          // suppression manytomany

@@ -140,7 +140,7 @@ public class TerminaleTypeManagerImpl implements TerminaleTypeManager
             terminaleTypeDao.removeObject(obj.getTerminaleTypeId());
             log.info("Suppression objet TerminaleType " + obj.toString());
          }else{
-            log.warn("Suppression objet TerminaleType " + obj.toString() + " impossible car est reference (par Terminale)");
+            log.warn("Suppression objet TerminaleType {} impossible car est reference (par Terminale)", obj);
             throw new ObjectUsedException("terminaleType.deletion.isReferenced", false);
          }
       }else{

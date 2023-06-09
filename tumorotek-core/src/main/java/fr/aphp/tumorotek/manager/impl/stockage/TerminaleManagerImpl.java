@@ -648,7 +648,7 @@ public class TerminaleManagerImpl implements TerminaleManager
    public void removeObjectManager(final Terminale terminale, final String comments, final Utilisateur user){
       if(terminale != null){
          if(isUsedObjectManager(terminale)){
-            log.warn("Objet utilisé lors de la suppression de l'objet " + "Terminale : " + terminale.toString());
+            log.warn("Objet utilisé lors de la suppression de l'objet Terminale : {}",  terminale);
             throw new ObjectUsedException("Terminale", "suppression");
          }else{
 
@@ -674,7 +674,7 @@ public class TerminaleManagerImpl implements TerminaleManager
          if(enceinte != null){
             if(number != null){
                if(number > enceinte.getNbPlaces()){
-                  log.warn("La position n'est pas dans la limite " + "des places de " + "l'enceinte");
+                  log.warn("La position n'est pas dans la limite des places de l'enceinte");
                   throw new InvalidPositionException("Terminale", "creation", number);
                }
 
@@ -770,7 +770,7 @@ public class TerminaleManagerImpl implements TerminaleManager
          if(enceinte != null){
             if(number != null){
                if(number > enceinte.getNbPlaces()){
-                  log.warn("La position n'est pas dans la limite " + "des places de " + "l'enceinte");
+                  log.warn("La position n'est pas dans la limite des places de l'enceinte");
                   throw new InvalidPositionException("Terminale", "creation", number);
                }
 

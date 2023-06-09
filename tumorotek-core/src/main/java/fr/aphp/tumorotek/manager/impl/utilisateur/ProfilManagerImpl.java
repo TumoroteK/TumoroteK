@@ -250,7 +250,7 @@ public class ProfilManagerImpl implements ProfilManager
    public void removeObjectManager(final Profil profil){
       if(profil != null){
          if(isUsedObjectManager(profil)){
-            log.warn("Objet utilisé lors de la suppression de l'objet " + "Profil : " + profil.toString());
+            log.warn("Objet utilisé lors de la suppression de l'objet Profil : {}",  profil);
             throw new ObjectUsedException("deletion.profil.isUsed", false);
          }
          // suppression des DroitsObjets

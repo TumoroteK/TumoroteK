@@ -579,13 +579,13 @@ public class InterfacageParsingUtilsImpl implements InterfacageParsingUtils
          }
       }else{
          if(config == null){
-            log.warn("initNewDossierExterne : " + "La configuration pour parser le message " + "est NULL");
+            log.warn("initNewDossierExterne : La configuration pour parser le message est NULL");
          }
          if(contenu == null){
-            log.warn("initNewDossierExterne : " + "Le fichier à injecter dans TK " + "est NULL");
+            log.warn("initNewDossierExterne : Le fichier à injecter dans TK est NULL");
          }
          if(racine == null){
-            log.warn("initNewDossierExterne : " + "La racine du fichier de mapping " + "est NULL");
+            log.warn("initNewDossierExterne : La racine du fichier de mapping est NULL");
          }
       }
 
@@ -770,16 +770,16 @@ public class InterfacageParsingUtilsImpl implements InterfacageParsingUtils
          }
       }else{
          if(conf == null){
-            log.warn("getValueFromBlocAndEmplacement : " + "La configuration pour parser le message " + "est NULL");
+            log.warn("getValueFromBlocAndEmplacement : La configuration pour parser le message est NULL");
          }
          if(bloc == null){
-            log.warn("getValueFromBlocAndEmplacement : " + "Le bloc dans lequel extraire la valeur " + "est NULL");
+            log.warn("getValueFromBlocAndEmplacement : Le bloc dans lequel extraire la valeur est NULL");
          }
          if(contenu == null){
             log.warn("getValueFromBlocAndEmplacement : Le contenu du fichier est NULL");
          }
          if(emplacement == null){
-            log.warn("getValueFromBlocAndEmplacement : " + "L'emplacement de la valeur à extraire " + "est NULL");
+            log.warn("getValueFromBlocAndEmplacement : L'emplacement de la valeur à extraire est NULL");
          }
       }
 
@@ -830,16 +830,16 @@ public class InterfacageParsingUtilsImpl implements InterfacageParsingUtils
          }
       }else{
          if(conf == null){
-            log.warn("getValueFromBlocLibre : " + "La configuration pour parser le message " + "est NULL");
+            log.warn("getValueFromBlocLibre : La configuration pour parser le message est NULL");
          }
          if(bloc == null){
-            log.warn("getValueFromBlocLibre : " + "Le bloc dans lequel extraire la valeur " + "est NULL");
+            log.warn("getValueFromBlocLibre : Le bloc dans lequel extraire la valeur est NULL");
          }
          if(blocsLibres == null){
             log.warn("getValueFromBlocLibre : La liste des blocs libres est NULL");
          }
          if(emplacement == null){
-            log.warn("getValueFromBlocLibre : " + "L'emplacement de la valeur à extraire " + "est NULL");
+            log.warn("getValueFromBlocLibre : L'emplacement de la valeur à extraire est NULL");
          }
       }
       return value;

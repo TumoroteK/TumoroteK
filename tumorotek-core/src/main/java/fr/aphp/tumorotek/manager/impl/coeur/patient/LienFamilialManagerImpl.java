@@ -132,7 +132,7 @@ public class LienFamilialManagerImpl implements LienFamilialManager
             lienFamilialDao.removeObject(obj.getLienFamilialId());
             log.debug("Suppression objet LienFamilial {} et son reciproque en cascade", obj);
          }else{
-            log.warn("Suppression objet LienFamilial " + obj.toString() + " impossible car est reference (par PatientLien)");
+            log.warn("Suppression objet LienFamilial {} impossible car est reference (par PatientLien)", obj);
             throw new ObjectUsedException();
          }
       }else{

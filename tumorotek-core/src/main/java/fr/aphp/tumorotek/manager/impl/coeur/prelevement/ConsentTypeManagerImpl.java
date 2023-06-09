@@ -136,7 +136,7 @@ public class ConsentTypeManagerImpl implements ConsentTypeManager
             consentTypeDao.removeObject(obj.getId());
             log.info("Suppression objet ConsentType " + obj.toString());
          }else{
-            log.warn("Suppression objet ConsentType " + obj.toString() + " impossible car est reference (par Prelevement)");
+            log.warn("Suppression objet ConsentType {} impossible car est reference (par Prelevement)", obj);
             throw new ObjectUsedException();
          }
       }else{

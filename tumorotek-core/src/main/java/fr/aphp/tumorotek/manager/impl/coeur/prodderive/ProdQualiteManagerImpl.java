@@ -187,7 +187,7 @@ public class ProdQualiteManagerImpl implements ProdQualiteManager
    public void updateObjectManager(final ProdQualite obj){
       final ProdQualite qualite = obj;
       if(findDoublonManager(qualite)){
-         log.warn("Doublon lors de la modification de l'objet " + "ProdQualite : " + qualite.toString());
+         log.warn("Doublon lors de la modification de l'objet ProdQualite : {}",  qualite);
          throw new DoublonFoundException("ProdQualite", "modification");
       }
       BeanValidator.validateObject(qualite, new Validator[] {prodQualiteValidator});

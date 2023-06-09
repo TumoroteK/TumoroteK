@@ -173,7 +173,7 @@ public class RequeteManagerImpl implements RequeteManager
          requete.setIntitule(intitule);
          //On met a jour la requete
          if(findDoublonManager(requete)){
-            log.warn("Doublon lors de la modification de l'objet " + "Requete : " + requete.toString());
+            log.warn("Doublon lors de la modification de l'objet Requete : {}",  requete);
             throw new DoublonFoundException("Requete", "modification");
          }else{
             BeanValidator.validateObject(requete, new Validator[] {requeteValidator});
@@ -323,7 +323,7 @@ public class RequeteManagerImpl implements RequeteManager
          throw new SearchedObjectIdNotExistException("Requete", requete.getRequeteId());
       }else{
          if(isUsedObjectManager(requete)){
-            log.warn("Objet utilisé lors de la suppression de l'objet " + "Requete : " + requete.toString());
+            log.warn("Objet utilisé lors de la suppression de l'objet Requete : {}",  requete);
             throw new ObjectUsedException("Requete", "suppression");
          }else{
             //suppression de la requete dans la liste

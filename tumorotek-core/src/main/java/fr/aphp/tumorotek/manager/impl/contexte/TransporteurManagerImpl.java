@@ -237,7 +237,7 @@ public class TransporteurManagerImpl implements TransporteurManager
             transporteurDao.removeObject(transporteur.getTransporteurId());
             log.info("Suppression de l'objet Transporteur : " + transporteur.toString());
          }else{
-            log.warn("Objet référencé lors de la suppression " + "de l'objet Transporteur : " + transporteur.toString());
+            log.warn("Objet référencé lors de la suppression de l'objet Transporteur : {}",  transporteur);
             throw new ObjectReferencedException("transporteur" + ".deletion.isReferenced", false);
          }
       }

@@ -222,7 +222,7 @@ public class RechercheManagerImpl implements RechercheManager
       recherche.setIntitule(intitule);
       // On met a jour la recherche
       if(findDoublonManager(recherche)){
-         log.warn("Doublon lors de la modification de l'objet " + "Recherche : " + recherche.toString());
+         log.warn("Doublon lors de la modification de l'objet Recherche : {}",  recherche);
          throw new DoublonFoundException("Recherche", "modification");
       }
       BeanValidator.validateObject(recherche, new Validator[] {rechercheValidator});
