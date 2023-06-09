@@ -182,7 +182,7 @@ public class EchanQualiteManagerImpl implements EchanQualiteManager
       }
       BeanValidator.validateObject(qualite, new Validator[] {echanQualiteValidator});
       echanQualiteDao.createObject(qualite);
-      log.info("Enregistrement de l'objet EchanQualite : " + qualite.toString());
+      log.info("Enregistrement de l'objet EchanQualite : {}",  qualite);
    }
 
    @Override
@@ -194,7 +194,7 @@ public class EchanQualiteManagerImpl implements EchanQualiteManager
       }
       BeanValidator.validateObject(qualite, new Validator[] {echanQualiteValidator});
       echanQualiteDao.updateObject(qualite);
-      log.info("Modification de l'objet EchanQualite : " + qualite.toString());
+      log.info("Modification de l'objet EchanQualite : {}",  qualite);
    }
 
    @Override

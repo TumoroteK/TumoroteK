@@ -426,7 +426,7 @@ public class EtablissementManagerImpl implements EtablissementManager
       etablissement.setCategorie(categorieDao.mergeObject(categorie));
 
       etablissementDao.createObject(etablissement);
-      log.info("Enregistrement de l'objet Etablissement : " + etablissement.toString());
+      log.info("Enregistrement de l'objet Etablissement : {}",  etablissement);
 
       // Enregistrement de l'operation associee
       final Operation creationOp = new Operation();
@@ -469,7 +469,7 @@ public class EtablissementManagerImpl implements EtablissementManager
       etablissement.setCategorie(categorieDao.mergeObject(categorie));
 
       etablissementDao.updateObject(etablissement);
-      log.info("Modification de l'objet Etablissement : " + etablissement.toString());
+      log.info("Modification de l'objet Etablissement : {}",  etablissement);
 
       if(cascadeArchive){
          archiveServices(etablissement, utilisateur);
@@ -534,7 +534,7 @@ public class EtablissementManagerImpl implements EtablissementManager
             CreateOrUpdateUtilities.removeAssociateOperations(etablissement, operationManager, comments, user);
 
             etablissementDao.removeObject(etablissement.getEtablissementId());
-            log.info("Suppression de l'objet Etablissement : " + etablissement.toString());
+            log.info("Suppression de l'objet Etablissement : {}",  etablissement);
 
          }else{
             if(!isReferencedObjectManager(etablissement)){
@@ -551,7 +551,7 @@ public class EtablissementManagerImpl implements EtablissementManager
    public void removeObjectCascadeManager(Etablissement etablissement, final String comments, final Utilisateur user){
 
       if(etablissement != null){
-         log.info("Suppression en cascade depuis objet Etablissement " + etablissement.toString());
+         log.info("Suppression en cascade depuis objet Etablissement {}",  etablissement);
 
          etablissement = etablissementDao.mergeObject(etablissement);
 

@@ -352,7 +352,7 @@ public class ServiceManagerImpl implements ServiceManager
             archiveCollaborateurs(service, collaborateurs, utilisateur);
          }
 
-         log.info("Enregistrement de l'objet Service : " + service.toString());
+         log.info("Enregistrement de l'objet Service : {}",  service);
 
          //Enregistrement de l'operation associee
          final Operation creationOp = new Operation();
@@ -415,7 +415,7 @@ public class ServiceManagerImpl implements ServiceManager
             archiveCollaborateurs(service, new ArrayList<>(getCollaborateursManager(service)), utilisateur);
          }
 
-         log.info("Modification de l'objet Service " + service.toString());
+         log.info("Modification de l'objet Service {}",  service);
 
          //Enregistrement de l'operation associee
          final Operation creationOp = new Operation();
@@ -457,7 +457,7 @@ public class ServiceManagerImpl implements ServiceManager
 
             //Supprime operations associes
             CreateOrUpdateUtilities.removeAssociateOperations(service, operationManager, comments, user);
-            log.info("Suppression de l'objet Service : " + service.toString());
+            log.info("Suppression de l'objet Service : {}",  service);
          }else{
             if(!isReferencedObjectManager(service)){ // suppr possible
                log.warn("Objet utilisé lors de la suppression de l'objet Service : {}",  service);
@@ -564,7 +564,7 @@ public class ServiceManagerImpl implements ServiceManager
    @Override
    public void removeObjectCascadeManager(final Service srv, final String comments, final Utilisateur user){
       if(srv != null){
-         log.info("Suppression en cascade depuis objet Service " + srv.toString());
+         log.info("Suppression en cascade depuis objet Service {}",  srv);
 
          //Supprime les collaborateurs
          final List<Collaborateur> collabs = new ArrayList<>();

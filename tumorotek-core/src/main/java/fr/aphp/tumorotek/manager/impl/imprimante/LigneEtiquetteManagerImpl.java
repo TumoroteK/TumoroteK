@@ -136,7 +136,7 @@ public class LigneEtiquetteManagerImpl implements LigneEtiquetteManager
 
       updateAssociations(ligneEtiquette, champLigneEtiquettes, null);
 
-      log.info("Enregistrement objet LigneEtiquette " + ligneEtiquette.toString());
+      log.info("Enregistrement objet LigneEtiquette {}",  ligneEtiquette);
    }
 
    @Override
@@ -151,7 +151,7 @@ public class LigneEtiquetteManagerImpl implements LigneEtiquetteManager
 
       updateAssociations(ligneEtiquette, champLigneEtiquettesToCreate, champLigneEtiquettesToremove);
 
-      log.info("Enregistrement objet LigneEtiquette " + ligneEtiquette.toString());
+      log.info("Enregistrement objet LigneEtiquette {}",  ligneEtiquette);
    }
 
    @Override
@@ -164,7 +164,7 @@ public class LigneEtiquetteManagerImpl implements LigneEtiquetteManager
          }
 
          ligneEtiquetteDao.removeObject(ligneEtiquette.getLigneEtiquetteId());
-         log.info("Suppression de l'objet LigneEtiquette : " + ligneEtiquette.toString());
+         log.info("Suppression de l'objet LigneEtiquette : {}",  ligneEtiquette);
       }else{
          log.warn("Suppression d'une LigneEtiquette null");
       }

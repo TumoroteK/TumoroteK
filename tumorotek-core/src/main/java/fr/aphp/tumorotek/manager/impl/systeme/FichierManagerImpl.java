@@ -177,7 +177,7 @@ public class FichierManagerImpl implements FichierManager
       }
       fichierDao.createObject(fichier);
       if(stream != null){
-         log.info("Enregistrement de l'objet Fichier : " + fichier.toString());
+         log.info("Enregistrement de l'objet Fichier : {}",  fichier);
          fichier.setPath(fichier.getPath() + "_" + fichier.getFichierId());
          fichierDao.updateObject(fichier);
          storeFile(stream, fichier.getPath(), filesCreated);
@@ -220,7 +220,7 @@ public class FichierManagerImpl implements FichierManager
 
       // path doit être inchangé
       fichierDao.updateObject(fichier);
-      log.info("Modification de l'objet Fichier : " + fichier.toString());
+      log.info("Modification de l'objet Fichier : {}",  fichier);
       return fichier;
    }
 
@@ -264,7 +264,7 @@ public class FichierManagerImpl implements FichierManager
                filesCreated.add(new File(path));
             }
          }else{
-            log.info("Fichier existe déjà path: " + path);
+            log.info("Fichier existe déjà path: {}",  path);
          }
       }catch(final FileNotFoundException fe){
          log.error("Annotation fichier: Erreur survenue dans la creation du fichier au chemin specifie: {}",  path);

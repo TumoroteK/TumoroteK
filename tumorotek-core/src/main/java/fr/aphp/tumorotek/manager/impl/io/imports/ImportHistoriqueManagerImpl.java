@@ -200,14 +200,14 @@ public class ImportHistoriqueManagerImpl implements ImportHistoriqueManager
       }
 
       importHistoriqueDao.createObject(importHistorique);
-      log.info("Enregistrement objet ImportHistorique " + importHistorique.toString());
+      log.info("Enregistrement objet ImportHistorique {}",  importHistorique);
    }
 
    @Override
    public void removeObjectManager(final ImportHistorique importHistorique){
       if(importHistorique != null){
          importHistoriqueDao.removeObject(importHistorique.getImportHistoriqueId());
-         log.info("Suppression de l'objet ImportHistorique : " + importHistorique.toString());
+         log.info("Suppression de l'objet ImportHistorique : {}",  importHistorique);
       }else{
          log.warn("Suppression d'un ImportHistorique null");
       }
@@ -217,7 +217,7 @@ public class ImportHistoriqueManagerImpl implements ImportHistoriqueManager
    public void removeImportationManager(final Importation importation){
       if(importation != null){
          importationDao.removeObject(importation.getImportationId());
-         log.info("Suppression de l'objet Importation : " + importation.toString());
+         log.info("Suppression de l'objet Importation : {}",  importation);
       }else{
          log.warn("Suppression d'un Importation null");
       }

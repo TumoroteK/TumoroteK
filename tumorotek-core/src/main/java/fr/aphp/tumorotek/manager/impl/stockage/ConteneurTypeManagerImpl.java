@@ -122,7 +122,7 @@ public class ConteneurTypeManagerImpl implements ConteneurTypeManager
       BeanValidator.validateObject(obj, new Validator[] {conteneurTypeValidator});
       if(!findDoublonManager(obj)){
          conteneurTypeDao.createObject(obj);
-         log.info("Enregistrement objet ConteneurType " + obj.toString());
+         log.info("Enregistrement objet ConteneurType {}",  obj);
       }else{
          log.warn("Doublon lors creation objet ConteneurType {}",  obj);
          throw new DoublonFoundException("ConteneurType", "creation");
@@ -134,7 +134,7 @@ public class ConteneurTypeManagerImpl implements ConteneurTypeManager
       BeanValidator.validateObject(obj, new Validator[] {conteneurTypeValidator});
       if(!findDoublonManager(obj)){
          conteneurTypeDao.updateObject(obj);
-         log.info("Modification objet ConteneurType " + obj.toString());
+         log.info("Modification objet ConteneurType {}",  obj);
       }else{
          log.warn("Doublon lors modification objet ConteneurType {}",  obj);
          throw new DoublonFoundException("ConteneurType", "modification");
@@ -145,7 +145,7 @@ public class ConteneurTypeManagerImpl implements ConteneurTypeManager
    public void removeObjectManager(final ConteneurType obj){
       if(obj != null){
          conteneurTypeDao.removeObject(obj.getId());
-         log.info("Suppression objet ConteneurType " + obj.toString());
+         log.info("Suppression objet ConteneurType {}",  obj);
       }else{
          log.warn("Suppression d'un ConteneurType null");
       }

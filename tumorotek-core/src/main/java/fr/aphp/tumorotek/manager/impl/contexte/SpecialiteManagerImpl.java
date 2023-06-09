@@ -142,7 +142,7 @@ public class SpecialiteManagerImpl implements SpecialiteManager
       BeanValidator.validateObject(obj, new Validator[] {specialiteValidator});
       if(!findDoublonManager(obj)){
          specialiteDao.createObject(obj);
-         log.info("Enregistrement objet Specialite " + obj.toString());
+         log.info("Enregistrement objet Specialite {}",  obj);
       }else{
          log.warn("Doublon lors creation objet Specialite {}",  obj);
          throw new DoublonFoundException("Specialite", "creation");
@@ -154,7 +154,7 @@ public class SpecialiteManagerImpl implements SpecialiteManager
       BeanValidator.validateObject(obj, new Validator[] {specialiteValidator});
       if(!findDoublonManager(obj)){
          specialiteDao.updateObject(obj);
-         log.info("Modification objet Specialite " + obj.toString());
+         log.info("Modification objet Specialite {}",  obj);
       }else{
          log.warn("Doublon lors modification objet Specialite {}",  obj);
          throw new DoublonFoundException("Specialite", "modification");
@@ -165,7 +165,7 @@ public class SpecialiteManagerImpl implements SpecialiteManager
    public void removeObjectManager(final Specialite obj){
       if(obj != null){
          specialiteDao.removeObject(obj.getId());
-         log.info("Suppression objet Specialite " + obj.toString());
+         log.info("Suppression objet Specialite {}",  obj);
       }else{
          log.warn("Suppression d'une Specialite null");
       }

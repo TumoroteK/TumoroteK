@@ -154,7 +154,7 @@ public class ChampLigneEtiquetteManagerImpl implements ChampLigneEtiquetteManage
 
       champLigneEtiquetteDao.createObject(champLigneEtiquette);
 
-      log.info("Enregistrement objet ChampLigneEtiquette " + champLigneEtiquette.toString());
+      log.info("Enregistrement objet ChampLigneEtiquette {}",  champLigneEtiquette);
    }
 
    @Override
@@ -176,7 +176,7 @@ public class ChampLigneEtiquetteManagerImpl implements ChampLigneEtiquetteManage
 
       champLigneEtiquetteDao.updateObject(champLigneEtiquette);
 
-      log.info("Enregistrement objet ChampLigneEtiquette " + champLigneEtiquette.toString());
+      log.info("Enregistrement objet ChampLigneEtiquette {}",  champLigneEtiquette);
    }
 
    @Override
@@ -184,7 +184,7 @@ public class ChampLigneEtiquetteManagerImpl implements ChampLigneEtiquetteManage
       if(champLigneEtiquette != null){
          final Champ chp = champLigneEtiquette.getChamp();
          champLigneEtiquetteDao.removeObject(champLigneEtiquette.getChampLigneEtiquetteId());
-         log.info("Suppression de l'objet ChampLigneEtiquette : " + champLigneEtiquette.toString());
+         log.info("Suppression de l'objet ChampLigneEtiquette : {}",  champLigneEtiquette);
 
          champManager.removeObjectManager(chp);
       }else{

@@ -456,7 +456,7 @@ public class TraitementQueryManagerImpl implements TraitementQueryManager
          }
 
          /* On exécute la requête. */
-         log.info("findObjetByCritereManager : Exécution de la requête : \n" + sb.toString());
+         log.info("findObjetByCritereManager : Exécution de la requête : \n{}",  sb);
          final EntityManager em = entityManagerFactory.createEntityManager();
          // si la liste n'est pas vide et que l'entité
          final TypedQuery<Object> query = em.createQuery(sb.toString(), Object.class);
@@ -1327,7 +1327,7 @@ public class TraitementQueryManagerImpl implements TraitementQueryManager
                throw new IllegalArgumentException();
             }
             /* On exécute la requête. */
-            log.info("findObjetByCritereManager : Exécution de la requête : \n" + sb.toString());
+            log.info("findObjetByCritereManager : Exécution de la requête : \n{}",  sb);
             final EntityManager em = entityManagerFactory.createEntityManager();
             final TypedQuery<Object> query = em.createQuery(sb.toString(), Object.class).setParameter("valeur", value);
             // si la liste n'est pas vide et que l'entité
@@ -1575,7 +1575,7 @@ public class TraitementQueryManagerImpl implements TraitementQueryManager
       }
 
       /* On exécute la requête. */
-      log.info("findObjetByCritereManager : Exécution de la requête : \n" + sql.toString());
+      log.info("findObjetByCritereManager : Exécution de la requête : \n{}",  sql);
       final EntityManager em = entityManagerFactory.createEntityManager();
       final TypedQuery<Integer> query = em.createQuery(sql.toString(), Integer.class);
       query.setParameter("entite", entiteTransformation);

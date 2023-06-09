@@ -662,7 +662,7 @@ public class CessionManagerImpl implements CessionManager
             destructionMotif, contrat);
 
          cessionDao.createObject(cession);
-         log.info("Enregistrement objet Cession " + cession.toString());
+         log.info("Enregistrement objet Cession {}",  cession);
 
          //Enregistrement de l'operation associee
          final Operation creationOp = new Operation();
@@ -734,7 +734,7 @@ public class CessionManagerImpl implements CessionManager
             destructionMotif, contrat);
 
          cessionDao.updateObject(cession);
-         log.info("Modification objet Cession " + cession.toString());
+         log.info("Modification objet Cession {}",  cession);
 
          //Enregistrement de l'operation associee
          final Operation creationOp = new Operation();
@@ -822,7 +822,7 @@ public class CessionManagerImpl implements CessionManager
          }
 
          cessionDao.removeObject(cession.getCessionId());
-         log.info("Suppression de l'objet Cession : " + cession.toString());
+         log.info("Suppression de l'objet Cession : {}",  cession);
 
          //Supprime operations associes
          CreateOrUpdateUtilities.removeAssociateOperations(cession, operationManager, comments, usr);

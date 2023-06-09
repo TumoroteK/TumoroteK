@@ -232,7 +232,7 @@ public class SModeleManagerImpl implements SModeleManager
    public void removeObjectManager(final SModele modele){
       if(modele != null){
          sModeleDao.removeObject(modele.getSmodeleId());
-         log.info("Suppression de l'objet IndicateurModele : " + modele.toString());
+         log.info("Suppression de l'objet IndicateurModele : {}",  modele);
       }else{
          log.warn("Suppression d'un IndicateurModele null");
       }

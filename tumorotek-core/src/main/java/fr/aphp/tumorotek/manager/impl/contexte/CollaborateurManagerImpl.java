@@ -440,7 +440,7 @@ public class CollaborateurManagerImpl implements CollaborateurManager
       collaborateurDao.createObject(collaborateur);
 
       updateServicesAndCoordonnees(collaborateur, services, coordonnees);
-      log.info("Enregistrement de l'objet Collaborateur : " + collaborateur.toString());
+      log.info("Enregistrement de l'objet Collaborateur : {}",  collaborateur);
 
       //Enregistrement de l'operation associee
       final Operation creationOp = new Operation();
@@ -518,7 +518,7 @@ public class CollaborateurManagerImpl implements CollaborateurManager
 
       updateServicesAndCoordonnees(collaborateur, services, coordonnees);
 
-      log.info("Enregistrement de l'objet Collaborateur : " + collaborateur.toString());
+      log.info("Enregistrement de l'objet Collaborateur : {}",  collaborateur);
 
       //Enregistrement de l'operation associee
       final Operation creationOp = new Operation();
@@ -565,7 +565,7 @@ public class CollaborateurManagerImpl implements CollaborateurManager
             CreateOrUpdateUtilities.removeAssociateOperations(collaborateur, operationManager, comments, user);
 
             collaborateurDao.removeObject(collaborateur.getCollaborateurId());
-            log.info("Suppression de l'objet Collaborateur : " + collaborateur.toString());
+            log.info("Suppression de l'objet Collaborateur : {}",  collaborateur);
          }else{
             log.warn("Objet référencé lors de la suppression de l'objet Collaborateur : {}",  collaborateur);
             throw new ObjectReferencedException("collaborateur" + ".deletion.isReferencedCascade", false);
@@ -723,7 +723,7 @@ public class CollaborateurManagerImpl implements CollaborateurManager
       final Utilisateur user){
 
       if(collab != null){
-         log.info("Suppression en cascade Collaborateur " + collab.toString());
+         log.info("Suppression en cascade Collaborateur {}",  collab);
          collab = collaborateurDao.mergeObject(collab);
          if(service != null){
             collab.getServices().remove(service);

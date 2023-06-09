@@ -191,12 +191,12 @@ public class TableAnnotationManagerImpl implements TableAnnotationManager
             try{
                if(operation.equals("creation")){
                   tableAnnotationDao.createObject(table);
-                  log.info("Enregistrement objet TableAnnotation " + table.toString());
+                  log.info("Enregistrement objet TableAnnotation {}",  table);
                   CreateOrUpdateUtilities.createAssociateOperation(table, operationManager,
                      operationTypeDao.findByNom("Creation").get(0), utilisateur);
                }else{
                   tableAnnotationDao.updateObject(table);
-                  log.info("Modification objet TableAnnotation " + table.toString());
+                  log.info("Modification objet TableAnnotation {}",  table);
                   CreateOrUpdateUtilities.createAssociateOperation(table, operationManager,
                      operationTypeDao.findByNom("Modification").get(0), utilisateur);
                }
@@ -318,7 +318,7 @@ public class TableAnnotationManagerImpl implements TableAnnotationManager
          table.setChampAnnotations(new HashSet<ChampAnnotation>());
 
          tableAnnotationDao.removeObject(table.getTableAnnotationId());
-         log.info("Suppression objet TableAnnotation " + table.toString());
+         log.info("Suppression objet TableAnnotation {}",  table);
          //Supprime operations associes
          CreateOrUpdateUtilities.removeAssociateOperations(table, operationManager, comments, usr);
       }else{

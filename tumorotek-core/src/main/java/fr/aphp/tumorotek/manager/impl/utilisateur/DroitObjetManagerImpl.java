@@ -225,7 +225,7 @@ public class DroitObjetManagerImpl implements DroitObjetManager
       // création
       droitObjetDao.createObject(droitObjet);
 
-      log.info("Enregistrement objet DroitObjet " + droitObjet.toString());
+      log.info("Enregistrement objet DroitObjet {}",  droitObjet);
 
    }
 
@@ -233,7 +233,7 @@ public class DroitObjetManagerImpl implements DroitObjetManager
    public void removeObjectManager(final DroitObjet droitObjet){
       if(droitObjet != null){
          droitObjetDao.removeObject(droitObjet.getPk());
-         log.info("Suppression de l'objet DroitObjet : " + droitObjet.toString());
+         log.info("Suppression de l'objet DroitObjet : {}",  droitObjet);
       }else{
          log.warn("Suppression d'un DroitObjet null");
       }

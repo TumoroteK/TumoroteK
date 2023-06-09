@@ -233,7 +233,7 @@ public class CodeDossierManagerImpl implements CodeDossierManager
          }
 
          codeDossierDao.removeObject(dos.getCodeDossierId());
-         log.info("Suppression objet CodeDossier " + dos.toString());
+         log.info("Suppression objet CodeDossier {}",  dos);
          //Supprime operations associes
          CreateOrUpdateUtilities.removeAssociateOperations(dos, operationManager);
       }else{

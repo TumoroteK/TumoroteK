@@ -148,7 +148,7 @@ public class ModePrepaDeriveManagerImpl implements ModePrepaDeriveManager
       }
       BeanValidator.validateObject(mode, new Validator[] {modePrepaDeriveValidator});
       modePrepaDeriveDao.createObject(mode);
-      log.info("Enregistrement de l'objet ModePrepaDerive : " + mode.toString());
+      log.info("Enregistrement de l'objet ModePrepaDerive : {}",  mode);
    }
 
    @Override
@@ -160,14 +160,14 @@ public class ModePrepaDeriveManagerImpl implements ModePrepaDeriveManager
       }
       BeanValidator.validateObject(mode, new Validator[] {modePrepaDeriveValidator});
       modePrepaDeriveDao.updateObject(mode);
-      log.info("Modification de l'objet ModePrepaDerive : " + mode.toString());
+      log.info("Modification de l'objet ModePrepaDerive : {}",  mode);
    }
 
    @Override
    public void removeObjectManager(final ModePrepaDerive obj){
       final ModePrepaDerive mode = obj;
       modePrepaDeriveDao.removeObject(mode.getId());
-      log.info("Suppression de l'objet ModePrepaDerive : " + mode.toString());
+      log.info("Suppression de l'objet ModePrepaDerive : {}",  mode);
    }
 
    @Override

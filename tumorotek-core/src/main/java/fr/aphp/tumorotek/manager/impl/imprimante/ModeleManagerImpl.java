@@ -204,7 +204,7 @@ public class ModeleManagerImpl implements ModeleManager
 
          updateAssociations(modele, ligneEtiquettes, null, champLigneEtiquettes, null);
 
-         log.info("Enregistrement de l'objet Modele : " + modele.toString());
+         log.info("Enregistrement de l'objet Modele : {}",  modele);
       }
    }
 
@@ -255,7 +255,7 @@ public class ModeleManagerImpl implements ModeleManager
          updateAssociations(modele, ligneEtiquettesToCreate, ligneEtiquettesToremove, champLigneEtiquettesToCreate,
             champLigneEtiquettesToRemove);
 
-         log.info("Enregistrement de l'objet Modele : " + modele.toString());
+         log.info("Enregistrement de l'objet Modele : {}",  modele);
       }
    }
 
@@ -269,7 +269,7 @@ public class ModeleManagerImpl implements ModeleManager
          }
 
          modeleDao.removeObject(modele.getModeleId());
-         log.info("Suppression de l'objet Modele : " + modele.toString());
+         log.info("Suppression de l'objet Modele : {}",  modele);
       }else{
          log.warn("Suppression d'un Modele null");
       }

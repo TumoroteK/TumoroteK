@@ -237,7 +237,7 @@ public class PatientManagerImpl implements PatientManager
 
             if(operation.equals("creation")){
                patientDao.createObject(patient);
-               log.info("Enregistrement objet Patient " + patient.toString());
+               log.info("Enregistrement objet Patient {}",  patient);
 
                oType = operationTypeDao.findByNom("Creation").get(0);
             }else{
@@ -245,7 +245,7 @@ public class PatientManagerImpl implements PatientManager
                // patient.setDelegate(patientDelegateDao.mergeObject(patient.getDelegate()));
 
                patientDao.updateObject(patient);
-               log.info("Modification objet Patient " + patient.toString());
+               log.info("Modification objet Patient {}",  patient);
 
                if(operation.equals("modification")){
                   oType = operationTypeDao.findByNom("Modification").get(0);
@@ -586,7 +586,7 @@ public class PatientManagerImpl implements PatientManager
             }
 
             patientDao.removeObject(patient.getPatientId());
-            log.info("Suppression objet Patient " + patient.toString());
+            log.info("Suppression objet Patient {}",  patient);
 
             //Supprime operations associes
             CreateOrUpdateUtilities.removeAssociateOperations(patient, operationManager, comments, user);

@@ -1130,7 +1130,7 @@ public class EchantillonManagerImpl implements EchantillonManager
          if(!findDoublonManager(echantillon)){
 
             echantillonDao.updateObject(echantillon);
-            log.info("Modification de l'objet Echantillon : {}" + echantillon);
+            log.info("Modification de l'objet Echantillon : {}",  echantillon);
 
             if(operations == null || !operations.contains(operationTypeDao.findByNom("ModifMultiple").get(0))){
                // Enregistrement de l'operation associee
@@ -1290,7 +1290,7 @@ public class EchantillonManagerImpl implements EchantillonManager
             CreateOrUpdateUtilities.removeAssociateNonConformites(echantillon, objetNonConformeManager);
 
             echantillonDao.removeObject(echantillon.getEchantillonId());
-            log.info("Suppression de l'objet Echantillon : " + echantillon.toString());
+            log.info("Suppression de l'objet Echantillon : {}",  echantillon);
 
             //Supprime operations associees
             CreateOrUpdateUtilities.removeAssociateOperations(echantillon, operationManager, comments, user);

@@ -110,13 +110,13 @@ public class InterfacageParsingUtilsImpl implements InterfacageParsingUtils
          if(sepElt != null){
             conf.setSeparateurChamps(sepElt.getText());
          }else{
-            log.info("initConfigurationParsing : " + "Balise 'SeparateurChamps' absente du fichier.");
+            log.info("initConfigurationParsing : Balise 'SeparateurChamps' absente du fichier.");
          }
          sepElt = confElt.getChild("SeparateurComposants");
          if(sepElt != null){
             conf.setSeparateurComposants(sepElt.getText());
          }else{
-            log.info("initConfigurationParsing : " + "Balise 'SeparateurComposants' absente du fichier.");
+            log.info("initConfigurationParsing : Balise 'SeparateurComposants' absente du fichier.");
          }
          sepElt = confElt.getChild("SeparateurSousComposants");
          if(sepElt != null){
@@ -128,7 +128,7 @@ public class InterfacageParsingUtilsImpl implements InterfacageParsingUtils
          if(sepElt != null){
             conf.setBlocLibreKey(sepElt.getText());
          }else{
-            log.info("initConfigurationParsing : " + "Balise 'BlocLibreKey' absente du fichier.");
+            log.info("initConfigurationParsing : Balise 'BlocLibreKey' absente du fichier.");
          }
       }else{
          log.warn("initConfigurationParsing : Balise 'Configuration' absente du fichier.");
@@ -547,7 +547,7 @@ public class InterfacageParsingUtilsImpl implements InterfacageParsingUtils
             }
             dossier.setIdentificationDossier(identificationDossier);
          }else{
-            log.info("initNewDossierExterne : " + "La balise 'NumeroDossier' est absente du fichier");
+            log.info("initNewDossierExterne : La balise 'NumeroDossier' est absente du fichier");
          }
 
          // extraction du numéro de la date
@@ -566,7 +566,7 @@ public class InterfacageParsingUtilsImpl implements InterfacageParsingUtils
             }
             dossier.setDateOperation(cal);
          }else{
-            log.info("initNewDossierExterne : " + "La balise 'DateDossier' est absente du fichier");
+            log.info("initNewDossierExterne : La balise 'DateDossier' est absente du fichier");
          }
 
          // extraction du numéro de l'opération
@@ -575,7 +575,7 @@ public class InterfacageParsingUtilsImpl implements InterfacageParsingUtils
             final String emp = confElt.getChild("OperationDossier").getChildText("Key");
             dossier.setOperation(getValueFromBlocAndEmplacement(contenu, config, bloc, emp));
          }else{
-            log.info("initNewDossierExterne : " + "La balise 'OperationDossier' est absente du fichier");
+            log.info("initNewDossierExterne : La balise 'OperationDossier' est absente du fichier");
          }
       }else{
          if(config == null){
@@ -1326,7 +1326,7 @@ public class InterfacageParsingUtilsImpl implements InterfacageParsingUtils
             // supprimes les fichiers associés si tout s'est bien passé
             if(delFile){
                for(final File file : relatedFiles){
-                  log.info("deletion du fichier: " + file.getName());
+                  log.info("deletion du fichier: {}",  file.getName());
                   file.delete();
                }
             }

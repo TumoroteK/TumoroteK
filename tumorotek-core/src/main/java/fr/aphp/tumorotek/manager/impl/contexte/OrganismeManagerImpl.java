@@ -115,7 +115,7 @@ public class OrganismeManagerImpl implements OrganismeManager
       BeanValidator.validateObject(organisme, new Validator[] {organismeValidator});
       if(!findDoublonManager(organisme)){
          organismeDao.createObject(organisme);
-         log.info("Enregistrement objet Organisme " + organisme.toString());
+         log.info("Enregistrement objet Organisme {}",  organisme);
       }else{
          log.warn("Doublon lors creation objet Organisme {}",  organisme);
          throw new DoublonFoundException("Organisme", "creation");
@@ -128,7 +128,7 @@ public class OrganismeManagerImpl implements OrganismeManager
       BeanValidator.validateObject(obj, new Validator[] {organismeValidator});
       if(!findDoublonManager(obj)){
          organismeDao.updateObject(obj);
-         log.info("Modification objet Organisme " + obj.toString());
+         log.info("Modification objet Organisme {}",  obj);
       }else{
          log.warn("Doublon lors modification objet Organisme {}",  obj);
          throw new DoublonFoundException("Organisme", "modification");
@@ -156,7 +156,7 @@ public class OrganismeManagerImpl implements OrganismeManager
    public void removeObjectManager(Organisme obj){
       if(obj != null){
          organismeDao.removeObject(obj.getId());
-         log.info("Suppression objet Organisme " + obj.toString());
+         log.info("Suppression objet Organisme {}",  obj);
       }else{
          log.warn("Suppression d'un Organisme null");
       }

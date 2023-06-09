@@ -460,7 +460,7 @@ public class ChampAnnotationManagerImpl implements ChampAnnotationManager
          }
 
          champAnnotationDao.removeObject(champAnnotation.getId());
-         log.info("Suppression objet ChampAnnotation " + champAnnotation.toString());
+         log.info("Suppression objet ChampAnnotation {}",  champAnnotation);
 
          //Supprime operations associes
          CreateOrUpdateUtilities.removeAssociateOperations(champAnnotation, operationManager, comments, user);
@@ -703,7 +703,7 @@ public class ChampAnnotationManagerImpl implements ChampAnnotationManager
             try{
                if(operation.equals("creation")){
                   champAnnotationDao.createObject(champ);
-                  log.info("Enregistrement objet ChampAnnotation " + champ.toString());
+                  log.info("Enregistrement objet ChampAnnotation {}",  champ);
                   // cree l'arborescence si annotation fichier
                   if(champ.getDataType().getType().equals("fichier")){
                      createOrDeleteFileDirectoryManager(baseDir, champ, false, getBanquesFromTableManager(champ));
@@ -712,7 +712,7 @@ public class ChampAnnotationManagerImpl implements ChampAnnotationManager
                      operationTypeDao.findByNom("Creation").get(0), utilisateur);
                }else{
                   champAnnotationDao.updateObject(champ);
-                  log.info("Modification objet ChampAnnotation " + champ.toString());
+                  log.info("Modification objet ChampAnnotation {}",  champ);
                   CreateOrUpdateUtilities.createAssociateOperation(champ, operationManager,
                      operationTypeDao.findByNom("Modification").get(0), utilisateur);
                }

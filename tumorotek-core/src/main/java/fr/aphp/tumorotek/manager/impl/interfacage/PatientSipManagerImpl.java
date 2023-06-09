@@ -185,7 +185,7 @@ public class PatientSipManagerImpl implements PatientSipManager
    public void removeObjectManager(final PatientSip patient){
       if(patient != null){
          patientSipDao.removeObject(patient.getPatientSipId());
-         log.info("Suppression objet Patient " + patient.toString());
+         log.info("Suppression objet Patient {}",  patient);
       }else{
          log.warn("Suppression d'un Patient null");
       }

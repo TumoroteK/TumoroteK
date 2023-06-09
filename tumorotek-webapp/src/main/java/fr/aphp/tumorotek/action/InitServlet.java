@@ -291,7 +291,7 @@ public class InitServlet extends HttpServlet
       final File[] contextFiles = confDir.toFile().listFiles(contextFileFilter);
 
       if(contextFiles.length == 1){
-         log.info("Suppression du descripteur de configuration " + contextFiles[0].getName());
+         log.info("Suppression du descripteur de configuration {}",  contextFiles[0].getName());
          contextFiles[0].delete();
       }
 

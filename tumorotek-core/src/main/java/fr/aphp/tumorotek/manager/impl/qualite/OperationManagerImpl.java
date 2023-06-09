@@ -278,7 +278,7 @@ public class OperationManagerImpl implements OperationManager
          }
 
          operationDao.removeObject(operation.getOperationId());
-         log.info("Suppression objet Operation " + operation.toString());
+         log.info("Suppression objet Operation {}",  operation);
       }else{
          log.warn("Suppression d'une Operation null");
       }

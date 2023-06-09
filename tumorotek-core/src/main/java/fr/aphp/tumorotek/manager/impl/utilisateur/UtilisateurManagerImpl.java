@@ -242,7 +242,7 @@ public class UtilisateurManagerImpl implements UtilisateurManager
 			}
 
 			utilisateurDao.createObject(utilisateur);
-			log.info("Enregistrement objet Utilisateur " + utilisateur.toString());
+			log.info("Enregistrement objet Utilisateur {}",  utilisateur);
 
 			//Enregistrement de l'operation associee
 			final Operation creationOp = new Operation();
@@ -285,7 +285,7 @@ public class UtilisateurManagerImpl implements UtilisateurManager
 			}
 
 			utilisateurDao.updateObject(utilisateur);
-			log.info("Enregistrement objet Utilisateur " + utilisateur.toString());
+			log.info("Enregistrement objet Utilisateur {}",  utilisateur);
 
 			//Enregistrement de l'operation associee
 			final Operation creationOp = new Operation();
@@ -448,7 +448,7 @@ public class UtilisateurManagerImpl implements UtilisateurManager
 				//				}
 
 				utilisateurDao.removeObject(utilisateur.getUtilisateurId());
-				log.info("Suppression de l'objet Utilisateur : " + utilisateur.toString());
+				log.info("Suppression de l'objet Utilisateur : {}",  utilisateur);
 
 				//Supprime operations associes
 				final List<Operation> ops = operationManager.findByObjectManager(utilisateur);
@@ -639,7 +639,7 @@ public class UtilisateurManagerImpl implements UtilisateurManager
 			final List<Utilisateur> usersToArchive = utilisateurDao.findByTimeOutBefore(Calendar.getInstance().getTime());
 			for(final Utilisateur usr : usersToArchive){
 				archiveUtilisateurManager(usr, admin);
-				log.info("Archivage automatisé par timeout de l'utilisateur: " + usr.getLogin());
+				log.info("Archivage automatisé par timeout de l'utilisateur: {}",  usr.getLogin());
 			}
 		}
 	}

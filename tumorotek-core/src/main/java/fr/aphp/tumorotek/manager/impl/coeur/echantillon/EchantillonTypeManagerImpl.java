@@ -210,7 +210,7 @@ public class EchantillonTypeManagerImpl implements EchantillonTypeManager
       }
       BeanValidator.validateObject(type, new Validator[] {echantillonTypeValidator});
       echantillonTypeDao.createObject(type);
-      log.info("Enregistrement de l'objet EchantillonType : " + type.toString());
+      log.info("Enregistrement de l'objet EchantillonType : {}",  type);
    }
 
    @Override
@@ -224,7 +224,7 @@ public class EchantillonTypeManagerImpl implements EchantillonTypeManager
       }
       BeanValidator.validateObject(type, new Validator[] {echantillonTypeValidator});
       echantillonTypeDao.updateObject(type);
-      log.info("Modification de l'objet EchantillonType : " + type.toString());
+      log.info("Modification de l'objet EchantillonType : {}",  type);
    }
 
    @Override
@@ -235,7 +235,7 @@ public class EchantillonTypeManagerImpl implements EchantillonTypeManager
          throw new ObjectUsedException("EchantillonType", "suppression");
       }
       echantillonTypeDao.removeObject(type.getId());
-      log.info("Suppression de l'objet EchantillonType : " + type.toString());
+      log.info("Suppression de l'objet EchantillonType : {}",  type);
    }
 
    @Override

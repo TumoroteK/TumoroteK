@@ -129,7 +129,7 @@ public class LaboInterManagerImpl implements LaboInterManager
          obj.setCollaborateur(collaborateurDao.mergeObject(collaborateur));
          obj.setTransporteur(transporteurDao.mergeObject(transporteur));
          laboInterDao.createObject(obj);
-         log.info("Enregistrement objet LaboInter " + obj.toString());
+         log.info("Enregistrement objet LaboInter {}",  obj);
 
          prelevementDao.mergeObject(prelevement).getLaboInters().add(obj);
 
@@ -155,7 +155,7 @@ public class LaboInterManagerImpl implements LaboInterManager
       //Doublon
       if(!findDoublonManager(obj)){
          laboInterDao.updateObject(obj);
-         log.info("Modification objet LaboInter " + obj.toString());
+         log.info("Modification objet LaboInter {}",  obj);
       }else{
          log.warn("Doublon lors modification objet LaboInter {}",  obj);
          throw new DoublonFoundException("LaboInter", "modification");
@@ -196,7 +196,7 @@ public class LaboInterManagerImpl implements LaboInterManager
    public void removeObjectManager(final LaboInter obj){
       if(obj != null){
          laboInterDao.removeObject(obj.getLaboInterId());
-         log.info("Suppression objet LaboInter " + obj.toString());
+         log.info("Suppression objet LaboInter {}",  obj);
       }else{
          log.warn("Suppression d'un LaboInter null");
       }

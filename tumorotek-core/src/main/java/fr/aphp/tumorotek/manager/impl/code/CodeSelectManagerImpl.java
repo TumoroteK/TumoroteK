@@ -174,12 +174,12 @@ public class CodeSelectManagerImpl implements CodeSelectManager
          if((operation.equals("creation") || operation.equals("modification"))){
             if(operation.equals("creation")){
                codeSelectDao.createObject(code);
-               log.info("Enregistrement objet CodeSelect " + code.toString());
+               log.info("Enregistrement objet CodeSelect {}",  code);
                CreateOrUpdateUtilities.createAssociateOperation(code, operationManager,
                   operationTypeDao.findByNom("Creation").get(0), code.getUtilisateur());
             }else{
                codeSelectDao.updateObject(code);
-               log.info("Modification objet CodeSelect " + code.toString());
+               log.info("Modification objet CodeSelect {}",  code);
                CreateOrUpdateUtilities.createAssociateOperation(code, operationManager,
                   operationTypeDao.findByNom("Modification").get(0), code.getUtilisateur());
             }
@@ -225,7 +225,7 @@ public class CodeSelectManagerImpl implements CodeSelectManager
    public void removeObjectManager(final CodeSelect code){
       if(code != null){
          codeSelectDao.removeObject(code.getCodeSelectId());
-         log.info("Suppression objet CodeSelect " + code.toString());
+         log.info("Suppression objet CodeSelect {}",  code);
          //Supprime operations associes
          CreateOrUpdateUtilities.removeAssociateOperations(code, operationManager);
       }else{

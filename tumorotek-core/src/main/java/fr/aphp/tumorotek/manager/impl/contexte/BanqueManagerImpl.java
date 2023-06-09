@@ -532,7 +532,7 @@ public class BanqueManagerImpl implements BanqueManager
             try{
                if(operation.equals("creation")){
                   banqueDao.createObject(banque);
-                  log.info("Enregistrement objet Banque " + banque.toString());
+                  log.info("Enregistrement objet Banque {}",  banque);
 
                   oType = operationTypeDao.findByNom("Creation").get(0);
 
@@ -540,7 +540,7 @@ public class BanqueManagerImpl implements BanqueManager
                   manageFileSystemForBanque(basedir, banque, false);
                }else{
                   banqueDao.updateObject(banque);
-                  log.info("Modification objet Banque " + banque.toString());
+                  log.info("Modification objet Banque {}",  banque);
 
                   oType = operationTypeDao.findByNom("Modification").get(0);
                }
@@ -927,7 +927,7 @@ public class BanqueManagerImpl implements BanqueManager
             CreateOrUpdateUtilities.removeAssociateOperations(banque, operationManager, comments, user);
 
             banqueDao.removeObject(banque.getBanqueId());
-            log.info("Suppression objet Banque " + banque.toString());
+            log.info("Suppression objet Banque {}",  banque);
 
             for(final SModele mod : banque.getSModeles()){
                mod.getBanques().remove(banque);
@@ -1005,7 +1005,7 @@ public class BanqueManagerImpl implements BanqueManager
          }
       }else{
          if(Utils.deleteDirectory(new File(path))){
-            log.info("Filesystem complet supprimé pour la banque " + bank.toString());
+            log.info("Filesystem complet supprimé pour la banque {}",  bank);
          }else{
             log.error("Erreur dans la suppression du systeme de fichier anapath pour la banque {}",  bank);
             throw new RuntimeException("banque.filesystem.delete.error");

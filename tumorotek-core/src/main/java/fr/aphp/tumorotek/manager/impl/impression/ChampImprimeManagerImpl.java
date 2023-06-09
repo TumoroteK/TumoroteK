@@ -183,7 +183,7 @@ public class ChampImprimeManagerImpl implements ChampImprimeManager
       // création
       champImprimeDao.createObject(champImprime);
 
-      log.info("Enregistrement objet ChampImprime " + champImprime.toString());
+      log.info("Enregistrement objet ChampImprime {}",  champImprime);
    }
 
    @Override
@@ -214,7 +214,7 @@ public class ChampImprimeManagerImpl implements ChampImprimeManager
       // création
       champImprimeDao.updateObject(champImprime);
 
-      log.info("Enregistrement objet ChampImprime " + champImprime.toString());
+      log.info("Enregistrement objet ChampImprime {}",  champImprime);
 
    }
 
@@ -222,7 +222,7 @@ public class ChampImprimeManagerImpl implements ChampImprimeManager
    public void removeObjectManager(final ChampImprime champImprime){
       if(champImprime != null){
          champImprimeDao.removeObject(champImprime.getPk());
-         log.info("Suppression de l'objet ChampImprime : " + champImprime.toString());
+         log.info("Suppression de l'objet ChampImprime : {}",  champImprime);
       }else{
          log.warn("Suppression d'un ChampImprime null");
       }

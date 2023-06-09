@@ -190,7 +190,7 @@ public class NonConformiteManagerImpl implements NonConformiteManager
       }else{
          BeanValidator.validateObject(nonConformite, new Validator[] {nonConformiteValidator});
          nonConformiteDao.createObject(nonConformite);
-         log.info("Enregistrement de l'objet NonConformite : " + nonConformite.toString());
+         log.info("Enregistrement de l'objet NonConformite : {}",  nonConformite);
       }
    }
 
@@ -219,7 +219,7 @@ public class NonConformiteManagerImpl implements NonConformiteManager
       }else{
          BeanValidator.validateObject(nonConformite, new Validator[] {nonConformiteValidator});
          nonConformiteDao.updateObject(nonConformite);
-         log.info("Modification de l'objet NonConformite : " + nonConformite.toString());
+         log.info("Modification de l'objet NonConformite : {}",  nonConformite);
       }
    }
 
@@ -234,7 +234,7 @@ public class NonConformiteManagerImpl implements NonConformiteManager
          }
 
          nonConformiteDao.removeObject(nonConformite.getId());
-         log.info("Suppression de l'objet NonConformite : " + nonConformite.toString());
+         log.info("Suppression de l'objet NonConformite : {}",  nonConformite);
       }
    }
 

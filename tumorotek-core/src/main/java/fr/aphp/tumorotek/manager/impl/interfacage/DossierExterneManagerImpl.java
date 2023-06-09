@@ -201,7 +201,7 @@ public class DossierExterneManagerImpl implements DossierExterneManager
       }
 
       dossierExterneDao.createObject(dossierExterne);
-      log.info("Enregistrement de l'objet DossierExterne : " + dossierExterne.toString());
+      log.info("Enregistrement de l'objet DossierExterne : {}",  dossierExterne);
 
       // création des blocs et des valeurs
       if(blocExternes != null){
@@ -236,7 +236,7 @@ public class DossierExterneManagerImpl implements DossierExterneManager
          }
 
          dossierExterneDao.removeObject(dossierExterne.getDossierExterneId());
-         log.info("Suppression de l'objet DossierExterne : " + dossierExterne.toString());
+         log.info("Suppression de l'objet DossierExterne : {}",  dossierExterne);
       }else{
          log.warn("Suppression d'une DossierExterne null");
       }

@@ -259,7 +259,7 @@ public class TransformationManagerImpl implements TransformationManager
       } else {*/
       BeanValidator.validateObject(transformation, new Validator[] {transformationValidator});
       transformationDao.createObject(transformation);
-      log.info("Enregistrement de l'objet Transformation : " + transformation.toString());
+      log.info("Enregistrement de l'objet Transformation : {}",  transformation);
       //}
 
    }
@@ -304,7 +304,7 @@ public class TransformationManagerImpl implements TransformationManager
       } else {*/
       BeanValidator.validateObject(transformation, new Validator[] {transformationValidator});
       transformationDao.updateObject(transformation);
-      log.info("Modification de l'objet Transformation : " + transformation.toString());
+      log.info("Modification de l'objet Transformation : {}",  transformation);
       //}
    }
 
@@ -318,7 +318,7 @@ public class TransformationManagerImpl implements TransformationManager
 
       transformationDao.removeObject(transformation.getTransformationId());
 
-      log.info("Suppression de l'objet Transformation : " + transformation.toString());
+      log.info("Suppression de l'objet Transformation : {}",  transformation);
    }
 
    @Override

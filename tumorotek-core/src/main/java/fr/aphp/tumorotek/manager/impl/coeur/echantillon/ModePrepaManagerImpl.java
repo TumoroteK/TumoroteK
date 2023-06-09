@@ -181,7 +181,7 @@ public class ModePrepaManagerImpl implements ModePrepaManager
       }
       BeanValidator.validateObject(mode, new Validator[] {modePrepaValidator});
       modePrepaDao.createObject(mode);
-      log.info("Enregistrement de l'objet ModePrepa : " + mode.toString());
+      log.info("Enregistrement de l'objet ModePrepa : {}",  mode);
    }
 
    @Override
@@ -195,7 +195,7 @@ public class ModePrepaManagerImpl implements ModePrepaManager
       }
       BeanValidator.validateObject(mode, new Validator[] {modePrepaValidator});
       modePrepaDao.updateObject(mode);
-      log.info("Modification de l'objet ModePrepa : " + mode.toString());
+      log.info("Modification de l'objet ModePrepa : {}",  mode);
    }
 
    @Override

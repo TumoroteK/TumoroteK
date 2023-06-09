@@ -227,7 +227,7 @@ public class ProfilUtilisateurManagerImpl implements ProfilUtilisateurManager
       // création
       profilUtilisateurDao.createObject(profilUtilisateur);
 
-      log.info("Enregistrement objet ProfilUtilisateur " + profilUtilisateur.toString());
+      log.info("Enregistrement objet ProfilUtilisateur {}",  profilUtilisateur);
 
    }
 
@@ -235,7 +235,7 @@ public class ProfilUtilisateurManagerImpl implements ProfilUtilisateurManager
    public void removeObjectManager(final ProfilUtilisateur profilUtilisateur){
       if(profilUtilisateur != null){
          profilUtilisateurDao.removeObject(profilUtilisateur.getPk());
-         log.info("Suppression de l'objet ProfilUtilisateur : " + profilUtilisateur.toString());
+         log.info("Suppression de l'objet ProfilUtilisateur : {}",  profilUtilisateur);
       }else{
          log.warn("Suppression d'un ProfilUtilisateur null");
       }

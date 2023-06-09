@@ -159,7 +159,7 @@ public class DestructionMotifManagerImpl implements DestructionMotifManager
       BeanValidator.validateObject(obj, new Validator[] {destructionMotifValidator});
       if(!findDoublonManager(obj)){
          destructionMotifDao.createObject(obj);
-         log.info("Enregistrement objet DestructionMotif " + obj.toString());
+         log.info("Enregistrement objet DestructionMotif {}",  obj);
       }else{
          log.warn("Doublon lors creation objet DestructionMotif {}",  obj);
          throw new DoublonFoundException("DestructionMotif", "creation");
@@ -171,7 +171,7 @@ public class DestructionMotifManagerImpl implements DestructionMotifManager
       BeanValidator.validateObject(obj, new Validator[] {destructionMotifValidator});
       if(!findDoublonManager(obj)){
          destructionMotifDao.updateObject(obj);
-         log.info("Modification objet DestructionMotif " + obj.toString());
+         log.info("Modification objet DestructionMotif {}",  obj);
       }else{
          log.warn("Doublon lors modification objet DestructionMotif {}",  obj);
          throw new DoublonFoundException("DestructionMotif", "modification");
@@ -182,7 +182,7 @@ public class DestructionMotifManagerImpl implements DestructionMotifManager
    public void removeObjectManager(final DestructionMotif obj){
       if(obj != null){
          destructionMotifDao.removeObject(obj.getId());
-         log.info("Suppression objet DestructionMotif " + obj.toString());
+         log.info("Suppression objet DestructionMotif {}",  obj);
       }else{
          log.warn("Suppression d'un DestructionMotif null");
       }

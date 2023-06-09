@@ -204,7 +204,7 @@ public class NumerotationManagerImpl implements NumerotationManager
 
          numerotationDao.createObject(numerotation);
 
-         log.info("Enregistrement de l'objet Numerotation : " + numerotation.toString());
+         log.info("Enregistrement de l'objet Numerotation : {}",  numerotation);
       }
    }
 
@@ -234,13 +234,13 @@ public class NumerotationManagerImpl implements NumerotationManager
 
          numerotationDao.updateObject(numerotation);
 
-         log.info("Enregistrement de l'objet Numerotation : " + numerotation.toString());
+         log.info("Enregistrement de l'objet Numerotation : {}",  numerotation);
       }
    }
 
    @Override
    public void removeObjectManager(final Numerotation numerotation){
       numerotationDao.removeObject(numerotation.getNumerotationId());
-      log.info("Suppression de l'objet Numerotation : " + numerotation.toString());
+      log.info("Suppression de l'objet Numerotation : {}",  numerotation);
    }
 }

@@ -1019,7 +1019,7 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
             prodDerive.setTransformation(null);
          }
          prodDeriveDao.createObject(prodDerive);
-         log.info("Enregistrement de l'objet ProdDerive : " + prodDerive.toString());
+         log.info("Enregistrement de l'objet ProdDerive : {}",  prodDerive);
          //Enregistrement de l'operation associee
          final Operation creationOp = new Operation();
          creationOp.setDate(Utils.getCurrentSystemCalendar());
@@ -1188,7 +1188,7 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
          }
 
          prodDeriveDao.updateObject(prodDerive);
-         log.info("Modification de l'objet ProdDerive : " + prodDerive.toString());
+         log.info("Modification de l'objet ProdDerive : {}",  prodDerive);
 
          //Enregistrement de l'operation associee
          final Operation creationOp = new Operation();
@@ -1343,7 +1343,7 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
 
       transformationManager.removeObjectManager(transformation, comments, user);
 
-      log.info("Suppression de l'objet Transformation : " + transformation.toString());
+      log.info("Suppression de l'objet Transformation : {}",  transformation);
    }
 
    @Override
@@ -1378,7 +1378,7 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
             CreateOrUpdateUtilities.removeAssociateNonConformites(prodDerive, objetNonConformeManager);
 
             prodDeriveDao.removeObject(prodDerive.getProdDeriveId());
-            log.info("Suppression de l'objet ProdDerive : " + prodDerive.toString());
+            log.info("Suppression de l'objet ProdDerive : {}",  prodDerive);
 
             //Supprime operations associees
             CreateOrUpdateUtilities.removeAssociateOperations(prodDerive, operationManager, comments, user);

@@ -151,7 +151,7 @@ public class BlocImpressionTemplateManagerImpl implements BlocImpressionTemplate
       // création
       blocImpressionTemplateDao.createObject(blocImpressionTemplate);
 
-      log.info("Enregistrement objet BlocImpressionTemplate " + blocImpressionTemplate.toString());
+      log.info("Enregistrement objet BlocImpressionTemplate {}",  blocImpressionTemplate);
 
    }
 
@@ -176,14 +176,14 @@ public class BlocImpressionTemplateManagerImpl implements BlocImpressionTemplate
       // création
       blocImpressionTemplateDao.updateObject(blocImpressionTemplate);
 
-      log.info("Enregistrement objet BlocImpressionTemplate " + blocImpressionTemplate.toString());
+      log.info("Enregistrement objet BlocImpressionTemplate {}",  blocImpressionTemplate);
    }
 
    @Override
    public void removeObjectManager(final BlocImpressionTemplate blocImpressionTemplate){
       if(blocImpressionTemplate != null){
          blocImpressionTemplateDao.removeObject(blocImpressionTemplate.getPk());
-         log.info("Suppression de l'objet BlocImpressionTemplate : " + blocImpressionTemplate.toString());
+         log.info("Suppression de l'objet BlocImpressionTemplate : {}",  blocImpressionTemplate);
       }else{
          log.warn("Suppression d'un BlocImpressionTemplate null");
       }

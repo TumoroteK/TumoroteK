@@ -151,13 +151,13 @@ public class MaladieManagerImpl implements MaladieManager
          if((operation.equals("creation") || operation.equals("modification"))){
             if(operation.equals("creation")){
                maladieDao.createObject(maladie);
-               log.info("Enregistrement objet Maladie " + maladie.toString());
+               log.info("Enregistrement objet Maladie {}",  maladie);
                CreateOrUpdateUtilities.createAssociateOperation(maladie, operationManager,
                   operationTypeDao.findByNom("Creation").get(0), utilisateur);
             }else{
 
                maladie = maladieDao.mergeObject(maladie);
-               log.info("Modification objet Maladie " + maladie.toString());
+               log.info("Modification objet Maladie {}",  maladie);
                CreateOrUpdateUtilities.createAssociateOperation(maladie, operationManager,
                   operationTypeDao.findByNom("Modification").get(0), utilisateur);
             }
@@ -236,7 +236,7 @@ public class MaladieManagerImpl implements MaladieManager
             CreateOrUpdateUtilities.removeAssociateOperations(maladie, operationManager, comments, user);
 
             maladieDao.removeObject(maladie.getMaladieId());
-            log.info("Suppression objet Maladie " + maladie.toString());
+            log.info("Suppression objet Maladie {}",  maladie);
          }else{
             log.warn("Suppression Maladie {} impossible car Objet est reference (par Prelevement)", maladie);
             throw new ObjectUsedException("maladie.deletion.isUsed", false);

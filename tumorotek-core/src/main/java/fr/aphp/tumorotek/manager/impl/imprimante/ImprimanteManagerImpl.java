@@ -188,7 +188,7 @@ public class ImprimanteManagerImpl implements ImprimanteManager
 
          imprimanteDao.createObject(imprimante);
 
-         log.info("Enregistrement de l'objet Imprimante : " + imprimante.toString());
+         log.info("Enregistrement de l'objet Imprimante : {}",  imprimante);
       }
    }
 
@@ -221,7 +221,7 @@ public class ImprimanteManagerImpl implements ImprimanteManager
 
          imprimanteDao.updateObject(imprimante);
 
-         log.info("Enregistrement de l'objet Imprimante : " + imprimante.toString());
+         log.info("Enregistrement de l'objet Imprimante : {}",  imprimante);
       }
    }
 
@@ -229,7 +229,7 @@ public class ImprimanteManagerImpl implements ImprimanteManager
    public void removeObjectManager(final Imprimante imprimante){
       if(imprimante != null){
          imprimanteDao.removeObject(imprimante.getImprimanteId());
-         log.info("Suppression de l'objet Imprimante : " + imprimante.toString());
+         log.info("Suppression de l'objet Imprimante : {}",  imprimante);
       }else{
          log.warn("Suppression d'un Imprimante null");
       }

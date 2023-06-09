@@ -115,7 +115,7 @@ public class RisqueManagerImpl implements RisqueManager
       BeanValidator.validateObject(rs, new Validator[] {risqueValidator});
       if(!findDoublonManager(rs)){
          risqueDao.createObject(rs);
-         log.info("Enregistrement objet Risque " + rs.toString());
+         log.info("Enregistrement objet Risque {}",  rs);
       }else{
          log.warn("Doublon lors creation objet Risque {}",  rs);
          throw new DoublonFoundException("Risque", "creation");
@@ -127,7 +127,7 @@ public class RisqueManagerImpl implements RisqueManager
       BeanValidator.validateObject(obj, new Validator[] {risqueValidator});
       if(!findDoublonManager(obj)){
          risqueDao.updateObject(obj);
-         log.info("Modification objet Risque " + obj.toString());
+         log.info("Modification objet Risque {}",  obj);
       }else{
          log.warn("Doublon lors modification objet Risque {}",  obj);
          throw new DoublonFoundException("Risque", "modification");
@@ -159,7 +159,7 @@ public class RisqueManagerImpl implements RisqueManager
    public void removeObjectManager(final Risque obj){
       if(obj != null){
          risqueDao.removeObject(obj.getId());
-         log.info("Suppression objet Risque " + obj.toString());
+         log.info("Suppression objet Risque {}",  obj);
       }else{
          log.warn("Suppression d'un Risque null");
       }

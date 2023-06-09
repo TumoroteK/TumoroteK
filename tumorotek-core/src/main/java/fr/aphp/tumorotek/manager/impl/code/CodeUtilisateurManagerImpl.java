@@ -227,12 +227,12 @@ public class CodeUtilisateurManagerImpl implements CodeUtilisateurManager
          if((operation.equals("creation") || operation.equals("modification"))){
             if(operation.equals("creation")){
                codeUtilisateurDao.createObject(code);
-               log.info("Enregistrement objet CodeUtilisateur " + code.toString());
+               log.info("Enregistrement objet CodeUtilisateur {}",  code);
                CreateOrUpdateUtilities.createAssociateOperation(code, operationManager,
                   operationTypeDao.findByNom("Creation").get(0), code.getUtilisateur());
             }else{
                codeUtilisateurDao.updateObject(code);
-               log.info("Modification objet CodeUtilisateur " + code.toString());
+               log.info("Modification objet CodeUtilisateur {}",  code);
                CreateOrUpdateUtilities.createAssociateOperation(code, operationManager,
                   operationTypeDao.findByNom("Modification").get(0), code.getUtilisateur());
             }
@@ -289,7 +289,7 @@ public class CodeUtilisateurManagerImpl implements CodeUtilisateurManager
          }
 
          codeUtilisateurDao.removeObject(code.getCodeUtilisateurId());
-         log.info("Suppression objet CodeUtilisateur " + code.toString());
+         log.info("Suppression objet CodeUtilisateur {}",  code);
          //Supprime operations associes
          CreateOrUpdateUtilities.removeAssociateOperations(code, operationManager);
       }else{

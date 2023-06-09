@@ -859,7 +859,7 @@ public class EmplacementManagerImpl implements EmplacementManager
 
       emplacementDao.createObject(emplacement);
 
-      log.info("Enregistrement de l'objet Emplacement : " + emplacement.toString());
+      log.info("Enregistrement de l'objet Emplacement : {}",  emplacement);
    }
 
    @Override
@@ -907,7 +907,7 @@ public class EmplacementManagerImpl implements EmplacementManager
 
       emplacementDao.updateObject(emplacement);
 
-      log.info("Modification de l'objet Emplacement : " + emplacement.toString());
+      log.info("Modification de l'objet Emplacement : {}",  emplacement);
    }
 
    @Override
@@ -918,7 +918,7 @@ public class EmplacementManagerImpl implements EmplacementManager
             throw new ObjectUsedException("Emplacement", "suppression");
          }
          emplacementDao.removeObject(emplacement.getEmplacementId());
-         log.info("Suppression de l'objet Emplacement : " + emplacement.toString());
+         log.info("Suppression de l'objet Emplacement : {}",  emplacement);
       }else{
          log.warn("Suppression d'un Emplacement null");
       }
@@ -993,7 +993,7 @@ public class EmplacementManagerImpl implements EmplacementManager
 
                emplacementDao.updateObject(emplacement);
 
-               log.info("Modification de l'objet Emplacement : " + emplacement.toString());
+               log.info("Modification de l'objet Emplacement : {}",  emplacement);
 
                //Enregistrement de l'operation associee
                if(!emplacement.getVide() && emplacement.getObjetId() != null && emplacement.getEntite() != null){

@@ -194,7 +194,7 @@ public class CodeAssigneManagerImpl implements CodeAssigneManager
 
             if(operation.equals("creation")){
                codeAssigneDao.createObject(code);
-               log.info("Enregistrement objet CodeAssigne " + code.toString());
+               log.info("Enregistrement objet CodeAssigne {}",  code);
 
                CreateOrUpdateUtilities.createAssociateOperation(code, operationManager,
                   operationTypeDao.findByNom("Creation").get(0), utilisateur);
@@ -208,7 +208,7 @@ public class CodeAssigneManagerImpl implements CodeAssigneManager
                      || (inBase.getLibelle() == null && code.getLibelle() != null));
 
                codeAssigneDao.updateObject(code);
-               log.info("Modification objet CodeAssigne " + code.toString());
+               log.info("Modification objet CodeAssigne {}",  code);
                if(doRecordModif){
                   CreateOrUpdateUtilities.createAssociateOperation(code, operationManager,
                      operationTypeDao.findByNom("Modification").get(0), utilisateur);
@@ -265,7 +265,7 @@ public class CodeAssigneManagerImpl implements CodeAssigneManager
          ////				echantillonDao.mergeObject(code.getEchanExpLes());
          //			}
          codeAssigneDao.removeObject(code.getCodeAssigneId());
-         log.info("Suppression objet CodeAssigne " + code.toString());
+         log.info("Suppression objet CodeAssigne {}",  code);
          //Supprime operations associes
          CreateOrUpdateUtilities.removeAssociateOperations(code, operationManager);
       }else{

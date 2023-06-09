@@ -181,7 +181,7 @@ public class BlocExterneManagerImpl implements BlocExterneManager
             .get(blocExterneDao.findByDossierExterne(dossierExterne).indexOf(blocExterne)));
       }
       blocExterneDao.createObject(blocExterne);
-      log.info("Enregistrement de l'objet BlocExterne : " + blocExterne.toString());
+      log.info("Enregistrement de l'objet BlocExterne : {}",  blocExterne);
 
       // création des valeurs
       if(valeurExternes != null){
@@ -202,7 +202,7 @@ public class BlocExterneManagerImpl implements BlocExterneManager
          }
 
          blocExterneDao.removeObject(blocExterne.getBlocExterneId());
-         log.info("Suppression de l'objet BlocExterne : " + blocExterne.toString());
+         log.info("Suppression de l'objet BlocExterne : {}",  blocExterne);
       }else{
          log.warn("Suppression d'une BlocExterne null");
       }

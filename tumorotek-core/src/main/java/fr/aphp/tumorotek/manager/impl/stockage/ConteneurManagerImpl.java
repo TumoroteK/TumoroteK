@@ -358,7 +358,7 @@ public class ConteneurManagerImpl implements ConteneurManager
 
       updateBanquesAndPlateformes(conteneur, banques, plateformes);
 
-      log.info("Enregistrement de l'objet Conteneur : " + conteneur.toString());
+      log.info("Enregistrement de l'objet Conteneur : {}",  conteneur);
 
       //Enregistrement de l'operation associee
       final Operation creationOp = new Operation();
@@ -416,7 +416,7 @@ public class ConteneurManagerImpl implements ConteneurManager
 
       updateBanquesAndPlateformes(conteneur, banques, plateformes);
 
-      log.info("Modification de l'objet Conteneur : " + conteneur.toString());
+      log.info("Modification de l'objet Conteneur : {}",  conteneur);
 
       //Enregistrement de l'operation associee
       final Operation creationOp = new Operation();
@@ -452,11 +452,11 @@ public class ConteneurManagerImpl implements ConteneurManager
             //Supprime operations associes
             CreateOrUpdateUtilities.removeAssociateOperations(conteneur, operationManager, comments, user);
 
-            log.info("Suppression de l'objet Conteneur : " + conteneur.toString());
+            log.info("Suppression de l'objet Conteneur : {}",  conteneur);
          }else{// archivage sinon
             conteneur.setArchive(true);
             conteneurDao.mergeObject(conteneur);
-            log.info("Archivage automatique de l'objet Conteneur : " + conteneur.toString());
+            log.info("Archivage automatique de l'objet Conteneur : {}",  conteneur);
          }
       }else{
          log.warn("Suppression d'un Conteneur null");

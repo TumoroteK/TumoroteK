@@ -175,7 +175,7 @@ public class AffichageManagerImpl implements AffichageManager
       }
       BeanValidator.validateObject(affichage, new Validator[] {affichageValidator});
       affichageDao.updateObject(affichage);
-      log.info("Modification de l'objet Affichage : " + affichage.toString());
+      log.info("Modification de l'objet Affichage : {}",  affichage);
    }
 
    /**
@@ -222,7 +222,7 @@ public class AffichageManagerImpl implements AffichageManager
       createObjectManager(a, a.getResultats(), a.getCreateur(), a.getBanque());
       // ajout de la requete dans la liste
       affichages.add(a);
-      log.info("Enregistrement de l'objet Affichage : " + a.toString());
+      log.info("Enregistrement de l'objet Affichage : {}",  a);
 
       return a;
    }
@@ -269,7 +269,7 @@ public class AffichageManagerImpl implements AffichageManager
 
       // ajout de la requete dans la liste
       affichages.add(affichage);
-      log.info("Enregistrement de l'objet Affichage : " + affichage.toString());
+      log.info("Enregistrement de l'objet Affichage : {}",  affichage);
    }
 
    /**
@@ -299,7 +299,7 @@ public class AffichageManagerImpl implements AffichageManager
          updateResultatsManager(affichage, resultats, resultatsToRemove);
       }
 
-      log.info("Modification de l'objet Affichage : " + affichage.toString());
+      log.info("Modification de l'objet Affichage : {}",  affichage);
 
    }
 

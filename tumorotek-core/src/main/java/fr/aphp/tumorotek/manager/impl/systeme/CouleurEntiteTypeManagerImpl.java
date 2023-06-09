@@ -181,7 +181,7 @@ public class CouleurEntiteTypeManagerImpl implements CouleurEntiteTypeManager
 
       couleurEntiteTypeDao.createObject(couleurEntiteType);
 
-      log.info("Enregistrement de l'objet CouleurEntiteType : " + couleurEntiteType.toString());
+      log.info("Enregistrement de l'objet CouleurEntiteType : {}",  couleurEntiteType);
    }
 
    @Override
@@ -223,14 +223,14 @@ public class CouleurEntiteTypeManagerImpl implements CouleurEntiteTypeManager
 
       couleurEntiteTypeDao.updateObject(couleurEntiteType);
 
-      log.info("Enregistrement de l'objet CouleurEntiteType : " + couleurEntiteType.toString());
+      log.info("Enregistrement de l'objet CouleurEntiteType : {}",  couleurEntiteType);
    }
 
    @Override
    public void removeObjectManager(final CouleurEntiteType couleurEntiteType){
       if(couleurEntiteType != null){
          couleurEntiteTypeDao.removeObject(couleurEntiteType.getCouleurEntiteTypeId());
-         log.info("Suppression de l'objet CouleurEntiteType : " + couleurEntiteType.toString());
+         log.info("Suppression de l'objet CouleurEntiteType : {}",  couleurEntiteType);
       }else{
          log.warn("Suppression d'une CouleurEntiteType null");
       }

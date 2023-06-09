@@ -249,12 +249,12 @@ public class RetourManagerImpl implements RetourManager
          if((operation.equals("creation") || operation.equals("modification"))){
             if(operation.equals("creation")){
                retourDao.createObject(retour);
-               log.info("Enregistrement du retour " + retour.toString());
+               log.info("Enregistrement du retour {}",  retour);
                CreateOrUpdateUtilities.createAssociateOperation(retour, operationManager,
                   operationTypeDao.findByNom("Creation").get(0), utilisateur);
             }else{
                retourDao.updateObject(retour);
-               log.info("Modification objet Retour " + retour.toString());
+               log.info("Modification objet Retour {}",  retour);
                CreateOrUpdateUtilities.createAssociateOperation(retour, operationManager,
                   operationTypeDao.findByNom("Modification").get(0), utilisateur);
             }
@@ -339,7 +339,7 @@ public class RetourManagerImpl implements RetourManager
             }
          }
          retourDao.removeObject(retour.getRetourId());
-         log.info("Suppression objet Retour " + retour.toString());
+         log.info("Suppression objet Retour {}",  retour);
          //Supprime operations associes
          CreateOrUpdateUtilities.removeAssociateOperations(retour, operationManager);
       }else{

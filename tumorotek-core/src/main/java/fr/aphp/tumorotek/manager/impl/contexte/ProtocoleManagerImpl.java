@@ -103,7 +103,7 @@ public class ProtocoleManagerImpl implements ProtocoleManager
       BeanValidator.validateObject(pt, new Validator[] {protocoleValidator});
       if(!findDoublonManager(pt)){
          protocoleDao.createObject(pt);
-         log.info("Enregistrement objet Protocole " + pt.toString());
+         log.info("Enregistrement objet Protocole {}",  pt);
       }else{
          log.warn("Doublon lors creation objet Protocole {}",  pt);
          throw new DoublonFoundException("Protocole", "creation");
@@ -115,7 +115,7 @@ public class ProtocoleManagerImpl implements ProtocoleManager
       BeanValidator.validateObject(obj, new Validator[] {protocoleValidator});
       if(!findDoublonManager(obj)){
          protocoleDao.updateObject(obj);
-         log.info("Modification objet Protocole " + obj.toString());
+         log.info("Modification objet Protocole {}",  obj);
       }else{
          log.warn("Doublon lors modification objet Protocole {}",  obj);
          throw new DoublonFoundException("Protocole", "modification");
@@ -131,7 +131,7 @@ public class ProtocoleManagerImpl implements ProtocoleManager
    public void removeObjectManager(final Protocole obj){
       if(obj != null){
          protocoleDao.removeObject(obj.getId());
-         log.info("Suppression objet Protocole " + obj.toString());
+         log.info("Suppression objet Protocole {}",  obj);
       }else{
          log.warn("Suppression d'un Protocole null");
       }

@@ -154,7 +154,7 @@ public class TableAnnotationTemplateManagerImpl implements TableAnnotationTempla
       // création
       tableAnnotationTemplateDao.createObject(tableAnnotationTemplate);
 
-      log.info("Enregistrement objet TableAnnotationTemplate " + tableAnnotationTemplate.toString());
+      log.info("Enregistrement objet TableAnnotationTemplate {}",  tableAnnotationTemplate);
    }
 
    @Override
@@ -179,14 +179,14 @@ public class TableAnnotationTemplateManagerImpl implements TableAnnotationTempla
       // création
       tableAnnotationTemplateDao.updateObject(tableAnnotationTemplate);
 
-      log.info("Enregistrement objet TableAnnotationTemplate " + tableAnnotationTemplate.toString());
+      log.info("Enregistrement objet TableAnnotationTemplate {}",  tableAnnotationTemplate);
    }
 
    @Override
    public void removeObjectManager(final TableAnnotationTemplate tableAnnotationTemplate){
       if(tableAnnotationTemplate != null){
          tableAnnotationTemplateDao.removeObject(tableAnnotationTemplate.getPk());
-         log.info("Suppression de l'objet TableAnnotationTemplate : " + tableAnnotationTemplate.toString());
+         log.info("Suppression de l'objet TableAnnotationTemplate : {}",  tableAnnotationTemplate);
       }else{
          log.warn("Suppression d'un TableAnnotationTemplate null");
       }

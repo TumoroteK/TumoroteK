@@ -613,7 +613,7 @@ public class EnceinteManagerImpl implements EnceinteManager
          updateBanques(enceinte, banques);
       }
 
-      log.info("Enregistrement de l'objet Enceinte : " + enceinte.toString());
+      log.info("Enregistrement de l'objet Enceinte : {}",  enceinte);
 
       //Enregistrement de l'operation associee
       final Operation creationOp = new Operation();
@@ -820,7 +820,7 @@ public class EnceinteManagerImpl implements EnceinteManager
          updateBanques(enceinte, banques);
       }
 
-      log.info("Modification de l'objet Enceinte : " + enceinte.toString());
+      log.info("Modification de l'objet Enceinte : {}",  enceinte);
 
       //Enregistrement de l'operation associee
       final Operation creationOp = new Operation();
@@ -861,7 +861,7 @@ public class EnceinteManagerImpl implements EnceinteManager
          CreateOrUpdateUtilities.removeAssociateOperations(enceinte, operationManager, comments, user);
 
          enceinteDao.removeObject(enceinte.getEnceinteId());
-         log.info("Suppression de l'objet Enceinte : " + enceinte.toString());
+         log.info("Suppression de l'objet Enceinte : {}",  enceinte);
       }else{
          log.warn("Suppression d'une Enceinte null");
       }
@@ -935,8 +935,8 @@ public class EnceinteManagerImpl implements EnceinteManager
             enceinteDao.updateObject(enceinte1);
             enceinteDao.updateObject(enceinte2);
 
-            log.info("Modification de l'objet Enceinte : " + enceinte1.toString());
-            log.info("Modification de l'objet Enceinte : " + enceinte2.toString());
+            log.info("Modification de l'objet Enceinte : {}",  enceinte1);
+            log.info("Modification de l'objet Enceinte : {}",  enceinte2);
 
             //Enregistrement des operations associees
             final Operation op1 = new Operation();

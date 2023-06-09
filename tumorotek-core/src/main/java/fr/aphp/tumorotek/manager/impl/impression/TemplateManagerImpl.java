@@ -221,7 +221,7 @@ public class TemplateManagerImpl implements TemplateManager
          }
 
          templateDao.createObject(template);
-         log.info("Enregistrement objet Template " + template.toString());
+         log.info("Enregistrement objet Template {}",  template);
 
          // enregistrements des associations
          updateAssociations(template, blocs, blocs, champs, champs, annotations, annotations);
@@ -291,7 +291,7 @@ public class TemplateManagerImpl implements TemplateManager
          }
 
          templateDao.createObject(template);
-         log.info("Enregistrement objet Template " + template.toString());
+         log.info("Enregistrement objet Template {}",  template);
 
          // enregistrements des associations
          updateAssociations(template, blocs, blocs, champs, champs, annotations, annotations, cles);
@@ -358,7 +358,7 @@ public class TemplateManagerImpl implements TemplateManager
          }
 
          templateDao.updateObject(template);
-         log.info("Enregistrement objet Template " + template.toString());
+         log.info("Enregistrement objet Template {}",  template);
 
          // enregistrements des associations
          updateAssociations(template, blocs, blocsToCreate, champs, champsToCreate, annotations, annotationsToCreate);
@@ -431,7 +431,7 @@ public class TemplateManagerImpl implements TemplateManager
          }
 
          templateDao.updateObject(template);
-         log.info("Enregistrement objet Template " + template.toString());
+         log.info("Enregistrement objet Template {}",  template);
 
          // enregistrements des associations
          updateAssociations(template, blocs, blocsToCreate, champs, champsToCreate, annotations, annotationsToCreate);
@@ -471,7 +471,7 @@ public class TemplateManagerImpl implements TemplateManager
          //         }
 
          templateDao.removeObject(template.getTemplateId());
-         log.info("Suppression de l'objet Template : " + template.toString());
+         log.info("Suppression de l'objet Template : {}",  template);
       }else{
          log.warn("Suppression d'un Template null");
       }

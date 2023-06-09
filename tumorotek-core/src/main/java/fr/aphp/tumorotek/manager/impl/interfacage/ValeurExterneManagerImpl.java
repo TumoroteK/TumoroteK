@@ -227,14 +227,14 @@ public class ValeurExterneManagerImpl implements ValeurExterneManager
       }
       valeurExterneDao.createObject(valeurExterne);
 
-      log.info("Enregistrement de l'objet ValeurExterne : " + valeurExterne.toString());
+      log.info("Enregistrement de l'objet ValeurExterne : {}",  valeurExterne);
    }
 
    @Override
    public void removeObjectManager(final ValeurExterne valeurExterne){
       if(valeurExterne != null && valeurExterne.getValeurExterneId() != null){
          valeurExterneDao.removeObject(valeurExterne.getValeurExterneId());
-         log.info("Suppression de l'objet ValeurExterne : " + valeurExterne.toString());
+         log.info("Suppression de l'objet ValeurExterne : {}",  valeurExterne);
       }else{
          log.warn("Suppression d'une ValeurExterne null");
       }

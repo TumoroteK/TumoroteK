@@ -300,7 +300,7 @@ public class ContratManagerImpl implements ContratManager
 
       contratDao.createObject(contrat);
 
-      log.info("Enregistrement de l'objet Contrat : " + contrat.toString());
+      log.info("Enregistrement de l'objet Contrat : {}",  contrat);
 
       //Enregistrement de l'operation associee
       final Operation creationOp = new Operation();
@@ -343,7 +343,7 @@ public class ContratManagerImpl implements ContratManager
 
       contratDao.updateObject(contrat);
 
-      log.info("Modification de l'objet Contrat : " + contrat.toString());
+      log.info("Modification de l'objet Contrat : {}",  contrat);
 
       //Enregistrement de l'operation associee
       final Operation creationOp = new Operation();
@@ -363,7 +363,7 @@ public class ContratManagerImpl implements ContratManager
          CreateOrUpdateUtilities.removeAssociateOperations(contrat, operationManager, comments, u);
 
          contratDao.removeObject(contrat.getContratId());
-         log.info("Suppression de l'objet Contrat : " + contrat.toString());
+         log.info("Suppression de l'objet Contrat : {}",  contrat);
       }else{
          log.warn("Suppression d'un Contrat null");
       }

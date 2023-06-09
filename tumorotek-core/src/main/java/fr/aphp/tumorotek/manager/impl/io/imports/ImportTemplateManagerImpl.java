@@ -177,7 +177,7 @@ public class ImportTemplateManagerImpl implements ImportTemplateManager
 
          updateAssociations(importTemplate, entites, colonnesToCreate, null);
 
-         log.info("Enregistrement objet ImportTemplate " + importTemplate.toString());
+         log.info("Enregistrement objet ImportTemplate {}",  importTemplate);
 
       }else{
          log.warn("Doublon lors creation objet ImportTemplate {}",  importTemplate);
@@ -219,7 +219,7 @@ public class ImportTemplateManagerImpl implements ImportTemplateManager
 
          updateAssociations(importTemplate, entites, colonnesToCreate, colonnesToremove);
 
-         log.info("Enregistrement objet ImportTemplate " + importTemplate.toString());
+         log.info("Enregistrement objet ImportTemplate {}",  importTemplate);
 
       }else{
          log.warn("Doublon lors modification objet ImportTemplate {}",  importTemplate);
@@ -244,7 +244,7 @@ public class ImportTemplateManagerImpl implements ImportTemplateManager
          }
 
          importTemplateDao.removeObject(importTemplate.getImportTemplateId());
-         log.info("Suppression de l'objet ImportTemplate : " + importTemplate.toString());
+         log.info("Suppression de l'objet ImportTemplate : {}",  importTemplate);
       }else{
          log.warn("Suppression d'un ImportTemplate null");
       }

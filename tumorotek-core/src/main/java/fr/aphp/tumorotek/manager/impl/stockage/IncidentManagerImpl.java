@@ -218,7 +218,7 @@ public class IncidentManagerImpl implements IncidentManager
 
          incidentDao.createObject(incident);
 
-         log.info("Enregistrement de l'objet Incident : " + incident.toString());
+         log.info("Enregistrement de l'objet Incident : {}",  incident);
       }
    }
 
@@ -255,7 +255,7 @@ public class IncidentManagerImpl implements IncidentManager
 
          incidentDao.updateObject(incident);
 
-         log.info("Modification de l'objet Incident : " + incident.toString());
+         log.info("Modification de l'objet Incident : {}",  incident);
       }
    }
 
@@ -263,7 +263,7 @@ public class IncidentManagerImpl implements IncidentManager
    public void removeObjectManager(final Incident incident){
       if(incident != null){
          incidentDao.removeObject(incident.getIncidentId());
-         log.info("Suppression de l'objet Incident : " + incident.toString());
+         log.info("Suppression de l'objet Incident : {}",  incident);
       }else{
          log.warn("Suppression d'un Incident null");
       }

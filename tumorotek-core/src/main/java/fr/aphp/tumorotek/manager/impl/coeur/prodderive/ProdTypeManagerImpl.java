@@ -172,7 +172,7 @@ public class ProdTypeManagerImpl implements ProdTypeManager
       }
       BeanValidator.validateObject(type, new Validator[] {prodTypeValidator});
       prodTypeDao.createObject(type);
-      log.info("Enregistrement de l'objet ProdType : " + type.toString());
+      log.info("Enregistrement de l'objet ProdType : {}",  type);
    }
 
    @Override
@@ -184,7 +184,7 @@ public class ProdTypeManagerImpl implements ProdTypeManager
       }
       BeanValidator.validateObject(type, new Validator[] {prodTypeValidator});
       prodTypeDao.updateObject(type);
-      log.info("Modification de l'objet ProdType : " + type.toString());
+      log.info("Modification de l'objet ProdType : {}",  type);
    }
 
    @Override
@@ -195,7 +195,7 @@ public class ProdTypeManagerImpl implements ProdTypeManager
          throw new ObjectUsedException("ProdType", "suppression");
       }
       prodTypeDao.removeObject(type.getId());
-      log.info("Suppression de l'objet ProdType : " + type.toString());
+      log.info("Suppression de l'objet ProdType : {}",  type);
    }
 
    @Override

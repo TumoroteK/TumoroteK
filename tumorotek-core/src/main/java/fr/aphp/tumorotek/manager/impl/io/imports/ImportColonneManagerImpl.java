@@ -239,7 +239,7 @@ public class ImportColonneManagerImpl implements ImportColonneManager
 
       importColonneDao.createObject(importColonne);
 
-      log.info("Enregistrement objet ImportColonne " + importColonne.toString());
+      log.info("Enregistrement objet ImportColonne {}",  importColonne);
 
    }
 
@@ -261,7 +261,7 @@ public class ImportColonneManagerImpl implements ImportColonneManager
 
       importColonneDao.updateObject(importColonne);
 
-      log.info("Enregistrement objet ImportColonne " + importColonne.toString());
+      log.info("Enregistrement objet ImportColonne {}",  importColonne);
 
    }
 
@@ -270,7 +270,7 @@ public class ImportColonneManagerImpl implements ImportColonneManager
       if(importColonne != null){
          final Champ chp = importColonne.getChamp();
          importColonneDao.removeObject(importColonne.getImportColonneId());
-         log.info("Suppression de l'objet ImportColonne : " + importColonne.toString());
+         log.info("Suppression de l'objet ImportColonne : {}",  importColonne);
 
          champManager.removeObjectManager(chp);
       }else{

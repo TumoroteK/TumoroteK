@@ -199,12 +199,12 @@ public class PlateformeManagerImpl implements PlateformeManager
 
             // cette methode appelle mergeObject(plateforme)
             plateforme = updateAdministrateurs(plateforme, utilisateurs);
-            log.info("Enregistrement objet Plateforme " + plateforme.toString());
+            log.info("Enregistrement objet Plateforme {}",  plateforme);
 
             // filesystem
             final String path = baseDir.concat("/pt_").concat(plateforme.getPlateformeId().toString());
             if(new File(path).mkdirs()){
-               log.info("Creation file system " + path);
+               log.info("Creation file system {}",  path);
             }else{
                log.error("Erreur dans la creation du systeme de fichier pour la pf {}",  plateforme);
                throw new RuntimeException("plateforme.filesystem.error");
@@ -243,7 +243,7 @@ public class PlateformeManagerImpl implements PlateformeManager
          BeanValidator.validateObject(plateforme, new Validator[] {plateformeValidator});
 
          plateforme = plateformeDao.mergeObject(plateforme);
-         log.info("Enregistrement objet Plateforme " + plateforme.toString());
+         log.info("Enregistrement objet Plateforme {}",  plateforme);
 
          //Enregistrement de l'operation associee
          final Operation creationOp = new Operation();
@@ -379,7 +379,7 @@ public class PlateformeManagerImpl implements PlateformeManager
             updateAdministrateurs(pf, new ArrayList<Utilisateur>());
 
             plateformeDao.removeObject(pf.getPlateformeId());
-            log.info("Suppression objet Plateforme " + pf.toString());
+            log.info("Suppression objet Plateforme {}",  pf);
 
             // delete file system
             new File(basedir.concat("/pt_").concat(pf.getPlateformeId().toString())).delete();

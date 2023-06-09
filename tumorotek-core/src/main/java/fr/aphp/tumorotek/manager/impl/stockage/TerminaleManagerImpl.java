@@ -535,7 +535,7 @@ public class TerminaleManagerImpl implements TerminaleManager
          terminale.setArchive(false);
          terminaleDao.createObject(terminale);
 
-         log.info("Enregistrement de l'objet Terminale : " + terminale.toString());
+         log.info("Enregistrement de l'objet Terminale : {}",  terminale);
 
          //Enregistrement de l'operation associee
          final Operation creationOp = new Operation();
@@ -625,7 +625,7 @@ public class TerminaleManagerImpl implements TerminaleManager
 
          terminaleDao.updateObject(terminale);
 
-         log.info("Modification de l'objet Terminale : " + terminale.toString());
+         log.info("Modification de l'objet Terminale : {}",  terminale);
 
          //Enregistrement de l'operation associee
          final Operation creationOp = new Operation();
@@ -656,7 +656,7 @@ public class TerminaleManagerImpl implements TerminaleManager
             CreateOrUpdateUtilities.removeAssociateOperations(terminale, operationManager, comments, user);
 
             terminaleDao.removeObject(terminale.getTerminaleId());
-            log.info("Suppression de l'objet Terminale : " + terminale.toString());
+            log.info("Suppression de l'objet Terminale : {}",  terminale);
          }
       }else{
          log.warn("Suppression d'une Terminale null");
@@ -733,8 +733,8 @@ public class TerminaleManagerImpl implements TerminaleManager
             terminaleDao.updateObject(terminale1);
             terminaleDao.updateObject(terminale2);
 
-            log.info("Modification de l'objet Terminale : " + terminale1.toString());
-            log.info("Modification de l'objet Terminale : " + terminale2.toString());
+            log.info("Modification de l'objet Terminale : {}",  terminale1);
+            log.info("Modification de l'objet Terminale : {}",  terminale2);
 
             //Enregistrement des operations associees
             final Operation op1 = new Operation();

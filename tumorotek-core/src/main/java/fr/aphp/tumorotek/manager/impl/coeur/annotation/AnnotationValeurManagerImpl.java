@@ -185,7 +185,7 @@ public class AnnotationValeurManagerImpl implements AnnotationValeurManager
                if(operation.equals("creation")){
 
                   annotationValeurDao.createObject(valeur);
-                  log.info("Enregistrement objet AnnotationValeur " + valeur.toString());
+                  log.info("Enregistrement objet AnnotationValeur {}",  valeur);
 
                   CreateOrUpdateUtilities.createAssociateOperation(valeur, operationManager,
                      operationTypeDao.findByNom("Creation").get(0), utilisateur);
@@ -193,7 +193,7 @@ public class AnnotationValeurManagerImpl implements AnnotationValeurManager
                }else{
 
                   annotationValeurDao.updateObject(valeur);
-                  log.info("Modification objet AnnotationValeur " + valeur.toString());
+                  log.info("Modification objet AnnotationValeur {}",  valeur);
                   CreateOrUpdateUtilities.createAssociateOperation(valeur, operationManager,
                      operationTypeDao.findByNom("Modification").get(0), utilisateur);
 
@@ -453,7 +453,7 @@ public class AnnotationValeurManagerImpl implements AnnotationValeurManager
    public void removeObjectManager(final AnnotationValeur valeur, final List<File> filesToDelete){
       if(valeur != null){
          annotationValeurDao.removeObject(valeur.getAnnotationValeurId());
-         log.info("Suppression objet AnnotationValeur " + valeur.toString());
+         log.info("Suppression objet AnnotationValeur {}",  valeur);
          //Supprime operations associes
          CreateOrUpdateUtilities.removeAssociateOperations(valeur, operationManager);
 

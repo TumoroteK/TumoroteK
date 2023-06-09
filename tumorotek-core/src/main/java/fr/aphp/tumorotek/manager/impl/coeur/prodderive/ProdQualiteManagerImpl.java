@@ -180,7 +180,7 @@ public class ProdQualiteManagerImpl implements ProdQualiteManager
       }
       BeanValidator.validateObject(qualite, new Validator[] {prodQualiteValidator});
       prodQualiteDao.createObject(qualite);
-      log.info("Enregistrement de l'objet ProdQualite : " + qualite.toString());
+      log.info("Enregistrement de l'objet ProdQualite : {}",  qualite);
    }
 
    @Override
@@ -192,14 +192,14 @@ public class ProdQualiteManagerImpl implements ProdQualiteManager
       }
       BeanValidator.validateObject(qualite, new Validator[] {prodQualiteValidator});
       prodQualiteDao.updateObject(qualite);
-      log.info("Modification de l'objet ProdQualite : " + qualite.toString());
+      log.info("Modification de l'objet ProdQualite : {}",  qualite);
    }
 
    @Override
    public void removeObjectManager(final ProdQualite obj){
       final ProdQualite qualite = obj;
       prodQualiteDao.removeObject(qualite.getId());
-      log.info("Suppression de l'objet ProdQualite : " + qualite.toString());
+      log.info("Suppression de l'objet ProdQualite : {}",  qualite);
    }
 
    @Override

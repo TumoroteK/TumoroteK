@@ -170,7 +170,7 @@ public class ProfilManagerImpl implements ProfilManager
          }
 
          profilDao.createObject(profil);
-         log.info("Enregistrement objet Profil " + profil.toString());
+         log.info("Enregistrement objet Profil {}",  profil);
 
          //Enregistrement de l'operation associee
          final Operation creationOp = new Operation();
@@ -214,7 +214,7 @@ public class ProfilManagerImpl implements ProfilManager
          }
 
          profilDao.updateObject(profil);
-         log.info("Enregistrement objet Profil " + profil.toString());
+         log.info("Enregistrement objet Profil {}",  profil);
 
          //Enregistrement de l'operation associee
          final Operation creationOp = new Operation();
@@ -265,7 +265,7 @@ public class ProfilManagerImpl implements ProfilManager
          }
 
          profilDao.removeObject(profil.getProfilId());
-         log.info("Suppression de l'objet Profil : " + profil.toString());
+         log.info("Suppression de l'objet Profil : {}",  profil);
 
          //Supprime operations associes
          final List<Operation> ops = operationManager.findByObjectManager(profil);

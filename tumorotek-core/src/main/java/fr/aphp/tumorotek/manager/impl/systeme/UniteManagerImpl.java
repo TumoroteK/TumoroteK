@@ -189,7 +189,7 @@ public class UniteManagerImpl implements UniteManager
       }else{
          BeanValidator.validateObject(unite, new Validator[] {uniteValidator});
          uniteDao.createObject(unite);
-         log.info("Enregistrement de l'objet Unite : " + unite.toString());
+         log.info("Enregistrement de l'objet Unite : {}",  unite);
       }
    }
 
@@ -207,7 +207,7 @@ public class UniteManagerImpl implements UniteManager
       }else{
          BeanValidator.validateObject(unite, new Validator[] {uniteValidator});
          uniteDao.updateObject(unite);
-         log.info("Modification de l'objet Unite : " + unite.toString());
+         log.info("Modification de l'objet Unite : {}",  unite);
       }
    }
 
@@ -224,7 +224,7 @@ public class UniteManagerImpl implements UniteManager
          throw new ObjectUsedException("Unite", "suppression");
       }else{
          uniteDao.removeObject(unite.getUniteId());
-         log.info("Suppression de l'objet Unite : " + unite.toString());
+         log.info("Suppression de l'objet Unite : {}",  unite);
       }
    }
 
