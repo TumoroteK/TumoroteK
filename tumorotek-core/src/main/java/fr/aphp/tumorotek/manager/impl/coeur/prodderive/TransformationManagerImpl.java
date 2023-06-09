@@ -247,8 +247,8 @@ public class TransformationManagerImpl implements TransformationManager
 
       // on vérifie que le couple Entité/ObjectId référence un objet existant
       if(entiteManager.findObjectByEntiteAndIdManager(entite, transformation.getObjetId()) == null){
-         log.warn("Couple Entite : " + entite.toString() + " - ObjetId :" + transformation.getObjetId()
-            + " inexistant lors de la " + "création d'un objet Transformation");
+         log.warn("Couple Entite : {} - ObjetId : {} inexistant lors de la création d'un objet Transformation",
+            entite, transformation.getObjetId());
          throw new EntiteObjectIdNotExistException("Transformation", entite.getNom(), transformation.getObjetId());
       }
 
@@ -292,8 +292,8 @@ public class TransformationManagerImpl implements TransformationManager
 
       // on vérifie que le couple Entité/ObjectId référence un objet existant
       if(entiteManager.findObjectByEntiteAndIdManager(entite, transformation.getObjetId()) == null){
-         log.warn("Couple Entite : " + entite.toString() + " - ObjetId :" + transformation.getObjetId()
-            + " inexistant lors de la " + "modification d'un objet Transformation");
+         log.warn("Couple Entite : {} - ObjetId : {} inexistant lors de la modification d'un objet Transformation",
+            entite, transformation.getObjetId());
          throw new EntiteObjectIdNotExistException("Transformation", entite.getNom(), transformation.getObjetId());
       }
 

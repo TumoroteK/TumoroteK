@@ -837,8 +837,8 @@ public class EmplacementManagerImpl implements EmplacementManager
          // on vérifie que le couple Entité/ObjectId référence
          // un objet existant
          if(entiteManager.findObjectByEntiteAndIdManager(emplacement.getEntite(), emplacement.getObjetId()) == null){
-            log.warn("Couple Entite : " + emplacement.getEntite().toString() + " - ObjetId :" + emplacement.getObjetId()
-               + " inexistant lors de la " + "création d'un objet Emplacement");
+            log.warn("Couple Entite : {} - ObjetId : {} inexistant lors de la création d'un objet Emplacement",
+               emplacement.getEntite(), emplacement.getObjetId());
             throw new EntiteObjectIdNotExistException("Emplacement", entite.getNom(), emplacement.getObjetId());
          }
       }
@@ -885,8 +885,8 @@ public class EmplacementManagerImpl implements EmplacementManager
          // on vérifie que le couple Entité/ObjectId référence
          // un objet existant
          if(entiteManager.findObjectByEntiteAndIdManager(emplacement.getEntite(), emplacement.getObjetId()) == null){
-            log.warn("Couple Entite : " + emplacement.getEntite().toString() + " - ObjetId :" + emplacement.getObjetId()
-               + " inexistant lors de la " + "modification d'un objet Emplacement");
+            log.warn("Couple Entite : {} - ObjetId : {} inexistant lors de la modification d'un objet Emplacement",
+               emplacement.getEntite(), emplacement.getObjetId());
             throw new EntiteObjectIdNotExistException("Emplacement", entite.getNom(), emplacement.getObjetId());
          }
       }
@@ -1037,8 +1037,8 @@ public class EmplacementManagerImpl implements EmplacementManager
                   final TKStockableObject tkObj =
                      (TKStockableObject) entiteManager.findObjectByEntiteAndIdManager(empl.getEntite(), empl.getObjetId());
                   if(tkObj == null){
-                     log.warn("Couple Entite : " + empl.getEntite().toString() + " - ObjetId :" + empl.getObjetId()
-                        + " inexistant lors de la " + "création d'un objet Emplacement");
+                     log.warn("Couple Entite : {} - ObjetId : {} inexistant lors de la création d'un objet Emplacement",
+                        empl.getEntite(), empl.getObjetId());
                      throw new EntiteObjectIdNotExistException("Emplacement", empl.getEntite().getNom(), empl.getObjetId());
                   }else if(tkObj.getEmplacement() != null && !tkObj.getEmplacement().equals(empl)){
                      // verifie que l'objet n'a pas ete stocke
