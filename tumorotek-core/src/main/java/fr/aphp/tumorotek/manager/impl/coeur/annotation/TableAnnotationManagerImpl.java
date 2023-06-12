@@ -411,8 +411,9 @@ public class TableAnnotationManagerImpl implements TableAnnotationManager
       for(int i = 0; i < valeurs.size(); i++){
          annotationValeurManager.removeObjectManager(valeurs.get(i), filesToDelete);
       }
-      log.info("Suppression des valeurs d'annotation pour l'association" + " table " + tab.getTableAnnotation() + " et banque "
-         + tab.getBanque());
+      log.info("Suppression des valeurs d'annotation pour l'association table {} et banque {}",
+         tab.getTableAnnotation(), tab.getBanque());
+
 
       // suppression du dossier
       final List<ChampAnnotation> chpFiles = champAnnotationManager.findChampsFichiersByTableManager(tab.getTableAnnotation());

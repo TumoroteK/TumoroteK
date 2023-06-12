@@ -2033,8 +2033,9 @@ public class TraitementQueryManagerImpl implements TraitementQueryManager
             }
          }
          /* On exécute la requête. */
-         log.info("findObjetByCritereManager : Exécution de la requête : \n" + sb.toString() + " avec les paramètres " + codes
-            + ", " + libelles + ", " + value + " et " + isMorpho);
+         log.info("findObjetByCritereManager : Exécution de la requête : \n{} avec les paramètres {}, {}, {} et {}",
+            sb, codes, libelles, value, isMorpho);
+
          final EntityManager em = entityManagerFactory.createEntityManager();
          final TypedQuery<Integer> query = em.createQuery(sb.toString(), Integer.class);
          if(sb.toString().contains(":codes")){
@@ -2244,8 +2245,9 @@ public class TraitementQueryManagerImpl implements TraitementQueryManager
          sb.append(" and e.banque in (:list)");
       }
       /* On exécute la requête. */
-      log.info("findObjetByCritereManager : Exécution de la requête : \n" + sb.toString() + " avec les paramètres " + codes + ", "
-         + libelles + ", " + value + " et " + isMorpho);
+      log.info("findObjetByCritereManager : Exécution de la requête : \n{} avec les paramètres {}, {}, {} et {}",
+         sb, codes, libelles, value, isMorpho);
+
       final EntityManager em = entityManagerFactory.createEntityManager();
       final TypedQuery<Integer> query = em.createQuery(sb.toString(), Integer.class);
       if(sb.toString().contains(":codes")){
@@ -2315,8 +2317,9 @@ public class TraitementQueryManagerImpl implements TraitementQueryManager
          }
 
          /* On exécute la requête. */
-         log.info("findEchantillonsByRequeteBiocap " + ": Exécution de la requête : \n" + sb.toString() + " avec les paramètres "
-            + banques + ", " + services + ", " + dateInf.getTime() + ", " + dateSup.getTime() + "et " + age);
+         log.info("findEchantillonsByRequeteBiocap : Exécution de la requête : \n{} avec les paramètres {}, {}, {} et {}",
+            sb, banques, services, dateInf.getTime(), dateSup.getTime(), age);
+
          final EntityManager em = entityManagerFactory.createEntityManager();
          final TypedQuery<Integer> query = em.createQuery(sb.toString(), Integer.class);
          query.setParameter("dateInf", dateInf);

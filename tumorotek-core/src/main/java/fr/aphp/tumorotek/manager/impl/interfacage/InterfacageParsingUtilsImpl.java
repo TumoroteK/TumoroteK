@@ -1106,8 +1106,9 @@ public class InterfacageParsingUtilsImpl implements InterfacageParsingUtils
                      valeurExternes.remove(blocCurrent);
                      valeurExternes.put(blocCurrent, vals);
                   }else{
-                     log.info("La valeur du bloc '" + bloc.getAttributeValue("nom") + "' à l'emplacement '"
-                        + sourceElt.getChildText("Key") + "' est NULL");
+                     log.info("La valeur du bloc '{}' à l'emplacement '{}' est NULL", bloc.getAttributeValue("nom"),
+                        sourceElt.getChildText("Key"));
+
                   }
                }
             }
@@ -1209,8 +1210,8 @@ public class InterfacageParsingUtilsImpl implements InterfacageParsingUtils
                         // insertion de la valeur dans la liste d'éléments
                         valeurExternes.get(blocSpm).add(valeur);
                      }else{
-                        log.info("La valeur du bloc '" + bloc.getAttributeValue("nom") + "' à l'emplacement '"
-                           + sourceElt.getChildText("Key") + "' est NULL");
+                        log.info("La valeur du bloc '{}' à l'emplacement '{}' est NULL",
+                           bloc.getAttributeValue("nom"), sourceElt.getChildText("Key"));
                      }
                   }
                }
@@ -1312,8 +1313,9 @@ public class InterfacageParsingUtilsImpl implements InterfacageParsingUtils
                      valeurExternes.remove(blocCurrent);
                      valeurExternes.put(blocCurrent, vals);
                   }else{
-                     log.info("La valeur du bloc libre '" + blocLibre.getAttributeValue("nom") + "' à l'emplacement '"
-                        + sourceElt.getChildText("Key") + "' est NULL");
+                     log.info("La valeur du bloc libre '{}' à l'emplacement '{}' est NULL",
+                        blocLibre.getAttributeValue("nom"), sourceElt.getChildText("Key"));
+
                   }
                }
             }
