@@ -2049,16 +2049,6 @@ public class FicheBanque extends AbstractFicheCombineController
       catalogues.clear();
       if(selectedContexte != null && selectedContexte.getContexteId() != null){
          catalogues.addAll(ManagerLocator.getContexteManager().getCataloguesManager(selectedContexte));
-      
-         // @since 2.3.0-gatsbi -> force maladie/visite contexte GATSBI en creation
-         if (defMaladieBox.isVisible()) {
-            if (getGatsbiSelected()) {
-               defMaladieBox.setChecked(true);
-               defMaladieBox.setDisabled(true);
-            } else {
-               defMaladieBox.setDisabled(false);
-            }
-         }
       }
    }
 
