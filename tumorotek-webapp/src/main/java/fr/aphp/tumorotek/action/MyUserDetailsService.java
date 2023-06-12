@@ -80,7 +80,7 @@ public class MyUserDetailsService implements UserDetailsService
       try{
          user = jdbcTemplate.queryForObject(sql, new String[] {username}, new UserMapper());
       }catch(final DataAccessException e){
-         log.info("La tentative de connection " + username + " a échoué " + "car les paramètres de connection sont invalides");
+         log.info("La tentative de connection {} a échoué car les paramètres de connection sont invalides", username);
          throw new UsernameNotFoundException("authentication error");
       }
       MDC.remove("client");

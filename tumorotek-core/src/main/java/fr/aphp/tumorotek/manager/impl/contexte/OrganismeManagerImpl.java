@@ -165,7 +165,7 @@ public class OrganismeManagerImpl implements OrganismeManager
    @Override
    public boolean isUsedObjectManager(Organisme obj){
       if(obj != null) {
-         log.info("Test si des études de la plateforme "+ obj.getPlateforme() +" sont rattachées à l'organisme " + obj.getNom());
+         log.info("Test si des études de la plateforme {} sont rattachées à l'organisme {}", obj.getPlateforme(), obj.getNom());
          return ( etudeDao.countByPfAndOrganismePromoteurId(obj.getPlateforme(), obj.getId()) > 0);
       }else{
          log.warn("Test nombre d'études sur l'Organisme null");

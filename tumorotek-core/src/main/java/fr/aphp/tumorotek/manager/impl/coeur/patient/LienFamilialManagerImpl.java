@@ -88,7 +88,7 @@ public class LienFamilialManagerImpl implements LienFamilialManager
          final LienFamilial reciproque = new LienFamilial();
          createReciprocity(obj, reciproque, true);
          lienFamilialDao.createObject(obj);
-         log.info("Enregistrement objet LienFamilial " + obj.toString() + " et son reciproque " + reciproque.toString());
+         log.info("Enregistrement objet LienFamilial {} et son reciproque {}", obj, reciproque);
 
       }else{
          log.warn("Doublon lors creation objet LienFamilial {}",  obj);
@@ -103,7 +103,7 @@ public class LienFamilialManagerImpl implements LienFamilialManager
          final LienFamilial reciproque = obj.getReciproque();
          createReciprocity(obj, reciproque, false);
          lienFamilialDao.updateObject(obj);
-         log.info("Modification objet LienFamilial " + obj.toString() + " et son reciproque " + reciproque.toString());
+         log.info("Modification objet LienFamilial {} et son reciproque {}", obj, reciproque);
       }else{
          log.warn("Doublon lors modification objet LienFamilial {}",  obj);
          throw new DoublonFoundException("LienFamilial", "modification");

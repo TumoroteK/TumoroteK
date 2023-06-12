@@ -119,7 +119,7 @@ public class InitServlet extends HttpServlet
                   final Path annoPath = Paths.get(baseDir.toString(), pfDir.toString(), "coll_" + bank.getBanqueId(), "anno");
                   new File(crAnapathPath.toUri()).mkdirs();
                   new File(annoPath.toUri()).mkdirs();
-                  log.info("base directory de la collection " + bank.getNom() + " généré");
+                  log.info("base directory de la collection {} généré", bank.getNom());
                }
                banks.clear();
             }

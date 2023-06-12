@@ -1891,7 +1891,7 @@ public class TraitementQueryManagerImpl implements TraitementQueryManager
             throw new IllegalArgumentException();
          }
          /* On exécute la requête. */
-         log.info("findObjetByCritereManager : Exécution de la requête : \n" + sb.toString() + " avec les paramètres " + values);
+         log.info("findObjetByCritereManager : Exécution de la requête : \n{} avec les paramètres {}", sb, values);
          final EntityManager em = entityManagerFactory.createEntityManager();
          final TypedQuery<Integer> query = em.createQuery(sb.toString(), Integer.class);
          if(!cumulative || values.isEmpty()){

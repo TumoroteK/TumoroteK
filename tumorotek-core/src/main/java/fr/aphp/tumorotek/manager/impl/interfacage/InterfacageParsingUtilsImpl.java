@@ -122,7 +122,7 @@ public class InterfacageParsingUtilsImpl implements InterfacageParsingUtils
          if(sepElt != null){
             conf.setSeparateurSousComposants(sepElt.getText());
          }else{
-            log.info("initConfigurationParsing : " + "Balise 'SeparateurSousComposants' " + "absente du fichier.");
+            log.info("initConfigurationParsing : Balise 'SeparateurSousComposants' absente du fichier.");
          }
          sepElt = confElt.getChild("BlocLibreKey");
          if(sepElt != null){
@@ -766,7 +766,7 @@ public class InterfacageParsingUtilsImpl implements InterfacageParsingUtils
          if(contenu.containsKey(bloc)){
             value = getValueFromEmplacement(contenu.get(bloc), conf, emplacement);
          }else{
-            log.info("getValueFromBlocAndEmplacement : " + "Le bloc '" + bloc + "' n'est pas présent dans le fichier");
+            log.info("getValueFromBlocAndEmplacement : Le bloc '{}' n'est pas présent dans le fichier", bloc);
          }
       }else{
          if(conf == null){
@@ -826,7 +826,7 @@ public class InterfacageParsingUtilsImpl implements InterfacageParsingUtils
 
             value = getValueFromEmplacement(values, conf, emplacement);
          }else{
-            log.info("getValueFromBlocLibre : " + "Le bloc libre '" + bloc + "' n'est pas présent dans le fichier");
+            log.info("getValueFromBlocLibre : Le bloc libre '{}' n'est pas présent dans le fichier", bloc);
          }
       }else{
          if(conf == null){
@@ -925,7 +925,7 @@ public class InterfacageParsingUtilsImpl implements InterfacageParsingUtils
                   value = emplacementAdrl.toString(); // l'adresse de stockage sera enregistrée comme valeur externe
                }
             }else{
-               log.info("formateValueUsingFunction : " + "La fonction de formatage '" + fonction + "' n'existe pas");
+               log.info("formateValueUsingFunction : La fonction de formatage '{}' n'existe pas", fonction);
             }
          }
       }

@@ -226,7 +226,7 @@ public class PatientSipManagerImpl implements PatientSipManager
             }
 
             patientSipDao.createObject(sipPatient);
-            log.info("Ajout du patient " + sipPatient.getNip() + " a la base temporaire");
+            log.info("Ajout du patient {} a la base temporaire", sipPatient.getNip());
 
             if(patientSipDao.findCountAll().get(0) > max){
                final List<PatientSip> sips = patientSipDao.findFirst();
@@ -315,7 +315,7 @@ public class PatientSipManagerImpl implements PatientSipManager
             patientManager.createOrUpdateObjectManager(pat, null, null, null, null, null, null, null, null, "synchronisation",
                null, false);
 
-            log.info("Synchronisation du patient " + sipPatient.getNip() + " pour les champs: " + fieldsNames);
+            log.info("Synchronisation du patient {} pour les champs: {}", sipPatient.getNip(), fieldsNames);
          }catch(final IllegalAccessException e){
             log.error(e.getMessage());
          }catch(final NoSuchMethodException e){

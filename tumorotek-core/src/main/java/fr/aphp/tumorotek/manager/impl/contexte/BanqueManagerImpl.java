@@ -988,13 +988,13 @@ public class BanqueManagerImpl implements BanqueManager
       if(!delete){
          if(!new File(path).exists()){
             if(new File(path + "/anno").mkdirs()){
-               log.info("Creation file system " + path + "/anno");
+               log.info("Creation file system {}/anno", path);
             }else{
                log.error("Erreur dans la creation du systeme de fichier anno pour la banque {}",  bank);
                throw new RuntimeException("banque.filesystem.anno.error");
             }
             if(new File(path + "/cr_anapath").mkdirs()){
-               log.info("Creation file system " + path + "/cr_anapath");
+               log.info("Creation file system {}/cr_anapath", path);
             }else{
                log.error("Erreur dans la creation du systeme de fichier anapath pour la banque {}",  bank);
                throw new RuntimeException("banque.filesystem.anapath.error");
