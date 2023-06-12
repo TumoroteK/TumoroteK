@@ -40,6 +40,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.text.ParseException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -377,5 +378,22 @@ public class GatsbiControllerPatient
 
    public static boolean getSchemaVisitesDefinedByEtude(Map<String, Object> sessionScope){
       return SessionUtils.getCurrentBanque(sessionScope).getEtude().getSchemaVisites() != null;
+   }
+   
+   /**
+    * Renvoie true si au moins une des clefs naturelles du patient est passée en paramètre.
+    * @param contexte
+    * @param listbox
+    */
+   public static boolean isAnyPatientNaturalKeyVisible(final Contexte contexte) {
+
+      // variable columns
+      for(final Integer chpId : contexte.getChampEntiteInTableauOrdered()){
+         if (Arrays.asList(2, 3, 5, 7).contains(chpId)) {
+            return true;
+         }
+      }
+      
+      return false;
    }
 }
