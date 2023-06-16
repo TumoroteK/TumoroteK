@@ -60,6 +60,7 @@ import org.zkoss.zul.Panel;
 
 import fr.aphp.tumorotek.action.ManagerLocator;
 import fr.aphp.tumorotek.action.controller.AbstractFicheStaticController;
+import fr.aphp.tumorotek.action.prelevement.PrelevementConsultFromOtherBanksRenderer;
 import fr.aphp.tumorotek.action.prelevement.PrelevementController;
 import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
 import fr.aphp.tumorotek.model.TKdataObject;
@@ -125,7 +126,8 @@ public class FichePatientStatic extends AbstractFicheStaticController
    private final List<Prelevement> prelevementsFromOtherMaladies = new ArrayList<>();
 
    // maladie systems -> contexte TK anapath par défaut
-   private final PrelevementItemRenderer prelevementFromOtherMaladiesRenderer = new PrelevementItemRenderer();
+   private final PrelevementConsultFromOtherBanksRenderer prelevementFromOtherMaladiesRenderer = 
+                     new PrelevementItemRenderer();
 
    private final List<FicheMaladie> maladiePanels = new ArrayList<>();
 
@@ -161,6 +163,15 @@ public class FichePatientStatic extends AbstractFicheStaticController
 
       addPrelevement.setVisible(!addMaladie.isVisible());
 
+      setClickPrelevementCodeForward();
+   }
+   
+   /**
+    * Event listener du clique code prelevement
+    * sera surchargé par gatsbi
+    * @since 2.3.0-gatsbi
+    */
+   protected void setClickPrelevementCodeForward() {
       prelevementsFromOtherMaladiesBox.addEventListener("onClickPrelevementCode", new EventListener<Event>()
       {
          @Override
@@ -213,7 +224,7 @@ public class FichePatientStatic extends AbstractFicheStaticController
 
          // configure le renderer pour inactiver les liens des
          // prélèvements non consultables
-         prelevementFromOtherMaladiesRenderer.setFromOtherConsultBanks(banks);
+         getPrelevementsFromOtherMaladiesRenderer().setOtherConsultBanks(banks);
 
          // medecins referents
          this.medecins = new ArrayList<>(ManagerLocator.getPatientManager().getMedecinsManager(patient));
@@ -548,7 +559,7 @@ public class FichePatientStatic extends AbstractFicheStaticController
       String compDef = "maladiePanel";
       
       // @since gatsbi
-      if (SessionUtils.getCurrentGatsbiContexteForEntiteId(7) != null && !prelevementsOnly) {
+      if (SessionUtils.getCurrentGatsbiContexteForEntiteId(7) != null) {
          compDef = "maladieGatsbiPanel";
       } else if(SessionUtils.getCurrentContexte() == EContexte.SEROLOGIE){
          compDef = "maladieSeroPanel";
@@ -709,7 +720,7 @@ public class FichePatientStatic extends AbstractFicheStaticController
       return prelevementsFromOtherMaladies;
    }
 
-   public PrelevementItemRenderer getPrelevementsFromOtherMaladiesRenderer(){
+   public PrelevementConsultFromOtherBanksRenderer getPrelevementsFromOtherMaladiesRenderer(){
       return prelevementFromOtherMaladiesRenderer;
    }
 
@@ -724,7 +735,7 @@ public class FichePatientStatic extends AbstractFicheStaticController
    /**
     * Affiche la fiche d'un prélèvement.
     */
-   private void onClickPrelevementCode(final Event e){
+   protected void onClickPrelevementCode(final Event e){
 
       final PrelevementController tabController = (PrelevementController) PrelevementController.backToMe(getMainWindow(), page);
    

@@ -1069,6 +1069,9 @@ public class GatsbiController
       col.setLabel(Labels.getLabel(nameKey));
       if(width != null){
          col.setWidth(width);
+         col.setStyle("max-width: " + width);
+      } else {
+         col.setHflex("1");
       }
       col.setAlign(align);
       if(child != null){

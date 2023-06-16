@@ -39,17 +39,23 @@ package fr.aphp.tumorotek.action.patient.gatsbi;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zul.Div;
+import org.zkoss.zul.Grid;
 import org.zkoss.zul.Groupbox;
 import org.zkoss.zul.Messagebox;
 
 import fr.aphp.tumorotek.action.ManagerLocator;
 import fr.aphp.tumorotek.action.patient.FicheMaladie;
 import fr.aphp.tumorotek.action.prelevement.PrelevementController;
+import fr.aphp.tumorotek.action.prelevement.gatsbi.GatsbiControllerPrelevement;
+import fr.aphp.tumorotek.action.prelevement.gatsbi.PrelevementInnerListRowRendererGatsbi;
 import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
 import fr.aphp.tumorotek.model.code.CodeCommon;
 import fr.aphp.tumorotek.model.contexte.gatsbi.Contexte;
 import fr.aphp.tumorotek.model.contexte.gatsbi.ContexteType;
 import fr.aphp.tumorotek.webapp.gatsbi.GatsbiController;
+import fr.aphp.tumorotek.webapp.gatsbi.RowRendererGatsbiOtherConsultBanks;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
 /**
@@ -64,6 +70,17 @@ public class FicheMaladieGatsbi extends FicheMaladie
 {
 
    private static final long serialVersionUID = -7612780578022559022L;
+   
+   private Div maladieBlockDivContainer;
+   private Div visiteMedecinsDiv;
+   
+   private Grid prelevementsGrid;
+   private RowRendererGatsbiOtherConsultBanks prelevementRendererGatsbi = 
+      new PrelevementInnerListRowRendererGatsbi(false, false);
+   
+   private Grid prelevementsFromOtherBanksGrid;
+   private RowRendererGatsbiOtherConsultBanks prelevementRendererFromOtherBanksGatsbi = 
+      new PrelevementInnerListRowRendererGatsbi(false, true);
 
    @Override
    public void doAfterCompose(final Component comp) throws Exception{
@@ -90,18 +107,41 @@ public class FicheMaladieGatsbi extends FicheMaladie
       Contexte prelContexte = SessionUtils.getCurrentGatsbiContexteForEntiteId(2);
       if (prelContexte == null) {
          prelContexte = GatsbiController.getGastbiDefautContexteForType(ContexteType.PRELEVEMENT);
-         // TODO PrelevementItemRenderer -> passer en mode Gatsbi
-         // prelevementRendererGatsbi.setContexte(prelContexte);
-         // prelevementFromOtherBanksRendererGatsbi.setContexte(prelContexte);
-         // setPrelevementFromOtherBanksRenderer(prelevementFromOtherBanksRendererGatsbi);
-      }
+      }  
       
+      GatsbiControllerPrelevement
+         .drawColumnsForPrelevements(prelContexte, prelevementsGrid, prelevementRendererGatsbi, false, "nbEchantillonsColumn");
+      GatsbiControllerPrelevement
+         .drawColumnsForPrelevements(prelContexte, prelevementsFromOtherBanksGrid, prelevementRendererFromOtherBanksGatsbi, true, 
+            "nbEchantillonsFromOtherBanksColumn");
+  
+   }
+   
+   @Override
+   protected void initObjLabelsComponent(){
+      setObjLabelsComponents(new Component[] {
+         this.libelleLabel, this.codeDiagLabel, this.dateDebutLabel, this.dateDiagLabel,
+         this.prelevementsMaladieGroup, this.prelevementsGrid, this.prelevementsFromOtherBanksGrid 
+      });    
+   }
+   
+   @Override
+   protected void setClickPrelevementCodeForward() {
+      prelevementsGrid.addEventListener("onClickPrelevementCode", new EventListener<Event>()
+      {
+         @Override
+         public void onEvent(final Event event) throws Exception{
+            onClickPrelevementCode(event);
+         }
+      });
 
-      // inner list
-      // non deletable
-      // ne force pas affichage emplacement et statut stockage en fin de grid
-      // GatsbiControllerPrelevement.drawColumnsForPrelevements(prelContexte,
-      //   echantillonsGrid, echantillonRendererGatsbi, false, false, getTtesCollections());
+      prelevementsFromOtherBanksGrid.addEventListener("onClickPrelevementCode", new EventListener<Event>()
+      {
+         @Override
+         public void onEvent(final Event event) throws Exception{
+            onClickPrelevementCode(event);
+         }
+      });
    }
    
    @Override
@@ -187,5 +227,30 @@ public class FicheMaladieGatsbi extends FicheMaladie
    }
 
    /*********** inner lists ******************/
+  
+   @Override
+   protected void detachMaladieFormMainComponent(){
+      if (this.maladieBlockDivContainer != null) {
+         maladieBlockDivContainer.detach();
+      }
+      if (this.visiteMedecinsDiv != null) {
+         visiteMedecinsDiv.detach();
+      }
+   }
+   
+   @Override
+   protected void detachPrelevementsMaladieGroup() {
+      prelevementsMaladieGroup.setSclass("prelevements-only"); // efface border+padding
+      ((Groupbox) prelevementsMaladieGroup).getFirstChild().detach(); // caption
+   }
+   
+  @Override
+   public RowRendererGatsbiOtherConsultBanks getPrelevementRenderer(){
+      return prelevementRendererGatsbi;
+   }
 
+  @Override
+   public RowRendererGatsbiOtherConsultBanks getPrelevementFromOtherBanksRenderer(){
+      return prelevementRendererFromOtherBanksGatsbi;
+   }
 }

@@ -222,8 +222,11 @@ public class ReferenceurPatientGatsbi extends ReferenceurPatient
       // si patient n'a pas encore d'identifiant pour la collection, 
       // ajout du schéma de visites
       if (!patient.hasIdentifiant()) {
-         DateModale.show(Labels.getLabel("gatsbi.schema.visites.title"), 
-            Labels.getLabel("gatsbi.schema.visites.label"), null, false, self);
+         if (SessionUtils.getCurrentBanque(sessionScope).getEtude() != null 
+         && SessionUtils.getCurrentBanque(sessionScope).getEtude().getSchemaVisites() != null) {
+            DateModale.show(Labels.getLabel("gatsbi.schema.visites.title"), 
+               Labels.getLabel("gatsbi.schema.visites.label"), null, false, self);
+         }
       } else { // ajout des visites existantes
          getMaladies().addAll(MaladieDecorator.decorateListe(
                ManagerLocator.getMaladieManager()
