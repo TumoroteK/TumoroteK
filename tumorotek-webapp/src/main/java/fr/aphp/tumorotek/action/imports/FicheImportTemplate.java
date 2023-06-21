@@ -451,6 +451,17 @@ public class FicheImportTemplate extends AbstractFicheCombineController
       Events.echoEvent("onLaterCreate", self, null);
    }
 
+   public void onClick$copyEmptyFields(){
+      for(ImportColonneDecorator importColonneDecorator : importColonnesDecorator){
+         //        si null , l'utilisateur n'a pas rempli l'entrée
+         if(importColonneDecorator.getColonne().getNom() == null){
+            log.info("l'entrée a été remplie avec la chaîne {}", importColonneDecorator.getChamp());
+            importColonneDecorator.getColonne().setNom(importColonneDecorator.getChamp().toLowerCase());
+         }
+      }
+
+   }
+
    @Override
    public void onLaterCreate(){
       try{
