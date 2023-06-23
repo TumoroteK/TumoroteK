@@ -39,7 +39,7 @@
 
 <window id="winRecherche" border="none" apply="fr.aphp.tumorotek.action.io.RechercheController">
 <borderlayout sclass="tabBorderLayout" id="mainBorder">
-		<west title="${c:l('recherche.liste.title')}" size="50%" border="normal" splittable="true" collapsible="true" id="listeRegion">
+		<west title="${c:l('recherche.liste.title')}" size="70%" border="normal" splittable="true" collapsible="true" id="listeRegion">
 			<listeRecherche id="listeRecherches"  hflex="1" vflex="1" />
 		</west>
 		<center id="ficheRegion">

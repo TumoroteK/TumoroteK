@@ -48,13 +48,15 @@
 				model="@{lwinRecherches$composer.listObjects}"
 				>
 				<columns sizable="true" >
+					<column label="${c:l('recherche.banque')}" />
 					<column label="${c:l('recherche.intitule')}"/>
 					<column label="${c:l('recherche.affichage')}"/>
 					<column label="${c:l('recherche.requete')}"/>
 				</columns>
 				<rows>
 					<row self="@{each='recherche'}">
-						<label id="viewObject" 
+						<label value="@{recherche.requete.banque.nom}"/>
+						<label id="viewObject"
 							value="@{recherche.intitule}" sclass="formLink"/>
 						<label value="@{recherche.affichage.intitule}"/>
 						<label value="@{recherche.requete.intitule}"/>

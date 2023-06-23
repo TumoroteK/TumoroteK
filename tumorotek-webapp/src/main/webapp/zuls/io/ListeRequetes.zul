@@ -46,10 +46,12 @@
 				sclass="gridListStyle"
 				model="@{lwinRequetes$composer.listObjects}">
 				<columns sizable="true" >
-					<column />
+					<column label="${c:l('recherche.banque')}" />
+					<column label="${c:l('requete.intitule')}"/>
 				</columns>
 				<rows>
 					<row self="@{each='requete'}">
+						<label value="@{requete.banque.nom}" />
 						<label id="viewObject" 
 							value="@{requete.intitule}" sclass="formLink"/>
 					</row>
