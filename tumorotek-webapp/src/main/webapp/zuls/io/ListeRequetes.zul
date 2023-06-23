@@ -46,7 +46,7 @@
 				sclass="gridListStyle"
 				model="@{lwinRequetes$composer.listObjects}">
 				<columns sizable="true" >
-					<column label="${c:l('recherche.banque')}" />
+					<column id="collection" label="${c:l('recherche.banque')}" visible="false" />
 					<column label="${c:l('requete.intitule')}"/>
 				</columns>
 				<rows>

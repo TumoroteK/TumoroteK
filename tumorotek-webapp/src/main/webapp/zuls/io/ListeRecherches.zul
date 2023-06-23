@@ -48,7 +48,7 @@
 				model="@{lwinRecherches$composer.listObjects}"
 				>
 				<columns sizable="true" >
-					<column label="${c:l('recherche.banque')}" />
+					<column id="collection" label="${c:l('recherche.banque')}" visible="false" />
 					<column label="${c:l('recherche.intitule')}"/>
 					<column label="${c:l('recherche.affichage')}"/>
 					<column label="${c:l('recherche.requete')}"/>

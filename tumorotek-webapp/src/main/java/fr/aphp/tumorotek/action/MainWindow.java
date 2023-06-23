@@ -443,24 +443,9 @@ public class MainWindow extends GenericForwardComposer<Component>
                mainTabbox.setSelectedTab((Tab) mainTabbox.getFellow("cessionTab"));
                Events.postEvent("onSelect", mainTabbox, null);
             }else if(curr.getId().equals("recherchePanel")){
-               ((RequeteController) getMainTabbox().getTabpanels().getFellow("recherchePanel").getFellow("winRechercheComplexe")
-                  .getFellow("exportTabbox").getFellow("panelModelisation").getFellow("modelisationTabbox")
-                  .getFellow("panelRequete").getFellow("requeteMacro").getFellow("winRequete")
-                  .getAttributeOrFellow("winRequete$composer", true)).reset();
-
-               ((AffichageController) getMainTabbox().getTabpanels().getFellow("recherchePanel").getFellow("winRechercheComplexe")
-                  .getFellow("exportTabbox").getFellow("panelModelisation").getFellow("modelisationTabbox")
-                  .getFellow("panelAffichage").getFellow("affichageMacro").getFellow("winAffichage")
-                  .getAttributeOrFellow("winAffichage$composer", true)).reset();
-
-               ((RechercheController) getMainTabbox().getTabpanels().getFellow("recherchePanel").getFellow("winRechercheComplexe")
-                  .getFellow("exportTabbox").getFellow("panelModelisation").getFellow("modelisationTabbox")
-                  .getFellow("panelRecherche").getFellow("rechercheMacro").getFellow("winRecherche")
-                  .getAttributeOrFellow("winRecherche$composer", true)).reset();
-
-               ((RechercheComplexeController) getMainTabbox().getTabpanels().getFellow("recherchePanel")
-                  .getFellow("winRechercheComplexe").getAttributeOrFellow("winRechercheComplexe$composer", true))
-                     .resetExecutionController();
+               Components.removeAllChildren(curr);
+               mainTabbox.setSelectedTab((Tab) mainTabbox.getFellow("rechercheTab"));
+               Events.postEvent("onSelect", mainTabbox, null);
             }else if(curr.getId().equals("administrationPanel")){
                Components.removeAllChildren(curr);
                if(sessionScope.containsKey("AccesAdmin") & (Boolean) sessionScope.get("AccesAdmin")){

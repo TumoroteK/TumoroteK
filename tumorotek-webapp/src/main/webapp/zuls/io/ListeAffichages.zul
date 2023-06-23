@@ -46,7 +46,7 @@
 				sclass="gridListStyle"
 				model="@{lwinAffichages$composer.listObjects}">
 				<columns sizable="true" >
-					<column id="collection"  label="${c:l('recherche.banque')}"  />
+					<column id="collection"  label="${c:l('recherche.banque')}"  visible="false" />
 					<column label="${c:l('affichage.intitule')}" />
 				</columns>
 				<rows>

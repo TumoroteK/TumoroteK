@@ -50,17 +50,22 @@ import fr.aphp.tumorotek.decorator.TKSelectObjectRenderer;
 import fr.aphp.tumorotek.model.TKdataObject;
 import fr.aphp.tumorotek.model.io.export.Affichage;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
-
+import org.zkoss.zul.Column;
 public class ListeAffichages extends AbstractListeController2
 {
 
    private static final long serialVersionUID = 1L;
 
+   Column collection;
    private List<Affichage> listObjects = new ArrayList<>();
 
    @Override
    public void doAfterCompose(final Component comp) throws Exception{
       super.doAfterCompose(comp);
+
+      if(sessionScope.containsKey("ToutesCollections")){
+         collection.setVisible(true);
+      }
 
       listPanel.setHeight(getMainWindow().getListPanelHeight() + 35 + "px");
       //objectsListGrid.setHeight(getMainWindow().getListPanelHeight()
