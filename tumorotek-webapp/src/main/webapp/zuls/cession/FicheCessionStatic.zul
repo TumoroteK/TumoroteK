@@ -374,6 +374,7 @@
 					<menu label="${c:l('general.actions')}" image="/images/icones/small_action.png" width="36px" height="24px">
 						<menupopup>
 							<menuitem id="printCessionPlan" image="/images/icones/terminale.png" label="${c:l('impression.boite.title.destockage')}" />
+							<menuitem id="move" image="/images/icones/deplacerTerminale.png" label="${c:l('ficheCession.actions.move')}"  visible="false"/>
 							<menuitem id="exporterEchantillons" image="/images/icones/export.png" label="${c:l('cession.exporter.echantillons')}" />
 							<menuitem id="exporterDerives" image="/images/icones/export.png" label="${c:l('cession.exporter.derives')}" />
 							<menuitem id="printAccord" image="/images/icones/printerAccord.png" label="${c:l('general.print.accord')}" />

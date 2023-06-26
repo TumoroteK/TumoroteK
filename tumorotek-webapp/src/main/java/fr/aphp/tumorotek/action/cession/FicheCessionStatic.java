@@ -172,6 +172,7 @@ public class FicheCessionStatic extends AbstractFicheStaticController
 	private Menuitem exporterEchantillons;
 	private Menuitem exporterDerives;
 
+	private Menuitem move;
 	private Menuitem printCessionPlan;
 
 	// IRELEC
@@ -193,7 +194,6 @@ public class FicheCessionStatic extends AbstractFicheStaticController
 		setFantomable(true);
 		setCascadable(false);
 		setDeletable(true);
-
 		cdEchansFactory = new CederObjetDecoratorFactory(isAnonyme(), checkedEchantillonIds);
 		cdDerivesFactory = new CederObjetDecoratorFactory(isAnonyme(), checkedDeriveIds);
 	}
@@ -319,7 +319,9 @@ public class FicheCessionStatic extends AbstractFicheStaticController
 			_needsTotalSizeUpdateP = true;
 			_startPageNumberP = 0;
 			refreshModelP(_startPageNumberP);
-
+			if (cession != null && cession.getCessionStatut().getStatut().equals("EN ATTENTE")){
+				move.setVisible(true);
+			}
 			edit.setVisible(true);
 			delete.setVisible(true);
 		}
@@ -390,6 +392,10 @@ public class FicheCessionStatic extends AbstractFicheStaticController
 		}
 	}
 
+
+	public void onClick$move(){
+
+	}
 	@Override
 	public void onClick$addNew(){
 		getObjectTabController().switchToCreateMode(null, null, null);
