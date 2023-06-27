@@ -50,29 +50,17 @@ import fr.aphp.tumorotek.decorator.TKSelectObjectRenderer;
 import fr.aphp.tumorotek.model.TKdataObject;
 import fr.aphp.tumorotek.model.io.export.Recherche;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
-import org.zkoss.zul.Column;
-public class ListeRecherches extends AbstractListeController2
+
+public class ListeRecherches extends ListeOngletRequete
 {
 
    private static final long serialVersionUID = 1L;
 
-   Column collection;
    private List<Recherche> listObjects = new ArrayList<>();
 
    @Override
    public void doAfterCompose(final Component comp) throws Exception{
       super.doAfterCompose(comp);
-      if(sessionScope.containsKey("ToutesCollections")){
-         collection.setVisible(true);
-      }
-      listPanel.setHeight(getMainWindow().getListPanelHeight() + 35 + "px");
-      //objectsListGrid.setHeight(getMainWindow().getListPanelHeight()
-      //		+ 38 + "px");
-      //listPanel.setHeight("100%");
-      // listObjects = (List<Recherche>) ManagerLocator.getRechercheManager()
-      //		.findByBanqueManager(
-      //		SessionUtils.getCurrentBanque(sessionScope));
-      // Collections.sort(listObjects);
    }
 
    @Override
@@ -98,8 +86,7 @@ public class ListeRecherches extends AbstractListeController2
       listObjects = rechs;
       setCurrentRow(null);
       setCurrentObject(null);
-
-      getBinder().loadAttribute(self.getFellow("objectsListGrid"), "model");
+      reloadComponent();
    }
 
    public AbstractFicheCombineController getFiche(){

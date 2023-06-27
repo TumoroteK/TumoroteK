@@ -46,15 +46,15 @@
 				sclass="gridListStyle"
 				model="@{lwinAffichages$composer.listObjects}">
 				<columns sizable="true" >
-					<column id="collection"  label="${c:l('recherche.banque')}"  visible="false" />
 					<column label="${c:l('affichage.intitule')}" />
+					<column id="collection"  label="${c:l('recherche.banque')}"  />
+
 				</columns>
 				<rows>
 					<row self="@{each='currAffichage'}">
-						<label value="@{currAffichage.banque.nom}" />
 						<label id="viewObject" 
 							value="@{currAffichage.intitule}" sclass="formLink"/>
-
+						<label value="@{currAffichage.banque.nom}" />
 					</row>
 				</rows>
 			</grid>
