@@ -456,7 +456,7 @@ public class FicheImportTemplate extends AbstractFicheCombineController
          //        si null , l'utilisateur n'a pas rempli l'entrée
          if(importColonneDecorator.getColonne().getNom() == null){
             log.info("l'entrée a été remplie avec la chaîne {}", importColonneDecorator.getChamp());
-            importColonneDecorator.getColonne().setNom(importColonneDecorator.getChamp().toLowerCase());
+            importColonneDecorator.getColonne().setNom(importColonneDecorator.getChamp());
          }
       }
 
