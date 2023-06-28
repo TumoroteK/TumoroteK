@@ -58,7 +58,6 @@ public class ListeRequetes extends ListeOngletRequete
 
    private List<Requete> listObjects = new ArrayList<>();
 
- //  Column collection;
 
    @Override
    public void doAfterCompose(final Component comp) throws Exception{

@@ -38,7 +38,7 @@
 
 <window id="winRequete" border="none" apply="fr.aphp.tumorotek.action.io.RequeteController">
 	<borderlayout sclass="tabBorderLayout" id="mainBorder">
-		<west title="${c:l('requetes.liste.title')}" size="50%"
+		<west title="${c:l('requetes.liste.title')}" size="40%"
 			border="normal" splittable="true" collapsible="true" id="listeRegion">
 						<listeRequete id="listeRequete" hflex="1" vflex="1"/>
 		</west>

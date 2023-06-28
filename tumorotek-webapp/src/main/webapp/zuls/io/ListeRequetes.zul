@@ -47,7 +47,7 @@
 				model="@{lwinRequetes$composer.listObjects}">
 				<columns sizable="true" >
 					<column label="${c:l('requete.intitule')}"/>
-					<column id="collection" label="${c:l('recherche.banque')}" visible="false" />
+					<column id="collection" label="${c:l('recherche.banque')}" />
 
 				</columns>
 				<rows>

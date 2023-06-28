@@ -42,7 +42,7 @@
 
 <window id="winAffichage" border="none" apply="fr.aphp.tumorotek.action.io.AffichageController">
 <borderlayout sclass="tabBorderLayout" id="mainBorder">
-		<west title="${c:l('affichages.liste.title')}" size="50%" border="normal" splittable="true" collapsible="true" id="listeRegion">
+		<west title="${c:l('affichages.liste.title')}" size="40%" border="normal" splittable="true" collapsible="true" id="listeRegion">
 			<listeAffichage id="listeAffichages" hflex="1" vflex="1"/>
 		</west>
 		<center id="ficheRegion">
