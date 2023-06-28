@@ -142,7 +142,6 @@ public class FicheImportTemplate extends AbstractFicheCombineController
    private Grid colonnesGridEdit;
 
    private Row helpAddColumnRow;
-
    private Row rowAddChamp;
 
    private Listbox champsBox;
@@ -155,6 +154,8 @@ public class FicheImportTemplate extends AbstractFicheCombineController
 
    // subderive
    private Button addNewSubderiveC;
+
+   private Button copyEmptyFields;
 
    private Listbox subderiveParentListbox;
 
@@ -229,6 +230,7 @@ public class FicheImportTemplate extends AbstractFicheCombineController
       }
 
       importer.setVisible(false);
+      copyEmptyFields.setVisible(false);
       exporterHeader.setVisible(false);
 
       Executions.createComponents("/zuls/imports/EntitesAssocieesImport.zul", entitesAssocieesImport, null);
@@ -340,7 +342,7 @@ public class FicheImportTemplate extends AbstractFicheCombineController
    @Override
    public void switchToStaticMode(){
       super.switchToStaticMode(this.importTemplate.equals(new ImportTemplate()));
-
+      copyEmptyFields.setVisible(false);
       if(this.importTemplate != null && this.importTemplate.getIsEditable() != null && !this.importTemplate.getIsEditable()){
          editC.setVisible(false);
          deleteC.setVisible(false);
@@ -451,15 +453,16 @@ public class FicheImportTemplate extends AbstractFicheCombineController
       Events.echoEvent("onLaterCreate", self, null);
    }
 
-   public void onClick$copyEmptyFields(){
+   public void onClick$copyEmptyFields() throws Exception{
       for(ImportColonneDecorator importColonneDecorator : importColonnesDecorator){
          //        si null , l'utilisateur n'a pas rempli l'entrée
          if(importColonneDecorator.getColonne().getNom() == null){
-            log.info("l'entrée a été remplie avec la chaîne {}", importColonneDecorator.getChamp());
-            importColonneDecorator.getColonne().setNom(importColonneDecorator.getChamp());
+            String champName = importColonneDecorator.getChamp();
+            log.debug("l'entrée a été remplie avec la chaîne {}", champName);
+            importColonneDecorator.getColonne().setNom(champName);
          }
       }
-
+      copyEmptyFields.setDisabled(true);
    }
 
    @Override
@@ -854,7 +857,6 @@ public class FicheImportTemplate extends AbstractFicheCombineController
          final ImportColonneDecorator icd = new ImportColonneDecorator(ic);
          importColonnesDecorator.add(icd);
          selectedChamp = null;
-
          getBinder().loadComponent(colonnesGridEdit);
          Clients.scrollIntoView(colonnesGridEdit);
       }
@@ -1375,7 +1377,11 @@ public class FicheImportTemplate extends AbstractFicheCombineController
       // ferme wait message
       Clients.clearBusy();
    }
-
+   public void showCopyFieldsButton(){
+      if (!copyEmptyFields.isVisible()){
+         copyEmptyFields.setVisible(true);
+      }
+   }
    public void switchToCreateModeSubderive(){
 
       super.switchToCreateMode();

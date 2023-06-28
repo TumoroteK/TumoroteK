@@ -68,31 +68,8 @@ public class ImportColonneRowRenderer implements RowRenderer<ImportColonne>
       // nom colonne
       final Label colonneLabel = new Label(colonne.getNom());
       colonneLabel.setParent(row);
-
+      String champ = ImportUtils.exctractChamp(colonne, visiteGatsbi);
       // Champ associé
-      String champ = "";
-      if(colonne.getChamp() != null){
-         if(colonne.getChamp().getChampEntite() != null){
-            if (!visiteGatsbi || colonne.getChamp().getChampEntite().getId() != 20) {
-               champ = getLabelForChampEntite(colonne.getChamp().getChampEntite());
-            } else { // rendu date debut -> date de visite
-               champ = Labels.getLabel("gatsbi.visite.date");
-            }         
-         }else if(colonne.getChamp().getChampDelegue() != null){
-            champ = Labels
-               .getLabel(colonne.getChamp().getChampDelegue().getILNLabelForChampDelegue(SessionUtils.getCurrentContexte()));
-         }else{
-            champ = colonne.getChamp().getChampAnnotation().getNom();
-         }
-      }else{ // subderive header
-         if(colonne.getNom().equals("code.parent")){
-            champ = Labels.getLabel("import.colonne.subderive.parent");
-         }else if(colonne.getNom().equals("qte.transf")){
-            champ = Labels.getLabel("import.colonne.subderive.qte.transf");
-         }else if(colonne.getNom().equals("evt.date")){
-            champ = Labels.getLabel("import.colonne.subderive.evt.date");
-         }
-      }
       final Label champLabel = new Label(champ);
       champLabel.setParent(row);
 

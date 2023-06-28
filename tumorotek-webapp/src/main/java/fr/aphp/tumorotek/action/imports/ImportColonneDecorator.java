@@ -87,30 +87,7 @@ public class ImportColonneDecorator
    }
 
    public String getChamp(){
-      String champ = "";
-      if(colonne.getChamp() != null){
-         if(colonne.getChamp().getChampEntite() != null){
-            if (!visiteGatsbi || colonne.getChamp().getChampEntite().getId() != 20) {
-               champ = getLabelForChampEntite(colonne.getChamp().getChampEntite());
-            } else { // rendu date debut -> date de visite
-               champ = Labels.getLabel("gatsbi.visite.date");
-            }
-         }else if(colonne.getChamp().getChampDelegue() != null){
-            champ = Labels
-               .getLabel(colonne.getChamp().getChampDelegue().getILNLabelForChampDelegue(SessionUtils.getCurrentContexte()));
-         }else{
-            champ = colonne.getChamp().getChampAnnotation().getNom();
-         }
-      }else{ // subderive header
-         if(colonne.getNom().equals("code.parent")){
-            champ = Labels.getLabel("import.colonne.subderive.parent");
-         }else if(colonne.getNom().equals("qte.transf")){
-            champ = Labels.getLabel("import.colonne.subderive.qte.transf");
-         }else if(colonne.getNom().equals("evt.date")){
-            champ = Labels.getLabel("import.colonne.subderive.evt.date");
-         }
-      }
-      return champ;
+    return ImportUtils.exctractChamp(colonne, visiteGatsbi);
    }
 
    public String getFormat(){
@@ -187,24 +164,7 @@ public class ImportColonneDecorator
       this.disableEditLabel = d;
    }
 
-   public String getLabelForChampEntite(final ChampEntite champ){
-      final StringBuffer iProperty = new StringBuffer();
-      iProperty.append("Champ.");
-      iProperty.append(champ.getEntite().getNom());
-      iProperty.append(".");
 
-      String champOk = "";
-      // si le nom du champ finit par "Id", on le retire
-      if(champ.getNom().endsWith("Id")){
-         champOk = champ.getNom().substring(0, champ.getNom().length() - 2);
-      }else{
-         champOk = champ.getNom();
-      }
-      iProperty.append(champOk);
-
-      // on ajoute la valeur du champ
-      return Labels.getLabel(iProperty.toString());
-   }
 
    /**
     * Decore une liste de ImportColonne.
