@@ -857,6 +857,7 @@ public class FicheImportTemplate extends AbstractFicheCombineController
          final ImportColonneDecorator icd = new ImportColonneDecorator(ic);
          importColonnesDecorator.add(icd);
          selectedChamp = null;
+         showCopyFieldsButton();
          getBinder().loadComponent(colonnesGridEdit);
          Clients.scrollIntoView(colonnesGridEdit);
       }
@@ -1378,9 +1379,9 @@ public class FicheImportTemplate extends AbstractFicheCombineController
       Clients.clearBusy();
    }
    public void showCopyFieldsButton(){
+      copyEmptyFields.setDisabled(false);
       if (!copyEmptyFields.isVisible()){
          copyEmptyFields.setVisible(true);
-         copyEmptyFields.setDisabled(false);
       }
    }
    public void switchToCreateModeSubderive(){
