@@ -41,9 +41,7 @@ import java.util.List;
 
 import org.zkoss.util.resource.Labels;
 
-import fr.aphp.tumorotek.model.io.export.ChampEntite;
 import fr.aphp.tumorotek.model.io.imports.ImportColonne;
-import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
 /**
  * Decorateur ImportColonne pour affichage ImportTemplate.
@@ -87,7 +85,7 @@ public class ImportColonneDecorator
    }
 
    public String getChamp(){
-    return ImportUtils.exctractChamp(colonne, visiteGatsbi);
+    return ImportUtils.extractChamp(colonne, visiteGatsbi);
    }
 
    public String getFormat(){

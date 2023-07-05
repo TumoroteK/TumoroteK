@@ -7,7 +7,7 @@ import org.zkoss.util.resource.*;
 
 public class ImportUtils
 {
-   public static String exctractChamp(ImportColonne colonne, boolean visiteGatsbi){
+   public static String extractChamp(ImportColonne colonne, boolean visiteGatsbi){
       String champ = "";
       if(colonne.getChamp() != null){
          if(colonne.getChamp().getChampEntite() != null){

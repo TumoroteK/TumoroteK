@@ -68,7 +68,7 @@ public class ImportColonneRowRenderer implements RowRenderer<ImportColonne>
       // nom colonne
       final Label colonneLabel = new Label(colonne.getNom());
       colonneLabel.setParent(row);
-      String champ = ImportUtils.exctractChamp(colonne, visiteGatsbi);
+      String champ = ImportUtils.extractChamp(colonne, visiteGatsbi);
       // Champ associé
       final Label champLabel = new Label(champ);
       champLabel.setParent(row);
