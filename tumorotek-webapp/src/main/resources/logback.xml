@@ -7,32 +7,33 @@
 <!-- For professional support please see                            -->
 <!--    http://www.qos.ch/shop/products/professionalSupport         -->
 <!--                                                                -->
+
 <configuration>
+    <!--    Sortie DailyRollingFile-->
     <appender name="DailyRollingFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <!--See also http://logback.qos.ch/manual/appenders.html#RollingFileAppender-->
-        <ack.MaxBackupIndex>5</ack.MaxBackupIndex>
         <File>${catalina.base}/logs/tumorotek_trace.log</File>
         <encoder>
-            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - [%X{username}] %msg%n</pattern>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%-5level] [%thread]  %logger{36} - [%X{username}] %msg%n</pattern>
         </encoder>
         <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
             <maxIndex>5</maxIndex>
-            <FileNamePattern>${catalina.base}/logs/tumorotek_trace.log.%i</FileNamePattern>
+            <FileNamePattern>${catalina.base}/logs/tumorotek_trace.log.%d{yyyy-MM-dd}.%i</FileNamePattern>
         </rollingPolicy>
         <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
             <MaxFileSize>500KB</MaxFileSize>
         </triggeringPolicy>
     </appender>
 
-    <appender name="LIQUIBASE" class="ch.qos.logback.core.ConsoleAppender">
-        <!-- encoders are assigned the type
-             ch.qos.logback.classic.encoder.PatternLayoutEncoder by default -->
+    <!--    Sortie Console-->
+    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
             <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - [%X{username}] %msg%n</pattern>
         </encoder>
     </appender>
 
-    <logger name="fr.aphp.tumorotek.manager" additivity="false" level="DEBUG">
+    <!--    logger personnalisées pour les différents packages-->
+    <logger name="fr.aphp.tumorotek.manager" additivity="false" level="ERROR">
         <appender-ref ref="DailyRollingFile"/>
     </logger>
 
@@ -40,23 +41,31 @@
         <appender-ref ref="DailyRollingFile"/>
     </logger>
 
-    <logger name="fr.aphp.tumorotek.webapp" additivity="false" level="DEBUG">
+    <logger name="fr.aphp.tumorotek.webapp" additivity="false" level="ERROR">
         <appender-ref ref="DailyRollingFile"/>
     </logger>
 
-    <logger name="fr.aphp.tumorotek.action" additivity="false" level="DEBUG">
+    <logger name="fr.aphp.tumorotek.action" additivity="false" level="ERROR">
         <appender-ref ref="DailyRollingFile"/>
     </logger>
 
-    <logger name="liquibase" level="DEBUG">
-        <appender-ref ref="LIQUIBASE" />
+    <logger name="fr.aphp.tumorotek.action.prelevement" additivity="false" level="ERROR">
+        <appender-ref ref="DailyRollingFile"/>
     </logger>
-    
+
+    <!--     logger pour le package "liquibase"-->
+    <logger name="liquibase" level="ERROR">
+        <appender-ref ref="DailyRollingFile"/>
+    </logger>
+
     <logger name="org.apache.camel" additivity="false" level="ERROR">
         <appender-ref ref="DailyRollingFile"/>
     </logger>
-   
+
+    <logger name="com.mysql.cj.jdbc" level="debug"/>
+
     <root level="ERROR">
         <appender-ref ref="DailyRollingFile"/>
+        <appender-ref ref="console"/>
     </root>
 </configuration>
