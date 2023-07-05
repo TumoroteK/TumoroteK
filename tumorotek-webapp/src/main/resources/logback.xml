@@ -62,7 +62,33 @@
         <appender-ref ref="DailyRollingFile"/>
     </logger>
 
-    <logger name="com.mysql.cj.jdbc" level="debug"/>
+    <logger name="com.mysql.cj.jdbc" level="ERROR"/>
+
+                            <!--    interfacage-->
+
+
+
+    <logger name="fr.aphp.tumorotek.interfacage" level="ERROR">
+        <appender-ref ref="DailyRollingFile"/>
+    </logger>
+
+    <logger name="fr.aphp.tumorotek.interfacage.sip" level="ERROR">
+        <appender-ref ref="DailyRollingFile"/>
+    </logger>
+
+    <logger name="fr.aphp.tumorotek.interfacage.sgl" level="ERROR">
+        <appender-ref ref="DailyRollingFile"/>
+    </logger>
+
+    <logger name="fr.aphp.tumorotek.interfacage.ack" level="ERROR">
+        <appender-ref ref="DailyRollingFile"/>
+    </logger>
+
+    <logger name="fr.aphp.tumorotek.interfacage.inclusion" level="ERROR">
+        <appender-ref ref="DailyRollingFile"/>
+    </logger>
+
+
 
     <root level="ERROR">
         <appender-ref ref="DailyRollingFile"/>
