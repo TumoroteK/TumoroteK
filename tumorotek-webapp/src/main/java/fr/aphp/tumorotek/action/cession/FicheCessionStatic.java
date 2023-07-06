@@ -189,7 +189,6 @@ public class FicheCessionStatic extends AbstractFicheStaticController
 	@Override
 	public void doAfterCompose(final Component comp) throws Exception{
 		super.doAfterCompose(comp);
-
 		setDeletionMessage("message.deletion.cession");
 		setFantomable(true);
 		setCascadable(false);
@@ -258,7 +257,9 @@ public class FicheCessionStatic extends AbstractFicheStaticController
 		printCessionPlan.setDisabled(cession.getCessionStatut() == null || cession.getCessionStatut().getStatut().equals("VALIDEE")
 				|| (getEchantillonsCedes().isEmpty() && getDerivesCedes().isEmpty()));
 
-		// since 2.2.1-IRELEC automated storage si admin PF ou (ou avec des droits de Consultation sur le stockage et en modification sur les échantillons (TK-339)) 
+		// gestion du déplacement
+		move.setDisabled(cession.getCessionStatut() == null || !cession.getCessionStatut().getStatut().equals("EN ATTENTE"));
+		// since 2.2.1-IRELEC automated storage si admin PF ou (ou avec des droits de Consultation sur le stockage et en modification sur les échantillons (TK-339))
 		//et cession en attente 
 		storageRobotItem.setVisible(storageRobotItemVisible() 
 				&& getObject() != null && getObject().getCessionStatut() != null 
@@ -295,7 +296,6 @@ public class FicheCessionStatic extends AbstractFicheStaticController
 	private void initAssociations(){
 		echantillonsCedes.clear();
 		derivesCedes.clear();
-
 		// @since 2.1
 		// reset checks on change objects
 		checkedEchantillonIds.clear();
@@ -319,13 +319,12 @@ public class FicheCessionStatic extends AbstractFicheStaticController
 			_needsTotalSizeUpdateP = true;
 			_startPageNumberP = 0;
 			refreshModelP(_startPageNumberP);
-			if (cession != null && cession.getCessionStatut().getStatut().equals("EN ATTENTE")){
-				move.setVisible(true);
-			}
 			edit.setVisible(true);
 			delete.setVisible(true);
 		}
 	}
+
+
 
 	@Override
 	public void prepareDeleteObject(){
