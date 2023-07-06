@@ -1380,9 +1380,7 @@ public class FicheImportTemplate extends AbstractFicheCombineController
    }
    public void showCopyFieldsButton(){
       copyEmptyFields.setDisabled(false);
-      if (!copyEmptyFields.isVisible()){
-         copyEmptyFields.setVisible(true);
-      }
+      copyEmptyFields.setVisible(true);
    }
    public void switchToCreateModeSubderive(){
 
