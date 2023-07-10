@@ -102,7 +102,7 @@ public final class TumorotekProperties
          res = pph.replacePlaceholders(value, TUMOROTEK_PROPERTIES);
       }
       else {
-         log.error("la clé : " + key + "n'a pas été trouvée dans tumorotek.properties - renvoie null");
+         log.error("la clé : " + key + " n'a pas été trouvée dans tumorotek.properties - renvoie null");
       }
 
       return res;
