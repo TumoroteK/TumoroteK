@@ -7,7 +7,7 @@
 		<preConditions onFail="MARK_RAN">
 			<not>
 				<columnExists tableName="CHAMP_ENTITE"
-					columnName="LABEL" />
+					columnName="GROUPE_CODE" />
 			</not>
 		</preConditions>
 		<addColumn tableName="CHAMP_ENTITE">

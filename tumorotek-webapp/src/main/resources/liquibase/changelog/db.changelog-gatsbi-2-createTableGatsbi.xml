@@ -225,10 +225,15 @@
 	</changeSet>
 	
 	<changeSet author="tkgatsbi" id="gatsbi-init-add-pk-table-8">
-    <addPrimaryKey
-        tableName="GATSBI_ETUDE_ETABLISSEMENT_PROMOTEUR"
-        columnNames="ETUDE_ID, ETABLISSEMENT_ID"
-        constraintName="PK_ETUDE_ETABLISSEMENT_PROMOTEUR" />
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<primaryKeyExists tableName="GATSBI_ETUDE_ETABLISSEMENT_PROMOTEUR" />
+			</not>
+		</preConditions>			
+	    <addPrimaryKey
+	        tableName="GATSBI_ETUDE_ETABLISSEMENT_PROMOTEUR"
+	        columnNames="ETUDE_ID, ETABLISSEMENT_ID"
+	        constraintName="PK_ETUDE_ETABLISSEMENT_PROMOTEUR" />
 	</changeSet>
 	
 	<changeSet author="tkgatsbi" id="gatsbi-init-creation-table-9">
