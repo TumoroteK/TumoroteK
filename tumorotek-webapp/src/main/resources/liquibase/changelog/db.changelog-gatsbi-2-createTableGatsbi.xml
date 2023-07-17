@@ -1,0 +1,798 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- création des tables nécessaires pour Gatsbi -->
+<databaseChangeLog
+	xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
+		
+	<!-- création des tables liées de référence -->
+	<changeSet author="tkgatsbi" id="gatsbi-init-creation-table-1">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<tableExists tableName="GATSBI_COLLABORATEUR_TYPE" />
+			</not>
+		</preConditions>
+		<createTable tableName="GATSBI_COLLABORATEUR_TYPE"
+			remarks="Cette table contient uniquement un code fonctionnel. Les libellés internationalisés sont gérés côté Java"
+		>
+			<column autoIncrement="true" name="COLLABORATEUR_TYPE_ID"
+				type="INT">
+				<constraints nullable="false" primaryKey="true" />
+			</column>
+			<column name="CODE" type="VARCHAR(25)">
+				<constraints nullable="false" />
+			</column>
+			<column name="TYPE_FAMILLE" type="VARCHAR(25)">
+				<constraints nullable="false" />
+			</column>
+		</createTable>
+		<modifySql dbms="mysql">
+   			<append value="ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4"/>
+ 		</modifySql>
+	</changeSet>	
+	 <changeSet author="tkgatsbi" id="gatsbi-init-creation-table-2">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<tableExists tableName="GATSBI_FICHIER_TYPE" />
+			</not>
+		</preConditions>
+		<createTable tableName="GATSBI_FICHIER_TYPE"
+			remarks="Cette table contient uniquement un code fonctionnel. Les libellés internationalisés sont gérés côté Java"
+		>
+			<column autoIncrement="true" name="FICHIER_TYPE_ID" type="INT">
+				<constraints nullable="false" primaryKey="true" />
+			</column>
+			<column name="CODE" type="VARCHAR(25)">
+				<constraints nullable="false" />
+			</column>
+		</createTable>
+		<modifySql dbms="mysql">
+   			<append value="ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4"/>
+ 		</modifySql>		
+	</changeSet>
+	<changeSet author="tkgatsbi" id="gatsbi-init-creation-table-3">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<tableExists tableName="GATSBI_PROMOTION_TYPE" />
+			</not>
+		</preConditions>
+		<createTable tableName="GATSBI_PROMOTION_TYPE"
+			remarks="Cette table contient uniquement un code fonctionnel. Les libellés internationalisés sont gérés côté Java"
+		>
+			<column autoIncrement="true" name="PROMOTION_TYPE_ID"
+				type="INT">
+				<constraints nullable="false" primaryKey="true" />
+			</column>
+			<column name="CODE" type="VARCHAR(25)">
+				<constraints nullable="false" />
+			</column>
+		</createTable>
+		<modifySql dbms="mysql">
+   			<append value="ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4"/>
+ 		</modifySql>		
+	</changeSet>	
+	<changeSet author="tkgatsbi" id="gatsbi-init-creation-table-5">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<tableExists tableName="GATSBI_INTERVALLE_UNITE" />
+			</not>
+		</preConditions>
+		<createTable tableName="GATSBI_INTERVALLE_UNITE">
+			<column autoIncrement="true" name="INTERVALLE_UNITE_ID"
+				type="INT">
+				<constraints nullable="false" primaryKey="true" />
+			</column>
+			<column name="CODE" type="VARCHAR(25)">
+				<constraints nullable="false" />
+			</column>
+		</createTable>
+		<modifySql dbms="mysql">
+   			<append value="ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4"/>
+ 		</modifySql>		
+	</changeSet>
+	
+	<!-- création des tables liées aux études -->
+	<changeSet author="tkgatsbi" id="gatsbi-init-creation-table-6">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<tableExists tableName="GATSBI_ETUDE" />
+			</not>
+		</preConditions>
+		<createTable tableName="GATSBI_ETUDE">
+			<column autoIncrement="true" name="ETUDE_ID" type="INT">
+				<constraints nullable="false" primaryKey="true" />
+			</column>
+			<column name="PLATEFORME_ID" type="INT">
+				<constraints nullable="false" 
+					foreignKeyName="FK_ETUDE_PLATEFORME_ID" 
+						referencedTableName="PLATEFORME" referencedColumnNames="PLATEFORME_ID" />
+			</column>
+			<column name="TITRE" type="VARCHAR(100)">
+				<constraints nullable="false" />
+			</column>
+			<column name="ACRONYME" type="VARCHAR(10)">
+				<constraints nullable="false" />
+			</column>
+			<column name="PROMOTION_TYPE_ID" type="INT">
+				<constraints foreignKeyName="FK_ETUDE_PROMOTION_TYPE_ID" 
+					referencedTableName="GATSBI_PROMOTION_TYPE" referencedColumnNames="PROMOTION_TYPE_ID" />
+			</column>
+			<column name="PROTOCOLE_TYPE_ID" type="INT">
+				<constraints foreignKeyName="FK_ETUDE_PROTOCOLE_TYPE_ID" 
+					referencedTableName="PROTOCOLE_TYPE" referencedColumnNames="PROTOCOLE_TYPE_ID" />
+			</column>
+			<column name="DATE_DEBUT" type="date">
+				<constraints nullable="false" />
+			</column>
+			<column name="DATE_FIN" type="date">
+				<constraints nullable="false" />
+			</column>
+			<column name="DATE_ARCHIVAGE" type="datetime" />
+			<column defaultValueBoolean="false" name="DONNEES_CLINIQUES"
+				type="BIT(1)" />
+			<column name="COMPLEMENTS" type="VARCHAR(250)" />
+			<column name="AUTRES" type="VARCHAR(250)" />
+			<column name="NB_PATIENTS" type="INT">
+				<constraints nullable="false" />
+			</column>
+			<column defaultValueBoolean="false" name="ARCHIVE"
+				type="BIT(1)">
+				<constraints nullable="false" />
+			</column>
+			<column name="ORGANISME_PROMOTEUR_ID" type="INT">
+				<constraints 
+					foreignKeyName="FK_ETUDE_ORGANISME_PROMOTEUR_ID" 
+						referencedTableName="ORGANISME" referencedColumnNames="ORGANISME_ID" />
+			</column>			
+			<column name="SEUIL_NON_CONF_ARRIVEE_PRELEV" type="FLOAT" />
+			<column name="SEUIL_NON_CONF_TRAITEMENT_ECHAN" type="FLOAT" />
+			<column name="SEUIL_NON_CONF_CESSION_ECHAN" type="FLOAT" />
+		</createTable>
+		<modifySql dbms="mysql">
+   			<append value="ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4"/>
+ 		</modifySql>
+					
+	</changeSet>	
+	
+	<!-- création de la FK de BANQUE sur GATSBI_ETUDE - l'ajout du champ ETUDE_ID dans BANQUE est fait dans tk-gatsbi-ddl-ini-1.0.xml -->
+	<changeSet author="tkgatsbi"
+		id="gatsbi-init-adddFk-banque-etude">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<foreignKeyConstraintExists
+					foreignKeyName="FK_BANQUE_ETUDE_ID" />
+			</not>
+		</preConditions>
+		<addForeignKeyConstraint constraintName="FK_BANQUE_ETUDE_ID" 
+			baseTableName="BANQUE" baseColumnNames="ETUDE_ID"
+			referencedTableName="GATSBI_ETUDE" referencedColumnNames="ETUDE_ID" />	
+	</changeSet>
+	
+	<changeSet author="tkgatsbi" id="gatsbi-init-creation-table-7">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<tableExists tableName="GATSBI_ETUDE_COLLABORATEUR" />
+			</not>
+		</preConditions>
+		<createTable tableName="GATSBI_ETUDE_COLLABORATEUR">
+			<column autoIncrement="true" name="ETUDE_COLLABORATEUR_ID" type="INT">
+				<constraints nullable="false" primaryKey="true" />
+			</column>
+			<column name="ETUDE_ID" type="INT">
+				<constraints nullable="false" 
+					foreignKeyName="FK_ETUDE_COLLABORATEUR_ETUDE_ID" 
+						referencedTableName="GATSBI_ETUDE" referencedColumnNames="ETUDE_ID" />
+			</column>
+			<column name="COLLABORATEUR_ID" type="INT">
+				<constraints nullable="false" 
+					foreignKeyName="FK_ETUDE_COLLABORATEUR_COLLABORATEUR_ID" 
+						referencedTableName="COLLABORATEUR" referencedColumnNames="COLLABORATEUR_ID" />				
+			</column>
+			<column name="COLLABORATEUR_TYPE_ID" type="INT">
+				<constraints nullable="false" 
+					foreignKeyName="FK_ETUDE_COLLABORATEUR_COLLABORATEUR_TYPE_ID" 
+						referencedTableName="GATSBI_COLLABORATEUR_TYPE" referencedColumnNames="COLLABORATEUR_TYPE_ID" />
+			</column>
+		</createTable>
+		<modifySql dbms="mysql">
+   			<append value="ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4"/>
+ 		</modifySql>
+	</changeSet>	
+	
+	<changeSet author="tkgatsbi" id="gatsbi-init-creation-table-8">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<tableExists
+					tableName="GATSBI_ETUDE_ETABLISSEMENT_PROMOTEUR" />
+			</not>
+		</preConditions>
+		<createTable
+			tableName="GATSBI_ETUDE_ETABLISSEMENT_PROMOTEUR">
+			<column name="ETUDE_ID" type="INT">
+				<constraints nullable="false" 
+					foreignKeyName="FK_ETUDE_ETABLISSEMENT_PROMOTEUR_ETUDE_ID" 
+						referencedTableName="GATSBI_ETUDE" referencedColumnNames="ETUDE_ID" />
+			</column>
+			<column name="ETABLISSEMENT_ID" type="INT">
+				<constraints nullable="false" 
+					foreignKeyName="FK_ETUDE_ETABLISSEMENT_PROMOTEUR_ETABLISSEMENT_ID" 
+						referencedTableName="ETABLISSEMENT" referencedColumnNames="ETABLISSEMENT_ID" />
+			</column>
+		</createTable>
+		<modifySql dbms="mysql">
+   			<append value="ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4"/>
+ 		</modifySql>
+	</changeSet>
+	
+	<changeSet author="tkgatsbi" id="gatsbi-init-add-pk-table-8">
+    <addPrimaryKey
+        tableName="GATSBI_ETUDE_ETABLISSEMENT_PROMOTEUR"
+        columnNames="ETUDE_ID, ETABLISSEMENT_ID"
+        constraintName="PK_ETUDE_ETABLISSEMENT_PROMOTEUR" />
+	</changeSet>
+	
+	<changeSet author="tkgatsbi" id="gatsbi-init-creation-table-9">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<tableExists tableName="GATSBI_ETUDE_FICHIER" />
+			</not>
+		</preConditions>
+		<createTable tableName="GATSBI_ETUDE_FICHIER">
+			<column autoIncrement="true" name="ETUDE_FICHIER_ID" type="INT">
+				<constraints nullable="false" primaryKey="true" />
+			</column>
+			<column name="FICHIER_TYPE_ID" type="INT">
+				<constraints nullable="false" 
+					foreignKeyName="FK_ETUDE_FICHIER_FICHIER_TYPE_ID" 
+						referencedTableName="GATSBI_FICHIER_TYPE" referencedColumnNames="FICHIER_TYPE_ID" />
+			</column>
+			<column name="ETUDE_ID" type="INT">
+				<constraints nullable="false" 
+					foreignKeyName="FK_ETUDE_FICHIER_ETUDE_ID" 
+						referencedTableName="GATSBI_ETUDE" referencedColumnNames="ETUDE_ID" />
+			</column>
+			<column name="NOM" type="VARCHAR(250)">
+				<constraints nullable="false" />
+			</column>
+			<column name="PATH" type="VARCHAR(250)">
+				<constraints nullable="false" />
+			</column>
+			<column name="MIMETYPE" type="VARCHAR(100)">
+				<constraints nullable="false" />
+			</column>
+		</createTable>
+		<modifySql dbms="mysql">
+   			<append value="ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4"/>
+ 		</modifySql>		
+	</changeSet>
+
+	<changeSet author="tkgatsbi" id="gatsbi-init-creation-table-10">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<tableExists tableName="GATSBI_ETUDE_MALADIE" />
+			</not>
+		</preConditions>
+		<createTable tableName="GATSBI_ETUDE_MALADIE">
+			<column autoIncrement="true" name="ETUDE_MALADIE_ID" type="INT">
+				<constraints nullable="false" primaryKey="true" />
+			</column>
+			<column name="ETUDE_ID" type="INT">
+				<constraints nullable="false" 
+					foreignKeyName="FK_ETUDE_MALADIE_ETUDE_ID" 
+						referencedTableName="GATSBI_ETUDE" referencedColumnNames="ETUDE_ID" />				
+			</column>
+			<column name="CODE" type="VARCHAR(50)" />
+			<column name="LIBELLE" type="VARCHAR(250)">
+				<constraints nullable="false" />
+			</column>
+		</createTable>
+		<modifySql dbms="mysql">
+   			<append value="ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4"/>
+ 		</modifySql>		
+	</changeSet>
+
+	<changeSet author="tkgatsbi" id="gatsbi-init-creation-table-11">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<tableExists tableName="GATSBI_ETUDE_INVESTIGATEUR_SERVICE" />
+			</not>
+		</preConditions>
+		<createTable tableName="GATSBI_ETUDE_INVESTIGATEUR_SERVICE">
+			<column autoIncrement="true" name="ETUDE_INVESTIGATEUR_SERVICE_ID"
+				type="INT">
+				<constraints nullable="false" primaryKey="true" />
+			</column>
+			<column name="ETUDE_ID" type="INT">
+				<constraints nullable="false" 
+					foreignKeyName="FK_ETUDE_INVESTIGATEUR_SERVICE_ETUDE_ID" 
+						referencedTableName="GATSBI_ETUDE" referencedColumnNames="ETUDE_ID" />
+			</column>
+			<column name="NUMERO" type="VARCHAR(25)" />
+			<column name="SERVICE_ID" type="INT">
+				<constraints nullable="false" 
+					foreignKeyName="FK_ETUDE_INVESTIGATEUR_SERVICE_SERVICE_ID" 
+						referencedTableName="SERVICE" referencedColumnNames="SERVICE_ID" />
+			</column>
+		</createTable>
+		<modifySql dbms="mysql">
+   			<append value="ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4"/>
+ 		</modifySql>		
+	</changeSet>
+	<changeSet author="tkgatsbi" id="gatsbi-init-creation-table-21">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<tableExists tableName="GATSBI_ETUDE_INVESTIGATEUR_COLLABORATEUR" />
+			</not>
+		</preConditions>
+		<createTable tableName="GATSBI_ETUDE_INVESTIGATEUR_COLLABORATEUR">
+			<column autoIncrement="true" name="ETUDE_INVESTIGATEUR_COLLABORATEUR_ID" type="INT">
+				<constraints nullable="false" primaryKey="true" />
+			</column>
+			<column name="ETUDE_INVESTIGATEUR_SERVICE_ID" type="INT">
+				<constraints nullable="false" 
+					foreignKeyName="FK_ETUDE_INVESTIGATEUR_COLLABORATEUR_INVEST_SERVICE_ID" 
+						referencedTableName="GATSBI_ETUDE_INVESTIGATEUR_SERVICE" referencedColumnNames="ETUDE_INVESTIGATEUR_SERVICE_ID" />
+			</column>
+			<column name="COLLABORATEUR_ID" type="INT">
+				<constraints nullable="false" 
+					foreignKeyName="FK_ETUDE_INVESTIGATEUR_COLLABORATEUR_COLLABORATEUR_ID" 
+						referencedTableName="COLLABORATEUR" referencedColumnNames="COLLABORATEUR_ID" />				
+			</column>
+			<column name="COLLABORATEUR_TYPE_ID" type="INT">
+				<constraints nullable="false" 
+					foreignKeyName="FK_ETUDE_INVESTIGATEUR_COLLABORATEUR_COLLABORATEUR_TYPE_ID" 
+						referencedTableName="GATSBI_COLLABORATEUR_TYPE" referencedColumnNames="COLLABORATEUR_TYPE_ID" />
+			</column>
+		</createTable>
+		<modifySql dbms="mysql">
+   			<append value="ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4"/>
+ 		</modifySql>
+	</changeSet>	
+	
+	<!-- création des tables liées aux contexte -->
+	
+	<changeSet author="tkgatsbi" id="gatsbi-init-creation-table-12">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<tableExists tableName="GATSBI_CONTEXTE" />
+			</not>
+		</preConditions>
+		<createTable tableName="GATSBI_CONTEXTE">
+			<column autoIncrement="true" name="CONTEXTE_ID" type="INT">
+				<constraints nullable="false" primaryKey="true" />
+			</column>
+			<column name="PLATEFORME_ID" type="INT">
+				<constraints nullable="false" 
+					foreignKeyName="FK_CONTEXTE_PLATEFORME_ID" 
+						referencedTableName="PLATEFORME" referencedColumnNames="PLATEFORME_ID" />				
+			</column>
+			<column name="NOM" type="VARCHAR(100)">
+				<constraints nullable="false" />
+			</column>
+			<column name="TYPE" type="VARCHAR(100)">
+				<constraints nullable="false" />
+			</column>
+			<column defaultValueBoolean="false" name="ARCHIVE"
+				type="BIT(1)">
+				<constraints nullable="false" />
+			</column>
+			<column name="DATE_ARCHIVAGE" type="datetime" />
+		</createTable>
+		<modifySql dbms="mysql">
+   			<append value="ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4"/>
+ 		</modifySql>
+	</changeSet>
+	
+	<changeSet author="tkgatsbi" id="gatsbi-init-creation-table-13">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<tableExists tableName="GATSBI_ETUDE_CONTEXTE" />
+			</not>
+		</preConditions>
+		<createTable tableName="GATSBI_ETUDE_CONTEXTE">
+			<column name="CONTEXTE_ID" type="INT">
+				<constraints nullable="false" 
+					primaryKey="true" 
+					foreignKeyName="FK_ETUDE_CONTEXTE_CONTEXTE_ID" 
+						referencedTableName="GATSBI_CONTEXTE" referencedColumnNames="CONTEXTE_ID" />
+			</column>
+			<column name="ETUDE_ID" type="INT">
+				<constraints nullable="false" 
+					primaryKey="true" 
+					foreignKeyName="FK_ETUDE_CONTEXTE_ETUDE_ID" 
+						referencedTableName="GATSBI_ETUDE" referencedColumnNames="ETUDE_ID" />
+			</column>
+		</createTable>
+		<modifySql dbms="mysql">
+   			<append value="ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4"/>
+ 		</modifySql>
+	</changeSet>	
+
+	<changeSet author="tkgatsbi" id="gatsbi-init-creation-table-14">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<tableExists tableName="GATSBI_CONTEXTE_CHAMP_ENTITE" />
+			</not>
+		</preConditions>
+		<createTable tableName="GATSBI_CONTEXTE_CHAMP_ENTITE">
+			<column autoIncrement="true" name="CONTEXTE_CHAMP_ENTITE_ID"
+				type="INT">
+				<constraints nullable="false" primaryKey="true" />
+			</column>
+			<column name="CONTEXTE_ID" type="INT">
+				<constraints nullable="false" 
+					foreignKeyName="FK_CONTEXTE_CHAMP_ENTITE_CONTEXTE_ID" 
+						referencedTableName="GATSBI_CONTEXTE" referencedColumnNames="CONTEXTE_ID" />
+			</column>
+			<column name="CHAMP_ENTITE_ID" type="INT">
+				<constraints nullable="false" 
+					foreignKeyName="FK_CONTEXTE_CHAMP_ENTITE_CHAMP_ENTITE_ID" 
+						referencedTableName="CHAMP_ENTITE" referencedColumnNames="CHAMP_ENTITE_ID" />
+			</column>
+			<column defaultValueBoolean="true" name="VISIBLE"
+				type="BIT(1)">
+				<constraints nullable="false" />
+			</column>
+			<column defaultValueBoolean="false" name="OBLIGATOIRE"
+				type="BIT(1)">
+				<constraints nullable="false" />
+			</column>
+			<column name="DATE_FORMAT" type="VARCHAR(20)" />
+			<column defaultValueBoolean="false" name="IN_TABLEAU"
+				type="BIT(1)">
+				<constraints nullable="false" />
+			</column>
+			<column name="ORDRE_TABLEAU" type="INT">
+				<constraints nullable="true" />
+			</column>
+		</createTable>
+		<modifySql dbms="mysql">
+   			<append value="ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4"/>
+ 		</modifySql>
+	</changeSet>
+	
+	<changeSet author="tkgatsbi" id="gatsbi-init-creation-table-15">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<tableExists tableName="GATSBI_CONTEXTE_THESAURUS_ITEM" />
+			</not>
+		</preConditions>
+		<createTable tableName="GATSBI_CONTEXTE_THESAURUS_ITEM">
+			<column autoIncrement="true" name="CONTEXTE_THESAURUS_ITEM_ID"
+				type="INT">
+				<constraints nullable="false" primaryKey="true" />
+			</column>
+			<!--  CHT - A REVOIR - devrait être complété par un champ contenant le nom de la table d'où est tiré l'id -->
+			<column name="THESAURUS_ID" type="INT">
+				<constraints nullable="false" />
+			</column>
+			<column name="THESAURUS_VALUE" type="VARCHAR(100)">
+				<constraints nullable="false" />
+			</column>
+			<!--  CHT - A REVOIR - c'est l'id de la table GATSBI_CHAMP_ENTITE_ID qui devrait être utilisé => impact sur la FK composite définie ci-dessous-->
+			<column name="CONTEXTE_ID" type="INT">
+				<constraints nullable="false" />
+			</column>
+			<column name="CHAMP_ENTITE_ID" type="INT">
+				<constraints nullable="false" />
+			</column>
+			<column name="POSITION" type="INT">
+				<constraints nullable="false" />
+			</column>
+		</createTable>
+		<modifySql dbms="mysql">
+   			<append value="ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4"/>
+ 		</modifySql>		
+	</changeSet>	
+
+	<!-- CHT - A REVOIR index à supprimer si utilisation d'une clé primaire (composite ou id) - ce qui devrait être fait /!\ si utilisation de l'id, il faut garder l'index en le passant en UNIQUE pour garantir l'unicité sur les 2 colonnes -->
+	<changeSet author="tkgatsbi"
+		id="gatsbi-init-addIndex-contexte-thesaurus-item-contexte-champ-entite">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<indexExists
+					indexName="GATSBI_CONTEXTE_CHAMP_ENTITE_KEY_COMPOSITE" />
+			</not>
+		</preConditions>
+		<createIndex
+			indexName="GATSBI_CONTEXTE_CHAMP_ENTITE_KEY_COMPOSITE"
+			tableName="GATSBI_CONTEXTE_CHAMP_ENTITE">
+			<column name="CONTEXTE_ID" />
+			<column name="CHAMP_ENTITE_ID" />
+		</createIndex>	
+	</changeSet>
+	<changeSet author="tkgatsbi"
+		id="gatsbi-init-addFk-contexte-thesaurus-item-contexte-champ-entite">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<foreignKeyConstraintExists
+					foreignKeyName="FK_CONTEXTE_THESAURUS_ITEM_CONTEXTE_CHAMP_ENTITE_ID" />
+			</not>
+		</preConditions>
+		<addForeignKeyConstraint constraintName="FK_CONTEXTE_THESAURUS_ITEM_CONTEXTE_CHAMP_ENTITE_ID" 
+			baseTableName="GATSBI_CONTEXTE_THESAURUS_ITEM" baseColumnNames="CONTEXTE_ID, CHAMP_ENTITE_ID"
+			referencedTableName="GATSBI_CONTEXTE_CHAMP_ENTITE" referencedColumnNames="CONTEXTE_ID, CHAMP_ENTITE_ID" />	
+	</changeSet>
+		
+	<!-- création des tables liées aux paramétrages -->	
+	<changeSet author="tkgatsbi" id="gatsbi-init-creation-table-16">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<tableExists tableName="GATSBI_CONTEXTE_PARAMETRAGE" />
+			</not>
+		</preConditions>
+		<createTable tableName="GATSBI_CONTEXTE_PARAMETRAGE">
+			<column autoIncrement="true" name="CONTEXTE_PARAMETRAGE_ID" type="INT">
+				<constraints nullable="false" primaryKey="true" /> 
+			</column>
+			<column name="NOM" type="VARCHAR(100)">
+				<constraints nullable="false" />
+			</column>
+			<column defaultValueBoolean="false" name="ARCHIVE"
+				type="BIT(1)">
+				<constraints nullable="false" />
+			</column>
+			<column name="DATE_ARCHIVAGE" type="datetime" />
+			<column name="CONTEXTE_ID" type="INT">
+				<constraints nullable="false" 
+					foreignKeyName="FK_PARAMETRAGE_CONTEXTE_ID" 
+						referencedTableName="GATSBI_CONTEXTE" referencedColumnNames="CONTEXTE_ID" />
+			</column>
+		</createTable>
+		<modifySql dbms="mysql">
+   			<append value="ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4"/>
+ 		</modifySql>
+	</changeSet>
+
+	<changeSet author="tkgatsbi" id="gatsbi-init-creation-table-17">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<tableExists tableName="GATSBI_CONTEXTE_PARAMETRAGE_ITEM" />
+			</not>
+		</preConditions>
+		<createTable tableName="GATSBI_CONTEXTE_PARAMETRAGE_ITEM">
+			<column autoIncrement="true" name="CONTEXTE_PARAMETRAGE_ITEM_ID"
+				type="INT">
+				<constraints nullable="false" primaryKey="true" />
+			</column>
+			<column name="CONTEXTE_CHAMP_ENTITE_ID" type="INT">
+				<constraints nullable="false" 
+					foreignKeyName="FK_PARAMETRAGE_ITEM_CONTEXTE_CHAMP_ENTITE_ID" 
+						referencedTableName="GATSBI_CONTEXTE_CHAMP_ENTITE" referencedColumnNames="CONTEXTE_CHAMP_ENTITE_ID" />
+			</column>
+			<column name="CONTEXTE_PARAMETRAGE_ID" type="INT">
+				<constraints nullable="false" 
+					foreignKeyName="FK_PARAMETRAGE_ITEM_CONTEXTE_PARAMETRAGE_ID" 
+						referencedTableName="GATSBI_CONTEXTE_PARAMETRAGE" referencedColumnNames="CONTEXTE_PARAMETRAGE_ID" />
+			</column>
+			<column name="DEFAULT_VALUE" type="VARCHAR(100)" />
+		</createTable>
+		<modifySql dbms="mysql">
+   			<append value="ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4"/>
+ 		</modifySql>		
+	</changeSet>
+
+	
+	<!-- création des tables liées aux schémas de visite -->
+		<changeSet author="tkgatsbi" id="gatsbi-init-creation-table-18">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<tableExists tableName="GATSBI_SCHEMA_VISITE" />
+			</not>
+		</preConditions>
+		<createTable tableName="GATSBI_SCHEMA_VISITE">
+			<column autoIncrement="true" name="SCHEMA_VISITE_ID"
+				type="INT">
+				<constraints nullable="false" primaryKey="true" />
+			</column>
+			<column name="NOM" type="VARCHAR(100)">
+				<constraints nullable="false" />
+			</column>
+			<column name="ETUDE_ID" type="INT">
+				<constraints nullable="false" 
+					foreignKeyName="FK_SCHEMA_VISITE_ETUDE_ID" 
+						referencedTableName="GATSBI_ETUDE" referencedColumnNames="ETUDE_ID" />
+			</column>
+			<column defaultValueBoolean="false" name="ARCHIVE"
+				type="BIT(1)">
+				<constraints nullable="false" />
+			</column>
+			<column name="DATE_ARCHIVAGE" type="datetime" />
+			<column name="NB_VISITE" type="INT">
+				<constraints nullable="false" />
+			</column>
+		</createTable>
+		<modifySql dbms="mysql">
+   			<append value="ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4"/>
+ 		</modifySql>		
+	</changeSet>
+
+	<changeSet author="tkgatsbi" id="gatsbi-init-creation-table-19">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<tableExists
+					tableName="GATSBI_VISITE" />
+			</not>
+		</preConditions>
+		<createTable tableName="GATSBI_VISITE">
+			<column autoIncrement="true"
+				name="VISITE_ID" type="INT">
+				<constraints nullable="false" primaryKey="true" />
+			</column>
+			<column name="SCHEMA_VISITE_ID" type="INT">
+				<constraints nullable="false" 
+					foreignKeyName="FK_VISITE_SCHEMA_VISITE_ID" 
+						referencedTableName="GATSBI_SCHEMA_VISITE" referencedColumnNames="SCHEMA_VISITE_ID" />
+			</column>
+			<column name="NOM" type="VARCHAR(250)">
+				<constraints nullable="false" />
+			</column>
+			<column name="ORDRE" type="INT">
+				<constraints nullable="false" />
+			</column>
+			<column name="INTERVALLE_DEPUIS_INCLUSION" type="INT">
+				<constraints nullable="false" />
+			</column>
+			<column name="INTERVALLE_UNITE_ID" type="INT">
+				<constraints nullable="false" 
+					foreignKeyName="FK_VISITE_INTERVALLE_UNITE_ID" 
+						referencedTableName="GATSBI_INTERVALLE_UNITE" referencedColumnNames="INTERVALLE_UNITE_ID" />
+			</column>
+		</createTable>
+		<modifySql dbms="mysql">
+   			<append value="ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4"/>
+ 		</modifySql>		
+	</changeSet>
+
+	<changeSet author="tkgatsbi" id="gatsbi-init-creation-table-20">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<tableExists
+					tableName="GATSBI_VISITE_PRELEVEMENT" />
+			</not>
+		</preConditions>
+		<createTable
+			tableName="GATSBI_VISITE_PRELEVEMENT">
+			<column autoIncrement="true"
+				name="VISITE_PRELEVEMENT_ID" type="INT">
+				<constraints nullable="false" primaryKey="true" />
+			</column>
+			<column name="VISITE_ID" type="INT">
+				<constraints nullable="false" 
+					foreignKeyName="FK_VISITE_PRELEVEMENT_VISITE_ID" 
+						referencedTableName="GATSBI_VISITE" referencedColumnNames="VISITE_ID" />
+			</column>
+			<column name="CONTEXTE_PARAMETRAGE_ID" type="INT">
+				<constraints nullable="false" 
+					foreignKeyName="FK_VISITE_PRELEVEMENT_CONTEXTE_PARAMETRAGE_ID" 
+						referencedTableName="GATSBI_CONTEXTE_PARAMETRAGE" referencedColumnNames="CONTEXTE_PARAMETRAGE_ID" />
+			</column>
+			<column name="NB_PRELEVEMENT_MIN" type="INT"></column>
+			<column name="NB_PRELEVEMENT_MAX" type="INT"></column>
+		</createTable>
+		<modifySql dbms="mysql">
+   			<append value="ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4"/>
+ 		</modifySql>		
+	</changeSet>
+	<changeSet author="tkgatsbi" id="gatsbi-init-ajout-vue-1">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<viewExists viewName="VGATSBI_BANQUE" />
+			</not>
+		</preConditions>
+		<createView
+            replaceIfExists="false"  
+            viewName="VGATSBI_BANQUE">SELECT * FROM BANQUE
+         </createView>
+	</changeSet>
+	<changeSet author="tkgatsbi" id="gatsbi-init-ajout-vue-2">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<viewExists viewName="VGATSBI_PLATEFORME" />
+			</not>
+		</preConditions>
+		<createView
+            replaceIfExists="false"  
+            viewName="VGATSBI_PLATEFORME">SELECT PLATEFORME_ID, NOM FROM PLATEFORME
+         </createView>
+	</changeSet>
+	<changeSet author="tkgatsbi" id="gatsbi-init-ajout-vue-3">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<viewExists viewName="VGATSBI_COLLABORATEUR" />
+			</not>
+		</preConditions>
+		<createView
+            replaceIfExists="false"  
+            viewName="VGATSBI_COLLABORATEUR">SELECT * FROM COLLABORATEUR
+         </createView>
+	</changeSet>
+	<changeSet author="tkgatsbi" id="gatsbi-init-ajout-vue-4">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<viewExists viewName="VGATSBI_COORDONNEE" />
+			</not>
+		</preConditions>
+		<createView
+            replaceIfExists="false"  
+            viewName="VGATSBI_COORDONNEE">SELECT * FROM COORDONNEE
+         </createView>
+	</changeSet>
+	<changeSet author="tkgatsbi" id="gatsbi-init-ajout-vue-5">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<viewExists viewName="VGATSBI_ETABLISSEMENT" />
+			</not>
+		</preConditions>
+		<createView
+            replaceIfExists="false"  
+            viewName="VGATSBI_ETABLISSEMENT">SELECT * FROM ETABLISSEMENT
+         </createView>
+	</changeSet>
+	<changeSet author="tkgatsbi" id="gatsbi-init-ajout-vue-6">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<viewExists viewName="VGATSBI_CATEGORIE" />
+			</not>
+		</preConditions>
+		<createView
+            replaceIfExists="false"  
+            viewName="VGATSBI_CATEGORIE">SELECT * FROM CATEGORIE
+         </createView>
+	</changeSet>
+	<changeSet author="tkgatsbi" id="gatsbi-init-ajout-vue-7">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<viewExists viewName="VGATSBI_PROTOCOLE_TYPE" />
+			</not>
+		</preConditions>
+		<createView
+            replaceIfExists="false"  
+            viewName="VGATSBI_PROTOCOLE_TYPE">SELECT * FROM PROTOCOLE_TYPE
+         </createView>
+	</changeSet>
+	<changeSet author="tkgatsbi" id="gatsbi-init-ajout-vue-8">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<viewExists viewName="VGATSBI_ENTITE" />
+			</not>
+		</preConditions>
+		<createView
+            replaceIfExists="false"  
+            viewName="VGATSBI_ENTITE">SELECT * FROM ENTITE
+         </createView>
+	</changeSet>
+	<changeSet author="tkgatsbi" id="gatsbi-init-ajout-vue-9">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<viewExists viewName="VGATSBI_DATA_TYPE" />
+			</not>
+		</preConditions>
+		<createView
+            replaceIfExists="false"  
+            viewName="VGATSBI_DATA_TYPE">SELECT * FROM DATA_TYPE
+         </createView>
+	</changeSet>
+	<changeSet author="tkgatsbi" id="gatsbi-init-ajout-vue-10">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<viewExists viewName="VGATSBI_CHAMP_ENTITE" />
+			</not>
+		</preConditions>
+		<createView
+            replaceIfExists="false"  
+            viewName="VGATSBI_CHAMP_ENTITE">SELECT * FROM CHAMP_ENTITE
+         </createView>
+	</changeSet>
+	<changeSet author="tkgatsbi" id="gatsbi-init-ajout-vue-11">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<viewExists viewName="VGATSBI_SERVICE" />
+			</not>
+		</preConditions>
+		<createView
+            replaceIfExists="false"  
+            viewName="VGATSBI_SERVICE">SELECT * FROM SERVICE
+         </createView>
+	</changeSet>
+</databaseChangeLog>

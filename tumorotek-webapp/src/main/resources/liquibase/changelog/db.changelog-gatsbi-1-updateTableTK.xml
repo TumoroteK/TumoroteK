@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog
+	xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
+	<changeSet author="tkgatsbi" id="addColumn-champEntite-1">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<columnExists tableName="CHAMP_ENTITE"
+					columnName="LABEL" />
+			</not>
+		</preConditions>
+		<addColumn tableName="CHAMP_ENTITE">
+			<column name="GROUPE_CODE" type="varchar(25)" />
+			<column name="ORDRE" type="INT" />
+			<column name="ORDRE_TABLEAU" type="INT" />
+			<column name="THESAURUS_TABLE_NOM" type="varchar(50)" />
+			<column name="THESAURUS_COLONNE_NOM" type="varchar(50)" />
+			<column name="THESAURUS_CLAUSE_WHERE" type="varchar(100)" />
+			<column defaultValueBoolean="false" name="PARAMETRABLE"
+				type="BIT(1)">
+				<constraints nullable="false" />
+			</column>
+			<column name="CHAMP_LIE_ID" type="INT" />
+			<column defaultValueBoolean="false" name="OBLIGATOIRE_TK"
+				type="BIT(1)">
+				<constraints nullable="false" />		
+			</column>			
+			<column defaultValueBoolean="false" name="OBLIGATOIRE_GATSBI"
+				type="BIT(1)">
+				<constraints nullable="false" />		
+			</column>		
+		</addColumn>
+	</changeSet>
+	<changeSet author="tkgatsbi" id="addRow-categorie-2">
+		<preConditions onFail="MARK_RAN">
+			<sqlCheck expectedResult="0">
+				SELECT COUNT(*) FROM CATEGORIE WHERE NOM='CRO';
+			</sqlCheck>
+		</preConditions>
+		<insert tableName="CATEGORIE">
+			<column name="NOM" value="CRO" />
+		</insert>
+	</changeSet>
+	<changeSet author="tkgatsbi" id="addColumn-banque-1">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<columnExists tableName="BANQUE" columnName="ETUDE_ID" />
+			</not>
+		</preConditions>
+		<addColumn tableName="BANQUE">
+			<column name="ETUDE_ID" type="INT" >
+				<constraints nullable="true"/>
+			</column>
+		</addColumn>
+		<!-- la foreign key FK_BANQUE_ETUDE_ID est posée dans db.changelog-gatsbi-2-createTableGatsbi.xml après la création de la table GATSBI_ETUDE -->
+	</changeSet>
+</databaseChangeLog>
