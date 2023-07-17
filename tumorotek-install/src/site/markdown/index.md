@@ -1,11 +1,28 @@
 #### Notes de version
 
-##### Version 2.3.0.3-SNAPSHOT - Publiée le 09/06/2023
-- Adaptations pour le module Gatsbi
+##### Version 2.3.0.3 - Publiée le 17/07/2023
+###### Corrections dans TK pour un contexte Gatsbi
+- YouTrack [TG-163](https://tumorotek.myjetbrains.com/youtrack/issue/TG-163) : [TK] - Prélèvement & Echantillon : filtre sur les thesaurus d'un champ lié non pris en compte
+- YouTrack [TG-165](https://tumorotek.myjetbrains.com/youtrack/issue/TG-165) : [TK] - Permettre de définir une collection Gatsbi sans le niveau maladie
+- YouTrack [TG-173](https://tumorotek.myjetbrains.com/youtrack/issue/TG-173) : [TK & Gatsbi] - Contexte Prélèvement par défaut : le champ statut juridique n'est pas obligatoire
+- YouTrack [TG-174](https://tumorotek.myjetbrains.com/youtrack/issue/TG-174) : [TK & Gatsbi] - Création Echantillon : le champ quantité défini comme obligatoire dans Gatsbi n'a pas l'astérisque rouge dans TK
+- YouTrack [TG-175](https://tumorotek.myjetbrains.com/youtrack/issue/TG-175) : [TK] - Création d'un Prélèvement / Echantillon : trier les paramétrages par ordre alphabétique dans la popup de sélection
+
+
+###### Corrections dans le module Gatsbi
+- YouTrack [TG-152](https://tumorotek.myjetbrains.com/youtrack/issue/TG-152) : [Gatsbi] - Schéma de visite : en mode édition, le champ étude n'est plus affiché en gris
+- YouTrack [TG-159](https://tumorotek.myjetbrains.com/youtrack/issue/TG-159) : [Gatsbi] - Echantillon : Supprimer le lien entre Date de stockage et délai de congélation
+- YouTrack [TG-160](https://tumorotek.myjetbrains.com/youtrack/issue/TG-160) : [Gatsbi] - Contexte Echantillon : erreur de traduction : quantity au lieu de Quality
+- YouTrack [TG-161](https://tumorotek.myjetbrains.com/youtrack/issue/TG-161) : [Gatsbi] - Contexte et Paramétrage : les noms des champs de TK sont en anglais ...
+- YouTrack [TG-164](https://tumorotek.myjetbrains.com/youtrack/issue/TG-164) : [Gatsbi] - Contexte : non prise en compte en base de données d'une mise à jour de filtre de thesaurus
+
+###### Corrections hors Gatsbi
+- intégration des corrections / évolutions de la version 2.2.8 
+
 
 ***
 
-##### Version 2.2.8 - Publiée le 09/06/2023
+##### Version 2.2.8 (dernière version sans le module Gatsbi) - Publiée le 17/05/2023
 ###### Corrections
 - YouTrack [TK-322](https://tumorotek.myjetbrains.com/youtrack/issue/TK-322) : la désactivation d'un compte avec accès LDAP n'est pas prise en compte
 - YouTrack [TK-333](https://tumorotek.myjetbrains.com/youtrack/issue/TK-333) : <span class="badge badge-stockage">Evènement de stockage</span> Sécurisation de  la gestion de l'attribut stérile lors d'un déplacement de boîte
@@ -32,7 +49,12 @@
 
 ***
 
-##### Version 2.2.7 - Publiée le 13/03/2023
+##### Version 2.3.0.2 - Publiée le 08/03/2023
+- Adaptations pour le module Gatsbi (version 1.0.0.2, publiée le 08/03/2023)
+
+***
+
+##### Version 2.2.7 - Publiée le 08/03/2023
 ###### Correction
 - YouTrack [TK-357](https://tumorotek.myjetbrains.com/youtrack/issue/TK-357) : <span class="badge badge-export">Export</span> <span class="badge badge-patient">Patient</span> Barre d'avancement bloquée à 0 %
 
