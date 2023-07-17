@@ -3,9 +3,10 @@
 ##### Version ${project.version} - Publiée le ${timestamp}
 
 
-##### Version 2.3.0.3 - Publiée le 10/07/2023
+##### Version 2.3.0.3 - Publiée le 17/07/2023
 ###### Corrections dans TK pour un contexte Gatsbi
 - YouTrack [TG-163](https://tumorotek.myjetbrains.com/youtrack/issue/TG-163) : [TK] - Prélèvement & Echantillon : filtre sur les thesaurus d'un champ lié non pris en compte
+- YouTrack [TG-165](https://tumorotek.myjetbrains.com/youtrack/issue/TG-165) : [TK] - Permettre de définir une collection Gatsbi sans le niveau maladie
 - YouTrack [TG-173](https://tumorotek.myjetbrains.com/youtrack/issue/TG-173) : [TK & Gatsbi] - Contexte Prélèvement par défaut : le champ statut juridique n'est pas obligatoire
 - YouTrack [TG-174](https://tumorotek.myjetbrains.com/youtrack/issue/TG-174) : [TK & Gatsbi] - Création Echantillon : le champ quantité défini comme obligatoire dans Gatsbi n'a pas l'astérisque rouge dans TK
 - YouTrack [TG-175](https://tumorotek.myjetbrains.com/youtrack/issue/TG-175) : [TK] : Création d'un Prélèvement / Echantillon : trier les paramétrages par ordre alphabétique dans la popup de sélection
