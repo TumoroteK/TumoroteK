@@ -35,8 +35,10 @@
  **/
 package fr.aphp.tumorotek.action.stockage;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Components;
@@ -318,7 +320,7 @@ public class StockageController extends AbstractObjectTabController
 
       getListeStockages().switchToDeplacementEmplacementMode();
       getFicheDeplacerEmplacements().setObjectTabController(this);
-      getFicheDeplacerEmplacements().setTerminale(terminale);
+//      getFicheDeplacerEmplacements().setTerminale(terminale);
       getFicheDeplacerEmplacements().switchToSelectionMode(false, mismatches);
       getFicheDeplacerEmplacements().setObjectTabController(this);
       actuelleTerminale = terminale;
@@ -482,19 +484,15 @@ public class StockageController extends AbstractObjectTabController
    public void handleScanTerminale(final ScanTerminale sT){
       if(sT != null){
 
-         final TKScanTerminaleDTO scanDto = ManagerLocator.getScanTerminaleManager().compareScanAndTerminaleManager(sT,
-            getListeStockages().getSelectedEnceinte(), getListeStockages().getSelectedConteneurs());
+         final TKScanTerminaleDTO scanDto = ManagerLocator.getScanTerminaleManager()
+            .compareScanAndTerminaleManager(sT, getListeStockages().getSelectedEnceinte(), getListeStockages().getSelectedConteneurs());
 
          if(scanDto.getTerminale() == null){
-            Clients
-               .showNotification(
-                  ObjectTypesFormatters
-                     .getLabel("scan.objects.terminale.notfound.warning",
-                        new String[] {sT.getName(), ObjectTypesFormatters.dateRenderer2(sT.getDateScan()),
-                           (getListeStockages().getSelectedEnceinte() != null ? getListeStockages().getSelectedEnceinte().getNom()
-                              : getListeStockages().getSelectedConteneur() != null
-                                 ? getListeStockages().getSelectedConteneur().getCode() : "")}),
-                  "warning", null, null, 4000, true);
+            Clients.showNotification(ObjectTypesFormatters.getLabel("scan.objects.terminale.notfound.warning",
+               new String[] {sT.getName(), ObjectTypesFormatters.dateRenderer2(sT.getDateScan()),
+                  (getListeStockages().getSelectedEnceinte() != null ? getListeStockages().getSelectedEnceinte().getNom() :
+                     getListeStockages().getSelectedConteneur() != null ? getListeStockages().getSelectedConteneur().getCode() :
+                        "")}), "warning", null, null, 4000, true);
          }else{
             // deplacement/stockage
             if(divDeplacerEmplacements.isVisible()){
@@ -509,21 +507,51 @@ public class StockageController extends AbstractObjectTabController
                //
                // }
             }else{
-               Clients
-                  .showNotification(
-                     ObjectTypesFormatters
-                        .getLabel("scan.objects.terminale.display.info",
-                           new String[] {sT.getName(), ObjectTypesFormatters.dateRenderer2(sT.getDateScan()),
-                              (getListeStockages().getSelectedEnceinte() != null
-                                 ? getListeStockages().getSelectedEnceinte().getNom()
-                                 : getListeStockages().getSelectedConteneur() != null
-                                    ? getListeStockages().getSelectedConteneur().getCode() : "")}),
-                     "info", null, null, 4000, true);
+               Clients.showNotification(ObjectTypesFormatters.getLabel("scan.objects.terminale.display.info",
+                     new String[] {sT.getName(), ObjectTypesFormatters.dateRenderer2(sT.getDateScan()),
+                        (getListeStockages().getSelectedEnceinte() != null ? getListeStockages().getSelectedEnceinte().getNom() :
+                           getListeStockages().getSelectedConteneur() != null ? getListeStockages().getSelectedConteneur().getCode() : "")}),
+                  "info", null, null, 4000, true);
 
                // affichage OU mode deplacement terminale -> destination
                getListeStockages().selectTerminaleFromScan(scanDto);
             }
          }
       }
+   }
+
+   /**
+    * Passe en mode de déplacement du contenu de cession.
+    * @param listEchantillons La liste des échantillons à déplacer.
+    * @param listDerives La liste des produits dérivés à déplacer.
+    */
+   public void switchToDeplacerContenuCessionMode(List<Echantillon> listEchantillons, List<ProdDerive> listDerives){
+      // ne pas afficher : fiche conteneur, enceinte ou terminale
+      divConteneur.setVisible(false);
+      divEnceinte.setVisible(false);
+      divTerminale.setVisible(false);
+
+      // afficher "stockage des echantillons et des produits derives"
+      divDeplacerEmplacements.setVisible(true);
+      Executions.createComponents("/zuls/stockage/FicheDeplacerEmplacements.zul", divDeplacerEmplacements, null);
+
+      getListeStockages().switchToDeplacementEmplacementMode();
+      getFicheDeplacerEmplacements().switchToSelectionContenuCessionMode(listEchantillons, listDerives);
+
+   }
+
+   public void switchToDeplacerContenuCessionMode2(Terminale terminale){
+      divConteneur.setVisible(false);
+      divEnceinte.setVisible(false);
+      divTerminale.setVisible(false);
+      divDeplacerEmplacements.setVisible(true);
+      Executions.createComponents("/zuls/stockage/FicheDeplacerEmplacements.zul", divDeplacerEmplacements, null);
+
+      getListeStockages().switchToDeplacementEmplacementMode();
+      getFicheDeplacerEmplacements().setObjectTabController(this);
+      getFicheDeplacerEmplacements().setTerminale(terminale);
+      getFicheDeplacerEmplacements().switchToSelectionMode(false, null);
+      getFicheDeplacerEmplacements().setObjectTabController(this);
+      actuelleTerminale = terminale;
    }
 }

@@ -465,7 +465,7 @@ public class Echantillon extends TKDelegetableObject<Echantillon> implements TKS
    }
 
    @Override
-   @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.REMOVE})
+   @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.REMOVE})
    @JoinColumn(name = "EMPLACEMENT_ID", nullable = true)
    public Emplacement getEmplacement(){
       return this.emplacement;

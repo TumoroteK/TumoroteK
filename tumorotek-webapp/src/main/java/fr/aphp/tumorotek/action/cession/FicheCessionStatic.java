@@ -42,10 +42,16 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
+import fr.aphp.tumorotek.action.stockage.StockageController;
+import fr.aphp.tumorotek.model.stockage.Emplacement;
+import fr.aphp.tumorotek.model.stockage.Terminale;
 import org.jdom.Document;
 import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
@@ -91,6 +97,7 @@ import fr.aphp.tumorotek.model.cession.Contrat;
 import fr.aphp.tumorotek.model.cession.ECederObjetStatut;
 import fr.aphp.tumorotek.model.coeur.annotation.TableAnnotation;
 import fr.aphp.tumorotek.model.coeur.prelevement.Prelevement;
+import fr.aphp.tumorotek.model.coeur.echantillon.Echantillon;
 import fr.aphp.tumorotek.model.coeur.prodderive.ProdDerive;
 import fr.aphp.tumorotek.model.contexte.EContexte;
 import fr.aphp.tumorotek.model.interfacage.scan.ScanTerminale;
@@ -184,7 +191,14 @@ public class FicheCessionStatic extends AbstractFicheStaticController
 
 	// @since 2.1 checked Objects
 	private final List<Integer> checkedEchantillonIds = new ArrayList<>();
+
 	private final List<Integer> checkedDeriveIds = new ArrayList<>();
+
+	// Echantillons ayant le statut "RESERVE"
+	private  List<Echantillon> reservedEchantillons = new ArrayList<>();
+
+  //	Dérivés ayant le statut "RESERVE"
+	private  List<ProdDerive> reservedDerive = new ArrayList<>();
 
 	@Override
 	public void doAfterCompose(final Component comp) throws Exception{
@@ -257,8 +271,9 @@ public class FicheCessionStatic extends AbstractFicheStaticController
 		printCessionPlan.setDisabled(cession.getCessionStatut() == null || cession.getCessionStatut().getStatut().equals("VALIDEE")
 				|| (getEchantillonsCedes().isEmpty() && getDerivesCedes().isEmpty()));
 
-		// gestion du déplacement
-		move.setDisabled(cession.getCessionStatut() == null || !cession.getCessionStatut().getStatut().equals("EN ATTENTE"));
+		//  désactiver/ne pas désactiver le bouton de déplacement
+		disableMoveButton();
+
 		// since 2.2.1-IRELEC automated storage si admin PF ou (ou avec des droits de Consultation sur le stockage et en modification sur les échantillons (TK-339))
 		//et cession en attente 
 		storageRobotItem.setVisible(storageRobotItemVisible() 
@@ -266,6 +281,25 @@ public class FicheCessionStatic extends AbstractFicheStaticController
 				&& getObject().getCessionStatut().getCessionStatutId().equals(1));
 
 		super.setObject(cession);
+	}
+
+	/**
+	 * désactiver / activer le bouton de déplacement
+	 */
+	private void disableMoveButton(){
+		// Le bouton ne sera actif que si: la cession est au statut EN ATTENTE et qu'elle contient au moins un échantillon ou
+		// un produit dérivé au statut RESERVE
+		// Obtenir les échantillons  puis extraire uniquement ceux qui sont réservés (pour la 2eme condition)
+		List<Echantillon> allEchantillons =  convertToListEchantillons(echantillonsCedes);
+		this.reservedEchantillons = findReservedEchantillons(allEchantillons);
+		// Obtenir les derives  puis extraire uniquement ceux qui sont réservés (pour la 2eme condition).
+		List<ProdDerive> allDerive =  convertToListDerives(derivesCedes);
+		this.reservedDerive =  findReservedDerives(allDerive);
+		boolean enAttente = (cession.getCessionStatut() != null && cession.getCessionStatut().getStatut().equals("EN ATTENTE"));
+		boolean isReserveFound = this.reservedDerive.size() > 0 || this.reservedEchantillons.size() > 0;
+		boolean isDisplay = enAttente && isReserveFound;
+		move.setDisabled(!isDisplay);
+
 	}
 
 	@Override
@@ -323,6 +357,7 @@ public class FicheCessionStatic extends AbstractFicheStaticController
 			delete.setVisible(true);
 		}
 	}
+
 
 
 
@@ -391,10 +426,38 @@ public class FicheCessionStatic extends AbstractFicheStaticController
 		}
 	}
 
-
+	/**
+	 * réponse au clic de l'utilisateur sur "Deplacer les echantillons / derives"
+	 */
 	public void onClick$move(){
-
+		final StockageController tabController = StockageController.backToMe(getMainWindow(), page);
+		tabController.clearAllPage();
+		tabController.switchToDeplacerContenuCessionMode(reservedEchantillons, reservedDerive);
 	}
+
+
+	/**
+	 *  filtrer tous les échantillons réservés
+	 * @param echantillonList List<Echantillon>
+	 * @return List<Echantillon> qui ont les status "RESERVE" (object_status = 3)
+	 */
+	private List<Echantillon> findReservedEchantillons(List<Echantillon> echantillonList){
+		return echantillonList.stream().filter(echantillon -> echantillon.getObjetStatut().getObjetStatutId().equals(3))
+			.collect(Collectors.toList());
+	}
+
+
+	/**
+	 *  filtrer tous les produits derives réservés
+	 * @param derivesList List<ProdDerive>
+	 * @return List<Echantillon> qui ont les status "RESERVE" (object_status = 3)
+	 */
+	private List<ProdDerive> findReservedDerives(List<ProdDerive> derivesList){
+		return derivesList.stream().filter(echantillon -> echantillon.getObjetStatut().getObjetStatutId().equals(3))
+			.collect(Collectors.toList());
+	}
+
+
 	@Override
 	public void onClick$addNew(){
 		getObjectTabController().switchToCreateMode(null, null, null);
@@ -1371,6 +1434,41 @@ public class FicheCessionStatic extends AbstractFicheStaticController
 		}
 		postStorageData(ManagerLocator.getEchantillonManager()
 				.findByIdsInListManager(echanIds), true);
+	}
+
+	/**
+	 * transformer une liste de CederObjet en une liste d'échantillons.
+	 *
+	 * @param echantillonsCedes List<CederObjet>.
+	 * @return La liste d'Echantillons obtenue à partir de la transformation ou une liste vide
+	 */
+	private List<Echantillon> convertToListEchantillons(List<CederObjet> echantillonsCedes) {
+		List<Integer> echantillonsIds= new ArrayList<>();
+		for (CederObjet cederObjet : echantillonsCedes) {
+			String entiteNom = cederObjet.getEntite().getNom();
+			//to do : not to string buit to entiteId
+			if (entiteNom.equals("Echantillon")) {
+				echantillonsIds.add(cederObjet.getPk().getObjetId());
+			}
+		}
+		return ManagerLocator.getEchantillonManager().findByIdsInListManager(echantillonsIds);
+	}
+
+	/**
+	 *  transformer une liste de CederObjet en une liste de produits dérivés.
+	 *
+	 * @param derivesCedes List<CederObjet>.
+	 * @return La liste de produits dérivés obtenue à partir de la transformation ou une liste vide.
+	 */
+	private List<ProdDerive> convertToListDerives(List<CederObjet> derivesCedes) {
+		List<Integer> derivesIds= new ArrayList<>();
+		for (CederObjet cederObjet : echantillonsCedes) {
+			String entiteNom = cederObjet.getEntite().getNom();
+			if (entiteNom.equals("ProdDerive")) {
+				derivesIds.add(cederObjet.getPk().getObjetId());
+			}
+		}
+		return ManagerLocator.getProdDeriveManager().findByIdsInListManager(derivesIds);
 	}
 
 

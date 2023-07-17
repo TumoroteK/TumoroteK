@@ -255,11 +255,11 @@ public class FicheDeplacerEmplacements extends FicheTerminale
       // Initialisation des listes de composants
       this.objSelectionComponents = new Component[] {this.rowSelectionTitle, this.validateSelection, this.cancelSelection};
 
-      this.objDeplacementComponents = new Component[] {this.rowDeplacementTitle, this.selectElementRow, this.validateDeplacement,
-         this.cancelDeplacement, this.entiteReserveeRow};
+      this.objDeplacementComponents =
+         new Component[] {this.rowDeplacementTitle, this.selectElementRow, this.validateDeplacement, this.cancelDeplacement, this.entiteReserveeRow};
 
-      this.objStockageComponents = new Component[] {this.rowStockageTitle, this.selectElementRow, this.validateStockage,
-         this.cancelStockage, this.entiteReserveeRow, this.listErrorRow};
+      this.objStockageComponents =
+         new Component[] {this.rowStockageTitle, this.selectElementRow, this.validateStockage, this.cancelStockage, this.entiteReserveeRow, this.listErrorRow};
 
       this.objDestockageComponents = new Component[] {this.rowDestockageTitle, this.validateDestockage, this.cancelDestockage};
 
@@ -270,6 +270,40 @@ public class FicheDeplacerEmplacements extends FicheTerminale
    @Override
    public StockageController getObjectTabController(){
       return super.getObjectTabController();
+   }
+
+   /**
+    * Change mode de la fiche en mode deplacement d'objets en mode cession.
+    * @param listEchantillons
+    * @param listDerives
+    */
+   public void switchToSelectionContenuCessionMode(List<Echantillon> listEchantillons, List<ProdDerive> listDerives){
+
+      fillDeplacements(listEchantillons, listDerives);
+      switchToSelectionMode(true, null);
+
+   }
+
+   private void fillDeplacements(List<Echantillon> listEchantillons, List<ProdDerive> listDerives){
+
+      for (Echantillon echantillon : listEchantillons) {
+         // get emplacement
+         addToDeplacements(echantillon);
+      }
+
+      // Add all ProdDerive objects to the allObjects list
+      for (ProdDerive prodDerive : listDerives) {
+         addToDeplacements(prodDerive);
+      }
+   }
+
+   private void addToDeplacements(TKStockableObject tkStockableObject){
+      Emplacement emplacement = ManagerLocator.getEmplacementManager().findByTKStockableObjectManager(tkStockableObject);
+      // creation de EmplacementDecorator
+      EmplacementDecorator emplacementDecorator = new EmplacementDecorator(emplacement);
+      emplacementDecorator.setTkStockObj(tkStockableObject);
+      // ajouter au deplacements
+      deplacements.add(emplacementDecorator);
    }
 
    /**
@@ -1860,9 +1894,9 @@ public class FicheDeplacerEmplacements extends FicheTerminale
             deplacements.add(deco);
          }
       }
-      final ListModel<EmplacementDecorator> list = new ListModelList<>(deplacements);
-      gridHistorique.setModel(list);
-      getBinder().loadComponent(gridHistorique);
+//      final ListModel<EmplacementDecorator> list = new ListModelList<>(deplacements);
+//      gridHistorique.setModel(list);
+//      getBinder().loadComponent(gridHistorique);
    }
 
    /**
@@ -2994,5 +3028,89 @@ public class FicheDeplacerEmplacements extends FicheTerminale
       //		}
 
       Clients.clearBusy();
+   }
+
+
+
+   private void switchToSelectionMode(List<Echantillon> listEchantillons, List<ProdDerive> listProdDerives){
+
+      this.terminale = null;
+      modeleBoite.getChildren().clear();
+      // la colonne des anciennes adresses n'est pas visible
+      oldAdresseColonne.setVisible(false);
+      newAdresseColonne.setVisible(true);
+      flecheColonne.setVisible(true);
+
+      for(int i = 0; i < objSelectionComponents.length; i++){
+         objSelectionComponents[i].setVisible(false);
+      }
+      for(int i = 0; i < objDeplacementComponents.length; i++){
+         objDeplacementComponents[i].setVisible(false);
+      }
+      for(int i = 0; i < objStockageComponents.length; i++){
+         objStockageComponents[i].setVisible(true);
+      }
+      for(int i = 0; i < objDestockageComponents.length; i++){
+         objDestockageComponents[i].setVisible(false);
+      }
+      this.rowDeplacementTitle.setVisible(false);
+      this.rowStockageTitle.setVisible(true);
+
+      deplacementsRestants = new ArrayList<>();
+      emplacementDepart = new ArrayList<>();
+      deplacements = new ArrayList<>();
+      // si l'on souhaite stocker des échantillons
+      if(listEchantillons.size() > 0){
+         echantillons = new ArrayList<>();
+         typeEntite = "Echantillon";
+         for(int i = 0; i < listEchantillons.size(); i++){
+            // on ne traite que les échans non stockés
+               echantillons.add(listEchantillons.get(i));
+               Emplacement emplacement =  ManagerLocator.getEmplacementManager().findByTKStockableObjectManager(listEchantillons.get(i));
+              final EmplacementDecorator deco = new EmplacementDecorator(emplacement);
+               deco.setCode(listEchantillons.get(i).getCode());
+               final Entite e = ManagerLocator.getEntiteManager().findByNomManager(typeEntite).get(0);
+               deco.getEmplacement().setEntite(e);
+               deco.getEmplacement().setObjetId(listEchantillons.get(i).getEchantillonId());
+               deco.getEmplacement().setPosition(i + 1);
+               deplacements.add(deco);
+            }
+         }
+
+      for(int i = 0; i < deplacements.size(); i++){
+         deplacementsRestants.add(deplacements.get(i));
+         emplacementDepart.add(deplacements.get(i));
+      }
+      if(deplacementsRestants.size() > 0){
+         selectedEmplacement = deplacementsRestants.get(0);
+      }
+
+      emplacementsDestDep = new Hashtable<>();
+
+      if(terminale != null && terminale.getEntite() != null){
+         final StringBuffer sb = new StringBuffer();
+         sb.append(Labels.getLabel("deplacer.emplacement.terminale.entite.reservee"));
+         sb.append(" ");
+         sb.append(terminale.getEntite().getNom());
+         sb.append("s.");
+         entiteReservee = sb.toString();
+         entiteReserveeLabel.setValue(entiteReservee);
+         entiteReserveeRow.setVisible(true);
+      }else{
+         entiteReserveeRow.setVisible(false);
+      }
+
+      if(deplacements.size() > 0){
+         listErrorRow.setVisible(false);
+      }else{
+         validateStockage.setVisible(false);
+      }
+
+      // on rafraichit les listes
+      getBinder().loadAttribute(self.getFellow("elementsBox"), "model");
+      final ListModel<EmplacementDecorator> list = new ListModelList<>(deplacements);
+      gridHistorique.setModel(list);
+
+      getBinder().loadComponent(self);
    }
 }
