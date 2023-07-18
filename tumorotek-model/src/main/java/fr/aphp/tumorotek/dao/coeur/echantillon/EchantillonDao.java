@@ -452,6 +452,14 @@ public interface EchantillonDao extends GenericDaoJpa<Echantillon, Integer>
     */
    List<Integer> findByPatientIdentifiantOrNomOrNipReturnIds(String search, List<Banque> selectedBanques);
 
-   String isEchantilonWithStatusExistsInCession(Integer cessionId, Integer status_id);
+   /**
+    * Recherche une cession contenant des échantillons avec le statut spécifié.
+    * La recherche s'arrête dès que le premier résultat correspondant est trouvé.
+    *
+    * @param cessionId   l'ID de la cession dans laquelle effectuer la recherche
+    * @param status_id   l'ID du statut à rechercher dans les échantillons
+    * @return  la chaîne de caractères "1" si un échantillon est trouvé
+    */
+   String isExistByStatutAndCessionId(Integer cessionId, Integer status_id);
 
 }

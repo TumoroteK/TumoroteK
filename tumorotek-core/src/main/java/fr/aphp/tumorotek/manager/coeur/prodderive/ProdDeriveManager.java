@@ -657,5 +657,15 @@ public interface ProdDeriveManager
     * @since 2.3
     */
    List<Integer> findByBanksAndImpact(List<Banque> banks, List<Boolean> impact);
+
+   /**
+    * Recherche une cession contenant des produits dérivés avec le statut spécifié.
+    * La recherche s'arrête dès que le premier résultat correspondant est trouvé.
+    *
+    * @param cessionId   l'ID de la cession dans laquelle effectuer la recherche
+    * @param status_id   l'ID du statut à rechercher dans les produits dérivés
+    * @return  true si au moins un produit dérivé a été trouvé, sinon false
+    */
+   boolean isDeriveWithStatusExistsInCession(Integer cessionId, Integer status_id);
    
 }

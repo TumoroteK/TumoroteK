@@ -284,14 +284,12 @@ public class FicheCessionStatic extends AbstractFicheStaticController
 	 * 2. elle contient au moins un échantillon ou un produit dérivé au statut RESERVE
 	 */
 	private void disableMoveButton(){
-		// Obtenir les échantillons puis extraire uniquement ceux qui sont réservés (pour la 2eme condition)
-		List<Echantillon> allEchantillons =  convertToListEchantillons(echantillonsCedes);
-		this.reservedEchantillons = findReservedEchantillons(allEchantillons);
-		// Obtenir les derives  puis extraire uniquement ceux qui sont réservés (pour la 2eme condition).
-		List<ProdDerive> allDerive =  convertToListDerives(derivesCedes);
-		this.reservedDerive =  findReservedDerives(allDerive);
+		Integer cessionId = cession.getCessionId();
+		Integer reservedStatusId = 3;
 		boolean enAttente = (cession.getCessionStatut() != null && cession.getCessionStatut().getStatut().equals("EN ATTENTE"));
-		boolean isReserveFound = this.reservedDerive.size() > 0 || this.reservedEchantillons.size() > 0;
+		boolean isEchantillonsFound = ManagerLocator.getEchantillonManager().isEchantilonWithStatusExistsInCession(cessionId, reservedStatusId);
+		boolean isDeriveFound = ManagerLocator.getProdDeriveManager().isDeriveWithStatusExistsInCession(cessionId, reservedStatusId);
+		boolean isReserveFound =  isEchantillonsFound || isDeriveFound;
 		boolean isDisplay = enAttente && isReserveFound;
 		move.setDisabled(!isDisplay);
 
@@ -424,6 +422,11 @@ public class FicheCessionStatic extends AbstractFicheStaticController
 	 * Écouteur d'événement pour le clic sur le bouton 'Déplacer les échantillons/dérivés'
 	 */
 	public void onClick$move(){
+		List<Echantillon> allEchantillons =  convertToListEchantillons(echantillonsCedes);
+		this.reservedEchantillons = findReservedEchantillons(allEchantillons);
+		// Obtenir les derives  puis extraire uniquement ceux qui sont réservés (pour la 2eme condition).
+		List<ProdDerive> allDerive =  convertToListDerives(derivesCedes);
+		this.reservedDerive =  findReservedDerives(allDerive);
 		final StockageController tabController = StockageController.backToMe(getMainWindow(), page);
 		tabController.clearAllPage();
 		tabController.switchToDeplacerContenuCessionMode(reservedEchantillons, reservedDerive);

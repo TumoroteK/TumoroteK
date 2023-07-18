@@ -2076,18 +2076,10 @@ public class EchantillonManagerImpl implements EchantillonManager
       return res;
    }
 
-   /**
-    * Recherche une cession contenant des échantillons avec le statut spécifié.
-    * La recherche s'arrête dès que le premier résultat correspondant est trouvé.
-    *
-    * @param cessionId   l'ID de la cession dans laquelle effectuer la recherche
-    * @param status_id   l'ID du statut à rechercher dans les échantillons
-    * @return  la chaîne de caractères "1" si un échantillon correspondant est trouvé, sinon un ensemble de résultats vide est retourné
-    */
 
    @Override
    public boolean isEchantilonWithStatusExistsInCession(Integer cessionId, Integer status_id){
-      String result = echantillonDao.isEchantilonWithStatusExistsInCession(cessionId, status_id);
+      String result = echantillonDao.isExistByStatutAndCessionId(cessionId, status_id);
       return result.equals("1");
    }
 }

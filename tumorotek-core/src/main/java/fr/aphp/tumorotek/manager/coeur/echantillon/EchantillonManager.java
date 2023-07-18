@@ -832,5 +832,13 @@ public interface EchantillonManager
     */
    List<Integer> findByPatientIdentifiantOrNomOrNipReturnIdsManager(String search, List<Banque> selectedBanques, boolean b);
 
+   /**
+    * Recherche une cession contenant des échantillons avec le statut spécifié.
+    * La recherche s'arrête dès que le premier résultat correspondant est trouvé.
+    *
+    * @param cessionId   l'ID de la cession dans laquelle effectuer la recherche
+    * @param status_id   l'ID du statut à rechercher dans les échantillons
+    * @return  true si au moins un échantillon a été trouvé, sinon false
+    */
    boolean isEchantilonWithStatusExistsInCession(Integer cessionId, Integer status_id);
 }

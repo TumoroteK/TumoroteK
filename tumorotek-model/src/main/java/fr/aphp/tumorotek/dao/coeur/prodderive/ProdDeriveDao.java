@@ -376,4 +376,14 @@ public interface ProdDeriveDao extends GenericDaoJpa<ProdDerive, Integer>
     * @return une liste d'ids.
     */
    List<Integer> findByBanksAndImpact(List<Banque> banks, List<Boolean> impact);
+
+   /**
+    * Recherche une cession contenant des produits dérivés avec le statut spécifié.
+    * La recherche s'arrête dès que le premier résultat correspondant est trouvé.
+    *
+    * @param cessionId   l'ID de la cession dans laquelle effectuer la recherche
+    * @param status_id   l'ID du statut à rechercher dans les dérivés
+    * @return  la chaîne de caractères "1" si un produit dérivé est trouvé
+    */
+   String isExistByStatutAndCessionId(Integer cessionId, Integer status_id);
 }
