@@ -88,6 +88,23 @@
     </appender>
 
 
+    <!-- Appender pour ACK -->
+    <appender name="DailyRollingFile-ack" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <File>${catalina.base}/logs/tumorotek_ack.log</File>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - [%X{username}] %msg%n</pattern>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+            <maxIndex>5</maxIndex>
+            <FileNamePattern>${catalina.base}/logs/tumorotek_ack.log.%d{yyyy-MM-dd}.%i</FileNamePattern>
+        </rollingPolicy>
+        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+            <MaxFileSize>500KB</MaxFileSize>
+        </triggeringPolicy>
+    </appender>
+
+
+
 
     <!--    logger personnalisées pour les différents packages-->
     <logger name="fr.aphp.tumorotek.manager" additivity="false" level="ERROR">
@@ -131,7 +148,9 @@
         <appender-ref ref="DailyRollingFile-sgl"/>
     </logger>
 
-
+    <logger name="fr.aphp.tumorotek.interfacage.sender.ack" level="ERROR">
+        <appender-ref ref="DailyRollingFile-ack"/>
+    </logger>
 
 
 
