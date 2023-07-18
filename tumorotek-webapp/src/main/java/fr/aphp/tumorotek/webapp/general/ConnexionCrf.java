@@ -87,9 +87,9 @@ public class ConnexionCrf extends GenericForwardComposer<Component>
 
          }else{
             if(selectedBanque != null){
-               log.info("La tentative de connection " + login + " a échoué " + "car les paramètres de connection sont invalides");
+               log.info("La tentative de connection {} a échoué car les paramètres de connection sont invalides", login);
             }else{
-               log.info("Aucune banque trouvée ayant l'identifiant " + "'" + banque + "'");
+               log.info("Aucune banque trouvée ayant l'identifiant '{}'", banque);
             }
             rowWait.setVisible(false);
             rowError.setVisible(true);

@@ -429,7 +429,7 @@ public class XmlUtilsImpl implements XmlUtils
                fileFolder.mkdir();
             }
          }catch(final Exception e){
-            log.error("Erreur dans la creation du fichier XML " + e.getMessage());
+            log.error("Erreur dans la creation du fichier XML {}",  e.getMessage());
          }
 
          final String fileTitle = folder + file;
@@ -441,7 +441,7 @@ public class XmlUtilsImpl implements XmlUtils
          sortie.output(doc, fis);
          fis.close();
       }catch(final IOException e){
-         log.error("Erreur dans l'enregistrement du fichier " + e.getMessage());
+         log.error("Erreur dans l'enregistrement du fichier {}",  e.getMessage());
       }
    }
 
@@ -458,10 +458,10 @@ public class XmlUtilsImpl implements XmlUtils
          final DOMOutputter export = new DOMOutputter();
          transformed = export.output(docFo);
       }catch(final XSLTransformException e){
-         log.error("Erreur dans la transformation du fichier " + e.getMessage());
+         log.error("Erreur dans la transformation du fichier {}",  e.getMessage());
          log.error(e.getMessage(), e); 
       }catch(final JDOMException e){
-         log.error("Erreur dans la création du fichier JDOM" + e.getMessage());
+         log.error("Erreur dans la création du fichier JDOM {}",  e.getMessage());
       }catch(final IOException e){
          log.error(e.getMessage(), e); 
       }
@@ -1528,10 +1528,10 @@ public class XmlUtilsImpl implements XmlUtils
          final DOMOutputter export = new DOMOutputter();
          transformed = export.output(docFo);
       }catch(final XSLTransformException e){
-         log.error("Erreur dans la transformation du fichier " + e.getMessage());
+         log.error("Erreur dans la transformation du fichier {}",  e.getMessage());
          log.error(e.getMessage(), e); 
       }catch(final JDOMException e){
-         log.error("Erreur dans la création du fichier JDOM" + e.getMessage());
+         log.error("Erreur dans la création du fichier JDOM {}",  e.getMessage());
       }catch(final IOException e){
          log.error(e.getMessage(), e); 
       }

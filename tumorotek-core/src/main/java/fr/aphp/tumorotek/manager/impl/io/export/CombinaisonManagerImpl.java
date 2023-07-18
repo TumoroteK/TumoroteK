@@ -126,7 +126,7 @@ public class CombinaisonManagerImpl implements CombinaisonManager
       Combinaison temp = null;
       //On verifie que la combinaison n'est pas nulle
       if(combinaison == null){
-         log.warn("Objet obligatoire Combinaison manquant lors " + "de la copie d'un objet Combinaison");
+         log.warn("Objet obligatoire Combinaison manquant lors de la copie d'un objet Combinaison");
          throw new RequiredObjectIsNullException("Combinaison", "copie", "Combinaison");
       }
       //On copie le champ1
@@ -156,17 +156,17 @@ public class CombinaisonManagerImpl implements CombinaisonManager
    public void createObjectManager(final Combinaison combinaison, Champ champ1, Champ champ2){
       //On vérifie que la combinaison n'est pas nulle
       if(combinaison == null){
-         log.warn("Objet obligatoire Combinaison manquant lors " + "de la création d'un objet Combinaison");
+         log.warn("Objet obligatoire Combinaison manquant lors de la création d'un objet Combinaison");
          throw new RequiredObjectIsNullException("Combinaison", "création", "Combinaison");
       }
       //On vérifie que le champ1 n'est pas nul
       if(champ1 == null){
-         log.warn("Objet obligatoire Champ1 manquant lors " + "de la création d'un objet Combinaison");
+         log.warn("Objet obligatoire Champ1 manquant lors de la création d'un objet Combinaison");
          throw new RequiredObjectIsNullException("Combinaison", "création", "Champ1");
       }
       //On vérifie que le champ2 n'est pas nul
       if(champ2 == null){
-         log.warn("Objet obligatoire Champ2 manquant lors " + "de la création d'un objet Combinaison");
+         log.warn("Objet obligatoire Champ2 manquant lors de la création d'un objet Combinaison");
          throw new RequiredObjectIsNullException("Combinaison", "création", "Champ2");
       }
       if(champ1.getChampId() != null){
@@ -197,17 +197,17 @@ public class CombinaisonManagerImpl implements CombinaisonManager
    public void updateObjectManager(final Combinaison combinaison, Champ champ1, Champ champ2){
       //On vérifie que la combinaison n'est pas nulle
       if(combinaison == null){
-         log.warn("Objet obligatoire Combinaison manquant lors " + "de la modification d'un objet Combinaison");
+         log.warn("Objet obligatoire Combinaison manquant lors de la modification d'un objet Combinaison");
          throw new RequiredObjectIsNullException("Combinaison", "modification", "Combinaison");
       }
       //On vérifie que le champ1 n'est pas nul
       if(champ1 == null){
-         log.warn("Objet obligatoire Champ1 manquant lors " + "de la modification d'un objet Combinaison");
+         log.warn("Objet obligatoire Champ1 manquant lors de la modification d'un objet Combinaison");
          throw new RequiredObjectIsNullException("Combinaison", "modification", "Champ1");
       }
       //On vérifie que le champ2 n'est pas nul
       if(champ2 == null){
-         log.warn("Objet obligatoire Champ2 manquant lors " + "de la modification d'un objet Combinaison");
+         log.warn("Objet obligatoire Champ2 manquant lors de la modification d'un objet Combinaison");
          throw new RequiredObjectIsNullException("Combinaison", "modification", "Champ2");
       }
       /*if (combinaison.getChamp1() != null && champ1 != null
@@ -256,7 +256,7 @@ public class CombinaisonManagerImpl implements CombinaisonManager
    public void removeObjectManager(final Combinaison combinaison){
       //On vérifie que la combinaison n'est pas nulle
       if(combinaison == null){
-         log.warn("Objet obligatoire Combinaison manquant lors " + "de la suppression d'un objet Combinaison");
+         log.warn("Objet obligatoire Combinaison manquant lors de la suppression d'un objet Combinaison");
          throw new RequiredObjectIsNullException("Combinaison", "suppression", "Combinaison");
       }
       //On vérifie que la combinaison est en BDD
@@ -277,7 +277,7 @@ public class CombinaisonManagerImpl implements CombinaisonManager
    public Combinaison findByIdManager(final Integer idCombinaison){
       //On vérifie que l'identifiant n'est pas nul
       if(idCombinaison == null){
-         log.warn("Objet obligatoire identifiant manquant lors de la " + "recherche par l'identifiant d'un objet Combinaison");
+         log.warn("Objet obligatoire identifiant manquant lors de la recherche par l'identifiant d'un objet Combinaison");
          throw new RequiredObjectIsNullException("Combinaison", "recherche par identifiant", "identifiant");
       }
       return combinaisonDao.findById(idCombinaison);

@@ -456,7 +456,7 @@ public class TraitementQueryManagerImpl implements TraitementQueryManager
          }
 
          /* On exécute la requête. */
-         log.info("findObjetByCritereManager : Exécution de la requête : \n" + sb.toString());
+         log.info("findObjetByCritereManager : Exécution de la requête : \n{}",  sb);
          final EntityManager em = entityManagerFactory.createEntityManager();
          // si la liste n'est pas vide et que l'entité
          final TypedQuery<Object> query = em.createQuery(sb.toString(), Object.class);
@@ -890,7 +890,7 @@ public class TraitementQueryManagerImpl implements TraitementQueryManager
       }
 
       /* On exécute la requête. */
-      log.debug("findObjetByCritereManager : Exécution de la requête : \n" + sql.toString());
+      log.debug("findObjetByCritereManager : Exécution de la requête : \n{}", sql);
 
       final EntityManager em = entityManagerFactory.createEntityManager();
       final TypedQuery<Integer> query = em.createQuery(sql.toString(), Integer.class);
@@ -1327,7 +1327,7 @@ public class TraitementQueryManagerImpl implements TraitementQueryManager
                throw new IllegalArgumentException();
             }
             /* On exécute la requête. */
-            log.info("findObjetByCritereManager : Exécution de la requête : \n" + sb.toString());
+            log.info("findObjetByCritereManager : Exécution de la requête : \n{}",  sb);
             final EntityManager em = entityManagerFactory.createEntityManager();
             final TypedQuery<Object> query = em.createQuery(sb.toString(), Object.class).setParameter("valeur", value);
             // si la liste n'est pas vide et que l'entité
@@ -1575,7 +1575,7 @@ public class TraitementQueryManagerImpl implements TraitementQueryManager
       }
 
       /* On exécute la requête. */
-      log.info("findObjetByCritereManager : Exécution de la requête : \n" + sql.toString());
+      log.info("findObjetByCritereManager : Exécution de la requête : \n{}",  sql);
       final EntityManager em = entityManagerFactory.createEntityManager();
       final TypedQuery<Integer> query = em.createQuery(sql.toString(), Integer.class);
       query.setParameter("entite", entiteTransformation);
@@ -1891,7 +1891,7 @@ public class TraitementQueryManagerImpl implements TraitementQueryManager
             throw new IllegalArgumentException();
          }
          /* On exécute la requête. */
-         log.info("findObjetByCritereManager : Exécution de la requête : \n" + sb.toString() + " avec les paramètres " + values);
+         log.info("findObjetByCritereManager : Exécution de la requête : \n{} avec les paramètres {}", sb, values);
          final EntityManager em = entityManagerFactory.createEntityManager();
          final TypedQuery<Integer> query = em.createQuery(sb.toString(), Integer.class);
          if(!cumulative || values.isEmpty()){
@@ -2033,8 +2033,9 @@ public class TraitementQueryManagerImpl implements TraitementQueryManager
             }
          }
          /* On exécute la requête. */
-         log.info("findObjetByCritereManager : Exécution de la requête : \n" + sb.toString() + " avec les paramètres " + codes
-            + ", " + libelles + ", " + value + " et " + isMorpho);
+         log.info("findObjetByCritereManager : Exécution de la requête : \n{} avec les paramètres {}, {}, {} et {}",
+            sb, codes, libelles, value, isMorpho);
+
          final EntityManager em = entityManagerFactory.createEntityManager();
          final TypedQuery<Integer> query = em.createQuery(sb.toString(), Integer.class);
          if(sb.toString().contains(":codes")){
@@ -2244,8 +2245,9 @@ public class TraitementQueryManagerImpl implements TraitementQueryManager
          sb.append(" and e.banque in (:list)");
       }
       /* On exécute la requête. */
-      log.info("findObjetByCritereManager : Exécution de la requête : \n" + sb.toString() + " avec les paramètres " + codes + ", "
-         + libelles + ", " + value + " et " + isMorpho);
+      log.info("findObjetByCritereManager : Exécution de la requête : \n{} avec les paramètres {}, {}, {} et {}",
+         sb, codes, libelles, value, isMorpho);
+
       final EntityManager em = entityManagerFactory.createEntityManager();
       final TypedQuery<Integer> query = em.createQuery(sb.toString(), Integer.class);
       if(sb.toString().contains(":codes")){
@@ -2315,8 +2317,9 @@ public class TraitementQueryManagerImpl implements TraitementQueryManager
          }
 
          /* On exécute la requête. */
-         log.info("findEchantillonsByRequeteBiocap " + ": Exécution de la requête : \n" + sb.toString() + " avec les paramètres "
-            + banques + ", " + services + ", " + dateInf.getTime() + ", " + dateSup.getTime() + "et " + age);
+         log.info("findEchantillonsByRequeteBiocap : Exécution de la requête : \n{} avec les paramètres {}, {}, {} et {}",
+            sb, banques, services, dateInf.getTime(), dateSup.getTime(), age);
+
          final EntityManager em = entityManagerFactory.createEntityManager();
          final TypedQuery<Integer> query = em.createQuery(sb.toString(), Integer.class);
          query.setParameter("dateInf", dateInf);

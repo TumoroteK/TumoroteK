@@ -112,7 +112,7 @@ public class UniteManagerImpl implements UniteManager
     */
    @Override
    public List<Unite> findByUniteLikeManager(String unite, final boolean exactMatch){
-      log.debug("Recherche Unite par unite " + unite + " exactMatch " + String.valueOf(exactMatch));
+      log.debug("Recherche Unite par unite {} exactMatch {}", unite, exactMatch);
       if(unite != null){
          if(!exactMatch){
             unite = unite + "%";
@@ -133,7 +133,7 @@ public class UniteManagerImpl implements UniteManager
     */
    @Override
    public List<Unite> findByTypeLikeManager(String type, final boolean exactMatch){
-      log.debug("Recherche Unite par type " + type + " exactMatch " + String.valueOf(exactMatch));
+      log.debug("Recherche Unite par type {} exactMatch {}", type, exactMatch);
       if(type != null){
          if(!exactMatch){
             type = type + "%";
@@ -184,12 +184,12 @@ public class UniteManagerImpl implements UniteManager
    @Override
    public void createObjectManager(final Unite unite){
       if(findDoublonManager(unite)){
-         log.warn("Doublon lors de la creation de l'objet Unite : " + unite.toString());
+         log.warn("Doublon lors de la creation de l'objet Unite : {}",  unite);
          throw new DoublonFoundException("Unite", "creation");
       }else{
          BeanValidator.validateObject(unite, new Validator[] {uniteValidator});
          uniteDao.createObject(unite);
-         log.info("Enregistrement de l'objet Unite : " + unite.toString());
+         log.info("Enregistrement de l'objet Unite : {}",  unite);
       }
    }
 
@@ -202,12 +202,12 @@ public class UniteManagerImpl implements UniteManager
    @Override
    public void updateObjectManager(final Unite unite){
       if(findDoublonManager(unite)){
-         log.warn("Doublon lors de la modif de l'objet Unite : " + unite.toString());
+         log.warn("Doublon lors de la modif de l'objet Unite : {}",  unite);
          throw new DoublonFoundException("Unite", "modification");
       }else{
          BeanValidator.validateObject(unite, new Validator[] {uniteValidator});
          uniteDao.updateObject(unite);
-         log.info("Modification de l'objet Unite : " + unite.toString());
+         log.info("Modification de l'objet Unite : {}",  unite);
       }
    }
 
@@ -220,11 +220,11 @@ public class UniteManagerImpl implements UniteManager
    @Override
    public void removeObjectManager(final Unite unite){
       if(isUsedObjectManager(unite)){
-         log.warn("Objet utilisé lors de la suppression de l'objet Unite : " + unite.toString());
+         log.warn("Objet utilisé lors de la suppression de l'objet Unite : {}",  unite);
          throw new ObjectUsedException("Unite", "suppression");
       }else{
          uniteDao.removeObject(unite.getUniteId());
-         log.info("Suppression de l'objet Unite : " + unite.toString());
+         log.info("Suppression de l'objet Unite : {}",  unite);
       }
    }
 

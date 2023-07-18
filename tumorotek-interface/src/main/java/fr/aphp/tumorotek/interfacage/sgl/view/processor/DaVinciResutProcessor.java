@@ -191,7 +191,7 @@ public class DaVinciResutProcessor implements ViewResultProcessor
          //bodyOut.free(); // new in JDBC 4.0
 
          valCodesLes.setValeur(codesLes.replace(",", ";"));
-         log.debug("les:" + valCodesLes.getValeur() + ".");
+         log.debug("les: {}.", valCodesLes.getValeur());
       }
 
       // 14+15 - DATE HEURE STOCKAGE

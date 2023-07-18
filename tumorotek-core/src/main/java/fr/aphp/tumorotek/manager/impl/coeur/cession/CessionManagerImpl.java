@@ -263,7 +263,7 @@ public class CessionManagerImpl implements CessionManager
     */
    @Override
    public List<Cession> findByNumeroLikeManager(String numero, final boolean exactMatch){
-      log.debug("Recherche Cession par numero : " + numero);
+      log.debug("Recherche Cession par numero : {}", numero);
       if(numero != null){
          if(!exactMatch){
             numero = numero + "%";
@@ -276,7 +276,7 @@ public class CessionManagerImpl implements CessionManager
    @Override
    public List<Integer> findByNumeroWithBanqueReturnIdsManager(String numero, final List<Banque> banques,
       final boolean exactMatch){
-      log.debug("Recherche Cession par numero : " + numero);
+      log.debug("Recherche Cession par numero : {}", numero);
       if(numero != null){
          if(!exactMatch){
             numero = "%" + numero + "%";
@@ -503,7 +503,7 @@ public class CessionManagerImpl implements CessionManager
 
       final List<Cession> liste = new ArrayList<>();
       if(banques != null && !banques.isEmpty() && nbResults > 0){
-         log.debug("Recherche des " + nbResults + " dernières Cessions " + "enregistrees.");
+         log.debug("Recherche des {} dernières Cessions enregistrees.", nbResults);
          // liste = findByLastOperationType(operationTypeDao
          //		.findByNom("Creation").get(0), banques, nbResults);
          final EntityManager em = entityManagerFactory.createEntityManager();
@@ -581,7 +581,7 @@ public class CessionManagerImpl implements CessionManager
       if(banque != null){
          cession.setBanque(banqueDao.mergeObject(banque));
       }else{
-         log.warn("Objet obligatoire Banque manquant" + " lors de la " + operation + " d'une Cession");
+         log.warn("Objet obligatoire Banque manquant lors de la {} d'une Cession", operation);
          throw new RequiredObjectIsNullException("Cession", operation, "Banque");
       }
 
@@ -589,7 +589,7 @@ public class CessionManagerImpl implements CessionManager
       if(cessionType != null){
          cession.setCessionType(cessionTypeDao.mergeObject(cessionType));
       }else{
-         log.warn("Objet obligatoire CessionType manquant" + " lors de la " + operation + " d'une Cession");
+         log.warn("Objet obligatoire CessionType manquant lors de la {} d'une Cession", operation);
          throw new RequiredObjectIsNullException("Cession", operation, "CessionType");
       }
 
@@ -597,7 +597,7 @@ public class CessionManagerImpl implements CessionManager
       if(cessionStatut != null){
          cession.setCessionStatut(cessionStatutDao.mergeObject(cessionStatut));
       }else{
-         log.warn("Objet obligatoire CessionStatut manquant" + " lors de la " + operation + " d'une Cession");
+         log.warn("Objet obligatoire CessionStatut manquant lors de la {} d'une Cession", operation);
          throw new RequiredObjectIsNullException("Cession", operation, "CessionStatut");
       }
    }
@@ -662,7 +662,7 @@ public class CessionManagerImpl implements CessionManager
             destructionMotif, contrat);
 
          cessionDao.createObject(cession);
-         log.info("Enregistrement objet Cession " + cession.toString());
+         log.info("Enregistrement objet Cession {}",  cession);
 
          //Enregistrement de l'operation associee
          final Operation creationOp = new Operation();
@@ -734,7 +734,7 @@ public class CessionManagerImpl implements CessionManager
             destructionMotif, contrat);
 
          cessionDao.updateObject(cession);
-         log.info("Modification objet Cession " + cession.toString());
+         log.info("Modification objet Cession {}",  cession);
 
          //Enregistrement de l'operation associee
          final Operation creationOp = new Operation();
@@ -822,7 +822,7 @@ public class CessionManagerImpl implements CessionManager
          }
 
          cessionDao.removeObject(cession.getCessionId());
-         log.info("Suppression de l'objet Cession : " + cession.toString());
+         log.info("Suppression de l'objet Cession : {}",  cession);
 
          //Supprime operations associes
          CreateOrUpdateUtilities.removeAssociateOperations(cession, operationManager, comments, usr);

@@ -197,7 +197,7 @@ public class EmplacementManagerImpl implements EmplacementManager
 
    @Override
    public List<Emplacement> findByTerminaleAndVideManager(final Terminale terminale, final boolean vide){
-      log.debug("Recherche de tous les emplacements vides " + "ou non d'une terminale");
+      log.debug("Recherche de tous les emplacements vides  ou non d'une terminale");
       if(terminale != null){
          return emplacementDao.findByTerminaleAndVide(terminale, vide);
       }
@@ -821,7 +821,7 @@ public class EmplacementManagerImpl implements EmplacementManager
       if(terminale != null){
          emplacement.setTerminale(terminaleDao.mergeObject(terminale));
       }else{
-         log.warn("Objet obligatoire Terminale manquant" + " lors de la création d'un Emplacement");
+         log.warn("Objet obligatoire Terminale manquant  lors de la création d'un Emplacement");
          throw new RequiredObjectIsNullException("Emplacement", "creation", "Terminale");
       }
 
@@ -829,7 +829,7 @@ public class EmplacementManagerImpl implements EmplacementManager
 
       // Test de la position
       if(!checkEmplacementInTerminale(emplacement)){
-         log.warn("La position n'est pas dans la limite des places de " + "la terminale");
+         log.warn("La position n'est pas dans la limite des places de la terminale");
          throw new InvalidPositionException("Emplacement", "creation", emplacement.getPosition());
       }
 
@@ -837,15 +837,15 @@ public class EmplacementManagerImpl implements EmplacementManager
          // on vérifie que le couple Entité/ObjectId référence
          // un objet existant
          if(entiteManager.findObjectByEntiteAndIdManager(emplacement.getEntite(), emplacement.getObjetId()) == null){
-            log.warn("Couple Entite : " + emplacement.getEntite().toString() + " - ObjetId :" + emplacement.getObjetId()
-               + " inexistant lors de la " + "création d'un objet Emplacement");
+            log.warn("Couple Entite : {} - ObjetId : {} inexistant lors de la création d'un objet Emplacement",
+               emplacement.getEntite(), emplacement.getObjetId());
             throw new EntiteObjectIdNotExistException("Emplacement", entite.getNom(), emplacement.getObjetId());
          }
       }
 
       // Test s"il y a des doublons
       if(findDoublonManager(emplacement) != null){
-         log.warn("Doublon lors de la creation de l'objet Emplacement : " + emplacement.toString());
+         log.warn("Doublon lors de la creation de l'objet Emplacement : {}",  emplacement);
          final EmplacementDoublonFoundException dbe = new EmplacementDoublonFoundException("Emplacement", "creation");
          dbe.setMessage("error.emplacement.doublon");
          dbe.setTerminale(emplacement.getTerminale());
@@ -859,7 +859,7 @@ public class EmplacementManagerImpl implements EmplacementManager
 
       emplacementDao.createObject(emplacement);
 
-      log.info("Enregistrement de l'objet Emplacement : " + emplacement.toString());
+      log.info("Enregistrement de l'objet Emplacement : {}",  emplacement);
    }
 
    @Override
@@ -869,7 +869,7 @@ public class EmplacementManagerImpl implements EmplacementManager
       if(terminale != null){
          emplacement.setTerminale(terminaleDao.mergeObject(terminale));
       }else{
-         log.warn("Objet obligatoire Terminale manquant" + " lors de la modification d'un Emplacement");
+         log.warn("Objet obligatoire Terminale manquant  lors de la modification d'un Emplacement");
          throw new RequiredObjectIsNullException("Emplacement", "modification", "Terminale");
       }
 
@@ -877,7 +877,7 @@ public class EmplacementManagerImpl implements EmplacementManager
 
       // Test de la position
       if(!checkEmplacementInTerminale(emplacement)){
-         log.warn("La position n'est pas dans la limite des places de " + "la terminale");
+         log.warn("La position n'est pas dans la limite des places de la terminale");
          throw new InvalidPositionException("Emplacement", "modification", emplacement.getPosition());
       }
 
@@ -885,15 +885,15 @@ public class EmplacementManagerImpl implements EmplacementManager
          // on vérifie que le couple Entité/ObjectId référence
          // un objet existant
          if(entiteManager.findObjectByEntiteAndIdManager(emplacement.getEntite(), emplacement.getObjetId()) == null){
-            log.warn("Couple Entite : " + emplacement.getEntite().toString() + " - ObjetId :" + emplacement.getObjetId()
-               + " inexistant lors de la " + "modification d'un objet Emplacement");
+            log.warn("Couple Entite : {} - ObjetId : {} inexistant lors de la modification d'un objet Emplacement",
+               emplacement.getEntite(), emplacement.getObjetId());
             throw new EntiteObjectIdNotExistException("Emplacement", entite.getNom(), emplacement.getObjetId());
          }
       }
 
       // Test s"il y a des doublons
       if(findDoublonManager(emplacement) != null){
-         log.warn("Doublon lors de la modification de l'objet " + "Emplacement : " + emplacement.toString());
+         log.warn("Doublon lors de la modification de l'objet Emplacement : {}",  emplacement);
          final EmplacementDoublonFoundException dbe = new EmplacementDoublonFoundException("Emplacement", "modification");
          dbe.setMessage("error.emplacement.doublon");
          dbe.setTerminale(emplacement.getTerminale());
@@ -907,18 +907,18 @@ public class EmplacementManagerImpl implements EmplacementManager
 
       emplacementDao.updateObject(emplacement);
 
-      log.info("Modification de l'objet Emplacement : " + emplacement.toString());
+      log.info("Modification de l'objet Emplacement : {}",  emplacement);
    }
 
    @Override
    public void removeObjectManager(final Emplacement emplacement){
       if(emplacement != null){
          if(isUsedObjectManager(emplacement)){
-            log.warn("Objet utilisé lors de la suppression de l'objet " + "Emplacement : " + emplacement.toString());
+            log.warn("Objet utilisé lors de la suppression de l'objet Emplacement : {}",  emplacement);
             throw new ObjectUsedException("Emplacement", "suppression");
          }
          emplacementDao.removeObject(emplacement.getEmplacementId());
-         log.info("Suppression de l'objet Emplacement : " + emplacement.toString());
+         log.info("Suppression de l'objet Emplacement : {}",  emplacement);
       }else{
          log.warn("Suppression d'un Emplacement null");
       }
@@ -933,7 +933,7 @@ public class EmplacementManagerImpl implements EmplacementManager
       if(terminale != null){
          if(number != null){
             if(number > terminale.getTerminaleType().getNbPlaces()){
-               log.warn("La position n'est pas dans la limite " + "des places de " + "la terminale");
+               log.warn("La position n'est pas dans la limite des places de la terminale");
                throw new InvalidPositionException("Emplacement", "creation", number);
             }
 
@@ -960,7 +960,7 @@ public class EmplacementManagerImpl implements EmplacementManager
          }
 
       }else{
-         log.warn("Objet obligatoire Terminale manquant" + " lors de la creation d'un Emplacement");
+         log.warn("Objet obligatoire Terminale manquant  lors de la creation d'un Emplacement");
          throw new RequiredObjectIsNullException("Emplacement", "creation", "Terminale");
       }
 
@@ -993,7 +993,7 @@ public class EmplacementManagerImpl implements EmplacementManager
 
                emplacementDao.updateObject(emplacement);
 
-               log.info("Modification de l'objet Emplacement : " + emplacement.toString());
+               log.info("Modification de l'objet Emplacement : {}",  emplacement);
 
                //Enregistrement de l'operation associee
                if(!emplacement.getVide() && emplacement.getObjetId() != null && emplacement.getEntite() != null){
@@ -1021,13 +1021,13 @@ public class EmplacementManagerImpl implements EmplacementManager
 
                //Terminale required
                if(empl.getTerminale() == null){
-                  log.warn("Objet obligatoire Terminale manquant" + " lors de la création d'un Emplacement");
+                  log.warn("Objet obligatoire Terminale manquant  lors de la création d'un Emplacement");
                   throw new RequiredObjectIsNullException("Emplacement", "creation", "Terminale");
                }
 
                // Test de la position
                if(!checkEmplacementInTerminale(empl)){
-                  log.warn("La position n'est pas dans la " + "limite des places de " + "la terminale");
+                  log.warn("La position n'est pas dans la limite des places de la terminale");
                   throw new InvalidPositionException("Emplacement", "creation", empl.getPosition());
                }
 
@@ -1037,8 +1037,8 @@ public class EmplacementManagerImpl implements EmplacementManager
                   final TKStockableObject tkObj =
                      (TKStockableObject) entiteManager.findObjectByEntiteAndIdManager(empl.getEntite(), empl.getObjetId());
                   if(tkObj == null){
-                     log.warn("Couple Entite : " + empl.getEntite().toString() + " - ObjetId :" + empl.getObjetId()
-                        + " inexistant lors de la " + "création d'un objet Emplacement");
+                     log.warn("Couple Entite : {} - ObjetId : {} inexistant lors de la création d'un objet Emplacement",
+                        empl.getEntite(), empl.getObjetId());
                      throw new EntiteObjectIdNotExistException("Emplacement", empl.getEntite().getNom(), empl.getObjetId());
                   }else if(tkObj.getEmplacement() != null && !tkObj.getEmplacement().equals(empl)){
                      // verifie que l'objet n'a pas ete stocke
@@ -1064,7 +1064,7 @@ public class EmplacementManagerImpl implements EmplacementManager
                      }
                   }
                   if(!skipErr){
-                     log.warn("Doublon lors de la creation de " + "l'objet Emplacement : " + empl.toString());
+                     log.warn("Doublon lors de la creation de l'objet Emplacement : {}",  empl);
                      final EmplacementDoublonFoundException dbe = new EmplacementDoublonFoundException("Emplacement", "creation");
                      dbe.setMessage("error.emplacement.doublon");
                      dbe.setTerminale(empl.getTerminale());

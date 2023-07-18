@@ -163,7 +163,7 @@ public class EchantillonTypeManagerImpl implements EchantillonTypeManager
     */
    @Override
    public List<EchantillonType> findByTypeLikeManager(String type, final boolean exactMatch){
-      log.debug("Recherche EchantillonType par " + type + " exactMatch " + String.valueOf(exactMatch));
+      log.debug("Recherche EchantillonType par {} exactMatch {}", type, exactMatch);
       if(type != null){
          if(!exactMatch){
             type = type + "%";
@@ -205,12 +205,12 @@ public class EchantillonTypeManagerImpl implements EchantillonTypeManager
       type.setPlateforme(plateformeDao.mergeObject(type.getPlateforme()));
 
       if(findDoublonManager(type)){
-         log.warn("Doublon lors de la creation de l'objet " + "EchantillonType : " + type.toString());
+         log.warn("Doublon lors de la creation de l'objet EchantillonType : {}",  type);
          throw new DoublonFoundException("EchantillonType", "creation");
       }
       BeanValidator.validateObject(type, new Validator[] {echantillonTypeValidator});
       echantillonTypeDao.createObject(type);
-      log.info("Enregistrement de l'objet EchantillonType : " + type.toString());
+      log.info("Enregistrement de l'objet EchantillonType : {}",  type);
    }
 
    @Override
@@ -219,23 +219,23 @@ public class EchantillonTypeManagerImpl implements EchantillonTypeManager
       final EchantillonType type = obj;
 
       if(findDoublonManager(type)){
-         log.warn("Doublon lors de la modification de l'objet " + "EchantillonType : " + type.toString());
+         log.warn("Doublon lors de la modification de l'objet EchantillonType : {}",  type);
          throw new DoublonFoundException("EchantillonType", "modification");
       }
       BeanValidator.validateObject(type, new Validator[] {echantillonTypeValidator});
       echantillonTypeDao.updateObject(type);
-      log.info("Modification de l'objet EchantillonType : " + type.toString());
+      log.info("Modification de l'objet EchantillonType : {}",  type);
    }
 
    @Override
    public void removeObjectManager(final EchantillonType obj){
       final EchantillonType type = obj;
       if(isUsedObjectManager(type)){
-         log.warn("Objet utilisé lors de la suppression de l'objet " + "EchantillonType : " + type.toString());
+         log.warn("Objet utilisé lors de la suppression de l'objet EchantillonType : {}",  type);
          throw new ObjectUsedException("EchantillonType", "suppression");
       }
       echantillonTypeDao.removeObject(type.getId());
-      log.info("Suppression de l'objet EchantillonType : " + type.toString());
+      log.info("Suppression de l'objet EchantillonType : {}",  type);
    }
 
    @Override

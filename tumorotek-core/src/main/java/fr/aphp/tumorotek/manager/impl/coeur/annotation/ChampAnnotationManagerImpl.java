@@ -217,7 +217,7 @@ public class ChampAnnotationManagerImpl implements ChampAnnotationManager
       final StringBuffer sb = new StringBuffer("");
       sb.append("SELECT va FROM AnnotationValeur as av " + "join av.champAnnotation as ca where ca.id = " + ca.getId());
       /* On exécute la requête. */
-      log.debug("findAnnotationValeurByChampAnnotationManager : " + "Exécution de la requête : \n" + sb.toString());
+      log.debug("findAnnotationValeurByChampAnnotationManager : Exécution de la requête : \n{}", sb);
       final EntityManager em = entityManagerFactory.createEntityManager();
       final TypedQuery<AnnotationValeur> query = em.createQuery(sb.toString(), AnnotationValeur.class);
       objets = query.getResultList();
@@ -231,7 +231,7 @@ public class ChampAnnotationManagerImpl implements ChampAnnotationManager
       sb.append("SELECT DISTINCT ca FROM ChampAnnotation as ca " + "join ca.tableAnnotation.entite as en "
          + "WHERE en.entiteId = " + e.getEntiteId().intValue());
       /* On exécute la requête. */
-      log.debug("findChampAnnotationByEntiteManager : " + "Exécution de la requête : \n" + sb.toString());
+      log.debug("findChampAnnotationByEntiteManager : Exécution de la requête : \n{}",sb);
       final EntityManager em = entityManagerFactory.createEntityManager();
       final TypedQuery<ChampAnnotation> query = em.createQuery(sb.toString(), ChampAnnotation.class);
       objets = query.getResultList();
@@ -278,7 +278,7 @@ public class ChampAnnotationManagerImpl implements ChampAnnotationManager
             + "join ca.tableAnnotation.entite as en " + "WHERE en.nom like '" + objet.getClass().getSimpleName()
             + "' and av.objetId = " + id + " and ca.id = " + champAnnotation.getId());
          /* On exécute la requête. */
-         log.debug("findAnnotationValeurManager : " + "Exécution de la requête : \n" + sb.toString());
+         log.debug("findAnnotationValeurManager : Exécution de la requête : \n{}", sb);
          final EntityManager em = entityManagerFactory.createEntityManager();
          final Query query = em.createQuery(sb.toString());
          try{
@@ -304,7 +304,7 @@ public class ChampAnnotationManagerImpl implements ChampAnnotationManager
       if(!exactMatch){
          nom = nom + "%";
       }
-      log.debug("Recherche ChampAnnotation par nom: " + nom + " exactMatch " + String.valueOf(exactMatch));
+      log.debug("Recherche ChampAnnotation par nom: {} exactMatch {}", nom, exactMatch);
       return champAnnotationDao.findByNom(nom);
    }
 
@@ -460,7 +460,7 @@ public class ChampAnnotationManagerImpl implements ChampAnnotationManager
          }
 
          champAnnotationDao.removeObject(champAnnotation.getId());
-         log.info("Suppression objet ChampAnnotation " + champAnnotation.toString());
+         log.info("Suppression objet ChampAnnotation {}",  champAnnotation);
 
          //Supprime operations associes
          CreateOrUpdateUtilities.removeAssociateOperations(champAnnotation, operationManager, comments, user);
@@ -488,7 +488,7 @@ public class ChampAnnotationManagerImpl implements ChampAnnotationManager
          // merge dataType object
          champ.setTableAnnotation(tableAnnotationDao.mergeObject(table));
       }else if(champ.getTableAnnotation() == null){
-         log.warn("Objet obligatoire TableAnnotation manquant" + " lors de la " + operation + " de champ");
+         log.warn("Objet obligatoire TableAnnotation manquant lors de la {} de champ", operation);
          throw new RequiredObjectIsNullException("ChampAnnotation", operation, "TableAnnotation");
       }
 
@@ -497,7 +497,7 @@ public class ChampAnnotationManagerImpl implements ChampAnnotationManager
          // merge dataType object
          champ.setDataType(dataTypeDao.mergeObject(dataType));
       }else if(champ.getDataType() == null){
-         log.warn("Objet obligatoire DataType manquant" + " lors de la " + operation + " de champ");
+         log.warn("Objet obligatoire DataType manquant lors de la {} de champ", operation);
          throw new RequiredObjectIsNullException("ChampAnnotation", operation, "DataType");
       }
 
@@ -553,8 +553,7 @@ public class ChampAnnotationManagerImpl implements ChampAnnotationManager
          // on retire l'item de l'association et on le supprime
          champ.getItems().remove(item);
          itemDao.removeObject(item.getItemId());
-
-         log.debug("Suppression de l'association entre le champ : " + champ.toString() + " et l'item " + item.toString());
+         log.debug("Suppression de l'association entre le champ : {} et l'item {}", champ, item);
       }
 
       final Set<Item> its = new LinkedHashSet<>();
@@ -562,9 +561,9 @@ public class ChampAnnotationManagerImpl implements ChampAnnotationManager
       for(int i = 0; i < items.size(); i++){
          // si un item n'était pas associé au champ
          if(!chpIts.contains(items.get(i))){
-            log.debug("Ajout de l'association entre le champ : " + champ.toString() + " et l'item : " + items.get(i).toString());
+            log.debug("Ajout de l'association entre le champ : {} et l'item : {}", champ, items.get(i));
          }else{
-            log.debug("Merge/Update de l'item " + items.get(i).toString() + " pour le champ " + champ.toString());
+            log.debug("Merge/Update de l'item {} pour le champ {}", items.get(i), champ);
          }
          // on ajoute l'item dans l'association
          its.add(itemDao.mergeObject(items.get(i)));
@@ -604,9 +603,8 @@ public class ChampAnnotationManagerImpl implements ChampAnnotationManager
          // on retire l'item de l'association et on le supprime
          champ.getAnnotationDefauts().remove(defautsToRemove.get(i));
          annotationDefautDao.removeObject(defautsToRemove.get(i).getAnnotationDefautId());
+         log.debug("Suppression de l'association entre le champ : {} et la valeur par defaut {}", champ, defautsToRemove.get(i));
 
-         log.debug("Suppression de l'association entre le champ : " + champ.toString() + " et la valeur par defaut "
-            + defautsToRemove.get(i).toString());
       }
 
       final Set<AnnotationDefaut> defs = new LinkedHashSet<>();
@@ -626,10 +624,10 @@ public class ChampAnnotationManagerImpl implements ChampAnnotationManager
                   }
                }
             }
-            log.debug("Ajout de l'association entre le champ : " + champ.toString() + " et la valeur par defaut : "
-               + defauts.get(i).toString());
+            log.debug("Ajout de l'association entre le champ : {} et la valeur par defaut : {}", champ, defauts.get(i));
+
          }else{
-            log.debug("Modification de la valeur par defaut : " + defauts.get(i).toString());
+            log.debug("Modification de la valeur par defaut : {}",defauts.get(i));
          }
          defs.add(annotationDefautDao.mergeObject(defauts.get(i)));
       }
@@ -667,9 +665,9 @@ public class ChampAnnotationManagerImpl implements ChampAnnotationManager
             path = Utils.writeAnnoFilePath(baseDir, bank, chp, null);
             if(!delete){
                if(new File(path).mkdirs()){
-                  log.debug("Creation file system " + path);
+                  log.debug("Creation file system {}",  path);
                }else{
-                  log.error("Erreur dans la creation du systeme " + "de fichier pour le champ " + chp.toString());
+                  log.error("Erreur dans la creation du systeme de fichier pour le champ {}",  chp);
                }
             }else{
                // supprime le contenu
@@ -677,7 +675,7 @@ public class ChampAnnotationManagerImpl implements ChampAnnotationManager
                if(annos != null){
                   for(int i = 0; i < annos.length; i++){
                      annos[i].delete();
-                     log.debug("Supprime " + annos[i].getName());
+                     log.debug("Supprime {}",annos[i].getName());
                   }
                }
                // supprime le dossier
@@ -705,7 +703,7 @@ public class ChampAnnotationManagerImpl implements ChampAnnotationManager
             try{
                if(operation.equals("creation")){
                   champAnnotationDao.createObject(champ);
-                  log.info("Enregistrement objet ChampAnnotation " + champ.toString());
+                  log.info("Enregistrement objet ChampAnnotation {}",  champ);
                   // cree l'arborescence si annotation fichier
                   if(champ.getDataType().getType().equals("fichier")){
                      createOrDeleteFileDirectoryManager(baseDir, champ, false, getBanquesFromTableManager(champ));
@@ -714,7 +712,7 @@ public class ChampAnnotationManagerImpl implements ChampAnnotationManager
                      operationTypeDao.findByNom("Creation").get(0), utilisateur);
                }else{
                   champAnnotationDao.updateObject(champ);
-                  log.info("Modification objet ChampAnnotation " + champ.toString());
+                  log.info("Modification objet ChampAnnotation {}",  champ);
                   CreateOrUpdateUtilities.createAssociateOperation(champ, operationManager,
                      operationTypeDao.findByNom("Modification").get(0), utilisateur);
                }
@@ -743,7 +741,7 @@ public class ChampAnnotationManagerImpl implements ChampAnnotationManager
             throw new IllegalArgumentException("Operation must match " + "'creation/modification' values");
          }
       }else{
-         log.warn("Doublon lors " + operation + " objet ChampAnnotation " + champ.toString());
+         log.warn("Doublon lors {} objet ChampAnnotation {}", operation, champ);
          throw new DoublonFoundException("ChampAnnotation", operation);
       }
    }

@@ -99,7 +99,7 @@ public class TitreManagerImpl implements TitreManager
     */
    @Override
    public List<Titre> findByTitreLikeManager(String titre, final boolean exactMatch){
-      log.debug("Recherche Titre par " + titre + " exactMatch " + String.valueOf(exactMatch));
+      log.debug("Recherche Titre par {} exactMatch {}", titre, exactMatch);
       if(titre != null){
          if(!exactMatch){
             titre = titre + "%";

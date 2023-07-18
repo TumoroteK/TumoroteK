@@ -225,7 +225,7 @@ public class CoordonneeManagerImpl implements CoordonneeManager
 
       coordonneeDao.createObject(coordonnee);
 
-      log.info("Enregistrement de l'objet Coordonnee : " + coordonnee.toString());
+      log.info("Enregistrement de l'objet Coordonnee : {}",  coordonnee);
 
    }
 
@@ -255,7 +255,7 @@ public class CoordonneeManagerImpl implements CoordonneeManager
 
       coordonneeDao.updateObject(coordonnee);
 
-      log.info("Enregistrement de l'objet Coordonnee : " + coordonnee.toString());
+      log.info("Enregistrement de l'objet Coordonnee : {}",  coordonnee);
 
    }
 
@@ -276,7 +276,7 @@ public class CoordonneeManagerImpl implements CoordonneeManager
       }
 
       coordonneeDao.removeObject(coordonnee.getCoordonneeId());
-      log.info("Suppression de l'objet Coordonnee : " + coordonnee.toString());
+      log.info("Suppression de l'objet Coordonnee : {}",  coordonnee);
 
    }
 

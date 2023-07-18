@@ -224,7 +224,7 @@ public class ContratManagerImpl implements ContratManager
    @Override
    public List<Contrat> findByNumeroLikeManager(String numero, final boolean exactMatch){
 
-      log.debug("Recherche Contrat par numero : " + numero + " exactMatch " + String.valueOf(exactMatch));
+      log.debug("Recherche Contrat par numero : {} exactMatch {}", numero, exactMatch);
       if(numero != null){
          if(!exactMatch){
             numero = numero + "%";
@@ -280,7 +280,7 @@ public class ContratManagerImpl implements ContratManager
       if(plateforme != null){
          contrat.setPlateforme(plateformeDao.mergeObject(plateforme));
       }else{
-         log.warn("Objet obligatoire Plateforme manquant" + " lors de la création d'un Contrat");
+         log.warn("Objet obligatoire Plateforme manquant  lors de la création d'un Contrat");
          throw new RequiredObjectIsNullException("Contrat", "Creation", "Plateforme");
       }
 
@@ -291,7 +291,7 @@ public class ContratManagerImpl implements ContratManager
 
       // Test s'il y a des doublons
       if(findDoublonManager(contrat)){
-         log.warn("Doublon lors de la creation de l'objet Contrat : " + contrat.toString());
+         log.warn("Doublon lors de la creation de l'objet Contrat : {}",  contrat);
          throw new DoublonFoundException("Contrat", "creation");
       }
 
@@ -300,7 +300,7 @@ public class ContratManagerImpl implements ContratManager
 
       contratDao.createObject(contrat);
 
-      log.info("Enregistrement de l'objet Contrat : " + contrat.toString());
+      log.info("Enregistrement de l'objet Contrat : {}",  contrat);
 
       //Enregistrement de l'operation associee
       final Operation creationOp = new Operation();
@@ -324,7 +324,7 @@ public class ContratManagerImpl implements ContratManager
       if(plateforme != null){
          contrat.setPlateforme(plateformeDao.mergeObject(plateforme));
       }else{
-         log.warn("Objet obligatoire Plateforme manquant" + " lors de la modification d'un Contrat");
+         log.warn("Objet obligatoire Plateforme manquant  lors de la modification d'un Contrat");
          throw new RequiredObjectIsNullException("Contrat", "modification", "Plateforme");
       }
 
@@ -335,7 +335,7 @@ public class ContratManagerImpl implements ContratManager
 
       // Test s'il y a des doublons
       if(findDoublonManager(contrat)){
-         log.warn("Doublon lors de la modification de l'objet Contrat : " + contrat.toString());
+         log.warn("Doublon lors de la modification de l'objet Contrat : {}",  contrat);
          throw new DoublonFoundException("Contrat", "modification");
       }
       // validation du Contrat
@@ -343,7 +343,7 @@ public class ContratManagerImpl implements ContratManager
 
       contratDao.updateObject(contrat);
 
-      log.info("Modification de l'objet Contrat : " + contrat.toString());
+      log.info("Modification de l'objet Contrat : {}",  contrat);
 
       //Enregistrement de l'operation associee
       final Operation creationOp = new Operation();
@@ -355,7 +355,7 @@ public class ContratManagerImpl implements ContratManager
    public void removeObjectManager(final Contrat contrat, final String comments, final Utilisateur u){
       if(contrat != null){
          if(isUsedObjectManager(contrat)){
-            log.warn("Objet utilisé lors de la suppression de l'objet " + "Contrat : " + contrat.toString());
+            log.warn("Objet utilisé lors de la suppression de l'objet Contrat : {}",  contrat);
             throw new ObjectUsedException("contrat.deletion.isReferenced", false);
          }
 
@@ -363,7 +363,7 @@ public class ContratManagerImpl implements ContratManager
          CreateOrUpdateUtilities.removeAssociateOperations(contrat, operationManager, comments, u);
 
          contratDao.removeObject(contrat.getContratId());
-         log.info("Suppression de l'objet Contrat : " + contrat.toString());
+         log.info("Suppression de l'objet Contrat : {}",  contrat);
       }else{
          log.warn("Suppression d'un Contrat null");
       }

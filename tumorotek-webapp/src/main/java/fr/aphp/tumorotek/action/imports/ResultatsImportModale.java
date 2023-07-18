@@ -562,7 +562,7 @@ public class ResultatsImportModale extends GenericForwardComposer<Component>
                   if(champ != null){
                      message = message + ObjectTypesFormatters.getLabel("validation.invalid.import", new String[] {champ});
                   }else{
-                     log.warn("internationalisation non trouvee pour " + er.toString());
+                     log.warn("internationalisation non trouvee pour {}",  er);
                      message = message + ObjectTypesFormatters.getLabel("validation.invalid.import", new String[] {"?"});
                   }
                }else{

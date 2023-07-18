@@ -46,6 +46,6 @@ public class TKSessionCleanup implements SessionCleanup
 
    @Override
    public void cleanup(final Session session) throws Exception{
-      log.info("\nDHzSessionCleanup::cleanup" + session.getLocalName());
+      log.info("\nDHzSessionCleanup::cleanup{}",  session.getLocalName());
    }
 }

@@ -168,7 +168,7 @@ public class PatientServeurIdentite implements Sip
          sql = sql + " AND rownum < " + nbMaxPatients;
       }
 
-      log.debug("Requete : " + sql);
+      log.debug("Requete : {}", sql);
       return sql;
    }
 

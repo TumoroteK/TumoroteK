@@ -112,7 +112,7 @@ public class ChampCalculeManagerImpl implements ChampCalculeManager, Application
    public void createObjectManager(final ChampCalcule champCalcule){
       // On vérifie que le groupement n'est pas nul
       if(champCalcule == null){
-         log.warn("Objet obligatoire ChampCalcule manquant lors " + "de la création d'un objet ChampCalcule");
+         log.warn("Objet obligatoire ChampCalcule manquant lors de la création d'un objet ChampCalcule");
          throw new RequiredObjectIsNullException("ChampCalcule", "création", "ChampCalcule");
       }
 
@@ -139,7 +139,7 @@ public class ChampCalculeManagerImpl implements ChampCalculeManager, Application
    public void updateObjectManager(final ChampCalcule champCalcule){
       //On vérifie que le groupement n'est pas nul
       if(champCalcule == null){
-         log.warn("Objet obligatoire ChampCalcule manquant lors " + "de la modification d'un objet ChampCalcule");
+         log.warn("Objet obligatoire ChampCalcule manquant lors de la modification d'un objet ChampCalcule");
          throw new RequiredObjectIsNullException("ChampCalcule", "modification", "ChampCalcule");
       }
 
@@ -181,7 +181,7 @@ public class ChampCalculeManagerImpl implements ChampCalculeManager, Application
    public void removeObjectManager(final ChampCalcule champCalcule){
       // On vérifie que le champ n'est pas nul
       if(champCalcule == null){
-         log.warn("Objet obligatoire ChampCalcule manquant lors " + "de la suppression d'un objet ChampCalcule");
+         log.warn("Objet obligatoire ChampCalcule manquant lors de la suppression d'un objet ChampCalcule");
          throw new RequiredObjectIsNullException("ChampCalcule", "suppression", "ChampCalcule");
       }
       // On vérifie que le champ est en BDD
@@ -215,7 +215,7 @@ public class ChampCalculeManagerImpl implements ChampCalculeManager, Application
    public ChampCalcule findByIdManager(final Integer id){
       // On vérifie que l'identifiant n'est pas nul
       if(id == null){
-         log.warn("Objet obligatoire identifiant manquant lors de la " + "recherche par l'identifiant d'un objet ChampCalcule");
+         log.warn("Objet obligatoire identifiant manquant lors de la recherche par l'identifiant d'un objet ChampCalcule");
          throw new RequiredObjectIsNullException("ChampCalcule", "recherche par identifiant", "identifiant");
       }
       return champCalculeDao.findById(id);

@@ -952,7 +952,7 @@ public class Export extends Thread
 				throw new InterruptedException();
 			}
 			try{
-				log.debug("fill tmp table annotation " + entite_id);
+				log.debug("fill tmp table annotation {}:",entite_id);
 
 				initAnnoTables();
 
@@ -1202,7 +1202,7 @@ public class Export extends Thread
 	{
 		@Override
 		public void uncaughtException(final Thread th, final Throwable ex){
-			log.error("Uncaught exception: " + ex);
+			log.error("Uncaught exception: {}",  ex);
 		}
 	};
 

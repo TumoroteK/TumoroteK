@@ -102,7 +102,7 @@ public abstract class RequiredValueValidator implements Validator
             final String fName = chpIdNameMap.get(chpId);
 
             if(!validations.keySet().contains(chpId)){ // simple getProperty validation
-               log.debug("validating field " + fName + " through getProperty validation");
+               log.debug("validating field {} through getProperty validation", fName);
                try{
                   if(!Collection.class.isAssignableFrom(PropertyUtils.getPropertyType(target, fName))){ // not collection
                      ValidationUtils.rejectIfEmptyOrWhitespace(errs, fName, eNom + "." + fName + ".empty");

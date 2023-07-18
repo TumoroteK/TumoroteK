@@ -78,7 +78,7 @@ public class TumoLinkUrdImpl implements TumoLinkUrd
             // ok file
             camelTemplate.sendBodyAndHeader("direct:ack-sgl", "", "CamelFileName", setFileName(prel, true, null, datef));
 
-            log.debug("Message send: " + dosExtId);
+            log.debug("Message send: {}", dosExtId);
          }catch(final Exception e){
             log.error(e.getMessage(), e);
             throw new RuntimeException(e.getMessage());

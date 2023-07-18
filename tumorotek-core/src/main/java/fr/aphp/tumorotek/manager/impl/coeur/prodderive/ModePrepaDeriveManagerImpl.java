@@ -102,7 +102,7 @@ public class ModePrepaDeriveManagerImpl implements ModePrepaDeriveManager
 
    @Override
    public List<ModePrepaDerive> findByModePrepaDeriveLikeManager(String mode, final boolean exactMatch){
-      log.debug("Recherche ModePrepaDerive par " + mode + " exactMatch " + String.valueOf(exactMatch));
+      log.debug("Recherche ModePrepaDerive par {} exactMatch {}", mode, exactMatch);
       if(mode != null){
          if(!exactMatch){
             mode = mode + "%";
@@ -143,31 +143,31 @@ public class ModePrepaDeriveManagerImpl implements ModePrepaDeriveManager
       mode.setPlateforme(plateformeDao.mergeObject(mode.getPlateforme()));
 
       if(findDoublonManager(mode)){
-         log.warn("Doublon lors de la creation de l'objet " + "ModePrepaDerive : " + mode.toString());
+         log.warn("Doublon lors de la creation de l'objet ModePrepaDerive : {}",  mode);
          throw new DoublonFoundException("ModePrepaDerive", "creation");
       }
       BeanValidator.validateObject(mode, new Validator[] {modePrepaDeriveValidator});
       modePrepaDeriveDao.createObject(mode);
-      log.info("Enregistrement de l'objet ModePrepaDerive : " + mode.toString());
+      log.info("Enregistrement de l'objet ModePrepaDerive : {}",  mode);
    }
 
    @Override
    public void updateObjectManager(final ModePrepaDerive obj){
       final ModePrepaDerive mode = obj;
       if(findDoublonManager(mode)){
-         log.warn("Doublon lors de la modification de l'objet " + "ModePrepaDerive : " + mode.toString());
+         log.warn("Doublon lors de la modification de l'objet ModePrepaDerive : {}",  mode);
          throw new DoublonFoundException("ModePrepaDerive", "modification");
       }
       BeanValidator.validateObject(mode, new Validator[] {modePrepaDeriveValidator});
       modePrepaDeriveDao.updateObject(mode);
-      log.info("Modification de l'objet ModePrepaDerive : " + mode.toString());
+      log.info("Modification de l'objet ModePrepaDerive : {}",  mode);
    }
 
    @Override
    public void removeObjectManager(final ModePrepaDerive obj){
       final ModePrepaDerive mode = obj;
       modePrepaDeriveDao.removeObject(mode.getId());
-      log.info("Suppression de l'objet ModePrepaDerive : " + mode.toString());
+      log.info("Suppression de l'objet ModePrepaDerive : {}",  mode);
    }
 
    @Override

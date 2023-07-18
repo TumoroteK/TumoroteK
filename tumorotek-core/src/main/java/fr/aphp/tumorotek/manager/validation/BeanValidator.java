@@ -74,7 +74,7 @@ public final class BeanValidator
 
       for(final Validator validator : vals){
          if(validator.supports(arg.getClass())){
-            log.debug("Validator supported: " + arg.getClass());
+            log.debug("Validator supported: {}",  arg.getClass());
             validateAndAddErrors(arg, validator, errors);
             //inspectObjectProperties(arg, errors);
             //break;

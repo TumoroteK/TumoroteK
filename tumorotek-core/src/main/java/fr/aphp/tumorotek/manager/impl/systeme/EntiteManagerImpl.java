@@ -109,7 +109,7 @@ public class EntiteManagerImpl implements EntiteManager
 
    @Override
    public List<Entite> findByNomManager(final String nom){
-      log.debug("Recherche Entite par " + nom);
+      log.debug("Recherche Entite par {}", nom);
       if(nom != null){
          return entiteDao.findByNom(nom);
       }
@@ -126,7 +126,7 @@ public class EntiteManagerImpl implements EntiteManager
    public Object findObjectByEntiteAndIdManager(final Entite entite, final Integer objectId){
 
       if(objectId != null && entite != null){
-         log.debug("Recherche l'objet correspondant au couple Entite : " + entite.toString() + " - ObjetId : " + objectId);
+         log.debug("Recherche l'objet correspondant au couple Entite : {} - ObjetId : {}", entite, objectId);
          final String nomTable = entite.getNom();
 
          String nomAttribut = "id";

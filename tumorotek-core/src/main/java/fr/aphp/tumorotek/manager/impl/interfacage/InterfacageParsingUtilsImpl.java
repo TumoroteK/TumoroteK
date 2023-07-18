@@ -110,28 +110,28 @@ public class InterfacageParsingUtilsImpl implements InterfacageParsingUtils
          if(sepElt != null){
             conf.setSeparateurChamps(sepElt.getText());
          }else{
-            log.info("initConfigurationParsing : " + "Balise 'SeparateurChamps' absente du fichier.");
+            log.info("initConfigurationParsing : Balise 'SeparateurChamps' absente du fichier.");
          }
          sepElt = confElt.getChild("SeparateurComposants");
          if(sepElt != null){
             conf.setSeparateurComposants(sepElt.getText());
          }else{
-            log.info("initConfigurationParsing : " + "Balise 'SeparateurComposants' absente du fichier.");
+            log.info("initConfigurationParsing : Balise 'SeparateurComposants' absente du fichier.");
          }
          sepElt = confElt.getChild("SeparateurSousComposants");
          if(sepElt != null){
             conf.setSeparateurSousComposants(sepElt.getText());
          }else{
-            log.info("initConfigurationParsing : " + "Balise 'SeparateurSousComposants' " + "absente du fichier.");
+            log.info("initConfigurationParsing : Balise 'SeparateurSousComposants' absente du fichier.");
          }
          sepElt = confElt.getChild("BlocLibreKey");
          if(sepElt != null){
             conf.setBlocLibreKey(sepElt.getText());
          }else{
-            log.info("initConfigurationParsing : " + "Balise 'BlocLibreKey' absente du fichier.");
+            log.info("initConfigurationParsing : Balise 'BlocLibreKey' absente du fichier.");
          }
       }else{
-         log.warn("initConfigurationParsing : " + "Balise 'Configuration' absente du fichier.");
+         log.warn("initConfigurationParsing : Balise 'Configuration' absente du fichier.");
       }
 
       return conf;
@@ -207,13 +207,13 @@ public class InterfacageParsingUtilsImpl implements InterfacageParsingUtils
 
       }else{
          if(file == null){
-            log.warn("extractEmetteurFromFileToInjectInTk : " + "Le fichier à injecter dans TK est NULL");
+            log.warn("extractEmetteurFromFileToInjectInTk : Le fichier à injecter dans TK est NULL");
          }
          if(fileXml == null){
-            log.warn("extractEmetteurFromFileToInjectInTk : " + "Le ficher XML de configuration est NULL");
+            log.warn("extractEmetteurFromFileToInjectInTk : Le ficher XML de configuration est NULL");
          }
          if(file == null){
-            log.warn("extractEmetteurFromFileToInjectInTk : " + "La boite ftp ayant reçu le message est NULL");
+            log.warn("extractEmetteurFromFileToInjectInTk : La boite ftp ayant reçu le message est NULL");
          }
       }
       return emetteurObj;
@@ -260,13 +260,13 @@ public class InterfacageParsingUtilsImpl implements InterfacageParsingUtils
 
       }else{
          if(file == null){
-            log.warn("extractXMLFIleFromFileToInjectInTk : " + "Le fichier à injecter dans TK est NULL");
+            log.warn("extractXMLFIleFromFileToInjectInTk : Le fichier à injecter dans TK est NULL");
          }
          if(fileXml == null){
-            log.warn("extractXMLFIleFromFileToInjectInTk : " + "Le ficher XML de configuration est NULL");
+            log.warn("extractXMLFIleFromFileToInjectInTk : Le ficher XML de configuration est NULL");
          }
          if(file == null){
-            log.warn("extractXMLFIleFromFileToInjectInTk : " + "La boite ftp ayant reçu le message est NULL");
+            log.warn("extractXMLFIleFromFileToInjectInTk : La boite ftp ayant reçu le message est NULL");
          }
       }
       return null;
@@ -547,7 +547,7 @@ public class InterfacageParsingUtilsImpl implements InterfacageParsingUtils
             }
             dossier.setIdentificationDossier(identificationDossier);
          }else{
-            log.info("initNewDossierExterne : " + "La balise 'NumeroDossier' est absente du fichier");
+            log.info("initNewDossierExterne : La balise 'NumeroDossier' est absente du fichier");
          }
 
          // extraction du numéro de la date
@@ -566,7 +566,7 @@ public class InterfacageParsingUtilsImpl implements InterfacageParsingUtils
             }
             dossier.setDateOperation(cal);
          }else{
-            log.info("initNewDossierExterne : " + "La balise 'DateDossier' est absente du fichier");
+            log.info("initNewDossierExterne : La balise 'DateDossier' est absente du fichier");
          }
 
          // extraction du numéro de l'opération
@@ -575,17 +575,17 @@ public class InterfacageParsingUtilsImpl implements InterfacageParsingUtils
             final String emp = confElt.getChild("OperationDossier").getChildText("Key");
             dossier.setOperation(getValueFromBlocAndEmplacement(contenu, config, bloc, emp));
          }else{
-            log.info("initNewDossierExterne : " + "La balise 'OperationDossier' est absente du fichier");
+            log.info("initNewDossierExterne : La balise 'OperationDossier' est absente du fichier");
          }
       }else{
          if(config == null){
-            log.warn("initNewDossierExterne : " + "La configuration pour parser le message " + "est NULL");
+            log.warn("initNewDossierExterne : La configuration pour parser le message est NULL");
          }
          if(contenu == null){
-            log.warn("initNewDossierExterne : " + "Le fichier à injecter dans TK " + "est NULL");
+            log.warn("initNewDossierExterne : Le fichier à injecter dans TK est NULL");
          }
          if(racine == null){
-            log.warn("initNewDossierExterne : " + "La racine du fichier de mapping " + "est NULL");
+            log.warn("initNewDossierExterne : La racine du fichier de mapping est NULL");
          }
       }
 
@@ -766,20 +766,20 @@ public class InterfacageParsingUtilsImpl implements InterfacageParsingUtils
          if(contenu.containsKey(bloc)){
             value = getValueFromEmplacement(contenu.get(bloc), conf, emplacement);
          }else{
-            log.info("getValueFromBlocAndEmplacement : " + "Le bloc '" + bloc + "' n'est pas présent dans le fichier");
+            log.info("getValueFromBlocAndEmplacement : Le bloc '{}' n'est pas présent dans le fichier", bloc);
          }
       }else{
          if(conf == null){
-            log.warn("getValueFromBlocAndEmplacement : " + "La configuration pour parser le message " + "est NULL");
+            log.warn("getValueFromBlocAndEmplacement : La configuration pour parser le message est NULL");
          }
          if(bloc == null){
-            log.warn("getValueFromBlocAndEmplacement : " + "Le bloc dans lequel extraire la valeur " + "est NULL");
+            log.warn("getValueFromBlocAndEmplacement : Le bloc dans lequel extraire la valeur est NULL");
          }
          if(contenu == null){
-            log.warn("getValueFromBlocAndEmplacement : " + "Le contenu du fichier est NULL");
+            log.warn("getValueFromBlocAndEmplacement : Le contenu du fichier est NULL");
          }
          if(emplacement == null){
-            log.warn("getValueFromBlocAndEmplacement : " + "L'emplacement de la valeur à extraire " + "est NULL");
+            log.warn("getValueFromBlocAndEmplacement : L'emplacement de la valeur à extraire est NULL");
          }
       }
 
@@ -826,20 +826,20 @@ public class InterfacageParsingUtilsImpl implements InterfacageParsingUtils
 
             value = getValueFromEmplacement(values, conf, emplacement);
          }else{
-            log.info("getValueFromBlocLibre : " + "Le bloc libre '" + bloc + "' n'est pas présent dans le fichier");
+            log.info("getValueFromBlocLibre : Le bloc libre '{}' n'est pas présent dans le fichier", bloc);
          }
       }else{
          if(conf == null){
-            log.warn("getValueFromBlocLibre : " + "La configuration pour parser le message " + "est NULL");
+            log.warn("getValueFromBlocLibre : La configuration pour parser le message est NULL");
          }
          if(bloc == null){
-            log.warn("getValueFromBlocLibre : " + "Le bloc dans lequel extraire la valeur " + "est NULL");
+            log.warn("getValueFromBlocLibre : Le bloc dans lequel extraire la valeur est NULL");
          }
          if(blocsLibres == null){
-            log.warn("getValueFromBlocLibre : " + "La liste des blocs libres est NULL");
+            log.warn("getValueFromBlocLibre : La liste des blocs libres est NULL");
          }
          if(emplacement == null){
-            log.warn("getValueFromBlocLibre : " + "L'emplacement de la valeur à extraire " + "est NULL");
+            log.warn("getValueFromBlocLibre : L'emplacement de la valeur à extraire est NULL");
          }
       }
       return value;
@@ -925,7 +925,7 @@ public class InterfacageParsingUtilsImpl implements InterfacageParsingUtils
                   value = emplacementAdrl.toString(); // l'adresse de stockage sera enregistrée comme valeur externe
                }
             }else{
-               log.info("formateValueUsingFunction : " + "La fonction de formatage '" + fonction + "' n'existe pas");
+               log.info("formateValueUsingFunction : La fonction de formatage '{}' n'existe pas", fonction);
             }
          }
       }
@@ -1106,8 +1106,9 @@ public class InterfacageParsingUtilsImpl implements InterfacageParsingUtils
                      valeurExternes.remove(blocCurrent);
                      valeurExternes.put(blocCurrent, vals);
                   }else{
-                     log.info("La valeur du bloc '" + bloc.getAttributeValue("nom") + "' à l'emplacement '"
-                        + sourceElt.getChildText("Key") + "' est NULL");
+                     log.info("La valeur du bloc '{}' à l'emplacement '{}' est NULL", bloc.getAttributeValue("nom"),
+                        sourceElt.getChildText("Key"));
+
                   }
                }
             }
@@ -1209,8 +1210,8 @@ public class InterfacageParsingUtilsImpl implements InterfacageParsingUtils
                         // insertion de la valeur dans la liste d'éléments
                         valeurExternes.get(blocSpm).add(valeur);
                      }else{
-                        log.info("La valeur du bloc '" + bloc.getAttributeValue("nom") + "' à l'emplacement '"
-                           + sourceElt.getChildText("Key") + "' est NULL");
+                        log.info("La valeur du bloc '{}' à l'emplacement '{}' est NULL",
+                           bloc.getAttributeValue("nom"), sourceElt.getChildText("Key"));
                      }
                   }
                }
@@ -1312,8 +1313,9 @@ public class InterfacageParsingUtilsImpl implements InterfacageParsingUtils
                      valeurExternes.remove(blocCurrent);
                      valeurExternes.put(blocCurrent, vals);
                   }else{
-                     log.info("La valeur du bloc libre '" + blocLibre.getAttributeValue("nom") + "' à l'emplacement '"
-                        + sourceElt.getChildText("Key") + "' est NULL");
+                     log.info("La valeur du bloc libre '{}' à l'emplacement '{}' est NULL",
+                        blocLibre.getAttributeValue("nom"), sourceElt.getChildText("Key"));
+
                   }
                }
             }
@@ -1326,7 +1328,7 @@ public class InterfacageParsingUtilsImpl implements InterfacageParsingUtils
             // supprimes les fichiers associés si tout s'est bien passé
             if(delFile){
                for(final File file : relatedFiles){
-                  log.info("deletion du fichier: " + file.getName());
+                  log.info("deletion du fichier: {}",  file.getName());
                   file.delete();
                }
             }

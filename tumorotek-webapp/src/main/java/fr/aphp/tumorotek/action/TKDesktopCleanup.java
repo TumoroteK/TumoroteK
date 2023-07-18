@@ -97,7 +97,7 @@ public class TKDesktopCleanup implements DesktopCleanup
    //			while (tmpsIt.hasNext()) {
    //				next = tmpsIt.next();
    //				next.delete();
-   //				log.info("Desktop cleanup: " + next.getPath() + " deleted");
+   //				log.info("Desktop cleanup: {} deleted", next.getPath());
    //			}
    //		}
    ////		} else {

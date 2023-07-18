@@ -155,7 +155,7 @@ public class GroupementManagerImpl implements GroupementManager
       Groupement parent){
       // On vérifie que le groupement n'est pas nul
       if(groupement == null){
-         log.warn("Objet obligatoire Groupement manquant lors " + "de la création d'un objet Groupement");
+         log.warn("Objet obligatoire Groupement manquant lors de la création d'un objet Groupement");
          throw new RequiredObjectIsNullException("Groupement", "création", "Groupement");
       }
       // On vérifie que l'opérateur n'est pas nul
@@ -215,7 +215,7 @@ public class GroupementManagerImpl implements GroupementManager
       Groupement parent){
       //On vérifie que le groupement n'est pas nul
       if(groupement == null){
-         log.warn("Objet obligatoire Groupement manquant lors " + "de la modification d'un objet Groupement");
+         log.warn("Objet obligatoire Groupement manquant lors de la modification d'un objet Groupement");
          throw new RequiredObjectIsNullException("Groupement", "modification", "Groupement");
       }
       // On met à jour d'abord son parent
@@ -266,7 +266,7 @@ public class GroupementManagerImpl implements GroupementManager
    public void removeObjectManager(final Groupement groupement){
       // On vérifie que le groupement n'est pas nul
       if(groupement == null){
-         log.warn("Objet obligatoire Groupement manquant lors " + "de la suppression d'un objet Groupement");
+         log.warn("Objet obligatoire Groupement manquant lors de la suppression d'un objet Groupement");
          throw new RequiredObjectIsNullException("Groupement", "suppression", "Groupement");
       }
       // On vérifie que le groupement est en BDD
@@ -307,7 +307,7 @@ public class GroupementManagerImpl implements GroupementManager
    public ArrayList<Groupement> findEnfantsManager(final Groupement groupement){
       // On vérifie que le groupement n'est pas nul
       if(groupement == null){
-         log.warn("Objet obligatoire Groupement manquant lors " + "de la recherche d'enfants d'un objet Groupement");
+         log.warn("Objet obligatoire Groupement manquant lors de la recherche d'enfants d'un objet Groupement");
          throw new RequiredObjectIsNullException("Groupement", "recherche d'enfants", "Groupement");
       }
       return groupementDao.findEnfants(groupement);
@@ -324,7 +324,7 @@ public class GroupementManagerImpl implements GroupementManager
    public List<Critere> findCriteresManager(final Groupement groupementRacine){
       // On vérifie que le groupementRacine n'est pas nul
       if(groupementRacine == null){
-         log.warn("Objet obligatoire Groupement manquant lors de la " + "recherche par de Criteres d'un objet Groupement");
+         log.warn("Objet obligatoire Groupement manquant lors de la recherche par de Criteres d'un objet Groupement");
          throw new RequiredObjectIsNullException("Groupement", "recherche de Criteres", "Groupement");
       }
       final List<Critere> criteres = new ArrayList<>();
@@ -359,7 +359,7 @@ public class GroupementManagerImpl implements GroupementManager
    public Groupement findByIdManager(final Integer id){
       // On vérifie que l'identifiant n'est pas nul
       if(id == null){
-         log.warn("Objet obligatoire identifiant manquant lors de la " + "recherche par l'identifiant d'un objet Groupement");
+         log.warn("Objet obligatoire identifiant manquant lors de la recherche par l'identifiant d'un objet Groupement");
          throw new RequiredObjectIsNullException("Groupement", "recherche par identifiant", "identifiant");
       }
       return groupementDao.findById(id);
@@ -476,7 +476,7 @@ public class GroupementManagerImpl implements GroupementManager
       Groupement temp = null;
       // On vérifie que le groupement n'est pas nul
       if(groupement == null){
-         log.warn("Objet obligatoire Groupement manquant lors " + "de la copie d'un objet Groupement");
+         log.warn("Objet obligatoire Groupement manquant lors de la copie d'un objet Groupement");
          throw new RequiredObjectIsNullException("Groupement", "copie", "Groupement");
       }
       BeanValidator.validateObject(groupement, new Validator[] {groupementValidator});

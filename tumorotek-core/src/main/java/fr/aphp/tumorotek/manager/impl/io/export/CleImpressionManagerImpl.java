@@ -94,7 +94,7 @@ public class CleImpressionManagerImpl implements CleImpressionManager
    public void createObjectManager(final CleImpression cleImpression){
       // On vérifie que la clé n'est pas nulle
       if(cleImpression == null){
-         log.warn("Objet obligatoire Cle manquant lors " + "de la création d'un objet Cle");
+         log.warn("Objet obligatoire Cle manquant lors de la création d'un objet Cle");
          throw new RequiredObjectIsNullException("Cle", "création", "Cle");
       }
       // On enregsitre d'abord les Champs
@@ -108,7 +108,7 @@ public class CleImpressionManagerImpl implements CleImpressionManager
    public void updateObjectManager(final CleImpression cleImpression){
       //On vérifie que la clé n'est pas nulle
       if(cleImpression == null){
-         log.warn("Objet obligatoire Champ manquant lors " + "de la modification d'un objet Champ");
+         log.warn("Objet obligatoire Champ manquant lors de la modification d'un objet Champ");
          throw new RequiredObjectIsNullException("Champ", "modification", "Champ");
       }
       //On met à jour le champs
@@ -133,7 +133,7 @@ public class CleImpressionManagerImpl implements CleImpressionManager
 
       // On vérifie que la clé n'est pas nulle
       if(cleImpression == null){
-         log.warn("Objet obligatoire Champ manquant lors " + "de la suppression d'un objet Champ");
+         log.warn("Objet obligatoire Champ manquant lors de la suppression d'un objet Champ");
          throw new RequiredObjectIsNullException("Champ", "suppression", "Champ");
       }
       // On vérifie que la clé est en BDD
@@ -152,7 +152,7 @@ public class CleImpressionManagerImpl implements CleImpressionManager
    public CleImpression findByIdManager(final Integer cleId){
       // On vérifie que l'identifiant n'est pas nul
       if(cleId == null){
-         log.warn("Objet obligatoire identifiant manquant lors de la " + "recherche par l'identifiant d'un objet Champ");
+         log.warn("Objet obligatoire identifiant manquant lors de la recherche par l'identifiant d'un objet Champ");
          throw new RequiredObjectIsNullException("Champ", "recherche par identifiant", "identifiant");
       }
       return cleImpressionDao.findById(cleId);
@@ -162,7 +162,7 @@ public class CleImpressionManagerImpl implements CleImpressionManager
    public CleImpression findByNameManager(final String name){
       // On vérifie que l'identifiant n'est pas nul
       if(name.isEmpty()){
-         log.warn("Objet obligatoire identifiant manquant lors de la " + "recherche par l'identifiant d'un objet Champ");
+         log.warn("Objet obligatoire identifiant manquant lors de la recherche par l'identifiant d'un objet Champ");
          throw new RequiredObjectIsNullException("Champ", "recherche par identifiant", "identifiant");
       }
 
@@ -188,7 +188,7 @@ public class CleImpressionManagerImpl implements CleImpressionManager
    //   public List<CleImpression> findByTemplateManager(final Template template){
    //      // On vérifie que l'identifiant n'est pas nul
    //      if(null == template){
-   //         log.warn("Objet obligatoire identifiant manquant lors de la " + "recherche par l'identifiant d'un objet Template");
+   //         log.warn("Objet obligatoire identifiant manquant lors de la recherche par l'identifiant d'un objet Template");
    //         throw new RequiredObjectIsNullException("Template", "recherche par identifiant", "identifiant");
    //      }
    //      return cleImpressionDao.findByTemplate(template);

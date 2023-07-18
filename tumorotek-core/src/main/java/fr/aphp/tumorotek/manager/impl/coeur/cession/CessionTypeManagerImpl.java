@@ -100,7 +100,7 @@ public class CessionTypeManagerImpl implements CessionTypeManager
    @Override
    public List<CessionType> findByTypeLikeManager(String type, final boolean exactMatch){
 
-      log.debug("Recherche CessionType par " + type + " exactMatch " + String.valueOf(exactMatch));
+      log.debug("Recherche CessionType par {} exactMatch {}", type, exactMatch);
       if(type != null){
          if(!exactMatch){
             type = type + "%";

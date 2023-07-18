@@ -133,7 +133,7 @@ public class ModePrepaManagerImpl implements ModePrepaManager
     */
    @Override
    public List<ModePrepa> findByModePrepaLikeManager(String mode, final boolean exactMatch){
-      log.debug("Recherche ModePrepa par " + mode + " exactMatch " + String.valueOf(exactMatch));
+      log.debug("Recherche ModePrepa par {} exactMatch {}", mode, exactMatch);
       if(mode != null){
          if(!exactMatch){
             mode = mode + "%";
@@ -176,12 +176,12 @@ public class ModePrepaManagerImpl implements ModePrepaManager
       mode.setPlateforme(plateformeDao.mergeObject(mode.getPlateforme()));
 
       if(findDoublonManager(mode)){
-         log.warn("Doublon lors de la creation de l'objet ModePrepa : " + mode.toString());
+         log.warn("Doublon lors de la creation de l'objet ModePrepa : {}",  mode);
          throw new DoublonFoundException("ModePrepa", "creation");
       }
       BeanValidator.validateObject(mode, new Validator[] {modePrepaValidator});
       modePrepaDao.createObject(mode);
-      log.info("Enregistrement de l'objet ModePrepa : " + mode.toString());
+      log.info("Enregistrement de l'objet ModePrepa : {}",  mode);
    }
 
    @Override
@@ -190,12 +190,12 @@ public class ModePrepaManagerImpl implements ModePrepaManager
       final ModePrepa mode = obj;
 
       if(findDoublonManager(mode)){
-         log.warn("Doublon lors de la modification de l'objet ModePrepa : " + mode.toString());
+         log.warn("Doublon lors de la modification de l'objet ModePrepa : {}",  mode);
          throw new DoublonFoundException("ModePrepa", "modification");
       }
       BeanValidator.validateObject(mode, new Validator[] {modePrepaValidator});
       modePrepaDao.updateObject(mode);
-      log.info("Modification de l'objet ModePrepa : " + mode.toString());
+      log.info("Modification de l'objet ModePrepa : {}",  mode);
    }
 
    @Override

@@ -408,7 +408,7 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
     */
    @Override
    public List<ProdDerive> findByCodeLikeManager(String code, final boolean exactMatch){
-      log.debug("Recherche ProdDerive par " + code + " exactMatch " + String.valueOf(exactMatch));
+      log.debug("Recherche ProdDerive par {} exactMatch {}", code, exactMatch);
       if(!exactMatch){
          code = code + "%";
       }
@@ -426,7 +426,7 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
     */
    @Override
    public List<ProdDerive> findByCodeOrLaboWithBanqueManager(String code, final Banque banque, final boolean exactMatch){
-      log.debug("Recherche ProdDerive par " + code + " exactMatch " + String.valueOf(exactMatch));
+      log.debug("Recherche ProdDerive par {} exactMatch {}", code, exactMatch);
       if(banque != null){
          if(!exactMatch){
             code = code + "%";
@@ -796,7 +796,7 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
    public List<ProdDerive> findLastCreationManager(final List<Banque> banques, final int nbResults){
       final List<ProdDerive> liste = new ArrayList<>();
       if(banques != null && banques.size() > 0 && nbResults > 0){
-         log.debug("Recherche des " + nbResults + " derniers Dérivés " + "enregistres.");
+         log.debug("Recherche des {} derniers Dérivés enregistres.", nbResults);
          //			EntityManager em = entityManagerFactory.createEntityManager();
          //			Query query = em.createQuery("SELECT p "
          //					+ "FROM ProdDerive p "
@@ -923,7 +923,7 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
       // On vérifie que la banque n'est pas null. Si c'est le cas on envoie
       // une exception
       if(banque == null){
-         log.warn("Objet obligatoire Banque manquant lors " + "de la creation " + "d'un objet ProdDerive");
+         log.warn("Objet obligatoire Banque manquant lors de la creation d'un objet ProdDerive");
          throw new RequiredObjectIsNullException("ProdDerive", "creation", "Banque");
       }
 
@@ -931,7 +931,7 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
       // On vérifie que le type n'est pas null. Si c'est le cas on envoie
       // une exception
       if(type == null){
-         log.warn("Objet obligatoire ProdType manquant lors " + "de la creation " + "d'un objet ProdDerive");
+         log.warn("Objet obligatoire ProdType manquant lors de la creation d'un objet ProdDerive");
          throw new RequiredObjectIsNullException("ProdDerive", "creation", "ProdType");
       }
 
@@ -941,7 +941,7 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
       if(statut != null){
          prodDerive.setObjetStatut(objetStatutDao.mergeObject(statut));
       }else if(prodDerive.getObjetStatut() == null){
-         log.warn("Objet obligatoire ObjetStatut manquant lors " + "de la creation " + "d'un objet ProdDerive");
+         log.warn("Objet obligatoire ObjetStatut manquant lors de la creation d'un objet ProdDerive");
          throw new RequiredObjectIsNullException("ProdDerive", "creation", "ObjetStatut");
       }
 
@@ -950,12 +950,12 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
       if(statut != null){
          prodDerive.setObjetStatut(objetStatutDao.mergeObject(statut));
       }else if(prodDerive.getObjetStatut() == null){
-         log.warn("Objet obligatoire ObjetStatut manquant lors " + "de la creation " + "d'un objet ProdDerive");
+         log.warn("Objet obligatoire ObjetStatut manquant lors de la creation d'un objet ProdDerive");
          throw new RequiredObjectIsNullException("ProdDerive", "creation", "ObjetStatut");
       }
 
       if(findDoublonManager(prodDerive)){
-         log.warn("Doublon lors de la creation de l'objet ProdDerive : " + prodDerive.toString());
+         log.warn("Doublon lors de la creation de l'objet ProdDerive : {}",  prodDerive);
          throw new DoublonFoundException("ProdDerive", "creation", prodDerive.getCode(), null);
       }
 
@@ -1019,7 +1019,7 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
             prodDerive.setTransformation(null);
          }
          prodDeriveDao.createObject(prodDerive);
-         log.info("Enregistrement de l'objet ProdDerive : " + prodDerive.toString());
+         log.info("Enregistrement de l'objet ProdDerive : {}",  prodDerive);
          //Enregistrement de l'operation associee
          final Operation creationOp = new Operation();
          creationOp.setDate(Utils.getCurrentSystemCalendar());
@@ -1099,7 +1099,7 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
       // On vérifie que la banque n'est pas null. Si c'est le cas on envoie
       // une exception
       if(banque == null){
-         log.warn("Objet obligatoire Banque manquant lors " + "de la modif " + "d'un objet ProdDerive");
+         log.warn("Objet obligatoire Banque manquant lors de la modif d'un objet ProdDerive");
          throw new RequiredObjectIsNullException("ProdDerive", "modification", "Banque");
       }
 
@@ -1107,7 +1107,7 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
       // On vérifie que le type n'est pas null. Si c'est le cas on envoie
       // une exception
       if(type == null){
-         log.warn("Objet obligatoire ProdType manquant lors " + "de la modif " + "d'un objet ProdDerive");
+         log.warn("Objet obligatoire ProdType manquant lors de la modif d'un objet ProdDerive");
          throw new RequiredObjectIsNullException("ProdDerive", "modification", "ProdType");
       }
 
@@ -1117,12 +1117,12 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
       if(statut != null){
          prodDerive.setObjetStatut(objetStatutDao.mergeObject(statut));
       }else if(prodDerive.getObjetStatut() == null){
-         log.warn("Objet obligatoire ObjetStatut manquant lors " + "de la creation " + "d'un objet ProdDerive");
+         log.warn("Objet obligatoire ObjetStatut manquant lors de la creation d'un objet ProdDerive");
          throw new RequiredObjectIsNullException("ProdDerive", "creation", "ObjetStatut");
       }
 
       if(findDoublonManager(prodDerive)){
-         log.warn("Doublon lors de la modif de l'objet ProdDerive : " + prodDerive.toString());
+         log.warn("Doublon lors de la modif de l'objet ProdDerive : {}",  prodDerive);
          throw new DoublonFoundException("ProdDerive", "modification", prodDerive.getCode(), null);
       }
 
@@ -1188,7 +1188,7 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
          }
 
          prodDeriveDao.updateObject(prodDerive);
-         log.info("Modification de l'objet ProdDerive : " + prodDerive.toString());
+         log.info("Modification de l'objet ProdDerive : {}",  prodDerive);
 
          //Enregistrement de l'operation associee
          final Operation creationOp = new Operation();
@@ -1343,7 +1343,7 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
 
       transformationManager.removeObjectManager(transformation, comments, user);
 
-      log.info("Suppression de l'objet Transformation : " + transformation.toString());
+      log.info("Suppression de l'objet Transformation : {}",  transformation);
    }
 
    @Override
@@ -1378,7 +1378,7 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
             CreateOrUpdateUtilities.removeAssociateNonConformites(prodDerive, objetNonConformeManager);
 
             prodDeriveDao.removeObject(prodDerive.getProdDeriveId());
-            log.info("Suppression de l'objet ProdDerive : " + prodDerive.toString());
+            log.info("Suppression de l'objet ProdDerive : {}",  prodDerive);
 
             //Supprime operations associees
             CreateOrUpdateUtilities.removeAssociateOperations(prodDerive, operationManager, comments, user);
@@ -1391,10 +1391,10 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
                filesToDelete);
          }else{
             if(!isCessedObjectManager(prodDerive)){
-               log.warn("Objet utilisé lors de la suppression de l'objet " + "ProdDerive : " + prodDerive.toString());
+               log.warn("Objet utilisé lors de la suppression de l'objet ProdDerive : {}",  prodDerive);
                throw new ObjectUsedException("derive.deletion." + "isUsedCascade", true);
             }
-            log.warn("Objet cédé lors de la suppression de l'objet " + "ProdDerive : " + prodDerive.toString());
+            log.warn("Objet cédé lors de la suppression de l'objet ProdDerive : {}",  prodDerive);
             throw new ObjectUsedException("derive.deletion." + "isUsedNonCascade", false);
          }
       }

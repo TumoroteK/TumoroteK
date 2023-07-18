@@ -134,9 +134,9 @@ public class EnceinteTypeManagerImpl implements EnceinteTypeManager
       BeanValidator.validateObject(obj, new Validator[] {enceinteTypeValidator});
       if(!findDoublonManager(obj)){
          enceinteTypeDao.createObject(obj);
-         log.info("Enregistrement objet EnceinteType " + obj.toString());
+         log.info("Enregistrement objet EnceinteType {}",  obj);
       }else{
-         log.warn("Doublon lors creation objet EnceinteType " + obj.toString());
+         log.warn("Doublon lors creation objet EnceinteType {}",  obj);
          throw new DoublonFoundException("EnceinteType", "creation");
       }
    }
@@ -146,9 +146,9 @@ public class EnceinteTypeManagerImpl implements EnceinteTypeManager
       BeanValidator.validateObject(obj, new Validator[] {enceinteTypeValidator});
       if(!findDoublonManager(obj)){
          enceinteTypeDao.updateObject(obj);
-         log.info("Modification objet EnceinteType " + obj.toString());
+         log.info("Modification objet EnceinteType {}",  obj);
       }else{
-         log.warn("Doublon lors modification objet EnceinteType " + obj.toString());
+         log.warn("Doublon lors modification objet EnceinteType {}",  obj);
          throw new DoublonFoundException("EnceinteType", "modification");
       }
    }
@@ -158,9 +158,9 @@ public class EnceinteTypeManagerImpl implements EnceinteTypeManager
       if(obj != null){
          if(!isUsedObjectManager(obj)){
             enceinteTypeDao.removeObject(obj.getId());
-            log.info("Suppression objet EnceinteType " + obj.toString());
+            log.info("Suppression objet EnceinteType {}",  obj);
          }else{
-            log.warn("Suppression objet EnceinteType " + obj.toString() + " impossible car est reference " + "(par Enceinte)");
+            log.warn("Suppression objet EnceinteType {} impossible car est reference (par Enceinte)", obj);
             throw new ObjectUsedException();
          }
       }else{

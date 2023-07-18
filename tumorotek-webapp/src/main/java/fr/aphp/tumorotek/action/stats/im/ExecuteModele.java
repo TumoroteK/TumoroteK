@@ -142,7 +142,7 @@ public class ExecuteModele
          long endTime = System.nanoTime();
 
          endTime = System.nanoTime();
-         log.debug("Total elapsed time in modele " + model.getNom() + " execution :" + ((endTime - startTime) / 1000000000.0));
+         log.debug("Total elapsed time in modele {} execution: {}", model.getNom(), ((endTime - startTime) / 1000000000.0));
       }catch(final Exception e){
          log.error(e.getMessage(), e); 
       }
@@ -178,7 +178,7 @@ public class ExecuteModele
 
    private void callExecute(final PreparedStatement call, final Indicateur st) throws SQLException{
       if(call.execute()){
-         log.debug("Call to string : " + call.toString());
+         log.debug("Call to string : {}", call);
          ResultSet rSet = null;
          try{
             rSet = call.getResultSet();
@@ -209,7 +209,7 @@ public class ExecuteModele
    private void printDataMap(){
       for(final Entry<Indicateur, ArrayList<ValueToExport>> e : dataMap.entrySet()){
          for(final ValueToExport o : e.getValue()){
-            log.error(e.getKey() + " : " + o.toString());
+            log.error("{} : {}", e.getKey(), o);
          }
       }
    }

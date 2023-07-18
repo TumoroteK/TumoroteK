@@ -82,7 +82,7 @@ public class CimoMorphoManagerImpl implements CimoMorphoManager
       if(!exactMatch){
          code = "%" + code + "%";
       }
-      log.debug("Recherche Cimo par code: " + code + " exactMatch " + String.valueOf(exactMatch));
+      log.debug("Recherche Cimo par code: {} exactMatch {}", code, exactMatch);
       final Set<CimoMorpho> cimos = new HashSet<>();
       cimos.addAll(cimoMorphoDao.findByCodeLike(code));
       cimos.addAll(cimoMorphoDao.findByCimRefLike(code));
@@ -94,7 +94,7 @@ public class CimoMorphoManagerImpl implements CimoMorphoManager
       if(!exactMatch){
          libelle = "%" + libelle + "%";
       }
-      log.debug("Recherche Cimo par libelle: " + libelle + " exactMatch " + String.valueOf(exactMatch));
+      log.debug("Recherche Cimo par libelle: {} exactMatch {}", libelle, exactMatch);
       return cimoMorphoDao.findByLibelleLike(libelle);
    }
 

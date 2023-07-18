@@ -93,7 +93,7 @@ public class TemperatureManagerImpl implements TemperatureManager
    public void createObjectManager(final Temperature temperature){
       // Test s'il y a des doublons
       if(findDoublonManager(temperature)){
-         log.warn("Doublon lors de la creation de l'objet Temperature : " + temperature.toString());
+         log.warn("Doublon lors de la creation de l'objet Temperature : {}",  temperature);
          throw new DoublonFoundException("Temperature", "creation");
       }else{
 
@@ -102,7 +102,7 @@ public class TemperatureManagerImpl implements TemperatureManager
 
          temperatureDao.createObject(temperature);
 
-         log.info("Enregistrement de l'objet Temperature : " + temperature.toString());
+         log.info("Enregistrement de l'objet Temperature : {}",  temperature);
       }
    }
 
@@ -110,7 +110,7 @@ public class TemperatureManagerImpl implements TemperatureManager
    public void updateObjectManager(final Temperature temperature){
       // Test s'il y a des doublons
       if(findDoublonManager(temperature)){
-         log.warn("Doublon lors de la modification de " + "l'objet Temperature : " + temperature.toString());
+         log.warn("Doublon lors de la modification de l'objet Temperature : {}",  temperature);
          throw new DoublonFoundException("Temperature", "modification");
       }else{
 
@@ -119,7 +119,7 @@ public class TemperatureManagerImpl implements TemperatureManager
 
          temperatureDao.updateObject(temperature);
 
-         log.info("Enregistrement de l'objet Temperature : " + temperature.toString());
+         log.info("Enregistrement de l'objet Temperature : {}",  temperature);
       }
    }
 
@@ -127,7 +127,7 @@ public class TemperatureManagerImpl implements TemperatureManager
    public void removeObjectManager(final Temperature temperature){
       if(temperature != null){
          temperatureDao.removeObject(temperature.getTemperatureId());
-         log.info("Suppression de l'objet Temperature : " + temperature.toString());
+         log.info("Suppression de l'objet Temperature : {}",  temperature);
       }else{
          log.warn("Suppression d'une Temperature null");
       }
