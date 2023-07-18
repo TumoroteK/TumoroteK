@@ -17,7 +17,8 @@
 - YouTrack [TG-164](https://tumorotek.myjetbrains.com/youtrack/issue/TG-164) : [Gatsbi] - Contexte : non prise en compte en base de données d'une mise à jour de filtre de thesaurus
 
 ###### Corrections hors Gatsbi
-- intégration des corrections / évolutions de la version 2.2.8 
+- intégration des corrections / évolutions de la version 2.2.8
+- YouTrack [TK-404](https://tumorotek.myjetbrains.com/youtrack/issue/TK-404) : Création d'un dérivé : position du curseur à l'affichage de l'écran
 
 
 ***
