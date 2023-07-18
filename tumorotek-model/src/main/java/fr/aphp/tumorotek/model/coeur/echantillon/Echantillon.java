@@ -92,6 +92,11 @@ import fr.aphp.tumorotek.model.utils.Utils;
 @Table(name = "ECHANTILLON")
 @Inheritance(strategy = InheritanceType.JOINED)
 @NamedQueries(value = {@NamedQuery(name = "Echantillon.findByCode", query = "SELECT e FROM Echantillon e WHERE e.code like ?1"),
+   @NamedQuery(name = "Echantillon.isExistByStatutAndCessionId",
+      query = "SELECT '1' FROM CederObjet c " +
+         "INNER JOIN Echantillon e ON c.pk.entite.entiteId = 3 AND c.pk.objetId = e.echantillonId " +
+         "WHERE c.pk.cession.cessionId = :cessionId AND e.objetStatut.objetStatutId = :objetStatutId " +
+         "LIMIT 1"),
    @NamedQuery(name = "Echantillon.findByCodeWithBanque",
       query = "SELECT e FROM Echantillon e WHERE e.code like ?1 " + "AND e.banque = ?2"),
    @NamedQuery(name = "Echantillon.findByCodeInPlateforme",

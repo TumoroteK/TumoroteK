@@ -831,4 +831,6 @@ public interface EchantillonManager
     * @since 2.3.0-gatsbi
     */
    List<Integer> findByPatientIdentifiantOrNomOrNipReturnIdsManager(String search, List<Banque> selectedBanques, boolean b);
+
+   boolean isEchantilonWithStatusExistsInCession(Integer cessionId, Integer status_id);
 }

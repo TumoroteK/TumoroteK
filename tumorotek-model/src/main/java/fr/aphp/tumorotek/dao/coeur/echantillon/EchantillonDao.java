@@ -451,4 +451,7 @@ public interface EchantillonDao extends GenericDaoJpa<Echantillon, Integer>
     * @since 2.3.0-gatsbi
     */
    List<Integer> findByPatientIdentifiantOrNomOrNipReturnIds(String search, List<Banque> selectedBanques);
+
+   String isEchantilonWithStatusExistsInCession(Integer cessionId, Integer status_id);
+
 }
