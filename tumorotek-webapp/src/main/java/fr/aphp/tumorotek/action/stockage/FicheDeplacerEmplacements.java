@@ -449,8 +449,7 @@ public class FicheDeplacerEmplacements extends FicheTerminale
       emplacementsDestDep = new Hashtable<>();
 
       // on affiche si la terminale est réservée pour un type d'entité
-      if (terminale != null){
-         if(terminale.getEntite() != null){
+         if(terminale != null && terminale.getEntite() != null){
             final StringBuffer sb = new StringBuffer();
             sb.append(Labels.getLabel("deplacer.emplacement.terminale.entite.reservee"));
             sb.append(" ");
@@ -459,7 +458,6 @@ public class FicheDeplacerEmplacements extends FicheTerminale
             entiteReservee = sb.toString();
             entiteReserveeLabel.setValue(entiteReservee);
             entiteReserveeRow.setVisible(true);
-         }
       }
       else{
          entiteReserveeRow.setVisible(false);
