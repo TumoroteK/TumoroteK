@@ -42,16 +42,12 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import fr.aphp.tumorotek.action.stockage.StockageController;
-import fr.aphp.tumorotek.model.stockage.Emplacement;
-import fr.aphp.tumorotek.model.stockage.Terminale;
 import org.jdom.Document;
 import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
@@ -191,7 +187,6 @@ public class FicheCessionStatic extends AbstractFicheStaticController
 
 	// @since 2.1 checked Objects
 	private final List<Integer> checkedEchantillonIds = new ArrayList<>();
-
 	private final List<Integer> checkedDeriveIds = new ArrayList<>();
 
 	// Echantillons ayant le statut "RESERVE"
@@ -207,6 +202,7 @@ public class FicheCessionStatic extends AbstractFicheStaticController
 		setFantomable(true);
 		setCascadable(false);
 		setDeletable(true);
+
 		cdEchansFactory = new CederObjetDecoratorFactory(isAnonyme(), checkedEchantillonIds);
 		cdDerivesFactory = new CederObjetDecoratorFactory(isAnonyme(), checkedDeriveIds);
 	}
@@ -271,7 +267,7 @@ public class FicheCessionStatic extends AbstractFicheStaticController
 		printCessionPlan.setDisabled(cession.getCessionStatut() == null || cession.getCessionStatut().getStatut().equals("VALIDEE")
 				|| (getEchantillonsCedes().isEmpty() && getDerivesCedes().isEmpty()));
 
-		//  désactiver/ne pas désactiver le bouton de déplacement
+		//  désactiver/ activer le bouton de déplacement
 		disableMoveButton();
 
 		// since 2.2.1-IRELEC automated storage si admin PF ou (ou avec des droits de Consultation sur le stockage et en modification sur les échantillons (TK-339))
@@ -330,6 +326,7 @@ public class FicheCessionStatic extends AbstractFicheStaticController
 	private void initAssociations(){
 		echantillonsCedes.clear();
 		derivesCedes.clear();
+
 		// @since 2.1
 		// reset checks on change objects
 		checkedEchantillonIds.clear();
@@ -353,13 +350,11 @@ public class FicheCessionStatic extends AbstractFicheStaticController
 			_needsTotalSizeUpdateP = true;
 			_startPageNumberP = 0;
 			refreshModelP(_startPageNumberP);
+
 			edit.setVisible(true);
 			delete.setVisible(true);
 		}
 	}
-
-
-
 
 	@Override
 	public void prepareDeleteObject(){
@@ -427,7 +422,7 @@ public class FicheCessionStatic extends AbstractFicheStaticController
 	}
 
 	/**
-	 * réponse au clic de l'utilisateur sur "Deplacer les echantillons / derives"
+	 * Écouteur d'événement pour le clic sur le bouton 'Déplacer les échantillons/dérivés'
 	 */
 	public void onClick$move(){
 		final StockageController tabController = StockageController.backToMe(getMainWindow(), page);
@@ -437,7 +432,7 @@ public class FicheCessionStatic extends AbstractFicheStaticController
 
 
 	/**
-	 *  filtrer tous les échantillons réservés
+	 *  Filtrer tous les échantillons réservés
 	 * @param echantillonList List<Echantillon>
 	 * @return List<Echantillon> qui ont les status "RESERVE" (object_status = 3)
 	 */
@@ -448,7 +443,7 @@ public class FicheCessionStatic extends AbstractFicheStaticController
 
 
 	/**
-	 *  filtrer tous les produits derives réservés
+	 *  Filtrer tous les produits dérivés réservés
 	 * @param derivesList List<ProdDerive>
 	 * @return List<Echantillon> qui ont les status "RESERVE" (object_status = 3)
 	 */
@@ -1437,7 +1432,7 @@ public class FicheCessionStatic extends AbstractFicheStaticController
 	}
 
 	/**
-	 * transformer une liste de CederObjet en une liste d'échantillons.
+	 * Transformer une liste de CederObjet en une liste d'échantillons.
 	 *
 	 * @param echantillonsCedes List<CederObjet>.
 	 * @return La liste d'Echantillons obtenue à partir de la transformation ou une liste vide
@@ -1445,9 +1440,9 @@ public class FicheCessionStatic extends AbstractFicheStaticController
 	private List<Echantillon> convertToListEchantillons(List<CederObjet> echantillonsCedes) {
 		List<Integer> echantillonsIds= new ArrayList<>();
 		for (CederObjet cederObjet : echantillonsCedes) {
-			String entiteNom = cederObjet.getEntite().getNom();
-			//to do : not to string buit to entiteId
-			if (entiteNom.equals("Echantillon")) {
+			Integer entiteId = cederObjet.getEntite().getEntiteId();
+//			Si l'objet est de type échantillon (id == 3).
+			if (entiteId.equals(3)) {
 				echantillonsIds.add(cederObjet.getPk().getObjetId());
 			}
 		}
@@ -1455,7 +1450,7 @@ public class FicheCessionStatic extends AbstractFicheStaticController
 	}
 
 	/**
-	 *  transformer une liste de CederObjet en une liste de produits dérivés.
+	 *  Transformer une liste de CederObjet en une liste de produits dérivés.
 	 *
 	 * @param derivesCedes List<CederObjet>.
 	 * @return La liste de produits dérivés obtenue à partir de la transformation ou une liste vide.
@@ -1463,8 +1458,9 @@ public class FicheCessionStatic extends AbstractFicheStaticController
 	private List<ProdDerive> convertToListDerives(List<CederObjet> derivesCedes) {
 		List<Integer> derivesIds= new ArrayList<>();
 		for (CederObjet cederObjet : echantillonsCedes) {
-			String entiteNom = cederObjet.getEntite().getNom();
-			if (entiteNom.equals("ProdDerive")) {
+			Integer entiteId = cederObjet.getEntite().getEntiteId();
+			//			Si l'objet est de type dérivé (id == 8).
+			if (entiteId.equals(8)) {
 				derivesIds.add(cederObjet.getPk().getObjetId());
 			}
 		}
