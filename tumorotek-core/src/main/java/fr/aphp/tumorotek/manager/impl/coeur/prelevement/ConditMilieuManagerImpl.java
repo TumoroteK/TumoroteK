@@ -100,9 +100,9 @@ public class ConditMilieuManagerImpl implements ConditMilieuManager
       BeanValidator.validateObject(obj, new Validator[] {conditMilieuValidator});
       if(!findDoublonManager(obj)){
          conditMilieuDao.createObject(obj);
-         log.info("Enregistrement objet ConditMilieu " + obj.toString());
+         log.info("Enregistrement objet ConditMilieu {}",  obj);
       }else{
-         log.warn("Doublon lors creation objet ConditMilieu " + obj.toString());
+         log.warn("Doublon lors creation objet ConditMilieu {}",  obj);
          throw new DoublonFoundException("ConditMilieu", "creation");
       }
    }
@@ -112,9 +112,9 @@ public class ConditMilieuManagerImpl implements ConditMilieuManager
       BeanValidator.validateObject(obj, new Validator[] {conditMilieuValidator});
       if(!findDoublonManager(obj)){
          conditMilieuDao.updateObject(obj);
-         log.info("Modification objet ConditMilieu " + obj.toString());
+         log.info("Modification objet ConditMilieu {}",  obj);
       }else{
-         log.warn("Doublon lors modification objet ConditMilieu " + obj.toString());
+         log.warn("Doublon lors modification objet ConditMilieu {}",  obj);
          throw new DoublonFoundException("ConditMilieu", "modification");
       }
    }
@@ -130,7 +130,7 @@ public class ConditMilieuManagerImpl implements ConditMilieuManager
       if(!exactMatch){
          milieu = milieu + "%";
       }
-      log.debug("Recherche ConditMilieu par milieu: " + milieu + " exactMatch " + String.valueOf(exactMatch));
+      log.debug("Recherche ConditMilieu par milieu: {} exactMatch {}", milieu, exactMatch);
       return conditMilieuDao.findByMilieu(milieu);
    }
 
@@ -138,7 +138,7 @@ public class ConditMilieuManagerImpl implements ConditMilieuManager
    public void removeObjectManager(final ConditMilieu obj){
       if(obj != null){
          conditMilieuDao.removeObject(obj.getId());
-         log.info("Suppression objet ConditMilieu " + obj.toString());
+         log.info("Suppression objet ConditMilieu {}",  obj);
       }else{
          log.warn("Suppression d'un ConditMilieu null");
       }

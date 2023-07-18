@@ -184,7 +184,7 @@ public class RechercheManagerImpl implements RechercheManager
    public Recherche findByIdManager(final Integer id){
       // On vérifie que l'identifiant n'est pas nul
       if(id == null){
-         log.warn("Objet obligatoire identifiant manquant lors de la " + "recherche par l'identifiant d'un objet Recherche");
+         log.warn("Objet obligatoire identifiant manquant lors de la recherche par l'identifiant d'un objet Recherche");
          throw new RequiredObjectIsNullException("Recherche", "recherche par identifiant", "identifiant");
       }
       return rechercheDao.findById(id);
@@ -212,7 +212,7 @@ public class RechercheManagerImpl implements RechercheManager
    public void renameRechercheManager(final Recherche recherche, final String intitule){
       // On verifie que la recherche n'est pas nulle
       if(recherche == null){
-         log.warn("Objet obligatoire Recherche manquant lors " + "du renommage d'un objet Recherche");
+         log.warn("Objet obligatoire Recherche manquant lors du renommage d'un objet Recherche");
          throw new RequiredObjectIsNullException("Recherche", "modification", "Recherche");
       }
       if(findByIdManager(recherche.getRechercheId()) == null){
@@ -222,7 +222,7 @@ public class RechercheManagerImpl implements RechercheManager
       recherche.setIntitule(intitule);
       // On met a jour la recherche
       if(findDoublonManager(recherche)){
-         log.warn("Doublon lors de la modification de l'objet " + "Recherche : " + recherche.toString());
+         log.warn("Doublon lors de la modification de l'objet Recherche : {}",  recherche);
          throw new DoublonFoundException("Recherche", "modification");
       }
       BeanValidator.validateObject(recherche, new Validator[] {rechercheValidator});
@@ -314,22 +314,22 @@ public class RechercheManagerImpl implements RechercheManager
       final Utilisateur createur, final Banque banque){
       // On vérifie que la recherche n'est pas nulle
       if(recherche == null){
-         log.warn("Objet obligatoire Recherche manquant lors " + "de la création d'un objet Recherche");
+         log.warn("Objet obligatoire Recherche manquant lors de la création d'un objet Recherche");
          throw new RequiredObjectIsNullException("Recherche", "création", "Recherche");
       }
       // On vérifie que l'affichage n'est pas nul
       if(affichage == null){
-         log.warn("Objet obligatoire Affichage manquant lors " + "de la création d'un objet Recherche");
+         log.warn("Objet obligatoire Affichage manquant lors de la création d'un objet Recherche");
          throw new RequiredObjectIsNullException("Recherche", "création", "Affichage");
       }
       // On vérifie que la requete n'est pas nulle
       if(requete == null){
-         log.warn("Objet obligatoire Requete manquant lors " + "de la création d'un objet Recherche");
+         log.warn("Objet obligatoire Requete manquant lors de la création d'un objet Recherche");
          throw new RequiredObjectIsNullException("Recherche", "création", "Requete");
       }
       // On vérifie que le createur n'est pas nul
       if(createur == null){
-         log.warn("Objet obligatoire Utilisateur manquant lors " + "de la création d'un objet Recherche");
+         log.warn("Objet obligatoire Utilisateur manquant lors de la création d'un objet Recherche");
          throw new RequiredObjectIsNullException("Recherche", "création", "Utilisateur");
       }
       if(affichage.getAffichageId() != null){
@@ -373,22 +373,22 @@ public class RechercheManagerImpl implements RechercheManager
       final Utilisateur createur, final Banque banque){
       // On vérifie que la recherche n'est pas nulle
       if(recherche == null){
-         log.warn("Objet obligatoire Recherche manquant lors " + "de la modification d'un objet Recherche");
+         log.warn("Objet obligatoire Recherche manquant lors de la modification d'un objet Recherche");
          throw new RequiredObjectIsNullException("Recherche", "modification", "Recherche");
       }
       // On vérifie que l'affichage n'est pas nul
       if(affichage == null){
-         log.warn("Objet obligatoire Affichage manquant lors " + "de la modification d'un objet Recherche");
+         log.warn("Objet obligatoire Affichage manquant lors de la modification d'un objet Recherche");
          throw new RequiredObjectIsNullException("Recherche", "modification", "Affichage");
       }
       // On vérifie que la requete n'est pas nulle
       if(requete == null){
-         log.warn("Objet obligatoire Requete manquant lors " + "de la modification d'un objet Recherche");
+         log.warn("Objet obligatoire Requete manquant lors de la modification d'un objet Recherche");
          throw new RequiredObjectIsNullException("Recherche", "modification", "Requete");
       }
       // On vérifie que le createur n'est pas nul
       if(createur == null){
-         log.warn("Objet obligatoire Utilisateur manquant lors " + "de la modification d'un objet Recherche");
+         log.warn("Objet obligatoire Utilisateur manquant lors de la modification d'un objet Recherche");
          throw new RequiredObjectIsNullException("Recherche", "modification", "Utilisateur");
       }
       if(affichage.getAffichageId() != null){
@@ -462,7 +462,7 @@ public class RechercheManagerImpl implements RechercheManager
    public List<Recherche> findByUtilisateurManager(final Utilisateur util){
       // On vérifie que l'utilisateur n'est pas nul
       if(util == null){
-         log.warn("Objet obligatoire Utilisateur manquant lors de la " + "recherche par l'Utilisateur d'un objet Recherche");
+         log.warn("Objet obligatoire Utilisateur manquant lors de la recherche par l'Utilisateur d'un objet Recherche");
          throw new RequiredObjectIsNullException("Recherche", "recherche par Utilisateur", "Utilisateur");
       }
       return rechercheDao.findByUtilisateur(util);
@@ -478,7 +478,7 @@ public class RechercheManagerImpl implements RechercheManager
    public List<Recherche> findByIntituleManager(final String intitule){
       // On vérifie que l'utilisateur n'est pas nul
       if(intitule == null){
-         log.warn("Objet obligatoire Intitule manquant lors de la " + "recherche par l'intitule d'un objet Recherche");
+         log.warn("Objet obligatoire Intitule manquant lors de la recherche par l'intitule d'un objet Recherche");
          throw new RequiredObjectIsNullException("Recherche", "recherche par Intitule", "Intitule");
       }
       return rechercheDao.findByIntitule(intitule);
@@ -502,7 +502,7 @@ public class RechercheManagerImpl implements RechercheManager
    public List<Recherche> findByRequeteManager(final Requete requete){
       // On vérifie que l'utilisateur n'est pas nul
       if(requete == null){
-         log.warn("Objet obligatoire Requête manquant lors de la " + "recherche par la requête d'un objet Recherche");
+         log.warn("Objet obligatoire Requête manquant lors de la recherche par la requête d'un objet Recherche");
          throw new RequiredObjectIsNullException("Recherche", "recherche par Requête", "Requête");
       }
       return rechercheDao.findByRequete(requete);
@@ -518,7 +518,7 @@ public class RechercheManagerImpl implements RechercheManager
    public List<Recherche> findByAffichageManager(final Affichage affichage){
       // On vérifie que l'utilisateur n'est pas nul
       if(affichage == null){
-         log.warn("Objet obligatoire Affichage manquant lors de la " + "recherche par l'affichage d'un objet Recherche");
+         log.warn("Objet obligatoire Affichage manquant lors de la recherche par l'affichage d'un objet Recherche");
          throw new RequiredObjectIsNullException("Recherche", "recherche par Affichage", "Affichage");
       }
       return rechercheDao.findByAffichage(affichage);
@@ -551,7 +551,7 @@ public class RechercheManagerImpl implements RechercheManager
    public Boolean findDoublonManager(final Recherche recherche){
       // On vérifie que la recherche n'est pas nulle
       if(recherche == null){
-         log.warn("Objet obligatoire Recherche manquant lors de la " + "recherche de doublon d'un objet Recherche");
+         log.warn("Objet obligatoire Recherche manquant lors de la recherche de doublon d'un objet Recherche");
          throw new RequiredObjectIsNullException("Recherche", "recherche de doublon", "Recherche");
       }
       if(recherche.getRechercheId() == null){
@@ -647,8 +647,7 @@ public class RechercheManagerImpl implements RechercheManager
          // on retire la banque de chaque coté de l'association
          rec.getBanques().remove(bank);
          bank.getRecherches().remove(rec);
-
-         log.debug("Suppression de l'association entre la banque : " + bank.toString() + " et la recherche : " + rec.toString());
+         log.debug("Suppression de l'association entre la banque : {} et la recherche : {}", bank, rec);
       }
 
       // on parcourt la nouvelle liste de banques

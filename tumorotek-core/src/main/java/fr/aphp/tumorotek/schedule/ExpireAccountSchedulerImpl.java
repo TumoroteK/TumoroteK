@@ -68,7 +68,9 @@ public class ExpireAccountSchedulerImpl implements ExpireAccountScheduler
     */
    @Override
    public void expireAccounts(){
-      log.debug(new SimpleDateFormat("YYYY-MM-DD hh:mm:ss").format(Calendar.getInstance().getTime()) + "exec cron");
+      String currentDate = new SimpleDateFormat("YYYY-MM-DD hh:mm:ss").format(Calendar.getInstance().getTime()) ;
+      log.debug("{} exec cron", currentDate);
+
       utilisateurManager.archiveScheduledUtilisateursManager(utilisateurManager.findByIdManager(1));
    }
 

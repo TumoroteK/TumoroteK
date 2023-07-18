@@ -107,7 +107,7 @@ public class OrganismeManagerImpl implements OrganismeManager
       // une exception
       Plateforme plateforme = organisme.getPlateforme();
       if( plateforme == null){
-         log.warn("Objet obligatoire Plateforme " + "manquant lors de la creation " + "d'un objet Organisme");
+         log.warn("Objet obligatoire Plateforme manquant lors de la creation d'un objet Organisme");
          throw new RequiredObjectIsNullException("Organisme", "creation", "Plateforme");
       }
       organisme.setPlateforme(plateformeDao.mergeObject(plateforme));
@@ -115,9 +115,9 @@ public class OrganismeManagerImpl implements OrganismeManager
       BeanValidator.validateObject(organisme, new Validator[] {organismeValidator});
       if(!findDoublonManager(organisme)){
          organismeDao.createObject(organisme);
-         log.info("Enregistrement objet Organisme " + organisme.toString());
+         log.info("Enregistrement objet Organisme {}",  organisme);
       }else{
-         log.warn("Doublon lors creation objet Organisme " + organisme.toString());
+         log.warn("Doublon lors creation objet Organisme {}",  organisme);
          throw new DoublonFoundException("Organisme", "creation");
       }
       
@@ -128,9 +128,9 @@ public class OrganismeManagerImpl implements OrganismeManager
       BeanValidator.validateObject(obj, new Validator[] {organismeValidator});
       if(!findDoublonManager(obj)){
          organismeDao.updateObject(obj);
-         log.info("Modification objet Organisme " + obj.toString());
+         log.info("Modification objet Organisme {}",  obj);
       }else{
-         log.warn("Doublon lors modification objet Organisme " + obj.toString());
+         log.warn("Doublon lors modification objet Organisme {}",  obj);
          throw new DoublonFoundException("Organisme", "modification");
       }
       
@@ -156,7 +156,7 @@ public class OrganismeManagerImpl implements OrganismeManager
    public void removeObjectManager(Organisme obj){
       if(obj != null){
          organismeDao.removeObject(obj.getId());
-         log.info("Suppression objet Organisme " + obj.toString());
+         log.info("Suppression objet Organisme {}",  obj);
       }else{
          log.warn("Suppression d'un Organisme null");
       }
@@ -165,7 +165,7 @@ public class OrganismeManagerImpl implements OrganismeManager
    @Override
    public boolean isUsedObjectManager(Organisme obj){
       if(obj != null) {
-         log.info("Test si des études de la plateforme "+ obj.getPlateforme() +" sont rattachées à l'organisme " + obj.getNom());
+         log.info("Test si des études de la plateforme {} sont rattachées à l'organisme {}", obj.getPlateforme(), obj.getNom());
          return ( etudeDao.countByPfAndOrganismePromoteurId(obj.getPlateforme(), obj.getId()) > 0);
       }else{
          log.warn("Test nombre d'études sur l'Organisme null");

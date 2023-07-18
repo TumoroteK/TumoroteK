@@ -117,7 +117,7 @@ public class ChampImprimeManagerImpl implements ChampImprimeManager
 
    @Override
    public List<ChampImprime> findByTemplateManager(final Template template){
-      log.debug("Recherche de tous les ChampImprimes d'un " + "Template.");
+      log.debug("Recherche de tous les ChampImprimes d'un  Template.");
       if(template != null){
          return champImprimeDao.findByTemplate(template);
       }
@@ -126,7 +126,7 @@ public class ChampImprimeManagerImpl implements ChampImprimeManager
 
    @Override
    public List<ChampImprime> findByTemplateAndBlocManager(final Template template, final BlocImpression bloc){
-      log.debug("Recherche de tous les ChampImprimes d'un " + "Template.");
+      log.debug("Recherche de tous les ChampImprimes d'un  Template.");
       if(template != null && bloc != null){
          return champImprimeDao.findByTemplateAndBloc(template, bloc);
       }
@@ -144,19 +144,19 @@ public class ChampImprimeManagerImpl implements ChampImprimeManager
    public void validateObjectManager(final Template template, final ChampEntite champEntite, final BlocImpression bloc){
       //template required
       if(template == null){
-         log.warn("Objet obligatoire Template manquant" + " lors de la validation d'un ChampImprime");
+         log.warn("Objet obligatoire Template manquant  lors de la validation d'un ChampImprime");
          throw new RequiredObjectIsNullException("ChampImprime", "creation", "Template");
       }
 
       //champEntite required
       if(champEntite == null){
-         log.warn("Objet obligatoire ChampEntite manquant" + " lors de la validation d'un ChampImprime");
+         log.warn("Objet obligatoire ChampEntite manquant  lors de la validation d'un ChampImprime");
          throw new RequiredObjectIsNullException("ChampImprime", "creation", "ChampEntite");
       }
 
       //bloc required
       if(bloc == null){
-         log.warn("Objet obligatoire BlocImpression manquant" + " lors de la validation d'un ChampImprime");
+         log.warn("Objet obligatoire BlocImpression manquant  lors de la validation d'un ChampImprime");
          throw new RequiredObjectIsNullException("ChampImprime", "creation", "BlocImpression");
       }
 
@@ -164,7 +164,7 @@ public class ChampImprimeManagerImpl implements ChampImprimeManager
       if(template.getTemplateId() != null){
          if(findDoublonManager(template, champEntite, bloc)){
 
-            log.warn("Doublon lors validation objet " + "ChampImprime");
+            log.warn("Doublon lors validation objet ChampImprime");
             throw new DoublonFoundException("ChampImprime", "creation");
          }
       }
@@ -183,7 +183,7 @@ public class ChampImprimeManagerImpl implements ChampImprimeManager
       // création
       champImprimeDao.createObject(champImprime);
 
-      log.info("Enregistrement objet ChampImprime " + champImprime.toString());
+      log.info("Enregistrement objet ChampImprime {}",  champImprime);
    }
 
    @Override
@@ -192,21 +192,21 @@ public class ChampImprimeManagerImpl implements ChampImprimeManager
 
       //template required
       if(template == null){
-         log.warn("Objet obligatoire Template manquant" + " lors de la validation d'un ChampImprime");
+         log.warn("Objet obligatoire Template manquant  lors de la validation d'un ChampImprime");
          throw new RequiredObjectIsNullException("ChampImprime", "modification", "Template");
       }
       champImprime.setTemplate(templateDao.mergeObject(template));
 
       //champEntite required
       if(champEntite == null){
-         log.warn("Objet obligatoire ChampEntite manquant" + " lors de la validation d'un ChampImprime");
+         log.warn("Objet obligatoire ChampEntite manquant  lors de la validation d'un ChampImprime");
          throw new RequiredObjectIsNullException("ChampImprime", "modification", "ChampEntite");
       }
       champImprime.setChampEntite(champEntiteDao.mergeObject(champEntite));
 
       //bloc required
       if(bloc == null){
-         log.warn("Objet obligatoire BlocImpression manquant" + " lors de la validation d'un ChampImprime");
+         log.warn("Objet obligatoire BlocImpression manquant  lors de la validation d'un ChampImprime");
          throw new RequiredObjectIsNullException("ChampImprime", "modification", "BlocImpression");
       }
       champImprime.setBlocImpression(blocImpressionDao.mergeObject(bloc));
@@ -214,7 +214,7 @@ public class ChampImprimeManagerImpl implements ChampImprimeManager
       // création
       champImprimeDao.updateObject(champImprime);
 
-      log.info("Enregistrement objet ChampImprime " + champImprime.toString());
+      log.info("Enregistrement objet ChampImprime {}",  champImprime);
 
    }
 
@@ -222,7 +222,7 @@ public class ChampImprimeManagerImpl implements ChampImprimeManager
    public void removeObjectManager(final ChampImprime champImprime){
       if(champImprime != null){
          champImprimeDao.removeObject(champImprime.getPk());
-         log.info("Suppression de l'objet ChampImprime : " + champImprime.toString());
+         log.info("Suppression de l'objet ChampImprime : {}",  champImprime);
       }else{
          log.warn("Suppression d'un ChampImprime null");
       }

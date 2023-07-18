@@ -100,9 +100,9 @@ public class PrelevementTypeManagerImpl implements PrelevementTypeManager
       BeanValidator.validateObject(obj, new Validator[] {prelevementTypeValidator});
       if(!findDoublonManager(obj)){
          prelevementTypeDao.createObject(obj);
-         log.info("Enregistrement objet PrelevementType " + obj.toString());
+         log.info("Enregistrement objet PrelevementType {}",  obj);
       }else{
-         log.warn("Doublon lors creation objet PrelevementType " + obj.toString());
+         log.warn("Doublon lors creation objet PrelevementType {}",  obj);
          throw new DoublonFoundException("PrelevementType", "creation");
       }
    }
@@ -112,9 +112,9 @@ public class PrelevementTypeManagerImpl implements PrelevementTypeManager
       BeanValidator.validateObject(obj, new Validator[] {prelevementTypeValidator});
       if(!findDoublonManager(obj)){
          prelevementTypeDao.updateObject(obj);
-         log.info("Modification objet PrelevementType " + obj.toString());
+         log.info("Modification objet PrelevementType {}",  obj);
       }else{
-         log.warn("Doublon lors modification objet PrelevementType " + obj.toString());
+         log.warn("Doublon lors modification objet PrelevementType {}",  obj);
          throw new DoublonFoundException("PrelevementType", "modification");
       }
    }
@@ -124,7 +124,7 @@ public class PrelevementTypeManagerImpl implements PrelevementTypeManager
       if(!exactMatch){
          type = type + "%";
       }
-      log.debug("Recherche PrelevementType par type: " + type + " exactMatch " + String.valueOf(exactMatch));
+      log.debug("Recherche PrelevementType par type: {} exactMatch {}", type, exactMatch);
       return prelevementTypeDao.findByType(type);
    }
 
@@ -132,7 +132,7 @@ public class PrelevementTypeManagerImpl implements PrelevementTypeManager
    public void removeObjectManager(final PrelevementType obj){
       if(obj != null){
          prelevementTypeDao.removeObject(obj.getId());
-         log.info("Suppression objet PrelevementType " + obj.toString());
+         log.info("Suppression objet PrelevementType {}",  obj);
       }else{
          log.warn("Suppression d'un PrelevementType null");
       }
@@ -158,7 +158,7 @@ public class PrelevementTypeManagerImpl implements PrelevementTypeManager
 
    @Override
    public List<PrelevementType> findByIncaCatManager(final String incaCat){
-      log.debug("Recherche PrelevementType par categorie INCa: " + incaCat);
+      log.debug("Recherche PrelevementType par categorie INCa: {}",  incaCat);
       return prelevementTypeDao.findByIncaCat(incaCat);
    }
 

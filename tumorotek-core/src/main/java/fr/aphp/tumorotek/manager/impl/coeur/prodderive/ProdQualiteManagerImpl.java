@@ -133,7 +133,7 @@ public class ProdQualiteManagerImpl implements ProdQualiteManager
     */
    @Override
    public List<ProdQualite> findByQualiteLikeManager(String qualite, final boolean exactMatch){
-      log.debug("Recherche ProdQualite par " + qualite + " exactMatch " + String.valueOf(exactMatch));
+      log.debug("Recherche ProdQualite par {} exactMatch {}", qualite, exactMatch);
       if(qualite != null){
          if(!exactMatch){
             qualite = qualite + "%";
@@ -175,31 +175,31 @@ public class ProdQualiteManagerImpl implements ProdQualiteManager
       qualite.setPlateforme(plateformeDao.mergeObject(qualite.getPlateforme()));
 
       if(findDoublonManager(qualite)){
-         log.warn("Doublon lors de la creation de l'objet ProdQualite : " + qualite.toString());
+         log.warn("Doublon lors de la creation de l'objet ProdQualite : {}",  qualite);
          throw new DoublonFoundException("ProdQualite", "creation");
       }
       BeanValidator.validateObject(qualite, new Validator[] {prodQualiteValidator});
       prodQualiteDao.createObject(qualite);
-      log.info("Enregistrement de l'objet ProdQualite : " + qualite.toString());
+      log.info("Enregistrement de l'objet ProdQualite : {}",  qualite);
    }
 
    @Override
    public void updateObjectManager(final ProdQualite obj){
       final ProdQualite qualite = obj;
       if(findDoublonManager(qualite)){
-         log.warn("Doublon lors de la modification de l'objet " + "ProdQualite : " + qualite.toString());
+         log.warn("Doublon lors de la modification de l'objet ProdQualite : {}",  qualite);
          throw new DoublonFoundException("ProdQualite", "modification");
       }
       BeanValidator.validateObject(qualite, new Validator[] {prodQualiteValidator});
       prodQualiteDao.updateObject(qualite);
-      log.info("Modification de l'objet ProdQualite : " + qualite.toString());
+      log.info("Modification de l'objet ProdQualite : {}",  qualite);
    }
 
    @Override
    public void removeObjectManager(final ProdQualite obj){
       final ProdQualite qualite = obj;
       prodQualiteDao.removeObject(qualite.getId());
-      log.info("Suppression de l'objet ProdQualite : " + qualite.toString());
+      log.info("Suppression de l'objet ProdQualite : {}",  qualite);
    }
 
    @Override

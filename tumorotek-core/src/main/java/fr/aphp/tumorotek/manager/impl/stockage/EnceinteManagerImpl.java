@@ -543,17 +543,17 @@ public class EnceinteManagerImpl implements EnceinteManager
       if(enceinteType != null){
          enceinte.setEnceinteType(enceinteTypeDao.mergeObject(enceinteType));
       }else{
-         log.warn("Objet obligatoire EnceinteType manquant" + " lors de la création d'une Enceinte");
+         log.warn("Objet obligatoire EnceinteType manquant  lors de la création d'une Enceinte");
          throw new RequiredObjectIsNullException("Enceinte", "creation", "EnceinteType");
       }
 
       // il faut que soit le conteneur soit une enceintePere
       // soit défini
       if(enceintePere != null && conteneur != null){
-         log.warn("Deux parents sont définis" + " lors de la création d'une Enceinte");
+         log.warn("Deux parents sont définis  lors de la création d'une Enceinte");
          throw new InvalidParentException("Enceinte", "creation", false);
       }else if(enceintePere == null && conteneur == null){
-         log.warn("Aucun parent n'est défini" + " lors de la création d'une Enceinte");
+         log.warn("Aucun parent n'est défini  lors de la création d'une Enceinte");
          throw new InvalidParentException("Enceinte", "creation", true);
       }
 
@@ -566,12 +566,12 @@ public class EnceinteManagerImpl implements EnceinteManager
       // Test de la position : dans les limites du parent
       if(enceinte.getConteneur() != null){
          if(!checkEnceinteInConteneurLimitesManager(enceinte)){
-            log.warn("La position n'est pas dans la limite des places du " + "conteneur parent");
+            log.warn("La position n'est pas dans la limite des places du conteneur parent");
             throw new InvalidPositionException("Enceinte", "creation", enceinte.getPosition());
          }
       }else if(enceinte.getEnceintePere() != null){
          if(!checkEnceinteInEnceintePereLimitesManager(enceinte)){
-            log.warn("La position n'est pas dans la limite des places de " + "l'enceinte parente");
+            log.warn("La position n'est pas dans la limite des places de l'enceinte parente");
             throw new InvalidPositionException("Enceinte", "creation", enceinte.getPosition());
          }
       }
@@ -579,20 +579,20 @@ public class EnceinteManagerImpl implements EnceinteManager
       // Test de la position : vide
       if(enceinte.getConteneur() != null){
          if(!checkPositionManager.checkPositionLibreInConteneurManager(enceinte.getConteneur(), enceinte.getPosition(), null)){
-            log.warn("La position est déjà occupée par un " + "autre objet dans " + "le conteneur parent");
+            log.warn("La position est déjà occupée par un autre objet dans le conteneur parent");
             throw new UsedPositionException("Enceinte", "creation", enceinte.getPosition());
          }
       }else if(enceinte.getEnceintePere() != null){
          if(!checkPositionManager.checkPositionLibreInEnceinteManager(enceinte.getEnceintePere(), enceinte.getPosition(), null,
             null)){
-            log.warn("La position est déjà occupée par un " + "autre objet dans " + "l'enceinte parent");
+            log.warn("La position est déjà occupée par un autre objet dans l'enceinte parent");
             throw new UsedPositionException("Enceinte", "creation", enceinte.getPosition());
          }
       }
 
       // Test s'il y a des doublons
       if(findDoublonManager(enceinte)){
-         log.warn("Doublon lors de la creation de l'objet Enceinte : " + enceinte.toString());
+         log.warn("Doublon lors de la creation de l'objet Enceinte : {}",  enceinte);
          throw new DoublonFoundException("Enceinte", "creation");
       }
 
@@ -613,7 +613,7 @@ public class EnceinteManagerImpl implements EnceinteManager
          updateBanques(enceinte, banques);
       }
 
-      log.info("Enregistrement de l'objet Enceinte : " + enceinte.toString());
+      log.info("Enregistrement de l'objet Enceinte : {}",  enceinte);
 
       //Enregistrement de l'operation associee
       final Operation creationOp = new Operation();
@@ -631,7 +631,7 @@ public class EnceinteManagerImpl implements EnceinteManager
          if(conteneur != null){
             if(number != null){
                if(number > conteneur.getNbrEnc()){
-                  log.warn("La position n'est pas dans la limite " + "des places du " + "conteneur");
+                  log.warn("La position n'est pas dans la limite des places du conteneur");
                   throw new InvalidPositionException("Enceinte", "creation", number);
                }
 
@@ -662,7 +662,7 @@ public class EnceinteManagerImpl implements EnceinteManager
             }
 
          }else{
-            log.warn("Objet obligatoire Conteneur manquant" + " lors de la creation d'une Enceinte");
+            log.warn("Objet obligatoire Conteneur manquant  lors de la creation d'une Enceinte");
             throw new RequiredObjectIsNullException("Enceinte", "creation", "Conteneur");
          }
       }
@@ -680,7 +680,7 @@ public class EnceinteManagerImpl implements EnceinteManager
          if(enceintePere != null){
             if(number != null){
                if(number > enceintePere.getNbPlaces()){
-                  log.warn("La position n'est pas dans la limite " + "des places de " + "l'enceinte parent");
+                  log.warn("La position n'est pas dans la limite des places de l'enceinte parent");
                   throw new InvalidPositionException("Enceinte", "creation", number);
                }
 
@@ -711,7 +711,7 @@ public class EnceinteManagerImpl implements EnceinteManager
             }
 
          }else{
-            log.warn("Objet obligatoire EnceintePere manquant" + " lors de la creation d'une Enceinte");
+            log.warn("Objet obligatoire EnceintePere manquant  lors de la creation d'une Enceinte");
             throw new RequiredObjectIsNullException("Enceinte", "creation", "EnceintePere");
          }
       }
@@ -728,17 +728,17 @@ public class EnceinteManagerImpl implements EnceinteManager
       if(enceinteType != null){
          enceinte.setEnceinteType(enceinteTypeDao.mergeObject(enceinteType));
       }else{
-         log.warn("Objet obligatoire EnceinteType manquant" + " lors de la modification d'une Enceinte");
+         log.warn("Objet obligatoire EnceinteType manquant  lors de la modification d'une Enceinte");
          throw new RequiredObjectIsNullException("Enceinte", "modification", "EnceinteType");
       }
 
       // il faut que soit le conteneur soit une enceintePere
       // soit défini
       if(enceintePere != null && conteneur != null){
-         log.warn("Deux parents sont définis" + " lors de la modification d'une Enceinte");
+         log.warn("Deux parents sont définis  lors de la modification d'une Enceinte");
          throw new InvalidParentException("Enceinte", "modification", false);
       }else if(enceintePere == null && conteneur == null){
-         log.warn("Aucun parent n'est défini" + " lors de la modification d'une Enceinte");
+         log.warn("Aucun parent n'est défini  lors de la modification d'une Enceinte");
          throw new InvalidParentException("Enceinte", "modification", true);
       }
 
@@ -751,12 +751,12 @@ public class EnceinteManagerImpl implements EnceinteManager
       // Test de la position : dans les limites du parent
       if(enceinte.getConteneur() != null){
          if(!checkEnceinteInConteneurLimitesManager(enceinte)){
-            log.warn("La position n'est pas dans la limite des places du " + "conteneur parent");
+            log.warn("La position n'est pas dans la limite des places du conteneur parent");
             throw new InvalidPositionException("Enceinte", "modification", enceinte.getPosition());
          }
       }else if(enceinte.getEnceintePere() != null){
          if(!checkEnceinteInEnceintePereLimitesManager(enceinte)){
-            log.warn("La position n'est pas dans la limite des places de " + "l'enceinte parente");
+            log.warn("La position n'est pas dans la limite des places de l'enceinte parente");
             throw new InvalidPositionException("Enceinte", "modification", enceinte.getPosition());
          }
       }
@@ -765,13 +765,13 @@ public class EnceinteManagerImpl implements EnceinteManager
       if(enceinte.getConteneur() != null){
          if(!checkPositionManager.checkPositionLibreInConteneurManager(enceinte.getConteneur(), enceinte.getPosition(),
             enceinte.getEnceinteId())){
-            log.warn("La position est déjà occupée par un " + "autre objet dans " + "le conteneur parent");
+            log.warn("La position est déjà occupée par un autre objet dans le conteneur parent");
             throw new UsedPositionException("Enceinte", "modification", enceinte.getPosition());
          }
       }else if(enceinte.getEnceintePere() != null){
          if(!checkPositionManager.checkPositionLibreInEnceinteManager(enceinte.getEnceintePere(), enceinte.getPosition(), null,
             enceinte.getEnceinteId())){
-            log.warn("La position est déjà occupée par un " + "autre objet dans " + "l'enceinte parent");
+            log.warn("La position est déjà occupée par un autre objet dans l'enceinte parent");
             throw new UsedPositionException("Enceinte", "modification", enceinte.getPosition());
          }
       }
@@ -801,7 +801,7 @@ public class EnceinteManagerImpl implements EnceinteManager
 
       // Test s'il y a des doublons
       if(findDoublonManager(enceinte)){
-         log.warn("Doublon lors de la modification de l'objet Enceinte : " + enceinte.toString());
+         log.warn("Doublon lors de la modification de l'objet Enceinte : {}",  enceinte);
          throw new DoublonFoundException("Enceinte", "modification");
       }
 
@@ -820,7 +820,7 @@ public class EnceinteManagerImpl implements EnceinteManager
          updateBanques(enceinte, banques);
       }
 
-      log.info("Modification de l'objet Enceinte : " + enceinte.toString());
+      log.info("Modification de l'objet Enceinte : {}",  enceinte);
 
       //Enregistrement de l'operation associee
       final Operation creationOp = new Operation();
@@ -841,7 +841,7 @@ public class EnceinteManagerImpl implements EnceinteManager
    public void removeObjectManager(final Enceinte enceinte, final String comments, final Utilisateur user){
       if(enceinte != null){
          if(isUsedObjectManager(enceinte)){
-            log.warn("Objet utilisé lors de la suppression de l'objet " + "Enceinte : " + enceinte.toString());
+            log.warn("Objet utilisé lors de la suppression de l'objet Enceinte : {}",  enceinte);
             throw new ObjectUsedException("enceinte.deletion.isUsed", false);
          }
          // suppression des enfants
@@ -861,7 +861,7 @@ public class EnceinteManagerImpl implements EnceinteManager
          CreateOrUpdateUtilities.removeAssociateOperations(enceinte, operationManager, comments, user);
 
          enceinteDao.removeObject(enceinte.getEnceinteId());
-         log.info("Suppression de l'objet Enceinte : " + enceinte.toString());
+         log.info("Suppression de l'objet Enceinte : {}",  enceinte);
       }else{
          log.warn("Suppression d'une Enceinte null");
       }
@@ -899,7 +899,7 @@ public class EnceinteManagerImpl implements EnceinteManager
          // on retire la banque de chaque coté de l'association
          enc.getBanques().remove(bank);
 
-         log.debug("Suppression de l'association entre l'enceinte : " + enc.toString() + " et la banque : " + bank.toString());
+         log.debug("Suppression de l'association entre l'enceinte : {} et la banque : {}", enc, bank);
       }
 
       // on parcourt la nouvelle liste de banques
@@ -921,10 +921,10 @@ public class EnceinteManagerImpl implements EnceinteManager
 
          // Test s'il y a des doublons
          if(findDoublonWithoutTwoEnceintesManager(enceinte1, enceinte2)){
-            log.warn("Doublon lors du déplacement de l'objet Enceinte : " + enceinte1.toString());
+            log.warn("Doublon lors du déplacement de l'objet Enceinte : {}",  enceinte1);
             throw new DoublonFoundException("Enceinte", "deplacement");
          }else if(findDoublonWithoutTwoEnceintesManager(enceinte2, enceinte1)){
-            log.warn("Doublon lors du déplacement de l'objet Enceinte : " + enceinte2.toString());
+            log.warn("Doublon lors du déplacement de l'objet Enceinte : {}",  enceinte2);
             throw new DoublonFoundException("Enceinte", "deplacement");
          }else{
 
@@ -935,8 +935,8 @@ public class EnceinteManagerImpl implements EnceinteManager
             enceinteDao.updateObject(enceinte1);
             enceinteDao.updateObject(enceinte2);
 
-            log.info("Modification de l'objet Enceinte : " + enceinte1.toString());
-            log.info("Modification de l'objet Enceinte : " + enceinte2.toString());
+            log.info("Modification de l'objet Enceinte : {}",  enceinte1);
+            log.info("Modification de l'objet Enceinte : {}",  enceinte2);
 
             //Enregistrement des operations associees
             final Operation op1 = new Operation();

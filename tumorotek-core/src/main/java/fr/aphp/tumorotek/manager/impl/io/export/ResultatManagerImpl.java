@@ -136,7 +136,7 @@ public class ResultatManagerImpl implements ResultatManager
    public Resultat findByIdManager(final Integer idResultat){
       //On vérifie que l'identifiant n'est pas nul
       if(idResultat == null){
-         log.warn("Objet obligatoire identifiant manquant lors de la " + "recherche par l'identifiant d'un objet Resultat");
+         log.warn("Objet obligatoire identifiant manquant lors de la recherche par l'identifiant d'un objet Resultat");
          throw new RequiredObjectIsNullException("Resultat", "recherche par identifiant", "identifiant");
       }
       return resultatDao.findById(idResultat);
@@ -160,12 +160,12 @@ public class ResultatManagerImpl implements ResultatManager
    public Resultat copyResultatManager(final Resultat resultat, final Affichage affichage){
       //On vérifie que le résultat n'est pas nul
       if(resultat == null){
-         log.warn("Objet obligatoire Resultat manquant lors " + "de la copie d'un objet Resultat");
+         log.warn("Objet obligatoire Resultat manquant lors de la copie d'un objet Resultat");
          throw new RequiredObjectIsNullException("Resultat", "copie", "Resultat");
       }
       //On vérifie que l'affichage n'est pas nul
       if(affichage == null){
-         log.warn("Objet obligatoire Affichage manquant lors " + "de la copie d'un objet Resultat");
+         log.warn("Objet obligatoire Affichage manquant lors de la copie d'un objet Resultat");
          throw new RequiredObjectIsNullException("Resultat", "copie", "Affichage");
       }
       //On copie le champ
@@ -190,17 +190,17 @@ public class ResultatManagerImpl implements ResultatManager
    public void createObjectManager(final Resultat resultat, Affichage affichage, Champ champ){
       //On vérifie que le résultat n'est pas nul
       if(resultat == null){
-         log.warn("Objet obligatoire Resultat manquant lors " + "de la création d'un objet Resultat");
+         log.warn("Objet obligatoire Resultat manquant lors de la création d'un objet Resultat");
          throw new RequiredObjectIsNullException("Resultat", "création", "Resultat");
       }
       //On vérifie que l'affichage n'est pas nul
       if(affichage == null){
-         log.warn("Objet obligatoire Affichage manquant lors " + "de la création d'un objet Resultat");
+         log.warn("Objet obligatoire Affichage manquant lors de la création d'un objet Resultat");
          throw new RequiredObjectIsNullException("Resultat", "création", "Affichage");
       }
       //On vérifie que le champ n'est pas nul
       if(champ == null){
-         log.warn("Objet obligatoire Champ manquant lors " + "de la création d'un objet Resultat");
+         log.warn("Objet obligatoire Champ manquant lors de la création d'un objet Resultat");
          throw new RequiredObjectIsNullException("Resultat", "création", "Champ");
       }
       if(champ.getChampId() != null){
@@ -227,17 +227,17 @@ public class ResultatManagerImpl implements ResultatManager
    public void updateObjectManager(final Resultat resultat, Affichage affichage, Champ champ){
       //On vérifie que le résultat n'est pas nul
       if(resultat == null){
-         log.warn("Objet obligatoire Resultat manquant lors " + "de la modification d'un objet Resultat");
+         log.warn("Objet obligatoire Resultat manquant lors de la modification d'un objet Resultat");
          throw new RequiredObjectIsNullException("Resultat", "modification", "Resultat");
       }
       //On vérifie que l'affichage n'est pas nul
       if(affichage == null){
-         log.warn("Objet obligatoire Affichage manquant lors " + "de la modification d'un objet Resultat");
+         log.warn("Objet obligatoire Affichage manquant lors de la modification d'un objet Resultat");
          throw new RequiredObjectIsNullException("Resultat", "modification", "Affichage");
       }
       //On vérifie que le champ n'est pas nul
       if(champ == null){
-         log.warn("Objet obligatoire Champ manquant lors " + "de la modification d'un objet Resultat");
+         log.warn("Objet obligatoire Champ manquant lors de la modification d'un objet Resultat");
          throw new RequiredObjectIsNullException("Resultat", "modification", "Champ");
       }
       final Champ oldChamp = resultat.getChamp();
@@ -295,7 +295,7 @@ public class ResultatManagerImpl implements ResultatManager
    public List<Resultat> findByAffichageManager(final Affichage affichage){
       //On vérifie que l'affichage n'est pas nul
       if(affichage == null){
-         log.warn("Objet obligatoire Affichage manquant lors de la " + "recherche par l'Affichage d'un objet Resultat");
+         log.warn("Objet obligatoire Affichage manquant lors de la recherche par l'Affichage d'un objet Resultat");
          throw new RequiredObjectIsNullException("Resultat", "recherche par Affichage", "Affichage");
       }
       return resultatDao.findByAffichage(affichage);

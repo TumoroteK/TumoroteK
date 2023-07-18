@@ -164,7 +164,7 @@ public class TransporteurManagerImpl implements TransporteurManager
    @Override
    public void createObjectManager(final Transporteur transporteur, final Coordonnee coordonnee, final Utilisateur utilisateur){
       if(findDoublonManager(transporteur)){
-         log.warn("Doublon lors de la creation de l'objet Transporteur : " + transporteur.toString());
+         log.warn("Doublon lors de la creation de l'objet Transporteur : {}",  transporteur);
          throw new DoublonFoundException("Transporteur", "creation");
       }else{
 
@@ -184,7 +184,7 @@ public class TransporteurManagerImpl implements TransporteurManager
          transporteur.setCoordonnee(coordonneeDao.mergeObject(coordonnee));
 
          transporteurDao.createObject(transporteur);
-         log.info("Enregistrement de l'objet Transporteur : " + transporteur.toString());
+         log.info("Enregistrement de l'objet Transporteur : {}",  transporteur);
 
          // Enregistrement de l'operation associee
          final Operation creationOp = new Operation();
@@ -197,7 +197,7 @@ public class TransporteurManagerImpl implements TransporteurManager
    @Override
    public void updateObjectManager(final Transporteur transporteur, final Coordonnee coordonnee, final Utilisateur utilisateur){
       if(findDoublonManager(transporteur)){
-         log.warn("Doublon lors de la modif de l'objet Transporteur : " + transporteur.toString());
+         log.warn("Doublon lors de la modif de l'objet Transporteur : {}",  transporteur);
          throw new DoublonFoundException("Transporteur", "modification");
       }else{
 
@@ -217,7 +217,7 @@ public class TransporteurManagerImpl implements TransporteurManager
          transporteur.setCoordonnee(coordonneeDao.mergeObject(coordonnee));
 
          transporteurDao.updateObject(transporteur);
-         log.info("Enregistrement de l'objet Transporteur : " + transporteur.toString());
+         log.info("Enregistrement de l'objet Transporteur : {}",  transporteur);
 
          //Enregistrement de l'operation associee
          final Operation creationOp = new Operation();
@@ -235,9 +235,9 @@ public class TransporteurManagerImpl implements TransporteurManager
             CreateOrUpdateUtilities.removeAssociateOperations(transporteur, operationManager, comments, user);
 
             transporteurDao.removeObject(transporteur.getTransporteurId());
-            log.info("Suppression de l'objet Transporteur : " + transporteur.toString());
+            log.info("Suppression de l'objet Transporteur : {}",  transporteur);
          }else{
-            log.warn("Objet référencé lors de la suppression " + "de l'objet Transporteur : " + transporteur.toString());
+            log.warn("Objet référencé lors de la suppression de l'objet Transporteur : {}",  transporteur);
             throw new ObjectReferencedException("transporteur" + ".deletion.isReferenced", false);
          }
       }

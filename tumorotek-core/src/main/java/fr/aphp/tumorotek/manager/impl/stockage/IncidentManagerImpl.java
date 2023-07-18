@@ -203,13 +203,13 @@ public class IncidentManagerImpl implements IncidentManager
       }else if(terminale != null){
          incident.setTerminale(terminaleDao.mergeObject(terminale));
       }else{
-         log.warn("Objet obligatoire Conteneur/Enceinte/Terminale manquant" + " lors de la création d'un Incident");
+         log.warn("Objet obligatoire Conteneur/Enceinte/Terminale manquant  lors de la création d'un Incident");
          throw new RequiredObjectIsNullException("Incident", "creation", "Conteneur/Enceinte/Terminale");
       }
 
       // Test s'il y a des doublons
       if(findDoublonManager(incident)){
-         log.warn("Doublon lors de la creation de l'objet Incident : " + incident.toString());
+         log.warn("Doublon lors de la creation de l'objet Incident : {}",  incident);
          throw new DoublonFoundException("Incident", "creation");
       }else{
 
@@ -218,7 +218,7 @@ public class IncidentManagerImpl implements IncidentManager
 
          incidentDao.createObject(incident);
 
-         log.info("Enregistrement de l'objet Incident : " + incident.toString());
+         log.info("Enregistrement de l'objet Incident : {}",  incident);
       }
    }
 
@@ -240,13 +240,13 @@ public class IncidentManagerImpl implements IncidentManager
          incident.setEnceinte(null);
          incident.setTerminale(terminaleDao.mergeObject(terminale));
       }else{
-         log.warn("Objet obligatoire Conteneur/Enceinte/Terminale manquant" + " lors de la modification d'un Incident");
+         log.warn("Objet obligatoire Conteneur/Enceinte/Terminale manquant  lors de la modification d'un Incident");
          throw new RequiredObjectIsNullException("Incident", "modification", "Conteneur/Enceinte/Terminale");
       }
 
       // Test s'il y a des doublons
       if(findDoublonManager(incident)){
-         log.warn("Doublon lors de la modification de l'objet Incident : " + incident.toString());
+         log.warn("Doublon lors de la modification de l'objet Incident : {}",  incident);
          throw new DoublonFoundException("Incident", "modification");
       }else{
 
@@ -255,7 +255,7 @@ public class IncidentManagerImpl implements IncidentManager
 
          incidentDao.updateObject(incident);
 
-         log.info("Modification de l'objet Incident : " + incident.toString());
+         log.info("Modification de l'objet Incident : {}",  incident);
       }
    }
 
@@ -263,7 +263,7 @@ public class IncidentManagerImpl implements IncidentManager
    public void removeObjectManager(final Incident incident){
       if(incident != null){
          incidentDao.removeObject(incident.getIncidentId());
-         log.info("Suppression de l'objet Incident : " + incident.toString());
+         log.info("Suppression de l'objet Incident : {}",  incident);
       }else{
          log.warn("Suppression d'un Incident null");
       }

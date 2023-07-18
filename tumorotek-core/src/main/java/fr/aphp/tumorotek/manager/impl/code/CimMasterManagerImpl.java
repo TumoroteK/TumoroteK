@@ -89,7 +89,7 @@ public class CimMasterManagerImpl implements CimMasterManager
       if(!exactMatch){
          code = "%" + code + "%";
       }
-      log.debug("Recherche Cim par code: " + code + " exactMatch " + String.valueOf(exactMatch));
+      log.debug("Recherche Cim par code: {} exactMatch {}", code, exactMatch);
       return cimMasterDao.findByCodeLike(code);
    }
 
@@ -98,7 +98,7 @@ public class CimMasterManagerImpl implements CimMasterManager
       if(!exactMatch){
          libelle = "%" + libelle + "%";
       }
-      log.debug("Recherche Cim par libelle: " + libelle + " exactMatch " + String.valueOf(exactMatch));
+      log.debug("Recherche Cim par libelle: {} exactMatch {}", libelle, exactMatch);
       // List<CimMaster> cims = new ArrayList<CimMaster>();
       // List<CimLibelle> libs = cimLibelleDao.findByLibelleLike(libelle);
       // for (int i = 0; i < libs.size(); i++) {

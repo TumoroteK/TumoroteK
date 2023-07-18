@@ -177,7 +177,7 @@ public class ImportHistoriqueManagerImpl implements ImportHistoriqueManager
       if(importTemplate != null){
          importHistorique.setImportTemplate(importTemplateDao.mergeObject(importTemplate));
       }else{
-         log.warn("Objet obligatoire ImportTemplate manquant" + " lors de la création d'un ImportHistorique");
+         log.warn("Objet obligatoire ImportTemplate manquant  lors de la création d'un ImportHistorique");
          throw new RequiredObjectIsNullException("ImportHistorique", "creation", "importTemplate");
       }
 
@@ -185,7 +185,7 @@ public class ImportHistoriqueManagerImpl implements ImportHistoriqueManager
       if(utilisateur != null){
          importHistorique.setUtilisateur(utilisateurDao.mergeObject(utilisateur));
       }else{
-         log.warn("Objet obligatoire Utilisateur manquant" + " lors de la création d'un ImportHistorique");
+         log.warn("Objet obligatoire Utilisateur manquant  lors de la création d'un ImportHistorique");
          throw new RequiredObjectIsNullException("Utilisateur", "creation", "importTemplate");
       }
 
@@ -200,14 +200,14 @@ public class ImportHistoriqueManagerImpl implements ImportHistoriqueManager
       }
 
       importHistoriqueDao.createObject(importHistorique);
-      log.info("Enregistrement objet ImportHistorique " + importHistorique.toString());
+      log.info("Enregistrement objet ImportHistorique {}",  importHistorique);
    }
 
    @Override
    public void removeObjectManager(final ImportHistorique importHistorique){
       if(importHistorique != null){
          importHistoriqueDao.removeObject(importHistorique.getImportHistoriqueId());
-         log.info("Suppression de l'objet ImportHistorique : " + importHistorique.toString());
+         log.info("Suppression de l'objet ImportHistorique : {}",  importHistorique);
       }else{
          log.warn("Suppression d'un ImportHistorique null");
       }
@@ -217,7 +217,7 @@ public class ImportHistoriqueManagerImpl implements ImportHistoriqueManager
    public void removeImportationManager(final Importation importation){
       if(importation != null){
          importationDao.removeObject(importation.getImportationId());
-         log.info("Suppression de l'objet Importation : " + importation.toString());
+         log.info("Suppression de l'objet Importation : {}",  importation);
       }else{
          log.warn("Suppression d'un Importation null");
       }

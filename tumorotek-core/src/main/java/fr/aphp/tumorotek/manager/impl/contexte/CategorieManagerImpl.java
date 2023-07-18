@@ -110,7 +110,7 @@ public class CategorieManagerImpl implements CategorieManager
    @Override
    public List<Categorie> findByNomLikeManager(String nom, final boolean exactMatch){
 
-      log.debug("Recherche Categorie par " + nom + " exactMatch " + String.valueOf(exactMatch));
+      log.debug("Recherche Categorie par {} exactMatch {}", nom, exactMatch);
       if(nom != null){
          if(!exactMatch){
             nom = nom + "%";
@@ -143,9 +143,9 @@ public class CategorieManagerImpl implements CategorieManager
       BeanValidator.validateObject(obj, new Validator[] {categorieValidator});
       if(!findDoublonManager(obj)){
          categorieDao.createObject(obj);
-         log.info("Enregistrement objet Categorie " + obj.toString());
+         log.info("Enregistrement objet Categorie {}",  obj);
       }else{
-         log.warn("Doublon lors creation objet Categorie " + obj.toString());
+         log.warn("Doublon lors creation objet Categorie {}",  obj);
          throw new DoublonFoundException("Categorie", "creation");
       }
    }
@@ -155,9 +155,9 @@ public class CategorieManagerImpl implements CategorieManager
       BeanValidator.validateObject(obj, new Validator[] {categorieValidator});
       if(!findDoublonManager(obj)){
          categorieDao.updateObject(obj);
-         log.info("Modification objet Categorie " + obj.toString());
+         log.info("Modification objet Categorie {}",  obj);
       }else{
-         log.warn("Doublon lors modification objet Categorie " + obj.toString());
+         log.warn("Doublon lors modification objet Categorie {}",  obj);
          throw new DoublonFoundException("Categorie", "modification");
       }
    }
@@ -166,7 +166,7 @@ public class CategorieManagerImpl implements CategorieManager
    public void removeObjectManager(final Categorie obj){
       if(obj != null){
          categorieDao.removeObject(obj.getId());
-         log.info("Suppression objet Categorie " + obj.toString());
+         log.info("Suppression objet Categorie {}",  obj);
       }else{
          log.warn("Suppression d'une Categorie null");
       }

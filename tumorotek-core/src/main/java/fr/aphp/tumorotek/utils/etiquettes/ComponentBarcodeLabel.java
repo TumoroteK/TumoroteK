@@ -148,7 +148,7 @@ public class ComponentBarcodeLabel extends Component
          }
       }catch(final BarcodeException be){
          // Error handling
-         log.error("paint:BarcodeException" + be);
+         log.error("paint:BarcodeException {}",  be);
       }
 
       if(barcode1 == null){

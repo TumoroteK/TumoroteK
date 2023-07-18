@@ -88,10 +88,10 @@ public class LienFamilialManagerImpl implements LienFamilialManager
          final LienFamilial reciproque = new LienFamilial();
          createReciprocity(obj, reciproque, true);
          lienFamilialDao.createObject(obj);
-         log.info("Enregistrement objet LienFamilial " + obj.toString() + " et son reciproque " + reciproque.toString());
+         log.info("Enregistrement objet LienFamilial {} et son reciproque {}", obj, reciproque);
 
       }else{
-         log.warn("Doublon lors creation objet LienFamilial " + obj.toString());
+         log.warn("Doublon lors creation objet LienFamilial {}",  obj);
          throw new DoublonFoundException("LienFamilial", "creation");
       }
    }
@@ -103,9 +103,9 @@ public class LienFamilialManagerImpl implements LienFamilialManager
          final LienFamilial reciproque = obj.getReciproque();
          createReciprocity(obj, reciproque, false);
          lienFamilialDao.updateObject(obj);
-         log.info("Modification objet LienFamilial " + obj.toString() + " et son reciproque " + reciproque.toString());
+         log.info("Modification objet LienFamilial {} et son reciproque {}", obj, reciproque);
       }else{
-         log.warn("Doublon lors modification objet LienFamilial " + obj.toString());
+         log.warn("Doublon lors modification objet LienFamilial {}",  obj);
          throw new DoublonFoundException("LienFamilial", "modification");
       }
    }
@@ -121,7 +121,7 @@ public class LienFamilialManagerImpl implements LienFamilialManager
       if(!exactMatch){
          nom = nom + "%";
       }
-      log.debug("Recherche LienFamilial par nom: " + nom + " exactMatch " + String.valueOf(exactMatch));
+      log.debug("Recherche LienFamilial par nom: {} exactMatch {}", nom, exactMatch);
       return lienFamilialDao.findByNom(nom);
    }
 
@@ -130,9 +130,9 @@ public class LienFamilialManagerImpl implements LienFamilialManager
       if(obj != null){
          if(!isUsedObjectManager(obj)){
             lienFamilialDao.removeObject(obj.getLienFamilialId());
-            log.debug("Suppression objet LienFamilial " + obj.toString() + " et son reciproque en cascade");
+            log.debug("Suppression objet LienFamilial {} et son reciproque en cascade", obj);
          }else{
-            log.warn("Suppression objet LienFamilial " + obj.toString() + " impossible car est reference (par PatientLien)");
+            log.warn("Suppression objet LienFamilial {} impossible car est reference (par PatientLien)", obj);
             throw new ObjectUsedException();
          }
       }else{

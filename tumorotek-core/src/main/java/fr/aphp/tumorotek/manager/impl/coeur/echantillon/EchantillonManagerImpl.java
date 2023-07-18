@@ -1130,7 +1130,7 @@ public class EchantillonManagerImpl implements EchantillonManager
          if(!findDoublonManager(echantillon)){
 
             echantillonDao.updateObject(echantillon);
-            log.info("Modification de l'objet Echantillon : {}" + echantillon);
+            log.info("Modification de l'objet Echantillon : {}",  echantillon);
 
             if(operations == null || !operations.contains(operationTypeDao.findByNom("ModifMultiple").get(0))){
                // Enregistrement de l'operation associee
@@ -1194,7 +1194,7 @@ public class EchantillonManagerImpl implements EchantillonManager
                }
             }
          }else{ // doublon
-            log.warn("Doublon lors de la modification de l'objet Echantillon : {}" + echantillon);
+            log.warn("Doublon lors de la modification de l'objet Echantillon : {}",  echantillon);
             throw new DoublonFoundException("Echantillon", "modification", echantillon.getCode(), null);
          }
       }catch(final RuntimeException re){
@@ -1290,7 +1290,7 @@ public class EchantillonManagerImpl implements EchantillonManager
             CreateOrUpdateUtilities.removeAssociateNonConformites(echantillon, objetNonConformeManager);
 
             echantillonDao.removeObject(echantillon.getEchantillonId());
-            log.info("Suppression de l'objet Echantillon : " + echantillon.toString());
+            log.info("Suppression de l'objet Echantillon : {}",  echantillon);
 
             //Supprime operations associees
             CreateOrUpdateUtilities.removeAssociateOperations(echantillon, operationManager, comments, user);
@@ -1309,10 +1309,10 @@ public class EchantillonManagerImpl implements EchantillonManager
 
          }else{
             if(!isCessedObjectManager(echantillon)){
-               log.warn("Objet utilisé lors de la suppression de l'objet " + "Echantillon : " + echantillon.toString());
+               log.warn("Objet utilisé lors de la suppression de l'objet Echantillon : {}",  echantillon);
                throw new ObjectUsedException("echantillon.deletion." + "isUsedCascade", true);
             }
-            log.warn("Objet cédé lors de la suppression de l'objet " + "Echantillon : " + echantillon.toString());
+            log.warn("Objet cédé lors de la suppression de l'objet Echantillon : {}",  echantillon);
             throw new ObjectUsedException("echantillon.deletion." + "isUsedNonCascade", false);
          }
       }
@@ -1694,7 +1694,7 @@ public class EchantillonManagerImpl implements EchantillonManager
          if(statut != null){
             echantillon.setObjetStatut(objetStatutDao.mergeObject(statut));
          }else if(echantillon.getObjetStatut() == null){
-            log.warn("Objet obligatoire ObjetStatut manquant lors " + "de la creation " + "d'un objet Echantillon");
+            log.warn("Objet obligatoire ObjetStatut manquant lors de la creation d'un objet Echantillon");
             throw new RequiredObjectIsNullException("Echantillon", "creation", "ObjetStatut");
          }
 

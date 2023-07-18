@@ -114,9 +114,9 @@ public class TerminaleTypeManagerImpl implements TerminaleTypeManager
       BeanValidator.validateObject(obj, new Validator[] {terminaleTypeValidator});
       if(!findDoublonManager(obj)){
          terminaleTypeDao.createObject(obj);
-         log.info("Enregistrement objet TerminaleType " + obj.toString());
+         log.info("Enregistrement objet TerminaleType {}",  obj);
       }else{
-         log.warn("Doublon lors creation objet TerminaleType " + obj.toString());
+         log.warn("Doublon lors creation objet TerminaleType {}",  obj);
          throw new DoublonFoundException("TerminaleType", "creation");
       }
    }
@@ -126,9 +126,9 @@ public class TerminaleTypeManagerImpl implements TerminaleTypeManager
       BeanValidator.validateObject(obj, new Validator[] {terminaleTypeValidator});
       if(!findDoublonManager(obj)){
          terminaleTypeDao.updateObject(obj);
-         log.info("Modification objet TerminaleType " + obj.toString());
+         log.info("Modification objet TerminaleType {}",  obj);
       }else{
-         log.warn("Doublon lors modification objet TerminaleType " + obj.toString());
+         log.warn("Doublon lors modification objet TerminaleType {}",  obj);
          throw new DoublonFoundException("TerminaleType", "modification");
       }
    }
@@ -138,9 +138,9 @@ public class TerminaleTypeManagerImpl implements TerminaleTypeManager
       if(obj != null){
          if(!isUsedObjectManager(obj)){
             terminaleTypeDao.removeObject(obj.getTerminaleTypeId());
-            log.info("Suppression objet TerminaleType " + obj.toString());
+            log.info("Suppression objet TerminaleType {}",  obj);
          }else{
-            log.warn("Suppression objet TerminaleType " + obj.toString() + " impossible car est reference (par Terminale)");
+            log.warn("Suppression objet TerminaleType {} impossible car est reference (par Terminale)", obj);
             throw new ObjectUsedException("terminaleType.deletion.isReferenced", false);
          }
       }else{

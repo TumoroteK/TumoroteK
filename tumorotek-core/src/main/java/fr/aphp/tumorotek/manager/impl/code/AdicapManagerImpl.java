@@ -87,7 +87,7 @@ public class AdicapManagerImpl implements AdicapManager
       if(!exactMatch){
          code = "%" + code + "%";
       }
-      log.debug("Recherche Adicap par code: " + code + " exactMatch " + String.valueOf(exactMatch));
+      log.debug("Recherche Adicap par code: {} exactMatch {}", code, exactMatch);
       return adicapDao.findByCodeLike(code);
    }
 
@@ -107,7 +107,7 @@ public class AdicapManagerImpl implements AdicapManager
       if(!exactMatch){
          libelle = "%" + libelle + "%";
       }
-      log.info("Recherche Adicap par libelle: " + libelle + " exactMatch " + String.valueOf(exactMatch));
+      log.info("Recherche Adicap par libelle: {} exactMatch {}", libelle, exactMatch);
       return adicapDao.findByLibelleLike(libelle);
    }
 

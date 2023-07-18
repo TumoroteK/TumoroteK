@@ -152,15 +152,15 @@ public class SglHandler
 
          prelNature = interfacageParsingUtils.getValueFromBlocAndEmplacement(contenu, config, "SPM", "5.2.1");
 
-         log.debug("GENNO message SSU_U03 SPM-2 nature prélèvement: " + prelNature);
+         log.debug("GENNO message SSU_U03 SPM-2 nature prélèvement: {}", prelNature);
 
          spm2 = interfacageParsingUtils.getValueFromBlocAndEmplacement(contenu, config, "SPM", "2");
 
-         log.debug("GENNO message SSU_U03 SPM-2 code prélèvement: " + spm2);
+         log.debug("GENNO message SSU_U03 SPM-2 code prélèvement: {}", spm2);
 
          spmObx10 = interfacageParsingUtils.getValueFromBlocAndEmplacement(contenu, config, "SPM_OBX10", "5");
 
-         log.debug("GENNO message SSU_U03 SPM_OBX-10 code prélèvement primaire: " + spmObx10);
+         log.debug("GENNO message SSU_U03 SPM_OBX-10 code prélèvement primaire: {}", spmObx10);
 
          // si SPM-2 = SPM_OBX-10 alors transmission = prélèvement primaire
          if(spm2 != null && !spm2.equals(spmObx10)){
@@ -182,7 +182,7 @@ public class SglHandler
       if(!skipMessage){
          handleMessage(body, sendingApp);
       }else{
-         log.info("GENNO message SSU_U03 " + spm2 + " non pris en compte - nature du dérivé filtrée: " + prelNature);
+         log.info("GENNO message SSU_U03 {} non pris en compte - nature du dérivé filtrée: {}", spm2,  prelNature);
       }
    }
 

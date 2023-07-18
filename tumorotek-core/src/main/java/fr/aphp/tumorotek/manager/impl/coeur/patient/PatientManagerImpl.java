@@ -226,7 +226,7 @@ public class PatientManagerImpl implements PatientManager
          //Doublon
          Optional<PatientDoublonFound> optDbf = findDoublonManager(patient);
          if(!operation.equals("fusion") && optDbf.isPresent()){
-            log.warn("Doublon lors " + operation + " objet Patient " + patient.toString());
+            log.warn("Doublon lors {} objet Patient {}", operation, patient);
             throw new DoublonFoundException("Patient", operation, optDbf.get());
          }
          if((operation.equals("creation") || operation.equals("modification")) || operation.equals("modifMulti")
@@ -237,7 +237,7 @@ public class PatientManagerImpl implements PatientManager
 
             if(operation.equals("creation")){
                patientDao.createObject(patient);
-               log.info("Enregistrement objet Patient " + patient.toString());
+               log.info("Enregistrement objet Patient {}",  patient);
 
                oType = operationTypeDao.findByNom("Creation").get(0);
             }else{
@@ -245,7 +245,7 @@ public class PatientManagerImpl implements PatientManager
                // patient.setDelegate(patientDelegateDao.mergeObject(patient.getDelegate()));
 
                patientDao.updateObject(patient);
-               log.info("Modification objet Patient " + patient.toString());
+               log.info("Modification objet Patient {}",  patient);
 
                if(operation.equals("modification")){
                   oType = operationTypeDao.findByNom("Modification").get(0);
@@ -432,7 +432,7 @@ public class PatientManagerImpl implements PatientManager
 
    @Override
    public List<Integer> findAllObjectsIdsWithBanquesManager(final List<Banque> banques){
-      log.debug("Recherche totalite des ids des Patients en" + "fonction d'une liste de banques");
+      log.debug("Recherche totalite des ids des Patients en fonction d'une liste de banques");
       if(banques != null && banques.size() > 0){
          return patientDao.findByAllIdsWithBanques(banques);
       }
@@ -444,7 +444,7 @@ public class PatientManagerImpl implements PatientManager
       if(!exactMatch){
          nom = "%" + nom + "%";
       }
-      log.debug("Recherche Patient par nom: " + nom + " exactMatch " + String.valueOf(exactMatch));
+      log.debug("Recherche Patient par nom: {} exactMatch {}", nom, exactMatch);
       return patientDao.findByNom(nom);
    }
 
@@ -453,7 +453,7 @@ public class PatientManagerImpl implements PatientManager
       if(!exactMatch){
          nip = "%" + nip + "%";
       }
-      log.debug("Recherche Patient par nip: " + nip + " exactMatch " + String.valueOf(exactMatch));
+      log.debug("Recherche Patient par nip: {} exactMatch {}", nip, exactMatch);
       return patientDao.findByNip(nip);
    }
 
@@ -469,7 +469,7 @@ public class PatientManagerImpl implements PatientManager
       if(!exactMatch){
          nom = "%" + nom + "%";
       }
-      log.debug("Recherche Patient par nom: " + nom + " exactMatch " + String.valueOf(exactMatch));
+      log.debug("Recherche Patient par nom: {} exactMatch {}", nom, exactMatch);
       return patientDao.findByNom(nom);
    }
 
@@ -485,7 +485,7 @@ public class PatientManagerImpl implements PatientManager
       if(!exactMatch){
          nom = "%" + nom + "%";
       }
-      log.debug("Recherche Patient par nom: " + nom + " exactMatch " + String.valueOf(exactMatch));
+      log.debug("Recherche Patient par nom: {} exactMatch {}", nom, exactMatch);
       if(banques != null && banques.size() > 0){
          return patientDao.findByNomReturnIds(nom, banques);
       }
@@ -504,7 +504,7 @@ public class PatientManagerImpl implements PatientManager
       if(!exactMatch){
          nip = "%" + nip + "%";
       }
-      log.debug("Recherche Patient par nip: " + nip + " exactMatch " + String.valueOf(exactMatch));
+      log.debug("Recherche Patient par nip: {} exactMatch {}", nip, exactMatch);
       if(banques != null && banques.size() > 0){
          return patientDao.findByNipReturnIds(nip, banques);
       }
@@ -536,7 +536,7 @@ public class PatientManagerImpl implements PatientManager
    @Override
    public List<Patient> findByDateNaissanceManager(final Date date){
       if(date != null){
-         log.debug("Recherche Patient par date de naissance: " + date.toString());
+         log.debug("Recherche Patient par date de naissance: {}",  date);
       }
       return patientDao.findByDateNaissance(date);
    }
@@ -563,7 +563,7 @@ public class PatientManagerImpl implements PatientManager
       if(!exactMatch){
          nda = "%" + nda + "%";
       }
-      log.debug("Recherche Patient par nda: " + nda + " exactMatch " + String.valueOf(exactMatch));
+      log.debug("Recherche Patient par nda: {} exactMatch {}", nda, exactMatch);
       final List<Prelevement> prels = prelevementDao.findByNdaLike(nda);
       for(int i = 0; i < prels.size(); i++){
          if(prels.get(i).getMaladie() != null){
@@ -586,7 +586,7 @@ public class PatientManagerImpl implements PatientManager
             }
 
             patientDao.removeObject(patient.getPatientId());
-            log.info("Suppression objet Patient " + patient.toString());
+            log.info("Suppression objet Patient {}",  patient);
 
             //Supprime operations associes
             CreateOrUpdateUtilities.removeAssociateOperations(patient, operationManager, comments, user);
@@ -673,8 +673,8 @@ public class PatientManagerImpl implements PatientManager
          pat.getMaladies().remove(mal);
          maladieDao.removeObject(mal.getMaladieId());
 
-         log.debug("Suppression de l'association entre le patient : " + pat.toString() + " et suppression de la maladie : "
-            + mal.toString());
+         log.debug("Suppression de l'association entre le patient : {} et suppression de la maladie : {}", pat, mal);
+
       }
 
       // on parcourt la nouvelle liste de maladies
@@ -723,8 +723,8 @@ public class PatientManagerImpl implements PatientManager
          pat.getPatientMedecins().remove(med);
          patientMedecinDao.removeObject(med.getPk());
 
-         log.debug("Suppression de l'association entre le patient : " + pat.toString() + " et suppression du medecin : "
-            + med.toString());
+         log.debug("Suppression de l'association entre le patient : {} et suppression du medecin : {}", pat, med);
+
       }
 
       // on parcourt la nouvelle liste de medecins
@@ -738,8 +738,8 @@ public class PatientManagerImpl implements PatientManager
             // on ajoute le medecin dans l'association dans le bon ordre
             pat.getPatientMedecins().add(patientMedecinDao.mergeObject(pm));
 
-            log.debug("Ajout de l'association entre le patient : " + pat.toString() + " et le medecin : "
-               + collaborateurs.get(i).toString());
+            log.debug("Ajout de l'association entre le patient : {} et le medecin : {}", pat, collaborateurs.get(i));
+
          }else{ // on modifie l'ordre du medecin present avec la liste
             pm = patientMedecinDao.findById(pk);
             pm.setOrdre(i + 1);
@@ -803,7 +803,7 @@ public class PatientManagerImpl implements PatientManager
             //				patientDao.mergeObject((liens.get(i).getPatient2()))
             //									.getPatientLiens2().add(liens.get(i));
 
-            log.debug("Ajout de l'association entre le patient : " + pat.toString() + " et le lien : " + liens.get(i).toString());
+            log.debug("Ajout de l'association entre le patient : {} et le lien : {}", pat, liens.get(i));
          }
       }
    }
@@ -890,7 +890,7 @@ public class PatientManagerImpl implements PatientManager
 
       final List<Patient> liste = new ArrayList<>();
       if(banques != null && banques.size() > 0 && nbResults > 0){
-         log.debug("Recherche des " + nbResults + " derniers Patients " + "enregistres.");
+         log.debug("Recherche des {} derniers Patients enregistres.", nbResults);
          final EntityManager em = entityManagerFactory.createEntityManager();
          final TypedQuery<Patient> query = em.createQuery("SELECT distinct p " + "FROM Patient p " + "JOIN p.maladies m "
             + "JOIN m.prelevements prlvts " + "WHERE prlvts.banque in (:banques) " + "ORDER BY p.patientId DESC", Patient.class);
@@ -1195,7 +1195,7 @@ public class PatientManagerImpl implements PatientManager
       if(!exactMatch){
          identifiant = "%" + identifiant + "%";
       }
-      log.debug("Recherche Patient par identifiant: " + identifiant + " exactMatch " + String.valueOf(exactMatch));
+      log.debug("Recherche Patient par identifiant: {} exactMatch {}", identifiant, exactMatch);
       if(selectedBanques != null && !selectedBanques.isEmpty()){
          return patientDao.findByIdentifiantReturnIds(identifiant, selectedBanques);
       }
@@ -1207,7 +1207,7 @@ public class PatientManagerImpl implements PatientManager
       if(!exactMatch){
          ident = "%" + ident + "%";
       }
-      log.debug("Recherche Patient par identifiant: " + ident + " exactMatch " + String.valueOf(exactMatch));
+      log.debug("Recherche Patient par identifiant: {} exactMatch {}", ident, exactMatch);
       if(selectedBanques != null && !selectedBanques.isEmpty()){
          return patientDao.findByIdentifiant(ident, selectedBanques);
       }
@@ -1217,7 +1217,7 @@ public class PatientManagerImpl implements PatientManager
    @Override
    public List<PatientIdentifiant> findIdentifiantsByPatientAndBanquesManager(Patient patient, List<Banque> banques) {
       if(patient != null && banques != null && !banques.isEmpty()){
-         log.debug("Recherche les identifiants du patient: " + patient.getPatientId());
+         log.debug("Recherche les identifiants du patient: {}",  patient.getPatientId());
          return patientDao.findIdentifiantsByPatientAndBanques(patient, banques);
       }
       return new ArrayList<PatientIdentifiant>();

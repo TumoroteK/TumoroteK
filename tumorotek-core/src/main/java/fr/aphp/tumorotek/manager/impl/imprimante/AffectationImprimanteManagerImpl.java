@@ -145,19 +145,19 @@ public class AffectationImprimanteManagerImpl implements AffectationImprimanteMa
 
       //utilisateur required
       if(utilisateur == null){
-         log.warn("Objet obligatoire Utilisateur manquant" + " lors de la validation d'une AffectationImprimante");
+         log.warn("Objet obligatoire Utilisateur manquant  lors de la validation d'une AffectationImprimante");
          throw new RequiredObjectIsNullException("AffectationImprimante", "creation", "Utilisateur");
       }
 
       //OperationType required
       if(banque == null){
-         log.warn("Objet obligatoire Banque manquant" + " lors de la validation d'une AffectationImprimante");
+         log.warn("Objet obligatoire Banque manquant  lors de la validation d'une AffectationImprimante");
          throw new RequiredObjectIsNullException("AffectationImprimante", "creation", "Banque");
       }
 
       //imprimante required
       if(imprimante == null){
-         log.warn("Objet obligatoire Imprimante manquant" + " lors de la validation d'une AffectationImprimante");
+         log.warn("Objet obligatoire Imprimante manquant  lors de la validation d'une AffectationImprimante");
          throw new RequiredObjectIsNullException("AffectationImprimante", "creation", "Imprimante");
       }
    }
@@ -182,12 +182,12 @@ public class AffectationImprimanteManagerImpl implements AffectationImprimanteMa
          // création
          affectationImprimanteDao.createObject(affectationImprimante);
 
-         log.info("Enregistrement objet AffectationImprimante " + affectationImprimante.toString());
+         log.info("Enregistrement objet AffectationImprimante {}",  affectationImprimante);
       }else{
          // update
          affectationImprimanteDao.updateObject(affectationImprimante);
 
-         log.info("Enregistrement objet AffectationImprimante " + affectationImprimante.toString());
+         log.info("Enregistrement objet AffectationImprimante {}",  affectationImprimante);
       }
    }
 
@@ -195,7 +195,7 @@ public class AffectationImprimanteManagerImpl implements AffectationImprimanteMa
    public void removeObjectManager(final AffectationImprimante affectationImprimante){
       if(affectationImprimante != null){
          affectationImprimanteDao.removeObject(affectationImprimante.getPk());
-         log.info("Suppression de l'objet AffectationImprimante : " + affectationImprimante.toString());
+         log.info("Suppression de l'objet AffectationImprimante : {}",  affectationImprimante);
       }else{
          log.warn("Suppression d'un AffectationImprimante null");
       }

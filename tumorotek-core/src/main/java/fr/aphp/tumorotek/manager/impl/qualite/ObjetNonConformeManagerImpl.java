@@ -102,7 +102,7 @@ public class ObjetNonConformeManagerImpl implements ObjetNonConformeManager
 
    @Override
    public List<ObjetNonConforme> findByObjetManager(final Object obj){
-      log.debug("Recherche de tous les ObjetNonConformes d'un " + "objet");
+      log.debug("Recherche de tous les ObjetNonConformes d'un  objet");
       if(obj != null){
          Entite entite = null;
          Integer id = null;
@@ -124,7 +124,7 @@ public class ObjetNonConformeManagerImpl implements ObjetNonConformeManager
 
    @Override
    public List<ObjetNonConforme> findByObjetAndTypeManager(final Object obj, final Object type){
-      log.debug("Recherche de tous les ObjetNonConformes d'un " + "objet en fonction du type de conformite");
+      log.debug("Recherche de tous les ObjetNonConformes d'un  objet en fonction du type de conformite");
       if(obj != null && type != null){
          Entite entite = null;
          Integer id = null;
@@ -206,7 +206,7 @@ public class ObjetNonConformeManagerImpl implements ObjetNonConformeManager
 
             // création
             objetNonConformeDao.createObject(newObj);
-            log.info("Enregistrement de l'objet ObjetNonConforme : " + newObj.toString());
+            log.info("Enregistrement de l'objet ObjetNonConforme : {}",  newObj);
             //				}
             //				else {
             //					// sinon, on va mettre à jour l'objet non conforme
@@ -363,7 +363,7 @@ public class ObjetNonConformeManagerImpl implements ObjetNonConformeManager
    public void removeObjectManager(final ObjetNonConforme objetNonConforme){
       if(objetNonConforme != null){
          objetNonConformeDao.removeObject(objetNonConforme.getObjetNonConformeId());
-         log.info("Suppression de l'objet ObjetNonConforme : " + objetNonConforme.toString());
+         log.info("Suppression de l'objet ObjetNonConforme : {}",  objetNonConforme);
       }
    }
 

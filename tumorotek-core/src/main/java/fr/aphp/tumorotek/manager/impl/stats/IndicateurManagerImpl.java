@@ -122,7 +122,7 @@ public class IndicateurManagerImpl implements IndicateurManager
       // stmt.setsModeleIndicateurs(sModeleDao.mergeObject(modele).getSModeleIndicateurs());
       // Test s'il y a des doublons
       if(findDoublonManager(indic)){
-         log.warn("Doublon lors de la creation de l'objet Indicateur : " + indic.getNom());
+         log.warn("Doublon lors de la creation de l'objet Indicateur : {}",  indic.getNom());
          throw new DoublonFoundException("Indicateur", "creation");
       }else{ // validation de l'objet
          // validation
@@ -131,7 +131,7 @@ public class IndicateurManagerImpl implements IndicateurManager
 
       // creation
       indicateurDao.createObject(indic);
-      log.debug("Enregistrement objet Indicateur " + indic.toString());
+      log.debug("Enregistrement objet Indicateur {}",  indic);
    }
 
    @Override
@@ -143,14 +143,14 @@ public class IndicateurManagerImpl implements IndicateurManager
       // stmt.setsModeleIndicateurs(sModeleDao.mergeObject(modele).getSModeleIndicateurs());
 
       indicateurDao.updateObject(indic);
-      log.debug("Mise à jour objet Statement " + indic.toString());
+      log.debug("Mise à jour objet Statement {}",  indic);
    }
 
    @Override
    public void removeObjectManager(final Indicateur indic){
       if(indic != null){
          indicateurDao.removeObject(indic.getIndicateurId());
-         log.debug("Suppression de l'objet Statement : " + indic.toString());
+         log.debug("Suppression de l'objet Statement : {}",  indic);
       }else{
          log.warn("Suppression d'un Statement null");
       }

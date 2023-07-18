@@ -141,7 +141,7 @@ public class CodeAssigneManagerImpl implements CodeAssigneManager
       if(!exactMatch){
          code = "%" + code + "%";
       }
-      log.debug("Recherche CodeAssigne par code: " + code + " exactMatch " + String.valueOf(exactMatch));
+      log.debug("Recherche CodeAssigne par code: {} exactMatch {}", code, exactMatch);
       return codeAssigneDao.findByCodeLike(code);
    }
 
@@ -150,7 +150,7 @@ public class CodeAssigneManagerImpl implements CodeAssigneManager
       if(!exactMatch){
          libelle = "%" + libelle + "%";
       }
-      log.debug("Recherche CodeAssigne par libelle: " + libelle + " exactMatch " + String.valueOf(exactMatch));
+      log.debug("Recherche CodeAssigne par libelle: {} exactMatch {}", libelle, exactMatch);
       return codeAssigneDao.findByLibelleLike(libelle);
    }
 
@@ -194,7 +194,7 @@ public class CodeAssigneManagerImpl implements CodeAssigneManager
 
             if(operation.equals("creation")){
                codeAssigneDao.createObject(code);
-               log.info("Enregistrement objet CodeAssigne " + code.toString());
+               log.info("Enregistrement objet CodeAssigne {}",  code);
 
                CreateOrUpdateUtilities.createAssociateOperation(code, operationManager,
                   operationTypeDao.findByNom("Creation").get(0), utilisateur);
@@ -208,7 +208,7 @@ public class CodeAssigneManagerImpl implements CodeAssigneManager
                      || (inBase.getLibelle() == null && code.getLibelle() != null));
 
                codeAssigneDao.updateObject(code);
-               log.info("Modification objet CodeAssigne " + code.toString());
+               log.info("Modification objet CodeAssigne {}",  code);
                if(doRecordModif){
                   CreateOrUpdateUtilities.createAssociateOperation(code, operationManager,
                      operationTypeDao.findByNom("Modification").get(0), utilisateur);
@@ -218,7 +218,7 @@ public class CodeAssigneManagerImpl implements CodeAssigneManager
             throw new IllegalArgumentException("Operation must match " + "'creation/modification' values");
          }
       }else{
-         log.warn("Doublon lors " + operation + " objet CodeUtilisateur " + code.toString());
+         log.warn("Doublon lors {} objet CodeUtilisateur {}", operation, code);
          throw new DoublonFoundException("CodeAssigne", operation);
       }
    }
@@ -236,7 +236,7 @@ public class CodeAssigneManagerImpl implements CodeAssigneManager
          // merge echantillon object
          code.setEchantillon(echantillonDao.mergeObject(echantillon));
       }else if(code.getEchantillon() == null){
-         log.warn("Objet obligatoire Echantillon manquant" + " lors de la " + operation + " du code assigne");
+         log.warn("Objet obligatoire Echantillon manquant lors de la {} du code assigne", operation);
          throw new RequiredObjectIsNullException("CodeAssigne", operation, "Echantillon");
       }
 
@@ -265,7 +265,7 @@ public class CodeAssigneManagerImpl implements CodeAssigneManager
          ////				echantillonDao.mergeObject(code.getEchanExpLes());
          //			}
          codeAssigneDao.removeObject(code.getCodeAssigneId());
-         log.info("Suppression objet CodeAssigne " + code.toString());
+         log.info("Suppression objet CodeAssigne {}",  code);
          //Supprime operations associes
          CreateOrUpdateUtilities.removeAssociateOperations(code, operationManager);
       }else{

@@ -150,7 +150,7 @@ public class ImportTemplateManagerImpl implements ImportTemplateManager
       if(banque != null){
          importTemplate.setBanque(banqueDao.mergeObject(banque));
       }else{
-         log.warn("Objet obligatoire Banque manquant" + " lors de la création d'un ImportTemplate");
+         log.warn("Objet obligatoire Banque manquant  lors de la création d'un ImportTemplate");
          throw new RequiredObjectIsNullException("ImportTemplate", "creation", "Banque");
       }
 
@@ -162,7 +162,7 @@ public class ImportTemplateManagerImpl implements ImportTemplateManager
                   colonnesToCreate.get(i).getChamp(), "creation");
             }
          }else{
-            log.warn("Doublon lors creation objet ImportColonne " + importTemplate.toString());
+            log.warn("Doublon lors creation objet ImportColonne {}",  importTemplate);
             throw new DoublonFoundException("ImportColonne", "creation");
          }
       }
@@ -177,10 +177,10 @@ public class ImportTemplateManagerImpl implements ImportTemplateManager
 
          updateAssociations(importTemplate, entites, colonnesToCreate, null);
 
-         log.info("Enregistrement objet ImportTemplate " + importTemplate.toString());
+         log.info("Enregistrement objet ImportTemplate {}",  importTemplate);
 
       }else{
-         log.warn("Doublon lors creation objet ImportTemplate " + importTemplate.toString());
+         log.warn("Doublon lors creation objet ImportTemplate {}",  importTemplate);
          throw new DoublonFoundException("ImportTemplate", "creation");
       }
    }
@@ -192,7 +192,7 @@ public class ImportTemplateManagerImpl implements ImportTemplateManager
       if(banque != null){
          importTemplate.setBanque(banqueDao.mergeObject(banque));
       }else{
-         log.warn("Objet obligatoire Banque manquant" + " lors de la modification d'un ImportTemplate");
+         log.warn("Objet obligatoire Banque manquant  lors de la modification d'un ImportTemplate");
          throw new RequiredObjectIsNullException("ImportTemplate", "modification", "Banque");
       }
 
@@ -204,7 +204,7 @@ public class ImportTemplateManagerImpl implements ImportTemplateManager
                   colonnesToCreate.get(i).getChamp(), "creation");
             }
          }else{
-            log.warn("Doublon lors creation objet ImportColonne " + importTemplate.toString());
+            log.warn("Doublon lors creation objet ImportColonne {}",  importTemplate);
             throw new DoublonFoundException("ImportColonne", "modification");
          }
       }
@@ -219,10 +219,10 @@ public class ImportTemplateManagerImpl implements ImportTemplateManager
 
          updateAssociations(importTemplate, entites, colonnesToCreate, colonnesToremove);
 
-         log.info("Enregistrement objet ImportTemplate " + importTemplate.toString());
+         log.info("Enregistrement objet ImportTemplate {}",  importTemplate);
 
       }else{
-         log.warn("Doublon lors modification objet ImportTemplate " + importTemplate.toString());
+         log.warn("Doublon lors modification objet ImportTemplate {}",  importTemplate);
          throw new DoublonFoundException("ImportTemplate", "modification");
       }
    }
@@ -244,7 +244,7 @@ public class ImportTemplateManagerImpl implements ImportTemplateManager
          }
 
          importTemplateDao.removeObject(importTemplate.getImportTemplateId());
-         log.info("Suppression de l'objet ImportTemplate : " + importTemplate.toString());
+         log.info("Suppression de l'objet ImportTemplate : {}",  importTemplate);
       }else{
          log.warn("Suppression d'un ImportTemplate null");
       }
@@ -306,8 +306,8 @@ public class ImportTemplateManagerImpl implements ImportTemplateManager
             temp.getEntites().remove(e);
             e.getImportTemplates().remove(temp);
 
-            log.debug("Suppression de l'association entre l'" + "ImportTemplate : " + temp.toString() + " et l'entité : "
-               + e.toString());
+            log.debug("Suppression de l'association entre l'ImportTemplate : {} et l'entité : {}", temp, e);
+
          }
 
          // on parcourt la nouvelle liste d'entites
@@ -318,8 +318,8 @@ public class ImportTemplateManagerImpl implements ImportTemplateManager
                temp.getEntites().add(entiteDao.mergeObject(entites.get(i)));
                entiteDao.mergeObject(entites.get(i)).getImportTemplates().add(temp);
 
-               log.debug("Ajout de l'association entre l'" + "ImportTemplate : " + temp.toString() + " et l'entité : "
-                  + entites.get(i).toString());
+               log.debug("Ajout de l'association entre l'ImportTemplate : {} et l'entité : {}", temp, entites.get(i));
+
             }
          }
       }

@@ -770,7 +770,7 @@ public class FicheLaboInter extends AbstractFicheEditController
    // List<String> errorMsg = updateObject();
    // if (errorMsg != null && errorMsg.size() == 0) {
    //
-   // log.debug("fiche: obj modifie: " + this.prelevement.toString());
+   // log.debug("fiche: obj modifie: {}",  this.prelevement);
    //
    // if (getListePrelevement() != null) {
    // // update du prélèvement dans la liste

@@ -118,7 +118,7 @@ public class ScanTerminaleManagerImpl implements ScanTerminaleManager
          sD = scanDeviceDao.findById(1);
          sT.setScanDevice(sD);
          scanTerminaleDao.createObject(sT);
-         log.debug("ScanTerminale creation: " + sT.getName());
+         log.debug("ScanTerminale creation: {}",  sT.getName());
       }
    }
 

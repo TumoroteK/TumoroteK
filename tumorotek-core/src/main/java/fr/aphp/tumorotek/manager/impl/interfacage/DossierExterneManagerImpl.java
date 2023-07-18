@@ -122,7 +122,7 @@ public class DossierExterneManagerImpl implements DossierExterneManager
 
    @Override
    public List<DossierExterne> findByEmetteurAndIdentificationManager(final Emetteur emetteur, final String numero){
-      log.debug("Recherche de tous les DossierExternes d'un emetteur " + "pour un numéro donné");
+      log.debug("Recherche de tous les DossierExternes d'un emetteur pour un numéro donné");
       if(emetteur != null && numero != null){
          return dossierExterneDao.findByEmetteurAndIdentification(emetteur, numero);
       }
@@ -163,7 +163,7 @@ public class DossierExterneManagerImpl implements DossierExterneManager
       final List<BlocExterne> blocExternes, final Hashtable<BlocExterne, List<ValeurExterne>> valeurExternes){
       // emetteur required
       if(emetteur == null){
-         log.warn("Objet obligatoire Emetteur manquant" + " lors de la création d'un DossierExterne");
+         log.warn("Objet obligatoire Emetteur manquant  lors de la création d'un DossierExterne");
          throw new RequiredObjectIsNullException("DossierExterne", "creation", "Emetteur");
       }
 
@@ -201,7 +201,7 @@ public class DossierExterneManagerImpl implements DossierExterneManager
       }
 
       dossierExterneDao.createObject(dossierExterne);
-      log.info("Enregistrement de l'objet DossierExterne : " + dossierExterne.toString());
+      log.info("Enregistrement de l'objet DossierExterne : {}",  dossierExterne);
 
       // création des blocs et des valeurs
       if(blocExternes != null){
@@ -219,8 +219,8 @@ public class DossierExterneManagerImpl implements DossierExterneManager
          final List<DossierExterne> dos = dossierExterneDao.findFirst();
          if(!dos.isEmpty()){
             removeObjectManager(dos.get(0));
-            log.debug("Suppression FIRST IN " + dos.get(0).getIdentificationDossier() + " pour maintenir la taille "
-               + " de la table temporaire à " + max);
+            log.debug("Suppression FIRST IN {} pour maintenir la taille de la table temporaire à {}", dos.get(0).getIdentificationDossier(), max);
+
          }
       }
    }
@@ -236,7 +236,7 @@ public class DossierExterneManagerImpl implements DossierExterneManager
          }
 
          dossierExterneDao.removeObject(dossierExterne.getDossierExterneId());
-         log.info("Suppression de l'objet DossierExterne : " + dossierExterne.toString());
+         log.info("Suppression de l'objet DossierExterne : {}",  dossierExterne);
       }else{
          log.warn("Suppression d'une DossierExterne null");
       }

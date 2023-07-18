@@ -95,7 +95,7 @@ public class ProtocoleManagerImpl implements ProtocoleManager
       // On vérifie que la pf n'est pas null. Si c'est le cas on envoie
       // une exception
       if(pt.getPlateforme() == null){
-         log.warn("Objet obligatoire Plateforme " + "manquant lors de la creation " + "d'un objet Protocole");
+         log.warn("Objet obligatoire Plateforme manquant lors de la creation d'un objet Protocole");
          throw new RequiredObjectIsNullException("Protocole", "creation", "Plateforme");
       }
       pt.setPlateforme(plateformeDao.mergeObject(pt.getPlateforme()));
@@ -103,9 +103,9 @@ public class ProtocoleManagerImpl implements ProtocoleManager
       BeanValidator.validateObject(pt, new Validator[] {protocoleValidator});
       if(!findDoublonManager(pt)){
          protocoleDao.createObject(pt);
-         log.info("Enregistrement objet Protocole " + pt.toString());
+         log.info("Enregistrement objet Protocole {}",  pt);
       }else{
-         log.warn("Doublon lors creation objet Protocole " + pt.toString());
+         log.warn("Doublon lors creation objet Protocole {}",  pt);
          throw new DoublonFoundException("Protocole", "creation");
       }
    }
@@ -115,9 +115,9 @@ public class ProtocoleManagerImpl implements ProtocoleManager
       BeanValidator.validateObject(obj, new Validator[] {protocoleValidator});
       if(!findDoublonManager(obj)){
          protocoleDao.updateObject(obj);
-         log.info("Modification objet Protocole " + obj.toString());
+         log.info("Modification objet Protocole {}",  obj);
       }else{
-         log.warn("Doublon lors modification objet Protocole " + obj.toString());
+         log.warn("Doublon lors modification objet Protocole {}",  obj);
          throw new DoublonFoundException("Protocole", "modification");
       }
    }
@@ -131,7 +131,7 @@ public class ProtocoleManagerImpl implements ProtocoleManager
    public void removeObjectManager(final Protocole obj){
       if(obj != null){
          protocoleDao.removeObject(obj.getId());
-         log.info("Suppression objet Protocole " + obj.toString());
+         log.info("Suppression objet Protocole {}",  obj);
       }else{
          log.warn("Suppression d'un Protocole null");
       }

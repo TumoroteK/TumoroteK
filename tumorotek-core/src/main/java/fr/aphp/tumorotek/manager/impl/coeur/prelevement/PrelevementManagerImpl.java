@@ -560,8 +560,8 @@ public class PrelevementManagerImpl implements PrelevementManager
    @Override
    public List<Prelevement> findAfterDateConsentementManager(final Date date){
       if(date != null){
-         log.debug(
-            "Recherche des Prelevements consentis apres la date " + new SimpleDateFormat("yyyy/MMM/dd HH:mm:ss").format(date));
+         String dateFormat = new SimpleDateFormat("yyyy/MMM/dd HH:mm:ss").format(date);
+         log.debug( "Recherche des Prelevements consentis apres la date {}", dateFormat );
       }
       return prelevementDao.findByConsentDateAfterDate(date);
    }
@@ -570,8 +570,8 @@ public class PrelevementManagerImpl implements PrelevementManager
    public List<Prelevement> findAfterDatePrelevementManager(final Date date){
       Calendar cal = null;
       if(date != null){
-         log.debug(
-            "Recherche des Prelevements preleves apres la date " + new SimpleDateFormat("yyyy/MMM/dd HH:mm:ss").format(date));
+         String dateFormat = new SimpleDateFormat("yyyy/MMM/dd HH:mm:ss").format(date);
+         log.debug("Recherche des Prelevements preleves apres la date {}" , dateFormat);
          cal = Calendar.getInstance();
          cal.setTime(date);
       }
@@ -583,8 +583,8 @@ public class PrelevementManagerImpl implements PrelevementManager
       Calendar cal = null;
       final List<Prelevement> res = new ArrayList<>();
       if(date != null && banques != null){
-         log.debug(
-            "Recherche des Prelevements preleves apres la date " + new SimpleDateFormat("yyyy/MMM/dd HH:mm:ss").format(date));
+         String dateFormat = new SimpleDateFormat("yyyy/MMM/dd HH:mm:ss").format(date);
+         log.debug("Recherche des Prelevements preleves apres la date {}" , dateFormat);
          cal = Calendar.getInstance();
          cal.setTime(date);
          final Iterator<Banque> it = banques.iterator();
@@ -599,8 +599,8 @@ public class PrelevementManagerImpl implements PrelevementManager
    public List<Integer> findAfterDateCreationReturnIdsManager(final Calendar date, final List<Banque> banques){
       final List<Integer> liste = new ArrayList<>();
       if(date != null && banques != null){
-         log.debug("Recherche des Prelevements enregistres apres la date "
-            + new SimpleDateFormat("yyyy/MMM/dd HH:mm:ss").format(date.getTime()));
+         String dateFormat = new SimpleDateFormat("yyyy/MMM/dd HH:mm:ss").format(date);
+         log.debug("Recherche des Prelevements enregistres apres la date {}" , dateFormat);
          final Iterator<Banque> it = banques.iterator();
          while(it.hasNext()){
             liste.addAll(findByOperationTypeAndDateReturnIds(operationTypeDao.findByNom("Creation").get(0), date, it.next()));
@@ -613,8 +613,8 @@ public class PrelevementManagerImpl implements PrelevementManager
    public List<Prelevement> findAfterDateModificationManager(final Calendar date, final Banque banque){
       List<Prelevement> liste = new ArrayList<>();
       if(date != null && banque != null){
-         log.debug("Recherche des Prelevements modifies apres la date "
-            + new SimpleDateFormat("yyyy/MMM/dd HH:mm:ss").format(date.getTime()));
+         String dateFormat = new SimpleDateFormat("yyyy/MMM/dd HH:mm:ss").format(date);
+         log.debug("Recherche des Prelevements modifies apres la date {}" , dateFormat);
          liste = findByOperationTypeAndDate(operationTypeDao.findByNom("Modification").get(0), date, banque);
       }
       return liste;
@@ -741,7 +741,7 @@ public class PrelevementManagerImpl implements PrelevementManager
       if(!exactMatch){
          code = code + "%";
       }
-      log.debug("Recherche Prelevement par code: " + code + " exactMatch " + String.valueOf(exactMatch));
+      log.debug("Recherche Prelevement par code: {} exactMatch ",code ,exactMatch);
       return prelevementDao.findByCode(code);
    }
 
@@ -751,7 +751,7 @@ public class PrelevementManagerImpl implements PrelevementManager
          if(!exactMatch){
             code = code + "%";
          }
-         log.debug("Recherche Prelevement par code: " + code + " exactMatch " + String.valueOf(exactMatch));
+         log.debug("Recherche Prelevement par code: {} exactMatch ",code ,exactMatch);
          return prelevementDao.findByCodeOrNumLaboWithBanque(code, banque);
       }
       return new ArrayList<>();
@@ -762,7 +762,7 @@ public class PrelevementManagerImpl implements PrelevementManager
       final boolean exactMatch){
       final List<Integer> res = new ArrayList<>();
       if(banques != null){
-         log.debug("Recherche Prelevement par code: " + code + " exactMatch " + String.valueOf(exactMatch));
+         log.debug("Recherche Prelevement par code: {} exactMatch {}", code, exactMatch);
          if(!exactMatch){
             code = "%" + code + "%";
          }
@@ -799,14 +799,14 @@ public class PrelevementManagerImpl implements PrelevementManager
       if(!exactMatch){
          libelle = libelle + "%";
       }
-      log.debug("Recherche Prelevement par libelle de maladie: " + libelle + " exactMatch " + String.valueOf(exactMatch));
+      log.debug("Recherche Prelevement par libelle de maladie: {} exactMatch {}", libelle, exactMatch);
       return prelevementDao.findByMaladieLibelleLike(libelle);
    }
 
    @Override
    public List<Prelevement> findByNatureManager(final Nature nature){
       if(nature != null){
-         log.debug("Recherche Prelevement par nature: " + nature.toString());
+         log.debug("Recherche Prelevement par nature: {}", nature);
       }
       return prelevementDao.findByNature(nature);
    }
@@ -814,7 +814,7 @@ public class PrelevementManagerImpl implements PrelevementManager
    @Override
    public List<Prelevement> findByTypeManager(final PrelevementType prelevementType){
       if(prelevementType != null){
-         log.debug("Recherche Prelevement par prelevementType: " + prelevementType.toString());
+         log.debug("Recherche Prelevement par prelevementType: {}", prelevementType);
       }
       return prelevementDao.findByPrelevementType(prelevementType);
    }
@@ -822,7 +822,7 @@ public class PrelevementManagerImpl implements PrelevementManager
    @Override
    public List<Prelevement> findByConsentTypeManager(final ConsentType consentType){
       if(consentType != null){
-         log.debug("Recherche Prelevement par consentType: " + consentType.toString());
+         log.debug("Recherche Prelevement par consentType: {}",consentType);
       }
       return prelevementDao.findByConsentType(consentType);
    }
@@ -1050,7 +1050,7 @@ public class PrelevementManagerImpl implements PrelevementManager
       if(banque != null){
          prelevement.setBanque(banque);
       }else if(prelevement.getBanque() == null){
-         log.warn("Objet obligatoire Banque manquant" + " lors de la " + operation + " d'un Prelevement");
+         log.warn("Objet obligatoire Banque manquant lors de la {} d'un Prelevement", operation);
          throw new RequiredObjectIsNullException("Prelevement", operation, "Banque");
       }
 
@@ -1068,7 +1068,7 @@ public class PrelevementManagerImpl implements PrelevementManager
       }else{ // valeur passée est nulle
          if(prelevement.getBanque().getEtude() == null || requiredChampEntiteId.contains(24)){ // obligatoire! 
             if(prelevement.getNature() == null){
-               log.warn("Objet obligatoire Nature manquant" + " lors de la " + operation + " d'un Prelevement");
+               log.warn("Objet obligatoire Nature manquant lors de la {} d'un Prelevement", operation);
                throw new RequiredObjectIsNullException("Prelevement", operation, "Nature");
             }
          }else{ // gastbi contexte non obligatoire
@@ -1081,7 +1081,7 @@ public class PrelevementManagerImpl implements PrelevementManager
       }else{ // valeur passée est nulle
          if(prelevement.getBanque().getEtude() == null || requiredChampEntiteId.contains(26)){ // obligatoire!
             if(prelevement.getConsentType() == null){
-               log.warn("Objet obligatoire ConsentType manquant" + " lors de la " + operation + " d'un Prelevement");
+               log.warn("Objet obligatoire ConsentType manquant lors de la {} d'un Prelevement", operation);
                throw new RequiredObjectIsNullException("Prelevement", operation, "ConsentType");
             }
          }else{ // gastbi contexte non obligatoire
@@ -1438,7 +1438,7 @@ public class PrelevementManagerImpl implements PrelevementManager
             mv.move();
          }
       }catch(final IOException ioe){ // problème survenu lors du déplacement
-         log.error("un problème est survenu dans un déplacement de fichier: " + mvFichier.toString());
+         log.error("un problème est survenu dans un déplacement de fichier: {}",  mvFichier);
 
          log.error(ioe.getMessage(), ioe);
 
@@ -1448,7 +1448,7 @@ public class PrelevementManagerImpl implements PrelevementManager
                mv.revert();
             }
          }catch(final IOException ioe2){ // problème survenu lors du rollback du déplacement
-            log.error("un problème est survenu dans un rollabck de déplacement de fichier: " + mvFichier.toString());
+            log.error("un problème est survenu dans un rollabck de déplacement de fichier: {}",  mvFichier);
 
             log.error(ioe2.getMessage(), ioe2);
          }
@@ -1488,7 +1488,7 @@ public class PrelevementManagerImpl implements PrelevementManager
          //Si le délégué présente des informations de validation, on 
 
          if(doValidation && findDoublonManager(prel)){
-            log.warn("Doublon lors creation objet Prelevement " + prel.toString());
+            log.warn("Doublon lors creation objet Prelevement {}",  prel);
             throw new DoublonFoundException("Prelevement", "switchBanque", prel.getCode(), null);
          }
          prel = prelevementDao.mergeObject(prel);

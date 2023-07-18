@@ -101,9 +101,9 @@ public class NatureManagerImpl implements NatureManager
       BeanValidator.validateObject(obj, new Validator[] {natureValidator});
       if(!findDoublonManager(obj)){
          natureDao.createObject(obj);
-         log.info("Enregistrement objet Nature " + obj.toString());
+         log.info("Enregistrement objet Nature {}",  obj);
       }else{
-         log.warn("Doublon lors creation objet Nature " + obj.toString());
+         log.warn("Doublon lors creation objet Nature {}",  obj);
          throw new DoublonFoundException("Nature", "creation");
       }
    }
@@ -113,9 +113,9 @@ public class NatureManagerImpl implements NatureManager
       BeanValidator.validateObject(obj, new Validator[] {natureValidator});
       if(!findDoublonManager(obj)){
          natureDao.updateObject(obj);
-         log.info("Modification objet Nature " + obj.toString());
+         log.info("Modification objet Nature {}",  obj);
       }else{
-         log.warn("Doublon lors modification objet Nature " + obj.toString());
+         log.warn("Doublon lors modification objet Nature {}",  obj);
          throw new DoublonFoundException("Nature", "modification");
       }
    }
@@ -125,7 +125,7 @@ public class NatureManagerImpl implements NatureManager
       if(!exactMatch){
          nature = nature + "%";
       }
-      log.debug("Recherche Nature par nature: " + nature + " exactMatch " + String.valueOf(exactMatch));
+      log.debug("Recherche Nature par nature: {} exactMatch {}", nature, exactMatch);
       return natureDao.findByNature(nature);
    }
 
@@ -134,9 +134,9 @@ public class NatureManagerImpl implements NatureManager
       if(obj != null){
          if(!isUsedObjectManager(obj)){
             natureDao.removeObject(obj.getId());
-            log.info("Suppression objet Nature " + obj.toString());
+            log.info("Suppression objet Nature {}",  obj);
          }else{
-            log.warn("Suppression objet Nature " + obj.toString() + " impossible car est reference (par Prelevement)");
+            log.warn("Suppression objet Nature {} impossible car est reference (par Prelevement)", obj);
             throw new ObjectUsedException();
          }
       }else{

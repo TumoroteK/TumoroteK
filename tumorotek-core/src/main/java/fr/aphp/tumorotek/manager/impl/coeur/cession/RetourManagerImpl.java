@@ -212,7 +212,7 @@ public class RetourManagerImpl implements RetourManager
          retour.setEntite(entiteDao.findByNom(objet.entiteNom()).get(0));
          retour.setTkObject(objet);
       }else if(retour.getObjetId() == null){
-         log.warn("Objet obligatoire Objet manquant" + " lors de la " + operation + " d'un retour");
+         log.warn("Objet obligatoire Objet manquant lors de la {} d'un retour", operation);
          throw new RequiredObjectIsNullException("Retour", operation, "Objet");
       }else{
          objet = getObjetFromRetourManager(retour);
@@ -249,12 +249,12 @@ public class RetourManagerImpl implements RetourManager
          if((operation.equals("creation") || operation.equals("modification"))){
             if(operation.equals("creation")){
                retourDao.createObject(retour);
-               log.info("Enregistrement du retour " + retour.toString());
+               log.info("Enregistrement du retour {}",  retour);
                CreateOrUpdateUtilities.createAssociateOperation(retour, operationManager,
                   operationTypeDao.findByNom("Creation").get(0), utilisateur);
             }else{
                retourDao.updateObject(retour);
-               log.info("Modification objet Retour " + retour.toString());
+               log.info("Modification objet Retour {}",  retour);
                CreateOrUpdateUtilities.createAssociateOperation(retour, operationManager,
                   operationTypeDao.findByNom("Modification").get(0), utilisateur);
             }
@@ -270,7 +270,7 @@ public class RetourManagerImpl implements RetourManager
             throw new IllegalArgumentException("Operation must match " + "'creation/modification' values");
          }
       }else{
-         log.warn("Doublon lors " + operation + " objet Retour " + retour.toString());
+         log.warn("Doublon lors {} objet Retour {}", operation, retour);
          throw new DoublonFoundException("Retour", operation);
       }
    }
@@ -339,7 +339,7 @@ public class RetourManagerImpl implements RetourManager
             }
          }
          retourDao.removeObject(retour.getRetourId());
-         log.info("Suppression objet Retour " + retour.toString());
+         log.info("Suppression objet Retour {}",  retour);
          //Supprime operations associes
          CreateOrUpdateUtilities.removeAssociateOperations(retour, operationManager);
       }else{

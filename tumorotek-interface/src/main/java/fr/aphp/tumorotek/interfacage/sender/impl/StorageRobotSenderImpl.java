@@ -162,7 +162,7 @@ public class StorageRobotSenderImpl implements StorageRobotSender
 
       // complete to 1000 as IRELEC demands
       //		if (nbLinesToBeProvide > 0) {
-      //			log.debug("providing additive lines: " + (nbLinesToBeProvide - currentRow));
+      //			log.debug("providing additive lines: {}", (nbLinesToBeProvide - currentRow));
       //			while (currentRow < nbLinesToBeProvide) {
       //				currentRow++;
       //				baos.write(String.valueOf(currentRow).getBytes());
@@ -190,7 +190,7 @@ public class StorageRobotSenderImpl implements StorageRobotSender
    private void printAdrl(String _a, final Recepteur re, final ByteArrayOutputStream baos, final String separator)
       throws IOException{
       if(_a != null){
-         log.debug("print adr: " + _a);
+         log.debug("print adr: {}", _a);
          if(_a.matches("[0-9]+")){ // rack transport integer position
             _a = "0.0.0." + _a;
          }

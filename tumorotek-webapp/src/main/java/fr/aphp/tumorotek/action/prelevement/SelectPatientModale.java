@@ -166,7 +166,7 @@ public class SelectPatientModale
       if(!isFusionPatients){
          //recherche dans le serveur identite patient si il est actif
          if(SipFactory.isDirectSip()){
-            log.info("->Debut traitement recherche de patients " + "dans serveur d'identités");
+            log.info("->Debut traitement recherche de patients dans serveur d'identités");
 
             // plusieurs fichiers de connexion au Sip peuvent être
             // définis ils doivent etre de la forme pt1_serveur_Identites,
@@ -253,7 +253,7 @@ public class SelectPatientModale
    }
 
    public void searchPatientsInSip(final String filePropertiesName){
-      log.info("->Debut traitement recherche de patients " + "dans serveur d'identités");
+      log.info("->Debut traitement recherche de patients dans serveur d'identités");
       final Sip sipActif = SipFactory.getSip(filePropertiesName);
       // recherche par nip
       List<Patient> listPatientTmp = new ArrayList<>();
@@ -278,7 +278,7 @@ public class SelectPatientModale
       // doublons de la liste de resultats
       // provenant du serveur d'identite patient.
       fusionerNouvelleListeAvecPrincipale(listPatientTmp);
-      log.info("->Fin recherche de patients " + "dans serveur d'identités");
+      log.info("->Fin recherche de patients dans serveur d'identités");
    }
 
    public void fusionerNouvelleListeAvecPrincipale(final List<Patient> newListe){

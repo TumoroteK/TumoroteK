@@ -78,7 +78,7 @@ public class VersionManagerImpl implements VersionManager
 
    @Override
    public List<Version> findByDateChronologiqueManager(){
-      log.debug("Recherche de toutes les Versions par " + "ordre chronologique.");
+      log.debug("Recherche de toutes les Versions par ordre chronologique.");
       return versionDao.findByDateChronologique();
    }
 

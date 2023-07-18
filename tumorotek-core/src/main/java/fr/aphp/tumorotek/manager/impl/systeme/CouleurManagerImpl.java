@@ -73,7 +73,7 @@ public class CouleurManagerImpl implements CouleurManager
 
    @Override
    public List<Couleur> findByCouleurLikeManager(String couleur, final boolean exactMatch){
-      log.debug("Recherche Couleur par " + couleur + " exactMatch " + String.valueOf(exactMatch));
+      log.debug("Recherche Couleur par {} exactMatch {}", couleur, exactMatch);
       if(couleur != null){
          if(!exactMatch){
             couleur = couleur + "%";

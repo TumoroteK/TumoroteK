@@ -102,7 +102,7 @@ public class PatientSipManagerImpl implements PatientSipManager
       if(!exactMatch){
          nip = "%" + nip + "%";
       }
-      log.debug("Recherche Patient Sip par nip: " + nip + " exactMatch " + String.valueOf(exactMatch));
+      log.debug("Recherche Patient Sip par nip: {} exactMatch {}", nip, exactMatch);
       return patientSipDao.findByNip(nip);
    }
 
@@ -111,7 +111,7 @@ public class PatientSipManagerImpl implements PatientSipManager
       if(!exactMatch){
          nom = "%" + nom + "%";
       }
-      log.debug("Recherche Patient Sip par nom: " + nom + " exactMatch " + String.valueOf(exactMatch));
+      log.debug("Recherche Patient Sip par nom: {} exactMatch {}", nom, exactMatch);
       return patientSipDao.findByNom(nom);
    }
 
@@ -185,7 +185,7 @@ public class PatientSipManagerImpl implements PatientSipManager
    public void removeObjectManager(final PatientSip patient){
       if(patient != null){
          patientSipDao.removeObject(patient.getPatientSipId());
-         log.info("Suppression objet Patient " + patient.toString());
+         log.info("Suppression objet Patient {}",  patient);
       }else{
          log.warn("Suppression d'un Patient null");
       }
@@ -200,8 +200,8 @@ public class PatientSipManagerImpl implements PatientSipManager
             if(pats.size() == 1){
                return pats.get(0);
             }else{ // message non traité
-               log.error("Synchronization SIP impossible! " + "Plusieurs patients "
-                  + "sont enregistrés dans le système pour ce nip " + sipPatient.getNip());
+               log.error("Synchronization SIP impossible! Plusieurs patients sont enregistrés dans le système pour ce nip {}",
+                  sipPatient.getNip());
             }
          }
       }
@@ -225,14 +225,15 @@ public class PatientSipManagerImpl implements PatientSipManager
             }
 
             patientSipDao.createObject(sipPatient);
-            log.info("Ajout du patient " + sipPatient.getNip() + " a la base temporaire");
+            log.info("Ajout du patient {} a la base temporaire", sipPatient.getNip());
 
             if(patientSipDao.findCountAll().get(0) > max){
                final List<PatientSip> sips = patientSipDao.findFirst();
                if(!sips.isEmpty()){
                   patientSipDao.removeObject(sips.get(0).getPatientSipId());
-                  log.debug("Suppression FIRST IN " + sips.get(0).getNip() + " pour maintenir la taille "
-                     + " de la table temporaire à " + max);
+                  log.debug("Suppression FIRST IN {} pour maintenir la taille de la table temporaire à {}",
+                     sips.get(0).getNip(), max);
+;
                }
             }
 
@@ -313,7 +314,7 @@ public class PatientSipManagerImpl implements PatientSipManager
             patientManager.createOrUpdateObjectManager(pat, null, null, null, null, null, null, null, null, "synchronisation",
                null, false);
 
-            log.info("Synchronisation du patient " + sipPatient.getNip() + " pour les champs: " + fieldsNames);
+            log.info("Synchronisation du patient {} pour les champs: {}", sipPatient.getNip(), fieldsNames);
          }catch(final IllegalAccessException e){
             log.error(e.getMessage());
          }catch(final NoSuchMethodException e){
@@ -322,7 +323,7 @@ public class PatientSipManagerImpl implements PatientSipManager
             log.error(e.getMessage());
          }
       }else{
-         log.debug("Aucun changement impliquant la synchronisation " + "du patient avec celui venant du SIP");
+         log.debug("Aucun changement impliquant la synchronisation du patient avec celui venant du SIP");
       }
    }
 
