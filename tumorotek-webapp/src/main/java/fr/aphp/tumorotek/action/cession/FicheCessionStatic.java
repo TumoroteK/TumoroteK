@@ -280,12 +280,11 @@ public class FicheCessionStatic extends AbstractFicheStaticController
 	}
 
 	/**
-	 * désactiver / activer le bouton de déplacement
+	 * Désactiver / activer le bouton de déplacement. Le bouton ne sera actif que si: 1. la cession est au statut EN ATTENTE
+	 * 2. elle contient au moins un échantillon ou un produit dérivé au statut RESERVE
 	 */
 	private void disableMoveButton(){
-		// Le bouton ne sera actif que si: la cession est au statut EN ATTENTE et qu'elle contient au moins un échantillon ou
-		// un produit dérivé au statut RESERVE
-		// Obtenir les échantillons  puis extraire uniquement ceux qui sont réservés (pour la 2eme condition)
+		// Obtenir les échantillons puis extraire uniquement ceux qui sont réservés (pour la 2eme condition)
 		List<Echantillon> allEchantillons =  convertToListEchantillons(echantillonsCedes);
 		this.reservedEchantillons = findReservedEchantillons(allEchantillons);
 		// Obtenir les derives  puis extraire uniquement ceux qui sont réservés (pour la 2eme condition).
