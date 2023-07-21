@@ -417,8 +417,8 @@ public class FicheCessionStatic extends AbstractFicheStaticController
 			tabController.clearAllPage();
 			tabController.switchToDeplacerContenuCessionMode(reservedEchantillons, reservedDerives);
 		} else {
-			// Code to handle when no products are found
-			String message = "Cette cession ne contient aucun produit dérivé réservé ni échantillon";
+			// Code to handle when no products are found:
+			String message = Labels.getLabel("message.cession.no.reserved");
 			Messagebox.show(message, "Information", Messagebox.OK, Messagebox.INFORMATION);
 		}
 	}

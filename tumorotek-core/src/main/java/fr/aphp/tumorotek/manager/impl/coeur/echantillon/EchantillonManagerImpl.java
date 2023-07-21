@@ -63,7 +63,7 @@ import org.springframework.validation.Validator;
 import fr.aphp.tumorotek.dao.coeur.ObjetStatutDao;
 import fr.aphp.tumorotek.dao.coeur.echantillon.EchanQualiteDao;
 import fr.aphp.tumorotek.dao.coeur.echantillon.EchantillonDao;
-mport fr.aphp.tumorotek.dao.coeur.echantillon.EchantillonTypeDao;
+import fr.aphp.tumorotek.dao.coeur.echantillon.EchantillonTypeDao;
 import fr.aphp.tumorotek.dao.coeur.echantillon.ModePrepaDao;
 import fr.aphp.tumorotek.dao.coeur.prelevement.PrelevementDao;
 import fr.aphp.tumorotek.dao.coeur.prodderive.TransformationDao;

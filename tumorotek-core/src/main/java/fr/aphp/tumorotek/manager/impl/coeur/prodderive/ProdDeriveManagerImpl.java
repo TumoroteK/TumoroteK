@@ -2073,13 +2073,12 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
       List<Integer> prodDeriveIds = new ArrayList<>();
       for (CederObjet cederObjet : cederObjets) {
          Integer entiteId = cederObjet.getEntite().getEntiteId();
-         // Vérifier si l'objet est de type échantillon (id == 3).
-         if (entiteId.equals(3)) {
+         // Vérifier si l'objet est de type DERIVE (id == 8)
+         if (entiteId.equals(8)) {
             prodDeriveIds.add(cederObjet.getPk().getObjetId());
          }
       }
       return findByIdsAndStatus(prodDeriveIds, statusId);
    }
-
 
 }
