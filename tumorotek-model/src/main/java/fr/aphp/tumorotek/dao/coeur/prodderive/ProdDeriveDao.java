@@ -276,6 +276,16 @@ public interface ProdDeriveDao extends GenericDaoJpa<ProdDerive, Integer>
    List<ProdDerive> findByIdInList(List<Integer> ids);
 
    /**
+    * Recherche les produits dérivés dont l'id est dans la liste et le statut est statusId.
+    * @param ids Liste d'identifiants.
+    * @param statusId statusId (table obect_statut).
+    * @return Liste de produits dérivés.
+    */
+   List<ProdDerive> findByIdsAndStatus(List<Integer> ids, Integer statusId);
+
+
+
+   /**
     * Recherche les ids des dérivés des banques de la liste.
     * @param banques Banques des dérivés recherchés.
     * @return Liste de ProdDerives.
@@ -376,14 +386,4 @@ public interface ProdDeriveDao extends GenericDaoJpa<ProdDerive, Integer>
     * @return une liste d'ids.
     */
    List<Integer> findByBanksAndImpact(List<Banque> banks, List<Boolean> impact);
-
-   /**
-    * Recherche une cession contenant des produits dérivés avec le statut spécifié.
-    * La recherche s'arrête dès que le premier résultat correspondant est trouvé.
-    *
-    * @param cessionId   l'ID de la cession dans laquelle effectuer la recherche
-    * @param status_id   l'ID du statut à rechercher dans les dérivés
-    * @return  la chaîne de caractères "1" si un produit dérivé est trouvé
-    */
-   String isExistByStatutAndCessionId(Integer cessionId, Integer status_id);
 }

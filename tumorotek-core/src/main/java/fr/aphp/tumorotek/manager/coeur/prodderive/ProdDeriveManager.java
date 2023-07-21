@@ -46,6 +46,7 @@ import fr.aphp.tumorotek.manager.exception.DoublonFoundException;
 import fr.aphp.tumorotek.manager.exception.ObjectUsedException;
 import fr.aphp.tumorotek.manager.impl.systeme.MvFichier;
 import fr.aphp.tumorotek.model.TKAnnotableObject;
+import fr.aphp.tumorotek.model.cession.CederObjet;
 import fr.aphp.tumorotek.model.coeur.ObjetStatut;
 import fr.aphp.tumorotek.model.coeur.annotation.AnnotationValeur;
 import fr.aphp.tumorotek.model.coeur.patient.Patient;
@@ -455,6 +456,14 @@ public interface ProdDeriveManager
    List<ProdDerive> findByIdsInListManager(List<Integer> ids);
 
    /**
+    * Recherche les produits dérivés dont l'id est dans la liste et le statut est statusId.
+    * @param ids Liste d'identifiants.
+    * @param statusId statusId (table obect_statut).
+    * @return Liste de produits dérivés.
+    */
+   List<ProdDerive> findByIdsAndStatus(List<Integer> ids, Integer statusId);
+
+   /**
     * Trouve les derives pour l'objet parent passé en paramètres.
     * Peut chercher ou non recursivement tous les derives isssus des 
     * derives du parent passé en paramètre.
@@ -659,13 +668,26 @@ public interface ProdDeriveManager
    List<Integer> findByBanksAndImpact(List<Banque> banks, List<Boolean> impact);
 
    /**
-    * Recherche une cession contenant des produits dérivés avec le statut spécifié.
-    * La recherche s'arrête dès que le premier résultat correspondant est trouvé.
-    *
-    * @param cessionId   l'ID de la cession dans laquelle effectuer la recherche
-    * @param status_id   l'ID du statut à rechercher dans les produits dérivés
-    * @return  true si au moins un produit dérivé a été trouvé, sinon false
+    * Cette méthode récupère les produits dérivés associés au statut spécifié à partir de la liste donnée d'objets CederObjet.
+    * Le résultat est renvoyé sous forme d'une liste de produits dérivés.
+    * @param cederObjets La liste d'objets CederObjet à utiliser dans la recherche.
+    * @param statusId La valeur représentant l'identifiant du statut pour filtrer les produits dérivés.
+    * @return Une liste de produits dérivés ayant le statut spécifié. Si aucun produit dérivé correspondant n'est trouvé,
+    * une liste vide est renvoyée.
     */
-   boolean isDeriveWithStatusExistsInCession(Integer cessionId, Integer status_id);
+   List<ProdDerive> getProdDerivesWithStatusFromCederObject(List<CederObjet> cederObjets, Integer statusId);
+
+
+      //   /**
+//    * Cette méthode effectue une requête SQL pour récupérer les objets ProdDerive associés au statusId spécifié, à partir
+//    * de la liste fournie d'objets CederObjet. Le résultat de la requête est renvoyé sous forme d'une liste d'objets ProdDerive.
+//    *
+//    * @param cederObjets La liste d'objets CederObjet à utiliser dans la requête.
+//    * @param statusId La valeur Integer représentant l'identifiant du statut pour filtrer les objets ProdDerive.
+//    * @return Une liste d'objets ProdDerive ayant le statusId spécifié. Si aucun objet ProdDerive correspondant n'est trouvé,
+//    *         une liste vide est renvoyée. Si la liste d'entrée cederObjets est nulle ou vide, null est renvoyé.
+//    */
+//
+//   List<ProdDerive> getProdDerivesWithStatusFromCederObject(List<CederObjet> cederObjets, Integer statusId);
    
 }

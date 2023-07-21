@@ -1462,6 +1462,14 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
       return new ArrayList<>();
    }
 
+   @Override
+   public List<ProdDerive> findByIdsAndStatus(final List<Integer> ids, Integer statusId){
+      if(ids != null && ids.size() > 0){
+         return prodDeriveDao.findByIdsAndStatus(ids, statusId);
+      }
+      return new ArrayList<>();
+   }
+
    //	/**
    //	 * Realise une deep copy de la liste des AnnotationValeur. Permet
    //	 * de conserver l'etat Transient (no id) pour un enregistrement
@@ -2040,7 +2048,7 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
    public List<ProdDerive> findByListCodeWithPlateforme(final List<String> listCodes, final Plateforme pf){
       return prodDeriveDao.findByListCodeWithPlateforme(listCodes, pf);
    }
-   
+
    @Override
    public List<Integer> findByBanksAndImpact(List<Banque> banks, List<Boolean> impact){
       if(banks.size() > 0){
@@ -2048,18 +2056,30 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
       }
       return new ArrayList<>();
    }
-
    /**
-    * Recherche une cession contenant des produits dérivés avec le statut spécifié.
-    * La recherche s'arrête dès que le premier résultat correspondant est trouvé.
+    * Cette méthode récupère les produits dérivés associés au statut spécifié à partir de la liste donnée d'objets CederObjet.
+    * Le résultat est renvoyé sous forme d'une liste de produits dérivés.
     *
-    * @param cessionId l'ID de la cession dans laquelle effectuer la recherche
-    * @param status_id l'ID du statut à rechercher dans les produits dérivés
-    * @return true si au moins un produit dérivé a été trouvé, sinon false
+    * @param cederObjets La liste d'objets CederObjet à utiliser dans la recherche.
+    * @param statusId    La valeur représentant l'identifiant du statut pour filtrer les produits dérivés.
+    * @return Une liste de produits dérivés ayant le statut spécifié. Si aucun produit dérivé correspondant n'est trouvé,
+    *         une liste vide est renvoyée.
     */
    @Override
-   public boolean isDeriveWithStatusExistsInCession(Integer cessionId, Integer status_id){
-      String result = prodDeriveDao.isExistByStatutAndCessionId(cessionId, status_id);
-      return result.equals("1");
+   public List<ProdDerive> getProdDerivesWithStatusFromCederObject(List<CederObjet> cederObjets, Integer statusId) {
+      if (cederObjets == null || cederObjets.isEmpty()) {
+         return new ArrayList<>();
+      }
+      List<Integer> prodDeriveIds = new ArrayList<>();
+      for (CederObjet cederObjet : cederObjets) {
+         Integer entiteId = cederObjet.getEntite().getEntiteId();
+         // Vérifier si l'objet est de type échantillon (id == 3).
+         if (entiteId.equals(3)) {
+            prodDeriveIds.add(cederObjet.getPk().getObjetId());
+         }
+      }
+      return findByIdsAndStatus(prodDeriveIds, statusId);
    }
+
+
 }

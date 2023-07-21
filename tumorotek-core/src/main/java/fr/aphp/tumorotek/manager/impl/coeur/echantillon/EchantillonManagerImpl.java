@@ -63,8 +63,7 @@ import org.springframework.validation.Validator;
 import fr.aphp.tumorotek.dao.coeur.ObjetStatutDao;
 import fr.aphp.tumorotek.dao.coeur.echantillon.EchanQualiteDao;
 import fr.aphp.tumorotek.dao.coeur.echantillon.EchantillonDao;
-// import fr.aphp.tumorotek.dao.coeur.echantillon.EchantillonDelegateDao;
-import fr.aphp.tumorotek.dao.coeur.echantillon.EchantillonTypeDao;
+mport fr.aphp.tumorotek.dao.coeur.echantillon.EchantillonTypeDao;
 import fr.aphp.tumorotek.dao.coeur.echantillon.ModePrepaDao;
 import fr.aphp.tumorotek.dao.coeur.prelevement.PrelevementDao;
 import fr.aphp.tumorotek.dao.coeur.prodderive.TransformationDao;
@@ -320,6 +319,14 @@ public class EchantillonManagerImpl implements EchantillonManager
    public List<Echantillon> findByIdsInListManager(final List<Integer> ids){
       if(ids != null && ids.size() > 0){
          return echantillonDao.findByIds(ids);
+      }
+      return new ArrayList<>();
+   }
+
+   @Override
+   public List<Echantillon> findByIdsInListAndStatusManager(final List<Integer> ids, Integer statusId){
+      if(ids != null && ids.size() > 0){
+         return echantillonDao.findByIdsAndStatus(ids, statusId);
       }
       return new ArrayList<>();
    }
@@ -642,7 +649,7 @@ public class EchantillonManagerImpl implements EchantillonManager
    }
 
    /**
-    * Recupere la liste d'échantillons en fonction du type d'operation et 
+    * Recupere la liste d'échantillons en fonction du type d'operation et
     * d'une date a laquelle la date d'enregistrement de l'operation doit
     * etre superieure ou egale.
     * Dans un premier temps, recupere la liste des objetIds qui sont ensuite
@@ -2076,10 +2083,19 @@ public class EchantillonManagerImpl implements EchantillonManager
       return res;
    }
 
-
    @Override
-   public boolean isEchantilonWithStatusExistsInCession(Integer cessionId, Integer status_id){
-      String result = echantillonDao.isExistByStatutAndCessionId(cessionId, status_id);
-      return result.equals("1");
+   public List<Echantillon> getEchantillonsWithStatusFromCederObject(List<CederObjet> cederObjets, Integer statusId){
+      if (cederObjets == null || cederObjets.isEmpty()) {
+         return new ArrayList<>();
+      }
+      List<Integer> echantillonsIds= new ArrayList<>();
+      for (CederObjet cederObjet : cederObjets) {
+         Integer entiteId = cederObjet.getEntite().getEntiteId();
+         //			Si l'objet est de type échantillon (id == 3).
+         if (entiteId.equals(3)) {
+            echantillonsIds.add(cederObjet.getPk().getObjetId());
+         }
+      }
+      return findByIdsInListAndStatusManager(echantillonsIds, statusId);
    }
 }

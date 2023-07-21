@@ -189,12 +189,6 @@ public class FicheCessionStatic extends AbstractFicheStaticController
 	private final List<Integer> checkedEchantillonIds = new ArrayList<>();
 	private final List<Integer> checkedDeriveIds = new ArrayList<>();
 
-	// Echantillons ayant le statut "RESERVE"
-	private  List<Echantillon> reservedEchantillons = new ArrayList<>();
-
-  //	Dérivés ayant le statut "RESERVE"
-	private  List<ProdDerive> reservedDerive = new ArrayList<>();
-
 	@Override
 	public void doAfterCompose(final Component comp) throws Exception{
 		super.doAfterCompose(comp);
@@ -280,20 +274,12 @@ public class FicheCessionStatic extends AbstractFicheStaticController
 	}
 
 	/**
-	 * Désactiver / activer le bouton de déplacement. Le bouton ne sera actif que si: 1. la cession est au statut EN ATTENTE
-	 * 2. elle contient au moins un échantillon ou un produit dérivé au statut RESERVE
+	 * Désactiver / activer le bouton de déplacement. Le bouton ne sera actif que si la cession est au statut EN ATTENTE
 	 */
 	private void disableMoveButton(){
-		Integer cessionId = cession.getCessionId();
-		Integer reservedStatusId = 3;
-		boolean enAttente = (cession.getCessionStatut() != null && cession.getCessionStatut().getStatut().equals("EN ATTENTE"));
-		boolean isEchantillonsFound = ManagerLocator.getEchantillonManager().isEchantilonWithStatusExistsInCession(cessionId, reservedStatusId);
-		boolean isDeriveFound = ManagerLocator.getProdDeriveManager().isDeriveWithStatusExistsInCession(cessionId, reservedStatusId);
-		boolean isReserveFound =  isEchantillonsFound || isDeriveFound;
-		boolean isDisplay = enAttente && isReserveFound;
-		move.setDisabled(!isDisplay);
-
-	}
+			boolean enAttente = (cession.getCessionStatut() != null && cession.getCessionStatut().getStatut().equals("EN ATTENTE"));
+			move.setDisabled(!enAttente);
+		}
 
 	@Override
 	public void setNewObject(){
@@ -422,36 +408,19 @@ public class FicheCessionStatic extends AbstractFicheStaticController
 	 * Écouteur d'événement pour le clic sur le bouton 'Déplacer les échantillons/dérivés'
 	 */
 	public void onClick$move(){
-		List<Echantillon> allEchantillons =  convertToListEchantillons(echantillonsCedes);
-		this.reservedEchantillons = findReservedEchantillons(allEchantillons);
-		// Obtenir les derives  puis extraire uniquement ceux qui sont réservés (pour la 2eme condition).
-		List<ProdDerive> allDerive =  convertToListDerives(derivesCedes);
-		this.reservedDerive =  findReservedDerives(allDerive);
-		final StockageController tabController = StockageController.backToMe(getMainWindow(), page);
-		tabController.clearAllPage();
-		tabController.switchToDeplacerContenuCessionMode(reservedEchantillons, reservedDerive);
-	}
-
-
-	/**
-	 *  Filtrer tous les échantillons réservés
-	 * @param echantillonList List<Echantillon>
-	 * @return List<Echantillon> qui ont les status "RESERVE" (object_status = 3)
-	 */
-	private List<Echantillon> findReservedEchantillons(List<Echantillon> echantillonList){
-		return echantillonList.stream().filter(echantillon -> echantillon.getObjetStatut().getObjetStatutId().equals(3))
-			.collect(Collectors.toList());
-	}
-
-
-	/**
-	 *  Filtrer tous les produits dérivés réservés
-	 * @param derivesList List<ProdDerive>
-	 * @return List<Echantillon> qui ont les status "RESERVE" (object_status = 3)
-	 */
-	private List<ProdDerive> findReservedDerives(List<ProdDerive> derivesList){
-		return derivesList.stream().filter(echantillon -> echantillon.getObjetStatut().getObjetStatutId().equals(3))
-			.collect(Collectors.toList());
+		List<Echantillon> reservedEchantillons =  ManagerLocator.getEchantillonManager().
+			getEchantillonsWithStatusFromCederObject(echantillonsCedes, 3);
+		List<ProdDerive> reservedDerives =  ManagerLocator.getProdDeriveManager().
+			getProdDerivesWithStatusFromCederObject(derivesCedes, 3);
+		if (reservedEchantillons.size() > 0 || reservedDerives.size() > 0 ) {
+			final StockageController tabController = StockageController.backToMe(getMainWindow(), page);
+			tabController.clearAllPage();
+			tabController.switchToDeplacerContenuCessionMode(reservedEchantillons, reservedDerives);
+		} else {
+			// Code to handle when no products are found
+			String message = "Cette cession ne contient aucun produit dérivé réservé ni échantillon";
+			Messagebox.show(message, "Information", Messagebox.OK, Messagebox.INFORMATION);
+		}
 	}
 
 
@@ -1432,42 +1401,5 @@ public class FicheCessionStatic extends AbstractFicheStaticController
 		postStorageData(ManagerLocator.getEchantillonManager()
 				.findByIdsInListManager(echanIds), true);
 	}
-
-	/**
-	 * Transformer une liste de CederObjet en une liste d'échantillons.
-	 *
-	 * @param echantillonsCedes List<CederObjet>.
-	 * @return La liste d'Echantillons obtenue à partir de la transformation ou une liste vide
-	 */
-	private List<Echantillon> convertToListEchantillons(List<CederObjet> echantillonsCedes) {
-		List<Integer> echantillonsIds= new ArrayList<>();
-		for (CederObjet cederObjet : echantillonsCedes) {
-			Integer entiteId = cederObjet.getEntite().getEntiteId();
-//			Si l'objet est de type échantillon (id == 3).
-			if (entiteId.equals(3)) {
-				echantillonsIds.add(cederObjet.getPk().getObjetId());
-			}
-		}
-		return ManagerLocator.getEchantillonManager().findByIdsInListManager(echantillonsIds);
-	}
-
-	/**
-	 *  Transformer une liste de CederObjet en une liste de produits dérivés.
-	 *
-	 * @param derivesCedes List<CederObjet>.
-	 * @return La liste de produits dérivés obtenue à partir de la transformation ou une liste vide.
-	 */
-	private List<ProdDerive> convertToListDerives(List<CederObjet> derivesCedes) {
-		List<Integer> derivesIds= new ArrayList<>();
-		for (CederObjet cederObjet : echantillonsCedes) {
-			Integer entiteId = cederObjet.getEntite().getEntiteId();
-			//			Si l'objet est de type dérivé (id == 8).
-			if (entiteId.equals(8)) {
-				derivesIds.add(cederObjet.getPk().getObjetId());
-			}
-		}
-		return ManagerLocator.getProdDeriveManager().findByIdsInListManager(derivesIds);
-	}
-
 
 }

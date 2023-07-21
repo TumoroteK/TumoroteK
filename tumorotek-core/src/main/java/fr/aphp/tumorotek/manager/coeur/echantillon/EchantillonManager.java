@@ -46,6 +46,7 @@ import java.util.Set;
 import fr.aphp.tumorotek.manager.exception.ObjectUsedException;
 import fr.aphp.tumorotek.manager.impl.coeur.echantillon.EchantillonJdbcSuite;
 import fr.aphp.tumorotek.manager.impl.systeme.MvFichier;
+import fr.aphp.tumorotek.model.cession.CederObjet;
 import fr.aphp.tumorotek.model.code.CodeAssigne;
 import fr.aphp.tumorotek.model.coeur.ObjetStatut;
 import fr.aphp.tumorotek.model.coeur.annotation.AnnotationValeur;
@@ -99,10 +100,19 @@ public interface EchantillonManager
    List<Echantillon> findByIdsInListManager(List<Integer> ids);
 
    /**
-    * Recherche les échantillons pour une liste de banques.
-    * @param banks Liste des banques.
-    * @return Une liste d'échantillons
+    * Recherche les échantillons dont l'id est dans la liste et le statut est statusId.
+    * @param ids Liste d'identifiants.
+    * @param statusId statusId.
+    * @return une liste d'échantillons.
     */
+   List<Echantillon> findByIdsInListAndStatusManager(final List<Integer> ids, Integer statusId);
+
+
+      /**
+       * Recherche les échantillons pour une liste de banques.
+       * @param banks Liste des banques.
+       * @return Une liste d'échantillons
+       */
    List<Echantillon> findByBanquesManager(List<Banque> banks);
 
    /**
@@ -833,12 +843,13 @@ public interface EchantillonManager
    List<Integer> findByPatientIdentifiantOrNomOrNipReturnIdsManager(String search, List<Banque> selectedBanques, boolean b);
 
    /**
-    * Recherche une cession contenant des échantillons avec le statut spécifié.
-    * La recherche s'arrête dès que le premier résultat correspondant est trouvé.
+    * Cette méthode récupère les échantillons associés au statut spécifié à partir de la liste donnée d'objets CederObjet.
+    * Le résultat est renvoyé sous forme d'une liste d'échantillons.
     *
-    * @param cessionId   l'ID de la cession dans laquelle effectuer la recherche
-    * @param status_id   l'ID du statut à rechercher dans les échantillons
-    * @return  true si au moins un échantillon a été trouvé, sinon false
+    * @param cederObjets La liste d'objets CederObjet à utiliser dans la recherche.
+    * @param statusId    La valeur représentant l'identifiant du statut pour filtrer les échantillons.
+    * @return Une liste d'échantillons ayant le statut spécifié. Si aucun échantillon correspondant n'est trouvé,
+    *         une liste vide est renvoyée.
     */
-   boolean isEchantilonWithStatusExistsInCession(Integer cessionId, Integer status_id);
+   List<Echantillon> getEchantillonsWithStatusFromCederObject(List<CederObjet> cederObjets, Integer statusId);
 }

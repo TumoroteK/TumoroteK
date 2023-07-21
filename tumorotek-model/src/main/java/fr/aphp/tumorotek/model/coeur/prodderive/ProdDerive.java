@@ -80,11 +80,6 @@ import fr.aphp.tumorotek.model.utils.Utils;
 @Entity
 @Table(name = "PROD_DERIVE")
 @NamedQueries(value = {@NamedQuery(name = "ProdDerive.findByCode", query = "SELECT p FROM ProdDerive p WHERE p.code like ?1"),
-   @NamedQuery(name = "ProdDerive.isExistByStatutAndCessionId",
-      query = "SELECT '1' FROM CederObjet c " +
-         "INNER JOIN ProdDerive p ON c.pk.entite.entiteId = 8 AND c.pk.objetId = p.prodDeriveId " +
-         "WHERE c.pk.cession.cessionId = :cessionId AND p.objetStatut.objetStatutId = :objetStatutId " +
-         "LIMIT 1"),
    @NamedQuery(name = "ProdDerive.findByCodeOrLaboWithBanque",
       query = "SELECT p FROM ProdDerive p WHERE " + "(p.code like ?1 OR p.codeLabo like ?1) " + "AND p.banque = ?2"),
    @NamedQuery(name = "ProdDerive.findByCodeInPlateforme",
@@ -141,6 +136,8 @@ import fr.aphp.tumorotek.model.utils.Utils;
          + "JOIN m.patient as pat " + "WHERE p.transformation.objetId = prlvt.prelevementId "
          + "AND p.transformation.entite.nom = 'Prelevement' " + "AND pat.nom like ?1 AND p.banque = ?2"),
    @NamedQuery(name = "ProdDerive.findByIdInList", query = "SELECT p FROM ProdDerive p " + "WHERE p.prodDeriveId in (?1)"),
+   @NamedQuery(name = "ProdDerive.findByIdsAndStatus", query = "SELECT p FROM ProdDerive p " +
+      " WHERE p.objetStatut.objetStatutId = ?2 AND p.prodDeriveId IN (?1)"),
    @NamedQuery(name = "ProdDerive.findByBanquesAllIds",
       query = "SELECT p.prodDeriveId FROM ProdDerive p " + "WHERE p.banque in (?1)"),
    @NamedQuery(name = "ProdDerive.findByParent",

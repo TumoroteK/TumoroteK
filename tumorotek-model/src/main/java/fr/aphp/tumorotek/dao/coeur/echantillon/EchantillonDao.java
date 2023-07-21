@@ -83,6 +83,15 @@ public interface EchantillonDao extends GenericDaoJpa<Echantillon, Integer>
    List<Echantillon> findByIds(List<Integer> ids);
 
    /**
+    * Recherche les échantillons dont l'id est dans la liste et le statut est statusId.
+    * @param ids Liste d'identifiants.
+    * @param statusId statusId (table obect_statut).
+    * @return une liste d'échantillons.
+    */
+   List<Echantillon> findByIdsAndStatus(List<Integer> ids, Integer statusId);
+
+
+   /**
     * Recherche les échantillons dont le code est égal au paramètre.
     * @param code Code pour lequel on recherche des échantillons.
     * @param banque Banque à laquelle appartient l'échantillon.
@@ -451,15 +460,4 @@ public interface EchantillonDao extends GenericDaoJpa<Echantillon, Integer>
     * @since 2.3.0-gatsbi
     */
    List<Integer> findByPatientIdentifiantOrNomOrNipReturnIds(String search, List<Banque> selectedBanques);
-
-   /**
-    * Recherche une cession contenant des échantillons avec le statut spécifié.
-    * La recherche s'arrête dès que le premier résultat correspondant est trouvé.
-    *
-    * @param cessionId   l'ID de la cession dans laquelle effectuer la recherche
-    * @param status_id   l'ID du statut à rechercher dans les échantillons
-    * @return  la chaîne de caractères "1" si un échantillon est trouvé
-    */
-   String isExistByStatutAndCessionId(Integer cessionId, Integer status_id);
-
 }
