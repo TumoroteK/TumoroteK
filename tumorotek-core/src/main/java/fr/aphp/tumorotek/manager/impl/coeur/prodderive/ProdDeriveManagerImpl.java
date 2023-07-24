@@ -2048,4 +2048,37 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
       }
       return new ArrayList<>();
    }
+
+
+   @Override
+   public List<ProdDerive> updateCodeDerivesManager(List<ProdDerive> produitsDerives, String oldPrefixe, String newPrefixe,
+      Utilisateur utilisateur){
+      final List<ProdDerive> results = new ArrayList<>();
+
+      if(produitsDerives != null && oldPrefixe != null && newPrefixe != null && utilisateur != null){
+         for(ProdDerive prodDerive: produitsDerives){
+            ProdDerive currentProdDerive = prodDerive;
+            String codeDerive = currentProdDerive.getCode();
+            // Vérifiez que le dérivé était bien composé de l'ancien préfixe et que les `oldPrefixe` et `newPrefixe`
+            // ne sont pas égaux (c'est-à-dire qu'un changement est requis).
+            if(!oldPrefixe.equals(newPrefixe) && codeDerive.contains(oldPrefixe)){
+            // Remplacez le `oldPrefixe` par le `newPrefixe`.
+               currentProdDerive.setCode(codeDerive.replace(oldPrefixe, newPrefixe));
+
+               // Enregistrez l'objet "ProdDerive" mis à jour en utilisant la méthode mergeObject
+               ProdDerive prodDeriveUpdated= prodDeriveDao.mergeObject(currentProdDerive);
+               // Créez un objet `Operation` pour suivre la modification
+               final Operation creationOp = new Operation();
+               creationOp.setDate(Utils.getCurrentSystemCalendar());
+               operationManager.createObjectManager(creationOp, utilisateur, operationTypeDao.findByNom("Modification").get(0),
+                  prodDeriveUpdated);
+            }
+            // Ajoutez le "ProdDerive" mis à jour à la liste `results`
+            results.add(prodDerive);
+         }
+      }
+      return results;
+   }
+
 }
+

@@ -657,5 +657,17 @@ public interface ProdDeriveManager
     * @since 2.3
     */
    List<Integer> findByBanksAndImpact(List<Banque> banks, List<Boolean> impact);
+
+   /**
+    * Mets à jour le préfixe du code de plusieurs produits dérivés.
+    * Méthode utilisée lors du changement du code d'un prélèvement/échantillon/derive.
+    * @param produitsDerives Liste des produitsDerives à mettre à jour.
+    * @param oldPrefixe Ancien préfixe.
+    * @param newPrefixe Nouveau préfixe.
+    * @param utilisateur Utilisateur.
+    * @return Liste des produitsDerives mis à jour.
+    */
+    List<ProdDerive> updateCodeDerivesManager(final List<ProdDerive> produitsDerives, final String oldPrefixe,
+      final String newPrefixe, final Utilisateur utilisateur);
    
 }

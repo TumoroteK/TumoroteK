@@ -38,6 +38,7 @@ package fr.aphp.tumorotek.action.prelevement;
 import java.util.ArrayList;
 import java.util.List;
 
+import fr.aphp.tumorotek.model.coeur.prodderive.ProdDerive;
 import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.Events;
@@ -117,9 +118,19 @@ public class ShowEchantillonsModale extends GenericForwardComposer<Window>
 
    public void onLaterUpdate(){
       // Maj des échantillons
+      String newPrefixe= prelevement.getCode();
       final List<Echantillon> resultats = ManagerLocator.getEchantillonManager().updateCodeEchantillonsManager(echantillons,
-         oldPrefixe, prelevement.getCode(), SessionUtils.getLoggedUser(sessionScope));
-
+         oldPrefixe, newPrefixe, SessionUtils.getLoggedUser(sessionScope));
+      // Pour chaque "échantillon" dans "resultats", traite les "produits dérivés" associés
+      for (Echantillon echantillon: resultats){
+         List<ProdDerive> produitsDerives = ManagerLocator.getEchantillonManager().getProdDerivesManager(echantillon);
+         // Vérifie si des "produits dérivés" sont associés à l'échantillon
+         if (produitsDerives.size() > 0 ){
+            // Met à jour les codes des produits dérivés
+            ManagerLocator.getProdDeriveManager().updateCodeDerivesManager(produitsDerives, oldPrefixe,  newPrefixe,
+               SessionUtils.getLoggedUser(sessionScope));
+          }
+      }
       // ferme wait message
       Clients.clearBusy();
 
