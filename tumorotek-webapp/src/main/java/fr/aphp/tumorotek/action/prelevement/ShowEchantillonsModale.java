@@ -117,27 +117,22 @@ public class ShowEchantillonsModale extends GenericForwardComposer<Window>
    }
 
    public void onLaterUpdate(){
-      // Maj des échantillons
-      String newPrefixe= prelevement.getCode();
-      final List<Echantillon> resultats = ManagerLocator.getEchantillonManager().updateCodeEchantillonsManager(echantillons,
-         oldPrefixe, newPrefixe, SessionUtils.getLoggedUser(sessionScope));
-      // Pour chaque "échantillon" dans "resultats", traite les "produits dérivés" associés
-      for (Echantillon echantillon: resultats){
-         List<ProdDerive> produitsDerives = ManagerLocator.getEchantillonManager().getProdDerivesManager(echantillon);
-         // Vérifie si des "produits dérivés" sont associés à l'échantillon
-         if (produitsDerives.size() > 0 ){
-            // Met à jour les codes des produits dérivés
-            ManagerLocator.getProdDeriveManager().updateCodeDerivesManager(produitsDerives, oldPrefixe,  newPrefixe,
-               SessionUtils.getLoggedUser(sessionScope));
-          }
-      }
+      // Mettre à jour le code des échantillons
+      String newPrefixe = prelevement.getCode();
+      final List<Echantillon> listEchantillonUpdated = ManagerLocator.getEchantillonManager()
+         .updateCodeEchantillonsManager(echantillons, oldPrefixe, newPrefixe, SessionUtils.getLoggedUser(sessionScope));
+      // Obtenir les produits  qui appartiennent au prélèvement
+      List<ProdDerive> prodDerives = ManagerLocator.getPrelevementManager().getProdDerivesManager(prelevement);
+
+      // Mettre à jour le code des produits dérives
+      changeDerivesCode(newPrefixe, listEchantillonUpdated, prodDerives);
       // ferme wait message
       Clients.clearBusy();
 
       // on passe sur l'onglet échantillons
       final EchantillonController tabController = (EchantillonController) EchantillonController.backToMe(main, pg);
       // on remplit la liste des échantillons
-      tabController.getListe().setListObjects(resultats);
+      tabController.getListe().setListObjects(listEchantillonUpdated);
       tabController.getListe().setCurrentObject(null);
       tabController.clearStaticFiche();
       tabController.getListe().getBinder().loadAttribute(tabController.getListe().getObjectsListGrid(), "model");
@@ -146,6 +141,27 @@ public class ShowEchantillonsModale extends GenericForwardComposer<Window>
       // fermeture de la fenêtre
       Events.postEvent(new Event("onClose", self.getRoot()));
    }
+
+   private void changeDerivesCode(String newPrefixe, List<Echantillon> listEchantillons, List<ProdDerive> listDerives){
+      // Échantillons
+      for(Echantillon echantillon : listEchantillons){
+         List<ProdDerive> produitsDerives = ManagerLocator.getEchantillonManager().getProdDerivesManager(echantillon);
+         // Vérifie si des "produits dérivés" sont associés à l'échantillon
+         if(produitsDerives != null && !produitsDerives.isEmpty()){
+            // Met à jour les codes des produits dérivés
+            ManagerLocator.getProdDeriveManager()
+               .updateCodeDerivesManager(produitsDerives, oldPrefixe, newPrefixe, SessionUtils.getLoggedUser(sessionScope));
+         }
+      }
+      // Produits Dérivés
+      if (listDerives != null && !listDerives.isEmpty()){
+         // Met à jour les codes des produits dérivés
+         ManagerLocator.getProdDeriveManager()
+            .updateCodeDerivesManager(listDerives, oldPrefixe, newPrefixe, SessionUtils.getLoggedUser(sessionScope));
+      }
+
+   }
+
 
    public List<Echantillon> getEchantillons(){
       return echantillons;
