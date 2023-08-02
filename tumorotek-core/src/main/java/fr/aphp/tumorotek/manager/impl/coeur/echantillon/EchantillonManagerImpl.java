@@ -1652,27 +1652,32 @@ public class EchantillonManagerImpl implements EchantillonManager
       final List<Echantillon> results = new ArrayList<>();
 
       if(echantillons != null && oldPrefixe != null && newPrefixe != null && utilisateur != null){
-
          for(int i = 0; i < echantillons.size(); i++){
             Echantillon echan = echantillons.get(i);
 
-            // on vérifie que l'échantillon était bien
-            // composé de l'ancien préfixe
+            // on vérifie que l'échantillon était bien composé de l'ancien préfixe
             if(!oldPrefixe.equals(newPrefixe) && echan.getCode().contains(oldPrefixe)){
-               echan.setCode(echan.getCode().replace(oldPrefixe, newPrefixe));
-
-               // sauvegarde
-               echan = echantillonDao.mergeObject(echan);
-               final Operation creationOp = new Operation();
-               creationOp.setDate(Utils.getCurrentSystemCalendar());
-               operationManager.createObjectManager(creationOp, utilisateur, operationTypeDao.findByNom("Modification").get(0),
-                  echan);
+               String newCode = echan.getCode().replace(oldPrefixe, newPrefixe);
+               echan.setCode(newCode);
+               // on évite les doublons
+               Boolean isDoublonFound = findDoublonManager(echan);
+               log.debug("Tentative de modification du code d'échantillon : {}. Le code existe dans la BD : {}", oldPrefixe, isDoublonFound);
+               if (!isDoublonFound){
+                  // sauvegarde
+                  echan = echantillonDao.mergeObject(echan);
+                  // Écriture dans la table des opérations (pour la traçabilité et l'historique)
+                  final Operation creationOp = new Operation();
+                  creationOp.setDate(Utils.getCurrentSystemCalendar());
+                  operationManager.createObjectManager(creationOp, utilisateur, operationTypeDao.findByNom("Modification").get(0),
+                     echan);
+                  results.add(echan);
+               }
             }
-            results.add(echan);
          }
       }
       return results;
    }
+
 
    @Override
    public void saveEchantillonEmplacementManager(final Echantillon echantillon, final ObjetStatut statut,
