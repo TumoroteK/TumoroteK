@@ -341,31 +341,22 @@ public abstract class AbstractFicheEditController extends AbstractFicheControlle
    public boolean onLaterUpdate(){
 
       try{
+         // Met à jour l'objet avec les annotations
          updateObjectWithAnnots();
 
-         // update de la liste
-         if(getObjectTabController().getListe() != null){
-            getObjectTabController().getListe().updateObjectGridList(getObject());
-         }
+         // Met à jour l'objet dans la liste d'objets (La liste de l'onglet actuel)
+         updateCurrentList();
 
-         // update de l'objet parent
-         if(!getObjectTabController().getReferencingObjectControllers().isEmpty() && getParentObject() != null){
-            for(int i = 0; i < getObjectTabController().getReferencingObjectControllers().size(); i++){
-               if(getObjectTabController().getReferencingObjectControllers().get(i).getListe() != null){
-                  getObjectTabController().getReferencingObjectControllers().get(i).getListe()
-                     .updateObjectGridListFromOtherPage(getParentObject(), true);
-               }
-            }
-         }
+         // Met à jour l'objet parent s'il existe
+         updateParent();
 
-         // update de la liste des enfants et l'enfant en fiche
-         getObjectTabController()
-            .updateReferencedObjects((List<TKdataObject>) getObjectTabController().getChildrenObjects(getObject()));
+         // Met à jour la fiche : la liste des enfants et l'enfant
+         updateCurrentFiche();
 
          // commande le passage en mode statique
          getObjectTabController().onEditDone(getObject());
 
-         // ferme wait message
+         // Ferme le message d'attente
          Clients.clearBusy();
 
          return true;
@@ -388,6 +379,44 @@ public abstract class AbstractFicheEditController extends AbstractFicheControlle
          Messagebox.show(handleExceptionMessage(e), "Error", Messagebox.OK, Messagebox.ERROR);
       }
       return false;
+   }
+
+   /**
+    * Met à jour la fiche courante en mettant à jour les objets sur la fiche
+    */
+   public void updateCurrentFiche(){
+      getObjectTabController()
+         .updateReferencedObjects((List<TKdataObject>) getObjectTabController().getChildrenObjects(getObject()));
+   }
+
+   /**
+    * Met à jour l'objet parent dans les listes des contrôleurs d'objets référençant l'objet courant,
+    * si des contrôleurs référençant existent et si l'objet parent n'est pas nul.
+    */
+   public void updateParent(){
+      if(!getObjectTabController().getReferencingObjectControllers().isEmpty() && getParentObject() != null){
+         for(int i = 0; i < getObjectTabController().getReferencingObjectControllers().size(); i++){
+            if(getObjectTabController().getReferencingObjectControllers().get(i).getListe() != null){
+               // Met à jour la liste d'objets de la page référençant l'objet parent.
+               getObjectTabController().getReferencingObjectControllers().get(i).getListe()
+                  .updateObjectGridListFromOtherPage(getParentObject(), true);
+            }
+         }
+      }
+   }
+
+   /**
+    * Met à jour la liste d'objets de la page courante, si la liste existe,
+    * en utilisant l'objet courant comme objet à mettre à jour dans cette liste.
+    *
+    * Exemple d'utilisation : Si vous modifiez le code d'un échantillon, cette méthode
+    * mettra à jour le code dans la liste des échantillons (trouvée dans l'onglet échantillon).
+    */
+
+   public void updateCurrentList(){
+      if(getObjectTabController().getListe() != null){
+         getObjectTabController().getListe().updateObjectGridList(getObject());
+      }
    }
 
    /**
