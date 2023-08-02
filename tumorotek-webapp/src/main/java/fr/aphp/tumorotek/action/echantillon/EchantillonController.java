@@ -44,10 +44,14 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import fr.aphp.tumorotek.action.utils.AfterUpdateCodeUtils;
+import fr.aphp.tumorotek.model.coeur.prodderive.ProdDerive;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Components;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Page;
+import org.zkoss.zk.ui.Path;
+import org.zkoss.zk.ui.SuspendNotAllowedException;
 import org.zkoss.zul.Box;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Hbox;
@@ -75,6 +79,7 @@ import fr.aphp.tumorotek.model.coeur.prelevement.Prelevement;
 import fr.aphp.tumorotek.model.interfacage.scan.ScanTerminale;
 import fr.aphp.tumorotek.model.systeme.Entite;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
+import org.zkoss.zul.Window;
 
 /**
  * Controller de l'onglet échantillon.
@@ -457,6 +462,30 @@ public class EchantillonController extends AbstractObjectTabController
 
       return parents;
    }
+
+   /**
+    * Ouvre et affiche la fenêtre AfterUpdateCodeModale pour la mise à jour des dérives après la mise à jour du code d'un
+    * échantillon.
+    * @param echantillon L'échantillon dont le code a été mis à jour.
+    * @param oldCode     L'ancien code de l'échantillon avant la mise à jour.
+    * @param newCode     Le nouveau code de l'échantillon après la mise à jour.
+    */
+   public void openAfterUpdateCodeModale(final Echantillon echantillon, String oldCode, String newCode){
+      List<ProdDerive> produitsDerives = ManagerLocator.getEchantillonManager().getProdDerivesManager(echantillon);
+      if(!produitsDerives.isEmpty()){
+         String path = Path.getPath(self);
+         final Window win = AfterUpdateCodeUtils.openUpdateCodeModale(null,produitsDerives,
+            oldCode,newCode, page , getMainWindow(), path);
+         try{
+            win.onModal();
+            setBlockModal(false);
+         }catch(final SuspendNotAllowedException e){
+            log.error(e.getMessage(), e);
+
+         }
+      }
+   }
+
 
    /**
     * Gère un scan full-rack barcode 2D au niveau de l'onglet echantillon:

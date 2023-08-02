@@ -44,22 +44,21 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import fr.aphp.tumorotek.action.utils.AfterUpdateCodeUtils;
+import fr.aphp.tumorotek.model.coeur.prodderive.ProdDerive;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Components;
 import org.zkoss.zk.ui.Executions;
-import org.zkoss.zk.ui.HtmlMacroComponent;
 import org.zkoss.zk.ui.Page;
+import org.zkoss.zk.ui.Path;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
-import org.zkoss.zk.ui.event.Event;
-import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Tabbox;
 import org.zkoss.zul.Tabpanel;
-import org.zkoss.zul.Timer;
 import org.zkoss.zul.Window;
 
 import fr.aphp.tumorotek.action.MainWindow;
@@ -712,87 +711,50 @@ public class PrelevementController extends AbstractObjectTabController
    }
 
    /**
-    * Si l'utilisateur a modifié le code d'un prélèvement, une
-    * fenêtre sera affichée pour lui proposer d'afficher ses
-    * échantillons afin de mettre à jour leurs codes.
+    * Prépare l'affichage de AfterUpdateCodeModale après la mise à jour du code d'un Prelevement.
     *
-    * @param prlvt
+    * @param prlvt Le Prelevement  dont le code a été mis à jour.
+    *  La méthode utilise cet objet pour récupérer les objets Echantillon, ProdDerive associés && le nouveau prefix.
     */
-   public void showEchantillonsAfterUpdate(final Prelevement prlvt){
-      final List<Echantillon> echans = new ArrayList<>(ManagerLocator.getPrelevementManager().getEchantillonsManager(prlvt));
-      // si le code a été mis à jour et que le prlvt a des
-      // échantillons
-      if(codeUpdated && echans.size() > 0 && oldCode != null){
-         openShowEchantillonsModaleWindow(echans, prlvt, oldCode);
+   public void prepareAfterUpdateCodeModale(final Prelevement prlvt){
+      // Rassemble les objets Echantillon et ProdDerive associés au Prelevement
+      final List<Echantillon> echantillons = new ArrayList<>(ManagerLocator.getPrelevementManager().getEchantillonsManager(prlvt));
+      final List<ProdDerive> prodDerives = ManagerLocator.getPrelevementManager().getProdDerivesManager(prlvt);
+      // Récupère le nouveau code du Prelevement.
+      String newCode = prlvt.getCode();
+      boolean isChangeNeeded = codeUpdated && echantillons.size() > 0 || !prodDerives.isEmpty() && oldCode != null;
+      if(isChangeNeeded){
+         // Ouvre une fenêtre AfterUpdateCodeModale
+         openAfterUpdateCodeWindow(echantillons, prodDerives, oldCode, newCode);
       }
    }
 
    /**
-    * Méthode appelée demander à l'utilisateur s'il souhaite afficher
-    * les échantillons d'un prélèvement pour les mettre à jour.
-    * pour changer le prelevement de collection.
+    * Crée et initialise une fenêtre modale AfterUpdateCodeModale pour la mise à jour du code.
+    * La fenêtre permet à l'utilisateur de choisir entre la mise à jour automatique, manuelle ou de ne pas mettre à jour les codes.
+    * @param listEchantillons Une liste d'échantillons à mettre à jour.
+    * @param listDerives  Un objet représentant le prélèvement associé aux échantillons.
+    * @param oldPrefix L'ancien préfixe à utiliser lors de la mise à jour du code.
+    * @param newPrefix  Le nouveau préfixe a utilisé lors de la mise à jour du code.
     */
-   public void openShowEchantillonsModaleWindow(final List<Echantillon> echans, final Prelevement prlvt, final String oldPrefixe){
+   public void openAfterUpdateCodeWindow(final List<Echantillon> listEchantillons, final List<ProdDerive> listDerives,
+      final String oldPrefix, final String newPrefix){
       if(!isBlockModal()){
-
          setBlockModal(true);
-
          // nouvelle fenêtre
-         final Window win = new Window();
-         win.setVisible(false);
-         win.setId("showEchantillonsWindow");
-         win.setPage(page);
-         win.setMaximizable(true);
-         win.setSizable(true);
-         win.setTitle(Labels.getLabel("general.edit"));
-         win.setBorder("normal");
-         win.setWidth("400px");
-         win.setHeight("325px");
-         win.setClosable(true);
-
-         final HtmlMacroComponent ua = populateShowEchantillonsModal(echans, prlvt, oldPrefixe, page, getMainWindow(), win);
-         ua.setVisible(false);
-
-         win.addEventListener("onTimed", new EventListener<Event>()
-         {
-            @Override
-            public void onEvent(final Event event) throws Exception{
-               //progress.detach();
-               ua.setVisible(true);
-            }
-         });
-
-         final Timer timer = new Timer();
-         timer.setDelay(500);
-         timer.setRepeats(false);
-         timer.addForward("onTimer", timer.getParent(), "onTimed");
-         win.appendChild(timer);
-         timer.start();
-
+         String path = Path.getPath(self);
+         final Window win = AfterUpdateCodeUtils.openUpdateCodeModale(listEchantillons,listDerives,
+            oldPrefix,newPrefix, page , getMainWindow(), path);
          try{
             win.onModal();
             setBlockModal(false);
 
          }catch(final SuspendNotAllowedException e){
-            log.error(e.getMessage(), e); 
+            log.error(e.getMessage(), e);
          }
       }
    }
 
-   private static HtmlMacroComponent populateShowEchantillonsModal(final List<Echantillon> echans, final Prelevement prlvt,
-      final String oldPrefixe, final Page page, final MainWindow main, final Window win){
-      HtmlMacroComponent ua;
-      ua = (HtmlMacroComponent) page.getComponentDefinition("showEchantillonsModale", false).newInstance(page, null);
-      ua.setParent(win);
-      ua.setId("openShowEchantillonsModale");
-      ua.applyProperties();
-      ua.afterCompose();
-
-      ((ShowEchantillonsModale) ua.getFellow("fwinShowEchantillons").getAttributeOrFellow("fwinShowEchantillons$composer", true))
-         .init(echans, prlvt, oldPrefixe, main, page);
-
-      return ua;
-   }
 
    public boolean isCodeUpdated(){
       return codeUpdated;
