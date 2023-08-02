@@ -35,11 +35,11 @@
 -->
 <?page title="Show Echantillons" contentType="text/html;charset=UTF-8"?>
 <?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
-<?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" name="showEchantillonsModale" root="../"?>
+<?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" name="afterUpdateCodeModale" root="../"?>
 
 <zk>
 
-<window id="fwinShowEchantillons" border="none" apply="fr.aphp.tumorotek.action.prelevement.ShowEchantillonsModale">
+<window id="fwinAfterUpdateCode" border="none" apply="fr.aphp.tumorotek.action.prelevement.AfterUpdateCodeModale">
 	<panel collapsible="false" sclass="fichePanelv2" id="winPanel">
 		<panelchildren id="panelChildrenWithScroll">
 			<grid fixedLayout="true" sclass="gridForm1" id="gridFormPrlvt">
@@ -57,7 +57,7 @@
 								sclass="formLabel"/>
 						</row>
 					<row spans="2">
-						<html content="${c:l('message.modification.code.echantillons')}" sclass="formValue" />
+						<html id="message" content="${c:l('message.modification.code.echantillons')}" sclass="formValue" />
 					</row>
 					<row spans="2">
 						<separator/>
@@ -67,17 +67,17 @@
 							<box orient="vertical">
 								<box orient="horizontal" pack="center">
 									<radio id="modifAuto" checked="true"/>
-									<label value="${c:l('message.modification.code.echantillons.auto')}"
+									<label id="autoLabel" value="${c:l('message.modification.code.echantillons.auto')}"
 											sclass="formLabel"/>
 								</box>
 								<box orient="horizontal" pack="center">
 									<radio id="modifManuelle"/>
-									<label value="${c:l('message.modification.code.echantillons.manuel')}"
+									<label id="manuelleLabel" value="${c:l('message.modification.code.echantillons.manuel')}"
 											sclass="formLabel"/>
 								</box>
 								<box orient="horizontal" pack="center">
 									<radio id="modifAucune"/>
-									<label value="${c:l('message.modification.code.echantillons.aucun')}"
+									<label id="noModifLabel" value="${c:l('message.modification.code.echantillons.aucun')}"
 											sclass="formLabel"/>
 								</box>
 							</box>
