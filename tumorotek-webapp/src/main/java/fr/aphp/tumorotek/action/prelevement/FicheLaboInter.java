@@ -631,7 +631,7 @@ public class FicheLaboInter extends AbstractFicheEditController
          // // ferme wait message
          // Clients.clearBusy();
          if(super.onLaterUpdate()){
-            getObjectTabController().showEchantillonsAfterUpdate(prelevement);
+            getObjectTabController().prepareAfterUpdateCodeModale(prelevement);
          }
          return true;
 

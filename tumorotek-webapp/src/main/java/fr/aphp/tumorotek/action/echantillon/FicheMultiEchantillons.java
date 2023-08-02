@@ -725,7 +725,7 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
          // ferme wait message
          Clients.clearBusy();
 
-         getPrelevementController().showEchantillonsAfterUpdate(getPrelevement());
+         getPrelevementController().prepareAfterUpdateCodeModale(getPrelevement());
          return true;
 
       }catch(final DoublonFoundException re){
