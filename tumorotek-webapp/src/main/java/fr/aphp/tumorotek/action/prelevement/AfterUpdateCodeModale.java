@@ -40,11 +40,14 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import fr.aphp.tumorotek.action.controller.AbstractController;
 import fr.aphp.tumorotek.action.echantillon.EchantillonController;
 import fr.aphp.tumorotek.action.prodderive.ProdDeriveController;
+import fr.aphp.tumorotek.model.TKdataObject;
 import fr.aphp.tumorotek.model.coeur.prodderive.ProdDerive;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.ComponentNotFoundException;
 import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.Path;
 import org.zkoss.zk.ui.event.Event;
@@ -55,7 +58,6 @@ import org.zkoss.zul.Label;
 import org.zkoss.zul.Radio;
 import org.zkoss.zul.Window;
 import org.zkoss.zul.Html;
-
 
 import fr.aphp.tumorotek.action.MainWindow;
 import fr.aphp.tumorotek.action.ManagerLocator;
@@ -73,7 +75,7 @@ import fr.aphp.tumorotek.webapp.general.SessionUtils;
  *
  * Cette classe étend GenericForwardComposer<Window> pour gérer les événements de la fenêtre modale.
  */
-public class AfterUpdateCodeModale extends GenericForwardComposer<Window>
+public class AfterUpdateCodeModale extends AbstractController
 {
 
    private static final long serialVersionUID = 3487687657729735018L;
@@ -86,7 +88,7 @@ public class AfterUpdateCodeModale extends GenericForwardComposer<Window>
 
    private String newPrefixe;
 
-  private MainWindow main;
+   private MainWindow main;
 
    private Page pg;
 
@@ -102,17 +104,30 @@ public class AfterUpdateCodeModale extends GenericForwardComposer<Window>
 
    private Label noModifLabel;
 
-
-   public void init(final List<Echantillon> listEchantillons, List<ProdDerive> listDerives,
-      final String oldPrefixe, final String newPrefixe, final Page page, final MainWindow main, final String path){
+   /**
+    * Initialise l'objet avec les paramètres donnés et effectue les actions nécessaires en fonction des données fournies.
+    *
+    * @param listEchantillons La liste des objets Echantillon à traiter.
+    * @param listDerives La liste des objets ProdDerive à traiter.
+    * @param oldPrefixe L'ancien préfixe à remplacer.
+    * @param newPrefixe Le nouveau préfixe pour remplacer l'ancien.
+    * @param page L'objet Page associé à l'opération.
+    * @param main L'objet MainWindow associé à l'opération.
+    * @param path Le chemin utilisé pour l'initialisation.
+    */
+   public void init(final List<Echantillon> listEchantillons, List<ProdDerive> listDerives, final String oldPrefixe,
+      final String newPrefixe, final Page page, final MainWindow main, final String path){
+      // Initialise l'objet avec les paramètres fournis
       this.echantillons = listEchantillons;
       this.oldPrefixe = oldPrefixe;
-      this.derives= listDerives;
+      this.derives = listDerives;
       this.path = path;
       this.main = main;
       this.pg = page;
       this.newPrefixe = newPrefixe;
-      if (echantillons == null || echantillons.isEmpty()) {
+      // Vérifie si la liste d'objets Echantillon est nulle ou vide
+      if(echantillons == null || echantillons.isEmpty()){
+
          String question = Labels.getLabel("message.modification.code.derives");
          message.setContent(question);
          String manual = Labels.getLabel("message.modification.code.derives.manuel");
@@ -124,12 +139,7 @@ public class AfterUpdateCodeModale extends GenericForwardComposer<Window>
    }
 
 
-   public void onClick$cancel(){
-      // fermeture de la fenêtre
-      closeModale();
-   }
-
-   /**
+    /**
     * Gère l'événement de clic sur le bouton "Valider".
     * Si la case "Modification automatique" est cochée, effectue une mise à jour automatique.
     * Si la case "Modification manuelle" est cochée, passe sur l'onglet "Échantillons" de la page de prélevement.
@@ -137,21 +147,24 @@ public class AfterUpdateCodeModale extends GenericForwardComposer<Window>
     *
     * Cette méthode prend en charge les événements "onClick" du bouton de validation.
     */
-   public void onClick$validate() {
+   public void onClick$validate(){
 
       // Si la modification automatique est cochée, arrête l'affichage du chargement et effectue une mise à jour.
-      if (modifAuto.isChecked()) {
+      if(modifAuto.isChecked()){
+         String waitingLabel = Labels.getLabel("general.display.wait");
+         Clients.showBusy(waitingLabel);
          Events.echoEvent("onLaterUpdate", self, null);
 
-      // Si la modification manuelle est cochée, passe sur l'onglet "Échantillons" de la page de prélevement.
+         // Si la modification manuelle est cochée, passe sur l'onglet "Échantillons" de la page de prélevement.
       }else if(modifManuelle.isChecked()){
          gotToFirstChilds();
       }
 
       // Si ne pas modifier est coché
-      else {
+      else{
          closeModale();
       }
+      Clients.clearBusy();
    }
 
    /**
@@ -160,12 +173,12 @@ public class AfterUpdateCodeModale extends GenericForwardComposer<Window>
     * Si aucun échantillon n'existe, elle affiche les dérivés et ferme la fenêtre modale.
     */
    private void gotToFirstChilds(){
-      if (echantillons != null) {
+      if(echantillons != null){
          showEchantillons();
          // Fermeture de la fenêtre modale.
          closeModale();
          // Si la modification manuelle est cochée, passe sur l'onglet "Dérivé" de la page de prélevement.
-      } else {
+      }else{
          showDerives();
          // Fermeture de la fenêtre modale.
          closeModale();
@@ -219,37 +232,87 @@ public class AfterUpdateCodeModale extends GenericForwardComposer<Window>
     * La méthode se termine en fermant le message d'attente (si présent) et en fermant la fenêtre modale.
     */
    public void onLaterUpdate(){
-      boolean isUpdateDerive = false;
       List<ProdDerive> prodDerivesFromEchantillons = new ArrayList<>();
       // Mettre à jour le code des échantillons
-      if (echantillons != null ){
-
+      if(echantillons != null){
          final List<Echantillon> listEchantillonUpdated = ManagerLocator.getEchantillonManager()
             .updateCodeEchantillonsManager(echantillons, oldPrefixe, newPrefixe, SessionUtils.getLoggedUser(sessionScope));
-
          prodDerivesFromEchantillons = getProduitsDeriveFromEchantillons(listEchantillonUpdated);
+         updateEchantillonList(listEchantillonUpdated);
       }
       // Fusionner les listes prodDerivesFromEchantillons et derives
-      List<ProdDerive> mergedDerivesList = Stream.concat(prodDerivesFromEchantillons.stream(), derives.stream())
-         .collect(Collectors.toList());
+      List<ProdDerive> mergedDerivesList =  Stream.concat(prodDerivesFromEchantillons.stream(),
+                                                          derives.stream()).collect(Collectors.toList());
       // Mettre à jour le code des produits dérives
-      if (!mergedDerivesList.isEmpty()){
+      if(!mergedDerivesList.isEmpty()){
          changeDerivesCode(mergedDerivesList);
-         isUpdateDerive = true;
-         if ( Path.getComponent(path) != null){
-            Events.postEvent(new Event("onRefresh", Path.getComponent(path), isUpdateDerive));
 
-         }
-
-
-
+         updateDerivesList(mergedDerivesList);
       }
-      // fermeture de la fenêtre
-      closeModale();
+      updateAllControlers();
 
+      closeModale();
    }
 
+   /**
+    * Cette méthode permet de mettre à jour la liste des échantillons
+    * en utilisant les IDs des échantillons mis à jour.
+    *
+    * @param listEchantillon La liste des échantillons mis à jour.
+    */
+   private void updateEchantillonList( List<Echantillon> listEchantillon){
+      List<Integer> idsList = listEchantillon.stream()
+         .map(Echantillon::getEchantillonId)
+         .collect(Collectors.toList());
+      try {
+         getEchantillonController().getListe().updateGridByIds(idsList, false, false);
 
+      } catch (NullPointerException ex){
+
+      }
+   }
+
+   /**
+    * Cette méthode permet de mettre à jour la liste des produits dérivés
+    * en utilisant les IDs des produits dérivés mis à jour.
+    *
+    * @param prodDeriveList La liste des produits dérivés mis à jour.
+    */
+   private void updateDerivesList(List<ProdDerive> prodDeriveList){
+      List<Integer> idsList = prodDeriveList.stream()
+         .map(ProdDerive::getProdDeriveId)
+         .collect(Collectors.toList());
+      if (getProdDeriveController().getListe() != null){
+         getProdDeriveController().getListe().updateGridByIds(idsList, false, false);
+      }
+   }
+
+   /**
+    * Met à jour les contrôleurs EchantillonController, ProdDeriveController et PrelevementController en appelant
+    * leurs méthodes 'updateRelatedUI' pour rafraîchir leurs interfaces utilisateur respectives.
+    * Cette méthode traite les exceptions qui peuvent survenir lors de l'appel de ces méthodes.
+    */
+   private void updateAllControlers(){
+      try {
+         // Try the first action
+         getProdDeriveController().getFicheEdit().updateRelatedUI();
+      } catch (Exception e1) {
+         // Log or handle the exception from the first action if needed
+         // If an exception occurred, move to the second action
+         try {
+            getEchantillonController().getFicheEdit().updateRelatedUI();
+         } catch (Exception e2 ) {
+            // Log or handle the exception from the second action if needed
+            // If an exception occurred, move to the third action
+            try {
+               getPrelevementController().getFicheEdit().updateRelatedUI();
+            } catch (Exception e3) {
+               // Log or handle the exception from the third action if needed
+               // If you need to take additional actions if all three actions fail, you can do it here
+            }
+         }
+      }
+   }
 
    /**
     * Fermeture de la fenêtre
@@ -289,6 +352,16 @@ public class AfterUpdateCodeModale extends GenericForwardComposer<Window>
       return allProduitsDerives;
 
    }
+
+   /**
+    * Fermeture de la fenêtre modale.
+    */
+   public void onClick$cancel(){
+      // fermeture de la fenêtre
+      closeModale();
+   }
+
+
    public List<Echantillon> getEchantillons(){
       return echantillons;
    }
@@ -305,5 +378,7 @@ public class AfterUpdateCodeModale extends GenericForwardComposer<Window>
       this.oldPrefixe = o;
    }
 
-   public List<ProdDerive> getDerives(){ return derives; }
+   public List<ProdDerive> getDerives(){
+      return derives;
+   }
 }
