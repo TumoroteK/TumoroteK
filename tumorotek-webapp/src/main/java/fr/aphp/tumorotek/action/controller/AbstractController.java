@@ -1553,6 +1553,21 @@ public abstract class AbstractController extends GenericForwardComposer<Componen
 	}
 
 	/**
+	 * Retourne le controller de la fiche d'un prélévemnt.
+	 *
+	 * @return PrelevementController
+	 */
+	public PrelevementController getPrelevementController(){
+		if(getMainWindow().isFullfilledComponent("prelevementPanel", "winPrelevement")){
+			return ((PrelevementController) getMainWindow().getMainTabbox().getTabpanels().getFellow("prelevementPanel")
+				.getFellow("winPrelevement").getAttributeOrFellow("winPrelevement$composer", true));
+		}
+		return null;
+	}
+
+
+
+	/**
 	 * Retourne le controller de la fiche d'un dérivé.
 	 * 
 	 * @param event
@@ -2507,4 +2522,6 @@ public abstract class AbstractController extends GenericForwardComposer<Componen
 	   }
 	   return true;
 	}
+
+
 }
