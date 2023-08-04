@@ -55,6 +55,8 @@ import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.Path;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.select.annotation.Listen;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Tabbox;
@@ -716,18 +718,16 @@ public class PrelevementController extends AbstractObjectTabController
     * @param prlvt Le Prelevement  dont le code a été mis à jour.
     *  La méthode utilise cet objet pour récupérer les objets Echantillon, ProdDerive associés && le nouveau prefix.
     */
-   public void prepareAfterUpdateCodeModale(final Prelevement prlvt){
-      // Rassemble les objets Echantillon et ProdDerive associés au Prelevement
-      final List<Echantillon> echantillons = new ArrayList<>(ManagerLocator.getPrelevementManager().getEchantillonsManager(prlvt));
-      final List<ProdDerive> prodDerives = ManagerLocator.getPrelevementManager().getProdDerivesManager(prlvt);
-      // Récupère le nouveau code du Prelevement.
-      String newCode = prlvt.getCode();
-      boolean isChangeNeeded = codeUpdated && echantillons.size() > 0 || !prodDerives.isEmpty() && oldCode != null;
+   public void prepareAfterUpdateCodeModale(List<Echantillon> echantillons,List<ProdDerive> prodDerives, String newCode ){
+      boolean isChangeNeeded = codeUpdated && oldCode != null;
       if(isChangeNeeded){
          // Ouvre une fenêtre AfterUpdateCodeModale
          openAfterUpdateCodeWindow(echantillons, prodDerives, oldCode, newCode);
+
       }
    }
+
+
 
    /**
     * Crée et initialise une fenêtre modale AfterUpdateCodeModale pour la mise à jour du code.
@@ -828,5 +828,13 @@ public class PrelevementController extends AbstractObjectTabController
          patEntite, SessionUtils.getSelectedBanques(sessionScope), true));
 
       return parents;
+   }
+
+   @Listen("onRefresh")
+   public void onRefresh(Event event){
+      log.error("geeting the event");
+      System.out.println("fff");
+      log.error((String) event.getData());
+
    }
 }
