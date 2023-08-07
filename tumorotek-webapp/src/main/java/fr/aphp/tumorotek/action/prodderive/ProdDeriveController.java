@@ -376,28 +376,6 @@ public class ProdDeriveController extends AbstractObjectTabController
       }
    }
 
-   /**
-    * Ouvre et affiche la fenêtre AfterUpdateCodeModale pour la mise à jour des dérives.
-    * @param prodDerive  Le Derive dont le code a été mis à jour.
-    * @param oldCode     L'ancien code de l'échantillon avant la mise à jour.
-    * @param newCode     Le nouveau code de l'échantillon après la mise à jour.
-    */
-   public void openAfterUpdateCodeWindow(final ProdDerive prodDerive, String oldCode, String newCode){
-      List<ProdDerive> produitsDerives = ManagerLocator.getProdDeriveManager().getProdDerivesManager(prodDerive);
-      if(!produitsDerives.isEmpty()){
-         String path = Path.getPath(self);
-
-         final Window win = AfterUpdateCodeUtils.openUpdateCodeModale(null,produitsDerives,
-            oldCode,newCode, page , getMainWindow(), path);
-         try{
-            win.onModal();
-            setBlockModal(false);
-
-         }catch(final SuspendNotAllowedException e){
-            log.error(e.getMessage(), e);
-         }
-      }
-   }
 
 
 }

@@ -463,28 +463,6 @@ public class EchantillonController extends AbstractObjectTabController
       return parents;
    }
 
-   /**
-    * Ouvre et affiche la fenêtre AfterUpdateCodeModale pour la mise à jour des dérives après la mise à jour du code d'un
-    * échantillon.
-    * @param echantillon L'échantillon dont le code a été mis à jour.
-    * @param oldCode     L'ancien code de l'échantillon avant la mise à jour.
-    * @param newCode     Le nouveau code de l'échantillon après la mise à jour.
-    */
-   public void openAfterUpdateCodeModale(final Echantillon echantillon, String oldCode, String newCode){
-      List<ProdDerive> produitsDerives = ManagerLocator.getEchantillonManager().getProdDerivesManager(echantillon);
-      if(!produitsDerives.isEmpty()){
-         String path = Path.getPath(self);
-         final Window win = AfterUpdateCodeUtils.openUpdateCodeModale(null,produitsDerives,
-            oldCode,newCode, page , getMainWindow(), path);
-         try{
-            win.onModal();
-            setBlockModal(false);
-         }catch(final SuspendNotAllowedException e){
-            log.error(e.getMessage(), e);
-
-         }
-      }
-   }
 
 
    /**

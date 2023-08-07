@@ -44,7 +44,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import fr.aphp.tumorotek.action.utils.AfterUpdateCodeUtils;
 import fr.aphp.tumorotek.model.coeur.prodderive.ProdDerive;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,15 +52,12 @@ import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Components;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Page;
-import org.zkoss.zk.ui.Path;
-import org.zkoss.zk.ui.SuspendNotAllowedException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.select.annotation.Listen;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Tabbox;
 import org.zkoss.zul.Tabpanel;
-import org.zkoss.zul.Window;
 
 import fr.aphp.tumorotek.action.MainWindow;
 import fr.aphp.tumorotek.action.ManagerLocator;
@@ -713,47 +709,28 @@ public class PrelevementController extends AbstractObjectTabController
    }
 
    /**
-    * Prépare l'affichage de AfterUpdateCodeModale après la mise à jour du code d'un Prelevement.
-    *
-    * @param prlvt Le Prelevement  dont le code a été mis à jour.
-    *  La méthode utilise cet objet pour récupérer les objets Echantillon, ProdDerive associés && le nouveau prefix.
-    */
-   public void prepareAfterUpdateCodeModale(List<Echantillon> echantillons,List<ProdDerive> prodDerives, String newCode ){
-      boolean isChangeNeeded = codeUpdated && oldCode != null;
-      if(isChangeNeeded){
-         // Ouvre une fenêtre AfterUpdateCodeModale
-         openAfterUpdateCodeWindow(echantillons, prodDerives, oldCode, newCode);
-
-      }
-   }
-
-
-
-   /**
-    * Crée et initialise une fenêtre modale AfterUpdateCodeModale pour la mise à jour du code.
+    * Ouvre une fenêtre modale "AfterUpdateCodeModale" pour la mise à jour du code des enfants si nécessaire.
     * La fenêtre permet à l'utilisateur de choisir entre la mise à jour automatique, manuelle ou de ne pas mettre à jour les codes.
+    *
     * @param listEchantillons Une liste d'échantillons à mettre à jour.
-    * @param listDerives  Un objet représentant le prélèvement associé aux échantillons.
-    * @param oldPrefix L'ancien préfixe à utiliser lors de la mise à jour du code.
-    * @param newPrefix  Le nouveau préfixe a utilisé lors de la mise à jour du code.
+    * @param listDerives      Une liste des produits dérivés à mettre à jour.
+    * @param oldPrefix        L'ancien préfixe à utiliser lors de la mise à jour du code.
+    * @param newPrefix        Le nouveau préfixe à utiliser lors de la mise à jour du code.
+    * @param newCode          Le nouveau code de l'échantillon après la mise à jour.
     */
-   public void openAfterUpdateCodeWindow(final List<Echantillon> listEchantillons, final List<ProdDerive> listDerives,
-      final String oldPrefix, final String newPrefix){
-      if(!isBlockModal()){
-         setBlockModal(true);
-         // nouvelle fenêtre
-         String path = Path.getPath(self);
-         final Window win = AfterUpdateCodeUtils.openUpdateCodeModale(listEchantillons,listDerives,
-            oldPrefix,newPrefix, page , getMainWindow(), path);
-         try{
-            win.onModal();
-            setBlockModal(false);
 
-         }catch(final SuspendNotAllowedException e){
-            log.error(e.getMessage(), e);
-         }
+   public void openAfterUpdateCodeModale(List<Echantillon> listEchantillons, List<ProdDerive> listDerives,
+      String oldCode, String newCode ){
+      // A voir: le codeUpdated n'est jamais null
+      boolean isChangeNeeded = codeUpdated && oldCode != null;
+      if(isChangeNeeded && !isBlockModal()){
+         setBlockModal(true);
+         // Ouvre une fenêtre AfterUpdateCodeModale
+         openAfterUpdateCodeModale(listEchantillons, listDerives, oldCode, newCode);
       }
    }
+
+
 
 
    public boolean isCodeUpdated(){
