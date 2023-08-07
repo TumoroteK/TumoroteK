@@ -67,6 +67,7 @@ import org.zkoss.zk.ui.SuspendNotAllowedException;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zkplus.databind.AnnotateDataBinder;
 import org.zkoss.zul.Filedownload;
@@ -302,16 +303,28 @@ public abstract class AbstractController extends GenericForwardComposer<Componen
 	 * @param oldPrefixe       L'ancien code de l'échantillon avant la mise à jour.
 	 * @param newPrefixe       Le nouveau code de l'échantillon après la mise à jour.
 	 */
-	public void openAfterUpdateCodeModale( List<Echantillon> listEchantillons, List<ProdDerive> produitsDerives , String oldPrefixe, String newPrefixe){
+	public void openAfterUpdateCodeModale( List<Echantillon> listEchantillons, List<ProdDerive> produitsDerives ,
+		String oldPrefixe, String newPrefixe){
+	 	try{
 			final Window win = AfterUpdateCodeUtils.openUpdateCodeModale(listEchantillons,produitsDerives,
 				oldPrefixe,newPrefixe, page , getMainWindow());
-			try{
-				win.onModal();
-				setBlockModal(false);
-			}catch(final SuspendNotAllowedException e){
-				log.error(e.getMessage(), e);
 
-			}
+			win.onModal();
+			setBlockModal(false);
+
+
+		}catch(final SuspendNotAllowedException e){
+			Clients.clearBusy();
+			log.error(e.getMessage(), e);
+			Messagebox.show(handleExceptionMessage(e), "Error", Messagebox.OK, Messagebox.ERROR);
+
+
+		}catch(final RuntimeException re){
+			// ferme wait message
+			Clients.clearBusy();
+			log.error(re.getMessage(), re);
+			Messagebox.show(handleExceptionMessage(re), "Error", Messagebox.OK, Messagebox.ERROR);
+		}
 	}
 
 
