@@ -85,8 +85,6 @@ public class AfterUpdateCodeModale extends AbstractController
 
    private Page pg;
 
-   private String path;
-
    private Radio modifAuto;
 
    private Radio modifManuelle;
@@ -109,12 +107,11 @@ public class AfterUpdateCodeModale extends AbstractController
     * @param path Le chemin utilisé pour l'initialisation.
     */
    public void init(final List<Echantillon> listEchantillons, List<ProdDerive> listDerives, final String oldPrefixe,
-      final String newPrefixe, final Page page, final MainWindow main, final String path){
+      final String newPrefixe, final Page page, final MainWindow main){
       // Initialise l'objet avec les paramètres fournis
       this.echantillons = listEchantillons;
       this.oldPrefixe = oldPrefixe;
       this.derives = listDerives;
-      this.path = path;
       this.main = main;
       this.pg = page;
       this.newPrefixe = newPrefixe;
