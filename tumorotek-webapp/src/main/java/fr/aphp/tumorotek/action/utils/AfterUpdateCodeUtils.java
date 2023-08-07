@@ -28,7 +28,7 @@ public class AfterUpdateCodeUtils
     */
 
    public static Window openUpdateCodeModale(final List<Echantillon> listEchantillons, List<ProdDerive> listDerives,
-      final String oldPrefixe, final String newPrefixe, final Page page, final MainWindow main, String path){
+      final String oldPrefixe, final String newPrefixe, final Page page, final MainWindow main){
       // Crée une nouvelle fenêtre modale
       final Window win = new Window();
       // Définit les propriétés de la fenêtre modale
@@ -44,7 +44,7 @@ public class AfterUpdateCodeUtils
       win.setClosable(true);
 
       final HtmlMacroComponent macroComponent = initAfterUpdateCodeModale(listEchantillons, listDerives, oldPrefixe,
-         newPrefixe,page, main,  win, path);
+         newPrefixe,page, main,  win);
       macroComponent.setVisible(false);
 
       // Ajoute un écouteur d'événements à la fenêtre modale pour rendre les composants visibles après un délai
@@ -75,7 +75,7 @@ public class AfterUpdateCodeUtils
     */
 
    public static HtmlMacroComponent initAfterUpdateCodeModale(final List<Echantillon> listEchantillons, List<ProdDerive> listDerives,
-      final String oldPrefix, final String newPrefix, final Page page, final MainWindow mainWindow, final Window window, String path){
+      final String oldPrefix, final String newPrefix, final Page page, final MainWindow mainWindow, final Window window){
       HtmlMacroComponent htmlMacroComponent;
       htmlMacroComponent = (HtmlMacroComponent) page.getComponentDefinition("afterUpdateCodeModale", false).newInstance(page, null);
       htmlMacroComponent.setParent(window);
@@ -84,7 +84,7 @@ public class AfterUpdateCodeUtils
       htmlMacroComponent.afterCompose();
 
       ((AfterUpdateCodeModale) htmlMacroComponent.getFellow("fwinAfterUpdateCode").getAttributeOrFellow("fwinAfterUpdateCode$composer", true))
-         .init(listEchantillons, listDerives, oldPrefix,  newPrefix, page, mainWindow, path);
+         .init(listEchantillons, listDerives, oldPrefix,  newPrefix, page, mainWindow);
 
       return htmlMacroComponent;
    }

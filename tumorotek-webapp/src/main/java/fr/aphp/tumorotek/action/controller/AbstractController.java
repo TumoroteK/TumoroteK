@@ -50,6 +50,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import fr.aphp.tumorotek.action.utils.AfterUpdateCodeUtils;
+import fr.aphp.tumorotek.model.coeur.echantillon.Echantillon;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -291,6 +293,29 @@ public abstract class AbstractController extends GenericForwardComposer<Componen
 	/*************************************************************************/
 	/************************** MODALES ***************************************/
 	/*************************************************************************/
+
+	/**
+	 * Ouvre et affiche la fenêtre AfterUpdateCodeModale pour la mise à jour des enfants après la mise à jour du code parent
+	 *
+	 * @param listEchantillons La liste des échantillons à mettre à jour.
+	 * @param produitsDerives  La liste des dérivés à mettre à jour.
+	 * @param oldPrefixe       L'ancien code de l'échantillon avant la mise à jour.
+	 * @param newPrefixe       Le nouveau code de l'échantillon après la mise à jour.
+	 */
+	public void openAfterUpdateCodeModale( List<Echantillon> listEchantillons, List<ProdDerive> produitsDerives , String oldPrefixe, String newPrefixe){
+			final Window win = AfterUpdateCodeUtils.openUpdateCodeModale(listEchantillons,produitsDerives,
+				oldPrefixe,newPrefixe, page , getMainWindow());
+			try{
+				win.onModal();
+				setBlockModal(false);
+			}catch(final SuspendNotAllowedException e){
+				log.error(e.getMessage(), e);
+
+			}
+	}
+
+
+
 
 	/**
 	 * Méthode appelée lorsque l'utilisateur clique sur le lien
