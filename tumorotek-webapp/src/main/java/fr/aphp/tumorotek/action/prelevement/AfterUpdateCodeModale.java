@@ -35,34 +35,27 @@
  **/
 package fr.aphp.tumorotek.action.prelevement;
 
+import fr.aphp.tumorotek.action.MainWindow;
+import fr.aphp.tumorotek.action.ManagerLocator;
+import fr.aphp.tumorotek.action.controller.AbstractController;
+import fr.aphp.tumorotek.action.echantillon.EchantillonController;
+import fr.aphp.tumorotek.action.prodderive.ProdDeriveController;
+import fr.aphp.tumorotek.model.coeur.echantillon.Echantillon;
+import fr.aphp.tumorotek.model.coeur.prodderive.ProdDerive;
+import fr.aphp.tumorotek.webapp.general.SessionUtils;
+import org.zkoss.util.resource.Labels;
+import org.zkoss.zk.ui.Page;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.util.Clients;
+import org.zkoss.zul.Html;
+import org.zkoss.zul.Label;
+import org.zkoss.zul.Radio;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import fr.aphp.tumorotek.action.controller.AbstractController;
-import fr.aphp.tumorotek.action.echantillon.EchantillonController;
-import fr.aphp.tumorotek.action.prodderive.ProdDeriveController;
-import fr.aphp.tumorotek.model.TKdataObject;
-import fr.aphp.tumorotek.model.coeur.prodderive.ProdDerive;
-import org.zkoss.util.resource.Labels;
-import org.zkoss.zk.ui.Component;
-import org.zkoss.zk.ui.ComponentNotFoundException;
-import org.zkoss.zk.ui.Page;
-import org.zkoss.zk.ui.Path;
-import org.zkoss.zk.ui.event.Event;
-import org.zkoss.zk.ui.event.Events;
-import org.zkoss.zk.ui.util.Clients;
-import org.zkoss.zk.ui.util.GenericForwardComposer;
-import org.zkoss.zul.Label;
-import org.zkoss.zul.Radio;
-import org.zkoss.zul.Window;
-import org.zkoss.zul.Html;
-
-import fr.aphp.tumorotek.action.MainWindow;
-import fr.aphp.tumorotek.action.ManagerLocator;
-import fr.aphp.tumorotek.model.coeur.echantillon.Echantillon;
-import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
 /**
  * Cette classe gère une fenêtre modale permettant la mise à jour du code des échantillons et produits dérivés
@@ -148,11 +141,11 @@ public class AfterUpdateCodeModale extends AbstractController
     * Cette méthode prend en charge les événements "onClick" du bouton de validation.
     */
    public void onClick$validate(){
-
+      String waitingLabel = Labels.getLabel("general.display.wait");
+      Clients.showBusy(waitingLabel);
       // Si la modification automatique est cochée, arrête l'affichage du chargement et effectue une mise à jour.
       if(modifAuto.isChecked()){
-         String waitingLabel = Labels.getLabel("general.display.wait");
-         Clients.showBusy(waitingLabel);
+
          Events.echoEvent("onLaterUpdate", self, null);
 
          // Si la modification manuelle est cochée, passe sur l'onglet "Échantillons" de la page de prélevement.
@@ -166,6 +159,8 @@ public class AfterUpdateCodeModale extends AbstractController
       }
       Clients.clearBusy();
    }
+
+
 
    /**
     * Cette méthode permet de naviguer vers les enfants du premier niveau de l'élément courant.
@@ -237,8 +232,11 @@ public class AfterUpdateCodeModale extends AbstractController
       if(echantillons != null){
          final List<Echantillon> listEchantillonUpdated = ManagerLocator.getEchantillonManager()
             .updateCodeEchantillonsManager(echantillons, oldPrefixe, newPrefixe, SessionUtils.getLoggedUser(sessionScope));
+      // Trouve leurs produits dérivés
          prodDerivesFromEchantillons = getProduitsDeriveFromEchantillons(listEchantillonUpdated);
+
          updateEchantillonList(listEchantillonUpdated);
+
       }
       // Fusionner les listes prodDerivesFromEchantillons et derives
       List<ProdDerive> mergedDerivesList =  Stream.concat(prodDerivesFromEchantillons.stream(),
@@ -294,21 +292,15 @@ public class AfterUpdateCodeModale extends AbstractController
     */
    private void updateAllControlers(){
       try {
-         // Try the first action
-         getProdDeriveController().getFicheEdit().updateRelatedUI();
+         getProdDeriveController().getFicheEdit().refreshAndUpdateUI();
       } catch (Exception e1) {
-         // Log or handle the exception from the first action if needed
-         // If an exception occurred, move to the second action
-         try {
-            getEchantillonController().getFicheEdit().updateRelatedUI();
+          try {
+            getEchantillonController().getFicheEdit().refreshAndUpdateUI();
          } catch (Exception e2 ) {
-            // Log or handle the exception from the second action if needed
-            // If an exception occurred, move to the third action
             try {
-               getPrelevementController().getFicheEdit().updateRelatedUI();
+               getPrelevementController().getFicheEdit().refreshAndUpdateUI();
             } catch (Exception e3) {
-               // Log or handle the exception from the third action if needed
-               // If you need to take additional actions if all three actions fail, you can do it here
+
             }
          }
       }

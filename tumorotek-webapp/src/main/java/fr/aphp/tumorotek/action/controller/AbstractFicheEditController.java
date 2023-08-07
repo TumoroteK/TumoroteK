@@ -271,13 +271,7 @@ public abstract class AbstractFicheEditController extends AbstractFicheControlle
 
       }catch(final DoublonFoundException re){
          Clients.clearBusy();
-         final HashMap<String, Object> map = new HashMap<>();
-         map.put("title", Labels.getLabel("error.unhandled"));
-         map.put("message", handleExceptionMessage(re));
-         map.put("exception", re);
-
-         final Window window = (Window) Executions.createComponents("/zuls/component/DynamicMultiLineMessageBox.zul", null, map);
-         window.doModal();
+         showDoublonFoundExceptionDialog(re);
 
          return false;
       }catch(final Exception e){
@@ -344,17 +338,8 @@ public abstract class AbstractFicheEditController extends AbstractFicheControlle
          // Met à jour l'objet avec les annotations
          updateObjectWithAnnots();
 
-         // Met à jour l'objet dans la liste d'objets (La liste de l'onglet actuel)
-         updateCurrentList();
-
-         // Met à jour l'objet parent s'il existe
-         updateParent();
-
-         // Met à jour la fiche : la liste des enfants et l'enfant
-         updateCurrentFiche();
-
-         // commande le passage en mode statique
-         getObjectTabController().onEditDone(getObject());
+         // Met à jour l'interface utilisateur (UI) liée à l'objet actuel
+         refreshAndUpdateUI();
 
          // Ferme le message d'attente
          Clients.clearBusy();
@@ -364,13 +349,7 @@ public abstract class AbstractFicheEditController extends AbstractFicheControlle
       }catch(final DoublonFoundException re){
          Clients.clearBusy();
 
-         final HashMap<String, Object> map = new HashMap<>();
-         map.put("title", Labels.getLabel("error.unhandled"));
-         map.put("message", handleExceptionMessage(re));
-         map.put("exception", re);
-
-         final Window window = (Window) Executions.createComponents("/zuls/component/DynamicMultiLineMessageBox.zul", null, map);
-         window.doModal();
+         showDoublonFoundExceptionDialog(re);
 
          return false;
       }catch(final Exception e){
@@ -379,6 +358,78 @@ public abstract class AbstractFicheEditController extends AbstractFicheControlle
          Messagebox.show(handleExceptionMessage(e), "Error", Messagebox.OK, Messagebox.ERROR);
       }
       return false;
+   }
+
+   /**
+    * Met à jour le code de l'objet et ses annotations, puis rafraîchit l'interface utilisateur si nécessaire.
+    *
+    * @param isRefreshNeeded Indique si l'interface utilisateur doit être mise à jour après la modification de l'objet.
+    * @return true si la mise à jour a réussi ou false si une exception a été rencontrée.
+    */
+   public boolean onUpdateCode(boolean isRefreshNeeded){
+
+      try{
+         // Enregistre les modifications sur un objet et ses annotations
+         updateObjectWithAnnots();
+
+         if (isRefreshNeeded){
+            refreshAndUpdateUI();
+         }
+         // Ferme le message d'attente
+         Clients.clearBusy();
+         return true;
+
+      }catch(final DoublonFoundException re){
+         Clients.clearBusy();
+
+         showDoublonFoundExceptionDialog(re);
+
+         return false;
+      }catch(final Exception e){
+         // ferme wait message
+         Clients.clearBusy();
+         Messagebox.show(handleExceptionMessage(e), "Error", Messagebox.OK, Messagebox.ERROR);
+      }
+      return false;
+   }
+
+   /**
+    * Met à jour l'interface utilisateur (UI) liée à l'objet actuel en effectuant les étapes suivantes:
+    * 1. Met à jour l'objet dans la liste d'objets de l'onglet actuel.
+    * 2. Met à jour l'objet parent s'il existe.
+    * 3. Met à jour la fiche d'affichage : la liste des enfants et l'enfant.
+    * 4. Passe en mode statique en cas de modification en édition.
+    */
+   public void refreshAndUpdateUI(){
+      // Met à jour l'objet dans la liste d'objets (La liste de l'onglet actuel)
+      updateCurrentList();
+
+      // Met à jour l'objet parent s'il existe
+      updateParent();
+
+      // Met à jour la fiche : la liste des enfants et l'enfant
+      updateCurrentFiche();
+
+      // commande le passage en mode statique
+      getObjectTabController().onEditDone(getObject());
+
+   }
+
+   /**
+    * Crée une boîte de dialogue affichant une exception de type DoublonFoundException.
+    *
+    * @param re L'exception de type DoublonFoundException à afficher dans la boîte de dialogue.
+    */
+   private static void showDoublonFoundExceptionDialog(DoublonFoundException re){
+      // Création d'une map contenant les informations à afficher dans la boîte de dialogue
+      final HashMap<String, Object> map = new HashMap<>();
+      map.put("title", Labels.getLabel("error.unhandled"));
+      map.put("message", handleExceptionMessage(re));
+      map.put("exception", re);
+      // Création de la fenêtre en utilisant le fichier de composants "/zuls/component/DynamicMultiLineMessageBox.zul"
+      final Window window = (Window) Executions.createComponents("/zuls/component/DynamicMultiLineMessageBox.zul", null, map);
+      // Affichage de la fenêtre en mode modal, bloquant l'interaction avec le reste de l'application
+      window.doModal();
    }
 
    /**
