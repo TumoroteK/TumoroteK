@@ -46,6 +46,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import fr.aphp.tumorotek.model.coeur.echantillon.Echantillon;
+import fr.aphp.tumorotek.model.coeur.prodderive.ProdDerive;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.validation.Errors;
@@ -203,6 +205,8 @@ public class FichePrelevementEdit extends AbstractFicheEditController
 
    protected List<Risque> risques = new ArrayList<>();
 
+
+
    protected boolean isPatientAccessible = true;
 
    protected Div refPatientDiv;
@@ -222,6 +226,8 @@ public class FichePrelevementEdit extends AbstractFicheEditController
    protected boolean isPatientMaladieStatic = false;
 
    protected ConsentTypeUsedTable consentTypeUsed = new ConsentTypeUsedTable();
+
+   private String oldPrefixe;
 
    public void setMaladie(final Maladie m){
       this.maladie = m;
@@ -538,7 +544,7 @@ public class FichePrelevementEdit extends AbstractFicheEditController
    public void setObject(final TKdataObject obj){
       this.prelevement = (Prelevement) obj;
       this.maladie = this.prelevement.getMaladie();
-
+      this.oldPrefixe = prelevement.getCode();
       //super.setObject(obj);
 
       // Calendar boxes
@@ -728,38 +734,52 @@ public class FichePrelevementEdit extends AbstractFicheEditController
       }
    }
 
-   @Override
-   public void onClick$validate(){
-
-      // gatsbi overrides
-      checkRequiredListboxes();
-
-      // valide les dates donc
-      validateAllDateComps();
-
-      super.onClick$validate();
-   }
 
    /**
-    * @version 2.1
+    *
+    * Méthode appelée lorsque le bouton "validate" est cliqué.
+    * Effectue les actions suivantes :
+    * - Applique la méthode checkRequiredListboxes() pour vérifier les listes requises.
+    * - Valide toutes les composantes de date.
+    * - Rassemble les objets Echantillon et ProdDerive associés au Prelevement en cours.
+    * - Récupère le nouveau code du Prelevement.
+    * - Vérifie si des enfants (échantillons ou dérivés) ont été trouvés pour le Prelevement.
+    * - Si des enfants sont trouvés, met à jour le code du Prelevement sans mise à jour de l'interface utilisateur,
+    *   puis ouvre une fenêtre modale "AfterUpdateCodeModale" pour la mise à jour des échantillons et dérivés associés.
+    * - Si aucun enfant n'est trouvé, met à jour le code du Prelevement avec mise à jour de l'interface utilisateur.
     */
    @Override
-   public boolean onLaterUpdate(){
+   public void onClick$validate() {
+      // Vérifie les listes requises en appliquant la méthode checkRequiredListboxes()
+      checkRequiredListboxes();
 
-      try{
-         if(super.onLaterUpdate()){
-            getObjectTabController().showEchantillonsAfterUpdate(prelevement);
-         }
-         return true;
+      // Valide toutes les composantes de date
+      validateAllDateComps();
 
-      }catch(final RuntimeException re){
-         // ferme wait message
-         Clients.clearBusy();
-         log.error(re.getMessage(), re);
-         Messagebox.show(handleExceptionMessage(re), "Error", Messagebox.OK, Messagebox.ERROR);
-         return false;
+      // Rassemble les objets Echantillon et ProdDerive associés au Prelevement en cours
+      final List<Echantillon> echantillons = new ArrayList<>(ManagerLocator.getPrelevementManager().getEchantillonsManager(prelevement));
+      final List<ProdDerive> prodDerives = ManagerLocator.getPrelevementManager().getProdDerivesManager(prelevement);
+
+      // Récupère le nouveau code du Prelevement
+      String newPrefixe = prelevement.getCode();
+
+      // Vérifie si des enfants (échantillons ou dérivés) ont été trouvés pour le Prelevement
+      boolean isChildrenFound = !echantillons.isEmpty() || !prodDerives.isEmpty();
+
+      if (isChildrenFound) {
+         // Si des enfants sont trouvés, met à jour le code du Prelevement sans mise à jour de l'interface utilisateur
+         super.onUpdateCode(false);
+
+         // Ouvre une fenêtre modale "AfterUpdateCodeModale" pour la mise à jour des échantillons et dérivés associés
+         getObjectTabController().openAfterUpdateCodeModale(echantillons, prodDerives, oldPrefixe, newPrefixe);
+
+      } else {
+         // Si aucun enfant n'est trouvé, met à jour le code du Prelevement avec mise à jour de l'interface utilisateur
+         super.onUpdateCode(true);
       }
    }
+
+
 
    @Override
    public void onClick$revert(){

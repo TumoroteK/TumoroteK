@@ -62,6 +62,7 @@ import org.zkoss.zul.Group;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listitem;
+import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.ext.Selectable;
@@ -326,6 +327,8 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
 
    private Date dateTransformation;
 
+   private String oldPrefixe;
+
    @Override
    public void doAfterCompose(final Component comp) throws Exception{
       super.doAfterCompose(comp);
@@ -348,6 +351,7 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
    @Override
    public void setObject(final TKdataObject pd){
       this.prodDerive = (ProdDerive) pd;
+      this.oldPrefixe = prodDerive.getCode();
 
       if(this.prodDerive.getTransformation() != null){
          setTransformation(this.prodDerive.getTransformation());
@@ -459,12 +463,46 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
       super.onClick$create();
    }
 
+   /**
+    *
+    * Méthode appelée lorsque le bouton "validate" est cliqué.
+    * Effectue les actions suivantes :
+    * - Applique la méthode onBlur$dateStockCalBox() pour valider la composante de date de stockage.
+    * - Applique la méthode onBlur$dateTransfoCalBox() pour valider la composante de date de transformation.
+    * - Rassemble les ProdDerive associés au ProdDerive en cours.
+    * - Récupère le nouveau code du ProdDerive.
+    * - Vérifie si des enfants (dérivés) ont été trouvés pour le ProdDerive.
+    * - Si des enfants sont trouvés, met à jour le code du ProdDerive sans mise à jour de l'interface utilisateur,
+    *   puis prépare et ouvre une fenêtre modale "AfterUpdateCodeModale" pour la mise à jour des dérivés associés.
+    * - Si aucun enfant n'est trouvé, met à jour le code du ProdDerive avec mise à jour de l'interface utilisateur.
+    */
    @Override
-   public void onClick$validate(){
+   public void onClick$validate() {
       onBlur$dateStockCalBox();
+
       onBlur$dateTransfoCalBox();
-      super.onClick$validate();
+
+      // Rassemble les objets Echantillon et ProdDerive associés au ProdDerive en cours
+      final List<ProdDerive> prodDerives = ManagerLocator.getProdDeriveManager().getProdDerivesManager(prodDerive);
+
+      boolean isChildrenFound = !prodDerives.isEmpty();
+
+      if (isChildrenFound) {
+         // Si des enfants (dérivés) sont trouvés, met à jour le code du ProdDerive sans mise à jour de l'interface utilisateur
+         super.onUpdateCode(false);
+
+         // Obtient le nouveau préfixe après la mise à jour du code du ProdDerive
+         String newPrefixe = prodDerive.getCode();
+
+         // Prépare et ouvre une fenêtre modale "AfterUpdateCodeModale" pour la mise à jour des dérivés associés
+         getObjectTabController().openAfterUpdateCodeModale(null, prodDerives, oldPrefixe, newPrefixe);
+
+      } else {
+         // Si aucun enfant n'est trouvé, met à jour le code du ProdDerive avec mise à jour de l'interface utilisateur
+         super.onUpdateCode(true);
+      }
    }
+
 
    @Override
    public void createNewObject(){}

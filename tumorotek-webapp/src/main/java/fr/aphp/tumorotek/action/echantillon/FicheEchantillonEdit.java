@@ -40,22 +40,20 @@ import java.io.InputStream;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import fr.aphp.tumorotek.model.coeur.prodderive.ProdDerive;
 import org.springframework.validation.Errors;
 import org.zkoss.util.media.Media;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
-import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.HtmlBasedComponent;
 import org.zkoss.zk.ui.Path;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
-import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Combobox;
@@ -72,7 +70,6 @@ import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Tabpanel;
 import org.zkoss.zul.Textbox;
-import org.zkoss.zul.Window;
 import org.zkoss.zul.ext.Selectable;
 
 import fr.aphp.tumorotek.action.CustomSimpleListModel;
@@ -235,6 +232,8 @@ public class FicheEchantillonEdit extends AbstractFicheEditController
 
    protected String codePrefixe = "";
 
+   protected String oldPrefixe = "";
+
    // private String codeSuffixe = "";
    private String emplacementAdrl = "";
 
@@ -275,7 +274,7 @@ public class FicheEchantillonEdit extends AbstractFicheEditController
    @Override
    public void setObject(final TKdataObject echan){
       this.echantillon = (Echantillon) echan;
-
+      this.oldPrefixe = echantillon.getCode();
       prelevement = null;
       setCrAnapath(new Fichier());
       emplacementAdrl = "";
@@ -472,64 +471,6 @@ public class FicheEchantillonEdit extends AbstractFicheEditController
 
    }
 
-   @Override
-   public boolean onLaterUpdate(){
-
-      checkRequiredListboxes();
-
-      try{
-         updateObjectWithAnnots();
-         // updateObject();
-
-         // update de la liste
-         if(getObjectTabController().getListe() != null){
-            getObjectTabController().getListe().updateObjectGridList(getObject());
-         }
-
-         if(getParentObject() != null){
-            if(getPrelevementController() != null){
-               getPrelevementController().getListe().updateObjectGridListFromOtherPage(getParentObject(), true);
-
-               // update patient
-               if(getParentObject().getMaladie() != null){
-                  if(!getPrelevementController().getReferencingObjectControllers().isEmpty()){
-                     getPrelevementController().getReferencingObjectControllers().get(0).getListe()
-                        .updateObjectGridListFromOtherPage(getParentObject().getMaladie().getPatient(), true);
-                  }
-               }
-            }
-         }
-
-         // update de la liste des enfants et l'enfant en fiche
-         getObjectTabController()
-            .updateReferencedObjects((List<TKdataObject>) getObjectTabController().getChildrenObjects(getObject()));
-
-         // commande le passage en mode statique
-         getObjectTabController().onEditDone(getObject());
-
-         // ferme wait message
-         Clients.clearBusy();
-
-         return true;
-      }catch(final DoublonFoundException re){
-         Clients.clearBusy();
-
-         final HashMap<String, Object> map = new HashMap<>();
-         map.put("title", Labels.getLabel("error.unhandled"));
-         map.put("message", handleExceptionMessage(re));
-         map.put("exception", re);
-
-         final Window window = (Window) Executions.createComponents("/zuls/component/DynamicMultiLineMessageBox.zul", null, map);
-         window.doModal();
-
-         return false;
-      }catch(final RuntimeException re){
-         // ferme wait message
-         Clients.clearBusy();
-         Messagebox.show(handleExceptionMessage(re), "Error", Messagebox.OK, Messagebox.ERROR);
-         return false;
-      }
-   }
 
    @Override
    protected void setEmptyToNulls(){
@@ -1781,14 +1722,53 @@ public class FicheEchantillonEdit extends AbstractFicheEditController
    }
 
    /**
-    * Bloque la navigation et passe le contrôle à la méthode onLaterUpdate.
+    * @param isRefreshNeeded
+    * @return
+    */
+   @Override
+   public boolean onUpdateCode(boolean isRefreshNeeded){
+      checkRequiredListboxes();
+
+      return super.onUpdateCode(isRefreshNeeded);
+   }
+
+   /**
+    *
+    * Méthode appelée lorsque le bouton "validate" est cliqué.
+    * Effectue les actions suivantes :
+    * - Applique la méthode onBlur$dateStockCalBox().
+    * - Récupère la liste des dérivés associés à l'échantillon en cours.
+    * - Vérifie si des enfants (dérivés) ont été trouvés pour l'échantillon.
+    * - Si des enfants sont trouvés, met à jour le code de l'échantillon sans mise à jour de l'interface utilisateur,
+    *   puis ouvre une fenêtre modale "AfterUpdateCodeModale" pour la mise à jour des dérivés associés.
+    * - Si aucun enfant n'est trouvé, met à jour le code de l'échantillon avec mise à jour de l'interface utilisateur.
     */
    @Override
    public void onClick$validate(){
       onBlur$dateStockCalBox();
-      Clients.showBusy(Labels.getLabel(getWaitLabel()));
-      Events.echoEvent("onLaterUpdate", self, null);
+
+      // Récupère la liste des dérivés associés à l'échantillon en cours
+      final List<ProdDerive> prodDerives = ManagerLocator.getEchantillonManager().getProdDerivesManager(echantillon);
+
+      // Vérifie si des enfants (dérivés) ont été trouvés pour l'échantillon
+      boolean isChildrenFound =  !prodDerives.isEmpty();
+
+      if (isChildrenFound){
+         // Si des enfants sont trouvés, met à jour le code de l'échantillon sans mise à jour de l'interface utilisateur
+         super.onUpdateCode(false);
+         // Obtient le nouveau préfixe après la mise à jour du code de l'échantillon
+         String newPrefixe = echantillon.getCode();
+
+         // Ouvre une fenêtre modale "AfterUpdateCodeModale" pour la mise à jour des dérivés associés
+         getObjectTabController().openAfterUpdateCodeModale(null, prodDerives, oldPrefixe, newPrefixe);
+      }
+      else {
+         // Si aucun enfant n'est trouvé, met à jour le code de l'échantillon avec mise à jour de l'interface utilisateur
+         super.onUpdateCode(true);
+      }
    }
+
+
 
    public PrelevementController getPrelevementController(){
       if(!getObjectTabController().getReferencingObjectControllers().isEmpty()){

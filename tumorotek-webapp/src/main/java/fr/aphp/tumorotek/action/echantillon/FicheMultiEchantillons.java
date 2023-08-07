@@ -56,6 +56,7 @@ import java.util.stream.IntStream;
 
 import javax.servlet.http.HttpServletRequest;
 
+import fr.aphp.tumorotek.model.coeur.prodderive.ProdDerive;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.jdom.Document;
@@ -725,7 +726,16 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
          // ferme wait message
          Clients.clearBusy();
 
-         getPrelevementController().prepareAfterUpdateCodeModale(getPrelevement());
+         Prelevement prelevement = getPrelevement();
+         // Rassemble les objets Echantillon et ProdDerive associés au Prelevement.
+         final List<Echantillon> childEchantillons = new ArrayList<>(ManagerLocator.getPrelevementManager().getEchantillonsManager(prelevement));
+         final List<ProdDerive> childProdDerives = ManagerLocator.getPrelevementManager().getProdDerivesManager(prelevement);
+         // Récupère le nouveau code du Prelevement.
+         String newPrefixe = prelevement.getCode();
+         if (!childEchantillons.isEmpty() || !childProdDerives.isEmpty()){
+            openAfterUpdateCodeModale(childEchantillons, childProdDerives, oldPrefixe, newPrefixe);
+
+         }
          return true;
 
       }catch(final DoublonFoundException re){

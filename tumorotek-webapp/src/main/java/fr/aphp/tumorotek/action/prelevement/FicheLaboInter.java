@@ -42,6 +42,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import fr.aphp.tumorotek.model.coeur.echantillon.Echantillon;
+import fr.aphp.tumorotek.model.coeur.prodderive.ProdDerive;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.validation.Errors;
@@ -214,6 +216,8 @@ public class FicheLaboInter extends AbstractFicheEditController
    private LaboInter cascadeNonSterileFrom = null;
 
    private Checkbox currentSterileLaboBox;
+
+   private String oldPrefixe;
 
    @Override
    public void doAfterCompose(final Component comp) throws Exception{
@@ -421,7 +425,7 @@ public class FicheLaboInter extends AbstractFicheEditController
    @Override
    public void setObject(final TKdataObject obj){
       this.prelevement = (Prelevement) obj;
-
+      this.oldPrefixe = prelevement.getCode();
       this.maladie = this.prelevement.getMaladie();
 
       initNonConformites();
@@ -631,7 +635,15 @@ public class FicheLaboInter extends AbstractFicheEditController
          // // ferme wait message
          // Clients.clearBusy();
          if(super.onLaterUpdate()){
-            getObjectTabController().prepareAfterUpdateCodeModale(prelevement);
+            // Rassemble les objets Echantillon et ProdDerive associés au Prelevement.
+            final List<Echantillon> childEchantillons = new ArrayList<>(ManagerLocator.getPrelevementManager().getEchantillonsManager(prelevement));
+            final List<ProdDerive> childProdDerives = ManagerLocator.getPrelevementManager().getProdDerivesManager(prelevement);
+            // Récupère le nouveau code du Prelevement.
+            String newPrefixe = prelevement.getCode();
+            if (!childEchantillons.isEmpty() || !childProdDerives.isEmpty()){
+               openAfterUpdateCodeModale(childEchantillons, childProdDerives,oldPrefixe , newPrefixe);
+
+            }
          }
          return true;
 
