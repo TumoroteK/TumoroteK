@@ -682,26 +682,50 @@ public abstract class AbstractListeController2 extends AbstractController
 	}
 
 	/**
-	 * Recherche la liste des échantillons à afficher.
+	 * Extrait les identifiants d'une liste d'objets qui étendent la classe TKdataObject.
 	 *
-	 * @param event
-	 *            Event : clique du bouton find.
-	 * @throws Exception
+	 * @param objects Une liste d'objets de type TKdataObject ou de ses sous-classes à partir desquels les identifiants doivent être extraits.
+	 * @return Une liste d'identifiants Integer extraits de la liste d'objets fournie.
+	 */
+	public List<Integer> extractIdsFromObjects(List<? extends TKdataObject> objects) {
+		List<Integer> ids = new ArrayList<>();
+
+		for (TKdataObject object : objects) {
+			// Assuming TKdataObject has a method called getId() to retrieve the ID
+			ids.add(object.listableObjectId());
+		}
+		return ids;
+	}
+
+	/**
+	 * Cette méthode est appelée lorsque le bouton de recherche est cliqué. Elle effectue une opération de recherche
+	 * en fonction de certaines conditions et met à jour l'affichage des résultats en conséquence.
 	 */
 	public void onClick$find(){
 		clearSelection();
+		// Vérifier si la case de création de date est cochée et si l'index de la boîte de sélection de date est égal à 3
+
 		if(dateCreation.isChecked() && dateCreationBox.getSelectedIndex() == 3){
-			setListObjects(extractLastObjectsCreated());
+			// récupère et affiche les objets créés récemment
+			List<Integer> listOfLast30 = extractIdsFromObjects(extractLastObjectsCreated());
+
+			setResultatsIds(listOfLast30);
+			onShowResults();
 		}else{
+			// Effectue une opération de recherche et récupère les identifiants d'objets en fonction des critères de recherche
 			setResultatsIds(doFindObjects());
+			// Vérifie le nombre d'identifiants de résultats
 			if(getResultatsIds().size() > 500){
+				// S'il y a plus de 500 résultats, ouvre une fenêtre
 				openResultatsWindow(page, getResultatsIds(), self, getEntiteNom(), getObjectTabController());
 			}else if(getResultatsIds().size() > 0){
+				// S'il y a des résultats (entre 1 et 500), met à jour les résultats affichés
 				// setListObjects(extractObjectsFromIds(resultatsIds));
 				onShowResults();
 			}else{
 				// setListObjects(new ArrayList<Object>());
 				onShowResults();
+				// S'il n'y a pas de résultats, affiche une boîte de dialogue avec les informations appropriées
 				Messagebox.show(Labels.getLabel("recherche.avancee.no.results"),
 						Labels.getLabel("recherche.avancee.no.results.title"), Messagebox.OK, Messagebox.INFORMATION);
 			}
