@@ -1375,10 +1375,16 @@ public class FicheImportTemplate extends AbstractFicheCombineController
 
    public void onLaterAddNewSubderive(){
       switchToCreateModeSubderive();
-      // ferme wait message
+      // Rend le bouton copyEmptyFields cliquable et visible
       showCopyFieldsButton();
+      // ferme wait message
       Clients.clearBusy();
    }
+
+   /**
+    *
+    * Active le bouton de copie des champs vides en le rendant cliquable et visible.
+    */
    public void showCopyFieldsButton(){
       copyEmptyFields.setDisabled(false);
       copyEmptyFields.setVisible(true);
