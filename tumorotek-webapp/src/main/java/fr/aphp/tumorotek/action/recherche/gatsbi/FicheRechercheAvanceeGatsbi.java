@@ -96,10 +96,6 @@ public class FicheRechercheAvanceeGatsbi extends FicheRechercheAvancee
          groupLaboInters.setVisible(SessionUtils.getCurrentGatsbiContexteForEntiteId(2) != null
             && SessionUtils.getCurrentGatsbiContexteForEntiteId(2).getSiteIntermediaire());
       }
-      
-      if (groupMaladies != null && !SessionUtils.getCurrentBanque(sessionScope).getDefMaladies()) {
-         groupMaladies.setVisible(false);
-      }
    }
 
    /**

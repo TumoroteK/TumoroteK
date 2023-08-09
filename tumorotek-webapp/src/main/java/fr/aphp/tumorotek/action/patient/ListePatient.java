@@ -128,9 +128,7 @@ public class ListePatient extends AbstractListeController2
 
       // retire le colonne maladies si aucune banque ne définitsetBanques
       // de maladies
-      // @since 2.3.0-gatsbi maladiesCol peut être null
-      if(!SessionUtils.isAnyDefMaladieInBanques(SessionUtils.getSelectedBanques(sessionScope))
-         && maladiesCol != null){
+      if(!SessionUtils.isAnyDefMaladieInBanques(SessionUtils.getSelectedBanques(sessionScope))){
          maladiesCol.setVisible(false);
       }
 

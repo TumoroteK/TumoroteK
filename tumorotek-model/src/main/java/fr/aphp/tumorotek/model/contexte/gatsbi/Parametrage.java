@@ -41,7 +41,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class Parametrage implements Serializable, Comparable<Parametrage>
+public class Parametrage implements Serializable
 {
 
    private static final long serialVersionUID = 1L;
@@ -115,10 +115,5 @@ public class Parametrage implements Serializable, Comparable<Parametrage>
          }
       }
       return null;
-   }
-
-   @Override
-   public int compareTo(final Parametrage arg0){
-      return this.getNom().compareToIgnoreCase(arg0.getNom());
    }
 }

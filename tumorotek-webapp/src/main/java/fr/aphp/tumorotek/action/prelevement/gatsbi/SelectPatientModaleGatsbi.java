@@ -35,12 +35,10 @@
  **/
 package fr.aphp.tumorotek.action.prelevement.gatsbi;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
+import java.util.LinkedHashSet;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import org.zkoss.bind.annotation.AfterCompose;
 import org.zkoss.bind.annotation.ContextParam;
@@ -106,21 +104,15 @@ public class SelectPatientModaleGatsbi extends SelectPatientModale
     * Ajoute une recherche identifiant à la recherche patient existante.
     */
    @Override
-   protected List<Patient> searchPatientInTK(){
-      
-      // ne recherche les patients par nip/nom/(nda) que si ces clefs 
-      // naturelles patient sont bien affichées dans le contexte Gatsbi
-      final List<Patient> res = GatsbiControllerPatient.isAnyPatientNaturalKeyVisible(contexte) ? 
-         super.searchPatientInTK() : new ArrayList<Patient>();
+   protected LinkedHashSet<Patient> searchPatientInTK(){
+      final LinkedHashSet<Patient> res = super.searchPatientInTK();
       
       if(critereValue != null && !critereValue.equals("")){
+         // clean empty identifiant TODO ajouter tous les patients ?
+         // res.removeIf(p -> p.getIdentifiant(banque).getIdentifiant() == null);
          
-         List<Integer> alreadyFetchedIds = res.stream().map(Patient::getPatientId).collect(Collectors.toList());
-         
-         ManagerLocator.getPatientManager()
-            .findByIdentifiantLikeManager(critereValue, false, Arrays.asList(banque))
-            .stream().filter(p -> !alreadyFetchedIds.contains(p.getPatientId()))
-            .forEach(res::add);            
+         res.addAll(ManagerLocator.getPatientManager()
+            .findByIdentifiantLikeManager(critereValue, false, Arrays.asList(banque))); 
       }
       
       return res;

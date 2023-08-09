@@ -94,7 +94,7 @@ public class ContexteDTO implements Serializable
    @JsonIgnore
    public Contexte toContexte(){
       return new Contexte(contexteId, nom, ContexteType.getByType(type), archive,
-         parametrageDTOs.stream().map(p -> p.toParametrage()).sorted().collect(Collectors.toList()),
+         parametrageDTOs.stream().map(p -> p.toParametrage()).collect(Collectors.toList()),
          champEntiteDTOs.stream().map(c -> c.toChampEntite()).collect(Collectors.toList()));
    }
 }

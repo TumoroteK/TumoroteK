@@ -60,7 +60,6 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.ForwardEvent;
 import org.zkoss.zk.ui.util.Clients;
-import org.zkoss.zkplus.databind.BindingListModelList;
 import org.zkoss.zkplus.databind.BindingListModelSet;
 import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Combobox;
@@ -239,7 +238,9 @@ public class FicheBanque extends AbstractFicheCombineController
    private Listbox listboxUtilisateurs;
 
    private Listbox listboxProfils;
-   private BindingListModelList<Utilisateur> utilisateursData;
+
+   private BindingListModelSet<Utilisateur> utilisateursData;
+
    private BindingListModelSet<Profil> profilsData;
 
    // conteneurs
@@ -392,7 +393,7 @@ public class FicheBanque extends AbstractFicheCombineController
       listboxUtilisateurs.setItemRenderer(utilisateurRenderer);
       listboxProfils.setItemRenderer(profilRenderer);
 
-      utilisateursData = new BindingListModelList<>(new ArrayList<Utilisateur>(), true);
+      utilisateursData = new BindingListModelSet<>(new HashSet<Utilisateur>(), true);
       profilsData = new BindingListModelSet<>(new HashSet<Profil>(), true);
 
       utilisateursData.setMultiple(true);
@@ -411,7 +412,7 @@ public class FicheBanque extends AbstractFicheCombineController
       super.setObject(banque);
 
       //initialisation de la liste des utilisateurs
-      final List<Utilisateur> utilisateursPlateforme = new ArrayList<>(ManagerLocator.getManager(UtilisateurManager.class)
+      final Set<Utilisateur> utilisateursPlateforme = new HashSet<>(ManagerLocator.getManager(UtilisateurManager.class)
          .findByArchiveManager(false, Arrays.asList(SessionUtils.getCurrentPlateforme())));
       utilisateursData.clear();
       utilisateursData.addAll(utilisateursPlateforme);
@@ -2049,6 +2050,16 @@ public class FicheBanque extends AbstractFicheCombineController
       catalogues.clear();
       if(selectedContexte != null && selectedContexte.getContexteId() != null){
          catalogues.addAll(ManagerLocator.getContexteManager().getCataloguesManager(selectedContexte));
+      
+         // @since 2.3.0-gatsbi -> force maladie/visite contexte GATSBI en creation
+         if (defMaladieBox.isVisible()) {
+            if (getGatsbiSelected()) {
+               defMaladieBox.setChecked(true);
+               defMaladieBox.setDisabled(true);
+            } else {
+               defMaladieBox.setDisabled(false);
+            }
+         }
       }
    }
 
@@ -2346,7 +2357,7 @@ public class FicheBanque extends AbstractFicheCombineController
       this.nomsServices = n;
    }
 
-   public BindingListModelList<Utilisateur> getUtilisateursData(){
+   public BindingListModelSet<Utilisateur> getUtilisateursData(){
       return utilisateursData;
    }
 

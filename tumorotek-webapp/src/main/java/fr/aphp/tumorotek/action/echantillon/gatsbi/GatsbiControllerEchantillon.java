@@ -415,7 +415,7 @@ public class GatsbiControllerEchantillon
    }
 
    /**
-    * Polymorphismes s'appliquent sur  deletable et force affichage emplacement et statut de stockage
+    * Polymorphismes s'applqie sur  deletable et force affichage emplacement et statut de stockage
     * car cette méthode est appelée pour rendre des inner lists de l'onglet Echantillon (échantillons
     * en création dans FicheMultiEchantillon) et de l'onglet Prélèvement.
     * @param contexte

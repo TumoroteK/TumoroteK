@@ -42,7 +42,6 @@ import java.util.List;
 
 import org.zkoss.util.resource.Labels;
 
-import fr.aphp.tumorotek.action.ManagerLocator;
 import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
 import fr.aphp.tumorotek.model.TKdataObject;
 import fr.aphp.tumorotek.model.cession.Retour;
@@ -262,32 +261,21 @@ public class RetourDecorator implements TKdataObject
       }
    }
 
-   //permet d'afficher l'évènement de stockage incomplet (sans date de retour) en rouge
-   // /!\ les évènements terminaux (créés lors d'une cession totale pour conserver l'emplacement de l'échantillon et qui ont aussi une date de retour à null)
-   //ne doivent pas être concernés. Normalement si l'échantillon est au statut "En cours de traitement" (c'est-à-dire qu'il existe un évènement incomplet), 
-   //il n'y en a pas d'évènement terminal mais par sécurité, ajout d'un test sur sterile (null uniquement pour les évènements terminaux)
    public String getLinkStyle(){
-      if(retour.getDateRetour() == null && retour.getSterile() != null && statut.getStatut().equals("ENCOURS")){
+      if(retour.getDateRetour() == null && statut.getStatut().equals("ENCOURS")){
          return "color : red";
       }else{
          return null;
       }
    }
 
-   //Si un évènement de stockage incomplet existe (l'échantillon est au statut "en cours de traitement" et la date de retour de l'évènement concerné est null)
-   //il faut bloquer la modification des autres évènements de stockage de l'échantillon 
-   //car dans ce cas les controles de cohérence sur les dates de tous les évènements de l'échantillon ne pourraient pas être faits
-   // => dans ce cas, seuls les évènements incomplets sont modifiables
-   //Par ailleurs, on bloque également la modification pour les évènements terminaux pour lesquels seule la température est renseignée. En effet, afficher la modale complète
-   //d'un évènement de stockage risque lors de la modification de modifier la stérilité (passée de null à false => cascade sur l'échantillon) et le statut 
-   //(à cause de la règle de gestion sur la date de retour null) - cf TK-397
    public String getEditClass(){
-      if(ManagerLocator.getRetourManager().checkModificationPossible(statut, retour)) {
-         return "gridEdit";
+      if(statut != null && statut.getStatut().equals("ENCOURS")){
+         if(retour.getDateRetour() != null){
+            return "gridEditDsb";
+         }
       }
-      else {
-         return "gridEditDsb";
-      }
+      return "gridEdit";
    }
 
    @Override

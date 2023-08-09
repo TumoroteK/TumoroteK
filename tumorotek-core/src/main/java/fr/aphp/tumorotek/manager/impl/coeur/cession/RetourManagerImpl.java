@@ -47,8 +47,8 @@ import java.util.Set;
 
 import javax.sql.DataSource;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.CannotGetJdbcConnectionException;
 import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.validation.Errors;
@@ -80,7 +80,6 @@ import fr.aphp.tumorotek.model.TKStockableObject;
 import fr.aphp.tumorotek.model.TKdataObject;
 import fr.aphp.tumorotek.model.cession.Cession;
 import fr.aphp.tumorotek.model.cession.Retour;
-import fr.aphp.tumorotek.model.coeur.ObjetStatut;
 import fr.aphp.tumorotek.model.coeur.echantillon.Echantillon;
 import fr.aphp.tumorotek.model.coeur.prodderive.ProdDerive;
 import fr.aphp.tumorotek.model.coeur.prodderive.Transformation;
@@ -102,7 +101,7 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
 public class RetourManagerImpl implements RetourManager
 {
 
-   private final Log log = LogFactory.getLog(RetourManager.class);
+   private final Logger log = LoggerFactory.getLogger(RetourManager.class);
 
    /* Beans injectes par Spring*/
    private RetourDao retourDao;
@@ -213,7 +212,7 @@ public class RetourManagerImpl implements RetourManager
          retour.setEntite(entiteDao.findByNom(objet.entiteNom()).get(0));
          retour.setTkObject(objet);
       }else if(retour.getObjetId() == null){
-         log.warn("Objet obligatoire Objet manquant" + " lors de la " + operation + " d'un retour");
+         log.warn("Objet obligatoire Objet manquant lors de la {} d'un retour", operation);
          throw new RequiredObjectIsNullException("Retour", operation, "Objet");
       }else{
          objet = getObjetFromRetourManager(retour);
@@ -231,8 +230,6 @@ public class RetourManagerImpl implements RetourManager
 
          // conserve le statut de l'objet en copie dans le retour
          // change le statut du StockableObject EVENEMENT EN COURS
-         // /!\ ce changement de statut ne doit être fait que lors de la création de l'évènement de stockage
-         //pour une cession partielle
          if(retour.getDateRetour() == null){
             if(!objet.getObjetStatut().getStatut().equals("ENCOURS")){
                retour.setObjetStatut(objet.getObjetStatut());
@@ -252,12 +249,12 @@ public class RetourManagerImpl implements RetourManager
          if((operation.equals("creation") || operation.equals("modification"))){
             if(operation.equals("creation")){
                retourDao.createObject(retour);
-               log.info("Enregistrement du retour " + retour.toString());
+               log.info("Enregistrement du retour {}",  retour);
                CreateOrUpdateUtilities.createAssociateOperation(retour, operationManager,
                   operationTypeDao.findByNom("Creation").get(0), utilisateur);
             }else{
                retourDao.updateObject(retour);
-               log.info("Modification objet Retour " + retour.toString());
+               log.info("Modification objet Retour {}",  retour);
                CreateOrUpdateUtilities.createAssociateOperation(retour, operationManager,
                   operationTypeDao.findByNom("Modification").get(0), utilisateur);
             }
@@ -273,7 +270,7 @@ public class RetourManagerImpl implements RetourManager
             throw new IllegalArgumentException("Operation must match " + "'creation/modification' values");
          }
       }else{
-         log.warn("Doublon lors " + operation + " objet Retour " + retour.toString());
+         log.warn("Doublon lors {} objet Retour {}", operation, retour);
          throw new DoublonFoundException("Retour", operation);
       }
    }
@@ -342,7 +339,7 @@ public class RetourManagerImpl implements RetourManager
             }
          }
          retourDao.removeObject(retour.getRetourId());
-         log.info("Suppression objet Retour " + retour.toString());
+         log.info("Suppression objet Retour {}",  retour);
          //Supprime operations associes
          CreateOrUpdateUtilities.removeAssociateOperations(retour, operationManager);
       }else{
@@ -752,23 +749,5 @@ public class RetourManagerImpl implements RetourManager
          return retourDao.findByObjectAndImpact(obj.listableObjectId(), entiteDao.findByNom(obj.entiteNom()).get(0), impact);
       }
       return new ArrayList<>();
-   }
-   
-   @Override 
-   public boolean checkModificationPossible(ObjetStatut statut, Retour retour) {
-      boolean modifPossible=false;
-      if( statut != null) {
-         if(statut.getStatut().equals("ENCOURS")) {
-            //autoriser que pour l'évènement incomplet
-            if(retour != null && retour.getDateRetour() == null) {
-               modifPossible=true;
-            }
-         }
-         else if(retour.getSterile() != null) {
-            modifPossible=true;
-         }
-      }
-      
-      return modifPossible;
    }
 }

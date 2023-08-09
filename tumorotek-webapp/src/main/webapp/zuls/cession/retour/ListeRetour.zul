@@ -34,9 +34,40 @@
  * accepté les termes. 
 -->
 <zk>
-	<div width="250px">
-		<datebox id="dateBox" format="dd/MM/yyyy" cols="8"
-			lenient="true" />
-		<timebox id="timeBox" format="HH:mm" />
-	</div>
+<window id="lwinRetour" border="none" apply="fr.aphp.tumorotek.action.cession.retour.ListeRetour">
+<panel border="none" collapsible="true" id="listPanel" sclass="fichePanelv2">
+	<panelchildren>
+		<grid id="objectsListGrid" mold="paging" pageSize="10"
+			fixedLayout="true" 
+			height="100%"
+			sclass="gridListStyle"
+			model="@{lwinRetour$composer.listObjects}">
+			<columns sizable="true" >
+				<column label="${c:l('Champ.Retour.DateSortie')}" width="130px"/>
+				<column label="${c:l('Champ.Retour.DateRetour')}" width="130px"/>
+				<column label="${c:l('listeRetour.objet')}" width="180px"/>
+				<column label="${c:l('Champ.Retour.TempMoyenne')}" width="100px"/>
+				<column id="editCol" width="20px" />
+				<column id="deleteCol" width="20px" />
+			</columns>
+			<rows>
+				<row self="@{each='currRetour'}" value="@{currRetour}">
+					<label id="viewObj" value="@{currRetour.dateSortie}" class="formLink" />
+					<label value="@{currRetour.dateRetour}"/>
+					<label value="@{currRetour.sortieObjet}"/>
+					<label value="@{currRetour.tempMoyenne}"/>
+					<div id="editObj" width="12px" height="12px" sclass="gridEdit" />
+					<div id="deleteObj" width="12px" height="12px" sclass="gridDelete" />
+				</row>
+			</rows>
+		</grid>
+	</panelchildren>
+	<toolbar height="30px" id="lToolbar" align="start">
+		<hbox spacing="5" align="center">
+			<button id="addNew" label="${c:l('general.new')}" height="24px"
+					image="/images/icones/new.png" sclass="buttonv2"/>
+		</hbox>
+	</toolbar>
+</panel>
+</window>
 </zk>

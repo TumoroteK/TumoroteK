@@ -43,7 +43,6 @@ import org.zkoss.zul.Listitem;
 import org.zkoss.zul.ListitemRenderer;
 
 import fr.aphp.tumorotek.action.ManagerLocator;
-import fr.aphp.tumorotek.action.prelevement.PrelevementConsultFromOtherBanksRenderer;
 import fr.aphp.tumorotek.action.utils.PrelevementUtils;
 import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
 import fr.aphp.tumorotek.model.coeur.prelevement.Prelevement;
@@ -61,12 +60,16 @@ import fr.aphp.tumorotek.model.contexte.Banque;
  * @author Mathieu BARTHELEMY
  * @version 2.2.1
  */
-public class PrelevementItemRenderer implements ListitemRenderer<Prelevement>, PrelevementConsultFromOtherBanksRenderer
+public class PrelevementItemRenderer implements ListitemRenderer<Prelevement>
 {
 
-   private boolean accessible = false;
-   
    private List<Banque> otherConsultBanks = null;
+
+   private boolean accessible = false;
+
+   public void setFromOtherConsultBanks(final List<Banque> oBks){
+      this.otherConsultBanks = oBks;
+   }
 
    @Override
    public void render(final Listitem li, final Prelevement data, final int index){

@@ -256,9 +256,6 @@ public class FicheConteneur extends AbstractFicheCombineStockageController
 			initIncidents(ManagerLocator.getIncidentManager().findAllObjectsByConteneurManager(conteneur));
 
 			final Iterator<Banque> it = ManagerLocator.getConteneurManager().getBanquesManager(conteneur).iterator();
-			//TK-395 : réinitialisation de la liste avant de l'alimenter. En effet, l'utilisateur peut cliquer sur différent conteneur dans l'écran.
-			//dans certains traitements, cette liste est utilisée pour mettre à jour les liens banque conteneur donc il faut qu'elle soit correcte.
-			banques = new ArrayList<>();
 			while(it.hasNext()){
 				banques.add(it.next());
 			}

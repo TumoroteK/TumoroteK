@@ -53,29 +53,29 @@
 						<label value="${c:l('patient.select')}" sclass="formLabel"/>
 					</row>
 					<row id="resultsRow">
-						<listbox id="patientsBox"
-							model="@load(vm.patients)"
-							selectedItem="@bind(vm.selectedPatient)"
-							onSelect="@command('onSelect$patientsBox')"
-							itemRenderer="@load(vm.patientRenderer)"
-							sclass="listBox" hflex="1" visible="true"
-							mold="paging" pageSize="10"
-							onDoubleClick="@command('onDoubleClicked')" >
-							<listhead />
-						</listbox>
-					</row>
-					<row id="legendeInTk">
-						<hbox><div>
-							<label value="___" sclass="patientTk" />
-							<label value="${c:l('patient.from.tk')}" sclass="formValue"/>
-						</div></hbox>
-					</row>
-					<row id="legendeInSip">
-						<hbox><div>
-							<label value="___" sclass="patientSip" />
-							<label value="${c:l('patient.from.sip')}" sclass="formValue"/>
-						</div></hbox>
-					</row>
+					<listbox id="patientsBox"
+						model="@load(vm.patients)"
+						selectedItem="@bind(vm.selectedPatient)"
+						onSelect="@command('onSelect$patientsBox')"
+						itemRenderer="@load(vm.patientRenderer)"
+						sclass="listBox" hflex="1" visible="true"
+						mold="paging" pageSize="10"
+						onDoubleClick="@command('onDoubleClicked')" >
+						<listhead />
+					</listbox>
+				</row>
+				<row id="legendeInTk">
+					<hbox><div>
+						<label value="___" sclass="patientTk" />
+						<label value="${c:l('patient.from.tk')}" sclass="formValue"/>
+					</div></hbox>
+				</row>
+				<row id="legendeInSip">
+					<hbox><div>
+						<label value="___" sclass="patientSip" />
+						<label value="${c:l('patient.from.sip')}" sclass="formValue"/>
+					</div></hbox>
+				</row>
 				</rows>
 			</grid>
 		</panelchildren>

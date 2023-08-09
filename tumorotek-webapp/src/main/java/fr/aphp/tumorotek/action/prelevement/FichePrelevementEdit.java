@@ -398,8 +398,7 @@ public class FichePrelevementEdit extends AbstractFicheEditController
          selectedConsentType = this.prelevement.getConsentType();
       }else{
          final List<ConsentType> tmps = ManagerLocator.getConsentTypeManager().findByTypeLikeManager("EN ATTENTE", false);
-         // @since 2.3.0-gatsbi init selected in list EN ATTENTE si hors gatsbi
-         if(tmps.size() > 0 && !GatsbiController.isInGatsbiContexte(SessionUtils.getCurrentBanque(sessionScope))){
+         if(tmps.size() > 0){
             selectedConsentType = tmps.get(0);
          }else if(!consentTypes.isEmpty()){
             selectedConsentType = consentTypes.get(0);

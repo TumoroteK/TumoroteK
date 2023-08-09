@@ -60,7 +60,6 @@ import org.zkoss.zul.Panel;
 
 import fr.aphp.tumorotek.action.ManagerLocator;
 import fr.aphp.tumorotek.action.controller.AbstractFicheStaticController;
-import fr.aphp.tumorotek.action.prelevement.PrelevementConsultFromOtherBanksRenderer;
 import fr.aphp.tumorotek.action.prelevement.PrelevementController;
 import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
 import fr.aphp.tumorotek.model.TKdataObject;
@@ -126,8 +125,7 @@ public class FichePatientStatic extends AbstractFicheStaticController
    private final List<Prelevement> prelevementsFromOtherMaladies = new ArrayList<>();
 
    // maladie systems -> contexte TK anapath par défaut
-   private final PrelevementConsultFromOtherBanksRenderer prelevementFromOtherMaladiesRenderer = 
-                     new PrelevementItemRenderer();
+   private final PrelevementItemRenderer prelevementFromOtherMaladiesRenderer = new PrelevementItemRenderer();
 
    private final List<FicheMaladie> maladiePanels = new ArrayList<>();
 
@@ -163,15 +161,6 @@ public class FichePatientStatic extends AbstractFicheStaticController
 
       addPrelevement.setVisible(!addMaladie.isVisible());
 
-      setClickPrelevementCodeForward();
-   }
-   
-   /**
-    * Event listener du clique code prelevement
-    * sera surchargé par gatsbi
-    * @since 2.3.0-gatsbi
-    */
-   protected void setClickPrelevementCodeForward() {
       prelevementsFromOtherMaladiesBox.addEventListener("onClickPrelevementCode", new EventListener<Event>()
       {
          @Override
@@ -224,7 +213,7 @@ public class FichePatientStatic extends AbstractFicheStaticController
 
          // configure le renderer pour inactiver les liens des
          // prélèvements non consultables
-         getPrelevementsFromOtherMaladiesRenderer().setOtherConsultBanks(banks);
+         prelevementFromOtherMaladiesRenderer.setFromOtherConsultBanks(banks);
 
          // medecins referents
          this.medecins = new ArrayList<>(ManagerLocator.getPatientManager().getMedecinsManager(patient));
@@ -279,7 +268,7 @@ public class FichePatientStatic extends AbstractFicheStaticController
             maladies.addAll(ManagerLocator.getMaladieManager().findByPatientExcludingVisitesManager(patient));
             // toutes les maladies non system, non visites gatsbi
             otherMaladies.addAll(new ArrayList<>(ManagerLocator.getMaladieManager().findByPatientNoSystemNorVisiteManager(patient)));
-            maladies.removeAll(otherMaladies); // reste maladies 'system', hors visite gatsbi
+            maladies.removeAll(otherMaladies); // reste maladies 'non system', hors visite gatsbi
             
             // ajout visites pour les banques accessibles
             for (Banque bank: consultableBanks) {
@@ -434,37 +423,29 @@ public class FichePatientStatic extends AbstractFicheStaticController
       // si on arrive à récupérer le panel prelevement et son controller
       if(tabController != null){
          // maladies doit contenir au moins une maladie
-         initMaladieDefaut();
+         if(this.maladies.size() == 0){ //cree la maladie sous-jacente
+            final Maladie maladieSJ = new Maladie();
+            if(SessionUtils.getSelectedBanques(sessionScope).get(0).getDefMaladies()){
+               if(SessionUtils.getSelectedBanques(sessionScope).get(0).getDefautMaladie() != null){
+                  maladieSJ.setLibelle(SessionUtils.getSelectedBanques(sessionScope).get(0).getDefautMaladie());
+                  maladieSJ.setCode(SessionUtils.getSelectedBanques(sessionScope).get(0).getDefautMaladieCode());
+               }else{
+                  maladieSJ.setLibelle(SessionUtils.getSelectedBanques(sessionScope).get(0).getNom() + "-defaut");
+                  maladieSJ.setSystemeDefaut(true);
+               }
+            }else{ // new Maladie system defaut à creer
+               maladieSJ.setLibelle(SessionUtils.getSelectedBanques(sessionScope).get(0).getNom() + "-defaut");
+               maladieSJ.setSystemeDefaut(true);
+            }
+
+            maladieSJ.setPatient(this.patient);
+            this.maladies.add(maladieSJ);
+         }
          tabController.switchToCreateMode(this.maladies.get(0));
          tabController.setFromFichePatient(true);
 
          // on cache la liste
          tabController.getListeRegion().setOpen(false);
-      }
-   }
-   
-   /**
-    * @since 2.3.0-gatsbi
-    * @return defaut maladie
-    */
-   protected void initMaladieDefaut() {
-      if(this.maladies.size() == 0){ //cree la maladie sous-jacente
-         final Maladie maladieSJ = new Maladie();
-         if(SessionUtils.getSelectedBanques(sessionScope).get(0).getDefMaladies()){
-            if(SessionUtils.getSelectedBanques(sessionScope).get(0).getDefautMaladie() != null){
-               maladieSJ.setLibelle(SessionUtils.getSelectedBanques(sessionScope).get(0).getDefautMaladie());
-               maladieSJ.setCode(SessionUtils.getSelectedBanques(sessionScope).get(0).getDefautMaladieCode());
-            }else{
-               maladieSJ.setLibelle(SessionUtils.getSelectedBanques(sessionScope).get(0).getNom() + "-defaut");
-               maladieSJ.setSystemeDefaut(true);
-            }
-         }else{ // new Maladie system defaut à creer
-            maladieSJ.setLibelle(SessionUtils.getSelectedBanques(sessionScope).get(0).getNom() + "-defaut");
-            maladieSJ.setSystemeDefaut(true);
-         }
-         
-         maladieSJ.setPatient(this.patient);
-         this.maladies.add(maladieSJ);
       }
    }
 
@@ -720,7 +701,7 @@ public class FichePatientStatic extends AbstractFicheStaticController
       return prelevementsFromOtherMaladies;
    }
 
-   public PrelevementConsultFromOtherBanksRenderer getPrelevementsFromOtherMaladiesRenderer(){
+   public PrelevementItemRenderer getPrelevementsFromOtherMaladiesRenderer(){
       return prelevementFromOtherMaladiesRenderer;
    }
 
@@ -735,7 +716,7 @@ public class FichePatientStatic extends AbstractFicheStaticController
    /**
     * Affiche la fiche d'un prélèvement.
     */
-   protected void onClickPrelevementCode(final Event e){
+   private void onClickPrelevementCode(final Event e){
 
       final PrelevementController tabController = (PrelevementController) PrelevementController.backToMe(getMainWindow(), page);
    

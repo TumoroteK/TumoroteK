@@ -50,8 +50,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.validation.Errors;
@@ -152,7 +152,7 @@ import fr.aphp.tumorotek.webapp.general.SessionUtils;
  */
 public abstract class AbstractController extends GenericForwardComposer<Component>
 {
-	protected static Log log = LogFactory.getLog(AbstractController.class);
+	protected static Logger log = LoggerFactory.getLogger(AbstractController.class);
 
 	private static final long serialVersionUID = -3799945305452822008L;
 
@@ -388,7 +388,7 @@ public abstract class AbstractController extends GenericForwardComposer<Componen
 				blockModal = false;
 
 			}catch(final SuspendNotAllowedException e){
-				log.error(e.getMessage(), e);
+				log.error(e.getMessage(), e); 
 			}
 		}
 	}
@@ -495,7 +495,7 @@ public abstract class AbstractController extends GenericForwardComposer<Componen
 				blockModal = false;
 
 			}catch(final SuspendNotAllowedException e){
-				log.error(e.getMessage(), e);
+				log.error(e.getMessage(), e); 
 			}
 		}
 	}
@@ -561,8 +561,8 @@ public abstract class AbstractController extends GenericForwardComposer<Componen
 	// try {
 	// win.onModal();
 	//
-	// } catch (SuspendNotAllowedException e) { log.error(e);
-	// } catch (InterruptedException e) { log.error(e); }
+	// } catch (SuspendNotAllowedException e) { log.error(e.getMessage(), e); 
+	// } catch (InterruptedException e) { log.error(e.getMessage(), e);  }
 	// }
 	//
 	// /**
@@ -663,7 +663,7 @@ public abstract class AbstractController extends GenericForwardComposer<Componen
 			// try {
 			throw (WrongValueException) ex;
 			//} catch (Exception e) {
-			//	log.error(e);
+			//	log.error(e.getMessage(), e); 
 			//}
 		}else if(ex instanceof PrinterException){
 			message = new StringBuilder(Labels.getLabel("validation.erreur.impression"));
@@ -700,12 +700,7 @@ public abstract class AbstractController extends GenericForwardComposer<Componen
 			}else{
 				message = new StringBuilder(ex.getMessage());
 			}
-			log.error(message, ex);
-		}
-		// aucun message n'a pu être généré -> exception inattendue
-		if(message == null){
-			message = new StringBuilder(ex.getClass().getSimpleName() + " : " + ex.getMessage());
-			log.error(message, ex);
+			log.error(ex.getMessage(), ex);
 		}
 
 		// si l'exception possède des infos sur l'objet qui l'a
@@ -798,7 +793,7 @@ public abstract class AbstractController extends GenericForwardComposer<Componen
 			final AMedia media = new AMedia(fileName, "xls", "application/vnd.ms-excel", out.toByteArray());
 			Filedownload.save(media);
 		}catch(final Exception e){
-			log.error(e.getMessage(), e);
+			log.error(e.getMessage(), e); 
 		}finally{
 			if(out != null){
 				try{
@@ -860,7 +855,7 @@ public abstract class AbstractController extends GenericForwardComposer<Componen
 				setBlockModal(false);
 
 			}catch(final SuspendNotAllowedException e){
-				log.error(e.getMessage(), e);
+				log.error(e.getMessage(), e); 
 			}
 		}
 	}
@@ -1164,7 +1159,7 @@ public abstract class AbstractController extends GenericForwardComposer<Componen
 				setBlockModal(false);
 
 			}catch(final SuspendNotAllowedException e){
-				log.error(e.getMessage(), e);
+				log.error(e.getMessage(), e); 
 			}
 		}
 	}
@@ -1308,9 +1303,9 @@ public abstract class AbstractController extends GenericForwardComposer<Componen
 				win.setTitle(Labels.getLabel("general.details"));
 			}else{
 				if(retour != null){
-					win.setTitle(Labels.getLabel("general.edit"));
-				}else{
 					win.setTitle(Labels.getLabel("general.create"));
+				}else{
+					win.setTitle(Labels.getLabel("general.edit"));
 				}
 			}
 			win.setBorder("normal");
@@ -1342,25 +1337,14 @@ public abstract class AbstractController extends GenericForwardComposer<Componen
 				((FicheRetour) ua.getFellow("fwinRetour").getAttributeOrFellow("fwinRetour$composer", true)).switchToStaticMode();
 			}else{
 				if(retour == null){
-					//TK-333 : le champ stérilité renseigné dans la modale n'a d'intérêt que pour les cessions partielles et les 
-				   //transformation en dérivés, opération qui nécessite l'ouverture des tubes.
-				   //Actuellement ce champ est à false par défaut. Or dans ce cas, une cascade de non stérilité est définie pour
-				   //appliquer la non stérilité à tous les échantillons / dérivés concernés ce qui peut amener à des erreurs 
-				   //pouvant impacter de nombreux échantillons dans le cas du déplacement ou de la création d'un incident
-				   //=> par défaut la stérilité sera désormais à true sauf pour la cession et la transformation pour ne pas casser les habitudes
-				   //Et dans le cas d'un déplacement, ce champ ne pourra pas être modifié
-				   boolean initSteriliteToTrue = true;
-				   boolean disableSterilite = false;
-				   if(objs != null){ // creation multiple
+					if(objs != null){ // creation multiple
 						((FicheRetour) ua.getFellow("fwinRetour").getAttributeOrFellow("fwinRetour$composer", true)).setObjects(objs);
 						if(cession != null){
 							((FicheRetour) ua.getFellow("fwinRetour").getAttributeOrFellow("fwinRetour$composer", true))
 							.setCession(cession);
-							initSteriliteToTrue = false;
 						}else if(transformation != null){
 							((FicheRetour) ua.getFellow("fwinRetour").getAttributeOrFellow("fwinRetour$composer", true))
 							.setTransformation(transformation);
-							initSteriliteToTrue = false;
 						}else if(incident != null){
 							((FicheRetour) ua.getFellow("fwinRetour").getAttributeOrFellow("fwinRetour$composer", true))
 							.setIncident(incident);
@@ -1376,10 +1360,8 @@ public abstract class AbstractController extends GenericForwardComposer<Componen
 					.setSelectedCollaborateur(operateur);
 					((FicheRetour) ua.getFellow("fwinRetour").getAttributeOrFellow("fwinRetour$composer", true))
 					.setOldEmplacements(oldEmplacements);
-					//TK-333 : On est dans le cas d'un déplacement quand oldEmplacements est renseigné et que cession, transformation, incindent sont null
-					disableSterilite = (oldEmplacements != null && cession == null && transformation == null && incident == null);
 					((FicheRetour) ua.getFellow("fwinRetour").getAttributeOrFellow("fwinRetour$composer", true))
-					.switchToCreateMode(observation, initSteriliteToTrue, disableSterilite);
+					.switchToCreateMode(observation);
 
 					((FicheRetour) ua.getFellow("fwinRetour").getAttributeOrFellow("fwinRetour$composer", true))
 					.setInitDateSortie(dateSortie);
@@ -1407,7 +1389,7 @@ public abstract class AbstractController extends GenericForwardComposer<Componen
 				setBlockModal(false);
 
 			}catch(final SuspendNotAllowedException e){
-				log.error(e.getMessage(), e);
+				log.error(e.getMessage(), e); 
 			}
 		}
 	}
@@ -1485,7 +1467,7 @@ public abstract class AbstractController extends GenericForwardComposer<Componen
 		//				setBlockModal(false);
 		//
 		//			} catch (SuspendNotAllowedException e) {
-		//				log.error(e);
+		//				log.error(e.getMessage(), e); 
 		//			}
 		//		}
 	}
@@ -1551,7 +1533,7 @@ public abstract class AbstractController extends GenericForwardComposer<Componen
 				setBlockModal(false);
 
 			}catch(final SuspendNotAllowedException e){
-				log.error(e.getMessage(), e);
+				log.error(e.getMessage(), e); 
 			}
 		}
 	}
@@ -1670,7 +1652,7 @@ public abstract class AbstractController extends GenericForwardComposer<Componen
 				setBlockModal(false);
 
 			}catch(final SuspendNotAllowedException e){
-				log.error(e.getMessage(), e);
+				log.error(e.getMessage(), e); 
 			}
 		}
 	}
@@ -1906,7 +1888,7 @@ public abstract class AbstractController extends GenericForwardComposer<Componen
 	//				setBlockModal(false);
 	//
 	//			} catch (SuspendNotAllowedException e) {
-	//				log.error(e);
+	//				log.error(e.getMessage(), e); 
 	//			}
 	//		}
 	//	}
@@ -1967,7 +1949,7 @@ public abstract class AbstractController extends GenericForwardComposer<Componen
 				setBlockModal(false);
 
 			}catch(final SuspendNotAllowedException e){
-				log.error(e.getMessage(), e);
+				log.error(e.getMessage(), e); 
 			}
 		}
 	}
@@ -2338,7 +2320,7 @@ public abstract class AbstractController extends GenericForwardComposer<Componen
 				setBlockModal(false);
 
 			}catch(final SuspendNotAllowedException e){
-				log.error(e.getMessage(), e);
+				log.error(e.getMessage(), e); 
 			}
 		}
 	}

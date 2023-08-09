@@ -214,8 +214,10 @@ public class ListeRetour extends AbstractListeController2
 
       final Retour retour = ((RetourDecorator) AbstractListeController2.getBindingData((ForwardEvent) event, false)).getRetour();
 
-      if(getObject() != null && ManagerLocator.getRetourManager().checkModificationPossible(getObject().getObjetStatut(), retour)) {
+      if(getObject() != null && getObject().getObjetStatut() != null
+         && (!getObject().getObjetStatut().getStatut().equals("ENCOURS") || retour.getDateRetour() == null)){
          openRetourFormModale(retour, true);
+
          Events.postEvent("onClickUpdateSorties", self.getParent().getParent(), getObject());
       }
    }

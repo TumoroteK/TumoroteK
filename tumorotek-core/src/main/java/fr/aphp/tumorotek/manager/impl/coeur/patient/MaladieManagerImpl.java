@@ -285,9 +285,9 @@ public class MaladieManagerImpl implements MaladieManager
 
       //Validation maladie
       Validator[] validators;
-      if(requiredChampEntiteId.isEmpty() || maladie.getSystemeDefaut()){ // pas de restriction gatsbi
+      if(requiredChampEntiteId.isEmpty()){ // pas de restriction gatsbi
          validators = new Validator[] {maladieValidator};
-      }else{ // gatsbi définit certain debut box obligatoires, non appliqué si system-defaut
+      }else{ // gatsbi définit certain champs obligatoires
          final MaladieGatsbiValidator gValidator = 
             new MaladieGatsbiValidator("maladie", requiredChampEntiteId);
          validators = new Validator[] {gValidator, maladieValidatorDateCoherenceOverride};

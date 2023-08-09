@@ -38,7 +38,6 @@ package fr.aphp.tumorotek.component;
 import java.util.Calendar;
 import java.util.Date;
 
-import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.HtmlMacroComponent;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Events;
@@ -77,28 +76,15 @@ public class CalendarBox extends HtmlMacroComponent
    public void afterCompose(){
       super.afterCompose();
 
-      Timebox timeBox = (Timebox) getFirstChild().getLastChild();
-      Datebox dateBox = (Datebox) getFirstChild().getFirstChild();
-
-      dateBox.setFormat(Labels.getLabel("validation.date.format.simple"));
-      timeBox.setButtonVisible(false);
-      
-      //définition d'un évènement pour gérer les sorties/entrées dans les éléments constituant le composant :
-      //la sortie par tabulation du champ date doit sélectionner le masque de saisie de l'heure pour que l'utilisateur
-      //puisse saisir l'heure sans reprendre la souris
-      ((Datebox) getFirstChild().getFirstChild()).addForward("onBlur", this, "onBlurDatebox");
-
-      //un onBlur sur l'un ou l'autre des éléments du composant doit générer un onBlur sur le composant lui-même
-      //(cet évènement est utilisé par les pages contenant le composant)
-      //pour le dateBox, cela est fait à la fin de la méthode onBlurDatebox
-      //pour le timeBox, c'est fait ici
-      ((Timebox) getFirstChild().getLastChild()).addForward("onBlur", this, "onBlur");
+      ((Timebox) getFirstChild().getLastChild()).setButtonVisible(false);
+      ((Datebox) getFirstChild().getFirstChild()).addForward("onBlur", this, "onBlur");
+      ((Timebox) getFirstChild().getLastChild()).addForward("onBlur", this, "onBlurTimebox");
    }
 
    /**
     * Assigne les valeurs aux boxes en dissociant les différentes
     * composantes du Calendar.
-    * @param c calendar
+    * @param maladie
     */
    public void setValue(final Calendar c){
 
@@ -113,6 +99,15 @@ public class CalendarBox extends HtmlMacroComponent
             date = cal.getTime();
             dateShort = new Date(cal.getTimeInMillis() - hours - minutes);
          }else{
+            /*cal = Calendar.getInstance();
+            cal.set(Calendar.YEAR, 1);
+            cal.set(Calendar.MONTH, 1);
+            cal.set(Calendar.DAY_OF_MONTH, 1);
+            cal.set(Calendar.HOUR_OF_DAY, 0);
+            cal.set(Calendar.MINUTE, 0);
+            cal.set(Calendar.SECOND, 0);
+            cal.set(Calendar.MILLISECOND, 0);
+            date = cal.getTime();*/
             date = null;
             dateShort = null;
          }
@@ -158,12 +153,22 @@ public class CalendarBox extends HtmlMacroComponent
       return cal;
    }
 
-   public void onBlurDatebox(){
-      ((Timebox) getFirstChild().getLastChild()).select();
-      //transmission de l'évenement onBlur fait sur le TimeBox, au composant composite (CalendarBox)
+   public void onBlurTimebox(){
+      final Calendar timeCal = Calendar.getInstance();
+      if(((Timebox) getFirstChild().getLastChild()).getValue() != null){
+         timeCal.setTime(((Timebox) getFirstChild().getLastChild()).getValue());
+      }else{
+         timeCal.set(Calendar.HOUR_OF_DAY, 0);
+         timeCal.set(Calendar.MINUTE, 0);
+      }
+
+      if(timeCal.get(Calendar.HOUR_OF_DAY) == 0 && timeCal.get(Calendar.MINUTE) == 0){
+         ((Timebox) getFirstChild().getLastChild()).setValue(null);
+      }
+
       Events.postEvent("onBlur", this, null);
-   }   
-   
+   }
+
    public boolean isHasChanged(){
       return hasChanged;
    }
@@ -174,6 +179,26 @@ public class CalendarBox extends HtmlMacroComponent
 
    public void clearErrorMessage(final Calendar value){
       Clients.clearWrongValue(this);
+   }
+
+   /**
+    * Lors du focus sur la date, si aucune heure n'est spécifiée dans le
+    * TimeBox, on le remplit à 00:00. Ceci est utilisé pour IE8, afin que
+    * le curseur se positionne au début de la TimeBox lors de l'utilisation
+    * des tabulations.
+    */
+   public void onFocus$dateBox(){
+      if(((Timebox) getFirstChild().getLastChild()).getValue() == null){
+         final Calendar calTmp = Calendar.getInstance();
+         calTmp.set(Calendar.YEAR, 1);
+         calTmp.set(Calendar.MONTH, 1);
+         calTmp.set(Calendar.DAY_OF_MONTH, 1);
+         calTmp.set(Calendar.HOUR_OF_DAY, 0);
+         calTmp.set(Calendar.MINUTE, 0);
+         calTmp.set(Calendar.SECOND, 0);
+         calTmp.set(Calendar.MILLISECOND, 0);
+         ((Timebox) getFirstChild().getLastChild()).setValue(calTmp.getTime());
+      }
    }
 
    public void setConstraint(final String cst){

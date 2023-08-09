@@ -235,7 +235,7 @@ public class FichePrelevementEditGatsbi extends FichePrelevementEdit
    
    @Override
    protected void setEmbeddedObjects(){
-            
+      
       // triggers identifiant textbox validation
       if (referenceur != null) {
          Textbox identifiantBox = ((PatientItemRendererGatsbi) 
@@ -253,7 +253,7 @@ public class FichePrelevementEditGatsbi extends FichePrelevementEdit
             ((Patient) identifiantBox.getAttribute("patient")).addToIdentifiants(identifiant.trim(), prelevement.getBanque());
          }
       }
-      
+          
       super.setEmbeddedObjects();
    }
 

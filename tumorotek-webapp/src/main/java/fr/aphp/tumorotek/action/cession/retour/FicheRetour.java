@@ -100,8 +100,8 @@ public class FicheRetour extends AbstractFicheCombineController
    private boolean dateRetourOblig = false;
 
    private Window fwinRetour;
-   
-   // Labels : valeur des champs en mode lecture
+
+   // Labels.
    private Label codeObjetLabel;
 
    // private Label entiteOperationLabel;
@@ -254,7 +254,6 @@ public class FicheRetour extends AbstractFicheCombineController
       }
    }
 
-
    @Override
    public void doAfterCompose(final Component comp) throws Exception{
 
@@ -283,6 +282,7 @@ public class FicheRetour extends AbstractFicheCombineController
       }
 
       drawActionsForRetours();
+
       getBinder().loadAll();
    }
 
@@ -372,20 +372,12 @@ public class FicheRetour extends AbstractFicheCombineController
    @Override
    public void setParentObject(final TKdataObject obj){}
 
-   public void switchToCreateMode(final String obs, final boolean initSteriliteToTrue, final boolean disableSterilite){
+   public void switchToCreateMode(final String obs){
 
       super.switchToCreateMode();
 
       retour.setObservations(obs);
 
-      //TK-333 : gestion du champ stérilité en fonction des cas d'utilisation :
-      //sécurisation pour éviter que la cascade de non stérilité modifie à tort la stérilité des échantillons en cas "d'oubli" de l'utilisateur
-      if(retour != null) {
-         retour.setSterile(initSteriliteToTrue);
-      }
-      sterileBox.setDisabled(disableSterilite);
-      //
-      
       // Initialisation du mode (listes, valeurs...)
       initEditableMode();
 

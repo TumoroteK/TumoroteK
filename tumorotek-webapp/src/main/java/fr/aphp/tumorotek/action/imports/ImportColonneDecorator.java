@@ -190,10 +190,10 @@ public class ImportColonneDecorator
    }
 
    /**
-    * Extrait les ImportColonne d'une liste de Decorator.
+    * Extrait les CederObjets d'une liste de Decorator.
     *
-    * @param ImportColonne
-    * @return ImportColonne décorés.
+    * @param CederObjets
+    * @return CederObjets décorés.
     */
    public static List<ImportColonne> extractListe(final List<ImportColonneDecorator> cols){
       final List<ImportColonne> liste = new ArrayList<>();

@@ -157,14 +157,9 @@ public class SelectPatientModale
     */
    public void searchForPatients(){
       // recherche des patients dans la base TK
-      //final LinkedHashSet<Patient> res = searchPatientInTK();
-      //this.patients = searchPatientInTK() new ArrayList<>(res);
+      final LinkedHashSet<Patient> res = searchPatientInTK();
+      this.patients = new ArrayList<>(res);
 
-      
-      // @since 2.3.0-gatsbi
-      // searchPatientInTK produit directement une arrayList
-      this.patients = searchPatientInTK();
-      
       // si nous sommes dans le cas d'une recherche de patients pour une
       // fusion, on ne va pas les chercher dans le serveur d'identités
       // patient
@@ -244,21 +239,17 @@ public class SelectPatientModale
    
    /**
     * Sera surchargé par Gatsbi
-    * searchPatientInTK produit directement une arrayList
     * @since 2.3.0-gatsbi
     * @return liste de patient trouvé dans TK
     */
-   protected List<Patient> searchPatientInTK() {
+   protected LinkedHashSet<Patient> searchPatientInTK() {
       LinkedHashSet<Patient> res = new LinkedHashSet<>();
-      
-      // set est utilisé pour retirer immédiatement les doublons 
-      // de patients basés sur les clefs naturelles
       if(critereValue != null && !critereValue.equals("")){
          res.addAll(ManagerLocator.getPatientManager().findByNipLikeManager(critereValue, false));
          res.addAll(ManagerLocator.getPatientManager().findByNomLikeManager(critereValue, false));
          res.addAll(ManagerLocator.getPatientManager().findByNdaLikeManager(critereValue, false));
       }
-      return new ArrayList<>(res);
+      return res;
    }
 
    public void searchPatientsInSip(final String filePropertiesName){

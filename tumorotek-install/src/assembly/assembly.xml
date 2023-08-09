@@ -23,7 +23,7 @@
       </fileSet>
       <fileSet>
          <directory>${build.directory}/site</directory>
-         <outputDirectory>tumorotek-site-static</outputDirectory>
+         <outputDirectory>README</outputDirectory>
       </fileSet>
    </fileSets>
    <files>

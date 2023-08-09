@@ -42,10 +42,17 @@
 	vflex="1">
 	<portallayout id="myptl" vflex="1">
         <portalchildren style="padding: 5px" width="30%" vflex="1">
-
+            <panel id="fonctionnalitesPanel" height="100%" vflex="2" border="normal" 
+            	style="margin-bottom:10px" title="${c:l('accueil.panel.fonctionnalités')}"
+            	maximizable="true" sclass="portalPanel">
+                <panelchildren>
+                    <iframe width="100%" height="100%" src="/portail/fonctionnalites.html"/>
+					<!--<iframe width="100%" height="100%" src="https://tumorotek.github.io/TumoroteK/note-version.html"/>-->
+                </panelchildren>
+            </panel>
             <panel id="licencePanel" vflex="1" border="normal" 
             	title="${c:l('accueil.panel.licence')}"
-            	sclass="portalPanel">
+            	maximizable="true" sclass="portalPanel">
                 <panelchildren>
                     <iframe width="100%" height="100%"
                         src="/portail/licence.html"/>
@@ -54,18 +61,8 @@
         </portalchildren>
         
         <portalchildren style="padding: 5px" width="40%" vflex="1">
-        
-            <panel id="fonctionnalitesPanel"  border="normal" 
-            	title="${c:l('accueil.panel.fonctionnalites')}"
-            	 sclass="portalPanel" height="60px">
-                <panelchildren>
-                    <vlayout style="margin: 10px 10px">
-                    	<a href="../../../tumorotek-site-static" style="text-decoration:none" target='_blank'><label sclass="formLink" value="${c:l('accueil.panel.fonctionnalites.detail')}"/></a>
-					</vlayout>
-                </panelchildren>
-            </panel>        
             <panel id="principalPanel" border="normal" vflex="3"
-            	style="margin:10px 0px" sclass="portalPanel" >
+            	style="margin-bottom:10px;" sclass="portalPanel" >
                 <panelchildren>
                 	<hlayout style="overflow-y: scroll;" hflex="1"  vflex="1" >
 	                	<vbox pack="center" align="center" vflex="1" hflex="1">
@@ -87,13 +84,14 @@
 	           				</hlayout>
 	             			<label sclass="formLabel" value="${c:l('accueil.principal.rights')}"/>
 	             			<hlayout>
-	             				<div class="mns" width="160px" height="80px" onClick='Executions.getCurrent().sendRedirect("http://www.sante.gouv.fr","_new");'/>
-	             				<div class="zkpow" width="100px" height="80px" onClick='Executions.getCurrent().sendRedirect("http://www.zkoss.org","_new");'/>
+	             				<div class="mns" width="160px" height="100px" onClick='Executions.getCurrent().sendRedirect("http://www.sante.gouv.fr","_new");'/>
+	             				<div class="zkpow" width="100px" height="100px" onClick='Executions.getCurrent().sendRedirect("http://www.zkoss.org","_new");'/>
 	             			</hlayout>
 	                	</vbox>
 	                </hlayout>
                 </panelchildren>
             </panel>
+ 
             <panel id="documentationPanel"  border="normal" 
             	title="${c:l('documentations')}"
             	 sclass="portalPanel" height="100px">

@@ -213,7 +213,7 @@ public class FicheRechercheAvancee extends AbstractFicheRechercheAvancee {
 
 	// Groupes
 	private Group groupPatients;
-	protected Group groupMaladies;
+	private Group groupMaladies;
 	private Group groupPrelevements;
 	protected Group groupLaboInters;
 	private Group groupEchantillons;

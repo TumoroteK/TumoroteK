@@ -62,6 +62,7 @@ import org.zkoss.zul.Groupbox;
 import org.zkoss.zul.Image;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Listbox;
+import org.zkoss.zul.ListitemRenderer;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Panel;
 import org.zkoss.zul.Textbox;
@@ -71,7 +72,6 @@ import fr.aphp.tumorotek.action.ManagerLocator;
 import fr.aphp.tumorotek.action.code.CodeUtils;
 import fr.aphp.tumorotek.action.constraints.ConstWord;
 import fr.aphp.tumorotek.action.controller.AbstractFicheCombineController;
-import fr.aphp.tumorotek.action.prelevement.PrelevementConsultFromOtherBanksRenderer;
 import fr.aphp.tumorotek.action.prelevement.PrelevementController;
 import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
 import fr.aphp.tumorotek.manager.validation.coeur.patient.MaladieValidator;
@@ -189,10 +189,10 @@ public class FicheMaladie extends AbstractFicheCombineController
    protected List<Collaborateur> medecins = new ArrayList<>();
 
    // defaut contexte TK renderer
-   protected PrelevementConsultFromOtherBanksRenderer prelevementRenderer = new PrelevementItemRenderer();
+   protected PrelevementItemRenderer prelevementRenderer = new PrelevementItemRenderer();
 
    // other banks -> contexte defaut TK
-   protected PrelevementConsultFromOtherBanksRenderer prelevementFromOtherBanksRenderer= new PrelevementItemRenderer();
+   protected PrelevementItemRenderer prelevementFromOtherBanksRenderer = new PrelevementItemRenderer();
    
    // @since 2.3.0-gatsbi
    // sera surchargé
@@ -218,7 +218,7 @@ public class FicheMaladie extends AbstractFicheCombineController
       this.prelevementFromOtherBanksRenderer = pobr;
    }
 
-   public PrelevementConsultFromOtherBanksRenderer getPrelevementRenderer(){
+   public ListitemRenderer<Prelevement> getPrelevementRenderer(){
       return prelevementRenderer;
    }
 
@@ -226,7 +226,7 @@ public class FicheMaladie extends AbstractFicheCombineController
       this.prelevementRenderer = pr;
    }
 
-   public PrelevementConsultFromOtherBanksRenderer getPrelevementFromOtherBanksRenderer(){
+   public ListitemRenderer<Prelevement> getPrelevementFromOtherBanksRenderer(){
       return prelevementFromOtherBanksRenderer;
    }
 
@@ -265,9 +265,8 @@ public class FicheMaladie extends AbstractFicheCombineController
 
       setDeletionMessage("message.deletion.maladie");
 
-      // @since 2.3.0-gatsbi
-      initObjLabelsComponent();
-      
+      setObjLabelsComponents(new Component[] {this.libelleLabel, this.codeDiagLabel, this.dateDebutLabel, this.dateDiagLabel,
+         this.prelevementsMaladieGroup, this.prelevementsMaladieBox, this.prelevementsFromOtherBanksMaladieBox});
       setObjBoxsComponents(
          new Component[] {this.libelleBox, this.codeDiagBox, this.dateDebutBox, this.dateDiagBox, codeAssistantButton});
       setRequiredMarks(new Component[] {this.libelleRequired});
@@ -275,32 +274,7 @@ public class FicheMaladie extends AbstractFicheCombineController
       getReferents().setFicheParent(this);
 
       drawActionsForMaladie();
-    
-      // @since 2.3.0-gatsbi
-      // regular Maladie Validator, sera surchargé par Gatsbi
-      setMaladieValidator(ManagerLocator.getMaladieValidator());
-      
-      // @since 2.3.0-gatsbi
-      setClickPrelevementCodeForward();
-   }
-   
-   /**
-    * sera surchargée car les prelevementsBox deviennent des grid dans Gatsbi
-    * @since 2.3.0-gatsbi
-    */
-   protected void initObjLabelsComponent(){
-      setObjLabelsComponents(new Component[] {
-         this.libelleLabel, this.codeDiagLabel, this.dateDebutLabel, this.dateDiagLabel,
-         this.prelevementsMaladieGroup, this.prelevementsMaladieBox, this.prelevementsFromOtherBanksMaladieBox 
-      });    
-   }
 
-   /**
-    * Event listener du clique code prelevement
-    * sera surchargé par gatsbi
-    * @since 2.3.0-gatsbi
-    */
-   protected void setClickPrelevementCodeForward() {
       prelevementsMaladieBox.addEventListener("onClickPrelevementCode", new EventListener<Event>()
       {
          @Override
@@ -316,6 +290,10 @@ public class FicheMaladie extends AbstractFicheCombineController
             onClickPrelevementCode(event);
          }
       });
+      
+      // @since 2.3.0-gatsbi
+      // regular Maladie Validator, sera surchargé par Gatsbi
+      setMaladieValidator(ManagerLocator.getMaladieValidator());
    }
 
    //   /**
@@ -349,40 +327,18 @@ public class FicheMaladie extends AbstractFicheCombineController
     * concernant la maladie sous-jacente à la collection.
     */
    public void setPrelevementsOnly(){
-      
-      // suppr de l'affichage toute le formulaire 
-      // maladie
-      detachMaladieFormMainComponent();
-      
+      if (this.formGrid != null) {
+         formGrid.detach();
+      }
       container.setClosable(false);
       container.setCollapsible(false);
       maladie.setLibelle(null);
       container.setOpen(true);
       container.setSclass(null);
-      
-      detachPrelevementsMaladieGroup();
       setGroupPrelevementsOpen(true);
-      
-      toolbar.setVisible(false);
-   }
-   
-   
-   /**
-    * @since 2.3.0 
-    * sera surchargé par gatsbi
-    */
-   protected void detachMaladieFormMainComponent() {
-      if (this.formGrid != null) {
-         formGrid.detach();
-      }
-   }
-   
-   /**
-    * @since 2.3.0 
-    * sera surchargé par gatsbi
-    */
-   protected void detachPrelevementsMaladieGroup() {
       prelevementsMaladieGroup.setVisible(false);
+      toolbar.setVisible(false);
+
    }
 
    @Override
@@ -418,7 +374,7 @@ public class FicheMaladie extends AbstractFicheCombineController
 
             // configure le renderer pour inactiver les liens des
             // prélèvements non consultables
-            getPrelevementFromOtherBanksRenderer().setOtherConsultBanks(banks);
+            prelevementFromOtherBanksRenderer.setFromOtherConsultBanks(banks);
 
             // etend la liste de banks à celle declarant
             // autoriseCrossPatient
@@ -441,7 +397,7 @@ public class FicheMaladie extends AbstractFicheCombineController
                   .addAll(ManagerLocator.getPrelevementManager().findByMaladieAndBanqueManager(this.maladie, it.next()));
             }
             // tous les prélèvements sont consultables
-            getPrelevementFromOtherBanksRenderer().setOtherConsultBanks(SessionUtils.getSelectedBanques(sessionScope));
+            prelevementFromOtherBanksRenderer.setFromOtherConsultBanks(SessionUtils.getSelectedBanques(sessionScope));
          }
          this.addPrelevement.setVisible(true);
          this.historique.setVisible(true);
@@ -876,7 +832,7 @@ public class FicheMaladie extends AbstractFicheCombineController
       Errors errs = null;
       String field = "";
 
-      if(dateValue == null){
+      if(dateValue == null || dateValue.equals("")){
          // la contrainte est retiree
          //((Datebox) comp).setConstraint("");
          ((Datebox) comp).clearErrorMessage(true);
@@ -975,7 +931,7 @@ public class FicheMaladie extends AbstractFicheCombineController
     * Affiche la fiche d'un prélèvement.
     * @param Event e indique le forward venant du selectAll si non null
     */
-   protected void onClickPrelevementCode(final Event e){
+   private void onClickPrelevementCode(final Event e){
 
       final PrelevementController tabController = (PrelevementController) PrelevementController.backToMe(getMainWindow(), page);
 
@@ -1137,9 +1093,9 @@ public class FicheMaladie extends AbstractFicheCombineController
 
       // si pas le droit d'accès aux prelevements, on cache le lien
       if(!getDroitsConsultation().get("Prelevement")){
-         getPrelevementRenderer().setAccessible(false);
+         prelevementRenderer.setAccessible(false);
       }else{
-         getPrelevementRenderer().setAccessible(true);
+         prelevementRenderer.setAccessible(true);
       }
 
       // empeche creation prelevements si toutes collections
@@ -1150,7 +1106,7 @@ public class FicheMaladie extends AbstractFicheCombineController
 
    @Override
    public String getDeleteWaitLabel(){
-      return Labels.getLabel("maladie.suppression.encours");
+      return Labels.getLabel("maaldie.suppression.encours");
    }
    
    // @since 2.3.0-gatsbi  
