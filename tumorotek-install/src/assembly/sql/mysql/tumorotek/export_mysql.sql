@@ -1147,8 +1147,8 @@ CREATE PROCEDURE `create_tmp_echan_retour_table`()
       ECHANTILLON_ID int(10),
       CODE_E         varchar(50),
       RETOUR_ID      int(10),
-      DATE_SORTIE    date,
-      DATE_RETOUR    date,
+      DATE_SORTIE    datetime,
+      DATE_RETOUR    datetime,
       TEMP_MOYENNE   DECIMAL(12, 3),
       STERILE        boolean,
       IMPACT         boolean,
@@ -1174,8 +1174,8 @@ CREATE PROCEDURE `create_tmp_derive_retour_table`()
       PROD_DERIVE_ID int(10),
       CODE_D         varchar(50),
       RETOUR_ID      int(10),
-      DATE_SORTIE    date,
-      DATE_RETOUR    date,
+      DATE_SORTIE    datetime,
+      DATE_RETOUR    datetime,
       TEMP_MOYENNE   DECIMAL(12, 3),
       STERILE        boolean,
       IMPACT         boolean,
@@ -1403,8 +1403,8 @@ CREATE PROCEDURE `fill_tmp_table_cession`(IN id INTEGER)
            t.nom,
            c.temperature,
            c.observations,
-           op.date_,
-           ut.login
+           GROUP_CONCAT(op.date_) as date_,
+           GROUP_CONCAT(ut.login) as login
     FROM CESSION c
            INNER JOIN BANQUE b
            INNER JOIN ENTITE ent
@@ -1602,7 +1602,7 @@ CREATE PROCEDURE `fill_tmp_table_annotation`(IN collection_id INTEGER, IN entite
     SET @objids = CONCAT(' AND av.OBJET_ID in (SELECT ', @CURRENT_ID, ' FROM ', @CURRENT_TABLE, ')');
 
     SET @insert = CONCAT('INSERT INTO ', @CORRESP_TABLE, ' (OBJET_ID, CHAMP_ID, CHAMP_NOM,CHAMP_VALEUR) 
-	SELECT av.objet_id, av.CHAMP_ANNOTATION_ID, ca.nom, left(av.texte, 3000) FROM ANNOTATION_VALEUR av 
+	SELECT av.objet_id, av.CHAMP_ANNOTATION_ID, ca.nom, left(av.texte, 350) FROM ANNOTATION_VALEUR av 
 		INNER JOIN CHAMP_ANNOTATION ca ON ca.CHAMP_ANNOTATION_ID = av.CHAMP_ANNOTATION_ID 
         INNER JOIN TABLE_ANNOTATION ta ON ta.TABLE_ANNOTATION_ID = ca.TABLE_ANNOTATION_ID 
         INNER JOIN TMP_TABLE_ANNOTATION_RESTRICT r ON ta.TABLE_ANNOTATION_ID = r.TABLE_ANNOTATION_ID 

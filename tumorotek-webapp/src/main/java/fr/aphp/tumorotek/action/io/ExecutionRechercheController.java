@@ -38,13 +38,14 @@ package fr.aphp.tumorotek.action.io;
 import static fr.aphp.tumorotek.webapp.general.SessionUtils.getCurrentBanque;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.HtmlMacroComponent;
@@ -109,7 +110,7 @@ import fr.aphp.tumorotek.webapp.general.export.ExportRechercheComplexe;
 public class ExecutionRechercheController extends AbstractObjectTabController
 {
 
-   private final Logger log = LoggerFactory.getLogger(ExecutionRechercheController.class);
+   private final Log log = LogFactory.getLog(ExecutionRechercheController.class);
 
    private static final long serialVersionUID = -1932781990848916925L;
 
@@ -185,25 +186,16 @@ public class ExecutionRechercheController extends AbstractObjectTabController
 
    public void initAssociations(){
 
-      final Banque banqueCourante = getCurrentBanque(sessionScope);
-      final List<Banque> tmp = getMainWindow().getBanques();
+      selectedBanque = getCurrentBanque(sessionScope);
+      
+      //utilisé pour le contenu de la liste déroulante. 
+      //Contient les banques de l'utilisateur ainsi que les banques "fictives" :
+      //"Toutes les collections" et les "Toutes collections par étude Gatsbi" (dont le banqueId est null)
+      banques = getMainWindow().getBanques();
 
-      banques = new ArrayList<>();
-      for(int i = 0; i < tmp.size(); i++){
-         if(tmp.get(i) != null && tmp.get(i).getBanqueId() != null){
-            banques.add(tmp.get(i));
-         }
-      }
-
-      selectedBanque = banqueCourante;
-
-      final List<Banque> listeBanqueRecherche = new ArrayList<>();
-      listeBanqueRecherche.add(banqueCourante);
-
-      recherches = ManagerLocator.getRechercheManager().findByBanqueInLIstManager(listeBanqueRecherche);
-      Collections.sort(recherches);
-      recherches.add(0, null);
-      selectedRecherche = null;
+      //le composant executionResult va être rafraichi dans sa globalité ensuite
+      //donc pas besoin de demander le refraichissement du composant lié à la recherche
+      refreshRecherches(false);
 
       getBinder().loadComponent(self);
    }
@@ -365,7 +357,7 @@ public class ExecutionRechercheController extends AbstractObjectTabController
             setBlockModal(false);
 
          }catch(final SuspendNotAllowedException e){
-            log.error(e.getMessage(), e); 
+            log.error(e);
          }
       }
    }
@@ -766,18 +758,36 @@ public class ExecutionRechercheController extends AbstractObjectTabController
    }
 
    public void onSelect$banquesBox(){
-
-      selectedRecherche = null;
-
-      final List<Banque> listeBanqueRecherche = new ArrayList<>();
-      listeBanqueRecherche.add(selectedBanque);
-
-      final List<Recherche> listeRecherche = ManagerLocator.getRechercheManager().findByBanqueInLIstManager(listeBanqueRecherche);
-      listeRecherche.add(0, null);
-
-      final ListModel<Recherche> listModel = new BindingListModelList<>(listeRecherche, true);
-      recherchesBox.setModel(listModel);
-
+      refreshRecherches(true);
    }
 
+   private void refreshRecherches(boolean reloadComponent) {
+      selectedRecherche = null;
+      
+      final List<Banque> listeBanqueRecherche = new ArrayList<>();
+      if (selectedBanque != null) {
+         if (selectedBanque.getBanqueId() != null) {
+            listeBanqueRecherche.add(selectedBanque);
+         }
+         else {//TK-400
+            //filtre de la liste de banques pour supprimer les "fictives" (cf commentaire ci-dessus)
+            int banquesSize = banques.size();
+            for(int i = 0; i < banquesSize; i++){
+               if(banques.get(i) != null && banques.get(i).getBanqueId() != null){
+                  listeBanqueRecherche.add(banques.get(i));
+               }
+            }
+         }
+      }    
+
+      recherches = ManagerLocator.getRechercheManager().findByBanqueInLIstManager(listeBanqueRecherche);
+      Collections.sort(recherches);
+      recherches.add(0, null);
+      
+      if(reloadComponent) {
+         getBinder().loadComponent(recherchesBox);
+      }
+
+   }
+   
 }

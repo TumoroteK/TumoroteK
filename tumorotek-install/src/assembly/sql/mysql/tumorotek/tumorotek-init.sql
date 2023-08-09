@@ -2072,8 +2072,14 @@ LOCK TABLES CONTEXTE WRITE;
   DISABLE KEYS */;
 INSERT INTO CONTEXTE (CONTEXTE_ID, NOM, LIBELLE)
 VALUES (1, 'DEFAUT', 'Anatomopathologie');
+-- le contexte Hématologie ne doit plus être proposé lors de la création d'une nouvelle base
+-- par contre, la clé doit continuer exister dans zk-label_fr.properties 
+-- pour les instances avec cette valeur en base de données. Il ne faut donc surtout pas réutiliser l'id 2
+-- INSERT INTO CONTEXTE (CONTEXTE_ID, NOM, LIBELLE)
+-- VALUES (2, 'HEMATOLOGIE', 'Hématologie');
 INSERT INTO CONTEXTE (CONTEXTE_ID, NOM, LIBELLE)
-VALUES (2, 'SEROLOGIE', 'Sérologie');
+VALUES (3, 'SEROLOGIE', 'Sérologie');
+-- le contexte GATSBI est rajouté par liquibase : db.changelog-gatsbi-3-loadTableGatsbi.xml
 /*!40000 ALTER TABLE `CONTEXTE`
   ENABLE KEYS */;
 UNLOCK TABLES;

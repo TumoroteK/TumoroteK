@@ -131,38 +131,20 @@
 				<!-- prelevement depuis collections hors maladies -->
 				<div class="block-separator" />
 				<groupbox id="groupPrelevementsHorsMaladie" 
-						visible="@{fwinPatientStatic$composer.hasPrelevementsFromOtherMaladies}">
-					<caption label="${c:l('patient.prelevements.horsMaladie')}" />
-					<listbox id="prelevementsFromOtherMaladiesBox" 
-						hflex="1"
-						fixedLayout="true"
-						span="true"
-						sizedByContent="false"
-						model="@{fwinPatientStatic$composer.prelevementsFromOtherMaladies}"
-						itemRenderer="${fwinPatientStatic$composer.prelevementsFromOtherMaladiesRenderer}"
-						sclass="listBox"
-						style="font-style: italic"
 						visible="@{fwinPatientStatic$composer.hasPrelevementsToShow}">
-						<listhead sizable="true">
-							<listheader width="50px" />
-							<listheader label="${c:l('prelevement.datePrelevementCourt')}" />
-							<listheader label="${c:l('general.code')}"   />
-							<listheader label="${c:l('Entite.Banque')}" />
-							<listheader label="${c:l('Champ.Prelevement.Nature')}" />
-							<listheader label="${c:l('general.type')}" />
-							<listheader label="${c:l('prelevement.etablissement')}"  />
-							<listheader label="${c:l('Champ.Prelevement.ConsentType')}" />
-							<listheader width="100px">
-								<vbox align="center" width="100%">
-									<label value="${c:l('prelevement.nbEchantillons')}" 
-										style="font-weight : bold;"/>
-									<label value="${c:l('prelevement.restants.total.stockes')}" 
-										style="font-weight : bold;"/>
-								</vbox>
-							</listheader>
-						</listhead>
-						<listitem self="@{each='currPrelevementFob'}" value="currPrelevementFob"/>
-					</listbox>
+					<caption label="${c:l('patient.prelevements.horsMaladie')}" 
+						visible="@{fwinPatientStatic$composer.hasPrelevementsFromOtherMaladies}"/>
+					<grid id="prelevementsFromOtherMaladiesGrid"
+						autopaging="true"
+						fixedLayout="false" span="true"
+						sizedByContent="true" sclass="gridListStyle"
+						model="@{fwinPatientStatic$composer.prelevementsFromOtherMaladies}"
+						rowRenderer="${fwinPatientStatic$composer.prelevementsFromOtherMaladiesRenderer}">
+						<columns menupopup="auto" sizable="true" width="100%" />
+						<rows id="prelevementsfromOtherMaladiesRows">
+							<row self="@{each='currPrel'}" value="currPrel"/>
+						</rows>
+					</grid>
 				</groupbox>
 			</div>					
 		</panelchildren>

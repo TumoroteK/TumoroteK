@@ -54,8 +54,8 @@ import java.util.stream.IntStream;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.springframework.transaction.TransactionDefinition;
@@ -157,7 +157,7 @@ import fr.aphp.tumorotek.webapp.general.SessionUtils;
 public class FicheMultiProdDerive extends FicheProdDeriveEdit
 {
 
-   private final Logger log = LoggerFactory.getLogger(FicheModifMultiProdDerive.class);
+   private final Log log = LogFactory.getLog(FicheModifMultiProdDerive.class);
 
    private static final long serialVersionUID = 8521632198848434054L;
 
@@ -841,7 +841,7 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
          try{
             dl = ManagerLocator.getXmlUtils().creerBoiteHtml(doc);
          }catch(final Exception e){
-            log.error(e.getMessage(), e); 
+            log.error(e);
          }
 
          // envoie du fichier à imprimer à l'utilisateur
@@ -2676,4 +2676,14 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
          setSelectedCollaborateur(null);
       }
    }
+
+  @Override
+   public void setFocusOnElement(){
+     // si l'origine est liste dérivée le focus sera sur Code du parent
+      if (getParentObject() == null){
+         codesParentBoxDerive.setFocus(true);
+      } else {
+         dateTransfoCalBox.setFocus(true);
+      }
+  }
 }

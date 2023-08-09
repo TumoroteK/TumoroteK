@@ -41,6 +41,7 @@ import fr.aphp.tumorotek.manager.impl.coeur.cession.OldEmplTrace;
 import fr.aphp.tumorotek.model.TKStockableObject;
 import fr.aphp.tumorotek.model.cession.Cession;
 import fr.aphp.tumorotek.model.cession.Retour;
+import fr.aphp.tumorotek.model.coeur.ObjetStatut;
 import fr.aphp.tumorotek.model.coeur.prodderive.Transformation;
 import fr.aphp.tumorotek.model.contexte.Collaborateur;
 import fr.aphp.tumorotek.model.stockage.Emplacement;
@@ -211,5 +212,16 @@ public interface RetourManager
     * @since 2.0.10
     */
    List<Retour> findByObjectAndImpactManager(TKStockableObject obj, Boolean impact);
+   
+   /**
+    * Vérifie si le retour peut être modifié sachant que :
+    *    si l'échantillon est au statut "En cours de traitement", seul l'évènement incomplet (date de retour à null) est modifiable
+    *    Pour les échantillons à un autre statut, la modification d'un évènement terminal est bloquée car dans ce cas, seule la température est saisie
+    *    Ainsi afficher la modale de l'évènement risque, lors de la validation, de modifier la valeur de la stérilité (à null dans ce cas) 
+    *    et le statut de l'échantillon à cause de la date de retour à null
+    *    @param statut : statut de l'échantillon / dérivé concerné par le retour
+    *    @parma retour : retour dont la possibilité de modification doit êter vérifiée
+    */
+   boolean checkModificationPossible(ObjetStatut statut, Retour retour);
 
 }
