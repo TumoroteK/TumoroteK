@@ -1376,6 +1376,7 @@ public class FicheImportTemplate extends AbstractFicheCombineController
    public void onLaterAddNewSubderive(){
       switchToCreateModeSubderive();
       // ferme wait message
+      showCopyFieldsButton();
       Clients.clearBusy();
    }
    public void showCopyFieldsButton(){
