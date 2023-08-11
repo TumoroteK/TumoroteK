@@ -714,9 +714,8 @@ public class PrelevementController extends AbstractObjectTabController
     *
     * @param listEchantillons Une liste d'échantillons à mettre à jour.
     * @param listDerives      Une liste des produits dérivés à mettre à jour.
-    * @param oldPrefix        L'ancien préfixe à utiliser lors de la mise à jour du code.
-    * @param newPrefix        Le nouveau préfixe à utiliser lors de la mise à jour du code.
-    * @param newCode          Le nouveau code de l'échantillon après la mise à jour.
+    * @param oldCode        L'ancien préfixe à utiliser lors de la mise à jour du code.
+    * @param newCode        Le nouveau préfixe à utiliser lors de la mise à jour du code.
     */
 
    public void openAfterUpdateCodeModale(List<Echantillon> listEchantillons, List<ProdDerive> listDerives,
@@ -726,7 +725,7 @@ public class PrelevementController extends AbstractObjectTabController
       if(isChangeNeeded && !isBlockModal()){
          setBlockModal(true);
          // Ouvre une fenêtre AfterUpdateCodeModale
-         openAfterUpdateCodeModale(listEchantillons, listDerives, oldCode, newCode);
+         super.openAfterUpdateCodeModale(listEchantillons, listDerives, oldCode, newCode);
       }
    }
 

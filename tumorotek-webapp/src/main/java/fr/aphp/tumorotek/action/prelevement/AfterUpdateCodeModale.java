@@ -138,11 +138,10 @@ public class AfterUpdateCodeModale extends AbstractController
     * Cette méthode prend en charge les événements "onClick" du bouton de validation.
     */
    public void onClick$validate(){
-      String waitingLabel = Labels.getLabel("general.display.wait");
-      Clients.showBusy(waitingLabel);
       // Si la modification automatique est cochée, arrête l'affichage du chargement et effectue une mise à jour.
       if(modifAuto.isChecked()){
-
+         String waitingLabel = Labels.getLabel("general.display.wait");
+         Clients.showBusy(waitingLabel);
          Events.echoEvent("onLaterUpdate", self, null);
 
          // Si la modification manuelle est cochée, passe sur l'onglet "Échantillons" de la page de prélevement.
@@ -154,7 +153,6 @@ public class AfterUpdateCodeModale extends AbstractController
       else{
          closeModale();
       }
-      Clients.clearBusy();
    }
 
 
@@ -224,6 +222,8 @@ public class AfterUpdateCodeModale extends AbstractController
     * La méthode se termine en fermant le message d'attente (si présent) et en fermant la fenêtre modale.
     */
    public void onLaterUpdate(){
+      closeModale();
+
       List<ProdDerive> prodDerivesFromEchantillons = new ArrayList<>();
       // Mettre à jour le code des échantillons
       if(echantillons != null){
@@ -245,8 +245,8 @@ public class AfterUpdateCodeModale extends AbstractController
          updateDerivesList(mergedDerivesList);
       }
       updateAllControlers();
+      Clients.clearBusy();
 
-      closeModale();
    }
 
    /**
