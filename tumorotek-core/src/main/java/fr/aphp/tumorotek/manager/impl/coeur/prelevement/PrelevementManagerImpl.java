@@ -613,7 +613,7 @@ public class PrelevementManagerImpl implements PrelevementManager
    public List<Prelevement> findAfterDateModificationManager(final Calendar date, final Banque banque){
       List<Prelevement> liste = new ArrayList<>();
       if(date != null && banque != null){
-         String dateFormat = new SimpleDateFormat("yyyy/MMM/dd HH:mm:ss").format(date);
+         String dateFormat = new SimpleDateFormat("yyyy/MMM/dd HH:mm:ss").format(date.getTime());
          log.debug("Recherche des Prelevements modifies apres la date {}" , dateFormat);
          liste = findByOperationTypeAndDate(operationTypeDao.findByNom("Modification").get(0), date, banque);
       }
