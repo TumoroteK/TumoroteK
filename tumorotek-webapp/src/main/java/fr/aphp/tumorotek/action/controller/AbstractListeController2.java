@@ -757,26 +757,32 @@ public abstract class AbstractListeController2 extends AbstractController
 		getObjectTabController().switchToOnlyListeMode();
 	}
 
-	public void onShowResults(){
-		List<Integer> ids = new ArrayList<>();
-		if(getResultatsIds().size() > 500){
-			Collections.reverse(getResultatsIds());
-			ids = getResultatsIds().subList(0, 500);
-		}else{
-			ids = getResultatsIds();
+	public void onShowResults(List<? extends TKdataObject> objs){
+		if(objs == null) {
+			List<Integer> ids = new ArrayList<>();
+			if(getResultatsIds().size() > 500){
+				Collections.reverse(getResultatsIds());
+				ids = getResultatsIds().subList(0, 500);
+			}else{
+				ids = getResultatsIds();
+			}
+			objs = extractObjectsFromIds(ids);
 		}
 
 		clearSelection();
-		setListObjects(extractObjectsFromIds(ids));
-
+		setListObjects(objs);
 		setCurrentRow(null);
 		setCurrentObject(null);
 		getObjectTabController().clearStaticFiche();
 		getObjectTabController().switchToOnlyListeMode();
 		objectsListGrid.setActivePage(0);
 		getBinder().loadComponent(objectsListGrid);
+		updateListResultsLabel(objs.size());
+	}
 
-		updateListResultsLabel(ids.size());
+
+	public void onShowResults(){
+		onShowResults(null);
 	}
 
 	/**
