@@ -599,7 +599,7 @@ public class PrelevementManagerImpl implements PrelevementManager
    public List<Integer> findAfterDateCreationReturnIdsManager(final Calendar date, final List<Banque> banques){
       final List<Integer> liste = new ArrayList<>();
       if(date != null && banques != null){
-         String dateFormat = new SimpleDateFormat("yyyy/MMM/dd HH:mm:ss").format(date);
+         String dateFormat = new SimpleDateFormat("yyyy/MMM/dd HH:mm:ss").format(date.getTime());
          log.debug("Recherche des Prelevements enregistres apres la date {}" , dateFormat);
          final Iterator<Banque> it = banques.iterator();
          while(it.hasNext()){
