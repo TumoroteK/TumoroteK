@@ -44,14 +44,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import fr.aphp.tumorotek.action.utils.AfterUpdateCodeUtils;
-import fr.aphp.tumorotek.model.coeur.prodderive.ProdDerive;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Components;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Page;
-import org.zkoss.zk.ui.Path;
-import org.zkoss.zk.ui.SuspendNotAllowedException;
 import org.zkoss.zul.Box;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Hbox;
@@ -462,8 +458,6 @@ public class EchantillonController extends AbstractObjectTabController
 
       return parents;
    }
-
-
 
    /**
     * Gère un scan full-rack barcode 2D au niveau de l'onglet echantillon:

@@ -52,8 +52,6 @@ import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Components;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Page;
-import org.zkoss.zk.ui.event.Event;
-import org.zkoss.zk.ui.select.annotation.Listen;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Tabbox;
@@ -804,13 +802,5 @@ public class PrelevementController extends AbstractObjectTabController
          patEntite, SessionUtils.getSelectedBanques(sessionScope), true));
 
       return parents;
-   }
-
-   @Listen("onRefresh")
-   public void onRefresh(Event event){
-      log.error("geeting the event");
-      System.out.println("fff");
-      log.error((String) event.getData());
-
    }
 }
