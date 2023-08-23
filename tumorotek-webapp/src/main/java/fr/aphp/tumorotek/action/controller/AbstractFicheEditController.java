@@ -363,17 +363,19 @@ public abstract class AbstractFicheEditController extends AbstractFicheControlle
    /**
     * Met à jour le code de l'objet et ses annotations, puis rafraîchit l'interface utilisateur si nécessaire.
     *
-    * @param isRefreshNeeded Indique si l'interface utilisateur doit être mise à jour après la modification de l'objet.
+    * @param noChildrenFound Indique s'il faut passer en mode static aprés la Mise à jour.
     * @return true si la mise à jour a réussi ou false si une exception a été rencontrée.
     */
-   public boolean onUpdateCode(boolean isRefreshNeeded){
+   public boolean onUpdateCode(boolean noChildrenFound){
 
       try{
          // Enregistre les modifications sur un objet et ses annotations
          updateObjectWithAnnots();
-
-         if (isRefreshNeeded){
-            updateTabLists();
+         // s'il n'y a pas d'enfants, le modal AfterUpdateCodeModale ne s'ouvrira pas et ne mettra pas à jour
+         // la liste parent et la liste actuelle, il faut donc le faire ici
+         if (noChildrenFound){
+            updateParentList();
+            updateCurrentList();
          }
          // Ferme le message d'attente
          Clients.clearBusy();
@@ -411,10 +413,12 @@ public abstract class AbstractFicheEditController extends AbstractFicheControlle
       // Actualise les listes des éléments enfants : échantillons et dérivés
       updateChildrensList();
 
-      // Passe en mode statique
-      getObjectTabController().onEditDone(getObject());
-
    }
+
+   public void switchToStaticMode(){
+      getObjectTabController().onEditDone(getObject());
+   }
+
 
    /**
     * Crée une boîte de dialogue affichant une exception de type DoublonFoundException.

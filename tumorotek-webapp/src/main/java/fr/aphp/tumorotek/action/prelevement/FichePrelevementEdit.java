@@ -772,11 +772,12 @@ public class FichePrelevementEdit extends AbstractFicheEditController
 
          // Ouvre une fenêtre modale "AfterUpdateCodeModale" pour la mise à jour des échantillons et dérivés associés
          getObjectTabController().openAfterUpdateCodeModale(echantillons, prodDerives, oldPrefixe, newPrefixe);
-
       } else {
          // Si aucun enfant n'est trouvé, met à jour le code du Prelevement avec mise à jour de l'interface utilisateur
          super.onUpdateCode(true);
       }
+      switchToStaticMode();
+
    }
 
 

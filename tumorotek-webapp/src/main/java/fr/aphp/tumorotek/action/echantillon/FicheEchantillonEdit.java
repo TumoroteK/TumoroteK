@@ -1722,14 +1722,14 @@ public class FicheEchantillonEdit extends AbstractFicheEditController
    }
 
    /**
-    * @param isRefreshNeeded
+    * @param noChildrenFound
     * @return
     */
    @Override
-   public boolean onUpdateCode(boolean isRefreshNeeded){
+   public boolean onUpdateCode(boolean noChildrenFound){
       checkRequiredListboxes();
 
-      return super.onUpdateCode(isRefreshNeeded);
+      return super.onUpdateCode(noChildrenFound);
    }
 
    /**
@@ -1766,6 +1766,8 @@ public class FicheEchantillonEdit extends AbstractFicheEditController
          // Si aucun enfant n'est trouvé, met à jour le code de l'échantillon avec mise à jour de l'interface utilisateur
          super.onUpdateCode(true);
       }
+      switchToStaticMode();
+
    }
 
 

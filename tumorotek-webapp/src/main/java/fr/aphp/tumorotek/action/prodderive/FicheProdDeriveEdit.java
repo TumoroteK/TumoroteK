@@ -501,6 +501,8 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
          // Si aucun enfant n'est trouvé, met à jour le code du ProdDerive avec mise à jour de l'interface utilisateur
          super.onUpdateCode(true);
       }
+      switchToStaticMode();
+
    }
 
 
