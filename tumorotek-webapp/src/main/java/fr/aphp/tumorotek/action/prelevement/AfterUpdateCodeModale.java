@@ -104,7 +104,6 @@ public class AfterUpdateCodeModale extends AbstractController
     * @param newPrefixe Le nouveau préfixe pour remplacer l'ancien.
     * @param page L'objet Page associé à l'opération.
     * @param main L'objet MainWindow associé à l'opération.
-    * @param path Le chemin utilisé pour l'initialisation.
     */
    public void init(final List<Echantillon> listEchantillons, List<ProdDerive> listDerives, final String oldPrefixe,
       final String newPrefixe, final Page page, final MainWindow main){
@@ -277,7 +276,7 @@ public class AfterUpdateCodeModale extends AbstractController
       List<Integer> idsList = prodDeriveList.stream()
          .map(ProdDerive::getProdDeriveId)
          .collect(Collectors.toList());
-      if (getProdDeriveController().getListe() != null){
+      if (getProdDeriveController() != null){
          getProdDeriveController().getListe().updateGridByIds(idsList, false, false);
       }
    }
