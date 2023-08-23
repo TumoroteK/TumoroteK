@@ -339,7 +339,7 @@ public abstract class AbstractFicheEditController extends AbstractFicheControlle
          updateObjectWithAnnots();
 
          // Met à jour l'interface utilisateur (UI) liée à l'objet actuel
-         refreshAndUpdateUI();
+         updateTabLists();
 
          // Ferme le message d'attente
          Clients.clearBusy();
@@ -373,7 +373,7 @@ public abstract class AbstractFicheEditController extends AbstractFicheControlle
          updateObjectWithAnnots();
 
          if (isRefreshNeeded){
-            refreshAndUpdateUI();
+            updateTabLists();
          }
          // Ferme le message d'attente
          Clients.clearBusy();
@@ -396,21 +396,22 @@ public abstract class AbstractFicheEditController extends AbstractFicheControlle
    /**
     * Met à jour l'interface utilisateur (UI) liée à l'objet actuel en effectuant les étapes suivantes:
     * 1. Met à jour l'objet dans la liste d'objets de l'onglet actuel.
-    * 2. Met à jour l'objet parent s'il existe.
-    * 3. Met à jour la fiche d'affichage : la liste des enfants et l'enfant.
+    * 2. Met à jour l'objet dans la liste de son parent - s'il existe.
+    * 3. Mets à jour les enfants dans leurs propres listes
     * 4. Passe en mode statique en cas de modification en édition.
     */
-   public void refreshAndUpdateUI(){
-      // Met à jour l'objet dans la liste d'objets (La liste de l'onglet actuel)
+   public void updateTabLists(){
+      // Actualise les listes. Par exemple, si l'objet actuel est un prélèvement :
+      // Actualise la liste des prélèvements (current)
       updateCurrentList();
 
-      // Met à jour l'objet parent s'il existe
-      updateParent();
+      // Actualise la liste des patients (parent)
+      updateParentList();
 
-      // Met à jour la fiche : la liste des enfants et l'enfant
-      updateCurrentFiche();
+      // Actualise les listes des éléments enfants : échantillons et dérivés
+      updateChildrensList();
 
-      // commande le passage en mode statique
+      // Passe en mode statique
       getObjectTabController().onEditDone(getObject());
 
    }
@@ -432,10 +433,11 @@ public abstract class AbstractFicheEditController extends AbstractFicheControlle
       window.doModal();
    }
 
+
    /**
-    * Met à jour la fiche courante en mettant à jour les objets sur la fiche
+    * Met à jour la liste des enfants
     */
-   public void updateCurrentFiche(){
+   public void updateChildrensList(){
       getObjectTabController()
          .updateReferencedObjects((List<TKdataObject>) getObjectTabController().getChildrenObjects(getObject()));
    }
@@ -444,7 +446,7 @@ public abstract class AbstractFicheEditController extends AbstractFicheControlle
     * Met à jour l'objet parent dans les listes des contrôleurs d'objets référençant l'objet courant,
     * si des contrôleurs référençant existent et si l'objet parent n'est pas nul.
     */
-   public void updateParent(){
+   public void updateParentList(){
       if(!getObjectTabController().getReferencingObjectControllers().isEmpty() && getParentObject() != null){
          for(int i = 0; i < getObjectTabController().getReferencingObjectControllers().size(); i++){
             if(getObjectTabController().getReferencingObjectControllers().get(i).getListe() != null){

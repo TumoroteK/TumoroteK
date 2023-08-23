@@ -288,13 +288,13 @@ public class AfterUpdateCodeModale extends AbstractController
     */
    private void updateAllControlers(){
       try {
-         getProdDeriveController().getFicheEdit().refreshAndUpdateUI();
+         getProdDeriveController().getFicheEdit().updateTabLists();
       } catch (Exception e1) {
           try {
-            getEchantillonController().getFicheEdit().refreshAndUpdateUI();
+            getEchantillonController().getFicheEdit().updateTabLists();
          } catch (Exception e2 ) {
             try {
-               getPrelevementController().getFicheEdit().refreshAndUpdateUI();
+               getPrelevementController().getFicheEdit().updateTabLists();
             } catch (Exception e3) {
 
             }
