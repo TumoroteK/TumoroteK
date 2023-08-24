@@ -19,20 +19,13 @@ jobs:
           java-version: '8'
           distribution: 'temurin'
 
-      # Cache Maven packages
-      - name: Cache Maven packages
+      - name: Cache Maven dependencies
         uses: actions/cache@v2
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-          restore-keys: ${{ runner.os }}-m2
+          restore-keys: |
+            ${{ runner.os }}-m2-
 
-      # Install Oracle JDBC driver to local repository
-      - name: Install Oracle JDBC driver to local repository
-        run: |
-          wget -O ojdbc6-11.2.0.4.jar https://repo1.maven.org/maven2/com/oracle/database/jdbc/ojdbc6/11.2.0.4/ojdbc6-11.2.0.4.jar
-          mvn install:install-file -Dfile=ojdbc6-11.2.0.4.jar -DgroupId=oracle -DartifactId=ojdbc6 -Dversion=11.2.0.4 -Dpackaging=jar
-
-      # Compile with Maven
-      - name: Compile with Maven
-        run: mvn compile
+      - name: Build with Maven
+        run: mvn clean compile  # Adjust the Maven command as needed
