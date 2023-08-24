@@ -340,7 +340,7 @@ public abstract class AbstractFicheEditController extends AbstractFicheControlle
     */
    public boolean onLaterUpdate(){
 
-      try{
+
          updateObjectWithAnnots();
 
          // update de la liste
