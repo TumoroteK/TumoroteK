@@ -43,11 +43,11 @@ jobs:
           wget  -O com.sun.xml.wsit:wsit-rt:1.1.jar   https://repository.jboss.org/nexus/content/repositories/thirdparty-releases/com/sun/xml/wsit/wsit-rt/1.1/wsit-rt-1.1.jar
           mvn install:install-file -Dfile=com.sun.xml.wsit:wsit-rt:1.1.jar -DgroupId=com.sun.xml.wsit -DartifactId=wsit-rt -Dversion=1.1 -Dpackaging=jar
 
-      - name: Install zkmax
-        run: |
-          mkdir -p lib
-          cp $GITHUB_WORKSPACE/.github/workflows/zkmax-6.5.7.jar ./lib/
-          mvn install:install-file -Dfile=./lib/zkmax-6.5.7.jar -DgroupId=org.zkoss.zk -DartifactId=zkmax -Dversion=6.5.7 -Dpackaging=jar
+#      - name: Install zkmax
+#        run: |
+#          mkdir -p lib
+#          cp $GITHUB_WORKSPACE/.github/workflows/zkmax-6.5.7.jar ./lib/
+#          mvn install:install-file -Dfile=./lib/zkmax-6.5.7.jar -DgroupId=org.zkoss.zk -DartifactId=zkmax -Dversion=6.5.7 -Dpackaging=jar
 
       - name: Install zkex
         run: |

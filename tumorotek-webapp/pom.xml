@@ -158,11 +158,6 @@
     </build>
     <repositories>
         <repository>
-            <id>zkoss-mavensync</id>
-            <url>https://mavensync.zkoss.org/maven2/</url>
-        </repository>
-
-        <repository>
             <id>org.springframework.repository.maven</id>
             <name>SpringSource Maven Repository</name>
             <url>http://repository.springframework.org/maven/</url>
@@ -174,9 +169,6 @@
             <id>ZK EE</id>
             <url>https://maven.zkoss.org/repo/zk/ee</url>
         </repository>
-
-
-
     </repositories>
 
     <dependencies>
@@ -259,11 +251,7 @@
             <artifactId>zkbind</artifactId>
             <version>6.5.4</version>
         </dependency>
-        <dependency>
-            <groupId>org.zkoss.zk</groupId>
-            <artifactId>zkmax</artifactId>
-            <version>${zk-version}</version>
-        </dependency>
+
         <dependency>
             <groupId>org.zkoss.zk</groupId>
             <artifactId>zkex</artifactId>
