@@ -341,7 +341,6 @@ public abstract class AbstractFicheEditController extends AbstractFicheControlle
    public boolean onLaterUpdate(){
 
 
-         updateObjectWithAnnots();
 
          // update de la liste
          if(getObjectTabController().getListe() != null){
