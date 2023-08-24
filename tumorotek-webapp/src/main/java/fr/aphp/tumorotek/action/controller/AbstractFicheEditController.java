@@ -391,7 +391,7 @@ public abstract class AbstractFicheEditController extends AbstractFicheControlle
    }
 
    /**
-    * Efface les modifications apportees sur l'objet en détachant
+    * Efface les modifications apportées sur l'objet en détachant
     * les composants du formulaire sans avoir effectué d'enregistrement.
     */
    public void onClick$revert(){
