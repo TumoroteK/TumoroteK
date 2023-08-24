@@ -158,6 +158,11 @@
     </build>
     <repositories>
         <repository>
+            <id>zkoss-mavensync</id>
+            <url>https://mavensync.zkoss.org/maven2/</url>
+        </repository>
+
+        <repository>
             <id>org.springframework.repository.maven</id>
             <name>SpringSource Maven Repository</name>
             <url>http://repository.springframework.org/maven/</url>
@@ -169,6 +174,9 @@
             <id>ZK EE</id>
             <url>https://maven.zkoss.org/repo/zk/ee</url>
         </repository>
+
+
+
     </repositories>
 
     <dependencies>
