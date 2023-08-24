@@ -249,7 +249,7 @@
         <dependency>
             <groupId>org.zkoss.zk</groupId>
             <artifactId>zkbind</artifactId>
-            <version>${zk-version}</version>
+            <version>6.5.4</version>
         </dependency>
         <dependency>
             <groupId>org.zkoss.zk</groupId>
