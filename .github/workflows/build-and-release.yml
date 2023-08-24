@@ -1,27 +1,26 @@
-name: TK CI
+name: Build with Oracle JDBC Driver
 
 on:
   push:
-    branches:
-      - '*'  # Trigger on every branch
-  workflow_dispatch:  # Add manual trigger option
+  workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Set up JDK 8
+      - name: Set up JDK
         uses: actions/setup-java@v2
         with:
-          java-version: '8'
-          distribution: 'temurin'
+          java-version: 11
 
-      - name: Install ojdbc6 to Local Repository
-        run: mvn install:install-file -Dfile=D:/Downloads/ojdbc6.jar -DgroupId=oracle -DartifactId=ojdbc6 -Dversion=11.2.0.4 -Dpackaging=jar
+      - name: Install Oracle JDBC driver to local repository
+        run: |
+          wget -O ojdbc6-11.2.0.3.jar https://www.datanucleus.org/downloads/maven2/oracle/ojdbc6/11.2.0.3/ojdbc6-11.2.0.3.jar
+          mvn install:install-file -Dfile=ojdbc6-11.2.0.3.jar -DgroupId=oracle -DartifactId=ojdbc6 -Dversion=11.2.0.3 -Dpackaging=jar
 
-      - name: Build with Maven
-        run: mvn --batch-mode --update-snapshots compile -DskipTests
+      - name: Compile with Maven
+        run: mvn compile
