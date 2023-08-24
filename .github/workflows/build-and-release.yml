@@ -25,8 +25,8 @@ jobs:
           rm maven-wrapper-0.5.6.tar.gz    
 
       - name: Make Maven Wrapper executable
-        run: chmod +x mvnw
-
+        run: chmod +x .mvn/wrapper/mvnw
+        
       - name: Install Oracle JDBC driver to local repository
         run: |
           wget -O ojdbc6-11.2.0.4.jar https://repo1.maven.org/maven2/com/oracle/database/jdbc/ojdbc6/11.2.0.4/ojdbc6-11.2.0.4.jar
