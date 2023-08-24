@@ -61,4 +61,4 @@ jobs:
 
     # Build
       - name: Install Dependencies
-        run: mvn --batch-mode --update-snapshots compile -DskipTests
+        run: mvn --batch-mode clean package -DskipTests
