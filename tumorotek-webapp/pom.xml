@@ -244,22 +244,22 @@
         <dependency>
             <groupId>org.zkoss.zk</groupId>
             <artifactId>zhtml</artifactId>
-            <version>${zk-version}</version>
+            <version>6.5.4</version>
         </dependency>
         <dependency>
             <groupId>org.zkoss.zk</groupId>
             <artifactId>zkbind</artifactId>
-            <version>${zk-version}</version>
+            <version>6.5.4</version>
         </dependency>
         <dependency>
             <groupId>org.zkoss.zk</groupId>
             <artifactId>zkmax</artifactId>
-            <version>${zk-version}</version>
+            <version>3.6.3</version>
         </dependency>
         <dependency>
             <groupId>org.zkoss.zk</groupId>
             <artifactId>zkex</artifactId>
-            <version>${zk-version}</version>
+            <version>3.6.3</version>
         </dependency>
         <dependency>
             <groupId>org.zkoss.theme</groupId>
