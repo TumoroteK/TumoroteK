@@ -9,27 +9,30 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    
       - name: Checkout code
         uses: actions/checkout@v2
-# set up java
+
+      # Set up Java
       - name: Set up JDK 8
         uses: actions/setup-java@v2
         with:
           java-version: '8'
           distribution: 'temurin'
-# maven       
-      - name: 'Cache Maven packages'
-        uses: actions/cache@v3
+
+      # Cache Maven packages
+      - name: Cache Maven packages
+        uses: actions/cache@v2
         with:
-          path: ~/.m2
-          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml', '**/*.target') }}
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
 
+      # Install Oracle JDBC driver to local repository
       - name: Install Oracle JDBC driver to local repository
         run: |
           wget -O ojdbc6-11.2.0.4.jar https://repo1.maven.org/maven2/com/oracle/database/jdbc/ojdbc6/11.2.0.4/ojdbc6-11.2.0.4.jar
-          ./mvnw install:install-file -Dfile=ojdbc6-11.2.0.4.jar -DgroupId=oracle -DartifactId=ojdbc6 -Dversion=11.2.0.4 -Dpackaging=jar
-# compile
+          mvn install:install-file -Dfile=ojdbc6-11.2.0.4.jar -DgroupId=oracle -DartifactId=ojdbc6 -Dversion=11.2.0.4 -Dpackaging=jar
+
+      # Compile with Maven
       - name: Compile with Maven
-        run: ./mvnw compile
+        run: mvn compile
