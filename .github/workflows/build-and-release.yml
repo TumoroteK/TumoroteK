@@ -26,11 +26,6 @@ jobs:
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml', '**/*.target') }}
           restore-keys: ${{ runner.os }}-m2
 
-      - name: Build and test
-        uses: coactions/setup-xvfb@v1
-        with: 
-          run: ./mvnw clean verify -PuseJenkinsSnapshots -f org.eclipse.xtext.full.releng
-
       - name: Install Oracle JDBC driver to local repository
         run: |
           wget -O ojdbc6-11.2.0.4.jar https://repo1.maven.org/maven2/com/oracle/database/jdbc/ojdbc6/11.2.0.4/ojdbc6-11.2.0.4.jar
