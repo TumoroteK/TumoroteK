@@ -33,4 +33,4 @@ jobs:
           mvn install:install-file -Dfile=ojdbc6-11.2.0.4.jar -DgroupId=oracle -DartifactId=ojdbc6 -Dversion=11.2.0.4 -Dpackaging=jar      
     # clean and pockage
       - name: Build with Maven
-        run: mvn clean 
+        run: mvn --batch-mode --update-snapshots compile -DskipTests
