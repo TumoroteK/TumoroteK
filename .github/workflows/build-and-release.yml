@@ -17,6 +17,12 @@ jobs:
         with:
           java-version: '8'
           distribution: 'temurin'
+      - name: Install Maven Wrapper
+        run: |
+          wget https://github.com/takari/maven-wrapper/archive/maven-wrapper-0.5.6.tar.gz
+          tar -xzf maven-wrapper-0.5.6.tar.gz
+          mv maven-wrapper-0.5.6 .mvn/wrapper
+          rm maven-wrapper-0.5.6.tar.gz    
 
       - name: Make Maven Wrapper executable
         run: chmod +x mvnw
