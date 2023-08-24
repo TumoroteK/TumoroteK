@@ -43,7 +43,13 @@ jobs:
           wget  -O com.sun.xml.wsit:wsit-rt:1.1.jar   https://repository.jboss.org/nexus/content/repositories/thirdparty-releases/com/sun/xml/wsit/wsit-rt/1.1/wsit-rt-1.1.jar
           mvn install:install-file -Dfile=com.sun.xml.wsit:wsit-rt:1.1.jar -DgroupId=com.sun.xml.wsit -DartifactId=wsit-rt -Dversion=1.1 -Dpackaging=jar
 
+      - name: Install zkex and zkmax
+        run: |
+         mkdir -p lib
+         cp ./*.jar ./lib/
+        working-directory: ${{ github.workspace }}
 
+     
 
     # Build
       - name: Install Dependencies
