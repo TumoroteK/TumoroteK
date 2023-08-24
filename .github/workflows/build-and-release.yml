@@ -20,5 +20,8 @@ jobs:
           java-version: '8'
           distribution: 'temurin'
 
+      - name: Install ojdbc6 to Local Repository
+        run: mvn install:install-file -Dfile=D:/Downloads/ojdbc6.jar -DgroupId=oracle -DartifactId=ojdbc6 -Dversion=11.2.0.4 -Dpackaging=jar
+
       - name: Build with Maven
         run: mvn --batch-mode --update-snapshots compile -DskipTests
