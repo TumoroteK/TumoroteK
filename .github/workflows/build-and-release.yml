@@ -23,20 +23,18 @@ jobs:
       - name: Create Maven Wrapper
         run: mvn wrapper:wrapper
 
-      # Use Maven Wrapper
-      - name: Set up Maven Wrapper
-        run: ./mvnw.cmd
-
-      # Print contents of repository directory for debugging
-      - name: Debug - List contents of repository
-        run: dir %USERPROFILE%\.m2\repository /s
-
       # Update Maven dependencies using Maven Wrapper
       - name: Install Dependencies and Build
         run: |
           .\mvnw.cmd clean install -DskipTests
         env:
           MAVEN_OPTS: -Dmaven.repo.local=%USERPROFILE%\.m2\repository
+
+
+      # Print contents of repository directory for debugging
+      - name: Debug - List contents of repository
+        run: dir %USERPROFILE%\.m2\repository /s
+
 
       # Additional debugging steps
       - name: Debug - Print Maven version
