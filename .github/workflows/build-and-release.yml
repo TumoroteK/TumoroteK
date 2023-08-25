@@ -23,14 +23,10 @@ jobs:
       - name: Create Maven Wrapper
         run: mvn wrapper:wrapper
 
-      # Cache Maven dependencies
-      - name: Cache Maven dependencies
-        uses: actions/cache@v2
+      - name: Restore Maven cache
+        uses: skjolber/maven-cache-github-action@v1
         with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-m2-    
+           step: restore
  
      # Install Missing JAR: Oracle JDBC
       - name: Install Oracle JDBC driver to local repository
@@ -58,6 +54,21 @@ jobs:
          mvn install:install-file -Dfile=./lib/zkex-6.5.7.jar -DgroupId=org.zkoss.zk -DartifactId=zkex -Dversion=6.5.7 -Dpackaging=jar    
 
         working-directory: ${{ github.workspace }}
+
+
+      # Install jackson-mapper-lgpl dependency
+      - name: Install jackson-mapper-lgpl to local repository
+        run: |
+          wget -O jackson-mapper-lgpl-1.7.4.jar https://repo1.maven.org/maven2/org/codehaus/jackson/jackson-mapper-lgpl/1.7.4/jackson-mapper-lgpl-1.7.4.jar
+          ./mvnw install:install-file -Dfile=jackson-mapper-lgpl-1.7.4.jar  -DgroupId=org.codehaus.jackson
+          -DartifactId=jackson-mapper-lgpl -Dversion=1.7.4 -Dpackaging=jar
+
+
+      # Save Maven Cache
+      - name: Save Maven cache
+        uses: skjolber/maven-cache-github-action@v1
+        with:
+         step: save
 
       # Compile the project using Maven Wrapper
       - name: Compile with Maven Wrapper
