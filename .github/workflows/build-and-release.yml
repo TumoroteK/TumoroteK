@@ -47,6 +47,16 @@ jobs:
 #        env:
 #          MAVEN_OPTS: -Dmaven.repo.local=$HOME/.m2/repository
 
+      # Print contents of home directory for debugging
+      - name: Debug - List contents of home directory
+        run: ls -R $HOME
+
+
+      # Print contents of Maven repository for debugging
+      - name: Debug - List contents of Maven repository
+        run: ls -R /home/runner/.m2/repository
+
+
       # Print contents of repository directory for debugging
       - name: Debug - List contents of repository
         run: ls -R $HOME/.m2/repository
