@@ -23,11 +23,11 @@ jobs:
 #      - name: Create Maven Wrapper
 #        run: mvn wrapper:wrapper
 #
-#      # Install Missing JAR: Oracle JDBC
-#      - name: Install Oracle JDBC driver to local repository
-#        run: |
-#          wget -O ojdbc6-11.2.0.4.jar https://repo1.maven.org/maven2/com/oracle/database/jdbc/ojdbc6/11.2.0.4/ojdbc6-11.2.0.4.jar
-#          ./mvnw install:install-file -Dfile=ojdbc6-11.2.0.4.jar -DgroupId=oracle -DartifactId=ojdbc6 -Dversion=11.2.0.4 -Dpackaging=jar
+     # Install Missing JAR: Oracle JDBC
+      - name: Install Oracle JDBC driver to local repository
+        run: |
+         wget -O ojdbc6-11.2.0.4.jar https://repo1.maven.org/maven2/com/oracle/database/jdbc/ojdbc6/11.2.0.4/ojdbc6-11.2.0.4.jar
+         ./mvnw install:install-file -Dfile=ojdbc6-11.2.0.4.jar -DgroupId=oracle -DartifactId=ojdbc6 -Dversion=11.2.0.4 -Dpackaging=jar
 #
 #      # Cache Maven dependencies
 #      - name: Cache Maven dependencies
@@ -50,17 +50,6 @@ jobs:
       # Print contents of home directory for debugging
       - name: Debug - List contents of home directory
         run: ls -R $HOME
-
-
-      # Additional debugging steps
-      - name: Debug - Print Maven version
-        run: ./mvnw --version
-
-      - name: Debug - Print Java version
-        run: java -version
-
-      - name: Debug - Print environment variables
-        run: echo $MAVEN_OPTS
 
       - name: Debug - Print directory contents
         run: ls -R
