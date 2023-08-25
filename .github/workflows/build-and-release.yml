@@ -19,10 +19,10 @@ jobs:
           java-version: '8'
           distribution: 'temurin'
 
-#      # Create Maven Wrapper
-#      - name: Create Maven Wrapper
-#        run: mvn wrapper:wrapper
-#
+     # Create Maven Wrapper
+      - name: Create Maven Wrapper
+        run: mvn wrapper:wrapper
+ 
      # Install Missing JAR: Oracle JDBC
       - name: Install Oracle JDBC driver to local repository
         run: |
