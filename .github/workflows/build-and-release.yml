@@ -60,8 +60,8 @@ jobs:
       - name: Install jackson-mapper-lgpl to local repository
         run: |
           wget -O jackson-mapper-lgpl-1.7.4.jar https://repo1.maven.org/maven2/org/codehaus/jackson/jackson-mapper-lgpl/1.7.4/jackson-mapper-lgpl-1.7.4.jar
-          ./mvnw install:install-file -Dfile=jackson-mapper-lgpl-1.7.4.jar  -DgroupId=org.codehaus.jackson
-          -DartifactId=jackson-mapper-lgpl -Dversion=1.7.4 -Dpackaging=jar
+         ./mvnw install:install-file -Dfile=jackson-mapper-lgpl-1.7.4.jar \
+         -DgroupId=org.codehaus.jackson -DartifactId=jackson-mapper-lgpl -Dversion=1.7.4 -Dpackaging=jar
 
 
       # Save Maven Cache
