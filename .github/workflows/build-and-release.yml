@@ -28,6 +28,12 @@ jobs:
         run: |
          wget -O ojdbc6-11.2.0.4.jar https://repo1.maven.org/maven2/com/oracle/database/jdbc/ojdbc6/11.2.0.4/ojdbc6-11.2.0.4.jar
          ./mvnw install:install-file -Dfile=ojdbc6-11.2.0.4.jar -DgroupId=oracle -DartifactId=ojdbc6 -Dversion=11.2.0.4 -Dpackaging=jar
+
+      # Compile the project using Maven Wrapper
+      - name: Compile with Maven Wrapper
+        run: ./mvnw compile -DskipTests
+    
+     
 #
 #      # Cache Maven dependencies
 #      - name: Cache Maven dependencies
