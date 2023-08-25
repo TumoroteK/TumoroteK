@@ -1,4 +1,4 @@
-name: Build with Oracle JDBC Driver
+name: Build TK On Linux
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
 
 jobs:
   build:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
@@ -22,6 +22,14 @@ jobs:
       # Create Maven Wrapper
       - name: Create Maven Wrapper
         run: mvn wrapper:wrapper
+
+      - name: Cache Maven dependencies
+        uses: actions/cache@v2
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-m2-  
         
     # Install Missing JAR: Oracle JDBC
       - name: Install Oracle JDBC driver to local repository
