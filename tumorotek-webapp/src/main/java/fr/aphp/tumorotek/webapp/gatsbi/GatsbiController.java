@@ -51,10 +51,9 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.codehaus.jackson.map.JsonMappingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.codehaus.jackson.JsonParseException;
-import org.codehaus.jackson.map.JsonMappingException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.ResourceAccessException;
@@ -736,8 +735,6 @@ public class GatsbiController
    /**
     * 
     * @param bank
-    * @throws JsonParseException
-    * @throws JsonMappingException
     * @throws IOException
     * @throws GatsbiException 
     */
