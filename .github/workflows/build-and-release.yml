@@ -6,7 +6,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
 
     steps:
       - name: Checkout code
@@ -19,46 +19,30 @@ jobs:
           java-version: '8'
           distribution: 'temurin'
 
-      - name: Cache Maven dependencies
-        uses: actions/cache@v2
-        with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-m2-
-            
-     # Install Missing JAR
-      - name: Install Oracle JDBC driver to local repository
+      # Use Maven Wrapper
+      - name: Set up Maven Wrapper
+        run: ./mvnw.cmd
+
+      # Print contents of repository directory for debugging
+      - name: Debug - List contents of repository
+        run: dir %USERPROFILE%\.m2\repository /s
+
+      # Update Maven dependencies using Maven Wrapper
+      - name: Install Dependencies and Build
         run: |
-          wget -O ojdbc6-11.2.0.4.jar https://repo1.maven.org/maven2/com/oracle/database/jdbc/ojdbc6/11.2.0.4/ojdbc6-11.2.0.4.jar
-          mvn install:install-file -Dfile=ojdbc6-11.2.0.4.jar -DgroupId=oracle -DartifactId=ojdbc6 -Dversion=11.2.0.4 -Dpackaging=jar 
-          
-      - name: Download and install security
-        run: |
-          wget  -O com.sun.xml.wsit.xws-security-1.3.1.jar    https://repository.jboss.org/com/sun/xml/wsit/xws-security/1.3.1/xws-security-1.3.1.jar
-          mvn install:install-file -Dfile=com.sun.xml.wsit.xws-security-1.3.1.jar -DgroupId=com.sun.xml.wsit -DartifactId=xws-security -Dversion=1.3.1 -Dpackaging=jar
+          .\mvnw.cmd clean install -DskipTests
+        env:
+          MAVEN_OPTS: -Dmaven.repo.local=%USERPROFILE%\.m2\repository
 
-      - name: Download and install wsit
-        run: |
-          wget  -O com.sun.xml.wsit:wsit-rt:1.1.jar   https://repository.jboss.org/nexus/content/repositories/thirdparty-releases/com/sun/xml/wsit/wsit-rt/1.1/wsit-rt-1.1.jar
-          mvn install:install-file -Dfile=com.sun.xml.wsit:wsit-rt:1.1.jar -DgroupId=com.sun.xml.wsit -DartifactId=wsit-rt -Dversion=1.1 -Dpackaging=jar
+      # Additional debugging steps
+      - name: Debug - Print Maven version
+        run: .\mvnw.cmd --version
 
-#      - name: Install zkmax
-#        run: |
-#          mkdir -p lib
-#          cp $GITHUB_WORKSPACE/.github/workflows/zkmax-6.5.7.jar ./lib/
-#          mvn install:install-file -Dfile=./lib/zkmax-6.5.7.jar -DgroupId=org.zkoss.zk -DartifactId=zkmax -Dversion=6.5.7 -Dpackaging=jar
+      - name: Debug - Print Java version
+        run: java -version
 
-      - name: Install zkex
-        run: |
-          mkdir -p lib
-          cp $GITHUB_WORKSPACE/.github/workflows/zkex-6.5.7.jar ./lib/
-          mvn install:install-file -Dfile=./lib/zkex-6.5.7.jar -DgroupId=org.zkoss.zk -DartifactId=zkex -Dversion=6.5.7 -Dpackaging=jar    
+      - name: Debug - Print environment variables
+        run: echo $env:MAVEN_OPTS
 
-        working-directory: ${{ github.workspace }}
-
-     
-
-    # Build
-      - name: Install Dependencies
-        run: mvn --batch-mode clean package -DskipTests
+      - name: Debug - Print directory contents
+        run: dir /s
