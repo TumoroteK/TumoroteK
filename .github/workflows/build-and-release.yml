@@ -19,32 +19,33 @@ jobs:
           java-version: '8'
           distribution: 'temurin'
 
-      # Create Maven Wrapper
-      - name: Create Maven Wrapper
-        run: mvn wrapper:wrapper
+#      # Create Maven Wrapper
+#      - name: Create Maven Wrapper
+#        run: mvn wrapper:wrapper
+#
+#      # Install Missing JAR: Oracle JDBC
+#      - name: Install Oracle JDBC driver to local repository
+#        run: |
+#          wget -O ojdbc6-11.2.0.4.jar https://repo1.maven.org/maven2/com/oracle/database/jdbc/ojdbc6/11.2.0.4/ojdbc6-11.2.0.4.jar
+#          ./mvnw install:install-file -Dfile=ojdbc6-11.2.0.4.jar -DgroupId=oracle -DartifactId=ojdbc6 -Dversion=11.2.0.4 -Dpackaging=jar
+#
+#      # Cache Maven dependencies
+#      - name: Cache Maven dependencies
+#        uses: actions/cache@v2
+#        with:
+#          path: ~/.m2/repository
+#          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+#          restore-keys: |
+#            ${{ runner.os }}-m2-
 
-      # Cache Maven dependencies
-      - name: Cache Maven dependencies
-        uses: actions/cache@v2
-        with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-m2-
 
-      # Install Missing JAR: Oracle JDBC
-      - name: Install Oracle JDBC driver to local repository
-        run: |
-          wget -O ojdbc6-11.2.0.4.jar https://repo1.maven.org/maven2/com/oracle/database/jdbc/ojdbc6/11.2.0.4/ojdbc6-11.2.0.4.jar
-          ./mvnw install:install-file -Dfile=ojdbc6-11.2.0.4.jar -DgroupId=oracle -DartifactId=ojdbc6 -Dversion=11.2.0.4 -Dpackaging=jar   
-
-      # Make Maven Wrapper executable
-      - name: Install Dependencies and Build
-        run: |
-          chmod +x ./mvnw
-          ./mvnw clean install -DskipTests
-        env:
-          MAVEN_OPTS: -Dmaven.repo.local=$HOME/.m2/repository
+#      # Make Maven Wrapper executable
+#      - name: Install Dependencies and Build
+#        run: |
+#          chmod +x ./mvnw
+#          ./mvnw clean install -DskipTests
+#        env:
+#          MAVEN_OPTS: -Dmaven.repo.local=$HOME/.m2/repository
 
       # Print contents of repository directory for debugging
       - name: Debug - List contents of repository
