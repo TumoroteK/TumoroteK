@@ -22,6 +22,15 @@ jobs:
      # Create Maven Wrapper
       - name: Create Maven Wrapper
         run: mvn wrapper:wrapper
+
+      # Cache Maven dependencies
+      - name: Cache Maven dependencies
+        uses: actions/cache@v2
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-m2-    
  
      # Install Missing JAR: Oracle JDBC
       - name: Install Oracle JDBC driver to local repository
@@ -29,7 +38,7 @@ jobs:
          wget -O ojdbc6-11.2.0.4.jar https://repo1.maven.org/maven2/com/oracle/database/jdbc/ojdbc6/11.2.0.4/ojdbc6-11.2.0.4.jar
          ./mvnw install:install-file -Dfile=ojdbc6-11.2.0.4.jar -DgroupId=oracle -DartifactId=ojdbc6 -Dversion=11.2.0.4 -Dpackaging=jar
          
-     # Install Missing JAR: A depdendecy of Spring WS Security » 2.1.3.RELEASE
+     # Install Missing JAR: A dependency of Spring WS Security » 2.1.3.RELEASE
       - name: Download and install security
         run: |
           wget  -O com.sun.xml.wsit.xws-security-1.3.1.jar    https://repository.jboss.org/com/sun/xml/wsit/xws-security/1.3.1/xws-security-1.3.1.jar
@@ -40,15 +49,8 @@ jobs:
         run: ./mvnw compile -DskipTests
     
      
-#
-#      # Cache Maven dependencies
-#      - name: Cache Maven dependencies
-#        uses: actions/cache@v2
-#        with:
-#          path: ~/.m2/repository
-#          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-#          restore-keys: |
-#            ${{ runner.os }}-m2-
+
+
 
 
 #      # Make Maven Wrapper executable
