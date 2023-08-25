@@ -46,11 +46,11 @@ jobs:
           wget -O wsit-rt-1.1.jar https://repository.jboss.org/com/sun/xml/wsit/wsit-rt/1.1/wsit-rt-1.1.jar
           ./mvnw install:install-file -Dfile=wsit-rt-1.1.jar -DgroupId=com.sun.xml.wsit -DartifactId=wsit-rt -Dversion=1.1 -Dpackaging=jar 
 
-      # Install  package: jackson-mapper-lgpl
-      - name: Install jackson-mapper-lgpl
-        run: |
-          wget -O jackson-mapper-lgpl-1.7.4.jar https://repo1.maven.org/maven2/org/codehaus/jackson/jackson-mapper-lgpl/1.7.4/jackson-mapper-lgpl-1.7.4.jar
-          ./mvnw install:install-file -Dfile=jackson-mapper-lgpl-1.7.4.jar -DgroupId=org.codehaus.jackson -DartifactId=jackson-mapper-lgpl -Dversion=1.7.4 -Dpackaging=jar
+#      # Install  package: jackson-mapper-lgpl
+#      - name: Install jackson-mapper-lgpl
+#        run: |
+#          wget -O jackson-mapper-lgpl-1.7.4.jar https://repo1.maven.org/maven2/org/codehaus/jackson/jackson-mapper-lgpl/1.7.4/jackson-mapper-lgpl-1.7.4.jar
+#          ./mvnw install:install-file -Dfile=jackson-mapper-lgpl-1.7.4.jar -DgroupId=org.codehaus.jackson -DartifactId=jackson-mapper-lgpl -Dversion=1.7.4 -Dpackaging=jar
 
 
       # Install Missing JAR: zkex. The version in the central repo is 3.x : so we can't use it
