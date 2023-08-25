@@ -52,15 +52,6 @@ jobs:
         run: ls -R $HOME
 
 
-      # Print contents of Maven repository for debugging
-      - name: Debug - List contents of Maven repository
-        run: ls -R /home/runner/.m2/repository
-
-
-      # Print contents of repository directory for debugging
-      - name: Debug - List contents of repository
-        run: ls -R $HOME/.m2/repository
-
       # Additional debugging steps
       - name: Debug - Print Maven version
         run: ./mvnw --version
