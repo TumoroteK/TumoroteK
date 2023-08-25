@@ -52,9 +52,7 @@ jobs:
          mkdir -p lib
          cp $GITHUB_WORKSPACE/.github/workflows/zkex-6.5.7.jar ./lib/
          mvn install:install-file -Dfile=./lib/zkex-6.5.7.jar -DgroupId=org.zkoss.zk -DartifactId=zkex -Dversion=6.5.7 -Dpackaging=jar    
-
         working-directory: ${{ github.workspace }}
-
 
       # Install jackson-mapper-lgpl dependency
       - name: Install jackson-mapper-lgpl to local repository
