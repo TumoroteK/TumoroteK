@@ -19,6 +19,10 @@ jobs:
           java-version: '8'
           distribution: 'temurin'
 
+      # Create Maven Wrapper
+      - name: Create Maven Wrapper
+        run: mvn wrapper:wrapper
+
       # Use Maven Wrapper
       - name: Set up Maven Wrapper
         run: ./mvnw.cmd
