@@ -47,19 +47,19 @@ jobs:
           ./mvnw install:install-file -Dfile=wsit-rt-1.1.jar -DgroupId=com.sun.xml.wsit -DartifactId=wsit-rt -Dversion=1.1 -Dpackaging=jar 
 
 
-      # Unzip the zip file and install all JARs connected to ZK version 6.57 that is not found on maven repo
+        # Unzip the zip file and install all JARs connected to ZK version 6.57 that is not found on maven repo
       - name: Unzip and Install zk JARs
         run: |
           mkdir -p unzip_temp
           unzip -q $GITHUB_WORKSPACE/.github/workflows/zk-6.5.7-jars.zip -d unzip_temp
           for file in unzip_temp/*.jar; do
-             filename=$(basename "$file")
-             artifactId=$(echo "$filename" | sed 's/-6.5.7.jar//')
-             echo "Installing file: $file"
-             echo "  GroupId: org.zkoss.zk"
-             echo "  ArtifactId: $artifactId"
-             ./mvnw install:install-file -Dfile=$file -DgroupId=org.zkoss.zk -DartifactId=$artifactId -Dversion=6.5.7 -Dpackaging=jar
-         done   
+            filename=$(basename "$file")
+            artifactId=$(echo "$filename" | sed 's/-6.5.7.jar//')
+            echo "Installing file: $file"
+            echo "  GroupId: org.zkoss.zk"
+            echo "  ArtifactId: $artifactId"
+            ./mvnw install:install-file -Dfile=$file -DgroupId=org.zkoss.zk -DartifactId=$artifactId -Dversion=6.5.7 -Dpackaging=jar
+          done
 
         working-directory: ${{ github.workspace }}
 
