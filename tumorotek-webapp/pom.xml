@@ -239,19 +239,23 @@
         <dependency>
             <groupId>org.zkoss.zk</groupId>
             <artifactId>zkplus</artifactId>
-            <version>6.5.4</version>
+            <version>${zk-version}</version>
         </dependency>
         <dependency>
             <groupId>org.zkoss.zk</groupId>
             <artifactId>zhtml</artifactId>
-            <version>6.5.4</version>
+            <version>${zk-version}</version>
         </dependency>
         <dependency>
             <groupId>org.zkoss.zk</groupId>
             <artifactId>zkbind</artifactId>
-            <version>6.5.4</version>
+            <version>${zk-version}</version>
         </dependency>
-
+        <dependency>
+            <groupId>org.zkoss.zk</groupId>
+            <artifactId>zkmax</artifactId>
+            <version>${zk-version}</version>
+        </dependency>
         <dependency>
             <groupId>org.zkoss.zk</groupId>
             <artifactId>zkex</artifactId>
@@ -275,12 +279,6 @@
             <groupId>org.liquibase</groupId>
             <artifactId>liquibase-core</artifactId>
             <version>${liquibase-version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>jfree</groupId>
-            <artifactId>jfreechart</artifactId>
-            <version>1.0.13</version>
         </dependency>
 
         <!-- For Java 9 compatibility -->
