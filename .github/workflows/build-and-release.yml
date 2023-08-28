@@ -47,12 +47,14 @@ jobs:
           ./mvnw install:install-file -Dfile=wsit-rt-1.1.jar -DgroupId=com.sun.xml.wsit -DartifactId=wsit-rt -Dversion=1.1 -Dpackaging=jar 
 
 
-      # Install Missing JAR: zkex. The version in the central repo is 3.x : so we can't use it
-      - name: Install zkex
+      # Unzip the zip file and install all JARs connected to ZK version 6.57 that is not found on maven repo
+      - name: Unzip and Install zk JARs
         run: |
-         mkdir -p lib
-         cp $GITHUB_WORKSPACE/.github/workflows/zkex-6.5.7.jar ./lib/
-         ./mvnw install:install-file -Dfile=./lib/zkex-6.5.7.jar -DgroupId=org.zkoss.zk -DartifactId=zkex -Dversion=6.5.7 -Dpackaging=jar  
+          mkdir -p unzip_temp
+          unzip -q $GITHUB_WORKSPACE/.github/workflows/zkex-6.5.7.zip -d unzip_temp
+          for file in unzip_temp/*.jar; do
+            ./mvnw install:install-file -Dfile=$file -DgroupId=org.zkoss.zk -DartifactId=zkex -Dversion=6.5.7 -Dpackaging=jar
+          done
 
         working-directory: ${{ github.workspace }}
 
