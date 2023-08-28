@@ -53,9 +53,13 @@ jobs:
           mkdir -p unzip_temp
           unzip -q $GITHUB_WORKSPACE/.github/workflows/zk-6.5.7-jars.zip -d unzip_temp
           for file in unzip_temp/*.jar; do
+             filename=$(basename "$file")
+             artifactId=$(echo "$filename" | sed 's/-6.5.7.jar//')
              echo "Installing file: $file"
-            ./mvnw install:install-file -Dfile=$file -DgroupId=org.zkoss.zk -DartifactId=zkex -Dversion=6.5.7 -Dpackaging=jar
-          done
+             echo "  GroupId: org.zkoss.zk"
+             echo "  ArtifactId: $artifactId"
+             ./mvnw install:install-file -Dfile=$file -DgroupId=org.zkoss.zk -DartifactId=$artifactId -Dversion=6.5.7 -Dpackaging=jar
+         done   
 
         working-directory: ${{ github.workspace }}
 
