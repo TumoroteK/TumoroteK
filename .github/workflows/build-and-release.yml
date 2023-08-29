@@ -59,9 +59,7 @@ jobs:
           for file in unzip_temp_common/*.jar; do
             filename=$(basename "$file")
             artifactId=$(echo "$filename" | sed 's/-6.5.7.jar//')
-            echo "Installing file: $file"
-            echo "  GroupId: org.zkoss.common"
-            echo "  ArtifactId: $artifactId"
+            echo "Installing file: $file   - GroupId: org.zkoss.common  - ArtifactId: $artifactId"
             ./mvnw install:install-file -Dfile=$file -DgroupId=org.zkoss.common -DartifactId=$artifactId -Dversion=6.5.7 -Dpackaging=jar
           done
 
@@ -83,12 +81,8 @@ jobs:
 
         working-directory: ${{ github.workspace }}
 
-
-          
-          
-
       # Compile the project using Maven Wrapper
-      - name: Compile with Maven Wrapper
+      - name: Clean
         run: ./mvnw clean
 
       # Compile the project using Maven Wrapper
