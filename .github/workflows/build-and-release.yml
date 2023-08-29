@@ -81,6 +81,12 @@ jobs:
 
         working-directory: ${{ github.workspace }}
 
+      # Print the folders and subfolders of the specified directory
+      - name: Print folders and subfolders
+        run: |
+          echo "Folders and subfolders of /home/runner/.m2/repository:"
+          ls -R /home/runner/.m2/repository
+
       # Compile the project using Maven Wrapper
       - name: Clean
         run: ./mvnw clean
