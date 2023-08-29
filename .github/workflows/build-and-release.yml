@@ -91,9 +91,9 @@ jobs:
       - name: Clean
         run: ./mvnw clean
 
-      # Compile the project using Maven Wrapper
-      - name: Compile with Maven Wrapper
-        run: ./mvnw compile -DskipTests
+#      # Compile the project using Maven Wrapper
+#      - name: Compile with Maven Wrapper
+#        run: ./mvnw compile -DskipTests
 
       # Save Maven Cache
       - name: Save Maven cache
