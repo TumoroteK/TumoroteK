@@ -71,7 +71,7 @@ jobs:
       - name: Unzip and Install org.zkoss.zk JARs
         run: |
           mkdir -p unzip_temp_zk
-          unzip -q $GITHUB_WORKSPACE/.github/workflows/org.zkoss.zk.zip -d unzip_temp
+          unzip -q $GITHUB_WORKSPACE/.github/workflows/org.zkoss.zk.zip -d unzip_temp_zk
           for file in unzip_temp_zk/*.jar; do
             filename=$(basename "$file")
             artifactId=$(echo "$filename" | sed 's/-6.5.7.jar//')
