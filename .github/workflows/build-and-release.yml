@@ -47,11 +47,12 @@ jobs:
           ./mvnw install:install-file -Dfile=wsit-rt-1.1.jar -DgroupId=com.sun.xml.wsit -DartifactId=wsit-rt -Dversion=1.1 -Dpackaging=jar 
 
 
-        # Unzip the zip file and install all JARs connected to ZK version 6.57 that is not found on maven repo
+        #The ZK dependencies in this project are of version 6.5.7: a version that can't be found in Maven Repo, they  must be installed manually
+        # Unzip the zip file with all the zk jars that have the groupIdD org.zkoss.zk and install them
       - name: Unzip and Install zk JARs
         run: |
           mkdir -p unzip_temp
-          unzip -q $GITHUB_WORKSPACE/.github/workflows/zk-6.5.7-jars.zip -d unzip_temp
+          unzip -q $GITHUB_WORKSPACE/.github/workflows/org.zkoss.zk.zip -d unzip_temp
           for file in unzip_temp/*.jar; do
             filename=$(basename "$file")
             artifactId=$(echo "$filename" | sed 's/-6.5.7.jar//')
@@ -62,6 +63,8 @@ jobs:
           done
 
         working-directory: ${{ github.workspace }}
+          
+          
 
       # Compile the project using Maven Wrapper
       - name: Compile with Maven Wrapper
@@ -76,12 +79,3 @@ jobs:
         uses: skjolber/maven-cache-github-action@v1
         with:
          step: save
-
-
-
-      # Print contents of home directory for debugging
-      - name: Debug - List contents of home directory
-        run: ls -R $HOME
-
-      - name: Debug - Print directory contents
-        run: ls -R
