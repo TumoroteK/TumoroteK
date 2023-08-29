@@ -91,12 +91,12 @@ jobs:
       - name: Clean
         run: ./mvnw clean
 
-#      # Compile the project using Maven Wrapper
-#      - name: Compile with Maven Wrapper
-#        run: ./mvnw compile -DskipTests
+      # Compile the project using Maven Wrapper
+      - name: Compile with Maven Wrapper
+        run: ./mvnw install -DskipTests
 
-      # Save Maven Cache
-      - name: Save Maven cache
-        uses: skjolber/maven-cache-github-action@v1
-        with:
-         step: save
+#      # Save Maven Cache
+#      - name: Save Maven cache
+#        uses: skjolber/maven-cache-github-action@v1
+#        with:
+#         step: save
