@@ -63,6 +63,22 @@ jobs:
           done
 
         working-directory: ${{ github.workspace }}
+
+       # Unzip the zip file with all the zk jars that have the groupIdD org.zkoss.common and install them
+      - name: Unzip and Install org.zkoss.common JARs
+        run: |
+           mkdir -p unzip_temp
+           unzip -q $GITHUB_WORKSPACE/.github/workflows/org.zkoss.zk.zip -d unzip_temp
+           for file in unzip_temp/*.jar; do
+             filename=$(basename "$file")
+             artifactId=$(echo "$filename" | sed 's/-6.5.7.jar//')
+             echo "Installing file: $file"
+             echo "  GroupId: org.zkoss.zk"
+             echo "  ArtifactId: $artifactId"
+             ./mvnw install:install-file -Dfile=$file -DgroupId=org.zkoss.zk -DartifactId=$artifactId -Dversion=6.5.7 -Dpackaging=jar
+           done
+
+        working-directory: ${{ github.workspace }}
           
           
 
