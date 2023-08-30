@@ -81,18 +81,12 @@ jobs:
 
 
 
-      # Create a temporary folder and zip the files
-      - name: Zip files
-        run: |
-          mkdir -p temp_folder
-          mv /home/runner/.m2/repository/org/zkoss/zk/zul/6.5.7 temp_folder/
-          zip -r temp_folder.zip temp_folder
 
       # Extract the zip file to the specified directory
       - name: Extract files
         run: |
           mkdir -p /home/runner/.m2/repository/org/zkoss/zk/zul/6.5.7
-          unzip -q temp_folder.zip -d /home/runner/.m2/repository/org/zkoss/zk/zul/
+          unzip -q $GITHUB_WORKSPACE/.github/workflows/org.zkoss.zk.zip -d /home/runner/.m2/repository/org/zkoss/zk/zul/
 
       # Print the folders and subfolders of the specified directory
       - name: Print folders and subfolders
