@@ -9,6 +9,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Set up environment variable
+        run: echo "ZK_FOLDER=/home/runner/.m2/repository/org/zkoss" >> $GITHUB_ENV
       - name: Checkout code
         uses: actions/checkout@v2
 
@@ -47,46 +49,12 @@ jobs:
           ./mvnw install:install-file -Dfile=wsit-rt-1.1.jar -DgroupId=com.sun.xml.wsit -DartifactId=wsit-rt -Dversion=1.1 -Dpackaging=jar 
           
 
+
       #The ZK dependencies in this project are of version 6.5.7: a version that can't be found in Maven Repo,
-      #they  must be installed manually
-
-
-#      # Unzip the zip file with all the zk jars that have the groupIdD org.zkoss.common and install them
-#      - name: Unzip and Install org.zkoss.common JARs
-#        run: |
-#          mkdir -p unzip_temp_common
-#          unzip -q $GITHUB_WORKSPACE/.github/workflows/org.zkoss.common.zip -d unzip_temp_common
-#          for file in unzip_temp_common/*.jar; do
-#            filename=$(basename "$file")
-#            artifactId=$(echo "$filename" | sed 's/-6.5.7.jar//')
-#            echo "Installing file: $file   - GroupId: org.zkoss.common  - ArtifactId: $artifactId"
-#            ./mvnw install:install-file -Dfile=$file -DgroupId=org.zkoss.common -DartifactId=$artifactId -Dversion=6.5.7 -Dpackaging=jar -X
-#          done
-#
-#        working-directory: ${{ github.workspace }}
-#
-        # Unzip the zip file with all the zk jars that have the groupIdD org.zkoss.zk and install them
-#      - name: Unzip and Install org.zkoss.zk JARs
-#        run: |
-#          mkdir -p unzip_temp_zk
-#          unzip -q $GITHUB_WORKSPACE/.github/workflows/org.zkoss.zk.zip -d unzip_temp_zk
-#          for file in unzip_temp_zk/*.jar; do
-#            filename=$(basename "$file")
-#            artifactId=$(echo "$filename" | sed 's/-6.5.7.jar//')
-#            echo "Installing file: $file"
-#            echo "  GroupId: org.zkoss.zk"
-#            echo "  ArtifactId: $artifactId"
-#            ./mvnw install:install-file -Dfile=$file -DgroupId=org.zkoss.zk -DartifactId=$artifactId -Dversion=6.5.7 -Dpackaging=jar -X
-#          done
-
-
-
-
-      # Extract the zip file to the specified directory
-      - name: Extract files
+      - name: Extract zk files to destination folder
         run: |
-          mkdir -p /home/runner/.m2/repository/org/zkoss/zk/zul/6.5.7
-          unzip -q $GITHUB_WORKSPACE/.github/workflows/org.zkoss.zk.zip -d /home/runner/.m2/repository/org/zkoss/zk/zul/
+          mkdir -p $ZK_FOLDER
+          unzip -q $GITHUB_WORKSPACE/.github/workflows/zk-dependencies.zip -d $ZK_FOLDER
 
       # Print the folders and subfolders of the specified directory
       - name: Print folders and subfolders
