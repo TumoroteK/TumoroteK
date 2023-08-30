@@ -54,7 +54,7 @@ jobs:
       - name: Extract zk files to destination folder
         run: |
           mkdir -p $ZK_FOLDER
-          unzip -q $GITHUB_WORKSPACE/.github/workflows/zk-dependencies.zip -d $ZK_FOLDER
+          unzip -q $GITHUB_WORKSPACE/.github/workflows/zk.zip -d $ZK_FOLDER
 
       # Print the folders and subfolders of the specified directory
       - name: Print folders and subfolders
