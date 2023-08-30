@@ -49,20 +49,6 @@ jobs:
 
       #The ZK dependencies in this project are of version 6.5.7: a version that can't be found in Maven Repo,
       #they  must be installed manually
-      # Install Missing JAR: ZK
-      - name: Install missing zk
-        run: |
-          mkdir -p unzip_zk
-          unzip -q $GITHUB_WORKSPACE/.github/workflows/missing-zk.zip -d unzip_zk
-          for file in unzip_zk/*.jar; do
-            filename=$(basename "$file")
-            artifactId=$(echo "$filename" | sed 's/-6.5.7.jar//')
-            echo "Installing file: $file   - GroupId: org.zkoss.common  - ArtifactId: $artifactId"
-            ./mvnw install:install-file -Dfile=$file -DgroupId=org.zkoss.zk -DartifactId=$artifactId -Dversion=6.5.7 -Dpackaging=jar -X
-          done
-        working-directory: ${{ github.workspace }}
-
-
 
 
 #      # Unzip the zip file with all the zk jars that have the groupIdD org.zkoss.common and install them
@@ -79,21 +65,20 @@ jobs:
 #
 #        working-directory: ${{ github.workspace }}
 #
-#        # Unzip the zip file with all the zk jars that have the groupIdD org.zkoss.zk and install them
-#      - name: Unzip and Install org.zkoss.zk JARs
-#        run: |
-#          mkdir -p unzip_temp_zk
-#          unzip -q $GITHUB_WORKSPACE/.github/workflows/org.zkoss.zk.zip -d unzip_temp_zk
-#          for file in unzip_temp_zk/*.jar; do
-#            filename=$(basename "$file")
-#            artifactId=$(echo "$filename" | sed 's/-6.5.7.jar//')
-#            echo "Installing file: $file"
-#            echo "  GroupId: org.zkoss.zk"
-#            echo "  ArtifactId: $artifactId"
-#            ./mvnw install:install-file -Dfile=$file -DgroupId=org.zkoss.zk -DartifactId=$artifactId -Dversion=6.5.7 -Dpackaging=jar -X
-#          done
-#
-#        working-directory: ${{ github.workspace }}
+        # Unzip the zip file with all the zk jars that have the groupIdD org.zkoss.zk and install them
+      - name: Unzip and Install org.zkoss.zk JARs
+        run: |
+          mkdir -p unzip_temp_zk
+          unzip -q $GITHUB_WORKSPACE/.github/workflows/org.zkoss.zk.zip -d unzip_temp_zk
+          for file in unzip_temp_zk/*.jar; do
+            filename=$(basename "$file")
+            artifactId=$(echo "$filename" | sed 's/-6.5.7.jar//')
+            echo "Installing file: $file"
+            echo "  GroupId: org.zkoss.zk"
+            echo "  ArtifactId: $artifactId"
+            ./mvnw install:install-file -Dfile=$file -DgroupId=org.zkoss.zk -DartifactId=$artifactId -Dversion=6.5.7 -Dpackaging=jar -X
+          done
+
 
       # Print the folders and subfolders of the specified directory
       - name: Print folders and subfolders
