@@ -66,19 +66,33 @@ jobs:
 #        working-directory: ${{ github.workspace }}
 #
         # Unzip the zip file with all the zk jars that have the groupIdD org.zkoss.zk and install them
-      - name: Unzip and Install org.zkoss.zk JARs
-        run: |
-          mkdir -p unzip_temp_zk
-          unzip -q $GITHUB_WORKSPACE/.github/workflows/org.zkoss.zk.zip -d unzip_temp_zk
-          for file in unzip_temp_zk/*.jar; do
-            filename=$(basename "$file")
-            artifactId=$(echo "$filename" | sed 's/-6.5.7.jar//')
-            echo "Installing file: $file"
-            echo "  GroupId: org.zkoss.zk"
-            echo "  ArtifactId: $artifactId"
-            ./mvnw install:install-file -Dfile=$file -DgroupId=org.zkoss.zk -DartifactId=$artifactId -Dversion=6.5.7 -Dpackaging=jar -X
-          done
+#      - name: Unzip and Install org.zkoss.zk JARs
+#        run: |
+#          mkdir -p unzip_temp_zk
+#          unzip -q $GITHUB_WORKSPACE/.github/workflows/org.zkoss.zk.zip -d unzip_temp_zk
+#          for file in unzip_temp_zk/*.jar; do
+#            filename=$(basename "$file")
+#            artifactId=$(echo "$filename" | sed 's/-6.5.7.jar//')
+#            echo "Installing file: $file"
+#            echo "  GroupId: org.zkoss.zk"
+#            echo "  ArtifactId: $artifactId"
+#            ./mvnw install:install-file -Dfile=$file -DgroupId=org.zkoss.zk -DartifactId=$artifactId -Dversion=6.5.7 -Dpackaging=jar -X
+#          done
 
+
+
+      # Create a temporary folder and zip the files
+      - name: Zip files
+        run: |
+          mkdir -p temp_folder
+          mv /home/runner/.m2/repository/org/zkoss/zk/zul/6.5.7 temp_folder/
+          zip -r temp_folder.zip temp_folder
+
+      # Extract the zip file to the specified directory
+      - name: Extract files
+        run: |
+          mkdir -p /home/runner/.m2/repository/org/zkoss/zk/zul/6.5.7
+          unzip -q temp_folder.zip -d /home/runner/.m2/repository/org/zkoss/zk/zul/
 
       # Print the folders and subfolders of the specified directory
       - name: Print folders and subfolders
