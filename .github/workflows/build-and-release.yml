@@ -54,8 +54,9 @@ jobs:
       #The ZK dependencies in this project are of version 6.5.7: a version that can't be found in Maven Repo
       - name: Extract zk files to destination folder
         run: |
-            if [ ! -d "$ZK_FOLDER" ]; then
-              mkdir -p $ZK_FOLDER
+            if [ ! -d $ZK_FOLDER ]; then
+             echo "ZK folder does not already exists. Extracting files..."        
+            mkdir -p $ZK_FOLDER
               unzip -q $GITHUB_WORKSPACE/.github/workflows/zk.zip -d $ZK_FOLDER
             else
               echo "ZK folder already exists. Skipping extraction."
