@@ -29,9 +29,13 @@ jobs:
 
       # Restore Maven cache
       - name: Restore Maven cache
-        uses: skjolber/maven-cache-github-action@v1
+        uses: actions/cache@v2
         with:
-           step: restore
+          path: |
+            ~/.m2/repository
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-m2-
  
      # Install Missing JAR: Oracle JDBC
       - name: Install Oracle JDBC driver to local repository
@@ -69,8 +73,10 @@ jobs:
         run: ./mvnw clean compile -DskipTests
 
 
-      # Save Maven Cache
+    # Save Maven Cache (use GitHub Actions cache)
       - name: Save Maven cache
-        uses: skjolber/maven-cache-github-action@v1
+        uses: actions/cache@v2
         with:
-         step: save
+         path: |
+          ~/.m2/repository
+         key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
