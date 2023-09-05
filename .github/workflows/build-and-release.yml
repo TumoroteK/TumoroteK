@@ -2,10 +2,12 @@ name: Compile TK On Linux
 
 
 on:
+  # Chaque Push
   push:
   workflow_dispatch:
 
 jobs:
+  # Job 1: Build
   build:
     runs-on: ubuntu-latest
 
