@@ -18,7 +18,7 @@ jobs:
 
       # Set up Java 8
       - name: Set up JDK 8
-        uses: actions/setup-java@v2
+        uses: actions/setup-java@v3
         with:
           java-version: '8'
           distribution: 'temurin'
@@ -29,7 +29,7 @@ jobs:
 
       # Restore Maven cache
       - name: Restore Maven cache
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: |
             ~/.m2/repository
@@ -75,7 +75,7 @@ jobs:
 
     # Save Maven Cache (use GitHub Actions cache)
       - name: Save Maven cache
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
          path: |
           ~/.m2/repository
