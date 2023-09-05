@@ -14,7 +14,7 @@ jobs:
         run: echo "ZK_FOLDER=/home/runner/.m2/repository/org/zkoss" >> $GITHUB_ENV
 
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       # Set up Java 8
       - name: Set up JDK 8
