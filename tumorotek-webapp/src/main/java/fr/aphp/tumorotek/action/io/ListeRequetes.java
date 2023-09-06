@@ -51,21 +51,18 @@ import fr.aphp.tumorotek.model.TKdataObject;
 import fr.aphp.tumorotek.model.io.export.Requete;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
-public class ListeRequetes extends AbstractListeController2
+public class ListeRequetes extends ListeOngletRequete
 {
 
    private static final long serialVersionUID = 1L;
 
    private List<Requete> listObjects = new ArrayList<>();
 
+
    @Override
    public void doAfterCompose(final Component comp) throws Exception{
 
       super.doAfterCompose(comp);
-
-      listPanel.setHeight(getMainWindow().getListPanelHeight() + 35 + "px");
-      //objectsListGrid.setHeight(getMainWindow().getListPanelHeight()
-      //		+ 38 + "px");
 
       listObjects = ManagerLocator.getRequeteManager().findByBanqueManager(SessionUtils.getCurrentBanque(sessionScope));
       Collections.sort(listObjects);
@@ -93,8 +90,7 @@ public class ListeRequetes extends AbstractListeController2
       listObjects = reqs;
       setCurrentRow(null);
       setCurrentObject(null);
-
-      getBinder().loadAttribute(self.getFellow("objectsListGrid"), "model");
+      reloadComponent();
    }
 
    public AbstractFicheCombineController getFiche(){
