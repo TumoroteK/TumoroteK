@@ -38,8 +38,8 @@ package fr.aphp.tumorotek.action.code;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
@@ -70,7 +70,7 @@ import fr.aphp.tumorotek.webapp.tree.code.CodeTreeitemRenderer;
 public class CodeBrowserComponent extends GenericForwardComposer<Component>
 {
 
-   private final Log log = LogFactory.getLog(CodeBrowserComponent.class);
+   private final Logger log = LoggerFactory.getLogger(CodeBrowserComponent.class);
 
    private static final long serialVersionUID = 1L;
 
@@ -309,7 +309,7 @@ public class CodeBrowserComponent extends GenericForwardComposer<Component>
                renderer.render(currentItem, selectedNode, 0);
             }
          }catch(final Exception e){
-            log.error(e);
+            log.error(e.getMessage(), e); 
          }
       }
    }

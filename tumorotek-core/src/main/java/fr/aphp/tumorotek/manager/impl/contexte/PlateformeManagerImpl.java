@@ -41,8 +41,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.validation.Validator;
 
 import fr.aphp.tumorotek.dao.contexte.CollaborateurDao;
@@ -80,7 +80,7 @@ import fr.aphp.tumorotek.utils.Utils;
 public class PlateformeManagerImpl implements PlateformeManager
 {
 
-   private final Log log = LogFactory.getLog(PlateformeManager.class);
+   private final Logger log = LoggerFactory.getLogger(PlateformeManager.class);
 
    private PlateformeDao plateformeDao;
 
@@ -199,14 +199,14 @@ public class PlateformeManagerImpl implements PlateformeManager
 
             // cette methode appelle mergeObject(plateforme)
             plateforme = updateAdministrateurs(plateforme, utilisateurs);
-            log.info("Enregistrement objet Plateforme " + plateforme.toString());
+            log.info("Enregistrement objet Plateforme {}",  plateforme);
 
             // filesystem
             final String path = baseDir.concat("/pt_").concat(plateforme.getPlateformeId().toString());
             if(new File(path).mkdirs()){
-               log.info("Creation file system " + path);
+               log.info("Creation file system {}",  path);
             }else{
-               log.error("Erreur dans la creation du systeme de fichier pour la pf " + plateforme.toString());
+               log.error("Erreur dans la creation du systeme de fichier pour la pf {}",  plateforme);
                throw new RuntimeException("plateforme.filesystem.error");
             }
 
@@ -224,7 +224,7 @@ public class PlateformeManagerImpl implements PlateformeManager
                plateforme);
 
          }else{
-            log.warn("Doublon lors modification objet Plateforme " + plateforme.toString());
+            log.warn("Doublon lors modification objet Plateforme {}",  plateforme);
             throw new DoublonFoundException("Plateforme", "modification");
          }
       }
@@ -243,7 +243,7 @@ public class PlateformeManagerImpl implements PlateformeManager
          BeanValidator.validateObject(plateforme, new Validator[] {plateformeValidator});
 
          plateforme = plateformeDao.mergeObject(plateforme);
-         log.info("Enregistrement objet Plateforme " + plateforme.toString());
+         log.info("Enregistrement objet Plateforme {}",  plateforme);
 
          //Enregistrement de l'operation associee
          final Operation creationOp = new Operation();
@@ -256,7 +256,7 @@ public class PlateformeManagerImpl implements PlateformeManager
          updateConteneurs(plateforme, conteneurs);
 
       }else{
-         log.warn("Doublon lors modification objet Plateforme " + plateforme.toString());
+         log.warn("Doublon lors modification objet Plateforme {}",  plateforme);
          throw new DoublonFoundException("Plateforme", "modification");
       }
       return plateforme;
@@ -298,8 +298,7 @@ public class PlateformeManagerImpl implements PlateformeManager
             pf.getUtilisateurs().remove(u);
             u.getPlateformes().remove(pf);
 
-            log.debug("Suppression de l'association entre " + "l'utilisateur : " + u.toString() + " et la plateforme : "
-               + pf.toString());
+            log.debug("Suppression de l'association entre l'utilisateur : {} et la plateforme: {}", u, pf);
          }
 
          // on parcourt la nouvelle liste d'utilisateurs
@@ -309,9 +308,7 @@ public class PlateformeManagerImpl implements PlateformeManager
                // on ajoute l'utilisateur des deux cotés de l'association
                pf.getUtilisateurs().add(utilisateurDao.mergeObject(utilisateurs.get(i)));
                utilisateurDao.mergeObject(utilisateurs.get(i)).getPlateformes().add(pf);
-
-               log.debug("Ajout de l'association entre " + "l'utilisateur : " + utilisateurs.get(i).toString()
-                  + " et la plateforme : " + pf.toString());
+               log.debug("Ajout de l'association entre l'utilisateur : {} et la plateforme: {}", utilisateurs, pf);
             }
          }
       }
@@ -361,9 +358,7 @@ public class PlateformeManagerImpl implements PlateformeManager
             if(!pf.getConteneurPlateformes().contains(cp)){
                // on ajoute le conteneur dans l'association
                pf.getConteneurPlateformes().add(conteneurPlateformeDao.mergeObject(cp));
-
-               log.debug("Ajout de l'association entre la plateforme : " + pf.toString() + " et le conteneur : "
-                  + conteneurs.get(i).toString());
+               log.debug("Ajout de l'association entre la plateforme : {} et le conteneur : {} ", pf, conteneurs.get(i));
             }else{ // sinon on passe le partage a true
                cp = conteneurPlateformeDao.findById(pk);
                cp.setPartage(true);
@@ -384,7 +379,7 @@ public class PlateformeManagerImpl implements PlateformeManager
             updateAdministrateurs(pf, new ArrayList<Utilisateur>());
 
             plateformeDao.removeObject(pf.getPlateformeId());
-            log.info("Suppression objet Plateforme " + pf.toString());
+            log.info("Suppression objet Plateforme {}",  pf);
 
             // delete file system
             new File(basedir.concat("/pt_").concat(pf.getPlateformeId().toString())).delete();

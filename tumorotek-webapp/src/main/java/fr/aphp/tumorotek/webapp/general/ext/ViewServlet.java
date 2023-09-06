@@ -65,8 +65,6 @@ public class ViewServlet extends HttpServlet
    @Override
    protected void doGet(final HttpServletRequest req, final HttpServletResponse resp) throws ServletException, IOException{
 
-      // System.out.println(Servlets.getDetail(req));
-
       doPost(req, resp);
 
    }

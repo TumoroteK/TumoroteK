@@ -121,7 +121,7 @@ public class TumoBarcodePrinterImpl implements TumoBarcodePrinter
    //				components.add(ComponentPrinter.getComponent(lignes, imprimante,
    //														modele, echan.getCode()));
    //			} catch (Exception e) {
-   //				e.printStackTrace();
+   //				log.error(e.getMessage(), e);
    //			}
    //		}
    //		codeRetour = componentPrinter.printComponents(components, nb,

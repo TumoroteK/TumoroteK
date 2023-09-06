@@ -50,8 +50,8 @@ import java.util.Map;
 import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import fr.aphp.tumorotek.interfacage.sgl.SglHandler;
 import fr.aphp.tumorotek.interfacage.sgl.view.ViewHandler;
@@ -63,7 +63,7 @@ import fr.aphp.tumorotek.model.interfacage.Emetteur;
 public class ViewHandlerImpl implements ViewHandler
 {
 
-   private final Log log = LogFactory.getLog(SglHandler.class);
+   private final Logger log = LoggerFactory.getLogger(SglHandler.class);
 
    private String camelConfigLocation;
 
@@ -75,8 +75,8 @@ public class ViewHandlerImpl implements ViewHandler
    public DossierExterne sendQuery(final Emetteur _e, final String sglNumDos, final String propFileName,
       final ViewResultProcessor processor, final Banque bank){
 
-      log.debug("send query for emetteur: " + _e.toString());
-      log.debug("send query for code: " + sglNumDos);
+      log.debug("send query for emetteur: {}", _e);
+      log.debug("send query for code: {}", sglNumDos);
 
       final Map<String, Object> args = new HashMap<>();
       args.put("numDos", sglNumDos);
@@ -93,7 +93,7 @@ public class ViewHandlerImpl implements ViewHandler
       DossierExterne dExt = null;
       final ResourceBundle jdbcBundle = getJdbcBundle(propFileName);
       if(jdbcBundle != null){
-         log.debug("property file loaded: " + jdbcBundle.toString());
+         log.debug("property file loaded: {} ", jdbcBundle);
          Connection con = null;
          PreparedStatement stmt = null;
          ResultSet rSet = null;
@@ -104,16 +104,16 @@ public class ViewHandlerImpl implements ViewHandler
             props.put("password", jdbcBundle.getString("password"));
 
             // Class.forName("net.sourceforge.jtds.jdbc.Driver");
-            log.debug("jdbc driver: " + jdbcBundle.getString("driver"));
+            log.debug("jdbc driver: {} ", jdbcBundle.getString("driver"));
             Class.forName(jdbcBundle.getString("driver"));
 
-            log.debug("jdbc url connection: " + jdbcBundle.getString("jdbcUrl"));
+            log.debug("jdbc url connection: {}",jdbcBundle.getString("jdbcUrl"));
             con = DriverManager.getConnection(jdbcBundle.getString("jdbcUrl"), props);
 
             stmt = con.prepareStatement(jdbcBundle.getString("statement"));
             stmt.setString(1, numDos);
 
-            log.debug("executing view query: " + jdbcBundle.getString("statement"));
+            log.debug("executing view query: {}", jdbcBundle.getString("statement"));
 
             rSet = stmt.executeQuery();
 
@@ -161,18 +161,18 @@ public class ViewHandlerImpl implements ViewHandler
          InputStreamReader reader = null;
          ResourceBundle bundle = null;
 
-         log.debug("stream property file looked path: " + file.getAbsolutePath());
+         log.debug("stream property file looked path: {}", file.getAbsolutePath());
 
          if(file.isFile()){ // Also checks for existance
-            log.debug("stream property file as bundle: " + file.getAbsolutePath());
+            log.debug("stream property file as bundle: {}",file.getAbsolutePath());
             try{
                fis = new FileInputStream(file);
                reader = new InputStreamReader(fis, Charset.forName("UTF-8"));
                bundle = new PropertyResourceBundle(reader);
             }catch(final FileNotFoundException e){
-               e.printStackTrace();
+               log.error(e.getMessage(), e);
             }catch(final IOException e){
-               e.printStackTrace();
+               log.error(e.getMessage(), e);
             }finally{
                try{
                   reader.close();
@@ -186,7 +186,7 @@ public class ViewHandlerImpl implements ViewHandler
                }
             }
          }else{
-            log.error("view property file not loaded: " + propFileName);
+            log.error("view property file not loaded: {}", propFileName);
             throw new RuntimeException("view.jdbc.properties.not.found");
          }
          return bundle;

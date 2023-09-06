@@ -39,8 +39,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import fr.aphp.tumorotek.dao.code.CodeDossierDao;
 import fr.aphp.tumorotek.dao.code.CodeSelectDao;
@@ -71,7 +71,7 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
 public class CodeSelectManagerImpl implements CodeSelectManager
 {
 
-   private final Log log = LogFactory.getLog(CodeSelectManager.class);
+   private final Logger log = LoggerFactory.getLogger(CodeSelectManager.class);
 
    private CodeSelectDao codeSelectDao;
 
@@ -174,12 +174,12 @@ public class CodeSelectManagerImpl implements CodeSelectManager
          if((operation.equals("creation") || operation.equals("modification"))){
             if(operation.equals("creation")){
                codeSelectDao.createObject(code);
-               log.info("Enregistrement objet CodeSelect " + code.toString());
+               log.info("Enregistrement objet CodeSelect {}",  code);
                CreateOrUpdateUtilities.createAssociateOperation(code, operationManager,
                   operationTypeDao.findByNom("Creation").get(0), code.getUtilisateur());
             }else{
                codeSelectDao.updateObject(code);
-               log.info("Modification objet CodeSelect " + code.toString());
+               log.info("Modification objet CodeSelect {}",  code);
                CreateOrUpdateUtilities.createAssociateOperation(code, operationManager,
                   operationTypeDao.findByNom("Modification").get(0), code.getUtilisateur());
             }
@@ -187,7 +187,7 @@ public class CodeSelectManagerImpl implements CodeSelectManager
             throw new IllegalArgumentException("Operation must match " + "'creation/modification' values");
          }
       }else{
-         log.warn("Doublon lors " + operation + " objet CodeSelect " + code.toString());
+         log.warn("Doublon lors {} objet CodeSelect {}", operation, code);
          throw new DoublonFoundException("CodeSelect", operation);
       }
    }
@@ -207,7 +207,7 @@ public class CodeSelectManagerImpl implements CodeSelectManager
          // merge banque object
          code.setBanque(banqueDao.mergeObject(bank));
       }else if(code.getBanque() == null){
-         log.warn("Objet obligatoire Banque manquant" + " lors de la " + operation + " du code favori");
+         log.warn("Objet obligatoire Banque manquant lors de la {} du code favori", operation);
          throw new RequiredObjectIsNullException("CodeSelect", operation, "Banque");
       }
 
@@ -216,7 +216,7 @@ public class CodeSelectManagerImpl implements CodeSelectManager
          // merge utilisateur object
          code.setUtilisateur(utilisateurDao.mergeObject(utilisateur));
       }else if(code.getUtilisateur() == null){
-         log.warn("Objet obligatoire Utilisateur manquant" + " lors de la " + operation + " du code favori");
+         log.warn("Objet obligatoire Utilisateur manquant lors de la {} du code favori", operation);
          throw new RequiredObjectIsNullException("CodeSelect", operation, "Utilisateur");
       }
    }
@@ -225,7 +225,7 @@ public class CodeSelectManagerImpl implements CodeSelectManager
    public void removeObjectManager(final CodeSelect code){
       if(code != null){
          codeSelectDao.removeObject(code.getCodeSelectId());
-         log.info("Suppression objet CodeSelect " + code.toString());
+         log.info("Suppression objet CodeSelect {}",  code);
          //Supprime operations associes
          CreateOrUpdateUtilities.removeAssociateOperations(code, operationManager);
       }else{

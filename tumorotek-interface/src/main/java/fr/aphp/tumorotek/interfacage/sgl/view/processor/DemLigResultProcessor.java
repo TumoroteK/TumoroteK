@@ -42,7 +42,8 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import fr.aphp.tumorotek.interfacage.sgl.view.ViewResultProcessor;
 import fr.aphp.tumorotek.manager.coeur.annotation.TableAnnotationManager;
@@ -57,7 +58,7 @@ import fr.aphp.tumorotek.model.interfacage.ValeurExterne;
 public class DemLigResultProcessor implements ViewResultProcessor
 {
 
-   private final Logger log = Logger.getLogger(ViewResultProcessor.class);
+   private final Logger log = LoggerFactory.getLogger(ViewResultProcessor.class);
 
    // PRE_CODE != D_CODE
    // identification_dossier = Numero_Inlog

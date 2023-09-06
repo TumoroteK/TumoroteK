@@ -50,8 +50,8 @@ import org.apache.commons.configuration2.PropertiesConfiguration;
 import org.apache.commons.configuration2.builder.FileBasedConfigurationBuilder;
 import org.apache.commons.configuration2.builder.fluent.Parameters;
 import org.apache.commons.configuration2.ex.ConfigurationException;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
 
 import fr.aphp.tumorotek.manager.administration.ParametresManager;
@@ -67,7 +67,7 @@ import fr.aphp.tumorotek.utils.TKStringUtils;
 public class ParametresManagerImpl implements ParametresManager
 {
 
-   public static final Log log = LogFactory.getLog(ParametresManagerImpl.class);
+   public static final Logger log = LoggerFactory.getLogger(ParametresManagerImpl.class);
 
    private final static String LOGO_FILEPATH = TumorotekProperties.TUMO_PROPERTIES_DIR + "/logo.png";
 
@@ -83,7 +83,7 @@ public class ParametresManagerImpl implements ParametresManager
       try( InputStream is = Files.newInputStream(Paths.get(TumorotekProperties.TUMO_PROPERTIES_PATH))){
          tumoProperties.load(is);
       }catch(final IOException e){
-         log.error("Erreur lors du chargement du fichier " + TumorotekProperties.TUMO_PROPERTIES_PATH, e);
+         log.error("Erreur lors du chargement du fichier {}",  TumorotekProperties.TUMO_PROPERTIES_PATH, e);
       }
 
       String msgAccueil = tumoProperties.getProperty(TkParam.MSG_ACCUEIL.getKey());
@@ -180,7 +180,7 @@ public class ParametresManagerImpl implements ParametresManager
 
          oldLogo.renameTo(logo);
 
-         log.error("Erreur lors de la sauvegarde du fichier " + LOGO_FILEPATH, e);
+         log.error("Erreur lors de la sauvegarde du fichier {}",  LOGO_FILEPATH, e);
 
       }finally{
 

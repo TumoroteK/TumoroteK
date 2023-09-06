@@ -49,8 +49,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import fr.aphp.tumorotek.action.ManagerLocator;
 import fr.aphp.tumorotek.action.stats.im.export.ExportToExcel;
@@ -63,7 +63,7 @@ import fr.aphp.tumorotek.utils.Utils;
 public class ExecuteModele
 {
 
-   protected static Log log = LogFactory.getLog(ExportToExcel.class);
+   protected static Logger log = LoggerFactory.getLogger(ExportToExcel.class);
 
    private SModele model;
 
@@ -104,15 +104,14 @@ public class ExecuteModele
          // printDataMap(); debug only
 
       }catch(final SQLException e){
-         log.error(e);
-         e.printStackTrace();
+         log.error(e.getMessage(), e);
          throw new RuntimeException(e.getMessage());
       }finally{
          if(connection != null){
             try{
                connection.close();
             }catch(final SQLException e){
-               log.error(e);
+               log.error(e.getMessage(), e); 
             }
          }
       }
@@ -143,9 +142,9 @@ public class ExecuteModele
          long endTime = System.nanoTime();
 
          endTime = System.nanoTime();
-         log.debug("Total elapsed time in modele " + model.getNom() + " execution :" + ((endTime - startTime) / 1000000000.0));
+         log.debug("Total elapsed time in modele {} execution: {}", model.getNom(), ((endTime - startTime) / 1000000000.0));
       }catch(final Exception e){
-         log.error(e);
+         log.error(e.getMessage(), e); 
       }
    }
 
@@ -179,7 +178,7 @@ public class ExecuteModele
 
    private void callExecute(final PreparedStatement call, final Indicateur st) throws SQLException{
       if(call.execute()){
-         log.debug("Call to string : " + call.toString());
+         log.debug("Call to string : {}", call);
          ResultSet rSet = null;
          try{
             rSet = call.getResultSet();
@@ -196,7 +195,7 @@ public class ExecuteModele
                   rSet.getInt(3), rSet.getInt(4)));
             }
          }catch(final SQLException e){
-            log.error(e);
+            log.error(e.getMessage(), e); 
             throw e;
          }finally{
             if(rSet != null){
@@ -210,7 +209,7 @@ public class ExecuteModele
    private void printDataMap(){
       for(final Entry<Indicateur, ArrayList<ValueToExport>> e : dataMap.entrySet()){
          for(final ValueToExport o : e.getValue()){
-            log.error(e.getKey() + " : " + o.toString());
+            log.error("{} : {}", e.getKey(), o);
          }
       }
    }

@@ -39,8 +39,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.validation.Validator;
 
 import fr.aphp.tumorotek.dao.contexte.PlateformeDao;
@@ -62,7 +62,7 @@ import fr.aphp.tumorotek.model.systeme.Entite;
 public class NonConformiteManagerImpl implements NonConformiteManager
 {
 
-   private final Log log = LogFactory.getLog(NonConformiteManager.class);
+   private final Logger log = LoggerFactory.getLogger(NonConformiteManager.class);
 
    /** Bean Dao. */
    private NonConformiteDao nonConformiteDao;
@@ -185,12 +185,12 @@ public class NonConformiteManagerImpl implements NonConformiteManager
       }
 
       if(findDoublonManager(nonConformite)){
-         log.warn("Doublon lors de la creation de l'objet " + "NonConformite : " + nonConformite.toString());
+         log.warn("Doublon lors de la creation de l'objet NonConformite : {}",  nonConformite);
          throw new DoublonFoundException("NonConformite", "creation");
       }else{
          BeanValidator.validateObject(nonConformite, new Validator[] {nonConformiteValidator});
          nonConformiteDao.createObject(nonConformite);
-         log.info("Enregistrement de l'objet NonConformite : " + nonConformite.toString());
+         log.info("Enregistrement de l'objet NonConformite : {}",  nonConformite);
       }
    }
 
@@ -214,12 +214,12 @@ public class NonConformiteManagerImpl implements NonConformiteManager
       }
 
       if(findDoublonManager(nonConformite)){
-         log.warn("Doublon lors de la modification de l'objet " + "NonConformite : " + nonConformite.toString());
+         log.warn("Doublon lors de la modification de l'objet NonConformite : {}",  nonConformite);
          throw new DoublonFoundException("NonConformite", "modification");
       }else{
          BeanValidator.validateObject(nonConformite, new Validator[] {nonConformiteValidator});
          nonConformiteDao.updateObject(nonConformite);
-         log.info("Modification de l'objet NonConformite : " + nonConformite.toString());
+         log.info("Modification de l'objet NonConformite : {}",  nonConformite);
       }
    }
 
@@ -234,7 +234,7 @@ public class NonConformiteManagerImpl implements NonConformiteManager
          }
 
          nonConformiteDao.removeObject(nonConformite.getId());
-         log.info("Suppression de l'objet NonConformite : " + nonConformite.toString());
+         log.info("Suppression de l'objet NonConformite : {}",  nonConformite);
       }
    }
 

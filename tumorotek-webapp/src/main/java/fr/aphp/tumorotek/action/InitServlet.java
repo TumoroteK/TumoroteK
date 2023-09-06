@@ -52,8 +52,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.sql.DataSource;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
 import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
@@ -82,7 +82,7 @@ public class InitServlet extends HttpServlet
 {
    private static final long serialVersionUID = 1L;
 
-   private final Log log = LogFactory.getLog(InitServlet.class);
+   private final Logger log = LoggerFactory.getLogger(InitServlet.class);
 
    @Override
    public void init() throws ServletException{
@@ -119,7 +119,7 @@ public class InitServlet extends HttpServlet
                   final Path annoPath = Paths.get(baseDir.toString(), pfDir.toString(), "coll_" + bank.getBanqueId(), "anno");
                   new File(crAnapathPath.toUri()).mkdirs();
                   new File(annoPath.toUri()).mkdirs();
-                  log.info("base directory de la collection " + bank.getNom() + " généré");
+                  log.info("base directory de la collection {} généré", bank.getNom());
                }
                banks.clear();
             }
@@ -291,7 +291,7 @@ public class InitServlet extends HttpServlet
       final File[] contextFiles = confDir.toFile().listFiles(contextFileFilter);
 
       if(contextFiles.length == 1){
-         log.info("Suppression du descripteur de configuration " + contextFiles[0].getName());
+         log.info("Suppression du descripteur de configuration {}",  contextFiles[0].getName());
          contextFiles[0].delete();
       }
 

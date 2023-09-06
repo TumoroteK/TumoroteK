@@ -8,8 +8,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.authentication.encoding.Md5PasswordEncoder;
 import org.springframework.security.authentication.encoding.PasswordEncoder;
@@ -37,7 +37,7 @@ public class ConnexionCrf extends GenericForwardComposer<Component>
 
    private static final long serialVersionUID = -6157769915889694408L;
 
-   private final Log log = LogFactory.getLog(ConnexionCrf.class);
+   private final Logger log = LoggerFactory.getLogger(ConnexionCrf.class);
 
    private Row rowWait;
 
@@ -87,9 +87,9 @@ public class ConnexionCrf extends GenericForwardComposer<Component>
 
          }else{
             if(selectedBanque != null){
-               log.info("La tentative de connection " + login + " a échoué " + "car les paramètres de connection sont invalides");
+               log.info("La tentative de connection {} a échoué car les paramètres de connection sont invalides", login);
             }else{
-               log.info("Aucune banque trouvée ayant l'identifiant " + "'" + banque + "'");
+               log.info("Aucune banque trouvée ayant l'identifiant '{}'", banque);
             }
             rowWait.setVisible(false);
             rowError.setVisible(true);

@@ -56,8 +56,8 @@ import javax.xml.transform.sax.SAXResult;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.apache.fop.apps.FOUserAgent;
 import org.apache.fop.apps.Fop;
 import org.apache.fop.apps.FopFactory;
@@ -80,7 +80,7 @@ import fr.aphp.tumorotek.utils.Utils;
 public class XmlUtilsImpl implements XmlUtils
 {
 
-   private final Log log = LogFactory.getLog(XmlUtils.class);
+   private final Logger log = LoggerFactory.getLogger(XmlUtils.class);
 
    private Resource xslPdfMainResource;
 
@@ -429,7 +429,7 @@ public class XmlUtilsImpl implements XmlUtils
                fileFolder.mkdir();
             }
          }catch(final Exception e){
-            log.error("Erreur dans la creation du fichier XML " + e.getMessage());
+            log.error("Erreur dans la creation du fichier XML {}",  e.getMessage());
          }
 
          final String fileTitle = folder + file;
@@ -441,7 +441,7 @@ public class XmlUtilsImpl implements XmlUtils
          sortie.output(doc, fis);
          fis.close();
       }catch(final IOException e){
-         log.error("Erreur dans l'enregistrement du fichier " + e.getMessage());
+         log.error("Erreur dans l'enregistrement du fichier {}",  e.getMessage());
       }
    }
 
@@ -458,12 +458,12 @@ public class XmlUtilsImpl implements XmlUtils
          final DOMOutputter export = new DOMOutputter();
          transformed = export.output(docFo);
       }catch(final XSLTransformException e){
-         log.error("Erreur dans la transformation du fichier " + e.getMessage());
-         log.error(e);
+         log.error("Erreur dans la transformation du fichier {}",  e.getMessage());
+         log.error(e.getMessage(), e); 
       }catch(final JDOMException e){
-         log.error("Erreur dans la création du fichier JDOM" + e.getMessage());
+         log.error("Erreur dans la création du fichier JDOM {}",  e.getMessage());
       }catch(final IOException e){
-         log.error(e);
+         log.error(e.getMessage(), e); 
       }
 
       return transformed;
@@ -477,7 +477,7 @@ public class XmlUtilsImpl implements XmlUtils
       try{
          docOut = outputter.output(doc);
       }catch(final JDOMException e1){
-         log.error(e1);
+         log.error(e1.getMessage(), e1);
       }
       final Source source = new DOMSource(docOut);
 
@@ -501,11 +501,11 @@ public class XmlUtilsImpl implements XmlUtils
 
          results = out.toByteArray();
       }catch(final TransformerConfigurationException e){
-         log.error(e);
+         log.error(e.getMessage(), e); 
       }catch(final TransformerException e){
-         log.error(e);
+         log.error(e.getMessage(), e); 
       }catch(final IOException e){
-         log.error(e);
+         log.error(e.getMessage(), e); 
       }finally{
          out.close();
       }
@@ -968,7 +968,7 @@ public class XmlUtilsImpl implements XmlUtils
       try{
          docOut = outputter.output(doc);
       }catch(final JDOMException e1){
-         log.error(e1);
+         log.error(e1.getMessage(), e1);
       }
       final Source source = new DOMSource(docOut);
 
@@ -992,11 +992,11 @@ public class XmlUtilsImpl implements XmlUtils
 
          results = out.toByteArray();
       }catch(final TransformerConfigurationException e){
-         log.error(e);
+         log.error(e.getMessage(), e); 
       }catch(final TransformerException e){
-         log.error(e);
+         log.error(e.getMessage(), e); 
       }catch(final IOException e){
-         log.error(e);
+         log.error(e.getMessage(), e); 
       }finally{
          out.close();
       }
@@ -1305,7 +1305,7 @@ public class XmlUtilsImpl implements XmlUtils
       try{
          docOut = outputter.output(doc);
       }catch(final JDOMException e1){
-         log.error(e1);
+         log.error(e1.getMessage(), e1);
       }
       final Source source = new DOMSource(docOut);
 
@@ -1329,11 +1329,11 @@ public class XmlUtilsImpl implements XmlUtils
 
          results = out.toByteArray();
       }catch(final TransformerConfigurationException e){
-         log.error(e);
+         log.error(e.getMessage(), e); 
       }catch(final TransformerException e){
-         log.error(e);
+         log.error(e.getMessage(), e); 
       }catch(final IOException e){
-         log.error(e);
+         log.error(e.getMessage(), e); 
       }finally{
          out.close();
       }
@@ -1528,12 +1528,12 @@ public class XmlUtilsImpl implements XmlUtils
          final DOMOutputter export = new DOMOutputter();
          transformed = export.output(docFo);
       }catch(final XSLTransformException e){
-         log.error("Erreur dans la transformation du fichier " + e.getMessage());
-         log.error(e);
+         log.error("Erreur dans la transformation du fichier {}",  e.getMessage());
+         log.error(e.getMessage(), e); 
       }catch(final JDOMException e){
-         log.error("Erreur dans la création du fichier JDOM" + e.getMessage());
+         log.error("Erreur dans la création du fichier JDOM {}",  e.getMessage());
       }catch(final IOException e){
-         log.error(e);
+         log.error(e.getMessage(), e); 
       }
 
       return transformed;

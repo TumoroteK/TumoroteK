@@ -43,8 +43,8 @@ import java.util.ResourceBundle;
 
 import org.apache.camel.component.hl7.HL7DataFormat;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import ca.uhn.hl7v2.HL7Exception;
 import ca.uhn.hl7v2.model.Message;
@@ -71,7 +71,7 @@ public class SglHandler
 
    private final static Integer DEFAULT_MAX_DOSSIER_TABLE_SIZE = 2000;
 
-   private final Log log = LogFactory.getLog(SglHandler.class);
+   private final Logger log = LoggerFactory.getLogger(SglHandler.class);
 
    private InterfacageParsingUtils interfacageParsingUtils;
 
@@ -152,15 +152,15 @@ public class SglHandler
 
          prelNature = interfacageParsingUtils.getValueFromBlocAndEmplacement(contenu, config, "SPM", "5.2.1");
 
-         log.debug("GENNO message SSU_U03 SPM-2 nature prélèvement: " + prelNature);
+         log.debug("GENNO message SSU_U03 SPM-2 nature prélèvement: {}", prelNature);
 
          spm2 = interfacageParsingUtils.getValueFromBlocAndEmplacement(contenu, config, "SPM", "2");
 
-         log.debug("GENNO message SSU_U03 SPM-2 code prélèvement: " + spm2);
+         log.debug("GENNO message SSU_U03 SPM-2 code prélèvement: {}", spm2);
 
          spmObx10 = interfacageParsingUtils.getValueFromBlocAndEmplacement(contenu, config, "SPM_OBX10", "5");
 
-         log.debug("GENNO message SSU_U03 SPM_OBX-10 code prélèvement primaire: " + spmObx10);
+         log.debug("GENNO message SSU_U03 SPM_OBX-10 code prélèvement primaire: {}", spmObx10);
 
          // si SPM-2 = SPM_OBX-10 alors transmission = prélèvement primaire
          if(spm2 != null && !spm2.equals(spmObx10)){
@@ -182,7 +182,7 @@ public class SglHandler
       if(!skipMessage){
          handleMessage(body, sendingApp);
       }else{
-         log.info("GENNO message SSU_U03 " + spm2 + " non pris en compte - nature du dérivé filtrée: " + prelNature);
+         log.info("GENNO message SSU_U03 {} non pris en compte - nature du dérivé filtrée: {}", spm2,  prelNature);
       }
    }
 
@@ -214,7 +214,7 @@ public class SglHandler
          Emetteur emet;
          try{
             emet = interfacageParsingUtils.extractEmetteurFromFileToInjectInTk(inboxesProp, body, sendingApp);
-            log.debug(emet);
+            log.debug("Emetteur: {}", emet);
             final String sglMap = interfacageParsingUtils.extractInboxParamFromFile(inboxesProp, body, sendingApp, "XML");
             // , emet);
             log.debug(sglMap);
@@ -223,7 +223,7 @@ public class SglHandler
 
          }catch(final Exception e){
             log.error("TK interfacage configuration: ");
-            log.error(e);
+            log.error(e.getMessage(), e); 
             throw new RuntimeException(e);
          }
 

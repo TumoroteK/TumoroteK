@@ -40,8 +40,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import fr.aphp.tumorotek.dao.code.CimoMorphoDao;
 import fr.aphp.tumorotek.manager.code.CimoMorphoManager;
@@ -60,7 +60,7 @@ import fr.aphp.tumorotek.model.code.CimoMorpho;
 public class CimoMorphoManagerImpl implements CimoMorphoManager
 {
 
-   private final Log log = LogFactory.getLog(CimoMorphoManager.class);
+   private final Logger log = LoggerFactory.getLogger(CimoMorphoManager.class);
 
    private CimoMorphoDao cimoMorphoDao;
 
@@ -82,7 +82,7 @@ public class CimoMorphoManagerImpl implements CimoMorphoManager
       if(!exactMatch){
          code = "%" + code + "%";
       }
-      log.debug("Recherche Cimo par code: " + code + " exactMatch " + String.valueOf(exactMatch));
+      log.debug("Recherche Cimo par code: {} exactMatch {}", code, exactMatch);
       final Set<CimoMorpho> cimos = new HashSet<>();
       cimos.addAll(cimoMorphoDao.findByCodeLike(code));
       cimos.addAll(cimoMorphoDao.findByCimRefLike(code));
@@ -94,7 +94,7 @@ public class CimoMorphoManagerImpl implements CimoMorphoManager
       if(!exactMatch){
          libelle = "%" + libelle + "%";
       }
-      log.debug("Recherche Cimo par libelle: " + libelle + " exactMatch " + String.valueOf(exactMatch));
+      log.debug("Recherche Cimo par libelle: {} exactMatch {}", libelle, exactMatch);
       return cimoMorphoDao.findByLibelleLike(libelle);
    }
 

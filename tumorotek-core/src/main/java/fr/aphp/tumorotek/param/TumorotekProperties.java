@@ -39,8 +39,8 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Properties;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.support.EncodedResource;
 import org.springframework.core.io.support.PropertiesLoaderUtils;
@@ -55,7 +55,7 @@ import org.springframework.util.SystemPropertyUtils;
 public final class TumorotekProperties
 {
 
-   private static final Log log = LogFactory.getLog(TumorotekProperties.class);
+   private static final Logger log = LoggerFactory.getLogger(TumorotekProperties.class);
 
    public static final String TUMO_PROPERTIES_FILENAME = "tumorotek.properties";
 
@@ -102,7 +102,7 @@ public final class TumorotekProperties
          res = pph.replacePlaceholders(value, TUMOROTEK_PROPERTIES);
       }
       else {
-         log.error("la clé : " + key + " n'a pas été trouvée dans tumorotek.properties - renvoie null");
+         log.error("la clé : {} n'a pas été trouvée dans tumorotek.properties - renvoie null", key);
       }
 
       return res;

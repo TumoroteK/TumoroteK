@@ -43,9 +43,9 @@ import java.util.List;
 
 import javax.sql.DataSource;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.log4j.MDC;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -67,7 +67,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 public class MyUserDetailsService implements UserDetailsService
 {
 
-   private final Log log = LogFactory.getLog(MyUserDetailsService.class);
+   private final Logger log = LoggerFactory.getLogger(MyUserDetailsService.class);
 
    private DataSource dataSource;
 
@@ -84,7 +84,7 @@ public class MyUserDetailsService implements UserDetailsService
          // sinon throw Exception
          
       }catch(final DataAccessException e){
-         log.info("La tentative de connection " + username + " a échoué " + "car les paramètres de connection sont invalides");
+         log.info("La tentative de connection {} a échoué car les paramètres de connection sont invalides", username);
          throw new UsernameNotFoundException("authentication error");
       }
       MDC.remove("client");

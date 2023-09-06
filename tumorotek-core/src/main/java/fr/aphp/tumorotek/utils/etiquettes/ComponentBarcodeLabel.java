@@ -44,8 +44,8 @@ import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.util.Vector;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.sourceforge.barbecue.Barcode;
 import net.sourceforge.barbecue.BarcodeException;
@@ -63,7 +63,7 @@ public class ComponentBarcodeLabel extends Component
 
    private static final long serialVersionUID = -8481492542890431288L;
 
-   private static Log log = LogFactory.getLog(ComponentBarcodeLabel.class);
+   private static Logger log = LoggerFactory.getLogger(ComponentBarcodeLabel.class);
 
    private final Vector<?> data;
 
@@ -148,7 +148,7 @@ public class ComponentBarcodeLabel extends Component
          }
       }catch(final BarcodeException be){
          // Error handling
-         log.error("paint:BarcodeException" + be);
+         log.error("paint:BarcodeException {}",  be);
       }
 
       if(barcode1 == null){
@@ -157,7 +157,7 @@ public class ComponentBarcodeLabel extends Component
          try{
             imageBarcode1 = BarcodeImageHandler.getImage(barcode1);
          }catch(final OutputException e){
-            log.error(e);
+            log.error(e.getMessage(), e); 
          }
       }
 
@@ -167,7 +167,7 @@ public class ComponentBarcodeLabel extends Component
          try{
             imageBarcode2 = BarcodeImageHandler.getImage(barcode2);
          }catch(final OutputException e){
-            log.error(e);
+            log.error(e.getMessage(), e); 
          }
       }
 

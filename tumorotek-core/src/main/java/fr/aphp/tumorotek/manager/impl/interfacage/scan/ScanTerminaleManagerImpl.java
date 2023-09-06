@@ -38,8 +38,8 @@ package fr.aphp.tumorotek.manager.impl.interfacage.scan;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import fr.aphp.tumorotek.dao.interfacage.scan.ScanDeviceDao;
 import fr.aphp.tumorotek.dao.interfacage.scan.ScanTerminaleDao;
@@ -73,7 +73,7 @@ import fr.aphp.tumorotek.model.stockage.Terminale;
 public class ScanTerminaleManagerImpl implements ScanTerminaleManager
 {
 
-   private final Log log = LogFactory.getLog(ScanTerminaleManager.class);
+   private final Logger log = LoggerFactory.getLogger(ScanTerminaleManager.class);
 
    private ScanTerminaleDao scanTerminaleDao;
 
@@ -118,7 +118,7 @@ public class ScanTerminaleManagerImpl implements ScanTerminaleManager
          sD = scanDeviceDao.findById(1);
          sT.setScanDevice(sD);
          scanTerminaleDao.createObject(sT);
-         log.debug("ScanTerminale creation: " + sT.getName());
+         log.debug("ScanTerminale creation: {}",  sT.getName());
       }
    }
 

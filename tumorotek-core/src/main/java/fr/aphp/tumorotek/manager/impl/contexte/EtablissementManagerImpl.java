@@ -41,8 +41,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.validation.Validator;
 
 import fr.aphp.tumorotek.dao.contexte.CategorieDao;
@@ -85,7 +85,7 @@ import fr.aphp.tumorotek.utils.Utils;
 public class EtablissementManagerImpl implements EtablissementManager
 {
 
-   private final Log log = LogFactory.getLog(EtablissementManager.class);
+   private final Logger log = LoggerFactory.getLogger(EtablissementManager.class);
 
    private EtablissementDao etablissementDao;
 
@@ -226,7 +226,7 @@ public class EtablissementManagerImpl implements EtablissementManager
    @Override
    public List<Etablissement> findByNomLikeManager(String nom, final boolean exactMatch){
 
-      log.debug("Recherche Etablissement par nom : " + nom + " exactMatch " + String.valueOf(exactMatch));
+      log.debug("Recherche Etablissement par nom : {} exactMatch {}", nom, exactMatch);
       if(nom != null){
          if(!exactMatch){
             nom = nom + "%";
@@ -239,7 +239,7 @@ public class EtablissementManagerImpl implements EtablissementManager
    @Override
    public List<Etablissement> findByNomLikeBothSideManager(String nom){
 
-      log.debug("Recherche Etablissement par nom : " + nom);
+      log.debug("Recherche Etablissement par nom : {}",  nom);
       if(nom != null){
          nom = "%" + nom + "%";
          return etablissementDao.findByNom(nom);
@@ -250,7 +250,7 @@ public class EtablissementManagerImpl implements EtablissementManager
    @Override
    public List<Etablissement> findByVilleLikeManager(String ville){
 
-      log.debug("Recherche Etablissement par ville : " + ville);
+      log.debug("Recherche Etablissement par ville : {}",  ville);
       if(ville != null){
          ville = "%" + ville + "%";
          return etablissementDao.findByVille(ville);
@@ -271,7 +271,7 @@ public class EtablissementManagerImpl implements EtablissementManager
    @Override
    public List<Etablissement> findByFinessLikeManager(String finess, final boolean exactMatch){
 
-      log.debug("Recherche Etablissement par finess : " + finess + " exactMatch " + String.valueOf(exactMatch));
+      log.debug("Recherche Etablissement par finess : {} exactMatch {}", finess, exactMatch);
       if(finess != null){
          if(!exactMatch){
             finess = finess + "%";
@@ -404,7 +404,7 @@ public class EtablissementManagerImpl implements EtablissementManager
       final Utilisateur utilisateur){
 
       if(findDoublonManager(etablissement)){
-         log.warn("Doublon lors de la creation de l'objet Etablissement : " + etablissement.toString());
+         log.warn("Doublon lors de la creation de l'objet Etablissement : {}",  etablissement);
          throw new DoublonFoundException("Etablissement", "creation");
       }
 
@@ -426,7 +426,7 @@ public class EtablissementManagerImpl implements EtablissementManager
       etablissement.setCategorie(categorieDao.mergeObject(categorie));
 
       etablissementDao.createObject(etablissement);
-      log.info("Enregistrement de l'objet Etablissement : " + etablissement.toString());
+      log.info("Enregistrement de l'objet Etablissement : {}",  etablissement);
 
       // Enregistrement de l'operation associee
       final Operation creationOp = new Operation();
@@ -450,7 +450,7 @@ public class EtablissementManagerImpl implements EtablissementManager
       final Utilisateur utilisateur, final boolean cascadeArchive){
 
       if(findDoublonManager(etablissement)){
-         log.warn("Doublon lors de la modif de l'objet Etablissement : " + etablissement.toString());
+         log.warn("Doublon lors de la modif de l'objet Etablissement : {}",  etablissement);
          throw new DoublonFoundException("Etablissement", "modification");
       }
 
@@ -469,7 +469,7 @@ public class EtablissementManagerImpl implements EtablissementManager
       etablissement.setCategorie(categorieDao.mergeObject(categorie));
 
       etablissementDao.updateObject(etablissement);
-      log.info("Modification de l'objet Etablissement : " + etablissement.toString());
+      log.info("Modification de l'objet Etablissement : {}",  etablissement);
 
       if(cascadeArchive){
          archiveServices(etablissement, utilisateur);
@@ -534,14 +534,14 @@ public class EtablissementManagerImpl implements EtablissementManager
             CreateOrUpdateUtilities.removeAssociateOperations(etablissement, operationManager, comments, user);
 
             etablissementDao.removeObject(etablissement.getEtablissementId());
-            log.info("Suppression de l'objet Etablissement : " + etablissement.toString());
+            log.info("Suppression de l'objet Etablissement : {}",  etablissement);
 
          }else{
             if(!isReferencedObjectManager(etablissement)){
-               log.warn("Objet utilisé lors de la suppression de l'objet " + "Etablissement : " + etablissement.toString());
+               log.warn("Objet utilisé lors de la suppression de l'objet Etablissement : {}",  etablissement);
                throw new ObjectUsedException("etablissement.deletion." + "isUsedCascade", true);
             }
-            log.warn("Objet référencé lors de la suppression " + "de l'objet Etablissement : " + etablissement.toString());
+            log.warn("Objet référencé lors de la suppression de l'objet Etablissement : {}",  etablissement);
             throw new ObjectReferencedException("etablissement" + ".deletion.isReferencedCascade", true);
          }
       }
@@ -551,7 +551,7 @@ public class EtablissementManagerImpl implements EtablissementManager
    public void removeObjectCascadeManager(Etablissement etablissement, final String comments, final Utilisateur user){
 
       if(etablissement != null){
-         log.info("Suppression en cascade depuis objet Etablissement " + etablissement.toString());
+         log.info("Suppression en cascade depuis objet Etablissement {}",  etablissement);
 
          etablissement = etablissementDao.mergeObject(etablissement);
 

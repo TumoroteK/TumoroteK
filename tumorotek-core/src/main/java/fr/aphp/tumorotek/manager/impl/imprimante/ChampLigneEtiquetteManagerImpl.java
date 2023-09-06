@@ -38,8 +38,8 @@ package fr.aphp.tumorotek.manager.impl.imprimante;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import fr.aphp.tumorotek.dao.imprimante.ChampLigneEtiquetteDao;
 import fr.aphp.tumorotek.dao.imprimante.LigneEtiquetteDao;
@@ -55,7 +55,7 @@ import fr.aphp.tumorotek.model.systeme.Entite;
 public class ChampLigneEtiquetteManagerImpl implements ChampLigneEtiquetteManager
 {
 
-   private final Log log = LogFactory.getLog(ChampLigneEtiquetteManager.class);
+   private final Logger log = LoggerFactory.getLogger(ChampLigneEtiquetteManager.class);
 
    /** Beans. */
    private ChampLigneEtiquetteDao champLigneEtiquetteDao;
@@ -96,7 +96,7 @@ public class ChampLigneEtiquetteManagerImpl implements ChampLigneEtiquetteManage
    @Override
    public List<ChampLigneEtiquette> findByLigneEtiquetteManager(final LigneEtiquette ligneEtiquette){
       if(ligneEtiquette != null){
-         log.debug("Recherche de tous les ChampLigneEtiquettes " + "d'une LigneEtiquette.");
+         log.debug("Recherche de tous les ChampLigneEtiquettes d'une LigneEtiquette.");
          return champLigneEtiquetteDao.findByLigneEtiquette(ligneEtiquette);
       }
       return new ArrayList<>();
@@ -106,7 +106,7 @@ public class ChampLigneEtiquetteManagerImpl implements ChampLigneEtiquetteManage
    public List<ChampLigneEtiquette> findByLigneEtiquetteAndEntiteManager(final LigneEtiquette ligneEtiquette,
       final Entite entite){
       if(ligneEtiquette != null && entite != null){
-         log.debug("Recherche de tous les ChampLigneEtiquettes " + "d'une LigneEtiquette et d'une Entite.");
+         log.debug("Recherche de tous les ChampLigneEtiquettes  d'une LigneEtiquette et d'une Entite.");
          return champLigneEtiquetteDao.findByLigneEtiquetteAndEntite(ligneEtiquette, entite);
       }
       return new ArrayList<>();
@@ -117,25 +117,25 @@ public class ChampLigneEtiquetteManagerImpl implements ChampLigneEtiquetteManage
       final Entite entite, final Champ champ, final String operation){
       // LigneEtiquette required
       if(ligneEtiquette == null){
-         log.warn("Objet obligatoire LigneEtiquette manquant" + " lors de la création d'un ChampLigneEtiquette");
+         log.warn("Objet obligatoire LigneEtiquette manquant  lors de la création d'un ChampLigneEtiquette");
          throw new RequiredObjectIsNullException("ChampLigneEtiquette", operation, "LigneEtiquette");
       }
 
       // champ required
       if(champ == null){
-         log.warn("Objet obligatoire Champ manquant" + " lors de la création d'un ChampLigneEtiquette");
+         log.warn("Objet obligatoire Champ manquant  lors de la création d'un ChampLigneEtiquette");
          throw new RequiredObjectIsNullException("ChampLigneEtiquette", operation, "Champ");
       }
 
       // Entite required
       if(entite == null){
-         log.warn("Objet obligatoire Entite manquant" + " lors de la création d'un ChampLigneEtiquette");
+         log.warn("Objet obligatoire Entite manquant  lors de la création d'un ChampLigneEtiquette");
          throw new RequiredObjectIsNullException("ChampLigneEtiquette", operation, "Entite");
       }
 
       // Ordre required
       if(champLigneEtiquette.getOrdre() == null){
-         log.warn("Objet obligatoire Ordre manquant" + " lors de la création d'un ChampLigneEtiquette");
+         log.warn("Objet obligatoire Ordre manquant  lors de la création d'un ChampLigneEtiquette");
          throw new RequiredObjectIsNullException("ChampLigneEtiquette", operation, "Ordre");
       }
    }
@@ -154,7 +154,7 @@ public class ChampLigneEtiquetteManagerImpl implements ChampLigneEtiquetteManage
 
       champLigneEtiquetteDao.createObject(champLigneEtiquette);
 
-      log.info("Enregistrement objet ChampLigneEtiquette " + champLigneEtiquette.toString());
+      log.info("Enregistrement objet ChampLigneEtiquette {}",  champLigneEtiquette);
    }
 
    @Override
@@ -176,7 +176,7 @@ public class ChampLigneEtiquetteManagerImpl implements ChampLigneEtiquetteManage
 
       champLigneEtiquetteDao.updateObject(champLigneEtiquette);
 
-      log.info("Enregistrement objet ChampLigneEtiquette " + champLigneEtiquette.toString());
+      log.info("Enregistrement objet ChampLigneEtiquette {}",  champLigneEtiquette);
    }
 
    @Override
@@ -184,7 +184,7 @@ public class ChampLigneEtiquetteManagerImpl implements ChampLigneEtiquetteManage
       if(champLigneEtiquette != null){
          final Champ chp = champLigneEtiquette.getChamp();
          champLigneEtiquetteDao.removeObject(champLigneEtiquette.getChampLigneEtiquetteId());
-         log.info("Suppression de l'objet ChampLigneEtiquette : " + champLigneEtiquette.toString());
+         log.info("Suppression de l'objet ChampLigneEtiquette : {}",  champLigneEtiquette);
 
          champManager.removeObjectManager(chp);
       }else{

@@ -40,8 +40,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import fr.aphp.tumorotek.dao.code.AdicapDao;
 import fr.aphp.tumorotek.dao.code.AdicapGroupeDao;
@@ -63,7 +63,7 @@ import fr.aphp.tumorotek.model.code.CimoMorpho;
 public class AdicapManagerImpl implements AdicapManager
 {
 
-   private final Log log = LogFactory.getLog(AdicapManager.class);
+   private final Logger log = LoggerFactory.getLogger(AdicapManager.class);
 
    private AdicapDao adicapDao;
 
@@ -87,7 +87,7 @@ public class AdicapManagerImpl implements AdicapManager
       if(!exactMatch){
          code = "%" + code + "%";
       }
-      log.debug("Recherche Adicap par code: " + code + " exactMatch " + String.valueOf(exactMatch));
+      log.debug("Recherche Adicap par code: {} exactMatch {}", code, exactMatch);
       return adicapDao.findByCodeLike(code);
    }
 
@@ -107,7 +107,7 @@ public class AdicapManagerImpl implements AdicapManager
       if(!exactMatch){
          libelle = "%" + libelle + "%";
       }
-      log.info("Recherche Adicap par libelle: " + libelle + " exactMatch " + String.valueOf(exactMatch));
+      log.info("Recherche Adicap par libelle: {} exactMatch {}", libelle, exactMatch);
       return adicapDao.findByLibelleLike(libelle);
    }
 

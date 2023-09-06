@@ -37,8 +37,8 @@ package fr.aphp.tumorotek.manager.impl.coeur.prelevement;
 
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.validation.Validator;
 
 import fr.aphp.tumorotek.dao.coeur.prelevement.ConsentTypeDao;
@@ -64,7 +64,7 @@ import fr.aphp.tumorotek.model.contexte.Plateforme;
 public class ConsentTypeManagerImpl implements ConsentTypeManager
 {
 
-   private final Log log = LogFactory.getLog(ConsentTypeManager.class);
+   private final Logger log = LoggerFactory.getLogger(ConsentTypeManager.class);
 
    /* Beans injectes par Spring*/
    private ConsentTypeDao consentTypeDao;
@@ -101,9 +101,9 @@ public class ConsentTypeManagerImpl implements ConsentTypeManager
       BeanValidator.validateObject(obj, new Validator[] {consentTypeValidator});
       if(!findDoublonManager(obj)){
          consentTypeDao.createObject(obj);
-         log.info("Enregistrement objet ConsentType " + obj.toString());
+         log.info("Enregistrement objet ConsentType {}",  obj);
       }else{
-         log.warn("Doublon lors creation objet ConsentType " + obj.toString());
+         log.warn("Doublon lors creation objet ConsentType {}",  obj);
          throw new DoublonFoundException("ConsentType", "creation");
       }
    }
@@ -113,9 +113,9 @@ public class ConsentTypeManagerImpl implements ConsentTypeManager
       BeanValidator.validateObject(obj, new Validator[] {consentTypeValidator});
       if(!findDoublonManager(obj)){
          consentTypeDao.updateObject(obj);
-         log.info("Modification objet ConsentType " + obj.toString());
+         log.info("Modification objet ConsentType {}",  obj);
       }else{
-         log.warn("Doublon lors modification objet ConsentType " + obj.toString());
+         log.warn("Doublon lors modification objet ConsentType {}",  obj);
          throw new DoublonFoundException("ConsentType", "modification");
       }
    }
@@ -125,7 +125,7 @@ public class ConsentTypeManagerImpl implements ConsentTypeManager
       if(!exactMatch){
          type = type + "%";
       }
-      log.debug("Recherche ConsentType par type: " + type + " exactMatch " + String.valueOf(exactMatch));
+      log.debug("Recherche ConsentType par type: {} exactMatch {}", type, exactMatch);
       return consentTypeDao.findByType(type);
    }
 
@@ -134,9 +134,9 @@ public class ConsentTypeManagerImpl implements ConsentTypeManager
       if(obj != null){
          if(!isUsedObjectManager(obj)){
             consentTypeDao.removeObject(obj.getId());
-            log.info("Suppression objet ConsentType " + obj.toString());
+            log.info("Suppression objet ConsentType {}",  obj);
          }else{
-            log.warn("Suppression objet ConsentType " + obj.toString() + " impossible car est reference (par Prelevement)");
+            log.warn("Suppression objet ConsentType {} impossible car est reference (par Prelevement)", obj);
             throw new ObjectUsedException();
          }
       }else{

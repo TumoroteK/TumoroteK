@@ -38,8 +38,8 @@ package fr.aphp.tumorotek.manager.impl.io.export;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import fr.aphp.tumorotek.dao.io.export.ChampDao;
 import fr.aphp.tumorotek.manager.coeur.annotation.AnnotationValeurManager;
@@ -65,7 +65,7 @@ import fr.aphp.tumorotek.model.io.export.Champ;
 public class ChampManagerImpl implements ChampManager
 {
 
-   private final Log log = LogFactory.getLog(GroupementManager.class);
+   private final Logger log = LoggerFactory.getLogger(GroupementManager.class);
 
    /** Bean Dao ChampDao. */
    private ChampDao champDao = null;
@@ -101,7 +101,7 @@ public class ChampManagerImpl implements ChampManager
    public void createObjectManager(final Champ champ, final Champ parent){
       // On vérifie que le groupement n'est pas nul
       if(champ == null){
-         log.warn("Objet obligatoire Champ manquant lors " + "de la création d'un objet Champ");
+         log.warn("Objet obligatoire Champ manquant lors de la création d'un objet Champ");
          throw new RequiredObjectIsNullException("Champ", "création", "Champ");
       }
       // On enregsitre d'abord son parent
@@ -122,7 +122,7 @@ public class ChampManagerImpl implements ChampManager
    public void createObjectManager(final Champ champ){
       // On vérifie que le groupement n'est pas nul
       if(champ == null){
-         log.warn("Objet obligatoire Champ manquant lors " + "de la création d'un objet Champ");
+         log.warn("Objet obligatoire Champ manquant lors de la création d'un objet Champ");
          throw new RequiredObjectIsNullException("Champ", "création", "Champ");
       }
       // On enregsitre d'abord son parent
@@ -145,7 +145,7 @@ public class ChampManagerImpl implements ChampManager
    public void updateObjectManager(final Champ champ, final Champ parent){
       //On vérifie que le groupement n'est pas nul
       if(champ == null){
-         log.warn("Objet obligatoire Champ manquant lors " + "de la modification d'un objet Champ");
+         log.warn("Objet obligatoire Champ manquant lors de la modification d'un objet Champ");
          throw new RequiredObjectIsNullException("Champ", "modification", "Champ");
       }
       //On met à jour le parent d'abord
@@ -165,7 +165,7 @@ public class ChampManagerImpl implements ChampManager
    public void updateObjectManager(final Champ champ){
       //On vérifie que le groupement n'est pas nul
       if(champ == null){
-         log.warn("Objet obligatoire Champ manquant lors " + "de la modification d'un objet Champ");
+         log.warn("Objet obligatoire Champ manquant lors de la modification d'un objet Champ");
          throw new RequiredObjectIsNullException("Champ", "modification", "Champ");
       }
       //On met à jour le parent d'abord
@@ -201,7 +201,7 @@ public class ChampManagerImpl implements ChampManager
    public void removeObjectManager(final Champ champ){
       // On vérifie que le champ n'est pas nul
       if(champ == null){
-         log.warn("Objet obligatoire Champ manquant lors " + "de la suppression d'un objet Champ");
+         log.warn("Objet obligatoire Champ manquant lors de la suppression d'un objet Champ");
          throw new RequiredObjectIsNullException("Champ", "suppression", "Champ");
       }
       // On vérifie que le champ est en BDD
@@ -227,7 +227,7 @@ public class ChampManagerImpl implements ChampManager
    public Champ copyChampManager(final Champ champ){
       // On vérifie que le groupement n'est pas nul
       if(champ == null){
-         log.warn("Objet obligatoire Champ manquant lors " + "de la copie d'un objet Champ");
+         log.warn("Objet obligatoire Champ manquant lors de la copie d'un objet Champ");
          throw new RequiredObjectIsNullException("Champ", "copie", "Champ");
       }
       // On enregistre d'abord son parent
@@ -257,7 +257,7 @@ public class ChampManagerImpl implements ChampManager
    public ArrayList<Champ> findEnfantsManager(final Champ champ){
       // On vérifie que le groupement n'est pas nul
       if(champ == null){
-         log.warn("Objet obligatoire Champ manquant lors " + "de la recherche d'enfants d'un objet Champ");
+         log.warn("Objet obligatoire Champ manquant lors de la recherche d'enfants d'un objet Champ");
          throw new RequiredObjectIsNullException("Champ", "recherche d'enfants", "Champ");
       }
       return champDao.findEnfants(champ);
@@ -274,7 +274,7 @@ public class ChampManagerImpl implements ChampManager
    public Champ findByIdManager(final Integer id){
       // On vérifie que l'identifiant n'est pas nul
       if(id == null){
-         log.warn("Objet obligatoire identifiant manquant lors de la " + "recherche par l'identifiant d'un objet Champ");
+         log.warn("Objet obligatoire identifiant manquant lors de la recherche par l'identifiant d'un objet Champ");
          throw new RequiredObjectIsNullException("Champ", "recherche par identifiant", "identifiant");
       }
       return champDao.findById(id);

@@ -38,8 +38,8 @@ package fr.aphp.tumorotek.manager.impl.systeme;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import fr.aphp.tumorotek.dao.coeur.echantillon.EchantillonTypeDao;
 import fr.aphp.tumorotek.dao.coeur.prodderive.ProdTypeDao;
@@ -59,7 +59,7 @@ import fr.aphp.tumorotek.model.systeme.CouleurEntiteType;
 public class CouleurEntiteTypeManagerImpl implements CouleurEntiteTypeManager
 {
 
-   private final Log log = LogFactory.getLog(CouleurEntiteTypeManager.class);
+   private final Logger log = LoggerFactory.getLogger(CouleurEntiteTypeManager.class);
 
    /** Bean Dao. */
    private CouleurEntiteTypeDao couleurEntiteTypeDao;
@@ -149,7 +149,7 @@ public class CouleurEntiteTypeManagerImpl implements CouleurEntiteTypeManager
       if(banque != null){
          couleurEntiteType.setBanque(banqueDao.mergeObject(banque));
       }else{
-         log.warn("Objet obligatoire Banque manquant" + " lors de la création d'une" + " CouleurEntiteType");
+         log.warn("Objet obligatoire Banque manquant  lors de la création d'une  CouleurEntiteType");
          throw new RequiredObjectIsNullException("CouleurEntiteType", "creation", "Banque");
       }
 
@@ -157,16 +157,16 @@ public class CouleurEntiteTypeManagerImpl implements CouleurEntiteTypeManager
       if(couleur != null){
          couleurEntiteType.setCouleur(couleurDao.mergeObject(couleur));
       }else{
-         log.warn("Objet obligatoire Couleur manquant" + " lors de la création d'une" + " CouleurEntiteType");
+         log.warn("Objet obligatoire Couleur manquant  lors de la création d'une  CouleurEntiteType");
          throw new RequiredObjectIsNullException("CouleurEntiteType", "creation", "Couleur");
       }
 
       // il faut qu'un seul type soit défini pour cette relation
       if(echantillonType != null && prodType != null){
-         log.warn("Deux types sont définis" + " lors de la création d'une CouleurEntiteType");
+         log.warn("Deux types sont définis  lors de la création d'une CouleurEntiteType");
          throw new InvalidMultipleAssociationException("CouleurEntiteType", "creation", false);
       }else if(echantillonType == null && prodType == null){
-         log.warn("Aucun type n'est défini" + " lors de la création d'une CouleurEntiteType");
+         log.warn("Aucun type n'est défini  lors de la création d'une CouleurEntiteType");
          throw new InvalidMultipleAssociationException("CouleurEntiteType", "creation", true);
       }
 
@@ -175,13 +175,13 @@ public class CouleurEntiteTypeManagerImpl implements CouleurEntiteTypeManager
 
       // Test s'il y a des doublons
       if(findDoublonManager(couleurEntiteType)){
-         log.warn("Doublon lors de la creation de l'objet " + "CouleurEntiteType : " + couleurEntiteType.toString());
+         log.warn("Doublon lors de la creation de l'objet CouleurEntiteType : {}",  couleurEntiteType);
          throw new DoublonFoundException("CouleurEntiteType", "creation");
       }
 
       couleurEntiteTypeDao.createObject(couleurEntiteType);
 
-      log.info("Enregistrement de l'objet CouleurEntiteType : " + couleurEntiteType.toString());
+      log.info("Enregistrement de l'objet CouleurEntiteType : {}",  couleurEntiteType);
    }
 
    @Override
@@ -191,7 +191,7 @@ public class CouleurEntiteTypeManagerImpl implements CouleurEntiteTypeManager
       if(banque != null){
          couleurEntiteType.setBanque(banqueDao.mergeObject(banque));
       }else{
-         log.warn("Objet obligatoire Banque manquant" + " lors de la modification d'une" + " CouleurEntiteType");
+         log.warn("Objet obligatoire Banque manquant  lors de la modification d'une  CouleurEntiteType");
          throw new RequiredObjectIsNullException("CouleurEntiteType", "modification", "Banque");
       }
 
@@ -199,16 +199,16 @@ public class CouleurEntiteTypeManagerImpl implements CouleurEntiteTypeManager
       if(couleur != null){
          couleurEntiteType.setCouleur(couleurDao.mergeObject(couleur));
       }else{
-         log.warn("Objet obligatoire Couleur manquant" + " lors de la modification d'une" + " CouleurEntiteType");
+         log.warn("Objet obligatoire Couleur manquant  lors de la modification d'une  CouleurEntiteType");
          throw new RequiredObjectIsNullException("CouleurEntiteType", "modification", "Couleur");
       }
 
       // il faut qu'un seul type soit défini pour cette relation
       if(echantillonType != null && prodType != null){
-         log.warn("Deux types sont définis" + " lors de la modification d'une CouleurEntiteType");
+         log.warn("Deux types sont définis  lors de la modification d'une CouleurEntiteType");
          throw new InvalidMultipleAssociationException("CouleurEntiteType", "modification", false);
       }else if(echantillonType == null && prodType == null){
-         log.warn("Aucun type n'est défini" + " lors de la modification d'une CouleurEntiteType");
+         log.warn("Aucun type n'est défini  lors de la modification d'une CouleurEntiteType");
          throw new InvalidMultipleAssociationException("CouleurEntiteType", "modification", true);
       }
 
@@ -217,20 +217,20 @@ public class CouleurEntiteTypeManagerImpl implements CouleurEntiteTypeManager
 
       // Test s'il y a des doublons
       if(findDoublonManager(couleurEntiteType)){
-         log.warn("Doublon lors de la modification de l'objet " + "CouleurEntiteType : " + couleurEntiteType.toString());
+         log.warn("Doublon lors de la modification de l'objet CouleurEntiteType : {}",  couleurEntiteType);
          throw new DoublonFoundException("CouleurEntiteType", "modification");
       }
 
       couleurEntiteTypeDao.updateObject(couleurEntiteType);
 
-      log.info("Enregistrement de l'objet CouleurEntiteType : " + couleurEntiteType.toString());
+      log.info("Enregistrement de l'objet CouleurEntiteType : {}",  couleurEntiteType);
    }
 
    @Override
    public void removeObjectManager(final CouleurEntiteType couleurEntiteType){
       if(couleurEntiteType != null){
          couleurEntiteTypeDao.removeObject(couleurEntiteType.getCouleurEntiteTypeId());
-         log.info("Suppression de l'objet CouleurEntiteType : " + couleurEntiteType.toString());
+         log.info("Suppression de l'objet CouleurEntiteType : {}",  couleurEntiteType);
       }else{
          log.warn("Suppression d'une CouleurEntiteType null");
       }

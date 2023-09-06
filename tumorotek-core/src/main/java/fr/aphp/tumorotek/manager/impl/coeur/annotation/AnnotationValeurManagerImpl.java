@@ -45,8 +45,8 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.validation.Validator;
 
 import fr.aphp.tumorotek.dao.annotation.AnnotationValeurDao;
@@ -87,7 +87,7 @@ import fr.aphp.tumorotek.utils.Utils;
 public class AnnotationValeurManagerImpl implements AnnotationValeurManager
 {
 
-   private final Log log = LogFactory.getLog(AnnotationValeurManager.class);
+   private final Logger log = LoggerFactory.getLogger(AnnotationValeurManager.class);
 
    /* Beans injectes par Spring*/
    private AnnotationValeurDao annotationValeurDao;
@@ -185,7 +185,7 @@ public class AnnotationValeurManagerImpl implements AnnotationValeurManager
                if(operation.equals("creation")){
 
                   annotationValeurDao.createObject(valeur);
-                  log.info("Enregistrement objet AnnotationValeur " + valeur.toString());
+                  log.info("Enregistrement objet AnnotationValeur {}",  valeur);
 
                   CreateOrUpdateUtilities.createAssociateOperation(valeur, operationManager,
                      operationTypeDao.findByNom("Creation").get(0), utilisateur);
@@ -193,7 +193,7 @@ public class AnnotationValeurManagerImpl implements AnnotationValeurManager
                }else{
 
                   annotationValeurDao.updateObject(valeur);
-                  log.info("Modification objet AnnotationValeur " + valeur.toString());
+                  log.info("Modification objet AnnotationValeur {}",  valeur);
                   CreateOrUpdateUtilities.createAssociateOperation(valeur, operationManager,
                      operationTypeDao.findByNom("Modification").get(0), utilisateur);
 
@@ -224,7 +224,7 @@ public class AnnotationValeurManagerImpl implements AnnotationValeurManager
             throw new IllegalArgumentException("Operation must match " + "'creation/modification' values");
          }
       }else{
-         log.warn("Doublon lors " + operation + " objet AnnotationValeur " + valeur.toString());
+         log.warn("Doublon lors {} objet AnnotationValeur {}", operation, valeur);
          throw new DoublonFoundException("AnnotationValeur", operation);
       }
    }
@@ -319,7 +319,7 @@ public class AnnotationValeurManagerImpl implements AnnotationValeurManager
             }
 
          }catch(final Exception e){
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
             jdbcSuite.setMaxAnnotationValeurId(maxAnnoId);
             throw e;
          }finally{}
@@ -373,7 +373,7 @@ public class AnnotationValeurManagerImpl implements AnnotationValeurManager
 
    @Override
    public List<AnnotationValeur> findByTableAndBanqueManager(final TableAnnotation table, final Banque bank){
-      log.debug("Recherche des AnnotationValeur par Table " + "et pour une banque");
+      log.debug("Recherche des AnnotationValeur par Table et pour une banque");
       return annotationValeurDao.findByTableAndBanque(table, bank);
    }
 
@@ -381,7 +381,7 @@ public class AnnotationValeurManagerImpl implements AnnotationValeurManager
    public List<AnnotationValeur> findByObjectManager(final TKAnnotableObject obj){
       List<AnnotationValeur> res = new ArrayList<>();
       if(obj != null){
-         log.debug("Recherche des AnnotationValeur pour l'objet " + obj.toString());
+         log.debug("Recherche des AnnotationValeur pour l'objet {}", obj);
          res = annotationValeurDao.findByObjectIdAndEntite(obj.listableObjectId(),
             entiteManager.findByNomManager(obj.entiteNom()).get(0));
       }
@@ -414,7 +414,7 @@ public class AnnotationValeurManagerImpl implements AnnotationValeurManager
          // merge dataType object
          valeur.setChampAnnotation(champAnnotationDao.mergeObject(champ));
       }else if(valeur.getChampAnnotation() == null){
-         log.warn("Objet obligatoire ChampAnnotation manquant lors de la " + operation + " de valeur annotation");
+         log.warn("Objet obligatoire ChampAnnotation manquant lors de la {} de valeur annotation", operation);
          throw new RequiredObjectIsNullException("AnnotationValeur", operation, "ChampAnnotation");
       }
 
@@ -422,7 +422,7 @@ public class AnnotationValeurManagerImpl implements AnnotationValeurManager
       if(obj != null){
          valeur.setObjetId(obj.listableObjectId());
       }else if(valeur.getObjetId() == null){
-         log.warn("Objet obligatoire objetId manquant lors de la " + operation + " de valeur annotation");
+         log.warn("Objet obligatoire objetId manquant lors de la {} de valeur annotation", operation);
          throw new RequiredObjectIsNullException("AnnotationValeur", operation, "TKAnnotableObject");
       }
 
@@ -430,7 +430,7 @@ public class AnnotationValeurManagerImpl implements AnnotationValeurManager
       if(banque != null){
          valeur.setBanque(banqueDao.mergeObject(banque));
       }else if(valeur.getBanque() == null){
-         log.warn("Objet obligatoire Banque manquant lors de la " + operation + " de valeur annotation");
+         log.warn("Objet obligatoire Banque manquant lors de la {} de valeur annotation", operation);
          throw new RequiredObjectIsNullException("AnnotationValeur", operation, "Banque");
       }
 
@@ -453,7 +453,7 @@ public class AnnotationValeurManagerImpl implements AnnotationValeurManager
    public void removeObjectManager(final AnnotationValeur valeur, final List<File> filesToDelete){
       if(valeur != null){
          annotationValeurDao.removeObject(valeur.getAnnotationValeurId());
-         log.info("Suppression objet AnnotationValeur " + valeur.toString());
+         log.info("Suppression objet AnnotationValeur {}",  valeur);
          //Supprime operations associes
          CreateOrUpdateUtilities.removeAssociateOperations(valeur, operationManager);
 

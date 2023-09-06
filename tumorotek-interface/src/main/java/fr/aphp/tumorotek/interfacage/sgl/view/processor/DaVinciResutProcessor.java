@@ -40,7 +40,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Calendar;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import fr.aphp.tumorotek.interfacage.sgl.view.ViewResultProcessor;
 import fr.aphp.tumorotek.model.contexte.Banque;
@@ -51,7 +52,7 @@ import fr.aphp.tumorotek.model.interfacage.ValeurExterne;
 public class DaVinciResutProcessor implements ViewResultProcessor
 {
 
-   private final Logger log = Logger.getLogger(DaVinciResutProcessor.class);
+   private final Logger log = LoggerFactory.getLogger(DaVinciResutProcessor.class);
 
    @Override
    public DossierExterne processResult(final ResultSet rSet, final Banque bank) throws SQLException{
@@ -190,7 +191,7 @@ public class DaVinciResutProcessor implements ViewResultProcessor
          //bodyOut.free(); // new in JDBC 4.0
 
          valCodesLes.setValeur(codesLes.replace(",", ";"));
-         log.debug("les:" + valCodesLes.getValeur() + ".");
+         log.debug("les: {}.", valCodesLes.getValeur());
       }
 
       // 14+15 - DATE HEURE STOCKAGE

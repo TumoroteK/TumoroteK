@@ -39,8 +39,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.validation.Validator;
 
 import fr.aphp.tumorotek.dao.qualite.OperationTypeDao;
@@ -74,7 +74,7 @@ import fr.aphp.tumorotek.utils.Utils;
 public class ProfilManagerImpl implements ProfilManager
 {
 
-   private final Log log = LogFactory.getLog(ProfilManager.class);
+   private final Logger log = LoggerFactory.getLogger(ProfilManager.class);
 
    private ProfilDao profilDao;
 
@@ -150,7 +150,7 @@ public class ProfilManagerImpl implements ProfilManager
       if(pf != null){
          profil.setPlateforme(pf);
       }else{
-         log.warn("Objet obligatoire Plateforme manquant" + " lors de la creation du profil");
+         log.warn("Objet obligatoire Plateforme manquant  lors de la creation du profil");
          throw new RequiredObjectIsNullException("Profil", "creation", "Plateforme");
       }
 
@@ -170,7 +170,7 @@ public class ProfilManagerImpl implements ProfilManager
          }
 
          profilDao.createObject(profil);
-         log.info("Enregistrement objet Profil " + profil.toString());
+         log.info("Enregistrement objet Profil {}",  profil);
 
          //Enregistrement de l'operation associee
          final Operation creationOp = new Operation();
@@ -186,7 +186,7 @@ public class ProfilManagerImpl implements ProfilManager
          }
 
       }else{
-         log.warn("Doublon lors creation objet Profil " + profil.toString());
+         log.warn("Doublon lors creation objet Profil {}",  profil);
          throw new DoublonFoundException("Profil", "creation");
       }
    }
@@ -214,7 +214,7 @@ public class ProfilManagerImpl implements ProfilManager
          }
 
          profilDao.updateObject(profil);
-         log.info("Enregistrement objet Profil " + profil.toString());
+         log.info("Enregistrement objet Profil {}",  profil);
 
          //Enregistrement de l'operation associee
          final Operation creationOp = new Operation();
@@ -241,7 +241,7 @@ public class ProfilManagerImpl implements ProfilManager
          }
 
       }else{
-         log.warn("Doublon lors creation objet Profil " + profil.toString());
+         log.warn("Doublon lors creation objet Profil {}",  profil);
          throw new DoublonFoundException("Profil", "creation");
       }
    }
@@ -250,7 +250,7 @@ public class ProfilManagerImpl implements ProfilManager
    public void removeObjectManager(final Profil profil){
       if(profil != null){
          if(isUsedObjectManager(profil)){
-            log.warn("Objet utilisé lors de la suppression de l'objet " + "Profil : " + profil.toString());
+            log.warn("Objet utilisé lors de la suppression de l'objet Profil : {}",  profil);
             throw new ObjectUsedException("deletion.profil.isUsed", false);
          }
          // suppression des DroitsObjets
@@ -265,7 +265,7 @@ public class ProfilManagerImpl implements ProfilManager
          }
 
          profilDao.removeObject(profil.getProfilId());
-         log.info("Suppression de l'objet Profil : " + profil.toString());
+         log.info("Suppression de l'objet Profil : {}",  profil);
 
          //Supprime operations associes
          final List<Operation> ops = operationManager.findByObjectManager(profil);

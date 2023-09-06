@@ -41,8 +41,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.validation.Validator;
 
 import fr.aphp.tumorotek.dao.contexte.CollaborateurDao;
@@ -88,7 +88,7 @@ import fr.aphp.tumorotek.utils.Utils;
 public class ServiceManagerImpl implements ServiceManager
 {
 
-   private final Log log = LogFactory.getLog(ServiceManager.class);
+   private final Logger log = LoggerFactory.getLogger(ServiceManager.class);
 
    private ServiceDao serviceDao;
 
@@ -199,7 +199,7 @@ public class ServiceManagerImpl implements ServiceManager
    @Override
    public List<Service> findByVilleLikeManager(final String ville){
 
-      log.debug("Recherche Service par ville : " + ville);
+      log.debug("Recherche Service par ville : {}",  ville);
       if(ville != null){
          //ville = "%" + ville + "%";
          return serviceDao.findByVille(ville);
@@ -219,7 +219,7 @@ public class ServiceManagerImpl implements ServiceManager
    @Override
    public List<Service> findByNomLikeManager(String nom, final boolean exactMatch){
 
-      log.debug("Recherche Service par nom : " + nom + " exactMatch " + String.valueOf(exactMatch));
+      log.debug("Recherche Service par nom : {} exactMatch {}", nom, exactMatch);
       if(nom != null){
          if(!exactMatch){
             nom = nom + "%";
@@ -233,7 +233,7 @@ public class ServiceManagerImpl implements ServiceManager
    @Override
    public List<Service> findByNomLikeBothSideManager(String nom){
 
-      log.debug("Recherche Service par nom : " + nom);
+      log.debug("Recherche Service par nom : {}",  nom);
       if(nom != null){
          nom = "%" + nom + "%";
          return serviceDao.findByNom(nom);
@@ -318,14 +318,14 @@ public class ServiceManagerImpl implements ServiceManager
       // On vérifie que l'établissement n'est pas null. Si c'est le
       // cas on envoie une exception
       if(etablissement == null){
-         log.warn("Objet obligatoire Etablissement manquant lors de " + "la creation " + "d'un objet Service");
+         log.warn("Objet obligatoire Etablissement manquant lors de la creation d'un objet Service");
          throw new RequiredObjectIsNullException("Service", "creation", "Etablissement");
       }else{
          service.setEtablissement(etablissementDao.mergeObject(etablissement));
       }
 
       if(findDoublonManager(service)){
-         log.warn("Doublon lors de la creation de l'objet Service : " + service.toString());
+         log.warn("Doublon lors de la creation de l'objet Service : {}",  service);
          throw new DoublonFoundException("Service", "creation");
       }else{
          BeanValidator.validateObject(service, new Validator[] {serviceValidator});
@@ -352,7 +352,7 @@ public class ServiceManagerImpl implements ServiceManager
             archiveCollaborateurs(service, collaborateurs, utilisateur);
          }
 
-         log.info("Enregistrement de l'objet Service : " + service.toString());
+         log.info("Enregistrement de l'objet Service : {}",  service);
 
          //Enregistrement de l'operation associee
          final Operation creationOp = new Operation();
@@ -377,14 +377,14 @@ public class ServiceManagerImpl implements ServiceManager
       // On vérifie que l'établissement n'est pas null. Si c'est le
       // cas on envoie une exception
       if(etablissement == null){
-         log.warn("Objet obligatoire Etablissement manquant lors de " + "la modification " + "d'un objet Service");
+         log.warn("Objet obligatoire Etablissement manquant lors de la modification d'un objet Service");
          throw new RequiredObjectIsNullException("Service", "modification", "Etablissement");
       }else{
          service.setEtablissement(etablissementDao.mergeObject(etablissement));
       }
 
       if(findDoublonManager(service)){
-         log.warn("Doublon lors de la modif de l'objet Service : " + service.toString());
+         log.warn("Doublon lors de la modif de l'objet Service : {}",  service);
          throw new DoublonFoundException("Service", "modification");
       }else{
          if(doValidation){
@@ -415,7 +415,7 @@ public class ServiceManagerImpl implements ServiceManager
             archiveCollaborateurs(service, new ArrayList<>(getCollaborateursManager(service)), utilisateur);
          }
 
-         log.info("Modification de l'objet Service " + service.toString());
+         log.info("Modification de l'objet Service {}",  service);
 
          //Enregistrement de l'operation associee
          final Operation creationOp = new Operation();
@@ -457,13 +457,13 @@ public class ServiceManagerImpl implements ServiceManager
 
             //Supprime operations associes
             CreateOrUpdateUtilities.removeAssociateOperations(service, operationManager, comments, user);
-            log.info("Suppression de l'objet Service : " + service.toString());
+            log.info("Suppression de l'objet Service : {}",  service);
          }else{
             if(!isReferencedObjectManager(service)){ // suppr possible
-               log.warn("Objet utilisé lors de la suppression de l'objet " + "Service : " + service.toString());
+               log.warn("Objet utilisé lors de la suppression de l'objet Service : {}",  service);
                throw new ObjectUsedException("service.deletion." + "isUsedCascade", true);
             }else{
-               log.warn("Objet référencé lors de la suppression " + "de l'objet Service : " + service.toString());
+               log.warn("Objet référencé lors de la suppression de l'objet Service : {}",  service);
                throw new ObjectReferencedException("service" + ".deletion.isReferencedCascade", true);
             }
          }
@@ -516,8 +516,8 @@ public class ServiceManagerImpl implements ServiceManager
             serv.getCollaborateurs().add(collaborateurDao.mergeObject(collabs.get(i)));
             collaborateurDao.mergeObject(collabs.get(i)).getServices().add(serv);
 
-            log.debug("Ajout de l'association entre le service : " + serv.toString() + " et le collaborateur : "
-               + collabs.get(i).toString());
+            log.debug("Ajout de l'association entre le service : {} et le collaborateur : {}", serv, collabs.get(i));
+;
          }
       }
    }
@@ -564,7 +564,7 @@ public class ServiceManagerImpl implements ServiceManager
    @Override
    public void removeObjectCascadeManager(final Service srv, final String comments, final Utilisateur user){
       if(srv != null){
-         log.info("Suppression en cascade depuis objet Service " + srv.toString());
+         log.info("Suppression en cascade depuis objet Service {}",  srv);
 
          //Supprime les collaborateurs
          final List<Collaborateur> collabs = new ArrayList<>();

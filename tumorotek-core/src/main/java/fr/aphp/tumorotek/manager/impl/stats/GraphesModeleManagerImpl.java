@@ -46,6 +46,8 @@ import java.util.Date;
 import javax.sql.DataSource;
 
 import org.springframework.jdbc.datasource.DataSourceUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import fr.aphp.tumorotek.manager.stats.GraphesModeleManager;
 import fr.aphp.tumorotek.model.stats.GraphesModele;
@@ -58,6 +60,7 @@ import fr.aphp.tumorotek.model.stats.GraphesModele;
 
 public class GraphesModeleManagerImpl implements GraphesModeleManager
 {
+   private static final Logger log = LoggerFactory.getLogger(GraphesModeleManagerImpl.class);
 
    private DataSource dataSource;
 
@@ -254,7 +257,7 @@ public class GraphesModeleManagerImpl implements GraphesModeleManager
 
             grM = new GraphesModele(rset);
          }catch(final SQLException e){
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
          }finally{
             try{
                if(null != rset){
@@ -267,7 +270,7 @@ public class GraphesModeleManagerImpl implements GraphesModeleManager
                   call.close();
                }
             }catch(final SQLException e){
-               e.printStackTrace();
+               log.error(e.getMessage(), e);
             }
          }
       }

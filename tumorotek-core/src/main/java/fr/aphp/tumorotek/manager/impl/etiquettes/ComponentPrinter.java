@@ -56,8 +56,8 @@ import javax.print.PrintService;
 import javax.print.PrintServiceLookup;
 import javax.print.SimpleDoc;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import fr.aphp.tumorotek.manager.etiquettes.BarcodeFieldDefault;
 import fr.aphp.tumorotek.manager.exception.StringEtiquetteOverSizeException;
@@ -70,7 +70,7 @@ import fr.aphp.tumorotek.model.imprimante.Modele;
 public class ComponentPrinter
 {
 
-   private static Log log = LogFactory.getLog(ComponentPrinter.class);
+   private static Logger log = LoggerFactory.getLogger(ComponentPrinter.class);
 
    private Exception runtimeException = null;
 
@@ -323,15 +323,15 @@ public class ComponentPrinter
                //  outToServer.writeBytes(out.toString());
 
                codeRetour = 1;
-               log.debug(codeRetour);
+               log.debug("Code retour {}:", codeRetour);
             }catch(final Exception e){
-               e.printStackTrace();
+               log.error(e.getMessage(), e);
             }finally{
                if(clientSocket != null){
                   try{
                      clientSocket.close();
                   }catch(final IOException e){
-                     e.printStackTrace();
+                     log.error(e.getMessage(), e);
                   }
                }
             }
@@ -352,7 +352,7 @@ public class ComponentPrinter
                         job.print(bytesDoc, null);
                         codeRetour = 1;
                      }catch(final PrintException pe){
-                        pe.printStackTrace();
+                        log.error(pe.getMessage(), pe);
                         codeRetour = 0;
                      }
                      break;

@@ -37,8 +37,8 @@ package fr.aphp.tumorotek.manager.impl.coeur.prelevement;
 
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.validation.Validator;
 
 import fr.aphp.tumorotek.dao.coeur.prelevement.ConditMilieuDao;
@@ -63,7 +63,7 @@ import fr.aphp.tumorotek.model.contexte.Plateforme;
 public class ConditMilieuManagerImpl implements ConditMilieuManager
 {
 
-   private final Log log = LogFactory.getLog(ConditMilieuManager.class);
+   private final Logger log = LoggerFactory.getLogger(ConditMilieuManager.class);
 
    /* Beans injectes par Spring*/
    private ConditMilieuDao conditMilieuDao;
@@ -100,9 +100,9 @@ public class ConditMilieuManagerImpl implements ConditMilieuManager
       BeanValidator.validateObject(obj, new Validator[] {conditMilieuValidator});
       if(!findDoublonManager(obj)){
          conditMilieuDao.createObject(obj);
-         log.info("Enregistrement objet ConditMilieu " + obj.toString());
+         log.info("Enregistrement objet ConditMilieu {}",  obj);
       }else{
-         log.warn("Doublon lors creation objet ConditMilieu " + obj.toString());
+         log.warn("Doublon lors creation objet ConditMilieu {}",  obj);
          throw new DoublonFoundException("ConditMilieu", "creation");
       }
    }
@@ -112,9 +112,9 @@ public class ConditMilieuManagerImpl implements ConditMilieuManager
       BeanValidator.validateObject(obj, new Validator[] {conditMilieuValidator});
       if(!findDoublonManager(obj)){
          conditMilieuDao.updateObject(obj);
-         log.info("Modification objet ConditMilieu " + obj.toString());
+         log.info("Modification objet ConditMilieu {}",  obj);
       }else{
-         log.warn("Doublon lors modification objet ConditMilieu " + obj.toString());
+         log.warn("Doublon lors modification objet ConditMilieu {}",  obj);
          throw new DoublonFoundException("ConditMilieu", "modification");
       }
    }
@@ -130,7 +130,7 @@ public class ConditMilieuManagerImpl implements ConditMilieuManager
       if(!exactMatch){
          milieu = milieu + "%";
       }
-      log.debug("Recherche ConditMilieu par milieu: " + milieu + " exactMatch " + String.valueOf(exactMatch));
+      log.debug("Recherche ConditMilieu par milieu: {} exactMatch {}", milieu, exactMatch);
       return conditMilieuDao.findByMilieu(milieu);
    }
 
@@ -138,7 +138,7 @@ public class ConditMilieuManagerImpl implements ConditMilieuManager
    public void removeObjectManager(final ConditMilieu obj){
       if(obj != null){
          conditMilieuDao.removeObject(obj.getId());
-         log.info("Suppression objet ConditMilieu " + obj.toString());
+         log.info("Suppression objet ConditMilieu {}",  obj);
       }else{
          log.warn("Suppression d'un ConditMilieu null");
       }

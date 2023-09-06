@@ -38,8 +38,8 @@ package fr.aphp.tumorotek.manager.impl.coeur.cession;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.validation.Validator;
 
 import fr.aphp.tumorotek.dao.cession.CessionExamenDao;
@@ -64,7 +64,7 @@ import fr.aphp.tumorotek.model.contexte.Plateforme;
 public class CessionExamenManagerImpl implements CessionExamenManager
 {
 
-   private final Log log = LogFactory.getLog(CessionExamenManager.class);
+   private final Logger log = LoggerFactory.getLogger(CessionExamenManager.class);
 
    /** Bean Dao CessionExamenDao. */
    private CessionExamenDao cessionExamenDao;
@@ -109,8 +109,7 @@ public class CessionExamenManagerImpl implements CessionExamenManager
     */
    @Override
    public List<CessionExamen> findByExamenLikeManager(String examen, final boolean exactMatch){
-
-      log.debug("Recherche CessionExamen par " + examen + " exactMatch " + String.valueOf(exactMatch));
+      log.debug("Recherche CessionExamen par {} exactMatch {}", examen, exactMatch);
       if(examen != null){
          if(!exactMatch){
             examen = examen + "%";
@@ -149,9 +148,9 @@ public class CessionExamenManagerImpl implements CessionExamenManager
       BeanValidator.validateObject(obj, new Validator[] {cessionExamenValidator});
       if(!findDoublonManager(obj)){
          cessionExamenDao.createObject(obj);
-         log.debug("Enregistrement objet CessionExamen " + obj.toString());
+         log.debug("Enregistrement objet CessionExamen {}" ,  obj);
       }else{
-         log.warn("Doublon lors creation objet CessionExamen " + obj.toString());
+         log.warn("Doublon lors creation objet CessionExamen {}",  obj);
          throw new DoublonFoundException("CessionExamen", "creation");
       }
    }
@@ -161,9 +160,9 @@ public class CessionExamenManagerImpl implements CessionExamenManager
       BeanValidator.validateObject(obj, new Validator[] {cessionExamenValidator});
       if(!findDoublonManager(obj)){
          cessionExamenDao.updateObject(obj);
-         log.debug("Modification objet CessionExamen " + obj.toString());
+         log.debug("Modification objet CessionExamen {}" ,  obj);
       }else{
-         log.warn("Doublon lors modification objet CessionExamen " + obj.toString());
+         log.warn("Doublon lors modification objet CessionExamen {}" ,  obj);
          throw new DoublonFoundException("CessionExamen", "modification");
       }
    }
@@ -172,7 +171,7 @@ public class CessionExamenManagerImpl implements CessionExamenManager
    public void removeObjectManager(final CessionExamen obj){
       if(obj != null){
          cessionExamenDao.removeObject(obj.getId());
-         log.debug("Suppression objet CessionExamen " + obj.toString());
+         log.debug("Suppression objet CessionExamen {}" , obj);
       }else{
          log.warn("Suppression d'une CessionExamen null");
       }

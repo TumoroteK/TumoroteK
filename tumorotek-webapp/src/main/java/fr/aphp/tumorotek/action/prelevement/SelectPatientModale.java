@@ -43,8 +43,8 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.zkoss.bind.annotation.AfterCompose;
 import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.ContextParam;
@@ -81,7 +81,7 @@ import fr.aphp.tumorotek.model.interfacage.PatientSip;
 public class SelectPatientModale
 {
 
-   private final Log log = LogFactory.getLog(SelectPatientModale.class);
+   private final Logger log = LoggerFactory.getLogger(SelectPatientModale.class);
 
    protected Boolean isFusionPatients = false;
 
@@ -171,7 +171,7 @@ public class SelectPatientModale
       if(!isFusionPatients){
          //recherche dans le serveur identite patient si il est actif
          if(SipFactory.isDirectSip()){
-            log.info("->Debut traitement recherche de patients " + "dans serveur d'identités");
+            log.info("->Debut traitement recherche de patients dans serveur d'identités");
 
             // plusieurs fichiers de connexion au Sip peuvent être
             // définis ils doivent etre de la forme pt1_serveur_Identites,
@@ -262,7 +262,7 @@ public class SelectPatientModale
    }
 
    public void searchPatientsInSip(final String filePropertiesName){
-      log.info("->Debut traitement recherche de patients " + "dans serveur d'identités");
+      log.info("->Debut traitement recherche de patients dans serveur d'identités");
       final Sip sipActif = SipFactory.getSip(filePropertiesName);
       // recherche par nip
       List<Patient> listPatientTmp = new ArrayList<>();
@@ -287,7 +287,7 @@ public class SelectPatientModale
       // doublons de la liste de resultats
       // provenant du serveur d'identite patient.
       fusionerNouvelleListeAvecPrincipale(listPatientTmp);
-      log.info("->Fin recherche de patients " + "dans serveur d'identités");
+      log.info("->Fin recherche de patients dans serveur d'identités");
    }
 
    public void fusionerNouvelleListeAvecPrincipale(final List<Patient> newListe){

@@ -37,8 +37,8 @@ package fr.aphp.tumorotek.manager.impl.coeur.prelevement;
 
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.validation.Validator;
 
 import fr.aphp.tumorotek.dao.coeur.prelevement.LaboInterDao;
@@ -69,7 +69,7 @@ import fr.aphp.tumorotek.model.contexte.Transporteur;
 public class LaboInterManagerImpl implements LaboInterManager
 {
 
-   private final Log log = LogFactory.getLog(LaboInterManager.class);
+   private final Logger log = LoggerFactory.getLogger(LaboInterManager.class);
 
    /* Beans injectes par Spring*/
    private LaboInterDao laboInterDao;
@@ -116,7 +116,7 @@ public class LaboInterManagerImpl implements LaboInterManager
       final Collaborateur collaborateur, final Transporteur transporteur, final boolean doValidation){
       //Prelevement required
       if(prelevement == null){
-         log.warn("Objet obligatoire Prelevement manquant" + " lors de la creation d'un LaboInter");
+         log.warn("Objet obligatoire Prelevement manquant  lors de la creation d'un LaboInter");
          throw new RequiredObjectIsNullException("LaboInter", "creation", "Prelevement");
       }
       obj.setPrelevement(prelevementDao.mergeObject(prelevement));
@@ -129,12 +129,12 @@ public class LaboInterManagerImpl implements LaboInterManager
          obj.setCollaborateur(collaborateurDao.mergeObject(collaborateur));
          obj.setTransporteur(transporteurDao.mergeObject(transporteur));
          laboInterDao.createObject(obj);
-         log.info("Enregistrement objet LaboInter " + obj.toString());
+         log.info("Enregistrement objet LaboInter {}",  obj);
 
          prelevementDao.mergeObject(prelevement).getLaboInters().add(obj);
 
       }else{
-         log.warn("Doublon lors creation objet LaboInter " + obj.toString());
+         log.warn("Doublon lors creation objet LaboInter {}",  obj);
          throw new DoublonFoundException("LaboInter", "creation");
       }
    }
@@ -144,7 +144,7 @@ public class LaboInterManagerImpl implements LaboInterManager
       final Collaborateur collaborateur, final Transporteur transporteur, final boolean doValidation){
       //Prelevement required
       if(prelevement == null){
-         log.warn("Objet obligatoire Prelevement manquant lors" + " de la modification d'un LaboInter " + obj.toString());
+         log.warn("Objet obligatoire Prelevement manquant lors  de la modification d'un LaboInter {}",  obj);
          throw new RequiredObjectIsNullException("LaboInter", "modification", "Prelevement");
       }
       obj.setPrelevement(prelevementDao.mergeObject(prelevement));
@@ -155,9 +155,9 @@ public class LaboInterManagerImpl implements LaboInterManager
       //Doublon
       if(!findDoublonManager(obj)){
          laboInterDao.updateObject(obj);
-         log.info("Modification objet LaboInter " + obj.toString());
+         log.info("Modification objet LaboInter {}",  obj);
       }else{
-         log.warn("Doublon lors modification objet LaboInter " + obj.toString());
+         log.warn("Doublon lors modification objet LaboInter {}",  obj);
          throw new DoublonFoundException("LaboInter", "modification");
       }
    }
@@ -171,7 +171,7 @@ public class LaboInterManagerImpl implements LaboInterManager
    @Override
    public List<LaboInter> findByServiceManager(final Service service){
       if(service != null){
-         log.debug("Recherche LaboInter par service: " + service.toString());
+         log.debug("Recherche LaboInter par service: {}",  service);
       }
       return laboInterDao.findByService(service);
    }
@@ -179,7 +179,7 @@ public class LaboInterManagerImpl implements LaboInterManager
    @Override
    public List<LaboInter> findByCollaborateurManager(final Collaborateur collaborateur){
       if(collaborateur != null){
-         log.debug("Recherche LaboInter par collaborateur: " + collaborateur.toString());
+         log.debug("Recherche LaboInter par collaborateur: {}",  collaborateur);
       }
       return laboInterDao.findByCollaborateur(collaborateur);
    }
@@ -187,7 +187,7 @@ public class LaboInterManagerImpl implements LaboInterManager
    @Override
    public List<LaboInter> findByTransporteurManager(final Transporteur transporteur){
       if(transporteur != null){
-         log.debug("Recherche LaboInter par collaborateur: " + transporteur.toString());
+         log.debug("Recherche LaboInter par collaborateur: {}",  transporteur);
       }
       return laboInterDao.findByTransporteur(transporteur);
    }
@@ -196,7 +196,7 @@ public class LaboInterManagerImpl implements LaboInterManager
    public void removeObjectManager(final LaboInter obj){
       if(obj != null){
          laboInterDao.removeObject(obj.getLaboInterId());
-         log.info("Suppression objet LaboInter " + obj.toString());
+         log.info("Suppression objet LaboInter {}",  obj);
       }else{
          log.warn("Suppression d'un LaboInter null");
       }

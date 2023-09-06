@@ -39,8 +39,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
@@ -90,7 +90,7 @@ import fr.aphp.tumorotek.webapp.tree.stockage.TerminaleNode;
 public class ListeStockages extends AbstractController
 {
 
-	private final Log log = LogFactory.getLog(ListeStockages.class);
+	private final Logger log = LoggerFactory.getLogger(ListeStockages.class);
 
 	private static final long serialVersionUID = -836695461692709048L;
 
@@ -368,7 +368,7 @@ public class ListeStockages extends AbstractController
          }
       }
       catch(Exception e){
-         log.error(e);
+         log.error(e.getMessage(), e); 
       }
    }  
 	
@@ -687,7 +687,7 @@ public class ListeStockages extends AbstractController
 			ctr.render(item, node, 0);
 			item.setOpen(true);
 		}catch(final Exception e){
-			log.error(e);
+			log.error(e.getMessage(), e); 
 		}
 
 		// on met à jour en cascade les noeuds parents

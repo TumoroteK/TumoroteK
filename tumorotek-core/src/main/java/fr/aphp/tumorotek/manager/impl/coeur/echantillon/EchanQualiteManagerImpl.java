@@ -38,8 +38,8 @@ package fr.aphp.tumorotek.manager.impl.coeur.echantillon;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.validation.Validator;
 
 import fr.aphp.tumorotek.dao.coeur.echantillon.EchanQualiteDao;
@@ -66,7 +66,7 @@ import fr.aphp.tumorotek.model.contexte.Plateforme;
 public class EchanQualiteManagerImpl implements EchanQualiteManager
 {
 
-   private final Log log = LogFactory.getLog(EchanQualiteManager.class);
+   private final Logger log = LoggerFactory.getLogger(EchanQualiteManager.class);
 
    /** Bean Dao EchanQualiteDao. */
    private EchanQualiteDao echanQualiteDao;
@@ -133,7 +133,7 @@ public class EchanQualiteManagerImpl implements EchanQualiteManager
     */
    @Override
    public List<EchanQualite> findByQualiteLikeManager(String qualite, final boolean exactMatch){
-      log.debug("Recherche EchanQualite par " + qualite + " exactMatch " + String.valueOf(exactMatch));
+      log.debug("Recherche EchanQualite par {} exactMatch {}", qualite, exactMatch);
       if(qualite != null){
          if(!exactMatch){
             qualite = qualite + "%";
@@ -177,24 +177,24 @@ public class EchanQualiteManagerImpl implements EchanQualiteManager
       qualite.setPlateforme(plateformeDao.mergeObject(qualite.getPlateforme()));
 
       if(findDoublonManager(qualite)){
-         log.warn("Doublon lors de la creation de l'objet EchanQualite : " + qualite.toString());
+         log.warn("Doublon lors de la creation de l'objet EchanQualite : {}",  qualite);
          throw new DoublonFoundException("EchanQualite", "creation");
       }
       BeanValidator.validateObject(qualite, new Validator[] {echanQualiteValidator});
       echanQualiteDao.createObject(qualite);
-      log.info("Enregistrement de l'objet EchanQualite : " + qualite.toString());
+      log.info("Enregistrement de l'objet EchanQualite : {}",  qualite);
    }
 
    @Override
    public void updateObjectManager(final EchanQualite obj){
       final EchanQualite qualite = obj;
       if(findDoublonManager(qualite)){
-         log.warn("Doublon lors de la modification de l'objet " + "EchanQualite : " + qualite.toString());
+         log.warn("Doublon lors de la modification de l'objet EchanQualite : {}",  qualite);
          throw new DoublonFoundException("EchanQualite", "modification");
       }
       BeanValidator.validateObject(qualite, new Validator[] {echanQualiteValidator});
       echanQualiteDao.updateObject(qualite);
-      log.info("Modification de l'objet EchanQualite : " + qualite.toString());
+      log.info("Modification de l'objet EchanQualite : {}",  qualite);
    }
 
    @Override

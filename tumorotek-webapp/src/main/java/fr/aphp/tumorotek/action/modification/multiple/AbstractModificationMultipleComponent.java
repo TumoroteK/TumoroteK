@@ -40,8 +40,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.beanutils.PropertyUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Path;
@@ -72,7 +72,6 @@ import fr.aphp.tumorotek.model.TKDelegetableObject;
 public abstract class AbstractModificationMultipleComponent extends AbstractController
 {
 
-   protected Log log = LogFactory.getLog(AbstractModificationMultipleComponent.class);
 
    /**
     * Components.
@@ -407,7 +406,7 @@ public abstract class AbstractModificationMultipleComponent extends AbstractCont
                hasNulls = true;
             }
          }catch(final IllegalAccessException | InvocationTargetException | NoSuchMethodException e){
-            log.error(e);
+            log.error(e.getMessage(), e); 
          }
       }
    }

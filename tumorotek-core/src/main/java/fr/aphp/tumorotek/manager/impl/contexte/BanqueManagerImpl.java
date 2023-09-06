@@ -46,8 +46,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.validation.Validator;
 
 import fr.aphp.tumorotek.dao.annotation.TableAnnotationBanqueDao;
@@ -128,7 +128,7 @@ import fr.aphp.tumorotek.utils.Utils;
 public class BanqueManagerImpl implements BanqueManager
 {
 
-   private final Log log = LogFactory.getLog(BanqueManager.class);
+   private final Logger log = LoggerFactory.getLogger(BanqueManager.class);
 
    private BanqueDao banqueDao;
 
@@ -484,13 +484,13 @@ public class BanqueManagerImpl implements BanqueManager
       if(pf != null){
          banque.setPlateforme(plateformeDao.mergeObject(pf));
       }else if(banque.getPlateforme() == null){
-         log.warn("Objet obligatoire Plateforme manquant" + " lors de la " + operation + " d'une Banque");
+         log.warn("Objet obligatoire Plateforme manquant lors de la {} d'une Banque", operation);
          throw new RequiredObjectIsNullException("Banque", operation, "Plateforme");
       }
       if(contexte != null){
          banque.setContexte(contexteDao.mergeObject(contexte));
       }else if(banque.getContexte() == null){
-         log.warn("Objet obligatoire Contexte manquant" + " lors de la " + operation + " d'une Banque");
+         log.warn("Objet obligatoire Contexte manquant lors de la {} d'une Banque", operation);
          throw new RequiredObjectIsNullException("Banque", operation, "Contexte");
       }
 
@@ -532,7 +532,7 @@ public class BanqueManagerImpl implements BanqueManager
             try{
                if(operation.equals("creation")){
                   banqueDao.createObject(banque);
-                  log.info("Enregistrement objet Banque " + banque.toString());
+                  log.info("Enregistrement objet Banque {}",  banque);
 
                   oType = operationTypeDao.findByNom("Creation").get(0);
 
@@ -540,7 +540,7 @@ public class BanqueManagerImpl implements BanqueManager
                   manageFileSystemForBanque(basedir, banque, false);
                }else{
                   banqueDao.updateObject(banque);
-                  log.info("Modification objet Banque " + banque.toString());
+                  log.info("Modification objet Banque {}",  banque);
 
                   oType = operationTypeDao.findByNom("Modification").get(0);
                }
@@ -614,7 +614,7 @@ public class BanqueManagerImpl implements BanqueManager
             throw new IllegalArgumentException("Operation must match " + "'creation/modification' values");
          }
       }else{
-         log.warn("Doublon lors " + operation + " objet Banque " + banque.toString());
+         log.warn("Doublon lors {} objet Banque {}", operation, banque);
          throw new DoublonFoundException("Banque", operation);
       }
    }
@@ -655,7 +655,7 @@ public class BanqueManagerImpl implements BanqueManager
          //cont.getBanques().remove(bank);
          conteneurManager.removeBanqueFromContAndEncManager(cont, bank);
 
-         log.debug("Suppression de l'association entre la banque : " + bank.toString() + " et le conteneur : " + cont.toString());
+         log.debug("Suppression de l'association entre la banque : {} et le conteneur : {}", bank, cont);
       }
 
       // on parcourt la nouvelle liste de conteneurs
@@ -665,8 +665,8 @@ public class BanqueManagerImpl implements BanqueManager
             // on ajoute le conteneur dans l'association
             bank.getConteneurs().add(conteneurDao.mergeObject(conteneurs.get(i)));
 
-            log.debug("Ajout de l'association entre la banque : " + bank.toString() + " et le conteneur : "
-               + conteneurs.get(i).toString());
+            log.debug("Ajout de l'association entre la banque : {} et le conteneur : {}", bank, conteneurs.get(i));
+
          }
       }
    }
@@ -717,8 +717,8 @@ public class BanqueManagerImpl implements BanqueManager
             // on ajoute la table dans l'association
             bank.getBanqueTableCodages().add(banqueTableCodageDao.mergeObject(codifications.get(i)));
 
-            log.debug("Ajout de l'association entre la banque : " + banque.toString() + " et la codification : "
-               + codifications.get(i).toString());
+            log.debug("Ajout de l'association entre la banque : {} et la codification : {}", banque, codifications.get(i));
+
          }
       }
    }
@@ -766,8 +766,8 @@ public class BanqueManagerImpl implements BanqueManager
          bank.getTableAnnotationBanques().remove(tab);
          tableAnnotationBanqueDao.removeObject(tab.getPk());
 
-         log.debug("Suppression de l'association entre la banque : " + bank.toString() + " et suppression de la table : "
-            + tab.toString());
+         log.debug("Suppression de l'association entre la banque : {} et suppression de la table : {}", bank, tab);
+
       }
 
       // on parcourt la nouvelle liste de tables
@@ -824,8 +824,8 @@ public class BanqueManagerImpl implements BanqueManager
          bank.getCouleurEntiteTypes().remove(coul);
          couleurEntiteTypeDao.removeObject(coul.getCouleurEntiteTypeId());
 
-         log.debug("Suppression de l'association entre la banque : " + bank.toString() + " et suppression de la couleur "
-            + " entite type : " + coul.toString());
+         log.debug("Suppression de l'association entre la banque : {} et suppression de la couleur entite type : {}", bank, coul);
+
       }
 
       // on parcourt la nouvelle liste de couleurs
@@ -836,8 +836,8 @@ public class BanqueManagerImpl implements BanqueManager
             coulTypes.get(i).setBanque(bank);
             bank.getCouleurEntiteTypes().add(couleurEntiteTypeDao.mergeObject(coulTypes.get(i)));
 
-            log.debug("Ajout de l'association entre la banque : " + bank.toString() + " et la couleur entite type : "
-               + coulTypes.get(i).toString());
+            log.debug("Ajout de l'association entre la banque : {} et la couleur entite type : {}", bank, coulTypes.get(i));
+
          }else{ // on modifie la couleur
             couleurEntiteTypeDao.mergeObject(coulTypes.get(i));
          }
@@ -927,7 +927,7 @@ public class BanqueManagerImpl implements BanqueManager
             CreateOrUpdateUtilities.removeAssociateOperations(banque, operationManager, comments, user);
 
             banqueDao.removeObject(banque.getBanqueId());
-            log.info("Suppression objet Banque " + banque.toString());
+            log.info("Suppression objet Banque {}",  banque);
 
             for(final SModele mod : banque.getSModeles()){
                mod.getBanques().remove(banque);
@@ -988,26 +988,26 @@ public class BanqueManagerImpl implements BanqueManager
       if(!delete){
          if(!new File(path).exists()){
             if(new File(path + "/anno").mkdirs()){
-               log.info("Creation file system " + path + "/anno");
+               log.info("Creation file system {}/anno", path);
             }else{
-               log.error("Erreur dans la creation du systeme de fichier anno pour la banque " + bank.toString());
+               log.error("Erreur dans la creation du systeme de fichier anno pour la banque {}",  bank);
                throw new RuntimeException("banque.filesystem.anno.error");
             }
             if(new File(path + "/cr_anapath").mkdirs()){
-               log.info("Creation file system " + path + "/cr_anapath");
+               log.info("Creation file system {}/cr_anapath", path);
             }else{
-               log.error("Erreur dans la creation du systeme de fichier anapath pour la banque " + bank.toString());
+               log.error("Erreur dans la creation du systeme de fichier anapath pour la banque {}",  bank);
                throw new RuntimeException("banque.filesystem.anapath.error");
             }
          }else{
-            log.error("Le systeme de fichier pour la banque " + bank.toString() + "existes deja");
+            log.error("Le systeme de fichier pour la banque {} existes deja", bank);
             throw new RuntimeException("banque.filesystem.exists.error");
          }
       }else{
          if(Utils.deleteDirectory(new File(path))){
-            log.info("Filesystem complet supprimé pour la banque " + bank.toString());
+            log.info("Filesystem complet supprimé pour la banque {}",  bank);
          }else{
-            log.error("Erreur dans la suppression du systeme de fichier anapath pour la banque " + bank.toString());
+            log.error("Erreur dans la suppression du systeme de fichier anapath pour la banque {}",  bank);
             throw new RuntimeException("banque.filesystem.delete.error");
          }
       }

@@ -119,7 +119,7 @@ public abstract class AbstractImpressionController extends AbstractFicheCombineC
             blockModal = false;
 
          }catch(final SuspendNotAllowedException e){
-            log.error(e);
+            log.error(e.getMessage(), e);
          }
       }
    }

@@ -41,8 +41,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.validation.Validator;
 
 import fr.aphp.tumorotek.dao.coeur.patient.PatientMedecinDao;
@@ -96,7 +96,7 @@ import fr.aphp.tumorotek.utils.Utils;
 public class CollaborateurManagerImpl implements CollaborateurManager
 {
 
-   private final Log log = LogFactory.getLog(CollaborateurManager.class);
+   private final Logger log = LoggerFactory.getLogger(CollaborateurManager.class);
 
    private CollaborateurDao collaborateurDao;
 
@@ -290,7 +290,7 @@ public class CollaborateurManagerImpl implements CollaborateurManager
     */
    @Override
    public List<Collaborateur> findByNomLikeManager(String nom, final boolean exactMatch){
-      log.debug("Recherche Collaborateur par nom : " + nom + " exactMatch " + String.valueOf(exactMatch));
+      log.debug("Recherche Collaborateur par nom : {} exactMatch {}", nom, exactMatch);
       if(nom != null){
          if(!exactMatch){
             nom = nom + "%";
@@ -302,7 +302,7 @@ public class CollaborateurManagerImpl implements CollaborateurManager
 
    @Override
    public List<Collaborateur> findByNomLikeBothSideManager(String nom){
-      log.debug("Recherche Collaborateur par nom : " + nom);
+      log.debug("Recherche Collaborateur par nom : {}",  nom);
       if(nom != null){
          nom = "%" + nom + "%";
          return collaborateurDao.findByNom(nom);
@@ -320,7 +320,7 @@ public class CollaborateurManagerImpl implements CollaborateurManager
     */
    @Override
    public List<Collaborateur> findByPrenomLikeManager(String prenom, final boolean exactMatch){
-      log.debug("Recherche Collaborateur par prenom : " + prenom + " exactMatch " + String.valueOf(exactMatch));
+      log.debug("Recherche Collaborateur par prenom : {} exactMatch {}", prenom, exactMatch);
       if(prenom != null){
          if(!exactMatch){
             prenom = prenom + "%";
@@ -393,7 +393,7 @@ public class CollaborateurManagerImpl implements CollaborateurManager
 
       // on vérifie qu'il n'y a pas de doublons pour le collab
       if(findDoublonManager(collaborateur)){
-         log.warn("Doublon lors de la creation de l'objet Collaborateur : " + collaborateur.toString());
+         log.warn("Doublon lors de la creation de l'objet Collaborateur : {}",  collaborateur);
          throw new DoublonFoundException("Collaborateur", "creation");
       }
       // on vérifie la validité du collab
@@ -440,7 +440,7 @@ public class CollaborateurManagerImpl implements CollaborateurManager
       collaborateurDao.createObject(collaborateur);
 
       updateServicesAndCoordonnees(collaborateur, services, coordonnees);
-      log.info("Enregistrement de l'objet Collaborateur : " + collaborateur.toString());
+      log.info("Enregistrement de l'objet Collaborateur : {}",  collaborateur);
 
       //Enregistrement de l'operation associee
       final Operation creationOp = new Operation();
@@ -466,7 +466,7 @@ public class CollaborateurManagerImpl implements CollaborateurManager
 
       // on vérifie qu'il n'y a pas de doublons pour le collab
       if(findDoublonManager(collaborateur)){
-         log.warn("Doublon lors de la modification de l'objet " + "Collaborateur : " + collaborateur.toString());
+         log.warn("Doublon lors de la modification de l'objet Collaborateur : {}",  collaborateur);
          throw new DoublonFoundException("Collaborateur", "modification");
       }
       // on vérifie la validité du collab
@@ -518,7 +518,7 @@ public class CollaborateurManagerImpl implements CollaborateurManager
 
       updateServicesAndCoordonnees(collaborateur, services, coordonnees);
 
-      log.info("Enregistrement de l'objet Collaborateur : " + collaborateur.toString());
+      log.info("Enregistrement de l'objet Collaborateur : {}",  collaborateur);
 
       //Enregistrement de l'operation associee
       final Operation creationOp = new Operation();
@@ -565,9 +565,9 @@ public class CollaborateurManagerImpl implements CollaborateurManager
             CreateOrUpdateUtilities.removeAssociateOperations(collaborateur, operationManager, comments, user);
 
             collaborateurDao.removeObject(collaborateur.getCollaborateurId());
-            log.info("Suppression de l'objet Collaborateur : " + collaborateur.toString());
+            log.info("Suppression de l'objet Collaborateur : {}",  collaborateur);
          }else{
-            log.warn("Objet référencé lors de la suppression " + "de l'objet Collaborateur : " + collaborateur.toString());
+            log.warn("Objet référencé lors de la suppression de l'objet Collaborateur : {}",  collaborateur);
             throw new ObjectReferencedException("collaborateur" + ".deletion.isReferencedCascade", false);
          }
       }
@@ -618,8 +618,8 @@ public class CollaborateurManagerImpl implements CollaborateurManager
             coll.getServices().add(serviceDao.mergeObject(services.get(i)));
             serviceDao.mergeObject(services.get(i)).getCollaborateurs().add(coll);
 
-            log.debug("Ajout de l'association entre le collaborateur : " + coll.toString() + " et le service : "
-               + services.get(i).toString());
+            log.debug("Ajout de l'association entre le collaborateur : {} et le service : {}", coll, services.get(i));
+
          }
       }
    }
@@ -659,8 +659,8 @@ public class CollaborateurManagerImpl implements CollaborateurManager
             // on retire la Coordonnee de chaque coté de l'association
             coll.getCoordonnees().remove(coord);
 
-            log.debug("Suppression de l'association entre le " + "collaborateur : " + coll.toString() + " et la coordonnée : "
-               + coord.toString());
+            log.debug("Suppression de l'association entre le collaborateur : {} et la coordonnée : {}", coll, coord);
+
          }
 
          // on parcourt la nouvelle liste de Coordonnees
@@ -671,8 +671,8 @@ public class CollaborateurManagerImpl implements CollaborateurManager
                final Coordonnee coord = coordonneeDao.mergeObject(coordonnees.get(i));
                coll.getCoordonnees().add(coord);
 
-               log.debug("Ajout de l'association entre le " + "collaborateur : " + coll.toString() + " et la coordonnee : "
-                  + coordonnees.get(i).toString());
+               log.debug("Ajout de l'association entre le collaborateur : {} et la coordonnee : {}", coll, coordonnees.get(i));
+
             }
          }
       }
@@ -699,8 +699,8 @@ public class CollaborateurManagerImpl implements CollaborateurManager
             coll.getServices().remove(serv);
             serv.getCollaborateurs().remove(coll);
 
-            log.debug("Suppression de l'association entre le " + "collaborateur : " + coll.toString() + " et le service : "
-               + serv.toString());
+            log.debug("Suppression de l'association entre le collaborateur : {} et le service : {}", coll, serv);
+
          }
 
          // on parcourt la nouvelle liste de services
@@ -711,8 +711,8 @@ public class CollaborateurManagerImpl implements CollaborateurManager
                coll.getServices().add(serviceDao.mergeObject(services.get(i)));
                serviceDao.mergeObject(services.get(i)).getCollaborateurs().add(coll);
 
-               log.debug("Ajout de l'association entre le " + "collaborateur : " + coll.toString() + " et le service : "
-                  + services.get(i).toString());
+               log.debug("Ajout de l'association entre le collaborateur : {} et le service : {}", coll, services.get(i));
+
             }
          }
       }
@@ -723,7 +723,7 @@ public class CollaborateurManagerImpl implements CollaborateurManager
       final Utilisateur user){
 
       if(collab != null){
-         log.info("Suppression en cascade Collaborateur " + collab.toString());
+         log.info("Suppression en cascade Collaborateur {}",  collab);
          collab = collaborateurDao.mergeObject(collab);
          if(service != null){
             collab.getServices().remove(service);
@@ -757,7 +757,7 @@ public class CollaborateurManagerImpl implements CollaborateurManager
 
    @Override
    public List<Collaborateur> findByVilleLikeManager(final String ville){
-      log.debug("Recherche Collaborateur par ville : " + ville);
+      log.debug("Recherche Collaborateur par ville : {}",  ville);
       if(ville != null){
          //ville = "%" + ville + "%";
          return collaborateurDao.findByVille(ville);

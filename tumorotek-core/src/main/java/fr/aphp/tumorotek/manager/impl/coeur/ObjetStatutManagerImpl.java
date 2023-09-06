@@ -38,8 +38,8 @@ package fr.aphp.tumorotek.manager.impl.coeur;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.validation.Validator;
 
 import fr.aphp.tumorotek.dao.coeur.ObjetStatutDao;
@@ -66,7 +66,7 @@ import fr.aphp.tumorotek.model.coeur.prodderive.ProdDerive;
 public class ObjetStatutManagerImpl implements ObjetStatutManager
 {
 
-   private final Log log = LogFactory.getLog(ObjetStatutManager.class);
+   private final Logger log = LoggerFactory.getLogger(ObjetStatutManager.class);
 
    private ObjetStatutDao objetStatutDao;
 
@@ -116,7 +116,7 @@ public class ObjetStatutManagerImpl implements ObjetStatutManager
     */
    @Override
    public List<ObjetStatut> findByStatutLikeManager(String statut, final boolean exactMatch){
-      log.debug("Recherche ObjetStatut par " + statut + " exactMatch " + String.valueOf(exactMatch));
+      log.debug("Recherche ObjetStatut par {} exactMatch {}", statut, exactMatch);
       if(statut != null){
          if(!exactMatch){
             statut = statut + "%";
@@ -163,12 +163,12 @@ public class ObjetStatutManagerImpl implements ObjetStatutManager
    @Override
    public void createObjectManager(final ObjetStatut statut){
       if(findDoublonManager(statut)){
-         log.warn("Doublon lors de la creation de l'objet ObjetStatut : " + statut.toString());
+         log.warn("Doublon lors de la creation de l'objet ObjetStatut : {}",  statut);
          throw new DoublonFoundException("ObjetStatut", "creation");
       }else{
          BeanValidator.validateObject(statut, new Validator[] {objetStatutValidator});
          objetStatutDao.createObject(statut);
-         log.debug("Enregistrement de l'objet ObjetStatut : " + statut.toString());
+         log.debug("Enregistrement de l'objet ObjetStatut : {}", statut);
       }
    }
 
@@ -181,12 +181,12 @@ public class ObjetStatutManagerImpl implements ObjetStatutManager
    @Override
    public void updateObjectManager(final ObjetStatut statut){
       if(findDoublonManager(statut)){
-         log.warn("Doublon lors de la modif de l'objet ObjetStatut : " + statut.toString());
+         log.warn("Doublon lors de la modif de l'objet ObjetStatut : {}",  statut);
          throw new DoublonFoundException("ObjetStatut", "modification");
       }else{
          BeanValidator.validateObject(statut, new Validator[] {objetStatutValidator});
          objetStatutDao.updateObject(statut);
-         log.debug("Modification de l'objet ObjetStatut : " + statut.toString());
+         log.debug("Modification de l'objet ObjetStatut : {}", statut);
       }
    }
 
@@ -199,11 +199,11 @@ public class ObjetStatutManagerImpl implements ObjetStatutManager
    @Override
    public void removeObjectManager(final ObjetStatut statut){
       if(isUsedObjectManager(statut)){
-         log.warn("Objet utilisé lors de la supperssion de l'objet " + "ObjetStatut : " + statut.toString());
+         log.warn("Objet utilisé lors de la supperssion de l'objet ObjetStatut : {}",  statut);
          throw new ObjectUsedException("ObjetStatut", "suppression");
       }else{
          objetStatutDao.removeObject(statut.getObjetStatutId());
-         log.debug("Suppression de l'objet ObjetStatut : " + statut.toString());
+         log.debug("Suppression de l'objet ObjetStatut : {}", statut);
       }
    }
 

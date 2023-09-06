@@ -42,8 +42,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.TypedQuery;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import fr.aphp.tumorotek.dao.code.CodeUtilisateurDao;
 import fr.aphp.tumorotek.dao.code.TableCodageDao;
@@ -59,7 +59,7 @@ import fr.aphp.tumorotek.model.code.TableCodage;
 public class CommonUtilsManagerImpl implements CommonUtilsManager
 {
 
-   private final Log log = LogFactory.getLog(CodeCommonManager.class);
+   private final Logger log = LoggerFactory.getLogger(CodeCommonManager.class);
 
    private EntityManagerFactory entityManagerFactoryCodes;
 
@@ -85,8 +85,7 @@ public class CommonUtilsManagerImpl implements CommonUtilsManager
       final List<CodeCommon> results = new ArrayList<>();
 
       if(table != null){
-         log.debug("Recherche code correspondant au couple TableCodage : " + table.toString() + " - CodeId : " + codeId);
-
+         log.debug("Recherche code correspondant au couple TableCodage : {} - CodeId : {}", table, codeId);
          String nomTable = table.getNom();
          String nomAttribut = null;
          if(table.getNom().equals("ADICAP")){

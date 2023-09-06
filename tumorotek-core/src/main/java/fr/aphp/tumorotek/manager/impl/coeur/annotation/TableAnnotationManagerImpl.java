@@ -43,8 +43,8 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Set;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.validation.Validator;
 
 import fr.aphp.tumorotek.dao.annotation.CatalogueDao;
@@ -89,7 +89,7 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
 public class TableAnnotationManagerImpl implements TableAnnotationManager
 {
 
-   private final Log log = LogFactory.getLog(TableAnnotationManager.class);
+   private final Logger log = LoggerFactory.getLogger(TableAnnotationManager.class);
 
    /* Beans injectes par Spring*/
    private TableAnnotationDao tableAnnotationDao;
@@ -191,12 +191,12 @@ public class TableAnnotationManagerImpl implements TableAnnotationManager
             try{
                if(operation.equals("creation")){
                   tableAnnotationDao.createObject(table);
-                  log.info("Enregistrement objet TableAnnotation " + table.toString());
+                  log.info("Enregistrement objet TableAnnotation {}",  table);
                   CreateOrUpdateUtilities.createAssociateOperation(table, operationManager,
                      operationTypeDao.findByNom("Creation").get(0), utilisateur);
                }else{
                   tableAnnotationDao.updateObject(table);
-                  log.info("Modification objet TableAnnotation " + table.toString());
+                  log.info("Modification objet TableAnnotation {}",  table);
                   CreateOrUpdateUtilities.createAssociateOperation(table, operationManager,
                      operationTypeDao.findByNom("Modification").get(0), utilisateur);
                }
@@ -229,7 +229,7 @@ public class TableAnnotationManagerImpl implements TableAnnotationManager
             throw new IllegalArgumentException("Operation must match " + "'creation/modification' values");
          }
       }else{
-         log.warn("Doublon lors " + operation + " objet TableAnnotation " + table.toString());
+         log.warn("Doublon lors {} objet TableAnnotation {}", operation, table);
          throw new DoublonFoundException("TableAnnotation", operation);
       }
    }
@@ -249,7 +249,7 @@ public class TableAnnotationManagerImpl implements TableAnnotationManager
    @Override
    public List<TableAnnotation> findByEntiteBanqueAndCatalogueManager(final Entite entite, final Banque bank,
       final String catalogue){
-      log.debug("Recherche des TableAnnotation par Entite, Banque et " + "catalogue");
+      log.debug("Recherche des TableAnnotation par Entite, Banque et catalogue");
       return tableAnnotationDao.findByEntiteBanqueAndCatalogue(entite, bank, catalogue);
    }
 
@@ -258,7 +258,7 @@ public class TableAnnotationManagerImpl implements TableAnnotationManager
       if(!exactMatch){
          nom = nom + "%";
       }
-      log.debug("Recherche TableAnnotation par nom: " + nom + " exactMatch " + String.valueOf(exactMatch));
+      log.debug("Recherche TableAnnotation par nom: {} exactMatch {}", nom, exactMatch);
       return tableAnnotationDao.findByNom(nom);
    }
 
@@ -318,7 +318,7 @@ public class TableAnnotationManagerImpl implements TableAnnotationManager
          table.setChampAnnotations(new HashSet<ChampAnnotation>());
 
          tableAnnotationDao.removeObject(table.getTableAnnotationId());
-         log.info("Suppression objet TableAnnotation " + table.toString());
+         log.info("Suppression objet TableAnnotation {}",  table);
          //Supprime operations associes
          CreateOrUpdateUtilities.removeAssociateOperations(table, operationManager, comments, usr);
       }else{
@@ -359,10 +359,8 @@ public class TableAnnotationManagerImpl implements TableAnnotationManager
          // on retire la TAB de l'association et on la supprime
          table.getTableAnnotationBanques().remove(tab);
          tableAnnotationBanqueDao.removeObject(tab.getPk());
-
-         log.debug("Suppression de l'association entre la table : " + table.toString() + " et suppression de la relation avec"
-            + " la banque: " + tab.getBanque().toString());
-
+         log.debug("Suppression de l'association entre la table : {} et suppression de la relation avec la banque: {}",
+            table, tab.getBanque());
          removeAnnotationValeursForTableAndBanque(tab, baseDir);
       }
 
@@ -413,8 +411,9 @@ public class TableAnnotationManagerImpl implements TableAnnotationManager
       for(int i = 0; i < valeurs.size(); i++){
          annotationValeurManager.removeObjectManager(valeurs.get(i), filesToDelete);
       }
-      log.info("Suppression des valeurs d'annotation pour l'association" + " table " + tab.getTableAnnotation() + " et banque "
-         + tab.getBanque());
+      log.info("Suppression des valeurs d'annotation pour l'association table {} et banque {}",
+         tab.getTableAnnotation(), tab.getBanque());
+
 
       // suppression du dossier
       final List<ChampAnnotation> chpFiles = champAnnotationManager.findChampsFichiersByTableManager(tab.getTableAnnotation());
@@ -438,7 +437,7 @@ public class TableAnnotationManagerImpl implements TableAnnotationManager
          // merge entite object
          table.setEntite(entiteDao.mergeObject(entite));
       }else if(table.getEntite() == null){
-         log.warn("Objet obligatoire Entite manquant" + " lors de la " + operation + " de table annotation");
+         log.warn("Objet obligatoire Entite manquant lors de la {} de table annotation", operation);
          throw new RequiredObjectIsNullException("TableAnnotation", operation, "Entite");
       }
 

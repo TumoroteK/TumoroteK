@@ -114,7 +114,7 @@ public class ParametresController extends AbstractController
             accueilImg.setVisible(true);
             noImgLabel.setVisible(false);
          }catch(final IOException e){
-            log.error("Impossible de charger le fichier image [" + newLogoFile.getAbsolutePath() + "]", e);
+            log.error("Impossible de charger le fichier image [{}]", newLogoFile.getAbsolutePath(), e );
             Messagebox.show(Labels.getLabel("error.params.image.update"), Labels.getLabel("general.error"), Messagebox.OK,
                Messagebox.ERROR);
          }

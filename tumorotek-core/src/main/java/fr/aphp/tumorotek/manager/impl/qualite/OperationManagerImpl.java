@@ -50,8 +50,8 @@ import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.sql.DataSource;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.CannotGetJdbcConnectionException;
 import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.validation.Validator;
@@ -86,7 +86,7 @@ import fr.aphp.tumorotek.utils.Utils;
 public class OperationManagerImpl implements OperationManager
 {
 
-   private final Log log = LogFactory.getLog(OperationManager.class);
+   private final Logger log = LoggerFactory.getLogger(OperationManager.class);
 
    /* Beans injectes par Spring*/
    private OperationDao operationDao;
@@ -146,13 +146,13 @@ public class OperationManagerImpl implements OperationManager
       operation.setUtilisateur(utilisateurDao.mergeObject(utilisateur));
       //OperationType required
       if(operationType == null){
-         log.warn("Objet obligatoire OperationType manquant" + " lors de la creation d'une Operation");
+         log.warn("Objet obligatoire OperationType manquant  lors de la creation d'une Operation");
          throw new RequiredObjectIsNullException("Operation", "creation", "OperationType");
       }
       operation.setOperationType(operationTypeDao.mergeObject(operationType));
       //Obj required
       if(obj == null){
-         log.warn("Objet obligatoire Object manquant" + " lors de la creation d'une Operation");
+         log.warn("Objet obligatoire Object manquant  lors de la creation d'une Operation");
          throw new RequiredObjectIsNullException("Operation", "creation", "Object");
       }
       //recupere la reference vers entite a partir de la classe de obj
@@ -175,7 +175,7 @@ public class OperationManagerImpl implements OperationManager
       BeanValidator.validateObject(obj, new Validator[] {operationValidator});
 
       operationDao.createObject(operation);
-      log.debug("Enregistrement objet Operation " + obj.toString());
+      log.debug("Enregistrement objet Operation {}",  obj);
 
    }
 
@@ -188,7 +188,7 @@ public class OperationManagerImpl implements OperationManager
    @Override
    public List<Operation> findByUtilisateurManager(final Utilisateur utilisateur){
       if(utilisateur != null){
-         log.debug("Recherche les operations pour l'utilisateur : " + utilisateur.toString());
+         log.debug("Recherche les operations pour l'utilisateur : {}",  utilisateur);
       }
       return operationDao.findByUtilisateur(utilisateur);
    }
@@ -215,7 +215,7 @@ public class OperationManagerImpl implements OperationManager
                entiteNom = "CodeDiagnostic";
             }
          }
-         log.debug("Recherche des Operation pour l'objet " + obj.toString());
+         log.debug("Recherche des Operation pour l'objet {}",  obj);
          entite = entiteDao.findByNom(entiteNom).get(0);
          objetId = getObjetIdFromObject(obj);
       }
@@ -239,7 +239,7 @@ public class OperationManagerImpl implements OperationManager
                entiteNom = "CodeDiagnostic";
             }
          }
-         log.debug("Recherche des Operation pour l'objet " + obj.toString());
+         log.debug("Recherche des Operation pour l'objet {}",  obj);
          entite = entiteDao.findByNom(entiteNom).get(0);
          objetId = getObjetIdFromObject(obj);
       }
@@ -278,7 +278,7 @@ public class OperationManagerImpl implements OperationManager
          }
 
          operationDao.removeObject(operation.getOperationId());
-         log.info("Suppression objet Operation " + operation.toString());
+         log.info("Suppression objet Operation {}",  operation);
       }else{
          log.warn("Suppression d'une Operation null");
       }
@@ -309,7 +309,7 @@ public class OperationManagerImpl implements OperationManager
       if(obj != null){
          final OperationType creation = operationTypeDao.findByNom("Creation").get(0);
 
-         log.debug("Recherche l'opération de création pour l'objet " + obj.toString());
+         log.debug("Recherche l'opération de création pour l'objet {}",  obj);
          entite = entiteDao.findByNom(obj.getClass().getSimpleName()).get(0);
          objetId = getObjetIdFromObject(obj);
 
@@ -335,15 +335,15 @@ public class OperationManagerImpl implements OperationManager
          final Method targetmethod = targetClass.getMethod("get" + targetClass.getSimpleName() + "Id", new Class[] {});
          return (Integer) targetmethod.invoke(obj, new Object[] {});
       }catch(final IllegalArgumentException e){
-         log.error("Creation Operation a echoue " + "car impossible de recupere ObjetId: " + e.getMessage());
+         log.error("Creation Operation a echoue car impossible de recupere ObjetId: {}",  e.getMessage());
       }catch(final IllegalAccessException e){
-         log.error("Creation Operation a echoue " + "car impossible de recupere ObjetId: " + e.getMessage());
+         log.error("Creation Operation a echoue car impossible de recupere ObjetId: {}",  e.getMessage());
       }catch(final InvocationTargetException e){
-         log.error("Creation Operation a echoue " + "car impossible de recupere ObjetId: " + e.getMessage());
+         log.error("Creation Operation a echoue car impossible de recupere ObjetId: {}",  e.getMessage());
       }catch(final SecurityException e){
-         log.error("Creation Operation a echoue " + "car impossible de recupere ObjetId: " + e.getMessage());
+         log.error("Creation Operation a echoue car impossible de recupere ObjetId: {}",  e.getMessage());
       }catch(final NoSuchMethodException e){
-         log.error("Creation Operation a echoue " + "car impossible de recupere ObjetId: " + e.getMessage());
+         log.error("Creation Operation a echoue car impossible de recupere ObjetId: {}",  e.getMessage());
       }
       return null;
    }

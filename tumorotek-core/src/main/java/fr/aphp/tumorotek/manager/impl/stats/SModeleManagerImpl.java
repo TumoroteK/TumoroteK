@@ -42,8 +42,8 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.validation.Validator;
 
 import fr.aphp.tumorotek.dao.contexte.BanqueDao;
@@ -74,7 +74,7 @@ import fr.aphp.tumorotek.model.stats.Subdivision;
 public class SModeleManagerImpl implements SModeleManager
 {
 
-   private final Log log = LogFactory.getLog(SModeleManager.class);
+   private final Logger log = LoggerFactory.getLogger(SModeleManager.class);
 
    private SModeleDao sModeleDao;
 
@@ -168,13 +168,13 @@ public class SModeleManagerImpl implements SModeleManager
       if(plateforme != null){
          modele.setPlateforme(plateformeDao.mergeObject(plateforme));
       }else{
-         log.warn("Objet obligatoire Plateforme manquant" + " lors de la création d'un Indicateur Modele");
+         log.warn("Objet obligatoire Plateforme manquant  lors de la création d'un Indicateur Modele");
          throw new RequiredObjectIsNullException("IndicateurModele", "creation", "Plateforme");
       }
 
       // Test s'il y a des doublons
       if(findDoublonManager(modele)){
-         log.warn("Doublon lors de la creation de l'objet Modele : " + modele.toString());
+         log.warn("Doublon lors de la creation de l'objet Modele : {}",  modele);
          throw new DoublonFoundException("Modele", "creation");
       }
 
@@ -190,7 +190,7 @@ public class SModeleManagerImpl implements SModeleManager
 
       // updateBanquesAssociation(banques, modele);
 
-      log.debug("Enregistrement de l'objet Modele : " + modele.toString());
+      log.debug("Enregistrement de l'objet Modele : {}",  modele);
    }
 
    @Override
@@ -200,13 +200,13 @@ public class SModeleManagerImpl implements SModeleManager
       if(plateforme != null){
          modele.setPlateforme(plateformeDao.mergeObject(plateforme));
       }else{
-         log.warn("Objet obligatoire Plateforme manquant" + " lors de la modification d'un IndicateurModele");
+         log.warn("Objet obligatoire Plateforme manquant  lors de la modification d'un IndicateurModele");
          throw new RequiredObjectIsNullException("IndicateurModele", "modification", "Plateforme");
       }
 
       // Test s'il y a des doublons
       if(findDoublonManager(modele)){
-         log.warn("Doublon lors de la modification de l'objet IndicateurModele : " + modele.toString());
+         log.warn("Doublon lors de la modification de l'objet IndicateurModele : {}",  modele);
          throw new DoublonFoundException("IndicateurModele", "modification");
       }
 
@@ -223,7 +223,7 @@ public class SModeleManagerImpl implements SModeleManager
 
       modele = updateAssociations(modele, indicateurs);
 
-      log.debug("Modification de l'objet Modele : " + modele.toString());
+      log.debug("Modification de l'objet Modele : {}",  modele);
 
       return modele;
    }
@@ -232,7 +232,7 @@ public class SModeleManagerImpl implements SModeleManager
    public void removeObjectManager(final SModele modele){
       if(modele != null){
          sModeleDao.removeObject(modele.getSmodeleId());
-         log.info("Suppression de l'objet IndicateurModele : " + modele.toString());
+         log.info("Suppression de l'objet IndicateurModele : {}",  modele);
       }else{
          log.warn("Suppression d'un IndicateurModele null");
       }
@@ -268,8 +268,8 @@ public class SModeleManagerImpl implements SModeleManager
             sModele.getSModeleIndicateurs().remove(sm);
             sModeleIndicateurDao.removeObject(sm.getPk());
 
-            log.debug("Suppression de l'association entre le sModele : " + sModele.toString() + " et l'indicateur : "
-               + sm.getIndicateur().toString());
+            log.debug("Suppression de l'association entre le sModele : {} et l'indicateur : {}", sModele, sm.getIndicateur());
+
          }
 
          for(int i = 0; i < indicateurs.size(); i++){
@@ -280,8 +280,8 @@ public class SModeleManagerImpl implements SModeleManager
             if(!sModele.getSModeleIndicateurs().contains(sm)){
                sModele.getSModeleIndicateurs().add(sModeleIndicateurDao.mergeObject(sm));
 
-               log.debug("Ajout de l'association entre le sModele : " + sModele.toString() + " et l'indicateur : "
-                  + indicateurs.get(i).toString());
+               log.debug("Ajout de l'association entre le sModele : {} et l'indicateur : {}", sModele, indicateurs.get(i));
+
             }else{ // on modifie l'ordre du medecin present avec la liste
                sm = sModeleIndicateurDao.findById(pk);
                sm.setOrdre(i + 1);
@@ -330,7 +330,7 @@ public class SModeleManagerImpl implements SModeleManager
                model.getBanques().add(banqueDao.mergeObject(b));
                banqueDao.mergeObject(b).getSModeles().add(model);
 
-               log.debug("Ajout de l'association entre le " + "Modele : " + model.toString() + " et la banque : " + b.toString());
+               log.debug("Ajout de l'association entre le Modele : {} et la banque : {}", model, b);
             }
          }
       }

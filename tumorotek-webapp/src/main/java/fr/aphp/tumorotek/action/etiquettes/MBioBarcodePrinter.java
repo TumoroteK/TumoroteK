@@ -41,8 +41,8 @@ import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Vector;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import fr.aphp.tumorotek.action.ManagerLocator;
 import fr.aphp.tumorotek.model.TKStockableObject;
@@ -61,7 +61,7 @@ import fr.aphp.tumorotek.model.coeur.prodderive.ProdDerive;
 public class MBioBarcodePrinter
 {
 
-   private final Log log = LogFactory.getLog(MBioBarcodePrinter.class);
+   private final Logger log = LoggerFactory.getLogger(MBioBarcodePrinter.class);
 
    private final int labelFormat;
 
@@ -235,36 +235,28 @@ public class MBioBarcodePrinter
       }catch(final ClassNotFoundException e){
          log.error("mbio package not found");
          codeRetour = 0;
-         log.error(e);
+         log.error(e.getMessage(), e); 
       }catch(final SecurityException e){
          codeRetour = 0;
-         log.error(e);
-         e.printStackTrace();
+         log.error(e.getMessage(), e); 
       }catch(final NoSuchMethodException e){
          codeRetour = 0;
-         log.error(e);
-         e.printStackTrace();
+         log.error(e.getMessage(), e); 
       }catch(final IllegalArgumentException e){
          codeRetour = 0;
-         log.error(e);
-         e.printStackTrace();
+         log.error(e.getMessage(), e); 
       }catch(final InstantiationException e){
          codeRetour = 0;
-         log.error(e);
-         e.printStackTrace();
+         log.error(e.getMessage(), e); 
       }catch(final IllegalAccessException e){
          codeRetour = 0;
-         log.error(e);
-         e.printStackTrace();
+         log.error(e.getMessage(), e); 
       }catch(final InvocationTargetException e){
          codeRetour = 0;
-         e.printStackTrace();
-         log.error(e);
-         e.printStackTrace();
+         log.error(e.getMessage(), e);
       }catch(final Exception e){
          codeRetour = 0;
-         log.error("printData:Exception," + e);
-         e.printStackTrace();
+         log.error(e.getMessage(), e);
       }
 
       return codeRetour;

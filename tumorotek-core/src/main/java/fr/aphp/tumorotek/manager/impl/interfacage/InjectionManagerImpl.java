@@ -56,8 +56,8 @@ import javax.persistence.TypedQuery;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import fr.aphp.tumorotek.dao.annotation.ChampAnnotationDao;
 import fr.aphp.tumorotek.dao.coeur.ObjetStatutDao;
@@ -112,7 +112,7 @@ import fr.aphp.tumorotek.utils.Utils;
 public class InjectionManagerImpl implements InjectionManager
 {
 
-   private final Log log = LogFactory.getLog(InjectionManager.class);
+   private final Logger log = LoggerFactory.getLogger(InjectionManager.class);
 
    private EntityManagerFactory entityManagerFactory;
 
@@ -435,11 +435,11 @@ public class InjectionManagerImpl implements InjectionManager
                PropertyUtils.setSimpleProperty(obj, nomChamp, null);
             }
          }catch(final IllegalAccessException e){
-            log.error(e);
+            log.error(e.getMessage(), e); 
          }catch(final InvocationTargetException e){
-            log.error(e);
+            log.error(e.getMessage(), e); 
          }catch(final NoSuchMethodException e){
-            log.error(e);
+            log.error(e.getMessage(), e); 
          }
       }
    }
@@ -562,11 +562,11 @@ public class InjectionManagerImpl implements InjectionManager
                      }
                   }
                }catch(final IllegalAccessException e){
-                  log.error(e);
+                  log.error(e.getMessage(), e); 
                }catch(final InvocationTargetException e){
-                  log.error(e);
+                  log.error(e.getMessage(), e); 
                }catch(final NoSuchMethodException e){
-                  log.error(e);
+                  log.error(e.getMessage(), e); 
                }
             }
          }else if(valeurExterne.getChampAnnotationId() != null){

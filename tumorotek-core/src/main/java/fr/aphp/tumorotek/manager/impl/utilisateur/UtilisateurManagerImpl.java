@@ -43,8 +43,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.validation.Validator;
 
 import fr.aphp.tumorotek.dao.contexte.BanqueDao;
@@ -79,7 +79,7 @@ import fr.aphp.tumorotek.utils.Utils;
 public class UtilisateurManagerImpl implements UtilisateurManager
 {
 
-	private final Log log = LogFactory.getLog(UtilisateurManager.class);
+	private final Logger log = LoggerFactory.getLogger(UtilisateurManager.class);
 
 	private UtilisateurDao utilisateurDao;
 	private ProfilUtilisateurManager profilUtilisateurManager;
@@ -242,7 +242,7 @@ public class UtilisateurManagerImpl implements UtilisateurManager
 			}
 
 			utilisateurDao.createObject(utilisateur);
-			log.info("Enregistrement objet Utilisateur " + utilisateur.toString());
+			log.info("Enregistrement objet Utilisateur {}",  utilisateur);
 
 			//Enregistrement de l'operation associee
 			final Operation creationOp = new Operation();
@@ -253,7 +253,7 @@ public class UtilisateurManagerImpl implements UtilisateurManager
 			updateProfilsAndPlateformes(utilisateur, profils, profils, plateformes);
 
 		}else{
-			log.warn("Doublon lors creation objet Utilisateur " + utilisateur.toString());
+			log.warn("Doublon lors creation objet Utilisateur {}",  utilisateur);
 			throw new DoublonFoundException("Utilisateur", "creation");
 		}
 
@@ -285,7 +285,7 @@ public class UtilisateurManagerImpl implements UtilisateurManager
 			}
 
 			utilisateurDao.updateObject(utilisateur);
-			log.info("Enregistrement objet Utilisateur " + utilisateur.toString());
+			log.info("Enregistrement objet Utilisateur {}",  utilisateur);
 
 			//Enregistrement de l'operation associee
 			final Operation creationOp = new Operation();
@@ -296,7 +296,7 @@ public class UtilisateurManagerImpl implements UtilisateurManager
 			updateProfilsAndPlateformes(utilisateur, profils, profilsToCreate, plateformes);
 
 		}else{
-			log.warn("Doublon lors modification objet Utilisateur " + utilisateur.toString());
+			log.warn("Doublon lors modification objet Utilisateur {}",  utilisateur);
 			throw new DoublonFoundException("Utilisateur", "modification");
 		}
 	}
@@ -361,8 +361,8 @@ public class UtilisateurManagerImpl implements UtilisateurManager
 				util.getPlateformes().remove(pf);
 				pf.getUtilisateurs().remove(util);
 
-				log.debug("Suppression de l'association entre " + "l'utilisateur : " + util.toString() + " et la plateforme : "
-						+ pf.toString());
+				log.debug("Suppression de l'association entre l'utilisateur : {} et la plateforme : {}", util, pf);
+
 			}
 
 			// on parcourt la nouvelle liste de plateformes
@@ -373,8 +373,8 @@ public class UtilisateurManagerImpl implements UtilisateurManager
 					util.getPlateformes().add(plateformeDao.mergeObject(plateformes.get(i)));
 					plateformeDao.mergeObject(plateformes.get(i)).getUtilisateurs().add(util);
 
-					log.debug("Ajout de l'association entre " + "l'utilisateur : " + util.toString() + " et la plateforme : "
-							+ plateformes.get(i).toString());
+					log.debug("Ajout de l'association entre l'utilisateur : {} et la plateforme : {}", util, plateformes.get(i));
+
 				}
 			}
 		}
@@ -426,7 +426,7 @@ public class UtilisateurManagerImpl implements UtilisateurManager
 	public void removeObjectManager(final Utilisateur utilisateur){
 		if(utilisateur != null){
 			if(isUsedObjectManager(utilisateur)){
-				log.warn("Objet utilisé lors de la suppression de l'objet " + "Utilisateur : " + utilisateur.toString());
+				log.warn("Objet utilisé lors de la suppression de l'objet Utilisateur : {}",  utilisateur);
 				throw new ObjectUsedException("utilisateur.suppression.impossible", false);
 			}else{
 				// utilisateur = utilisateurDao.mergeObject(utilisateur);
@@ -448,7 +448,7 @@ public class UtilisateurManagerImpl implements UtilisateurManager
 				//				}
 
 				utilisateurDao.removeObject(utilisateur.getUtilisateurId());
-				log.info("Suppression de l'objet Utilisateur : " + utilisateur.toString());
+				log.info("Suppression de l'objet Utilisateur : {}",  utilisateur);
 
 				//Supprime operations associes
 				final List<Operation> ops = operationManager.findByObjectManager(utilisateur);
@@ -639,7 +639,7 @@ public class UtilisateurManagerImpl implements UtilisateurManager
 			final List<Utilisateur> usersToArchive = utilisateurDao.findByTimeOutBefore(Calendar.getInstance().getTime());
 			for(final Utilisateur usr : usersToArchive){
 				archiveUtilisateurManager(usr, admin);
-				log.info("Archivage automatisé par timeout de l'utilisateur: " + usr.getLogin());
+				log.info("Archivage automatisé par timeout de l'utilisateur: {}",  usr.getLogin());
 			}
 		}
 	}

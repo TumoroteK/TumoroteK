@@ -45,8 +45,8 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.TypedQuery;
 
 import org.apache.commons.beanutils.PropertyUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import fr.aphp.tumorotek.dao.code.CimMasterDao;
 import fr.aphp.tumorotek.manager.code.CimMasterManager;
@@ -65,7 +65,7 @@ import fr.aphp.tumorotek.model.code.CimMaster;
 public class CimMasterManagerImpl implements CimMasterManager
 {
 
-   private final Log log = LogFactory.getLog(CimMasterManager.class);
+   private final Logger log = LoggerFactory.getLogger(CimMasterManager.class);
 
    private CimMasterDao cimMasterDao;
 
@@ -89,7 +89,7 @@ public class CimMasterManagerImpl implements CimMasterManager
       if(!exactMatch){
          code = "%" + code + "%";
       }
-      log.debug("Recherche Cim par code: " + code + " exactMatch " + String.valueOf(exactMatch));
+      log.debug("Recherche Cim par code: {} exactMatch {}", code, exactMatch);
       return cimMasterDao.findByCodeLike(code);
    }
 
@@ -98,7 +98,7 @@ public class CimMasterManagerImpl implements CimMasterManager
       if(!exactMatch){
          libelle = "%" + libelle + "%";
       }
-      log.debug("Recherche Cim par libelle: " + libelle + " exactMatch " + String.valueOf(exactMatch));
+      log.debug("Recherche Cim par libelle: {} exactMatch {}", libelle, exactMatch);
       // List<CimMaster> cims = new ArrayList<CimMaster>();
       // List<CimLibelle> libs = cimLibelleDao.findByLibelleLike(libelle);
       // for (int i = 0; i < libs.size(); i++) {

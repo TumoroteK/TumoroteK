@@ -35,8 +35,8 @@
  **/
 package fr.aphp.tumorotek.manager.impl.coeur.patient;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import fr.aphp.tumorotek.dao.coeur.patient.LienFamilialDao;
 import fr.aphp.tumorotek.dao.coeur.patient.PatientDao;
@@ -60,7 +60,7 @@ import fr.aphp.tumorotek.model.coeur.patient.PatientLien;
 public class PatientLienManagerImpl implements PatientLienManager
 {
 
-   private final Log log = LogFactory.getLog(PatientLienManager.class);
+   private final Logger log = LoggerFactory.getLogger(PatientLienManager.class);
 
    /* Beans injectes par Spring*/
    private PatientLienDao patientLienDao;
@@ -100,7 +100,7 @@ public class PatientLienManagerImpl implements PatientLienManager
          if(operation.equals("creation")){
             //if (operation.equals("creation")) {
             patientLienDao.createObject(patientLien);
-            log.debug("Enregistrement objet PatientLien " + patientLien.toString());
+            log.debug("Enregistrement objet PatientLien {}",  patientLien);
             //				} else { //cree un nouvel objet car modification de la clef
             //					patientLienDao.updateObject(patientLien);
             //					log.info("Modification objet PatientLien "
@@ -113,9 +113,9 @@ public class PatientLienManagerImpl implements PatientLienManager
          if(operation.equals("modification")
             && !patientLien.getLienFamilial().equals(patientLienDao.findById(patientLien.getPk()).getLienFamilial())){
             patientLienDao.updateObject(patientLien);
-            log.debug("Modification objet PatientLien " + patientLien.toString());
+            log.debug("Modification objet PatientLien {}",  patientLien);
          }else{
-            log.warn("Doublon lors " + operation + " objet PatientLien " + patientLien.toString());
+            log.warn("Doublon lors {} objet PatientLien {}", operation, patientLien);
             throw new DoublonFoundException("PatientLien", operation);
          }
       }
@@ -125,7 +125,7 @@ public class PatientLienManagerImpl implements PatientLienManager
    public void removeObjectManager(final PatientLien patientLien){
       if(patientLien != null){
          patientLienDao.removeObject(patientLien.getPk());
-         log.debug("Suppression objet PatientLien " + patientLien.toString());
+         log.debug("Suppression objet PatientLien {}",  patientLien);
       }else{
          log.warn("Suppression d'un PatientLien null");
       }
@@ -152,21 +152,21 @@ public class PatientLienManagerImpl implements PatientLienManager
       if(patient1 != null){
          patientLien.setPatient1(patientDao.mergeObject(patient1));
       }else if(patientLien.getPatient1() == null){
-         log.warn("Objet obligatoire Patient1 manquant" + " lors de la " + operation + " d'un PatientLien");
+         log.warn("Objet obligatoire Patient1 manquant lors de la {} d'un PatientLien", operation);
          throw new RequiredObjectIsNullException("PatientLien", operation, "Patient1");
       }
       //patient2 required
       if(patient2 != null){
          patientLien.setPatient2(patientDao.mergeObject(patient2));
       }else if(patientLien.getPatient2() == null){
-         log.warn("Objet obligatoire Patient2 manquant" + " lors de la " + operation + " d'un PatientLien");
+         log.warn("Objet obligatoire Patient2 manquant lors de la {} d'un PatientLien", operation);
          throw new RequiredObjectIsNullException("PatientLien", operation, "Patient2");
       }
       //LienFamilial required
       if(lienFamilial != null){
          patientLien.setLienFamilial(lienFamilialDao.mergeObject(lienFamilial));
       }else if(patientLien.getLienFamilial() == null){
-         log.warn("Objet obligatoire LienFamilial  manquant" + " lors de la " + operation + " d'un PatientLien");
+         log.warn("Objet obligatoire LienFamilial  manquant lors de la {} d'un PatientLien", operation);
          throw new RequiredObjectIsNullException("PatientLien", operation, "LienFamilial");
       }
 

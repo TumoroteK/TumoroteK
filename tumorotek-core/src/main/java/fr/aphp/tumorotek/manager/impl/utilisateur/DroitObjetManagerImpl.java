@@ -38,8 +38,8 @@ package fr.aphp.tumorotek.manager.impl.utilisateur;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import fr.aphp.tumorotek.dao.qualite.OperationTypeDao;
 import fr.aphp.tumorotek.dao.systeme.EntiteDao;
@@ -66,7 +66,7 @@ import fr.aphp.tumorotek.model.utilisateur.Profil;
 public class DroitObjetManagerImpl implements DroitObjetManager
 {
 
-   private final Log log = LogFactory.getLog(DroitObjetManager.class);
+   private final Logger log = LoggerFactory.getLogger(DroitObjetManager.class);
 
    /** Bean Dao. */
    private DroitObjetDao droitObjetDao;
@@ -185,19 +185,19 @@ public class DroitObjetManagerImpl implements DroitObjetManager
    public void validateObjectManager(final Profil profil, final Entite entite, final OperationType type){
       //profil required
       if(profil == null){
-         log.warn("Objet obligatoire Profil manquant" + " lors de la validation d'un DroitObjet");
+         log.warn("Objet obligatoire Profil manquant  lors de la validation d'un DroitObjet");
          throw new RequiredObjectIsNullException("DroitObjet", "creation", "Profil");
       }
 
       //Entite required
       if(entite == null){
-         log.warn("Objet obligatoire Entite manquant" + " lors de la validation d'un DroitObjet");
+         log.warn("Objet obligatoire Entite manquant  lors de la validation d'un DroitObjet");
          throw new RequiredObjectIsNullException("DroitObjet", "creation", "Entite");
       }
 
       //OperationType required
       if(type == null){
-         log.warn("Objet obligatoire OperationType manquant" + " lors de la validation d'un DroitObjet");
+         log.warn("Objet obligatoire OperationType manquant  lors de la validation d'un DroitObjet");
          throw new RequiredObjectIsNullException("DroitObjet", "creation", "OperationType");
       }
 
@@ -225,7 +225,7 @@ public class DroitObjetManagerImpl implements DroitObjetManager
       // création
       droitObjetDao.createObject(droitObjet);
 
-      log.info("Enregistrement objet DroitObjet " + droitObjet.toString());
+      log.info("Enregistrement objet DroitObjet {}",  droitObjet);
 
    }
 
@@ -233,7 +233,7 @@ public class DroitObjetManagerImpl implements DroitObjetManager
    public void removeObjectManager(final DroitObjet droitObjet){
       if(droitObjet != null){
          droitObjetDao.removeObject(droitObjet.getPk());
-         log.info("Suppression de l'objet DroitObjet : " + droitObjet.toString());
+         log.info("Suppression de l'objet DroitObjet : {}",  droitObjet);
       }else{
          log.warn("Suppression d'un DroitObjet null");
       }

@@ -54,8 +54,8 @@ import java.util.stream.IntStream;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.springframework.transaction.TransactionDefinition;
@@ -157,7 +157,7 @@ import fr.aphp.tumorotek.webapp.general.SessionUtils;
 public class FicheMultiProdDerive extends FicheProdDeriveEdit
 {
 
-   private final Log log = LogFactory.getLog(FicheModifMultiProdDerive.class);
+   private final Logger log = LoggerFactory.getLogger(FicheModifMultiProdDerive.class);
 
    private static final long serialVersionUID = 8521632198848434054L;
 
@@ -841,7 +841,7 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
          try{
             dl = ManagerLocator.getXmlUtils().creerBoiteHtml(doc);
          }catch(final Exception e){
-            log.error(e);
+            log.error(e.getMessage(), e); 
          }
 
          // envoie du fichier à imprimer à l'utilisateur
@@ -2687,3 +2687,4 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
       }
   }
 }
+

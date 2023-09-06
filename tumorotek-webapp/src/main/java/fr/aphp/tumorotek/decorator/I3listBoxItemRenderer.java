@@ -37,8 +37,8 @@ package fr.aphp.tumorotek.decorator;
 
 import java.lang.reflect.Field;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
@@ -57,7 +57,7 @@ import org.zkoss.zul.ListitemRenderer;
 public class I3listBoxItemRenderer implements ListitemRenderer<Object>
 {
 
-   private final Log log = LogFactory.getLog(I3listBoxItemRenderer.class);
+   private final Logger log = LoggerFactory.getLogger(I3listBoxItemRenderer.class);
 
    private final String fieldName;
 

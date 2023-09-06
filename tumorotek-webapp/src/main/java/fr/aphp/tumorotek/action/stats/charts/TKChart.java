@@ -74,6 +74,9 @@ import org.zkoss.zul.SimplePieModel;
 import org.zkoss.zul.Vlayout;
 import org.zkoss.zul.Window;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import fr.aphp.tumorotek.action.stats.chart.engine.TKChartEngine;
 import fr.aphp.tumorotek.model.stats.GraphesModele;
 
@@ -86,6 +89,8 @@ import fr.aphp.tumorotek.model.stats.GraphesModele;
  */
 public class TKChart extends HtmlMacroComponent
 {
+   private static final Logger log = LoggerFactory.getLogger(TKChart.class);
+
 
    private static final long serialVersionUID = -4430614130184318712L;
 
@@ -338,7 +343,7 @@ public class TKChart extends HtmlMacroComponent
             new AMedia(getTitle().replace(" ", "_") + "_" + date, "xls", "application/vnd.ms-excel", outStr.toByteArray());
          Filedownload.save(media);
       }catch(final IOException e){
-         e.printStackTrace();
+         log.error(e.getMessage(), e);
       }
    }
 

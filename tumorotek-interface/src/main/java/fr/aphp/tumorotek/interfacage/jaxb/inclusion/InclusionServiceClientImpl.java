@@ -1,12 +1,14 @@
 package fr.aphp.tumorotek.interfacage.jaxb.inclusion;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.springframework.ws.client.core.WebServiceTemplate;
 
 public class InclusionServiceClientImpl implements InclusionServiceClient
 {
 
-   private final Logger log = Logger.getLogger(InclusionServiceClient.class);
+   private final Logger log = LoggerFactory.getLogger(InclusionServiceClient.class);
 
    private static final ObjectFactory WS_CLIENT_FACTORY = new ObjectFactory();
 
@@ -32,8 +34,8 @@ public class InclusionServiceClientImpl implements InclusionServiceClient
       log.debug("Invoking Web service Operation[CancelOrder]....");
       final CreateResponse response = (CreateResponse) webServiceTemplate.marshalSendAndReceive(request);
 
-      log.debug("Has the subject added " + response.getLabel());
-      log.debug("Has the subject added " + response.getResult());
+      log.debug("Has the subject added {}.", response.getLabel());
+      log.debug("Has the subject added {}.", response.getResult());
 
       return response.getError().isEmpty();
    }
@@ -48,8 +50,8 @@ public class InclusionServiceClientImpl implements InclusionServiceClient
       log.debug("Invoking Web service Operation[CancelOrder]....");
       final CreateResponse response = (CreateResponse) webServiceTemplateTK.marshalSendAndReceive(request);
 
-      log.debug("Has the subject added " + response.getLabel());
-      log.debug("Has the subject added " + response.getResult());
+      log.debug("Has the subject added {}.", response.getLabel());
+      log.debug("Has the subject added {}.", response.getResult());
 
       return response.getError().isEmpty();
    }

@@ -41,8 +41,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.TypedQuery;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.orm.jpa.SharedEntityManagerCreator;
 import org.springframework.validation.Validator;
 
@@ -69,7 +69,7 @@ import fr.aphp.tumorotek.model.contexte.Plateforme;
 public class RisqueManagerImpl implements RisqueManager
 {
 
-   private final Log log = LogFactory.getLog(RisqueManager.class);
+   private final Logger log = LoggerFactory.getLogger(RisqueManager.class);
 
    /* Beans injectes par Spring*/
    private RisqueDao risqueDao;
@@ -107,7 +107,7 @@ public class RisqueManagerImpl implements RisqueManager
       // On vérifie que la pf n'est pas null. Si c'est le cas on envoie
       // une exception
       if(rs.getPlateforme() == null){
-         log.warn("Objet obligatoire Plateforme " + "manquant lors de la creation " + "d'un objet Risque");
+         log.warn("Objet obligatoire Plateforme manquant lors de la creation d'un objet Risque");
          throw new RequiredObjectIsNullException("Risque", "creation", "Plateforme");
       }
       rs.setPlateforme(plateformeDao.mergeObject(rs.getPlateforme()));
@@ -115,9 +115,9 @@ public class RisqueManagerImpl implements RisqueManager
       BeanValidator.validateObject(rs, new Validator[] {risqueValidator});
       if(!findDoublonManager(rs)){
          risqueDao.createObject(rs);
-         log.info("Enregistrement objet Risque " + rs.toString());
+         log.info("Enregistrement objet Risque {}",  rs);
       }else{
-         log.warn("Doublon lors creation objet Risque " + rs.toString());
+         log.warn("Doublon lors creation objet Risque {}",  rs);
          throw new DoublonFoundException("Risque", "creation");
       }
    }
@@ -127,9 +127,9 @@ public class RisqueManagerImpl implements RisqueManager
       BeanValidator.validateObject(obj, new Validator[] {risqueValidator});
       if(!findDoublonManager(obj)){
          risqueDao.updateObject(obj);
-         log.info("Modification objet Risque " + obj.toString());
+         log.info("Modification objet Risque {}",  obj);
       }else{
-         log.warn("Doublon lors modification objet Risque " + obj.toString());
+         log.warn("Doublon lors modification objet Risque {}",  obj);
          throw new DoublonFoundException("Risque", "modification");
       }
    }
@@ -145,13 +145,13 @@ public class RisqueManagerImpl implements RisqueManager
       if(!exactMatch){
          nom = nom + "%";
       }
-      log.debug("Recherche Risque par nom: " + nom + " exactMatch " + String.valueOf(exactMatch));
+      log.debug("Recherche Risque par nom: {} exactMatch {}", nom, exactMatch);
       return risqueDao.findByNom(nom);
    }
 
    @Override
    public List<Risque> findByInfectieuxManager(final Boolean infectieux){
-      log.debug("Recherche Risque par infectiosite: " + infectieux);
+      log.debug("Recherche Risque par infectiosite: {}",  infectieux);
       return risqueDao.findByInfectieux(infectieux);
    }
 
@@ -159,7 +159,7 @@ public class RisqueManagerImpl implements RisqueManager
    public void removeObjectManager(final Risque obj){
       if(obj != null){
          risqueDao.removeObject(obj.getId());
-         log.info("Suppression objet Risque " + obj.toString());
+         log.info("Suppression objet Risque {}",  obj);
       }else{
          log.warn("Suppression d'un Risque null");
       }

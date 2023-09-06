@@ -42,8 +42,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.HtmlMacroComponent;
@@ -81,7 +81,7 @@ import fr.aphp.tumorotek.webapp.general.SessionUtils;
 public class SelectDossierExterneModale extends AbstractFicheCombineController
 {
 
-   private final Log log = LogFactory.getLog(SelectDossierExterneModale.class);
+   private final Logger log = LoggerFactory.getLogger(SelectDossierExterneModale.class);
 
    private static final long serialVersionUID = 5225330380328203307L;
 
@@ -283,8 +283,7 @@ public class SelectDossierExterneModale extends AbstractFicheCombineController
             Clients.clearBusy();
 
          }catch(final RuntimeException re){
-            re.printStackTrace();
-            log.error(re);
+            log.error(re.getMessage(), re);
             // fermeture de la fenêtre
             Events.postEvent(new Event("onClose", self.getRoot()));
             // ferme wait message
@@ -349,7 +348,7 @@ public class SelectDossierExterneModale extends AbstractFicheCombineController
             setBlockModal(false);
 
          }catch(final SuspendNotAllowedException e){
-            log.error(e);
+            log.error(e.getMessage(), e); 
          }
       }
    }

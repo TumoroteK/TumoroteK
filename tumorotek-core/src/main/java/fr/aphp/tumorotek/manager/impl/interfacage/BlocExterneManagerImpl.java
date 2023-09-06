@@ -38,8 +38,8 @@ package fr.aphp.tumorotek.manager.impl.interfacage;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import fr.aphp.tumorotek.dao.interfacage.BlocExterneDao;
 import fr.aphp.tumorotek.dao.interfacage.DossierExterneDao;
@@ -65,7 +65,7 @@ import fr.aphp.tumorotek.model.systeme.Entite;
 public class BlocExterneManagerImpl implements BlocExterneManager
 {
 
-   private final Log log = LogFactory.getLog(BlocExterneManager.class);
+   private final Logger log = LoggerFactory.getLogger(BlocExterneManager.class);
 
    /** Bean Dao. */
    private BlocExterneDao blocExterneDao;
@@ -117,7 +117,7 @@ public class BlocExterneManagerImpl implements BlocExterneManager
 
    @Override
    public List<BlocExterne> findByDossierExterneAndEntiteManager(final DossierExterne dossierExterne, final Entite entite){
-      log.debug("Recherche de tous les BlocExternes pour un dossier " + "et une entité");
+      log.debug("Recherche de tous les BlocExternes pour un dossier  et une entité");
       if(dossierExterne != null && entite != null){
          return blocExterneDao.findByDossierExterneAndEntite(dossierExterne, entite.getEntiteId());
       }
@@ -144,13 +144,13 @@ public class BlocExterneManagerImpl implements BlocExterneManager
    public void validateBlocExterneManager(final BlocExterne blocExterne, final DossierExterne dossierExterne){
       // dossierExterne required
       if(dossierExterne == null){
-         log.warn("Objet obligatoire DossierExterne manquant" + " lors de la création d'un BlocExterne");
+         log.warn("Objet obligatoire DossierExterne manquant  lors de la création d'un BlocExterne");
          throw new RequiredObjectIsNullException("BlocExterne", "creation", "DossierExterne");
       }
 
       // entite required
       if(blocExterne.getEntiteId() == null){
-         log.warn("Objet obligatoire Entite manquant" + " lors de la création d'un BlocExterne");
+         log.warn("Objet obligatoire Entite manquant  lors de la création d'un BlocExterne");
          throw new RequiredObjectIsNullException("BlocExterne", "creation", "Entite");
       }
 
@@ -163,7 +163,7 @@ public class BlocExterneManagerImpl implements BlocExterneManager
 
       // ordre required
       if(blocExterne.getOrdre() == null){
-         log.warn("Objet obligatoire Ordre manquant" + " lors de la création d'un BlocExterne");
+         log.warn("Objet obligatoire Ordre manquant  lors de la création d'un BlocExterne");
          throw new RequiredObjectIsNullException("BlocExterne", "creation", "Ordre");
       }
    }
@@ -181,7 +181,7 @@ public class BlocExterneManagerImpl implements BlocExterneManager
             .get(blocExterneDao.findByDossierExterne(dossierExterne).indexOf(blocExterne)));
       }
       blocExterneDao.createObject(blocExterne);
-      log.info("Enregistrement de l'objet BlocExterne : " + blocExterne.toString());
+      log.info("Enregistrement de l'objet BlocExterne : {}",  blocExterne);
 
       // création des valeurs
       if(valeurExternes != null){
@@ -202,7 +202,7 @@ public class BlocExterneManagerImpl implements BlocExterneManager
          }
 
          blocExterneDao.removeObject(blocExterne.getBlocExterneId());
-         log.info("Suppression de l'objet BlocExterne : " + blocExterne.toString());
+         log.info("Suppression de l'objet BlocExterne : {}",  blocExterne);
       }else{
          log.warn("Suppression d'une BlocExterne null");
       }

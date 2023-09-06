@@ -1,6 +1,5 @@
 #### Notes de version
 
-
 ##### Version 2.3.0.3 - Publiée le 17/07/2023
 ###### Corrections dans TK pour un contexte Gatsbi
 - YouTrack [TG-163](https://tumorotek.myjetbrains.com/youtrack/issue/TG-163) : [TK] - Prélèvement & Echantillon : filtre sur les thesaurus d'un champ lié non pris en compte

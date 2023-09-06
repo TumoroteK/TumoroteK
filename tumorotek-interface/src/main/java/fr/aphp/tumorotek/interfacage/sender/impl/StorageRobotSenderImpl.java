@@ -49,8 +49,8 @@ import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
 
 import org.apache.camel.ProducerTemplate;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import fr.aphp.tumorotek.interfacage.sender.StorageRobotSender;
 import fr.aphp.tumorotek.interfacage.storageRobot.StorageMovement;
@@ -68,7 +68,7 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
 public class StorageRobotSenderImpl implements StorageRobotSender
 {
 
-   private final Log log = LogFactory.getLog(StorageRobotSender.class);
+   private final Logger log = LoggerFactory.getLogger(StorageRobotSender.class);
 
    private ProducerTemplate camelTemplate;
 
@@ -143,7 +143,7 @@ public class StorageRobotSenderImpl implements StorageRobotSender
       int currentRow = 0;
 
       for(final StorageMovement stE : storageMvts){
-         log.debug(stE);
+         log.debug("StorageMovement: {}", stE);
          currentRow++;
          // 1st col = increment
          baos.write(String.valueOf(currentRow).getBytes());
@@ -162,7 +162,7 @@ public class StorageRobotSenderImpl implements StorageRobotSender
 
       // complete to 1000 as IRELEC demands
       //		if (nbLinesToBeProvide > 0) {
-      //			log.debug("providing additive lines: " + (nbLinesToBeProvide - currentRow));
+      //			log.debug("providing additive lines: {}", (nbLinesToBeProvide - currentRow));
       //			while (currentRow < nbLinesToBeProvide) {
       //				currentRow++;
       //				baos.write(String.valueOf(currentRow).getBytes());
@@ -190,7 +190,7 @@ public class StorageRobotSenderImpl implements StorageRobotSender
    private void printAdrl(String _a, final Recepteur re, final ByteArrayOutputStream baos, final String separator)
       throws IOException{
       if(_a != null){
-         log.debug("print adr: " + _a);
+         log.debug("print adr: {}", _a);
          if(_a.matches("[0-9]+")){ // rack transport integer position
             _a = "0.0.0." + _a;
          }
@@ -336,9 +336,9 @@ public class StorageRobotSenderImpl implements StorageRobotSender
                // vars.setNbLinesToBeProvide(Integer.valueOf(bundle.getString("nb.lines.tofill")));
 
             }catch(final FileNotFoundException e){
-               e.printStackTrace();
+               log.error(e.getMessage(), e);
             }catch(final IOException e){
-               e.printStackTrace();
+               log.error(e.getMessage(), e);
             }finally{
                try{
                   reader.close();

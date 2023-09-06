@@ -43,8 +43,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.ComponentNotFoundException;
@@ -116,7 +116,7 @@ import fr.aphp.tumorotek.webapp.general.ext.ResourceRequest;
 public class MainWindow extends GenericForwardComposer<Component>
 {
 
-   private final Log log = LogFactory.getLog(MainWindow.class);
+   private final Logger log = LoggerFactory.getLogger(MainWindow.class);
 
    private static final long serialVersionUID = -2216377552659874209L;
 
@@ -1144,7 +1144,7 @@ public class MainWindow extends GenericForwardComposer<Component>
             setBlockModal(false);
 
          }catch(final SuspendNotAllowedException e){
-            log.error(e);
+            log.error(e.getMessage(), e); 
          }
       }
    }

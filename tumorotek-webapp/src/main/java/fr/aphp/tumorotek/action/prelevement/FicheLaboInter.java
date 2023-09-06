@@ -42,8 +42,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.validation.Errors;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
@@ -109,7 +109,7 @@ import fr.aphp.tumorotek.webapp.general.SessionUtils;
 public class FicheLaboInter extends AbstractFicheEditController
 {
 
-   protected final Log log = LogFactory.getLog(FicheLaboInter.class);
+   protected final Logger log = LoggerFactory.getLogger(FicheLaboInter.class);
 
    private static final long serialVersionUID = -422768239086454672L;
 
@@ -638,7 +638,7 @@ public class FicheLaboInter extends AbstractFicheEditController
       }catch(final RuntimeException re){
          // ferme wait message
          Clients.clearBusy();
-         log.error(re);
+         log.error(re.getMessage(), re);
          Messagebox.show(handleExceptionMessage(re), "Error", Messagebox.OK, Messagebox.ERROR);
          return false;
       }
@@ -770,7 +770,7 @@ public class FicheLaboInter extends AbstractFicheEditController
    // List<String> errorMsg = updateObject();
    // if (errorMsg != null && errorMsg.size() == 0) {
    //
-   // log.debug("fiche: obj modifie: " + this.prelevement.toString());
+   // log.debug("fiche: obj modifie: {}",  this.prelevement);
    //
    // if (getListePrelevement() != null) {
    // // update du prélèvement dans la liste
@@ -1022,7 +1022,7 @@ public class FicheLaboInter extends AbstractFicheEditController
                   }
                   currentSterileLaboBox = (Checkbox) target;
                }catch(final NullPointerException e){
-                  log.error(e);
+                  log.error(e.getMessage(), e); 
                }
             }
          }else if(lab.equals(cascadeNonSterileFrom)){

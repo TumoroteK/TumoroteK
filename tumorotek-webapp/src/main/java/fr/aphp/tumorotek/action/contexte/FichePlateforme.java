@@ -41,8 +41,8 @@ import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.zkoss.util.resource.Labels;
@@ -96,7 +96,7 @@ import fr.aphp.tumorotek.webapp.general.SessionUtils;
 public class FichePlateforme extends AbstractFicheCombineController
 {
 
-   private final Log log = LogFactory.getLog(FichePlateforme.class);
+   private final Logger log = LoggerFactory.getLogger(FichePlateforme.class);
 
    private static final long serialVersionUID = -2844832651429510018L;
 
@@ -726,7 +726,7 @@ public class FichePlateforme extends AbstractFicheCombineController
          dl = ManagerLocator.getXmlUtils().creerPdf(document);
 
       }catch(final Exception e){
-         log.error(e);
+         log.error(e.getMessage(), e); 
       }
 
       // ferme wait message

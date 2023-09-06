@@ -38,8 +38,8 @@ package fr.aphp.tumorotek.manager.impl.imprimante;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.validation.Validator;
 
 import fr.aphp.tumorotek.dao.imprimante.LigneEtiquetteDao;
@@ -56,7 +56,7 @@ import fr.aphp.tumorotek.model.imprimante.Modele;
 public class LigneEtiquetteManagerImpl implements LigneEtiquetteManager
 {
 
-   private final Log log = LogFactory.getLog(LigneEtiquetteManager.class);
+   private final Logger log = LoggerFactory.getLogger(LigneEtiquetteManager.class);
 
    /** Beans. */
    private LigneEtiquetteDao ligneEtiquetteDao;
@@ -109,7 +109,7 @@ public class LigneEtiquetteManagerImpl implements LigneEtiquetteManager
       final List<ChampLigneEtiquette> champLigneEtiquettes, final String operation){
       // modele required
       if(modele == null){
-         log.warn("Objet obligatoire Modele manquant" + " lors de la création d'une LigneEtiquette");
+         log.warn("Objet obligatoire Modele manquant  lors de la création d'une LigneEtiquette");
          throw new RequiredObjectIsNullException("LigneEtiquette", operation, "Modele");
       }
 
@@ -136,7 +136,7 @@ public class LigneEtiquetteManagerImpl implements LigneEtiquetteManager
 
       updateAssociations(ligneEtiquette, champLigneEtiquettes, null);
 
-      log.info("Enregistrement objet LigneEtiquette " + ligneEtiquette.toString());
+      log.info("Enregistrement objet LigneEtiquette {}",  ligneEtiquette);
    }
 
    @Override
@@ -151,7 +151,7 @@ public class LigneEtiquetteManagerImpl implements LigneEtiquetteManager
 
       updateAssociations(ligneEtiquette, champLigneEtiquettesToCreate, champLigneEtiquettesToremove);
 
-      log.info("Enregistrement objet LigneEtiquette " + ligneEtiquette.toString());
+      log.info("Enregistrement objet LigneEtiquette {}",  ligneEtiquette);
    }
 
    @Override
@@ -164,7 +164,7 @@ public class LigneEtiquetteManagerImpl implements LigneEtiquetteManager
          }
 
          ligneEtiquetteDao.removeObject(ligneEtiquette.getLigneEtiquetteId());
-         log.info("Suppression de l'objet LigneEtiquette : " + ligneEtiquette.toString());
+         log.info("Suppression de l'objet LigneEtiquette : {}",  ligneEtiquette);
       }else{
          log.warn("Suppression d'une LigneEtiquette null");
       }

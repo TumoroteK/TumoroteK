@@ -38,8 +38,8 @@ package fr.aphp.tumorotek.manager.impl.systeme;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import fr.aphp.tumorotek.dao.systeme.CouleurDao;
 import fr.aphp.tumorotek.manager.systeme.CouleurManager;
@@ -57,7 +57,7 @@ import fr.aphp.tumorotek.model.systeme.Couleur;
 public class CouleurManagerImpl implements CouleurManager
 {
 
-   private final Log log = LogFactory.getLog(CouleurManager.class);
+   private final Logger log = LoggerFactory.getLogger(CouleurManager.class);
 
    /** Bean Dao CouleurDao. */
    private CouleurDao couleurDao;
@@ -73,7 +73,7 @@ public class CouleurManagerImpl implements CouleurManager
 
    @Override
    public List<Couleur> findByCouleurLikeManager(String couleur, final boolean exactMatch){
-      log.debug("Recherche Couleur par " + couleur + " exactMatch " + String.valueOf(exactMatch));
+      log.debug("Recherche Couleur par {} exactMatch {}", couleur, exactMatch);
       if(couleur != null){
          if(!exactMatch){
             couleur = couleur + "%";

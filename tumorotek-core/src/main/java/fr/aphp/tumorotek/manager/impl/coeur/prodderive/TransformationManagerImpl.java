@@ -38,8 +38,8 @@ package fr.aphp.tumorotek.manager.impl.coeur.prodderive;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.validation.Validator;
 
 import fr.aphp.tumorotek.dao.coeur.prodderive.ProdDeriveDao;
@@ -73,7 +73,7 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
 public class TransformationManagerImpl implements TransformationManager
 {
 
-   private final Log log = LogFactory.getLog(TransformationManager.class);
+   private final Logger log = LoggerFactory.getLogger(TransformationManager.class);
 
    /** Bean Dao TransformationDao. */
    private TransformationDao transformationDao;
@@ -146,7 +146,7 @@ public class TransformationManagerImpl implements TransformationManager
     */
    @Override
    public List<Transformation> findByEntiteObjetManager(final Entite entite, final Integer objetId){
-      log.debug("Recherche Transformation par " + entite + " et " + objetId);
+      log.debug("Recherche Transformation par {} et {}", entite, objetId);
       return transformationDao.findByEntiteObjet(entite, objetId);
    }
 
@@ -233,7 +233,7 @@ public class TransformationManagerImpl implements TransformationManager
       // On vérifie que l'entité n'est pas null. Si c'est le cas on envoie
       // une exception
       if(entite == null){
-         log.warn("Objet obligatoire Entite manquant lors de la creation " + "d'un objet Transformation");
+         log.warn("Objet obligatoire Entite manquant lors de la creation d'un objet Transformation");
          throw new RequiredObjectIsNullException("Transformation", "creation", "Entite");
       }else{
          transformation.setEntite(entiteDao.mergeObject(entite));
@@ -247,8 +247,8 @@ public class TransformationManagerImpl implements TransformationManager
 
       // on vérifie que le couple Entité/ObjectId référence un objet existant
       if(entiteManager.findObjectByEntiteAndIdManager(entite, transformation.getObjetId()) == null){
-         log.warn("Couple Entite : " + entite.toString() + " - ObjetId :" + transformation.getObjetId()
-            + " inexistant lors de la " + "création d'un objet Transformation");
+         log.warn("Couple Entite : {} - ObjetId : {} inexistant lors de la création d'un objet Transformation",
+            entite, transformation.getObjetId());
          throw new EntiteObjectIdNotExistException("Transformation", entite.getNom(), transformation.getObjetId());
       }
 
@@ -259,7 +259,7 @@ public class TransformationManagerImpl implements TransformationManager
       } else {*/
       BeanValidator.validateObject(transformation, new Validator[] {transformationValidator});
       transformationDao.createObject(transformation);
-      log.info("Enregistrement de l'objet Transformation : " + transformation.toString());
+      log.info("Enregistrement de l'objet Transformation : {}",  transformation);
       //}
 
    }
@@ -278,7 +278,7 @@ public class TransformationManagerImpl implements TransformationManager
       // On vérifie que l'entité n'est pas null. Si c'est le cas on envoie
       // une exception
       if(entite == null){
-         log.warn("Objet obligatoire Entite manquant lors de la modif " + "d'un objet Transformation");
+         log.warn("Objet obligatoire Entite manquant lors de la modif d'un objet Transformation");
          throw new RequiredObjectIsNullException("Transformation", "modification", "Entite");
       }else{
          transformation.setEntite(entiteDao.mergeObject(entite));
@@ -292,8 +292,8 @@ public class TransformationManagerImpl implements TransformationManager
 
       // on vérifie que le couple Entité/ObjectId référence un objet existant
       if(entiteManager.findObjectByEntiteAndIdManager(entite, transformation.getObjetId()) == null){
-         log.warn("Couple Entite : " + entite.toString() + " - ObjetId :" + transformation.getObjetId()
-            + " inexistant lors de la " + "modification d'un objet Transformation");
+         log.warn("Couple Entite : {} - ObjetId : {} inexistant lors de la modification d'un objet Transformation",
+            entite, transformation.getObjetId());
          throw new EntiteObjectIdNotExistException("Transformation", entite.getNom(), transformation.getObjetId());
       }
 
@@ -304,7 +304,7 @@ public class TransformationManagerImpl implements TransformationManager
       } else {*/
       BeanValidator.validateObject(transformation, new Validator[] {transformationValidator});
       transformationDao.updateObject(transformation);
-      log.info("Modification de l'objet Transformation : " + transformation.toString());
+      log.info("Modification de l'objet Transformation : {}",  transformation);
       //}
    }
 
@@ -318,7 +318,7 @@ public class TransformationManagerImpl implements TransformationManager
 
       transformationDao.removeObject(transformation.getTransformationId());
 
-      log.info("Suppression de l'objet Transformation : " + transformation.toString());
+      log.info("Suppression de l'objet Transformation : {}",  transformation);
    }
 
    @Override

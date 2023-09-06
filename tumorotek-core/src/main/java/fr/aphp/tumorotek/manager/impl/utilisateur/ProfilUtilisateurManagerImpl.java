@@ -41,8 +41,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import fr.aphp.tumorotek.dao.contexte.BanqueDao;
 import fr.aphp.tumorotek.dao.utilisateur.ProfilDao;
@@ -71,7 +71,7 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
 public class ProfilUtilisateurManagerImpl implements ProfilUtilisateurManager
 {
 
-   private final Log log = LogFactory.getLog(ProfilUtilisateurManager.class);
+   private final Logger log = LoggerFactory.getLogger(ProfilUtilisateurManager.class);
 
    private ProfilUtilisateurDao profilUtilisateurDao;
 
@@ -186,19 +186,19 @@ public class ProfilUtilisateurManagerImpl implements ProfilUtilisateurManager
 
       //profil required
       if(profil == null){
-         log.warn("Objet obligatoire Profil manquant" + " lors de la validation d'un ProfilUtilisateur");
+         log.warn("Objet obligatoire Profil manquant  lors de la validation d'un ProfilUtilisateur");
          throw new RequiredObjectIsNullException("ProfilUtilisateur", "creation", "Profil");
       }
 
       //utilisateur required
       if(utilisateur == null){
-         log.warn("Objet obligatoire Utilisateur manquant" + " lors de la validation d'un ProfilUtilisateur");
+         log.warn("Objet obligatoire Utilisateur manquant  lors de la validation d'un ProfilUtilisateur");
          throw new RequiredObjectIsNullException("ProfilUtilisateur", "creation", "Utilisateur");
       }
 
       //OperationType required
       if(banque == null){
-         log.warn("Objet obligatoire Banque manquant" + " lors de la validation d'un ProfilUtilisateur");
+         log.warn("Objet obligatoire Banque manquant  lors de la validation d'un ProfilUtilisateur");
          throw new RequiredObjectIsNullException("ProfilUtilisateur", "creation", "Banque");
       }
 
@@ -227,7 +227,7 @@ public class ProfilUtilisateurManagerImpl implements ProfilUtilisateurManager
       // création
       profilUtilisateurDao.createObject(profilUtilisateur);
 
-      log.info("Enregistrement objet ProfilUtilisateur " + profilUtilisateur.toString());
+      log.info("Enregistrement objet ProfilUtilisateur {}",  profilUtilisateur);
 
    }
 
@@ -235,7 +235,7 @@ public class ProfilUtilisateurManagerImpl implements ProfilUtilisateurManager
    public void removeObjectManager(final ProfilUtilisateur profilUtilisateur){
       if(profilUtilisateur != null){
          profilUtilisateurDao.removeObject(profilUtilisateur.getPk());
-         log.info("Suppression de l'objet ProfilUtilisateur : " + profilUtilisateur.toString());
+         log.info("Suppression de l'objet ProfilUtilisateur : {}",  profilUtilisateur);
       }else{
          log.warn("Suppression d'un ProfilUtilisateur null");
       }

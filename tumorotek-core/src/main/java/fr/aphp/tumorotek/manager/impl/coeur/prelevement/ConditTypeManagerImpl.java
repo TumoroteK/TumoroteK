@@ -37,8 +37,8 @@ package fr.aphp.tumorotek.manager.impl.coeur.prelevement;
 
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.validation.Validator;
 
 import fr.aphp.tumorotek.dao.coeur.prelevement.ConditTypeDao;
@@ -63,7 +63,7 @@ import fr.aphp.tumorotek.model.contexte.Plateforme;
 public class ConditTypeManagerImpl implements ConditTypeManager
 {
 
-   private final Log log = LogFactory.getLog(ConditTypeManager.class);
+   private final Logger log = LoggerFactory.getLogger(ConditTypeManager.class);
 
    /* Beans injectes par Spring*/
    private ConditTypeDao conditTypeDao;
@@ -100,9 +100,9 @@ public class ConditTypeManagerImpl implements ConditTypeManager
       BeanValidator.validateObject(obj, new Validator[] {conditTypeValidator});
       if(!findDoublonManager(obj)){
          conditTypeDao.createObject(obj);
-         log.info("Enregistrement objet ConditType " + obj.toString());
+         log.info("Enregistrement objet ConditType {}",  obj);
       }else{
-         log.warn("Doublon lors creation objet ConditType " + obj.toString());
+         log.warn("Doublon lors creation objet ConditType {}",  obj);
          throw new DoublonFoundException("ConditType", "creation");
       }
    }
@@ -112,9 +112,9 @@ public class ConditTypeManagerImpl implements ConditTypeManager
       BeanValidator.validateObject(obj, new Validator[] {conditTypeValidator});
       if(!findDoublonManager(obj)){
          conditTypeDao.updateObject(obj);
-         log.info("Modification objet ConditType " + obj.toString());
+         log.info("Modification objet ConditType {}",  obj);
       }else{
-         log.warn("Doublon lors modification objet ConditType " + obj.toString());
+         log.warn("Doublon lors modification objet ConditType {}",  obj);
          throw new DoublonFoundException("ConditType", "modification");
       }
    }
@@ -124,7 +124,7 @@ public class ConditTypeManagerImpl implements ConditTypeManager
       if(!exactMatch){
          type = type + "%";
       }
-      log.debug("Recherche ConditType par type: " + type + " exactMatch " + String.valueOf(exactMatch));
+      log.debug("Recherche ConditType par type: {} exactMatch {}", type, exactMatch);
       return conditTypeDao.findByType(type);
    }
 
@@ -132,7 +132,7 @@ public class ConditTypeManagerImpl implements ConditTypeManager
    public void removeObjectManager(final ConditType obj){
       if(obj != null){
          conditTypeDao.removeObject(obj.getId());
-         log.info("Suppression objet ConditType " + obj.toString());
+         log.info("Suppression objet ConditType {}",  obj);
       }else{
          log.warn("Suppression d'un ConditType null");
       }

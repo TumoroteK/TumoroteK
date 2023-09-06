@@ -38,8 +38,8 @@ package fr.aphp.tumorotek.manager.impl.impression;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import fr.aphp.tumorotek.dao.impression.BlocImpressionDao;
 import fr.aphp.tumorotek.dao.impression.BlocImpressionTemplateDao;
@@ -55,7 +55,7 @@ import fr.aphp.tumorotek.model.impression.Template;
 public class BlocImpressionTemplateManagerImpl implements BlocImpressionTemplateManager
 {
 
-   private final Log log = LogFactory.getLog(BlocImpressionTemplateManager.class);
+   private final Logger log = LoggerFactory.getLogger(BlocImpressionTemplateManager.class);
 
    /** Bean Dao. */
    private BlocImpressionTemplateDao blocImpressionTemplateDao;
@@ -99,7 +99,7 @@ public class BlocImpressionTemplateManagerImpl implements BlocImpressionTemplate
 
    @Override
    public List<BlocImpressionTemplate> findByTemplateManager(final Template template){
-      log.debug("Recherche de tous les BlocImpressionTemplates d'un " + "Template.");
+      log.debug("Recherche de tous les BlocImpressionTemplates d'un Template.");
       if(template != null){
          return blocImpressionTemplateDao.findByTemplate(template);
       }
@@ -118,13 +118,13 @@ public class BlocImpressionTemplateManagerImpl implements BlocImpressionTemplate
    public void validateObjectManager(final Template template, final BlocImpression blocImpression){
       //template required
       if(template == null){
-         log.warn("Objet obligatoire Template manquant" + " lors de la validation d'un BlocImpressionTemplate");
+         log.warn("Objet obligatoire Template manquant  lors de la validation d'un BlocImpressionTemplate");
          throw new RequiredObjectIsNullException("BlocImpressionTemplate", "creation", "Template");
       }
 
       //blocImpression required
       if(blocImpression == null){
-         log.warn("Objet obligatoire BlocImpression manquant" + " lors de la validation d'un BlocImpressionTemplate");
+         log.warn("Objet obligatoire BlocImpression manquant  lors de la validation d'un BlocImpressionTemplate");
          throw new RequiredObjectIsNullException("BlocImpressionTemplate", "creation", "BlocImpression");
       }
 
@@ -132,7 +132,7 @@ public class BlocImpressionTemplateManagerImpl implements BlocImpressionTemplate
       if(template.getTemplateId() != null){
          if(findDoublonManager(template, blocImpression)){
 
-            log.warn("Doublon lors validation objet " + "BlocImpressionTemplate");
+            log.warn("Doublon lors validation objet BlocImpressionTemplate");
             throw new DoublonFoundException("BlocImpressionTemplate", "creation");
          }
       }
@@ -151,7 +151,7 @@ public class BlocImpressionTemplateManagerImpl implements BlocImpressionTemplate
       // création
       blocImpressionTemplateDao.createObject(blocImpressionTemplate);
 
-      log.info("Enregistrement objet BlocImpressionTemplate " + blocImpressionTemplate.toString());
+      log.info("Enregistrement objet BlocImpressionTemplate {}",  blocImpressionTemplate);
 
    }
 
@@ -161,14 +161,14 @@ public class BlocImpressionTemplateManagerImpl implements BlocImpressionTemplate
 
       //template required
       if(template == null){
-         log.warn("Objet obligatoire Template manquant" + " lors de la validation d'un BlocImpressionTemplate");
+         log.warn("Objet obligatoire Template manquant  lors de la validation d'un BlocImpressionTemplate");
          throw new RequiredObjectIsNullException("BlocImpressionTemplate", "modification", "Template");
       }
       blocImpressionTemplate.setTemplate(templateDao.mergeObject(template));
 
       //blocImpression required
       if(blocImpression == null){
-         log.warn("Objet obligatoire BlocImpression manquant" + " lors de la validation d'un BlocImpressionTemplate");
+         log.warn("Objet obligatoire BlocImpression manquant  lors de la validation d'un BlocImpressionTemplate");
          throw new RequiredObjectIsNullException("BlocImpressionTemplate", "modification", "BlocImpression");
       }
       blocImpressionTemplate.setBlocImpression(blocImpressionDao.mergeObject(blocImpression));
@@ -176,14 +176,14 @@ public class BlocImpressionTemplateManagerImpl implements BlocImpressionTemplate
       // création
       blocImpressionTemplateDao.updateObject(blocImpressionTemplate);
 
-      log.info("Enregistrement objet BlocImpressionTemplate " + blocImpressionTemplate.toString());
+      log.info("Enregistrement objet BlocImpressionTemplate {}",  blocImpressionTemplate);
    }
 
    @Override
    public void removeObjectManager(final BlocImpressionTemplate blocImpressionTemplate){
       if(blocImpressionTemplate != null){
          blocImpressionTemplateDao.removeObject(blocImpressionTemplate.getPk());
-         log.info("Suppression de l'objet BlocImpressionTemplate : " + blocImpressionTemplate.toString());
+         log.info("Suppression de l'objet BlocImpressionTemplate : {}",  blocImpressionTemplate);
       }else{
          log.warn("Suppression d'un BlocImpressionTemplate null");
       }

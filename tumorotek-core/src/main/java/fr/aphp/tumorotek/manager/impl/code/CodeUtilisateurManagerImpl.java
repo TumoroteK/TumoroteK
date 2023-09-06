@@ -42,8 +42,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.validation.Validator;
 
 import fr.aphp.tumorotek.dao.code.CodeDossierDao;
@@ -80,7 +80,7 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
 public class CodeUtilisateurManagerImpl implements CodeUtilisateurManager
 {
 
-   private final Log log = LogFactory.getLog(CodeUtilisateurManager.class);
+   private final Logger log = LoggerFactory.getLogger(CodeUtilisateurManager.class);
 
    private CodeUtilisateurDao codeUtilisateurDao;
 
@@ -227,12 +227,12 @@ public class CodeUtilisateurManagerImpl implements CodeUtilisateurManager
          if((operation.equals("creation") || operation.equals("modification"))){
             if(operation.equals("creation")){
                codeUtilisateurDao.createObject(code);
-               log.info("Enregistrement objet CodeUtilisateur " + code.toString());
+               log.info("Enregistrement objet CodeUtilisateur {}",  code);
                CreateOrUpdateUtilities.createAssociateOperation(code, operationManager,
                   operationTypeDao.findByNom("Creation").get(0), code.getUtilisateur());
             }else{
                codeUtilisateurDao.updateObject(code);
-               log.info("Modification objet CodeUtilisateur " + code.toString());
+               log.info("Modification objet CodeUtilisateur {}",  code);
                CreateOrUpdateUtilities.createAssociateOperation(code, operationManager,
                   operationTypeDao.findByNom("Modification").get(0), code.getUtilisateur());
             }
@@ -243,7 +243,7 @@ public class CodeUtilisateurManagerImpl implements CodeUtilisateurManager
             throw new IllegalArgumentException("Operation must match " + "'creation/modification' values");
          }
       }else{
-         log.warn("Doublon lors " + operation + " objet CodeUtilisateur " + code.toString());
+         log.warn("Doublon lors {} objet CodeUtilisateur {}", operation, code);
          throw new DoublonFoundException("CodeUtilisateur", operation);
       }
    }
@@ -263,7 +263,7 @@ public class CodeUtilisateurManagerImpl implements CodeUtilisateurManager
          // merge banque object
          code.setBanque(banqueDao.mergeObject(bank));
       }else if(code.getBanque() == null){
-         log.warn("Objet obligatoire Banque manquant" + " lors de la " + operation + " du code utilisateur");
+         log.warn("Objet obligatoire Banque manquant lors de la {} du code utilisateur", operation);
          throw new RequiredObjectIsNullException("CodeUtilisateur", operation, "Banque");
       }
 
@@ -272,7 +272,7 @@ public class CodeUtilisateurManagerImpl implements CodeUtilisateurManager
          // merge utilisateur object
          code.setUtilisateur(utilisateurDao.mergeObject(utilisateur));
       }else if(code.getUtilisateur() == null){
-         log.warn("Objet obligatoire Utilisateur manquant" + " lors de la " + operation + " du code utilisateur");
+         log.warn("Objet obligatoire Utilisateur manquant lors de la {} du code utilisateur", operation);
          throw new RequiredObjectIsNullException("CodeUtilisateur", operation, "Utilisateur");
       }
 
@@ -289,7 +289,7 @@ public class CodeUtilisateurManagerImpl implements CodeUtilisateurManager
          }
 
          codeUtilisateurDao.removeObject(code.getCodeUtilisateurId());
-         log.info("Suppression objet CodeUtilisateur " + code.toString());
+         log.info("Suppression objet CodeUtilisateur {}",  code);
          //Supprime operations associes
          CreateOrUpdateUtilities.removeAssociateOperations(code, operationManager);
       }else{
@@ -351,8 +351,8 @@ public class CodeUtilisateurManagerImpl implements CodeUtilisateurManager
          final TranscodeUtilisateur toRemove = it.next();
          code.getTranscodes().remove(toRemove);
          transcodeUtilisateurDao.removeObject(toRemove.getTranscodeUtilisateurId());
-         log.debug("Suppression de l'association entre le code : " + code.toString() + " et le transcode : "
-            + getCodeCommonFromTransCode(toRemove).toString());
+         log.debug("Suppression de l'association entre le code : {} et le transcode : {}",code,
+            getCodeCommonFromTransCode(toRemove));
       }
 
       // on parcourt la nouvelle liste de transcodes
@@ -365,8 +365,8 @@ public class CodeUtilisateurManagerImpl implements CodeUtilisateurManager
 
          // on ajoute le transcode dans l'association
          code.getTranscodes().add(newTr);
+         log.debug("Ajout de l'association entre le code : {} et le transcode : {}", code, c);
 
-         log.debug("Ajout de l'association entre le code : " + code.toString() + " et le transcode : " + c.toString());
       }
       codeUtilisateurDao.updateObject(code);
    }

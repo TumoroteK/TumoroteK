@@ -50,8 +50,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.validation.Errors;
@@ -152,7 +152,7 @@ import fr.aphp.tumorotek.webapp.general.SessionUtils;
  */
 public abstract class AbstractController extends GenericForwardComposer<Component>
 {
-	protected static Log log = LogFactory.getLog(AbstractController.class);
+	protected static Logger log = LoggerFactory.getLogger(AbstractController.class);
 
 	private static final long serialVersionUID = -3799945305452822008L;
 
@@ -388,7 +388,7 @@ public abstract class AbstractController extends GenericForwardComposer<Componen
 				blockModal = false;
 
 			}catch(final SuspendNotAllowedException e){
-				log.error(e.getMessage(), e);
+				log.error(e.getMessage(), e); 
 			}
 		}
 	}
@@ -495,7 +495,7 @@ public abstract class AbstractController extends GenericForwardComposer<Componen
 				blockModal = false;
 
 			}catch(final SuspendNotAllowedException e){
-				log.error(e.getMessage(), e);
+				log.error(e.getMessage(), e); 
 			}
 		}
 	}
@@ -561,8 +561,8 @@ public abstract class AbstractController extends GenericForwardComposer<Componen
 	// try {
 	// win.onModal();
 	//
-	// } catch (SuspendNotAllowedException e) { log.error(e);
-	// } catch (InterruptedException e) { log.error(e); }
+	// } catch (SuspendNotAllowedException e) { log.error(e.getMessage(), e); 
+	// } catch (InterruptedException e) { log.error(e.getMessage(), e);  }
 	// }
 	//
 	// /**
@@ -663,7 +663,7 @@ public abstract class AbstractController extends GenericForwardComposer<Componen
 			// try {
 			throw (WrongValueException) ex;
 			//} catch (Exception e) {
-			//	log.error(e);
+			//	log.error(e.getMessage(), e); 
 			//}
 		}else if(ex instanceof PrinterException){
 			message = new StringBuilder(Labels.getLabel("validation.erreur.impression"));
@@ -798,7 +798,7 @@ public abstract class AbstractController extends GenericForwardComposer<Componen
 			final AMedia media = new AMedia(fileName, "xls", "application/vnd.ms-excel", out.toByteArray());
 			Filedownload.save(media);
 		}catch(final Exception e){
-			log.error(e.getMessage(), e);
+			log.error(e.getMessage(), e); 
 		}finally{
 			if(out != null){
 				try{
@@ -860,7 +860,7 @@ public abstract class AbstractController extends GenericForwardComposer<Componen
 				setBlockModal(false);
 
 			}catch(final SuspendNotAllowedException e){
-				log.error(e.getMessage(), e);
+				log.error(e.getMessage(), e); 
 			}
 		}
 	}
@@ -1485,7 +1485,7 @@ public abstract class AbstractController extends GenericForwardComposer<Componen
 		//				setBlockModal(false);
 		//
 		//			} catch (SuspendNotAllowedException e) {
-		//				log.error(e);
+		//				log.error(e.getMessage(), e); 
 		//			}
 		//		}
 	}
@@ -1551,7 +1551,7 @@ public abstract class AbstractController extends GenericForwardComposer<Componen
 				setBlockModal(false);
 
 			}catch(final SuspendNotAllowedException e){
-				log.error(e.getMessage(), e);
+				log.error(e.getMessage(), e); 
 			}
 		}
 	}
@@ -1670,7 +1670,7 @@ public abstract class AbstractController extends GenericForwardComposer<Componen
 				setBlockModal(false);
 
 			}catch(final SuspendNotAllowedException e){
-				log.error(e.getMessage(), e);
+				log.error(e.getMessage(), e); 
 			}
 		}
 	}
@@ -1906,7 +1906,7 @@ public abstract class AbstractController extends GenericForwardComposer<Componen
 	//				setBlockModal(false);
 	//
 	//			} catch (SuspendNotAllowedException e) {
-	//				log.error(e);
+	//				log.error(e.getMessage(), e); 
 	//			}
 	//		}
 	//	}
@@ -1967,7 +1967,7 @@ public abstract class AbstractController extends GenericForwardComposer<Componen
 				setBlockModal(false);
 
 			}catch(final SuspendNotAllowedException e){
-				log.error(e.getMessage(), e);
+				log.error(e.getMessage(), e); 
 			}
 		}
 	}
@@ -2338,7 +2338,7 @@ public abstract class AbstractController extends GenericForwardComposer<Componen
 				setBlockModal(false);
 
 			}catch(final SuspendNotAllowedException e){
-				log.error(e.getMessage(), e);
+				log.error(e.getMessage(), e); 
 			}
 		}
 	}

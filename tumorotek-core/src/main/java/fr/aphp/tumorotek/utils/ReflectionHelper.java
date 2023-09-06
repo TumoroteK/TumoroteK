@@ -1,5 +1,7 @@
 package fr.aphp.tumorotek.utils;
 
+import org.slf4j.*;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -9,6 +11,8 @@ import java.util.List;
 
 public class ReflectionHelper
 {
+
+   private static final Logger log = LoggerFactory.getLogger(ReflectionHelper.class);
 
    public static List<Class<?>> findClassesImplenenting(final Class<?> interfaceClass){
 
@@ -35,9 +39,9 @@ public class ReflectionHelper
             }
          }
       }catch(final ClassNotFoundException e){
-         e.printStackTrace();
+         log.error(e.getMessage(), e);
       }catch(final IOException e){
-         e.printStackTrace();
+         log.error(e.getMessage(), e);
       }
 
       return rVal;

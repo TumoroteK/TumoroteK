@@ -56,8 +56,8 @@ import java.util.stream.IntStream;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.springframework.transaction.TransactionDefinition;
@@ -144,7 +144,7 @@ import fr.aphp.tumorotek.webapp.general.SessionUtils;
 public class FicheMultiEchantillons extends FicheEchantillonEdit
 {
 
-   private final Log log = LogFactory.getLog(FicheMultiEchantillons.class);
+   private final Logger log = LoggerFactory.getLogger(FicheMultiEchantillons.class);
 
    private static final long serialVersionUID = 3863329092781960062L;
 
@@ -1044,7 +1044,7 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
          try{
             dl = ManagerLocator.getXmlUtils().creerBoiteHtml(doc);
          }catch(final Exception e){
-            log.error(e);
+            log.error(e.getMessage(), e); 
          }
 
          // envoie du fichier à imprimer à l'utilisateur

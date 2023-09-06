@@ -47,8 +47,8 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.collections.BidiMap;
 import org.apache.commons.collections.bidimap.DualHashBidiMap;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.zkoss.util.resource.Labels;
@@ -134,7 +134,7 @@ import fr.aphp.tumorotek.webapp.tree.stockage.TerminaleNode;
 public class FicheTerminale extends AbstractFicheCombineStockageController
 {
 
-	private final Log log = LogFactory.getLog(FicheTerminale.class);
+	private final Logger log = LoggerFactory.getLogger(FicheTerminale.class);
 
 	private static final long serialVersionUID = -6631022113321896477L;
 
@@ -2265,7 +2265,7 @@ public class FicheTerminale extends AbstractFicheCombineStockageController
 			try{
 				dl = ManagerLocator.getXmlUtils().creerContenuHtml(doc);
 			}catch(final Exception e){
-				log.error(e);
+				log.error(e.getMessage(), e); 
 			}
 
 			// envoie du fichier à imprimer à l'utilisateur

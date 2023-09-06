@@ -38,8 +38,8 @@ package fr.aphp.tumorotek.action.imprimante;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.HtmlMacroComponent;
@@ -78,7 +78,7 @@ import fr.aphp.tumorotek.webapp.general.SessionUtils;
 public class ImprimanteController extends AbstractObjectTabController
 {
 
-   private final Log log = LogFactory.getLog(ImprimanteController.class);
+   private final Logger log = LoggerFactory.getLogger(ImprimanteController.class);
 
    private static final long serialVersionUID = -6529384484810872608L;
 
@@ -476,7 +476,7 @@ public class ImprimanteController extends AbstractObjectTabController
             setBlockModal(false);
 
          }catch(final SuspendNotAllowedException e){
-            log.error(e);
+            log.error(e.getMessage(), e); 
          }
       }
    }
@@ -547,7 +547,7 @@ public class ImprimanteController extends AbstractObjectTabController
             setBlockModal(false);
 
          }catch(final SuspendNotAllowedException e){
-            log.error(e);
+            log.error(e.getMessage(), e); 
          }
       }
    }
@@ -618,7 +618,7 @@ public class ImprimanteController extends AbstractObjectTabController
             setBlockModal(false);
 
          }catch(final SuspendNotAllowedException e){
-            log.error(e);
+            log.error(e.getMessage(), e); 
          }
       }
    }

@@ -37,8 +37,8 @@ package fr.aphp.tumorotek.manager.impl.stockage;
 
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.validation.Validator;
 
 import fr.aphp.tumorotek.dao.contexte.PlateformeDao;
@@ -63,7 +63,7 @@ import fr.aphp.tumorotek.model.stockage.ConteneurType;
 public class ConteneurTypeManagerImpl implements ConteneurTypeManager
 {
 
-   private final Log log = LogFactory.getLog(ConteneurTypeManager.class);
+   private final Logger log = LoggerFactory.getLogger(ConteneurTypeManager.class);
 
    /** Bean Dao ConteneurTypeDao. */
    private ConteneurTypeDao conteneurTypeDao;
@@ -122,9 +122,9 @@ public class ConteneurTypeManagerImpl implements ConteneurTypeManager
       BeanValidator.validateObject(obj, new Validator[] {conteneurTypeValidator});
       if(!findDoublonManager(obj)){
          conteneurTypeDao.createObject(obj);
-         log.info("Enregistrement objet ConteneurType " + obj.toString());
+         log.info("Enregistrement objet ConteneurType {}",  obj);
       }else{
-         log.warn("Doublon lors creation objet ConteneurType " + obj.toString());
+         log.warn("Doublon lors creation objet ConteneurType {}",  obj);
          throw new DoublonFoundException("ConteneurType", "creation");
       }
    }
@@ -134,9 +134,9 @@ public class ConteneurTypeManagerImpl implements ConteneurTypeManager
       BeanValidator.validateObject(obj, new Validator[] {conteneurTypeValidator});
       if(!findDoublonManager(obj)){
          conteneurTypeDao.updateObject(obj);
-         log.info("Modification objet ConteneurType " + obj.toString());
+         log.info("Modification objet ConteneurType {}",  obj);
       }else{
-         log.warn("Doublon lors modification objet ConteneurType " + obj.toString());
+         log.warn("Doublon lors modification objet ConteneurType {}",  obj);
          throw new DoublonFoundException("ConteneurType", "modification");
       }
    }
@@ -145,7 +145,7 @@ public class ConteneurTypeManagerImpl implements ConteneurTypeManager
    public void removeObjectManager(final ConteneurType obj){
       if(obj != null){
          conteneurTypeDao.removeObject(obj.getId());
-         log.info("Suppression objet ConteneurType " + obj.toString());
+         log.info("Suppression objet ConteneurType {}",  obj);
       }else{
          log.warn("Suppression d'un ConteneurType null");
       }

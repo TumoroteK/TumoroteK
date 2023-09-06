@@ -38,8 +38,8 @@ package fr.aphp.tumorotek.manager.impl.coeur.cession;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.validation.Validator;
 
 import fr.aphp.tumorotek.dao.cession.ProtocoleTypeDao;
@@ -64,7 +64,7 @@ import fr.aphp.tumorotek.model.contexte.Plateforme;
 public class ProtocoleTypeManagerImpl implements ProtocoleTypeManager
 {
 
-   private final Log log = LogFactory.getLog(ProtocoleTypeManager.class);
+   private final Logger log = LoggerFactory.getLogger(ProtocoleTypeManager.class);
 
    /** Bean Dao CategorieDao. */
    private ProtocoleTypeDao protocoleTypeDao;
@@ -110,7 +110,7 @@ public class ProtocoleTypeManagerImpl implements ProtocoleTypeManager
    @Override
    public List<ProtocoleType> findByTypeLikeManager(String type, final boolean exactMatch){
 
-      log.debug("Recherche ProtocoleType par " + type + " exactMatch " + String.valueOf(exactMatch));
+      log.debug("Recherche ProtocoleType par {} exactMatch {}", type, exactMatch);
       if(type != null){
          if(!exactMatch){
             type = type + "%";
@@ -149,9 +149,9 @@ public class ProtocoleTypeManagerImpl implements ProtocoleTypeManager
       BeanValidator.validateObject(obj, new Validator[] {protocoleTypeValidator});
       if(!findDoublonManager(obj)){
          protocoleTypeDao.createObject(obj);
-         log.info("Enregistrement objet ProtocoleType " + obj.toString());
+         log.info("Enregistrement objet ProtocoleType {}",  obj);
       }else{
-         log.warn("Doublon lors creation objet ProtocoleType " + obj.toString());
+         log.warn("Doublon lors creation objet ProtocoleType {}",  obj);
          throw new DoublonFoundException("ProtocoleType", "creation");
       }
    }
@@ -161,9 +161,9 @@ public class ProtocoleTypeManagerImpl implements ProtocoleTypeManager
       BeanValidator.validateObject(obj, new Validator[] {protocoleTypeValidator});
       if(!findDoublonManager(obj)){
          protocoleTypeDao.updateObject(obj);
-         log.info("Modification objet ProtocoleType " + obj.toString());
+         log.info("Modification objet ProtocoleType {}",  obj);
       }else{
-         log.warn("Doublon lors modification objet ProtocoleType " + obj.toString());
+         log.warn("Doublon lors modification objet ProtocoleType {}",  obj);
          throw new DoublonFoundException("ProtocoleType", "modification");
       }
    }
@@ -172,7 +172,7 @@ public class ProtocoleTypeManagerImpl implements ProtocoleTypeManager
    public void removeObjectManager(final ProtocoleType obj){
       if(obj != null){
          protocoleTypeDao.removeObject(obj.getId());
-         log.info("Suppression objet ProtocoleType " + obj.toString());
+         log.info("Suppression objet ProtocoleType {}",  obj);
       }else{
          log.warn("Suppression d'un ProtocoleType null");
       }

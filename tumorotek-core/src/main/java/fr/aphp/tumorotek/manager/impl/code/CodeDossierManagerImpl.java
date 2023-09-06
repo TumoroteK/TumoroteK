@@ -38,8 +38,8 @@ package fr.aphp.tumorotek.manager.impl.code;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.validation.Validator;
 
 import fr.aphp.tumorotek.dao.code.CodeDossierDao;
@@ -73,7 +73,7 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
 public class CodeDossierManagerImpl implements CodeDossierManager
 {
 
-   private final Log log = LogFactory.getLog(CodeDossierManager.class);
+   private final Logger log = LoggerFactory.getLogger(CodeDossierManager.class);
 
    private CodeDossierDao codeDossierDao;
 
@@ -143,12 +143,12 @@ public class CodeDossierManagerImpl implements CodeDossierManager
          if((operation.equals("creation") || operation.equals("modification"))){
             if(operation.equals("creation")){
                codeDossierDao.createObject(dos);
-               log.debug("Enregistrement objet CodeDossier " + dos.toString());
+               log.debug("Enregistrement objet CodeDossier {}", dos);
                CreateOrUpdateUtilities.createAssociateOperation(dos, operationManager,
                   operationTypeDao.findByNom("Creation").get(0), dos.getUtilisateur());
             }else{
                codeDossierDao.updateObject(dos);
-               log.debug("Modification objet CodeDossier " + dos.toString());
+               log.debug("Modification objet CodeDossier ", dos);
                CreateOrUpdateUtilities.createAssociateOperation(dos, operationManager,
                   operationTypeDao.findByNom("Modification").get(0), dos.getUtilisateur());
             }
@@ -156,7 +156,7 @@ public class CodeDossierManagerImpl implements CodeDossierManager
             throw new IllegalArgumentException("Operation must match " + "'creation/modification' values");
          }
       }else{
-         log.warn("Doublon lors " + operation + " objet CodeDossier " + dos.toString());
+         log.warn("Doublon lors {} objet CodeDossier {}", operation, dos);
          throw new DoublonFoundException("CodeUtilisateur", operation);
       }
 
@@ -177,7 +177,7 @@ public class CodeDossierManagerImpl implements CodeDossierManager
       if(!exactMatch){
          nom = "%" + nom + "%";
       }
-      log.debug("Recherche CodeUtilisateur par code: " + nom + " exactMatch " + String.valueOf(exactMatch));
+      log.debug("Recherche CodeUtilisateur par code: {} exactMatch {}", nom, exactMatch);
       return codeDossierDao.findByNomLike(nom, bank);
    }
 
@@ -233,7 +233,7 @@ public class CodeDossierManagerImpl implements CodeDossierManager
          }
 
          codeDossierDao.removeObject(dos.getCodeDossierId());
-         log.info("Suppression objet CodeDossier " + dos.toString());
+         log.info("Suppression objet CodeDossier {}",  dos);
          //Supprime operations associes
          CreateOrUpdateUtilities.removeAssociateOperations(dos, operationManager);
       }else{
@@ -257,7 +257,7 @@ public class CodeDossierManagerImpl implements CodeDossierManager
          // merge banque object
          dos.setBanque(banqueDao.mergeObject(bank));
       }else if(dos.getBanque() == null){
-         log.warn("Objet obligatoire Banque manquant" + " lors de la " + operation + " du code dossier");
+         log.warn("Objet obligatoire Banque manquant lors de la {} du code dossier", operation);
          throw new RequiredObjectIsNullException("CodeDossier", operation, "Banque");
       }
 
@@ -266,7 +266,7 @@ public class CodeDossierManagerImpl implements CodeDossierManager
          // merge utilisateur object
          dos.setUtilisateur(utilisateurDao.mergeObject(utilisateur));
       }else if(dos.getUtilisateur() == null){
-         log.warn("Objet obligatoire Utilisateur manquant" + " lors de la " + operation + " du code utilisateur");
+         log.warn("Objet obligatoire Utilisateur manquant lors de la {} du code utilisateur", operation);
          throw new RequiredObjectIsNullException("CodeDossier", operation, "Utilisateur");
       }
 

@@ -38,8 +38,8 @@ package fr.aphp.tumorotek.manager.impl.qualite;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import fr.aphp.tumorotek.dao.qualite.ConformiteTypeDao;
 import fr.aphp.tumorotek.manager.qualite.ConformiteTypeManager;
@@ -58,7 +58,7 @@ import fr.aphp.tumorotek.model.systeme.Entite;
 public class ConformiteTypeManagerImpl implements ConformiteTypeManager
 {
 
-   private final Log log = LogFactory.getLog(ConformiteTypeManager.class);
+   private final Logger log = LoggerFactory.getLogger(ConformiteTypeManager.class);
 
    /** Bean Dao. */
    private ConformiteTypeDao conformiteTypeDao;

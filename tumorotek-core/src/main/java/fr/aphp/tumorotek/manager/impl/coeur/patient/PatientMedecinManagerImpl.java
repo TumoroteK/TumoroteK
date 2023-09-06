@@ -35,8 +35,8 @@
  **/
 package fr.aphp.tumorotek.manager.impl.coeur.patient;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.validation.Validator;
 
 import fr.aphp.tumorotek.dao.coeur.patient.PatientDao;
@@ -63,7 +63,7 @@ import fr.aphp.tumorotek.model.contexte.Collaborateur;
 public class PatientMedecinManagerImpl implements PatientMedecinManager
 {
 
-   private final Log log = LogFactory.getLog(PatientMedecinManager.class);
+   private final Logger log = LoggerFactory.getLogger(PatientMedecinManager.class);
 
    /* Beans injectes par Spring*/
    private PatientMedecinDao patientMedecinDao;
@@ -109,7 +109,7 @@ public class PatientMedecinManagerImpl implements PatientMedecinManager
          if(operation.equals("creation")){
             //if (operation.equals("creation")) {
             patientMedecinDao.createObject(medecin);
-            log.debug("Enregistrement objet PatientMedecin " + medecin.toString());
+            log.debug("Enregistrement objet PatientMedecin {}",  medecin);
             //				} else { //cree un nouvel objet car modification de la clef
             //					PatientMedecinDao.updateObject(PatientMedecin);
             //					log.info("Modification objet PatientMedecin "
@@ -122,9 +122,9 @@ public class PatientMedecinManagerImpl implements PatientMedecinManager
          if(operation.equals("modification")
             && !medecin.getOrdre().equals(patientMedecinDao.findById(medecin.getPk()).getOrdre())){
             patientMedecinDao.updateObject(medecin);
-            log.debug("Modification objet PatientMedecin " + medecin.toString());
+            log.debug("Modification objet PatientMedecin {}",  medecin);
          }else{
-            log.warn("Doublon lors " + operation + " objet PatientMedecin " + medecin.toString());
+            log.warn("Doublon lors {} objet PatientMedecin {}", operation, medecin);
             throw new DoublonFoundException("PatientMedecin", operation);
          }
       }
@@ -134,7 +134,7 @@ public class PatientMedecinManagerImpl implements PatientMedecinManager
    public void removeObjectManager(final PatientMedecin medecin){
       if(medecin != null){
          patientMedecinDao.removeObject(medecin.getPk());
-         log.debug("Suppression objet PatientMedecin " + medecin.toString());
+         log.debug("Suppression objet PatientMedecin {}",  medecin);
       }else{
          log.warn("Suppression d'un PatientMedecin null");
       }
@@ -161,14 +161,14 @@ public class PatientMedecinManagerImpl implements PatientMedecinManager
       if(patient != null){
          medecin.setPatient(patientDao.mergeObject(patient));
       }else if(medecin.getPatient() == null){
-         log.warn("Objet obligatoire Patient manquant" + " lors de la " + operation + " d'un PatientMedecin");
+         log.warn("Objet obligatoire Patient manquant lors de la {} d'un PatientMedecin", operation);
          throw new RequiredObjectIsNullException("PatientMedecin", operation, "Patient");
       }
       //Collaborateur required
       if(collaborateur != null){
          medecin.setCollaborateur(collaborateurDao.mergeObject(collaborateur));
       }else if(medecin.getCollaborateur() == null){
-         log.warn("Objet obligatoire Collaborateur  manquant" + " lors de la " + operation + " d'un PatientMedecin");
+         log.warn("Objet obligatoire Collaborateur  manquant lors de la {} d'un PatientMedecin", operation);
          throw new RequiredObjectIsNullException("PatientMedecin", operation, "Collaborateur");
       }
 

@@ -77,8 +77,8 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import fr.aphp.tumorotek.param.TkParam;
 import fr.aphp.tumorotek.param.TumorotekProperties;
@@ -93,7 +93,7 @@ import fr.aphp.tumorotek.param.TumorotekProperties;
 public class TumorotekPropertiesInitializer
 {
 
-   private final Log log = LogFactory.getLog(TumorotekPropertiesInitializer.class);
+   private final Logger log = LoggerFactory.getLogger(TumorotekPropertiesInitializer.class);
 
    /**
     * Ajoute les propriétés nécessaires à tumorotek.properties si elles ne sont pas déjà présentes
@@ -239,7 +239,7 @@ public class TumorotekPropertiesInitializer
          Files.write(tumoPropertiesPath, sb.toString().getBytes(), StandardOpenOption.APPEND, StandardOpenOption.APPEND);
 
       }catch(NamingException | IOException e){
-         log.error("Erreur lors de l'écriture du fichier " + TumorotekProperties.TUMO_PROPERTIES_PATH, e);
+         log.error("Erreur lors de l'écriture du fichier {}",  TumorotekProperties.TUMO_PROPERTIES_PATH, e);
       }
 
    }

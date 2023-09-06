@@ -46,8 +46,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.validation.Validator;
 
 import eu.medsea.mimeutil.MimeUtil;
@@ -74,7 +74,7 @@ import fr.aphp.tumorotek.model.systeme.Fichier;
 public class FichierManagerImpl implements FichierManager
 {
 
-   private final Log log = LogFactory.getLog(FichierManager.class);
+   private final Logger log = LoggerFactory.getLogger(FichierManager.class);
 
    private FichierDao fichierDao;
 
@@ -101,7 +101,7 @@ public class FichierManagerImpl implements FichierManager
 
    @Override
    public List<Fichier> findByPathLikeManager(String path, final boolean exactMatch){
-      log.debug("Recherche Fichier par " + path + " exactMatch " + String.valueOf(exactMatch));
+      log.debug("Recherche Fichier par {} exactMatch {}", path, exactMatch);
       if(path != null){
          if(!exactMatch){
             path = path + "%";
@@ -160,7 +160,7 @@ public class FichierManagerImpl implements FichierManager
    @Override
    public void createObjectManager(final Fichier fichier, final InputStream stream, final List<File> filesCreated){
       if(findDoublonManager(fichier)){
-         log.warn("Doublon lors de la creation de l'objet Fichier : " + fichier.toString());
+         log.warn("Doublon lors de la creation de l'objet Fichier : {}",  fichier);
          throw new DoublonFoundException("Fichier", "creation");
       }
 
@@ -177,7 +177,7 @@ public class FichierManagerImpl implements FichierManager
       }
       fichierDao.createObject(fichier);
       if(stream != null){
-         log.info("Enregistrement de l'objet Fichier : " + fichier.toString());
+         log.info("Enregistrement de l'objet Fichier : {}",  fichier);
          fichier.setPath(fichier.getPath() + "_" + fichier.getFichierId());
          fichierDao.updateObject(fichier);
          storeFile(stream, fichier.getPath(), filesCreated);
@@ -193,7 +193,7 @@ public class FichierManagerImpl implements FichierManager
    public Fichier updateObjectManager(final Fichier fichier, final InputStream stream, final List<File> filesCreated,
       final List<File> filesToDelete){
       if(findDoublonManager(fichier)){
-         log.warn("Doublon lors de la modification de l'objet Fichier : " + fichier.toString());
+         log.warn("Doublon lors de la modification de l'objet Fichier : {}",  fichier);
          throw new DoublonFoundException("Fichier", "modification");
       }
 
@@ -220,7 +220,7 @@ public class FichierManagerImpl implements FichierManager
 
       // path doit être inchangé
       fichierDao.updateObject(fichier);
-      log.info("Modification de l'objet Fichier : " + fichier.toString());
+      log.info("Modification de l'objet Fichier : {}",  fichier);
       return fichier;
    }
 
@@ -238,7 +238,7 @@ public class FichierManagerImpl implements FichierManager
             }
          }
          fichierDao.removeObject(path.getFichierId());
-         log.debug("Suppression de la reference vers l'objet Fichier : " + path.toString());
+         log.debug("Suppression de la reference vers l'objet Fichier : {}", path);
          //			} else {
          //				log.info("Référence vers fichier non supprimée");
          //			}
@@ -264,10 +264,10 @@ public class FichierManagerImpl implements FichierManager
                filesCreated.add(new File(path));
             }
          }else{
-            log.info("Fichier existe déjà path: " + path);
+            log.info("Fichier existe déjà path: {}",  path);
          }
       }catch(final FileNotFoundException fe){
-         log.error("Annotation fichier: Erreur survenue dans la creation du fichier au chemin specifie: " + path);
+         log.error("Annotation fichier: Erreur survenue dans la creation du fichier au chemin specifie: {}",  path);
          throw new RuntimeException(fe);
       }catch(final java.io.IOException e){
          log.error("Annotation fichier: Erreur survenue dans l'ecriture fichier");
@@ -326,7 +326,7 @@ public class FichierManagerImpl implements FichierManager
    public void switchBanqueManager(final Fichier file, final Banque dest, final Set<MvFichier> filesToMove){
 
       if(file != null && dest != null && filesToMove != null){
-         log.debug("modification chemin et déplacement du fichier: " + file.getNom());
+         log.debug("modification chemin et déplacement du fichier: {}",  file.getNom());
          final String actualPathStr = file.getPath();
          final String destPathStr = actualPathStr.replaceFirst("coll_\\d+", "coll_" + dest.getBanqueId());
 

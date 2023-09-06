@@ -40,8 +40,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
@@ -71,7 +71,7 @@ public class ExportToExcel extends ResultSetToExcel
 
    //TODO Mega Refactoring Necessaire
 
-   protected static Log log = LogFactory.getLog(ExportToExcel.class);
+   protected static Logger log = LoggerFactory.getLogger(ExportToExcel.class);
 
    private final Map<Indicateur, ArrayList<ValueToExport>> dataMap;
 
@@ -177,7 +177,6 @@ public class ExportToExcel extends ResultSetToExcel
       for(final Sheet sh : sheetList){
          //?probleme avec ligne du dessous?
          final String tmp[] = sh.getSheetName().split("-");
-         //System.out.println("test");
          //ne passe pas là
          if(tmp != null && tmp.length == 2){
             //pas d'affectation à year, pourquoi? (voir plus haut)
@@ -192,8 +191,6 @@ public class ExportToExcel extends ResultSetToExcel
          for(final Banque collection : ManagerLocator.getSModeleManager().getBanquesManager(modele)){
             firstRow = currentRow;
             collectionRow = sh.createRow(rowCountCollection);
-            // System.out.println("Collection > " + collection
-            // + "/ row collection :" + rowCountCollection);
             writeCell(collectionRow, 0, collection.getNom(), null, boldFont, null);
 
             if(modele.getSubdivision() != null){
@@ -257,12 +254,10 @@ public class ExportToExcel extends ResultSetToExcel
       //		writeCell(rowValue, 1, "TOTAL COLLECTION", null, boldFont);
       //		currentRow++;
       for(final String subValue : subValues){
-         //System.out.println("subvalues " + subValue + " / row Subvalue :" + currentRow + " / " + rowValue.getRowNum());
          writeCell(rowValue, 1, subValue, null, boldFont, null);
          writeValues(collection, rowValue, currentCol, subValue, year, period);
          currentCol = 2;
          rowValue = sh.createRow(1 + currentRow++);
-         //System.err.println("1\\ " + rowValue.getRowNum() + " / " + currentRow);
       }
    }
 
@@ -275,8 +270,6 @@ public class ExportToExcel extends ResultSetToExcel
    			if (v.getUnitTemp().contentEquals(year)
    					&& v.getCollection() == collection.getBanqueId()
    					&& v.getSubValue().contentEquals(subValue)) {
-   				System.err.println("value rowCount : " + currentRow
-   				 + " / col : " + currentCol);
    				writeCell(row, currentCol,
    						String.valueOf(v.getValue()),
    						null, boldFont, null);
@@ -294,10 +287,6 @@ public class ExportToExcel extends ResultSetToExcel
    					&& v.getSemestre().contentEquals(period)
    					&& v.getCollection() == collection.getBanqueId()
    					&& v.getSubValue().contentEquals(subValue)) {
-   				// System.err.println("value rowCount : " + currentRow
-   				// + " / col : " + currentCol +" / " + year + " / " + period);
-
-
    				writeCell(row, currentCol, String.valueOf(v.getValue()), FormatType.NUMERIC,
    						boldFont, null);
    			}
@@ -394,15 +383,11 @@ public class ExportToExcel extends ResultSetToExcel
     */
    //   private void createDataSheetByWeek(final Banque collection, final Row row, final int currentCol, final String period,
    //      final int subValue, final Indicateur s, final String year){
-   //      System.out.println("Passe par ici (week) 2 ????");
    //
    //      for(final ValueToExport v : dataMap.get(s.getCallingProcedure())){
    //         //			if (v.getUnitTemp().contentEquals(year+"-"+period.substring(1))
    //         //					&& v.getCollection() == collection.getBanqueId()
    //         //					&& v.getSubValue() == subValue) {
-   //         //
-   //         //				// System.err.println("value rowCount : " + currentRow
-   //         //				// + " / col : " + currentCol +" / " + year + " / " + period);
    //         //				writeCell(row, currentCol, String.valueOf(v.getValue()), FormatType.NUMERIC,
    //         //						boldFont, null);
    //         //			}
@@ -426,8 +411,6 @@ public class ExportToExcel extends ResultSetToExcel
 
    private void groupRow(final Sheet sh){
       for(final GroupExcel g : groupList){
-         //			System.out.println(g.getFirstRow() + " / " + g.getLastRow());
-         //			System.out.println("----------");
          sh.groupRow(g.getFirstRow(), g.getLastRow());
       }
    }
@@ -439,9 +422,7 @@ public class ExportToExcel extends ResultSetToExcel
             sh.setHorizontallyCenter(true);
             sh.setVerticallyCenter(true);
          }catch(final Exception ex){
-            System.out.println("Erreur generate");
-            System.out.println(ex);
-            log.error(ex);
+            log.error(ex.getMessage(), ex);
          }finally{
             // Autosize columns
             ((SXSSFSheet) sh).trackAllColumnsForAutoSizing();
@@ -461,7 +442,6 @@ public class ExportToExcel extends ResultSetToExcel
       final XSSFCellStyle style = (XSSFCellStyle) workbook.createCellStyle();
 
       if(font != null){
-         //System.out.println("style font");
          style.setFont(font);
          font.setBold(true);
          font.setItalic(true);
@@ -514,7 +494,6 @@ public class ExportToExcel extends ResultSetToExcel
       }
 
       if(font != null){
-         //System.out.println("style font");
          style.setFont(font);
          font.setBold(true);
          font.setItalic(true);

@@ -38,8 +38,8 @@ package fr.aphp.tumorotek.manager.impl.contexte;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.validation.Validator;
 
 import fr.aphp.tumorotek.dao.contexte.SpecialiteDao;
@@ -61,7 +61,7 @@ import fr.aphp.tumorotek.model.contexte.Specialite;
 public class SpecialiteManagerImpl implements SpecialiteManager
 {
 
-   private final Log log = LogFactory.getLog(SpecialiteManager.class);
+   private final Logger log = LoggerFactory.getLogger(SpecialiteManager.class);
 
    /** Bean Dao SpecialiteDao. */
    private SpecialiteDao specialiteDao;
@@ -109,7 +109,7 @@ public class SpecialiteManagerImpl implements SpecialiteManager
     */
    @Override
    public List<Specialite> findByNomLikeManager(String nom, final boolean exactMatch){
-      log.debug("Recherche Specialite par " + nom + " exactMatch " + String.valueOf(exactMatch));
+      log.debug("Recherche Specialite par {} exactMatch {}", nom, exactMatch);
       if(nom != null){
          if(!exactMatch){
             nom = nom + "%";
@@ -142,9 +142,9 @@ public class SpecialiteManagerImpl implements SpecialiteManager
       BeanValidator.validateObject(obj, new Validator[] {specialiteValidator});
       if(!findDoublonManager(obj)){
          specialiteDao.createObject(obj);
-         log.info("Enregistrement objet Specialite " + obj.toString());
+         log.info("Enregistrement objet Specialite {}",  obj);
       }else{
-         log.warn("Doublon lors creation objet Specialite " + obj.toString());
+         log.warn("Doublon lors creation objet Specialite {}",  obj);
          throw new DoublonFoundException("Specialite", "creation");
       }
    }
@@ -154,9 +154,9 @@ public class SpecialiteManagerImpl implements SpecialiteManager
       BeanValidator.validateObject(obj, new Validator[] {specialiteValidator});
       if(!findDoublonManager(obj)){
          specialiteDao.updateObject(obj);
-         log.info("Modification objet Specialite " + obj.toString());
+         log.info("Modification objet Specialite {}",  obj);
       }else{
-         log.warn("Doublon lors modification objet Specialite " + obj.toString());
+         log.warn("Doublon lors modification objet Specialite {}",  obj);
          throw new DoublonFoundException("Specialite", "modification");
       }
    }
@@ -165,7 +165,7 @@ public class SpecialiteManagerImpl implements SpecialiteManager
    public void removeObjectManager(final Specialite obj){
       if(obj != null){
          specialiteDao.removeObject(obj.getId());
-         log.info("Suppression objet Specialite " + obj.toString());
+         log.info("Suppression objet Specialite {}",  obj);
       }else{
          log.warn("Suppression d'une Specialite null");
       }

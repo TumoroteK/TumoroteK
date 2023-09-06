@@ -44,8 +44,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.zkoss.util.Locales;
@@ -76,7 +76,7 @@ import fr.aphp.tumorotek.model.contexte.Service;
 public class FicheBonLivraisonModale extends AbstractFicheCombineController
 {
 
-   private final Log log = LogFactory.getLog(FicheBonLivraisonModale.class);
+   private final Logger log = LoggerFactory.getLogger(FicheBonLivraisonModale.class);
 
    private static final long serialVersionUID = -8704338228969541559L;
 
@@ -160,7 +160,7 @@ public class FicheBonLivraisonModale extends AbstractFicheCombineController
          dl = ManagerLocator.getXmlUtils().creerAccordTransfertPdf(document);
 
       }catch(final Exception e){
-         log.error(e);
+         log.error(e.getMessage(), e); 
       }
 
       // ferme wait message
@@ -492,7 +492,7 @@ public class FicheBonLivraisonModale extends AbstractFicheCombineController
          ManagerLocator.getXmlUtils().addSignatures(page, sign);
 
       }catch(final Exception e){
-         e.printStackTrace();
+         log.error(e.getMessage(), e);
       }finally{
          if(oldLocale != null){
             Locales.setThreadLocal(oldLocale);

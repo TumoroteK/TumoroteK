@@ -38,8 +38,8 @@ package fr.aphp.tumorotek.manager.impl.io.imports;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.validation.Validator;
 
 import fr.aphp.tumorotek.dao.annotation.DataTypeDao;
@@ -60,7 +60,7 @@ import fr.aphp.tumorotek.model.systeme.Entite;
 public class ImportColonneManagerImpl implements ImportColonneManager
 {
 
-   private final Log log = LogFactory.getLog(ImportColonneManager.class);
+   private final Logger log = LoggerFactory.getLogger(ImportColonneManager.class);
 
    /** Beans. */
    private ImportColonneDao importColonneDao;
@@ -107,7 +107,7 @@ public class ImportColonneManagerImpl implements ImportColonneManager
    @Override
    public List<ImportColonne> findByImportTemplateManager(final ImportTemplate template){
       if(template != null){
-         log.debug("Recherche de tous les ImportColonnes " + "d'un ImportTemplate.");
+         log.debug("Recherche de tous les ImportColonnes d'un ImportTemplate.");
          return importColonneDao.findByTemplateWithOrder(template);
       }else{
          return new ArrayList<>();
@@ -204,13 +204,13 @@ public class ImportColonneManagerImpl implements ImportColonneManager
       final String operation){
       // ImportTemplate required
       if(template == null){
-         log.warn("Objet obligatoire ImportTemplate manquant" + " lors de la création d'un ImportColonne");
+         log.warn("Objet obligatoire ImportTemplate manquant  lors de la création d'un ImportColonne");
          throw new RequiredObjectIsNullException("ImportColonne", operation, "ImportTemplate");
       }
 
       // champ required
       if(champ == null){
-         log.warn("Objet obligatoire Champ manquant" + " lors de la création d'un ImportColonne");
+         log.warn("Objet obligatoire Champ manquant  lors de la création d'un ImportColonne");
          throw new RequiredObjectIsNullException("ImportColonne", operation, "Champ");
       }
 
@@ -221,7 +221,7 @@ public class ImportColonneManagerImpl implements ImportColonneManager
          BeanValidator.validateObject(importColonne, new Validator[] {importColonneValidator});
 
       }else{
-         log.warn("Doublon lors creation objet ImportColonne " + importColonne.toString());
+         log.warn("Doublon lors creation objet ImportColonne {}",  importColonne);
          throw new DoublonFoundException("ImportColonne", operation);
       }
    }
@@ -239,7 +239,7 @@ public class ImportColonneManagerImpl implements ImportColonneManager
 
       importColonneDao.createObject(importColonne);
 
-      log.info("Enregistrement objet ImportColonne " + importColonne.toString());
+      log.info("Enregistrement objet ImportColonne {}",  importColonne);
 
    }
 
@@ -261,7 +261,7 @@ public class ImportColonneManagerImpl implements ImportColonneManager
 
       importColonneDao.updateObject(importColonne);
 
-      log.info("Enregistrement objet ImportColonne " + importColonne.toString());
+      log.info("Enregistrement objet ImportColonne {}",  importColonne);
 
    }
 
@@ -270,7 +270,7 @@ public class ImportColonneManagerImpl implements ImportColonneManager
       if(importColonne != null){
          final Champ chp = importColonne.getChamp();
          importColonneDao.removeObject(importColonne.getImportColonneId());
-         log.info("Suppression de l'objet ImportColonne : " + importColonne.toString());
+         log.info("Suppression de l'objet ImportColonne : {}",  importColonne);
 
          champManager.removeObjectManager(chp);
       }else{

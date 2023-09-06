@@ -37,8 +37,8 @@ package fr.aphp.tumorotek.manager.impl.contexte;
 
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.validation.Validator;
 
 import fr.aphp.tumorotek.dao.contexte.DiagnosticDao;
@@ -65,7 +65,7 @@ import fr.aphp.tumorotek.model.contexte.Plateforme;
 public class DiagnosticManagerImpl implements DiagnosticManager
 {
 
-   private final Log log = LogFactory.getLog(DiagnosticManager.class);
+   private final Logger log = LoggerFactory.getLogger(DiagnosticManager.class);
 
    private DiagnosticDao diagnosticDao;
 
@@ -96,7 +96,7 @@ public class DiagnosticManagerImpl implements DiagnosticManager
       // On vérifie que la pf n'est pas null. Si c'est le cas on envoie
       // une exception
       if(pt.getPlateforme() == null){
-         log.warn("Objet obligatoire Plateforme " + "manquant lors de la creation " + "d'un objet Diagnostic");
+         log.warn("Objet obligatoire Plateforme manquant lors de la creation d'un objet Diagnostic");
          throw new RequiredObjectIsNullException("Diagnostic", "creation", "Plateforme");
       }
       pt.setPlateforme(plateformeDao.mergeObject(pt.getPlateforme()));
@@ -104,9 +104,9 @@ public class DiagnosticManagerImpl implements DiagnosticManager
       BeanValidator.validateObject(pt, new Validator[] {diagnosticValidator});
       if(!findDoublonManager(pt)){
          diagnosticDao.createObject(pt);
-         log.info("Enregistrement objet Diagnostic " + pt.toString());
+         log.info("Enregistrement objet Diagnostic {}",  pt);
       }else{
-         log.warn("Doublon lors creation objet Diagnostic " + pt.toString());
+         log.warn("Doublon lors creation objet Diagnostic {}",  pt);
          throw new DoublonFoundException("Diagnostic", "creation");
       }
    }
@@ -116,9 +116,9 @@ public class DiagnosticManagerImpl implements DiagnosticManager
       BeanValidator.validateObject(obj, new Validator[] {diagnosticValidator});
       if(!findDoublonManager(obj)){
          diagnosticDao.updateObject(obj);
-         log.info("Modification objet Diagnostic " + obj.toString());
+         log.info("Modification objet Diagnostic {}",  obj);
       }else{
-         log.warn("Doublon lors modification objet Diagnostic " + obj.toString());
+         log.warn("Doublon lors modification objet Diagnostic {}",  obj);
          throw new DoublonFoundException("Diagnostic", "modification");
       }
    }
@@ -132,7 +132,7 @@ public class DiagnosticManagerImpl implements DiagnosticManager
    public void removeObjectManager(final Diagnostic obj){
       if(obj != null){
          diagnosticDao.removeObject(obj.getId());
-         log.info("Suppression objet Diagnostic " + obj.toString());
+         log.info("Suppression objet Diagnostic {}",  obj);
       }else{
          log.warn("Suppression d'un Diagnostic null");
       }

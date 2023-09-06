@@ -38,8 +38,8 @@ package fr.aphp.tumorotek.manager.impl.coeur.cession;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import fr.aphp.tumorotek.dao.cession.CessionTypeDao;
 import fr.aphp.tumorotek.manager.coeur.cession.CessionTypeManager;
@@ -57,7 +57,7 @@ import fr.aphp.tumorotek.model.cession.CessionType;
 public class CessionTypeManagerImpl implements CessionTypeManager
 {
 
-   private final Log log = LogFactory.getLog(CessionTypeManager.class);
+   private final Logger log = LoggerFactory.getLogger(CessionTypeManager.class);
 
    /** Bean Dao CessionTypeDao. */
    private CessionTypeDao cessionTypeDao;
@@ -100,7 +100,7 @@ public class CessionTypeManagerImpl implements CessionTypeManager
    @Override
    public List<CessionType> findByTypeLikeManager(String type, final boolean exactMatch){
 
-      log.debug("Recherche CessionType par " + type + " exactMatch " + String.valueOf(exactMatch));
+      log.debug("Recherche CessionType par {} exactMatch {}", type, exactMatch);
       if(type != null){
          if(!exactMatch){
             type = type + "%";

@@ -39,8 +39,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.validation.Validator;
 
 import fr.aphp.tumorotek.dao.io.export.GroupementDao;
@@ -71,7 +71,7 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
 public class RequeteManagerImpl implements RequeteManager
 {
 
-   private final Log log = LogFactory.getLog(RequeteManager.class);
+   private final Logger log = LoggerFactory.getLogger(RequeteManager.class);
 
    /** Liste des requêtes du manager. */
    private List<Requete> requetes = new ArrayList<>();
@@ -139,7 +139,7 @@ public class RequeteManagerImpl implements RequeteManager
    public Requete findByIdManager(final Integer id){
       //On vérifie que l'identifiant n'est pas nul
       if(id == null){
-         log.warn("Objet obligatoire identifiant manquant lors de la " + "recherche par l'identifiant d'un objet Requete");
+         log.warn("Objet obligatoire identifiant manquant lors de la recherche par l'identifiant d'un objet Requete");
          throw new RequiredObjectIsNullException("Requete", "recherche par identifiant", "identifiant");
       }
       return requeteDao.findById(id);
@@ -163,7 +163,7 @@ public class RequeteManagerImpl implements RequeteManager
    public void renameRequeteManager(final Requete requete, final String intitule){
       //On verifie que la requete n'est pas nulle
       if(requete == null){
-         log.warn("Objet obligatoire Requete manquant lors " + "du renommage d'un objet Requete");
+         log.warn("Objet obligatoire Requete manquant lors du renommage d'un objet Requete");
          throw new RequiredObjectIsNullException("Requete", "modification", "Requete");
       }
       if(findByIdManager(requete.getRequeteId()) == null){
@@ -173,7 +173,7 @@ public class RequeteManagerImpl implements RequeteManager
          requete.setIntitule(intitule);
          //On met a jour la requete
          if(findDoublonManager(requete)){
-            log.warn("Doublon lors de la modification de l'objet " + "Requete : " + requete.toString());
+            log.warn("Doublon lors de la modification de l'objet Requete : {}",  requete);
             throw new DoublonFoundException("Requete", "modification");
          }else{
             BeanValidator.validateObject(requete, new Validator[] {requeteValidator});
@@ -192,17 +192,17 @@ public class RequeteManagerImpl implements RequeteManager
    public Requete copyRequeteManager(final Requete requete, final Utilisateur copieur, final Banque banque){
       //On verifie que la requete n'est pas nulle
       if(requete == null){
-         log.warn("Objet obligatoire Requete manquant lors " + "de la copie d'un objet Requete");
+         log.warn("Objet obligatoire Requete manquant lors de la copie d'un objet Requete");
          throw new RequiredObjectIsNullException("Requete", "copie", "Requete");
       }
       //On verifie que l'utilisateur n'est pas nul
       if(copieur == null){
-         log.warn("Objet obligatoire Utilisateur manquant lors " + "de la copie d'un objet Requete");
+         log.warn("Objet obligatoire Utilisateur manquant lors de la copie d'un objet Requete");
          throw new RequiredObjectIsNullException("Requete", "modification", "Utilisateur");
       }
       //On vérifie que la banque n'est pas nul
       if(banque == null){
-         log.warn("Objet obligatoire Banque manquant lors " + "de la création d'un objet Requete");
+         log.warn("Objet obligatoire Banque manquant lors de la création d'un objet Requete");
          throw new RequiredObjectIsNullException("Requete", "création", "Banque");
       }
       //On copie le groupement racine
@@ -228,22 +228,22 @@ public class RequeteManagerImpl implements RequeteManager
    public void createObjectManager(final Requete requete, Groupement groupement, final Utilisateur createur, final Banque banque){
       //On vérifie que la requête n'est pas nulle
       if(requete == null){
-         log.warn("Objet obligatoire Requete manquant lors " + "de la création d'un objet Requete");
+         log.warn("Objet obligatoire Requete manquant lors de la création d'un objet Requete");
          throw new RequiredObjectIsNullException("Requete", "création", "Requete");
       }
       //On vérifie que le groupement n'est pas nul
       if(groupement == null){
-         log.warn("Objet obligatoire Groupement manquant lors " + "de la création d'un objet Requete");
+         log.warn("Objet obligatoire Groupement manquant lors de la création d'un objet Requete");
          throw new RequiredObjectIsNullException("Requete", "création", "Groupement");
       }
       //On vérifie que le createur n'est pas nul
       if(createur == null){
-         log.warn("Objet obligatoire Utilisateur manquant lors " + "de la création d'un objet Requete");
+         log.warn("Objet obligatoire Utilisateur manquant lors de la création d'un objet Requete");
          throw new RequiredObjectIsNullException("Requete", "création", "Utilisateur");
       }
       //On vérifie que la banque n'est pas nul
       if(banque == null){
-         log.warn("Objet obligatoire Banque manquant lors " + "de la création d'un objet Requete");
+         log.warn("Objet obligatoire Banque manquant lors de la création d'un objet Requete");
          throw new RequiredObjectIsNullException("Requete", "création", "Banque");
       }
       requete.setBanque(banque);
@@ -272,17 +272,17 @@ public class RequeteManagerImpl implements RequeteManager
    public void updateObjectManager(final Requete requete, Groupement groupement, final Utilisateur createur){
       //On vérifie que la requête n'est pas nulle
       if(requete == null){
-         log.warn("Objet obligatoire Requete manquant lors " + "de la modification d'un objet Requete");
+         log.warn("Objet obligatoire Requete manquant lors de la modification d'un objet Requete");
          throw new RequiredObjectIsNullException("Requete", "modification", "Requete");
       }
       //On vérifie que le groupement n'est pas nul
       if(groupement == null){
-         log.warn("Objet obligatoire Groupement manquant lors " + "de la modification d'un objet Requete");
+         log.warn("Objet obligatoire Groupement manquant lors de la modification d'un objet Requete");
          throw new RequiredObjectIsNullException("Requete", "modification", "Groupement");
       }
       //On vérifie que le createur n'est pas nul
       if(createur == null){
-         log.warn("Objet obligatoire Utilisateur manquant lors " + "de la modification d'un objet Requete");
+         log.warn("Objet obligatoire Utilisateur manquant lors de la modification d'un objet Requete");
          throw new RequiredObjectIsNullException("Requete", "modification", "Utilisateur");
       }
       final Groupement oldGroupement = requete.getGroupementRacine();
@@ -323,7 +323,7 @@ public class RequeteManagerImpl implements RequeteManager
          throw new SearchedObjectIdNotExistException("Requete", requete.getRequeteId());
       }else{
          if(isUsedObjectManager(requete)){
-            log.warn("Objet utilisé lors de la suppression de l'objet " + "Requete : " + requete.toString());
+            log.warn("Objet utilisé lors de la suppression de l'objet Requete : {}",  requete);
             throw new ObjectUsedException("Requete", "suppression");
          }else{
             //suppression de la requete dans la liste
@@ -355,7 +355,7 @@ public class RequeteManagerImpl implements RequeteManager
    public List<Requete> findByUtilisateurManager(final Utilisateur util){
       //On vérifie que l'utilisateur n'est pas nul
       if(util == null){
-         log.warn("Objet obligatoire Utilisateur manquant lors de la " + "recherche par l'Utilisateur d'un objet Requete");
+         log.warn("Objet obligatoire Utilisateur manquant lors de la recherche par l'Utilisateur d'un objet Requete");
          throw new RequiredObjectIsNullException("Requete", "recherche par Utilisateur", "Utilisateur");
       }
       return requeteDao.findByUtilisateur(util);
@@ -370,7 +370,7 @@ public class RequeteManagerImpl implements RequeteManager
    public List<Requete> findByIntituleManager(final String intitule){
       //On vérifie que l'utilisateur n'est pas nul
       if(intitule == null){
-         log.warn("Objet obligatoire intitule manquant lors de la " + "recherche par l'intitulé d'un objet Requete");
+         log.warn("Objet obligatoire intitule manquant lors de la recherche par l'intitulé d'un objet Requete");
          throw new RequiredObjectIsNullException("Requete", "recherche par Intitulé", "Intitulé");
       }
       return requeteDao.findByIntitule(intitule);
@@ -394,7 +394,7 @@ public class RequeteManagerImpl implements RequeteManager
    public Boolean findDoublonManager(final Requete requete){
       //On vérifie que l'affichage n'est pas nul
       if(requete == null){
-         log.warn("Objet obligatoire Requete manquant lors de la " + "recherche de doublon d'un objet Requete");
+         log.warn("Objet obligatoire Requete manquant lors de la recherche de doublon d'un objet Requete");
          throw new RequiredObjectIsNullException("Requete", "recherche de doublon", "Requete");
       }
       if(requete.getRequeteId() == null){

@@ -38,6 +38,8 @@ package fr.aphp.tumorotek.webapp.general.export;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.zkoss.zk.ui.Desktop;
 import org.zkoss.zk.ui.DesktopUnavailableException;
@@ -66,6 +68,8 @@ import fr.aphp.tumorotek.webapp.general.ExportUtils;
  */
 public class ExportRechercheComplexe extends Export
 {
+
+   private static final Logger log = LoggerFactory.getLogger(ExportRechercheComplexe.class);
 
    public ExportRechercheComplexe(){}
 
@@ -102,9 +106,9 @@ public class ExportRechercheComplexe extends Export
       }catch(final InterruptedException ie){
          log.warn(ie.getMessage());
       }catch(final DesktopUnavailableException e){
-         e.printStackTrace();
+         log.error(e.getMessage(), e);
       }catch(final IOException e){
-         log.error(e);
+         log.error(e.getMessage(), e);
       }finally{
          // updateUIBarThread.interrupt();
          // close progressBar

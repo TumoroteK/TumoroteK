@@ -38,8 +38,8 @@ package fr.aphp.tumorotek.manager.impl.stats;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.validation.Validator;
 
 import fr.aphp.tumorotek.dao.stats.IndicateurDao;
@@ -54,7 +54,7 @@ import fr.aphp.tumorotek.model.stats.Subdivision;
 public class IndicateurManagerImpl implements IndicateurManager
 {
 
-   private final Log log = LogFactory.getLog(IndicateurManager.class);
+   private final Logger log = LoggerFactory.getLogger(IndicateurManager.class);
 
    private final List<Indicateur> NO_LIST = new ArrayList<>();
 
@@ -122,7 +122,7 @@ public class IndicateurManagerImpl implements IndicateurManager
       // stmt.setsModeleIndicateurs(sModeleDao.mergeObject(modele).getSModeleIndicateurs());
       // Test s'il y a des doublons
       if(findDoublonManager(indic)){
-         log.warn("Doublon lors de la creation de l'objet Indicateur : " + indic.getNom());
+         log.warn("Doublon lors de la creation de l'objet Indicateur : {}",  indic.getNom());
          throw new DoublonFoundException("Indicateur", "creation");
       }else{ // validation de l'objet
          // validation
@@ -131,7 +131,7 @@ public class IndicateurManagerImpl implements IndicateurManager
 
       // creation
       indicateurDao.createObject(indic);
-      log.debug("Enregistrement objet Indicateur " + indic.toString());
+      log.debug("Enregistrement objet Indicateur {}",  indic);
    }
 
    @Override
@@ -143,14 +143,14 @@ public class IndicateurManagerImpl implements IndicateurManager
       // stmt.setsModeleIndicateurs(sModeleDao.mergeObject(modele).getSModeleIndicateurs());
 
       indicateurDao.updateObject(indic);
-      log.debug("Mise à jour objet Statement " + indic.toString());
+      log.debug("Mise à jour objet Statement {}",  indic);
    }
 
    @Override
    public void removeObjectManager(final Indicateur indic){
       if(indic != null){
          indicateurDao.removeObject(indic.getIndicateurId());
-         log.debug("Suppression de l'objet Statement : " + indic.toString());
+         log.debug("Suppression de l'objet Statement : {}",  indic);
       }else{
          log.warn("Suppression d'un Statement null");
       }

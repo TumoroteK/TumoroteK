@@ -48,8 +48,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.TypedQuery;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import fr.aphp.tumorotek.manager.coeur.cession.LargeCessionManager;
 import fr.aphp.tumorotek.manager.coeur.echantillon.EchantillonManager;
@@ -73,7 +73,7 @@ import fr.aphp.tumorotek.utils.Utils;
 public class LargeCessionManagerImpl implements LargeCessionManager
 {
 
-   private final Log log = LogFactory.getLog(LargeCessionManager.class);
+   private final Logger log = LoggerFactory.getLogger(LargeCessionManager.class);
 
    private EchantillonManager echantillonManager;
 
@@ -137,8 +137,7 @@ public class LargeCessionManagerImpl implements LargeCessionManager
                conn.commit();
 
             }catch(final Exception e){
-               e.printStackTrace();
-               log.error(e.getMessage());
+               log.error(e.getMessage(), e);
             }finally{
                if(conn != null){
                   try{

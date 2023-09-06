@@ -37,8 +37,8 @@ package fr.aphp.tumorotek.manager.impl.io.export;
 
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.validation.Validator;
 
 import fr.aphp.tumorotek.dao.io.export.ChampDao;
@@ -67,7 +67,7 @@ import fr.aphp.tumorotek.model.io.export.Critere;
 public class CritereManagerImpl implements CritereManager
 {
 
-   private final Log log = LogFactory.getLog(CritereManager.class);
+   private final Logger log = LoggerFactory.getLogger(CritereManager.class);
 
    /** Bean Dao CritereDao. */
    private CritereDao critereDao = null;
@@ -149,7 +149,7 @@ public class CritereManagerImpl implements CritereManager
       Critere temp = null;
       //On vérifie que le critere n'est pas nul
       if(critere == null){
-         log.warn("Objet obligatoire Critere manquant lors " + "de la copie d'un objet Critere");
+         log.warn("Objet obligatoire Critere manquant lors de la copie d'un objet Critere");
          throw new RequiredObjectIsNullException("Critere", "copie", "Critere");
       }
       if(critere.getChamp() != null){
@@ -187,7 +187,7 @@ public class CritereManagerImpl implements CritereManager
    public void createObjectManager(final Critere critere, Champ champ, Combinaison combinaison){
       //On vérifie que le critère n'est pas nul
       if(critere == null){
-         log.warn("Objet obligatoire Critere manquant lors " + "de la création d'un objet Critere");
+         log.warn("Objet obligatoire Critere manquant lors de la création d'un objet Critere");
          throw new RequiredObjectIsNullException("Critere", "création", "Critere");
       }
       if(champ != null){
@@ -220,7 +220,7 @@ public class CritereManagerImpl implements CritereManager
    public void updateObjectManager(final Critere critere, Champ champ, Combinaison combinaison){
       //On vérifie que le critère n'est pas nul
       if(critere == null){
-         log.warn("Objet obligatoire Critere manquant lors " + "de la modification d'un objet Critere");
+         log.warn("Objet obligatoire Critere manquant lors de la modification d'un objet Critere");
          throw new RequiredObjectIsNullException("Critere", "modification", "Critere");
       }
       final Champ oldChamp = critere.getChamp();
@@ -257,7 +257,7 @@ public class CritereManagerImpl implements CritereManager
    public void removeObjectManager(final Critere critere){
       //On vérifie que le critère n'est pas nul
       if(critere == null){
-         log.warn("Objet obligatoire Critere manquant lors " + "de la suppression d'un objet Critere");
+         log.warn("Objet obligatoire Critere manquant lors de la suppression d'un objet Critere");
          throw new RequiredObjectIsNullException("Critere", "suppression", "Critere");
       }
       //On vérifie que le critère est en BDD
@@ -282,7 +282,7 @@ public class CritereManagerImpl implements CritereManager
    public Critere findByIdManager(final Integer idCritere){
       //On vérifie que l'identifiant n'est pas nul
       if(idCritere == null){
-         log.warn("Objet obligatoire identifiant manquant lors de la " + "recherche par l'identifiant d'un objet Critere");
+         log.warn("Objet obligatoire identifiant manquant lors de la recherche par l'identifiant d'un objet Critere");
          throw new RequiredObjectIsNullException("Critere", "recherche par identifiant", "identifiant");
       }
       return critereDao.findById(idCritere);

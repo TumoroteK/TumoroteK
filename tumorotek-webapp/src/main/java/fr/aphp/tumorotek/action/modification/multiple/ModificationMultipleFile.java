@@ -41,7 +41,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.HashSet;
 import java.util.Set;
 
+import fr.aphp.tumorotek.manager.code.*;
 import org.apache.commons.beanutils.PropertyUtils;
+import org.slf4j.*;
 import org.zkoss.util.media.Media;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.event.Event;
@@ -71,6 +73,7 @@ import fr.aphp.tumorotek.model.systeme.Fichier;
  */
 public class ModificationMultipleFile extends AbstractModificationMultipleComponent
 {
+   private static final Logger log = LoggerFactory.getLogger(ModificationMultipleFile.class);
 
    private static final long serialVersionUID = 3551763682958457361L;
 
@@ -191,7 +194,7 @@ public class ModificationMultipleFile extends AbstractModificationMultipleCompon
             }
 
          }catch(final IllegalAccessException | InvocationTargetException | NoSuchMethodException e){
-            log.error(e);
+            log.error(e.getMessage(), e);
          }
 
       }

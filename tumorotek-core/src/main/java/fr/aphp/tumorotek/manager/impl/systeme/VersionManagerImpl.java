@@ -37,8 +37,8 @@ package fr.aphp.tumorotek.manager.impl.systeme;
 
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import fr.aphp.tumorotek.dao.systeme.VersionDao;
 import fr.aphp.tumorotek.manager.systeme.VersionManager;
@@ -56,7 +56,7 @@ import fr.aphp.tumorotek.model.systeme.Version;
 public class VersionManagerImpl implements VersionManager
 {
 
-   private final Log log = LogFactory.getLog(VersionManager.class);
+   private final Logger log = LoggerFactory.getLogger(VersionManager.class);
 
    /** Bean Dao VersionDao. */
    private VersionDao versionDao;
@@ -78,7 +78,7 @@ public class VersionManagerImpl implements VersionManager
 
    @Override
    public List<Version> findByDateChronologiqueManager(){
-      log.debug("Recherche de toutes les Versions par " + "ordre chronologique.");
+      log.debug("Recherche de toutes les Versions par ordre chronologique.");
       return versionDao.findByDateChronologique();
    }
 

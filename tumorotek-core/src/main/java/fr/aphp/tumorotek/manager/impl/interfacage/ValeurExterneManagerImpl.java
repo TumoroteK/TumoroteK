@@ -38,8 +38,8 @@ package fr.aphp.tumorotek.manager.impl.interfacage;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.validation.Validator;
 
 import fr.aphp.tumorotek.dao.annotation.ChampAnnotationDao;
@@ -70,7 +70,7 @@ import fr.aphp.tumorotek.model.io.export.ChampEntite;
 public class ValeurExterneManagerImpl implements ValeurExterneManager
 {
 
-   private final Log log = LogFactory.getLog(ValeurExterneManager.class);
+   private final Logger log = LoggerFactory.getLogger(ValeurExterneManager.class);
 
    /** Bean Dao. */
    private ValeurExterneDao valeurExterneDao;
@@ -166,7 +166,7 @@ public class ValeurExterneManagerImpl implements ValeurExterneManager
 
       // blocExterne required
       if(blocExterne == null){
-         log.warn("Objet obligatoire BlocExterne manquant" + " lors de la création d'une ValeurExterne");
+         log.warn("Objet obligatoire BlocExterne manquant  lors de la création d'une ValeurExterne");
          throw new RequiredObjectIsNullException("ValeurExterne", "creation", "BlocExterne");
       }
 
@@ -227,14 +227,14 @@ public class ValeurExterneManagerImpl implements ValeurExterneManager
       }
       valeurExterneDao.createObject(valeurExterne);
 
-      log.info("Enregistrement de l'objet ValeurExterne : " + valeurExterne.toString());
+      log.info("Enregistrement de l'objet ValeurExterne : {}",  valeurExterne);
    }
 
    @Override
    public void removeObjectManager(final ValeurExterne valeurExterne){
       if(valeurExterne != null && valeurExterne.getValeurExterneId() != null){
          valeurExterneDao.removeObject(valeurExterne.getValeurExterneId());
-         log.info("Suppression de l'objet ValeurExterne : " + valeurExterne.toString());
+         log.info("Suppression de l'objet ValeurExterne : {}",  valeurExterne);
       }else{
          log.warn("Suppression d'une ValeurExterne null");
       }

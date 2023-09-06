@@ -44,8 +44,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.HtmlMacroComponent;
@@ -110,7 +110,7 @@ import fr.aphp.tumorotek.webapp.general.export.ExportRechercheComplexe;
 public class ExecutionRechercheController extends AbstractObjectTabController
 {
 
-   private final Log log = LogFactory.getLog(ExecutionRechercheController.class);
+   private final Logger log = LoggerFactory.getLogger(ExecutionRechercheController.class);
 
    private static final long serialVersionUID = -1932781990848916925L;
 
@@ -357,7 +357,7 @@ public class ExecutionRechercheController extends AbstractObjectTabController
             setBlockModal(false);
 
          }catch(final SuspendNotAllowedException e){
-            log.error(e);
+            log.error(e.getMessage(), e); 
          }
       }
    }
@@ -789,5 +789,4 @@ public class ExecutionRechercheController extends AbstractObjectTabController
       }
 
    }
-   
 }

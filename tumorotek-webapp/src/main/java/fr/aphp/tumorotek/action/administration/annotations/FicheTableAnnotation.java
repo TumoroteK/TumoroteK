@@ -42,8 +42,8 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
@@ -98,7 +98,7 @@ import fr.aphp.tumorotek.webapp.general.SessionUtils;
 public class FicheTableAnnotation extends AbstractFicheCombineController
 {
 
-   private final Log log = LogFactory.getLog(FicheTableAnnotation.class);
+   private final Logger log = LoggerFactory.getLogger(FicheTableAnnotation.class);
 
    private static final long serialVersionUID = 6300875937416491348L;
 
@@ -1086,7 +1086,7 @@ public class FicheTableAnnotation extends AbstractFicheCombineController
             win.onModal();
             win.setPosition("center");
          }catch(final SuspendNotAllowedException e){
-            log.error(e);
+            log.error(e.getMessage(), e); 
          }
       }
    }

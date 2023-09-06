@@ -37,8 +37,8 @@ package fr.aphp.tumorotek.manager.impl.systeme;
 
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.validation.Validator;
 
 import fr.aphp.tumorotek.dao.systeme.TemperatureDao;
@@ -51,7 +51,7 @@ import fr.aphp.tumorotek.model.systeme.Temperature;
 public class TemperatureManagerImpl implements TemperatureManager
 {
 
-   private final Log log = LogFactory.getLog(TemperatureManager.class);
+   private final Logger log = LoggerFactory.getLogger(TemperatureManager.class);
 
    private TemperatureDao temperatureDao;
 
@@ -93,7 +93,7 @@ public class TemperatureManagerImpl implements TemperatureManager
    public void createObjectManager(final Temperature temperature){
       // Test s'il y a des doublons
       if(findDoublonManager(temperature)){
-         log.warn("Doublon lors de la creation de l'objet Temperature : " + temperature.toString());
+         log.warn("Doublon lors de la creation de l'objet Temperature : {}",  temperature);
          throw new DoublonFoundException("Temperature", "creation");
       }else{
 
@@ -102,7 +102,7 @@ public class TemperatureManagerImpl implements TemperatureManager
 
          temperatureDao.createObject(temperature);
 
-         log.info("Enregistrement de l'objet Temperature : " + temperature.toString());
+         log.info("Enregistrement de l'objet Temperature : {}",  temperature);
       }
    }
 
@@ -110,7 +110,7 @@ public class TemperatureManagerImpl implements TemperatureManager
    public void updateObjectManager(final Temperature temperature){
       // Test s'il y a des doublons
       if(findDoublonManager(temperature)){
-         log.warn("Doublon lors de la modification de " + "l'objet Temperature : " + temperature.toString());
+         log.warn("Doublon lors de la modification de l'objet Temperature : {}",  temperature);
          throw new DoublonFoundException("Temperature", "modification");
       }else{
 
@@ -119,7 +119,7 @@ public class TemperatureManagerImpl implements TemperatureManager
 
          temperatureDao.updateObject(temperature);
 
-         log.info("Enregistrement de l'objet Temperature : " + temperature.toString());
+         log.info("Enregistrement de l'objet Temperature : {}",  temperature);
       }
    }
 
@@ -127,7 +127,7 @@ public class TemperatureManagerImpl implements TemperatureManager
    public void removeObjectManager(final Temperature temperature){
       if(temperature != null){
          temperatureDao.removeObject(temperature.getTemperatureId());
-         log.info("Suppression de l'objet Temperature : " + temperature.toString());
+         log.info("Suppression de l'objet Temperature : {}",  temperature);
       }else{
          log.warn("Suppression d'une Temperature null");
       }

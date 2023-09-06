@@ -75,7 +75,6 @@ public class LevenshteinDistance
 
    public static int computeEditDistance(String s1, String s2){
 
-      //System.out.println("test passage algo computeEditDistance " + j);
       j++;
 
       s1 = s1.toLowerCase();

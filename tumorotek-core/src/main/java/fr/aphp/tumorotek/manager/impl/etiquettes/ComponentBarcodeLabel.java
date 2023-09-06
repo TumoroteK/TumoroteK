@@ -155,7 +155,6 @@ public class ComponentBarcodeLabel extends Component
    //		// --- Set the drawing color to black
    //		Graphics2D g2d = (Graphics2D) g;
    //		g2d.setPaint(Color.black);
-   //System.out.println("GAGAGAAAAAAAAAA");
    //		// paramètres
    //		int dW = 4;
    //		int dH = 4;
@@ -196,7 +195,7 @@ public class ComponentBarcodeLabel extends Component
    //					try {
    //						imageBarcode = BarcodeImageHandler.getImage(barcode);
    //					} catch (OutputException e) {
-   //						log.error(e);
+   //						 log.error("An error occurred : ", e);
    //					}
    //				}
    //
