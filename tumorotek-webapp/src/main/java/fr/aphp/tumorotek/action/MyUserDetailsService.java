@@ -79,6 +79,10 @@ public class MyUserDetailsService implements UserDetailsService
       User user;
       try{
          user = jdbcTemplate.queryForObject(sql, new String[] {username}, new UserMapper());
+         
+         // verifier que user non admin a accès au moins une collection
+         // sinon throw Exception
+         
       }catch(final DataAccessException e){
          log.info("La tentative de connection {} a échoué car les paramètres de connection sont invalides", username);
          throw new UsernameNotFoundException("authentication error");

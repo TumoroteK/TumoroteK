@@ -90,8 +90,9 @@ public class SelectParametrageModaleVM
    public void init(@ExecutionArgParam("contexte") final Contexte _c, @ExecutionArgParam("parent") final Component _p,
       @ExecutionArgParam("parentObj") final TKdataObject _o){
       final List<Parametrage> params = new ArrayList<>();
-      params.add(0, new Parametrage(null, Labels.getLabel("general.new"), null));
       params.addAll(_c.getParametrages());
+      //Nouveau est mis en dernière position (demande du Club Utilisateur du 15/06/2023)
+      params.add(new Parametrage(null, Labels.getLabel("general.new"), null));
       parametrages = new SimpleListModel<>(params);
       entiteLabel = Labels.getLabel("Entite.".concat(_c.getContexteType().getType()));
       parent = _p;

@@ -80,6 +80,7 @@ import fr.aphp.tumorotek.model.TKStockableObject;
 import fr.aphp.tumorotek.model.TKdataObject;
 import fr.aphp.tumorotek.model.cession.Cession;
 import fr.aphp.tumorotek.model.cession.Retour;
+import fr.aphp.tumorotek.model.coeur.ObjetStatut;
 import fr.aphp.tumorotek.model.coeur.echantillon.Echantillon;
 import fr.aphp.tumorotek.model.coeur.prodderive.ProdDerive;
 import fr.aphp.tumorotek.model.coeur.prodderive.Transformation;
@@ -230,6 +231,8 @@ public class RetourManagerImpl implements RetourManager
 
          // conserve le statut de l'objet en copie dans le retour
          // change le statut du StockableObject EVENEMENT EN COURS
+         // /!\ ce changement de statut ne doit être fait que lors de la création de l'évènement de stockage
+         //pour une cession partielle
          if(retour.getDateRetour() == null){
             if(!objet.getObjetStatut().getStatut().equals("ENCOURS")){
                retour.setObjetStatut(objet.getObjetStatut());
@@ -751,3 +754,4 @@ public class RetourManagerImpl implements RetourManager
       return new ArrayList<>();
    }
 }
+
