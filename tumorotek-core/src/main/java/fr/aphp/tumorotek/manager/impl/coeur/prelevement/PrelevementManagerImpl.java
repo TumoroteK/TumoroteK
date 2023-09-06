@@ -560,7 +560,7 @@ public class PrelevementManagerImpl implements PrelevementManager
    @Override
    public List<Prelevement> findAfterDateConsentementManager(final Date date){
       if(date != null){
-         String dateFormat = new SimpleDateFormat("yyyy/MMM/dd HH:mm:ss").format(date);
+         String dateFormat = new SimpleDateFormat("yyyy/MMM/dd HH:mm:ss").format(date.getTime());
          log.debug( "Recherche des Prelevements consentis apres la date {}", dateFormat );
       }
       return prelevementDao.findByConsentDateAfterDate(date);
@@ -570,7 +570,7 @@ public class PrelevementManagerImpl implements PrelevementManager
    public List<Prelevement> findAfterDatePrelevementManager(final Date date){
       Calendar cal = null;
       if(date != null){
-         String dateFormat = new SimpleDateFormat("yyyy/MMM/dd HH:mm:ss").format(date);
+         String dateFormat = new SimpleDateFormat("yyyy/MMM/dd HH:mm:ss").format(date.getTime());
          log.debug("Recherche des Prelevements preleves apres la date {}" , dateFormat);
          cal = Calendar.getInstance();
          cal.setTime(date);
@@ -583,7 +583,7 @@ public class PrelevementManagerImpl implements PrelevementManager
       Calendar cal = null;
       final List<Prelevement> res = new ArrayList<>();
       if(date != null && banques != null){
-         String dateFormat = new SimpleDateFormat("yyyy/MMM/dd HH:mm:ss").format(date);
+         String dateFormat = new SimpleDateFormat("yyyy/MMM/dd HH:mm:ss").format(date.getTime());
          log.debug("Recherche des Prelevements preleves apres la date {}" , dateFormat);
          cal = Calendar.getInstance();
          cal.setTime(date);
@@ -599,7 +599,7 @@ public class PrelevementManagerImpl implements PrelevementManager
    public List<Integer> findAfterDateCreationReturnIdsManager(final Calendar date, final List<Banque> banques){
       final List<Integer> liste = new ArrayList<>();
       if(date != null && banques != null){
-         String dateFormat = new SimpleDateFormat("yyyy/MMM/dd HH:mm:ss").format(date);
+         String dateFormat = new SimpleDateFormat("yyyy/MMM/dd HH:mm:ss").format(date.getTime());
          log.debug("Recherche des Prelevements enregistres apres la date {}" , dateFormat);
          final Iterator<Banque> it = banques.iterator();
          while(it.hasNext()){
@@ -613,7 +613,7 @@ public class PrelevementManagerImpl implements PrelevementManager
    public List<Prelevement> findAfterDateModificationManager(final Calendar date, final Banque banque){
       List<Prelevement> liste = new ArrayList<>();
       if(date != null && banque != null){
-         String dateFormat = new SimpleDateFormat("yyyy/MMM/dd HH:mm:ss").format(date);
+         String dateFormat = new SimpleDateFormat("yyyy/MMM/dd HH:mm:ss").format(date.getTime());
          log.debug("Recherche des Prelevements modifies apres la date {}" , dateFormat);
          liste = findByOperationTypeAndDate(operationTypeDao.findByNom("Modification").get(0), date, banque);
       }
