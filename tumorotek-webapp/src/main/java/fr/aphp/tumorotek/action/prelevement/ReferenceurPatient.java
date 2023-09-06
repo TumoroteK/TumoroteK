@@ -456,7 +456,9 @@ public class ReferenceurPatient extends GenericForwardComposer<Component>
       
       maladies.addAll(MaladieDecorator.decorateListe(
          new ArrayList<Maladie>(ManagerLocator.getMaladieManager()
-            .findByPatientNoSystemNorVisiteManager(patient))));      
+            .findByPatientNoSystemNorVisiteManager(patient))));
+      
+      maladies.forEach(m -> m.getMaladie().setPatient(patient));
    }
 
    /**

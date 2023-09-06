@@ -532,9 +532,6 @@ public class Patient extends TKDelegetableObject<Patient> implements TKAnnotable
       if(this.dateNaissance != null){
          hashDate = this.dateNaissance.hashCode();
       }
-//      if (this.identifiant != null) {
-//          hashIdentifiant = this.identifiant.hashCode();
-//      }
 
       hash = 7 * hash + hashNom;
       hash = 7 * hash + hashPrenom;

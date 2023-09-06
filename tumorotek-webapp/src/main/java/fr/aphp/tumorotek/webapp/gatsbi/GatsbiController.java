@@ -662,15 +662,21 @@ public class GatsbiController
 
       List<ImportColonneDecorator> decos = ImportColonneDecorator.decorateListe(cols, isSubderive);
 
-      // surcharge la propriété deletable suivant le contexte gastbi
-      Contexte c;
-      for(ImportColonneDecorator deco : decos){
-         c = SessionUtils
-            .getCurrentGatsbiContexteForEntiteId(deco.getColonne().getChamp().getChampEntite().getEntite().getEntiteId());
-         if(c != null){
-            deco.setCanDelete(
-               !getRequiredChampEntiteIdsForContexte(c).contains(deco.getColonne().getChamp().getChampEntite().getId()));
-            deco.setVisiteGatsbi(c.getContexteType().equals(ContexteType.MALADIE));
+      //Bug TG-168 : actuellement, l'entité produit dérivé n'est pas gérée dans Gatsbi => on ne peut jamais passer 
+      //dans ce bloc spécifique à Gatsbi => test pour corriger "facilement" le bug
+      //Quand les produits dérivés seront gérés dans Gatsbi, il faudra traiter le NullPointerException généré par deco.getColonne() dans le bloc ci-dessous.
+      //Cela est dû au fait que ImportColonneDecorator.decorateListe() instancie des ImportColonneDecorator incomplets pour les colonnes d'entête des produits dérivés liées aux transformations qui les a générés.
+      if(!isSubderive) {
+         // surcharge la propriété deletable suivant le contexte gastbi
+         Contexte c;
+         for(ImportColonneDecorator deco : decos){
+            c = SessionUtils
+               .getCurrentGatsbiContexteForEntiteId(deco.getColonne().getChamp().getChampEntite().getEntite().getEntiteId());
+            if(c != null){
+               deco.setCanDelete(
+                  !getRequiredChampEntiteIdsForContexte(c).contains(deco.getColonne().getChamp().getChampEntite().getId()));
+               deco.setVisiteGatsbi(c.getContexteType().equals(ContexteType.MALADIE));
+            }
          }
       }
       return decos;
@@ -1069,6 +1075,9 @@ public class GatsbiController
       col.setLabel(Labels.getLabel(nameKey));
       if(width != null){
          col.setWidth(width);
+         col.setStyle("max-width: " + width);
+      } else {
+         col.setHflex("1");
       }
       col.setAlign(align);
       if(child != null){
