@@ -2676,4 +2676,14 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
          setSelectedCollaborateur(null);
       }
    }
+
+  @Override
+   public void setFocusOnElement(){
+     // si l'origine est liste dérivée le focus sera sur Code du parent
+      if (getParentObject() == null){
+         codesParentBoxDerive.setFocus(true);
+      } else {
+         dateTransfoCalBox.setFocus(true);
+      }
+  }
 }

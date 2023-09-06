@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>fr.aphp.tumorotek</groupId>
 		<artifactId>tumorotek-parent</artifactId>
-		<version>2.3.0.3-SNAPSHOT</version>
+		<version>2.3.0.4-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>tumorotek-model</artifactId>

@@ -131,3 +131,8 @@ div.main-container .z-groupbox-header {
 	font-weight: bold;
 	font-size: 12px;
 }
+
+div.prelevements-only .z-groupbox-cnt{
+	padding: 0;
+	border: none;
+}
