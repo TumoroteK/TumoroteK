@@ -222,8 +222,9 @@
 								<row id="colonneRow" self="@{each='colonneEdit'}" value="@{colonneEdit}" height="20px">
 									<textbox id="nomColonneBox" cols="20"
 											value="@{colonneEdit.colonne.nom,
-			        							save-when='validateC.onClick, createC.onClick, self.onBlur'}" 
-											constraint="${fwinImportTemplate$composer.nomConstraint}" 
+			        							save-when='validateC.onClick, createC.onClick, self.onBlur'
+			        							load-after='copyEmptyFields.onClick'}"
+											constraint="${fwinImportTemplate$composer.nomConstraint}"
 											disabled="@{colonneEdit.disableEditLabel}" />
 									<label value="@{colonneEdit.champ}" />
 									<label value="@{colonneEdit.format}" /> 
@@ -245,6 +246,8 @@
 								</row>
 							</rows>
 						</grid>
+							<button id="copyEmptyFields"  label="${c:l('importColonne.copy')}"
+									image="/images/icones/westBorderCollapse.png" sclass="buttonv2"/>
 						</vlayout>
 					</row>
 					

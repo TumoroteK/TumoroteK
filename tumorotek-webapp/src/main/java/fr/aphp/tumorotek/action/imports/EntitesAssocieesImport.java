@@ -200,6 +200,7 @@ public class EntitesAssocieesImport extends OneToManyComponent<EntiteDecorator>
 
    @Override
    public void onClick$addSelObj(){
+      getFicheImportTemplate().showCopyFieldsButton();
       if(objectsBox.getSelectedIndex() > -1){
          addToListObjects((EntiteDecorator) objectsBox.getModel().getElementAt(objectsBox.getSelectedIndex()));
       }else{ // selectionne le premier de la liste
@@ -221,6 +222,9 @@ public class EntitesAssocieesImport extends OneToManyComponent<EntiteDecorator>
       onClick$cancelSelObj();
    }
 
+   public FicheImportTemplate getFicheImportTemplate(){
+      return (FicheImportTemplate) self.getParent().getAttributeOrFellow("fwinImportTemplate$composer", true);
+   }
    public boolean isGatsbi(){
       return gatsbi;
    }
