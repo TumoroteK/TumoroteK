@@ -115,8 +115,6 @@ public class FichePrelevementStatic extends AbstractFicheStaticController
 
    protected Grid echantillonsGrid;
 
-   protected Grid prodDerivesGrid;
-
    protected Grid laboIntersGrid;
 
    // gatsbi overrides
@@ -134,7 +132,7 @@ public class FichePrelevementStatic extends AbstractFicheStaticController
 
    protected HtmlBasedComponent groupEchans;
 
-   protected HtmlBasedComponent groupDerivesPrlvt;
+   protected HtmlBasedComponent groupDerives;
 
    protected ResumePatient resumePatient;
 
@@ -152,6 +150,9 @@ public class FichePrelevementStatic extends AbstractFicheStaticController
 
    private Menuitem importDossier;
 
+   protected Vbox selectAllVbox;
+
+
    /**
     *  Objets Principaux.
     */
@@ -165,13 +166,23 @@ public class FichePrelevementStatic extends AbstractFicheStaticController
 
    protected List<Echantillon> echantillons = new ArrayList<>();
 
-   protected List<ProdDerive> derives = new ArrayList<>();
+   protected List<ProdDerive> listDerivesFromDerives = new ArrayList<>();
+
+   protected List<ProdDerive> listDerivesFromPrelevement = new ArrayList<>();
+
+   protected List<ProdDerive> listDerivesFromEchantillons = new ArrayList<>();
 
    protected String valeurQuantite = "";
 
    protected String echantillonsGroupHeader;
 
-   protected String prodDerivesGroupHeader;
+   protected String totalProdDerivesHeader;
+
+   protected String derivesFromPrlvmntHeader;
+
+   protected String derivesFromEchantHeader;
+
+   protected String derivesFromDerivesHeader;
 
    protected ProdDeriveRowRenderer prodDeriveRenderer = new ProdDeriveRowRenderer(false, false);
 
@@ -195,13 +206,17 @@ public class FichePrelevementStatic extends AbstractFicheStaticController
       setFantomable(true);
 
       echantillonsGrid.setVisible(false);
-      prodDerivesGrid.setVisible(false);
+
+
+      selectAllVbox.setVisible(false);
+
+
       addDerive.setDisabled(true);
 
       // **************** gastbi
       setGroupLaboInterOpen(false);
       setGroupEchansOpen(false);
-      setGroupDerivesPrlvtOpen(false);
+      setGroupDerivesOpen(false);
       // gatsbi ****************
 
       getEchantillonRenderer().setEmbedded(true);
@@ -228,6 +243,15 @@ public class FichePrelevementStatic extends AbstractFicheStaticController
       return (PrelevementController) super.getObjectTabController();
    }
 
+   /**
+    * Calcule et retourne la somme des tous les dérivés.
+    *
+    * @return La somme des tailles des listes de dérivés
+    */
+   public int sumOfListDerives() {
+      return listDerivesFromDerives.size() + listDerivesFromPrelevement.size() + listDerivesFromEchantillons.size();
+   }
+
    @Override
    public void setObject(final TKdataObject p){
       this.prelevement = (Prelevement) p;
@@ -236,28 +260,18 @@ public class FichePrelevementStatic extends AbstractFicheStaticController
       initAssociations();
 
       // Initialisation du nombre d'échantillons à afficher sur la page
-      StringBuffer sb = new StringBuffer();
-      sb.append(Labels.getLabel("fichePrelevement.group.echantillons"));
-      sb.append(" (");
-      sb.append(echantillons.size());
-      sb.append(")");
-      echantillonsGroupHeader = sb.toString();
-
+      int totalEchantillons = echantillons.size();
+      echantillonsGroupHeader = buildTotalString("fichePrelevement.group.echantillons", totalEchantillons);
       // Initialisation du nombre de dérivés à afficher sur la page
-      sb = new StringBuffer();
-      sb.append(Labels.getLabel("fichePrelevement.group.prodDerives"));
-      sb.append(" (");
-      sb.append(derives.size());
-      sb.append(")");
-      prodDerivesGroupHeader = sb.toString();
+      initDerivesHeaders();
+
 
       initQuantiteAndVolume();
 
       laboIntersGrid.setVisible(laboInters.size() > 0);
       echantillonsGrid.setVisible(echantillons.size() > 0);
-      prodDerivesGrid.setVisible(derives.size() > 0);
+      displaySelectAllDerivesButton();
 
-      // gridFormPrlvtComp.setVisible(true);
       // grise le libelle car pas de reference vers patient/maladie
 
       // gatsbi override
@@ -328,6 +342,70 @@ public class FichePrelevementStatic extends AbstractFicheStaticController
       super.setObject(prelevement);
 
    }
+   /**
+    * Affiche le bouton "Sélectionner tout" en fonction de la présence de dérivés
+    * provenant de différentes sources (dérivés, échantillons, prélèvements) et
+    * de la condition que au moins deux tables sont affichées.
+    */
+   private void displaySelectAllDerivesButton(){
+      // Parent derive
+      boolean isFromDerivesExist = !listDerivesFromDerives.isEmpty();
+      // Parent echantillon
+      boolean isFromEchantillonsExist = !listDerivesFromEchantillons.isEmpty();
+      // Parent prelevemnt
+      boolean isFromPrlvmntExist = !listDerivesFromPrelevement.isEmpty();
+      boolean isSelectAll = isDisplaySelectAllButton(isFromDerivesExist, isFromEchantillonsExist, isFromPrlvmntExist);
+      selectAllVbox.setVisible(isSelectAll);
+   }
+
+   /**
+    * Vérifie si le bouton « Select All » doit s'afficher selon l'existence d'au moins 2 tables.
+    * *
+    * @param isFromDerivesExist    Indique si des éléments proviennent de la source "Dérivés".
+    * @param isFromEchantillonsExist Indique si des éléments proviennent de la source "Échantillons".
+    * @param isFromPrlvmntExist     Indique si des éléments proviennent de la source "Prlvmnt" (probablement "Paiement" en abrégé).
+    * @return                       Renvoie vrai si le bouton "Sélectionner Tout" doit être affiché, sinon renvoie faux.
+    */
+   private static boolean isDisplaySelectAllButton(boolean isFromDerivesExist, boolean isFromEchantillonsExist, boolean isFromPrlvmntExist) {
+      return isFromEchantillonsExist && isFromPrlvmntExist ||
+         isFromEchantillonsExist && isFromDerivesExist ||
+         isFromPrlvmntExist && isFromDerivesExist;
+   }
+
+
+   /**
+    * Initialise les en-têtes pour les dérivés dans la fiche de prélèvement.
+    * Cette méthode calcule et crée les en-têtes pour les totaux des dérivés ainsi que les
+    * dérivés provenant des prélèvements, des échantillons et d'autres dérivés.
+    *
+    * @see #buildTotalString(String, int)
+    */
+   private void initDerivesHeaders(){
+      totalProdDerivesHeader = buildTotalString("fichePrelevement.group.prodDerives.totaux", sumOfListDerives());
+      derivesFromPrlvmntHeader = buildTotalString("fichePrelevement.group.prodDerives.prelevement", listDerivesFromPrelevement.size());
+      derivesFromEchantHeader = buildTotalString("fichePrelevement.group.prodDerives.echantillons", listDerivesFromEchantillons.size());
+      derivesFromDerivesHeader = buildTotalString("fichePrelevement.group.prodDerives.derives", listDerivesFromDerives.size());
+   }
+
+
+
+   /**
+    * Construit une chaîne de caractères représentant un total avec un label et une valeur.
+    * Cette méthode prend un label et une valeur entière en paramètres et crée une chaîne de
+    * caractères qui combine le label et la valeur entre parenthèses.
+    *
+    * @param label Le label à inclure dans la chaîne (par ex. "Total des produits dérivés")
+    * @param totalSize La valeur entière à inclure dans la chaîne (par ex. le nombre total)
+    * @return Une chaîne de caractères représentant le total formaté (par ex. "Total des produits dérivés (42)")
+    */
+   private String buildTotalString(String label, int totalSize){
+      StringBuffer sb = new StringBuffer();
+      sb.append(Labels.getLabel(label));
+      sb.append(" (");
+      sb.append(totalSize);
+      sb.append(")");
+      return sb.toString();
+   }
 
    /**
     * Gatsbi surcharge cette méthode
@@ -366,7 +444,9 @@ public class FichePrelevementStatic extends AbstractFicheStaticController
    public void initAssociations(){
       laboInters.clear();
       echantillons.clear();
-      derives.clear();
+      listDerivesFromPrelevement.clear();
+      listDerivesFromEchantillons.clear();
+      listDerivesFromDerives.clear();
       // Init des labos inters
       if(this.prelevement.getPrelevementId() != null){
          final Iterator<LaboInter> labsIt =
@@ -387,17 +467,40 @@ public class FichePrelevementStatic extends AbstractFicheStaticController
          }
 
          // Init des dérivés
-         derives = new ArrayList<>();
          if(canAccessDerives){
-            derives = ManagerLocator.getPrelevementManager().getProdDerivesManager(prelevement);
+            initiateDerivesLists();
+
          }
       }
       
       // **************** gastbi
       setGroupLaboInterOpen(laboInters.size() > 0);
       setGroupEchansOpen(echantillons.size() > 0);
-      setGroupDerivesPrlvtOpen(derives.size() > 0);
+      setGroupDerivesOpen(sumOfListDerives() > 0);
       // gatsbi ****************    
+   }
+
+   /**
+    * Initialise les listes de dérivés en fonction de différentes sources (prélèvements, échantillons, dérivés).
+    */
+   private void initiateDerivesLists(){
+      // listDerives : parent prelevement
+      listDerivesFromPrelevement = ManagerLocator.getPrelevementManager().getProdDerivesManager(prelevement);
+      // listDerives : parent echantillon
+      for (Echantillon echantillon: echantillons){
+         List<ProdDerive> listProdDerives = ManagerLocator.getEchantillonManager().getProdDerivesManager(echantillon);
+         listDerivesFromEchantillons.addAll(listProdDerives);
+      }
+      // listDerives : parent derive - grandparent prelevement
+      for (ProdDerive prodDerive: listDerivesFromPrelevement){
+         List<ProdDerive> listProdDerives = ManagerLocator.getProdDeriveManager().getProdDerivesManager(prodDerive);
+         listDerivesFromDerives.addAll(listProdDerives);
+      }
+      // listDerives : parent derive - grandparent échantillon
+      for (ProdDerive prodDerive: listDerivesFromEchantillons){
+         List<ProdDerive> listProdDerives = ManagerLocator.getProdDeriveManager().getProdDerivesManager(prodDerive);
+         listDerivesFromDerives.addAll(listProdDerives);
+      }
    }
 
    @Override
@@ -657,7 +760,52 @@ public class FichePrelevementStatic extends AbstractFicheStaticController
     */
    public boolean getDerivesListSizeSupOne(){
       if(getDroitsConsultation().containsKey("ProdDerive") && getDroitsConsultation().get("ProdDerive")){
-         return this.derives.size() > 1;
+         return sumOfListDerives() > 1;
+      }
+      return false;
+   }
+
+   /**
+    * Vérifie si des dérivés sont associés au prélèvement actuel et si
+    * l'utilisateur a les droits de consultation pour les dérivés.
+    *
+    * @return boolean: true si des dérivés sont associés au prélèvement et que
+    *         l'utilisateur a les droits de consultation pour les dérivés,
+    *         sinon false
+    */
+   public boolean isDerivesFromPrlvmntFound(){
+      if(getDroitsConsultation().containsKey("ProdDerive") && getDroitsConsultation().get("ProdDerive")){
+         return !this.listDerivesFromPrelevement.isEmpty();
+      }
+      return false;
+   }
+
+   /**
+    * Vérifie si des dérivés sont associés aux échantillons actuels et si
+    * l'utilisateur a les droits de consultation pour les dérivés.
+    *
+    * @return boolean: true si des dérivés sont associés au prélèvement et que
+    *         l'utilisateur a les droits de consultation pour les dérivés,
+    *         sinon false
+    */
+   public boolean idDerivesFromEchantillonsFound(){
+      if(getDroitsConsultation().containsKey("ProdDerive") && getDroitsConsultation().get("ProdDerive")){
+         return !this.listDerivesFromEchantillons.isEmpty();
+      }
+      return false;
+   }
+
+   /**
+    * Vérifie si des dérivés sont associés aux dérivés actuels et si
+    * l'utilisateur a les droits de consultation pour les dérivés.
+    *
+    * @return boolean: true si des dérivés sont associés au prélèvement et que
+    *         l'utilisateur a les droits de consultation pour les dérivés,
+    *         sinon false
+    */
+   public boolean isDerivesFromDerivesFound(){
+      if(getDroitsConsultation().containsKey("ProdDerive") && getDroitsConsultation().get("ProdDerive")){
+         return !this.listDerivesFromDerives.isEmpty();
       }
       return false;
    }
@@ -691,11 +839,11 @@ public class FichePrelevementStatic extends AbstractFicheStaticController
 
    /**
     * Cett méthode descend la barre de scroll au niveau du groupe
-    * groupDerivesPrlvt.
+    * groupDerives.
     */
-   public void onOpen$groupDerivesPrlvt(){
+   public void onOpen$groupDerives(){
       final String idGrid = gridFormPrlvtComp.getUuid();
-      final String id = groupDerivesPrlvt.getUuid();
+      final String id = groupDerives.getUuid();
       final String idTop = panelChildrenWithScroll.getUuid();
       Clients.evalJavaScript("document.getElementById('" + idTop + "')" + ".scrollTop = document.getElementById('" + id + "')"
          + ".offsetTop + document.getElementById('" + idGrid + "')" + ".offsetTop;");
@@ -709,7 +857,7 @@ public class FichePrelevementStatic extends AbstractFicheStaticController
       if(event.getData() instanceof Echantillon){
          onClickEchantillonCode(event);
       }else if(event.getData() instanceof ProdDerive){
-         onClickProdDeriveCode(event);
+         onClickProdDeriveCode(event, null);
       }
    }
 
@@ -749,14 +897,14 @@ public class FichePrelevementStatic extends AbstractFicheStaticController
     * la liste des produits dérivés.
     * @throws Exception
     */
-   public void onClickProdDeriveCode(final Event event){
+   public void onClickProdDeriveCode(final Event event, List<ProdDerive> listDerives){
       final ProdDeriveController tabController = (ProdDeriveController) ProdDeriveController.backToMe(getMainWindow(), page);
 
       if(event != null){
          final ProdDerive derive = (ProdDerive) event.getData();
          tabController.switchToFicheStaticMode(derive);
       }else{
-         tabController.getListe().setListObjects(ManagerLocator.getPrelevementManager().getProdDerivesManager(prelevement));
+         tabController.getListe().setListObjects(listDerives);
          tabController.getListe().setCurrentObject(null);
          tabController.clearStaticFiche();
          tabController.getListe().getBinder().loadAttribute(tabController.getListe().getObjectsListGrid(), "model");
@@ -766,11 +914,43 @@ public class FichePrelevementStatic extends AbstractFicheStaticController
    }
 
    /**
-    * Forward Event.
+    * Déplace vers l'onglet des dérivés et affiche tous les dérivés associés
     */
    public void onSelectAllDerives(){
-      onClickProdDeriveCode(null);
+      List<ProdDerive> allDerives = new ArrayList<>();
+      allDerives.addAll(listDerivesFromPrelevement);
+      allDerives.addAll(listDerivesFromEchantillons);
+      allDerives.addAll(listDerivesFromDerives);
+      onClickProdDeriveCode(null, allDerives);
    }
+
+   /**
+    * Déplace vers l'onglet des dérivés et affiche tous les dérivés associés au prélèvement actuel.
+    */
+
+   public void onSelectAllFromPrlvmnt(){
+      onClickProdDeriveCode(null, listDerivesFromPrelevement);
+   }
+
+   /**
+    * Déplace vers l'onglet des dérivés et affiche tous les dérivés associés aux échantillons actuel.
+    */
+   public void onSelectAllFromEchantillons(){
+      onClickProdDeriveCode(null, listDerivesFromEchantillons);
+   }
+
+   /**
+    * Déplace vers l'onglet des dérivés et affiche tous les dérivés associés aux dérivés actuel.
+    */
+   public void onSelectAllFromDerives(){
+      onClickProdDeriveCode(null, listDerivesFromDerives);
+   }
+
+
+
+
+
+
 
    /**
     * Affiche la page de création des dérivés.
@@ -899,6 +1079,22 @@ public class FichePrelevementStatic extends AbstractFicheStaticController
    /**********************************************************************/
    /*********************** GETTERS / SETTERS ****************************/
    /**********************************************************************/
+
+   public String getProdDerviesFromPrlmntHeader(){
+      return derivesFromPrlvmntHeader;
+   }
+
+   public String getTotalProdDerivesHeader(){
+      return totalProdDerivesHeader;
+   }
+
+   public String getProdDerviesFromEchantHeader(){
+      return derivesFromEchantHeader;
+   }
+
+   public String getProdDerviesFromDerivesHeader(){
+      return derivesFromDerivesHeader;
+   }
    public Maladie getMaladie(){
       return maladie;
    }
@@ -931,21 +1127,44 @@ public class FichePrelevementStatic extends AbstractFicheStaticController
       this.echantillons = e;
    }
 
-   public List<ProdDerive> getDerives(){
-      return derives;
+
+
+   public Vbox getSelectAllVbox(){      return selectAllVbox;   }
+
+   public List<ProdDerive> getListDerivesFromDerives(){
+      return listDerivesFromDerives;
    }
 
-   public void setDerives(final List<ProdDerive> d){
-      this.derives = d;
+   public List<ProdDerive> getListDerivesFromPrelevement(){
+      return listDerivesFromPrelevement;
+   }
+
+   public List<ProdDerive> getListDerivesFromEchantillons(){
+      return listDerivesFromEchantillons;
+   }
+
+
+   public void setListDerivesFromDerives(List<ProdDerive> listDerivesFromDerives){
+      this.listDerivesFromDerives = listDerivesFromDerives;
+   }
+
+   public void setListDerivesFromPrelevement(List<ProdDerive> listDerivesFromPrelevement){
+      this.listDerivesFromPrelevement = listDerivesFromPrelevement;
+   }
+
+   public void setListDerivesFromEchantillons(List<ProdDerive> listDerivesFromEchantillons){
+      this.listDerivesFromEchantillons = listDerivesFromEchantillons;
    }
 
    public String getEchantillonsGroupHeader(){
       return echantillonsGroupHeader;
    }
 
-   public String getProdDerivesGroupHeader(){
-      return prodDerivesGroupHeader;
-   }
+   public String getDerivesFromPrlvmntHeader(){      return derivesFromPrlvmntHeader;   }
+
+   public String getDerivesFromEchantHeader(){      return derivesFromEchantHeader;   }
+
+   public String getDerivesFromDerivesHeader(){      return derivesFromDerivesHeader;   }
 
    public ProdDeriveRowRenderer getProdDeriveRenderer(){
       return prodDeriveRenderer;
@@ -1233,18 +1452,23 @@ public class FichePrelevementStatic extends AbstractFicheStaticController
    }
    
    protected void setGroupEchansOpen(final boolean b){
+   if (groupEchans != null ){
       if(groupEchans instanceof Group){
          ((Group) groupEchans).setOpen(b);
       }else{
          ((Groupbox) groupEchans).setOpen(b);
       }      
+     }
    }
-   
-   protected void setGroupDerivesPrlvtOpen(final boolean b){
-      if(groupDerivesPrlvt instanceof Group){
-         ((Group) groupDerivesPrlvt).setOpen(b);
+
+   protected void setGroupDerivesOpen(final boolean b){
+      if (groupDerives != null) {
+         if(groupDerives instanceof Group){
+            ((Group) groupDerives).setOpen(b);
       }else{
-         ((Groupbox) groupDerivesPrlvt).setOpen(b);
+            ((Groupbox) groupDerives).setOpen(b);
       }      
    }
+}
+
 }
