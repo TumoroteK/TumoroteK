@@ -753,5 +753,24 @@ public class RetourManagerImpl implements RetourManager
       }
       return new ArrayList<>();
    }
+   
+   @Override 
+   public boolean checkModificationPossible(ObjetStatut statut, Retour retour) {
+      boolean modifPossible=false;
+      if( statut != null) {
+         if(statut.getStatut().equals("ENCOURS")) {
+            //autoriser que pour l'évènement incomplet
+            if(retour != null && retour.getDateRetour() == null) {
+               modifPossible=true;
+            }
+         }
+         else if(retour.getSterile() != null) {
+            modifPossible=true;
+         }
+      }
+      
+      return modifPossible;
+   }
+
 }
 
