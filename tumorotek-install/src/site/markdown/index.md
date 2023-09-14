@@ -1,9 +1,14 @@
 #### Notes de version
 
+##### Version 2.2.9 - Publiée le 14/09/2023
+###### Corrections
+- YouTrack [TK-446](https://tumorotek.myjetbrains.com/youtrack/issue/TK-446) : <span class="badge badge-export">Export</span> correction du plantage avec Mysql8 à cause de la valeur par défaut de sql_mode (pas de problème avec Mariadb)
+
+
 ##### Version 2.2.8 - Publiée le 17/05/2023
 ###### Corrections
 - YouTrack [TK-322](https://tumorotek.myjetbrains.com/youtrack/issue/TK-322) : la désactivation d'un compte avec accès LDAP n'est pas prise en compte
-- YouTrack [TK-333](https://tumorotek.myjetbrains.com/youtrack/issue/TK-333) : <span class="badge badge-stockage">Evènement de stockage</span> Modification de la gestion de la stérilité (cochée par défaut lors de la création)
+- YouTrack [TK-333](https://tumorotek.myjetbrains.com/youtrack/issue/TK-333) : <span class="badge badge-stockage">Evènement de stockage</span> Sécurisation de  la gestion de l'attribut stérile lors d'un déplacement de boîte
 - YouTrack [TK-358](https://tumorotek.myjetbrains.com/youtrack/issue/TK-358) : <span class="badge badge-recherche">Recherche Avancée</span> Plantage si saisie d'un critère sur complément diagnostic
 - YouTrack [TK-368](https://tumorotek.myjetbrains.com/youtrack/issue/TK-368) : <span class="badge badge-recherche">Recherche</span> Mauvaise actualisation du nombre de résultats de la recherche, dans le titre au dessus de la liste
 - YouTrack [TK-373](https://tumorotek.myjetbrains.com/youtrack/issue/TK-373) : <span class="badge badge-export">Export</span> <span class="badge badge-echantillon">Echantillon</span> Heures des dates toujours à 00:00 au niveau des évènements de stockage
