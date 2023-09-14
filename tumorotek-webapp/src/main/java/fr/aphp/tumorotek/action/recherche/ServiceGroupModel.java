@@ -64,7 +64,9 @@ public class ServiceGroupModel extends GroupsModelArray<Service, ServiceGroupMod
    public static class ServiceInfo
    {
       private final Service firstChild;
+
       private final int groupIndex;
+
       private final int colIndex;
 
       public ServiceInfo(final Service firstChild, final int groupIndex, final int colIndex){

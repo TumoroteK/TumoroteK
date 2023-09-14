@@ -65,8 +65,11 @@ public class ProdDeriveRowRenderer extends TKSelectObjectRenderer<ProdDerive>
 {
 
    private boolean accessible = true;
+
    private boolean accessPrelevement = true;
+
    private boolean accessEchantillon = true;
+
    private boolean isEmbedded = false;
 
    private boolean accessStockage = true;
@@ -109,7 +112,7 @@ public class ProdDeriveRowRenderer extends TKSelectObjectRenderer<ProdDerive>
          if(!anonyme){
             new Label(getPatient(derive)).setParent(row);
          }else{
-            createAnonymeBlock().setParent(row);
+            createAnonymeLabelIsClickable(true).setParent(row);
          }
       }
 
@@ -162,7 +165,7 @@ public class ProdDeriveRowRenderer extends TKSelectObjectRenderer<ProdDerive>
          }
          emplLabel.setParent(row);
       }else{
-         createAnonymeBlock().setParent(row);
+         createAnonymeLabelIsClickable(false).setParent(row);
       }
 
       // nb derives

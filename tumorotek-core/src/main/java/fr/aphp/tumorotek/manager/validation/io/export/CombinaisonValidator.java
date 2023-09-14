@@ -56,7 +56,6 @@ import fr.aphp.tumorotek.model.io.export.Combinaison;
 public class CombinaisonValidator implements Validator
 {
 
-   
    @Override
    public boolean supports(final Class<?> clazz){
       return Combinaison.class.equals(clazz);

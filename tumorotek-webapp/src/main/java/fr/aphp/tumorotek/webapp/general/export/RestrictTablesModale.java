@@ -75,6 +75,7 @@ public class RestrictTablesModale
 
    @Wire("#fwinRestrictTablesModale")
    private Window fwinRestrictTablesModale;
+
    @WireVariable
    private Session _sess;
 
@@ -83,9 +84,12 @@ public class RestrictTablesModale
    private AbstractListeController2 listeController;
 
    private List<Integer> restrictedId = new ArrayList<>();
+
    private Entite entite;
+
    // FicheRechercheAvancée qui a commandé le résultat
    private Component parent;
+
    private final List<TableAnnotation> tables = new ArrayList<>();
 
    @AfterCompose
@@ -133,7 +137,7 @@ public class RestrictTablesModale
 
    /**
     * Récupère et filtre les tables en fonction de l'entite concernée par l'export.
-    * @version 2.0.10.5 
+    * @version 2.0.10.5
     */
    private List<TableAnnotation> getTables(){
       if(tables.isEmpty()){
@@ -147,7 +151,7 @@ public class RestrictTablesModale
          }else{
             for(final TableAnnotation tab : ManagerLocator.getTableAnnotationManager()
                .findByBanquesManager(SessionUtils.getSelectedBanques(_sess.getAttributes()), true)){
-               if(tab.getEntite().getEntiteId() == 5){ // tables cession 
+               if(tab.getEntite().getEntiteId() == 5){ // tables cession
                   tables.add(tab);
                }
             }
@@ -225,7 +229,7 @@ public class RestrictTablesModale
 
       // modale ouverte depuis ListeController
       if(parent == null){
-    	 Events.postEvent("onClick$exportItem", getListeController().getSelfComponent(), null);
+         Events.postEvent("onClick$exportItem", getListeController().getSelfComponent(), null);
          // getListeController().onLaterExport(true);
       }else{ // modale ouverte depuis Fiche ResultatsModale
          Events.postEvent("onClick$exportItem", getParent(), null);

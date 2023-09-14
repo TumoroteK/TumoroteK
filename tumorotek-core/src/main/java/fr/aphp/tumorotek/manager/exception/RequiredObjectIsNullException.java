@@ -50,7 +50,9 @@ public class RequiredObjectIsNullException extends TKException
    private static final long serialVersionUID = 1L;
 
    private String entite;
+
    private String operation;
+
    private String requiredObject;
 
    public RequiredObjectIsNullException(){
@@ -90,7 +92,7 @@ public class RequiredObjectIsNullException extends TKException
 
    @Override
    public String getMessage(){
-      return this.entite + ": " + requiredObject + " est null lors de " + "l'opération de " + this.operation + "";
+      return this.entite + ": " + requiredObject + " manquant(e) lors de " + "l'opération de " + this.operation + "";
    }
 
 }

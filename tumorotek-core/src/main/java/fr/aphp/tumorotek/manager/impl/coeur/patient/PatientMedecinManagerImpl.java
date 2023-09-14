@@ -67,8 +67,11 @@ public class PatientMedecinManagerImpl implements PatientMedecinManager
 
    /* Beans injectes par Spring*/
    private PatientMedecinDao patientMedecinDao;
+
    private PatientDao patientDao;
+
    private CollaborateurDao collaborateurDao;
+
    private PatientMedecinValidator patientMedecinValidator;
 
    public PatientMedecinManagerImpl(){}
@@ -139,12 +142,12 @@ public class PatientMedecinManagerImpl implements PatientMedecinManager
 
    @Override
    public boolean findDoublonManager(final PatientMedecin medecin){
-      // l'utilisation de excludedId impossible a cause de la clef composite 
+      // l'utilisation de excludedId impossible a cause de la clef composite
       return patientMedecinDao.findAll().contains(medecin);
    }
 
    /**
-    * Verifie que les Objets devant etre obligatoirement associes 
+    * Verifie que les Objets devant etre obligatoirement associes
     * sont non nulls.
     * @param TableAnnotationBanque
     * @param patient1

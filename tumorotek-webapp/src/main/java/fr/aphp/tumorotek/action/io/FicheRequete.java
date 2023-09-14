@@ -94,7 +94,9 @@ public class FicheRequete extends AbstractFicheCombineController
     *  Editable components : mode d'édition ou de création.
     */
    private Label intituleRequired;
+
    private Textbox intituleBox;
+
    private Button addCritereButton;
 
    private Column returnCritereCol;
@@ -107,9 +109,10 @@ public class FicheRequete extends AbstractFicheCombineController
 
    /** Objets principaux. */
    private Requete requete;
+
    private Critere critere;
 
-   // private List<CritereDecorator> criteres = 
+   // private List<CritereDecorator> criteres =
    //							new ArrayList<CritereDecorator>();
    private ListModelList<CritereDecorator> criteresModel = new ListModelList<>();
 
@@ -179,7 +182,7 @@ public class FicheRequete extends AbstractFicheCombineController
       node = null;
 
       this.criteresModel.clear();
-      // this.criteresGrid.setModel(new 
+      // this.criteresGrid.setModel(new
       //		SimpleListModel<CritereDecorator>(criteres));
 
       this.criteresGrid.setVisible(true);
@@ -216,7 +219,7 @@ public class FicheRequete extends AbstractFicheCombineController
       node = GroupementNode.convertFromGroupement(requete.getGroupementRacine(), null);
 
       this.criteresModel.clear();
-      // this.criteresGrid.setModel(new 
+      // this.criteresGrid.setModel(new
       //		SimpleListModel<CritereDecorator>(criteres));
 
       this.criteresGrid.setVisible(true);
@@ -301,7 +304,7 @@ public class FicheRequete extends AbstractFicheCombineController
 
             try{
                /**
-                * On supprime l'objet en base de données, 
+                * On supprime l'objet en base de données,
                 * avec cascade sur les recherches
                 */
                ManagerLocator.getRequeteManager().removeObjectManager(requete);
@@ -416,7 +419,7 @@ public class FicheRequete extends AbstractFicheCombineController
          final CritereDecorator cr = (CritereDecorator) AbstractListeController2.getBindingData((ForwardEvent) event, false);
          // on enlève le critère de la liste et on la met à jour
          criteresModel.remove(cr);
-         // ListModel<CritereDecorator> list = 
+         // ListModel<CritereDecorator> list =
          //		new ListModelList<CritereDecorator>(criteres);
          // criteresGrid.setModel(list);
       }
@@ -570,7 +573,7 @@ public class FicheRequete extends AbstractFicheCombineController
          // on enlève le critère de la liste de critères de la fiche parente
          // et on la met à jour
          criteresModel.remove(new CritereDecorator(this.getCritere()));
-         //			ListModel<CritereDecorator> list = 
+         //			ListModel<CritereDecorator> list =
          //					new ListModelList<CritereDecorator>(this.getCriteres());
          //			criteresGrid.setModel(list);
          this.setCritere(null);
@@ -592,7 +595,7 @@ public class FicheRequete extends AbstractFicheCombineController
          node = null;
       }
       criteresModel.addAll(CritereDecorator.decorateListe(crit));
-      // ListModel<CritereDecorator> listCrit = 
+      // ListModel<CritereDecorator> listCrit =
       //				new ListModelList<CritereDecorator>(criteres);
       // criteresGrid.setModel(listCrit);
       if(node != null){
@@ -695,7 +698,7 @@ public class FicheRequete extends AbstractFicheCombineController
    //				.getFellow("winFicheRecherche").
    //				getAttributeOrFellow("winFicheRecherche$composer", true));
    //	}
-   //	
+   //
    /**
     * Ouvre ou ferme la liste de Requetes.
     */

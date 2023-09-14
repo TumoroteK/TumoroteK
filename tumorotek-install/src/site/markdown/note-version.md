@@ -1,11 +1,28 @@
 #### Notes de version
 
-##### Version 2.2.9 - Publiée le 14/09/2023
-###### Corrections
-- YouTrack [TK-446](https://tumorotek.myjetbrains.com/youtrack/issue/TK-446) : <span class="badge badge-export">Export</span> correction du plantage avec Mysql8 à cause de la valeur par défaut de sql_mode (pas de problème avec Mariadb)
+##### Version 2.3.0.3 - Publiée le 17/07/2023
+###### Corrections dans TK pour un contexte Gatsbi
+- YouTrack [TG-163](https://tumorotek.myjetbrains.com/youtrack/issue/TG-163) : [TK] - Prélèvement & Echantillon : filtre sur les thesaurus d'un champ lié non pris en compte
+- YouTrack [TG-165](https://tumorotek.myjetbrains.com/youtrack/issue/TG-165) : [TK] - Permettre de définir une collection Gatsbi sans le niveau maladie
+- YouTrack [TG-173](https://tumorotek.myjetbrains.com/youtrack/issue/TG-173) : [TK & Gatsbi] - Contexte Prélèvement par défaut : le champ statut juridique n'est pas obligatoire
+- YouTrack [TG-174](https://tumorotek.myjetbrains.com/youtrack/issue/TG-174) : [TK & Gatsbi] - Création Echantillon : le champ quantité défini comme obligatoire dans Gatsbi n'a pas l'astérisque rouge dans TK
+- YouTrack [TG-175](https://tumorotek.myjetbrains.com/youtrack/issue/TG-175) : [TK] - Création d'un Prélèvement / Echantillon : trier les paramétrages par ordre alphabétique dans la popup de sélection
 
 
-##### Version 2.2.8 - Publiée le 17/05/2023
+###### Corrections dans le module Gatsbi
+- YouTrack [TG-152](https://tumorotek.myjetbrains.com/youtrack/issue/TG-152) : [Gatsbi] - Schéma de visite : en mode édition, le champ étude n'est plus affiché en gris
+- YouTrack [TG-159](https://tumorotek.myjetbrains.com/youtrack/issue/TG-159) : [Gatsbi] - Echantillon : Supprimer le lien entre Date de stockage et délai de congélation
+- YouTrack [TG-160](https://tumorotek.myjetbrains.com/youtrack/issue/TG-160) : [Gatsbi] - Contexte Echantillon : erreur de traduction : quantity au lieu de Quality
+- YouTrack [TG-161](https://tumorotek.myjetbrains.com/youtrack/issue/TG-161) : [Gatsbi] - Contexte et Paramétrage : les noms des champs de TK sont en anglais ...
+- YouTrack [TG-164](https://tumorotek.myjetbrains.com/youtrack/issue/TG-164) : [Gatsbi] - Contexte : non prise en compte en base de données d'une mise à jour de filtre de thesaurus
+
+###### Corrections hors Gatsbi
+- intégration des corrections / évolutions de la version 2.2.8 
+
+
+***
+
+##### Version 2.2.8 (dernière version sans le module Gatsbi) - Publiée le 17/05/2023
 ###### Corrections
 - YouTrack [TK-322](https://tumorotek.myjetbrains.com/youtrack/issue/TK-322) : la désactivation d'un compte avec accès LDAP n'est pas prise en compte
 - YouTrack [TK-333](https://tumorotek.myjetbrains.com/youtrack/issue/TK-333) : <span class="badge badge-stockage">Evènement de stockage</span> Sécurisation de  la gestion de l'attribut stérile lors d'un déplacement de boîte
@@ -30,14 +47,24 @@
 - YouTrack [TK-383](https://tumorotek.myjetbrains.com/youtrack/issue/TK-383) : Page d'accueil : le bloc "nouvelles fonctionnalités" ne propose plus qu'un lien vers le site statique lié à la version installée
 - YouTrack [TK-399](https://tumorotek.myjetbrains.com/youtrack/issue/TK-333) : <span class="badge badge-stockage">Evènement de stockage</span> Optimisation du temps de création (pose d'un index)
 
+***
 
-##### Version 2.2.7 - Publiée le 13/03/2023
+##### Version 2.3.0.2 - Publiée le 08/03/2023
+- Adaptations pour le module Gatsbi (version 1.0.0.2, publiée le 08/03/2023)
+
+***
+
+##### Version 2.2.7 - Publiée le 08/03/2023
 ###### Correction
 - YouTrack [TK-357](https://tumorotek.myjetbrains.com/youtrack/issue/TK-357) : <span class="badge badge-export">Export</span> <span class="badge badge-patient">Patient</span> Barre d'avancement bloquée à 0 %
+
+***
 
 ##### Version 2.2.6 - Publiée le 29/09/2022
 ###### Adaptation pour projet IRELEC - CHU Grenoble
 - YouTrack [TK-339](https://tumorotek.myjetbrains.com/youtrack/issue/TK-339) : ROBOT Grenoble - accès bouton "Stockage automatisé" et "Déstockage automatisé"
+
+***
 
 ##### Version 2.2.5 - Publiée le 06/07/2022
 ###### Corrections
@@ -54,9 +81,11 @@
 
 ##### Version 2.2.3-fix305 - Publiée le 21/09/2021
 ###### Corrections
-- YouTrack [TKB-305](https://tumorotek.myjetbrains.com/youtrack/issue/TKB-305)
-- YouTrack [TKB-302](https://tumorotek.myjetbrains.com/youtrack/issue/TKB-302)
-- YouTrack [TKB-299](https://tumorotek.myjetbrains.com/youtrack/issue/TKB-299)
+- YouTrack [TK-305](https://tumorotek.myjetbrains.com/youtrack/issue/TK-305)
+- YouTrack [TK-302](https://tumorotek.myjetbrains.com/youtrack/issue/TK-302)
+- YouTrack [TK-299](https://tumorotek.myjetbrains.com/youtrack/issue/TK-299)
+
+***
 
 ##### Version 2.2.3 - Publiée le 09/06/2021
 ###### Nouveautés
@@ -77,7 +106,7 @@
 
 ###### Corrections
 - YouTrack [TK-111](https://tumorotek.myjetbrains.com/youtrack/issue/TK-111) : <span class="badge badge-statistiques">Statistiques</span> Modifier le libellé DGOS... en Totaux des prélèvements
-- YouTrack [TK-155](https://tumorotek.myjetbrains.com/youtrack/issue/TK-155) : Correction de la fonctionalité de déplacement de prélèvement/échantillon/dérivé de collection afin de mettre à jour les liens vers les fichiers associés
+- YouTrack [TK-155](https://tumorotek.myjetbrains.com/youtrack/issue/TK-155) : Correction de la fonctionnalité de déplacement de prélèvement/échantillon/dérivé de collection afin de mettre à jour les liens vers les fichiers associés
 - YouTrack [TK-159](https://tumorotek.myjetbrains.com/youtrack/issue/TK-159) : Suppression de l'erreur au remplissage d'un composant datebox au format d/M/yy.
 - YouTrack [TK-173](https://tumorotek.myjetbrains.com/youtrack/issue/TK-173) : <span class="badge badge-statistiques">Statistiques</span> Renommer les indicateurs MERRI en enlevant la notion DGOS
 - YouTrack [TK-204](https://tumorotek.myjetbrains.com/youtrack/issue/TK-204) : Il manque des pastilles de couleur lors de l'impression du contenu d'une boîte

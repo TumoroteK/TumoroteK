@@ -49,12 +49,12 @@ import fr.aphp.tumorotek.model.contexte.Plateforme;
  *
  */
 @MappedSuperclass
-@Inheritance(strategy=InheritanceType.TABLE_PER_CLASS)
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public abstract class AbstractPfDependantThesaurusObject extends AbstractThesaurusObject implements PfDependantObject
 {
 
    private Plateforme plateforme;
-   
+
    @Override
    @ManyToOne
    @JoinColumn(name = "PLATEFORME_ID", nullable = false)
@@ -63,10 +63,10 @@ public abstract class AbstractPfDependantThesaurusObject extends AbstractThesaur
    }
 
    @Override
-   public void setPlateforme(Plateforme pf){
+   public void setPlateforme(final Plateforme pf){
       this.plateforme = pf;
    }
-   
+
    @Override
    public int hashCode(){
       final int prime = 31;
@@ -77,25 +77,29 @@ public abstract class AbstractPfDependantThesaurusObject extends AbstractThesaur
    }
 
    @Override
-   public boolean equals(Object obj){
-      if(this == obj)
+   public boolean equals(final Object obj){
+      if(this == obj){
          return true;
-      if(obj == null)
+      }
+      if((obj == null) || (getClass() != obj.getClass())){
          return false;
-      if(getClass() != obj.getClass())
-         return false;
-      AbstractPfDependantThesaurusObject other = (AbstractPfDependantThesaurusObject) obj;
+      }
+      final AbstractPfDependantThesaurusObject other = (AbstractPfDependantThesaurusObject) obj;
       if(this.getNom() == null){
-         if(other.getNom() != null)
+         if(other.getNom() != null){
             return false;
-      }else if(!this.getNom().equals(other.getNom()))
+         }
+      }else if(!this.getNom().equals(other.getNom())){
          return false;
+      }
       if(plateforme == null){
-         if(other.getPlateforme() != null)
+         if(other.getPlateforme() != null){
             return false;
-      }else if(!plateforme.equals(other.getPlateforme()))
+         }
+      }else if(!plateforme.equals(other.getPlateforme())){
          return false;
+      }
       return true;
    }
-   
+
 }

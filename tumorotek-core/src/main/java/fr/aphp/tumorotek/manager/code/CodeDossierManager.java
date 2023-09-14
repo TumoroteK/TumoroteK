@@ -84,7 +84,7 @@ public interface CodeDossierManager
    List<CodeDossier> findByRootCodeDossierUtilisateurManager(Banque bank);
 
    /**
-    * Recherche les dossiers de CodeSelect a la racine pour un utilisateur 
+    * Recherche les dossiers de CodeSelect a la racine pour un utilisateur
     * et une banque donnée.
     * @param utilisateur
     * @param banque
@@ -102,7 +102,7 @@ public interface CodeDossierManager
    List<CodeDossier> findByUtilisateurAndBanqueManager(Utilisateur u, Banque b);
 
    /**
-    * Recherche les dossiers de codes ajoutés au favoris 
+    * Recherche les dossiers de codes ajoutés au favoris
     * pour l'utilisateur et la banque passées en paramètres.
     * @param l'utilisateur pour lequel on recherche des dossiers.
     * @param la banque
@@ -112,7 +112,7 @@ public interface CodeDossierManager
 
    /**
     * Cherche les doublons en se basant sur la methode equals()
-    * surchargee par les entites. Si l'objet est modifie donc a un id 
+    * surchargee par les entites. Si l'objet est modifie donc a un id
     * attribue par le SGBD, ce dernier est retire de la liste findAll.
     * @param table CodeUtilisateur dont on cherche la presence dans la base
     * @return true/false
@@ -120,7 +120,7 @@ public interface CodeDossierManager
    boolean findDoublonManager(CodeDossier dos);
 
    /**
-    * Enregsitre ou modifie un dossier. 
+    * Enregsitre ou modifie un dossier.
     * @param dos
     * @param dossier parent
     * @param banque
@@ -138,7 +138,7 @@ public interface CodeDossierManager
    void removeObjectManager(CodeDossier dos);
 
    /**
-    * Recherche tous les dossiers de codes favoris ou utilisateur définis 
+    * Recherche tous les dossiers de codes favoris ou utilisateur définis
     * pour une banque à la racine de l'arborescence.
     * @param banque Banque
     * @return une liste de CodeDossier.

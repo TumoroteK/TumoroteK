@@ -75,14 +75,19 @@ public class LigneEtiquetteManagerTest extends AbstractManagerTest4
 
    @Autowired
    private LigneEtiquetteManager ligneEtiquetteManager;
+
    @Autowired
    private ModeleDao modeleDao;
+
    @Autowired
    private EntiteDao entiteDao;
+
    @Autowired
    private ChampLigneEtiquetteManager champLigneEtiquetteManager;
+
    @Autowired
    private ChampEntiteDao champEntiteDao;
+
    @Autowired
    private ChampManager champManager;
 

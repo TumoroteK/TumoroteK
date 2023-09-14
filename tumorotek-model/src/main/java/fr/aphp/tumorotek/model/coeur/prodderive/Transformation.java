@@ -89,14 +89,19 @@ public class Transformation implements Serializable
    private static final long serialVersionUID = 127047103050760932L;
 
    private Integer transformationId;
+
    private Integer objetId;
+
    private Entite entite;
+
    private Float quantite;
+
    private Unite quantiteUnite;
    //private Float volume;
    //private Unite volumeUnite;
 
    private Set<Retour> retours;
+
    private Set<ProdDerive> prodDerives;
 
    /** Constructeur par défaut. */
@@ -215,10 +220,10 @@ public class Transformation implements Serializable
          && (this.entite == test.entite || (this.entite != null && this.entite.equals(test.entite)))
          && (this.quantiteUnite == test.quantiteUnite
             || (this.quantiteUnite != null && this.quantiteUnite.equals(test.quantiteUnite))));
-      /*&& (this.volume == test.volume || (this.volume != null 
-      		&& this.volume.equals(test.volume))) 
-      && (this.volumeUnite == test.volumeUnite 
-      		|| (this.volumeUnite != null 
+      /*&& (this.volume == test.volume || (this.volume != null
+      		&& this.volume.equals(test.volume)))
+      && (this.volumeUnite == test.volumeUnite
+      		|| (this.volumeUnite != null
       		&& this.volumeUnite.equals(test.volumeUnite))));*/
    }
 

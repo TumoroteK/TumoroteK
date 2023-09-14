@@ -69,8 +69,11 @@
 <?component name="champImpression" macroURI="/zuls/impression/FicheChampImpression.zul" ?>
 <?component name="ficheTemplateModale" macroURI="/zuls/impression/FicheTemplateModale.zul"?>
 <?component name="ficheRechercheAvanceePatient" macroURI="/zuls/recherche/FicheRechercheAvanceePatient.zul"?>
+<?component name="ficheRechercheAvanceePatientGatsbi" macroURI="/zuls/recherche/gatsbi/FicheRechercheAvanceePatientGatsbi.zul"?>
 <?component name="ficheRechercheAvanceePrelevement" macroURI="/zuls/recherche/FicheRechercheAvanceePrelevement.zul"?>
+<?component name="ficheRechercheAvanceePrelevementGatsbi" macroURI="/zuls/recherche/gatsbi/FicheRechercheAvanceePrelevementGatsbi.zul"?>
 <?component name="ficheRechercheAvanceeEchantillon" macroURI="/zuls/recherche/FicheRechercheAvanceeEchantillon.zul"?>
+<?component name="ficheRechercheAvanceeEchantillonGatsbi" macroURI="/zuls/recherche/gatsbi/FicheRechercheAvanceeEchantillonGatsbi.zul"?>
 <?component name="ficheRechercheAvanceeProdDerive" macroURI="/zuls/recherche/FicheRechercheAvanceeProdDerive.zul"?>
 <?component name="ficheRechercheAvanceeCession" macroURI="/zuls/recherche/FicheRechercheAvanceeCession.zul"?>
 <?component name="ficheRechercheINCa" macroURI="/zuls/recherche/FicheRechercheINCa.zul"?>
@@ -115,6 +118,9 @@
 <?component name="ficheRechercheAvanceePrelevementSero" macroURI="/zuls/recherche/serotk/FicheRechercheAvanceePrelevementSero.zul"?>
 <?component name="ficheRechercheAvanceeEchantillonSero" macroURI="/zuls/recherche/serotk/FicheRechercheAvanceeEchantillonSero.zul"?>
 <?component name="ficheRechercheAvanceeProdDeriveSero" macroURI="/zuls/recherche/serotk/FicheRechercheAvanceeProdDeriveSero.zul"?>
+<!-- Gatsbi -->
+<?component name="maladieGatsbiPanel" macroURI="/zuls/patient/gatsbi/FicheMaladieGatsbi.zul" ?>
+
 
 	<!-- <script type="text/javascript">
 		zk.afterMount(function () {
@@ -134,6 +140,8 @@
 <style src="/css/font-awesome-4.6.1/css/font-awesome.min.css" />
 <style src="/css/newstyle.css.dsp" />
 <style src="/css/stats/chart.css" />
+
+<style src="/css/gatsbi.css.dsp" />
 
 
 <!-- <html><![CDATA[

@@ -97,7 +97,7 @@ public class FileDownloadTumo
 
    /** Open a download dialog to save the specified content at the client
     * with the suggested file name.<br/>
-    * Note: You don't need to close the content (a InputStream), it will be closed automatically after download. 
+    * Note: You don't need to close the content (a InputStream), it will be closed automatically after download.
     * @param content the content
     * @param contentType the content type (aka., mine type),
     * e.g., application/pdf
@@ -176,6 +176,7 @@ public class FileDownloadTumo
    private static class DownloadURL implements DeferredValue
    {
       private final Media _media;
+
       private final String _path;
 
       private DownloadURL(final Media media, String flnm){

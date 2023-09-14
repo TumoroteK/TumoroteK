@@ -63,7 +63,7 @@ public final class TKStockableObjectUtils
    private TKStockableObjectUtils(){}
 
    /**
-    * Dessine la liste d'icône en tête d'une liste d'objets Echantillon 
+    * Dessine la liste d'icône en tête d'une liste d'objets Echantillon
     * ou dérivés
     * @param TKStockable objet
     * @return Hlayout contenant les icônes

@@ -52,7 +52,7 @@ import fr.aphp.tumorotek.model.io.export.Champ;
 /**
  *
  * Implémentation du manager du bean de domaine CleImpression.
- * 
+ *
   * Classe créée le 16/01/2018.
  *
  * @author Answald Bournique
@@ -130,7 +130,7 @@ public class CleImpressionManagerImpl implements CleImpressionManager
 
    @Override
    public void removeObjectManager(final CleImpression cleImpression){
-      
+
       // On vérifie que la clé n'est pas nulle
       if(cleImpression == null){
          log.warn("Objet obligatoire Champ manquant lors " + "de la suppression d'un objet Champ");
@@ -165,17 +165,17 @@ public class CleImpressionManagerImpl implements CleImpressionManager
          log.warn("Objet obligatoire identifiant manquant lors de la " + "recherche par l'identifiant d'un objet Champ");
          throw new RequiredObjectIsNullException("Champ", "recherche par identifiant", "identifiant");
       }
-      
-      List<CleImpression> cleImprList = cleImpressionDao.findByName(name);
+
+      final List<CleImpression> cleImprList = cleImpressionDao.findByName(name);
       if(!cleImprList.isEmpty()){
          //Boucle pour le traitement du retour SQL qui n'est pas sensible à l'accent. On vérifie donc l'exactitude des noms de clés ici.
-         for(CleImpression cle : cleImprList){
+         for(final CleImpression cle : cleImprList){
             if(cle.getNom().equals(name)){
                return cle;
             }
          }
       }
-      
+
       return null;
    }
 
@@ -184,13 +184,13 @@ public class CleImpressionManagerImpl implements CleImpressionManager
       return cleImpressionDao.findAll();
    }
 
-//   @Override
-//   public List<CleImpression> findByTemplateManager(final Template template){
-//      // On vérifie que l'identifiant n'est pas nul
-//      if(null == template){
-//         log.warn("Objet obligatoire identifiant manquant lors de la " + "recherche par l'identifiant d'un objet Template");
-//         throw new RequiredObjectIsNullException("Template", "recherche par identifiant", "identifiant");
-//      }
-//      return cleImpressionDao.findByTemplate(template);
-//   }
+   //   @Override
+   //   public List<CleImpression> findByTemplateManager(final Template template){
+   //      // On vérifie que l'identifiant n'est pas nul
+   //      if(null == template){
+   //         log.warn("Objet obligatoire identifiant manquant lors de la " + "recherche par l'identifiant d'un objet Template");
+   //         throw new RequiredObjectIsNullException("Template", "recherche par identifiant", "identifiant");
+   //      }
+   //      return cleImpressionDao.findByTemplate(template);
+   //   }
 }

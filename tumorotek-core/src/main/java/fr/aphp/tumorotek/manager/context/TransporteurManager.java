@@ -76,7 +76,7 @@ public interface TransporteurManager
     * Sauvegarde les modifications apportées à un objet persistant.
     * @param transporteur Objet à mettre à jour dans la base.
     * @param coordonnee Coord associée au Transporteur.
-    * @throws javax.xml.bind.ValidationException 
+    * @throws javax.xml.bind.ValidationException
     */
    void updateObjectManager(Transporteur transporteur, Coordonnee coordonnee, Utilisateur utilisateur);
 
@@ -94,7 +94,7 @@ public interface TransporteurManager
     * Verifie si le transporteur est référencé par d'autres objets du système
     * et donc ne peut être supprimé.
     * @param transp Transporteur
-    * @return boolean true si le transporteur est référencé 
+    * @return boolean true si le transporteur est référencé
     * par au moins un objet.
     */
    boolean isReferencedObjectManager(Transporteur tr);

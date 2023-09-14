@@ -58,7 +58,9 @@ public class FicheHeadersModale extends GenericForwardComposer<Component>
    private static final long serialVersionUID = 4596408583672453913L;
 
    private Component parent;
+
    private String hautDePage;
+
    private String basDePage;
 
    @Override

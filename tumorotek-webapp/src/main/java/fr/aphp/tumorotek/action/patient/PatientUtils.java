@@ -64,8 +64,11 @@ public final class PatientUtils
    private PatientUtils(){}
 
    public static final LabelCodeItem SEXE_EMPTY = new LabelCodeItem("", null);
+
    public static final LabelCodeItem SEXE_M = new LabelCodeItem(Labels.getLabel("patient.sexe.homme"), "M");
+
    public static final LabelCodeItem SEXE_F = new LabelCodeItem(Labels.getLabel("patient.sexe.femme"), "F");
+
    public static final LabelCodeItem SEXE_IND = new LabelCodeItem(Labels.getLabel("patient.sexe.ind"), "Ind");
 
    private static List<LabelCodeItem> sexes = new ArrayList<>();
@@ -77,16 +80,22 @@ public final class PatientUtils
    }
 
    public static final LabelCodeItem ETAT_V = new LabelCodeItem(Labels.getLabel("patient.etat.vivant"), "V");
+
    public static final LabelCodeItem ETAT_VF = new LabelCodeItem(Labels.getLabel("patient.etat.vivant.f"), "V");
+
    public static final LabelCodeItem ETAT_D = new LabelCodeItem(Labels.getLabel("patient.etat.decede"), "D");
+
    public static final LabelCodeItem ETAT_DF = new LabelCodeItem(Labels.getLabel("patient.etat.decede.f"), "D");
+
    public static final LabelCodeItem ETAT_I = new LabelCodeItem(Labels.getLabel("patient.etat.inconnu"), "Inconnu");
+
    private static List<LabelCodeItem> etats = new ArrayList<>();
    static{
       etats.add(ETAT_V);
       etats.add(ETAT_D);
       etats.add(ETAT_I);
    }
+
    private static List<LabelCodeItem> etatsF = new ArrayList<>();
    static{
       etatsF.add(ETAT_VF);
@@ -135,9 +144,9 @@ public final class PatientUtils
 
    /**
     * A partir des variables de session banques selectionnées et utilisateur,
-    * étend la liste aux banques consultables qui seront prises en compte dans 
+    * étend la liste aux banques consultables qui seront prises en compte dans
     * l'affichage des comptes de prélèvements.
-    * @param Map session 
+    * @param Map session
     * @return liste banque
     */
    public static List<Banque> getBanquesConsultForPrelevement(final Map<?, ?> session){
@@ -154,11 +163,11 @@ public final class PatientUtils
    }
 
    /**
-    * Calcule le nombre de prélèvements à afficher pour un 
-    * patient spécifié. Ce calcul prend en compte les banques consultables par 
+    * Calcule le nombre de prélèvements à afficher pour un
+    * patient spécifié. Ce calcul prend en compte les banques consultables par
     * l'utilisateur (droits et autoriseCrossPatient) passées en paramètres.
     * @param patient
-    * @param liste banks consultables 
+    * @param liste banks consultables
     * @return int le compte de prélèvements
     */
    public static int getNbPrelsForPatientAndUser(final Patient patient, final List<Banque> banks){
@@ -219,7 +228,7 @@ public final class PatientUtils
    }
 
    /**
-    * Renvoie la date état ou de décès en fonction du patient 
+    * Renvoie la date état ou de décès en fonction du patient
     * passé en paramètre.
     */
    public static String getDateDecesOrEtat(final Patient patient){

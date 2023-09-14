@@ -67,8 +67,10 @@ public class ChampEntiteBlocManagerTest extends AbstractManagerTest4
 
    @Autowired
    private ChampEntiteBlocManager champEntiteBlocManager;
+
    @Autowired
    private BlocImpressionManager blocImpressionManager;
+
    @Autowired
    private ChampEntiteManager champEntiteManager;
 

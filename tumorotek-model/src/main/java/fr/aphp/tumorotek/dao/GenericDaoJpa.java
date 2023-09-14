@@ -51,7 +51,7 @@ import java.util.List;
 public interface GenericDaoJpa<T, PK extends Serializable>
 {
 
-   /** 
+   /**
     * Persist une instance d'objet dans la base de données.
     * @param newInstance est  une instance de l'objet à créer.
     */
@@ -59,7 +59,7 @@ public interface GenericDaoJpa<T, PK extends Serializable>
 
    T mergeObject(T o);
 
-   /** 
+   /**
     *   Retrouve un objet qui était persistant dans la base de données en
     *   utilisant sa clé primaire.
     *   @param id est la clé primaire de l'objet.
@@ -77,13 +77,13 @@ public interface GenericDaoJpa<T, PK extends Serializable>
    /**
     * Sauvegarde les modifications apportées à un objet persistant.
     * @param transientObject est l'objet à mettre à jour dans la base
-    * de données. 
+    * de données.
     */
    void updateObject(T transientObject);
 
-   /**  
+   /**
     * Supprime un objet de la base de données.
-    * @param id est la clé primaire de l'objet à surrpimer. 
+    * @param id est la clé primaire de l'objet à surrpimer.
     */
    void removeObject(PK id);
 

@@ -72,7 +72,7 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
  *
  *
  * @author Mathieu BARTHELEMY
- * @version 2.0.13.2
+ * @version 2.3.0-gatsbi
  */
 public interface ImportManager
 {
@@ -92,13 +92,13 @@ public interface ImportManager
     * fonction de son header.
     * @param file Fichier à importer.
     * @return Hashtable.
-    * @throws HeaderException 
+    * @throws HeaderException
     */
    Hashtable<String, Integer> initColumnsHeadersManager(Row row) throws HeaderException;
 
    /**
     * Initialise une hashtable contenant pour chaque entité à importer,
-    * les ImportColonne correspondantes. Vérifie que pour chaque 
+    * les ImportColonne correspondantes. Vérifie que pour chaque
     * ImportColonne, une colonne associée existe bien.
     * @param colonnes Colonnes issues du fichier.
     * @param importTemplate ImportTemplate.
@@ -111,6 +111,7 @@ public interface ImportManager
     * Extrait toutes les valeurs d'un thésaurus et les met dans 1
     * hashtable : <valeur, Objet>.
     * @param champEntite Champ thésaurus.
+    * @param banque
     * @return Hashtable.
     */
    Hashtable<String, Object> extractValuesForOneThesaurus(ChampEntite champEntite, Banque banque);
@@ -133,7 +134,7 @@ public interface ImportManager
 
    /**
     * Extrait toutes les valeurs de tous les thésaurus d'annotations
-    * d'un ImportTemplate et les place dans une 
+    * d'un ImportTemplate et les place dans une
     * Hashtable <ChampAnnotation, Valeurs>.
     * @param importTemplate ImportTemplate.
     * @return Hashtable.
@@ -181,7 +182,7 @@ public interface ImportManager
    boolean setCodeAssigneForEchantillon(Echantillon echan, ImportColonne colonne, Row row, ImportProperties properties);
 
    /**
-    * Extrait les risques (séparés par des ',') et les assigne 
+    * Extrait les risques (séparés par des ',') et les assigne
     * au prélèvement.
     * @param prlvt Prelevement.
     * @param colonne Colonne actuelle.
@@ -194,7 +195,7 @@ public interface ImportManager
 
    /**
     * Récupère la ou les valeur(s) (thesaurusM depuis 2.0.13)
-    * pour la colonne dans le fichier et la set à l'AnnotationValeur ou 
+    * pour la colonne dans le fichier et la set à l'AnnotationValeur ou
     * à la liste d'AnnotationValeur.
     * @param colonne Colonne actuelle.
     * @param row Ligne actuelle.
@@ -254,7 +255,7 @@ public interface ImportManager
    ProdDerive setAllPropertiesForProdDerive(Row row, ImportProperties properties);
 
    /**
-    * Sauvegarde les objets issus de l'import pour la ligne du fichier tabulé 
+    * Sauvegarde les objets issus de l'import pour la ligne du fichier tabulé
     * en cours de lecture.
     * @param Row row current row editor
     * @param objects Objets à mettre en base.
@@ -263,10 +264,10 @@ public interface ImportManager
     * @param import properties
     * @param liste des batches de dérivés à créer à la fin de l'import
     * @since 2.0.10.6
-    * @param jdbcSuite contenant les ids et statements permettant 
+    * @param jdbcSuite contenant les ids et statements permettant
     * la creation des objets en full JDBC
     * @version 2.0.10.6
-    * @return 
+    * @return
     */
    void saveObjectsRowManager(Row row, List<Object> objects, List<Importation> importations, Utilisateur utilisateur,
       ImportProperties properties, EchantillonJdbcSuite jdbcSuite, List<DerivesImportBatches> derivesBatches);
@@ -276,9 +277,10 @@ public interface ImportManager
     * @param file Fichier d'import.
     * @param importTemplate Template d'import.
     * @param utilisateur Utilisateur.
+    * @param banque
     * @return ImportHistorique
     */
-   ImportHistorique importFileManager(ImportTemplate importTemplate, Utilisateur utilisateur, InputStream fis);
+   ImportHistorique importFileManager(ImportTemplate importTemplate, Utilisateur utilisateur, Banque banque, InputStream fis);
 
    /**
     * Extrait toutes les valeurs de la première colonne et les place
@@ -290,15 +292,16 @@ public interface ImportManager
    List<String> extractListOfStringFromExcelFile(InputStream fis, boolean fixNulls);
 
    /**
-    * Surcharge de la methode importFileManaer pour passer le contenu 
+    * Surcharge de la methode importFileManager pour passer le contenu
     * du fichier à importer sous la forme d'une Sheet
     * @param importTemplate
     * @param utilisateur
+    * @param banque
     * @param wb HSSFSheet or XSSFSheet
     * @return ImportHistorique
-    * @version 2.0.10.6
+    * @version 2.3.0-gatsbi
     */
-   ImportHistorique importFileManager(ImportTemplate importTemplate, Utilisateur utilisateur, Sheet sheet);
+   ImportHistorique importFileManager(ImportTemplate importTemplate, Utilisateur utilisateur, Banque banque, Sheet sheet);
 
    /**
     * Extrait les non conformites (séparés par des ';') et prepare la liste.
@@ -324,27 +327,28 @@ public interface ImportManager
    Map<TKAnnotableObject, List<NonConformite>> getNcfsDeriveCess();
 
    /**
-    * Import spécifique de dérivés de dérivés (1ere génération) à 
+    * Import spécifique de dérivés de dérivés (1ere génération) à
     * partir d'une Sheet spéciale, qui doit contenir a minima
-    * les colonnes clefs naturelles des dérivés parents, et les colonnes 
+    * les colonnes clefs naturelles des dérivés parents, et les colonnes
     * permettant la créatien des dérivés enfants.
     * @param importTemplate
     * @param utilisateur
+    * @param banque
     * @param wb HSSFSheet or XSSFSheet
-    * @param String texte (internationalisé) utilisé pour observations 
+    * @param String texte (internationalisé) utilisé pour observations
     * de l'évènement de stockage automatique EPUISEMENT du parent transformé.
     * @return ImportHistorique
     * @version 2.0.11
     */
-   ImportHistorique importSubDeriveFileManager(ImportTemplate importTemplate, Utilisateur utilisateur, Sheet sheet,
+   ImportHistorique importSubDeriveFileManager(ImportTemplate importTemplate, Utilisateur utilisateur, Banque banque, Sheet sheet,
       String retourTransfoEpuisement);
 
    /**
-    * Ajoute le derive contenu dans la ligne 
-    * à un batches de dérivés existants, ou créé le batch 
-    * si il n'existe pas. Un batch est défini par le parent de la transformation, 
-    * la quantité utilisée, et la date de sortie du parent avant transformation 
-    * (date utilisée pour crée l'évènement d'épuisement du parent, ou la complétion 
+    * Ajoute le derive contenu dans la ligne
+    * à un batches de dérivés existants, ou créé le batch
+    * si il n'existe pas. Un batch est défini par le parent de la transformation,
+    * la quantité utilisée, et la date de sortie du parent avant transformation
+    * (date utilisée pour crée l'évènement d'épuisement du parent, ou la complétion
     * de l'évènement ENCOURS si le parent est un TKStockableObject).
     * @param row ligne fichier Import
     * @param derive ProdDerive à ajouter au batch
@@ -352,7 +356,7 @@ public interface ImportManager
     * @param parent matériel à l'origine de la transformation
     * @param transfoQte quantité transformée
     * @param dateSortie date de l'évènement de stockahe
-    * @param observations observations éventuelles à ajouter à l'évènement 
+    * @param observations observations éventuelles à ajouter à l'évènement
     * @param properties ImportProperties
     * @since 2.0.12
     * @version 2.0.12
@@ -361,13 +365,13 @@ public interface ImportManager
       Float transfoQte, Calendar dateSortie, String observations, ImportProperties properties);
 
    /**
-    * Persiste les dérivés par lots, à partir des batches composés à la 
+    * Persiste les dérivés par lots, à partir des batches composés à la
     * lecture du fichier d'importation.
     * @param batches liste de DeriveImportBatches
     * @param properties ImportPropertries
     * @param importations liste d'importation à laquelle ajouté les enregistrements
     * @param utilisateur Utilisateur en charge de la création
-    * @param baseDir 
+    * @param baseDir
     * @param errors liste d'errors à compléter le cas échéant.
     * @since 2.0.12
     * @version 2.0.12

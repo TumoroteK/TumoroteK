@@ -40,6 +40,7 @@ import java.util.List;
 import fr.aphp.tumorotek.dao.GenericDaoJpa;
 import fr.aphp.tumorotek.model.coeur.patient.Maladie;
 import fr.aphp.tumorotek.model.coeur.patient.Patient;
+import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.contexte.Collaborateur;
 
 /**
@@ -48,7 +49,7 @@ import fr.aphp.tumorotek.model.contexte.Collaborateur;
  * Interface créée le 02/10/09.
  *
  * @author Mathieu BARTHELEMY
- * @version 2.2.3-genno
+ * @version 2.3.0-gatsbi
  *
  */
 public interface MaladieDao extends GenericDaoJpa<Maladie, Integer>
@@ -60,9 +61,9 @@ public interface MaladieDao extends GenericDaoJpa<Maladie, Integer>
     * @return Liste de Maladies.
     */
    List<Maladie> findByLibelle(String libelle);
-   
+
    /**
-    * Recherche les maladies dont le libelle correspond à celui 
+    * Recherche les maladies dont le libelle correspond à celui
     * fourni en paramètre pour un patient donnée.
     * @param libelle Libelle des maladies recherchées.
     * @param patient Patient
@@ -79,7 +80,7 @@ public interface MaladieDao extends GenericDaoJpa<Maladie, Integer>
    List<Maladie> findByCode(String code);
 
    /**
-    * Recherche toutes les maladies sauf celle dont l'id est passé 
+    * Recherche toutes les maladies sauf celle dont l'id est passé
     * en paramètre.
     * @param maladieId Identifiant de la maladie que l'on souhaite
     * exclure de la liste retournée.
@@ -89,27 +90,46 @@ public interface MaladieDao extends GenericDaoJpa<Maladie, Integer>
    List<Maladie> findByExcludedId(Integer maladieId, String libelle);
 
    /**
-    * Recherche les maladies assignées au patient.
+    * Recherche toutes les maladies/visites assignées au patient.
     * @param patient
-    * @return une liste de Maladie.
+    * @return une liste de Maladie/Visites.
+    * @since 2.3.0-gatsbi
     */
-   List<Maladie> findByPatient(Patient patient);
+   List<Maladie> findAllByPatient(Patient patient);
+   
+   /**
+    * Recherche les maladies assignées au patient, excluant toutes 
+    * celles correspondant à des visites (banque_id not null)
+    * @param patient
+    * @return une liste de Maladie/Visites.
+    * @since 2.3.0-gatsbi
+    */
+   List<Maladie> findByPatientExcludingVisites(Patient patient);
 
    /**
-    * Recherche les maladies assignées au patient uniquement 
-    * par l'utilisateur, et non pas par le systeme dans le cadre
-    * de collection de prélèvements qui ne définissent pas de maladies.
+    * Recherche les maladies assignées au patient uniquement
+    * par l'utilisateur: excluant celles définies pas par le systeme dans le cadre
+    * de collection de prélèvements qui ne définissent pas de maladies, 
+    * et les visites gatsbi.
     * @param patient
     * @return une liste de Maladie.
     */
-   List<Maladie> findByPatientNoSystem(Patient patient);
+   List<Maladie> findByPatientNoSystemNorVisite(Patient patient);
 
    List<Maladie> findByCollaborateurId(Integer collaborateurId);
 
    /**
     * Compte les maladies pour le médecin référent passé en paramètre.
-    * @param Collaborateur 
+    * @param Collaborateur
     * @return long
     */
    List<Long> findCountByReferent(Collaborateur referent);
+   
+   /**
+    * Liste les maladies/visites définie pour la collection pour le patient.
+    * @param patient
+    * @param banque
+    * @return une liste de visites.
+    */
+   List<Maladie> findVisites(Patient patient, Banque banque);
 }

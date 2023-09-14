@@ -79,18 +79,25 @@ public class PrelEchansManagerImpl implements PrelEchansManager
 
    @Autowired
    private PrelevementManager prelevementManager;
+
    @Autowired
    private EchantillonManager echantillonManager;
+
    @Autowired
    private ObjetStatutDao objetStatutDao;
+
    @Autowired
    private OperationTypeDao operationTypeDao;
+
    @Autowired
    private EmplacementManager emplacementManager;
+
    @Autowired
    private ObjetNonConformeManager objetNonConformeManager;
+
    @Autowired
    private AnnotationValeurManager annotationValeurManager;
+
    @Autowired
    private EntiteDao entiteDao;
 
@@ -140,7 +147,7 @@ public class PrelEchansManagerImpl implements PrelEchansManager
                // clone emplacement map
                if(echansEmpl != null && echansEmpl.containsKey(newEchan)){
                   // pour éviter chgt hashcode
-                  // dans Map echansEmpl 
+                  // dans Map echansEmpl
                   newEchan.setBanque(banque);
                   echEmplsClone.put(newEchan, echansEmpl.get(echanDTOs.get(i).getEchantillon()));
                }
@@ -152,7 +159,7 @@ public class PrelEchansManagerImpl implements PrelEchansManager
                for(final CodeAssigne codeA : echanDTOs.get(i).getCodesLesToCreateOrEdit()){
                   codes.add(codeA.clone());
                }
-               //					
+               //
                //					codes.addAll(echanDTOs
                //							.get(i).getCodesOrgsToCreateOrEdit());
                //					codes.addAll(echanDTOs
@@ -171,23 +178,23 @@ public class PrelEchansManagerImpl implements PrelEchansManager
                // création de l'objet
                echantillonManager.createObjectWithCrAnapathManager(newEchan, banque, pClone, newEchan.getCollaborateur(),
                   objetStatutDao.findByStatut("NON STOCKE").get(0),
-                  // newEchan.getEmplacement(), 
+                  // newEchan.getEmplacement(),
                   null, // since 2.0.13.2
                   newEchan.getEchantillonType(), codes, newEchan.getQuantiteUnite(), newEchan.getEchanQualite(),
                   newEchan.getModePrepa(), crAnapath, newEchan.getAnapathStream(), filesCreated,
-                  //codeOrgExp, 
+                  //codeOrgExp,
                   //codeLesExp,
                   echanDTOs.get(i).getValeursToCreateOrUpdate(), utilisateur, true, baseDir, false);
 
                // non confs
                if(newEchan.getConformeTraitement() != null && !newEchan.getConformeTraitement()){
-                  // enregistrement de la non conformité 
+                  // enregistrement de la non conformité
                   // après traitement
                   objetNonConformeManager.createUpdateOrRemoveListObjectManager(newEchan,
                      echanDTOs.get(i).getNonConformiteTraitements(), "Traitement");
                }
                if(newEchan.getConformeCession() != null && !newEchan.getConformeCession()){
-                  // enregistrement de la non conformité 
+                  // enregistrement de la non conformité
                   // à la cession
                   objetNonConformeManager.createUpdateOrRemoveListObjectManager(newEchan,
                      echanDTOs.get(i).getNonConformiteCessions(), "Cession");
@@ -202,7 +209,7 @@ public class PrelEchansManagerImpl implements PrelEchansManager
 
          // emplacements
          if(!echEmplsClone.isEmpty()){
-            // enregistrement des emplacements	
+            // enregistrement des emplacements
             // on parcourt la hashtable du stockage et on extrait
             // l'emplacement de chaque échantillon
             final List<Emplacement> emplsFinaux = new ArrayList<>();
@@ -235,11 +242,11 @@ public class PrelEchansManagerImpl implements PrelEchansManager
                echantillonManager.saveEchantillonEmplacementManager(echanToUpdate, statut, echEmplsClone.get(echanToUpdate),
                   utilisateur, ops);
 
-               //	EchantillonDTO deco = new 
+               //	EchantillonDTO deco = new
                //	EchantillonDTO(echanToUpdate);
                // si l'échantillon existait déjà, on MAJ sa fiche
                // dans la liste des échantillons
-               //	if (!addedEchantillons.contains(deco.getEchantillon())) {		
+               //	if (!addedEchantillons.contains(deco.getEchantillon())) {
                // update de l'échantillon dans la liste
                //		getObjectTabController().getListe()
                //			.updateObjectGridListFromOtherPage(echanToUpdate, false);
@@ -262,7 +269,7 @@ public class PrelEchansManagerImpl implements PrelEchansManager
             f.delete();
          }
 
-         //			if (isPrelevementProcedure) {	
+         //			if (isPrelevementProcedure) {
          //				if (revertMaladie) {
          //					getParentObject().getMaladie().setMaladieId(null);
          //					if (revertPatient) {
@@ -270,17 +277,17 @@ public class PrelEchansManagerImpl implements PrelEchansManager
          //									.getPatient().setPatientId(null);
          //					}
          //				}
-         //				
+         //
          //				getParentObject().setPrelevementId(null);
          //				// revert Objects
-         //				Iterator<LaboInter> it = 
+         //				Iterator<LaboInter> it =
          //							getParentObject().getLaboInters().iterator();
          //				while (it.hasNext()) {
          //					it.next().setLaboInterId(null);
          //				}
          //			}
          //			Iterator<EchantillonDTO> itE = echanDTOs.iterator();
-         //			
+         //
          //			Echantillon e;
          //			EchantillonDTO ed;
          //			ObjetStatut stocke = objetStatutDao
@@ -302,8 +309,8 @@ public class PrelEchansManagerImpl implements PrelEchansManager
          //						e.setObjetStatut(stocke);
          //						e.setEmplacement(null);
          //						// clean echanEmpl from emplacement in error
-         //						// doublon ou emplacement occupé 
-         //						if ((re instanceof EmplacementDoublonFoundException 
+         //						// doublon ou emplacement occupé
+         //						if ((re instanceof EmplacementDoublonFoundException
          //								&& echansEmpl.get(e).equals(((EmplacementDoublonFoundException) re).getEmplacementMock()))
          //							|| (re instanceof TKException && re.getMessage().equals("error.emplacement.notEmpty")
          //									&& ((TKException) re).getTkObj().equals(e))) {
@@ -312,8 +319,8 @@ public class PrelEchansManagerImpl implements PrelEchansManager
          //							ed.setAdrlTmp(null);
          //							ed.getEchantillon().setObjetStatut(nonstocke);
          //						}
-         //					}			
-         //					
+         //					}
+         //
          ////						if (ed.getCodeOrganeToExport() != null) {
          ////							ed.getCodeOrganeToExport().setEchantillon(e);
          ////							ed.getCodeOrganeToExport().setEchanExpOrg(e);
@@ -327,7 +334,7 @@ public class PrelEchansManagerImpl implements PrelEchansManager
          //					break;
          //				}
          //			}
-         //			
+         //
          ////			updateDecoList(echansEmpl);
 
          throw re;
@@ -335,9 +342,9 @@ public class PrelEchansManagerImpl implements PrelEchansManager
 
       // envoi informations exterieures
       //		if (getParentObject() != null) {
-      //			getPrelevementController().handleExtCom((Prelevement) getParentObject(), 
+      //			getPrelevementController().handleExtCom((Prelevement) getParentObject(),
       //					getObjectTabController());
-      //		}		
+      //		}
       return pClone;
    }
 }

@@ -102,7 +102,7 @@ public interface CederObjetManager
     * @return Liste ordonnée de CederObjets.
     */
    List<CederObjet> findByObjetManager(Object obj);
-   
+
    /**
     * Recherche tous les CederObjet pour l'objet passé en paramètre dans un statut précis
     * @param obj Objet pour lequel on recherche des CederObjets.
@@ -195,7 +195,7 @@ public interface CederObjetManager
    /**
     * Compte les echantillons ou dérivés impliqués dans la session.
     * @param cess
-    * @param entite 
+    * @param entite
     * @return le compte
     * @since 2.0.10
     */

@@ -169,12 +169,12 @@ public class ModificationMultipleCodeAssigne extends AbstractModificationMultipl
          if(isOrg()){
             codes.addAll(
                ManagerLocator.getCodeAssigneManager().findCodesOrganeByEchantillonManager((Echantillon) getListObjets().get(i)));
-            //exp = (((Echantillon) 
+            //exp = (((Echantillon)
             //		getListObjets().get(i)).getCodeOrganeExport());
          }else{
             codes.addAll(
                ManagerLocator.getCodeAssigneManager().findCodesMorphoByEchantillonManager((Echantillon) getListObjets().get(i)));
-            //exp = (((Echantillon) 
+            //exp = (((Echantillon)
             //		getListObjets().get(i)).getCodeLesExport());
          }
 
@@ -200,8 +200,8 @@ public class ModificationMultipleCodeAssigne extends AbstractModificationMultipl
    }
 
    /**
-    * Formatte l'affichage d'un objet CodePack sous la forme d'une 
-    * ligne de codes (sans libelles) avec une asterix pour noter 
+    * Formatte l'affichage d'un objet CodePack sous la forme d'une
+    * ligne de codes (sans libelles) avec une asterix pour noter
     * le code exporté.
     */
    @Override

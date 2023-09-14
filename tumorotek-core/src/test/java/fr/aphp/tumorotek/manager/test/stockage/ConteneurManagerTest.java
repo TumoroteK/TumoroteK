@@ -82,34 +82,49 @@ public class ConteneurManagerTest extends AbstractManagerTest4
 
    @Autowired
    private ConteneurManager conteneurManager;
+
    @Autowired
    private BanqueDao banqueDao;
+
    @Autowired
    private PlateformeDao plateformeDao;
+
    @Autowired
    private ConteneurTypeDao conteneurTypeDao;
+
    @Autowired
    private ServiceDao serviceDao;
+
    @Autowired
    private EnceinteTypeDao enceinteTypeDao;
+
    @Autowired
    private TerminaleTypeDao terminaleTypeDao;
+
    @Autowired
    private TerminaleNumerotationDao terminaleNumerotationDao;
+
    @Autowired
    private EnceinteManager enceinteManager;
+
    @Autowired
    private TerminaleManager terminaleManager;
+
    @Autowired
    private UtilisateurDao utilisateurDao;
+
    @Autowired
    private EmplacementManager emplacementManager;
+
    @Autowired
    private EntiteDao entiteDao;
+
    @Autowired
    private EchantillonDao echantillonDao;
+
    @Autowired
    private RetourManager retourManager;
+
    @Autowired
    private IncidentManager incidentManager;
 

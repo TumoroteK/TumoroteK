@@ -65,7 +65,7 @@ public interface TumoBarcodePrinter
    //
    //	int printCession(List<Cession> cessions, int nb);
    //	/**
-   //	 * Lance l'impression d'un certain nb de copies d'etiquettes 
+   //	 * Lance l'impression d'un certain nb de copies d'etiquettes
    //	 * codes a barres à partir d'une liste de valeurs.
    //	 * @param l liste de valeurs à imprimer (lignes)
    //	 * @param nb copies de l'étiquette
@@ -77,10 +77,10 @@ public interface TumoBarcodePrinter
    //	 */
    //	int printData(List<LigneEtiquette> l, int nb, Imprimante imprimante,
    //			Modele modele, String rawLang) throws PrinterException;
-   //	
+   //
    //
    //	/**
-   //	 * Fonction qui lance l'impression de plusieurs etiquettes codes a barres 
+   //	 * Fonction qui lance l'impression de plusieurs etiquettes codes a barres
    //	 * d'une à partir d'une liste de liste de valeurs.
    //	 * @param dataListeEtiquette liste de listes de lignes
    //	 * @param imprimante cible
@@ -90,12 +90,12 @@ public interface TumoBarcodePrinter
    //	 * @throws PrinterException
    //	 */
    //	int printListData(List<List<LigneEtiquette>> dataListeEtiquette,
-   //			Imprimante imprimante, Modele modele, String rawLang) 
+   //			Imprimante imprimante, Modele modele, String rawLang)
    //					throws PrinterException;
 
    /**
     * Méthode d'entrée pour impression d'échantillou ou de produits dérivés.
-    * Cette méthode dispatche vers les méthodes printEchantillon et printDeribe 
+    * Cette méthode dispatche vers les méthodes printEchantillon et printDeribe
     * qui ne devrait pas êtré différenciée
     * @param objects
     * @param i
@@ -104,13 +104,13 @@ public interface TumoBarcodePrinter
     * @param raw printing language
     * @param BarcodeFieldDefault modifie parametres dessin codes-barres
     * @return int success si 0
-    * @throws PrinterException 
+    * @throws PrinterException
     */
    int printStockableObjects(List<? extends TKStockableObject> objects, int i, Imprimante imp, Modele mod, String rawLang,
       BarcodeFieldDefault by) throws PrinterException;
 
    /**
-    * Fonction qui effectue l'impression d'un certain nombre de copies d'etiquettes 
+    * Fonction qui effectue l'impression d'un certain nombre de copies d'etiquettes
     * codes a barres d'une à partir d'une liste de liste de parametres.
     * @param l liste de listes de lignes (1 liste de ligne = 1 image étiquette)
     * @param nb copies de chaque image étiquette

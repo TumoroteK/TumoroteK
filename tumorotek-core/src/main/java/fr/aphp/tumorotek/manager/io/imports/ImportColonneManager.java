@@ -108,7 +108,7 @@ public interface ImportColonneManager
    List<ImportColonne> findByTemplateAndThesaurusManager(ImportTemplate importTemplate);
 
    /**
-    * Recherche les ImportColonnes de l'ImportTemplate qui sont des annotations de 
+    * Recherche les ImportColonnes de l'ImportTemplate qui sont des annotations de
     * type thésaurus ou depuis v 2.0.13.2 des thésaurus multiples
     * @param importTemplate Template.
     * @return Liste d'ImportColonnes.
@@ -118,7 +118,7 @@ public interface ImportColonneManager
 
    /**
     * Recherche les doublons de l'ImportColonne passé en paramètre.
-    * @param importColonne Un ImportColonne pour lequel on 
+    * @param importColonne Un ImportColonne pour lequel on
     * cherche des doublons.
     * @return True s'il existe des doublons.
     */

@@ -56,7 +56,7 @@ public interface AffectationImprimanteDao extends GenericDaoJpa<AffectationImpri
 {
 
    /**
-    * Recherche les AffectationImprimantes sauf celui dont la clé 
+    * Recherche les AffectationImprimantes sauf celui dont la clé
     * primaire est passée en paramètre.
     * @param pk AffectationImprimantePK.
     * @return une liste de AffectationImprimantes.

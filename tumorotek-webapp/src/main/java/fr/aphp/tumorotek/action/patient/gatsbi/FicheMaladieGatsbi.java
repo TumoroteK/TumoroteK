@@ -1,0 +1,256 @@
+/**
+ * Copyright ou © ou Copr. Assistance Publique des Hôpitaux de
+ * PARIS et SESAN
+ * projet-tk@sesan.fr
+ *
+ * Ce logiciel est un programme informatique servant à la gestion de
+ * l'activité de biobanques.
+ *
+ * Ce logiciel est régi par la licence CeCILL soumise au droit français
+ * et respectant les principes de diffusion des logiciels libres. Vous
+ * pouvez utiliser, modifier et/ou redistribuer ce programme sous les
+ * conditions de la licence CeCILL telle que diffusée par le CEA, le
+ * CNRS et l'INRIA sur le site "http://www.cecill.info".
+ * En contrepartie de l'accessibilité au code source et des droits de
+ * copie, de modification et de redistribution accordés par cette
+ * licence, il n'est offert aux utilisateurs qu'une garantie limitée.
+ * Pour les mêmes raisons, seule une responsabilité restreinte pèse sur
+ * l'auteur du programme, le titulaire des droits patrimoniaux et les
+ * concédants successifs.
+ *
+ * A cet égard  l'attention de l'utilisateur est attirée sur les
+ * risques associés au chargement,  à l'utilisation,  à la modification
+ * et/ou au  développement et à la reproduction du logiciel par
+ * l'utilisateur étant donné sa spécificité de logiciel libre, qui peut
+ * le rendre complexe à manipuler et qui le réserve donc à des
+ * développeurs et des professionnels  avertis possédant  des
+ * connaissances  informatiques approfondies.  Les utilisateurs sont
+ * donc invités à charger  et  tester  l'adéquation  du logiciel à leurs
+ * besoins dans des conditions permettant d'assurer la sécurité de leurs
+ * systèmes et ou de leurs données et, plus généralement, à l'utiliser
+ * et l'exploiter dans les mêmes conditions de sécurité.
+ *
+ * Le fait que vous puissiez accéder à cet en-tête signifie que vous
+ * avez pris connaissance de la licence CeCILL, et que vous en avez
+ * accepté les termes.
+ **/
+package fr.aphp.tumorotek.action.patient.gatsbi;
+
+import org.zkoss.util.resource.Labels;
+import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zul.Div;
+import org.zkoss.zul.Grid;
+import org.zkoss.zul.Groupbox;
+import org.zkoss.zul.Messagebox;
+
+import fr.aphp.tumorotek.action.ManagerLocator;
+import fr.aphp.tumorotek.action.patient.FicheMaladie;
+import fr.aphp.tumorotek.action.prelevement.PrelevementController;
+import fr.aphp.tumorotek.action.prelevement.gatsbi.GatsbiControllerPrelevement;
+import fr.aphp.tumorotek.action.prelevement.gatsbi.PrelevementInnerListRowRendererGatsbi;
+import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
+import fr.aphp.tumorotek.model.code.CodeCommon;
+import fr.aphp.tumorotek.model.contexte.gatsbi.Contexte;
+import fr.aphp.tumorotek.model.contexte.gatsbi.ContexteType;
+import fr.aphp.tumorotek.webapp.gatsbi.GatsbiController;
+import fr.aphp.tumorotek.webapp.gatsbi.RowRendererGatsbiOtherConsultBanks;
+import fr.aphp.tumorotek.webapp.general.SessionUtils;
+
+/**
+ *
+ * Controller gérant la fiche static d'un prélèvement GATSBI.
+ *
+ * @author mathieu BARTHELEMY
+ * @version 2.3.0-gatsbi
+ *
+ */
+public class FicheMaladieGatsbi extends FicheMaladie
+{
+
+   private static final long serialVersionUID = -7612780578022559022L;
+   
+   private Div maladieBlockDivContainer;
+   private Div visiteMedecinsDiv;
+   
+   private Grid prelevementsGrid;
+   private RowRendererGatsbiOtherConsultBanks prelevementRendererGatsbi = 
+      new PrelevementInnerListRowRendererGatsbi(false, false);
+   
+   private Grid prelevementsFromOtherBanksGrid;
+   private RowRendererGatsbiOtherConsultBanks prelevementRendererFromOtherBanksGatsbi = 
+      new PrelevementInnerListRowRendererGatsbi(false, true);
+
+   @Override
+   public void doAfterCompose(final Component comp) throws Exception{
+
+      super.doAfterCompose(comp);
+      
+      // devenu inutile
+      setRequiredMarks(new Component[] {});
+      
+      
+      // apply visite gatsbi validator
+      // else remove date debut (visite) no empty constraint if no maladie def
+      if (SessionUtils.getCurrentBanque(sessionScope).getDefMaladies()) {
+         setMaladieValidator(ManagerLocator.getMaladieValidatorDateCoherenceOverride());
+      } else {
+         dateDebutBox.setConstraint("");
+      }
+
+      GatsbiController.initWireAndDisplay(this, 7, false, null, null, null, new Groupbox[]{});
+      
+      // Injection contexte prélèvement pour inner list maladies
+      // ce contexte peut être (null) non paramétré pour l'étude
+      // donc GET le contexte defaut pour le ContexteType Prélèvement
+      Contexte prelContexte = SessionUtils.getCurrentGatsbiContexteForEntiteId(2);
+      if (prelContexte == null) {
+         prelContexte = GatsbiController.getGastbiDefautContexteForType(ContexteType.PRELEVEMENT);
+      }  
+      
+      GatsbiControllerPrelevement
+         .drawColumnsForPrelevements(prelContexte, prelevementsGrid, prelevementRendererGatsbi, false, "nbEchantillonsColumn");
+      GatsbiControllerPrelevement
+         .drawColumnsForPrelevements(prelContexte, prelevementsFromOtherBanksGrid, prelevementRendererFromOtherBanksGatsbi, true, 
+            "nbEchantillonsFromOtherBanksColumn");
+  
+   }
+   
+   @Override
+   protected void initObjLabelsComponent(){
+      setObjLabelsComponents(new Component[] {
+         this.libelleLabel, this.codeDiagLabel, this.dateDebutLabel, this.dateDiagLabel,
+         this.prelevementsMaladieGroup, this.prelevementsGrid, this.prelevementsFromOtherBanksGrid 
+      });    
+   }
+   
+   @Override
+   protected void setClickPrelevementCodeForward() {
+      prelevementsGrid.addEventListener("onClickPrelevementCode", new EventListener<Event>()
+      {
+         @Override
+         public void onEvent(final Event event) throws Exception{
+            onClickPrelevementCode(event);
+         }
+      });
+
+      prelevementsFromOtherBanksGrid.addEventListener("onClickPrelevementCode", new EventListener<Event>()
+      {
+         @Override
+         public void onEvent(final Event event) throws Exception{
+            onClickPrelevementCode(event);
+         }
+      });
+   }
+   
+   @Override
+   public void setNewObject(){
+      super.setNewObject();
+      if (SessionUtils.getCurrentBanque(sessionScope).getDefMaladies()) {
+         getMaladie().setBanque(SessionUtils.getCurrentBanque(sessionScope));
+      }
+   }
+
+   @Override
+   public void onClick$addPrelevement(){
+
+      final PrelevementController tabController = (PrelevementController) PrelevementController.backToMe(getMainWindow(), page);
+
+      GatsbiController.addNewObjectForContext(SessionUtils.getCurrentGatsbiContexteForEntiteId(2),
+         tabController.getListe().getSelfComponent(), e -> {
+            try{
+               super.onClick$addPrelevement();
+            }catch(final Exception ex){
+               Messagebox.show(handleExceptionMessage(ex), "Error", Messagebox.OK, Messagebox.ERROR);
+            }
+         }, null, this.maladie);
+   }
+   
+   public String getVisiteLibelle() {
+      
+      String libelle = getMaladieLibelle();
+      
+      if (maladie.getDateDebut() != null) {
+         return libelle.concat(" - ")
+            .concat(ObjectTypesFormatters.dateRenderer2(maladie.getDateDebut()));
+      }
+      
+      return libelle;
+   }
+   
+   @Override
+   protected void setLibelleIndeterminee(){
+      maladie.setLibelle(Labels.getLabel("gatsbi.visite.new").toUpperCase());
+   }
+   
+   @Override
+   protected void setIncaLabelStyle() {
+   }
+   
+   @Override
+   protected void setRegularLabelStyle(){
+   }
+   
+   /**
+    * N'applique plus le libelle issu de la codification CIM-10 
+    * lors de la saisie du code diagnostic
+    */
+   @Override
+   public void onGetCodeFromAssist(final Event event){
+      if(event.getData() != null){
+         this.maladie.setCode(((CodeCommon) event.getData()).getCode());
+      }
+   }
+   
+   @Override
+   public void onBlur$codeDiagBox(){
+   }
+   
+   @Override
+   public void switchToCreateMode(){
+      super.switchToCreateMode();
+      GatsbiController.initWireAndDisplay(this, 7, true, null, null, null, new Groupbox[]{});
+   }
+   
+   @Override
+   public void switchToEditMode(){
+      super.switchToEditMode();
+      GatsbiController.initWireAndDisplay(this, 7, true, null, null, null, new Groupbox[]{});
+   }
+   
+   @Override
+   public void switchToStaticMode(){
+      super.switchToStaticMode();
+      GatsbiController.initWireAndDisplay(this, 7, false, null, null, null, new Groupbox[]{});
+
+   }
+
+   /*********** inner lists ******************/
+  
+   @Override
+   protected void detachMaladieFormMainComponent(){
+      if (this.maladieBlockDivContainer != null) {
+         maladieBlockDivContainer.detach();
+      }
+      if (this.visiteMedecinsDiv != null) {
+         visiteMedecinsDiv.detach();
+      }
+   }
+   
+   @Override
+   protected void detachPrelevementsMaladieGroup() {
+      prelevementsMaladieGroup.setSclass("prelevements-only"); // efface border+padding
+      ((Groupbox) prelevementsMaladieGroup).getFirstChild().detach(); // caption
+   }
+   
+  @Override
+   public RowRendererGatsbiOtherConsultBanks getPrelevementRenderer(){
+      return prelevementRendererGatsbi;
+   }
+
+  @Override
+   public RowRendererGatsbiOtherConsultBanks getPrelevementFromOtherBanksRenderer(){
+      return prelevementRendererFromOtherBanksGatsbi;
+   }
+}

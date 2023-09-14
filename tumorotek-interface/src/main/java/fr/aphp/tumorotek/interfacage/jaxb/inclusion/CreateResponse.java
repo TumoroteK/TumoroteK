@@ -46,20 +46,23 @@ public class CreateResponse
 
    @XmlElement(namespace = "http://openclinica.org/ws/studySubject/v1", required = true)
    protected String result;
+
    @XmlElement(namespace = "http://openclinica.org/ws/studySubject/v1", required = true)
    protected String label;
+
    @XmlElement(namespace = "http://openclinica.org/ws/studySubject/v1")
    protected List<String> warning;
+
    @XmlElement(namespace = "http://openclinica.org/ws/studySubject/v1")
    protected List<String> error;
 
    /**
     * Gets the value of the result property.
-    * 
+    *
     * @return
     *     possible object is
     *     {@link String }
-    *     
+    *
     */
    public String getResult(){
       return result;
@@ -67,11 +70,11 @@ public class CreateResponse
 
    /**
     * Sets the value of the result property.
-    * 
+    *
     * @param value
     *     allowed object is
     *     {@link String }
-    *     
+    *
     */
    public void setResult(final String value){
       this.result = value;
@@ -79,11 +82,11 @@ public class CreateResponse
 
    /**
     * Gets the value of the label property.
-    * 
+    *
     * @return
     *     possible object is
     *     {@link String }
-    *     
+    *
     */
    public String getLabel(){
       return label;
@@ -91,11 +94,11 @@ public class CreateResponse
 
    /**
     * Sets the value of the label property.
-    * 
+    *
     * @param value
     *     allowed object is
     *     {@link String }
-    *     
+    *
     */
    public void setLabel(final String value){
       this.label = value;
@@ -103,25 +106,25 @@ public class CreateResponse
 
    /**
     * Gets the value of the warning property.
-    * 
+    *
     * <p>
     * This accessor method returns a reference to the live list,
     * not a snapshot. Therefore any modification you make to the
     * returned list will be present inside the JAXB object.
     * This is why there is not a <CODE>set</CODE> method for the warning property.
-    * 
+    *
     * <p>
     * For example, to add a new item, do as follows:
     * <pre>
     *    getWarning().add(newItem);
     * </pre>
-    * 
-    * 
+    *
+    *
     * <p>
     * Objects of the following type(s) are allowed in the list
     * {@link String }
-    * 
-    * 
+    *
+    *
     */
    public List<String> getWarning(){
       if(warning == null){
@@ -132,25 +135,25 @@ public class CreateResponse
 
    /**
     * Gets the value of the error property.
-    * 
+    *
     * <p>
     * This accessor method returns a reference to the live list,
     * not a snapshot. Therefore any modification you make to the
     * returned list will be present inside the JAXB object.
     * This is why there is not a <CODE>set</CODE> method for the error property.
-    * 
+    *
     * <p>
     * For example, to add a new item, do as follows:
     * <pre>
     *    getError().add(newItem);
     * </pre>
-    * 
-    * 
+    *
+    *
     * <p>
     * Objects of the following type(s) are allowed in the list
     * {@link String }
-    * 
-    * 
+    *
+    *
     */
    public List<String> getError(){
       if(error == null){

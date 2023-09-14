@@ -42,7 +42,7 @@ public interface CommonUtilsManager
 {
 
    /**
-    * Recherche un code partir de la table et du code de l'Id 
+    * Recherche un code partir de la table et du code de l'Id
     * spécifiés en paramètres.
     * @param ID du code
     * @param TableCodage

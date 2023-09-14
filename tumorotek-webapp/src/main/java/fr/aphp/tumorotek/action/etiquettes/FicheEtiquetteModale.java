@@ -82,39 +82,58 @@ public class FicheEtiquetteModale
 
    @Wire("#fwinEtiquetteModale")
    private Window fwinEtiquetteModale;
+
    @Wire("#copiesCheckbox")
    private Checkbox copiesCheckbox;
+
    @Wire("#listeCheckbox")
    private Checkbox listeCheckbox;
+
    @Wire("#premierNumeroBox")
    private Intbox premierNumeroBox;
+
    @Wire("#dernierNumeroBox")
    private Intbox dernierNumeroBox;
 
    private Window imprimanteWindow;
 
    private Integer nbrCopies = 1;
+
    private String codePrelevement;
+
    private String numeroTube;
+
    private String type;
+
    private String patient;
+
    private String dateCongelation;
+
    private String quantite;
+
    private Integer premierNumeroTube;
+
    private Integer dernierNumeroTube;
 
    private Boolean copies = false;
+
    private Boolean listeInc = true;
 
    private Modele modele;
+
    private Imprimante selectedImprimante;
+
    private String rawLang = null;
+
    private BarcodeFieldDefault barcodeBy = new BarcodeFieldDefault();
+
    private final List<String> separators = new ArrayList<>();
+
    private String separator;
 
    //private List<LigneEtiquette> lignesToPrint;
    private Vector<String> mbioData;
+
    private List<List<LigneEtiquette>> listlignes = new ArrayList<>();
 
    @AfterCompose
@@ -208,24 +227,24 @@ public class FicheEtiquetteModale
 
                completed = ManagerLocator.getTumoBarcodePrinter().printListCopiesData(getListlignes(), nbrCopies,
                   getSelectedImprimante(), getModele(), getRawLang(), getBarcodeBy());
-               //					
+               //
                //					if (copiesCheckbox.isChecked()) {
                //						if (!listeCheckbox.isChecked()) {
                //							completed = ManagerLocator.getTumoBarcodePrinter()
-               //								.printData(getLignes(), nbrCopies, getSelectedImprimante(), 
+               //								.printData(getLignes(), nbrCopies, getSelectedImprimante(),
                //										getModele(), rawLang);
                //						} else { // les deux sont cochées
                //							completed = ManagerLocator.getTumoBarcodePrinter()
-               //									.printListCopiesData(getListlignes(), nbrCopies, getSelectedImprimante(), 
+               //									.printListCopiesData(getListlignes(), nbrCopies, getSelectedImprimante(),
                //											getModele(),rawLang);
                //						}
                //					} else if (listeCheckbox.isChecked()) {
                //						completed = ManagerLocator.getTumoBarcodePrinter()
-               //							.printListData(getListlignes(), getSelectedImprimante(), 
+               //							.printListData(getListlignes(), getSelectedImprimante(),
                //									getModele(), rawLang);
                //					} else { // impression une seule etiquette
                //						completed = ManagerLocator.getTumoBarcodePrinter()
-               //								.printData(getLignes(), 1, getSelectedImprimante(), 
+               //								.printData(getLignes(), 1, getSelectedImprimante(),
                //										getModele(), rawLang);
                //					}
 
@@ -249,7 +268,7 @@ public class FicheEtiquetteModale
             //								.getLabel("validation.erreur.impression"));
             //		    		sb.append(" ");
             //		    		sb.append(e.getMessage());
-            //		    		Messagebox.show(sb.toString(), 
+            //		    		Messagebox.show(sb.toString(),
             //							"Error", Messagebox.OK, Messagebox.ERROR);
             //		    	}
          }else if(getSelectedImprimante().getImprimanteApi().getNom().equals("mbio")){

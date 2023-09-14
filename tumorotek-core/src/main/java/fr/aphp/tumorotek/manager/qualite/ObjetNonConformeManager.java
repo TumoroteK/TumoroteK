@@ -57,7 +57,7 @@ public interface ObjetNonConformeManager
 
    /**
     * Recherche un ObjetNonConforme dont l'identifiant est passé en paramètre.
-    * @param objetNonConformeId Identifiant du ObjetNonConforme 
+    * @param objetNonConformeId Identifiant du ObjetNonConforme
     * que l'on recherche.
     * @return Un ObjetNonConforme.
     */
@@ -108,7 +108,7 @@ public interface ObjetNonConformeManager
    void removeObjectManager(ObjetNonConforme objetNonConforme);
 
    /**
-    * Renvoie tous les ids objets qui référencent au moins une des 
+    * Renvoie tous les ids objets qui référencent au moins une des
     * non conformites passées dans la liste en paramètre.
     * Teste si la liste est vide ou null.
     * @param noconfs
@@ -119,7 +119,7 @@ public interface ObjetNonConformeManager
 
    /**
     * Préparations des batch statements pour full JDBC inserts pour l'objet passé en paramètre.
-    * @param jdbcSuite contenant les ids et statements permettant 
+    * @param jdbcSuite contenant les ids et statements permettant
     * la creation des objets en full JDBC
     * @param obj TKAnnotableObjects
     * @param nonConformites

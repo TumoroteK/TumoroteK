@@ -61,9 +61,9 @@ public interface TransporteurDao extends GenericDaoJpa<Transporteur, Integer>
    List<Transporteur> findByNom(String nom);
 
    /**
-    * Recherche les transporteurs dont le nom du contact est 
+    * Recherche les transporteurs dont le nom du contact est
     * donné en paramètre.
-    * @param contactNom du contact pour lequel on recherche des 
+    * @param contactNom du contact pour lequel on recherche des
     * transporteurs.
     * @return une liste de transporteurs.
     */
@@ -77,7 +77,7 @@ public interface TransporteurDao extends GenericDaoJpa<Transporteur, Integer>
    List<Transporteur> findByArchive(boolean archive);
 
    /**
-    * Recherche les transporteurs dont les coordonnées sont passées 
+    * Recherche les transporteurs dont les coordonnées sont passées
     * en paramètre.
     * @param coordonnee pour lesquelles on recherche des transporteurs.
     * @return une liste transporteurs.
@@ -100,7 +100,7 @@ public interface TransporteurDao extends GenericDaoJpa<Transporteur, Integer>
    List<Transporteur> findByOrder();
 
    /**
-    * Recherche tous les transporteurs sauf celui dont l'id est passé 
+    * Recherche tous les transporteurs sauf celui dont l'id est passé
     * en paramètre.
     * @param transporteurId Identifiant du transporteur que l'on souhaite
     * exclure de la liste retournée.

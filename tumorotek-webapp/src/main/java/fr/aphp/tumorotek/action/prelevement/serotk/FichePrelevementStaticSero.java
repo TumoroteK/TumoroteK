@@ -67,6 +67,7 @@ public class FichePrelevementStaticSero extends FichePrelevementStatic
    private static final long serialVersionUID = -7612780578022559022L;
 
    protected Vbox protocolesBox;
+
    protected Div refPatientDiv;
 
    @Override

@@ -58,11 +58,15 @@ public final class TumorotekProperties
    private static final Log log = LogFactory.getLog(TumorotekProperties.class);
 
    public static final String TUMO_PROPERTIES_FILENAME = "tumorotek.properties";
+
    public static final String TUMO_PROPERTIES_DIR = System.getProperty("catalina.base") + "/conf/Catalina/localhost/";
+
    public static final String TUMO_PROPERTIES_PATH = TUMO_PROPERTIES_DIR + TUMO_PROPERTIES_FILENAME;
 
    private static final Properties TUMOROTEK_PROPERTIES = new Properties();
+
    private static final String PLACEHOLDER_START_DELIMITER = "${";
+
    private static final String PLACEHOLDER_END_DELIMITER = "}";
 
    static{
@@ -96,6 +100,9 @@ public final class TumorotekProperties
          final PropertyPlaceholderHelper pph =
             new PropertyPlaceholderHelper(PLACEHOLDER_START_DELIMITER, PLACEHOLDER_END_DELIMITER, "#", false);
          res = pph.replacePlaceholders(value, TUMOROTEK_PROPERTIES);
+      }
+      else {
+         log.error("la clé : " + key + " n'a pas été trouvée dans tumorotek.properties - renvoie null");
       }
 
       return res;

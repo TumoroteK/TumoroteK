@@ -55,7 +55,7 @@ public interface DiagnosticDao extends GenericDaoJpa<Diagnostic, Integer>, PfDep
 {
 
    /**
-    * Recherche les diagnostics dont le nom 
+    * Recherche les diagnostics dont le nom
     * est 'like' le nom des diagnostics recherchés.
     * @return Liste des types de conditionnement.
     */

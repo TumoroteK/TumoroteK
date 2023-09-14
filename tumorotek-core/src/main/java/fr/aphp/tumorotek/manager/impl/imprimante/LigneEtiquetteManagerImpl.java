@@ -60,8 +60,11 @@ public class LigneEtiquetteManagerImpl implements LigneEtiquetteManager
 
    /** Beans. */
    private LigneEtiquetteDao ligneEtiquetteDao;
+
    private ModeleDao modeleDao;
+
    private ChampLigneEtiquetteManager champLigneEtiquetteManager;
+
    private LigneEtiquetteValidator ligneEtiquetteValidator;
 
    public void setLigneEtiquetteDao(final LigneEtiquetteDao lDao){

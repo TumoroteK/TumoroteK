@@ -102,13 +102,14 @@ public class FicheChampsAffichageModale extends GenericForwardComposer<Component
    }
 
    /**
-    * 
+    *
     * @param oldSelectedChamps oldSelected anciens champs sélectionnés qui ne seront pas affichés
     * @param parent composent parent
     * @param banque banque
     * @param selectionMultiple activer la sélection multiple
     */
-   public void init(final List<Champ> oldSelectedChamps, final Component parent, final Banque banque, final Boolean selectionMultiple){
+   public void init(final List<Champ> oldSelectedChamps, final Component parent, final Banque banque,
+      final Boolean selectionMultiple){
       this.oldSelectedChamps = oldSelectedChamps;
       this.parent = parent;
       this.banque = banque;
@@ -119,7 +120,7 @@ public class FicheChampsAffichageModale extends GenericForwardComposer<Component
 
       binder.loadComponent(champsAffichageTree);
    }
-   
+
    /**
     * @param oldSelectedChamps anciens champs sélectionnés qui ne seront pas affichés
     * @param parent composent parent
@@ -128,7 +129,8 @@ public class FicheChampsAffichageModale extends GenericForwardComposer<Component
     * @param dataTypeList liste des datatypes à afficher
     * @param excludeIds exclure les champs numériques représentant un id
     */
-   public void init(final List<Champ> oldSelectedChamps, final Component parent, final Banque banque, final Boolean selectionMultiple, List<DataType> dataTypeList, Boolean excludeIds){
+   public void init(final List<Champ> oldSelectedChamps, final Component parent, final Banque banque,
+      final Boolean selectionMultiple, final List<DataType> dataTypeList, final Boolean excludeIds){
       this.oldSelectedChamps = oldSelectedChamps;
       this.parent = parent;
       this.banque = banque;
@@ -139,34 +141,34 @@ public class FicheChampsAffichageModale extends GenericForwardComposer<Component
 
       binder.loadComponent(champsAffichageTree);
    }
-   
+
    /**
     * Init du noeud root de l'arbre
     */
    private ChampsRootNode initRoot(){
-   // Init du noeud root de l'arbre
+      // Init du noeud root de l'arbre
       final ChampsRootNode root = new ChampsRootNode();
       root.setOldSelectedChamps(oldSelectedChamps);
       root.setBanque(banque);
       root.readChildren();
-      
+
       return root;
    }
-   
+
    /**
     * Init du noeud root de l'arbre
     * @param dataTypeList liste des datatypes à afficher
     * @param excludeIds exclure les champs numériques représentant un id
     */
    private ChampsRootNode initRoot(final List<DataType> dataTypeList, final Boolean excludeIds){
-   // Init du noeud root de l'arbre
+      // Init du noeud root de l'arbre
       final ChampsRootNode root = new ChampsRootNode();
       root.setOldSelectedChamps(oldSelectedChamps);
       root.setBanque(banque);
       root.setDataTypeList(dataTypeList);
       root.setExcludeIds(excludeIds);
       root.readChildren();
-      
+
       return root;
    }
 

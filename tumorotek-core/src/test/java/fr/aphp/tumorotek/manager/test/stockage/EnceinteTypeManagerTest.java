@@ -67,6 +67,7 @@ public class EnceinteTypeManagerTest extends AbstractManagerTest4
 
    @Autowired
    private EnceinteTypeManager enceinteTypeManager;
+
    @Autowired
    private PlateformeDao plateformeDao;
 

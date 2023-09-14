@@ -121,13 +121,13 @@ public class ChampDelegueManagerTest extends AbstractManagerTest4
       champDelegueInexistant.setNom("ChampInconnu");
       champDelegueInexistant.setContexte(EContexte.SEROLOGIE);
       champDelegueInexistant.setEntite(entite);
-      
+
       Object valeur = champDelegueManager.getValueForEntite(champDelegueInexistant, prelevement);
 
       assertNull(valeur);
-      
+
    }
-   
+
    /**
     * Test method for {@link fr.aphp.tumorotek.manager.impl.io.ChampDelegueManagerImpl#findByNomAndEntiteAndContexte(java.lang.String, fr.aphp.tumorotek.model.systeme.Entite, fr.aphp.tumorotek.model.contexte.EContexte)}.
     */

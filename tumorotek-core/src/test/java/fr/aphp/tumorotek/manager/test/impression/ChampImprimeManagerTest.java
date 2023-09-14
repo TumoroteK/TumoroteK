@@ -70,10 +70,13 @@ public class ChampImprimeManagerTest extends AbstractManagerTest4
 
    @Autowired
    private ChampImprimeManager champImprimeManager;
+
    @Autowired
    private TemplateDao templateDao;
+
    @Autowired
    private ChampEntiteDao champEntiteDao;
+
    @Autowired
    private BlocImpressionDao blocImpressionDao;
 

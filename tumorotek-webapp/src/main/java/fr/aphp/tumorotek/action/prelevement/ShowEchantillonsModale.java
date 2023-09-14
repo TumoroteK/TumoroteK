@@ -66,12 +66,17 @@ public class ShowEchantillonsModale extends GenericForwardComposer<Window>
    private static final long serialVersionUID = 3487687657729735018L;
 
    private List<Echantillon> echantillons = new ArrayList<>();
+
    private Prelevement prelevement;
+
    private String oldPrefixe;
+
    private MainWindow main;
+
    private Page pg;
 
    private Radio modifAuto;
+
    private Radio modifManuelle;
 
    public void init(final List<Echantillon> echans, final Prelevement prlvt, final String oPrefixe, final MainWindow mw,

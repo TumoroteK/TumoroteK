@@ -66,7 +66,7 @@
 						sort="auto(datePrelevement)" />
 					<column
 						label="${c:l('Champ.Prelevement.Nature.Nature')}"
-						sort="auto(nature.nature)" />
+						sort="auto(nature.nom)" />
 					<column label="${c:l('general.diagnostic')}" />
 					<column align="center" sort="auto"
 						id="nbEchantillonsColumn">
@@ -81,7 +81,7 @@
 					</column>
 					<column
 						label="${c:l('Champ.Prelevement.ConsentType')}"
-						sort="auto(consentType.type)" />
+						sort="auto(consentType.nom)" />
 				</columns>
 				<rows>
 					<row self="@{each='currPrelevement'}"

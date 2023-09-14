@@ -50,9 +50,9 @@ public interface ChampDelegueManager
 {
 
    List<ChampDelegue> findByEntiteAndContexte(Entite entite, EContexte contexte);
-   
+
    <T> Object getValueForEntite(ChampDelegue cd, TKDelegetableObject<T> entite);
-   
+
    List<ChampDelegue> findByNomAndEntiteAndContexte(String nom, Entite entite, EContexte contexte);
-   
+
 }

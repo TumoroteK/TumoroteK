@@ -75,8 +75,8 @@ import fr.aphp.tumorotek.webapp.general.SessionUtils;
  * @version 2.2.1
  *
  *          modifié le 21 Septembre 2012 par Julien HUSSON déplacement multiple
- *  
- * @since 2.2.1 TK-254 contrainte de contexte afin que les banques disponibles pour 
+ *
+ * @since 2.2.1 TK-254 contrainte de contexte afin que les banques disponibles pour
  * un changement de collection soient de même contexte
  *
  */
@@ -86,16 +86,25 @@ public class ChangeBanqueModale extends GenericForwardComposer<Component>
    private static final long serialVersionUID = 5284777010172649451L;
 
    private Group groupEchans;
+
    private Grid echantillonsGrid;
+
    private Group groupDerives;
+
    private Grid derivesGrid;
+
    private Label emplWarnLabel;
+
    private Listbox banquesBox;
+
    private Grid prlvtsGrid;
 
    private Prelevement[] prelevements;
+
    private final List<Echantillon> echans = new ArrayList<>();
+
    private final List<ProdDerive> derives = new ArrayList<>();
+
    private List<Banque> banques;
 
    private MainWindow main;
@@ -166,7 +175,7 @@ public class ChangeBanqueModale extends GenericForwardComposer<Component>
    /**
     * Affiche ou non le warning sur les emplacements si un des objets est
     * stocké.
-    * 
+    *
     * @return true si au moins un des objets est stocké.
     */
    private boolean displayEmplWarning(){
@@ -236,7 +245,7 @@ public class ChangeBanqueModale extends GenericForwardComposer<Component>
    /**
     * Forwarded Event. Récupère le prélèvement pour afficher ses
     * échantillons/dérivés associées
-    * 
+    *
     * @param e
     *            forwardé depuis le table code prel cliquable (event.getData
     *            contient l'objet Prelevement).
@@ -258,6 +267,6 @@ class MyGridRenderer implements RowRenderer<Prelevement>
       codeLbl.setParent(row);
       codeLbl.setClass("formLink");
       new Label(p.getNumeroLabo()).setParent(row);
-      new Label(p.getNature().getNom()).setParent(row);
+      new Label(p.getNature() != null ? p.getNature().getNom() : "").setParent(row);
    }
 }

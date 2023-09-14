@@ -51,7 +51,9 @@ public class BarcodeFieldDefault
 {
 
    private Float moduleWidth = new Float(1.0);
+
    private Float widthRatio = new Float(3.0);
+
    private Integer barCodeHeight = 10;
 
    public BarcodeFieldDefault(){}

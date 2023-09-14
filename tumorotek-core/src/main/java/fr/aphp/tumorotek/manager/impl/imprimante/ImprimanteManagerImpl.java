@@ -70,10 +70,13 @@ public class ImprimanteManagerImpl implements ImprimanteManager
 
    /** Bean Dao. */
    private ImprimanteDao imprimanteDao;
+
    /** Bean Dao. */
    private ImprimanteApiDao imprimanteApiDao;
+
    /** Bean Dao. */
    private PlateformeDao plateformeDao;
+
    /** Bean Validator. */
    private ImprimanteValidator imprimanteValidator;
 

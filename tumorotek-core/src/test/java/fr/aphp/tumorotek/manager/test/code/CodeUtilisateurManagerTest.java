@@ -88,24 +88,34 @@ public class CodeUtilisateurManagerTest extends AbstractManagerTest4
 
    @Autowired
    private CodeUtilisateurManager codeUtilisateurManager;
+
    @Autowired
    private CodeUtilisateurDao codeUtilisateurDao;
+
    @Autowired
    private CodeDossierDao codeDossierDao;
+
    @Autowired
    private UtilisateurDao utilisateurDao;
+
    @Autowired
    private BanqueDao banqueDao;
+
    @Autowired
    private OperationManager operationManager;
+
    @Autowired
    private CodeCommonValidator codeCommonValidator;
+
    @Autowired
    private AdicapDao adicapDao;
+
    @Autowired
    private CimMasterDao cimMasterDao;
+
    @Autowired
    private TableCodageDao tableCodageDao;
+
    @Autowired
    private OperationTypeDao operationTypeDao;
 

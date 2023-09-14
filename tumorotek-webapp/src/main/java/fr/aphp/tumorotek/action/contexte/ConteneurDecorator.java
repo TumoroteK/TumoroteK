@@ -53,7 +53,9 @@ public class ConteneurDecorator
 {
 
    private Conteneur conteneur;
+
    private Plateforme current;
+
    private Boolean deleteHeaderVisible;
 
    public ConteneurDecorator(final Conteneur c, final Plateforme current){
@@ -105,9 +107,9 @@ public class ConteneurDecorator
    }
 
    /**
-    * Récupère les conteneurs à passer dans la méthode d'update afin de 
+    * Récupère les conteneurs à passer dans la méthode d'update afin de
     * modifier les relations Conteneur_Plateforme.
-    * Exclue de la liste tous les conteneurs dont la plateforme de création 
+    * Exclue de la liste tous les conteneurs dont la plateforme de création
     * correspond à la plateforme en cours
     * @param decos
     * @return List<Conteneur>

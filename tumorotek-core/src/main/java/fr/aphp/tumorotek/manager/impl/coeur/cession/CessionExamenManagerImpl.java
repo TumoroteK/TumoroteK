@@ -68,7 +68,9 @@ public class CessionExamenManagerImpl implements CessionExamenManager
 
    /** Bean Dao CessionExamenDao. */
    private CessionExamenDao cessionExamenDao;
+
    private CessionExamenValidator cessionExamenValidator;
+
    private PlateformeDao plateformeDao;
 
    public void setPlateformeDao(final PlateformeDao pDao){
@@ -185,5 +187,5 @@ public class CessionExamenManagerImpl implements CessionExamenManager
    public List<CessionExamen> findByOrderManager(){
       return cessionExamenDao.findByOrder();
    }
-   
+
 }

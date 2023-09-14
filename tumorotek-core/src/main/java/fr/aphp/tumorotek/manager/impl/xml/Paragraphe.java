@@ -47,9 +47,13 @@ public class Paragraphe
 {
 
    private String titre;
+
    private Object[] lignes;
+
    private SousParagraphe[] sousParagraphes;
+
    private String inconnu;
+
    private ListeElement liste;
 
    public Paragraphe(){

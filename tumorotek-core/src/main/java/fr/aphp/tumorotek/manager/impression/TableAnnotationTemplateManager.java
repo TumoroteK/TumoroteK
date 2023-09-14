@@ -55,9 +55,9 @@ public interface TableAnnotationTemplateManager
 {
 
    /**
-    * Recherche un TableAnnotationTemplate dont l'identifiant est 
+    * Recherche un TableAnnotationTemplate dont l'identifiant est
     * passé en paramètre.
-    * @param pk Identifiant du TableAnnotationTemplate que 
+    * @param pk Identifiant du TableAnnotationTemplate que
     * l'on recherche.
     * @return Un TableAnnotationTemplate.
     */
@@ -70,7 +70,7 @@ public interface TableAnnotationTemplateManager
    List<TableAnnotationTemplate> findAllObjectsManager();
 
    /**
-    * Recherche les TableAnnotationTemplates sauf celui dont la clé 
+    * Recherche les TableAnnotationTemplates sauf celui dont la clé
     * primaire est passée en paramètre.
     * @param pk TableAnnotationTemplatePK.
     * @return Liste de TableAnnotationTemplates.
@@ -78,7 +78,7 @@ public interface TableAnnotationTemplateManager
    List<TableAnnotationTemplate> findByExcludedPKManager(TableAnnotationTemplatePK pk);
 
    /**
-    * Recherche les TableAnnotationTemplates dont le Template est égal au 
+    * Recherche les TableAnnotationTemplates dont le Template est égal au
     * paramètre.
     * @param template Template des TableAnnotationTemplates recherchés.
     * @return une liste de TableAnnotationTemplates.

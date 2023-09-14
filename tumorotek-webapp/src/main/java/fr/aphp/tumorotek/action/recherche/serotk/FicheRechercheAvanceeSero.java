@@ -62,7 +62,7 @@ import fr.aphp.tumorotek.webapp.general.SessionUtils;
 /**
  * Méthodes pour les recherches avancées du contexte SEROTK
  * Class créée le 07/06/2018
- * 
+ *
  * @author Answald Bournique
  * @version 2.2.0
  * @since 2.2.0
@@ -71,15 +71,19 @@ public class FicheRechercheAvanceeSero extends FicheRechercheAvancee
 {
 
    /**
-    * 
+    *
     */
    private static final long serialVersionUID = 3235082304872498863L;
 
    // Contexte Serotheque
    private Listbox protocolesBox;
+
    private Textbox diagCompBox;
+
    private List<Protocole> protocoles;
+
    private Listbox diagSeroBox;
+
    private List<Diagnostic> diagnostics;
 
    @Override
@@ -106,7 +110,7 @@ public class FicheRechercheAvanceeSero extends FicheRechercheAvancee
       final Entite maladieEntite =
          ManagerLocator.getManager(EntiteManager.class).findByNomManager(Maladie.class.getSimpleName()).get(0);
 
-      ChampDelegue delegate = new ChampDelegue();
+      final ChampDelegue delegate = new ChampDelegue();
       delegate.setNom("Delegate");
       delegate.setEntite(maladieEntite);
       Champ parent1 = new Champ(delegate);
@@ -136,11 +140,11 @@ public class FicheRechercheAvanceeSero extends FicheRechercheAvancee
             if(current.getSelectedIndex() > 0){
                if(current.getId().equals("diagSeroBox")){
                   //ChampEntite protocoles = ManagerLocator.getChampEntiteManager().findByEntiteAndNomManager(prlvtEntite, "Protocoles").get(0);
-                  ChampDelegue diagnostic = ManagerLocator.getManager(ChampDelegueManager.class)
+                  final ChampDelegue diagnostic = ManagerLocator.getManager(ChampDelegueManager.class)
                      .findByNomAndEntiteAndContexte("Diagnostic", maladieEntite, EContexte.SEROLOGIE).get(0);
                   parent1 = new Champ(diagnostic);
                   parent2 = new Champ(diagnostic);
-                  Champ champParent = new Champ(delegate);
+                  final Champ champParent = new Champ(delegate);
                   champParent.setChampParent(parent1ToQueryMaladie);
                   parent1.setChampParent(champParent);
                   parent2.setChampParent(champParent);
@@ -159,7 +163,7 @@ public class FicheRechercheAvanceeSero extends FicheRechercheAvancee
       final Entite prlvtEntite =
          ManagerLocator.getManager(EntiteManager.class).findByNomManager(Prelevement.class.getSimpleName()).get(0);
       //ChampEntite delegate = ManagerLocator.getChampEntiteManager().findByEntiteAndNomManager(prlvtEntite, "Delegate").get(0);
-      ChampEntite delegate = new ChampEntite();
+      final ChampEntite delegate = new ChampEntite();
       delegate.setNom("Delegate");
       delegate.setEntite(prlvtEntite);
       Champ parent1 = new Champ(delegate);
@@ -195,11 +199,11 @@ public class FicheRechercheAvanceeSero extends FicheRechercheAvancee
             if(current.getSelectedIndex() > 0){
                if(current.getId().equals("protocolesBox")){
                   //ChampEntite protocoles = ManagerLocator.getChampEntiteManager().findByEntiteAndNomManager(prlvtEntite, "Protocoles").get(0);
-                  ChampDelegue protocoles = ManagerLocator.getManager(ChampDelegueManager.class)
+                  final ChampDelegue protocoles = ManagerLocator.getManager(ChampDelegueManager.class)
                      .findByNomAndEntiteAndContexte("Protocoles", prlvtEntite, EContexte.SEROLOGIE).get(0);
                   parent1 = new Champ(protocoles);
                   parent2 = new Champ(protocoles);
-                  Champ champParent = new Champ(delegate);
+                  final Champ champParent = new Champ(delegate);
                   champParent.setChampParent(parent1ToQueryPrlvt);
                   parent1.setChampParent(champParent);
                   parent2.setChampParent(champParent);
@@ -224,7 +228,7 @@ public class FicheRechercheAvanceeSero extends FicheRechercheAvancee
       return diagnostics;
    }
 
-   public void setDiagnostics(List<Diagnostic> diagnostics){
+   public void setDiagnostics(final List<Diagnostic> diagnostics){
       this.diagnostics = diagnostics;
    }
 

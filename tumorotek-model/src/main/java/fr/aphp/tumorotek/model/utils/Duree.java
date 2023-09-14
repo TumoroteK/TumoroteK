@@ -42,7 +42,7 @@ import java.util.Date;
  * Classe utilitaire de type durée permettant le calcul de différence de dates et le calcul de nombre de secondes, minutes, heures, jours, mois...
  * <br><strong> Attention : </strong> Ne prends pas en compte les années bisextiles, les mois sont estimés à 30 jours et les années à 365 jours.
  * Classe créée le 20/02/2018
- * 
+ *
  * @author Answald Bournique
  * @version 2.2.0
  * @since 2.2.0
@@ -51,12 +51,19 @@ public class Duree
 {
 
    public static Long MILLISECONDE = 1L;
+
    public static Long SECONDE = 1000 * MILLISECONDE;
+
    public static Long MINUTE = SECONDE * 60;
+
    public static Long HEURE = MINUTE * 60;
+
    public static Long JOUR = HEURE * 24;
+
    public static Long SEMAINE = JOUR * 7;
+
    public static Long MOIS = JOUR * 30;
+
    public static Long ANNEE = JOUR * 365;
 
    private Long millisecondes;
@@ -69,14 +76,14 @@ public class Duree
    public Duree(final Long temps, final Long unite){
       this.millisecondes = temps * unite;
    }
-   
+
    /**
     * Initialise une durée selon l'unité
     * @param temps temps
     * @param unite unité utiliser (Duree.TYPE_SOUHAITE)
     */
    public Duree(final Float temps, final Long unite){
-      Float res = temps * new Float(unite);
+      final Float res = temps * new Float(unite);
       this.millisecondes = res.longValue();
    }
 

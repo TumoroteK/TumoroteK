@@ -76,10 +76,15 @@ public class ScanTerminaleManagerImpl implements ScanTerminaleManager
    private final Log log = LogFactory.getLog(ScanTerminaleManager.class);
 
    private ScanTerminaleDao scanTerminaleDao;
+
    private ScanDeviceDao scanDeviceDao;
+
    private EchantillonManager echantillonManager;
+
    private ProdDeriveManager prodDeriveManager;
+
    private TerminaleManager terminaleManager;
+
    private EmplacementManager emplacementManager;
 
    public void setScanTerminaleDao(final ScanTerminaleDao _s){
@@ -225,7 +230,7 @@ public class ScanTerminaleManagerImpl implements ScanTerminaleManager
                   }else if(!objs.get(0).getCode().equals(tube.getCode())){
                      scanDTO.getEmplacementsMismatch().put(tube, objs.get(0));
                   }
-               }else{ // 2-emplacement filled && tube scan empty -> to be freed 
+               }else{ // 2-emplacement filled && tube scan empty -> to be freed
                   scanDTO.getEmplacementsToFree().put(tube, objs.get(0));
                }
             }else{

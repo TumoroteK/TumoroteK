@@ -24,13 +24,19 @@ public class FichePasswordModale extends GenericForwardComposer<Component>
    private static final long serialVersionUID = -2054096107955103379L;
 
    private Component parent;
+
    private Utilisateur utilisateur;
+
    private String oldPassword;
+
    private String newPassword;
+
    private String confirmationPassword;
 
    private Textbox ancienPasswordBox;
+
    private Textbox confirmPasswordBox;
+
    private Row rowOldPassword;
 
    private boolean isAdminPF = false;

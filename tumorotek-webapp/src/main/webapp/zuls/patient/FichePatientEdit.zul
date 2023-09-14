@@ -58,8 +58,8 @@
 							constraint="@{fwinPatientEdit$composer.codeNullConstraint}" />
 						<label id="ndaFieldLabel" value="${c:l('Champ.Prelevement.PatientNda')}"
 												 sclass="formLabel" visible="false"/>
-						<textbox id="ndaBox" width="100px" visible="false"
-									constraint="@{fwinPatient$composer.codeNullConstraint}" />
+						<textbox id="patientNdaBox" width="100px" visible="false"
+									constraint="@{fwinPatientEdit$composer.ndaConstraint}" />
 					</row>
 					<row>
 					<!-- Nom -->
@@ -84,10 +84,10 @@
 							<label value="${c:l('Champ.Patient.Prenom')}" sclass="formLabel" />
 							<label id="prenomRequired" value="*" sclass="requiredMark" />
 						</hbox>
-							<textbox id="prenomBox" value="@{fwinPatientEdit$composer.object.prenom,
+						<textbox id="prenomBox" value="@{fwinPatientEdit$composer.object.prenom,
 		        								 save-when='validate.onClick, create.onClick'}"
-						width="100px" 
-						constraint="@{fwinPatientEdit$composer.nomConstraint}" />
+							width="100px" 
+							constraint="@{fwinPatientEdit$composer.nomConstraint}" />
 					<!-- Sexe -->
 						<hbox>
 							<box orient="horizontal" pack="center" >
@@ -126,14 +126,14 @@
 						<label value="${c:l('Champ.Patient.PaysNaissance')}" sclass="formLabel" />
 						<textbox id="paysNaisBox" value="@{fwinPatientEdit$composer.object.paysNaissance,
 		        								 save-when='validate.onClick, create.onClick'}" 
-						width="100px" 
-						constraint="@{fwinPatientEdit$composer.villePaysConstraint}" />
+							width="100px" 
+							constraint="@{fwinPatientEdit$composer.paysNaissanceConstraint}" />
 					<!-- Ville de naissance -->
 						<label value="${c:l('Champ.Patient.VilleNaissance')}" sclass="formLabel" />
 						<textbox id="villeNaisBox" value="@{fwinPatientEdit$composer.object.villeNaissance,
 			        								 save-when='validate.onClick, create.onClick'}" 
 							width="100px" 
-							constraint="@{fwinPatientEdit$composer.villePaysConstraint}" />
+							constraint="@{fwinPatientEdit$composer.villeNaissanceConstraint}" />
 					</row>
 					<row>
 				<!-- Etat patient -->

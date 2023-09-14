@@ -60,169 +60,177 @@ import fr.aphp.tumorotek.model.io.export.Champ;
 @Entity
 @Table(name = "IMPORT_COLONNE")
 @NamedQueries(value = {
-		@NamedQuery(name = "ImportColonne.findByTemplateWithOrder", query = "SELECT i FROM ImportColonne i "
-				+ "WHERE i.importTemplate = ?1 ORDER BY i.ordre"),
-		@NamedQuery(name = "ImportColonne.findByTemplateWithOrderSelectNom", query = "SELECT i.nom FROM ImportColonne i "
-				+ "WHERE i.importTemplate = ?1 ORDER BY i.ordre"),
-		@NamedQuery(name = "ImportColonne.findByTemplateAndEntite", query = "SELECT i FROM ImportColonne i "
-				+ "WHERE i.importTemplate = ?1 AND i.champ.champEntite.entite = ?2 ORDER BY i.ordre"),
-		@NamedQuery(name = "ImportColonne.findByTemplateAndEntiteDelegue", query = "SELECT i FROM ImportColonne i "
-				+ "WHERE i.importTemplate = ?1 AND i.champ.champDelegue.entite = ?2 ORDER BY i.ordre"),
-		@NamedQuery(name = "ImportColonne.findByTemplateAndAnnotationEntite", query = "SELECT i FROM ImportColonne i "
-				+ "WHERE i.importTemplate = ?1 " + "AND i.champ.champAnnotation.tableAnnotation.entite = ?2 "
-				+ "ORDER BY i.ordre"),
-		@NamedQuery(name = "ImportColonne.findByTemplateAndDataType", query = "SELECT i FROM ImportColonne i "
-				+ "WHERE i.importTemplate = ?1 " + "AND i.champ.champEntite.dataType = ?2 " + "ORDER BY i.ordre"),
-		@NamedQuery(name = "ImportColonne.findByTemplateAndThesaurus", query = "SELECT i FROM ImportColonne i "
-				+ "WHERE i.importTemplate = ?1 " + "AND i.champ.champEntite.queryChamp is not null "
-				+ "ORDER BY i.ordre"),
-		@NamedQuery(name = "ImportColonne.findByTemplateAndAnnotationDatatype", query = "SELECT i FROM ImportColonne i "
-				+ "WHERE i.importTemplate = ?1 " + "AND i.champ.champAnnotation.dataType = ?2 " + "ORDER BY i.ordre"),
-		@NamedQuery(name = "ImportColonne.findByExcludedIdWithTemplate", query = "SELECT i FROM ImportColonne i "
-				+ "WHERE i.importColonneId != ?1 " + "AND i.importTemplate = ?2"),
-		@NamedQuery(name = "ImportColonne"
-				+ ".findByExcludedIdWithTemplateSelectNom", query = "SELECT i.nom FROM ImportColonne i "
-						+ "WHERE i.importColonneId != ?1 " + "AND i.importTemplate = ?2") })
-public class ImportColonne implements java.io.Serializable {
+   @NamedQuery(name = "ImportColonne.findByTemplateWithOrder",
+      query = "SELECT i FROM ImportColonne i " + "WHERE i.importTemplate = ?1 ORDER BY i.ordre"),
+   @NamedQuery(name = "ImportColonne.findByTemplateWithOrderSelectNom",
+      query = "SELECT i.nom FROM ImportColonne i " + "WHERE i.importTemplate = ?1 ORDER BY i.ordre"),
+   @NamedQuery(name = "ImportColonne.findByTemplateAndEntite",
+      query = "SELECT i FROM ImportColonne i "
+         + "WHERE i.importTemplate = ?1 AND i.champ.champEntite.entite = ?2 ORDER BY i.ordre"),
+   @NamedQuery(name = "ImportColonne.findByTemplateAndEntiteDelegue",
+      query = "SELECT i FROM ImportColonne i "
+         + "WHERE i.importTemplate = ?1 AND i.champ.champDelegue.entite = ?2 ORDER BY i.ordre"),
+   @NamedQuery(name = "ImportColonne.findByTemplateAndAnnotationEntite",
+      query = "SELECT i FROM ImportColonne i " + "WHERE i.importTemplate = ?1 "
+         + "AND i.champ.champAnnotation.tableAnnotation.entite = ?2 " + "ORDER BY i.ordre"),
+   @NamedQuery(name = "ImportColonne.findByTemplateAndDataType",
+      query = "SELECT i FROM ImportColonne i " + "WHERE i.importTemplate = ?1 " + "AND i.champ.champEntite.dataType = ?2 "
+         + "ORDER BY i.ordre"),
+   @NamedQuery(name = "ImportColonne.findByTemplateAndThesaurus",
+      query = "SELECT i FROM ImportColonne i " + "WHERE i.importTemplate = ?1 "
+         + "AND i.champ.champEntite.queryChamp is not null " + "ORDER BY i.ordre"),
+   @NamedQuery(name = "ImportColonne.findByTemplateAndAnnotationDatatype",
+      query = "SELECT i FROM ImportColonne i " + "WHERE i.importTemplate = ?1 " + "AND i.champ.champAnnotation.dataType = ?2 "
+         + "ORDER BY i.ordre"),
+   @NamedQuery(name = "ImportColonne.findByExcludedIdWithTemplate",
+      query = "SELECT i FROM ImportColonne i " + "WHERE i.importColonneId != ?1 " + "AND i.importTemplate = ?2"),
+   @NamedQuery(name = "ImportColonne" + ".findByExcludedIdWithTemplateSelectNom",
+      query = "SELECT i.nom FROM ImportColonne i " + "WHERE i.importColonneId != ?1 " + "AND i.importTemplate = ?2")})
+public class ImportColonne implements java.io.Serializable
+{
 
-	private static final long serialVersionUID = -1118923775227753390L;
+   private static final long serialVersionUID = -1118923775227753390L;
 
-	private Integer importColonneId;
-	private ImportTemplate importTemplate;
-	private Champ champ;
-	private String nom;
-	private Integer ordre;
+   private Integer importColonneId;
 
-	public ImportColonne() {
+   private ImportTemplate importTemplate;
 
-	}
+   private Champ champ;
 
-	@Id
-	@Column(name = "IMPORT_COLONNE_ID", unique = true, nullable = false)
-	@GeneratedValue(generator = "autoincrement")
-	@GenericGenerator(name = "autoincrement", strategy = "increment")
-	public Integer getImportColonneId() {
-		return importColonneId;
-	}
+   private String nom;
 
-	public void setImportColonneId(final Integer id) {
-		this.importColonneId = id;
-	}
+   private Integer ordre;
 
-	@ManyToOne
-	@JoinColumn(name = "IMPORT_TEMPLATE_ID", nullable = false)
-	public ImportTemplate getImportTemplate() {
-		return importTemplate;
-	}
+   public ImportColonne(){
 
-	public void setImportTemplate(final ImportTemplate i) {
-		this.importTemplate = i;
-	}
+   }
 
-	@ManyToOne
-	@JoinColumn(name = "CHAMP_ID", nullable = false)
-	public Champ getChamp() {
-		return champ;
-	}
+   @Id
+   @Column(name = "IMPORT_COLONNE_ID", unique = true, nullable = false)
+   @GeneratedValue(generator = "autoincrement")
+   @GenericGenerator(name = "autoincrement", strategy = "increment")
+   public Integer getImportColonneId(){
+      return importColonneId;
+   }
 
-	public void setChamp(final Champ c) {
-		this.champ = c;
-	}
+   public void setImportColonneId(final Integer id){
+      this.importColonneId = id;
+   }
 
-	@Column(name = "NOM", nullable = false, length = 50)
-	public String getNom() {
-		return nom;
-	}
+   @ManyToOne
+   @JoinColumn(name = "IMPORT_TEMPLATE_ID", nullable = false)
+   public ImportTemplate getImportTemplate(){
+      return importTemplate;
+   }
 
-	public void setNom(final String n) {
-		this.nom = n;
-	}
+   public void setImportTemplate(final ImportTemplate i){
+      this.importTemplate = i;
+   }
 
-	@Column(name = "ORDRE", nullable = true)
-	public Integer getOrdre() {
-		return ordre;
-	}
+   @ManyToOne
+   @JoinColumn(name = "CHAMP_ID", nullable = false)
+   public Champ getChamp(){
+      return champ;
+   }
 
-	public void setOrdre(final Integer o) {
-		this.ordre = o;
-	}
+   public void setChamp(final Champ c){
+      this.champ = c;
+   }
 
-	/**
-	 * 2 colonnes sont considérées comme égales si elles ont le même nom et la même
-	 * reference vers le template.
-	 * 
-	 * @param obj
-	 *            à tester.
-	 * @return true si les objs sont égaux.
-	 */
-	@Override
-	public boolean equals(final Object obj) {
+   @Column(name = "NOM", nullable = false, length = 50)
+   public String getNom(){
+      return nom;
+   }
 
-		if (this == obj) {
-			return true;
-		}
-		if ((obj == null) || obj.getClass() != this.getClass()) {
-			return false;
-		}
-		final ImportColonne test = (ImportColonne) obj;
-		return ((this.nom == test.nom || (this.nom != null && this.nom.equals(test.nom)))
-				&& (this.importTemplate == test.importTemplate
-						|| (this.importTemplate != null && this.importTemplate.equals(test.importTemplate)))
-				&& (this.champ == test.champ || (this.champ != null && this.champ.equals(test.champ))));
-	}
+   public void setNom(final String n){
+      this.nom = n;
+   }
 
-	/**
-	 * Le hashcode est calculé sur l'attribut nom et la reference vers le template.
-	 * 
-	 * @return la valeur du hashcode.
-	 */
-	@Override
-	public int hashCode() {
-		int hash = 7;
-		int hashNom = 0;
-		int hashChamp = 0;
-		int hashImport = 0;
+   @Column(name = "ORDRE", nullable = true)
+   public Integer getOrdre(){
+      return ordre;
+   }
 
-		if (this.nom != null) {
-			hashNom = this.nom.hashCode();
-		}
-		if (this.champ != null) {
-			hashChamp = this.champ.hashCode();
-		}
-		if (this.importTemplate != null) {
-			hashImport = this.importTemplate.hashCode();
-		}
+   public void setOrdre(final Integer o){
+      this.ordre = o;
+   }
 
-		hash = 31 * hash + hashNom;
-		hash = 31 * hash + hashChamp;
-		hash = 31 * hash + hashImport;
+   /**
+    * 2 colonnes sont considérées comme égales si elles ont le même nom et la même
+    * reference vers le template.
+    * 
+    * @param obj
+    *            à tester.
+    * @return true si les objs sont égaux.
+    */
+   @Override
+   public boolean equals(final Object obj){
 
-		return hash;
-	}
+      if(this == obj){
+         return true;
+      }
+      if((obj == null) || obj.getClass() != this.getClass()){
+         return false;
+      }
+      final ImportColonne test = (ImportColonne) obj;
+      return ((this.nom == test.nom || (this.nom != null && this.nom.equals(test.nom)))
+         && (this.importTemplate == test.importTemplate
+            || (this.importTemplate != null && this.importTemplate.equals(test.importTemplate)))
+         && (this.champ == test.champ || (this.champ != null && this.champ.equals(test.champ))));
+   }
 
-	@Override
-	public ImportColonne clone() {
-		final ImportColonne clone = new ImportColonne();
+   /**
+    * Le hashcode est calculé sur l'attribut nom et la reference vers le template.
+    * 
+    * @return la valeur du hashcode.
+    */
+   @Override
+   public int hashCode(){
+      int hash = 7;
+      int hashNom = 0;
+      int hashChamp = 0;
+      int hashImport = 0;
 
-		clone.setImportColonneId(this.importColonneId);
-		clone.setImportTemplate(this.importTemplate);
-		clone.setChamp(this.champ);
-		clone.setNom(this.nom);
-		clone.setOrdre(this.ordre);
+      if(this.nom != null){
+         hashNom = this.nom.hashCode();
+      }
+      if(this.champ != null){
+         hashChamp = this.champ.hashCode();
+      }
+      if(this.importTemplate != null){
+         hashImport = this.importTemplate.hashCode();
+      }
 
-		return clone;
-	}
+      hash = 31 * hash + hashNom;
+      hash = 31 * hash + hashChamp;
+      hash = 31 * hash + hashImport;
 
-	/**
-	 * Méthode surchargeant le toString() de l'objet.
-	 */
-	@Override
-	public String toString() {
-		if (this.nom != null && this.importTemplate != null) {
-			return "{" + this.nom + ", " + importTemplate.getNom() + "(ImportTemplate)}";
-		} else {
-			return "{Empty ImportColonne}";
-		}
-	}
+      return hash;
+   }
+
+   @Override
+   public ImportColonne clone(){
+      final ImportColonne clone = new ImportColonne();
+
+      clone.setImportColonneId(this.importColonneId);
+      clone.setImportTemplate(this.importTemplate);
+      clone.setChamp(this.champ);
+      clone.setNom(this.nom);
+      clone.setOrdre(this.ordre);
+
+      return clone;
+   }
+
+   /**
+    * Méthode surchargeant le toString() de l'objet.
+    */
+   @Override
+   public String toString(){
+      if(this.nom != null && this.importTemplate != null){
+         return "{" + this.nom + ", " + importTemplate.getNom() + "(ImportTemplate)}";
+      }else{
+         return "{Empty ImportColonne}";
+      }
+   }
 
 }

@@ -80,16 +80,22 @@ public class Formulaire
 
    @XmlElement(name = "identifiant", required = true)
    private String identifiant;
+
    @XmlElement(name = "patient", required = true)
    private Formulaire.Patient patient;
+
    @XmlElement(name = "venue", required = true)
    private Formulaire.Venue venue;
+
    @XmlElement(name = "dateValeur", required = true)
    private Formulaire.DateValeur dateValeur;
+
    @XmlElement(name = "codForm", required = true)
    private Integer codForm = 69;
+
    @XmlElement(name = "libForm", required = true)
    private String libForm = "Biothèque";
+
    @XmlElementWrapper(name = "rubriques", required = true)
    @XmlElement(name = "rubrique")
    protected List<Rubrique> rubriques;
@@ -319,6 +325,7 @@ public class Formulaire
 
       @XmlElement(name = "date", required = true)
       private String date = null;
+
       @XmlElement(name = "heure", required = true)
       private String heure = null;
 

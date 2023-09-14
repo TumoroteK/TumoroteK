@@ -52,6 +52,7 @@ public class TransformationQuantiteOverDemandException extends TKException
    private static final long serialVersionUID = -3562772083927549441L;
 
    private Float qteDemandee;
+
    private Float qteRestante;
 
    public TransformationQuantiteOverDemandException(){

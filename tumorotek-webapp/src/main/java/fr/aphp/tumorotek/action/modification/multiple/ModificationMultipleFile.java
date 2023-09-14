@@ -75,10 +75,13 @@ public class ModificationMultipleFile extends AbstractModificationMultipleCompon
    private static final long serialVersionUID = 3551763682958457361L;
 
    private Textbox fileUniqueBox;
+
    private Textbox fileEraseBox;
+
    private Image addEraseFile;
 
    private Fichier file = null;
+
    private InputStream fileStream = null;
 
    @Override
@@ -139,7 +142,7 @@ public class ModificationMultipleFile extends AbstractModificationMultipleCompon
    @Override
    public void onClick$lock(){
       super.onClick$lock();
-      // si re-lock met le stream a null 
+      // si re-lock met le stream a null
       if(multiListBox.isDisabled()){
          fileStream = null;
       }
@@ -158,27 +161,25 @@ public class ModificationMultipleFile extends AbstractModificationMultipleCompon
       // toutes ces valeurs sont placées dans la liste values
       setHasNulls(false);
       final Set<String> paths = new HashSet<>();
-      for(Object object : getListObjets()){
-         
+      for(final Object object : getListObjets()){
+
          try{
-            
+
             boolean isDelegateProperty = false;
             TKDelegateObject<?> delegate = null;
-            
-            if(object instanceof TKDelegetableObject) {
-               delegate = ((TKDelegetableObject<?>)object).getDelegate();
-               isDelegateProperty = delegate != null 
-            		   && PropertyUtils.describe(delegate).keySet().contains(getChamp());
+
+            if(object instanceof TKDelegetableObject){
+               delegate = ((TKDelegetableObject<?>) object).getDelegate();
+               isDelegateProperty = delegate != null && PropertyUtils.describe(delegate).keySet().contains(getChamp());
             }
-            
+
             Fichier fichier = null;
-            if(isDelegateProperty) {
-               fichier = (Fichier)PropertyUtils.getSimpleProperty(delegate, getChamp());
+            if(isDelegateProperty){
+               fichier = (Fichier) PropertyUtils.getSimpleProperty(delegate, getChamp());
+            }else{
+               fichier = (Fichier) PropertyUtils.getSimpleProperty(object, getChamp());
             }
-            else {
-               fichier = (Fichier)PropertyUtils.getSimpleProperty(object, getChamp());
-            }
-            
+
             if(fichier != null){
                if(!paths.contains(fichier.getPath()) || !getStringValues().contains(fichier.getNom())){
                   paths.add(fichier.getPath());
@@ -188,11 +189,11 @@ public class ModificationMultipleFile extends AbstractModificationMultipleCompon
             }else{
                setHasNulls(true);
             }
-            
+
          }catch(final IllegalAccessException | InvocationTargetException | NoSuchMethodException e){
             log.error(e);
          }
-         
+
       }
    }
 

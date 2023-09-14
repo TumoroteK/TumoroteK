@@ -32,15 +32,23 @@ public class ObjetStatutWarnModale
 
    @Wire("#fwinObjetStatutWarnModale")
    private Window fwinObjetStatutWarnModale;
+
    private MainWindow main;
 
    private List<TKStockableObject> objs = new ArrayList<>();
+
    private List<Echantillon> echans = new ArrayList<>();
+
    private List<Echantillon> echansOtherBanks = new ArrayList<>();
+
    private List<ProdDerive> derives = new ArrayList<>();
+
    private List<Echantillon> derivesOtherBanks = new ArrayList<>();
+
    private Banque currBanque;
+
    private Boolean singleObj;
+
    private String operation;
 
    @AfterCompose

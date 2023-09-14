@@ -65,8 +65,11 @@ public class ScanDevice implements java.io.Serializable
    private static final long serialVersionUID = 1035198779653396102L;
 
    private Integer scanDeviceId;
+
    private String name;
+
    private String version;
+
    private Set<ScanTerminale> scanTerminales = new HashSet<>();
 
    public ScanDevice(){

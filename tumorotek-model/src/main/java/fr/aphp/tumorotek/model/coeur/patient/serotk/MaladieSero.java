@@ -81,11 +81,11 @@ public class MaladieSero extends AbstractMaladieDelegate
    public boolean isEmpty(){
       return (getDiagnostic() == null);
    }
-   
+
    @Override
-	public TKDelegateObject<Maladie> clone() {
-		MaladieSero clone = new MaladieSero();
-		clone.setDiagnostic(getDiagnostic());
-		return clone;
-	}
+   public TKDelegateObject<Maladie> clone(){
+      final MaladieSero clone = new MaladieSero();
+      clone.setDiagnostic(getDiagnostic());
+      return clone;
+   }
 }

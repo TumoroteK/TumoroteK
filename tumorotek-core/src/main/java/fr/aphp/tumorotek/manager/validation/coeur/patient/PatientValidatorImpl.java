@@ -52,7 +52,7 @@ import fr.aphp.tumorotek.utils.Utils;
  * Regles de validation:<br>
  *  - le champ nip doit null ou non vide et valide litteralement et
  * 		de taille inferieure à 20<br>
- * 	- le champ nom doit etre non vide, non null, et valide litteralement et
+ * 	- le champ nom doit etre valide litteralement et
  * 		de taille inferieure à 50<br>
  *  - le champ nom de naissance doit etre non vide et valide
  * 		litteralement et de taille inferieure à 50<br>
@@ -63,7 +63,7 @@ import fr.aphp.tumorotek.utils.Utils;
  * 		valide litteralement et de taille inferieure à 100<br>
  * 	- le champ pays de naissance doit etre null ou non vide et
  * 		valide litteralement et de taille inferieure à 100<br>
- * 	- le champ etat patient doit etre non null ou egal à V, D  ou Inconnu<br>
+ * 	- le champ etat patient doit etre null ou egal à V, D  ou Inconnu<br>
  * 	- le champ date etat doit etre null, ou supérieure à la date de naissance
  * 		et inférieure ou égale à la date actuelle<br>
  *  - la date de naissance doit être null ou
@@ -77,29 +77,13 @@ import fr.aphp.tumorotek.utils.Utils;
  *  	et cohérente avec l'état décédé<br>
  *
  * @since 2.0.9 prenom, sexe, date naissance NOT NULL
- *
+ * @since 2.3.0-gatsbi nom et patient etat sont nullable
  *
  * @author Mathieu BARTHELEMY
- * @version 2.0.9
+ * @version 2.3.0-gatsbi
  */
 public class PatientValidatorImpl implements PatientValidator
 {
-
-   //	private PrelevementManager prelevementManager;
-   //	private PrelevementValidator prelevementValidator;
-   //	private MaladieManager maladieManager;
-
-   //	public void setPrelevementManager(PrelevementManager pManager) {
-   //		this.prelevementManager = pManager;
-   //	}
-   //
-   //	public void setPrelevementValidator(PrelevementValidator pValidator) {
-   //		this.prelevementValidator = pValidator;
-   //	}
-   //
-   //	public void setMaladieManager(MaladieManager mManager) {
-   //		this.maladieManager = mManager;
-   //	}
 
    private CoherenceDateManager coherenceDateManager;
 
@@ -128,10 +112,11 @@ public class PatientValidatorImpl implements PatientValidator
          }
       }
 
-      //Nom non null
-      ValidationUtils.rejectIfEmptyOrWhitespace(errs, "nom", "patient.nom.empty");
+      // @since 2.3.0-gatsbi -> null est possible (pas empty)
+      // ValidationUtils.rejectIfEmptyOrWhitespace(errs, "nom", "patient.nom.empty");
       //nom valide
       if(patient.getNom() != null){
+         ValidationUtils.rejectIfEmptyOrWhitespace(errs, "nom", "patient.nom.empty");
          if(!patient.getNom().matches(ValidationUtilities.MOTREGEXP)){
             errs.rejectValue("nom", "patient.nom.illegal");
          }
@@ -151,14 +136,11 @@ public class PatientValidatorImpl implements PatientValidator
          }
       }
 
-      //prenom non null
-      ValidationUtils.rejectIfEmptyOrWhitespace(errs, "prenom", "patient.prenom.empty");
-
+      // @since 2.3.0-gatsbi -> null est possible (pas empty)
+      // ValidationUtils.rejectIfEmptyOrWhitespace(errs, "prenom", "patient.prenom.empty");
       //prenom valide
       if(patient.getPrenom() != null){
-         //			ValidationUtils
-         //			.rejectIfEmptyOrWhitespace(errs, "prenom", 
-         //										"patient.prenom.empty");
+         ValidationUtils.rejectIfEmptyOrWhitespace(errs, "prenom", "patient.prenom.empty");
          if(!patient.getPrenom().matches(ValidationUtilities.MOTREGEXP)){
             errs.rejectValue("prenom", "patient.prenom.illegal");
          }
@@ -167,13 +149,11 @@ public class PatientValidatorImpl implements PatientValidator
          }
       }
 
-      //sexe non null
-      ValidationUtils.rejectIfEmptyOrWhitespace(errs, "sexe", "patient.sexe.empty");
+      // @since 2.3.0-gatsbi -> null est possible (pas empty)
+      // ValidationUtils.rejectIfEmptyOrWhitespace(errs, "sexe", "patient.sexe.empty");
       //sexe valide
       if(patient.getSexe() != null){
-         //			ValidationUtils
-         //			.rejectIfEmptyOrWhitespace(errs, "sexe", 
-         //										"patient.sexe.empty");
+         ValidationUtils.rejectIfEmptyOrWhitespace(errs, "sexe", "patient.sexe.empty");
          if(!patient.getSexe().matches(ValidationUtilities.SEXEREGEXP)){
             errs.rejectValue("sexe", "patient.sexe.illegal");
          }
@@ -201,11 +181,11 @@ public class PatientValidatorImpl implements PatientValidator
          }
       }
 
-      //etat non null
-      ValidationUtils.rejectIfEmptyOrWhitespace(errs, "patientEtat", "patient.patientEtat.empty");
-
+      // @since 2.3.0-gatsbi -> null est possible (pas empty)
+      // ValidationUtils.rejectIfEmptyOrWhitespace(errs, "patientEtat", "patient.patientEtat.empty");
       //etat valide
       if(patient.getPatientEtat() != null){
+         ValidationUtils.rejectIfEmptyOrWhitespace(errs, "patientEtat", "patient.patientEtat.empty");
          if(!patient.getPatientEtat().matches(ValidationUtilities.PATIENT_ETAT_REGEXP)){
             errs.rejectValue("patientEtat", "patient.patientEtat.illegal");
          }
@@ -238,14 +218,16 @@ public class PatientValidatorImpl implements PatientValidator
          if(ValidationUtilities.checkWithDate(patient.getDateNaissance(), null, dateAndCode[0], null, null, null, null, false)){
             errs.rejectValue("dateNaissance", (String) dateAndCode[1]);
          }
-      }else{
-         errs.rejectValue("dateNaissance", "patient.dateNaissance.empty");
-      }
+      } 
+      // @since gatsbi
+      // else{
+      //   errs.rejectValue("dateNaissance", "patient.dateNaissance.empty");
+      // }
       return errs;
    }
 
    /**
-    * Vérifie la cohérence de la date de l'état. 
+    * Vérifie la cohérence de la date de l'état.
     * @param patient
     * @return Errors
     */
@@ -270,7 +252,7 @@ public class PatientValidatorImpl implements PatientValidator
 
    /**
     * Vérifie la cohérence de la date de deces.
-    * Verifie la coherence avec l'état du patient. 
+    * Verifie la coherence avec l'état du patient.
     * @param patient
     * @return Errors
     */
@@ -305,12 +287,12 @@ public class PatientValidatorImpl implements PatientValidator
    //		Object previous = null;
    //		String codePrevious = null;
    //		Object[] dateAndCodeForEchan;
-   //		
+   //
    //		// boucle utilisée lors update uniquement
    //		if (patient.getPatientId() != null) {
-   //			
+   //
    //			// trouve les maladies
-   //			List<Maladie> maladies = 
+   //			List<Maladie> maladies =
    //					new ArrayList<Maladie>(maladieManager
    //											.getMaladiesManager(patient));
    //			for (int j = 0; j < maladies.size(); j++) {
@@ -333,11 +315,11 @@ public class PatientValidatorImpl implements PatientValidator
    //					}
    //				}
    //			}
-   //					
+   //
    //			// trouve les prelevements
    //			List<Prelevement> prels = prelevementManager
    //									.findAllPrelevementsManager(patient);
-   //			
+   //
    //			// trouve la date de reference
    //			for (int i = 0; i < prels.size(); i++) {
    //				if (!prels.get(i).getArchive()) {
@@ -353,11 +335,11 @@ public class PatientValidatorImpl implements PatientValidator
    //						List<LaboInter> list =
    //							new ArrayList<LaboInter>(prelevementManager
    //								.getLaboIntersWithOrderManager(prels.get(i)));
-   //							
+   //
    //						if (list != null) {
    //							int ordre;
-   //							// utilisation de precedent 
-   //							// car aucune certitude 
+   //							// utilisation de precedent
+   //							// car aucune certitude
    //							// sur l'ordre
    //							// des labos dans le set
    //							int precedent = list.size() + 1;
@@ -386,7 +368,7 @@ public class PatientValidatorImpl implements PatientValidator
    //								ref = prels.get(i).getDateArrivee();
    //								code = "date.validation"
    //											+ ".supDateDepartUnPrelevement";
-   //							}						
+   //							}
    //						}
    //						if (ref == null) {
    //							// trouve parmi les echantillons
@@ -398,12 +380,12 @@ public class PatientValidatorImpl implements PatientValidator
    //							}
    //						}
    //					}
-   //					
+   //
    //					if (ref != null) {
    //						if (previous != null) {
    //							if (ValidationUtilities
-   //									.checkWithDate(ref, null, 
-   //										previous, null, null, null, 
+   //									.checkWithDate(ref, null,
+   //										previous, null, null, null,
    //														null, true)) {
    //								previous = ref;
    //								codePrevious = code;
@@ -423,7 +405,7 @@ public class PatientValidatorImpl implements PatientValidator
    //			dateAndCode[0] = Utils.getCurrentSystemDate();
    //			dateAndCode[1] = "date.validation.supDateActuelle";
    //		}
-   //		
+   //
    //		return dateAndCode;
    //	}
 }

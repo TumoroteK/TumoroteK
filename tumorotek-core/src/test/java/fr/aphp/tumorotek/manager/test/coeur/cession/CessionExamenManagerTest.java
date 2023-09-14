@@ -67,6 +67,7 @@ public class CessionExamenManagerTest extends AbstractManagerTest4
 
    @Autowired
    private CessionExamenManager cessionExamenManager;
+
    @Autowired
    private PlateformeDao plateformeDao;
 

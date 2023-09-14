@@ -87,7 +87,7 @@ import fr.aphp.tumorotek.model.utils.Utils;
       @NamedQuery(name = "CederObjet.findByEntiteObjet",
          query = "SELECT c FROM CederObjet c " + "WHERE c.pk.entite = ?1 AND c.pk.objetId = ?2"),
       @NamedQuery(name = "CederObjet.findByEntiteObjetStatut",
-      query = "SELECT c FROM CederObjet c " + "WHERE c.pk.entite = ?1 AND c.pk.objetId = ?2 AND c.statut = ?3"),
+         query = "SELECT c FROM CederObjet c " + "WHERE c.pk.entite = ?1 AND c.pk.objetId = ?2 AND c.statut = ?3"),
       @NamedQuery(name = "CederObjet.findByObjetId", query = "SELECT c FROM CederObjet c " + "WHERE c.pk.objetId = ?1"),
       @NamedQuery(name = "CederObjet.findByCessionEntite",
          query = "SELECT c FROM CederObjet c " + "WHERE c.pk.cession = ?1 AND c.pk.entite = ?2"),
@@ -107,8 +107,11 @@ public class CederObjet implements Serializable, TKdataObject
    private static final long serialVersionUID = -4882326831163602398L;
 
    private Float quantite;
+
    private Unite quantiteUnite;
+
    private ECederObjetStatut statut;
+
    private List<ProdDerive> produitRetourList;
 
    /** Constructeur par défaut. */
@@ -171,7 +174,7 @@ public class CederObjet implements Serializable, TKdataObject
       return statut;
    }
 
-   public void setStatut(ECederObjetStatut statut){
+   public void setStatut(final ECederObjetStatut statut){
       this.statut = statut;
    }
 
@@ -185,7 +188,7 @@ public class CederObjet implements Serializable, TKdataObject
       return produitRetourList;
    }
 
-   public void setProduitRetourList(List<ProdDerive> produitRetour){
+   public void setProduitRetourList(final List<ProdDerive> produitRetour){
       this.produitRetourList = produitRetour;
    }
 

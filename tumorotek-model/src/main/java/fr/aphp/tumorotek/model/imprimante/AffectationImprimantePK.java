@@ -61,7 +61,9 @@ public class AffectationImprimantePK implements Serializable
    private static final long serialVersionUID = 2865113820064733177L;
 
    private Utilisateur utilisateur;
+
    private Banque banque;
+
    private Imprimante imprimante;
 
    public AffectationImprimantePK(){
@@ -102,7 +104,7 @@ public class AffectationImprimantePK implements Serializable
    }
 
    /**
-    * 2 PKs sont considérés comme égales si elles sont composees 
+    * 2 PKs sont considérés comme égales si elles sont composees
     * des mêmes clés.
     * @param obj est la PK à tester.
     * @return true si les PK sont egales.

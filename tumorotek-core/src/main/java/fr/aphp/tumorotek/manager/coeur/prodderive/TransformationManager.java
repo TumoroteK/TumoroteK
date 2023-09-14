@@ -58,7 +58,7 @@ public interface TransformationManager
 
    /**
     * Recherche une transformation dont l'identifiant est passé en paramètre.
-    * @param transformationId Identifiant de la transformation que l'on 
+    * @param transformationId Identifiant de la transformation que l'on
     * recherche.
     * @return Une Transformation.
     */
@@ -87,7 +87,7 @@ public interface TransformationManager
 
    /**
     * Recherche les doublons de la Transformation passé en paramètre.
-    * @param transformation Transformation pour laquelle on cherche 
+    * @param transformation Transformation pour laquelle on cherche
     * des doublons.
     * @return True s'il existe des doublons.
     */
@@ -121,9 +121,9 @@ public interface TransformationManager
    void updateObjectManager(Transformation transformation, Entite entite, Unite quantiteUnite);
 
    /**
-    * Supprime une Transformation de la base de données. Cascade 
+    * Supprime une Transformation de la base de données. Cascade
     * automatiquement la deletion vers les derives.
-    * @param transformation Transformation à supprimer de la base 
+    * @param transformation Transformation à supprimer de la base
     * de données.
     * @param comments commentaires liés à la suppression
     * @param Utilisateur réalisant la suppression.

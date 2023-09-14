@@ -1,0 +1,26 @@
+<?page title="Résultat de la validation" contentType="text/html;charset=UTF-8"?>
+<?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
+
+<zk>
+<window id="fwinDateModale" border="none"
+	mode="modal" maximizable="false" closable="true"
+    action="hide: slideUp" apply="org.zkoss.bind.BindComposer"
+  	viewModel="@id('vm') @init('fr.aphp.tumorotek.modales.DateModale')">
+	<panel collapsible="false" sclass="fichePanelv2" style="overflow-y:scroll">
+		<panelchildren>
+			<label sclass="formLabel" value="@load(vm.label)" />
+			<datebox value="@bind(vm.value)" format="dd/MM/yyyy" cols="8" />		
+			<toolbar height="100%" id="toolbar" align="end">
+				<hbox spacing="5" align="center">
+					<button label="${c:l('general.validate')}" height="24px"
+						image="/images/icones/validate.png" sclass="buttonv2"
+						onClick="@command('validate')" />
+					<button id="cancelBtn" label="${c:l('general.cancel')}"
+						height="24px" image="/images/icones/cancel.png" sclass="buttonv2"
+						onClick="@command('cancel')" />
+				</hbox>
+			</toolbar>		
+		</panelchildren>
+	</panel>
+</window>
+</zk>

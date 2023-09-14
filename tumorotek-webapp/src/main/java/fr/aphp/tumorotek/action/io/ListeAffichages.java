@@ -63,13 +63,12 @@ public class ListeAffichages extends AbstractListeController2
       super.doAfterCompose(comp);
 
       listPanel.setHeight(getMainWindow().getListPanelHeight() + 35 + "px");
-      //objectsListGrid.setHeight(getMainWindow().getListPanelHeight() 
+      //objectsListGrid.setHeight(getMainWindow().getListPanelHeight()
       //		+ 38 + "px");
       listObjects = ManagerLocator.getAffichageManager().findByBanqueManager(SessionUtils.getCurrentBanque(sessionScope));
       Collections.sort(listObjects);
    }
 
-   
    @Override
    public void setListObjects(final List<? extends TKdataObject> objs){
       this.listObjects.clear();

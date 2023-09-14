@@ -61,12 +61,16 @@ public class TKAnnnotableDuoManagerTest extends AbstractManagerTest4
 
    @Autowired
    private TKAnnotableDuoManager tkAnnotableDuoManager;
+
    @Autowired
    private PrelevementManager prelevementManager;
+
    @Autowired
    private EntiteDao entiteDao;
+
    @Autowired
    private ObjetNonConformeManager objetNonConformeManager;
+
    @Autowired
    private ChampEntiteDao champEntiteDao;
 

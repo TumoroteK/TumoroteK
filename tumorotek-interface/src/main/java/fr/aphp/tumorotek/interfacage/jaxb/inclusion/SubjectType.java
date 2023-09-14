@@ -48,18 +48,21 @@ public class SubjectType
 
    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
    protected String uniqueIdentifier;
+
    protected GenderType gender;
+
    @XmlSchemaType(name = "date")
    protected XMLGregorianCalendar dateOfBirth;
+
    protected BigInteger yearOfBirth;
 
    /**
     * Gets the value of the uniqueIdentifier property.
-    * 
+    *
     * @return
     *     possible object is
     *     {@link String }
-    *     
+    *
     */
    public String getUniqueIdentifier(){
       return uniqueIdentifier;
@@ -67,11 +70,11 @@ public class SubjectType
 
    /**
     * Sets the value of the uniqueIdentifier property.
-    * 
+    *
     * @param value
     *     allowed object is
     *     {@link String }
-    *     
+    *
     */
    public void setUniqueIdentifier(final String value){
       this.uniqueIdentifier = value;
@@ -79,11 +82,11 @@ public class SubjectType
 
    /**
     * Gets the value of the gender property.
-    * 
+    *
     * @return
     *     possible object is
     *     {@link GenderType }
-    *     
+    *
     */
    public GenderType getGender(){
       return gender;
@@ -91,11 +94,11 @@ public class SubjectType
 
    /**
     * Sets the value of the gender property.
-    * 
+    *
     * @param value
     *     allowed object is
     *     {@link GenderType }
-    *     
+    *
     */
    public void setGender(final GenderType value){
       this.gender = value;
@@ -103,11 +106,11 @@ public class SubjectType
 
    /**
     * Gets the value of the dateOfBirth property.
-    * 
+    *
     * @return
     *     possible object is
     *     {@link XMLGregorianCalendar }
-    *     
+    *
     */
    public XMLGregorianCalendar getDateOfBirth(){
       return dateOfBirth;
@@ -115,11 +118,11 @@ public class SubjectType
 
    /**
     * Sets the value of the dateOfBirth property.
-    * 
+    *
     * @param value
     *     allowed object is
     *     {@link XMLGregorianCalendar }
-    *     
+    *
     */
    public void setDateOfBirth(final XMLGregorianCalendar value){
       this.dateOfBirth = value;
@@ -127,11 +130,11 @@ public class SubjectType
 
    /**
     * Gets the value of the yearOfBirth property.
-    * 
+    *
     * @return
     *     possible object is
     *     {@link BigInteger }
-    *     
+    *
     */
    public BigInteger getYearOfBirth(){
       return yearOfBirth;
@@ -139,11 +142,11 @@ public class SubjectType
 
    /**
     * Sets the value of the yearOfBirth property.
-    * 
+    *
     * @param value
     *     allowed object is
     *     {@link BigInteger }
-    *     
+    *
     */
    public void setYearOfBirth(final BigInteger value){
       this.yearOfBirth = value;

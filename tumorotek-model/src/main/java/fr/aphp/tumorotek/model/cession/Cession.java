@@ -127,36 +127,61 @@ public class Cession implements TKAnnotableObject, Serializable
    private static final long serialVersionUID = 8712594639435839849L;
 
    private Integer cessionId;
+
    private String numero;
+
    private Date demandeDate;
+
    private String etudeTitre;
+
    private String description;
+
    private Date validationDate;
+
    private Calendar departDate;
+
    private Calendar arriveeDate;
+
    private String observations;
+
    private Float temperature;
+
    private Calendar destructionDate;
+
    private Boolean etatIncomplet;
+
    private Boolean archive = false;
+
    // @since 2.1
    private Calendar lastScanCheckDate;
+
    /** @since 2.2.0 */
    private AbstractCessionDelegate delegate;
 
    private Banque banque;
+
    private CessionType cessionType;
+
    private CessionExamen cessionExamen;
+
    private Contrat contrat;
+
    private Collaborateur destinataire;
+
    private Service serviceDest;
+
    private Collaborateur demandeur;
+
    private CessionStatut cessionStatut;
+
    private Collaborateur executant;
+
    private Transporteur transporteur;
+
    private DestructionMotif destructionMotif;
 
    private Set<Retour> retours = new HashSet<>();
+
    private Set<CederObjet> cederObjets = new HashSet<>();
 
    /** Constructeur par défaut. */
@@ -467,7 +492,7 @@ public class Cession implements TKAnnotableObject, Serializable
       return delegate;
    }
 
-   public void setDelegate(AbstractCessionDelegate delegate){
+   public void setDelegate(final AbstractCessionDelegate delegate){
       this.delegate = delegate;
    }
 

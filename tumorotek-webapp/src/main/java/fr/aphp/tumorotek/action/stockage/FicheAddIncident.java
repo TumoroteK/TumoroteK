@@ -26,9 +26,13 @@ public class FicheAddIncident extends AbstractFicheCombineController
    private static final long serialVersionUID = -3694035708012726832L;
 
    private Conteneur conteneur;
+
    private Enceinte enceinte;
+
    private Terminale terminale;
+
    private Incident incident;
+
    private Component parent;
 
    @Override
@@ -111,10 +115,10 @@ public class FicheAddIncident extends AbstractFicheCombineController
             if(objs.size() > 0 && askForRetoursCreation(objs.size(), null, null, null, incident,
                ManagerLocator.getOperationTypeManager().findByNomLikeManager("Creation", true).get(0))){
                // recherche des emplacements de ces objets
-               //					Hashtable<TKStockableObject, Emplacement> emps = 
+               //					Hashtable<TKStockableObject, Emplacement> emps =
                //						new Hashtable<TKStockableObject, Emplacement>();
                //					for (int i = 0; i < objs.size(); i++) {
-               //						emps.put(objs.get(i), 
+               //						emps.put(objs.get(i),
                //								ObjectTypesFormatters.getEmplacementAdrl(
                //										objs.get(i)));
                //					}

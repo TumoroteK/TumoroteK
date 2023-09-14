@@ -47,21 +47,18 @@ package fr.aphp.tumorotek.action.utilisateur;
 public enum ProfilExport
 {
 
-   NO(0),
-   ANONYME(1),
-   ANONYMESTOCK(3),
-   NOMINATIF(2);
-   
+   NO(0), ANONYME(1), ANONYMESTOCK(3), NOMINATIF(2);
+
    private int value;
 
-   private ProfilExport(final int  _v){
+   private ProfilExport(final int _v){
       this.value = _v;
    }
 
    public Integer getValue(){
       return value;
    }
-   
+
    @Override
    public String toString(){
       return this.name();

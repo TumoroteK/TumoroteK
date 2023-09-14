@@ -70,7 +70,7 @@ public class UtilisateurValidator implements Validator
       }
 
       //Utilisateur non LDAP
-      if(!utilisateur.isLdap()) {
+      if(!utilisateur.isLdap()){
 
          // password non null
          ValidationUtils.rejectIfEmptyOrWhitespace(errors, "password", "utilisateur.password.empty");

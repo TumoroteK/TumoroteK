@@ -122,8 +122,8 @@ public interface InjectionManager
    ResultatInjection injectDossierManager(DossierExterne dossier, Banque banque);
 
    /**
-    * Injecte le contenu d'un dossier sous la forme d'un produit dérivé. 
-    * Utilisé dans l'interfaçage avec GENNO pour récupérer les secondes 
+    * Injecte le contenu d'un dossier sous la forme d'un produit dérivé.
+    * Utilisé dans l'interfaçage avec GENNO pour récupérer les secondes
     * transmissions sous la forme d'un seul produit dérivé
     * @param dossier
     * @param banque
@@ -131,9 +131,9 @@ public interface InjectionManager
     * @since 2.2.3-genno
     */
    ResultatInjection injectDossierDeriveManager(DossierExterne dossier, Banque banque);
-   
+
    /**
-    * Persiste directement un dossier externe et éventuellement des dossiers 
+    * Persiste directement un dossier externe et éventuellement des dossiers
     * 'enfants', comme les dossiers dérivés envoyés par GENNO.
     * @param dossier
     * @param banque
@@ -144,7 +144,7 @@ public interface InjectionManager
    void saveDossierAndChildrenManager(DossierExterne dossier, Banque banque, Utilisateur u, String baseDir);
 
    /**
-    * Persiste des dossiers 'enfants', comme les dossiers dérivés envoyés par GENNO, sous 
+    * Persiste des dossiers 'enfants', comme les dossiers dérivés envoyés par GENNO, sous
     * une seule transformation d'un prélèvement passé en paramètre.
     * @param prel
     * @param liste de dossiers 'enfants' = dérivés
@@ -154,10 +154,10 @@ public interface InjectionManager
     * @since 2.2.3-genno
     */
    void saveDeriveChildrenManager(Prelevement prel, List<DossierExterne> derivesDos, Banque banque, Utilisateur u,
-		String baseDir);
+      String baseDir);
 
    /**
-    * Recherche tous les dossiers pour un émetteur dont l'entite est nulle, correspondant à un 
+    * Recherche tous les dossiers pour un émetteur dont l'entite est nulle, correspondant à un
     * prélèvement déja enregistré dans TK pour la plateforme passée en paramètres.
     * @param emetteur
     * @param pf
@@ -167,8 +167,8 @@ public interface InjectionManager
    List<DossierExterne> findExistingPrelevementByEmetteurManager(Emetteur emet, Plateforme pf);
 
    /**
-    * Recherche tous les dossiers pour un émetteur et une entite (= derivé)  
-    * dont le code parent (prélèvement secondaire) correspond à un prélèvement déja enregistré dans TK 
+    * Recherche tous les dossiers pour un émetteur et une entite (= derivé)
+    * dont le code parent (prélèvement secondaire) correspond à un prélèvement déja enregistré dans TK
     * pour la plateforme passée en paramètres.
     * @param emetteur
     * @param entite id
@@ -177,10 +177,10 @@ public interface InjectionManager
     * @since 2.2.3-genno
     */
    List<DossierExterne> findExistingParentByEmetteurAndEntiteManager(Emetteur emet, Integer _id, Plateforme pf);
-   
+
    /**
-    * Recherche tous les dossiers pour un émetteur et une entite (= derivé)  
-    * dont le code parent (prélèvement secondaire) correspond à un prélèvement déja enregistré dans TK 
+    * Recherche tous les dossiers pour un émetteur et une entite (= derivé)
+    * dont le code parent (prélèvement secondaire) correspond à un prélèvement déja enregistré dans TK
     * pour la plateforme passée en paramètres.
     * @param emetteur
     * @param pf
@@ -190,11 +190,11 @@ public interface InjectionManager
    List<DossierExterne> findExistingChildByEmetteurAndEntiteManager(Emetteur emet, Plateforme pf);
 
    /**
-    * Enregistre tous les dossiers pour un émetteur et une entite (= derivé)  
-    * dont le code parent (prélèvement secondaire) correspond à un prélèvement déja enregistré dans TK 
-    * pour la plateforme passée en paramètres. 
-    * Trouve le prélèvement parent pour lui ajouter une transformation par dérivé et y associer le dérivé 
-    * à créer 
+    * Enregistre tous les dossiers pour un émetteur et une entite (= derivé)
+    * dont le code parent (prélèvement secondaire) correspond à un prélèvement déja enregistré dans TK
+    * pour la plateforme passée en paramètres.
+    * Trouve le prélèvement parent pour lui ajouter une transformation par dérivé et y associer le dérivé
+    * à créer
     * @param emetteur
     * @param pf
     * @param utilisateur
@@ -202,6 +202,6 @@ public interface InjectionManager
     * @return true si au moins un prel parent a été mis à jour
     * @since 2.2.3-genno
     */
-   boolean synchronizeDeriveChildrenManager(Emetteur emet, Plateforme pf, Utilisateur u, String baseDir);	
+   boolean synchronizeDeriveChildrenManager(Emetteur emet, Plateforme pf, Utilisateur u, String baseDir);
 
 }

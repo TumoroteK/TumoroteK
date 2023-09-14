@@ -64,15 +64,14 @@ import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 
+import fr.aphp.tumorotek.manager.ConfigManager;
+import fr.aphp.tumorotek.manager.exception.StringEtiquetteOverSizeException;
+import fr.aphp.tumorotek.model.imprimante.LigneEtiquette;
 import net.sourceforge.barbecue.Barcode;
 import net.sourceforge.barbecue.BarcodeException;
 import net.sourceforge.barbecue.BarcodeFactory;
 import net.sourceforge.barbecue.BarcodeImageHandler;
 import net.sourceforge.barbecue.output.OutputException;
-
-import fr.aphp.tumorotek.manager.ConfigManager;
-import fr.aphp.tumorotek.manager.exception.StringEtiquetteOverSizeException;
-import fr.aphp.tumorotek.model.imprimante.LigneEtiquette;
 
 /**
  * Classe permettant l'impression d'un composant.
@@ -84,19 +83,26 @@ public class ComponentPrintable implements Printable
 {
 
    private final ComponentBarcodeLabel componentToBePrinted;
+
    private final PrinterJob printJob;
+
    private ComponentPrinter componentPrinter;
+
    private static Log log = LogFactory.getLog(ComponentBarcodeLabel.class);
 
    // private static final String BARCODE = "code barre ";
    // private static final int BARCODE_MAX_HEIGHT = 56;
 
    private List<LigneEtiquette> lignes = new ArrayList<>();
+
    private final int abscisse;
+
    private final int ordonnee;
+
    private final int maxWidth;
 
    private Boolean isQRCode = false;
+
    private final String code;
 
    public ComponentPrintable(final ComponentBarcodeLabel cToBePrinted, final PrinterJob pj){
@@ -218,8 +224,8 @@ public class ComponentPrintable implements Printable
                   //			        FileOutputStream fos = new FileOutputStream(bcImg);
                   //			        BarcodeImageHandler.writePNG(barcode, fos);
 
-                  // BufferedImage resized = 
-                  // 	Scalr.resize(imageBarcode, Scalr.Method.ULTRA_QUALITY, 
+                  // BufferedImage resized =
+                  // 	Scalr.resize(imageBarcode, Scalr.Method.ULTRA_QUALITY,
                   //			Scalr.Mode.FIT_TO_WIDTH,
                   //			width, new BufferedImageOp[]{});
 

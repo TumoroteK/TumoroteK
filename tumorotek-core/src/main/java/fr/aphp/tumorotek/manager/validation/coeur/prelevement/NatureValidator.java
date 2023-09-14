@@ -67,11 +67,11 @@ public class NatureValidator implements Validator
 
       final Nature nature = (Nature) obj;
       //nom valide
-      if(nature.getNature() != null){
-         if(!nature.getNature().matches(ValidationUtilities.MOTREGEXP)){
+      if(nature.getNom() != null){
+         if(!nature.getNom().matches(ValidationUtilities.MOTREGEXP)){
             errs.rejectValue("nature", "nature.nature.illegal");
          }
-         if(nature.getNature().length() > 200){
+         if(nature.getNom().length() > 200){
             errs.rejectValue("nature", "nature.nature.tooLong");
          }
       }

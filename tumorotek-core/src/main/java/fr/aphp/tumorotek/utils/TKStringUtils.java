@@ -50,7 +50,7 @@ public final class TKStringUtils
     * Constructeur privé
     */
    private TKStringUtils(){}
-   
+
    /**
     * Echappe, sécurise et nettoie une string HTML
     * @param html string html à traiter
@@ -59,45 +59,45 @@ public final class TKStringUtils
    public static String cleanHtmlString(final String html){
 
       String res = html;
-      
+
       //Etape 1 : Remplacer les < qui ne sont pas des débuts de balise par &lt;
       //Si on ne fait pas cette étape, tout ce qui se trouve entre un < et un éventuel >
       //situé hors d'un balise est considéré comme une balise inconnue et supprimé
       //Par ex. <p>Ce<ci est un t>est</p> rendrait <p>Ceest</p>
       int nbLtReplaced = 0;
-      for(int i=0 ; i < html.length() ; i++) {
+      for(int i = 0; i < html.length(); i++){
 
-         if(html.charAt(i) == '<') {
+         if(html.charAt(i) == '<'){
 
             final int nextGtIndx = html.substring(i).indexOf('>');
             final String tagPotentiel = html.substring(i, i + nextGtIndx + 1);
 
             int tagNameBeginIndex = 1;
-            if(!"</>".equals(tagPotentiel) && tagPotentiel.startsWith("</")) {
+            if(!"</>".equals(tagPotentiel) && tagPotentiel.startsWith("</")){
                tagNameBeginIndex = 2;
             }
-            
+
             final int tagNameEndIndex;
-            if(tagPotentiel.contains(" ")) {
+            if(tagPotentiel.contains(" ")){
                tagNameEndIndex = tagPotentiel.indexOf(' ');
-            }else if(tagPotentiel.endsWith("/>")) {
+            }else if(tagPotentiel.endsWith("/>")){
                tagNameEndIndex = tagPotentiel.indexOf("/>");
-            }else {
+            }else{
                tagNameEndIndex = tagPotentiel.indexOf('>');
             }
-            
+
             final String tagName = tagPotentiel.substring(tagNameBeginIndex, tagNameEndIndex);
-            
-            if(!Tag.isKnownTag(tagName)) {
-               final int posCharToReplace = nbLtReplaced*3 + i;
-               res = res.substring(0, posCharToReplace) + "&lt;" + res.substring(posCharToReplace+1);
+
+            if(!Tag.isKnownTag(tagName)){
+               final int posCharToReplace = nbLtReplaced * 3 + i;
+               res = res.substring(0, posCharToReplace) + "&lt;" + res.substring(posCharToReplace + 1);
                nbLtReplaced++;
             }
 
          }
 
       }
-      
+
       //Etape 2 : Nettoyer le html
       final Whitelist whitelist =
          Whitelist.basic().addAttributes("p", "style").addAttributes("span", "style").addAttributes("a", "style");
@@ -107,7 +107,7 @@ public final class TKStringUtils
       return res;
 
    }
-   
+
    /**
     * Supprime les placeholders délimités par les bornes spécifiées d'une chaîne de caractères
     * @param stringToClean chaîne de caractères à nettoyer
@@ -115,10 +115,10 @@ public final class TKStringUtils
     * @param endDelimiter borne de fin des placeholders
     * @return
     */
-   public static String cleanPlaceholders(final String stringToClean, final String startDelimiter, final String endDelimiter) {
-      
+   public static String cleanPlaceholders(final String stringToClean, final String startDelimiter, final String endDelimiter){
+
       String cleanString = stringToClean;
-      
+
       int placeholderBeginIdx = stringToClean.indexOf(startDelimiter);
       int placeholderEndIdx = stringToClean.indexOf(endDelimiter);
 
@@ -126,10 +126,10 @@ public final class TKStringUtils
       boolean dirty = placeholderBeginIdx != -1 && placeholderEndIdx != -1 && placeholderBeginIdx < placeholderEndIdx;
 
       while(dirty){
-         
+
          final String placeholder = cleanString.substring(placeholderBeginIdx + 2, placeholderEndIdx);
-         
-       //Si une valeur ne contenant pas de placeholder a été trouvée pour le placeholder, on le remplace, sinon, on le laisse tel quel
+
+         //Si une valeur ne contenant pas de placeholder a été trouvée pour le placeholder, on le remplace, sinon, on le laisse tel quel
          cleanString = cleanString.replace(startDelimiter + placeholder + endDelimiter, placeholder);
 
          //Calcul de l'indice de fin du placeholder ou de la valeur substituée (qui sert de point de départ pour la recherche du paceholder suivant)
@@ -146,11 +146,11 @@ public final class TKStringUtils
          }else{
             dirty = false;
          }
-         
+
       }
-      
+
       return cleanString;
-      
+
    }
-   
+
 }

@@ -13,6 +13,7 @@ public class EnceinteRowRenderer implements RowRenderer<Enceinte>
 {
 
    private Long nbLibresTotaux = (long) 0;
+
    private Long nbOccupesTotaux = (long) 0;
 
    public EnceinteRowRenderer(){
@@ -52,7 +53,7 @@ public class EnceinteRowRenderer implements RowRenderer<Enceinte>
          // pourcentage
          Label pourcLabel = null;
          if(total != 0){
-            final Float puiss = nbEmplacementsOccupes.floatValue() * 100;
+            final float puiss = nbEmplacementsOccupes.floatValue() * 100;
             final Float pourc = puiss / total.floatValue();
             pourcLabel = new Label(String.valueOf(ObjectTypesFormatters.floor(pourc, 2)) + "%");
          }else{
@@ -83,7 +84,7 @@ public class EnceinteRowRenderer implements RowRenderer<Enceinte>
          // pourcentage
          Label pourcLabel = null;
          if(total != 0){
-            final Float puiss = nbOccupesTotaux.floatValue() * 100;
+            final float puiss = nbOccupesTotaux.floatValue() * 100;
             final Float pourc = puiss / total.floatValue();
             pourcLabel = new Label(String.valueOf(ObjectTypesFormatters.floor(pourc, 2)) + "%");
          }else{

@@ -118,11 +118,11 @@ public class MaladieDecorator
     * @return nb
     */
    public String getNbPrelevements(){
-      if(maladie != null){
+      if(maladie != null && maladie.getMaladieId() != null){
          final String totalNb = String.valueOf(ManagerLocator.getMaladieManager().getPrelevementsManager(this.maladie).size());
          return totalNb;
       }else{
-         return null;
+         return "0";
       }
    }
 

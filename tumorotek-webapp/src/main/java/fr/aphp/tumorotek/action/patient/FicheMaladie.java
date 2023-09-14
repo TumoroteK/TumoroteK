@@ -46,7 +46,9 @@ import java.util.Set;
 import org.springframework.validation.Errors;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.HtmlBasedComponent;
 import org.zkoss.zk.ui.Path;
+import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -56,13 +58,12 @@ import org.zkoss.zul.Button;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Grid;
 import org.zkoss.zul.Group;
+import org.zkoss.zul.Groupbox;
 import org.zkoss.zul.Image;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Listbox;
-import org.zkoss.zul.ListitemRenderer;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Panel;
-import org.zkoss.zul.Row;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Toolbar;
 
@@ -70,6 +71,7 @@ import fr.aphp.tumorotek.action.ManagerLocator;
 import fr.aphp.tumorotek.action.code.CodeUtils;
 import fr.aphp.tumorotek.action.constraints.ConstWord;
 import fr.aphp.tumorotek.action.controller.AbstractFicheCombineController;
+import fr.aphp.tumorotek.action.prelevement.PrelevementConsultFromOtherBanksRenderer;
 import fr.aphp.tumorotek.action.prelevement.PrelevementController;
 import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
 import fr.aphp.tumorotek.manager.validation.coeur.patient.MaladieValidator;
@@ -112,66 +114,89 @@ public class FicheMaladie extends AbstractFicheCombineController
 
    //Panel
    protected Panel container;
+
    protected Grid formGrid;
 
    protected Label codeDiagFormLabel;
+
    protected Label dateDiagFormLabel;
 
    // Labels
    protected Label libelleLabel;
+
    protected Label libelleRequired;
+
    protected Label codeDiagLabel;
+
    protected Label dateDebutLabel;
+
    protected Label dateDiagLabel;
+
    // Editable components
    protected Textbox libelleBox;
+
    protected Textbox codeDiagBox;
+
    protected Datebox dateDebutBox;
+
    protected Datebox dateDiagBox;
 
    // inca
    private Image pop1;
+
    private Image pop2;
 
    protected Button codeAssistantButton;
 
-   protected Row libelleRow;
+   // @since 2.3.0-gatsbi 
+   // Row devient Div dans fiche Gatsbi
+   protected HtmlBasedComponent libelleRow;
 
    // Objets Principaux
    protected Maladie maladie = new Maladie();
 
    protected Button addPrelevement;
+
    protected Toolbar toolbar;
 
-   // Composants Prélèvements
-   protected Group prelevementsMaladieGroup;
+   // @since 2.3.0-gatsbi
+   // group deviennent generic HtmlBasedComponent
+   // car dans Gatsbi ce sont des groupboxes
+   protected HtmlBasedComponent prelevementsMaladieGroup;
+   protected HtmlBasedComponent referentsGroup;
+
    protected Listbox prelevementsMaladieBox;
+
    protected Listbox prelevementsFromOtherBanksMaladieBox;
+
    protected boolean canCreatePrelevement;
 
    protected Button selectAllprelevementsButton;
+
    private Button historique;
 
    // true si create/edit mode
    protected boolean isInEdition = false;
 
-   // referents
-   protected Group referentsGroup;
-
    protected List<Prelevement> prelevements = new ArrayList<>();
+
    protected Prelevement selectedPrelevement;
+
    protected List<Prelevement> prelevementsFromOtherBanks = new ArrayList<>();
+
    protected Prelevement selectedPrelevementFromOtherBank;
 
    protected List<Collaborateur> medecins = new ArrayList<>();
 
    // defaut contexte TK renderer
-   protected PrelevementItemRenderer prelevementRenderer = 
-		   new PrelevementItemRenderer();
+   protected PrelevementConsultFromOtherBanksRenderer prelevementRenderer = new PrelevementItemRenderer();
 
    // other banks -> contexte defaut TK
-   protected PrelevementItemRenderer prelevementFromOtherBanksRenderer = 
-		   new PrelevementItemRenderer();
+   protected PrelevementConsultFromOtherBanksRenderer prelevementFromOtherBanksRenderer= new PrelevementItemRenderer();
+   
+   // @since 2.3.0-gatsbi
+   // sera surchargé
+   protected MaladieValidator maladieValidator;
 
    public Panel getContainer(){
       return container;
@@ -193,7 +218,7 @@ public class FicheMaladie extends AbstractFicheCombineController
       this.prelevementFromOtherBanksRenderer = pobr;
    }
 
-   public ListitemRenderer<Prelevement> getPrelevementRenderer(){
+   public PrelevementConsultFromOtherBanksRenderer getPrelevementRenderer(){
       return prelevementRenderer;
    }
 
@@ -201,7 +226,7 @@ public class FicheMaladie extends AbstractFicheCombineController
       this.prelevementRenderer = pr;
    }
 
-   public ListitemRenderer<Prelevement> getPrelevementFromOtherBanksRenderer(){
+   public PrelevementConsultFromOtherBanksRenderer getPrelevementFromOtherBanksRenderer(){
       return prelevementFromOtherBanksRenderer;
    }
 
@@ -235,13 +260,14 @@ public class FicheMaladie extends AbstractFicheCombineController
 
    @Override
    public void doAfterCompose(final Component comp) throws Exception{
-      	   
-	  super.doAfterCompose(comp);
+
+      super.doAfterCompose(comp);
 
       setDeletionMessage("message.deletion.maladie");
 
-      setObjLabelsComponents(new Component[] {this.libelleLabel, this.codeDiagLabel, this.dateDebutLabel, this.dateDiagLabel,
-         this.prelevementsMaladieGroup, this.prelevementsMaladieBox, this.prelevementsFromOtherBanksMaladieBox});
+      // @since 2.3.0-gatsbi
+      initObjLabelsComponent();
+      
       setObjBoxsComponents(
          new Component[] {this.libelleBox, this.codeDiagBox, this.dateDebutBox, this.dateDiagBox, codeAssistantButton});
       setRequiredMarks(new Component[] {this.libelleRequired});
@@ -249,7 +275,32 @@ public class FicheMaladie extends AbstractFicheCombineController
       getReferents().setFicheParent(this);
 
       drawActionsForMaladie();
+    
+      // @since 2.3.0-gatsbi
+      // regular Maladie Validator, sera surchargé par Gatsbi
+      setMaladieValidator(ManagerLocator.getMaladieValidator());
+      
+      // @since 2.3.0-gatsbi
+      setClickPrelevementCodeForward();
+   }
+   
+   /**
+    * sera surchargée car les prelevementsBox deviennent des grid dans Gatsbi
+    * @since 2.3.0-gatsbi
+    */
+   protected void initObjLabelsComponent(){
+      setObjLabelsComponents(new Component[] {
+         this.libelleLabel, this.codeDiagLabel, this.dateDebutLabel, this.dateDiagLabel,
+         this.prelevementsMaladieGroup, this.prelevementsMaladieBox, this.prelevementsFromOtherBanksMaladieBox 
+      });    
+   }
 
+   /**
+    * Event listener du clique code prelevement
+    * sera surchargé par gatsbi
+    * @since 2.3.0-gatsbi
+    */
+   protected void setClickPrelevementCodeForward() {
       prelevementsMaladieBox.addEventListener("onClickPrelevementCode", new EventListener<Event>()
       {
          @Override
@@ -266,28 +317,28 @@ public class FicheMaladie extends AbstractFicheCombineController
          }
       });
    }
-   
-//   /**
-//    * Fixe le contexte de la banque courante, ou si mode toutes collections, le contexte 
-//    * commun à toutes les collections.
-//    * Si pas de contexte commun alors contexte 'null' = anapath par défaut
-//    * @since 2.2.1
-//    * @return
-//    */
-//   private Contexte initContexte() {
-//	   // une seule collection en cours
-//	   if(SessionUtils.getSelectedBanques(sessionScope).size() == 1) { 
-//		   return SessionUtils.getSelectedBanques(sessionScope).get(0).getContexte();
-//	   } else { // toutes collections
-//		   List<Contexte> conts = SessionUtils.getSelectedBanques(sessionScope).stream().map(b -> b.getContexte())
-//				   .distinct().collect(Collectors.toList());
-//		   if (conts.size() == 1) { // 1 seul contexte pour toutes les banques
-//			   return conts.get(0);
-//		   } else { // contexte TK par défaut > null
-//			   return null;
-//		   }
-//	   }
-//   }
+
+   //   /**
+   //    * Fixe le contexte de la banque courante, ou si mode toutes collections, le contexte
+   //    * commun à toutes les collections.
+   //    * Si pas de contexte commun alors contexte 'null' = anapath par défaut
+   //    * @since 2.2.1
+   //    * @return
+   //    */
+   //   private Contexte initContexte() {
+   //	   // une seule collection en cours
+   //	   if(SessionUtils.getSelectedBanques(sessionScope).size() == 1) {
+   //		   return SessionUtils.getSelectedBanques(sessionScope).get(0).getContexte();
+   //	   } else { // toutes collections
+   //		   List<Contexte> conts = SessionUtils.getSelectedBanques(sessionScope).stream().map(b -> b.getContexte())
+   //				   .distinct().collect(Collectors.toList());
+   //		   if (conts.size() == 1) { // 1 seul contexte pour toutes les banques
+   //			   return conts.get(0);
+   //		   } else { // contexte TK par défaut > null
+   //			   return null;
+   //		   }
+   //	   }
+   //   }
 
    public void setPatient(final Patient pat){
       this.maladie.setPatient(pat);
@@ -298,16 +349,40 @@ public class FicheMaladie extends AbstractFicheCombineController
     * concernant la maladie sous-jacente à la collection.
     */
    public void setPrelevementsOnly(){
-      formGrid.detach();
+      
+      // suppr de l'affichage toute le formulaire 
+      // maladie
+      detachMaladieFormMainComponent();
+      
       container.setClosable(false);
       container.setCollapsible(false);
       maladie.setLibelle(null);
       container.setOpen(true);
       container.setSclass(null);
-      prelevementsMaladieGroup.setOpen(true);
-      prelevementsMaladieGroup.setVisible(false);
+      
+      detachPrelevementsMaladieGroup();
+      setGroupPrelevementsOpen(true);
+      
       toolbar.setVisible(false);
-
+   }
+   
+   
+   /**
+    * @since 2.3.0 
+    * sera surchargé par gatsbi
+    */
+   protected void detachMaladieFormMainComponent() {
+      if (this.formGrid != null) {
+         formGrid.detach();
+      }
+   }
+   
+   /**
+    * @since 2.3.0 
+    * sera surchargé par gatsbi
+    */
+   protected void detachPrelevementsMaladieGroup() {
+      prelevementsMaladieGroup.setVisible(false);
    }
 
    @Override
@@ -317,7 +392,7 @@ public class FicheMaladie extends AbstractFicheCombineController
 
    /**
     * Setter appelé par fichePatient lors du dessin des panels.
-    * Cette méthode est donc appelée avec des maladies existantes et 
+    * Cette méthode est donc appelée avec des maladies existantes et
     * une nouvelle maladie (empty) potentiellement.
     * Récupère les prélèvements pour la banque courante et les prèlèvements
     * pour une autre banque dans deux listes séparées.
@@ -341,9 +416,9 @@ public class FicheMaladie extends AbstractFicheCombineController
                SessionUtils.getPlateforme(sessionScope));
             banks.remove(SessionUtils.getSelectedBanques(sessionScope).get(0));
 
-            // configure le renderer pour inactiver les liens des 
+            // configure le renderer pour inactiver les liens des
             // prélèvements non consultables
-            prelevementFromOtherBanksRenderer.setFromOtherConsultBanks(banks);
+            getPrelevementFromOtherBanksRenderer().setOtherConsultBanks(banks);
 
             // etend la liste de banks à celle declarant
             // autoriseCrossPatient
@@ -366,7 +441,7 @@ public class FicheMaladie extends AbstractFicheCombineController
                   .addAll(ManagerLocator.getPrelevementManager().findByMaladieAndBanqueManager(this.maladie, it.next()));
             }
             // tous les prélèvements sont consultables
-            prelevementFromOtherBanksRenderer.setFromOtherConsultBanks(SessionUtils.getSelectedBanques(sessionScope));
+            getPrelevementFromOtherBanksRenderer().setOtherConsultBanks(SessionUtils.getSelectedBanques(sessionScope));
          }
          this.addPrelevement.setVisible(true);
          this.historique.setVisible(true);
@@ -374,7 +449,7 @@ public class FicheMaladie extends AbstractFicheCombineController
          // medecins referents
          this.medecins = new ArrayList<>(ManagerLocator.getMaladieManager().getCollaborateursManager(this.maladie));
          getReferents().setMedecins(this.medecins);
-         referentsGroup.setOpen(false);
+         setGroupMedecinsOpen(false);
 
       }else{
          // maladie en creation
@@ -383,7 +458,7 @@ public class FicheMaladie extends AbstractFicheCombineController
             this.maladie.setLibelle(SessionUtils.getSelectedBanques(sessionScope).get(0).getDefautMaladie());
             this.maladie.setCode(SessionUtils.getSelectedBanques(sessionScope).get(0).getDefautMaladieCode());
          }else{
-            this.maladie.setLibelle(Labels.getLabel("maladie.indeterminee"));
+            setLibelleIndeterminee();
          }
       }
 
@@ -394,10 +469,16 @@ public class FicheMaladie extends AbstractFicheCombineController
       // clone er reload
       super.setObject(maladie);
    }
+   
+   // @since 2.3.0-gatsbi
+   // sera surchargée
+   protected void setLibelleIndeterminee() {
+      this.maladie.setLibelle(Labels.getLabel("maladie.indeterminee"));
+   }
 
    /**
-    * Passe les listes de prélèvements en mold paging si ces listes 
-    * contiennent plus de 5 prelevements. 
+    * Passe les listes de prélèvements en mold paging si ces listes
+    * contiennent plus de 5 prelevements.
     */
    public void setListBoxesMold(){
       /*if (prelevements.size() > 5) {
@@ -539,7 +620,7 @@ public class FicheMaladie extends AbstractFicheCombineController
 
    /**
     * Envoie un evenement à la fiche patient lui spécifiant que la manipulation
-    * sur la maladie est terminée. La fiche patient peut alors reprendre le 
+    * sur la maladie est terminée. La fiche patient peut alors reprendre le
     * contrôle en activant les boutons de sa toolbar.
     * @param maladie Maladie manipulée, peut être null (revert/cancel)
     */
@@ -585,7 +666,7 @@ public class FicheMaladie extends AbstractFicheCombineController
    }
 
    /**
-    * Prepare les valeurs des attributs qui seront sauvées avec le 
+    * Prepare les valeurs des attributs qui seront sauvées avec le
     * bean patient.
     * Recupere la liste de referents depuis le composant embarqué.
     * @param boolean specifiant si la liste de medecins doit être passée
@@ -610,6 +691,7 @@ public class FicheMaladie extends AbstractFicheCombineController
    }
 
    @Override
+   @SuppressWarnings("unchecked")
    public void switchToStaticMode(){
       super.switchToStaticMode(this.maladie.equals(new Maladie()));
       libelleRow.setVisible(false);
@@ -624,8 +706,7 @@ public class FicheMaladie extends AbstractFicheCombineController
             pop1.setVisible(((Map<String, Boolean>) sessionScope.get("catalogues")).containsKey("INCa"));
             pop2.setVisible(((Map<String, Boolean>) sessionScope.get("catalogues")).containsKey("INCa"));
          }
-         codeDiagFormLabel.setSclass("formLabel");
-         dateDiagFormLabel.setSclass("formLabel");
+         setRegularLabelStyle();
       }
       isInEdition = false;
    }
@@ -638,10 +719,7 @@ public class FicheMaladie extends AbstractFicheCombineController
       historique.setVisible(false);
       getReferents().switchToEditMode();
 
-      //pop1.setVisible(false);
-      codeDiagFormLabel.setSclass("incaLabel");
-      //pop2.setVisible(false);
-      dateDiagFormLabel.setSclass("incaLabel");
+      setIncaLabelStyle();
 
       isInEdition = true;
    }
@@ -652,12 +730,23 @@ public class FicheMaladie extends AbstractFicheCombineController
       this.libelleRow.setVisible(true);
       getReferents().switchToCreateMode();
 
-      //pop1.setVisible(false);
-      codeDiagFormLabel.setSclass("incaLabel");
-      //pop2.setVisible(false);
-      dateDiagFormLabel.setSclass("incaLabel");
+      setIncaLabelStyle();
 
       isInEdition = true;
+   }
+   
+   // @since 2.3.0-gatsbi, sera surchargée par gatsbi
+   // car devenu inutile
+   protected void setIncaLabelStyle() {
+      codeDiagFormLabel.setSclass("incaLabel");
+      dateDiagFormLabel.setSclass("incaLabel");
+   }
+   
+   // @since 2.3.0-gatsbi, sera surchargée par gatsbi
+   // car devenu inutile
+   protected void setRegularLabelStyle() {
+      codeDiagFormLabel.setSclass("formLabel");
+      dateDiagFormLabel.setSclass("formLabel");
    }
 
    @Override
@@ -675,10 +764,21 @@ public class FicheMaladie extends AbstractFicheCombineController
     * @return String libelle fiche maladie
     */
    public String getMaladieLibelle(){
+      
+      String libelle = null;
+      
       if(!this.maladie.getSystemeDefaut()){
-         return this.maladie.getLibelle() + " (" + String.valueOf(getTotPrelevementsCount()) + ")";
+         libelle =  this.maladie.getLibelle() + " (" + String.valueOf(getTotPrelevementsCount()) + ")";
+         
+         // @since 2.3.0-gatsbi
+         // en toutes collections ajoute collection au libelle visite
+         if (Sessions.getCurrent().getAttribute("ToutesCollections") != null 
+               && this.maladie.getBanque() != null) {
+            libelle = libelle.concat(" - ").concat(this.maladie.getBanque().getNom());
+         }        
       }
-      return null;
+     
+      return libelle;
    }
 
    public String getPrelevementsGroupLabel(){
@@ -726,7 +826,7 @@ public class FicheMaladie extends AbstractFicheCombineController
 
    /**
     * Méthode appelée après la saisie d'une valeur dans le champ
-    * codeDiagBox. Cette valeur sera mise en majuscules et une recherche 
+    * codeDiagBox. Cette valeur sera mise en majuscules et une recherche
     * automatique du libelle correspondant est lancée.
     */
    public void onBlur$codeDiagBox(){
@@ -776,7 +876,7 @@ public class FicheMaladie extends AbstractFicheCombineController
       Errors errs = null;
       String field = "";
 
-      if(dateValue == null || dateValue.equals("")){
+      if(dateValue == null){
          // la contrainte est retiree
          //((Datebox) comp).setConstraint("");
          ((Datebox) comp).clearErrorMessage(true);
@@ -804,14 +904,14 @@ public class FicheMaladie extends AbstractFicheCombineController
          if(comp.getId().equals("dateDiagBox")){
             field = "dateDiagnostic";
             this.maladie.setDateDiagnostic(dateValue);
-            errs = MaladieValidator.checkDateDiagCoherence(this.maladie);
+            errs = getMaladieValidator().checkDateDiagCoherence(this.maladie);
          }
 
          // date début
          if(comp.getId().equals("dateDebutBox")){
             field = "dateDebut";
             this.maladie.setDateDebut(dateValue);
-            errs = MaladieValidator.checkDateDebutCoherence(this.maladie);
+            errs = getMaladieValidator().checkDateDebutCoherence(this.maladie);
          }
 
          if(errs != null && errs.hasErrors()){
@@ -857,7 +957,7 @@ public class FicheMaladie extends AbstractFicheCombineController
    }
 
    /**
-    * Lance la validation de toutes les dates de maladie car 
+    * Lance la validation de toutes les dates de maladie car
     * les dates de references du Patient ont pu changer a posteriori.
     */
    public void validateAllDateComps(){
@@ -875,7 +975,7 @@ public class FicheMaladie extends AbstractFicheCombineController
     * Affiche la fiche d'un prélèvement.
     * @param Event e indique le forward venant du selectAll si non null
     */
-   private void onClickPrelevementCode(final Event e){
+   protected void onClickPrelevementCode(final Event e){
 
       final PrelevementController tabController = (PrelevementController) PrelevementController.backToMe(getMainWindow(), page);
 
@@ -926,19 +1026,18 @@ public class FicheMaladie extends AbstractFicheCombineController
    }
 
    /**
-    * Forward Event. 
+    * Forward Event.
     */
    public void onSelectAllPrelevements(){
       onClickPrelevementCode(null);
    }
 
    /**
-    * Ouvre le panel et le groupe de prélèvements. 
+    * Ouvre le panel et le groupe de prélèvements.
     */
    public void openAll(){
       container.setOpen(true);
-      //Clients.scrollIntoView(container);
-      prelevementsMaladieGroup.setOpen(true);
+      setGroupPrelevementsOpen(true);
    }
 
    public void reloadListePrelevements(){
@@ -956,7 +1055,7 @@ public class FicheMaladie extends AbstractFicheCombineController
    }
 
    /**
-    * Ouvre la modale contenant l'assistant deployant les 
+    * Ouvre la modale contenant l'assistant deployant les
     * codifications pré-filtrées pour les codes diagnostic.
     */
    public void onClick$codeAssistantButton(){
@@ -978,7 +1077,7 @@ public class FicheMaladie extends AbstractFicheCombineController
    /**
     * la fiche est embarquée donc en mode création uniquement sans affichage
     * des boutons.
-    * @param withPatient indique si la fiche est embarquée avec la fiche 
+    * @param withPatient indique si la fiche est embarquée avec la fiche
     * patient.
     */
    public void setEmbedded(final boolean withPatient){
@@ -995,31 +1094,23 @@ public class FicheMaladie extends AbstractFicheCombineController
       this.selectAllprelevementsButton.setVisible(false);
       this.container.setStyle("border: none");
       this.container.getPanelchildren().setStyle("border-top-style: none");
-      this.formGrid.setStyle("border-top-style: none");
+      if (this.formGrid != null) {
+         this.formGrid.setStyle("border-top-style: none");
+      }
       this.isEmbeddedWithPatient = withPatient;
    }
 
    /*************************************************************************/
    /************************** VALIDATION ***********************************/
    /*************************************************************************/
-   private static ConstWord libelleConstraint = new ConstWord();
-   {
-      libelleConstraint.setNullable(false);
-      libelleConstraint.setSize(300);
-   }
 
-   private static ConstWord codeNullConstraint = new ConstWord();
-   {
-      codeNullConstraint.setNullable(true);
-      codeNullConstraint.setSize(50);
-   }
 
    public ConstWord getCodeNullConstraint(){
-      return codeNullConstraint;
+      return MaladieConstraints.getCodeNullConstraint();
    }
 
    public ConstWord getLibelleConstraint(){
-      return libelleConstraint;
+      return MaladieConstraints.getLibelleConstraint();
    }
 
    public Maladie getMaladie(){
@@ -1046,17 +1137,48 @@ public class FicheMaladie extends AbstractFicheCombineController
 
       // si pas le droit d'accès aux prelevements, on cache le lien
       if(!getDroitsConsultation().get("Prelevement")){
-         prelevementRenderer.setAccessible(false);
+         getPrelevementRenderer().setAccessible(false);
       }else{
-         prelevementRenderer.setAccessible(true);
+         getPrelevementRenderer().setAccessible(true);
       }
 
       // empeche creation prelevements si toutes collections
       addPrelevement.setDisabled(!canCreatePrelevement || !sessionScope.containsKey("Banque"));
+      
+      setCanEdit(isCanEdit() && !SessionUtils.areToutesCollectionContainsOneGatsbi());
    }
 
    @Override
    public String getDeleteWaitLabel(){
-      return Labels.getLabel("maaldie.suppression.encours");
+      return Labels.getLabel("maladie.suppression.encours");
    }
+   
+   // @since 2.3.0-gatsbi  
+   protected void setGroupMedecinsOpen(final boolean b){
+      if(referentsGroup instanceof Group){
+         ((Group) referentsGroup).setOpen(b);
+      }else{
+         ((Groupbox) referentsGroup).setOpen(b);
+      }      
+   }
+   
+   // @since 2.3.0-gatsbi  
+   protected void setGroupPrelevementsOpen(final boolean b){
+      if(prelevementsMaladieGroup instanceof Group){
+         ((Group) prelevementsMaladieGroup).setOpen(b);
+      }else{
+         ((Groupbox) prelevementsMaladieGroup).setOpen(b);
+      }      
+   }
+
+   // @since 2.3.0-gatsbi  
+   public MaladieValidator getMaladieValidator(){
+      return maladieValidator;
+   }
+
+   // @since 2.3.0-gatsbi  
+   public void setMaladieValidator(MaladieValidator maladieValidator){
+      this.maladieValidator = maladieValidator;
+   }
+   
 }

@@ -104,8 +104,8 @@ public class RawLanguageTranslater
             }else{
                content = contenu;
             }
-            
-            int fontHeight = (le.getSize() != null ? le.getSize() : 6) * (dpiResolution / 72);
+
+            final int fontHeight = (le.getSize() != null ? le.getSize() : 6) * (dpiResolution / 72);
 
             buf.append(String.format("^A0N,%d^FO0,%d", fontHeight, y));
             if(!content.contains("^")){
@@ -169,7 +169,7 @@ public class RawLanguageTranslater
 
       // ORIENTATION p263
       // reverse + smart mode
-      // buf.append("O R, P"); 
+      // buf.append("O R, P");
       buf.append("O R, P");
       buf.append(System.lineSeparator());
 

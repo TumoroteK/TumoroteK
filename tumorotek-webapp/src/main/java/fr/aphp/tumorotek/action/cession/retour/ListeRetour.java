@@ -72,10 +72,15 @@ public class ListeRetour extends AbstractListeController2
    private static final long serialVersionUID = 2480945046066137749L;
 
    private TKStockableObject object;
+
    private final List<TKdataObject> listObjects = new ArrayList<>();
+
    private Button addNew;
+
    private Column editCol;
+
    private Column deleteCol;
+
    private Window lwinRetour;
 
    public Window getLwinRetour(){
@@ -87,6 +92,7 @@ public class ListeRetour extends AbstractListeController2
    }
 
    private boolean isEmbedded = true;
+
    private boolean canEditObject = false;
 
    @Override
@@ -257,11 +263,11 @@ public class ListeRetour extends AbstractListeController2
          final Integer idUpdated = edit.getContrat().getContratId();
          if(idSelected.equals(idUpdated)){
             final int ind = getListObjects().indexOf(getCurrentObject());
-            // si c'est le cas, maj de la liste par 
+            // si c'est le cas, maj de la liste par
             // suppression/insertion
             if(ind > -1){
                getListObjects().remove(ind);
-               addToListObjects(edit, new Integer(ind));
+               addToListObjects(edit, Integer.valueOf(ind));
 
                getBinder().loadAttribute(objectsListGrid, "model");
 
@@ -291,7 +297,7 @@ public class ListeRetour extends AbstractListeController2
          // suppression/insertion dans la liste
          final int ind = getListObjects().indexOf(edit);
          getListObjects().remove(ind);
-         addToListObjects(edit, new Integer(ind));
+         addToListObjects(edit, Integer.valueOf(ind));
 
          // maj de la grille
          getBinder().loadAttribute(objectsListGrid, "model");
@@ -305,7 +311,7 @@ public class ListeRetour extends AbstractListeController2
          // on affiche la page contenant l'objet
          objectsListGrid.getPaginal().setActivePage(getPageNumberForObject(getCurrentObject()));
 
-         // on passe l'objet à la fiche			
+         // on passe l'objet à la fiche
          updated = true;
       }
 
@@ -394,7 +400,7 @@ public class ListeRetour extends AbstractListeController2
    }
 
    /**
-    * Wrapper pour la methode d'ouverture de la modale formulaire 
+    * Wrapper pour la methode d'ouverture de la modale formulaire
     * d'une sortie temporaire du le système de stockage.
     * @param retour
     * @param b
@@ -418,7 +424,7 @@ public class ListeRetour extends AbstractListeController2
    }
 
    public Integer getAddedDelais(){
-      Integer sum = 0;
+      int sum = 0;
       for(int i = 0; i < listObjects.size(); i++){
          if(((RetourDecorator) listObjects.get(i)).getDelaiInMins() != null){
             sum = sum + ((RetourDecorator) listObjects.get(i)).getDelaiInMins();

@@ -43,22 +43,37 @@ public abstract class LoadPropertiesServeurIdentitesFile
 {
    /* declaration des noms des variables dans le fichier */
    private static final String DBMS = "DBMS";
+
    private static final String HOST = "HOST";
+
    private static final String DRIVER = "DRIVER";
+
    private static final String DATABASE = "DATABASE";
+
    private static final String LOGIN = "LOGIN";
+
    private static final String PASSWORD = "PASSWORD";
 
    private static final String TABLE_PATIENT = "TABLE_PATIENT";
+
    private static final String NIP = "NIP";
+
    private static final String NIP_TYPE = "NIP_TYPE";
+
    private static final String NOM = "NOM";
+
    private static final String NOM_PATRON = "NOM_PATRON";
+
    private static final String PRENOM = "PRENOM";
+
    private static final String SEXE = "SEXE";
+
    private static final String SEXE_TYPE = "SEXE_TYPE";
+
    private static final String SEXE_FEMME = "SEXE_FEMME";
+
    private static final String SEXE_HOMME = "SEXE_HOMME";
+
    private static final String DATE_NAISS = "DATE_NAISS";
 
    private static final String NUM_DOSSIER = "NUM_DOSSIER";

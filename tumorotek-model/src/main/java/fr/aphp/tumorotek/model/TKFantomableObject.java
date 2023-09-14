@@ -47,7 +47,7 @@ public interface TKFantomableObject
 {
 
    /**
-    * Methode qui écrit la trace à conserver 
+    * Methode qui écrit la trace à conserver
     * lors de la suppression.
     * @return Integer objetId.
     */

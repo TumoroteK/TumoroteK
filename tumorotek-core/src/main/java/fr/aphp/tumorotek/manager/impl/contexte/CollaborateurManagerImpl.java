@@ -99,16 +99,27 @@ public class CollaborateurManagerImpl implements CollaborateurManager
    private final Log log = LogFactory.getLog(CollaborateurManager.class);
 
    private CollaborateurDao collaborateurDao;
+
    private EtablissementDao etablissementDao;
+
    private SpecialiteDao specialiteDao;
+
    private TitreDao titreDao;
+
    private ServiceDao serviceDao;
+
    private CoordonneeDao coordonneeDao;
+
    private CoordonneeManager coordonneeManager;
+
    private OperationManager operationManager;
+
    private OperationTypeDao operationTypeDao;
+
    private PatientMedecinDao patientMedecinDao;
+
    private CollaborateurValidator collaborateurValidator;
+
    private CoordonneeValidator coordonneeValidator;
 
    public void setCollaborateurDao(final CollaborateurDao cDao){
@@ -567,7 +578,7 @@ public class CollaborateurManagerImpl implements CollaborateurManager
     * une liste de service.
     * @param collaborateur Collaborateur pour lequel on veut mettre à jour
     * les associations.
-    * @param services Liste des services que l'on veut associer au 
+    * @param services Liste des services que l'on veut associer au
     * collaborateur.
     */
    public void updateServices(final Collaborateur collaborateur, final List<Service> services){
@@ -618,9 +629,9 @@ public class CollaborateurManagerImpl implements CollaborateurManager
     * une liste de service et une liste de coordonnées.
     * @param collaborateur Collaborateur pour lequel on veut mettre à jour
     * les associations.
-    * @param services Liste des services que l'on veut associer au 
+    * @param services Liste des services que l'on veut associer au
     * collaborateur.
-    * @param coordonnees Liste des coordonnees que l'on veut associer au 
+    * @param coordonnees Liste des coordonnees que l'on veut associer au
     * collaborateur.
     */
    public void updateServicesAndCoordonnees(final Collaborateur collaborateur, final List<Service> services,
@@ -725,12 +736,12 @@ public class CollaborateurManagerImpl implements CollaborateurManager
             collab.setEtablissement(null);
          }
 
-         // supprime le collab en cascade si aucun service ne 
+         // supprime le collab en cascade si aucun service ne
          // le référence
          if(collab.getServices().isEmpty()){
             removeObjectManager(collab, comments, user);
          }else{
-            // passe en reference l'etablissement du premier 
+            // passe en reference l'etablissement du premier
             // service restant
             collab.setEtablissement(new ArrayList<>(collab.getServices()).get(0).getEtablissement());
             collaborateurDao.mergeObject(collab);
@@ -783,7 +794,7 @@ public class CollaborateurManagerImpl implements CollaborateurManager
          }
          cPassif.getBanques().clear();
 
-         // BANQUE-CONTACT		
+         // BANQUE-CONTACT
          final Set<Banque> cBanquesP = new HashSet<>(cPassif.getContactBanques());
 
          for(final Banque bq : cBanquesP){
@@ -912,7 +923,7 @@ public class CollaborateurManagerImpl implements CollaborateurManager
          }
          cPassif.getUtilisateurs().clear();
 
-         // MEDECINS REFERENTS - DAO MERGE				
+         // MEDECINS REFERENTS - DAO MERGE
          final Set<PatientMedecin> patientMedsP = new HashSet<>(cPassif.getPatientMedecins());
 
          //			List<PatientMedecin> patientMedsPList = new ArrayList<PatientMedecin>();

@@ -73,6 +73,7 @@ public class Patient
 
    @XmlElement(name = "identifiant", required = true)
    private Identifiant identifiant;
+
    @XmlElement(name = "personnePhysique", required = true)
    private PersonnePhysique personnePhysique;
 

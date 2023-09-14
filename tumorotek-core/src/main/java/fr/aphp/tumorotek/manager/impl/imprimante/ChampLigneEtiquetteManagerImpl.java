@@ -59,8 +59,11 @@ public class ChampLigneEtiquetteManagerImpl implements ChampLigneEtiquetteManage
 
    /** Beans. */
    private ChampLigneEtiquetteDao champLigneEtiquetteDao;
+
    private LigneEtiquetteDao ligneEtiquetteDao;
+
    private EntiteDao entiteDao;
+
    private ChampManager champManager;
 
    public void setChampLigneEtiquetteDao(final ChampLigneEtiquetteDao cDao){

@@ -1,0 +1,380 @@
+<!--
+ * Copyright ou © ou Copr. Assistance Publique des Hôpitaux de 
+ * PARIS et SESAN
+ * projet-tk@sesan.fr
+ *
+ * Ce logiciel est un programme informatique servant à la gestion de
+ * l'activité de biobanques.
+ *
+ * Ce logiciel est régi par la licence CeCILL soumise au droit français
+ * et respectant les principes de diffusion des logiciels libres. Vous
+ * pouvez utiliser, modifier et/ou redistribuer ce programme sous les
+ * conditions de la licence CeCILL telle que diffusée par le CEA, le
+ * CNRS et l'INRIA sur le site "http://www.cecill.info".
+ * En contrepartie de l'accessibilité au code source et des droits de
+ * copie, de modification et de redistribution accordés par cette
+ * licence, il n'est offert aux utilisateurs qu'une garantie limitée.
+ * Pour les mêmes raisons, seule une responsabilité restreinte pèse sur
+ * l'auteur du programme, le titulaire des droits patrimoniaux et les
+ * concédants successifs.
+ *
+ * A cet égard  l'attention de l'utilisateur est attirée sur les
+ * risques associés au chargement,  à l'utilisation,  à la modification
+ * et/ou au  développement et à la reproduction du logiciel par
+ * l'utilisateur étant donné sa spécificité de logiciel libre, qui peut
+ * le rendre complexe à manipuler et qui le réserve donc à des
+ * développeurs et des professionnels  avertis possédant  des
+ * connaissances  informatiques approfondies.  Les utilisateurs sont
+ * donc invités à charger  et  tester  l'adéquation  du logiciel à leurs
+ * besoins dans des conditions permettant d'assurer la sécurité de leurs
+ * systèmes et ou de leurs données et, plus généralement, à l'utiliser
+ * et l'exploiter dans les mêmes conditions de sécurité.
+ *
+ * Le fait que vous puissiez accéder à cet en-tête signifie que vous
+ * avez pris connaissance de la licence CeCILL, et que vous en avez
+ * accepté les termes.
+-->
+<zk>
+
+<?component name="calendarbox" macroURI="/zuls/component/CalendarBox.zul" class="fr.aphp.tumorotek.component.CalendarBox" ?>
+<?component name="codeAssigneEditor" macroURI="/zuls/code/CodeAssigneEditor.zul" ?>
+<?component name="incaPopUps" macroURI="/zuls/echantillon/incaPopUpsEchantillon.zul" inline="true" ?>
+
+<window id="fwinEchantillonEdit" border="none" 
+		apply="fr.aphp.tumorotek.action.echantillon.gatsbi.FicheEchantillonEditGatsbi">
+	<panel collapsible="false" title="${c:l('ficheEchantillon.panel.title')}"
+	 		id="winPanel" sclass="fichePanelv2" closable="true">
+		<panelchildren style="overflow-y:scroll" id="panelChildrenWithScroll">
+			<div id="gatsbiContainer" class="main-container gridForm1">
+				<div id="identifiantBlockDiv" style="padding-left: 5px"><!-- Identifiants échantillon -->
+					<div id="identifiantBlockDivContainer" class="block-container">
+						<div class="item item-mid" id="codeEchanDiv"><!-- Code échantillon -->
+							<custom-attributes champId="54" />
+							<div class="row-container chpLabel">
+								<label value="${c:l('Champ.Echantillon.Code')}" sclass="formLabel" />
+								<label value="*" sclass="requiredMark" />
+							</div>
+							<textbox id="codePrefixeEchan" 
+								value="@{fwinEchantillonEdit$composer.codePrefixe,
+			        			save-when='validate.onClick, create.onClick'}"
+								width="150px" 
+								constraint="${fwinEchantillonEdit$composer.codePrefixConstraint}"/>
+						</div>
+						<div class="item item-mid" id="echantillonTypeDiv"><!-- Type échantillon -->	
+							<custom-attributes champId="58" listmodel="types" />
+							<div class="row-container chpLabel">
+								<label value="${c:l('Champ.Echantillon.EchantillonType.Type')}" sclass="formLabel" />
+								<label value="*" sclass="requiredMark" />
+							</div>
+							<listbox id="typesBoxEchan" mold="select" rows="1"
+								model="@{fwinEchantillonEdit$composer.types}"
+								selectedItem="@{fwinEchantillonEdit$composer.selectedType}" >
+								<listitem self="@{each='typeEchan'}" value="@{typeEchan}">			
+									<listcell label="@{typeEchan.type}" />
+								</listitem>
+							</listbox>
+						</div>
+					</div>
+				</div>
+				<div class="block-separator" />
+				<!-- Infos prélèvement  -->
+				<groupbox id="groupPrlvt">
+					<caption label="${c:l('ficheEchantillon.prelevement.titre')}" />
+					<div>
+						<div id="prelevementBlockDiv"><!-- Prelevement -->
+							<!-- if no prelevement -->
+							<div class="item item-wide" id="row1PrlvtEchan" visible="false">
+								<label id="prlvtInconnuEchan"
+									value="${c:l('ficheEchantillon.prelevement.inconnu')}"
+									sclass="formValue"
+									style="font-style:italic"
+									visible="false"/>
+							</div>
+							<!-- else -->	
+							<div id="row2PrlvtEchan" class="block-container">
+								<div class="item item-mid" id="codePrelevementDiv"><!-- Code prélèvement -->
+									<custom-attributes champId="23" />
+									<label value="${c:l('ficheEchantillon.prelevement.code')}" sclass="chpLabel formLabel"/>
+									<label id="codePrlvtLabel" 
+										value="@{fwinEchantillonEdit$composer.parentObject.code}"
+										sclass="formValue" />
+								</div>
+								<div class="item item-mid" id="natureDiv"><!-- nature -->
+									<custom-attributes champId="24" />
+									<label value="${c:l('Champ.Prelevement.Nature')}" sclass="chpLabel formLabel" />
+									<label id="typePrlvtLabel" 
+										value="@{fwinEchantillonEdit$composer.parentObject.nature.nature}"
+										sclass="formValue" />
+								</div>
+							</div>
+						</div>
+					</div>
+				</groupbox>
+				<div class="block-separator" />
+				<!-- Informations échantillon -->
+				<groupbox id="groupEchantillon">
+					<caption label="${c:l('ficheEchantillon.informations')}" />
+					<div id="infoEchanBlockDiv">
+						<div class="block-container" id="infoEchanBlockDivContainer">
+							<div class="item item-mid" id="echanQteDiv"><!-- Quantité / QuantitéInit de l'échantillon -->
+								<custom-attributes champId="61" listmodel="quantiteUnites" thesChampId="63" />
+								<div class="row-container chpLabel">
+									<label value="${c:l('ficheEchantillon.quantiteLabel')}" sclass="formLabel" />
+									<label value="*" sclass="requiredMark" />
+								</div>
+								<div class="row-container skip-required">
+									<label id="quantiteBoxEchan" 
+										sclass="formValue"
+										value="@{fwinEchantillonEdit$composer.valeurQuantiteRestante, 
+										load-after='quantiteInitBoxEchan.onBlur'}"
+									/>
+									<label id="slashLabelEchan" value=" / " style="font-weight:bold;" />
+									<decimalbox id="quantiteInitBoxEchan"
+										width="75px"
+										constraint="${fwinEchantillonEdit$composer.cttQuantiteInit}"
+										value="@{fwinEchantillonEdit$composer.object.quantiteInit,
+													save-when='validate.onClick, create.onClick'}"
+										format="#,##0.###" scale="3"
+										locale="en"
+									/>
+									<!-- Unité de la quantité -->
+									<listbox id="quaniteUnitesBoxEchan" mold="select" rows="1"
+											model="@{fwinEchantillonEdit$composer.quantiteUnites}"
+											selectedItem="@{fwinEchantillonEdit$composer.selectedQuantiteUnite}" >
+										<listitem self="@{each='quantiteUniteEchan'}" value="@{quantiteUniteEchan}">			
+											<listcell label="@{quantiteUniteEchan.unite}" />
+										</listitem>
+									</listbox>
+								</div>	
+							</div>
+							<div class="item item-mid" id="echanModePrepaDiv"><!-- Mode de préparation -->
+								<custom-attributes champId="70" listmodel="prepas" />
+								<div class="row-container chpLabel">
+									<label value="${c:l('Champ.Echantillon.ModePrepa')}" sclass="formLabel" />
+									<label value="*" sclass="requiredMark" />
+								</div>								
+								<listbox id="prepasBox" mold="select" rows="1"
+									model="@{fwinEchantillonEdit$composer.prepas}"
+									selectedItem="@{fwinEchantillonEdit$composer.selectedPrepa}" >
+									<listitem self="@{each='prepa'}" value="@{prepa}">			
+										<listcell label="@{prepa.nom}" />
+									</listitem>
+								</listbox>
+							</div>
+							<div class="item item-mid" id="echanSterileDiv"><!-- Sterile -->
+								<custom-attributes champId="72" />
+								<div class="row-container chpLabel">
+									<label value="${c:l('Champ.Echantillon.Sterile')}" sclass="formLabel" />
+									<label value="*" sclass="requiredMark" />
+								</div>
+								<checkbox id="sterileBox" />
+							</div>
+							<div class="item item-mid" id="echanDateStockDiv"><!-- Date de stockage -->
+								<custom-attributes champId="56" />
+								<div class="row-container chpLabel">
+									<label value="${c:l('Champ.Echantillon.DateStock')}" sclass="formLabel" />
+									<label value="*" sclass="requiredMark" />
+								</div>
+								<calendarbox id="dateStockCalBox" value="@{fwinEchantillonEdit$composer.object.dateStock,
+			        				save-when='validate.onClick, create.onClick, self.onBlur'}" />
+							</div>					
+							<div class="item item-mid" id="delaiCglDiv"><!-- Délai de congélation -->
+								<custom-attributes champId="67" />
+								<div class="row-container chpLabel">
+									<label value="${c:l('Champ.Echantillon.DelaiCgl')}" sclass="formLabel" />
+									<label value="*" sclass="requiredMark" />
+								</div>								
+								<div class="row-container">
+									<intbox id="heureBox" 
+										width="50px"
+										value="@{fwinEchantillonEdit$composer.heureDelai,  
+										load-after='dateStockCalBox.onBlur'}" />
+									<label value=" h " style="font-weight:bold;"/>
+									<intbox id="minBox" 
+										width="50px"
+										value="@{fwinEchantillonEdit$composer.minDelai,
+										load-after='dateStockCalBox.onBlur'}"/>
+									<label value=" min " style="font-weight:bold;"/>
+								</div>	
+							</div>
+							<div class="item item-wide" id="echanOperateurDiv"><!-- Opérateur -->
+								<custom-attributes champId="53" />
+								<div class="row-container chpLabel">
+									<label value="${c:l('Champ.Echantillon.Collaborateur')}" sclass="formLabel" />
+									<label value="*" sclass="requiredMark" />
+								</div>
+								<div class="row-container">
+									<combobox id="collabBox" 
+						 				autodrop="true" width="150px">
+						 					<comboitem self="@{each=attrValue}" label="@{attrValue}"/>
+						 			</combobox>
+									<space/>
+									<label id="operateurAideSaisieEchan" style="font-weight:bold;"
+										value="${c:l('ficheEchantillon.operateur.aideSaisie')}"
+										sclass="formLink" />
+								</div>
+							</div>
+							<div class="item item-mid" id="echanStatutDiv"><!-- Statut de l'objet -->
+								<custom-attributes champId="55" />								
+								<label value="${c:l('Champ.Echantillon.ObjetStatut')}" sclass="chpLabel formLabel"/>
+								<label id="statutLabelEchan" 
+									value="@{fwinEchantillonEdit$composer.objetStatut}"
+									sclass="formValue" />	
+							</div>
+							<div class="item item-mid" id="echanEmplacementDiv"><!-- Emplacement de stockage -->
+								<custom-attributes champId="57" />
+								<label value="${c:l('Champ.Echantillon.Emplacement')}" sclass="chpLabel formLabel"/>
+								<label id="emplacementLabelEchan" 
+									value="@{fwinEchantillonEdit$composer.emplacementAdrl}"
+									sclass="formValue" />
+							</div>	
+							<div class="item item-mid" id="echanQualiteDiv"><!-- Qualité de l'échantillon -->
+								<custom-attributes champId="68" listmodel="qualites" />
+								<div class="row-container chpLabel">
+									<label value="${c:l('Champ.Echantillon.EchanQualite')}" sclass="formLabel" />
+									<label value="*" sclass="requiredMark" />
+								</div>
+								<listbox id="qualitesBoxEchan" mold="select" rows="1"
+									model="@{fwinEchantillonEdit$composer.qualites}"
+									selectedItem="@{fwinEchantillonEdit$composer.selectedQualite}">
+									<listitem self="@{each='qualiteEchan'}" value="@{qualiteEchan}">			
+										<listcell label="@{qualiteEchan.echanQualite}" />
+									</listitem>
+								</listbox>
+							</div>
+							<div class="item item-mid" id="echanTempStockDiv"><!-- Température de stockage -->
+								<custom-attributes champId="265" />
+								<label value="${c:l('ficheEchantillon.temperatureLabel')}" sclass="chpLabel formLabel"/>
+								<label id="temperatureLabelEchan" 
+									value="@{fwinEchantillonEdit$composer.temperatureFormated}"
+									sclass="formValue" />
+							</div>
+							<div class="item item-wide" id="conformeTraitementDiv"><!-- Conforme après traitement  -->
+								<custom-attributes champId="243" listmodel="nonConformitesTraitement" thesChampId="261" />
+								<div class="row-container chpLabel">
+									<label value="${c:l('Champ.Echantillon.ConformeTraitement')}" sclass="formLabel" />
+									<label value="*" sclass="requiredMark" />
+								</div>
+								<div class="row-container">
+									<checkbox id="conformeTraitementBoxOui"/>
+									<label value="${c:l('general.checkbox.true')}" sclass="formLabel"/>
+									<checkbox id="conformeTraitementBoxNon"/>
+									<label value="${c:l('general.checkbox.false')}" sclass="formLabel"/>
+									<div id="conformeTraitementBox" visible="false">
+										<space width="10px"/>
+										<listbox id="nonConformitesTraitementBox" mold="select" multiple="true" rows="3" 
+											model="@{fwinEchantillonEdit$composer.nonConformitesTraitement}"
+											>
+											<listitem self="@{each='nonConformiteSelTrait'}" value="nonConformiteSelTrait.nom">
+												<listcell label="@{nonConformiteSelTrait.nom}"/>
+											</listitem>	
+										</listbox>
+									</div>
+								</div>
+							</div>
+							<div class="item item-wide" id="conformeCessionDiv"><!-- Conforme à la cession  -->
+								<custom-attributes champId="244" listmodel="nonConformitesCession" thesChampId="262" />
+								<div class="row-container chpLabel">
+									<label value="${c:l('Champ.Echantillon.ConformeCession')}" sclass="formLabel" />
+									<label value="*" sclass="requiredMark" />
+								</div>
+								<div class="row-container">
+									<checkbox id="conformeCessionBoxOui"/>
+									<label value="${c:l('general.checkbox.true')}" sclass="formLabel"/>
+									<checkbox id="conformeCessionBoxNon"/>
+									<label value="${c:l('general.checkbox.false')}" sclass="formLabel"/>
+									<div id="conformeCessionBox" visible="false">
+										<space width="10px"/>
+										<listbox id="nonConformitesCessionBox" mold="select" multiple="true" rows="3" 
+											model="@{fwinEchantillonEdit$composer.nonConformitesCession}"
+											>
+											<listitem self="@{each='nonConformiteSelCess'}" value="nonConformiteSelCess">
+												<listcell label="@{nonConformiteSelCess.nom}"/>
+											</listitem>	
+										</listbox>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</groupbox>
+				<div class="block-separator" />	
+				<groupbox id="groupInfosCompEchan" open="true">
+					<caption label="${c:l('ficheEchantillon.infosComp')}" />
+					<div id="anapathInfosBlockDiv"><!-- Informations complémentaires -->
+						<div class="block-container" id="anapathInfosBlockDivContainer">
+							<div class="item item-mid" id="crAnapathDiv"><!-- CrAnapath -->
+								<custom-attributes champId="255" />
+								<div class="row-container chpLabel">
+									<label value="${c:l('ficheEchantillon.crAnapathLabel')}" sclass="formLabel" />
+									<label value="*" sclass="requiredMark" />
+								</div>
+								<div class="row-container skip-required">
+									<textbox id="crAnapathNomBox" cols="15" visible="false" />
+									<image id="addCrFile" src="/images/icones/fileimport.png" style="cursor: pointer" />
+									<image id="deleteCrFile" src="/images/icones/eraser.png" style="cursor: pointer" visible="false" />
+								</div>
+							</div>
+							<div class="item item-mid" id="tumoralDiv"><!-- Echantillon tumoral  -->
+								<custom-attributes champId="69" />
+								<div class="row-container chpLabel">
+									<label value="${c:l('Champ.Echantillon.Tumoral')}" sclass="formLabel" />
+									<label value="*" sclass="requiredMark" />
+								</div>
+								<checkbox id="tumoraleBox" />
+							</div>
+							<div class="item item-wide" id="cOrganesDiv"><!-- codes organes -->
+								<custom-attributes champId="229" />
+								<div class="row-container chpLabel">
+									<label value="${c:l('Champ.Echantillon.Organe')}" sclass="formLabel" />
+									<label value="*" sclass="requiredMark" />
+								</div>
+								<div class="skip-required" width="95%" >
+									<codeAssigneEditor id="organesEditor" isOrg="true" />
+								</div>
+							</div>
+							<div class="item item-wide" id="lateraliteDiv"><!-- lateralite -->
+								<custom-attributes champId="60" />
+								<div class="row-container chpLabel">
+									<label value="${c:l('Champ.Echantillon.Lateralite')}" sclass="formLabel" />
+									<label value="*" sclass="requiredMark" />
+								</div>								
+								<listbox id="lateraliteBox" mold="select" rows="1"
+									selectedItem="@{fwinEchantillonEdit$composer.selectedLateralite save-when='create.onClick, validate.onClick'}" >											
+									<listitem label="" value="" />
+									<listitem label="${c:l('echantillon.lateralite.I')}" value="I" />
+									<listitem label="${c:l('echantillon.lateralite.D')}" value="D" />
+									<listitem label="${c:l('echantillon.lateralite.G')}" value="G" />
+									<listitem label="${c:l('echantillon.lateralite.B')}" value="B" />
+								</listbox>
+							</div>
+							<div class="item item-wide" id="cMorphosDiv"><!-- codes lesionnels -->
+								<custom-attributes champId="230" />
+								<div class="row-container chpLabel">
+									<label value="${c:l('ficheEchantillon.codeLesionelLabel')}" sclass="formLabel" />
+									<label value="*" sclass="requiredMark" />
+								</div>
+								<div class="skip-required" width="95%" >
+									<codeAssigneEditor id="morphosEditor" isOrg="false" isMorpho="true" />
+								</div>
+							</div>
+						</div>
+					</div>
+				</groupbox>
+			</div>
+		</panelchildren>
+		<toolbar height="100%" id="toolbarEchan" align="end">
+			<hbox spacing="5">
+				<button id="validate" label="${c:l('general.validate')}" height="24px"
+					image="/images/icones/save.png" sclass="buttonv2"/>
+				<button id="revert" label="${c:l('general.cancel')}" height="24px"
+					image="/images/icones/cancel.png" sclass="buttonv2"/>
+				<button id="create" label="${c:l('general.create')}" height="24px"
+					image="/images/icones/save.png" sclass="buttonv2"/>
+				<button id="cancel" label="${c:l('general.cancel')}"  height="24px"
+					image="/images/icones/cancel.png" sclass="buttonv2"/>
+			</hbox>
+		</toolbar>
+	</panel>
+</window>
+</zk>

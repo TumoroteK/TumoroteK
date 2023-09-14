@@ -69,10 +69,15 @@ public class Message implements Serializable
 {
 
    private Integer messageId;
+
    private String objet;
+
    private String texte;
+
    private Integer importance;
+
    private Utilisateur destinataire;
+
    private Utilisateur expediteur;
 
    private static final long serialVersionUID = 1L;
@@ -142,7 +147,7 @@ public class Message implements Serializable
    /**
     * Deux messages sont considerees egaux s'ils ont le
     * meme objet, le meme texte, le meme destinataire
-    * et envoyes par le meme utilisateur. 
+    * et envoyes par le meme utilisateur.
     * @param obj est le message à tester.
     * @return true si les messages sont egaux.
     */

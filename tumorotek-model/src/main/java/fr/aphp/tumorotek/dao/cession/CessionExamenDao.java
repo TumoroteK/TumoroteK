@@ -54,7 +54,7 @@ public interface CessionExamenDao extends GenericDaoJpa<CessionExamen, Integer>,
 {
 
    /**
-    * Recherche les CessionExamens dont la 
+    * Recherche les CessionExamens dont la
     * valeur est égale au paramètre.
     * @param examen Valeur examen de la CessionExamen recherchée.
     * @return une liste de CessionExamens.
@@ -62,7 +62,7 @@ public interface CessionExamenDao extends GenericDaoJpa<CessionExamen, Integer>,
    List<CessionExamen> findByExamen(String examen);
 
    /**
-    * Recherche les CessionExamens dont la 
+    * Recherche les CessionExamens dont la
     * valeur est égale au paramètre.
     * @param examenEn Valeur en anglais de la CessionExamen recherchée.
     * @return une liste de CessionExamens.

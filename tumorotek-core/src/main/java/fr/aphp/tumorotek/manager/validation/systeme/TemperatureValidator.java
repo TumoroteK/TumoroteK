@@ -50,7 +50,6 @@ import fr.aphp.tumorotek.model.systeme.Temperature;
 public class TemperatureValidator implements Validator
 {
 
-   
    @Override
    public boolean supports(final Class<?> clazz){
       return Temperature.class.equals(clazz);

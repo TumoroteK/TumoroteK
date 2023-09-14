@@ -56,8 +56,8 @@ public class ThesaurusRowRenderer implements RowRenderer<Object>
    @Override
    public void render(final Row row, final Object data, final int index) throws Exception{
 
-      final TKThesaurusObject thesaurusObject = (TKThesaurusObject)data;
-      
+      final TKThesaurusObject thesaurusObject = (TKThesaurusObject) data;
+
       // valeur row
       final Label valLabel = new Label(thesaurusObject.getNom());
       valLabel.setParent(row);

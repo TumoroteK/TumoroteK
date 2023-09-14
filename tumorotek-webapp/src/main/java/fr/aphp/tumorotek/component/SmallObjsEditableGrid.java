@@ -71,14 +71,19 @@ public class SmallObjsEditableGrid extends AbstractController
    private static final long serialVersionUID = 1L;
 
    protected Grid objGrid;
+
    protected Rows rows;
 
    private String deletionMessageKey;
 
    private List<SmallObjDecorator> objs = new ArrayList<>();
+
    private final List<SmallObjDecorator> objToCreateOrEdit = new ArrayList<>();
+
    private final List<SmallObjDecorator> objToDelete = new ArrayList<>();
+
    private Object beforeEditObjClone;
+
    private SmallObjDecorator currentObjEdited;
 
    @Override
@@ -137,7 +142,7 @@ public class SmallObjsEditableGrid extends AbstractController
     * si c'est un élément en cours modification -> revert
     * si c'est un élément en cours de creation -> remove.
     * @param event
-    * @throws IOException 
+    * @throws IOException
     */
    public void onClick$editObj(final Event event) throws IOException{
       revertCurrentObjEdition();

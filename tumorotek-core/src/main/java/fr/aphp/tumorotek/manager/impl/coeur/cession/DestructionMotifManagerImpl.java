@@ -68,7 +68,9 @@ public class DestructionMotifManagerImpl implements DestructionMotifManager
 
    /** Bean Dao DestructionMotifDao. */
    private DestructionMotifDao destructionMotifDao;
+
    private DestructionMotifValidator destructionMotifValidator;
+
    private PlateformeDao plateformeDao;
 
    public void setPlateformeDao(final PlateformeDao pDao){
@@ -89,7 +91,7 @@ public class DestructionMotifManagerImpl implements DestructionMotifManager
 
    /**
     * Recherche un DestructionMotif dont l'identifiant est passé en paramètre.
-    * @param destructionMotifId Identifiant du DestructionMotif que 
+    * @param destructionMotifId Identifiant du DestructionMotif que
     * l'on recherche.
     * @return Un DestructionMotif.
     */

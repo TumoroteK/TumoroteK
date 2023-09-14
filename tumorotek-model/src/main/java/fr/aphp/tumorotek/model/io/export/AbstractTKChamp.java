@@ -55,7 +55,9 @@ public abstract class AbstractTKChamp
 {
 
    private Integer id;
+
    private DataType dataType;
+
    private String nom;
 
    /**

@@ -60,7 +60,7 @@ public interface ProtocoleManager extends PfDependantTKThesaurusManager<Protocol
 
    /**
     * Recherche toutes les instances présentes dans la base.
-    * @return List contenant les Risque.
+    * @return List contenant les Protocole.
     */
    List<Protocole> findAllObjectsManager();
 

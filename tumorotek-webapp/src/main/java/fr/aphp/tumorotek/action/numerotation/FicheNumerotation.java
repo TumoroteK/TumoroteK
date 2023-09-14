@@ -85,56 +85,93 @@ public class FicheNumerotation extends AbstractFicheCombineController
    private static final long serialVersionUID = -48088936138017866L;
 
    private static final String PREFIXE_LABEL = Labels.getLabel("numerotation.date.prefixe");
+
    private static final String SUFFIXE_LABEL = Labels.getLabel("numerotation.date.suffixe");
 
    private static final String CREATE_MODE = "create";
+
    private static final String EDIT_MODE = "edit";
+
    private static final String STATIC_MODE = "static";
 
    private String mode;
 
    // Labels components
    private Label collectionLabel;
+
    private Label entiteLabel;
+
    private Label codeLabel;
+
    private Label codeHelpLabel;
+
    private Label startLabel;
+
    private Label currentLabel;
+
    private Label nbChiffresLabel;
+
    private Label zeroFillLabel;
+
    private Label dateFormatLabel;
+
    private Label datePlaceLabel;
+
    private Label dateFormatStatic;
+
    private Label datePlaceStatic;
+
    private Label noDateLabel;
 
    // Editable Components
    private Label collectionRequired;
+
    private Label entiteRequired;
+
    private Label startRequired;
+
    private Label currentRequired;
+
    private Intbox nbChiffresBox;
+
    private Checkbox zeroFillBox;
+
    private Intbox startBox;
+
    private Intbox currentBox;
+
    private Listbox collectionBox;
+
    private Listbox entitesBox;
+
    private Checkbox dateCheckbox;
+
    private Listbox dateFormatBox;
+
    private Listbox datePlaceBox;
+
    private Textbox codePrefixeNumerotation;
+
    private Textbox codeSuffixeNumerotation;
+
    private Label xxxLabel;
+
    private Label codeHelpEditLabel;
+
    private Span infoDatesDiv;
 
    private Numerotation numerotation;
-//   private String codePrefixe;
-//   private String codeSuffixe;
+
+   //   private String codePrefixe;
+   //   private String codeSuffixe;
    private List<Banque> banques = new ArrayList<>();
+
    private Banque selectedBanque;
+
    private List<Entite> allEntites = new ArrayList<>();
+
    private List<Entite> entites = new ArrayList<>();
+
    private Entite selectedEntite;
 
    @Override
@@ -169,17 +206,17 @@ public class FicheNumerotation extends AbstractFicheCombineController
       final Function<ENumerotationDateFormat, String> getLibelleFormatDate =
          ndf -> Labels.getLabel("date.format." + ndf.getLibelle());
 
-         final List<ENumerotationDateFormat> dateFormatList = Stream.of(ENumerotationDateFormat.values())
-            .sorted(Comparator.comparing(getLibelleFormatDate)).collect(Collectors.toList());
-         final ListModel<ENumerotationDateFormat> listModelDateFormat = new ListModelList<>(dateFormatList);
-         final ListitemRenderer<ENumerotationDateFormat> dateFormatRenderer = (li, ndf, idx) -> {
-            li.setLabel(getLibelleFormatDate.apply(ndf));
-            li.setValue(ndf);
-         };
-         dateFormatBox.setModel(listModelDateFormat);
-         dateFormatBox.setItemRenderer(dateFormatRenderer);
+      final List<ENumerotationDateFormat> dateFormatList = Stream.of(ENumerotationDateFormat.values())
+         .sorted(Comparator.comparing(getLibelleFormatDate)).collect(Collectors.toList());
+      final ListModel<ENumerotationDateFormat> listModelDateFormat = new ListModelList<>(dateFormatList);
+      final ListitemRenderer<ENumerotationDateFormat> dateFormatRenderer = (li, ndf, idx) -> {
+         li.setLabel(getLibelleFormatDate.apply(ndf));
+         li.setValue(ndf);
+      };
+      dateFormatBox.setModel(listModelDateFormat);
+      dateFormatBox.setItemRenderer(dateFormatRenderer);
 
-         getBinder().loadAll();
+      getBinder().loadAll();
 
    }
 
@@ -318,13 +355,13 @@ public class FicheNumerotation extends AbstractFicheCombineController
 
    @Override
    public void setFieldsToUpperCase(){
-//      if(codePrefixe != null){
-//         codePrefixe = codePrefixe.toUpperCase();
-//      }
-//
-//      if(codeSuffixe != null){
-//         codeSuffixe = codeSuffixe.toUpperCase();
-//      }
+      //      if(codePrefixe != null){
+      //         codePrefixe = codePrefixe.toUpperCase();
+      //      }
+      //
+      //      if(codeSuffixe != null){
+      //         codeSuffixe = codeSuffixe.toUpperCase();
+      //      }
    }
 
    @Override
@@ -366,17 +403,16 @@ public class FicheNumerotation extends AbstractFicheCombineController
       this.numerotation.setZeroFill(zeroFillBox.isChecked());
       final String prefixe = codePrefixeNumerotation.getValue();
       final String suffixe = codeSuffixeNumerotation.getValue();
-      
+
       this.numerotation.setCodeFormula(composeCodeFormula(prefixe, suffixe));
       this.numerotation.setCurrentIncrement(this.numerotation.getStartIncrement() - 1);
 
-      if(dateCheckbox.isChecked()) {
+      if(dateCheckbox.isChecked()){
          this.numerotation.setDateFormat(dateFormatBox.getSelectedItem().getValue());
-      }
-      else {
+      }else{
          this.numerotation.setDateFormat(null);
       }
-      
+
       // update de l'objet
       ManagerLocator.getNumerotationManager().createObjectManager(numerotation, selectedBanque, selectedEntite);
 
@@ -496,19 +532,18 @@ public class FicheNumerotation extends AbstractFicheCombineController
    public void updateObject(){
       // on remplit l'utilisateur en fonction des champs nulls
       setEmptyToNulls();
-      
+
       final String prefixe = codePrefixeNumerotation.getValue();
       final String suffixe = codeSuffixeNumerotation.getValue();
-      
+
       this.numerotation.setCodeFormula(composeCodeFormula(prefixe, suffixe));
-      if(dateCheckbox.isChecked()) {
+      if(dateCheckbox.isChecked()){
          this.numerotation.setDateFormat(dateFormatBox.getSelectedItem().getValue());
-      }
-      else {
+      }else{
          this.numerotation.setDateFormat(null);
       }
       this.numerotation.setZeroFill(zeroFillBox.isChecked());
-      
+
       // update de l'objet
       ManagerLocator.getNumerotationManager().updateObjectManager(numerotation, numerotation.getBanque(),
          numerotation.getEntite());
@@ -611,7 +646,7 @@ public class FicheNumerotation extends AbstractFicheCombineController
 
       String codePrefixe = "";
       String codeSuffixe = "";
-      
+
       // init du code
       if(numerotation.getCodeFormula() != null){
          if(numerotation.getCodeFormula().contains("[]")){
@@ -625,10 +660,10 @@ public class FicheNumerotation extends AbstractFicheCombineController
             codePrefixe = numerotation.getCodeFormula();
          }
       }
-      
+
       codePrefixeNumerotation.setValue(codePrefixe);
       codeSuffixeNumerotation.setValue(codeSuffixe);
-      
+
    }
 
    /**
@@ -711,27 +746,26 @@ public class FicheNumerotation extends AbstractFicheCombineController
 
       String codePreview = "";
 
-      if(numerotation != null) {
+      if(numerotation != null){
 
          final Numerotation tempNumerotation;
-         if(CREATE_MODE.equals(mode) || EDIT_MODE.equals(mode)) {
+         if(CREATE_MODE.equals(mode) || EDIT_MODE.equals(mode)){
 
             tempNumerotation = new Numerotation();
 
             final String prefixe = codePrefixeNumerotation.getValue();
             final String suffixe = codeSuffixeNumerotation.getValue();
-            
+
             tempNumerotation.setCodeFormula(composeCodeFormula(prefixe, suffixe));
-            
-            if(dateFormatBox.getSelectedItem() != null) {
+
+            if(dateFormatBox.getSelectedItem() != null){
                tempNumerotation.setDateFormat(dateFormatBox.getSelectedItem().getValue());
             }
-            
+
             tempNumerotation.setNbChiffres(nbChiffresBox.getValue());
             tempNumerotation.setZeroFill(zeroFillBox.isChecked());
 
-         }
-         else{
+         }else{
             tempNumerotation = numerotation.clone();
          }
 

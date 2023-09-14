@@ -68,16 +68,22 @@ public class ChooseSheetWindow
 
    @Wire("#fwinChooseSheetWindow")
    private Window fwinChooseSheetWindow;
+
    @Wire("#buttonsBox")
    private Hlayout buttonsLayout;
+
    private Component parent;
 
    private final List<TabFileSheet> sheets = new ArrayList<>();
+
    private TabFileSheet selectedSheet = null;
+
    private Boolean embed = false;
 
    private String border = "normal";
+
    private String winTitle = Labels.getLabel("import.choose.sheet.title");
+
    private String mainLabel = Labels.getLabel("import.choose.sheet");
 
    @AfterCompose
@@ -117,7 +123,7 @@ public class ChooseSheetWindow
    }
 
    private void updateSelSheets(final List<TabFileSheet> selTbs){
-      // disable 
+      // disable
       if(selTbs != null){
          for(final TabFileSheet tf : selTbs){
             if(sheets.contains(tf)){

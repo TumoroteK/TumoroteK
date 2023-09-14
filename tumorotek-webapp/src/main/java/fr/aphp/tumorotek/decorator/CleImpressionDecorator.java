@@ -44,7 +44,7 @@ import fr.aphp.tumorotek.model.impression.CleImpression;
  * Classe décorator pour les CleImpression
  * Reprends les méthode de CleImpression pour permettre l'affichage de labels internationalisés et de valeurs formattées
  * Classe créée le 09/04/2018
- * 
+ *
  * @author Answald Bournique
  * @version 2.2.0
  * @since 2.2.0
@@ -57,35 +57,35 @@ public class CleImpressionDecorator
     * La CleImpression à décorer
     */
    private CleImpression cleImpression;
-   
+
    /**
     * La valeur du champ pour une sélection
     */
    private String value;
 
-   public CleImpressionDecorator(CleImpression cleImpression){
+   public CleImpressionDecorator(final CleImpression cleImpression){
       this.cleImpression = cleImpression;
    }
-   
+
    /**
     * Décore une liste de CleImpression
     * @return liste de CleImpressionDecorator
     */
-   public static List<CleImpressionDecorator> decorateList(List<CleImpression> cleImpressionList){
-      List<CleImpressionDecorator> cleImpressionDecoList = new ArrayList<>();
-      for(CleImpression cle : cleImpressionList){
+   public static List<CleImpressionDecorator> decorateList(final List<CleImpression> cleImpressionList){
+      final List<CleImpressionDecorator> cleImpressionDecoList = new ArrayList<>();
+      for(final CleImpression cle : cleImpressionList){
          cleImpressionDecoList.add(new CleImpressionDecorator(cle));
       }
       return cleImpressionDecoList;
    }
-   
+
    /**
     * Décore une liste de CleImpression
     * @return liste de CleImpressionDecorator
     */
-   public static List<CleImpression> getCleImpressionList(List<CleImpressionDecorator> cleImpressionDecoList){
-      List<CleImpression> cleImpressionList = new ArrayList<>();
-      for(CleImpressionDecorator cle : cleImpressionDecoList){
+   public static List<CleImpression> getCleImpressionList(final List<CleImpressionDecorator> cleImpressionDecoList){
+      final List<CleImpression> cleImpressionList = new ArrayList<>();
+      for(final CleImpressionDecorator cle : cleImpressionDecoList){
          cleImpressionList.add(cle.getCleImpression());
       }
       return cleImpressionList;
@@ -106,6 +106,7 @@ public class CleImpressionDecorator
    public String getLabel(){
       return getNom() + " = " + getEntiteLabel() + "." + getChampLabel();
    }
+
    /**
     * L'entité internationalisée
     * @return L'entité internationalisée
@@ -129,7 +130,7 @@ public class CleImpressionDecorator
       }
       return label;
    }
-   
+
    /**
     * La CleImpression à décorer
     * @return La CleImpression à décorer
@@ -142,10 +143,10 @@ public class CleImpressionDecorator
     * La CleImpression à décorer
     * @param cleImpression La CleImpression à décorer
     */
-   public void setCleImpression(CleImpression cleImpression){
+   public void setCleImpression(final CleImpression cleImpression){
       this.cleImpression = cleImpression;
    }
-   
+
    /**
     * valeur de la clé pour la sélection
     * @return valeur de la clé pour la sélection
@@ -158,7 +159,7 @@ public class CleImpressionDecorator
     * La valeur de la clé pour la sélection
     * @param value valeur de la clé pour la sélection
     */
-   public void setValue(String value){
+   public void setValue(final String value){
       this.value = value;
    }
 }

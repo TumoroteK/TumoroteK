@@ -90,13 +90,21 @@ public class TKChart extends HtmlMacroComponent
    private static final long serialVersionUID = -4430614130184318712L;
 
    TKChartEngine engine = new TKChartEngine();
+
    GraphesModele model;
+
    String title = "";
+
    String height = "200px";
+
    String barType = "bar";
+
    String type = barType;
+
    Boolean zoomed = false;
+
    SimpleCategoryModel catModel = new SimpleCategoryModel();
+
    SimplePieModel pieModel = new SimplePieModel();
 
    ListModelList<CategoryDetails> categories = new ListModelList<>();
@@ -115,7 +123,7 @@ public class TKChart extends HtmlMacroComponent
    @Wire
    private Button zoom;
 
-   //	@Wire 
+   //	@Wire
    //	private Button close;
 
    @Wire

@@ -88,7 +88,7 @@ public class CoulTypesRowRenderer implements RowRenderer<CouleurEntiteType>
    }
 
    /**
-    * Renvoie le type au format String associé à l'objet 
+    * Renvoie le type au format String associé à l'objet
     * CouleurEntiteType passé en paramètre.
     * @param cet
     * @return type echantillon ou derivé associe.

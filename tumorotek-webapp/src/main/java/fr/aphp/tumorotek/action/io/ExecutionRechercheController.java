@@ -115,15 +115,23 @@ public class ExecutionRechercheController extends AbstractObjectTabController
    private static final long serialVersionUID = -1932781990848916925L;
 
    private List<Recherche> recherches = new ArrayList<>();
+
    private List<Banque> banques = new ArrayList<>();
+
    private Banque selectedBanque;
+
    private Recherche selectedRecherche;
 
    private Paging resPaging;
+
    private GridResultsModel model;
+
    private int _pageSize = 20;
+
    private int _startPageNumber = 0;
+
    private int _totalSize = 0;
+
    private boolean _needsTotalSizeUpdate = true;
 
    private Grid listObjets;
@@ -135,12 +143,19 @@ public class ExecutionRechercheController extends AbstractObjectTabController
    private Affichage affichage;
 
    private Menuitem showPatients;
+
    private Menuitem showPrelevements;
+
    private Menuitem showEchantillons;
+
    private Menuitem showProdDerives;
+
    private Menuitem exportItemINCa;
+
    private Menuitem exportItemTVGSO;
+
    private Menuitem exportItemTVGSOcsv;
+
    private Menuitem exportItemBIOCAP;
 
    private String entite;

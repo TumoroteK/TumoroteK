@@ -141,7 +141,7 @@ public final class PrelevementUtils
    }
 
    /**
-    * Dessine la liste d'icône en tête d'une liste de prélèvements 
+    * Dessine la liste d'icône en tête d'une liste de prélèvements
     * (à l'exception de l'icone concernant l'interfacage)
     * @param prel
     * @return Hlayout contenant les icônes

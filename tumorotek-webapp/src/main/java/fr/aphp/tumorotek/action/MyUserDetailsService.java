@@ -64,7 +64,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
  * Créée le 07/06/2010.
  * @version 2.2.0
  */
-public class MyUserDetailsService implements UserDetailsService {
+public class MyUserDetailsService implements UserDetailsService
+{
 
    private final Log log = LogFactory.getLog(MyUserDetailsService.class);
 
@@ -77,7 +78,11 @@ public class MyUserDetailsService implements UserDetailsService {
       jdbcTemplate.setDataSource(getDataSource());
       User user;
       try{
-         user = jdbcTemplate.queryForObject(sql, new String[]{username}, new UserMapper());
+         user = jdbcTemplate.queryForObject(sql, new String[] {username}, new UserMapper());
+         
+         // verifier que user non admin a accès au moins une collection
+         // sinon throw Exception
+         
       }catch(final DataAccessException e){
          log.info("La tentative de connection " + username + " a échoué " + "car les paramètres de connection sont invalides");
          throw new UsernameNotFoundException("authentication error");
@@ -104,7 +109,9 @@ public class MyUserDetailsService implements UserDetailsService {
       return dataSource;
    }
 
-   private class UserMapper implements RowMapper<User> {
+   private class UserMapper implements RowMapper<User>
+   {
+      @Override
       public User mapRow(final ResultSet rs, final int arg1) throws SQLException{
          return new User(rs.getString("login"), rs.getString("password"), true, true, true, true, getAuthorities(false));
       }

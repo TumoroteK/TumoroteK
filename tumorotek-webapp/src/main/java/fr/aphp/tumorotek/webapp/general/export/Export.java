@@ -85,7 +85,7 @@ import fr.aphp.tumorotek.webapp.general.ResultSetToExcel;
  * Echantillon, Produits Dérivés, Cession
  *
  * @author jhusson
- * @version 2.2.3-rc1
+ * @version 2.3.0-gatsbi
  */
 public class Export extends Thread
 {
@@ -132,6 +132,9 @@ public class Export extends Thread
 	protected short exportType = 1;
 	protected List<Banque> collections;
 
+   // @since 2.3.0-gatsbi
+   protected Integer etudeId = null;
+	
 	protected List<Integer> patientIds = new ArrayList<>();
 	protected List<Integer> prelevementIds = new ArrayList<>();
 	protected List<Integer> echantillonIds = new ArrayList<>();
@@ -208,9 +211,13 @@ public class Export extends Thread
 		collections = b;
 		exportType = type;
 		user = u;
-
+		
 		getRestrictedAnnosTableIds().addAll(rI);
-
+		
+      // since 2.3.0-gatsbi
+      if(ctx.equals(EContexte.GATSBI)){
+         etudeId = collections.get(0).getEtude().getEtudeId();
+      }
 	}
 
 	protected void init(final Desktop d, final HtmlMacroComponent htmlMacroComponent){
@@ -269,12 +276,11 @@ public class Export extends Thread
 		catch(final ClassNotFoundException e){
 			log.error(e);
 		}catch(final DesktopUnavailableException e){
-			e.printStackTrace();
+         log.warn(e);
 		}catch(final InterruptedException e){
 			log.warn(e.getMessage());
 		}catch(final Exception e){
-			log.error(e);
-			e.printStackTrace();
+			log.error(e.getMessage(), e);
 			try{
 				setExportDetails(0, 0, 0, null, null, e);
 			}catch(DesktopUnavailableException | InterruptedException e1){}
@@ -1311,15 +1317,33 @@ public class Export extends Thread
 			String create = "";
 			String fill = "";
 			if(entiteId == 1){ // PATIENT
-				boolean exportAnonyme = profilExport != null && !profilExport.equals(ProfilExport.NOMINATIF);
-				create = exportAnonyme ? initPatientTableAnonymeSQL() : "{call create_tmp_patient_table()}";
-				fill = exportAnonyme ? "{call fill_tmp_table_patient_anonyme(?)}" : "{call fill_tmp_table_patient(?)}";
+            boolean exportAnonyme = profilExport != null && !profilExport.equals(ProfilExport.NOMINATIF);
+
+            switch(ctx) {
+               case GATSBI:
+                  create = exportAnonyme ? "{call create_tmp_anonyme_table_gatsbi(" + etudeId + ")}" 
+                                       : "{call create_tmp_patient_table_gatsbi(" + etudeId + ")}";
+                  fill = (exportAnonyme ? "{call fill_tmp_anonyme_table_gatsbi(?, " 
+                        : "{call fill_tmp_table_patient_gatsbi(?, ")  
+                     .concat(collections.get(0).getBanqueId().toString())
+                     .concat(", ")
+                     .concat(etudeId.toString())
+                     .concat(")}");
+                  break;
+               default:
+      				create = exportAnonyme ? initPatientTableAnonymeSQL() : "{call create_tmp_patient_table()}";
+      				fill = exportAnonyme ? "{call fill_tmp_table_patient_anonyme(?)}" : "{call fill_tmp_table_patient(?)}";
+            }
 			} else if (entiteId == 7) { // MALADIE
 				switch(ctx)	{
 					case SEROLOGIE:
 						create = "{call create_tmp_maladie_table_sero()}";
 						fill = "{call fill_tmp_table_maladie_sero(?)}";
 						break;
+					case GATSBI:
+                  create = "{call create_tmp_maladie_table_gatsbi(" + etudeId + ")}";
+                  fill = "{call fill_tmp_table_maladie_gatsbi(?, " + etudeId + ")}";
+                  break;
 					default:
 						create = "{call create_tmp_maladie_table()}";
 						fill = "{call fill_tmp_table_maladie(?)}";
@@ -1330,6 +1354,10 @@ public class Export extends Thread
 						create = "{call create_tmp_prel_sero_table()}";
 						fill = "{call fill_tmp_table_prel_sero(?)}";
 						break;
+					case GATSBI:
+                  create = "{call create_tmp_prelevement_table_gatsbi(" + etudeId + ")}";
+                  fill = "{call fill_tmp_table_prel_gatsbi(?, " + etudeId + ")}";
+                  break;
 					default:
 						create = "{call create_tmp_prelevement_table()}";
 						fill = "{call fill_tmp_table_prel(?)}";
@@ -1340,6 +1368,10 @@ public class Export extends Thread
 						create = "{call create_tmp_echan_table_sero()}";
 						fill = "{call fill_tmp_table_echan_sero(?)}";
 						break;
+					case GATSBI:
+                  create = "{call create_tmp_echantillon_table_gatsbi(" + etudeId + ")}";
+                  fill = "{call fill_tmp_table_echan_gatsbi(?, " + etudeId + ")}";
+                  break;
 					default:
 						create = "{call create_tmp_echantillon_table()}";
 						fill = "{call fill_tmp_table_echan(?)}";
@@ -1360,21 +1392,23 @@ public class Export extends Thread
 				getStatement().executeUpdate(create);
 			}
 
-			List<Integer> ids;
+			List<Integer> ids = new ArrayList<Integer>();
 			//TK-320 : apparamment o est toujours null (cf appel de export_xxx dans load_sequences()) :
 			if(o == null){
-				ids = objsId;
+				ids.addAll(objsId);
 			}else{
-				ids = o;
+				ids.addAll(o);
 			}
 
 			int j = 1;
+			
 			// REMPLISSAGE DE LA TABLE TEMP
 			setPreparedStatement(getConnection().prepareCall(fill));
+			
 			int count = 0;
 			for(final Integer i : ids){
 
-				getPreparedStatement().setInt(1, i);
+				getPreparedStatement().setInt(1, i.intValue());
 				getPreparedStatement().addBatch();
 				// saveOperation((Patient) objs.get(i));
 				setExportDetails(progress, j, o == null ? total : o.size(), null, null, null);
@@ -1403,6 +1437,7 @@ public class Export extends Thread
 			if(Thread.interrupted()){
 				throw new InterruptedException();
 			}
+						
 			throw e;
 		}
 	}

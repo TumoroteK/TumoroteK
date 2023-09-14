@@ -35,6 +35,8 @@
  **/
 package fr.aphp.tumorotek.action.echantillon;
 
+import java.lang.reflect.InvocationTargetException;
+import java.text.ParseException;
 import java.util.List;
 
 import org.zkoss.util.resource.Labels;
@@ -54,12 +56,13 @@ import fr.aphp.tumorotek.action.utils.TKStockableObjectUtils;
 import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
 import fr.aphp.tumorotek.dto.EchantillonDTO;
 import fr.aphp.tumorotek.manager.exception.DoublonFoundException;
+import fr.aphp.tumorotek.webapp.gatsbi.RowRendererGatsbi;
 
 /**
  * @author GCH
  *
  */
-public abstract class AbstractEchantillonDecoratorRowRenderer implements RowRenderer<EchantillonDTO>
+public abstract class AbstractEchantillonDecoratorRowRenderer implements RowRenderer<EchantillonDTO>, RowRendererGatsbi
 {
 
    private List<String> usedCodes = null;
@@ -67,13 +70,17 @@ public abstract class AbstractEchantillonDecoratorRowRenderer implements RowRend
    public void setUsedCodes(final List<String> o){
       usedCodes = o;
    }
-   
-   @Override
-   public void render(final Row row, final EchantillonDTO deco, final int index) {
 
-      final Hlayout icones = TKStockableObjectUtils.drawListIcones(deco.getEchantillon(), deco.getNonConformiteTraitements(),
-         deco.getNonConformiteCessions());
-      icones.setParent(row);
+   @Override
+   public void render(final Row row, final EchantillonDTO deco, final int index){
+
+      // @since gatsbi, icones peuvent ne jamais s'afficher
+      // icones
+      if(areIconesRendered()){
+         final Hlayout icones = TKStockableObjectUtils.drawListIcones(deco.getEchantillon(), deco.getNonConformiteTraitements(),
+            deco.getNonConformiteCessions());
+         icones.setParent(row);
+      }
 
       // code
       if(deco.isNew() && deco.getAdrlTmp() == null){
@@ -118,18 +125,14 @@ public abstract class AbstractEchantillonDecoratorRowRenderer implements RowRend
          new Label(deco.getCode()).setParent(row);
       }
 
-      // type
-      if(deco.getType() != null){
-         new Label(deco.getType()).setParent(row);
-      }else{
-         new Label().setParent(row);
-      }
-
-      // quantité
-      if(deco.getOnlyQuantiteInit() != null){
-         new Label(deco.getOnlyQuantiteInit()).setParent(row);
-      }else{
-         new Label().setParent(row);
+      // @since gatsbi
+      try{
+         renderEchantillon(row, deco);
+      }catch(final Exception e){
+         // une erreur inattendue levée dans la récupération
+         // ou le rendu d'une propriété prel
+         // va arrêter le rendu du reste du tableau
+         throw new RuntimeException(e);
       }
 
       // emplct
@@ -155,7 +158,44 @@ public abstract class AbstractEchantillonDecoratorRowRenderer implements RowRend
       delImg.addForward("onClick", row.getParent(), "onDeleteDeco", deco);
       delImg.setVisible(deco.isNew());
       delImg.setParent(row);
-      
    }
+
+   /**
+    * Rendu des colonnes spécifiques échantillon, sera surchargé par Gatsbi.
+    *
+    * @param row
+    * @param deco
+    */
+   protected void renderEchantillon(final Row row, final EchantillonDTO deco)
+      throws IllegalAccessException, InvocationTargetException, NoSuchMethodException, ParseException{
+      // type
+      if(deco.getType() != null){
+         new Label(deco.getType()).setParent(row);
+      }else{
+         new Label().setParent(row);
+      }
+
+      // quantité
+      if(deco.getOnlyQuantiteInit() != null){
+         new Label(deco.getOnlyQuantiteInit()).setParent(row);
+      }else{
+         new Label().setParent(row);
+      }
+   }
+
+   /**
+    * Sera surchargée par Gatsbi pour ne pas dessiner les icones quand les champs
+    * correspondants ne sont plus affichés dans les formulaires
+    *
+    * @since 2.3.0-gatsbi
+    * @return true si les icones doivent être dessinées
+    */
+   @Override
+   public boolean areIconesRendered(){
+      return true;
+   }
+
+   @Override
+   public void setIconesRendered(final boolean _i){}
 
 }

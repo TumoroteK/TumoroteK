@@ -63,6 +63,7 @@ public class ConformiteTypeManagerTest extends AbstractManagerTest4
 
    @Autowired
    private ConformiteTypeManager conformiteTypeManager;
+
    @Autowired
    private EntiteDao entiteDao;
 

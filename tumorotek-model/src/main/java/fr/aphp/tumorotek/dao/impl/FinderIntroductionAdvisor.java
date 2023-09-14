@@ -60,7 +60,7 @@ public class FinderIntroductionAdvisor extends DefaultIntroductionAdvisor
    }
 
    /**
-    * 
+    *
     * @author Pierre Ventadour
     * 09/09/2009
     * Filtre de classe.
@@ -73,7 +73,7 @@ public class FinderIntroductionAdvisor extends DefaultIntroductionAdvisor
        * @return true si le FinderExecutor est assignable à cette classe.
        */
       @Override
-      
+
       public boolean matches(final Class<?> clazz){
          return FinderExecutor.class.isAssignableFrom(clazz);
       }

@@ -53,12 +53,12 @@ public class ListeEchantillonSero extends ListeEchantillon
 {
 
    /**
-    * 
+    *
     */
    private static final long serialVersionUID = -5972467495447701308L;
 
    @Override
-   public void doAfterCompose(Component comp) throws Exception{
+   public void doAfterCompose(final Component comp) throws Exception{
       listObjectsRenderer = new EchantillonSeroRowRenderer(true, false);
       super.doAfterCompose(comp);
    }

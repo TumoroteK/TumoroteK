@@ -51,38 +51,38 @@ public interface ParametresManager
     * @return message d'accueil
     */
    String getMessageAccueil(boolean raw);
-   
+
    /**
     * Sauvegarde le message d'accueil
     * @param msgAccueil
     * @return true si le message a bien eété sauvegardé
     */
    boolean saveMessageAccueil(String msgAccueil);
-   
+
    /**
     * Supprime le message d'accueil
     * @param msgAccueil
     * @return true si le message a bien eété supprimé
     */
    boolean deleteMessageAccueil();
-   
+
    /**
     * Récupère le fichier du logo affiché sur la page d'accueil
     * @return
     */
    File getLogoFile();
-   
+
    /**
     * Sauvegarde le logo de la page d'accueil
     * @param logoFile
     * @return true si le logo a bien été sauvegardé
     */
    boolean saveLogo(File logoFile);
-   
+
    /**
     * Supprime le logo de la page d'accueil
     * @return true si le logo a bien été suprimé
     */
    boolean deleteLogo();
-   
+
 }

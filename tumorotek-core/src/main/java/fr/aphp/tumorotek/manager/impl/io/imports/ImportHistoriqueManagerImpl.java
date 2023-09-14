@@ -65,9 +65,13 @@ public class ImportHistoriqueManagerImpl implements ImportHistoriqueManager
    private final Log log = LogFactory.getLog(ImportHistoriqueManager.class);
 
    private ImportHistoriqueDao importHistoriqueDao;
+
    private ImportTemplateDao importTemplateDao;
+
    private UtilisateurDao utilisateurDao;
+
    private ImportationDao importationDao;
+
    private EntiteDao entiteDao;
 
    public void setImportHistoriqueDao(final ImportHistoriqueDao iDao){

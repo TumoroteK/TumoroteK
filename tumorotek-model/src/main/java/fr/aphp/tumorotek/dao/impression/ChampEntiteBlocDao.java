@@ -55,7 +55,7 @@ public interface ChampEntiteBlocDao extends GenericDaoJpa<ChampEntiteBloc, Champ
 {
 
    /**
-    * Recherche les ChampEntiteBlocs dont le bloc 
+    * Recherche les ChampEntiteBlocs dont le bloc
     * est égal au paramètre.
     * @param bloc BlocImpression du bloc recherché.
     * @return une liste de ChampEntiteBloc.

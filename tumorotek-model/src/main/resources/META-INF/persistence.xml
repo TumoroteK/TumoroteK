@@ -19,6 +19,8 @@
         </class>
         <class>fr.aphp.tumorotek.model.contexte.Etablissement
         </class>
+        <class>fr.aphp.tumorotek.model.contexte.Organisme
+        </class>        
         <class>fr.aphp.tumorotek.model.contexte.Plateforme
         </class>
         <class>fr.aphp.tumorotek.model.contexte.Service
@@ -260,6 +262,9 @@
         <class>fr.aphp.tumorotek.model.cession.delegate.AbstractCessionDelegate</class>
         <class>fr.aphp.tumorotek.model.coeur.patient.delegate.AbstractPatientDelegate</class>
         <class>fr.aphp.tumorotek.model.io.export.ChampDelegue</class>
+        <class>fr.aphp.tumorotek.model.contexte.gatsbi.Etude</class>
+        <class>fr.aphp.tumorotek.model.config.ConfigItem</class>
+        <class>fr.aphp.tumorotek.model.coeur.patient.gatsbi.PatientIdentifiant</class>
         <exclude-unlisted-classes>true</exclude-unlisted-classes>
     </persistence-unit>
     <persistence-unit name="pCodes">

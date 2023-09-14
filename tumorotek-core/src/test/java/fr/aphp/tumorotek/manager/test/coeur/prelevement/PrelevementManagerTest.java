@@ -147,7 +147,7 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
  * Classe de test pour le manager PrelevementManager. Classe créée le 14/10/09.
  *
  * @author Mathieu BARTHELEMY.
- * @version 2.1
+ * @version 2.3.0-gatsbi
  *
  */
 public class PrelevementManagerTest extends AbstractManagerTest4
@@ -155,84 +155,124 @@ public class PrelevementManagerTest extends AbstractManagerTest4
 
    @Autowired
    private PrelevementManager prelevementManager;
+
    @Autowired
    private MaladieManager maladieManager;
+
    @Autowired
    private PatientManager patientManager;
+
    @Autowired
    private BanqueDao banqueDao;
+
    @Autowired
    private NatureDao natureDao;
+
    @Autowired
    private MaladieDao maladieDao;
+
    @Autowired
    private ConsentTypeDao consentTypeDao;
+
    @Autowired
    private CollaborateurDao collaborateurDao;
+
    @Autowired
    private ServiceDao serviceDao;
+
    @Autowired
    private PrelevementTypeDao prelevementTypeDao;
+
    @Autowired
    private ConditTypeDao conditTypeDao;
+
    @Autowired
    private ConditMilieuDao conditMilieuDao;
+
    @Autowired
    private UniteDao uniteDao;
+
    @Autowired
    private TransporteurDao transporteurDao;
+
    @Autowired
    private UtilisateurDao utilisateurDao;
+
    @Autowired
    private EchantillonDao echantillonDao;
+
    @Autowired
    private LaboInterDao laboInterDao;
+
    @Autowired
    private PrelevementValidator prelevementValidator;
+
    @Autowired
    private ChampAnnotationDao champAnnotationDao;
+
    @Autowired
    private AnnotationValeurManager annotationValeurManager;
+
    @Autowired
    private EchantillonTypeManager echantillonTypeManager;
+
    @Autowired
    private PatientDao patientDao;
+
    @Autowired
    private EntiteDao entiteDao;
+
    @Autowired
    private TransformationManager transformationManager;
+
    @Autowired
    private ProdDeriveManager prodDeriveManager;
+
    @Autowired
    private ProdTypeDao prodTypeDao;
+
    @Autowired
    private CessionDao cessionDao;
+
    @Autowired
    private CederObjetManager cederObjetManager;
+
    @Autowired
    private RisqueDao risqueDao;
+
    @Autowired
    private ConteneurManager conteneurManager;
+
    @Autowired
    private EnceinteManager enceinteManager;
+
    @Autowired
    private TerminaleManager terminaleManager;
+
    @Autowired
    private EmplacementManager emplacementManager;
+
    @Autowired
    private BanqueManager banqueManager;
+
    @Autowired
    private EchantillonManager echantillonManager;
+
    @Autowired
    private EnceinteTypeDao enceinteTypeDao;
+
    @Autowired
    private EmetteurDao emetteurDao;
+
    @Autowired
    private ObjetStatutDao objetStatutDao;
+
    @Autowired
    private NonConformiteDao nonConformiteDao;
+
    @Autowired
    private ObjetNonConformeDao objetNonConformeDao;
+
    @Autowired
    private PlateformeDao plateformeDao;
 
@@ -977,13 +1017,13 @@ public class PrelevementManagerTest extends AbstractManagerTest4
       depDate.setTime(new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").parse("20/09/2006 12:57:01"));
       p.setDateDepart(depDate);
       final Transporteur t = transporteurDao.findById(1);
-      p.setTransportTemp(new Float(-5.9));
+      p.setTransportTemp(-5.9f);
       // Calendar arrDate = Calendar.getInstance();
       // arrDate.setTime(new SimpleDateFormat("dd/MM/yyyy HH:mm:ss")
       // .parse("22/09/2006 12:57:01"));
       // p.setDateArrivee(arrDate);
       final Collaborateur op = collaborateurDao.findById(2);
-      p.setQuantite(new Float(12.5));
+      p.setQuantite(12.5f);
       final Unite qU = (uniteDao.findByUnite("mg")).get(0);
       p.setPatientNda("NDA1");
       p.setNumeroLabo("1234");
@@ -1132,7 +1172,6 @@ public class PrelevementManagerTest extends AbstractManagerTest4
       cleanUpFantomes(fs);
    }
 
-   
    @Test
    public void testValidation(){
       final Prelevement p = new Prelevement();
@@ -1187,7 +1226,7 @@ public class PrelevementManagerTest extends AbstractManagerTest4
       // validation sur les champs nullables
       final ArrayList<Integer> conditNbrs = new ArrayList<>();
       conditNbrs.add(-1);
-      final List<Float> tValues = createNegativeAndOverFloats(new Float(1000.0));
+      final List<Float> tValues = createNegativeAndOverFloats(1000.0f);
       final List<Float> floats = createNegativeAndOverFloats(null);
       final List<String> ndas = createInvalideAndOverStrings(20);
       final List<String> nums = createInvalideAndOverStrings(50);
@@ -2072,12 +2111,12 @@ public class PrelevementManagerTest extends AbstractManagerTest4
       depDate.setTime(new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").parse("20/09/2006 12:57:01"));
       p.setDateDepart(depDate);
       p.setTransporteur(transporteurDao.findById(1));
-      p.setTransportTemp(new Float(-5.9));
+      p.setTransportTemp(-5.9f);
       final Calendar arrDate = Calendar.getInstance();
       arrDate.setTime(new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").parse("22/09/2006 12:57:01"));
       p.setDateArrivee(arrDate);
       p.setPreleveur(collaborateurDao.findById(2));
-      p.setQuantite(new Float(12.5));
+      p.setQuantite(12.5f);
       p.setQuantiteUnite((uniteDao.findByUnite("mg")).get(0));
       p.setPatientNda("NDA1");
       p.setNumeroLabo("1234");
@@ -2754,14 +2793,10 @@ public class PrelevementManagerTest extends AbstractManagerTest4
       emp.setPosition(55);
       emp.setVide(false);
       emp.setObjetId(derive.getProdDeriveId());
-      final Terminale t1 =
-         enceinteManager
-            .getTerminalesManager(
-               enceinteManager
-                  .getEnceintesManager(enceinteManager
-                     .getEnceintesManager(conteneurManager.getEnceintesManager(c).iterator().next()).iterator().next())
-                  .iterator().next())
-            .iterator().next();
+      final Terminale t1 = enceinteManager.getTerminalesManager(enceinteManager
+         .getEnceintesManager(
+            enceinteManager.getEnceintesManager(conteneurManager.getEnceintesManager(c).iterator().next()).iterator().next())
+         .iterator().next()).iterator().next();
       emplacementManager.createObjectManager(emp, t1, entiteDao.findById(8));
       prodDeriveManager.updateObjectManager(derive, derive.getBanque(), derive.getProdType(), null, null, emp, null, null, null,
          null, null, derive.getTransformation(), null, null, null, null, u, false, null, "/tmp/");
@@ -3033,7 +3068,7 @@ public class PrelevementManagerTest extends AbstractManagerTest4
       depDate.setTime(new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").parse("20/09/2006 12:57:01"));
       prel3.setDateDepart(depDate);
       final Transporteur t = transporteurDao.findById(1);
-      prel2.setTransportTemp(new Float(-5.9));
+      prel2.setTransportTemp(-5.9f);
       prel1.setSterile(true);
       prel2.setSterile(true);
       final Set<LaboInter> labos = new HashSet<>();
@@ -3174,7 +3209,7 @@ public class PrelevementManagerTest extends AbstractManagerTest4
 
       // on teste une maj non valide sur le 1er élément
       prelTest1.setConsentDate(new SimpleDateFormat("dd/MM/yyyy").parse("17/09/2078"));
-      final Float temp = new Float(-12.5);
+      final Float temp = -12.5f;
       prelTest1.setTransportTemp(temp);
       prelTest2.setTransportTemp(temp);
       prelTest3.setTransportTemp(temp);
@@ -3204,7 +3239,7 @@ public class PrelevementManagerTest extends AbstractManagerTest4
       prelTest2.setLaboInters(new HashSet<LaboInter>());
       prelTest3.setLaboInters(new HashSet<LaboInter>());
       assertNull(prelTest1.getTransportTemp());
-      assertTrue(prelTest2.getTransportTemp().equals(new Float(-5.9)));
+      assertTrue(prelTest2.getTransportTemp().equals(-5.9f));
       assertNull(prelTest3.getTransportTemp());
       assertFalse(annotationValeurManager.findByChampAndObjetManager(champAnnotationDao.findById(2), prelTest1).get(0)
          .getAlphanum().equals("TEST"));
@@ -3242,7 +3277,7 @@ public class PrelevementManagerTest extends AbstractManagerTest4
       list.add(prelTest2);
       list.add(prelTest3);
       assertNull(prelTest1.getTransportTemp());
-      assertTrue(prelTest2.getTransportTemp().equals(new Float(-5.9)));
+      assertTrue(prelTest2.getTransportTemp().equals(-5.9f));
       assertNull(prelTest3.getTransportTemp());
       assertFalse(annotationValeurManager.findByChampAndObjetManager(champAnnotationDao.findById(2), prelTest1).get(0)
          .getAlphanum().equals("TEST"));
@@ -3354,12 +3389,12 @@ public class PrelevementManagerTest extends AbstractManagerTest4
       depDate.setTime(new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").parse("20/09/2006 12:57:01"));
       p.setDateDepart(depDate);
       final Transporteur t = transporteurDao.findById(1);
-      p.setTransportTemp(new Float(-5.9));
+      p.setTransportTemp(-5.9f);
       final Calendar arrDate = Calendar.getInstance();
       arrDate.setTime(new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").parse("22/09/2006 12:57:02"));
       p.setDateArrivee(arrDate);
       final Collaborateur op = collaborateurDao.findById(2);
-      p.setQuantite(new Float(12.5));
+      p.setQuantite(12.5f);
       final Unite qU = (uniteDao.findByUnite("mg")).get(0);
       p.setPatientNda("NDA1");
       p.setNumeroLabo("1234");
@@ -3429,10 +3464,10 @@ public class PrelevementManagerTest extends AbstractManagerTest4
       assertTrue(p3.getConditNbr().equals(1));
       assertTrue(p3.getDateDepart().equals(depDate));
       assertTrue(p3.getTransporteur().equals(t));
-      assertTrue(p3.getTransportTemp().equals(new Float(-5.9)));
+      assertTrue(p3.getTransportTemp().equals(-5.9f));
       assertTrue(p3.getDateArrivee().equals(arrDate));
       assertTrue(p3.getOperateur().equals(op));
-      assertTrue(p3.getQuantite().equals(new Float(12.5)));
+      assertTrue(p3.getQuantite().equals(12.5f));
       assertTrue(p3.getQuantiteUnite().equals(qU));
       assertTrue(p3.getPatientNda().equals("NDA1"));
       assertTrue(p3.getNumeroLabo().equals("1234"));
@@ -3542,7 +3577,7 @@ public class PrelevementManagerTest extends AbstractManagerTest4
       ids.add(p1.getPrelevementId());
       ids.add(p2.getPrelevementId());
       ids.add(p3.getPrelevementId());
-      final Integer prelCessedObjectId = new Integer(1);
+      final Integer prelCessedObjectId = 1;
       ids.add(prelCessedObjectId); // ce prelevement est parent d'un object cédé
 
       // rollback used object Exception
@@ -3700,4 +3735,89 @@ public class PrelevementManagerTest extends AbstractManagerTest4
       assertTrue(prels.size() == 0);
    }
 
+   @Test
+   public void testFindByPatientIdentifiantOrNomOrNipInListManager(){
+      List<String> criteres = new ArrayList<>();
+      criteres.add("876");
+      criteres.add("SOLIS");
+      criteres.add("SLS-1234");
+      final List<Banque> bks = new ArrayList<>();
+      bks.add(banqueDao.findById(1));
+      bks.add(banqueDao.findById(2));
+      
+      // les prélèvements patients 876 (DELPHINO) et SOLIS
+      // ne seront pas pris en compte car ils n'ont pas d'identifiant (donc pas Gatsbi !)
+      List<Integer> liste = prelevementManager.findByPatientIdentifiantOrNomOrNipInListManager(criteres, bks);
+      assertTrue(liste.size() == 1);
+      assertTrue(liste.get(0).equals(3));
+
+      // NOM
+      criteres.clear();
+      criteres.add("MAYER");
+      liste = prelevementManager.findByPatientIdentifiantOrNomOrNipInListManager(criteres, bks);
+      assertTrue(liste.size() == 1);
+      assertTrue(liste.get(0).equals(3));
+      
+      // NIP
+      criteres.clear();
+      criteres.add("12");
+      liste = prelevementManager.findByPatientIdentifiantOrNomOrNipInListManager(criteres, bks);
+      assertTrue(liste.size() == 1);
+      assertTrue(liste.get(0).equals(3));
+
+      liste = prelevementManager.findByPatientIdentifiantOrNomOrNipInListManager(null, bks);
+      assertTrue(liste.size() == 0);
+      liste = prelevementManager.findByPatientIdentifiantOrNomOrNipInListManager(criteres, null);
+      assertTrue(liste.size() == 0);
+      liste = prelevementManager.findByPatientIdentifiantOrNomOrNipInListManager(new ArrayList<String>(), bks);
+      assertTrue(liste.size() == 0);
+      liste = prelevementManager.findByPatientIdentifiantOrNomOrNipInListManager(criteres, new ArrayList<Banque>());
+      assertTrue(liste.size() == 0);
+   }
+   
+   @Test
+   public void testFindByPatientIdentifiantOrNomOrNipReturnIdsManager(){
+      // IDENTIFIANT exact = true
+      String search = "SLS-1234";
+      final List<Banque> bks = new ArrayList<>();
+      bks.add(banqueDao.findById(1));
+      bks.add(banqueDao.findById(2));
+      
+      List<Integer> liste = prelevementManager
+         .findByPatientIdentifiantOrNomOrNipReturnIdsManager(search, bks, true);
+      assertTrue(liste.size() == 1);
+      assertTrue(liste.get(0).equals(3));
+      
+      // IDENTIFIANT exact = false
+      search = "LS-123";
+      liste = prelevementManager.findByPatientIdentifiantOrNomOrNipReturnIdsManager(search, bks, false);
+      assertTrue(liste.size() == 1);
+      assertTrue(liste.get(0).equals(3));
+
+      // NOM exact = false
+      search = "MAYER";
+      liste = prelevementManager.findByPatientIdentifiantOrNomOrNipReturnIdsManager(search, bks, false);
+      assertTrue(liste.size() == 1);
+      assertTrue(liste.get(0).equals(3));
+      
+      // NIP exact = true
+      search = "12";
+      liste = prelevementManager.findByPatientIdentifiantOrNomOrNipReturnIdsManager(search, bks, true);
+      assertTrue(liste.size() == 1);
+      assertTrue(liste.get(0).equals(3));
+      
+      // IDENTIFIANT exact = true FAIL
+      search = "LS-123";
+      liste = prelevementManager.findByPatientIdentifiantOrNomOrNipReturnIdsManager(search, bks, true);
+      assertTrue(liste.isEmpty());
+
+      liste = prelevementManager.findByPatientIdentifiantOrNomOrNipReturnIdsManager(null, bks, false);
+      assertTrue(liste.size() == 0);
+      liste = prelevementManager.findByPatientIdentifiantOrNomOrNipReturnIdsManager(search, null, false);
+      assertTrue(liste.size() == 0);
+      liste = prelevementManager.findByPatientIdentifiantOrNomOrNipReturnIdsManager("", bks, false);
+      assertTrue(liste.size() == 0);
+      liste = prelevementManager.findByPatientIdentifiantOrNomOrNipReturnIdsManager(search, new ArrayList<Banque>(), false);
+      assertTrue(liste.size() == 0);
+   }
 }

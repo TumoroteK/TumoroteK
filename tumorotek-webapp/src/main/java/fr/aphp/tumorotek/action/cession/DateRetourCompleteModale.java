@@ -53,19 +53,25 @@ public class DateRetourCompleteModale extends GenericForwardComposer<Window>
 
    // @Wire("#fwinDateRetourComplete")
    private Window fwinDateRetourComplete;
+
    // @Wire("#incompEchansRetourLayout")
    private Vlayout incompEchansRetourLayout;
+
    // @Wire("#incompDerivesRetourLayout")
    private Vlayout incompDerivesRetourLayout;
 
    private Listbox echansRetoursDetailsList;
+
    private Listbox derivesRetoursDetailsList;
 
    private CalendarBox dateRetourEchansCalBox;
+
    private CalendarBox dateRetourDerivesCalBox;
+
    private FicheCessionEdit cessionEditController;
 
    private Map<String, String> echansRetourIncompletes;
+
    private Map<String, String> derivesRetourIncompletes;
 
    //	@AfterCompose
@@ -103,8 +109,8 @@ public class DateRetourCompleteModale extends GenericForwardComposer<Window>
    }
 
    //	@Init
-   //	public void init(@ExecutionArgParam("cal1") Calendar cal1, 
-   //			@ExecutionArgParam("cal2") Calendar cal2, 
+   //	public void init(@ExecutionArgParam("cal1") Calendar cal1,
+   //			@ExecutionArgParam("cal2") Calendar cal2,
    //			@ExecutionArgParam("controller") FicheCessionEdit cont) {
    //		if (cal1 != null) {
    //			setDateRetourEchans(cal1.getTime());

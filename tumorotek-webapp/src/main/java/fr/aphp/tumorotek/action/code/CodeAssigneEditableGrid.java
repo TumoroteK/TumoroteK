@@ -98,12 +98,19 @@ public class CodeAssigneEditableGrid extends SmallObjsEditableGrid
    private static final long serialVersionUID = 1L;
 
    private Echantillon echantillon;
+
    private boolean isOrg = true;
+
    private boolean isMorpho = false;
+
    private boolean toCims = false;
+
    private Banque banque;
+
    private Button addEmptyCode;
+
    private Column expCol;
+
    private Hbox favBox;
 
    private Combobox bookmarksBox;
@@ -111,11 +118,13 @@ public class CodeAssigneEditableGrid extends SmallObjsEditableGrid
    private boolean assistCodeClicked = false;
 
    // @since 2.1
-   // fix codebox.onBlur / onClick problem 
-   // due to echoEvent onLaterFindLibelle triggers 
+   // fix codebox.onBlur / onClick problem
+   // due to echoEvent onLaterFindLibelle triggers
    // this event after validate/cancel
    private boolean findLibelleEchoEd = false;
+
    private Event validateClickEd = null;
+
    private Event cancelClickEd = null;
 
    private static ConstWord codeConstraint = new ConstWord();
@@ -123,6 +132,7 @@ public class CodeAssigneEditableGrid extends SmallObjsEditableGrid
       codeConstraint.setNullable(false);
       codeConstraint.setSize(50);
    }
+
    private static ConstWord libelleConstraint = new ConstWord();
    {
       libelleConstraint.setNullable(true);
@@ -281,22 +291,22 @@ public class CodeAssigneEditableGrid extends SmallObjsEditableGrid
                // rétablit la relation oneToone en ajoutant la référence
                // vers échantillon et en la passant a null au code supprime
                //					if (isOrg) {
-               //						((CodeAssigne) 
+               //						((CodeAssigne)
                //							((CodeAssigneDecorator) getObjs().get(0)).getObj())
                //								.setEchanExpOrg(echantillon);
                //						if (getObjToDelete().contains(toBeDeleted)) {
-               //							((CodeAssigne) 
+               //							((CodeAssigne)
                //								((CodeAssigneDecorator) getObjToDelete()
                //									.get(getObjToDelete().indexOf(toBeDeleted)))
                //																	.getObj())
                //													.setEchanExpOrg(null);
                //						}
                //					} else {
-               //						((CodeAssigne) 
+               //						((CodeAssigne)
                //							((CodeAssigneDecorator) getObjs().get(0)).getObj())
                //									.setEchanExpLes(echantillon);
                //						if (getObjToDelete().contains(toBeDeleted)) {
-               //							((CodeAssigne) 
+               //							((CodeAssigne)
                //								((CodeAssigneDecorator) getObjToDelete()
                //									.get(getObjToDelete().indexOf(toBeDeleted)))
                //																	.getObj())
@@ -377,7 +387,7 @@ public class CodeAssigneEditableGrid extends SmallObjsEditableGrid
          final List<CodeAssigne> codesAss = new ArrayList<>();
 
          if(value != null){
-            // bug exportNbIllegal -> supprime code non enregistré 
+            // bug exportNbIllegal -> supprime code non enregistré
             revertCurrentObjEdition();
             exportBoxEachCode.setDisabled(false);
 
@@ -467,7 +477,7 @@ public class CodeAssigneEditableGrid extends SmallObjsEditableGrid
    }
 
    /**
-    * Decore la liste de code assignes et ses eventuels transcodes dictés 
+    * Decore la liste de code assignes et ses eventuels transcodes dictés
     * par la configuration de la banque à la grid dont le controller est passé
     * en paramètre.
     * Place le preimer code export si la liste était vide auparavant
@@ -486,7 +496,7 @@ public class CodeAssigneEditableGrid extends SmallObjsEditableGrid
       //		Iterator<BanqueTableCodage> btcsIt = ManagerLocator.getBanqueManager()
       //			.getBanqueTableCodageByBanqueManager(SessionUtils
       //					.getSelectedBanques(sessionScope).get(0)).iterator();
-      //		
+      //
       //		List<TableCodage> codifs = new ArrayList<TableCodage>();
       //		while (btcsIt.hasNext()) {
       //			codifs.add(btcsIt.next().getTableCodage());
@@ -550,12 +560,12 @@ public class CodeAssigneEditableGrid extends SmallObjsEditableGrid
    }
 
    /**
-    * Ouvre la modale contenant l'assistant deployant les 
+    * Ouvre la modale contenant l'assistant deployant les
     * codifications non pre-filtrées pour les codes lésionnels.
     */
    public void onClick$codesAssistantButton(){
 
-      // bug exportNbIllegal -> supprime code non enregistré 
+      // bug exportNbIllegal -> supprime code non enregistré
       revertCurrentObjEdition();
       exportBoxEachCode.setDisabled(false);
       reloadGrid();
@@ -609,8 +619,8 @@ public class CodeAssigneEditableGrid extends SmallObjsEditableGrid
    }
 
    /**
-    * Ouvre la modale assistant codes en lui spécifiant l'objet 
-    * les paramètres morpho et organe. Si code diagnostic maladie, 
+    * Ouvre la modale assistant codes en lui spécifiant l'objet
+    * les paramètres morpho et organe. Si code diagnostic maladie,
     * passe un paramètre boolean isDiagnostic a true.
     * @param page
     * @param path
@@ -684,8 +694,8 @@ public class CodeAssigneEditableGrid extends SmallObjsEditableGrid
    }
 
    /**
-    * Lance une requête de codes vers les classifications une fois le code 
-    * renseigné afin de peupler la ligne avec le libelle exact si aucun libelle n'a été 
+    * Lance une requête de codes vers les classifications une fois le code
+    * renseigné afin de peupler la ligne avec le libelle exact si aucun libelle n'a été
     * saisi.
     * @param e Event
     * @since 2.0.10
@@ -765,7 +775,7 @@ public class CodeAssigneEditableGrid extends SmallObjsEditableGrid
                addCodesAndTranscodesToGrid(handleCodeCommonList(codes), this);
 
                //				if (passExport) {
-               //					((CodeAssigneDecorator) 
+               //					((CodeAssigneDecorator)
                //						getObjToCreateOrEdit().get(getObjToCreateOrEdit().size() -1))
                //						.setExport(true);
                //				}
@@ -820,7 +830,7 @@ public class CodeAssigneEditableGrid extends SmallObjsEditableGrid
             addCodesAndTranscodesToGrid(handleCodeCommonList(allCodes), this);
 
             //				if (passExport) {
-            //					((CodeAssigneDecorator) 
+            //					((CodeAssigneDecorator)
             //						getObjToCreateOrEdit().get(getObjToCreateOrEdit().size() -1))
             //						.setExport(true);
             //				}

@@ -56,7 +56,6 @@ import fr.aphp.tumorotek.model.coeur.annotation.ChampAnnotation;
 public class ChampAnnotationValidator implements Validator
 {
 
-   
    @Override
    public boolean supports(final Class<?> clazz){
       return ChampAnnotation.class.equals(clazz);

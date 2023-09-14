@@ -13,23 +13,31 @@ public class Themes
 {
 
    private static final String COOKIE_FONT_SIZE = "zksandboxfs";
+
    private static final String THEME_COOKIE_KEY = "zktheme";
+
    public static final String BREEZE_THEME = "breeze";
+
    public static final String CLASSICBLUE_THEME = "classicblue";
+
    public static final String SILVERGRAY_THEME = "silvergray";
 
    public static final String DEFAULT_WCS_URI = "~./zul/css/zk.wcs";
+
    public static final String DEFAULT_SILVERGRAY_URI = "~./silvergray";
 
    private static final String SAPPHIRE_THEME = "sapphire";
+
    public static final String PREFERRED_THEME = "org.zkoss.theme.preferred";
+
    public static final String THEME_NAMES = "org.zkoss.theme.names";
+
    public static final String THEME_DEFAULT = "org.zkoss.theme.default";
 
    /**
     * Returns the font size specified in cookies.
     * @param exe Execution
-    * @return "lg" for larger font, "sm" for smaller 
+    * @return "lg" for larger font, "sm" for smaller
     * font or "" for normal font.
     */
    public static String getFontSizeCookie(final Execution exe){
@@ -52,7 +60,7 @@ public class Themes
    /**
     * Sets the font size to cookie.
     * @param exe Execution
-    * @param fontSize "lg" for larger font, "sm" 
+    * @param fontSize "lg" for larger font, "sm"
     * for smaller font or other string for normal font.
     */
    public static void setFondSizeCookie(final Execution exe, final String fontSize){
@@ -78,7 +86,7 @@ public class Themes
       //store 30 days
       cookie.setMaxAge(60 * 60 * 24 * 30);
       String cp = exe.getContextPath();
-      // if path is empty, cookie path will be request path, 
+      // if path is empty, cookie path will be request path,
       // which causes problems
       if(cp.length() == 0){
          cp = "/";

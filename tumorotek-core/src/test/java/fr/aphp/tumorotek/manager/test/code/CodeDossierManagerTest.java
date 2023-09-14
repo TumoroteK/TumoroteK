@@ -80,20 +80,28 @@ public class CodeDossierManagerTest extends AbstractManagerTest4
 
    @Autowired
    private CodeDossierManager codeDossierManager;
+
    @Autowired
    private CodeUtilisateurManager codeUtilisateurManager;
+
    @Autowired
    private UtilisateurDao utilisateurDao;
+
    @Autowired
    private BanqueDao banqueDao;
+
    @Autowired
    private OperationManager operationManager;
+
    @Autowired
    private CodeDossierValidator codeDossierValidator;
+
    @Autowired
    private TableCodageDao tableCodageDao;
+
    @Autowired
    private CodeSelectManager codeSelectManager;
+
    @Autowired
    private OperationTypeDao operationTypeDao;
 

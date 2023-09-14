@@ -89,14 +89,19 @@ public class StockageController extends AbstractObjectTabController
    private static final long serialVersionUID = -7451277316473328904L;
 
    private Borderlayout mainBorder;
+
    // div contenant le formulaire pour les conteneurs
    private Div divConteneur;
+
    // Div contenant le formulaire pour les enceintes
    private Div divEnceinte;
+
    // Div contenant le formulaire multiple pour les terminales
    private Div divTerminale;
+
    // Div contenant le formulaire multiple pour les déplacements
    private Div divDeplacerEmplacements;
+
    // Terminale actuelle
    private Terminale actuelleTerminale;
 

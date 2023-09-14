@@ -96,9 +96,11 @@ public class DefautComponent extends HtmlMacroComponent
    private Component box = null;
 
    private ChampAnnotationDecorator chpDeco;
+
    private Component backComp;
 
    private Column editCol;
+
    private Column deleteCol;
 
    private ChampCalcule champCalculeCopy;
@@ -106,7 +108,9 @@ public class DefautComponent extends HtmlMacroComponent
    //   private Champ selectedChamp;
 
    private final List<Item> itemsCopy = new ArrayList<>();
+
    private Set<AnnotationDefaut> defauts = new LinkedHashSet<>();
+
    private List<Listitem> boolsItem;
    //   private List<DataType> allowedDataTypeList = new ArrayList<>();
 
@@ -121,6 +125,7 @@ public class DefautComponent extends HtmlMacroComponent
       this.backComp = bC;
    }
 
+   @Override
    public void afterCompose(){
 
       super.afterCompose();
@@ -131,7 +136,7 @@ public class DefautComponent extends HtmlMacroComponent
    }
 
    /**
-    * Dessine les composants editables permettant de renseigner les valeurs 
+    * Dessine les composants editables permettant de renseigner les valeurs
     * par défaut en fonction du type de ChampAnnotation.
     */
    private void drawDefautEditablesComponents(){
@@ -168,7 +173,7 @@ public class DefautComponent extends HtmlMacroComponent
     * @return Textbox pour un Champ alphanumérique
     */
    private Textbox drawAlphanumBox(){
-      Textbox textbox = new Textbox();
+      final Textbox textbox = new Textbox();
       textbox.setHflex("1");
       // ((Textbox) box).setCols(15);
       final ConstAlphanum constr = new ConstAlphanum();
@@ -185,7 +190,7 @@ public class DefautComponent extends HtmlMacroComponent
     * @return DecimalBox pour un Champ numérique
     */
    private Decimalbox drawNumBox(){
-      Decimalbox decimalbox = new Decimalbox();
+      final Decimalbox decimalbox = new Decimalbox();
       decimalbox.setHflex("1");
       decimalbox.setFormat("0.###");
       decimalbox.setLocale("en");
@@ -201,7 +206,7 @@ public class DefautComponent extends HtmlMacroComponent
     * @return la Textbox pour un Champ texte
     */
    private Textbox drawTextBox(){
-      Textbox textbox = new Textbox();
+      final Textbox textbox = new Textbox();
       textbox.setRows(3);
       textbox.setHflex("1");
       if(chpDeco.getDefauts().iterator().next().getTexte() != null){
@@ -216,7 +221,7 @@ public class DefautComponent extends HtmlMacroComponent
     * @return la Datebox pour un Champ date
     */
    private Datebox drawDateBox(){
-      Datebox datebox = new Datebox();
+      final Datebox datebox = new Datebox();
       datebox.setFormat(Labels.getLabel("validation.date.format.simple"));
       datebox.setWidth("200px");
       if(chpDeco.getDefauts().iterator().next().getDate() != null){
@@ -231,7 +236,7 @@ public class DefautComponent extends HtmlMacroComponent
     * @return Textbox pour un Champ hyperlien
     */
    private Textbox drawHyperlienBox(){
-      Textbox textbox = new Textbox();
+      final Textbox textbox = new Textbox();
       textbox.setHflex("1");
       final ConstHyperlien constr = new ConstHyperlien();
       constr.setNullable(true);
@@ -249,7 +254,7 @@ public class DefautComponent extends HtmlMacroComponent
     */
    private CalendarBox drawDatetimeBox(){
       CalendarBox calendarbox = null;
-      Component component =
+      final Component component =
          getPage().getComponentDefinition("calendarbox", false).newInstance(getPage(), "fr.aphp.tumorotek.component.CalendarBox");
       if(CalendarBox.class.isInstance(component)){
          calendarbox = CalendarBox.class.cast(component);
@@ -274,18 +279,18 @@ public class DefautComponent extends HtmlMacroComponent
       final DureeComponent dureebox = new DureeComponent();
       dureebox.setWidth("400px");
       // Remplissage des champs si modification et si valeur existante
-      String valeurDefaut = chpDeco.getDefauts().iterator().next().getAlphanum();
+      final String valeurDefaut = chpDeco.getDefauts().iterator().next().getAlphanum();
       if(null != valeurDefaut && !"".equals(valeurDefaut)){
          dureebox.setDuree(new Duree(new Long(valeurDefaut), Duree.SECONDE));
       }
-      
+
       // Event listener permettant d'enregistrer la durée à la validation
       getFirstChild().getFellow("validateButton").addEventListener("onClick", new EventListener<Event>()
       {
          @Override
          public void onEvent(final Event event) throws Exception{
-            Duree duree = dureebox.getDuree();
-            Long secondes = duree.getTemps(Duree.SECONDE);
+            final Duree duree = dureebox.getDuree();
+            final Long secondes = duree.getTemps(Duree.SECONDE);
             defauts.iterator().next().setAlphanum(secondes.toString());
          }
       });
@@ -293,7 +298,7 @@ public class DefautComponent extends HtmlMacroComponent
    }
 
    /**
-    * Dessine la Grid listant les items. 
+    * Dessine la Grid listant les items.
     * L'élément Rows gere les evenements renvoyes depuis les images
     * boutons delete-edit.
     * La Grid utilise pour model la deep copy de la liste items.
@@ -413,7 +418,7 @@ public class DefautComponent extends HtmlMacroComponent
    private Listbox createBoolBox(){
       Listitem listIt = null;
 
-      Listbox listbox = new Listbox();
+      final Listbox listbox = new Listbox();
       listbox.setMold("select");
 
       boolsItem = new ArrayList<>();
@@ -477,20 +482,19 @@ public class DefautComponent extends HtmlMacroComponent
          @Override
          public void onEvent(final Event event) throws Exception{
             // Validation de la saisie du champ Calculé
-            ChampCalcule champCalcule = champCalculeGrid.getChampCalcule();
+            final ChampCalcule champCalcule = champCalculeGrid.getChampCalcule();
             if(null == champCalcule){
                throw new WrongValueException(box, Labels.getLabel("anno.champ1.empty"));
             }else if(null == champCalcule.getChamp1()){
                throw new WrongValueException(box, Labels.getLabel("anno.champCalcule.champ1.empty"));
-            }
-            else if(null == champCalcule.getOperateur()){
+            }else if(null == champCalcule.getOperateur()){
                throw new WrongValueException(box, Labels.getLabel("anno.champCalcule.operateur.empty"));
             }else if(null == champCalcule.getChamp2()){
                if(null == champCalcule.getValeur()){
                   throw new WrongValueException(box, Labels.getLabel("anno.champCalcule.champ2orValue.empty"));
                }
             }
-            
+
             champCalculeCopy = champCalcule;
          }
       });
@@ -520,11 +524,11 @@ public class DefautComponent extends HtmlMacroComponent
    }
 
    /**
-    * Recupere les valeurs specifiée pour les assigner au 
+    * Recupere les valeurs specifiée pour les assigner au
     * ChampAnnotationDecorator.
     * Ferme la modale.
     * Post back un event pour rafraichir la div defaut dans la ligne
-    * de la liste de champs FicheTableAnnotation. 
+    * de la liste de champs FicheTableAnnotation.
     */
    private void recordAnnotationDefaut(){
       extractValuesFromDefautBox();
@@ -533,15 +537,15 @@ public class DefautComponent extends HtmlMacroComponent
       Events.postEvent(new Event("onClose", getParent()));
    }
 
-   /** 
-    * Ferme la modale. 
+   /**
+    * Ferme la modale.
     */
    private void cancelAnnotationDefaut(){
       Events.postEvent(new Event("onClose", getParent()));
    }
 
    /**
-    * Extrait les valeurs d'AnnotationDefaut 
+    * Extrait les valeurs d'AnnotationDefaut
     * à assigner au champAnnotationDecorator.
     * Récupère également les items pour les thesaurus
     */
@@ -605,11 +609,11 @@ public class DefautComponent extends HtmlMacroComponent
     * d'un item de thesaurus.
     * Si thesaurus simple et un defaut deja selectionné, envoie
     * l'instruction disable defaut.
-    * Disable le checkbox defaut si thesaurus simple avec une 
+    * Disable le checkbox defaut si thesaurus simple avec une
     * AnnotationDefaut non associe a l'Item passe en parametre.
     * @param Item item
     * @param boolean flag isCreate si modal en mode creation
-    * @param boolean disableDefaut 
+    * @param boolean disableDefaut
     */
    public void openItemModale(final Item item, final boolean isCreate){
 
@@ -769,7 +773,7 @@ public class DefautComponent extends HtmlMacroComponent
 
    /**
     * Supprime une annotation defaut de la liste pour un thesaurus
-    * simple ou a choix multiple. 
+    * simple ou a choix multiple.
     * @param item
     */
    private void removeDefautsFromList(final Item item){

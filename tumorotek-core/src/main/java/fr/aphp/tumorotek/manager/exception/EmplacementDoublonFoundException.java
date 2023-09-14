@@ -55,6 +55,7 @@ public class EmplacementDoublonFoundException extends DoublonFoundException
    private static final long serialVersionUID = 1L;
 
    private Terminale terminale;
+
    private Integer position;
 
    public EmplacementDoublonFoundException(){

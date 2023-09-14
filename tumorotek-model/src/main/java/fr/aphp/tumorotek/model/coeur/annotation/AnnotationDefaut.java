@@ -77,13 +77,21 @@ public class AnnotationDefaut extends AnnotationCommon implements Serializable
    private static final long serialVersionUID = 1L;
 
    private Integer annotationDefautId;
+
    private String alphanum;
+
    private String texte;
+
    private Calendar date;
+
    private Boolean bool;
+
    private Boolean obligatoire;
+
    private Item item;
+
    private ChampAnnotation champAnnotation;
+
    private Banque banque;
 
    /** Constructeur par défaut. */
@@ -181,7 +189,7 @@ public class AnnotationDefaut extends AnnotationCommon implements Serializable
    /**
     * Override methode de AnnotationValeur car la cascade differe.
     * En effet, les valeurs par defaut peuvent être enregistrees
-    * en même temps que les items, contrairement aux valeurs qui sont 
+    * en même temps que les items, contrairement aux valeurs qui sont
     * assignees aux objets ultérieurement.
     */
    @Override
@@ -199,7 +207,7 @@ public class AnnotationDefaut extends AnnotationCommon implements Serializable
    /**
     * Override methode de AnnotationValeur car la cascade differe.
     * En effet, les valeurs par defaut peuvent être enregistrees
-    * en même temps que les champs, contrairement aux valeurs qui sont 
+    * en même temps que les champs, contrairement aux valeurs qui sont
     * assignees aux objets ultérieurement.
     */
    @Override
@@ -216,7 +224,7 @@ public class AnnotationDefaut extends AnnotationCommon implements Serializable
 
    /**
     * 2 valeurs sont considerees comme egales si ils ont les mêmes references
-    * vers le champ annotation auxqelles et la banque sont attribuees. 
+    * vers le champ annotation auxqelles et la banque sont attribuees.
     * La propriete item intervient pour
     * differencier les valeurs defaut lors d'une selection multiple.
     * @param obj est la valeur defaut à tester.
@@ -245,7 +253,7 @@ public class AnnotationDefaut extends AnnotationCommon implements Serializable
    }
 
    /**
-    * Le hashcode est calculé sur les references vers le 
+    * Le hashcode est calculé sur les references vers le
     * champ annotation, l'item auxquels la valeur est attribuee.
     * @return la valeur du hashcode.
     */

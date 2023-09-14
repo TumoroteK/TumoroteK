@@ -55,6 +55,7 @@ public class EnceinteSizeException extends TKException
    private static final long serialVersionUID = -3562772083927549441L;
 
    private Enceinte enceinte;
+
    private Integer nbPlaces;
 
    public EnceinteSizeException(){

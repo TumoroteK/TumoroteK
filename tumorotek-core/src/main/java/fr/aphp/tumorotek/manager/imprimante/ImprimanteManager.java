@@ -85,7 +85,7 @@ public interface ImprimanteManager
    List<Imprimante> findByNomAndPlateformeManager(String nom, Plateforme plateforme);
 
    /**
-    * Recherche tous les noms d'Imprimantes présentes d'une Plateforme, 
+    * Recherche tous les noms d'Imprimantes présentes d'une Plateforme,
     * ordonnés par nom.
     * @param plateforme Plateforme.
     * @return Liste de noms d'Imprimantes.

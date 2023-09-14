@@ -58,7 +58,6 @@ import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFColor;
 import org.apache.poi.xssf.usermodel.XSSFDataFormat;
 import org.apache.poi.xssf.usermodel.XSSFFont;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
 
 import fr.aphp.tumorotek.action.ManagerLocator;
 import fr.aphp.tumorotek.model.contexte.Banque;
@@ -69,29 +68,37 @@ import fr.aphp.tumorotek.webapp.general.ResultSetToExcel;
 
 public class ExportToExcel extends ResultSetToExcel
 {
-   
+
    //TODO Mega Refactoring Necessaire
 
    protected static Log log = LogFactory.getLog(ExportToExcel.class);
 
    private final Map<Indicateur, ArrayList<ValueToExport>> dataMap;
+
    private List<GroupExcel> groupList;
+
    private final SModele modele;
+
    private final List<String> years;
+
    //TODO Jamais utilisé ?
    private final String intervalType;
+
    private final List<String> subValues;
+
    private final Map<String, ArrayList<String>> mapPeriodByYear;
+
    private final List<Sheet> sheetList;
 
    private int lastRow;
+
    private int firstRow;
 
    private int currentRow;
 
    public ExportToExcel(final SModele modele, final List<String> years, final String intervalType,
-                        final Map<String, ArrayList<String>> mapPeriodByYear, final Map<Indicateur, ArrayList<ValueToExport>> dataMap,
-                        final List<String> subValues, final String sheetName){
+      final Map<String, ArrayList<String>> mapPeriodByYear, final Map<Indicateur, ArrayList<ValueToExport>> dataMap,
+      final List<String> subValues, final String sheetName){
 
       super(sheetName);
 
@@ -130,7 +137,7 @@ public class ExportToExcel extends ResultSetToExcel
       int i = 0;
       for(final String year : years){
          for(final String period : mapPeriodByYear.get(year)){
-            sheet = (SXSSFSheet) workbook.createSheet(year + (period != "" ? "-" + period : ""));
+            sheet = workbook.createSheet(year + (period != "" ? "-" + period : ""));
             final Row rowStmt = sheet.createRow(0);
             rowStmt.setHeightInPoints(50);
             writeCell(rowStmt, i, "collection ou projet (type de prélèvement)", null, boldFont, cs);
@@ -220,7 +227,7 @@ public class ExportToExcel extends ResultSetToExcel
     * @param period
     */
    private void writeValues(final Banque collection, final Row rowValue, int currentCol, final String subValue, final String year,
-                            final String period){
+      final String period){
       for(final SModeleIndicateur s : modele.getSModeleIndicateurs()){
 
          /*	if (intervalType.contentEquals("year")) {
@@ -245,7 +252,7 @@ public class ExportToExcel extends ResultSetToExcel
    }
 
    private void writeSubValues(final Sheet sh, final Banque collection, Row rowValue, int currentCol, final String year,
-                               final String period){
+      final String period){
       //total subvalue
       //		writeCell(rowValue, 1, "TOTAL COLLECTION", null, boldFont);
       //		currentRow++;
@@ -308,19 +315,19 @@ public class ExportToExcel extends ResultSetToExcel
     * @param s
     * @param year
     */
-//   private void createDataSheetByTrimester(final Banque collection, final Row row, final int currentCol, final String period,
-//      final int subValue, final Indicateur s, final String year){
-//
-//      for(final ValueToExport v : dataMap.get(s.getCallingProcedure())){
-//         // if (v.getUnitTemp().contentEquals(year+"-"+period)
-//         //		&& v.getCollection() == collection.getBanqueId()
-//         //		&& v.getSubValue() == subValue) {
-//
-//         //	writeCell(row, currentCol, String.valueOf(v.getValue()), FormatType.NUMERIC,
-//         //			boldFont, null);
-//         // }
-//      }
-//   }
+   //   private void createDataSheetByTrimester(final Banque collection, final Row row, final int currentCol, final String period,
+   //      final int subValue, final Indicateur s, final String year){
+   //
+   //      for(final ValueToExport v : dataMap.get(s.getCallingProcedure())){
+   //         // if (v.getUnitTemp().contentEquals(year+"-"+period)
+   //         //		&& v.getCollection() == collection.getBanqueId()
+   //         //		&& v.getSubValue() == subValue) {
+   //
+   //         //	writeCell(row, currentCol, String.valueOf(v.getValue()), FormatType.NUMERIC,
+   //         //			boldFont, null);
+   //         // }
+   //      }
+   //   }
 
    /**
     * TODO A quoi sert cela ?
@@ -332,48 +339,48 @@ public class ExportToExcel extends ResultSetToExcel
     * @param s
     * @param year
     */
-//   private void createDataSheetByMonth(final Banque collection, final Row row, final int currentCol, final String period,
-//      final int subValue, final Indicateur s, final String year){
-//
-//      switch(period){
-//         case "Jan":
-//            break;
-//         case "FeB":
-//            break;
-//         case "Mar":
-//            break;
-//         case "Apr":
-//            break;
-//         case "May":
-//            break;
-//         case "Jun":
-//            break;
-//         case "Jul":
-//            break;
-//         case "Aug":
-//            break;
-//         case "Sep":
-//            break;
-//         case "Oct":
-//            break;
-//         case "Nov":
-//            break;
-//         case "Dec":
-//         default:
-//      }
-//      //
-//
-//      for(final ValueToExport v : dataMap.get(s.getCallingProcedure())){
-//         // if (v.getUnitTemp().contentEquals(year+"-"+periodTemp)
-//         //		//&& v.getUnitTemp().contains(period)
-//         //		&& v.getCollection() == collection.getBanqueId()
-//         //		&& v.getSubValue() == subValue) {
-//
-//         //	writeCell(row, currentCol, String.valueOf(v.getValue()), FormatType.NUMERIC,
-//         //			boldFont, null);
-//         // }
-//      }
-//   }
+   //   private void createDataSheetByMonth(final Banque collection, final Row row, final int currentCol, final String period,
+   //      final int subValue, final Indicateur s, final String year){
+   //
+   //      switch(period){
+   //         case "Jan":
+   //            break;
+   //         case "FeB":
+   //            break;
+   //         case "Mar":
+   //            break;
+   //         case "Apr":
+   //            break;
+   //         case "May":
+   //            break;
+   //         case "Jun":
+   //            break;
+   //         case "Jul":
+   //            break;
+   //         case "Aug":
+   //            break;
+   //         case "Sep":
+   //            break;
+   //         case "Oct":
+   //            break;
+   //         case "Nov":
+   //            break;
+   //         case "Dec":
+   //         default:
+   //      }
+   //      //
+   //
+   //      for(final ValueToExport v : dataMap.get(s.getCallingProcedure())){
+   //         // if (v.getUnitTemp().contentEquals(year+"-"+periodTemp)
+   //         //		//&& v.getUnitTemp().contains(period)
+   //         //		&& v.getCollection() == collection.getBanqueId()
+   //         //		&& v.getSubValue() == subValue) {
+   //
+   //         //	writeCell(row, currentCol, String.valueOf(v.getValue()), FormatType.NUMERIC,
+   //         //			boldFont, null);
+   //         // }
+   //      }
+   //   }
 
    /**
     * TODO A quoi sert cela ?
@@ -385,22 +392,22 @@ public class ExportToExcel extends ResultSetToExcel
     * @param s
     * @param year
     */
-//   private void createDataSheetByWeek(final Banque collection, final Row row, final int currentCol, final String period,
-//      final int subValue, final Indicateur s, final String year){
-//      System.out.println("Passe par ici (week) 2 ????");
-//
-//      for(final ValueToExport v : dataMap.get(s.getCallingProcedure())){
-//         //			if (v.getUnitTemp().contentEquals(year+"-"+period.substring(1))
-//         //					&& v.getCollection() == collection.getBanqueId()
-//         //					&& v.getSubValue() == subValue) {
-//         //
-//         //				// System.err.println("value rowCount : " + currentRow
-//         //				// + " / col : " + currentCol +" / " + year + " / " + period);
-//         //				writeCell(row, currentCol, String.valueOf(v.getValue()), FormatType.NUMERIC,
-//         //						boldFont, null);
-//         //			}
-//      }
-//   }
+   //   private void createDataSheetByWeek(final Banque collection, final Row row, final int currentCol, final String period,
+   //      final int subValue, final Indicateur s, final String year){
+   //      System.out.println("Passe par ici (week) 2 ????");
+   //
+   //      for(final ValueToExport v : dataMap.get(s.getCallingProcedure())){
+   //         //			if (v.getUnitTemp().contentEquals(year+"-"+period.substring(1))
+   //         //					&& v.getCollection() == collection.getBanqueId()
+   //         //					&& v.getSubValue() == subValue) {
+   //         //
+   //         //				// System.err.println("value rowCount : " + currentRow
+   //         //				// + " / col : " + currentCol +" / " + year + " / " + period);
+   //         //				writeCell(row, currentCol, String.valueOf(v.getValue()), FormatType.NUMERIC,
+   //         //						boldFont, null);
+   //         //			}
+   //      }
+   //   }
 
    /**
     *
@@ -412,7 +419,7 @@ public class ExportToExcel extends ResultSetToExcel
     * @param style
     */
    private void writeCell(final Row row, final int col, final String value, final Object object, final XSSFFont boldFont,
-                          final XSSFCellStyle style){
+      final XSSFCellStyle style){
       writeCell(row, col, value, null, null, boldFont, style);
 
    }
@@ -437,7 +444,7 @@ public class ExportToExcel extends ResultSetToExcel
             log.error(ex);
          }finally{
             // Autosize columns
-            ((SXSSFSheet)sh).trackAllColumnsForAutoSizing();
+            ((SXSSFSheet) sh).trackAllColumnsForAutoSizing();
             for(int i = 0; i < 30; i++){
                sh.autoSizeColumn((short) i);
             }
@@ -446,7 +453,7 @@ public class ExportToExcel extends ResultSetToExcel
    }
 
    protected void writeCell(final Row row, final int col, final Object value, final FormatType formatType, final Short bgColor,
-                            final Font font){
+      final Font font){
       final Cell cell = row.createCell(col);
       if(value == null){
          return;
@@ -500,7 +507,7 @@ public class ExportToExcel extends ResultSetToExcel
    }
 
    protected void writeCell(final Row row, final int col, final Object value, final FormatType formatType, final Short bgColor,
-                            final XSSFFont font, final XSSFCellStyle style){
+      final XSSFFont font, final XSSFCellStyle style){
       final Cell cell = row.createCell(col);
       if(value == null){
          return;
@@ -532,6 +539,7 @@ public class ExportToExcel extends ResultSetToExcel
    class GroupExcel
    {
       private int firstRow = 0;
+
       private int lastRow = 0;
 
       public GroupExcel(final int a, final int b){

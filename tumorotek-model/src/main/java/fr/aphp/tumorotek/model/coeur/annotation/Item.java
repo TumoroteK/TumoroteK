@@ -71,9 +71,9 @@ import fr.aphp.tumorotek.model.contexte.Plateforme;
    @NamedQuery(name = "Item.findByChampAndPlateforme",
       query = "SELECT i FROM Item i WHERE i.champAnnotation = ?1 " + "AND (i.plateforme = ?2 OR i.plateforme is null) "
          + "ORDER BY i.itemId"),
-   //			@NamedQuery(name = "Item.findDoublon", 
-   //				query = "SELECT i FROM Item i WHERE i.label = ?1" 
-   //					+ " AND i.champAnnotation = ?2") 
+   //			@NamedQuery(name = "Item.findDoublon",
+   //				query = "SELECT i FROM Item i WHERE i.label = ?1"
+   //					+ " AND i.champAnnotation = ?2")
    @NamedQuery(name = "Item.findByExcludedId", query = "SELECT i FROM Item i WHERE i.itemId != ?1")})
 public class Item implements Serializable
 {
@@ -81,12 +81,17 @@ public class Item implements Serializable
    private static final long serialVersionUID = 1L;
 
    private Integer itemId;
+
    private String label;
+
    private String valeur;
+
    private ChampAnnotation champAnnotation;
+
    private Plateforme plateforme;
 
    private Set<AnnotationDefaut> annotationDefauts = new HashSet<>();
+
    private Set<AnnotationValeur> annotationValeurs = new HashSet<>();
 
    /** Constructeur par défaut. */
@@ -161,7 +166,7 @@ public class Item implements Serializable
    }
 
    /**
-    * 2 items sont consideres comme egaux si ils ont le même label 
+    * 2 items sont consideres comme egaux si ils ont le même label
     * et la même reference vers le champ annotation.
     * @param obj est l'item à tester.
     * @return true si les items sont égaux.

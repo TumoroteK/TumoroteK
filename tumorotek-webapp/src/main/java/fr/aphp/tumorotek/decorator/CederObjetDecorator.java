@@ -70,14 +70,23 @@ public class CederObjetDecorator
 {
 
    private CederObjet cederObjet;
+
    private Echantillon echantillon;
+
    private ProdDerive prodDerive;
+
    private Float quantiteMax = (float) 0.0;
+
    private Float quantiteRestante = null;
+
    private boolean isAnonyme = false;
+
    private ObjetStatut newStatut;
+
    private Emplacement oldEmplacement;
+
    private Retour retour;
+
    private List<Unite> unites = new ArrayList<>();
 
    // @since 2.1
@@ -246,23 +255,23 @@ public class CederObjetDecorator
       }
       return "-";
    }
-   
+
    /**
     * @since 2.2.1
     * @return
     */
    public String getDateCessionFormatted(){
-	      if(this.cederObjet != null && this.cederObjet.getCession() != null){
-	         String value = "-";
-	         if(this.cederObjet.getCession().getCessionType().getType().toUpperCase().equals("DESTRUCTION")){
-	            value = ObjectTypesFormatters.dateRenderer2(this.cederObjet.getCession().getDestructionDate());
-	         }else{
-	            value = ObjectTypesFormatters.dateRenderer2(this.cederObjet.getCession().getDepartDate());
-	         }
-	         return value;
-	      }
-	      return "-";
-	   }
+      if(this.cederObjet != null && this.cederObjet.getCession() != null){
+         String value = "-";
+         if(this.cederObjet.getCession().getCessionType().getType().toUpperCase().equals("DESTRUCTION")){
+            value = ObjectTypesFormatters.dateRenderer2(this.cederObjet.getCession().getDestructionDate());
+         }else{
+            value = ObjectTypesFormatters.dateRenderer2(this.cederObjet.getCession().getDepartDate());
+         }
+         return value;
+      }
+      return "-";
+   }
 
    public String getCessionDemandeur(){
       if(this.cederObjet != null && this.cederObjet.getCession() != null && this.cederObjet.getCession().getDemandeur() != null){
@@ -493,7 +502,7 @@ public class CederObjetDecorator
          prlvt = ManagerLocator.getProdDeriveManager().getPrelevementParent(prodDerive);
       }
 
-      if(prlvt != null){
+      if(prlvt != null && prlvt.getConsentType() != null){
          return prlvt.getConsentType().getNom();
       }
       return "";
@@ -765,7 +774,7 @@ public class CederObjetDecorator
       String res = null;
       if(null != this.cederObjet && null != this.cederObjet.getProduitRetourList()
          && !this.cederObjet.getProduitRetourList().isEmpty()){
-         Integer nbProdRetour = this.cederObjet.getProduitRetourList().size();
+         final Integer nbProdRetour = this.cederObjet.getProduitRetourList().size();
          res = nbProdRetour + " ...";
       }
 
@@ -773,7 +782,7 @@ public class CederObjetDecorator
    }
 
    public Boolean getIsEnTraitement(){
-      Boolean res = false;
+      boolean res = false;
       if(null != this.cederObjet){
          res = ECederObjetStatut.TRAITEMENT == this.cederObjet.getStatut();
       }
@@ -781,7 +790,7 @@ public class CederObjetDecorator
    }
 
    public Boolean getHasProduitRetour(){
-      Boolean res = false;
+      boolean res = false;
       if(null != this.cederObjet && null != this.cederObjet.getProduitRetourList()){
          res = !this.cederObjet.getProduitRetourList().isEmpty();
       }

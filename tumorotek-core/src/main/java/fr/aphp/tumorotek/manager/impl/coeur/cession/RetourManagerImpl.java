@@ -106,20 +106,33 @@ public class RetourManagerImpl implements RetourManager
 
    /* Beans injectes par Spring*/
    private RetourDao retourDao;
+
    private EntiteDao entiteDao;
+
    private OperationManager operationManager;
+
    private OperationTypeDao operationTypeDao;
 
    private CollaborateurDao collaborateurDao;
+
    private CessionDao cessionDao;
+
    private TransformationDao transformationDao;
+
    private EmplacementManager emplacementManager;
+
    private EmplacementDao emplacementDao;
+
    private IncidentDao incidentDao;
+
    private RetourValidator retourValidator;
+
    private ObjetStatutDao objetStatutDao;
+
    private EchantillonDao echantillonDao;
+
    private ProdDeriveDao prodDeriveDao;
+
    private DataSource dataSource;
 
    public RetourManagerImpl(){}
@@ -266,7 +279,7 @@ public class RetourManagerImpl implements RetourManager
    }
 
    /**
-    * Verifie que les Objets devant etre obligatoirement associes 
+    * Verifie que les Objets devant etre obligatoirement associes
     * sont non nulls et lance la validation via le Validator.
     * Lance une exception si l'objet est en statut ENCOURS.
     * @param retour
@@ -289,7 +302,7 @@ public class RetourManagerImpl implements RetourManager
       retour.setIncident(incidentDao.mergeObject(incident));
 
       // peule les champs emplAdrl et Conteneur à partir de Emplacement
-      // utilise emplacement passé en paramètre car correspond à 
+      // utilise emplacement passé en paramètre car correspond à
       // l'emplacement d'origine lors d'un déplacement
       if(emplacement != null){
          retour.setOldEmplacementAdrl(emplacementManager.getAdrlManager(emplacement, false));
@@ -345,7 +358,7 @@ public class RetourManagerImpl implements RetourManager
 
       if(objet != null){
          final String objetClass = objet.getClass().getSimpleName();
-         // L'objet sur lequel s'applique un Retour peut être un échantillon 
+         // L'objet sur lequel s'applique un Retour peut être un échantillon
          // ou un produit dérivé.
          entite = entiteDao.findByNom(objetClass).get(0);
 
@@ -359,9 +372,9 @@ public class RetourManagerImpl implements RetourManager
    }
 
    @Override
-   public void createRetourListManager(final List<TKStockableObject> objects,
-      final List<OldEmplTrace> oldEmpAdrls, final Retour retour, final Collaborateur collaborateur,
-      final Cession cession, final Transformation transformation, final Incident incident, final Utilisateur utilisateur){
+   public void createRetourListManager(final List<TKStockableObject> objects, final List<OldEmplTrace> oldEmpAdrls,
+      final Retour retour, final Collaborateur collaborateur, final Cession cession, final Transformation transformation,
+      final Incident incident, final Utilisateur utilisateur){
 
       Retour newRet;
       if(objects != null){
@@ -372,7 +385,7 @@ public class RetourManagerImpl implements RetourManager
             // emplacement actuel ou avant déplacement
             Emplacement emp = null;
             if(oldEmpAdrls != null && oldEmpAdrls.contains(new OldEmplTrace(objects.get(i), null, null, null))){
-              emp = oldEmpAdrls.get(oldEmpAdrls.indexOf(new OldEmplTrace(objects.get(i), null, null, null))).getCurrent();
+               emp = oldEmpAdrls.get(oldEmpAdrls.indexOf(new OldEmplTrace(objects.get(i), null, null, null))).getCurrent();
             }
 
             createOrUpdateObjectManager(newRet, objects.get(i), emp, collaborateur, cession, transformation, incident,
@@ -383,15 +396,15 @@ public class RetourManagerImpl implements RetourManager
    }
 
    @Override
-   public boolean createRetourHugeListManager(final List<TKStockableObject> objects,
-      final List<OldEmplTrace> oldEmpAdrls, final Retour retour, final Collaborateur collaborateur,
-      final Cession cession, final Transformation transformation, final Incident incident, final Utilisateur utilisateur){
+   public boolean createRetourHugeListManager(final List<TKStockableObject> objects, final List<OldEmplTrace> oldEmpAdrls,
+      final Retour retour, final Collaborateur collaborateur, final Cession cession, final Transformation transformation,
+      final Incident incident, final Utilisateur utilisateur){
 
       final boolean ok = true;
 
       if(objects != null){
 
-         // ids objs dont les retours pourraient rentrer en conflit 
+         // ids objs dont les retours pourraient rentrer en conflit
          // avec le retour créé
          final Set<Integer> objsEchanIds = new HashSet<>();
          objsEchanIds
@@ -525,11 +538,10 @@ public class RetourManagerImpl implements RetourManager
                // @since 2.2.3-genno
                // fix https://tumorotek.myjetbrains.com/youtrack/issue/TK-291
                if(oldEmpAdrls != null && oldEmpAdrls.contains((new OldEmplTrace(objects.get(i), null, null, null)))){
-                  pstmt.setString(10, oldEmpAdrls.get(oldEmpAdrls
-                		.indexOf(new OldEmplTrace(objects.get(i), null, null, null))).getOldAdrl());
-                  pstmt.setInt(13,  oldEmpAdrls.get(oldEmpAdrls
-                  		.indexOf(new OldEmplTrace(objects.get(i), null, null, null))).getConteneur()
-                		  	.getConteneurId());
+                  pstmt.setString(10,
+                     oldEmpAdrls.get(oldEmpAdrls.indexOf(new OldEmplTrace(objects.get(i), null, null, null))).getOldAdrl());
+                  pstmt.setInt(13, oldEmpAdrls.get(oldEmpAdrls.indexOf(new OldEmplTrace(objects.get(i), null, null, null)))
+                     .getConteneur().getConteneurId());
                }else if(objects.get(i).getEmplacement() != null){
                   emp = emplacementDao.mergeObject(objects.get(i).getEmplacement());
                   pstmt.setString(10, emplacementManager.getAdrlManager(emp, false));
@@ -592,7 +604,7 @@ public class RetourManagerImpl implements RetourManager
                   || obj.getObjetStatut().getStatut().equals("ENCOURS")) && retour.getRetourId() == null){
                   throw new ObjectStatutException(entiteDao.findByNom(obj.entiteNom()).get(0).getNom(), "évènement de stockage");
                }else if(retour.getDateSortie().before(obj.getDateStock())){
-                  // throw new TKException("date.validation.infDateStockage: " 
+                  // throw new TKException("date.validation.infDateStockage: "
                   //	+ obj.getCode());
                   continue;
                }else{
@@ -606,7 +618,7 @@ public class RetourManagerImpl implements RetourManager
                      }
                   }
                }
-               // checkRequiredObjectsAndValidate(retour, isEchan ? (Echantillon) objects.get(i) : (ProdDerive) objects.get(i), 
+               // checkRequiredObjectsAndValidate(retour, isEchan ? (Echantillon) objects.get(i) : (ProdDerive) objects.get(i),
                //		null, collaborateur, cession, transformation, incident, "creation");
 
                pstmt.addBatch();
@@ -692,7 +704,7 @@ public class RetourManagerImpl implements RetourManager
       //			if (rs.size() == 1) {
       //				return rs.get(0);
       //			} else {
-      //				throw new 
+      //				throw new
       //				ManyIncompleteRetourException(getObjetFromRetourManager(rs.get(0)));
       //			}
       //		}

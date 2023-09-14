@@ -75,8 +75,8 @@ public interface PatientSipManager
 
    /**
     * Enregistre un patient venant du SIP dans la table temporaire.
-    * Vérifie doublons. 
-    * Si maxsize de la table temp est atteinte -> applique first in 
+    * Vérifie doublons.
+    * Si maxsize de la table temp est atteinte -> applique first in
     * first out.
     * @param sipPatient
     * @param int max taille de la table à maintenir
@@ -85,16 +85,16 @@ public interface PatientSipManager
    void createOrUpdatePatientInTempTableManager(PatientSip sipPatient, int max, boolean isFusion);
 
    /**
-    * Modifie un patient dans la table temporaire si une modification 
+    * Modifie un patient dans la table temporaire si une modification
     * est à appliquée.
     * @param sipPatient
     * @param isFusion true si methode appelee suite evt fusion patient
     */
    void updatePatientInTempTableManager(PatientSip sipPatient, boolean isFusion);
 
-   /** 
-    * Modifie de manière automatique un patient deja enregistré dans le 
-    * système (synchronisation avec le serveur d'indentités patient). 
+   /**
+    * Modifie de manière automatique un patient deja enregistré dans le
+    * système (synchronisation avec le serveur d'indentités patient).
     * Trouve le patient par son nip, si modification à appliquer.
     * @param sipPatient
     * @param patient à synchroniser.
@@ -103,7 +103,7 @@ public interface PatientSipManager
 
    /**
     * Cherche les doublons en se basant sur la methode equals()
-    * surchargee par les entites. Si l'objet est modifie donc a un id 
+    * surchargee par les entites. Si l'objet est modifie donc a un id
     * attribue par le SGBD, ce dernier est retire de la liste findAll.
     * @param patient PatientSip dont on cherche la presence dans la base
     * @return true/false
@@ -118,15 +118,15 @@ public interface PatientSipManager
    void removeObjectManager(PatientSip patient);
 
    /**
-    * Recherche toutes les instances de Patient venant du SIP 
+    * Recherche toutes les instances de Patient venant du SIP
     * présentes dans la base dans la table temporaire.
     * @return List contenant les PatientSips.
     */
    List<PatientSip> findAllObjectsManager();
 
    /**
-    * Recherche toutes les patients venant du Sip 
-    * dont le nom est egal ou 'like' 
+    * Recherche toutes les patients venant du Sip
+    * dont le nom est egal ou 'like'
     * celui passé en parametre.
     * @param nom
     * @param boolean exactMatch
@@ -144,7 +144,7 @@ public interface PatientSipManager
    List<PatientSip> findByNipLikeManager(String nip, boolean exactMatch);
 
    /**
-    * Verifie si le patient doit être modifié (de manière automatique 
+    * Verifie si le patient doit être modifié (de manière automatique
     * par synchronisation avec le serveur d'identité patient).
     * @param PatientSip
     * @return list de Fields qui sont l'objet des modifications
@@ -152,9 +152,9 @@ public interface PatientSipManager
    List<Field> isSynchronizedPatientManager(PatientSip pat);
 
    /**
-    * Verifie si un patient venant du SIP correspond à une modification 
-    *	d'un patient enregistré dans le système impliquant donc une 
-    * synchronisation. Renvoie une erreur si plusieurs patients 
+    * Verifie si un patient venant du SIP correspond à une modification
+    *	d'un patient enregistré dans le système impliquant donc une
+    * synchronisation. Renvoie une erreur si plusieurs patients
     * sont enregistrés dans le système pour le NIP du patient.
     * @param sipPatient
     * @return List de champs a modifier.
@@ -170,7 +170,7 @@ public interface PatientSipManager
    void fusionPatientSystemManager(Patient p1, Patient p2);
 
    /**
-    * Parse un message HL7 et extrait le segment PID dans un 
+    * Parse un message HL7 et extrait le segment PID dans un
     * objet PATIENT_SIP
     * @param message HL7
     * @return objet PATIENT_SIP
@@ -179,10 +179,10 @@ public interface PatientSipManager
    PatientSip parseHl7MessagePID(String message) throws IOException;
 
    /**
-    * Parse un message HL7 pour extraire le NIP du segment MRG 
+    * Parse un message HL7 pour extraire le NIP du segment MRG
     * qui correspond à l'instruction d'une fusion.
-    * Le nip est attribué à un PatientSip qui sera le patient 
-    * passif. 
+    * Le nip est attribué à un PatientSip qui sera le patient
+    * passif.
     * @param message
     * @return objet PATIENT_SIP
     * @throws IOException
@@ -190,7 +190,7 @@ public interface PatientSipManager
    PatientSip parseHl7MessageMRG(String message) throws IOException;
 
    /**
-    * Recherche toutes les patients venant du SIP ayant un numero de sejour 
+    * Recherche toutes les patients venant du SIP ayant un numero de sejour
     * ou 'like' celui en parametre.
     * @param numero
     * @param boolean exactMatch

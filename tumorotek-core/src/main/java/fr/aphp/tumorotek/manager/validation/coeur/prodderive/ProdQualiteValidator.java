@@ -55,7 +55,6 @@ import fr.aphp.tumorotek.model.coeur.prodderive.ProdQualite;
 public class ProdQualiteValidator implements Validator
 {
 
-   
    @Override
    public boolean supports(final Class<?> clazz){
       return ProdQualite.class.equals(clazz);

@@ -51,9 +51,10 @@ public class ExtractValueFromChampManagerImpl implements ExtractValueFromChampMa
    public String extractValueForChampManager(final Echantillon echantillon, final Champ champ){
 
       String res = null;
-      
+
       if(echantillon != null && champ != null){
-         final List<Object> listObjetsCorrespondants = RechercheUtilsManager.getListeObjetsCorrespondants(echantillon, champ, null);
+         final List<Object> listObjetsCorrespondants =
+            RechercheUtilsManager.getListeObjetsCorrespondants(echantillon, champ, null);
          final Object value = RechercheUtilsManager.getChampValueFromObjectList(champ, listObjetsCorrespondants);
          res = ConversionUtils.formatToStringValue(value);
       }
@@ -68,7 +69,8 @@ public class ExtractValueFromChampManagerImpl implements ExtractValueFromChampMa
       String res = null;
 
       if(prodDerive != null && champ != null){
-         final List<Object> listObjetsCorrespondants = RechercheUtilsManager.getListeObjetsCorrespondants(prodDerive, champ, null);
+         final List<Object> listObjetsCorrespondants =
+            RechercheUtilsManager.getListeObjetsCorrespondants(prodDerive, champ, null);
          final Object value = RechercheUtilsManager.getChampValueFromObjectList(champ, listObjetsCorrespondants);
          res = ConversionUtils.formatToStringValue(value);
       }

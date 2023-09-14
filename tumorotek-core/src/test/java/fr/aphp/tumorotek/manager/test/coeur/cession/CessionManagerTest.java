@@ -112,42 +112,61 @@ public class CessionManagerTest extends AbstractManagerTest4
 
    @Autowired
    private CessionManager cessionManager;
+
    @Autowired
    private BanqueManager banqueManager;
+
    @Autowired
    private CessionTypeDao cessionTypeDao;
+
    @Autowired
    private CessionExamenDao cessionExamenDao;
+
    @Autowired
    private ContratManager contratManager;
+
    @Autowired
    private CollaborateurDao collaborateurDao;
+
    @Autowired
    private ServiceDao serviceDao;
+
    @Autowired
    private CessionStatutDao cessionStatutDao;
+
    @Autowired
    private TransporteurDao transporteurDao;
+
    @Autowired
    private DestructionMotifDao destructionMotifDao;
+
    @Autowired
    private UtilisateurManager utilisateurManager;
+
    @Autowired
    private UniteDao uniteDao;
+
    @Autowired
    private EntiteDao entiteDao;
+
    @Autowired
    private CederObjetManager cederObjetManager;
+
    @Autowired
    private ChampAnnotationDao champAnnotationDao;
+
    @Autowired
    private AnnotationValeurManager annotationValeurManager;
+
    @Autowired
    private TableAnnotationManager tableAnnotationManager;
+
    @Autowired
    private DataTypeDao dataTypeDao;
+
    @Autowired
    private OperationTypeDao operationTypeDao;
+
    @Autowired
    private PlateformeDao plateformeDao;
 

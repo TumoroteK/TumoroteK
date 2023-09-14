@@ -80,6 +80,7 @@ public class ChampEntiteBloc implements Serializable
    private static final long serialVersionUID = 4090410359848285650L;
 
    private Integer ordre;
+
    private ChampEntiteBlocPK pk = new ChampEntiteBlocPK();
 
    public ChampEntiteBloc(){

@@ -56,7 +56,6 @@ import org.zkoss.zul.Row;
 import org.zkoss.zul.SimpleListModel;
 
 import fr.aphp.tumorotek.action.ManagerLocator;
-import fr.aphp.tumorotek.action.utils.ChampUtils;
 import fr.aphp.tumorotek.decorator.ChampDecorator;
 import fr.aphp.tumorotek.decorator.CritereDecorator;
 import fr.aphp.tumorotek.decorator.EntiteDecorator;
@@ -71,6 +70,7 @@ import fr.aphp.tumorotek.model.io.export.Champ;
 import fr.aphp.tumorotek.model.io.export.ChampEntite;
 import fr.aphp.tumorotek.model.io.export.Critere;
 import fr.aphp.tumorotek.model.systeme.Entite;
+import fr.aphp.tumorotek.webapp.gatsbi.GatsbiController;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
 /**
@@ -81,7 +81,7 @@ import fr.aphp.tumorotek.webapp.general.SessionUtils;
  * 2.0.8 Ajout de l'etablissement preleveur
  *
  * @author Pierre VENTADOUR
- * @version 2.0.8
+ * @version 2.3.0-gatsbi
  *
  *
  */
@@ -91,29 +91,47 @@ public class FicheAddCritere extends GenericForwardComposer<Component>
    private static final long serialVersionUID = 7394049019102721264L;
 
    private Panel winPanel;
+
    private Component parent;
+
    private Banque banque;
+
    private AnnotateDataBinder binder;
 
    // components
    private Row rowSousChamp;
+
    private Row rowChamp;
+
    private Row rowOperateur;
+
    private Row rowValeur;
+
    private Listbox entitesBox;
+
    private Listbox sousChampsBox;
+
    private Listbox champsBox;
+
    private Listbox operateursBox;
+
    private Button addCritere;
 
    // variables
    private List<EntiteDecorator> entites = new ArrayList<>();
+
    private List<ChampDecorator> sousChamps;
+
    private List<ChampDecorator> champs;
+
    private List<String> operateurs;
+
    private Entite entite;
+
    private Champ sousChamp;
+
    private Champ champ;
+
    private String operateur;
 
    @Override
@@ -166,8 +184,11 @@ public class FicheAddCritere extends GenericForwardComposer<Component>
       if(this.entitesBox.getSelectedIndex() > 0){
          entite = entites.get(this.entitesBox.getSelectedIndex()).getEntite();
 
+         // @since gatsbi
+         // final Stream<ChampEntite> champEntiteStream =
+         //   ManagerLocator.getManager(ChampEntiteManager.class).findByEntiteAndImportManager(entite, true).stream();
          final Stream<ChampEntite> champEntiteStream =
-            ManagerLocator.getManager(ChampEntiteManager.class).findByEntiteAndImportManager(entite, true).stream();
+            GatsbiController.findByEntiteImportAndIsNullableManager(entite, true, null).stream();
          final Stream<ChampEntite> customChampsEntiteStream = getCustomChampEntite().stream();
 
          //Ajout des champs entité
@@ -322,9 +343,9 @@ public class FicheAddCritere extends GenericForwardComposer<Component>
                }else if("QuantiteUniteId".equals(nomChamp)){
                   nomEntiteReel = "Unite";
                }
-//               else if("Protocoles".equals(nomChamp)){
-//                  nomEntiteReel = "Protocole";
-//               }
+               //               else if("Protocoles".equals(nomChamp)){
+               //                  nomEntiteReel = "Protocole";
+               //               }
             }else if("Echantillon".equals(nomEntiteChamp)){
                if("QuantiteUniteId".equals(nomChamp)){
                   nomEntiteReel = "Unite";
@@ -518,7 +539,11 @@ public class FicheAddCritere extends GenericForwardComposer<Component>
       switch(entite.getNom()){
          case "Prelevement":
             //EtablissementId
-            customChampsEntite.add(ManagerLocator.getManager(ChampEntiteManager.class).findByIdManager(193));
+            // since 2.3.0-gatsbi etablissement depend de service preleveur
+            if(SessionUtils.getCurrentGatsbiContexteForEntiteId(entite.getEntiteId()) == null
+               || SessionUtils.getCurrentGatsbiContexteForEntiteId(entite.getEntiteId()).isChampIdVisible(29)){
+               customChampsEntite.add(ManagerLocator.getManager(ChampEntiteManager.class).findByIdManager(193));
+            }
             //Age au prélèvement
             customChampsEntite.add(ManagerLocator.getManager(ChampEntiteManager.class).findByIdManager(254));
             break;

@@ -534,6 +534,7 @@
 		<column>PLATEFORME_ID</column>
 		<column>ECHANTILLON_COULEUR_ID</column>
 		<column>PROD_DERIVE_COULEUR_ID</column>
+		<column>ETUDE_ID</column>
 		<row>
 			<value>1</value>
 			<value>1</value>
@@ -549,6 +550,7 @@
 			<value>M-9440/3</value>
 			<value>1</value>
 			<value>1</value>
+			<null/>
 			<null/>
 			<null/>
 		</row>
@@ -569,6 +571,7 @@
 			<value>1</value>
 			<value>2</value>
 			<null/>
+			<null/>
 		</row>
 		<row>
 			<value>3</value>
@@ -587,6 +590,7 @@
 			<value>1</value>
 			<value>2</value>
 			<value>2</value>
+			<null/>
 		</row>
 		<row>
 			<value>4</value>
@@ -605,6 +609,7 @@
 			<value>2</value>
 			<value>3</value>
 			<value>4</value>
+			<null/>
 		</row>
 	</table>
 <!--	<table name="BANQUE_STOCKAGE">-->
@@ -12246,6 +12251,54 @@
 			<value>2015-04-24 08:08:00</value>
 			<value>1</value>
 			<value>DIAMIC</value>
+		</row>
+	</table>
+	<table name="GATSBI_ETUDE">
+		<column>ETUDE_ID</column>
+		<column>TITRE</column>
+		<column>ACRONYME</column>
+		<column>PLATEFORME_ID</column>
+		<column>ARCHIVE</column>
+		<row>
+			<value>1</value>
+			<value>A-ETUDE-PF1</value>
+			<value>AEP</value>
+			<value>1</value>
+			<value>0</value>
+		</row>
+		<row>
+			<value>2</value>
+			<value>C-ETUDE-PF1</value>
+			<value>CEP</value>
+			<value>1</value>
+			<value>1</value>
+		</row>
+		<row>
+			<value>3</value>
+			<value>B-ETUDE-PF1</value>
+			<value>BEP</value>
+			<value>1</value>
+			<value>0</value>
+		</row>
+	</table>
+	<table name="PATIENT_IDENTIFIANT">
+		<column>PATIENT_ID</column>
+		<column>BANQUE_ID</column>
+		<column>IDENTIFIANT</column>
+		<row>
+			<value>1</value>
+			<value>1</value>
+			<value>SLS-1234</value>
+		</row>
+		<row>
+			<value>1</value>
+			<value>2</value>
+			<value>MEL-889</value>
+		</row>
+		<row>
+			<value>2</value>
+			<value>1</value>
+			<value>SLS-1255</value>
 		</row>
 	</table>
 </dataset>

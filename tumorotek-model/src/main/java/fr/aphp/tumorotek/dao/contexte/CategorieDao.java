@@ -62,7 +62,7 @@ public interface CategorieDao extends GenericDaoJpa<Categorie, Integer>, TKThesa
 
    /**
     * Recherche les catégories dont l'établissement est égal au paramètre.
-    * @param etabId est la clé primaire de l'établissement pour lequel on 
+    * @param etabId est la clé primaire de l'établissement pour lequel on
     * recherche des catégories.
     * @return une liste de catégories.
     */
@@ -72,6 +72,7 @@ public interface CategorieDao extends GenericDaoJpa<Categorie, Integer>, TKThesa
     * Recherche toutes les Categories ordonnées.
     * @return Liste ordonnée de Categories.
     */
+   @Override
    List<Categorie> findByOrder();
 
    /**

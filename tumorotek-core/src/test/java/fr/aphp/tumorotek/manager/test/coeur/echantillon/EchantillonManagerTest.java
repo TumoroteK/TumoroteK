@@ -142,7 +142,7 @@ import static org.junit.Assert.*;
  * Classe créée le 25/09/09.
  *
  * @author Pierre Ventadour.
- * @version 2.1
+ * @version 2.3.0-gatsbi
  *
  */
 public class EchantillonManagerTest extends AbstractManagerTest4
@@ -150,83 +150,122 @@ public class EchantillonManagerTest extends AbstractManagerTest4
 
    @Autowired
    private EchantillonManager echantillonManager;
+
    @Autowired
    private EchantillonTypeManager echantillonTypeManager;
+
    @Autowired
    private BanqueManager banqueManager;
+
    @Autowired
    private PrelevementDao prelevementDao;
+
    @Autowired
    private CollaborateurManager collaborateurManager;
+
    @Autowired
    private ObjetStatutManager objetStatutManager;
+
    @Autowired
    private UniteManager uniteManager;
+
    @Autowired
    private EchanQualiteManager echanQualiteManager;
+
    @Autowired
    private ModePrepaManager modePrepaManager;
+
    @Autowired
    private FichierManager fichierManager;
+
    @Autowired
    private UtilisateurDao utilisateurDao;
+
    @Autowired
    private EchantillonValidator echantillonValidator;
+
    @Autowired
    private CodeAssigneManager codeAssigneManager;
+
    @Autowired
    private TableCodageDao tableCodageDao;
+
    @Autowired
    private ChampAnnotationDao champAnnotationDao;
+
    @Autowired
    private AnnotationValeurManager annotationValeurManager;
+
    @Autowired
    private BanqueDao banqueDao;
+
    @Autowired
    private OperationTypeManager operationTypeManager;
+
    @Autowired
    private EntiteDao entiteDao;
+
    @Autowired
    private TransformationManager transformationManager;
+
    @Autowired
    private ProdTypeDao prodTypeDao;
+
    @Autowired
    private ProdDeriveManager prodDeriveManager;
+
    @Autowired
    private CederObjetManager cederObjetManager;
+
    @Autowired
    private UniteDao uniteDao;
+
    @Autowired
    private CessionDao cessionDao;
+
    @Autowired
    private TerminaleDao terminaleDao;
+
    @Autowired
    private ConteneurManager conteneurManager;
+
    @Autowired
    private EnceinteTypeDao enceinteTypeDao;
+
    @Autowired
    private EmplacementManager emplacementManager;
+
    @Autowired
    private EnceinteManager enceinteManager;
+
    @Autowired
    private TerminaleManager terminaleManager;
+
    @Autowired
    private ItemDao itemDao;
+
    @Autowired
    private ChampEntiteDao champEntiteDao;
+
    @Autowired
    private ExtractValueFromChampManager extractValueFromChampManager;
+
    @Autowired
    private RetourManager retourManager;
+
    @Autowired
    private NonConformiteDao nonConformiteDao;
+
    @Autowired
    private ObjetNonConformeDao objetNonConformeDao;
+
    @Autowired
    private ConformiteTypeDao conformiteTypeDao;
+
    @Autowired
    @Qualifier("dataSource")
    private DataSource dataSource;
+
    @Autowired
    private PlateformeDao plateformeDao;
 
@@ -979,6 +1018,7 @@ public class EchantillonManagerTest extends AbstractManagerTest4
       // Insertion
       final Echantillon echan1 = new Echantillon();
       echan1.setCode("Code");
+      echan1.setType(type);
 
       final Emplacement emp = new Emplacement();
       emp.setTerminale(terminaleDao.findById(6));
@@ -990,8 +1030,8 @@ public class EchantillonManagerTest extends AbstractManagerTest4
       Boolean catched = false;
       // on test l'insertion avec la banque nulle
       try{
-         echantillonManager.createObjectManager(echan1, null, null, null, null, null, type, null, null, null, null, null,
-            null, null, true, null, false);
+         echantillonManager.createObjectManager(echan1, null, null, null, null, null, type, null, null, null, null, null, null,
+            null, true, null, false);
       }catch(final Exception e){
          if(e.getClass().getSimpleName().equals("RequiredObjectIsNullException")){
             catched = true;
@@ -1002,8 +1042,8 @@ public class EchantillonManagerTest extends AbstractManagerTest4
 
       // on test l'insertion avec le type nul
       try{
-         echantillonManager.createObjectManager(echan1, banque, null, null, null, null, null, null, null, null, null, null,
-            null, null, true, null, false);
+         echantillonManager.createObjectManager(echan1, banque, null, null, null, null, null, null, null, null, null, null, null,
+            null, true, null, false);
       }catch(final Exception e){
          if(e.getClass().getSimpleName().equals("RequiredObjectIsNullException")){
             catched = true;
@@ -1014,8 +1054,8 @@ public class EchantillonManagerTest extends AbstractManagerTest4
 
       // on test l'insertion avec le statut null
       try{
-         echantillonManager.createObjectManager(echan1, banque, null, null, null, null, type, null, null, null, null, null,
-            null, null, true, null, false);
+         echantillonManager.createObjectManager(echan1, banque, null, null, null, null, type, null, null, null, null, null, null,
+            null, true, null, false);
       }catch(final Exception e){
          if(e.getClass().getSimpleName().equals("RequiredObjectIsNullException")){
             catched = true;
@@ -1024,30 +1064,30 @@ public class EchantillonManagerTest extends AbstractManagerTest4
       assertTrue(catched);
       catched = false;
 
-      echan1.setCode("PTRA.1");
-      // On teste l'insertion d'un doublon pour vérifier que l'exception
-      // est lancée
-      try{
-         echantillonManager.createObjectManager(echan1, banque, null, null, statut, null, type, null, null, null, null,
-            null, null, null, true, null, false);
-      }catch(final Exception e){
-         if(e.getClass().getSimpleName().equals("DoublonFoundException")){
-            catched = true;
-         }
-      }
-      assertTrue(catched);
-
       // Emplacement occupé par un dérivé
       echan1.setCode("PTRA.3");
       final Emplacement empl = emplacementManager.findByIdManager(2);
       catched = false;
       try{
-         echantillonManager.createObjectManager(echan1, banque, null, null, statut, empl, type, null, null, null, null,
-            null, null, null, true, null, false);
+         echantillonManager.createObjectManager(echan1, banque, null, null, statut, empl, type, null, null, null, null, null,
+            null, null, true, null, false);
       }catch(final TKException ex){
          catched = true;
          assertTrue(ex.getMessage().equals("PTRA.3 : error.emplacement.notEmpty"));
          assertTrue(ex.getIdentificationObjetException().equals("PTRA.3"));
+      }
+      assertTrue(catched);
+
+      echan1.setCode("PTRA.1");
+      // On teste l'insertion d'un doublon pour vérifier que l'exception
+      // est lancée
+      try{
+         echantillonManager.createObjectManager(echan1, banque, null, null, statut, null, type, null, null, null, null, null,
+            null, null, true, null, false);
+      }catch(final Exception e){
+         if(e.getClass().getSimpleName().equals("DoublonFoundException")){
+            catched = true;
+         }
       }
       assertTrue(catched);
 
@@ -1060,8 +1100,8 @@ public class EchantillonManagerTest extends AbstractManagerTest4
       echan1.setDelaiCgl((float) -1.0);
       echan1.setQuantite(null);
       echan1.setQuantiteInit(null);
-      echantillonManager.createObjectManager(echan1, banque, null, null, statut, null, type, null, null, null, null, null,
-         null, utilisateur, false, null, false);
+      echantillonManager.createObjectManager(echan1, banque, null, null, statut, null, type, null, null, null, null, null, null,
+         utilisateur, false, null, false);
       assertTrue(echantillonManager.findByCodeLikeManager("PTRA.3", true).size() == 1);
       assertNull(echan1.getSterile());
       assertTrue(getOperationManager().findByObjectManager(echan1).size() == 1);
@@ -1121,17 +1161,18 @@ public class EchantillonManagerTest extends AbstractManagerTest4
       echan5.setCode("PTRA.3");
       echan5.setSterile(null);
       statut = objetStatutManager.findByIdManager(4);
-      echantillonManager.createObjectManager(echan5, banque, null, null, statut, null, type, null, null, null, null, null,
-         null, utilisateur, true, null, false);
+      echantillonManager.createObjectManager(echan5, banque, null, null, statut, null, type, null, null, null, null, null, null,
+         utilisateur, true, null, false);
       assertTrue(echantillonManager.findByCodeLikeManager("PTRA.3", true).size() == 1);
 
       Boolean catchedUpdate = false;
       // on test l'update avec une banque nulle
       final Echantillon echan6 = echantillonManager.findByCodeLikeManager("PTRA.3", true).get(0);
       echan6.setCode(codeUpdated1);
+      echan6.setBanque(null);
       try{
-         echantillonManager.updateObjectManager(echan6, null, null, null, null, null, type, null, null, null, null, null,
-            null, null, null, null, null, true, null, null);
+         echantillonManager.updateObjectManager(echan6, null, null, null, null, null, type, null, null, null, null, null, null,
+            null, null, null, null, true, null, null);
       }catch(final Exception e){
          if(e.getClass().getSimpleName().equals("RequiredObjectIsNullException")){
             catchedUpdate = true;
@@ -1143,26 +1184,12 @@ public class EchantillonManagerTest extends AbstractManagerTest4
       // on test l'update avec un type null
       final Echantillon echan8 = echantillonManager.findByCodeLikeManager("PTRA.3", true).get(0);
       echan8.setCode(codeUpdated1);
+      echan8.setEchantillonType(null);
       try{
-         echantillonManager.updateObjectManager(echan8, banque, null, null, null, null, null, null, null, null, null, null,
-            null, null, null, null, null, true, null, null);
+         echantillonManager.updateObjectManager(echan8, banque, null, null, null, null, null, null, null, null, null, null, null,
+            null, null, null, null, true, null, null);
       }catch(final Exception e){
          if(e.getClass().getSimpleName().equals("RequiredObjectIsNullException")){
-            catchedUpdate = true;
-         }
-      }
-      assertTrue(catchedUpdate);
-      catchedUpdate = false;
-
-      // On teste l'update d'un doublon pour vérifier que l'exception
-      // est lancée
-      final Echantillon echan9 = echantillonManager.findByCodeLikeManager("PTRA.3", true).get(0);
-      echan9.setCode(codeUpdated2);
-      try{
-         echantillonManager.updateObjectManager(echan9, banque, null, null, null, null, type, null, null, null, null, null,
-            null, null, null, null, null, true, null, null);
-      }catch(final Exception e){
-         if(e.getClass().getSimpleName().equals("DoublonFoundException")){
             catchedUpdate = true;
          }
       }
@@ -1173,14 +1200,29 @@ public class EchantillonManagerTest extends AbstractManagerTest4
       // MAJ emplacemet Emplacement occupé par un dérivé
       catched = false;
       try{
-         echantillonManager.updateObjectManager(echan10, banque, null, null, null, empl, type, null, null, null, null, null,
-            null, null, null, null, utilisateur, false, null, null);
+         echantillonManager.updateObjectManager(echan10, banque, null, null, null, empl, type, null, null, null, null, null, null,
+            null, null, null, utilisateur, false, null, null);
       }catch(final TKException ex){
          catched = true;
          assertTrue(ex.getMessage().equals("PTRA.3 : error.emplacement.notEmpty"));
          assertTrue(ex.getIdentificationObjetException().equals("PTRA.3"));
       }
       assertTrue(catched);
+
+      // On teste l'update d'un doublon pour vérifier que l'exception
+      // est lancée
+      final Echantillon echan9 = echantillonManager.findByCodeLikeManager("PTRA.3", true).get(0);
+      echan9.setCode(codeUpdated2);
+      try{
+         echantillonManager.updateObjectManager(echan9, banque, null, null, null, null, type, null, null, null, null, null, null,
+            null, null, null, null, true, null, null);
+      }catch(final Exception e){
+         if(e.getClass().getSimpleName().equals("DoublonFoundException")){
+            catchedUpdate = true;
+         }
+      }
+      assertTrue(catchedUpdate);
+      catchedUpdate = false;
 
       // On test la validation lors d'un update
       validationUpdate(echan10);
@@ -1189,8 +1231,8 @@ public class EchantillonManagerTest extends AbstractManagerTest4
       echan10.setDelaiCgl((float) -1.0);
       echan10.setQuantite(null);
       echan10.setQuantiteInit(null);
-      echantillonManager.updateObjectManager(echan10, banque, null, null, null, null, type, null, null, null, null, null,
-         null, null, null, null, utilisateur, false, null, null);
+      echantillonManager.updateObjectManager(echan10, banque, null, null, null, null, type, null, null, null, null, null, null,
+         null, null, null, utilisateur, false, null, null);
       //Echantillon echan1 = echantillonManager.findByIdManager(7);
       assertTrue(getOperationManager().findByObjectManager(echan10).size() == 2);
       Echantillon testInsert2 = echantillonManager.findByCodeLikeManager("test", true).get(0);
@@ -1266,8 +1308,8 @@ public class EchantillonManagerTest extends AbstractManagerTest4
          catchedInsert = false;
          try{
             echantillon.setCode(emptyValues[i]);
-            echantillonManager.createObjectManager(echantillon, banque, null, null, st, null, type, null, null, null, null,
-               null, null, utilisateur, true, null, false);
+            echantillonManager.createObjectManager(echantillon, banque, null, null, st, null, type, null, null, null, null, null,
+               null, utilisateur, true, null, false);
          }catch(final Exception e){
             if(e.getClass().getSimpleName().equals("ValidationException")){
                catchedInsert = true;
@@ -1282,8 +1324,8 @@ public class EchantillonManagerTest extends AbstractManagerTest4
       echantillon.setQuantiteInit(negative);
       catchedInsert = false;
       try{
-         echantillonManager.createObjectManager(echantillon, banque, null, null, st, null, type, null, null, null, null,
-            null, null, utilisateur, true, null, false);
+         echantillonManager.createObjectManager(echantillon, banque, null, null, st, null, type, null, null, null, null, null,
+            null, utilisateur, true, null, false);
       }catch(final Exception e){
          if(e.getClass().getSimpleName().equals("ValidationException")){
             catchedInsert = true;
@@ -1296,8 +1338,8 @@ public class EchantillonManagerTest extends AbstractManagerTest4
       echantillon.setQuantite(negative);
       catchedInsert = false;
       try{
-         echantillonManager.createObjectManager(echantillon, banque, null, null, st, null, type, null, null, null, null,
-            null, null, utilisateur, true, null, false);
+         echantillonManager.createObjectManager(echantillon, banque, null, null, st, null, type, null, null, null, null, null,
+            null, utilisateur, true, null, false);
       }catch(final Exception e){
          if(e.getClass().getSimpleName().equals("ValidationException")){
             catchedInsert = true;
@@ -1313,8 +1355,8 @@ public class EchantillonManagerTest extends AbstractManagerTest4
       echantillon.setQuantiteInit(q2);
       catchedInsert = false;
       try{
-         echantillonManager.createObjectManager(echantillon, banque, null, null, null, null, type, null, null, null, null,
-            null, null, utilisateur, true, null, false);
+         echantillonManager.createObjectManager(echantillon, banque, null, null, null, null, type, null, null, null, null, null,
+            null, utilisateur, true, null, false);
       }catch(final Exception e){
          if(e.getClass().getSimpleName().equals("ValidationException")){
             catchedInsert = true;
@@ -1328,8 +1370,8 @@ public class EchantillonManagerTest extends AbstractManagerTest4
       echantillon.setDelaiCgl(negative);
       catchedInsert = false;
       try{
-         echantillonManager.createObjectManager(echantillon, banque, null, null, null, null, type, null, null, null, null,
-            null, null, utilisateur, true, null, false);
+         echantillonManager.createObjectManager(echantillon, banque, null, null, null, null, type, null, null, null, null, null,
+            null, utilisateur, true, null, false);
       }catch(final Exception e){
          if(e.getClass().getSimpleName().equals("ValidationException")){
             catchedInsert = true;
@@ -1342,8 +1384,8 @@ public class EchantillonManagerTest extends AbstractManagerTest4
       echantillon.setLateralite("O3");
       catchedInsert = false;
       try{
-         echantillonManager.createObjectManager(echantillon, banque, null, null, null, null, type, null, null, null, null,
-            null, null, utilisateur, true, null, false);
+         echantillonManager.createObjectManager(echantillon, banque, null, null, null, null, type, null, null, null, null, null,
+            null, utilisateur, true, null, false);
       }catch(final Exception e){
          if(e.getClass().getSimpleName().equals("ValidationException")){
             catchedInsert = true;
@@ -1369,8 +1411,8 @@ public class EchantillonManagerTest extends AbstractManagerTest4
          catchedInsert = false;
          try{
             echantillon.setCode(emptyValues[i]);
-            echantillonManager.updateObjectManager(echantillon, banque, null, null, null, null, type, null, null, null,
-               null, null, null, null, null, null, utilisateur, true, null, null);
+            echantillonManager.updateObjectManager(echantillon, banque, null, null, null, null, type, null, null, null, null,
+               null, null, null, null, null, utilisateur, true, null, null);
          }catch(final Exception e){
             if(e.getClass().getSimpleName().equals("ValidationException")){
                catchedInsert = true;
@@ -1385,8 +1427,8 @@ public class EchantillonManagerTest extends AbstractManagerTest4
       echantillon.setQuantiteInit(negative);
       catchedInsert = false;
       try{
-         echantillonManager.updateObjectManager(echantillon, banque, null, null, null, null, type, null, null, null, null,
-            null, null, null, null, null, utilisateur, true, null, null);
+         echantillonManager.updateObjectManager(echantillon, banque, null, null, null, null, type, null, null, null, null, null,
+            null, null, null, null, utilisateur, true, null, null);
       }catch(final Exception e){
          if(e.getClass().getSimpleName().equals("ValidationException")){
             catchedInsert = true;
@@ -1399,8 +1441,8 @@ public class EchantillonManagerTest extends AbstractManagerTest4
       echantillon.setQuantite(negative);
       catchedInsert = false;
       try{
-         echantillonManager.updateObjectManager(echantillon, banque, null, null, null, null, type, null, null, null, null,
-            null, null, null, null, null, utilisateur, true, null, null);
+         echantillonManager.updateObjectManager(echantillon, banque, null, null, null, null, type, null, null, null, null, null,
+            null, null, null, null, utilisateur, true, null, null);
       }catch(final Exception e){
          if(e.getClass().getSimpleName().equals("ValidationException")){
             catchedInsert = true;
@@ -1629,8 +1671,8 @@ public class EchantillonManagerTest extends AbstractManagerTest4
       // erreur validation sur CodeOrganeExport null alors que orgs.size > 0
       boolean catchedInsert = false;
       try{
-         echantillonManager.createObjectManager(echan1, banque, null, null, null, null, type, codes, null, null, null, null,
-            null, utilisateur, true, null, false);
+         echantillonManager.createObjectManager(echan1, banque, null, null, null, null, type, codes, null, null, null, null, null,
+            utilisateur, true, null, false);
       }catch(final RuntimeException e){
          // e.printStackTrace();
          assertTrue(e.getMessage().equals("echantillon" + ".codesAssigne.organe.exportNbIllegal"));
@@ -1656,16 +1698,16 @@ public class EchantillonManagerTest extends AbstractManagerTest4
       cOrg2.setExport(false);
       catchedInsert = false;
       try{
-         echantillonManager.createObjectManager(echan1, banque, null, null, null, null, type, codes, null, null, null, null,
-            null, utilisateur, true, null, false);
+         echantillonManager.createObjectManager(echan1, banque, null, null, null, null, type, codes, null, null, null, null, null,
+            utilisateur, true, null, false);
       }catch(final ValidationException e){
          catchedInsert = true;
       }
       assertTrue(catchedInsert);
       //echan1.setEchantillonId(null);
       cOrg2.setCode("codePerso");
-      echantillonManager.createObjectManager(echan1, banque, null, null, null, null, type, codes, null, null, null, null,
-         null, utilisateur, true, null, false);
+      echantillonManager.createObjectManager(echan1, banque, null, null, null, null, type, codes, null, null, null, null, null,
+         utilisateur, true, null, false);
       assertTrue(getOperationManager().findByObjectManager(echan1).size() == 1);
       assertTrue(codeAssigneManager.findCodesOrganeByEchantillonManager(echan1).size() == 2);
       codeAssigneManager.findCodesOrganeByEchantillonManager(echan1).get(0).getCode().equals("BL");
@@ -1687,8 +1729,8 @@ public class EchantillonManagerTest extends AbstractManagerTest4
       final List<CodeAssigne> codesToD = new ArrayList<>();
       codesToD.add(codeAssigneManager.findCodesOrganeByEchantillonManager(echan1).get(0));
 
-      echantillonManager.updateObjectManager(testInsert, banque, null, null, null, null, type, codes, codesToD, null, null,
-         null, null, null, null, null, utilisateur, true, null, null);
+      echantillonManager.updateObjectManager(testInsert, banque, null, null, null, null, type, codes, codesToD, null, null, null,
+         null, null, null, null, utilisateur, true, null, null);
 
       assertTrue(codeAssigneManager.findCodesMorphoByEchantillonManager(echan1).size() == 1);
       assertTrue(codeAssigneManager.findCodesOrganeByEchantillonManager(echan1).size() == 1);
@@ -1701,8 +1743,8 @@ public class EchantillonManagerTest extends AbstractManagerTest4
       // update codes apres insert echantillon
       final Echantillon echan2 = new Echantillon();
       echan2.setCode("CodeWithAssigne2");
-      echantillonManager.createObjectManager(echan2, banque, null, null, objetStatutManager.findByIdManager(4), null, type,
-         null, null, null, null, null, null, utilisateur, true, null, false);
+      echantillonManager.createObjectManager(echan2, banque, null, null, objetStatutManager.findByIdManager(4), null, type, null,
+         null, null, null, null, null, utilisateur, true, null, false);
 
       final List<CodeAssigne> codes2 = new ArrayList<>();
       final CodeAssigne cOrg3 = new CodeAssigne();
@@ -1723,8 +1765,8 @@ public class EchantillonManagerTest extends AbstractManagerTest4
       cLes3.setTableCodage(tableCodageDao.findById(2));
       codes2.add(cLes3);
       try{
-         echantillonManager.updateObjectManager(echan2, banque, null, null, null, null, type, codes2, null, null, null,
-            null, null, null, null, null, utilisateur, true, null, null);
+         echantillonManager.updateObjectManager(echan2, banque, null, null, null, null, type, codes2, null, null, null, null,
+            null, null, null, null, utilisateur, true, null, null);
       }catch(final RuntimeException e){
          assertTrue(e.getMessage().equals("echantillon" + ".codesAssigne.organe.exportNbIllegal"));
          catchedInsert = true;
@@ -1733,16 +1775,16 @@ public class EchantillonManagerTest extends AbstractManagerTest4
       catchedInsert = false;
       cOrg3.setExport(true);
       try{
-         echantillonManager.updateObjectManager(echan2, banque, null, null, null, null, type, codes2, null, null, null,
-            null, null, null, null, null, utilisateur, true, null, null);
+         echantillonManager.updateObjectManager(echan2, banque, null, null, null, null, type, codes2, null, null, null, null,
+            null, null, null, null, utilisateur, true, null, null);
       }catch(final RuntimeException e){
          assertTrue(e.getMessage().equals("echantillon" + ".codesAssigne.morpho.exportNbIllegal"));
          catchedInsert = true;
       }
       assertTrue(catchedInsert);
       cLes3.setExport(true);
-      echantillonManager.updateObjectManager(echan2, banque, null, null, null, null, type, codes2, null, null, null, null,
-         null, null, null, null, utilisateur, true, null, null);
+      echantillonManager.updateObjectManager(echan2, banque, null, null, null, null, type, codes2, null, null, null, null, null,
+         null, null, null, utilisateur, true, null, null);
       assertTrue(getOperationManager().findByObjectManager(echan2).size() == 2);
       assertTrue(codeAssigneManager.findCodesMorphoByEchantillonManager(echan2).size() == 1);
       assertTrue(codeAssigneManager.findCodesOrganeByEchantillonManager(echan2).size() == 1);
@@ -1777,8 +1819,8 @@ public class EchantillonManagerTest extends AbstractManagerTest4
       cLes2.setIsMorpho(true);
       cLes2.setOrdre(2);
       codes.add(cLes2);
-      echantillonManager.updateObjectManager(testInsert, banque, null, null, null, null, type, codes, null, null, null,
-         null, null, null, null, null, utilisateur, false, null, null);
+      echantillonManager.updateObjectManager(testInsert, banque, null, null, null, null, type, codes, null, null, null, null,
+         null, null, null, null, utilisateur, false, null, null);
 
       assertTrue(getOperationManager().findByObjectManager(testInsert).size() == 3);
       assertTrue(codeAssigneManager.findCodesMorphoByEchantillonManager(testInsert).size() == 2);
@@ -1961,8 +2003,8 @@ public class EchantillonManagerTest extends AbstractManagerTest4
       num.setAlphanum("&é**$$$");
       boolean catched = false;
       try{
-         echantillonManager.createObjectManager(echan, b1, null, null, null, null, type, null, null, null, null, listAnnots,
-            null, utilisateur, false, null, false);
+         echantillonManager.createObjectManager(echan, b1, null, null, null, null, type, null, null, null, null, listAnnots, null,
+            utilisateur, false, null, false);
       }catch(final ValidationException ve){
          catched = true;
       }
@@ -1973,8 +2015,8 @@ public class EchantillonManagerTest extends AbstractManagerTest4
 
       num.setAlphanum("123456");
 
-      echantillonManager.createObjectManager(echan, b1, null, null, null, null, type, null, null, null, null, listAnnots,
-         null, utilisateur, false, "/tmp/", false);
+      echantillonManager.createObjectManager(echan, b1, null, null, null, null, type, null, null, null, null, listAnnots, null,
+         utilisateur, false, "/tmp/", false);
 
       assertTrue(echantillonManager.findByCodeLikeManager("EchanAnnotated", true).size() == 1);
       assertTrue(annotationValeurManager.findByChampAndObjetManager(c, echan).get(0).getAlphanum().equals("123456"));
@@ -1998,8 +2040,8 @@ public class EchantillonManagerTest extends AbstractManagerTest4
 
       echan.setTumoral(true);
 
-      echantillonManager.updateObjectManager(echan, b1, null, null, null, null, type, null, null, null, null, null,
-         listAnnots, listDelete, null, null, utilisateur, false, null, "/tmp/");
+      echantillonManager.updateObjectManager(echan, b1, null, null, null, null, type, null, null, null, null, null, listAnnots,
+         listDelete, null, null, utilisateur, false, null, "/tmp/");
 
       assertTrue(echantillonManager.findByCodeLikeManager("EchanAnnotated", true).size() == 1);
       assertTrue(annotationValeurManager.findByChampAndObjetManager(c, echan).size() == 1);
@@ -2014,8 +2056,8 @@ public class EchantillonManagerTest extends AbstractManagerTest4
       //				.findByChampAndObjetManager(c2, echan).get(0));
       listAnnots.clear();
 
-      echantillonManager.updateObjectManager(echan, b1, null, null, null, null, type, null, null, null, null, null,
-         listAnnots, listDelete, null, null, utilisateur, false, null, "/tmp/");
+      echantillonManager.updateObjectManager(echan, b1, null, null, null, null, type, null, null, null, null, null, listAnnots,
+         listDelete, null, null, utilisateur, false, null, "/tmp/");
 
       assertTrue(annotationValeurManager.findByChampAndObjetManager(c, echan).size() == 0);
       assertTrue(annotationValeurManager.findByChampAndObjetManager(c2, echan).size() == 1);
@@ -2510,8 +2552,8 @@ public class EchantillonManagerTest extends AbstractManagerTest4
       final Utilisateur utilisateur = utilisateurDao.findById(1);
       e.setObjetStatut(objetStatutManager.findByIdManager(4));
 
-      echantillonManager.createObjectManager(e, b, null, null, null, null, eType, null, null, null, null, null, null,
-         utilisateur, false, null, false);
+      echantillonManager.createObjectManager(e, b, null, null, null, null, eType, null, null, null, null, null, null, utilisateur,
+         false, null, false);
 
       final Retour r = new Retour();
       /*Champs obligatoires*/
@@ -2763,14 +2805,10 @@ public class EchantillonManagerTest extends AbstractManagerTest4
       emp.setPosition(55);
       emp.setVide(false);
       emp.setObjetId(derive.getProdDeriveId());
-      final Terminale t1 =
-         enceinteManager
-            .getTerminalesManager(
-               enceinteManager
-                  .getEnceintesManager(enceinteManager
-                     .getEnceintesManager(conteneurManager.getEnceintesManager(c).iterator().next()).iterator().next())
-                  .iterator().next())
-            .iterator().next();
+      final Terminale t1 = enceinteManager.getTerminalesManager(enceinteManager
+         .getEnceintesManager(
+            enceinteManager.getEnceintesManager(conteneurManager.getEnceintesManager(c).iterator().next()).iterator().next())
+         .iterator().next()).iterator().next();
       emplacementManager.createObjectManager(emp, t1, entiteDao.findById(8));
       prodDeriveManager.updateObjectManager(derive, derive.getBanque(), derive.getProdType(), null, null, emp, null, null, null,
          null, null, derive.getTransformation(), null, null, null, null, u, false, null, null);
@@ -2798,7 +2836,7 @@ public class EchantillonManagerTest extends AbstractManagerTest4
       // e = echantillonManager.findByIdManager(e.getEchantillonId());
 
       try{
-         echantillonManager.switchBanqueCascadeManager(e, b2, true, u, null,null);
+         echantillonManager.switchBanqueCascadeManager(e, b2, true, u, null, null);
       }catch(final RuntimeException re){
          catched = true;
          assertTrue(re.getMessage().equals("echantillon.switchBanque.badBanqueStockage"));
@@ -2904,7 +2942,8 @@ public class EchantillonManagerTest extends AbstractManagerTest4
 
       // creation architecture fichiers
       File targetFolder = new File("target");
-      File file = new File("target", "/tmp/" + "pt_" + b1.getPlateforme().getPlateformeId() + "/" + "coll_" + b1.getBanqueId() + "/cr_anapath/");
+      File file = new File("target",
+         "/tmp/" + "pt_" + b1.getPlateforme().getPlateformeId() + "/" + "coll_" + b1.getBanqueId() + "/cr_anapath/");
       if(file.exists()){
          FileUtils.deleteDirectory(file);
       }
@@ -3406,10 +3445,10 @@ public class EchantillonManagerTest extends AbstractManagerTest4
 
       // test sur le risque
       final Champ c249 = new Champ(champEntiteDao.findById(249));
-      final String[] expected = new String[]{"HIV", "LEUCEMIE"};
+      final String[] expected = new String[] {"HIV", "LEUCEMIE"};
       String value = extractValueFromChampManager.extractValueForChampManager(e1, c249);
-      List<String> actual = Stream.of(value.split(",")).map( token -> token.trim() ).collect(Collectors.toList());
-      assertTrue( actual.size() == 2 && actual.containsAll(Arrays.asList(expected)) );
+      List<String> actual = Stream.of(value.split(",")).map(token -> token.trim()).collect(Collectors.toList());
+      assertTrue(actual.size() == 2 && actual.containsAll(Arrays.asList(expected)));
 
       // test sur l'emplacement
       final Echantillon e2 = echantillonManager.findByIdManager(2);
@@ -3443,18 +3482,18 @@ public class EchantillonManagerTest extends AbstractManagerTest4
       final Echantillon echan1 = new Echantillon();
       echan1.setObjetStatut(objetStatutManager.findByIdManager(4));
       echan1.setCode("XTRA.1");
-      echantillonManager.createObjectManager(echan1, banque, null, null, null, null, type, null, null, null, null, null,
-         null, utilisateur, false, null, false);
+      echantillonManager.createObjectManager(echan1, banque, null, null, null, null, type, null, null, null, null, null, null,
+         utilisateur, false, null, false);
       final Echantillon echan2 = new Echantillon();
       echan2.setObjetStatut(objetStatutManager.findByIdManager(4));
       echan2.setCode("XTRA.2");
-      echantillonManager.createObjectManager(echan2, banque, null, null, null, null, type, null, null, null, null, null,
-         null, utilisateur, false, null, false);
+      echantillonManager.createObjectManager(echan2, banque, null, null, null, null, type, null, null, null, null, null, null,
+         utilisateur, false, null, false);
       final Echantillon echan3 = new Echantillon();
       echan3.setCode("XTRA.3");
       echan3.setObjetStatut(objetStatutManager.findByIdManager(4));
-      echantillonManager.createObjectManager(echan3, banque, null, null, null, null, type, null, null, null, null, null,
-         null, utilisateur, false, null, false);
+      echantillonManager.createObjectManager(echan3, banque, null, null, null, null, type, null, null, null, null, null, null,
+         utilisateur, false, null, false);
       assertTrue(echantillonManager.findAllObjectsManager().size() == 7);
       assertTrue(echantillonManager.findByCodeLikeManager("XTRA", false).size() == 3);
 
@@ -3739,8 +3778,8 @@ public class EchantillonManagerTest extends AbstractManagerTest4
       e0.setSterile(true);
 
       echantillonManager.createObjectWithNonConformitesManager(e0, b1, null, null, objetStatutManager.findByIdManager(4), null,
-         echantillonTypeManager.findByIdManager(1), null, null, null, null, null, null, null, u, false, "/tmp/", false,
-         ncfsTrait, ncfsCess);
+         echantillonTypeManager.findByIdManager(1), null, null, null, null, null, null, null, u, false, "/tmp/", false, ncfsTrait,
+         ncfsCess);
 
       e0 = echantillonManager.findByCodeLikeManager("e0", true).get(0);
 
@@ -3753,8 +3792,8 @@ public class EchantillonManagerTest extends AbstractManagerTest4
       ncfsCess.add(nonConformiteDao.findById(7));
 
       echantillonManager.createObjectWithNonConformitesManager(e1, banqueDao.findById(1), null, null,
-         objetStatutManager.findByIdManager(4), null, echantillonTypeManager.findByIdManager(1), null, null, null, null,
-         null, null, null, u, false, "/tmp/", false, ncfsTrait, ncfsCess);
+         objetStatutManager.findByIdManager(4), null, echantillonTypeManager.findByIdManager(1), null, null, null, null, null,
+         null, null, u, false, "/tmp/", false, ncfsTrait, ncfsCess);
 
       e1 = echantillonManager.findByCodeLikeManager("e1", true).get(0);
 
@@ -3767,8 +3806,8 @@ public class EchantillonManagerTest extends AbstractManagerTest4
       e2.setSterile(true);
 
       echantillonManager.createObjectWithNonConformitesManager(e2, banqueDao.findById(1), null, null,
-         objetStatutManager.findByIdManager(4), null, echantillonTypeManager.findByIdManager(1), null, null, null, null,
-         null, null, null, u, false, "/tmp/", false, null, null);
+         objetStatutManager.findByIdManager(4), null, echantillonTypeManager.findByIdManager(1), null, null, null, null, null,
+         null, null, u, false, "/tmp/", false, null, null);
 
       e2 = echantillonManager.findByCodeLikeManager("e2", true).get(0);
 
@@ -3777,8 +3816,8 @@ public class EchantillonManagerTest extends AbstractManagerTest4
       assertNull(e2.getConformeTraitement());
 
       echantillonManager.updateObjectWithNonConformitesManager(e1, banqueDao.findById(1), null, null,
-         objetStatutManager.findByIdManager(4), null, echantillonTypeManager.findByIdManager(1), null, null, null, null,
-         null, null, null, null, null, u, false, null, "/tmp/", ncfsTrait, ncfsCess);
+         objetStatutManager.findByIdManager(4), null, echantillonTypeManager.findByIdManager(1), null, null, null, null, null,
+         null, null, null, null, u, false, null, "/tmp/", ncfsTrait, ncfsCess);
 
       ncfsTrait.remove(0);
       ncfsCess.clear();
@@ -3786,8 +3825,8 @@ public class EchantillonManagerTest extends AbstractManagerTest4
       e1.setConformeCession(true);
 
       echantillonManager.updateObjectWithNonConformitesManager(e1, banqueDao.findById(1), null, null,
-         objetStatutManager.findByIdManager(4), null, echantillonTypeManager.findByIdManager(1), null, null, null, null,
-         null, null, null, null, null, u, false, null, "/tmp/", ncfsTrait, ncfsCess);
+         objetStatutManager.findByIdManager(4), null, echantillonTypeManager.findByIdManager(1), null, null, null, null, null,
+         null, null, null, null, u, false, null, "/tmp/", ncfsTrait, ncfsCess);
 
       e1 = echantillonManager.findByCodeLikeManager("e1", true).get(0);
 
@@ -3799,8 +3838,8 @@ public class EchantillonManagerTest extends AbstractManagerTest4
       ncfsCess.add(nonConformiteDao.findById(6));
 
       echantillonManager.updateObjectWithNonConformitesManager(e1, banqueDao.findById(1), null, null,
-         objetStatutManager.findByIdManager(4), null, e1.getEchantillonType(), null, null, null, null, null, null, null,
-         null, null, u, false, null, "/tmp/", ncfsTrait, ncfsCess);
+         objetStatutManager.findByIdManager(4), null, e1.getEchantillonType(), null, null, null, null, null, null, null, null,
+         null, u, false, null, "/tmp/", ncfsTrait, ncfsCess);
 
       assertTrue(objetNonConformeDao.findByObjetAndEntite(e1.getEchantillonId(), entiteDao.findById(3)).size() == 2);
       assertTrue(objetNonConformeDao.findByObjetAndEntite(e1.getEchantillonId(), entiteDao.findById(3)).get(0).getNonConformite()
@@ -3906,7 +3945,7 @@ public class EchantillonManagerTest extends AbstractManagerTest4
          // on test l'insertion avec la banque nulle
          try{
             echantillonManager.prepareObjectJDBCManager(jdbcSuite, echan1, null, null, null, null, null, type, null, null, null,
-               null, null, null, null, null, true, false);
+               null, null, null, null, null, true, false, new ArrayList<Integer>());
          }catch(final Exception e){
             if(e.getClass().getSimpleName().equals("RequiredObjectIsNullException")){
                catched = true;
@@ -3922,7 +3961,7 @@ public class EchantillonManagerTest extends AbstractManagerTest4
          // on test l'insertion avec le type nul
          try{
             echantillonManager.prepareObjectJDBCManager(jdbcSuite, echan1, banque, null, null, null, null, null, null, null, null,
-               null, null, null, null, null, true, false);
+               null, null, null, null, null, true, false, new ArrayList<Integer>());
          }catch(final Exception e){
             if(e.getClass().getSimpleName().equals("RequiredObjectIsNullException")){
                catched = true;
@@ -3934,7 +3973,7 @@ public class EchantillonManagerTest extends AbstractManagerTest4
          // on test l'insertion avec le statut null
          try{
             echantillonManager.prepareObjectJDBCManager(jdbcSuite, echan1, banque, null, null, null, null, type, null, null, null,
-               null, null, null, null, null, true, false);
+               null, null, null, null, null, true, false, new ArrayList<Integer>());
          }catch(final Exception e){
             if(e.getClass().getSimpleName().equals("RequiredObjectIsNullException")){
                catched = true;
@@ -3946,7 +3985,7 @@ public class EchantillonManagerTest extends AbstractManagerTest4
          // on test l'insertion avec utilistateur null
          try{
             echantillonManager.prepareObjectJDBCManager(jdbcSuite, echan1, banque, null, null, nonstocke, null, type, null, null,
-               null, null, null, null, null, null, true, false);
+               null, null, null, null, null, null, true, false, new ArrayList<Integer>());
          }catch(final Exception e){
             if(e.getClass().getSimpleName().equals("RequiredObjectIsNullException")){
                catched = true;
@@ -3960,7 +3999,7 @@ public class EchantillonManagerTest extends AbstractManagerTest4
          // est lancée
          try{
             echantillonManager.prepareObjectJDBCManager(jdbcSuite, echan1, banque, null, null, nonstocke, null, type, null, null,
-               null, null, null, null, null, utilisateur, true, false);
+               null, null, null, null, null, utilisateur, true, false, new ArrayList<Integer>());
          }catch(final Exception e){
             // e.printStackTrace();
             if(e.getClass().getSimpleName().equals("DoublonFoundException")){
@@ -3976,7 +4015,7 @@ public class EchantillonManagerTest extends AbstractManagerTest4
          catched = false;
          try{
             echantillonManager.prepareObjectJDBCManager(jdbcSuite, echan1, banque, null, null, stocke, empl, type, null, null,
-               null, null, null, null, null, utilisateur, true, false);
+               null, null, null, null, null, utilisateur, true, false, new ArrayList<Integer>());
          }catch(final TKException ex){
             catched = true;
             assertTrue(ex.getMessage().equals("PTRA.3 : error.emplacement.notEmpty"));
@@ -4012,7 +4051,7 @@ public class EchantillonManagerTest extends AbstractManagerTest4
          catched = false;
          try{
             echantillonManager.prepareObjectJDBCManager(jdbcSuite, echan1, banque, null, null, stocke, null, type, null, null,
-               null, codes, null, null, null, utilisateur, true, false);
+               null, codes, null, null, null, utilisateur, true, false, new ArrayList<Integer>());
          }catch(final ValidationException ex){
             catched = true;
          }
@@ -4033,7 +4072,7 @@ public class EchantillonManagerTest extends AbstractManagerTest4
          jdbcSuite.getPstmtOp().clearBatch();
 
          echantillonManager.prepareObjectJDBCManager(jdbcSuite, echan1, banque, null, null, nonstocke, null, type, null, null,
-            null, null, new ArrayList<AnnotationValeur>(), null, null, utilisateur, true, false);
+            null, null, new ArrayList<AnnotationValeur>(), null, null, utilisateur, true, false, new ArrayList<Integer>());
 
          // ids changés
          assertTrue(jdbcSuite.getMaxEchantillonId().equals(maxEchId + 1));
@@ -4106,7 +4145,7 @@ public class EchantillonManagerTest extends AbstractManagerTest4
          c3.setIsOrgane(false);
 
          echantillonManager.prepareObjectJDBCManager(jdbcSuite, echan2, banque, prelevement, collab, stocke, emp, type, quantite,
-            qualite, prepa, codes, avs, ncfsTrait, ncfsCess, utilisateur, true, false);
+            qualite, prepa, codes, avs, ncfsTrait, ncfsCess, utilisateur, true, false, new ArrayList<Integer>());
 
          // ids changés
          assertTrue(jdbcSuite.getMaxEchantillonId().equals(maxEchId + 2));
@@ -4226,11 +4265,11 @@ public class EchantillonManagerTest extends AbstractManagerTest4
          e.printStackTrace();
       }finally{
          if(null != stmt)
-         stmt.close();
+            stmt.close();
          if(null != rs)
-         rs.close();
+            rs.close();
          if(null != conn)
-         conn.close();
+            conn.close();
          jdbcSuite.closePs();
       }
    }
@@ -4330,5 +4369,94 @@ public class EchantillonManagerTest extends AbstractManagerTest4
       assertTrue(echans.size() == 0);
       echans = echantillonManager.findByCodeInPlateformeManager("%", null);
       assertTrue(echans.size() == 0);
+   }
+   
+   /**
+    * @since 2.3.0-gatsbi
+    */
+   @Test
+   public void testFindByPatientIdentifiantOrNomOrNipInListManager(){
+      List<String> criteres = new ArrayList<>();
+      criteres.add("876");
+      criteres.add("SOLIS");
+      criteres.add("SLS-1234");
+      final List<Banque> bks = new ArrayList<>();
+      bks.add(banqueDao.findById(1));
+      bks.add(banqueDao.findById(2));
+
+      // les échantillons patients 876 (DELPHINO) et SOLIS
+      // ne seront pas pris en compte car ils n'ont pas d'identifiant (donc pas Gatsbi !)
+      List<Integer> liste = echantillonManager.findByPatientIdentifiantOrNomOrNipInListManager(criteres, bks);
+      assertTrue(liste.size() == 1);
+      assertTrue(liste.get(0).equals(4));
+
+      // NOM
+      criteres.clear();
+      criteres.add("MAYER");
+      liste = echantillonManager.findByPatientIdentifiantOrNomOrNipInListManager(criteres, bks);
+      assertTrue(liste.size() == 1);
+      assertTrue(liste.get(0).equals(4));
+      
+      // NIP
+      criteres.clear();
+      criteres.add("12");
+      liste = echantillonManager.findByPatientIdentifiantOrNomOrNipInListManager(criteres, bks);
+      assertTrue(liste.size() == 1);
+      assertTrue(liste.get(0).equals(4));
+      
+      liste = echantillonManager.findByPatientIdentifiantOrNomOrNipInListManager(null, bks);
+      assertTrue(liste.size() == 0);
+      liste = echantillonManager.findByPatientIdentifiantOrNomOrNipInListManager(criteres, null);
+      assertTrue(liste.size() == 0);
+      liste = echantillonManager.findByPatientIdentifiantOrNomOrNipInListManager(new ArrayList<String>(), bks);
+      assertTrue(liste.size() == 0);
+      liste = echantillonManager.findByPatientIdentifiantOrNomOrNipInListManager(criteres, new ArrayList<Banque>());
+      assertTrue(liste.size() == 0);
+   }
+   
+   @Test
+   public void testFindByPatientIdentifiantOrNomOrNipReturnIdsManager(){
+      // IDENTIFIANT exact = true
+      String search = "SLS-1234";
+      final List<Banque> bks = new ArrayList<>();
+      bks.add(banqueDao.findById(1));
+      bks.add(banqueDao.findById(2));
+      
+      List<Integer> liste = echantillonManager
+         .findByPatientIdentifiantOrNomOrNipReturnIdsManager(search, bks, true);
+      assertTrue(liste.size() == 1);
+      assertTrue(liste.get(0).equals(4));
+      
+      // IDENTIFIANT exact = false
+      search = "LS-123";
+      liste = echantillonManager.findByPatientIdentifiantOrNomOrNipReturnIdsManager(search, bks, false);
+      assertTrue(liste.size() == 1);
+      assertTrue(liste.get(0).equals(4));
+
+      // NOM exact = false
+      search = "MAYER";
+      liste = echantillonManager.findByPatientIdentifiantOrNomOrNipReturnIdsManager(search, bks, false);
+      assertTrue(liste.size() == 1);
+      assertTrue(liste.get(0).equals(4));
+      
+      // NIP exact = true
+      search = "12";
+      liste = echantillonManager.findByPatientIdentifiantOrNomOrNipReturnIdsManager(search, bks, true);
+      assertTrue(liste.size() == 1);
+      assertTrue(liste.get(0).equals(4));
+      
+      // IDENTIFIANT exact = true FAIL
+      search = "LS-123";
+      liste = echantillonManager.findByPatientIdentifiantOrNomOrNipReturnIdsManager(search, bks, true);
+      assertTrue(liste.isEmpty());
+
+      liste = echantillonManager.findByPatientIdentifiantOrNomOrNipReturnIdsManager(null, bks, false);
+      assertTrue(liste.size() == 0);
+      liste = echantillonManager.findByPatientIdentifiantOrNomOrNipReturnIdsManager(search, null, false);
+      assertTrue(liste.size() == 0);
+      liste = echantillonManager.findByPatientIdentifiantOrNomOrNipReturnIdsManager("", bks, false);
+      assertTrue(liste.size() == 0);
+      liste = echantillonManager.findByPatientIdentifiantOrNomOrNipReturnIdsManager(search, new ArrayList<Banque>(), false);
+      assertTrue(liste.size() == 0);
    }
 }

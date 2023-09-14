@@ -56,6 +56,7 @@ import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Components;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.HtmlBasedComponent;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.ForwardEvent;
@@ -66,6 +67,7 @@ import org.zkoss.zul.Div;
 import org.zkoss.zul.Filedownload;
 import org.zkoss.zul.Grid;
 import org.zkoss.zul.Group;
+import org.zkoss.zul.Groupbox;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Menuitem;
 import org.zkoss.zul.Row;
@@ -115,8 +117,8 @@ import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
 /**
  *
- * Controller gérant la fiche static d'un échantillon.
- * Controller créé le 21/06/2010.
+ * Controller gérant la fiche static d'un échantillon. Controller créé le
+ * 21/06/2010.
  *
  * @author Pierre Ventadour
  * @version 2.0
@@ -130,56 +132,88 @@ public class FicheEchantillonStatic extends AbstractFicheStaticController
    private static final long serialVersionUID = 4995144588806344858L;
 
    private Button addDerive;
+
    private Menuitem printINCa;
 
    // Groups
-   private Group groupDerivesEchan;
-   private Group groupCessionsEchan;
-   private Group groupSortiesEchan;
-   protected Group groupInfosCompEchan;
-   private Grid prodDerivesGrid;
-   private Grid cessionsGrid;
+   // gatsbi overrides
+   // private Group groupDerivesEchan;
+   // private Group groupCessionsEchan;
+   // private Group groupSortiesEchan;
+   // protected Group groupInfosCompEchan;
+   // private Group groupPrlvt;
+
+   // gatsbi group -> groupboxes
+   protected HtmlBasedComponent groupDerivesEchan;
+
+   protected HtmlBasedComponent groupCessionsEchan;
+
+   protected HtmlBasedComponent groupSortiesEchan;
+
+   protected HtmlBasedComponent groupInfosCompEchan;
+
+   protected Grid prodDerivesGrid;
+
+   protected Grid cessionsGrid;
 
    protected Row lateraliteRow;
 
    // Infos prelevement
-   //private Group groupPrlvt;
-   private Row row1PrlvtEchan;
-   private Row row2PrlvtEchan;
-   private Row row3PrlvtEchan;
-   private Label codePrlvtLabel;
-   private Label prlvtInconnuEchan;
-   private Label patientLabel;
-   private Label anapathLabel;
+   // gatsbi row -> div
+   protected HtmlBasedComponent row1PrlvtEchan;
+
+   protected HtmlBasedComponent row2PrlvtEchan;
+
+   protected HtmlBasedComponent row3PrlvtEchan;
+
+   protected Label codePrlvtLabel;
+
+   protected Label prlvtInconnuEchan;
+
+   protected Label patientLabel;
+
+   protected Label anapathLabel;
+
    protected Label qualiteEchanLabel;
+
    protected Label qualiteEchanValue;
 
-   private Vbox risquesBox;
+   protected Vbox risquesBox;
 
    // Objets Principaux.
-   private Echantillon echantillon = new Echantillon();
-   private Prelevement prelevement;
-   private List<ProdDerive> derives = new ArrayList<>();
-   private List<CederObjetDecorator> cedesDecorated = new ArrayList<>();
+   protected Echantillon echantillon = new Echantillon();
+
+   protected Prelevement prelevement;
+
+   protected List<ProdDerive> derives = new ArrayList<>();
+
+   protected List<CederObjetDecorator> cedesDecorated = new ArrayList<>();
 
    // Variables formulaire.
    private String valeurQuantite = "";
+
    private String delaiLabel = "";
+
    private String prodDerivesGroupHeader;
+
    private String cessionsGroupHeader;
+
    private String sortiesGroupHeader;
+
    private String emplacementAdrl = "";
 
    private boolean canAccessDerives = true;
 
-   private static ProdDeriveRowRenderer prodDeriveRenderer = new ProdDeriveRowRenderer(false, false);
+   protected static ProdDeriveRowRenderer prodDeriveRenderer = new ProdDeriveRowRenderer(false, false);
 
-   //Codes assignes
-   private Div codesOrganeDiv;
-   private Div codesMorphoDiv;
+   // Codes assignes
+   protected Div codesOrganeDiv;
+
+   protected Div codesMorphoDiv;
 
    // INCa
    private Integer nbItemsINCaTotaux;
+
    private Integer nbItemsINCaRemplis;
 
    // Labels à rendre anonymes
@@ -187,9 +221,10 @@ public class FicheEchantillonStatic extends AbstractFicheStaticController
 
    // INCa
    private String hautPageInca;
+
    private String piedPageInca;
 
-   private ListeRetour listeRetour;
+   protected ListeRetour listeRetour;
 
    @Override
    public void doAfterCompose(final Component comp) throws Exception{
@@ -202,9 +237,10 @@ public class FicheEchantillonStatic extends AbstractFicheStaticController
       this.cessionsGrid.setVisible(false);
       this.addDerive.setDisabled(true);
 
-      groupDerivesEchan.setOpen(false);
-      groupCessionsEchan.setOpen(false);
-      groupSortiesEchan.setOpen(true);
+      // **************** gastbi
+      setGroupDerivesEchanOpen(false);
+      setGroupCessionsEchanOpen(false);
+      setGroupSortiesEchanOpen(false);
 
       prodDeriveRenderer.setEmbedded(true);
       prodDeriveRenderer.setTtesCollections(getTtesCollections());
@@ -249,34 +285,30 @@ public class FicheEchantillonStatic extends AbstractFicheStaticController
 
       if(derives.size() == 0){
          this.prodDerivesGrid.setVisible(false);
-         groupDerivesEchan.setOpen(false);
+         setGroupDerivesEchanOpen(false);
       }else{
          this.prodDerivesGrid.setVisible(true);
-         groupDerivesEchan.setOpen(true);
+         setGroupDerivesEchanOpen(true);
       }
       if(cedesDecorated.size() == 0){
          cessionsGrid.setVisible(false);
-         groupCessionsEchan.setOpen(false);
+         setGroupCessionsEchanOpen(false);
       }else{
          cessionsGrid.setVisible(true);
-         groupCessionsEchan.setOpen(true);
+         setGroupCessionsEchanOpen(true);
       }
       if(listeRetour.getListObjects().size() == 0){
          if(listeRetour.getObjectsListGrid().isVisible()){
-            groupSortiesEchan.setOpen(false);
+            setGroupSortiesEchanOpen(false);
             listeRetour.getObjectsListGrid().setVisible(false);
          }
       }else{
          if(!listeRetour.getObjectsListGrid().isVisible()){
-            groupSortiesEchan.setOpen(true);
+            setGroupSortiesEchanOpen(true);
             listeRetour.getObjectsListGrid().setVisible(true);
          }
       }
       listeRetour.getLwinRetour().invalidate();
-
-      //		for (int i = 0; i < infosPrlvt.length; i++) {
-      //			infosPrlvt[i].setVisible(true);
-      //		}
 
       if(prelevement != null){
          if(getDroitsConsultation().get("Prelevement")){
@@ -314,8 +346,9 @@ public class FicheEchantillonStatic extends AbstractFicheStaticController
 
       drawRisquesFormatted();
 
-      groupInfosCompEchan
-         .setOpen(echantillon.getBanque() != null && echantillon.getBanque().getContexte().getNom().equals("anatomopathologie"));
+      setGroupInfosCompEchanOpen(
+         echantillon.getBanque() != null && (echantillon.getBanque().getContexte().getNom().equals("anatomopathologie")
+            || SessionUtils.getCurrentGatsbiContexteForEntiteId(3) != null));
 
       // annotations
       super.setObject(echantillon);
@@ -398,7 +431,7 @@ public class FicheEchantillonStatic extends AbstractFicheStaticController
          if(isUsed){
             setDeleteMessage(Labels.getLabel("echantillon.deletion.isUsedCascade"));
          }
-      }else{ //objet non supprimable car cédé
+      }else{ // objet non supprimable car cédé
          setDeleteMessage(Labels.getLabel("echantillon.deletion.isUsedNonCascade"));
       }
       setFantomable(!isCessed);
@@ -422,7 +455,7 @@ public class FicheEchantillonStatic extends AbstractFicheStaticController
    }
 
    /*************************************************************************/
-   /************************** FORMATTERS************************************/
+   /************************** FORMATTERS ************************************/
    /*************************************************************************/
    /**
     * Méthode initialisant les champs de formulaire pour la quantité.
@@ -449,8 +482,7 @@ public class FicheEchantillonStatic extends AbstractFicheStaticController
    }
 
    /**
-    * Méthode initialisant le champs de formulaire pour le délai
-    * de congélation.
+    * Méthode initialisant le champs de formulaire pour le délai de congélation.
     */
    public void initDelaiCgl(){
 
@@ -540,8 +572,7 @@ public class FicheEchantillonStatic extends AbstractFicheStaticController
    }
 
    /**
-    * Renvoie la valeur de lateralite internationalisée
-    * si non nulle.
+    * Renvoie la valeur de lateralite internationalisée si non nulle.
     */
    public String getLateraliteLabel(){
       if(echantillon.getLateralite() != null){
@@ -565,13 +596,13 @@ public class FicheEchantillonStatic extends AbstractFicheStaticController
    }
 
    public String getSClassStockage(){
-      
+
       if(isCanStockage()){
          return "formLink";
       }
-      
+
       return "formAnonymeBlock";
-      
+
    }
 
    /*************************************************************************/
@@ -686,6 +717,7 @@ public class FicheEchantillonStatic extends AbstractFicheStaticController
 
    /**
     * Génère le Document JDOM contenant les infos INCa à imprimer.
+    *
     * @return Document JDOM.
     */
    public Document createDocumentXMLForINCa(){
@@ -749,6 +781,7 @@ public class FicheEchantillonStatic extends AbstractFicheStaticController
 
    /**
     * Ajoute les informations INCa relatives au patient.
+    *
     * @param page
     */
    public Paragraphe addINCaPatientData(){
@@ -813,8 +846,10 @@ public class FicheEchantillonStatic extends AbstractFicheStaticController
       final LigneParagraphe li4 = new LigneParagraphe("", new CoupleValeur[] {cp5, cp6});
 
       // Cause du décès
-      /*CoupleValeur cp7 = createCoupleForAnnotation(
-      		"076 : Cause du décès", patient, false);*/
+      /*
+       * CoupleValeur cp7 = createCoupleForAnnotation( "076 : Cause du décès",
+       * patient, false);
+       */
       final CoupleValeur cp7 =
          (CoupleValeur) createCoupleForAnnotation("076 : Cause du décès", "recherche.inca.item.76", patient, false, false);
       final LigneDeuxColonnesParagraphe li5 = new LigneDeuxColonnesParagraphe(cp7);
@@ -827,6 +862,7 @@ public class FicheEchantillonStatic extends AbstractFicheStaticController
 
    /**
     * Ajoute les informations INCa relatives à la maladie.
+    *
     * @param page
     */
    public Paragraphe addINCaMaladieData(){
@@ -889,6 +925,7 @@ public class FicheEchantillonStatic extends AbstractFicheStaticController
 
    /**
     * Ajoute les informations INCa relatives au Prelevement.
+    *
     * @param page
     */
    public Paragraphe addINCaPrelevementData(){
@@ -1087,6 +1124,7 @@ public class FicheEchantillonStatic extends AbstractFicheStaticController
 
    /**
     * Ajoute les informations INCa relatives au Echantillon.
+    *
     * @param page
     */
    public Paragraphe addINCaEchantillonData(){
@@ -1209,7 +1247,7 @@ public class FicheEchantillonStatic extends AbstractFicheStaticController
          // on extrait les valeurs
          final List<AnnotationValeur> avs =
             ManagerLocator.getAnnotationValeurManager().findByChampAndObjetManager(chp, echantillon);
-         //StringBuffer sb = new StringBuffer();
+         // StringBuffer sb = new StringBuffer();
          if(avs.size() > 0){
             final Float v = Float.valueOf(avs.get(0).getAlphanum());
             if(v != null){
@@ -1254,8 +1292,8 @@ public class FicheEchantillonStatic extends AbstractFicheStaticController
    }
 
    /**
-    * Ajoute les informations INCa relatives aus ressources
-    * biologiques.
+    * Ajoute les informations INCa relatives aus ressources biologiques.
+    *
     * @param page
     */
    public Paragraphe addINCaRessourcesBiologiquesData(){
@@ -1290,8 +1328,8 @@ public class FicheEchantillonStatic extends AbstractFicheStaticController
    }
 
    /**
-    * Ajoute les informations INCa relatives aux infos
-    * complementaires.
+    * Ajoute les informations INCa relatives aux infos complementaires.
+    *
     * @param page
     */
    public Paragraphe addINCaComplementairesData(){
@@ -1374,6 +1412,7 @@ public class FicheEchantillonStatic extends AbstractFicheStaticController
 
    /**
     * Ajoute les informations INCa relatives au Prelevement.
+    *
     * @param page
     */
    public Paragraphe addINCaContactData(){
@@ -1439,11 +1478,12 @@ public class FicheEchantillonStatic extends AbstractFicheStaticController
 
    /**
     * Ajoute les informations INCa Tabac.
+    *
     * @param page
     */
    public Paragraphe addINCaTabacData(){
-      //String tmp = "";
-      //CoupleValeur cpVide = new CoupleValeur("", "");
+      // String tmp = "";
+      // CoupleValeur cpVide = new CoupleValeur("", "");
 
       Patient patient = null;
       final Prelevement prlvt = ManagerLocator.getEchantillonManager().getPrelevementManager(echantillon);
@@ -1483,6 +1523,7 @@ public class FicheEchantillonStatic extends AbstractFicheStaticController
 
    /**
     * Ajoute les informations INCa relatives au site.
+    *
     * @param page
     */
    public Paragraphe addINCaSiteData(){
@@ -1509,10 +1550,10 @@ public class FicheEchantillonStatic extends AbstractFicheStaticController
 
    /**
     * Crée un couple de valeurs pour un ChampAnnotation.
-    * @param champNom Nom du ChampAnnotation.
-    * @param champTitle Label permettant d'afficher le titre de cette
-    * annotation.
-    * @param obj Objet dont on veut la valeur.
+    *
+    * @param champNom    Nom du ChampAnnotation.
+    * @param champTitle  Label permettant d'afficher le titre de cette annotation.
+    * @param obj         Objet dont on veut la valeur.
     * @param obligatoire True si le couple est obligatoire.
     * @return Un CoupleValeur ou un CoupleSimpleValeur.
     */
@@ -1563,8 +1604,9 @@ public class FicheEchantillonStatic extends AbstractFicheStaticController
 
    /**
     * Crée un couple de valeurs pour un ChampAnnotation.
-    * @param champNom Nom du ChampAnnotation.
-    * @param obj Objet dont on veut la valeur.
+    *
+    * @param champNom    Nom du ChampAnnotation.
+    * @param obj         Objet dont on veut la valeur.
     * @param obligatoire True si le couple est obligatoire.
     * @return Un CoupleValeur.
     */
@@ -1608,6 +1650,7 @@ public class FicheEchantillonStatic extends AbstractFicheStaticController
 
    /**
     * Ajoute les informations INCa relatives au Echantillon.
+    *
     * @param page
     */
    public List<LigneParagraphe> addINCaAnnotationData(final List<TableAnnotation> tabs, final Object obj){
@@ -1684,6 +1727,7 @@ public class FicheEchantillonStatic extends AbstractFicheStaticController
 
    /**
     * Affiche la fiche d'un prélèvement.
+    *
     * @param event Event : clique sur un lien codePrlvtLabel.
     * @throws Exception
     */
@@ -1721,8 +1765,9 @@ public class FicheEchantillonStatic extends AbstractFicheStaticController
 
    /**
     * Affiche la fiche d'un produit dérivé.
-    * @param event Event : clique sur un code d'un dérivé dans
-    * la liste des produits dérivés.
+    *
+    * @param event Event : clique sur un code d'un dérivé dans la liste des
+    *              produits dérivés.
     * @throws Exception
     */
    public void onClickProdDeriveCode(final Event event){
@@ -1775,8 +1820,9 @@ public class FicheEchantillonStatic extends AbstractFicheStaticController
 
    /**
     * Affiche la fiche d'une cession.
-    * @param event Event : clique sur un lien numCession dans
-    * la liste des produits dérivés.
+    *
+    * @param event Event : clique sur un lien numCession dans la liste des produits
+    *              dérivés.
     * @throws Exception
     */
    public void onClick$numCession(final Event event){
@@ -1798,6 +1844,7 @@ public class FicheEchantillonStatic extends AbstractFicheStaticController
 
    /**
     * Affiche la page de création d'un nouveau dérivé.
+    *
     * @param event Event : clique sur le bouton addDeriveForEchan.
     * @throws Exception
     */
@@ -1815,6 +1862,7 @@ public class FicheEchantillonStatic extends AbstractFicheStaticController
    /************************** DROITS ***************************************/
    /*************************************************************************/
    private boolean canCreateDerive = false;
+
    private boolean canStockage = true;
 
    public boolean isCanCreateDerive(){
@@ -1834,7 +1882,7 @@ public class FicheEchantillonStatic extends AbstractFicheStaticController
          // donne aucun droit en creation
          setCanNew(false);
          canCreateDerive = false;
-         //setCanDelete(true);
+         // setCanDelete(true);
       }
 
       canStockage = getDroitOnAction("Stockage", "Consultation");
@@ -1844,12 +1892,12 @@ public class FicheEchantillonStatic extends AbstractFicheStaticController
          emplacementLabelEchan.removeForward("onClick", self, "onClickObjectEmplacementFromFiche");
       }
 
-      //		List<String> entites = new ArrayList<String>();
-      //		entites.add("Patient");
-      //		entites.add("Prelevement");
-      //		entites.add("ProdDerive");
-      //		entites.add("Cession");
-      //		setDroitsConsultation(drawConsultationLinks(entites));
+      // List<String> entites = new ArrayList<String>();
+      // entites.add("Patient");
+      // entites.add("Prelevement");
+      // entites.add("ProdDerive");
+      // entites.add("Cession");
+      // setDroitsConsultation(drawConsultationLinks(entites));
       //
       // si pas le droit d'accès aux dérivés, on cache le lien
       if(!getDroitsConsultation().get("ProdDerive")){
@@ -2016,8 +2064,9 @@ public class FicheEchantillonStatic extends AbstractFicheStaticController
    }
 
    /**
-    * Recoit l'évenement de clique sur le lien emplacement contenu
-    * dans la fiche statique.
+    * Recoit l'évenement de clique sur le lien emplacement contenu dans la fiche
+    * statique.
+    *
     * @param event
     */
    public void onClickObjectEmplacementFromFiche(final Event event){
@@ -2042,7 +2091,7 @@ public class FicheEchantillonStatic extends AbstractFicheStaticController
             }else{
                final Box box = new Box();
                box.setOrient("horizontal");
-               //box.setValign("middle");
+               // box.setValign("middle");
                box.setPack("center");
                lab.setSclass("formValueEmph");
                box.appendChild(lab);
@@ -2059,16 +2108,15 @@ public class FicheEchantillonStatic extends AbstractFicheStaticController
    }
 
    /**
-    * Recoit l'evenement venant de la liste de retours quand
-    * un élément est ajouté.
+    * Recoit l'evenement venant de la liste de retours quand un élément est ajouté.
     */
    public void onClickUpdateSorties$retourRow(final Event event){
-      //updateSortiesHeader(true);
       getObjectTabController().getListe().updateObjectGridListFromOtherPage(((ForwardEvent) event).getOrigin().getData(), true);
    }
 
    /**
     * Rafraichit le header de la liste de sorties.
+    *
     * @param force force le rafraichissement du header si true
     */
    public void updateSortiesHeader(final boolean force){
@@ -2084,7 +2132,7 @@ public class FicheEchantillonStatic extends AbstractFicheStaticController
       sortiesGroupHeader = sb.toString();
 
       if(force){
-         groupSortiesEchan.setLabel(sortiesGroupHeader);
+         setGroupSortiesEchanLabel(sortiesGroupHeader);
       }
    }
 
@@ -2092,4 +2140,46 @@ public class FicheEchantillonStatic extends AbstractFicheStaticController
       return ObjectTypesFormatters.ILNObjectStatut(getObject().getObjetStatut());
    }
 
+   /*** gatsbi groups -> groupboxes ****/
+
+   protected void setGroupSortiesEchanOpen(final boolean b){
+      if(groupSortiesEchan instanceof Group){
+         ((Group) groupSortiesEchan).setOpen(b);
+      }else{
+         ((Groupbox) groupSortiesEchan).setOpen(b);
+      }
+   }
+
+   protected void setGroupSortiesEchanLabel(final String value){
+      if(groupSortiesEchan instanceof Group){
+         ((Group) groupSortiesEchan).setLabel(value);
+      }else{
+         ((Groupbox) groupSortiesEchan).getCaption().setLabel(value);
+      }
+   }
+
+   protected void setGroupCessionsEchanOpen(final boolean b){
+      if(groupCessionsEchan instanceof Group){
+         ((Group) groupCessionsEchan).setOpen(b);
+      }else{
+         ((Groupbox) groupCessionsEchan).setOpen(b);
+      }
+
+   }
+
+   protected void setGroupDerivesEchanOpen(final boolean b){
+      if(groupDerivesEchan instanceof Group){
+         ((Group) groupDerivesEchan).setOpen(b);
+      }else{
+         ((Groupbox) groupDerivesEchan).setOpen(b);
+      }
+   }
+
+   protected void setGroupInfosCompEchanOpen(final boolean b){
+      if(groupInfosCompEchan instanceof Group){
+         ((Group) groupInfosCompEchan).setOpen(b);
+      }else{
+         ((Groupbox) groupInfosCompEchan).setOpen(b);
+      }      
+   }
 }

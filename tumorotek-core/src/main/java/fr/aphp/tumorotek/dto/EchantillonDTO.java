@@ -70,22 +70,35 @@ public class EchantillonDTO
 {
 
    private final boolean isNew;
+
    private Echantillon echantillon;
+
    private Boolean checkedEchantillon;
+
    private String adrlTmp;
 
    private List<AnnotationValeur> valeursToCreateOrUpdate;
+
    private List<CodeAssigne> codesOrgsToCreateOrEdit = new ArrayList<>();
+
    private List<CodeAssigne> codesLesToCreateOrEdit = new ArrayList<>();
+
    private CodeAssigne codeOrganeToExport;
+
    private CodeAssigne codeLesToExport;
+
    private List<NonConformite> nonConformiteTraitements = new ArrayList<>();
+
    private List<NonConformite> nonConformiteCessions = new ArrayList<>();
 
    private Integer nbDerives = 0;
+
    private Integer nbCessions = 0;
+
    private Calendar dateCreation;
+
    private String emplacementAdrl;
+
    private Float tempStock;
 
    public EchantillonDTO(final Echantillon newEchan){
@@ -96,7 +109,7 @@ public class EchantillonDTO
       //	if (this.echantillon.getEchantillonId() != null) {
       //		setCodesOrgsToCreateOrEdit(codeAssigneManager()
       //				.findCodesOrganeByEchantillonManager(this.echantillon));
-      //		
+      //
       //		setCodesLesToCreateOrEdit(codeAssigneManager()
       //				.findCodesMorphoByEchantillonManager(this.echantillon));
       //	}

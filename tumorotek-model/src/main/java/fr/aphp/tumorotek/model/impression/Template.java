@@ -216,7 +216,7 @@ public class Template extends Object implements TKdataObject, Serializable
 
    @ManyToMany(targetEntity = CleImpression.class, fetch = FetchType.EAGER)
    @JoinTable(name = "CLE_IMPRESSION_TEMPLATE", joinColumns = @JoinColumn(name = "TEMPLATE_ID"),
-   inverseJoinColumns = @JoinColumn(name = "CLE_IMPRESSION_ID"))
+      inverseJoinColumns = @JoinColumn(name = "CLE_IMPRESSION_ID"))
    public List<CleImpression> getCleImpressionList(){
       return cleImpressionList;
    }

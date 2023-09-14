@@ -36,8 +36,11 @@
 package fr.aphp.tumorotek.manager.utilisateur;
 
 import java.util.List;
+import java.util.Map;
+
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.contexte.Plateforme;
+import fr.aphp.tumorotek.model.contexte.gatsbi.Etude;
 import fr.aphp.tumorotek.model.utilisateur.Profil;
 import fr.aphp.tumorotek.model.utilisateur.ProfilUtilisateur;
 import fr.aphp.tumorotek.model.utilisateur.ProfilUtilisateurPK;
@@ -49,14 +52,14 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
  * Interface créée le 19/05/2010.
  *
  * @author Pierre Ventadour
- * @version 2.2.4.1
+ * @version 2.3.0-gatsbi
  *
  */
 public interface ProfilUtilisateurManager
 {
 
    /**
-    * Recherche un ProfilUtilisateur dont l'identifiant est 
+    * Recherche un ProfilUtilisateur dont l'identifiant est
     * passé en paramètre.
     * @param pk Identifiant du ProfilUtilisateur que l'on recherche.
     * @return Un ProfilUtilisateur.
@@ -70,7 +73,7 @@ public interface ProfilUtilisateurManager
    List<ProfilUtilisateur> findAllObjectsManager();
 
    /**
-    * Recherche les ProfilUtilisateurs sauf celui dont la clé 
+    * Recherche les ProfilUtilisateurs sauf celui dont la clé
     * primaire est passée en paramètre.
     * @param pk ProfilUtilisateurPK.
     * @return Liste de ProfilUtilisateurs.
@@ -78,8 +81,8 @@ public interface ProfilUtilisateurManager
    List<ProfilUtilisateur> findByExcludedPKManager(ProfilUtilisateurPK pk);
 
    /**
-    * Recherche les ProfilUtilisateurs dont le Profil est égal au 
-    * paramètre, en filtrant sur les utilisateurs archivés. Renvoie tous 
+    * Recherche les ProfilUtilisateurs dont le Profil est égal au
+    * paramètre, en filtrant sur les utilisateurs archivés. Renvoie tous
     * les profils utilisateurs si archive = null;
     * @param profil Profil des ProfilUtilisateurs recherchés.
     * @param archive utilisateur
@@ -89,7 +92,7 @@ public interface ProfilUtilisateurManager
    List<ProfilUtilisateur> findByProfilManager(Profil profil, Boolean archive);
 
    /**
-    * Recherche les ProfilUtilisateurs dont l'Utilisateur est égal au 
+    * Recherche les ProfilUtilisateurs dont l'Utilisateur est égal au
     * paramètre.
     * @param utilisateur Utilisateur des ProfilUtilisateurs recherchés.
     * @param archive filtre statut archivé banque
@@ -99,7 +102,7 @@ public interface ProfilUtilisateurManager
    List<ProfilUtilisateur> findByUtilisateurManager(Utilisateur utilisateur, Boolean archive);
 
    /**
-    * Recherche les ProfilUtilisateurs dont la Banque est égale au 
+    * Recherche les ProfilUtilisateurs dont la Banque est égale au
     * paramètre.
     * @param banque Banque des ProfilUtilisateurs recherchés.
     * @param Boolean utilisateur archivé
@@ -163,14 +166,14 @@ public interface ProfilUtilisateurManager
 
    /**
     * Supprime un ProfilUtilisateur de la base de données.
-    * @param profilUtilisateur ProfilUtilisateur à supprimer 
+    * @param profilUtilisateur ProfilUtilisateur à supprimer
     * de la base de données.
     */
    void removeObjectManager(ProfilUtilisateur profilUtilisateur);
-   
+
    /**
-    * Compte pour un utilisateur le nombre de profils différents qui lui sont attribués 
-    * pour accéder aux banques de chaque contexte, pour une plateforme donnée.
+    * Compte pour un utilisateur le nombre de profils différents qui lui sont attribués
+    * pour accéder aux banques de contexte non GATSBI, pour une plateforme donnée.
     * Cette méthode permet de visualiser rapidement, si le nombre de profils est supérieur à 1,
     * si l'utilisateur pourra accéder en mode 'toutes collections'.
     * @param u utilisateur
@@ -178,5 +181,17 @@ public interface ProfilUtilisateurManager
     * @return nombre de profils d'accès distincts
     * @since 2.2.4.1
     */
-   Long countDistinctProfilForUserAndPlateformeGroupedByContexteManager(Utilisateur u, Plateforme p);
+   Long countDistinctProfilForUserAndPlateformeManager(Utilisateur u, Plateforme p);
+
+   /**
+    * Compte pour un utilisateur le nombre de profils différents qui lui sont attribués
+    * pour accéder aux banques de chaque étude, donc de contexte GATSBI, pour une plateforme donnée.
+    * Cette méthode permet de visualiser rapidement, si le nombre de profils est supérieur à 1,
+    * si l'utilisateur pourra accéder en mode 'toutes collections' pour chacune des études
+    * @param u utilisateur
+    * @param p plateforme
+    * @return nombre de profils d'accès distincts par étude
+    * @since 2.3.0-gatsbi
+    */
+   Map<Etude, Long> countDistinctProfilForUserAndPlateformeGroupedByEtudeManager(Utilisateur u, Plateforme p);
 }

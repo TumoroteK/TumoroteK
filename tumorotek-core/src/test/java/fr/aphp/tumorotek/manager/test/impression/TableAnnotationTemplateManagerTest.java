@@ -68,8 +68,10 @@ public class TableAnnotationTemplateManagerTest extends AbstractManagerTest4
 
    @Autowired
    private TableAnnotationTemplateManager tableAnnotationTemplateManager;
+
    @Autowired
    private TemplateDao templateDao;
+
    @Autowired
    private TableAnnotationDao tableAnnotationDao;
 

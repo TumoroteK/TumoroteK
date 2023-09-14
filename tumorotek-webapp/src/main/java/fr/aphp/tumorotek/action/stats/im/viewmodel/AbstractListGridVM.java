@@ -79,15 +79,23 @@ public abstract class AbstractListGridVM
 {
 
    protected List<String> valueList;
+
    protected Window win;
+
    protected List<SModele> modelList;
+
    protected Grid gridView;
+
    protected Boolean isGridCreated = false;
 
    private SModele selectedModel;
+
    private final List<Banque> gridBanques = new ArrayList<>();
-   private final List<IndicateurDecorator> gridIndicateurs = new ArrayList<IndicateurDecorator>();
+
+   private final List<IndicateurDecorator> gridIndicateurs = new ArrayList<>();
+
    private TKThesaurusObject subdivManager = null;
+
    private Subdivision gridSubdivision;
 
    private final Map<Integer, String> subdivMap = new HashMap<>();
@@ -136,8 +144,7 @@ public abstract class AbstractListGridVM
       getGridBanques().clear();
       getGridIndicateurs().clear();
 
-      getGridIndicateurs().addAll(decorateIndicateurs(ManagerLocator.getIndicateurManager()
-    		  .findBySModeleManager(selectedModel)));
+      getGridIndicateurs().addAll(decorateIndicateurs(ManagerLocator.getIndicateurManager().findBySModeleManager(selectedModel)));
       getGridBanques().addAll(ManagerLocator.getSModeleManager().getBanquesManager(selectedModel));
       setGridSubdivision(selectedModel.getSubdivision());
       Collections.sort(getGridBanques());
@@ -158,9 +165,9 @@ public abstract class AbstractListGridVM
    }
 
    /**
-    * Peuple la liste de rows qui permettront de remplir la dataGrid. Si 
+    * Peuple la liste de rows qui permettront de remplir la dataGrid. Si
     * la dataMap est null, seules les deux premières colonnes Banque et Subdiv sont remplies.
-    * 
+    *
     * @param dataMap
     */
    private void populateRowValues(final Map<Indicateur, ArrayList<ValueToExport>> dataMap){
@@ -362,41 +369,39 @@ public abstract class AbstractListGridVM
       return modelList;
    }
 
-   public void setModelList(List<SModele> modelList){
+   public void setModelList(final List<SModele> modelList){
       this.modelList = modelList;
    }
-   
+
    /**
     * Decores indicateurs
     * @since 2.2.3-genno
     * @param indics
     * @return list decorateurs
     */
-   protected List<IndicateurDecorator> decorateIndicateurs(List<Indicateur> indics) {
-	   List<IndicateurDecorator> decos = new ArrayList<IndicateurDecorator>();
-	   
-	   if (indics != null) {
-		   decos.addAll(indics.stream().map(i -> new IndicateurDecorator(i))
-			.collect(Collectors.toList()));
-	   }
-	   
-	   return decos;
+   protected List<IndicateurDecorator> decorateIndicateurs(final List<Indicateur> indics){
+      final List<IndicateurDecorator> decos = new ArrayList<>();
+
+      if(indics != null){
+         decos.addAll(indics.stream().map(i -> new IndicateurDecorator(i)).collect(Collectors.toList()));
+      }
+
+      return decos;
    }
-   
+
    /**
     * Extraits les indicateurs depuis les decorateurs
     * @since 2.2.3-genno
     * @param decos
     * @return list indicateurs
     */
-   protected List<Indicateur> unDecorateIndicateurs(List<IndicateurDecorator> decos) {
-	   List<Indicateur> indics = new ArrayList<Indicateur>();
-	   
-	   if (decos != null) {
-		   indics.addAll(decos.stream().map(d -> d.getIndicateur())
-			.collect(Collectors.toList()));
-	   }
-	   
-	   return indics;
+   protected List<Indicateur> unDecorateIndicateurs(final List<IndicateurDecorator> decos){
+      final List<Indicateur> indics = new ArrayList<>();
+
+      if(decos != null){
+         indics.addAll(decos.stream().map(d -> d.getIndicateur()).collect(Collectors.toList()));
+      }
+
+      return indics;
    }
 }

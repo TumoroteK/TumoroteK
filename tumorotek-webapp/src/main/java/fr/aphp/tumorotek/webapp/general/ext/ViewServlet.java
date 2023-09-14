@@ -77,56 +77,54 @@ public class ViewServlet extends HttpServlet
    @Override
    protected void doPost(final HttpServletRequest req, final HttpServletResponse resp) throws ServletException, IOException{
       try{
-    	  
-    	 ResourceRequest<Prelevement> resReq = null;
+
+         ResourceRequest<Prelevement> resReq = null;
          if(req.getParameter("id") != null){
             final Integer prelID = new Integer(req.getParameter("id"));
 
             final Prelevement prel = ManagerLocator.getPrelevementManager().findByIdManager(prelID);
-            
+
             if(prel != null){
-            	
-            	resReq = new ResourceRequest<Prelevement>(Prelevement.class, prel.getBanque());
-            	
+
+               resReq = new ResourceRequest<>(Prelevement.class, prel.getBanque());
+
                // verifie que l'utilisateur a accès au prélèvement
                if(ManagerLocator.getUtilisateurManager().getAvailableBanquesManager(ConnexionUtils.getLoggedUtilisateur(), false)
-            		   	.contains(prel.getBanque())){           	   
-            	   resReq.addToTkObjs(prel);
-               } else {
-            	   resp.sendError(HttpServletResponse.SC_FORBIDDEN);
-              }
+                  .contains(prel.getBanque())){
+                  resReq.addToTkObjs(prel);
+               }else{
+                  resp.sendError(HttpServletResponse.SC_FORBIDDEN);
+               }
             }
-         } else if(req.getParameter("pCode") != null && req.getParameter("bId") != null) { // rech par prel code et banque id
-        	 final Banque bank = ManagerLocator.getBanqueManager()
-        			 .findByIdManager(new Integer(req.getParameter("bId")));
-        	 // verifie que l'utilisateur a accès à la banque
-             if(bank != null && ManagerLocator.getUtilisateurManager()
-            		 .getAvailableBanquesManager(ConnexionUtils.getLoggedUtilisateur(), false).contains(bank)) {           	 
-            	 
-            	 resReq = new ResourceRequest<Prelevement>(Prelevement.class, 
-            		bank, ManagerLocator.getPrelevementManager()
-                		.findByCodeOrNumLaboLikeWithBanqueManager(req.getParameter("pCode"), bank, false));
-            	
-             }else{
-            	 resp.sendError(HttpServletResponse.SC_FORBIDDEN);
-             }     	 
-         } else {
-        	 resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
+         }else if(req.getParameter("pCode") != null && req.getParameter("bId") != null){ // rech par prel code et banque id
+            final Banque bank = ManagerLocator.getBanqueManager().findByIdManager(new Integer(req.getParameter("bId")));
+            // verifie que l'utilisateur a accès à la banque
+            if(bank != null && ManagerLocator.getUtilisateurManager()
+               .getAvailableBanquesManager(ConnexionUtils.getLoggedUtilisateur(), false).contains(bank)){
+
+               resReq = new ResourceRequest<>(Prelevement.class, bank, ManagerLocator.getPrelevementManager()
+                  .findByCodeOrNumLaboLikeWithBanqueManager(req.getParameter("pCode"), bank, false));
+
+            }else{
+               resp.sendError(HttpServletResponse.SC_FORBIDDEN);
+            }
+         }else{
+            resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
          }
-         
-         if (resReq != null) {
-        	 if (resReq.isEmpty()) {
-        		 resp.sendError(HttpServletResponse.SC_NOT_FOUND);
-        	 } else {
-        		 req.getSession().setAttribute("resourceRequest", resReq);
-        		 resp.sendRedirect(resp.encodeRedirectURL(req.getContextPath() + "/login/SelectBanque.zul"));
-        	 }
-         } else {
-        	 resp.sendError(HttpServletResponse.SC_NOT_FOUND);
+
+         if(resReq != null){
+            if(resReq.isEmpty()){
+               resp.sendError(HttpServletResponse.SC_NOT_FOUND);
+            }else{
+               req.getSession().setAttribute("resourceRequest", resReq);
+               resp.sendRedirect(resp.encodeRedirectURL(req.getContextPath() + "/login/SelectBanque.zul"));
+            }
+         }else{
+            resp.sendError(HttpServletResponse.SC_NOT_FOUND);
          }
-         
+
       }catch(final TKException tke){
-    	  throw new RuntimeException("ext.request.illegal");
+         throw new RuntimeException("ext.request.illegal");
       }
    }
 }

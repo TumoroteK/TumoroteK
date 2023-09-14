@@ -38,62 +38,64 @@ package fr.aphp.tumorotek.action.stats.im.viewmodel;
 import java.util.Objects;
 
 import org.zkoss.util.resource.Labels;
+
 import fr.aphp.tumorotek.model.stats.Indicateur;
 
 /**
  * Decorateur du nom d'un indicateur
  * qui peut être internationalisé ou pas
  * @version 2.2.3-genno
- * 
+ *
  * @author Mathieu Barthelemy
  *
  */
-public class IndicateurDecorator {
+public class IndicateurDecorator
+{
 
-	private Indicateur indicateur;
+   private Indicateur indicateur;
 
-	IndicateurDecorator(Indicateur _i) {
-		this.indicateur = _i;
-	}
+   IndicateurDecorator(final Indicateur _i){
+      this.indicateur = _i;
+   }
 
-	public Indicateur getIndicateur() {
-		return indicateur;
-	}
+   public Indicateur getIndicateur(){
+      return indicateur;
+   }
 
-	public void setIndicateur(Indicateur _i) {
-		this.indicateur = _i;
-	}
+   public void setIndicateur(final Indicateur _i){
+      this.indicateur = _i;
+   }
 
-	public String getNom() {
-		if (indicateur != null) {
-			String iln = Labels.getLabel("Indicateur.".concat(indicateur.getNom()));
-			if (iln != null) {
-				return iln;
-			}
-			return indicateur.getNom();
-		}
-		return null;
-	}
-	
-	@Override
-	   public int hashCode(){
-	      final int prime = 31;
-	      int result = 1;
-	      result = prime * result + ((getIndicateur() == null) ? 0 : getIndicateur().hashCode());
-	      return result;
-	   }
+   public String getNom(){
+      if(indicateur != null){
+         final String iln = Labels.getLabel("Indicateur.".concat(indicateur.getNom()));
+         if(iln != null){
+            return iln;
+         }
+         return indicateur.getNom();
+      }
+      return null;
+   }
 
-	   @Override
-	   public boolean equals(Object obj){
-			if (obj == this) {
-	            return true;
-	        }
-	        if (obj == null || obj.getClass() != this.getClass()) {
-	            return false;
-	        }
-	        
-			IndicateurDecorator deco = (IndicateurDecorator) obj;
+   @Override
+   public int hashCode(){
+      final int prime = 31;
+      int result = 1;
+      result = prime * result + ((getIndicateur() == null) ? 0 : getIndicateur().hashCode());
+      return result;
+   }
 
-	        return (Objects.equals(getIndicateur(), deco.getIndicateur()));
-	   }
+   @Override
+   public boolean equals(final Object obj){
+      if(obj == this){
+         return true;
+      }
+      if(obj == null || obj.getClass() != this.getClass()){
+         return false;
+      }
+
+      final IndicateurDecorator deco = (IndicateurDecorator) obj;
+
+      return (Objects.equals(getIndicateur(), deco.getIndicateur()));
+   }
 }

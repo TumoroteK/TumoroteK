@@ -46,23 +46,27 @@ public class StudySubjectType
 
    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
    protected String label;
+
    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
    protected String secondaryLabel;
+
    @XmlElement(required = true)
    @XmlSchemaType(name = "date")
    protected XMLGregorianCalendar enrollmentDate;
+
    @XmlElement(required = true)
    protected SubjectType subject;
+
    @XmlElement(required = true)
    protected StudyRefType studyRef;
 
    /**
     * Gets the value of the label property.
-    * 
+    *
     * @return
     *     possible object is
     *     {@link String }
-    *     
+    *
     */
    public String getLabel(){
       return label;
@@ -70,11 +74,11 @@ public class StudySubjectType
 
    /**
     * Sets the value of the label property.
-    * 
+    *
     * @param value
     *     allowed object is
     *     {@link String }
-    *     
+    *
     */
    public void setLabel(final String value){
       this.label = value;
@@ -82,11 +86,11 @@ public class StudySubjectType
 
    /**
     * Gets the value of the secondaryLabel property.
-    * 
+    *
     * @return
     *     possible object is
     *     {@link String }
-    *     
+    *
     */
    public String getSecondaryLabel(){
       return secondaryLabel;
@@ -94,11 +98,11 @@ public class StudySubjectType
 
    /**
     * Sets the value of the secondaryLabel property.
-    * 
+    *
     * @param value
     *     allowed object is
     *     {@link String }
-    *     
+    *
     */
    public void setSecondaryLabel(final String value){
       this.secondaryLabel = value;
@@ -106,11 +110,11 @@ public class StudySubjectType
 
    /**
     * Gets the value of the enrollmentDate property.
-    * 
+    *
     * @return
     *     possible object is
     *     {@link XMLGregorianCalendar }
-    *     
+    *
     */
    public XMLGregorianCalendar getEnrollmentDate(){
       return enrollmentDate;
@@ -118,11 +122,11 @@ public class StudySubjectType
 
    /**
     * Sets the value of the enrollmentDate property.
-    * 
+    *
     * @param value
     *     allowed object is
     *     {@link XMLGregorianCalendar }
-    *     
+    *
     */
    public void setEnrollmentDate(final XMLGregorianCalendar value){
       this.enrollmentDate = value;
@@ -130,11 +134,11 @@ public class StudySubjectType
 
    /**
     * Gets the value of the subject property.
-    * 
+    *
     * @return
     *     possible object is
     *     {@link SubjectType }
-    *     
+    *
     */
    public SubjectType getSubject(){
       return subject;
@@ -142,11 +146,11 @@ public class StudySubjectType
 
    /**
     * Sets the value of the subject property.
-    * 
+    *
     * @param value
     *     allowed object is
     *     {@link SubjectType }
-    *     
+    *
     */
    public void setSubject(final SubjectType value){
       this.subject = value;
@@ -154,11 +158,11 @@ public class StudySubjectType
 
    /**
     * Gets the value of the studyRef property.
-    * 
+    *
     * @return
     *     possible object is
     *     {@link StudyRefType }
-    *     
+    *
     */
    public StudyRefType getStudyRef(){
       return studyRef;
@@ -166,11 +170,11 @@ public class StudySubjectType
 
    /**
     * Sets the value of the studyRef property.
-    * 
+    *
     * @param value
     *     allowed object is
     *     {@link StudyRefType }
-    *     
+    *
     */
    public void setStudyRef(final StudyRefType value){
       this.studyRef = value;

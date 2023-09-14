@@ -86,24 +86,34 @@ public class EmplacementManagerTest extends AbstractManagerTest4
 
    @Autowired
    private EmplacementManager emplacementManager;
+
    @Autowired
    private TerminaleDao terminaleDao;
+
    @Autowired
    private EntiteDao entiteDao;
+
    @Autowired
    private UtilisateurDao utilisateurDao;
+
    @Autowired
    private EntiteManager entiteManager;
+
    @Autowired
    private BanqueDao banqueDao;
+
    @Autowired
    private ConteneurManager conteneurManager;
+
    @Autowired
    private ServiceDao serviceDao;
+
    @Autowired
    private PlateformeDao plateformeDao;
+
    @Autowired
    private ProdDeriveDao prodDeriveDao;
+
    @Autowired
    private EchantillonDao echantillonDao;
 
@@ -1482,17 +1492,17 @@ public class EmplacementManagerTest extends AbstractManagerTest4
       assertTrue(catched);
       catched = false;
       assertEquals(7, emplacementManager.findAllObjectsManager().size());
-      
+
       try{
-          emplacementManager.validateMultiEmplacementsManager(liste, true);
-       }catch(final Exception e){
-          if(e.getClass().getSimpleName().equals("RequiredObjectIsNullException")){
-             catched = true;
-          }
-       }
-       assertTrue(catched);
-       catched = false;
-       assertEquals(7, emplacementManager.findAllObjectsManager().size());
+         emplacementManager.validateMultiEmplacementsManager(liste, true);
+      }catch(final Exception e){
+         if(e.getClass().getSimpleName().equals("RequiredObjectIsNullException")){
+            catched = true;
+         }
+      }
+      assertTrue(catched);
+      catched = false;
+      assertEquals(7, emplacementManager.findAllObjectsManager().size());
 
       // on test la validation de la position
       eError.setTerminale(t);
@@ -1507,7 +1517,7 @@ public class EmplacementManagerTest extends AbstractManagerTest4
       assertTrue(catched);
       catched = false;
       assertEquals(7, emplacementManager.findAllObjectsManager().size());
-      
+
       try{
          emplacementManager.validateMultiEmplacementsManager(liste, true);
       }catch(final Exception e){
@@ -1533,46 +1543,46 @@ public class EmplacementManagerTest extends AbstractManagerTest4
       assertTrue(catched);
       catched = false;
       assertEquals(7, emplacementManager.findAllObjectsManager().size());
-      
+
       try{ // si deplacement, alors pas d'erreur
-          emplacementManager.validateMultiEmplacementsManager(liste, true);
-       }catch(final Exception e){
-          if(e.getClass().getSimpleName().equals("EntiteObjectIdNotExistException")){
-             catched = true;
-          }
-       }
-       assertFalse(catched);
-       catched = false;
-       assertEquals(7, emplacementManager.findAllObjectsManager().size());
-       
-       // on teste un objet deja stocké
-       eError.setObjetId(2);
-       try{
-          emplacementManager.validateMultiEmplacementsManager(liste, false);
-       }catch(final Exception e){
-          if(e.getClass().getSimpleName().equals("ObjectAlreadyStockedException")){
-         	assertTrue(((ObjectAlreadyStockedException) e).getIdentificationObjetException().equals("PTRA.2"));
-             catched = true;
-          }
-       }
-       assertTrue(catched);
-       catched = false;
-       assertEquals(7, emplacementManager.findAllObjectsManager().size());
-       
-       try{ // si deplacement pas d'erreur
-           emplacementManager.validateMultiEmplacementsManager(liste, true);
-        }catch(final Exception e){
-           if(e.getClass().getSimpleName().equals("ObjectAlreadyStockedException")){
-          	assertTrue(((ObjectAlreadyStockedException) e).getIdentificationObjetException().equals("PTRA.1.2"));
-              catched = true;
-           }
-        }
-        assertFalse(catched);
-        catched = false;
-        assertEquals(7, emplacementManager.findAllObjectsManager().size());
-       
-       eError.setEntite(null);
-       eError.setObjetId(null);
+         emplacementManager.validateMultiEmplacementsManager(liste, true);
+      }catch(final Exception e){
+         if(e.getClass().getSimpleName().equals("EntiteObjectIdNotExistException")){
+            catched = true;
+         }
+      }
+      assertFalse(catched);
+      catched = false;
+      assertEquals(7, emplacementManager.findAllObjectsManager().size());
+
+      // on teste un objet deja stocké
+      eError.setObjetId(2);
+      try{
+         emplacementManager.validateMultiEmplacementsManager(liste, false);
+      }catch(final Exception e){
+         if(e.getClass().getSimpleName().equals("ObjectAlreadyStockedException")){
+            assertTrue(((ObjectAlreadyStockedException) e).getIdentificationObjetException().equals("PTRA.2"));
+            catched = true;
+         }
+      }
+      assertTrue(catched);
+      catched = false;
+      assertEquals(7, emplacementManager.findAllObjectsManager().size());
+
+      try{ // si deplacement pas d'erreur
+         emplacementManager.validateMultiEmplacementsManager(liste, true);
+      }catch(final Exception e){
+         if(e.getClass().getSimpleName().equals("ObjectAlreadyStockedException")){
+            assertTrue(((ObjectAlreadyStockedException) e).getIdentificationObjetException().equals("PTRA.1.2"));
+            catched = true;
+         }
+      }
+      assertFalse(catched);
+      catched = false;
+      assertEquals(7, emplacementManager.findAllObjectsManager().size());
+
+      eError.setEntite(null);
+      eError.setObjetId(null);
 
       // on test l'insertion d'un doublon
       eError.setPosition(1);
@@ -1586,19 +1596,18 @@ public class EmplacementManagerTest extends AbstractManagerTest4
       assertTrue(catched);
       catched = false;
       assertEquals(7, emplacementManager.findAllObjectsManager().size());
-      
+
       try{
-          emplacementManager.validateMultiEmplacementsManager(liste, true);
-       }catch(final Exception e){
-          if(e.getClass().getSimpleName().equals("EmplacementDoublonFoundException")){
-             catched = true;
-          }
-       }
-       assertTrue(catched);
-       catched = false;
-       assertEquals(7, emplacementManager.findAllObjectsManager().size());
-      
-       
+         emplacementManager.validateMultiEmplacementsManager(liste, true);
+      }catch(final Exception e){
+         if(e.getClass().getSimpleName().equals("EmplacementDoublonFoundException")){
+            catched = true;
+         }
+      }
+      assertTrue(catched);
+      catched = false;
+      assertEquals(7, emplacementManager.findAllObjectsManager().size());
+
       eError.setPosition(55);
       eError.setAdrl("%$*g¤d");
       // Test de la validation lors de la création
@@ -1608,13 +1617,13 @@ public class EmplacementManagerTest extends AbstractManagerTest4
          catched = true;
       }
       assertEquals(7, emplacementManager.findAllObjectsManager().size());
-      
+
       try{
-          emplacementManager.validateMultiEmplacementsManager(liste, true);
-       }catch(final ValidationException ve){
-          catched = true;
-       }
-       assertEquals(7, emplacementManager.findAllObjectsManager().size());
+         emplacementManager.validateMultiEmplacementsManager(liste, true);
+      }catch(final ValidationException ve){
+         catched = true;
+      }
+      assertEquals(7, emplacementManager.findAllObjectsManager().size());
    }
 
    /**
@@ -1675,13 +1684,13 @@ public class EmplacementManagerTest extends AbstractManagerTest4
       emplacementManager.removeObjectManager(eTestNew);
       assertEquals(7, emplacementManager.findAllObjectsManager().size());
    }
-   
+
    /**
     * Test l'appel de la méthode findByObjetIdEntite().
     */
    @Test
    public void testFindByTKStockableObjectManager(){
-	  TKStockableObject tkObj = prodDeriveDao.findById(1);
+      TKStockableObject tkObj = prodDeriveDao.findById(1);
       Emplacement emp = emplacementManager.findByTKStockableObjectManager(tkObj);
       assertTrue(emp.getEmplacementId() == 1);
 
@@ -1747,7 +1756,7 @@ public class EmplacementManagerTest extends AbstractManagerTest4
 
       empl = emplacementManager.findByAdrlCallableManager(null, b1);
       assertNull(empl);
-      
+
       empl = emplacementManager.findByAdrlCallableManager("CC1.R1.T1.BT1.A-1", null);
       assertNull(empl);
    }

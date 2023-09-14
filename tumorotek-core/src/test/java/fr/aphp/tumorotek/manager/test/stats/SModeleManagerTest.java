@@ -68,16 +68,22 @@ public class SModeleManagerTest extends AbstractManagerTest4
 
    @Autowired
    private SModeleDao modeleDao;
+
    @Autowired
    private SModeleManager sModeleManager;
+
    @Autowired
    private PlateformeManager plateformeManager;
+
    @Autowired
    private IndicateurManager indicateurManager;
+
    @Autowired
    private BanqueManager banqueManager;
+
    @Autowired
    private SModeleIndicateurDao sModeleIndicateurDao;
+
    @Autowired
    private SubdivisionDao subdivisionDao;
 

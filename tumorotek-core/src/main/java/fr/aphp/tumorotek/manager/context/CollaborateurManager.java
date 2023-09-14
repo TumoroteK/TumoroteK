@@ -213,7 +213,7 @@ public interface CollaborateurManager
     * @param coordonnees Liste de coord associées au collaborateur.
     * @param doValidation Si false, ne fait pas la validation des
     * champs du collaborateur.
-    * @throws javax.xml.bind.ValidationException 
+    * @throws javax.xml.bind.ValidationException
     */
    void updateObjectManager(Collaborateur collaborateur, Titre titre, Etablissement etablissement, Specialite specialite,
       List<Service> services, List<Coordonnee> coordonnees, Utilisateur utilisateur, boolean doValidation);
@@ -232,17 +232,17 @@ public interface CollaborateurManager
     * Verifie si le collaborateur est référencé par d'autres objets du système
     * et donc ne peut être supprimé (peut être inactivé en attendant).
     * @param collab Collaborateur
-    * @return boolean true si le collaborateur est référencé 
+    * @return boolean true si le collaborateur est référencé
     * par au moins un objet.
     */
    boolean isReferencedObjectManager(Collaborateur et);
 
    /**
-    * Supprime un collaborateyr de la base de données 
-    * en terminale d'une cascade 
+    * Supprime un collaborateyr de la base de données
+    * en terminale d'une cascade
     * initié par au niveau du service ou de l'établissement.
-    * Si le collaborateur appartient à plusieurs services, ne supprime que 
-    * que la référence du service cascadant.  
+    * Si le collaborateur appartient à plusieurs services, ne supprime que
+    * que la référence du service cascadant.
     * @param collaborateur Collaborateur à supprimer de la base de données.
     * @param service Service cascadant
     * @param comments commentaires liés à la suppression
@@ -260,8 +260,8 @@ public interface CollaborateurManager
 
    /**
     * Fusionne deux Collaborateurs enregistrés dans le système.
-    * Le premier collaborateur passé en paramètre est celui qui sera conservé 
-    * dans le système et qui recevra les associations attribuées au 
+    * Le premier collaborateur passé en paramètre est celui qui sera conservé
+    * dans le système et qui recevra les associations attribuées au
     * collaborateur passif passé en deuxième paramètre.
     * Association à récupérer:<br>
     * 		-Banque

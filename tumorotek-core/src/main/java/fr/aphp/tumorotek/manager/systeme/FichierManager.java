@@ -96,7 +96,7 @@ public interface FichierManager
    Boolean isUsedObjectManager(Fichier path);
 
    /**
-    * Test le path d'un Fichier est partagé par plusieurs fichiers et 
+    * Test le path d'un Fichier est partagé par plusieurs fichiers et
     * donc référencé par plusieurs échantillons ou annotations.
     * @param path Fichier que l'on souhaite tester.
     * @return Vrai si le nb de refs est sup à 1.
@@ -121,7 +121,7 @@ public interface FichierManager
     * @param stream InputStream contenant le fichier
     * @param liste des fichiers qui ont été crées sur le disque
     * @param liste des fichiers qui seront supprimés du disque
-    * @return 
+    * @return
     * @throws DoublonFoundException Lance une exception si un doublon de
     * l'objet à créer se trouve déjà dans la base.
     */
@@ -147,13 +147,13 @@ public interface FichierManager
    boolean storeFile(InputStream fis, String path, List<File> filesCreated);
 
    /**
-    * Cree, modifie ou suppr la reference vers le fichier pour le TKFileSettableObject 
+    * Cree, modifie ou suppr la reference vers le fichier pour le TKFileSettableObject
     * passé en paramètre.
-    * Si un stream est fourni, réalise les opérations de création/modification dans le 
-    * file system en ajoutant dans la liste filesCreated les objets File créés et 
+    * Si un stream est fourni, réalise les opérations de création/modification dans le
+    * file system en ajoutant dans la liste filesCreated les objets File créés et
     * dans la liste filesToDelete les objets File qui seront à supprimés.
     * La liste filesToDelete est parcouru en fin de méthode (quand aucun rollback n'est
-    * possible). La liste filesCreated est utilisé lors d'un rollback pour supprimer 
+    * possible). La liste filesCreated est utilisé lors d'un rollback pour supprimer
     * les fichiers du file system.
     * @param obj TKFileSettableObject
     * @param fileRef Fichier
@@ -164,17 +164,17 @@ public interface FichierManager
     */
    void createOrUpdateFileForObject(TKFileSettableObject obj, Fichier fileRef, InputStream stream, String pathBase,
       List<File> filesCreated, List<File> filesToDelete);
-   
-	/**
-	 * [Correctif bug TK-155]
-	 * Change le fichier de collection, lors du changement de collection d'un objet et de 
-	 * ses annotations.
-	 * Met à jour le path et déplace physiquement le fichier dans le système de stockage. 
-	 * @param file Fichier
-	 * @param dest Collection de destination
-	 * @param liste de déplacements (unique) de fichiers à programmer 
-	 * @since 2.2.0
-	 */
-	void switchBanqueManager(Fichier file, Banque dest, Set<MvFichier> filesToMove);
+
+   /**
+    * [Correctif bug TK-155]
+    * Change le fichier de collection, lors du changement de collection d'un objet et de 
+    * ses annotations.
+    * Met à jour le path et déplace physiquement le fichier dans le système de stockage. 
+    * @param file Fichier
+    * @param dest Collection de destination
+    * @param liste de déplacements (unique) de fichiers à programmer 
+    * @since 2.2.0
+    */
+   void switchBanqueManager(Fichier file, Banque dest, Set<MvFichier> filesToMove);
 
 }

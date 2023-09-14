@@ -67,6 +67,8 @@ import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.utilisateur.Profil;
 import fr.aphp.tumorotek.model.utilisateur.ProfilUtilisateur;
 import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
+import fr.aphp.tumorotek.param.TkParam;
+import fr.aphp.tumorotek.webapp.gatsbi.GatsbiAuthenticationUtils;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
 /**
@@ -209,6 +211,7 @@ public class AdministrationController extends AbstractObjectTabController
          availableTabsNames.add("plateformesTab");
       }
 
+      // Tab Paramètres
       if(!SessionUtils.getLoggedUser(sessionScope).isSuperAdmin() && !sessionScope.containsKey("AdminPF")){
          final Tab tabPf = (Tab) adminTabbox.getFellow("parametresTab");
          tabPf.setDisabled(true);
@@ -218,6 +221,18 @@ public class AdministrationController extends AbstractObjectTabController
          tabPf.setVisible(true);
          availableTabsNames.add("parametresTab");
       }
+      
+      //Tab Gatsbi
+      boolean gatsbiInstalled = (TkParam.GATSBI_INSTALLATION.getValue() != null && Boolean.parseBoolean(TkParam.GATSBI_INSTALLATION.getValue()));
+      boolean displayGatsbi = gatsbiInstalled && 
+         ( SessionUtils.getLoggedUser(sessionScope).isSuperAdmin() || sessionScope.containsKey("AdminPF") || sessionScope.containsKey("Admin"));
+      final Tab tabPf = (Tab) adminTabbox.getFellow("gatsbiTab");
+      tabPf.setVisible(displayGatsbi);
+      tabPf.setDisabled(!displayGatsbi);
+      if(displayGatsbi) {
+         availableTabsNames.add("gatsbiTab");
+      }
+
       
       availableTabsNames.add("annotationsTab");
       availableTabsNames.add("banquesTab");
@@ -471,6 +486,28 @@ public class AdministrationController extends AbstractObjectTabController
       if(item != null && item.getId().equals("profilsPanel")){
          getMainWindow().createMacroComponent("/zuls/utilisateur/Profil.zul", "winProfil", item);
       }
+      
+      // @since 2.3.0 (Gatsbi)
+      if(item != null && item.getId().equals("gatsbiPanel")){
+         //Attribution d'un rôle à l'utilisateur pour faciliter les contrôles côté Gatsbi
+         String role = null;
+         if(SessionUtils.getLoggedUser(sessionScope).isSuperAdmin()) {
+            role = GatsbiAuthenticationUtils.ROLE__SUPER_ADMIN;
+         }
+         else if(sessionScope.containsKey("AdminPF")) {
+            role = GatsbiAuthenticationUtils.ROLE__ADMIN_PLATEFORME;
+         }
+         else if(sessionScope.containsKey("Admin")) {
+            role = GatsbiAuthenticationUtils.ROLE__ADMIN_COLLECTION;
+         }
+         
+         GatsbiAuthenticationUtils gatsbiAuthenticationUtils = new GatsbiAuthenticationUtils(execution);
+         gatsbiAuthenticationUtils.connectToGatsbi(
+            SessionUtils.getLoggedUser(sessionScope).getLogin(), 
+            role,  
+            SessionUtils.getCurrentPlateforme().getPlateformeId()
+            );
+        }      
    }
 
    @Override

@@ -91,8 +91,8 @@ import fr.aphp.tumorotek.model.stockage.Conteneur;
          + "AND s.archive =?2"),
    @NamedQuery(name = "Service.findCountByEtablissementId",
       query = "SELECT count(s) FROM Service s " + "left join s.etablissement e " + "WHERE e.etablissementId = (?1)"),
-   //		@NamedQuery(name = "Service.findByBanqueId", 
-   //				query = "SELECT s FROM Service s " 
+   //		@NamedQuery(name = "Service.findByBanqueId",
+   //				query = "SELECT s FROM Service s "
    //					+ "WHERE s.banques.banqueId = ?1"),
    @NamedQuery(name = "Service.findByBanquePossedeesId",
       query = "SELECT s FROM Service s " + "left join s.banquesPossedees b " + "WHERE b.banqueId = ?1"),
@@ -107,19 +107,28 @@ public class Service implements TKdataObject, TKFantomableObject, java.io.Serial
    private static final long serialVersionUID = 54864135646414L;
 
    private Integer serviceId;
+
    private String nom;
+
    private Boolean archive = false;
 
    private Etablissement etablissement;
+
    private Coordonnee coordonnee;
 
    private Set<Collaborateur> collaborateurs = new HashSet<>();
+
    //private Set<Banque> banques = new HashSet<Banque>();
    private Set<Banque> banquesPossedees = new HashSet<>();
+
    private Set<Conteneur> conteneurs = new HashSet<>();
+
    private Set<Prelevement> prelevements = new HashSet<>();
+
    private Set<Cession> cessions = new HashSet<>();
+
    private Set<Contrat> contrats = new HashSet<>();
+
    private Set<LaboInter> laboInters = new HashSet<>();
 
    /** Constructeur par défaut. */

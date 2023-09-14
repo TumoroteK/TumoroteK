@@ -57,6 +57,7 @@ public interface CategorieManager extends TKThesaurusManager<Categorie>
     * @param categorieId Identifiant de la Categorie que l'on recherche.
     * @return Une Categorie.
     */
+   @Override
    Categorie findByIdManager(Integer categorieId);
 
    /**

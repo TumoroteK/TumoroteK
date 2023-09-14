@@ -52,7 +52,9 @@ public class ObjectStatutException extends TKException
    private static final long serialVersionUID = -6748880359935549123L;
 
    private String entite;
+
    private String operation;
+
    private String key;
 
    public ObjectStatutException(){

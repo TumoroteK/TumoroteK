@@ -81,15 +81,20 @@ public class PersonnePhysique
 
    @XmlAttribute(name = "sexe", required = true)
    private String sexe = null;
+
    @XmlElement(name = "nomUsuel", required = true)
    private String nom = null;
+
    @XmlElement(name = "nomNaissance")
    private String nomPatro;
+
    @XmlElementWrapper(name = "prenoms")
    @XmlElement(name = "prenom")
    private ArrayList<String> prenomList = null;
+
    @XmlElement(name = "dateNaissance")
    private DateNaissanceWrapper dateNaissanceWrapper = null;
+
    @XmlElement(name = "decede", required = false)
    private Decede decede = null;
 
@@ -154,18 +159,18 @@ public class PersonnePhysique
          return dateNaissanceWrapper.getDate();
       }
       return null;
-   	}
+   }
 
-   	public Decede getDecede() {
-		return decede;
-	}
-	
-	public void setDecede(Decede decede) {
-		this.decede = decede;
-	}
+   public Decede getDecede(){
+      return decede;
+   }
 
-	public String getEtatPatient() {
-      if(decede != null) {
+   public void setDecede(final Decede decede){
+      this.decede = decede;
+   }
+
+   public String getEtatPatient(){
+      if(decede != null){
          return "D";
       }
       return null;

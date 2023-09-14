@@ -65,6 +65,7 @@ public class CategorieManagerImpl implements CategorieManager
 
    /** Bean Dao CategorieDao. */
    private CategorieDao categorieDao;
+
    private CategorieValidator categorieValidator;
 
    /**
@@ -126,9 +127,9 @@ public class CategorieManagerImpl implements CategorieManager
          if(cat.getId() == null){
             return categorieDao.findAll().contains(cat);
          }
-            return categorieDao.findByExcludedId(cat.getId()).contains(cat);
+         return categorieDao.findByExcludedId(cat.getId()).contains(cat);
       }
-         return false;
+      return false;
    }
 
    @Override

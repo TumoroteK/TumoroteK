@@ -38,7 +38,6 @@ package fr.aphp.tumorotek.action.controller;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
-import java.util.Map;
 
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
@@ -55,12 +54,9 @@ import org.zkoss.zul.Window;
 import fr.aphp.tumorotek.action.ManagerLocator;
 import fr.aphp.tumorotek.manager.exception.DoublonFoundException;
 import fr.aphp.tumorotek.model.TKAnnotableObject;
-import fr.aphp.tumorotek.model.TKStockableObject;
 import fr.aphp.tumorotek.model.TKdataObject;
 import fr.aphp.tumorotek.model.contexte.Banque;
-import fr.aphp.tumorotek.model.interfacage.Recepteur;
 import fr.aphp.tumorotek.model.qualite.OperationType;
-import fr.aphp.tumorotek.model.stockage.Emplacement;
 import fr.aphp.tumorotek.model.systeme.Numerotation;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
@@ -81,10 +77,15 @@ public abstract class AbstractFicheEditController extends AbstractFicheControlle
 
    //Composants
    protected Grid formGrid;
+
    protected Button validate;
+
    protected Button revert;
+
    protected Button create;
+
    protected Button cancel;
+
    protected Button numerotation;
 
    private Object copy;

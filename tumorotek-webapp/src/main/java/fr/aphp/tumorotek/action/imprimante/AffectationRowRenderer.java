@@ -70,6 +70,7 @@ public class AffectationRowRenderer implements RowRenderer<Object>
    }
 
    private Plateforme plateforme;
+
    private boolean canEdit = false;
 
    @Override

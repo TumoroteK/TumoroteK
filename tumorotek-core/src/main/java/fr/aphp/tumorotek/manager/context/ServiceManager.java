@@ -106,7 +106,7 @@ public interface ServiceManager
    List<Collaborateur> getCollaborateursWithOrderManager(Service service);
 
    /**
-    * Recherche les collaborateurs non archivés liés au service passé 
+    * Recherche les collaborateurs non archivés liés au service passé
     * en paramètre.
     * @param service Service pour lequel on recherche des
     * collaborateurs.
@@ -164,15 +164,15 @@ public interface ServiceManager
       List<Collaborateur> collaborateurs, Utilisateur utilisateur, boolean cascadeArchive, boolean doValidation);
 
    /**
-    * Verifie si le service contient des 
-    * collborateurs. 
+    * Verifie si le service contient des
+    * collborateurs.
     * @param srv Service
     * @return boolean true si le service a des enfants.
     */
    boolean isUsedObjectManager(Service srv);
 
    /**
-    * Verifie si le service est référencé par d'autres objets 
+    * Verifie si le service est référencé par d'autres objets
     * (banques, prelevements, laboInters, cessions, contrats, conteneurs)
     * et donc ne peut être supprimé (peut être inactivé en attendant).
     * @param src Service
@@ -193,9 +193,9 @@ public interface ServiceManager
    void removeObjectManager(Service service, String comments, Utilisateur user);
 
    /**
-    * Supprime un objet de la base de données et en cascade tous les objets 
-    * dont il est le parent, deletion cascadant à leur tour sur les objets 
-    * en descendant la hierarchie. 
+    * Supprime un objet de la base de données et en cascade tous les objets
+    * dont il est le parent, deletion cascadant à leur tour sur les objets
+    * en descendant la hierarchie.
     * @param service Service à supprimer de la base de données.
     * @param comments commentaires liés à la suppression
     * @param Utilisateur réalisant la suppression.
@@ -204,8 +204,8 @@ public interface ServiceManager
 
    /**
     * Fusionne deux Services enregistrés dans le système.
-    * Le premier service passé en paramètre est celui qui sera conservé 
-    * dans le système et qui recevra les associations attribuées au 
+    * Le premier service passé en paramètre est celui qui sera conservé
+    * dans le système et qui recevra les associations attribuées au
     * service passif passé en deuxième paramètre.
     * Association à récupérer:<br>
     * 		-Banque

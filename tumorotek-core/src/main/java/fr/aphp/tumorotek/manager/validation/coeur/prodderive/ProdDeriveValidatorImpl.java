@@ -186,11 +186,11 @@ public class ProdDeriveValidatorImpl implements ProdDeriveValidator
       }
       // quantiteInit = volumeInit * concentration
       if(derive.getQuantiteInit() != null && derive.getVolumeInit() != null && derive.getConc() != null){
-         Float res = derive.getVolumeInit() * derive.getConc();
-         Float floor = Utils.floor(res, 3);
+         final Float res = derive.getVolumeInit() * derive.getConc();
+         final Float floor = Utils.floor(res, 3);
          // TK-290 arrondi peut être supérieur ou inférieur = OK
-         if((derive.getQuantiteInit().floatValue() > (floor + 0.001f)) 
-        		|| (derive.getQuantiteInit().floatValue() < (floor - 0.001f)) ){
+         if((derive.getQuantiteInit().floatValue() > (floor + 0.001f))
+            || (derive.getQuantiteInit().floatValue() < (floor - 0.001f))){
             errs.rejectValue("quantiteInit", "prodDerive.quantiteInit.illegal");
          }
       }
@@ -290,8 +290,8 @@ public class ProdDeriveValidatorImpl implements ProdDeriveValidator
    }
 
    //	/**
-   //	 * Parcoure les dates des objets précédant un dérivé jusqu'a la date 
-   //	 * de naissance du patient, pour trouver la date de référence la plus 
+   //	 * Parcoure les dates des objets précédant un dérivé jusqu'a la date
+   //	 * de naissance du patient, pour trouver la date de référence la plus
    //	 * récente.
    //	 * Permet la récursivite sur les dérivés de dérivés.
    //	 * @param dérivé
@@ -307,9 +307,9 @@ public class ProdDeriveValidatorImpl implements ProdDeriveValidator
    //		if (derive.getTransformation() != null) {
    //			Object parent = entiteManager
    //				.findObjectByEntiteAndIdManager(derive.getTransformation()
-   //															.getEntite(), 
+   //															.getEntite(),
    //											derive.getTransformation()
-   //															.getObjetId());	
+   //															.getObjetId());
    //			if (parent.getClass().getSimpleName().equals("ProdDerive")) {
    //				if (((ProdDerive) parent).getDateStock() != null) {
    //					ref = ((ProdDerive) parent).getDateStock();
@@ -317,7 +317,7 @@ public class ProdDeriveValidatorImpl implements ProdDeriveValidator
    //				} else if (((ProdDerive) parent)
    //										.getDateTransformation() != null) {
    //					ref = ((ProdDerive) parent).getDateTransformation();
-   //					code = "date.validation.infDateTransfoDeriveParent"; 
+   //					code = "date.validation.infDateTransfoDeriveParent";
    //				} else {
    //					return findAntRefDateForDerive((ProdDerive) parent);
    //				}
@@ -340,10 +340,10 @@ public class ProdDeriveValidatorImpl implements ProdDeriveValidator
    //		}
    //		dateAndCode[0] = ref;
    //		dateAndCode[1] = code;
-   //		
+   //
    //		return dateAndCode;
    //	}
-   //	
+   //
    //	@Override
    //	public Object[] findPostRefDateInDerives(Object parent) {
    //		Object[] dateAndCode = new Object[]{null, null};
@@ -354,23 +354,23 @@ public class ProdDeriveValidatorImpl implements ProdDeriveValidator
    //		// trouve les derives potentiels, aucun si update
    //		List<ProdDerive> derives = transformationManager
    //									.findAllDeriveFromParentManager(parent);
-   //		
+   //
    //		// trouve la date de reference
    //		for (int i = 0; i < derives.size(); i++) {
    //			if (!derives.get(i).getArchive()) {
    //				if (derives.get(i).getDateTransformation() != null) {
    //					ref = derives.get(i).getDateTransformation();
    //					code = "date.validation.supDateTransfoEnfant";
-   //					
+   //
    //				} else if (derives.get(i).getDateStock() != null) {
    //					ref = derives.get(i).getDateStock();
    //					code = "date.validation.supDateStockDeriveEnfant";
    //				}
-   //				
+   //
    //				if (ref != null) {
    //					if (previous != null) {
    //						if (ValidationUtilities
-   //								.checkWithDate(ref, null, previous, 
+   //								.checkWithDate(ref, null, previous,
    //										null, null, null, null, true)) {
    //							previous = ref;
    //							codePrevious = code;
@@ -382,7 +382,7 @@ public class ProdDeriveValidatorImpl implements ProdDeriveValidator
    //				}
    //			}
    //		}
-   //			
+   //
    //		if (previous != null) {
    //			dateAndCode[0] = previous;
    //			dateAndCode[1] = codePrevious;
@@ -390,7 +390,7 @@ public class ProdDeriveValidatorImpl implements ProdDeriveValidator
    //			dateAndCode[0] = Utils.getCurrentSystemDate();
    //			dateAndCode[1] = "date.validation.supDateActuelle";
    //		}
-   //		
+   //
    //		return dateAndCode;
    //	}
 }

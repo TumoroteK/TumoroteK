@@ -43,11 +43,17 @@ public class EnceinteDecorator
 {
 
    private Enceinte enceinte;
+
    private Integer nbNiveau;
+
    private Boolean isTerminale;
+
    private Integer sizeVisoGobeletMarguerite = null;
+
    private Integer nbPlaces;
+
    private Integer firstPosition;
+
    private Boolean disabled = false;
 
    public EnceinteDecorator(final Enceinte enc){

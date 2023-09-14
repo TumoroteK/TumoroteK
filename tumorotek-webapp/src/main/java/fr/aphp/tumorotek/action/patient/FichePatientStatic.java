@@ -39,22 +39,28 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Components;
+import org.zkoss.zk.ui.HtmlBasedComponent;
 import org.zkoss.zk.ui.HtmlMacroComponent;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Group;
+import org.zkoss.zul.Groupbox;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Panel;
 
 import fr.aphp.tumorotek.action.ManagerLocator;
 import fr.aphp.tumorotek.action.controller.AbstractFicheStaticController;
+import fr.aphp.tumorotek.action.prelevement.PrelevementConsultFromOtherBanksRenderer;
 import fr.aphp.tumorotek.action.prelevement.PrelevementController;
 import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
 import fr.aphp.tumorotek.model.TKdataObject;
@@ -66,6 +72,10 @@ import fr.aphp.tumorotek.model.contexte.Collaborateur;
 import fr.aphp.tumorotek.model.contexte.EContexte;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
+/**
+ * @version 2.3.0-gatsbi
+ * @author Mathieu BARTHELEMY
+ */
 public class FichePatientStatic extends AbstractFicheStaticController
 {
 
@@ -73,41 +83,51 @@ public class FichePatientStatic extends AbstractFicheStaticController
 
    // button
    protected Button addMaladie;
-   private Button addPrelevement;
+
+   protected Button addPrelevement;
 
    // maladies
-   private Div malaDiv;
+   protected Div malaDiv;
 
    private String maladieGroupHeaderTemplate;
+
    private String maladieGroupHeader;
+
    private int lastPanelId;
 
+   // @since gatsbi 
+   // gatsbi overrides group -> groupboxes
    // referents
-   private Group maladiesGroup;
-   private Group referentsGroup;
+   protected HtmlBasedComponent groupMaladies;
+   protected HtmlBasedComponent groupMedecins;
 
    // Objets Principaux
-   private Patient patient;
+   protected Patient patient;
 
    // dateEtatDeces
    private Label dateEtatDecesField;
 
-   private Listbox prelevementsFromOtherMaladiesBox;
+   protected Listbox prelevementsFromOtherMaladiesBox;
 
    // Associations
-   private List<Maladie> maladies = new ArrayList<>();
+   protected List<Maladie> maladies = new ArrayList<>();
+
    private List<Collaborateur> medecins = new ArrayList<>();
 
    // Labels à cacher en cas de compte anonyme
-   private Label nipLabel;
-   private Label nomLabel;
-   private Label nomNaisLabel;
-   private Label prenomLabel;
+   protected Label nipLabel;
+
+   protected Label nomLabel;
+
+   protected Label nomNaisLabel;
+
+   protected Label prenomLabel;
 
    private final List<Prelevement> prelevementsFromOtherMaladies = new ArrayList<>();
-   
+
    // maladie systems -> contexte TK anapath par défaut
-   private final PrelevementItemRenderer prelevementFromOtherMaladiesRenderer = new PrelevementItemRenderer();
+   private final PrelevementConsultFromOtherBanksRenderer prelevementFromOtherMaladiesRenderer = 
+                     new PrelevementItemRenderer();
 
    private final List<FicheMaladie> maladiePanels = new ArrayList<>();
 
@@ -132,7 +152,7 @@ public class FichePatientStatic extends AbstractFicheStaticController
       // cree maladie groupHeaderTemplate avec slots 1 et 2
       this.maladieGroupHeaderTemplate = "";
       if(SessionUtils.isAnyDefMaladieInBanques(SessionUtils.getSelectedBanques(sessionScope))){
-         this.maladieGroupHeaderTemplate = Labels.getLabel("patient.maladies") + "({1}) - ";
+         this.maladieGroupHeaderTemplate = getMaladieHeaderBase() + "({1}) - ";
       }
       this.maladieGroupHeaderTemplate = this.maladieGroupHeaderTemplate + Labels.getLabel("ficheMaladie.prelevements") + "({2})";
 
@@ -143,6 +163,15 @@ public class FichePatientStatic extends AbstractFicheStaticController
 
       addPrelevement.setVisible(!addMaladie.isVisible());
 
+      setClickPrelevementCodeForward();
+   }
+   
+   /**
+    * Event listener du clique code prelevement
+    * sera surchargé par gatsbi
+    * @since 2.3.0-gatsbi
+    */
+   protected void setClickPrelevementCodeForward() {
       prelevementsFromOtherMaladiesBox.addEventListener("onClickPrelevementCode", new EventListener<Event>()
       {
          @Override
@@ -150,6 +179,11 @@ public class FichePatientStatic extends AbstractFicheStaticController
             onClickPrelevementCode(event);
          }
       });
+   }
+
+   // @since 2.3.0-gatsbi, sera surchargée dans contexte gatsbi
+   protected String getMaladieHeaderBase(){
+      return Labels.getLabel("patient.maladies");
    }
 
    public List<FicheMaladie> getMaladiePanels(){
@@ -173,31 +207,14 @@ public class FichePatientStatic extends AbstractFicheStaticController
 
       if(patient.getPatientId() != null){
          List<Maladie> otherMaladies = new ArrayList<>();
-         if(sessionScope.containsKey("Banque")){
-            // banque définit maladies -> une liste de maladies,
-            // les autres sont maladies sytem
-            if(SessionUtils.getSelectedBanques(sessionScope).get(0).getDefMaladies()){
-               this.maladies = new ArrayList<>(ManagerLocator.getMaladieManager().findByPatientNoSystemManager(patient));
-               otherMaladies = ManagerLocator.getMaladieManager().findByPatientManager(patient);
-               otherMaladies.removeAll(maladies);
-            }else{
-               // banque définit pas maladies -> une maladie system,
-               // les autres sont maladies venant d'autres banques
-               this.maladies = ManagerLocator.getMaladieManager().findByPatientManager(patient);
-               otherMaladies = new ArrayList<>(ManagerLocator.getMaladieManager().findByPatientNoSystemManager(patient));
-               maladies.removeAll(otherMaladies);
-            }
-         }else{
-            // si au moins une banque définit une maladie
-            if(SessionUtils.isAnyDefMaladieInBanques(SessionUtils.getSelectedBanques(sessionScope))){
-               this.maladies = new ArrayList<>(ManagerLocator.getMaladieManager().findByPatientNoSystemManager(patient));
-               otherMaladies = ManagerLocator.getMaladieManager().findByPatientManager(patient);
-               otherMaladies.removeAll(maladies);
-            }else{
-               // n'affiche que des prelevements car maladies systems only
-               this.maladies = ManagerLocator.getMaladieManager().findByPatientManager(patient);
-            }
-         }
+         
+         // Retrouve les collections de prelevements consultables
+         final List<Banque> banks = ManagerLocator.getBanqueManager().findByEntiteConsultByUtilisateurManager(
+            SessionUtils.getLoggedUser(sessionScope), ManagerLocator.getEntiteManager().findByNomManager("Prelevement").get(0),
+            SessionUtils.getPlateforme(sessionScope));
+         
+         // @since 2.3.0-gatsbi
+         populatesPatientMaladies(maladies, otherMaladies, banks);
 
          // prepare la liste de prélèvements
          final Iterator<Maladie> mals = otherMaladies.iterator();
@@ -205,14 +222,9 @@ public class FichePatientStatic extends AbstractFicheStaticController
             this.prelevementsFromOtherMaladies.addAll(ManagerLocator.getMaladieManager().getPrelevementsManager(mals.next()));
          }
 
-         // Retrouve les collections de prelevements consultables
-         final List<Banque> banks = ManagerLocator.getBanqueManager().findByEntiteConsultByUtilisateurManager(
-            SessionUtils.getLoggedUser(sessionScope), ManagerLocator.getEntiteManager().findByNomManager("Prelevement").get(0),
-            SessionUtils.getPlateforme(sessionScope));
-
          // configure le renderer pour inactiver les liens des
          // prélèvements non consultables
-         prelevementFromOtherMaladiesRenderer.setFromOtherConsultBanks(banks);
+         getPrelevementsFromOtherMaladiesRenderer().setOtherConsultBanks(banks);
 
          // medecins referents
          this.medecins = new ArrayList<>(ManagerLocator.getPatientManager().getMedecinsManager(patient));
@@ -224,11 +236,71 @@ public class FichePatientStatic extends AbstractFicheStaticController
       redrawMaladies();
 
       getReferents().setMedecins(this.medecins);
-      referentsGroup.setOpen(false);
+      setGroupMedecinsOpen(false);
 
       // annotations
       super.setObject(patient);
 
+   }
+
+   // @since 2.3.0-gatsbi, sera surchargée
+   protected void populatesPatientMaladies(List<Maladie> maladies, List<Maladie> otherMaladies, List<Banque> consultableBanks){
+      
+      maladies.clear();
+      otherMaladies.clear();
+      
+      if(sessionScope.containsKey("Banque")){
+         
+         List<Maladie> system = ManagerLocator.getMaladieManager()
+            .findByPatientExcludingVisitesManager(patient)
+            .stream().filter(m -> m.getSystemeDefaut()).collect(Collectors.toList());   
+         
+         // banque définit maladies -> une liste de maladies,
+         // les autres sont maladies sytem
+         if(SessionUtils.getSelectedBanques(sessionScope).get(0).getDefMaladies()){
+            // toutes les maladies non system, non visites gatsbi
+            // toutes les maladies communes et system, non visites 
+            maladies.addAll(new ArrayList<>(ManagerLocator.getMaladieManager().findByPatientExcludingVisitesManager(patient)));
+            
+            maladies.removeAll(system);
+       
+            // maladies 'system', correspondant aux collections no-def maladie
+            otherMaladies.addAll(system); // reste 
+            
+            // ajout visites pour les banques accessibles
+            for (Banque bank: consultableBanks) {
+               otherMaladies.addAll(ManagerLocator.getMaladieManager().findVisitesManager(patient, bank));
+            }
+         }else{
+            // banque définit pas maladies -> une maladie system,
+            // les autres sont maladies venant d'autres banques
+            
+            // toutes les maladies non visites
+            maladies.addAll(ManagerLocator.getMaladieManager().findByPatientExcludingVisitesManager(patient));
+            // toutes les maladies non system, non visites gatsbi
+            otherMaladies.addAll(new ArrayList<>(ManagerLocator.getMaladieManager().findByPatientNoSystemNorVisiteManager(patient)));
+            maladies.removeAll(otherMaladies); // reste maladies 'system', hors visite gatsbi
+            
+            // ajout visites pour les banques accessibles
+            for (Banque bank: consultableBanks) {
+               otherMaladies.addAll(ManagerLocator.getMaladieManager().findVisitesManager(patient, bank));
+            }
+         }
+      }else{
+         // si au moins une banque définit une maladie
+         if(SessionUtils.isAnyDefMaladieInBanques(SessionUtils.getSelectedBanques(sessionScope))){
+            maladies.addAll(new ArrayList<>(ManagerLocator.getMaladieManager().findByPatientNoSystemNorVisiteManager(patient)));
+            // ajout des visites de toutes les collections
+            for (Banque bank : SessionUtils.getSelectedBanques(sessionScope)) {
+               maladies.addAll(new ArrayList<>(ManagerLocator.getMaladieManager().findVisitesManager(patient, bank)));
+            }
+            otherMaladies.addAll(ManagerLocator.getMaladieManager().findByPatientExcludingVisitesManager(patient));
+            otherMaladies.removeAll(maladies);
+         }else{
+            // n'affiche que des prelevements car maladies systems only
+            maladies.addAll(ManagerLocator.getMaladieManager().findByPatientExcludingVisitesManager(patient));
+         }
+      }      
    }
 
    @Override
@@ -289,10 +361,12 @@ public class FichePatientStatic extends AbstractFicheStaticController
     * gère ces deux valeurs en base).
     */
    private void accordDateToEtat(){
-      if(!"D".equals(this.patient.getPatientEtat())){
-         this.dateEtatDecesField.setValue(Labels.getLabel("Champ.Patient.DateEtat"));
-      }else{
-         this.dateEtatDecesField.setValue(Labels.getLabel("Champ.Patient.DateDeces"));
+      if (dateEtatDecesField != null) {
+         if(!"D".equals(this.patient.getPatientEtat())){
+            this.dateEtatDecesField.setValue(Labels.getLabel("Champ.Patient.DateEtat"));
+         }else{
+            this.dateEtatDecesField.setValue(Labels.getLabel("Champ.Patient.DateDeces"));
+         }
       }
    }
 
@@ -360,29 +434,37 @@ public class FichePatientStatic extends AbstractFicheStaticController
       // si on arrive à récupérer le panel prelevement et son controller
       if(tabController != null){
          // maladies doit contenir au moins une maladie
-         if(this.maladies.size() == 0){ //cree la maladie sous-jacente
-            final Maladie maladieSJ = new Maladie();
-            if(SessionUtils.getSelectedBanques(sessionScope).get(0).getDefMaladies()){
-               if(SessionUtils.getSelectedBanques(sessionScope).get(0).getDefautMaladie() != null){
-                  maladieSJ.setLibelle(SessionUtils.getSelectedBanques(sessionScope).get(0).getDefautMaladie());
-                  maladieSJ.setCode(SessionUtils.getSelectedBanques(sessionScope).get(0).getDefautMaladieCode());
-               }else{
-                  maladieSJ.setLibelle(SessionUtils.getSelectedBanques(sessionScope).get(0).getNom() + "-defaut");
-                  maladieSJ.setSystemeDefaut(true);
-               }
-            }else{ // new Maladie system defaut à creer
-               maladieSJ.setLibelle(SessionUtils.getSelectedBanques(sessionScope).get(0).getNom() + "-defaut");
-               maladieSJ.setSystemeDefaut(true);
-            }
-
-            maladieSJ.setPatient(this.patient);
-            this.maladies.add(maladieSJ);
-         }
+         initMaladieDefaut();
          tabController.switchToCreateMode(this.maladies.get(0));
          tabController.setFromFichePatient(true);
 
          // on cache la liste
          tabController.getListeRegion().setOpen(false);
+      }
+   }
+   
+   /**
+    * @since 2.3.0-gatsbi
+    * @return defaut maladie
+    */
+   protected void initMaladieDefaut() {
+      if(this.maladies.size() == 0){ //cree la maladie sous-jacente
+         final Maladie maladieSJ = new Maladie();
+         if(SessionUtils.getSelectedBanques(sessionScope).get(0).getDefMaladies()){
+            if(SessionUtils.getSelectedBanques(sessionScope).get(0).getDefautMaladie() != null){
+               maladieSJ.setLibelle(SessionUtils.getSelectedBanques(sessionScope).get(0).getDefautMaladie());
+               maladieSJ.setCode(SessionUtils.getSelectedBanques(sessionScope).get(0).getDefautMaladieCode());
+            }else{
+               maladieSJ.setLibelle(SessionUtils.getSelectedBanques(sessionScope).get(0).getNom() + "-defaut");
+               maladieSJ.setSystemeDefaut(true);
+            }
+         }else{ // new Maladie system defaut à creer
+            maladieSJ.setLibelle(SessionUtils.getSelectedBanques(sessionScope).get(0).getNom() + "-defaut");
+            maladieSJ.setSystemeDefaut(true);
+         }
+         
+         maladieSJ.setPatient(this.patient);
+         this.maladies.add(maladieSJ);
       }
    }
 
@@ -475,7 +557,11 @@ public class FichePatientStatic extends AbstractFicheStaticController
 
       // Injection des contextes
       String compDef = "maladiePanel";
-      if(SessionUtils.getCurrentContexte() == EContexte.SEROLOGIE){
+      
+      // @since gatsbi
+      if (SessionUtils.getCurrentGatsbiContexteForEntiteId(7) != null) {
+         compDef = "maladieGatsbiPanel";
+      } else if(SessionUtils.getCurrentContexte() == EContexte.SEROLOGIE){
          compDef = "maladieSeroPanel";
       }
 
@@ -587,7 +673,7 @@ public class FichePatientStatic extends AbstractFicheStaticController
       this.maladieGroupHeader = (maladieGroupHeaderTemplate.replaceFirst("\\{1\\}", String.valueOf(this.maladies.size())))
          .replaceFirst("\\{2\\}", nbPrelevements);
 
-      getBinder().loadAttribute(maladiesGroup, "label");
+      getBinder().loadAttribute(groupMaladies, "label");
    }
 
    /*************************************************************************/
@@ -607,8 +693,10 @@ public class FichePatientStatic extends AbstractFicheStaticController
       }else if(sessionScope.containsKey("ToutesCollections")){
          // donne les droits de creation/modification patient
          // car acune map de droits générée dans ce cas
-         setCanEdit(true);
-         setCanNew(true);
+         // @since 2.3.0-gatsbi invalide les creations / modification
+         // si mélange de collections contient une contextualisées par gatsbi 
+         setCanEdit(!SessionUtils.areToutesCollectionContainsOneGatsbi());
+         setCanNew(!SessionUtils.areToutesCollectionContainsOneGatsbi());
          canCreatePrel = false;
       }
 
@@ -632,7 +720,7 @@ public class FichePatientStatic extends AbstractFicheStaticController
       return prelevementsFromOtherMaladies;
    }
 
-   public PrelevementItemRenderer getPrelevementsFromOtherMaladiesRenderer(){
+   public PrelevementConsultFromOtherBanksRenderer getPrelevementsFromOtherMaladiesRenderer(){
       return prelevementFromOtherMaladiesRenderer;
    }
 
@@ -647,18 +735,29 @@ public class FichePatientStatic extends AbstractFicheStaticController
    /**
     * Affiche la fiche d'un prélèvement.
     */
-   private void onClickPrelevementCode(final Event e){
+   protected void onClickPrelevementCode(final Event e){
 
       final PrelevementController tabController = (PrelevementController) PrelevementController.backToMe(getMainWindow(), page);
-
+   
       if(e != null){ // un seul element a afficher
          final Prelevement prel = (Prelevement) e.getData();
          // change la banque au besoin
          if(!SessionUtils.getSelectedBanques(sessionScope).contains(prel.getBanque())){
-            getMainWindow().updateSelectedBanque(prel.getBanque());
+   
+            Clients.showBusy(Labels.getLabel("fichePrelevement.switchBanque.encours"));
+   
+            Events.echoEvent("onLaterSwitchBanque", self, prel);
+         }else{
+            tabController.switchToFicheStaticMode(prel);
          }
-         tabController.switchToFicheStaticMode(prel);
       }
+      tabController.getListe().updateListResultsLabel(null);
+   }
+   
+   public void onLaterSwitchBanque(final Event evt){
+      getMainWindow().updateSelectedBanque(((Prelevement) evt.getData()).getBanque());
+   
+      Events.echoEvent("onSwitchBanqueFromMaladiePrelClick", getMainWindow().getSelfComponent(), evt.getData());
    }
 
    @Override
@@ -732,6 +831,23 @@ public class FichePatientStatic extends AbstractFicheStaticController
 
    public Patient getPatient(){
       return this.patient;
+   }
+   
+   // @since 2.3.0-gatsbi  
+   protected void setGroupMedecinsOpen(final boolean b){
+      if(groupMedecins instanceof Group){
+         ((Group) groupMedecins).setOpen(b);
+      }else{
+         ((Groupbox) groupMedecins).setOpen(b);
+      }      
+   }
+   
+   protected void setGroupMaladiesOpen(final boolean b){
+      if(groupMaladies instanceof Group){
+         ((Group) groupMaladies).setOpen(b);
+      }else{
+         ((Groupbox) groupMaladies).setOpen(b);
+      }      
    }
 
 }

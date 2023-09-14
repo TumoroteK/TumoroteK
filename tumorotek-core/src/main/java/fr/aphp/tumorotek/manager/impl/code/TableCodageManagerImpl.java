@@ -70,9 +70,13 @@ public class TableCodageManagerImpl implements TableCodageManager
    // private Log log = LogFactory.getLog(TableCodageManager.class);
 
    private TableCodageDao tableCodageDao;
+
    private AdicapManager adicapManager;
+
    private CimMasterManager cimMasterManager;
+
    private CimoMorphoManager cimoMorphoManager;
+
    private CodeUtilisateurManager codeUtilisateurManager;
 
    public void setTableCodageDao(final TableCodageDao tDao){
@@ -105,17 +109,17 @@ public class TableCodageManagerImpl implements TableCodageManager
       return tableCodageDao.findByNom(nom);
    }
 
-   //	
+   //
    //	@Override
    //	public CodeCommon findCodeByTableCodageAndId(Integer codeId,
    //														TableCodage table) {
-   //		
+   //
    //		List<CodeCommon> results  = new ArrayList<CodeCommon>();
-   //		
+   //
    //		if (table != null) {
-   //			log.debug("Recherche code correspondant au couple TableCodage : " 
+   //			log.debug("Recherche code correspondant au couple TableCodage : "
    //					+ table.toString() + " - CodeId : " + codeId);
-   //			
+   //
    //			String nomTable = table.getNom();
    //			String nomAttribut = null;
    //			if (table.getNom().equals("ADICAP")) {
@@ -129,8 +133,8 @@ public class TableCodageManagerImpl implements TableCodageManager
    //				nomAttribut = "cimoMorphoId";
    //			} else if (table.getNom().equals("UTILISATEUR")) {
    //				results.add(codeUtilisateurManager.findByIdManager(codeId));
-   //			} 
-   //			
+   //			}
+   //
    //			if (nomAttribut != null) {
    //				StringBuffer sb = new StringBuffer();
    //				sb.append("SELECT c FROM ");
@@ -139,14 +143,14 @@ public class TableCodageManagerImpl implements TableCodageManager
    //				sb.append(nomAttribut);
    //				sb.append(" = ");
    //				sb.append(codeId);
-   //				
+   //
    //				EntityManager em = entityManagerFactoryCodes
    //												.createEntityManager();
    //				Query query = em.createQuery(sb.toString());
    //				results.addAll((List<CodeCommon>) query.getResultList());
    //			}
    //		}
-   //	 
+   //
    //		if (results.size() > 0) {
    //			return results.get(0);
    //		} else {
@@ -221,7 +225,6 @@ public class TableCodageManagerImpl implements TableCodageManager
       return resTrans;
    }
 
-   
    @Override
    public List<CodeCommon> findCodesAndTranscodesFromStringManager(final String codeorLib, final List<TableCodage> tables,
       final List<Banque> banks, final boolean exactMatch){

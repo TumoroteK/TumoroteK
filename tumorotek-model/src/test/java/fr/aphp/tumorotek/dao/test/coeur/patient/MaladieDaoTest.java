@@ -343,29 +343,41 @@ public class MaladieDaoTest extends AbstractDaoTest
       assertTrue(m.getDelegate().equals(m2.getDelegate()));
    }
 
-   public void testFindByPatient(){
+   public void testFindAllByPatient(){
       final Patient p = patientDao.findById(3);
-      List<Maladie> mals = maladieDao.findByPatient(p);
+      List<Maladie> mals = maladieDao.findAllByPatient(p);
       assertTrue(mals.size() == 3);
       assertTrue(mals.get(0).equals(maladieDao.findById(6)));
       assertTrue(mals.get(1).equals(maladieDao.findById(4)));
       assertTrue(mals.get(2).equals(maladieDao.findById(3)));
-      mals = maladieDao.findByPatient(patientDao.findById(2));
+      mals = maladieDao.findAllByPatient(patientDao.findById(2));
       assertTrue(mals.size() == 0);
-      mals = maladieDao.findByPatient(null);
+      mals = maladieDao.findAllByPatient(null);
       assertTrue(mals.size() == 0);
    }
 
    public void testFindByPatientNoSystem(){
       final Patient p = patientDao.findById(3);
-      List<Maladie> mals = maladieDao.findByPatientNoSystem(p);
+      List<Maladie> mals = maladieDao.findByPatientNoSystemNorVisite(p);
       assertTrue(mals.size() == 2);
       assertTrue(mals.contains(maladieDao.findById(3)));
       assertTrue(mals.contains(maladieDao.findById(4)));
-      mals = maladieDao.findByPatientNoSystem(patientDao.findById(2));
+      mals = maladieDao.findByPatientNoSystemNorVisite(patientDao.findById(2));
       assertTrue(mals.size() == 0);
-      mals = maladieDao.findByPatientNoSystem(null);
+      mals = maladieDao.findByPatientNoSystemNorVisite(null);
       assertTrue(mals.size() == 0);
    }
 
+   public void testFindByPatientExcludingVisites(){
+      final Patient p = patientDao.findById(3);
+      List<Maladie> mals = maladieDao.findByPatientExcludingVisites(p);
+      assertTrue(mals.size() == 3);
+      assertTrue(mals.get(0).equals(maladieDao.findById(6)));
+      assertTrue(mals.get(1).equals(maladieDao.findById(4)));
+      assertTrue(mals.get(2).equals(maladieDao.findById(3)));
+      mals = maladieDao.findByPatientExcludingVisites(patientDao.findById(2));
+      assertTrue(mals.size() == 0);
+      mals = maladieDao.findByPatientExcludingVisites(null);
+      assertTrue(mals.size() == 0);
+   }
 }

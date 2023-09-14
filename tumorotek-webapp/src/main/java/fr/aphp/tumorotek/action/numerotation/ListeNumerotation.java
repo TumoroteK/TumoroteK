@@ -58,6 +58,7 @@ public class ListeNumerotation extends AbstractListeController2
    private static final long serialVersionUID = 6575020319511994454L;
 
    private List<Numerotation> listObjects = new ArrayList<>();
+
    private NumerotationRowRenderer numerotationRenderer = new NumerotationRowRenderer();
 
    @Override
@@ -73,7 +74,6 @@ public class ListeNumerotation extends AbstractListeController2
       return this.listObjects;
    }
 
-   
    @Override
    public void setListObjects(final List<? extends TKdataObject> objs){
       this.listObjects = (List<Numerotation>) objs;

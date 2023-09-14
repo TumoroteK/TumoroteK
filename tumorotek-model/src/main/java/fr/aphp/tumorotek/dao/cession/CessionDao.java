@@ -98,7 +98,7 @@ public interface CessionDao extends GenericDaoJpa<Cession, Integer>
    List<String> findByBanqueSelectNumero(Banque banque);
 
    /**
-    * Recherche les cessions dont le numéro 
+    * Recherche les cessions dont le numéro
     * est 'like' le paramètre pour la plateforme spécifiée.
     * @param code Code pour lequel on recherche des cessions.
     * @param pf Plateforme.
@@ -157,7 +157,7 @@ public interface CessionDao extends GenericDaoJpa<Cession, Integer>
    List<Integer> findByServiceDest(Service service);
 
    /**
-    * Compte les cessions dont le demandeur est le collaborateur 
+    * Compte les cessions dont le demandeur est le collaborateur
     * passée en paramètre.
     * @param collaborateur
     * @return long
@@ -165,7 +165,7 @@ public interface CessionDao extends GenericDaoJpa<Cession, Integer>
    List<Long> findCountByDemandeur(Collaborateur collaborateur);
 
    /**
-    * Compte les cessions dont le destinataire est le collaborateur 
+    * Compte les cessions dont le destinataire est le collaborateur
     * passée en paramètre.
     * @param collaborateur
     * @return long
@@ -173,7 +173,7 @@ public interface CessionDao extends GenericDaoJpa<Cession, Integer>
    List<Long> findCountByDestinataire(Collaborateur collaborateur);
 
    /**
-    * Compte les cessions dont l'executant est le collaborateur 
+    * Compte les cessions dont l'executant est le collaborateur
     * passée en paramètre.
     * @param collaborateur
     * @return long

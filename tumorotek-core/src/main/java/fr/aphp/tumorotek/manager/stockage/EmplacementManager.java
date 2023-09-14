@@ -126,7 +126,7 @@ public interface EmplacementManager
    Emplacement findDoublonManager(Emplacement emplacement);
 
    /**
-    * Teste si l'Emplacement passé en paramètre est utilisé par 
+    * Teste si l'Emplacement passé en paramètre est utilisé par
     * d'autres objets.
     * @param emplacement Emplacement que l'on test.
     * @return True si l'objet est utilisé.
@@ -146,7 +146,7 @@ public interface EmplacementManager
     * @param emplacement Emplacement pour lequel on souhaite
     * créer l'Adrl.
     * @param flag positions si true renvoie adrl composée positions
-    * (utilisable uniquement pour Emplacement deja en base, car resultat 
+    * (utilisable uniquement pour Emplacement deja en base, car resultat
     * renvoyé par function SQL)
     * @return Adrl de l'emplacement.
     */
@@ -234,7 +234,7 @@ public interface EmplacementManager
    void saveMultiEmplacementsManager(List<Emplacement> emplacements);
 
    /**
-    * Renvoie l'éventuel objet de l'entité et placé à l'emplacement passés en 
+    * Renvoie l'éventuel objet de l'entité et placé à l'emplacement passés en
     * paramètre.
     * @param empl
     * @param String entiteNom
@@ -248,7 +248,7 @@ public interface EmplacementManager
    /**
     * Trouve un emplacement depuis un object stockable.
     * @param tk object
-    * @return emplacement ou null 
+    * @return emplacement ou null
     */
    Emplacement findByTKStockableObjectManager(TKStockableObject tkObj);
 

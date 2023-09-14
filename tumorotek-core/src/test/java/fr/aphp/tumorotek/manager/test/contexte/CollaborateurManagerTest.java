@@ -133,88 +133,130 @@ public class CollaborateurManagerTest extends AbstractManagerTest4
 
    @Autowired
    private CollaborateurManager collaborateurManager;
+
    @Autowired
    private SpecialiteManager specialiteManager;
+
    @Autowired
    private EtablissementManager etablissementManager;
+
    @Autowired
    private TitreManager titreManager;
+
    @Autowired
    private ServiceManager serviceManager;
+
    @Autowired
    private CoordonneeManager coordonneeManager;
+
    @Autowired
    private UtilisateurDao utilisateurDao;
+
    @Autowired
    private ServiceDao serviceDao;
+
    @Autowired
    private UtilisateurManager utilisateurManager;
+
    @Autowired
    private CollaborateurDao collaborateurDao;
+
    @Autowired
    private BanqueManager banqueManager;
+
    @Autowired
    private BanqueDao banqueDao;
+
    @Autowired
    private PlateformeDao plateformeDao;
+
    @Autowired
    private ContexteDao contexteDao;
+
    @Autowired
    private CoordonneeDao coordonneeDao;
+
    @Autowired
    private ContratManager contratManager;
+
    @Autowired
    private ContratDao contratDao;
+
    @Autowired
    private EchantillonManager echantillonManager;
+
    @Autowired
    private EchantillonDao echantillonDao;
+
    @Autowired
    private EchantillonTypeDao echantillonTypeDao;
+
    @Autowired
    private ObjetStatutDao objetStatutDao;
+
    @Autowired
    private LaboInterDao laboInterDao;
+
    @Autowired
    private PrelevementManager prelevementManager;
+
    @Autowired
    private PrelevementDao prelevementDao;
+
    @Autowired
    private MaladieManager maladieManager;
+
    @Autowired
    private MaladieDao maladieDao;
+
    @Autowired
    private PatientManager patientManager;
+
    @Autowired
    private PatientDao patientDao;
+
    @Autowired
    private PlateformeManager plateformeManager;
+
    @Autowired
    private ProdDeriveManager produitDeriveManager;
+
    @Autowired
    private ProdDeriveDao prodDeriveDao;
+
    @Autowired
    private ProdTypeDao produitTypeDao;
+
    @Autowired
    private RetourDao retourDao;
+
    @Autowired
    private RetourManager retourManager;
+
    @Autowired
    private EntiteDao entiteDao;
+
    @Autowired
    private OperationDao operationDao;
+
    @Autowired
    private CessionDao cessionDao;
+
    @Autowired
    private CessionManager cessionManager;
+
    @Autowired
    private CessionTypeDao cessionTypeDao;
+
    @Autowired
    private CessionStatutDao cessionStatutDao;
+
    @Autowired
    private NatureDao natureDao;
+
    @Autowired
    private ConsentTypeDao consentTypeDao;
+
    @Autowired
    private OperationTypeDao operationTypeDao;
 

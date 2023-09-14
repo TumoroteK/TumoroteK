@@ -55,7 +55,7 @@ public class CederObjetDecoratorFactory implements TKDecoratorFactory
 
    private boolean isAnonyme;
 
-   // @since 2.1 
+   // @since 2.1
    // objects ids scan checked
    private List<Integer> checkedObjectIds = new ArrayList<>();
 

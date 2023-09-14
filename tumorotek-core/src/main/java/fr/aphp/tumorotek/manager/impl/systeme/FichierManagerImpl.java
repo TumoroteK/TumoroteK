@@ -50,6 +50,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.validation.Validator;
 
+import eu.medsea.mimeutil.MimeUtil;
 import fr.aphp.tumorotek.dao.systeme.FichierDao;
 import fr.aphp.tumorotek.manager.exception.DoublonFoundException;
 import fr.aphp.tumorotek.manager.systeme.FichierManager;
@@ -59,8 +60,6 @@ import fr.aphp.tumorotek.model.TKFileSettableObject;
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.systeme.Fichier;
 
-import eu.medsea.mimeutil.MimeUtil;
-
 /**
  *
  * Implémentation du manager du bean de domaine CrAnapath.
@@ -68,7 +67,7 @@ import eu.medsea.mimeutil.MimeUtil;
  *
  * @author Pierre Ventadour
  * @version 2.0.11
- * 
+ *
  * TODO Migrer File vers NIO Paths pour faciliter les tests
  *
  */
@@ -78,6 +77,7 @@ public class FichierManagerImpl implements FichierManager
    private final Log log = LogFactory.getLog(FichierManager.class);
 
    private FichierDao fichierDao;
+
    private FichierValidator fichierValidator;
 
    public void setFichierDao(final FichierDao fDao){
@@ -108,8 +108,8 @@ public class FichierManagerImpl implements FichierManager
          }
          return fichierDao.findByPath(path);
       }
-         return new ArrayList<>();
-      }
+      return new ArrayList<>();
+   }
 
    @Override
    public Boolean findDoublonManager(final Fichier file){
@@ -137,7 +137,7 @@ public class FichierManagerImpl implements FichierManager
       // return (echans.size() > 0);
       return isPathSharedManager(path);
    }
-   //	
+   //
    //	@Override
    //	public Boolean isSharedByEchansObjectManager(Fichier file) {
    //		List<Echantillon> echans = echantillonDao.findByCrAnapath(file);
@@ -164,30 +164,30 @@ public class FichierManagerImpl implements FichierManager
          throw new DoublonFoundException("Fichier", "creation");
       }
 
-         BeanValidator.validateObject(fichier, new Validator[] {fichierValidator});
-         //			if (stream == null) {
-         //				log.warn("Incoherence creation stream vide");
-         //				throw new RuntimeException("Creation de fichier vide");
-         //			}
-         if(stream != null){
-            fichier.setMimeType(getMimeType(stream));
-         }
-         if(fichier.getMimeType() == null){ // defaut
-            fichier.setMimeType("application/octet-stream");
-         }
-         fichierDao.createObject(fichier);
-         if(stream != null){
-            log.info("Enregistrement de l'objet Fichier : " + fichier.toString());
-            fichier.setPath(fichier.getPath() + "_" + fichier.getFichierId());
-            fichierDao.updateObject(fichier);
-            storeFile(stream, fichier.getPath(), filesCreated);
-
-         }else if(!fichier.getPath().matches(".*_[0-9]+")){
-            fichier.setFichierId(null);
-            throw new RuntimeException("fichier.path.illegal");
-         }
-         //			fichierDao.createObject(fichier);
+      BeanValidator.validateObject(fichier, new Validator[] {fichierValidator});
+      //			if (stream == null) {
+      //				log.warn("Incoherence creation stream vide");
+      //				throw new RuntimeException("Creation de fichier vide");
+      //			}
+      if(stream != null){
+         fichier.setMimeType(getMimeType(stream));
       }
+      if(fichier.getMimeType() == null){ // defaut
+         fichier.setMimeType("application/octet-stream");
+      }
+      fichierDao.createObject(fichier);
+      if(stream != null){
+         log.info("Enregistrement de l'objet Fichier : " + fichier.toString());
+         fichier.setPath(fichier.getPath() + "_" + fichier.getFichierId());
+         fichierDao.updateObject(fichier);
+         storeFile(stream, fichier.getPath(), filesCreated);
+
+      }else if(!fichier.getPath().matches(".*_[0-9]+")){
+         fichier.setFichierId(null);
+         throw new RuntimeException("fichier.path.illegal");
+      }
+      //			fichierDao.createObject(fichier);
+   }
 
    @Override
    public Fichier updateObjectManager(final Fichier fichier, final InputStream stream, final List<File> filesCreated,
@@ -197,30 +197,30 @@ public class FichierManagerImpl implements FichierManager
          throw new DoublonFoundException("Fichier", "modification");
       }
 
-         BeanValidator.validateObject(fichier, new Validator[] {fichierValidator});
-      
-         if(stream != null){
-            //				fichierDao.updateObject(fichier);
-            // suppr ref, recree une autre ref			
-            removeObjectManager(fichier, filesToDelete);
-            final Fichier clone = fichier.clone();
-            clone.setFichierId(null);
-            fichier.setMimeType(getMimeType(stream));
-            clone.setPath(clone.getPath().substring(0, clone.getPath().lastIndexOf("_")));
-            createObjectManager(clone, stream, filesCreated);
-            //				// ecrase path ssi pas partage
-            //				if (!isPathSharedManager(fichier)) {
-            //					storeFile(stream, fichier.getPath() 
-            //								+ "_" + fichier.getFichierId());
-            //				} else { // recree un nouveau fichier
-            //					
-            //				}
-            return clone;
+      BeanValidator.validateObject(fichier, new Validator[] {fichierValidator});
+
+      if(stream != null){
+         //				fichierDao.updateObject(fichier);
+         // suppr ref, recree une autre ref			
+         removeObjectManager(fichier, filesToDelete);
+         final Fichier clone = fichier.clone();
+         clone.setFichierId(null);
+         fichier.setMimeType(getMimeType(stream));
+         clone.setPath(clone.getPath().substring(0, clone.getPath().lastIndexOf("_")));
+         createObjectManager(clone, stream, filesCreated);
+         //				// ecrase path ssi pas partage
+         //				if (!isPathSharedManager(fichier)) {
+         //					storeFile(stream, fichier.getPath() 
+         //								+ "_" + fichier.getFichierId());
+         //				} else { // recree un nouveau fichier
+         //					
+         //				}
+         return clone;
       }
-      
-            // path doit être inchangé
-            fichierDao.updateObject(fichier);
-         log.info("Modification de l'objet Fichier : " + fichier.toString());
+
+      // path doit être inchangé
+      fichierDao.updateObject(fichier);
+      log.info("Modification de l'objet Fichier : " + fichier.toString());
       return fichier;
    }
 
@@ -321,21 +321,21 @@ public class FichierManagerImpl implements FichierManager
       }
       obj.setFile(fileRef);
    }
-   
+
    @Override
-   public void switchBanqueManager(Fichier file, Banque dest, Set<MvFichier> filesToMove) {
+   public void switchBanqueManager(final Fichier file, final Banque dest, final Set<MvFichier> filesToMove){
 
-	   if (file != null && dest != null && filesToMove != null) {
-		   log.debug("modification chemin et déplacement du fichier: " + file.getNom());
-		   String actualPathStr = file.getPath();
-		   String destPathStr = actualPathStr.replaceFirst("coll_\\d+", "coll_" + dest.getBanqueId());
+      if(file != null && dest != null && filesToMove != null){
+         log.debug("modification chemin et déplacement du fichier: " + file.getNom());
+         final String actualPathStr = file.getPath();
+         final String destPathStr = actualPathStr.replaceFirst("coll_\\d+", "coll_" + dest.getBanqueId());
 
-		   // programme de déplacement physique du fichier
-		   filesToMove.add(new MvFichier(Paths.get(actualPathStr), Paths.get(destPathStr)));
+         // programme de déplacement physique du fichier
+         filesToMove.add(new MvFichier(Paths.get(actualPathStr), Paths.get(destPathStr)));
 
-		   // mise à jour du chemin
-		   file.setPath(destPathStr);
-		   fichierDao.updateObject(file);
-	   }
+         // mise à jour du chemin
+         file.setPath(destPathStr);
+         fichierDao.updateObject(file);
+      }
    }
 }

@@ -35,12 +35,12 @@
  **/
 package fr.aphp.tumorotek.action;
 
+import static fr.aphp.tumorotek.param.TkParam.LDAP_AUTHENTICATION;
+
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.ldap.authentication.LdapAuthenticationProvider;
 import org.springframework.security.ldap.authentication.LdapAuthenticator;
-
-import static fr.aphp.tumorotek.param.TkParam.LDAP_AUTHENTICATION;
 
 /**
  * Provider d'authentification LDAP
@@ -49,23 +49,24 @@ import static fr.aphp.tumorotek.param.TkParam.LDAP_AUTHENTICATION;
 public class CustomLdapProvider extends LdapAuthenticationProvider
 {
 
-   private Boolean ldapAuthActivated;
-   
+   private final Boolean ldapAuthActivated;
+
    /**
     * Exception indiquant que l'authentification est désactivée dans le paramétrage de l'application
     */
-   private class LdapAuhtenticationDeactivatedException extends AuthenticationException{
+   private class LdapAuhtenticationDeactivatedException extends AuthenticationException
+   {
 
       private static final long serialVersionUID = 5450668710171265295L;
 
       public LdapAuhtenticationDeactivatedException(){
          super("Authentification LDAP désactivée");
       }
-      
+
    }
-   
+
    /** Constructeur */
-   public CustomLdapProvider(LdapAuthenticator authenticator){
+   public CustomLdapProvider(final LdapAuthenticator authenticator){
       super(authenticator);
       this.ldapAuthActivated = Boolean.valueOf(LDAP_AUTHENTICATION.getValue());
    }
@@ -75,14 +76,14 @@ public class CustomLdapProvider extends LdapAuthenticationProvider
     * @see org.springframework.security.ldap.authentication.AbstractLdapAuthenticationProvider#authenticate(org.springframework.security.core.Authentication)
     */
    @Override
-   public Authentication authenticate(Authentication authentication) throws AuthenticationException{
-      
-      if(!ldapAuthActivated) {
+   public Authentication authenticate(final Authentication authentication) throws AuthenticationException{
+
+      if(!ldapAuthActivated){
          throw new LdapAuhtenticationDeactivatedException();
       }
-      
+
       return super.authenticate(authentication);
-      
+
    }
 
 }

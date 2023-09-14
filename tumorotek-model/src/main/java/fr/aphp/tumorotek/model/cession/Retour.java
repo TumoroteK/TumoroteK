@@ -75,52 +75,61 @@ import fr.aphp.tumorotek.model.systeme.Entite;
  */
 @Entity
 @Table(name = "RETOUR")
-@NamedQueries(
-   value = {
-      @NamedQuery(name = "Retour.findByObjetId",
-         query = "SELECT r FROM Retour r WHERE r.objetId = ?1 " + "ORDER BY r.dateSortie"),
-      @NamedQuery(name = "Retour.findByObject",
-         query = "SELECT r FROM Retour r WHERE r.objetId = ?1" + " AND r.entite = ?2 " + "ORDER BY r.dateSortie"),
-      @NamedQuery(name = "Retour.findByObjectAndImpact",
-         query = "SELECT r FROM Retour r WHERE r.objetId = ?1" + " AND r.entite = ?2 AND r.impact = ?3 "
-            + "ORDER BY r.dateSortie"),
-      @NamedQuery(name = "Retour.findByObjectsDateRetourEmpty",
-         query = "SELECT r FROM Retour r WHERE " + " r.entite = ?2 AND r.dateRetour is null" + " AND r.objetId in (?1)"),
-      @NamedQuery(name = "Retour.findByExcludedId",
-         query = "SELECT r FROM Retour r WHERE r.retourId != ?1 " + " AND r.objetId = ?2" + " AND r.entite = ?3"),
-      @NamedQuery(name = "Retour.findByMaxId", query = "SELECT max(r.retourId) FROM Retour r"),
-      @NamedQuery(name = "Retour.findByObjDates",
-         query = "SELECT r FROM Retour r where r.dateSortie <= ?1 "
-            + "AND r.dateRetour >= ?1 AND r.objetId = ?2 and r.entite = ?3 " + "AND r.retourId <> ?4"),
-      @NamedQuery(name = "Retour.findObjIdsByDatesAndEntite",
-         query = "SELECT distinct r.objetId FROM Retour r where r.dateSortie <= ?1 "
-            + "AND r.dateRetour >= ?1 AND r.entite = ?2"),
-      @NamedQuery(name = "Retour.findByObjInsideDates",
-         query = "SELECT r FROM Retour r where r.dateSortie >= ?1 "
-            + "AND r.dateRetour <= ?2 AND r.objetId = ?3 and r.entite = ?4 " + "AND r.retourId <> ?5"),
-      @NamedQuery(name = "Retour.findObjIdsInsideDatesEntite",
-         query = "SELECT distinct r.objetId FROM Retour r where r.dateSortie >= ?1 "
-            + "AND r.dateRetour <= ?2 AND r.entite = ?3"),
-      @NamedQuery(name = "Retour.findByCollaborateur", query = "SELECT r FROM Retour r where r.collaborateur = ?1 ")})
+@NamedQueries(value = {
+   @NamedQuery(name = "Retour.findByObjetId", query = "SELECT r FROM Retour r WHERE r.objetId = ?1 " + "ORDER BY r.dateSortie"),
+   @NamedQuery(name = "Retour.findByObject",
+      query = "SELECT r FROM Retour r WHERE r.objetId = ?1" + " AND r.entite = ?2 " + "ORDER BY r.dateSortie"),
+   @NamedQuery(name = "Retour.findByObjectAndImpact",
+      query = "SELECT r FROM Retour r WHERE r.objetId = ?1" + " AND r.entite = ?2 AND r.impact = ?3 " + "ORDER BY r.dateSortie"),
+   @NamedQuery(name = "Retour.findByObjectsDateRetourEmpty",
+      query = "SELECT r FROM Retour r WHERE " + " r.entite = ?2 AND r.dateRetour is null" + " AND r.objetId in (?1)"),
+   @NamedQuery(name = "Retour.findByExcludedId",
+      query = "SELECT r FROM Retour r WHERE r.retourId != ?1 " + " AND r.objetId = ?2" + " AND r.entite = ?3"),
+   @NamedQuery(name = "Retour.findByMaxId", query = "SELECT max(r.retourId) FROM Retour r"),
+   @NamedQuery(name = "Retour.findByObjDates",
+      query = "SELECT r FROM Retour r where r.dateSortie <= ?1 " + "AND r.dateRetour >= ?1 AND r.objetId = ?2 and r.entite = ?3 "
+         + "AND r.retourId <> ?4"),
+   @NamedQuery(name = "Retour.findObjIdsByDatesAndEntite",
+      query = "SELECT distinct r.objetId FROM Retour r where r.dateSortie <= ?1 " + "AND r.dateRetour >= ?1 AND r.entite = ?2"),
+   @NamedQuery(name = "Retour.findByObjInsideDates",
+      query = "SELECT r FROM Retour r where r.dateSortie >= ?1 " + "AND r.dateRetour <= ?2 AND r.objetId = ?3 and r.entite = ?4 "
+         + "AND r.retourId <> ?5"),
+   @NamedQuery(name = "Retour.findObjIdsInsideDatesEntite",
+      query = "SELECT distinct r.objetId FROM Retour r where r.dateSortie >= ?1 " + "AND r.dateRetour <= ?2 AND r.entite = ?3"),
+   @NamedQuery(name = "Retour.findByCollaborateur", query = "SELECT r FROM Retour r where r.collaborateur = ?1 ")})
 public class Retour implements TKdataObject, Serializable
 {
 
    private Integer retourId;
+
    private Integer objetId;
+
    private Calendar dateSortie;
+
    private Calendar dateRetour;
+
    private Float tempMoyenne;
+
    private Boolean sterile;
+
    private Boolean impact;
+
    private String observations;
+
    private String oldEmplacementAdrl;
 
    private Cession cession;
+
    private Entite entite;
+
    private Transformation transformation;
+
    private Collaborateur collaborateur;
+
    private Conteneur conteneur;
+
    private Incident incident;
+
    private ObjetStatut objetStatut;
 
    private TKStockableObject tkObject;

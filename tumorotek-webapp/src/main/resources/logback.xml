@@ -32,7 +32,7 @@
         </encoder>
     </appender>
 
-    <logger name="fr.aphp.tumorotek.manager" additivity="false" level="ERROR">
+    <logger name="fr.aphp.tumorotek.manager" additivity="false" level="DEBUG">
         <appender-ref ref="DailyRollingFile"/>
     </logger>
 
@@ -40,15 +40,15 @@
         <appender-ref ref="DailyRollingFile"/>
     </logger>
 
-    <logger name="fr.aphp.tumorotek.webapp" additivity="false" level="ERROR">
+    <logger name="fr.aphp.tumorotek.webapp" additivity="false" level="DEBUG">
         <appender-ref ref="DailyRollingFile"/>
     </logger>
 
-    <logger name="fr.aphp.tumorotek.action" additivity="false" level="ERROR">
+    <logger name="fr.aphp.tumorotek.action" additivity="false" level="DEBUG">
         <appender-ref ref="DailyRollingFile"/>
     </logger>
 
-    <logger name="liquibase" level="INFO">
+    <logger name="liquibase" level="DEBUG">
         <appender-ref ref="LIQUIBASE" />
     </logger>
     

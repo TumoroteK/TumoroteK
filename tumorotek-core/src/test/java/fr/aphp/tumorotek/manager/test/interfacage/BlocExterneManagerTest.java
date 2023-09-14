@@ -70,10 +70,13 @@ public class BlocExterneManagerTest extends AbstractManagerTest4
 
    @Autowired
    private BlocExterneManager blocExterneManager;
+
    @Autowired
    private DossierExterneDao dossierExterneDao;
+
    @Autowired
    private EntiteDao entiteDao;
+
    @Autowired
    private ValeurExterneManager valeurExterneManager;
 

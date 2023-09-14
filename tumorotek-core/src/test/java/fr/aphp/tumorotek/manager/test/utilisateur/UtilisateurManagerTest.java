@@ -84,24 +84,34 @@ public class UtilisateurManagerTest extends AbstractManagerTest4
 
    @Autowired
    private UtilisateurManager utilisateurManager;
+
    @Autowired
    private UtilisateurDao utilisateurDao;
+
    @Autowired
    private BanqueDao banqueDao;
+
    @Autowired
    private ProfilDao profilDao;
+
    @Autowired
    private CollaborateurDao collaborateurDao;
+
    @Autowired
    private ProfilUtilisateurManager profilUtilisateurManager;
+
    @Autowired
    private PlateformeManager plateformeManager;
+
    @Autowired
    private OperationManager operationManager;
+
    @Autowired
    private CodeSelectManager codeSelectManager;
+
    @Autowired
    private CodeUtilisateurManager codeUtilisateurManager;
+
    @Autowired
    private OperationTypeDao operationTypeDao;
 
@@ -890,12 +900,12 @@ public class UtilisateurManagerTest extends AbstractManagerTest4
    @Test
    public void testDateDesactivationCoherence() throws ParseException{
       /*Utilisateur u = new Utilisateur();
-
+      
       // null validation
       u.setTimeOut(null);
       Errors errs = UtilisateurValidator.checkDateDesactCoherence(u);
       assertTrue(errs.getAllErrors().size() == 0);
-
+      
       // limites inf
       u.setTimeOut(new SimpleDateFormat("dd/MM/yyyy").parse("01/01/2009"));
       errs = UtilisateurValidator.checkDateDesactCoherence(u);
@@ -1102,24 +1112,23 @@ public class UtilisateurManagerTest extends AbstractManagerTest4
 
       cleanUpFantomes(null);
    }
-   
+
    /**
     * @since 2.2.1
     */
    @Test
    public void testFindSuperAndArchiveManager(){
-      List<Utilisateur> utilisateurs =
-         utilisateurManager.findBySuperAndArchiveManager(true, true);
+      List<Utilisateur> utilisateurs = utilisateurManager.findBySuperAndArchiveManager(true, true);
       assertTrue(utilisateurs.isEmpty());
 
-      utilisateurs =  utilisateurManager.findBySuperAndArchiveManager(false, true);
+      utilisateurs = utilisateurManager.findBySuperAndArchiveManager(false, true);
       assertTrue(utilisateurs.size() == 1);
       assertTrue(utilisateurs.get(0).getUtilisateurId() == 5);
 
       utilisateurs = utilisateurManager.findBySuperAndArchiveManager(true, false);
       assertTrue(utilisateurs.size() == 1);
       assertTrue(utilisateurs.get(0).getUtilisateurId() == 3);
-      
+
       utilisateurs = utilisateurManager.findBySuperAndArchiveManager(false, false);
       assertTrue(utilisateurs.size() == 3);
    }

@@ -37,7 +37,6 @@ package fr.aphp.tumorotek.manager.test.qualite;
 
 import static org.junit.Assert.*;
 
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -68,17 +67,19 @@ public class NonConformiteManagerTest extends AbstractManagerTest4
 
    @Autowired
    private NonConformiteManager nonConformiteManager;
+
    @Autowired
    private ConformiteTypeManager conformiteTypeManager;
+
    @Autowired
    private PlateformeDao plateformeDao;
+
    @Autowired
    private EntiteDao entiteDao;
 
    private final int tot = 11;
 
-   public NonConformiteManagerTest(){
-   }
+   public NonConformiteManagerTest(){}
 
    @Test
    public void testFindById(){
@@ -188,7 +189,7 @@ public class NonConformiteManagerTest extends AbstractManagerTest4
       assertFalse(nonConformiteManager.isUsedObjectManager(n2));
    }
 
-  @Test
+   @Test
    public void testCrud(){
       // Insertion
       final NonConformite n1 = new NonConformite();
@@ -334,7 +335,7 @@ public class NonConformiteManagerTest extends AbstractManagerTest4
       assertTrue(nonConformiteManager.findAllObjectsManager().size() == tot);
    }
 
-  @Test
+   @Test
    public void testGetFromObjetNonConformes(){
       // null
       assertTrue(nonConformiteManager.getFromObjetNonConformes(null).isEmpty());

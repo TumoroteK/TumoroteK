@@ -601,7 +601,7 @@ public class TemplateManagerImpl implements TemplateManager
       //Gestion des CleImpression
       if(cles != null){
          // enregistrements
-         for(CleImpression cle : cles){
+         for(final CleImpression cle : cles){
             if(null != cle.getCleId()){
                cleImpressionManager.updateObjectManager(cle);
             }else{

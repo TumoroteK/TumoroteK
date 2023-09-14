@@ -38,9 +38,6 @@ package fr.aphp.tumorotek.utils;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.Duration;
-import java.time.LocalDate;
-import java.time.Period;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -327,29 +324,25 @@ public abstract class ConversionUtils
 
    }
 
-   public static String formatToStringValue(Object obj) {
+   public static String formatToStringValue(final Object obj){
 
       String value = null;
 
       if(obj instanceof String){
-         value = (String)obj;
-      }
-      else if(obj instanceof Number){
+         value = (String) obj;
+      }else if(obj instanceof Number){
          value = String.valueOf(obj);
-      }
-      else if(obj instanceof Boolean){
+      }else if(obj instanceof Boolean){
          if((Boolean) obj){
             value = "Oui";
          }else{
             value = "Non";
          }
-      }
-      else if(obj instanceof Date){
+      }else if(obj instanceof Date){
          final Date date = (Date) obj;
          final SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
          value = sdf.format(date);
-      }
-      else if(obj instanceof Calendar){
+      }else if(obj instanceof Calendar){
          final Calendar tmp = (Calendar) obj;
          SimpleDateFormat sdf = null;
          if(tmp.get(Calendar.HOUR_OF_DAY) > 0 || tmp.get(Calendar.MINUTE) > 0 || tmp.get(Calendar.SECOND) > 0){
@@ -358,8 +351,7 @@ public abstract class ConversionUtils
             sdf = new SimpleDateFormat("dd/MM/yyyy");
          }
          value = sdf.format(tmp.getTime());
-      }
-      else if(obj instanceof Fichier){
+      }else if(obj instanceof Fichier){
          value = ((Fichier) obj).getNom();
       }
 

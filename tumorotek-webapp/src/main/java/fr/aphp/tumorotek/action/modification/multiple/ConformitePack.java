@@ -56,6 +56,7 @@ public class ConformitePack
    // private static final long serialVersionUID = 3551763682958457361L;
 
    private Boolean nonConforme;
+
    private List<NonConformite> nonConformites = new ArrayList<>();
 
    public Boolean getNonConforme(){

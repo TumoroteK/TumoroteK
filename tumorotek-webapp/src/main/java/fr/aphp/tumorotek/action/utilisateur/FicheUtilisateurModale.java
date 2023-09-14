@@ -72,25 +72,36 @@ public class FicheUtilisateurModale extends AbstractFicheCombineController
 
    // Static Components pour le mode static.
    private Label emailLabel;
+
    private Row rowPfsAdmin;
+
    private Row timeoutRow;
+
    private Row timeoutHelpRow;
+
    private Button close;
 
    // Editable components : mode d'édition ou de création.
    private Row passwordRow;
+
    private Textbox emailBox;
+
    private Group groupRoles;
 
    // Objets Principaux.
    private Utilisateur user;
+
    private String path;
+
    private boolean changed = false;
+
    private Integer nbMoisMdp = null;
 
    // Associations.
    private List<ProfilUtilisateur> profilUtilisateurs = new ArrayList<>();
+
    private List<ProfilUtilisateur> profilUtilisateursOtherBanques = new ArrayList<>();
+
    private List<Plateforme> plateformes = new ArrayList<>();
 
    // Variables formulaire.
@@ -139,7 +150,7 @@ public class FicheUtilisateurModale extends AbstractFicheCombineController
       passwordRow.setVisible(!user.isLdap());
       timeoutRow.setVisible(!user.isLdap());
       timeoutHelpRow.setVisible(!user.isLdap());
-      
+
       getBinder().loadComponent(self);
    }
 
@@ -216,7 +227,7 @@ public class FicheUtilisateurModale extends AbstractFicheCombineController
       deleteC.setVisible(false);
 
       getBinder().loadComponent(self);
-      
+
    }
 
    /**
@@ -228,7 +239,7 @@ public class FicheUtilisateurModale extends AbstractFicheCombineController
       super.switchToEditMode();
 
       getBinder().loadComponent(self);
-      
+
    }
 
    @Override
@@ -415,15 +426,15 @@ public class FicheUtilisateurModale extends AbstractFicheCombineController
    public String getLdapFormated(){
 
       String ftdIsLdap = "";
-      
+
       if(this.user != null){
          ftdIsLdap = ObjectTypesFormatters.booleanLitteralFormatter(this.user.isLdap());
       }
-      
+
       return ftdIsLdap;
-      
+
    }
-   
+
    public void onClick$editPassword(){
       openPasswordWindow(page, self, user);
    }
@@ -511,5 +522,5 @@ public class FicheUtilisateurModale extends AbstractFicheCombineController
    public void setNbMoisMdp(final Integer nb){
       this.nbMoisMdp = nb;
    }
-   
+
 }

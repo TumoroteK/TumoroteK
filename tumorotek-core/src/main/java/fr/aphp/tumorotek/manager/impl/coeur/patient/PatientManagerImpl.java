@@ -39,6 +39,7 @@ import java.io.File;
 import java.lang.reflect.Field;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
@@ -46,6 +47,7 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import javax.persistence.EntityManager;
@@ -74,6 +76,7 @@ import fr.aphp.tumorotek.manager.impl.coeur.CreateOrUpdateUtilities;
 import fr.aphp.tumorotek.manager.io.imports.ImportHistoriqueManager;
 import fr.aphp.tumorotek.manager.qualite.OperationManager;
 import fr.aphp.tumorotek.manager.validation.BeanValidator;
+import fr.aphp.tumorotek.manager.validation.coeur.patient.gatsbi.PatientGatsbiValidator;
 import fr.aphp.tumorotek.model.coeur.annotation.AnnotationValeur;
 import fr.aphp.tumorotek.model.coeur.annotation.ChampAnnotation;
 import fr.aphp.tumorotek.model.coeur.patient.Maladie;
@@ -82,9 +85,11 @@ import fr.aphp.tumorotek.model.coeur.patient.PatientLien;
 import fr.aphp.tumorotek.model.coeur.patient.PatientLienPK;
 import fr.aphp.tumorotek.model.coeur.patient.PatientMedecin;
 import fr.aphp.tumorotek.model.coeur.patient.PatientMedecinPK;
+import fr.aphp.tumorotek.model.coeur.patient.gatsbi.PatientIdentifiant;
 import fr.aphp.tumorotek.model.coeur.prelevement.Prelevement;
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.contexte.Collaborateur;
+import fr.aphp.tumorotek.model.contexte.gatsbi.Contexte;
 import fr.aphp.tumorotek.model.interfacage.PatientSip;
 import fr.aphp.tumorotek.model.qualite.OperationType;
 import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
@@ -95,7 +100,7 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
  * Classe créée le 30/10/09.
  *
  * @author Mathieu BARTHELEMY
- * @version 2.0
+ * @version 2.3.0-gatsbi
  *
  */
 public class PatientManagerImpl implements PatientManager
@@ -105,17 +110,29 @@ public class PatientManagerImpl implements PatientManager
 
    /* Beans injectes par Spring*/
    private PatientDao patientDao;
+
    private MaladieDao maladieDao;
+
    private MaladieManager maladieManager;
+
    private PatientMedecinDao patientMedecinDao;
+
    private PatientLienDao patientLienDao;
+
    private PatientValidator patientValidator;
+
    private OperationTypeDao operationTypeDao;
+
    private OperationManager operationManager;
+
    private EntityManagerFactory entityManagerFactory;
+
    private EntiteDao entiteDao;
+
    private PrelevementDao prelevementDao;
+
    private AnnotationValeurManager annotationValeurManager;
+
    private ImportHistoriqueManager importHistoriqueManager;
    // private PatientDelegateDao patientDelegateDao;
 
@@ -185,15 +202,36 @@ public class PatientManagerImpl implements PatientManager
          if(operation == null){
             throw new NullPointerException("operation cannot be " + "set to null for createorUpdateMethod");
          }
+         
+         // @since 2.3.0-gatsbi 
+         final List<Integer> requiredChampEntiteId = new ArrayList<>();
+         if(patient.getBanque() != null && patient.getBanque().getEtude() != null){ // creation / edition en contexte Gatsbi
+            final Contexte patContexte = patient.getBanque().getEtude().getContexteForEntite(1);
+            if(patContexte != null){
+               requiredChampEntiteId.addAll(patContexte.getRequiredChampEntiteIds());
+            }
+         }
+         Validator[] validators;
+         if(requiredChampEntiteId.isEmpty()){ // pas de restriction gatsbi
+            validators = new Validator[] {patientValidator};
+         }else{ // gatsbi définit certain champs obligatoires
+            final PatientGatsbiValidator gValidator = 
+               new PatientGatsbiValidator("patient", requiredChampEntiteId);
+            validators = new Validator[] {gValidator, patientValidator};
+         }
+         
          //Validation
-         BeanValidator.validateObject(patient, new Validator[] {patientValidator});
+         BeanValidator.validateObject(patient, validators);
+         
          //Doublon
-         if(!operation.equals("fusion") && findDoublonManager(patient)){
+         Optional<PatientDoublonFound> optDbf = findDoublonManager(patient);
+         if(!operation.equals("fusion") && optDbf.isPresent()){
             log.warn("Doublon lors " + operation + " objet Patient " + patient.toString());
-            throw new DoublonFoundException("Patient", operation, patient.getNip(), null);
+            throw new DoublonFoundException("Patient", operation, optDbf.get());
          }
          if((operation.equals("creation") || operation.equals("modification")) || operation.equals("modifMulti")
-            || operation.equals("synchronisation") || operation.equals("fusion") || operation.equals("validation") || operation.equals("invalidation")){
+            || operation.equals("synchronisation") || operation.equals("fusion") || operation.equals("validation")
+            || operation.equals("invalidation")){
 
             OperationType oType;
 
@@ -248,13 +286,13 @@ public class PatientManagerImpl implements PatientManager
                }
 
                // update les annotations, null operation pour
-               // laisser la possibilité création/modification au sein 
+               // laisser la possibilité création/modification au sein
                // de la liste
                if(listAnnoToCreateOrUpdate != null){
                   annotationValeurManager.createAnnotationValeurListManager(listAnnoToCreateOrUpdate, patient, utilisateur, null,
                      baseDir, filesCreated, filesToDelete);
                }
-               // enregistre operation associee annotation 
+               // enregistre operation associee annotation
                // si il y a eu des deletes et pas d'updates
                if((listAnnoToCreateOrUpdate == null || listAnnoToCreateOrUpdate.isEmpty())
                   && (listAnnoToDelete != null && !listAnnoToDelete.isEmpty())){
@@ -283,7 +321,8 @@ public class PatientManagerImpl implements PatientManager
             }
 
          }else{
-            throw new IllegalArgumentException("Operation must match " + "'creation/modification/synchronisation/fusion/validation/invalidation' values");
+            throw new IllegalArgumentException(
+               "Operation must match " + "'creation/modification/synchronisation/fusion/validation/invalidation' values");
          }
       }
    }
@@ -295,39 +334,86 @@ public class PatientManagerImpl implements PatientManager
    }
 
    @Override
-   public boolean findDoublonManager(final Patient patient){
+   public Optional<PatientDoublonFound> findDoublonManager(final Patient patient){
+      if (patient.getBanque() == null) {
+         return findPatientDoublonOnIdentityOrNip(patient);
+      } else { // gatsbi 
+         // recherche d'abord par identifiant si existe pour la banque
+         if (findPatientDoublonOnIdentifiant(patient)) {
+            PatientDoublonFound df = new PatientDoublonFound();
+            df.setIdentifiant(patient.getIdentifiantAsString());
+            return Optional.of(df);
+         }
+         
+         // sinon vérifie quand même les traits d'identités et le NIP
+         return findPatientDoublonOnIdentityOrNip(patient);
+      }  
+   }
+   
+   private boolean findPatientDoublonOnIdentifiant(final Patient patient) {
+      // un seul patient avec l'identifiant au max doit exister 
+      List<Patient> existings = patientDao
+         .findByIdentifiant(patient.getIdentifiantAsString(), Arrays.asList(patient.getBanque()));
+      if(patient.getPatientId() == null){ // nouveau, aucun patient avec cet identifiant ne doit exister
+         return !existings.isEmpty();
+      }else{ // en modification, seul LE patient avec LE même id peut exister
+         return !existings.isEmpty() && !patient.getPatientId().equals(existings.get(0).getPatientId());
+      }
+   }
+      
+   private Optional<PatientDoublonFound> findPatientDoublonOnIdentityOrNip(final Patient patient) {
+
+      PatientDoublonFound df = new PatientDoublonFound();
+      
       boolean doublon = false;
-      if(patient.getPatientId() == null){
+      if(patient.getPatientId() == null){ // creation
          doublon = patientDao.findByNom(patient.getNom()).contains(patient);
-      }else{
+      }else{ // modification
          doublon = patientDao.findByExcludedId(patient.getPatientId(), patient.getNom()).contains((patient));
       }
 
-      // s'il n'y a pas de doublon sur le EQUALS du Patient, on va
-      // vérifier qu'il n'y a aucun patient ayant le même NIP
+      // il y un doublon sur les traits d'identité nom, prenom, date naissance
+      // traits EQUALS du patient
       if(doublon){
-         return doublon;
+         df.setNom(patient.getNom());
+         return Optional.of(df);
       }
-      if(patient.getPatientId() == null){
-         return patientDao.findByNip(patient.getNip()).size() > 0;
+      
+      // sinon érifier qu'il n'y a aucun patient ayant le même NIP
+      if(patient.getPatientId() == null){ // creation
+         doublon = patientDao.findByNip(patient.getNip()).size() > 0;
+      } else { // modification
+         doublon = patientDao.findByNipWithExcludedId(patient.getNip(), patient.getPatientId()).size() > 0;
       }
-
-      return patientDao.findByNipWithExcludedId(patient.getNip(), patient.getPatientId()).size() > 0;
+      
+      if(doublon){
+         df.setNip(patient.getNip());
+         return Optional.of(df);
+      }
+      return Optional.empty();
    }
 
    @Override
    public Patient getExistingPatientManager(final Patient pat){
       if(pat != null){
-         // recherche par identité
-         final List<Patient> patients = patientDao.findByNom(pat.getNom());
-
-         // renvoie patient si contenu dans la liste
-         if(patients.contains(pat)){
-            return patients.get(patients.indexOf(pat));
+         
+         final List<Patient> patients = new ArrayList<Patient>();
+         // @since gatsbi
+         // recherche si le patient existant correspond à un identifiant
+         if (pat.getBanque() != null) {
+            patients.addAll(patientDao
+               .findByIdentifiant(pat.getIdentifiantAsString(), Arrays.asList(pat.getBanque())));
+            return patients.get(0); // un seul patient possible par identifiant par banque
          }
-
-         patients.clear();
-
+         
+         // le patient existant porte sur l'identité
+         if (patients.isEmpty()) {
+            patients.addAll(patientDao.findByNom(pat.getNom()));
+            // renvoie patient si contenu dans la liste
+            if(patients.contains(pat)){
+               return patients.get(patients.indexOf(pat));
+            }
+         }
       }
       return null;
    }
@@ -372,7 +458,7 @@ public class PatientManagerImpl implements PatientManager
    }
 
    /**
-    * Recherche toutes les patients dont le nom est egal ou 'like' 
+    * Recherche toutes les patients dont le nom est egal ou 'like'
     * celui passé en parametre.
     * @param nom
     * @param boolean exactMatch
@@ -388,7 +474,7 @@ public class PatientManagerImpl implements PatientManager
    }
 
    /**
-    * Recherche toutes les patients dont le nom est egal ou 'like' 
+    * Recherche toutes les patients dont le nom est egal ou 'like'
     * celui passé en parametre.
     * @param nom
     * @param boolean exactMatch
@@ -494,7 +580,7 @@ public class PatientManagerImpl implements PatientManager
          if(!isUsedObjectManager(patient)){
 
             // Supprime les maladies associées
-            final Iterator<Maladie> malsIt = maladieManager.findByPatientManager(patient).iterator();
+            final Iterator<Maladie> malsIt = maladieManager.findAllByPatientManager(patient).iterator();
             while(malsIt.hasNext()){
                maladieManager.removeObjectManager(malsIt.next(), comments, user);
             }
@@ -559,7 +645,7 @@ public class PatientManagerImpl implements PatientManager
     * une liste de maladies.
     * @param patient pour lequel on veut mettre à jour
     * les associations.
-    * @param maladies Liste des maladies que l'on veut associer 
+    * @param maladies Liste des maladies que l'on veut associer
     * au patient.
     */
    private void updateMaladies(final Patient patient, final List<Maladie> maladies){
@@ -609,7 +695,7 @@ public class PatientManagerImpl implements PatientManager
     * une liste de patientMedecin.
     * @param patient pour lequel on veut mettre à jour
     * les associations.
-    * @param collaborateurs Liste ordonnée des medecins referents 
+    * @param collaborateurs Liste ordonnée des medecins referents
     * que l'on veut associer au patient.
     */
    private void updateMedecins(final Patient patient, final List<Collaborateur> collaborateurs){
@@ -667,7 +753,7 @@ public class PatientManagerImpl implements PatientManager
     * une liste de patientLien.
     * @param patient pour lequel on veut mettre à jour
     * les liens familiaux.
-    * @param patients Liste de patients que l'on veut que 
+    * @param patients Liste de patients que l'on veut que
     * l'on veut lier au patient.
     */
    private void updateLiens(final Patient patient, final List<PatientLien> liens){
@@ -723,7 +809,7 @@ public class PatientManagerImpl implements PatientManager
    }
 
    /**
-    * Recupere la liste de patients en fonction du type d'operation et 
+    * Recupere la liste de patients en fonction du type d'operation et
     * d'une date a laquelle la date d'enregistrement de l'operation doit
     * etre superieure ou egale.
     * Dans un premier temps, recupere la liste des objetIds qui sont ensuite
@@ -756,7 +842,7 @@ public class PatientManagerImpl implements PatientManager
    }
 
    /**
-    * Recupere la liste de patients en fonction du type d'operation et 
+    * Recupere la liste de patients en fonction du type d'operation et
     * d'une date a laquelle la date d'enregistrement de l'operation doit
     * etre superieure ou egale.
     * Dans un premier temps, recupere la liste des objetIds qui sont ensuite
@@ -860,9 +946,9 @@ public class PatientManagerImpl implements PatientManager
          annotationValeurManager.removeAnnotationValeurListManager(listAnnoToDelete, filesToDelete);
 
          if(listAnnoToCreateOrUpdate != null){
-            // traite en premier et retire les annotations 
-            // création de fichiers pour 
-            // enregistrement en batch 
+            // traite en premier et retire les annotations
+            // création de fichiers pour
+            // enregistrement en batch
             final List<AnnotationValeur> fileVals = new ArrayList<>();
             for(final AnnotationValeur val : listAnnoToCreateOrUpdate){
                if(val.getFichier() != null && val.getStream() != null){
@@ -874,7 +960,7 @@ public class PatientManagerImpl implements PatientManager
             listAnnoToCreateOrUpdate.removeAll(fileVals);
 
             // update les annotations, null operation pour
-            // laisser la possibilité création/modification au sein 
+            // laisser la possibilité création/modification au sein
             // de la liste
             annotationValeurManager.createAnnotationValeurListManager(listAnnoToCreateOrUpdate, null, utilisateur, null, baseDir,
                filesCreated, filesToDelete);
@@ -992,7 +1078,7 @@ public class PatientManagerImpl implements PatientManager
             // si le patient actif a déjà une annotation pour le
             // champ de l'annotation du passif
             if(champsValeurs.containsKey(valeursPassives.get(i).getChampAnnotation())){
-               // si cette valeur est pour la même collection : 
+               // si cette valeur est pour la même collection :
                // on va supprimer cette annotation
                valeursASupprimer.add(valeursPassives.get(i));
             }else{
@@ -1078,13 +1164,14 @@ public class PatientManagerImpl implements PatientManager
    }
 
    @Override
-   public void removeListFromIdsManager(final List<Integer> ids, final String comment, final Utilisateur u){
+   public void removeListFromIdsManager(final List<Integer> ids, final String comment, final Utilisateur u, final Banque b){
       if(ids != null){
          final List<File> filesToDelete = new ArrayList<>();
          Patient p;
          for(final Integer id : ids){
             p = findByIdManager(id);
             if(p != null){
+               p.setBanque(b); // @since 2.3.0-gasbi, si banque non nulle alors identifiant sera chois comme phantomData
                removeObjectManager(p, comment, u, filesToDelete);
             }
          }
@@ -1094,7 +1181,45 @@ public class PatientManagerImpl implements PatientManager
       }
    }
 
-//   public void setPatientDelegateDao(PatientDelegateDao patientDelegateDao){
-//      this.patientDelegateDao = patientDelegateDao;
-//   }
+   @Override
+   public List<Integer> findByIdentifiantsInListManager(List<String> identifiants, List<Banque> selectedBanques){
+      if(identifiants != null && !identifiants.isEmpty() && selectedBanques != null && !selectedBanques.isEmpty()){
+         return patientDao.findByIdentifiantInList(identifiants, selectedBanques);
+      }
+      return new ArrayList<>();
+   }
+
+   @Override
+   public List<Integer> findByIdentifiantLikeBothSideReturnIdsManager(String identifiant,
+      List<Banque> selectedBanques, boolean exactMatch){
+      if(!exactMatch){
+         identifiant = "%" + identifiant + "%";
+      }
+      log.debug("Recherche Patient par identifiant: " + identifiant + " exactMatch " + String.valueOf(exactMatch));
+      if(selectedBanques != null && !selectedBanques.isEmpty()){
+         return patientDao.findByIdentifiantReturnIds(identifiant, selectedBanques);
+      }
+      return new ArrayList<Integer>();
+   }
+
+   @Override
+   public List<Patient> findByIdentifiantLikeManager(String ident, boolean exactMatch, List<Banque> selectedBanques){
+      if(!exactMatch){
+         ident = "%" + ident + "%";
+      }
+      log.debug("Recherche Patient par identifiant: " + ident + " exactMatch " + String.valueOf(exactMatch));
+      if(selectedBanques != null && !selectedBanques.isEmpty()){
+         return patientDao.findByIdentifiant(ident, selectedBanques);
+      }
+      return new ArrayList<Patient>();
+   }
+   
+   @Override
+   public List<PatientIdentifiant> findIdentifiantsByPatientAndBanquesManager(Patient patient, List<Banque> banques) {
+      if(patient != null && banques != null && !banques.isEmpty()){
+         log.debug("Recherche les identifiants du patient: " + patient.getPatientId());
+         return patientDao.findIdentifiantsByPatientAndBanques(patient, banques);
+      }
+      return new ArrayList<PatientIdentifiant>();
+   }
 }

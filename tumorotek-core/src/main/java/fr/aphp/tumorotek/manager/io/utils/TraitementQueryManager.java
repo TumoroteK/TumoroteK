@@ -104,8 +104,8 @@ public interface TraitementQueryManager
     * @param critere Critere à exécuter.
     * @param banques Liste de Banques.
     * @param value Valeur du critère.
-    * @param cumulative si la recherche doit retourner les élements 
-    * correspondant à la totalité des critères 
+    * @param cumulative si la recherche doit retourner les élements
+    * correspondant à la totalité des critères
     * @return Liste d'objets correspondant au critère.
     * @version 2.0.13
     */
@@ -133,7 +133,7 @@ public interface TraitementQueryManager
    List<Integer> findPrelevementsByAgePatientWithBanquesManager(String operateur, Integer age, List<Banque> banques, String dbms);
 
    /**
-    * Retourne les ids des TKStockableObjects (échantillons ou dérivés) dont la 
+    * Retourne les ids des TKStockableObjects (échantillons ou dérivés) dont la
     * température de stockage correspond la recherche.
     * @param Entite tkStockableObject
     * @param temp Float Température de stockage recherchée
@@ -153,10 +153,10 @@ public interface TraitementQueryManager
       List<String> libelles, String value, boolean isMorpho, Entite echanEntite);
 
    /**
-    * Recherche tous les échantillons pour la recherche BioCap : 
+    * Recherche tous les échantillons pour la recherche BioCap :
     * échantillons dont le prlvt est fait sur des mineurs, entre
     * 2 dates et pour une liste de services.
-    * @param dbms 
+    * @param dbms
     * @param banques Liste des banques des échantillons.
     * @param services Liste des services préleveurs.
     * @param dateInf Date inf de prélèvement.
@@ -170,7 +170,7 @@ public interface TraitementQueryManager
       Calendar dateInf, Calendar dateSup, Integer age, ObjetStatut statut);
 
    /**
-    * Retourne les prélèvements pour un médecin. Recherche dans les medecins 
+    * Retourne les prélèvements pour un médecin. Recherche dans les medecins
     * referents de la maladie et du patient.
     * @param medecin Collaborateur
     * @param banques Liste de Banques.
@@ -179,23 +179,23 @@ public interface TraitementQueryManager
    List<Integer> findPrelevementsByMedecinsManager(Collaborateur collab, List<Banque> banques);
 
    /**
-    * Retourne les ids des objets qui référence au moins une non conformite 
-    * caractérisé par un type, une plateforme et contenant dans son nom les 
+    * Retourne les ids des objets qui référence au moins une non conformite
+    * caractérisé par un type, une plateforme et contenant dans son nom les
     * paramètres respectifs.
     * Filtre les résultats obtenus par une liste de banque d'appartenance
     * @param nom
     * @param cType
     * @param pf
-    * @param banques 
+    * @param banques
     * @return liste objet ids
     */
    List<Integer> findObjetIdsFromNonConformiteNomManager(String nom, ConformiteType cType, Plateforme pf, List<Banque> banks);
 
    /**
-    * Retourne les ids des objets pour lesquels un fichier a été chargé pour 
-    * le champ passé en paramètre, qui peux être un ChampEntite Echantillon (CrAnapath) 
+    * Retourne les ids des objets pour lesquels un fichier a été chargé pour
+    * le champ passé en paramètre, qui peux être un ChampEntite Echantillon (CrAnapath)
     * ou un champ annotation pour toutes entites.
-    * Le paramètre target permet d'obtenir la correspondance si l'entité recherchée 
+    * Le paramètre target permet d'obtenir la correspondance si l'entité recherchée
     * n'est pas celle sur laquelle la requête s'applique.
     * @param fileChp Champ
     * @param target Entite
@@ -204,10 +204,10 @@ public interface TraitementQueryManager
     * @return liste objets ids
     */
    List<Integer> findFileUploadedManager(Champ fileChp, Entite target, List<Banque> banques, boolean empty);
-   
+
    /**
-    * Retourne les ids des prelèvements d'une liste de collections 
-    * pour lesquels un objet correspondant 
+    * Retourne les ids des prelèvements d'une liste de collections
+    * pour lesquels un objet correspondant
     * à une information de traçabilité d'un site intermédiaire est passé en paramètre.
     * @param obj etablissement/Service/Collaborateur site intermédiaire
     * @param banques liste de banques

@@ -51,12 +51,11 @@ public interface CoherenceDateManager
 
    public abstract Object[] findAntRefDateInPrelevementManager(Prelevement prelevement, boolean skipToDatePrel);
 
-   
    public abstract Object[] findPostRefDateInLabosManager(List<LaboInter> labos);
 
    /**
-    * Parcoure les dates des objets précédant un dérivé jusqu'a la date 
-    * de naissance du patient, pour trouver la date de référence la plus 
+    * Parcoure les dates des objets précédant un dérivé jusqu'a la date
+    * de naissance du patient, pour trouver la date de référence la plus
     * récente.
     * Permet la récursivite sur les dérivés de dérivés.
     * @param dérivé

@@ -71,14 +71,15 @@ import fr.aphp.tumorotek.model.coeur.patient.serotk.MaladieSero;
 @NamedQueries(value = {
    @NamedQuery(name = "Diagnostic.findByNom", query = "SELECT p FROM Diagnostic p WHERE p.nom like ?1 " + "order by p.nom"),
    @NamedQuery(name = "Diagnostic.findByExcludedId", query = "SELECT p FROM Diagnostic p " + "WHERE p.id != ?1"),
-   @NamedQuery(name = "Diagnostic.findByOrder", query = "SELECT p FROM Diagnostic p " + "ORDER BY p.nom"), 
-   @NamedQuery(name = "Diagnostic.findByPfOrder", query = "SELECT p FROM Diagnostic p " + "WHERE p.plateforme = ?1 ORDER BY p.nom")})
+   @NamedQuery(name = "Diagnostic.findByOrder", query = "SELECT p FROM Diagnostic p " + "ORDER BY p.nom"), @NamedQuery(
+      name = "Diagnostic.findByPfOrder", query = "SELECT p FROM Diagnostic p " + "WHERE p.plateforme = ?1 ORDER BY p.nom")})
 public class Diagnostic extends AbstractPfDependantThesaurusObject implements Serializable
 {
 
    private static final long serialVersionUID = -2506949180590820975L;
 
    private String description;
+
    private Set<Maladie> maladies = new HashSet<>();
 
    /** Constructeur par défaut. */

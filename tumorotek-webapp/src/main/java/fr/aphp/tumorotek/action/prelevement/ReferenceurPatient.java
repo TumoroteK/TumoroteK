@@ -57,6 +57,7 @@ import org.zkoss.zul.Row;
 import org.zkoss.zul.Textbox;
 
 import fr.aphp.tumorotek.action.ManagerLocator;
+import fr.aphp.tumorotek.action.constraints.ConstCode;
 import fr.aphp.tumorotek.action.patient.FicheMaladie;
 import fr.aphp.tumorotek.action.patient.FichePatientEdit;
 import fr.aphp.tumorotek.action.patient.PatientController;
@@ -65,7 +66,6 @@ import fr.aphp.tumorotek.action.prelevement.serotk.FichePrelevementEditSero;
 import fr.aphp.tumorotek.action.sip.SipFactory;
 import fr.aphp.tumorotek.decorator.MaladieDecorator;
 import fr.aphp.tumorotek.decorator.PatientItemRenderer;
-import fr.aphp.tumorotek.manager.coeur.patient.MaladieManager;
 import fr.aphp.tumorotek.manager.coeur.prelevement.RisqueManager;
 import fr.aphp.tumorotek.model.coeur.patient.Maladie;
 import fr.aphp.tumorotek.model.coeur.patient.Patient;
@@ -85,7 +85,7 @@ import fr.aphp.tumorotek.webapp.general.SessionUtils;
  * séléctionner une maladie ou d'en créer une nouvelle.
  *
  * @author mathieu
- * @version 2.0.6
+ * @version 2.3.0-gatsbi
  * @see <a href="http://docs.zkoss.org/wiki/Macro_Component">Macro_Component</a>
  * <p>
  * Date: 01/12/2009
@@ -93,40 +93,60 @@ import fr.aphp.tumorotek.webapp.general.SessionUtils;
 public class ReferenceurPatient extends GenericForwardComposer<Component>
 {
 
-   // private Log log = LogFactory.getLog(ReferenceurPatient.class);
-
    private static final long serialVersionUID = 1L;
 
    // composants
-   private Radiogroup radioGroup;
-   private Grid existingPatientGrid;
-   private Textbox nomNipNdaBox;
-   private Listbox patientsBox;
-   private Row noPatientRow;
-   private Listbox maladiesBox;
-   private Row noMaladieRow;
-   private Button embedMaladieButton;
-   private Row embeddedFicheMaladieRow;
-   private Div embeddedFicheMaladieDiv;
-   private Radio newRadio;
-   private Radio findRadio;
-   private Radio noRadio;
-   private Div fichePatientDiv;
-   private Div ficheMaladieWithPatientDiv;
-   private Textbox ndaBox;
-   private Row ndaRow;
+   protected Radiogroup radioGroup;
+
+   protected Grid existingPatientGrid;
+
+   protected Textbox nomNipNdaBox;
+
+   protected Listbox patientsBox;
+
+   protected Row noPatientRow;
+
+   protected Listbox maladiesBox;
+
+   protected Row noMaladieRow;
+
+   protected Button embedMaladieButton;
+
+   protected Row embeddedFicheMaladieRow;
+
+   protected Div embeddedFicheMaladieDiv;
+
+   protected Radio newRadio;
+
+   protected Radio findRadio;
+
+   protected Radio noRadio;
+
+   protected Div fichePatientDiv;
+
+   protected Div ficheMaladieWithPatientDiv;
+
+   protected Textbox ndaBox;
+
+   protected Row ndaRow;
+
    private boolean banqueDefMaladies;
 
    // patientBox items
    private List<Patient> patients = new ArrayList<>();
+
    private Patient selectedPatient;
 
    // maladiesBox items
    private List<MaladieDecorator> maladies = new ArrayList<>();
+
    private MaladieDecorator selectedMaladie;
+
    private MaladieDecorator selectedMaladieByNda = null;
-   private static ListitemRenderer<Patient> patientRenderer = new PatientItemRenderer(true);
-   private AnnotateDataBinder referenceurBinder;
+
+   private ListitemRenderer<Patient> patientRenderer = new PatientItemRenderer(true);
+
+   protected AnnotateDataBinder referenceurBinder;
 
    @Override
    public void doAfterCompose(final Component comp) throws Exception{
@@ -220,10 +240,15 @@ public class ReferenceurPatient extends GenericForwardComposer<Component>
       if(radioGroup.getSelectedItem().getValue().equals("find")){
          displayExistingPatient(true);
       }else if(radioGroup.getSelectedItem().getValue().equals("new")){
-         displayEmbeddedPatient(true, new Patient());
+         displayEmbeddedPatient(true, initNewPatient());
       }else{
          displayNone();
       }
+   }
+   
+   // @since 2.3.0-gatsbi sera surchargée
+   protected Patient initNewPatient() {
+      return new Patient();
    }
 
    public void onOK$nomNipNdaBox(){
@@ -237,7 +262,8 @@ public class ReferenceurPatient extends GenericForwardComposer<Component>
       final FichePrelevementEdit fichePrelevementEdit = getFichePrelevementEditFromContexte();
 
       fichePrelevementEdit.getObjectTabController().setPatientSip(null);
-      fichePrelevementEdit.openSelectPatientWindow(Path.getPath(self), "onGetPatientFromSelection", false, critereValue, null);
+      fichePrelevementEdit.openSelectPatientWindow(Path.getPath(self), 
+                  "onGetPatientFromSelection", false, critereValue, null, null, null);
 
    }
 
@@ -247,7 +273,7 @@ public class ReferenceurPatient extends GenericForwardComposer<Component>
     *
     * @param e Event contenant le patient sélectionné.
     */
-   public void onGetPatientFromSelection(final Event e){
+   public Patient onGetPatientFromSelection(final Event e){
 
       if(e.getData() != null){
 
@@ -265,14 +291,14 @@ public class ReferenceurPatient extends GenericForwardComposer<Component>
 
             this.patientsBox.setVisible(true);
             this.noPatientRow.setVisible(false);
-            this.ndaRow.setVisible(true);
+            setVisibleNdaRow(true);
 
          }else{
 
             radioGroup.setSelectedItem(newRadio);
             displayEmbeddedPatient(true, patSel);
 
-            FichePrelevementEdit fichePrelevementEdit = getFichePrelevementEditFromContexte();
+            final FichePrelevementEdit fichePrelevementEdit = getFichePrelevementEditFromContexte();
 
             fichePrelevementEdit.clearRisques();
             fichePrelevementEdit.clearProtocoles();
@@ -293,7 +319,11 @@ public class ReferenceurPatient extends GenericForwardComposer<Component>
 
             }
          }
+         
+         return patSel;
       }
+      
+      return null;
    }
 
    /**
@@ -317,7 +347,7 @@ public class ReferenceurPatient extends GenericForwardComposer<Component>
 
          this.patientsBox.setVisible(true);
          this.noPatientRow.setVisible(false);
-         this.ndaRow.setVisible(true);
+         setVisibleNdaRow(true);
 
          // nda DIAMIC-TK 2.0.13 fix
          ndaBox.setValue(nda);
@@ -368,20 +398,19 @@ public class ReferenceurPatient extends GenericForwardComposer<Component>
     */
    private void selectPatientAuto(final Patient selected){
 
-      FichePrelevementEdit fichePrelevementEdit = getFichePrelevementEditFromContexte();
-     
+      final FichePrelevementEdit fichePrelevementEdit = getFichePrelevementEditFromContexte();
+
       if(this.banqueDefMaladies){
 
-         final List<Maladie> res = new ArrayList<>(ManagerLocator.getMaladieManager().findByPatientNoSystemManager(selected));
-
-         this.maladies = MaladieDecorator.decorateListe(res);
+         fetchAndDecorateMaladieForPatient(selected);
+         
          //selectionne automatiquement la premiere maladie
          if(maladies.size() > 0){
             if(selectedMaladieByNda == null){
 
                this.selectedMaladie = this.maladies.get(0);
 
-               fichePrelevementEdit.setMaladie(res.get(0));
+               fichePrelevementEdit.setMaladie(selectedMaladie.getMaladie());
 
             }else{
                this.selectedMaladie = this.maladies.get(maladies.indexOf(selectedMaladieByNda));
@@ -397,7 +426,7 @@ public class ReferenceurPatient extends GenericForwardComposer<Component>
       else{
 
          final List<Maladie> res =
-            new ArrayList<>(ManagerLocator.getManager(MaladieManager.class).findByPatientManager(selected));
+            new ArrayList<>(ManagerLocator.getMaladieManager().findByPatientExcludingVisitesManager(selected));
 
          // 2.0.13 fix ajout maladie defaut system
          Maladie maladie = res.stream().filter(Maladie::getSystemeDefaut).findFirst().orElse(null);
@@ -419,34 +448,46 @@ public class ReferenceurPatient extends GenericForwardComposer<Component>
       fichePrelevementEdit.selectRisques(risques);
 
    }
+   
+   // @since 2.3.0-gatsbi, sera surchargée
+   protected void fetchAndDecorateMaladieForPatient(Patient patient) {
+ 
+      maladies.clear();
+      
+      maladies.addAll(MaladieDecorator.decorateListe(
+         new ArrayList<Maladie>(ManagerLocator.getMaladieManager()
+            .findByPatientNoSystemNorVisiteManager(patient))));
+      
+      maladies.forEach(m -> m.getMaladie().setPatient(patient));
+   }
 
    /**
-    * Factorisation de la méthode de récupération du controller 
+    * Factorisation de la méthode de récupération du controller
     * FichePrelevementEdit en fonction du contexte collection.
     * @return
     */
-   private FichePrelevementEdit getFichePrelevementEditFromContexte() {
-	   switch(SessionUtils.getCurrentContexte()){
-       case SEROLOGIE:
-          return (FichePrelevementEditSero) self.getParent().getParent()
-             .getAttributeOrFellow("fwinPrelevementEditSero$composer", true);
-       default:
-          return (FichePrelevementEdit) self.getParent()
-        		  .getParent().getAttributeOrFellow("fwinPrelevementEdit$composer", true);
-	   }
+   protected FichePrelevementEdit getFichePrelevementEditFromContexte(){
+      switch(SessionUtils.getCurrentContexte()){
+         case SEROLOGIE:
+            return (FichePrelevementEditSero) self.getParent().getParent()
+               .getAttributeOrFellow("fwinPrelevementEditSero$composer", true);
+         default:
+            return (FichePrelevementEdit) self.getParent().getParent().getAttributeOrFellow("fwinPrelevementEdit$composer", true);
+      }
    }
 
-/**
+   /**
     * Assigne la référence vers la maladie à la fiche prélèvement.
     */
    public void onSelect$maladiesBox(){
 
       final Maladie selected = ((MaladieDecorator) this.maladiesBox.getSelectedItem().getValue()).getMaladie();
-
+      setFichePrelevementMaladie(selected);
+   }
+   
+   public void setFichePrelevementMaladie(Maladie mal) {
       final FichePrelevementEdit fichePrelevement = getFichePrelevementEditFromContexte();
-
-      fichePrelevement.setMaladie(selected);
-
+      fichePrelevement.setMaladie(mal);
    }
 
    /**
@@ -457,7 +498,7 @@ public class ReferenceurPatient extends GenericForwardComposer<Component>
     * Efface le bouton et le message 'noMaladies', et rend la liste de
     * maladies inacessible.
     */
-   public void onClick$embedMaladieButton(){
+   public FicheMaladie onClick$embedMaladieButton(){
 
       createMaladieComponent(embeddedFicheMaladieDiv);
       setEmbeddedMaladieVisible(true);
@@ -470,17 +511,17 @@ public class ReferenceurPatient extends GenericForwardComposer<Component>
                .getAttributeOrFellow("fwinMaladie$composer", true);
             break;
          default:
-           ficheMaladie =
+            ficheMaladie =
                (FicheMaladie) embeddedFicheMaladieDiv.getFellow("fwinMaladie").getAttributeOrFellow("fwinMaladie$composer", true);
             break;
       }
 
       // informe la fiche prelevement de la presence du formulaire
-      // TODO : A quoi ça sert? - JDI
       ficheMaladie.setEmbedded(true);
       ficheMaladie.getObject().setPatient(selectedPatient);
       fichePrelevementEdit.setMaladieEmbedded(true);
-
+      
+      return ficheMaladie;
    }
 
    /**
@@ -508,7 +549,7 @@ public class ReferenceurPatient extends GenericForwardComposer<Component>
     *
     * @param bool
     */
-   private void setEmbeddedMaladieVisible(final boolean bool){
+   protected void setEmbeddedMaladieVisible(final boolean bool){
       this.embeddedFicheMaladieRow.setVisible(bool);
       this.embedMaladieButton.setVisible(!bool);
 
@@ -551,46 +592,16 @@ public class ReferenceurPatient extends GenericForwardComposer<Component>
 
          Components.removeAllChildren(fichePatientDiv);
 
-         Executions.createComponents("/zuls/patient/FichePatientEdit.zul", fichePatientDiv, null);
+         Executions.createComponents(getFichePatientComponent(), fichePatientDiv, null);
          final FichePatientEdit fichePatient = (FichePatientEdit) fichePatientDiv.getFellow("fwinPatientEdit")
             .getAttributeOrFellow("fwinPatientEdit$composer", true);
 
          fichePatient.setEmbedded(pat);
-
-         Components.removeAllChildren(embeddedFicheMaladieDiv);
-         createMaladieComponent(ficheMaladieWithPatientDiv);
-
-         final FicheMaladie ficheMaladie;
-         switch(SessionUtils.getCurrentContexte()){
-            case SEROLOGIE:
-               ficheMaladie = (FicheMaladieSero) ficheMaladieWithPatientDiv.getFellow("fwinMaladie")
-                  .getAttributeOrFellow("fwinMaladie$composer", true);
-               break;
-            default:
-               ficheMaladie = (FicheMaladie) ficheMaladieWithPatientDiv.getFellow("fwinMaladie")
-                  .getAttributeOrFellow("fwinMaladie$composer", true);
-               break;
-         }
-
-         ficheMaladie.setEmbedded(true);
-
-         if(SessionUtils.getSelectedBanques(sessionScope).get(0).getDefMaladies()){
-            self.getFellow("newPatientDiv").getFellow("newMaladieBox").setVisible(true);
-         }else{
-            // efface le bloc div
-            self.getFellow("newPatientDiv").getFellow("newMaladieBox").setVisible(false);
-            // cree la maladie sous-jacente
-            ((Textbox) ficheMaladieWithPatientDiv.getFellow("fwinMaladie").getFellow("libelleBox"))
-               .setValue((SessionUtils.getSelectedBanques(sessionScope).get(0).getNom() + "-defaut"));
-            ficheMaladie.getObject().setSystemeDefaut(true);
-
-         }
-
-         // attribution du patient a la maladie embedded
-         ficheMaladie.getObject().setPatient(fichePatient.getObject());
-
+         
          // efface la grid existing patient
          displayExistingPatient(false);
+         
+         embedFicheMaladie(fichePatient, pat);
 
       }else{
          // detache les composants
@@ -601,7 +612,46 @@ public class ReferenceurPatient extends GenericForwardComposer<Component>
       final FichePrelevementEdit fichePrelevementEdit = getFichePrelevementEditFromContexte();
 
       fichePrelevementEdit.setPatientEmbedded(show);
+   }
+   
+   // @since 2.3.0-gatsbi, sera surchargée
+   protected void embedFicheMaladie(FichePatientEdit fichePatient, Patient pat) {
+      Components.removeAllChildren(embeddedFicheMaladieDiv);
+      createMaladieComponent(ficheMaladieWithPatientDiv);
 
+      final FicheMaladie ficheMaladie;
+      switch(SessionUtils.getCurrentContexte()){
+         case SEROLOGIE:
+            ficheMaladie = (FicheMaladieSero) ficheMaladieWithPatientDiv.getFellow("fwinMaladie")
+               .getAttributeOrFellow("fwinMaladie$composer", true);
+            break;
+         default:
+            ficheMaladie = (FicheMaladie) ficheMaladieWithPatientDiv.getFellow("fwinMaladie")
+               .getAttributeOrFellow("fwinMaladie$composer", true);
+            break;
+      }
+
+      ficheMaladie.setEmbedded(true);
+
+      if(SessionUtils.getSelectedBanques(sessionScope).get(0).getDefMaladies()){
+         self.getFellow("newPatientDiv").getFellow("newMaladieBox").setVisible(true);
+      }else{
+         // efface le bloc div
+         self.getFellow("newPatientDiv").getFellow("newMaladieBox").setVisible(false);
+         // cree la maladie sous-jacente
+         ((Textbox) ficheMaladieWithPatientDiv.getFellow("fwinMaladie").getFellow("libelleBox"))
+            .setValue((SessionUtils.getSelectedBanques(sessionScope).get(0).getNom() + "-defaut"));
+         ficheMaladie.getObject().setSystemeDefaut(true);
+
+      }
+
+      // attribution du patient a la maladie embedded
+      ficheMaladie.getObject().setPatient(fichePatient.getObject());
+   }
+   
+   // sera surchargé par gatsbi
+   protected String getFichePatientComponent() {
+      return "/zuls/patient/FichePatientEdit.zul";
    }
 
    /**
@@ -610,17 +660,16 @@ public class ReferenceurPatient extends GenericForwardComposer<Component>
     *
     * @param show
     */
-   private void displayExistingPatient(final boolean show){
+   protected void displayExistingPatient(final boolean show){
 
       this.existingPatientGrid.setVisible(show);
 
       if(show && selectedPatient != null){
-         ndaRow.setVisible(true);
+         setVisibleNdaRow(true);
       }else{
-         ndaRow.setVisible(false);
+         setVisibleNdaRow(false);
       }
 
-      ndaBox.setValue(null);
 
       final FichePrelevementEdit fichePrelevementEdit = getFichePrelevementEditFromContexte();
 
@@ -707,7 +756,7 @@ public class ReferenceurPatient extends GenericForwardComposer<Component>
     * Injection contexte dans la creation du formulaire
     * maladie.
     */
-   private void createMaladieComponent(final Div div){
+   protected void createMaladieComponent(final Div div){
 
       final String zulPath;
 
@@ -723,6 +772,14 @@ public class ReferenceurPatient extends GenericForwardComposer<Component>
       if(div.getChildren().isEmpty()){
          Executions.createComponents(zulPath, div, null);
       }
-
+   }
+   
+   // sera surchargé par gatsbi
+   public void setVisibleNdaRow(boolean b) {
+      ndaRow.setVisible(b);
+   }
+   
+   public ConstCode getNdaConstraint(){
+      return PrelevementConstraints.getNdaConstraint();
    }
 }

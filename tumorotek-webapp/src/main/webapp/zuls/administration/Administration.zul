@@ -66,18 +66,19 @@
 			<tab label="${c:l('admin.tabbox.utilisateurs')}" id="utilisateursTab" style="text-align:center"/>
 			<tab label="${c:l('admin.tabbox.contrats')}" id="contratsTab" style="text-align:center"/>
 			<tab label="${c:l('admin.tabbox.terminaleType')}" id="terminaleTypeTab" style="text-align:center"/>
+			<tab label="${c:l('admin.tabbox.gatsbi')}" id="gatsbiTab" style="text-align:center"/>
 			<tab label="${c:l('admin.tabbox.historique')}" id="historiqueTab" style="text-align:center"/>
 			<tab label="${c:l('admin.tabbox.imports')}" id="importsTab" style="text-align:center"/>
 			<tab label="${c:l('admin.tabbox.impression')}" id="impressionTab" style="text-align:center"/>
 			<tab label="${c:l('admin.tabbox.imprimantes')}" id="imprimantesTab" style="text-align:center"/>
 			<tab label="${c:l('admin.tabbox.numerotation')}" id="numerotationTab" style="text-align:center"/>
 			<tab label="${c:l('admin.tabbox.outils')}" id="outilsTab" style="text-align:center"/>
+			<tab label="${c:l('admin.tabbox.parametres')}" id="parametresTab"/>
 			<tab label="${c:l('admin.tabbox.plateformes')}" id="plateformesTab" style="text-align:center"/>
 			<tab label="${c:l('admin.tabbox.profils')}" id="profilsTab" style="text-align:center"/>
 			<tab label="${c:l('admin.tabbox.reports')}" id="reportsTab" style="text-align:center"/>
 			<tab label="${c:l('admin.tabbox.thesaurus')}" id="thesaurusTab" style="text-align:center"/>
 			<tab label="${c:l('admin.tabbox.transporteurs')}" id="transporteursTab" style="text-align:center"/>
-			<tab label="${c:l('admin.tabbox.parametres')}" id="parametresTab"/>
 		</tabs>
 		<tabpanels>
 			<tabpanel id="annotationsPanel" hflex="1" vflex="1" >
@@ -97,6 +98,7 @@
 			<tabpanel id="terminaleTypePanel" fulfill="terminaleTypeTab.onSelect" hflex="1" vflex="1">
 				<terminaleTypes id="terminaleTypeMacro" hflex="1" vflex="1" />
 			</tabpanel>
+			<tabpanel id="gatsbiPanel" hflex="1" vflex="1" />
 			<tabpanel id="historiquePanel" fulfill="historiqueTab.onSelect" hflex="1" vflex="1">
 				<historique id="historiqueMacro" hflex="1" vflex="1" />
 			</tabpanel>
@@ -115,6 +117,9 @@
 			<tabpanel id="outilsPanel" fulfill="outilsTab.onSelect" hflex="1" vflex="1">
 				<outils id="outilsMacro" hflex="1" vflex="1"/>
 			</tabpanel>
+			<tabpanel id="parametresPanel" fulfill="parametresTab.onSelect" hflex="1" vflex="1">
+				<parametres id="parametresMacro" hflex="1" vflex="1" />
+			</tabpanel>
 			<tabpanel id="plateformesPanel" fulfill="plateformesTab.onSelect" hflex="1">
 				<plateformes id="plateformesMacro" hflex="1" />
 			</tabpanel>
@@ -129,9 +134,6 @@
 			</tabpanel>
 			<tabpanel id="transporteursPanel" fulfill="transporteursTab.onSelect" hflex="1">
 				<transporteurs id="transporteursMacro" hflex="1" />
-			</tabpanel>
-			<tabpanel id="parametresPanel" fulfill="parametresTab.onSelect" hflex="1" vflex="1">
-				<parametres id="parametresMacro" hflex="1" vflex="1" />
 			</tabpanel>
 		</tabpanels>
 	</tabbox>

@@ -99,9 +99,9 @@ public class CodeCommonValidator implements Validator
             }
          }
          // table codage non required mais implique codeRefId
-         //			if (!((((CodeAssigne) code).getTableCodage() != null 
+         //			if (!((((CodeAssigne) code).getTableCodage() != null
          //					&& ((CodeAssigne) code).getCodeRefId() != null)
-         //				|| (((CodeAssigne) code).getTableCodage() == null 
+         //				|| (((CodeAssigne) code).getTableCodage() == null
          //						&& ((CodeAssigne) code).getCodeRefId() == null))) {
          //				errs.rejectValue("codeRefId", "code.codeRefIDOrTableEmpty");
          //			}

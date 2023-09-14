@@ -45,22 +45,32 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.ForwardEvent;
 import org.zkoss.zk.ui.util.Clients;
+import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Messagebox;
 
 import fr.aphp.tumorotek.action.factory.DelegateFactory;
 import fr.aphp.tumorotek.action.modification.multiple.SimpleChampValue;
+import fr.aphp.tumorotek.model.TKAnnotableObject;
 import fr.aphp.tumorotek.model.TKDelegateObject;
 import fr.aphp.tumorotek.model.TKDelegetableObject;
 import fr.aphp.tumorotek.model.TKdataObject;
 import fr.aphp.tumorotek.model.contexte.EContexte;
+import fr.aphp.tumorotek.webapp.gatsbi.GatsbiController;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
+/**
+ *
+ * @author Mathieu BARTHELEMY
+ * @version 2.3.0-gatsbi
+ *
+ */
 public abstract class AbstractFicheModifMultiController extends AbstractFicheController
 {
 
    private static final long serialVersionUID = 1L;
 
    private TKdataObject baseObject;
+
    private final String modifEncoursLabel = "general.modifMulti.encours";
 
    private List<? extends Object> objsToEdit = new ArrayList<>();
@@ -93,9 +103,9 @@ public abstract class AbstractFicheModifMultiController extends AbstractFicheCon
    }
 
    /**
-    * Methode qui recupere la modification spécifiée dans le composant de 
-    * modification multiple.
-    * L'event passe en data un objet simpleChampValue.
+    * Methode qui recupere la modification spécifiée dans le composant de
+    * modification multiple. L'event passe en data un objet simpleChampValue.
+    *
     * @param e
     */
    public void onGetChangeOnChamp(final Event e){
@@ -104,30 +114,29 @@ public abstract class AbstractFicheModifMultiController extends AbstractFicheCon
       final SimpleChampValue tmp = (SimpleChampValue) e.getData();
 
       TKDelegateObject<? extends TKdataObject> delegate = null;
-      if(!EContexte.DEFAUT.equals(SessionUtils.getCurrentContexte()) && getObject() instanceof TKDelegetableObject) {
+      if(!EContexte.DEFAUT.equals(SessionUtils.getCurrentContexte()) && getObject() instanceof TKDelegetableObject){
 
          delegate = DelegateFactory.getDelegate(getObject(), SessionUtils.getCurrentContexte());
 
-         ((TKDelegetableObject)getObject()).setDelegate(delegate);
+         ((TKDelegetableObject) getObject()).setDelegate(delegate);
 
          try{
             isDelegateProperty = PropertyUtils.describe(delegate).keySet().contains(tmp.getChamp());
-         }catch(Exception ex){
+         }catch(final Exception ex){
             log.error(ex);
          }
-         
+
       }
 
       try{
 
          final Object beanToModify;
-         if(!isDelegateProperty) {
+         if(!isDelegateProperty){
             beanToModify = getObject();
-         }
-         else {
+         }else{
             beanToModify = delegate;
          }
-         
+
          if(!(tmp.getValue() instanceof List)){
             PropertyUtils.setSimpleProperty(beanToModify, tmp.getChamp(), tmp.getValue());
          }else{
@@ -159,8 +168,9 @@ public abstract class AbstractFicheModifMultiController extends AbstractFicheCon
    }
 
    /**
-    * Recoit l'information 'reset' du pop up de modification multiple.
-    * L'event contient le champLabel spécifié pour le 'reset'.
+    * Recoit l'information 'reset' du pop up de modification multiple. L'event
+    * contient le champLabel spécifié pour le 'reset'.
+    *
     * @param event
     */
    public void onResetMulti(final Event event){
@@ -169,17 +179,17 @@ public abstract class AbstractFicheModifMultiController extends AbstractFicheCon
    }
 
    /**
-    * Met à jour le labelChanged en fonction du champ passé en 
-    * paramètre.
+    * Met à jour le labelChanged en fonction du champ passé en paramètre.
+    *
     * @param champ
     * @param printValue valeur de la modification multiple à afficher.
-    * @param true si reset demandé
+    * @param true       si reset demandé
     */
    public abstract void updateLabelChanged(String champ, String printValue, boolean reset);
 
    /**
-    * Valide les modifications multiples.
-    * Passe la fiche en affichage statique.
+    * Valide les modifications multiples. Passe la fiche en affichage statique.
+    *
     * @param event Event : clique sur le bouton validateModifMultiple.
     * @throws Exception
     */
@@ -202,13 +212,20 @@ public abstract class AbstractFicheModifMultiController extends AbstractFicheCon
       Clients.clearBusy();
    }
 
-
    public void onLaterUpdateMultiple(){
       try{
+
+         // enrichit les banques avec les contextes GATSBI
+         // avant update
+         for(final Object tkObj : getObjsToEdit()){
+            ((TKAnnotableObject) tkObj).setBanque(
+               GatsbiController.enrichesBanqueWithEtudeContextes(((TKAnnotableObject) tkObj).getBanque(), sessionScope));
+         }
+
          updateMultiObjects();
 
          // redessine la page d'annotation pour static
-         //getFicheAnnotation().drawAnnotationPanelContent(false);
+         // getFicheAnnotation().drawAnnotationPanelContent(false);
 
          // on vérifie que l'on retrouve bien la page contenant la liste
          // des objets
@@ -236,8 +253,9 @@ public abstract class AbstractFicheModifMultiController extends AbstractFicheCon
    public abstract void updateMultiObjects();
 
    /**
-    * Ordonne a la fiche Annotation de preparer les listes de 
-    * valeurs à modifier, créer, supprimer.
+    * Ordonne a la fiche Annotation de preparer les listes de valeurs à modifier,
+    * créer, supprimer.
+    *
     * @return true si une de ces listes n'est pas vide.
     */
    public boolean updateMultiAnnotationValeurs(){
@@ -248,11 +266,49 @@ public abstract class AbstractFicheModifMultiController extends AbstractFicheCon
 
    /**
     * Méthode qui ferme la fiche : seule la liste sera visible.
+    *
     * @param event onClose de la fiche.
     */
    public void onClose$winPanel(final Event event){
       Events.getRealOrigin((ForwardEvent) event).stopPropagation();
       getObjectTabController().clearStaticFiche();
       getObjectTabController().switchToOnlyListeMode();
+   }
+
+   /**
+    * Cette restriction est implémentée par Gatsbi
+    *
+    * @param liste de valeurs de thesaurus initiale
+    * @param champ entite id
+    * @return liste filtrée par le contexte défini par le gestionnaire Gatsbi
+    * @since 2.3.0-gatsbi
+    */
+   protected List<Object> applyAnyThesaurusRestriction(final List<Object> thObjs, final Integer chpId){
+      return thObjs;
+   }
+
+   /**
+    * Cette mutation est implémentée par Gatsbi
+    *
+    * @param contrainte dont le flag NO_EMPTY est muté suivant le caractère
+    *                   obligatoire défini par Gatsbi
+    * @param champ      entite id
+    * @return contrainte mutée
+    * @since 2.3.0-gatsbi
+    */
+   protected Constraint muteAnyRequiredConstraint(final Constraint cstr, final Integer chpId){
+      return cstr;
+   }
+
+   /**
+    * Cette mutation est implémentée par Gatsbi
+    *
+    * @param flag  isObligatoire
+    * @param champ entite id
+    * @return flag isObligatoire muté
+    * @since 2.3.0-gatsbi
+    */
+   protected boolean switchAnyRequiredFlag(final Boolean flag, final Integer chpId){
+      return flag;
    }
 }

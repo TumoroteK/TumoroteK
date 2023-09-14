@@ -51,6 +51,7 @@ public abstract class AbstractListeController extends AbstractController
 {
 
    private static final long serialVersionUID = -6167747099087709700L;
+
    protected Log log = LogFactory.getLog(AbstractListeController.class);
 
    @Override

@@ -75,6 +75,11 @@ import fr.aphp.tumorotek.model.coeur.prelevement.Prelevement;
 import fr.aphp.tumorotek.model.systeme.Entite;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
+/**
+ * @version 2.3.0-gatsbi
+ * @author Mathieu BARTHELEMY
+ *
+ */
 public class ListePrelevement extends AbstractListeController2
 {
 
@@ -83,27 +88,35 @@ public class ListePrelevement extends AbstractListeController2
    private static final long serialVersionUID = -4444512949273177133L;
 
    private List<Prelevement> listObjects = new ArrayList<>();
+
    private List<Prelevement> selectedObjects = new ArrayList<>();
 
    // Critères de recherche.
-   private Radio codePrlvt;
-   private Radio patientPrlvt;
-   private Textbox codeBoxPrlvt;
-   private Textbox nomPatientPrlvt;
-   private Column nbEchantillonsColumn;
+   protected Radio codePrlvt;
 
-   private Button findDossierExterne;
+   protected Radio patientPrlvt;
+
+   protected Textbox codeBoxPrlvt;
+
+   protected Textbox nomPatientPrlvt;
+
+   protected Column nbEchantillonsColumn;
+
+   protected Button findDossierExterne;
 
    // Variables formulaire pour les critères.
    private String searchCode;
+
    private String searchNomPatient;
 
    // Variable de droits.
    private boolean canAccessPatient;
 
    protected PrelevementRowRenderer listObjectsRenderer = new PrelevementRowRenderer(true, false);
-   private PrelevementsNbEchantillonsComparator comparatorAsc = new PrelevementsNbEchantillonsComparator(true);
-   private PrelevementsNbEchantillonsComparator comparatorDesc = new PrelevementsNbEchantillonsComparator(false);
+
+   protected PrelevementsNbEchantillonsComparator comparatorAsc = new PrelevementsNbEchantillonsComparator(true);
+
+   protected PrelevementsNbEchantillonsComparator comparatorDesc = new PrelevementsNbEchantillonsComparator(false);
 
    public String getSearchCode(){
       return searchCode;
@@ -130,6 +143,16 @@ public class ListePrelevement extends AbstractListeController2
          setListObjectsRenderer((TKSelectObjectRenderer<? extends TKdataObject>) arg.get("renderer"));
       }
 
+      // @since gatsbi
+      try{
+         drawColumnsForVisibleChampEntites();
+      }catch(final Exception e){
+         // une erreur inattendue levée dans la récupération
+         // ou le rendu d'une propriété prel
+         // va arrêter le rendu du reste du tableau
+         throw new RuntimeException(e);
+      }
+
       nbEchantillonsColumn.setSortAscending(comparatorAsc);
       nbEchantillonsColumn.setSortDescending(comparatorDesc);
 
@@ -137,6 +160,14 @@ public class ListePrelevement extends AbstractListeController2
 
       listObjectsRenderer.setEmetteurs(SessionUtils.getEmetteursInterfacages(sessionScope));
    }
+
+   /**
+    * Cette méthode de dessin dynamique des colonnes est surchargée par Gatsbi
+    *
+    * @since 2.3.0-gatsbi
+    */
+   protected void drawColumnsForVisibleChampEntites()
+      throws ClassNotFoundException, InstantiationException, IllegalAccessException{}
 
    public void setListObjectsRenderer(final TKSelectObjectRenderer<? extends TKdataObject> listObjectsRenderer){
       this.listObjectsRenderer = (PrelevementRowRenderer) listObjectsRenderer;
@@ -230,16 +261,16 @@ public class ListePrelevement extends AbstractListeController2
    }
 
    /**
-    * Méthode appelée après lors du focus sur le champ codeBoxPrlvt. Le
-    * radiobutton correspondant sera automatiquement sélectionné.
+    * Méthode appelée après lors du focus sur le champ codeBoxPrlvt. Le radiobutton
+    * correspondant sera automatiquement sélectionné.
     */
    public void onSelect$dateCreationBoxPrlvt(){
       dateCreation.setChecked(true);
    }
 
    /**
-    * Méthode appelée après lors du focus sur le champ codeBoxPrlvt. Le
-    * radiobutton correspondant sera automatiquement sélectionné.
+    * Méthode appelée après lors du focus sur le champ codeBoxPrlvt. Le radiobutton
+    * correspondant sera automatiquement sélectionné.
     */
    public void onFocus$codeBoxPrlvt(){
       codePrlvt.setChecked(true);
@@ -262,8 +293,8 @@ public class ListePrelevement extends AbstractListeController2
    }
 
    /**
-    * Méthode appelée après la saisie d'une valeur dans le champ
-    * nomPatientPrlvt. Cette valeur sera mise en majuscules.
+    * Méthode appelée après la saisie d'une valeur dans le champ nomPatientPrlvt.
+    * Cette valeur sera mise en majuscules.
     */
    public void onBlur$nomPatientPrlvt(){
       nomPatientPrlvt.setValue(nomPatientPrlvt.getValue().toUpperCase());
@@ -308,11 +339,9 @@ public class ListePrelevement extends AbstractListeController2
       }else if(patientPrlvt.isChecked()){
          if(searchNomPatient.contains(",")){
             final List<String> pats = ObjectTypesFormatters.formateStringToList(searchNomPatient);
-            prelevements = ManagerLocator.getPrelevementManager().findByPatientNomOrNipInListManager(pats,
-               SessionUtils.getSelectedBanques(sessionScope));
+            prelevements = findPrelevementsByPatientCodes(pats);
          }else{
-            prelevements = ManagerLocator.getPrelevementManager().findByPatientNomReturnIdsManager(searchNomPatient,
-               SessionUtils.getSelectedBanques(sessionScope), true);
+            prelevements = searchPrelevementByPatientInfos(searchNomPatient);
          }
       }
       return prelevements;
@@ -327,8 +356,8 @@ public class ListePrelevement extends AbstractListeController2
    }
 
    /**
-    * Lance la recherche des prélèvements en fournissant un fichier Excel
-    * contenant une liste de codes.
+    * Lance la recherche des prélèvements en fournissant un fichier Excel contenant
+    * une liste de codes.
     */
    public void onClick$findByListCodes(){
       // récupère les codes des prlvts présents dans le
@@ -341,26 +370,46 @@ public class ListePrelevement extends AbstractListeController2
    }
 
    /**
-    * Lance la recherche des prélèvements en fournissant un fichier Excel
-    * contenant une liste de patients (noms ou nips).
+    * Lance la recherche des prélèvements en fournissant un fichier Excel contenant
+    * une liste de patients (noms ou nips).
     */
    public void onClick$findByListPatients(){
       // récupère les codes des prlvts présents dans le
       // fichier excel que l'utilisateur va uploader
       final List<String> pats = getListStringToSearch();
-      final List<Integer> prelevements = ManagerLocator.getPrelevementManager().findByPatientNomOrNipInListManager(pats,
-         SessionUtils.getSelectedBanques(sessionScope));
+      final List<Integer> prelevements = findPrelevementsByPatientCodes(pats);
       // affichage de ces résultats
       showResultsAfterSearchByList(prelevements);
    }
 
    /**
+    * Sera surchargée par GATSBI.
+    * @since 2.3.0-gatsbi
+    * @param pats
+    * @return liste prelevements
+    */
+   protected List<Integer> findPrelevementsByPatientCodes(List<String> pats){
+      return ManagerLocator.getPrelevementManager().findByPatientNomOrNipInListManager(pats,
+         SessionUtils.getSelectedBanques(sessionScope));
+   }
+
+   /**
+    * Sera surchargée par GATSBI.
+    * @since 2.3.0-gatsbi
+    * @param pats
+    * @return liste prelevements
+    */
+   protected List<Integer> searchPrelevementByPatientInfos(String searchNomPatient){
+      return ManagerLocator.getPrelevementManager().findByPatientNomReturnIdsManager(searchNomPatient,
+         SessionUtils.getSelectedBanques(sessionScope), true);
+   }
+   
+   /**
     * Forwarded Event. Sélectionne le patient concerné pour l'afficher dans la
     * fiche.
-    * 
-    * @param event
-    *            forwardé depuis le lable nom cliquable (event.getData contient
-    *            l'objet Prelevement).
+    *
+    * @param event forwardé depuis le lable nom cliquable (event.getData contient
+    *              l'objet Prelevement).
     */
    public void onClickPatient(final Event event){
 
@@ -380,10 +429,9 @@ public class ListePrelevement extends AbstractListeController2
    /**
     * Forwarded Event. Sélectionne la maladie concernée pour l'afficher dans la
     * fiche.
-    * 
-    * @param event
-    *            forwardé depuis le lable nom cliquable (event.getData contient
-    *            l'objet Prelevement).
+    *
+    * @param event forwardé depuis le lable nom cliquable (event.getData contient
+    *              l'objet Prelevement).
     */
    public void onClickMaladie(final Event event){
 
@@ -470,8 +518,8 @@ public class ListePrelevement extends AbstractListeController2
    }
 
    /**
-    * Méthode appelée lorsque l'utilisateur clique sur le menu item pour
-    * changer le prelevement de collection.
+    * Méthode appelée lorsque l'utilisateur clique sur le menu item pour changer le
+    * prelevement de collection.
     */
    public void openChangeModaleWindow(final Prelevement[] prlvts){
       if(!isBlockModal()){
@@ -555,13 +603,12 @@ public class ListePrelevement extends AbstractListeController2
    }
 
    /**
-    * Forwarded Event. Sélectionne le dossier externe pour
-    * fiche.
-    * 
-    * @param event  forwardé depuis l'enveloppe cliquable (event.getData contient
-    *            l'objet Prelevement).
-    * @since 2.1 
-    * 
+    * Forwarded Event. Sélectionne le dossier externe pour fiche.
+    *
+    * @param event forwardé depuis l'enveloppe cliquable (event.getData contient
+    *              l'objet Prelevement).
+    * @since 2.1
+    *
     */
    public void onClickDossierExt(final Event event){
       if(getObjectTabController() != null){

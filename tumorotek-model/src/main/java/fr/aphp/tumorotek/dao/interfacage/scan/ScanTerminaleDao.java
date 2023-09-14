@@ -56,7 +56,7 @@ public interface ScanTerminaleDao extends GenericDaoJpa<ScanTerminale, Integer>
 {
 
    /**
-    * Renvoie les scans de boites pour le scanner passé en paramètre dans l'ordre 
+    * Renvoie les scans de boites pour le scanner passé en paramètre dans l'ordre
     * inverse de leur création (du plus récent au plus ancien)
     * @param scanDevice scanner
     * @return List<ScanTerminale>
@@ -64,7 +64,7 @@ public interface ScanTerminaleDao extends GenericDaoJpa<ScanTerminale, Integer>
    public List<ScanTerminale> findByScanDevice(ScanDevice device);
 
    /**
-    * Renvoie le liste des codes correspondant au tubes scannées pour la 
+    * Renvoie le liste des codes correspondant au tubes scannées pour la
     * boite passée en paramètre.
     * @param sT scanTerminale
     * @return List<String> codes

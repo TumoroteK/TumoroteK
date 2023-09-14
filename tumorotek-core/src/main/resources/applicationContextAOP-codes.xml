@@ -1,45 +1,49 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	   xmlns:aop="http://www.springframework.org/schema/aop"
-	   xmlns:tx="http://www.springframework.org/schema/tx"
-	   xsi:schemaLocation="
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="
 			http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
 			http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
 			http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
-	
-	<!-- AOP-managed transactions -->   
-	<bean id="txManagerCodes" class="org.springframework.orm.jpa.JpaTransactionManager">
-     	<property name="entityManagerFactory" ref="entityManagerFactoryCodes" />
-   </bean>
-   
-   <bean id="txProxyTemplateCodes" abstract="true"
-        class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
-  		<property name="transactionManager" ref="txManagerCodes"/>
-  		<property name="transactionAttributes">
-	    	<props>
-	      		<prop key="find*">PROPAGATION_REQUIRED, readOnly</prop>
-	      		<prop key="get*">PROPAGATION_REQUIRED, readOnly</prop>
-	      		<prop key="*">PROPAGATION_REQUIRED</prop>
-	    	</props>
-  		</property>
+
+	<!-- AOP-managed transactions -->
+	<bean id="txManagerCodes"
+		class="org.springframework.orm.jpa.JpaTransactionManager">
+		<property name="entityManagerFactory"
+			ref="entityManagerFactoryCodes" />
 	</bean>
-  
-<!--   <tx:advice id="serviceTxAdviceCodes" transaction-manager="txManagerCodes">-->
-<!--     <tx:attributes>-->
-<!--       <tx:method name="find*" propagation="REQUIRED" read-only="true" />-->
-<!--       <tx:method name="get*" propagation="REQUIRED" read-only="true" />-->
-<!--       <tx:method name="*" propagation="REQUIRED" />-->
-<!--     </tx:attributes>-->
-<!--   </tx:advice>-->
-   
-<!--   <aop:config> -->
-<!--    	<aop:pointcut id="serviceMethodsCodes"  expression="execution(* fr.aphp.tumorotek.manager.code.*.*Manager(..))" />-->
-<!--      	  <aop:advisor advice-ref="serviceTxAdviceCodes" pointcut-ref="serviceMethodsCodes" order="1"/> -->
-<!--      	<aop:aspect id="loggingAspect" ref="monLogger">-->
-<!--		    <aop:before method="logMethodEntry"  pointcut-ref="serviceMethods"/>    		-->
-<!--		    <aop:after-returning method="logMethodExit" returning="result" pointcut-ref="serviceMethods"/>-->
-<!--	 	</aop:aspect> -->
-<!--   </aop:config>-->
- 	
+
+	<bean id="txProxyTemplateCodes" abstract="true"
+		class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+		<property name="transactionManager" ref="txManagerCodes" />
+		<property name="transactionAttributes">
+			<props>
+				<prop key="find*">PROPAGATION_REQUIRED, readOnly</prop>
+				<prop key="get*">PROPAGATION_REQUIRED, readOnly</prop>
+				<prop key="*">PROPAGATION_REQUIRED</prop>
+			</props>
+		</property>
+	</bean>
+
+	<!-- <tx:advice id="serviceTxAdviceCodes" transaction-manager="txManagerCodes"> -->
+	<!-- <tx:attributes> -->
+	<!-- <tx:method name="find*" propagation="REQUIRED" read-only="true" /> -->
+	<!-- <tx:method name="get*" propagation="REQUIRED" read-only="true" /> -->
+	<!-- <tx:method name="*" propagation="REQUIRED" /> -->
+	<!-- </tx:attributes> -->
+	<!-- </tx:advice> -->
+
+	<!-- <aop:config> -->
+	<!-- <aop:pointcut id="serviceMethodsCodes" expression="execution(* fr.aphp.tumorotek.manager.code.*.*Manager(..))" 
+		/> -->
+	<!-- <aop:advisor advice-ref="serviceTxAdviceCodes" pointcut-ref="serviceMethodsCodes" 
+		order="1"/> -->
+	<!-- <aop:aspect id="loggingAspect" ref="monLogger"> -->
+	<!-- <aop:before method="logMethodEntry" pointcut-ref="serviceMethods"/> -->
+	<!-- <aop:after-returning method="logMethodExit" returning="result" pointcut-ref="serviceMethods"/> -->
+	<!-- </aop:aspect> -->
+	<!-- </aop:config> -->
+
 </beans>

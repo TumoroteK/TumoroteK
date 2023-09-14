@@ -64,11 +64,14 @@ public class MBioBarcodePrinter
    private final Log log = LogFactory.getLog(MBioBarcodePrinter.class);
 
    private final int labelFormat;
+
    private final int printerId;
+
    private MBioFileProperties mbioFile;
+
    private final String confDir;
 
-   /** 
+   /**
     * @param _banqueDb
     */
    public MBioBarcodePrinter(final MBioFileProperties mbio, final String url){
@@ -99,7 +102,7 @@ public class MBioBarcodePrinter
    }
 
    /**
-    * Fonction qui effectue l'impression des etiquettes 
+    * Fonction qui effectue l'impression des etiquettes
     * codes a barres d'une liste de prelevements.
     */
    public int printPrelevement(final List<Prelevement> prelevements, final int nb){
@@ -107,7 +110,7 @@ public class MBioBarcodePrinter
    }
 
    /**
-    * Fonction qui effectue l'impression des etiquettes 
+    * Fonction qui effectue l'impression des etiquettes
     * codes a barres d'une liste d'echantillons.
     */
    public int printEchantillon(final List<Echantillon> echantillons, final int nb){
@@ -135,7 +138,7 @@ public class MBioBarcodePrinter
    }
 
    /**
-    * Fonction qui effectue l'impression des etiquettes 
+    * Fonction qui effectue l'impression des etiquettes
     * codes a barres d'une liste de derives.
     */
    public int printDerive(final List<ProdDerive> derives, final int nb){
@@ -163,15 +166,15 @@ public class MBioBarcodePrinter
    }
 
    /**
-    * Fonction qui effectue l'impression des etiquettes 
-    * codes a barres d'une liste de cessions. 
+    * Fonction qui effectue l'impression des etiquettes
+    * codes a barres d'une liste de cessions.
     */
    public int printCession(final List<Cession> cessions, final int nb){
       return 0;
    }
 
    /**
-    * Fonction qui effectue l'impression des etiquettes 
+    * Fonction qui effectue l'impression des etiquettes
     * codes a barres d'une liste de données.
     */
    public int printListData(final List<Vector<String>> datas){
@@ -197,21 +200,21 @@ public class MBioBarcodePrinter
    }
 
    /**
-    * Fonction qui effectue l'impression des etiquettes 
+    * Fonction qui effectue l'impression des etiquettes
     * codes a barres d'une liste de (6) parametres.
     */
    public int printData(final Vector<String> data, final int nb){
       int codeRetour = 0;
 
-      // Se referer au fichier de configuration mbioApi.xml 
+      // Se referer au fichier de configuration mbioApi.xml
       // pour definir le labelFormat et le printerId
-      // Et aussi pour definir la correspondance entre les 
+      // Et aussi pour definir la correspondance entre les
       // parametres et leur place sur l'etiquette.
       final int quantity = nb;
 
       try{
          /** instancie et appelle le MBioPrinter par reflection
-          * pour ne pas inclure .jar com.modulbio dans le 
+          * pour ne pas inclure .jar com.modulbio dans le
           * classpath.
           */
          final Class<?> mbio = Class.forName("com.modulbio.printer.MBioPrint");

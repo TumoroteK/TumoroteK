@@ -106,7 +106,7 @@ public interface GroupementManager
    List<Groupement> findEnfantsManager(Groupement groupement);
 
    /**
-    * Recherche les Critères dont le Groupement racine est passé en paramètre. 
+    * Recherche les Critères dont le Groupement racine est passé en paramètre.
     * @param groupementRacine Groupement racine dont on souhaite obtenir
     * les Critères.
     * @return la liste de tous les Critères descendants du Groupement racine.

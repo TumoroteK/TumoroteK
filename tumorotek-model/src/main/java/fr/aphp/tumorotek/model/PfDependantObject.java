@@ -1,4 +1,5 @@
 package fr.aphp.tumorotek.model;
+
 import fr.aphp.tumorotek.model.contexte.Plateforme;
 
 /**
@@ -46,7 +47,7 @@ public interface PfDependantObject
 {
 
    Plateforme getPlateforme();
-   
+
    void setPlateforme(Plateforme pf);
-   
+
 }

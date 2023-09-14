@@ -88,19 +88,29 @@ public class ExportModale extends AbstractFicheCombineController
    private static final long serialVersionUID = 3224510698969716417L;
 
    private String entite;
+
    private List<Object> objs;
+
    private List<Banque> banques;
+
    private boolean isExportAnonyme;
+
    private Utilisateur user;
 
    private Progressmeter progress;
+
    private Row rowQuestion;
+
    private Row rowButtons;
+
    private Row rowExport;
+
    private Label pourcentageLabel;
 
    private Checkbox exportBox;
+
    private Button oui;
+
    private Button non;
 
    private int pourcentage = 0;
@@ -108,7 +118,7 @@ public class ExportModale extends AbstractFicheCombineController
    @Override
    public void doAfterCompose(final Component comp) throws Exception{
       super.doAfterCompose(comp);
-      //AnnotateDataBinder binder = new AnnotateDataBinder(comp);	
+      //AnnotateDataBinder binder = new AnnotateDataBinder(comp);
       //binder.loadComponent(comp);
       getBinder().loadAll();
    }
@@ -116,7 +126,7 @@ public class ExportModale extends AbstractFicheCombineController
    /**
     * Initialise le composant à partir des paramètres d'affichage.
     * @param message avertissement affiché à l'utilisateur
-    * @param fantomable indique si le textbox de commentaire doit 
+    * @param fantomable indique si le textbox de commentaire doit
     * être affiché.
     * @param deletable inique si l'avertissement seul doit être affiché.
     * @param component parent ayant demandé la modale.

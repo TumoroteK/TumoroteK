@@ -80,6 +80,7 @@ public class ChampEntiteKey implements Serializable
    private static final long serialVersionUID = 4090410359848285650L;
 
    private Integer ordre;
+
    private ChampEntiteKeyPK pk = new ChampEntiteKeyPK();
 
    public ChampEntiteKey(){

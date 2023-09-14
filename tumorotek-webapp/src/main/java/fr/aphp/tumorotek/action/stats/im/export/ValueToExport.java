@@ -50,11 +50,14 @@ public class ValueToExport
    // private String unitTemp;
    // private String year;
    private Number value;
+
    private Number valuePourcentage;
+
    private Integer subDivId;
+
    private Integer banqueId;
    /*
-   	public ValueToExport(Number v, 
+   	public ValueToExport(Number v,
    			Integer b,
    			Integer s) {
    		this.value = "nb : " + v;

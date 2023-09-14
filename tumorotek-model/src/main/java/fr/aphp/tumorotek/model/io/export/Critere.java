@@ -61,9 +61,13 @@ public class Critere
 {
 
    private Integer critereId;
+
    private Champ champ;
+
    private Combinaison combinaison;
+
    private String operateur;
+
    private String valeur;
 
    public Critere(){

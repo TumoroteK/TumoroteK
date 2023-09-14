@@ -53,6 +53,7 @@ public class FilePack
    // private static final long serialVersionUID = 3551763682958457361L;
 
    private Fichier file;
+
    private InputStream stream;
 
    public Fichier getFile(){

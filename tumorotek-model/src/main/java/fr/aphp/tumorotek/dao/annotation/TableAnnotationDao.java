@@ -92,7 +92,7 @@ public interface TableAnnotationDao extends GenericDaoJpa<TableAnnotation, Integ
    List<Integer> findMaxOrdreForBanqueAndEntite(Entite entite, Banque bank);
 
    /**
-    * Recherche toutes les tables sauf celle dont l'id est passé 
+    * Recherche toutes les tables sauf celle dont l'id est passé
     * en paramètre.
     * @param tableAnnotationId Identifiant de la table que l'on souhaite
     * exclure de la liste retournée.
@@ -101,7 +101,7 @@ public interface TableAnnotationDao extends GenericDaoJpa<TableAnnotation, Integ
    List<TableAnnotation> findByExcludedId(Integer champAnnotationId);
 
    /**
-    * Recherche les tables par l'entite à laquelle elles sont attribuées 
+    * Recherche les tables par l'entite à laquelle elles sont attribuées
     * pour une plateforme.
     * @param e Entite
     * @param Plateforme pf
@@ -110,7 +110,7 @@ public interface TableAnnotationDao extends GenericDaoJpa<TableAnnotation, Integ
    List<TableAnnotation> findByEntiteAndPlateforme(Entite e, Plateforme pf);
 
    /**
-    * Recherche les tables associées à au moins une banque appartenant 
+    * Recherche les tables associées à au moins une banque appartenant
     * à la plateforme.
     * @param pf
     * @return une liste de TableAnnotation ordonnée par leur nom
@@ -132,8 +132,8 @@ public interface TableAnnotationDao extends GenericDaoJpa<TableAnnotation, Integ
    List<TableAnnotation> findByCatalogues(List<Catalogue> catas);
 
    /**
-    * Recherche les tables associées au catalogue passé en paramètre 
-    * et contenant au moins un champ annotation dont editable 
+    * Recherche les tables associées au catalogue passé en paramètre
+    * et contenant au moins un champ annotation dont editable
     * par l'utilisateur.
     * @param catalogue
     * @return une liste de TableAnnotation.

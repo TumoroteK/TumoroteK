@@ -67,7 +67,9 @@ public class ConditMilieuManagerImpl implements ConditMilieuManager
 
    /* Beans injectes par Spring*/
    private ConditMilieuDao conditMilieuDao;
+
    private ConditMilieuValidator conditMilieuValidator;
+
    private PlateformeDao plateformeDao;
 
    public ConditMilieuManagerImpl(){}

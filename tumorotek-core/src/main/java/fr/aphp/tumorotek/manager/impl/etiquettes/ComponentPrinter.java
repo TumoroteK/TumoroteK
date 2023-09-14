@@ -76,13 +76,13 @@ public class ComponentPrinter
 
    /**
     * fonction d impression d etiquettes.
-    * 
+    *
     * @param componentsToBePrinted
     * @param nb
     * @param confDir
     * @param printerTumoFileBean
     * @return
-    * @throws PrinterException 
+    * @throws PrinterException
     */
    public int printComponents(final List<ComponentBarcodeLabel> componentsToBePrinted, final Imprimante imprimante,
       final String rawLang, final BarcodeFieldDefault by) throws PrinterException{
@@ -183,7 +183,7 @@ public class ComponentPrinter
 
    //	/**
    //	 * fonction qui lance l impression d une liste d etiquette.
-   //	 * 
+   //	 *
    //	 * @param ArrayList
    //	 *            liste des etiquettes
    //	 * @param int nb
@@ -191,7 +191,7 @@ public class ComponentPrinter
    //	 * @param ModeleEtiquetteBean
    //	 * @param raw printing Language
    //	 * @return
-   //	 * @throws PrinterException 
+   //	 * @throws PrinterException
    //	 */
    //	public int print(List<LigneEtiquette> lignes, int nb,
    //			Imprimante imprimanteBean, Modele modele, String rawLang) throws PrinterException {
@@ -203,7 +203,7 @@ public class ComponentPrinter
    //
    //	/**
    //	 * fonction qui lance l impression d une liste d etiquette.
-   //	 * 
+   //	 *
    //	 * @param ArrayList
    //	 *            liste des etiquettes
    //	 * @param int nb
@@ -211,7 +211,7 @@ public class ComponentPrinter
    //	 * @param ModeleEtiquetteBean
    //	 * @param raw printing Language
    //	 * @return
-   //	 * @throws PrinterException 
+   //	 * @throws PrinterException
    //	 */
    //	public int printList(List<List<LigneEtiquette>> liste, int nb,
    //			Imprimante imprimanteBean, Modele modele, String rawLang) throws PrinterException {
@@ -224,7 +224,7 @@ public class ComponentPrinter
    //	}
 
    /**
-    * 
+    *
     * @param liste
     * @param printerTumoFileBean
     * @return
@@ -252,8 +252,8 @@ public class ComponentPrinter
    }
 
    /**
-    * 
-    * @param code 
+    *
+    * @param code
     * @param liste
     * @param printerTumoFileBean
     * @return
@@ -341,7 +341,7 @@ public class ComponentPrinter
             final DocFlavor byteFlavor = DocFlavor.BYTE_ARRAY.AUTOSENSE;
             final Doc bytesDoc = new SimpleDoc(bytes, byteFlavor, null);
             // PrintServiceAttributeSet aset = new HashPrintServiceAttributeSet();
-            // aset.add(new PrinterName(imprimante.getNom(), null)); 
+            // aset.add(new PrinterName(imprimante.getNom(), null));
             final PrintService[] services = PrintServiceLookup.lookupPrintServices(null, null);
 
             if(services.length > 0){

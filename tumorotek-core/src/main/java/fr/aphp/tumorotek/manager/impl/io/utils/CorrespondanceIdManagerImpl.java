@@ -246,7 +246,7 @@ public class CorrespondanceIdManagerImpl implements CorrespondanceIdManager
       final List<Banque> banks){
       // path 1 echantillons
       final List<Integer> res = findDerivesFromEchantillonsIds(findEchantillonsFromPrelevementsIds(ids, em, banks), em, banks);
-      // path 2 prélèvements 
+      // path 2 prélèvements
       res.addAll(findDerivesFromPrelevementsIds(ids, em, banks));
       // path 3 derives desc
       final List<Integer> totDerives = new ArrayList<>();

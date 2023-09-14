@@ -42,6 +42,7 @@ import java.util.List;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.zkoss.util.resource.Labels;
+import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zkplus.databind.AnnotateDataBinder;
@@ -50,31 +51,38 @@ import org.zkoss.zul.Decimalbox;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Row;
+import org.zkoss.zul.SimpleConstraint;
 
 import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
 import fr.aphp.tumorotek.model.systeme.Unite;
 
 /**
  * Classe gérant une fenêtre modal pour la modification multiple d'une
- * Quantification.
- * Classe créée le 15/03/09.
+ * Quantification. Classe créée le 15/03/09.
  *
  * @author Pierre Ventadour
- * @version 2.0
+ * @version 2.3.0-gatsbi
  */
 public class ModificationMultipleQuantification extends AbstractModificationMultipleComponent
 {
 
    private static final long serialVersionUID = -40186196122301556L;
+
    /**
     * Components.
     */
    private Decimalbox multiNumeriqueBox;
+
    private Decimalbox eraseMultiNumeriqueBox;
+
    private Listbox multiUnitesBox;
+
    private Listbox multiValuesListBox;
+
    private Listbox eraseMultiUnitesBox;
+
    private Label modifImpossibleLabel;
+
    private Row rowModifImpossible;
 
    /**
@@ -82,11 +90,14 @@ public class ModificationMultipleQuantification extends AbstractModificationMult
     */
    // Valeurs numériques du champ des différents objets
    private List<Object> uniteValues = new ArrayList<>();
+
    private List<Object> allUniteValues = new ArrayList<>();
+
    private List<String> allStringUniteValues = new ArrayList<>();
 
    // Si une seule valeur : ancienne
    private Object oldUniqueUniteValue;
+
    // Nouvelle valeur
    private Object selectedUnite;
 
@@ -97,7 +108,7 @@ public class ModificationMultipleQuantification extends AbstractModificationMult
    private boolean modifPossible = true;
 
    public void init(final String pathToPage, final String methodToCall, final List<? extends Object> objs, final String label,
-      final String champToEdit, final List<Object> allValuesThesaurus, final String champNameThesaurus){
+      final String champToEdit, final List<Object> allValuesThesaurus, final String champNameThesaurus, final Constraint constr){
       setPath(pathToPage);
       setMethode(methodToCall);
       getListObjets().clear();
@@ -107,6 +118,7 @@ public class ModificationMultipleQuantification extends AbstractModificationMult
       setChamp(champToEdit);
       this.allUniteValues = allValuesThesaurus;
       setChampThesaurus(champNameThesaurus);
+      setConstraint(constr);
 
       // on crée le nom du champ des unités
       if(getChamp().contains("Init")){
@@ -128,6 +140,10 @@ public class ModificationMultipleQuantification extends AbstractModificationMult
 
          // initialisation des composants
          initComponentsInWindow();
+
+         // @since 2.2.3-gatsbi
+         setConstraintsToBoxes(constr);
+
          getBinder().loadComponent(self);
 
          if(getStringValues().size() <= 1){
@@ -178,7 +194,7 @@ public class ModificationMultipleQuantification extends AbstractModificationMult
    public void extractValuesFromObjects(){
       setHasNulls(false);
       // pour chaque objet à modifier
-      // on extrait la valeur numérique et l'unité actuelle du 
+      // on extrait la valeur numérique et l'unité actuelle du
       // champ à modifier
       for(int i = 0; i < getListObjets().size(); i++){
          try{
@@ -188,7 +204,7 @@ public class ModificationMultipleQuantification extends AbstractModificationMult
             // on extrait l'unité
             final Object tmp = PropertyUtils.getSimpleProperty(getListObjets().get(i), champUnite);
 
-            // on construit une liste de strings contenant la 
+            // on construit une liste de strings contenant la
             // concaténation des 2 valeurs
             List<Object> tmps = null;
             if(tmpFloat != null && tmp != null){
@@ -244,7 +260,7 @@ public class ModificationMultipleQuantification extends AbstractModificationMult
    @Override
    public void initComponentsInWindow(){
       super.initComponentsInWindow();
-      // unite 
+      // unite
       if(uniteValues.size() == 1){
          oldUniqueUniteValue = uniteValues.get(0);
          selectedUnite = oldUniqueUniteValue;
@@ -274,6 +290,8 @@ public class ModificationMultipleQuantification extends AbstractModificationMult
          lock.setSrc("/images/icones/locked.png");
          setOldUniqueValue(null);
       }
+
+      setConstraintsToBoxes(getConstraint());
    }
 
    @Override
@@ -308,6 +326,12 @@ public class ModificationMultipleQuantification extends AbstractModificationMult
 
    @Override
    public void onClick$validate(){
+
+      // checks unite is selected
+      if(isObligatoire()){
+         checkUniteSelected();
+      }
+
       List<Object> finalValue = null;
       setChangedValue(false);
       // si on était en mode liste
@@ -350,6 +374,21 @@ public class ModificationMultipleQuantification extends AbstractModificationMult
       postBack(scv);
 
       Events.postEvent(new Event("onClose", self.getRoot()));
+   }
+
+   /**
+    * @since 2.3.0-gatsbi
+    */
+   private void checkUniteSelected(){
+      if(rowOneValue.isVisible()){
+         if(multiUnitesBox.getSelectedCount() == 0){
+            throw new WrongValueException(multiUnitesBox, Labels.getLabel("anno.thes.empty"));
+         }
+      }else if(rowMultiValue.isVisible()){
+         if(eraseMultiUnitesBox.getSelectedCount() == 0){
+            throw new WrongValueException(eraseMultiUnitesBox, Labels.getLabel("anno.thes.empty"));
+         }
+      }
    }
 
    @Override
@@ -420,7 +459,17 @@ public class ModificationMultipleQuantification extends AbstractModificationMult
 
    @Override
    public void setConstraintsToBoxes(final Constraint constr){
+      if(rowOneValue.isVisible()){
+         multiNumeriqueBox.setConstraint(constr);
+      }else if(rowMultiValue.isVisible()){
 
+         if(constr != null && eraseMultiNumeriqueBox.isVisible()){
+            eraseMultiNumeriqueBox.setConstraint(constr);
+         }else{
+            final SimpleConstraint nullCstr = null;
+            eraseMultiNumeriqueBox.setConstraint(nullCstr);
+         }
+      }
    }
 
    @Override
@@ -437,9 +486,9 @@ public class ModificationMultipleQuantification extends AbstractModificationMult
          eraseMultiNumeriqueBox
             .setValue(new BigDecimal(((Float) getValues().get(multiValuesListBox.getSelectedIndex())).floatValue()));
          eraseMultiUnitesBox.setSelectedIndex(allUniteValues.indexOf(uniteValues.get(multiValuesListBox.getSelectedIndex() - 1)));
-      }else{
-         //eraseMultiNumeriqueBox.setValue(null);
-         eraseMultiNumeriqueBox.setValue("");
+      }else{ // TODO impossible de passer un decimalbox value à null
+         // eraseMultiNumeriqueBox.setValue(null);
+         // eraseMultiNumeriqueBox.;
       }
    }
 

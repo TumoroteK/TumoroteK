@@ -89,7 +89,7 @@ public interface EtablissementDao extends GenericDaoJpa<Etablissement, Integer>
    List<Etablissement> findByArchiveWithOrder(boolean archive);
 
    /**
-    * Recherche les établissements dont les coordonnées 
+    * Recherche les établissements dont les coordonnées
     * sont passées en paramètre.
     * @param coordonnee pour lesquelles on recherche un établissement.
     * @return une liste d'établissements.
@@ -139,7 +139,7 @@ public interface EtablissementDao extends GenericDaoJpa<Etablissement, Integer>
    List<Etablissement> findByCollaborateurId(Integer collaborateurId);
 
    /**
-    * Recherche tous les établissements sauf celui dont l'id est passé 
+    * Recherche tous les établissements sauf celui dont l'id est passé
     * en paramètre.
     * @param etablissementId Identifiant de l'établissement que l'on souhaite
     * exclure de la liste retournée.
@@ -148,7 +148,7 @@ public interface EtablissementDao extends GenericDaoJpa<Etablissement, Integer>
    List<Etablissement> findByExcludedId(Integer etablissementId);
 
    /**
-    * Recherche le nombre de services de l'etablissement est passé 
+    * Recherche le nombre de services de l'etablissement est passé
     * en paramètre.
     * @param etablissementId Identifiant de l'établissement.
     * @return une liste sercice.

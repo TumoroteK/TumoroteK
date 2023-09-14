@@ -75,10 +75,15 @@ public class Champ implements Comparable<Champ>
 {
 
    private Integer champId;
+
    private ChampEntite champEntite;
+
    private ChampAnnotation champAnnotation;
+
    private ChampDelegue champDelegue;
+
    private Champ champParent;
+
    private Set<ChampLigneEtiquette> champLigneEtiquettes = new HashSet<>();
 
    public Champ(){
@@ -100,24 +105,24 @@ public class Champ implements Comparable<Champ>
       this.champDelegue = chDel;
    }
 
-   public Champ(final AbstractTKChamp ch, final Champ champParent) {
-      
-      if(ch instanceof ChampEntite) {
-         this.champEntite = (ChampEntite)ch;
-      }else if(ch instanceof ChampAnnotation) {
-         this.champAnnotation = (ChampAnnotation)ch;
-      }else if(ch instanceof ChampDelegue) {
-         this.champDelegue = (ChampDelegue)ch;
+   public Champ(final AbstractTKChamp ch, final Champ champParent){
+
+      if(ch instanceof ChampEntite){
+         this.champEntite = (ChampEntite) ch;
+      }else if(ch instanceof ChampAnnotation){
+         this.champAnnotation = (ChampAnnotation) ch;
+      }else if(ch instanceof ChampDelegue){
+         this.champDelegue = (ChampDelegue) ch;
       }
-      
+
       this.champParent = champParent;
-      
+
    }
-   
-   public Champ(final AbstractTKChamp ch) {
+
+   public Champ(final AbstractTKChamp ch){
       this(ch, null);
    }
-   
+
    @Id
    @GeneratedValue(generator = "autoincrement")
    @GenericGenerator(name = "autoincrement", strategy = "increment")
@@ -195,10 +200,7 @@ public class Champ implements Comparable<Champ>
          return false;
       }
       final Champ other = (Champ) obj;
-      if(null == this.champParent && null != other.champParent){
-         return false;
-      }
-      if(null != this.champParent && null == other.champParent){
+      if((null == this.champParent && null != other.champParent) || (null != this.champParent && null == other.champParent)){
          return false;
       }
       if(null != this.champParent && null != other.champParent){
@@ -294,32 +296,32 @@ public class Champ implements Comparable<Champ>
       }
       return retour;
    }
-   
-   public String champParentToString() {
-      
+
+   public String champParentToString(){
+
       final String champParentNom;
-      if(this.champParent.getChampEntite() != null) {
+      if(this.champParent.getChampEntite() != null){
          champParentNom = this.champParent.getChampEntite().getNom().replaceAll("Id$", "");
-      }else {
+      }else{
          champParentNom = this.champParent.getChampDelegue().getNom().replaceAll("Id$", "");
       }
-      
+
       final String entiteNom;
-      if(this.champParent.getChampEntite() != null) {
+      if(this.champParent.getChampEntite() != null){
          entiteNom = this.champParent.getChampEntite().getEntite().getNom();
-      }else {
+      }else{
          entiteNom = this.champParent.getChampDelegue().getEntite().getNom();
       }
-      
+
       final String champNom;
-      if(this.getChampEntite() != null) {
+      if(this.getChampEntite() != null){
          champNom = this.getChampEntite().getNom();
-      }else {
+      }else{
          champNom = this.getChampDelegue().getNom();
       }
-      
+
       return entiteNom + "." + champParentNom + "." + champNom;
-      
+
    }
 
    @Override

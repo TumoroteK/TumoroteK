@@ -69,10 +69,13 @@ public class AdicapGroupe implements Serializable
    private static final long serialVersionUID = -8442052205622516619L;
 
    private Integer adicapGroupeId;
+
    private String nom;
+
    private AdicapGroupe groupeParent;
 
    private Set<AdicapGroupe> adicapGroupes = new HashSet<>();
+
    private Set<Adicap> adicaps = new HashSet<>();
 
    /** Constructeur par défaut. */
@@ -134,7 +137,7 @@ public class AdicapGroupe implements Serializable
 
    /**
     * 2 groupe adicaps sont considérés comme égaux s'ils ont le même ID.
-    * Les groupes ne seront pas enregistres par l'interface mais 
+    * Les groupes ne seront pas enregistres par l'interface mais
     * directement dans la base de donnees donc impossibilite
     * de ne pas avoir ID assigne de maniere unique.
     * @param obj est le groupe adicap à tester.

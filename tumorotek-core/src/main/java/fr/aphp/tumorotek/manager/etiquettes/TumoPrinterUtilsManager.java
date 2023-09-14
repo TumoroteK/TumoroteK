@@ -55,7 +55,7 @@ public interface TumoPrinterUtilsManager
    /**
     * Extrait les données d'un échantillon/dérivé pour les imprimer sur etiquette d'un
     * modèle dynamique.
-    * 
+    *
     * @param echantillon/dérivé
     *            echantillon/dérivé à imprimer.
     * @param modele
@@ -66,14 +66,14 @@ public interface TumoPrinterUtilsManager
 
    /**
     * Créé les li
-    * @param modele 
+    * @param modele
     * @param echantillon
     * @return Lignes étiquettes
     */
    List<LigneEtiquette> createListEtiquette(TKStockableObject object, Modele modele);
 
    /**
-    * Extrait les données statique 
+    * Extrait les données statique
     * pour le protocole MBio
     * @param Obj
     * @return données etiquettes

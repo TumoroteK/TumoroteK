@@ -64,24 +64,32 @@ public class CodeNode extends TumoTreeNode
 {
 
    private TableCodage codification;
+
    private CodeCommon code = null;
+
    private CodeDossier dossier = null;
+
    private CodeSelect codeSelect = null;
+
    private AdicapGroupe adicapGroupe = null;
+
    private Boolean isTopo = null;
+
    private Treeitem parentItem;
 
    private boolean isRoot = false;
 
    private List<? extends CodeCommon> childrenCodes = new ArrayList<>();
+
    private List<AdicapGroupe> childrenGroupes = new ArrayList<>();
+
    private List<CodeDossier> childrenDossiers = new ArrayList<>();
 
    public CodeNode(){}
 
    /**
     * Constructeur d'un noeud code.
-    * @param c code 
+    * @param c code
     * @param t codification associée
     * @param b isTopo
     */
@@ -98,7 +106,7 @@ public class CodeNode extends TumoTreeNode
 
    /**
     * Constructeur d'un noeud de type Groupe Adicap.
-    * Assigne le membre isTopo qui sera propagé aux code 
+    * Assigne le membre isTopo qui sera propagé aux code
     * Adicap fils.
     * @param groupe
     * @param t Codification Adicap

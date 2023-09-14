@@ -68,6 +68,9 @@
 		<label-location>/WEB-INF/internationalization/tooltips/prelevement.properties</label-location>
 		<label-location>/WEB-INF/internationalization/tooltips/echantillon.properties</label-location>
 		
+		<label-location>/WEB-INF/internationalization/gatsbi.properties</label-location>
+		
+		
 		<!-- <label-location>file:///home/mathieu/animotek_fr.properties</label-location> -->
 
 	</system-config>

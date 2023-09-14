@@ -55,10 +55,11 @@ import fr.aphp.tumorotek.decorator.ChampImpressionRowRenderer;
 import fr.aphp.tumorotek.model.TKdataObject;
 import fr.aphp.tumorotek.model.impression.ChampEntiteBloc;
 import fr.aphp.tumorotek.model.io.export.ChampEntite;
+import fr.aphp.tumorotek.webapp.gatsbi.GatsbiController;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
 /**
- * 
+ *
  * @author mathieu
  * @version 2.2.3-genno
  */
@@ -73,7 +74,9 @@ public class FicheChampsImpression extends AbstractFicheController
     * Objets principaux.
     */
    private BlocImpressionDecorator blocImpressionDecorator;
+
    private List<ChampImpressionDecorator> champs = new ArrayList<>();
+
    private String path;
 
    private ChampImpressionRowRenderer champImpressionRenderer = new ChampImpressionRowRenderer();
@@ -176,7 +179,7 @@ public class FicheChampsImpression extends AbstractFicheController
     */
    public void onClick$validate(){
       final List<ChampEntite> champsFinaux = new ArrayList<>();
-      // on parcourt tous les champs et on ne conserve que ceux 
+      // on parcourt tous les champs et on ne conserve que ceux
       // à imprimer
       for(int i = 0; i < champs.size(); i++){
          if(champs.get(i).getImprimer()){
@@ -220,29 +223,32 @@ public class FicheChampsImpression extends AbstractFicheController
       // on extrait tous les champs disponibles
       final List<ChampEntiteBloc> cebs =
          ManagerLocator.getChampEntiteBlocManager().findByBlocManager(blocImpressionDecorator.getBlocImpression());
-      
+
+      // since @gatsbi, retire tous les champs invisible
+      cebs.removeIf(c -> !GatsbiController.isChampEntiteVisible(c.getChampEntite()));
+
       // decoration
       for(int i = 0; i < cebs.size(); i++){
-          if(!blocImpressionDecorator.getChampEntites().contains(cebs.get(i).getChampEntite())){
-             final ChampImpressionDecorator deco = new ChampImpressionDecorator(cebs.get(i).getChampEntite());
-             deco.setImprimer(false);
-             champs.add(deco);
-          }
-       }
-      
+         if(!blocImpressionDecorator.getChampEntites().contains(cebs.get(i).getChampEntite())){
+            final ChampImpressionDecorator deco = new ChampImpressionDecorator(cebs.get(i).getChampEntite());
+            deco.setImprimer(false);
+            champs.add(deco);
+         }
+      }
+
       // Vilain HACK !! contexte SEROLOGIE
       // suppr les champs échantillons
-      if ("SEROLOGIE".equalsIgnoreCase(SessionUtils.getCurrentContexte().getNom())) {
-	      if (blocImpressionDecorator.getBlocImpression().getNom().equals("bloc.prelevement.echantillons")) {
-	    	  champs.remove(new ChampImpressionDecorator(new ChampEntite(ManagerLocator
-					  .getEntiteManager().findByIdManager(3), "EchanQualiteId", null)));
-			  champs.remove(new ChampImpressionDecorator(new ChampEntite(ManagerLocator
-					  .getEntiteManager().findByIdManager(3), "AdicapOrganeId", null)));
-			  champs.remove(new ChampImpressionDecorator(new ChampEntite(ManagerLocator
-					  .getEntiteManager().findByIdManager(3), "CodeAssigneId", null)));
-		  }
+      if("SEROLOGIE".equalsIgnoreCase(SessionUtils.getCurrentContexte().getNom())){
+         if(blocImpressionDecorator.getBlocImpression().getNom().equals("bloc.prelevement.echantillons")){
+            champs.remove(new ChampImpressionDecorator(
+               new ChampEntite(ManagerLocator.getEntiteManager().findByIdManager(3), "EchanQualiteId", null)));
+            champs.remove(new ChampImpressionDecorator(
+               new ChampEntite(ManagerLocator.getEntiteManager().findByIdManager(3), "AdicapOrganeId", null)));
+            champs.remove(new ChampImpressionDecorator(
+               new ChampEntite(ManagerLocator.getEntiteManager().findByIdManager(3), "CodeAssigneId", null)));
+         }
       }
-     
+
       getBinder().loadComponent(self);
    }
 

@@ -75,26 +75,41 @@ public abstract class AbstractFicheCombineController extends AbstractFicheContro
    private static final long serialVersionUID = 1L;
 
    protected Button createC;
+
    protected Button cancelC;
+
    protected Button validateC;
+
    protected Button revertC;
+
    protected Button addNewC;
+
    protected Button deleteC;
+
    protected Button editC;
+
    protected Button printC;
+
    protected Menuitem historique;
+
    private boolean isAnonyme;
 
    private TKdataObject clone;
 
    private Component[] objLabelsComponents;
+
    private Component[] objBoxsComponents;
+
    private Component[] requiredMarks;
 
    private boolean canEdit;
+
    private boolean canDelete;
+
    private boolean canNew;
+
    private boolean canSeeHistorique;
+
    private boolean admin;
 
    private String deletionMessage;
@@ -324,8 +339,8 @@ public abstract class AbstractFicheCombineController extends AbstractFicheContro
    }
 
    /**
-    * Recoit l'evenement envoyé depuis la modale pour 
-    * commander la suppression. L'evenement contient en data 
+    * Recoit l'evenement envoyé depuis la modale pour
+    * commander la suppression. L'evenement contient en data
     * les commentaires liés à la suppression.
     * @param event
     */
@@ -391,7 +406,7 @@ public abstract class AbstractFicheCombineController extends AbstractFicheContro
    }
 
    /**
-    * Méthode appelée lors de l'appui sur la touche ENTREE : 
+    * Méthode appelée lors de l'appui sur la touche ENTREE :
     * valide le formulaire en mode création ou validation.
     */
    public void onOK(){
@@ -493,7 +508,7 @@ public abstract class AbstractFicheCombineController extends AbstractFicheContro
    public abstract void updateObject();
 
    /**
-    * Prepare la méthode de suppression de l'objet. Verifie si ce dernier 
+    * Prepare la méthode de suppression de l'objet. Verifie si ce dernier
     * est utilisé ou référencé.
     * @return true si la suppression devient archivage.
     */
@@ -529,7 +544,7 @@ public abstract class AbstractFicheCombineController extends AbstractFicheContro
     * des droits de l'utilisateur.
     * @param nomEntite Entite (ex.:ProdDerive).
     */
-   
+   @SuppressWarnings("unchecked")
    public void drawActionsButtons(final String nomEntite){
       Boolean admin = false;
       if(sessionScope.containsKey("AdminPF")){
@@ -540,7 +555,7 @@ public abstract class AbstractFicheCombineController extends AbstractFicheContro
 
       // si l'utilisateur est admin => boutons cliquables
       if(admin){
-    	 setAdmin(true);
+         setAdmin(true);
          setCanNew(true);
          setCanEdit(true);
          setCanDelete(true);
@@ -635,11 +650,11 @@ public abstract class AbstractFicheCombineController extends AbstractFicheContro
       this.canSeeHistorique = canHistorique;
    }
 
-	public boolean isAdmin() {
-		return admin;
-	}
-	
-	public void setAdmin(boolean _a) {
-		this.admin = _a;
-	}
+   public boolean isAdmin(){
+      return admin;
+   }
+
+   public void setAdmin(final boolean _a){
+      this.admin = _a;
+   }
 }

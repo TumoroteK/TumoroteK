@@ -67,9 +67,12 @@ public class NumerotationManagerImpl implements NumerotationManager
 {
 
    private final Log log = LogFactory.getLog(NumerotationManager.class);
+
    /** Bean Dao. */
    private NumerotationDao numerotationDao;
+
    private BanqueDao banqueDao;
+
    private EntiteDao entiteDao;
 
    public void setNumerotationDao(final NumerotationDao nDao){
@@ -136,43 +139,43 @@ public class NumerotationManagerImpl implements NumerotationManager
 
    @Override
    public String getGeneratedCodeManager(final Numerotation numerotation){
-      
+
       String generatedCode = null;
-      
+
       if(numerotation != null && numerotation.getCodeFormula() != null){
-         
+
          final Integer currentIncrement = numerotation.getCurrentIncrement();
-         
+
          if(currentIncrement != null){
 
             final boolean zeroFill = Optional.ofNullable(numerotation.getZeroFill()).orElse(false);
-            
+
             String format = "%d";
-            
-            if(zeroFill) {
+
+            if(zeroFill){
                format = "%0" + Optional.ofNullable(numerotation.getNbChiffres()).orElse(1) + "d";
             }
-            
+
             final String num = String.format(format, currentIncrement);
-            
+
             generatedCode = numerotation.getCodeFormula().replace("[]", num);
          }else{
             generatedCode = numerotation.getCodeFormula();
          }
-         
-         if(numerotation.getCodeFormula().contains(DATE_PLACEHOLDER)) {
-            
+
+         if(numerotation.getCodeFormula().contains(DATE_PLACEHOLDER)){
+
             final String dateFormat = numerotation.getDateFormat().getFormat();
             final String date = LocalDate.now().format(DateTimeFormatter.ofPattern(dateFormat));
-            
+
             generatedCode = generatedCode.replace(DATE_PLACEHOLDER, date);
-            
+
          }
-         
+
       }
-      
+
       return generatedCode;
-      
+
    }
 
    @Override

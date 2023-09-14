@@ -44,12 +44,20 @@ import fr.aphp.tumorotek.action.constraints.ConstFilename;
  * Date: 26/07/2010.
  *
  * @author Mathieu BARTHELEMY
- * @version 2.0
+ * @version 2.3.0-gatsbi
  */
 public final class EchantillonConstraints
 {
 
    private EchantillonConstraints(){}
+   
+// @since 2.3.0-gatsbi reset nullable 
+   public static void resetNullableProps() {
+      codePrefixConstraint.setNullable(false);
+      codePrefixNullableConstraint.setNullable(true);
+      codeSuffixConstraint.setNullable(false);
+      crAnapathConstraint.setNullable(true);
+   }
 
    private static ConstCode codePrefixConstraint = new ConstCode();
    static{

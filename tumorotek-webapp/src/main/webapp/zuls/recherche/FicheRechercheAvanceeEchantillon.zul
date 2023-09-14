@@ -78,7 +78,7 @@
 								<!-- Groupe échantillon -->
 								<group id="groupEchantillons"
 									label="${c:l('recherche.avancee.informations.echantillon')}" />
-								<!-- code et nature -->
+								<!-- code et type -->
 								<row>
 									<label
 										value="${c:l('Champ.Echantillon.Code')}" sclass="formLabel" />

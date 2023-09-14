@@ -65,7 +65,9 @@ import fr.aphp.tumorotek.model.TKFantomableObject;
 import fr.aphp.tumorotek.model.TKdataObject;
 import fr.aphp.tumorotek.model.coeur.patient.serotk.AbstractMaladieDelegate;
 import fr.aphp.tumorotek.model.coeur.prelevement.Prelevement;
+import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.contexte.Collaborateur;
+import fr.aphp.tumorotek.model.contexte.gatsbi.Visite;
 
 /**
  *
@@ -73,7 +75,7 @@ import fr.aphp.tumorotek.model.contexte.Collaborateur;
  * Classe créée le 14/09/09.
  *
  * @author Maxime Gousseau
- * @version 2.2.3-genno
+ * @version 2.3.0-gatsbi
  *
  */
 @Entity
@@ -82,17 +84,21 @@ import fr.aphp.tumorotek.model.contexte.Collaborateur;
    @NamedQuery(name = "Maladie.findByCode", query = "SELECT m FROM Maladie m WHERE m.code like ?1"),
    @NamedQuery(name = "Maladie.findByExcludedId",
       query = "SELECT m FROM Maladie m WHERE m.maladieId != ?1" + " AND m.libelle = ?2"),
-   @NamedQuery(name = "Maladie.findByPatient",
-      query = "SELECT m FROM Maladie m WHERE m.patient = ?1" + " ORDER BY m.dateDebut, m.dateDiagnostic"),
-   @NamedQuery(name = "Maladie.findByPatientNoSystem",
-      query = "SELECT m FROM Maladie m " + "WHERE m.patient = ?1 AND m.systemeDefaut = 0 "
+   @NamedQuery(name = "Maladie.findByPatientNoSystemNorVisite",
+      query = "SELECT m FROM Maladie m WHERE m.patient = ?1 AND m.systemeDefaut = 0 AND m.banque is null "
          + "ORDER BY m.dateDebut, m.dateDiagnostic, m.maladieId"),
    @NamedQuery(name = "Maladie.findByCollaborateurId",
-      query = "SELECT m FROM Maladie m " + "LEFT JOIN m.collaborateurs o " + "WHERE o.collaborateurId = ?1"),
+      query = "SELECT m FROM Maladie m LEFT JOIN m.collaborateurs o  WHERE o.collaborateurId = ?1"),
    @NamedQuery(name = "Maladie.findCountByReferent",
-      query = "SELECT count(m) FROM Maladie m " + "JOIN m.collaborateurs c " + "WHERE c = ?1"), 
-   @NamedQuery(name = "Maladie.findByLibelleAndPatient", query = "SELECT m FROM Maladie m WHERE m.libelle like ?1 " 
-		 + 	"AND m.patient = ?2")
+      query = "SELECT count(m) FROM Maladie m " + "JOIN m.collaborateurs c WHERE c = ?1"),
+   @NamedQuery(name = "Maladie.findByLibelleAndPatient",
+      query = "SELECT m FROM Maladie m WHERE m.libelle like ?1 AND m.patient = ?2"),
+   @NamedQuery(name = "Maladie.findAllByPatient",
+      query = "SELECT m FROM Maladie m WHERE m.patient = ?1 ORDER BY m.dateDebut, m.dateDiagnostic"),
+   @NamedQuery(name = "Maladie.findByPatientExcludingVisites",
+      query = "SELECT m FROM Maladie m WHERE m.patient = ?1 AND m.banque is null ORDER BY m.dateDebut, m.dateDiagnostic"),
+   @NamedQuery(name = "Maladie.findVisites",
+      query = "SELECT m FROM Maladie m WHERE m.patient = ?1 and m.banque = ?2")
 })
 public class Maladie extends TKDelegetableObject<Maladie> implements TKdataObject, TKFantomableObject, Serializable
 {
@@ -100,17 +106,33 @@ public class Maladie extends TKDelegetableObject<Maladie> implements TKdataObjec
    private static final long serialVersionUID = 4092522013404060267L;
 
    private Integer maladieId;
+
    private Patient patient;
+
    private String libelle;
+
    private String code;
+
    private Date dateDiagnostic;
+
    private Date dateDebut;
+
    private Boolean systemeDefaut = false;
 
    private Set<Prelevement> prelevements = new HashSet<>();
+
    private Set<Collaborateur> collaborateurs = new HashSet<>();
 
    private TKDelegateObject<Maladie> delegate;
+   
+   // @since 2.3.0-gatsbi
+   // Transient
+   private Visite visite;
+   
+   // @since 2.3.0-gatsbi
+   // les maladies correspondant à des visites ont une référence vers la 
+   // collection dans laquelle elles ont été créées.
+   private Banque banque;
 
    /** Constructeur par défaut. */
    public Maladie(){}
@@ -204,6 +226,16 @@ public class Maladie extends TKDelegetableObject<Maladie> implements TKdataObjec
       this.systemeDefaut = sysDefaut;
    }
 
+   @ManyToOne
+   @JoinColumn(name = "BANQUE_ID", nullable = true)
+   public Banque getBanque(){
+      return banque;
+   }
+
+   public void setBanque(Banque banque){
+      this.banque = banque;
+   }
+
    @OneToMany(mappedBy = "maladie")
    @OrderBy("datePrelevement")
    public Set<Prelevement> getPrelevements(){
@@ -292,6 +324,8 @@ public class Maladie extends TKDelegetableObject<Maladie> implements TKdataObjec
 
       clone.setDelegate(getDelegate());
       
+      clone.setBanque(getBanque());
+
       return clone;
    }
 
@@ -306,19 +340,35 @@ public class Maladie extends TKDelegetableObject<Maladie> implements TKdataObjec
       return "Maladie";
    }
 
+   @Override
    @OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "delegator",
-		      targetEntity = AbstractMaladieDelegate.class)
+      targetEntity = AbstractMaladieDelegate.class)
    public TKDelegateObject<Maladie> getDelegate(){
       return delegate;
    }
-   
+
    @Override
-   public void setDelegate(TKDelegateObject<Maladie> delegate){
+   public void setDelegate(final TKDelegateObject<Maladie> delegate){
       this.delegate = delegate;
    }
 
    @Override
    public Integer listableObjectId(){
       return getMaladieId();
+   }
+   
+   @Transient
+   public Visite getVisite(){
+      return visite;
+   }
+
+   @Transient
+   public void setVisite(Visite visite){
+      this.visite = visite;
+   }
+   
+   @Transient
+   public String getMaladieBanqueLibelle() {
+      return libelle.concat(banque != null ? " [".concat(banque.getNom().concat("]")) : "");
    }
 }

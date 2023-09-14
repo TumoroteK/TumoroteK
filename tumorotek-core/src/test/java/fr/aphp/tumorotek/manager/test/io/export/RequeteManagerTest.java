@@ -66,10 +66,13 @@ public class RequeteManagerTest extends AbstractManagerTest4
 
    @Autowired
    private RequeteManager manager;
+
    @Autowired
    private GroupementManager groupementManager;
+
    @Autowired
    private BanqueDao banqueDao;
+
    @Autowired
    private UtilisateurDao utilisateurDao;
 

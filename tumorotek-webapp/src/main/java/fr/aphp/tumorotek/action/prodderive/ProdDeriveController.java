@@ -80,7 +80,9 @@ public class ProdDeriveController extends AbstractObjectTabController
    private static final long serialVersionUID = -6252555557751742915L;
 
    private Div divProdDeriveStatic;
+
    private Div divProdDeriveEdit;
+
    private Div modifMultiDiv;
 
    private final String createZulPath = "/zuls/prodderive/FicheMultiProdDerive.zul";

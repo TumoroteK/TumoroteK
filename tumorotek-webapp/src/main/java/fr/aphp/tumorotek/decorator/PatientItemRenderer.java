@@ -62,11 +62,15 @@ import fr.aphp.tumorotek.model.contexte.Collaborateur;
  * Date: 14/04/2010
  *
  * @author Mathieu BARTHELEMY
- * @version 2.0
+ * @version 2.3.0-gatsbi
  */
 public class PatientItemRenderer implements ListitemRenderer<Patient>
 {
 
+   private boolean showMedecin = false;
+
+   private boolean isFusion = false;
+   
    /**
     * Constructeur.
     * @param show pour afficher le medecin referents dans la row.
@@ -75,29 +79,14 @@ public class PatientItemRenderer implements ListitemRenderer<Patient>
       this.showMedecin = show;
    }
 
-   private boolean showMedecin = false;
-   private boolean isFusion = false;
-
    @Override
    public void render(final Listitem li, final Patient data, final int index){
 
       final Patient pat = data;
-      new Listcell(pat.getNip()).setParent(li);
-      new Listcell(pat.getNom()).setParent(li);
-      new Listcell(pat.getPrenom()).setParent(li);
-      new Listcell(PatientUtils.setSexeFromDBValue(pat)).setParent(li);
-      new Listcell(ObjectTypesFormatters.dateRenderer2(pat.getDateNaissance())).setParent(li);
-      //        String dateN = null;
-      //    	if (pat.getDateNaissance() != null) {
-      //			Calendar c = Calendar.getInstance();
-      //			c.setTime(pat.getDateNaissance());
-      //			dateN = String.valueOf(c.get(Calendar.YEAR));
-      //		}
-      //		new Listcell(dateN).setParent(li);
-
+      
+      renderPatient(li, pat);
+      
       if(isFusion){
-         //new Listcell(String.valueOf(getNbPrelevements(pat)))
-         //.setParent(li);
          drawPrelevementsLabelWithPopup(li, pat);
       }
 
@@ -109,12 +98,46 @@ public class PatientItemRenderer implements ListitemRenderer<Patient>
          li.setStyle("background-color : #e2e9fe");
       }else{
          li.setStyle("background-color : #beff96");
-      }
+      } 
    }
 
+   protected void renderPatient(Listitem li, Patient pat){
+
+      renderNip(li, pat);
+      
+      renderNom(li, pat);
+      
+      renderPrenom(li, pat);
+
+      renderSexe(li, pat);
+      
+      renderDateNais(li, pat);     
+   }
+   
+   protected void renderNip(Listitem li, Patient pat) {
+      new Listcell(pat.getNip()).setParent(li);
+   }
+   
+   protected void renderNom(Listitem li, Patient pat) {
+      new Listcell(pat.getNom()).setParent(li);
+   }
+   
+   protected void renderPrenom(Listitem li, Patient pat) {
+      new Listcell(pat.getPrenom()).setParent(li);
+   }
+   
+   protected void renderSexe(Listitem li, Patient pat) {
+      new Listcell(PatientUtils.setSexeFromDBValue(pat)).setParent(li);
+   }
+   
+   protected void renderDateNais(Listitem li, Patient pat) {
+      new Listcell(ObjectTypesFormatters.dateRenderer2(pat.getDateNaissance())).setParent(li);
+   }
+
+
    public Integer getNbPrelevements(final Patient pat){
-      Integer nb = 0;
-      final List<Maladie> maladies = ManagerLocator.getMaladieManager().findByPatientNoSystemManager(pat);
+      int nb = 0;
+      final List<Maladie> maladies = ManagerLocator.getMaladieManager().findByPatientNoSystemNorVisiteManager(pat);
       for(int i = 0; i < maladies.size(); i++){
          nb += ManagerLocator.getMaladieManager().getPrelevementsManager(maladies.get(i)).size();
       }
@@ -129,7 +152,7 @@ public class PatientItemRenderer implements ListitemRenderer<Patient>
     */
    private void drawPrelevementsLabelWithPopup(final Listitem li, final Patient pat){
       Integer nb = 0;
-      final List<Maladie> maladies = ManagerLocator.getMaladieManager().findByPatientNoSystemManager(pat);
+      final List<Maladie> maladies = ManagerLocator.getMaladieManager().findByPatientNoSystemNorVisiteManager(pat);
       for(int i = 0; i < maladies.size(); i++){
          nb += ManagerLocator.getMaladieManager().getPrelevementsManager(maladies.get(i)).size();
       }
@@ -152,7 +175,7 @@ public class PatientItemRenderer implements ListitemRenderer<Patient>
       if(!values.isEmpty()){
          final Label label1 = new Label(values.get(0));
          label1.setSclass("formValue");
-         // dessine le label avec un lien vers popup 
+         // dessine le label avec un lien vers popup
          if(values.size() > 1){
             final Hbox labelAndLinkBox = new Hbox();
             labelAndLinkBox.setSpacing("5px");
@@ -195,8 +218,8 @@ public class PatientItemRenderer implements ListitemRenderer<Patient>
    }
 
    /**
-    * Dessine dans un label le nom (et prenom) des medecins referents. 
-    * Utilisation d'un tooltip pour afficher la totalité des medecines 
+    * Dessine dans un label le nom (et prenom) des medecins referents.
+    * Utilisation d'un tooltip pour afficher la totalité des medecines
     * suivant cette même règle.
     * @param Listiem li
     * @param Component Parent
@@ -206,7 +229,7 @@ public class PatientItemRenderer implements ListitemRenderer<Patient>
       if(meds != null && !meds.isEmpty()){
 
          final Label c1Label = new Label(meds.get(0).getNom());
-         // dessine le label avec un lien vers popup 
+         // dessine le label avec un lien vers popup
          if(meds.size() > 1){
             final Hlayout labelAndLinkBox = new Hlayout();
             labelAndLinkBox.setSpacing("5px");
@@ -243,5 +266,9 @@ public class PatientItemRenderer implements ListitemRenderer<Patient>
          final Listcell cell = new Listcell();
          cell.setParent(li);
       }
+   }
+   
+   public void setShowMedecin(boolean _s){
+      this.showMedecin = _s;
    }
 }

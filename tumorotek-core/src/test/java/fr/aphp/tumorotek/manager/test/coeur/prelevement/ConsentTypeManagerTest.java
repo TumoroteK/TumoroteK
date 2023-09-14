@@ -65,6 +65,7 @@ public class ConsentTypeManagerTest extends AbstractManagerTest4
 
    @Autowired
    private ConsentTypeManager consentTypeManager;
+
    @Autowired
    private PlateformeDao plateformeDao;
 
@@ -81,7 +82,7 @@ public class ConsentTypeManagerTest extends AbstractManagerTest4
       //teste une recherche non exactMatch
       consentTypes = consentTypeManager.findByTypeLikeManager("RECH", false);
       assertTrue(consentTypes.size() == 1);
-      assertTrue(consentTypes.get(0).getType().equals("RECHERCHE"));
+      assertTrue(consentTypes.get(0).getNom().equals("RECHERCHE"));
       //teste une recherche infructueuse
       consentTypes = consentTypeManager.findByTypeLikeManager("ACCORD", false);
       assertTrue(consentTypes.size() == 0);
@@ -99,11 +100,11 @@ public class ConsentTypeManagerTest extends AbstractManagerTest4
       final ConsentType ct1 = (consentTypeManager.findByTypeLikeManager("RECHERCHE", true)).get(0);
       assertFalse(consentTypeManager.findDoublonManager(ct1));
       final ConsentType ct2 = new ConsentType();
-      ct2.setType(ct1.getType());
+      ct2.setNom(ct1.getNom());
       ct2.setPlateforme(ct1.getPlateforme());
       assertTrue(ct2.equals(ct1));
       assertTrue(consentTypeManager.findDoublonManager(ct2));
-      ct1.setType("DECEDE");
+      ct1.setNom("DECEDE");
       ct1.setPlateforme(plateformeDao.findById(1));
       assertTrue(consentTypeManager.findDoublonManager(ct1));
    }
@@ -137,14 +138,14 @@ public class ConsentTypeManagerTest extends AbstractManagerTest4
    private void createObjectManagerTest(){
       //Insertion nouvel enregistrement
       final ConsentType ct1 = new ConsentType();
-      ct1.setType("GENETIQUE 1.0");
+      ct1.setNom("GENETIQUE 1.0");
       ct1.setPlateforme(plateformeDao.findById(1));
       consentTypeManager.createObjectManager(ct1);
       assertTrue((consentTypeManager.findByTypeLikeManager("GENETIQUE 1.0", true)).size() == 1);
       //Insertion d'un doublon engendrant une exception
       Boolean catched = false;
       final ConsentType ct1Bis = new ConsentType();
-      ct1Bis.setType("GENETIQUE 1.0");
+      ct1Bis.setNom("GENETIQUE 1.0");
       try{
          consentTypeManager.createObjectManager(ct1Bis);
       }catch(final Exception e){
@@ -170,7 +171,7 @@ public class ConsentTypeManagerTest extends AbstractManagerTest4
       ct2.setPlateforme(ct1.getPlateforme());
       for(int i = 0; i < emptyValues.length; i++){
          try{
-            ct2.setType(emptyValues[i]);
+            ct2.setNom(emptyValues[i]);
             consentTypeManager.createObjectManager(ct2);
          }catch(final ValidationException e){
             //verifie qu'aucune ligne n'a ete ajoutee
@@ -182,13 +183,13 @@ public class ConsentTypeManagerTest extends AbstractManagerTest4
    private void updateObjectManagerTest(){
       //Modification d'un enregistrement
       final ConsentType ct1 = (consentTypeManager.findByTypeLikeManager("GENETIQUE 1.0", true)).get(0);
-      ct1.setType("ADN -");
+      ct1.setNom("ADN -");
       consentTypeManager.updateObjectManager(ct1);
       assertTrue((consentTypeManager.findByTypeLikeManager("ADN -", true)).size() == 1);
       //Modification en un doublon engendrant une exception
       Boolean catched = false;
       try{
-         ct1.setType("EN ATTENTE");
+         ct1.setNom("EN ATTENTE");
          consentTypeManager.updateObjectManager(ct1);
       }catch(final Exception e){
          if(e.getClass().getSimpleName().equals("DoublonFoundException")){
@@ -202,7 +203,7 @@ public class ConsentTypeManagerTest extends AbstractManagerTest4
       final String[] emptyValues = new String[] {"", "  ", "¤¤$$[plk]", createOverLength(200), null};
       for(int i = 0; i < emptyValues.length; i++){
          try{
-            ct1.setType(emptyValues[i]);
+            ct1.setNom(emptyValues[i]);
             consentTypeManager.updateObjectManager(ct1);
          }catch(final ValidationException e){
             //verifie que l'enregistrement n'a pas ete modifie

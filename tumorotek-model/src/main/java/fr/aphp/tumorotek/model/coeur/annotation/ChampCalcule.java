@@ -1,37 +1,37 @@
-/** 
+/**
  * Copyright ou © ou Copr. Ministère de la santé, FRANCE (01/01/2011)
  * dsi-projet.tk@aphp.fr
- * 
- * Ce logiciel est un programme informatique servant à la gestion de 
- * l'activité de biobanques. 
+ *
+ * Ce logiciel est un programme informatique servant à la gestion de
+ * l'activité de biobanques.
  *
  * Ce logiciel est régi par la licence CeCILL soumise au droit français
- * et respectant les principes de diffusion des logiciels libres. Vous 
- * pouvez utiliser, modifier et/ou redistribuer ce programme sous les 
- * conditions de la licence CeCILL telle que diffusée par le CEA, le 
- * CNRS et l'INRIA sur le site "http://www.cecill.info". 
- * En contrepartie de l'accessibilité au code source et des droits de   
- * copie, de modification et de redistribution accordés par cette 
- * licence, il n'est offert aux utilisateurs qu'une garantie limitée. 
- * Pour les mêmes raisons, seule une responsabilité restreinte pèse sur 
- * l'auteur du programme, le titulaire des droits patrimoniaux et les 
+ * et respectant les principes de diffusion des logiciels libres. Vous
+ * pouvez utiliser, modifier et/ou redistribuer ce programme sous les
+ * conditions de la licence CeCILL telle que diffusée par le CEA, le
+ * CNRS et l'INRIA sur le site "http://www.cecill.info".
+ * En contrepartie de l'accessibilité au code source et des droits de
+ * copie, de modification et de redistribution accordés par cette
+ * licence, il n'est offert aux utilisateurs qu'une garantie limitée.
+ * Pour les mêmes raisons, seule une responsabilité restreinte pèse sur
+ * l'auteur du programme, le titulaire des droits patrimoniaux et les
  * concédants successifs.
  *
- * A cet égard  l'attention de l'utilisateur est attirée sur les 
- * risques associés au chargement,  à l'utilisation,  à la modification 
- * et/ou au  développement et à la reproduction du logiciel par 
- * l'utilisateur étant donné sa spécificité de logiciel libre, qui peut 
- * le rendre complexe à manipuler et qui le réserve donc à des 	
- * développeurs et des professionnels  avertis possédant  des 
- * connaissances  informatiques approfondies.  Les utilisateurs sont 
+ * A cet égard  l'attention de l'utilisateur est attirée sur les
+ * risques associés au chargement,  à l'utilisation,  à la modification
+ * et/ou au  développement et à la reproduction du logiciel par
+ * l'utilisateur étant donné sa spécificité de logiciel libre, qui peut
+ * le rendre complexe à manipuler et qui le réserve donc à des
+ * développeurs et des professionnels  avertis possédant  des
+ * connaissances  informatiques approfondies.  Les utilisateurs sont
  * donc invités à charger  et  tester  l'adéquation  du logiciel à leurs
  * besoins dans des conditions permettant d'assurer la sécurité de leurs
- * systèmes et ou de leurs données et, plus généralement, à l'utiliser 
- * et l'exploiter dans les mêmes conditions de sécurité. 
- *	
- * Le fait que vous puissiez accéder à cet en-tête signifie que vous 
- * avez pris connaissance de la licence CeCILL, et que vous en avez 
- * accepté les termes. 
+ * systèmes et ou de leurs données et, plus généralement, à l'utiliser
+ * et l'exploiter dans les mêmes conditions de sécurité.
+ *
+ * Le fait que vous puissiez accéder à cet en-tête signifie que vous
+ * avez pris connaissance de la licence CeCILL, et que vous en avez
+ * accepté les termes.
  **/
 package fr.aphp.tumorotek.model.coeur.annotation;
 
@@ -58,11 +58,11 @@ import fr.aphp.tumorotek.model.io.export.Champ;
  * Type de champ d'annotation permettant le calcul entre deux champs
  * ou entre un champ et une valeur saisie
  * Classe créée le 19/02/2018
- * 
+ *
  * @author Answald Bournique
  * @version 2.2.0
  * @since 2.2.0
- * 
+ *
  */
 @Entity
 @Table(name = "CHAMP_CALCULE")
@@ -77,28 +77,34 @@ public class ChampCalcule implements Serializable
     * id du champ calcule
     */
    private Integer champCalculeId;
+
    /**
     * Champ annotation auquel est relie le champ calculé
     */
    private ChampAnnotation champAnnotation;
+
    /**
     * Premier champ pour le calcul
     */
    private Champ champ1;
+
    /**
     * Deuxième champ pour le calcul
     */
    private Champ champ2;
+
    /**
     * Si le calcul se fait avec une saisie utilisateur (à la place de champ2)
     * TODO ChampCalcule - Renommer plus explicitement comme "valeurSaisie" ?
     */
    private String valeur;
+
    /**
     * Opération a effectuer entre les deux champs/valeur
     * TODO ChampCalcule - Enum ?
     */
    private String operateur;
+
    /**
     * DataType que retourne le champCalculé
     */
@@ -123,7 +129,7 @@ public class ChampCalcule implements Serializable
     * id du champ calcule
     * @param id id du champ calcule
     */
-   public void setChampCalculeId(Integer id){
+   public void setChampCalculeId(final Integer id){
       this.champCalculeId = id;
    }
 
@@ -141,7 +147,7 @@ public class ChampCalcule implements Serializable
     * Champ annotation auquel est relie le champ calculé
     * @param chp Champ annotation auquel est relie le champ calculé
     */
-   public void setChampAnnotation(ChampAnnotation chp){
+   public void setChampAnnotation(final ChampAnnotation chp){
       this.champAnnotation = chp;
    }
 
@@ -159,7 +165,7 @@ public class ChampCalcule implements Serializable
     * Premier champ pour le calcul
     * @param champ1 Premier champ pour le calcul
     */
-   public void setChamp1(Champ champ1){
+   public void setChamp1(final Champ champ1){
       this.champ1 = champ1;
    }
 
@@ -177,7 +183,7 @@ public class ChampCalcule implements Serializable
     * Deuxième champ pour le calcul
     * @param champ2 Deuxième champ pour le calcul
     */
-   public void setChamp2(Champ champ2){
+   public void setChamp2(final Champ champ2){
       this.champ2 = champ2;
    }
 
@@ -194,7 +200,7 @@ public class ChampCalcule implements Serializable
     * Si le calcul se fait avec une saisie utilisateur (à la place de champ2)
     * @param valeur Si le calcul se fait avec une saisie utilisateur (à la place de champ2)
     */
-   public void setValeur(String valeur){
+   public void setValeur(final String valeur){
       this.valeur = valeur;
    }
 
@@ -211,7 +217,7 @@ public class ChampCalcule implements Serializable
     * Opération a effectuer entre les deux champs/valeur
     * @param operateur Opération a effectuer entre les deux champs/valeur
     */
-   public void setOperateur(String operateur){
+   public void setOperateur(final String operateur){
       this.operateur = operateur;
    }
 
@@ -229,18 +235,18 @@ public class ChampCalcule implements Serializable
     * DataType que retourne le champCalculé
     * @param dataType DataType que doit retourner le champCalculé
     */
-   public void setDataType(DataType dataType){
+   public void setDataType(final DataType dataType){
       this.dataType = dataType;
    }
 
    /**
-    * 2 items sont consideres comme egaux si ils ont le même label 
+    * 2 items sont consideres comme egaux si ils ont le même label
     * et la même reference vers le champ annotation.
     * @param obj est l'item à tester.
     * @return true si les items sont égaux.
     */
    @Override
-   public boolean equals(Object obj){
+   public boolean equals(final Object obj){
 
       if(this == obj){
          return true;
@@ -249,7 +255,7 @@ public class ChampCalcule implements Serializable
          return false;
       }
 
-      ChampCalcule test = (ChampCalcule) obj;
+      final ChampCalcule test = (ChampCalcule) obj;
       if(this.champCalculeId != null && this.champCalculeId.equals(test.champCalculeId)){
          return true;
       }
@@ -259,7 +265,7 @@ public class ChampCalcule implements Serializable
    }
 
    /**
-    * 
+    *
     * @return la valeur du hashcode.
     */
    @Override
@@ -271,7 +277,7 @@ public class ChampCalcule implements Serializable
       int hasChamp2 = 0;
       int hasOperateur = 0;
       int hasValeur = 0;
-      int hasDataType= 0;
+      int hasDataType = 0;
 
       if(this.champCalculeId != null){
          return 31 * hash + this.champCalculeId.hashCode();
@@ -296,7 +302,7 @@ public class ChampCalcule implements Serializable
       if(this.valeur != null){
          hasValeur = this.valeur.hashCode();
       }
-      
+
       if(this.dataType != null){
          hasDataType = this.dataType.hashCode();
       }
@@ -322,8 +328,9 @@ public class ChampCalcule implements Serializable
    /**
     * Clone un item (deep copy).
     */
+   @Override
    public ChampCalcule clone(){
-      ChampCalcule clone = new ChampCalcule();
+      final ChampCalcule clone = new ChampCalcule();
       clone.setChampCalculeId(this.champCalculeId);
       clone.setChampAnnotation(this.champAnnotation);
       clone.setChamp1(this.champ1);

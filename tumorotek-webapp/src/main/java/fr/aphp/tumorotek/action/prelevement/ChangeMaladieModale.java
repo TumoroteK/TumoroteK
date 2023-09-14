@@ -72,21 +72,35 @@ public class ChangeMaladieModale extends GenericForwardComposer<Component>
    private static final long serialVersionUID = 2132993101599271792L;
 
    private Label prelCodeLabel;
+
    private Label prelNumLabel;
+
    private Label prelNatureLabel;
+
    private Listbox maladiesBox;
+
    private Label patientNipLabel;
+
    private Label ndaLabel;
+
    private Label patientNomLabel;
+
    private Label patientPrenomLabel;
+
    private Label patientDdnLabel;
+
    private Label patientSexeLabel;
+
    private Label maladieLibelleLabel;
+
    private Label maladieCodeLabel;
 
    private Prelevement prelevement;
+
    private Maladie currentMaladie;
+
    private Patient patient;
+
    private List<Maladie> maladies;
 
    private MainWindow main;
@@ -113,7 +127,15 @@ public class ChangeMaladieModale extends GenericForwardComposer<Component>
 
          // recherche des maladies disponibles : celles du patient
          // du prélèvement
-         maladies = ManagerLocator.getMaladieManager().findByPatientManager(currentMaladie.getPatient());
+         // toutes les maladies sauf visites
+         maladies = ManagerLocator.getMaladieManager()
+               .findByPatientExcludingVisitesManager(currentMaladie.getPatient());
+         
+         if (prelevement.getBanque().getEtude() != null) { // gatsbi -> ajoutes les visites de la collection
+            maladies.addAll(ManagerLocator.getMaladieManager()
+               .findVisitesManager(currentMaladie.getPatient(), prel.getBanque()));
+         }
+         
          maladies.remove(currentMaladie);
          maladiesBox.setModel(new SimpleListModel<>(maladies));
          if(!maladies.isEmpty()){

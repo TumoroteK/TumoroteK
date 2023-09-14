@@ -69,6 +69,7 @@ public class EntiteManagerTest extends AbstractManagerTest4
 
    @Autowired
    private EntiteManager entiteManager;
+
    @Autowired
    private BanqueDao banqueDao;
 
@@ -135,12 +136,12 @@ public class EntiteManagerTest extends AbstractManagerTest4
       final Entite retour = entiteManager.findByIdManager(19);
       final Object objRetour = entiteManager.findObjectByEntiteAndIdManager(retour, 10);
       assertNull(objRetour);
-      
+
       // @since 2.2.1 AbstractTKChamp utilise ID
       final Entite chpA = entiteManager.findByIdManager(30);
       final Object objChpA = entiteManager.findObjectByEntiteAndIdManager(chpA, 1);
       assertTrue(((ChampAnnotation) objChpA).getId() == 1);
-      
+
    }
 
    @Test

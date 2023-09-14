@@ -64,6 +64,7 @@ public class BlocImpressionManagerTest extends AbstractManagerTest4
 
    @Autowired
    private BlocImpressionManager blocImpressionManager;
+
    @Autowired
    private EntiteManager entiteManager;
 

@@ -68,6 +68,7 @@ public class ModeleType implements Serializable
    private static final long serialVersionUID = 4331282255233204913L;
 
    private Integer modeleTypeId;
+
    private String type;
 
    private Set<Modele> modeles = new HashSet<>();

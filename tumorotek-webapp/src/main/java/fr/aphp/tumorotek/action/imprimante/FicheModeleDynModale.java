@@ -89,16 +89,24 @@ public class FicheModeleDynModale extends AbstractFicheCombineController
 
    // Components
    private Listbox modeleTypesBox;
+
    private Grid lignesGrid;
 
    // Objets principaux
    private Modele modele;
+
    private Component parent;
+
    private List<ModeleType> modeleTypes = new ArrayList<>();
+
    private ModeleType selectedModeleType;
+
    private List<LigneEtiquette> ligneEtiquettes = new ArrayList<>();
+
    private List<LigneEtiquette> ligneEtiquettesToRemove = new ArrayList<>();
+
    private ListModelList<LigneEtiquetteDecorator> ligneEtiquettesDeco = new ListModelList<>();
+
    private LigneEtiquetteRowRenderer ligneEtiquetteRowRenderer = new LigneEtiquetteRowRenderer();
 
    // qrcode
@@ -128,7 +136,7 @@ public class FicheModeleDynModale extends AbstractFicheCombineController
    /**
     * Initialise la fenêtre : le parent, l'imprimante et passe en mode create
     * ou edit.
-    * 
+    *
     * @param imp
     * @param comp
     */
@@ -393,7 +401,7 @@ public class FicheModeleDynModale extends AbstractFicheCombineController
 
    /**
     * Clic sur l'image pour éditer une ligne.
-    * 
+    *
     * @param event
     */
    public void onClickEditLigne(final ForwardEvent event){
@@ -405,7 +413,7 @@ public class FicheModeleDynModale extends AbstractFicheCombineController
 
    /**
     * Clic sur l'image pour supprimer une ligne.
-    * 
+    *
     * @param event
     */
    public void onClickDeleteLigne(final ForwardEvent event){
@@ -439,7 +447,7 @@ public class FicheModeleDynModale extends AbstractFicheCombineController
 
    /**
     * Clic sur l'image pour monter une ligne.
-    * 
+    *
     * @param event
     */
    public void onClickUpLigne(final ForwardEvent event){
@@ -452,7 +460,7 @@ public class FicheModeleDynModale extends AbstractFicheCombineController
 
    /**
     * Clic sur l'image pour descendre une ligne.
-    * 
+    *
     * @param event
     */
    public void onClickDownLigne(final ForwardEvent event){
@@ -468,7 +476,7 @@ public class FicheModeleDynModale extends AbstractFicheCombineController
 
    /**
     * Effectue l'operation de mouvements des objets au sein de la liste.
-    * 
+    *
     * @param objet
     *            a monter d'un cran
     */
@@ -490,7 +498,7 @@ public class FicheModeleDynModale extends AbstractFicheCombineController
 
    /**
     * Méthode appelé une fois que l'utilisateur a fini de modifier une ligne.
-    * 
+    *
     * @param e
     */
    public void onGetLigneEtiquette(final Event e){
@@ -521,7 +529,7 @@ public class FicheModeleDynModale extends AbstractFicheCombineController
 
    /**
     * Ouvre une fenêtre permettant de définir une ligne d'étiquettes.
-    * 
+    *
     * @param page
     *            Page.
     * @param comp

@@ -62,7 +62,9 @@ public class CommonUtilsManagerImpl implements CommonUtilsManager
    private final Log log = LogFactory.getLog(CodeCommonManager.class);
 
    private EntityManagerFactory entityManagerFactoryCodes;
+
    private CodeUtilisateurDao codeUtilisateurDao;
+
    private TableCodageDao tableCodageDao;
 
    public void setEntityManagerFactoryCodes(final EntityManagerFactory eCodes){
@@ -77,7 +79,6 @@ public class CommonUtilsManagerImpl implements CommonUtilsManager
       this.tableCodageDao = tDao;
    }
 
-   
    @Override
    public CodeCommon findCodeByTableCodageAndIdManager(final Integer codeId, final TableCodage table){
 
@@ -119,7 +120,7 @@ public class CommonUtilsManagerImpl implements CommonUtilsManager
       if(results.size() > 0){
          return results.get(0);
       }
-         return null;
+      return null;
    }
 
    @Override

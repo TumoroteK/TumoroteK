@@ -75,52 +75,78 @@ public class ResultatsModale extends AbstractController
 {
 
    private static final long serialVersionUID = -1203931482648923134L;
+
    private Component parent;
+
    private List<Integer> results = new ArrayList<>();
+
    private String entite;
+
    private boolean hasAnnots;
+
    private boolean cessionable = false;
+
    private boolean deletable = false;
+
    private boolean selectMode = false;
-   
+
    // @since 2.2.3-rc1
    private boolean canExport = false;
-   
+
    private AbstractObjectTabController controller;
 
    // Components
    private Label nbLabel;
+
    private Checkbox exportBox;
+
    private Button afficher;
+
    private Menubar actions;
+
    private Menuitem newCessionItem;
+
    private Menuitem deleteItem;
+
    private Button select;
+
    // private Button cancel;
    private Button exporter;
+
    private Menubar menuExportBar;
+
    private Menuitem exportItemINCa;
+
    private Menuitem exportItemTVGSO;
+
    private Menuitem exportItemTVGSOcsv;
+
    private Menuitem exportItemBIOCAP;
+
    //@since 2.1
    private Menuitem exportItemBIOBANQUES;
+
    private Menuitem exportItemAdv;
 
    protected Menuitem patientsItem;
+
    protected Menuitem prelevementsItem;
+
    protected Menuitem echantillonsItem;
+
    protected Menuitem derivesItem;
+
    protected Menuitem derivesAscItem;
+
    protected Menuitem cessionsItem;
 
    @Override
    public void doAfterCompose(final Component comp) throws Exception{
       super.doAfterCompose(comp);
-      
+
       //@since 2.2.3-rc1
       canExport = !getProfilExport().equals(ProfilExport.NO);
-      
+
       setBinder(new AnnotateDataBinder(comp));
       getBinder().loadComponent(comp);
    }
@@ -128,12 +154,12 @@ public class ResultatsModale extends AbstractController
    /**
     * Initialise le composant à partir des paramètres d'affichage.
     * @param message avertissement affiché à l'utilisateur
-    * @param fantomable indique si le textbox de commentaire doit 
+    * @param fantomable indique si le textbox de commentaire doit
     * être affiché.
     * @param deletable inique si l'avertissement seul doit être affiché.
     * @param component parent ayant demandé la modale.
     */
-   
+
    public void init(final List<Integer> res, final Component prt, final String ent, final AbstractObjectTabController c){
 
       setParent(prt);
@@ -166,7 +192,7 @@ public class ResultatsModale extends AbstractController
 
       disableObjectTreeButtons();
 
-      // select mode	
+      // select mode
       if(controller != null && controller.getListe() != null){
          selectMode = controller.getListe().getMode().equals("select");
          cessionable = (controller.getEntiteTab().getNom().equals("Echantillon")
@@ -332,7 +358,7 @@ public class ResultatsModale extends AbstractController
       final String entiteNom = controller.getEntiteTab().getNom();
 
       // objets tree item
-      // recupère LA banque courante ou la première banque en toutes collections 
+      // recupère LA banque courante ou la première banque en toutes collections
       // car par définition, même profil pour toutes les banques en toutes collections
       Banque banqueToGetAuthorisation = null;
       if(!SessionUtils.getSelectedBanques(sessionScope).isEmpty()){
@@ -400,8 +426,8 @@ public class ResultatsModale extends AbstractController
       Events.postEvent("onClick$cessionsItem", controller.getListe().getSelfComponent(), getResults());
    }
 
-	public boolean getCanExport() {
-		return canExport;
-	}
-	
+   public boolean getCanExport(){
+      return canExport;
+   }
+
 }

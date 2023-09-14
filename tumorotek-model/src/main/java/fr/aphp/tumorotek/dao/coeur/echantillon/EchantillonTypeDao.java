@@ -69,9 +69,9 @@ public interface EchantillonTypeDao extends GenericDaoJpa<EchantillonType, Integ
    List<EchantillonType> findByIncaCat(String cat);
 
    /**
-    * Recherche le type qui est lié à l'échantillon passé 
-    * en paramètre. 
-    * @param echantillonId Identifiant de l'échantillon pour lequel 
+    * Recherche le type qui est lié à l'échantillon passé
+    * en paramètre.
+    * @param echantillonId Identifiant de l'échantillon pour lequel
     * on recherche un type.
     * @return Liste d'EchantillonTypes.
     */

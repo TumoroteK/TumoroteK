@@ -95,12 +95,12 @@ import fr.aphp.tumorotek.model.qualite.NonConformite;
 import fr.aphp.tumorotek.model.qualite.ObjetNonConforme;
 import fr.aphp.tumorotek.model.systeme.Temperature;
 import fr.aphp.tumorotek.model.systeme.Unite;
+import fr.aphp.tumorotek.webapp.gatsbi.GatsbiController;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
 /**
  *
- * Controller gérant la fiche des labos inters.
- * Controller créé le 25/11/2009.
+ * Controller gérant la fiche des labos inters. Controller créé le 25/11/2009.
  *
  * @author Pierre Ventadour
  * @version 2.0
@@ -109,86 +109,118 @@ import fr.aphp.tumorotek.webapp.general.SessionUtils;
 public class FicheLaboInter extends AbstractFicheEditController
 {
 
-   private final Log log = LogFactory.getLog(FicheLaboInter.class);
+   protected final Log log = LogFactory.getLog(FicheLaboInter.class);
 
    private static final long serialVersionUID = -422768239086454672L;
 
    /**
-    *  Static Components pour le mode static.
+    * Static Components pour le mode static.
     */
    private Grid gridFormPrlvtComp;
 
    // Buttons
    private Button previous;
+
    private Button next;
-   private Button addLabo;
+
+   protected Button addLabo;
 
    /**
-    *  Editable components : mode d'édition ou de création.
+    * Editable components : mode d'édition ou de création.
     */
    private CalendarBox dateDepartCalBox;
+
    private CalendarBox dateArriveeCalBox;
+
    private Decimalbox quantiteBoxLabo;
-   //private Listbox collaborateursBoxLabo;
+
+   // private Listbox collaborateursBoxLabo;
    private Grid laboIntersGrid;
+
    private Label operateurAideSaisieEchan;
+
    private Combobox collabBox;
 
-   //	private Datebox dateDepartInterBox;
-   //	private Datebox dateArriveeInterBox;
-   //	private Label laboInterValidationLabel;
+   // private Datebox dateDepartInterBox;
+   // private Datebox dateArriveeInterBox;
+   // private Label laboInterValidationLabel;
 
    private Checkbox congDepartBox;
+
    private Checkbox congArriveeBox;
+
    private Checkbox conformeArriveeBoxOui;
+
    private Checkbox conformeArriveeBoxNon;
+
    private Div conformeArriveeBox;
+
    private Listbox nonConformitesBox;
 
    /**
-    *  Objets Principaux.
+    * Objets Principaux.
     */
-   private Prelevement prelevement;
+   protected Prelevement prelevement;
+
    private Maladie maladie;
 
    /**
-    *  Associations.
+    * Associations.
     */
    private List<LaboInter> laboInters = new ArrayList<>();
+
    private List<LaboInter> oldLaboInters = new ArrayList<>();
+
    private List<LaboInter> laboIntersToDelete = new ArrayList<>();
+
    private List<Transporteur> transporteurs = new ArrayList<>();
+
    private Transporteur selectedTransporteur;
+
    private List<Collaborateur> collaborateurs = new ArrayList<>();
+
    private Collaborateur selectedCollaborateur;
+
    private List<String> nomsAndPrenoms = new ArrayList<>();
+
    private List<Unite> quantiteUnites = new ArrayList<>();
+
    private Unite selectedQuantiteUnite;
+
    private List<Service> allServices = new ArrayList<>();
+
    private List<Collaborateur> allCollaborateurs = new ArrayList<>();
+
    private List<Etablissement> allEtablissements = new ArrayList<>();
+
    private List<Temperature> temperatures = new ArrayList<>();
+
    private Temperature selectedTemperature;
+
    private List<NonConformite> nonConformites = new ArrayList<>();
+
    private NonConformite selectedNonConformite;
+
    private Set<Listitem> selectedNonConformitesItem = new HashSet<>();
 
    /**
-    *  Variables formulaire.
+    * Variables formulaire.
     */
    private String valeurQuantite = "";
+
    // ordre maximum des labos inters du prlvt
    private Integer ordreMax = 0;
 
    private LaboInter cascadeNonSterileFrom = null;
+
    private Checkbox currentSterileLaboBox;
 
    @Override
    public void doAfterCompose(final Component comp) throws Exception{
 
-      initEditableMode();
-
       super.doAfterCompose(comp);
+
+      initEditableMode();
 
       next.setDisabled(!getDroitOnAction("Echantillon", "Creation"));
    }
@@ -213,7 +245,9 @@ public class FicheLaboInter extends AbstractFicheEditController
       initAssociations();
 
       // scroll up pour se placer en haut de la page
-      Clients.scrollIntoView(gridFormPrlvtComp.getColumns());
+      if(gridFormPrlvtComp != null){
+         Clients.scrollIntoView(gridFormPrlvtComp.getColumns());
+      }
    }
 
    @Override
@@ -232,8 +266,8 @@ public class FicheLaboInter extends AbstractFicheEditController
    }
 
    /**
-    * Méthode pour l'initialisation du mode d'édition : récupération du contenu
-    * des listes déroulantes (types, qualités...).
+    * Méthode pour l'initialisation du mode d'édition : récupération du contenu des
+    * listes déroulantes (types, qualités...).
     */
    public void initEditableMode(){
 
@@ -268,10 +302,16 @@ public class FicheLaboInter extends AbstractFicheEditController
       temperatures = ManagerLocator.getTemperatureManager().findAllObjectsManager();
       temperatures.add(0, null);
       selectedTemperature = null;
+
+      // init des non conformites
+      nonConformites = ManagerLocator.getNonConformiteManager().findByPlateformeEntiteAndTypeStringManager(
+         SessionUtils.getPlateforme(sessionScope), "Arrivee", ManagerLocator.getEntiteManager().findByIdManager(2));
+      selectedNonConformite = null;
    }
 
    /**
     * Select les non conformites dans la dropdown list.
+    *
     * @param risks liste à selectionner
     */
    public void selectNonConformites(){
@@ -292,16 +332,12 @@ public class FicheLaboInter extends AbstractFicheEditController
             selectedNonConformitesItem.add(nonConformitesBox.getItemAtIndex(nonConformites.indexOf(ncf.get(i))));
          }
       }
-      //risquesBox.setSelectedItems(selectedRisques);
+      // risquesBox.setSelectedItems(selectedRisques);
       getBinder().loadAttribute(nonConformitesBox, "selectedItems");
 
    }
 
    public void initNonConformites(){
-      // init des non conformites
-      nonConformites = ManagerLocator.getNonConformiteManager().findByPlateformeEntiteAndTypeStringManager(
-         SessionUtils.getPlateforme(sessionScope), "Arrivee", getObjectTabController().getEntiteTab());
-      selectedNonConformite = null;
       if(prelevement != null && prelevement.getPrelevementId() != null){
          final List<ObjetNonConforme> tmp =
             ManagerLocator.getObjetNonConformeManager().findByObjetAndTypeManager(prelevement, "Arrivee");
@@ -315,8 +351,7 @@ public class FicheLaboInter extends AbstractFicheEditController
    }
 
    /**
-    * Méthode initialisant les champs de formulaire pour la quantité et
-    * le volume.
+    * Méthode initialisant les champs de formulaire pour la quantité et le volume.
     */
    public void initQuantiteAndVolume(){
       final StringBuffer sb = new StringBuffer();
@@ -405,9 +440,9 @@ public class FicheLaboInter extends AbstractFicheEditController
 
       // Calendar boxes
       // dateDepartCalBox.setValue(this.prelevement.getDateDepart());
-      // dateArriveeCalBox.setValue(this.prelevement.getDateArrivee());	
+      // dateArriveeCalBox.setValue(this.prelevement.getDateArrivee());
 
-      //super.setObject(obj); pour eviter mise à jour annotations
+      // super.setObject(obj); pour eviter mise à jour annotations
       setCopy(((TKAnnotableObject) obj).clone());
       getBinder().loadAll();
    }
@@ -427,6 +462,7 @@ public class FicheLaboInter extends AbstractFicheEditController
 
    /**
     * Retourne la fiche d'un prlvt.
+    *
     * @param event
     * @return
     */
@@ -474,13 +510,13 @@ public class FicheLaboInter extends AbstractFicheEditController
          this.prelevement.setConformeArrivee(null);
       }
       // enregistrement de la conformité
-      //		if (this.prelevement.getConformeArrivee() != null
-      //				&& !this.prelevement.getConformeArrivee()) {
-      //			ManagerLocator.getObjetNonConformeManager()
-      //				.createUpdateOrRemoveListObjectManager(
-      //						prelevement, findSelectedNonConformites(), 
-      //						"Arrivee");
-      //		}
+      // if (this.prelevement.getConformeArrivee() != null
+      // && !this.prelevement.getConformeArrivee()) {
+      // ManagerLocator.getObjetNonConformeManager()
+      // .createUpdateOrRemoveListObjectManager(
+      // prelevement, findSelectedNonConformites(),
+      // "Arrivee");
+      // }
 
       // Gestion du collaborateur
       prepareSelectedCollaborateur();
@@ -491,53 +527,16 @@ public class FicheLaboInter extends AbstractFicheEditController
 
       // create de l'objet
       ManagerLocator.getPrelevementManager().createObjectWithNonConformitesManager(prelevement,
-         SessionUtils.getSelectedBanques(sessionScope).get(0), nature, maladie, consentType, preleveur, servicePreleveur, mode,
-         conditType, conditMilieu, selectedTransporteur, selectedCollaborateur, selectedQuantiteUnite, laboInters,
-         getObjectTabController().getFicheAnnotation().getValeursToCreateOrUpdate(), SessionUtils.getLoggedUser(sessionScope),
-         true, SessionUtils.getSystemBaseDir(), false, ncfs);
-
-      //mécanisme de validation à implémenter
-      //		if (BANQUE_ORGANE.equals(getCurrentContexte())) {
-      //			if (patientFake!=null) {
-      //
-      //
-      //
-      //
-      //				if (validatePatientBox) {
-      //					validatePatient(patientFake,getObjectTabController().getFicheAnnotation());
-      //				}
-      //			}
-      //		}
+         GatsbiController.enrichesBanqueWithEtudeContextes(getBanque(), sessionScope), nature, maladie, consentType, preleveur,
+         servicePreleveur, mode, conditType, conditMilieu, selectedTransporteur, selectedCollaborateur, selectedQuantiteUnite,
+         laboInters, getObjectTabController().getFicheAnnotation().getValeursToCreateOrUpdate(),
+         SessionUtils.getLoggedUser(sessionScope), true, SessionUtils.getSystemBaseDir(), false, ncfs);
 
       // suppression du patientSip
       getObjectTabController().removePatientSip();
       // gestion de la communication des infos et de l'éventuel dossier externe
       getObjectTabController().handleExtCom(null, (Prelevement) getObject(), getObjectTabController());
 
-      //			// pour chaque LaboInter
-      //			for (int i = 0; i < laboInters.size(); i++) {
-      //				LaboInter labo = laboInters.get(i);
-      //				
-      //				// si c'est un nouveau labointer : création
-      //				if (labo.getLaboInterId() == null) {
-      //					ManagerLocator.getLaboInterManager()
-      //						.createObjectManager(labo, 
-      //							prelevement, 
-      //							labo.getService(), 
-      //							labo.getCollaborateur(), 
-      //							labo.getTransporteur());
-      //					
-      //					this.prelevement.getLaboInters().add(labo);
-      //				} else {
-      //					// si le labo existe déjà : update
-      //					ManagerLocator.getLaboInterManager()
-      //						.updateObjectManager(labo, 
-      //							prelevement, 
-      //							labo.getService(), 
-      //							labo.getCollaborateur(), 
-      //							labo.getTransporteur());
-      //				}
-      //			}
    }
 
    @Override
@@ -578,14 +577,14 @@ public class FicheLaboInter extends AbstractFicheEditController
 
    @Override
    public void onClick$create(){
-      // valide les dates donc 		
+      // valide les dates donc
       validateAllDateComps();
       super.onClick$create();
    }
 
    @Override
    public void onClick$validate(){
-      // valide les dates donc 		
+      // valide les dates donc
       validateAllDateComps();
       super.onClick$validate();
    }
@@ -597,40 +596,40 @@ public class FicheLaboInter extends AbstractFicheEditController
    public boolean onLaterUpdate(){
 
       try{
-         //			updateObjectWithAnnots();
-         //			
-         //			// update de la liste
-         //			if (getObjectTabController().getListe() != null) {			
-         //				getObjectTabController().getListe()
-         //										.updateObjectGridList(getObject());
-         //			}
-         //			
-         //			// update de l'objet parent
-         //			if (!getObjectTabController()
-         //					.getReferencingObjectControllers().isEmpty() 
-         //												&& getParentObject() != null) {
-         //				for (int i = 0; i < getObjectTabController()
-         //							.getReferencingObjectControllers().size(); i++) {
-         //					if (getObjectTabController()
-         //							.getReferencingObjectControllers()
-         //												.get(i).getListe() != null) {
-         //						getObjectTabController()
-         //							.getReferencingObjectControllers().get(i).getListe()
-         //						.updateObjectGridListFromOtherPage(getParentObject(), true);
-         //					}
-         //				}
-         //			}
-         //			
-         //			// update de la liste des enfants et l'enfant en fiche
-         //			getObjectTabController()
-         //				.updateReferencedObjects((List<TKdataObject>) 
-         //						getObjectTabController().getChildrenObjects(prelevement));
-         //			
-         //			// commande le passage en mode statique
-         //			getObjectTabController().onEditDone(getObject());
-         //			
-         //			// ferme wait message
-         //			Clients.clearBusy();
+         // updateObjectWithAnnots();
+         //
+         // // update de la liste
+         // if (getObjectTabController().getListe() != null) {
+         // getObjectTabController().getListe()
+         // .updateObjectGridList(getObject());
+         // }
+         //
+         // // update de l'objet parent
+         // if (!getObjectTabController()
+         // .getReferencingObjectControllers().isEmpty()
+         // && getParentObject() != null) {
+         // for (int i = 0; i < getObjectTabController()
+         // .getReferencingObjectControllers().size(); i++) {
+         // if (getObjectTabController()
+         // .getReferencingObjectControllers()
+         // .get(i).getListe() != null) {
+         // getObjectTabController()
+         // .getReferencingObjectControllers().get(i).getListe()
+         // .updateObjectGridListFromOtherPage(getParentObject(), true);
+         // }
+         // }
+         // }
+         //
+         // // update de la liste des enfants et l'enfant en fiche
+         // getObjectTabController()
+         // .updateReferencedObjects((List<TKdataObject>)
+         // getObjectTabController().getChildrenObjects(prelevement));
+         //
+         // // commande le passage en mode statique
+         // getObjectTabController().onEditDone(getObject());
+         //
+         // // ferme wait message
+         // Clients.clearBusy();
          if(super.onLaterUpdate()){
             getObjectTabController().showEchantillonsAfterUpdate(prelevement);
          }
@@ -662,7 +661,7 @@ public class FicheLaboInter extends AbstractFicheEditController
 
       setEmptyToNulls();
 
-      // casse la cascade stérilité si le labo n'est pas supprimé 
+      // casse la cascade stérilité si le labo n'est pas supprimé
       // ou n'est pas le dernier labo sans echantillons derrière
       if(cascadeNonSterileFrom != null && !laboIntersToDelete.contains(cascadeNonSterileFrom)
          && !(cascadeNonSterileFrom.equals(laboInters.get(laboInters.size() - 1))
@@ -707,10 +706,10 @@ public class FicheLaboInter extends AbstractFicheEditController
          this.prelevement.setConformeArrivee(null);
       }
       // enregistrement de la conformité
-      //		ManagerLocator.getObjetNonConformeManager()
-      //			.createUpdateOrRemoveListObjectManager(
-      //						prelevement, ncf, 
-      //						"Arrivee");
+      // ManagerLocator.getObjetNonConformeManager()
+      // .createUpdateOrRemoveListObjectManager(
+      // prelevement, ncf,
+      // "Arrivee");
 
       // Gestion du collaborateur
       final String selectedNomAndPremon = this.collabBox.getValue().toUpperCase();
@@ -729,78 +728,78 @@ public class FicheLaboInter extends AbstractFicheEditController
       }
 
       // update de l'objet
-      ManagerLocator.getPrelevementManager().updateObjectWithNonConformitesManager(prelevement, prelevement.getBanque(), nature,
-         maladie, consentType, preleveur, servicePreleveur, mode, conditType, conditMilieu, selectedTransporteur,
-         selectedCollaborateur, selectedQuantiteUnite, laboInters,
-         getObjectTabController().getFicheAnnotation().getValeursToCreateOrUpdate(),
+      ManagerLocator.getPrelevementManager().updateObjectWithNonConformitesManager(prelevement,
+         GatsbiController.enrichesBanqueWithEtudeContextes(prelevement.getBanque(), sessionScope), nature, maladie, consentType,
+         preleveur, servicePreleveur, mode, conditType, conditMilieu, selectedTransporteur, selectedCollaborateur,
+         selectedQuantiteUnite, laboInters, getObjectTabController().getFicheAnnotation().getValeursToCreateOrUpdate(),
          getObjectTabController().getFicheAnnotation().getValeursToDelete(), SessionUtils.getLoggedUser(sessionScope),
          cascadeNonSterile, true, SessionUtils.getSystemBaseDir(), false, ncfs);
 
-      //			// pour chaque LaboInter
-      //			for (int i = 0; i < laboInters.size(); i++) {
-      //				LaboInter labo = laboInters.get(i);
-      //				
-      //				// si c'est un nouveau labointer : création
-      //				if (labo.getLaboInterId() == null) {
-      //					ManagerLocator.getLaboInterManager()
-      //						.createObjectManager(labo, 
-      //							prelevement, 
-      //							labo.getService(), 
-      //							labo.getCollaborateur(), 
-      //							labo.getTransporteur());
-      //					this.prelevement.getLaboInters().add(labo);
-      //				} else {
-      //					// si le labo existe déjà : update
-      //					ManagerLocator.getLaboInterManager()
-      //						.updateObjectManager(labo, 
-      //							prelevement, 
-      //							labo.getService(), 
-      //							labo.getCollaborateur(), 
-      //							labo.getTransporteur());
-      //				}
-      //			}
+      // // pour chaque LaboInter
+      // for (int i = 0; i < laboInters.size(); i++) {
+      // LaboInter labo = laboInters.get(i);
+      //
+      // // si c'est un nouveau labointer : création
+      // if (labo.getLaboInterId() == null) {
+      // ManagerLocator.getLaboInterManager()
+      // .createObjectManager(labo,
+      // prelevement,
+      // labo.getService(),
+      // labo.getCollaborateur(),
+      // labo.getTransporteur());
+      // this.prelevement.getLaboInters().add(labo);
+      // } else {
+      // // si le labo existe déjà : update
+      // ManagerLocator.getLaboInterManager()
+      // .updateObjectManager(labo,
+      // prelevement,
+      // labo.getService(),
+      // labo.getCollaborateur(),
+      // labo.getTransporteur());
+      // }
+      // }
       getObjectTabController().handleExtCom(null, (Prelevement) getObject(), getObjectTabController());
    }
 
-   //	/**
-   //	 * Processing echoEvent (no messagebox).
-   //	 * @see onClick$validate()
-   //	 */
-   //	public void onLaterValidate() {
-   //		// s'il n'y a pas d'erreurs lors de l'update
-   //		List<String> errorMsg = updateObject();
-   //		if (errorMsg != null && errorMsg.size() == 0) {
-   //		
-   //			log.debug("fiche: obj modifie: " + this.prelevement.toString());
-   //		
-   //			if (getListePrelevement() != null) {		
-   //				// update du prélèvement dans la liste
-   //				getListePrelevement().updateObjectGridList(this.prelevement);
-   //			}
-   //			
-   //			if (getMainWindow().isFullfilledComponent(
-   //					"patientPanel", "winPatient")) {
-   //				if (getFichePrelevementEdit().getListePatient() != null
-   //											&& this.maladie != null) {	
-   //					// update du patient dans la liste
-   //					getFichePrelevementEdit().getListePatient()
-   //						.updateObjectGridListFromOtherPage(this.maladie
-   //													.getPatient());
-   //				}
-   //			}
-   //			
-   //			// l'affichage revient sur la fiche prlvt, en mode static
-   //			// avec le prlvt
-   //			postDetachEditEvent();
-   //			getPrelevementController().getFicheStatic()
-   //				.setPrelevement(this.prelevement);
-   //			
-   //		} else {
-   //			log.debug("Modification prelevement non effectuée à "
-   //					+ "cause d'erreurs");
-   //		}
-   //		Clients.showBusy(null, false);
-   //	}
+   // /**
+   // * Processing echoEvent (no messagebox).
+   // * @see onClick$validate()
+   // */
+   // public void onLaterValidate() {
+   // // s'il n'y a pas d'erreurs lors de l'update
+   // List<String> errorMsg = updateObject();
+   // if (errorMsg != null && errorMsg.size() == 0) {
+   //
+   // log.debug("fiche: obj modifie: " + this.prelevement.toString());
+   //
+   // if (getListePrelevement() != null) {
+   // // update du prélèvement dans la liste
+   // getListePrelevement().updateObjectGridList(this.prelevement);
+   // }
+   //
+   // if (getMainWindow().isFullfilledComponent(
+   // "patientPanel", "winPatient")) {
+   // if (getFichePrelevementEdit().getListePatient() != null
+   // && this.maladie != null) {
+   // // update du patient dans la liste
+   // getFichePrelevementEdit().getListePatient()
+   // .updateObjectGridListFromOtherPage(this.maladie
+   // .getPatient());
+   // }
+   // }
+   //
+   // // l'affichage revient sur la fiche prlvt, en mode static
+   // // avec le prlvt
+   // postDetachEditEvent();
+   // getPrelevementController().getFicheStatic()
+   // .setPrelevement(this.prelevement);
+   //
+   // } else {
+   // log.debug("Modification prelevement non effectuée à "
+   // + "cause d'erreurs");
+   // }
+   // Clients.showBusy(null, false);
+   // }
 
    @Override
    protected void setEmptyToNulls(){
@@ -818,8 +817,8 @@ public class FicheLaboInter extends AbstractFicheEditController
    }
 
    /**
-    * Méthode vidant tous les messages d'erreurs apparaissant dans
-    * les contraintes de la fiche.
+    * Méthode vidant tous les messages d'erreurs apparaissant dans les contraintes
+    * de la fiche.
     */
    @Override
    public void clearConstraints(){
@@ -827,12 +826,12 @@ public class FicheLaboInter extends AbstractFicheEditController
    }
 
    /*************************************************************************/
-   /*****************  NEXT - PREVIOUS **************************************/
+   /***************** NEXT - PREVIOUS **************************************/
    /*************************************************************************/
 
    /**
-    * Revient sur la page FichePrelevement dans l'état où elle
-    * était avant d'arriver sur la page FicheLaboInter.
+    * Revient sur la page FichePrelevement dans l'état où elle était avant
+    * d'arriver sur la page FicheLaboInter.
     */
    public void onClick$previous(){
       getObjectTabController().switchFromLaboToPrelevement();
@@ -846,12 +845,12 @@ public class FicheLaboInter extends AbstractFicheEditController
 
       getObjectTabController().getFicheAnnotation().validateComponents();
       // prepare les listes de valeurs à manipuler
-      //getObjectTabController()
-      //	.getFicheAnnotation()
-      //	.populateValeursActionLists(prelevement
-      //				.getPrelevementId() == null, false);
+      // getObjectTabController()
+      // .getFicheAnnotation()
+      // .populateValeursActionLists(prelevement
+      // .getPrelevementId() == null, false);
 
-      //Clients.showBusy(Labels.getLabel("general.wait"), true);
+      // Clients.showBusy(Labels.getLabel("general.wait"), true);
       Clients.showBusy(Labels.getLabel("general.wait"));
       Events.echoEvent("onLaterNextStep", self, null);
    }
@@ -878,7 +877,7 @@ public class FicheLaboInter extends AbstractFicheEditController
          selectedCollaborateur = null;
       }
 
-      // on recopie les sélections dans le prlvt		
+      // on recopie les sélections dans le prlvt
       this.prelevement.setTransporteur(selectedTransporteur);
       this.prelevement.setOperateur(selectedCollaborateur);
       this.prelevement.setQuantiteUnite(selectedQuantiteUnite);
@@ -910,8 +909,8 @@ public class FicheLaboInter extends AbstractFicheEditController
    /*************************************************************************/
    /**
     * Méthode appelée lorsque l'utilisateur clique sur le lien
-    * operateurAideSaisieEchan. Cette méthode va créer une nouvelle
-    * fenêtre contenant l'aide pour la sélection d'un collaborateur.
+    * operateurAideSaisieEchan. Cette méthode va créer une nouvelle fenêtre
+    * contenant l'aide pour la sélection d'un collaborateur.
     */
    public void onClick$operateurAideSaisieEchan(){
       // on récupère le collaborateur actuellement sélectionné
@@ -934,8 +933,9 @@ public class FicheLaboInter extends AbstractFicheEditController
    }
 
    /**
-    * Méthode appelée par la fenêtre CollaborationsController quand
-    * l'utilisateur sélectionne un collaborateur.
+    * Méthode appelée par la fenêtre CollaborationsController quand l'utilisateur
+    * sélectionne un collaborateur.
+    *
     * @param e Event contenant le collaborateur sélectionné.
     */
    public void onGetObjectFromSelection(final Event e){
@@ -968,8 +968,9 @@ public class FicheLaboInter extends AbstractFicheEditController
    /************************** STERILITE ************************************/
    /*************************************************************************/
    /**
-    * Méthode qui verifie si il faut appliquer la cascade de non sterilite
-    * a partir du labo courant, si update seulement.
+    * Méthode qui verifie si il faut appliquer la cascade de non sterilite a partir
+    * du labo courant, si update seulement.
+    *
     * @param event Blur sur la box.
     */
    public void onCheck$sterileLaboBox(final Event event){
@@ -994,8 +995,8 @@ public class FicheLaboInter extends AbstractFicheEditController
          errs = ManagerLocator.getLaboInterValidator().checkSteriliteAntecedence(lab);
 
          if(errs != null && errs.hasErrors()){
-            //throw new WrongValueException(
-            //sterileBox, handleErrors(errs, field));
+            // throw new WrongValueException(
+            // sterileBox, handleErrors(errs, field));
             final List<Errors> errors = new ArrayList<>();
             errors.add(errs);
             Messagebox.show(handleExceptionMessage(new ValidationException(errors)), "Error", Messagebox.OK, Messagebox.ERROR);
@@ -1034,8 +1035,8 @@ public class FicheLaboInter extends AbstractFicheEditController
    /************************** LABO *****************************************/
    /*************************************************************************/
    /**
-    * Méthode appelée lors du clic sur le bouton addLabo. Elle
-    * va créer un nouveau LaboInter et l'ajouter à la liste.
+    * Méthode appelée lors du clic sur le bouton addLabo. Elle va créer un nouveau
+    * LaboInter et l'ajouter à la liste.
     */
    public void onClick$addLabo(){
 
@@ -1077,6 +1078,7 @@ public class FicheLaboInter extends AbstractFicheEditController
 
    /**
     * Cette méthode va supprimer un LaboInter de la liste.
+    *
     * @param event Clic sur une image deleteLabo.
     */
    public void onClick$deleteLabo(final Event event){
@@ -1104,8 +1106,9 @@ public class FicheLaboInter extends AbstractFicheEditController
    }
 
    /**
-    * Cette méthode va retourner la liste pour laquelle un event vient de
-    * se produire.
+    * Cette méthode va retourner la liste pour laquelle un event vient de se
+    * produire.
+    *
     * @param event Event sur une liste.
     * @return Une ListBox (de services, collabs ou transporteurs).
     */
@@ -1122,8 +1125,9 @@ public class FicheLaboInter extends AbstractFicheEditController
    }
 
    /**
-    * Cette méthode va retourner le calendarBox pour lequelle un event vient de
-    * se produire.
+    * Cette méthode va retourner le calendarBox pour lequelle un event vient de se
+    * produire.
+    *
     * @param event Event sur un calendarBox.
     * @return un CalendarBox
     */
@@ -1141,6 +1145,7 @@ public class FicheLaboInter extends AbstractFicheEditController
 
    /**
     * Méthode initialisant le transporteur sélectionné pour le labo courant.
+    *
     * @param event Init de la liste transporteursBoxEachLabo.
     */
    public void onInitRender$transporteursBoxEachLabo(final Event event){
@@ -1155,6 +1160,7 @@ public class FicheLaboInter extends AbstractFicheEditController
 
    /**
     * Filtre les services par établissement.
+    *
     * @param event Event : seléction sur la liste etabsBoxEachLabo.
     * @throws Exception
     */
@@ -1173,7 +1179,7 @@ public class FicheLaboInter extends AbstractFicheEditController
       final List<Service> services = ManagerLocator.getEtablissementManager().getActiveServicesWithOrderManager(etab);
       services.add(0, null);
 
-      // on sort les composants contenus dans la ligne suivante 
+      // on sort les composants contenus dans la ligne suivante
       // du formulaire
       final List<Component> comps = listEtab.getParent().getNextSibling().getChildren();
 
@@ -1206,6 +1212,7 @@ public class FicheLaboInter extends AbstractFicheEditController
 
    /**
     * Filtre les collaborateurs par le service sélectionné.
+    *
     * @param event Event : seléction sur la liste servicesBoxEachLabo.
     * @throws Exception
     */
@@ -1224,7 +1231,7 @@ public class FicheLaboInter extends AbstractFicheEditController
       final List<Collaborateur> collabs = ManagerLocator.getServiceManager().getActiveCollaborateursWithOrderManager(serv);
       collabs.add(0, null);
 
-      // on sort les composants contenus dans la ligne suivante 
+      // on sort les composants contenus dans la ligne suivante
       // du formulaire
       final List<Component> comps = listServ.getParent().getNextSibling().getChildren();
 
@@ -1256,8 +1263,9 @@ public class FicheLaboInter extends AbstractFicheEditController
    }
 
    /**
-    * Méthode qui récupère le collab sélectionné pour le labo courant
-    * et qui met à jour cet objet.
+    * Méthode qui récupère le collab sélectionné pour le labo courant et qui met à
+    * jour cet objet.
+    *
     * @param event Select sur la liste collaborateursBoxEachLabo.
     */
    public void onSelect$collaborateursBoxEachLabo(final Event event){
@@ -1271,8 +1279,9 @@ public class FicheLaboInter extends AbstractFicheEditController
    }
 
    /**
-    * Méthode qui récupère le transporteur sélectionné pour le labo courant
-    * et qui met à jour cet objet.
+    * Méthode qui récupère le transporteur sélectionné pour le labo courant et qui
+    * met à jour cet objet.
+    *
     * @param event Select sur la liste transporteursBoxEachLabo.
     */
    public void onSelect$transporteursBoxEachLabo(final Event event){
@@ -1286,9 +1295,9 @@ public class FicheLaboInter extends AbstractFicheEditController
    }
 
    /**
-    * Méthode appelée lors de la sélection d'une température dans la
-    * liste temperatureListBoxLabo : mets à jour la valeur dans
-    * temperatureBoxLabo.
+    * Méthode appelée lors de la sélection d'une température dans la liste
+    * temperatureListBoxLabo : mets à jour la valeur dans temperatureBoxLabo.
+    *
     * @param event Select sur la liste temperatureListBoxLabo.
     */
    public void onSelect$temperatureListBoxLabo(final Event event){
@@ -1301,8 +1310,9 @@ public class FicheLaboInter extends AbstractFicheEditController
    }
 
    /**
-    * Méthode appelée lors de la sélection d'une température dans la
-    * liste temperatureListBoxSite.
+    * Méthode appelée lors de la sélection d'une température dans la liste
+    * temperatureListBoxSite.
+    *
     * @param event Select sur la liste temperatureListBoxSite.
     */
    public void onSelect$temperatureListBoxSite(final Event event){
@@ -1321,8 +1331,9 @@ public class FicheLaboInter extends AbstractFicheEditController
    }
 
    /**
-    * Méthode appelée lors de la sélection d'une température dans la
-    * liste temperatureListBoxSite2.
+    * Méthode appelée lors de la sélection d'une température dans la liste
+    * temperatureListBoxSite2.
+    *
     * @param event Select sur la liste temperatureListBoxSite2.
     */
    public void onSelect$temperatureListBoxSite2(final Event event){
@@ -1358,6 +1369,7 @@ public class FicheLaboInter extends AbstractFicheEditController
 
    /**
     * Retourne les non conformites sélectionnées.
+    *
     * @return
     */
    public List<NonConformite> findSelectedNonConformites(){
@@ -1373,82 +1385,82 @@ public class FicheLaboInter extends AbstractFicheEditController
    /************************** VALIDATION ***********************************/
    /*************************************************************************/
 
-   //	/**
-   //	 * Gere la validationException pour isoler les erreurs liees aux
-   //	 * LaboInter et les afficher dans le laboInterValidationLabel.
-   //	 * @param ve ValidationException
-   //	 * @return message d'erreur eventuel lie à une autre erreur de validation.
-   //	 */
-   //	public String handleValidationException(ValidationException ve) {
-   //		String errorMsg = null;
-   //		List<Errors> errors = ve.getErrors();
-   //		Errors errs;
-   //		FieldError err;
-   //		String errMessage = "";
-   //		Iterator<FieldError> fieldErrorIt;
-   //		for (int i = 0; i < errors.size(); i++) {
-   //			errs = errors.get(i);
-   //			if (errs.getObjectName()
-   //					.equals("fr.aphp.tumorotek.model."
-   //									+ "coeur.prelevement.LaboInter")) {
-   //				fieldErrorIt = errs.getFieldErrors().iterator();
-   //			
-   //				while (fieldErrorIt.hasNext()) {
-   //					err = fieldErrorIt.next();
-   //					if (errMessage.equals("")) {
-   //						errMessage = Labels.getLabel(err.getCode());
-   //					} else {
-   //						errMessage = errMessage  + ";"
-   //										+ Labels.getLabel(err.getCode());
-   //					}
-   //				}
-   //			}
-   //		}
-   //		if (!errMessage.equals("")) {
-   //			Clients.showBusy(null, false);
-   ////			showLaboInterValidationError(
-   ////					Labels.getLabel("laboInter.verifier.coherence")
-   ////						+ "\n" + errMessage);
-   //			errorMsg = Labels.getLabel("laboInter.verifier.coherence")
-   //			+ "\n" + errMessage;
-   //		} else {
-   //			errorMsg = "- Erreur validation prelevement";
-   //		}
-   //		return errorMsg;
-   //	}
+   // /**
+   // * Gere la validationException pour isoler les erreurs liees aux
+   // * LaboInter et les afficher dans le laboInterValidationLabel.
+   // * @param ve ValidationException
+   // * @return message d'erreur eventuel lie à une autre erreur de validation.
+   // */
+   // public String handleValidationException(ValidationException ve) {
+   // String errorMsg = null;
+   // List<Errors> errors = ve.getErrors();
+   // Errors errs;
+   // FieldError err;
+   // String errMessage = "";
+   // Iterator<FieldError> fieldErrorIt;
+   // for (int i = 0; i < errors.size(); i++) {
+   // errs = errors.get(i);
+   // if (errs.getObjectName()
+   // .equals("fr.aphp.tumorotek.model."
+   // + "coeur.prelevement.LaboInter")) {
+   // fieldErrorIt = errs.getFieldErrors().iterator();
+   //
+   // while (fieldErrorIt.hasNext()) {
+   // err = fieldErrorIt.next();
+   // if (errMessage.equals("")) {
+   // errMessage = Labels.getLabel(err.getCode());
+   // } else {
+   // errMessage = errMessage + ";"
+   // + Labels.getLabel(err.getCode());
+   // }
+   // }
+   // }
+   // }
+   // if (!errMessage.equals("")) {
+   // Clients.showBusy(null, false);
+   //// showLaboInterValidationError(
+   //// Labels.getLabel("laboInter.verifier.coherence")
+   //// + "\n" + errMessage);
+   // errorMsg = Labels.getLabel("laboInter.verifier.coherence")
+   // + "\n" + errMessage;
+   // } else {
+   // errorMsg = "- Erreur validation prelevement";
+   // }
+   // return errorMsg;
+   // }
 
-   //	/**
-   //	 * Remplissage automatique avec la date (sans heures) de prelevement 
-   //	 * si champ vide, déclenche validation sinon.
-   //	 */
-   //	public void onBlur$dateDepartCalBox() {
-   //		if (!dateDepartCalBox.isHasChanged() 
-   //				&& dateDepartCalBox.getValue() == null) {
-   //			dateDepartCalBox.setValue(ObjectTypesFormatters
-   //				.getDateWithoutHoursAndMins(prelevement.getDatePrelevement()));
-   //		} else {		
-   //			dateDepartCalBox.clearErrorMessage(dateDepartCalBox.getValue());
-   //			validateCoherenceDate(dateDepartCalBox, 
-   //												dateDepartCalBox.getValue());
-   //			dateArriveeCalBox.clearErrorMessage(dateArriveeCalBox.getValue());
-   //			validateCoherenceDate(dateArriveeCalBox, 
-   //												dateArriveeCalBox.getValue());
-   //		}
-   //		dateDepartCalBox.setHasChanged(true);
-   //	}
+   // /**
+   // * Remplissage automatique avec la date (sans heures) de prelevement
+   // * si champ vide, déclenche validation sinon.
+   // */
+   // public void onBlur$dateDepartCalBox() {
+   // if (!dateDepartCalBox.isHasChanged()
+   // && dateDepartCalBox.getValue() == null) {
+   // dateDepartCalBox.setValue(ObjectTypesFormatters
+   // .getDateWithoutHoursAndMins(prelevement.getDatePrelevement()));
+   // } else {
+   // dateDepartCalBox.clearErrorMessage(dateDepartCalBox.getValue());
+   // validateCoherenceDate(dateDepartCalBox,
+   // dateDepartCalBox.getValue());
+   // dateArriveeCalBox.clearErrorMessage(dateArriveeCalBox.getValue());
+   // validateCoherenceDate(dateArriveeCalBox,
+   // dateArriveeCalBox.getValue());
+   // }
+   // dateDepartCalBox.setHasChanged(true);
+   // }
 
-   //	/**
-   //	 * Applique la validation sur la date et les dates dependantes.
-   //	 */
-   //	public void onBlur$dateDepartInterBox(Event event) {
-   //		this.currentLabo = (LaboInter) getBindingData((ForwardEvent) event);
-   //		dateDepartInterBox.clearErrorMessage(true);
-   //		validateCoherenceDate(dateDepartInterBox, 
-   //												dateDepartInterBox.getValue());
-   //		dateArriveeInterBox.clearErrorMessage(true);
-   //		validateCoherenceDate(dateArriveeInterBox, 
-   //												dateArriveeInterBox.getValue());
-   //	}
+   // /**
+   // * Applique la validation sur la date et les dates dependantes.
+   // */
+   // public void onBlur$dateDepartInterBox(Event event) {
+   // this.currentLabo = (LaboInter) getBindingData((ForwardEvent) event);
+   // dateDepartInterBox.clearErrorMessage(true);
+   // validateCoherenceDate(dateDepartInterBox,
+   // dateDepartInterBox.getValue());
+   // dateArriveeInterBox.clearErrorMessage(true);
+   // validateCoherenceDate(dateArriveeInterBox,
+   // dateArriveeInterBox.getValue());
+   // }
 
    public void onBlur$dateArriveeCalBox(){
       if(!dateArriveeCalBox.isHasChanged() && dateArriveeCalBox.getValue() == null){
@@ -1478,8 +1490,8 @@ public class FicheLaboInter extends AbstractFicheEditController
    }
 
    /**
-    * Lance la validation de toutes les dates de prelevement pour
-    * s'assurer de la cohérencence entre les pages.
+    * Lance la validation de toutes les dates de prelevement pour s'assurer de la
+    * cohérencence entre les pages.
     */
    public void validateAllDateComps(){
       dateDepartCalBox.clearErrorMessage(dateDepartCalBox.getValue());
@@ -1488,36 +1500,36 @@ public class FicheLaboInter extends AbstractFicheEditController
       validateCoherenceDate(dateArriveeCalBox, dateArriveeCalBox.getValue());
    }
 
-   //	/**
-   //	 * Applique la validation sur la date et les dates dependantes.
-   //	 */
-   //	public void onBlur$dateArriveeInterBox(Event event) {
-   //		this.currentLabo = (LaboInter) getBindingData((ForwardEvent) event);
-   //		dateArriveeInterBox.clearErrorMessage(true);
-   //		validateCoherenceDate(dateArriveeInterBox, 
-   //												dateArriveeInterBox.getValue());
-   //		dateDepartInterBox.clearErrorMessage(true);
-   //		validateCoherenceDate(dateDepartInterBox, 
-   //												dateDepartInterBox.getValue());
-   //	}	
-   //	/**
-   //	 * Declenche l'affichage du message d'erreur de validation
-   //	 * des labos inters.
-   //	 * @param message, si null, n'affiche pas
-   //	 */
-   //	private void showLaboInterValidationError(String message) {
-   //		if (message != null) {
-   //			laboInterValidationLabel.setValue(message);
-   //			laboInterValidationLabel.setVisible(true);
-   //			laboIntersGrid.setStyle("border-style : solid;" 
-   //									+ "border-width : 1px;"
-   //									+ "border-color : red;");
-   //		} else {
-   //			laboInterValidationLabel.setValue(null);
-   //			laboInterValidationLabel.setVisible(false);
-   //			laboIntersGrid.setStyle("");
-   //		}
-   //	}
+   // /**
+   // * Applique la validation sur la date et les dates dependantes.
+   // */
+   // public void onBlur$dateArriveeInterBox(Event event) {
+   // this.currentLabo = (LaboInter) getBindingData((ForwardEvent) event);
+   // dateArriveeInterBox.clearErrorMessage(true);
+   // validateCoherenceDate(dateArriveeInterBox,
+   // dateArriveeInterBox.getValue());
+   // dateDepartInterBox.clearErrorMessage(true);
+   // validateCoherenceDate(dateDepartInterBox,
+   // dateDepartInterBox.getValue());
+   // }
+   // /**
+   // * Declenche l'affichage du message d'erreur de validation
+   // * des labos inters.
+   // * @param message, si null, n'affiche pas
+   // */
+   // private void showLaboInterValidationError(String message) {
+   // if (message != null) {
+   // laboInterValidationLabel.setValue(message);
+   // laboInterValidationLabel.setVisible(true);
+   // laboIntersGrid.setStyle("border-style : solid;"
+   // + "border-width : 1px;"
+   // + "border-color : red;");
+   // } else {
+   // laboInterValidationLabel.setValue(null);
+   // laboInterValidationLabel.setVisible(false);
+   // laboIntersGrid.setStyle("");
+   // }
+   // }
 
    @Override
    protected void validateCoherenceDate(final Component comp, final Object value){
@@ -1526,7 +1538,7 @@ public class FicheLaboInter extends AbstractFicheEditController
 
       if(value == null || value.equals("")){
          // la contrainte est retiree
-         //((Datebox) comp).setConstraint("");
+         // ((Datebox) comp).setConstraint("");
 
          if(comp.getId().equals("dateDepartCalBox")){
             ((CalendarBox) comp).clearErrorMessage(dateDepartCalBox.getValue());
@@ -1690,8 +1702,8 @@ public class FicheLaboInter extends AbstractFicheEditController
    }
 
    /**
-    * Assigne la valeur au collaborateur qui sera utilisé 
-    * pour enregistrer le prelevement.
+    * Assigne la valeur au collaborateur qui sera utilisé pour enregistrer le
+    * prelevement.
     */
    private void prepareSelectedCollaborateur(){
       final String selectedNomAndPremon = this.collabBox.getValue().toUpperCase();
@@ -1705,9 +1717,9 @@ public class FicheLaboInter extends AbstractFicheEditController
    }
 
    /**
-    * Prepare le prelevement en lui assignant les references vers
-    *  ses objets associés afin d'etre enregistré au niveau de la 
-    *  page MultiEchantillon.
+    * Prepare le prelevement en lui assignant les references vers ses objets
+    * associés afin d'etre enregistré au niveau de la page MultiEchantillon.
+    *
     * @return
     */
    public Prelevement getPrelevementPrepared(){
@@ -1760,8 +1772,8 @@ public class FicheLaboInter extends AbstractFicheEditController
    }
 
    /**
-    * Uncheck tous les radios contenus dans la grid des 
-    * labo inters.
+    * Uncheck tous les radios contenus dans la grid des labo inters.
+    *
     * @param checked
     */
    private void uncheckSiteCongelations(){

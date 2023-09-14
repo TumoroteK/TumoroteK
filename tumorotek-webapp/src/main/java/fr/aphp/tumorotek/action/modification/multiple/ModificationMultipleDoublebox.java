@@ -62,9 +62,11 @@ public class ModificationMultipleDoublebox extends AbstractModificationMultipleC
     * Components specific Datebox.
     */
    private Decimalbox multiDoublebox;
+
    private Decimalbox eraseMultiDoublebox;
 
    private boolean isInteger = false;
+
    private boolean isFloat = false;
 
    @Override
@@ -155,14 +157,14 @@ public class ModificationMultipleDoublebox extends AbstractModificationMultipleC
 
    @Override
    public void passValueToEraserBox(){
-      
+
       if(getValues().get(multiListBox.getSelectedIndex()) != null){
-         Number selectedValue = (Number) getValues().get(multiListBox.getSelectedIndex());
+         final Number selectedValue = (Number) getValues().get(multiListBox.getSelectedIndex());
          eraseMultiDoublebox.setValue(selectedValue.toString());
       }else{
          eraseMultiDoublebox.setRawValue(null);
       }
-      
+
    }
 
    @Override

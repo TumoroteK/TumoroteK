@@ -67,6 +67,7 @@ public class ConteneurTypeManagerTest extends AbstractManagerTest4
 
    @Autowired
    private ConteneurTypeManager conteneurTypeManager;
+
    @Autowired
    private PlateformeDao plateformeDao;
 

@@ -74,8 +74,10 @@ public class EvenementPatient
 
    @XmlElement(name = "enregistrementPatient", required = false)
    private ActionPatient enregistrementPatient;
+
    @XmlElement(name = "venuePatient", required = false)
    private ActionPatient venuePatient;
+
    @XmlElement(name = "fusionPatient", required = false)
    private ActionPatient fusionPatient;
 

@@ -65,6 +65,7 @@ public class EmetteurManagerTest extends AbstractManagerTest4
 
    @Autowired
    private EmetteurManager emetteurManager;
+
    @Autowired
    private LogicielDao logicielDao;
 

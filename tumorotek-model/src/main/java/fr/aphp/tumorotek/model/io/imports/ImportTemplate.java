@@ -79,14 +79,21 @@ public class ImportTemplate implements java.io.Serializable, TKdataObject
    private static final long serialVersionUID = -319499964642320756L;
 
    private Integer importTemplateId;
+
    private Banque banque;
+
    private String nom;
+
    private String description;
+
    private Boolean isEditable;
+
    private Entite deriveParentEntite;
+
    private Boolean isUpdate = false;
 
    private Set<Entite> entites = new HashSet<>();
+
    private Set<ImportHistorique> importHistoriques = new HashSet<>();
 
    public ImportTemplate(){

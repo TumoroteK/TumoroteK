@@ -41,6 +41,7 @@ import java.util.List;
 
 import fr.aphp.tumorotek.dao.GenericDaoJpa;
 import fr.aphp.tumorotek.model.coeur.patient.Patient;
+import fr.aphp.tumorotek.model.coeur.patient.gatsbi.PatientIdentifiant;
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.contexte.Collaborateur;
 import fr.aphp.tumorotek.model.contexte.Etablissement;
@@ -113,7 +114,7 @@ public interface PatientDao extends GenericDaoJpa<Patient, Integer>
    List<Patient> findByEtatIncomplet();
 
    /**
-    * Recherche tous les patients sauf celui dont l'id est passé 
+    * Recherche tous les patients sauf celui dont l'id est passé
     * en paramètre.
     * @param patientId Identifiant du patient que l'on souhaite
     * exclure de la liste retournée.
@@ -166,7 +167,7 @@ public interface PatientDao extends GenericDaoJpa<Patient, Integer>
    /**
     * Compte les patient qui ont été enregistrés par le système suite
     * à un prélèvements enregistré dans une des banques passées en paramètres.
-    * La date utilisée comme référence est celle d'enregistrement du patient 
+    * La date utilisée comme référence est celle d'enregistrement du patient
     * dans le système.
     * @param cal1
     * @param cal2
@@ -189,11 +190,11 @@ public interface PatientDao extends GenericDaoJpa<Patient, Integer>
    /**
     * Compte les patient qui ont été enregistrés par le système suite
     * à un prélèvements enregistré dans une des banques passées en paramètres.
-    * La date utilisée comme référence est celle d'enregistrement du patient 
+    * La date utilisée comme référence est celle d'enregistrement du patient
     * dans le système.
-    * Une liste d'établissement est passée en paramètre 
-    * pour exclure tous les échantillons techniqués dans ces derniers (pour 
-    * compter les échantillons extérieurs aux établissement 
+    * Une liste d'établissement est passée en paramètre
+    * pour exclure tous les échantillons techniqués dans ces derniers (pour
+    * compter les échantillons extérieurs aux établissement
     * locaux par exemple).
     * @param cal1
     * @param cal2
@@ -207,9 +208,9 @@ public interface PatientDao extends GenericDaoJpa<Patient, Integer>
     * Compte les patient qui ont été enregistrés par le système suite
     * à un prélèvements enregistré dans une des banques passées en paramètres.
     * La date utilisée comme référence est celle de prélèvement.
-    * Une liste d'établissement est passée en paramètre 
-    * pour exclure tous les échantillons techniqués dans ces derniers (pour 
-    * compter les échantillons extérieurs aux établissement 
+    * Une liste d'établissement est passée en paramètre
+    * pour exclure tous les échantillons techniqués dans ces derniers (pour
+    * compter les échantillons extérieurs aux établissement
     * locaux par exemple).
     * @param cal1
     * @param cal2
@@ -251,9 +252,54 @@ public interface PatientDao extends GenericDaoJpa<Patient, Integer>
 
    /**
     * Compte les patients pour le médecin référent passé en paramètre.
-    * @param Collaborateur 
+    * @param Collaborateur
     * @return long
     */
    List<Long> findCountByReferent(Collaborateur referent);
+   
+//   /**
+//    * Recherche les patients dont le IDENTIFIANT est 'like' le paramètre.
+//    * @param identifiant des patients recherchés.
+//    * @return Liste de Patients.
+//    */
+//   List<Patient> findByIdentifiant(String identifiant);
+
+   /**
+    * Recherche les patients dont les identifiants sont passés en paramètres sous la 
+    * forme d'une liste, pour une liste de collections.
+    * @param identifiants
+    * @param collections
+    * @return liste patient ids
+    */
+   List<Integer> findByIdentifiantInList(List<String> identifiants, List<Banque> selectedBanques);
+
+   /**
+    * Recherche les patients pour un identifiant passé en paramètres, pour 
+    * une liste de collections.
+    * @param identifiant
+    * @param collections
+    * @param boolean exactMatch if true
+    * @return liste patient ids
+    */
+   List<Integer> findByIdentifiantReturnIds(String identifiant, List<Banque> selectedBanques);
+
+   /**
+    * Recherche toutes les patients dont l'identifiant est egal
+    * ou 'like' celui en parametre pour une liste de banques.
+    * @param identifiant
+    * @param boolean exactMatch
+    * @param banques
+    * @return Liste de Patient.
+    */
+   List<Patient> findByIdentifiant(String ident, List<Banque> selectedBanques);
+   
+   /**
+    * Recherche tous les identifiants attribués à un patient pour une liste de collections.
+    * @param patient
+    * @param banques
+    * @return liste d'identifiants
+    * @since 2.3.0-gatsbi
+    */
+   List<PatientIdentifiant> findIdentifiantsByPatientAndBanques(Patient patient, List<Banque> banques);
 
 }

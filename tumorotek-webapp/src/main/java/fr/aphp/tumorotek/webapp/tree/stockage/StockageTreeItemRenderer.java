@@ -218,7 +218,7 @@ public class StockageTreeItemRenderer implements TreeitemRenderer<Object>
             sb.append(nbLibres);
             final Long total = nbLibres + nbOccupes;
             if(total != 0){
-               final Float puiss = nbOccupes.floatValue() * 100;
+               final float puiss = nbOccupes.floatValue() * 100;
                final Float pourcentage = puiss / total.floatValue();
                sb.append(" - ");
                sb.append(ObjectTypesFormatters.floor(pourcentage, 1));

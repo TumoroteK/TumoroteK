@@ -46,7 +46,7 @@ import fr.aphp.tumorotek.model.AbstractThesaurusObject;
  *
  * @author Mathieu BARTHELEMY
  * @version 2.0
- * 
+ *
  * @param <T> est l'objet de type TKThesaurusObject
  *
  */
@@ -54,11 +54,11 @@ public interface TKThesaurusDao<T extends AbstractThesaurusObject>
 {
 
    /**
-    * Recherche tous les éléments de thesaurus ordonnés pour une 
+    * Recherche tous les éléments de thesaurus ordonnés pour une
     * plateforme passée en paramètre.
     * @param plateforme
     * @return Liste ordonnée des éléments de thesaurus.
     */
    List<T> findByOrder();
-   
+
 }

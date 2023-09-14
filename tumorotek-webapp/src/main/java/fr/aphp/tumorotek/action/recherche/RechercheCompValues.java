@@ -55,16 +55,24 @@ public class RechercheCompValues
 {
 
    private Class<? extends Component> compClass;
+
    private String compId;
+
    private String groupId;
+
    private Integer selectedIndexValue;
+
    private Object selectedObject;
+
    private String textValue;
+
    private Boolean checkedValue;
+
    private Calendar calendarValue;
 
    // @since 2.0.13
    private final List<Object> selectedValues = new ArrayList<>();
+
    private boolean cumulative = false;
 
    public Class<? extends Component> getCompClass(){

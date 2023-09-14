@@ -43,7 +43,7 @@ import fr.aphp.tumorotek.test.AbstractInMemoryTests;
  * @author 7009917
  *
  */
-@ContextConfiguration(inheritLocations=true, locations= {"classpath:applicationContextManagerBase.xml"})
+@ContextConfiguration(inheritLocations = true, locations = {"classpath:applicationContextManagerBase.xml"})
 public abstract class AbstractInMemoryManagerTest extends AbstractInMemoryTests
 {
 

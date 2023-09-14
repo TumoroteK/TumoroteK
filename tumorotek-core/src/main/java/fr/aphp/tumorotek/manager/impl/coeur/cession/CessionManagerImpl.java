@@ -109,22 +109,38 @@ public class CessionManagerImpl implements CessionManager
    private final Log log = LogFactory.getLog(CessionManager.class);
 
    private CessionDao cessionDao;
+
    private BanqueDao banqueDao;
+
    private CessionTypeDao cessionTypeDao;
+
    private CessionExamenDao cessionExamenDao;
+
    private ContratDao contratDao;
+
    private CollaborateurDao collaborateurDao;
+
    private ServiceDao serviceDao;
+
    private CessionStatutDao cessionStatutDao;
+
    private TransporteurDao transporteurDao;
+
    private DestructionMotifDao destructionMotifDao;
+
    // private CessionDelegateDao cessionDelegateDao;
    private CederObjetManager cederObjetManager;
+
    private OperationTypeDao operationTypeDao;
+
    private OperationManager operationManager;
+
    private EntiteDao entiteDao;
+
    private EntityManagerFactory entityManagerFactory;
+
    private CessionValidator cessionValidator;
+
    private AnnotationValeurManager annotationValeurManager;
 
    public void setCessionDao(final CessionDao cDao){
@@ -167,9 +183,9 @@ public class CessionManagerImpl implements CessionManager
       this.destructionMotifDao = dDao;
    }
 
-//   public void setCessionDelegateDao(CessionDelegateDao cessionDelegateDao){
-//      this.cessionDelegateDao = cessionDelegateDao;
-//   }
+   //   public void setCessionDelegateDao(CessionDelegateDao cessionDelegateDao){
+   //      this.cessionDelegateDao = cessionDelegateDao;
+   //   }
 
    public void setCederObjetManager(final CederObjetManager cManager){
       this.cederObjetManager = cManager;
@@ -381,7 +397,7 @@ public class CessionManagerImpl implements CessionManager
    }
 
    /**
-    * Recherche toutes les Cessions dont la date de modification systeme est 
+    * Recherche toutes les Cessions dont la date de modification systeme est
     * posterieure ou egale a celle passee en parametre.
     * @param date
     * @param banque Banque à laquelle appartient la Cession.
@@ -399,7 +415,7 @@ public class CessionManagerImpl implements CessionManager
    }
 
    /**
-    * Recupere la liste des cessions en fonction du type d'operation et 
+    * Recupere la liste des cessions en fonction du type d'operation et
     * d'une date a laquelle la date d'enregistrement de l'operation doit
     * etre superieure ou egale.
     * Dans un premier temps, recupere la liste des objetIds qui sont ensuite
@@ -437,7 +453,7 @@ public class CessionManagerImpl implements CessionManager
    }
 
    /**
-    * Recupere la liste des cessions en fonction du type d'operation et 
+    * Recupere la liste des cessions en fonction du type d'operation et
     * d'une date a laquelle la date d'enregistrement de l'operation doit
     * etre superieure ou egale.
     * Dans un premier temps, recupere la liste des objetIds qui sont ensuite
@@ -493,12 +509,12 @@ public class CessionManagerImpl implements CessionManager
          final EntityManager em = entityManagerFactory.createEntityManager();
          final TypedQuery<Cession> query = em.createQuery(
             "SELECT c " + "FROM Cession c " + "WHERE c.banque in (:banque) " + "ORDER BY c.cessionId DESC", Cession.class);
-         //			Query query = em.createQuery("SELECT e " 
-         //					+ "FROM Echantillon e, Operation o " 
-         //					+ "WHERE o.objetId = e.echantillonId " 
-         //					+ "AND o.entite = :entite " 
-         //					+ "AND o.operationType = :oType " 
-         //					+ "AND e.banque in (:banque) " 
+         //			Query query = em.createQuery("SELECT e "
+         //					+ "FROM Echantillon e, Operation o "
+         //					+ "WHERE o.objetId = e.echantillonId "
+         //					+ "AND o.entite = :entite "
+         //					+ "AND o.operationType = :oType "
+         //					+ "AND e.banque in (:banque) "
          //					+ "ORDER BY o.date DESC");
          //			query.setParameter("entite", entiteDao.findByNom("Echantillon"));
          //			query.setParameter("oType", operationTypeDao
@@ -522,35 +538,35 @@ public class CessionManagerImpl implements CessionManager
     * @param nbResults Nombre max de cessions souhaitées.
     * @return Liste de Echantillons.
     */
-   //	
-   //	private List<Cession> findByLastOperationType(OperationType oType, 
+   //
+   //	private List<Cession> findByLastOperationType(OperationType oType,
    //			List<Banque> banques, int nbResults) {
-   //		
+   //
    //		List<Cession> cessions = new ArrayList<Cession>();
-   //		
+   //
    //		if (banques.size() > 0) {
    //			EntityManager em = entityManagerFactory.createEntityManager();
-   //			Query query = em.createQuery("SELECT c " 
-   //					+ "FROM Cession c, Operation o " 
-   //					+ "WHERE o.objetId = c.cessionId " 
-   //					+ "AND o.entite = :entite " 
-   //					+ "AND o.operationType = :oType " 
+   //			Query query = em.createQuery("SELECT c "
+   //					+ "FROM Cession c, Operation o "
+   //					+ "WHERE o.objetId = c.cessionId "
+   //					+ "AND o.entite = :entite "
+   //					+ "AND o.operationType = :oType "
    //					+ "AND c.banque in (:banques) "
    //					+ "ORDER BY o.date DESC");
    //			query.setParameter("entite", entiteDao.findByNom("Cession"));
    //			query.setParameter("oType", oType);
    //			query.setParameter("banques", banques);
    //			query.setMaxResults(nbResults);
-   //			
+   //
    //			cessions.addAll(query.getResultList());
    //		}
-   //		
+   //
    //		return cessions;
-   //		
+   //
    //	}
 
    /**
-    * Verifie que les Objets devant etre obligatoirement associes 
+    * Verifie que les Objets devant etre obligatoirement associes
     * sont non nulls et lance la validation via le Validator.
     * @param cession
     * @param banque
@@ -587,7 +603,7 @@ public class CessionManagerImpl implements CessionManager
    }
 
    /**
-    * Merge et assigne tous les objects associes non obligatoires à 
+    * Merge et assigne tous les objects associes non obligatoires à
     * à la cession (sauf partie Contrat, sujette à la validation).
     * @param cession
     * @param cessionExamen
@@ -662,7 +678,7 @@ public class CessionManagerImpl implements CessionManager
          }
 
          // cree les annotations, null operation pour
-         // laisser la possibilité création/modification au sein 
+         // laisser la possibilité création/modification au sein
          // de la liste
          if(listAnnoToCreateOrUpdate != null){
             annotationValeurManager.createAnnotationValeurListManager(listAnnoToCreateOrUpdate, cession, utilisateur, null,
@@ -678,7 +694,7 @@ public class CessionManagerImpl implements CessionManager
          }
          // en cas d'erreur lors enregistrement annotation
          // le rollback se fera mais echantillon aura un id assigne
-         // qui déclenchera une TransientException si on essaie 
+         // qui déclenchera une TransientException si on essaie
          // d'enregistrer a nouveau.
          if(cession.getCessionId() != null){
             cession.setCessionId(null);
@@ -739,7 +755,7 @@ public class CessionManagerImpl implements CessionManager
             // suppression des anciens CederObjet qui n'existent
             // plus
             final Set<CederObjet> oldCedes = getCederObjetsManager(cession);
-            for(CederObjet tmp : oldCedes){
+            for(final CederObjet tmp : oldCedes){
                if(!cederObjets.contains(tmp)){
                   cederObjetManager.removeObjectManager(tmp);
                }
@@ -748,7 +764,7 @@ public class CessionManagerImpl implements CessionManager
             // suppression des anciens CederObjets qui n'existent
             // plus
             final Set<CederObjet> oldCedes = getCederObjetsManager(cession);
-            for(CederObjet tmp : oldCedes){
+            for(final CederObjet tmp : oldCedes){
                cederObjetManager.removeObjectManager(tmp);
             }
          }
@@ -759,13 +775,13 @@ public class CessionManagerImpl implements CessionManager
          }
 
          // update les annotations, null operation pour
-         // laisser la possibilité création/modification au sein 
+         // laisser la possibilité création/modification au sein
          // de la liste
          if(listAnnoToCreateOrUpdate != null){
             annotationValeurManager.createAnnotationValeurListManager(listAnnoToCreateOrUpdate, cession, utilisateur, null,
                baseDir, filesCreated, filesToDelete);
          }
-         // enregistre operation associee annotation 
+         // enregistre operation associee annotation
          // si il y a eu des deletes et pas d'updates
          if((listAnnoToCreateOrUpdate == null || listAnnoToCreateOrUpdate.isEmpty())
             && (listAnnoToDelete != null && !listAnnoToDelete.isEmpty())){
@@ -847,7 +863,7 @@ public class CessionManagerImpl implements CessionManager
          //         List<Map<String, Object>> res = query.getResultList();
 
          for(final Object resObj : res){
-            Map<?, ?> map = Map.class.cast(resObj);
+            final Map<?, ?> map = Map.class.cast(resObj);
             out.put(String.class.cast(map.get("tp")), Number.class.cast(map.get("ct")));
          }
 
@@ -859,7 +875,7 @@ public class CessionManagerImpl implements CessionManager
 
          res = query.getResultList();
          for(final Object resObj : res){
-            Map<?, ?> map = Map.class.cast(resObj);
+            final Map<?, ?> map = Map.class.cast(resObj);
             out.put((String) map.get("tp"), !out.containsKey(map.get("tp")) ? (Number) map.get("ct")
                : new Integer(((Number) map.get("ct")).intValue() + out.get(map.get("tp")).intValue()));
          }

@@ -55,7 +55,9 @@ public interface FinderExecutor
     * @param arguments sont les arguments passés à la requête.
     * @return les résultats.
     */
-   // 
+   //
    List<?> executeFinder(Method m, Object[] arguments);
+   
+   Long executeCounter(Method m, Object[] arguments);
 
 }

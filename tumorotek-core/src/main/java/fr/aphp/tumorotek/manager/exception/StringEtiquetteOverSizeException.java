@@ -52,6 +52,7 @@ public class StringEtiquetteOverSizeException extends PrinterException
    private static final long serialVersionUID = -3562772083927549441L;
 
    private String type;
+
    private String message;
 
    public StringEtiquetteOverSizeException(){

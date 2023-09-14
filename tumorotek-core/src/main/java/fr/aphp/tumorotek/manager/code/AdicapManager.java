@@ -94,7 +94,7 @@ public interface AdicapManager extends CodeCommonManager<Adicap>
    Set<CimMaster> getCimMastersManager(Adicap adicap);
 
    /**
-    * Cree la liste de dossiers correspondants à la liste 
+    * Cree la liste de dossiers correspondants à la liste
     * de dictionnaires de l'ADICAP.
     * @return liste de AdicapGroupe
     */
@@ -108,8 +108,8 @@ public interface AdicapManager extends CodeCommonManager<Adicap>
    List<AdicapGroupe> getAdicapGroupesManager(AdicapGroupe groupe);
 
    /**
-    * Renvoie les codes ADICAP contenu dans l'arborescence dont la 
-    * racine est le code ou le groupe passé en paramètre. Les codes sont 
+    * Renvoie les codes ADICAP contenu dans l'arborescence dont la
+    * racine est le code ou le groupe passé en paramètre. Les codes sont
     * filtrés par le critère stringOrLibelle ('%' supprime ce filtre).
     * @param code ADICAP
     * @param groupe ADICAP
@@ -119,7 +119,7 @@ public interface AdicapManager extends CodeCommonManager<Adicap>
    List<Adicap> findChildrenCodesManager(Adicap code, AdicapGroupe groupe, String codeOrLibelle);
 
    /**
-    * Recherche les codes ADICAP dans un dictionnaire par son code 
+    * Recherche les codes ADICAP dans un dictionnaire par son code
     * ou son libellé LIKE.
     * @param grp Dico ADICAP
     * @param codeOrLibelle

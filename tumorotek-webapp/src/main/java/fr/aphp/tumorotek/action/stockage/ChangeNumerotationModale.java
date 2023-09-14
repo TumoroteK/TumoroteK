@@ -84,17 +84,27 @@ public class ChangeNumerotationModale extends GenericForwardComposer<Component>
    private static final long serialVersionUID = -4675282379020609559L;
 
    private Image warnImg;
+
    private Image stopImg;
+
    private Html warnLabel;
+
    private Listbox numerotationsBox;
+
    private MainWindow main;
+
    private Row rowNumerotationTerminales;
+
    private Button validate;
 
    private Conteneur conteneur;
+
    private Enceinte enceinte;
+
    private List<Terminale> terminales = new ArrayList<>();
+
    private List<TerminaleNumerotation> numerotations = new ArrayList<>();
+
    private TerminaleNumerotation selectedNumerotation;
 
    public void init(final Object parent, final MainWindow mw){
@@ -205,12 +215,9 @@ public class ChangeNumerotationModale extends GenericForwardComposer<Component>
          message = ObjectTypesFormatters.getLabel("validation.doublon",
             new String[] {((DoublonFoundException) ex).getEntite(), ((DoublonFoundException) ex).getOperation()});
       }else if(ex instanceof RequiredObjectIsNullException){
-         message =
-            ObjectTypesFormatters
-               .getLabel("validation.requiredObject",
-                  new String[] {((RequiredObjectIsNullException) ex).getEntite(),
-                     ((RequiredObjectIsNullException) ex).getRequiredObject(),
-                     ((RequiredObjectIsNullException) ex).getOperation()});
+         message = ObjectTypesFormatters.getLabel("validation.requiredObject",
+            new String[] {((RequiredObjectIsNullException) ex).getEntite(),
+               ((RequiredObjectIsNullException) ex).getRequiredObject(), ((RequiredObjectIsNullException) ex).getOperation()});
       }else if(ex instanceof ObjectUsedException){
          message = Labels.getLabel(((ObjectUsedException) ex).getKey());
       }else if(ex instanceof ObjectReferencedException){

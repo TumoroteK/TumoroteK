@@ -64,23 +64,31 @@ public class ListePatient extends AbstractListeController2
    private static final long serialVersionUID = -6167747099087709700L;
 
    private List<Patient> listObjects = new ArrayList<>();
+
    private List<Patient> selectedObjects = new ArrayList<>();
 
    // Critères de recherche.
-   private Radio nomPatient;
-   private Radio nipPatient;
-   private Textbox nomBoxPatient;
-   private Textbox nipBoxPatient;
+   protected Radio nomPatient;
+
+   protected Radio nipPatient;
+
+   protected Textbox nomBoxPatient;
+
+   protected Textbox nipBoxPatient;
 
    // Variables formulaire pour les critères.
-   private String searchNomPatient;
-   private String searchNipPatient;
+   protected String searchNomPatient;
 
-   private Column maladiesCol;
-   private Column nbPrelevementsColumn;
+   protected String searchNipPatient;
 
-   private final PatientRowRenderer listObjectsRenderer = new PatientRowRenderer(true);
+   protected Column maladiesCol;
+
+   protected Column nbPrelevementsColumn;
+
+   private PatientRowRenderer listObjectsRenderer = new PatientRowRenderer(true);
+
    private PatientsNbPrelevementsComparator comparatorAsc = new PatientsNbPrelevementsComparator(true);
+
    private PatientsNbPrelevementsComparator comparatorDesc = new PatientsNbPrelevementsComparator(false);
 
    /** Getters-setters. **/
@@ -104,19 +112,55 @@ public class ListePatient extends AbstractListeController2
    @Override
    public void doAfterCompose(final Component comp) throws Exception{
       super.doAfterCompose(comp);
+      
+      // @since gatsbi
+      try{
+         drawColumnsForVisibleChampEntites();
+         drawQuickSearchForVisibleChampEntites();
+      }catch(final Exception e){
+         // une erreur inattendue levée dans la récupération
+         // ou le rendu d'une propriété prel
+         // va arrêter le rendu du reste du tableau
+         throw new RuntimeException(e);
+      }
 
       this.listObjectsRenderer.setBanques(PatientUtils.getBanquesConsultForPrelevement(sessionScope));
 
-      // retire le colonne maladies si aucune banque ne définit
+      // retire le colonne maladies si aucune banque ne définitsetBanques
       // de maladies
-      if(!SessionUtils.isAnyDefMaladieInBanques(SessionUtils.getSelectedBanques(sessionScope))){
+      // @since 2.3.0-gatsbi maladiesCol peut être null
+      if(!SessionUtils.isAnyDefMaladieInBanques(SessionUtils.getSelectedBanques(sessionScope))
+         && maladiesCol != null){
          maladiesCol.setVisible(false);
       }
 
       comparatorAsc.setBanques(PatientUtils.getBanquesConsultForPrelevement(sessionScope));
       comparatorDesc.setBanques(PatientUtils.getBanquesConsultForPrelevement(sessionScope));
+      
+      if (nbPrelevementsColumn != null) {
+         nbPrelevementsColumn.setSortAscending(comparatorAsc);
+         nbPrelevementsColumn.setSortDescending(comparatorDesc);
+      }
 
       setOnGetEventName("onGetPatientsFromSelection");
+   }
+   
+   /**
+    * Cette méthode de dessin dynamique des colonnes est surchargée par Gatsbi
+    * @since 2.3.0-gatsbi
+    */
+   protected void drawColumnsForVisibleChampEntites()
+      throws ClassNotFoundException, InstantiationException, IllegalAccessException{}
+   
+   /**
+    * Cette méthode de dessin dynamique des champs de recherche rapide est surchargée par Gatsbi
+    * @since 2.3.0-gatsbi
+    */
+   protected void drawQuickSearchForVisibleChampEntites()
+      throws ClassNotFoundException, InstantiationException, IllegalAccessException{}
+
+   public void setListObjectsRenderer(final TKSelectObjectRenderer<? extends TKdataObject> listObjectsRenderer){
+      this.listObjectsRenderer = (PatientRowRenderer) listObjectsRenderer;
    }
 
    @Override
@@ -124,7 +168,6 @@ public class ListePatient extends AbstractListeController2
       return this.listObjects;
    }
 
-   
    @Override
    public void setListObjects(final List<? extends TKdataObject> objs){
       clearSelection();
@@ -148,7 +191,6 @@ public class ListePatient extends AbstractListeController2
       getListObjects().remove(obj);
    }
 
-   
    @Override
    public void setSelectedObjects(final List<? extends TKdataObject> objs){
       this.selectedObjects = (List<Patient>) objs;
@@ -204,9 +246,6 @@ public class ListePatient extends AbstractListeController2
       this.listObjects = patients;
       setCurrentRow(null);
       setCurrentObject(null);
-
-      nbPrelevementsColumn.setSortAscending(comparatorAsc);
-      nbPrelevementsColumn.setSortDescending(comparatorDesc);
 
       getBinder().loadAttribute(self.getFellow("objectsListGrid"), "model");
 
@@ -289,7 +328,7 @@ public class ListePatient extends AbstractListeController2
             }
          }
 
-      }else if(nipPatient.isChecked()){
+      }else if(nipPatient != null && nipPatient.isChecked()){
          if(!searchNipPatient.equals("")){
             if(searchNipPatient.contains(",")){
                final List<String> pats = ObjectTypesFormatters.formateStringToList(searchNipPatient);
@@ -353,16 +392,12 @@ public class ListePatient extends AbstractListeController2
       super.applyDroitsOnListe();
       listObjectsRenderer.setAnonyme(isAnonyme());
 
-      if(isAnonyme()){
-         nomPatient.setDisabled(true);
-         nomBoxPatient.setDisabled(true);
-         nipPatient.setDisabled(true);
-         nipBoxPatient.setDisabled(true);
-      }else{
-         nomPatient.setDisabled(false);
-         nomBoxPatient.setDisabled(false);
-         nipPatient.setDisabled(false);
-         nipBoxPatient.setDisabled(false);
+      nomPatient.setDisabled(isAnonyme());
+      nomBoxPatient.setDisabled(isAnonyme());
+      
+      if(nipPatient != null){ // peut être null pour collections gatsbi
+         nipPatient.setDisabled(isAnonyme());
+         nipBoxPatient.setDisabled(isAnonyme());
       }
    }
 
@@ -382,8 +417,13 @@ public class ListePatient extends AbstractListeController2
       this.comparatorDesc = c;
    }
 
+   // @since gatsbi current banque est utilisée pour identifier le patient 
+   // TODO attention mode toutes collections
    @Override
    public void batchDelete(final List<Integer> ids, final String comment){
-      ManagerLocator.getPatientManager().removeListFromIdsManager(ids, comment, SessionUtils.getLoggedUser(sessionScope));
+      ManagerLocator.getPatientManager()
+         .removeListFromIdsManager(ids, comment, 
+            SessionUtils.getLoggedUser(sessionScope), 
+            SessionUtils.getCurrentBanque(sessionScope));
    }
 }

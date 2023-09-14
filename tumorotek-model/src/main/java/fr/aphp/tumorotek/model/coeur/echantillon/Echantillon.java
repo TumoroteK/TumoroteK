@@ -119,12 +119,9 @@ import fr.aphp.tumorotek.model.utils.Utils;
       query = "SELECT e.code FROM Echantillon e " + "WHERE e.banque = ?1 " + "AND (quantite > 0 OR quantite IS NULL) "
          + "AND e.objetStatut.statut not in ('EPUISE', 'ENCOURS', 'RESERVE')"),
    @NamedQuery(name = "Echantillon.findAllCodesByBanqueAndQuantiteNotNullOrInCessionTraitement",
-      query = "SELECT e.code FROM Echantillon e "
-         + "WHERE e.banque = ?1 "
-         + "AND (((quantite > 0 OR quantite IS NULL) "
-         + "AND e.objetStatut.statut not in ('EPUISE', 'ENCOURS', 'RESERVE'))"
-         + "OR ("
-               + "e.echantillonId in (SELECT c.pk.objetId FROM CederObjet c WHERE c.pk.entite.nom = 'Echantillon' AND c.pk.cession.cessionType.type = 'Traitement' AND c.statut = 'TRAITEMENT'"
+      query = "SELECT e.code FROM Echantillon e " + "WHERE e.banque = ?1 " + "AND (((quantite > 0 OR quantite IS NULL) "
+         + "AND e.objetStatut.statut not in ('EPUISE', 'ENCOURS', 'RESERVE'))" + "OR ("
+         + "e.echantillonId in (SELECT c.pk.objetId FROM CederObjet c WHERE c.pk.entite.nom = 'Echantillon' AND c.pk.cession.cessionType.type = 'Traitement' AND c.statut = 'TRAITEMENT'"
          + ")))"),
    @NamedQuery(name = "Echantillon.findByBanqueStatutSelectCode",
       query = "SELECT e.code FROM Echantillon e " + "WHERE e.banque = ?1 AND e.objetStatut=?2 " + "ORDER BY e.code"),
@@ -189,39 +186,71 @@ import fr.aphp.tumorotek.model.utils.Utils;
    @NamedQuery(name = "Echantillon.findByCodeInListWithPlateforme", query= "SELECT e FROM Echantillon e JOIN e.banque bq JOIN bq.plateforme pf WHERE e.code in (?1) AND pf = ?2 "),
    @NamedQuery(name = "Echantillon.findByBanksAndImpact",
    query = "SELECT e.echantillonId FROM Echantillon e, Retour r " + "WHERE e.echantillonId = r.objetId "
-      + "and e.banque in (?1)"+ "and r.impact in (?2) ")})
+      + "and e.banque in (?1)"+ "and r.impact in (?2) "),
+   @NamedQuery(name = "Echantillon.findByPatientIdentifiantOrNomOrNipInList",
+      query = "SELECT distinct(e.echantillonId) FROM Echantillon e JOIN e.prelevement as p JOIN p.maladie as m JOIN m.patient as pat "
+         + "JOIN pat.patientIdentifiants i WHERE (pat.nom in (?1) or pat.nip in (?1) or i.identifiant in (?1)) "
+         + "AND i.pk.banque in (?2) AND e.banque in (?2)"),
+   @NamedQuery(name = "Echantillon.findByPatientIdentifiantOrNomOrNipReturnIds",
+      query = "SELECT distinct(e.echantillonId) FROM Echantillon e JOIN e.prelevement as p JOIN p.maladie as m JOIN m.patient as pat "
+         + "JOIN pat.patientIdentifiants i WHERE (pat.nom like ?1 or pat.nip like ?1 or i.identifiant like ?1) "
+         + "AND i.pk.banque in (?2) AND e.banque in (?2)")
+})
 public class Echantillon extends TKDelegetableObject<Echantillon> implements TKStockableObject, Serializable, TKFileSettableObject
 {
 
    private static final long serialVersionUID = 7561274704258954965L;
 
    private Integer echantillonId;
+
    private String code;
+
    private Calendar dateStock;
+
    private Float quantite;
+
    private Float quantiteInit;
+
    //private Float volume;
    //private Float volumeInit;
    private Float delaiCgl;
+
    private Boolean tumoral;
+
    private Boolean sterile;
+
    private Boolean conformeTraitement;
+
    private Boolean conformeCession;
+
    private String lateralite;
+
    private Boolean etatIncomplet;
+
    private Boolean archive = false;
 
    private Banque banque;
+
    private ObjetStatut objetStatut;
+
    private EchanQualite echanQualite;
+
    private ModePrepa modePrepa;
+
    private Unite quantiteUnite;
+
    private Collaborateur collaborateur;
+
    private Emplacement emplacement;
+
    private Fichier crAnapath;
+
    private EchantillonType echantillonType;
+
    private Prelevement prelevement;
+
    private Set<CodeAssigne> codesAssignes = new HashSet<>();
+
    private TKDelegateObject<Echantillon> delegate;
 
    // stream utilise pour enregistre Cr anapath
@@ -458,7 +487,7 @@ public class Echantillon extends TKDelegetableObject<Echantillon> implements TKS
    }
 
    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-   @JoinColumn(name = "ECHANTILLON_TYPE_ID", nullable = false)
+   @JoinColumn(name = "ECHANTILLON_TYPE_ID", nullable = true)
    public EchantillonType getEchantillonType(){
       return this.echantillonType;
    }
@@ -486,8 +515,9 @@ public class Echantillon extends TKDelegetableObject<Echantillon> implements TKS
       this.codesAssignes = cs;
    }
 
+   @Override
    @OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "delegator",
-		      targetEntity = AbstractEchantillonDelegate.class)
+      targetEntity = AbstractEchantillonDelegate.class)
    public TKDelegateObject<Echantillon> getDelegate(){
       return delegate;
    }
@@ -599,7 +629,7 @@ public class Echantillon extends TKDelegetableObject<Echantillon> implements TKS
       clone.setAnapathStream(getAnapathStream());
 
       clone.setDelegate(getDelegate());
-      
+
       return clone;
    }
 
@@ -660,8 +690,8 @@ public class Echantillon extends TKDelegetableObject<Echantillon> implements TKS
       setCrAnapath(f);
    }
 
-	@Override
-	public void setDelegate(TKDelegateObject<Echantillon> _d) {
-		this.delegate = _d;
-	}
+   @Override
+   public void setDelegate(final TKDelegateObject<Echantillon> _d){
+      this.delegate = _d;
+   }
 }

@@ -54,9 +54,9 @@ public interface NumerotationManager
 {
 
    public static String DATE_PLACEHOLDER = "[DATE]";
-   
+
    /**
-    * Recherche une Numerotation dont l'identifiant est passé en 
+    * Recherche une Numerotation dont l'identifiant est passé en
     * paramètre.
     * @param numerotationId Identifiant de la Numerotation
     * que l'on recherche.
@@ -95,7 +95,7 @@ public interface NumerotationManager
 
    /**
     * Recherche les doublons de la Numerotation passée en paramètre.
-    * @param numerotation Numerotation pour laquelle on cherche 
+    * @param numerotation Numerotation pour laquelle on cherche
     * des doublons.
     * @return True s'il existe des doublons.
     */

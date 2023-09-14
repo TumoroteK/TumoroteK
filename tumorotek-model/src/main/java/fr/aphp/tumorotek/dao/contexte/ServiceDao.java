@@ -98,7 +98,7 @@ public interface ServiceDao extends GenericDaoJpa<Service, Integer>
    List<Service> findByEtablissementWithOrder(Etablissement etablissement);
 
    /**
-    * Recherche les services archivés ou non dont l'établissement est passé 
+    * Recherche les services archivés ou non dont l'établissement est passé
     * en paramètre. Ces services sont renvoyés ordonnés.
     * @param etablissement pour lequel on recherche des services.
     * @param archive True : renvoie les services archivés.
@@ -131,7 +131,7 @@ public interface ServiceDao extends GenericDaoJpa<Service, Integer>
 
    /**
     * Recherche le services dont l'identifiant passé en paramètre.
-    * Les associations avec les tables ETABLISSEMENT et 
+    * Les associations avec les tables ETABLISSEMENT et
     * COORDONNEE seront chargées
     * par l'intermédiaire d'un fetch.
     * @param serviceId est l'identifiant dU service recherché.
@@ -140,7 +140,7 @@ public interface ServiceDao extends GenericDaoJpa<Service, Integer>
    List<Service> findByIdWithFetch(Integer serviceId);
 
    /**
-    * Recherche tous les services sauf celui dont l'id est passé 
+    * Recherche tous les services sauf celui dont l'id est passé
     * en paramètre.
     * @param serviceId Identifiant du Service que l'on souhaite
     * exclure de la liste retournée.

@@ -70,10 +70,13 @@ public class GroupementManagerImpl implements GroupementManager
 
    /** Bean Dao GroupementDao. */
    private GroupementDao groupementDao = null;
+
    /** Bean Dao CritereDao. */
    private CritereDao critereDao = null;
+
    /** Bean Manager CritereManager. */
    private CritereManager critereManager = null;
+
    /** Bean Validator. */
    private GroupementValidator groupementValidator = null;
 
@@ -83,7 +86,7 @@ public class GroupementManagerImpl implements GroupementManager
 
    /**
     * Setter du bean GroupementDao.
-    * 
+    *
     * @param grDao
     *            est le bean Dao.
     */
@@ -93,7 +96,7 @@ public class GroupementManagerImpl implements GroupementManager
 
    /**
     * Setter du bean CritereDao.
-    * 
+    *
     * @param cDao
     *            est le bean Dao.
     */
@@ -103,7 +106,7 @@ public class GroupementManagerImpl implements GroupementManager
 
    /**
     * Setter du bean CritereManager.
-    * 
+    *
     * @param critManager
     *            est le bean Manager.
     */
@@ -113,7 +116,7 @@ public class GroupementManagerImpl implements GroupementManager
 
    /**
     * Setter du bean GroupementValidator.
-    * 
+    *
     * @param groupementValidator
     *            est le bean Validator.
     */
@@ -123,7 +126,7 @@ public class GroupementManagerImpl implements GroupementManager
 
    /**
     * Copie un Groupement en BDD.
-    * 
+    *
     * @param groupement
     *            Groupement à copier.
     * @return le Groupement copié.
@@ -135,7 +138,7 @@ public class GroupementManagerImpl implements GroupementManager
 
    /**
     * Créé un Groupement en BDD.
-    * 
+    *
     * @param groupement
     *            Groupement à créer.
     * @param critere1
@@ -195,7 +198,7 @@ public class GroupementManagerImpl implements GroupementManager
 
    /**
     * Met à jour un Groupement en BDD.
-    * 
+    *
     * @param groupement
     *            Groupement à mettre à jour.
     * @param critere1
@@ -255,7 +258,7 @@ public class GroupementManagerImpl implements GroupementManager
 
    /**
     * Supprime un Groupement et ses enfants d'abord.
-    * 
+    *
     * @param groupement
     *            Groupement à supprimer.
     */
@@ -295,7 +298,7 @@ public class GroupementManagerImpl implements GroupementManager
 
    /**
     * Chercher les Groupements enfants du Groupement passé en paramètre.
-    * 
+    *
     * @param groupement
     *            Groupement dont on souhaite obtenir la liste d'enfants.
     * @return liste des enfants (Groupements) d'un Groupement.
@@ -312,7 +315,7 @@ public class GroupementManagerImpl implements GroupementManager
 
    /**
     * Recherche les Critères dont le Groupement racine est passé en paramètre.
-    * 
+    *
     * @param groupementRacine
     *            Groupement racine dont on souhaite obtenir les Critères.
     * @return la liste de tous les Critères descendants du Groupement racine.
@@ -347,7 +350,7 @@ public class GroupementManagerImpl implements GroupementManager
 
    /**
     * Recherche un Groupement dont l'identifiant est passé en paramètre.
-    * 
+    *
     * @param groupementId
     *            Identifiant du Groupement que l'on recherche.
     * @return un Groupement.
@@ -364,7 +367,7 @@ public class GroupementManagerImpl implements GroupementManager
 
    /**
     * Recherche tous les Groupements présents dans la BDD.
-    * 
+    *
     * @return Liste de Groupements.
     */
    @Override
@@ -375,7 +378,7 @@ public class GroupementManagerImpl implements GroupementManager
    /**
     * Méthode qui permet de vérifier que 2 Groupements sont des copies (et que
     * leurs enfants aussi).
-    * 
+    *
     * @param g
     *            Groupement premier Groupement à vérifier.
     * @param copie
@@ -462,7 +465,7 @@ public class GroupementManagerImpl implements GroupementManager
 
    /**
     * Copie un Groupement en BDD.
-    * 
+    *
     * @param groupement
     *            Groupement à copier.
     * @param parent

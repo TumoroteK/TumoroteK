@@ -60,7 +60,9 @@ public class TexteModale extends GenericForwardComposer<Component>
    private static final long serialVersionUID = -1418399743820656530L;
 
    private Label textboxLabel;
+
    private Textbox textbox;
+
    private Button cancel;
 
    /**
@@ -100,12 +102,12 @@ public class TexteModale extends GenericForwardComposer<Component>
    }
 
    @Override
-   public void doAfterCompose(Component comp) throws Exception{
+   public void doAfterCompose(final Component comp) throws Exception{
 
       super.doAfterCompose(comp);
 
       final Window window = (Window) comp;
-      final boolean closable = (Boolean)arg.get("closable");
+      final boolean closable = (Boolean) arg.get("closable");
 
       window.setVisible(false);
       window.setClosable(closable);
@@ -119,9 +121,9 @@ public class TexteModale extends GenericForwardComposer<Component>
       window.setPosition("center, top");
 
       cancel.setVisible(closable);
-      
+
       textboxLabel.setValue((String) arg.get("label"));
-      textbox.setRows((Integer)arg.get("nbLignes"));
+      textbox.setRows((Integer) arg.get("nbLignes"));
       textbox.setValue(String.valueOf(arg.get("defaultValue")));
 
    }
@@ -131,8 +133,7 @@ public class TexteModale extends GenericForwardComposer<Component>
     */
    public void onClick$validate(){
 
-      final String valeurSaisie =
-         textbox.getValue() != null ? textbox.getValue() : (String)arg.get("defaultValue");
+      final String valeurSaisie = textbox.getValue() != null ? textbox.getValue() : (String) arg.get("defaultValue");
       Events.postEvent(Events.ON_CLOSE, self.getRoot(), valeurSaisie);
 
    }
@@ -143,5 +144,5 @@ public class TexteModale extends GenericForwardComposer<Component>
    public void onClick$cancel(){
       Events.postEvent(Events.ON_CLOSE, self.getRoot(), null);
    }
-   
+
 }

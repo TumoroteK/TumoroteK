@@ -201,56 +201,56 @@
 }
 
 .buttonDsb.z-button .z-button-tl{
-	background-image : none; /*PRO*/
+	background-image : none;
 	background-position : top left;
 	border-top-style : none;
 	background:transparent;
 }
 
 .buttonDsb.z-button .z-button-tm{
-	background-image : none; /*PRO*/
+	background-image : none;
 	background-position : top center;
 	background:transparent;
 }
 
 .buttonDsb.z-button .z-button-tr{
-	background-image : none; /*PRO*/
+	background-image : none;
 	background-position : top right;
 	background:transparent;
 }
 
 .buttonDsb.z-button .z-button-cl{
-	background-image : none; /*PRO*/
+	background-image : none;
 	background-position : center left;
 	background:transparent;
 }
 
 .buttonDsb.z-button .z-button-cm{
-	background-image : none; /*PRO*/
+	background-image : none;
 	background-position : center center;
-	color : #00227c; /*PRO*/
+	color : #00227c;
 }
 
 .buttonDsb.z-button .z-button-cr{
-	background-image : none; /*PRO*/
+	background-image : none;
 	background-position : center right;
 	background:transparent;
 }
 
 .buttonDsb.z-button .z-button-bl{
-	background-image : none; /*PRO*/
+	background-image : none;
 	background-position : bottom left;
 	background:transparent;
 }
 
 .buttonDsb.z-button .z-button-bm{
-	background-image : none; /*PRO*/
+	background-image : none;
 	background-position : bottom center;
 	background:transparent;
 }
 
 .buttonDsb.z-button .z-button-br{
-	background-image : none; /*PRO*/
+	background-image : none;
 	background-position : bottom right;
 	background:transparent;
 }
@@ -551,4 +551,79 @@ div.zkpow {
 div.bulb {
 	background: url(${c:encodeURL('/images/icones/bulb.png')});
 	cursor: help;
+}
+
+
+div.z-listbox.listBox div.z-list-header-cnt, div.z-listbox.listBox div.z-listheader-cnt{
+	color : #FFFFFF;
+	font-style : normal;
+	text-align : left;
+	font-weight : bold;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+}
+
+.listBox.z-listbox div.z-listbox-header tr.z-list-head, .listBox.z-listbox div.z-listbox-header tr.z-auxhead, .listBox.z-listbox div.z-listbox-header tr.z-listhead, .listBox.z-listbox div.z-listbox-header tr.z-auxhead{
+	background-color : #1E62BB;
+	background-image : none;
+}
+
+.listBox.z-listbox div.z-listbox-header th.z-list-header, .listBox.z-listbox div.z-listbox-header tr, .listBox.z-listbox div.z-listbox-header th.z-auxheader, .listBox.z-listbox div.z-listbox-header th.z-listheader, .listBox.z-listbox div.z-listbox-header tr, .listBox.z-listbox div.z-listbox-header th.z-auxheader{
+	border-top-style : solid;
+	border-top-color : #FFFFFF;
+	border-top-width : 1px;
+	border-right-style : solid;
+	border-bottom-style : solid;
+	border-bottom-color : #FFFFFF;
+	border-left-style : solid;
+	border-left-color : #FFFFFF;
+	border-right-color : #FFFFFF;
+	border-right-width : 0px;
+	border-bottom-width : 1px;
+	border-left-width : 1px;
+}
+
+.listBox div.z-listbox-header, .listBox div.z-listbox-header tr, .listBox div.z-listbox-header tr.z-auxhead {
+	border-style : none;
+}
+
+div.z-listbox.listBox .z-list-item div.z-list-cell-cnt, div.z-listbox.listBox .z-listitem div.z-listcell-cnt{
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	text-align : left;
+}
+
+div.listBox .z-listbox-body{
+	border-style : solid;
+	border-color : #FFFFFF;
+}
+
+div.z-listbox.listBox {
+	border-style : none;
+	border-color : #FFFFFF;
+}
+
+div.z-listbox.listBox tr.z-listbox-odd{
+	background-color : #FFFFFF;
+}
+
+div.z-listbox.listBox tr.z-list-item-seld {
+	background-color : #e8b3c8;
+}
+
+.listBox tr.z-list-item-over{
+	background-color : #d2d8f3;
+}
+
+.listBox tr.z-list-item-over-seld{
+	background-color : #e8b3c8;
+}
+
+.listBox .z-list-cell{
+	border-style : solid;
+	border-width : 1px;
+	border-color : #FFFFFF;
+}
+
+div.z-listbox.listBox tr.z-listbox-odd:hover{
+	background-color : #d2d8f3;
+	background-image : none;
 }

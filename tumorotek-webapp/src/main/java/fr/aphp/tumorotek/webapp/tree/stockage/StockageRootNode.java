@@ -58,17 +58,18 @@ public class StockageRootNode extends TumoTreeNode
 {
 
    private List<Banque> banques = new ArrayList<>();
+
    // @since 2.1
    private final List<Conteneur> conteneurs = new ArrayList<>();
 
    // @since 2.2.3-genno
    // TK-289
    private final Plateforme curPf;
-   
-   public StockageRootNode(final List<Banque> banks, Plateforme _f){
+
+   public StockageRootNode(final List<Banque> banks, final Plateforme _f){
       this.banques = banks;
       this.curPf = _f;
-      
+
       conteneurs.addAll(ManagerLocator.getConteneurManager().findByBanquesWithOrderManager(banques));
    }
 

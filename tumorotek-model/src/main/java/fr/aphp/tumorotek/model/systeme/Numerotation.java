@@ -84,13 +84,21 @@ public class Numerotation implements TKdataObject, Serializable
    private static final long serialVersionUID = 1L;
 
    private Integer numerotationId;
+
    private String codeFormula;
+
    private Integer currentIncrement;
+
    private Integer startIncrement;
+
    private Integer nbChiffres;
+
    private Boolean zeroFill;
+
    private Entite entite;
+
    private Banque banque;
+
    private ENumerotationDateFormat dateFormat;
 
    /** Constructeur par défaut. */
@@ -173,17 +181,16 @@ public class Numerotation implements TKdataObject, Serializable
       this.banque = b;
    }
 
-   @Column(name="DATE_FORMAT")
+   @Column(name = "DATE_FORMAT")
    @Enumerated(EnumType.STRING)
    public ENumerotationDateFormat getDateFormat(){
       return dateFormat;
    }
 
-   public void setDateFormat(ENumerotationDateFormat dateFormat){
+   public void setDateFormat(final ENumerotationDateFormat dateFormat){
       this.dateFormat = dateFormat;
    }
 
-   
    /**
     * Deux numerotations sont considerees comme egales
     * si elles partagent la meme formule et si elles
@@ -209,7 +216,7 @@ public class Numerotation implements TKdataObject, Serializable
    }
 
    /**
-    * Le hashcode est calculé sur la formule et la reference vers 
+    * Le hashcode est calculé sur la formule et la reference vers
     * l'entite.
     * @return la valeur du hashcode.
     */

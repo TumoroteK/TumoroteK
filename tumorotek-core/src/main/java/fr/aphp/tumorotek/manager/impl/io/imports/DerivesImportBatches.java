@@ -69,14 +69,23 @@ public class DerivesImportBatches
    private TKAnnotableObject parent;
 
    private Float transfoQte;
+
    private Unite transfoQteUnite;
+
    private String observations;
+
    private List<ProdDerive> derives = new ArrayList<>();
+
    private Calendar dateSortie;
+
    private Hashtable<ProdDerive, Row> importRow = new Hashtable<>();
+
    private Hashtable<ProdDerive, List<AnnotationValeur>> annoVals = new Hashtable<>();
+
    private Hashtable<ProdDerive, Emplacement> emplacements = new Hashtable<>();
+
    private Hashtable<ProdDerive, List<NonConformite>> ncfsTrait = new Hashtable<>();
+
    private Hashtable<ProdDerive, List<NonConformite>> ncfsCess = new Hashtable<>();
 
    public DerivesImportBatches(final TKAnnotableObject parent, final Float transfoQte, final String observations,
@@ -198,8 +207,8 @@ public class DerivesImportBatches
       final DerivesImportBatches test = (DerivesImportBatches) obj;
       return ((this.parent == test.parent || (this.parent != null && this.parent.equals(test.parent)))
          && (this.transfoQte == test.transfoQte || (this.transfoQte != null && this.transfoQte.equals(test.transfoQte)))
-         // && (this.transfoQteUnite == test.transfoQteUnite 
-         //	|| (this.transfoQteUnite != null 
+         // && (this.transfoQteUnite == test.transfoQteUnite
+         //	|| (this.transfoQteUnite != null
          //	&& this.transfoQteUnite.equals(test.transfoQteUnite)))
          && (this.dateSortie == test.dateSortie || (this.dateSortie != null && this.dateSortie.equals(test.dateSortie))));
    }

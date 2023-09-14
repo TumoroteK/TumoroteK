@@ -55,7 +55,7 @@ public interface CodeDossierDao extends GenericDaoJpa<CodeDossier, Integer>
 {
 
    /**
-    * Recherche les dossiers dont le nom est like celui 
+    * Recherche les dossiers dont le nom est like celui
     * passé en paramètre.
     * @param nom pour lequel on recherche des dossiers de codes utilisateurs.
     * @param banque
@@ -71,7 +71,7 @@ public interface CodeDossierDao extends GenericDaoJpa<CodeDossier, Integer>
    List<CodeDossier> findByCodeDossierParent(CodeDossier codeDossier);
 
    /**
-    * Recherche tous les dossiers des Codeutilisateur à la racine 
+    * Recherche tous les dossiers des Codeutilisateur à la racine
     * pour une banque donnée.
     * @param banque
     * @return Liste de CodeDossier.
@@ -79,7 +79,7 @@ public interface CodeDossierDao extends GenericDaoJpa<CodeDossier, Integer>
    List<CodeDossier> findByRootCodeDossierUtilisateur(Banque bank);
 
    /**
-    * Recherche tous les dossiers des CodeSelect à la racine 
+    * Recherche tous les dossiers des CodeSelect à la racine
     * pour une banque et un utilisateur donnés.
     * @param utilisateur
     * @param banque
@@ -88,7 +88,7 @@ public interface CodeDossierDao extends GenericDaoJpa<CodeDossier, Integer>
    List<CodeDossier> findByRootCodeDossierSelect(Utilisateur u, Banque bank);
 
    /**
-    * Recherche les dossiers de codes ajoutés au favoris 
+    * Recherche les dossiers de codes ajoutés au favoris
     * pour l'utilisateur et la banque passées en paramètres.
     * @param l'utilisateur pour lequel on recherche des dossiers.
     * @param la banque
@@ -106,7 +106,7 @@ public interface CodeDossierDao extends GenericDaoJpa<CodeDossier, Integer>
    List<CodeDossier> findByUtilisateurAndBanque(Utilisateur u, Banque b);
 
    /**
-    * Recherche tous les dossiers sauf celui dont l'id est passé 
+    * Recherche tous les dossiers sauf celui dont l'id est passé
     * en paramètre.
     * @param codeDossierId Identifiant du dossier que l'on souhaite
     * exclure de la liste retournée.
@@ -115,7 +115,7 @@ public interface CodeDossierDao extends GenericDaoJpa<CodeDossier, Integer>
    List<CodeDossier> findByExcludedId(Integer codeDossierId);
 
    /**
-    * Recherche tous les dossiers de codes favoris ou utilisateur définis 
+    * Recherche tous les dossiers de codes favoris ou utilisateur définis
     * pour une banque à la racine de l'arborescence.
     * @param banque Banque
     * @return une liste de CodeDossier.

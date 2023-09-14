@@ -476,7 +476,9 @@ public abstract class AbstractListeController2 extends AbstractController
 			disableObjetsSelectionItems(true);
 
 			getListObjectsRenderer().setCheckAll(false);
-			checkAll.setChecked(false);
+			if (checkAll != null) {
+				checkAll.setChecked(false);
+			}
 			checkOrNotAllElements(false);
 		}
 	}
@@ -774,7 +776,7 @@ public abstract class AbstractListeController2 extends AbstractController
 	 *
 	 * @param Event contenant les résultats de la recherche.
 	 */
-
+   @SuppressWarnings("unchecked")
 	public void onGetObjectFromResearch(final Event e){
 
 		// si des patients sont renvoyés
@@ -871,7 +873,7 @@ public abstract class AbstractListeController2 extends AbstractController
 	 * vide
 	 * @param fromSelection
 	 */
-
+   @SuppressWarnings("unchecked")
 	public void onLaterExport(final boolean fromSelection){
 
 	   //TK-320 : filtre sur les collections concernées par les objets à exporter
@@ -1648,7 +1650,7 @@ public abstract class AbstractListeController2 extends AbstractController
 	/**
 	 * Attribues les droits de creation et de modification multiples.
 	 */
-
+   @SuppressWarnings("unchecked")
 	public void drawActionsButtons(){
 		Boolean admin = false;
 		if(sessionScope.containsKey("Admin")){
@@ -1710,6 +1712,14 @@ public abstract class AbstractListeController2 extends AbstractController
 			//			setCanEtiquette(imprimantes.size() > 0);
 			setCanEtiquette(
 					!ManagerLocator.getImprimanteManager().findByPlateformeManager(SessionUtils.getPlateforme(sessionScope)).isEmpty());
+			
+			
+			 // @since 2.3.0-gatsbi invalide les modifications
+         // si mélange de collections contextualisées par gatsbi ou non
+			setCanNew(isCanNew() && !SessionUtils.areToutesCollectionContainsOneGatsbi());
+         setCanModifMultiple(isCanModifMultiple() && !SessionUtils.areToutesCollectionContainsOneGatsbi());
+
+			
 		}else{
 			setCanEtiquette(false);
 		}
@@ -1785,7 +1795,8 @@ public abstract class AbstractListeController2 extends AbstractController
 		HtmlMacroComponent ua = null;
 
 		if(entiteToSearch.getNom().equals("Patient")){
-			String pageDef = "ficheRechercheAvanceePatient";
+		   String pageDef = SessionUtils.getCurrentGatsbiContexteForEntiteId(1) == null ? 
+            "ficheRechercheAvanceePatient": "ficheRechercheAvanceePatientGatsbi";    
 			String winDef = "fwinRechercheAvanceePatient";
 			if(SessionUtils.getCurrentContexte() == EContexte.SEROLOGIE){
 				pageDef = "ficheRechercheAvanceePatientSero";
@@ -1802,7 +1813,9 @@ public abstract class AbstractListeController2 extends AbstractController
 							anonyme, listeController);
 
 		}else if(entiteToSearch.getNom().equals("Prelevement")){
-			String pageDef = "ficheRechercheAvanceePrelevement";
+			// since gatsbi
+			String pageDef = SessionUtils.getCurrentGatsbiContexteForEntiteId(2) == null ? 
+					"ficheRechercheAvanceePrelevement": "ficheRechercheAvanceePrelevementGatsbi";
 			String winDef = "fwinRechercheAvanceePrelevement";
 			if(SessionUtils.getCurrentContexte() == EContexte.SEROLOGIE){
 				pageDef = "ficheRechercheAvanceePrelevementSero";
@@ -1817,7 +1830,9 @@ public abstract class AbstractListeController2 extends AbstractController
 			((FicheRechercheAvancee) ua.getFellow(winDef).getAttributeOrFellow(winDef + "$composer", true))
 			.initRechercheAvancee(entiteToSearch, path, anonyme, listeController);
 		}else if(entiteToSearch.getNom().equals("Echantillon")){
-			String pageDef = "ficheRechercheAvanceeEchantillon";
+			// since gatsbi
+			String pageDef = SessionUtils.getCurrentGatsbiContexteForEntiteId(3) == null ? 
+					"ficheRechercheAvanceeEchantillon": "ficheRechercheAvanceeEchantillonGatsbi";					
 			String winDef = "fwinRechercheAvanceeEchantillon";
 			if(SessionUtils.getCurrentContexte() == EContexte.SEROLOGIE){
 				pageDef = "ficheRechercheAvanceeEchantillonSero";
@@ -2022,7 +2037,7 @@ public abstract class AbstractListeController2 extends AbstractController
 	 * @param controller
 	 *            parent ayant demandé la délétion.
 	 */
-
+   @SuppressWarnings("unchecked")
 	public void openExportWindow(final Page page, final String entite, final List<?> objs, final List<Banque> banques,
 			final boolean isExportAnonyme, final Utilisateur user){
 		if(!isBlockModal()){
@@ -2140,7 +2155,7 @@ public abstract class AbstractListeController2 extends AbstractController
 	/**
 	 * Impression des étiquettes pour les TKStockableObject
 	 */
-
+   @SuppressWarnings("unchecked")
 	public void onClick$etiquetteItem(){
 
 		AffectationImprimante affectation = null;
@@ -2155,6 +2170,7 @@ public abstract class AbstractListeController2 extends AbstractController
 				(List<? extends TKStockableObject>) getSelectedObjects(), affectation, null);
 	}
 
+	@SuppressWarnings("unchecked")
 	public void onDeleteIdsFromModaleEvent(final Event e){
 		getResultatsIds().clear();
 		if(e.getData() != null && e.getData() instanceof List){
@@ -2290,7 +2306,7 @@ public abstract class AbstractListeController2 extends AbstractController
 	 * Ouvre une warning modale si un objet est en statut
 	 * @since 2.0.10
 	 */
-
+   @SuppressWarnings("unchecked")
 	public void onClick$retourItem(){
 
 		if(!getObjStatutIncompatibleForRetour(getSelectedObjects(), null)){
@@ -2317,7 +2333,7 @@ public abstract class AbstractListeController2 extends AbstractController
 	 * des évènements de stockage incomplets
 	 * @since 2.0.10
 	 */
-
+   @SuppressWarnings("unchecked")
 	public void onClick$incompRetoursItem(){
 		openDateRetourModale(this, (List<TKStockableObject>) getSelectedObjects());
 	}
@@ -2347,6 +2363,7 @@ public abstract class AbstractListeController2 extends AbstractController
 		getObjectTabController().postIdsToOtherEntiteTab(eNom, resIds);
 	}
 
+	@SuppressWarnings("unchecked")
 	private List<Integer> getSelectedIds(final boolean fromSelection){
 		final List<Integer> ids = new ArrayList<>();
 		if(fromSelection){
@@ -2354,7 +2371,8 @@ public abstract class AbstractListeController2 extends AbstractController
 		}
 		return ids;
 	}
-
+	
+   @SuppressWarnings("unchecked")
 	public void onClick$patientsItem(final Event e){
 		if(e.getData() != null && !((List<Integer>) e.getData()).isEmpty()){
 			postTargetObjectsIds("Patient", null, (List<Integer>) e.getData());
@@ -2363,7 +2381,8 @@ public abstract class AbstractListeController2 extends AbstractController
 		}
 	}
 
-	public void onClick$prelevementsItem(final Event e){
+	@SuppressWarnings("unchecked")
+   public void onClick$prelevementsItem(final Event e){
 		if(e.getData() != null && !((List<Integer>) e.getData()).isEmpty()){
 			postTargetObjectsIds("Prelevement", null, (List<Integer>) e.getData());
 		}else{
@@ -2371,6 +2390,7 @@ public abstract class AbstractListeController2 extends AbstractController
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	public void onClick$echantillonsItem(final Event e){
 		if(e.getData() != null && !((List<Integer>) e.getData()).isEmpty()){
 			postTargetObjectsIds("Echantillon", null, (List<Integer>) e.getData());
@@ -2379,6 +2399,7 @@ public abstract class AbstractListeController2 extends AbstractController
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	public void onClick$derivesItem(final Event e){
 		if(e.getData() != null && !((List<Integer>) e.getData()).isEmpty()){
 			postTargetObjectsIds("ProdDerive", true, (List<Integer>) e.getData());
@@ -2387,6 +2408,7 @@ public abstract class AbstractListeController2 extends AbstractController
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	public void onClick$derivesAscItem(final Event e){
 		if(e.getData() != null && !((List<Integer>) e.getData()).isEmpty()){
 			postTargetObjectsIds("ProdDerive", false, (List<Integer>) e.getData());
@@ -2395,6 +2417,7 @@ public abstract class AbstractListeController2 extends AbstractController
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	public void onClick$cessionsItem(final Event e){
 		if(e.getData() != null && !((List<Integer>) e.getData()).isEmpty()){
 			postTargetObjectsIds("Cession", null, (List<Integer>) e.getData());

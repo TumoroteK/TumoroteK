@@ -68,6 +68,7 @@ public abstract class AbstractMaladieDelegate extends TKDelegateObject<Maladie>
 {
 
    private Integer maladieDelegateId;
+
    private Maladie delegator;
    // private Contexte contexte;
 
@@ -84,7 +85,7 @@ public abstract class AbstractMaladieDelegate extends TKDelegateObject<Maladie>
    public void setMaladieDelegateId(final Integer mId){
       this.maladieDelegateId = mId;
    }
-   
+
    @Override
    @OneToOne(optional = false)
    @JoinColumn(name = "MALADIE_ID", unique = true)
@@ -103,34 +104,34 @@ public abstract class AbstractMaladieDelegate extends TKDelegateObject<Maladie>
       return false;
    }
 
-//   @OneToOne(optional = false)
-//   @JoinColumn(name = "MALADIE_ID", unique = true)
-//   public Maladie getMaladie(){
-//      return maladie;
-//   }
-//
-//   public void setMaladie(final Maladie maladie){
-//      this.maladie = maladie;
-//   }
+   //   @OneToOne(optional = false)
+   //   @JoinColumn(name = "MALADIE_ID", unique = true)
+   //   public Maladie getMaladie(){
+   //      return maladie;
+   //   }
+   //
+   //   public void setMaladie(final Maladie maladie){
+   //      this.maladie = maladie;
+   //   }
 
-//   @ManyToOne
-//   @JoinColumn(name = "CONTEXTE_ID", nullable = false)
-//   public Contexte getContexte(){
-//      return contexte;
-//   }
-//
-//   public void setContexte(final Contexte contexte){
-//      this.contexte = contexte;
-//   }
-//
-//   @Transient
-//   @Override
-//   public TKDelegetableObject<Maladie> getDelegator(){
-//      return getMaladie();
-//   }
-//
-//   @Override
-//   public void setDelegator(final TKDelegetableObject<Maladie> _d){
-//      setMaladie(_d);
-//   }
+   //   @ManyToOne
+   //   @JoinColumn(name = "CONTEXTE_ID", nullable = false)
+   //   public Contexte getContexte(){
+   //      return contexte;
+   //   }
+   //
+   //   public void setContexte(final Contexte contexte){
+   //      this.contexte = contexte;
+   //   }
+   //
+   //   @Transient
+   //   @Override
+   //   public TKDelegetableObject<Maladie> getDelegator(){
+   //      return getMaladie();
+   //   }
+   //
+   //   @Override
+   //   public void setDelegator(final TKDelegetableObject<Maladie> _d){
+   //      setMaladie(_d);
+   //   }
 }

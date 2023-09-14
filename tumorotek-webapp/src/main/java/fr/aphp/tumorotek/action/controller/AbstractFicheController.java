@@ -50,6 +50,7 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zkplus.databind.AnnotateDataBinder;
 import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Panel;
+import org.zkoss.zul.SimpleConstraint;
 import org.zkoss.zul.Timer;
 import org.zkoss.zul.Window;
 
@@ -105,8 +106,11 @@ public abstract class AbstractFicheController extends AbstractController
    private static final long serialVersionUID = 1L;
 
    private boolean cascadable;
+
    private boolean fantomable;
+
    private boolean deletable;
+
    private String deleteMessage;
 
    private AbstractObjectTabController objectTabController;
@@ -203,14 +207,14 @@ public abstract class AbstractFicheController extends AbstractController
    /*************************************************************************/
 
    /**
-    * Méthode appelée lorsque l'utilisateur clique sur un lien pour 
+    * Méthode appelée lorsque l'utilisateur clique sur un lien pour
     * réaliser une modification multiple.
     * @param page dans laquelle inclure la modale
     * @param pathToPage Chemin vers la page qui demande une modif.
     * @param methodToCall Méthode à appeler
     * @param typeModal type de la modale
     * @param objs Liste des objets à modifier
-    * @param label Code pour label du champ dans .properties 
+    * @param label Code pour label du champ dans .properties
     * internationalisation.
     * @param champToEdit Champ de l'entité à modifier.
     * @param allValuesThesaurus Toutes les valeurs possibles que
@@ -275,7 +279,7 @@ public abstract class AbstractFicheController extends AbstractController
                break;
             case "Quantification":
                populateModificationMultipleQuantification(win, page, pathToPage, methodToCall, objs, label, champToEdit,
-                  allValuesThesaurus, champThesaurus);
+                  allValuesThesaurus, champThesaurus, isOblig);
                break;
             case "Checkbox":
                populateModificationMultipleCheckbox(win, page, pathToPage, methodToCall, objs, label, champToEdit, entiteNom,
@@ -283,18 +287,18 @@ public abstract class AbstractFicheController extends AbstractController
                break;
             case "Doublebox":
                populateModificationMultipleDoublebox(win, page, pathToPage, methodToCall, objs, label, champToEdit, entiteNom,
-                  constr, isCombined);
+                  constr, isCombined, isOblig);
                break;
             case "Intbox":
                ua = populateModificationMultipleDoublebox(win, page, pathToPage, methodToCall, objs, label, champToEdit,
-                  entiteNom, constr, isCombined);
+                  entiteNom, constr, isCombined, isOblig);
 
                ((ModificationMultipleDoublebox) ua.getFellow("winModificationMultipleDoublebox")
                   .getAttributeOrFellow("winModificationMultipleDoublebox$composer", true)).setInteger(true);
                break;
             case "Floatbox":
                ua = populateModificationMultipleDoublebox(win, page, pathToPage, methodToCall, objs, label, champToEdit,
-                  entiteNom, constr, isCombined);
+                  entiteNom, constr, isCombined, isOblig);
 
                ((ModificationMultipleDoublebox) ua.getFellow("winModificationMultipleDoublebox")
                   .getAttributeOrFellow("winModificationMultipleDoublebox$composer", true)).setFloat(true);
@@ -319,7 +323,7 @@ public abstract class AbstractFicheController extends AbstractController
                break;
             case "Conformitebox":
                populateModificationMultipleNonConformites(win, page, pathToPage, methodToCall, objs, label, champToEdit,
-                  allValuesThesaurus, champThesaurus, entiteNom);
+                  allValuesThesaurus, champThesaurus, entiteNom, isOblig);
                break;
             case "DureeBox":
                populateModificationMultipleDuree(win, page, pathToPage, methodToCall, objs, label, champToEdit, entiteNom, constr,
@@ -366,9 +370,9 @@ public abstract class AbstractFicheController extends AbstractController
     * @param pathToPage Chemin vers la page qui demande une modif.
     * @param methodToCall Méthode à appeler
     * @param objs Liste des objets à modifier
-    * @param label Code pour label du champ dans .properties 
+    * @param label Code pour label du champ dans .properties
     * internationalisation.
-    * @param entiteToEdit Nom de l'entité à modifier. 
+    * @param entiteToEdit Nom de l'entité à modifier.
     * @param champToEdit Champ de l'entité à modifier.
     * @param ent nom de l'entite a afficher dans l'intitulé
     * @param Constraint à appliquer
@@ -414,9 +418,9 @@ public abstract class AbstractFicheController extends AbstractController
     * @param pathToPage Chemin vers la page qui demande une modif.
     * @param methodToCall Méthode à appeler
     * @param objs Liste des objets à modifier
-    * @param label Code pour label du champ dans .properties 
+    * @param label Code pour label du champ dans .properties
     * internationalisation.
-    * @param entiteToEdit Nom de l'entité à modifier. 
+    * @param entiteToEdit Nom de l'entité à modifier.
     * @param champToEdit Champ de l'entité à modifier.
     * @param allValuesThesaurus Toutes les valeurs possibles que
     * peut prendre le champ à modifier.
@@ -455,9 +459,9 @@ public abstract class AbstractFicheController extends AbstractController
     * @param pathToPage Chemin vers la page qui demande une modif.
     * @param methodToCall Méthode à appeler
     * @param objs Liste des objets à modifier
-    * @param label Code pour label du champ dans .properties 
+    * @param label Code pour label du champ dans .properties
     * internationalisation.
-    * @param entiteToEdit Nom de l'entité à modifier. 
+    * @param entiteToEdit Nom de l'entité à modifier.
     * @param champToEdit Champ de l'entité à modifier.
     * @param allValuesThesaurus Toutes les valeurs possibles que
     * peut prendre le champ à modifier.
@@ -496,9 +500,9 @@ public abstract class AbstractFicheController extends AbstractController
     * @param pathToPage Chemin vers la page qui demande une modif.
     * @param methodToCall Méthode à appeler
     * @param objs Liste des objets à modifier
-    * @param label Code pour label du champ dans .properties 
+    * @param label Code pour label du champ dans .properties
     * internationalisation.
-    * @param entiteToEdit Nom de l'entité à modifier. 
+    * @param entiteToEdit Nom de l'entité à modifier.
     * @param champToEdit Champ de l'entité à modifier.
     * @param ent nom de l'entite a afficher dans l'intitulé
     * @param Constraint à appliquer
@@ -531,9 +535,9 @@ public abstract class AbstractFicheController extends AbstractController
     * @param pathToPage Chemin vers la page qui demande une modif.
     * @param methodToCall Méthode à appeler
     * @param objs Liste des objets à modifier
-    * @param label Code pour label du champ dans .properties 
+    * @param label Code pour label du champ dans .properties
     * internationalisation.
-    * @param entiteToEdit Nom de l'entité à modifier. 
+    * @param entiteToEdit Nom de l'entité à modifier.
     * @param champToEdit Champ de l'entité à modifier.
     * @param allValuesThesaurus Toutes les valeurs possibles que
     * peut prendre le champ à modifier.
@@ -541,10 +545,11 @@ public abstract class AbstractFicheController extends AbstractController
     * valeurs du thésaurus.
     * @param ent nom de l'entite a afficher dans l'intitulé
     * @param Constraint à appliquer
+    * @param Boolean obligatoire?
     */
    private static HtmlMacroComponent populateModificationMultipleQuantification(final Window win, final Page page,
       final String pathToPage, final String methodToCall, final List<? extends Object> objs, final String label,
-      final String champToEdit, final List<Object> allValuesThesaurus, final String champThesaurus){
+      final String champToEdit, final List<Object> allValuesThesaurus, final String champThesaurus, final Boolean isOblig){
       // HtmlMacroComponent contenu dans la fenêtre : il correspond
       // au composant de la modif multiple.
       HtmlMacroComponent ua;
@@ -554,9 +559,15 @@ public abstract class AbstractFicheController extends AbstractController
       ua.applyProperties();
       ua.afterCompose();
 
+      // @since 2.2.3-gatsbi obligatoire constraint
+      SimpleConstraint constr = null;
+      if(isOblig){
+         constr = new SimpleConstraint("no empty");
+      }
+
       ((ModificationMultipleQuantification) ua.getFellow("winModificationMultipleQuantification")
          .getAttributeOrFellow("winModificationMultipleQuantification$composer", true)).init(pathToPage, methodToCall, objs,
-            label, champToEdit, allValuesThesaurus, champThesaurus);
+            label, champToEdit, allValuesThesaurus, champThesaurus, constr);
 
       return ua;
    }
@@ -569,9 +580,9 @@ public abstract class AbstractFicheController extends AbstractController
     * @param pathToPage Chemin vers la page qui demande une modif.
     * @param methodToCall Méthode à appeler
     * @param objs Liste des objets à modifier
-    * @param label Code pour label du champ dans .properties 
+    * @param label Code pour label du champ dans .properties
     * internationalisation.
-    * @param entiteToEdit Nom de l'entité à modifier. 
+    * @param entiteToEdit Nom de l'entité à modifier.
     * @param champToEdit Champ de l'entité à modifier.
     * @param ent nom de l'entite a afficher dans l'intitulé
     * @param Constraint à appliquer
@@ -603,17 +614,18 @@ public abstract class AbstractFicheController extends AbstractController
     * @param pathToPage Chemin vers la page qui demande une modif.
     * @param methodToCall Méthode à appeler
     * @param objs Liste des objets à modifier
-    * @param label Code pour label du champ dans .properties 
+    * @param label Code pour label du champ dans .properties
     * internationalisation.
-    * @param entiteToEdit Nom de l'entité à modifier. 
+    * @param entiteToEdit Nom de l'entité à modifier.
     * @param champToEdit Champ de l'entité à modifier.
     * @param ent nom de l'entite a afficher dans l'intitulé
     * @param Constraint à appliquer
     * @param Boolean true si champAnnotation combine
+    * @param Boolean obligatoire?
     */
    private static HtmlMacroComponent populateModificationMultipleDoublebox(final Window win, final Page page,
       final String pathToPage, final String methodToCall, final List<? extends Object> objs, final String label,
-      final String champToEdit, final String entiteNom, final Constraint constr, final Boolean isCombined){
+      final String champToEdit, final String entiteNom, Constraint constr, final Boolean isCombined, final Boolean isOblig){
       // HtmlMacroComponent contenu dans la fenêtre : il correspond
       // au composant de la modif multiple.
       HtmlMacroComponent ua;
@@ -622,6 +634,11 @@ public abstract class AbstractFicheController extends AbstractController
       ua.setId("openModificationMultipleDoublebox");
       ua.applyProperties();
       ua.afterCompose();
+
+      // @since 2.2.3-gatsbi obligatoire constraint
+      if(constr == null && isOblig != null && isOblig){
+         constr = new SimpleConstraint("no empty");
+      }
 
       ((ModificationMultipleDoublebox) ua.getFellow("winModificationMultipleDoublebox")
          .getAttributeOrFellow("winModificationMultipleDoublebox$composer", true)).init(pathToPage, methodToCall, objs, label,
@@ -638,9 +655,9 @@ public abstract class AbstractFicheController extends AbstractController
     * @param pathToPage Chemin vers la page qui demande une modif.
     * @param methodToCall Méthode à appeler
     * @param objs Liste des objets à modifier
-    * @param label Code pour label du champ dans .properties 
+    * @param label Code pour label du champ dans .properties
     * internationalisation.
-    * @param entiteToEdit Nom de l'entité à modifier. 
+    * @param entiteToEdit Nom de l'entité à modifier.
     * @param champToEdit Champ de l'entité à modifier.
     * @param allValuesThesaurus Toutes les valeurs possibles que
     * peut prendre le champ à modifier.
@@ -682,9 +699,9 @@ public abstract class AbstractFicheController extends AbstractController
     * @param pathToPage Chemin vers la page qui demande une modif.
     * @param methodToCall Méthode à appeler
     * @param objs Liste des objets à modifier
-    * @param label Code pour label du champ dans .properties 
+    * @param label Code pour label du champ dans .properties
     * internationalisation.
-    * @param entiteToEdit Nom de l'entité à modifier. 
+    * @param entiteToEdit Nom de l'entité à modifier.
     * @param champToEdit Champ de l'entité à modifier.
     * @param ent nom de l'entite a afficher dans l'intitulé
     * @param Constraint à appliquer
@@ -717,7 +734,7 @@ public abstract class AbstractFicheController extends AbstractController
     * @param pathToPage Chemin vers la page qui demande une modif.
     * @param methodToCall Méthode à appeler
     * @param objs Liste des objets à modifier
-    * @param label Code pour label du champ dans .properties 
+    * @param label Code pour label du champ dans .properties
     * internationalisation.
     * @param champToEdit Champ de l'entité à modifier.
     */
@@ -749,7 +766,7 @@ public abstract class AbstractFicheController extends AbstractController
     * @param pathToPage Chemin vers la page qui demande une modif.
     * @param methodToCall Méthode à appeler
     * @param objs Liste des objets à modifier
-    * @param label Code pour label du champ dans .properties 
+    * @param label Code pour label du champ dans .properties
     * internationalisation.
     * @param champToEdit Champ de l'entité à modifier.
     */
@@ -781,9 +798,9 @@ public abstract class AbstractFicheController extends AbstractController
     * @param pathToPage Chemin vers la page qui demande une modif.
     * @param methodToCall Méthode à appeler
     * @param objs Liste des objets à modifier
-    * @param label Code pour label du champ dans .properties 
+    * @param label Code pour label du champ dans .properties
     * internationalisation.
-    * @param entiteToEdit Nom de l'entité à modifier. 
+    * @param entiteToEdit Nom de l'entité à modifier.
     * @param champToEdit Champ de l'entité à modifier.
     * @param allValuesThesaurus Toutes les valeurs possibles que
     * peut prendre le champ à modifier.
@@ -792,11 +809,12 @@ public abstract class AbstractFicheController extends AbstractController
     * @param ent nom de l'entite a afficher dans l'intitulé
     * @param Constraint à appliquer
     * @param Boolean true si champAnnotation combine
+    * @param Boolean obligatoire ?
     */
    private static HtmlMacroComponent populateModificationMultipleNonConformites(final Window win, final Page page,
       final String pathToPage, final String methodToCall, final List<? extends Object> objs, final String label,
       final String champToEdit, final List<? extends Object> allValuesThesaurus, final String champThesaurus,
-      final String entiteNom){
+      final String entiteNom, final Boolean isOblig){
       // HtmlMacroComponent contenu dans la fenêtre : il correspond
       // au composant de la modif multiple.
       HtmlMacroComponent ua;
@@ -808,7 +826,7 @@ public abstract class AbstractFicheController extends AbstractController
 
       ((ModificationMultipleNonConformites) ua.getFellow("winModificationMultipleNonConformites")
          .getAttributeOrFellow("winModificationMultipleNonConformites$composer", true)).init(pathToPage, methodToCall, objs,
-            label, champToEdit, allValuesThesaurus, champThesaurus, entiteNom);
+            label, champToEdit, allValuesThesaurus, champThesaurus, entiteNom, isOblig);
 
       return ua;
 
@@ -966,9 +984,9 @@ public abstract class AbstractFicheController extends AbstractController
     * @param pathToPage Chemin vers la page qui demande une modif.
     * @param methodToCall Méthode à appeler
     * @param objs Liste des objets à modifier
-    * @param label Code pour label du champ dans .properties 
+    * @param label Code pour label du champ dans .properties
     * internationalisation.
-    * @param entiteToEdit Nom de l'entité à modifier. 
+    * @param entiteToEdit Nom de l'entité à modifier.
     * @param champToEdit Champ de l'entité à modifier.
     * @param ent nom de l'entite a afficher dans l'intitulé
     * @param Constraint à appliquer
@@ -1350,7 +1368,7 @@ public abstract class AbstractFicheController extends AbstractController
     * @version 2.2.3-genno
     */
    public void openSelectDossierExterneWindow(final Page page, final String path, final String critere, final boolean isEdit,
-      final Prelevement prlvt, boolean derive){
+      final Prelevement prlvt, final boolean derive){
       if(!isBlockModal()){
 
          setBlockModal(true);
@@ -1405,7 +1423,7 @@ public abstract class AbstractFicheController extends AbstractController
     * @param critere
     * @param isEdit
     * @param prlvt
-    * @param derive 
+    * @param derive
     * @return macro component modale
     * @version 2.2.3-genno
     */
@@ -1465,7 +1483,7 @@ public abstract class AbstractFicheController extends AbstractController
       ManagerLocator.getEchantillonManager().updateObjectManager(echanToUpdate, echanToUpdate.getBanque(), prlvt,
          echanToUpdate.getCollaborateur(), statut, echanToUpdate.getEmplacement(), echanToUpdate.getEchantillonType(), null, null,
          echanToUpdate.getQuantiteUnite(), echanToUpdate.getEchanQualite(), echanToUpdate.getModePrepa(),
-         //				echanToUpdate.getCrAnapath(), null, 
+         //				echanToUpdate.getCrAnapath(), null,
          null, null, null, null, SessionUtils.getLoggedUser(sessionScope), false, ops, null);
 
    }
@@ -1499,7 +1517,7 @@ public abstract class AbstractFicheController extends AbstractController
                deriveToUpdate.setVolume(calculerVolumeRestant(deriveToUpdate, deriveToUpdate.getQuantite()));
             }
          }
-      }else{ // @since 2.1.1 pas d'unité... 
+      }else{ // @since 2.1.1 pas d'unité...
          if(deriveToUpdate.getVolume() != null){
             if(deriveToUpdate.getVolumeInit() != null){
                deriveToUpdate.setVolume(((CederObjetDecorator) deco).getQuantiteMax());

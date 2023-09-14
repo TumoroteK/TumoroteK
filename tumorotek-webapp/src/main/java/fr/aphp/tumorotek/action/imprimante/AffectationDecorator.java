@@ -42,10 +42,15 @@ public class AffectationDecorator
 {
 
    private Utilisateur utilisateur;
+
    private Banque banque;
+
    private boolean isFirst;
+
    private boolean isLast;
+
    private Integer nbBanquesForUtilisateur;
+
    private boolean isEdit;
 
    public AffectationDecorator(){

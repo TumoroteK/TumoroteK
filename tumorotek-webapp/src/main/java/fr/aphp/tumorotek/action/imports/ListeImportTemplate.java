@@ -70,7 +70,6 @@ public class ListeImportTemplate extends AbstractListeController2
       return this.listObjects;
    }
 
-   
    @Override
    public void setListObjects(final List<? extends TKdataObject> objs){
       this.listObjects.clear();

@@ -67,13 +67,19 @@ public class MedecinReferents extends AbstractController
    private static final long serialVersionUID = 1L;
 
    private List<Collaborateur> medecins = new ArrayList<>();
+
    private Collaborateur selectedMedecin;
+
    private AbstractController ficheParent;
 
    private Listbox referentsList;
+
    private Button addMed;
+
    private Listcell deleteCell;
+
    private Listheader deleteHeader;
+
    private Label medecinLabel;
 
    public List<Collaborateur> getMedecins(){

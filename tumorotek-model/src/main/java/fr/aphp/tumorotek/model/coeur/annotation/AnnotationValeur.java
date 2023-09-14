@@ -44,7 +44,6 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -103,15 +102,25 @@ public class AnnotationValeur extends AnnotationCommon implements Serializable, 
    private static final long serialVersionUID = 1L;
 
    private Integer annotationValeurId;
+
    private Integer objetId;
+
    private String alphanum;
+
    private String texte;
+
    private Calendar date;
+
    private Boolean bool;
+
    private Item item;
+
    private Fichier fichier;
+
    private InputStream stream = null;
+
    private ChampAnnotation champAnnotation;
+
    private Banque banque;
 
    /** Constructeur par défaut. */
@@ -208,7 +217,7 @@ public class AnnotationValeur extends AnnotationCommon implements Serializable, 
       this.item = it;
    }
 
-   @OneToOne(orphanRemoval=true)
+   @OneToOne(orphanRemoval = true)
    @JoinColumn(name = "FICHIER_ID", nullable = true)
    public Fichier getFichier(){
       return this.fichier;
@@ -261,7 +270,7 @@ public class AnnotationValeur extends AnnotationCommon implements Serializable, 
 
    /**
     * 2 valeurs sont considerees comme egales si ils ont les mêmes references
-    * vers le champ annotation, vers l'objet et vers la banque 
+    * vers le champ annotation, vers l'objet et vers la banque
     * auxquelles elles sont attribuees. La propriete item intervient pour
     * differencier les valeurs lors d'une selection multiple.
     * @param obj est la valeur à tester.
@@ -439,7 +448,7 @@ public class AnnotationValeur extends AnnotationCommon implements Serializable, 
       }
       return valeur;
    }
-   
+
    /**
     * Renvoie l'objet valeur en fonction du data type du champ.
     * @param dataType datatype du champ
@@ -447,7 +456,7 @@ public class AnnotationValeur extends AnnotationCommon implements Serializable, 
     * @since 2.2.0
     */
    @Transient
-   private Object getValeur(DataType dataType){
+   private Object getValeur(final DataType dataType){
       Object valeur = null;
       switch(dataType.getType()){
          case "alphanum":
@@ -485,13 +494,13 @@ public class AnnotationValeur extends AnnotationCommon implements Serializable, 
       }
       return valeur;
    }
-   
+
    /**
     * Assigne la valeur selon le type d'objet passé en paramètre et selon le datatype si renseigné
     * @param valeur valeur
     */
    @Transient
-   public void setValeur(Object valeur){
+   public void setValeur(final Object valeur){
       if(valeur instanceof String){
          if(null != this.getChampAnnotation() && null != this.getChampAnnotation().getDataType()){
             if("texte".equals(this.getChampAnnotation().getDataType().getType())){
@@ -503,7 +512,7 @@ public class AnnotationValeur extends AnnotationCommon implements Serializable, 
       }else if(valeur instanceof Number){
          this.setAlphanum(valeur.toString());
       }else if(valeur instanceof Date){
-         Calendar cal = Calendar.getInstance();
+         final Calendar cal = Calendar.getInstance();
          cal.setTime((Date) valeur);
          this.setDate(cal);
       }else if(valeur instanceof Calendar){

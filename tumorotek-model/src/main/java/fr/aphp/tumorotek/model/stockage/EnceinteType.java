@@ -73,8 +73,7 @@ import fr.aphp.tumorotek.model.AbstractPfDependantThesaurusObject;
    @NamedQuery(name = "EnceinteType.findByExcludedId", query = "SELECT e FROM EnceinteType e " + "WHERE e.id != ?1"),
    @NamedQuery(name = "EnceinteType.findByPfOrder",
       query = "SELECT e FROM EnceinteType e " + "WHERE e.plateforme = ?1 ORDER BY e.nom"),
-   @NamedQuery(name = "EnceinteType.findByOrder",
-   query = "SELECT e FROM EnceinteType e ORDER BY e.nom"),
+   @NamedQuery(name = "EnceinteType.findByOrder", query = "SELECT e FROM EnceinteType e ORDER BY e.nom"),
    @NamedQuery(name = "EnceinteType.findByOrderExceptBoite",
       query = "SELECT e FROM EnceinteType e " + "WHERE e.nom != 'BOITE' AND e.plateforme = ?1 " + "ORDER BY e.nom")})
 public class EnceinteType extends AbstractPfDependantThesaurusObject implements Serializable
@@ -142,7 +141,6 @@ public class EnceinteType extends AbstractPfDependantThesaurusObject implements 
    public void setEnceintes(final Set<Enceinte> encs){
       this.enceintes = encs;
    }
-
 
    /**
     * Méthode surchargeant le toString() de l'objet.

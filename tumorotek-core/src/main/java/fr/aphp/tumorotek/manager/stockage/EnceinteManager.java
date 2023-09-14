@@ -105,7 +105,7 @@ public interface EnceinteManager
 
    /**
     * Retourne toutes les terminales d'une enceinte en
-    * parcourant toutes les enceintes filles de cette 
+    * parcourant toutes les enceintes filles de cette
     * enceinte.
     * @param enceinte Enceinte.
     * @return Liste de Terminales.
@@ -205,7 +205,7 @@ public interface EnceinteManager
    Boolean findDoublonWithoutTwoEnceintesManager(Enceinte enceinte, Enceinte enceinteDestination);
 
    /**
-    * Teste si l'Enceinte passée en paramètre est utilisée par 
+    * Teste si l'Enceinte passée en paramètre est utilisée par
     * d'autres objets.
     * @param enceinte Enceinte que l'on test.
     * @return True si l'objet est utilisé.
@@ -355,7 +355,7 @@ public interface EnceinteManager
    Conteneur getConteneurParent(Enceinte enceinte);
 
    /**
-    * Trouve de manière récursive toutes les enceintes contenues 
+    * Trouve de manière récursive toutes les enceintes contenues
     * dans un conteneur à tous les niveaux.
     * @param Conteneur
     * @return liste d'enceintes
@@ -363,10 +363,10 @@ public interface EnceinteManager
    List<Enceinte> findAllEnceinteByConteneurManager(Conteneur c);
 
    /**
-    * Peuple la liste passée en deuxième paramètre avec toutes 
-    * les enceintes descendantes de celles passées dans la liste 
+    * Peuple la liste passée en deuxième paramètre avec toutes
+    * les enceintes descendantes de celles passées dans la liste
     * en premier paramètre.
-    * @param encs 
+    * @param encs
     * @param coll
     */
    void findEnceinteRecursiveManager(List<Enceinte> encs, List<Enceinte> coll);
@@ -381,7 +381,7 @@ public interface EnceinteManager
    List<Enceinte> findByEnceintePereAndNomManager(Enceinte enceintePere, String nom);
 
    /**
-    * Recherche les Enceintes d'un conteneur dont le nom est 
+    * Recherche les Enceintes d'un conteneur dont le nom est
     * passé en paramètre.
     * @param conteneur Conteneur des Enceintes que l'on recherche.
     * @param nom Nom de l'enceinte.
@@ -397,9 +397,9 @@ public interface EnceinteManager
     * @return Enceinte maj.
     */
    Enceinte updateTailleEnceinteManager(Enceinte enceinte, Integer nbPlaces, Utilisateur utilisateur);
-   
+
    /**
-    * Collecte les banques distinctes représentées par le contenu de l'ensemble des 
+    * Collecte les banques distinctes représentées par le contenu de l'ensemble des
     * terminales composant l'enceinte
     * @param term
     * @return liste de banques

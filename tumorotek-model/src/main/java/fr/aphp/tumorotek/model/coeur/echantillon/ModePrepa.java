@@ -79,6 +79,7 @@ public class ModePrepa extends AbstractPfDependantThesaurusObject implements Ser
    private static final long serialVersionUID = 5348645345465465L;
 
    private String nomEn;
+
    private Set<Echantillon> echantillons;
 
    /** Constructeur par défaut. */

@@ -58,6 +58,7 @@ public class SModeleIndicateurPK implements Serializable
    private static final long serialVersionUID = 1L;
 
    private SModele sModele;
+
    private Indicateur indicateur;
 
    /** Constructeur par défaut. */
@@ -87,7 +88,7 @@ public class SModeleIndicateurPK implements Serializable
    }
 
    /**
-    * 2 PKs sont considérés comme égales si elles sont composees 
+    * 2 PKs sont considérés comme égales si elles sont composees
     * des mêmes clés.
     * @param obj est la PK à tester.
     * @return true si les PK sont egales.

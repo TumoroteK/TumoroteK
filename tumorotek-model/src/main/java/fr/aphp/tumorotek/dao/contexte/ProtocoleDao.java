@@ -54,7 +54,7 @@ public interface ProtocoleDao extends GenericDaoJpa<Protocole, Integer>, PfDepen
 {
 
    /**
-    * Recherche les protocoles dont le nom 
+    * Recherche les protocoles dont le nom
     * est 'like' le nom des protocoles recherchés.
     * @return Liste des types de conditionnement.
     */

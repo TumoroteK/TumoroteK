@@ -70,12 +70,10 @@ import fr.aphp.tumorotek.model.AbstractPfDependantThesaurusObject;
 @NamedQueries(
    value = {@NamedQuery(name = "ProtocoleType.findByType", query = "SELECT p FROM ProtocoleType p WHERE p.nom like ?1"),
       @NamedQuery(name = "ProtocoleType.findByDoublon", query = "SELECT p FROM ProtocoleType p WHERE p.nom = ?1"),
-      @NamedQuery(name = "ProtocoleType.findByExcludedId",
-         query = "SELECT p FROM ProtocoleType p " + "WHERE p.id != ?1"),
+      @NamedQuery(name = "ProtocoleType.findByExcludedId", query = "SELECT p FROM ProtocoleType p " + "WHERE p.id != ?1"),
       @NamedQuery(name = "ProtocoleType.findByPfOrder",
          query = "SELECT p FROM ProtocoleType p " + "WHERE p.plateforme = ?1 ORDER BY p.nom"),
-      @NamedQuery(name = "ProtocoleType.findByOrder",
-      query = "SELECT p FROM ProtocoleType p ORDER BY p.nom")})
+      @NamedQuery(name = "ProtocoleType.findByOrder", query = "SELECT p FROM ProtocoleType p ORDER BY p.nom")})
 public class ProtocoleType extends AbstractPfDependantThesaurusObject implements Serializable
 {
 
@@ -102,6 +100,7 @@ public class ProtocoleType extends AbstractPfDependantThesaurusObject implements
     * @deprecated Utiliser {@link #setId(Integer)}
     * @return
     */
+   @Deprecated
    public void setProtocoleTypeId(final Integer id){
       this.setId(id);
    }
@@ -109,6 +108,7 @@ public class ProtocoleType extends AbstractPfDependantThesaurusObject implements
    /**
     * @deprecated Utiliser {@link #getNom()}
     */
+   @Deprecated
    @Transient
    public String getType(){
       return this.getNom();
@@ -117,6 +117,7 @@ public class ProtocoleType extends AbstractPfDependantThesaurusObject implements
    /**
     * @deprecated Utiliser {@link #setNom(String)}
     */
+   @Deprecated
    public void setType(final String t){
       this.setNom(t);
    }

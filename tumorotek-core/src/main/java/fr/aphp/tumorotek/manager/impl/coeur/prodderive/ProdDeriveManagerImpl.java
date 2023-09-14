@@ -133,31 +133,57 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
    private final Log log = LogFactory.getLog(ProdDeriveManager.class);
 
    private ProdDeriveDao prodDeriveDao;
+
    private BanqueDao banqueDao;
+
    private ProdTypeDao prodTypeDao;
+
    private ObjetStatutDao objetStatutDao;
+
    private CollaborateurDao collaborateurDao;
+
    private EmplacementDao emplacementDao;
+
    private UniteDao uniteDao;
+
    private ProdQualiteDao prodQualiteDao;
+
    private TransformationDao transformationDao;
+
    private ProdDeriveValidator prodDeriveValidator;
+
    private OperationTypeDao operationTypeDao;
+
    private OperationManager operationManager;
+
    private TransformationManager transformationManager;
+
    private EntiteManager entiteManager;
+
    private EntityManagerFactory entityManagerFactory;
+
    private EntiteDao entiteDao;
+
    private EmplacementManager emplacementManager;
+
    private AnnotationValeurManager annotationValeurManager;
+
    private CederObjetManager cederObjetManager;
+
    private ModePrepaDeriveDao modePrepaDeriveDao;
+
    private ImportHistoriqueManager importHistoriqueManager;
+
    private ConteneurManager conteneurManager;
+
    private PrelevementDao prelevementDao;
+
    private RetourManager retourManager;
+
    private ObjetNonConformeManager objetNonConformeManager;
+
    private ObjetStatutManager objetStatutManager;
+
    private EchantillonDao echantillonDao;
 
    public void setProdDeriveDao(final ProdDeriveDao pDao){
@@ -473,7 +499,7 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
       }
       return new ArrayList<>();
    }
-   
+
    @Override
    public List<String> findAllCodesForDerivesByBanque(final Banque banque){
       if(banque != null){
@@ -569,7 +595,7 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
    }
 
    /**
-    * Recherche une liste de produits dérivés dont le prodDerive est 
+    * Recherche une liste de produits dérivés dont le prodDerive est
     * passé en paramètre.
     * @param prodDerive ProdDerive pour lequel on recherche des
     * produits dérivés.
@@ -657,7 +683,7 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
    }
 
    /**
-    * Recherche tous les dérivés dont la date de modification systeme est 
+    * Recherche tous les dérivés dont la date de modification systeme est
     * posterieure ou egale a celle passee en parametre.
     * @param date
     * @param banque Banque à laquelle appartient le dérivé.
@@ -690,7 +716,7 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
    }
 
    /**
-    * Recupere la liste de dérivés en fonction du type d'operation et 
+    * Recupere la liste de dérivés en fonction du type d'operation et
     * d'une date a laquelle la date d'enregistrement de l'operation doit
     * etre superieure ou egale.
     * Dans un premier temps, recupere la liste des objetIds qui sont ensuite
@@ -728,7 +754,7 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
    }
 
    /**
-    * Recupere la liste d'Ids de dérivés en fonction du type d'operation et 
+    * Recupere la liste d'Ids de dérivés en fonction du type d'operation et
     * d'une date a laquelle la date d'enregistrement de l'operation doit
     * etre superieure ou egale.
     * Dans un premier temps, recupere la liste des objetIds qui sont ensuite
@@ -772,24 +798,24 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
       if(banques != null && banques.size() > 0 && nbResults > 0){
          log.debug("Recherche des " + nbResults + " derniers Dérivés " + "enregistres.");
          //			EntityManager em = entityManagerFactory.createEntityManager();
-         //			Query query = em.createQuery("SELECT p " 
-         //					+ "FROM ProdDerive p " 
-         //					+ "WHERE p.banque in (:banque) " 
+         //			Query query = em.createQuery("SELECT p "
+         //					+ "FROM ProdDerive p "
+         //					+ "WHERE p.banque in (:banque) "
          //					+ "ORDER BY p.prodDeriveId DESC");
          //			query.setParameter("banque", banques);
          //			query.setMaxResults(nbResults);
-         //			
+         //
          //			List<ProdDerive> res = query.getResultList();
          //			for (int i = 0; i < res.size(); i++) {
          //				liste.add(0, res.get(i));
          //			}
          final EntityManager em = entityManagerFactory.createEntityManager();
-         //			Query query = em.createQuery("SELECT p " 
-         //					+ "FROM ProdDerive p, Operation o " 
-         //					+ "WHERE o.objetId = p.prodDeriveId " 
-         //					+ "AND o.entite = :entite " 
-         //					+ "AND o.operationType = :oType " 
-         //					+ "AND p.banque in (:banque) " 
+         //			Query query = em.createQuery("SELECT p "
+         //					+ "FROM ProdDerive p, Operation o "
+         //					+ "WHERE o.objetId = p.prodDeriveId "
+         //					+ "AND o.entite = :entite "
+         //					+ "AND o.operationType = :oType "
+         //					+ "AND p.banque in (:banque) "
          //					+ "ORDER BY o.date DESC");
          //			query.setParameter("entite", entiteDao.findByNom("ProdDerive"));
          //			query.setParameter("oType", operationTypeDao
@@ -815,31 +841,31 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
     * @param nbResults Nombre max de dérivés souhaités.
     * @return Liste de ProdDerives.
     */
-   //	
-   //	private List<ProdDerive> findByLastOperationType(OperationType oType, 
+   //
+   //	private List<ProdDerive> findByLastOperationType(OperationType oType,
    //			List<Banque> banques, int nbResults) {
-   //		
+   //
    //		List<ProdDerive> derives = new ArrayList<ProdDerive>();
-   //		
+   //
    //		if (banques.size() > 0) {
    //			EntityManager em = entityManagerFactory.createEntityManager();
-   //			Query query = em.createQuery("SELECT DISTINCT p " 
-   //					+ "FROM ProdDerive p, Operation o " 
-   //					+ "WHERE o.objetId = p.prodDeriveId " 
-   //					+ "AND o.entite = :entite " 
-   //					+ "AND o.operationType = :oType " 
-   //					+ "AND p.banque in (:banque) " 
+   //			Query query = em.createQuery("SELECT DISTINCT p "
+   //					+ "FROM ProdDerive p, Operation o "
+   //					+ "WHERE o.objetId = p.prodDeriveId "
+   //					+ "AND o.entite = :entite "
+   //					+ "AND o.operationType = :oType "
+   //					+ "AND p.banque in (:banque) "
    //					+ "ORDER BY p.prodDeriveId DESC");
    //			query.setParameter("entite", entiteDao.findByNom("ProdDerive"));
    //			query.setParameter("oType", oType);
    //			query.setParameter("banque", banques);
    //			query.setMaxResults(nbResults);
-   //			
+   //
    //			derives.addAll(query.getResultList());
    //		}
-   //		
+   //
    //		return derives;
-   //		
+   //
    //	}
 
    @Override
@@ -892,8 +918,7 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
       final ObjetStatut statut, final Collaborateur collab, final Emplacement emplacement, final Unite volumeUnite,
       final Unite concUnite, final Unite quantiteUnite, final ModePrepaDerive modePrepaDerive, final ProdQualite qualite,
       final Transformation transfo, final List<AnnotationValeur> listAnnoToCreateOrUpdate, final List<File> filesCreated,
-      final Utilisateur utilisateur, final boolean doValidation, final String baseDir,
-      final boolean isImport){
+      final Utilisateur utilisateur, final boolean doValidation, final String baseDir, final boolean isImport){
 
       // On vérifie que la banque n'est pas null. Si c'est le cas on envoie
       // une exception
@@ -911,7 +936,7 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
       }
 
       prodDerive.setProdType(prodTypeDao.mergeObject(type));
-      // On vérifie que le statut n'est pas null. Si c'est le cas 
+      // On vérifie que le statut n'est pas null. Si c'est le cas
       // on envoie une exception
       if(statut != null){
          prodDerive.setObjetStatut(objetStatutDao.mergeObject(statut));
@@ -920,7 +945,7 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
          throw new RequiredObjectIsNullException("ProdDerive", "creation", "ObjetStatut");
       }
 
-      // On vérifie que le statut n'est pas null. Si c'est le cas 
+      // On vérifie que le statut n'est pas null. Si c'est le cas
       // on envoie une exception
       if(statut != null){
          prodDerive.setObjetStatut(objetStatutDao.mergeObject(statut));
@@ -1001,7 +1026,7 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
          operationManager.createObjectManager(creationOp, utilisateur, operationTypeDao.findByNom("Creation").get(0), prodDerive);
 
          // cree les annotations, null operation pour
-         // laisser la possibilité création/modification au sein 
+         // laisser la possibilité création/modification au sein
          // de la liste
          if(listAnnoToCreateOrUpdate != null){
             annotationValeurManager.createAnnotationValeurListManager(listAnnoToCreateOrUpdate, prodDerive, utilisateur, null,
@@ -1019,7 +1044,7 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
          }
          // en cas d'erreur lors enregistrement d'un code ou annotation
          // le rollback se fera mais derive aura un id assigne
-         // qui déclenchera une TransientException si on essaie 
+         // qui déclenchera une TransientException si on essaie
          // d'enregistrer a nouveau.
          if(!isImport){
             if(prodDerive.getProdDeriveId() != null){
@@ -1034,9 +1059,9 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
    public void createObjectWithNonConformitesManager(final ProdDerive prodDerive, final Banque banque, final ProdType type,
       final ObjetStatut statut, final Collaborateur collab, final Emplacement emplacement, final Unite volumeUnite,
       final Unite concUnite, final Unite quantiteUnite, final ModePrepaDerive modePrepaDerive, final ProdQualite qualite,
-      final Transformation transfo, final List<AnnotationValeur> listAnnoToCreateOrUpdate, 
-      final Utilisateur utilisateur, final boolean doValidation, final String baseDir, final boolean isImport,
-      final List<NonConformite> noconfsTrait, final List<NonConformite> noconfsCess){
+      final Transformation transfo, final List<AnnotationValeur> listAnnoToCreateOrUpdate, final Utilisateur utilisateur,
+      final boolean doValidation, final String baseDir, final boolean isImport, final List<NonConformite> noconfsTrait,
+      final List<NonConformite> noconfsCess){
 
       final List<File> filesCreated = new ArrayList<>();
 
@@ -1050,8 +1075,8 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
          }
 
          createObjectManager(prodDerive, banque, type, statut, collab, emplacement, volumeUnite, concUnite, quantiteUnite,
-            modePrepaDerive, qualite, transfo, listAnnoToCreateOrUpdate, filesCreated, utilisateur, doValidation,
-            baseDir, isImport);
+            modePrepaDerive, qualite, transfo, listAnnoToCreateOrUpdate, filesCreated, utilisateur, doValidation, baseDir,
+            isImport);
 
          objetNonConformeManager.createUpdateOrRemoveListObjectManager(prodDerive, noconfsTrait, "Traitement");
          objetNonConformeManager.createUpdateOrRemoveListObjectManager(prodDerive, noconfsCess, "Cession");
@@ -1069,8 +1094,7 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
       final Unite concUnite, final Unite quantiteUnite, final ModePrepaDerive modePrepaDerive, final ProdQualite qualite,
       final Transformation transfo, final List<AnnotationValeur> listAnnoToCreateOrUpdate,
       final List<AnnotationValeur> listAnnoToDelete, final List<File> filesCreated, final List<File> filesToDelete,
-      final Utilisateur utilisateur, final boolean doValidation,
-      final List<OperationType> operations, final String baseDir){
+      final Utilisateur utilisateur, final boolean doValidation, final List<OperationType> operations, final String baseDir){
 
       // On vérifie que la banque n'est pas null. Si c'est le cas on envoie
       // une exception
@@ -1088,7 +1112,7 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
       }
 
       prodDerive.setProdType(prodTypeDao.mergeObject(type));
-      // On vérifie que le statut n'est pas null. Si c'est le cas 
+      // On vérifie que le statut n'est pas null. Si c'est le cas
       // on envoie une exception
       if(statut != null){
          prodDerive.setObjetStatut(objetStatutDao.mergeObject(statut));
@@ -1188,14 +1212,14 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
          }
 
          // update les annotations, null operation pour
-         // laisser la possibilité création/modification au sein 
+         // laisser la possibilité création/modification au sein
          // de la liste
          if(listAnnoToCreateOrUpdate != null){
             annotationValeurManager.createAnnotationValeurListManager(listAnnoToCreateOrUpdate, prodDerive, utilisateur, null,
                baseDir, filesCreated, filesToDelete);
          }
 
-         // enregistre operation associee annotation 
+         // enregistre operation associee annotation
          // si il y a eu des deletes et pas d'updates
          if((listAnnoToCreateOrUpdate == null || listAnnoToCreateOrUpdate.isEmpty())
             && (listAnnoToDelete != null && !listAnnoToDelete.isEmpty())){
@@ -1258,9 +1282,9 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
          annotationValeurManager.removeAnnotationValeurListManager(listAnnoToDelete, filesToDelete);
 
          if(listAnnoToCreateOrUpdate != null){
-            // traite en premier et retire les annotations 
-            // création de fichiers pour 
-            // enregistrement en batch 
+            // traite en premier et retire les annotations
+            // création de fichiers pour
+            // enregistrement en batch
             final List<AnnotationValeur> fileVals = new ArrayList<>();
             for(final AnnotationValeur val : listAnnoToCreateOrUpdate){
                if(val.getFichier() != null && val.getStream() != null){
@@ -1272,7 +1296,7 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
             listAnnoToCreateOrUpdate.removeAll(fileVals);
 
             // update les annotations, null operation pour
-            // laisser la possibilité création/modification au sein 
+            // laisser la possibilité création/modification au sein
             // de la liste
             annotationValeurManager.createAnnotationValeurListManager(listAnnoToCreateOrUpdate, null, utilisateur, null, baseDir,
                filesCreated, filesToDelete);
@@ -1305,7 +1329,7 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
    public void removeObjectCascadeManager(final Transformation transformation, final String comments, final Utilisateur user,
       final List<File> filesToDelete){
       //		if (isUsedObjectManager(transformation)) {
-      //			log.warn("Objet utilisé lors de la suppression de l'objet " 
+      //			log.warn("Objet utilisé lors de la suppression de l'objet "
       //					+ "Transformation : " + transformation.toString());
       //			throw new ObjectUsedException("Transformation", "suppression");
       //		} else {
@@ -1440,7 +1464,7 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
 
    //	/**
    //	 * Realise une deep copy de la liste des AnnotationValeur. Permet
-   //	 * de conserver l'etat Transient (no id) pour un enregistrement 
+   //	 * de conserver l'etat Transient (no id) pour un enregistrement
    //	 * multiple de même valeurs assignées à différents objets.
    //	 * @param list
    //	 * @return copy
@@ -1543,9 +1567,9 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
       final ObjetStatut statut, final Collaborateur collab, final Emplacement emplacement, final Unite volumeUnite,
       final Unite concUnite, final Unite quantiteUnite, final ModePrepaDerive modePrepaDerive, final ProdQualite qualite,
       final Transformation transfo, final List<AnnotationValeur> listAnnoToCreateOrUpdate,
-      final List<AnnotationValeur> listAnnoToDelete, final Utilisateur utilisateur,
-      final boolean doValidation, final List<OperationType> operations, final String baseDir,
-      final List<NonConformite> noconfsTraitement, final List<NonConformite> noconfsCession){
+      final List<AnnotationValeur> listAnnoToDelete, final Utilisateur utilisateur, final boolean doValidation,
+      final List<OperationType> operations, final String baseDir, final List<NonConformite> noconfsTraitement,
+      final List<NonConformite> noconfsCession){
 
       final List<File> filesCreated = new ArrayList<>();
       final List<File> filesToDelete = new ArrayList<>();
@@ -1631,11 +1655,11 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
    //		} else {
    //			return null;
    //		}
-   //	}	
+   //	}
 
    /**
-    * Vérifie que l'emplacement n'est pas occupé par un autre objet. Validation permettant 
-    * d'éviter que la contrainte d'unicité sur emplacement_id soit contournée par la 
+    * Vérifie que l'emplacement n'est pas occupé par un autre objet. Validation permettant
+    * d'éviter que la contrainte d'unicité sur emplacement_id soit contournée par la
     * présence d'un échantillon ou d'un autre dérivé (si création nouveaux emplacements)
     * @param emplacement
     * @param dérivé
@@ -1769,7 +1793,7 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
                }
 
                // if (transfoRetour != null) {
-               //	BeanValidator.validateObject(transfoRetour, 
+               //	BeanValidator.validateObject(transfoRetour,
                //		new Validator[]{retourValidator});
                //}
             }
@@ -1853,11 +1877,11 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
          if(parent != null){
             // creation du retour
             if(transfoRetour != null){
-               // passage temporaire au statut NON STOCKE 
-               // afin que ce statut soit enregistré dans le retour correspondant 
+               // passage temporaire au statut NON STOCKE
+               // afin que ce statut soit enregistré dans le retour correspondant
                // à l'épuisement de l'échantillon
                // ((TKStockableObject) parent).setObjetStatut(objetStatutManager
-               //			.findByStatutLikeManager("NON STOCKE", true).get(0));				
+               //			.findByStatutLikeManager("NON STOCKE", true).get(0));
                retourManager.createOrUpdateObjectManager(transfoRetour, (TKStockableObject) parent, oldEmplacement, null, null,
                   transfo, null, u, transfoRetour.getRetourId() != null ? "modification" : "creation");
                // re-assigne l'object statut avant update parent
@@ -1906,15 +1930,15 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
                      ((TKStockableObject) parent).getQuantite());
                }
             } // else {
-            //	((TKStockableObject) parent).setQuantite(qteMax);
-            //}
+              //	((TKStockableObject) parent).setQuantite(qteMax);
+              //}
 
             // maj du volume si derive
             if(parent instanceof ProdDerive){
                final ProdDerive deriveParent = (ProdDerive) parent;
                if(deriveParent.getQuantiteInit() != null && !deriveParent.getQuantiteInit().equals(new Float(0.0))){
                   if(deriveParent.getVolumeInit() != null){
-                     final Float rapport = deriveParent.getQuantite() / deriveParent.getQuantiteInit();
+                     final float rapport = deriveParent.getQuantite() / deriveParent.getQuantiteInit();
                      final Float newVol = deriveParent.getVolumeInit() * rapport;
                      deriveParent.setVolume(newVol);
                   }
@@ -1941,8 +1965,8 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
                throw new TransformationQuantiteOverDemandException(tf.getQuantite(), ((Prelevement) parent).getQuantite());
             }
          } // else {
-         //	((Prelevement) parent).setQuantite(((Prelevement) parent).getQuantite());
-         //}
+           //	((Prelevement) parent).setQuantite(((Prelevement) parent).getQuantite());
+           //}
       }
       return null;
    }
@@ -2013,7 +2037,7 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
    }
 
    @Override
-   public List<ProdDerive> findByListCodeWithPlateforme(List<String> listCodes, Plateforme pf){
+   public List<ProdDerive> findByListCodeWithPlateforme(final List<String> listCodes, final Plateforme pf){
       return prodDeriveDao.findByListCodeWithPlateforme(listCodes, pf);
    }
    

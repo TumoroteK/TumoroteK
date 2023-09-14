@@ -70,6 +70,7 @@ public class CessionStatut implements Serializable
    private static final long serialVersionUID = -1503913295196145334L;
 
    private Integer cessionStatutId;
+
    private String statut;
 
    private Set<Cession> cessions = new HashSet<>();

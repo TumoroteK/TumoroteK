@@ -55,7 +55,6 @@ import fr.aphp.tumorotek.model.stockage.EnceinteType;
 public class EnceinteTypeValidator implements Validator
 {
 
-   
    @Override
    public boolean supports(final Class<?> clazz){
       return EnceinteType.class.equals(clazz);

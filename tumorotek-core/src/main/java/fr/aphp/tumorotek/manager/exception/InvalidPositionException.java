@@ -41,7 +41,9 @@ public class InvalidPositionException extends TKException
    private static final long serialVersionUID = 2128520088634952358L;
 
    private String entite;
+
    private String operation;
+
    private Integer position;
 
    public InvalidPositionException(){

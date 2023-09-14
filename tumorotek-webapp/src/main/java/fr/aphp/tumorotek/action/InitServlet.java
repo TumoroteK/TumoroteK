@@ -61,7 +61,6 @@ import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.contexte.Plateforme;
 import fr.aphp.tumorotek.model.systeme.Version;
 import fr.aphp.tumorotek.param.TkParam;
-
 import liquibase.Liquibase;
 import liquibase.database.Database;
 import liquibase.database.DatabaseFactory;
@@ -82,6 +81,7 @@ import liquibase.resource.ClassLoaderResourceAccessor;
 public class InitServlet extends HttpServlet
 {
    private static final long serialVersionUID = 1L;
+
    private final Log log = LogFactory.getLog(InitServlet.class);
 
    @Override
@@ -90,9 +90,8 @@ public class InitServlet extends HttpServlet
 
       log.info("----- TumoroteK startup routines -----");
       final Path baseDir = Paths.get(TkParam.FILESYSTEM.getValue());
-      
-      log.info(baseDir.toString());
 
+      log.info(baseDir.toString());
 
       // Initialisation TUMOROTEK_CODES & TUMOROTEK_INTERFACAGES
       performInitialisation();
@@ -190,8 +189,8 @@ public class InitServlet extends HttpServlet
          log.error(e.toString());
       }
       try{
-         final Liquibase liquibase =
-            new Liquibase("liquibase/changelog/interfacages/db.changelog-init-interfacages.xml", new ClassLoaderResourceAccessor(), database);
+         final Liquibase liquibase = new Liquibase("liquibase/changelog/interfacages/db.changelog-init-interfacages.xml",
+            new ClassLoaderResourceAccessor(), database);
          liquibase.update("*");
       }catch(final LiquibaseException e){
          log.error(e.toString());
@@ -209,23 +208,21 @@ public class InitServlet extends HttpServlet
       try{
          database = DatabaseFactory.getInstance()
             .findCorrectDatabaseImplementation(new JdbcConnection(dataSource(ESchema.TUMOROTEK).getConnection()));
-         
+
          databaseIntf = DatabaseFactory.getInstance()
-             .findCorrectDatabaseImplementation(new JdbcConnection(dataSource(ESchema.TUMOROTEK_INTERFACAGES).getConnection()));
-         
+            .findCorrectDatabaseImplementation(new JdbcConnection(dataSource(ESchema.TUMOROTEK_INTERFACAGES).getConnection()));
+
       }catch(DatabaseException | SQLException e){
          log.error(e.toString());
       }
       try{
          final Liquibase liquibase =
-            new Liquibase("liquibase/changelog/db.changelog-master.xml", 
-            	new ClassLoaderResourceAccessor(), database);
+            new Liquibase("liquibase/changelog/db.changelog-master.xml", new ClassLoaderResourceAccessor(), database);
          liquibase.update("*");
-         
+
          // interfacages
-         final Liquibase liquibaseIntf =
-                new Liquibase("liquibase/changelog/interfacages/db.changelog-master.xml", 
-                		new ClassLoaderResourceAccessor(), databaseIntf);
+         final Liquibase liquibaseIntf = new Liquibase("liquibase/changelog/interfacages/db.changelog-master.xml",
+            new ClassLoaderResourceAccessor(), databaseIntf);
          liquibaseIntf.update("*");
 
          // Pour faire un rollback

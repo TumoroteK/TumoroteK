@@ -72,6 +72,7 @@ public class PatientSipManagerImpl implements PatientSipManager
    private final Log log = LogFactory.getLog(PatientSipManager.class);
 
    private PatientSipDao patientSipDao;
+
    private PatientManager patientManager;
 
    private InterfacageParsingUtils interfacageParsingUtils;

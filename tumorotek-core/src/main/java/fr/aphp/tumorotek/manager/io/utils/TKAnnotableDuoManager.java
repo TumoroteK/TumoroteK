@@ -54,9 +54,9 @@ public interface TKAnnotableDuoManager
 {
 
    /**
-    * Compare pour la liste de champ entite et de champ d'annotations passées en 
+    * Compare pour la liste de champ entite et de champ d'annotations passées en
     * paramètres les deux objets TKAnnotableObject composant le duo.
-    * Renvoie une liste de duos composés par les valeurs pour un champ 
+    * Renvoie une liste de duos composés par les valeurs pour un champ
     * dont la comparaison a montré une divergence.
     * @param duo TKAnnotableObjectDuo
     * @param chpEntites
@@ -67,11 +67,11 @@ public interface TKAnnotableDuoManager
       List<ChampAnnotation> chpAnnos);
 
    /**
-    * Applique pour chaque duo de valeurs contenu dans la liste 
-    * de TKAnnotableObjectPropertyDuo passée en paramètre, donc pour chaque champ 
+    * Applique pour chaque duo de valeurs contenu dans la liste
+    * de TKAnnotableObjectPropertyDuo passée en paramètre, donc pour chaque champ
     * entité ou annotation réprésenté par ces duos de valeurs, l'écrasement de la valeur
-    * de l'objet existant (secondObj) par la valeur de l'objet nouvellement composé 
-    * (firstObject) 
+    * de l'objet existant (secondObj) par la valeur de l'objet nouvellement composé
+    * (firstObject)
     * @param duo TKAnnotableObjectDuo
     * @param liste TKAnnotableObjectPropertyDuo
     * @return true si il y a eu au moins une modification appliquée.

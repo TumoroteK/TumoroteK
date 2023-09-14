@@ -39,11 +39,13 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
+import java.util.Objects;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
@@ -60,6 +62,7 @@ import fr.aphp.tumorotek.model.TKAnnotableObject;
 import fr.aphp.tumorotek.model.TKDelegateObject;
 import fr.aphp.tumorotek.model.TKDelegetableObject;
 import fr.aphp.tumorotek.model.coeur.patient.delegate.AbstractPatientDelegate;
+import fr.aphp.tumorotek.model.coeur.patient.gatsbi.PatientIdentifiant;
 import fr.aphp.tumorotek.model.contexte.Banque;
 
 /**
@@ -68,7 +71,7 @@ import fr.aphp.tumorotek.model.contexte.Banque;
  * Classe créée le 14/09/09.
  *
  * @author Maxime Gousseau
- * @version 2.0
+ * @version 2.3.0-gatsbi
  *
  */
 @Entity
@@ -83,26 +86,8 @@ import fr.aphp.tumorotek.model.contexte.Banque;
    @NamedQuery(name = "Patient.findByNomReturnIds",
       query = "SELECT distinct(p.patientId) FROM Patient p " + "JOIN p.maladies m " + "JOIN m.prelevements prlvts "
          + "WHERE (p.nom like ?1 " + "OR p.nomNaissance like ?1) " + "AND prlvts.banque in (?2)"),
-   //		@NamedQuery(name = "Patient.findByNomNaissance", 
-   //			query = "SELECT p FROM Patient p WHERE p.nomNaissance = ?1"),
-   //		@NamedQuery(name = "Patient.findByPrenom", 
-   //			query = "SELECT p FROM Patient p WHERE p.prenom = ?1"),
-   //		@NamedQuery(name = "Patient.findBySexe", 
-   //			query = "SELECT p FROM Patient p WHERE p.sexe = ?1"),
    @NamedQuery(name = "Patient.findByDateNaissance", query = "SELECT p FROM Patient p WHERE p.dateNaissance = ?1"),
-   //		@NamedQuery(name = "Patient.findByVilleNaissance", 
-   //			query = "SELECT p FROM Patient p WHERE p.villeNaissance = ?1"),
-   //		@NamedQuery(name = "Patient.findByPaysNaissance", 
-   //			query = "SELECT p FROM Patient p WHERE p.paysNaissance = ?1"),
-   //		@NamedQuery(name = "Patient.findByPatientEtat", 
-   //			query = "SELECT p FROM Patient p WHERE p.patientEtat = ?1"),
-   //		@NamedQuery(name = "Patient.findByDateEtat", 
-   //			query = "SELECT p FROM Patient p WHERE p.dateEtat = ?1"),
-   //		@NamedQuery(name = "Patient.findByDateDeces", 
-   //			query = "SELECT p FROM Patient p WHERE p.dateDeces = ?1"),
    @NamedQuery(name = "Patient.findByEtatIncomplet", query = "SELECT p FROM Patient p WHERE p.etatIncomplet = true"),
-   //		@NamedQuery(name = "Patient.findByArchive", 
-   //			query = "SELECT p FROM Patient p WHERE p.archive = ?1")
    @NamedQuery(name = "Patient.findAllNips", query = "SELECT p.nip FROM Patient p where p.nip is not null " + "ORDER BY p.nip"),
    @NamedQuery(name = "Patient.findAllNoms", query = "SELECT p.nom FROM Patient p ORDER BY p.nom"),
    @NamedQuery(name = "Patient.findByExcludedId", query = "SELECT p FROM Patient p WHERE p.patientId != ?1" + " and p.nom = ?2"),
@@ -127,7 +112,7 @@ import fr.aphp.tumorotek.model.contexte.Banque;
       query = "SELECT count(distinct p) FROM Patient p " + "JOIN p.maladies m " + "JOIN m.prelevements r "
          + "WHERE r.datePrelevement >= ?1 " + "AND r.datePrelevement <= ?2 " + "AND r.banque in (?3) "
          + "AND (r.servicePreleveur is null " + "OR r.servicePreleveur.etablissement not in (?4))"),
-   @NamedQuery(name = "Patient.findByIdInList", query = "SELECT p FROM Patient p " + "WHERE p.patientId in (?1)"),
+   @NamedQuery(name = "Patient.findByIdInList", query = "SELECT p FROM Patient p WHERE p.patientId in (?1)"),
    @NamedQuery(name = "Patient.findByAllIds", query = "SELECT p.patientId FROM Patient p"),
    @NamedQuery(name = "Patient.findByAllIdsWithBanques",
       query = "SELECT distinct(p.patientId) FROM Patient p " + "JOIN p.maladies m " + "JOIN m.prelevements prlvts "
@@ -139,44 +124,87 @@ import fr.aphp.tumorotek.model.contexte.Banque;
       query = "SELECT distinct(p.patientId) FROM Patient p " + "JOIN p.maladies m " + "JOIN m.prelevements prlvts "
          + "WHERE p.nip in (?1) " + "AND prlvts.banque in (?2)"),
    @NamedQuery(name = "Patient.findCountByReferent",
-      query = "SELECT count(p) FROM Patient p " + "JOIN p.patientMedecins o " + "WHERE o.pk.collaborateur = ?1")})
+      query = "SELECT count(p) FROM Patient p " + "JOIN p.patientMedecins o " + "WHERE o.pk.collaborateur = ?1"), 
+   @NamedQuery(name = "Patient.findByIdentifiantInList",
+      query = "SELECT distinct(p.patientId) FROM Patient p  "
+         + "JOIN p.patientIdentifiants i WHERE i.identifiant in (?1) AND i.pk.banque in (?2)"),
+   @NamedQuery(name = "Patient.findByIdentifiantReturnIds",
+      query = "SELECT distinct(p.patientId) FROM Patient p JOIN p.patientIdentifiants i "
+         + "WHERE i.identifiant like ?1 AND i.pk.banque in (?2)"),
+   @NamedQuery(name = "Patient.findByIdentifiant", query = "SELECT distinct p FROM Patient p JOIN p.patientIdentifiants i "
+         + "WHERE i.identifiant like ?1 AND i.pk.banque in (?2)"),
+   @NamedQuery(name = "Patient.findIdentifiantsByPatientAndBanques", 
+      query = "SELECT distinct i "
+         + "FROM PatientIdentifiant i "
+         + "WHERE i.pk.patient = (?1) AND i.pk.banque in (?2) ORDER BY i.pk.banque.nom")
+})
 public class Patient extends TKDelegetableObject<Patient> implements TKAnnotableObject, Serializable
 {
 
    private static final long serialVersionUID = -2015746269357055625L;
 
    private Integer patientId;
+
    private String nip;
+
    private String nom;
+
    private String nomNaissance;
+
    private String prenom;
+
    private String sexe;
+
    private Date dateNaissance;
+
    private String villeNaissance;
+
    private String paysNaissance;
+
    private String patientEtat;
+
    private Date dateEtat;
+
    private Date dateDeces;
+
    private Boolean etatIncomplet;
+
    private Boolean archive = false;
+
    private TKDelegateObject<Patient> delegate;
 
    private Set<PatientLien> patientLiens = new HashSet<>();
+
    private Set<PatientLien> patientLiens2 = new HashSet<>();
+
    private Set<Maladie> maladies = new HashSet<>();
+
    private Set<PatientMedecin> patientMedecins = new LinkedHashSet<>();
+   
+   // @since 2.3.0-gatsbi
+   private Set<PatientIdentifiant> patientIdentifiants = new LinkedHashSet<PatientIdentifiant>();
+// transient car si gatsbi, banque peut être fournie pour associer avec identifiant lors create/update
+   private Banque banque = null; 
+   
+   // flag
+   private boolean newIdentifiantAdded = false;
 
    /** Constructeur par défaut. */
    public Patient(){}
 
    @Override
    public String toString(){
-      if(this.nom != null){
+     
+     if(this.nom != null){
          if(this.prenom != null){
             return "{" + this.nom + " " + this.prenom + "}";
          }else{
             return "{" + this.nom + " prenom inconnu}";
          }
+      }else if(this.nip != null){
+         return "{" + this.nip + "}";
+         //  }else if(this.identifiant != null){
+         //    return "{" + this.identifiant + "}";
       }else{
          return "{Empty Patient}";
       }
@@ -203,7 +231,7 @@ public class Patient extends TKDelegetableObject<Patient> implements TKAnnotable
       this.nip = n;
    }
 
-   @Column(name = "NOM", nullable = false, length = 50)
+   @Column(name = "NOM", nullable = true, length = 50)
    public String getNom(){
       return this.nom;
    }
@@ -274,7 +302,7 @@ public class Patient extends TKDelegetableObject<Patient> implements TKAnnotable
       this.paysNaissance = pays;
    }
 
-   @Column(name = "PATIENT_ETAT", nullable = false, length = 10)
+   @Column(name = "PATIENT_ETAT", nullable = true, length = 10)
    public String getPatientEtat(){
       return this.patientEtat;
    }
@@ -335,19 +363,19 @@ public class Patient extends TKDelegetableObject<Patient> implements TKAnnotable
       this.archive = arch;
    }
 
-   @OneToOne(mappedBy="delegator", cascade=CascadeType.ALL, orphanRemoval=true,
+   @Override
+   @OneToOne(mappedBy = "delegator", cascade = CascadeType.ALL, orphanRemoval = true,
       targetEntity = AbstractPatientDelegate.class)
-//   public AbstractPatientDelegate getDelegate(){
    public TKDelegateObject<Patient> getDelegate(){
       return delegate;
    }
 
    @Override
-   public void setDelegate(TKDelegateObject<Patient> delegate){
+   public void setDelegate(final TKDelegateObject<Patient> delegate){
       this.delegate = delegate;
    }
-   
-   public void setDelegate(AbstractPatientDelegate delegate){
+
+   public void setDelegate(final AbstractPatientDelegate delegate){
       this.delegate = delegate;
    }
 
@@ -389,6 +417,69 @@ public class Patient extends TKDelegetableObject<Patient> implements TKAnnotable
       this.patientMedecins = patientMeds;
    }
 
+   @OneToMany(mappedBy = "pk.patient", cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
+   @OrderBy("identifiant")
+   public Set<PatientIdentifiant> getPatientIdentifiants(){
+      return patientIdentifiants;
+   }
+
+   public void setPatientIdentifiants(Set<PatientIdentifiant> _i){
+      this.patientIdentifiants = _i;
+   }
+   
+   @Transient
+   public PatientIdentifiant getIdentifiant(Banque _b) {
+      return patientIdentifiants.stream()
+         .filter(i -> i.getBanque().equals(_b)).findFirst()
+         .orElse(new PatientIdentifiant(this, _b));
+   }
+   
+   @Transient
+   public String getIdentifiantAsString(Banque _b) {
+      return getIdentifiant(_b).getIdentifiant();
+   }
+   
+   @Transient
+   public PatientIdentifiant getIdentifiant() {
+      return patientIdentifiants.stream()
+         .filter(i -> i.getBanque().equals(banque)).findFirst()
+         .orElse(new PatientIdentifiant(this, banque));
+   }
+   
+   @Transient
+   public String getIdentifiantAsString() {
+      return getIdentifiant(banque).getIdentifiant();
+   }
+   
+   public boolean hasIdentifiant() {
+      return getIdentifiant(banque) != null && !getIdentifiant(banque).isEmpty();
+   }
+   
+   public boolean hasIdentifiant(Banque bank) {
+      return getIdentifiant(bank) != null && !getIdentifiant(bank).isEmpty();
+   }
+   
+   public void addToIdentifiants(PatientIdentifiant ident) {
+      // suppr tout identifiant existant dont la valeur 'identifiant' 
+      // diffère de celui passé en paramètre
+ //     if (patientIdentifiants.stream()
+ //           .anyMatch(i -> i.equals(ident) && !i.getIdentifiant().equals(ident.getIdentifiant()))) {
+ //        patientIdentifiants.remove(ident); 
+ //     }  
+      
+      // soit identifiant n'existe plus pour la banque
+      // soit la valeur 'identifiant' n'a pas été modifiée
+      if (!patientIdentifiants.contains(ident)) { // ajoute identifiant si nécessaire
+         this.patientIdentifiants.add(ident);
+      }
+      
+      newIdentifiantAdded = true;
+   }
+   
+   public void addToIdentifiants(String ident, Banque bank) {
+      addToIdentifiants(new PatientIdentifiant(this, bank, ident));
+   }
+
    /**
     * 2 patients sont considérés comme égaux s'ils ont les mêmes nom,
     * prénom, date de naissance.
@@ -406,11 +497,10 @@ public class Patient extends TKDelegetableObject<Patient> implements TKAnnotable
          return false;
       }
       final Patient test = (Patient) obj;
-      // 2 coordonnees sont egales si toutes leurs valeurs le sont
-      final boolean eq = (((this.nom != null && this.nom.equalsIgnoreCase(test.nom)) || this.nom == test.nom)
-         && ((this.prenom != null && this.prenom.equalsIgnoreCase(test.prenom)) || this.prenom == test.prenom)
-         && ((this.dateNaissance != null && this.dateNaissance.equals(test.dateNaissance))
-            || this.dateNaissance == test.dateNaissance));
+
+      final boolean eq = Objects.equals(nom, test.getNom())
+         && Objects.equals(prenom, test.getPrenom())
+         && Objects.equals(dateNaissance, test.getDateNaissance());
 
       // verif supp sur la ville de naissance
       if(this.villeNaissance != null && test.villeNaissance != null){
@@ -431,7 +521,7 @@ public class Patient extends TKDelegetableObject<Patient> implements TKAnnotable
       int hashNom = 0;
       int hashPrenom = 0;
       int hashDate = 0;
-      //int hashVille = 0;
+      int hashIdentifiant = 0;
 
       if(this.nom != null){
          hashNom = this.nom.hashCode();
@@ -442,14 +532,11 @@ public class Patient extends TKDelegetableObject<Patient> implements TKAnnotable
       if(this.dateNaissance != null){
          hashDate = this.dateNaissance.hashCode();
       }
-      // if (this.villeNaissance != null) {
-      //	hashVille = this.villeNaissance.hashCode();
-      //}
 
       hash = 7 * hash + hashNom;
       hash = 7 * hash + hashPrenom;
       hash = 7 * hash + hashDate;
-      //hash = 7 * hash + hashVille;
+      hash = 7 * hash + hashIdentifiant;
 
       return hash;
    }
@@ -475,6 +562,11 @@ public class Patient extends TKDelegetableObject<Patient> implements TKAnnotable
 
       clone.setDelegate(getDelegate());
       
+      clone.getPatientIdentifiants().addAll(this.getPatientIdentifiants());
+      
+      // @since gatsbi
+      clone.setBanque(getBanque());
+      
       return clone;
    }
 
@@ -491,21 +583,35 @@ public class Patient extends TKDelegetableObject<Patient> implements TKAnnotable
    @Override
    @Transient
    public Banque getBanque(){
-      return null;
+      return banque;
    }
 
    @Override
    @Transient
-   public void setBanque(final Banque b){}
+   public void setBanque(final Banque _b){
+      this.banque = _b;
+   }
 
    @Override
    @Transient
    public String getPhantomData(){
-      if(getPrenom() != null){
-         return getNom() + " " + getPrenom();
-      }else{
-         return getNom();
+      // @since gatsbi
+      // se base sur identifiant si banque (transient)
+      // attribuée au patient
+      if (getIdentifiantAsString(banque) == null) {
+         if(getPrenom() != null){
+            return getNom() + " " + getPrenom();
+         }else{
+            return getNom();
+         }
+      } else { // supprime patient créé depuis collection étude gatsbi
+         return getIdentifiantAsString(banque);
       }
+   }
+
+   @Transient
+   public boolean isNewIdentifiantAdded(){
+      return newIdentifiantAdded;
    }
 
 }

@@ -91,16 +91,17 @@ import fr.aphp.tumorotek.webapp.general.SessionUtils;
 /**
  *
  * @author Mathieu BARTHELEMY
- * @version 2.2.1
+ * @version 2.3.0-gatsbi
  * @since 2.2.1 date stockage echantillon/dérivés
  */
 public class FicheRechercheAvancee extends AbstractFicheRechercheAvancee {
 
 	// @since 2.2.1 chrome fix to div flex display
-	private Div topDivForScroll;
+	protected Div topDivForScroll;
 	
 	// Components patient
 	private Checkbox searchPatientsBox;
+   private Textbox identifiantPatientBox;
 	private Textbox nipPatientBox;
 	private Textbox nomPatientBox;
 	private Textbox nomNaissancePatientBox;
@@ -212,9 +213,9 @@ public class FicheRechercheAvancee extends AbstractFicheRechercheAvancee {
 
 	// Groupes
 	private Group groupPatients;
-	private Group groupMaladies;
+	protected Group groupMaladies;
 	private Group groupPrelevements;
-	private Group groupLaboInters;
+	protected Group groupLaboInters;
 	private Group groupEchantillons;
 	private Group groupProdDerives;
 
@@ -236,7 +237,7 @@ public class FicheRechercheAvancee extends AbstractFicheRechercheAvancee {
 	protected Champ parent1ToQueryPrlvt;
 	protected Champ parent2ToQueryPrlvt;
 	private Champ parentToQueryEchantillon;
-	private boolean critereOnEchantillon = false;
+	protected boolean critereOnEchantillon = false;
 
 	/**
 	 * Liste d'objets.
@@ -271,9 +272,9 @@ public class FicheRechercheAvancee extends AbstractFicheRechercheAvancee {
 	public void doAfterCompose(final Component comp) throws Exception{
 		super.doAfterCompose(comp);
 
-		objPatientComponents = new Component[] {this.nipPatientBox, this.nomPatientBox, this.nomNaissancePatientBox,
-				this.prenomPatientBox, this.dateNaissance1Box, this.dateNaissance2Box, this.sexeFBox, this.sexeHBox, this.sexeIndBox,
-				this.etatVBox, this.etatDBox, this.etatIncBox, this.medecinsBox};
+		objPatientComponents = new Component[] {this.identifiantPatientBox, this.nipPatientBox, this.nomPatientBox, 
+		      this.nomNaissancePatientBox, this.prenomPatientBox, this.dateNaissance1Box, this.dateNaissance2Box, 
+		      this.sexeFBox, this.sexeHBox, this.sexeIndBox, this.etatVBox, this.etatDBox, this.etatIncBox, this.medecinsBox};
 
 		objMaladieComponents = new Component[] {this.libelleMaladieBox, this.codeMaladieBox, this.dateDebutMaladie1Box,
 				this.dateDebutMaladie2Box, this.dateDiagnosticMaladie1Box, this.dateDiagnosticMaladie2Box, this.medecinsMaPatBox};
@@ -308,6 +309,16 @@ public class FicheRechercheAvancee extends AbstractFicheRechercheAvancee {
 
 		prepareContextComponents();
 
+		openGroups();
+
+		getBinder().loadAll();
+
+	}
+	
+	/**
+	 * Gatsbi surcharge cette méthode
+	 */
+	protected void openGroups() {
 		setGroupPatientsOpened(groupPatients.isOpen());
 		setGroupMaladiesOpened(groupMaladies.isOpen());
 		setGroupPrelevementsOpened(groupPrelevements.isOpen());
@@ -316,9 +327,6 @@ public class FicheRechercheAvancee extends AbstractFicheRechercheAvancee {
 		}
 		setGroupEchantillonsOpened(groupEchantillons.isOpen());
 		setGroupProdDerivesOpened(groupProdDerives.isOpen());
-
-		getBinder().loadAll();
-
 	}
 
 	/**
@@ -435,7 +443,29 @@ public class FicheRechercheAvancee extends AbstractFicheRechercheAvancee {
 		operateursDates.add("<");
 		operateursDates.add(">");
 		operateursDates.add("[..]");
+		
+		initGroupAnnotations();
 
+		createSearchHistoryListbox(entiteToSearch.getNom());
+		
+		// gatsbi overrides
+		applyThesaurusRestrictions();
+
+		getBinder().loadComponent(self);
+	}
+	
+	/**
+	 * Retire certaines valeurs de thésaurus suivant 
+	 * le contexte appliqué par Gatsbi
+	 * @since 2.3.0-gatsbi
+	 */
+	protected void applyThesaurusRestrictions() {		
+	}
+
+	/**
+	 * Gatsbi surcharge cette méthode
+	 */
+	protected void initGroupAnnotations() {
 		if(entiteToSearch.getNom().equals("Patient")){
 			groupAnnotations.setLabel(Labels.getLabel("recherche.avancee.patient.annotations"));
 		}else if(entiteToSearch.getNom().equals("Prelevement")){
@@ -447,10 +477,6 @@ public class FicheRechercheAvancee extends AbstractFicheRechercheAvancee {
 			groupAnnotations.setLabel(Labels.getLabel("recherche.avancee.prodDerives.annotations"));
 			searchForProdDerives = true;
 		}
-
-		createSearchHistoryListbox(entiteToSearch.getNom());
-
-		getBinder().loadComponent(self);
 	}
 
 	@Override
@@ -1010,8 +1036,19 @@ public class FicheRechercheAvancee extends AbstractFicheRechercheAvancee {
 					// si une valeur a été saisie
 					if(current.getValue() != null && !current.getValue().equals("")){
 
-						// exécution de la requête
-						executeSimpleQueryForTextbox(current, parent1ToQueryPatient, parent2ToQueryPatient,  false);
+	                // exécution de la requête
+					   if (!current.getId().equals("identifiantPatientBox")) {
+					      executeSimpleQueryForTextbox(current, parent1ToQueryPatient, parent2ToQueryPatient,  false);
+					   } else { // identifiant (gatsbi)
+					      executeIdentifiantQuery(current.getValue());
+					            
+					      // ajout du composant à l'historique
+					      final RechercheCompValues rcv = new RechercheCompValues();
+					      rcv.setCompClass(Textbox.class);
+					      rcv.setCompId(current.getId());
+					      rcv.setTextValue(current.getText());
+					      getUsedComponents().add(rcv);
+					   }
 
 						oneValueEntered = true;
 					}
@@ -2110,6 +2147,7 @@ public class FicheRechercheAvancee extends AbstractFicheRechercheAvancee {
 	 * @return La liste de résultats mise à jour.
 	 */
 
+	@SuppressWarnings("unchecked")
 	public void executeTempStockQuery(final Decimalbox current, final String op, final Entite ent){
 
 		// on récupère la ou les banques sélectionnée(s)
@@ -2151,8 +2189,18 @@ public class FicheRechercheAvancee extends AbstractFicheRechercheAvancee {
       }
       if ("ProdDerive".equals(nomEntite)) {
          executeQueryForEntityToSearch(ManagerLocator.getEntiteManager().findByIdManager(8), ManagerLocator.getProdDeriveManager().findByBanksAndImpact(banques, impact));
-      }
-      
+      }   
+   }
+   
+   /**
+    * Exécute la requête permettant de récupérer tous les échantillons ayant une dégradation possible du matériel
+    * @param impact
+    * @return La liste de résultats mise à jour.
+    */
+   public void executeIdentifiantQuery(final String identifiant){
+      final List<Banque> banques = SessionUtils.getSelectedBanques(sessionScope);
+      executeQueryForEntityToSearch(ManagerLocator.getEntiteManager().findByIdManager(1), 
+         ManagerLocator.getPatientManager().findByIdentifiantLikeBothSideReturnIdsManager(identifiant, banques, false)); 
    }
 
 	@Override

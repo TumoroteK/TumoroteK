@@ -87,15 +87,15 @@ public interface CoordonneeDao extends GenericDaoJpa<Coordonnee, Integer>
    //	 * @return une liste de coordonnees (de taille 1).
    //	 */
    //	List<Coordonnee> findByEtablissement(Etablissement etab);
-   //	
+   //
    //	/**
-   //	 * Recherche la coordonnee associée au service 
+   //	 * Recherche la coordonnee associée au service
    //	 * passé en paramètre.
    //	 * @param service pour lequel dont on recherche les coordonnées.
    //	 * @return une liste de coordonnees (de taille 1).
    //	 */
    //	List<Coordonnee> findByService(Service serv);
-   //	
+   //
    //	/**
    //	 * Recherche la coordonnee associée au transporteur
    //	 * passé en paramètre.
@@ -103,7 +103,7 @@ public interface CoordonneeDao extends GenericDaoJpa<Coordonnee, Integer>
    //	 * @return une liste de coordonnees (de taille 1).
    //	 */
    //	List<Coordonnee> findByTransporteur(Transporteur transp);
-   //	
+   //
    /**
     * Recherche la coordonnee associée au collaborateur dont l'id est
     * passé en paramètre.
@@ -125,7 +125,7 @@ public interface CoordonneeDao extends GenericDaoJpa<Coordonnee, Integer>
    List<Coordonnee> findByCollaborateurIdAndExcludedId(Integer collaborateurId, Integer coordonneeId);
 
    /**
-    * Recherche toutes les coordonnees sauf celles dont l'id est passé 
+    * Recherche toutes les coordonnees sauf celles dont l'id est passé
     * en paramètre.
     * @param coordonneeId Identifiant de la Coordonnee que l'on souhaite
     * exclure de la liste retournée.

@@ -52,8 +52,11 @@ public class TKAnnotableObjectPropertyDuo
 {
 
    private ChampEntite champEntite;
+
    private ChampAnnotation champAnnotation;
+
    private Object firstValue;
+
    private Object secondValue;
 
    public Object getFirstValue(){

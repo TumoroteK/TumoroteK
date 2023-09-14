@@ -35,6 +35,7 @@
  **/
 package fr.aphp.tumorotek.manager.exception;
 
+import fr.aphp.tumorotek.manager.impl.coeur.patient.PatientDoublonFound;
 import fr.aphp.tumorotek.model.contexte.Plateforme;
 
 /**
@@ -45,7 +46,7 @@ import fr.aphp.tumorotek.model.contexte.Plateforme;
  * détailler dans quelle collection se trouvent les doublons.
  *
  * @author Pierre Ventadour
- * @version 2.1
+ * @version 2.3.0-gatsbi
  *
  */
 public class DoublonFoundException extends TKException
@@ -54,10 +55,14 @@ public class DoublonFoundException extends TKException
    private static final long serialVersionUID = 1L;
 
    private String entite;
+
    private String operation;
 
    // @since 2.1
    private String code;
+   
+   private PatientDoublonFound patientDoublonFound; 
+
    private Plateforme plateforme;
 
    public DoublonFoundException(){
@@ -79,6 +84,16 @@ public class DoublonFoundException extends TKException
       this.operation = _o;
       this.code = _c;
       this.plateforme = _p;
+   }
+   
+   /**
+    * @since 2.3.0-gatsbi
+    */
+   public DoublonFoundException(final String en, final String op, final PatientDoublonFound dbf){
+      super();
+      this.entite = en;
+      this.operation = op;
+      this.patientDoublonFound = dbf;
    }
 
    public String getEntite(){
@@ -120,5 +135,13 @@ public class DoublonFoundException extends TKException
 
    public void setPlateforme(final Plateforme _p){
       this.plateforme = _p;
+   }
+
+   public PatientDoublonFound getPatientDoublonFound(){
+      return patientDoublonFound;
+   }
+
+   public void setPatientDoublonFound(PatientDoublonFound _dbf){
+      this.patientDoublonFound = _dbf;
    }
 }

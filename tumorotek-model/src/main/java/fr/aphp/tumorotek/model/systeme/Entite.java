@@ -85,19 +85,31 @@ public class Entite implements Serializable
    private static final long serialVersionUID = -7961160095742036172L;
 
    private Integer entiteId;
+
    private String nom;
+
    private Boolean masc; //FIXME jamais utilisé
+
    private Boolean annotable;
 
    private Set<DroitObjet> droitObjets = new HashSet<>();
+
    private Set<Retour> retours = new HashSet<>();
+
    private Set<Transformation> transformations = new HashSet<>();
+
    private Set<Emplacement> emplacements = new HashSet<>();
+
    private Set<CederObjet> cederObjets = new HashSet<>();
+
    private Set<Terminale> terminales = new HashSet<>();
+
    private Set<Enceinte> enceintes = new HashSet<>();
+
    private Set<ImportTemplate> importTemplates = new HashSet<>();
+
    private Set<ChampLigneEtiquette> champLigneEtiquettes = new HashSet<>();
+
    private Set<ObjetNonConforme> objetNonConformes = new HashSet<>();
 
    public Entite(){}

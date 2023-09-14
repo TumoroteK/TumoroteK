@@ -76,7 +76,9 @@ public class LargeCessionManagerImpl implements LargeCessionManager
    private final Log log = LogFactory.getLog(LargeCessionManager.class);
 
    private EchantillonManager echantillonManager;
+
    private ProdDeriveManager prodDeriveManager;
+
    private EntityManagerFactory entityManagerFactory;
 
    public void setEchantillonManager(final EchantillonManager _e){
@@ -198,7 +200,6 @@ public class LargeCessionManagerImpl implements LargeCessionManager
       return errs;
    }
 
-   
    @Override
    public List<String> findIncompatibleStatutsManager(final List<Integer> ids, final Integer entiteId){
 
@@ -226,7 +227,6 @@ public class LargeCessionManagerImpl implements LargeCessionManager
       return codes;
    }
 
-   
    @Override
    public List<String> findDateStockIncompatiblesManager(final List<Integer> ids, final Integer entiteId, final Date dateCession){
 
@@ -258,7 +258,6 @@ public class LargeCessionManagerImpl implements LargeCessionManager
       return codes;
    }
 
-   
    @Override
    public List<String> findEvtStockIncompatiblesManager(final List<Integer> ids, final Integer entiteId, final Date dateCession){
 

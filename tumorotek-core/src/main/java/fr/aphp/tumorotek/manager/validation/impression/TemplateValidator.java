@@ -45,7 +45,6 @@ import fr.aphp.tumorotek.model.impression.Template;
 public class TemplateValidator implements Validator
 {
 
-   
    @Override
    public boolean supports(final Class<?> clazz){
       return Template.class.equals(clazz);

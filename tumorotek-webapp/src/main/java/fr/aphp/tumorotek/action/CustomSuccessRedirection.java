@@ -64,7 +64,7 @@ public class CustomSuccessRedirection implements RedirectStrategy
       //redirect basé sur la demande d'affichage d'une ressource externe à partir
       // d'une requête HTTP
       if(savedRequest == null || (!savedRequest.getParameterMap().containsKey("id")
-    		  && !savedRequest.getParameterMap().containsKey("bId") && !savedRequest.getParameterMap().containsKey("pCode"))) {
+         && !savedRequest.getParameterMap().containsKey("bId") && !savedRequest.getParameterMap().containsKey("pCode"))){
          response.sendRedirect(response.encodeRedirectURL(request.getContextPath() + "/login/SelectBanque.zul"));
       }else{
          response.sendRedirect(savedRequest.getRedirectUrl());

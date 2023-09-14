@@ -87,10 +87,15 @@ public class ExportThread extends Thread
    private static Log log = LogFactory.getLog(ExportThread.class);
 
    private final Desktop desktop;
+
    private final String nomEntite;
+
    private final List<? extends Object> objs;
+
    private final List<Banque> banques;
+
    private final boolean isExportAnonyme;
+
    private final Utilisateur user;
 
    private Catalogue catalogue;
@@ -265,7 +270,7 @@ public class ExportThread extends Thread
                changeWaitMessage(pourcentage);
             }
             final Patient patient = (Patient) objs.get(i);
-            final List<Maladie> maladies = ManagerLocator.getMaladieManager().findByPatientManager(patient);
+            final List<Maladie> maladies = ManagerLocator.getMaladieManager().findAllByPatientManager(patient);
             for(int j = 0; j < maladies.size(); j++){
                // ajout de ses données dans une nouvelle ligne
                final HSSFRow row = sheet.createRow(nbRow);
@@ -489,8 +494,9 @@ public class ExportThread extends Thread
             ((BufferedWriter) wb).flush();
             downloadExportFileCsv(bouf, sb.toString(), desktop);
             ((BufferedWriter) wb).close();
-            if(null != bouf)
+            if(null != bouf){
                bouf.close();
+            }
          }
 
          Executions.deactivate(desktop);
@@ -1047,7 +1053,7 @@ public class ExportThread extends Thread
    }
 
    /**
-    * Prepare le download d'un fichier d'export au format csv, donc 
+    * Prepare le download d'un fichier d'export au format csv, donc
     * à partir d'un ByteArrayOutputStream.
     * @param buf ByteArrayOutputStream
     * @param filename

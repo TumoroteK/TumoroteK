@@ -86,26 +86,37 @@ public class ModeleManagerTest extends AbstractManagerTest4
 
    @Autowired
    private ModeleManager modeleManager;
+
    @Autowired
    private ModeleTypeManager modeleTypeManager;
+
    @Autowired
    private PlateformeManager plateformeManager;
+
    @Autowired
    private AffectationImprimanteManager affectationImprimanteManager;
+
    @Autowired
    private UtilisateurDao utilisateurDao;
+
    @Autowired
    private BanqueDao banqueDao;
+
    @Autowired
    private ImprimanteDao imprimanteDao;
+
    @Autowired
    private LigneEtiquetteManager ligneEtiquetteManager;
+
    @Autowired
    private ChampLigneEtiquetteManager champLigneEtiquetteManager;
+
    @Autowired
    private ChampManager champManager;
+
    @Autowired
    private ChampEntiteDao champEntiteDao;
+
    @Autowired
    private EntiteDao entiteDao;
 
@@ -486,8 +497,7 @@ public class ModeleManagerTest extends AbstractManagerTest4
       List<ChampLigneEtiquette> champs = new ArrayList<>();
       champs.add(cle1);
       champs.add(cle2);
-      final Hashtable<LigneEtiquette, List<ChampLigneEtiquette>> hash =
-         new Hashtable<>();
+      final Hashtable<LigneEtiquette, List<ChampLigneEtiquette>> hash = new Hashtable<>();
       hash.put(le1, champs);
 
       modeleManager.createObjectManager(m, pf1, mt1, lignes, hash);
@@ -626,8 +636,7 @@ public class ModeleManagerTest extends AbstractManagerTest4
       final List<ChampLigneEtiquette> chpsToRmv = new ArrayList<>();
       chpsToRmv.add(cle1);
       hash.put(le1, champs);
-      final Hashtable<LigneEtiquette, List<ChampLigneEtiquette>> hashToRmv =
-         new Hashtable<>();
+      final Hashtable<LigneEtiquette, List<ChampLigneEtiquette>> hashToRmv = new Hashtable<>();
       hashToRmv.put(le1, chpsToRmv);
 
       modeleManager.updateObjectManager(mTest, pf1, mt1, lignes, null, hash, hashToRmv);

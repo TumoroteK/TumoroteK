@@ -170,30 +170,53 @@ public class ProdDerive extends TKDelegetableObject<ProdDerive> implements TKSto
    private static final long serialVersionUID = 1110628569548421522L;
 
    private Integer prodDeriveId;
+
    private String code;
+
    private String codeLabo;
+
    private Float volumeInit;
+
    private Float volume;
+
    private Float conc;
+
    private Calendar dateStock;
+
    private Float quantiteInit;
+
    private Float quantite;
+
    private Calendar dateTransformation;
+
    private Boolean etatIncomplet;
+
    private Boolean archive = false;
+
    private Boolean conformeTraitement;
+
    private Boolean conformeCession;
 
    private Banque banque;
+
    private Unite quantiteUnite;
+
    private Unite concUnite;
+
    private ProdType prodType;
+
    private ObjetStatut objetStatut;
+
    private ProdQualite prodQualite;
+
    private Collaborateur collaborateur;
+
    private Emplacement emplacement;
+
    private Unite volumeUnite;
+
    private Transformation transformation;
+
    private ModePrepaDerive modePrepaDerive;
 
    private TKDelegateObject<ProdDerive> delegate;
@@ -481,24 +504,25 @@ public class ProdDerive extends TKDelegetableObject<ProdDerive> implements TKSto
       this.conformeCession = conforme;
    }
 
+   @Override
    @OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "delegator",
-		      targetEntity = AbstractProdDeriveDelegate.class)
+      targetEntity = AbstractProdDeriveDelegate.class)
    // @OneToOne(mappedBy = "delegator", cascade = CascadeType.MERGE, orphanRemoval = true)
    public TKDelegateObject<ProdDerive> getDelegate(){
       return delegate;
    }
-   
+
    @Override
-   public void setDelegate(TKDelegateObject<ProdDerive> _d){
+   public void setDelegate(final TKDelegateObject<ProdDerive> _d){
       this.delegate = _d;
    }
 
-//   /**
-//    * @param delegate the delegate to set
-//    */
-//   public void setDelegate(AbstractProdDeriveDelegate delegate){
-//      this.delegate = delegate;
-//   }
+   //   /**
+   //    * @param delegate the delegate to set
+   //    */
+   //   public void setDelegate(AbstractProdDeriveDelegate delegate){
+   //      this.delegate = delegate;
+   //   }
 
    /**
     * 2 produits dérivés sont considérés comme égaux s'ils ont le même code
@@ -585,7 +609,7 @@ public class ProdDerive extends TKDelegetableObject<ProdDerive> implements TKSto
       clone.setArchive(this.getArchive());
       clone.setConformeTraitement(this.getConformeTraitement());
       clone.setConformeCession(this.getConformeCession());
-      
+
       clone.setDelegate(getDelegate());
 
       return clone;

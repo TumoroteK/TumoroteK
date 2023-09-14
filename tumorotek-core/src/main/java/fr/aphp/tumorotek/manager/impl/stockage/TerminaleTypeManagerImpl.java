@@ -63,8 +63,10 @@ public class TerminaleTypeManagerImpl implements TerminaleTypeManager
 {
 
    private final Log log = LogFactory.getLog(TerminaleTypeManager.class);
+
    /** Bean Dao CessionStatutDao. */
    private TerminaleTypeDao terminaleTypeDao;
+
    private TerminaleTypeValidator terminaleTypeValidator;
 
    /**

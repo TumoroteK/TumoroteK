@@ -81,14 +81,21 @@ public class Adicap implements CodeCommon, Serializable
    private static final long serialVersionUID = -8442052205622516619L;
 
    private Integer adicapId;
+
    private String code;
+
    private String libelle;
+
    private AdicapGroupe adicapGroupe;
+
    private Boolean morpho;
+
    private Adicap adicapParent;
 
    private Set<Adicap> adicaps = new HashSet<>();
+
    private Set<CimoMorpho> cimoMorphos = new HashSet<>();
+
    private Set<CimMaster> cimMasters = new HashSet<>();
 
    private CodeSelect codeSelect;
@@ -194,7 +201,7 @@ public class Adicap implements CodeCommon, Serializable
 
    /**
     * 2 adicaps sont considérés comme égaux s'ils ont le ID.
-    * Les codes ne seront pas enregistres par l'interface mais 
+    * Les codes ne seront pas enregistres par l'interface mais
     * directement dans la base de donnees donc impossibilite
     * de ne pas avoir ID assigne de maniere unique.
     * @param obj est l'adicap à tester.
@@ -207,7 +214,7 @@ public class Adicap implements CodeCommon, Serializable
          return true;
       }
       // instanceOf est utilise plutot que != a cause des instances
-      // Adicap$$EnhancerByCGLIB qui sont crées par lors du fetch par 
+      // Adicap$$EnhancerByCGLIB qui sont crées par lors du fetch par
       // la relation manyToAny
       if((obj == null) || !(obj instanceof Adicap)){
          return false;

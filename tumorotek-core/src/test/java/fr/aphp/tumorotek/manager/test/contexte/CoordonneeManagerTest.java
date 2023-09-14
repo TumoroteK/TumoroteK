@@ -69,6 +69,7 @@ public class CoordonneeManagerTest extends AbstractManagerTest4
 
    @Autowired
    private CoordonneeManager coordonneeManager;
+
    @Autowired
    private CollaborateurManager collaborateurManager;
 

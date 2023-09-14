@@ -66,5 +66,5 @@ public class EchantillonDecoratorRowRenderer extends AbstractEchantillonDecorato
       ObjectTypesFormatters.drawCodesExpLabel(deco.getCodesLesToCreateOrEdit(), row, null, false, 3);
 
    }
-   
+
 }

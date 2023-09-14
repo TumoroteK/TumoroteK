@@ -77,7 +77,7 @@ import fr.aphp.tumorotek.webapp.general.SessionUtils;
  * @since 2.1 export biobanques
  *
  * @author Pierre Ventadour
- * @version 2.2.1-IRELEC
+ * @version 2.3.0-gatsbi
  *
  */
 public class ListeEchantillon extends AbstractListeController2
@@ -100,8 +100,10 @@ public class ListeEchantillon extends AbstractListeController2
 	private Radio patientEchantillon;
 	private Textbox codeBoxEchan;
 	private Textbox patientBoxEchan;
-	private Column nbProdDerivesColumn;
-	private Column nbCessionsColumn;
+	
+	// gatsbi column créés dynamiquement, écrasées pour être sortable
+	protected Column nbProdDerivesColumn;
+	protected Column nbCessionsColumn;
 
 	// Variables formulaire pour les critères.
 	private String searchCode;
@@ -146,6 +148,21 @@ public class ListeEchantillon extends AbstractListeController2
 	@Override
 	public void doAfterCompose(final Component comp) throws Exception{
 		super.doAfterCompose(comp);
+		
+		// recoit le renderer en argument
+	      if(arg != null && arg.containsKey("renderer")){
+	         setListObjectsRenderer((TKSelectObjectRenderer<? extends TKdataObject>) arg.get("renderer"));
+	      }
+	      
+		// @since gatsbi
+		try {
+			drawColumnsForVisibleChampEntites();
+		} catch (Exception e) {
+			// une erreur inattendue levée dans la récupération 
+			// ou le rendu d'une propriété prel
+			// va arrêter le rendu du reste du tableau
+			throw new RuntimeException(e);
+		}
 
 		setOnGetEventName("onGetEchantillonsFromSelection");
 		listObjectsRenderer.setEmbedded(false);
@@ -155,6 +172,19 @@ public class ListeEchantillon extends AbstractListeController2
 		nbCessionsColumn.setSortAscending(comparatorCessionsAsc);
 		nbCessionsColumn.setSortDescending(comparatorCessionsDesc);
 	}
+	
+   /**
+    * Cette méthode de dessin dynamique des colonnes est surchargée 
+    * par Gatsbi
+    * @since 2.3.0-gatsbi
+    */
+	protected void drawColumnsForVisibleChampEntites() 
+			throws ClassNotFoundException, InstantiationException, IllegalAccessException {
+   }
+
+   public void setListObjectsRenderer(final TKSelectObjectRenderer<? extends TKdataObject> listObjectsRenderer){
+      this.listObjectsRenderer = (EchantillonRowRenderer) listObjectsRenderer;
+   }
 
 	@Override
 	public List<Echantillon> getListObjects(){
@@ -357,11 +387,9 @@ public class ListeEchantillon extends AbstractListeController2
 		}else if(patientEchantillon.isChecked()){
 			if(searchPatientNom.contains(",")){
 				final List<String> pats = ObjectTypesFormatters.formateStringToList(searchPatientNom);
-				echantillons = ManagerLocator.getEchantillonManager().findByPatientNomOrNipInListManager(pats,
-						SessionUtils.getSelectedBanques(sessionScope));
+				echantillons = findEchantillonByPatientCodes(pats);
 			}else{
-				echantillons = ManagerLocator.getEchantillonManager().findByPatientNomReturnIdsManager(searchPatientNom,
-						SessionUtils.getSelectedBanques(sessionScope), true);
+				echantillons = searchEchantillonByPatientInfos(searchPatientNom);
 			}
 		}
 		return echantillons;
@@ -420,11 +448,32 @@ public class ListeEchantillon extends AbstractListeController2
 		// récupère les patients présents dans le
 		// fichier excel que l'utilisateur va uploader
 		final List<String> pats = getListStringToSearch();
-		final List<Integer> echantillons = ManagerLocator.getEchantillonManager().findByPatientNomOrNipInListManager(pats,
-				SessionUtils.getSelectedBanques(sessionScope));
+		final List<Integer> echantillons = findEchantillonByPatientCodes(pats);
 		// affichage de ces résultats
 		showResultsAfterSearchByList(echantillons);
 	}
+	
+   /**
+    * Sera surchargée par GATSBI.
+    * @since 2.3.0-gatsbi
+    * @param pats
+    * @return
+    */
+   protected List<Integer> findEchantillonByPatientCodes(List<String> pats){
+      return ManagerLocator.getPrelevementManager().findByPatientNomOrNipInListManager(pats,
+         SessionUtils.getSelectedBanques(sessionScope));
+   }
+
+   /**
+    * Sera surchargée par GATSBI.
+    * @since 2.3.0-gatsbi
+    * @param pats
+    * @return
+    */
+   protected List<Integer> searchEchantillonByPatientInfos(String search){
+      return ManagerLocator.getEchantillonManager().findByPatientNomReturnIdsManager(searchPatientNom,
+         SessionUtils.getSelectedBanques(sessionScope), true);
+   }
 
 	/**
 	 * Méthode appelée lors du clic sur le bouton de menu newCessionItem. Une

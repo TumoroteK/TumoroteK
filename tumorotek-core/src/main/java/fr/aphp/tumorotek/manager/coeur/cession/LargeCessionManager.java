@@ -57,7 +57,7 @@ public interface LargeCessionManager
 {
 
    /**
-    * Ajoute une liste d'échantillons ou de dérivés à partir d'une liste d'ids en base à la cession 
+    * Ajoute une liste d'échantillons ou de dérivés à partir d'une liste d'ids en base à la cession
     * passée en paramètre et valide la cession.
     * La cession des objets est totale, et est réalisé par la procédure SQL largeCession.
     * @param cession
@@ -71,7 +71,7 @@ public interface LargeCessionManager
       Utilisateur utilisateur);
 
    /**
-    * Recherche parmis les ids passés en paramètre les objets TK stockables dont le statut de stockage 
+    * Recherche parmis les ids passés en paramètre les objets TK stockables dont le statut de stockage
     * est incompatible avec une large cession (tous statut qui n'est pas STOCKE).
     * @param list objs ids.
     * @param Integer entiteId.
@@ -80,8 +80,8 @@ public interface LargeCessionManager
    List<String> findIncompatibleStatutsManager(List<Integer> ids, Integer entiteId);
 
    /**
-    * Recherche parmis les ids passés en paramètre les objets TK stockable dont la date de stockage 
-    * est ultérieure à la date de départ de la cession 
+    * Recherche parmis les ids passés en paramètre les objets TK stockable dont la date de stockage
+    * est ultérieure à la date de départ de la cession
     * @param list objs ids.
     * @param Integer entiteId.
     * @param date départ Cession
@@ -90,8 +90,8 @@ public interface LargeCessionManager
    List<String> findDateStockIncompatiblesManager(List<Integer> ids, Integer entiteId, Date dateCession);
 
    /**
-    * Recherche parmis les ids passés en paramètre les objets TK stockable pour lesquels un évènement de 
-    * stockage aurait une date de retour ultérieure à  ultérieure à la date de départ de la cession 
+    * Recherche parmis les ids passés en paramètre les objets TK stockable pour lesquels un évènement de
+    * stockage aurait une date de retour ultérieure à  ultérieure à la date de départ de la cession
     * @param list objs ids.
     * @param Integer entiteId.
     * @param date départ Cession

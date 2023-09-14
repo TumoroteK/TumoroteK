@@ -55,6 +55,7 @@ import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.Path;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
+import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.BookmarkEvent;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -76,12 +77,14 @@ import org.zkoss.zul.Tabpanels;
 import org.zkoss.zul.Timer;
 import org.zkoss.zul.Window;
 
+import fr.aphp.tumorotek.action.controller.AbstractController;
 import fr.aphp.tumorotek.action.controller.AbstractObjectTabController;
 import fr.aphp.tumorotek.action.io.AffichageController;
 import fr.aphp.tumorotek.action.io.RechercheComplexeController;
 import fr.aphp.tumorotek.action.io.RechercheController;
 import fr.aphp.tumorotek.action.io.RequeteController;
 import fr.aphp.tumorotek.action.prelevement.PrelevementController;
+import fr.aphp.tumorotek.action.prelevement.gatsbi.exception.GatsbiException;
 import fr.aphp.tumorotek.action.recherche.historique.SearchHistory;
 import fr.aphp.tumorotek.action.stockage.StockageController;
 import fr.aphp.tumorotek.action.utilisateur.FicheUtilisateurModale;
@@ -91,21 +94,23 @@ import fr.aphp.tumorotek.model.coeur.patient.Patient;
 import fr.aphp.tumorotek.model.coeur.prelevement.Prelevement;
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.contexte.Plateforme;
+import fr.aphp.tumorotek.model.contexte.gatsbi.Etude;
 import fr.aphp.tumorotek.model.interfacage.Emetteur;
 import fr.aphp.tumorotek.model.interfacage.scan.ScanTerminale;
 import fr.aphp.tumorotek.model.qualite.OperationType;
 import fr.aphp.tumorotek.model.systeme.CouleurEntiteType;
 import fr.aphp.tumorotek.model.utilisateur.Profil;
 import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
+import fr.aphp.tumorotek.webapp.gatsbi.GatsbiController;
 import fr.aphp.tumorotek.webapp.general.ConnexionUtils;
 import fr.aphp.tumorotek.webapp.general.MainTabbox;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
 import fr.aphp.tumorotek.webapp.general.ext.ResourceRequest;
 
 /**
- * 
+ *
  * @author Mathieu BARTHELEMY
- * @version 2.2.3-genno
+ * @version 2.3.0-gatsbi
  *
  */
 public class MainWindow extends GenericForwardComposer<Component>
@@ -118,41 +123,59 @@ public class MainWindow extends GenericForwardComposer<Component>
    private Listbox mainBanquesListBox;
 
    private Window mainWinRight;
+
    private Window mainWinLeft;
+
    private Window mainWinBottom;
+
    private Box mainCenterVbox;
+
    private Tabbox mainTabbox;
+
    private List<Banque> banques = new ArrayList<>();
+
    private Banque selectedBanque;
    // = ManagerLocator
    // .getBanqueManager().findAllObjectsManager().get(0);
-   private Banque toutesColl = null;
 
    private Integer screenHeight = 800;
+
    private Integer screenWidth = 1280;
+
    private boolean screenUpdated = false;
 
    private Integer tabPanelsHeight;
+
    private Integer panelHeight;
+
    // liste contenant les noms des tabs
    private List<String> tabsNames = new ArrayList<>();
+
    private List<String> availableTabsNames = new ArrayList<>();
    // bouton de déconnexion
    // private Button buttonLogout;
 
    // @since 2.1 scan device
    protected Timer scanTimer;
+
    protected Div scanButtonDiv;
-   
+
    // @since 2.2.3-genno
    private Div genno;
 
+   // @since 2.30-gatsbi
+   // conserve la banque pour remettre la liste
+   // si erreur conn GATSBI
+   private Banque previousBanque;
+
    private Hashtable<String, String> echantillonTypesCouleur = new Hashtable<>();
+
    private Hashtable<String, String> prodDeriveTypesCouleur = new Hashtable<>();
 
    // Search History
-   public static String SEARCH_HISTORY_SESSION = "SearchHistorySession";
-   private List<SearchHistory> searchHistoryList;
+   public static String SEARCH_HISTORY_SESSIONS = "SearchHistorySessions";
+
+   private Map<Etude, LinkedList<SearchHistory>> searchHistoryMap;
 
    private AnnotateDataBinder mainBinder;
 
@@ -215,9 +238,8 @@ public class MainWindow extends GenericForwardComposer<Component>
 
       // Définition de la taille du div central de la bannière
       /*
-       * Div divSeparator = (Div) mainBorderLayout
-       * .getFellow("northTopBanniere") .getFellow("hboxTopBanniere")
-       * .getFellow("divSeparator");
+       * Div divSeparator = (Div) mainBorderLayout .getFellow("northTopBanniere")
+       * .getFellow("hboxTopBanniere") .getFellow("divSeparator");
        * divSeparator.setWidth(getDivSeparatorWidth() + "px");
        */
 
@@ -255,25 +277,27 @@ public class MainWindow extends GenericForwardComposer<Component>
 
       mainBinder.loadAll();
 
-      //		if (sessionScope.containsKey("patient")) {
-      //			launchImportPatientFromCrfProdedure((Patient) sessionScope
-      //					.get("patient"));
-      //		}
+      // if (sessionScope.containsKey("patient")) {
+      // launchImportPatientFromCrfProdedure((Patient) sessionScope
+      // .get("patient"));
+      // }
 
       // Initialise la sauvegarde de l'historique de recherche
-      searchHistoryList = new LinkedList<>();
-      sessionScope.put(SEARCH_HISTORY_SESSION, searchHistoryList);
+      // @since 2.3.0-gatsbi, historique is mapped by etude (ie sets of fomr
+      // contextes)
+      searchHistoryMap = new HashMap<>();
+      sessionScope.put(SEARCH_HISTORY_SESSIONS, searchHistoryMap);
 
       if(sessionScope.containsKey("resourceRequest")){
          displayTkObjDetails((ResourceRequest<?>) sessionScope.get("resourceRequest"));
-      } 
+      }
 
       scanButtonDiv = (Div) mainBorderLayout.getFellow("northTopBanniere").getFellow("scanButtonDiv");
       scanButtonDiv.addForward("onClick", self, "onSwitchScanButton");
       scanTimer = (Timer) scanButtonDiv.getFellow("scanTimer");
       scanTimer.addForward("onTimer", self, "onScanTimer");
-      
-      genno =  (Div) mainBorderLayout.getFellow("northTopBanniere").getFellow("genno");
+
+      genno = (Div) mainBorderLayout.getFellow("northTopBanniere").getFellow("genno");
       genno.addForward("onClick", self, "onOpenDossierExternes");
    }
 
@@ -283,20 +307,22 @@ public class MainWindow extends GenericForwardComposer<Component>
 
       // init des banques
       banques = ManagerLocator.getUtilisateurManager().getAvailableBanquesByPlateformeManager(user, pf, false);
-      if(ConnexionUtils.canAccessToutesCollections(banques, pf, user)){
-         toutesColl = new Banque();
-         toutesColl.setNom(Labels.getLabel("select.banque.toutesCollection"));
-         toutesColl.setPlateforme(pf);
-         banques.add(toutesColl);
-      }
-
+      ConnexionUtils.initToutesCollectionsAccesses(banques, pf, user);
+      
+      final Banque toutesColl = ConnexionUtils.initFakeToutesCollBankItem(pf);
+      
       if(sessionScope.containsKey("Banque")){
          selectedBanque = (Banque) sessionScope.get("Banque");
-      }else if(sessionScope.containsKey("ToutesCollections")){
+      }else if (sessionScope.containsKey("ToutesCollections")) {
+      
+         // toutes collections par étude ?.
+         if (SessionUtils.getSelectedBanques(sessionScope)
+            .stream().filter(b -> b.getEtude() != null).map(b -> b.getEtude()).distinct().count() == 1) {
+            toutesColl.setNom(Labels.getLabel("select.banque.toutesCollection.gatsbi", 
+               new String[] {SessionUtils.getSelectedBanques(sessionScope).get(0).getEtude().getTitre()}));
+         }
+         
          selectedBanque = toutesColl;
-      }else{
-         selectedBanque = null;
-         // selectedBanque = banques.get(0);
       }
    }
 
@@ -306,7 +332,7 @@ public class MainWindow extends GenericForwardComposer<Component>
 
    /**
     * Récupère la mainTabbox.
-    * 
+    *
     * @return Tabbox.
     */
    public Tabbox getMainTabbox(){
@@ -316,7 +342,7 @@ public class MainWindow extends GenericForwardComposer<Component>
 
    /**
     * Disable ou non la liste des banques.
-    * 
+    *
     * @param disable
     */
    public void disableBanqueListbox(final boolean disable){
@@ -324,42 +350,42 @@ public class MainWindow extends GenericForwardComposer<Component>
       banqueListbox.setDisabled(disable);
    }
 
-   public void updateSelectedBanque(Banque bank){
-      if(bank == null){
-         bank = selectedBanque;
-      }else{
-         // met à jour la pf si update banque cross-plateforme
-         if(!bank.getPlateforme().equals(SessionUtils.getPlateforme(sessionScope))){
-            sessionScope.put("Plateforme", bank.getPlateforme());
-            prepareListBanques();
-         }
+   /**
+    * @since 2.3.0-gatsbi vérifie que GATSBI est bien accessible
+    * @param bank
+    */
+   public void updateSelectedBanque(final Banque bank){
+
+      // @since 2.30-gatsbi
+      // suppr err gatsbi éventuelle
+      Clients.clearWrongValue(self.getFellow("main").getFellow("mainBanquesListBox"));
+
+      // select banque
+      if(bank != null){ // banque est modifié depuis un n'importe quel onglet
          setSelectedBanque(bank);
-         mainBinder.loadComponent(self.getFellow("main").getFellow("mainBanquesListBox"));
-      }
-      if(!selectedBanque.equals(toutesColl)){
-         sessionScope.put("Banque", selectedBanque);
-         final List<Banque> bks = new ArrayList<>();
-         bks.add(bank);
-         ConnexionUtils.setSessionCatalogues(bks, sessionScope);
-         updateDroitsForSelectedBanque(selectedBanque);
-         sessionScope.remove("ToutesCollections");
-      }else{
-         final List<Banque> bksList = new ArrayList<>();
-         bksList.addAll(banques);
-         bksList.remove(toutesColl);
-         ConnexionUtils.setSessionCatalogues(bksList, sessionScope);
-         sessionScope.put("ToutesCollections", bksList);
-         // car tous les droits sont identiques
-         updateDroitsForSelectedBanque(bksList.get(0));
-         sessionScope.remove("Banque");
+      } // sinon si bank == null, banque est modifiée depuis la liste
+        // MainBanquesListBox.onLaterUpdate et donc selectBanque a déja été appelé
 
-         /*
-          * sessionScope.put("Admin", true); sessionScope.remove("AdminPF");
-          * sessionScope.put("ToutesCollections", banquesAdmin);
-          * sessionScope.remove("Banque");
-          */
+      // user et plateforme peuvent être null car
+      // ne seront jamais mis à jour depuis MainWindow update banque
+      try{
+         ConnexionUtils.selectConnection(null, null, selectedBanque, banques, session);
+      }catch(final GatsbiException e){
+         setSelectedBanque(previousBanque); // previous ne peut pas être nulle
+         mainBinder.loadAttribute(self.getFellow("main").getFellow("mainBanquesListBox"), "selectedItem");
+         Clients.clearBusy();
+         throw new WrongValueException(mainBanquesListBox, AbstractController.handleExceptionMessage(e));
       }
 
+      // met à jour la pf si update banque cross-plateforme
+      if(!selectedBanque.getPlateforme().equals(SessionUtils.getPlateforme(sessionScope))){
+         sessionScope.put("Plateforme", selectedBanque.getPlateforme());
+         prepareListBanques();
+         // mainBinder.loadComponent(self.getFellow("main").getFellow("mainBanquesListBox"));
+      }
+
+      resetMainBanquesListBox();
+      
       resetControllers();
       initAvailableTabsNames();
       initDroitsConsultation();
@@ -368,11 +394,7 @@ public class MainWindow extends GenericForwardComposer<Component>
    }
 
    public void updateSelectedBanqueToutesColl() throws Exception{
-      if(toutesColl != null){
-         updateSelectedBanque(toutesColl);
-      }else{
-         throw new Exception();
-      }
+      updateSelectedBanque(ConnexionUtils.initFakeToutesCollBankItem(SessionUtils.getCurrentPlateforme()));
    }
 
    private void resetControllers(){
@@ -459,8 +481,9 @@ public class MainWindow extends GenericForwardComposer<Component>
    }
 
    /**
-    * Renvoie le controller du tab selectionné, si celui-ci gère le 
-    * scan full-rack barcode donc Echantillon, Derive, Stockage, Cession
+    * Renvoie le controller du tab selectionné, si celui-ci gère le scan full-rack
+    * barcode donc Echantillon, Derive, Stockage, Cession
+    *
     * @return AbstractObjectTabController
     * @since 2.1
     */
@@ -487,7 +510,7 @@ public class MainWindow extends GenericForwardComposer<Component>
 
    /**
     * Méthode récupérant le controller du panel des stockages.
-    * 
+    *
     * @return CessionController classe gérant le panel des stockages.
     */
    public StockageController getStockageController(){
@@ -502,7 +525,7 @@ public class MainWindow extends GenericForwardComposer<Component>
    /**
     * Renvoie la hauteur disponible pour l'ensemble de la fenêtre TK : ceci
     * représente 80% de la résolution de l'écran.
-    * 
+    *
     * @return La hauteur disponible.
     */
    public Integer getWindowAvailableHeight(){
@@ -521,43 +544,43 @@ public class MainWindow extends GenericForwardComposer<Component>
    /**
     * Renvoie la largeur disponible pour l'ensemble de la fenêtre TK : ceci
     * représente 95% de la résolution de l'écran.
-    * 
+    *
     * @return La largeur disponible.
     */
    public Integer getWindowAvailableWidth(){
 
-      Integer width = 0;
+      int width = 0;
       width = (screenWidth * 98) / 100;
       return width;
    }
 
    /**
     * Renvoie l'espace à laisser à droite de la fenêtre TK.
-    * 
+    *
     * @return L'espace à droite.
     */
    public Integer getRightWindowWidth(){
 
-      final Integer width = ((screenWidth - getWindowAvailableWidth()) / 2) - 5;
+      final int width = ((screenWidth - getWindowAvailableWidth()) / 2) - 5;
 
       return width;
    }
 
    /**
     * Renvoie l'espace à laisser à gauche de la fenêtre TK.
-    * 
+    *
     * @return L'espace à gauche.
     */
    public Integer getLeftWindowWidth(){
 
-      final Integer width = (screenWidth - getWindowAvailableWidth()) / 2 - 5;
+      final int width = (screenWidth - getWindowAvailableWidth()) / 2 - 5;
 
       return width;
    }
 
    /**
     * Renvoie la hauteur disponible pour la fenêtre contenue dans un TabPanel.
-    * 
+    *
     * @return Hauteur d'un TabPanel.
     */
    public Integer getTabPanelsHeight(){
@@ -569,7 +592,7 @@ public class MainWindow extends GenericForwardComposer<Component>
 
    /**
     * Renvoie la hauteur disponible pour un panel ou une fiche.
-    * 
+    *
     * @return Hauteur d'un Panel.
     */
    public Integer getPanelHeight(){
@@ -581,7 +604,7 @@ public class MainWindow extends GenericForwardComposer<Component>
 
    /**
     * Renvoie la hauteur disponible pour la liste des éléments.
-    * 
+    *
     * @return Hauteur d'une liste.
     */
    public Integer getListPanelHeight(){
@@ -593,7 +616,7 @@ public class MainWindow extends GenericForwardComposer<Component>
 
    /**
     * Renvoie la hauteur disponible pour une fiche annotation.
-    * 
+    *
     * @return hauteur d'une fiche annotation.
     */
    public Integer getAnnoPanelHeight(){
@@ -602,13 +625,13 @@ public class MainWindow extends GenericForwardComposer<Component>
    }
 
    /**
-    * Renvoie la largeur de la partie centrale de la bannière entre le logo TK
-    * et la sélection de la banque.
-    * 
+    * Renvoie la largeur de la partie centrale de la bannière entre le logo TK et
+    * la sélection de la banque.
+    *
     * @return
     */
    public Integer getDivSeparatorWidth(){
-      final Integer width = getWindowAvailableWidth() - 560;
+      final int width = getWindowAvailableWidth() - 560;
 
       return width;
    }
@@ -630,8 +653,8 @@ public class MainWindow extends GenericForwardComposer<Component>
    }
 
    /**
-    * Initialise les tabs qui sont disponibles pour l'utilisateur (en fonction
-    * de ses droits).
+    * Initialise les tabs qui sont disponibles pour l'utilisateur (en fonction de
+    * ses droits).
     */
    public void initAvailableTabsNames(){
 
@@ -717,9 +740,10 @@ public class MainWindow extends GenericForwardComposer<Component>
    }
 
    /**
-    * Selectionne l'onglet par defaut. Si un onglet a deja été choisi, le
-    * conserve si il est accessible, sinon selectionne l'onglet prelevement si
-    * il est accessible, sinon selectionne le premier onglet disponible.
+    * Selectionne l'onglet par defaut. Si un onglet a deja été choisi, le conserve
+    * si il est accessible, sinon selectionne l'onglet prelevement si il est
+    * accessible, sinon selectionne le premier onglet disponible.
+    *
     * @version 2.0.13.2
     */
    private void setStartingPanel(){
@@ -727,8 +751,8 @@ public class MainWindow extends GenericForwardComposer<Component>
          if(availableTabsNames.contains("prelevementTab")){
             mainTabbox.setSelectedTab((Tab) mainTabbox.getFellow("prelevementTab"));
          }else{
-            //	Tab accueil = (Tab) mainTabbox.getFellow("accueilTab");
-            //	mainTabbox.setSelectedTab(accueil);
+            // Tab accueil = (Tab) mainTabbox.getFellow("accueilTab");
+            // mainTabbox.setSelectedTab(accueil);
             // since 2.0.13.2
             // accueil default
             Tab firstAvail = (Tab) mainTabbox.getFellow(availableTabsNames.get(0));
@@ -745,9 +769,8 @@ public class MainWindow extends GenericForwardComposer<Component>
    /**
     * Méthode qui rend tous les tabs inactifs, sauf celui dont le nom est en
     * paramètre.
-    * 
-    * @param tabName
-    *            Nom du tab à garder actif.
+    *
+    * @param tabName Nom du tab à garder actif.
     */
    public void blockAllPanelsExceptOne(final String tabName){
       if(tabName != null && tabsNames.contains(tabName)){
@@ -808,14 +831,15 @@ public class MainWindow extends GenericForwardComposer<Component>
    }
 
    public void setSelectedBanque(final Banque selected){
+      this.previousBanque = selectedBanque;
       this.selectedBanque = selected;
    }
 
    /*
-    * public void onClientInfo$mainWin(ClientInfoEvent event) {
-    * int height = event.getScreenHeight(); Integer mainHeigth = 0; if (height
-    * > 650) { mainHeigth = (height * 80) / 100; } else { mainHeigth = 600; }
-    * 
+    * public void onClientInfo$mainWin(ClientInfoEvent event) { int height =
+    * event.getScreenHeight(); Integer mainHeigth = 0; if (height > 650) {
+    * mainHeigth = (height * 80) / 100; } else { mainHeigth = 600; }
+    *
     * tabPanelsHeight = mainHeigth - 100; panelHeight = mainHeigth - 140;
     * listPanelHeight = mainHeigth - 320; }
     */
@@ -905,13 +929,10 @@ public class MainWindow extends GenericForwardComposer<Component>
 
    /**
     * Méthode qui crée le macro component représentant le contenu d'un panel.
-    * 
-    * @param zul
-    *            Adresse du zul du MacroComponent.
-    * @param macroId
-    *            Id du MacroComponent.
-    * @param parentItem
-    *            TabPanel parent.
+    *
+    * @param zul        Adresse du zul du MacroComponent.
+    * @param macroId    Id du MacroComponent.
+    * @param parentItem TabPanel parent.
     */
    public void createMacroComponent(final String zul, final String macroId, final Tabpanel parentItem){
       if(!parentItem.hasFellow(macroId)){
@@ -921,11 +942,9 @@ public class MainWindow extends GenericForwardComposer<Component>
    }
 
    /**
-    * Méthode qui détruit le macro component représentant le contenu d'un
-    * panel.
-    * 
-    * @param parentItem
-    *            TabPanel parent.
+    * Méthode qui détruit le macro component représentant le contenu d'un panel.
+    *
+    * @param parentItem TabPanel parent.
     */
    public void destroyContentPanel(final Tabpanel parentItem){
       if(parentItem != null){
@@ -939,16 +958,15 @@ public class MainWindow extends GenericForwardComposer<Component>
     */
    public void updateDroitsForSelectedBanque(final Banque bk){
 
-      ConnexionUtils.generateDroitsForSelectedBanque(bk, bk.getPlateforme(), 
-    		  (Utilisateur) sessionScope.get("User"), sessionScope);
+      ConnexionUtils.generateDroitsForSelectedBanque(bk, bk.getPlateforme(), (Utilisateur) sessionScope.get("User"),
+         sessionScope);
    }
 
    /**
-    * Cette méthode créee une hashtable contenant, pour chaque entité, la liste
-    * des types d'operations possibles pour le profil du user.
-    * 
-    * @param profil
-    *            Profil pour la banque sélectionnée et l'utilisateur.
+    * Cette méthode créee une hashtable contenant, pour chaque entité, la liste des
+    * types d'operations possibles pour le profil du user.
+    *
+    * @param profil Profil pour la banque sélectionnée et l'utilisateur.
     * @return Hashtable contenant les OperationType.
     */
    public Hashtable<String, List<OperationType>> getOperationsForProfil(final Profil profil){
@@ -987,11 +1005,9 @@ public class MainWindow extends GenericForwardComposer<Component>
 
    /**
     * Méthode qui teste si le macrocomponent d'un panel a déja été chargé.
-    * 
-    * @param panelName
-    *            Nom du Tabpanel.
-    * @param macroName
-    *            Id du MacroComponent.
+    *
+    * @param panelName Nom du Tabpanel.
+    * @param macroName Id du MacroComponent.
     * @return True si le MacroComponent a été chargé.
     */
    public boolean isFullfilledComponent(final String panelName, final String macroName){
@@ -1010,15 +1026,12 @@ public class MainWindow extends GenericForwardComposer<Component>
    }
 
    /**
-    * Test si une action est réalisable en fonction des droits de
-    * l'utilisateur.
-    * 
-    * @param nomEntite
-    *            Entite (ex.:ProdDerive).
-    * @param nomOperation
-    *            Type d'operation du bouton.
+    * Test si une action est réalisable en fonction des droits de l'utilisateur.
+    *
+    * @param nomEntite    Entite (ex.:ProdDerive).
+    * @param nomOperation Type d'operation du bouton.
     */
-   
+
    public boolean getDroitOnAction(final String nomEntite, final String nomOperation){
       Boolean admin = false;
       if(sessionScope.containsKey("Admin")){
@@ -1079,16 +1092,12 @@ public class MainWindow extends GenericForwardComposer<Component>
    }
 
    /**
-    * Méthode appelée lorsque l'utilisateur clique sur le lien pour voir
-    * recherché les patients existants lors de la création d'un nouveau
-    * prélèvement.
-    * 
-    * @param page
-    *            dans laquelle inclure la modale
-    * @param path
-    *            Chemin vers la page ayant appelée cette modale.
-    * @param critere
-    *            Critere de recherche des patients.
+    * Méthode appelée lorsque l'utilisateur clique sur le lien pour voir recherché
+    * les patients existants lors de la création d'un nouveau prélèvement.
+    *
+    * @param page    dans laquelle inclure la modale
+    * @param path    Chemin vers la page ayant appelée cette modale.
+    * @param critere Critere de recherche des patients.
     */
    public void openFicheUtilisateurWindow(){
       if(!isBlockModal()){
@@ -1173,24 +1182,37 @@ public class MainWindow extends GenericForwardComposer<Component>
     * Lance la procédure d'import d'un nouveau patient depuis une appli tiers :
     * ouverture de la page nouveau prlvt avec le patient intégré à celle-ci.
     * 
+    * Méthode jamais appelée ?
+    *
     * @param patient
     */
    public void launchImportPatientFromCrfProdedure(Patient patient){
       Maladie maladie = new Maladie();
       maladie.setLibelle(SessionUtils.getSelectedBanques(sessionScope).get(0).getDefautMaladie());
       maladie.setCode(SessionUtils.getSelectedBanques(sessionScope).get(0).getDefautMaladieCode());
+      
+      // @since 2.3.0-gatsbi
+      if (GatsbiController.isInGatsbiContexte(SessionUtils.getCurrentBanque(sessionScope))) { // gastbi
+         patient.setBanque(SessionUtils.getCurrentBanque(sessionScope));
+      }
 
       // récupération du patient et de sa maladie s'ils existaient déjà
       // doublon patient
       // on regarde si le patient existe deja en base
-      if(ManagerLocator.getPatientManager().findDoublonManager(patient)){
-         final List<Patient> liste = ManagerLocator.getPatientManager().findByNomLikeManager(patient.getNom(), true);
+      if(ManagerLocator.getPatientManager().findDoublonManager(patient).isPresent()){
+//         final List<Patient> liste = ManagerLocator.getPatientManager().findByNomLikeManager(patient.getNom(), true);
+//
+//         for(int i = 0; i < liste.size(); i++){
+//            final Patient p = liste.get(i);
+//            if(patient.equals(p)){
+//               patient = p;
+//            }
+//         }
+         // @since 2.3.0-gatsbi, patient existant peut être par identifiant
+         Patient existingPat = ManagerLocator.getPatientManager().getExistingPatientManager(patient);
 
-         for(int i = 0; i < liste.size(); i++){
-            final Patient p = liste.get(i);
-            if(patient.equals(p)){
-               patient = p;
-            }
+         if(patient.equals(existingPat)){
+            patient = existingPat;
          }
 
          maladie.setPatient(patient);
@@ -1198,9 +1220,9 @@ public class MainWindow extends GenericForwardComposer<Component>
          // @since 2.2.3-genno optimisation = recherche la maladie par patient
 
          if(ManagerLocator.getMaladieManager().findDoublonManager(maladie, patient)){
-				// @since 2.2.3-genno optimisation = recherche la maladie par patient
-				final List<Maladie> mals = ManagerLocator.getMaladieManager()
-						.findByLibelleAndPatientManager(maladie.getLibelle(), patient);
+            // @since 2.2.3-genno optimisation = recherche la maladie par patient
+            final List<Maladie> mals =
+               ManagerLocator.getMaladieManager().findByLibelleAndPatientManager(maladie.getLibelle(), patient);
 
             for(int i = 0; i < mals.size(); i++){
                final Maladie m = mals.get(i);
@@ -1226,8 +1248,8 @@ public class MainWindow extends GenericForwardComposer<Component>
    }
 
    /**
-    * Affiche la fiche détaillée d'un objet TK annotable passé en 
-    * paramètre.
+    * Affiche la fiche détaillée d'un objet TK annotable passé en paramètre.
+    *
     * @param tkObj
     * @since 2.0.10
     */
@@ -1243,31 +1265,32 @@ public class MainWindow extends GenericForwardComposer<Component>
          tabController.switchToFicheStaticMode(tkObj);
       }
    }
-   
+
    /**
-    * Affiche une liste d'objects (prelevement) suite à une demande 
-    * de resources externe, comme le lien http envoyé à DIAMIC
+    * Affiche une liste d'objects (prelevement) suite à une demande de resources
+    * externe, comme le lien http envoyé à DIAMIC
+    *
     * @param tkObjs
     * @since 2.2.2-diamic
     */
    public void displayTkObjDetails(final ResourceRequest<?> resReq){
-	   if (resReq != null) {
-	      AbstractObjectTabController tabController = null;
-	      if(resReq.isPrelevement()){
-	         tabController = PrelevementController.backToMe(this, page);
-	      }
-	
-	      // si on arrive à récupérer le panel prelevement et son controller
-	      if(tabController != null){
-	    	  
-	    	 // si un seul objet à afficher
-	    	 if (resReq.getTkObjs().size() == 1) {
-	    		 tabController.switchToFicheStaticMode(resReq.getTkObjs().get(0));
-	    	 } else {
-	    		 tabController.displayObjectsListData(resReq.getTkObjs());
-	    	 }
-	      }
-	   }
+      if(resReq != null){
+         AbstractObjectTabController tabController = null;
+         if(resReq.isPrelevement()){
+            tabController = PrelevementController.backToMe(this, page);
+         }
+
+         // si on arrive à récupérer le panel prelevement et son controller
+         if(tabController != null){
+
+            // si un seul objet à afficher
+            if(resReq.getTkObjs().size() == 1){
+               tabController.switchToFicheStaticMode(resReq.getTkObjs().get(0));
+            }else{
+               tabController.displayObjectsListData(resReq.getTkObjs());
+            }
+         }
+      }
    }
 
    /******************** DROITS CONSULTATION SESSION UTILISATEUR ********/
@@ -1294,7 +1317,6 @@ public class MainWindow extends GenericForwardComposer<Component>
       drawConsultationLinks(eNoms);
    }
 
-   
    public void drawConsultationLinks(final List<String> entites){
       if(sessionScope.containsKey("Admin") && (Boolean) sessionScope.get("Admin")){
          for(int i = 0; i < entites.size(); i++){
@@ -1401,24 +1423,23 @@ public class MainWindow extends GenericForwardComposer<Component>
       }
       ManagerLocator.getScanTerminaleManager().removeObjectManager((ScanTerminale) ev.getData());
    }
-   
+
    /**** since 2.2.3-genno dossier externjes multiple integration *******/
-   
-   public boolean getGenno() {	   
-	   return findGennoEmetteurIfAny() != null;	   
+
+   public boolean getGenno(){
+      return findGennoEmetteurIfAny() != null;
    }
-   
-   private Emetteur findGennoEmetteurIfAny() {
-	   return SessionUtils.getEmetteursInterfacages(Sessions.getCurrent().getAttributes())
-			   .stream().filter(e -> e.getIdentification()
-					   .equalsIgnoreCase("Genno")).findFirst().orElse(null);
+
+   private Emetteur findGennoEmetteurIfAny(){
+      return SessionUtils.getEmetteursInterfacages(Sessions.getCurrent().getAttributes()).stream()
+         .filter(e -> e.getIdentification().equalsIgnoreCase("Genno")).findFirst().orElse(null);
    }
-   
-   public void onOpenDossierExternes() {
-	   final Map<String, Object> args = new HashMap<>();
-       args.put("emetteur", findGennoEmetteurIfAny());
-       args.put("mainWindow", this);
-       Executions.createComponents("/zuls/interfacage/SelectDossierExterneToSaveModale.zul", null, args);
+
+   public void onOpenDossierExternes(){
+      final Map<String, Object> args = new HashMap<>();
+      args.put("emetteur", findGennoEmetteurIfAny());
+      args.put("mainWindow", this);
+      Executions.createComponents("/zuls/interfacage/SelectDossierExterneToSaveModale.zul", null, args);
    }
 
 }

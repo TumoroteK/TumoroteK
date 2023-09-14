@@ -77,14 +77,19 @@ public class TransformationManagerImpl implements TransformationManager
 
    /** Bean Dao TransformationDao. */
    private TransformationDao transformationDao;
+
    /** Bean Dao ProdDeriveDao. */
    private ProdDeriveDao prodDeriveDao;
+
    /** Bean Dao EntiteDao. */
    private EntiteDao entiteDao;
+
    /** Bean Manager EntiteManager. */
    private EntiteManager entiteManager;
+
    /** Bean Dao UniteDao. */
    private UniteDao uniteDao;
+
    /** Bean Validator. */
    private TransformationValidator transformationValidator;
 
@@ -114,7 +119,7 @@ public class TransformationManagerImpl implements TransformationManager
 
    /**
     * Recherche une transformation dont l'identifiant est passé en paramètre.
-    * @param transformationId Identifiant de la transformation que l'on 
+    * @param transformationId Identifiant de la transformation que l'on
     * recherche.
     * @return Une Transformation.
     */
@@ -190,7 +195,7 @@ public class TransformationManagerImpl implements TransformationManager
 
    /**
     * Recherche les doublons de la Transformation passé en paramètre.
-    * @param transformation Transformation pour laquelle on cherche 
+    * @param transformation Transformation pour laquelle on cherche
     * des doublons.
     * @return True s'il existe des doublons.
     */
@@ -209,9 +214,9 @@ public class TransformationManagerImpl implements TransformationManager
    //	 * @return Vrai si la qualité est utilisée.
    //	 */
    //	public Boolean isUsedObjectManager(Transformation transformation) {
-   //		List<ProdDerive> list = 
+   //		List<ProdDerive> list =
    //			prodDeriveDao.findByTransformation(transformation);
-   //		
+   //
    //		return (list.size() > 0);
    //	}
 
@@ -248,7 +253,7 @@ public class TransformationManagerImpl implements TransformationManager
       }
 
       /*if (findDoublonManager(transformation)) {
-      	log.warn("Doublon lors de la creation de l'objet Transformation : " 
+      	log.warn("Doublon lors de la creation de l'objet Transformation : "
       			+ transformation.toString());
       	throw new DoublonFoundException("Transformation", "creation");
       } else {*/
@@ -293,7 +298,7 @@ public class TransformationManagerImpl implements TransformationManager
       }
 
       /*if (findDoublonManager(transformation)) {
-      	log.warn("Doublon lors de la modif de l'objet Transformation : " 
+      	log.warn("Doublon lors de la modif de l'objet Transformation : "
       			+ transformation.toString());
       	throw new DoublonFoundException("Transformation", "modification");
       } else {*/
@@ -306,7 +311,7 @@ public class TransformationManagerImpl implements TransformationManager
    @Override
    public void removeObjectManager(final Transformation transformation, final String comments, final Utilisateur user){
       //		if (isUsedObjectManager(transformation)) {
-      //			log.warn("Objet utilisé lors de la suppression de l'objet " 
+      //			log.warn("Objet utilisé lors de la suppression de l'objet "
       //					+ "Transformation : " + transformation.toString());
       //			throw new ObjectUsedException("Transformation", "suppression");
       //		} else {

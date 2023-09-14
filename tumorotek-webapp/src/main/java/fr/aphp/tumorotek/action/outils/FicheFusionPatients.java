@@ -90,17 +90,27 @@ public class FicheFusionPatients extends AbstractFicheCombineController
    private static final long serialVersionUID = -6573663322216502290L;
 
    private Textbox nomFirstBox;
+
    private Textbox nomSecondBox;
+
    private Div patientAConserverMaladiesDiv;
+
    private Div patientASupprimerMaladiesDiv;
+
    private Div patientAConserverMedecinsDiv;
+
    private Div patientASupprimerMedecinsDiv;
+
    private Div patientAConserverPrelevementsDiv;
+
    private Div patientASupprimerPrelevementsDiv;
+
    private Button fusionButton;
 
    private Patient patientAConserver;
+
    private Patient patientASupprimer;
+
    private String commentaires;
 
    @Override
@@ -139,11 +149,14 @@ public class FicheFusionPatients extends AbstractFicheCombineController
     */
    public void onClick$searchFirstPatient(){
       final String critereValue = nomFirstBox.getValue();
-      openSelectPatientWindow(Path.getPath(self), "onGetFirstPatientFromSelection", true, critereValue, patientASupprimer);
+      
+      // TODO gatsbi contexte HERE
+      
+      openSelectPatientWindow(Path.getPath(self), "onGetFirstPatientFromSelection", true, critereValue, patientASupprimer, null, null);
    }
 
    /**
-    * Méthode permettant de recevoir le patient à conserver 
+    * Méthode permettant de recevoir le patient à conserver
     * sélectionné dans la modal.
     * @param e Event contenant le patient sélectionné.
     */
@@ -153,7 +166,7 @@ public class FicheFusionPatients extends AbstractFicheCombineController
          patientAConserver = (Patient) e.getData();
 
          // on dessine les maladies
-         final List<Maladie> maladies = ManagerLocator.getMaladieManager().findByPatientNoSystemManager(patientAConserver);
+         final List<Maladie> maladies = ManagerLocator.getMaladieManager().findByPatientNoSystemNorVisiteManager(patientAConserver);
          List<String> values = new ArrayList<>();
          for(int i = 0; i < maladies.size(); i++){
             final StringBuffer sb = new StringBuffer();
@@ -215,11 +228,14 @@ public class FicheFusionPatients extends AbstractFicheCombineController
     */
    public void onClick$searchSecondPatient(){
       final String critereValue = nomSecondBox.getValue();
-      openSelectPatientWindow(Path.getPath(self), "onGetSecondPatientFromSelection", true, critereValue, patientAConserver);
+      
+      // TODO gatsbi contexte HERE
+      
+      openSelectPatientWindow(Path.getPath(self), "onGetSecondPatientFromSelection", true, critereValue, patientAConserver, null, null);
    }
 
    /**
-    * Méthode permettant de recevoir le patient à supprimer 
+    * Méthode permettant de recevoir le patient à supprimer
     * sélectionné dans la modal.
     * @param e Event contenant le patient sélectionné.
     */
@@ -229,7 +245,7 @@ public class FicheFusionPatients extends AbstractFicheCombineController
          patientASupprimer = (Patient) e.getData();
 
          // on dessine les maladies
-         final List<Maladie> maladies = ManagerLocator.getMaladieManager().findByPatientNoSystemManager(patientASupprimer);
+         final List<Maladie> maladies = ManagerLocator.getMaladieManager().findByPatientNoSystemNorVisiteManager(patientASupprimer);
          List<String> values = new ArrayList<>();
          for(int i = 0; i < maladies.size(); i++){
             final StringBuffer sb = new StringBuffer();
@@ -426,14 +442,14 @@ public class FicheFusionPatients extends AbstractFicheCombineController
    //	 * @param path Chemin vers la page ayant appelée cette modale.
    //	 * @param critere Critere de recherche des patients.
    //	 */
-   //	public void openSelectPatientWindow(Page page, 
+   //	public void openSelectPatientWindow(Page page,
    //			String path, String returnMethode,
    //			boolean isFusionPatients, String critere,
    //			Patient patientAExclure) {
    //		 if (!isBlockModal()) {
-   //				
+   //
    //			 setBlockModal(true);
-   //		
+   //
    //			// nouvelle fenêtre
    //			final Window win = new Window();
    //			win.setVisible(false);
@@ -447,35 +463,35 @@ public class FicheFusionPatients extends AbstractFicheCombineController
    ////			int height = 470;
    ////			win.setHeight(height + "px");
    //			win.setClosable(true);
-   //			
+   //
    //			final HtmlMacroComponent ua = populateSelectPatientModal(
-   //					win, page, path, returnMethode, isFusionPatients, 
+   //					win, page, path, returnMethode, isFusionPatients,
    //					critere, patientAExclure);
    //			ua.setVisible(false);
-   //			
+   //
    //			win.addEventListener("onTimed", new EventListener<Event>() {
    //				public void onEvent(Event event) throws Exception {
    //					//progress.detach();
    //					ua.setVisible(true);
    //				}
    //			});
-   //			
+   //
    //			Timer timer = new Timer();
    //			timer.setDelay(500);
    //			timer.setRepeats(false);
    //			timer.addForward("onTimer", timer.getParent(), "onTimed");
    //			win.appendChild(timer);
    //			timer.start();
-   //			
+   //
    //			try {
    //				win.onModal();
    //				setBlockModal(false);
-   //	
+   //
    //			} catch (SuspendNotAllowedException e) { log.error(e);
    //			}
    //		 }
    //	}
-   //	
+   //
    //	private static HtmlMacroComponent populateSelectPatientModal(
    //			Window win, Page page,
    //			String path, String returnMethode,
@@ -490,13 +506,13 @@ public class FicheFusionPatients extends AbstractFicheCombineController
    //		ua.setParent(win);
    //		ua.setId("openSelectPatientModale");
    //		ua.applyProperties();
-   //		ua.afterCompose(); 
-   //		
+   //		ua.afterCompose();
+   //
    //		((SelectPatientModale) ua.getFellow("fwinSelectPatientModale")
    //				.getAttributeOrFellow("fwinSelectPatientModale$composer", true))
    //				.init(path, returnMethode, isFusionPatients, critere,
    //						patientAExclure);
-   //		
+   //
    //		return ua;
    //	}
 
@@ -598,7 +614,7 @@ public class FicheFusionPatients extends AbstractFicheCombineController
       if(!values.isEmpty()){
          final Label label1 = new Label(values.get(0));
          label1.setSclass("formValue");
-         // dessine le label avec un lien vers popup 
+         // dessine le label avec un lien vers popup
          if(values.size() > 1){
             final Hbox labelAndLinkBox = new Hbox();
             labelAndLinkBox.setSpacing("5px");

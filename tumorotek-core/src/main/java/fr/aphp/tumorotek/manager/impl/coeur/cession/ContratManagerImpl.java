@@ -76,21 +76,30 @@ public class ContratManagerImpl implements ContratManager
 
    /** Bean Dao. */
    private ContratDao contratDao;
+
    /** Bean Dao CessionDao. */
    private CessionDao cessionDao;
+
    /** Bean Dao. */
    private CollaborateurDao collaborateurDao;
+
    /** Bean Dao. */
    private ServiceDao serviceDao;
+
    /** Bean Dao. */
    private EtablissementDao etablissementDao;
+
    /** Bean Dao. */
    private ProtocoleTypeDao protocoleTypeDao;
+
    /** Bean Dao. */
    private PlateformeDao plateformeDao;
+
    /** Bean Validator. */
    private ContratValidator contratValidator;
+
    private OperationManager operationManager;
+
    private OperationTypeDao operationTypeDao;
 
    /**

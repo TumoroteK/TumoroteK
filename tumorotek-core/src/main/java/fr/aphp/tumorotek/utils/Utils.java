@@ -123,6 +123,7 @@ public final class Utils
     * @param file TKAnnotableObject
     * @return path
     */
+   //TK-298 : https://tumorotek.myjetbrains.com/youtrack/issue/TK-298
    public static String writeAnnoFilePath(String baseDir, final Banque bank, final ChampAnnotation chp, final Fichier file){
       if(baseDir == null || !new File(baseDir).exists()){
          throw new RuntimeException("error.filesystem.access");
@@ -239,6 +240,7 @@ public final class Utils
       return resultat;
    }
 
+   // PF_1:R1,R2,R3;PF_2:R1,R2;
    public static Hashtable<Integer, List<Integer>> extractAssosPlateformesEmetteursRecepteurs(String value){
       final Hashtable<Integer, List<Integer>> associations = new Hashtable<>();
 

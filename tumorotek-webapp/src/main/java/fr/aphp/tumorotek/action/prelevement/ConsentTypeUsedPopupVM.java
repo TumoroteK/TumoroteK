@@ -59,6 +59,7 @@ public class ConsentTypeUsedPopupVM
 {
 
    ConsentTypeUsedTable table;
+
    ListModel<PrelevementDecorator2> prelsModel = null;
 
    @Init

@@ -75,24 +75,31 @@ public class FicheRecherche extends AbstractFicheCombineController
     *  Editable components : mode d'édition ou de création.
     */
    private Label intituleLabel;
+
    private Label requeteLabel;
+
    private Label affichageLabel;
    // private Label banquesLabel;
 
    private Label intituleRequired;
+
    private Textbox intituleBox;
 
    private Label requeteRequired;
+
    private Listbox requetesBox;
 
    private Label affichageRequired;
+
    private Listbox affichagesBox;
 
    // private Label banquesRequired;
    // private Listbox banquesBox;
 
    private List<Requete> requetes;
+
    private List<Affichage> affichages;
+
    private List<Banque> banques;
 
    private List<Banque> banquesDeRecherche;
@@ -103,7 +110,7 @@ public class FicheRecherche extends AbstractFicheCombineController
 
    /**
     *  Gestion des contraintes sur les quantités et volumes.
-    *  Variables conservant les valeurs saisies dans les champs. 
+    *  Variables conservant les valeurs saisies dans les champs.
     */
 
    @Override

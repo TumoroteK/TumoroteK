@@ -74,20 +74,32 @@ public class FicheImprimanteModale extends AbstractFicheCombineController
 
    // Components
    private Combobox imprimantesBox;
+
    private Listbox orientationsBox;
+
    private Listbox imprimanteApisBox;
+
    private Row selectImprimante;
+
    private Row descImprimante;
+
    private Row rowMbioPrinter;
 
    // Objets principaux
    private Imprimante imprimante;
+
    private Component parent;
+
    private List<ImprimanteApi> imprimanteApis = new ArrayList<>();
+
    private ImprimanteApi selectedImprimanteApi;
+
    private List<String> orientations = new ArrayList<>();
+
    private String selectedOrientation;
+
    private List<String> availableImprimantes = new ArrayList<>();
+
    private String selectedImprimante;
 
    @Override

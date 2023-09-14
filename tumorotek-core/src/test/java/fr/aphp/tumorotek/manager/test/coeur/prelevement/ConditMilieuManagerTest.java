@@ -65,6 +65,7 @@ public class ConditMilieuManagerTest extends AbstractManagerTest4
 
    @Autowired
    private ConditMilieuManager conditMilieuManager;
+
    @Autowired
    private PlateformeDao plateformeDao;
 
@@ -81,7 +82,7 @@ public class ConditMilieuManagerTest extends AbstractManagerTest4
       //teste une recherche non exactMatch
       conditMilieux = conditMilieuManager.findByMilieuLikeManager("HEP", false);
       assertTrue(conditMilieux.size() == 1);
-      assertTrue(conditMilieux.get(0).getMilieu().equals("HEPARINE"));
+      assertTrue(conditMilieux.get(0).getNom().equals("HEPARINE"));
       //teste une recherche infructueuse
       conditMilieux = conditMilieuManager.findByMilieuLikeManager("TRIZOL", false);
       assertTrue(conditMilieux.size() == 0);
@@ -99,11 +100,11 @@ public class ConditMilieuManagerTest extends AbstractManagerTest4
       final ConditMilieu cm1 = (conditMilieuManager.findByMilieuLikeManager("SEC", true)).get(0);
       assertFalse(conditMilieuManager.findDoublonManager(cm1));
       final ConditMilieu cm2 = new ConditMilieu();
-      cm2.setMilieu(cm1.getMilieu());
+      cm2.setNom(cm1.getNom());
       cm2.setPlateforme(cm1.getPlateforme());
       assertTrue(cm2.equals(cm1));
       assertTrue(conditMilieuManager.findDoublonManager(cm2));
-      cm1.setMilieu("HEPARINE");
+      cm1.setNom("HEPARINE");
       cm1.setPlateforme(plateformeDao.findById(2));
       assertTrue(conditMilieuManager.findDoublonManager(cm1));
    }
@@ -134,14 +135,14 @@ public class ConditMilieuManagerTest extends AbstractManagerTest4
    private void createObjectManagerTest(){
       //Insertion nouvel enregistrement
       final ConditMilieu cm1 = new ConditMilieu();
-      cm1.setMilieu("EDTA-");
+      cm1.setNom("EDTA-");
       cm1.setPlateforme(plateformeDao.findById(1));
       conditMilieuManager.createObjectManager(cm1);
       assertTrue((conditMilieuManager.findByMilieuLikeManager("EDTA-", true)).size() == 1);
       //Insertion d'un doublon engendrant une exception
       Boolean catched = false;
       final ConditMilieu cm1Bis = new ConditMilieu();
-      cm1Bis.setMilieu("EDTA-");
+      cm1Bis.setNom("EDTA-");
       try{
          conditMilieuManager.createObjectManager(cm1Bis);
       }catch(final Exception e){
@@ -168,7 +169,7 @@ public class ConditMilieuManagerTest extends AbstractManagerTest4
       cm2.setPlateforme(cm1.getPlateforme());
       for(int i = 0; i < emptyValues.length; i++){
          try{
-            cm2.setMilieu(emptyValues[i]);
+            cm2.setNom(emptyValues[i]);
             conditMilieuManager.createObjectManager(cm2);
          }catch(final ValidationException e){
             //verifie qu'aucune ligne n'a ete ajoutee
@@ -180,13 +181,13 @@ public class ConditMilieuManagerTest extends AbstractManagerTest4
    private void updateObjectManagerTest(){
       //Modification d'un enregistrement
       final ConditMilieu cm1 = (conditMilieuManager.findByMilieuLikeManager("EDTA-", true)).get(0);
-      cm1.setMilieu("Triz.zol +");
+      cm1.setNom("Triz.zol +");
       conditMilieuManager.updateObjectManager(cm1);
       assertTrue((conditMilieuManager.findByMilieuLikeManager("Triz.zol +", true)).size() == 1);
       //Modification en un doublon engendrant une exception
       Boolean catched = false;
       try{
-         cm1.setMilieu("SEC");
+         cm1.setNom("SEC");
          conditMilieuManager.updateObjectManager(cm1);
       }catch(final Exception e){
          if(e.getClass().getSimpleName().equals("DoublonFoundException")){
@@ -200,7 +201,7 @@ public class ConditMilieuManagerTest extends AbstractManagerTest4
       final String[] emptyValues = new String[] {"", "  ", "$$lk#¤¤", createOverLength(200), null};
       for(int i = 0; i < emptyValues.length; i++){
          try{
-            cm1.setMilieu(emptyValues[i]);
+            cm1.setNom(emptyValues[i]);
             conditMilieuManager.updateObjectManager(cm1);
          }catch(final ValidationException e){
             //verifie que l'enregistrement n'a pas ete modifie

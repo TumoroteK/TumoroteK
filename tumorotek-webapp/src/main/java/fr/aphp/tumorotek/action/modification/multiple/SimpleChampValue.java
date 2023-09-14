@@ -47,7 +47,9 @@ package fr.aphp.tumorotek.action.modification.multiple;
 public class SimpleChampValue
 {
    private String champ;
+
    private Object value;
+
    private String printValue;
 
    public String getChamp(){

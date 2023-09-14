@@ -67,6 +67,7 @@ public class DestructionMotifManagerTest extends AbstractManagerTest4
 
    @Autowired
    private DestructionMotifManager destructionMotifManager;
+
    @Autowired
    private PlateformeDao plateformeDao;
 

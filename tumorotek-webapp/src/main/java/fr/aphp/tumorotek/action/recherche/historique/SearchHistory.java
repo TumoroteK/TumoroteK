@@ -59,14 +59,19 @@ public class SearchHistory implements Serializable
    private static final long serialVersionUID = 1L;
 
    private static final String GREATER_THAN = " > ";
+
    private static final String SPACE = " ";
 
    private List<RechercheCompValues> listSearchHistoryComponent;
+
    private List<RechercheCompValues> listAnnotationsComponent;
 
    private String type;
+
    private int resultCount = 0;
+
    private String searchTime;
+
    private String info;
 
    List<String> openedGroupsIds = new ArrayList<>();

@@ -83,8 +83,11 @@ public class ImportHistorique implements java.io.Serializable, TKdataObject
    private static final long serialVersionUID = 7189671254502803140L;
 
    private Integer importHistoriqueId;
+
    private ImportTemplate importTemplate;
+
    private Utilisateur utilisateur;
+
    private Calendar date;
 
    private Set<Importation> importations = new HashSet<>();

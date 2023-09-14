@@ -57,7 +57,7 @@ public interface LaboInterDao extends GenericDaoJpa<LaboInter, Integer>
 {
 
    /**
-    * Recherche tous les labo intermediaires sauf celui dont l'id est passé 
+    * Recherche tous les labo intermediaires sauf celui dont l'id est passé
     * en paramètre.
     * @param laboInterId Identifiant du labo que l'on souhaite
     * exclure de la liste retournée.
@@ -95,7 +95,7 @@ public interface LaboInterDao extends GenericDaoJpa<LaboInter, Integer>
    List<LaboInter> findByPrelevementWithOrder(Prelevement prelevement);
 
    /**
-    * Recherche les ordres des labos intermediaires par leur 
+    * Recherche les ordres des labos intermediaires par leur
     * prelevement.
     * @param prelevement Prelevement.
     * @return Liste d'ordres de labos intermediaires.
@@ -103,8 +103,8 @@ public interface LaboInterDao extends GenericDaoJpa<LaboInter, Integer>
    List<Integer> findByPrelevementWithOnlyOrder(Prelevement prelevement);
 
    /**
-    * Recherche les ordres des labos intermediaires par leur 
-    * prelevement. Ne retourne pas l'ordre du labo dont l'id est passé 
+    * Recherche les ordres des labos intermediaires par leur
+    * prelevement. Ne retourne pas l'ordre du labo dont l'id est passé
     * en paramètre.
     * @param prelevement Prelevement.
     * @param laboInterId Identifiant du labo à ignorer.

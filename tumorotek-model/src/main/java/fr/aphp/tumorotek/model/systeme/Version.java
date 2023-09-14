@@ -67,9 +67,13 @@ import org.hibernate.annotations.GenericGenerator;
 public class Version implements Serializable
 {
    private Integer versionId;
+
    private String version;
+
    private Date date;
+
    private String nomSite;
+
    private static final long serialVersionUID = 8764654676154L;
 
    public Version(){}

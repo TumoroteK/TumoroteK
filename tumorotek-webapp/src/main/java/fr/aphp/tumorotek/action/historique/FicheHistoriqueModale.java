@@ -74,8 +74,11 @@ public class FicheHistoriqueModale extends AbstractFicheCombineController
    private static final long serialVersionUID = 6483086378228201927L;
 
    private TKdataObject historiqueObject;
+
    private String title;
+
    private List<Operation> operations = new ArrayList<>();
+
    private OperationRenderer operationRenderer = new OperationRenderer();
 
    @Override

@@ -63,6 +63,7 @@ public class FicheMaladieSero extends FicheMaladie
    private static final long serialVersionUID = 7781723391910786070L;
 
    private Label diagSeroLabel;
+
    private Listbox diagSeroBox;
 
    private Diagnostic selectedDiag;
@@ -71,8 +72,8 @@ public class FicheMaladieSero extends FicheMaladie
 
    @Override
    public void doAfterCompose(final Component comp) throws Exception{
-	   
-	   setPrelevementRenderer(new PrelevementSeroItemRenderer());
+
+      setPrelevementRenderer(new PrelevementSeroItemRenderer());
 
       super.doAfterCompose(comp);
 
@@ -90,7 +91,7 @@ public class FicheMaladieSero extends FicheMaladie
       comps[comps.length - 1] = diagSeroBox;
       setObjBoxsComponents(comps);
    }
-   
+
    @Override
    public void onClick$editC(){
       if(null == maladie.getDelegate()){
@@ -123,7 +124,7 @@ public class FicheMaladieSero extends FicheMaladie
 
    /**
     * Setter appelé par fichePatient lors du dessin des panels.
-    * Cette méthode est donc appelée avec des maladies existantes et 
+    * Cette méthode est donc appelée avec des maladies existantes et
     * une nouvelle maladie (empty) potentiellement.
     * Récupère les prélèvements pour la banque courante et les prèlèvements
     * pour une autre banque dans deux listes séparées.

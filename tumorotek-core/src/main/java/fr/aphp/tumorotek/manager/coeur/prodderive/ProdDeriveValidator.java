@@ -70,8 +70,8 @@ public interface ProdDeriveValidator extends Validator
    Errors checkDateTransfoCoherence(ProdDerive derive);
 
    /**
-    * Parcoure les dates des objets dérivés d'un parent jusqu'a la date 
-    * actuelle, pour trouver la date de référence la moins 
+    * Parcoure les dates des objets dérivés d'un parent jusqu'a la date
+    * actuelle, pour trouver la date de référence la moins
     * récente.
     * Permet la récursivite sur les dérivés de dérivés.
     * @param object parent

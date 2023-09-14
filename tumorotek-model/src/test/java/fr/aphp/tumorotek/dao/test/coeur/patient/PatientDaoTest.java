@@ -50,6 +50,7 @@ import fr.aphp.tumorotek.dao.contexte.EtablissementDao;
 import fr.aphp.tumorotek.dao.systeme.EntiteDao;
 import fr.aphp.tumorotek.dao.test.AbstractDaoTest;
 import fr.aphp.tumorotek.model.coeur.patient.Patient;
+import fr.aphp.tumorotek.model.coeur.patient.gatsbi.PatientIdentifiant;
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.contexte.Etablissement;
 
@@ -60,7 +61,7 @@ import fr.aphp.tumorotek.model.contexte.Etablissement;
  * Classe de test créée le 28/10/09.
  *
  * @author Mathieu BARTHELEMY
- * @version 2.0
+ * @version 2.3.0-gatsbi
  *
  */
 public class PatientDaoTest extends AbstractDaoTest
@@ -335,7 +336,10 @@ public class PatientDaoTest extends AbstractDaoTest
       p.setDateEtat(etat);
       p.setDateDeces(null);
       p.setEtatIncomplet(false);
-      p.setArchive(false);
+      p.setArchive(false);     
+      // @since 2.3.0-gatsbi
+//      p.setIdentifiant("gatsbi123");
+      
       // Test de l'insertion
       patientDao.createObject(p);
       assertEquals(new Integer(6), p.getPatientId());
@@ -355,6 +359,8 @@ public class PatientDaoTest extends AbstractDaoTest
       assertNull(p2.getDateDeces());
       assertFalse(p2.getEtatIncomplet());
       assertFalse(p2.getArchive());
+//      assertTrue(p2.getIdentifiant().equals("gatsbi123"));
+      
       //update
       p.setNip(null);
       p.setNom("Rey mysterio");
@@ -369,6 +375,8 @@ public class PatientDaoTest extends AbstractDaoTest
       p.setDateDeces(deces);
       p.setEtatIncomplet(null);
       p.setArchive(null);
+      // @since 2.3.0-gatsbi
+//      p.setIdentifiant("gatsbi124");
       patientDao.updateObject(p2);
       assertNull(patientDao.findById(6).getNip());
       assertTrue(patientDao.findById(6).getNom().equals("Rey mysterio"));
@@ -382,6 +390,8 @@ public class PatientDaoTest extends AbstractDaoTest
       assertTrue(patientDao.findById(6).getDateDeces().equals(deces));
       assertNull(patientDao.findById(6).getEtatIncomplet());
       assertNull(patientDao.findById(6).getArchive());
+//      assertTrue(patientDao.findById(6).getIdentifiant().equals("gatsbi124"));
+
 
       // Test de la délétion
       patientDao.removeObject(new Integer(6));
@@ -450,33 +460,43 @@ public class PatientDaoTest extends AbstractDaoTest
       final Date date3 = new SimpleDateFormat("dd/MM/yyyy").parse("13/10/2006");
       final Date[] dates = new Date[] {null, date1, date2, date3};
       final String[] villes = new String[] {null, "ville1", "ville2", "ville1"};
+ //     final String[] identifiants = new String[] {null, "g1", "g2", "g1"};
 
       for(int i = 0; i < noms.length; i++){
          for(int j = 0; j < prenoms.length; j++){
             for(int k = 0; k < dates.length; k++){
                for(int l = 0; l < villes.length; l++){
-                  for(int m = 0; m < noms.length; m++){
-                     for(int n = 0; n < prenoms.length; n++){
-                        for(int o = 0; o < dates.length; o++){
-                           for(int q = 0; q < villes.length; q++){
-                              p1.setNom(noms[i]);
-                              p1.setPrenom(prenoms[j]);
-                              p1.setDateNaissance(dates[k]);
-                              p1.setVilleNaissance(villes[l]);
-                              p2.setNom(noms[m]);
-                              p2.setPrenom(prenoms[n]);
-                              p2.setDateNaissance(dates[o]);
-                              p2.setVilleNaissance(villes[q]);
-                              if(((i == m) || (i + m == 4)) && ((j == n) || (j + n == 4)) && ((k == o) || (k + o == 4))
-                                 && ((l == q) || (l + q == 4) || l == 0 || q == 0)){
-                                 assertTrue(p1.equals(p2));
-                                 assertTrue(p1.hashCode() == p2.hashCode());
-                              }else{
-                                 assertFalse(p1.equals(p2));
+               //   for(int d = 0; d < identifiants.length; d++){
+                     for(int m = 0; m < noms.length; m++){
+                        for(int n = 0; n < prenoms.length; n++){
+                           for(int o = 0; o < dates.length; o++){
+                              for(int q = 0; q < villes.length; q++){
+               //                  for(int e = 0; e < identifiants.length; e++){
+
+                                    p1.setNom(noms[i]);
+                                    p1.setPrenom(prenoms[j]);
+                                    p1.setDateNaissance(dates[k]);
+                                    p1.setVilleNaissance(villes[l]);
+                 //                   p1.setIdentifiant(identifiants[d]);
+                                    p2.setNom(noms[m]);
+                                    p2.setPrenom(prenoms[n]);
+                                    p2.setDateNaissance(dates[o]);
+                                    p2.setVilleNaissance(villes[q]);
+                 //                   p2.setIdentifiant(identifiants[e]);
+                                    
+                                    if(((i == m) || (i + m == 4)) && ((j == n) || (j + n == 4)) && ((k == o) || (k + o == 4))
+                                       && ((l == q) || (l + q == 4) || l == 0 || q == 0)){
+                                     //   && ((e == d) || (e + d == 4)) 
+                                       assertTrue(p1.equals(p2));
+                                       assertTrue(p1.hashCode() == p2.hashCode());
+                                    }else{
+                                       assertFalse(p1.equals(p2));
+                                    }
+                              //   }
                               }
                            }
                         }
-                     }
+                  //   }
                   }
                }
             }
@@ -709,5 +729,99 @@ public class PatientDaoTest extends AbstractDaoTest
       res = patientDao.findCountPrelevedByDatesPrelExt(d1, d2, banks, null);
       assertTrue(res.get(0) == 0);
    }
+   
+   public void testFindByIdentifiantReturnIds(){
+      final List<Banque> bks = new ArrayList<>();
+      bks.add(banqueDao.findById(1));
+      List<Integer> patients = patientDao.findByIdentifiantReturnIds("SLS-1234", bks);
+      assertTrue(patients.size() == 1);
 
+      patients = patientDao.findByIdentifiantReturnIds("K12", bks);
+      assertTrue(patients.size() == 0);
+
+      patients = patientDao.findByIdentifiantReturnIds("SLS-123%", bks);
+      assertTrue(patients.size() == 1);
+
+      bks.add(banqueDao.findById(2));
+      patients = patientDao.findByIdentifiantReturnIds("%", bks);
+      assertTrue(patients.size() == 2);
+
+      patients = patientDao.findByIdentifiantReturnIds(null, bks);
+      assertTrue(patients.size() == 0);
+
+      patients = patientDao.findByIdentifiantReturnIds("%", null);
+      assertTrue(patients.size() == 0);
+   }
+   
+   public void testFindByIdentifiantInList(){
+      List<String> identifiants = new ArrayList<>();
+      identifiants.add("SLS-1234");
+      identifiants.add("MEL-889");
+      identifiants.add("SLS-1255");
+      final List<Banque> banks = new ArrayList<>();
+      banks.add(banqueDao.findById(1));
+      banks.add(banqueDao.findById(2));
+
+      List<Integer> liste = patientDao.findByIdentifiantInList(identifiants, banks);
+      assertTrue(liste.size() == 2);
+
+      identifiants.clear();
+      identifiants.add("MEL-889");
+      liste = patientDao.findByIdentifiantInList(identifiants, banks);
+      assertTrue(liste.size() == 1);
+   }
+   
+   public void testFindByIdentifiant(){
+      String identifiant = "SLS-1234";
+      final List<Banque> banks = new ArrayList<>();
+      banks.add(banqueDao.findById(1));
+
+      List<Patient> patients = patientDao.findByIdentifiant(identifiant, banks);
+      assertTrue(patients.size() == 1);
+      assertTrue(patients.get(0).getPatientId() == 1);
+      
+      identifiant = "SLS-12%";
+      patients = patientDao.findByIdentifiant(identifiant, banks);
+      assertTrue(patients.size() == 2);
+
+
+      banks.add(banqueDao.findById(2));
+      identifiant = "%";
+      patients = patientDao.findByIdentifiant(identifiant, banks);
+      assertTrue(patients.size() == 2);
+      
+      identifiant = "UNK";
+      patients = patientDao.findByIdentifiant(identifiant, banks);
+      assertTrue(patients.isEmpty());
+   }
+   
+   public void testFindIdentifiantsByPatientAndBanques(){
+      final List<Banque> banks = new ArrayList<>();
+      banks.add(banqueDao.findById(1));
+
+      final List<PatientIdentifiant> identifiants = patientDao
+         .findIdentifiantsByPatientAndBanques(patientDao.findById(1), banks);
+      assertTrue(identifiants.size() == 1);
+      assertTrue(identifiants.get(0).getIdentifiant().equals("SLS-1234"));
+    
+      banks.add(banqueDao.findById(2));
+      identifiants.clear();
+      identifiants.addAll(patientDao
+         .findIdentifiantsByPatientAndBanques(patientDao.findById(1), banks));
+      assertTrue(identifiants.size() == 2);
+      assertTrue(identifiants.get(0).getIdentifiant().equals("SLS-1234"));
+      assertTrue(identifiants.get(1).getIdentifiant().equals("MEL-889"));
+      
+      identifiants.clear();
+      identifiants.addAll(patientDao
+         .findIdentifiantsByPatientAndBanques(patientDao.findById(2), banks));
+      assertTrue(identifiants.size() == 1);
+      assertTrue(identifiants.get(0).getIdentifiant().equals("SLS-1255"));
+
+      // nulls
+      identifiants.clear();
+      identifiants.addAll(patientDao
+         .findIdentifiantsByPatientAndBanques(null, banks));
+      assertTrue(identifiants.isEmpty());
+   }
 }

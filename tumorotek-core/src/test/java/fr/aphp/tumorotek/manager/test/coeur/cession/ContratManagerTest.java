@@ -85,16 +85,22 @@ public class ContratManagerTest extends AbstractManagerTest4
 
    @Autowired
    private ContratManager contratManager;
+
    @Autowired
    private CollaborateurManager collaborateurManager;
+
    @Autowired
    private ServiceManager serviceManager;
+
    @Autowired
    private ProtocoleTypeManager protocoleTypeManager;
+
    @Autowired
    private UtilisateurDao utilisateurDao;
+
    @Autowired
    private EtablissementDao etablissementDao;
+
    @Autowired
    private PlateformeDao plateformeDao;
 

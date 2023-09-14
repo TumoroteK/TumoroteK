@@ -90,19 +90,31 @@ public class HistoriqueController extends AbstractObjectTabController
    private static final long serialVersionUID = 527753922586818481L;
 
    private Grid historiqueGrid;
+
    private Button find;
+
    private Button export;
 
    private Date date1;
+
    private Date date2;
+
    private List<Operation> operations = new ArrayList<>();
+
    private List<String> operateursDates = new ArrayList<>();
+
    private String operateur = "=";
+
    private List<OperationType> operationTypes = new ArrayList<>();
+
    private OperationType operationType;
+
    private List<Utilisateur> utilisateurs = new ArrayList<>();
+
    private Utilisateur selectedUtilisateur;
+
    private final List<Utilisateur> selUsers = new ArrayList<>();
+
    private HistoriqueRenderer operationRenderer = new HistoriqueRenderer();
 
    private static I3listBoxItemRenderer typeRenderer = new I3listBoxItemRenderer("nom");

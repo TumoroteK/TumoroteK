@@ -47,7 +47,9 @@ public class ListeElement
 {
 
    private String titre;
+
    private EnteteListe entete;
+
    private LigneListe[] lignes;
 
    public ListeElement(){

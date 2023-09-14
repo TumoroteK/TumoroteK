@@ -61,6 +61,7 @@ public class ModificationMultipleDatebox extends AbstractModificationMultipleCom
    private static final long serialVersionUID = 4487271130091905174L;
 
    private Datebox multiDatebox;
+
    private Datebox eraseMultiDatebox;
 
    private boolean isCalendar = false;

@@ -67,7 +67,9 @@ public class PrelevementTypeManagerImpl implements PrelevementTypeManager
 
    /* Beans injectes par Spring*/
    private PrelevementTypeDao prelevementTypeDao;
+
    private PrelevementTypeValidator prelevementTypeValidator;
+
    private PlateformeDao plateformeDao;
 
    public PrelevementTypeManagerImpl(){}

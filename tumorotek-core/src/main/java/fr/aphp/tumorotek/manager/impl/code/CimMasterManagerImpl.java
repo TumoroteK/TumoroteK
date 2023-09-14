@@ -68,6 +68,7 @@ public class CimMasterManagerImpl implements CimMasterManager
    private final Log log = LogFactory.getLog(CimMasterManager.class);
 
    private CimMasterDao cimMasterDao;
+
    private EntityManagerFactory entityManagerFactory;
 
    public void setCimMasterDao(final CimMasterDao cDao){
@@ -102,11 +103,10 @@ public class CimMasterManagerImpl implements CimMasterManager
       // List<CimLibelle> libs = cimLibelleDao.findByLibelleLike(libelle);
       // for (int i = 0; i < libs.size(); i++) {
       //	cims.add(libs.get(i).getCimMaster());
-      //}		
+      //}
       return cimMasterDao.findByLibelleLike(libelle);
    }
 
-   
    @Override
    public List<CimMaster> findByCimParentManager(final CimMaster parent){
       List<CimMaster> cims = new ArrayList<>();

@@ -100,12 +100,14 @@ import fr.aphp.tumorotek.manager.context.ContexteManager;
 import fr.aphp.tumorotek.manager.context.CoordonneeManager;
 import fr.aphp.tumorotek.manager.context.DiagnosticManager;
 import fr.aphp.tumorotek.manager.context.EtablissementManager;
+import fr.aphp.tumorotek.manager.context.OrganismeManager;
 import fr.aphp.tumorotek.manager.context.PlateformeManager;
 import fr.aphp.tumorotek.manager.context.ProtocoleManager;
 import fr.aphp.tumorotek.manager.context.ServiceManager;
 import fr.aphp.tumorotek.manager.context.SpecialiteManager;
 import fr.aphp.tumorotek.manager.context.TitreManager;
 import fr.aphp.tumorotek.manager.context.TransporteurManager;
+import fr.aphp.tumorotek.manager.context.gatsbi.EtudeManager;
 import fr.aphp.tumorotek.manager.dto.EchantillonDTOManager;
 import fr.aphp.tumorotek.manager.etiquettes.TumoBarcodePrinter;
 import fr.aphp.tumorotek.manager.etiquettes.TumoPrinterUtilsManager;
@@ -184,6 +186,8 @@ import fr.aphp.tumorotek.manager.utilisateur.ProfilManager;
 import fr.aphp.tumorotek.manager.utilisateur.ProfilUtilisateurManager;
 import fr.aphp.tumorotek.manager.utilisateur.UtilisateurManager;
 import fr.aphp.tumorotek.manager.validation.coeur.cession.retour.RetourValidator;
+import fr.aphp.tumorotek.manager.validation.coeur.patient.MaladieValidator;
+import fr.aphp.tumorotek.manager.validation.coeur.patient.gatsbi.MaladieValidatorDateCoherenceOverride;
 import fr.aphp.tumorotek.manager.xml.XmlUtils;
 import fr.aphp.tumorotek.model.TKThesaurusObject;
 import fr.aphp.tumorotek.model.bundles.ResourceBundleMbio;
@@ -206,6 +210,7 @@ import fr.aphp.tumorotek.model.coeur.prodderive.ProdQualite;
 import fr.aphp.tumorotek.model.coeur.prodderive.ProdType;
 import fr.aphp.tumorotek.model.contexte.Categorie;
 import fr.aphp.tumorotek.model.contexte.Diagnostic;
+import fr.aphp.tumorotek.model.contexte.Organisme;
 import fr.aphp.tumorotek.model.contexte.Protocole;
 import fr.aphp.tumorotek.model.contexte.Specialite;
 import fr.aphp.tumorotek.model.qualite.NonConformite;
@@ -246,6 +251,8 @@ public final class ManagerLocator
       THESAURUS_MANAGER_MAP.put(ConteneurType.class, ConteneurTypeManager.class);
       THESAURUS_MANAGER_MAP.put(EnceinteType.class, EnceinteTypeManager.class);
       THESAURUS_MANAGER_MAP.put(NonConformite.class, NonConformiteManager.class);
+      THESAURUS_MANAGER_MAP.put(Organisme.class, OrganismeManager.class);
+      
    }
 
    // private static final Log logger =
@@ -338,6 +345,15 @@ public final class ManagerLocator
 
    public static MaladieManager getMaladieManager(){
       return (MaladieManager) (ContextLoader.getCurrentWebApplicationContext()).getBean("maladieManager");
+   }
+   
+   public static MaladieValidator getMaladieValidator(){
+      return (MaladieValidator) (ContextLoader.getCurrentWebApplicationContext()).getBean("maladieValidator");
+   }
+   
+   public static MaladieValidatorDateCoherenceOverride getMaladieValidatorDateCoherenceOverride(){
+      return (MaladieValidatorDateCoherenceOverride) 
+         (ContextLoader.getCurrentWebApplicationContext()).getBean("maladieValidatorDateCoherenceOverride");
    }
 
    /* Managers du package echantillon */
@@ -482,12 +498,12 @@ public final class ManagerLocator
    public static ChampEntiteManager getChampEntiteManager(){
       return (ChampEntiteManager) (ContextLoader.getCurrentWebApplicationContext()).getBean("champEntiteManager");
    }
-   
+
    /**
     * @since 2.2.1
     */
    public static ChampDelegueManager getChampDelegueManager(){
-	   return (ChampDelegueManager) (ContextLoader.getCurrentWebApplicationContext()).getBean("champDelegueManager");
+      return (ChampDelegueManager) (ContextLoader.getCurrentWebApplicationContext()).getBean("champDelegueManager");
    }
 
    public static ChampManager getChampManager(){
@@ -917,4 +933,10 @@ public final class ManagerLocator
       return (EchantillonDTOManager) (ContextLoader.getCurrentWebApplicationContext()).getBean("echantillonDTOManager");
    }
 
+   /**
+    * @since 2.30-gatsbi
+    */
+   public static EtudeManager getEtudeManager(){
+      return (EtudeManager) (ContextLoader.getCurrentWebApplicationContext()).getBean("etudeManager");
+   }
 }

@@ -93,7 +93,7 @@ public interface DroitObjetManager
    List<DroitObjet> findByProfilEntiteManager(Profil profil, Entite entite);
 
    /**
-    * Recherche tous les types d'opération pour un couple de 
+    * Recherche tous les types d'opération pour un couple de
     * valeurs Profil
     * et entité.
     * @param profil Profil des DroitObjet recherchés.
@@ -144,7 +144,7 @@ public interface DroitObjetManager
    void removeObjectManager(DroitObjet droitObjet);
 
    /**
-    * Vérifie si un profil à le droit sur l'opération spécifiée sur toutes 
+    * Vérifie si un profil à le droit sur l'opération spécifiée sur toutes
     * les entités passées en paramètres
     * @param profil
     * @param type OperationType

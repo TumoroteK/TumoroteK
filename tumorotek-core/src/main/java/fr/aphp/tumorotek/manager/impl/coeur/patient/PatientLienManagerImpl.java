@@ -64,7 +64,9 @@ public class PatientLienManagerImpl implements PatientLienManager
 
    /* Beans injectes par Spring*/
    private PatientLienDao patientLienDao;
+
    private PatientDao patientDao;
+
    private LienFamilialDao lienFamilialDao;
 
    public PatientLienManagerImpl(){}
@@ -131,12 +133,12 @@ public class PatientLienManagerImpl implements PatientLienManager
 
    @Override
    public boolean findDoublonManager(final PatientLien patientLien){
-      // l'utilisation de excludedId impossible a cause de la clef composite 
+      // l'utilisation de excludedId impossible a cause de la clef composite
       return patientLienDao.findAll().contains(patientLien);
    }
 
    /**
-    * Verifie que les Objets devant etre obligatoirement associes 
+    * Verifie que les Objets devant etre obligatoirement associes
     * sont non nulls.
     * @param patientLien
     * @param patient1

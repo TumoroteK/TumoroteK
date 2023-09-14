@@ -76,7 +76,7 @@ public class GraphesModele
    /**
     * Transforme le resulset en Map clef-valeurs.
     * Clef = catégorie
-    * Valeur = compte 
+    * Valeur = compte
     * En cas d'erreur, vide le map
     * @param rs ResultSet
     * @param map

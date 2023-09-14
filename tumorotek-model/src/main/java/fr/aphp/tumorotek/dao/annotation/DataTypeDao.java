@@ -58,7 +58,7 @@ public interface DataTypeDao extends GenericDaoJpa<DataType, Integer>
     * @return Liste de DataTypes.
     */
    List<DataType> findByType(String type);
-   
+
    /**
     * Recherche les DataTypes dont le type est 'like' le paramètre.
     * @param type Type de DataTypes recherchés.

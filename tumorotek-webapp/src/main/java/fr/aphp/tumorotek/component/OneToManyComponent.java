@@ -69,12 +69,19 @@ public abstract class OneToManyComponent<T extends Object> extends AbstractContr
    private static final long serialVersionUID = 8722970657499733752L;
 
    protected Grid objectsList;
+
    protected Button addObj;
+
    protected Column deleteHeader;
+
    protected Column linkHeader;
+
    protected Column staticHeader;
+
    protected Label objLinkLabel;
+
    protected Box addObjBox;
+
    protected Listbox objectsBox;
 
    private Group groupHeader;
@@ -96,7 +103,7 @@ public abstract class OneToManyComponent<T extends Object> extends AbstractContr
    }
 
    /**
-    * Demande la msie à jour la liste et du 
+    * Demande la msie à jour la liste et du
     * group header associe au composant.
     */
    public void updateComponent(){
@@ -147,7 +154,7 @@ public abstract class OneToManyComponent<T extends Object> extends AbstractContr
    }
 
    /**
-    * Recoit l'evenement de suppression envoyé depuis le 
+    * Recoit l'evenement de suppression envoyé depuis le
     * click sur la delete image.
     * @param event
     */
@@ -177,8 +184,8 @@ public abstract class OneToManyComponent<T extends Object> extends AbstractContr
    }
 
    /**
-    * Ajoute le conteneur selectionné dans la listbox à 
-    * la liste des conteneurs. 
+    * Ajoute le conteneur selectionné dans la listbox à
+    * la liste des conteneurs.
     */
    public void onClick$addSelObj(){
       if(objectsBox.getSelectedItem() != null){
@@ -214,7 +221,7 @@ public abstract class OneToManyComponent<T extends Object> extends AbstractContr
    public abstract void setObjects(List<T> objs);
 
    /**
-    * Renvoie la valeur d'entete affichee dans le Label du groupe Parent. 
+    * Renvoie la valeur d'entete affichee dans le Label du groupe Parent.
     */
    public abstract String getGroupHeaderValue();
 
@@ -225,7 +232,7 @@ public abstract class OneToManyComponent<T extends Object> extends AbstractContr
 
    /**
     * Prepare la liste des objects qui pourront être ajoutés en
-    *  association. Retires donc de cette liste tous les objets 
+    *  association. Retires donc de cette liste tous les objets
     *  deja associés.
     * @return liste des objets associables.
     */
@@ -236,7 +243,7 @@ public abstract class OneToManyComponent<T extends Object> extends AbstractContr
    public abstract void removeFromListObjects(Object obj);
 
    /**
-    * Applique les droits de l'utilisateur sur le composant 
+    * Applique les droits de l'utilisateur sur le composant
     * d'association.
     */
    public abstract void drawActionForComponent();

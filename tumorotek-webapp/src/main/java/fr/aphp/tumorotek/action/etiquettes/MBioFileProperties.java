@@ -41,7 +41,9 @@ public class MBioFileProperties
 {
 
    private String confDir;
+
    private String labelFormatId;
+
    private Integer printerId;
 
    public MBioFileProperties(final Integer printId){

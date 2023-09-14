@@ -68,6 +68,10 @@ public class FinderIntroductionInterceptor implements IntroductionInterceptor
          final Object[] arguments = methodInvocation.getArguments();
          return genericDao.executeFinder(methodInvocation.getMethod(), arguments);
       }
+      else if(methodName.startsWith("count")) {
+         final Object[] arguments = methodInvocation.getArguments();
+         return genericDao.executeCounter(methodInvocation.getMethod(), arguments);         
+      }
       return methodInvocation.proceed();
    }
 
@@ -80,7 +84,7 @@ public class FinderIntroductionInterceptor implements IntroductionInterceptor
    public boolean implementsInterface(final Class<?> intf){
       //logger.debug("Intercepted class type: " + intf.getCanonicalName());
       //logger.debug("intf.isInterface() = " + intf.isInterface());
-      //logger.debug("FinderExecutor.class.isAssignableFrom(intf) = 
+      //logger.debug("FinderExecutor.class.isAssignableFrom(intf) =
       //" + FinderExecutor.class.isAssignableFrom(intf));
       return intf.isInterface() && FinderExecutor.class.isAssignableFrom(intf);
 

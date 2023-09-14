@@ -87,20 +87,28 @@ public class ExportUtilsTest extends AbstractManagerTest4
 
    @Autowired
    private ExportUtils exportUtils;
+
    @Autowired
    private MaladieManager maladieManager;
+
    @Autowired
    private PrelevementManager prelevementManager;
+
    @Autowired
    private EchantillonManager echantillonManager;
+
    @Autowired
    private ProdDeriveManager prodDeriveManager;
+
    @Autowired
    private CessionManager cessionManager;
+
    @Autowired
    private TableAnnotationManager tableAnnotationManager;
+
    @Autowired
    private UtilisateurManager utilisateurManager;
+
    @Autowired
    private OperationManager operationManager;
 
@@ -541,7 +549,7 @@ public class ExportUtilsTest extends AbstractManagerTest4
          }
       }
    }
-   
+
    /**
     * teste la regexp qui suppr les 7 caractères problématiques 
     * dans la création des noms des workbook sheets 
@@ -549,8 +557,8 @@ public class ExportUtilsTest extends AbstractManagerTest4
     * @see https://www.accountingweb.com/technology/excel/seven-characters-you-cant-use-in-worksheet-names
     */
    @Test
-   public void testXlsxSheetNameInfamousChars() {	   
-	   String sheetname = "\\/*[]:?";
-	   assertTrue(sheetname.replaceAll(ValidationUtilities.SHEETNAME_INFAMOUSCHARS, "").isEmpty());
+   public void testXlsxSheetNameInfamousChars(){
+      String sheetname = "\\/*[]:?";
+      assertTrue(sheetname.replaceAll(ValidationUtilities.SHEETNAME_INFAMOUSCHARS, "").isEmpty());
    }
 }

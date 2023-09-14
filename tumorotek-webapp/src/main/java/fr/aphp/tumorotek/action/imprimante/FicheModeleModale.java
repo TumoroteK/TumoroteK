@@ -75,8 +75,11 @@ public class FicheModeleModale extends AbstractFicheCombineController
 
    // Objets principaux
    private Modele modele;
+
    private Component parent;
+
    private List<ModeleType> modeleTypes = new ArrayList<>();
+
    private ModeleType selectedModeleType;
 
    @Override
@@ -319,7 +322,7 @@ public class FicheModeleModale extends AbstractFicheCombineController
       final AffectationImprimante aff = new AffectationImprimante();
       aff.setModele(getModele());
       openImprimanteModeleModale(SessionUtils.getPlateforme(sessionScope), null, aff, null);
-      // openEtiquetteWindow(page, true, modele, 
+      // openEtiquetteWindow(page, true, modele,
       //		new ArrayList<LigneEtiquette>(), null);
    }
 

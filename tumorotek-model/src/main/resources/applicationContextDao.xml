@@ -115,6 +115,21 @@
 		</property>
 	</bean>
 
+	<bean id="organismeDao" parent="abstractDao">
+		<property name="proxyInterfaces">
+			<value>fr.aphp.tumorotek.dao.contexte.OrganismeDao
+			</value>
+		</property>
+		<property name="target">
+			<bean parent="abstractDaoTarget">
+				<constructor-arg>
+					<value>fr.aphp.tumorotek.model.contexte.Organisme
+					</value>
+				</constructor-arg>
+			</bean>
+		</property>
+	</bean>
+
 	<bean id="plateformeDao" parent="abstractDao">
 		<property name="proxyInterfaces">
 			<value>fr.aphp.tumorotek.dao.contexte.PlateformeDao
@@ -1940,4 +1955,33 @@
 		</property>
 	</bean>
 	
+	<bean id="etudeDao" parent="abstractDao">
+		<property name="proxyInterfaces">
+			<value>fr.aphp.tumorotek.dao.contexte.gatsbi.EtudeDao
+			</value>
+		</property>
+		<property name="target">
+			<bean parent="abstractDaoTarget">
+				<constructor-arg>
+					<value>fr.aphp.tumorotek.model.contexte.gatsbi.Etude
+					</value>
+				</constructor-arg>
+			</bean>
+		</property>
+	</bean>
+
+	<bean id="configItemDao" parent="abstractDao">
+		<property name="proxyInterfaces">
+			<value>fr.aphp.tumorotek.dao.administration.ConfigItemDao
+			</value>
+		</property>
+		<property name="target">
+			<bean parent="abstractDaoTarget">
+				<constructor-arg>
+					<value>fr.aphp.tumorotek.model.config.ConfigItem
+					</value>
+				</constructor-arg>
+			</bean>
+		</property>
+	</bean>	
 </beans>

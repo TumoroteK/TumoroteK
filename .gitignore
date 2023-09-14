@@ -35,10 +35,9 @@ tumorotek-install/src/site/markdown/*
 tumorotek-install/src/site/markdown/index.md
 tumorotek-install/src/site/markdown/note-version.md
 tumorotek-core/src/test/java/fr/aphp/tumorotek/manager/test/xml/test.pdf
+tumorotek-core/src/test/java/fr/aphp/tumorotek/manager/test/xml/test.xml
 tumorotek-core/src/test/java/fr/aphp/tumorotek/manager/test/xml/testAccord.pdf
+tumorotek-core/src/test/java/fr/aphp/tumorotek/manager/test/xml/testAccord.xml
 tumorotek-core/src/test/java/fr/aphp/tumorotek/manager/test/xml/testBoite.html
 tumorotek-core/src/test/java/fr/aphp/tumorotek/manager/test/xml/testContenu.html
-tumorotek-core/src/test/java/fr/aphp/tumorotek/manager/test/xml/test.pdf
 target/checkout/
-*.bak
-**/persistence.xml

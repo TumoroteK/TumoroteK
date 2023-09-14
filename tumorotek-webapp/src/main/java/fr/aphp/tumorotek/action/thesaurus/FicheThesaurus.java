@@ -75,6 +75,7 @@ import fr.aphp.tumorotek.model.coeur.prodderive.ProdQualite;
 import fr.aphp.tumorotek.model.coeur.prodderive.ProdType;
 import fr.aphp.tumorotek.model.contexte.Categorie;
 import fr.aphp.tumorotek.model.contexte.Diagnostic;
+import fr.aphp.tumorotek.model.contexte.Organisme;
 import fr.aphp.tumorotek.model.contexte.Protocole;
 import fr.aphp.tumorotek.model.contexte.Specialite;
 import fr.aphp.tumorotek.model.qualite.NonConformite;
@@ -90,15 +91,22 @@ public class FicheThesaurus extends AbstractFicheCombineController
    private static final long serialVersionUID = -7373242015410721878L;
 
    private Button addNewValeur;
+
    private Grid gridValeurs;
+
    private Grid valeursListGrid;
+
    /**
     * Objets principaux.
     */
    private Thesaurus<? extends TKThesaurusObject> typeThesaurus;
+
    private boolean isAdmin = false;
+
    private ThesaurusRowRenderer listValeursRenderer = new ThesaurusRowRenderer();
+
    private TKThesaurusManager<? extends TKThesaurusObject> thesManager;
+
    private List<?> listValeurs = new ArrayList<>();
 
    @Override
@@ -191,51 +199,52 @@ public class FicheThesaurus extends AbstractFicheCombineController
       listValeurs = new ArrayList<>();
 
       if(reset){
-         
+
          thesManager = ManagerLocator.getThesaurusManager(typeThesaurus.getThesaurusObjectClass());
 
-         }/*else if(typeThesaurus.getNom().equals("Diagnostic")){
-            thesManager = ManagerLocator.getManager(DiagnosticManager.class);
-         }*/
+      }/*else if(typeThesaurus.getNom().equals("Diagnostic")){
+         thesManager = ManagerLocator.getManager(DiagnosticManager.class);
+       }*/
 
-      boolean thesaurusNonConformite = NonConformite.class.equals(typeThesaurus.getThesaurusObjectClass());
+      final boolean thesaurusNonConformite = NonConformite.class.equals(typeThesaurus.getThesaurusObjectClass());
 
-      if( !thesaurusNonConformite ) {
+      if(!thesaurusNonConformite){
          if(thesManager instanceof PfDependantTKThesaurusManager){
-            listValeurs = ((PfDependantTKThesaurusManager<?>) thesManager).findByOrderManager(SessionUtils.getPlateforme(sessionScope));
+            listValeurs =
+               ((PfDependantTKThesaurusManager<?>) thesManager).findByOrderManager(SessionUtils.getPlateforme(sessionScope));
          }else{
             listValeurs = ((TKThesaurusManager<?>) thesManager).findByOrderManager();
-      }
-      } else {
+         }
+      }else{
 
-         NonConformiteManager ncManager = (NonConformiteManager) thesManager;
+         final NonConformiteManager ncManager = (NonConformiteManager) thesManager;
 
          switch(typeThesaurus.getQualifier()){
             case "NonConformiteArrivee":
-               listValeurs = ncManager.findByPlateformeEntiteAndTypeStringManager(
-               SessionUtils.getPlateforme(sessionScope), "Arrivee", ManagerLocator.getEntiteManager().findByIdManager(2));
+               listValeurs = ncManager.findByPlateformeEntiteAndTypeStringManager(SessionUtils.getPlateforme(sessionScope),
+                  "Arrivee", ManagerLocator.getEntiteManager().findByIdManager(2));
                break;
             case "NonConformiteTraitementEchan":
-               listValeurs = ncManager.findByPlateformeEntiteAndTypeStringManager(
-               SessionUtils.getPlateforme(sessionScope), "Traitement", ManagerLocator.getEntiteManager().findByIdManager(3));
+               listValeurs = ncManager.findByPlateformeEntiteAndTypeStringManager(SessionUtils.getPlateforme(sessionScope),
+                  "Traitement", ManagerLocator.getEntiteManager().findByIdManager(3));
                break;
             case "NonConformiteCessionEchan":
-               listValeurs = ncManager.findByPlateformeEntiteAndTypeStringManager(
-               SessionUtils.getPlateforme(sessionScope), "Cession", ManagerLocator.getEntiteManager().findByIdManager(3));
+               listValeurs = ncManager.findByPlateformeEntiteAndTypeStringManager(SessionUtils.getPlateforme(sessionScope),
+                  "Cession", ManagerLocator.getEntiteManager().findByIdManager(3));
                break;
             case "NonConformiteTraitementDerive":
-               listValeurs = ncManager.findByPlateformeEntiteAndTypeStringManager(
-               SessionUtils.getPlateforme(sessionScope), "Traitement", ManagerLocator.getEntiteManager().findByIdManager(8));
+               listValeurs = ncManager.findByPlateformeEntiteAndTypeStringManager(SessionUtils.getPlateforme(sessionScope),
+                  "Traitement", ManagerLocator.getEntiteManager().findByIdManager(8));
                break;
             case "NonConformiteCessionDerive":
-               listValeurs = ncManager.findByPlateformeEntiteAndTypeStringManager(
-               SessionUtils.getPlateforme(sessionScope), "Cession", ManagerLocator.getEntiteManager().findByIdManager(8));
+               listValeurs = ncManager.findByPlateformeEntiteAndTypeStringManager(SessionUtils.getPlateforme(sessionScope),
+                  "Cession", ManagerLocator.getEntiteManager().findByIdManager(8));
                break;
             default:
                throw new TKException("Type de non-conformité [" + typeThesaurus.getQualifier() + "] inconnu");
          }
 
-         }
+      }
 
       getBinder().loadAttribute(valeursListGrid, "model");
       getBinder().loadComponent(valeursListGrid);
@@ -271,28 +280,28 @@ public class FicheThesaurus extends AbstractFicheCombineController
          throw new TKException("Impossible d'instancier " + typeThesaurus.getThesaurusObjectClass().getSimpleName());
       }
 
-      if(value instanceof NonConformite) {
+      if(value instanceof NonConformite){
 
          switch(typeThesaurus.getQualifier()){
             case "NonConformiteArrivee":
-            ((NonConformite) value).setConformiteType(ManagerLocator.getConformiteTypeManager()
-               .findByEntiteAndTypeManager("Arrivee", ManagerLocator.getEntiteManager().findByIdManager(2)).get(0));
+               ((NonConformite) value).setConformiteType(ManagerLocator.getConformiteTypeManager()
+                  .findByEntiteAndTypeManager("Arrivee", ManagerLocator.getEntiteManager().findByIdManager(2)).get(0));
                break;
             case "NonConformiteTraitementEchan":
-            ((NonConformite) value).setConformiteType(ManagerLocator.getConformiteTypeManager()
-               .findByEntiteAndTypeManager("Traitement", ManagerLocator.getEntiteManager().findByIdManager(3)).get(0));
+               ((NonConformite) value).setConformiteType(ManagerLocator.getConformiteTypeManager()
+                  .findByEntiteAndTypeManager("Traitement", ManagerLocator.getEntiteManager().findByIdManager(3)).get(0));
                break;
             case "NonConformiteCessionEchan":
-            ((NonConformite) value).setConformiteType(ManagerLocator.getConformiteTypeManager()
-               .findByEntiteAndTypeManager("Cession", ManagerLocator.getEntiteManager().findByIdManager(3)).get(0));
+               ((NonConformite) value).setConformiteType(ManagerLocator.getConformiteTypeManager()
+                  .findByEntiteAndTypeManager("Cession", ManagerLocator.getEntiteManager().findByIdManager(3)).get(0));
                break;
             case "NonConformiteTraitementDerive":
-            ((NonConformite) value).setConformiteType(ManagerLocator.getConformiteTypeManager()
-               .findByEntiteAndTypeManager("Traitement", ManagerLocator.getEntiteManager().findByIdManager(8)).get(0));
+               ((NonConformite) value).setConformiteType(ManagerLocator.getConformiteTypeManager()
+                  .findByEntiteAndTypeManager("Traitement", ManagerLocator.getEntiteManager().findByIdManager(8)).get(0));
                break;
             case "NonConformiteCessionDerive":
-            ((NonConformite) value).setConformiteType(ManagerLocator.getConformiteTypeManager()
-               .findByEntiteAndTypeManager("Cession", ManagerLocator.getEntiteManager().findByIdManager(8)).get(0));
+               ((NonConformite) value).setConformiteType(ManagerLocator.getConformiteTypeManager()
+                  .findByEntiteAndTypeManager("Cession", ManagerLocator.getEntiteManager().findByIdManager(8)).get(0));
                break;
             default:
                throw new TKException("Type de non-conformité [" + typeThesaurus.getQualifier() + "] inconnu");
@@ -342,16 +351,17 @@ public class FicheThesaurus extends AbstractFicheCombineController
       checkIsUsedClassList.add(ProdType.class);
       checkIsUsedClassList.add(ConsentType.class);
       checkIsUsedClassList.add(EnceinteType.class);
+      checkIsUsedClassList.add(Organisme.class);
 
       final String nom = getValeur(value);
 
-      final boolean isUsed = ((TKThesaurusManager<TKThesaurusObject>)thesManager).isUsedObjectManager(value);
+      final boolean isUsed = ((TKThesaurusManager<TKThesaurusObject>) thesManager).isUsedObjectManager(value);
       boolean isDeletable = true;
 
       String message = ObjectTypesFormatters.getLabel("message.deletion.message",
          new String[] {ObjectTypesFormatters.getLabel("message.deletion.value.thesaurus", new String[] {nom})});
       if(isUsed){
-         if(checkIsUsedClassList.contains( typeThesaurus.getThesaurusObjectClass() )){
+         if(checkIsUsedClassList.contains(typeThesaurus.getThesaurusObjectClass())){
             message = Labels.getLabel("thesaurus.deletion.isUsedNotNull");
             isDeletable = false;
          }else{
@@ -364,7 +374,7 @@ public class FicheThesaurus extends AbstractFicheCombineController
             Messagebox.QUESTION) == Messagebox.YES){
 
             try{
-               ((TKThesaurusManager<TKThesaurusObject>)thesManager).removeObjectManager(value);
+               ((TKThesaurusManager<TKThesaurusObject>) thesManager).removeObjectManager(value);
 
                initListeValeurs(false);
                getBinder().loadComponent(gridValeurs);
@@ -449,8 +459,10 @@ public class FicheThesaurus extends AbstractFicheCombineController
          constraint = ThesaurusConstraints.getEnceinteTypeConstraint();
       }else if(NonConformite.class.equals(typeThesaurus.getThesaurusObjectClass())){
          constraint = ThesaurusConstraints.getNonConformiteConstraint();
+      }else if(Organisme.class.equals(typeThesaurus.getThesaurusObjectClass())){
+         constraint = ThesaurusConstraints.getOrganismeConstraint();
       }
-
+      
       return constraint;
    }
 
@@ -496,10 +508,12 @@ public class FicheThesaurus extends AbstractFicheCombineController
       this.typeThesaurus = typeTh;
    }
 
+   @Override
    public boolean isAdmin(){
       return isAdmin;
    }
 
+   @Override
    public void setAdmin(final boolean is){
       this.isAdmin = is;
    }

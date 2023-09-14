@@ -71,14 +71,19 @@ public class CritereManagerImpl implements CritereManager
 
    /** Bean Dao CritereDao. */
    private CritereDao critereDao = null;
+
    /** Bean Dao CritereDao. */
    private ChampDao champDao = null;
+
    /** Bean Dao CombinaisonDao. */
    private CombinaisonDao combinaisonDao = null;
+
    /** Bean Manager CombinaisonManager. */
    private CombinaisonManager combinaisonManager;
+
    /** Bean Dao ChampManager. */
    private ChampManager champManager = null;
+
    /** Bean Validator. */
    private CritereValidator critereValidator = null;
 

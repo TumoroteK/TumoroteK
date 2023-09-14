@@ -54,7 +54,7 @@ public interface ProdTypeDao extends GenericDaoJpa<ProdType, Integer>, PfDependa
 {
 
    /**
-    * Recherche les types de produits dérivés dont la 
+    * Recherche les types de produits dérivés dont la
     * valeur est égale au paramètre.
     * @param type Type du produit dérivé.
     * @return une liste de types.
@@ -62,9 +62,9 @@ public interface ProdTypeDao extends GenericDaoJpa<ProdType, Integer>, PfDependa
    List<ProdType> findByType(String type);
 
    /**
-    * Recherche le type qui est lié au produit dérivé passé 
-    * en paramètre. 
-    * @param prodDeriveId Identifiant du produit dérivé pour lequel 
+    * Recherche le type qui est lié au produit dérivé passé
+    * en paramètre.
+    * @param prodDeriveId Identifiant du produit dérivé pour lequel
     * on recherche un type.
     * @return Liste de type.
     */

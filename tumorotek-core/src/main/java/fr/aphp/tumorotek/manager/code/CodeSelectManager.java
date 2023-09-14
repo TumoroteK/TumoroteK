@@ -62,9 +62,9 @@ public interface CodeSelectManager
    List<CodeSelect> findAllObjectsManager();
 
    /**
-    * Recherche les codes référencés par les CodeSelects pour 
-    * utilisateur et la banque 
-    * passés en paramètres et dont le code est like celui passé 
+    * Recherche les codes référencés par les CodeSelects pour
+    * utilisateur et la banque
+    * passés en paramètres et dont le code est like celui passé
     * en paramètre.
     * @param code
     * @param exactMatch
@@ -82,7 +82,7 @@ public interface CodeSelectManager
    List<CodeSelect> findByCodeDossierManager(CodeDossier parent);
 
    /**
-    * Recherche les codes référencés par les codes favoris du Dossier 
+    * Recherche les codes référencés par les codes favoris du Dossier
     * passé en paramètre.
     * @param dossier dont on veut les codes référencés contenus.
     * @return une liste de codes Common.
@@ -90,11 +90,11 @@ public interface CodeSelectManager
    List<CodeCommon> findCodesFromSelectByDossierManager(CodeDossier parent);
 
    /**
-    * Recherche les codes referencés par les codes favoris qui sont 
+    * Recherche les codes referencés par les codes favoris qui sont
     * non contenus dans un dossier pour un utilisateur
     * et une banque donnée.
     * @param utilisateur
-    * @param banque	 
+    * @param banque
     * @return une liste de codes CodeCommon.
     */
    List<CodeCommon> findByRootDossierManager(Utilisateur u, Banque bank);
@@ -102,23 +102,23 @@ public interface CodeSelectManager
    /**
     * Recherche les codes pour un utilisateur et une banque.
     * @param utilisateur Utilisateur
-    * @param banque Banque 
+    * @param banque Banque
     * @return une liste de codes CodeSelect.
     */
    List<CodeSelect> findByUtilisateurAndBanqueManager(Utilisateur u, Banque b);
 
    /**
-    * Recherche les codes référencés par les favoris pour 
+    * Recherche les codes référencés par les favoris pour
     * un utilisateur et une banque.
     * @param utilisateur Utilisateur
-    * @param banque Banque 
+    * @param banque Banque
     * @return une liste de codes CodeSelect.
     */
    List<CodeCommon> findCodesFromSelectByUtilisateurAndBanqueManager(Utilisateur u, Banque b);
 
    /**
     * Cherche les doublons en se basant sur la methode equals()
-    * surchargee par les entites. Si l'objet est modifie donc a un id 
+    * surchargee par les entites. Si l'objet est modifie donc a un id
     * attribue par le SGBD, ce dernier est retire de la liste findAll.
     * @param table CodeUtilisateur dont on cherche la presence dans la base
     * @return true/false
@@ -126,8 +126,8 @@ public interface CodeSelectManager
    boolean findDoublonManager(CodeSelect code);
 
    /**
-    * Enregsitre ou modifie un code favori. 
-    * La modification ne peut porter que sur le dossier parent 
+    * Enregsitre ou modifie un code favori.
+    * La modification ne peut porter que sur le dossier parent
     * (cad deplacement).
     * @param code
     * @param dos

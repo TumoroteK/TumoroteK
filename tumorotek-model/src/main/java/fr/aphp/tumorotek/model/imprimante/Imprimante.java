@@ -85,18 +85,29 @@ public class Imprimante implements TKdataObject, Serializable
 {
 
    private Integer imprimanteId;
+
    private String nom;
+
    private Integer abscisse;
+
    private Integer ordonnee;
+
    private Integer largeur;
+
    private Integer longueur;
+
    private Integer orientation;
+
    private Integer mbioPrinter;
+
    private ImprimanteApi imprimanteApi;
+
    private Plateforme plateforme;
 
    private String adresseIp;
+
    private Integer resolution;
+
    private Integer port;
 
    private Set<AffectationImprimante> affectationImprimantes = new HashSet<>();

@@ -51,7 +51,7 @@ import fr.aphp.tumorotek.model.systeme.Entite;
 	 */
 public interface ChampEntiteManager
 {
-   
+
    /**
     * Recherche un ChampEntite dont l'identifiant est passé en paramètre.
     * @param id Identifiant du ChampEntite que l'on recherche.
@@ -74,7 +74,7 @@ public interface ChampEntiteManager
    List<ChampEntite> findByEntiteManager(Entite entite);
 
    /**
-    * Recherche les champs dont l'entité et le nom sont passés 
+    * Recherche les champs dont l'entité et le nom sont passés
     * en paramètres. Les champs retournés sont triés par leur ordre.
     * @param entite Entité à laquelle les champs appartiennent.
     * @param nom Nom du ChampEntite.
@@ -110,8 +110,9 @@ public interface ChampEntiteManager
     * @param excludeIds exclu les champs numériques représentant un id
     * @return Liste de ChampEntites.
     */
-   List<ChampEntite> findByEntiteAndImportManagerAndDatatype(final Entite entite, final Boolean canImport, final List<DataType> dataTypeList, final Boolean excludeIds);
-   
+   List<ChampEntite> findByEntiteAndImportManagerAndDatatype(final Entite entite, final Boolean canImport,
+      final List<DataType> dataTypeList, final Boolean excludeIds);
+
    /**
     * Renvoie les ChampEntites importables, nullable (ou non) pour
     * une entité.
@@ -121,7 +122,7 @@ public interface ChampEntiteManager
     * @return Liste de ChampEntites.
     */
    List<ChampEntite> findByEntiteImportAndIsNullableManager(Entite entite, Boolean canImport, Boolean isNullable);
-   
+
    /**
     * Renvoie la valeur (en String) du champEntite pour l'objet.
     * @param champ ChampEntite à extraire.

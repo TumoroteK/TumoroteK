@@ -64,8 +64,11 @@ public class PatientSipSejour
 {
 
    private Integer patientSipSejourId;
+
    private String numero;
+
    private Date dateSejour;
+
    private PatientSip patientSip;
 
    /** Constructeur par défaut. */

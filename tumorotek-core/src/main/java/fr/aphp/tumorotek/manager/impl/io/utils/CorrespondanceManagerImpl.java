@@ -65,11 +65,17 @@ public class CorrespondanceManagerImpl implements CorrespondanceManager
 
    /* Beans injectes par Spring */
    private MaladieManager maladieManager = null;
+
    private PrelevementManager prelevementManager = null;
+
    private EchantillonManager echantillonManager = null;
+
    private ProdDeriveManager prodDeriveManager = null;
+
    private EntiteManager entiteManager = null;
+
    private CessionManager cessionManager = null;
+
    private CederObjetManager cederObjetManager = null;
 
    public CorrespondanceManagerImpl(){}
@@ -120,7 +126,7 @@ public class CorrespondanceManagerImpl implements CorrespondanceManager
       final List<Object> retours = new ArrayList<>();
       if(sources != null){
          if(sources.size() > 0){
-            String entiteSource = sources.get(0).getClass().getSimpleName();
+            final String entiteSource = sources.get(0).getClass().getSimpleName();
 
             switch(entiteSource){
                case "Patient":

@@ -99,17 +99,29 @@ public class EmplacementManagerImpl implements EmplacementManager
    private final Log log = LogFactory.getLog(EmplacementManager.class);
 
    private EmplacementDao emplacementDao;
+
    private TerminaleDao terminaleDao;
+
    private EntiteDao entiteDao;
+
    private EntiteManager entiteManager;
+
    private EmplacementValidator emplacementValidator;
+
    private JpaTransactionManager txManager;
+
    private OperationManager operationManager;
+
    private OperationTypeDao operationTypeDao;
+
    private ConteneurDao conteneurDao;
+
    private EnceinteDao enceinteDao;
+
    private EchantillonDao echantillonDao;
+
    private ProdDeriveDao prodDeriveDao;
+
    private DataSource dataSource;
 
    public void setEmplacementDao(final EmplacementDao eDao){
@@ -159,9 +171,9 @@ public class EmplacementManagerImpl implements EmplacementManager
    public void setProdDeriveDao(final ProdDeriveDao pDao){
       this.prodDeriveDao = pDao;
    }
-   
+
    public void setDataSource(final DataSource d){
-	  this.dataSource = d;
+      this.dataSource = d;
    }
 
    /**
@@ -211,7 +223,7 @@ public class EmplacementManagerImpl implements EmplacementManager
 
    @Override
    public Boolean checkEmplacementInTerminale(final Emplacement emplacement){
-      Boolean valide = true;
+      boolean valide = true;
 
       // on vérifie que l'emplacement n'est pas vide
       if(emplacement != null){
@@ -251,8 +263,8 @@ public class EmplacementManagerImpl implements EmplacementManager
                }
             }
 
-            final List<Conteneur> conteneurs = conteneurDao
-            	.findByBanqueIdAndCode(banque != null ? banque.getBanqueId() : null, conteneur);
+            final List<Conteneur> conteneurs =
+               conteneurDao.findByBanqueIdAndCode(banque != null ? banque.getBanqueId() : null, conteneur);
             if(conteneurs.size() == 1){
                List<Enceinte> enceintesTmp = new ArrayList<>();
                for(int i = 0; i < enceintes.size(); i++){
@@ -651,8 +663,8 @@ public class EmplacementManagerImpl implements EmplacementManager
          if(terminale.getTerminaleType().getScheme() != null){
 
             Integer nbEmpOld = 0;
-            Integer nbEmpAct = 0;
-            Integer cptLigne = 1;
+            int nbEmpAct = 0;
+            int cptLigne = 1;
             // on récupère le nb d'emplacements par ligne
             final String[] values = terminale.getTerminaleType().getScheme().split(";");
             int i = 0;
@@ -775,7 +787,7 @@ public class EmplacementManagerImpl implements EmplacementManager
 
    @Override
    public Integer getPositionByCoordonnees(final Terminale terminale, final Integer numLigne, final Integer numColonne){
-      Integer position = 0;
+      int position = 0;
 
       if(terminale != null && terminale.getTerminaleId() != null && numLigne != null && numLigne > 0 && numColonne != null
          && numColonne > 0){
@@ -822,7 +834,7 @@ public class EmplacementManagerImpl implements EmplacementManager
       }
 
       if(emplacement.getEntite() != null && emplacement.getObjetId() != null){
-         // on vérifie que le couple Entité/ObjectId référence 
+         // on vérifie que le couple Entité/ObjectId référence
          // un objet existant
          if(entiteManager.findObjectByEntiteAndIdManager(emplacement.getEntite(), emplacement.getObjetId()) == null){
             log.warn("Couple Entite : " + emplacement.getEntite().toString() + " - ObjetId :" + emplacement.getObjetId()
@@ -870,7 +882,7 @@ public class EmplacementManagerImpl implements EmplacementManager
       }
 
       if(emplacement.getEntite() != null && emplacement.getObjetId() != null){
-         // on vérifie que le couple Entité/ObjectId référence 
+         // on vérifie que le couple Entité/ObjectId référence
          // un objet existant
          if(entiteManager.findObjectByEntiteAndIdManager(emplacement.getEntite(), emplacement.getObjetId()) == null){
             log.warn("Couple Entite : " + emplacement.getEntite().toString() + " - ObjetId :" + emplacement.getObjetId()
@@ -967,14 +979,14 @@ public class EmplacementManagerImpl implements EmplacementManager
             if(emplacement != null && emplacement.getEmplacementId() != null){
                //					// Test de la position
                //					if (!checkEmplacementInTerminale(emplacement)) {
-               //						log.warn("La position n'est pas dans la limite " 
-               //								+ "des places de " 
+               //						log.warn("La position n'est pas dans la limite "
+               //								+ "des places de "
                //								+ "la terminale");
                //						throw new InvalidPositionException(
-               //								"Emplacement", "modification", 
+               //								"Emplacement", "modification",
                //								emplacement.getPosition());
                //					}
-               //					
+               //
                //					// validation du Contrat
                //					BeanValidator.validateObject(
                //							emplacement, new Validator[]{emplacementValidator});
@@ -1000,7 +1012,7 @@ public class EmplacementManagerImpl implements EmplacementManager
    }
 
    @Override
-   public void validateMultiEmplacementsManager(final List<Emplacement> emplacements, boolean isDeplacement){
+   public void validateMultiEmplacementsManager(final List<Emplacement> emplacements, final boolean isDeplacement){
       if(emplacements != null){
          for(int i = 0; i < emplacements.size(); i++){
             final Emplacement empl = emplacements.get(i);
@@ -1020,18 +1032,18 @@ public class EmplacementManagerImpl implements EmplacementManager
                }
 
                if(!isDeplacement && empl.getEntite() != null && empl.getObjetId() != null){
-                  // on vérifie que le couple Entité/ObjectId référence 
+                  // on vérifie que le couple Entité/ObjectId référence
                   // un objet existant
-            	  TKStockableObject tkObj = (TKStockableObject) 
-            			 entiteManager.findObjectByEntiteAndIdManager(empl.getEntite(), empl.getObjetId());
+                  final TKStockableObject tkObj =
+                     (TKStockableObject) entiteManager.findObjectByEntiteAndIdManager(empl.getEntite(), empl.getObjetId());
                   if(tkObj == null){
                      log.warn("Couple Entite : " + empl.getEntite().toString() + " - ObjetId :" + empl.getObjetId()
                         + " inexistant lors de la " + "création d'un objet Emplacement");
                      throw new EntiteObjectIdNotExistException("Emplacement", empl.getEntite().getNom(), empl.getObjetId());
-                  } else if (tkObj.getEmplacement() != null && !tkObj.getEmplacement().equals(empl)) { 
-                	  // verifie que l'objet n'a pas ete stocke
-                	  // TK-237
-                	 throw new ObjectAlreadyStockedException(tkObj);
+                  }else if(tkObj.getEmplacement() != null && !tkObj.getEmplacement().equals(empl)){
+                     // verifie que l'objet n'a pas ete stocke
+                     // TK-237
+                     throw new ObjectAlreadyStockedException(tkObj);
                   }
                }
 
@@ -1094,19 +1106,19 @@ public class EmplacementManagerImpl implements EmplacementManager
          }
       }
    }
-   
+
    @Override
-   public Emplacement findByTKStockableObjectManager(TKStockableObject tkObj) {
-	   if (tkObj != null) {
-		   List<Entite> ets = entiteDao.findByNom(tkObj.entiteNom());
-		   if (!ets.isEmpty()) {
-			   List<Emplacement> emps = emplacementDao.findByObjetIdEntite(tkObj.listableObjectId(), ets.get(0));
-			   if (!emps.isEmpty()) {
-				  return emps.get(0); 
-			   }
-		   }
-	   }
-	   return null;
+   public Emplacement findByTKStockableObjectManager(final TKStockableObject tkObj){
+      if(tkObj != null){
+         final List<Entite> ets = entiteDao.findByNom(tkObj.entiteNom());
+         if(!ets.isEmpty()){
+            final List<Emplacement> emps = emplacementDao.findByObjetIdEntite(tkObj.listableObjectId(), ets.get(0));
+            if(!emps.isEmpty()){
+               return emps.get(0);
+            }
+         }
+      }
+      return null;
    }
 
    @Override
@@ -1130,44 +1142,52 @@ public class EmplacementManagerImpl implements EmplacementManager
 
       return objs;
    }
-   
+
    @Override
-   public Emplacement findByAdrlCallableManager(String adrl, Banque bank) {
-	   
-	   Emplacement empl = null;
-	   
-	   if (!StringUtils.isEmpty(adrl) && bank != null) {
-	   
-		   Connection conn = null;
-		   CallableStatement findCall = null;
-		   ResultSet rSet = null;
-	
-		   try{
-	           conn = DataSourceUtils.getConnection(dataSource);	
-	           findCall = conn.prepareCall("select find_emplacement_by_adrl(?,?)");
-	           findCall.setString(1, adrl);
-	           findCall.setInt(2, bank.getBanqueId());
-	           if(findCall.execute()) {
-	               rSet = findCall.getResultSet();
-	               while(rSet.next()){
-	                  // if(rSet.getInt(1) != null){
-	            	   empl = emplacementDao.findById(rSet.getInt(1));
-	                  //}
-	           		}
-	           }
-		   }catch(final Exception e){
-			   e.printStackTrace();
-			   log.error(e.getMessage());
-		   }finally{
-			   if(conn != null){
-				   try{ conn.close(); }catch(final Exception e){ conn = null;}
-			   }  
-			   if(findCall != null){
-				   try{ findCall.close(); }catch(final Exception e){ findCall = null;}
-			   }
-		   }
-	   }
-	   
-	   return empl;
+   public Emplacement findByAdrlCallableManager(final String adrl, final Banque bank){
+
+      Emplacement empl = null;
+
+      if(!StringUtils.isEmpty(adrl) && bank != null){
+
+         Connection conn = null;
+         CallableStatement findCall = null;
+         ResultSet rSet = null;
+
+         try{
+            conn = DataSourceUtils.getConnection(dataSource);
+            findCall = conn.prepareCall("select find_emplacement_by_adrl(?,?)");
+            findCall.setString(1, adrl);
+            findCall.setInt(2, bank.getBanqueId());
+            if(findCall.execute()){
+               rSet = findCall.getResultSet();
+               while(rSet.next()){
+                  // if(rSet.getInt(1) != null){
+                  empl = emplacementDao.findById(rSet.getInt(1));
+                  //}
+               }
+            }
+         }catch(final Exception e){
+            e.printStackTrace();
+            log.error(e.getMessage());
+         }finally{
+            if(conn != null){
+               try{
+                  conn.close();
+               }catch(final Exception e){
+                  conn = null;
+               }
+            }
+            if(findCall != null){
+               try{
+                  findCall.close();
+               }catch(final Exception e){
+                  findCall = null;
+               }
+            }
+         }
+      }
+
+      return empl;
    }
 }

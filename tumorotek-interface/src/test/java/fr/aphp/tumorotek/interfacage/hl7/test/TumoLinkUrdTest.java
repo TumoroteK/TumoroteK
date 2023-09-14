@@ -57,7 +57,7 @@ public class TumoLinkUrdTest
       final TumoLinkUrdImpl urd = new TumoLinkUrdImpl();
       final Prelevement prel = new Prelevement();
       prel.setPrelevementId(1234);
-      urd.createUDMMessage(prel, "H12345", "http://localhost:8080");
+      urd.createUDMMessage(prel, "H12345", "http://localhost:8080?bId=1&pCode=TEST");
       urd.createUDMMessage(new Prelevement(), null, "http://test@camerl.org");
       urd.createUDMMessage(new Prelevement(), "HA1234", null);
       urd.createUDMMessage(null, "HA1234", "http://test@camerl.org");

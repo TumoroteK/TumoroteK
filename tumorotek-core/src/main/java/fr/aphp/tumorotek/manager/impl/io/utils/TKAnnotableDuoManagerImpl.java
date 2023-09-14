@@ -107,18 +107,18 @@ public class TKAnnotableDuoManagerImpl implements TKAnnotableDuoManager
    }
 
    /**
-    * Récupère les valeurs pour les champs TK pour chacun des deux objets 
+    * Récupère les valeurs pour les champs TK pour chacun des deux objets
     * afin de peupler un duo de valeurs si celle-ci sont divergentes.
     * Implémente les exceptions à la récupération générique par PropertyUtils à partir de champEntite (ex:
     * non conformites, codes assignes etc...)
     * @param nomChamp property
     * @param object duo
     * @param propDuo property values duo
-    * @throws NoSuchMethodException 
-    * @throws InvocationTargetException 
-    * @throws IllegalAccessException 
+    * @throws NoSuchMethodException
+    * @throws InvocationTargetException
+    * @throws IllegalAccessException
     */
-   
+
    private void populateTKPropDuo(final ChampEntite chpE, final TKAnnotableObjectDuo duo,
       final TKAnnotableObjectPropertyDuo propDuo) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException{
 
@@ -186,14 +186,14 @@ public class TKAnnotableDuoManagerImpl implements TKAnnotableDuoManager
 
    /**
     * Récupère les valeurs pour les champs d'annotations
-    * pour chacun des deux objets afin de peupler un duo de valeurs si celle-ci sont 
+    * pour chacun des deux objets afin de peupler un duo de valeurs si celle-ci sont
     * divergentes
     * @param nomChamp property
     * @param object duo
     * @param propDuo property values duo
-    * @throws NoSuchMethodException 
-    * @throws InvocationTargetException 
-    * @throws IllegalAccessException 
+    * @throws NoSuchMethodException
+    * @throws InvocationTargetException
+    * @throws IllegalAccessException
     */
    private void populateAnnoPropDuo(final ChampAnnotation chpA, final TKAnnotableObjectDuo duo,
       final TKAnnotableObjectPropertyDuo propDuo){
@@ -205,7 +205,7 @@ public class TKAnnotableDuoManagerImpl implements TKAnnotableDuoManager
       // 1 seul valeur
       if(!chpA.getDataType().getType().equals("thesaurusM")){
          if(!firstAnnoValue.isEmpty()){
-            if(!secondAnnoValue.isEmpty()){ // second valeur existe 
+            if(!secondAnnoValue.isEmpty()){ // second valeur existe
                if(!firstAnnoValue.get(0).getValeur().equals(secondAnnoValue.get(0).getValeur())){
                   isDiff = true;
                }
@@ -252,7 +252,7 @@ public class TKAnnotableDuoManagerImpl implements TKAnnotableDuoManager
    @Override
    public Boolean mergeDuoObjectsManager(final TKAnnotableObjectDuo duo, final List<TKAnnotableObjectPropertyDuo> propDuos){
 
-      Boolean merged = false;
+      boolean merged = false;
       try{
          if(propDuos != null && duo != null){
             // actualise les deux listes d'annotations valeurs
@@ -284,11 +284,11 @@ public class TKAnnotableDuoManagerImpl implements TKAnnotableDuoManager
     * non conformites, codes assignes etc...).
     * @param secondObj TKAnnotableObjet existant
     * @param propertyDuo contenant la valeur et le champ assigné auxquel l'assigner
-    * @return true si la modification a été appliquée (elle peut ne pas avoir été appliquée sir 
+    * @return true si la modification a été appliquée (elle peut ne pas avoir été appliquée sir
     * une valeur nulle est attribuée à un champ obligatoire)
-    * @throws NoSuchMethodException 
-    * @throws InvocationTargetException 
-    * @throws IllegalAccessException 
+    * @throws NoSuchMethodException
+    * @throws InvocationTargetException
+    * @throws IllegalAccessException
     */
    private boolean mergeValues(final TKAnnotableObject secondObj, final TKAnnotableObjectPropertyDuo propDuo)
       throws IllegalAccessException, InvocationTargetException, NoSuchMethodException{
@@ -319,16 +319,16 @@ public class TKAnnotableDuoManagerImpl implements TKAnnotableDuoManager
    }
 
    /**
-    * Le TKAnnotableObjectPropertyDuo passé en paramètre contient les valeurs d'annotation 
-    * pour le champ d'annotation qui devront être supprimées pour le secondObj, et créées pour 
+    * Le TKAnnotableObjectPropertyDuo passé en paramètre contient les valeurs d'annotation
+    * pour le champ d'annotation qui devront être supprimées pour le secondObj, et créées pour
     * le firstObj.
-    * Cette méthode met donc à jour les deux Maps d'annotation valeurs qui seront prises en 
+    * Cette méthode met donc à jour les deux Maps d'annotation valeurs qui seront prises en
     * compte dans la methode d'enregistrement des modifications (saveObjectsRowManager).
     * @param duo d'objets TKAnnotable
     * @param pDuo de liste de valeurs d'annotation TKAnnotableObjectPropertyDuo
-    * @return true 
+    * @return true
     */
-   
+
    private boolean mergeAnnoValues(final TKAnnotableObjectDuo duo, final TKAnnotableObjectPropertyDuo pDuo){
 
       duo.getFirstAnnoValsMap().put(pDuo.getChampAnnotation(), ((List<AnnotationValeur>) pDuo.getFirstValue()));

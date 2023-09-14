@@ -58,10 +58,14 @@ import fr.aphp.tumorotek.manager.impl.coeur.CreateOrUpdateUtilities;
 import fr.aphp.tumorotek.manager.qualite.OperationManager;
 import fr.aphp.tumorotek.manager.validation.BeanValidator;
 import fr.aphp.tumorotek.manager.validation.coeur.patient.MaladieValidator;
+import fr.aphp.tumorotek.manager.validation.coeur.patient.gatsbi.MaladieGatsbiValidator;
+import fr.aphp.tumorotek.manager.validation.coeur.patient.gatsbi.MaladieValidatorDateCoherenceOverride;
 import fr.aphp.tumorotek.model.coeur.patient.Maladie;
 import fr.aphp.tumorotek.model.coeur.patient.Patient;
 import fr.aphp.tumorotek.model.coeur.prelevement.Prelevement;
+import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.contexte.Collaborateur;
+import fr.aphp.tumorotek.model.contexte.gatsbi.Contexte;
 import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
 
 /**
@@ -80,11 +84,20 @@ public class MaladieManagerImpl implements MaladieManager
 
    /* Beans injectes par Spring*/
    private MaladieDao maladieDao;
+
    private PatientDao patientDao;
+
    private CollaborateurDao collaborateurDao;
+
    private MaladieValidator maladieValidator;
+   
+   //@since 2.3.0-gatsbi
+   private MaladieValidatorDateCoherenceOverride maladieValidatorDateCoherenceOverride;
+
    private PatientValidator patientValidator;
+
    private OperationTypeDao operationTypeDao;
+
    private OperationManager operationManager;
 
    public MaladieManagerImpl(){}
@@ -104,6 +117,10 @@ public class MaladieManagerImpl implements MaladieManager
 
    public void setMaladieValidator(final MaladieValidator mValidator){
       this.maladieValidator = mValidator;
+   }
+
+   public void setMaladieValidatorDateCoherenceOverride(MaladieValidatorDateCoherenceOverride _v){
+      this.maladieValidatorDateCoherenceOverride = _v;
    }
 
    public void setPatientValidator(final PatientValidator pValidator){
@@ -138,7 +155,7 @@ public class MaladieManagerImpl implements MaladieManager
                CreateOrUpdateUtilities.createAssociateOperation(maladie, operationManager,
                   operationTypeDao.findByNom("Creation").get(0), utilisateur);
             }else{
-               
+
                maladie = maladieDao.mergeObject(maladie);
                log.info("Modification objet Maladie " + maladie.toString());
                CreateOrUpdateUtilities.createAssociateOperation(maladie, operationManager,
@@ -159,24 +176,24 @@ public class MaladieManagerImpl implements MaladieManager
 
    @Override
    public boolean findDoublonManager(final Maladie maladie, final Patient patient){
-	   if (patient != null) { 
-		   if (patient.getPatientId() != null) { // si le patient n'est pas encore enregistré, doublon impossible
-	   		   List<Maladie> mals = maladieDao.findByLibelleAndPatient(maladie.getLibelle(), patient);
-			   if (mals.contains(maladie)) {
-				   if (maladie.getMaladieId() == null) {
-					   return true;
-				   } 
-				   return maladie.getMaladieId() != mals.get(mals.indexOf(maladie)).getMaladieId();
-			   }
-		   }
-	   } else { // ancienne recherche de doublons ne reposant pas sur le patient
-	      if(maladie.getMaladieId() == null){
-	    	return maladieDao.findByLibelle(maladie.getLibelle()).contains(maladie);
-	      } else {
-	    	  return maladieDao.findByExcludedId(maladie.getMaladieId(), maladie.getLibelle()).contains((maladie));
-	      }
-	   }
-	   return false;
+      if(patient != null){
+         if(patient.getPatientId() != null){ // si le patient n'est pas encore enregistré, doublon impossible
+            final List<Maladie> mals = maladieDao.findByLibelleAndPatient(maladie.getLibelle(), patient);
+            if(mals.contains(maladie)){
+               if(maladie.getMaladieId() == null){
+                  return true;
+               }
+               return maladie.getMaladieId() != mals.get(mals.indexOf(maladie)).getMaladieId();
+            }
+         }
+      }else{ // ancienne recherche de doublons ne reposant pas sur le patient
+         if(maladie.getMaladieId() == null){
+            return maladieDao.findByLibelle(maladie.getLibelle()).contains(maladie);
+         }else{
+            return maladieDao.findByExcludedId(maladie.getMaladieId(), maladie.getLibelle()).contains((maladie));
+         }
+      }
+      return false;
    }
 
    @Override
@@ -235,17 +252,20 @@ public class MaladieManagerImpl implements MaladieManager
    }
 
    /**
-    * Verifie que les Objets devant etre obligatoirement associes 
+    * Verifie que les Objets devant etre obligatoirement associes
     * sont non nulls et lance la validation via la Validator.
     * @param maladie
     * @param patient
     * @param operation demandant la verification
+    * @version 2.3.0-gatsbi
     */
    private void checkRequiredObjectsAndValidate(final Maladie maladie, final Patient patient, final String operation){
       //Patient required
       if(patient != null){
          if(patient.getPatientId() == null){ // creation conjointe
             // validation patient
+            // TODO cette création conjointe n'est jamais appliquée !?
+            // sinon pas de trace de création patient dans table Operation
             BeanValidator.validateObject(patient, new Validator[] {patientValidator});
          }
          maladie.setPatient(patientDao.mergeObject(patient));
@@ -253,9 +273,27 @@ public class MaladieManagerImpl implements MaladieManager
          log.warn("Objet obligatoire Patient manquant" + " lors de la " + operation + " d'une Maladie");
          throw new RequiredObjectIsNullException("Maladie", operation, "Patient");
       }
+      
+      // Gatsbi required
+      final List<Integer> requiredChampEntiteId = new ArrayList<>();
+      if(maladie.getPatient().getBanque() != null && maladie.getPatient().getBanque().getEtude() != null){
+         final Contexte maladieContexte = maladie.getPatient().getBanque().getEtude().getContexteForEntite(7);
+         if(maladieContexte != null){
+            requiredChampEntiteId.addAll(maladieContexte.getRequiredChampEntiteIds());
+         }
+      }
 
       //Validation maladie
-      BeanValidator.validateObject(maladie, new Validator[] {maladieValidator});
+      Validator[] validators;
+      if(requiredChampEntiteId.isEmpty() || maladie.getSystemeDefaut()){ // pas de restriction gatsbi
+         validators = new Validator[] {maladieValidator};
+      }else{ // gatsbi définit certain debut box obligatoires, non appliqué si system-defaut
+         final MaladieGatsbiValidator gValidator = 
+            new MaladieGatsbiValidator("maladie", requiredChampEntiteId);
+         validators = new Validator[] {gValidator, maladieValidatorDateCoherenceOverride};
+      }
+
+      BeanValidator.validateObject(maladie, validators);   
    }
 
    @Override
@@ -281,7 +319,7 @@ public class MaladieManagerImpl implements MaladieManager
     * une liste de collaborateurs.
     * @param maladie pour laquelle on veut mettre à jour
     * les associations.
-    * @param collaborateurs Liste des collaborateur que l'on veut associer 
+    * @param collaborateurs Liste des collaborateur que l'on veut associer
     * a la maladie.
     */
    private void updateCollaborateurs(final Maladie mal, final List<Collaborateur> collaborateurs){
@@ -326,13 +364,18 @@ public class MaladieManagerImpl implements MaladieManager
    }
 
    @Override
-   public List<Maladie> findByPatientNoSystemManager(final Patient patient){
-      return maladieDao.findByPatientNoSystem(patient);
+   public List<Maladie> findByPatientNoSystemNorVisiteManager(final Patient patient){
+      return maladieDao.findByPatientNoSystemNorVisite(patient);
    }
 
    @Override
-   public List<Maladie> findByPatientManager(final Patient patient){
-      return maladieDao.findByPatient(patient);
+   public List<Maladie> findAllByPatientManager(final Patient patient){
+      return maladieDao.findAllByPatient(patient);
+   }
+   
+   @Override
+   public List<Maladie> findByPatientExcludingVisitesManager(final Patient patient){
+      return maladieDao.findByPatientExcludingVisites(patient);
    }
 
    @Override
@@ -343,8 +386,13 @@ public class MaladieManagerImpl implements MaladieManager
       return new Long(0);
    }
 
-	@Override
-	public List<Maladie> findByLibelleAndPatientManager(String libelle, Patient patient) {
-		return maladieDao.findByLibelleAndPatient(libelle, patient);
-	}
+   @Override
+   public List<Maladie> findByLibelleAndPatientManager(final String libelle, final Patient patient){
+      return maladieDao.findByLibelleAndPatient(libelle, patient);
+   }
+
+   @Override
+   public List<Maladie> findVisitesManager(Patient patient, Banque banque){
+      return maladieDao.findVisites(patient, banque);
+   }
 }

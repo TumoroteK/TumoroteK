@@ -81,7 +81,7 @@ import fr.aphp.tumorotek.webapp.general.SessionUtils;
  * Controller créé le 02/11/2009.
  *
  * @author Pierre Ventadour
- * @version 2.2.0
+ * @version 2.3.0-gasbi
  * @since 2.1.0
  */
 public class EchantillonController extends AbstractObjectTabController
@@ -89,10 +89,10 @@ public class EchantillonController extends AbstractObjectTabController
    private static final long serialVersionUID = -3799945305452822008L;
 
    private Div divEchantillonStatic;
+
    private Div divEchantillonEdit;
+
    private Div modifMultiDiv;
-   private Component listeEchantillon;
-   private Component listeEchantillonSero;
 
    private String createZulPath = "/zuls/echantillon/FicheMultiEchantillons.zul";
 
@@ -105,17 +105,9 @@ public class EchantillonController extends AbstractObjectTabController
 
       super.doAfterCompose(comp);
 
-      switch(getCurrentContexte()){
-         case SEROLOGIE:
-            listeEchantillonSero.setVisible(true);
-            break;
-         default:
-            listeEchantillon.setVisible(true);
-            break;
-      }
-
       setStaticDiv(divEchantillonStatic);
       setEditDiv(divEchantillonEdit);
+      setModifMultiDiv(modifMultiDiv);
 
       switch(getCurrentContexte()){
          case SEROLOGIE:
@@ -126,19 +118,32 @@ public class EchantillonController extends AbstractObjectTabController
             setListZulPath("/zuls/echantillon/serotk/ListeEchantillonSero.zul");
             break;
          default:
-            setEditZulPath("/zuls/echantillon/FicheEchantillonEdit.zul");
-            setMultiEditZulPath("/zuls/echantillon/FicheModifMultiEchantillon.zul");
-            setStaticZulPath("/zuls/echantillon/FicheEchantillonStatic.zul");
+            if(SessionUtils.getCurrentGatsbiContexteForEntiteId(3) == null){
+               createZulPath = "/zuls/echantillon/FicheMultiEchantillons.zul";
+               setEditZulPath("/zuls/echantillon/FicheEchantillonEdit.zul");
+               setMultiEditZulPath("/zuls/echantillon/FicheModifMultiEchantillon.zul");
+               setStaticZulPath("/zuls/echantillon/FicheEchantillonStatic.zul");
+               setListZulPath("/zuls/echantillon/ListeEchantillon.zul");
+            }else{
+               createZulPath = "/zuls/echantillon/gatsbi/FicheMultiEchantillonsGatsbi.zul";
+               setEditZulPath("/zuls/echantillon/gatsbi/FicheEchantillonEditGatsbi.zul");
+               setStaticZulPath("/zuls/echantillon/gatsbi/FicheEchantillonStaticGatsbi.zul");
+               setMultiEditZulPath("/zuls/echantillon/gatsbi/FicheModifMultiEchantillonGatsbi.zul");
+               setListZulPath("/zuls/echantillon/gatsbi/ListeEchantillonGatsbi.zul");
+            }
             break;
       }
 
-      setModifMultiDiv(modifMultiDiv);
+      drawListe();
 
       initFicheStatic();
 
       switchToOnlyListeMode();
       orderAnnotationDraw(false);
-
+      
+      // @since 2.3.0-gatsbi
+      // force constraints reset des status nullable
+      EchantillonConstraints.resetNullableProps();
    }
 
    @Override
@@ -173,11 +178,10 @@ public class EchantillonController extends AbstractObjectTabController
    @Override
    public ListeEchantillon getListe(){
       if(SEROLOGIE.equals(getCurrentContexte())){
-         return ((ListeEchantillonSero) self.getFellow("listeEchantillonSero").getFellow("lwinEchantillonSero")
-            .getAttributeOrFellow("lwinEchantillonSero$composer", true));
+         return ((ListeEchantillonSero) self.getFellow("lwinEchantillonSero").getAttributeOrFellow("lwinEchantillonSero$composer",
+            true));
       }
-      return ((ListeEchantillon) self.getFellow("listeEchantillon").getFellow("lwinEchantillon")
-         .getAttributeOrFellow("lwinEchantillon$composer", true));
+      return ((ListeEchantillon) self.getFellow("lwinEchantillon").getAttributeOrFellow("lwinEchantillon$composer", true));
    }
 
    @Override
@@ -362,7 +366,7 @@ public class EchantillonController extends AbstractObjectTabController
       // si il y eu edit avant et addNew depuis liste
       clearEditDiv();
 
-      Executions.createComponents(createZulPath, divEchantillonEdit, null);
+      Executions.createComponents(createZulPath, getEditDiv(), null);
       getMultiFicheEdit().setObjectTabController(this);
       getMultiFicheEdit().setNewObject();
       getMultiFicheEdit().switchToCreateMode((Prelevement) parent);
@@ -380,6 +384,13 @@ public class EchantillonController extends AbstractObjectTabController
 
       showStatic(false);
    }
+
+   //	public void populateFicheEdit(){
+   //		if(isStaticEditMode()){
+   //			clearEditDiv();
+   //			Executions.createComponents(createZulPath, getEditDiv(), null);
+   //		}
+   //	}
 
    public void switchToPrelevementEditMode(final Object obj){
 

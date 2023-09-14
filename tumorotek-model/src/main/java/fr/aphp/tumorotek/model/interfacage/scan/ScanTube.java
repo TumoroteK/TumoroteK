@@ -63,10 +63,15 @@ public class ScanTube implements java.io.Serializable
    private static final long serialVersionUID = 1035198779653396102L;
 
    private Integer scanTubeId;
+
    private ScanTerminale scanTerminale;
+
    private String code;
+
    private String cell;
+
    private String row;
+
    private String col;
 
    public ScanTube(){

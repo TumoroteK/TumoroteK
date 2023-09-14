@@ -55,7 +55,7 @@ public interface TableAnnotationTemplateDao extends GenericDaoJpa<TableAnnotatio
 {
 
    /**
-    * Recherche les TableAnnotationTemplates dont le template 
+    * Recherche les TableAnnotationTemplates dont le template
     * est égal au paramètre.
     * @param template Template du bloc recherché.
     * @return une liste de TableAnnotationTemplates.

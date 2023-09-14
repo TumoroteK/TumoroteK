@@ -58,7 +58,9 @@ public class ConteneurNode extends TumoTreeNode
 {
 
    private Conteneur conteneur;
+
    private String libelle = "";
+
    private Banque selectedBanque;
 
    public ConteneurNode(final Conteneur cont, final Banque banque, final Plateforme curPf){
@@ -70,14 +72,13 @@ public class ConteneurNode extends TumoTreeNode
          }else{
             this.libelle = this.conteneur.getCode();
          }
-         
+
          // conteneur partagé depuis pf extérieur
          // ajoute au libellé
          // TK-289
-         if (!conteneur.getPlateformeOrig().equals(curPf)) {
-        	 this.libelle = this.libelle.concat(" [")
-        		.concat(conteneur.getPlateformeOrig().getAlias() != null ? 
-        			conteneur.getPlateformeOrig().getAlias() : conteneur.getPlateformeOrig().getNom()).concat("]");
+         if(!conteneur.getPlateformeOrig().equals(curPf)){
+            this.libelle = this.libelle.concat(" [").concat(conteneur.getPlateformeOrig().getAlias() != null
+               ? conteneur.getPlateformeOrig().getAlias() : conteneur.getPlateformeOrig().getNom()).concat("]");
          }
       }else{
          this.libelle = "(Vide)";
@@ -85,7 +86,7 @@ public class ConteneurNode extends TumoTreeNode
    }
 
    /**
-    * Recherche toutes les enceintes du conteneur et crée un 
+    * Recherche toutes les enceintes du conteneur et crée un
     * EnceinteNode pour chacun.
     */
    @Override

@@ -42,22 +42,21 @@ import org.zkoss.bind.annotation.ContextParam;
 import org.zkoss.bind.annotation.ContextType;
 import org.zkoss.bind.annotation.ExecutionArgParam;
 import org.zkoss.bind.annotation.Init;
-import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.select.Selectors;
 import org.zkoss.zk.ui.select.annotation.Wire;
 
+import bsh.org.objectweb.asm.Label;
 import fr.aphp.tumorotek.action.ManagerLocator;
+import fr.aphp.tumorotek.action.controller.AbstractController;
 import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
 import fr.aphp.tumorotek.manager.exception.DoublonFoundException;
+import fr.aphp.tumorotek.manager.impl.coeur.patient.PatientDoublonFound;
 import fr.aphp.tumorotek.model.cession.Cession;
 import fr.aphp.tumorotek.model.coeur.echantillon.Echantillon;
-import fr.aphp.tumorotek.model.coeur.patient.Patient;
 import fr.aphp.tumorotek.model.coeur.prelevement.Prelevement;
 import fr.aphp.tumorotek.model.coeur.prodderive.ProdDerive;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
-
-import bsh.org.objectweb.asm.Label;
 
 /**
  * Window modale representant une custom MessageBox permettant d'afficher
@@ -73,7 +72,9 @@ public class DynamicMultiLineMessageBox
 {
 
    private String title;
+
    private String message;
+
    private Exception exception;
 
    private String exceptionDetails = null;
@@ -93,7 +94,7 @@ public class DynamicMultiLineMessageBox
       this.message = _m;
       this.exception = _e;
       details();
-      
+
    }
 
    private void details(){
@@ -145,13 +146,21 @@ public class DynamicMultiLineMessageBox
                   }
                   break;
                case "Patient":
-                  final List<Patient> pats =
-                     ManagerLocator.getPatientManager().findByNipLikeManager(((DoublonFoundException) exception).getCode(), true);
-                  if(!pats.isEmpty()){
-                     label = ObjectTypesFormatters.getLabel("validation.doublon.patient.nip",
-                        new String[] {((DoublonFoundException) exception).getCode()});
-                  }else{
-                     label = Labels.getLabel("validation.doublon.patient");
+                  // @since 2.3.0-gatsbi, amélioration du message 
+                  PatientDoublonFound dbf = ((DoublonFoundException) exception).getPatientDoublonFound();
+                  if(dbf != null) {
+                     if (dbf.getNip() != null) {
+                        label = ObjectTypesFormatters
+                           .getLabel("validation.doublon.patient.nip", new String[] {dbf.getNip()});
+                     }else if (dbf.getIdentifiant() != null){
+                        label = ObjectTypesFormatters
+                           .getLabel("validation.doublon.patient.identifiant", new String[] {dbf.getIdentifiant()});
+                     }else {
+                        label = ObjectTypesFormatters
+                           .getLabel("validation.doublon.patient", new String[] {dbf.getNom()});
+                     }
+                  } else {
+                     label = AbstractController.handleExceptionMessage(exception);
                   }
                default:
                   break;

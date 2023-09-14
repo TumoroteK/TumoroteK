@@ -69,10 +69,13 @@ public class BlocExterneManagerImpl implements BlocExterneManager
 
    /** Bean Dao. */
    private BlocExterneDao blocExterneDao;
+
    /** Bean Dao. */
    private DossierExterneDao dossierExterneDao;
+
    /** Bean Dao. */
    private EntiteDao entiteDao;
+
    /** Bean Manager. */
    private ValeurExterneManager valeurExterneManager;
 

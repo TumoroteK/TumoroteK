@@ -41,7 +41,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.zkoss.util.resource.Labels;
@@ -80,13 +79,16 @@ public class ModificationMultipleMultiListbox extends AbstractModificationMultip
     * Components.
     */
    private Listbox eraseMultiListBox;
+
    private Listbox oneValueMultiListBox;
+
    private Boolean isObligatoire;
 
    private Integer listLength = 15;
 
    // Toutes les valeurs possibles
    private final List<Object> allValues = new ArrayList<>();
+
    // Valeurs String correspondantes
    private final List<String> allStringValues = new ArrayList<>();
 
@@ -129,7 +131,6 @@ public class ModificationMultipleMultiListbox extends AbstractModificationMultip
       eraseMultiListBox.setVisible(visible);
    }
 
-   
    @Override
    public void passValueToEraserBox(){
       final Set<Listitem> selIts = new HashSet<>();
@@ -242,7 +243,6 @@ public class ModificationMultipleMultiListbox extends AbstractModificationMultip
       }
    }
 
-   
    @Override
    public void extractValuesFromObjects(){
 
@@ -250,33 +250,29 @@ public class ModificationMultipleMultiListbox extends AbstractModificationMultip
       // on extrait la valeur actuelle du champ à modifier
       // toutes ces valeurs sont placées dans la liste values
       setHasNulls(false);
-      for(Object object : getListObjets()){
-         
+      for(final Object object : getListObjets()){
+
          try{
             List<? extends Object> vals;
             // annotation valeurs
             if(object instanceof List<?>){
                vals = (List<? extends Object>) object;
             }else{
-               
+
                boolean isDelegateProperty = false;
                TKDelegateObject<?> delegate = null;
-               
-               if(object instanceof TKDelegetableObject) {
-                  delegate = ((TKDelegetableObject<?>)object).getDelegate();
-                  isDelegateProperty = delegate != null 
-                		 && PropertyUtils.describe(delegate).keySet().contains(getChamp());
+
+               if(object instanceof TKDelegetableObject){
+                  delegate = ((TKDelegetableObject<?>) object).getDelegate();
+                  isDelegateProperty = delegate != null && PropertyUtils.describe(delegate).keySet().contains(getChamp());
                }
-               
-               if(isDelegateProperty) {
-                  vals = new ArrayList<>(
-                     (Set<? extends Object>) PropertyUtils.getSimpleProperty(delegate, getChamp()));
+
+               if(isDelegateProperty){
+                  vals = new ArrayList<>((Set<? extends Object>) PropertyUtils.getSimpleProperty(delegate, getChamp()));
+               }else{
+                  vals = new ArrayList<>((Set<? extends Object>) PropertyUtils.getSimpleProperty(object, getChamp()));
                }
-               else {
-                  vals = new ArrayList<>(
-                     (Set<? extends Object>) PropertyUtils.getSimpleProperty(object, getChamp()));
-               }
-               
+
             }
             Object tmp = null;
             final Set<Object> its = new HashSet<>();
@@ -313,7 +309,7 @@ public class ModificationMultipleMultiListbox extends AbstractModificationMultip
          }catch(final IllegalAccessException | InvocationTargetException | NoSuchMethodException e){
             log.error(e);
          }
-         
+
       }
 
       // pour chaque objet du thésaurus, on va extraire la valeur du
@@ -336,7 +332,6 @@ public class ModificationMultipleMultiListbox extends AbstractModificationMultip
       }
    }
 
-   
    @Override
    public String formatLocalObject(final Object obj){
       if(getIsCombined()){
@@ -382,7 +377,7 @@ public class ModificationMultipleMultiListbox extends AbstractModificationMultip
     * Cree la liste Listitem avec selectedItems.
     * @param its
     */
-   
+
    private void drawOneValueMultiListBox(){
       Set<Object> its = null;
       if(getValues().get(0) != null && !getValues().get(0).equals("system.tk.unknownExistingValue")){

@@ -70,12 +70,16 @@ public class ResultatManagerImpl implements ResultatManager
 
    /** Bean Dao ResultatDao. */
    private ResultatDao resultatDao = null;
+
    /** Bean Dao AffichageDao. */
    private AffichageDao affichageDao;
+
    /** Bean Dao ChampDao. */
    private ChampDao champDao;
+
    /** Bean Manager ChampManager. */
    private ChampManager champManager;
+
    /** Bean Validator. */
    private ResultatValidator resultatValidator;
 

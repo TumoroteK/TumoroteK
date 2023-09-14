@@ -44,17 +44,32 @@ import fr.aphp.tumorotek.action.constraints.ConstWord;
  * Date: 26/07/2010.
  *
  * @author Mathieu BARTHELEMY
- * @version 2.0
+ * @version 2.3.0-gatsbi
  */
 public final class PatientConstraints
 {
 
    private PatientConstraints(){}
+   
+   // @since 2.3.0-gatsbi reset nullable 
+   public static void resetNullableProps() {
+      codeNullConstraint.setNullable(true);
+      nomConstraint.setNullable(false);
+      nomNullConstraint.setNullable(true);
+      paysNaissanceConstraint.setNullable(true);
+      villeNaissanceConstraint.setNullable(true);
+   }
 
    private static ConstCode codeNullConstraint = new ConstCode();
    static{
       codeNullConstraint.setNullable(true);
       codeNullConstraint.setSize(20);
+   }
+   
+   private static ConstCode codeConstraint = new ConstCode();
+   static{
+      codeConstraint.setNullable(false);
+      codeConstraint.setSize(20);
    }
 
    private static ConstWord nomConstraint = new ConstWord();
@@ -67,6 +82,18 @@ public final class PatientConstraints
    static{
       nomNullConstraint.setNullable(true);
       nomNullConstraint.setSize(50);
+   }
+   
+   private static ConstWord paysNaissanceConstraint = new ConstWord();
+   static{
+      paysNaissanceConstraint.setNullable(true);
+      paysNaissanceConstraint.setSize(100);
+   }
+   
+   private static ConstWord villeNaissanceConstraint = new ConstWord();
+   static{
+      villeNaissanceConstraint.setNullable(true);
+      villeNaissanceConstraint.setSize(100);
    }
 
    public static ConstCode getCodeNullConstraint(){
@@ -81,4 +108,15 @@ public final class PatientConstraints
       return nomNullConstraint;
    }
 
+   public static ConstWord getVilleNaissanceConstraint(){
+      return villeNaissanceConstraint;
+   }
+
+   public static ConstWord getPaysNaissanceConstraint(){
+      return paysNaissanceConstraint;
+   }
+
+   public static ConstCode getCodeConstraint(){
+      return codeConstraint;
+   }
 }

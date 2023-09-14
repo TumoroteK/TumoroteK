@@ -53,6 +53,7 @@ import fr.aphp.tumorotek.model.io.export.AbstractTKChamp;
 import fr.aphp.tumorotek.model.io.export.Champ;
 import fr.aphp.tumorotek.model.io.export.ChampEntite;
 import fr.aphp.tumorotek.model.systeme.Entite;
+import fr.aphp.tumorotek.webapp.gatsbi.GatsbiController;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
 import fr.aphp.tumorotek.webapp.tree.TumoTreeNode;
 
@@ -62,22 +63,26 @@ import fr.aphp.tumorotek.webapp.tree.TumoTreeNode;
  * Classe créée le 07/04/2011.
  *
  * @author Pierre Ventadour.
- * @version 2.0.
+ * @version 2.3.0-gatsbi
  *
  */
 public class EntiteNode extends TumoTreeNode
 {
 
    private Entite entite;
+
    private List<Champ> oldSelectedChamps = new ArrayList<>();
+
    /**
     * Liste des dataTypes à afficher
     */
    private List<DataType> dataTypeList;
+
    /**
     * Exclure les champs numérique de type Id
     */
    private Boolean excludeIds;
+
    private Banque banque;
 
    public EntiteNode(final Entite e){
@@ -105,8 +110,12 @@ public class EntiteNode extends TumoTreeNode
       final Predicate<Champ> notSelected = champ -> !oldSelectedChamps.contains(champ);
 
       final Stream<ChampEntite> virtualChampsStream = getVirtualChampEntite().stream();
+
+      // @since gatsbi
+      // final Stream<ChampEntite> champsEntiteStream =
+      //   ManagerLocator.getManager(ChampEntiteManager.class).findByEntiteAndImportManager(entite, true).stream();
       final Stream<ChampEntite> champsEntiteStream =
-         ManagerLocator.getManager(ChampEntiteManager.class).findByEntiteAndImportManager(entite, true).stream();
+         GatsbiController.findByEntiteImportAndIsNullableManager(entite, true, null).stream();
 
       //Ajout des noeuds "champ entité"
       Stream.concat(virtualChampsStream, champsEntiteStream).filter(dataTypeAutorise)
@@ -144,7 +153,10 @@ public class EntiteNode extends TumoTreeNode
          case "Prelevement":
             ce = ManagerLocator.getManager(ChampEntiteManager.class).findByIdManager(193);
             if((null == excludeIds || !excludeIds)
-               && (null == dataTypeList || (null != dataTypeList && dataTypeList.contains(ce.getDataType())))){
+               && (null == dataTypeList || (null != dataTypeList && dataTypeList.contains(ce.getDataType())))
+               // since 2.3.0-gatsbi etablissement depend de service preleveur
+               && (SessionUtils.getCurrentGatsbiContexteForEntiteId(entite.getEntiteId()) == null
+                  || SessionUtils.getCurrentGatsbiContexteForEntiteId(entite.getEntiteId()).isChampIdVisible(29))){
                virtualChampEntiteList.add(ce);
             }
             break;

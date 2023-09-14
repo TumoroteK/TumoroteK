@@ -60,23 +60,23 @@ import fr.aphp.tumorotek.model.code.TableCodage;
    query = "SELECT b FROM BanqueTableCodage b " + "WHERE b.pk.banque = ?1 ORDER BY b.pk.tableCodage.nom")})
 public class BanqueTableCodage
 {
-	private BanqueTableCodagePK pk = new BanqueTableCodagePK();
-	private Boolean libelleExport;
-	
-	public BanqueTableCodage() {
-	}
-	
-	public BanqueTableCodage(Banque _b, TableCodage _t) {
-		this.pk.setBanque(_b);
-		this.pk.setTableCodage(_t);
-	}
+   private BanqueTableCodagePK pk = new BanqueTableCodagePK();
+
+   private Boolean libelleExport;
+
+   public BanqueTableCodage(){}
+
+   public BanqueTableCodage(final Banque _b, final TableCodage _t){
+      this.pk.setBanque(_b);
+      this.pk.setTableCodage(_t);
+   }
 
    @Override
    public String toString(){
       if(this.getBanque() != null && this.getTableCodage() != null){
          return "{" + this.getBanque().getNom() + " - " + this.getTableCodage().getNom() + "}";
-      } else if (this.getTableCodage() != null) {
-    	  return this.getTableCodage().toString();
+      }else if(this.getTableCodage() != null){
+         return this.getTableCodage().toString();
       }
       return "{Empty BanqueTableCodage}";
    }
@@ -120,7 +120,7 @@ public class BanqueTableCodage
    }
 
    /**
-    * 2 banqueTableCodage sont considérées comme égales 
+    * 2 banqueTableCodage sont considérées comme égales
     * si elles ont la même pk.
     * @param obj est l'objet à tester.
     * @return true si les objets sont égaux.

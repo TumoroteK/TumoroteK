@@ -67,7 +67,6 @@ public class BanquesAssocieesContrats extends OneToManyComponent<Banque>
       return this.objects;
    }
 
-   
    @Override
    public void setObjects(final List<Banque> objs){
       this.objects = objs;

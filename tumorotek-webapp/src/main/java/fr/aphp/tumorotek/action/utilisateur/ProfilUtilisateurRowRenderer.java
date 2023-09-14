@@ -57,6 +57,7 @@ public class ProfilUtilisateurRowRenderer implements RowRenderer<ProfilUtilisate
    // si true render login - banque
    // sinon rendre login - profil
    private boolean banqueRender = false;
+
    private boolean editMode;
 
    public ProfilUtilisateurRowRenderer(final boolean _b){
@@ -99,24 +100,22 @@ public class ProfilUtilisateurRowRenderer implements RowRenderer<ProfilUtilisate
          banqueLabel.addForward(null, banqueLabel.getParent(), "onClickProfilUtilisateurBanque", profil);
          banqueLabel.setParent(row);
       }
-      
-      if(editMode) {
-         Image removeIcon = new Image("/images/icones/small_delete.png");
+
+      if(editMode){
+         final Image removeIcon = new Image("/images/icones/small_delete.png");
          removeIcon.addForward(Events.ON_CLICK, removeIcon.getParent(), "onClickRemoveProfil", profil);
          removeIcon.setStyle("cursor:pointer");
          removeIcon.setParent(row);
       }
-      
+
    }
 
    public boolean isEditMode(){
       return editMode;
    }
 
-   public void setEditMode(boolean editMode){
+   public void setEditMode(final boolean editMode){
       this.editMode = editMode;
    }
 
-   
-   
 }

@@ -1,0 +1,183 @@
+<!--
+ * Copyright ou © ou Copr. Assistance Publique des Hôpitaux de 
+ * PARIS et SESAN
+ * projet-tk@sesan.fr
+ *
+ * Ce logiciel est un programme informatique servant à la gestion de
+ * l'activité de biobanques.
+ *
+ * Ce logiciel est régi par la licence CeCILL soumise au droit français
+ * et respectant les principes de diffusion des logiciels libres. Vous
+ * pouvez utiliser, modifier et/ou redistribuer ce programme sous les
+ * conditions de la licence CeCILL telle que diffusée par le CEA, le
+ * CNRS et l'INRIA sur le site "http://www.cecill.info".
+ * En contrepartie de l'accessibilité au code source et des droits de
+ * copie, de modification et de redistribution accordés par cette
+ * licence, il n'est offert aux utilisateurs qu'une garantie limitée.
+ * Pour les mêmes raisons, seule une responsabilité restreinte pèse sur
+ * l'auteur du programme, le titulaire des droits patrimoniaux et les
+ * concédants successifs.
+ *
+ * A cet égard  l'attention de l'utilisateur est attirée sur les
+ * risques associés au chargement,  à l'utilisation,  à la modification
+ * et/ou au  développement et à la reproduction du logiciel par
+ * l'utilisateur étant donné sa spécificité de logiciel libre, qui peut
+ * le rendre complexe à manipuler et qui le réserve donc à des
+ * développeurs et des professionnels  avertis possédant  des
+ * connaissances  informatiques approfondies.  Les utilisateurs sont
+ * donc invités à charger  et  tester  l'adéquation  du logiciel à leurs
+ * besoins dans des conditions permettant d'assurer la sécurité de leurs
+ * systèmes et ou de leurs données et, plus généralement, à l'utiliser
+ * et l'exploiter dans les mêmes conditions de sécurité.
+ *
+ * Le fait que vous puissiez accéder à cet en-tête signifie que vous
+ * avez pris connaissance de la licence CeCILL, et que vous en avez
+ * accepté les termes.
+-->
+<zk>
+
+<?component name="referents" macroURI="/zuls/patient/MedecinsReferents.zul" ?>
+
+<window id="fwinPatientStatic" border="none" 
+		apply="fr.aphp.tumorotek.action.patient.gatsbi.FichePatientStaticGatsbi"
+		forward="onSelectParametrage=onGetSelectedParametrage">
+	<panel id="winPanel" title="${c:l('fichePatient.panel.title')}"
+	 	sclass="fichePanelv2" closable="true">
+		<panelchildren style="overflow-y:scroll" id="panelChildrenWithScroll">
+			<div id="gatsbiContainer" class="main-container gridForm1">
+				<div id="patientBlockDiv" style="padding-left: 5px">
+					<div id="patientBlockDivContainer" class="block-container">
+						<div class="item item-wide" id="identifiantDiv"><!-- Identifiant -->
+							<custom-attributes champId="272" />
+							<label value="${c:l('Champ.Patient.Identifiant')}" sclass="chpLabel formLabel" />
+							<label id="identifiantLabel" value="@{fwinPatientStatic$composer.patientIdentifiant}" sclass="formValue" />
+						</div>
+						<div class="item item-wide" id="nipDiv"><!-- Nip -->
+							<custom-attributes champId="2" />
+							<label value="${c:l('Champ.Patient.Nip')}" sclass="chpLabel formLabel" />
+							<label id="nipLabel" value="@{fwinPatientStatic$composer.nipFormatted}" sclass="formValue" />
+						</div>
+						<div class="item item-mid" id="nomDiv"><!-- Nom -->	
+							<custom-attributes champId="3" />
+							<label value="${c:l('Champ.Patient.Nom')}" sclass="chpLabel formLabel" />
+							<label id="nomLabel" value="@{fwinPatientStatic$composer.nomFormatted}" sclass="formValue" />	
+						</div>
+						<div class="item item-mid" id="nomNaissanceDiv"><!-- Nom Naissance-->	
+							<custom-attributes champId="4" />
+							<label value="${c:l('Champ.Patient.NomNaissance')}" sclass="chpLabel formLabel" />
+							<label id="nomNaisLabel" value="@{fwinPatientStatic$composer.nomNaissanceFormatted}" sclass="formValue" />							
+						</div>
+						<div class="item item-mid" id="prenomDiv"><!-- Prénom -->	
+							<custom-attributes champId="5" />
+							<label value="${c:l('Champ.Patient.Prenom')}" sclass="chpLabel formLabel" />
+							<label id="prenomLabel" value="@{fwinPatientStatic$composer.prenomFormatted}" sclass="formValue" />
+						</div>
+						<div class="item item-mid" id="sexeDiv"><!-- Sexe -->	
+							<custom-attributes champId="6" />
+							<label value="${c:l('Champ.Patient.Sexe')}" sclass="chpLabel formLabel" />						
+							<label id="sexeLabel" value="@{fwinPatientStatic$composer.sexeFormatted}" sclass="formValue" />
+						</div>
+						<div class="item item-wide" id="dateNaissanceDiv"><!-- Date naissance -->	
+							<custom-attributes champId="7" />
+							<label value="${c:l('Champ.Patient.DateNaissance')}" sclass="chpLabel formLabel" />
+							<label id="dateNaisLabel" value="@{fwinPatientStatic$composer.dateNaisFormatted}" sclass="formValue" />
+						</div>
+						<div class="item item-mid" id="paysNaissanceDiv"><!-- Pays naissance -->	
+							<custom-attributes champId="9" />
+							<label value="${c:l('Champ.Patient.PaysNaissance')}" sclass="chpLabel formLabel" />
+							<label id="paysNaisLabel" value="@{fwinPatientStatic$composer.object.paysNaissance}" sclass="formValue" />
+						</div>
+						<div class="item item-mid" id="villeNaissanceDiv"><!-- Ville naissance -->	
+							<custom-attributes champId="8" />
+							<label value="${c:l('Champ.Patient.VilleNaissance')}" sclass="chpLabel formLabel" />
+							<label id="villeNaisLabel" value="@{fwinPatientStatic$composer.object.villeNaissance}" sclass="formValue" />
+						</div>
+						<div class="item item-mid" id="etatDiv"><!-- Etat -->	
+							<custom-attributes champId="10" />
+							<label value="${c:l('Champ.Patient.PatientEtat')}" sclass="chpLabel formLabel" />
+							<label id="etatLabel" value="@{fwinPatientStatic$composer.etatFormatted}" sclass="formValue" />
+						</div>
+						<div class="item item-mid" id="dateEtatDiv"><!-- Date etat ou deces -->	
+							<custom-attributes champId="11" />
+							<label id="dateEtatDecesField" value="${c:l('Champ.Patient.DateEtat')}" sclass="chpLabel formLabel" />
+							<label id="dateEtatDecesLabel" value="@{fwinPatientStatic$composer.dateEtatDecesFormatted}" sclass="formValue" />
+						</div>
+						<!-- Date deces - TG-138 : la date de décès est finalement gérée avec la date d'état comme dans le standard TK
+						<div class="item item-mid" id="dateDecesDiv">	
+							<custom-attributes champId="12" />
+							<label value="${c:l('Champ.Patient.DateDeces')}" sclass="chpLabel formLabel" />
+							<label id="decesLabel" value="@{fwinPatientStatic$composer.dateDecesFormatted}" sclass="formValue" />
+						</div>-->
+					</div>
+				</div>
+				<div class="block-separator" />
+				<!-- Médecins -->
+				<div class="item item-wide" id="patientMedecinsDiv">	
+					<custom-attributes champId="227" />
+					<groupbox id="groupMedecins">
+						<caption label="@{fwinPatientStatic$composer.referentsGroupHeader}" />
+						<div id="referentsDiv">
+							<referents id="referents" width="100%" />
+						</div>
+					</groupbox>
+				</div>
+				<div class="block-separator" />
+				<!-- Maladies -->
+				<groupbox id="groupMaladies">
+					<caption label="@{fwinPatientStatic$composer.maladiesGroupHeader}" />
+					<div id="malaDiv">
+					</div>
+				</groupbox>
+				<!-- prelevement depuis collections hors maladies -->
+				<div class="block-separator" />
+				<groupbox id="groupPrelevementsHorsMaladie" 
+						visible="@{fwinPatientStatic$composer.hasPrelevementsToShow}">
+					<caption label="${c:l('patient.prelevements.horsMaladie')}" 
+						visible="@{fwinPatientStatic$composer.hasPrelevementsFromOtherMaladies}"/>
+					<grid id="prelevementsFromOtherMaladiesGrid"
+						autopaging="true"
+						fixedLayout="false" span="true"
+						sizedByContent="true" sclass="gridListStyle"
+						model="@{fwinPatientStatic$composer.prelevementsFromOtherMaladies}"
+						rowRenderer="${fwinPatientStatic$composer.prelevementsFromOtherMaladiesRenderer}">
+						<columns menupopup="auto" sizable="true" width="100%" />
+						<rows id="prelevementsfromOtherMaladiesRows">
+							<row self="@{each='currPrel'}" value="currPrel"/>
+						</rows>
+					</grid>
+				</groupbox>
+			</div>					
+		</panelchildren>
+		<toolbar height="100%" id="toolbar" align="end">
+			<hbox spacing="5">
+				<menubar sclass="menuBarV2" id="menuBar">
+					<menu label="${c:l('general.actions')}" image="/images/icones/small_action.png" 
+						width="36px" height="24px">
+						<menupopup>
+							<menuitem id="print" image="/images/icones/printer.png"
+								label="${c:l('general.print')}"/>
+							<menuitem id="historique" image="/images/icones/history.png" 
+								label="${c:l('general.historique')}"/>
+						</menupopup>
+					</menu>
+				</menubar>
+				<button id="addNew" label="${c:l('general.new')}" height="24px"
+					image="/images/icones/new.png" sclass="buttonv2" 
+					use="fr.aphp.tumorotek.component.TKDisablableButton"/>
+				<button id="edit" label="${c:l('general.edit')}" height="24px"
+					image="/images/icones/edit.png" sclass="buttonv2" disabled="true" 
+					use="fr.aphp.tumorotek.component.TKDisablableButton" />
+				<button id="delete" label="${c:l('general.delete')}" height="24px"
+					image="/images/icones/trash.png" sclass="buttonv2" disabled="true" 
+					use="fr.aphp.tumorotek.component.TKDisablableButton" />
+				<button id="addMaladie" label="${c:l('patient.ajouter.maladie')}" height="24px" 
+					image="/images/icones/virus.png" sclass="buttonv2" disabled="true" 
+					use="fr.aphp.tumorotek.component.TKDisablableButton" />
+				<button id="addPrelevement" label="${c:l('patient.ajouter.prelevement')}" height="24px" 
+					image="/images/icones/sample.png" sclass="buttonv2" disabled="true" 
+					use="fr.aphp.tumorotek.component.TKDisablableButton" />
+			</hbox>
+		</toolbar>
+	</panel>
+</window>
+</zk>

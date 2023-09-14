@@ -56,7 +56,6 @@ import fr.aphp.tumorotek.model.io.export.Critere;
 public class CritereValidator implements Validator
 {
 
-   
    @Override
    public boolean supports(final Class<?> clazz){
       return Critere.class.equals(clazz);

@@ -65,7 +65,9 @@ public class CalendarBox extends HtmlMacroComponent
    private Calendar cal = null;
 
    private Date date = null;
+
    private Date dateShort = null;
+
    private String dateConstraint = null;
 
    // flag indiquant si le Calendarbox a été modifié
@@ -94,7 +96,7 @@ public class CalendarBox extends HtmlMacroComponent
    }
 
    /**
-    * Assigne les valeurs aux boxes en dissociant les différentes 
+    * Assigne les valeurs aux boxes en dissociant les différentes
     * composantes du Calendar.
     * @param c calendar
     */
@@ -102,7 +104,7 @@ public class CalendarBox extends HtmlMacroComponent
 
       cal = c;
 
-      if(getFirstChild() != null){ // vérifie que le composant a été crée 
+      if(getFirstChild() != null){ // vérifie que le composant a été crée
          int hours = 0;
          int minutes = 0;
          if(cal != null){

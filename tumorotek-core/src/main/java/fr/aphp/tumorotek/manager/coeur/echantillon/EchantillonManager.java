@@ -72,7 +72,7 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
  *
  * @author Pierre Ventadour
  * @author Mathieu BARTHELEMY
- * @version 2.2.2
+ * @version 2.3.0-gatsbi
  *
  */
 public interface EchantillonManager
@@ -270,7 +270,7 @@ public interface EchantillonManager
 
    /**
     * Recherche la liste des codes utilisés par les échantillons pour associer à un produit dérivé :
-    * Echantillons liés à la banque passée en paramètre et dont la quantité n'est pas égale à 0, ou dans une cession de type traotement
+    * Echantillons liés à la banque passée en paramètre et dont la quantité n'est pas égale à 0, ou dans une cession de type traitement
     * @param banque Banque pour laquelle on recherche les codes.
     * @return Liste de codes.
     */
@@ -746,14 +746,15 @@ public interface EchantillonManager
     * @param utilisateur
     * @param doValidation
     * @param isImport
+    * @param requiredChampEntiteIds gatsbi champ entite required
     * @return echantillon_id assigne au nouvel enregistrement
-    * @version 2.0.10.6
+    * @version 2.3.0-gatsbi
     */
    Integer prepareObjectJDBCManager(EchantillonJdbcSuite jdbcSuite, Echantillon echantillon, Banque banque,
       Prelevement prelevement, Collaborateur collaborateur, ObjetStatut statut, Emplacement emplacement, EchantillonType type,
       Unite quantite, EchanQualite qualite, ModePrepa preparation, List<CodeAssigne> codes,
       List<AnnotationValeur> listAnnoToCreateOrUpdate, List<NonConformite> noconfsTrait, List<NonConformite> noconfsCess,
-      Utilisateur utilisateur, boolean doValidation, boolean isImport) throws SQLException;
+      Utilisateur utilisateur, boolean doValidation, boolean isImport, List<Integer> requiredChampEntiteIds) throws SQLException;
 
    /**
     * Supprime les échantillons et en cascade les dérivés dont 
@@ -792,8 +793,8 @@ public interface EchantillonManager
     * @return delai en millisecondes
     * @since 2.2.2
     */
-   long calculDelaiStockage(Echantillon echan, Prelevement prel); 
-   
+   long calculDelaiStockage(Echantillon echan, Prelevement prel);
+
    /**
     * Renvoie tous les échantillons ayant eu une dégradation possible
     * @param banks
@@ -801,5 +802,33 @@ public interface EchantillonManager
     * @return liste d'ids
     * @since 2.3
     */
-   List<Integer> findByBanksAndImpact(List<Banque> banks, List<Boolean> impact);
+   List<Integer> findByBanksAndImpact(List<Banque> banks, List<Boolean> impact);   
+   
+   /**
+    * Factorisation check avant create update.
+    * 
+    * @since 2.3.0-gatsbi
+    */
+   void checkRequiredObjectsAndValidate(Echantillon echantillon, Banque banque, EchantillonType type, ObjetStatut statut,
+      String operation, Utilisateur utilisateur, List<CodeAssigne> codes, boolean doValidation, boolean isImport);
+
+   /**
+    * Recherche tous les échantillons ids issus des patients dont les valeurs passées 
+    * en paramètres correspondent à un identifiant, un nip, ou un nom.
+    * @param idsNipsNoms Liste des identifiants noms ou nips de patients.
+    * @param banks Liste des banques des échantillons.
+    * @return Liste d'ids échantillons.
+    * @since 2.3.0-gatsbi
+    */
+   List<Integer> findByPatientIdentifiantOrNomOrNipInListManager(List<String> idsNipsNoms, List<Banque> selectedBanques);
+
+   /**
+    * Recherche tous les échantillons ids issus des patients dont l'identifiant, nip ou nom 
+    * correspond au critère passé en paramètre 
+    * @param search critere
+    * @param banks Liste des banques des échantillons.
+    * @return Liste d'ids échantillons.
+    * @since 2.3.0-gatsbi
+    */
+   List<Integer> findByPatientIdentifiantOrNomOrNipReturnIdsManager(String search, List<Banque> selectedBanques, boolean b);
 }

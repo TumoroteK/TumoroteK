@@ -1,0 +1,505 @@
+<!--
+ * Copyright ou © ou Copr. Assistance Publique des Hôpitaux de 
+ * PARIS et SESAN
+ * projet-tk@sesan.fr
+ *
+ * Ce logiciel est un programme informatique servant à la gestion de
+ * l'activité de biobanques.
+ *
+ * Ce logiciel est régi par la licence CeCILL soumise au droit français
+ * et respectant les principes de diffusion des logiciels libres. Vous
+ * pouvez utiliser, modifier et/ou redistribuer ce programme sous les
+ * conditions de la licence CeCILL telle que diffusée par le CEA, le
+ * CNRS et l'INRIA sur le site "http://www.cecill.info".
+ * En contrepartie de l'accessibilité au code source et des droits de
+ * copie, de modification et de redistribution accordés par cette
+ * licence, il n'est offert aux utilisateurs qu'une garantie limitée.
+ * Pour les mêmes raisons, seule une responsabilité restreinte pèse sur
+ * l'auteur du programme, le titulaire des droits patrimoniaux et les
+ * concédants successifs.
+ *
+ * A cet égard  l'attention de l'utilisateur est attirée sur les
+ * risques associés au chargement,  à l'utilisation,  à la modification
+ * et/ou au  développement et à la reproduction du logiciel par
+ * l'utilisateur étant donné sa spécificité de logiciel libre, qui peut
+ * le rendre complexe à manipuler et qui le réserve donc à des
+ * développeurs et des professionnels  avertis possédant  des
+ * connaissances  informatiques approfondies.  Les utilisateurs sont
+ * donc invités à charger  et  tester  l'adéquation  du logiciel à leurs
+ * besoins dans des conditions permettant d'assurer la sécurité de leurs
+ * systèmes et ou de leurs données et, plus généralement, à l'utiliser
+ * et l'exploiter dans les mêmes conditions de sécurité.
+ *
+ * Le fait que vous puissiez accéder à cet en-tête signifie que vous
+ * avez pris connaissance de la licence CeCILL, et que vous en avez
+ * accepté les termes.
+-->
+<zk>
+
+<?component name="calendarbox" macroURI="/zuls/component/CalendarBox.zul" class="fr.aphp.tumorotek.component.CalendarBox" ?>
+
+	<window id="fwinLaboInter" border="none"
+		apply="fr.aphp.tumorotek.action.prelevement.gatsbi.FicheLaboInterGatsbi"
+		forward="onSelectParametrage=onGetSelectedParametrage">
+		<panel collapsible="false"
+			title="${c:l('bloc.prelevement.laboInter')}" sclass="fichePanelv2"
+			id="winPanel" closable="true">
+			<panelchildren style="overflow-y:scroll" id="panelChildrenWithScroll">
+				<div id="gatsbiContainer" class="main-container gridForm1" style="padding: 5px">
+					<div class="item item-mid" id="codeLaboDiv"><!-- Code du prélèvement / Non modifiable -->
+						<div class="row-container chpLabel">
+							<label value="${c:l('Champ.Prelevement.Code')}"
+								sclass="formLabel" />
+						</div>
+						<label id="codeLabelPrlvt"
+							value="@{fwinLaboInter$composer.object.code}" sclass="formValue" />
+					</div>
+					<div class="item item-mid" id="natureDiv"><!-- Nature du prélèvement / Non modifiable 
+							/ Visibilité paramétrable -->
+						<custom-attributes champId="24" />
+						<div class="row-container chpLabel">
+							<label value="${c:l('Champ.Prelevement.Nature')}"
+								sclass="formLabel" />
+						</div>
+						<label id="natureLabelPrlvt"
+							value="@{fwinLaboInter$composer.object.nature.nature}"
+							sclass="formValue" />
+					</div>
+					<div class="block-separator" />
+					<!-- Départ -->
+					<div id="departBlockDiv">
+						<div class="block-title">
+							<div class="column-container">
+								<label value="${c:l('fichePrelevement.departPreleveur')}"
+									sclass="formSubTitle" />
+								<image width="100%" height="1px"
+									src="/images/pixelble.gif" style="background-repeat: repeat-x;" />
+							</div>
+						</div>
+						<div id="departBlockDivContainer" class="block-container">
+							<div class="item item-wide" id="congPrelDiv"><!-- Congelation au prélèvement -->
+								<custom-attributes champId="269" />
+								<div class="row-container">
+									<label id="congDepartLabel"
+										value="${c:l('Champ.Prelevement.CongDepart')}"
+										sclass="formLabel" style="line-height: 20px" />
+									<checkbox id="congDepartBox"
+										checked="@{fwinLaboInter$composer.object.congDepart,
+					        			save-when='validate.onClick, create.onClick, next.onClick, self.onBlur'}" />
+								</div>
+							</div>		
+							<div class="item item-wide" id="dateDepartDiv"><!-- Date de départ -->
+								<custom-attributes champId="35" />
+								<div class="row-container chpLabel">
+									<label value="${c:l('Champ.Prelevement.DateDepart')}"
+										sclass="formLabel" />
+									<label value="*" sclass="requiredMark" />
+								</div>
+								<calendarbox id="dateDepartCalBox"
+									value="@{fwinLaboInter$composer.object.dateDepart,
+			        			save-when='validate.onClick, create.onClick, next.onClick, self.onBlur'}" />
+							</div>
+							<div class="item item-mid" id="transporteurDiv"><!-- Transporteur -->
+								<custom-attributes champId="36" />
+								<div class="row-container chpLabel">
+									<label value="${c:l('Champ.Prelevement.Transporteur')}" sclass="formLabel" />
+									<label value="*" sclass="requiredMark" />
+								</div>
+								<listbox id="transporteursBoxLabo" mold="select"
+									rows="1" model="@{fwinLaboInter$composer.transporteurs}"
+									selectedItem="@{fwinLaboInter$composer.selectedTransporteur}">
+									<listitem self="@{each='transporteurLabo'}"
+										value="@{transporteurLabo}">
+										<listcell label="@{transporteurLabo.nom}" />
+									</listitem>
+								</listbox>
+							</div>
+							<div class="item item-mid" id="tempTranspDiv"><!-- Température de transport -->
+								<custom-attributes champId="37" />
+								<div class="row-container chpLabel">
+									<label value="${c:l('Champ.Prelevement.TransportTemp')}" sclass="formLabel" />
+									<label value="*" sclass="requiredMark" />
+								</div>
+								<div class="row-container">
+									<decimalbox id="temperatureBoxLabo" width="50px"
+										value="@{fwinLaboInter$composer.object.transportTemp,
+											load-after='temperatureListBoxLabo.onSelect',
+											save-when='validate.onClick, create.onClick, next.onClick'}"
+										locale="en" />
+									<label value="°C" sclass="formLabel" />
+									<listbox id="temperatureListBoxLabo" mold="select"
+										rows="1" model="@{fwinLaboInter$composer.temperatures}"
+										selectedItem="@{fwinLaboInter$composer.selectedTemperature}">
+										<listitem self="@{each='temp'}" value="@{temp}">
+											<listcell label="@{temp.temperature}" />
+										</listitem>
+									</listbox>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="block-separator" />
+					<!-- Sites d'analyse -->
+					<div id="groupLaboInter">
+						<div class="block-title">
+							<div class="column-container">
+								<label value="${c:l('fichePrelevement.laboInters')}"
+									sclass="formSubTitle" />
+								<image src="/images/pixelble.gif"
+									style="background-repeat: repeat-x;" />
+							</div>
+						</div>
+						<div class="block-container">
+							<div class="item item-wide">
+								<grid id="laboIntersGrid" fixedLayout="true"
+									sclass="gridListEditStyle"
+									model="@{fwinLaboInter$composer.laboInters load-after='addLabo.onClick'}">
+									<columns>
+										<column width="40px" />
+										<column label="${c:l('laboInter.dateArrivee')}"
+											width="200px" />
+										<column label="${c:l('laboInter.dateDepart')}"
+											width="200px" />
+										<column label="${c:l('laboInter.service')}"
+											width="200px" />
+										<column
+											label="${c:l('laboInter.temperature.conservation.short')}"
+											width="150px" />
+										<column width="25px" />
+									</columns>
+									<rows id="rows">
+										<row self="@{each='labo'}" value="@{labo}">
+											<detail id="detail" open="true">
+												<vbox id="vboxEachLabo">
+													<!-- Etablissement -->
+													<hbox id="hetablissement">
+														<div width="125px">
+															<label value="${c:l('laboInter.etablissement')}"
+																sclass="formLabel" />
+														</div>
+														<listbox id="etabsBoxEachLabo" mold="select"
+															rows="1"
+															model="@{fwinLaboInter$composer.allEtablissements}"
+															selectedItem="@{labo.service.etablissement}"
+															forward="onCreate()">
+															<listitem self="@{each='eachEtabLabo'}"
+																value="@{eachEtabLabo}"
+																disabled="@{eachEtabLabo.archive}">
+																<listcell label="@{eachEtabLabo.nom}" />
+															</listitem>
+														</listbox>
+													</hbox>
+													<!-- Service -->
+													<hbox id="hservice">
+														<div width="125px">
+															<label value="${c:l('laboInter.service')}"
+																sclass="formLabel" />
+														</div>
+														<listbox id="servicesBoxEachLabo" mold="select"
+															rows="1" model="@{fwinLaboInter$composer.allServices}"
+															selectedItem="@{labo.service}" forward="onCreate()">
+															<listitem self="@{each='eachServiceLabo'}"
+																value="@{eachServiceLabo}"
+																disabled="@{eachServiceLabo.archive}">
+																<listcell label="@{eachServiceLabo.nom}" />
+															</listitem>
+														</listbox>
+													</hbox>
+													<!-- Opérateur -->
+													<hbox id="hcollab">
+														<div width="125px">
+															<label value="${c:l('laboInter.operateur')}"
+																sclass="formLabel" />
+														</div>
+														<listbox id="collaborateursBoxEachLabo"
+															mold="select" rows="1"
+															model="@{fwinLaboInter$composer.allCollaborateurs}"
+															selectedItem="@{labo.collaborateur}">
+															<listitem self="@{each='eachCollaborateurLabo'}"
+																value="@{eachCollaborateurLabo}"
+																disabled="@{eachCollaborateurLabo.archive}">
+																<listcell
+																	label="@{eachCollaborateurLabo.nomAndPrenom}" />
+															</listitem>
+														</listbox>
+													</hbox>
+													<!-- Arrivée au site -->
+													<label value="${c:l('laboInter.title.arrivee')}"
+														sclass="formSubTitle" />
+													<image src="/images/pixelble.gif" width="500px" />
+													<!-- Date d'arrivée -->
+													<hbox id="hdateArr">
+														<div width="125px">
+															<label value="${c:l('laboInter.dateArrivee')}"
+																sclass="formLabel" />
+														</div>
+														<div width="180px">
+															<calendarbox id="dateArriveeLaboCalBox"
+																value="@{labo.dateArrivee, save-when='validate.onClick, create.onClick, next.onClick, self.onBlur', access=both}" />
+														</div>
+													</hbox>
+													<hbox>
+														<!-- Température de conservation -->
+														<div width="125px">
+															<label
+																value="${c:l('laboInter.temperature.conservation')}"
+																sclass="formLabel" />
+														</div>
+														<div width="160px">
+															<box orient="horizontal" pack="center">
+																<decimalbox width="50px"
+																	value="@{labo.conservTemp,
+																	load-after='temperatureListBoxSite.onSelect',
+																	save-when='validate.onClick, create.onClick, 
+																	next.onClick, self.onBlur'}"
+																	locale="en" />
+																<separator />
+																<label value="°C" sclass="formLabel" />
+																<separator />
+																<listbox id="temperatureListBoxSite"
+																	mold="select" rows="1"
+																	model="@{fwinLaboInter$composer.temperatures}">
+																	<listitem self="@{each='temp1'}"
+																		value="@{temp1}">
+																		<listcell label="@{temp1.temperature}" />
+																	</listitem>
+																</listbox>
+															</box>
+														</div>
+														<!-- stérile -->
+														<div width="250px">
+															<label value="${c:l('laboInter.sterile')}"
+																sclass="formLabel" />
+															<checkbox id="sterileLaboBox"
+																checked="@{labo.sterile,
+															save-when='validate.onClick, create.onClick, 
+																	next.onClick, self.onBlur'}" />
+														</div>
+													</hbox>
+													<!-- Congelation sur site -->
+													<hbox pack="center">
+														<label id="congSiteLabel"
+															value="${c:l('laboInter.congelation')}"
+															sclass="formLabel" />
+														<checkbox id="congSiteBox"
+															checked="@{labo.congelation,
+					        								save-when='validate.onClick, create.onClick, next.onClick, self.onBlur'}" />
+													</hbox>
+													<!-- Départ du site -->
+													<label value="${c:l('laboInter.title.depart')}"
+														sclass="formSubTitle" />
+													<image src="/images/pixelble.gif" width="500px" />
+													<!-- date de départ -->
+													<hbox id="hdateDep">
+														<div width="125px">
+															<label value="${c:l('laboInter.dateDepart')}"
+																sclass="formLabel" />
+														</div>
+														<div width="200px">
+															<calendarbox id="dateDepartLaboCalBox"
+																value="@{labo.dateDepart, save-when='validate.onClick, create.onClick, next.onClick, self.onBlur', access=both}" />
+														</div>
+													</hbox>
+													<hbox id="transporteursHboxEachLabo">
+														<!-- transporteur -->
+														<div width="125px">
+															<label value="${c:l('laboInter.transporteur')}"
+																sclass="formLabel" />
+														</div>
+														<div width="200px" id="transporteursDivEachLabo">
+															<listbox id="transporteursBoxEachLabo"
+																mold="select" rows="1"
+																model="@{fwinLaboInter$composer.transporteurs}">
+																<listitem self="@{each='eachTransporteurLabo'}"
+																	value="@{eachTransporteurLabo}">
+																	<listcell label="@{eachTransporteurLabo.nom}" />
+																</listitem>
+															</listbox>
+														</div>
+													</hbox>
+													<hbox>
+														<!-- température de transport -->
+														<div width="125px">
+															<label
+																value="${c:l('laboInter.temperature.transport')}"
+																sclass="formLabel" />
+														</div>
+														<div width="160px">
+															<hbox>
+																<decimalbox width="50px"
+																	value="@{labo.transportTemp,
+																	load-after='temperatureListBoxSite2.onSelect',
+																	save-when='validate.onClick, create.onClick, 
+																	next.onClick, self.onBlur'}"
+																	locale="en" />
+																<separator />
+																<label value="°C" sclass="formLabel" />
+																<listbox id="temperatureListBoxSite2"
+																	mold="select" rows="1"
+																	model="@{fwinLaboInter$composer.temperatures}">
+																	<listitem self="@{each='temp2'}"
+																		value="@{temp2}">
+																		<listcell label="@{temp2.temperature}" />
+																	</listitem>
+																</listbox>
+															</hbox>
+														</div>
+													</hbox>
+												</vbox>
+											</detail>
+											<label value="@{labo.dateArrivee}"
+												use="fr.aphp.tumorotek.component.CalendarLabel" />
+											<label value="@{labo.dateDepart}"
+												use="fr.aphp.tumorotek.component.CalendarLabel" />
+											<label
+												value="@{labo.service.nom, load-after='etabsBoxEachLabo.onSelect,
+												servicesBoxEachLabo.onSelect'}" />
+											<label
+												value="@{labo.conservTemp, load-after='temperatureListBoxSite.onSelect'}" />
+											<div align="center">
+												<image width="12px" height="12px" id="deleteLabo"
+													src="/images/icones/small_delete.png"
+													style="cursor:pointer" />
+											</div>
+										</row>
+									</rows>
+								</grid>
+							</div>
+						</div>
+					</div>
+					<div class="block-separator" />
+					<!-- Arrivée -->
+					<div id="arriveeBlockDiv">
+						<div class="block-title">
+							<div class="column-container">
+								<label value="${c:l('fichePrelevement.arriveeStockage')}"
+									sclass="formSubTitle" />
+								<image width="100%" height="1px"
+									src="/images/pixelble.gif" style="background-repeat: repeat-x;" />
+							</div>
+						</div>
+						<div id="arriveeBlockDivContainer" class="block-container">
+							<div class="item item-wide" id="dateArriveeDiv"><!-- Date d'arrivée -->
+								<custom-attributes champId="38" />
+								<div class="row-container chpLabel">
+									<label value="${c:l('Champ.Prelevement.DateArrivee')}" sclass="formLabel" />
+									<label value="*" sclass="requiredMark" />
+								</div>
+								<calendarbox id="dateArriveeCalBox"
+									value="@{fwinLaboInter$composer.object.dateArrivee,
+			        				save-when='validate.onClick, create.onClick, next.onClick, self.onBlur'}" />
+							</div>
+							<div class="item item-wide" id="operateurDiv"><!-- Operateur -->
+								<custom-attributes champId="39" />
+								<div class="row-container chpLabel">
+									<label value="${c:l('Champ.Prelevement.Operateur')}" sclass="formLabel" />
+									<label value="*" sclass="requiredMark" />
+								</div>
+								<div class="row-container">
+									<combobox id="collabBox" autodrop="true" width="150px">
+										<comboitem self="@{each=attrValue}"
+											label="@{attrValue}" />
+									</combobox>
+									<space />
+									<label id="operateurAideSaisieEchan"
+										style="font-weight:bold;"
+										value="${c:l('laboInter.operateur.aideSaisie')}"
+										sclass="formLink" />
+								</div>
+							</div>
+							<div class="item item-wide" id="quantiteDiv"><!-- Quantite -->
+								<custom-attributes champId="40" listmodel="quantiteUnites" thesChampId="41" />
+								<div class="row-container chpLabel">
+									<label value="${c:l('Champ.Prelevement.Quantite')}" sclass="formLabel" />
+									<label value="*" sclass="requiredMark" />
+								</div>
+								<div class="row-container">
+									<decimalbox id="quantiteBoxLabo" width="75px"
+										constraint="no negative"
+										value="@{fwinLaboInter$composer.object.quantite,
+										save-when='validate.onClick, create.onClick, next.onClick, self.onBlur'}"
+										format="#,##0.###" scale="3" locale="en" />
+									<listbox id="quantiteUnitesBoxLabo" mold="select"
+										rows="1" model="@{fwinLaboInter$composer.quantiteUnites}"
+										selectedItem="@{fwinLaboInter$composer.selectedQuantiteUnite}">
+										<listitem self="@{each='quantiteUniteLabo'}"
+											value="@{quantiteUniteLabo}">
+											<listcell label="@{quantiteUniteLabo.unite}" />
+										</listitem>
+									</listbox>
+								</div>
+							</div>
+							<div class="item item-wide" id="congBiothequeDiv"><!-- Congelation à la biothèque -->
+								<custom-attributes champId="270" />
+								<div class="row-container">
+									<label id="congArriveeLabel"
+										value="${c:l('Champ.Prelevement.CongArrivee')}"
+										sclass="formLabel" style="line-height: 20px" />
+									<checkbox id="congArriveeBox"
+										checked="@{fwinLaboInter$composer.object.congArrivee,
+				        				save-when='validate.onClick, create.onClick, next.onClick, self.onBlur'}" />
+								</div>
+							</div>
+							<div class="item item-wide" id="conformeArriveeDiv"><!-- Conforme à l'arrivée -->
+								<custom-attributes champId="256" listmodel="nonConformites" thesChampId="257" />
+								<div class="row-container chpLabel">
+									<label id="conformeArriveeLabel"
+										value="${c:l('Champ.Prelevement.ConformeArrivee')}"
+										sclass="formLabel" />
+									<label value="*" sclass="requiredMark" />
+								</div>
+								<div class="row-container">
+									<checkbox id="conformeArriveeBoxOui" />
+									<label value="${c:l('general.checkbox.true')}"
+										sclass="formLabel" />
+									<checkbox id="conformeArriveeBoxNon" />
+									<label value="${c:l('general.checkbox.false')}"
+										sclass="formLabel" />
+									<div id="conformeArriveeBox" visible="false"
+										style="valign:top;">
+										<space width="10px" />
+										<listbox id="nonConformitesBox" mold="select"
+											multiple="true" rows="3"
+											model="@{fwinLaboInter$composer.nonConformites}"
+											selectedItems="@{fwinLaboInter$composer.selectedNonConformitesItem}">
+											<listitem self="@{each='nonConformiteSel'}"
+												value="nonConformiteSel">
+												<listcell label="@{nonConformiteSel.nom}" />
+											</listitem>
+										</listbox>
+									</div>
+								</div>
+							</div>
+						</div>	
+					</div>
+				</div>
+			</panelchildren>
+			<toolbar height="30px" id="toolbarEchan" align="end">
+				<hbox spacing="5" align="center">
+					<button id="addLabo"
+						label="${c:l('prelevement.laboInters.addLabo')}" height="24px"
+						visible="false" image="/images/icones/addLaboInter.png"
+						sclass="buttonv2" />
+					<button id="validate" label="${c:l('general.saveAndQuit')}"
+						height="24px" visible="false" image="/images/icones/save.png"
+						sclass="buttonv2" />
+					<button id="revert" label="${c:l('general.cancel')}"
+						height="24px" visible="false" image="/images/icones/cancel.png"
+						sclass="buttonv2" />
+					<button id="create" label="${c:l('general.createAndQuit')}"
+						height="24px" visible="false" image="/images/icones/save.png"
+						sclass="buttonv2" />
+					<button id="cancel" label="${c:l('general.cancel')}"
+						height="24px" visible="false" image="/images/icones/cancel.png"
+						sclass="buttonv2" />
+					<button id="previous" label="${c:l('general.back')}"
+						height="24px" visible="false" image="/images/icones/back.png"
+						sclass="buttonv2" />
+					<button id="next" height="24px" visible="false"
+						image="/images/icones/next.png" label="${c:l('general.next')}"
+						sclass="buttonv2" />
+				</hbox>
+			</toolbar>
+		</panel>
+	</window>
+</zk>

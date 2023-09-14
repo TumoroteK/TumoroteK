@@ -70,7 +70,7 @@ public interface ChampManager
     * @param parent Champ parent de la reqûete.
     */
    void createObjectManager(Champ champ, Champ parent);
-   
+
    /**
     * Créé un Champ en BDD.
     * @param champ Champ à créer.
@@ -83,7 +83,7 @@ public interface ChampManager
     * @param parent Champ parent du Champ à mettre à jour.
     */
    void updateObjectManager(Champ champ, Champ parent);
-   
+
    /**
     * Met à jour un Champ en BDD.
     * @param champ Champ à mettre à jour.

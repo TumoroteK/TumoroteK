@@ -42,6 +42,7 @@ public class ResultatRow
 {
 
    private List<Object> valuesToShow = new ArrayList<>();
+
    private List<Object> objects = new ArrayList<>();
 
    public ResultatRow(){

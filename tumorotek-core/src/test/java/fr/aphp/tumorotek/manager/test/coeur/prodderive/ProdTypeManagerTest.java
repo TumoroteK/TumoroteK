@@ -66,6 +66,7 @@ public class ProdTypeManagerTest extends AbstractManagerTest4
 
    @Autowired
    private ProdTypeManager prodTypeManager;
+
    @Autowired
    private PlateformeDao plateformeDao;
 

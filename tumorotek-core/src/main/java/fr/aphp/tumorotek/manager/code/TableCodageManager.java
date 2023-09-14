@@ -68,7 +68,7 @@ public interface TableCodageManager
    List<TableCodage> findByNomManager(String nom);
 
    /**
-    * Recherche un code partir de la table et du code de l'Id 
+    * Recherche un code partir de la table et du code de l'Id
     * spécifiés en paramètres.
     * @param ID du code
     * @param TableCodage
@@ -91,7 +91,7 @@ public interface TableCodageManager
    //	Set<Banque> getBanquesManager(TableCodage tab);
 
    /**
-    * Trouve tous les codes au travers des tables de transcodage pour le code 
+    * Trouve tous les codes au travers des tables de transcodage pour le code
     * et sa table de codage passés en paramètres.
     * @param code dont on cherche les transcodes
     * @param tables auxquelles peuvent appartenir les transcodes.
@@ -103,9 +103,9 @@ public interface TableCodageManager
    /**
     * Trouve tous les codes au travers des tables de transcodage pour la chaine
     * de caractere passées en paramètres. Trouve pour chaque table le code dont
-    * le code ou le libellé est égal à la chaine de caractère 
-    * passée en paramètre et trouve tous les transcodes 
-    * pour les autres tables. 
+    * le code ou le libellé est égal à la chaine de caractère
+    * passée en paramètre et trouve tous les transcodes
+    * pour les autres tables.
     * @param string chaine de caractères à matcher sur la base de codes.
     * @param liste de table de codifications.
     * @param liste de banque (pour les codes utilisateur)

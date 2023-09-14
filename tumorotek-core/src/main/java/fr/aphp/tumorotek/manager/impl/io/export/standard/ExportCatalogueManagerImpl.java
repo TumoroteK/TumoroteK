@@ -76,15 +76,21 @@ public class ExportCatalogueManagerImpl implements ExportCatalogueManager
    private JpaTransactionManager txManager;
 
    private EchantillonManager echantillonManager;
+
    private OperationManager operationManager;
+
    private OperationTypeDao operationTypeDao;
+
    private ExportUtils exportUtils;
 
    private DateFormat dateFormatterINCA = new SimpleDateFormat("yyyyMMdd");
 
    private Echantillon echantillon;
+
    private Prelevement prelevement;
+
    private Patient patient;
+
    private Banque banque;
 
    public Echantillon getEchantillon(){
@@ -274,7 +280,7 @@ public class ExportCatalogueManagerImpl implements ExportCatalogueManager
    }
 
    /**
-    * Methode permettant de recupere une valeur au format Date 
+    * Methode permettant de recupere une valeur au format Date
     * pour un item.
     * @param Connection con
     * @param requête SQL

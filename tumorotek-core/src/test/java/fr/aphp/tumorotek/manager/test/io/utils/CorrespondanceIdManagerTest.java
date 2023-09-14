@@ -55,8 +55,10 @@ public class CorrespondanceIdManagerTest extends AbstractManagerTest4
 
    @Autowired
    private EntiteDao entiteDao;
+
    @Autowired
    private BanqueDao banqueDao;
+
    @Autowired
    private CorrespondanceIdManager correspondanceIdManager;
 

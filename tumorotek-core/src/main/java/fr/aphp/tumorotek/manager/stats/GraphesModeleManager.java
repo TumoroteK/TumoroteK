@@ -50,7 +50,7 @@ public interface GraphesModeleManager
 {
 
    /**
-    * Calcule la répartition des patients par plateforme en fonction de dates passées en param, 
+    * Calcule la répartition des patients par plateforme en fonction de dates passées en param,
     * pour dessiner le graphe correspondant du tableau de bord.
     * @param Date de debut de recherche
     * @param Date de fin de recherche
@@ -60,7 +60,7 @@ public interface GraphesModeleManager
    GraphesModele platformeViewByPatientManager(Date date_debut, Date date_fin, boolean isOracle);
 
    /**
-    * Calcule la répartition des prélèvements par plateforme en fonction de dates passées en param, 
+    * Calcule la répartition des prélèvements par plateforme en fonction de dates passées en param,
     * pour dessiner le graphe correspondant du tableau de bord.
     * @param Date de debut de recherche
     * @param Date de fin de recherche
@@ -70,7 +70,7 @@ public interface GraphesModeleManager
    GraphesModele platformeViewByPrelevementManager(Date date_debut, Date date_fin, boolean isOracle);
 
    /**
-    * Calcule la répartition des échantillons par plateforme en fonction de dates passées en param, 
+    * Calcule la répartition des échantillons par plateforme en fonction de dates passées en param,
     * pour dessiner le graphe correspondant du tableau de bord.
     * @param Date de debut de recherche
     * @param Date de fin de recherche
@@ -80,7 +80,7 @@ public interface GraphesModeleManager
    GraphesModele platformeViewByEchantillonManager(Date date_debut, Date date_fin, boolean isOracle);
 
    /**
-    * Calcule la répartition des Derive par plateforme en fonction de dates passées en param, 
+    * Calcule la répartition des Derive par plateforme en fonction de dates passées en param,
     * pour dessiner le graphe correspondant du tableau de bord.
     * @param Date de debut de recherche
     * @param Date de fin de recherche
@@ -90,7 +90,7 @@ public interface GraphesModeleManager
    GraphesModele platformeViewByDeriveManager(Date date_debut, Date date_fin, boolean isOracle);
 
    /**
-    * Calcule la répartition des Cession par plateforme en fonction de dates passées en param, 
+    * Calcule la répartition des Cession par plateforme en fonction de dates passées en param,
     * pour dessiner le graphe correspondant du tableau de bord.
     * @param Date de debut de recherche
     * @param Date de fin de recherche
@@ -100,7 +100,7 @@ public interface GraphesModeleManager
    GraphesModele platformeViewByCessionManager(Date date_debut, Date date_fin, boolean isOracle);
 
    /**
-    * Calcule la répartition des Patients par collection d'une plateforme passée en paramêtre, 
+    * Calcule la répartition des Patients par collection d'une plateforme passée en paramêtre,
     * en fonction de dates passées en param
     * pour dessiner le graphe correspondant du tableau de bord.
     * @param Date de debut de recherche

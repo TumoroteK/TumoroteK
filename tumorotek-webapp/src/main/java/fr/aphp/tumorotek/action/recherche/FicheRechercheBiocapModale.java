@@ -89,20 +89,28 @@ public class FicheRechercheBiocapModale
    private ServiceGroupModel groupModel;
 
    private Component parent;
+
    private AbstractObjectTabController tabController;
 
    private final List<Service> services = new ArrayList<>();
+
    private List<ObjetStatut> statuts = new ArrayList<>();
+
    private Date dateInf;
+
    private Date dateSup;
+
    // since 2.0.13 - < 20 ans
    private final Integer age = 20;
+
    private ObjetStatut objetStatut = null;
 
    @Wire
    private Button find;
+
    @Wire("#fwinBiocapModale")
    private Window fwinBiocapModale;
+
    @WireVariable
    private Session _sess;
 

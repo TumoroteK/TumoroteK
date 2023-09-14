@@ -52,8 +52,11 @@ public class BoiteContenu
 {
 
    private Terminale boite;
+
    private List<String> listeParents = new ArrayList<>();
+
    private List<String> listeNombres = new ArrayList<>();
+
    private String valeurLibre = "";
 
    public BoiteContenu(){

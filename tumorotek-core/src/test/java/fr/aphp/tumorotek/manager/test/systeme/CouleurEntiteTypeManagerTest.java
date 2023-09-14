@@ -72,12 +72,16 @@ public class CouleurEntiteTypeManagerTest extends AbstractManagerTest4
 
    @Autowired
    private CouleurEntiteTypeManager couleurEntiteTypeManager;
+
    @Autowired
    private CouleurManager couleurManager;
+
    @Autowired
    private BanqueManager banqueManager;
+
    @Autowired
    private EchantillonTypeManager echantillonTypeManager;
+
    @Autowired
    private ProdTypeManager prodTypeManager;
 

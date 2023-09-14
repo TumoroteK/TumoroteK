@@ -96,51 +96,82 @@ public class FicheEtablissement extends AbstractFicheCombineController
    private static final long serialVersionUID = -8941746249248191447L;
 
    private Group groupServicesEtab;
+
    private Button addService;
+
    private Menubar menuBar;
 
    // Labels
    private Label nomLabel;
+
    private Label finessLabel;
+
    private Label categorieLabel;
+
    private Label localLabel;
+
    private Label adresseLabel;
+
    private Label cpLabel;
+
    private Label villeLabel;
+
    private Label paysLabel;
+
    private Label telLabel;
+
    private Label faxLabel;
+
    private Label mailLabel;
+
    private Label archiveLabel;
 
    // Editable components : mode d'édition ou de création.
    private Label nomRequired;
+
    private Textbox nomBox;
+
    private Textbox finessBox;
+
    private Listbox categorieBox;
+
    private Textbox adresseBox;
+
    private Textbox cpBox;
+
    private Textbox villeBox;
+
    private Textbox paysBox;
+
    private Textbox telBox;
+
    private Textbox faxBox;
+
    private Textbox mailBox;
+
    private Checkbox localBox;
+
    private Checkbox archiveBox;
 
    // Objets principaux
    private Etablissement etablissement;
+
    private Coordonnee coordonnee;
+
    private Coordonnee copyCoord;
 
    // Associations.
    private Categorie selectedCategorie;
+
    private List<Categorie> categories = new ArrayList<>();
+
    private List<Service> services = new ArrayList<>();
 
    // Variables formulaire.
    private String servicesGroupHeader = Labels.getLabel("etablissement.services");
+
    private String mode;
+
    private boolean cascadeArchive = false;
 
    @Override
@@ -607,7 +638,7 @@ public class FicheEtablissement extends AbstractFicheCombineController
    //		etablissement.setServices(copyEtab.getServices());
    //		etablissement.setCollaborateurs(copyEtab.getCollaborateurs());
    //	}
-   //	
+   //
    //	public void revertCoordonnee() {
    //		coordonnee.setCoordonneeId(copyCoord.getCoordonneeId());
    //		coordonnee.setAdresse(copyCoord.getAdresse());

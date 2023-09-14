@@ -54,7 +54,7 @@ public interface ConsentTypeDao extends GenericDaoJpa<ConsentType, Integer>, PfD
 {
 
    /**
-    * Recherche les types de consentement dont le type 
+    * Recherche les types de consentement dont le type
     * est 'like' le paramètre.
     * @param type Type des conditionnements recherchés.
     * @return Liste des types de conditionnement.

@@ -65,12 +65,19 @@ public class ProcedureManagerImpl implements ProcedureManager
 {
 
    private PatientManager patientManager;
+
    private MaladieDao maladieDao;
+
    private MaladieManager maladieManager;
+
    private PrelevementDao prelevementDao;
+
    private AnnotationValeurManager annotationValeurManager;
+
    private PatientDao patientDao;
+
    private ImportHistoriqueManager importHistoriqueManager;
+
    private OperationManager operationManager;
 
    public void setPatientManager(final PatientManager pManager){
@@ -152,7 +159,7 @@ public class ProcedureManagerImpl implements ProcedureManager
             // si le patient actif a déjà une annotation pour le
             // champ de l'annotation du passif
             if(champsValeurs.containsKey(valeursPassives.get(i).getChampAnnotation())){
-               // si cette valeur est pour la même collection : 
+               // si cette valeur est pour la même collection :
                // on va supprimer cette annotation
                if(valeursPassives.get(i).getBanque()
                   .equals(champsValeurs.get(valeursPassives.get(i).getChampAnnotation()).getBanque())){
@@ -184,7 +191,7 @@ public class ProcedureManagerImpl implements ProcedureManager
             maladie.setPatient(patient); // pour appliquer equals()
             if(!malA.contains(maladie)){ // ajoute la maladie
 
-               // si la maladie passive est Inconnu, on va 
+               // si la maladie passive est Inconnu, on va
                // la supprimer
                if(maladie.getLibelle().equals("Inconnu")){
                   maladie.setPatient(passif); //recupere son patient

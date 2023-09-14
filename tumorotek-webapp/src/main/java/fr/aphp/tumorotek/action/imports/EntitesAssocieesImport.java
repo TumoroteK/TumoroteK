@@ -63,7 +63,10 @@ public class EntitesAssocieesImport extends OneToManyComponent<EntiteDecorator>
    private static final long serialVersionUID = -8965931524670323917L;
 
    private List<EntiteDecorator> objects = new ArrayList<>();
+
    private String pathToRespond;
+   
+   private boolean gatsbi = false;
 
    @Override
    public void doAfterCompose(final Component comp) throws Exception{
@@ -76,7 +79,6 @@ public class EntitesAssocieesImport extends OneToManyComponent<EntiteDecorator>
       return this.objects;
    }
 
-   
    @Override
    public void setObjects(final List<EntiteDecorator> objs){
       this.objects = objs;
@@ -156,7 +158,7 @@ public class EntitesAssocieesImport extends OneToManyComponent<EntiteDecorator>
 
       final Object obj = AbstractListeController2.getBindingData((ForwardEvent) event, false);
 
-      if(obj != null && ((EntiteDecorator) obj).getNom().equals("Maladie")){
+      if(obj != null && ((EntiteDecorator) obj).getEntite().getEntiteId() == 7){ // maladie
          phrase = phrase + " " + Labels.getLabel("importTemplate.maladie.remove.warning");
       }
 
@@ -210,12 +212,20 @@ public class EntitesAssocieesImport extends OneToManyComponent<EntiteDecorator>
       if(getObjects().contains(new EntiteDecorator(ManagerLocator.getEntiteManager().findByNomManager("Patient").get(0)))
          && getObjects().contains(new EntiteDecorator(ManagerLocator.getEntiteManager().findByNomManager("Prelevement").get(0)))
          && !getObjects().contains(new EntiteDecorator(ManagerLocator.getEntiteManager().findByNomManager("Maladie").get(0)))){
-         addToListObjects(new EntiteDecorator(ManagerLocator.getEntiteManager().findByNomManager("Maladie").get(0)));
+         addToListObjects(new EntiteDecorator(ManagerLocator.getEntiteManager().findByNomManager("Maladie").get(0), gatsbi));
       }
 
       updateComponent();
 
       // affiche les composants
       onClick$cancelSelObj();
+   }
+
+   public boolean isGatsbi(){
+      return gatsbi;
+   }
+
+   public void setGatsbi(boolean gatsbi){
+      this.gatsbi = gatsbi;
    }
 }

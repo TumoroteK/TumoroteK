@@ -49,6 +49,7 @@ import fr.aphp.tumorotek.model.contexte.Collaborateur;
 import fr.aphp.tumorotek.model.contexte.Contexte;
 import fr.aphp.tumorotek.model.contexte.Plateforme;
 import fr.aphp.tumorotek.model.contexte.Service;
+import fr.aphp.tumorotek.model.contexte.gatsbi.Etude;
 import fr.aphp.tumorotek.model.imprimante.Imprimante;
 import fr.aphp.tumorotek.model.stockage.Conteneur;
 import fr.aphp.tumorotek.model.systeme.Couleur;
@@ -65,7 +66,7 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
  * Cession au travers de la banque.
  *
  * @author Pierre Ventadour
- * @version 2.2.1
+ * @version 2.3.0-gatsbi
  *
  */
 public interface BanqueManager
@@ -198,7 +199,8 @@ public interface BanqueManager
       Collaborateur contact, List<Conteneur> conteneurs, List<BanqueTableCodage> codifications,
       List<TableAnnotation> tablesPatient, List<TableAnnotation> tablesPrlvt, List<TableAnnotation> tablesEchan,
       List<TableAnnotation> tablesDerive, List<TableAnnotation> tablesCess, List<CouleurEntiteType> coulTypes,
-      Couleur couleurEchan, Couleur couleurDerive, Utilisateur utilisateur, Set<Utilisateur> utilisateursList, String operation, String basedir);
+      Couleur couleurEchan, Couleur couleurDerive, Utilisateur utilisateur, Set<Utilisateur> utilisateursList, String operation,
+      String basedir);
 
    /**
     * Recherche la présence de doublon d'un objet Banque.
@@ -277,11 +279,20 @@ public interface BanqueManager
    List<Banque> findBanqueForSwitchManager(Prelevement p, Utilisateur u);
 
    /**
-	 * Recherche toutes les banques donnant l'accès au 
-	 * conteneur passé en paramètre.  
-	 * @param conteneur
-	 * @return liste de banques 
-	 * @since 2.2.1
-	 */
+    * Recherche toutes les banques donnant l'accès au 
+    * conteneur passé en paramètre.  
+    * @param conteneur
+    * @return liste de banques 
+    * @since 2.2.1
+    */
    List<Banque> findByConteneurManager(Conteneur c1);
+
+   /**
+    * Recherche toutes les banques donnant l'accès au 
+    * conteneur passé en paramètre.  
+    * @param etude
+    * @return liste de banques 
+    * @since 2.3.0-gatsbi
+    */
+   List<Banque> findByEtudeManager(Etude e);
 }

@@ -80,6 +80,7 @@ public class ProdType extends AbstractPfDependantThesaurusObject implements Seri
    private static final long serialVersionUID = -8819167609321186090L;
 
    private Set<ProdDerive> prodDerives;
+
    private Set<CouleurEntiteType> couleurEntiteTypes = new HashSet<>();
 
    /** Constructeur par défaut. */
@@ -92,6 +93,7 @@ public class ProdType extends AbstractPfDependantThesaurusObject implements Seri
     * @deprecated Utiliser {@link #getId()}
     * @return
     */
+   @Deprecated
    @Transient
    public Integer getProdTypeId(){
       return this.getId();
@@ -101,6 +103,7 @@ public class ProdType extends AbstractPfDependantThesaurusObject implements Seri
     * @deprecated Utiliser {@link #setId(Integer)}
     * @return
     */
+   @Deprecated
    public void setProdTypeId(final Integer id){
       this.setId(id);
    }
@@ -108,6 +111,7 @@ public class ProdType extends AbstractPfDependantThesaurusObject implements Seri
    /**
     * @deprecated Utiliser {@link #getNom()}
     */
+   @Deprecated
    @Transient
    public String getType(){
       return this.getNom();
@@ -116,6 +120,7 @@ public class ProdType extends AbstractPfDependantThesaurusObject implements Seri
    /**
     * @deprecated Utiliser {@link #setNom(String)}
     */
+   @Deprecated
    public void setType(final String t){
       this.setNom(t);
    }

@@ -58,7 +58,7 @@ import fr.aphp.tumorotek.model.contexte.Plateforme;
  * clef composite
  * @see http://boris.kirzner.info/blog/archives/2008/07/19/*%20
  * 		hibernate-annotations-the-many-to-many-association-with-composite-key/
- * 
+ *
  * Ajout interfaçage IRELEC
  *
  * @author Mathieu BARTHELEMY
@@ -68,116 +68,118 @@ import fr.aphp.tumorotek.model.contexte.Plateforme;
 @Entity
 @Table(name = "CONTENEUR_PLATEFORME")
 @AssociationOverrides({
-	@AssociationOverride(name = "pk.conteneur",
-			joinColumns = @JoinColumn(name = "CONTENEUR_ID", referencedColumnName = "CONTENEUR_ID")),
-	@AssociationOverride(name = "pk.plateforme",
-	joinColumns = @JoinColumn(name = "PLATEFORME_ID", referencedColumnName = "PLATEFORME_ID"))})
+   @AssociationOverride(name = "pk.conteneur",
+      joinColumns = @JoinColumn(name = "CONTENEUR_ID", referencedColumnName = "CONTENEUR_ID")),
+   @AssociationOverride(name = "pk.plateforme",
+      joinColumns = @JoinColumn(name = "PLATEFORME_ID", referencedColumnName = "PLATEFORME_ID"))})
 public class ConteneurPlateforme implements Serializable
 {
 
-	private static final long serialVersionUID = 1L;
+   private static final long serialVersionUID = 1L;
 
-	private Boolean partage = false;
-	private ConteneurPlateformePK pk = new ConteneurPlateformePK();
-	private Boolean restrictStock = false;
+   private Boolean partage = false;
 
-	/** Constructeur par défaut. */
-	public ConteneurPlateforme(){}
+   private ConteneurPlateformePK pk = new ConteneurPlateformePK();
 
-	public ConteneurPlateforme(final Conteneur c, final Plateforme p){
-		pk.setConteneur(c);
-		pk.setPlateforme(p);
-	}
+   private Boolean restrictStock = false;
 
-	@Override
-	public String toString(){
-		if(this.getConteneur() != null && this.getPlateforme() != null){
-			return "{" + this.getConteneur() + " - " + this.getPlateforme() + "}";
-		}
-		return "{Empty ConteneurPlateforme}";
-	}
+   /** Constructeur par défaut. */
+   public ConteneurPlateforme(){}
 
-	@EmbeddedId
-	@AttributeOverrides({@AttributeOverride(name = "conteneur", column = @Column(name = "CONTENEUR_ID")),
-		@AttributeOverride(name = "plateforme", column = @Column(name = "PLATEFORME_ID"))})
-	public ConteneurPlateformePK getPk(){
-		return pk;
-	}
+   public ConteneurPlateforme(final Conteneur c, final Plateforme p){
+      pk.setConteneur(c);
+      pk.setPlateforme(p);
+   }
 
-	public void setPk(final ConteneurPlateformePK pmk){
-		this.pk = pmk;
-	}
+   @Override
+   public String toString(){
+      if(this.getConteneur() != null && this.getPlateforme() != null){
+         return "{" + this.getConteneur() + " - " + this.getPlateforme() + "}";
+      }
+      return "{Empty ConteneurPlateforme}";
+   }
 
-	@Column(name = "PARTAGE", nullable = false)
-	public Boolean getPartage(){
-		return this.partage;
-	}
+   @EmbeddedId
+   @AttributeOverrides({@AttributeOverride(name = "conteneur", column = @Column(name = "CONTENEUR_ID")),
+      @AttributeOverride(name = "plateforme", column = @Column(name = "PLATEFORME_ID"))})
+   public ConteneurPlateformePK getPk(){
+      return pk;
+   }
 
-	public void setPartage(final Boolean b){
-		this.partage = b;
-	}
+   public void setPk(final ConteneurPlateformePK pmk){
+      this.pk = pmk;
+   }
 
-	@Column(name = "RESTRICT_STOCK", nullable = false)
-	public Boolean getRestrictStock() {
-		return this.restrictStock;
-	}
+   @Column(name = "PARTAGE", nullable = false)
+   public Boolean getPartage(){
+      return this.partage;
+   }
 
-	public void setRestrictStock(Boolean b) {
-		this.restrictStock = b;
-	}
+   public void setPartage(final Boolean b){
+      this.partage = b;
+   }
 
-	@Transient
-	public Conteneur getConteneur(){
-		return this.pk.getConteneur();
-	}
+   @Column(name = "RESTRICT_STOCK", nullable = false)
+   public Boolean getRestrictStock(){
+      return this.restrictStock;
+   }
 
-	public void setConteneur(final Conteneur c){
-		this.pk.setConteneur(c);
-	}
+   public void setRestrictStock(final Boolean b){
+      this.restrictStock = b;
+   }
 
-	@Transient
-	public Plateforme getPlateforme(){
-		return this.pk.getPlateforme();
-	}
+   @Transient
+   public Conteneur getConteneur(){
+      return this.pk.getConteneur();
+   }
 
-	public void setPlateforme(final Plateforme p){
-		this.pk.setPlateforme(p);
-	}
+   public void setConteneur(final Conteneur c){
+      this.pk.setConteneur(c);
+   }
 
-	/**
-	 * 2 liens sont considérés comme égaux s'ils ont la même pk.
-	 * @param obj est le lien à tester.
-	 * @return true si les liens sont égaux.
-	 */
-	@Override
-	public boolean equals(final Object obj){
+   @Transient
+   public Plateforme getPlateforme(){
+      return this.pk.getPlateforme();
+   }
 
-		if(this == obj){
-			return true;
-		}
-		if((obj == null) || obj.getClass() != this.getClass()){
-			return false;
-		}
-		final ConteneurPlateforme test = (ConteneurPlateforme) obj;
-		return (this.pk != null && (this.pk == test.pk || this.pk.equals(test.pk)));
-	}
+   public void setPlateforme(final Plateforme p){
+      this.pk.setPlateforme(p);
+   }
 
-	/**
-	 * Le hashcode est calculé sur la pk.
-	 * @return la valeur du hashcode.
-	 */
-	@Override
-	public int hashCode(){
+   /**
+    * 2 liens sont considérés comme égaux s'ils ont la même pk.
+    * @param obj est le lien à tester.
+    * @return true si les liens sont égaux.
+    */
+   @Override
+   public boolean equals(final Object obj){
 
-		int hash = 7;
-		int hashPk = 0;
+      if(this == obj){
+         return true;
+      }
+      if((obj == null) || obj.getClass() != this.getClass()){
+         return false;
+      }
+      final ConteneurPlateforme test = (ConteneurPlateforme) obj;
+      return (this.pk != null && (this.pk == test.pk || this.pk.equals(test.pk)));
+   }
 
-		if(this.pk != null){
-			hashPk = this.pk.hashCode();
-		}
+   /**
+    * Le hashcode est calculé sur la pk.
+    * @return la valeur du hashcode.
+    */
+   @Override
+   public int hashCode(){
 
-		hash = 7 * hash + hashPk;
+      int hash = 7;
+      int hashPk = 0;
 
-		return hash;
-	}
+      if(this.pk != null){
+         hashPk = this.pk.hashCode();
+      }
+
+      hash = 7 * hash + hashPk;
+
+      return hash;
+   }
 }

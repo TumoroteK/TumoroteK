@@ -147,10 +147,10 @@ public class CodeAssigneDecorator extends SmallObjDecorator
    }
 
    /**
-    * Decore la liste de codes assigne d'un echantillon après avoir 
-    * supprimé toute référence vers cet échantillon ainsi que tout ID 
-    * en base de données. Cette méthode est utilisée lors de modifications 
-    * multiples pour créer une nouvelle liste avec d'échantillons à partir 
+    * Decore la liste de codes assigne d'un echantillon après avoir
+    * supprimé toute référence vers cet échantillon ainsi que tout ID
+    * en base de données. Cette méthode est utilisée lors de modifications
+    * multiples pour créer une nouvelle liste avec d'échantillons à partir
     * d'une liste assignée à un des échantillons
     * @param liste de codes à décorer
     * @return codes décorés.
@@ -164,8 +164,8 @@ public class CodeAssigneDecorator extends SmallObjDecorator
 
    /**
     * Transforme une liste de codes assignes en une liste identique,
-    * clonée, mais 
-    * dépourvue pour chaque code de référence vers l'échantillon et d'ID 
+    * clonée, mais
+    * dépourvue pour chaque code de référence vers l'échantillon et d'ID
     * en base de données.
     * Utilisée pour les modifications multiples
     * @param codes
@@ -223,23 +223,23 @@ public class CodeAssigneDecorator extends SmallObjDecorator
 
    //	@Override
    //	public boolean equals(Object deco2) {
-   //		
+   //
    //		CodeAssigne c1 = (CodeAssigne) getObj();
    //		CodeAssigne c2 = (CodeAssigne) ((CodeAssigneDecorator) deco2).getObj();
-   //		
-   //		return ( (c1.getCode() == c2.getCode() 
-   //					|| (c1.getCode() != null 
-   //							&& c1.getCode().equals(c2.getCode()))) 
-   //			&& (c1.getLibelle() == c2.getLibelle() 
-   //					|| (c1.getLibelle() != null 
-   //					&& c1.getLibelle().equals(c2.getLibelle()))) 
-   //			&& (c1.getIsOrgane() == c2.getIsOrgane() 
-   //					|| (c1.getIsOrgane() != null 
-   //					&& c1.getIsOrgane().equals(c2.getIsOrgane()))) 
-   //			&& (c1.getIsMorpho() == c2.getIsMorpho() 
-   //					|| (c1.getIsMorpho() != null 
-   //					&& c1.getIsMorpho().equals(c2.getIsMorpho()))) 
+   //
+   //		return ( (c1.getCode() == c2.getCode()
+   //					|| (c1.getCode() != null
+   //							&& c1.getCode().equals(c2.getCode())))
+   //			&& (c1.getLibelle() == c2.getLibelle()
+   //					|| (c1.getLibelle() != null
+   //					&& c1.getLibelle().equals(c2.getLibelle())))
+   //			&& (c1.getIsOrgane() == c2.getIsOrgane()
+   //					|| (c1.getIsOrgane() != null
+   //					&& c1.getIsOrgane().equals(c2.getIsOrgane())))
+   //			&& (c1.getIsMorpho() == c2.getIsMorpho()
+   //					|| (c1.getIsMorpho() != null
+   //					&& c1.getIsMorpho().equals(c2.getIsMorpho())))
    //		);
-   //		
+   //
    //	}
 }

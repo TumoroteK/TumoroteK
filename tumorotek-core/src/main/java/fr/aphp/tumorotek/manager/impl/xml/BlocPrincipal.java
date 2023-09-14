@@ -47,6 +47,7 @@ public class BlocPrincipal
 {
 
    private String nomBloc;
+
    private LigneAccord[] lignes;
 
    public BlocPrincipal(){

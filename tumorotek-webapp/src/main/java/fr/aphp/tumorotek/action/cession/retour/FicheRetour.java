@@ -40,7 +40,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 
 import org.zkoss.util.resource.Labels;
@@ -80,7 +79,6 @@ import fr.aphp.tumorotek.model.coeur.prodderive.ProdDerive;
 import fr.aphp.tumorotek.model.coeur.prodderive.Transformation;
 import fr.aphp.tumorotek.model.contexte.Collaborateur;
 import fr.aphp.tumorotek.model.stockage.Conteneur;
-import fr.aphp.tumorotek.model.stockage.Emplacement;
 import fr.aphp.tumorotek.model.stockage.Incident;
 import fr.aphp.tumorotek.model.systeme.Entite;
 import fr.aphp.tumorotek.model.systeme.Temperature;
@@ -88,7 +86,7 @@ import fr.aphp.tumorotek.utils.Utils;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
 /**
- * 
+ *
  * @author mathieu BARTHELEMY
  * @version 2.2.3-genno
  */
@@ -105,60 +103,92 @@ public class FicheRetour extends AbstractFicheCombineController
    
    // Labels : valeur des champs en mode lecture
    private Label codeObjetLabel;
+
    // private Label entiteOperationLabel;
    // private Label entiteCodeLabel;
    private Label dateSortieLabel;
+
    private Label dateRetourLabel;
+
    private Label tempMoyenneLabel;
+
    private Label sterileLabel;
+
    private Label collaborateurLabel;
+
    private Label observationsLabel;
+
    private Label emplacementLabel;
 
    // Editable components : mode d'édition ou de création.
    private Label dateSortieRequired;
+
    private Label dateRetourRequired;
+
    private CalendarBox dateSortieCalBox;
+
    private CalendarBox dateRetourCalBox;
+
    private Decimalbox tempMoyenneBox;
+
    private Label tempMoyenneRequired;
+
    private Checkbox sterileBox;
+
    private Checkbox impactBox;
+
    private Combobox collaborateurBox;
+
    private Textbox observationsBox;
+
    private Textbox emplacementBox;
+
    private Listbox temperatureListBox;
+
    private Listbox objectsBox;
+
    private Row rowSelectionTitle;
+
    private Row rowSelection;
+
    private Row rowEmplacement;
 
    // Objets Principaux.
    private Retour retour = new Retour();
 
    private TKStockableObject tkObject;
+
    private final ListModelList<TKStockableObject> objects = new ListModelList<>();
    // private Set<Listitem> selectedObjectsItem = new HashSet<Listitem>();
-   
+
    // @since 2.2.3-genno
    // https://tumorotek.myjetbrains.com/youtrack/issue/TK-291
-   private List<OldEmplTrace> oldEmplacements = new ArrayList<OldEmplTrace>();
-   
+   private List<OldEmplTrace> oldEmplacements = new ArrayList<>();
+
    private Entite entiteOperation = null;
+
    private Cession cession = null;
+
    private Transformation transformation = null;
+
    private Incident incident = null;
+
    private String oldEmplacementAdrl = null;
+
    private Conteneur conteneur = null;
 
    private List<Collaborateur> collaborateurs;
+
    private Collaborateur selectedCollaborateur;
+
    private List<String> nomsAndPrenoms = new ArrayList<>();
 
    private List<Temperature> temperatures = new ArrayList<>();
+
    private Temperature selectedTemperature;
 
    private boolean insertOk = true;
+
    private boolean isAdmin = false;
 
    public List<TKStockableObject> getObjects(){
@@ -174,8 +204,8 @@ public class FicheRetour extends AbstractFicheCombineController
 
    public void setCession(final Cession ces){
       this.cession = ces;
-      // les évènements de stockage ne peuvent être incomplets 
-      // que si la cession est attente. 
+      // les évènements de stockage ne peuvent être incomplets
+      // que si la cession est attente.
       final boolean validee = ces != null && !ces.getCessionStatut().getStatut().equals("EN ATTENTE");
       dateRetourOblig = dateRetourOblig || validee;
       dateRetourCalBox.setDisabled(!validee);
@@ -197,7 +227,7 @@ public class FicheRetour extends AbstractFicheCombineController
 
    /**
     * Pré-remplie le calendarBox de la date de Sortie.
-    * Pré-remplie le calendarBox de la date de retour, avec la date 
+    * Pré-remplie le calendarBox de la date de retour, avec la date
     * actuelle
     * @param Date in
     */
@@ -365,7 +395,7 @@ public class FicheRetour extends AbstractFicheCombineController
             rowSelection.setVisible(true);
             rowSelectionTitle.setVisible(true);
             //				for (int i = 0; i < objectsBox.getItems().size(); i++) {
-            //					selectedObjectsItem.add((Listitem) 
+            //					selectedObjectsItem.add((Listitem)
             //							objectsBox.getItems().get(i));
             //				}
             objectsBox.setModel(objects);
@@ -379,7 +409,7 @@ public class FicheRetour extends AbstractFicheCombineController
             ((Window) fwinRetour.getParent().getParent()).setHeight("380px");
          }
          //			else {
-         //				ListModel<TKStockableObject> list = 
+         //				ListModel<TKStockableObject> list =
          //						new ListModelList<TKStockableObject>(
          //						new ArrayList<TKStockableObject>());
          //				objectsBox.setModel(list);
@@ -414,7 +444,7 @@ public class FicheRetour extends AbstractFicheCombineController
    }
 
    /**
-    * Si l'utilisateur n'est pas admin, tous les champs de formulaire 
+    * Si l'utilisateur n'est pas admin, tous les champs de formulaire
     * sont disabled sauf date de retour
     */
    private void disableIfNotAdmin(){
@@ -422,7 +452,7 @@ public class FicheRetour extends AbstractFicheCombineController
          //dateSortieCalBox.setDisabled(true);
          //collaborateurBox.setDisabled(true);
          //sterileBox.setDisabled(true);
-         //observationsBox.setDisabled(true); 
+         //observationsBox.setDisabled(true);
          //temperatureListBox.setDisabled(true);
       }
    }
@@ -468,13 +498,13 @@ public class FicheRetour extends AbstractFicheCombineController
 
             for(int i = 0; i < getObjects().size(); i++){
                if(getObjects().get(i) instanceof Echantillon){
-                  // on vérifie que l'on retrouve bien la 
+                  // on vérifie que l'on retrouve bien la
                   // page contenant la liste
                   // des échantillons
                   // refresh object
                   echans.add(ManagerLocator.getEchantillonManager().findByIdManager(getObjects().get(i).listableObjectId()));
                }else if(getObjects().get(i) instanceof ProdDerive){
-                  // on vérifie que l'on retrouve bien la 
+                  // on vérifie que l'on retrouve bien la
                   // page contenant la liste des dérives
 
                   // refresh object
@@ -769,7 +799,7 @@ public class FicheRetour extends AbstractFicheCombineController
          //			else if (oldEmplacement != null) {
          //				entiteCode = ManagerLocator.getEmplacementManager()
          //					.getAdrlManager(oldEmplacement);
-         //			} 
+         //			}
       }
       return entiteCode;
    }
@@ -857,7 +887,7 @@ public class FicheRetour extends AbstractFicheCombineController
    /**
     * Méthode appelée lors de la sélection d'une température dans la
     * liste temperatureListBox. Met à jour la valeur dans la decimalBox
-    * @param event Select 
+    * @param event Select
     */
    public void onSelect$temperatureListBox(final Event event){
 

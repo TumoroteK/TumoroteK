@@ -51,9 +51,11 @@ public abstract class SmallObjDecorator
 
    // flag qui specifie si l'objet a ete valide (ou en cours de creation)
    private boolean validated = false;
+
    private boolean edition = false;
 
    private Integer ordre;
+
    private Integer ordreInit;
 
    public SmallObjDecorator(){}
@@ -144,7 +146,7 @@ public abstract class SmallObjDecorator
    }
 
    /**
-    * Indique si l'ordre du decorator a change par rapport au code de l'objet 
+    * Indique si l'ordre du decorator a change par rapport au code de l'objet
     * sous jacent.
     * @return true si chgt
     */

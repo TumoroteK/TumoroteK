@@ -60,6 +60,7 @@ public class UiRequeteManagerImpl implements UiRequeteManager
 {
 
    private UiRequeteDao uiRequeteDao;
+
    private UiRequeteValidator uiRequeteValidator;
 
    public void setUiRequeteDao(final UiRequeteDao uDao){

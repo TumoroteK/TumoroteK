@@ -1,0 +1,206 @@
+<!--
+ * Copyright ou © ou Copr. Ministère de la santé, FRANCE (01/01/2011)
+ * dsi-projet.tk@aphp.fr
+ * 
+ * Ce logiciel est un programme informatique servant à la gestion de 
+ * l'activité de biobanques. 
+ *
+ * Ce logiciel est régi par la licence CeCILL soumise au droit français
+ * et respectant les principes de diffusion des logiciels libres. Vous 
+ * pouvez utiliser, modifier et/ou redistribuer ce programme sous les 
+ * conditions de la licence CeCILL telle que diffusée par le CEA, le 
+ * CNRS et l'INRIA sur le site "http://www.cecill.info". 
+ * En contrepartie de l'accessibilité au code source et des droits de   
+ * copie, de modification et de redistribution accordés par cette 
+ * licence, il n'est offert aux utilisateurs qu'une garantie limitée. 
+ * Pour les mêmes raisons, seule une responsabilité restreinte pèse sur 
+ * l'auteur du programme, le titulaire des droits patrimoniaux et les 
+ * concédants successifs.
+ *
+ * A cet égard  l'attention de l'utilisateur est attirée sur les 
+ * risques associés au chargement,  à l'utilisation,  à la modification 
+ * et/ou au  développement et à la reproduction du logiciel par 
+ * l'utilisateur étant donné sa spécificité de logiciel libre, qui peut 
+ * le rendre complexe à manipuler et qui le réserve donc à des 	
+ * développeurs et des professionnels  avertis possédant  des 
+ * connaissances  informatiques approfondies.  Les utilisateurs sont 
+ * donc invités à charger  et  tester  l'adéquation  du logiciel à leurs
+ * besoins dans des conditions permettant d'assurer la sécurité de leurs
+ * systèmes et ou de leurs données et, plus généralement, à l'utiliser 
+ * et l'exploiter dans les mêmes conditions de sécurité. 
+ *	
+ * Le fait que vous puissiez accéder à cet en-tête signifie que vous 
+ * avez pris connaissance de la licence CeCILL, et que vous en avez 
+ * accepté les termes. 
+-->
+<window id="lwinEchantillon" border="none" 
+	apply="fr.aphp.tumorotek.action.echantillon.gatsbi.ListeEchantillonGatsbi"
+	forward="onSelectParametrage=onGetSelectedParametrage">
+	<panel border="none" collapsible="true" id="listPanel" sclass="fichePanelv2">
+		<panelchildren id="scrollPan" style="overflow-y: auto">
+			<grid id="objectsListGrid" mold="paging"
+				fixedLayout="true"		
+				autopaging="true" vflex="1" hflex="1"
+				sclass="gridListStyle"
+				span="true"
+				sizedByContent="true"
+				model="@{lwinEchantillon$composer.listObjects 
+				load-after='findByListCodesEchan.onClick,
+					findByListPatientsEchan.onClick'}"
+				rowRenderer="@{lwinEchantillon$composer.listObjectsRenderer}">
+				<columns id="gridColumns" menupopup="auto" sizable="true" width="100%" />
+				<rows id="echantillonRows">
+					<row self="@{each='currEchantillon'}" value="currEchantillon" />
+				</rows>
+			</grid>
+		</panelchildren>
+	</panel>
+	<panel title="${c:l('general.recherche.rapide')}" collapsible="false" height="150px" sclass="panelv2">
+		<panelchildren>
+			<radiogroup id="criteresRadioGroup">
+				<vlayout>
+					<hlayout sclass="z-valign-bottom">
+						<radio id="dateCreation"/>
+						<div width="150px">
+							<label value="${c:l('listeEchantillon.critere.date.creation')}"
+								sclass="formLabel"/>
+						</div>
+						<listbox id="dateCreationBox" mold="select" rows="1"
+							model="@{lwinEchantillon$composer.creationDates}">
+								<listitem self="@{each='date'}" value="@{date}">			
+									<listcell label="@{date}" />
+								</listitem>
+						</listbox>
+					</hlayout>
+					<hlayout sclass="z-valign-bottom">
+						<radio id="codeEchan"/>
+						<div width="150px">
+							<label value="${c:l('Champ.Echantillon.Code')}" sclass="formLabel"/>
+						</div>
+						<textbox id="codeBoxEchan" 
+							value="@{lwinEchantillon$composer.searchCode,
+		        			save-when='find.onClick, self.onOK'}" 
+							forward="onOK=onPressEnterKey()"
+						/>
+						<button id="findByListCodesEchan" height="20px"
+							image="/images/icones/small_add.png" sclass="buttonv2"
+							tooltiptext="${c:l('tooltip.recherche.liste.code')}" />
+						</hlayout>
+					<hlayout sclass="z-valign-bottom">
+						<radio id="patientEchantillon"/>
+						<div width="150px">
+							<label value="${c:l('prelevement.patient')}" 
+								sclass="formLabel"/>
+						</div>
+						<textbox id="patientBoxEchan" 
+							value="@{lwinEchantillon$composer.searchPatientNom,
+							save-when='find.onClick, self.onOK'}"
+							forward="onOK=onPressEnterKey()"
+						/>
+						<button id="findByListPatientsEchan" height="20px"
+							image="/images/icones/small_add.png" sclass="buttonv2"
+							tooltiptext="${c:l('tooltip.recherche.liste.patient')}" />
+					</hlayout>
+				</vlayout>
+			</radiogroup>
+		</panelchildren>
+		<toolbar height="100%" id="lToolbarEchan" align="start" hflex="1">
+			<hlayout hflex="1">
+				<hbox spacing="5" hflex="1">
+					<button id="find" label="${c:l('general.find')}" height="24px"
+						image="/images/icones/search.png" sclass="buttonv2"/>
+					<button id="findMore" label="${c:l('general.recherche.avancee')}"  
+						image="/images/icones/find.png" height="24px" visible="true" sclass="buttonv2"/>
+					<button id="findINCa" label="${c:l('recherche.inca.titre')}"  
+						image="/images/icones/smallINCa.png" height="24px" visible="true" sclass="buttonv2"/>
+					<button id="findBiocap" label="${c:l('recherche.biocap.title')}"  
+						image="/images/icones/catalogues/small_biocap.png" height="24px" visible="false" sclass="buttonv2"/>
+					<button id="addNew" label="${c:l('general.new')}"  height="24px"
+						image="/images/icones/new.png" sclass="buttonv2"
+						use="fr.aphp.tumorotek.component.TKDisablableButton" />
+					<menubar sclass="menuBarV2" id="menuBar">
+						<menu label="${c:l('general.tree.objs')}"
+							image="/images/icones/objTree.png" width="36px"
+							height="24px">
+							<menupopup>
+								<menuitem id="patientsItem"
+									image="/images/icones/patient.png"
+									label="${c:l('Entite.Patient.pluriel')}"
+									disabled="true" />
+								<menuitem id="prelevementsItem"
+									image="/images/icones/prelevement.png"
+									label="${c:l('Entite.Prelevement.pluriel')}" 
+									disabled="true" />
+								<menuitem id="derivesItem"
+									image="/images/icones/derive.png"
+									label="${c:l('Entite.ProdDerive.pluriel')}" 
+									disabled="true" />
+								<menuitem id="cessionsItem"
+									image="/images/icones/cederObjet.png"
+									label="${c:l('Entite.Cession.pluriel')}" 
+									disabled="true" />
+							</menupopup>
+						</menu>
+					</menubar>
+					<menubar sclass="menuBarV2" id="objectsBar">
+						<menu label="${c:l('general.actions')}" image="/images/icones/small_action.png" 
+							 height="24px">
+							<menupopup>
+								<menuitem id="newCessionItem" image="/images/icones/cederObjet.png"
+									label="${c:l('general.actions.add.new.cessions')}"
+									disabled="true"/>
+								<menuitem id="modificationItem" image="/images/icones/edit.png" 
+									label="${c:l('general.actions.modification.multiple')}"
+									disabled="true"/>
+								<menuitem id="stockageItem" image="/images/icones/terminale.png" 
+									label="${c:l('general.actions.stockage.echantillons')}"
+									disabled="true"/>
+								<menuitem id="storageRobotItem" image="/images/icones/kstars.png" 
+									label="${c:l('storage.robot.stockage')}"
+									disabled="true" visible="false" />
+								<menu label="${c:l('general.actions.exporter')}" image="/images/icones/export.png" 
+										 height="24px">
+									<menupopup sclass="exportsMenu">
+										<menuitem id="exportItem" image="/images/icones/export.png"
+											label="${c:l('general.actions.exporter')}" sclass="exports"
+											disabled="true"/>
+										<menuitem id="exportItemAdv"
+											image="/images/icones/export.png"
+											label="${c:l('general.actions.exporterAdv')}" disabled="true" />
+										<menuitem id="exportItemINCa" image="/images/icones/catalogues/inca_tk.png"
+											label="${c:l('catalogue.exporter.INCa')}" sclass="exports"
+											disabled="true"/>
+										<menuitem id="exportItemTVGSO" image="/images/icones/catalogues/tvgso_small.jpg" 
+											label="${c:l('catalogue.exporter.TVGSO')}" sclass="exports"
+											disabled="true"/>
+										<menuitem id="exportItemTVGSOcsv" image="/images/icones/catalogues/tvgso_small.jpg" 
+											label="${c:l('catalogue.exporter.TVGSOcsv')}" sclass="exports"
+											disabled="true"/>
+										<menuitem id="exportItemBIOCAP" image="/images/icones/catalogues/biocap.gif" 
+											label="${c:l('catalogue.exporter.BIOCAP')}" sclass="exports"
+											disabled="true"/>
+										<menuitem id="exportItemBIOBANQUES" image="/images/icones/catalogues/biocap.gif" 
+											label="${c:l('catalogue.exporter.BIOBANQUES')}" sclass="exports"
+											disabled="true"/>
+									</menupopup>
+								</menu>
+								<menuitem id="etiquetteItem" image="/images/icones/printer.png" 
+									label="${c:l('general.actions.print.etiquette')}"
+									disabled="true"/>
+								<menuitem id="retourItem" image="/images/icones/retour.png" 
+									label="${c:l('ficheRetour.title')}"
+									disabled="true"/>
+								<menuitem id="deleteItem" image="/images/icones/delete.png"
+									label="${c:l('general.delete')}" disabled="true" />
+							</menupopup>
+						</menu>
+					</menubar>
+					<button id="select" label="${c:l('general.select')}"  height="24px" visible="false"
+						image="/images/icones/select.png" sclass="buttonv2"/>
+					<button id="cancelSelection" label="${c:l('general.cancel')}" height="24px" visible="false"
+						image="/images/icones/cancel.png" sclass="buttonv2"/>
+				</hbox>
+			</hlayout>
+		</toolbar>
+	</panel>
+</window>

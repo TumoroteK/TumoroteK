@@ -57,7 +57,7 @@ public final class CreateOrUpdateUtilities
    /**
     * Enregistre automatiquement les operations de creation/modification pour
     * l'objet specifie.
-    * @param obj 
+    * @param obj
     * @param manager
     * @param oType
     * @param utilisateur

@@ -13,18 +13,28 @@ public class ProgressBarComponent extends GenericForwardComposer<Component>
 
    /**
     * Barre de progression
-    * 
+    *
     */
    private static final long serialVersionUID = 6995294807796646517L;
+
    private Progressmeter progressBar;
+
    private Label curr_step;
+
    private Label curr_;
+
    private Label type_;
+
    private Label total_;
+
    private Label errmes;
+
    private Export exportThread;
+
    private String entite = "";
+
    private String action = "";
+
    private String counter = "";
 
    @Override
@@ -42,7 +52,7 @@ public class ProgressBarComponent extends GenericForwardComposer<Component>
    }
 
    /**
-    * 
+    *
     * @param v
     * @param count
     * @param libelle action
@@ -87,10 +97,10 @@ public class ProgressBarComponent extends GenericForwardComposer<Component>
 
    public void onClick$cancel(){
       exportThread.interrupt();
-      //		if (exportThread.isAlive() 
+      //		if (exportThread.isAlive()
       //			&& !exportThread.isInterrupted()) {
       // exportThread.closeFromBar();
-      //} 
+      //}
       exportThread.getProgressBarComponent().getParent().detach();
    }
 

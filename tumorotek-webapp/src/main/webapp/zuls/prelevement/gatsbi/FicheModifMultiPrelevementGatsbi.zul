@@ -1,0 +1,373 @@
+<!--
+ * Copyright ou © ou Copr. Assistance Publique des Hôpitaux de 
+ * PARIS et SESAN
+ * projet-tk@sesan.fr
+ *
+ * Ce logiciel est un programme informatique servant à la gestion de
+ * l'activité de biobanques.
+ *
+ * Ce logiciel est régi par la licence CeCILL soumise au droit français
+ * et respectant les principes de diffusion des logiciels libres. Vous
+ * pouvez utiliser, modifier et/ou redistribuer ce programme sous les
+ * conditions de la licence CeCILL telle que diffusée par le CEA, le
+ * CNRS et l'INRIA sur le site "http://www.cecill.info".
+ * En contrepartie de l'accessibilité au code source et des droits de
+ * copie, de modification et de redistribution accordés par cette
+ * licence, il n'est offert aux utilisateurs qu'une garantie limitée.
+ * Pour les mêmes raisons, seule une responsabilité restreinte pèse sur
+ * l'auteur du programme, le titulaire des droits patrimoniaux et les
+ * concédants successifs.
+ *
+ * A cet égard  l'attention de l'utilisateur est attirée sur les
+ * risques associés au chargement,  à l'utilisation,  à la modification
+ * et/ou au  développement et à la reproduction du logiciel par
+ * l'utilisateur étant donné sa spécificité de logiciel libre, qui peut
+ * le rendre complexe à manipuler et qui le réserve donc à des
+ * développeurs et des professionnels  avertis possédant  des
+ * connaissances  informatiques approfondies.  Les utilisateurs sont
+ * donc invités à charger  et  tester  l'adéquation  du logiciel à leurs
+ * besoins dans des conditions permettant d'assurer la sécurité de leurs
+ * systèmes et ou de leurs données et, plus généralement, à l'utiliser
+ * et l'exploiter dans les mêmes conditions de sécurité.
+ *
+ * Le fait que vous puissiez accéder à cet en-tête signifie que vous
+ * avez pris connaissance de la licence CeCILL, et que vous en avez
+ * accepté les termes.
+-->
+<zk>
+
+<window id="fwinModifMultiPrelevement" border="none" 
+		apply="fr.aphp.tumorotek.action.prelevement.gatsbi.FicheModifMultiPrelevementGatsbi">
+	<panel id="winPanel" title="${c:l('fichePatient.panel.title')}"
+	 	sclass="fichePanelv2" closable="true">
+		<panelchildren id="panelChildrenWithScroll" style="overflow:scroll">
+			<div id="gatsbiContainer" class="main-container gridForm1" style="padding-left: 5px; padding-top: 5px">
+				<div id="infoPrelBlockDiv">
+					<div class="block-title">
+						<div class="column-container">
+							<label value="${c:l('bloc.prelevement.informations.prelevement')}" sclass="formSubTitle"/>
+							<image src="/images/pixelble.gif" style="background-repeat: repeat-x;"/>
+						</div>
+					</div>
+					<div class="block-container" id="infoPrelBlockDivContainer"><!-- Informations prélèvement -->
+						<div class="item item-wide" id="codeLaboDiv"><!-- Numéro Labo -->	
+							<custom-attributes champId="45" />
+							<label value="${c:l('Champ.Prelevement.NumeroLabo')}" sclass="chpLabel formLabel" />
+							<div class="row-container changedValue">				
+								<label id="numeroLaboLabelChanged" 
+									sclass="modifmultiValue formValue"
+									visible="false"
+								/>
+								<label id="numeroLaboMultiLabel"
+									value="${c:l('general.edit.modification.multiple')}" 
+									sclass="formLink" />
+							</div>	
+						</div>
+						<div class="item item-wide" id="natureDiv"><!-- Nature -->	
+							<custom-attributes champId="24" listmodel="natures" />
+							<label value="${c:l('Champ.Prelevement.Nature')}" sclass="chpLabel formLabel" />
+							<div class="row-container changedValue">				
+								<label id="natureLabelChanged" 
+									sclass="modifmultiValue formValue"
+									style="font-style:italic"
+									visible="false"
+								/>
+								<label id="natureMultiLabel"
+									value="${c:l('general.edit.modification.multiple')}" 
+									sclass="formLink" />
+							</div>
+						</div>
+						<div class="item item-wide" id="datePrelDiv"><!-- date du prélèvement -->
+							<custom-attributes champId="30" />
+							<label value="${c:l('Champ.Prelevement.DatePrelevement')}" sclass="chpLabel formLabel" />
+							<div class="row-container changedValue">				
+								<label id="datePrelevementLabelChanged" 
+									sclass="modifmultiValue formValue"
+									visible="false"
+								/>
+								<label id="datePrelevementMultiLabel"
+									value="${c:l('general.edit.modification.multiple')}" 
+									sclass="formLink" />
+							</div>
+						</div>
+						<div class="item item-wide" id="typeDiv"><!-- Mode du prélèvement -->
+							<custom-attributes champId="31" listmodel="modes" />
+							<label value="${c:l('Champ.Prelevement.PrelevementType')}" sclass="chpLabel formLabel" />
+							<div class="row-container changedValue">				
+								<label id="prelevementTypeLabelChanged" 
+									sclass="modifmultiValue formValue"
+									visible="false"
+								/>
+								<label id="prelevementTypeMultiLabel"
+									value="${c:l('general.edit.modification.multiple')}" 
+									sclass="formLink" />
+							</div>
+						</div>
+						<div class="item item-wide" id="sterileDiv"><!-- Sterile -->
+							<custom-attributes champId="47" />
+							<label value="${c:l('general.sterile')}" sclass="chpLabel formLabel" />
+							<div class="row-container changedValue">				
+								<label id="sterileLabelChanged" 
+									sclass="modifmultiValue formValue"
+									visible="false"
+								/>
+								<label id="sterileMultiLabel"
+									value="${c:l('general.edit.modification.multiple')}" 
+									sclass="formLink" />
+							</div>
+						</div>
+						<div class="item item-wide" id="risquesDiv"><!-- Risques -->	
+							<custom-attributes champId="249" listmodel="risques" />
+							<label value="${c:l('Champ.Prelevement.Risque')}" sclass="chpLabel formLabel" />
+							<div class="row-container changedValue">				
+								<label id="risqueLabelChanged" 
+									sclass="modifmultiValue formValue"
+									visible="false" />
+								<label id="risqueMultiLabel"
+									value="${c:l('general.edit.modification.multiple')}" 
+									sclass="formLink" />
+							</div>
+						</div>
+						<div class="item item-wide" id="servicePreleveurDiv"><!-- Service -->
+							<custom-attributes champId="29" />
+							<label value="${c:l('Champ.Prelevement.ServicePreleveur')}" sclass="chpLabel formLabel" />
+							<div class="row-container changedValue">				
+								<label id="serviceLabelChanged" 
+									sclass="modifmultiValue formValue"
+									visible="false"
+								/>
+								<label id="serviceMultiLabel"
+									value="${c:l('general.edit.modification.multiple')}" 
+									sclass="formLink" />
+							</div>
+						</div>
+						<div class="item item-wide" id="preleveurDiv"><!-- Preleveur -->
+							<custom-attributes champId="28" />
+							<label value="${c:l('Champ.Prelevement.Preleveur')}" sclass="chpLabel formLabel" />
+							<div class="row-container changedValue">				
+								<label id="preleveurLabelChanged" 
+									sclass="modifmultiValue formValue"
+									visible="false"
+								/>
+								<label id="preleveurMultiLabel"
+									value="${c:l('general.edit.modification.multiple')}" 
+									sclass="formLink" />
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="block-separator" />
+				<div id="conditBlockDiv"><!-- Conditionnement -->
+					<div class="block-title">
+						<div class="column-container">
+							<label value="${c:l('fichePrelevement.group.conditionnement')}" sclass="formSubTitle"/>
+							<image width="100%" height="1px" src="/images/pixelble.gif" style="background-repeat: repeat-x;"/>
+						</div>
+					</div>
+					<div class="block-container" id="conditBlockDivContainer">
+						<div class="item item-wide" id="conditTypeDiv"><!-- type de conditionnement -->
+							<custom-attributes champId="32" listmodel="conditTypes" />
+							<label value="${c:l('Champ.Prelevement.ConditType')}" sclass="chpLabel formLabel" />
+							<div class="row-container changedValue">				
+								<label id="conditTypeLabelChanged" 
+									sclass="modifmultiValue formValue"
+									visible="false"
+								/>
+								<label id="conditTypeMultiLabel"
+									value="${c:l('general.edit.modification.multiple')}" 
+									sclass="formLink" />
+							</div>
+						</div>
+						<div class="item item-wide" id="conditNbrDiv"><!-- Nombre de condit -->
+							<custom-attributes champId="34" />				
+							<label value="${c:l('Champ.Prelevement.ConditNbr')}" sclass="chpLabel formLabel" />
+							<div class="row-container changedValue">				
+								<label id="conditNbLabelChanged" 
+									sclass="modifmultiValue formValue"
+									visible="false"
+								/>
+								<label id="conditNbMultiLabel"
+									value="${c:l('general.edit.modification.multiple')}" 
+									sclass="formLink" />
+							</div>
+						</div>
+						<div class="item item-wide" id="conditMilieuDiv"><!-- Milieu de Condit -->
+							<custom-attributes champId="33" listmodel="conditMilieus" />
+							<label sclass="chpLabel formLabel" value="${c:l('Champ.Prelevement.ConditMilieu')}" />
+							<div class="row-container changedValue">				
+								<label id="conditMilieuLabelChanged" 
+									sclass="modifmultiValue formValue"
+									visible="false"
+								/>
+								<label id="conditMilieuMultiLabel"
+									value="${c:l('general.edit.modification.multiple')}" 
+									sclass="formLink" />
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="block-separator" />
+				<div id="consentBlockDiv"><!-- Consentement -->
+					<div class="block-title">
+						<div class="column-container">
+							<label value="${c:l('fichePrelevement.group.consentement')}" sclass="formSubTitle"/>
+							<image width="100%" height="1px" src="/images/pixelble.gif" style="background-repeat: repeat-x;"/>
+						</div>
+					</div>
+					<div class="block-container" id="consentBlockDivContainer">
+						<div class="item item-wide" id="consentTypeDiv"><!-- type de consentement -->
+							<custom-attributes champId="26" listmodel="consentTypes" />
+							<label sclass="chpLabel formLabel" value="${c:l('Champ.Prelevement.ConsentType')}" />
+							<div class="row-container changedValue">				
+								<label id="consentTypeLabelChanged" 
+									sclass="modifmultiValue formValue"
+									visible="false"
+								/>
+								<label id="consentTypeMultiLabel"
+									value="${c:l('general.edit.modification.multiple')}" 
+									sclass="formLink" />
+							</div>
+						</div>
+						<div class="item item-wide" id="consentDateDiv"><!-- Date de consentement -->
+							<custom-attributes champId="27" />
+							<label sclass="chpLabel formLabel" value="${c:l('Champ.Prelevement.ConsentDate')}" />
+							<div class="row-container changedValue">				
+								<label id="consentDateLabelChanged" 
+									sclass="modifmultiValue formValue"
+									visible="false"
+								/>
+								<label id="consentDateMultiLabel"
+									value="${c:l('general.edit.modification.multiple')}" 
+									sclass="formLink" />
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="block-separator" />
+				<div id="departBlockDiv"> <!--  Depart -->
+					<div class="block-title">
+						<div class="column-container">
+							<label value="${c:l('fichePrelevement.departPreleveur')}" sclass="formSubTitle"/>
+							<image src="/images/pixelble.gif" style="background-repeat: repeat-x;"/>
+						</div>
+					</div>
+					<div id="departBlockDivContainer" class="block-container">
+						<div class="item item-wide" id="dateDepartDiv"><!-- Date de départ -->
+							<custom-attributes champId="35" />
+							<label sclass="chpLabel formLabel" value="${c:l('Champ.Prelevement.DateDepart')}" />
+							<div class="row-container changedValue">				
+								<label id="dateDepartLabelChanged" 
+									sclass="modifmultiValue formValue"
+									visible="false"
+								/>
+								<label id="dateDepartMultiLabel"
+									value="${c:l('general.edit.modification.multiple')}" 
+									sclass="formLink" />
+							</div>
+						</div>
+						<div class="item item-wide" id="transporteurDiv"><!-- Transporteur -->
+							<custom-attributes champId="36" />
+							<label sclass="chpLabel formLabel" value="${c:l('Champ.Prelevement.Transporteur')}" />
+							<div class="row-container changedValue">				
+								<label id="transporteurLabelChanged" 
+									sclass="modifmultiValue formValue"
+									visible="false"
+								/>
+								<label id="transporteurMultiLabel"
+									value="${c:l('general.edit.modification.multiple')}" 
+									sclass="formLink" />
+							</div>
+						</div>
+						<div class="item item-wide" id="tempTranspDiv"><!-- Température de transport -->
+							<custom-attributes champId="37" />
+							<label sclass="chpLabel formLabel" value="${c:l('Champ.Prelevement.TransportTemp')}" />
+							<div class="row-container changedValue">				
+								<label id="transportTempLabelChanged" 
+									sclass="modifmultiValue formValue"
+									visible="false"
+								/>
+								<label id="transportTempMultiLabel"
+									value="${c:l('general.edit.modification.multiple')}" 
+									sclass="formLink" />
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="block-separator" />
+				<!-- Arrivée -->
+				<div id="arriveeBlockDiv">
+					<div class="block-title">
+						<div class="column-container">
+							<label value="${c:l('fichePrelevement.arriveeStockage')}" sclass="formSubTitle"/>
+							<image src="/images/pixelble.gif" style="background-repeat: repeat-x;"/>
+						</div>
+					</div>
+					<div id="arriveeBlockDivContainer" class="block-container">
+						<div class="item item-wide" id="dateArriveeDiv"><!-- Date d'arrivée -->
+							<custom-attributes champId="38" />
+							<label sclass="chpLabel formLabel" value="${c:l('Champ.Prelevement.DateArrivee')}" />
+							<div class="row-container changedValue">				
+								<label id="dateArriveeLabelChanged" 
+									sclass="modifmultiValue formValue"
+									visible="false"
+								/>
+								<label id="dateArriveeMultiLabel"
+									value="${c:l('general.edit.modification.multiple')}" 
+									sclass="formLink" />
+							</div>
+						</div>
+						<div class="item item-wide" id="operateurDiv"><!-- Operateur -->
+							<custom-attributes champId="39" />
+							<label sclass="chpLabel formLabel" value="${c:l('Champ.Prelevement.Operateur')}" />
+							<div class="row-container changedValue">				
+								<label id="operateurLabelChanged" 
+									sclass="modifmultiValue formValue"
+									visible="false"
+								/>
+								<label id="operateurMultiLabel"
+									value="${c:l('general.edit.modification.multiple')}" 
+									sclass="formLink" />
+							</div>
+						</div>
+						<div class="item item-wide" id="quantiteDiv"><!-- Quantite -->
+							<custom-attributes champId="40" />
+							<label sclass="chpLabel formLabel" value="${c:l('Champ.Prelevement.Quantite')}" />
+							<div class="row-container changedValue">				
+								<label id="quantiteLabelChanged" 
+									sclass="modifmultiValue formValue"
+									visible="false"
+								/>
+								<label id="quantiteMultiLabel"
+									value="${c:l('general.edit.modification.multiple')}" 
+									sclass="formLink" />
+							</div>
+						</div>
+						<div class="item item-wide" id="conformeArriveeDiv"><!-- Conforme à l'arrivée -->
+							<custom-attributes champId="256" listmodel="nonConformites" thesChampId="257" />
+							<label id="nonConformeArriveeLabel" value="${c:l('Champ.Prelevement.ConformeArrivee')}" sclass="chpLabel formLabel" />
+							<div class="row-container changedValue">
+								<label id="nonConformeLabelChanged" 
+									sclass="modifmultiValue formValue"
+									visible="false"
+								/>
+								<label id="nonConformeMultiLabel"
+									value="${c:l('general.edit.modification.multiple')}" 
+									sclass="formLink" 
+									/>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</panelchildren>
+		<toolbar height="100%" align="end">
+			<hbox spacing="5" align="center">
+				<button id="validateModifMultiple" label="${c:l('general.validate')}" height="24px"
+					image="/images/icones/save.png" sclass="buttonv2"/>
+				<button id="revert" label="${c:l('general.cancel')}" height="24px"
+					image="/images/icones/cancel.png" sclass="buttonv2"/>
+			</hbox>
+		</toolbar>
+	</panel>
+</window>
+</zk>

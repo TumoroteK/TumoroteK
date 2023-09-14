@@ -70,6 +70,8 @@ import fr.aphp.tumorotek.action.controller.AbstractFicheModifMultiController;
 import fr.aphp.tumorotek.action.controller.AbstractObjectTabController;
 import fr.aphp.tumorotek.action.echantillon.EchantillonController;
 import fr.aphp.tumorotek.action.echantillon.FicheMultiEchantillons;
+import fr.aphp.tumorotek.action.patient.MaladieConstraints;
+import fr.aphp.tumorotek.action.patient.PatientConstraints;
 import fr.aphp.tumorotek.action.patient.PatientController;
 import fr.aphp.tumorotek.action.prelevement.serotk.FichePrelevementEditSero;
 import fr.aphp.tumorotek.action.prelevement.serotk.FichePrelevementStaticSero;
@@ -82,8 +84,10 @@ import fr.aphp.tumorotek.model.coeur.echantillon.Echantillon;
 import fr.aphp.tumorotek.model.coeur.patient.Maladie;
 import fr.aphp.tumorotek.model.coeur.prelevement.LaboInter;
 import fr.aphp.tumorotek.model.coeur.prelevement.Prelevement;
+import fr.aphp.tumorotek.model.contexte.gatsbi.Contexte;
 import fr.aphp.tumorotek.model.interfacage.PatientSip;
 import fr.aphp.tumorotek.model.systeme.Entite;
+import fr.aphp.tumorotek.webapp.gatsbi.GatsbiController;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
 /**
@@ -91,7 +95,7 @@ import fr.aphp.tumorotek.webapp.general.SessionUtils;
  * Controller créé le 23/11/2009.
  *
  * @author Pierre Ventadour
- * @version 2.2.0
+ * @version 2.3.0-gatsbi
  * @since 2.0.6
  */
 public class PrelevementController extends AbstractObjectTabController
@@ -100,26 +104,33 @@ public class PrelevementController extends AbstractObjectTabController
    private final Log log = LogFactory.getLog(PrelevementController.class);
 
    private static final long serialVersionUID = -5315034328095152785L;
+
    //private Prelevement prelevement;
    private Maladie maladie;
 
    private Div divPrelevementStatic;
+
    private Div divPrelevementEdit;
+
    private Div divLaboInter;
+
    //private Div divMultiEchantillons;
    private Div modifMultiDiv;
-   private Component listePrelevement;
-   private Component listePrelevementSero;
+   // private Component listePrelevement;
+   // private Component listePrelevementSero;
 
    // flag ordonnant le retour vers la fiche patient
    // et rafraichissement et ouverture panel maladie
    private boolean fromFichePatient = false;
+
    private boolean fromFicheMaladie = false;
 
    // flag indiquant que le panel echantillon a été atteint
    private boolean nextToEchanClicked = false;
+
    // flag indiquant que le code du prlvt a été modifié
    private boolean codeUpdated = false;
+
    // ancien code
    private String oldCode = null;
 
@@ -166,38 +177,60 @@ public class PrelevementController extends AbstractObjectTabController
 
       super.doAfterCompose(comp);
 
-//      switch(getCurrentContexte()){
-//         case SEROLOGIE:
-//            listePrelevementSero.setVisible(true);
-//            break;
-//         default:
-//            listePrelevement.setVisible(true);
-//            break;
-//      }
-
       setStaticDiv(divPrelevementStatic);
       setEditDiv(divPrelevementEdit);
       setModifMultiDiv(modifMultiDiv);
 
       switch(getCurrentContexte()){
          case SEROLOGIE:
-            listePrelevementSero.setVisible(true);
-            setEditZulPath("/zuls/prelevement/serotk/FichePrelevementEditSero.zul");
             setListZulPath("/zuls/prelevement/serotk/ListePrelevementSero.zul");
             setMultiEditZulPath("/zuls/prelevement/serotk/FicheModifMultiPrelevementSero.zul");
             break;
          default:
-            listePrelevement.setVisible(true);
-            setEditZulPath("/zuls/prelevement/FichePrelevementEdit.zul");
-            setListZulPath("/zuls/prelevement/ListePrelevement.zul");
-            setMultiEditZulPath("/zuls/prelevement/FicheModifMultiPrelevement.zul");
+            if(SessionUtils.getCurrentGatsbiContexteForEntiteId(2) == null){
+               setListZulPath("/zuls/prelevement/ListePrelevement.zul");
+               setMultiEditZulPath("/zuls/prelevement/FicheModifMultiPrelevement.zul");
+            }else{
+               setListZulPath("/zuls/prelevement/gatsbi/ListePrelevementGatsbi.zul");
+               setMultiEditZulPath("/zuls/prelevement/gatsbi/FicheModifMultiPrelevementGatsbi.zul");
+            }
             break;
       }
+
+      // seul le choix du composant pour edit est factorisé
+      setEditZulPath(getFichePrelevementEditZulPath());
+
+      drawListe();
 
       initFicheStatic();
 
       switchToOnlyListeMode();
       orderAnnotationDraw(false);
+      
+      // @since 2.3.0-gatsbi
+      // force constraints reset des status nullable
+      PatientConstraints.resetNullableProps();
+      MaladieConstraints.resetNullableProps();
+      PrelevementConstraints.resetNullableProps();
+   }
+   
+   /**
+    * Factorisation du choix du zul path, car le choix de 
+    * du composant d'édition est utilisé par plusieurs 
+    * fonctionalités.
+    * @return FichePrelevementEdit zul path
+    */
+   private String getFichePrelevementEditZulPath() {
+      switch(getCurrentContexte()){
+         case SEROLOGIE:
+            return "/zuls/prelevement/serotk/FichePrelevementEditSero.zul";
+         default:
+            if(SessionUtils.getCurrentGatsbiContexteForEntiteId(2) == null){
+               return "/zuls/prelevement/FichePrelevementEdit.zul";
+            }else{
+               return "/zuls/prelevement/gatsbi/FichePrelevementEditGatsbi.zul";
+            }
+      }
    }
 
    @Override
@@ -219,7 +252,11 @@ public class PrelevementController extends AbstractObjectTabController
       if(SEROLOGIE.equals(getCurrentContexte())){
          setStaticZulPath("/zuls/prelevement/serotk/FichePrelevementStaticSero.zul");
       }else{
-         setStaticZulPath("/zuls/prelevement/FichePrelevementStatic.zul");
+         if(SessionUtils.getCurrentGatsbiContexteForEntiteId(2) == null){
+            setStaticZulPath("/zuls/prelevement/FichePrelevementStatic.zul");
+         }else{
+            setStaticZulPath("/zuls/prelevement/gatsbi/FichePrelevementStaticGatsbi.zul");
+         }
       }
       super.populateFicheStatic();
    }
@@ -247,11 +284,10 @@ public class PrelevementController extends AbstractObjectTabController
    @Override
    public ListePrelevement getListe(){
       if(SEROLOGIE.equals(getCurrentContexte())){
-         return ((ListePrelevementSero) self.getFellow("listePrelevementSero").getFellow("lwinPrelevementSero")
-            .getAttributeOrFellow("lwinPrelevementSero$composer", true));
+         return ((ListePrelevementSero) self.getFellow("lwinPrelevementSero").getAttributeOrFellow("lwinPrelevementSero$composer",
+            true));
       }
-      return ((ListePrelevement) self.getFellow("listePrelevement").getFellow("lwinPrelevement")
-         .getAttributeOrFellow("lwinPrelevement$composer", true));
+      return ((ListePrelevement) self.getFellow("lwinPrelevement").getAttributeOrFellow("lwinPrelevement$composer", true));
 
    }
 
@@ -369,7 +405,11 @@ public class PrelevementController extends AbstractObjectTabController
       //divMultiEchantillons.setVisible(false);
 
       if(divLaboInter.getChildren().size() == 0){
-         Executions.createComponents("/zuls/prelevement/FicheLaboInter.zul", divLaboInter, null);
+         if(SessionUtils.getCurrentGatsbiContexteForEntiteId(2) == null){
+            Executions.createComponents("/zuls/prelevement/FicheLaboInter.zul", divLaboInter, null);
+         }else{
+            Executions.createComponents("/zuls/prelevement/gatsbi/FicheLaboInterGatsbi.zul", divLaboInter, null);
+         }
          getFicheLaboInter().setObjectTabController(this);
          getFicheLaboInter().setObject(edit);
          getFicheLaboInter().switchToEditMode();
@@ -392,7 +432,11 @@ public class PrelevementController extends AbstractObjectTabController
       //divMultiEchantillons.setVisible(false);
 
       if(divLaboInter.getChildren().size() == 0){
-         Executions.createComponents("/zuls/prelevement/FicheLaboInter.zul", divLaboInter, null);
+         if(SessionUtils.getCurrentGatsbiContexteForEntiteId(2) == null){
+            Executions.createComponents("/zuls/prelevement/FicheLaboInter.zul", divLaboInter, null);
+         }else{
+            Executions.createComponents("/zuls/prelevement/gatsbi/FicheLaboInterGatsbi.zul", divLaboInter, null);
+         }
          getFicheLaboInter().setObjectTabController(this);
          getFicheLaboInter().setObject(newPrlvt);
          getFicheLaboInter().setOldLaboInters(labos);
@@ -601,37 +645,70 @@ public class PrelevementController extends AbstractObjectTabController
       super.onRevert();
    }
 
+   /**
+    * @version 2.3.0-gatsbi
+    * @param prlvt
+    */
    public void createAnotherPrelevement(final Prelevement prlvt){
       if(Messagebox.show(Labels.getLabel("fichePrelevement.create.another.prelevement"),
-         Labels.getLabel("message.new.prelevement.title"), Messagebox.YES | Messagebox.NO,
-         Messagebox.QUESTION) == Messagebox.YES){
+            Labels.getLabel("message.new.prelevement.title"), Messagebox.YES | Messagebox.NO,
+            Messagebox.QUESTION) == Messagebox.YES){
+         
+         
          backToMe(getMainWindow(), page);
+         
+         Contexte contexte = SessionUtils.getCurrentGatsbiContexteForEntiteId(2);
 
-         // si il y eu edit avant et addNew depuis liste
-         clearEditDiv();
-         if(SEROLOGIE.equals(getCurrentContexte())){
-            Executions.createComponents("/zuls/prelevement/serotk/FichePrelevementEditSero.zul", divPrelevementEdit, null);
-         }else{
-            Executions.createComponents("/zuls/prelevement/FichePrelevementEdit.zul", divPrelevementEdit, null);
+         
+         // @since 2.3.0-gatsbi
+         if (contexte != null) {
+         
+            GatsbiController.addNewObjectForContext(contexte, 
+                              getListe().getSelfComponent(), e -> {
+               try{
+                  swithToCreatedModeFromCopy(prlvt);
+               }catch(final Exception ex){
+                  Messagebox.show(handleExceptionMessage(ex), "Error", Messagebox.OK, Messagebox.ERROR);
+               }
+            }, null, prlvt); 
+          // prlvt utilisé comme 'parentObject' pour être renvoyé à ListePrelevement 
+          // et ainsi commander l'appel de swithToCreatedModeFromCopy 
+         } else {
+            swithToCreatedModeFromCopy(prlvt);
          }
-         getFicheEdit().setObjectTabController(this);
-         getFicheEdit().setNewObjectByCopy(prlvt);
-         getFicheEdit().setParentObject(prlvt.getMaladie());
-         getFicheEdit().switchToCreateMode();
-         getFicheEdit().initSelectedInLists();
-
-         if(canUpdateAnnotation()){
-            getFicheAnnotation().switchToStaticOrEditMode(false, false);
-         }
-
-         if(!annoRegion.isOpen() && annoRegion.isVisible()){
-            annoRegion.setOpen(true);
-         }
-
-         getListeRegion().setOpen(false);
-
-         showStatic(false);
       }
+   }
+   
+   /**
+    * Ouvre le formulaire de création prélèvement à partir d'informations 
+    * prélèvement précédemment créé (notamment patient/maladie).
+    * @since 2.3.0-gatsbi
+    * @version 2.3.0-gatsbi
+    * @param prlvt
+    * 
+    */
+   public void swithToCreatedModeFromCopy(Prelevement prlvt) { 
+      // si il y eu edit avant et addNew depuis liste
+      clearEditDiv();
+      Executions.createComponents(getFichePrelevementEditZulPath(), divPrelevementEdit, null);
+
+      getFicheEdit().setObjectTabController(this);
+      getFicheEdit().setNewObjectByCopy(prlvt);
+      getFicheEdit().setParentObject(prlvt.getMaladie());
+      getFicheEdit().switchToCreateMode();
+      getFicheEdit().initSelectedInLists();
+
+      if(canUpdateAnnotation()){
+         getFicheAnnotation().switchToStaticOrEditMode(false, false);
+      }
+
+      if(!annoRegion.isOpen() && annoRegion.isVisible()){
+         annoRegion.setOpen(true);
+      }
+
+      getListeRegion().setOpen(false);
+
+      showStatic(false);
    }
 
    /**

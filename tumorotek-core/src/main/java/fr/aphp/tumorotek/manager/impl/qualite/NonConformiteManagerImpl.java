@@ -66,14 +66,19 @@ public class NonConformiteManagerImpl implements NonConformiteManager
 
    /** Bean Dao. */
    private NonConformiteDao nonConformiteDao;
+
    /** Bean Dao. */
    private ConformiteTypeDao conformiteTypeDao;
+
    /** Bean Dao. */
    private ObjetNonConformeDao objetNonConformeDao;
+
    /** Bean Dao. */
    private PlateformeDao plateformeDao;
+
    /** Bean Validator. */
    private NonConformiteValidator nonConformiteValidator;
+
    /** Bean Manager. */
    private ObjetNonConformeManager objetNonConformeManager;
 
@@ -140,7 +145,7 @@ public class NonConformiteManagerImpl implements NonConformiteManager
 
    @Override
    public boolean findDoublonManager(final NonConformite nonConformite){
-      
+
       if(nonConformite != null){
          if(nonConformite.getId() == null){
             return nonConformiteDao.findAll().contains(nonConformite);
@@ -154,7 +159,7 @@ public class NonConformiteManagerImpl implements NonConformiteManager
 
    @Override
    public boolean isUsedObjectManager(final NonConformite nonConformite){
-      
+
       final List<ObjetNonConforme> objs = objetNonConformeDao.findByNonConformite(nonConformite);
 
       return (objs.size() > 0);
@@ -162,7 +167,7 @@ public class NonConformiteManagerImpl implements NonConformiteManager
 
    @Override
    public void createObjectManager(final NonConformite nonConformite){
-      
+
       // On vérifie que la pf n'est pas null. Si c'est le cas on envoie
       // une exception
       if(nonConformite.getPlateforme() == null){
@@ -191,7 +196,7 @@ public class NonConformiteManagerImpl implements NonConformiteManager
 
    @Override
    public void updateObjectManager(final NonConformite nonConformite){
-      
+
       // On vérifie que la pf n'est pas null. Si c'est le cas on envoie
       // une exception
       if(nonConformite.getPlateforme() == null){
@@ -220,7 +225,7 @@ public class NonConformiteManagerImpl implements NonConformiteManager
 
    @Override
    public void removeObjectManager(final NonConformite nonConformite){
-      
+
       if(nonConformite != null){
          // suppression des objets non conforme
          final List<ObjetNonConforme> objs = objetNonConformeDao.findByNonConformite(nonConformite);
@@ -246,7 +251,7 @@ public class NonConformiteManagerImpl implements NonConformiteManager
    }
 
    @Override
-   public List<NonConformite> findByOrderManager(Plateforme pf){
+   public List<NonConformite> findByOrderManager(final Plateforme pf){
       return nonConformiteDao.findByPfOrder(pf);
    }
 

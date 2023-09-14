@@ -57,53 +57,62 @@ public class RechercheUtilsManager
 {
 
    private static CorrespondanceManager correspondanceManager;
+
    private static ChampManager champManager;
+
    private static AnnotationValeurManager annotationValeurManager;
+
    private static PrelevementManager prelevementManager;
+
    private static ObjetNonConformeManager objetNonConformeManager;
+
    private static ConformiteTypeManager conformiteTypeManager;
+
    private static CodeAssigneManager codeAssigneManager;
+
    private static ProdDeriveManager prodDeriveManager;
+
    private static ConteneurManager conteneurManager;
+
    private static EchantillonDTOManager echantillonDTOManager;
 
-   public static void setCorrespondanceManager(CorrespondanceManager correspondanceManager){
+   public static void setCorrespondanceManager(final CorrespondanceManager correspondanceManager){
       RechercheUtilsManager.correspondanceManager = correspondanceManager;
    }
 
-   public static void setChampManager(ChampManager champManager){
+   public static void setChampManager(final ChampManager champManager){
       RechercheUtilsManager.champManager = champManager;
    }
 
-   public static void setAnnotationValeurManager(AnnotationValeurManager annotationValeurManager){
+   public static void setAnnotationValeurManager(final AnnotationValeurManager annotationValeurManager){
       RechercheUtilsManager.annotationValeurManager = annotationValeurManager;
    }
 
-   public static void setPrelevementManager(PrelevementManager prelevementManager){
+   public static void setPrelevementManager(final PrelevementManager prelevementManager){
       RechercheUtilsManager.prelevementManager = prelevementManager;
    }
 
-   public static void setObjetNonConformeManager(ObjetNonConformeManager objetNonConformeManager){
+   public static void setObjetNonConformeManager(final ObjetNonConformeManager objetNonConformeManager){
       RechercheUtilsManager.objetNonConformeManager = objetNonConformeManager;
    }
 
-   public static void setConformiteTypeManager(ConformiteTypeManager conformiteTypeManager){
+   public static void setConformiteTypeManager(final ConformiteTypeManager conformiteTypeManager){
       RechercheUtilsManager.conformiteTypeManager = conformiteTypeManager;
    }
 
-   public static void setCodeAssigneManager(CodeAssigneManager codeAssigneManager){
+   public static void setCodeAssigneManager(final CodeAssigneManager codeAssigneManager){
       RechercheUtilsManager.codeAssigneManager = codeAssigneManager;
    }
 
-   public static void setProdDeriveManager(ProdDeriveManager prodDeriveManager){
+   public static void setProdDeriveManager(final ProdDeriveManager prodDeriveManager){
       RechercheUtilsManager.prodDeriveManager = prodDeriveManager;
    }
 
-   public static void setEchantillonDTOManager(EchantillonDTOManager echantillonDTOManager){
+   public static void setEchantillonDTOManager(final EchantillonDTOManager echantillonDTOManager){
       RechercheUtilsManager.echantillonDTOManager = echantillonDTOManager;
    }
-   
-   public static void setConteneurManager(ConteneurManager conteneurManager){
+
+   public static void setConteneurManager(final ConteneurManager conteneurManager){
       RechercheUtilsManager.conteneurManager = conteneurManager;
    }
 
@@ -171,7 +180,8 @@ public class RechercheUtilsManager
       if(champ.getChampEntite() != null){
          liste.addAll(getListeObjetsCorrespondants(objetInitial, champ.getChampEntite(), champ.getChampParent(), reservedEntite));
       }else if(champ.getChampDelegue() != null){
-         liste.addAll( getListeObjetsCorrespondants(objetInitial, champ.getChampDelegue(), champ.getChampParent(), reservedEntite));
+         liste
+            .addAll(getListeObjetsCorrespondants(objetInitial, champ.getChampDelegue(), champ.getChampParent(), reservedEntite));
       }else if(champ.getChampAnnotation() != null){
          liste.addAll(getListeObjetsCorrespondants(objetInitial, champ.getChampAnnotation(), reservedEntite));
       }
@@ -290,16 +300,17 @@ public class RechercheUtilsManager
     * @param reservedEntite entité reservée ???
     * @return liste des objets liés à un objet initial
     */
-   public static List<Object> getListeObjetsCorrespondants(Object objetInitial, Affichage affichage, String reservedEntite){
-      List<Object> liste = new ArrayList<>();
+   public static List<Object> getListeObjetsCorrespondants(final Object objetInitial, final Affichage affichage,
+      final String reservedEntite){
+      final List<Object> liste = new ArrayList<>();
       /* On itère la liste des résultats de l'affichage. */
-      Iterator<Resultat> itRes = affichage.getResultats().iterator();
+      final Iterator<Resultat> itRes = affichage.getResultats().iterator();
       Entite entite = null;
       //TODO Vraie utilité du prévious ?
       Entite previous = null;
       Object recup = null;
       while(itRes.hasNext()){
-         Resultat res = itRes.next();
+         final Resultat res = itRes.next();
          /* On récupère l'entité depuis le champ du Resultat. */
          if(res != null){
             if(res.getChamp() != null){
@@ -313,7 +324,7 @@ public class RechercheUtilsManager
                   }
                }else if(res.getChamp().getChampAnnotation() != null){
                   entite = res.getChamp().getChampAnnotation().getTableAnnotation().getEntite();
-               }else if(res.getChamp().getChampDelegue() != null) {
+               }else if(res.getChamp().getChampDelegue() != null){
                   entite = res.getChamp().getChampDelegue().getEntite();
                }else{
                   liste.add(null);
@@ -332,9 +343,9 @@ public class RechercheUtilsManager
                   if(objetInitial.getClass().getSimpleName().equals(entite.getNom())){
                      recup = objetInitial;
                   }else{
-                     List<Object> lObj = new ArrayList<>();
+                     final List<Object> lObj = new ArrayList<>();
                      lObj.add(objetInitial);
-                     List<Object> recups = correspondanceManager.recupereEntitesViaDAutres(lObj, entite.getNom());
+                     final List<Object> recups = correspondanceManager.recupereEntitesViaDAutres(lObj, entite.getNom());
                      if(recups != null && recups.size() >= 1){
                         recup = recups.get(0);
                      }
@@ -368,15 +379,14 @@ public class RechercheUtilsManager
       return champManager.getValueForObjectManager(champ, tkObject, prettyFormat);
    }
 
-
-
    /**
     * Retourne la valeur d'un champAnnotation de l'objet correspondant
     * @param obj objet contenant l'annotation
     * @param ca champAnnotation
     * @return valeur du champAnnotation de l'objet correspondant
     */
-   private static Object getChampAnnotationValeur(final TKAnnotableObject obj, final ChampAnnotation ca, boolean prettyFormat){
+   private static Object getChampAnnotationValeur(final TKAnnotableObject obj, final ChampAnnotation ca,
+      final boolean prettyFormat){
       final List<AnnotationValeur> avs = annotationValeurManager.findByChampAndObjetManager(ca, obj);
       Object res = null;
       if(!avs.isEmpty()){
@@ -393,8 +403,8 @@ public class RechercheUtilsManager
             if(1 == avs.size()){
                res = avs.get(0).getValeur();
             }else{
-               List<Object> lo = new ArrayList<>();
-               for(AnnotationValeur annoVal : avs){
+               final List<Object> lo = new ArrayList<>();
+               for(final AnnotationValeur annoVal : avs){
                   lo.add(annoVal.getValeur());
                }
                res = lo;
@@ -424,11 +434,9 @@ public class RechercheUtilsManager
             entite = parent.getChampEntite().getEntite();
             temp = parent.getChampParent();
          }
-      }
-      else if(champ.getChampDelegue() != null) {
+      }else if(champ.getChampDelegue() != null){
          entite = champ.getChampDelegue().getEntite();
-      }
-      else if(champ.getChampAnnotation() != null){
+      }else if(champ.getChampAnnotation() != null){
          entite = champ.getChampAnnotation().getTableAnnotation().getEntite();
       }
 
@@ -447,7 +455,7 @@ public class RechercheUtilsManager
     */
    public static Object getChampValueFromObjectList(final ChampAnnotation champAnnotation, final List<Object> listeObjets){
       Entite entite = null;
-      Champ parent = null;
+      final Champ parent = null;
       Object value = null;
       if(champAnnotation != null){
          entite = champAnnotation.getTableAnnotation().getEntite();
@@ -480,7 +488,8 @@ public class RechercheUtilsManager
     * @param listeObjets liste des objets dans laquelle recherchée l'entité Patient et le champ
     * @return la valeur du champ pour l'entité patient
     */
-   public static Object getChampValueFromPatient(final ChampAnnotation chp, final List<Object> listeObjets, final Boolean prettyFormat){
+   public static Object getChampValueFromPatient(final ChampAnnotation chp, final List<Object> listeObjets,
+      final Boolean prettyFormat){
       final Patient recup = getObjectFromList(listeObjets, Patient.class);
       if(null != recup){
          return getChampValueFromPatient(recup, chp, prettyFormat);
@@ -527,7 +536,7 @@ public class RechercheUtilsManager
     * @return valeur du champ maladie
     */
    public static Object getChampValueFromMaladie(final Maladie maladie, final Champ chp, final Champ parent){
-      
+
       if(maladie != null && chp != null){
 
          //Cas particulier du champ délégué diagnostic (contexte SéroTK)
@@ -541,7 +550,7 @@ public class RechercheUtilsManager
             }
 
          }
-         
+
          //Cas général
          if(chp.getChampEntite() != null){
             if(parent == null){
@@ -553,9 +562,9 @@ public class RechercheUtilsManager
             }
          }
       }
-      
+
       return null;
-      
+
    }
 
    /**
@@ -583,23 +592,22 @@ public class RechercheUtilsManager
     */
    public static Object getChampValueFromPrelevement(final Prelevement prel, final Champ chp, final Champ parent){
       if(prel != null && chp != null){
-         if(chp.getChampDelegue() != null) {
+         if(chp.getChampDelegue() != null){
 
-            if("Protocoles".equals(chp.getChampDelegue().getNom()) && prel.getDelegate() != null) {
-               PrelevementSero prelSero = ((PrelevementSero)prel.getDelegate());
-               if(prelSero.getProtocoles() != null) {
+            if("Protocoles".equals(chp.getChampDelegue().getNom()) && prel.getDelegate() != null){
+               final PrelevementSero prelSero = ((PrelevementSero) prel.getDelegate());
+               if(prelSero.getProtocoles() != null){
                   return prelSero.getProtocoles().stream().map(Protocole::getNom).sorted().collect(Collectors.joining(","));
                }
             }
 
             return getChampValueForObject(chp, prel, false);
-         }
-         else if(chp.getChampEntite() != null){
-            
-            if("Risques".equals(chp.getChampEntite().getNom())) {
+         }else if(chp.getChampEntite() != null){
+
+            if("Risques".equals(chp.getChampEntite().getNom())){
                return prel.getRisques().stream().map(Risque::getNom).collect(Collectors.joining(","));
             }
-            
+
             if(parent == null){
                if(chp.getChampEntite().getNom().equals("EtablissementId")){
                   if(prel.getServicePreleveur() != null){
@@ -644,7 +652,8 @@ public class RechercheUtilsManager
     * @param parent champ parent
     * @return valeur du champ maladie
     */
-   public static Object getChampValueFromPrelevement(final Prelevement prel, final ChampAnnotation chp, final Champ parent, final Boolean prettyFormat){
+   public static Object getChampValueFromPrelevement(final Prelevement prel, final ChampAnnotation chp, final Champ parent,
+      final Boolean prettyFormat){
       if(prel != null && chp != null){
          return getChampAnnotationValeur(prel, chp, prettyFormat);
       }
@@ -858,7 +867,8 @@ public class RechercheUtilsManager
     * @param parent champ parent
     * @return valeur du champ produit dérivé
     */
-   public static Object getChampValueFromDerive(final ProdDerive prodDerive, final ChampAnnotation chp, final Champ parent, final Boolean prettyFormat){
+   public static Object getChampValueFromDerive(final ProdDerive prodDerive, final ChampAnnotation chp, final Champ parent,
+      final Boolean prettyFormat){
       if(prodDerive != null && chp != null){
          return getChampAnnotationValeur(prodDerive, chp, prettyFormat);
       }
@@ -888,7 +898,8 @@ public class RechercheUtilsManager
     * @param listeObjets liste d'objets où rechercher l'objet echantillon
     * @return valeur du champ produit dérivé
     */
-   public static Object getChampValueFromDerive(final ChampAnnotation chp, final Champ parent, final List<Object> listeObjets, final Boolean prettyFormat){
+   public static Object getChampValueFromDerive(final ChampAnnotation chp, final Champ parent, final List<Object> listeObjets,
+      final Boolean prettyFormat){
       final ProdDerive recup = getObjectFromList(listeObjets, ProdDerive.class);
       if(null != recup){
          return getChampValueFromDerive(recup, chp, parent, prettyFormat);
@@ -929,7 +940,8 @@ public class RechercheUtilsManager
       return null;
    }
 
-   public static Object getChampValueFromCession(final ChampAnnotation chp, final List<Object> listeObjets, final Boolean prettyFormat){
+   public static Object getChampValueFromCession(final ChampAnnotation chp, final List<Object> listeObjets,
+      final Boolean prettyFormat){
       final Cession recup = getObjectFromList(listeObjets, Cession.class);
       if(null != recup){
          return getChampValueFromCession(recup, chp, prettyFormat);

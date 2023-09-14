@@ -94,28 +94,40 @@ public class RetourManagerTest extends AbstractManagerTest4
 
    @Autowired
    private RetourManager retourManager;
+
    @Autowired
    private EchantillonDao echantillonDao;
+
    @Autowired
    private ProdDeriveDao prodDeriveDao;
+
    @Autowired
    private CollaborateurDao collaborateurDao;
+
    @Autowired
    private CessionDao cessionDao;
+
    @Autowired
    private IncidentDao incidentDao;
+
    @Autowired
    private RetourValidator retourValidator;
+
    @Autowired
    private UtilisateurDao utilisateurDao;
+
    @Autowired
    private TransformationDao transformationDao;
+
    @Autowired
    private EmplacementDao emplacementDao;
+
    @Autowired
    private ConteneurDao conteneurDao;
+
    @Autowired
    private EntiteDao entiteDao;
+
    @Autowired
    private ObjetStatutDao objetStatutDao;
 
@@ -380,8 +392,8 @@ public class RetourManagerTest extends AbstractManagerTest4
 
       // old emplacements
       final List<OldEmplTrace> oldEmps = new ArrayList<OldEmplTrace>();
-      oldEmps.add(new OldEmplTrace(echantillonDao.findById(2), "OLD.C1.R1.T1.23", 
-    		  conteneurDao.findById(1), emplacementDao.findById(2)));
+      oldEmps.add(
+         new OldEmplTrace(echantillonDao.findById(2), "OLD.C1.R1.T1.23", conteneurDao.findById(1), emplacementDao.findById(2)));
       oldEmps.add(new OldEmplTrace(prodDeriveDao.findById(1), null, null, emplacementDao.findById(4)));
 
       retourManager.createRetourListManager(objs, oldEmps, base, c, c1, null, null, u);
@@ -485,10 +497,10 @@ public class RetourManagerTest extends AbstractManagerTest4
 
       // old emplacements
       final List<OldEmplTrace> oldEmps = new ArrayList<OldEmplTrace>();
-      oldEmps.add(new OldEmplTrace(echantillonDao.findById(2), "CC1.R2.T6.BT1.A-1", 
-    		  conteneurDao.findById(1), emplacementDao.findById(3)));
-      oldEmps.add(new OldEmplTrace(prodDeriveDao.findById(1), "CC1.R1.T1.BT1.A-A", 
-    		  conteneurDao.findById(1), emplacementDao.findById(1)));
+      oldEmps.add(
+         new OldEmplTrace(echantillonDao.findById(2), "CC1.R2.T6.BT1.A-1", conteneurDao.findById(1), emplacementDao.findById(3)));
+      oldEmps.add(
+         new OldEmplTrace(prodDeriveDao.findById(1), "CC1.R1.T1.BT1.A-A", conteneurDao.findById(1), emplacementDao.findById(1)));
       // oldEmps.put(echantillonDao.findById(2), emplacementDao.findById(6));
       // oldEmps.put(prodDeriveDao.findById(1), emplacementDao.findById(1));
 

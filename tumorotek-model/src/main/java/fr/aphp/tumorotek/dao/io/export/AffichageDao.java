@@ -90,7 +90,7 @@ public interface AffichageDao extends GenericDaoJpa<Affichage, Integer>
    List<Affichage> findByIntituleUtilisateur(String intitule, Utilisateur utilisateur);
 
    /**
-   * Recherche tous les Affichages, sauf celui dont l'id est passé 
+   * Recherche tous les Affichages, sauf celui dont l'id est passé
    * en paramètre.
    * @param affichageId Identifiant de l'Affichage que l'on souhaite
    * exclure de la liste retournée.

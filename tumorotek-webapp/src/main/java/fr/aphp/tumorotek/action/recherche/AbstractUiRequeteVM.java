@@ -70,7 +70,9 @@ public class AbstractUiRequeteVM //FIXME Class non utilisée ?? A quoi sert-elle
 {
 
    private final Entite entite;
+
    private final ListModelList<UiRequete> uiRequetes = new ListModelList<>();
+
    private final ListModelList<SearchHistory> searchHistories = new ListModelList<>();
 
    /**
@@ -136,7 +138,7 @@ public class AbstractUiRequeteVM //FIXME Class non utilisée ?? A quoi sert-elle
    }
 
    /**
-    * Nettoie et peuple les composants de fiche à partir d'une 
+    * Nettoie et peuple les composants de fiche à partir d'une
     * sélection.
     * @param sH element searchHistory sélectionné
     * @param rechercheDiv Div racine de la fiche.

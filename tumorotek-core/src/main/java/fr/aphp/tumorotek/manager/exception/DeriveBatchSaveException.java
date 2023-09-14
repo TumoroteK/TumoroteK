@@ -1,4 +1,5 @@
 package fr.aphp.tumorotek.manager.exception;
+
 /**
  * Copyright ou © ou Copr. Ministère de la santé, FRANCE (01/01/2011)
  * dsi-projet.tk@aphp.fr
@@ -51,6 +52,7 @@ public class DeriveBatchSaveException extends TKException
    private static final long serialVersionUID = 1L;
 
    private ProdDerive deriveInError;
+
    private RuntimeException targetExeption;
 
    public DeriveBatchSaveException(final ProdDerive d, final RuntimeException e){

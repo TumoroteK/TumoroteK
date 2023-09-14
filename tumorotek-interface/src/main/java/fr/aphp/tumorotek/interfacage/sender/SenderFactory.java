@@ -36,10 +36,11 @@
 package fr.aphp.tumorotek.interfacage.sender;
 
 import java.util.List;
+
 import fr.aphp.tumorotek.interfacage.storageRobot.StorageMovement;
-import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
 import fr.aphp.tumorotek.model.TKAnnotableObject;
 import fr.aphp.tumorotek.model.interfacage.Recepteur;
+import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
 
 /**
  *
@@ -53,7 +54,7 @@ public interface SenderFactory
 {
 
    /**
-    * Transmet un objet TK au bon SenderMessage en fonction du Recepteur afin de 
+    * Transmet un objet TK au bon SenderMessage en fonction du Recepteur afin de
     * produire le message.
     * @param re Recepteur
     * @param tkObj
@@ -63,8 +64,8 @@ public interface SenderFactory
    void sendMessage(Recepteur re, TKAnnotableObject tkObj, String dosExtId, String url);
 
    /**
-    * Envoie une liste d'obj à un recepteur afin de produire les messages 
-    * correspondants. La variable tampon b (defaut = 100) permet de grouper les 
+    * Envoie une liste d'obj à un recepteur afin de produire les messages
+    * correspondants. La variable tampon b (defaut = 100) permet de grouper les
     * objets dans un même message.
     * @param re Recepteur
     * @param tkObj
@@ -73,14 +74,14 @@ public interface SenderFactory
     */
    void sendMessages(Recepteur re, List<TKAnnotableObject> tkObjs, Integer b);
 
-	/**
-	 * Transmet une liste de <StorageMovement> au bon SenderMessage en fonction du Recepteur afin de 
-	 * produire le message.
-	 * @param re Recepteur
-	 * @param storage mvts
-	 * @param url
-	 * @param utilisateur u
-	 * @since 2.2.1-IRELEC
-	 */
-	void sendEmplacements(Recepteur re, List<StorageMovement> movs, Utilisateur u);
+   /**
+    * Transmet une liste de <StorageMovement> au bon SenderMessage en fonction du Recepteur afin de
+    * produire le message.
+    * @param re Recepteur
+    * @param storage mvts
+    * @param url
+    * @param utilisateur u
+    * @since 2.2.1-IRELEC
+    */
+   void sendEmplacements(Recepteur re, List<StorageMovement> movs, Utilisateur u);
 }

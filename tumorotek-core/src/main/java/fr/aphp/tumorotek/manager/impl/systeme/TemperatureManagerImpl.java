@@ -54,6 +54,7 @@ public class TemperatureManagerImpl implements TemperatureManager
    private final Log log = LogFactory.getLog(TemperatureManager.class);
 
    private TemperatureDao temperatureDao;
+
    private TemperatureValidator temperatureValidator;
 
    public void setTemperatureDao(final TemperatureDao tDao){

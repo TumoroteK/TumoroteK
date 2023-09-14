@@ -101,30 +101,43 @@ public class TableAnnotationManagerTest extends AbstractManagerTest4
    /* Managers injectes par Spring*/
    @Autowired
    private TableAnnotationManager tableAnnotationManager;
+
    @Autowired
    private EntiteDao entiteDao;
+
    @Autowired
    private CatalogueDao catalogueDao;
+
    @Autowired
    private BanqueDao banqueDao;
+
    @Autowired
    private UtilisateurDao utilisateurDao;
+
    @Autowired
    private TableAnnotationBanqueDao tableAnnotationBanqueDao;
+
    @Autowired
    private TableAnnotationValidator tableAnnotationValidator;
+
    @Autowired
    private DataTypeDao dataTypeDao;
+
    @Autowired
    private ChampAnnotationDao champAnnotationDao;
+
    @Autowired
    private ChampAnnotationManager champAnnotationManager;
+
    @Autowired
    private AnnotationDefautDao annotationDefautDao;
+
    @Autowired
    private ItemDao itemDao;
+
    @Autowired
    private PlateformeDao plateformeDao;
+
    @Autowired
    private OperationTypeDao operationTypeDao;
 
@@ -750,8 +763,7 @@ public class TableAnnotationManagerTest extends AbstractManagerTest4
 
       final TableAnnotation t3 = tableAnnotationManager.findByNomLikeManager("NEWTABLE", true).get(0);
 
-      final List<ChampAnnotation> champsOrdered =
-         new ArrayList<>(tableAnnotationManager.getChampAnnotationsManager(t3));
+      final List<ChampAnnotation> champsOrdered = new ArrayList<>(tableAnnotationManager.getChampAnnotationsManager(t3));
       assertTrue(champsOrdered.get(0).equals(c4));
       assertTrue(champsOrdered.get(1).equals(c1));
       assertTrue(champsOrdered.get(2).equals(c3));

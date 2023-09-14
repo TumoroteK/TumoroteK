@@ -105,64 +105,108 @@ public class FicheCollaborateur extends AbstractFicheCombineController
    private static final long serialVersionUID = -5288212654515739964L;
 
    private Button addCoordonnee;
+
    private Menubar menuBar;
 
    // Labels
    private Label titreLabel;
+
    private Label nomLabel;
+
    private Label prenomLabel;
+
    private Label specialiteLabel;
+
    private Label etablissementLabel;
+
    private Grid servicesList;
+
    private Group groupServicesCollab;
+
    private Group groupCoordonneesCollab;
+
    private Grid coordonneesGrid;
+
    private Label archiveLabel;
 
    // Editable components : mode d'édition ou de création.
    private Label nomRequired;
+
    private Textbox nomBox;
+
    private Textbox prenomBox;
+
    private Listbox etabsBox;
+
    private Listbox titresBox;
+
    private Listbox specialitesBox;
+
    private Grid servicesListEdit;
+
    private Row rowServicesTitle;
+
    private Row rowAddService;
+
    private Combobox addServiceBox;
+
    private Grid coordonneesGridEdit;
+
    private Textbox adresseBox;
+
    private Textbox cpBox;
+
    private Textbox villeBox;
+
    private Textbox paysBox;
+
    private Textbox telBox;
+
    private Textbox faxBox;
+
    private Textbox mailBox;
+
    private Checkbox archiveBox;
 
    // Objets Principaux.
    private Collaborateur collaborateur;
+
    private final List<String> servicesAndEtabs = new ArrayList<>();
+
    private Service service;
 
    // Associations.
    private Titre selectedTitre;
+
    private Specialite selectedSpecialite;
+
    private Etablissement selectedEtablissement;
+
    private List<Titre> titres = new ArrayList<>();
+
    private List<Specialite> specialites = new ArrayList<>();
+
    private List<Etablissement> etablissements = new ArrayList<>();
+
    private final List<Service> services = new ArrayList<>();
+
    private final List<Coordonnee> coordonnees = new ArrayList<>();
+
    private List<Coordonnee> coordonneesToDelete = new ArrayList<>();
+
    private final List<Coordonnee> copyCoords = new ArrayList<>();
+
    private List<Service> allServices = new ArrayList<>();
 
    // Variables formulaire.
    private String serviceNom;
+
    private boolean createMode = false;
+
    private String servicesGroupHeader = Labels.getLabel("collaborateur.services");
+
    private String coordonneesGroupHeader = Labels.getLabel("coordonnee.group.infos");
+
    private String mode;
 
    @Override
@@ -900,14 +944,14 @@ public class FicheCollaborateur extends AbstractFicheCombineController
       }
 
    }
-   //	
+   //
    //	public void revertCoordonnees() {
    //		coordonnees = new ArrayList<Coordonnee>();
-   //		
+   //
    //		for (int i = 0; i < copyCoords.size(); i++) {
    //			Coordonnee coordonnee = new Coordonnee();
    //			Coordonnee copyCoord = copyCoords.get(i);
-   //			
+   //
    //			coordonnee.setCoordonneeId(copyCoord.getCoordonneeId());
    //			coordonnee.setAdresse(copyCoord.getAdresse());
    //			coordonnee.setCp(copyCoord.getCp());
@@ -917,7 +961,7 @@ public class FicheCollaborateur extends AbstractFicheCombineController
    //			coordonnee.setFax(copyCoord.getFax());
    //			coordonnee.setMail(copyCoord.getMail());
    //			coordonnee.setCollaborateurs(copyCoord.getCollaborateurs());
-   //			
+   //
    //			coordonnees.add(coordonnee);
    //		}
    //	}

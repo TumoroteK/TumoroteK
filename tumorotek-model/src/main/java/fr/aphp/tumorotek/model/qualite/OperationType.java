@@ -77,9 +77,13 @@ public class OperationType implements Serializable
    private static final long serialVersionUID = 1L;
 
    private Integer operationTypeId;
+
    private String nom;
+
    private Boolean profilable;
+
    private Set<DroitObjet> droitObjets = new HashSet<>();
+
    private Set<Operation> operations = new HashSet<>();
 
    // @since 2.0.13.1

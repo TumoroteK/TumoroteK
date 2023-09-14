@@ -70,10 +70,15 @@ public class ValeurExterneDecorator
 
    /** Objets principaux. **/
    private ValeurExterne valeurExterne;
+
    private Object oldObject;
+
    private List<Echantillon> echantillons = new ArrayList<>();
+
    private String oldValue;
+
    private String newValue;
+
    private boolean importer = true;
 
    // since 2.0.13
@@ -265,7 +270,7 @@ public class ValeurExterneDecorator
                      value = serv.getNom();
                   }
                }else if(ce.getQueryChamp().getEntite().getNom().equals("Etablissement")){
-                  // on formate la nouvelle valeur si c'est 
+                  // on formate la nouvelle valeur si c'est
                   // un etablissemet
                   final Etablissement etab =
                      ManagerLocator.getEtablissementManager().findByIdManager(Integer.parseInt(valeurExterne.getValeur()));
@@ -352,7 +357,7 @@ public class ValeurExterneDecorator
    }
 
    /**
-    * Decore la liste pour les champ d'informations propres aux 
+    * Decore la liste pour les champ d'informations propres aux
     * échantillons.
     * @since 2.0.13
     */

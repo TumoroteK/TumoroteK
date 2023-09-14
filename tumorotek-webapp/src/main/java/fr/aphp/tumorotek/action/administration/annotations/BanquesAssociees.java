@@ -70,7 +70,9 @@ public class BanquesAssociees extends OneToManyComponent<Banque>
    private static final long serialVersionUID = 1L;
 
    private Listbox collectionsBox;
+
    private BindingListModelList<Banque> banquesData;
+
    private Button addOrRemoveAllBanques;
 
    private List<Banque> objects = new ArrayList<>();
@@ -87,7 +89,7 @@ public class BanquesAssociees extends OneToManyComponent<Banque>
 
       collectionsBox.setItemRenderer(banqueRenderer);
 
-      banquesData = new BindingListModelList<Banque>(new ArrayList<Banque>(), true);
+      banquesData = new BindingListModelList<>(new ArrayList<Banque>(), true);
       banquesData.setMultiple(true);
 
    }
@@ -100,9 +102,9 @@ public class BanquesAssociees extends OneToManyComponent<Banque>
    @Override
    public void setObjects(final List<Banque> objs){
       this.objects = objs;
-      
+
       Collections.sort(objs);
-      
+
       updateComponent();
    }
 
@@ -232,8 +234,8 @@ public class BanquesAssociees extends OneToManyComponent<Banque>
 
       banquesData.clear();
       banquesData.addAll(findObjectsAddable());
-      
-     // Collections.sort(banquesData);
+
+      // Collections.sort(banquesData);
 
    }
 

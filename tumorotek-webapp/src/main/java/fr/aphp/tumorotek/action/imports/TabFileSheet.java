@@ -47,7 +47,9 @@ public class TabFileSheet
 {
 
    private String name;
+
    private Integer rowCount;
+
    private Boolean disabled = false;
 
    public TabFileSheet(final String n, final Integer r, final Boolean d){

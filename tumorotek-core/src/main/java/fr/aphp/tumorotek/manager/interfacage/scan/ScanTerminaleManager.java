@@ -59,7 +59,7 @@ public interface ScanTerminaleManager
 
    /**
     * Persiste le scan d'une boite pour un scanner passé en paramètre.
-    * Le scan d'une boite contient une liste de ScanTubes qui représentent les 
+    * Le scan d'une boite contient une liste de ScanTubes qui représentent les
     * objets contenus à chaque position de la boite (ou leur absence si ScanTube.code = null)
     * @param sT scanTerminale scan de la boite
     * @param sD scanDEvice scanner
@@ -67,7 +67,7 @@ public interface ScanTerminaleManager
    void createObjectManager(ScanTerminale sT, ScanDevice sD);
 
    /**
-    * Supprime les informations relatives à un scan de boites 
+    * Supprime les informations relatives à un scan de boites
     * @param sT scanTerminale scan de la boite
     */
    void removeObjectManager(ScanTerminale sT);
@@ -79,7 +79,7 @@ public interface ScanTerminaleManager
    List<ScanTerminale> findAllManager();
 
    /**
-    * Renvoie tous les scans de boites pour un scanner passé en 
+    * Renvoie tous les scans de boites pour un scanner passé en
     * paramètre dans l'ordre inverse de leur création
     * @param scanDevice scanner
     * @return List<ScanTerminale>
@@ -87,7 +87,7 @@ public interface ScanTerminaleManager
    List<ScanTerminale> findByDeviceManager(ScanDevice sD);
 
    /**
-    * Renvoie tous les codes échantillons/dérivés extraits par le 
+    * Renvoie tous les codes échantillons/dérivés extraits par le
     * scanner sous la forme de ScanTubes
     * @param sT scan boite
     * @return List<String> codes
@@ -95,9 +95,9 @@ public interface ScanTerminaleManager
    List<String> findTKObjectCodesManager(ScanTerminale sT);
 
    /**
-    * Renvoie les objets stockables TK contenu dans la boite 
+    * Renvoie les objets stockables TK contenu dans la boite
     * à partir du scan.
-    * Renvoie une erreur de validation si scan incoherent avec stockage dans TK 
+    * Renvoie une erreur de validation si scan incoherent avec stockage dans TK
     * cad tubes ne sont pas dans 1 seule boite de TK.
     * @param sT scan boite
     * @param list banques accessibles
@@ -106,18 +106,18 @@ public interface ScanTerminaleManager
    List<TKStockableObject> findTKStockableObjectsManager(ScanTerminale sT, List<Banque> banques);
 
    /**
-    * Compare le scan et la terminale trouvée dans le système de stockage, 
+    * Compare le scan et la terminale trouvée dans le système de stockage,
     * en se basant sur les positions :
-    *  - trouve les emplacements remplis dans la boite, alors qu'ils ne le sont pas dans le 
+    *  - trouve les emplacements remplis dans la boite, alors qu'ils ne le sont pas dans le
     * système de stockage virtuel de TK (fill)
     * Si aucun emplacement n'est défini, un nouvel objet Emplacement est créé à la position.
-    *  - trouve les emplacements vides dans la boite alors qu'ils sont remplis 
+    *  - trouve les emplacements vides dans la boite alors qu'ils sont remplis
     *  dans le système de stockage TK (free)
-    *  - trouve les emplacements incohérents cad contenant un objet dont le code ne correspond 
-    *  pas à celui du code du tube scanné à sa position 
-    * Renvoie une erreur si le code de la boite scannée correspond à plusieurs boites/alias 
-    * dans TK trouvées à partir d'une enceinte parente ou d'un conteneur racine. Si enceinte parente 
-    * et/ou conteneur racine sont nulls, il n'y a plus de restriction de la recherche dans 
+    *  - trouve les emplacements incohérents cad contenant un objet dont le code ne correspond
+    *  pas à celui du code du tube scanné à sa position
+    * Renvoie une erreur si le code de la boite scannée correspond à plusieurs boites/alias
+    * dans TK trouvées à partir d'une enceinte parente ou d'un conteneur racine. Si enceinte parente
+    * et/ou conteneur racine sont nulls, il n'y a plus de restriction de la recherche dans
     * l'arborescence.
     * @param sT scan boite
     * @param enc Enceinte parente
@@ -128,9 +128,9 @@ public interface ScanTerminaleManager
    TKScanTerminaleDTO compareScanAndTerminaleManager(ScanTerminale sT, Enceinte enc, List<Conteneur> conts);
 
    /**
-    * Recherche la boite depuis son scan dans le système de stockage 
+    * Recherche la boite depuis son scan dans le système de stockage
     * à partir du conteneur racine, et/ou d'une enceinte parente.
-    * Renvoie une ScannedTerminaleNotUniqueException si plusieurs boites 
+    * Renvoie une ScannedTerminaleNotUniqueException si plusieurs boites
     * partagent le nom/alias scanné.
     * @param sT scanTerminale
     * @param enc Enceinte parente

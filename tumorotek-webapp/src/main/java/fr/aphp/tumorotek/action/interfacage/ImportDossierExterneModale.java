@@ -53,28 +53,47 @@ public class ImportDossierExterneModale extends AbstractFicheCombineController
    private static final long serialVersionUID = -9000002907510692460L;
 
    private Listbox echantillonsBox;
+
    private Checkbox checkAllValeursPatient;
+
    private Grid patientValeursGrid;
+
    private Checkbox checkAllValeursMaladie;
+
    private Grid maladieValeursGrid;
+
    private Checkbox checkAllValeursPrelevement;
+
    private Grid prelevementValeursGrid;
+
    private Checkbox checkAllValeursEchantillon;
+
    private Grid echantillonValeursGrid;
 
    private String path;
+
    private Prelevement prelevement;
+
    private Patient patient;
+
    private Maladie maladie;
+
    private DossierExterne dossierExterne;
+
    private List<Echantillon> echantillons = new ArrayList<>();
 
    private List<BlocExterne> blocExternes = new ArrayList<>();
+
    private List<ValeurExterneDecorator> patientValeurExternes = new ArrayList<>();
+
    private List<ValeurExterneDecorator> maladieValeurExternes = new ArrayList<>();
+
    private List<ValeurExterneDecorator> prelevementValeurExternes = new ArrayList<>();
+
    private List<ValeurExterneDecorator> echantillonValeurExternes = new ArrayList<>();
+
    private ValeurExterneRowRenderer valeurExterneRowRenderer = new ValeurExterneRowRenderer();
+
    private Set<Listitem> selectedEchantillonsItem = new HashSet<>();
 
    // warning no echantillon selected
@@ -349,10 +368,8 @@ public class ImportDossierExterneModale extends AbstractFicheCombineController
          // sauvegarde du patient si un import a été fait
          if(upPatient){
             // on récupère les listes non impactées par cet update
-            final List<Collaborateur> medecins =
-               new ArrayList<>(ManagerLocator.getPatientManager().getMedecinsManager(patient));
-            final List<PatientLien> liens =
-               new ArrayList<>(ManagerLocator.getPatientManager().getPatientLiensManager(patient));
+            final List<Collaborateur> medecins = new ArrayList<>(ManagerLocator.getPatientManager().getMedecinsManager(patient));
+            final List<PatientLien> liens = new ArrayList<>(ManagerLocator.getPatientManager().getPatientLiensManager(patient));
 
             // on recherche les annotations à supprimer (celle maj)
             for(int i = 0; i < patientAnnoValeurs.size(); i++){

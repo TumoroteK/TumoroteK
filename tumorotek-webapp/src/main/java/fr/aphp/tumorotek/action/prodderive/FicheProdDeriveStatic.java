@@ -101,60 +101,94 @@ public class FicheProdDeriveStatic extends AbstractFicheStaticController
 
    // Groups
    private Group groupParent;
+
    private Group groupDerivesDerive;
+
    private Group groupCessionsDerive;
+
    private Group groupSortiesDerive;
 
    private Grid prodDerivesGrid;
+
    private Grid cessionsGrid;
 
    private Label prlvtLinkDerive;
+
    private Label echanLinkDerive;
+
    private Row row2EchanDerive;
+
    private Row row3EchanDerive;
+
    private Row row4EchanDerive;
+
    private Row row2PrlvtDerive;
+
    private Row row3PrlvtDerive;
+
    private Row row4PrlvtDerive;
+
    private Row row2DeriveDerive;
+
    private Row row3DeriveDerive;
+
    private Row row4DeriveDerive;
+
    // Lignes pour la transformation
    private Row rowTransformation1;
+
    private Row rowTransformation2;
+
    private Row rowTransformation3;
+
    //private Row transformationInconnueLabel;
    private Component[] objLabelsPrlvtParent;
+
    private Component[] objLabelsEchanParent;
+
    private Component[] objLabelsDeriveParent;
+
    private Component[] objLabelsTransformation;
 
    private Label patientLabelDerive;
 
    // Composants a rendre anonymes
    private Label emplacementLabelDerive;
+
    private Label emplacementEchanLabelDerive;
 
    // Objets Principaux.
    private ProdDerive prodDerive = new ProdDerive();
-   private Transformation transformation;;
+
+   private Transformation transformation;
 
    private TKdataObject parentObj;
+
    private String typeParent;
 
    private List<ProdDerive> derives = new ArrayList<>();
+
    private List<CederObjetDecorator> cedesDecorated = new ArrayList<>();
 
    //  Variables formulaire.
    private String valeurQuantite = "";
+
    private String valeurQuantiteRestante = "";
+
    private String valeurVolume = "";
+
    private String valeurVolumeRestant = "";
+
    private String valeurConcentration = "";
+
    private String valeurTransfoQuantite = "";
+
    private String emplacementAdrl = "";
+
    private String prodDerivesGroupHeader;
+
    private String cessionsGroupHeader;
+
    private String sortiesGroupHeader;
 
    private static ProdDeriveRowRenderer prodDeriveRenderer = new ProdDeriveRowRenderer(false, false);
@@ -190,7 +224,7 @@ public class FicheProdDeriveStatic extends AbstractFicheStaticController
 
       listeRetour =
          ((ListeRetour) self.getFellow("listeRetour").getFellow("lwinRetour").getAttributeOrFellow("lwinRetour$composer", true));
-      
+
    }
 
    @Override
@@ -536,9 +570,9 @@ public class FicheProdDeriveStatic extends AbstractFicheStaticController
     * @return
     */
    public String getEmplacementEchantillonAdrl(){
-      
+
       String emplacementEchantillonAdrl = null;
-      
+
       Boolean isAutorise;
 
       if(isAnonyme()){
@@ -550,12 +584,12 @@ public class FicheProdDeriveStatic extends AbstractFicheStaticController
       if(!isAutorise){
          makeLabelAnonyme(emplacementEchanLabelDerive, false);
          emplacementEchantillonAdrl = getAnonymeString();
-      } else if(getParentEchantillon() != null) {
+      }else if(getParentEchantillon() != null){
          emplacementEchantillonAdrl = ManagerLocator.getEchantillonManager().getEmplacementAdrlManager(getParentEchantillon());
       }
-      
+
       return emplacementEchantillonAdrl;
-      
+
    }
 
    /**
@@ -636,13 +670,13 @@ public class FicheProdDeriveStatic extends AbstractFicheStaticController
    }
 
    public String getSClassStockage(){
-      
+
       if(isCanStockage()){
          return "formLink";
       }
-      
+
       return "formAnonymeBlock";
-      
+
    }
 
    /*************************************************************************/
@@ -761,7 +795,7 @@ public class FicheProdDeriveStatic extends AbstractFicheStaticController
    }
 
    /**
-    * Forward Event. 
+    * Forward Event.
     */
    public void onSelectAllDerives(){
       onClickProdDeriveCode(null);
@@ -831,6 +865,7 @@ public class FicheProdDeriveStatic extends AbstractFicheStaticController
    /************************** DROITS ***************************************/
    /*************************************************************************/
    private boolean canCreateDerive = false;
+
    private boolean canStockage = true;
 
    public boolean isCanCreateDerive(){
@@ -938,7 +973,7 @@ public class FicheProdDeriveStatic extends AbstractFicheStaticController
    }
 
    public String getEmplacementAdrl(){
-      
+
       Boolean isAutorise;
 
       if(isAnonyme()){
@@ -953,9 +988,9 @@ public class FicheProdDeriveStatic extends AbstractFicheStaticController
       }
 
       return emplacementAdrl;
-      
+
    }
-   
+
    public String getTemperatureFormated(){
 
       Float temp = null;
@@ -1041,7 +1076,7 @@ public class FicheProdDeriveStatic extends AbstractFicheStaticController
    	sb.append(Labels.getLabel("impression.print.prodDerive"));
    	sb.append(" ");
    	sb.append(this.prodDerive.getCode());
-   	
+
    	openImpressionWindow(page, prodDerive, sb.toString(), isAnonyme());
    }*/
 
@@ -1057,7 +1092,7 @@ public class FicheProdDeriveStatic extends AbstractFicheStaticController
    }
 
    /**
-    * Recoit l'évenement de clique sur le lien emplacement contenu 
+    * Recoit l'évenement de clique sur le lien emplacement contenu
     * dans la fiche statique.
     * @param event
     */
@@ -1069,7 +1104,7 @@ public class FicheProdDeriveStatic extends AbstractFicheStaticController
    }
 
    /**
-    * Recoit l'evenement venant de la liste de retours quand 
+    * Recoit l'evenement venant de la liste de retours quand
     * un élément est ajouté.
     */
    public void onClickUpdateSorties$retourRow(final Event event){
@@ -1120,12 +1155,12 @@ public class FicheProdDeriveStatic extends AbstractFicheStaticController
    /**
     * @param prodDerive the prodDerive to set
     */
-   public void setProdDerive(ProdDerive prodDerive){
+   public void setProdDerive(final ProdDerive prodDerive){
       this.prodDerive = prodDerive;
    }
 
    /**
-    * Surcharge de la méthode pour éviter la mise à jour du binding de la liste 
+    * Surcharge de la méthode pour éviter la mise à jour du binding de la liste
     * de dérivés en cas de suppression de dérivés de dérivés.
     */
    @Override

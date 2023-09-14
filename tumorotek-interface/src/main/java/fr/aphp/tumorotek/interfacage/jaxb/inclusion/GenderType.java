@@ -31,7 +31,10 @@ import javax.xml.bind.annotation.XmlType;
 public enum GenderType
 {
 
-   @XmlEnumValue("m") M("m"), @XmlEnumValue("f") F("f");
+   @XmlEnumValue("m")
+   M("m"), @XmlEnumValue("f")
+   F("f");
+
    private final String value;
 
    GenderType(final String v){

@@ -72,10 +72,13 @@ public class Contexte implements java.io.Serializable
    private static final long serialVersionUID = 1L;
 
    private Integer contexteId;
+
    private String nom;
+
    private String libelle;
 
    private Set<Banque> banques = new HashSet<>();
+
    private Set<Catalogue> catalogues = new HashSet<>();
 
    /** Constructeur par défaut. */

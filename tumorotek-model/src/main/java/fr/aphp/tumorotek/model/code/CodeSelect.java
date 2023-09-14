@@ -82,10 +82,15 @@ public class CodeSelect implements Serializable
    private static final long serialVersionUID = 478456654635153L;
 
    private Integer codeSelectId;
+
    private Integer codeId;
+
    private TableCodage tableCodage;
+
    private Utilisateur utilisateur;
+
    private Banque banque;
+
    private CodeDossier codeDossier;
 
    /** Constructeur par défaut. */

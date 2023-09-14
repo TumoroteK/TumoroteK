@@ -37,24 +37,11 @@
 
 <?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
 <zk>
-	<?component name="listePrelevement" macroURI="/zuls/prelevement/ListePrelevement.zul" ?>
-	<?component name="fichePrelevementStatic" macroURI="/zuls/prelevement/FichePrelevementStatic.zul" ?>
-
-	<?component name="listePrelevementSero" macroURI="/zuls/prelevement/serotk/ListePrelevementSero.zul" ?>
-	<?component name="fichePrelevementStaticSero" macroURI="/zuls/prelevement/serotk/FichePrelevementStaticSero.zul" ?>
-
-	<?component name="ficheLaboInter" macroURI="/zuls/prelevement/FicheLaboInter.zul" ?>
-	<?component name="ficheMultiEchantillons" macroURI="/zuls/echantillon/FicheMultiEchantillons.zul" ?>
 	<?component name="ficheAnnotation" macroURI="/zuls/annotation/FicheAnnotation.zul" ?>
 
 	<window id="winPrelevement" border="none" apply="fr.aphp.tumorotek.action.prelevement.PrelevementController">
 		<borderlayout sclass="tabBorderLayout" id="mainBorder">
 			<west size="30%" title="${c:l('general.recherche')}" border="normal" splittable="true" collapsible="true" id="listeRegion">
-
-				<div>
-					<listePrelevement visible="false" id="listePrelevement" hflex="1" vflex="1" />
-					<listePrelevementSero visible="false" id="listePrelevementSero" hflex="1" vflex="1" />
-				</div>
 			</west>
 			<center id="ficherRegion">
 				<div hflex="1">

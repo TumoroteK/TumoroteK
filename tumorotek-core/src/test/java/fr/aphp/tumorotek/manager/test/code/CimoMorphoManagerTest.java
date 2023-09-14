@@ -61,14 +61,12 @@ public class CimoMorphoManagerTest extends AbstractManagerTest4
    @Autowired
    private CimoMorphoManager cimoMorphoManager;
 
-   
    @Test
    public void testFindAllObjectsManager(){
       final List<CimoMorpho> cims = cimoMorphoManager.findAllObjectsManager();
       assertTrue(cims.size() == 1161);
    }
 
-   
    @Test
    public void testFindByCodeLikeManager(){
       //teste une recherche exactMatch
@@ -92,7 +90,6 @@ public class CimoMorphoManagerTest extends AbstractManagerTest4
       assertTrue(cimos.size() == 0);
    }
 
-   
    @Test
    public void testFindByLibelleLikeManager(){
       //teste une recherche exactMatch

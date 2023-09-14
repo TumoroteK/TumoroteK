@@ -50,6 +50,7 @@ public class Outil implements TKdataObject
 {
 
    private String nom;
+
    private String label;
 
    public Outil(final String n, final String l){

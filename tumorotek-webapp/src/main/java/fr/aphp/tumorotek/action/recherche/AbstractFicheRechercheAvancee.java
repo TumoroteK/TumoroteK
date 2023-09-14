@@ -45,6 +45,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.beanutils.PropertyUtils;
@@ -92,6 +93,7 @@ import fr.aphp.tumorotek.model.coeur.annotation.Item;
 import fr.aphp.tumorotek.model.coeur.annotation.TableAnnotation;
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.contexte.EContexte;
+import fr.aphp.tumorotek.model.contexte.gatsbi.Etude;
 import fr.aphp.tumorotek.model.io.export.Champ;
 import fr.aphp.tumorotek.model.io.export.ChampDelegue;
 import fr.aphp.tumorotek.model.io.export.ChampEntite;
@@ -106,9 +108,8 @@ import fr.aphp.tumorotek.webapp.general.SessionUtils;
  * Abstract classe contenant methodes recherches avancees.
  *
  * @author Pierre VENTADOUR
- * @version 2.0.13
+ * @version 2.3.0-gatsbi
  *
- *          modifiée Septembre 2012 Julien Husson
  *
  */
 public abstract class AbstractFicheRechercheAvancee extends AbstractFicheCombineController
@@ -177,7 +178,8 @@ public abstract class AbstractFicheRechercheAvancee extends AbstractFicheCombine
 	 * 
 	 */
 	protected SearchHistory searchHistory;
-	protected List<SearchHistory> searchHistoryList;
+	// @since 2.3.0-gatsbi history mapped by etude
+	protected Map<Etude, LinkedList<SearchHistory>> searchHistoryMap;
 	protected ListModelList<SearchHistory> itemSearchHistoryListbox;
 	protected West panelSearchHistorique;
 
@@ -1992,17 +1994,22 @@ public abstract class AbstractFicheRechercheAvancee extends AbstractFicheCombine
 	/**
 	 * Create the listbox history get save history in sessionscope filter by
 	 * entite name.
-	 * 
+	 * @version 2.3.0-gatsbi
 	 */
-
+	@SuppressWarnings("unchecked")
 	protected void createSearchHistoryListbox(final String entiteNom){
-		if(sessionScope.containsKey("SearchHistorySession")){
-			searchHistoryList = (LinkedList<SearchHistory>) sessionScope.get("SearchHistorySession");
+		if(sessionScope.containsKey("SearchHistorySessions")){
+			searchHistoryMap = (Map<Etude, LinkedList<SearchHistory>>) sessionScope.get("SearchHistorySessions");
 		}
 
 		itemSearchHistoryListbox = new ListModelList<>();
 
-		for(final SearchHistory searchHistory : searchHistoryList){
+		// inits map entry if needed
+		if (!searchHistoryMap.containsKey(getCurrentEtudeOrEmptyNone())) { 
+			searchHistoryMap.put(getCurrentEtudeOrEmptyNone(), new LinkedList<SearchHistory>());
+		}
+		
+		for(final SearchHistory searchHistory : searchHistoryMap.get(getCurrentEtudeOrEmptyNone())){
 			if(searchHistory.getType().contentEquals(entiteNom)){
 				itemSearchHistoryListbox.add(0, searchHistory);
 				panelSearchHistorique.setOpen(true);
@@ -2032,7 +2039,7 @@ public abstract class AbstractFicheRechercheAvancee extends AbstractFicheCombine
 		searchHistory.getOpenedGroupsIds().addAll(getOpenedGroups());
 
 		// add current search history to sessionScope
-		searchHistoryList.add(searchHistory);
+		searchHistoryMap.get(getCurrentEtudeOrEmptyNone()).add(searchHistory);
 		getItemSearchHistoryListbox().add(0, searchHistory);
 	}
 
@@ -2235,5 +2242,20 @@ public abstract class AbstractFicheRechercheAvancee extends AbstractFicheCombine
 
 	public void setUsedAnnoComponents(final List<RechercheCompValues> u){
 		this.usedAnnoComponents = u;
+	}
+	
+	/**
+	 * Return current gatsbi ETUDE or empty Etude if current bank 
+	 * (or all bank) selected are not gatsbi contextualized.
+	 * @sicne 2.3.0-gatsbi
+	 * @return etude 
+	 */
+	public Etude getCurrentEtudeOrEmptyNone() {
+		Etude etude = SessionUtils.getSelectedBanques(sessionScope).get(0).getEtude();
+		if (etude != null) {
+			return etude;
+		}
+		return new Etude();
+		
 	}
 }
