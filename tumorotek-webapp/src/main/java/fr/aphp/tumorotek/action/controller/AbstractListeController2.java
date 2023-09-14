@@ -882,7 +882,7 @@ public abstract class AbstractListeController2 extends AbstractController
 		}
 		try{
 			//TK-320 : ajoute les tables d'annotation en filtrant sur les collections concernées par les objets à exporter
-         if(getRestrictedTableIds() != null){//cas où au moins une annotation a été sélectionnée
+         if(getRestrictedTableIds() != null){//cas de l'export classique (avec annotations)
    			if(getRestrictedTableIds().isEmpty()){
    			   //TK-320 si la liste des banques récupérées précédemment est non vide, l'utiliser à la place de l'appel de SessionUtils.getSelectedBanques(sessionScope) ci-dessous
    			   //=> filtre sur les annotations des collections concernées
