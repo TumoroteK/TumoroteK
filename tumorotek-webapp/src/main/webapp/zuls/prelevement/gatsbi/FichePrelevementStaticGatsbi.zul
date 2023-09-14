@@ -588,6 +588,12 @@
 					<div visible="@{fwinPrelevementStatic$composer.idDerivesFromEchantillonsFound}">
 					<div class="item item-wide">
 					<vbox align="center" hflex="1" vflex="1">
+						<div class="block-title">
+							<div class="column-container">
+								<label value="@{fwinPrelevementStatic$composer.derivesFromEchantHeader}" sclass="formSubTitle"/>
+								<image src="/images/pixelble.gif" style="background-repeat: repeat-x;"/>
+							</div>
+						</div>
 					<grid
 							hflex="1"
 							fixedLayout="true"
@@ -633,6 +639,12 @@
 					<div visible="@{fwinPrelevementStatic$composer.isDerivesFromDerivesFound}">
 					<div class="item item-wide">
 					<vbox align="center" hflex="1" vflex="1">
+						<div class="block-title">
+							<div class="column-container">
+								<label value="@{fwinPrelevementStatic$composer.derivesFromDerivesHeader}" sclass="formSubTitle"/>
+								<image src="/images/pixelble.gif" style="background-repeat: repeat-x;"/>
+							</div>
+						</div>
 					<grid
 							hflex="1"
 							fixedLayout="true"
@@ -674,14 +686,20 @@
 			</div>
 
 					<!--selectionner tous les derives-->
-					<vbox align="center"  hflex="1" vflex="1" id="selectAllVbox">
-						<image src="/images/pixelble.gif" style="background-repeat: repeat-x;"/>
-						<button sclass="buttonv2"
-								label="${c:l('fichePrelevement.selectAllDerives')}"
-								height="24px"
-								image="/images/icones/selectAllProdDerives.png"
-								forward="onClick=onSelectAllDerives(all)"/>
+					<div class="item item-wide">
+					<vbox align="center" hflex="1" vflex="1"  id="selectAllVbox">
+					<div class="block-title">
+						<div class="column-container">
+							<image src="/images/pixelble.gif" style="background-repeat: repeat-x;"/>
+							<button sclass="buttonv2"
+									label="${c:l('fichePrelevement.selectAllDerives')}"
+									height="24px"
+									image="/images/icones/selectAllProdDerives.png"
+									forward="onClick=onSelectAllDerives(all)"/>
+						</div>
+					</div>
 					</vbox>
+					</div>
 
 
 				</groupbox>
