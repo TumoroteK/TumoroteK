@@ -1,6 +1,11 @@
 #### Notes de version
 
-##### Version 2.2.8 - Publiée le ${timestamp}
+##### Version 2.2.9 - Publiée le 14/09/2023
+###### Corrections
+- YouTrack [TK-446](https://tumorotek.myjetbrains.com/youtrack/issue/TK-446) : ${export} correction du plantage avec Mysql8 à cause de la valeur par défaut de sql_mode (pas de problème avec Mariadb)
+
+
+##### Version 2.2.8 - Publiée le 17/05/2023
 ###### Corrections
 - YouTrack [TK-322](https://tumorotek.myjetbrains.com/youtrack/issue/TK-322) : la désactivation d'un compte avec accès LDAP n'est pas prise en compte
 - YouTrack [TK-333](https://tumorotek.myjetbrains.com/youtrack/issue/TK-333) : ${stockage-evenement} Sécurisation de  la gestion de l'attribut stérile lors d'un déplacement de boîte
