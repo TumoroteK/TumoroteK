@@ -1,5 +1,8 @@
 #### Notes de version
 
+##### Version 2.3.0.4-SNAPSHOT - Publiée le ????
+- intégration de la correction de la version 2.2.9
+
 ##### Version 2.3.0.3 - Publiée le 17/07/2023
 ###### Corrections dans TK pour un contexte Gatsbi
 - YouTrack [TG-163](https://tumorotek.myjetbrains.com/youtrack/issue/TG-163) : [TK] - Prélèvement & Echantillon : filtre sur les thesaurus d'un champ lié non pris en compte
@@ -23,7 +26,11 @@
 
 ***
 
-##### Version 2.2.8 (dernière version sans le module Gatsbi) - Publiée le 17/05/2023
+##### Version 2.2.9 (dernière version sans le module Gatsbi) - Publiée le 14/09/2023
+###### Corrections
+- YouTrack [TK-446](https://tumorotek.myjetbrains.com/youtrack/issue/TK-446) : ${export} correction du plantage avec Mysql8 à cause de la valeur par défaut de sql_mode (pas de problème avec Mariadb)
+
+##### Version 2.2.8 - Publiée le 17/05/2023
 ###### Corrections
 - YouTrack [TK-322](https://tumorotek.myjetbrains.com/youtrack/issue/TK-322) : la désactivation d'un compte avec accès LDAP n'est pas prise en compte
 - YouTrack [TK-333](https://tumorotek.myjetbrains.com/youtrack/issue/TK-333) : ${stockage-evenement} Sécurisation de  la gestion de l'attribut stérile lors d'un déplacement de boîte
