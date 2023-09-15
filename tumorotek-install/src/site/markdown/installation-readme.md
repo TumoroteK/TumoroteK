@@ -99,9 +99,20 @@ adaptez ces lignes et le niveau de sécurité en cas de l'utilisation d'un serve
             ldap.userdn = <USER_LDAP>
             ldap.password = <MDP_LDAP>
         
-4. Niveaux de logs Log4j
-    
-    Se référer à la documentation Log4j pour l'édition du fichier `<TOMCAT_PATH>/webapps/tumorotek##2.3.0.3/WEB-INF/classes/log4j.properties`
+4. Gestion des logs avec Logback
+
++ **Paramétrage du niveau de logs**
+
+  **Windows :**\
+  Pour configurer le niveau de logs sous Windows, veuillez suivre cette étape :
++ Copiez le fichier `setenv.bat` depuis le fichier d'installation ZIP.
+
+  **Linux :**\
+  Pour configurer le niveau de logs sous Linux, veuillez suivre cette étape :
++ Copiez le fichier `setenv.sh` depuis le fichier d'installation ZIP.
+
+Référez-vous à la documentation Log4j pour l'édition du fichier `<TOMCAT_PATH>/conf/Catalina/localhost/logback/logback.xml` afin de spécifier le niveau de logs souhaité.
+
 
 5. Déplacer la web archive `tumorotek##2.3.0.3.war` dans le dossier `<PATH_TOMCAT>/webapps`  
 
