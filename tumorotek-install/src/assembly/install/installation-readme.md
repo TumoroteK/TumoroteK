@@ -100,9 +100,15 @@ adaptez ces lignes et le niveau de sécurité en cas de l'utilisation d'un serve
             ldap.userdn = <USER_LDAP>
             ldap.password = <MDP_LDAP>
         
-4. Niveaux de logs Log4j
-    
-    Se référer à la documentation Log4j pour l'édition du fichier `<TOMCAT_PATH>/webapps/${webapp.packaging.finalName}/WEB-INF/classes/log4j.properties`
+4. Gestion des logs avec Logback
++ Prise en compte de la configuration logback
+
+**Windows:** Copiez le fichier setenv.bat qui définit l'option -Dlogback.configurationFile depuis le fichier d'installation ZIP.
+
+**Linux:** Copiez le fichier setenv.sh qui définit l'option -Dlogback.configurationFile depuis le fichier d'installation ZIP.
+
++ Se référer à la documentation logback pour l'édition du fichier `<TOMCAT_PATH>/conf/Catalina/localhost/logbacklogback.xml`
+
 
 5. Déplacer la web archive `${webapp.packaging.finalName}.war` dans le dossier `<PATH_TOMCAT>/webapps`  
 6. Démarrer le service Apache Tomcat

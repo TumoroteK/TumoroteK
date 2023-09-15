@@ -1,5 +1,5 @@
-#### Installation de TumoroteK version 2.3.0.3
-![TumoroteK version 2.3.0.3](https://img.shields.io/badge/TumoroteK-2.3.0.3-brightgreen.svg "TumoroteK version 2.3.0.3")
+#### Installation de TumoroteK version 2.3.0.4-SNAPSHOT
+![TumoroteK version 2.3.0.4-SNAPSHOT](https://img.shields.io/badge/TumoroteK-2.3.0.4-SNAPSHOT-brightgreen.svg "TumoroteK version 2.3.0.4-SNAPSHOT")
 ![Java version 8](https://img.shields.io/badge/Java->=_8-blue.svg "Java version 8")
 ![Apache Tomcat version 7](https://img.shields.io/badge/Apache_Tomcat->=_7-yellow.svg "Apache Tomcat version 7")
 
@@ -21,7 +21,8 @@ sous Unix, dans la variable `CATALINA_OPTS`, par l'intermédiaire du script de d
 ***
 
 ##### A. Télécharger puis dézipper le package d'installation :
-[Dossier d'installation](https://github.com/TumoroteK/TumoroteK/releases/download/v2.3.0.3/tumorotek-install-2.3.0.3.zip)
+[Dossier d'installation](https://github.com/TumoroteK/TumoroteK/releases/download/v2.3.0.4-SNAPSHOT/tumorotek-install-2.3.0.4-SNAPSHOT.zip)
+
 
 ##### B. Recommandé : création d'un utilisateur de base de données dédié à l'application TumoroteK + autorisations sur les trois bases de données
     
@@ -100,22 +101,11 @@ adaptez ces lignes et le niveau de sécurité en cas de l'utilisation d'un serve
             ldap.password = <MDP_LDAP>
         
 4. Gestion des logs avec Logback
-
-+ **Paramétrage du niveau de logs**
-
-  **Windows :**\
-  Pour configurer le niveau de logs sous Windows, veuillez suivre cette étape :
-+ Copiez le fichier `setenv.bat` depuis le fichier d'installation ZIP.
-
-  **Linux :**\
-  Pour configurer le niveau de logs sous Linux, veuillez suivre cette étape :
-+ Copiez le fichier `setenv.sh` depuis le fichier d'installation ZIP.
-
-Référez-vous à la documentation Log4j pour l'édition du fichier `<TOMCAT_PATH>/conf/Catalina/localhost/logback/logback.xml` afin de spécifier le niveau de logs souhaité.
-
-
-5. Déplacer la web archive `tumorotek##2.3.0.3.war` dans le dossier `<PATH_TOMCAT>/webapps`  
-
++ Prise en compte de la configuration logback
+**Windows:** Copiez le fichier setenv.bat qui définit l'option -Dlogback.configurationFile depuis le fichier d'installation ZIP.
+**Linux:** Copiez le fichier setenv.sh qui définit l'option -Dlogback.configurationFile depuis le fichier d'installation ZIP.
++ Se référer à la documentation logback pour l'édition du fichier `<TOMCAT_PATH>/conf/Catalina/localhost/logbacklogback.xml`
+5. Déplacer la web archive `tumorotek##2.3.0.4-SNAPSHOT.war` dans le dossier `<PATH_TOMCAT>/webapps`  
 6. Démarrer le service Apache Tomcat
     > L'application TumoroteK va créer et initialiser les bases de données (tumorotek, tumorotek_codes et tumorotek_interfacages) automatiquement.
     
