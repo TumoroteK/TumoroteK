@@ -50,9 +50,9 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.TypedQuery;
 
+import org.hibernate.collection.PersistentSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.hibernate.collection.PersistentSet;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.Validator;
 
@@ -536,7 +536,7 @@ public class PrelevementManagerImpl implements PrelevementManager
       // Banque banque = prelevement.getBanque();
       final List<Prelevement> dbls = prelevementDao.findByCodeInPlateforme(prelevement.getCode(),
          prelevement.getBanque() != null ? prelevement.getBanque().getPlateforme() : null);
-      //	.findByCodeOrNumLaboWithBanque(prelevement.getCode(), banque);
+      // .findByCodeOrNumLaboWithBanque(prelevement.getCode(), banque);
 
       if(!dbls.isEmpty()){
          if(prelevement.getPrelevementId() == null){
@@ -1634,7 +1634,7 @@ public class PrelevementManagerImpl implements PrelevementManager
                prlvts.addAll(prelevementDao.findByCodesAndBanquesInList(chks, banques));
             }
             // prlvts = prelevementDao.findByCodesAndBanquesInList(codes,
-            //		banques);
+            //    banques);
          }
       }
 

@@ -40,6 +40,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import fr.aphp.tumorotek.manager.exception.DoublonFoundException;
@@ -313,16 +314,7 @@ public interface ProdDeriveManager
    Patient getPatientParentManager(ProdDerive prodDerive);
 
    /**
-    * Extrait la valeur d'un champ pour un dérivé donné.
-    * @param prodDerive ProdDerive.
-    * @param champ Champ.
-    * @return Valeur extraite du champ.
-    */
-   //String extractValueForChampManager(ProdDerive prodDerive,
-   //		Champ champ);
-
-   /**
-    * 	Persist une instance de ProdDerive dans la base de données.
+    *    Persist une instance de ProdDerive dans la base de données.
     * @param prodDerive Nouvelle instance de l'objet à créer.
     * @param banque Banque assoiée (obligatoire).
     * @param type Type du produit dérivé (obligatoire).
@@ -484,10 +476,10 @@ public interface ProdDeriveManager
     * @param liste des fichiers à supprimer après transaction
     * @param liste de déplacements (uniques) de fichiers à programmer [Correctif bug TK-155]
     * @version 2.2.0
-	*/
-	void switchBanqueCascadeManager(ProdDerive derive, Banque bank,
-								boolean doValidation, Utilisateur u, 
-								List<File>filesToDelete, Set<MvFichier> filesToMove);
+   */
+   void switchBanqueCascadeManager(ProdDerive derive, Banque bank,
+                        boolean doValidation, Utilisateur u, 
+                        List<File>filesToDelete, Set<MvFichier> filesToMove);
 
    /**
     * Supprime une Transformation de la base de données.
@@ -657,5 +649,17 @@ public interface ProdDeriveManager
     * @since 2.3
     */
    List<Integer> findByBanksAndImpact(List<Banque> banks, List<Boolean> impact);
+   
+   /**
+    * Mets à jour le préfixe du code de plusieurs produits dérivés.
+    * Méthode utilisée lors du changement du code d'un prélèvement/échantillon/derive.
+    * @param produitsDerives Liste des produitsDerives à mettre à jour.
+    * @param oldPrefixe Ancien préfixe.
+    * @param newPrefixe Nouveau préfixe.
+    * @param utilisateur Utilisateur.
+    * @return une map des produitsDerives mis à jour et des produitsDerives non mis à jour à cause d'un doublon.
+    */
+    Map<String,List<ProdDerive>> updateCodeDerivesManager(final List<ProdDerive> produitsDerives, final String oldPrefixe,
+      final String newPrefixe, final Utilisateur utilisateur);
    
 }

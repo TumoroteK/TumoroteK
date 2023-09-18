@@ -62,6 +62,7 @@ import org.zkoss.zul.Group;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listitem;
+import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.ext.Selectable;
@@ -152,7 +153,7 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
 
    protected Listbox modePrepaBoxDerive;
 
-   //	private Label transfoQuantiteUnitesBoxDerive;
+   // private Label transfoQuantiteUnitesBoxDerive;
    protected Combobox collabBoxDerive;
 
    protected Label operateurAideSaisieDerive;
@@ -348,7 +349,7 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
    @Override
    public void setObject(final TKdataObject pd){
       this.prodDerive = (ProdDerive) pd;
-
+      
       if(this.prodDerive.getTransformation() != null){
          setTransformation(this.prodDerive.getTransformation());
          // copyTransformation = this.transformation.clone();
@@ -438,6 +439,9 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
       showParentInformation();
 
       super.switchToEditMode();
+      
+      getObjectTabController().setCodeUpdated(false);
+      getObjectTabController().setOldCode(null);
 
       if(!getDroitOnAction("Collaborateur", "Consultation")){
          operateurAideSaisieDerive.setVisible(false);
@@ -466,6 +470,28 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
       super.onClick$validate();
    }
 
+   /**
+    * @version 2.1
+    */
+   @Override
+   public boolean onLaterUpdate(){
+
+      try{
+         if(super.onLaterUpdate()){
+            getObjectTabController().showEchantillonsAfterUpdate(prodDerive);
+         }
+         return true;
+
+      }catch(final RuntimeException re){
+         // ferme wait message
+         Clients.clearBusy();
+         log.error(re.getMessage(), re);
+         Messagebox.show(handleExceptionMessage(re), "Error", Messagebox.OK, Messagebox.ERROR);
+         return false;
+      }
+   }
+   
+   
    @Override
    public void createNewObject(){}
 
@@ -821,19 +847,19 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
     */
 
    public void initEditableMode(){
-      //		volume = null;
-      //		volumeInit = null;
-      //		quantite = null;
-      //		quantiteInit = null;
-      //		dateCongelation = null;
-      //		dateTransformation = null;
-      //		quantiteMax = null;
-      //		quantiteTransformation = null;
+      //    volume = null;
+      //    volumeInit = null;
+      //    quantite = null;
+      //    quantiteInit = null;
+      //    dateCongelation = null;
+      //    dateTransformation = null;
+      //    quantiteMax = null;
+      //    quantiteTransformation = null;
 
       codePrefixe = this.prodDerive.getCode();
 
       //codePrefixe = this.prodDerive.getCode().substring(0,
-      //		this.prodDerive.getCode().lastIndexOf("."));
+      //    this.prodDerive.getCode().lastIndexOf("."));
 
       // si le parent est un prlvt
       if(typeParent != null){
@@ -1091,13 +1117,16 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
    /*************************************************************************/
    /************************** FORMATTERS ***********************************/
    /*************************************************************************/
-   /**
-    * Méthode appelée après la saisie d'une valeur dans le champ
-    * codeBoxDerive. Cette valeur sera mise en majuscules.
-    */
-   public void onBlur$codeBoxDerive(){
-      codeBoxDerive.setValue(codeBoxDerive.getValue().toUpperCase().trim());
-   }
+//   // /!\ le composant codeBoxDerive ne semble plus utilisé : code en commentaire dans le zul
+//   // utilisation à la place de codePrefixeLabelDerive...
+//   //  A SUPPRIMER ......
+//   /**
+//    * Méthode appelée après la saisie d'une valeur dans le champ
+//    * codeBoxDerive. Cette valeur sera mise en majuscules.
+//    */
+//   public void onBlur$codeBoxDerive(){
+//      codeBoxDerive.setValue(codeBoxDerive.getValue().toUpperCase().trim());
+//   }
 
    /**
     * Méthode appelée après la saisie d'une valeur dans le champ
@@ -1107,9 +1136,15 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
 
       codePrefixeLabelDerive.setValue(codePrefixeLabelDerive.getValue().toUpperCase().trim());
 
-      //On ne contrôle le code que s'il s'agit d'un nouveau prélèvement ou si le code a été modifié
+      //On ne contrôle le code que s'il s'agit d'un nouveau produit dérivé ou si le code a été modifié
       if(prodDerive.getCode() == null || !codePrefixeLabelDerive.getValue().equals(prodDerive.getCode())){
          validateProdDeriveCode(codePrefixeLabelDerive.getValue());
+         //cas de la modification du code => on stocke l'info de la mise à jour pour ouvrir ensuite la fenêtre de mise à jour automatique des codes des enfants
+         if(prodDerive.getCode() != null) {
+            getObjectTabController().setCodeUpdated(true);
+            getObjectTabController().setOldCode(prodDerive.getCode());
+         }
+
       }
 
    }
