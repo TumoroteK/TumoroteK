@@ -99,7 +99,7 @@
 <?component name="retourModale" macroURI="/zuls/cession/retour/FicheRetour.zul" ?>
 <?component name="doublonPatientModale" macroURI="/zuls/prelevement/DoublonPatientModale.zul" ?>
 <?component name="ficheUtilisateurModale" macroURI="/zuls/utilisateur/FicheUtilisateurModale.zul" ?>
-<?component name="showEchantillonsModale" macroURI="/zuls/prelevement/ShowEchantillonsModale.zul" ?>
+<?component name="afterUpdateCodeModale" macroURI="/zuls/prelevement/AfterUpdateCodeModale.zul" ?>
 <?component name="affectationCollectionsModale" macroURI="/zuls/imprimante/AffectationCollectionsModale.zul"?>
 <?component name="fusionModale" macroURI="/zuls/outils/FicheFusionModale.zul"?>
 <?component name="accueil" macroURI="/zuls/main/Accueil.zul"?>

@@ -41,6 +41,7 @@ import java.sql.SQLException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import fr.aphp.tumorotek.manager.exception.ObjectUsedException;
@@ -354,15 +355,6 @@ public interface EchantillonManager
    boolean itemINCa50To53Manager(Echantillon echantillon, String value);
 
    /**
-    * Extrait la valeur d'un champ pour un echantillon donnée.
-    * @param echantillon Echantillon.
-    * @param champ Champ.
-    * @return Valeur extraite du champ.
-    */
-   //String extractValueForChampManager(Echantillon echantillon,
-   //		Champ champ);
-
-   /**
     * Persist une instance d'Echantillon dans la base de données.
     * @param echantillon Nouvelle instance de l'objet à créer.
     * @param banque Banque associée à l'échantillon (obligatoire).
@@ -556,11 +548,11 @@ public interface EchantillonManager
     * @param liste des fichiers à supprimer après transaction. La suppression 
     * sera réalisée dans la méthode parente.
     * @param liste de déplacements (uniques) de fichiers à programmer [Correctif bug TK-155]
-	* @version 2.2.0
-	*/
-	void switchBanqueCascadeManager(Echantillon echan, Banque bank, 
-								boolean doValidation, Utilisateur u,
-								List<File> filesToDelete, Set<MvFichier> filesToMove);
+   * @version 2.2.0
+   */
+   void switchBanqueCascadeManager(Echantillon echan, Banque bank, 
+                        boolean doValidation, Utilisateur u,
+                        List<File> filesToDelete, Set<MvFichier> filesToMove);
    /**
     * Réalise la modification multiple d'une liste d'échantillons.
     * @param echantillons Liste des echantillons à mettre à jour, cad clone 
@@ -587,18 +579,20 @@ public interface EchantillonManager
       List<NonConformite> ncfsTrait, List<NonConformite> ncfsCess, Utilisateur utilisateur, String baseDir);
 
    /**
-    * Mets à jour le préfixe du code de plusieurs échantillons. 
+    * Met à jour le préfixe du code de plusieurs échantillons. 
     * Méthode utilisée
-    * lors du changement du code d'un prélèevement.
+    * lors du changement du code d'un prélèvement.
+    * Si un doublon est détecté, les autres échantillons sont quand même mis à jour
     * @param echantillons Liste des échantillons à maj.
     * @param oldPrefixe Ancien préfixe.
     * @param newPrefixe Nouveau préfixe.
     * @param utilisateur Utilisateur.
-    * @return Liste des échantillons mis à jour.
+    * @return Map contenant la liste des échantillons mis à jour et celle des échantillons en doublon.
     */
-   List<Echantillon> updateCodeEchantillonsManager(List<Echantillon> echantillons, String oldPrefixe, String newPrefixe,
-      Utilisateur utilisateur);
-
+   Map<String, List<Echantillon>> updateCodeEchantillonsManager(List<Echantillon> echantillons, String oldPrefixe, String newPrefixe,
+      Utilisateur utilisateur);   
+  
+   
    /**
     * Modifie l'emplacement de l'échantillon et son statut.
     * @param echantillon Echantillon à modifier.

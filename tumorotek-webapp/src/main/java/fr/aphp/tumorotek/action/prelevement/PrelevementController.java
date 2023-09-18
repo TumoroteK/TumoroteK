@@ -52,6 +52,7 @@ import org.zkoss.zk.ui.Components;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.HtmlMacroComponent;
 import org.zkoss.zk.ui.Page;
+import org.zkoss.zk.ui.Path;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -84,6 +85,7 @@ import fr.aphp.tumorotek.model.coeur.echantillon.Echantillon;
 import fr.aphp.tumorotek.model.coeur.patient.Maladie;
 import fr.aphp.tumorotek.model.coeur.prelevement.LaboInter;
 import fr.aphp.tumorotek.model.coeur.prelevement.Prelevement;
+import fr.aphp.tumorotek.model.coeur.prodderive.ProdDerive;
 import fr.aphp.tumorotek.model.contexte.gatsbi.Contexte;
 import fr.aphp.tumorotek.model.interfacage.PatientSip;
 import fr.aphp.tumorotek.model.systeme.Entite;
@@ -127,12 +129,6 @@ public class PrelevementController extends AbstractObjectTabController
 
    // flag indiquant que le panel echantillon a été atteint
    private boolean nextToEchanClicked = false;
-
-   // flag indiquant que le code du prlvt a été modifié
-   private boolean codeUpdated = false;
-
-   // ancien code
-   private String oldCode = null;
 
    // dossier externe provenant d'un SGL
    // private DossierExterne dossierExterne;
@@ -712,104 +708,24 @@ public class PrelevementController extends AbstractObjectTabController
    }
 
    /**
-    * Si l'utilisateur a modifié le code d'un prélèvement, une
-    * fenêtre sera affichée pour lui proposer d'afficher ses
-    * échantillons afin de mettre à jour leurs codes.
+    * On est dans le cas où l'utilisateur a modifié le code de l'entité. Une fenêtre sera affichée pour lui proposer :
+    *  - soit de mettre automatiquement à jour les codes des "enfants et petits enfants" (échantillons ou dérivés)
+    *  - soit d'afficher ses échantillons / produits dérivés afin de mettre à jour leurs codes manuellement.
     *
     * @param prlvt
     */
    public void showEchantillonsAfterUpdate(final Prelevement prlvt){
-      final List<Echantillon> echans = new ArrayList<>(ManagerLocator.getPrelevementManager().getEchantillonsManager(prlvt));
-      // si le code a été mis à jour et que le prlvt a des
-      // échantillons
-      if(codeUpdated && echans.size() > 0 && oldCode != null){
-         openShowEchantillonsModaleWindow(echans, prlvt, oldCode);
-      }
-   }
-
-   /**
-    * Méthode appelée demander à l'utilisateur s'il souhaite afficher
-    * les échantillons d'un prélèvement pour les mettre à jour.
-    * pour changer le prelevement de collection.
-    */
-   public void openShowEchantillonsModaleWindow(final List<Echantillon> echans, final Prelevement prlvt, final String oldPrefixe){
-      if(!isBlockModal()){
-
-         setBlockModal(true);
-
-         // nouvelle fenêtre
-         final Window win = new Window();
-         win.setVisible(false);
-         win.setId("showEchantillonsWindow");
-         win.setPage(page);
-         win.setMaximizable(true);
-         win.setSizable(true);
-         win.setTitle(Labels.getLabel("general.edit"));
-         win.setBorder("normal");
-         win.setWidth("400px");
-         win.setHeight("325px");
-         win.setClosable(true);
-
-         final HtmlMacroComponent ua = populateShowEchantillonsModal(echans, prlvt, oldPrefixe, page, getMainWindow(), win);
-         ua.setVisible(false);
-
-         win.addEventListener("onTimed", new EventListener<Event>()
-         {
-            @Override
-            public void onEvent(final Event event) throws Exception{
-               //progress.detach();
-               ua.setVisible(true);
-            }
-         });
-
-         final Timer timer = new Timer();
-         timer.setDelay(500);
-         timer.setRepeats(false);
-         timer.addForward("onTimer", timer.getParent(), "onTimed");
-         win.appendChild(timer);
-         timer.start();
-
-         try{
-            win.onModal();
-            setBlockModal(false);
-
-         }catch(final SuspendNotAllowedException e){
-            log.error(e.getMessage(), e); 
+      if(isCodeUpdated() && getOldCode() != null) {
+         final List<Echantillon> echans = new ArrayList<>(ManagerLocator.getPrelevementManager().getEchantillonsManager(prlvt));
+         final List<ProdDerive> prodDerives = ManagerLocator.getPrelevementManager().getProdDerivesManager(prlvt);
+         // si le code a été mis à jour et que le prlvt a des
+         // échantillons
+         if(echans.size() > 0 || prodDerives.size() > 0){
+            openAfterUpdateCodeModaleWindow(echans, prodDerives, getOldCode(), prlvt.getCode());
          }
       }
    }
-
-   private static HtmlMacroComponent populateShowEchantillonsModal(final List<Echantillon> echans, final Prelevement prlvt,
-      final String oldPrefixe, final Page page, final MainWindow main, final Window win){
-      HtmlMacroComponent ua;
-      ua = (HtmlMacroComponent) page.getComponentDefinition("showEchantillonsModale", false).newInstance(page, null);
-      ua.setParent(win);
-      ua.setId("openShowEchantillonsModale");
-      ua.applyProperties();
-      ua.afterCompose();
-
-      ((ShowEchantillonsModale) ua.getFellow("fwinShowEchantillons").getAttributeOrFellow("fwinShowEchantillons$composer", true))
-         .init(echans, prlvt, oldPrefixe, main, page);
-
-      return ua;
-   }
-
-   public boolean isCodeUpdated(){
-      return codeUpdated;
-   }
-
-   public void setCodeUpdated(final boolean cUpdated){
-      this.codeUpdated = cUpdated;
-   }
-
-   public String getOldCode(){
-      return oldCode;
-   }
-
-   public void setOldCode(final String c){
-      this.oldCode = c;
-   }
-
+   
    public PatientSip getPatientSip(){
       return patientSip;
    }

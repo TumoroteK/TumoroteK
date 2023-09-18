@@ -98,6 +98,7 @@ import fr.aphp.tumorotek.model.coeur.echantillon.EchantillonType;
 import fr.aphp.tumorotek.model.coeur.echantillon.ModePrepa;
 import fr.aphp.tumorotek.model.coeur.prelevement.LaboInter;
 import fr.aphp.tumorotek.model.coeur.prelevement.Prelevement;
+import fr.aphp.tumorotek.model.coeur.prodderive.ProdDerive;
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.contexte.Collaborateur;
 import fr.aphp.tumorotek.model.contexte.EContexte;
@@ -362,6 +363,9 @@ public class FicheEchantillonEdit extends AbstractFicheEditController
       initEditableMode();
 
       super.switchToEditMode();
+      
+      getObjectTabController().setCodeUpdated(false);
+      getObjectTabController().setOldCode(null);
 
       if(prelevement != null){
          row1PrlvtEchan.setVisible(false);
@@ -506,10 +510,13 @@ public class FicheEchantillonEdit extends AbstractFicheEditController
 
          // commande le passage en mode statique
          getObjectTabController().onEditDone(getObject());
-
+         
          // ferme wait message
          Clients.clearBusy();
 
+         //Gestion éventuelle de la modification en cascade des codes des enfants (dans le cas de la modification du code échantillon)
+         getObjectTabController().showEchantillonsAfterUpdate(echantillon);
+         
          return true;
       }catch(final DoublonFoundException re){
          Clients.clearBusy();
@@ -711,7 +718,8 @@ public class FicheEchantillonEdit extends AbstractFicheEditController
    /*************************************************************************/
    /************************** FORMATTERS ***********************************/
    /*************************************************************************/
-
+   // /!\ le composant codeBoxEchan ne semble plus utilisé : code en commentaire dans le zul
+   // utilisation à la place de codePrefixeEchan...
    /**
     * Méthode appelée après la saisie d'une valeur dans le champ codeBoxEchan.
     * Cette valeur sera mise en majuscules.
@@ -728,10 +736,15 @@ public class FicheEchantillonEdit extends AbstractFicheEditController
 
       codePrefixeEchan.setValue(codePrefixeEchan.getValue().toUpperCase().trim());
 
-      // On ne contrôle le code que s'il s'agit d'un nouveau prélèvement ou si le code
+      // On ne contrôle le code que s'il s'agit d'un nouveau échantillon ou si le code
       // a été modifié
       if(echantillon.getEchantillonId() == null || !codePrefixeEchan.getValue().equals(echantillon.getCode())){
          validateEchantillonCode(codePrefixeEchan.getValue());
+         //cas de la modification du code => on stocke l'info de la mise à jour pour ouvrir ensuite la fenêtre de mise à jour automatique des codes des enfants
+         if(echantillon.getEchantillonId() != null) {
+            getObjectTabController().setCodeUpdated(true);
+            getObjectTabController().setOldCode(echantillon.getCode());
+         }
       }
 
    }

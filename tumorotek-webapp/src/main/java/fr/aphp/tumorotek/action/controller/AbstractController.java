@@ -1560,7 +1560,6 @@ public abstract class AbstractController extends GenericForwardComposer<Componen
 	/**
 	 * Retourne le controller de la fiche d'un échantillon.
 	 * 
-	 * @param event
 	 * @return
 	 */
 	public EchantillonController getEchantillonController(){
@@ -1574,7 +1573,6 @@ public abstract class AbstractController extends GenericForwardComposer<Componen
 	/**
 	 * Retourne le controller de la fiche d'un dérivé.
 	 * 
-	 * @param event
 	 * @return
 	 */
 	public ProdDeriveController getProdDeriveController(){
@@ -1585,7 +1583,21 @@ public abstract class AbstractController extends GenericForwardComposer<Componen
 		return null;
 	}
 
-	/**
+   /**
+    * Retourne le controller de la fiche d'une cession.
+    * 
+    * @return
+    */
+   public CessionController getCessionController(){
+      if(getMainWindow().isFullfilledComponent("cessionPanel", "winCession")){
+         return (CessionController) getMainWindow().getMainTabbox().getTabpanels()
+            .getFellow("cessionPanel").getFellow("winCession").getAttributeOrFellow("winCession$composer", true);
+      }
+      return null;
+   }
+   
+
+   /**
 	 * Modale window appelée pour choisir l'imprimante et le modèle d'impression.
 	 * @param pf Plateforme d'appartenance des imprimantes et des modèles.
 	 * @param list TKStockableObject à imprimer
