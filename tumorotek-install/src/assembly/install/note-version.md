@@ -1,10 +1,75 @@
 #### Notes de version
 
-##### Version ${project.version} - Publiée le ${timestamp}
-- Adaptations pour le module Gatsbi
+##### Version 2.3.0.4-SNAPSHOT - Publiée le ????
+- intégration de la correction de la version 2.2.9
 
 
-##### Version 2.2.5 - Publiée le 13/04/2022
+##### Version 2.3.0.3 - Publiée le 17/07/2023
+###### Corrections dans TK pour un contexte Gatsbi
+- YouTrack [TG-163](https://tumorotek.myjetbrains.com/youtrack/issue/TG-163) : [TK] - Prélèvement & Echantillon : filtre sur les thesaurus d'un champ lié non pris en compte
+- YouTrack [TG-165](https://tumorotek.myjetbrains.com/youtrack/issue/TG-165) : [TK] - Permettre de définir une collection Gatsbi sans le niveau maladie
+- YouTrack [TG-173](https://tumorotek.myjetbrains.com/youtrack/issue/TG-173) : [TK & Gatsbi] - Contexte Prélèvement par défaut : le champ statut juridique n'est pas obligatoire
+- YouTrack [TG-174](https://tumorotek.myjetbrains.com/youtrack/issue/TG-174) : [TK & Gatsbi] - Création Echantillon : le champ quantité défini comme obligatoire dans Gatsbi n'a pas l'astérisque rouge dans TK
+- YouTrack [TG-175](https://tumorotek.myjetbrains.com/youtrack/issue/TG-175) : [TK] - Création d'un Prélèvement / Echantillon : trier les paramétrages par ordre alphabétique dans la popup de sélection
+
+
+###### Corrections dans le module Gatsbi
+- YouTrack [TG-152](https://tumorotek.myjetbrains.com/youtrack/issue/TG-152) : [Gatsbi] - Schéma de visite : en mode édition, le champ étude n'est plus affiché en gris
+- YouTrack [TG-159](https://tumorotek.myjetbrains.com/youtrack/issue/TG-159) : [Gatsbi] - Echantillon : Supprimer le lien entre Date de stockage et délai de congélation
+- YouTrack [TG-160](https://tumorotek.myjetbrains.com/youtrack/issue/TG-160) : [Gatsbi] - Contexte Echantillon : erreur de traduction : quantity au lieu de Quality
+- YouTrack [TG-161](https://tumorotek.myjetbrains.com/youtrack/issue/TG-161) : [Gatsbi] - Contexte et Paramétrage : les noms des champs de TK sont en anglais ...
+- YouTrack [TG-164](https://tumorotek.myjetbrains.com/youtrack/issue/TG-164) : [Gatsbi] - Contexte : non prise en compte en base de données d'une mise à jour de filtre de thesaurus
+
+###### Corrections hors Gatsbi
+- intégration des corrections / évolutions de la version 2.2.8
+- YouTrack [TK-404](https://tumorotek.myjetbrains.com/youtrack/issue/TK-404) : Création d'un dérivé : position du curseur à l'affichage de l'écran
+
+
+***
+
+##### Version 2.2.9 (dernière version sans le module Gatsbi) - Publiée le 14/09/2023
+###### Corrections
+- YouTrack [TK-446](https://tumorotek.myjetbrains.com/youtrack/issue/TK-446) : ${export} correction du plantage avec Mysql8 à cause de la valeur par défaut de sql_mode (pas de problème avec Mariadb)
+
+##### Version 2.2.8 - Publiée le 17/05/2023
+###### Corrections
+- YouTrack [TK-322](https://tumorotek.myjetbrains.com/youtrack/issue/TK-322) : la désactivation d'un compte avec accès LDAP n'est pas prise en compte
+- YouTrack [TK-333](https://tumorotek.myjetbrains.com/youtrack/issue/TK-333) : ${stockage-evenement} Sécurisation de  la gestion de l'attribut stérile lors d'un déplacement de boîte
+- YouTrack [TK-358](https://tumorotek.myjetbrains.com/youtrack/issue/TK-358) : ${recherche-avancee} Plantage si saisie d'un critère sur complément diagnostic
+- YouTrack [TK-368](https://tumorotek.myjetbrains.com/youtrack/issue/TK-368) : ${recherche} Mauvaise actualisation du nombre de résultats de la recherche, dans le titre au dessus de la liste
+- YouTrack [TK-373](https://tumorotek.myjetbrains.com/youtrack/issue/TK-373) : ${export} ${echantillon} Heures des dates toujours à 00:00 au niveau des évènements de stockage
+- YouTrack [TK-374](https://tumorotek.myjetbrains.com/youtrack/issue/TK-374) : ${administration} Initialisation TK : contexte Sérologie non proposé
+- YouTrack [TK-377](https://tumorotek.myjetbrains.com/youtrack/issue/TK-377) : ${export} En toutes collections, champs d'annotation affichés plusieurs fois
+- YouTrack [TK-378](https://tumorotek.myjetbrains.com/youtrack/issue/TK-378) : ${export} En toutes collections, champs d'annotation non regroupés par table d'annotation
+- YouTrack [TK-379](https://tumorotek.myjetbrains.com/youtrack/issue/TK-379) : ${impression-bon-livraison} Afficher la date de mise à disposition au format anglais, si choix de la langue anglaise
+- YouTrack [TK-390](https://tumorotek.myjetbrains.com/youtrack/issue/TK-390) : ${export} Correction de l'erreur "Data truncated for column 'A1_1' at row 1"
+- YouTrack [TK-395](https://tumorotek.myjetbrains.com/youtrack/issue/TK-395) : ${stockage} Conteneur attribué automatiquement à des collections à tort
+- YouTrack [TK-397](https://tumorotek.myjetbrains.com/youtrack/issue/TK-397) : ${stockage-evenement} Sécurisation de la modification d'un évènement de stockage, rendue impossible pour ceux créés automatiquement lors d'une cession totale ou une transformation totale
+- YouTrack [TK-398](https://tumorotek.myjetbrains.com/youtrack/issue/TK-398) : popup ${stockage-evenement} Correction du titre en fonction du cas courant (création ou modification)
+- YouTrack [TK-400](https://tumorotek.myjetbrains.com/youtrack/issue/TK-400) : Exécution ${recherche-complexe} Ajout de la valeur "Toutes les collections" pour afficher toutes les requêtes quelque soit la collection de création (comme c'était le cas sur la version 2.1.4)
+- YouTrack [TK-402](https://tumorotek.myjetbrains.com/youtrack/issue/TK-402) : ${export} ${cession} impossible pour certaines installations mysql version 8
+
+###### Améliorations
+- YouTrack [TK-342](https://tumorotek.myjetbrains.com/youtrack/issue/TK-342) : ${administration} Création d'une collection : trier la liste des utilisateurs par ordre alphabétique
+- YouTrack [TK-365](https://tumorotek.myjetbrains.com/youtrack/issue/TK-365) : Amélioration pour faciliter la saisie des heures, sur les champs de type date+heure
+- YouTrack [TK-382](https://tumorotek.myjetbrains.com/youtrack/issue/TK-382) : ${export} Pose d'un index sur la table OBJET_NON_CONFORME
+- YouTrack [TK-383](https://tumorotek.myjetbrains.com/youtrack/issue/TK-383) : Page d'accueil : le bloc "nouvelles fonctionnalités" ne propose plus qu'un lien vers le site statique lié à la version installée
+- YouTrack [TK-399](https://tumorotek.myjetbrains.com/youtrack/issue/TK-333) : ${stockage-evenement} Optimisation du temps de création (pose d'un index)
+
+***
+
+##### Version 2.3.0.2 - Publiée le 08/03/2023
+- Adaptations pour le module Gatsbi (version 1.0.0.2, publiée le 08/03/2023)
+
+***
+
+##### Version 2.2.7 - Publiée le 08/03/2023
+###### Correction
+- YouTrack [TK-357](https://tumorotek.myjetbrains.com/youtrack/issue/TK-357) : ${export} ${patient} Barre d'avancement bloquée à 0 %
+
+***
+
+##### Version 2.2.6 - Publiée le 29/09/2022
 ###### Adaptation pour projet IRELEC - CHU Grenoble
 - YouTrack [TK-339](https://tumorotek.myjetbrains.com/youtrack/issue/TK-339) : ROBOT Grenoble - accès bouton "Stockage automatisé" et "Déstockage automatisé"
 

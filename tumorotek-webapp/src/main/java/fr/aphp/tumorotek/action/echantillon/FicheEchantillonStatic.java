@@ -346,9 +346,7 @@ public class FicheEchantillonStatic extends AbstractFicheStaticController
 
       drawRisquesFormatted();
 
-      setGroupInfosCompEchanOpen(
-         echantillon.getBanque() != null && (echantillon.getBanque().getContexte().getNom().equals("anatomopathologie")
-            || SessionUtils.getCurrentGatsbiContexteForEntiteId(3) != null));
+      setGroupInfosCompEchanOpen(true);
 
       // annotations
       super.setObject(echantillon);

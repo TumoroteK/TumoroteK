@@ -700,7 +700,13 @@ public abstract class AbstractController extends GenericForwardComposer<Componen
 			}else{
 				message = new StringBuilder(ex.getMessage());
 			}
-			log.error(ex.getMessage(), ex);
+			log.error(message.toString(), ex);
+		}
+		// aucun message n'a pu être généré -> exception inattendue
+		//CHT : code mort car message ne peut être null : test à revoir ....
+		if(message == null){
+			message = new StringBuilder(ex.getClass().getSimpleName() + " : " + ex.getMessage());
+			log.error(message.toString(), ex);
 		}
 
 		// si l'exception possède des infos sur l'objet qui l'a

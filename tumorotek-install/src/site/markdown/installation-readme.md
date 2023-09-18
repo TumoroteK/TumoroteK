@@ -23,7 +23,6 @@ sous Unix, dans la variable `CATALINA_OPTS`, par l'intermédiaire du script de d
 ##### A. Télécharger puis dézipper le package d'installation :
 [Dossier d'installation](https://github.com/TumoroteK/TumoroteK/releases/download/v2.3.0.3-SNAPSHOT/tumorotek-install-2.3.0.3-SNAPSHOT.zip)
 
-
 ##### B. Recommandé : création d'un utilisateur de base de données dédié à l'application TumoroteK + autorisations sur les trois bases de données
     
     mysql> create user tumo@'localhost' identified by 'tumo';
@@ -105,6 +104,7 @@ adaptez ces lignes et le niveau de sécurité en cas de l'utilisation d'un serve
     Se référer à la documentation Log4j pour l'édition du fichier `<TOMCAT_PATH>/webapps/tumorotek##2.3.0.3-SNAPSHOT/WEB-INF/classes/log4j.properties`
 
 5. Déplacer la web archive `tumorotek##2.3.0.3-SNAPSHOT.war` dans le dossier `<PATH_TOMCAT>/webapps`  
+
 6. Démarrer le service Apache Tomcat
     > L'application TumoroteK va créer et initialiser les bases de données (tumorotek, tumorotek_codes et tumorotek_interfacages) automatiquement.
     
