@@ -45,9 +45,11 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.persistence.EntityManager;
@@ -60,6 +62,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.Validator;
 
+import fr.aphp.tumorotek.TKConstants;
 import fr.aphp.tumorotek.dao.coeur.ObjetStatutDao;
 import fr.aphp.tumorotek.dao.coeur.echantillon.EchanQualiteDao;
 import fr.aphp.tumorotek.dao.coeur.echantillon.EchantillonDao;
@@ -1646,34 +1649,63 @@ public class EchantillonManagerImpl implements EchantillonManager
       }
    }
 
+   /**
+    * Met à jour le préfixe du code de plusieurs échantillons. 
+    * Méthode utilisée
+    * lors du changement du code d'un prélèvement.
+    * Si un doublon est détecté, les autres échantillons sont quand même mis à jour
+    * @param echantillons Liste des échantillons à maj.
+    * @param oldPrefixe Ancien préfixe.
+    * @param newPrefixe Nouveau préfixe.
+    * @param utilisateur Utilisateur.
+    * @return Map contenant la liste des échantillons mis à jour et celle des échantillons en doublon.
+    */
    @Override
-   public List<Echantillon> updateCodeEchantillonsManager(final List<Echantillon> echantillons, final String oldPrefixe,
+   public Map<String, List<Echantillon>> updateCodeEchantillonsManager(final List<Echantillon> echantillons, final String oldPrefixe,
       final String newPrefixe, final Utilisateur utilisateur){
-      final List<Echantillon> results = new ArrayList<>();
+      Map<String, List<Echantillon>> result = new HashMap<String, List<Echantillon>>();
+      List<Echantillon> updatedEchantillons = new ArrayList<>();
+      List<Echantillon> doublons = new ArrayList<Echantillon>();
 
-      if(echantillons != null && oldPrefixe != null && newPrefixe != null && utilisateur != null){
-
+      if(echantillons != null && oldPrefixe != null && newPrefixe != null && !oldPrefixe.equals(newPrefixe) && utilisateur != null){
          for(int i = 0; i < echantillons.size(); i++){
             Echantillon echan = echantillons.get(i);
 
             // on vérifie que l'échantillon était bien
             // composé de l'ancien préfixe
-            if(!oldPrefixe.equals(newPrefixe) && echan.getCode().contains(oldPrefixe)){
-               echan.setCode(echan.getCode().replace(oldPrefixe, newPrefixe));
-
-               // sauvegarde
-               echan = echantillonDao.mergeObject(echan);
-               final Operation creationOp = new Operation();
-               creationOp.setDate(Utils.getCurrentSystemCalendar());
-               operationManager.createObjectManager(creationOp, utilisateur, operationTypeDao.findByNom("Modification").get(0),
-                  echan);
+            if(echan.getCode().contains(oldPrefixe)){
+               String currentCode = echan.getCode();
+               String newCode = echan.getCode().replace(oldPrefixe, newPrefixe);
+               echan.setCode(newCode);
+               log.debug("Tentative de modification du code de l'échantillon: {}. Remplacement de {} par {}.", echan, oldPrefixe, newPrefixe);
+               // on gère les doublons
+               boolean isDoublonFound = findDoublonManager(echan);
+               if (isDoublonFound){
+                  doublons.add(echan);
+                  log.error("Doublon lors de la modification du code de l'echantillon : {} avec la valeur {} ", currentCode, newPrefixe);
+               }
+               else {
+                  // sauvegarde
+                  echan = echantillonDao.mergeObject(echan);
+                  final Operation creationOp = new Operation();
+                  creationOp.setDate(Utils.getCurrentSystemCalendar());
+                  operationManager.createObjectManager(creationOp, utilisateur, operationTypeDao.findByNom("Modification").get(0),
+                     echan);
+                  updatedEchantillons.add(echan);
+               }
             }
-            results.add(echan);
+            
          }
+         if(updatedEchantillons.size() > 0) {
+            result.put(TKConstants.MAP_KEY_UPDATED, updatedEchantillons);
+         }
+         if(doublons.size() > 0) {
+            result.put(TKConstants.MAP_KEY_DOUBLON, doublons);
+         }         
       }
-      return results;
+      return result;
    }
-
+   
    @Override
    public void saveEchantillonEmplacementManager(final Echantillon echantillon, final ObjetStatut statut,
       final Emplacement emplacement, final Utilisateur utilisateur, final List<OperationType> operations){
@@ -1902,25 +1934,6 @@ public class EchantillonManagerImpl implements EchantillonManager
       // on vérifie que la date de prlvt est exploitables
       if(prel != null && prel.getDatePrelevement() != null && (prel.getDatePrelevement().get(Calendar.HOUR_OF_DAY) != 0
          || prel.getDatePrelevement().get(Calendar.MINUTE) != 0 || prel.getDatePrelevement().get(Calendar.SECOND) != 0)){
-
-         // creation ou update dans procedure
-         //			if (getLaboInters() != null) { 
-         //				((Prelevement) getParentObject())
-         //					.setLaboInters(new HashSet<LaboInter>(getLaboInters()));
-         //			}
-         //			
-         //			Calendar dateRefPrel = ManagerLocator
-         //				.getPrelevementManager()
-         //					.getDateCongelationManager(getParentObject());
-         //			if (dateRefPrel != null) {
-         //				if (dateRefPrel.get(Calendar.HOUR_OF_DAY) != 0
-         //					|| dateRefPrel.get(Calendar.MINUTE) != 0
-         //					|| dateRefPrel.get(Calendar.SECOND) != 0) {
-         //					milli = dateRefPrel.getTimeInMillis() 
-         //							- getParentObject()
-         //							.getDatePrelevement().getTimeInMillis();
-         //				}			
-         //			} else
 
          if(echan.getDateStock() != null){
             if(echan.getDateStock().get(Calendar.HOUR_OF_DAY) != 0 || echan.getDateStock().get(Calendar.MINUTE) != 0

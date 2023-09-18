@@ -35,6 +35,7 @@
  **/
 package fr.aphp.tumorotek.component;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.zkoss.bind.annotation.AfterCompose;
@@ -42,6 +43,7 @@ import org.zkoss.bind.annotation.ContextParam;
 import org.zkoss.bind.annotation.ContextType;
 import org.zkoss.bind.annotation.ExecutionArgParam;
 import org.zkoss.bind.annotation.Init;
+import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.select.Selectors;
 import org.zkoss.zk.ui.select.annotation.Wire;
@@ -51,6 +53,7 @@ import fr.aphp.tumorotek.action.ManagerLocator;
 import fr.aphp.tumorotek.action.controller.AbstractController;
 import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
 import fr.aphp.tumorotek.manager.exception.DoublonFoundException;
+import fr.aphp.tumorotek.manager.exception.MultipleDoublonFoundException;
 import fr.aphp.tumorotek.manager.impl.coeur.patient.PatientDoublonFound;
 import fr.aphp.tumorotek.model.cession.Cession;
 import fr.aphp.tumorotek.model.coeur.echantillon.Echantillon;
@@ -101,75 +104,140 @@ public class DynamicMultiLineMessageBox
 
       if(exceptionDetails == null){
          if(exception instanceof DoublonFoundException){
-            String label = "error.doublonfound.details";
-            String banks = "";
-            switch(((DoublonFoundException) exception).getEntite()){
-               case "Prelevement":
-                  final List<Prelevement> dbls = ManagerLocator.getPrelevementManager().findByCodeInPlateformeManager(
-                     ((DoublonFoundException) exception).getCode(), SessionUtils.getCurrentPlateforme());
-                  for(final Prelevement prelevement : dbls){
-                     if(!banks.equals("")){
-                        banks = banks + ", ";
-                     }
-                     banks = banks + prelevement.getBanque().getNom();
+            defineDetailForDoublonFoundException((DoublonFoundException) exception);
+         }
+         else if (exception instanceof MultipleDoublonFoundException) {
+            for(DoublonFoundException doublonFoundException : ((MultipleDoublonFoundException)exception).getDoublonFoundExceptions()) {
+               defineDetailForDoublonFoundException(doublonFoundException);
+            }
+         }
+      }
+
+   }
+
+   private void defineDetailForDoublonFoundException(DoublonFoundException doublonFoundException){
+      String label = "error.doublonfound.details";
+      String banks = "";
+      List<String> banksByCodeDoublon = new ArrayList<String>();
+      //TK-426 : Dans le cas de mise à jour automatique du code des enfants d'un prélèvement, ce traitement peut afficher des doublonc sur des codes échantillon
+      //ou sur des codes de produit dérivés. Pour éviter l'ambiguïté, le type de l'entité concerné est affiché dans le message de doublon
+      //=> pour cela, définition d'une liste contenant le type de l'entité à afficher pour chaque cas de code en doublon. La valeur est internationalisée
+      List<String> labelsForTypeEntiteKeyByCodeDoublon = new ArrayList<String>();
+      switch(doublonFoundException.getEntite()){
+         case "Prelevement":
+            List<Prelevement> dbls = new ArrayList<Prelevement>();
+            //Dans certains cas, plusieurs doublons ont pu être détectés en même temps :
+            for(String code : doublonFoundException.getCodes()) {
+               dbls = ManagerLocator.getPrelevementManager().findByCodeInPlateformeManager(code, SessionUtils.getCurrentPlateforme());
+               for(final Prelevement prelevement : dbls){
+                  if(!banks.equals("")){
+                     banks = banks + ", ";
                   }
-                  break;
-               case "Echantillon":
-                  final List<Echantillon> dblEs = ManagerLocator.getEchantillonManager().findByCodeInPlateformeManager(
-                     ((DoublonFoundException) exception).getCode(), SessionUtils.getCurrentPlateforme());
-                  for(final Echantillon echantillon : dblEs){
-                     if(!banks.equals("")){
-                        banks = banks + ", ";
-                     }
-                     banks = banks + echantillon.getBanque().getNom();
-                  }
-                  break;
-               case "ProdDerive":
-                  final List<ProdDerive> dblDs = ManagerLocator.getProdDeriveManager().findByCodeInPlateformeManager(
-                     ((DoublonFoundException) exception).getCode(), SessionUtils.getCurrentPlateforme());
-                  for(final ProdDerive derive : dblDs){
-                     if(!banks.equals("")){
-                        banks = banks + ", ";
-                     }
-                     banks = banks + derive.getBanque().getNom();
-                  }
-                  break;
-               case "Cession":
-                  label = "error.doublonfound.details.cession";
-                  final List<Cession> dblCs = ManagerLocator.getCessionManager().findByNumeroInPlateformeManager(
-                     ((DoublonFoundException) exception).getCode(), SessionUtils.getCurrentPlateforme());
-                  for(final Cession cession : dblCs){
-                     if(!banks.equals("")){
-                        banks = banks + ", ";
-                     }
-                     banks = banks + cession.getBanque().getNom();
-                  }
-                  break;
-               case "Patient":
-                  // @since 2.3.0-gatsbi, amélioration du message 
-                  PatientDoublonFound dbf = ((DoublonFoundException) exception).getPatientDoublonFound();
-                  if(dbf != null) {
-                     if (dbf.getNip() != null) {
-                        label = ObjectTypesFormatters
-                           .getLabel("validation.doublon.patient.nip", new String[] {dbf.getNip()});
-                     }else if (dbf.getIdentifiant() != null){
-                        label = ObjectTypesFormatters
-                           .getLabel("validation.doublon.patient.identifiant", new String[] {dbf.getIdentifiant()});
-                     }else {
-                        label = ObjectTypesFormatters
-                           .getLabel("validation.doublon.patient", new String[] {dbf.getNom()});
-                     }
-                  } else {
-                     label = AbstractController.handleExceptionMessage(exception);
-                  }
-               default:
-                  break;
+                  banks = banks + prelevement.getBanque().getNom();
+               }
+               labelsForTypeEntiteKeyByCodeDoublon.add(Labels.getLabel("Entite.Prelevement"));
+               banksByCodeDoublon.add(banks);
+               banks="";
             }
 
-            exceptionDetails = !banks.equals("")
-               ? ObjectTypesFormatters.getLabel(label, new String[] {((DoublonFoundException) exception).getCode(), banks})
-               : label;
+            break;
+         case "Echantillon":
+            List<Echantillon> dblEs = new ArrayList<Echantillon>();
+            for(String code : doublonFoundException.getCodes()) {
+               dblEs = ManagerLocator.getEchantillonManager().findByCodeInPlateformeManager(code, SessionUtils.getCurrentPlateforme());
+               for(final Echantillon echantillon : dblEs){
+                  if(!banks.equals("")){
+                     banks = banks + ", ";
+                  }
+                  banks = banks + echantillon.getBanque().getNom();
+               }
+               labelsForTypeEntiteKeyByCodeDoublon.add(Labels.getLabel("Entite.Echantillon"));
+               banksByCodeDoublon.add(banks);
+               banks="";
+            }
+
+            break;
+         case "ProdDerive":
+            List<ProdDerive> dblDs = new ArrayList<ProdDerive>();
+            for(String code : doublonFoundException.getCodes()) {
+               dblDs = ManagerLocator.getProdDeriveManager().findByCodeInPlateformeManager(code, SessionUtils.getCurrentPlateforme());
+               for(final ProdDerive derive : dblDs){
+                  if(!banks.equals("")){
+                     banks = banks + ", ";
+                  }
+                  banks = banks + derive.getBanque().getNom();
+               }
+               labelsForTypeEntiteKeyByCodeDoublon.add(Labels.getLabel("Entite.ProdDerive"));
+               banksByCodeDoublon.add(banks);
+               banks="";
+            }
+
+            break;
+         case "Cession":
+            label = "error.doublonfound.details.cession";
+            List<Cession> dblCs = new ArrayList<Cession>();
+            for(String code : doublonFoundException.getCodes()) {
+               dblCs = ManagerLocator.getCessionManager().findByNumeroInPlateformeManager(code, SessionUtils.getCurrentPlateforme());
+               for(final Cession cession : dblCs){
+                  if(!banks.equals("")){
+                     banks = banks + ", ";
+                  }
+                  banks = banks + cession.getBanque().getNom();
+               }
+               banksByCodeDoublon.add(banks);
+               banks="";
+            }                  
+
+            break;
+         case "Patient":
+            // @since 2.3.0-gatsbi, amélioration du message 
+            PatientDoublonFound dbf = doublonFoundException.getPatientDoublonFound();
+            if(dbf != null) {
+               if (dbf.getNip() != null) {
+                  label = ObjectTypesFormatters
+                     .getLabel("validation.doublon.patient.nip", new String[] {dbf.getNip()});
+               }else if (dbf.getIdentifiant() != null){
+                  label = ObjectTypesFormatters
+                     .getLabel("validation.doublon.patient.identifiant", new String[] {dbf.getIdentifiant()});
+               }else {
+                  label = ObjectTypesFormatters
+                     .getLabel("validation.doublon.patient", new String[] {dbf.getNom()});
+               }
+            } else {
+               label = AbstractController.handleExceptionMessage(exception);
+            }
+         default:
+            break;
+      }
+
+      /*
+      exceptionDetails = !banks.equals("")
+         ? ObjectTypesFormatters.getLabel(label, new String[] {doublonFoundException.getCode(), banks})
+         : label;
+        */ 
+      
+      //Affiche un message par code en doublon en les séparant par une ligne blanche
+      int nb = doublonFoundException.getCodes().size();
+      if(exceptionDetails == null) {
+         exceptionDetails="";         
+      }
+      for(int i=0; i< nb; i++) {
+         if(!banksByCodeDoublon.isEmpty() && !banksByCodeDoublon.get(i).equals("")) {
+            //Le nombre de paramètres à passer au libellé internationalisé dépendant du cas en cours de traitement, 
+            //passage par une liste qui sera transformée en tableau lors de l'appel de la récupération du libellé internationalisé
+            List<String> listParamLabel = new ArrayList<String>();
+            if(!labelsForTypeEntiteKeyByCodeDoublon.isEmpty()) {
+               listParamLabel.add(labelsForTypeEntiteKeyByCodeDoublon.get(i).toLowerCase());
+            }
+            listParamLabel.add(doublonFoundException.getCodes().get(i));
+            listParamLabel.add(banksByCodeDoublon.get(i));
+            exceptionDetails = exceptionDetails + ObjectTypesFormatters.getLabel(label, listParamLabel.toArray(new String[0]));
          }
+         else {
+            exceptionDetails= exceptionDetails + label;
+            
+         }
+         exceptionDetails = exceptionDetails + "<br><br>";//prépare pour l'éventuel message suivant.
       }
 
    }

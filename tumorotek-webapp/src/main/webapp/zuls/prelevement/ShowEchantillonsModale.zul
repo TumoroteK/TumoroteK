@@ -53,11 +53,11 @@
 							<box>
 								<image id="warnImg" src="/images/icones/big_warning.png" visible="true"/>
 							</box>
-							<label value="${c:l('message.modification.code.prelevement')}" 
+							<label id="title" value="${c:l('message.modification.code.prelevement')}" 
 								sclass="formLabel"/>
 						</row>
 					<row spans="2">
-						<html content="${c:l('message.modification.code.echantillons')}" sclass="formValue" />
+						<html id="message" content="${c:l('message.modification.code.echantillons')}" sclass="formValue" />
 					</row>
 					<row spans="2">
 						<separator/>
@@ -67,17 +67,17 @@
 							<box orient="vertical">
 								<box orient="horizontal" pack="center">
 									<radio id="modifAuto" checked="true"/>
-									<label value="${c:l('message.modification.code.echantillons.auto')}"
+									<label id="autoLabel" value="${c:l('message.modification.code.echantillons.auto')}"
 											sclass="formLabel"/>
 								</box>
 								<box orient="horizontal" pack="center">
 									<radio id="modifManuelle"/>
-									<label value="${c:l('message.modification.code.echantillons.manuel')}"
+									<label id="manuelLabel" value="${c:l('message.modification.code.echantillons.manuel')}"
 											sclass="formLabel"/>
 								</box>
 								<box orient="horizontal" pack="center">
 									<radio id="modifAucune"/>
-									<label value="${c:l('message.modification.code.echantillons.aucun')}"
+									<label id="noModifLabel" value="${c:l('message.modification.code.echantillons.aucun')}"
 											sclass="formLabel"/>
 								</box>
 							</box>

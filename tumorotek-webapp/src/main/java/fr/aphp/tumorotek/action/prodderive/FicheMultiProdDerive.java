@@ -288,6 +288,9 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
 
       super.switchToCreateMode();
 
+      getObjectTabController().setCodeUpdated(false);
+      getObjectTabController().setOldCode(null);
+      
       Clients.scrollIntoView(formGrid.getColumns());
 
       // si le parent n'est pas null, on l'associe au

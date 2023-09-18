@@ -48,6 +48,7 @@ import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Components;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Page;
+import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zul.Box;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Hbox;
@@ -72,6 +73,7 @@ import fr.aphp.tumorotek.model.cession.CederObjet;
 import fr.aphp.tumorotek.model.code.CodeAssigne;
 import fr.aphp.tumorotek.model.coeur.echantillon.Echantillon;
 import fr.aphp.tumorotek.model.coeur.prelevement.Prelevement;
+import fr.aphp.tumorotek.model.coeur.prodderive.ProdDerive;
 import fr.aphp.tumorotek.model.interfacage.scan.ScanTerminale;
 import fr.aphp.tumorotek.model.systeme.Entite;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
@@ -473,6 +475,25 @@ public class EchantillonController extends AbstractObjectTabController
             getListe().displayTKObjectsFromCodes(ManagerLocator.getScanTerminaleManager().findTKObjectCodesManager(sT), sT);
          }else if(getEditDiv().isVisible() && hasMultiFicheEdit()){
             getMultiFicheEdit().applyTKObjectsCodesFromScan(sT);
+         }
+      }
+   }
+
+   /**
+    * Si l'utilisateur a modifié le code d'un échantillon, une
+    * fenêtre sera affichée pour lui proposer :
+    *  - soit de mettre automatiquement à jour les codes des enfants (dérivés)
+    *  - soit d'afficher les produits dérivés afin de mettre à jour leurs codes manuellement.
+    *
+    * @param prlvt
+    */
+   public void showEchantillonsAfterUpdate(final Echantillon echantillon){
+      if(isCodeUpdated() && getOldCode() != null) {
+         final List<ProdDerive> prodDerives = ManagerLocator.getEchantillonManager().getProdDerivesManager(echantillon);
+         // si le code a été mis à jour et que le prlvt a des
+         // échantillons
+         if(prodDerives.size() > 0){
+            openShowEchantillonsModaleWindow(null, prodDerives, getOldCode(), echantillon.getCode());
          }
       }
    }

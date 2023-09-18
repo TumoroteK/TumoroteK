@@ -37,6 +37,7 @@ package fr.aphp.tumorotek.action.controller;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -48,19 +49,26 @@ import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Components;
 import org.zkoss.zk.ui.Desktop;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.HtmlMacroComponent;
+import org.zkoss.zk.ui.Page;
+import org.zkoss.zk.ui.Path;
+import org.zkoss.zk.ui.SuspendNotAllowedException;
 import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.ForwardEvent;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.East;
 import org.zkoss.zul.Intbox;
+import org.zkoss.zul.Timer;
 import org.zkoss.zul.West;
+import org.zkoss.zul.Window;
 
 import fr.aphp.tumorotek.action.MainWindow;
 import fr.aphp.tumorotek.action.ManagerLocator;
@@ -69,6 +77,7 @@ import fr.aphp.tumorotek.action.cession.CessionController;
 import fr.aphp.tumorotek.action.echantillon.EchantillonController;
 import fr.aphp.tumorotek.action.patient.PatientController;
 import fr.aphp.tumorotek.action.prelevement.PrelevementController;
+import fr.aphp.tumorotek.action.prelevement.ShowEchantillonsModale;
 import fr.aphp.tumorotek.action.prodderive.ProdDeriveController;
 import fr.aphp.tumorotek.action.utilisateur.ProfilExport;
 import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
@@ -79,7 +88,9 @@ import fr.aphp.tumorotek.model.TKdataObject;
 import fr.aphp.tumorotek.model.coeur.annotation.AnnotationValeur;
 import fr.aphp.tumorotek.model.coeur.annotation.ChampAnnotation;
 import fr.aphp.tumorotek.model.coeur.annotation.TableAnnotation;
+import fr.aphp.tumorotek.model.coeur.echantillon.Echantillon;
 import fr.aphp.tumorotek.model.coeur.prelevement.Prelevement;
+import fr.aphp.tumorotek.model.coeur.prodderive.ProdDerive;
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.interfacage.DossierExterne;
 import fr.aphp.tumorotek.model.interfacage.Recepteur;
@@ -129,6 +140,12 @@ public abstract class AbstractObjectTabController extends AbstractController
 	private final List<AbstractObjectTabController> referencingObjectControllers = new ArrayList<>();
 	private final List<AbstractObjectTabController> referencedObjectControllers = new ArrayList<>();
 
+   // flag indiquant que le code du prlvt/échantillon ou produit dérivé a été modifié
+   private boolean codeUpdated = false;
+
+   // ancien code
+   private String oldCode = null;
+	
 	@Override
 	public void doAfterCompose(final Component comp) throws Exception{
 		super.doAfterCompose(comp);
@@ -1198,4 +1215,86 @@ public abstract class AbstractObjectTabController extends AbstractController
 
 		return url;
 	}
+	
+   /**
+    * Méthode appelée demander à l'utilisateur s'il souhaite afficher
+    * les échantillons d'un prélèvement pour les mettre à jour.
+    * pour changer le prelevement de collection.
+    */
+   public void openShowEchantillonsModaleWindow(final List<Echantillon> echans, final List<ProdDerive> prodDerives, final String oldPrefixe, final String newPrefixe){
+      if(!isBlockModal()){
+
+         setBlockModal(true);
+
+         // nouvelle fenêtre
+         final Window win = new Window();
+         win.setVisible(false);
+         win.setId("showEchantillonsWindow");
+         win.setPage(page);
+         win.setMaximizable(true);
+         win.setSizable(true);
+         win.setTitle(Labels.getLabel("general.edit"));
+         win.setBorder("normal");
+         win.setWidth("400px");
+         win.setHeight("325px");
+         win.setClosable(true);
+         
+         final HtmlMacroComponent ua = populateShowEchantillonsModal(echans, prodDerives, oldPrefixe, newPrefixe, page, getMainWindow(), win);
+         ua.setVisible(false);
+
+         win.addEventListener("onTimed", new EventListener<Event>()
+         {
+            @Override
+            public void onEvent(final Event event) throws Exception{
+               //progress.detach();
+               ua.setVisible(true);
+            }
+         });
+
+         final Timer timer = new Timer();
+         timer.setDelay(500);
+         timer.setRepeats(false);
+         timer.addForward("onTimer", timer.getParent(), "onTimed");
+         win.appendChild(timer);
+         timer.start();
+
+         try{
+            win.onModal();
+            setBlockModal(false);
+
+         }catch(final SuspendNotAllowedException e){
+            log.error(e.getMessage(), e); 
+         }
+      }
+   }
+
+   private HtmlMacroComponent populateShowEchantillonsModal(final List<Echantillon> echans, final List<ProdDerive> prodDerives, final String oldPrefixe, final String newPrefix, final Page page, final MainWindow main, final Window win){
+      HtmlMacroComponent ua;
+      ua = (HtmlMacroComponent) page.getComponentDefinition("showEchantillonsModale", false).newInstance(page, null);
+      ua.setParent(win);
+      ua.setId("openShowEchantillonsModale");
+      ua.applyProperties();
+      ua.afterCompose();
+
+      ((ShowEchantillonsModale) ua.getFellow("fwinShowEchantillons").getAttributeOrFellow("fwinShowEchantillons$composer", true))
+         .init(echans, prodDerives, oldPrefixe, newPrefix, page, main, Path.getPath(self));
+
+      return ua;
+   }
+
+   public boolean isCodeUpdated(){
+      return codeUpdated;
+   }
+
+   public void setCodeUpdated(final boolean cUpdated){
+      this.codeUpdated = cUpdated;
+   }
+
+   public String getOldCode(){
+      return oldCode;
+   }
+
+   public void setOldCode(final String c){
+      this.oldCode = c;
+   }
 }
