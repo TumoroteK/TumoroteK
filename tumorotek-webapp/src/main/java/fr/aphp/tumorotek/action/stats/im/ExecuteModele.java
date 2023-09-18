@@ -209,7 +209,7 @@ public class ExecuteModele
    private void printDataMap(){
       for(final Entry<Indicateur, ArrayList<ValueToExport>> e : dataMap.entrySet()){
          for(final ValueToExport o : e.getValue()){
-            log.error("{} : {}", e.getKey(), o);
+            log.debug("{} : {}", e.getKey(), o);
          }
       }
    }
