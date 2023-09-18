@@ -493,7 +493,7 @@ public class EchantillonController extends AbstractObjectTabController
          // si le code a été mis à jour et que le prlvt a des
          // échantillons
          if(prodDerives.size() > 0){
-            openShowEchantillonsModaleWindow(null, prodDerives, getOldCode(), echantillon.getCode());
+            openAfterUpdateCodeModaleWindow(null, prodDerives, getOldCode(), echantillon.getCode());
          }
       }
    }

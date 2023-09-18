@@ -35,11 +35,11 @@
 -->
 <?page title="Show Echantillons" contentType="text/html;charset=UTF-8"?>
 <?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
-<?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" name="showEchantillonsModale" root="../"?>
+<?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" name="afterUpdateCodeModale" root="../"?>
 
 <zk>
 
-<window id="fwinShowEchantillons" border="none" apply="fr.aphp.tumorotek.action.prelevement.ShowEchantillonsModale">
+<window id="fwinAfterUpdateCodeModale" border="none" apply="fr.aphp.tumorotek.action.prelevement.AfterUpdateCodeModale">
 	<panel collapsible="false" sclass="fichePanelv2" id="winPanel">
 		<panelchildren id="panelChildrenWithScroll">
 			<grid fixedLayout="true" sclass="gridForm1" id="gridFormPrlvt">

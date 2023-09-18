@@ -721,7 +721,7 @@ public class PrelevementController extends AbstractObjectTabController
          // si le code a été mis à jour et que le prlvt a des
          // échantillons
          if(echans.size() > 0 || prodDerives.size() > 0){
-            openShowEchantillonsModaleWindow(echans, prodDerives, getOldCode(), prlvt.getCode());
+            openAfterUpdateCodeModaleWindow(echans, prodDerives, getOldCode(), prlvt.getCode());
          }
       }
    }

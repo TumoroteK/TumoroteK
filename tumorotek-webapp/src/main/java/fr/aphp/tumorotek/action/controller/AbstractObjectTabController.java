@@ -77,7 +77,7 @@ import fr.aphp.tumorotek.action.cession.CessionController;
 import fr.aphp.tumorotek.action.echantillon.EchantillonController;
 import fr.aphp.tumorotek.action.patient.PatientController;
 import fr.aphp.tumorotek.action.prelevement.PrelevementController;
-import fr.aphp.tumorotek.action.prelevement.ShowEchantillonsModale;
+import fr.aphp.tumorotek.action.prelevement.AfterUpdateCodeModale;
 import fr.aphp.tumorotek.action.prodderive.ProdDeriveController;
 import fr.aphp.tumorotek.action.utilisateur.ProfilExport;
 import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
@@ -1221,7 +1221,7 @@ public abstract class AbstractObjectTabController extends AbstractController
     * les échantillons d'un prélèvement pour les mettre à jour.
     * pour changer le prelevement de collection.
     */
-   public void openShowEchantillonsModaleWindow(final List<Echantillon> echans, final List<ProdDerive> prodDerives, final String oldPrefixe, final String newPrefixe){
+   public void openAfterUpdateCodeModaleWindow(final List<Echantillon> echans, final List<ProdDerive> prodDerives, final String oldPrefixe, final String newPrefixe){
       if(!isBlockModal()){
 
          setBlockModal(true);
@@ -1270,13 +1270,13 @@ public abstract class AbstractObjectTabController extends AbstractController
 
    private HtmlMacroComponent populateShowEchantillonsModal(final List<Echantillon> echans, final List<ProdDerive> prodDerives, final String oldPrefixe, final String newPrefix, final Page page, final MainWindow main, final Window win){
       HtmlMacroComponent ua;
-      ua = (HtmlMacroComponent) page.getComponentDefinition("showEchantillonsModale", false).newInstance(page, null);
+      ua = (HtmlMacroComponent) page.getComponentDefinition("afterUpdateCodeModale", false).newInstance(page, null);
       ua.setParent(win);
-      ua.setId("openShowEchantillonsModale");
+      ua.setId("openAfterUpdateCodeModale");
       ua.applyProperties();
       ua.afterCompose();
 
-      ((ShowEchantillonsModale) ua.getFellow("fwinShowEchantillons").getAttributeOrFellow("fwinShowEchantillons$composer", true))
+      ((AfterUpdateCodeModale) ua.getFellow("fwinAfterUpdateCodeModale").getAttributeOrFellow("fwinAfterUpdateCodeModale$composer", true))
          .init(echans, prodDerives, oldPrefixe, newPrefix, page, main, Path.getPath(self));
 
       return ua;

@@ -80,7 +80,7 @@ import fr.aphp.tumorotek.webapp.general.SessionUtils;
  * Le 07/07/2011.
  *
  */
-public class ShowEchantillonsModale extends AbstractController
+public class AfterUpdateCodeModale extends AbstractController
 {
 
    private static final long serialVersionUID = 3487687657729735018L;

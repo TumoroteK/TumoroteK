@@ -389,7 +389,7 @@ public class ProdDeriveController extends AbstractObjectTabController
          // si le code a été mis à jour et que le prlvt a des
          // échantillons
          if(prodDerives.size() > 0){
-            openShowEchantillonsModaleWindow(null, prodDerives, getOldCode(), prodDerive.getCode());
+            openAfterUpdateCodeModaleWindow(null, prodDerives, getOldCode(), prodDerive.getCode());
          }
       }
    }
