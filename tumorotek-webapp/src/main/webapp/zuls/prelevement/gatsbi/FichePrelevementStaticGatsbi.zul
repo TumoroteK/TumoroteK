@@ -637,6 +637,24 @@
 
 					<!--                    Origin: Derives -->
 					<div visible="@{fwinPrelevementStatic$composer.isDerivesFromDerivesFound}">
+
+						<!--selectionner tous les derives-->
+						<div class="item item-wide">
+							<vbox align="center" hflex="1" vflex="1"  id="selectAllDerives">
+								<div class="block-title">
+									<div class="column-container">
+										<button sclass="buttonv2"
+												label="${c:l('fichePrelevement.selectAllDerives')}"
+												height="24px"
+												image="/images/icones/selectAllProdDerives.png"
+												forward="onClick=onSelectAllDerives(all)"/>
+										<image src="/images/pixelble.gif" style="background-repeat: repeat-x;"/>
+
+									</div>
+								</div>
+							</vbox>
+						</div>
+
 					<div class="item item-wide">
 					<vbox align="center" hflex="1" vflex="1">
 						<div class="block-title">
@@ -684,22 +702,6 @@
 						</vbox>
 					</div>
 			</div>
-
-					<!--selectionner tous les derives-->
-					<div class="item item-wide">
-					<vbox align="center" hflex="1" vflex="1"  id="selectAllVbox">
-					<div class="block-title">
-						<div class="column-container">
-							<image src="/images/pixelble.gif" style="background-repeat: repeat-x;"/>
-							<button sclass="buttonv2"
-									label="${c:l('fichePrelevement.selectAllDerives')}"
-									height="24px"
-									image="/images/icones/selectAllProdDerives.png"
-									forward="onClick=onSelectAllDerives(all)"/>
-						</div>
-					</div>
-					</vbox>
-					</div>
 
 
 				</groupbox>

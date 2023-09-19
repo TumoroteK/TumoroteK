@@ -150,7 +150,7 @@ public class FichePrelevementStatic extends AbstractFicheStaticController
 
    private Menuitem importDossier;
 
-   protected Vbox selectAllVbox;
+   protected Vbox selectAllDerives;
 
 
    /**
@@ -176,7 +176,7 @@ public class FichePrelevementStatic extends AbstractFicheStaticController
 
    protected String echantillonsGroupHeader;
 
-   protected String totalProdDerivesHeader;
+   protected String totalProdDerivesGroupHeader;
 
    protected String derivesFromPrlvmntHeader;
 
@@ -208,7 +208,7 @@ public class FichePrelevementStatic extends AbstractFicheStaticController
       echantillonsGrid.setVisible(false);
 
 
-      selectAllVbox.setVisible(false);
+      selectAllDerives.setVisible(false);
 
 
       addDerive.setDisabled(true);
@@ -248,7 +248,7 @@ public class FichePrelevementStatic extends AbstractFicheStaticController
     *
     * @return La somme des tailles des listes de dérivés
     */
-   public int sumOfListDerives() {
+   public int calculateSumOfDerivesLists() {
       return listDerivesFromDerives.size() + listDerivesFromPrelevement.size() + listDerivesFromEchantillons.size();
    }
 
@@ -355,7 +355,7 @@ public class FichePrelevementStatic extends AbstractFicheStaticController
       // Parent prelevemnt
       boolean isFromPrlvmntExist = !listDerivesFromPrelevement.isEmpty();
       boolean isSelectAll = isDisplaySelectAllButton(isFromDerivesExist, isFromEchantillonsExist, isFromPrlvmntExist);
-      selectAllVbox.setVisible(isSelectAll);
+      selectAllDerives.setVisible(isSelectAll);
    }
 
    /**
@@ -381,7 +381,7 @@ public class FichePrelevementStatic extends AbstractFicheStaticController
     * @see #buildTotalString(String, int)
     */
    private void initDerivesHeaders(){
-      totalProdDerivesHeader = buildTotalString("fichePrelevement.group.prodDerives.totaux", sumOfListDerives());
+      totalProdDerivesGroupHeader = buildTotalString("fichePrelevement.group.prodDerives.totaux", calculateSumOfDerivesLists());
       derivesFromPrlvmntHeader = buildTotalString("fichePrelevement.group.prodDerives.prelevement", listDerivesFromPrelevement.size());
       derivesFromEchantHeader = buildTotalString("fichePrelevement.group.prodDerives.echantillons", listDerivesFromEchantillons.size());
       derivesFromDerivesHeader = buildTotalString("fichePrelevement.group.prodDerives.derives", listDerivesFromDerives.size());
@@ -476,7 +476,7 @@ public class FichePrelevementStatic extends AbstractFicheStaticController
       // **************** gastbi
       setGroupLaboInterOpen(laboInters.size() > 0);
       setGroupEchansOpen(echantillons.size() > 0);
-      setGroupDerivesOpen(sumOfListDerives() > 0);
+      setGroupDerivesOpen(calculateSumOfDerivesLists() > 0);
       // gatsbi ****************    
    }
 
@@ -760,7 +760,7 @@ public class FichePrelevementStatic extends AbstractFicheStaticController
     */
    public boolean getDerivesListSizeSupOne(){
       if(getDroitsConsultation().containsKey("ProdDerive") && getDroitsConsultation().get("ProdDerive")){
-         return sumOfListDerives() > 1;
+         return calculateSumOfDerivesLists() > 1;
       }
       return false;
    }
@@ -1085,7 +1085,7 @@ public class FichePrelevementStatic extends AbstractFicheStaticController
    }
 
    public String getTotalProdDerivesHeader(){
-      return totalProdDerivesHeader;
+      return totalProdDerivesGroupHeader;
    }
 
    public String getProdDerviesFromEchantHeader(){
@@ -1129,7 +1129,7 @@ public class FichePrelevementStatic extends AbstractFicheStaticController
 
 
 
-   public Vbox getSelectAllVbox(){      return selectAllVbox;   }
+   public Vbox getSelectAllVbox(){      return selectAllDerives;   }
 
    public List<ProdDerive> getListDerivesFromDerives(){
       return listDerivesFromDerives;
