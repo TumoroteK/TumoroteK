@@ -682,16 +682,15 @@ public abstract class AbstractListeController2 extends AbstractController
 	}
 
 	/**
-	 * Recherche la liste des échantillons à afficher.
-	 *
-	 * @param event
-	 *            Event : clique du bouton find.
-	 * @throws Exception
-	 */
+	* Cette méthode est appelée lorsque le bouton de recherche est cliqué. Elle effectue une opération de recherche
+	* en fonction de certains critères et met à jour la liste des résultats en conséquence.
+	*/
 	public void onClick$find(){
-		clearSelection();
+		clearList(false);
+		//TK-429 : cas spécifique de la recherche des 30 derniers
 		if(dateCreation.isChecked() && dateCreationBox.getSelectedIndex() == 3){
 			setListObjects(extractLastObjectsCreated());
+			onShowResults();
 		}else{
 			setResultatsIds(doFindObjects());
 			if(getResultatsIds().size() > 500){
@@ -716,7 +715,7 @@ public abstract class AbstractListeController2 extends AbstractController
 	 *            Liste des ids des objets à afficher.
 	 */
 	public void showResultsAfterSearchByList(final List<Integer> res){
-		clearSelection();
+		clearList(false);
 		setResultatsIds(res);
 		if(res.size() > 500){
 			openResultatsWindow(page, res, self, getEntiteNom(), getObjectTabController());
@@ -727,32 +726,28 @@ public abstract class AbstractListeController2 extends AbstractController
 			Messagebox.show(Labels.getLabel("recherche.avancee.no.results"), Labels.getLabel("recherche.avancee.no.results.title"),
 					Messagebox.OK, Messagebox.INFORMATION);
 		}
-		setCurrentRow(null);
-		setCurrentObject(null);
-		getObjectTabController().clearStaticFiche();
-		getObjectTabController().switchToOnlyListeMode();
 	}
 
 	public void onShowResults(){
-		List<Integer> ids = new ArrayList<>();
-		if(getResultatsIds().size() > 500){
-			Collections.reverse(getResultatsIds());
-			ids = getResultatsIds().subList(0, 500);
-		}else{
-			ids = getResultatsIds();
+		//cette méthode est appelée soit à la suite de l'alimentation de listObjects soit à la suite de l'alimentaiton
+	        //de resultsIds
+	        //l'affichage s'appuie sur listObjects donc si c'est resultIds qui est renseigné, on alimente listObjects
+	        if(getListObjects().isEmpty()) {		
+			List<Integer> ids = new ArrayList<>();
+			if(getResultatsIds().size() > 500){
+				Collections.reverse(getResultatsIds());
+				ids = getResultatsIds().subList(0, 500);
+		    	}else{
+				ids = getResultatsIds();
+		    	}
+			setListObjects(extractObjectsFromIds(ids));
 		}
 
-		clearSelection();
-		setListObjects(extractObjectsFromIds(ids));
-
-		setCurrentRow(null);
-		setCurrentObject(null);
 		getObjectTabController().clearStaticFiche();
 		getObjectTabController().switchToOnlyListeMode();
 		objectsListGrid.setActivePage(0);
+		updateListResultsLabel(getListObjects().size());
 		getBinder().loadComponent(objectsListGrid);
-
-		updateListResultsLabel(ids.size());
 	}
 
 	/**
@@ -1178,6 +1173,7 @@ public abstract class AbstractListeController2 extends AbstractController
 	 */
 	public void updateMultiObjectsGridListFromOtherPage(final List<TKdataObject> objects){
 		if(objects != null && !objects.isEmpty()){
+			//CHT : devrait être un clearList(false); car c'est updateGridByIds qui rafraichit la liste après alimentation - A TESTER.
 			clearList();
 			// setListObjects(objects);
 			// refreshListe();
@@ -1273,17 +1269,25 @@ public abstract class AbstractListeController2 extends AbstractController
 	}
 
 	/**
-	 * Efface le contenu de la liste.
+	 * Efface le contenu de la liste et rafraichit le composant.
 	 */
 	public void clearList(){
+		clearList(true);
+	}
+
+	/**
+	 * Efface le contenu de la liste et rafraichit le composant si besoin.
+	 */
+	public void clearList(boolean refreshList){
 		clearSelection();
 		getListObjects().clear();
 		setCurrentRow(null);
 		setCurrentObject(null);
-
-		refreshListe();
+		if(refreshList) {
+			refreshListe();
+		}
 	}
-
+	
 	public void onSelectFromResultatModale(){
 		setSelectedObjects(extractObjectsFromIds(getResultatsIds()));
 		onClick$select();
