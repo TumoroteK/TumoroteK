@@ -583,7 +583,7 @@
 					<!--selectionner tous les derives-->
 					<row spans="4">
 
-						<vbox align="center"  hflex="1" vflex="1" id="selectAllDerives">
+						<vbox align="center"  hflex="1" vflex="1" id="selectAllDerivesVbox">
 							<button sclass="buttonv2" label="${c:l('fichePrelevement.selectAllDerives')}"
 									height="24px"
 									image="/images/icones/selectAllProdDerives.png"
@@ -646,7 +646,7 @@
 
                     <!-- Origin: Echantillons -->
 
-                    <row spans="4" visible="@{fwinPrelevementStatic$composer.idDerivesFromEchantillonsFound}">
+                    <row spans="4" visible="@{fwinPrelevementStatic$composer.isDerivesFromEchantillonsFound}">
                         <vbox >
 
                             <vbox >

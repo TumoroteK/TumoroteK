@@ -527,8 +527,24 @@
 				<div class="block-separator" />
 
 							<!--				Derives-->
-				<groupbox  >
+				<groupbox  id="groupDerives">
 				<caption label="@{fwinPrelevementStatic$composer.totalProdDerivesHeader}"  />
+					<!--selectionner tous les derives-->
+					<div class="item item-wide">
+						<vbox align="center" hflex="1" vflex="1"  id="selectAllDerivesVbox">
+							<div class="block-title">
+								<div class="column-container">
+									<button sclass="buttonv2"
+											label="${c:l('fichePrelevement.selectAllDerives')}"
+											height="24px"
+											image="/images/icones/selectAllProdDerives.png"
+											forward="onClick=onSelectAllDerives(all)"/>
+									<image src="/images/pixelble.gif" style="background-repeat: repeat-x;"/>
+
+								</div>
+							</div>
+						</vbox>
+					</div>
 
 				<!--                    Origin: Prelevement -->
 				<div visible="@{fwinPrelevementStatic$composer.isDerivesFromPrlvmntFound}">
@@ -579,13 +595,13 @@
 									label="${c:l('general.selectAll')}"
 									height="24px"
 									image="/images/icones/selectall.png"
-									forward="onClick=onSelectAllDerives(all)"/>
+									forward="onClick=onSelectAllFromPrlvmnt(all)"/>
 						</vbox>
 					</div>
 				</div>
 
 					<!--                    Origin: Echantillons -->
-					<div visible="@{fwinPrelevementStatic$composer.idDerivesFromEchantillonsFound}">
+					<div visible="@{fwinPrelevementStatic$composer.isDerivesFromEchantillonsFound}">
 					<div class="item item-wide">
 					<vbox align="center" hflex="1" vflex="1">
 						<div class="block-title">
@@ -609,7 +625,7 @@
 									visible="@{fwinPrelevementStatic$composer.ttesCollections}"/>
 							<column label="${c:l('Champ.ProdDerive.CodeLabo')}" visible="false"/>
 							<column label="${c:l('prodDerive.type.parent')}" visible="false"/>
-							<column label="${c:l('prodDerive.code.parent')}" visible="false"/>
+							<column label="${c:l('prodDerive.code.parent')}" visible="true"/>
 							<column label="${c:l('Champ.ProdDerive.DateStock')}" width="130px"/>
 							<column label="${c:l('Champ.ProdDerive.ProdType')}"/>
 							<column label="${c:l('Champ.ProdDerive.Volume')}" width="130px"/>
@@ -638,22 +654,7 @@
 					<!--                    Origin: Derives -->
 					<div visible="@{fwinPrelevementStatic$composer.isDerivesFromDerivesFound}">
 
-						<!--selectionner tous les derives-->
-						<div class="item item-wide">
-							<vbox align="center" hflex="1" vflex="1"  id="selectAllDerives">
-								<div class="block-title">
-									<div class="column-container">
-										<button sclass="buttonv2"
-												label="${c:l('fichePrelevement.selectAllDerives')}"
-												height="24px"
-												image="/images/icones/selectAllProdDerives.png"
-												forward="onClick=onSelectAllDerives(all)"/>
-										<image src="/images/pixelble.gif" style="background-repeat: repeat-x;"/>
 
-									</div>
-								</div>
-							</vbox>
-						</div>
 
 					<div class="item item-wide">
 					<vbox align="center" hflex="1" vflex="1">
@@ -677,7 +678,7 @@
 									<column label="${c:l('Entite.Banque')}" visible="@{fwinPrelevementStatic$composer.ttesCollections}" />
 									<column label="${c:l('Champ.ProdDerive.CodeLabo')}" visible="false"/>
 									<column label="${c:l('prodDerive.type.parent')}" visible="false"/>
-									<column label="${c:l('prodDerive.code.parent')}" visible="false"/>
+									<column label="${c:l('prodDerive.code.parent')}" visible="true"/>
 									<column label="${c:l('Champ.ProdDerive.DateStock')}" width="130px"/>
 									<column label="${c:l('Champ.ProdDerive.ProdType')}"/>
 									<column label="${c:l('Champ.ProdDerive.Volume')}" width="130px"/>
@@ -698,7 +699,7 @@
 							  label="${c:l('general.selectAll')}"
 							  height="24px"
 							  image="/images/icones/selectall.png"
-							  forward="onClick=onSelectAllFromEchantillons(all)"/>
+							  forward="onClick=onSelectAllFromDerives(all)"/>
 						</vbox>
 					</div>
 			</div>

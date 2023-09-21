@@ -150,7 +150,7 @@ public class FichePrelevementStatic extends AbstractFicheStaticController
 
    private Menuitem importDossier;
 
-   protected Vbox selectAllDerives;
+   protected Vbox selectAllDerivesVbox;
 
 
    /**
@@ -208,7 +208,7 @@ public class FichePrelevementStatic extends AbstractFicheStaticController
       echantillonsGrid.setVisible(false);
 
 
-      selectAllDerives.setVisible(false);
+      selectAllDerivesVbox.setVisible(false);
 
 
       addDerive.setDisabled(true);
@@ -248,7 +248,7 @@ public class FichePrelevementStatic extends AbstractFicheStaticController
     *
     * @return La somme des tailles des listes de dérivés
     */
-   public int calculateSumOfDerivesLists() {
+   public int calculateSumOfDerives() {
       return listDerivesFromDerives.size() + listDerivesFromPrelevement.size() + listDerivesFromEchantillons.size();
    }
 
@@ -348,29 +348,19 @@ public class FichePrelevementStatic extends AbstractFicheStaticController
     * de la condition que au moins deux tables sont affichées.
     */
    private void displaySelectAllDerivesButton(){
-      // Parent derive
-      boolean isFromDerivesExist = !listDerivesFromDerives.isEmpty();
-      // Parent echantillon
-      boolean isFromEchantillonsExist = !listDerivesFromEchantillons.isEmpty();
-      // Parent prelevemnt
-      boolean isFromPrlvmntExist = !listDerivesFromPrelevement.isEmpty();
-      boolean isSelectAll = isDisplaySelectAllButton(isFromDerivesExist, isFromEchantillonsExist, isFromPrlvmntExist);
-      selectAllDerives.setVisible(isSelectAll);
+      int nbBlocDerive = 0;
+      if(!listDerivesFromPrelevement.isEmpty()) {
+         nbBlocDerive++;
+      }
+      if(!listDerivesFromEchantillons.isEmpty()) {
+         nbBlocDerive++;
+      }
+      if(!listDerivesFromDerives.isEmpty()) {
+         nbBlocDerive++;
+      }
+      selectAllDerivesVbox.setVisible(nbBlocDerive > 1);
    }
 
-   /**
-    * Vérifie si le bouton « Select All » doit s'afficher selon l'existence d'au moins 2 tables.
-    * *
-    * @param isFromDerivesExist    Indique si des éléments proviennent de la source "Dérivés".
-    * @param isFromEchantillonsExist Indique si des éléments proviennent de la source "Échantillons".
-    * @param isFromPrlvmntExist     Indique si des éléments proviennent de la source "Prlvmnt" (probablement "Paiement" en abrégé).
-    * @return                       Renvoie vrai si le bouton "Sélectionner Tout" doit être affiché, sinon renvoie faux.
-    */
-   private static boolean isDisplaySelectAllButton(boolean isFromDerivesExist, boolean isFromEchantillonsExist, boolean isFromPrlvmntExist) {
-      return isFromEchantillonsExist && isFromPrlvmntExist ||
-         isFromEchantillonsExist && isFromDerivesExist ||
-         isFromPrlvmntExist && isFromDerivesExist;
-   }
 
 
    /**
@@ -381,7 +371,7 @@ public class FichePrelevementStatic extends AbstractFicheStaticController
     * @see #buildTotalString(String, int)
     */
    private void initDerivesHeaders(){
-      totalProdDerivesGroupHeader = buildTotalString("fichePrelevement.group.prodDerives.totaux", calculateSumOfDerivesLists());
+      totalProdDerivesGroupHeader = buildTotalString("fichePrelevement.group.prodDerives.totaux", calculateSumOfDerives());
       derivesFromPrlvmntHeader = buildTotalString("fichePrelevement.group.prodDerives.prelevement", listDerivesFromPrelevement.size());
       derivesFromEchantHeader = buildTotalString("fichePrelevement.group.prodDerives.echantillons", listDerivesFromEchantillons.size());
       derivesFromDerivesHeader = buildTotalString("fichePrelevement.group.prodDerives.derives", listDerivesFromDerives.size());
@@ -476,33 +466,33 @@ public class FichePrelevementStatic extends AbstractFicheStaticController
       // **************** gastbi
       setGroupLaboInterOpen(laboInters.size() > 0);
       setGroupEchansOpen(echantillons.size() > 0);
-      setGroupDerivesOpen(calculateSumOfDerivesLists() > 0);
+      setGroupDerivesOpen(calculateSumOfDerives() > 0);
       // gatsbi ****************    
    }
 
    /**
     * Initialise les listes de dérivés en fonction de différentes sources (prélèvements, échantillons, dérivés).
     */
-   private void initiateDerivesLists(){
-      // listDerives : parent prelevement
+      private void initiateDerivesLists() {
+      // parent prelevement
       listDerivesFromPrelevement = ManagerLocator.getPrelevementManager().getProdDerivesManager(prelevement);
-      // listDerives : parent echantillon
+
+      // parent echantillon
       for (Echantillon echantillon: echantillons){
          List<ProdDerive> listProdDerives = ManagerLocator.getEchantillonManager().getProdDerivesManager(echantillon);
          listDerivesFromEchantillons.addAll(listProdDerives);
+
       }
-      // listDerives : parent derive - grandparent prelevement
-      for (ProdDerive prodDerive: listDerivesFromPrelevement){
-         List<ProdDerive> listProdDerives = ManagerLocator.getProdDeriveManager().getProdDerivesManager(prodDerive);
-         listDerivesFromDerives.addAll(listProdDerives);
-      }
-      // listDerives : parent derive - grandparent échantillon
-      for (ProdDerive prodDerive: listDerivesFromEchantillons){
+      // listDerivesFromPrelevement + listDerivesFromEchantillons
+      List<ProdDerive> combinedListDerives = new ArrayList<>(listDerivesFromPrelevement);
+      combinedListDerives.addAll(listDerivesFromEchantillons);
+
+      // parent derive: grandparent échantillon + grandparent prelevement
+      for (ProdDerive prodDerive : combinedListDerives) {
          List<ProdDerive> listProdDerives = ManagerLocator.getProdDeriveManager().getProdDerivesManager(prodDerive);
          listDerivesFromDerives.addAll(listProdDerives);
       }
    }
-
    @Override
    public void setNewObject(){
       setObject(new Prelevement());
@@ -760,13 +750,25 @@ public class FichePrelevementStatic extends AbstractFicheStaticController
     */
    public boolean getDerivesListSizeSupOne(){
       if(getDroitsConsultation().containsKey("ProdDerive") && getDroitsConsultation().get("ProdDerive")){
-         return calculateSumOfDerivesLists() > 1;
+         return calculateSumOfDerives() > 1;
+      }
+      return false;
+   }
+
+   /** Vérifie si l'utilisateur a les droits de voir les dérivés et si oui, si la liste de dérivés
+    * passée en paramètre contient des éléments
+    * @param listDerive : liste des dérivés à prendre en compte
+    * @return true si les 2 conditions sont vérifiées, false sinon
+    */
+   public boolean isDerivesFound(List listDerive){
+      if(getDroitsConsultation().containsKey("ProdDerive") && getDroitsConsultation().get("ProdDerive")){
+         return !listDerive.isEmpty();
       }
       return false;
    }
 
    /**
-    * Vérifie si des dérivés sont associés au prélèvement actuel et si
+    * Vérifie si des dérivés sont associés au prélèvement et si
     * l'utilisateur a les droits de consultation pour les dérivés.
     *
     * @return boolean: true si des dérivés sont associés au prélèvement et que
@@ -774,29 +776,23 @@ public class FichePrelevementStatic extends AbstractFicheStaticController
     *         sinon false
     */
    public boolean isDerivesFromPrlvmntFound(){
-      if(getDroitsConsultation().containsKey("ProdDerive") && getDroitsConsultation().get("ProdDerive")){
-         return !this.listDerivesFromPrelevement.isEmpty();
-      }
-      return false;
+         return isDerivesFound(listDerivesFromPrelevement);
    }
 
    /**
-    * Vérifie si des dérivés sont associés aux échantillons actuels et si
+    * Vérifie si des dérivés sont associés aux échantillons du prélèvement et si
     * l'utilisateur a les droits de consultation pour les dérivés.
     *
     * @return boolean: true si des dérivés sont associés au prélèvement et que
     *         l'utilisateur a les droits de consultation pour les dérivés,
     *         sinon false
     */
-   public boolean idDerivesFromEchantillonsFound(){
-      if(getDroitsConsultation().containsKey("ProdDerive") && getDroitsConsultation().get("ProdDerive")){
-         return !this.listDerivesFromEchantillons.isEmpty();
-      }
-      return false;
+   public boolean isDerivesFromEchantillonsFound(){
+         return isDerivesFound(listDerivesFromEchantillons);
    }
 
    /**
-    * Vérifie si des dérivés sont associés aux dérivés actuels et si
+    * Vérifie si des dérivés sont associés aux dérivés (du prélèvement ou des échantillons) et si
     * l'utilisateur a les droits de consultation pour les dérivés.
     *
     * @return boolean: true si des dérivés sont associés au prélèvement et que
@@ -804,10 +800,7 @@ public class FichePrelevementStatic extends AbstractFicheStaticController
     *         sinon false
     */
    public boolean isDerivesFromDerivesFound(){
-      if(getDroitsConsultation().containsKey("ProdDerive") && getDroitsConsultation().get("ProdDerive")){
-         return !this.listDerivesFromDerives.isEmpty();
-      }
-      return false;
+         return isDerivesFound(listDerivesFromDerives);
    }
 
    /**
@@ -925,7 +918,7 @@ public class FichePrelevementStatic extends AbstractFicheStaticController
    }
 
    /**
-    * Déplace vers l'onglet des dérivés et affiche tous les dérivés associés au prélèvement actuel.
+    * Déplace vers l'onglet des dérivés et affiche tous les dérivés associés au prélèvement.
     */
 
    public void onSelectAllFromPrlvmnt(){
@@ -933,14 +926,14 @@ public class FichePrelevementStatic extends AbstractFicheStaticController
    }
 
    /**
-    * Déplace vers l'onglet des dérivés et affiche tous les dérivés associés aux échantillons actuel.
+    * Déplace vers l'onglet des dérivés et affiche tous les dérivés associés aux échantillons du prélèvement.
     */
    public void onSelectAllFromEchantillons(){
       onClickProdDeriveCode(null, listDerivesFromEchantillons);
    }
 
    /**
-    * Déplace vers l'onglet des dérivés et affiche tous les dérivés associés aux dérivés actuel.
+    * Déplace vers l'onglet des dérivés et affiche tous les dérivés associés aux dérivés.
     */
    public void onSelectAllFromDerives(){
       onClickProdDeriveCode(null, listDerivesFromDerives);
@@ -1129,7 +1122,7 @@ public class FichePrelevementStatic extends AbstractFicheStaticController
 
 
 
-   public Vbox getSelectAllVbox(){      return selectAllDerives;   }
+   public Vbox getSelectAllVbox(){      return selectAllDerivesVbox;   }
 
    public List<ProdDerive> getListDerivesFromDerives(){
       return listDerivesFromDerives;
@@ -1452,23 +1445,20 @@ public class FichePrelevementStatic extends AbstractFicheStaticController
    }
    
    protected void setGroupEchansOpen(final boolean b){
-   if (groupEchans != null ){
       if(groupEchans instanceof Group){
          ((Group) groupEchans).setOpen(b);
       }else{
          ((Groupbox) groupEchans).setOpen(b);
       }      
      }
-   }
+
 
    protected void setGroupDerivesOpen(final boolean b){
-      if (groupDerives != null) {
          if(groupDerives instanceof Group){
             ((Group) groupDerives).setOpen(b);
       }else{
             ((Groupbox) groupDerives).setOpen(b);
       }      
    }
-}
 
 }
