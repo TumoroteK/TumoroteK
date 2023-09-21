@@ -35,6 +35,12 @@
  **/
 package fr.aphp.tumorotek.manager.test.coeur.echantillon;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
@@ -44,7 +50,15 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -61,6 +75,7 @@ import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
+import fr.aphp.tumorotek.TKConstants;
 import fr.aphp.tumorotek.dao.annotation.ChampAnnotationDao;
 import fr.aphp.tumorotek.dao.annotation.ItemDao;
 import fr.aphp.tumorotek.dao.cession.CessionDao;
@@ -83,7 +98,11 @@ import fr.aphp.tumorotek.manager.coeur.ObjetStatutManager;
 import fr.aphp.tumorotek.manager.coeur.annotation.AnnotationValeurManager;
 import fr.aphp.tumorotek.manager.coeur.cession.CederObjetManager;
 import fr.aphp.tumorotek.manager.coeur.cession.RetourManager;
-import fr.aphp.tumorotek.manager.coeur.echantillon.*;
+import fr.aphp.tumorotek.manager.coeur.echantillon.EchanQualiteManager;
+import fr.aphp.tumorotek.manager.coeur.echantillon.EchantillonManager;
+import fr.aphp.tumorotek.manager.coeur.echantillon.EchantillonTypeManager;
+import fr.aphp.tumorotek.manager.coeur.echantillon.EchantillonValidator;
+import fr.aphp.tumorotek.manager.coeur.echantillon.ModePrepaManager;
 import fr.aphp.tumorotek.manager.coeur.prodderive.ProdDeriveManager;
 import fr.aphp.tumorotek.manager.coeur.prodderive.TransformationManager;
 import fr.aphp.tumorotek.manager.context.BanqueManager;
@@ -128,13 +147,15 @@ import fr.aphp.tumorotek.model.io.export.Champ;
 import fr.aphp.tumorotek.model.qualite.NonConformite;
 import fr.aphp.tumorotek.model.qualite.Operation;
 import fr.aphp.tumorotek.model.qualite.OperationType;
-import fr.aphp.tumorotek.model.stockage.*;
+import fr.aphp.tumorotek.model.stockage.Conteneur;
+import fr.aphp.tumorotek.model.stockage.Emplacement;
+import fr.aphp.tumorotek.model.stockage.Enceinte;
+import fr.aphp.tumorotek.model.stockage.EnceinteType;
+import fr.aphp.tumorotek.model.stockage.Terminale;
 import fr.aphp.tumorotek.model.systeme.Entite;
 import fr.aphp.tumorotek.model.systeme.Fichier;
 import fr.aphp.tumorotek.model.systeme.Unite;
 import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
-
-import static org.junit.Assert.*;
 
 /**
  *
@@ -3513,7 +3534,8 @@ public class EchantillonManagerTest extends AbstractManagerTest4
       assertTrue(echantillonManager.findByCodeLikeManager("XTRA", false).size() == 3);
 
       // maj non valide : ancien prefixe = new prefixe
-      List<Echantillon> res = echantillonManager.updateCodeEchantillonsManager(liste, "XTRA", "XTRA", utilisateur);
+      Map<String, List<Echantillon>> mapRes = echantillonManager.updateCodeEchantillonsManager(liste, "XTRA", "XTRA", utilisateur);
+      List<Echantillon> res = mapRes.get(TKConstants.MAP_KEY_UPDATED);
       assertTrue(echantillonManager.findByCodeLikeManager("XTRA", false).size() == 3);
       assertTrue(res.size() == 3);
       for(int i = 0; i < res.size(); i++){
@@ -3521,7 +3543,8 @@ public class EchantillonManagerTest extends AbstractManagerTest4
       }
 
       // maj non valide : ancien prefixe incorrect
-      res = echantillonManager.updateCodeEchantillonsManager(liste, "XXX", "XPOR", utilisateur);
+      mapRes =  echantillonManager.updateCodeEchantillonsManager(liste, "XXX", "XPOR", utilisateur);
+      res = mapRes.get(TKConstants.MAP_KEY_UPDATED);
       assertTrue(echantillonManager.findByCodeLikeManager("XTRA", false).size() == 3);
       assertTrue(echantillonManager.findByCodeLikeManager("XPOR", false).size() == 0);
       assertTrue(res.size() == 3);
@@ -3530,7 +3553,8 @@ public class EchantillonManagerTest extends AbstractManagerTest4
       }
 
       // maj valide
-      res = echantillonManager.updateCodeEchantillonsManager(liste, "XTRA", "XPOR", utilisateur);
+      mapRes = echantillonManager.updateCodeEchantillonsManager(liste, "XTRA", "XPOR", utilisateur);
+      res = mapRes.get(TKConstants.MAP_KEY_UPDATED);      
       assertTrue(echantillonManager.findByCodeLikeManager("XTRA", false).size() == 0);
       assertTrue(echantillonManager.findByCodeLikeManager("XPOR", false).size() == 3);
       assertTrue(res.size() == 3);

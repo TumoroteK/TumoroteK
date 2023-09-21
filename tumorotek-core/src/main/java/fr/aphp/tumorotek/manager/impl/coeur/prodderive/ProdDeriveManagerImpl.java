@@ -41,9 +41,11 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.persistence.EntityManager;
@@ -55,6 +57,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.validation.Validator;
 
+import fr.aphp.tumorotek.TKConstants;
 import fr.aphp.tumorotek.dao.coeur.ObjetStatutDao;
 import fr.aphp.tumorotek.dao.coeur.echantillon.EchantillonDao;
 import fr.aphp.tumorotek.dao.coeur.prelevement.PrelevementDao;
@@ -2047,5 +2050,60 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
          return prodDeriveDao.findByBanksAndImpact(banks, impact);
       }
       return new ArrayList<>();
+   }
+   
+   
+   /**
+    * Mets à jour le préfixe du code de plusieurs produits dérivés.
+    * Méthode utilisée lors du changement du code d'un prélèvement/échantillon/derive.
+    * @param produitsDerives Liste des produitsDerives à mettre à jour.
+    * @param oldPrefixe Ancien préfixe.
+    * @param newPrefixe Nouveau préfixe.
+    * @param utilisateur Utilisateur.
+    * @return une map des produitsDerives mis à jour et des produitsDerives non mis à jour à cause d'un doublon.
+    */
+   @Override
+   public Map<String,List<ProdDerive>> updateCodeDerivesManager(List<ProdDerive> produitsDerives, String oldPrefixe, String newPrefixe,
+      Utilisateur utilisateur){
+      Map<String,List<ProdDerive>> mapResult = new HashMap<String, List<ProdDerive>>();
+      List<ProdDerive> updatedProduitDerives = new ArrayList<>();
+      List<ProdDerive> doublons = new ArrayList<>();
+
+      if(produitsDerives != null && oldPrefixe != null && newPrefixe != null && !oldPrefixe.equals(newPrefixe) && utilisateur != null ){ //CHT
+         for(ProdDerive prodDerive : produitsDerives){
+            String currentCodeDerive = prodDerive.getCode();
+            // Vérifiez que le dérivé était bien composé de l'ancien préfixe et que les `oldPrefixe` et `newPrefixe`
+            // ne sont pas égaux (c'est-à-dire qu'un changement est requis).
+            if(currentCodeDerive.contains(oldPrefixe)){
+               log.debug("Tentative de modification du code de produit dérivé : {}. Remplacement de {} par {}.", currentCodeDerive, oldPrefixe, newPrefixe);
+               String newCode = prodDerive.getCode().replace(oldPrefixe, newPrefixe);
+               prodDerive.setCode(newCode);
+               // on gère les doublons
+               boolean isDoublonFound = findDoublonManager(prodDerive);
+               if(isDoublonFound){
+                  doublons.add(prodDerive);
+                  log.error("Doublon détecté lors de la tentative de modification du code du produit dérivé : {}. Le nouveau code prévu {} existe déjà dans la base de données", currentCodeDerive,newCode);
+               }
+               else {
+                  // Enregistrement de l'objet "ProdDerive" mis à jour en utilisant la méthode mergeObject
+                  ProdDerive prodDeriveUpdated = prodDeriveDao.mergeObject(prodDerive);
+                  // Création d'un objet `Operation` pour suivre la modification
+                  final Operation creationOp = new Operation();
+                  creationOp.setDate(Utils.getCurrentSystemCalendar());
+                  operationManager.createObjectManager(creationOp, utilisateur, operationTypeDao.findByNom("Modification").get(0),
+                     prodDeriveUpdated);
+                  // Ajout du "ProdDerive" mis à jour à la liste `results`
+                  updatedProduitDerives.add(prodDeriveUpdated);
+               }
+            }
+         }
+         if(updatedProduitDerives.size() > 0) {
+            mapResult.put(TKConstants.MAP_KEY_UPDATED, updatedProduitDerives);
+         }
+         if(doublons.size() > 0) {
+            mapResult.put(TKConstants.MAP_KEY_DOUBLON, doublons);
+         } 
+      }
+      return mapResult;
    }
 }

@@ -284,6 +284,9 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
       initFormFromDossierExterne();
 
       super.switchToCreateMode();
+      
+      getObjectTabController().setCodeUpdated(false);
+      getObjectTabController().setOldCode(null);
 
       scrollToTop();
 
