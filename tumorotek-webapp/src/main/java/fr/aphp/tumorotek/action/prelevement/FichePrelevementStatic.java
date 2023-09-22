@@ -1073,21 +1073,8 @@ public class FichePrelevementStatic extends AbstractFicheStaticController
    /*********************** GETTERS / SETTERS ****************************/
    /**********************************************************************/
 
-   public String getProdDerviesFromPrlmntHeader(){
-      return derivesFromPrlvmntHeader;
-   }
 
-   public String getTotalProdDerivesHeader(){
-      return totalProdDerivesGroupHeader;
-   }
 
-   public String getProdDerviesFromEchantHeader(){
-      return derivesFromEchantHeader;
-   }
-
-   public String getProdDerviesFromDerivesHeader(){
-      return derivesFromDerivesHeader;
-   }
    public Maladie getMaladie(){
       return maladie;
    }
@@ -1120,21 +1107,13 @@ public class FichePrelevementStatic extends AbstractFicheStaticController
       this.echantillons = e;
    }
 
+   public Vbox getSelectAllDerivesVbox(){      return selectAllDerivesVbox;   }
 
+   public List<ProdDerive> getListDerivesFromDerives(){       return listDerivesFromDerives;   }
 
-   public Vbox getSelectAllVbox(){      return selectAllDerivesVbox;   }
+   public List<ProdDerive> getListDerivesFromPrelevement(){      return listDerivesFromPrelevement;   }
 
-   public List<ProdDerive> getListDerivesFromDerives(){
-      return listDerivesFromDerives;
-   }
-
-   public List<ProdDerive> getListDerivesFromPrelevement(){
-      return listDerivesFromPrelevement;
-   }
-
-   public List<ProdDerive> getListDerivesFromEchantillons(){
-      return listDerivesFromEchantillons;
-   }
+   public List<ProdDerive> getListDerivesFromEchantillons(){      return listDerivesFromEchantillons;   }
 
 
    public void setListDerivesFromDerives(List<ProdDerive> listDerivesFromDerives){
@@ -1148,10 +1127,9 @@ public class FichePrelevementStatic extends AbstractFicheStaticController
    public void setListDerivesFromEchantillons(List<ProdDerive> listDerivesFromEchantillons){
       this.listDerivesFromEchantillons = listDerivesFromEchantillons;
    }
+   public String getTotalProdDerivesGroupHeader(){      return totalProdDerivesGroupHeader;   }
 
-   public String getEchantillonsGroupHeader(){
-      return echantillonsGroupHeader;
-   }
+   public String getEchantillonsGroupHeader(){      return echantillonsGroupHeader;   }
 
    public String getDerivesFromPrlvmntHeader(){      return derivesFromPrlvmntHeader;   }
 
@@ -1159,13 +1137,9 @@ public class FichePrelevementStatic extends AbstractFicheStaticController
 
    public String getDerivesFromDerivesHeader(){      return derivesFromDerivesHeader;   }
 
-   public ProdDeriveRowRenderer getProdDeriveRenderer(){
-      return prodDeriveRenderer;
-   }
+   public ProdDeriveRowRenderer getProdDeriveRenderer(){      return prodDeriveRenderer;   }
 
-   public EchantillonRowRenderer getEchantillonRenderer(){
-      return echantillonRenderer;
-   }
+   public EchantillonRowRenderer getEchantillonRenderer(){      return echantillonRenderer;   }
 
    public String getValeurQuantite(){
       return valeurQuantite;
