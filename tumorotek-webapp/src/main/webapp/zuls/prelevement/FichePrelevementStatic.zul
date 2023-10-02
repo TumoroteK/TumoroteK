@@ -34,6 +34,8 @@
  * accepté les termes. 
 -->
 <?component name="incaPopUps" macroURI="/zuls/prelevement/incaPopUpsPrelevement.zul" inline="true" ?>
+<?component name="tableauDerives" macroURI="/zuls/component/TableauDerives.zul" class="fr.aphp.tumorotek.component.TableauDerives" ?>
+
 
 <window id="fwinPrelevementStatic" border="none" apply="fr.aphp.tumorotek.action.prelevement.FichePrelevementStatic">
 	<panel collapsible="false" title="${c:l('fichePrelevement.panel.title')}"
@@ -574,7 +576,7 @@
 					</row>
 					
                     <!-- Derives -->
-                    <group label="@{fwinPrelevementStatic$composer.totalProdDerivesHeader}"
+                    <group label="@{fwinPrelevementStatic$composer.totalProdDerivesGroupHeader}"
                            id="groupDerives"/>
 					<row spans="4">
 						<separator/>
@@ -602,38 +604,9 @@
                             </vbox>
 
                             <vbox align="center" hflex="1" vflex="1">
-                                <grid
-                                      fixedLayout="true"
-                                      hflex="1"
-                                      sclass="gridListStyle"
-                                      span="true"
-                                      sizedByContent="false"
-                                      model="@{fwinPrelevementStatic$composer.listDerivesFromPrelevement}"
-                                      rowRenderer="@{fwinPrelevementStatic$composer.prodDeriveRenderer}">
-                                    <columns menupopup="auto" sizable="true">
-                                        <column align="center" width="70px"/>
-                                        <column label="${c:l('general.code')}"/>
-                                        <column label="${c:l('Entite.Banque')}"
-                                                visible="@{fwinPrelevementStatic$composer.ttesCollections}"/>
-                                        <column label="${c:l('Champ.ProdDerive.CodeLabo')}" visible="false"/>
-                                        <column label="${c:l('prodDerive.type.parent')}" visible="false"/>
-                                        <column label="${c:l('prodDerive.code.parent')}" visible="false"/>
-                                        <column label="${c:l('Champ.ProdDerive.DateStock')}" width="130px"/>
-                                        <column label="${c:l('Champ.ProdDerive.ProdType')}"/>
-                                        <column label="${c:l('Champ.ProdDerive.Volume')}" width="130px"/>
-                                        <column label="${c:l('Champ.ProdDerive.Conc')}" visible="false" width="130px"/>
-                                        <column label="${c:l('Champ.ProdDerive.Quantite')}" width="130px"/>
-                                        <column label="${c:l('Champ.ProdDerive.ObjetStatut')}"/>
-                                        <column label="${c:l('Champ.ProdDerive.Emplacement')}"/>
-                                        <column label="${c:l('derives.nb')}" width="100px"
-                                                visible="false"/>
-                                        <column label="${c:l('cession.nb')}" width="100px"
-                                                visible="false"/>
-                                    </columns>
-                                    <rows>
-                                        <row self="@{each='currDerive'}" value="currDerive"/>
-                                    </rows>
-                                </grid>
+								<tableauDerives  derives="@{fwinPrelevementStatic$composer.listDerivesFromPrelevement}"
+												 toutesCollections="@{fwinPrelevementStatic$composer.ttesCollections}"
+												 renderer="@{fwinPrelevementStatic$composer.prodDeriveRenderer}"/>
                                 <button sclass="buttonv2"
                                         label="${c:l('general.selectAll')}"
                                         height="24px"
@@ -655,38 +628,9 @@
                             </vbox>
 
 						<vbox align="center" hflex="1" vflex="1">
-                                <grid
-                                        fixedLayout="true"
-										hflex="1"
-                                        sclass="gridListStyle"
-                                        span="true"
-                                        sizedByContent="false"
-                                        model="@{fwinPrelevementStatic$composer.listDerivesFromEchantillons}"
-                                        rowRenderer="@{fwinPrelevementStatic$composer.prodDeriveRenderer}">
-                                    <columns menupopup="auto" sizable="true">
-                                        <column align="center" width="70px"/>
-                                        <column label="${c:l('general.code')}"/>
-                                        <column label="${c:l('Entite.Banque')}"
-                                                visible="@{fwinPrelevementStatic$composer.ttesCollections}"/>
-                                        <column label="${c:l('Champ.ProdDerive.CodeLabo')}" visible="false"/>
-                                        <column label="${c:l('prodDerive.type.parent')}" visible="false"/>
-                                        <column label="${c:l('prodDerive.code.parent')}" visible="true"/>
-                                        <column label="${c:l('Champ.ProdDerive.DateStock')}" width="130px"/>
-                                        <column label="${c:l('Champ.ProdDerive.ProdType')}"/>
-                                        <column label="${c:l('Champ.ProdDerive.Volume')}" width="130px"/>
-                                        <column label="${c:l('Champ.ProdDerive.Conc')}" visible="false" width="130px"/>
-                                        <column label="${c:l('Champ.ProdDerive.Quantite')}" width="130px"/>
-                                        <column label="${c:l('Champ.ProdDerive.ObjetStatut')}"/>
-                                        <column label="${c:l('Champ.ProdDerive.Emplacement')}"/>
-                                        <column label="${c:l('derives.nb')}" width="100px"
-                                                visible="false"/>
-                                        <column label="${c:l('cession.nb')}" width="100px"
-                                                visible="false"/>
-                                    </columns>
-                                    <rows>
-                                        <row self="@{each='currDerive'}" value="currDerive"/>
-                                    </rows>
-                                </grid>
+							<tableauDerives  derives="@{fwinPrelevementStatic$composer.listDerivesFromEchantillons}"
+											 toutesCollections="@{fwinPrelevementStatic$composer.ttesCollections}"
+											 renderer="@{fwinPrelevementStatic$composer.prodDeriveRenderer}"/>
                                 <button sclass="buttonv2"
                                         label="${c:l('general.selectAll')}"
                                         height="24px"
@@ -706,37 +650,9 @@
                             </vbox>
 
                             <vbox align="center" hflex="1" vflex="1">
-                                <grid
-							fixedLayout="true"
-							hflex="1"
-							sclass="gridListStyle"
-							span="true"
-							sizedByContent="false"
-                                      model="@{fwinPrelevementStatic$composer.listDerivesFromDerives}"
-							rowRenderer="@{fwinPrelevementStatic$composer.prodDeriveRenderer}">
-							<columns menupopup="auto" sizable="true">
-								<column align="center" width="70px"/>
-								<column label="${c:l('general.code')}" />
-								<column label="${c:l('Entite.Banque')}" visible="@{fwinPrelevementStatic$composer.ttesCollections}" />
-								<column label="${c:l('Champ.ProdDerive.CodeLabo')}" visible="false"/>
-								<column label="${c:l('prodDerive.type.parent')}" visible="false"/>
-                                        <column label="${c:l('prodDerive.code.parent')}" visible="true"/>
-								<column label="${c:l('Champ.ProdDerive.DateStock')}" width="130px"/>
-								<column label="${c:l('Champ.ProdDerive.ProdType')}"/>
-								<column label="${c:l('Champ.ProdDerive.Volume')}" width="130px"/>
-								<column label="${c:l('Champ.ProdDerive.Conc')}" visible="false" width="130px"/>
-								<column label="${c:l('Champ.ProdDerive.Quantite')}" width="130px"/>
-								<column label="${c:l('Champ.ProdDerive.ObjetStatut')}"/>
-								<column label="${c:l('Champ.ProdDerive.Emplacement')}"/>
-								<column label="${c:l('derives.nb')}" width="100px"
-									visible="false"/>
-								<column label="${c:l('cession.nb')}" width="100px"
-									visible="false"/>
-							</columns>
-							<rows>
-								<row self="@{each='currDerive'}" value="currDerive"/>
-							</rows>
-						</grid>
+								<tableauDerives  derives="@{fwinPrelevementStatic$composer.listDerivesFromDerives}"
+												 toutesCollections="@{fwinPrelevementStatic$composer.ttesCollections}"
+												 renderer="@{fwinPrelevementStatic$composer.prodDeriveRenderer}"/>
                                 <button sclass="buttonv2"
                                         label="${c:l('general.selectAll')}"
                                         height="24px"

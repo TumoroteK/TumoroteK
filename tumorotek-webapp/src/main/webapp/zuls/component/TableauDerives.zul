@@ -1,0 +1,30 @@
+<grid id="gridDerive"
+        fixedLayout="false"
+        hflex="1"
+        sclass="gridListStyle"
+        span="true"
+        sizedByContent="true" >
+<!--    le model et le rowRenderer sont initié dans la classe TableauDerives.java-->
+    <columns menupopup="auto" sizable="true">
+        <column align="center" width="70px"/>
+        <column label="${c:l('general.code')}"/>
+        <column id="toutesColsColumn" label="${c:l('Entite.Banque')}"/>
+        <column label="${c:l('Champ.ProdDerive.CodeLabo')}" visible="false"/>
+        <column label="${c:l('prodDerive.type.parent')}" visible="false"/>
+        <column label="${c:l('prodDerive.code.parent')}" visible="false"/>
+        <column label="${c:l('Champ.ProdDerive.DateStock')}" width="130px"/>
+        <column label="${c:l('Champ.ProdDerive.ProdType')}"/>
+        <column label="${c:l('Champ.ProdDerive.Volume')}" width="130px"/>
+        <column label="${c:l('Champ.ProdDerive.Conc')}" visible="false" width="130px"/>
+        <column label="${c:l('Champ.ProdDerive.Quantite')}" width="130px"/>
+        <column label="${c:l('Champ.ProdDerive.ObjetStatut')}"/>
+        <column label="${c:l('Champ.ProdDerive.Emplacement')}"/>
+        <column label="${c:l('derives.nb')}" width="100px"
+                visible="false"/>
+        <column label="${c:l('cession.nb')}" width="100px"
+                visible="false"/>
+    </columns>
+
+<!--    le RowRenderer générera les <Row>s ici-->
+<!-- redondant:    <rows >         <row self="@{each='x'}" value="x"/>     </rows>-->
+</grid>
