@@ -562,8 +562,8 @@
 								sclass="gridListStyle"
 								span="true"
 								sizedByContent="false"
-								  model="@{fwinPrelevementStatic$composer.listDerivesFromPrelevement}"
-								  rowRenderer="@{fwinPrelevementStatic$composer.prodDeriveRenderer}">
+								model="@{fwinPrelevementStatic$composer.listDerivesFromPrelevement}"
+								rowRenderer="@{fwinPrelevementStatic$composer.prodDeriveRenderer}">
 								<columns menupopup="auto" sizable="true">
 									<column align="center" width="70px"/>
 									<column label="${c:l('general.code')}"/>
@@ -695,11 +695,11 @@
 									<row self="@{each='currDerive'}" value="currDerive"/>
 								</rows>
 							</grid>
-					<button   sclass="buttonv2"
-							  label="${c:l('general.selectAll')}"
-							  height="24px"
-							  image="/images/icones/selectall.png"
-							  forward="onClick=onSelectAllFromDerives(all)"/>
+							<button   sclass="buttonv2"
+									  label="${c:l('general.selectAll')}"
+									  height="24px"
+									  image="/images/icones/selectall.png"
+									  forward="onClick=onSelectAllFromDerives(all)"/>
 						</vbox>
 					</div>
 			</div>

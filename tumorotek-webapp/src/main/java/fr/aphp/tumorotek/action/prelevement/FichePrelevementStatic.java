@@ -1104,16 +1104,25 @@ public class FichePrelevementStatic extends AbstractFicheStaticController
    }
 
    public void setEchantillons(final List<Echantillon> e){
+
       this.echantillons = e;
    }
 
-   public Vbox getSelectAllDerivesVbox(){      return selectAllDerivesVbox;   }
+   public Vbox getSelectAllDerivesVbox(){
+      return selectAllDerivesVbox;
+   }
 
-   public List<ProdDerive> getListDerivesFromDerives(){       return listDerivesFromDerives;   }
+   public List<ProdDerive> getListDerivesFromDerives(){
+      return listDerivesFromDerives;
+   }
 
-   public List<ProdDerive> getListDerivesFromPrelevement(){      return listDerivesFromPrelevement;   }
+   public List<ProdDerive> getListDerivesFromPrelevement(){
+      return listDerivesFromPrelevement;
+   }
 
-   public List<ProdDerive> getListDerivesFromEchantillons(){      return listDerivesFromEchantillons;   }
+   public List<ProdDerive> getListDerivesFromEchantillons(){
+      return listDerivesFromEchantillons;
+   }
 
 
    public void setListDerivesFromDerives(List<ProdDerive> listDerivesFromDerives){
@@ -1127,19 +1136,33 @@ public class FichePrelevementStatic extends AbstractFicheStaticController
    public void setListDerivesFromEchantillons(List<ProdDerive> listDerivesFromEchantillons){
       this.listDerivesFromEchantillons = listDerivesFromEchantillons;
    }
-   public String getTotalProdDerivesGroupHeader(){      return totalProdDerivesGroupHeader;   }
+   public String getTotalProdDerivesGroupHeader(){
+      return totalProdDerivesGroupHeader;
+   }
 
-   public String getEchantillonsGroupHeader(){      return echantillonsGroupHeader;   }
+   public String getEchantillonsGroupHeader(){
+      return echantillonsGroupHeader;
+   }
 
-   public String getDerivesFromPrlvmntHeader(){      return derivesFromPrlvmntHeader;   }
+   public String getDerivesFromPrlvmntHeader(){
+      return derivesFromPrlvmntHeader;
+   }
 
-   public String getDerivesFromEchantHeader(){      return derivesFromEchantHeader;   }
+   public String getDerivesFromEchantHeader(){
+      return derivesFromEchantHeader;
+   }
 
-   public String getDerivesFromDerivesHeader(){      return derivesFromDerivesHeader;   }
+   public String getDerivesFromDerivesHeader(){
+      return derivesFromDerivesHeader;
+   }
 
-   public ProdDeriveRowRenderer getProdDeriveRenderer(){      return prodDeriveRenderer;   }
+   public ProdDeriveRowRenderer getProdDeriveRenderer(){
+      return prodDeriveRenderer;
+   }
 
-   public EchantillonRowRenderer getEchantillonRenderer(){      return echantillonRenderer;   }
+   public EchantillonRowRenderer getEchantillonRenderer(){
+      return echantillonRenderer;
+   }
 
    public String getValeurQuantite(){
       return valeurQuantite;
