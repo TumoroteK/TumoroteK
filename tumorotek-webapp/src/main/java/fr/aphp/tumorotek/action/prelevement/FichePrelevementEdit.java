@@ -46,6 +46,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import fr.aphp.tumorotek.model.coeur.echantillon.Echantillon;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.validation.Errors;
@@ -746,11 +747,19 @@ public class FichePrelevementEdit extends AbstractFicheEditController
     */
    @Override
    public boolean onLaterUpdate(){
-
+      Calendar dateBeforeSave = prelevement.getDatePrelevement();
       try{
          if(super.onLaterUpdate()){
             getObjectTabController().showEchantillonsAfterUpdate(prelevement);
          }
+      Calendar dateAfterSave = prelevement.getDatePrelevement();
+      boolean isPrelevemntDateWasChanged =  compareCalendars(dateBeforeSave, dateAfterSave);
+      if (isPrelevemntDateWasChanged){
+         final List<Echantillon> echantillons = new ArrayList<>(ManagerLocator.getPrelevementManager().
+                                                                               getEchantillonsManager(prelevement));
+         ManagerLocator.getEchantillonManager().updateDelayCongelation(echantillons, prelevement);
+      }
+
          return true;
 
       }catch(final RuntimeException re){
@@ -760,6 +769,17 @@ public class FichePrelevementEdit extends AbstractFicheEditController
          Messagebox.show(handleExceptionMessage(re), "Error", Messagebox.OK, Messagebox.ERROR);
          return false;
       }
+   }
+
+   /**
+    * Compare deux objets Calendar pour déterminer s'ils représentent la même date et heure.
+    *
+    * @param calendar1 Le premier objet Calendar à comparer.
+    * @param calendar2 Le deuxième objet Calendar à comparer.
+    * @return true si les objets Calendar sont égaux (représentent la même date et heure), false sinon.
+    */
+   private  boolean compareCalendars(Calendar calendar1, Calendar calendar2) {
+      return calendar1.equals(calendar2);
    }
 
    @Override

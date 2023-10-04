@@ -51,6 +51,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -2088,4 +2089,35 @@ public class EchantillonManagerImpl implements EchantillonManager
 
       return res;
    }
+
+   /**
+    * Met à jour le délai de congélation pour une liste d'échantillons donnée en fonction du prélèvement associé.
+    *
+    * @param echantillons La liste d'échantillons pour lesquels mettre à jour le délai de congélation.
+    * @param prelevement Le prélèvement associé utilisé pour le calcul du délai de congélation.
+    * @return Une liste d'échantillons mise à jour suite aux calculs de délai de congélation.
+    */
+   @Override
+   public void updateDelayCongelation(List<Echantillon> echantillons, Prelevement prelevement){
+
+      // Parcours la liste des échantillons pour mettre à jour les délais de congélation
+      for(Echantillon echantillon : echantillons){
+         // Vérifie si la date de stockage de l'échantillon est présente
+         if (echantillon.getDateStock() != null){
+            // Calcul du délai de congélation en fonction de l'échantillon et du prélèvement
+            long delayCongeLong = calculDelaiStockage(echantillon, prelevement);
+            // Vérifie si le délai de congélation calculé est positif
+            if (delayCongeLong > 0){
+               // Conversion du délai de congélation en float pour mise à jour et en minutes
+               float delayCongelInMilliSeconds = (float) delayCongeLong;
+               float delayCongelInMinutes = delayCongelInMilliSeconds / (60 * 1000);
+               // Mise à jour du délai de congélation de l'échantillon
+               echantillon.setDelaiCgl(delayCongelInMinutes);
+               // Mise à jour de l'échantillon dans la base de données
+               updateEchantillon(echantillon);
+            }
+         }
+      }
+
+}
 }
