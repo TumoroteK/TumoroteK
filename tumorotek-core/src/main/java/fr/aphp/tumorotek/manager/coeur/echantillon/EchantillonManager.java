@@ -833,5 +833,5 @@ public interface EchantillonManager
     * @param prelevement Le prélèvement associé utilisé pour le calcul du délai de congélation.
     * @return Une liste d'échantillons mise à jour suite aux calculs de délai de congélation.
     */
-   void updateDelayCongelation(List<Echantillon> echantillons, Prelevement prelevement);
+   void updateFreezingDelay(Prelevement prelevement);
 }

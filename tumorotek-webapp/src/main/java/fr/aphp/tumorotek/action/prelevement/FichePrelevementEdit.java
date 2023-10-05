@@ -46,7 +46,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import fr.aphp.tumorotek.model.coeur.echantillon.Echantillon;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.validation.Errors;
@@ -217,6 +216,8 @@ public class FichePrelevementEdit extends AbstractFicheEditController
    protected boolean sterileInit;
 
    protected boolean isAnonyme = false;
+
+   protected boolean isCalendarBoxChanged = false;
 
    protected Window referenceur;
 
@@ -739,6 +740,11 @@ public class FichePrelevementEdit extends AbstractFicheEditController
       // valide les dates donc
       validateAllDateComps();
 
+      // TK-427: Mettre à jour le délai de congélation des échantillons
+      if (isCalendarBoxChanged){
+         ManagerLocator.getEchantillonManager().updateFreezingDelay(prelevement);
+      }
+
       super.onClick$validate();
    }
 
@@ -747,19 +753,11 @@ public class FichePrelevementEdit extends AbstractFicheEditController
     */
    @Override
    public boolean onLaterUpdate(){
-      Calendar dateBeforeSave = prelevement.getDatePrelevement();
+
       try{
          if(super.onLaterUpdate()){
             getObjectTabController().showEchantillonsAfterUpdate(prelevement);
          }
-      Calendar dateAfterSave = prelevement.getDatePrelevement();
-      boolean isPrelevemntDateWasChanged =  compareCalendars(dateBeforeSave, dateAfterSave);
-      if (isPrelevemntDateWasChanged){
-         final List<Echantillon> echantillons = new ArrayList<>(ManagerLocator.getPrelevementManager().
-                                                                               getEchantillonsManager(prelevement));
-         ManagerLocator.getEchantillonManager().updateDelayCongelation(echantillons, prelevement);
-      }
-
          return true;
 
       }catch(final RuntimeException re){
@@ -771,16 +769,6 @@ public class FichePrelevementEdit extends AbstractFicheEditController
       }
    }
 
-   /**
-    * Compare deux objets Calendar pour déterminer s'ils représentent la même date et heure.
-    *
-    * @param calendar1 Le premier objet Calendar à comparer.
-    * @param calendar2 Le deuxième objet Calendar à comparer.
-    * @return true si les objets Calendar sont égaux (représentent la même date et heure), false sinon.
-    */
-   private  boolean compareCalendars(Calendar calendar1, Calendar calendar2) {
-      return calendar1.equals(calendar2);
-   }
 
    @Override
    public void onClick$revert(){
@@ -1176,7 +1164,6 @@ public class FichePrelevementEdit extends AbstractFicheEditController
     * codeBoxPrlvt. Cette valeur sera mise en majuscules.
     */
    public void onBlur$codeBoxPrlvt(){
-
       codeBoxPrlvt.setValue(codeBoxPrlvt.getValue().toUpperCase().trim());
 
       //On ne contrôle le code que s'il s'agit d'un nouveau prélèvement ou si le code a été modifié
@@ -1321,6 +1308,7 @@ public class FichePrelevementEdit extends AbstractFicheEditController
     * à la sortie du champs Date de Prélèvement
     */
    public void onBlur$datePrelCalBox(){
+      isCalendarBoxChanged = true;
       datePrelCalBox.clearErrorMessage(datePrelCalBox.getValue());
       if(getObjectTabController().isFicheLaboOpened()){
          prelevement.setLaboInters(new HashSet<>(getObjectTabController().getFicheLaboInter().getLaboInters()));

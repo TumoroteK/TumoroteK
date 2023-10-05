@@ -55,6 +55,7 @@ import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.Transient;
 import javax.persistence.TypedQuery;
 
 import org.apache.commons.collections4.CollectionUtils;
@@ -125,7 +126,7 @@ import fr.aphp.tumorotek.model.systeme.Fichier;
 import fr.aphp.tumorotek.model.systeme.Unite;
 import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
 import fr.aphp.tumorotek.utils.Utils;
-
+import fr.aphp.tumorotek.utils.TimeUtils;
 /**
  *
  * Implémentation du manager du bean de domaine Echantillon.
@@ -2093,13 +2094,12 @@ public class EchantillonManagerImpl implements EchantillonManager
    /**
     * Met à jour le délai de congélation pour une liste d'échantillons donnée en fonction du prélèvement associé.
     *
-    * @param echantillons La liste d'échantillons pour lesquels mettre à jour le délai de congélation.
     * @param prelevement Le prélèvement associé utilisé pour le calcul du délai de congélation.
     * @return Une liste d'échantillons mise à jour suite aux calculs de délai de congélation.
     */
    @Override
-   public void updateDelayCongelation(List<Echantillon> echantillons, Prelevement prelevement){
-
+   public void updateFreezingDelay(Prelevement prelevement){
+      final List<Echantillon> echantillons = findByPrelevementManager(prelevement);
       // Parcours la liste des échantillons pour mettre à jour les délais de congélation
       for(Echantillon echantillon : echantillons){
          // Vérifie si la date de stockage de l'échantillon est présente
@@ -2109,8 +2109,7 @@ public class EchantillonManagerImpl implements EchantillonManager
             // Vérifie si le délai de congélation calculé est positif
             if (delayCongeLong > 0){
                // Conversion du délai de congélation en float pour mise à jour et en minutes
-               float delayCongelInMilliSeconds = (float) delayCongeLong;
-               float delayCongelInMinutes = delayCongelInMilliSeconds / (60 * 1000);
+               float delayCongelInMinutes = TimeUtils.millisecondsToMinutes(delayCongeLong);
                // Mise à jour du délai de congélation de l'échantillon
                echantillon.setDelaiCgl(delayCongelInMinutes);
                // Mise à jour de l'échantillon dans la base de données
@@ -2119,5 +2118,6 @@ public class EchantillonManagerImpl implements EchantillonManager
          }
       }
 
+ }
 }
-}
+
