@@ -46,7 +46,6 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -430,19 +429,22 @@ public class ImportManagerImpl implements ImportManager
    }
 
    @Override
-   public Hashtable<String, Object> extractValuesForOneThesaurus(final ChampEntite champEntite, final Banque banque){
+   public Hashtable<String, Object> extractValuesForOneThesaurus(final ChampEntite champEntiteAImporter, final Banque banque){
       final Hashtable<String, Object> values = new Hashtable<>();
-
-      if(champEntite != null){
+      
+      if(champEntiteAImporter != null){
+         
+         ChampEntite champEntite = champEntiteAImporter.getQueryChamp();
 
          List<Integer> thesValueIds = null;
          // prépare le filtre les valeurs de thésaurus par leur ids suivant les restrictions gatsbi
+         // correction TG-181. 
          if(banque.getEtude() != null){
             final Contexte contexte =
-               banque.getEtude().getContexteForEntite(translateChpIdToFindContexteEntite(champEntite.getId()));
+               banque.getEtude().getContexteForEntite(champEntiteAImporter.getEntite().getEntiteId());
             if(contexte != null){
                thesValueIds =
-                  contexte.getThesaurusValuesForChampEntiteId(translateChpIdToMatchGatsbiContexte(champEntite.getId())).stream()
+                  contexte.getThesaurusValuesForChampEntiteId(champEntiteAImporter.getId()).stream()
                      .map(v -> v.getThesaurusId()).collect(Collectors.toList());
             }
          }
@@ -534,93 +536,6 @@ public class ImportManagerImpl implements ImportManager
    }
 
    /**
-    * Hackish méthode pour retrouver la valeur entite_id 
-    * à partir du champ_entite_id utilisé par importManager 
-    * qui correspond au QUERY_CHAMP_ID
-    * @param id
-    * @return id
-    */
-   private Integer translateChpIdToFindContexteEntite(final Integer id){
-
-      // prelevement
-      if(Arrays.asList(111, 113, 116, 144, 118, 247, 257).contains(id)){
-         return 2;
-      }
-
-      // echantillon
-      if(Arrays.asList(120, 131, 133, 215, 261, 262).contains(id)){
-         return 3;
-      }
-
-      return id;
-   }
-
-   /**
-    * Hackish méthode pour retrouver le champ_entite_id envoyé 
-    * par le Contexte à partir du champ_entite_id utilisé par importManager 
-    * qui correspond au QUERY_CHAMP_ID
-    * @param id
-    * @return id
-    * TODO pourrait remplacer ce mapping par req en base, sauf pour certains champs (ex: qte unite 120 -> 61)!
-    */
-   private Integer translateChpIdToMatchGatsbiContexte(final Integer id){
-
-      // retrouve le chpId à partir du query champ id
-      // prelevement 
-      if(id == 111){
-         return 24; // nature
-      }
-      if(id == 113){
-         return 26; // consent type
-      }
-      if(id == 116){
-         return 31; // prelevement type
-      }
-      if(id == 144){
-         return 32; // condit type
-      }
-      if(id == 118){
-         return 33; // condit milieu
-      }
-      if(id == 247){
-         return 249; // risques
-      }
-      if(id == 257){
-         return 256; // non conformites arrivée raisons car chpId uniquement sur booleen dans Gatsbi
-      }
-
-      // echantillon
-      if(id == 120){
-         return 61; // quantite unite car chpId uniquement sur quantite dans Gatsbi
-      }
-      if(id == 131){
-         return 68; // echan qualite
-      }
-      if(id == 133){
-         return 70; // mode prepa
-      }
-      if(id == 215){
-         return 58; // echantillon type
-      }
-      if(id == 261){
-         return 243; // non conformites traitement raisons
-      }
-      if(id == 262){
-         return 244; // non conformites cession raisons
-      }
-
-      // derives
-      if(id == 263){
-         return 251; // non conformites traitement raisons
-      }
-      if(id == 264){
-         return 252; // non conformites cession raisons
-      }
-
-      return id;
-   }
-
-   /**
     * Ajoute la valeur de thésaurus si elle est configurée par le gestionnaire Gatsbi.
     * @since 2.3.0-gatsbi
     * @param values
@@ -660,6 +575,21 @@ public class ImportManagerImpl implements ImportManager
 
    @Override
    public Hashtable<Object, Hashtable<String, Object>> generateThesaurusHashtable(final ImportTemplate importTemplate){
+      // Map qui contient : 
+      //   - en clé la valeur du champ entité associé au thesaurus 
+      //   - en valeur une autre map contenant en clé la valeur du thesaurus et en valeur l'objet complet correspondant 
+      // à cette valeur (objet associé à la ligne dans la table)
+      // exemple d'une valeur de la map : {Unite}={ml={ml, volume}}
+      // /!\ cette map n'est pas adaptée pour Gatsbi car elle contient les valeurs après application du filtre Gatsbi qui porte
+      // lui sur le champ à importer et non sur le thesaurus.
+      // Dans l'état actuel le filtre du premier champ associé à ce thesaurus va être appliqué à tous les autres champs associés
+      // à ce thesaurus.
+      // il faudrait transformer cette map pour avoir en clé le champ à importer et non le champ du thesaurus.
+      // Cela ne pose pas de problème pour le moment car un thesaurus n'est jamais utilisé pour 2 champs
+      // différents mais cela pourrait poser un problème lors de la prise en compte par Gatsbi 
+      // des dérivés car l'unité peut correspondre à celle de la quantité, du volume ou de la concentration
+      // et des filtre différents pourront être définis dans Gatsbi.
+      // TODO TG-185
       final Hashtable<Object, Hashtable<String, Object>> thesaurus = new Hashtable<>();
 
       if(importTemplate != null){
@@ -676,7 +606,9 @@ public class ImportManagerImpl implements ImportManager
                champ = colThes.get(i).getChamp().getChampEntite().getQueryChamp();
                // ajout à la hashtable
                if(!thesaurus.containsKey(champ.getEntite())){
-                  thesaurus.put(champ.getEntite(), extractValuesForOneThesaurus(champ, importTemplate.getBanque()));
+                  ///!\ c'est le champ de la table thesaurus qui est la clé de la map mais c'est le champ à importer qui est passé
+                  //à la méthode extractValuesForOneThesaurus qui en a besoin pour prendre en compte le filtre Gatsbi
+                  thesaurus.put(champ.getEntite(), extractValuesForOneThesaurus(colThes.get(i).getChamp().getChampEntite(), importTemplate.getBanque()));
                }
             }else{ // pas extraction du champ correspondant car plusieurs noconfs
                // convergent vers le même champ
@@ -940,6 +872,7 @@ public class ImportManagerImpl implements ImportManager
             }
          }
          if(value != null && !((String) value).equals("")){
+            // TODO TG-185 : à revoir
             // si le champ de la colonne est un thésaurus
             if(colonne.getChamp().getChampEntite().getQueryChamp() != null){
                // Entité liée au thésaurus
