@@ -70,6 +70,9 @@ public class ImportProperties
     * Hashtable contenant les valeurs des thésaurus en fct de leur
     * ebtité.
     */
+   // TODO TG-185 :
+   // Avec Gatsbi qui permet de définir un filtre des thesaurus pour chaque champ de TK,
+   // il faudrait revoir cette map pour qu'elle ait comme clé le champ à importer et non le champ thesaurus...
    private Hashtable<Object, Hashtable<String, Object>> thesaurusValues = new Hashtable<>();
 
    /**
