@@ -214,8 +214,9 @@ public class PrelevementRowRendererGatsbi extends PrelevementRowRenderer impleme
    @Override
    protected void renderPatient(Prelevement prel, Row row){
       if(prel.getMaladie() != null){
+         //TG-182 : 
          final Label identifiantLabel = 
-            new Label(prel.getMaladie().getPatient().getIdentifiantAsString(prel.getBanque()));
+            new Label(prel.getMaladie().getPatient().setBanqueAndGetIdentifiantAsString(prel.getBanque()));
          if(getAccessPatient()){
             identifiantLabel.addForward(null, identifiantLabel.getParent(), "onClickPatient", prel);
             identifiantLabel.setClass("formLink");

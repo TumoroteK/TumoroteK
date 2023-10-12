@@ -427,16 +427,11 @@ public class Patient extends TKDelegetableObject<Patient> implements TKAnnotable
       this.patientIdentifiants = _i;
    }
    
+   //TG-182
    @Transient
-   public PatientIdentifiant getIdentifiant(Banque _b) {
-      return patientIdentifiants.stream()
-         .filter(i -> i.getBanque().equals(_b)).findFirst()
-         .orElse(new PatientIdentifiant(this, _b));
-   }
-   
-   @Transient
-   public String getIdentifiantAsString(Banque _b) {
-      return getIdentifiant(_b).getIdentifiant();
+   public String setBanqueAndGetIdentifiantAsString(Banque _b) {
+      setBanque(_b);
+      return getIdentifiantAsString();
    }
    
    @Transient
@@ -448,15 +443,12 @@ public class Patient extends TKDelegetableObject<Patient> implements TKAnnotable
    
    @Transient
    public String getIdentifiantAsString() {
-      return getIdentifiant(banque).getIdentifiant();
+      return getIdentifiant().getIdentifiant();
    }
    
    public boolean hasIdentifiant() {
-      return getIdentifiant(banque) != null && !getIdentifiant(banque).isEmpty();
-   }
-   
-   public boolean hasIdentifiant(Banque bank) {
-      return getIdentifiant(bank) != null && !getIdentifiant(bank).isEmpty();
+      PatientIdentifiant patientIdentifiant = getIdentifiant();
+      return patientIdentifiant != null && !patientIdentifiant.isEmpty();
    }
    
    public void addToIdentifiants(PatientIdentifiant ident) {
@@ -598,14 +590,14 @@ public class Patient extends TKDelegetableObject<Patient> implements TKAnnotable
       // @since gatsbi
       // se base sur identifiant si banque (transient)
       // attribuée au patient
-      if (getIdentifiantAsString(banque) == null) {
+      if (getIdentifiantAsString() == null) {//TG-182
          if(getPrenom() != null){
             return getNom() + " " + getPrenom();
          }else{
             return getNom();
          }
       } else { // supprime patient créé depuis collection étude gatsbi
-         return getIdentifiantAsString(banque);
+         return getIdentifiantAsString();
       }
    }
 

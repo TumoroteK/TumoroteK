@@ -207,14 +207,17 @@ public class FichePatientEditGatsbi extends FichePatientEdit
       }
    }
    
-   // TODO toutes collections ? Afficher une liste ?
+   // TODO toutes collections ? Afficher une liste ? 
+   //TG-182
+   // CHT : pas modifiable en toutes collections => on ne va pas dans ce code lié à l'édition...
    public String getIdentifiant() {
-      return patient.getIdentifiantAsString(SessionUtils.getCurrentBanque(sessionScope));
+      return patient.getIdentifiantAsString();
    }
    
    // TODO toutes collections = non modifiable
+   //TG-182
    public void setIdentifiant(String identifiant) {
-      PatientIdentifiant currPatIdent = patient.getIdentifiant(SessionUtils.getCurrentBanque(sessionScope));
+      PatientIdentifiant currPatIdent = patient.getIdentifiant();
       currPatIdent.setIdentifiant(identifiant);
       
       // met à jour (si nécessaire) la relation patient-banque-identifiant
@@ -252,7 +255,8 @@ public class FichePatientEditGatsbi extends FichePatientEdit
       super.switchToEditMode();
       
       // inclusion d'un patient existant dans une collection gatsbi
-      if (!patient.hasIdentifiant(SessionUtils.getCurrentBanque(sessionScope)) 
+      //TG-182
+      if (!patient.hasIdentifiant() 
          && GatsbiControllerPatient.getSchemaVisitesDefinedByEtude(sessionScope)) {
          
          patient.setMaladies(new HashSet<Maladie>(

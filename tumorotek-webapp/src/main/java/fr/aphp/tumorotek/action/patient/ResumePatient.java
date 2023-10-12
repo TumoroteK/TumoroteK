@@ -263,9 +263,10 @@ public class ResumePatient
       
       // @since 2.3.0-gatsbi
       if (patientContexte != null) { // identifiant must be set
-         identifiantLabel.setValue(patient
-            .getIdentifiantAsString(prelevement != null && prelevement.getBanque() != null ? 
-               prelevement.getBanque() : curBanque));
+         //TG-182 : rattachement du patient à la banque pour laquelle on cherche l'identifiant
+         patient.setBanque(prelevement != null && prelevement.getBanque() != null ? 
+            prelevement.getBanque() : curBanque);
+         identifiantLabel.setValue(patient.getIdentifiantAsString());
       }
       
       if(!anonyme){

@@ -111,8 +111,10 @@ public class PatientRowRendererGatsbi extends PatientRowRenderer implements RowR
       // mode collection -> affiche identifiant / inclure
       if (!Sessions.getCurrent().hasAttribute("ToutesCollections")) {
          
-         identifiantLabel = new Label(pat.hasIdentifiant(curBanque) ? 
-            (pat.getIdentifiantAsString(curBanque)) : Labels.getLabel("gatsbi.patient.include"));
+         //TG-182 : on associe la patient à la banque courante pour récupérer l'identifiant associé si il existe
+         pat.setBanque(curBanque);
+         identifiantLabel = new Label(pat.hasIdentifiant() ? 
+            (pat.getIdentifiantAsString()) : Labels.getLabel("gatsbi.patient.include"));
         
          identifiantLabel.setParent(row);
 
