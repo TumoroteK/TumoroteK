@@ -1086,7 +1086,7 @@ public class FicheProdDeriveStatic extends AbstractFicheStaticController
          prlvt = ManagerLocator.getProdDeriveManager().getPrelevementParent(prodDerive);
       }
       if(prlvt != null){
-         return PrelevementUtils.getPatientNomAndPrenom(prlvt);
+         return PrelevementUtils.getPatientNomAndPrenomOrIdentifiantGatsbi(prlvt);
       }
       return null;
    }

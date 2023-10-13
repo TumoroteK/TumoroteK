@@ -1457,7 +1457,7 @@ public class FicheTemplateModale extends AbstractImpressionController
          final LigneParagraphe li1 = new LigneParagraphe("li1", new CoupleValeur[] {cp1, cp2});
 
          final CoupleValeur cp3 =
-            new CoupleValeur(Labels.getLabel("prelevement.patient"), PrelevementUtils.getPatientNomAndPrenom(prlvt));
+            new CoupleValeur(Labels.getLabel("prelevement.patient"), PrelevementUtils.getPatientNomAndPrenomOrIdentifiantGatsbi(prlvt));
          cp3.setAnonyme(anonyme);
 
          final List<CoupleValeur> vals = new ArrayList<>();
@@ -1908,7 +1908,7 @@ public class FicheTemplateModale extends AbstractImpressionController
             prlvt = ManagerLocator.getProdDeriveManager().getPrelevementParent(derive);
          }
          if(prlvt != null){
-            tmp = PrelevementUtils.getPatientNomAndPrenom(prlvt);
+            tmp = PrelevementUtils.getPatientNomAndPrenomOrIdentifiantGatsbi(prlvt);
          }else{
             tmp = "-";
          }

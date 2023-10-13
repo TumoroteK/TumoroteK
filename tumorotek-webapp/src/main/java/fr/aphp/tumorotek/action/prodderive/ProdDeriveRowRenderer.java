@@ -347,7 +347,7 @@ public class ProdDeriveRowRenderer extends TKSelectObjectRenderer<ProdDerive>
       final Prelevement prlvt = ManagerLocator.getProdDeriveManager().getPrelevementParent(derive);
 
       if(prlvt != null){
-         return PrelevementUtils.getPatientNomAndPrenom(prlvt);
+         return PrelevementUtils.getPatientNomAndPrenomOrIdentifiantGatsbi(prlvt);
       }
       return "";
    }

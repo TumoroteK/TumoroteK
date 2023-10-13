@@ -67,7 +67,7 @@ public final class PrelevementUtils
     * @param prelevement
     * @return String
     */
-   public static String getPatientNomAndPrenom(final Prelevement prel){
+   public static String getPatientNomAndPrenomOrIdentifiantGatsbi(final Prelevement prel){
       final StringBuffer sb = new StringBuffer();
 
       final Maladie maladie = prel.getMaladie();
