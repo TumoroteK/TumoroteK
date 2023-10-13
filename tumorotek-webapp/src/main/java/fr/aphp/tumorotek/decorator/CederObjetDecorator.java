@@ -518,7 +518,7 @@ public class CederObjetDecorator
          }
 
          if(prlvt != null){
-            return PrelevementUtils.getPatientNomAndPrenom(prlvt);
+            return PrelevementUtils.getPatientNomAndPrenomOrIdentifiantGatsbi(prlvt);
          }
          return null;
       }

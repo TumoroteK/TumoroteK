@@ -340,7 +340,7 @@ public class FicheEchantillonEdit extends AbstractFicheEditController
 
    public String getNomPatient(){
       if(this.prelevement != null){
-         return PrelevementUtils.getPatientNomAndPrenom(prelevement);
+         return PrelevementUtils.getPatientNomAndPrenomOrIdentifiantGatsbi(prelevement);
       }
       return null;
    }

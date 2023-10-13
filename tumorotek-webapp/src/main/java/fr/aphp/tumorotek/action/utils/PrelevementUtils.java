@@ -67,7 +67,7 @@ public final class PrelevementUtils
     * @param prelevement
     * @return String
     */
-   public static String getPatientNomAndPrenom(final Prelevement prel){
+   public static String getPatientNomAndPrenomOrIdentifiantGatsbi(final Prelevement prel){
       final StringBuffer sb = new StringBuffer();
 
       final Maladie maladie = prel.getMaladie();
@@ -84,7 +84,18 @@ public final class PrelevementUtils
          }else if(pat.getPrenom() != null){
             sb.append(pat.getPrenom());
          }
+         //TG-188 : cas des patients Gatsbi avec uniquement un identifiant
+         //on retourne alors celui-ci pour éviter d'avoir "vide"
+         else {
+            if(pat.getBanque() == null) {
+               pat.setBanque(prel.getBanque());
+            }
+            if(pat.hasIdentifiant()) {
+               sb.append(pat.getIdentifiantAsString());
+            }
+         }
       }
+      
       return sb.toString();
    }
 

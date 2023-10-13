@@ -261,7 +261,7 @@ public class PrelevementRowRenderer extends TKSelectObjectRenderer<Prelevement>
             }
          }else{
             if (renderNom) { // affiche nom + prenom demandé
-               final Label patientLabel = new Label(PrelevementUtils.getPatientNomAndPrenom(prel));
+               final Label patientLabel = new Label(PrelevementUtils.getPatientNomAndPrenomOrIdentifiantGatsbi(prel));
                if(getAccessPatient()){
                   patientLabel.addForward(null, patientLabel.getParent(), "onClickPatient", prel);
                   patientLabel.setClass("formLink");
