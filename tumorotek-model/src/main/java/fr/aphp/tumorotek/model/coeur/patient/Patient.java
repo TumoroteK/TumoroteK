@@ -188,6 +188,8 @@ public class Patient extends TKDelegetableObject<Patient> implements TKAnnotable
    
    // flag
    private boolean newIdentifiantAdded = false;
+   
+   private final static String EMPTY_PATIENT = "{Empty Patient}";
 
    /** Constructeur par défaut. */
    public Patient(){}
@@ -206,7 +208,7 @@ public class Patient extends TKDelegetableObject<Patient> implements TKAnnotable
          //  }else if(this.identifiant != null){
          //    return "{" + this.identifiant + "}";
       }else{
-         return "{Empty Patient}";
+         return EMPTY_PATIENT;
       }
    }
 
@@ -489,6 +491,16 @@ public class Patient extends TKDelegetableObject<Patient> implements TKAnnotable
          return false;
       }
       final Patient test = (Patient) obj;
+      
+      //TG-183 : si les 2 patients à comparer n'ont aucun champ renseigné (EMPTY_PATIENT) : cas de patient Gatsbi avec uniquement un identifiant,
+      //il faut considérer qu'ils ne sont jamais égaux sauf si ils ont le même patientId
+      String thisToString = toString(); 
+      if(thisToString.equals(EMPTY_PATIENT) && test.toString().equals(thisToString)) {
+         if(patientId != null && test.getPatientId() != null) {
+            return patientId == test.getPatientId();
+         }
+         return false;
+      }
 
       final boolean eq = Objects.equals(nom, test.getNom())
          && Objects.equals(prenom, test.getPrenom())
