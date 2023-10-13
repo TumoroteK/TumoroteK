@@ -72,6 +72,8 @@ public class PatientItemRendererGatsbi extends PatientItemRenderer
    @Override
    protected void renderPatient(Listitem li, Patient pat){
       
+      //TG-182 : affectation du patient à la banque courante :
+      pat.setBanque(banque);
       identifiantBox = renderIdentifiantForBanque(li, pat);
       
       if (contexte.isChampIdVisible(2)) {
@@ -98,7 +100,7 @@ public class PatientItemRendererGatsbi extends PatientItemRenderer
    private Textbox renderIdentifiantForBanque(Listitem li, Patient pat) {
             
       // textbox pour ajouter un identifiant
-      if(isIdentifiantEditable && !pat.hasIdentifiant(banque)){
+      if(isIdentifiantEditable && !pat.hasIdentifiant()){
          // tb.setInplace(true);
         final Textbox tb = new Textbox();
          tb.setAttribute("patient", pat);
@@ -109,7 +111,7 @@ public class PatientItemRendererGatsbi extends PatientItemRenderer
          
          return tb;
       }else{ // affichage identifiant
-         new Listcell(pat.getIdentifiantAsString(banque)).setParent(li);
+         new Listcell(pat.getIdentifiantAsString()).setParent(li);
       }
       
       return null;

@@ -105,7 +105,7 @@ public class ListePrelevementGatsbi extends ListePrelevement
       GatsbiControllerPrelevement.drawBanqueColumn(objectsListGrid, isTtesCollection());
 
       // patient, identifiant colonne toujours affichée
-      GatsbiController.addColumn(objectsListGrid, "Champ.Patient.Identifiant", null, null, null, null, true);
+      GatsbiController.addColumn(objectsListGrid, "Champ.Patient.Identifiant", null, null, null, "auto(maladie.patient.identifiant.identifiant)", true);
 
       // patient
       Contexte patientContexte = SessionUtils.getCurrentGatsbiContexteForEntiteId(1);
