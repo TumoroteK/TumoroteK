@@ -36,11 +36,9 @@
 package fr.aphp.tumorotek.manager.utilisateur;
 
 import java.util.List;
-import java.util.Map;
 
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.contexte.Plateforme;
-import fr.aphp.tumorotek.model.contexte.gatsbi.Etude;
 import fr.aphp.tumorotek.model.utilisateur.Profil;
 import fr.aphp.tumorotek.model.utilisateur.ProfilUtilisateur;
 import fr.aphp.tumorotek.model.utilisateur.ProfilUtilisateurPK;
@@ -183,15 +181,4 @@ public interface ProfilUtilisateurManager
     */
    Long countDistinctProfilForUserAndPlateformeManager(Utilisateur u, Plateforme p);
 
-   /**
-    * Compte pour un utilisateur le nombre de profils différents qui lui sont attribués
-    * pour accéder aux banques de chaque étude, donc de contexte GATSBI, pour une plateforme donnée.
-    * Cette méthode permet de visualiser rapidement, si le nombre de profils est supérieur à 1,
-    * si l'utilisateur pourra accéder en mode 'toutes collections' pour chacune des études
-    * @param u utilisateur
-    * @param p plateforme
-    * @return nombre de profils d'accès distincts par étude
-    * @since 2.3.0-gatsbi
-    */
-   Map<Etude, Long> countDistinctProfilForUserAndPlateformeGroupedByEtudeManager(Utilisateur u, Plateforme p);
 }
