@@ -1,5 +1,20 @@
 #### Notes de version
 
+##### Version 2.3.0.4 - Publiée le 19/10/2023
+###### Corrections hors Gatsbi
+- intégration de la correction de la version 2.2.9
+- YouTrack [TG-168](https://tumorotek.myjetbrains.com/youtrack/issue/TG-168) : [TK] - Imports : plantage lors du clic sur Nouveau modèle dérivés
+
+###### Corrections dans TK pour un contexte Gatsbi
+- YouTrack [TG-181](https://tumorotek.myjetbrains.com/youtrack/issue/TG-181) : [TK] - Import Echantillon : échec systématique à cause du champ unité de la quantité
+- YouTrack [TG-182](https://tumorotek.myjetbrains.com/youtrack/issue/TG-182) : [TK] - Liste des patients : plantage lors du tri sur la colonne identifiant
+- YouTrack [TG-183](https://tumorotek.myjetbrains.com/youtrack/issue/TG-183) : [TK] - Fiche Patient : erreur "doublon" quand modification du libellé d'une visite
+- YouTrack [TG-187](https://tumorotek.myjetbrains.com/youtrack/issue/TG-187) : [TK] - Plantage sur la liste patients en "toutes collections"
+- YouTrack [TG-188](https://tumorotek.myjetbrains.com/youtrack/issue/TG-188) : [TK] - Fiche Echantillon : Patient vide dans bloc Prélèvement pour collection Gatsbi et patient avec uniquement un identifiant
+- YouTrack [TG-192](https://tumorotek.myjetbrains.com/youtrack/issue/TG-192) : [TK] - Liste Patients en toutes collections, affichage de l'identifiant pour les patients anonymes "Gatsbi" pour éviter les lignes vides
+- YouTrack [TG-193](https://tumorotek.myjetbrains.com/youtrack/issue/TG-193) : [TK] - Fiche Patient anonyme "Gatsbi", en toutes collection : affichage de l'identifiant du patient (unique dans ce cas) pour éviter un haut de fiche vide
+
+
 ##### Version 2.3.0.3 - Publiée le 17/07/2023
 ###### Corrections dans TK pour un contexte Gatsbi
 - YouTrack [TG-163](https://tumorotek.myjetbrains.com/youtrack/issue/TG-163) : [TK] - Prélèvement & Echantillon : filtre sur les thesaurus d'un champ lié non pris en compte
@@ -17,12 +32,17 @@
 - YouTrack [TG-164](https://tumorotek.myjetbrains.com/youtrack/issue/TG-164) : [Gatsbi] - Contexte : non prise en compte en base de données d'une mise à jour de filtre de thesaurus
 
 ###### Corrections hors Gatsbi
-- intégration des corrections / évolutions de la version 2.2.8 
+- intégration des corrections / évolutions de la version 2.2.8
+- YouTrack [TK-404](https://tumorotek.myjetbrains.com/youtrack/issue/TK-404) : Création d'un dérivé : position du curseur à l'affichage de l'écran
 
 
 ***
 
-##### Version 2.2.8 (dernière version sans le module Gatsbi) - Publiée le 17/05/2023
+##### Version 2.2.9 (dernière version sans le module Gatsbi) - Publiée le 14/09/2023
+###### Corrections
+- YouTrack [TK-446](https://tumorotek.myjetbrains.com/youtrack/issue/TK-446) : <span class="badge badge-export">Export</span> correction du plantage avec Mysql8 à cause de la valeur par défaut de sql_mode (pas de problème avec Mariadb)
+
+##### Version 2.2.8 - Publiée le 17/05/2023
 ###### Corrections
 - YouTrack [TK-322](https://tumorotek.myjetbrains.com/youtrack/issue/TK-322) : la désactivation d'un compte avec accès LDAP n'est pas prise en compte
 - YouTrack [TK-333](https://tumorotek.myjetbrains.com/youtrack/issue/TK-333) : <span class="badge badge-stockage">Evènement de stockage</span> Sécurisation de  la gestion de l'attribut stérile lors d'un déplacement de boîte
