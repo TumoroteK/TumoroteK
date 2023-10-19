@@ -501,7 +501,7 @@ public class Patient extends TKDelegetableObject<Patient> implements TKAnnotable
       //il faut considérer qu'ils ne sont jamais égaux sauf si ils ont le même patientId
       if(isEmptyPatient() && test.toString().equals(toString())) {
          if(patientId != null && test.getPatientId() != null) {
-            return patientId == test.getPatientId();
+            return patientId.equals(test.getPatientId());
          }
          return false;
       }
