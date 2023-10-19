@@ -1,7 +1,16 @@
 #### Notes de version
 
-##### Version 2.3.0.4-SNAPSHOT - Publiée le ????
+##### Version 2.3.0.4 - Publiée le 19/10/2023
 - intégration de la correction de la version 2.2.9
+- YouTrack [TG-168](https://tumorotek.myjetbrains.com/youtrack/issue/ : [TK] - Import : plantage lors du clic sur Nouveau modèle dérivés
+- YouTrack [TG-181](https://tumorotek.myjetbrains.com/youtrack/issue/ : [TK] - Import Echantillon : échec systématique à cause du champ unité de la quantité
+- YouTrack [TG-182](https://tumorotek.myjetbrains.com/youtrack/issue/ : [TK] - Liste des patients : plantage lors du tri sur la colonne identifiant
+- YouTrack [TG-183](https://tumorotek.myjetbrains.com/youtrack/issue/ : [TK] - Fiche Patient : erreur "doublon" quand modification du libellé d'une visite
+- YouTrack [TG-187](https://tumorotek.myjetbrains.com/youtrack/issue/ : [TK] - Plantage sur la liste patients en "toutes collections"
+- YouTrack [TG-188](https://tumorotek.myjetbrains.com/youtrack/issue/ : [TK] - Fiche Echantillon : Patient vide dans bloc Prélèvement pour collection Gatsbi et patient avec uniquement un identifiant
+- YouTrack [TG-192](https://tumorotek.myjetbrains.com/youtrack/issue/ : [TK] - Liste Patients en toutes collections, affichage de l'identifiant pour les patients anonymes "Gatsbi" pour éviter les lignes vides
+- YouTrack [TG-193](https://tumorotek.myjetbrains.com/youtrack/issue/ : [TK] - Fiche Patient anonyme "Gatsbi", en toutes collection : affichage de l'identifiant du patient (unique dans ce cas) pour éviter un haut de fiche vide
+
 
 ##### Version 2.3.0.3 - Publiée le 17/07/2023
 ###### Corrections dans TK pour un contexte Gatsbi
