@@ -139,9 +139,8 @@ public class PatientRowRenderer extends TKSelectObjectRenderer<Patient>
       //TG-192 : cas particulier "Toutes collections" et patient "empty" :
       if(Sessions.getCurrent().hasAttribute("ToutesCollections") && pat.isEmptyPatient()) {
          //le patient étant empty il n'est forcément rattaché qu'à une seule banque donc n'a qu'un seul identifiant
-         PatientIdentifiant patientIdentifiant = pat.getPatientIdentifiants().iterator().next();
          //on affiche le nom de celle-ci entre [], après l'identifiant 
-         String identifiantAAfficher = patientIdentifiant.getIdentifiant().concat(" [").concat(patientIdentifiant.getBanque().getNom()).concat("]");
+         String identifiantAAfficher = PatientUtils.concatPatientIdentifiantEtCollectionForUniquePatientIdentifiant(pat);
          renderClickableValue(row, identifiantAAfficher, pat);
       }
       else {
