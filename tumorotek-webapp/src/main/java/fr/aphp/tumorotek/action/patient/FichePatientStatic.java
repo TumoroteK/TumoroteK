@@ -46,6 +46,7 @@ import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Components;
 import org.zkoss.zk.ui.HtmlBasedComponent;
 import org.zkoss.zk.ui.HtmlMacroComponent;
+import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
@@ -66,6 +67,7 @@ import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
 import fr.aphp.tumorotek.model.TKdataObject;
 import fr.aphp.tumorotek.model.coeur.patient.Maladie;
 import fr.aphp.tumorotek.model.coeur.patient.Patient;
+import fr.aphp.tumorotek.model.coeur.patient.gatsbi.PatientIdentifiant;
 import fr.aphp.tumorotek.model.coeur.prelevement.Prelevement;
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.contexte.Collaborateur;
@@ -778,12 +780,25 @@ public class FichePatientStatic extends AbstractFicheStaticController
     * @return
     */
    public String getNipFormatted(){
+      //TG-193 : exception : affichage de l'identifiant du patient dans le champ Nip dans le cas 
+      //de "Toutes les collections" et patient empty sinon du fait qu'on est sur le masque "standard"
+      //qui n'affiche pas l'identifiant, l'utilisateur n'a aucun élément relatif à l'identification du patient 
+      if(Sessions.getCurrent().hasAttribute("ToutesCollections") && getObject().isEmptyPatient()) {
+         if(getObject().getPatientIdentifiants().size() > 0) {//size vaut forcément 1
+            PatientIdentifiant patientIdentifiant = getObject().getPatientIdentifiants().iterator().next();
+            //on affiche le nom de celle-ci entre [], après l'identifiant 
+            String identifiantAAfficher = patientIdentifiant.getIdentifiant().concat(" [").concat(patientIdentifiant.getBanque().getNom()).concat("]");
+            return identifiantAAfficher;
+         }
+      }
+
       if(isAnonyme()){
          makeLabelAnonyme(nipLabel, false);
          return getAnonymeString();
       }
       nipLabel.setSclass("formValue");
       return this.getObject().getNip();
+
    }
 
    /**
