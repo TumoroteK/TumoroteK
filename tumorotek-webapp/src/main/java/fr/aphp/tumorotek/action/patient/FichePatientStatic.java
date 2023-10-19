@@ -784,12 +784,7 @@ public class FichePatientStatic extends AbstractFicheStaticController
       //de "Toutes les collections" et patient empty sinon du fait qu'on est sur le masque "standard"
       //qui n'affiche pas l'identifiant, l'utilisateur n'a aucun élément relatif à l'identification du patient 
       if(Sessions.getCurrent().hasAttribute("ToutesCollections") && getObject().isEmptyPatient()) {
-         if(getObject().getPatientIdentifiants().size() > 0) {//size vaut forcément 1
-            PatientIdentifiant patientIdentifiant = getObject().getPatientIdentifiants().iterator().next();
-            //on affiche le nom de celle-ci entre [], après l'identifiant 
-            String identifiantAAfficher = patientIdentifiant.getIdentifiant().concat(" [").concat(patientIdentifiant.getBanque().getNom()).concat("]");
-            return identifiantAAfficher;
-         }
+         return PatientUtils.concatPatientIdentifiantEtCollectionForUniquePatientIdentifiant(patient);
       }
 
       if(isAnonyme()){
