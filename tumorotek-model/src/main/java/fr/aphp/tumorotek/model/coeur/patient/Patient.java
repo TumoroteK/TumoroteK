@@ -212,6 +212,11 @@ public class Patient extends TKDelegetableObject<Patient> implements TKAnnotable
       }
    }
 
+   @Transient
+   public boolean isEmptyPatient() {
+      return this.toString().equals(EMPTY_PATIENT);
+   }
+   
    @Id
    @Column(name = "PATIENT_ID", unique = true, nullable = false)
    @GeneratedValue(generator = "autoincrement")
@@ -494,8 +499,7 @@ public class Patient extends TKDelegetableObject<Patient> implements TKAnnotable
       
       //TG-183 : si les 2 patients à comparer n'ont aucun champ renseigné (EMPTY_PATIENT) : cas de patient Gatsbi avec uniquement un identifiant,
       //il faut considérer qu'ils ne sont jamais égaux sauf si ils ont le même patientId
-      String thisToString = toString(); 
-      if(thisToString.equals(EMPTY_PATIENT) && test.toString().equals(thisToString)) {
+      if(isEmptyPatient() && test.toString().equals(toString())) {
          if(patientId != null && test.getPatientId() != null) {
             return patientId == test.getPatientId();
          }
