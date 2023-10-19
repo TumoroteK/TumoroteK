@@ -47,6 +47,7 @@ import org.zkoss.util.resource.Labels;
 import fr.aphp.tumorotek.action.ManagerLocator;
 import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
 import fr.aphp.tumorotek.model.coeur.patient.Patient;
+import fr.aphp.tumorotek.model.coeur.patient.gatsbi.PatientIdentifiant;
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
@@ -237,4 +238,45 @@ public final class PatientUtils
       }
       return ObjectTypesFormatters.dateRenderer2(patient.getDateDeces());
    }
+
+   /**
+    * retourne l'identifiant du patient suivi du nom de la collection associé à celui-ci
+    * @param patientIdentifiant
+    * @return "id [nomCollection]"
+    */
+   public static String concatPatientIdentifiantEtCollection(PatientIdentifiant patientIdentifiant) {
+      if(patientIdentifiant != null) { 
+         return  patientIdentifiant.getIdentifiant().concat(" [").concat(patientIdentifiant.getBanque().getNom()).concat("]");
+      }
+      return null;
+   }
+   
+   /**
+    * renvoie la concaténation "identifiant [nomCollection]" pour l'unique identifiant patient
+    * du patient passé en paramètre.
+    * Ne doit donc être appelé que sur des patients dont on est sûr qu'il n'y a qu'un identifiant. 
+    * Ex : le patient "empty".
+    * @param patient
+    * @return "id [nomCollection]"
+    * @throws IllegalArgumentException si la patient à plus d'un patient identifiant
+    */
+   //NB : Généralement patient empty est testé avant appel de cette méthode donc on ne reteste pas pour des questions de perf
+   //(cette méthode est généralement appelée en Toutes collections donc sur de gros volumes)
+   //Par contre, pour sécuriser, test qu'il n'y a bien qu'un seul identifiant...
+   public static String concatPatientIdentifiantEtCollectionForUniquePatientIdentifiant(Patient patient) throws IllegalArgumentException {
+      String result = "";
+      if(patient != null) {
+         int nbPatientIdentifiant = patient.getPatientIdentifiants().size();
+         if(nbPatientIdentifiant == 1) { 
+            PatientIdentifiant patientIdentifiant = patient.getPatientIdentifiants().iterator().next();
+            result = concatPatientIdentifiantEtCollection(patientIdentifiant);
+         }
+         else if (nbPatientIdentifiant > 1) {
+            throw new IllegalArgumentException("le patient passé en paramètre ne doit contenir qu'un seul identifiant");
+         }
+      }
+      
+      return result;
+   }
+
 }
