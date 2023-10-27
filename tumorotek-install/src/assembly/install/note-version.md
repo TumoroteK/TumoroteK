@@ -12,7 +12,7 @@
 - YouTrack [TG-187](https://tumorotek.myjetbrains.com/youtrack/issue/TG-187) : [TK] - Plantage sur la liste patients en "toutes collections"
 - YouTrack [TG-188](https://tumorotek.myjetbrains.com/youtrack/issue/TG-188) : [TK] - Fiche Echantillon : Patient vide dans bloc Prélèvement pour collection Gatsbi et patient avec uniquement un identifiant
 - YouTrack [TG-192](https://tumorotek.myjetbrains.com/youtrack/issue/TG-192) : [TK] - Liste Patients en toutes collections, affichage de l'identifiant pour les patients anonymes "Gatsbi" pour éviter les lignes vides
-- YouTrack [TG-193](https://tumorotek.myjetbrains.com/youtrack/issue/TG-193) : [TK] - Fiche Patient anonyme "Gatsbi", en toutes collection : affichage de l'identifiant du patient (unique dans ce cas) pour éviter un haut de fiche vide
+- YouTrack [TG-193](https://tumorotek.myjetbrains.com/youtrack/issue/TG-193) : [TK] - Fiche Patient anonyme "Gatsbi", en toutes collections : affichage de l'identifiant du patient (unique dans ce cas) pour éviter un haut de fiche vide
 
 ###### Corrections dans le module Gatsbi
 - YouTrack [TG-184](https://tumorotek.myjetbrains.com/youtrack/issue/TG-184) : [Gatsbi] - Contexte : même valeur présente plusieurs fois sur certains thesaurus
