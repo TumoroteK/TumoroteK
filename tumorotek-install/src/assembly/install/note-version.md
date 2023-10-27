@@ -14,6 +14,9 @@
 - YouTrack [TG-192](https://tumorotek.myjetbrains.com/youtrack/issue/TG-192) : [TK] - Liste Patients en toutes collections, affichage de l'identifiant pour les patients anonymes "Gatsbi" pour éviter les lignes vides
 - YouTrack [TG-193](https://tumorotek.myjetbrains.com/youtrack/issue/TG-193) : [TK] - Fiche Patient anonyme "Gatsbi", en toutes collection : affichage de l'identifiant du patient (unique dans ce cas) pour éviter un haut de fiche vide
 
+###### Corrections dans le module Gatsbi
+- YouTrack [TG-184](https://tumorotek.myjetbrains.com/youtrack/issue/TG-184) : [Gatsbi] - Contexte : même valeur présente plusieurs fois sur certains thesaurus
+
 
 ##### Version 2.3.0.3 - Publiée le 17/07/2023
 ###### Corrections dans TK pour un contexte Gatsbi
