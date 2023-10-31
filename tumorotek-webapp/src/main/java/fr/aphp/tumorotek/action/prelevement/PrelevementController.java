@@ -44,24 +44,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import fr.aphp.tumorotek.utils.MessagesUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Components;
 import org.zkoss.zk.ui.Executions;
-import org.zkoss.zk.ui.HtmlMacroComponent;
 import org.zkoss.zk.ui.Page;
-import org.zkoss.zk.ui.Path;
-import org.zkoss.zk.ui.SuspendNotAllowedException;
-import org.zkoss.zk.ui.event.Event;
-import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Tabbox;
 import org.zkoss.zul.Tabpanel;
-import org.zkoss.zul.Timer;
-import org.zkoss.zul.Window;
 
 import fr.aphp.tumorotek.action.MainWindow;
 import fr.aphp.tumorotek.action.ManagerLocator;
@@ -134,6 +128,16 @@ public class PrelevementController extends AbstractObjectTabController
    // private DossierExterne dossierExterne;
 
    private PatientSip patientSip;
+
+   private boolean isDateFieldModified = false;
+
+   public boolean isDateFieldModified(){
+      return isDateFieldModified;
+   }
+
+   public void setDateFieldModified(boolean dateFieldModified){
+      isDateFieldModified = dateFieldModified;
+   }
 
    public Maladie getMaladie(){
       return maladie;
@@ -783,4 +787,28 @@ public class PrelevementController extends AbstractObjectTabController
 
       return parents;
    }
+
+   /**
+    * Met à jour le délai de congélation pour un prélèvement, en vérifiant s'il existe des échantillons
+    * avec des délais non calculés, avec interaction utilisateur le cas échéant.
+    *
+    * @param prelevement Le prélèvement à gérer.
+    */
+   public void miseAJourDelaiCongelation(Prelevement prelevement){
+      boolean hasEchantillonWithNonCalculatedDelai = ManagerLocator.getEchantillonManager().hasEchantillonWithNonCalculatedDelai(prelevement);
+
+      if (hasEchantillonWithNonCalculatedDelai) {
+         // Ouvrir la fenêtre modale et récupération de la réponse de l'utilisateur
+         String title = Labels.getLabel("message.title.maj.delaicongelation");
+         String message = Labels.getLabel("message.question.maj.delaicongelation");
+         boolean isUserAccepted = MessagesUtils.openQuestionModal(title, message);
+
+         if (isUserAccepted) {
+            ManagerLocator.getEchantillonManager().updateDelaiCongelation(prelevement);
+         }
+      } else {
+         ManagerLocator.getEchantillonManager().updateDelaiCongelation(prelevement);
+      }
+   }
+
 }
