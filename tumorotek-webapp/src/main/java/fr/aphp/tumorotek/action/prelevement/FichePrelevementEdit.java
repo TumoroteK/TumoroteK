@@ -834,7 +834,7 @@ public class FichePrelevementEdit extends AbstractFicheEditController
 
          // TK-427: Mettre à jour le délai de congélation des échantillons
          if (isCalendarBoxChanged){
-            boolean isClcikedOk = MessagesUtils.openQuestionModal("title", "are you sure");
+            boolean isClcikedOk = MessagesUtils.openQuestionModal("Code", "are you sure");
             System.out.println(isClcikedOk);
          }
 
