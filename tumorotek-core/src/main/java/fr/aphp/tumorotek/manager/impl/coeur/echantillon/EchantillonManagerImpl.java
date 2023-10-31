@@ -2116,5 +2116,28 @@ public class EchantillonManagerImpl implements EchantillonManager
       }
 
  }
+
+   /**
+    * Vérifie si un Prélèvement contient des échantillons avec des délais de congélation saisis manuellement
+    * qui ne sont pas calculés.
+    *
+    * @param prelevement Le Prélèvement à vérifier.
+    * @return  false: si tous les échantillons du Prélèvement ont un délai de congélation calculé,
+    *          true: dès qu'un échantillon avec un délai de congélation saisi manuellement est trouvé.
+    */
+   @Override
+   public boolean hasEchantillonWithNonCalculatedDelai(Prelevement prelevement){
+      final List<Echantillon> echantillons = findByPrelevementManager(prelevement);
+      for(Echantillon echantillon : echantillons){
+         if(echantillon.getDateStock() != null){
+            long delayCongeLong = calculDelaiStockage(echantillon, prelevement);
+
+            if(delayCongeLong != echantillon.getDateStock().getTimeInMillis()){
+               return true;
+            }
+         }
+      }
+      return false;
+   }
 }
 

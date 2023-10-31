@@ -217,8 +217,6 @@ public class FichePrelevementEdit extends AbstractFicheEditController
 
    protected boolean isAnonyme = false;
 
-   protected boolean isCalendarBoxChanged = false;
-
    protected Window referenceur;
 
    protected boolean isPatientMaladieStatic = false;
@@ -832,11 +830,12 @@ public class FichePrelevementEdit extends AbstractFicheEditController
             getObjectTabController().getFicheAnnotation().getValeursToDelete(), filesCreated, filesToDelete,
             SessionUtils.getLoggedUser(sessionScope), cascadeNonSterile, true, SessionUtils.getSystemBaseDir(), false);
 
+
          // TK-427: Mettre à jour le délai de congélation des échantillons
-         if (isCalendarBoxChanged){
-            boolean isClcikedOk = MessagesUtils.openQuestionModal("Code", "are you sure");
-            System.out.println(isClcikedOk);
+         if (getObjectTabController().isDateFieldModified()) {
+            getObjectTabController().miseAJourDelaiCongelation(prelevement);
          }
+
 
          getObjectTabController().handleExtCom(null, getObject(), getObjectTabController());
 
@@ -851,6 +850,7 @@ public class FichePrelevementEdit extends AbstractFicheEditController
          throw (re);
       }
    }
+
 
    protected Set<Risque> findSelectedRisques(){
       final Set<Risque> rs = new HashSet<>();
@@ -1310,7 +1310,7 @@ public class FichePrelevementEdit extends AbstractFicheEditController
     * à la sortie du champs Date de Prélèvement
     */
    public void onBlur$datePrelCalBox(){
-      isCalendarBoxChanged = true;
+      getObjectTabController().setDateFieldModified(true);
       datePrelCalBox.clearErrorMessage(datePrelCalBox.getValue());
       if(getObjectTabController().isFicheLaboOpened()){
          prelevement.setLaboInters(new HashSet<>(getObjectTabController().getFicheLaboInter().getLaboInters()));
@@ -1400,9 +1400,6 @@ public class FichePrelevementEdit extends AbstractFicheEditController
       return selectedConditMilieu;
    }
 
-   public boolean isCalendarBoxChanged(){
-      return isCalendarBoxChanged;
-   }
 
    public void setSelectedConditMilieu(final ConditMilieu selected){
       this.selectedConditMilieu = selected;

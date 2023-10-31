@@ -832,4 +832,15 @@ public interface EchantillonManager
     * @param prelevement Le prélèvement
     */
    void updateDelaiCongelation(Prelevement prelevement);
+
+   /**
+    * Vérifie si un Prélèvement contient des échantillons avec des délais de congélation saisis manuellement
+    * qui ne sont pas calculés.
+    *
+    * @param prelevement Le Prélèvement à vérifier.
+    * @return  false: si tous les échantillons du Prélèvement ont un délai de congélation calculé,
+    *          true: dès qu'un échantillon avec un délai de congélation saisi manuellement est trouvé.
+    */
+    boolean hasEchantillonWithNonCalculatedDelai(Prelevement prelevement);
+
 }
