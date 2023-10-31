@@ -735,6 +735,11 @@ public class FicheLaboInter extends AbstractFicheEditController
          getObjectTabController().getFicheAnnotation().getValeursToDelete(), SessionUtils.getLoggedUser(sessionScope),
          cascadeNonSterile, true, SessionUtils.getSystemBaseDir(), false, ncfs);
 
+      boolean isDateChanged = getFichePrelevementEdit().isCalendarBoxChanged();
+      // TK-427: Mettre à jour le délai de congélation des échantillons
+      if (isDateChanged){
+         ManagerLocator.getEchantillonManager().updateDelaiCongelation(prelevement);
+      }
       // // pour chaque LaboInter
       // for (int i = 0; i < laboInters.size(); i++) {
       // LaboInter labo = laboInters.get(i);

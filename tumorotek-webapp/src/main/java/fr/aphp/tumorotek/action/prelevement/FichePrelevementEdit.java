@@ -110,7 +110,7 @@ import fr.aphp.tumorotek.model.contexte.gatsbi.Contexte;
 import fr.aphp.tumorotek.model.systeme.Unite;
 import fr.aphp.tumorotek.webapp.gatsbi.GatsbiController;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
-
+import fr.aphp.tumorotek.utils.MessagesUtils;
 /**
  * Controller gérant la fiche en édition d'un prélèvement.
  * Controller créé le 23/06/2010.
@@ -740,10 +740,6 @@ public class FichePrelevementEdit extends AbstractFicheEditController
       // valide les dates donc
       validateAllDateComps();
 
-      // TK-427: Mettre à jour le délai de congélation des échantillons
-      if (isCalendarBoxChanged){
-         ManagerLocator.getEchantillonManager().updateFreezingDelay(prelevement);
-      }
 
       super.onClick$validate();
    }
@@ -835,6 +831,12 @@ public class FichePrelevementEdit extends AbstractFicheEditController
             getObjectTabController().getFicheAnnotation().getValeursToCreateOrUpdate(),
             getObjectTabController().getFicheAnnotation().getValeursToDelete(), filesCreated, filesToDelete,
             SessionUtils.getLoggedUser(sessionScope), cascadeNonSterile, true, SessionUtils.getSystemBaseDir(), false);
+
+         // TK-427: Mettre à jour le délai de congélation des échantillons
+         if (isCalendarBoxChanged){
+            boolean isClcikedOk = MessagesUtils.openQuestionModal("title", "are you sure");
+            System.out.println(isClcikedOk);
+         }
 
          getObjectTabController().handleExtCom(null, getObject(), getObjectTabController());
 
@@ -1396,6 +1398,10 @@ public class FichePrelevementEdit extends AbstractFicheEditController
 
    public ConditMilieu getSelectedConditMilieu(){
       return selectedConditMilieu;
+   }
+
+   public boolean isCalendarBoxChanged(){
+      return isCalendarBoxChanged;
    }
 
    public void setSelectedConditMilieu(final ConditMilieu selected){

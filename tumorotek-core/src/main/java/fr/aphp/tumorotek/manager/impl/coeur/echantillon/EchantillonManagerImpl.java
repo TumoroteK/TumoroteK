@@ -51,11 +51,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.Transient;
 import javax.persistence.TypedQuery;
 
 import org.apache.commons.collections4.CollectionUtils;
@@ -2092,13 +2090,12 @@ public class EchantillonManagerImpl implements EchantillonManager
    }
 
    /**
-    * Met à jour le délai de congélation pour une liste d'échantillons donnée en fonction du prélèvement associé.
+    * Met à jour le délai de congélation des échantillons qui appartient à un prélèvement.
     *
-    * @param prelevement Le prélèvement associé utilisé pour le calcul du délai de congélation.
-    * @return Une liste d'échantillons mise à jour suite aux calculs de délai de congélation.
+    * @param prelevement Le prélèvement
     */
    @Override
-   public void updateFreezingDelay(Prelevement prelevement){
+   public void updateDelaiCongelation(Prelevement prelevement){
       final List<Echantillon> echantillons = findByPrelevementManager(prelevement);
       // Parcours la liste des échantillons pour mettre à jour les délais de congélation
       for(Echantillon echantillon : echantillons){
@@ -2109,7 +2106,7 @@ public class EchantillonManagerImpl implements EchantillonManager
             // Vérifie si le délai de congélation calculé est positif
             if (delayCongeLong > 0){
                // Conversion du délai de congélation en float pour mise à jour et en minutes
-               float delayCongelInMinutes = TimeUtils.millisecondsToMinutes(delayCongeLong);
+               float delayCongelInMinutes = TimeUtils.convertMillisecondsToMinutes(delayCongeLong);
                // Mise à jour du délai de congélation de l'échantillon
                echantillon.setDelaiCgl(delayCongelInMinutes);
                // Mise à jour de l'échantillon dans la base de données

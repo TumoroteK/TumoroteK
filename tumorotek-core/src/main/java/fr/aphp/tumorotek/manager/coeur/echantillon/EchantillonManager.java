@@ -827,11 +827,9 @@ public interface EchantillonManager
    List<Integer> findByPatientIdentifiantOrNomOrNipReturnIdsManager(String search, List<Banque> selectedBanques, boolean b);
 
    /**
-    * Met à jour le délai de congélation pour une liste d'échantillons donnée en fonction du prélèvement associé.
+    * Met à jour le délai de congélation des échantillons qui appartient à un prélèvement.
     *
-    * @param echantillons La liste d'échantillons pour lesquels mettre à jour le délai de congélation.
-    * @param prelevement Le prélèvement associé utilisé pour le calcul du délai de congélation.
-    * @return Une liste d'échantillons mise à jour suite aux calculs de délai de congélation.
+    * @param prelevement Le prélèvement
     */
-   void updateFreezingDelay(Prelevement prelevement);
+   void updateDelaiCongelation(Prelevement prelevement);
 }

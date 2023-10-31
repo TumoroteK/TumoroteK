@@ -9,7 +9,7 @@ public class TimeUtils
     * @return La durée équivalente en minutes.
     * @throws IllegalArgumentException Si la durée est négative.
     */
-      public static float millisecondsToMinutes(long milliseconds) {
+      public static float convertMillisecondsToMinutes(long milliseconds) {
          if (milliseconds < 0) {
             throw new IllegalArgumentException("Duration cannot be negative.");
          }
