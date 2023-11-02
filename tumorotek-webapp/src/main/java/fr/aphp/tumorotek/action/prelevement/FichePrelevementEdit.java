@@ -110,7 +110,7 @@ import fr.aphp.tumorotek.model.contexte.gatsbi.Contexte;
 import fr.aphp.tumorotek.model.systeme.Unite;
 import fr.aphp.tumorotek.webapp.gatsbi.GatsbiController;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
-import fr.aphp.tumorotek.utils.MessagesUtils;
+
 /**
  * Controller gérant la fiche en édition d'un prélèvement.
  * Controller créé le 23/06/2010.
@@ -207,6 +207,7 @@ public class FichePrelevementEdit extends AbstractFicheEditController
 
    protected Div refPatientDiv;
 
+
    //protected Boolean banqueOrgane;
    // boolean conditionnant l'affichage dans le group Patient
    protected boolean maladieEmbedded = false;
@@ -243,6 +244,7 @@ public class FichePrelevementEdit extends AbstractFicheEditController
    public void doAfterCompose(final Component comp) throws Exception{
       super.doAfterCompose(comp);
 
+
       // Initialisation du mode (listes, valeurs...)
       initLists();
 
@@ -256,6 +258,7 @@ public class FichePrelevementEdit extends AbstractFicheEditController
 
       // gatsbi overrides
       resumePatient = initResumePatient();
+
    }
 
    // gatsbi surcharge cette méthode
@@ -307,6 +310,9 @@ public class FichePrelevementEdit extends AbstractFicheEditController
 
    @Override
    public void switchToEditMode(){
+
+      getObjectTabController().setPreviousPrelevementDate(datePrelCalBox.getValue());
+
       super.switchToEditMode();
 
       if(getMaladie() != null){
@@ -821,6 +827,8 @@ public class FichePrelevementEdit extends AbstractFicheEditController
          getObject().getRisques().clear();
          getObject().getRisques().addAll(findSelectedRisques());
 
+
+
          //Update de l'objet
          ManagerLocator.getPrelevementManager().updateObjectManager(prelevement,
             GatsbiController.enrichesBanqueWithEtudeContextes(prelevement.getBanque(), sessionScope), selectedNature, maladie,
@@ -830,12 +838,10 @@ public class FichePrelevementEdit extends AbstractFicheEditController
             getObjectTabController().getFicheAnnotation().getValeursToDelete(), filesCreated, filesToDelete,
             SessionUtils.getLoggedUser(sessionScope), cascadeNonSterile, true, SessionUtils.getSystemBaseDir(), false);
 
-
          // TK-427: Mettre à jour le délai de congélation des échantillons
-         if (getObjectTabController().isDateFieldModified()) {
+         if (!getObjectTabController().getPreviousPrelevementDate().equals(prelevement.getDatePrelevement())) {
             getObjectTabController().miseAJourDelaiCongelation(prelevement);
          }
-
 
          getObjectTabController().handleExtCom(null, getObject(), getObjectTabController());
 
@@ -1310,7 +1316,6 @@ public class FichePrelevementEdit extends AbstractFicheEditController
     * à la sortie du champs Date de Prélèvement
     */
    public void onBlur$datePrelCalBox(){
-      getObjectTabController().setDateFieldModified(true);
       datePrelCalBox.clearErrorMessage(datePrelCalBox.getValue());
       if(getObjectTabController().isFicheLaboOpened()){
          prelevement.setLaboInters(new HashSet<>(getObjectTabController().getFicheLaboInter().getLaboInters()));

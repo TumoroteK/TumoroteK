@@ -39,6 +39,7 @@ import static fr.aphp.tumorotek.model.contexte.EContexte.SEROLOGIE;
 import static fr.aphp.tumorotek.webapp.general.SessionUtils.getCurrentContexte;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -129,15 +130,18 @@ public class PrelevementController extends AbstractObjectTabController
 
    private PatientSip patientSip;
 
-   private boolean isDateFieldModified = false;
 
-   public boolean isDateFieldModified(){
-      return isDateFieldModified;
+   private Calendar previousPrelevementDate;
+
+
+   public Calendar getPreviousPrelevementDate(){
+      return previousPrelevementDate;
    }
 
-   public void setDateFieldModified(boolean dateFieldModified){
-      isDateFieldModified = dateFieldModified;
+   public void setPreviousPrelevementDate(Calendar previousPrelevementDate){
+      this.previousPrelevementDate = previousPrelevementDate;
    }
+
 
    public Maladie getMaladie(){
       return maladie;
@@ -795,7 +799,8 @@ public class PrelevementController extends AbstractObjectTabController
     * @param prelevement Le prélèvement à gérer.
     */
    public void miseAJourDelaiCongelation(Prelevement prelevement){
-      boolean hasEchantillonWithNonCalculatedDelai = ManagerLocator.getEchantillonManager().hasEchantillonWithNonCalculatedDelai(prelevement);
+      boolean hasEchantillonWithNonCalculatedDelai = ManagerLocator.getEchantillonManager()
+                                                    .hasEchantillonWithNonCalculatedDelai(prelevement, previousPrelevementDate);
 
       if (hasEchantillonWithNonCalculatedDelai) {
          // Ouvrir la fenêtre modale et récupération de la réponse de l'utilisateur
