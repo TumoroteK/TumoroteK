@@ -736,9 +736,10 @@ public class FicheLaboInter extends AbstractFicheEditController
          cascadeNonSterile, true, SessionUtils.getSystemBaseDir(), false, ncfs);
 
       // TK-427: Mettre à jour le délai de congélation des échantillons
-      if (getObjectTabController().isDateFieldModified()) {
+      if (!getObjectTabController().getPreviousPrelevementDate().equals(prelevement.getDatePrelevement())) {
          getObjectTabController().miseAJourDelaiCongelation(prelevement);
       }
+
 
       // // pour chaque LaboInter
       // for (int i = 0; i < laboInters.size(); i++) {

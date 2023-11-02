@@ -790,6 +790,18 @@ public interface EchantillonManager
    long calculDelaiStockage(Echantillon echan, Prelevement prel);
 
    /**
+    * Calcule le délai de stockage en millisecondes entre la date de prélèvement et la date de stockage d'un échantillon.
+    *
+    * @param echan L'objet Echantillon pour lequel calculer le délai de stockage.
+    * @param datePrelevement La date de prélèvement au format Calendar.
+    * @return Le délai de stockage en millisecondes, ou -1 si les dates ne sont pas valides ou si l'une des dates est nulle.
+    */
+
+   long calculDelaiStockage(Echantillon echan, Calendar datePrelevement);
+
+
+
+   /**
     * Renvoie tous les échantillons ayant eu une dégradation possible
     * @param banks
     * @param impact
@@ -833,14 +845,15 @@ public interface EchantillonManager
     */
    void updateDelaiCongelation(Prelevement prelevement);
 
+
    /**
-    * Vérifie si un Prélèvement contient des échantillons avec des délais de congélation saisis manuellement
-    * qui ne sont pas calculés.
-    *
-    * @param prelevement Le Prélèvement à vérifier.
-    * @return  false: si tous les échantillons du Prélèvement ont un délai de congélation calculé,
-    *          true: dès qu'un échantillon avec un délai de congélation saisi manuellement est trouvé.
+    * Vérifie s'il existe des échantillons associés à un prélèvement avec un délai de congélation non calculé.
+    * vous ne pouvez pas utiliser le prélevement pour obtenir sa date, car il s'agit de la nouvelle date que
+    * l'utilisateur a entrée, tandis que pour le calcul, vous avez besoin de la date précédente qui a été utilisée pour le calcul.
+    * @param prelevement L'objet Prelevement pour lequel vérifier la présence d'échantillons non calculés.
+    * @param datePrelevement L'ancienne date de prélèvement au format Calendar, utilisée pour calculer les délais de congélation.
+    * @return true si au moins un échantillon associé au prélèvement a un délai de congélation non calculé, false sinon.
     */
-    boolean hasEchantillonWithNonCalculatedDelai(Prelevement prelevement);
+    boolean hasEchantillonWithNonCalculatedDelai(Prelevement prelevement, Calendar datePrelevement);
 
 }
