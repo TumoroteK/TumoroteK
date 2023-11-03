@@ -80,12 +80,20 @@ public class EmplacementDecorator
          emplacement = new Emplacement();
          vide = true;
          libelle = "";
-         adrl = "";
+         //valorisation iutile puisqu'il s'agit de la valeur par défaut
+         //adrl = "";
       }else{
          emplacement = emp;
          vide = emplacement.getVide();
          position = emplacement.getPosition();
-         adrl = emplacement.getAdrl();
+         // /!\ le code ci-dessous est incorrect et peut afficher une valeur erronnée 
+         // car l'attribut adrl n'est plus valorisé dans emplacement (et donc plus stocké en base)
+         // la valeur est désormais calculée par une fonction : 
+         // ManagerLocator.getEmplacementManager().getAdrlManager(tkObj.getEmplacement(), true)
+         // l'appel dans le contructeur de cette méthode est inutile car dans quasiment tous les cas, lorsque le EmplacementDecorator
+         // est construit à partir d'une emplacement celui-ci est instancié juste avant et incomplet.
+         // il vaut donc mieux laisser l'appel de la récupération de l'adrl aux cas nécessaires (ex : TK-414) 
+         //adrl = emplacement.getAdrl();
       }
    }
 
