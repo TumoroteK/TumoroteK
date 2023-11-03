@@ -165,6 +165,8 @@ import fr.aphp.tumorotek.model.utils.Utils;
       query = "SELECT e.echantillonId FROM Echantillon e " + "JOIN e.prelevement as p " + "JOIN p.maladie as m "
          + "JOIN m.patient as pat " + "WHERE (pat.nom like ?1 OR pat.nip like ?1) AND e.banque = ?2"),
    @NamedQuery(name = "Echantillon.findByIds", query = "SELECT e FROM Echantillon e " + "WHERE e.echantillonId in (?1)"),
+   @NamedQuery(name = "Echantillon.findByIdsAndStatus", query = "SELECT e FROM Echantillon e " +
+      " WHERE e.echantillonId IN (?1) AND e.objetStatut.objetStatutId = ?2 "),
    @NamedQuery(name = "Echantillon.findByBanquesAllIds",
       query = "SELECT e.echantillonId FROM Echantillon e " + "WHERE e.banque in (?1)"),
    @NamedQuery(name = "Echantillon.findCountByPrelevement",

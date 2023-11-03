@@ -136,6 +136,8 @@ import fr.aphp.tumorotek.model.utils.Utils;
          + "JOIN m.patient as pat " + "WHERE p.transformation.objetId = prlvt.prelevementId "
          + "AND p.transformation.entite.nom = 'Prelevement' " + "AND pat.nom like ?1 AND p.banque = ?2"),
    @NamedQuery(name = "ProdDerive.findByIdInList", query = "SELECT p FROM ProdDerive p " + "WHERE p.prodDeriveId in (?1)"),
+   @NamedQuery(name = "ProdDerive.findByIdsAndStatus", query = "SELECT p FROM ProdDerive p " +
+      " WHERE p.prodDeriveId IN (?1) AND p.objetStatut.objetStatutId = ?2 "),
    @NamedQuery(name = "ProdDerive.findByBanquesAllIds",
       query = "SELECT p.prodDeriveId FROM ProdDerive p " + "WHERE p.banque in (?1)"),
    @NamedQuery(name = "ProdDerive.findByParent",

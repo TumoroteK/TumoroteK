@@ -83,6 +83,14 @@ public interface EchantillonDao extends GenericDaoJpa<Echantillon, Integer>
    List<Echantillon> findByIds(List<Integer> ids);
 
    /**
+    * Recherche les échantillons dont l'id est dans la liste et le statut est statusId.
+    * @param ids Liste d'identifiants.
+    * @param statusId statusId (table obect_statut).
+    * @return une liste d'échantillons.
+    */
+   List<Echantillon> findByIdsAndStatus(List<Integer> ids, Integer statusId);   
+   
+   /**
     * Recherche les échantillons dont le code est égal au paramètre.
     * @param code Code pour lequel on recherche des échantillons.
     * @param banque Banque à laquelle appartient l'échantillon.
