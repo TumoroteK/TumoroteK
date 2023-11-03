@@ -40,6 +40,7 @@ import static fr.aphp.tumorotek.webapp.general.SessionUtils.getCurrentContexte;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -138,8 +139,8 @@ public class PrelevementController extends AbstractObjectTabController
       return previousPrelevementDate;
    }
 
-   public void setPreviousPrelevementDate(Calendar previousPrelevementDate){
-      this.previousPrelevementDate = previousPrelevementDate;
+   public void setPreviousPrelevementDate(Calendar previousPrelevementDate) {
+         this.previousPrelevementDate = previousPrelevementDate;
    }
 
 
@@ -803,9 +804,10 @@ public class PrelevementController extends AbstractObjectTabController
                                                     .hasEchantillonWithNonCalculatedDelai(prelevement, previousPrelevementDate);
 
       if (hasEchantillonWithNonCalculatedDelai) {
-         // Ouvrir la fenêtre modale et récupération de la réponse de l'utilisateur
          String title = Labels.getLabel("message.title.maj.delaicongelation");
          String message = Labels.getLabel("message.question.maj.delaicongelation");
+
+         // Ouvrir la fenêtre modale et récupération de la réponse de l'utilisateur
          boolean isUserAccepted = MessagesUtils.openQuestionModal(title, message);
 
          if (isUserAccepted) {

@@ -2,20 +2,26 @@ package fr.aphp.tumorotek.utils;
 
 import java.util.Calendar;
 
+/**
+ * Classe utilitaire pour gérer les opérations liées au temps.
+ */
 public class TimeUtils
 {
+
+   private TimeUtils(){
+   }
+
    /**
     * Convertit une durée spécifiée en millisecondes en minutes.
     *
     * @param milliseconds La durée à convertir, spécifiée en millisecondes.
-    * @return La durée équivalente en minutes.
-    * @throws IllegalArgumentException Si la durée est négative.
+    * @return La durée équivalente en minutes. Si la durée en entrée est négative, cette méthode renvoie -1.
     */
       public static float convertMillisecondsToMinutes(long milliseconds) {
-         if (milliseconds < 0) {
-            throw new IllegalArgumentException("Duration cannot be negative.");
+         if (milliseconds > 0) {
+            return (float) milliseconds / (60 * 1000);
          }
-         return (float) milliseconds / (60 * 1000);
+         return -1;
       }
 
    /**
@@ -26,7 +32,7 @@ public class TimeUtils
     * @param date L'objet Calendar représentant la date à vérifier.
     * @return true si la date est valide, false sinon.
     */
-   public static boolean isValidDate(Calendar date) {
+   public static boolean isDateAndTimeValid(Calendar date) {
       return date != null && (date.get(Calendar.HOUR_OF_DAY) != 0 || date.get(Calendar.MINUTE) != 0 || date.get(Calendar.SECOND) != 0);
    }
 }
