@@ -10,50 +10,48 @@
 <configuration>
     <!--See also http://logback.qos.ch/manual/appenders.html#RollingFileAppender-->
 
-    <!--    Appender général-->
-    <appender name="DailyRollingFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <File>${catalina.base}/logs/tumorotek_trace.log</File>
-        <encoder>
+	<!-- ******************************** Appenders : ******************************** -->
+
+	<!-- appender console pour les éventuelles erreurs au lancement de l'application -->
+	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+	    <!-- encoders are assigned the type
+             ch.qos.logback.classic.encoder.PatternLayoutEncoder by default -->
+		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+			<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - [%X{username}] %msg%n</pattern>
+		</encoder>
+	</appender>
+
+	<!-- appender principal de l'application -->
+	<appender name="DailyRollingFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<File>${catalina.base}/logs/tumorotek_trace.log</File>
+		<encoder>
             <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - [%X{username}] %msg%n</pattern>
         </encoder>
-        <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
-            <maxIndex>5</maxIndex>
-            <FileNamePattern>${catalina.base}/logs/tumorotek_trace.log.%d{yyyy-MM-dd}.%i</FileNamePattern>
-        </rollingPolicy>
-        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
-            <MaxFileSize>500KB</MaxFileSize>
-        </triggeringPolicy>
-    </appender>
+		<rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+			<fileNamePattern>${catalina.base}/logs/tumorotek_trace.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+			<!-- each archived file's size will be max 500KB -->
+			<maxFileSize>500KB</maxFileSize>    
+			<!-- 90 days to keep -->
+			<maxHistory>90</maxHistory>
+			<!-- total size of all archive files, if total size > 10MB, it will delete old archived file -->
+			<totalSizeCap>10MB</totalSizeCap>
+		</rollingPolicy>
+	</appender>
+	
 
-    <!-- Appender pour Liquibase  -->
-    <appender name="LiquibaseFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <File>${catalina.base}/logs/liquibase.log</File>
-        <encoder>
-            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - [%X{username}] %msg%n</pattern>
-        </encoder>
-        <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
-            <maxIndex>5</maxIndex>
-            <FileNamePattern>${catalina.base}/logs/liquibase.log.%d{yyyy-MM-dd}.%i</FileNamePattern>
-        </rollingPolicy>
-        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
-            <MaxFileSize>500KB</MaxFileSize>
-        </triggeringPolicy>
-    </appender>
-
-
+	<!-- !!!!!!!!!!!!!!!!! Appenders pour les interfaçages : DEBUT !!!!!!!!!!!!!!! -->
     <!-- Appender pour scan  -->
     <appender name="DailyRollingFile-scan" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <File>${catalina.base}/logs/tumorotek_scan.log</File>
         <encoder>
             <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - [%X{username}] %msg%n</pattern>
         </encoder>
-        <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
-            <maxIndex>5</maxIndex>
-            <FileNamePattern>${catalina.base}/logs/tumorotek_scan.log.%d{yyyy-MM-dd}.%i</FileNamePattern>
-        </rollingPolicy>
-        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
-            <MaxFileSize>500KB</MaxFileSize>
-        </triggeringPolicy>
+		<rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+			<fileNamePattern>${catalina.base}/logs/tumorotek_scan.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+			<maxFileSize>500KB</maxFileSize>    
+			<maxHistory>60</maxHistory>
+			<totalSizeCap>5MB</totalSizeCap>
+		</rollingPolicy>
     </appender>
 
     <!-- Appender pour SGL  -->
@@ -62,13 +60,12 @@
         <encoder>
             <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - [%X{username}] %msg%n</pattern>
         </encoder>
-        <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
-            <maxIndex>5</maxIndex>
-            <FileNamePattern>${catalina.base}/logs/tumorotek_sgl.log.%d{yyyy-MM-dd}.%i</FileNamePattern>
-        </rollingPolicy>
-        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
-            <MaxFileSize>500KB</MaxFileSize>
-        </triggeringPolicy>
+		<rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+			<fileNamePattern>${catalina.base}/logs/tumorotek_sgl.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+			<maxFileSize>500KB</maxFileSize>    
+			<maxHistory>60</maxHistory>
+			<totalSizeCap>5MB</totalSizeCap>
+		</rollingPolicy>
     </appender>
 
 
@@ -78,13 +75,12 @@
         <encoder>
             <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - [%X{username}] %msg%n</pattern>
         </encoder>
-        <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
-            <maxIndex>5</maxIndex>
-            <FileNamePattern>${catalina.base}/logs/tumorotek_interfacage.log.%d{yyyy-MM-dd}.%i</FileNamePattern>
-        </rollingPolicy>
-        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
-            <MaxFileSize>500KB</MaxFileSize>
-        </triggeringPolicy>
+		<rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+			<fileNamePattern>${catalina.base}/logs/tumorotek_interfacage.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+			<maxFileSize>500KB</maxFileSize>    
+			<maxHistory>60</maxHistory>
+			<totalSizeCap>5MB</totalSizeCap>
+		</rollingPolicy>
     </appender>
 
 
@@ -94,48 +90,60 @@
         <encoder>
             <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - [%X{username}] %msg%n</pattern>
         </encoder>
-        <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
-            <maxIndex>5</maxIndex>
-            <FileNamePattern>${catalina.base}/logs/tumorotek_ack.log.%d{yyyy-MM-dd}.%i</FileNamePattern>
-        </rollingPolicy>
-        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
-            <MaxFileSize>500KB</MaxFileSize>
-        </triggeringPolicy>
+		<rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+			<fileNamePattern>${catalina.base}/logs/tumorotek_interfacage.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+			<maxFileSize>500KB</maxFileSize>    
+			<maxHistory>60</maxHistory>
+			<totalSizeCap>5MB</totalSizeCap>
+		</rollingPolicy>
     </appender>
+	<!-- !!!!!!!!!!!!!!!!! Appenders pour les interfaçages : FIN !!!!!!!!!!!!!!! -->
+	
 
+	<!-- ******************************** Loggers : ******************************** -->
+	<!-- loggers pour afficher dans la console un problème de démarrage de l'application -->
+	<logger name="fr.aphp.tumorotek.action.InitServlet" additivity="false" level="INFO">
+		<appender-ref ref="STDOUT"/>
+		<appender-ref ref="DailyRollingFile"/>
+	</logger>
+	<logger name="liquibase" level="INFO">
+        <appender-ref ref="STDOUT" />
+		<appender-ref ref="DailyRollingFile"/>
+    </logger>
+	<!-- -->
 
-
-
-    <!--    logger personnalisées pour les différents packages-->
-    <logger name="fr.aphp.tumorotek.manager" additivity="false" level="ERROR">
+    <!--    logger personnalisées pour les différents packages : à décommenter si besoin -->
+	<!--
+    <logger name="fr.aphp.tumorotek.manager" additivity="false" level="DEBUG">
         <appender-ref ref="DailyRollingFile"/>
     </logger>
 
-    <logger name="fr.aphp.tumorotek.model" additivity="false" level="ERROR">
+    <logger name="fr.aphp.tumorotek.model" additivity="false" level="DEBUG">
         <appender-ref ref="DailyRollingFile"/>
     </logger>
 
-    <logger name="fr.aphp.tumorotek.webapp" additivity="false" level="ERROR">
+    <logger name="fr.aphp.tumorotek.webapp" additivity="false" level="DEBUG">
         <appender-ref ref="DailyRollingFile"/>
     </logger>
 
-    <logger name="fr.aphp.tumorotek.action" additivity="false" level="ERROR">
+    <logger name="fr.aphp.tumorotek.action" additivity="false" level="DEBUG">
+        <appender-ref ref="DailyRollingFile"/>
+    </logger> -->
+	
+	<!-- pour tracer les requêtes avec les paramètres -->
+	<logger name="org.hibernate.type" additivity="false" level="ERROR">
+        <appender-ref ref="DailyRollingFile"/>
+    </logger>
+	<logger name="org.hibernate" additivity="false" level="ERROR">
         <appender-ref ref="DailyRollingFile"/>
     </logger>
 
-
-    <!--     logger pour le package "liquibase"-->
-    <logger name="liquibase" level="INFO">
-        <appender-ref ref="LiquibaseFile"/>
-    </logger>
 
     <logger name="org.apache.camel" additivity="false" level="ERROR">
         <appender-ref ref="DailyRollingFile"/>
     </logger>
 
-
-                            <!--    interfacage-->
-
+   	<!-- !!!!!!!!!!!!!!!!! loggers pour les interfaçages : DEBUT !!!!!!!!!!!!!!! -->
     <logger name="fr.aphp.tumorotek.interfacage" level="ERROR">
         <appender-ref ref="DailyRollingFile-interfacage"/>
     </logger>
@@ -151,7 +159,7 @@
     <logger name="fr.aphp.tumorotek.interfacage.sender.ack" level="ERROR">
         <appender-ref ref="DailyRollingFile-ack"/>
     </logger>
-
+   	<!-- !!!!!!!!!!!!!!!!! loggers pour les interfaçages : DEBUT !!!!!!!!!!!!!!! -->
 
 
     <root level="ERROR">
