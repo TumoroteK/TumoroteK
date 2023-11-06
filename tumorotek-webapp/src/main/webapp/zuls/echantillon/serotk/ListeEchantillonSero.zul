@@ -33,7 +33,7 @@
  * avez pris connaissance de la licence CeCILL, et que vous en avez 
  * accepté les termes. 
 -->
-<window id="lwinEchantillonSero" border="none" apply="fr.aphp.tumorotek.action.echantillon.serotk.ListeEchantillonSero">
+<window id="lwinEchantillon" border="none" apply="fr.aphp.tumorotek.action.echantillon.serotk.ListeEchantillonSero">
 	<panel border="none" collapsible="true" id="listPanel" sclass="fichePanelv2">
 		<panelchildren id="scrollPan" style="overflow-y: auto">
 			<grid id="objectsListGrid" mold="paging"
@@ -42,10 +42,10 @@
 				sclass="gridListStyle"
 				span="true"
 				sizedByContent="true"
-				model="@{lwinEchantillonSero$composer.listObjects 
+				model="@{lwinEchantillon$composer.listObjects 
 				load-after='findByListCodesEchan.onClick,
 					findByListPatientsEchan.onClick'}"
-				rowRenderer="@{lwinEchantillonSero$composer.listObjectsRenderer}">
+				rowRenderer="@{lwinEchantillon$composer.listObjectsRenderer}">
 				<columns menupopup="auto" sizable="true" width="100%">
 					<column width="40px">
 						<checkbox id="checkAll" />
@@ -53,7 +53,7 @@
 					<column align="center"/>
 					<column label="${c:l('general.code')}" sort="auto(code)" />
 					<column label="${c:l('Entite.Banque')}" 
-						visible="@{lwinEchantillonSero$composer.isTtesCollection}" />
+						visible="@{lwinEchantillon$composer.isTtesCollection}" />
 					<column label="${c:l('prelevement.patient')}" 
 						visible="false" width="100px"/>
 					<column label="${c:l('Champ.Echantillon.DateStock')}" sort="auto(dateStock)"/>
@@ -84,7 +84,7 @@
 								sclass="formLabel"/>
 						</div>
 						<listbox id="dateCreationBox" mold="select" rows="1"
-							model="@{lwinEchantillonSero$composer.creationDates}">
+							model="@{lwinEchantillon$composer.creationDates}">
 								<listitem self="@{each='date'}" value="@{date}">			
 									<listcell label="@{date}" />
 								</listitem>
@@ -96,7 +96,7 @@
 							<label value="${c:l('Champ.Echantillon.Code')}" sclass="formLabel"/>
 						</div>
 						<textbox id="codeBoxEchan" 
-							value="@{lwinEchantillonSero$composer.searchCode,
+							value="@{lwinEchantillon$composer.searchCode,
 		        			save-when='find.onClick, self.onOK'}" 
 							forward="onOK=onPressEnterKey()"
 						/>
@@ -111,7 +111,7 @@
 								sclass="formLabel"/>
 						</div>
 						<textbox id="patientBoxEchan" 
-							value="@{lwinEchantillonSero$composer.searchPatientNom,
+							value="@{lwinEchantillon$composer.searchPatientNom,
 							save-when='find.onClick, self.onOK'}"
 							forward="onOK=onPressEnterKey()"
 						/>
