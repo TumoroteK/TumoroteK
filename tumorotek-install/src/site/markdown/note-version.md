@@ -1,5 +1,13 @@
 #### Notes de version
 
+##### Version 2.3.0.5 - Publiée le 07/11/2023
+###### Corrections hors Gatsbi
+- YouTrack [TK-442](https://tumorotek.myjetbrains.com/youtrack/issue/TK-442) : <span class="badge badge-cession">Cession</span> en contexte sérologie : plantage lors de l'ajout multiple d'échantillons
+
+###### Corrections dans le module Gatsbi (version 1.0.0.5)
+- YouTrack [TG-170](https://tumorotek.myjetbrains.com/youtrack/issue/TG-170) : [Gatsbi] - Contexte : erreur lors de la désélection du champ "risques infectieux" précédemment visible, pour certains adhérents (bases de données mariaDb).
+
+
 ##### Version 2.3.0.4 - Publiée le 19/10/2023
 ###### Corrections hors Gatsbi
 - intégration de la correction de la version 2.2.9
@@ -14,7 +22,7 @@
 - YouTrack [TG-192](https://tumorotek.myjetbrains.com/youtrack/issue/TG-192) : [TK] - Liste Patients en toutes collections, affichage de l'identifiant pour les patients anonymes "Gatsbi" pour éviter les lignes vides
 - YouTrack [TG-193](https://tumorotek.myjetbrains.com/youtrack/issue/TG-193) : [TK] - Fiche Patient anonyme "Gatsbi", en toutes collections : affichage de l'identifiant du patient (unique dans ce cas) pour éviter un haut de fiche vide
 
-###### Corrections dans le module Gatsbi
+###### Corrections dans le module Gatsbi (version 1.0.0.4)
 - YouTrack [TG-184](https://tumorotek.myjetbrains.com/youtrack/issue/TG-184) : [Gatsbi] - Contexte : même valeur présente plusieurs fois sur certains thesaurus
 
 
@@ -27,7 +35,7 @@
 - YouTrack [TG-175](https://tumorotek.myjetbrains.com/youtrack/issue/TG-175) : [TK] - Création d'un Prélèvement / Echantillon : trier les paramétrages par ordre alphabétique dans la popup de sélection
 
 
-###### Corrections dans le module Gatsbi
+###### Corrections dans le module Gatsbi (version 1.0.0.3)
 - YouTrack [TG-152](https://tumorotek.myjetbrains.com/youtrack/issue/TG-152) : [Gatsbi] - Schéma de visite : en mode édition, le champ étude n'est plus affiché en gris
 - YouTrack [TG-159](https://tumorotek.myjetbrains.com/youtrack/issue/TG-159) : [Gatsbi] - Echantillon : Supprimer le lien entre Date de stockage et délai de congélation
 - YouTrack [TG-160](https://tumorotek.myjetbrains.com/youtrack/issue/TG-160) : [Gatsbi] - Contexte Echantillon : erreur de traduction : quantity au lieu de Quality
