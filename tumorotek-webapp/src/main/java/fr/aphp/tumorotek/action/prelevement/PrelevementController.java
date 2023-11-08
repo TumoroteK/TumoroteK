@@ -799,22 +799,29 @@ public class PrelevementController extends AbstractObjectTabController
     *
     * @param prelevement Le prélèvement à gérer.
     */
-   public void miseAJourDelaiCongelation(Prelevement prelevement){
+   public void miseAJourDelaiCongelation(Prelevement prelevement) {
+      // Vérifie s'il existe au moins un échantillon avec un délai non calculé
       boolean hasEchantillonWithNonCalculatedDelai = ManagerLocator.getEchantillonManager()
-                                                    .hasEchantillonWithNonCalculatedDelai(prelevement, previousPrelevementDate);
+         .hasEchantillonWithNonCalculatedDelai(prelevement, previousPrelevementDate);
 
+      // S'il y en a, ouvre la boîte de dialogue
       if (hasEchantillonWithNonCalculatedDelai) {
          String title = Labels.getLabel("message.title.maj.delaicongelation");
          String message = Labels.getLabel("message.question.maj.delaicongelation");
 
-         // Ouvrir la fenêtre modale et récupération de la réponse de l'utilisateur
+         // Ouvre la fenêtre modale et récupère la réponse de l'utilisateur
          boolean isUserAccepted = MessagesUtils.openQuestionModal(title, message);
 
+         // Si l'utilisateur clique sur "Oui", met à jour tous les échantillons
          if (isUserAccepted) {
             ManagerLocator.getEchantillonManager().updateDelaiCongelation(prelevement);
          }
       } else {
-         ManagerLocator.getEchantillonManager().updateDelaiCongelation(prelevement);
+         // Met à jour uniquement les échantillons dont le délai n'est pas saisi manuellement
+         List<Echantillon> echantillonsWithCalculatedDelai = ManagerLocator.getEchantillonManager()
+            .findEchantillonWithCalculatedDelai(prelevement, previousPrelevementDate);
+
+         ManagerLocator.getEchantillonManager().updateDelaiCongelation(echantillonsWithCalculatedDelai, prelevement);
       }
    }
 

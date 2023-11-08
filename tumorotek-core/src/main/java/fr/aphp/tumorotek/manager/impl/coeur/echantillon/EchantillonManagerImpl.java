@@ -2125,6 +2125,30 @@ public class EchantillonManagerImpl implements EchantillonManager
       }
 
  }
+
+   @Override
+   public void updateDelaiCongelation(List<Echantillon> echantillons, Prelevement prelevement){
+      // Parcours la liste des échantillons pour mettre à jour les délais de congélation
+      for(Echantillon echantillon : echantillons){
+         // Vérifie si la date de stockage de l'échantillon est présente.
+         if (echantillon.getDateStock() != null){
+            // Calcul du délai de congélation en fonction de l'échantillon et du prélèvement
+            long delayCongeLong = calculDelaiStockage(echantillon, prelevement);
+            // Conversion du délai de congélation en float pour la mise à jour (en minutes)
+            float delayCongelInMinutes = TimeUtils.convertMillisecondsToMinutes(delayCongeLong);
+            if (delayCongelInMinutes != -1 ){
+               // Mise à jour du délai de congélation de l'échantillon
+               echantillon.setDelaiCgl(delayCongelInMinutes);
+               // Mise à jour de l'échantillon dans la base de données
+               updateEchantillon(echantillon);
+            }
+            else {
+               echantillon.setDelaiCgl(null);
+            }
+         }
+      }
+
+   }
    @Override
    public boolean hasEchantillonWithNonCalculatedDelai(Prelevement prelevement, Calendar datePrelevement) {
       // Récupère la liste des échantillons associés au prélèvement
@@ -2144,6 +2168,27 @@ public class EchantillonManagerImpl implements EchantillonManager
          }
 
      return false;
+   }
+
+   public List<Echantillon> findEchantillonWithCalculatedDelai(Prelevement prelevement, Calendar datePrelevement) {
+      // Récupère la liste des échantillons associés au prélèvement
+      List<Echantillon> echantillons = findByPrelevementManager(prelevement);
+      List<Echantillon> echantillonsWithCalculatedDelai = new ArrayList<>();
+
+      for (Echantillon echantillon : echantillons) {
+         // Récupère le délai de congélation depuis la base de données (en minutes)
+         Float delaiCongelationFromDB = echantillon.getDelaiCgl();
+         // Calcule le délai de congélation pour l'échantillon actuel
+         long delaiCongelationCalculated = calculDelaiStockage(echantillon, datePrelevement);
+         // Convertit le délai calculé en minutes
+         float delaiCongelationCalculatedInMinutes = TimeUtils.convertMillisecondsToMinutes(delaiCongelationCalculated);
+         // Vérifie si les deux délais sont valides et s'ils sont identiques
+         if (delaiCongelationFromDB != null && delaiCongelationCalculatedInMinutes != -1 && delaiCongelationFromDB == delaiCongelationCalculatedInMinutes) {
+            echantillonsWithCalculatedDelai.add(echantillon);
+         }
+      }
+
+      return echantillonsWithCalculatedDelai;
    }
 
 
