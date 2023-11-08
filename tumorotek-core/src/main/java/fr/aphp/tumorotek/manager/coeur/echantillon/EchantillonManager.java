@@ -839,13 +839,25 @@ public interface EchantillonManager
    List<Integer> findByPatientIdentifiantOrNomOrNipReturnIdsManager(String search, List<Banque> selectedBanques, boolean b);
 
    /**
-    * Met à jour le délai de congélation des échantillons appartenant à un prélèvement.
+    * Met à jour le délai de congélation de tous les échantillons appartenant à un prélèvement.
     * La mise à jour sera effectuée sous condition que la date de stockage et la date de prélèvement soient valides
     * (voir méthode calculDelaiStockage).
     *
     * @param prelevement Le prélèvement
     */
    void updateDelaiCongelation(Prelevement prelevement);
+
+   /**
+    * Met à jour le délai de congélation de certains échantillons.
+    * Pour mettre à jour le délai de congélation de tous les échantillons, utilisez la méthode
+    * void updateDelaiCongelation(Prelevement prelevement).
+    * La mise à jour sera effectuée sous condition que la date de stockage et la date de prélèvement soient valides
+    * (voir méthode calculDelaiStockage).
+    *
+    * @param prelevement Le prélèvement associé aux échantillons.
+    */
+
+   void updateDelaiCongelation(List<Echantillon> echantillonsWithCalculatedDelai, Prelevement prelevement);
 
 
    /**
@@ -857,5 +869,15 @@ public interface EchantillonManager
     * @return true si au moins un échantillon associé au prélèvement a un délai de congélation non calculé, false sinon.
     */
     boolean hasEchantillonWithNonCalculatedDelai(Prelevement prelevement, Calendar datePrelevement);
+
+   /**
+    * Récupère une liste de tous les échantillons pour lesquels le délai de congélation dans la base de données et le délai calculé sont identiques.
+    *
+    * @param prelevement Le prélèvement associé aux échantillons.
+    * @param datePrelevement La date du prélèvement pour le calcul du délai de congélation.
+    * @return Une liste d'échantillons ayant un délai de congélation identique dans la base de données et calculé.
+    */
+   List<Echantillon> findEchantillonWithCalculatedDelai(Prelevement prelevement, Calendar datePrelevement);
+
 
 }
