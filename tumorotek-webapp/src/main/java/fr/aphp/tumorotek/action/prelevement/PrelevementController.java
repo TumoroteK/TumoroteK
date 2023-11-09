@@ -40,13 +40,13 @@ import static fr.aphp.tumorotek.webapp.general.SessionUtils.getCurrentContexte;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import fr.aphp.tumorotek.utils.MessagesUtils;
+import fr.aphp.tumorotek.utils.TimeAndDateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.util.resource.Labels;
@@ -807,21 +807,27 @@ public class PrelevementController extends AbstractObjectTabController
       // S'il y en a, ouvre la boîte de dialogue
       if (hasEchantillonWithNonCalculatedDelai) {
          String title = Labels.getLabel("message.title.maj.delaicongelation");
-         String message = Labels.getLabel("message.question.maj.delaicongelation");
-
+         String message = Labels.getLabel("message.maj.delaicg.echantillons");
+         if  (!TimeAndDateUtils.isDateAndTimeValid(prelevement.getDatePrelevement())){
+            message = Labels.getLabel("message.maj.delaicg.date.prlv.non.valide");
+         }
          // Ouvre la fenêtre modale et récupère la réponse de l'utilisateur
          boolean isUserAccepted = MessagesUtils.openQuestionModal(title, message);
 
          // Si l'utilisateur clique sur "Oui", met à jour tous les échantillons
          if (isUserAccepted) {
             ManagerLocator.getEchantillonManager().updateDelaiCongelation(prelevement);
-         }
-      } else {
-         // Met à jour uniquement les échantillons dont le délai n'est pas saisi manuellement
-         List<Echantillon> echantillonsWithCalculatedDelai = ManagerLocator.getEchantillonManager()
-            .findEchantillonWithCalculatedDelai(prelevement, previousPrelevementDate);
+         } else {
+            // Met à jour uniquement les échantillons dont le délai n'est pas saisi manuellement
+            List<Echantillon> echantillonsWithCalculatedDelai = ManagerLocator.getEchantillonManager()
+               .findEchantillonWithCalculatedDelai(prelevement, previousPrelevementDate);
 
-         ManagerLocator.getEchantillonManager().updateDelaiCongelation(echantillonsWithCalculatedDelai, prelevement);
+            ManagerLocator.getEchantillonManager().updateDelaiCongelation(echantillonsWithCalculatedDelai, prelevement);
+         }
+         // S'il y en a pas, mettre à jour tous les échantillons
+      } else {
+         ManagerLocator.getEchantillonManager().updateDelaiCongelation(prelevement);
+
       }
    }
 
