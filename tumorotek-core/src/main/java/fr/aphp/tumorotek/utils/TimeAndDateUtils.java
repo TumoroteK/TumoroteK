@@ -5,10 +5,10 @@ import java.util.Calendar;
 /**
  * Classe utilitaire pour gérer les opérations liées au temps.
  */
-public class TimeUtils
+public class TimeAndDateUtils
 {
 
-   private TimeUtils(){
+   private TimeAndDateUtils(){
    }
 
    /**
