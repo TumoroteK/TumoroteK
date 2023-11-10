@@ -891,6 +891,7 @@ public interface EchantillonManager
 
 
 
+  /*
     * Cette méthode récupère les échantillons associés au statut spécifié à partir de la liste donnée d'objets CederObjet.
     * Le résultat est renvoyé sous forme d'une liste d'échantillons.
     *
