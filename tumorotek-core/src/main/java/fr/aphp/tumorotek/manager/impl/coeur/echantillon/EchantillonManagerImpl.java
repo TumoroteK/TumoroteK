@@ -2205,7 +2205,7 @@ public class EchantillonManagerImpl implements EchantillonManager
    }
 
 
-}
+
 
    
    @Override
