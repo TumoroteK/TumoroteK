@@ -820,9 +820,9 @@ public class PrelevementController extends AbstractObjectTabController
          } else {
             // Met à jour uniquement les échantillons dont le délai n'est pas saisi manuellement
             List<Echantillon> echantillonsWithCalculatedDelai = ManagerLocator.getEchantillonManager()
-               .findEchantillonWithCalculatedDelai(prelevement, previousPrelevementDate);
+               .findEchantillonsWithCalculatedDelai(prelevement, previousPrelevementDate);
 
-            ManagerLocator.getEchantillonManager().updateDelaiCongelation(echantillonsWithCalculatedDelai, prelevement);
+            ManagerLocator.getEchantillonManager().updateDelaiCongelation(echantillonsWithCalculatedDelai);
          }
          // S'il y en a pas, mettre à jour tous les échantillons
       } else {

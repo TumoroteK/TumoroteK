@@ -2128,11 +2128,12 @@ public class EchantillonManagerImpl implements EchantillonManager
  }
 
    @Override
-   public void updateDelaiCongelation(List<Echantillon> echantillons, Prelevement prelevement){
+   public void updateDelaiCongelation(List<Echantillon> echantillons){
       // Parcours la liste des échantillons pour mettre à jour les délais de congélation
       for(Echantillon echantillon : echantillons){
-         // Vérifie si la date de stockage de l'échantillon est présente.
-         if (echantillon.getDateStock() != null){
+         // Récupère le prélèvement pour la calculDelaiStockage
+         Prelevement prelevement = echantillon.getPrelevement();
+         if (echantillon.getDateStock() != null && prelevement != null){
             // Calcul du délai de congélation en fonction de l'échantillon et du prélèvement
             long delayCongeLong = calculDelaiStockage(echantillon, prelevement);
             // Conversion du délai de congélation en float pour la mise à jour (en minutes)
@@ -2173,7 +2174,7 @@ public class EchantillonManagerImpl implements EchantillonManager
      return false;
    }
 
-   public List<Echantillon> findEchantillonWithCalculatedDelai(Prelevement prelevement, Calendar datePrelevement) {
+   public List<Echantillon> findEchantillonsWithCalculatedDelai(Prelevement prelevement, Calendar datePrelevement) {
       // Récupère la liste des échantillons associés au prélèvement
       List<Echantillon> echantillons = findByPrelevementManager(prelevement);
       List<Echantillon> echantillonsWithCalculatedDelai = new ArrayList<>();

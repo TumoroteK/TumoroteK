@@ -857,7 +857,7 @@ public interface EchantillonManager
     * @param prelevement Le prélèvement associé aux échantillons.
     */
 
-   void updateDelaiCongelation(List<Echantillon> echantillonsWithCalculatedDelai, Prelevement prelevement);
+   void updateDelaiCongelation(List<Echantillon> echantillonsWithCalculatedDelai);
 
 
    /**
@@ -877,7 +877,7 @@ public interface EchantillonManager
     * @param datePrelevement La date du prélèvement pour le calcul du délai de congélation.
     * @return Une liste d'échantillons ayant un délai de congélation identique dans la base de données et calculé.
     */
-   List<Echantillon> findEchantillonWithCalculatedDelai(Prelevement prelevement, Calendar datePrelevement);
+   List<Echantillon> findEchantillonsWithCalculatedDelai(Prelevement prelevement, Calendar datePrelevement);
 
 
 }

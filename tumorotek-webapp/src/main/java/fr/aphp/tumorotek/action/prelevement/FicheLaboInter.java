@@ -42,6 +42,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import fr.aphp.tumorotek.utils.TimeAndDateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.validation.Errors;
@@ -735,14 +736,15 @@ public class FicheLaboInter extends AbstractFicheEditController
          getObjectTabController().getFicheAnnotation().getValeursToDelete(), SessionUtils.getLoggedUser(sessionScope),
          cascadeNonSterile, true, SessionUtils.getSystemBaseDir(), false, ncfs);
 
+
       // TK-427: Mettre à jour le délai de congélation des échantillons
       Calendar previousPrelevementDate = getObjectTabController().getPreviousPrelevementDate();
-      // Si la date de prélèvement précédente est nulle ou la date de prélèvement actuelle est nulle, ou si elles ne sont pas égales,
-      if (previousPrelevementDate == null || prelevement.getDatePrelevement() == null ||
+      // Si la date de prélèvement précédente est nulle ou la date de prélèvement actuelle n'est pas valide,
+      // ou si elles ne sont pas égales,
+      if (previousPrelevementDate == null || TimeAndDateUtils.isDateAndTimeValid(prelevement.getDatePrelevement()) ||
          !previousPrelevementDate.equals(prelevement.getDatePrelevement())) {
          getObjectTabController().miseAJourDelaiCongelation(prelevement);
       }
-
 
       // // pour chaque LaboInter
       // for (int i = 0; i < laboInters.size(); i++) {
