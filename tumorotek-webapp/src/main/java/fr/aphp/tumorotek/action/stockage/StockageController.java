@@ -363,6 +363,28 @@ public class StockageController extends AbstractObjectTabController
       actuelleTerminale = terminale;
    }
 
+   /**
+    * Passe en mode de déplacement du contenu de cession.
+    * @param listEchantillonsReserve  La liste des échantillons réservés à déplacer.
+    * @param listDerivesReserve  La liste des produits dérivés réservés à déplacer.
+    */
+   public void switchToDeplacerContenuCessionMode(List<Echantillon> listEchantillonsReserve, List<ProdDerive> listDerivesReserve){
+      // ne pas afficher : fiche conteneur, enceinte ou terminale
+      divConteneur.setVisible(false);
+      divEnceinte.setVisible(false);
+      divTerminale.setVisible(false);
+
+      // afficher "stockage des echantillons et des produits derives"
+      divDeplacerEmplacements.setVisible(true);
+      Executions.createComponents("/zuls/stockage/FicheDeplacerEmplacements.zul", divDeplacerEmplacements, null);
+
+      getListeStockages().switchToDeplacementEmplacementMode();
+      getFicheDeplacerEmplacements().setObjectTabController(this);
+      getFicheDeplacerEmplacements().switchToDeplacerMode(listEchantillonsReserve, listDerivesReserve);
+
+   }   
+   
+   
    public void clearFiches(){
       getFicheConteneur().clearData();
       getFicheEnceinte().clearData();

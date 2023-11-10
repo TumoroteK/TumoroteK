@@ -88,7 +88,7 @@ public class InitServlet extends HttpServlet
    public void init() throws ServletException{
       super.init();
 
-      log.info("----- TumoroteK startup routines -----");
+      log.info("----- TumoroteK startup routines : DEBUT -----");
       final Path baseDir = Paths.get(TkParam.FILESYSTEM.getValue());
 
       log.info(baseDir.toString());
@@ -106,10 +106,11 @@ public class InitServlet extends HttpServlet
          final File f = new File(baseDir.toUri());
          // crée le base directory au besoin
          if(f.exists() && f.isDirectory() && f.list().length == 0){
-            log.info("----- Mise en place du base directory TumoroteK -----");
+            log.info("----- Création des répertoires TumoroteK liés aux collections  -----");
             final List<Plateforme> pfs = ManagerLocator.getPlateformeManager().findAllObjectsManager();
             Path pfDir;
             final List<Banque> banks = new ArrayList<>();
+            int nbBank = 0;
             for(final Plateforme pf : pfs){
                pfDir = Paths.get("pt_" + pf.getPlateformeId());
                banks.addAll(ManagerLocator.getBanqueManager().findByPlateformeAndArchiveManager(pf, null));
@@ -119,13 +120,15 @@ public class InitServlet extends HttpServlet
                   final Path annoPath = Paths.get(baseDir.toString(), pfDir.toString(), "coll_" + bank.getBanqueId(), "anno");
                   new File(crAnapathPath.toUri()).mkdirs();
                   new File(annoPath.toUri()).mkdirs();
-                  log.info("base directory de la collection {} généré", bank.getNom());
+                  log.debug("base directory de la collection {} généré", bank.getNom());
+                  nbBank++;
                }
                banks.clear();
             }
+            log.info("----- {} collections créées pour {} plateformes -----", Integer.valueOf(nbBank), Integer.valueOf(pfs.size()));
          }
       }
-
+      log.info("----- TumoroteK startup routines : FIN -----");
    }
 
    public enum ESchema
@@ -163,7 +166,7 @@ public class InitServlet extends HttpServlet
     * Applique la mise à jour des versions grâce à Liquibase.
     */
    public void performInitialisation(){
-      log.info("----- Recherche des mises à jours database -----");
+      log.info("----- Recherche des mises à jours sur les bases 'codes' et 'interfaces' : DEBUT -----");
 
       // TUMOROTEK_CODES
       Database database = null;
@@ -195,13 +198,14 @@ public class InitServlet extends HttpServlet
       }catch(final LiquibaseException e){
          log.error(e.toString());
       }
+      //log.info("----- Recherche des mises à jours sur les bases 'codes' et 'interfaces' : FIN -----");
    }
 
    /**
     * Applique la mise à jour des versions grâce à Liquibase.
     */
    public void performUpdates(){
-      log.info("----- Recherche des mises à jours database -----");
+      log.info("----- Recherche des mises à jours sur la base 'tumorotek' : DEBUT -----");
 
       Database database = null;
       Database databaseIntf = null;
@@ -231,9 +235,12 @@ public class InitServlet extends HttpServlet
          log.error(e.getMessage(),e);
       }
 
+      //log.info("----- Recherche des mises à jours sur la base 'tumorotek' : FIN -----");
+      
       final Version currentVersion = ManagerLocator.getVersionManager().findByCurrentVersionManager();
       //final List<Version> allVersions = ManagerLocator.getVersionManager().findAllObjectsManager();
       final String nextVersion = ObjectTypesFormatters.getLabel("app.version", new String[] {});
+      log.info("----- Mise à jour de la version {} -----", nextVersion);
       // Enregistre la version qui vient d'être installée
       if(null != currentVersion && !currentVersion.getVersion().equals(nextVersion)){
          final Version version = new Version();

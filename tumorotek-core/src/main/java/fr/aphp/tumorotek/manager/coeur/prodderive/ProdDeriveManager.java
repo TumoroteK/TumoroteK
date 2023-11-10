@@ -47,6 +47,7 @@ import fr.aphp.tumorotek.manager.exception.DoublonFoundException;
 import fr.aphp.tumorotek.manager.exception.ObjectUsedException;
 import fr.aphp.tumorotek.manager.impl.systeme.MvFichier;
 import fr.aphp.tumorotek.model.TKAnnotableObject;
+import fr.aphp.tumorotek.model.cession.CederObjet;
 import fr.aphp.tumorotek.model.coeur.ObjetStatut;
 import fr.aphp.tumorotek.model.coeur.annotation.AnnotationValeur;
 import fr.aphp.tumorotek.model.coeur.patient.Patient;
@@ -447,6 +448,14 @@ public interface ProdDeriveManager
    List<ProdDerive> findByIdsInListManager(List<Integer> ids);
 
    /**
+    * Recherche les produits dérivés dont l'id est dans la liste et le statut est statusId.
+    * @param ids Liste d'identifiants.
+    * @param statusId statusId (table obect_statut).
+    * @return Liste de produits dérivés.
+    */
+   List<ProdDerive> findByIdsAndStatus(List<Integer> ids, Integer statusId);
+   
+   /**
     * Trouve les derives pour l'objet parent passé en paramètres.
     * Peut chercher ou non recursivement tous les derives isssus des 
     * derives du parent passé en paramètre.
@@ -661,5 +670,15 @@ public interface ProdDeriveManager
     */
     Map<String,List<ProdDerive>> updateCodeDerivesManager(final List<ProdDerive> produitsDerives, final String oldPrefixe,
       final String newPrefixe, final Utilisateur utilisateur);
+    
+    /**
+     * Cette méthode récupère les produits dérivés associés au statut spécifié à partir de la liste donnée d'objets CederObjet.
+     * Le résultat est renvoyé sous forme d'une liste de produits dérivés.
+     * @param cederObjets La liste d'objets CederObjet à utiliser dans la recherche.
+     * @param statusId La valeur représentant l'identifiant du statut pour filtrer les produits dérivés.
+     * @return Une liste de produits dérivés ayant le statut spécifié. Si aucun produit dérivé correspondant n'est trouvé,
+     * une liste vide est renvoyée.
+     */
+    List<ProdDerive> findProdDerivesWithStatusFromCederObject(List<CederObjet> cederObjets, Integer statusId);   
    
 }

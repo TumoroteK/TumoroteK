@@ -328,6 +328,15 @@ public class EchantillonManagerImpl implements EchantillonManager
    }
 
    @Override
+   public List<Echantillon> findByIdsInListAndStatusManager(final List<Integer> ids, Integer statusId){
+      if(ids != null && ids.size() > 0){
+         return echantillonDao.findByIdsAndStatus(ids, statusId);
+      }
+      return new ArrayList<>();
+   }   
+   
+   
+   @Override
    public List<Echantillon> findByBanquesManager(final List<Banque> banks){
       List<Echantillon> echans = new ArrayList<>();
       if(banks != null && !banks.isEmpty()){
@@ -2198,3 +2207,20 @@ public class EchantillonManagerImpl implements EchantillonManager
 
 }
 
+   
+   @Override
+   public List<Echantillon> findEchantillonsWithStatusFromCederObject(List<CederObjet> cederObjets, Integer statusId){
+      if (cederObjets == null || cederObjets.isEmpty()) {
+         return new ArrayList<>();
+      }
+      List<Integer> echantillonsIds= new ArrayList<>();
+      for (CederObjet cederObjet : cederObjets) {
+         Integer entiteId = cederObjet.getEntite().getEntiteId();
+         //       Si l'objet est de type échantillon (id == 3).
+         if (entiteId.equals(3)) {
+            echantillonsIds.add(cederObjet.getPk().getObjetId());
+         }
+      }
+      return findByIdsInListAndStatusManager(echantillonsIds, statusId);
+   }   
+}

@@ -273,6 +273,56 @@ public class FicheDeplacerEmplacements extends FicheTerminale
    }
 
    /**
+    * Passe sur le 2e écran d'un déplacement (destination) avec les échantillons / produits dérivés passés en paramètre présélectionnés.
+    * @param listEchantillons
+    * @param listDerives
+    */
+   public void switchToDeplacerMode(List<Echantillon> listEchantillons, List<ProdDerive> listDerives){
+      populateDeplacements(listEchantillons, listDerives);
+      switchToDeplacerMode();
+   }
+
+
+   /**
+    * Remplir la liste de deplacements avec les échantillons et les produits dérivés fournis.
+    *
+    * @param listEchantillons Une liste d'échantillons à ajouter aux deplacements.
+    * @param listDerives      Une liste de produits dérivés à ajouter aux deplacements.
+    */
+   private void populateDeplacements(List<Echantillon> listEchantillons, List<ProdDerive> listDerives){
+
+      for(Echantillon echantillon : listEchantillons){
+         addToDeplacements(echantillon);
+      }
+      for(ProdDerive prodDerive : listDerives){
+         addToDeplacements(prodDerive);
+      }
+   }
+
+   //TK-414
+     /**
+    * Crée un objet EmplacementDecorator à partir de l'objet tkStockableObject et l'ajoute à la liste des mouvements.
+    *
+    * @param tkStockableObject L'objet de stockage à partir duquel créer l'EmplacementDecorator et l'ajouter aux mouvements.
+    */
+   private void addToDeplacements(TKStockableObject tkStockableObject){
+      //Récupération de l'emplacement de l'objet : on va le rechercher en base de données pour avoir les données "fraîches".
+      Emplacement emplacement = ManagerLocator.getEmplacementManager().findByTKStockableObjectManager(tkStockableObject);
+      // creation de EmplacementDecorator
+      EmplacementDecorator emplacementDecorator = new EmplacementDecorator(emplacement);
+      emplacementDecorator.setTkStockObj(tkStockableObject);
+      emplacementDecorator.setCode(tkStockableObject.getCode());
+      emplacementDecorator.setEmplacementDepart(true);
+      emplacementDecorator.setType(tkStockableObject.getType().getNom());
+      emplacementDecorator.setTerminale(emplacement.getTerminale());
+      emplacementDecorator.setAdrl(ManagerLocator.getEmplacementManager().getAdrlManager(emplacement, false));
+      // ajouter au deplacements
+      deplacements.add(emplacementDecorator);
+
+   }   
+   
+   
+   /**
     * Change mode de la fiche en mode sélection.
     * @param back boolean
     * @param mismatches Une liste de mismatches entre un scan et le stockage virtuel
@@ -387,20 +437,26 @@ public class FicheDeplacerEmplacements extends FicheTerminale
 
       emplacementsDestDep = new Hashtable<>();
 
-      // on affiche si la terminale est réservée pour un type d'entité
-      if(terminale.getEntite() != null){
-         final StringBuffer sb = new StringBuffer();
-         sb.append(Labels.getLabel("deplacer.emplacement.terminale.entite.reservee"));
-         sb.append(" ");
-         sb.append(terminale.getEntite().getNom());
-         sb.append("s.");
-         entiteReservee = sb.toString();
-         entiteReserveeLabel.setValue(entiteReservee);
-         entiteReserveeRow.setVisible(true);
-      }else{
+      // TK-414
+      if(terminale == null || terminale.getTerminaleId() == null){
+         // on cache les emplacements
+         modeleBoite.setVisible(false);
          entiteReserveeRow.setVisible(false);
+      }else{
+      // on affiche si la terminale est réservée pour un type d'entité
+         if(terminale.getEntite() != null){
+            final StringBuffer sb = new StringBuffer();
+            sb.append(Labels.getLabel("deplacer.emplacement.terminale.entite.reservee"));
+            sb.append(" ");
+            sb.append(terminale.getEntite().getNom());
+            sb.append("s.");
+            entiteReservee = sb.toString();
+            entiteReserveeLabel.setValue(entiteReservee);
+            entiteReserveeRow.setVisible(true);
+         }else{
+            entiteReserveeRow.setVisible(false);
+         }
       }
-
       getBinder().loadComponent(self);
 
    }

@@ -428,7 +428,7 @@ public class FicheEchantillonEdit extends AbstractFicheEditController
       }
 
       // final Emplacement emp = echantillon.getEmplacement();
-      // TK-225 echantillon en modification peux avoir son statut de stockage
+      // TK-225 echantillon en modification peut avoir son statut de stockage
       // modifié par un autre utilisateur
       // -> refresh emplacement depuis la base de données
       final Emplacement emp = ManagerLocator.getEmplacementManager().findByTKStockableObjectManager(echantillon);

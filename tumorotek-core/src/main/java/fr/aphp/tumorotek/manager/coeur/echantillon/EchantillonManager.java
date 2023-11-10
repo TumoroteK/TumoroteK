@@ -47,6 +47,7 @@ import java.util.Set;
 import fr.aphp.tumorotek.manager.exception.ObjectUsedException;
 import fr.aphp.tumorotek.manager.impl.coeur.echantillon.EchantillonJdbcSuite;
 import fr.aphp.tumorotek.manager.impl.systeme.MvFichier;
+import fr.aphp.tumorotek.model.cession.CederObjet;
 import fr.aphp.tumorotek.model.code.CodeAssigne;
 import fr.aphp.tumorotek.model.coeur.ObjetStatut;
 import fr.aphp.tumorotek.model.coeur.annotation.AnnotationValeur;
@@ -99,6 +100,14 @@ public interface EchantillonManager
     */
    List<Echantillon> findByIdsInListManager(List<Integer> ids);
 
+   /**
+    * Recherche les échantillons dont l'id est dans la liste et le statut est statusId.
+    * @param ids Liste d'identifiants.
+    * @param statusId statusId.
+    * @return une liste d'échantillons.
+    */
+   List<Echantillon> findByIdsInListAndStatusManager(final List<Integer> ids, Integer statusId);
+   
    /**
     * Recherche les échantillons pour une liste de banques.
     * @param banks Liste des banques.
@@ -800,7 +809,6 @@ public interface EchantillonManager
    long calculDelaiStockage(Echantillon echan, Calendar datePrelevement);
 
 
-
    /**
     * Renvoie tous les échantillons ayant eu une dégradation possible
     * @param banks
@@ -839,6 +847,7 @@ public interface EchantillonManager
    List<Integer> findByPatientIdentifiantOrNomOrNipReturnIdsManager(String search, List<Banque> selectedBanques, boolean b);
 
    /**
+
     * Met à jour le délai de congélation de tous les échantillons appartenant à un prélèvement.
     * La mise à jour sera effectuée sous condition que la date de stockage et la date de prélèvement soient valides
     * (voir méthode calculDelaiStockage).
@@ -858,6 +867,61 @@ public interface EchantillonManager
     */
 
    void updateDelaiCongelation(List<Echantillon> echantillonsWithCalculatedDelai);
+
+
+   /**
+    * Vérifie s'il existe des échantillons associés à un prélèvement avec un délai de congélation non calculé.
+    * vous ne pouvez pas utiliser le prélevement pour obtenir sa date, car il s'agit de la nouvelle date que
+    * l'utilisateur a entrée, tandis que pour le calcul, vous avez besoin de la date précédente qui a été utilisée pour le calcul.
+    * @param prelevement L'objet Prelevement pour lequel vérifier la présence d'échantillons non calculés.
+    * @param datePrelevement L'ancienne date de prélèvement au format Calendar, utilisée pour calculer les délais de congélation.
+    * @return true si au moins un échantillon associé au prélèvement a un délai de congélation non calculé, false sinon.
+    */
+    boolean hasEchantillonWithNonCalculatedDelai(Prelevement prelevement, Calendar datePrelevement);
+
+   /**
+    * Récupère une liste de tous les échantillons pour lesquels le délai de congélation dans la base de données et le délai calculé sont identiques.
+    *
+    * @param prelevement Le prélèvement associé aux échantillons.
+    * @param datePrelevement La date du prélèvement pour le calcul du délai de congélation.
+    * @return Une liste d'échantillons ayant un délai de congélation identique dans la base de données et calculé.
+    */
+   List<Echantillon> findEchantillonsWithCalculatedDelai(Prelevement prelevement, Calendar datePrelevement);
+
+
+
+    * Cette méthode récupère les échantillons associés au statut spécifié à partir de la liste donnée d'objets CederObjet.
+    * Le résultat est renvoyé sous forme d'une liste d'échantillons.
+    *
+    * @param cederObjets La liste d'objets CederObjet à utiliser dans la recherche.
+    * @param statusId    La valeur représentant l'identifiant du statut pour filtrer les échantillons.
+    * @return Une liste d'échantillons ayant le statut spécifié. Si aucun échantillon correspondant n'est trouvé,
+    *         une liste vide est renvoyée.
+    */
+   List<Echantillon> findEchantillonsWithStatusFromCederObject(List<CederObjet> cederObjets, Integer statusId);
+
+  /**
+    * Met à jour le délai de congélation de tous les échantillons appartenant à un prélèvement.
+    * La mise à jour sera effectuée sous condition que la date de stockage et la date de prélèvement soient valides
+    * (voir méthode calculDelaiStockage).
+    *
+    * @param prelevement Le prélèvement
+    */
+   void updateDelaiCongelation(Prelevement prelevement);
+
+   /**
+    * Met à jour le délai de congélation d'une liste d'échantillons.
+    * Utilisez cette méthode pour ajuster le délai de congélation spécifiquement pour une liste d'échantillons donnée.
+    * Pour mettre à jour le délai de congélation de tous les échantillons, préférez la méthode
+    * {@link #updateDelaiCongelation(Prelevement prelevement)}.
+    *
+    * La mise à jour sera effectuée sous condition que la date de stockage et la date de prélèvement soient valides
+    * (voir la méthode {@link #calculDelaiStockage}).
+    *
+    * @param echantillons La liste d'échantillons dont le délai de congélation doit être mis à jour.
+    */
+   void updateDelaiCongelation(List<Echantillon> echantillons);
+
 
 
    /**

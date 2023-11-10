@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+				   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+				   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+	<changeSet id="${project.artifactId}-2.3.1.0" author="CH" context="*">
+		<tagDatabase tag="${project.parent.version}"/>
+	</changeSet>
+    
+	<changeSet id="${project.artifactId}-2.3.1.0-1" author="CH" runAlways="false" context="*">
+        <preConditions onFail="MARK_RAN">
+	        <not>
+	            <indexExists indexName="EMPLACEMENT_CLE_NATURELLE_IDX" tableName="EMPLACEMENT" />
+	        </not>
+    	</preConditions>
+        <createIndex indexName="EMPLACEMENT_CLE_NATURELLE_IDX" tableName="EMPLACEMENT" unique="false">  
+        	<column name="OBJET_ID"/>  
+        	<column name="ENTITE_ID"/> 
+    	</createIndex>
+    </changeSet>    
+
+</databaseChangeLog>

@@ -76,6 +76,7 @@ import fr.aphp.tumorotek.action.controller.AbstractFicheStaticController;
 import fr.aphp.tumorotek.action.controller.AbstractListeController2;
 import fr.aphp.tumorotek.action.listmodel.ObjectPagingModel;
 import fr.aphp.tumorotek.action.prodderive.ProdDeriveController;
+import fr.aphp.tumorotek.action.stockage.StockageController;
 import fr.aphp.tumorotek.action.utilisateur.ProfilExport;
 import fr.aphp.tumorotek.action.utils.CessionUtils;
 import fr.aphp.tumorotek.decorator.CederObjetDecorator;
@@ -90,6 +91,7 @@ import fr.aphp.tumorotek.model.cession.Cession;
 import fr.aphp.tumorotek.model.cession.Contrat;
 import fr.aphp.tumorotek.model.cession.ECederObjetStatut;
 import fr.aphp.tumorotek.model.coeur.annotation.TableAnnotation;
+import fr.aphp.tumorotek.model.coeur.echantillon.Echantillon;
 import fr.aphp.tumorotek.model.coeur.prelevement.Prelevement;
 import fr.aphp.tumorotek.model.coeur.prodderive.ProdDerive;
 import fr.aphp.tumorotek.model.contexte.EContexte;
@@ -172,6 +174,8 @@ public class FicheCessionStatic extends AbstractFicheStaticController
 	private Menuitem exporterEchantillons;
 	private Menuitem exporterDerives;
 
+	//TK-414
+	private Menuitem move;
 	private Menuitem printCessionPlan;
 
 	// IRELEC
@@ -258,6 +262,9 @@ public class FicheCessionStatic extends AbstractFicheStaticController
 		printCessionPlan.setDisabled(cession.getCessionStatut() == null || cession.getCessionStatut().getStatut().equals("VALIDEE")
 				|| (getEchantillonsCedes().isEmpty() && getDerivesCedes().isEmpty()));
 
+		//TK-414 : désactiver/ activer le bouton de déplacement
+      disableMoveButton();
+		
 		// since 2.2.1-IRELEC automated storage si admin PF ou (ou avec des droits de Consultation sur le stockage et en modification sur les échantillons (TK-339)) 
 		//et cession en attente 
 		storageRobotItem.setVisible(storageRobotItemVisible() 
@@ -267,6 +274,16 @@ public class FicheCessionStatic extends AbstractFicheStaticController
 		super.setObject(cession);
 	}
 
+	//TK-414 :
+   /**
+    * Désactiver / activer le bouton de déplacement. Le bouton ne sera actif que si la cession est au statut EN ATTENTE
+    */
+   private void disableMoveButton(){
+      boolean enAttente = (cession.getCessionStatut() != null && cession.getCessionStatut().getStatut().equals("EN ATTENTE"));
+      move.setDisabled(!enAttente);
+   }	
+	
+	
 	@Override
 	public void setNewObject(){
 		setObject(new Cession());
@@ -390,6 +407,26 @@ public class FicheCessionStatic extends AbstractFicheStaticController
 		}
 	}
 
+	//TK-414
+   /**
+    * Écouteur d'événement pour le clic sur le bouton 'Déplacer les échantillons/dérivés'
+    */
+   public void onClick$move(){
+      List<Echantillon> reservedEchantillons =  ManagerLocator.getEchantillonManager().
+         findEchantillonsWithStatusFromCederObject(echantillonsCedes, 3);
+      List<ProdDerive> reservedDerives =  ManagerLocator.getProdDeriveManager().
+         findProdDerivesWithStatusFromCederObject(derivesCedes, 3);
+      if (reservedEchantillons.size() > 0 || reservedDerives.size() > 0 ) {
+         final StockageController tabController = StockageController.backToMe(getMainWindow(), page);
+         tabController.clearAllPage();
+         tabController.switchToDeplacerContenuCessionMode(reservedEchantillons, reservedDerives);
+      } else {
+         // Code to handle when no products are found:
+         String message = Labels.getLabel("message.cession.no.reserved");
+         Messagebox.show(message, "Information", Messagebox.OK, Messagebox.INFORMATION);
+      }
+   }	
+	
 	@Override
 	public void onClick$addNew(){
 		getObjectTabController().switchToCreateMode(null, null, null);
