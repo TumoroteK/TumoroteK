@@ -91,7 +91,7 @@ public final class TumorotekProperties
     * @param key
     * @return
     */
-   protected static String getValue(final String key){
+   protected static String getValue(final String key, boolean mandatory){
 
       String res = null;
 
@@ -101,13 +101,26 @@ public final class TumorotekProperties
             new PropertyPlaceholderHelper(PLACEHOLDER_START_DELIMITER, PLACEHOLDER_END_DELIMITER, "#", false);
          res = pph.replacePlaceholders(value, TUMOROTEK_PROPERTIES);
       }
+      else if (mandatory) {
+         log.error("la clé : " + key + " n'a pas été trouvée dans tumorotek.properties");
+      }
       else {
-         log.error("la clé : " + key + " n'a pas été trouvée dans tumorotek.properties - renvoie null");
+         log.debug("la clé : " + key + " n'a pas été trouvée dans tumorotek.properties - renvoie null : la valeur par défaut sera utilisée");
       }
 
       return res;
    }
 
+   /**
+    * Renvoie la valeur de la clé spécifiée dans le fichier tumorotek.properties (null si la clé n'est pas trouvée)
+    * @param key
+    * @return
+    */
+   protected static String getValue(final String key){
+      return getValue(key, true);
+   }
+   
+  
    /**
     * Recherche une clé dans le fichier tumorotek.properties
     * @param key clé recherchée
