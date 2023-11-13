@@ -99,7 +99,8 @@ public class GatsbiAuthenticationUtils
             mapPrivateClaim.put(KEY__CLAIM_ROLE, role);
          }
          int dureeVieJwt = DUREE_VIE__JWT;//valeur par défaut qui peut être surchargée par la conf
-         if(TkParam.GATSBI_JWT_EXPIRATION.getValue() != null) {
+         String gatsbiJwtExpirationValue = TkParam.GATSBI_JWT_EXPIRATION.getValue();
+         if(gatsbiJwtExpirationValue != null && gatsbiJwtExpirationValue.trim().length() > 0) {
             dureeVieJwt = Integer.parseInt(TkParam.GATSBI_JWT_EXPIRATION.getValue());
          }
          return ManagerLocator.getManager(JWTGenerator.class).generate("Gatsbi", login, dureeVieJwt, tokenCSRF, mapPrivateClaim);
