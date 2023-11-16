@@ -35,30 +35,18 @@
  **/
 package fr.aphp.tumorotek.action.administration;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.Arrays;
-
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang.StringUtils;
-import org.springframework.http.InvalidMediaTypeException;
-import org.springframework.http.MediaType;
-import org.zkoss.image.AImage;
-import org.zkoss.util.media.Media;
-import org.zkoss.util.resource.Labels;
-import org.zkoss.zk.ui.Component;
-import org.zkoss.zk.ui.event.Event;
-import org.zkoss.zk.ui.event.EventListener;
-import org.zkoss.zul.Fileupload;
-import org.zkoss.zul.Html;
-import org.zkoss.zul.Image;
-import org.zkoss.zul.Label;
-import org.zkoss.zul.Messagebox;
-
-import fr.aphp.tumorotek.action.ManagerLocator;
 import fr.aphp.tumorotek.action.controller.AbstractController;
-import fr.aphp.tumorotek.component.TexteModale;
-import fr.aphp.tumorotek.manager.administration.ParametresManager;
+import fr.aphp.tumorotek.model.config.Parameter;
+import org.zkoss.bind.annotation.BindingParam;
+import org.zkoss.bind.annotation.Command;
+import org.zkoss.bind.annotation.Init;
+import org.zkoss.bind.annotation.NotifyChange;
+import org.zkoss.zk.ui.Component;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author GCH
@@ -67,197 +55,89 @@ import fr.aphp.tumorotek.manager.administration.ParametresManager;
 public class ParametresController extends AbstractController
 {
 
-   private static final long serialVersionUID = -2450763003941018231L;
+   private List<Parameter> parameterList;
 
-   /** Formats image acceptés */
-   private static final MediaType[] AUTHORIZED_IMAGE_MEDIA_TYPES =
-      new MediaType[] {MediaType.IMAGE_GIF, MediaType.IMAGE_JPEG, MediaType.IMAGE_PNG};
+   private Map<Parameter, Boolean> editModeMap;
 
-   //Composants ZK
-   private Image accueilImg;
-
-   private Label noImgLabel;
-
-   private Html accueilHtml;
+   public List<Parameter> getParameterList(){
+      return parameterList;
+   }
 
    @Override
-   public void doAfterCompose(final Component comp) throws Exception{
-
+   public void doAfterCompose(Component comp) throws Exception{
       super.doAfterCompose(comp);
+      // Initialize parameterList with sample data
+      parameterList = new ArrayList<>();
+      parameterList.add(new Parameter("Key1", "Value1", "string"));
+      parameterList.add(new Parameter("Key2", "Value2", "boolean"));
+      parameterList.add(new Parameter("Key3", "Value3", "string"));
 
-      final ParametresManager parametresManager = ManagerLocator.getManager(ParametresManager.class);
-
-      updateLogo(parametresManager.getLogoFile());
-
-      String accueilMsg = parametresManager.getMessageAccueil(false);
-
-      if(StringUtils.isEmpty(accueilMsg)){
-         accueilMsg = Labels.getLabel("params.message.empty");
+      // Initialize the editModeMap
+      editModeMap = new HashMap<>();
+      for(Parameter parameter : parameterList){
+         editModeMap.put(parameter, false);
       }
-
-      accueilHtml.setContent(accueilMsg);
-
    }
 
-   /**
-    * Met à jour le composant contenant le logo, si le nouveau logo est null, remplace l'image par un label
-    * @param newLogoFile nouveau logo
-    * @throws IOException
-    */
-   private void updateLogo(final File newLogoFile){
+   public boolean isEditMode(Parameter parameter){
+      return editModeMap.get(parameter);
+   }
 
-      if(newLogoFile != null && newLogoFile.exists()){
 
-         try{
-            final AImage content = new AImage(newLogoFile);
-            accueilImg.setContent(content);
-            accueilImg.setVisible(true);
-            noImgLabel.setVisible(false);
-         }catch(final IOException e){
-            log.error("Impossible de charger le fichier image [{}]", newLogoFile.getAbsolutePath(), e );
-            Messagebox.show(Labels.getLabel("error.params.image.update"), Labels.getLabel("general.error"), Messagebox.OK,
-               Messagebox.ERROR);
-         }
+   @Init
+   public void init(){
+      // Initialize parameterList with sample data
+      parameterList = new ArrayList<>();
+      parameterList.add(new Parameter("Key1", "Value1", "string"));
+      parameterList.add(new Parameter("Key2", "Value2", "boolean"));
+      parameterList.add(new Parameter("Key3", "Value3", "string"));
 
+      // Initialize the editModeMap
+      editModeMap = new HashMap<>();
+      for(Parameter parameter : parameterList){
+         editModeMap.put(parameter, false);
+      }
+   }
+
+   @Command
+   @NotifyChange("parameterList")
+   public void editParameter(@BindingParam("parameter") Parameter parameter){
+      boolean isEditMode = isEditMode(parameter);
+
+      if(!isEditMode){
+         editModeMap.put(parameter, true);
       }else{
-         accueilImg.setVisible(false);
-         noImgLabel.setVisible(true);
+         // Save to the database here
+         // Get the index of the parameter in the list
+         int index = parameterList.indexOf(parameter);
+
+         // Update the parameter with the edited values
+         Parameter editedParameter = parameterList.get(index);
+         // Assuming Parameter class has appropriate setter methods
+         editedParameter.setCode(parameter.getCode());
+         editedParameter.setValue(parameter.getValue());
+         editedParameter.setType(parameter.getType());
+
+         // After updating, set edit mode to false
+         editModeMap.put(parameter, false);
+
+         // After saving, clear the edited value and set edit mode to false
+         editModeMap.put(parameter, false);
       }
+   }
+
+
+   @Command
+   @NotifyChange("parameterList")
+   public void cancelEdit(@BindingParam("parameter") Parameter parameter) {
+      // Revert to the original values
+
+
+      // Set edit mode to false to cancel the editing
+      editModeMap.put(parameter, false);
+
 
    }
 
-   /**
-    * Méthode appelés lors du clic sur le bouton "Modifier" de l'image d'accueil
-    */
-   public void onClick$uploadImageAccueilBtn(){
-
-      final Media uploadedMedia = Fileupload.get();
-      final ParametresManager parametresManager = ManagerLocator.getManager(ParametresManager.class);
-
-      if(uploadedMedia == null){
-         return;
-      }
-
-      boolean mediaTypeValide = false;
-      try{
-         final MediaType uploadedMediaType = MediaType.valueOf(uploadedMedia.getContentType());
-         mediaTypeValide = Arrays.asList(AUTHORIZED_IMAGE_MEDIA_TYPES).contains(uploadedMediaType);
-      }catch(final InvalidMediaTypeException imte){
-         log.warn("MediaType inconnu", imte);
-      }
-
-      if(mediaTypeValide){
-
-         boolean saved = false;
-
-         File tmpLogoFile = null;
-         try{
-            tmpLogoFile = File.createTempFile("logo", ".tmp");
-            FileUtils.writeByteArrayToFile(tmpLogoFile, uploadedMedia.getByteData());
-            saved = parametresManager.saveLogo(tmpLogoFile);
-         }catch(final IOException e){
-            log.error("Erreur lors de la conversion du media en fichier", e);
-         }finally{
-            if(null != tmpLogoFile && tmpLogoFile.exists()){
-               tmpLogoFile.delete();
-            }
-         }
-
-         if(saved){
-            updateLogo(parametresManager.getLogoFile());
-         }else{
-            Messagebox.show(Labels.getLabel("error.params.image.update"), Labels.getLabel("general.error"), Messagebox.OK,
-               Messagebox.ERROR);
-         }
-
-      }else{
-         Messagebox.show(Labels.getLabel("error.params.image.format"), Labels.getLabel("general.error"), Messagebox.OK,
-            Messagebox.ERROR);
-      }
-
-   }
-
-   /**
-    * Méthode appelés lors du clic sur le bouton "Supprimer" de l'image d'accueil
-    */
-   public void onClick$deleteImageAccueilBtn(){
-
-      final int confirmation = Messagebox.show("Confirmer la suppression de l'image d'accueil ?",
-         "Suppression de l'image d'accueil", Messagebox.YES | Messagebox.NO, Messagebox.EXCLAMATION);
-
-      if(confirmation == Messagebox.YES){
-
-         final boolean deleted = ManagerLocator.getManager(ParametresManager.class).deleteLogo();
-
-         if(deleted){
-            updateLogo(null);
-         }else{
-            Messagebox.show(Labels.getLabel("error.params.image.update"), Labels.getLabel("general.error"), Messagebox.OK,
-               Messagebox.ERROR);
-         }
-
-      }
-
-   }
-
-   /**
-    * Méthode appelé lors du clic sur le bouton "Modifier" du message d'accueil
-    */
-   public void onClick$updateMsgAccueilBtn(){
-
-      final EventListener<Event> onCloseListener = event -> {
-         if(null != event.getData()){
-            storeNewMsgAccueil((String) event.getData());
-         }
-      };
-
-      final String currentMsg = ManagerLocator.getManager(ParametresManager.class).getMessageAccueil(true);
-
-      TexteModale.show(Labels.getLabel("params.modale.message.titre"), Labels.getLabel("params.modale.message.libelle"),
-         currentMsg, 5, true, onCloseListener);
-
-   }
-
-   /**
-    * Méthode appelé lors du clic sur le bouton "Supprimer" du message d'accueil
-    */
-   public void onClick$deleteMsgAccueilBtn(){
-
-      final int confirmation = Messagebox.show("Confirmer la suppression du message d'accueil ?",
-         "Suppression du message d'accueil", Messagebox.YES | Messagebox.NO, Messagebox.EXCLAMATION);
-
-      if(confirmation == Messagebox.YES){
-
-         final boolean deleted = ManagerLocator.getManager(ParametresManager.class).deleteMessageAccueil();
-
-         if(deleted){
-            accueilHtml.setContent(Labels.getLabel("params.message.empty"));
-         }else{
-            Messagebox.show(Labels.getLabel("error.params.message.update"), Labels.getLabel("general.error"), Messagebox.OK,
-               Messagebox.ERROR);
-         }
-
-      }
-
-   }
-
-   /**
-    * Stocke le nouveau message d'accueil dans le fichier tumorotek.properties
-    * @param msgAccueil nouveau message d'accueil
-    */
-   private void storeNewMsgAccueil(final String msgAccueil){
-
-      final ParametresManager paramsMgr = ManagerLocator.getManager(ParametresManager.class);
-
-      final boolean saved = paramsMgr.saveMessageAccueil(msgAccueil);
-
-      if(saved){
-         accueilHtml.setContent(paramsMgr.getMessageAccueil(false));
-      }else{
-         Messagebox.show(Labels.getLabel("error.params.message.update"), Labels.getLabel("general.error"), Messagebox.OK,
-            Messagebox.ERROR);
-      }
-
-   }
 
 }
