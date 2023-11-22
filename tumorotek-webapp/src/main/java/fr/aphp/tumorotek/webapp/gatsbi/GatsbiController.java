@@ -670,12 +670,17 @@ public class GatsbiController
          // surcharge la propriété deletable suivant le contexte gastbi
          Contexte c;
          for(ImportColonneDecorator deco : decos){
-            c = SessionUtils
-               .getCurrentGatsbiContexteForEntiteId(deco.getColonne().getChamp().getChampEntite().getEntite().getEntiteId());
-            if(c != null){
-               deco.setCanDelete(
-                  !getRequiredChampEntiteIdsForContexte(c).contains(deco.getColonne().getChamp().getChampEntite().getId()));
-               deco.setVisiteGatsbi(c.getContexteType().equals(ContexteType.MALADIE));
+            //TG-197 : dans le cas d'une annotation : deco.getColonne().getChamp().getChampEntite() est null 
+            // mais le champ n'est pas concerné par le contexte Gatsbi donc les valeurs par défaut de ImportColonneDecorator ne sont pas à surcharger
+            //=> test ci-dessous
+            if (deco.getColonne().getChamp() != null && deco.getColonne().getChamp().getChampEntite() != null) {
+               c = SessionUtils
+                  .getCurrentGatsbiContexteForEntiteId(deco.getColonne().getChamp().getChampEntite().getEntite().getEntiteId());
+               if(c != null){
+                  deco.setCanDelete(
+                     !getRequiredChampEntiteIdsForContexte(c).contains(deco.getColonne().getChamp().getChampEntite().getId()));
+                  deco.setVisiteGatsbi(c.getContexteType().equals(ContexteType.MALADIE));
+               }
             }
          }
       }
