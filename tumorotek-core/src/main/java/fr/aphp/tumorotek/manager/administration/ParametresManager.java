@@ -35,7 +35,11 @@
  **/
 package fr.aphp.tumorotek.manager.administration;
 
+import fr.aphp.tumorotek.dto.ParametreDTO;
+import fr.aphp.tumorotek.model.config.ParametreValeurSpecifique;
+
 import java.io.File;
+import java.util.List;
 
 /**
  * Interface du service de gestion des paramètres de l'application
@@ -61,7 +65,7 @@ public interface ParametresManager
 
    /**
     * Supprime le message d'accueil
-    * @param msgAccueil
+    *
     * @return true si le message a bien eété supprimé
     */
    boolean deleteMessageAccueil();
@@ -84,5 +88,13 @@ public interface ParametresManager
     * @return true si le logo a bien été suprimé
     */
    boolean deleteLogo();
+
+   List<ParametreDTO> getParametresByPlateformeId(Integer idPlateforme);
+
+
+   public ParametreValeurSpecifique findParametresByPlateformeIdAndCode(Integer plateformID, String code);
+
+   public void updateValeur(Integer plateformID, String code, String newValue);
+
 
 }
