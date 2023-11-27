@@ -8,6 +8,6 @@ import java.util.List;
 public interface ParametreDao extends GenericDaoJpa<ParametreValeurSpecifique, Integer>
 {
    List<ParametreValeurSpecifique> findByPlateformeIdAndCode(Integer plateformeId, String code);
-   List<ParametreValeurSpecifique> selectAll();
+   List<ParametreValeurSpecifique> findAllByPlateformeId(Integer plateformeId);
 
 }

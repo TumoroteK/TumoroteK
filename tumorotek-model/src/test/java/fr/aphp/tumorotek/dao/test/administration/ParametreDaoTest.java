@@ -15,12 +15,9 @@ public class ParametreDaoTest extends AbstractDaoTest
 
    private ParametreDao parametreDao;
 
-
-
    public void setParametreDao(ParametreDao parametreDao){
       this.parametreDao = parametreDao;
    }
-
 
    /**
     * Teste la méthode {@link ParametreDao#findByPlateformeIdAndCode(Integer, String)}.
@@ -40,8 +37,8 @@ public class ParametreDaoTest extends AbstractDaoTest
 
       List<ParametreValeurSpecifique> result = parametreDao.findByPlateformeIdAndCode(plateformID, code);
       assertNotNull(result);
-      assertEquals(1 , result.size());
-      String codeError ="welcame.message";
+      assertEquals(1, result.size());
+      String codeError = "welcame.message";
       assertEquals(code, result.get(0).getCode());
       assertNotEquals(codeError, result.get(0).getCode());
 
@@ -55,13 +52,13 @@ public class ParametreDaoTest extends AbstractDaoTest
     * spécifiquement une {@link ConstraintViolationException}. En effet, la combinaison de code et de
     * plateformeId doit être unique.
     */
-   public void testDuplicate() {
+   public void testDuplicate(){
 
       Integer plateformID = 1;
       String code = "welcome.message";
 
-      try {
-         for (int i = 0; i < 3; i++) {
+      try{
+         for(int i = 0; i < 3; i++){
             ParametreValeurSpecifique newParametreValeurSpecifique = new ParametreValeurSpecifique();
             newParametreValeurSpecifique.setPlateformeId(plateformID);
             newParametreValeurSpecifique.setCode(code);
@@ -71,12 +68,29 @@ public class ParametreDaoTest extends AbstractDaoTest
 
          // If no exception is thrown, fail the test
          fail("Expected DataIntegrityViolationException not thrown");
-      } catch (DataIntegrityViolationException e) {
+      }catch(DataIntegrityViolationException e){
          // Expected exception, do further assertions if needed
          assertTrue(e.getCause() instanceof ConstraintViolationException);
       }
    }
 
+   public void testFindAllByPlateformeId(){
+      Integer platformId = 1;
+      String code = "welcome.message";
+      String code2 = "message";
+      ParametreValeurSpecifique newParametreValeurSpecifique = new ParametreValeurSpecifique();
+      newParametreValeurSpecifique.setPlateformeId(platformId);
+      newParametreValeurSpecifique.setCode(code);
+      ParametreValeurSpecifique newParametreValeurSpecifique2 = new ParametreValeurSpecifique();
+      newParametreValeurSpecifique2.setPlateformeId(platformId);
+      newParametreValeurSpecifique2.setCode(code2);
+
+      parametreDao.createObject(newParametreValeurSpecifique);
+      parametreDao.createObject(newParametreValeurSpecifique2);
+      List<ParametreValeurSpecifique> allParameters = parametreDao.findAllByPlateformeId(platformId);
+      assertNotNull(allParameters);
+      assertEquals(2, allParameters.size());
    }
+}
 
 

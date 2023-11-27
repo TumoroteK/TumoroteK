@@ -39,7 +39,7 @@ import fr.aphp.tumorotek.dto.ParametreDTO;
 import fr.aphp.tumorotek.model.config.ParametreValeurSpecifique;
 
 import java.io.File;
-import java.util.List;
+import java.util.Set;
 
 /**
  * Interface du service de gestion des paramètres de l'application
@@ -89,7 +89,7 @@ public interface ParametresManager
     */
    boolean deleteLogo();
 
-   List<ParametreDTO> getParametresByPlateformeId(Integer idPlateforme);
+   Set<ParametreDTO> getParametresByPlateformeId(Integer idPlateforme);
 
 
    public ParametreValeurSpecifique findParametresByPlateformeIdAndCode(Integer plateformID, String code);

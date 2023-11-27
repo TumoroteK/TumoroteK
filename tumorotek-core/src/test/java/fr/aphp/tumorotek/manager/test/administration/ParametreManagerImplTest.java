@@ -11,6 +11,7 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
+import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
@@ -118,7 +119,7 @@ public class ParametreManagerImplTest extends AbstractManagerTest
    public void testgetDefaultParametresByPlateformeId(){
       Integer plateformeId = 3;
       // Act
-      List<ParametreDTO> result = parametreManager.getParametresByPlateformeId(plateformeId);
+      Set<ParametreDTO> result = parametreManager.getParametresByPlateformeId(plateformeId);
 
       // Assert
       assertNotNull(result);
@@ -148,7 +149,7 @@ public class ParametreManagerImplTest extends AbstractManagerTest
    public void testgetParametresByPlateformeId(){
       Integer plateformeId = 1;
       // Act
-      List<ParametreDTO> result = parametreManager.getParametresByPlateformeId(plateformeId);
+      Set<ParametreDTO> result = parametreManager.getParametresByPlateformeId(plateformeId);
 
       // Assert
       assertNotNull(result);

@@ -2,6 +2,8 @@ package fr.aphp.tumorotek.dto;
 
 import fr.aphp.tumorotek.model.config.ParametreValeurSpecifique;
 
+import java.util.Objects;
+
 public class ParametreDTO
 {
 
@@ -54,6 +56,19 @@ public class ParametreDTO
    public static ParametreDTO mapFromEntity(ParametreValeurSpecifique entity) {
       return new ParametreDTO(entity.getCode(),entity.getValeur(),
                                        entity.getType() , entity.getGroupe());
+   }
+
+   @Override
+   public boolean equals(Object o) {
+      if (this == o) return true;
+      if (o == null || getClass() != o.getClass()) return false;
+      ParametreDTO that = (ParametreDTO) o;
+      return Objects.equals(code, that.code);
+   }
+
+   @Override
+   public int hashCode() {
+      return Objects.hash(code);
    }
 
 }

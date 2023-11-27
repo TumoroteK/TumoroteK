@@ -42,6 +42,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.HashSet;
 import java.util.Properties;
 import fr.aphp.tumorotek.dao.administration.ParametreDao;
 import fr.aphp.tumorotek.dto.ParametreDTO;
@@ -62,9 +63,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 
-
+import javax.persistence.SecondaryTable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Service de gestion de paramètres de l'application
@@ -226,30 +228,51 @@ public class ParametresManagerImpl implements ParametresManager
     * Récupère une liste de ParametreDTO en fonction de l'identifiant de la plateforme.
     *
     * @param plateformeId L'identifiant de la plateforme.
-    * @return Une liste de ParametreDTO.
+    * @return Set de ParametreDTO.
     */
-   public List<ParametreDTO> getParametresByPlateformeId(Integer plateformeId){
-      // Crée une liste pour stocker les ParametreDTO
-      List<ParametreDTO> listOfParameters = new ArrayList<>();
+   public Set<ParametreDTO> getParametresByPlateformeId(Integer plateformeId) {
+      // Récupère les ParametreValeurSpecifique modifiés pour la plateforme donnée
+      List<ParametreValeurSpecifique> parametresModifies = parametreDao.findAllByPlateformeId(plateformeId);
 
-      // Parcours de l'énumération des paramètres par défaut
-      for(EParametreValeurParDefaut param : EParametreValeurParDefaut.values()){
-         // Obtient le code du paramètre
+      // Initialise le set qui contiendra les ParametreDTO résultants
+      Set<ParametreDTO> setOfParameters = new HashSet<>();
+
+      // Parcours des valeurs par défaut des paramètres
+      for (EParametreValeurParDefaut param : EParametreValeurParDefaut.values()) {
          String code = param.getCode();
-         // Récupère le ParametreValeurSpecifique depuis la base de données en utilisant l'id de la plateforme et le code
-         ParametreValeurSpecifique resultFromDB = findParametresByPlateformeIdAndCode(plateformeId, code);
-         // Vérifie si le ParametreValeurSpecifique existe dans la base de données
-         if(resultFromDB != null){
-            // Si oui, mappe le ParametreValeurSpecifique vers ParametreDTO et l'ajoute à la liste
-            ParametreDTO parametreDTO = ParametreDTO.mapFromEntity(resultFromDB);
-            listOfParameters.add(parametreDTO);
-         }else{
-            // Si non, crée un nouveau ParametreDTO avec les valeurs par défaut et l'ajoute à la liste
-            listOfParameters.add(new ParametreDTO(code, param.getValeur(), param.getType(), param.getGroupe()));
+
+         // Vérifie s'il existe un ParametreValeurSpecifique modifié avec le même code
+         ParametreValeurSpecifique parametreModifie = findModifiedParamByCode(parametresModifies, code);
+
+         if (parametreModifie != null) {
+            // Si oui, mappe-le vers ParametreDTO et ajoute-le au set
+            ParametreDTO parametreDTO = ParametreDTO.mapFromEntity(parametreModifie);
+            setOfParameters.add(parametreDTO);
+         } else {
+            // Si aucun ParametreValeurSpecifique modifié n'est trouvé, ajoute les valeurs par défaut au set
+            setOfParameters.add(new ParametreDTO(code, param.getValeur(), param.getType(), param.getGroupe()));
          }
       }
-      // Retourne la liste des ParametreDTO
-      return listOfParameters;
+
+      // Retourne le set des ParametreDTO
+      return setOfParameters;
+   }
+
+   /**
+    * Recherche un ParametreValeurSpecifique modifié avec le code donné dans la liste spécifiée.
+    *
+    * @param modifiedParams Liste des ParametreValeurSpecifique modifiés.
+    * @param code           Le code du paramètre à rechercher.
+    * @return Le ParametreValeurSpecifique modifié correspondant au code, ou null s'il n'est pas trouvé.
+    */
+   private ParametreValeurSpecifique findModifiedParamByCode(List<ParametreValeurSpecifique> modifiedParams, String code) {
+      // Itère à travers la liste des ParametreValeurSpecifique modifiés et trouve celui avec le code correspondant
+      for (ParametreValeurSpecifique param : modifiedParams) {
+         if (code.equals(param.getCode())) {
+            return param;
+         }
+      }
+      return null; // Retourne null si non trouvé
    }
 
 
