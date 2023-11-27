@@ -59,6 +59,7 @@ import org.apache.commons.configuration2.builder.fluent.Parameters;
 import org.apache.commons.configuration2.ex.ConfigurationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 
 
@@ -78,6 +79,10 @@ public class ParametresManagerImpl implements ParametresManager
    private ParametreDao parametreDao;
 
    private final static String LOGO_FILEPATH = TumorotekProperties.TUMO_PROPERTIES_DIR + "/logo.png";
+
+   public void setParametreDao(ParametreDao parametreDao){
+      this.parametreDao = parametreDao;
+   }
 
    /* (non-Javadoc)
     * @see fr.aphp.tumorotek.manager.administration.ParametresManager#getMessageAccueil(boolean)
@@ -256,8 +261,16 @@ public class ParametresManagerImpl implements ParametresManager
     * @return Le ParametreValeurSpecifique trouvé.
     */
    @Override
-   public ParametreValeurSpecifique findParametresByPlateformeIdAndCode(Integer plateformID, String code){
-      return parametreDao.findByPlateformeIdAndCode(plateformID, code).get(0);
+   public ParametreValeurSpecifique findParametresByPlateformeIdAndCode(Integer plateformID, String code) {
+      List<ParametreValeurSpecifique> parametres = parametreDao.findByPlateformeIdAndCode(plateformID, code);
+
+      if (!parametres.isEmpty()) {
+         // Return the first element if the list is not empty
+         return parametres.get(0);
+      } else {
+         // Handle the case where the list is empty (return null or take appropriate action)
+         return null;
+      }
    }
 
    /**
@@ -270,6 +283,11 @@ public class ParametresManagerImpl implements ParametresManager
     */
    @Override
    public void updateValeur(Integer plateformID, String code, String newValue){
+      // Vérifie si le code existe dans l'énumération
+      EParametreValeurParDefaut paramEnum = EParametreValeurParDefaut.findByCode(code);
+      if (paramEnum == null) {
+         throw new IllegalArgumentException("Invalid code: " + code);
+      }
       // Trouve le ParametreValeurSpecifique dans la base de données en utilisant l'id de la plateforme et le code
       ParametreValeurSpecifique plateformParametreValeurSpecifique = findParametresByPlateformeIdAndCode(plateformID, code);
       if (plateformParametreValeurSpecifique != null) {
@@ -278,17 +296,13 @@ public class ParametresManagerImpl implements ParametresManager
          parametreDao.updateObject(plateformParametreValeurSpecifique);
       } else {
          // Si le ParametreValeurSpecifique n'existe pas, crée un nouveau ParametreValeurSpecifique
-         EParametreValeurParDefaut paramEnum = EParametreValeurParDefaut.findByCode(code);
-         if (paramEnum != null){
-            ParametreValeurSpecifique newParametreValeurSpecifique = new ParametreValeurSpecifique();
-            newParametreValeurSpecifique.setPlateformeId(plateformID);
-            newParametreValeurSpecifique.setCode(code);
-            newParametreValeurSpecifique.setValeur(newValue);
-            newParametreValeurSpecifique.setType(paramEnum.getType());
-            newParametreValeurSpecifique.setGroupe(paramEnum.getGroupe());
-            parametreDao.createObject(newParametreValeurSpecifique);
-         }
-
+         ParametreValeurSpecifique newParametreValeurSpecifique = new ParametreValeurSpecifique();
+         newParametreValeurSpecifique.setPlateformeId(plateformID);
+         newParametreValeurSpecifique.setCode(code);
+         newParametreValeurSpecifique.setValeur(newValue);
+         newParametreValeurSpecifique.setType(paramEnum.getType());
+         newParametreValeurSpecifique.setGroupe(paramEnum.getGroupe());
+         parametreDao.createObject(newParametreValeurSpecifique);
       }
    }
 

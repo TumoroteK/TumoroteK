@@ -2585,8 +2585,16 @@
 	</bean>
 
 	<!-- Package administration -->
-	<bean id="parametresManager"
-		class="fr.aphp.tumorotek.manager.impl.administration.ParametresManagerImpl" />
+	<bean id="parametresManager">
+		<property name="target">
+			<bean
+					class="fr.aphp.tumorotek.manager.impl.administration.ParametresManagerImpl" >
+				<property name="parametreDao" ref="parametreDao" />
+
+			</bean>
+		</property>
+	</bean>
+
   
 	<bean id="configItemManager" parent="txProxyTemplate">
 		<property name="target">

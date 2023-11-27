@@ -13,7 +13,7 @@ import javax.persistence.UniqueConstraint;
       @UniqueConstraint(columnNames = {"plateformeId", "code"})
 })
 @NamedQuery(
-   name = "Parametre.findByPlateformeIdAndCode",
+   name = "ParametreValeurSpecifique.findByPlateformeIdAndCode",
    query = "SELECT p FROM ParametreValeurSpecifique p WHERE p.plateformeId = ?1 AND p.code = ?2"
 )
 

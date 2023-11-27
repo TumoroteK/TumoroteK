@@ -11,7 +11,14 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 /**
- * Classe qui va gérer l'ensemble des tests sur les Managers.
+ * Classe qui va gérer les tests sur les Managers.
+ *
+ *  Notez que l'utilisation de la classe AbstractManagerTest4 ne fonctionnera pas,
+ *  car elle présente des conflits de dépendances dans sa définition.
+ *  Si vous souhaitez étendre cette classe pour tester un "Manager"", assurez-vous de l'inclure
+ *  dans le fichier applicationContextManagerTest.xml.
+ *
+ * Pour tester les DAO, étendez la classe AbstractDAOTest.
  *
  * Cette classe abstraite sert de base pour tous les tests sur les managers.
  * Elle utilise le {@link SpringJUnit4ClassRunner} pour intégrer le framework Spring avec JUnit.
@@ -24,7 +31,7 @@ import static org.junit.Assert.assertNotNull;
  * @version 23/11/2023
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = "classpath:applicationContextManager-test-mysql.xml")
+@ContextConfiguration(locations = "classpath:applicationContextManagerForTest.xml")
 public abstract class AbstractManagerTest extends AbstractTransactionalJUnit4SpringContextTests
 {
 

@@ -22,7 +22,8 @@ public enum EParametreValeurParDefaut
 {
    // paramètre quantité utilisé obligatoire lors de la création du dérivé :
    DERIVE_QTE_OBLIGATOIRE("derives.obligatoire", "true", "boolean", "derive"),
-   MESSAGE_ACCEUIL("msg.acceuil", "welcome", "string", "derive"), QTE_OBLIGATOIRE("qut.oblig", "false", "boolean", "derive");
+   MESSAGE_ACCEUIL("msg.acceuil", "welcome", "string", "derive"),
+   QTE_OBLIGATOIRE("qut.oblig", "false", "boolean", "derive");
 
    private String code;
 
