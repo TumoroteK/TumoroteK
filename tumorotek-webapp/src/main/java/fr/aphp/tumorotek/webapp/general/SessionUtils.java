@@ -36,8 +36,10 @@
 package fr.aphp.tumorotek.webapp.general;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.zkoss.zk.ui.Sessions;
 
@@ -51,6 +53,7 @@ import fr.aphp.tumorotek.model.interfacage.Recepteur;
 import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
 import fr.aphp.tumorotek.param.TkParam;
 import fr.aphp.tumorotek.utils.Utils;
+import fr.aphp.tumorotek.dto.ParametreDTO;
 
 /**
  * Utility class fournissant les methodes récupérant les variables de session.
@@ -289,6 +292,28 @@ public final class SessionUtils {
       return Sessions.getCurrent().getAttribute("ToutesCollections") != null 
          && ((List<Banque>) Sessions.getCurrent()
             .getAttribute("ToutesCollections")).stream().anyMatch(b -> b.getEtude() != null);  
+   }
+
+   /**
+    * Stocker les paramètres de la plateforme dans la session.
+    *
+    * @param parametres Set<ParametreDTO> paramètres de la plateforme à stocker
+    * @param sessionScp la map de session où les paramètres seront stockés
+    */
+   public static void setPlatformParameters(Set<ParametreDTO> parametres, final Map<String, Object> sessionScp) {
+      sessionScp.put("Parametres", parametres);
+   }
+
+   /**
+    * Récupère les paramètres de la plateforme depuis la session.
+    *
+    * @return Set<ParametreDTO> L'ensemble des paramètres de la plateforme.
+    */
+   public static Set<ParametreDTO> getPlatformParameters(final Map<String, Object> sessionScp) {
+      if(sessionScp.get("Parametres") != null){
+         return (Set<ParametreDTO>) sessionScp.get("Parametres");
+      }
+      return new HashSet<>();
    }
 
 }

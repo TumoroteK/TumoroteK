@@ -7,6 +7,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,6 +31,9 @@ import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
 import fr.aphp.tumorotek.param.TkParam;
 import fr.aphp.tumorotek.param.TumorotekProperties;
+import fr.aphp.tumorotek.dto.ParametreDTO;
+import fr.aphp.tumorotek.manager.administration.ParametresManager;
+import fr.aphp.tumorotek.model.contexte.Plateforme;
 
 @SuppressWarnings("deprecation")
 public class ConnexionCrf extends GenericForwardComposer<Component>
@@ -258,6 +262,13 @@ public class ConnexionCrf extends GenericForwardComposer<Component>
    public void redirect(){
       if(selectedBanque != null){
          sessionScope.put("User", user);
+         Plateforme plateforme = selectedBanque.getPlateforme();
+         // Obtient les paramètres pour l'ID de la plateforme donneé
+         Set<ParametreDTO> parametres = ManagerLocator.getManager(ParametresManager.class).
+                                        getParametresByPlateformeId(plateforme.getPlateformeId());
+         // Enregistre la liste de paramètres dans la session
+         SessionUtils.setPlatformParameters(parametres, sessionScope);
+
          sessionScope.put("Plateforme", selectedBanque.getPlateforme());
          sessionScope.put("Banque", selectedBanque);
          final List<Banque> bks = new ArrayList<>();

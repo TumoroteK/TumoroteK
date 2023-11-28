@@ -42,6 +42,8 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -106,7 +108,8 @@ import fr.aphp.tumorotek.webapp.general.ConnexionUtils;
 import fr.aphp.tumorotek.webapp.general.MainTabbox;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
 import fr.aphp.tumorotek.webapp.general.ext.ResourceRequest;
-
+import fr.aphp.tumorotek.dto.ParametreDTO;
+import fr.aphp.tumorotek.manager.administration.ParametresManager;
 /**
  *
  * @author Mathieu BARTHELEMY
@@ -376,10 +379,14 @@ public class MainWindow extends GenericForwardComposer<Component>
          Clients.clearBusy();
          throw new WrongValueException(mainBanquesListBox, AbstractController.handleExceptionMessage(e));
       }
-
+      Plateforme plateforme = selectedBanque.getPlateforme();
+      // Obtient les paramètres pour l'ID de la plateforme donneé
+      Set<ParametreDTO> parametres = ManagerLocator.getManager(ParametresManager.class).getParametresByPlateformeId(plateforme.getPlateformeId());
+      // Enregistre la liste de paramètres dans la session
+      SessionUtils.setPlatformParameters(parametres, sessionScope);
       // met à jour la pf si update banque cross-plateforme
       if(!selectedBanque.getPlateforme().equals(SessionUtils.getPlateforme(sessionScope))){
-         sessionScope.put("Plateforme", selectedBanque.getPlateforme());
+         sessionScope.put("Plateforme", plateforme );
          prepareListBanques();
          // mainBinder.loadComponent(self.getFellow("main").getFellow("mainBanquesListBox"));
       }

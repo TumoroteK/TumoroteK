@@ -42,9 +42,11 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.Set;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
+
 
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
@@ -73,7 +75,8 @@ import fr.aphp.tumorotek.param.TkParam;
 import fr.aphp.tumorotek.param.TumorotekProperties;
 import fr.aphp.tumorotek.utils.Utils;
 import fr.aphp.tumorotek.webapp.general.ext.ResourceRequest;
-
+import fr.aphp.tumorotek.dto.ParametreDTO;
+import fr.aphp.tumorotek.manager.administration.ParametresManager;
 /**
  * Modale choix plateforme et banque après authentification.
  * Gère l'archivage automatique si timeout.
@@ -328,6 +331,13 @@ public class SelectBanqueController extends GenericForwardComposer<Component>
             || ManagerLocator.getUtilisateurManager().getPlateformesManager(user).contains(selectedPlateforme)){
             final Map<String, Object> sessionScp = session.getAttributes();
             sessionScp.put("User", user);
+
+            // Obtient les paramètres pour l'ID de la plateforme donné
+            Set<ParametreDTO> parametres = ManagerLocator.getManager(ParametresManager.class)
+                                          .getParametresByPlateformeId(selectedPlateforme.getPlateformeId());
+            // Enregistre la liste de paramètres dans la session
+            SessionUtils.setPlatformParameters(parametres, sessionScope);
+
             sessionScp.put("Plateforme", selectedPlateforme);
             ConnexionUtils.generateDroitsForSelectedBanque(null, selectedPlateforme, user, sessionScope);
             Executions.sendRedirect("/zuls/main/main.zul");
