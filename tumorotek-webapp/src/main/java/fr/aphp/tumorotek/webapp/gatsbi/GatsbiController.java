@@ -1072,6 +1072,7 @@ public class GatsbiController
          col.setStyle("max-width: " + width);
       } else {
          col.setHflex("1");
+         col.setStyle("min-width: 150px");
       }
       col.setAlign(align);
       if(child != null){

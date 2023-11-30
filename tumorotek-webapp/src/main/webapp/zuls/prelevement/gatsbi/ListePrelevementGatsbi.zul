@@ -42,7 +42,7 @@
 		<panelchildren id="scrollPan">
 			<grid id="objectsListGrid" mold="paging" 
 				autopaging="true" vflex="1"
-				fixedLayout="false" span="true"
+				fixedLayout="true" span="true"
 				sizedByContent="true" sclass="gridListStyle"
 				model="@{lwinPrelevement$composer.listObjects 
 					load-after='findByListCodes.onClick,
