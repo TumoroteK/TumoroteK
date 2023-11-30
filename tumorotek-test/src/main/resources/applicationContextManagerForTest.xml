@@ -9,12 +9,8 @@
     http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.0.xsd
     http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc-3.0.xsd">
 
-    <import resource="spring-jpa-test-mysql.xml" />
-    <import resource="applicationContextDao.xml" />
-    <import resource="applicationContextManagerTest.xml" />
-
-
-
-
+<import resource="spring-jpa-test-mysql.xml" />
+<import resource="applicationContextDao.xml" />
+<import resource="applicationContextManagerTest.xml" />
 
 </beans>

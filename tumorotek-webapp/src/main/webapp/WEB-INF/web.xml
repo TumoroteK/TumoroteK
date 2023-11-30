@@ -14,12 +14,14 @@
         <param-name>log4jConfigLocation</param-name>
         <param-value>WEB-INF/classes/log4j.properties</param-value>
     </context-param>
+
     <context-param>
         <param-name>contextConfigLocation</param-name>
         <param-value>
         	classpath:applicationContext.xml
             classpath:applicationContextDaoBase.xml
             classpath:applicationContextManagerBase.xml
+            classpath:applicationContextManagerCleanBase.xml
             classpath:applicationContext-security.xml
             <!-- classpath:applicationContext-securityCas.xml -->
             classpath:camel-config.xml
