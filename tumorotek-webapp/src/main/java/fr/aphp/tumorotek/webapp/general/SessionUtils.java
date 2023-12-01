@@ -35,14 +35,7 @@
  **/
 package fr.aphp.tumorotek.webapp.general;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import org.zkoss.zk.ui.Sessions;
-
+import fr.aphp.tumorotek.dto.ParametreDTO;
 import fr.aphp.tumorotek.manager.impl.interfacage.ResultatInjection;
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.contexte.EContexte;
@@ -53,7 +46,13 @@ import fr.aphp.tumorotek.model.interfacage.Recepteur;
 import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
 import fr.aphp.tumorotek.param.TkParam;
 import fr.aphp.tumorotek.utils.Utils;
-import fr.aphp.tumorotek.dto.ParametreDTO;
+import org.zkoss.zk.ui.Sessions;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Utility class fournissant les methodes récupérant les variables de session.
@@ -101,6 +100,11 @@ public final class SessionUtils {
 
    public static Plateforme getPlateforme(final Map<?, ?> sessionScp){
       return (Plateforme) sessionScp.get("Plateforme");
+   }
+
+   public static Plateforme getPlateforme(){
+      return (Plateforme)   Sessions.getCurrent().getAttribute("Plateforme");
+
    }
 
    /**
@@ -305,6 +309,15 @@ public final class SessionUtils {
    }
 
    /**
+    * Stocker les paramètres de la plateforme dans la session.
+    *
+    * @param parametres Set<ParametreDTO> paramètres de la plateforme à stocker
+    */
+   public static void setPlatformParameters(Set<ParametreDTO> parametres) {
+      Sessions.getCurrent().setAttribute("Parametres", parametres);
+     }
+
+   /**
     * Récupère les paramètres de la plateforme depuis la session.
     *
     * @return Set<ParametreDTO> L'ensemble des paramètres de la plateforme.
@@ -315,5 +328,17 @@ public final class SessionUtils {
       }
       return new HashSet<>();
    }
+
+   /**
+    * Récupère les paramètres de la plateforme depuis la session.
+    *
+    * @return Set<ParametreDTO> L'ensemble des paramètres de la plateforme.
+    */
+   public static Set<ParametreDTO> getPlatformParameters() {
+      // Récupère l'objet des paramètres depuis la session
+      return (Set<ParametreDTO>) Sessions.getCurrent().getAttribute("Parametres");
+
+   }
+
 
 }

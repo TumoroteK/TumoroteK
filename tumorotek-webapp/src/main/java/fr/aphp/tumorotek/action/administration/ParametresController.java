@@ -38,17 +38,34 @@ package fr.aphp.tumorotek.action.administration;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
+import fr.aphp.tumorotek.dto.ParametreDTO;
+import fr.aphp.tumorotek.model.contexte.Plateforme;
+import fr.aphp.tumorotek.webapp.general.SessionUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.http.InvalidMediaTypeException;
 import org.springframework.http.MediaType;
+import org.zkoss.bind.annotation.BindingParam;
+import org.zkoss.bind.annotation.Command;
+import org.zkoss.bind.annotation.ContextParam;
+import org.zkoss.bind.annotation.ContextType;
+import org.zkoss.bind.annotation.Init;
+import org.zkoss.bind.annotation.NotifyChange;
 import org.zkoss.image.AImage;
 import org.zkoss.util.media.Media;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.Session;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.UploadEvent;
+import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Fileupload;
 import org.zkoss.zul.Html;
 import org.zkoss.zul.Image;
@@ -64,7 +81,7 @@ import fr.aphp.tumorotek.manager.administration.ParametresManager;
  * @author GCH
  *
  */
-public class ParametresController extends AbstractController
+public class ParametresController
 {
 
    private static final long serialVersionUID = -2450763003941018231L;
@@ -73,173 +90,130 @@ public class ParametresController extends AbstractController
    private static final MediaType[] AUTHORIZED_IMAGE_MEDIA_TYPES =
       new MediaType[] {MediaType.IMAGE_GIF, MediaType.IMAGE_JPEG, MediaType.IMAGE_PNG};
 
-   //Composants ZK
-   private Image accueilImg;
+   public Set<ParametreDTO> parameterList;
 
-   private Label noImgLabel;
+   private Map<ParametreDTO, Boolean> editModeMap;
 
-   private Html accueilHtml;
+   private Map<ParametreDTO, ParametreDTO> originalValuesMap;
 
-   @Override
-   public void doAfterCompose(final Component comp) throws Exception{
+   final ParametresManager parametresManager = ManagerLocator.getManager(ParametresManager.class);
 
-      super.doAfterCompose(comp);
+   public String logoPath = "";
 
-      final ParametresManager parametresManager = ManagerLocator.getManager(ParametresManager.class);
 
-      updateLogo(parametresManager.getLogoFile());
 
-      String accueilMsg = parametresManager.getMessageAccueil(false);
-
-      if(StringUtils.isEmpty(accueilMsg)){
-         accueilMsg = Labels.getLabel("params.message.empty");
-      }
-
-      accueilHtml.setContent(accueilMsg);
-
+   public Set<ParametreDTO> getParameterList() {
+      return parameterList;
    }
 
    /**
-    * Met à jour le composant contenant le logo, si le nouveau logo est null, remplace l'image par un label
-    * @param newLogoFile nouveau logo
-    * @throws IOException
+    * Indique si le mode édition est activé pour un paramètre donné.
+    *
+    * @param parameter le paramètre
+    * @return true si le mode édition est activé, sinon false
     */
-   private void updateLogo(final File newLogoFile){
+   public boolean isEditMode(ParametreDTO parameter) {
+      return editModeMap.get(parameter);
+   }
 
-      if(newLogoFile != null && newLogoFile.exists()){
+   /**
+    * Initialisation du contrôleur.
+    */
+   @Init
+   public void init() {
 
-         try{
-            final AImage content = new AImage(newLogoFile);
-            accueilImg.setContent(content);
-            accueilImg.setVisible(true);
-            noImgLabel.setVisible(false);
-         }catch(final IOException e){
-            log.error("Impossible de charger le fichier image [{}]", newLogoFile.getAbsolutePath(), e );
-            Messagebox.show(Labels.getLabel("error.params.image.update"), Labels.getLabel("general.error"), Messagebox.OK,
-               Messagebox.ERROR);
+         // Initialize parameterList with sample data
+         parameterList = SessionUtils.getPlatformParameters();
+
+         // Ensure that parameterList is not null
+         if (parameterList == null) {
+            parameterList = new HashSet<>(); // Or initialize it appropriately
          }
 
-      }else{
-         accueilImg.setVisible(false);
-         noImgLabel.setVisible(true);
-      }
+         logoPath = parametresManager.getLogoFile().getAbsolutePath();
 
-   }
+         // Initialize the editModeMap and originalValuesMap
+         editModeMap = new HashMap<>();
+         originalValuesMap = new HashMap<>(); // Initialize originalValuesMap
 
-   /**
-    * Méthode appelés lors du clic sur le bouton "Modifier" de l'image d'accueil
-    */
-   public void onClick$uploadImageAccueilBtn(){
+         for (ParametreDTO parameter : parameterList) {
+            editModeMap.put(parameter, false);
 
-      final Media uploadedMedia = Fileupload.get();
-      final ParametresManager parametresManager = ManagerLocator.getManager(ParametresManager.class);
-
-      if(uploadedMedia == null){
-         return;
-      }
-
-      boolean mediaTypeValide = false;
-      try{
-         final MediaType uploadedMediaType = MediaType.valueOf(uploadedMedia.getContentType());
-         mediaTypeValide = Arrays.asList(AUTHORIZED_IMAGE_MEDIA_TYPES).contains(uploadedMediaType);
-      }catch(final InvalidMediaTypeException imte){
-         log.warn("MediaType inconnu", imte);
-      }
-
-      if(mediaTypeValide){
-
-         boolean saved = false;
-
-         File tmpLogoFile = null;
-         try{
-            tmpLogoFile = File.createTempFile("logo", ".tmp");
-            FileUtils.writeByteArrayToFile(tmpLogoFile, uploadedMedia.getByteData());
-            saved = parametresManager.saveLogo(tmpLogoFile);
-         }catch(final IOException e){
-            log.error("Erreur lors de la conversion du media en fichier", e);
-         }finally{
-            if(null != tmpLogoFile && tmpLogoFile.exists()){
-               tmpLogoFile.delete();
+            // Ensure that originalValuesMap is not null
+            if (originalValuesMap == null) {
+               originalValuesMap = new HashMap<>();
             }
-         }
 
-         if(saved){
-            updateLogo(parametresManager.getLogoFile());
-         }else{
-            Messagebox.show(Labels.getLabel("error.params.image.update"), Labels.getLabel("general.error"), Messagebox.OK,
-               Messagebox.ERROR);
+            originalValuesMap.put(parameter, new ParametreDTO(parameter.getCode(), parameter.getValeur(), parameter.getType(), parameter.getGroupe()));
          }
-
-      }else{
-         Messagebox.show(Labels.getLabel("error.params.image.format"), Labels.getLabel("general.error"), Messagebox.OK,
-            Messagebox.ERROR);
       }
+
+
+
+
+   @Command
+   @NotifyChange("parameterList")
+   public void editParameter(@BindingParam("parameter") ParametreDTO parameter) {
+      boolean isEditMode = isEditMode(parameter);
+
+      if (!isEditMode) {
+         editModeMap.put(parameter, true);
+      } else {
+         Plateforme plateforme = SessionUtils.getPlateforme();
+         // Save to the database here
+         parametresManager.updateValeur(plateforme.getPlateformeId(), parameter.getCode(), parameter.getValeur());
+
+         Set<ParametreDTO> updatedParameters = parametresManager.getParametresByPlateformeId(SessionUtils.getPlateforme().getPlateformeId());
+         // update the session
+         SessionUtils.setPlatformParameters(updatedParameters);
+
+         editModeMap.put(parameter, false);
+      }
+   }
+
+   /**
+    * Annule les modifications effectuées lors de l'édition d'un paramètre.
+    *
+    * @param parameter le paramètre à annuler
+    */
+   @Command
+   @NotifyChange("parameterList")
+   public void cancelEdit(@BindingParam("parameter") ParametreDTO parameter) {
+      // Set edit mode to false to revert the changes
+      // Revert to the original values
+      ParametreDTO originalValues = originalValuesMap.get(parameter);
+      parameter.setCode(originalValues.getCode());
+      parameter.setValeur(originalValues.getValeur());
+
+      // Set edit mode to false to cancel the editing
+      editModeMap.put(parameter, false);
+
 
    }
 
    /**
-    * Méthode appelés lors du clic sur le bouton "Supprimer" de l'image d'accueil
+    * Gère le téléchargement de fichiers dans le contexte des paramètres.
+    *
+    * @param parameter le paramètre associé au fichier
+    * @param event     l'événement de téléchargement déclenché
     */
-   public void onClick$deleteImageAccueilBtn(){
+   @Command
+   @NotifyChange({"parameterList"})
+   public void handleFileUpload(@BindingParam("parameter") ParametreDTO parameter,
+      @ContextParam(ContextType.TRIGGER_EVENT) UploadEvent event) {
+      Media media = event.getMedia();
 
-      final int confirmation = Messagebox.show("Confirmer la suppression de l'image d'accueil ?",
-         "Suppression de l'image d'accueil", Messagebox.YES | Messagebox.NO, Messagebox.EXCLAMATION);
-
-      if(confirmation == Messagebox.YES){
-
-         final boolean deleted = ManagerLocator.getManager(ParametresManager.class).deleteLogo();
-
-         if(deleted){
-            updateLogo(null);
-         }else{
-            Messagebox.show(Labels.getLabel("error.params.image.update"), Labels.getLabel("general.error"), Messagebox.OK,
-               Messagebox.ERROR);
-         }
-
+      if (isMediaTypeValide(media)) {
+         // Save the file
+         boolean isSaved = saveLogo(media);
+         String filepath = media.getContentType();
+         parameter.setValeur(filepath);
+         // Update the image source
       }
-
    }
 
-   /**
-    * Méthode appelé lors du clic sur le bouton "Modifier" du message d'accueil
-    */
-   public void onClick$updateMsgAccueilBtn(){
 
-      final EventListener<Event> onCloseListener = event -> {
-         if(null != event.getData()){
-            storeNewMsgAccueil((String) event.getData());
-         }
-      };
-
-      final String currentMsg = ManagerLocator.getManager(ParametresManager.class).getMessageAccueil(true);
-
-      TexteModale.show(Labels.getLabel("params.modale.message.titre"), Labels.getLabel("params.modale.message.libelle"),
-         currentMsg, 5, true, onCloseListener);
-
-   }
-
-   /**
-    * Méthode appelé lors du clic sur le bouton "Supprimer" du message d'accueil
-    */
-   public void onClick$deleteMsgAccueilBtn(){
-
-      final int confirmation = Messagebox.show("Confirmer la suppression du message d'accueil ?",
-         "Suppression du message d'accueil", Messagebox.YES | Messagebox.NO, Messagebox.EXCLAMATION);
-
-      if(confirmation == Messagebox.YES){
-
-         final boolean deleted = ManagerLocator.getManager(ParametresManager.class).deleteMessageAccueil();
-
-         if(deleted){
-            accueilHtml.setContent(Labels.getLabel("params.message.empty"));
-         }else{
-            Messagebox.show(Labels.getLabel("error.params.message.update"), Labels.getLabel("general.error"), Messagebox.OK,
-               Messagebox.ERROR);
-         }
-
-      }
-
-   }
+//***************************************** Utility Mehtods ******************************************************************
 
    /**
     * Stocke le nouveau message d'accueil dans le fichier tumorotek.properties
@@ -247,17 +221,57 @@ public class ParametresController extends AbstractController
     */
    private void storeNewMsgAccueil(final String msgAccueil){
 
-      final ParametresManager paramsMgr = ManagerLocator.getManager(ParametresManager.class);
+      final boolean saved = parametresManager.saveMessageAccueil(msgAccueil);
 
-      final boolean saved = paramsMgr.saveMessageAccueil(msgAccueil);
-
-      if(saved){
-         accueilHtml.setContent(paramsMgr.getMessageAccueil(false));
-      }else{
+      if(!saved){
          Messagebox.show(Labels.getLabel("error.params.message.update"), Labels.getLabel("general.error"), Messagebox.OK,
             Messagebox.ERROR);
-      }
 
+      }
+   }
+
+   /**
+    * Vérifie si le type de média est valide.
+    *
+    * @param uploadedMedia le média téléchargé
+    * @return true si le type de média est valide, sinon false
+    */
+   private boolean isMediaTypeValide(Media uploadedMedia){
+      boolean mediaTypeValide = false;
+
+      if (uploadedMedia != null) {
+         try{
+            final MediaType uploadedMediaType = MediaType.valueOf(uploadedMedia.getContentType());
+            mediaTypeValide = Arrays.asList(AUTHORIZED_IMAGE_MEDIA_TYPES).contains(uploadedMediaType);
+         }catch(final InvalidMediaTypeException imte){
+         }
+
+      }
+      return mediaTypeValide;
+
+   }
+
+   /**
+    * Enregistre le logo à partir du média téléchargé.
+    *
+    * @param uploadedMedia le média téléchargé représentant le logo
+    * @return true si l'enregistrement du logo est réussi, sinon false
+    */
+   private boolean saveLogo(Media uploadedMedia){
+      boolean saved = false;
+
+      File tmpLogoFile = null;
+      try{
+         tmpLogoFile = File.createTempFile("logo", ".tmp");
+         FileUtils.writeByteArrayToFile(tmpLogoFile, uploadedMedia.getByteData());
+         saved = parametresManager.saveLogo(tmpLogoFile);
+      }catch(final IOException e){
+      }finally{
+         if(null != tmpLogoFile && tmpLogoFile.exists()){
+            tmpLogoFile.delete();
+         }
+      }
+      return saved;
    }
 
 }

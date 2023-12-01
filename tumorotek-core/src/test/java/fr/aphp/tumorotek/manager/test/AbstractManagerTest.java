@@ -3,8 +3,10 @@ package fr.aphp.tumorotek.manager.test;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.AbstractTransactionalJUnit4SpringContextTests;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.test.jpa.AbstractJpaTests;
 
 import static org.junit.Assert.assertEquals;
@@ -31,7 +33,10 @@ import static org.junit.Assert.assertNotNull;
  * @version 23/11/2023
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = "classpath:applicationContextManagerForTest.xml")
+@ContextConfiguration(
+   locations = {"classpath:applicationContextDaoBase-test-mysql.xml", "classpath:applicationContextManagerCleanBase.xml"})
+@TestExecutionListeners({DependencyInjectionTestExecutionListener.class})
+
 public abstract class AbstractManagerTest extends AbstractTransactionalJUnit4SpringContextTests
 {
 

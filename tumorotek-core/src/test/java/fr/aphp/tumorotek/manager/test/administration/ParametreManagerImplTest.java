@@ -123,7 +123,11 @@ public class ParametreManagerImplTest extends AbstractManagerTest
 
       // Assert
       assertNotNull(result);
-      assertEquals(EParametreValeurParDefaut.values().length, result.size());
+      assertNotNull(result);
+      // Le nombre de paramètres par défaut est égal au nombre d'éléments d'énumération + 2 (message d'accueil + logo),
+      int totalParametres = EParametreValeurParDefaut.values().length +2;
+
+      assertEquals(totalParametres, result.size());
 
       // Verify that findParametresByPlateformeIdAndCode was called for each parameter code
       for(EParametreValeurParDefaut param : EParametreValeurParDefaut.values()){
@@ -153,7 +157,10 @@ public class ParametreManagerImplTest extends AbstractManagerTest
 
       // Assert
       assertNotNull(result);
-      assertEquals(EParametreValeurParDefaut.values().length, result.size());
+      // Le nombre de paramètres par défaut est égal au nombre d'éléments d'énumération + 2 (message d'accueil + logo),
+      int totalParametres = EParametreValeurParDefaut.values().length +2;
+
+      assertEquals(totalParametres, result.size());
 
       // Verify that findParametresByPlateformeIdAndCode was called for each parameter code
       for(EParametreValeurParDefaut param : EParametreValeurParDefaut.values()){
@@ -172,4 +179,6 @@ public class ParametreManagerImplTest extends AbstractManagerTest
 
       }
    }
+
+
 }

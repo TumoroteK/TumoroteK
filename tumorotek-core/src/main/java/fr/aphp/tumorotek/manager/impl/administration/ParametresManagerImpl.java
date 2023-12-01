@@ -60,11 +60,8 @@ import org.apache.commons.configuration2.builder.fluent.Parameters;
 import org.apache.commons.configuration2.ex.ConfigurationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 
-import javax.persistence.SecondaryTable;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -237,6 +234,12 @@ public class ParametresManagerImpl implements ParametresManager
       // Initialise le set qui contiendra les ParametreDTO résultants
       Set<ParametreDTO> setOfParameters = new HashSet<>();
 
+      // Ajoute le paramètre de message d'accueil
+      setOfParameters.add(buildMessageDacceuilParametre());
+
+      // Ajoute le paramètre du logo
+      setOfParameters.add(buildLogoParametre());
+
       // Parcours des valeurs par défaut des paramètres
       for (EParametreValeurParDefaut param : EParametreValeurParDefaut.values()) {
          String code = param.getCode();
@@ -288,10 +291,8 @@ public class ParametresManagerImpl implements ParametresManager
       List<ParametreValeurSpecifique> parametres = parametreDao.findByPlateformeIdAndCode(plateformID, code);
 
       if (!parametres.isEmpty()) {
-         // Return the first element if the list is not empty
          return parametres.get(0);
       } else {
-         // Handle the case where the list is empty (return null or take appropriate action)
          return null;
       }
    }
@@ -329,5 +330,21 @@ public class ParametresManagerImpl implements ParametresManager
       }
    }
 
+   private ParametreDTO buildMessageDacceuilParametre(){
+      String code = "params.message.accueil";
+      String valeur = getMessageAccueil(true);
+      String type = "string";
+      String groupe = "general";
+      return new ParametreDTO(code, valeur, type, groupe);
+   }
+
+   private ParametreDTO buildLogoParametre(){
+      String code = "params.logo.accueil";
+      String valeur =LOGO_FILEPATH;
+      String type = "image";
+      String groupe = "general";
+      return new ParametreDTO(code, valeur, type, groupe);
+
+   }
 
 }
