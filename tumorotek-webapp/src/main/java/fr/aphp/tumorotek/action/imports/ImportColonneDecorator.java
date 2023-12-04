@@ -64,6 +64,7 @@ public class ImportColonneDecorator
    private Boolean disableEditLabel = false;
    
    // decorateur s'applique dans un contexte gatsbi?
+   //la maladie doit être considérée comme une visite => date de début est en fait la date de la visite 
    private boolean visiteGatsbi = false;
 
    public ImportColonneDecorator(final ImportColonne ic){

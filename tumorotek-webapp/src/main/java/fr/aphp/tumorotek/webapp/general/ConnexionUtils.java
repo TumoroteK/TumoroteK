@@ -360,8 +360,9 @@ public final class ConnexionUtils
 
       // s'il y a plusieurs banques disponibles
       if(banques.size() > 1){
+         //Récupération de toutes les plateformes dont l'utilisateur est admin (méthode getPlateformesManager() mal nommée ....)
          final Set<Plateforme> pfs = ManagerLocator.getUtilisateurManager().getPlateformesManager(user);
-         // si l'utilisateur n'est admin de la plateforme
+         // si l'utilisateur n'est pas admin de la plateforme
          if(!pfs.contains(pf) && !user.isSuperAdmin()){
             
             // @since 2.2.4.1
