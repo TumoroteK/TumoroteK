@@ -312,22 +312,28 @@ public class ParametresManagerImpl implements ParametresManager
       if (paramEnum == null) {
          throw new IllegalArgumentException("Invalid code: " + code);
       }
-      // Trouve le ParametreValeurSpecifique dans la base de données en utilisant l'id de la plateforme et le code
-      ParametreValeurSpecifique plateformParametreValeurSpecifique = findParametresByPlateformeIdAndCode(plateformID, code);
-      if (plateformParametreValeurSpecifique != null) {
-         // Si le ParametreValeurSpecifique existe, met à jour sa valeur
-         plateformParametreValeurSpecifique.setValeur(newValue);
-         parametreDao.updateObject(plateformParametreValeurSpecifique);
-      } else {
-         // Si le ParametreValeurSpecifique n'existe pas, crée un nouveau ParametreValeurSpecifique
-         ParametreValeurSpecifique newParametreValeurSpecifique = new ParametreValeurSpecifique();
-         newParametreValeurSpecifique.setPlateformeId(plateformID);
-         newParametreValeurSpecifique.setCode(code);
-         newParametreValeurSpecifique.setValeur(newValue);
-         newParametreValeurSpecifique.setType(paramEnum.getType());
-         newParametreValeurSpecifique.setGroupe(paramEnum.getGroupe());
-         parametreDao.createObject(newParametreValeurSpecifique);
+      if (!paramEnum.getValeur().equals(newValue) ){
+         // Trouve le ParametreValeurSpecifique dans la base de données en utilisant l'id de la plateforme et le code
+         ParametreValeurSpecifique plateformParametreValeurSpecifique = findParametresByPlateformeIdAndCode(plateformID, code);
+         if (plateformParametreValeurSpecifique != null) {
+            // Si le ParametreValeurSpecifique existe, met à jour sa valeur
+            plateformParametreValeurSpecifique.setValeur(newValue);
+            parametreDao.updateObject(plateformParametreValeurSpecifique);
+         } else {
+            // Si le ParametreValeurSpecifique n'existe pas, crée un nouveau ParametreValeurSpecifique
+            ParametreValeurSpecifique newParametreValeurSpecifique = new ParametreValeurSpecifique();
+            newParametreValeurSpecifique.setParameterId(1);
+            newParametreValeurSpecifique.setPlateformeId(plateformID);
+            newParametreValeurSpecifique.setCode(code);
+            newParametreValeurSpecifique.setValeur(newValue);
+            newParametreValeurSpecifique.setType(paramEnum.getType());
+            newParametreValeurSpecifique.setGroupe(paramEnum.getGroupe());
+//            parametreDao.createObject(newParametreValeurSpecifique);
+            parametreDao.updateObject(newParametreValeurSpecifique);
+         }
+
       }
+
    }
 
 
