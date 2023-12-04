@@ -35,6 +35,10 @@
  **/
 package fr.aphp.tumorotek.dao;
 
+import org.springframework.dao.DataAccessException;
+import org.springframework.orm.jpa.JpaTemplate;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.io.Serializable;
 import java.util.List;
 

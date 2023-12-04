@@ -39,6 +39,9 @@ import org.jsoup.Jsoup;
 import org.jsoup.parser.Tag;
 import org.jsoup.safety.Whitelist;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 /**
  * @author GCH
  *
@@ -152,5 +155,30 @@ public final class TKStringUtils
       return cleanString;
 
    }
+
+
+
+   /**
+    * Normalise un chemin en remplaçant les caractères de séparation de répertoire par des barres obliques '/' et en
+    * normalisant le chemin résultant à l'aide de la classe {@code Path}.
+    *
+    * @param originalPath Le chemin original à normaliser.
+    * @return Le chemin normalisé résultant.
+
+    *
+    * @see Path
+    * @see Paths#get(String, String...)
+    * @see Path#normalize()
+    */
+
+   public static String normalizePath(String originalPath) {
+      String normalizedPath = originalPath.replace('\\', '/');
+
+      Path path = Paths.get(normalizedPath);
+      Path normalized = path.normalize();
+
+      return normalized.toString();
+   }
+
 
 }

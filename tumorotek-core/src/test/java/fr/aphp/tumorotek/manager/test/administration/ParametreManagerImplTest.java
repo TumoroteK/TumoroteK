@@ -10,7 +10,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.List;
 import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
@@ -28,7 +27,7 @@ public class ParametreManagerImplTest extends AbstractManagerTest
    @Autowired
    private ParametreDao parametreDao;
 
-   String code = "derives.obligatoire";
+   String code = "params.derives.obligatoire";
 
    String valueFromDb = "value_from_db";
 
@@ -46,6 +45,8 @@ public class ParametreManagerImplTest extends AbstractManagerTest
    }
 
 
+
+
    /**
     * Teste le scénario où la mise à jour de la valeur d'un paramètre, qui n'a jamais été modifiée auparavant
     * (n'existe pas dans la base de données).
@@ -54,7 +55,7 @@ public class ParametreManagerImplTest extends AbstractManagerTest
    @Test
    public void testUpdateValeurNoExistsInDB(){
       // Arrange
-      Integer plateformId = 2;
+      Integer plateformId = 14;
       String nouvelleValeur = "value_from_user";
 
       // Vérifie que le paramètre n'existe pas initialement dans la base de données
@@ -179,6 +180,10 @@ public class ParametreManagerImplTest extends AbstractManagerTest
 
       }
    }
+
+
+
+
 
 
 }

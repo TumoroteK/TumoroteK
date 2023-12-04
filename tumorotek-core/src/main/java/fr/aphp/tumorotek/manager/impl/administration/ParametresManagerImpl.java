@@ -330,11 +330,13 @@ public class ParametresManagerImpl implements ParametresManager
       }
    }
 
+
+
    private ParametreDTO buildMessageDacceuilParametre(){
       String code = "params.message.accueil";
-      String valeur = getMessageAccueil(true);
+      String valeur = getMessageAccueil(false);
       String type = "string";
-      String groupe = "general";
+      String groupe = "application";
       return new ParametreDTO(code, valeur, type, groupe);
    }
 
@@ -342,7 +344,7 @@ public class ParametresManagerImpl implements ParametresManager
       String code = "params.logo.accueil";
       String valeur =LOGO_FILEPATH;
       String type = "image";
-      String groupe = "general";
+      String groupe = "application";
       return new ParametreDTO(code, valeur, type, groupe);
 
    }
