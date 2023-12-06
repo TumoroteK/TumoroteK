@@ -330,19 +330,16 @@ public class ParametresManagerImpl implements ParametresManager
             parametreDao.createObject(newParametreValeurSpecifique);
 
          }
-
-
-
    }
-
 
 
    private ParametreDTO buildMessageDacceuilParametre(){
       String code = "params.message.accueil";
-      String valeur = getMessageAccueil(true);
+      String messageAccueil = getMessageAccueil(false);
+      String normalizedText = TKStringUtils.convertHtmlEntities(messageAccueil);
       String type = "string";
       String groupe = "application";
-      return new ParametreDTO(code, valeur, type, groupe);
+      return new ParametreDTO(code, normalizedText, type, groupe);
    }
 
    private ParametreDTO buildLogoParametre(){

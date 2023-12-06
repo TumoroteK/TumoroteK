@@ -119,7 +119,6 @@ public class ParametresController
 
          // Initialize parameterList with sample data
          parameterList = SessionUtils.getPlatformParameters();
-       accueilMsg = parametresManager.getMessageAccueil(false);
 
 
          // Ensure that parameterList is not null

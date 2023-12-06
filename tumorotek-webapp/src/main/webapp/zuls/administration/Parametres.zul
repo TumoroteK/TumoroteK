@@ -64,19 +64,10 @@
 					<cell>
 						<!-- Display radio buttons for 'yes' and 'no' if the type is 'boolean' and in edit mode -->
 
-
-<!--						<radiogroup  if="${each.type eq 'boolean'}"-->
-<!--									selectedItem="${each.valeur}"-->
-<!--									onCheck="@command('editParameter', parameter=each)">-->
-<!--							<radio label="true" value="true" />-->
-<!--							<radio label="false" value="false" />-->
-<!--						</radiogroup>-->
 						<radiogroup visible="${each.type eq 'boolean'}" onCheck="@command('updateParameterValue', parameter=each)">
 							<radio label="Yes" value="true" checked="${each.valeur == 'true'}" />
 							<radio label="No" value="false" checked="${each.valeur == 'false'}" />
 						</radiogroup>
-
-
 
 						<!-- Afficher une zone de texte si le type n'est pas 'image' -->
 						<textbox value="@load(each.valeur) @save(each.valeur)"
@@ -84,27 +75,10 @@
 
 						<label value="@load(each.valeur)" visible="${!vm.isEditMode(each)}"  unless="${each.type eq 'boolean' || each.type eq 'image' }" />
 
-						<!-- Afficher une image si le type est 'file' -->
-<!--						<image  style="max-width: 50px; max-height: 50px;" if="${each.type eq 'image'}"-->
-<!--							   src="${vm.logoPath}"/>-->
-
-						<image style="max-width: 50px; max-height: 50px;" if="${each.type eq 'image'}"
-						 src="${vm.logoPath}"/>
-<!--						debug-->
-						<label value="${vm.logoPath}" visible="${!vm.isEditMode(each)}"  if="${each.type eq 'image' }" />
-
 
 					</cell>
 					<!-- La troisième cellule contient des boutons pour éditer, enregistrer et annuler les modifications -->
 					<cell>
-						<!-- Boutons Éditer et Enregistrer affichés conditionnellement en fonction du mode d'édition -->
-						<!--						modifier-->
-<!--						<button label="${vm.isEditMode(each) ? 'Save' : 'Edit'}"-->
-<!--								onClick="@command('editParameter', parameter=each)" unless="${each.type eq 'image' || each.type eq 'boolean'}" />-->
-
-<!--						&lt;!&ndash; Bouton Annuler visible uniquement en mode édition &ndash;&gt;-->
-<!--						<button label="Annuler" visible="${vm.isEditMode(each)}"-->
-<!--								onClick="@command('cancelEdit', parameter=each)" unless="${each.type eq 'image' || each.type eq 'boolean'}" />-->
 
 						<div unless="${each.type eq 'image' || each.type eq 'boolean'}">
 							<button label="${vm.isEditMode(each) ? 'Save' : 'Edit'}"
@@ -114,7 +88,6 @@
 							<button label="Annuler" visible="${vm.isEditMode(each)}"
 									onClick="@command('cancelEdit', parameter=each)" />
 						</div>
-
 
 						<!-- Bouton de téléchargement de fichier affiché uniquement si le type est 'image' -->
 						<fileupload label="Télécharger" onUpload="@command('handleFileUpload', parameter=each)" if="${each.type eq 'image'}" />

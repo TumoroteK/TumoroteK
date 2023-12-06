@@ -35,12 +35,13 @@
  **/
 package fr.aphp.tumorotek.utils;
 
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.parser.Tag;
 import org.jsoup.safety.Whitelist;
-
 import java.nio.file.Path;
 import java.nio.file.Paths;
+
 
 /**
  * @author GCH
@@ -49,10 +50,30 @@ import java.nio.file.Paths;
 public final class TKStringUtils
 {
 
+
+
    /**
     * Constructeur privé
     */
    private TKStringUtils(){}
+
+   /**
+    * Convertit les entités HTML dans une chaîne de texte en caractères Unicode correspondants.
+    * Cette méthode utilise la bibliothèque Apache Commons Lang et la classe StringEscapeUtils
+    * pour effectuer la conversion.
+    * Example
+    * Input HTML Text: Bienvenue sur le syst&egrave;me de gestion des collections de pr&eacute;l&egrave;vements biologiques.
+    * Output Text: Bienvenue sur le système de gestion des collections de prélèvements biologiques.
+    *
+    * @param htmlText La chaîne de texte contenant des entités HTML à convertir.
+    * @return La chaîne de texte avec les entités HTML converties en caractères Unicode.
+    * @throws IllegalArgumentException Si la chaîne de texte en entrée est nulle.
+    *
+    */
+
+   public static String convertHtmlEntities(String htmlText) {
+      return StringEscapeUtils.unescapeHtml4(htmlText);
+   }
 
    /**
     * Echappe, sécurise et nettoie une string HTML
