@@ -2,13 +2,15 @@ package fr.aphp.tumorotek.manager.test.administration;
 
 import fr.aphp.tumorotek.dao.administration.ParametreDao;
 import fr.aphp.tumorotek.dto.ParametreDTO;
-import fr.aphp.tumorotek.manager.impl.administration.ParametresManagerImpl;
+import fr.aphp.tumorotek.manager.administration.ParametresManager;
 import fr.aphp.tumorotek.manager.test.AbstractManagerTest4;
 import fr.aphp.tumorotek.model.config.ParametreValeurSpecifique;
 import fr.aphp.tumorotek.param.EParametreValeurParDefaut;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.Rollback;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Set;
 
@@ -18,11 +20,13 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 
-public class ParametreManagerImplTest extends AbstractManagerTest4
+@Transactional
+public class ParametresManagerTest extends AbstractManagerTest4
 {
 
    @Autowired
-   private ParametresManagerImpl parametreManager;
+   private ParametresManager parametresManager;
+
 
    @Autowired
    private ParametreDao parametreDao;
@@ -44,7 +48,10 @@ public class ParametreManagerImplTest extends AbstractManagerTest4
 
    }
 
+   public void deleteAfterTest(ParametreValeurSpecifique parametreValeurSpecifique){
+      parametreDao.removeObject(parametreValeurSpecifique.getParameterId());
 
+   }
 
 
    /**
@@ -55,21 +62,22 @@ public class ParametreManagerImplTest extends AbstractManagerTest4
    @Test
    public void testUpdateValeurNoExistsInDB(){
       // Arrange
-      Integer plateformId = 14;
-      String nouvelleValeur = "value_from_user";
+      Integer plateformId = 11244;
+      String nouvelleValeur = "value_from_user_input";
 
       // Vérifie que le paramètre n'existe pas initialement dans la base de données
-      ParametreValeurSpecifique parametre = parametreManager.findParametresByPlateformeIdAndCode(plateformId, code);
+      ParametreValeurSpecifique parametre = parametresManager.findParametresByPlateformeIdAndCode(plateformId, code);
       assertNull(parametre);
 
       // Act
-      parametreManager.updateValeur(plateformId, code, nouvelleValeur);
+      parametresManager.updateValeur(plateformId, code, nouvelleValeur);
 
       // Assert
       // Vérifie que le paramètre a été créé avec la nouvelle valeur
-      ParametreValeurSpecifique parametreMaj = parametreManager.findParametresByPlateformeIdAndCode(plateformId, code);
+      ParametreValeurSpecifique parametreMaj = parametresManager.findParametresByPlateformeIdAndCode(plateformId, code);
       assertNotNull(parametreMaj);
       assertEquals(nouvelleValeur, parametreMaj.getValeur());
+
    }
 
    /**
@@ -83,18 +91,19 @@ public class ParametreManagerImplTest extends AbstractManagerTest4
       String nouvelleValeur = "NOUVELLE_VALEUR";
 
       // Vérifie que le paramètre existe initialement dans la base de données
-      ParametreValeurSpecifique parametreDeLaBase = parametreManager.findParametresByPlateformeIdAndCode(plateformeId, code);
+      ParametreValeurSpecifique parametreDeLaBase = parametresManager.findParametresByPlateformeIdAndCode(plateformeId, code);
       assertNotNull(parametreDeLaBase);
       assertEquals(parametreDeLaBase.getValeur(), valueFromDb);
 
       // Act
-      parametreManager.updateValeur(plateformeId, code, nouvelleValeur);
+      parametresManager.updateValeur(plateformeId, code, nouvelleValeur);
 
       // Assert
       // Récupère l'objet mis à jour depuis la base de données et vérifie ses propriétés
-      ParametreValeurSpecifique parametreMaj = parametreManager.findParametresByPlateformeIdAndCode(plateformeId, code);
+      ParametreValeurSpecifique parametreMaj = parametresManager.findParametresByPlateformeIdAndCode(plateformeId, code);
       assertNotNull(parametreMaj);
       assertEquals(nouvelleValeur, parametreMaj.getValeur());
+
    }
 
    /***
@@ -103,7 +112,7 @@ public class ParametreManagerImplTest extends AbstractManagerTest4
    @Test
    public void updateInvalidCode() {
       try {
-         parametreManager.updateValeur(5, "non_existing_code", "value");
+         parametresManager.updateValeur(5, "non_existing_code", "value");
          // La ligne ci-dessus devrait générer une exception
          fail("Expected IllegalArgumentException was not thrown");
       } catch (IllegalArgumentException e) {
@@ -120,7 +129,7 @@ public class ParametreManagerImplTest extends AbstractManagerTest4
    public void testgetDefaultParametresByPlateformeId(){
       Integer plateformeId = 3;
       // Act
-      Set<ParametreDTO> result = parametreManager.getParametresByPlateformeId(plateformeId);
+      Set<ParametreDTO> result = parametresManager.getParametresByPlateformeId(plateformeId);
 
       // Assert
       assertNotNull(result);
@@ -154,7 +163,7 @@ public class ParametreManagerImplTest extends AbstractManagerTest4
    public void testgetParametresByPlateformeId(){
       Integer plateformeId = 1;
       // Act
-      Set<ParametreDTO> result = parametreManager.getParametresByPlateformeId(plateformeId);
+      Set<ParametreDTO> result = parametresManager.getParametresByPlateformeId(plateformeId);
 
       // Assert
       assertNotNull(result);
