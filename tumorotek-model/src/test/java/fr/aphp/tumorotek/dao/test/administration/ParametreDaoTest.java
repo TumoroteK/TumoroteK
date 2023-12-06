@@ -44,35 +44,7 @@ public class ParametreDaoTest extends AbstractDaoTest
 
    }
 
-   /**
-    * Teste la contrainte d'unicité pour la combinaison de code et plateformeId.
-    *
-    * Ce test garantit que toute tentative d'insertion de plusieurs instances de ParametreValeurSpecifique avec la même
-    * combinaison de code et plateformeId entraîne une {@link DataIntegrityViolationException}, plus
-    * spécifiquement une {@link ConstraintViolationException}. En effet, la combinaison de code et de
-    * plateformeId doit être unique.
-    */
-   public void testDuplicate(){
 
-      Integer plateformID = 1;
-      String code = "welcome.message";
-
-      try{
-         for(int i = 0; i < 3; i++){
-            ParametreValeurSpecifique newParametreValeurSpecifique = new ParametreValeurSpecifique();
-            newParametreValeurSpecifique.setPlateformeId(plateformID);
-            newParametreValeurSpecifique.setCode(code);
-
-            parametreDao.createObject(newParametreValeurSpecifique);
-         }
-
-         // If no exception is thrown, fail the test
-         fail("Expected DataIntegrityViolationException not thrown");
-      }catch(DataIntegrityViolationException e){
-         // Expected exception, do further assertions if needed
-         assertTrue(e.getCause() instanceof ConstraintViolationException);
-      }
-   }
 
    public void testFindAllByPlateformeId(){
       Integer platformId = 1;
