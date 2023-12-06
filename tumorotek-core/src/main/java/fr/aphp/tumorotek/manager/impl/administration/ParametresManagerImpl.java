@@ -70,6 +70,7 @@ import java.util.Set;
  * @author GCH
  *
  */
+
 public class ParametresManagerImpl implements ParametresManager
 {
 
@@ -312,7 +313,6 @@ public class ParametresManagerImpl implements ParametresManager
       if (paramEnum == null) {
          throw new IllegalArgumentException("Invalid code: " + code);
       }
-      if (!paramEnum.getValeur().equals(newValue) ){
          // Trouve le ParametreValeurSpecifique dans la base de données en utilisant l'id de la plateforme et le code
          ParametreValeurSpecifique plateformParametreValeurSpecifique = findParametresByPlateformeIdAndCode(plateformID, code);
          if (plateformParametreValeurSpecifique != null) {
@@ -322,17 +322,16 @@ public class ParametresManagerImpl implements ParametresManager
          } else {
             // Si le ParametreValeurSpecifique n'existe pas, crée un nouveau ParametreValeurSpecifique
             ParametreValeurSpecifique newParametreValeurSpecifique = new ParametreValeurSpecifique();
-            newParametreValeurSpecifique.setParameterId(1);
             newParametreValeurSpecifique.setPlateformeId(plateformID);
             newParametreValeurSpecifique.setCode(code);
             newParametreValeurSpecifique.setValeur(newValue);
             newParametreValeurSpecifique.setType(paramEnum.getType());
             newParametreValeurSpecifique.setGroupe(paramEnum.getGroupe());
-//            parametreDao.createObject(newParametreValeurSpecifique);
-            parametreDao.updateObject(newParametreValeurSpecifique);
+            parametreDao.createObject(newParametreValeurSpecifique);
+
          }
 
-      }
+
 
    }
 
@@ -340,7 +339,7 @@ public class ParametresManagerImpl implements ParametresManager
 
    private ParametreDTO buildMessageDacceuilParametre(){
       String code = "params.message.accueil";
-      String valeur = getMessageAccueil(false);
+      String valeur = getMessageAccueil(true);
       String type = "string";
       String groupe = "application";
       return new ParametreDTO(code, valeur, type, groupe);

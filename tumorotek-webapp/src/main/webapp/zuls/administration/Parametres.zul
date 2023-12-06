@@ -1,12 +1,54 @@
-
-	<window id="fwinParametres" width="500px" height="auto" border="normal" minimizable="false"
+<!--
+ * Copyright ou © ou Copr. Ministère de la santé, FRANCE (01/01/2011)
+ * dsi-projet.tk@aphp.fr
+ *
+ * Ce logiciel est un programme informatique servant à la gestion de
+ * l'activité de biobanques.
+ *
+ * Ce logiciel est régi par la licence CeCILL soumise au droit français
+ * et respectant les principes de diffusion des logiciels libres. Vous
+ * pouvez utiliser, modifier et/ou redistribuer ce programme sous les
+ * conditions de la licence CeCILL telle que diffusée par le CEA, le
+ * CNRS et l'INRIA sur le site "http://www.cecill.info".
+ * En contrepartie de l'accessibilité au code source et des droits de
+ * copie, de modification et de redistribution accordés par cette
+ * licence, il n'est offert aux utilisateurs qu'une garantie limitée.
+ * Pour les mêmes raisons, seule une responsabilité restreinte pèse sur
+ * l'auteur du programme, le titulaire des droits patrimoniaux et les
+ * concédants successifs.
+ *
+ * A cet égard  l'attention de l'utilisateur est attirée sur les
+ * risques associés au chargement,  à l'utilisation,  à la modification
+ * et/ou au  développement et à la reproduction du logiciel par
+ * l'utilisateur étant donné sa spécificité de logiciel libre, qui peut
+ * le rendre complexe à manipuler et qui le réserve donc à des
+ * développeurs et des professionnels  avertis possédant  des
+ * connaissances  informatiques approfondies.  Les utilisateurs sont
+ * donc invités à charger  et  tester  l'adéquation  du logiciel à leurs
+ * besoins dans des conditions permettant d'assurer la sécurité de leurs
+ * systèmes et ou de leurs données et, plus généralement, à l'utiliser
+ * et l'exploiter dans les mêmes conditions de sécurité.
+ *
+ * Le fait que vous puissiez accéder à cet en-tête signifie que vous
+ * avez pris connaissance de la licence CeCILL, et que vous en avez
+ * accepté les termes.
+-->
+	<window id="fwinParametres" width="100%" height="auto" border="normal" minimizable="false"
 			maximizable="false"
 			apply="org.zkoss.bind.BindComposer"
 			viewModel="@id('vm') @init('fr.aphp.tumorotek.action.administration.ParametresController')">
+		<panel collapsible="false" title="Paramètres"
+			   sclass="fichePanelv2" id="winPanel" closable="false">
+		<panelchildren id="panelChildrenWithScroll">
 
 
 		<!-- Grille pour afficher les paramètres -->
-		<grid model="@load(vm.parameterList)">
+		<grid model="@load(vm.parameterList)" sclass="gridForm1" id="gridFormPrlvt">
+			<columns>
+				<column width="30%"/>
+				<column width="40%"/>
+				<column />
+			</columns>
 
 			<!-- Utiliser un modèle pour les lignes -->
 			<template name="model">
@@ -15,32 +57,63 @@
 
 					<!-- 1: Afficher la clé du paramètre dans la première cellule -->
 					<cell>
-						<label value="${c:l('each.code')}" />
+						<label value="${c:l(each.code)}" />
 					</cell>
 
 					<!-- 2: La deuxième cellule contient soit une zone de texte soit une image en fonction du type de paramètre -->
 					<cell>
+						<!-- Display radio buttons for 'yes' and 'no' if the type is 'boolean' and in edit mode -->
+
+
+<!--						<radiogroup  if="${each.type eq 'boolean'}"-->
+<!--									selectedItem="${each.valeur}"-->
+<!--									onCheck="@command('editParameter', parameter=each)">-->
+<!--							<radio label="true" value="true" />-->
+<!--							<radio label="false" value="false" />-->
+<!--						</radiogroup>-->
+						<radiogroup visible="${each.type eq 'boolean'}" onCheck="@command('updateParameterValue', parameter=each)">
+							<radio label="Yes" value="true" checked="${each.valeur == 'true'}" />
+							<radio label="No" value="false" checked="${each.valeur == 'false'}" />
+						</radiogroup>
+
+
+
 						<!-- Afficher une zone de texte si le type n'est pas 'image' -->
 						<textbox value="@load(each.valeur) @save(each.valeur)"
-								 unless="${!vm.isEditMode(each) || each.type eq 'image'}"/>
+								 unless="${!vm.isEditMode(each) || each.type eq 'image' || each.type eq 'boolean'}" width="90%"/>
 
-						<label value="@load(each.valeur)" visible="${!vm.isEditMode(each)}" />
+						<label value="@load(each.valeur)" visible="${!vm.isEditMode(each)}"  unless="${each.type eq 'boolean' || each.type eq 'image' }" />
 
 						<!-- Afficher une image si le type est 'file' -->
-						<image id="img" style="max-width: 50px; max-height: 50px;" if="${each.type eq 'image'}"
-							   src="${each.type eq 'image' ? controller.logoPath : ''}"/>
+<!--						<image  style="max-width: 50px; max-height: 50px;" if="${each.type eq 'image'}"-->
+<!--							   src="${vm.logoPath}"/>-->
+
+						<image style="max-width: 50px; max-height: 50px;" if="${each.type eq 'image'}"
+						 src="${vm.logoPath}"/>
+<!--						debug-->
+						<label value="${vm.logoPath}" visible="${!vm.isEditMode(each)}"  if="${each.type eq 'image' }" />
+
+
 					</cell>
 					<!-- La troisième cellule contient des boutons pour éditer, enregistrer et annuler les modifications -->
 					<cell>
 						<!-- Boutons Éditer et Enregistrer affichés conditionnellement en fonction du mode d'édition -->
 						<!--						modifier-->
-						<button label="${vm.isEditMode(each) ? 'Save' : 'Edit'}"
-								onClick="@command('editParameter', parameter=each)" unless="${each.type eq 'image'}" />
+<!--						<button label="${vm.isEditMode(each) ? 'Save' : 'Edit'}"-->
+<!--								onClick="@command('editParameter', parameter=each)" unless="${each.type eq 'image' || each.type eq 'boolean'}" />-->
 
-						<!-- Bouton Annuler visible uniquement en mode édition -->
-						<button label="Annuler" visible="${vm.isEditMode(each)}"
-								onClick="@command('cancelEdit', parameter=each)" unless="${each.type eq 'image'}" />
+<!--						&lt;!&ndash; Bouton Annuler visible uniquement en mode édition &ndash;&gt;-->
+<!--						<button label="Annuler" visible="${vm.isEditMode(each)}"-->
+<!--								onClick="@command('cancelEdit', parameter=each)" unless="${each.type eq 'image' || each.type eq 'boolean'}" />-->
 
+						<div unless="${each.type eq 'image' || each.type eq 'boolean'}">
+							<button label="${vm.isEditMode(each) ? 'Save' : 'Edit'}"
+									onClick="@command('editParameter', parameter=each)" />
+
+							<!-- Bouton Annuler visible uniquement en mode édition -->
+							<button label="Annuler" visible="${vm.isEditMode(each)}"
+									onClick="@command('cancelEdit', parameter=each)" />
+						</div>
 
 
 						<!-- Bouton de téléchargement de fichier affiché uniquement si le type est 'image' -->
@@ -49,7 +122,8 @@
 				</row>
 			</template>
 		</grid>
-
+		</panelchildren>
+		</panel>
 	</window>
 
 

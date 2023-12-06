@@ -40,15 +40,14 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import fr.aphp.tumorotek.dto.ParametreDTO;
 import fr.aphp.tumorotek.model.contexte.Plateforme;
+import fr.aphp.tumorotek.utils.TKStringUtils;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.http.InvalidMediaTypeException;
 import org.springframework.http.MediaType;
 import org.zkoss.bind.annotation.BindingParam;
@@ -57,25 +56,15 @@ import org.zkoss.bind.annotation.ContextParam;
 import org.zkoss.bind.annotation.ContextType;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.bind.annotation.NotifyChange;
-import org.zkoss.image.AImage;
 import org.zkoss.util.media.Media;
 import org.zkoss.util.resource.Labels;
-import org.zkoss.zk.ui.Component;
-import org.zkoss.zk.ui.Session;
-import org.zkoss.zk.ui.event.Event;
-import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.CheckEvent;
 import org.zkoss.zk.ui.event.UploadEvent;
-import org.zkoss.zk.ui.util.Clients;
-import org.zkoss.zul.Fileupload;
-import org.zkoss.zul.Html;
-import org.zkoss.zul.Image;
-import org.zkoss.zul.Label;
 import org.zkoss.zul.Messagebox;
 
 import fr.aphp.tumorotek.action.ManagerLocator;
-import fr.aphp.tumorotek.action.controller.AbstractController;
-import fr.aphp.tumorotek.component.TexteModale;
 import fr.aphp.tumorotek.manager.administration.ParametresManager;
+import org.zkoss.zul.Radio;
 
 /**
  * @author GCH
@@ -94,11 +83,14 @@ public class ParametresController
 
    private Map<ParametreDTO, Boolean> editModeMap;
 
-   private Map<ParametreDTO, ParametreDTO> originalValuesMap;
+   private Map<String, ParametreDTO> originalValuesMap;
 
    final ParametresManager parametresManager = ManagerLocator.getManager(ParametresManager.class);
 
    public String logoPath = "";
+
+   public String accueilMsg = "";
+
 
 
 
@@ -122,15 +114,21 @@ public class ParametresController
    @Init
    public void init() {
 
+         String path = parametresManager.getLogoFile().getAbsolutePath();
+         logoPath = TKStringUtils.normalizePath(path);
+
          // Initialize parameterList with sample data
          parameterList = SessionUtils.getPlatformParameters();
+       accueilMsg = parametresManager.getMessageAccueil(false);
+
 
          // Ensure that parameterList is not null
          if (parameterList == null) {
             parameterList = new HashSet<>(); // Or initialize it appropriately
          }
 
-         logoPath = parametresManager.getLogoFile().getAbsolutePath();
+//         File logoFile = parametresManager.getLogoFile();
+//         loadLogo(logoFile);
 
          // Initialize the editModeMap and originalValuesMap
          editModeMap = new HashMap<>();
@@ -144,7 +142,7 @@ public class ParametresController
                originalValuesMap = new HashMap<>();
             }
 
-            originalValuesMap.put(parameter, new ParametreDTO(parameter.getCode(), parameter.getValeur(), parameter.getType(), parameter.getGroupe()));
+            originalValuesMap.put(parameter.getCode(), new ParametreDTO(parameter.getCode(), parameter.getValeur(), parameter.getType(), parameter.getGroupe()));
          }
       }
 
@@ -159,16 +157,33 @@ public class ParametresController
       if (!isEditMode) {
          editModeMap.put(parameter, true);
       } else {
-         Plateforme plateforme = SessionUtils.getPlateforme();
-         // Save to the database here
-         parametresManager.updateValeur(plateforme.getPlateformeId(), parameter.getCode(), parameter.getValeur());
-
-         Set<ParametreDTO> updatedParameters = parametresManager.getParametresByPlateformeId(SessionUtils.getPlateforme().getPlateformeId());
-         // update the session
-         SessionUtils.setPlatformParameters(updatedParameters);
-
+         // if it's a accuilme message call save message
+         if (parameter.getCode().equals("params.message.accueil")){
+            storeNewMsgAccueil(parameter.getValeur());
+         } else {
+            // Save to the database here
+            saveParameter(parameter);
+         }
          editModeMap.put(parameter, false);
       }
+   }
+
+   private void saveParameter(ParametreDTO parameter){
+      Plateforme plateforme = SessionUtils.getPlateforme();
+
+      parametresManager.updateValeur(plateforme.getPlateformeId(), parameter.getCode(), parameter.getValeur());
+
+      Set<ParametreDTO> updatedParameters = parametresManager.getParametresByPlateformeId(SessionUtils.getPlateforme().getPlateformeId());
+      // update the session
+      SessionUtils.setPlatformParameters(updatedParameters);
+   }
+
+   @Command
+   public void updateParameterValue(@BindingParam("parameter") ParametreDTO parameter,
+                                    @ContextParam(ContextType.TRIGGER_EVENT) CheckEvent event) {
+      String selectedValue = ((Radio) event.getTarget()).getValue();
+      parameter.setValeur(selectedValue);
+      saveParameter(parameter);
    }
 
    /**
@@ -181,8 +196,7 @@ public class ParametresController
    public void cancelEdit(@BindingParam("parameter") ParametreDTO parameter) {
       // Set edit mode to false to revert the changes
       // Revert to the original values
-      ParametreDTO originalValues = originalValuesMap.get(parameter);
-      parameter.setCode(originalValues.getCode());
+      ParametreDTO originalValues = originalValuesMap.get(parameter.getCode());
       parameter.setValeur(originalValues.getValeur());
 
       // Set edit mode to false to cancel the editing
@@ -274,4 +288,28 @@ public class ParametresController
       return saved;
    }
 
+   /**
+    * Met à jour le composant contenant le logo, si le nouveau logo est null, remplace l'image par un label
+    * @param newLogoFile nouveau logo
+    * @throws IOException
+    */
+//   private void loadLogo(final File newLogoFile){
+//
+//      if(newLogoFile != null && newLogoFile.exists()){
+//
+//         try{
+//            final AImage content = new AImage(newLogoFile);
+//            accueilImg.setContent(content);
+//         }catch(final IOException e){
+//            Messagebox.show(Labels.getLabel("error.params.image.update"), Labels.getLabel("general.error"), Messagebox.OK,
+//               Messagebox.ERROR);
+//         }
+//
+//      }
+//
+//   }
+
+   public String getLogoPath(){
+      return logoPath;
+   }
 }

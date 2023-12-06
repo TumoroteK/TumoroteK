@@ -3,7 +3,7 @@ package fr.aphp.tumorotek.manager.test.administration;
 import fr.aphp.tumorotek.dao.administration.ParametreDao;
 import fr.aphp.tumorotek.dto.ParametreDTO;
 import fr.aphp.tumorotek.manager.impl.administration.ParametresManagerImpl;
-import fr.aphp.tumorotek.manager.test.AbstractManagerTest;
+import fr.aphp.tumorotek.manager.test.AbstractManagerTest4;
 import fr.aphp.tumorotek.model.config.ParametreValeurSpecifique;
 import fr.aphp.tumorotek.param.EParametreValeurParDefaut;
 import org.junit.Before;
@@ -18,7 +18,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 
-public class ParametreManagerImplTest extends AbstractManagerTest
+public class ParametreManagerImplTest extends AbstractManagerTest4
 {
 
    @Autowired

@@ -21,7 +21,6 @@
         	classpath:applicationContext.xml
             classpath:applicationContextDaoBase.xml
             classpath:applicationContextManagerBase.xml
-            classpath:applicationContextManagerCleanBase.xml
             classpath:applicationContext-security.xml
             <!-- classpath:applicationContext-securityCas.xml -->
             classpath:camel-config.xml

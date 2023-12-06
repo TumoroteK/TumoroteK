@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+				   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+				   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.10.xsd">
+
+	<changeSet author="tk_435" id="createTable_PARAMETRE_VALEUR_SPECIFIQUE">
+		<createTable tableName="PARAMETRE_VALEUR_SPECIFIQUE">
+			<column name="parameterId" type="INT">
+				<constraints primaryKey="true" nullable="false"/>
+			</column>
+			<column name="plateformeId" type="INT">
+			</column>
+			<column name="code" type="VARCHAR(125)">
+				<constraints nullable="false" />
+			</column>
+			<column name="valeur" type="VARCHAR(255)" >
+			<constraints nullable="false" />
+		</column>
+			<column name="type" type="VARCHAR(25)"/>
+			<column name="groupe" type="VARCHAR(25)"/>
+		</createTable>
+	</changeSet>
+
+</databaseChangeLog>
