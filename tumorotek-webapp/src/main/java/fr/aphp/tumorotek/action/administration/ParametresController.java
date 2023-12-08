@@ -62,7 +62,6 @@ import org.zkoss.util.media.Media;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.event.CheckEvent;
 import org.zkoss.zk.ui.event.UploadEvent;
-import org.zkoss.zul.Label;
 import org.zkoss.zul.Messagebox;
 
 import fr.aphp.tumorotek.action.ManagerLocator;
@@ -87,7 +86,7 @@ public class ParametresController
 
    private Map<String, ParametreDTO> originalValuesMap = new HashMap<>();
 
-   public boolean isLogoExists = false;
+   public boolean logoExists = true;
 
    final ParametresManager parametresManager = ManagerLocator.getManager(ParametresManager.class);
 
@@ -113,7 +112,7 @@ public class ParametresController
 
       // Initialise parameterList
          parameterList = SessionUtils.getPlatformParameters();
-         isLogoExists = parametresManager.isLogoExists();
+         logoExists = parametresManager.isLogoExists();
 
       // Initialise les maps editModeMap et originalValuesMap
          for (ParametreDTO parameter : parameterList) {
@@ -124,9 +123,6 @@ public class ParametresController
 
 
 //      ************************************  Event Listeners ****************************************************
-
-//@Command : Indique que cette méthode est associée à une commande, souvent utilisée dans les frameworks UI.
-//@NotifyChange("parameterList") : Notifie le framework pour rafraîchir "parameterList" après la suppression du logo.
 
 
    /**
@@ -195,6 +191,7 @@ public class ParametresController
     *
     */
    @Command
+   @NotifyChange("logoExists")
    public void deleteLogo() {
       // Récupère le titre et le corps de la question localisés pour la boîte de dialogue de confirmation
       String questionTitle= Labels.getLabel("question.title.logo.delete");
@@ -213,7 +210,7 @@ public class ParametresController
          MessagesUtils.openInfoModal(messageHeader, messageBody);
       }
          // Met à jour le drapeau pour indiquer si le logo existe
-         isLogoExists = false;
+         logoExists = false;
       }
    }
 
@@ -235,6 +232,7 @@ public class ParametresController
          if (isSaved){
             String filepath = media.getContentType();
             parameter.setValeur(filepath);
+            logoExists = true;
          }
          else {
             // En cas d'échec de l'enregistrement, affiche un message d'erreur
@@ -326,4 +324,7 @@ public class ParametresController
       return saved;
    }
 
+   public boolean getLogoExists(){
+      return logoExists;
+   }
 }

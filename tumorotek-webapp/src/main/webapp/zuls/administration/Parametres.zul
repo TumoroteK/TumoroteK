@@ -48,6 +48,7 @@
 				<column width="30%"/>
 				<column width="40%"/>
 				<column />
+				<column />
 			</columns>
 
 			<!-- Utiliser un modèle pour les lignes -->
@@ -60,6 +61,7 @@
 					</cell>
 
 					<!-- 2: La deuxième cellule contient soit une zone de texte soit une image en fonction du type de paramètre -->
+
 					<cell>
 						<!-- Display radio buttons for 'yes' and 'no' if the type is 'boolean' and in edit mode -->
 
@@ -80,25 +82,43 @@
 
 					</cell>
 					<!-- La troisième cellule contient des boutons pour éditer, enregistrer ... les modifications -->
+					<!-- Règle de Gestion:
+                         Les boutons d'édition, d'enregistrement et d'annulation sont conditionnellement affichés en fonction du mode d'édition pour chaque élément.
+                         Si le type est une chaîne de caractères :
+                         - Le bouton "Modifier" est visible.
+                         - Le bouton "Enregistrer" est visible uniquement en mode édition.
+                         - Le bouton "Annuler" est visible uniquement en mode édition.
+                         Si le type est un booléen :
+                         - Aucun bouton n'est affiché ; il s'agit d'un bouton radio.
+                         Pour l'image d'accueil :
+                         Le bouton de téléchargement de fichier (fileupload) est affiché uniquement si le type de l'élément est une image.
+                         Le bouton de suppression est affiché uniquement si le type de l'élément est une image et que isLogoExists==true.
+                         Note : Les actions des boutons sont liées à des commandes spécifiques définies dans le ViewModel.
+                    -->
+
 					<cell>
 
 						<div unless="${each.type eq 'image' || each.type eq 'boolean'}">
-						<!--							edit          -->
-							<button label="${c:l('general.edit')}" if="${vm.isEditMode(each)"
+							<button label="${c:l('general.edit')}"  visible="${!vm.isEditMode(each)}"
 									onClick="@command('editParameter', parameter=each)" />
-						<!--							save           -->
-							<button label="${c:l('general.save')}" if="${vm.isEditMode(each)"
+
+							<button label="${c:l('general.save')}"  visible="${vm.isEditMode(each)}"
 									onClick="@command('editParameter', parameter=each)" />
+
 							<!-- Bouton Annuler visible uniquement en mode édition -->
-							<button label="${c:l('general.cancel')}" visible="${vm.isEditMode(each)}"
+							<button label="${c:l('general.cancel')}"  visible="${vm.isEditMode(each)}"
 									onClick="@command('cancelEdit', parameter=each)" />
 						</div>
 
- 						<fileupload label="${c:l('general.upload')}"  onUpload="@command('handleFileUpload',
- 						 parameter=each)" if="${each.type eq 'image'}" />
-						<button label="${c:l('general.delete')}"  onClick="@command('deleteLogo')" />
 
+						<div if="${each.type eq 'image'}">
+								<fileupload label="${c:l('general.upload')}"  onUpload="@command('handleFileUpload',
+ 						 parameter=each)" visible="${each.type eq 'image'}" class="buttonv1"/>
+								<button label="${c:l('general.delete')}"  onClick="@command('deleteLogo')"
+										visible="@load(vm.logoExists)" class="buttonv2"/>
+						</div>
 					</cell>
+
 				</row>
 			</template>
 		</grid>
