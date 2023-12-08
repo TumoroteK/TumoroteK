@@ -42,10 +42,16 @@ import java.io.File;
 import java.util.Set;
 
 /**
- * Interface du service de gestion des paramètres de l'application
- * @author GCH
+ * Interface du service de gestion des paramètres de l'application et des plateformes.
+ * Une plateforme possède des paramètres par défaut définis dans la classe EParametreValeurParDefaut.
+ * Lorsque l'utilisateur modifie un paramètre, les modifications sont sauvegardées dans la table "parameter_valeur_specifique".
+ * Ces paramètres ont généralement une portée au niveau de la plateforme et peuvent varier d'une plateforme à une autre.
+ * Il existe également deux paramètres avec une portée au niveau de l'application, gérés différemment (pour faciliter le déploiement) :
+ * le message de bienvenue défini dans "tumorotek.properties" et le logo situé dans "catalina/localhost".
  *
+ * @author GCH
  */
+
 public interface ParametresManager
 {
 
@@ -58,23 +64,20 @@ public interface ParametresManager
 
    /**
     * Sauvegarde le message d'accueil
-    * @param msgAccueil
+    * @param msgAccueil le nouveau message d'accueil
     * @return true si le message a bien eété sauvegardé
     */
    boolean saveMessageAccueil(String msgAccueil);
 
-   /**
-    * Supprime le message d'accueil
-    *
-    * @return true si le message a bien eété supprimé
-    */
-   boolean deleteMessageAccueil();
+
 
    /**
     * Récupère le fichier du logo affiché sur la page d'accueil
-    * @return
+    * @return File
     */
    File getLogoFile();
+
+   boolean isLogoExists();
 
    /**
     * Sauvegarde le logo de la page d'accueil
@@ -92,9 +95,9 @@ public interface ParametresManager
    Set<ParametreDTO> getParametresByPlateformeId(Integer idPlateforme);
 
 
-   public ParametreValeurSpecifique findParametresByPlateformeIdAndCode(Integer plateformID, String code);
+    ParametreValeurSpecifique findParametresByPlateformeIdAndCode(Integer plateformID, String code);
 
-   public void updateValeur(Integer plateformID, String code, String newValue);
+    void updateValeur(Integer plateformID, String code, String newValue);
 
 
 }

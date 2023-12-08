@@ -45,9 +45,11 @@ import java.util.Set;
 
 import fr.aphp.tumorotek.dto.ParametreDTO;
 import fr.aphp.tumorotek.model.contexte.Plateforme;
-import fr.aphp.tumorotek.utils.TKStringUtils;
+import fr.aphp.tumorotek.utils.MessagesUtils;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
 import org.apache.commons.io.FileUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.InvalidMediaTypeException;
 import org.springframework.http.MediaType;
 import org.zkoss.bind.annotation.BindingParam;
@@ -60,18 +62,18 @@ import org.zkoss.util.media.Media;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.event.CheckEvent;
 import org.zkoss.zk.ui.event.UploadEvent;
+import org.zkoss.zul.Label;
 import org.zkoss.zul.Messagebox;
 
 import fr.aphp.tumorotek.action.ManagerLocator;
 import fr.aphp.tumorotek.manager.administration.ParametresManager;
 import org.zkoss.zul.Radio;
 
-/**
- * @author GCH
- *
- */
+
 public class ParametresController
 {
+
+   public static final Logger logger = LoggerFactory.getLogger(ParametresController.class);
 
    private static final long serialVersionUID = -2450763003941018231L;
 
@@ -79,20 +81,15 @@ public class ParametresController
    private static final MediaType[] AUTHORIZED_IMAGE_MEDIA_TYPES =
       new MediaType[] {MediaType.IMAGE_GIF, MediaType.IMAGE_JPEG, MediaType.IMAGE_PNG};
 
-   public Set<ParametreDTO> parameterList;
+   public Set<ParametreDTO> parameterList  = new HashSet<>();
 
-   private Map<ParametreDTO, Boolean> editModeMap;
+   private Map<ParametreDTO, Boolean> editModeMap  = new HashMap<>();
 
-   private Map<String, ParametreDTO> originalValuesMap;
+   private Map<String, ParametreDTO> originalValuesMap = new HashMap<>();
+
+   public boolean isLogoExists = false;
 
    final ParametresManager parametresManager = ManagerLocator.getManager(ParametresManager.class);
-
-   public String logoPath = "";
-
-   public String accueilMsg = "";
-
-
-
 
    public Set<ParametreDTO> getParameterList() {
       return parameterList;
@@ -109,75 +106,64 @@ public class ParametresController
    }
 
    /**
-    * Initialisation du contrôleur.
+    * Initialise le composant en chargeant les paramètres nécessaires.
     */
    @Init
    public void init() {
 
-         String path = parametresManager.getLogoFile().getAbsolutePath();
-         logoPath = TKStringUtils.normalizePath(path);
-
-         // Initialize parameterList with sample data
+      // Initialise parameterList
          parameterList = SessionUtils.getPlatformParameters();
+         isLogoExists = parametresManager.isLogoExists();
 
-
-         // Ensure that parameterList is not null
-         if (parameterList == null) {
-            parameterList = new HashSet<>(); // Or initialize it appropriately
-         }
-
-//         File logoFile = parametresManager.getLogoFile();
-//         loadLogo(logoFile);
-
-         // Initialize the editModeMap and originalValuesMap
-         editModeMap = new HashMap<>();
-         originalValuesMap = new HashMap<>(); // Initialize originalValuesMap
-
+      // Initialise les maps editModeMap et originalValuesMap
          for (ParametreDTO parameter : parameterList) {
             editModeMap.put(parameter, false);
-
-            // Ensure that originalValuesMap is not null
-            if (originalValuesMap == null) {
-               originalValuesMap = new HashMap<>();
-            }
-
             originalValuesMap.put(parameter.getCode(), new ParametreDTO(parameter.getCode(), parameter.getValeur(), parameter.getType(), parameter.getGroupe()));
          }
       }
 
 
+//      ************************************  Event Listeners ****************************************************
+
+//@Command : Indique que cette méthode est associée à une commande, souvent utilisée dans les frameworks UI.
+//@NotifyChange("parameterList") : Notifie le framework pour rafraîchir "parameterList" après la suppression du logo.
 
 
+   /**
+    * Permet d'éditer un paramètre et gère l'enregistrement des modifications.
+    *
+    * @param parameter le paramètre à éditer
+    */
    @Command
    @NotifyChange("parameterList")
    public void editParameter(@BindingParam("parameter") ParametreDTO parameter) {
+
       boolean isEditMode = isEditMode(parameter);
 
       if (!isEditMode) {
          editModeMap.put(parameter, true);
       } else {
-         // if it's a accuilme message call save message
-         if (parameter.getCode().equals("params.message.accueil")){
+         // Si c'est un message d'accueil, appelle la méthode pour enregistrer le message
+         String messageCode = "params.message.accueil";
+         if (parameter.getCode().equals(messageCode)){
             storeNewMsgAccueil(parameter.getValeur());
          } else {
-            // Save to the database here
+            // Enregistre dans la base de données + Session
             saveParameter(parameter);
          }
+         // Réinitialiser le mode édition à faux
          editModeMap.put(parameter, false);
       }
    }
 
-   private void saveParameter(ParametreDTO parameter){
-      Plateforme plateforme = SessionUtils.getPlateforme();
-
-      parametresManager.updateValeur(plateforme.getPlateformeId(), parameter.getCode(), parameter.getValeur());
-
-      Set<ParametreDTO> updatedParameters = parametresManager.getParametresByPlateformeId(SessionUtils.getPlateforme().getPlateformeId());
-      // update the session
-      SessionUtils.setPlatformParameters(updatedParameters);
-   }
-
+   /**
+    * Met à jour la valeur d'un paramètre suite à un événement de sélection (Radio Button).
+    *
+    * @param parameter le paramètre à mettre à jour
+    * @param event     l'événement de sélection déclenché
+    */
    @Command
+   @NotifyChange("parameterList")
    public void updateParameterValue(@BindingParam("parameter") ParametreDTO parameter,
                                     @ContextParam(ContextType.TRIGGER_EVENT) CheckEvent event) {
       String selectedValue = ((Radio) event.getTarget()).getValue();
@@ -193,40 +179,90 @@ public class ParametresController
    @Command
    @NotifyChange("parameterList")
    public void cancelEdit(@BindingParam("parameter") ParametreDTO parameter) {
-      // Set edit mode to false to revert the changes
-      // Revert to the original values
+      // Rétablit les valeurs originales
       ParametreDTO originalValues = originalValuesMap.get(parameter.getCode());
       parameter.setValeur(originalValues.getValeur());
 
-      // Set edit mode to false to cancel the editing
+      // Réinitialiser le mode édition à faux
       editModeMap.put(parameter, false);
 
 
    }
 
    /**
-    * Gère le téléchargement de fichiers dans le contexte des paramètres.
+    * Supprime le logo après confirmation de l'utilisateur via une boîte de dialogue modale.
+    * Si l'utilisateur confirme la suppression, le logo est supprimé, et un message de réussite est affiché.
+    *
+    */
+   @Command
+   public void deleteLogo() {
+      // Récupère le titre et le corps de la question localisés pour la boîte de dialogue de confirmation
+      String questionTitle= Labels.getLabel("question.title.logo.delete");
+      String questionBody= Labels.getLabel("question.body.logo.delete");
+      // Affiche une boîte de dialogue modale et attend la confirmation de l'utilisateur
+      boolean isOk = MessagesUtils.openQuestionModal(questionTitle, questionBody);
+      // Si l'utilisateur confirme la suppression
+      if(isOk){
+         // Tente de supprimer le logo
+      boolean wasDeleted = parametresManager.deleteLogo();
+         // Si le logo a été supprimé avec succès
+      if (wasDeleted){
+         // Affiche le message de réussite
+         String messageBody  = Labels.getLabel("success.logo.delete");
+         String messageHeader  = Labels.getLabel("general.success");
+         MessagesUtils.openInfoModal(messageHeader, messageBody);
+      }
+         // Met à jour le drapeau pour indiquer si le logo existe
+         isLogoExists = false;
+      }
+   }
+
+   /**
+    * Gère le téléchargement de logo.
     *
     * @param parameter le paramètre associé au fichier
     * @param event     l'événement de téléchargement déclenché
     */
    @Command
-   @NotifyChange({"parameterList"})
    public void handleFileUpload(@BindingParam("parameter") ParametreDTO parameter,
       @ContextParam(ContextType.TRIGGER_EVENT) UploadEvent event) {
       Media media = event.getMedia();
 
+      String errorLabel = "general.error";
       if (isMediaTypeValide(media)) {
-         // Save the file
+         // Enregistre le fichier
          boolean isSaved = saveLogo(media);
-         String filepath = media.getContentType();
-         parameter.setValeur(filepath);
-         // Update the image source
+         if (isSaved){
+            String filepath = media.getContentType();
+            parameter.setValeur(filepath);
+         }
+         else {
+            // En cas d'échec de l'enregistrement, affiche un message d'erreur
+            MessagesUtils.openErrorModal(Labels.getLabel(errorLabel), Labels.getLabel("error.params.image.update"));
+         }
+      } else {
+         // Si le type de média n'est pas valide, affiche un message d'erreur
+         MessagesUtils.openErrorModal(Labels.getLabel(errorLabel), Labels.getLabel("error.params.image.format"));
+
       }
    }
 
 
 //***************************************** Utility Mehtods ******************************************************************
+
+   /**
+    * Enregistre les modifications apportées à un paramètre.
+    *
+    * @param parameter le paramètre à enregistrer
+    */
+   private void saveParameter(ParametreDTO parameter){
+      Plateforme plateforme = SessionUtils.getPlateforme();
+      // Met à jour/ sauvegarde le paramètre de la plateforme en BD
+      parametresManager.updateValeur(plateforme.getPlateformeId(), parameter.getCode(), parameter.getValeur());
+      Set<ParametreDTO> updatedParameters = parametresManager.getParametresByPlateformeId(SessionUtils.getPlateforme().getPlateformeId());
+      // Met à jour les paramètres de la plateforme en session
+      SessionUtils.setPlatformParameters(updatedParameters);
+   }
 
    /**
     * Stocke le nouveau message d'accueil dans le fichier tumorotek.properties
@@ -257,6 +293,7 @@ public class ParametresController
             final MediaType uploadedMediaType = MediaType.valueOf(uploadedMedia.getContentType());
             mediaTypeValide = Arrays.asList(AUTHORIZED_IMAGE_MEDIA_TYPES).contains(uploadedMediaType);
          }catch(final InvalidMediaTypeException imte){
+            logger.warn("MediaType inconnu", imte);
          }
 
       }
@@ -279,6 +316,8 @@ public class ParametresController
          FileUtils.writeByteArrayToFile(tmpLogoFile, uploadedMedia.getByteData());
          saved = parametresManager.saveLogo(tmpLogoFile);
       }catch(final IOException e){
+         logger.error("Erreur lors de la conversion du media en fichier", e);
+
       }finally{
          if(null != tmpLogoFile && tmpLogoFile.exists()){
             tmpLogoFile.delete();
@@ -287,28 +326,4 @@ public class ParametresController
       return saved;
    }
 
-   /**
-    * Met à jour le composant contenant le logo, si le nouveau logo est null, remplace l'image par un label
-    * @param newLogoFile nouveau logo
-    * @throws IOException
-    */
-//   private void loadLogo(final File newLogoFile){
-//
-//      if(newLogoFile != null && newLogoFile.exists()){
-//
-//         try{
-//            final AImage content = new AImage(newLogoFile);
-//            accueilImg.setContent(content);
-//         }catch(final IOException e){
-//            Messagebox.show(Labels.getLabel("error.params.image.update"), Labels.getLabel("general.error"), Messagebox.OK,
-//               Messagebox.ERROR);
-//         }
-//
-//      }
-//
-//   }
-
-   public String getLogoPath(){
-      return logoPath;
-   }
 }

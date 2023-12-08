@@ -66,9 +66,14 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Service de gestion de paramètres de l'application
- * @author GCH
+ * Service de gestion des paramètres de l'application et des plateformes.
+ * Une plateforme possède des paramètres par défaut définis dans la classe EParametreValeurParDefaut.
+ * Lorsque l'utilisateur modifie un paramètre, les modifications sont sauvegardées dans la table "parameter_valeur_specifique".
+ * Ces paramètres ont généralement une portée au niveau de la plateforme et peuvent varier d'une plateforme à une autre.
+ * Il existe également deux paramètres avec une portée au niveau de l'application, gérés différemment (pour faciliter le déploiement) :
+ * le message de bienvenue défini dans "tumorotek.properties" et le logo situé dans "catalina/localhost".
  *
+ * @author GCH
  */
 
 public class ParametresManagerImpl implements ParametresManager
@@ -80,11 +85,13 @@ public class ParametresManagerImpl implements ParametresManager
 
    private final static String LOGO_FILEPATH = TumorotekProperties.TUMO_PROPERTIES_DIR + "/logo.png";
 
+
+   // Dependency injection
    public void setParametreDao(ParametreDao parametreDao){
       this.parametreDao = parametreDao;
    }
 
-   /* (non-Javadoc)
+   /**
     * @see fr.aphp.tumorotek.manager.administration.ParametresManager#getMessageAccueil(boolean)
     */
    @Override
@@ -109,8 +116,9 @@ public class ParametresManagerImpl implements ParametresManager
       return msgAccueil;
    }
 
-   /* (non-Javadoc)
-    * @see fr.aphp.tumorotek.manager.administration.ParametresManager#saveMessageAccueil(java.lang.String)
+
+   /**
+    * @see fr.aphp.tumorotek.manager.administration.ParametresManager#saveMessageAccueil(String)
     */
    @Override
    public boolean saveMessageAccueil(final String msgAccueil){
@@ -140,15 +148,8 @@ public class ParametresManagerImpl implements ParametresManager
 
    }
 
-   @Override
-   /*
-    * (non-Javadoc)
-    * @see fr.aphp.tumorotek.manager.administration.ParametresManager#deleteMessageAccueil()
-    */ public boolean deleteMessageAccueil(){
-      return saveMessageAccueil("");
-   }
 
-   /* (non-Javadoc)
+   /**
     * @see fr.aphp.tumorotek.manager.administration.ParametresManager#getLogoFile()
     */
    @Override
@@ -156,8 +157,18 @@ public class ParametresManagerImpl implements ParametresManager
       return new File(LOGO_FILEPATH);
    }
 
-   /* (non-Javadoc)
-    * @see fr.aphp.tumorotek.manager.administration.ParametresManager#saveLogo(java.io.File)
+   /**
+    * Vérifie si le fichier du logo existe.
+    *
+    * @return true si le fichier du logo existe, false sinon
+    */
+   public boolean isLogoExists() {
+      File logoFile = new File(LOGO_FILEPATH);
+      return logoFile.exists();
+   }
+
+   /**
+    * @see fr.aphp.tumorotek.manager.administration.ParametresManager#saveLogo(File)
     */
    @Override
    public boolean saveLogo(final File logoFile){
@@ -205,11 +216,11 @@ public class ParametresManagerImpl implements ParametresManager
       return saved;
    }
 
-   @Override
-   /*
-    * (non-Javadoc)
+   /**
     * @see fr.aphp.tumorotek.manager.administration.ParametresManager#deleteLogo()
-    */ public boolean deleteLogo(){
+    */
+   @Override
+   public boolean deleteLogo(){
 
       boolean deleted = false;
 

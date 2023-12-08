@@ -54,7 +54,6 @@
 			<template name="model">
 				<!-- Chaque ligne représente un paramètre -->
 				<row>
-
 					<!-- 1: Afficher la clé du paramètre dans la première cellule -->
 					<cell>
 						<label value="${c:l(each.code)}" />
@@ -64,33 +63,41 @@
 					<cell>
 						<!-- Display radio buttons for 'yes' and 'no' if the type is 'boolean' and in edit mode -->
 
-						<radiogroup visible="${each.type eq 'boolean'}" onCheck="@command('updateParameterValue', parameter=each)">
-							<radio label="Yes" value="true" checked="${each.valeur == 'true'}" />
-							<radio label="No" value="false" checked="${each.valeur == 'false'}" />
+						<radiogroup visible="${each.type eq 'boolean'}"
+									onCheck="@command('updateParameterValue', parameter=each)">
+							<radio label="${c:l('general.checkbox.true')}"  value="true" checked="${each.valeur == 'true'}" />
+							<radio label="${c:l('general.checkbox.false')}" value="false" checked="${each.valeur == 'false'}" />
 						</radiogroup>
 
 						<!-- Afficher une zone de texte si le type n'est pas 'image' -->
 						<textbox value="@load(each.valeur) @save(each.valeur)"
-								 unless="${!vm.isEditMode(each) || each.type eq 'image' || each.type eq 'boolean'}" width="90%"/>
+								 unless="${!vm.isEditMode(each) || each.type eq 'image' || each.type eq 'boolean'}"
+								 width="90%"/>
 
-						<label value="@load(each.valeur)" visible="${!vm.isEditMode(each)}"  unless="${each.type eq 'boolean' || each.type eq 'image' }" />
+						<label value="@load(each.valeur)" visible="${!vm.isEditMode(each)}"
+							   unless="${each.type eq 'boolean' || each.type eq 'image' }" />
 
 
 					</cell>
-					<!-- La troisième cellule contient des boutons pour éditer, enregistrer et annuler les modifications -->
+					<!-- La troisième cellule contient des boutons pour éditer, enregistrer ... les modifications -->
 					<cell>
 
 						<div unless="${each.type eq 'image' || each.type eq 'boolean'}">
-							<button label="${vm.isEditMode(each) ? 'Save' : 'Edit'}"
+						<!--							edit          -->
+							<button label="${c:l('general.edit')}" if="${vm.isEditMode(each)"
 									onClick="@command('editParameter', parameter=each)" />
-
+						<!--							save           -->
+							<button label="${c:l('general.save')}" if="${vm.isEditMode(each)"
+									onClick="@command('editParameter', parameter=each)" />
 							<!-- Bouton Annuler visible uniquement en mode édition -->
-							<button label="Annuler" visible="${vm.isEditMode(each)}"
+							<button label="${c:l('general.cancel')}" visible="${vm.isEditMode(each)}"
 									onClick="@command('cancelEdit', parameter=each)" />
 						</div>
 
-						<!-- Bouton de téléchargement de fichier affiché uniquement si le type est 'image' -->
-						<fileupload label="Télécharger" onUpload="@command('handleFileUpload', parameter=each)" if="${each.type eq 'image'}" />
+ 						<fileupload label="${c:l('general.upload')}"  onUpload="@command('handleFileUpload',
+ 						 parameter=each)" if="${each.type eq 'image'}" />
+						<button label="${c:l('general.delete')}"  onClick="@command('deleteLogo')" />
+
 					</cell>
 				</row>
 			</template>
