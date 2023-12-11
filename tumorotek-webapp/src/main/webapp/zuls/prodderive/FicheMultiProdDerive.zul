@@ -205,7 +205,12 @@
 			        			save-when='validate.onClick, create.onClick, self.onBlur, interfacage.onClick'}" />
 							
 						<!-- Quantité utilisé dans la transformation -->
-						<label id="transfoQuantiteLabel" value="${c:l('ficheProdDerive.transformation.quantité')}" sclass="formLabel"/>
+						<hbox>
+							<label id="transfoQuantiteLabel" value="${c:l('ficheProdDerive.transformation.quantité')}" sclass="formLabel"/>
+							<label id="requiredtransfoQuantiteLabel" value="*" sclass="requiredMark"
+								   visible="true"/>
+
+						</hbox>
 
 						<div id="transfoQuantiteDiv">
 							<decimalbox id="transfoQuantiteBoxDerive"

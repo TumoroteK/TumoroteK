@@ -53,6 +53,8 @@ import java.util.stream.IntStream;
 
 import javax.servlet.http.HttpServletRequest;
 
+import fr.aphp.tumorotek.dto.ParametreDTO;
+import fr.aphp.tumorotek.param.EParametreValeurParDefaut;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -74,26 +76,7 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.ForwardEvent;
 import org.zkoss.zk.ui.util.Clients;
-import org.zkoss.zul.Box;
-import org.zkoss.zul.Button;
-import org.zkoss.zul.Cell;
-import org.zkoss.zul.Column;
-import org.zkoss.zul.Columns;
-import org.zkoss.zul.Combobox;
-import org.zkoss.zul.Constraint;
-import org.zkoss.zul.Div;
-import org.zkoss.zul.Grid;
-import org.zkoss.zul.Intbox;
-import org.zkoss.zul.Label;
-import org.zkoss.zul.ListModel;
-import org.zkoss.zul.ListModelList;
-import org.zkoss.zul.Listbox;
-import org.zkoss.zul.Messagebox;
-import org.zkoss.zul.Radio;
-import org.zkoss.zul.Row;
-import org.zkoss.zul.Rows;
-import org.zkoss.zul.Textbox;
-import org.zkoss.zul.Window;
+import org.zkoss.zul.*;
 import org.zkoss.zul.impl.InputElement;
 
 import fr.aphp.tumorotek.action.CustomSimpleListModel;
@@ -191,6 +174,8 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
 
    private Label prodDeriveQteLabel;
 
+   private Label requiredTypeDerive;
+
    private Div prodDeriveQteDiv;
 
    private Grid derivesList;
@@ -225,6 +210,8 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
    //   private List<String> lettres = new ArrayList<>();
    private boolean selectParent = false;
 
+   private boolean quantiteUtiliseObligatoire;
+
    private Date dateSortie;
 
    private final ProdDeriveDecoratorRowRenderer deriveDecoRenderer = new ProdDeriveDecoratorRowRenderer();
@@ -244,6 +231,8 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
    public void doAfterCompose(final Component comp) throws Exception{
       super.doAfterCompose(comp);
 
+      getParametreFromSession();
+
       setWaitLabel("ficheProdDerive.multi.creation.encours");
 
       // liste de composants pour le prlvt parent
@@ -260,6 +249,20 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
       //      lettres = Utils.createListChars(26, null, new ArrayList<String>());
 
       getBinder().loadAll();
+   }
+
+   private void getParametreFromSession(){
+      EParametreValeurParDefaut deriveQteObligatoire = EParametreValeurParDefaut.DERIVE_QTE_OBLIGATOIRE;
+      ParametreDTO deriveQteObligatoireDto = extractParametre(deriveQteObligatoire.getCode());
+      if (deriveQteObligatoireDto != null){
+         String isObligatoireString = deriveQteObligatoire.getValeur();
+            if(isObligatoireString.equalsIgnoreCase("false")){
+               quantiteUtiliseObligatoire = false;
+         }
+            else{
+               quantiteUtiliseObligatoire = true;
+            }
+      }
    }
 
    /**
@@ -292,7 +295,9 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
       getObjectTabController().setOldCode(null);
       
       Clients.scrollIntoView(formGrid.getColumns());
-
+      if (quantiteUtiliseObligatoire){
+         requiredTypeDerive.setVisible(true);
+      }
       // si le parent n'est pas null, on l'associe au
       // nouveau dérivé
       if(prodDeriveFromRetourCession){
@@ -1143,6 +1148,17 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
 
    /**
     * Méthode appelée après la saisie d'une valeur dans le champ
+    * transfoQuantiteBoxDerive.
+    */
+   public void onBlur$transfoQuantiteBoxDerive(final Event event) throws Exception{
+      if(quantiteUtiliseObligatoire){
+         transfoQuantiteBoxDerive.setConstraint(new SimpleConstraint("NO EMPTY"));
+      }
+   }
+
+
+   /**
+    * Méthode appelée après la saisie d'une valeur dans le champ
     * codePrefixeLabelDerive. Cette valeur sera mise en majuscules.
     */
    @Override
@@ -1920,6 +1936,10 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
 
    public List<String> getListParentTypes(){
       return listParentTypes;
+   }
+
+   public boolean isQuantiteUtiliseObligatoire(){
+      return quantiteUtiliseObligatoire;
    }
 
    public String getSelectedParent(){
