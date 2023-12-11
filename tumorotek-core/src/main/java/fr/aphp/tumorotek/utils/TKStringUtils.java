@@ -202,4 +202,23 @@ public final class TKStringUtils
    }
 
 
+   /**
+    * Convertit une chaîne de caractères en boolean.
+    *
+    * @param input La chaîne de caractères à convertir.
+    * @return true si la chaîne est égale à "true" (insensible à la casse), sinon false.
+    */
+   public static boolean convertToBoolean(String input) {
+      // Convertit la chaîne d'entrée en minuscules pour une comparaison insensible à la casse
+      String lowercaseInput = input.toLowerCase();
+
+      // Vérifie si la chaîne en minuscules est égale à "true"
+      if ("true".equals(lowercaseInput)) {
+         return true;
+      }
+      // Si ce n'est pas "true", retourne false
+      return false;
+   }
+
+
 }

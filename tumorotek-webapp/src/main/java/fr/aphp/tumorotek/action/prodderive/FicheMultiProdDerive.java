@@ -55,6 +55,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import fr.aphp.tumorotek.dto.ParametreDTO;
 import fr.aphp.tumorotek.param.EParametreValeurParDefaut;
+import fr.aphp.tumorotek.utils.TKStringUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -176,6 +177,8 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
 
    private Label requiredTypeDerive;
 
+   private Label requiredtransfoQuantiteLabel;
+
    private Div prodDeriveQteDiv;
 
    private Grid derivesList;
@@ -210,7 +213,7 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
    //   private List<String> lettres = new ArrayList<>();
    private boolean selectParent = false;
 
-   private boolean quantiteUtiliseObligatoire;
+   private boolean quantiteUtiliseObligatoire = true;
 
    private Date dateSortie;
 
@@ -231,7 +234,7 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
    public void doAfterCompose(final Component comp) throws Exception{
       super.doAfterCompose(comp);
 
-      getParametreFromSession();
+      initializeQuantiteUtiliseObligatoireFromSession();
 
       setWaitLabel("ficheProdDerive.multi.creation.encours");
 
@@ -251,17 +254,14 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
       getBinder().loadAll();
    }
 
-   private void getParametreFromSession(){
+   private void initializeQuantiteUtiliseObligatoireFromSession(){
       EParametreValeurParDefaut deriveQteObligatoire = EParametreValeurParDefaut.DERIVE_QTE_OBLIGATOIRE;
-      ParametreDTO deriveQteObligatoireDto = extractParametre(deriveQteObligatoire.getCode());
+      ParametreDTO deriveQteObligatoireDto = getParametreByCode(deriveQteObligatoire.getCode());
       if (deriveQteObligatoireDto != null){
-         String isObligatoireString = deriveQteObligatoire.getValeur();
-            if(isObligatoireString.equalsIgnoreCase("false")){
-               quantiteUtiliseObligatoire = false;
+         quantiteUtiliseObligatoire = TKStringUtils.convertToBoolean(deriveQteObligatoireDto.getValeur());
+         if (!quantiteUtiliseObligatoire){
+            requiredtransfoQuantiteLabel.setVisible(false);
          }
-            else{
-               quantiteUtiliseObligatoire = true;
-            }
       }
    }
 
