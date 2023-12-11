@@ -255,12 +255,25 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
       getBinder().loadAll();
    }
 
+
+   /**
+    * Initialise la quantité utilisée obligatoire à partir de la session.
+    *
+    * Note: La condition d'affichage de l'astérisque rouge est gérée dynamiquement dans cette méthode.
+    * Si la quantité utilisée n'est pas obligatoire, l'astérisque est masqué, sinon il est affiché.
+    *
+    */
    private void initializeQuantiteUtiliseObligatoireFromSession(){
+      // Récupérer le code (deriveQteObligatoire.getCode())
       EParametreValeurParDefaut deriveQteObligatoire = EParametreValeurParDefaut.DERIVE_QTE_OBLIGATOIRE;
+      // Obtenir le DTO associé au paramètre
       ParametreDTO deriveQteObligatoireDto = getParametreByCode(deriveQteObligatoire.getCode());
+      // Vérifier si le DTO n'est pas nul
       if (deriveQteObligatoireDto != null){
+         // Convertir la valeur du paramètre en un boolean
          quantiteUtiliseObligatoire = TKStringUtils.convertToBoolean(deriveQteObligatoireDto.getValeur());
          if (!quantiteUtiliseObligatoire){
+            // Masquer le label de transformation obligatoire si la quantité n'est pas utilisée
             requiredtransfoQuantiteLabel.setVisible(false);
          }
       }
@@ -920,15 +933,19 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
             Clients.scrollIntoView(typesBoxDerive);
             throw new WrongValueException(typesBoxDerive, Labels.getLabel("ficheProdDerive.error.type"));
          }
-
+         // TK-434: Sécuriser la saisie de la quantité utilisée
+         // Si le champ n'est pas renseigné
          if (transfoQuantiteBoxDerive.getValue() == null){
+            // et la plateforme est configurée pour avoir la saisie de quantité utilisée obligatoire, on bloque l'ajout
             if (quantiteUtiliseObligatoire){
                Clients.scrollIntoView(transfoQuantiteBoxDerive);
+               // afficher un message d'erreur à côté du champ "quantité utilisée obligatoire"
                throw new WrongValueException(transfoQuantiteBoxDerive, Labels.getLabel("ficheProdDerive.error.quantite"));
             } else{
+               // si la valeur du paramètre "quantité utilisée obligatoire" est définie et vaut false,
+               // afficher une fenêtre d'avertissement
                boolean userAnswer = MessagesUtils.openQuestionModal(Labels.getLabel("general.warning"),
                                                                     Labels.getLabel("ficheProdDerive.warning.quantite"));
-
                if (!userAnswer) {
                   return;
                }
