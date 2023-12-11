@@ -55,6 +55,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import fr.aphp.tumorotek.dto.ParametreDTO;
 import fr.aphp.tumorotek.param.EParametreValeurParDefaut;
+import fr.aphp.tumorotek.utils.MessagesUtils;
 import fr.aphp.tumorotek.utils.TKStringUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -918,6 +919,21 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
          if(getSelectedType() == null){
             Clients.scrollIntoView(typesBoxDerive);
             throw new WrongValueException(typesBoxDerive, Labels.getLabel("ficheProdDerive.error.type"));
+         }
+
+         if (transfoQuantiteBoxDerive.getValue() == null){
+            if (quantiteUtiliseObligatoire){
+               Clients.scrollIntoView(transfoQuantiteBoxDerive);
+               throw new WrongValueException(transfoQuantiteBoxDerive, Labels.getLabel("ficheProdDerive.error.quantite"));
+            } else{
+               boolean userAnswer = MessagesUtils.openQuestionModal(Labels.getLabel("general.warning"),
+                                                                    Labels.getLabel("ficheProdDerive.warning.quantite"));
+
+               if (!userAnswer) {
+                  return;
+               }
+            }
+
          }
 
          // si le dérivé est issu d'un parent connu
