@@ -274,7 +274,7 @@
 									<label value="${c:l('Champ.Prelevement.ConditNbr')}" sclass="formLabel" />
 									<label value="*" sclass="requiredMark"/>
 								</div>
-								<intbox id="nbConditBoxPrlvt" width="50px" value="@{fwinPrelevementEdit$composer.object.conditNbr,
+								<intbox id="nbConditBoxPrlvt" width="50px" height="20px" value="@{fwinPrelevementEdit$composer.object.conditNbr,
 									save-when='validate.onClick, create.onClick, next.onClick'}" constraint="no negative" />
 							</div>
 							<div class="item item-mid" id="conditMilieuDiv"><!-- Milieu de Condit -->

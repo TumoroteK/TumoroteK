@@ -126,11 +126,11 @@
 									<label id="quantiteBoxEchan" 
 										sclass="formValue"
 										value="@{fwinEchantillonEdit$composer.valeurQuantiteRestante, 
-										load-after='quantiteInitBoxEchan.onBlur'}"
+										load-after='quantiteInitBoxEchan.onBlur'}" width="40px"
 									/>
-									<label id="slashLabelEchan" value=" / " style="font-weight:bold;" />
+									<label id="slashLabelEchan" value=" / " sclass="formValue" width="10px" />
 									<decimalbox id="quantiteInitBoxEchan"
-										width="75px"
+										width="75px" height="20px;"
 										constraint="${fwinEchantillonEdit$composer.cttQuantiteInit}"
 										value="@{fwinEchantillonEdit$composer.object.quantiteInit,
 													save-when='validate.onClick, create.onClick'}"
@@ -138,7 +138,7 @@
 										locale="en"
 									/>
 									<!-- Unité de la quantité -->
-									<listbox id="quaniteUnitesBoxEchan" mold="select" rows="1"
+									<listbox id="quaniteUnitesBoxEchan" mold="select" rows="1" height="25px"
 											model="@{fwinEchantillonEdit$composer.quantiteUnites}"
 											selectedItem="@{fwinEchantillonEdit$composer.selectedQuantiteUnite}" >
 										<listitem self="@{each='quantiteUniteEchan'}" value="@{quantiteUniteEchan}">			
