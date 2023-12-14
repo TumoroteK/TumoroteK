@@ -247,7 +247,7 @@
 								<div class="row-container skip-required">
 									<decimalbox id="quantiteInitBoxEchan" 
 										constraint="@{fwinMultiEchantillons$composer.cttQuantiteInit}"
-										width="50px"
+										width="50px" height="20px"
 										value="@{fwinMultiEchantillons$composer.echantillon.quantiteInit,
 												save-when='addEchantillons.onClick'}"
 										format="#,##0.###" scale="3"
@@ -257,7 +257,7 @@
 									<listbox id="quaniteUnitesBoxEchan" mold="select" rows="1"
 										model="@{fwinMultiEchantillons$composer.quantiteUnites}"
 										selectedItem="@{fwinMultiEchantillons$composer.selectedQuantiteUnite
-										load-after='addEchantillons.onClick'}">
+										load-after='addEchantillons.onClick'}" height="25px">
 										<listitem self="@{each='quantiteUniteEchan'}" value="@{quantiteUniteEchan}">			
 											<listcell label="@{quantiteUniteEchan.unite}" />
 										</listitem>
