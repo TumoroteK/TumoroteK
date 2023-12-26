@@ -543,17 +543,17 @@
 							rowRenderer="@{fwinPrelevementStaticSero$composer.echantillonRenderer}"
 							style="overflow-y:scroll">
 							<columns menupopup="auto" sizable="true" >
-								<column width="15px" align="center" visible="false"/>
-								<column label="${c:l('general.code')}"  width="100px" />
+								<column align="center" width="70px" />
+								<column label="${c:l('general.code')}" />
 								<column label="${c:l('Entite.Banque')}" visible="false" />
-								<column label="${c:l('Champ.Echantillon.DateStock')}" width="100px"/>
+								<column label="${c:l('Champ.Echantillon.DateStock')}" width="130px"/>
 								<column label="${c:l('Champ.Echantillon.DelaiCgl')}"/>
-								<column label="${c:l('Champ.Echantillon.EchantillonType.Type')}" width="100px"/>
-								<column label="${c:l('Champ.Echantillon.Quantite')}" width="100px"/>
-								<column label="${c:l('Champ.Echantillon.ObjetStatut')}" width="80px"/>
-								<column label="${c:l('Champ.Echantillon.Emplacement')}" width="150px"/>
-								<column label="${c:l('derives.nb')}" width="80px"/>
-								<column label="${c:l('cession.nb')}" width="80px"/>
+								<column label="${c:l('Champ.Echantillon.EchantillonType.Type')}"/>
+								<column label="${c:l('Champ.Echantillon.Quantite')}" width="130px"/>
+								<column label="${c:l('Champ.Echantillon.ObjetStatut')}" />
+								<column label="${c:l('Champ.Echantillon.Emplacement')}" />
+								<column label="${c:l('derives.nb')}" width="100px" visible="false "/>
+								<column label="${c:l('cession.nb')}" width="100px" visible="false" />
 							</columns>
 							<rows id="echansRows">
 								<row self="@{each='currEchantillon'}" value="currEchantillon"/>
