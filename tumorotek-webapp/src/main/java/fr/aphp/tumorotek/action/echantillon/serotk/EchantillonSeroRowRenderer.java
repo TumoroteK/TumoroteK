@@ -60,15 +60,6 @@ public class EchantillonSeroRowRenderer extends EchantillonRowRenderer
       super(select, cols);
    }
 
-   @Override
-   public void render(final Row row, final Echantillon data, final int index){
-
-      // dessine le checkbox
-      super.render(row, data, index);
-
-      renderObjets(row, data);
-   }
-
    /**
     * Rendu des colonnes spécifiques échantillon seroTK.
     *
