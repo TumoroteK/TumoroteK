@@ -1075,6 +1075,27 @@ public class GatsbiController
     */
    public static Column addColumn(Grid grid, String nameKey, String width, String align, Component child, String sort,
       Boolean visible) throws ClassNotFoundException, InstantiationException, IllegalAccessException{
+      return addColumn(grid, nameKey, width, align, child, sort, visible, false);
+   }
+   
+   //TG-200 : plantage lors du clic sur les colonnes du tableau des échantillons embarqué dans FicheMultiEchantillonsGatsbi 
+   /**
+    * Dessine une colonne.
+    * @param grid composant parent
+    * @param nameKey
+    * @param width
+    * @param align
+    * @param child
+    * @param sort
+    * @param visible
+    * @param bloquerTri
+    * @return composant column dessiné.
+    * @throws ClassNotFoundException
+    * @throws InstantiationException
+    * @throws IllegalAccessException
+    */
+   public static Column addColumn(Grid grid, String nameKey, String width, String align, Component child, String sort,
+      Boolean visible, Boolean bloquerTri) throws ClassNotFoundException, InstantiationException, IllegalAccessException{
       // check box first immutable column
       Column col = new Column();
       col.setLabel(Labels.getLabel(nameKey));
@@ -1087,6 +1108,10 @@ public class GatsbiController
       col.setAlign(align);
       if(child != null){
          child.setParent(col);
+      }
+      //TG-199
+      if(bloquerTri) {
+         sort = "none";
       }
       col.setSort(sort);
       col.setVisible(visible);

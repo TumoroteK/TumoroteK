@@ -472,8 +472,8 @@
 								<column label="${c:l('ficheEchantillon.codeLesionelLabel')}" />
 								<column label="${c:l('Champ.Echantillon.EchantillonType.Type')}" />
 								<column label="${c:l('Champ.Echantillon.Quantite')}" />
-								<column label="${c:l('Champ.Echantillon.Emplacement')}" />
 								<column label="${c:l('Champ.Echantillon.ObjetStatut')}" />
+								<column label="${c:l('Champ.Echantillon.Emplacement')}" />
 								<column width="35px"/>
 							</columns>
 							<rows id="rows">

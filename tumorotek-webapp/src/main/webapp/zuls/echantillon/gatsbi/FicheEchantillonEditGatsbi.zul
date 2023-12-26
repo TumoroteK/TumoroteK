@@ -214,15 +214,13 @@
 										sclass="formLink" />
 								</div>
 							</div>
-							<div class="item item-mid" id="echanStatutDiv"><!-- Statut de l'objet -->
-								<custom-attributes champId="55" />								
+							<div class="item item-mid" id="echanStatutDiv"><!-- Statut de l'objet : toujours affiché -->
 								<label value="${c:l('Champ.Echantillon.ObjetStatut')}" sclass="chpLabel formLabel"/>
 								<label id="statutLabelEchan" 
 									value="@{fwinEchantillonEdit$composer.objetStatut}"
 									sclass="formValue" />	
 							</div>
-							<div class="item item-mid" id="echanEmplacementDiv"><!-- Emplacement de stockage -->
-								<custom-attributes champId="57" />
+							<div class="item item-mid" id="echanEmplacementDiv"><!-- Emplacement de stockage : toujours affiché -->
 								<label value="${c:l('Champ.Echantillon.Emplacement')}" sclass="chpLabel formLabel"/>
 								<label id="emplacementLabelEchan" 
 									value="@{fwinEchantillonEdit$composer.emplacementAdrl}"

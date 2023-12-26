@@ -135,16 +135,16 @@ public abstract class AbstractEchantillonDecoratorRowRenderer implements RowRend
          throw new RuntimeException(e);
       }
 
-      // emplct
-      if(deco.getEmplacementAdrlinMulti() != null){
-         new Label(deco.getEmplacementAdrlinMulti()).setParent(row);
-      }else{
-         new Label().setParent(row);
-      }
-
       // objet statut
       if(deco.getStatut() != null){
          new Label(Labels.getLabel("Statut." + deco.getStatut().getStatut())).setParent(row);
+      }else{
+         new Label().setParent(row);
+      }      
+      
+      // emplct
+      if(deco.getEmplacementAdrlinMulti() != null){
+         new Label(deco.getEmplacementAdrlinMulti()).setParent(row);
       }else{
          new Label().setParent(row);
       }
@@ -181,6 +181,7 @@ public abstract class AbstractEchantillonDecoratorRowRenderer implements RowRend
       }else{
          new Label().setParent(row);
       }
+
    }
 
    /**
