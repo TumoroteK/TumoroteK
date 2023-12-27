@@ -73,7 +73,7 @@ public class FichePrelevementStaticGatsbi extends FichePrelevementStatic
    private Contexte contexte;
 
    private final EchantillonRowRendererGatsbi echantillonRendererGatsbi =
-      new EchantillonRowRendererGatsbi(false, false, false, false);
+      new EchantillonRowRendererGatsbi(false, false);
 
    @Override
    public void doAfterCompose(final Component comp) throws Exception{
@@ -100,9 +100,9 @@ public class FichePrelevementStaticGatsbi extends FichePrelevementStatic
 
       // inner list
       // non deletable
-      // ne force pas affichage emplacement et statut stockage en fin de grid
-      GatsbiControllerEchantillon.drawColumnsForEchantillons(echanContexte, echantillonsGrid, echantillonRendererGatsbi, false,
-         false, getTtesCollections());
+      // la colonne "toutes collections" doit être créée. Elle sera visible ou non selon la valeur de getTtesCollections()
+      GatsbiControllerEchantillon.drawColumnsForEchantillons(echanContexte, echantillonsGrid, echantillonRendererGatsbi, false, true,
+         getTtesCollections());
    }
 
    @Override

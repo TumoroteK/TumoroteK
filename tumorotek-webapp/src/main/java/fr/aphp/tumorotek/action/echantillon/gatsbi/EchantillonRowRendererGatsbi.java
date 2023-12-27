@@ -60,33 +60,14 @@ public class EchantillonRowRendererGatsbi extends EchantillonRowRenderer impleme
 
    private Contexte contexte;
 
-   // par défaut les icones sont toujours dessinées car impact evt de stockage
    private boolean iconesRendered = true;
 
-   private boolean renderNbs = true;
-
-   private boolean drawCheckbox = true;
-
-   public EchantillonRowRendererGatsbi(final boolean select, final boolean cols, 
-                     final boolean _c, final boolean _r) {
+ 
+   public EchantillonRowRendererGatsbi(final boolean select, final boolean cols) {
       super(select, cols);
 
-      this.drawCheckbox = _c;
-      this.renderNbs = _r;
-
       contexte = SessionUtils.getCurrentGatsbiContexteForEntiteId(3);
-   }
-
-   @Override
-   public void render(final Row row, final Echantillon data, final int index){
-
-      if(drawCheckbox){
-         // dessine le checkbox
-         super.render(row, data, index);
-      }
-
-      renderObjets(row, data);
-   }
+   }   
 
    @Override
    protected void renderEchantillon(final Row row, final Echantillon echan)
@@ -96,11 +77,12 @@ public class EchantillonRowRendererGatsbi extends EchantillonRowRenderer impleme
          GatsbiControllerEchantillon.applyEchantillonChpRender(chpId, row, echan, isAnonyme(), isAccessStockage());
       }
 
-      if(renderNbs){
-         renderNbDerives(row, echan);
-
-         renderNbCessions(row, echan);
-      }
+      //TG-199 : le statut et l'emplacement sont systématiquement affichés
+      EchantillonRowRenderer.renderObjetStatut(row, echan);
+      EchantillonRowRenderer.renderEmplacement(row, echan, isAnonyme(), isAccessStockage());
+      
+      renderNbDerives(row, echan);
+      renderNbCessions(row, echan);
    }
 
    @Override
