@@ -105,6 +105,7 @@ import fr.aphp.tumorotek.model.coeur.patient.Maladie;
 import fr.aphp.tumorotek.model.coeur.patient.Patient;
 import fr.aphp.tumorotek.model.coeur.prelevement.Prelevement;
 import fr.aphp.tumorotek.model.contexte.Banque;
+import fr.aphp.tumorotek.model.contexte.Transporteur;
 import fr.aphp.tumorotek.model.contexte.gatsbi.Contexte;
 import fr.aphp.tumorotek.model.contexte.gatsbi.ContexteType;
 import fr.aphp.tumorotek.model.contexte.gatsbi.Etude;
@@ -460,7 +461,8 @@ public class GatsbiController
          for(ThesaurusValue val : values){
             thesObjs.add(lModel.stream().filter(
                v -> v != null && (((v instanceof TKThesaurusObject) && ((TKThesaurusObject) v).getId().equals(val.getThesaurusId()))
-                  || ((v instanceof Unite) && ((Unite) v).getNom().equals(val.getThesaurusValue()))))
+                  || ((v instanceof Unite) && ((Unite) v).getNom().equals(val.getThesaurusValue())) 
+                  || ((v instanceof Transporteur) && ((Transporteur) v).getNom().equals(val.getThesaurusValue())) ))
                .findAny().orElseThrow(() -> new TKException("gatsbi.thesaurus.value.notfound", val.getThesaurusValue())));
          }
       } else { // adds all thesaurus values

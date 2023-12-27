@@ -100,7 +100,7 @@
 			        			save-when='validate.onClick, create.onClick, next.onClick, self.onBlur'}" />
 							</div>
 							<div class="item item-mid" id="transporteurDiv"><!-- Transporteur -->
-								<custom-attributes champId="36" />
+								<custom-attributes champId="36" listmodel="transporteurs" />
 								<div class="row-container chpLabel">
 									<label value="${c:l('Champ.Prelevement.Transporteur')}" sclass="formLabel" />
 									<label value="*" sclass="requiredMark" />
