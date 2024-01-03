@@ -471,7 +471,7 @@ public class FichePrelevementEdit extends AbstractFicheEditController
       if(selectedService != null){
          collaborateurs = ManagerLocator.getServiceManager().getActiveCollaborateursWithOrderManager(selectedService);
       }else{
-         collaborateurs = ManagerLocator.getCollaborateurManager().findAllActiveObjectsWithOrderManager();
+         collaborateurs = findCollaborateursToDisplay();
       }
       collaborateurs.add(0, null);
 
@@ -482,6 +482,16 @@ public class FichePrelevementEdit extends AbstractFicheEditController
       getBinder().loadAll();
    }
 
+   /**
+    * renvoie les collaborateurs à afficher pour le champ opérateur
+    * sera surchargé pour Gatsbi pour n'afficher que ceux sélectionnés dans le paramétrage voire le contexte
+    * @return liste de collaborateur
+    * @since Gatsbi : TG-204 : filtre sur les collaborateurs gérés comme un thesaurus
+    */
+   public List<Collaborateur> findCollaborateursToDisplay() {
+      return ManagerLocator.getCollaborateurManager().findAllActiveObjectsWithOrderManager();
+   }
+   
    /**
     * Méthode inspirée initCollaborations et allégée pour appel uniquement
     * dans injection depuis interfaçage.

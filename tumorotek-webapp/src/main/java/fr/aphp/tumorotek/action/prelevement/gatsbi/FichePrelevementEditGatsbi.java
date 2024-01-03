@@ -57,6 +57,7 @@ import fr.aphp.tumorotek.action.prelevement.FichePrelevementEdit;
 import fr.aphp.tumorotek.decorator.gatsbi.PatientItemRendererGatsbi;
 import fr.aphp.tumorotek.model.coeur.patient.Patient;
 import fr.aphp.tumorotek.model.coeur.prelevement.LaboInter;
+import fr.aphp.tumorotek.model.contexte.Collaborateur;
 import fr.aphp.tumorotek.model.contexte.gatsbi.Contexte;
 import fr.aphp.tumorotek.webapp.gatsbi.GatsbiController;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
@@ -269,4 +270,19 @@ public class FichePrelevementEditGatsbi extends FichePrelevementEdit
    public Contexte getContexte(){
       return contexte;
    }
+
+
+   //TG-204 : le mécanisme générique de gestion des filtres sur les thesaurus
+   //ne peut pas s'appliquer dans ce cas car il est appelé dans doAfterCompose avant le chargement
+   //de tous éléments (initCollaborations()) utilisés pour le controle des valeurs transmises par Gatsbi
+   @Override
+   public List<Collaborateur> findCollaborateursToDisplay() {
+      //récupération de tous les collaborateurs (cas hors Gatsbi) :
+      List<Collaborateur> allCollaborateur = super.findCollaborateursToDisplay();
+      
+      //application du filtre en fonction du paramétrage Gatsbi
+      Contexte contexte = SessionUtils.getCurrentGatsbiContexteForEntiteId(2);
+      return GatsbiController.filterExistingListModel(contexte, allCollaborateur, 28);
+   }
+
 }

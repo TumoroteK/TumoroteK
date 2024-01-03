@@ -198,6 +198,8 @@
 								</div>	
 							</div>
 							<div class="item item-wide" id="echanOperateurDiv"><!-- Opérateur -->
+								<!-- TG-204 : le filtre du contexte Gatsbi sur cette liste n''est pas géré comme les autres thesaurus car le composant est différent comboBox au lieu de listBox
+									=> pas besoin de l'attribut listmodel   -->								
 								<custom-attributes champId="53" />
 								<div class="row-container chpLabel">
 									<label value="${c:l('Champ.Echantillon.Collaborateur')}" sclass="formLabel" />

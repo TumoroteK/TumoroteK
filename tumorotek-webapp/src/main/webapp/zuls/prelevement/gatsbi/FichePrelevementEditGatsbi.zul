@@ -230,6 +230,8 @@
 								</div>
 							</div>
 							<div class="item item-wide" id="preleveurDiv"><!-- Préleveur du prélèvement -->
+								<!-- TG-204 : le filtre du contexte Gatsbi sur cette liste n''est pas géré comme les autres thesaurus car la liste des toutes les valeurs n''est pas initialisée au même moment
+									=> pas besoin de l'attribut listmodel   -->
 								<custom-attributes champId="28" />
 								<div class="row-container chpLabel">
 									<label value="${c:l('Champ.Prelevement.Preleveur')}" sclass="formLabel" />

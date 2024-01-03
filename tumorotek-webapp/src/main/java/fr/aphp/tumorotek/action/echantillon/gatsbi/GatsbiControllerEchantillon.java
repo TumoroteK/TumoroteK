@@ -38,6 +38,7 @@ package fr.aphp.tumorotek.action.echantillon.gatsbi;
 
 import java.lang.reflect.InvocationTargetException;
 import java.text.ParseException;
+import java.util.List;
 
 import org.zkoss.zul.Column;
 import org.zkoss.zul.Grid;
@@ -48,9 +49,11 @@ import fr.aphp.tumorotek.action.echantillon.EchantillonRowRenderer;
 import fr.aphp.tumorotek.decorator.TKSelectObjectRenderer;
 import fr.aphp.tumorotek.dto.EchantillonDTO;
 import fr.aphp.tumorotek.model.coeur.echantillon.Echantillon;
+import fr.aphp.tumorotek.model.contexte.Collaborateur;
 import fr.aphp.tumorotek.model.contexte.gatsbi.Contexte;
 import fr.aphp.tumorotek.webapp.gatsbi.GatsbiController;
 import fr.aphp.tumorotek.webapp.gatsbi.RowRendererGatsbi;
+import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
 /**
  * Gatsbi controller regroupant les fonctionalités de modification dynamique de
@@ -481,4 +484,10 @@ public class GatsbiControllerEchantillon
          GatsbiController.addColumn(grid, null, "35px", "center", null, null, true, bloquerTri);
       }
    }
+
+   public static List<Collaborateur> filterOperateursFromContexte(List<Collaborateur> allCollaborateur) {
+      Contexte contexte = SessionUtils.getCurrentGatsbiContexteForEntiteId(3);
+      return GatsbiController.filterExistingListModel(contexte, allCollaborateur, 53);
+   }
+
 }

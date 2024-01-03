@@ -709,7 +709,7 @@
 		</preConditions>
 		<createView
             replaceIfExists="false"  
-            viewName="VGATSBI_COLLABORATEUR">SELECT * FROM COLLABORATEUR
+            viewName="VGATSBI_COLLABORATEUR">SELECT COLLABORATEUR_ID, NOM, PRENOM, trim(concat(coalesce(NOM, ''), ' ', coalesce(PRENOM, ''))) as NOM_ET_PRENOM, ARCHIVE, COORDONNEE_ID FROM COLLABORATEUR
          </createView>
 	</changeSet>
 	<changeSet author="tkgatsbi" id="gatsbi-init-ajout-vue-4">

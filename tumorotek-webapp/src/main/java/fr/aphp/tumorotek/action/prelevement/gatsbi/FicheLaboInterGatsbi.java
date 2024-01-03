@@ -49,6 +49,7 @@ import org.zkoss.zul.Messagebox;
 
 import fr.aphp.tumorotek.action.prelevement.FicheLaboInter;
 import fr.aphp.tumorotek.action.prelevement.gatsbi.exception.GatsbiException;
+import fr.aphp.tumorotek.model.contexte.Collaborateur;
 import fr.aphp.tumorotek.model.contexte.gatsbi.Contexte;
 import fr.aphp.tumorotek.webapp.gatsbi.GatsbiController;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
@@ -166,4 +167,19 @@ public class FicheLaboInterGatsbi extends FicheLaboInter
          Messagebox.show(handleExceptionMessage(e), "Error", Messagebox.OK, Messagebox.ERROR);
       }
    }
+
+   //TG-204 : définition d'un "thesaurus dans Gatsbi" pour le champ opérateur
+   //le mécanisme standard de gestion des thesaurus (GatsbiController.appliThesaurusValues()) 
+   //ne peut pas s'appliquer ici car le composant est un combobox et non une liste 
+   @Override
+   public List<Collaborateur> findCollaborateursToDisplay() {
+      //récupération de tous les collaborateurs (cas hors Gatsbi) :
+      List<Collaborateur> allCollaborateur = super.findCollaborateursToDisplay();
+      
+      //application du filtre en fonction du paramétrage Gatsbi
+      Contexte contexte = SessionUtils.getCurrentGatsbiContexteForEntiteId(2);
+      return GatsbiController.filterExistingListModel(contexte, allCollaborateur, 39);
+   }
+
+
 }
