@@ -2204,7 +2204,11 @@
 		</property>
 	</bean>
 
-	<bean id="importManager" parent="txProxyTemplate">
+	<!-- depuis Gatsbi (2.3.0), les attributs des valeurs de thesaurus des "non conformités stockées" dans ImportManagerImpl
+		sont propres à l'utilisation car les valeurs peuvent être filtrées pour certaines collections Gatsbi
+		pour éviter des bugs lors de l'exécution en parallèle d'import, il ne faut pas que le bean soit un singleton
+		=> scope passé à "prototype" -->
+	<bean id="importManager" parent="txProxyTemplate" scope="prototype">
 		<property name="target">
 			<bean
 				class="fr.aphp.tumorotek.manager.impl.io.imports.ImportManagerImpl">

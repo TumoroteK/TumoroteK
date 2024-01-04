@@ -548,7 +548,7 @@ public class ImportManagerTest extends AbstractManagerTest4
     */
    @Test
    public void testGenerateThesaurusHashtable(){
-      Hashtable<Object, Hashtable<String, Object>> thesaurus = new Hashtable<>();
+      Hashtable<ChampEntite, Hashtable<String, Object>> thesaurus = new Hashtable<>();
       final ImportTemplate it = importTemplateManager.findByIdManager(1);
       thesaurus = importManager.generateThesaurusHashtable(it);
       assertTrue(thesaurus.size() == 8);
