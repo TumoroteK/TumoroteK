@@ -37,6 +37,7 @@ package fr.aphp.tumorotek.manager.test.coeur.echantillon;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -827,40 +828,56 @@ public class EchantillonManagerTest extends AbstractManagerTest4
     * Test la méthode findDoublon.
     */
    @Test
-   public void testFindDoublon(){
+   public void testFindDoublon() {
       final Banque banque1 = banqueManager.findByIdManager(1);
       final Banque banque2 = banqueManager.findByIdManager(2);
+
+      // Créer un Echantillon avec un code existant dans la base de données
+      final Echantillon existingEchantillon = echantillonManager.findByIdManager(1);
+      assertNotNull(existingEchantillon);
+      final String existingCode = existingEchantillon.getCode();
+
+      final String codeLike = existingCode.replace(".", "_");
       final Echantillon echan = new Echantillon();
-      echan.setCode("PTRA.1");
+      echan.setCode(existingCode);
       echan.setBanque(banque2);
-      assertFalse(echan.equals(echantillonManager.findByIdManager(1)));
+
+      final Echantillon echanCodeLike = new Echantillon();
+      echanCodeLike.setCode(codeLike);
+      echanCodeLike.setBanque(banque2);
+
+
+      assertNotEquals(echan, existingEchantillon);
+
       assertTrue(echantillonManager.findDoublonManager(echan));
+      assertFalse(echantillonManager.findDoublonManager(echanCodeLike));
+
 
       echan.setBanque(banque1);
-      assertTrue(echan.equals(echantillonManager.findByIdManager(1)));
+      assertEquals(echan, existingEchantillon);
       assertTrue(echantillonManager.findDoublonManager(echan));
 
-      // pf
+      // Plateforme différente
       echan.setBanque(banqueDao.findById(4));
-      assertFalse(echan.equals(echantillonManager.findByIdManager(1)));
-      assertFalse(echantillonManager.findDoublonManager(echan));
+      assertNotEquals(echan, existingEchantillon);
 
-      // null
+      // Banque nulle
       echan.setBanque(null);
-      assertFalse(echan.equals(echantillonManager.findByIdManager(1)));
-      assertFalse(echantillonManager.findDoublonManager(echan));
+      assertNotEquals(echan, existingEchantillon);
 
+      // Code différent
       echan.setCode("PTRA.3");
       echan.setBanque(banque1);
       assertFalse(echantillonManager.findDoublonManager(echan));
+      echanCodeLike.setBanque(banque1);
 
-      final Echantillon echan2 = echantillonManager.findByIdManager(1);
-      assertFalse(echantillonManager.findDoublonManager(echan2));
+      // Même Echantillon (doit renvoyer false)
+      assertFalse(echantillonManager.findDoublonManager(existingEchantillon));
+      assertFalse(echantillonManager.findDoublonManager(echanCodeLike));
 
-      assertFalse(echantillonManager.findDoublonManager(echan2));
-
-      echan2.setCode("PTRA.2");
-      assertTrue(echantillonManager.findDoublonManager(echan2));
+      // Code différent, même Banque
+      existingEchantillon.setCode("PTRA.2");
+      assertTrue(echantillonManager.findDoublonManager(existingEchantillon));
    }
 
    @Test
@@ -4385,13 +4402,13 @@ public class EchantillonManagerTest extends AbstractManagerTest4
    @Test
    public void testFindByCodeInPlateformeBanqueManager(){
       final Plateforme p1 = plateformeDao.findById(1);
-      List<Echantillon> echans = echantillonManager.findByCodeInPlateformeManager("PTRA.1", p1);
+      List<Echantillon> echans = echantillonManager.findByCodeLikeInPlateformeManager("PTRA.1", p1);
       assertTrue(echans.size() == 1);
-      echans = echantillonManager.findByCodeInPlateformeManager("%", p1);
+      echans = echantillonManager.findByCodeLikeInPlateformeManager("%", p1);
       assertTrue(echans.size() == 4);
-      echans = echantillonManager.findByCodeInPlateformeManager(null, p1);
+      echans = echantillonManager.findByCodeLikeInPlateformeManager(null, p1);
       assertTrue(echans.size() == 0);
-      echans = echantillonManager.findByCodeInPlateformeManager("%", null);
+      echans = echantillonManager.findByCodeLikeInPlateformeManager("%", null);
       assertTrue(echans.size() == 0);
    }
    

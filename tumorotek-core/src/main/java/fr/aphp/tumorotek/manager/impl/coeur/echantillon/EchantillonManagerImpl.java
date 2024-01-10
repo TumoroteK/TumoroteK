@@ -303,9 +303,6 @@ public class EchantillonManagerImpl implements EchantillonManager
       this.objetNonConformeManager = oM;
    }
 
-   //   public void setDelegateDao(EchantillonDelegateDao delegateDao){
-   //      this.delegateDao = delegateDao;
-   //   }
 
    @Override
    public Echantillon findByIdManager(final Integer echantillonId){
@@ -591,7 +588,7 @@ public class EchantillonManagerImpl implements EchantillonManager
     */
    @Override
    public Boolean findDoublonManager(final Echantillon echantillon){
-      final List<Echantillon> dbls = echantillonDao.findByCodeInPlateforme(echantillon.getCode(),
+      final List<Echantillon> dbls = findByCodeInPlateforme(echantillon.getCode(),
          echantillon.getBanque() != null ? echantillon.getBanque().getPlateforme() : null);
 
       if(!dbls.isEmpty()){
@@ -1921,8 +1918,20 @@ public class EchantillonManagerImpl implements EchantillonManager
    }
 
    @Override
-   public List<Echantillon> findByCodeInPlateformeManager(final String code, final Plateforme pf){
+   public List<Echantillon> findByCodeLikeInPlateformeManager(final String code, final Plateforme pf){
       return echantillonDao.findByCodeInPlateforme(code, pf);
+   }
+
+   /**
+    * Renvoie la liste des échantillons avec un code exact correspondant dans la plateforme spécifiée.
+    *
+    * @param codeEchantillon Code exact pour lequel on recherche des échantillons.
+    * @param plateform       Plateforme dans laquelle la recherche est effectuée.
+    * @return Liste d'échantillons correspondant au code exact dans la plateforme spécifiée.
+    */
+   @Override
+   public List<Echantillon> findByCodeInPlateforme(String codeEchantillon, Plateforme plateform){
+      return echantillonDao.findByCodeExactMatchInPlateforme(codeEchantillon, plateform);
    }
 
    @Override

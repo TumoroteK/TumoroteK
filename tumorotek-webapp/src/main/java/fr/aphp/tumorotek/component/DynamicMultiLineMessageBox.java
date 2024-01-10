@@ -144,7 +144,7 @@ public class DynamicMultiLineMessageBox
          case "Echantillon":
             List<Echantillon> dblEs = new ArrayList<Echantillon>();
             for(String code : doublonFoundException.getCodes()) {
-               dblEs = ManagerLocator.getEchantillonManager().findByCodeInPlateformeManager(code, SessionUtils.getCurrentPlateforme());
+               dblEs = ManagerLocator.getEchantillonManager().findByCodeInPlateforme(code, SessionUtils.getCurrentPlateforme());
                for(final Echantillon echantillon : dblEs){
                   if(!banks.equals("")){
                      banks = banks + ", ";
