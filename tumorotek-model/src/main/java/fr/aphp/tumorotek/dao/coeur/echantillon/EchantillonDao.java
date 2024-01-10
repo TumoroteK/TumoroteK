@@ -91,16 +91,11 @@ public interface EchantillonDao extends GenericDaoJpa<Echantillon, Integer>
    List<Echantillon> findByIdsAndStatus(List<Integer> ids, Integer statusId);
 
    /**
-    * Attention!! Utilisation de l'opérateur LIKE dans la requête SQL pour la colonne code.
-    * Si vous avez besoin de faire une recherche à partir d'un code exact, utilisez findByCodeExactMatchInPlateforme.
-    * Recherche les échantillons avec des codes correspondants à la recherche.
-    *
+    * Recherche les échantillons dont le code est égal au paramètre.
     * @param code Code pour lequel on recherche des échantillons.
     * @param banque Banque à laquelle appartient l'échantillon.
-    * @return Une liste d'échantillons.
+    * @return une liste d'échantillons.
     */
-
-
    List<Echantillon> findByCodeWithBanque(String code, Banque banque);
 
    /**
@@ -112,6 +107,18 @@ public interface EchantillonDao extends GenericDaoJpa<Echantillon, Integer>
     * @since 2.1
     */
    List<Echantillon> findByCodeInPlateforme(String code, Plateforme pf);
+
+   /**
+    *
+    * Cette méthode recherche un échantillon en effectuant une correspondance exacte sur le code spécifié,
+    * limitée à la Banque spécifiée.
+    *
+    * @param codeEchantillon Le code exact pour lequel on recherche un échantillon.
+    * @param plateforme La Banque dans laquelle la recherche est effectuée.
+    * @return Une liste d'échantillons correspondant au code exact dans la Banque spécifiée.
+    *         La liste peut être vide si aucun échantillon correspondant n'est trouvé.
+    */
+   List<Echantillon> findByCodeExactMatchInPlateforme(String codeEchantillon, Plateforme plateforme);
 
    /**
     * Recherche les Ids d'échantillons dont le code est égal au paramètre.
@@ -460,15 +467,5 @@ public interface EchantillonDao extends GenericDaoJpa<Echantillon, Integer>
     */
    List<Integer> findByPatientIdentifiantOrNomOrNipReturnIds(String search, List<Banque> selectedBanques);
 
-   /**
-    *
-    * Cette méthode recherche un échantillon en effectuant une correspondance exacte sur le code spécifié,
-    * limitée à la Banque spécifiée.
-    *
-    * @param codeEchantillon Le code exact pour lequel on recherche un échantillon.
-    * @param banque La Banque dans laquelle la recherche est effectuée.
-    * @return Une liste d'échantillons correspondant au code exact dans la Banque spécifiée.
-    *         La liste peut être vide si aucun échantillon correspondant n'est trouvé.
-    */
-   List<Echantillon> findByCodeExactMatchInPlateforme(String codeEchantillon, Banque banque);
+
 }

@@ -225,27 +225,10 @@ public class EchantillonDaoTest extends AbstractDaoTest
       assertTrue(echans.size() == 0);
    }
 
-   /**
-    * Test la requête SQL: SELECT e From Echantillon e WHERE e.code = ?1 AND e.banque =? 2
-    */
-   public void testFindByExactCodeWithBanque(){
-      final Banque b1 = banqueDao.findById(1);
-      final Banque b2 = banqueDao.findById(2);
-      List<Echantillon> echans = echantillonDao.findByCodeExactMatchInPlateforme("EHT.1", b1);
-      assertEquals(1, echans.size());
-      echans = echantillonDao.findByCodeExactMatchInPlateforme("PTRA", b1);
-      assertTrue(echans.isEmpty());
-      echans = echantillonDao.findByCodeExactMatchInPlateforme("PTRA%", b1);
-      assertEquals(2, echans.size());
-      echans = echantillonDao.findByCodeExactMatchInPlateforme("PTRA%", b2);
-      assertTrue(echans.isEmpty());
-      echans = echantillonDao.findByCodeExactMatchInPlateforme("PTRA%", null);
-      assertTrue(echans.isEmpty());
-      echans = echantillonDao.findByCodeExactMatchInPlateforme(null, b1);
-      assertTrue(echans.isEmpty());
-   }
+
 
    /**
+    * Test la requête SQL: SELECT e From Echantillon e WHERE e.code LIKE ?1 AND e.banque =? 2
     * @since 2.1
     */
    public void testFindByCodeInPlateforme(){
@@ -261,11 +244,11 @@ public class EchantillonDaoTest extends AbstractDaoTest
       echans = echantillonDao.findByCodeInPlateforme("PTRA", null);
       assertTrue(echans.size() == 0);
       echans = echantillonDao.findByCodeInPlateforme("%.1", p1);
-      assertTrue(echans.size() == 3);
+      assertTrue(echans.size() == 4);
       echans = echantillonDao.findByCodeInPlateforme("PTRA._", p1);
       assertTrue(echans.size() == 2);
       echans = echantillonDao.findByCodeInPlateforme("%", p1);
-      assertTrue(echans.size() == 4);
+      assertTrue(echans.size() == 8);
       echans = echantillonDao.findByCodeInPlateforme("%", null);
       assertTrue(echans.size() == 0);
       echans = echantillonDao.findByCodeInPlateforme(null, p1);
@@ -277,11 +260,62 @@ public class EchantillonDaoTest extends AbstractDaoTest
       echans = echantillonDao.findByCodeInPlateforme("PTRA", p2);
       assertTrue(echans.size() == 0);
       echans = echantillonDao.findByCodeInPlateforme("%", p2);
-      assertTrue(echans.size() == 0);
+      assertTrue(echans.size() == 1);
       echans = echantillonDao.findByCodeInPlateforme(null, p2);
       assertTrue(echans.size() == 0);
    }
 
+
+   /**
+    * Test la requête SQL: SELECT e From Echantillon e WHERE e.code = ?1 AND e.banque =? 2
+    */
+   public void testFindByCodeExactInPlateforme() {
+      final Plateforme p1 = plateformeDao.findById(1);
+
+      List<Echantillon> echans = echantillonDao.findByCodeExactMatchInPlateforme("PTRA.1", p1);
+      assertEquals(1, echans.size());
+
+      echans = echantillonDao.findByCodeExactMatchInPlateforme("JEG.1", p1);
+      assertEquals(1, echans.size());
+
+      echans = echantillonDao.findByCodeExactMatchInPlateforme("PTRA.1", null);
+      assertTrue(echans.isEmpty());
+
+      echans = echantillonDao.findByCodeExactMatchInPlateforme("PTRA", p1);
+      assertTrue(echans.isEmpty());
+
+      echans = echantillonDao.findByCodeExactMatchInPlateforme("PTRA", null);
+      assertTrue(echans.isEmpty());
+
+      echans = echantillonDao.findByCodeExactMatchInPlateforme("%.1", p1);
+      assertEquals(0, echans.size());
+
+      echans = echantillonDao.findByCodeExactMatchInPlateforme("PTRA._", p1);
+      assertEquals(0, echans.size());
+
+      echans = echantillonDao.findByCodeExactMatchInPlateforme("%", p1);
+      assertEquals(0 , echans.size());
+
+      echans = echantillonDao.findByCodeExactMatchInPlateforme("%", null);
+      assertTrue(echans.isEmpty());
+
+      echans = echantillonDao.findByCodeExactMatchInPlateforme(null, p1);
+      assertTrue(echans.isEmpty());
+
+      final Plateforme p2 = plateformeDao.findById(2);
+
+      echans = echantillonDao.findByCodeExactMatchInPlateforme("PTRA.1", p2);
+      assertTrue(echans.isEmpty());
+
+      echans = echantillonDao.findByCodeExactMatchInPlateforme("PTRA", p2);
+      assertTrue(echans.isEmpty());
+
+      echans = echantillonDao.findByCodeExactMatchInPlateforme("%", p2);
+      assertTrue(echans.isEmpty());
+
+      echans = echantillonDao.findByCodeExactMatchInPlateforme(null, p2);
+      assertTrue(echans.isEmpty());
+   }
    /**
     * Test l'appel de la méthode findByCodeWithBanqueReturnIds().
     */
