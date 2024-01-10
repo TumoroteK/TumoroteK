@@ -226,6 +226,26 @@ public class EchantillonDaoTest extends AbstractDaoTest
    }
 
    /**
+    * Test la requête SQL: SELECT e From Echantillon e WHERE e.code = ?1 AND e.banque =? 2
+    */
+   public void testFindByExactCodeWithBanque(){
+      final Banque b1 = banqueDao.findById(1);
+      final Banque b2 = banqueDao.findById(2);
+      List<Echantillon> echans = echantillonDao.findByCodeExactMatchInPlateforme("EHT.1", b1);
+      assertEquals(1, echans.size());
+      echans = echantillonDao.findByCodeExactMatchInPlateforme("PTRA", b1);
+      assertTrue(echans.isEmpty());
+      echans = echantillonDao.findByCodeExactMatchInPlateforme("PTRA%", b1);
+      assertEquals(2, echans.size());
+      echans = echantillonDao.findByCodeExactMatchInPlateforme("PTRA%", b2);
+      assertTrue(echans.isEmpty());
+      echans = echantillonDao.findByCodeExactMatchInPlateforme("PTRA%", null);
+      assertTrue(echans.isEmpty());
+      echans = echantillonDao.findByCodeExactMatchInPlateforme(null, b1);
+      assertTrue(echans.isEmpty());
+   }
+
+   /**
     * @since 2.1
     */
    public void testFindByCodeInPlateforme(){

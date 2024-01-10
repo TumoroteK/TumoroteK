@@ -94,6 +94,8 @@ import fr.aphp.tumorotek.model.utils.Utils;
 @NamedQueries(value = {@NamedQuery(name = "Echantillon.findByCode", query = "SELECT e FROM Echantillon e WHERE e.code like ?1"),
    @NamedQuery(name = "Echantillon.findByCodeWithBanque",
       query = "SELECT e FROM Echantillon e WHERE e.code like ?1 " + "AND e.banque = ?2"),
+   @NamedQuery(name="Echantillon.findByCodeExactMatchInPlateforme",
+      query="SELECT e From Echantillon e WHERE e.code = ?1 AND e.banque =? 2"),
    @NamedQuery(name = "Echantillon.findByCodeInPlateforme",
       query = "SELECT e FROM Echantillon e WHERE e.code like ?1 " + "AND e.banque.plateforme = ?2"),
    @NamedQuery(name = "Echantillon.findByCodeWithBanqueReturnIds",
@@ -133,7 +135,7 @@ import fr.aphp.tumorotek.model.utils.Utils;
    @NamedQuery(name = "Echantillon.findByBanques",
       query = "SELECT e FROM Echantillon e WHERE e.banque in (?1) " + "ORDER BY e.banque, e.code"),
    @NamedQuery(name = "Echantillon.findByTerminaleDirect",
-      query = "SELECT e FROM Echantillon e " + "WHERE e.emplacement.terminale = ?1)"),
+      query = "SELECT e FROM Echantillon e " + "WHERE e.emplacement.terminale = ?1"),
    @NamedQuery(name = "Echantillon.findByMaladieAndType",
       query = "SELECT e FROM Echantillon e " + "WHERE e.prelevement.maladie = ?1 " + "AND e.echantillonType.nom like ?2 "
          + "AND e.prelevement.datePrelevement = ?3"),
