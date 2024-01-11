@@ -128,7 +128,7 @@ public class DynamicMultiLineMessageBox
             List<Prelevement> dbls = new ArrayList<Prelevement>();
             //Dans certains cas, plusieurs doublons ont pu être détectés en même temps :
             for(String code : doublonFoundException.getCodes()) {
-               dbls = ManagerLocator.getPrelevementManager().findByCodeInPlateformeManager(code, SessionUtils.getCurrentPlateforme());
+               dbls = ManagerLocator.getPrelevementManager().findByCodeExactMatchInPlateforme(code, SessionUtils.getCurrentPlateforme());
                for(final Prelevement prelevement : dbls){
                   if(!banks.equals("")){
                      banks = banks + ", ";

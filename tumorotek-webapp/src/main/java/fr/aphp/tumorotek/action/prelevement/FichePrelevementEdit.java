@@ -1264,7 +1264,7 @@ public class FichePrelevementEdit extends AbstractFicheEditController
 
       //Vérification de l'absence de doublons
       final List<Prelevement> doublons = ManagerLocator.getManager(PrelevementManager.class)
-         .findByCodeInPlateformeManager(prltCode, SessionUtils.getCurrentPlateforme());
+         .findByCodeExactMatchInPlateforme(prltCode, SessionUtils.getCurrentPlateforme());
 
       if(!doublons.isEmpty()){
          final String collectionsDoublon =
