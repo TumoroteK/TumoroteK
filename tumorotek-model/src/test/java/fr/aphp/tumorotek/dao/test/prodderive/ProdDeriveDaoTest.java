@@ -208,6 +208,41 @@ public class ProdDeriveDaoTest extends AbstractDaoTest
    }
 
    /**
+    * Test the findByCodeExactMatchInPlateforme method.
+    * query = "SELECT p FROM ProdDerive p WHERE p.code = ?1 AND p.banque.plateforme = ?2"),
+    */
+   public void testFindByCodeExactInPlateforme(){
+      final Plateforme plateforme = plateformeDao.findById(1);
+
+      List<ProdDerive> prodDerives = prodDeriveDao.findByCodeExactMatchInPlateforme("PTRA.1.1", plateforme);
+      assertEquals(1, prodDerives.size());
+
+      prodDerives = prodDeriveDao.findByCodeExactMatchInPlateforme("JEG.1.1", plateforme);
+      assertEquals(1, prodDerives.size());
+
+      // test wildcards
+      prodDerives = prodDeriveDao.findByCodeExactMatchInPlateforme("%.1.1", plateforme);
+      assertTrue( prodDerives.isEmpty());
+      prodDerives = prodDeriveDao.findByCodeExactMatchInPlateforme("PTRA.1._", plateforme);
+      assertTrue( prodDerives.isEmpty());
+      prodDerives = prodDeriveDao.findByCodeExactMatchInPlateforme("%", plateforme);
+      assertTrue( prodDerives.isEmpty());
+
+      // test null
+      prodDerives = prodDeriveDao.findByCodeExactMatchInPlateforme("PTRA.1.1", null);
+      assertEquals(0, prodDerives.size());
+      prodDerives = prodDeriveDao.findByCodeExactMatchInPlateforme(null, plateforme);
+      assertEquals(0, prodDerives.size());
+
+      // platform different
+      final Plateforme p2 = plateformeDao.findById(2);
+      prodDerives = prodDeriveDao.findByCodeExactMatchInPlateforme("PTRA.1.1", p2);
+      assertEquals(0, prodDerives.size());
+
+   }
+
+
+   /**
     * @since 2.1
     */
    public void testFindByCodeInPlateforme(){
@@ -226,8 +261,6 @@ public class ProdDeriveDaoTest extends AbstractDaoTest
       assertTrue(ders.size() == 3);
       ders = prodDeriveDao.findByCodeInPlateforme("PTRA.1._", p1);
       assertTrue(ders.size() == 2);
-      ders = prodDeriveDao.findByCodeInPlateforme("%", p1);
-      assertTrue(ders.size() == 4);
       ders = prodDeriveDao.findByCodeInPlateforme("%", null);
       assertTrue(ders.size() == 0);
       ders = prodDeriveDao.findByCodeInPlateforme(null, p1);
