@@ -1157,7 +1157,7 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
 
       //Vérification de l'absence de doublons
       final List<ProdDerive> doublons = ManagerLocator.getManager(ProdDeriveManager.class)
-         .findByCodeInPlateformeManager(prodDeriveCode, SessionUtils.getCurrentPlateforme());
+         .findByCodeExactMatchInPlateforme(prodDeriveCode, SessionUtils.getCurrentPlateforme());
 
       if(!doublons.isEmpty()){
          final String collectionsDoublon =

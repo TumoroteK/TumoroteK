@@ -695,16 +695,21 @@ public class ProdDeriveManagerTest extends AbstractManagerTest4
       final Banque banque1 = banqueManager.findByIdManager(1);
       final Banque banque2 = banqueManager.findByIdManager(2);
       final ProdDerive derive = new ProdDerive();
+
       derive.setCode("PTRA.1.1");
       derive.setBanque(banque2);
       assertTrue(prodDeriveManager.findDoublonManager(derive));
 
-      derive.setBanque(banque1);
-      assertTrue(prodDeriveManager.findDoublonManager(derive));
+      //      "PTRA.1.1" et "PTRA.1.%" ne sont pas doublons
+      derive.setCode("PTRA.1.%");
+      assertFalse(prodDeriveManager.findDoublonManager(derive));
 
-      // pf
+
+      // Banque Different
+      derive.setBanque(banque1);
+      assertFalse(prodDeriveManager.findDoublonManager(derive));
+
       derive.setBanque(banqueDao.findById(4));
-      assertFalse(derive.equals(prodDeriveManager.findByIdManager(1)));
       assertFalse(prodDeriveManager.findDoublonManager(derive));
 
       // null
@@ -715,6 +720,7 @@ public class ProdDeriveManagerTest extends AbstractManagerTest4
       derive.setCode("PTRA.1.3");
       assertFalse(prodDeriveManager.findDoublonManager(derive));
 
+      // Meme entite != Doublon
       final ProdDerive derive2 = prodDeriveManager.findByIdManager(1);
       assertFalse(prodDeriveManager.findDoublonManager(derive2));
 
@@ -4072,13 +4078,13 @@ public class ProdDeriveManagerTest extends AbstractManagerTest4
    @Test
    public void testFindByCodeInPlateformeBanqueManager(){
       final Plateforme p1 = plateformeDao.findById(1);
-      List<ProdDerive> derives = prodDeriveManager.findByCodeInPlateformeManager("PTRA.1.1", p1);
+      List<ProdDerive> derives = prodDeriveManager.findByCodeLikeInPlateformeManager("PTRA.1.1", p1);
       assertTrue(derives.size() == 1);
-      derives = prodDeriveManager.findByCodeInPlateformeManager("%", p1);
+      derives = prodDeriveManager.findByCodeLikeInPlateformeManager("%", p1);
       assertTrue(derives.size() == 4);
-      derives = prodDeriveManager.findByCodeInPlateformeManager(null, p1);
+      derives = prodDeriveManager.findByCodeLikeInPlateformeManager(null, p1);
       assertTrue(derives.size() == 0);
-      derives = prodDeriveManager.findByCodeInPlateformeManager("%", null);
+      derives = prodDeriveManager.findByCodeLikeInPlateformeManager("%", null);
       assertTrue(derives.size() == 0);
    }
 }

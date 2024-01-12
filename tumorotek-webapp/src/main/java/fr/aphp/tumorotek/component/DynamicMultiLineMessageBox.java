@@ -160,7 +160,7 @@ public class DynamicMultiLineMessageBox
          case "ProdDerive":
             List<ProdDerive> dblDs = new ArrayList<ProdDerive>();
             for(String code : doublonFoundException.getCodes()) {
-               dblDs = ManagerLocator.getProdDeriveManager().findByCodeInPlateformeManager(code, SessionUtils.getCurrentPlateforme());
+               dblDs = ManagerLocator.getProdDeriveManager().findByCodeExactMatchInPlateforme(code, SessionUtils.getCurrentPlateforme());
                for(final ProdDerive derive : dblDs){
                   if(!banks.equals("")){
                      banks = banks + ", ";
