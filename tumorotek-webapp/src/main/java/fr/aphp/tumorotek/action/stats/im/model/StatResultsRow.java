@@ -50,7 +50,7 @@ import fr.aphp.tumorotek.model.contexte.Banque;
  *
  */
 
-public class StatResultsRow
+public class StatResultsRow implements Comparable<StatResultsRow>
 {
 
    private Integer subDivId;
@@ -59,8 +59,6 @@ public class StatResultsRow
 
    private Banque banque;
 
-   // private Boolean isSelected = false;
-   // private String calling;
    private final List<Number> values = new ArrayList<>();
 
    private final List<Number> valuesPourcentage = new ArrayList<>();
@@ -73,16 +71,7 @@ public class StatResultsRow
 
    public StatResultsRow(){}
 
-   //	public StatResultsRow(Collection collection, TKThesaurusObject o) {
-   //		this.collection = collection;
-   //		setThObj(o);
-   //	}
-   //
-   //	public StatResultsRow(Collection collection, TKThesaurusObject o, Number v) {
-   //		this.collection = collection;
-   //		setThObj(o);
-   //		value = v;
-   //	}
+
 
    public StatResultsRow(final Banque b, final Integer si, final String sn, final Boolean f){
       setBanque(b);
@@ -126,19 +115,16 @@ public class StatResultsRow
       if(this == obj){
          return true;
       }
-      if((obj == null) || (!(obj instanceof StatResultsRow))){
+      if((!(obj instanceof StatResultsRow))){
          return false;
       }
 
       final StatResultsRow st = (StatResultsRow) obj;
 
-      return (this.subDivId == st.getSubDivId() || (subDivId != null && subDivId.equals(st.getSubDivId())))
+      return (this.subDivId.equals(st.getSubDivId()) || (subDivId != null && subDivId.equals(st.getSubDivId())))
          && (this.banque == st.getBanque() || (banque != null && banque.equals(st.getBanque())));
    }
 
-   //	public boolean getIsFirstSubdivisionOfTheCollection() {
-   //		return (this.equals(collection.getSubdivisions().get(0)));
-   //	}
 
    public Boolean getFirstSubdivForBanque(){
       return firstSubdivForBanque;
@@ -168,18 +154,11 @@ public class StatResultsRow
       this.subDivNom = subDivNom;
    }
 
-   //
-   //	public String getCalling() {
-   //		return calling;
-   //	}
 
    public String getValue(){
       return value;
    }
 
-   //	public void setCalling(String calling) {
-   //		this.calling = calling;
-   //	}
 
    public void setValue(final String value){
       this.value = value;
@@ -191,6 +170,32 @@ public class StatResultsRow
 
    public void setRowspan(final Integer rowspan){
       this.rowspan = rowspan;
+   }
+
+   /**
+    * Compare cet objet avec l'objet spécifié pour déterminer l'ordre. Retourne un
+    * entier négatif, zéro ou un entier positif selon que cet objet est inférieur,
+    * égal ou supérieur à l'objet spécifié.
+    *
+    * @param o l'objet à comparer.
+    * @return un entier négatif, zéro ou un entier positif selon que cet objet
+    *         est inférieur, égal ou supérieur à l'objet spécifié.
+    * @throws NullPointerException si l'objet spécifié est null.
+    * @throws ClassCastException   si le type de l'objet spécifié empêche la
+    *                              comparaison avec cet objet.
+    * @implNote Le critère de classement est le nom de la collection (banque).
+    */
+   @Override
+   public int compareTo(StatResultsRow o) {
+      if (this.banque == null && o.banque == null) {
+         return 0;
+      } else if (this.banque == null) {
+         return -1;
+      } else if (o.banque == null) {
+         return 1;
+      } else {
+         return this.banque.getNom().compareTo(o.banque.getNom());
+      }
    }
 
 }
