@@ -38,6 +38,7 @@ package fr.aphp.tumorotek.dao.test.coeur.prelevement;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
@@ -329,6 +330,31 @@ public void testFindByNumberEchantillons(){
       assertTrue(prels.size() == 0);
       prels = prelevementDao.findByCodeInPlateforme("12%", p1);
       assertTrue(prels.size() == 0);
+   }
+
+   /**
+    * Test the findByCodeExactMatchInPlateforme method.
+    * query = "SELECT p FROM Prelevement p WHERE p.code = ?1 AND p.banque.plateforme = ?2"),
+    */
+   public void testFindByCodeeExactInPlateforme(){
+      final Plateforme p1 = plateformeDao.findById(1);
+
+      List<Prelevement> prels = prelevementDao.findByCodeExactMatchInPlateforme("PRLVT1", p1);
+      assertEquals(1, prels.size());
+
+      //      test null
+      prels = prelevementDao.findByCodeExactMatchInPlateforme("PRLVT%", null);
+      assertEquals(0, prels.size());
+      prels = prelevementDao.findByCodeExactMatchInPlateforme(null, p1);
+      assertEquals(0, prels.size());
+
+      //      test match exact
+      prels = prelevementDao.findByCodeExactMatchInPlateforme("PRLVT%", p1);
+      assertTrue(prels.isEmpty());
+      prels = prelevementDao.findByCodeExactMatchInPlateforme("PRLVT_", p1);
+      assertTrue(prels.isEmpty());
+      prels = prelevementDao.findByCodeExactMatchInPlateforme("%", p1);
+      assertTrue(prels.isEmpty());
    }
 
    /**

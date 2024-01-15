@@ -103,6 +103,19 @@ public interface PrelevementDao extends GenericDaoJpa<Prelevement, Integer>
     */
    List<Prelevement> findByCodeInPlateforme(String code, Plateforme pf);
 
+
+   /**
+    *
+    * Cette méthode recherche un prélèvement en effectuant une correspondance exacte sur le code spécifié (= et pas LIKE),
+    * limitée à la Banque spécifiée.
+    *
+    * @param codePrelevement Le code exact pour lequel on recherche un prélèvement.
+    * @param plateforme La Banque dans laquelle la recherche est effectuée.
+    * @return Une liste des prélèvements correspondant au code exact dans la Banque spécifiée.
+    *         La liste peut être vide si aucun prélèvement correspondant n'est trouvé.
+    */
+   List<Prelevement> findByCodeExactMatchInPlateforme(String codePrelevement, Plateforme plateforme);
+
    /**
     * Recherche les prelevements Ids dont le code ou le numéro de labo
     * est 'like' le paramètre.

@@ -140,12 +140,13 @@ public interface PrelevementManager
       List<File> filesCreated, List<File> filesToDelete, Utilisateur utilisateur, Integer cascadeNonSterile, boolean doValidation,
       String baseDir, boolean multiple);
 
+
    /**
-    * Cherche les doublons en se basant sur le code du prélèvement
-    * et l'appartenance à la plateforme de la banque à laquelle le prélèvement
-    * doit être attribué.
-    * @param prelevement Prelevement dont on cherche la presence dans la base
-    * @return true/false
+    * Recherche les doublons d'un Prelevement dans la base de données en se basant sur le code du prélèvement
+    * et la plateforme de la banque à laquelle le prélèvement doit être attribué.
+    *
+    * @param prelevement L'objet {@code Prelevement} pour lequel on recherche les doublons.
+    * @return {@code true} s'il existe des doublons, {@code false} sinon.
     * @version 2.1
     */
    boolean findDoublonManager(Prelevement prelevement);
@@ -685,7 +686,19 @@ public interface PrelevementManager
     * @return liste prélèvement
     * @since 2.1
     */
-   List<Prelevement> findByCodeInPlateformeManager(String code, Plateforme pf);
+   List<Prelevement> findByCodeLikeInPlateformeManager(String code, Plateforme pf);
+
+   /**
+    *
+    * Cette méthode recherche un prélèvement en effectuant une correspondance exacte sur le code spécifié (= et pas LIKE),
+    * limitée à la Banque spécifiée.
+    *
+    * @param code Le code exact pour lequel on recherche un prélèvement.
+    * @param plateforme La Banque dans laquelle la recherche est effectuée.
+    * @return Une liste des prélèvements correspondant au code exact dans la Banque spécifiée.
+    *         La liste peut être vide si aucun prélèvement correspondant n'est trouvé.
+    */
+   List<Prelevement> findByCodeExactMatchInPlateforme(String code, Plateforme plateforme);
 
    /**
     * Verifie que les Objets devant etre obligatoirement associes sont non

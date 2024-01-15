@@ -90,6 +90,17 @@ public interface ProdDeriveDao extends GenericDaoJpa<ProdDerive, Integer>
    List<ProdDerive> findByCodeInPlateforme(String code, Plateforme pf);
 
    /**
+    * Cette méthode recherche un ProdDerive en effectuant une correspondance exacte sur le code spécifié (= et pas LIKE),
+    * limitée à la Banque spécifiée.
+    *
+    * @param codeProdDerive Le code exact pour lequel on recherche un ProdDerive.
+    * @param plateforme La Banque dans laquelle la recherche est effectuée.
+    * @return Une liste des ProdDerives correspondant au code exact dans la Banque spécifiée.
+    *         La liste peut être vide si aucun ProdDerive correspondant n'est trouvé.
+    */
+   List<ProdDerive> findByCodeExactMatchInPlateforme(String codeProdDerive, Plateforme plateforme);
+
+   /**
     * Recherche les Ids de produits dérivés dont le code ou le code labo est 
     * égal au paramètre.
     * @param code Code pour lequel on recherche des produits dérivés.
