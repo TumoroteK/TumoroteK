@@ -121,7 +121,7 @@ public class StatResultsRow implements Comparable<StatResultsRow>
 
       final StatResultsRow st = (StatResultsRow) obj;
 
-      return (this.subDivId.equals(st.getSubDivId()) || (subDivId != null && subDivId.equals(st.getSubDivId())))
+      return (this.subDivId == st.getSubDivId() || (subDivId != null && subDivId.equals(st.getSubDivId())))
          && (this.banque == st.getBanque() || (banque != null && banque.equals(st.getBanque())));
    }
 
@@ -189,12 +189,14 @@ public class StatResultsRow implements Comparable<StatResultsRow>
    public int compareTo(StatResultsRow o) {
       if (this.banque == null && o.banque == null) {
          return 0;
-      } else if (this.banque == null) {
+      }
+      if (this.banque == null) {
          return -1;
-      } else if (o.banque == null) {
+      }
+      if (o.banque == null) {
          return 1;
       } else {
-         return this.banque.getNom().compareTo(o.banque.getNom());
+         return this.banque.getNom().compareToIgnoreCase(o.banque.getNom());
       }
    }
 
