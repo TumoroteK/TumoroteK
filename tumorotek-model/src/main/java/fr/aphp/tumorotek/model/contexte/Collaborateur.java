@@ -106,6 +106,9 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
    @NamedQuery(name = "Collaborateur.findByServiceIdArchiveWithOrder",
       query = "SELECT c FROM Collaborateur c " + "left join c.services s " + "WHERE s.serviceId = ?1 " + "AND c.archive = ?2 "
          + "ORDER BY c.nom, c.prenom"),
+   @NamedQuery(name = "Collaborateur.findByServiceIdCollaborateurIdsWithOrder",
+   query = "SELECT c FROM Collaborateur c " + "join c.services s " + "WHERE s.serviceId = ?1 " + "AND c.collaborateurId in (?2) "
+      + "ORDER BY c.nom, c.prenom"),
    @NamedQuery(name = "Collaborateur.findByServiceId",
       query = "SELECT c FROM Collaborateur c " + "left join c.services s " + "WHERE s.serviceId = ?1"),
    @NamedQuery(name = "Collaborateur.findByPlateformeId",

@@ -465,25 +465,32 @@ public class GatsbiController
       
       if (!values.isEmpty()) {  
          
+         int nbDataNotNullInLModel = lModel.size();
          if(lModel.contains(null)){
             thesObjs.add(null);
+            nbDataNotNullInLModel = nbDataNotNullInLModel-1;
          }
          
-         for(ThesaurusValue val : values){
-            thesObjs.add(lModel.stream().filter(
-               v -> v != null && (((v instanceof TKThesaurusObject) && ((TKThesaurusObject) v).getId().equals(val.getThesaurusId()))
-                  || ((v instanceof Unite) && ((Unite) v).getNom().equals(val.getThesaurusValue())) 
-                  || ((v instanceof Transporteur) && ((Transporteur) v).getNom().equals(val.getThesaurusValue()))
-                  || ((v instanceof Collaborateur) && ((Collaborateur) v).getNomAndPrenom().equals(val.getThesaurusValue())) ))
-               .findAny().orElseThrow(() -> new TKException("gatsbi.thesaurus.value.notfound", val.getThesaurusValue())));
+         //optimisation liée au fait que Gatsbi renvoie tous les thesaurus si il n'y a aucun filtre défini :
+         if(values.size() != nbDataNotNullInLModel) {
+            for(ThesaurusValue val : values){
+               thesObjs.add(lModel.stream().filter(
+                  v -> v != null && (((v instanceof TKThesaurusObject) && ((TKThesaurusObject) v).getId().equals(val.getThesaurusId()))
+                     || ((v instanceof Unite) && ((Unite) v).getNom().equals(val.getThesaurusValue())) 
+                     || ((v instanceof Transporteur) && ((Transporteur) v).getNom().equals(val.getThesaurusValue()))
+                     || ((v instanceof Collaborateur) && ((Collaborateur) v).getNomAndPrenom().equals(val.getThesaurusValue())) ))
+                  .findAny().orElseThrow(() -> new TKException("gatsbi.thesaurus.value.notfound", val.getThesaurusValue())));
+            }
+            
+            return thesObjs;
          }
-      } else { // adds all thesaurus values
-         //une évolution a été faite côté Gatsbi qui renvoie désormais toutes les valeurs du thesaurus si 
-         //l'utilisateur n'en a saisi aucun (TG-148) => on ne passe plus ici que si il n'y a aucune valeur pour la plateforme
-         //dans ce cas lModel est vide.
-         thesObjs.addAll(lModel);
       }
-
+      
+      // adds all thesaurus values si :
+      // - values est vide - ne doit jamais se présenter depuis qu'une évolution a été faite côté Gatsbi pour renvoyer toutes les valeurs du thesaurus si 
+      //l'utilisateur n'en a saisi aucun (TG-148) 
+      // - le nombre d'éléments dans values est égal à celui dans lModel : cas où il n'y a pas de filtre (depuis la TG-148) 
+      thesObjs.addAll(lModel);
       return thesObjs;
    }
 
@@ -984,7 +991,6 @@ public class GatsbiController
                }
             }
             
-            //déja testé au dessus, pourquoi on reteste ?
             ManagerLocator.getInjectionManager().injectBlocExterneInObject(tkObj, banque, bloc,
                new ArrayList<AnnotationValeur>());
          }

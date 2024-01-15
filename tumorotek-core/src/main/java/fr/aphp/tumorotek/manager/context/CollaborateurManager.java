@@ -114,6 +114,14 @@ public interface CollaborateurManager
     * @return Liste de Collaborateurs.
     */
    List<Collaborateur> findByServicesAndArchiveManager(Service service, boolean archive);
+   
+   /**
+    * filtre les collaborateurs passés en paramètre pour ne garder que ceux du service voulu
+    * @param service
+    * @param collaborateurs
+    * @return
+    */
+   List<Collaborateur> filterCollaborateursByServiceWithOrder(final Service service, final List<Collaborateur> collaborateurs);
 
    /**
     * Recherche les coordonnées liées au collaborateur passé en paramètre.

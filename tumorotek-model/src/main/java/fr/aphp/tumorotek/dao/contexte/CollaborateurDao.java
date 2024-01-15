@@ -172,6 +172,15 @@ public interface CollaborateurDao extends GenericDaoJpa<Collaborateur, Integer>
    List<Collaborateur> findByServiceIdArchiveWithOrder(Integer serviceId, boolean archive);
 
    /**
+    * filtre les collaborateurs dont les ids sont passés en paramètre 
+    * pour ne garder que ceux appartenant au service passé en paramètre
+    * @param serviceId, service concerné par le filtre.
+    * @param collaborateurIds, les liste des collaborateurs concernés.
+    * @return une liste ordonnée de collaborateurs.
+    */
+   List<Collaborateur> findByServiceIdCollaborateurIdsWithOrder(Integer serviceId, List<Integer> collaborateurIds);
+   
+   /**
     * Recherche les collaborateurs dont une plateforme est passée en paramètre.
     * @param plateformeId pour laquelle on recherche des collaborateurs.
     * @return une liste de collaborateurs.

@@ -404,4 +404,24 @@ public final class Utils
       return TkParam.CONF_DIR.getValue();
    }
 
+   /**
+    * découpe une liste en sous liste de nbElementSousListe éléments max
+    * @param list
+    * @param nbElementSousListe
+    * @return
+    */
+   public static List<List<Integer>> decoupeListe(List<Integer> list, int nbElementSousListe) {
+       List<List<Integer>> resultat = new ArrayList<List<Integer>>();
+       int nbElementListe = list.size();
+       int fromInclus = 0;
+       int toExclu = 0;
+       while(fromInclus < nbElementListe){
+         toExclu = Math.min(fromInclus+nbElementSousListe, nbElementListe);
+         resultat.add(list.subList(fromInclus, toExclu));
+         fromInclus = toExclu;
+       }
+       
+       return resultat;
+   }      
+   
 }

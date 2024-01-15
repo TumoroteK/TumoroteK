@@ -40,6 +40,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -50,6 +51,7 @@ import fr.aphp.tumorotek.dao.contexte.CoordonneeDao;
 import fr.aphp.tumorotek.dao.contexte.EtablissementDao;
 import fr.aphp.tumorotek.dao.contexte.ServiceDao;
 import fr.aphp.tumorotek.dao.qualite.OperationTypeDao;
+import fr.aphp.tumorotek.dto.ServicesEtEtablissementsLiesADesCollaborateurs;
 import fr.aphp.tumorotek.manager.context.CollaborateurManager;
 import fr.aphp.tumorotek.manager.context.CoordonneeManager;
 import fr.aphp.tumorotek.manager.context.ServiceManager;
@@ -660,4 +662,40 @@ public class ServiceManagerImpl implements ServiceManager
          removeObjectManager(sPassif, "fusion id: " + idActif + " ." + comments, user);
       }
    }
+   
+   @Override
+   public List<Service> findServicesActifsForCollaborateurs(List<Collaborateur> collaborateurs) {
+      List<Service> services = new ArrayList<Service>();
+      if(collaborateurs != null && !collaborateurs.isEmpty()) {
+         List<Integer> collaborateursIds = collaborateurs.stream().map(collaborateur -> collaborateur.getCollaborateurId()).collect(Collectors.toList());
+         //Par sécurité, comme la liste des collaborateurs peut être grande, découpage par bloc
+         final int NB_COLLAB_MAX_FOR_QUERY = 150;
+         List<List<Integer>> collaborateursIdsDecoupesParBloc = Utils.decoupeListe(collaborateursIds, NB_COLLAB_MAX_FOR_QUERY);
+         
+         for(List<Integer> sousListeCollabIds : collaborateursIdsDecoupesParBloc) {
+            services.addAll(serviceDao.findByCollaborateurIdsAndArchive(sousListeCollabIds, false));
+         }
+      }
+    
+      return services;
+   }   
+   
+   @Override
+   public List<Service> findServicesActifsForOneCollaborateur(Collaborateur collaborateur) {
+      List<Service> services = new ArrayList<Service>();
+      if(collaborateur != null) {
+            services.addAll(serviceDao.findByCollaborateurIdAndArchive(collaborateur.getCollaborateurId(), false));
+      }
+  
+      return services;
+   }   
+   
+   
+   @Override
+   public ServicesEtEtablissementsLiesADesCollaborateurs retrieveServicesEtEtablissementsLiesADesCollaborateurs(List<Collaborateur> listCollaborateur) {
+      List<Service> servicesActifsDesCollaborateurs = findServicesActifsForCollaborateurs(listCollaborateur);
+      
+      return new ServicesEtEtablissementsLiesADesCollaborateurs(listCollaborateur, servicesActifsDesCollaborateurs);
+   }
+   
 }

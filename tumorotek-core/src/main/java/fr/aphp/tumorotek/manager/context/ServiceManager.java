@@ -38,6 +38,7 @@ package fr.aphp.tumorotek.manager.context;
 import java.util.List;
 import java.util.Set;
 
+import fr.aphp.tumorotek.dto.ServicesEtEtablissementsLiesADesCollaborateurs;
 import fr.aphp.tumorotek.manager.exception.ObjectReferencedException;
 import fr.aphp.tumorotek.manager.exception.ObjectUsedException;
 import fr.aphp.tumorotek.model.contexte.Collaborateur;
@@ -227,4 +228,29 @@ public interface ServiceManager
     * @return Liste de Service.
     */
    List<Service> findByVilleLikeManager(String ville);
+   
+   /**
+    * recherche les services actifs d'une liste de collaborateurs
+    * @param collaborateurs
+    * @return une liste de services
+    */
+   List<Service> findServicesActifsForCollaborateurs(List<Collaborateur> collaborateurs);
+   
+   /**
+    * recherche les services actifs d'un collaborateur
+    * @param collaborateur
+    * @return une liste de services
+    */
+   List<Service> findServicesActifsForOneCollaborateur(Collaborateur collaborateur);
+   
+   /**
+    * retourne un objet qui permettra de récupérer tous les services actifs et les établissements actifs liés 
+    * à une liste de collaborateurs. Les établissements seront ceux des services ou les établissements de rattachement
+    * (pour les collaborateurs rattachés à aucun service)
+    * @param listCollaborateur
+    * @return ServicesEtEtablissementsLiesADesCollaborateurs
+    */
+   ServicesEtEtablissementsLiesADesCollaborateurs retrieveServicesEtEtablissementsLiesADesCollaborateurs(List<Collaborateur> listCollaborateur);
+
+   
 }

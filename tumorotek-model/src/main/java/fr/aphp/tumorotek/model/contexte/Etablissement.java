@@ -83,6 +83,7 @@ import fr.aphp.tumorotek.model.cession.Contrat;
          + "WHERE e.etablissementId = ?1"),
    @NamedQuery(name = "Etablissement.findByServiceId",
       query = "SELECT e FROM Etablissement e " + "left join e.services s " + "WHERE s.serviceId = ?1"),
+   //findByCollaborateurId ne semble pas utilisée ...
    @NamedQuery(name = "Etablissement.findByCollaborateurId",
       query = "SELECT e FROM Etablissement e " + "left join e.collaborateurs c " + "WHERE c.collaborateurId = ?1"),
    @NamedQuery(name = "Etablissement.findByExcludedId",
