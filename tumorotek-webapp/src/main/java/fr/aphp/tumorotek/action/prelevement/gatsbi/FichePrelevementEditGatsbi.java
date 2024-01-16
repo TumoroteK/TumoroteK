@@ -53,6 +53,7 @@ import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Groupbox;
 import org.zkoss.zul.Label;
+import org.zkoss.zul.ListModel;
 import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Textbox;
@@ -628,6 +629,57 @@ public class FichePrelevementEditGatsbi extends FichePrelevementEdit
       return new ArrayList<Collaborateur>(); 
    }
 
+   //TG-206 : cette méthode pourrait être définie dans FichePrelevementEdit.java (à la place de celle existante)
+   //pour faire profiter les "collections hors Gatsbi" de la valorisation automatique du service si il n'y a en qu'un
+   //et celle du collaborateur si il n'y en a également qu'un seul. 
+   //Mais avec la volumétrie des collaborations des HCL, il y a un temps de latence important entre la modification de l'établissement
+   //et le rafraichissement des listes qui est perturbant => mise en place uniquement pour Gatsbi où les listes sont filtrées
+   @Override
+   public void onSelect$etabsBoxPrlvt(final Event event) throws Exception{
+      if(filterOnPreleveurDefined) {
+         populateServicesForSelectedEtablissement();
+         
+         if(selectedEtablissement == null) {
+            services = allServices;
+            selectedService = null;
+            collaborateurs = allCollaborateurs;
+            selectedCollaborateur = null;
+         }
+         else {
+            if(!services.contains(selectedService)){
+               selectedService = null;
+               populateCollaborateurForSelectedEtablissement();
+            }
+            
+            if(services.size() == 2) {
+               selectedService = services.get(1);//le premier est la ligne vide
+               //mise à jour des collaborateurs 
+               populateCollaborateursForSelectedService();
+               if(!collaborateurs.contains(selectedCollaborateur)){
+                  selectedCollaborateur = null;
+               }
+            }
+            
+            if(collaborateurs.size() == 2) {
+               selectedCollaborateur = collaborateurs.get(1);//le premier est la ligne vide
+            }      
+         }
+         
+         final ListModel<Service> list = new ListModelList<>(services);
+         servicesBoxPrlvt.setModel(list);
+         servicesBoxPrlvt.setSelectedIndex(services.indexOf(selectedService));
+         getBinder().loadComponent(servicesBoxPrlvt);
+         
+         collaborateursBoxPrlvt.setModel(new ListModelList<>(collaborateurs));
+         collaborateursBoxPrlvt.setSelectedIndex(collaborateurs.indexOf(selectedCollaborateur));
+         getBinder().loadComponent(collaborateursBoxPrlvt);
+      }
+      else {
+         super.onSelect$etabsBoxPrlvt(event);
+      }
+   }
+
+   
    private void refreshCollaborationComponents(){
       if(champServicePreleveurVisible) {
          etabsBoxPrlvt.setModel(new ListModelList<>(etablissements));

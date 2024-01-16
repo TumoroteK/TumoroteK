@@ -1191,42 +1191,23 @@ public class FichePrelevementEdit extends AbstractFicheEditController
     * @throws Exception
     */
    public void onSelect$etabsBoxPrlvt(final Event event) throws Exception{
-      populateServicesForSelectedEtablissement();
-      
-      if(selectedEtablissement == null) {
-         services = allServices;
-         selectedService = null;
-         collaborateurs = allCollaborateurs;
-         selectedCollaborateur = null;
+      if(selectedEtablissement != null){
+         services = ManagerLocator.getEtablissementManager().getActiveServicesWithOrderManager(selectedEtablissement);
+      }else{
+         services = ManagerLocator.getServiceManager().findAllActiveObjectsWithOrderManager();
       }
-      else {
-         if(!services.contains(selectedService)){
-            selectedService = null;
-            populateCollaborateurForSelectedEtablissement();
-         }
-         
-         if(services.size() == 2) {
-            selectedService = services.get(1);//le premier est la ligne vide
-            //mise à jour des collaborateurs 
-            populateCollaborateursForSelectedService();
-            if(!collaborateurs.contains(selectedCollaborateur)){
-               selectedCollaborateur = null;
-            }
-         }
-         
-         if(collaborateurs.size() == 2) {
-            selectedCollaborateur = collaborateurs.get(1);//le premier est la ligne vide
-         }      
-      }
-      
+      services.add(0, null);
+
       final ListModel<Service> list = new ListModelList<>(services);
       servicesBoxPrlvt.setModel(list);
+
+      if(!services.contains(selectedService)){
+         selectedService = null;
+      }
+
       servicesBoxPrlvt.setSelectedIndex(services.indexOf(selectedService));
+
       getBinder().loadComponent(servicesBoxPrlvt);
-      
-      collaborateursBoxPrlvt.setModel(new ListModelList<>(collaborateurs));
-      collaborateursBoxPrlvt.setSelectedIndex(collaborateurs.indexOf(selectedCollaborateur));
-      getBinder().loadComponent(collaborateursBoxPrlvt);
    }
    
    protected List<Service> retrieveActiveServicesWithOrder(Etablissement selectedEtablissement) {
