@@ -87,8 +87,6 @@ public class ServicesEtEtablissementsLiesADesCollaborateurs
    
    private void populateAndSortAllEtablissementsActifs() {
       Set<Integer> etablissementIdsAlreadAdded = new HashSet<Integer>();
-      //etablissementIds.addAll(servicesEtEtablissementsAssocies.getEtablissements().stream()
-        // .map(etab -> etab.getEtablissementId()).collect(Collectors.toList()));
       for(Service service : servicesActifsDesCollaborateurs) {
          addEtablissementIfNecessary(service.getEtablissement(), etablissementIdsAlreadAdded);
       }
@@ -111,62 +109,4 @@ public class ServicesEtEtablissementsLiesADesCollaborateurs
          etablissementIdsAlreadAdded.add(etablissementToAdd.getEtablissementId());
       }
    }
-   
-//   private List<Integer> collaborateurIds = new ArrayList<Integer>();
-//   private ServicesEtEtablissementsAssociesDTO servicesEtEtablissementsAssocies = new ServicesEtEtablissementsAssociesDTO();
-//   private Set<Etablissement> etablissementsForCollaborateurSansService = new HashSet<Etablissement>();
-//   
-//   public ServicesEtEtablissementsLiesADesCollaborateursDTO() {
-//   }
-//   
-//   public ServicesEtEtablissementsLiesADesCollaborateursDTO(List<Integer> collaborateurIds) {
-//      this.collaborateurIds = collaborateurIds;
-//   }
-//   
-//   public List<Integer> getCollaborateurIds(){
-//      return collaborateurIds;
-//   }
-//   public ServicesEtEtablissementsAssociesDTO getServicesEtEtablissementsAssocies(){
-//      return servicesEtEtablissementsAssocies;
-//   }
-//   public Set<Etablissement> getEtablissementsForCollaborateurSansService(){
-//      return etablissementsForCollaborateurSansService;
-//   }
-//   
-//   public void addServiceEtSonEtablissement(ServiceEtSonEtablissementDTO serviceEtSonEtablissement) {
-//      servicesEtEtablissementsAssocies.addServiceEtSonEtablissement(serviceEtSonEtablissement);
-//   }
-//   
-//   public void addAllEtablissements(List<Etablissement> etablissements) {
-//      etablissementsForCollaborateurSansService.addAll(etablissements);
-//   }
-//   
-//   public List<Etablissement> retrieveAllEtablissementsTries() {
-//      //transformation en liste pour pouvoir trier
-//      List<Etablissement> allEtablissementsTries = new ArrayList<Etablissement>();
-//      allEtablissementsTries.addAll(servicesEtEtablissementsAssocies.getEtablissements());
-//      //suppression des doublons en utilisant un set sur les ids (l'utilisation d'un set sur les objets ne filtre pas correctement les doublons) :
-//      Set<Integer> etablissementIds = new HashSet<Integer>();
-//      etablissementIds.addAll(servicesEtEtablissementsAssocies.getEtablissements().stream()
-//         .map(etab -> etab.getEtablissementId()).collect(Collectors.toList()));
-//      for(Etablissement etabForCollabSansService : etablissementsForCollaborateurSansService) {
-//         if(!etablissementIds.contains(etabForCollabSansService.getEtablissementId())) {
-//            allEtablissementsTries.add(etabForCollabSansService);
-//            etablissementIds.add(etabForCollabSansService.getEtablissementId());
-//         }
-//      }
-//      
-//      Collections.sort(allEtablissementsTries, Comparator.comparing(Etablissement::getNom));
-//      
-//      return allEtablissementsTries;
-//   }
-//   
-//   public List<Service> retrieveServicesTries() {
-//      List<Service> servicesTries = new ArrayList<Service>();
-//      servicesTries.addAll(servicesEtEtablissementsAssocies.getServices());
-//      
-//      Collections.sort(servicesTries, Comparator.comparing(Service::getNom));
-//      
-//      return servicesTries;
-//   }
 }
