@@ -143,7 +143,7 @@
 									value="@{fwinMultiEchantillons$composer.codePrefixe,
 				        			save-when='addEchantillons.onClick' save-after='codePrefixeEchan.onBlur' 
 				        			load-after='addEchantillons.onClick, numerotation.onClick'}" 
-									width="200px" mold="rounded"
+									width="200px" height="20px" mold="rounded"
 									constraint="${fwinMultiEchantillons$composer.codePrefixNullableConstraint}" 
 									/>
 								
@@ -164,7 +164,7 @@
 									save-when='addEchantillons.onClick',
 									load-after='addEchantillons.onClick, codesParentBoxEchan.onSelect'}"
 									constraint="@{fwinMultiEchantillons$composer.cttPremierCode}"
-									width="30px" mold="rounded"/>
+									width="30px" height="20px" mold="rounded"/>
 																		
 								<textbox id="premiereLettreBoxEchan" 
 									value="@{fwinMultiEchantillons$composer.premiereLettre,
@@ -183,7 +183,7 @@
 									save-when='addEchantillons.onClick',
 									load-after='addEchantillons.onClick, codesParentBoxEchan.onSelect'}"
 									constraint="@{fwinMultiEchantillons$composer.cttDernierCode}"
-									width="30px" mold="rounded"/>
+									width="30px" height="20px" mold="rounded"/>
 									
 								<textbox id="derniereLettreBoxEchan" 
 									value="@{fwinMultiEchantillons$composer.derniereLettre,
@@ -305,12 +305,12 @@
 								</div>								
 								<div class="row-container">
 									<intbox id="heureBox" 
-										width="50px"
+										width="50px" height="20px"
 										value="@{fwinMultiEchantillons$composer.heureDelai,
 										load-after='dateStockCalBox.onBlur'}" />
 									<label value=" h " style="font-weight:bold;"/>
 									<intbox id="minBox" 
-										width="50px"
+										width="50px" height="20px"
 										value="@{fwinMultiEchantillons$composer.minDelai,
 										load-after='dateStockCalBox.onBlur'}"/>
 									<label value=" min " style="font-weight:bold;"/>

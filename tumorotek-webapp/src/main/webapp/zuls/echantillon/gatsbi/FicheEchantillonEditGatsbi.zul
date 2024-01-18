@@ -57,7 +57,7 @@
 							<textbox id="codePrefixeEchan" 
 								value="@{fwinEchantillonEdit$composer.codePrefixe,
 			        			save-when='validate.onClick, create.onClick'}"
-								width="150px" 
+								width="150px" height="20px"
 								constraint="${fwinEchantillonEdit$composer.codePrefixConstraint}"/>
 						</div>
 						<div class="item item-mid" id="echantillonTypeDiv"><!-- Type échantillon -->	
@@ -186,12 +186,12 @@
 								</div>								
 								<div class="row-container">
 									<intbox id="heureBox" 
-										width="50px"
+										width="50px" height="20px"
 										value="@{fwinEchantillonEdit$composer.heureDelai,  
 										load-after='dateStockCalBox.onBlur'}" />
 									<label value=" h " style="font-weight:bold;"/>
 									<intbox id="minBox" 
-										width="50px"
+										width="50px" height="20px"
 										value="@{fwinEchantillonEdit$composer.minDelai,
 										load-after='dateStockCalBox.onBlur'}"/>
 									<label value=" min " style="font-weight:bold;"/>
