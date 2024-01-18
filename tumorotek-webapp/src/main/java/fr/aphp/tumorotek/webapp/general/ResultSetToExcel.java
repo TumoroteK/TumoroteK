@@ -91,7 +91,6 @@ public class ResultSetToExcel
 
    private static final String RETOUR_DERIVE_SHEET = "Evts_derive_List";
 
-   // private static final int LIMIT_AUTOSIZE = 10000;
    public static final String DATE_FORMAT = "yyyyMMddHHmm";
 
    //TG-209
@@ -156,7 +155,7 @@ public class ResultSetToExcel
       sheet = wb.createSheet(sheetName);
       boldFont = (XSSFFont) workbook.createFont();
       boldFont.setBold(true);
-      // format = workbook.createDataFormat();
+
       this.profilExport = pE;
       hasPrelevement = hasP;
       resultLaboInter = rs2;
@@ -356,13 +355,10 @@ public class ResultSetToExcel
          createRetourSheet(8);
       }
 
-      // Autosize columns
-      // if (currentRow < LIMIT_AUTOSIZE) {
       sheet.trackAllColumnsForAutoSizing();
       for(int i = 0; i < numCols; i++){
          sheet.autoSizeColumn((short) i);
       }
-      // }
    }
 
    private void writeTKcolNames(){
@@ -426,7 +422,6 @@ public class ResultSetToExcel
 
       if(value != null){
          final Cell cell = row.createCell(col);
-         // CellStyle style = workbook.createCellStyle();
 
          if(st != null){
             cell.setCellStyle(st);
@@ -464,7 +459,6 @@ public class ResultSetToExcel
                   cell.setCellValue(((BigDecimal) value).doubleValue());
                }else{
                   cell.setCellValue((Double) value);
-                  // cell.setCellType(Cell.CELL_TYPE_BLANK);
                }
             }else{
                cell.setCellType(CellType.STRING);
@@ -477,10 +471,7 @@ public class ResultSetToExcel
                if(!value.toString().contentEquals("0")){
                   cell.setCellType(CellType.STRING);
                   createHyperlink("id_", cell, row, DETAILS_LABO_INTER, indexColumnForPrelevementId);
-               } // else {
-                 //	cell.setCellType(Cell.CELL_TYPE_BLANK);
-                 // cell.setCellValue("");
-                 //}
+               } 
             }
          }
          if(col == retourE_interColumn && row.getRowNum() != 0){
@@ -495,20 +486,6 @@ public class ResultSetToExcel
                createHyperlink("id_rd_", cell, row, DETAILS_RETOUR, indexColumnForProdDeriveId);
             }
          }
-         //		if (bgColor != null) {
-         //			CellStyle titleStyle = workbook.createCellStyle();
-         //
-         //			titleStyle.setAlignment(CellStyle.ALIGN_CENTER);
-         //			titleStyle.setBorderBottom(CellStyle.BORDER_MEDIUM);
-         //			titleStyle.setBorderLeft(CellStyle.BORDER_MEDIUM);
-         //			titleStyle.setBorderRight(CellStyle.BORDER_MEDIUM);
-         //			titleStyle.setBorderTop(CellStyle.BORDER_MEDIUM);
-         //			cell.setCellStyle(titleStyle);
-         // HSSFCellUtil.setCellStyleProperty(cell, workbook,
-         // FILL_FOREGROUND_COLOR, bgColor);
-         // HSSFCellUtil.setCellStyleProperty(cell, workbook, FILL_PATTERN,
-         // HSSFCellStyle.SOLID_FOREGROUND);
-         //		}
       }
    }
 
@@ -574,7 +551,7 @@ public class ResultSetToExcel
                   }
                } 
             }
-            // ecris la reference sur le cells range du prelevement precedent
+            // ecrit la reference sur le cells range du prelevement precedent
             if(prev_prelId != null && null != prelId && !prelId.equals(prev_prelId)){
                cellRange[1] = currentRow - 1;
                namedCell = (XSSFName) workbook.createName();
@@ -590,13 +567,8 @@ public class ResultSetToExcel
             }
             prev_prelId = prelId;
 
-            //			if (getUpdateThread() != null) {
-            //				if (getUpdateThread().isInterrupted()) {
-            //					throw new InterruptedException();
-            //				}
-            //			}
          }
-         // ecris le dernier lien
+         // ecrit le dernier lien
          cellRange[1] = currentRow;
          namedCell = (XSSFName) workbook.createName();
          namedCell.setNameName("id_" + prelId);
@@ -683,7 +655,7 @@ public class ResultSetToExcel
                   }
                }
             }
-            // ecris la reference sur le cells range de l'objet precedent
+            // ecrit la reference sur le cells range de l'objet precedent
             if(prev_objId != null && null != objId && !objId.equals(prev_objId)){
                cellRange[1] = currentRow - 1;
                namedCell = workbook.createName();
@@ -700,7 +672,7 @@ public class ResultSetToExcel
             prev_objId = objId;
 
          }
-         // ecris le dernier lien
+         // ecrit le dernier lien
          cellRange[1] = currentRow;
          namedCell = workbook.createName();
          namedCell.setNameName(suff + objId);
@@ -737,18 +709,6 @@ public class ResultSetToExcel
       }
    }
    
-   // private void createValueBox(Row row, Row row2, int col, int col2) {
-   // DVConstraint dvConstraint = DVConstraint
-   // .createExplicitListConstraint(new String[] { "DA37B1.1",
-   // "DA37B2.1", "DA37B3.1" });
-   // CellRangeAddressList addressList = new CellRangeAddressList(
-   // row.getRowNum(), row2.getRowNum(), col, col2);
-   // DataValidation dataValidation = new HSSFDataValidation(addressList,
-   // dvConstraint);
-   // dataValidation.setSuppressDropDownArrow(true);
-   // sheet.addValidationData(dataValidation);
-   // }
-
    public enum FormatType
    {
       TEXT, BOOL, DATE, NUMERIC
@@ -763,38 +723,6 @@ public class ResultSetToExcel
       }
       return s;
    }
-
-   //	/**
-   //	 * Gère le download d'un fichier d'export xls.
-   //	 *
-   //	 * @param wb
-   //	 *            workbook
-   //	 * @param fileName
-   //	 */
-   //	public static void downloadExportFileXls(XSSFWorkbook wb, String fileName) {
-   //		ByteArrayOutputStream out = null;
-   //		try {
-   //			out = new ByteArrayOutputStream();
-   //			wb.write(out);
-   //			if (out.size() > 0) {
-   //				AMedia media = new AMedia(fileName, "xls",
-   //						ConfigManager.OFFICE_EXCEL_MIME_TYPE, out.toByteArray());
-   //				Filedownload.save(media);
-   //			}
-   //		} catch (FileNotFoundException e) {
-   //			log.error(e);
-   //		} catch (Exception e) {
-   //			log.error(e);
-   //		} finally {
-   //			if (out != null) {
-   //				try {
-   //					out.close();
-   //				} catch (IOException e) {
-   //					out = null;
-   //				}
-   //			}
-   //		}
-   //	}
 
    public void setUpdateThread(final Export u){
       this.updateThread = u;
