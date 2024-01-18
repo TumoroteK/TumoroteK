@@ -42,6 +42,8 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -89,16 +91,14 @@ public class ResultSetToExcel
 
    private static final String RETOUR_DERIVE_SHEET = "Evts_derive_List";
 
-   // private static final int LIMIT_AUTOSIZE = 10000;
    public static final String DATE_FORMAT = "yyyyMMddHHmm";
 
-   // ecart entre colonnes permettant de retrouver l'id du prel à partir de la colonne labo_inter
-   private int index_prel_id = 26;
-
-   // ecart entre colonnes permettant de retrouver l'id de l'echan/derive à partir de la colonne evts_stock
-   private int index_echan_id = 25;
-
-   private int index_derive_id = 28;
+   //TG-209
+   //Avec Gatsbi : la position des colonnes d'id - utilisées pour les liens entre onglet de l'excel - est variable
+   //=> la mécanique s'appuyant sur les écarts ne marche plus.
+   private Integer indexColumnForPrelevementId = null;
+   private Integer indexColumnForEchantillonId = null;
+   private Integer indexColumnForProdDeriveId = null;
 
    protected SXSSFWorkbook workbook;
 
@@ -155,7 +155,7 @@ public class ResultSetToExcel
       sheet = wb.createSheet(sheetName);
       boldFont = (XSSFFont) workbook.createFont();
       boldFont.setBold(true);
-      // format = workbook.createDataFormat();
+
       this.profilExport = pE;
       hasPrelevement = hasP;
       resultLaboInter = rs2;
@@ -163,8 +163,6 @@ public class ResultSetToExcel
       retourDeriveRs = drRs;
 
       cessionExport = isCession;
-
-      setsEcartColsFromContexte(export);
 
       sheet.trackAllColumnsForAutoSizing();
 
@@ -184,29 +182,6 @@ public class ResultSetToExcel
       hlink_font.setFontHeightInPoints((short) 12);
       linkStyle.setFont(hlink_font);
 
-   }
-
-   /**
-    * Défini les valeurs des variables définissant les écarts de colonnes
-    * entre les ids de domaine et les hyperliens, en fonction du contexte
-    * de la collection.
-    * @param export, car contient une ref vers le contexte
-    * @since 2.2.1
-    */
-   private void setsEcartColsFromContexte(final Export export){
-      if(export != null && export.getCtx() != null){
-         switch(export.getCtx()){
-            case SEROLOGIE:
-               index_prel_id = 28;
-               index_echan_id = 21;
-               // index_derive_id = 28;
-               break;
-            default:
-               index_prel_id = 26;
-               index_echan_id = 25;
-               index_derive_id = 28;
-         }
-      }
    }
 
    public ResultSetToExcel(final ResultSet resultSet, final String sheetName){
@@ -307,10 +282,16 @@ public class ResultSetToExcel
             entite = "Maladie";
          }else if(title.equals("PRELEVEMENT_ID")){
             entite = "Prelevement";
+            //TG-209
+            indexColumnForPrelevementId=i;
          }else if(title.equals("ECHANTILLON_ID")){
             entite = "Echantillon";
+            //TG-209
+            indexColumnForEchantillonId=i;
          }else if(title.equals("PROD_DERIVE_ID")){
             entite = "ProdDerive";
+            //TG-209
+            indexColumnForProdDeriveId=i;
          }else if(title.equals("CESSION_ID")){
             entite = "Cession";
          }
@@ -326,11 +307,27 @@ public class ResultSetToExcel
 
       currentRow++;
       // Write report rows
+      //amélioration faite suite au bug TG-209
+      //Si une erreur est détectée sur la création d'un lien (à date pas de lien sur cet onglet mais on ne sait jamais)
+      //il ne faut pas bloquer l'export mais tracer.
+      //Par contre, la trace ne doit être écrite qu'à la première détection pour cette colonne (puisque ça doit être pareil pour toutes les lignes de l'export)
+      //=> utilisation d'une map
+      Map<Integer, Boolean> hyperlinkExceptionFoundByNumColIndex = new HashMap<Integer, Boolean>();
       while(resultSet.next()){
          row = sheet.createRow(currentRow++);
          for(int i = 0; i < numCols; i++){
             final Object value = resultSet.getObject(i + 1);
-            writeCell(row, i, value, formatTypes[i]);
+            //amélioration faite suite au bug TG-209
+            try {
+               writeCell(row, i, value, formatTypes[i]);
+            }
+            catch(HyperlinkException hyperlinkException) {
+               if(hyperlinkExceptionFoundByNumColIndex.get(i) == null) {
+                  log.error("Erreur rencontrée lors de la génération du lien hypertext pour le champ " + resultSetMetaData.getColumnName(i + 1),
+                     hyperlinkException);
+                  hyperlinkExceptionFoundByNumColIndex.put(i, true);
+               }
+            }
          }
          if(currentRow % 10 == 0){
             if(getUpdateThread() != null){
@@ -358,13 +355,10 @@ public class ResultSetToExcel
          createRetourSheet(8);
       }
 
-      // Autosize columns
-      // if (currentRow < LIMIT_AUTOSIZE) {
       sheet.trackAllColumnsForAutoSizing();
       for(int i = 0; i < numCols; i++){
          sheet.autoSizeColumn((short) i);
       }
-      // }
    }
 
    private void writeTKcolNames(){
@@ -385,7 +379,13 @@ public class ResultSetToExcel
          "ANNOTATION_PREL.Donnees cliniques", "ANNOTATION_PREL.Inclusion protocole thérapeutique",
          "ANNOTATION_PREL.Inclusion projet recherche", "ECHANTILLON.STATUT", "", "", "", "", "PRELEVEMENT.NUMERO_LABO"};
       for(int i = 0; i < tkcols.length; i++){
-         writeCell(row, i, tkcols[i], FormatType.TEXT);
+         try {
+            writeCell(row, i, tkcols[i], FormatType.TEXT);
+         }
+         catch (HyperlinkException e) {
+            //cette exception ne doit jamais se rencontrer pour l'entête ...
+            log.error("erreur rencontrée lors de la création d'un lien hypertexte sur l'entête", e);
+         }
       }
    }
 
@@ -405,21 +405,23 @@ public class ResultSetToExcel
       }
    }
 
-   protected void writeCell(final Row row, final int col, final Object value, final FormatType formatType){
+   //amélioration faite suite au bug TG-209 (throws HyperlinkException)
+   protected void writeCell(final Row row, final int col, final Object value, final FormatType formatType) throws HyperlinkException {
       writeCell(row, col, value, formatType, null);
    }
 
+   //amélioration faite suite au bug TG-209 (throws HyperlinkException)
    protected void writeCell(final Row row, final int col, final Object value, final FormatType formatType,
-      final XSSFCellStyle st){
+      final XSSFCellStyle st) throws HyperlinkException {
       writeCell(row, col, value, formatType, null, st);
    }
 
+   //amélioration faite suite au bug TG-209 (throws HyperlinkException)
    protected void writeCell(final Row row, final int col, final Object value, final FormatType formatType, final Short bgColor,
-      final XSSFCellStyle st){
+      final XSSFCellStyle st)  throws HyperlinkException {
 
       if(value != null){
          final Cell cell = row.createCell(col);
-         // CellStyle style = workbook.createCellStyle();
 
          if(st != null){
             cell.setCellStyle(st);
@@ -457,7 +459,6 @@ public class ResultSetToExcel
                   cell.setCellValue(((BigDecimal) value).doubleValue());
                }else{
                   cell.setCellValue((Double) value);
-                  // cell.setCellType(Cell.CELL_TYPE_BLANK);
                }
             }else{
                cell.setCellType(CellType.STRING);
@@ -469,42 +470,22 @@ public class ResultSetToExcel
             if(labo_interColumn.contains(col) && row.getRowNum() != 0){
                if(!value.toString().contentEquals("0")){
                   cell.setCellType(CellType.STRING);
-                  createHyperlink("id_", cell, col, row, DETAILS_LABO_INTER, index_prel_id);
-               } // else {
-                 //	cell.setCellType(Cell.CELL_TYPE_BLANK);
-                 // cell.setCellValue("");
-                 //}
+                  createHyperlink("id_", cell, row, DETAILS_LABO_INTER, indexColumnForPrelevementId);
+               } 
             }
          }
          if(col == retourE_interColumn && row.getRowNum() != 0){
             if(!value.toString().contentEquals("0")){
                cell.setCellType(CellType.STRING);
-               createHyperlink("id_re_", cell, col, row, DETAILS_RETOUR,
-                  index_echan_id + (cessionExport && retourD_interColumn == -1 ? 2 : 0));
-               // n'applique le +2 en cas de cessionExport que si c'est un export Echantillon
-               // et donc que le +2 n'a pas déja été appliqué pour le dérivé.
+               createHyperlink("id_re_", cell, row, DETAILS_RETOUR, indexColumnForEchantillonId);
             }
          }
          if(col == retourD_interColumn && row.getRowNum() != 0){
             if(!value.toString().contentEquals("0")){
                cell.setCellType(CellType.STRING);
-               createHyperlink("id_rd_", cell, col, row, DETAILS_RETOUR, index_derive_id + (cessionExport ? 2 : 0));
+               createHyperlink("id_rd_", cell, row, DETAILS_RETOUR, indexColumnForProdDeriveId);
             }
          }
-         //		if (bgColor != null) {
-         //			CellStyle titleStyle = workbook.createCellStyle();
-         //
-         //			titleStyle.setAlignment(CellStyle.ALIGN_CENTER);
-         //			titleStyle.setBorderBottom(CellStyle.BORDER_MEDIUM);
-         //			titleStyle.setBorderLeft(CellStyle.BORDER_MEDIUM);
-         //			titleStyle.setBorderRight(CellStyle.BORDER_MEDIUM);
-         //			titleStyle.setBorderTop(CellStyle.BORDER_MEDIUM);
-         //			cell.setCellStyle(titleStyle);
-         // HSSFCellUtil.setCellStyleProperty(cell, workbook,
-         // FILL_FOREGROUND_COLOR, bgColor);
-         // HSSFCellUtil.setCellStyleProperty(cell, workbook, FILL_PATTERN,
-         // HSSFCellStyle.SOLID_FOREGROUND);
-         //		}
       }
    }
 
@@ -524,7 +505,17 @@ public class ResultSetToExcel
             final Class<?> _class = Class.forName(resultSetMetaData.getColumnClassName(i + 1));
             final int precision = resultSetMetaData.getPrecision(i + 1);
             formatTypes[i] = getFormatType(_class, precision);
-            writeCell(row, i, labelPrintTitle(title, "LaboInter"), formatTypes[i], boldStyle);
+            //une exception sur la création d'un lien hypertext ne doit pas bloquer l'export mais ne doit pas non plus tracer l'exception pour chaque ligne du fichier ...
+            //(amélioration faite suite au bug TG-209)
+            try {
+               writeCell(row, i, labelPrintTitle(title, "LaboInter"), formatTypes[i], boldStyle);
+            }
+            catch (HyperlinkException hyperlinkException) {
+               //pas de lien au niveau de la ligne d'entête donc on ne doit jamais passer ici
+               //par sécurité on prévoit tout de même une trace
+               log.error("Erreur rencontrée lors de la génération d'un lien hypertext sur l'entête " + title + "de l'onglet Labo inter" 
+                  , hyperlinkException);
+            }
          }
          currentRow++;
          // Write report rows
@@ -534,6 +525,14 @@ public class ResultSetToExcel
          Number prelId = null;
          String reference;
          XSSFName namedCell;
+         //Parcourt le résultset lié à tous les retours :
+         //Cet appel est fait lors de l'écriture de la 1ere ligne de l'onglet principal
+         //Amélioration suite au bug TG-209 :
+         //Si une erreur est détectée sur la création d'un lien (à date pas de lien sur cet onglet mais on ne sait jamais)
+         //il ne faut pas bloquer l'export mais tracer.
+         //Par contre, la trace ne doit être écrite qu'à la première détection pour cette colonne (puisque ça doit être pareil pour toutes les lignes de l'export)
+         //=> utilisation d'une map
+         Map<Integer, Boolean> hyperlinkExceptionFoundByNumColIndex = new HashMap<Integer, Boolean>();
          while(resultLaboInter.next()){
             row = sheet2.createRow(currentRow++);
             for(int i = 0; i < numCols; i++){
@@ -541,9 +540,18 @@ public class ResultSetToExcel
                if(i == 0){
                   prelId = (Number) value;
                }
-               writeCell(row, i, value, formatTypes[i]);
+               try {
+                  writeCell(row, i, value, formatTypes[i]);
+               }
+               catch(HyperlinkException hyperlinkException) {
+                  if(hyperlinkExceptionFoundByNumColIndex.get(i) == null) {
+                     log.error("Erreur rencontrée lors de la génération du lien hypertext sur l'onglet Labo inter pour le champ " + resultSetMetaData.getColumnName(i + 1),
+                        hyperlinkException);
+                     hyperlinkExceptionFoundByNumColIndex.put(i, true);
+                  }
+               } 
             }
-            // ecris la reference sur le cells range du prelevement precedent
+            // ecrit la reference sur le cells range du prelevement precedent
             if(prev_prelId != null && null != prelId && !prelId.equals(prev_prelId)){
                cellRange[1] = currentRow - 1;
                namedCell = (XSSFName) workbook.createName();
@@ -559,13 +567,8 @@ public class ResultSetToExcel
             }
             prev_prelId = prelId;
 
-            //			if (getUpdateThread() != null) {
-            //				if (getUpdateThread().isInterrupted()) {
-            //					throw new InterruptedException();
-            //				}
-            //			}
          }
-         // ecris le dernier lien
+         // ecrit le dernier lien
          cellRange[1] = currentRow;
          namedCell = (XSSFName) workbook.createName();
          namedCell.setNameName("id_" + prelId);
@@ -606,7 +609,16 @@ public class ResultSetToExcel
             final Class<?> _class = Class.forName(resultSetMetaData.getColumnClassName(i + 1));
             final int precision = resultSetMetaData.getPrecision(i + 1);
             formatTypes[i] = getFormatType(_class, precision);
-            writeCell(row, i, labelPrintTitle(title, "Retour"), formatTypes[i], boldStyle);
+            //amélioration suite au bug TG-209
+            try {
+               writeCell(row, i, labelPrintTitle(title, "Retour"), formatTypes[i], boldStyle);
+            }
+            catch (HyperlinkException hyperlinkException) {
+               //pas de lien au niveau de la ligne d'entête donc on ne doit jamais passer ici
+               //par sécurité on prévoit tout de même une trace
+               log.error("Erreur rencontrée lors de la génération d'un lien hypertext sur l'entête " + title + "de l'onglet évènement de stockage" 
+                  , hyperlinkException);
+            }
          }
 
          currentRow++;
@@ -617,6 +629,14 @@ public class ResultSetToExcel
          Number objId = null;
          String reference;
          Name namedCell;
+         //Parcourt le résultset lié à tous les retours :
+         //Cet appel est fait lors de l'écriture de la 1ere ligne de l'onglet principal
+         //Amélioration suite au bug TG-209 :         
+         //Si une erreur est détectée sur la création d'un lien (à date pas de lien sur cet onglet mais on ne sait jamais)
+         //il ne faut pas bloquer l'export mais tracer.
+         //Par contre, la trace ne doit être écrite qu'à la première détection pour cette colonne (puisque ça doit être pareil pour toutes les lignes de l'export)
+         //=> utilisation d'une map
+         Map<Integer, Boolean> hyperlinkExceptionFoundByNumColIndex = new HashMap<Integer, Boolean>();
          while(rs.next()){
             row = sheet2.createRow(currentRow++);
             for(int i = 0; i < numCols; i++){
@@ -624,9 +644,18 @@ public class ResultSetToExcel
                if(i == 0){
                   objId = (Number) value;
                }
-               writeCell(row, i, value, formatTypes[i]);
+               try {
+                  writeCell(row, i, value, formatTypes[i]);
+               }
+               catch(HyperlinkException hyperlinkException) {
+                  if(hyperlinkExceptionFoundByNumColIndex.get(i) == null) {
+                     log.error("Erreur rencontrée lors de la génération du lien hypertext sur l'onglet Evènements de stockage pour le champ " + resultSetMetaData.getColumnName(i + 1),
+                        hyperlinkException);
+                     hyperlinkExceptionFoundByNumColIndex.put(i, true);
+                  }
+               }
             }
-            // ecris la reference sur le cells range de l'objet precedent
+            // ecrit la reference sur le cells range de l'objet precedent
             if(prev_objId != null && null != objId && !objId.equals(prev_objId)){
                cellRange[1] = currentRow - 1;
                namedCell = workbook.createName();
@@ -643,7 +672,7 @@ public class ResultSetToExcel
             prev_objId = objId;
 
          }
-         // ecris le dernier lien
+         // ecrit le dernier lien
          cellRange[1] = currentRow;
          namedCell = workbook.createName();
          namedCell.setNameName(suff + objId);
@@ -663,27 +692,23 @@ public class ResultSetToExcel
       rs.close();
    }
 
-   private void createHyperlink(final String suff, final Cell cell, final int col, final Row row, final String text,
-      final int idEcartCol){
+   private void createHyperlink(final String suff, final Cell cell, final Row row, final String text, final int numeroColonneId) throws HyperlinkException {
       cell.setCellValue(text);
-      final org.apache.poi.ss.usermodel.Hyperlink link2 = createHelper.createHyperlink(HyperlinkType.DOCUMENT);
-
-      link2.setAddress(suff + String.valueOf((int) (row.getCell(col - idEcartCol).getNumericCellValue())));
-      cell.setHyperlink(link2);
+      //Amélioration suite au bug TG-209 :
+      //si la récupération de l'id pour créer le lien renvoie une exception, on passe outre pour ne pas bloquer complètement l'export
+      try {
+         final org.apache.poi.ss.usermodel.Hyperlink link2 = createHelper.createHyperlink(HyperlinkType.DOCUMENT);
+   
+         link2.setAddress(suff + String.valueOf((int) (row.getCell(numeroColonneId).getNumericCellValue())));
+         cell.setHyperlink(link2);
+         cell.setCellStyle(linkStyle);
+      }
+      catch (Exception e) {
+         //Pour éviter trop de log (une pour chaque ligne de l'export), les traces seront gérées par l'appelant
+         throw new HyperlinkException(e);
+      }
    }
-
-   // private void createValueBox(Row row, Row row2, int col, int col2) {
-   // DVConstraint dvConstraint = DVConstraint
-   // .createExplicitListConstraint(new String[] { "DA37B1.1",
-   // "DA37B2.1", "DA37B3.1" });
-   // CellRangeAddressList addressList = new CellRangeAddressList(
-   // row.getRowNum(), row2.getRowNum(), col, col2);
-   // DataValidation dataValidation = new HSSFDataValidation(addressList,
-   // dvConstraint);
-   // dataValidation.setSuppressDropDownArrow(true);
-   // sheet.addValidationData(dataValidation);
-   // }
-
+   
    public enum FormatType
    {
       TEXT, BOOL, DATE, NUMERIC
@@ -698,38 +723,6 @@ public class ResultSetToExcel
       }
       return s;
    }
-
-   //	/**
-   //	 * Gère le download d'un fichier d'export xls.
-   //	 *
-   //	 * @param wb
-   //	 *            workbook
-   //	 * @param fileName
-   //	 */
-   //	public static void downloadExportFileXls(XSSFWorkbook wb, String fileName) {
-   //		ByteArrayOutputStream out = null;
-   //		try {
-   //			out = new ByteArrayOutputStream();
-   //			wb.write(out);
-   //			if (out.size() > 0) {
-   //				AMedia media = new AMedia(fileName, "xls",
-   //						ConfigManager.OFFICE_EXCEL_MIME_TYPE, out.toByteArray());
-   //				Filedownload.save(media);
-   //			}
-   //		} catch (FileNotFoundException e) {
-   //			log.error(e);
-   //		} catch (Exception e) {
-   //			log.error(e);
-   //		} finally {
-   //			if (out != null) {
-   //				try {
-   //					out.close();
-   //				} catch (IOException e) {
-   //					out = null;
-   //				}
-   //			}
-   //		}
-   //	}
 
    public void setUpdateThread(final Export u){
       this.updateThread = u;
@@ -937,5 +930,19 @@ public class ResultSetToExcel
 
    public void setFormatTypes(final FormatType[] ft){
       this.formatTypes = ft;
+   }
+   
+   //Amélioration suite au bug TG-209
+   private class HyperlinkException extends Exception {
+
+      private static final long serialVersionUID = 1L;
+
+      public HyperlinkException(final String message){
+         super(message);
+      }
+
+      public HyperlinkException(final Exception e){
+         super(e);
+      }
    }
 }
