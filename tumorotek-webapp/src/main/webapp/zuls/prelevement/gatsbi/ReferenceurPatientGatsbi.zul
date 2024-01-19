@@ -59,7 +59,7 @@
 			<row id="findPatientRow">
 				<box orient="horizontal" pack="center">	
 					<label value="${c:l('patient.reference.recherche')}" sclass="formLabel" />
-					<textbox id="nomNipNdaBox" />
+					<textbox id="nomNipNdaBox" height="20px" />
 		 			<image id="goForIt" src="/images/icones/player_play.png"/>
 				</box>
 			</row>
@@ -109,7 +109,7 @@
 						<label value="${c:l('Champ.Prelevement.PatientNda')}" sclass="formLabel" />
 						<label value="*" sclass="requiredMark" />
 					</div>
-					<textbox id="ndaBox" width="100px" constraint="${winRefPatient$composer.ndaConstraint}" />
+					<textbox id="ndaBox" width="100px" height="20px" constraint="${winRefPatient$composer.ndaConstraint}" />
 				</div>	
 			</row>
 			<row id="embeddedFicheMaladieRow" visible="false">

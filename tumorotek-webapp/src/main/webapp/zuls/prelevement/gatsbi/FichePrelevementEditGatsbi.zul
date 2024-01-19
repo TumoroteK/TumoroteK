@@ -55,7 +55,7 @@
 							<div class="row-container">
 								<textbox id="codeBoxPrlvt" value="@{fwinPrelevementEdit$composer.object.code,
 				        			save-when='validate.onClick, create.onClick, next.onClick'
-				        			load-after='numerotation.onClick'}" width="150px" 
+				        			load-after='numerotation.onClick'}" width="150px" height="20px"
 				        			constraint="${fwinPrelevementEdit$composer.codeConstraint}" />
 								<button id="numerotation" image="/images/icones/numerotation.png" sclass="buttonv2" visible="false" />
 								<button id="interfacage" image="/images/icones/wizard.png" sclass="buttonv2" visible="false" />
