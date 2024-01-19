@@ -66,6 +66,7 @@ import fr.aphp.tumorotek.action.ManagerLocator;
 import fr.aphp.tumorotek.action.cession.CessionConstraints;
 import fr.aphp.tumorotek.action.constraints.ConstText;
 import fr.aphp.tumorotek.action.controller.AbstractFicheCombineController;
+import fr.aphp.tumorotek.action.echantillon.gatsbi.GatsbiControllerEchantillon;
 import fr.aphp.tumorotek.component.CalendarBox;
 import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
 import fr.aphp.tumorotek.manager.impl.coeur.cession.OldEmplTrace;
@@ -83,6 +84,7 @@ import fr.aphp.tumorotek.model.stockage.Incident;
 import fr.aphp.tumorotek.model.systeme.Entite;
 import fr.aphp.tumorotek.model.systeme.Temperature;
 import fr.aphp.tumorotek.utils.Utils;
+import fr.aphp.tumorotek.webapp.gatsbi.GatsbiController;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
 /**
@@ -564,7 +566,7 @@ public class FicheRetour extends AbstractFicheCombineController
    public void initEditableMode(){
       // init des collaborateurs
       nomsAndPrenoms = new ArrayList<>();
-      collaborateurs = ManagerLocator.getCollaborateurManager().findAllActiveObjectsWithOrderManager();
+      collaborateurs = findCollaborateursToDisplayForOperateur();
       for(int i = 0; i < collaborateurs.size(); i++){
          nomsAndPrenoms.add(collaborateurs.get(i).getNomAndPrenom());
       }
@@ -950,4 +952,21 @@ public class FicheRetour extends AbstractFicheCombineController
    public Boolean getDotVisible(){
       return retour != null && retour.getImpact() != null && retour.getImpact() && !impactBox.isVisible();
    }
+
+   //TG-216 (sous-tâche de TG-204) : avec Gatsbi un filtre peut être défini sur les opérateurs dans le contexte Echantillon. Celui-ci doit s'appliquer
+   //au champ opérateur de l'écran de création d'un évènement de stockage que celui-ci porte sur un échantillon ou sur un produit dérivé.
+   private List<Collaborateur> findCollaborateursToDisplayForOperateur() {
+      //récupération de tous les collaborateurs (cas standard sans le filtre Gatsbi) :
+      List<Collaborateur> allCollaborateur = ManagerLocator.getCollaborateurManager().findAllActiveObjectsWithOrderManager();
+      //est-on dans le cas Gatsbi ?
+      boolean isGatsbi = GatsbiController
+         .isInGatsbiContexte(SessionUtils.getCurrentBanque(sessionScope));
+      if(isGatsbi) {
+         return GatsbiControllerEchantillon.filterOperateursFromContexte(allCollaborateur); 
+      }
+      else {
+         return allCollaborateur;
+      }
+   }
+
 }
