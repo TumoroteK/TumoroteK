@@ -170,7 +170,7 @@
 									value="@{fwinMultiEchantillons$composer.premiereLettre,
 				        			save-when='addEchantillons.onClick'
 				        			load-after='addEchantillons.onClick, numerotation.onClick, codesParentBoxEchan.onSelect'}" 
-									width="30px" 
+									width="30px" height="20px"
 									constraint="@{fwinMultiEchantillons$composer.cttPremiereLettre}"
 									visible="false" mold="rounded"/>								
 						
@@ -189,7 +189,7 @@
 									value="@{fwinMultiEchantillons$composer.derniereLettre,
 				        			save-when='addEchantillons.onClick'
 				        			load-after='addEchantillons.onClick, numerotation.onClick, codesParentBoxEchan.onSelect'}" 
-									width="30px" 
+									width="30px" height="20px"
 									constraint="@{fwinMultiEchantillons$composer.cttDerniereLettre}"
 									visible="false" mold="rounded"/>
 								
