@@ -287,6 +287,9 @@
 								</div>
 								<checkbox id="sterileBox" />
 							</div>
+							<!-- TG-217 : ajout d''une div toute largeur, de hauteur 0px pour forcer le retour à la ligne
+									et avoir ainsi Date de stockage et Délai de congélation toujours sur la même ligne -->
+							<div class="item item-wide" style="min-height:0px"/>
 							<div class="item item-mid" id="echanDateStockDiv"><!-- Date de stockage -->
 								<custom-attributes champId="56" />
 								<div class="row-container chpLabel">
