@@ -98,7 +98,8 @@ import fr.aphp.tumorotek.model.contexte.gatsbi.Visite;
    @NamedQuery(name = "Maladie.findByPatientExcludingVisites",
       query = "SELECT m FROM Maladie m WHERE m.patient = ?1 AND m.banque is null ORDER BY m.dateDebut, m.dateDiagnostic"),
    @NamedQuery(name = "Maladie.findVisites",
-      query = "SELECT m FROM Maladie m WHERE m.patient = ?1 and m.banque = ?2")
+      query = "SELECT m FROM Maladie m WHERE m.patient = ?1 and m.banque = ?2 "
+         + "ORDER BY m.dateDebut, m.dateDiagnostic, m.maladieId")
 })
 public class Maladie extends TKDelegetableObject<Maladie> implements TKdataObject, TKFantomableObject, Serializable
 {
