@@ -78,7 +78,26 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.ForwardEvent;
 import org.zkoss.zk.ui.util.Clients;
-import org.zkoss.zul.*;
+import org.zkoss.zul.Box;
+import org.zkoss.zul.Button;
+import org.zkoss.zul.Cell;
+import org.zkoss.zul.Column;
+import org.zkoss.zul.Columns;
+import org.zkoss.zul.Combobox;
+import org.zkoss.zul.Constraint;
+import org.zkoss.zul.Div;
+import org.zkoss.zul.Grid;
+import org.zkoss.zul.Intbox;
+import org.zkoss.zul.Label;
+import org.zkoss.zul.ListModel;
+import org.zkoss.zul.ListModelList;
+import org.zkoss.zul.Listbox;
+import org.zkoss.zul.Messagebox;
+import org.zkoss.zul.Radio;
+import org.zkoss.zul.Row;
+import org.zkoss.zul.Rows;
+import org.zkoss.zul.Textbox;
+import org.zkoss.zul.Window;
 import org.zkoss.zul.impl.InputElement;
 
 import fr.aphp.tumorotek.action.CustomSimpleListModel;
@@ -176,8 +195,6 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
 
    private Label prodDeriveQteLabel;
 
-   private Label requiredTypeDerive;
-
    private Label requiredtransfoQuantiteLabel;
 
    private Div prodDeriveQteDiv;
@@ -214,7 +231,7 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
    //   private List<String> lettres = new ArrayList<>();
    private boolean selectParent = false;
 
-   private boolean quantiteUtiliseObligatoire = true;
+   private boolean isQuantiteUtiliseObligatoire = true;
 
    private Date dateSortie;
 
@@ -235,7 +252,6 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
    public void doAfterCompose(final Component comp) throws Exception{
       super.doAfterCompose(comp);
 
-      initializeQuantiteUtiliseObligatoireFromSession();
 
       setWaitLabel("ficheProdDerive.multi.creation.encours");
 
@@ -256,28 +272,7 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
    }
 
 
-   /**
-    * Initialise la quantité utilisée obligatoire à partir de la session.
-    *
-    * Note: La condition d'affichage de l'astérisque rouge est gérée dynamiquement dans cette méthode.
-    * Si la quantité utilisée n'est pas obligatoire, l'astérisque est masqué, sinon il est affiché.
-    *
-    */
-   private void initializeQuantiteUtiliseObligatoireFromSession(){
-      // Récupérer le code (deriveQteObligatoire.getCode())
-      EParametreValeurParDefaut deriveQteObligatoire = EParametreValeurParDefaut.DERIVE_QTE_OBLIGATOIRE;
-      // Obtenir le DTO associé au paramètre
-      ParametreDTO deriveQteObligatoireDto = getParametreByCode(deriveQteObligatoire.getCode());
-      // Vérifier si le DTO n'est pas nul
-      if (deriveQteObligatoireDto != null){
-         // Convertir la valeur du paramètre en un boolean
-         quantiteUtiliseObligatoire = TKStringUtils.convertToBoolean(deriveQteObligatoireDto.getValeur());
-         if (!quantiteUtiliseObligatoire){
-            // Masquer le label de transformation obligatoire si la quantité n'est pas utilisée
-            requiredtransfoQuantiteLabel.setVisible(false);
-         }
-      }
-   }
+
 
    /**
     * Change le mode de la fiche en creation.
@@ -309,9 +304,7 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
       getObjectTabController().setOldCode(null);
       
       Clients.scrollIntoView(formGrid.getColumns());
-      if (quantiteUtiliseObligatoire){
-         requiredTypeDerive.setVisible(true);
-      }
+
       // si le parent n'est pas null, on l'associe au
       // nouveau dérivé
       if(prodDeriveFromRetourCession){
@@ -934,23 +927,22 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
             throw new WrongValueException(typesBoxDerive, Labels.getLabel("ficheProdDerive.error.type"));
          }
          // TK-434: Sécuriser la saisie de la quantité utilisée
+
          // Si le champ n'est pas renseigné
          if (transfoQuantiteBoxDerive.getValue() == null){
             // et la plateforme est configurée pour avoir la saisie de quantité utilisée obligatoire, on bloque l'ajout
-            if (quantiteUtiliseObligatoire){
+            if (isQuantiteUtiliseObligatoire){
                Clients.scrollIntoView(transfoQuantiteBoxDerive);
                // afficher un message d'erreur à côté du champ "quantité utilisée obligatoire"
-               throw new WrongValueException(transfoQuantiteBoxDerive, Labels.getLabel("ficheProdDerive.error.quantite"));
+               throw new WrongValueException(transfoQuantiteBoxDerive, Labels.getLabel("validation.syntax.empty"));
             } else{
-               // si la valeur du paramètre "quantité utilisée obligatoire" est définie et vaut false,
-               // afficher une fenêtre d'avertissement
+               // si la valeur du paramètre "quantité utilisée obligatoire" est false,  afficher une fenêtre d'avertissement
                boolean userAnswer = MessagesUtils.openQuestionModal(Labels.getLabel("general.warning"),
                                                                     Labels.getLabel("ficheProdDerive.warning.quantite"));
                if (!userAnswer) {
                   return;
                }
             }
-
          }
 
          // si le dérivé est issu d'un parent connu
@@ -1138,6 +1130,9 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
       }
    }
 
+   private void validateQuantiteUtilise(){
+   }
+
    /**
     * Méthode supprimant un des dérivés que l'utilisateur
     * souhaitait créer.
@@ -1177,16 +1172,6 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
          }
       }
 
-   }
-
-   /**
-    * Méthode appelée après la saisie d'une valeur dans le champ
-    * transfoQuantiteBoxDerive.
-    */
-   public void onBlur$transfoQuantiteBoxDerive(final Event event) throws Exception{
-      if(quantiteUtiliseObligatoire){
-         transfoQuantiteBoxDerive.setConstraint(new SimpleConstraint("NO EMPTY"));
-      }
    }
 
 
@@ -1972,7 +1957,7 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
    }
 
    public boolean isQuantiteUtiliseObligatoire(){
-      return quantiteUtiliseObligatoire;
+      return isQuantiteUtiliseObligatoire;
    }
 
    public String getSelectedParent(){

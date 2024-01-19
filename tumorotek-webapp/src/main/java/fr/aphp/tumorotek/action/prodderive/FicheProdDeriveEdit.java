@@ -45,6 +45,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import fr.aphp.tumorotek.dto.ParametreDTO;
+import fr.aphp.tumorotek.param.EParametreValeurParDefaut;
+import fr.aphp.tumorotek.utils.TKStringUtils;
 import org.springframework.validation.Errors;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
@@ -115,6 +118,7 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
 
    private static final long serialVersionUID = 4384639895874573764L;
 
+
    protected Textbox codePrefixeLabelDerive;
 
    protected Textbox codeBoxDerive;
@@ -122,6 +126,8 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
    protected Textbox codeLaboBoxDerive;
 
    protected Label volumeBoxDerive;
+
+   private Label requiredtransfoQuantiteLabel;
 
    protected Decimalbox volumeInitBoxDerive;
 
@@ -153,7 +159,6 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
 
    protected Listbox modePrepaBoxDerive;
 
-   // private Label transfoQuantiteUnitesBoxDerive;
    protected Combobox collabBoxDerive;
 
    protected Label operateurAideSaisieDerive;
@@ -303,6 +308,9 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
 
    private String emplacementAdrl = "";
 
+   private boolean isQuantiteObligatoire = true;
+
+
    //Labels anonymisables
    private Label emplacementLabelDerive;
 
@@ -331,6 +339,8 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
    public void doAfterCompose(final Component comp) throws Exception{
       super.doAfterCompose(comp);
 
+      initializeQuantiteUtiliseObligatoireFromSession();
+
       setWaitLabel("ficheProdDerive.creation.encours");
 
       // liste de composants pour le prlvt parent
@@ -344,6 +354,29 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
          this.row3DeriveDerive, this.row4DeriveDerive});
       // liste de composants pour la transformation
       setObjLabelsTransformation(new Component[] {this.rowTransformation1, this.rowTransformation2,});
+   }
+
+   /**
+    * Initialise la quantité utilisée obligatoire à partir de la session.
+    *
+    * Note: La condition d'affichage de l'astérisque rouge est gérée dynamiquement dans cette méthode.
+    * Si la quantité utilisée n'est pas obligatoire, l'astérisque est masqué, sinon il est affiché.
+    *
+    */
+   private void initializeQuantiteUtiliseObligatoireFromSession(){
+      // Récupérer le code (deriveQteObligatoire.getCode())
+      EParametreValeurParDefaut deriveQteObligatoire = EParametreValeurParDefaut.DERIVE_QTE_OBLIGATOIRE;
+      // Obtenir le DTO associé au paramètre
+      ParametreDTO deriveQteObligatoireDto = getParametreByCode(deriveQteObligatoire.getCode());
+      // Vérifier si le DTO n'est pas nul
+      if (deriveQteObligatoireDto != null){
+         // Convertir la valeur du paramètre en un boolean
+         isQuantiteObligatoire = Boolean.parseBoolean(deriveQteObligatoireDto.getValeur());
+         if (!isQuantiteObligatoire){
+            // Masquer le label de transformation obligatoire si la quantité n'est pas utilisée
+            requiredtransfoQuantiteLabel.setVisible(false);
+         }
+      }
    }
 
    @Override
@@ -1546,7 +1579,6 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
 
    /**
     * Select les non conformites dans la dropdown list.
-    * @param risks liste à selectionner
     */
 
    public void selectNonConformites(){
@@ -2266,6 +2298,9 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
       @Override
       public void validate(final Component comp, final Object value){
          final BigDecimal quantiteTransfoValue = (BigDecimal) value;
+         if (isQuantiteObligatoire && quantiteTransfoValue == null) {
+            throw new WrongValueException(comp, Labels.getLabel("validation.syntax.empty"));
+         }
          if(quantiteTransfoValue != null){
             quantiteTransformation = quantiteTransfoValue.floatValue();
 
@@ -2614,5 +2649,13 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
 
    public String getObjetStatut(){
       return ObjectTypesFormatters.ILNObjectStatut(getObject().getObjetStatut());
+   }
+
+   public Label getRequiredtransfoQuantiteLabel(){
+      return requiredtransfoQuantiteLabel;
+   }
+
+   public void setRequiredtransfoQuantiteLabel(Label requiredtransfoQuantiteLabel){
+      this.requiredtransfoQuantiteLabel = requiredtransfoQuantiteLabel;
    }
 }
