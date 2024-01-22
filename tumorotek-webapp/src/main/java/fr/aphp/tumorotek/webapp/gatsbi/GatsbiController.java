@@ -1100,11 +1100,23 @@ public class GatsbiController
       Column col = new Column();
       col.setLabel(Labels.getLabel(nameKey));
       if(width != null){
+         //NB : les tests faits dans le cadre de la TG-198 montre que zk / le navigateur (?) ne prend pas en compte la valeur pour l'attribut width 
+         //(peut-être dû au fait que c'est un <th>)
          col.setWidth(width);
-         col.setStyle("max-width: " + width);
-      } else {
-         col.setHflex("1");
       }
+      /*
+      TG-198 : ajout du min-width corrige le problème d'affichage TG-198 avec FireFox mais pas avec Chrome
+      => comme le problème est introduit par le Hflex à 1, mise en commentaire du else... Peut-être qu'une montée de version de zk ou
+      du navigateur permettra de revenir à ce code. 
+      A date la largeur des colonnes est un peut trop grande pour les colonnes sans entête si il y a peu de colonne mais les valeurs ne sont
+      pas tronquées lors de l'affichage de la fiche à côté de la liste.
+      else {
+         col.setHflex("1");
+         col.setStyle("min-width: 150px");//corrige TG-198 sous FireFox
+      }
+      */
+      //NB : les tests faits dans le cadre de la TG-198 montre que zk / le navigateur (?) ne prend pas en compte la valeur pour l'attribut align 
+      //(peut-être dû au fait que c'est un <th>)      
       col.setAlign(align);
       if(child != null){
          child.setParent(col);
