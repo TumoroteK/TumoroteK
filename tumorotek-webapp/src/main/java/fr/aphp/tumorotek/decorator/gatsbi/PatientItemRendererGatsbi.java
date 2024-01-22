@@ -76,27 +76,32 @@ public class PatientItemRendererGatsbi extends PatientItemRenderer
       pat.setBanque(banque);
       identifiantBox = renderIdentifiantForBanque(li, pat);
       
-      if (contexte.isChampIdVisible(2)) {
-         renderNip(li, pat);
-      }
-      
-      if (contexte.isChampIdVisible(3)) {
+      if (display(3)) {
          renderNom(li, pat);
       }
       
-      if (contexte.isChampIdVisible(5)) {
+      if (display(5)) {
          renderPrenom(li, pat);
       }
       
-      if (contexte.isChampIdVisible(6)) {
+      if (display(2)) {
+         renderNip(li, pat);
+      }
+      
+      if (display(6)) {
       renderSexe(li, pat);
       }
       
-      if (contexte.isChampIdVisible(7)) {
+      if (display(7)) {
       renderDateNais(li, pat);  
       }
    }
 
+   //renvoie true si le champ est visible et à afficher dans le tableau pour le contexte courant
+   private boolean display(Integer champEntiteId) {
+      return contexte.isChampIdVisible(champEntiteId) && contexte.isChampInTableau(champEntiteId);
+   }
+   
    private Textbox renderIdentifiantForBanque(Listitem li, Patient pat) {
             
       // textbox pour ajouter un identifiant
