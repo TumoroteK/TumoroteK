@@ -37,9 +37,11 @@ package fr.aphp.tumorotek.action.administration;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -80,7 +82,7 @@ public class ParametresController
    private static final MediaType[] AUTHORIZED_IMAGE_MEDIA_TYPES =
       new MediaType[] {MediaType.IMAGE_GIF, MediaType.IMAGE_JPEG, MediaType.IMAGE_PNG};
 
-   public Set<ParametreDTO> parameterList  = new HashSet<>();
+   public List<ParametreDTO> parameterList  = new ArrayList<>();
 
    private Map<ParametreDTO, Boolean> editModeMap  = new HashMap<>();
 
@@ -90,7 +92,7 @@ public class ParametresController
 
    final ParametresManager parametresManager = ManagerLocator.getManager(ParametresManager.class);
 
-   public Set<ParametreDTO> getParameterList() {
+   public List<ParametreDTO> getParameterList() {
       return parameterList;
    }
 
@@ -257,7 +259,7 @@ public class ParametresController
       Plateforme plateforme = SessionUtils.getPlateforme();
       // Met à jour/ sauvegarde le paramètre de la plateforme en BD
       parametresManager.updateValeur(plateforme.getPlateformeId(), parameter.getCode(), parameter.getValeur());
-      Set<ParametreDTO> updatedParameters = parametresManager.getParametresByPlateformeId(SessionUtils.getPlateforme().getPlateformeId());
+      List<ParametreDTO> updatedParameters = parametresManager.findParametresByPlateformeId(SessionUtils.getPlateforme().getPlateformeId());
       // Met à jour les paramètres de la plateforme en session
       SessionUtils.setPlatformParameters(updatedParameters);
    }

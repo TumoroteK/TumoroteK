@@ -42,9 +42,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.Properties;
-import fr.aphp.tumorotek.dao.administration.ParametreDao;
+import fr.aphp.tumorotek.dao.administration.ParametreValeurSpecifiqueDao;
 import fr.aphp.tumorotek.dto.ParametreDTO;
 import fr.aphp.tumorotek.manager.administration.ParametresManager;
 import fr.aphp.tumorotek.model.config.ParametreValeurSpecifique;
@@ -63,7 +63,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
 
 import java.util.List;
-import java.util.Set;
 
 /**
  * Service de gestion des paramètres de l'application et des plateformes.
@@ -81,14 +80,14 @@ public class ParametresManagerImpl implements ParametresManager
 
    public static final Logger log = LoggerFactory.getLogger(ParametresManagerImpl.class);
 
-   private ParametreDao parametreDao;
+   private ParametreValeurSpecifiqueDao parametreValeurSpecifiqueDao;
 
    private final static String LOGO_FILEPATH = TumorotekProperties.TUMO_PROPERTIES_DIR + "/logo.png";
 
 
    // Dependency injection
-   public void setParametreDao(ParametreDao parametreDao){
-      this.parametreDao = parametreDao;
+   public void setParametreDao(ParametreValeurSpecifiqueDao parametreValeurSpecifiqueDao){
+      this.parametreValeurSpecifiqueDao = parametreValeurSpecifiqueDao;
    }
 
    /**
@@ -148,6 +147,13 @@ public class ParametresManagerImpl implements ParametresManager
 
    }
 
+   /**
+    * @see fr.aphp.tumorotek.manager.administration.ParametresManager#deleteMessageAccueil()
+    */
+   @Override
+   public boolean deleteMessageAccueil(){
+      return saveMessageAccueil("");
+   }
 
    /**
     * @see fr.aphp.tumorotek.manager.administration.ParametresManager#getLogoFile()
@@ -157,15 +163,6 @@ public class ParametresManagerImpl implements ParametresManager
       return new File(LOGO_FILEPATH);
    }
 
-   /**
-    * Vérifie si le fichier du logo existe.
-    *
-    * @return true si le fichier du logo existe, false sinon
-    */
-   public boolean isLogoExists() {
-      File logoFile = new File(LOGO_FILEPATH);
-      return logoFile.exists();
-   }
 
    /**
     * @see fr.aphp.tumorotek.manager.administration.ParametresManager#saveLogo(File)
@@ -239,22 +236,17 @@ public class ParametresManagerImpl implements ParametresManager
     * @param plateformeId L'identifiant de la plateforme.
     * @return Set de ParametreDTO.
     */
-   public Set<ParametreDTO> getParametresByPlateformeId(Integer plateformeId) {
+   public List<ParametreDTO> findParametresByPlateformeId(Integer plateformeId) {
       // Récupère les ParametreValeurSpecifique modifiés pour la plateforme donnée
-      List<ParametreValeurSpecifique> parametresModifies = parametreDao.findAllByPlateformeId(plateformeId);
+      List<ParametreValeurSpecifique> parametresModifies = parametreValeurSpecifiqueDao.findAllByPlateformeId(plateformeId);
 
       // Initialise le set qui contiendra les ParametreDTO résultants
-      Set<ParametreDTO> setOfParameters = new HashSet<>();
+      List<ParametreDTO> listOfParametres = new ArrayList<>();
 
-      // Ajoute le paramètre de message d'accueil
-      setOfParameters.add(buildMessageDacceuilParametre());
-
-      // Ajoute le paramètre du logo
-      setOfParameters.add(buildLogoParametre());
 
       // Parcours des valeurs par défaut des paramètres
-      for (EParametreValeurParDefaut param : EParametreValeurParDefaut.values()) {
-         String code = param.getCode();
+      for (EParametreValeurParDefaut eParametreValeurParDefaut : EParametreValeurParDefaut.values()) {
+         String code = eParametreValeurParDefaut.getCode();
 
          // Vérifie s'il existe un ParametreValeurSpecifique modifié avec le même code
          ParametreValeurSpecifique parametreModifie = findModifiedParamByCode(parametresModifies, code);
@@ -262,15 +254,15 @@ public class ParametresManagerImpl implements ParametresManager
          if (parametreModifie != null) {
             // Si oui, mappe-le vers ParametreDTO et ajoute-le au set
             ParametreDTO parametreDTO = ParametreDTO.mapFromEntity(parametreModifie);
-            setOfParameters.add(parametreDTO);
+            listOfParametres.add(parametreDTO);
          } else {
             // Si aucun ParametreValeurSpecifique modifié n'est trouvé, ajoute les valeurs par défaut au set
-            setOfParameters.add(new ParametreDTO(code, param.getValeur(), param.getType(), param.getGroupe()));
+            listOfParametres.add(new ParametreDTO(code, eParametreValeurParDefaut.getValeur(), eParametreValeurParDefaut.getType(), eParametreValeurParDefaut.getGroupe()));
          }
       }
 
       // Retourne le set des ParametreDTO
-      return setOfParameters;
+      return listOfParametres;
    }
 
    /**
@@ -300,7 +292,7 @@ public class ParametresManagerImpl implements ParametresManager
     */
    @Override
    public ParametreValeurSpecifique findParametresByPlateformeIdAndCode(Integer plateformID, String code) {
-      List<ParametreValeurSpecifique> parametres = parametreDao.findByPlateformeIdAndCode(plateformID, code);
+      List<ParametreValeurSpecifique> parametres = parametreValeurSpecifiqueDao.findByPlateformeIdAndCode(plateformID, code);
 
       if (!parametres.isEmpty()) {
          return parametres.get(0);
@@ -329,7 +321,7 @@ public class ParametresManagerImpl implements ParametresManager
          if (plateformParametreValeurSpecifique != null) {
             // Si le ParametreValeurSpecifique existe, met à jour sa valeur
             plateformParametreValeurSpecifique.setValeur(newValue);
-            parametreDao.updateObject(plateformParametreValeurSpecifique);
+            parametreValeurSpecifiqueDao.updateObject(plateformParametreValeurSpecifique);
          } else {
             // Si le ParametreValeurSpecifique n'existe pas, crée un nouveau ParametreValeurSpecifique
             ParametreValeurSpecifique newParametreValeurSpecifique = new ParametreValeurSpecifique();
@@ -338,28 +330,9 @@ public class ParametresManagerImpl implements ParametresManager
             newParametreValeurSpecifique.setValeur(newValue);
             newParametreValeurSpecifique.setType(paramEnum.getType());
             newParametreValeurSpecifique.setGroupe(paramEnum.getGroupe());
-            parametreDao.createObject(newParametreValeurSpecifique);
+            parametreValeurSpecifiqueDao.createObject(newParametreValeurSpecifique);
 
          }
-   }
-
-
-   private ParametreDTO buildMessageDacceuilParametre(){
-      String code = "params.message.accueil";
-      String messageAccueil = getMessageAccueil(false);
-      String normalizedText = TKStringUtils.convertHtmlEntities(messageAccueil);
-      String type = "string";
-      String groupe = "application";
-      return new ParametreDTO(code, normalizedText, type, groupe);
-   }
-
-   private ParametreDTO buildLogoParametre(){
-      String code = "params.logo.accueil";
-      String valeur =LOGO_FILEPATH;
-      String type = "image";
-      String groupe = "application";
-      return new ParametreDTO(code, valeur, type, groupe);
-
    }
 
 }

@@ -1,26 +1,24 @@
 package fr.aphp.tumorotek.dao.test.administration;
 
-import fr.aphp.tumorotek.dao.administration.ParametreDao;
+import fr.aphp.tumorotek.dao.administration.ParametreValeurSpecifiqueDao;
 import fr.aphp.tumorotek.dao.test.AbstractDaoTest;
 import fr.aphp.tumorotek.model.config.ParametreValeurSpecifique;
-import org.hibernate.exception.ConstraintViolationException;
-import org.springframework.dao.DataIntegrityViolationException;
 
 import java.util.List;
 
 import static org.junit.Assert.assertNotEquals;
 
-public class ParametreDaoTest extends AbstractDaoTest
+public class ParametreValeurSpecifiqueDaoTest extends AbstractDaoTest
 {
 
-   private ParametreDao parametreDao;
+   private ParametreValeurSpecifiqueDao parametreValeurSpecifiqueDao;
 
-   public void setParametreDao(ParametreDao parametreDao){
-      this.parametreDao = parametreDao;
+   public void setParametreDao(ParametreValeurSpecifiqueDao parametreValeurSpecifiqueDao){
+      this.parametreValeurSpecifiqueDao = parametreValeurSpecifiqueDao;
    }
 
    /**
-    * Teste la méthode {@link ParametreDao#findByPlateformeIdAndCode(Integer, String)}.
+    * Teste la méthode {@link ParametreValeurSpecifiqueDao#findByPlateformeIdAndCode(Integer, String)}.
     *
     * Ce test vérifie que le DAO récupère correctement un ParametreValeurSpecifique par son plateformeId et son code.
     * Il crée un nouveau ParametreValeurSpecifique, l'enregistre en utilisant le DAO, puis le récupère et vérifie que
@@ -33,9 +31,9 @@ public class ParametreDaoTest extends AbstractDaoTest
       newParametreValeurSpecifique.setPlateformeId(plateformID);
       newParametreValeurSpecifique.setCode(code);
 
-      parametreDao.createObject(newParametreValeurSpecifique);
+      parametreValeurSpecifiqueDao.createObject(newParametreValeurSpecifique);
 
-      List<ParametreValeurSpecifique> result = parametreDao.findByPlateformeIdAndCode(plateformID, code);
+      List<ParametreValeurSpecifique> result = parametreValeurSpecifiqueDao.findByPlateformeIdAndCode(plateformID, code);
       assertNotNull(result);
       assertEquals(1, result.size());
       String codeError = "welcame.message";
@@ -57,9 +55,9 @@ public class ParametreDaoTest extends AbstractDaoTest
       newParametreValeurSpecifique2.setPlateformeId(platformId);
       newParametreValeurSpecifique2.setCode(code2);
 
-      parametreDao.createObject(newParametreValeurSpecifique);
-      parametreDao.createObject(newParametreValeurSpecifique2);
-      List<ParametreValeurSpecifique> allParameters = parametreDao.findAllByPlateformeId(platformId);
+      parametreValeurSpecifiqueDao.createObject(newParametreValeurSpecifique);
+      parametreValeurSpecifiqueDao.createObject(newParametreValeurSpecifique2);
+      List<ParametreValeurSpecifique> allParameters = parametreValeurSpecifiqueDao.findAllByPlateformeId(platformId);
       assertNotNull(allParameters);
       assertEquals(2, allParameters.size());
    }

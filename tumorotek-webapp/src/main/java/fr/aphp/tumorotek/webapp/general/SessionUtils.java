@@ -102,11 +102,6 @@ public final class SessionUtils {
       return (Plateforme) sessionScp.get("Plateforme");
    }
 
-   public static Plateforme getPlateforme(){
-      return (Plateforme)   Sessions.getCurrent().getAttribute("Plateforme");
-
-   }
-
    /**
     * Indique si l'utilisateur est connecté en tant qu'admin de plateforme.
     *
@@ -301,43 +296,66 @@ public final class SessionUtils {
    /**
     * Stocker les paramètres de la plateforme dans la session.
     *
-    * @param parametres Set<ParametreDTO> paramètres de la plateforme à stocker
+    * @param parametres List<ParametreDTO> paramètres de la plateforme à stocker
     * @param sessionScp la map de session où les paramètres seront stockés
     */
-   public static void setPlatformParameters(Set<ParametreDTO> parametres, final Map<String, Object> sessionScp) {
+   public static void setPlatformParameters(List<ParametreDTO> parametres, final Map<String, Object> sessionScp) {
       sessionScp.put("Parametres", parametres);
    }
 
    /**
     * Stocker les paramètres de la plateforme dans la session.
     *
-    * @param parametres Set<ParametreDTO> paramètres de la plateforme à stocker
+    * @param parametres List<ParametreDTO> paramètres de la plateforme à stocker
     */
-   public static void setPlatformParameters(Set<ParametreDTO> parametres) {
+   public static void setPlatformParameters(List<ParametreDTO> parametres) {
       Sessions.getCurrent().setAttribute("Parametres", parametres);
      }
 
    /**
     * Récupère les paramètres de la plateforme depuis la session.
     *
-    * @return Set<ParametreDTO> L'ensemble des paramètres de la plateforme.
+    * @return List<ParametreDTO> L'ensemble des paramètres de la plateforme.
     */
-   public static Set<ParametreDTO> getPlatformParameters(final Map<String, Object> sessionScp) {
+   public static List<ParametreDTO> getPlatformParameters(final Map<String, Object> sessionScp) {
       if(sessionScp.get("Parametres") != null){
-         return (Set<ParametreDTO>) sessionScp.get("Parametres");
+         return (List<ParametreDTO>) sessionScp.get("Parametres");
       }
-      return new HashSet<>();
+      return new ArrayList<>();
    }
 
    /**
     * Récupère les paramètres de la plateforme depuis la session.
     *
-    * @return Set<ParametreDTO> L'ensemble des paramètres de la plateforme.
+    * @return List<ParametreDTO> L'ensemble des paramètres de la plateforme.
     */
-   public static Set<ParametreDTO> getPlatformParameters() {
+   public static List<ParametreDTO> getPlatformParameters() {
       // Récupère l'objet des paramètres depuis la session
-      return (Set<ParametreDTO>) Sessions.getCurrent().getAttribute("Parametres");
+      return (List<ParametreDTO>) Sessions.getCurrent().getAttribute("Parametres");
 
+   }
+
+   /**
+    * Récupère un ParametreDTO en utilisant le code spécifié.
+    *
+    * @param codeToFind Le code à utiliser pour récupérer le ParametreDTO.
+    * @return Le ParametreDTO correspondant au code spécifié, ou null s'il n'est pas trouvé.
+    */
+   public static ParametreDTO getParametreByCode(String codeToFind, Map<String, Object> sessionScp) {
+      // Récupère l'ensemble des ParametreDTO à partir de la session de la plateforme
+      List<ParametreDTO> parametreDTOList = getPlatformParameters(sessionScp);
+
+      // Parcours l'ensemble des ParametreDTO pour trouver celui avec le code spécifié
+      for (ParametreDTO parametreDTO : parametreDTOList) {
+         // Vérifie si le code du ParametreDTO actuel correspond au code recherché
+         if (parametreDTO.getCode().equals(codeToFind)) {
+            // Retourne le ParametreDTO trouvé
+            return parametreDTO;
+         }
+      }
+
+      // Aucun ParametreDTO correspondant n'a été trouvé, retourne null
+      return null;
    }
 
 

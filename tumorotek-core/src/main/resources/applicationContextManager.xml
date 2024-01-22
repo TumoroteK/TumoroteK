@@ -2593,7 +2593,7 @@
 		<property name="target">
 			<bean
 					class="fr.aphp.tumorotek.manager.impl.administration.ParametresManagerImpl" >
-				<property name="parametreDao" ref="parametreDao" />
+				<property name="parametreValeurSpecifiqueDao" ref="parametreValeurSpecifiqueDao" />
 
 			</bean>
 		</property>

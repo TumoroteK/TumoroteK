@@ -1563,27 +1563,5 @@ public abstract class AbstractFicheController extends AbstractController
    }
 
 
-   /**
-    * Récupère un ParametreDTO en utilisant le code spécifié.
-    *
-    * @param codeToFind Le code à utiliser pour récupérer le ParametreDTO.
-    * @return Le ParametreDTO correspondant au code spécifié, ou null s'il n'est pas trouvé.
-    */
-   protected ParametreDTO getParametreByCode(String codeToFind) {
-      // Récupère l'ensemble des ParametreDTO à partir de la session de la plateforme
-      Set<ParametreDTO> parametreDTOSet = SessionUtils.getPlatformParameters();
-
-      // Parcours l'ensemble des ParametreDTO pour trouver celui avec le code spécifié
-      for (ParametreDTO parametreDTO : parametreDTOSet) {
-         // Vérifie si le code du ParametreDTO actuel correspond au code recherché
-         if (parametreDTO.getCode().equals(codeToFind)) {
-            // Retourne le ParametreDTO trouvé
-            return parametreDTO;
-         }
-      }
-
-      // Aucun ParametreDTO correspondant n'a été trouvé, retourne null
-      return null;
-   }
 
 }

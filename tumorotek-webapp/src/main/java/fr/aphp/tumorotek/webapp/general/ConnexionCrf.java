@@ -264,8 +264,7 @@ public class ConnexionCrf extends GenericForwardComposer<Component>
          sessionScope.put("User", user);
          Plateforme plateforme = selectedBanque.getPlateforme();
          // Obtient les paramètres pour l'ID de la plateforme donneé
-         Set<ParametreDTO> parametres = ManagerLocator.getManager(ParametresManager.class).
-                                        getParametresByPlateformeId(plateforme.getPlateformeId());
+         List<ParametreDTO> parametres = ManagerLocator.getManager(ParametresManager.class).findParametresByPlateformeId(plateforme.getPlateformeId());
          // Enregistre la liste de paramètres dans la session
          SessionUtils.setPlatformParameters(parametres, sessionScope);
 

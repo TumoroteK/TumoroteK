@@ -318,8 +318,7 @@ public final class ConnexionUtils
       }
       if(pf != null){
          // Obtient les paramètres pour l'ID de la plateforme donneé
-         Set<ParametreDTO> parametres = ManagerLocator.getManager(ParametresManager.class).
-            getParametresByPlateformeId(pf.getPlateformeId());
+         List<ParametreDTO> parametres = ManagerLocator.getManager(ParametresManager.class).findParametresByPlateformeId(pf.getPlateformeId());
          // Enregistre la liste de paramètres dans la session
          SessionUtils.setPlatformParameters(parametres, sessionScp);
          sessionScp.put("Plateforme", pf);

@@ -5,7 +5,7 @@ import fr.aphp.tumorotek.model.config.ParametreValeurSpecifique;
 
 import java.util.List;
 
-public interface ParametreDao extends GenericDaoJpa<ParametreValeurSpecifique, Integer>
+public interface ParametreValeurSpecifiqueDao extends GenericDaoJpa<ParametreValeurSpecifique, Integer>
 {
    List<ParametreValeurSpecifique> findByPlateformeIdAndCode(Integer plateformeId, String code);
    List<ParametreValeurSpecifique> findAllByPlateformeId(Integer plateformeId);

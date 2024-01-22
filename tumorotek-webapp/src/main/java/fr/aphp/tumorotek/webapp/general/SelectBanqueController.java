@@ -333,8 +333,8 @@ public class SelectBanqueController extends GenericForwardComposer<Component>
             sessionScp.put("User", user);
 
             // Obtient les paramètres pour l'ID de la plateforme donné
-            Set<ParametreDTO> parametres = ManagerLocator.getManager(ParametresManager.class)
-                                          .getParametresByPlateformeId(selectedPlateforme.getPlateformeId());
+            List<ParametreDTO> parametres = ManagerLocator.getManager(ParametresManager.class)
+                                          .findParametresByPlateformeId(selectedPlateforme.getPlateformeId());
             // Enregistre la liste de paramètres dans la session
             SessionUtils.setPlatformParameters(parametres, sessionScope);
 

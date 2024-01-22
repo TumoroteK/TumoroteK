@@ -1,6 +1,6 @@
 package fr.aphp.tumorotek.manager.test.administration;
 
-import fr.aphp.tumorotek.dao.administration.ParametreDao;
+import fr.aphp.tumorotek.dao.administration.ParametreValeurSpecifiqueDao;
 import fr.aphp.tumorotek.dto.ParametreDTO;
 import fr.aphp.tumorotek.manager.administration.ParametresManager;
 import fr.aphp.tumorotek.manager.test.AbstractManagerTest4;
@@ -9,10 +9,10 @@ import fr.aphp.tumorotek.param.EParametreValeurParDefaut;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Set;
+import java.util.List;
+import java.util.Random;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
@@ -21,20 +21,19 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 
 @Transactional
-public class ParametresManagerTest extends AbstractManagerTest4
-{
+public class ParametresManagerTest extends AbstractManagerTest4 {
 
    @Autowired
    private ParametresManager parametresManager;
 
-
    @Autowired
-   private ParametreDao parametreDao;
+   private ParametreValeurSpecifiqueDao parametreValeurSpecifiqueDao;
 
-   String code = "params.derives.obligatoire";
+   private static final Random random = new Random();
+
+   String code = "DERIVE_QTE_OBLIGATOIRE";
 
    String valueFromDb = "value_from_db";
-
 
    @Before
    public void insertOneParametre(){
@@ -44,15 +43,9 @@ public class ParametresManagerTest extends AbstractManagerTest4
       parametre.setCode(code);
       parametre.setValeur(valueFromDb);
       parametre.setPlateformeId(plateformeId);
-      parametreDao.createObject(parametre);
+      parametreValeurSpecifiqueDao.createObject(parametre);
 
    }
-
-   public void deleteAfterTest(ParametreValeurSpecifique parametreValeurSpecifique){
-      parametreDao.removeObject(parametreValeurSpecifique.getParameterId());
-
-   }
-
 
    /**
     * Teste le scénario où la mise à jour de la valeur d'un paramètre, qui n'a jamais été modifiée auparavant
@@ -86,8 +79,8 @@ public class ParametresManagerTest extends AbstractManagerTest4
     */
    @Test
    public void testUpdateValeurExistsInDB(){
-      // Arrange
       Integer plateformeId = 1;
+      // Arrange
       String nouvelleValeur = "NOUVELLE_VALEUR";
 
       // Vérifie que le paramètre existe initialement dans la base de données
@@ -110,12 +103,12 @@ public class ParametresManagerTest extends AbstractManagerTest4
     *
     */
    @Test
-   public void updateInvalidCode() {
-      try {
+   public void updateInvalidCode(){
+      try{
          parametresManager.updateValeur(5, "non_existing_code", "value");
          // La ligne ci-dessus devrait générer une exception
          fail("Expected IllegalArgumentException was not thrown");
-      } catch (IllegalArgumentException e) {
+      }catch(IllegalArgumentException e){
          // Vérifier le message de l'exception
          assertEquals("Invalid code: non_existing_code", e.getMessage());
       }
@@ -129,20 +122,21 @@ public class ParametresManagerTest extends AbstractManagerTest4
    public void testgetDefaultParametresByPlateformeId(){
       Integer plateformeId = 3;
       // Act
-      Set<ParametreDTO> result = parametresManager.getParametresByPlateformeId(plateformeId);
+      List<ParametreDTO> result = parametresManager.findParametresByPlateformeId(plateformeId);
 
       // Assert
       assertNotNull(result);
       assertNotNull(result);
       // Le nombre de paramètres par défaut est égal au nombre d'éléments d'énumération + 2 (message d'accueil + logo),
-      int totalParametres = EParametreValeurParDefaut.values().length +2;
+      int totalParametres = EParametreValeurParDefaut.values().length + 2;
 
       assertEquals(totalParametres, result.size());
 
       // Verify that findParametresByPlateformeIdAndCode was called for each parameter code
       for(EParametreValeurParDefaut param : EParametreValeurParDefaut.values()){
          // Find the corresponding ParametreDTO in the result list
-         ParametreDTO parametreDTO = result.stream().filter(dto -> dto.getCode().equals(param.getCode())).findFirst().orElse(null);
+         ParametreDTO parametreDTO =
+            result.stream().filter(dto -> dto.getCode().equals(param.getCode())).findFirst().orElse(null);
 
          // Verify that the ParametreDTO exists
          assertNotNull(parametreDTO);
@@ -163,36 +157,32 @@ public class ParametresManagerTest extends AbstractManagerTest4
    public void testgetParametresByPlateformeId(){
       Integer plateformeId = 1;
       // Act
-      Set<ParametreDTO> result = parametresManager.getParametresByPlateformeId(plateformeId);
+      List<ParametreDTO> result = parametresManager.findParametresByPlateformeId(plateformeId);
 
       // Assert
       assertNotNull(result);
-      // Le nombre de paramètres par défaut est égal au nombre d'éléments d'énumération + 2 (message d'accueil + logo),
-      int totalParametres = EParametreValeurParDefaut.values().length +2;
+      // Le nombre de paramètres par défaut est égal au nombre d'éléments d'énumération
+      int totalParametres = EParametreValeurParDefaut.values().length;
 
       assertEquals(totalParametres, result.size());
 
       // Verify that findParametresByPlateformeIdAndCode was called for each parameter code
       for(EParametreValeurParDefaut param : EParametreValeurParDefaut.values()){
          // Find the corresponding ParametreDTO in the result list
-         ParametreDTO parametreDTO = result.stream().filter(dto -> dto.getCode().equals(param.getCode())).findFirst().orElse(null);
+         ParametreDTO parametreDTO =
+            result.stream().filter(dto -> dto.getCode().equals(param.getCode())).findFirst().orElse(null);
 
          // Verify that the ParametreDTO exists
          assertNotNull(parametreDTO);
 
          // Assert that the ParametreDTO has the correct values
          assertEquals(param.getCode(), parametreDTO.getCode());
-         if (param.getCode().equals(code)){
+         if(param.getCode().equals(code)){
             assertNotEquals(param.getValeur(), parametreDTO.getValeur());
 
          }
 
       }
    }
-
-
-
-
-
 
 }

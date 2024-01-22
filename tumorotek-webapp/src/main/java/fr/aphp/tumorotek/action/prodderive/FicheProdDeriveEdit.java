@@ -367,7 +367,7 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
       // Récupérer le code (deriveQteObligatoire.getCode())
       EParametreValeurParDefaut deriveQteObligatoire = EParametreValeurParDefaut.DERIVE_QTE_OBLIGATOIRE;
       // Obtenir le DTO associé au paramètre
-      ParametreDTO deriveQteObligatoireDto = getParametreByCode(deriveQteObligatoire.getCode());
+      ParametreDTO deriveQteObligatoireDto = SessionUtils.getParametreByCode(deriveQteObligatoire.getCode(), sessionScope);
       // Vérifier si le DTO n'est pas nul
       if (deriveQteObligatoireDto != null){
          // Convertir la valeur du paramètre en un boolean

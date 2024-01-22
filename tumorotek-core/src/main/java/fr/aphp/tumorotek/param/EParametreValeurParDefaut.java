@@ -21,7 +21,7 @@ package fr.aphp.tumorotek.param;
 public enum EParametreValeurParDefaut
 {
    // paramètre quantité utilisé obligatoire lors de la création du dérivé :
-   DERIVE_QTE_OBLIGATOIRE("derives.quantite.utilise.obligatoire", "true", "boolean", "derive");
+   DERIVE_QTE_OBLIGATOIRE("DERIVE_QTE_OBLIGATOIRE", "true", "boolean", "DERIVE");
 
    private String code;
 

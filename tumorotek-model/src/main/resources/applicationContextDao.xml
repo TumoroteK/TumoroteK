@@ -1985,9 +1985,9 @@
 		</property>
 	</bean>
 
-	<bean id="parametreDao" parent="abstractDao">
+	<bean id="parametreValeurSpecifiqueDao" parent="abstractDao">
 		<property name="proxyInterfaces">
-			<value>fr.aphp.tumorotek.dao.administration.ParametreDao</value>
+			<value>fr.aphp.tumorotek.dao.administration.ParametreValeurSpecifiqueDao</value>
 		</property>
 		<property name="target">
 			<bean parent="abstractDaoTarget">
