@@ -89,6 +89,8 @@ import fr.aphp.tumorotek.model.stockage.Conteneur;
    @NamedQuery(name = "Service.findByCollaborateurIdAndArchive",
       query = "SELECT s FROM Service s " + "left join s.collaborateurs c " + "WHERE c.collaborateurId = ?1 "
          + "AND s.archive =?2"),
+   @NamedQuery(name = "Service.findByCollaborateurIdsAndArchive",
+   query = "SELECT distinct s FROM Service s " + "join s.collaborateurs c " + "WHERE c.collaborateurId in (?1) AND s.archive =?2 order by s.nom"), 
    @NamedQuery(name = "Service.findCountByEtablissementId",
       query = "SELECT count(s) FROM Service s " + "left join s.etablissement e " + "WHERE e.etablissementId = (?1)"),
    //		@NamedQuery(name = "Service.findByBanqueId",

@@ -114,6 +114,14 @@ public interface ServiceDao extends GenericDaoJpa<Service, Integer>
    List<Service> findByCollaborateurId(Integer collaborateurId);
 
    /**
+    * Recherche les services actifs d'un ensemble de collaborateurs passé en paramètre.
+    * @param collaborateurIds pour lesquels on recherche des services.
+    * @return une liste de services.
+    */
+   List<Service> findByCollaborateurIdsAndArchive(List<Integer> collaborateurIds, boolean archive);
+
+   
+   /**
     * Recherche les services dont un collaborateur est passé en paramètre
     * et qui sont archivés ou non.
     * @param collaborateurId pour lequel on recherche des services.

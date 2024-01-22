@@ -229,6 +229,7 @@ public class InjectionManagerImpl implements InjectionManager
 
       if(champEntite != null && valeur != null && banque != null){
 
+         //gestion du système de transcodage nécessaire pour certains champs dont la valeur ne peut pas être prise telle quelle
          if(champEntite.getEntite().getNom().equals("Etablissement") || champEntite.getEntite().getNom().equals("Collaborateur")
             || champEntite.getEntite().getNom().equals("Service")){
 

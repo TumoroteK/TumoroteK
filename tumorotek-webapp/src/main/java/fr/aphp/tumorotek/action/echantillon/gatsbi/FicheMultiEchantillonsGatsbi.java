@@ -54,6 +54,7 @@ import fr.aphp.tumorotek.action.echantillon.AbstractEchantillonDecoratorRowRende
 import fr.aphp.tumorotek.action.echantillon.FicheMultiEchantillons;
 import fr.aphp.tumorotek.action.prelevement.gatsbi.exception.GatsbiException;
 import fr.aphp.tumorotek.manager.impl.interfacage.ResultatInjection;
+import fr.aphp.tumorotek.model.contexte.Collaborateur;
 import fr.aphp.tumorotek.model.contexte.gatsbi.Contexte;
 import fr.aphp.tumorotek.webapp.gatsbi.GatsbiController;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
@@ -207,5 +208,15 @@ public class FicheMultiEchantillonsGatsbi extends FicheMultiEchantillons
    
    public void onSelectParametrageClose(){
       super.scrollToBottom();    
+   }
+   
+   //TG-204 : définition d'un "thesaurus dans Gatsbi" pour le champ opérateur
+   //le mécanisme standard de gestion des thesaurus (GatsbiController.appliThesaurusValues()) 
+   //ne peut pas s'appliquer ici car le composant est un combobox et non une liste 
+   @Override
+   public List<Collaborateur> findCollaborateursToDisplayForOperateur() {
+      //récupération de tous les collaborateurs (cas standard sans le filtre Gatsbi) :
+      List<Collaborateur> allCollaborateur = super.findCollaborateursToDisplayForOperateur();
+      return GatsbiControllerEchantillon.filterOperateursFromContexte(allCollaborateur);  
    }
 }

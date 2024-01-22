@@ -48,6 +48,7 @@ import org.zkoss.zul.Groupbox;
 import org.zkoss.zul.Listbox;
 
 import fr.aphp.tumorotek.action.echantillon.FicheEchantillonEdit;
+import fr.aphp.tumorotek.model.contexte.Collaborateur;
 import fr.aphp.tumorotek.webapp.gatsbi.GatsbiController;
 
 /**
@@ -127,4 +128,15 @@ public class FicheEchantillonEditGatsbi extends FicheEchantillonEdit
       GatsbiController.checkRequiredNonInputComponents(reqListboxes, reqComboboxes, reqDivs);
       super.onClick$validate();
    }
+
+   //TG-204 : définition d'un "thesaurus dans Gatsbi" pour le champ opérateur
+   //le mécanisme standard de gestion des thesaurus (GatsbiController.appliThesaurusValues()) 
+   //ne peut pas s'appliquer ici car le composant est un combobox et non une liste 
+   @Override
+   public List<Collaborateur> findCollaborateursToDisplayForOperateur() {
+      //récupération de tous les collaborateurs (cas standard sans le filtre Gatsbi) :
+      List<Collaborateur> allCollaborateur = super.findCollaborateursToDisplayForOperateur();
+      return GatsbiControllerEchantillon.filterOperateursFromContexte(allCollaborateur); 
+   }
+
 }

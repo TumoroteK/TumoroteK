@@ -187,14 +187,35 @@ public class FichePrelevementEdit extends AbstractFicheEditController
 
    protected ConsentType selectedConsentType;
 
+   // @since Gatsbi - TG-206 (v2.3.0.6)
+   // Tous les établissements pouvant être sélectionnés - règle différente pour collection Gatsbi ou non
+   // avec la valeur null
+   protected List<Etablissement> allEtablissements = new ArrayList<>();
+   
+   // établissements à afficher en fonction des filtres faits par l'utilisateur
+   // avec la valeur null
    protected List<Etablissement> etablissements = new ArrayList<>();
 
    protected Etablissement selectedEtablissement;
 
+   //@since Gatsbi - TG-206 (v2.3.0.6)
+   // Tous les services pouvant être sélectionnés (cas ou pas de filtre établissement) - règle différente pour collection Gatsbi ou non
+   // avec la valeur null
+   protected List<Service> allServices = new ArrayList<>();
+   
+   // services à afficher en fonction des filtres faits par l'utilisateur
+   // avec la valeur null
    protected List<Service> services = new ArrayList<>();
 
    protected Service selectedService;
 
+   // @since Gatsbi - TG-206 (v2.3.0.6)
+   // Tous les collaborateurs pouvant être sélectionnés (cas ou pas de filtre établissement) - règle différente pour collection Gatsbi ou non
+   // avec la valeur null
+   protected List<Collaborateur> allCollaborateurs = new ArrayList<>();
+   
+   // collaborateurs à afficher en fonction des filtres faits par l'utilisateur
+   // avec la valeur null
    protected List<Collaborateur> collaborateurs = new ArrayList<>();
 
    protected Collaborateur selectedCollaborateur;
@@ -435,46 +456,96 @@ public class FichePrelevementEdit extends AbstractFicheEditController
    }
 
    public void initCollaborations(){
+      initAllCollaborationPossible();
+      //réinit selectedXxx :
+      selectedEtablissement = null;
+      selectedService = null;
+      selectedCollaborateur = null;
+      
+    
+      //************** gestion des sélections dans le cas où une valeur est renseignée (mode modification):
       if(this.prelevement.getServicePreleveur() != null){
          selectedService = this.prelevement.getServicePreleveur();
-      }else{
-         selectedService = null;
       }
 
       if(this.prelevement.getPreleveur() != null){
          selectedCollaborateur = this.prelevement.getPreleveur();
-      }else{
-         selectedCollaborateur = null;
       }
 
-      // init des étabs
-      etablissements = ManagerLocator.getEtablissementManager().findAllActiveObjectsWithOrderManager();
-      etablissements.add(0, null);
+
+      //etablissements.add(0, null);
       if(selectedService != null){
          selectedEtablissement = selectedService.getEtablissement();
-      }else{
-         selectedEtablissement = null;
       }
-
+      //************** gestion des cas où une valeur est renseignée - FIN
+      
+      //************** filtre des listes en fonction des sélections
+      // init des étabs
+      etablissements = allEtablissements;
+      
       // init des services
-      if(selectedEtablissement != null){
-         services = ManagerLocator.getEtablissementManager().getActiveServicesWithOrderManager(selectedEtablissement);
-      }else{
-         services = ManagerLocator.getServiceManager().findAllActiveObjectsWithOrderManager();
-      }
-      services.add(0, null);
-      final ListModel<Service> listTmp = new ListModelList<>(services);
-      servicesBoxPrlvt.setModel(listTmp);
-      servicesBoxPrlvt.setSelectedIndex(services.indexOf(selectedService));
+      populateServicesForSelectedEtablissement();
+      
+      initCollaborateurs();
 
-      // init des collaborateurs
-      if(selectedService != null){
-         collaborateurs = ManagerLocator.getServiceManager().getActiveCollaborateursWithOrderManager(selectedService);
-      }else{
-         collaborateurs = ManagerLocator.getCollaborateurManager().findAllActiveObjectsWithOrderManager();
-      }
-      collaborateurs.add(0, null);
+      //dans le cas de la création, si une seule valeur de collaborateur (en plus de la ligne blanche), on la force:
+      //dans la réalité concerne plutôt Gatsbi mais règle générale définie en standard
+      if(prelevement.getPrelevementId() == null) {
+         if(collaborateurs.size() == 2 && selectedCollaborateur == null) {
+            selectedCollaborateur = collaborateurs.get(1);
+            //si une seule valeur (en plus de la ligne blanche), on la force:
+            if(services.size() == 2) {
+               selectedService = services.get(1);
+            }
+            else {
+               selectedService = null;
+            }
+         }
 
+         //dans le cas de la création, 
+         //si une seule valeur (en plus de la ligne blanche) et que tous les collaborateurs
+         //appartiennent à ce service (pas de collab sans service), on la force:
+         if(services.size() == 2 && selectedService == null) {
+            List<Collaborateur> collaborateursForService = retrieveActiveCollaborateursWithOrder(services.get(1));
+            //allCollaborateurs à une ligne blanche d'où le size() -1 :
+            if(collaborateursForService.size() == allCollaborateurs.size()-1) {
+               selectedService = services.get(1);
+               selectedEtablissement = selectedService.getEtablissement();
+            }
+         }
+         //dans le cas de la création, si une seule valeur (en plus de la ligne blanche), on la force:
+         if(etablissements.size() == 2 && selectedEtablissement == null ) {
+            selectedEtablissement = etablissements.get(1);
+         }
+      }      
+      
+      //************** filtre des listes en fonction des sélections - FIN
+      
+      //cas de la modification :
+      if(prelevement.getPrelevementId() != null) {
+         //************** gestion des cas où la valeur sélectionnée correspond à un élément archivé, non présent dans les listes :
+         if(selectedEtablissement != null && !allEtablissements.contains(selectedEtablissement)) {
+            allEtablissements.add(selectedEtablissement);
+         }
+         
+         if(selectedService != null && !allServices.contains(selectedService)) {
+            allServices.add(selectedService);
+         }
+         if(selectedCollaborateur != null && !allCollaborateurs.contains(selectedCollaborateur)) {
+            allCollaborateurs.add(selectedCollaborateur);
+         }
+         //************** gestion des cas où la valeur sélectionnée correspond à un élément archivé, non présent dans les listes - FIN
+      }
+      
+      //alimentation des box avant rafraichissement des composants:
+      final ListModel<Etablissement> listEtablissements = new ListModelList<>(etablissements);
+      etabsBoxPrlvt.setModel(listEtablissements);
+      etabsBoxPrlvt.setSelectedIndex(etablissements.indexOf(selectedEtablissement));   
+      
+      final ListModel<Service> listServices = new ListModelList<>(services);
+      servicesBoxPrlvt.setModel(listServices);
+      servicesBoxPrlvt.setSelectedIndex(services.indexOf(selectedService));      
+      
       final ListModel<Collaborateur> listCollabs = new ListModelList<>(collaborateurs);
       collaborateursBoxPrlvt.setModel(listCollabs);
       collaborateursBoxPrlvt.setSelectedIndex(collaborateurs.indexOf(selectedCollaborateur));
@@ -482,6 +553,47 @@ public class FichePrelevementEdit extends AbstractFicheEditController
       getBinder().loadAll();
    }
 
+   protected void populateServicesForSelectedEtablissement(){
+      List<Service> servicesForSelectedEtablissement = null;
+      if(selectedEtablissement != null){
+         servicesForSelectedEtablissement = retrieveActiveServicesWithOrder(selectedEtablissement);
+      }else{
+         servicesForSelectedEtablissement = allServices;
+      }
+      services = addNullServiceIfNecessary(servicesForSelectedEtablissement);
+   }
+
+   //En standard, si un établissement est sélectionné mais qu'aucun service n'est sélectionné
+   //affichage de tous les collaborateurs sans tenir compte de l'établissement
+   //cela permet d'afficher systématiquement tous les collaborateurs sans service sans avoir à 
+   //aller regarder l'établissement de tous les collaborateurs
+   //sera surchargé avec Gatsbi en cas de filtre sur les collaborateur car le nombre de collaborateurs sera plus restreint
+   protected void populateCollaborateurForSelectedEtablissement(){
+      collaborateurs = allCollaborateurs;
+   }
+  
+   //TG-206 : ne fait rien en standard mais sera surchargé dans Gatsbi
+   protected void doAfterSelectingCollaborateur() {
+   }
+   
+   
+   /**
+    * récupère tous les établissements, services et collaborateurs (pour le champ opérateur) possibles
+    * dans le cas classique, il n'y a pas de lien entre les 3 listes : récupération de tout ce qui est en base
+    * sera surchargé pour Gatsbi pour n'afficher que ceux sélectionnés dans le contexte
+    * @since Gatsbi : TG-206 : gestion des services préleveurs à partir du filtre sur les préleveur gérés comme un thesaurus
+    */   
+   protected void initAllCollaborationPossible() {
+      //les listes all contiennent la valeur null pour pouvoir ensuite affecter la référence aux objets etablissements, services, collaborateurs
+      //et éviter de recréer un objet contenant potentiellement plusieurs centaines de références !!!!!!!!
+      allEtablissements = addNullEtablissementIfNecessary(
+         ManagerLocator.getEtablissementManager().findAllActiveObjectsWithOrderManager());
+      allServices = addNullServiceIfNecessary(
+         ManagerLocator.getServiceManager().findAllActiveObjectsWithOrderManager());
+      allCollaborateurs = addNullCollaborateurIfNecessary(
+         ManagerLocator.getCollaborateurManager().findAllActiveObjectsWithOrderManager());
+   }
+   
    /**
     * Méthode inspirée initCollaborations et allégée pour appel uniquement
     * dans injection depuis interfaçage.
@@ -500,7 +612,7 @@ public class FichePrelevementEdit extends AbstractFicheEditController
          selectedEtablissement = selectedService.getEtablissement();
 
          services.clear();
-         services.addAll(ManagerLocator.getEtablissementManager().getActiveServicesWithOrderManager(selectedEtablissement));
+         services.addAll(retrieveActiveServicesWithOrder(selectedEtablissement));
          services.add(0, null);
          final ListModel<Service> servModel = new ListModelList<>(services);
          servicesBoxPrlvt.setModel(servModel);
@@ -509,7 +621,7 @@ public class FichePrelevementEdit extends AbstractFicheEditController
 
          // init des collaborateurs
          collaborateurs.clear();
-         collaborateurs.addAll(ManagerLocator.getServiceManager().getActiveCollaborateursWithOrderManager(selectedService));
+         collaborateurs.addAll(retrieveActiveCollaborateursWithOrder(selectedService));
          collaborateurs.add(0, null);
 
          final ListModel<Collaborateur> listCollabs = new ListModelList<>(collaborateurs);
@@ -523,15 +635,18 @@ public class FichePrelevementEdit extends AbstractFicheEditController
          final int idx = collaborateurs.indexOf(selectedCollaborateur);
          if(idx >= 0){
             collaborateursBoxPrlvt.setSelectedIndex(collaborateurs.indexOf(selectedCollaborateur));
-         }else{ // warning incoherence appartenance service
-            //				throw new WrongValueException(collaborateursBoxPrlvt,
-            //						Labels.getLabel(
-            //							"interfacage.injection.collaborateur.incoherent"));
+            doAfterSelectingCollaborateur();
+         }else{ 
             Messagebox.show(Labels.getLabel("interfacage.injection.collaborateur.incoherent"), Labels.getLabel("general.warning"),
                Messagebox.OK, Messagebox.EXCLAMATION);
          }
       }else{
-         selectedCollaborateur = null;
+         if(collaborateurs.size() == 2) {
+            selectedCollaborateur = collaborateurs.get(1);// get(0) est la ligne blanche
+         } 
+         else {
+            selectedCollaborateur = null;
+         }
       }
    }
 
@@ -1094,35 +1209,67 @@ public class FichePrelevementEdit extends AbstractFicheEditController
 
       getBinder().loadComponent(servicesBoxPrlvt);
    }
+   
+   protected List<Service> retrieveActiveServicesWithOrder(Etablissement selectedEtablissement) {
+      return ManagerLocator.getEtablissementManager().getActiveServicesWithOrderManager(selectedEtablissement);
+   }
 
    /**
     * Filtre les collaborateurs par service.
     *
-    * @param event Event : seléction sur la liste etabsBoxPrlvt.
+    * @param event Event : seléction sur la liste servicesBoxPrlvt.
     * @throws Exception
     */
    public void onSelect$servicesBoxPrlvt(final Event event) throws Exception{
       final int ind = servicesBoxPrlvt.getSelectedIndex();
       selectedService = services.get(ind);
-      if(selectedService != null){
-         collaborateurs = ManagerLocator.getServiceManager().getActiveCollaborateursWithOrderManager(selectedService);
-      }else{
-         collaborateurs = ManagerLocator.getCollaborateurManager().findAllActiveObjectsWithOrderManager();
+      
+      populateCollaborateursForSelectedService();
+
+      // NB : collaborateurs peut être null si le champ préleveur n'est pas visible :
+      if(collaborateurs != null && !collaborateurs.contains(selectedCollaborateur)){
+         selectedCollaborateur = null;
       }
-      collaborateurs.add(0, null);
+      if(collaborateurs != null && collaborateurs.size() == 2) {
+         selectedCollaborateur = collaborateurs.get(1);//le premier est la ligne vide
+      }
 
       final ListModel<Collaborateur> list = new ListModelList<>(collaborateurs);
       collaborateursBoxPrlvt.setModel(list);
-
-      if(!collaborateurs.contains(selectedCollaborateur)){
-         selectedCollaborateur = null;
-      }
 
       collaborateursBoxPrlvt.setSelectedIndex(collaborateurs.indexOf(selectedCollaborateur));
 
       getBinder().loadComponent(collaborateursBoxPrlvt);
    }
 
+   
+   //TG-206 : 
+   // cas standard : alimente les collaborateurs à partir du service éventuellement sélectionné => appel de populateCollaborateursForSelectedService()
+   // sera surchargé par Gatsbi qui fera plus de chose ....
+   protected void initCollaborateurs(){
+      populateCollaborateursForSelectedService();
+   }
+   
+   //TG-206 : 
+   // alimente les collaborateurs à partir du service éventuellement sélectionné
+   // si le service sélectionné est null, on affiche tous les collaborateurs, sans regarder l'établissement,
+   // règle en place avant l'évo TG-206 pour faciliter la gestion des collaborateurs sans services
+   // ce sera surchargé pour l'écran Gatsbi où la volumétrie des collaborateurs sera moindre ...
+   protected void populateCollaborateursForSelectedService(){
+      List<Collaborateur> collaborateursForSelectedService = null;
+      if(selectedService != null){
+         collaborateursForSelectedService = retrieveActiveCollaborateursWithOrder(selectedService);
+      }else{
+         collaborateursForSelectedService = allCollaborateurs;
+      }
+      collaborateurs = addNullCollaborateurIfNecessary(collaborateursForSelectedService);
+   }
+
+   //TG-206 : sera surchargé par Gatsbi
+   protected List<Collaborateur> retrieveActiveCollaborateursWithOrder(Service selectedService) {
+      return ManagerLocator.getServiceManager().getActiveCollaborateursWithOrderManager(selectedService);
+   }
+   
    /**
     * Sélectionne le collaborateur.
     *
@@ -1661,6 +1808,7 @@ public class FichePrelevementEdit extends AbstractFicheEditController
       openCollaborationsWindow(page, "general.recherche", "select", null, "Service", null, Path.getPath(self), old);
    }
 
+   //A REVOIR
    /**
     * Méthode appelée par la fenêtre CollaborationsController quand
     * l'utilisateur sélectionne un collaborateur.
@@ -1672,12 +1820,9 @@ public class FichePrelevementEdit extends AbstractFicheEditController
 
       // les collaborateurs peuvent être modifiés dans la fenêtre
       // d'aide => maj de ceux-ci
-      etablissements = ManagerLocator.getEtablissementManager().findAllActiveObjectsWithOrderManager();
-      etablissements.add(0, null);
-      services = ManagerLocator.getServiceManager().findAllActiveObjectsWithOrderManager();
-      services.add(0, null);
-      collaborateurs = ManagerLocator.getCollaborateurManager().findAllActiveObjectsWithOrderManager();
-      collaborateurs.add(0, null);
+      etablissements = allEtablissements;
+      services = allServices;
+      collaborateurs = allCollaborateurs;
 
       if(this.prelevement.getServicePreleveur() != null && !services.contains(this.prelevement.getServicePreleveur())){
          services.add(this.prelevement.getServicePreleveur());
@@ -1811,4 +1956,28 @@ public class FichePrelevementEdit extends AbstractFicheEditController
    protected String getRefPatientCompPath() {
       return "/zuls/prelevement/ReferenceurPatient.zul";
    }
+   
+   private void addNullIfNecessary(List<? extends TKdataObject> values) {
+      if(values != null) {
+         if(values.isEmpty() || values.get(0) != null) {
+            values.add(0, null);
+         }
+      }
+   }
+   
+   protected List<Etablissement> addNullEtablissementIfNecessary(List<Etablissement> values) {
+      addNullIfNecessary(values);
+      return values;
+   }
+   
+   protected List<Service> addNullServiceIfNecessary(List<Service> values) {
+      addNullIfNecessary(values);
+      return values;
+   }
+   
+   protected List<Collaborateur> addNullCollaborateurIfNecessary(List<Collaborateur> values) {
+      addNullIfNecessary(values);
+      return values;
+   }
+  
 }
