@@ -42,7 +42,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
-import java.util.Set;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
@@ -332,13 +331,10 @@ public class SelectBanqueController extends GenericForwardComposer<Component>
             final Map<String, Object> sessionScp = session.getAttributes();
             sessionScp.put("User", user);
 
-            // Obtient les paramètres pour l'ID de la plateforme donné
-            List<ParametreDTO> parametres = ManagerLocator.getManager(ParametresManager.class)
-                                          .findParametresByPlateformeId(selectedPlateforme.getPlateformeId());
-            // Enregistre la liste de paramètres dans la session
-            SessionUtils.setPlatformParameters(parametres, sessionScope);
-
             sessionScp.put("Plateforme", selectedPlateforme);
+            // Enregistre la liste de paramètres dans la session
+            SessionUtils.savePlatformParamsToSession(sessionScope);
+
             ConnexionUtils.generateDroitsForSelectedBanque(null, selectedPlateforme, user, sessionScope);
             Executions.sendRedirect("/zuls/main/main.zul");
          }

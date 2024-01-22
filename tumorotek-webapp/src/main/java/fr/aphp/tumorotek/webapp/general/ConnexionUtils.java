@@ -317,11 +317,9 @@ public final class ConnexionUtils
          sessionScp.put("User", user);
       }
       if(pf != null){
-         // Obtient les paramètres pour l'ID de la plateforme donneé
-         List<ParametreDTO> parametres = ManagerLocator.getManager(ParametresManager.class).findParametresByPlateformeId(pf.getPlateformeId());
-         // Enregistre la liste de paramètres dans la session
-         SessionUtils.setPlatformParameters(parametres, sessionScp);
          sessionScp.put("Plateforme", pf);
+         // Enregistre la liste de paramètres dans la session
+         SessionUtils.savePlatformParamsToSession(sessionScp);
       }
 
       if(bank != null){

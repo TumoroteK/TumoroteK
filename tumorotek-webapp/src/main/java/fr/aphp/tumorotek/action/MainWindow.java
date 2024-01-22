@@ -42,8 +42,6 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -379,14 +377,11 @@ public class MainWindow extends GenericForwardComposer<Component>
          Clients.clearBusy();
          throw new WrongValueException(mainBanquesListBox, AbstractController.handleExceptionMessage(e));
       }
-      Plateforme plateforme = selectedBanque.getPlateforme();
-      // Obtient les paramètres pour l'ID de la plateforme donneé
-      List<ParametreDTO> parametres = ManagerLocator.getManager(ParametresManager.class).findParametresByPlateformeId(plateforme.getPlateformeId());
-      // Enregistre la liste de paramètres dans la session
-      SessionUtils.setPlatformParameters(parametres, sessionScope);
       // met à jour la pf si update banque cross-plateforme
       if(!selectedBanque.getPlateforme().equals(SessionUtils.getPlateforme(sessionScope))){
+         Plateforme plateforme = selectedBanque.getPlateforme();
          sessionScope.put("Plateforme", plateforme );
+         SessionUtils.savePlatformParamsToSession(sessionScope);
          prepareListBanques();
       }
 

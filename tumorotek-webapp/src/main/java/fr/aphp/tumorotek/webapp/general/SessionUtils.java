@@ -35,7 +35,9 @@
  **/
 package fr.aphp.tumorotek.webapp.general;
 
+import fr.aphp.tumorotek.action.ManagerLocator;
 import fr.aphp.tumorotek.dto.ParametreDTO;
+import fr.aphp.tumorotek.manager.administration.ParametresManager;
 import fr.aphp.tumorotek.manager.impl.interfacage.ResultatInjection;
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.contexte.EContexte;
@@ -49,10 +51,8 @@ import fr.aphp.tumorotek.utils.Utils;
 import org.zkoss.zk.ui.Sessions;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Utility class fournissant les methodes récupérant les variables de session.
@@ -294,23 +294,25 @@ public final class SessionUtils {
    }
 
    /**
-    * Stocker les paramètres de la plateforme dans la session.
+    * Stocke les paramètres de la plateforme dans la session.
     *
-    * @param parametres List<ParametreDTO> paramètres de la plateforme à stocker
-    * @param sessionScp la map de session où les paramètres seront stockés
+    * @param sessionScp La map de session où les paramètres seront stockés.
+    *
     */
-   public static void setPlatformParameters(List<ParametreDTO> parametres, final Map<String, Object> sessionScp) {
+   public static void savePlatformParamsToSession(final Map<String, Object> sessionScp) {
+      // Récupère la plateforme depuis la session
+      Plateforme plateforme = getPlateforme(sessionScp);
+
+      // Obtient les paramètres associés à l'ID de la plateforme
+      List<ParametreDTO> parametres = ManagerLocator.getManager(ParametresManager.class)
+         .findParametresByPlateformeId(plateforme.getPlateformeId());
+
+      // Stocke la liste de paramètres dans la session sous la clé "Parametres"
       sessionScp.put("Parametres", parametres);
    }
 
-   /**
-    * Stocker les paramètres de la plateforme dans la session.
-    *
-    * @param parametres List<ParametreDTO> paramètres de la plateforme à stocker
-    */
-   public static void setPlatformParameters(List<ParametreDTO> parametres) {
-      Sessions.getCurrent().setAttribute("Parametres", parametres);
-     }
+
+
 
    /**
     * Récupère les paramètres de la plateforme depuis la session.
