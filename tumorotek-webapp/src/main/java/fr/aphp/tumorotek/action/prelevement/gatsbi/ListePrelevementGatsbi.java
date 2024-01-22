@@ -126,7 +126,7 @@ public class ListePrelevementGatsbi extends ListePrelevement
       }
 
       // maladie, colonne visible si banque définit le niveau
-      GatsbiController.addColumn(objectsListGrid, "prelevement.maladie", "150px", null, null, "auto(maladie.patient.nom)",
+      GatsbiController.addColumn(objectsListGrid, "prelevement.visite", "150px", null, null, "auto(maladie.patient.nom)",
          getBanqueDefMaladies());
 
       // variable columns
