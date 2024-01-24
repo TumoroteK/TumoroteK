@@ -40,7 +40,7 @@
 
 <window id="fwinPrelevementEdit" border="none"
 	 apply="fr.aphp.tumorotek.action.prelevement.gatsbi.FichePrelevementEditGatsbi"
-	 forward="onGatsbiParamSelected=onGetInjectionDossierExterneDone">
+	 forward="onGatsbiParamSelected=onGetInjectionDossierExterneDone, onSelectParametrage=onGetSelectedParametrage">
 	<panel collapsible="false" title="${c:l('fichePrelevement.panel.title')}" sclass="fichePanelv2" id="winPanel" closable="true">
 		<panelchildren style="overflow-y:scroll" id="panelChildrenWithScroll">
 			<div id="gatsbiContainer" class="main-container gridForm1">

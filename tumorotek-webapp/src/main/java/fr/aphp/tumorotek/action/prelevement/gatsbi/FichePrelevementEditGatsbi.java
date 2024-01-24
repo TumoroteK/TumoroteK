@@ -56,11 +56,13 @@ import org.zkoss.zul.Label;
 import org.zkoss.zul.ListModel;
 import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Listbox;
+import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Textbox;
 
 import fr.aphp.tumorotek.action.ManagerLocator;
 import fr.aphp.tumorotek.action.patient.ResumePatient;
 import fr.aphp.tumorotek.action.prelevement.FichePrelevementEdit;
+import fr.aphp.tumorotek.action.prelevement.gatsbi.exception.GatsbiException;
 import fr.aphp.tumorotek.decorator.gatsbi.PatientItemRendererGatsbi;
 import fr.aphp.tumorotek.dto.ServicesEtEtablissementsLiesADesCollaborateurs;
 import fr.aphp.tumorotek.model.coeur.patient.Patient;
@@ -184,11 +186,53 @@ public class FichePrelevementEditGatsbi extends FichePrelevementEdit
                new ArrayList<LaboInter>());
          }else{
             // si nous sommes dans une action de création, on
-            // appelle la page FicheMultiEchantillons en mode create
-            getObjectTabController().switchToMultiEchantillonsCreateMode(this.prelevement, new ArrayList<LaboInter>());
+            // appelle la page FicheMultiEchantillons en mode create 
+            // TG-221 : si besoin la modale de sélection des paramétrages sera affichée en amont ...
+            // /!\ correction TG-221 ci-dessous à revoir car elle n'est pas optimale.
+            // En effet le test "paramétrages définis ou non" est fait dans addNewObjectForContext
+            // mais l'utilisation de cette méthode introduit l'affichage pendant une fraction de seconde de la liste des échantillons (cf TG-222)
+            // amélioration du code à faire dans le ticket TG-223 quand TG-222 aura été corrigée
+            if(contexte.getParametrages().isEmpty()){
+               getObjectTabController().switchToMultiEchantillonsCreateMode(this.prelevement, new ArrayList<LaboInter>());
+            }
+            else {
+               GatsbiController.addNewObjectForContext(SessionUtils.getCurrentGatsbiContexteForEntiteId(3), self, e -> {
+                  try{
+                     //getObjectTabController().switchToMultiEchantillonsCreateMode(this.prelevement, new ArrayList<LaboInter>());
+                  }catch(final Exception ex){
+                     Messagebox.show(handleExceptionMessage(ex), "Error", Messagebox.OK, Messagebox.ERROR);
+                  }
+               }, null, this.prelevement);
+            }
+            // Fin correction TG-221
          }
 
          Clients.clearBusy();
+      }
+   }
+   
+   //TG-221
+   /**
+    * Un parametrage échantillon a été sélectionné (cas où la page "laboInter" n'est pas affiché).
+    *
+    * @param param
+    * @throws Exception
+    * @since Gatsbi
+    */
+   public void onGetSelectedParametrage(final ForwardEvent evt) throws Exception{
+      try{
+
+         GatsbiController.getSelectedParametrageFromSelectEvent(SessionUtils.getCurrentGatsbiContexteForEntiteId(3),
+            SessionUtils.getCurrentBanque(sessionScope), getObjectTabController().getReferencedObjectsControllers(true).get(0),
+            null, () -> {
+               try{
+                  getObjectTabController().switchToMultiEchantillonsCreateMode(this.prelevement, new ArrayList<LaboInter>());
+               }catch(final Exception ex){
+                  Messagebox.show(handleExceptionMessage(ex), "Error", Messagebox.OK, Messagebox.ERROR);
+               }
+            }, evt);
+      }catch(final GatsbiException e){
+         Messagebox.show(handleExceptionMessage(e), "Error", Messagebox.OK, Messagebox.ERROR);
       }
    }
    
