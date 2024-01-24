@@ -319,23 +319,14 @@ public final class SessionUtils {
     *
     * @return List<ParametreDTO> L'ensemble des paramètres de la plateforme.
     */
-   public static List<ParametreDTO> getPlatformParameters(final Map<String, Object> sessionScp) {
+   public static List<ParametreDTO> getParametresPlateforme(final Map<String, Object> sessionScp) {
       if(sessionScp.get("Parametres") != null){
          return (List<ParametreDTO>) sessionScp.get("Parametres");
       }
       return new ArrayList<>();
    }
 
-   /**
-    * Récupère les paramètres de la plateforme depuis la session.
-    *
-    * @return List<ParametreDTO> L'ensemble des paramètres de la plateforme.
-    */
-   public static List<ParametreDTO> getPlatformParameters() {
-      // Récupère l'objet des paramètres depuis la session
-      return (List<ParametreDTO>) Sessions.getCurrent().getAttribute("Parametres");
 
-   }
 
    /**
     * Récupère un ParametreDTO en utilisant le code spécifié.
@@ -345,7 +336,7 @@ public final class SessionUtils {
     */
    public static ParametreDTO getParametreByCode(String codeToFind, Map<String, Object> sessionScp) {
       // Récupère l'ensemble des ParametreDTO à partir de la session de la plateforme
-      List<ParametreDTO> parametreDTOList = getPlatformParameters(sessionScp);
+      List<ParametreDTO> parametreDTOList = getParametresPlateforme(sessionScp);
 
       // Parcours l'ensemble des ParametreDTO pour trouver celui avec le code spécifié
       for (ParametreDTO parametreDTO : parametreDTOList) {

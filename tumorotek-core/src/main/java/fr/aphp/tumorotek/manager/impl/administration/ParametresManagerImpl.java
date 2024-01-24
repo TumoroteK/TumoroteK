@@ -86,7 +86,8 @@ public class ParametresManagerImpl implements ParametresManager
 
 
    // Dependency injection
-   public void setParametreDao(ParametreValeurSpecifiqueDao parametreValeurSpecifiqueDao){
+
+   public void setParametreValeurSpecifiqueDao(ParametreValeurSpecifiqueDao parametreValeurSpecifiqueDao){
       this.parametreValeurSpecifiqueDao = parametreValeurSpecifiqueDao;
    }
 

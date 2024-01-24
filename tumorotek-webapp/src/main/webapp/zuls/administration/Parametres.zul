@@ -37,94 +37,111 @@
 			maximizable="false"
 			apply="org.zkoss.bind.BindComposer"
 			viewModel="@id('vm') @init('fr.aphp.tumorotek.action.administration.ParametresController')">
-		<panel collapsible="false" title="Paramètres"
-			   sclass="fichePanelv2" id="winPanel" closable="false">
-		<panelchildren id="panelChildrenWithScroll">
+
+<!--		 Panel: Paramètres de l'application -->
+
+		<panel collapsible="false" title="${c:l('params.application.title')}"
+			   sclass="fichePanelv2"  closable="false">
+			<panelchildren >
+				<grid fixedLayout="true" sclass="gridForm1" >
+					<columns>
+						<column width="40%"/>
+						<column width="40%"/>
+						<column />
+					</columns>
+					<rows>
+<!--						Logo -->
+						<row>
+
+							<cell>
+								<label id="accueilImgLabel" value="${c:l('params.logo.accueil')}" style="color: #636363;" sclass="formLabel"/>
+							</cell>
+
+							<cell>
+								<image id="accueilImg" style="width: 50px; height: 50px" content="@load(vm.logo)" if="${not empty vm.logo}"/>
+								<label id="noImgLabel" value="${c:l('params.logo.empty')}" sclass="formValue" if="${empty vm.logo}" />
+							</cell>
+
+							<cell>
+								<button id="uploadImageAccueilBtn" label="${c:l('general.edit')}" height="24px"
+										image="/images/icones/edit.png" sclass="buttonv2" />
+								<button id="deleteImageAccueilBtn" label="${c:l('general.delete')}" height="24px"
+										image="/images/icones/trash.png" sclass="buttonv2" />
+							</cell>
+						</row>
+
+<!--						Message d'accueil  -->
+						<row>
+							<label id="accueilMsgLabel" value="${c:l('params.message.accueil')}" sclass="formLabel"/>
+							<html id="accueilHtml" sclass="formValue z-label" content="@load(vm.accueilMsg)" />
+							<hlayout>
+								<button id="updateMsgAccueilBtn" label="${c:l('general.edit')}" height="24px"
+										image="/images/icones/edit.png" sclass="buttonv2"/>
+								<button id="deleteMsgAccueilBtn" label="${c:l('general.delete')}" height="24px"
+										image="/images/icones/trash.png" sclass="buttonv2" />
+							</hlayout>
+						</row>
 
 
-		<!-- Grille pour afficher les paramètres -->
-		<grid model="@load(vm.parameterList)" sclass="gridForm1" id="gridFormPrlvt">
-			<columns>
-				<column width="30%"/>
-				<column width="40%"/>
-				<column />
-				<column />
-			</columns>
+					</rows>
+				</grid>
+			</panelchildren>
+		</panel>
+<!--		Panel: Paramètres de la plateforme-->
 
-			<!-- Utiliser un modèle pour les lignes -->
-			<template name="model">
-				<!-- Chaque ligne représente un paramètre -->
-				<row>
-					<!-- 1: Afficher la clé du paramètre dans la première cellule -->
-					<cell>
-						<label value="${c:l(each.code)}" />
-					</cell>
+		<panel  collapsible="false" title="@load(vm.plateformeTitle)"
+			   sclass="fichePanelv2 padding"  closable="false" style="margin-top:10px">
+			<panelchildren >
+				<grid model="@load(vm.parameterList)" sclass="gridForm1" >
+					<columns>
+						<column width="40%"/>
+						<column width="40%"/>
+						<column />
+					</columns>
 
-					<!-- 2: La deuxième cellule contient soit une zone de texte soit une image en fonction du type de paramètre -->
+					<!-- Utiliser un modèle pour les lignes -->
+					<template name="model">
+						<!-- Chaque ligne représente un paramètre -->
+						<row>
+							<!-- 1: Afficher la clé du paramètre dans la première cellule -->
+							<cell>
+								<label value="${c:l(each.code)}" style="color: #636363;" sclass="formLabel" />
+							</cell>
 
-					<cell>
-						<!-- Display radio buttons for 'yes' and 'no' if the type is 'boolean' and in edit mode -->
+							<!-- 2: La deuxième cellule contient un bouton radio pour les valeurs booléennes -->
+							<cell>
+								<!-- Affichez les boutons radio uniquement si le type est 'boolean' et en mode édition -->
+								<radiogroup if="${each.type eq 'boolean'}"  visible="${vm.isEditMode(each)}"
+											onCheck="@command('updateParameterValue', parameter=each)">
+									<radio label="${c:l('general.checkbox.true')}" value="true" checked="${each.valeur == 'true'}" />
+									<radio label="${c:l('general.checkbox.false')}" value="false" checked="${each.valeur == 'false'}" />
+								</radiogroup>
 
-						<radiogroup visible="${each.type eq 'boolean'}"
-									onCheck="@command('updateParameterValue', parameter=each)">
-							<radio label="${c:l('general.checkbox.true')}"  value="true" checked="${each.valeur == 'true'}" />
-							<radio label="${c:l('general.checkbox.false')}" value="false" checked="${each.valeur == 'false'}" />
-						</radiogroup>
+								<!-- Afficher une étiquette si le type n'est pas 'boolean' ou si on est en mode lecture -->
+								<label value="@load(each.valeur ? c:l('general.checkbox.true') : c:l('general.checkbox.false'))"
+									   visible="${!vm.isEditMode(each) || each.type ne 'boolean'}"
+									   sclass="formValue"/>
 
-						<!-- Afficher une zone de texte si le type n'est pas 'image' -->
-						<textbox value="@load(each.valeur) @save(each.valeur)"
-								 unless="${!vm.isEditMode(each) || each.type eq 'image' || each.type eq 'boolean'}"
-								 width="90%"/>
+							</cell>
+							<!-- La troisième cellule contient des boutons pour éditer, enregistrer ... les modifications -->
+							<cell>
 
-						<label value="@load(each.valeur)" visible="${!vm.isEditMode(each)}"
-							   unless="${each.type eq 'boolean' || each.type eq 'image' }" />
+									<button label="${c:l('general.edit')}" visible="${!vm.isEditMode(each)}"
+											onClick="@command('editParameter', parameter=each)"
+											image="/images/icones/edit.png" height="24px"
+									/>
+									<button label="${c:l('general.save')}" visible="${vm.isEditMode(each)}"
+											onClick="@command('saveParameter', parameter=each)" />
 
+									<button label="${c:l('general.cancel')}" visible="${vm.isEditMode(each)}"
+											onClick="@command('cancelEdit', parameter=each)" />
 
-					</cell>
-					<!-- La troisième cellule contient des boutons pour éditer, enregistrer ... les modifications -->
-					<!-- Règle de Gestion:
-                         Les boutons d'édition, d'enregistrement et d'annulation sont conditionnellement affichés en fonction du mode d'édition pour chaque élément.
-                         Si le type est une chaîne de caractères :
-                         - Le bouton "Modifier" est visible.
-                         - Le bouton "Enregistrer" est visible uniquement en mode édition.
-                         - Le bouton "Annuler" est visible uniquement en mode édition.
-                         Si le type est un booléen :
-                         - Aucun bouton n'est affiché ; il s'agit d'un bouton radio.
-                         Pour l'image d'accueil :
-                         Le bouton de téléchargement de fichier (fileupload) est affiché uniquement si le type de l'élément est une image.
-                         Le bouton de suppression est affiché uniquement si le type de l'élément est une image et que isLogoExists==true.
-                         Note : Les actions des boutons sont liées à des commandes spécifiques définies dans le ViewModel.
-                    -->
+							</cell>
 
-					<cell>
+						</row>
+					</template>
 
-						<div unless="${each.type eq 'image' || each.type eq 'boolean'}">
-							<button label="${c:l('general.edit')}"  visible="${!vm.isEditMode(each)}"
-									onClick="@command('editParameter', parameter=each)" />
-
-							<button label="${c:l('general.save')}"  visible="${vm.isEditMode(each)}"
-									onClick="@command('editParameter', parameter=each)" />
-
-							<!-- Bouton Annuler visible uniquement en mode édition -->
-							<button label="${c:l('general.cancel')}"  visible="${vm.isEditMode(each)}"
-									onClick="@command('cancelEdit', parameter=each)" />
-						</div>
-
-
-						<div if="${each.type eq 'image'}">
-								<fileupload label="${c:l('general.upload')}"  onUpload="@command('handleFileUpload',
- 						 parameter=each)" visible="${each.type eq 'image'}" class="buttonv1"/>
-								<button label="${c:l('general.delete')}"  onClick="@command('deleteLogo')"
-										visible="@load(vm.logoExists)" class="buttonv2"/>
-						</div>
-					</cell>
-
-				</row>
-			</template>
-		</grid>
-		</panelchildren>
+				</grid>
+			</panelchildren>
 		</panel>
 	</window>
-
-
-
