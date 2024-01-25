@@ -36,15 +36,17 @@
 package fr.aphp.tumorotek.action.administration;
 
 import fr.aphp.tumorotek.action.ManagerLocator;
-import fr.aphp.tumorotek.action.controller.AbstractController;
 import fr.aphp.tumorotek.component.TexteModale;
 import fr.aphp.tumorotek.dto.ParametreDTO;
 import fr.aphp.tumorotek.manager.administration.ParametresManager;
 import fr.aphp.tumorotek.model.contexte.Plateforme;
+import fr.aphp.tumorotek.utils.MessagesUtils;
 import fr.aphp.tumorotek.utils.TKStringUtils;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.InvalidMediaTypeException;
 import org.springframework.http.MediaType;
 import org.zkoss.bind.annotation.BindingParam;
@@ -58,10 +60,11 @@ import org.zkoss.util.media.Media;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.event.CheckEvent;
+import org.zkoss.zk.ui.event.InputEvent;
+import org.zkoss.zul.Messagebox;
+import org.zkoss.zul.Fileupload;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
-import org.zkoss.zul.Fileupload;
-import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Radio;
 
 import java.io.File;
@@ -81,14 +84,20 @@ import static org.apache.camel.util.StringHelper.sanitize;
  *
  * @author GCH
  */
-public class ParametresController extends AbstractController
+public class ParametresController
 {
+
+   private static final Logger logger = LoggerFactory.getLogger(ParametresController.class);
 
    private static final long serialVersionUID = -2450763003941018231L;
 
    /** Formats image acceptés */
    private static final MediaType[] AUTHORIZED_IMAGE_MEDIA_TYPES =
       new MediaType[] {MediaType.IMAGE_GIF, MediaType.IMAGE_JPEG, MediaType.IMAGE_PNG};
+
+   private static final String PARAMETER_TYPE_BOOLEAN = "boolean";
+
+   private static final String PARAMETER_TYPE_STRING = "string";
 
    public List<ParametreDTO> parameterList = new ArrayList<>();
 
@@ -98,14 +107,16 @@ public class ParametresController extends AbstractController
 
    private ParametresManager parametresManager;
 
-   private String accueilMsg;
+   private String welcomeMessage;
 
-   private AImage logo;
+   private AImage welcomeImage;
 
    private String plateformeTitle;
 
+   //      **************************** | Mise en place |  ******************************************
+
    /**
-    * Mise en place: Initialise le contrôleur en charge de la configuration des paramètres.
+    * Mise en place:
     * Charge la liste des paramètres de la plateforme, trie la liste par groupe puis par code,
     * initialise les maps de gestion du mode édition et des valeurs originales.
     */
@@ -116,42 +127,227 @@ public class ParametresController extends AbstractController
       Collections.sort(parameterList, new ParametreComparator());
       parametresManager = ManagerLocator.getManager(ParametresManager.class);
 
-      plateformeTitle = buildPlateformString();
-
       // Initialise les maps editModeMap et originalValuesMap
       for(ParametreDTO parameter : parameterList){
          editModeMap.put(parameter, false);
          originalValuesMap.put(parameter.getCode(),
             new ParametreDTO(parameter.getCode(), parameter.getValeur(), parameter.getType(), parameter.getGroupe()));
       }
-
       initWelcomeMessage();
-      initLogo();
+      initWelcomeImage();
+      plateformeTitle = buildPlateformString();
    }
 
-   private void initLogo(){
-      File logofile = parametresManager.getLogoFile();
-      if(logofile.exists()){
-         try{
+   //      ****************************** | Event Listeners : App Params | *************************************************
 
-            logo = new AImage(logofile);
+   /**
+    * Modifie l'image de bienvenue en fonction du média téléchargé.
+    * Si le média est d'un type d'image autorisé, il est enregistré et l'image de bienvenue est mise à jour.
+    * Affiche des messages d'erreur en cas de problème avec le média ou son type.
+    */
 
-         }catch(final IOException e){
-            log.error("Unable to load the image file [{}]", sanitize(logofile.getAbsolutePath()), e);
+   @Command
+   @NotifyChange("welcomeImage")
+   public void modifyWelcomeImage(){
+      // Récupérer le média téléchargé
+      final Media uploadedMedia = Fileupload.get();
+      if(uploadedMedia == null){
+         return;
+      }
 
-            Messagebox.show(Labels.getLabel("error.params.image.update"), Labels.getLabel("general.error"), Messagebox.OK,
-               Messagebox.ERROR);
+      // Vérifier le type du média téléchargé
+      boolean mediaTypeValid = isMediaTypeValid(uploadedMedia);
+
+      // Traiter en fonction de la validité du type de média
+      if(mediaTypeValid){
+         // Enregistrer le média téléchargé comme image de bienvenue
+         saveWelcomeImage(uploadedMedia);
+      }else{
+         // Afficher un message d'erreur pour un type de média invalide
+         displayError(Labels.getLabel("error.params.image.format"));
+      }
+   }
+
+   /**
+    * Supprime l'image de bienvenue (logo) après confirmation de l'utilisateur.
+    * Si l'utilisateur annule (clic sur "Annuler"), aucune action n'est effectuée.
+    */
+
+   @Command
+   @NotifyChange("welcomeImage")
+   public void deleteWelcomeImage(){
+      // Récupère le titre et le corps de la question localisés pour la boîte de dialogue de confirmation
+      String questionTitle = Labels.getLabel("question.title.logo.delete");
+      String questionBody = Labels.getLabel("question.body.logo.delete");
+      // Affiche une boîte de dialogue modale et attend la confirmation de l'utilisateur
+      boolean isOk = MessagesUtils.openQuestionModal(questionTitle, questionBody);
+
+      if(isOk){
+         // Tente de supprimer le logo
+         boolean wasDeleted = parametresManager.deleteLogo();
+         // Si le logo a été supprimé avec succès
+         if(wasDeleted){
+            // Affiche le message de réussite
+            String messageBody = Labels.getLabel("success.logo.delete");
+            String messageHeader = Labels.getLabel("general.success");
+            MessagesUtils.openInfoModal(messageHeader, messageBody);
+            welcomeImage = null;
+         }else{
+            displayError(Labels.getLabel("error.params.image.update"));
+
          }
 
       }
    }
 
-   private void initWelcomeMessage(){
-      accueilMsg = parametresManager.getMessageAccueil(false);
-      accueilMsg = TKStringUtils.convertHtmlEntities(accueilMsg);
+   /**
+    * Supprime le message de bienvenue après confirmation de l'utilisateur.
+    * Si la suppression échoue, un message d'erreur est affiché.
+    *
+    */
+   @Command
+   @NotifyChange("welcomeMessage")
+   public void deleteWelcomeMessage(){
 
-      if(StringUtils.isEmpty(accueilMsg)){
-         accueilMsg = Labels.getLabel("params.message.empty");
+      String messageBody = Labels.getLabel("params.modale.message.delete");
+      String messageHeader = Labels.getLabel("params.modale.message.libelle");
+
+      boolean isOk = MessagesUtils.openQuestionModal(messageHeader, messageBody);
+
+      if(isOk){
+
+         final boolean deleted = parametresManager.deleteMessageAccueil();
+
+         if(deleted){
+            welcomeMessage = Labels.getLabel("params.message.empty");
+         }else{
+            displayError(Labels.getLabel("error.params.message.update"));
+
+         }
+
+      }
+
+   }
+
+   /**
+    * Méthode appelée lors de la modification du message d'accueil.
+    * Affiche une boîte de dialogue modale permettant à l'utilisateur
+    * de modifier le message d'accueil de l'application.
+    */
+   @Command
+   public void modifyWelcomeMessage(){
+
+      EventListener<Event> onCloseListener = event -> {
+         if(null != event.getData()){
+            String newMessage = (String) event.getData();
+            boolean saved = parametresManager.saveMessageAccueil(newMessage);
+            if(!saved){
+               displayError(Labels.getLabel("error.params.message.update"));
+            }
+
+         }
+      };
+
+      String currentMsg = ManagerLocator.getManager(ParametresManager.class).getMessageAccueil(true);
+      TexteModale.show(Labels.getLabel("params.modale.message.titre"), Labels.getLabel("params.modale.message.libelle"),
+         currentMsg, 5, true, onCloseListener);
+
+   }
+
+
+   //      **************************** | Event Listeners : Plateforme Params |  ******************************************
+   /**
+    * Active le mode édition pour un paramètre donné et enregistre la valeur d'origine du paramètre.
+    *
+    * @param parameter Le paramètre à éditer.
+    */
+   @Command
+   @NotifyChange("parameterList")
+   public void editParameter(@BindingParam("parameter") ParametreDTO parameter) {
+      boolean isEditMode = isEditMode(parameter);
+
+      if (!isEditMode) {
+         // Save the original value
+         originalValuesMap.put(parameter.getCode(),
+            new ParametreDTO(parameter.getCode(), parameter.getValeur(), parameter.getType(), parameter.getGroupe()));
+         editModeMap.put(parameter, true);
+      }
+   }
+
+
+   /**
+    * Annule les modifications effectuées lors de l'édition d'un paramètre.
+    *
+    * @param parameter le paramètre à annuler
+    */
+   @Command
+   @NotifyChange("parameterList")
+   public void cancelEdit(@BindingParam("parameter") ParametreDTO parameter) {
+      // Rétablit les valeurs originales
+      ParametreDTO originalValues = originalValuesMap.get(parameter.getCode());
+      parameter.setValeur(originalValues.getValeur());
+
+      // Réinitialiser le mode édition à faux
+      editModeMap.put(parameter, false);
+
+
+   }
+
+   @Command
+   @NotifyChange("parameterList")
+   public void saveParameter(@BindingParam("parameter") ParametreDTO parameter,
+      @ContextParam(ContextType.TRIGGER_EVENT) Event event){
+
+      // Vérifier le type du paramètre
+      if (PARAMETER_TYPE_BOOLEAN.equals(parameter.getType())) {
+         // C'est un paramètre booléen, caster l'événement en CheckEvent
+         CheckEvent checkEvent = (CheckEvent) event;
+         String selectedValue = ((Radio) checkEvent.getTarget()).getValue();
+         parameter.setValeur(selectedValue);
+      } else if (PARAMETER_TYPE_STRING.equals(parameter.getType())) {
+         // C'est un paramètre de type chaîne de caractères, caster l'événement en InputEvent (Textbox)
+         InputEvent inputEvent = (InputEvent) event;
+         String newValue = inputEvent.getValue();
+         parameter.setValeur(newValue);
+      }
+
+      // Enregistrer la valeur mise à jour
+      saveParameter(parameter);
+   }
+
+
+   //      ****************************** | Méthodes utilitaires    | *************************************************
+
+   /**
+    * Initialise l'image de bienvenue en récupérant le fichier image depuis le gestionnaire de paramètres.
+    * Si le fichier existe, charge l'image à l'aide de la classe AImage.
+    * En cas d'erreur lors du chargement de l'image, affiche un message d'erreur.
+    */
+   private void initWelcomeImage(){
+      File logofile = parametresManager.getLogoFile();
+      if(logofile.exists()){
+         try{
+
+            welcomeImage = new AImage(logofile);
+
+         }catch(final IOException e){
+            logger.error("Unable to load the image file [{}]", sanitize(logofile.getAbsolutePath()), e);
+            displayError(Labels.getLabel("error.params.image.update"));
+
+         }
+      }
+   }
+
+   /**
+    * Initialise le message d'accueil en récupérant la valeur depuis le gestionnaire de paramètres.
+    * Le message est ensuite converti en entités HTML et, s'il est vide, il est remplacé par un message par défaut.
+    */
+   private void initWelcomeMessage(){
+      welcomeMessage = parametresManager.getMessageAccueil(false);
+      welcomeMessage = TKStringUtils.convertHtmlEntities(welcomeMessage);
+
+      if(StringUtils.isEmpty(welcomeMessage)){
+         welcomeMessage = Labels.getLabel("params.message.empty");
       }
    }
 
@@ -172,6 +368,96 @@ public class ParametresController extends AbstractController
    }
 
    /**
+    * Enregistre les modifications apportées à un paramètre dans la base de données et met à jour
+    * les paramètres de la plateforme en session.
+    *
+    * @param parameter Le paramètre à enregistrer.
+    */
+   private void saveParameter(ParametreDTO parameter){
+      // Obtient la plateforme actuelle depuis la session
+      Plateforme plateforme = SessionUtils.getPlateforme(Sessions.getCurrent().getAttributes());
+
+      // Met à jour/sauvegarde le paramètre de la plateforme en base de données
+      parametresManager.updateValeur(plateforme.getPlateformeId(), parameter.getCode(), parameter.getValeur());
+
+      // Met à jour les paramètres de la plateforme en session
+      SessionUtils.savePlatformParamsToSession(Sessions.getCurrent().getAttributes());
+   }
+
+   /**
+    * Vérifie si le type de média est valide.
+    *
+    * @param uploadedMedia le média téléchargé
+    * @return true si le type de média est valide, sinon false
+    */
+   private boolean isMediaTypeValid(Media uploadedMedia){
+      boolean mediaTypeValide = false;
+
+      if(uploadedMedia != null){
+         try{
+            final MediaType uploadedMediaType = MediaType.valueOf(uploadedMedia.getContentType());
+            mediaTypeValide = Arrays.asList(AUTHORIZED_IMAGE_MEDIA_TYPES).contains(uploadedMediaType);
+         }catch(final InvalidMediaTypeException imte){
+            logger.warn("MediaType inconnu", imte);
+         }
+
+      }
+      return mediaTypeValide;
+
+   }
+
+   /**
+    * Enregistre le média téléchargé comme image de bienvenue.
+    *
+    * @param uploadedMedia Le média téléchargé à enregistrer.
+    */
+   private void saveWelcomeImage(Media uploadedMedia){
+      boolean saved = false;
+      File tmpImageFile = null;
+
+      try{
+         // Créer un fichier temporaire pour l'image de bienvenue
+         tmpImageFile = File.createTempFile("welcomeImage", ".tmp");
+
+         // Écrire les données du média dans le fichier temporaire
+         FileUtils.writeByteArrayToFile(tmpImageFile, uploadedMedia.getByteData());
+
+         // Sauvegarder l'image de bienvenue
+         saved = parametresManager.saveLogo(tmpImageFile);
+      }catch(final IOException e){
+         logger.error("Erreur lors de la conversion du média en fichier", e);
+      }finally{
+         // Supprimer le fichier temporaire après utilisation
+         if(tmpImageFile != null && tmpImageFile.exists()){
+            tmpImageFile.delete();
+         }
+      }
+
+      // Si l'enregistrement est réussi, mettre à jour l'image de bienvenue
+      if(saved){
+         try{
+            welcomeImage = new AImage(tmpImageFile);
+         }catch(final IOException e){
+            logger.error("Impossible de charger le fichier image [{}]", sanitize(tmpImageFile.getAbsolutePath()), e);
+         }
+      }else{
+         // Afficher un message d'erreur en cas d'échec de l'enregistrement
+         displayError("error.params.image.update");
+      }
+   }
+
+   /**
+    * Affiche un modal d'erreur avec la clé du message spécifié.
+    *
+    * @param messageKey La clé du message d'erreur à afficher.
+    */
+   private void displayError(String messageKey){
+      String messageHeader = Labels.getLabel("general.error");
+      String messageBody = Labels.getLabel(messageKey);
+      MessagesUtils.openErrorModal(messageHeader, messageBody);
+   }
+
+   /**
     * Indique si le mode édition est activé pour un paramètre donné.
     *
     * @param parameter Le paramètre à vérifier.
@@ -181,205 +467,6 @@ public class ParametresController extends AbstractController
       return editModeMap.get(parameter);
    }
 
-   /**
-    * Enregistre les modifications apportées à un paramètre dans la session.
-    *
-    * @param parameter Le paramètre à enregistrer.
-    */
-   private void saveParameter(ParametreDTO parameter){
-      SessionUtils.savePlatformParamsToSession(Sessions.getCurrent().getAttributes());
-   }
-
-   /**
-    * Stocke le nouveau message d'accueil dans le fichier tumorotek.properties.
-    *
-    * @param msgAccueil Le nouveau message d'accueil.
-    */
-   private void storeNewMsgAccueil(final String msgAccueil){
-
-      final boolean saved = parametresManager.saveMessageAccueil(msgAccueil);
-
-      if(saved){
-         // TODO: refresh the ui
-      }else{
-         Messagebox.show(Labels.getLabel("error.params.message.update"), Labels.getLabel("general.error"), Messagebox.OK,
-            Messagebox.ERROR);
-      }
-
-   }
-
-   //      ****************************** | Event Listeners : App Params | *************************************************
-
-   /**
-    * Méthode appelés lors du clic sur le bouton "Modifier" de l'image d'accueil
-    */
-   public void onClick$uploadImageAccueilBtn(){
-
-      final Media uploadedMedia = Fileupload.get();
-      if(uploadedMedia == null){
-         return;
-      }
-
-      boolean mediaTypeValide = false;
-      try{
-         final MediaType uploadedMediaType = MediaType.valueOf(uploadedMedia.getContentType());
-         mediaTypeValide = Arrays.asList(AUTHORIZED_IMAGE_MEDIA_TYPES).contains(uploadedMediaType);
-      }catch(final InvalidMediaTypeException imte){
-         log.warn("MediaType inconnu", imte);
-      }
-
-      if(mediaTypeValide){
-
-         boolean saved = false;
-
-         File tmpLogoFile = null;
-         try{
-            tmpLogoFile = File.createTempFile("logo", ".tmp");
-            FileUtils.writeByteArrayToFile(tmpLogoFile, uploadedMedia.getByteData());
-            saved = parametresManager.saveLogo(tmpLogoFile);
-         }catch(final IOException e){
-            log.error("Erreur lors de la conversion du media en fichier", e);
-         }finally{
-            if(null != tmpLogoFile && tmpLogoFile.exists()){
-               tmpLogoFile.delete();
-            }
-         }
-
-         if(saved){
-            initLogo();
-         }else{
-            Messagebox.show(Labels.getLabel("error.params.image.update"), Labels.getLabel("general.error"), Messagebox.OK,
-               Messagebox.ERROR);
-         }
-
-      }else{
-         Messagebox.show(Labels.getLabel("error.params.image.format"), Labels.getLabel("general.error"), Messagebox.OK,
-            Messagebox.ERROR);
-      }
-
-   }
-
-   /**
-    * Méthode appelés lors du clic sur le bouton "Supprimer" de l'image d'accueil
-    */
-   public void onClick$deleteImageAccueilBtn(){
-
-      final int confirmation =
-         Messagebox.show("Confirmer la suppression de l'image d'accueil ?", "Suppression de l'image d'accueil",
-            Messagebox.YES | Messagebox.NO, Messagebox.EXCLAMATION);
-
-      if(confirmation == Messagebox.YES){
-
-         final boolean deleted = parametresManager.deleteLogo();
-
-         if(deleted){
-            logo = null;
-         }else{
-            Messagebox.show(Labels.getLabel("error.params.image.update"), Labels.getLabel("general.error"), Messagebox.OK,
-               Messagebox.ERROR);
-         }
-
-      }
-
-   }
-
-   /**
-    * Méthode appelé lors du clic sur le bouton "Modifier" du message d'accueil
-    */
-   public void onClick$updateMsgAccueilBtn(){
-
-      final EventListener<Event> onCloseListener = event -> {
-         if(null != event.getData()){
-            storeNewMsgAccueil((String) event.getData());
-         }
-      };
-
-      final String currentMsg = ManagerLocator.getManager(ParametresManager.class).getMessageAccueil(true);
-
-      TexteModale.show(Labels.getLabel("params.modale.message.titre"), Labels.getLabel("params.modale.message.libelle"),
-         currentMsg, 5, true, onCloseListener);
-
-   }
-
-   /**
-    * Méthode appelé lors du clic sur le bouton "Supprimer" du message d'accueil
-    */
-   public void onClick$deleteMsgAccueilBtn(){
-
-      final int confirmation =
-         Messagebox.show("Confirmer la suppression du message d'accueil ?", "Suppression du message d'accueil",
-            Messagebox.YES | Messagebox.NO, Messagebox.EXCLAMATION);
-
-      if(confirmation == Messagebox.YES){
-
-         final boolean deleted = ManagerLocator.getManager(ParametresManager.class).deleteMessageAccueil();
-
-         if(deleted){
-            // todo: Refresh UI
-         }else{
-            Messagebox.show(Labels.getLabel("error.params.message.update"), Labels.getLabel("general.error"), Messagebox.OK,
-               Messagebox.ERROR);
-         }
-
-      }
-
-   }
-
-   //      **************************** | Event Listeners : Plateforme Params |  ******************************************
-
-   /**
-    * Permet d'éditer un paramètre et gère l'enregistrement des modifications.
-    *
-    * @param parameter le paramètre à éditer
-    */
-   @Command
-   @NotifyChange("parameterList")
-   public void editParameter(@BindingParam("parameter") ParametreDTO parameter){
-
-      boolean isEditMode = isEditMode(parameter);
-
-      if(!isEditMode){
-         editModeMap.put(parameter, true);
-      }else{
-
-         // Enregistre dans la base de données + Session
-         saveParameter(parameter);
-      }
-      // Réinitialiser le mode édition à faux
-      editModeMap.put(parameter, false);
-   }
-
-   /**
-    * Met à jour la valeur d'un paramètre suite à un événement de sélection (Radio Button).
-    *
-    * @param parameter le paramètre à mettre à jour
-    * @param event     l'événement de sélection déclenché
-    */
-   @Command
-   @NotifyChange("parameterList")
-   public void updateParameterValue(@BindingParam("parameter") ParametreDTO parameter,
-      @ContextParam(ContextType.TRIGGER_EVENT) CheckEvent event){
-      String selectedValue = ((Radio) event.getTarget()).getValue();
-      parameter.setValeur(selectedValue);
-      saveParameter(parameter);
-   }
-
-   /**
-    * Annule les modifications effectuées lors de l'édition d'un paramètre.
-    *
-    * @param parameter le paramètre à annuler
-    */
-   @Command
-   @NotifyChange("parameterList")
-   public void cancelEdit(@BindingParam("parameter") ParametreDTO parameter){
-      // Rétablit les valeurs originales
-      ParametreDTO originalValues = originalValuesMap.get(parameter.getCode());
-      parameter.setValeur(originalValues.getValeur());
-
-      // Réinitialiser le mode édition à faux
-      editModeMap.put(parameter, false);
-
-   }
 
    /**
     * Comparateur pour trier les paramètres par groupe puis par code.
@@ -414,10 +501,10 @@ public class ParametresController extends AbstractController
    }
 
    public String getAccueilMsg(){
-      return accueilMsg;
+      return welcomeMessage;
    }
 
    public AImage getLogo(){
-      return logo;
+      return welcomeImage;
    }
 }

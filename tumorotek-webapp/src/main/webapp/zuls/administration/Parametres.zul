@@ -33,115 +33,147 @@
  * avez pris connaissance de la licence CeCILL, et que vous en avez
  * accepté les termes.
 -->
-	<window id="fwinParametres" width="100%" height="auto" border="normal" minimizable="false"
-			maximizable="false"
-			apply="org.zkoss.bind.BindComposer"
-			viewModel="@id('vm') @init('fr.aphp.tumorotek.action.administration.ParametresController')">
+<window id="fwinParametres" width="100%" height="auto" border="normal" minimizable="false"
+        maximizable="false"
+        apply="org.zkoss.bind.BindComposer"
+        viewModel="@id('vm') @init('fr.aphp.tumorotek.action.administration.ParametresController')">
 
-<!--		 Panel: Paramètres de l'application -->
+    <!--  Panel: Paramètres de l'application -->
 
-		<panel collapsible="false" title="${c:l('params.application.title')}"
-			   sclass="fichePanelv2"  closable="false">
-			<panelchildren >
-				<grid fixedLayout="true" sclass="gridForm1" >
-					<columns>
-						<column width="40%"/>
-						<column width="40%"/>
-						<column />
-					</columns>
-					<rows>
-<!--						Logo -->
-						<row>
+    <panel collapsible="false" title="${c:l('params.application.title')}"
+           sclass="fichePanelv2" closable="false">
+        <panelchildren>
+            <grid fixedLayout="true" sclass="gridForm1">
+                <columns>
+                    <column width="40%"/>
+                    <column width="40%"/>
+                    <column width="20%"/>
+                </columns>
 
-							<cell>
-								<label id="accueilImgLabel" value="${c:l('params.logo.accueil')}" style="color: #636363;" sclass="formLabel"/>
-							</cell>
+                <rows>
+                    <!--  WelcomeImage -->
+                    <row>
 
-							<cell>
-								<image id="accueilImg" style="width: 50px; height: 50px" content="@load(vm.logo)" if="${not empty vm.logo}"/>
-								<label id="noImgLabel" value="${c:l('params.logo.empty')}" sclass="formValue" if="${empty vm.logo}" />
-							</cell>
+                        <cell>
+                            <label value="${c:l('params.logo.accueil')}" sclass="formLabel"/>
+                        </cell>
 
-							<cell>
-								<button id="uploadImageAccueilBtn" label="${c:l('general.edit')}" height="24px"
-										image="/images/icones/edit.png" sclass="buttonv2" />
-								<button id="deleteImageAccueilBtn" label="${c:l('general.delete')}" height="24px"
-										image="/images/icones/trash.png" sclass="buttonv2" />
-							</cell>
-						</row>
+                        <cell>
+                            <image if="${not empty vm.logo}" style="width: 50px; height: 50px"
+                                   content="@load(vm.logo)"/>
+                            <label if="${empty vm.logo}" value="${c:l('params.logo.empty')}" sclass="formValue"/>
+                        </cell>
 
-<!--						Message d'accueil  -->
-						<row>
-							<label id="accueilMsgLabel" value="${c:l('params.message.accueil')}" sclass="formLabel"/>
-							<html id="accueilHtml" sclass="formValue z-label" content="@load(vm.accueilMsg)" />
-							<hlayout>
-								<button id="updateMsgAccueilBtn" label="${c:l('general.edit')}" height="24px"
-										image="/images/icones/edit.png" sclass="buttonv2"/>
-								<button id="deleteMsgAccueilBtn" label="${c:l('general.delete')}" height="24px"
-										image="/images/icones/trash.png" sclass="buttonv2" />
-							</hlayout>
-						</row>
+                        <cell>
+                            <button label="${c:l('general.edit')}"
+                                    image="/images/icones/edit.png" sclass="buttonv2"
+                                    onClick="@command('deleteWelcomeImage')"/>
+                            <button label="${c:l('general.delete')}" height="24px"
+                                    image="/images/icones/trash.png" sclass="buttonv2"
+                                    onClick="@command('deleteWelcomeImage')"/>
+                        </cell>
+                    </row>
+
+                    <!--  welcome Message -->
+                    <row>
+                        <cell>
+                            <label id="accueilMsgLabel" value="${c:l('params.message.accueil')}" sclass="formLabel"/>
+                        </cell>
+
+                        <cell>
+
+                            <html id="accueilHtml" sclass="formValue z-label" content="@load(vm.welcomeMessage)"/>
+                        </cell>
+                        <cell>
+                            <button label="${c:l('general.edit')}" height="24px"
+                                    image="/images/icones/edit.png" sclass="buttonv2"
+                                    onClick="@command('deleteWelcomeMessage')"/>
+                            <button label="${c:l('general.delete')}" height="24px"
+                                    image="/images/icones/trash.png" sclass="buttonv2"
+                                    onClick="@command('deleteWelcomeMessage')"/>
+                        </cell>
+                    </row>
 
 
-					</rows>
-				</grid>
-			</panelchildren>
-		</panel>
-<!--		Panel: Paramètres de la plateforme-->
+                </rows>
+            </grid>
+        </panelchildren>
+    </panel>
 
-		<panel  collapsible="false" title="@load(vm.plateformeTitle)"
-			   sclass="fichePanelv2 padding"  closable="false" style="margin-top:10px">
-			<panelchildren >
-				<grid model="@load(vm.parameterList)" sclass="gridForm1" >
-					<columns>
-						<column width="40%"/>
-						<column width="40%"/>
-						<column />
-					</columns>
 
-					<!-- Utiliser un modèle pour les lignes -->
-					<template name="model">
-						<!-- Chaque ligne représente un paramètre -->
-						<row>
-							<!-- 1: Afficher la clé du paramètre dans la première cellule -->
-							<cell>
-								<label value="${c:l(each.code)}" style="color: #636363;" sclass="formLabel" />
-							</cell>
+    <!--     Panel: Paramètres de la plateforme-->
 
-							<!-- 2: La deuxième cellule contient un bouton radio pour les valeurs booléennes -->
-							<cell>
-								<!-- Affichez les boutons radio uniquement si le type est 'boolean' et en mode édition -->
-								<radiogroup if="${each.type eq 'boolean'}"  visible="${vm.isEditMode(each)}"
-											onCheck="@command('updateParameterValue', parameter=each)">
-									<radio label="${c:l('general.checkbox.true')}" value="true" checked="${each.valeur == 'true'}" />
-									<radio label="${c:l('general.checkbox.false')}" value="false" checked="${each.valeur == 'false'}" />
-								</radiogroup>
+    <panel collapsible="false" title="@load(vm.plateformeTitle)"
+           sclass="fichePanelv2 padding" closable="false" style="margin-top:10px">
+        <panelchildren>
+            <grid model="@load(vm.parameterList)" sclass="gridForm1">
+                <columns>
+                    <column width="40%"/>
+                    <column width="40%"/>
+                    <column width="20%"/>
+                </columns>
 
-								<!-- Afficher une étiquette si le type n'est pas 'boolean' ou si on est en mode lecture -->
-								<label value="@load(each.valeur ? c:l('general.checkbox.true') : c:l('general.checkbox.false'))"
-									   visible="${!vm.isEditMode(each) || each.type ne 'boolean'}"
-									   sclass="formValue"/>
+                <template name="model">
+                    <!-- Chaque ligne représente un paramètre -->
+                    <row>
+                        <!-- 1: Afficher la clé du paramètre dans la première cellule -->
+                        <cell>
+                            <label value="${c:l(each.code)}" sclass="formLabel"/>
+                        </cell>
 
-							</cell>
-							<!-- La troisième cellule contient des boutons pour éditer, enregistrer ... les modifications -->
-							<cell>
+                        <!-- 2: La deuxième cellule contient la valeur du paramètre -->
+                        <cell>
 
-									<button label="${c:l('general.edit')}" visible="${!vm.isEditMode(each)}"
-											onClick="@command('editParameter', parameter=each)"
-											image="/images/icones/edit.png" height="24px"
-									/>
-									<button label="${c:l('general.save')}" visible="${vm.isEditMode(each)}"
-											onClick="@command('saveParameter', parameter=each)" />
+                            <div if="${vm.isEditMode(each)}">
+                                <!-- Afficher les boutons radio 'oui' et 'non' si le type est 'boolean' -->
+                                <radiogroup if="${each.type eq 'boolean'}"
+                                            onCheck="@command('updateParameterValue', parameter=each)">
+                                    <radio label="${c:l('general.checkbox.true')}" value="true"
+                                           checked="${each.valeur == 'true'}"/>
+                                    <radio label="${c:l('general.checkbox.false')}" value="false"
+                                           checked="${each.valeur == 'false'}"/>
+                                </radiogroup>
+                                <!-- Afficher la zone de texte si c'est une chaîne de caractères -->
+                                <textbox if="${each.type eq 'string'}"
+                                         value="@load(each.valeur) @save(each.valeur)"
+                                         width="90%"/>
+                            </div>
+                            <!-- Si en mode Lecture -->
 
-									<button label="${c:l('general.cancel')}" visible="${vm.isEditMode(each)}"
-											onClick="@command('cancelEdit', parameter=each)" />
+                            <div if="${!vm.isEditMode(each)}">
+                                <!-- Afficher l'étiquette si c'est une chaîne de caractères -->
+                                <label if="${each.type eq 'string'}" value="@load(each.valeur)" sclass="formValue"/>
 
-							</cell>
+                                <!-- Afficher l'étiquette i18n pour le boolean -->
+                                <label if="${each.type eq 'boolean'}"
+                                       value="@load(each.valeur ? c:l('general.checkbox.true') : c:l('general.checkbox.false'))"
+                                       sclass="formValue"/>
+                            </div>
 
-						</row>
-					</template>
 
-				</grid>
-			</panelchildren>
-		</panel>
-	</window>
+                        </cell>
+
+
+                        <!-- La troisième cellule contient des boutons pour éditer, enregistrer ... les modifications -->
+                        <cell>
+
+
+                            <button if="${!vm.isEditMode(each)}" label="${c:l('general.edit')}"
+                                    onClick="@command('editParameter', parameter=each)"
+                                    image="/images/icones/edit.png" />
+
+                            <button if="${vm.isEditMode(each)}" label="${c:l('general.save')}"
+                                    onClick="@command('saveParameter', parameter=each)"/>
+
+                            <button if="${vm.isEditMode(each)}" label="${c:l('general.cancel')}"
+                                    onClick="@command('cancelEdit', parameter=each)"/>
+
+                        </cell>
+
+                    </row>
+                </template>
+
+            </grid>
+        </panelchildren>
+    </panel>
+</window>
