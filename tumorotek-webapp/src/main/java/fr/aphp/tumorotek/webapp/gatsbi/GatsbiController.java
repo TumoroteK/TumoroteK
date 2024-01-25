@@ -984,6 +984,10 @@ public class GatsbiController
                         }
                      }
                   }
+                  else {
+                     paramValueToInject = value.getDefaultValue();
+                  }
+                  
                   val = new ValeurExterne();
                   val.setChampEntiteId(value.getChampEntiteId());
                   val.setValeur(paramValueToInject);
