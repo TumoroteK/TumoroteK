@@ -38,106 +38,112 @@
         apply="org.zkoss.bind.BindComposer"
         viewModel="@id('vm') @init('fr.aphp.tumorotek.action.administration.ParametresController')">
 
-    <!--  Panel: Paramètres de l'application -->
+    <!--
+    Le panneau ci-dessous contient les paramètres de l'application.
+    Il ne peut pas être replié (collapsible="false") et ne peut pas être fermé (closable="false").
+    -->
 
     <panel collapsible="false" title="${c:l('params.application.title')}"
            sclass="fichePanelv2" closable="false">
-        <panelchildren>
+        <panelchildren id="panelChildrenWithScroll">
             <grid fixedLayout="true" sclass="gridForm1">
                 <columns>
                     <column width="40%"/>
                     <column width="40%"/>
-                    <column width="20%"/>
+                    <column/>
                 </columns>
 
                 <rows>
-                    <!--  WelcomeImage -->
+                    <!--
+                                      Première ligne: Image de bienvenue.
+                                  -->
                     <row>
-
+                        <!-- Cellule pour le libellé de l'image. -->
                         <cell>
-                            <label value="${c:l('params.logo.accueil')}" sclass="formLabel"/>
+                            <label value="${c:l('params.logo.accueil')}" sclass="formLabel" style="color: #636363;"/>
                         </cell>
-
+                        <!-- Cellule pour afficher l'image de bienvenue ou un message si elle n'existe pas. -->
                         <cell>
-                            <image if="${not empty vm.logo}" style="width: 50px; height: 50px"
-                                   content="@load(vm.logo)"/>
-                            <label if="${empty vm.logo}" value="${c:l('params.logo.empty')}" sclass="formValue"/>
-                        </cell>
+                            <image visible="@load(vm.welcomeImageExists)" style="width: 50px; height: 50px"
+                                   content="@load(vm.welcomeImage)"/>
 
+                            <label visible="@load(!vm.welcomeImageExists)" value="${c:l('params.logo.empty')}"
+                                   sclass="formValue"/>
+                        </cell>
+                        <!--
+                          Cellule dédiée aux boutons d'édition et de suppression de l'image.
+                          La suppression d'une image est possible uniquement si elle existe.
+                          Par conséquent, le bouton de suppression est visible uniquement si une image existe ou a été téléchargée.
+                      -->
                         <cell>
                             <button label="${c:l('general.edit')}"
                                     image="/images/icones/edit.png" sclass="buttonv2"
-                                    onClick="@command('deleteWelcomeImage')"/>
-                            <button label="${c:l('general.delete')}" height="24px"
+                                    onClick="@command('modifyWelcomeImage')"/>
+                            <button visible="@load(vm.welcomeImageExists)"
+                                    label="${c:l('general.delete')}"
                                     image="/images/icones/trash.png" sclass="buttonv2"
                                     onClick="@command('deleteWelcomeImage')"/>
                         </cell>
                     </row>
 
-                    <!--  welcome Message -->
+                    <!--
+                                       Deuxième ligne: Message de bienvenue.
+                                   -->
                     <row>
+                        <!-- Cellule pour le libellé du message de bienvenue. -->
                         <cell>
-                            <label id="accueilMsgLabel" value="${c:l('params.message.accueil')}" sclass="formLabel"/>
+                            <label value="${c:l('params.message.accueil')}" sclass="formLabel" style="color: #636363;"/>
+
+                        </cell>
+                        <!-- Cellule pour afficher le message de bienvenue au format HTML. -->
+                        <cell>
+                            <html sclass="formValue z-label" content="@load(vm.welcomeMessage)"/>
                         </cell>
 
+                        <!-- Cellule pour les boutons d'édition et de suppression du message de bienvenue.
+                         Le meme logique comme pour l'image-->
                         <cell>
-
-                            <html id="accueilHtml" sclass="formValue z-label" content="@load(vm.welcomeMessage)"/>
-                        </cell>
-                        <cell>
-                            <button label="${c:l('general.edit')}" height="24px"
+                            <button label="${c:l('general.edit')}"
                                     image="/images/icones/edit.png" sclass="buttonv2"
-                                    onClick="@command('deleteWelcomeMessage')"/>
-                            <button label="${c:l('general.delete')}" height="24px"
+                                    onClick="@command('modifyWelcomeMessage')"/>
+                            <button visible="@load(vm.welcomeMessageExists)"
+                                    label="${c:l('general.delete')}"
                                     image="/images/icones/trash.png" sclass="buttonv2"
                                     onClick="@command('deleteWelcomeMessage')"/>
                         </cell>
                     </row>
-
-
                 </rows>
             </grid>
         </panelchildren>
     </panel>
 
 
-    <!--     Panel: Paramètres de la plateforme-->
+        <!--
+        Le panneau ci-dessous affiche une liste de paramètres de la plateforme.
+        Il ne peut pas être replié (collapsible="false") et ne peut pas être fermé (closable="false").
+        -->
 
     <panel collapsible="false" title="@load(vm.plateformeTitle)"
-           sclass="fichePanelv2 padding" closable="false" style="margin-top:10px">
+           sclass="fichePanelv2" closable="false" style="margin-top:10px">
         <panelchildren>
             <grid model="@load(vm.parameterList)" sclass="gridForm1">
                 <columns>
                     <column width="40%"/>
                     <column width="40%"/>
-                    <column width="20%"/>
+                    <column/>
                 </columns>
 
                 <template name="model">
-                    <!-- Chaque ligne représente un paramètre -->
+                    <!-- Chaque ligne (row) représente un paramètre -->
                     <row>
-                        <!-- 1: Afficher la clé du paramètre dans la première cellule -->
+                        <!-- Première cellule: Afficher la clé du paramètre -->
                         <cell>
-                            <label value="${c:l(each.code)}" sclass="formLabel"/>
+                            <label value="${c:l(each.code)}" sclass="formLabel" style="color: #636363;"/>
                         </cell>
 
-                        <!-- 2: La deuxième cellule contient la valeur du paramètre -->
+                        <!-- Deuxième cellule: Afficher la valeur du paramètre en mode édition ou lecture -->
                         <cell>
 
-                            <div if="${vm.isEditMode(each)}">
-                                <!-- Afficher les boutons radio 'oui' et 'non' si le type est 'boolean' -->
-                                <radiogroup if="${each.type eq 'boolean'}"
-                                            onCheck="@command('updateParameterValue', parameter=each)">
-                                    <radio label="${c:l('general.checkbox.true')}" value="true"
-                                           checked="${each.valeur == 'true'}"/>
-                                    <radio label="${c:l('general.checkbox.false')}" value="false"
-                                           checked="${each.valeur == 'false'}"/>
-                                </radiogroup>
-                                <!-- Afficher la zone de texte si c'est une chaîne de caractères -->
-                                <textbox if="${each.type eq 'string'}"
-                                         value="@load(each.valeur) @save(each.valeur)"
-                                         width="90%"/>
-                            </div>
                             <!-- Si en mode Lecture -->
 
                             <div if="${!vm.isEditMode(each)}">
@@ -151,22 +157,38 @@
                             </div>
 
 
+                            <!-- Si en mode Edition -->
+
+                            <div if="${vm.isEditMode(each)}">
+                                <!-- Afficher les boutons radio 'oui' et 'non' si le type est 'boolean' -->
+                                <radiogroup if="${each.type eq 'boolean'}"
+                                            selectedItem="@load(each.valeur) @save(each.valeur)">
+                                    <radio label="${c:l('general.checkbox.true')}" value="true"/>
+                                    <radio label="${c:l('general.checkbox.false')}" value="false"/>
+                                </radiogroup>
+
+                                <!-- Afficher la zone de texte si c'est une chaîne de caractères -->
+                                <textbox if="${each.type eq 'string'}"
+                                         value="@load(each.valeur) @save(each.valeur)"
+                                         width="90%"/>
+                            </div>
+
                         </cell>
 
 
-                        <!-- La troisième cellule contient des boutons pour éditer, enregistrer ... les modifications -->
-                        <cell>
-
+                        <!-- Troisième cellule: Boutons pour éditer, enregistrer et annuler les modifications -->                        <cell>
 
                             <button if="${!vm.isEditMode(each)}" label="${c:l('general.edit')}"
                                     onClick="@command('editParameter', parameter=each)"
-                                    image="/images/icones/edit.png" />
+                                    image="/images/icones/edit.png" sclass="buttonv2"/>
 
                             <button if="${vm.isEditMode(each)}" label="${c:l('general.save')}"
-                                    onClick="@command('saveParameter', parameter=each)"/>
+                                    onClick="@command('saveParameter', parameter=each)"
+                                    image="/images/icones/save.png" sclass="buttonv2"/>
 
                             <button if="${vm.isEditMode(each)}" label="${c:l('general.cancel')}"
-                                    onClick="@command('cancelEdit', parameter=each)"/>
+                                    onClick="@command('cancelEdit', parameter=each)"
+                                    image="/images/icones/cancel.png" sclass="buttonv2"/>
 
                         </cell>
 

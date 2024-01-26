@@ -59,13 +59,9 @@ import org.zkoss.image.AImage;
 import org.zkoss.util.media.Media;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Sessions;
-import org.zkoss.zk.ui.event.CheckEvent;
-import org.zkoss.zk.ui.event.InputEvent;
-import org.zkoss.zul.Messagebox;
-import org.zkoss.zul.Fileupload;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
-import org.zkoss.zul.Radio;
+import org.zkoss.zul.Fileupload;
 
 import java.io.File;
 import java.io.IOException;
@@ -95,30 +91,39 @@ public class ParametresController
    private static final MediaType[] AUTHORIZED_IMAGE_MEDIA_TYPES =
       new MediaType[] {MediaType.IMAGE_GIF, MediaType.IMAGE_JPEG, MediaType.IMAGE_PNG};
 
-   private static final String PARAMETER_TYPE_BOOLEAN = "boolean";
-
-   private static final String PARAMETER_TYPE_STRING = "string";
-
+   // Liste de paramètres représentant les parameters de la plateforme.
    public List<ParametreDTO> parameterList = new ArrayList<>();
 
    final private Map<ParametreDTO, Boolean> editModeMap = new HashMap<>();
 
+   // Map stockant les valeurs originales de chaque paramètre avant toute modification.
    private Map<String, ParametreDTO> originalValuesMap = new HashMap<>();
 
    private ParametresManager parametresManager;
 
+   // Message de bienvenue affiché dans l'interface utilisateur.
    private String welcomeMessage;
 
+   // Image de bienvenue affichée dans l'interface utilisateur.
    private AImage welcomeImage;
 
+   // Titre de la plateforme
    private String plateformeTitle;
+
+   // Indicateur indiquant si une image de bienvenue existe.
+   private boolean welcomeImageExists;
+
+   // Indicateur indiquant si un message de bienvenue existe.
+   private boolean welcomeMessageExists;
+
+   private String imageUpdateError = "error.params.image.update";
 
    //      **************************** | Mise en place |  ******************************************
 
    /**
     * Mise en place:
     * Charge la liste des paramètres de la plateforme, trie la liste par groupe puis par code,
-    * initialise les maps de gestion du mode édition et des valeurs originales.
+    * initialise les maps de gestion du mode édition et des valeurs originales, init les variables.
     */
    @Init
    public void init(){
@@ -147,7 +152,7 @@ public class ParametresController
     */
 
    @Command
-   @NotifyChange("welcomeImage")
+   @NotifyChange({"welcomeImage", "welcomeImageExists"})
    public void modifyWelcomeImage(){
       // Récupérer le média téléchargé
       final Media uploadedMedia = Fileupload.get();
@@ -174,7 +179,7 @@ public class ParametresController
     */
 
    @Command
-   @NotifyChange("welcomeImage")
+   @NotifyChange({"welcomeImage", "welcomeImageExists"})
    public void deleteWelcomeImage(){
       // Récupère le titre et le corps de la question localisés pour la boîte de dialogue de confirmation
       String questionTitle = Labels.getLabel("question.title.logo.delete");
@@ -184,16 +189,17 @@ public class ParametresController
 
       if(isOk){
          // Tente de supprimer le logo
-         boolean wasDeleted = parametresManager.deleteLogo();
+         boolean imageWasDeleted = parametresManager.deleteLogo();
          // Si le logo a été supprimé avec succès
-         if(wasDeleted){
+         if(imageWasDeleted){
             // Affiche le message de réussite
             String messageBody = Labels.getLabel("success.logo.delete");
             String messageHeader = Labels.getLabel("general.success");
             MessagesUtils.openInfoModal(messageHeader, messageBody);
             welcomeImage = null;
+            welcomeImageExists = false;
          }else{
-            displayError(Labels.getLabel("error.params.image.update"));
+            displayError(Labels.getLabel(imageUpdateError));
 
          }
 
@@ -206,7 +212,7 @@ public class ParametresController
     *
     */
    @Command
-   @NotifyChange("welcomeMessage")
+   @NotifyChange({"welcomeMessage", "welcomeMessageExists"})
    public void deleteWelcomeMessage(){
 
       String messageBody = Labels.getLabel("params.modale.message.delete");
@@ -220,6 +226,7 @@ public class ParametresController
 
          if(deleted){
             welcomeMessage = Labels.getLabel("params.message.empty");
+            welcomeMessageExists = false;
          }else{
             displayError(Labels.getLabel("error.params.message.update"));
 
@@ -235,27 +242,31 @@ public class ParametresController
     * de modifier le message d'accueil de l'application.
     */
    @Command
+   @NotifyChange({"welcomeMessage", "welcomeMessageExists"})
    public void modifyWelcomeMessage(){
 
       EventListener<Event> onCloseListener = event -> {
          if(null != event.getData()){
             String newMessage = (String) event.getData();
             boolean saved = parametresManager.saveMessageAccueil(newMessage);
-            if(!saved){
+            if(saved){
+               welcomeMessage = newMessage;
+               welcomeMessageExists = true;
+            }else{
                displayError(Labels.getLabel("error.params.message.update"));
-            }
 
+            }
          }
       };
 
-      String currentMsg = ManagerLocator.getManager(ParametresManager.class).getMessageAccueil(true);
+      String currentMsg = parametresManager.getMessageAccueil(true);
       TexteModale.show(Labels.getLabel("params.modale.message.titre"), Labels.getLabel("params.modale.message.libelle"),
          currentMsg, 5, true, onCloseListener);
 
    }
 
-
    //      **************************** | Event Listeners : Plateforme Params |  ******************************************
+
    /**
     * Active le mode édition pour un paramètre donné et enregistre la valeur d'origine du paramètre.
     *
@@ -263,17 +274,16 @@ public class ParametresController
     */
    @Command
    @NotifyChange("parameterList")
-   public void editParameter(@BindingParam("parameter") ParametreDTO parameter) {
+   public void editParameter(@BindingParam("parameter") ParametreDTO parameter){
       boolean isEditMode = isEditMode(parameter);
 
-      if (!isEditMode) {
+      if(!isEditMode){
          // Save the original value
          originalValuesMap.put(parameter.getCode(),
             new ParametreDTO(parameter.getCode(), parameter.getValeur(), parameter.getType(), parameter.getGroupe()));
          editModeMap.put(parameter, true);
       }
    }
-
 
    /**
     * Annule les modifications effectuées lors de l'édition d'un paramètre.
@@ -282,14 +292,13 @@ public class ParametresController
     */
    @Command
    @NotifyChange("parameterList")
-   public void cancelEdit(@BindingParam("parameter") ParametreDTO parameter) {
+   public void cancelEdit(@BindingParam("parameter") ParametreDTO parameter){
       // Rétablit les valeurs originales
       ParametreDTO originalValues = originalValuesMap.get(parameter.getCode());
       parameter.setValeur(originalValues.getValeur());
 
       // Réinitialiser le mode édition à faux
       editModeMap.put(parameter, false);
-
 
    }
 
@@ -298,23 +307,13 @@ public class ParametresController
    public void saveParameter(@BindingParam("parameter") ParametreDTO parameter,
       @ContextParam(ContextType.TRIGGER_EVENT) Event event){
 
-      // Vérifier le type du paramètre
-      if (PARAMETER_TYPE_BOOLEAN.equals(parameter.getType())) {
-         // C'est un paramètre booléen, caster l'événement en CheckEvent
-         CheckEvent checkEvent = (CheckEvent) event;
-         String selectedValue = ((Radio) checkEvent.getTarget()).getValue();
-         parameter.setValeur(selectedValue);
-      } else if (PARAMETER_TYPE_STRING.equals(parameter.getType())) {
-         // C'est un paramètre de type chaîne de caractères, caster l'événement en InputEvent (Textbox)
-         InputEvent inputEvent = (InputEvent) event;
-         String newValue = inputEvent.getValue();
-         parameter.setValeur(newValue);
-      }
-
+      String selectedValue = parameter.getValeur();
+      parameter.setValeur(selectedValue);
       // Enregistrer la valeur mise à jour
       saveParameter(parameter);
-   }
 
+      editModeMap.put(parameter, false);
+   }
 
    //      ****************************** | Méthodes utilitaires    | *************************************************
 
@@ -323,24 +322,26 @@ public class ParametresController
     * Si le fichier existe, charge l'image à l'aide de la classe AImage.
     * En cas d'erreur lors du chargement de l'image, affiche un message d'erreur.
     */
+
    private void initWelcomeImage(){
       File logofile = parametresManager.getLogoFile();
       if(logofile.exists()){
          try{
-
             welcomeImage = new AImage(logofile);
-
+            welcomeImageExists = true;
          }catch(final IOException e){
             logger.error("Unable to load the image file [{}]", sanitize(logofile.getAbsolutePath()), e);
-            displayError(Labels.getLabel("error.params.image.update"));
+            displayError(Labels.getLabel(imageUpdateError));
 
          }
+      } else {
+         welcomeImageExists = false;
       }
    }
 
    /**
     * Initialise le message d'accueil en récupérant la valeur depuis le gestionnaire de paramètres.
-    * Le message est ensuite converti en entités HTML et, s'il est vide, il est remplacé par un message par défaut.
+    * Le message est ensuite converti en entités HTML et, s'il est vide, il est remplacé par la valeur de "params.message.empty"
     */
    private void initWelcomeMessage(){
       welcomeMessage = parametresManager.getMessageAccueil(false);
@@ -348,6 +349,10 @@ public class ParametresController
 
       if(StringUtils.isEmpty(welcomeMessage)){
          welcomeMessage = Labels.getLabel("params.message.empty");
+         welcomeMessageExists = false;
+      } else {
+         welcomeMessageExists = true;
+
       }
    }
 
@@ -424,6 +429,12 @@ public class ParametresController
 
          // Sauvegarder l'image de bienvenue
          saved = parametresManager.saveLogo(tmpImageFile);
+         if(saved){
+            initWelcomeImage();
+         }else{
+            // Afficher un message d'erreur en cas d'échec de l'enregistrement
+            displayError(imageUpdateError);
+         }
       }catch(final IOException e){
          logger.error("Erreur lors de la conversion du média en fichier", e);
       }finally{
@@ -433,17 +444,7 @@ public class ParametresController
          }
       }
 
-      // Si l'enregistrement est réussi, mettre à jour l'image de bienvenue
-      if(saved){
-         try{
-            welcomeImage = new AImage(tmpImageFile);
-         }catch(final IOException e){
-            logger.error("Impossible de charger le fichier image [{}]", sanitize(tmpImageFile.getAbsolutePath()), e);
-         }
-      }else{
-         // Afficher un message d'erreur en cas d'échec de l'enregistrement
-         displayError("error.params.image.update");
-      }
+
    }
 
    /**
@@ -457,6 +458,7 @@ public class ParametresController
       MessagesUtils.openErrorModal(messageHeader, messageBody);
    }
 
+
    /**
     * Indique si le mode édition est activé pour un paramètre donné.
     *
@@ -466,7 +468,6 @@ public class ParametresController
    public boolean isEditMode(ParametreDTO parameter){
       return editModeMap.get(parameter);
    }
-
 
    /**
     * Comparateur pour trier les paramètres par groupe puis par code.
@@ -500,11 +501,40 @@ public class ParametresController
       this.plateformeTitle = plateformeTitle;
    }
 
-   public String getAccueilMsg(){
+   public String getWelcomeMessage(){
       return welcomeMessage;
    }
 
-   public AImage getLogo(){
+   public AImage getWelcomeImage(){
       return welcomeImage;
+   }
+
+   public void setWelcomeMessage(String welcomeMessage){
+      this.welcomeMessage = welcomeMessage;
+   }
+
+   public void setWelcomeImage(AImage welcomeImage){
+      this.welcomeImage = welcomeImage;
+   }
+
+
+   public void setParameterList(List<ParametreDTO> parameterList){
+      this.parameterList = parameterList;
+   }
+
+   public boolean isWelcomeImageExists(){
+      return welcomeImageExists;
+   }
+
+   public void setWelcomeImageExists(boolean welcomeImageExists){
+      this.welcomeImageExists = welcomeImageExists;
+   }
+
+   public boolean isWelcomeMessageExists(){
+      return welcomeMessageExists;
+   }
+
+   public void setWelcomeMessageExists(boolean welcomeMessageExists){
+      this.welcomeMessageExists = welcomeMessageExists;
    }
 }
