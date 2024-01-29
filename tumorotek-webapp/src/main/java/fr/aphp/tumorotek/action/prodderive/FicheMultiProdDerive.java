@@ -195,8 +195,6 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
 
    private Label prodDeriveQteLabel;
 
-   private Label requiredtransfoQuantiteLabel;
-
    private Div prodDeriveQteDiv;
 
    private Grid derivesList;
@@ -934,7 +932,7 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
             if (isQuantiteUtiliseObligatoire){
                Clients.scrollIntoView(transfoQuantiteBoxDerive);
                // afficher un message d'erreur à côté du champ "quantité utilisée obligatoire"
-               throw new WrongValueException(transfoQuantiteBoxDerive, Labels.getLabel("validation.syntax.empty"));
+               throw new WrongValueException(transfoQuantiteBoxDerive, Labels.getLabel("ficheMultiProdDerive.validation.quantite"));
             } else{
                // si la valeur du paramètre "quantité utilisée obligatoire" est false,  afficher une fenêtre d'avertissement
                boolean userAnswer = MessagesUtils.openQuestionModal(Labels.getLabel("general.warning"),

@@ -48,7 +48,7 @@
         <panelchildren id="panelChildrenWithScroll">
             <grid fixedLayout="true" sclass="gridForm1">
                 <columns>
-                    <column width="40%"/>
+                    <column width="30%"/>
                     <column width="40%"/>
                     <column/>
                 </columns>
@@ -128,7 +128,7 @@
         <panelchildren>
             <grid model="@load(vm.parameterList)" sclass="gridForm1">
                 <columns>
-                    <column width="40%"/>
+                    <column width="30%"/>
                     <column width="40%"/>
                     <column/>
                 </columns>

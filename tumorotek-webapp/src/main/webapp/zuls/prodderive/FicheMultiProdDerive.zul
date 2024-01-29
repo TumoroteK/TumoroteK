@@ -207,7 +207,7 @@
 						<!-- Quantité utilisée dans la transformation -->
 						<hbox>
 							<label id="transfoQuantiteLabel" value="${c:l('ficheProdDerive.transformation.quantité')}" sclass="formLabel"/>
-							<label id="requiredtransfoQuantiteLabel" value="*" sclass="requiredMark" />
+							<label id="requiredtransfoQuantiteLabel" value="*" sclass="requiredMark" visible="false" />
 						</hbox>
 
 						<div id="transfoQuantiteDiv">
@@ -219,7 +219,7 @@
 								format="##0.###" scale="3"
 								locale="en"
 							/>
-							
+						<!--	Les unités-->
 							<label id="transfoQuantiteUnitesBoxDerive"
 								value="@{fwinMultiProdDerive$composer.selectedTransfoQuantiteUnite.unite
 								load-after='codesParentBoxDerive.onSelect'}"

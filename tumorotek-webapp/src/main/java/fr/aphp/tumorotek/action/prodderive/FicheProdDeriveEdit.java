@@ -47,7 +47,6 @@ import java.util.stream.Collectors;
 
 import fr.aphp.tumorotek.dto.ParametreDTO;
 import fr.aphp.tumorotek.param.EParametreValeurParDefaut;
-import fr.aphp.tumorotek.utils.TKStringUtils;
 import org.springframework.validation.Errors;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
@@ -308,7 +307,7 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
 
    private String emplacementAdrl = "";
 
-   private boolean isQuantiteObligatoire = true;
+   private boolean isQuantiteObligatoire;
 
 
    //Labels anonymisables
@@ -364,7 +363,7 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
     *
     */
    private void initializeQuantiteUtiliseObligatoireFromSession(){
-      // Récupérer le code (deriveQteObligatoire.getCode())
+      // Récupérer le Enum
       EParametreValeurParDefaut deriveQteObligatoire = EParametreValeurParDefaut.DERIVE_QTE_OBLIGATOIRE;
       // Obtenir le DTO associé au paramètre
       ParametreDTO deriveQteObligatoireDto = SessionUtils.getParametreByCode(deriveQteObligatoire.getCode(), sessionScope);
@@ -880,19 +879,8 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
     */
 
    public void initEditableMode(){
-      //    volume = null;
-      //    volumeInit = null;
-      //    quantite = null;
-      //    quantiteInit = null;
-      //    dateCongelation = null;
-      //    dateTransformation = null;
-      //    quantiteMax = null;
-      //    quantiteTransformation = null;
 
       codePrefixe = this.prodDerive.getCode();
-
-      //codePrefixe = this.prodDerive.getCode().substring(0,
-      //    this.prodDerive.getCode().lastIndexOf("."));
 
       // si le parent est un prlvt
       if(typeParent != null){
@@ -1150,16 +1138,7 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
    /*************************************************************************/
    /************************** FORMATTERS ***********************************/
    /*************************************************************************/
-//   // /!\ le composant codeBoxDerive ne semble plus utilisé : code en commentaire dans le zul
-//   // utilisation à la place de codePrefixeLabelDerive...
-//   //  A SUPPRIMER ......
-//   /**
-//    * Méthode appelée après la saisie d'une valeur dans le champ
-//    * codeBoxDerive. Cette valeur sera mise en majuscules.
-//    */
-//   public void onBlur$codeBoxDerive(){
-//      codeBoxDerive.setValue(codeBoxDerive.getValue().toUpperCase().trim());
-//   }
+
 
    /**
     * Méthode appelée après la saisie d'une valeur dans le champ
@@ -2222,7 +2201,6 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
             }else{
                Clients.clearWrongValue(quantiteInitBoxDerive);
                quantiteInitBoxDerive.setConstraint("");
-               //quantiteInitBoxDerive.setValue(null);
                quantiteInitBoxDerive.setValue("");
                quantiteInitBoxDerive.setConstraint(cttQuantiteInit);
             }
@@ -2286,33 +2264,34 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
 
    /**
     * Contrainte vérifiant que la quantite de transformation n'est
-    * pas inférieure à 0 et n'est pas supérieure à celle du parent.
+    * pas inférieure à 0, n'est pas supérieure à celle du parent et n'est pas null si isQuantiteObligatoire == true.
     * @author Pierre Ventadour.
     *
     */
    public class ConstQuantiteTransformation implements Constraint
    {
       /**
-       * Méthode de validation du champ quantiteInitBox.
+       * Valide la quantité de transformation.
+       *
+       * @param comp  Le composant associé à la contrainte.
+       * @param value La valeur de la quantité de transformation.
+       * @throws WrongValueException Si la validation échoue.
        */
       @Override
       public void validate(final Component comp, final Object value){
          final BigDecimal quantiteTransfoValue = (BigDecimal) value;
+         // Si isQuantiteObligatoire est null et elle doit être rensigné: Lance une exception
          if (isQuantiteObligatoire && quantiteTransfoValue == null) {
-            throw new WrongValueException(comp, Labels.getLabel("validation.syntax.empty"));
+            throw new WrongValueException(comp, Labels.getLabel("ficheMultiProdDerive.validation.quantite"));
          }
+         // Si la valeur est negative : Lance une exception
          if(quantiteTransfoValue != null){
             quantiteTransformation = quantiteTransfoValue.floatValue();
 
             if(quantiteTransformation < 0){
-               throw new WrongValueException(comp, "Seul les nombres positifs sont acceptés.");
+               throw new WrongValueException(comp, Labels.getLabel("validation.negative.value"));
             }
-            // sinon on enlève toutes les erreurs affichées
-            BigDecimal decimal = new BigDecimal(quantiteTransformation);
-            Clients.clearWrongValue(transfoQuantiteBoxDerive);
-            transfoQuantiteBoxDerive.setConstraint("");
-            transfoQuantiteBoxDerive.setValue(decimal);
-            transfoQuantiteBoxDerive.setConstraint(cttQuantiteTransfo);
+            clearErrors(quantiteTransfoValue);
 
             if(quantiteMax != null && quantiteTransformation > quantiteMax){
                final StringBuffer sb = new StringBuffer();
@@ -2337,13 +2316,15 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
 
                throw new WrongValueException(comp, sb.toString());
             }
-            // sinon on enlève toutes les erreurs affichées
-            decimal = new BigDecimal(quantiteTransformation);
-            Clients.clearWrongValue(transfoQuantiteBoxDerive);
-            transfoQuantiteBoxDerive.setConstraint("");
-            transfoQuantiteBoxDerive.setValue(decimal);
-            transfoQuantiteBoxDerive.setConstraint(cttQuantiteTransfo);
+            clearErrors(quantiteTransfoValue);
          }
+      }
+
+      private void clearErrors(BigDecimal quantiteTransfoValue){
+         Clients.clearWrongValue(transfoQuantiteBoxDerive);
+         transfoQuantiteBoxDerive.setConstraint("");
+         transfoQuantiteBoxDerive.setValue(quantiteTransfoValue);
+         transfoQuantiteBoxDerive.setConstraint(cttQuantiteTransfo);
       }
    }
 

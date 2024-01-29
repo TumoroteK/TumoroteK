@@ -2592,8 +2592,8 @@
 	<bean id="parametresManager" parent="txProxyTemplate">
 		<property name="target">
 			<bean
-					class="fr.aphp.tumorotek.manager.impl.administration.ParametresManagerImpl" >
-				<property name="parametreValeurSpecifiqueDao" ref="parametreValeurSpecifiqueDao" />
+				  class="fr.aphp.tumorotek.manager.impl.administration.ParametresManagerImpl" >
+				  <property name="parametreValeurSpecifiqueDao" ref="parametreValeurSpecifiqueDao" />
 
 			</bean>
 		</property>
