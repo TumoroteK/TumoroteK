@@ -229,7 +229,7 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
    //   private List<String> lettres = new ArrayList<>();
    private boolean selectParent = false;
 
-   private boolean isQuantiteUtiliseObligatoire = true;
+   private boolean isQuantiteUtiliseObligatoire;
 
    private Date dateSortie;
 

@@ -371,9 +371,9 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
       if (deriveQteObligatoireDto != null){
          // Convertir la valeur du paramètre en un boolean
          isQuantiteObligatoire = Boolean.parseBoolean(deriveQteObligatoireDto.getValeur());
-         if (!isQuantiteObligatoire){
+         if (isQuantiteObligatoire){
             // Masquer le label de transformation obligatoire si la quantité n'est pas utilisée
-            requiredtransfoQuantiteLabel.setVisible(false);
+            requiredtransfoQuantiteLabel.setVisible(true);
          }
       }
    }
