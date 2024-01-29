@@ -307,7 +307,7 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
 
    private String emplacementAdrl = "";
 
-   private boolean isQuantiteObligatoire;
+   protected boolean isQuantiteObligatoire;
 
 
    //Labels anonymisables

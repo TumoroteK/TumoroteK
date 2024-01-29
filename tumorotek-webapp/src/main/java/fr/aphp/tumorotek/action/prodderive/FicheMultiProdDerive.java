@@ -229,8 +229,6 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
    //   private List<String> lettres = new ArrayList<>();
    private boolean selectParent = false;
 
-   private boolean isQuantiteUtiliseObligatoire;
-
    private Date dateSortie;
 
    private final ProdDeriveDecoratorRowRenderer deriveDecoRenderer = new ProdDeriveDecoratorRowRenderer();
@@ -929,7 +927,7 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
          // Si le champ n'est pas renseigné
          if (transfoQuantiteBoxDerive.getValue() == null){
             // et la plateforme est configurée pour avoir la saisie de quantité utilisée obligatoire, on bloque l'ajout
-            if (isQuantiteUtiliseObligatoire){
+            if (isQuantiteObligatoire){
                Clients.scrollIntoView(transfoQuantiteBoxDerive);
                // afficher un message d'erreur à côté du champ "quantité utilisée obligatoire"
                throw new WrongValueException(transfoQuantiteBoxDerive, Labels.getLabel("ficheMultiProdDerive.validation.quantite"));
@@ -1952,10 +1950,6 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
 
    public List<String> getListParentTypes(){
       return listParentTypes;
-   }
-
-   public boolean isQuantiteUtiliseObligatoire(){
-      return isQuantiteUtiliseObligatoire;
    }
 
    public String getSelectedParent(){
