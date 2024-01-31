@@ -1,5 +1,10 @@
 #### Notes de version
 
+##### Version 2.3.0.7 - Publiée le 31/01/2024
+###### Corrections dans TK pour un contexte Gatsbi
+- YouTrack [TG-228](https://tumorotek.myjetbrains.com/youtrack/issue/TG-228) : [TK] - Fiche ${patient} : dans la liste des prélèvements les données ne sont pas affichées dans les bonnes colonnes si le service préleveur est à afficher
+- YouTrack [TG-232](https://tumorotek.myjetbrains.com/youtrack/issue/TG-232) : [TK] - En édition, les listes des thésaurus affichent 2 lignes blanches si aucun filtre n'est défini
+
 ##### Version 2.3.0.6 - Publiée le 24/01/2024
 ###### Corrections dans TK pour un contexte Gatsbi
 - YouTrack [TG-171](https://tumorotek.myjetbrains.com/youtrack/issue/TG-171) : [TK] - ${echantillon} bug d'affichage de la quantité : champ trop haut
