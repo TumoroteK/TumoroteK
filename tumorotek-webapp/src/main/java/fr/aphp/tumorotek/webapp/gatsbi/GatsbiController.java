@@ -490,6 +490,10 @@ public class GatsbiController
       // - values est vide - ne doit jamais se présenter depuis qu'une évolution a été faite côté Gatsbi pour renvoyer toutes les valeurs du thesaurus si 
       //l'utilisateur n'en a saisi aucun (TG-148) 
       // - le nombre d'éléments dans values est égal à celui dans lModel : cas où il n'y a pas de filtre (depuis la TG-148) 
+      // TG-232 : Il ne faut pas ajouter 2 fois null. Si thesObjs le contient c'est que lModel le contient aussi (cf code ci-dessus) => clear()
+      if(thesObjs.contains(null)) {
+         thesObjs.clear();
+      }
       thesObjs.addAll(lModel);
       return thesObjs;
    }
