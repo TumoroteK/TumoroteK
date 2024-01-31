@@ -8,6 +8,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
 
+import fr.aphp.tumorotek.manager.administration.ParametresManager;
+import fr.aphp.tumorotek.utils.TKStringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -18,6 +20,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.GrantedAuthorityImpl;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
+import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.ClientInfoEvent;
@@ -68,9 +71,20 @@ public class ConnexionCrf extends GenericForwardComposer<Component>
 
    private Utilisateur user = null;
 
+   private String welcomeMessage;
+
+
    @Override
    public void doAfterCompose(final Component comp) throws Exception{
       super.doAfterCompose(comp);
+      ParametresManager parametresManager = ManagerLocator.getManager(ParametresManager.class);
+      // Récupération du message d'accueil à afficher
+      welcomeMessage = parametresManager.getMessageAccueil(false);
+
+      // Si le message d'accueil est vide, utiliser le message par défaut
+      if(TKStringUtils.isEmptyString(welcomeMessage)){
+         welcomeMessage = Labels.getLabel("login.welcome");
+      }
 
       // on vérifie que la connexion est bien active
       if(connexionActive()){
@@ -399,4 +413,7 @@ public class ConnexionCrf extends GenericForwardComposer<Component>
       this.dateNaissance = d;
    }
 
+   public String getWelcomeMessage(){
+      return welcomeMessage;
+   }
 }

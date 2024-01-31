@@ -56,7 +56,7 @@ public interface ParametresManager
 {
 
    /**
-    * Récupère le message d'accueil actuel
+    * Récupère le message d'accueil actuel depuis le fichier tumorotek.properties
     * @param raw si true renvoie le message tel qu'il a été saisi (et stocké), si false, renvoie le html qui sera effectivement traité
     * @return message d'accueil
     */

@@ -213,7 +213,7 @@ public class ParametresController
     */
    @Command
    @NotifyChange({"welcomeMessage", "welcomeMessageExists"})
-   public void deleteWelcomeMessage(){
+   public void resetWelcomeMessage(){
 
       String messageBody = Labels.getLabel("params.modale.message.delete");
       String messageHeader = Labels.getLabel("params.modale.message.libelle");
@@ -225,7 +225,7 @@ public class ParametresController
          final boolean deleted = parametresManager.deleteMessageAccueil();
 
          if(deleted){
-            welcomeMessage = Labels.getLabel("params.message.empty");
+            welcomeMessage = Labels.getLabel("login.welcome");
             welcomeMessageExists = false;
          }else{
             displayError(Labels.getLabel("error.params.message.update"));

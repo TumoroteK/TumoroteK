@@ -107,9 +107,9 @@
                                     image="/images/icones/edit.png" sclass="buttonv2"
                                     onClick="@command('modifyWelcomeMessage')"/>
                             <button visible="@load(vm.welcomeMessageExists)"
-                                    label="${c:l('general.delete')}"
+                                    label="${c:l('general.reset')}"
                                     image="/images/icones/trash.png" sclass="buttonv2"
-                                    onClick="@command('deleteWelcomeMessage')"/>
+                                    onClick="@command('resetWelcomeMessage')"/>
                         </cell>
                     </row>
                 </rows>

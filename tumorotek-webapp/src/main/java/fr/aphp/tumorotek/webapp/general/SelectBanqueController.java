@@ -46,7 +46,7 @@ import java.util.ResourceBundle;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
-
+import fr.aphp.tumorotek.utils.TKStringUtils;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Execution;
@@ -137,10 +137,19 @@ public class SelectBanqueController extends GenericForwardComposer<Component>
 
    private Row rowResourceRedirect;
 
+   private String welcomeMessage;
+
    @Override
    public void doAfterCompose(final Component comp) throws Exception{
       super.doAfterCompose(comp);
 
+      ParametresManager parametresManager = ManagerLocator.getManager(ParametresManager.class);
+      // Récupération du message d'accueil à afficher
+      welcomeMessage = parametresManager.getMessageAccueil(false);
+      // Si le message d'accueil est vide, utiliser le message par défaut
+      if(TKStringUtils.isEmptyString(welcomeMessage)){
+         welcomeMessage = Labels.getLabel("login.welcome");
+      }
       selectionComponents =
          new Component[] {this.rowPlateformeTitle, this.rowPlateforme, this.rowBanqueTitle, this.rowBanque, this.validate};
       archiveComponents = new Component[] {this.rowMdpArchive1, this.rowMdpArchive2, this.rowMdpArchive3};
@@ -435,5 +444,9 @@ public class SelectBanqueController extends GenericForwardComposer<Component>
 
    public void setSelectedPlateforme(final Plateforme sPlateforme){
       this.selectedPlateforme = sPlateforme;
+   }
+
+   public String getWelcomeMessage(){
+      return welcomeMessage;
    }
 }

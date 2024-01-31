@@ -82,7 +82,7 @@
 			<rows>
 				<row>
 					<vbox align="center">
-						<label sclass="formSubTitle" value="${c:l('login.welcome')}"/>
+						<label sclass="formSubTitle" value="@{winSelectBanque$composer.welcomeMessage}"/>
 						<separator/>
 						<separator/>
 					</vbox>
