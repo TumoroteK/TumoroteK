@@ -251,10 +251,16 @@ public class GatsbiControllerPrelevement {
          rowRenderer.setIconesRendered(true);
       }
 
-      // date prelevement optionnel
-      if (contexte.getChampEntiteInTableauOrdered().contains(29)) {
-         GatsbiControllerPrelevement.drawDatePrelColumn(grid);
-      }
+      // bug TG-228 : mise en commentaire du code qui pose problème pour annuler la spécificité souhaité
+      // avant de revoir tout le mécanisme de génération des tableaux (règles de gestions sur les colonne et les lignes
+      // définies une seule fois) : tâche TG-230.
+      // date prelevement optionnel mais si demandé doit être avant le code prélèvement dans le cas des inners :
+      // /!\ date de prélèvement c'est 30 et non 29 comme renseigné au moment la TG-228 avant la TG (29 c'est service préleveur)
+      // => passer par des constantes : tâche TG-229
+      // reprendre la règle de gestion spécifique avec la TG-231 dont TG-230 est le prérequis
+      //if (contexte.getChampEntiteInTableauOrdered().contains(30)) { 
+      //   GatsbiControllerPrelevement.drawDatePrelColumn(grid);
+      //}
       
       // code echan column, toujours affichée
       GatsbiControllerPrelevement.drawCodeColumn(grid);
