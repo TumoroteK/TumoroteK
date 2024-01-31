@@ -258,10 +258,18 @@ public class ParametresController
             }
          }
       };
-
+      // Récupérer le message d'accueil à partir de tumorotek.properties
       String currentMsg = parametresManager.getMessageAccueil(true);
+      // Si le message  est vide, récupérer le libellé par défaut pour le message d'accueil depuis les ressources
+      if (TKStringUtils.isEmptyString(currentMsg)) {
+         currentMsg = Labels.getLabel("login.welcome");
+
+      }
+      // Nettoyage : voir la documentation JavaDoc de convertHtmlEntities pour un example
+      String cleanMsg = TKStringUtils.normalizeSpecialChars(currentMsg);
+
       TexteModale.show(Labels.getLabel("params.modale.message.titre"), Labels.getLabel("params.modale.message.libelle"),
-         currentMsg, 5, true, onCloseListener);
+         cleanMsg, 5, true, onCloseListener);
 
    }
 
@@ -345,7 +353,7 @@ public class ParametresController
     */
    private void initWelcomeMessage(){
       welcomeMessage = parametresManager.getMessageAccueil(false);
-      welcomeMessage = TKStringUtils.convertHtmlEntities(welcomeMessage);
+      welcomeMessage = TKStringUtils.normalizeSpecialChars(welcomeMessage);
 
       if(StringUtils.isEmpty(welcomeMessage)){
          welcomeMessage = Labels.getLabel("params.message.empty");

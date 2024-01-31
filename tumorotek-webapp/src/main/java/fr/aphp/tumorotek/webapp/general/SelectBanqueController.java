@@ -146,6 +146,9 @@ public class SelectBanqueController extends GenericForwardComposer<Component>
       ParametresManager parametresManager = ManagerLocator.getManager(ParametresManager.class);
       // Récupération du message d'accueil à afficher
       welcomeMessage = parametresManager.getMessageAccueil(false);
+      // Nettoyage : voir la documentation JavaDoc de convertHtmlEntities pour un example
+
+      welcomeMessage = TKStringUtils.normalizeSpecialChars(welcomeMessage);
       // Si le message d'accueil est vide, utiliser le message par défaut
       if(TKStringUtils.isEmptyString(welcomeMessage)){
          welcomeMessage = Labels.getLabel("login.welcome");

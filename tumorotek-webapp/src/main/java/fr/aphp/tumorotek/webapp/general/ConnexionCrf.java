@@ -80,7 +80,8 @@ public class ConnexionCrf extends GenericForwardComposer<Component>
       ParametresManager parametresManager = ManagerLocator.getManager(ParametresManager.class);
       // Récupération du message d'accueil à afficher
       welcomeMessage = parametresManager.getMessageAccueil(false);
-
+      // Nettoyage : voir la documentation JavaDoc de convertHtmlEntities pour un example
+      welcomeMessage = TKStringUtils.normalizeSpecialChars(welcomeMessage);
       // Si le message d'accueil est vide, utiliser le message par défaut
       if(TKStringUtils.isEmptyString(welcomeMessage)){
          welcomeMessage = Labels.getLabel("login.welcome");
@@ -224,11 +225,9 @@ public class ConnexionCrf extends GenericForwardComposer<Component>
    }
 
    /**
-    * Log un utilisateur et renvoie true si la connection s'est
-    * bien passée.
-    * @param login
-    * @param pass
-    * @return
+    * Log un utilisateur
+    *
+    * @return true si la connection s'est bien passée.
     */
    public boolean logUser(){
       boolean ok = false;

@@ -58,20 +58,17 @@ public final class TKStringUtils
    private TKStringUtils(){}
 
    /**
-    * Convertit les entités HTML dans une chaîne de texte en caractères Unicode correspondants.
-    * Cette méthode utilise la bibliothèque Apache Commons Lang et la classe StringEscapeUtils
-    * pour effectuer la conversion.
-    * Example
-    * Input HTML Text: Bienvenue sur le syst&egrave;me de gestion des collections de pr&eacute;l&egrave;vements biologiques.
-    * Output Text: Bienvenue sur le système de gestion des collections de prélèvements biologiques.
+    * Normalise les caractères spéciaux dans une chaîne de texte.
     *
-    * @param htmlText La chaîne de texte contenant des entités HTML à convertir.
+    * Exemple :
+    * Texte en entrée : Bienvenue sur le syst&egrave;me de gestion des collections de pr&eacute;l&egrave;vements biologiques.
+    * Texte en sortie : Bienvenue sur le système de gestion des collections de prélèvements biologiques.
+    *
+    * @param texteHtml La chaîne de texte contenant des entités HTML à convertir.
     * @return La chaîne de texte avec les entités HTML converties en caractères Unicode.
-    * @throws IllegalArgumentException Si la chaîne de texte en entrée est nulle.
-    *
     */
 
-   public static String convertHtmlEntities(String htmlText) {
+   public static String normalizeSpecialChars(String htmlText) {
       return StringEscapeUtils.unescapeHtml4(htmlText);
    }
 
