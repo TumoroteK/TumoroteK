@@ -195,9 +195,10 @@ public class StatResultsRow implements Comparable<StatResultsRow>
       }
       if (o.banque == null) {
          return 1;
-      } else {
-         return this.banque.getNom().compareToIgnoreCase(o.banque.getNom());
+      }
+
+      return this.banque.getNom().compareToIgnoreCase(o.banque.getNom());
       }
    }
 
-}
+
