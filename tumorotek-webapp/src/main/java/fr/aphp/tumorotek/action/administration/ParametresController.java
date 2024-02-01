@@ -349,14 +349,14 @@ public class ParametresController
 
    /**
     * Initialise le message d'accueil en récupérant la valeur depuis le gestionnaire de paramètres.
-    * Le message est ensuite converti en entités HTML et, s'il est vide, il est remplacé par la valeur de "params.message.empty"
+    * Le message est ensuite converti en entités HTML et, s'il est vide, il est remplacé par le message par defaut
     */
    private void initWelcomeMessage(){
       welcomeMessage = parametresManager.getMessageAccueil(false);
       welcomeMessage = TKStringUtils.normalizeSpecialChars(welcomeMessage);
 
       if(StringUtils.isEmpty(welcomeMessage)){
-         welcomeMessage = Labels.getLabel("params.message.empty");
+         welcomeMessage = Labels.getLabel("login.welcome");
          welcomeMessageExists = false;
       } else {
          welcomeMessageExists = true;

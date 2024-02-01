@@ -54,9 +54,9 @@
 				<column width="450px"/>
 			</columns>
 			<rows>
-				<row>
+				<row align="center" style="padding-top: 20px">
 					<vbox align="center">
-						<label sclass="formSubTitle"  value="@{winConnectionCrf$composer.welcomeMessage}"/>
+						<html id="htmlMsg" sclass="formSubTitle z-label" />
 						<separator/>
 						<separator/>
 					</vbox>

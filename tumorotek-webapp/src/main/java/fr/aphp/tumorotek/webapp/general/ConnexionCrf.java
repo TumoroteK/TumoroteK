@@ -25,6 +25,7 @@ import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.ClientInfoEvent;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
+import org.zkoss.zul.Html;
 import org.zkoss.zul.Row;
 
 import fr.aphp.tumorotek.action.ManagerLocator;
@@ -71,22 +72,13 @@ public class ConnexionCrf extends GenericForwardComposer<Component>
 
    private Utilisateur user = null;
 
-   private String welcomeMessage;
-
+   private Html htmlMsg;
 
    @Override
    public void doAfterCompose(final Component comp) throws Exception{
       super.doAfterCompose(comp);
-      ParametresManager parametresManager = ManagerLocator.getManager(ParametresManager.class);
       // Récupération du message d'accueil à afficher
-      welcomeMessage = parametresManager.getMessageAccueil(false);
-      // Nettoyage : voir la documentation JavaDoc de convertHtmlEntities pour un example
-      welcomeMessage = TKStringUtils.normalizeSpecialChars(welcomeMessage);
-      // Si le message d'accueil est vide, utiliser le message par défaut
-      if(TKStringUtils.isEmptyString(welcomeMessage)){
-         welcomeMessage = Labels.getLabel("login.welcome");
-      }
-
+      assignWelcomeMessage();
       // on vérifie que la connexion est bien active
       if(connexionActive()){
          rowInactive.setVisible(false);
@@ -113,6 +105,22 @@ public class ConnexionCrf extends GenericForwardComposer<Component>
          rowInactive.setVisible(true);
          rowWait.setVisible(false);
          rowError.setVisible(false);
+      }
+   }
+
+   /**
+    * Init. le variable welcomeMessage. Si le message d'accueil est vide, utiliser le message par défaut
+    */
+   private void assignWelcomeMessage(){
+      ParametresManager parametresManager = ManagerLocator.getManager(ParametresManager.class);
+      // Récupération du message d'accueil depuis le gestionnaire de paramètres
+      String welcomeMessage = parametresManager.getMessageAccueil(false);
+      // Si le message d'accueil est vide, utiliser le message par défaut
+      if(TKStringUtils.isEmptyString(welcomeMessage)){
+         String defaultMessage = Labels.getLabel("login.welcome");
+         htmlMsg.setContent(TKStringUtils.cleanHtmlString(defaultMessage));
+      } else {
+         htmlMsg.setContent(TKStringUtils.cleanHtmlString(welcomeMessage));
       }
    }
 
@@ -412,7 +420,4 @@ public class ConnexionCrf extends GenericForwardComposer<Component>
       this.dateNaissance = d;
    }
 
-   public String getWelcomeMessage(){
-      return welcomeMessage;
-   }
 }

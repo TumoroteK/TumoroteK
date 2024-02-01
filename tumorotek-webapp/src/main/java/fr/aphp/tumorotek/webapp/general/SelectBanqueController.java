@@ -137,27 +137,18 @@ public class SelectBanqueController extends GenericForwardComposer<Component>
 
    private Row rowResourceRedirect;
 
-   private String welcomeMessage;
+   private Html htmlMsg;
+
 
    @Override
    public void doAfterCompose(final Component comp) throws Exception{
       super.doAfterCompose(comp);
+      assignWelcomeMessage();
 
-      ParametresManager parametresManager = ManagerLocator.getManager(ParametresManager.class);
-      // Récupération du message d'accueil à afficher
-      welcomeMessage = parametresManager.getMessageAccueil(false);
-      // Nettoyage : voir la documentation JavaDoc de convertHtmlEntities pour un example
-
-      welcomeMessage = TKStringUtils.normalizeSpecialChars(welcomeMessage);
-      // Si le message d'accueil est vide, utiliser le message par défaut
-      if(TKStringUtils.isEmptyString(welcomeMessage)){
-         welcomeMessage = Labels.getLabel("login.welcome");
-      }
       selectionComponents =
          new Component[] {this.rowPlateformeTitle, this.rowPlateforme, this.rowBanqueTitle, this.rowBanque, this.validate};
       archiveComponents = new Component[] {this.rowMdpArchive1, this.rowMdpArchive2, this.rowMdpArchive3};
 
-      //user = getLoggedUtilisateur();
       user = ConnexionUtils.getLoggedUtilisateur();
 		//Si l'utilisateur est archivé, il ne peut pas se connecter => on force à null comme si l'utilisateur n'existait pas
 		if(user != null && user.isArchive()) {
@@ -167,6 +158,22 @@ public class SelectBanqueController extends GenericForwardComposer<Component>
       initWindow();
 
       ConnexionUtils.initToutesCollectionsAccesses(banques, selectedPlateforme, user);
+   }
+
+   /**
+    * Init. le variable welcomeMessage. Si le message d'accueil est vide, utiliser le message par défaut
+    */
+   private void assignWelcomeMessage(){
+      ParametresManager parametresManager = ManagerLocator.getManager(ParametresManager.class);
+      // Récupération du message d'accueil depuis le gestionnaire de paramètres
+      String welcomeMessage = parametresManager.getMessageAccueil(false);
+      // Si le message d'accueil est vide, utiliser le message par défaut
+      if(TKStringUtils.isEmptyString(welcomeMessage)){
+          String defaultMessage = Labels.getLabel("login.welcome");
+         htmlMsg.setContent(TKStringUtils.cleanHtmlString(defaultMessage));
+      } else {
+         htmlMsg.setContent(TKStringUtils.cleanHtmlString(welcomeMessage));
+      }
    }
 
    public void initWindow(){
@@ -449,7 +456,5 @@ public class SelectBanqueController extends GenericForwardComposer<Component>
       this.selectedPlateforme = sPlateforme;
    }
 
-   public String getWelcomeMessage(){
-      return welcomeMessage;
-   }
+
 }
