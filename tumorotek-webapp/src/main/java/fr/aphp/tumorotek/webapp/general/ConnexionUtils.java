@@ -46,6 +46,7 @@ import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -68,7 +69,8 @@ import fr.aphp.tumorotek.param.TkParam;
 import fr.aphp.tumorotek.param.TumorotekProperties;
 import fr.aphp.tumorotek.utils.Utils;
 import fr.aphp.tumorotek.webapp.gatsbi.GatsbiController;
-
+import fr.aphp.tumorotek.dto.ParametreDTO;
+import fr.aphp.tumorotek.manager.administration.ParametresManager;
 /**
  * Regroupe les méthodes utilisées après la connexion de l'utilisateur.
  * @author pierre
@@ -316,6 +318,8 @@ public final class ConnexionUtils
       }
       if(pf != null){
          sessionScp.put("Plateforme", pf);
+         // Enregistre la liste de paramètres dans la session
+         SessionUtils.savePlatformParamsToSession(sessionScp);
       }
 
       if(bank != null){

@@ -99,10 +99,12 @@ adaptez ces lignes et le niveau de sécurité en cas de l'utilisation d'un serve
             activedirectory.url = <URL_LDAP> (exemple : activedirectory.url = ldap://127.0.0.1:389/dc=sls,dc=aphp,dc=fr)
             ldap.userdn = <USER_LDAP>
             ldap.password = <MDP_LDAP>
-        
-4. Niveaux de logs Log4j
-    
-    Se référer à la documentation Log4j pour l'édition du fichier `<TOMCAT_PATH>/webapps/tumorotek##2.3.0.4-SNAPSHOT/WEB-INF/classes/log4j.properties`
+
+4. Gestion des logs avec Logback.\
+   Prise en compte de la configuration logback:\
+   **Windows:** Copiez, depuis le fichier d'installation ZIP, le fichier **setenv.bat** qui définit l'option `-Dlogback.configurationFile`.\
+   **Linux:** Copiez, depuis le fichier d'installation ZIP, le fichier **setenv.sh** qui définit l'option `-Dlogback.configurationFile`.\
+   Se référer à la documentation logback pour la modification du fichier `<TOMCAT_PATH>/conf/Catalina/localhost/logback/logback.xml`
 
 5. Déplacer la web archive `tumorotek##2.3.0.4-SNAPSHOT.war` dans le dossier `<PATH_TOMCAT>/webapps`  
 6. Démarrer le service Apache Tomcat

@@ -265,6 +265,8 @@
         <class>fr.aphp.tumorotek.model.contexte.gatsbi.Etude</class>
         <class>fr.aphp.tumorotek.model.config.ConfigItem</class>
         <class>fr.aphp.tumorotek.model.coeur.patient.gatsbi.PatientIdentifiant</class>
+        <class>fr.aphp.tumorotek.model.config.ParametreValeurSpecifique</class>
+
         <exclude-unlisted-classes>true</exclude-unlisted-classes>
     </persistence-unit>
     <persistence-unit name="pCodes">

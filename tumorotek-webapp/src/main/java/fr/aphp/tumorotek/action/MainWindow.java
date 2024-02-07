@@ -106,7 +106,8 @@ import fr.aphp.tumorotek.webapp.general.ConnexionUtils;
 import fr.aphp.tumorotek.webapp.general.MainTabbox;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
 import fr.aphp.tumorotek.webapp.general.ext.ResourceRequest;
-
+import fr.aphp.tumorotek.dto.ParametreDTO;
+import fr.aphp.tumorotek.manager.administration.ParametresManager;
 /**
  *
  * @author Mathieu BARTHELEMY
@@ -376,12 +377,12 @@ public class MainWindow extends GenericForwardComposer<Component>
          Clients.clearBusy();
          throw new WrongValueException(mainBanquesListBox, AbstractController.handleExceptionMessage(e));
       }
-
       // met à jour la pf si update banque cross-plateforme
       if(!selectedBanque.getPlateforme().equals(SessionUtils.getPlateforme(sessionScope))){
-         sessionScope.put("Plateforme", selectedBanque.getPlateforme());
+         Plateforme plateforme = selectedBanque.getPlateforme();
+         sessionScope.put("Plateforme", plateforme );
+         SessionUtils.savePlatformParamsToSession(sessionScope);
          prepareListBanques();
-         // mainBinder.loadComponent(self.getFellow("main").getFellow("mainBanquesListBox"));
       }
 
       resetMainBanquesListBox();

@@ -45,6 +45,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import fr.aphp.tumorotek.dto.ParametreDTO;
+import fr.aphp.tumorotek.param.EParametreValeurParDefaut;
 import org.springframework.validation.Errors;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
@@ -115,6 +117,7 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
 
    private static final long serialVersionUID = 4384639895874573764L;
 
+
    protected Textbox codePrefixeLabelDerive;
 
    protected Textbox codeBoxDerive;
@@ -122,6 +125,8 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
    protected Textbox codeLaboBoxDerive;
 
    protected Label volumeBoxDerive;
+
+   private Label requiredtransfoQuantiteLabel;
 
    protected Decimalbox volumeInitBoxDerive;
 
@@ -153,7 +158,6 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
 
    protected Listbox modePrepaBoxDerive;
 
-   // private Label transfoQuantiteUnitesBoxDerive;
    protected Combobox collabBoxDerive;
 
    protected Label operateurAideSaisieDerive;
@@ -303,6 +307,9 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
 
    private String emplacementAdrl = "";
 
+   protected boolean isQuantiteObligatoire;
+
+
    //Labels anonymisables
    private Label emplacementLabelDerive;
 
@@ -331,6 +338,8 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
    public void doAfterCompose(final Component comp) throws Exception{
       super.doAfterCompose(comp);
 
+      initializeQuantiteUtiliseObligatoireFromSession();
+
       setWaitLabel("ficheProdDerive.creation.encours");
 
       // liste de composants pour le prlvt parent
@@ -344,6 +353,29 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
          this.row3DeriveDerive, this.row4DeriveDerive});
       // liste de composants pour la transformation
       setObjLabelsTransformation(new Component[] {this.rowTransformation1, this.rowTransformation2,});
+   }
+
+   /**
+    * Initialise la quantité utilisée obligatoire à partir de la session.
+    *
+    * Note: La condition d'affichage de l'astérisque rouge est gérée dynamiquement dans cette méthode.
+    * Si la quantité utilisée n'est pas obligatoire, l'astérisque est masqué, sinon il est affiché.
+    *
+    */
+   private void initializeQuantiteUtiliseObligatoireFromSession(){
+      // Récupérer le Enum
+      EParametreValeurParDefaut deriveQteObligatoire = EParametreValeurParDefaut.DERIVE_QTE_OBLIGATOIRE;
+      // Obtenir le DTO associé au paramètre
+      ParametreDTO deriveQteObligatoireDto = SessionUtils.getParametreByCode(deriveQteObligatoire.getCode(), sessionScope);
+      // Vérifier si le DTO n'est pas nul
+      if (deriveQteObligatoireDto != null){
+         // Convertir la valeur du paramètre en un boolean
+         isQuantiteObligatoire = Boolean.parseBoolean(deriveQteObligatoireDto.getValeur());
+         if (isQuantiteObligatoire){
+            // Masquer le label de transformation obligatoire si la quantité n'est pas utilisée
+            requiredtransfoQuantiteLabel.setVisible(true);
+         }
+      }
    }
 
    @Override
@@ -847,19 +879,8 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
     */
 
    public void initEditableMode(){
-      //    volume = null;
-      //    volumeInit = null;
-      //    quantite = null;
-      //    quantiteInit = null;
-      //    dateCongelation = null;
-      //    dateTransformation = null;
-      //    quantiteMax = null;
-      //    quantiteTransformation = null;
 
       codePrefixe = this.prodDerive.getCode();
-
-      //codePrefixe = this.prodDerive.getCode().substring(0,
-      //    this.prodDerive.getCode().lastIndexOf("."));
 
       // si le parent est un prlvt
       if(typeParent != null){
@@ -1117,16 +1138,7 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
    /*************************************************************************/
    /************************** FORMATTERS ***********************************/
    /*************************************************************************/
-//   // /!\ le composant codeBoxDerive ne semble plus utilisé : code en commentaire dans le zul
-//   // utilisation à la place de codePrefixeLabelDerive...
-//   //  A SUPPRIMER ......
-//   /**
-//    * Méthode appelée après la saisie d'une valeur dans le champ
-//    * codeBoxDerive. Cette valeur sera mise en majuscules.
-//    */
-//   public void onBlur$codeBoxDerive(){
-//      codeBoxDerive.setValue(codeBoxDerive.getValue().toUpperCase().trim());
-//   }
+
 
    /**
     * Méthode appelée après la saisie d'une valeur dans le champ
@@ -1546,7 +1558,6 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
 
    /**
     * Select les non conformites dans la dropdown list.
-    * @param risks liste à selectionner
     */
 
    public void selectNonConformites(){
@@ -2190,7 +2201,6 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
             }else{
                Clients.clearWrongValue(quantiteInitBoxDerive);
                quantiteInitBoxDerive.setConstraint("");
-               //quantiteInitBoxDerive.setValue(null);
                quantiteInitBoxDerive.setValue("");
                quantiteInitBoxDerive.setConstraint(cttQuantiteInit);
             }
@@ -2254,30 +2264,34 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
 
    /**
     * Contrainte vérifiant que la quantite de transformation n'est
-    * pas inférieure à 0 et n'est pas supérieure à celle du parent.
+    * pas inférieure à 0, n'est pas supérieure à celle du parent et n'est pas null si isQuantiteObligatoire == true.
     * @author Pierre Ventadour.
     *
     */
    public class ConstQuantiteTransformation implements Constraint
    {
       /**
-       * Méthode de validation du champ quantiteInitBox.
+       * Valide la quantité de transformation.
+       *
+       * @param comp  Le composant associé à la contrainte.
+       * @param value La valeur de la quantité de transformation.
+       * @throws WrongValueException Si la validation échoue.
        */
       @Override
       public void validate(final Component comp, final Object value){
          final BigDecimal quantiteTransfoValue = (BigDecimal) value;
+         // Si isQuantiteObligatoire est null et elle doit être rensigné: Lance une exception
+         if (isQuantiteObligatoire && quantiteTransfoValue == null) {
+            throw new WrongValueException(comp, Labels.getLabel("ficheMultiProdDerive.validation.quantite"));
+         }
+         // Si la valeur est negative : Lance une exception
          if(quantiteTransfoValue != null){
             quantiteTransformation = quantiteTransfoValue.floatValue();
 
             if(quantiteTransformation < 0){
-               throw new WrongValueException(comp, "Seul les nombres positifs sont acceptés.");
+               throw new WrongValueException(comp, Labels.getLabel("validation.negative.value"));
             }
-            // sinon on enlève toutes les erreurs affichées
-            BigDecimal decimal = new BigDecimal(quantiteTransformation);
-            Clients.clearWrongValue(transfoQuantiteBoxDerive);
-            transfoQuantiteBoxDerive.setConstraint("");
-            transfoQuantiteBoxDerive.setValue(decimal);
-            transfoQuantiteBoxDerive.setConstraint(cttQuantiteTransfo);
+            clearErrors(quantiteTransfoValue);
 
             if(quantiteMax != null && quantiteTransformation > quantiteMax){
                final StringBuffer sb = new StringBuffer();
@@ -2302,13 +2316,15 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
 
                throw new WrongValueException(comp, sb.toString());
             }
-            // sinon on enlève toutes les erreurs affichées
-            decimal = new BigDecimal(quantiteTransformation);
-            Clients.clearWrongValue(transfoQuantiteBoxDerive);
-            transfoQuantiteBoxDerive.setConstraint("");
-            transfoQuantiteBoxDerive.setValue(decimal);
-            transfoQuantiteBoxDerive.setConstraint(cttQuantiteTransfo);
+            clearErrors(quantiteTransfoValue);
          }
+      }
+
+      private void clearErrors(BigDecimal quantiteTransfoValue){
+         Clients.clearWrongValue(transfoQuantiteBoxDerive);
+         transfoQuantiteBoxDerive.setConstraint("");
+         transfoQuantiteBoxDerive.setValue(quantiteTransfoValue);
+         transfoQuantiteBoxDerive.setConstraint(cttQuantiteTransfo);
       }
    }
 
@@ -2614,5 +2630,13 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
 
    public String getObjetStatut(){
       return ObjectTypesFormatters.ILNObjectStatut(getObject().getObjetStatut());
+   }
+
+   public Label getRequiredtransfoQuantiteLabel(){
+      return requiredtransfoQuantiteLabel;
+   }
+
+   public void setRequiredtransfoQuantiteLabel(Label requiredtransfoQuantiteLabel){
+      this.requiredtransfoQuantiteLabel = requiredtransfoQuantiteLabel;
    }
 }

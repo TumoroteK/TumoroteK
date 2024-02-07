@@ -46,6 +46,7 @@ import java.util.ResourceBundle;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
+
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Execution;
@@ -73,7 +74,8 @@ import fr.aphp.tumorotek.param.TkParam;
 import fr.aphp.tumorotek.param.TumorotekProperties;
 import fr.aphp.tumorotek.utils.Utils;
 import fr.aphp.tumorotek.webapp.general.ext.ResourceRequest;
-
+import fr.aphp.tumorotek.dto.ParametreDTO;
+import fr.aphp.tumorotek.manager.administration.ParametresManager;
 /**
  * Modale choix plateforme et banque après authentification.
  * Gère l'archivage automatique si timeout.
@@ -328,7 +330,11 @@ public class SelectBanqueController extends GenericForwardComposer<Component>
             || ManagerLocator.getUtilisateurManager().getPlateformesManager(user).contains(selectedPlateforme)){
             final Map<String, Object> sessionScp = session.getAttributes();
             sessionScp.put("User", user);
+
             sessionScp.put("Plateforme", selectedPlateforme);
+            // Enregistre la liste de paramètres dans la session
+            SessionUtils.savePlatformParamsToSession(sessionScope);
+
             ConnexionUtils.generateDroitsForSelectedBanque(null, selectedPlateforme, user, sessionScope);
             Executions.sendRedirect("/zuls/main/main.zul");
          }

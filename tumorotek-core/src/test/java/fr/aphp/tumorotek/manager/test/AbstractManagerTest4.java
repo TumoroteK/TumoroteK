@@ -53,7 +53,10 @@ import fr.aphp.tumorotek.model.TKFantomableObject;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(
-   locations = {"classpath:applicationContextDaoBase-test-mysql.xml", "classpath:applicationContextManagerBase.xml"})
+   locations = {
+      "classpath:applicationContextDaoBase-test-mysql.xml",
+      "classpath:applicationContextManagerBase.xml",
+   })
 @TestExecutionListeners({DependencyInjectionTestExecutionListener.class})
 public abstract class AbstractManagerTest4
 {

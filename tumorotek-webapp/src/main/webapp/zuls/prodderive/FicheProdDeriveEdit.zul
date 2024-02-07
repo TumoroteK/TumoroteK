@@ -33,6 +33,13 @@
  * avez pris connaissance de la licence CeCILL, et que vous en avez 
  * accepté les termes. 
 -->
+
+
+<!-- Attention : ce fichier n'est pas utilisé pour créer ou éditer de nouveaux dérivés
+(vous pouvez effectuer un test : modifiez une valeur ici et vérifiez si elle se reflète dans l'application).
+Pour tout ce qui concerne la création ou l'édition de dérivés, veuillez vous référer au fichier fwinMultiProdDerive. -->
+
+
 <?component name="calendarbox" macroURI="/zuls/component/CalendarBox.zul" class="fr.aphp.tumorotek.component.CalendarBox" ?>
 
 <window id="fwinProdDeriveEdit" border="none" apply="fr.aphp.tumorotek.action.prodderive.FicheProdDeriveEdit"
@@ -61,14 +68,7 @@
 								width="150px" 
 								constraint="${fwinProdDeriveEdit$composer.codePrefixConstraint}"
 							/>
-<!--							<label id="pointLabelDerive" value="." -->
-<!--								style="font-weight:bold;" -->
-<!--								sclass="formValue"-->
-<!--							/>-->
-<!--							<textbox id="codeBoxDerive" value="@{fwinProdDeriveEdit$composer.codeSuffixe,-->
-<!--			        								 save-when='validate.onClick, create.onClick'}" -->
-<!--								width="30px" -->
-<!--								constraint="${fwinProdDeriveEdit$composer.codeSuffixConstraint}" />-->
+
 						</div>
 						
 						<!-- Type du Produit dérivé -->
@@ -263,22 +263,13 @@
 						<calendarbox id="dateTransfoCalBox" value="@{fwinProdDeriveEdit$composer.object.dateTransformation,
 			        			save-when='validate.onClick, create.onClick, self.onBlur'}" />
 							
-						<!-- Quantité utilisé dans la transformation -->
+						<!-- Quantité utilisée dans la transformation -->
 						<label value="${c:l('ficheProdDerive.transformation.quantité')}" sclass="formLabel"/>
 						<div>
 							<label id="transformationQuantiteLabelDerive" 
 							value="@{fwinProdDeriveEdit$composer.valeurTransfoQuantite}"
 							sclass="formValue" />
-							<!--  <decimalbox id="transfoQuantiteBoxDerive" -->
-							<!--	width="50px" -->
-							<!--	value="@{fwinProdDeriveEdit$composer.transformation.quantite,  -->
-							<!--	save-when='validate.onClick, create.onClick'}" -->
-							<!--	constraint="@{fwinProdDeriveEdit$composer.cttQuantiteTransfo}" -->
-							<!--	locale="en" scale="3" format="##0.###"/> -->
-							<!-- -->
-							<!-- <label id="transfoQuantiteUnitesBoxDerive" -->
-							<!--	value="@{fwinProdDeriveEdit$composer.selectedTransfoQuantiteUnite.unite}" -->
-							<!--	sclass="formValue"/> -->
+
 						</div>					
 					</row>
 					<row spans="4" id="transformationInconnueLabel" visible="false">

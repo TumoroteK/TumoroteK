@@ -53,6 +53,10 @@ import java.util.stream.IntStream;
 
 import javax.servlet.http.HttpServletRequest;
 
+import fr.aphp.tumorotek.dto.ParametreDTO;
+import fr.aphp.tumorotek.param.EParametreValeurParDefaut;
+import fr.aphp.tumorotek.utils.MessagesUtils;
+import fr.aphp.tumorotek.utils.TKStringUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -244,6 +248,7 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
    public void doAfterCompose(final Component comp) throws Exception{
       super.doAfterCompose(comp);
 
+
       setWaitLabel("ficheProdDerive.multi.creation.encours");
 
       // liste de composants pour le prlvt parent
@@ -261,6 +266,9 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
 
       getBinder().loadAll();
    }
+
+
+
 
    /**
     * Change le mode de la fiche en creation.
@@ -914,6 +922,24 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
             Clients.scrollIntoView(typesBoxDerive);
             throw new WrongValueException(typesBoxDerive, Labels.getLabel("ficheProdDerive.error.type"));
          }
+         // TK-434: Sécuriser la saisie de la quantité utilisée
+
+         // Si le champ n'est pas renseigné
+         if (transfoQuantiteBoxDerive.getValue() == null){
+            // et la plateforme est configurée pour avoir la saisie de quantité utilisée obligatoire, on bloque l'ajout
+            if (isQuantiteObligatoire){
+               Clients.scrollIntoView(transfoQuantiteBoxDerive);
+               // afficher un message d'erreur à côté du champ "quantité utilisée obligatoire"
+               throw new WrongValueException(transfoQuantiteBoxDerive, Labels.getLabel("ficheMultiProdDerive.validation.quantite"));
+            } else{
+               // si la valeur du paramètre "quantité utilisée obligatoire" est false,  afficher une fenêtre d'avertissement
+               boolean userAnswer = MessagesUtils.openQuestionModal(Labels.getLabel("general.warning"),
+                                                                    Labels.getLabel("ficheProdDerive.warning.quantite"));
+               if (!userAnswer) {
+                  return;
+               }
+            }
+         }
 
          // si le dérivé est issu d'un parent connu
          if(selectParent && !getTypeParent().equals("Aucun")){
@@ -1100,6 +1126,9 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
       }
    }
 
+   private void validateQuantiteUtilise(){
+   }
+
    /**
     * Méthode supprimant un des dérivés que l'utilisateur
     * souhaitait créer.
@@ -1140,6 +1169,7 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
       }
 
    }
+
 
    /**
     * Méthode appelée après la saisie d'une valeur dans le champ

@@ -652,10 +652,8 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
 
    @Override
    public Boolean findDoublonManager(final ProdDerive prodDerive){
-      // Banque banque = prodDerive.getBanque();
       final List<ProdDerive> dbls = prodDeriveDao.findByCodeInPlateforme(prodDerive.getCode(),
          prodDerive.getBanque() != null ? prodDerive.getBanque().getPlateforme() : null);
-      //		.findByCodeOrLaboWithBanque(prodDerive.getCode(), banque);
 
       if(!dbls.isEmpty()){
          if(prodDerive.getProdDeriveId() == null){
