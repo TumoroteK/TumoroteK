@@ -488,12 +488,17 @@ public class ExportUtilsImpl implements ExportUtils
       // Numero labo
       indCell = addCell(indCell, row, prelevement.getNumeroLabo());
       // Nature
-      indCell = addCell(indCell, row, prelevement.getNature().getNature());
+      if(prelevement.getNature() != null) {
+         indCell = addCell(indCell, row, prelevement.getNature().getNom());
+      }
+      else {
+         indCell = addCell(indCell, row, null);
+      }
       // Date prélèvement
       indCell = addDateCell(indCell, row, prelevement.getDatePrelevement(), wb);
       // Type de prélèvement
       if(prelevement.getPrelevementType() != null){
-         indCell = addCell(indCell, row, prelevement.getPrelevementType().getType());
+         indCell = addCell(indCell, row, prelevement.getPrelevementType().getNom());
       }else{
          indCell = addCell(indCell, row, null);
       }
