@@ -69,6 +69,8 @@ public class PatientItemRendererGatsbi extends PatientItemRenderer
       this.isIdentifiantEditable = _i;
    }
 
+   // /!\ dans le cas des listes de patient "embedded", on n'affiche pas tous les champs choisis par l'utilisateur.
+   // => veillez à la cohérence avec la définition des colonnes du tableau : GatsbiControllerPatient.addListHeadForChpId()
    @Override
    protected void renderPatient(Listitem li, Patient pat){
       
@@ -76,27 +78,41 @@ public class PatientItemRendererGatsbi extends PatientItemRenderer
       pat.setBanque(banque);
       identifiantBox = renderIdentifiantForBanque(li, pat);
       
-      if (display(3)) {
-         renderNom(li, pat);
-      }
-      
-      if (display(5)) {
-         renderPrenom(li, pat);
-      }
-      
-      if (display(2)) {
-         renderNip(li, pat);
-      }
-      
-      if (display(6)) {
-      renderSexe(li, pat);
-      }
-      
-      if (display(7)) {
-      renderDateNais(li, pat);  
+      for(final Integer chpId : contexte.getChampEntiteInTableauOrdered()){
+         switch(chpId){
+            case 2: // nip
+               renderNip(li, pat);
+               break;
+            case 3: // nom
+               renderNom(li, pat);
+               break;
+            case 4: // nom naissance
+               break;
+            case 5: // prenom
+               renderPrenom(li, pat);
+               break;
+            case 6: // sexe
+               renderSexe(li, pat);
+               break;
+            case 7: // date naissance
+               renderDateNais(li, pat);
+               break;
+            case 8: // ville naissance
+               break;
+            case 9: // pays naissance
+               break;
+            case 10: // état
+               break;
+            case 11: // date état
+               break;
+            case 227: // médecins
+               break;
+            default:
+               break;
+         }
       }
    }
-
+   
    //renvoie true si le champ est visible et à afficher dans le tableau pour le contexte courant
    private boolean display(Integer champEntiteId) {
       return contexte.isChampIdVisible(champEntiteId) && contexte.isChampInTableau(champEntiteId);
