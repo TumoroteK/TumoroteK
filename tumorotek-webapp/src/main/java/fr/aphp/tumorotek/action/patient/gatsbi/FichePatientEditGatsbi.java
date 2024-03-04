@@ -211,13 +211,13 @@ public class FichePatientEditGatsbi extends FichePatientEdit
    //TG-182
    // CHT : pas modifiable en toutes collections => on ne va pas dans ce code lié à l'édition...
    public String getIdentifiant() {
-      return patient.getIdentifiantAsString();
+      return patient.getIdentifiant();
    }
    
    // TODO toutes collections = non modifiable
    //TG-182
    public void setIdentifiant(String identifiant) {
-      PatientIdentifiant currPatIdent = patient.getIdentifiant();
+      PatientIdentifiant currPatIdent = patient.getPatientIdentifiant();
       currPatIdent.setIdentifiant(identifiant);
       
       // met à jour (si nécessaire) la relation patient-banque-identifiant

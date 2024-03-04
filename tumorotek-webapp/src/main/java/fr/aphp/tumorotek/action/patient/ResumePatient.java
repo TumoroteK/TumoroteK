@@ -266,7 +266,7 @@ public class ResumePatient
          //TG-182 : rattachement du patient à la banque pour laquelle on cherche l'identifiant
          patient.setBanque(prelevement != null && prelevement.getBanque() != null ? 
             prelevement.getBanque() : curBanque);
-         identifiantLabel.setValue(patient.getIdentifiantAsString());
+         identifiantLabel.setValue(patient.getIdentifiant());
       }
       
       if(!anonyme){

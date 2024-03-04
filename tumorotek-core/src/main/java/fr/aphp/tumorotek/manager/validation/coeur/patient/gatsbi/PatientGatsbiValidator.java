@@ -71,13 +71,13 @@ public class PatientGatsbiValidator extends RequiredValueValidator
       final Patient patient = (Patient) target;
 
       //identifiant obligatoire
-      if (patient.getIdentifiant() == null || StringUtils.isBlank(patient.getIdentifiantAsString())) {
+      if (patient.getPatientIdentifiant() == null || StringUtils.isBlank(patient.getIdentifiant())) {
          errs.rejectValue("identifiant", "patient.identifiant.empty");
       } else { //identifiant valide
-         if(!patient.getIdentifiantAsString().matches(ValidationUtilities.CODEREGEXP)){
+         if(!patient.getIdentifiant().matches(ValidationUtilities.CODEREGEXP)){
             errs.rejectValue("identifiant", "patient.identifiant.illegal");
          }
-         if(patient.getIdentifiantAsString().length() > 20){
+         if(patient.getIdentifiant().length() > 20){
             errs.rejectValue("identifiant", "patient.identifiant.tooLong");
          }
       }

@@ -436,25 +436,31 @@ public class Patient extends TKDelegetableObject<Patient> implements TKAnnotable
    
    //TG-182
    @Transient
-   public String setBanqueAndGetIdentifiantAsString(Banque _b) {
+   public String setBanqueAndGetIdentifiant(Banque _b) {
       setBanque(_b);
-      return getIdentifiantAsString();
+      return getIdentifiant();
    }
    
    @Transient
-   public PatientIdentifiant getIdentifiant() {
+   public PatientIdentifiant getPatientIdentifiant() {
+      // TG-238 : gérer le cas où la banque n'est pas valorisée (recherche complexe) mais qu'il n'y a qu'un seul identifiant : cas le plus courant
+      if(banque == null && patientIdentifiants.size() == 1) {
+         return patientIdentifiants.iterator().next();
+      }
       return patientIdentifiants.stream()
          .filter(i -> i.getBanque().equals(banque)).findFirst()
          .orElse(new PatientIdentifiant(this, banque));
    }
    
+   // TG-238 /!\ cette méthode est obligatoire et ne doit pas être renommé car elle simule le nom d'un attribut de patient utilisé dans champEntite (id 272)
+   // pour éviter d'avoir à afficher à l'utilisateur la notion PatientIdentifiant lors de la demande de sélection d'un champ (recherche, import ...).
    @Transient
-   public String getIdentifiantAsString() {
-      return getIdentifiant().getIdentifiant();
+   public String getIdentifiant() {
+      return getPatientIdentifiant().getIdentifiant();
    }
    
    public boolean hasIdentifiant() {
-      PatientIdentifiant patientIdentifiant = getIdentifiant();
+      PatientIdentifiant patientIdentifiant = getPatientIdentifiant();
       return patientIdentifiant != null && !patientIdentifiant.isEmpty();
    }
    
@@ -606,14 +612,14 @@ public class Patient extends TKDelegetableObject<Patient> implements TKAnnotable
       // @since gatsbi
       // se base sur identifiant si banque (transient)
       // attribuée au patient
-      if (getIdentifiantAsString() == null) {//TG-182
+      if (getIdentifiant() == null) {//TG-182
          if(getPrenom() != null){
             return getNom() + " " + getPrenom();
          }else{
             return getNom();
          }
       } else { // supprime patient créé depuis collection étude gatsbi
-         return getIdentifiantAsString();
+         return getIdentifiant();
       }
    }
 

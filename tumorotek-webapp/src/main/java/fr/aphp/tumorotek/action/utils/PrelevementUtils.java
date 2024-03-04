@@ -91,7 +91,7 @@ public final class PrelevementUtils
                pat.setBanque(prel.getBanque());
             }
             if(pat.hasIdentifiant()) {
-               sb.append(pat.getIdentifiantAsString());
+               sb.append(pat.getIdentifiant());
             }
          }
       }
