@@ -570,7 +570,7 @@
 					foreignKeyName="FK_PARAMETRAGE_ITEM_CONTEXTE_PARAMETRAGE_ID" 
 						referencedTableName="GATSBI_CONTEXTE_PARAMETRAGE" referencedColumnNames="CONTEXTE_PARAMETRAGE_ID" />
 			</column>
-			<column name="DEFAULT_VALUE" type="VARCHAR(100)" />
+			<column name="DEFAULT_VALUE" type="VARCHAR(200)" />
 		</createTable>
 		<modifySql dbms="mysql">
    			<append value="ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4"/>
