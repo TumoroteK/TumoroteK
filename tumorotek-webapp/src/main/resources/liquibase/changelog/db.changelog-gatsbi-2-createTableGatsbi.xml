@@ -471,7 +471,7 @@
 			<column name="THESAURUS_ID" type="INT">
 				<constraints nullable="false" />
 			</column>
-			<column name="THESAURUS_VALUE" type="VARCHAR(100)">
+			<column name="THESAURUS_VALUE" type="VARCHAR(200)">
 				<constraints nullable="false" />
 			</column>
 			<!--  CHT - A REVOIR - c'est l'id de la table GATSBI_CHAMP_ENTITE_ID qui devrait être utilisé => impact sur la FK composite définie ci-dessous-->
