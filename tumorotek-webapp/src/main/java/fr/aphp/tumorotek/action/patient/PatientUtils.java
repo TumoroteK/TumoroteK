@@ -42,6 +42,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.zkoss.util.resource.Labels;
 
 import fr.aphp.tumorotek.action.ManagerLocator;
@@ -50,6 +52,7 @@ import fr.aphp.tumorotek.model.coeur.patient.Patient;
 import fr.aphp.tumorotek.model.coeur.patient.gatsbi.PatientIdentifiant;
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
+import fr.aphp.tumorotek.webapp.general.export.Export;
 
 /**
  * Utility class fournissant les methodes récupérant et formattant les valeurs
@@ -62,6 +65,8 @@ import fr.aphp.tumorotek.webapp.general.SessionUtils;
 public final class PatientUtils
 {
 
+   protected static Log log = LogFactory.getLog(PatientUtils.class);
+   
    private PatientUtils(){}
 
    public static final LabelCodeItem SEXE_EMPTY = new LabelCodeItem("", null);
@@ -263,7 +268,7 @@ public final class PatientUtils
    //NB : Généralement patient empty est testé avant appel de cette méthode donc on ne reteste pas pour des questions de perf
    //(cette méthode est généralement appelée en Toutes collections donc sur de gros volumes)
    //Par contre, pour sécuriser, test qu'il n'y a bien qu'un seul identifiant...
-   public static String concatPatientIdentifiantEtCollectionForUniquePatientIdentifiant(Patient patient) throws IllegalArgumentException {
+   public static String concatPatientIdentifiantEtCollectionForUniquePatientIdentifiant(Patient patient) {
       String result = "";
       if(patient != null) {
          int nbPatientIdentifiant = patient.getPatientIdentifiants().size();
@@ -272,7 +277,7 @@ public final class PatientUtils
             result = concatPatientIdentifiantEtCollection(patientIdentifiant);
          }
          else if (nbPatientIdentifiant > 1) {
-            throw new IllegalArgumentException("le patient passé en paramètre ne doit contenir qu'un seul identifiant");
+            log.error("le patient 'empty' d'id "+ patient.getPatientId() +" a plusieurs identifiants.");//ce cas ne doit pas se produire : un patient "empty" ne peut pas avoir été rattaché sur 2 études différentes...
          }
       }
       
