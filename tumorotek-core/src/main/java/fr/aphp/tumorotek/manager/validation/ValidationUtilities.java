@@ -58,6 +58,8 @@ public final class ValidationUtilities
 
    public static final String MOTNOPUNCTREGEXP = "[\\p{L}|\\p{N}|\\p{Z}|\\p{M}|\\+\\-@/<=>$%°~]+";
 
+   //lettres en minuscules et majuscules, les chiffres, le underscore (_), le caractère blanc (\s), le point (\.), le - et le +.
+   //le dernier + veut dire qu'il faut au moins un de ces caractères
    public static final String CODEREGEXP = "[a-zA-Z0-9_\\s\\.\\-\\+\\/]+";
 
    public static final String ONLYSPACESREGEXP = "\\s*";
