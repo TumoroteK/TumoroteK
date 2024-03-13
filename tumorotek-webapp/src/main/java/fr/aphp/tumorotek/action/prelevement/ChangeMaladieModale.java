@@ -110,7 +110,9 @@ public class ChangeMaladieModale extends GenericForwardComposer<Component>
       main = mw;
       prelCodeLabel.setValue(prelevement.getCode());
       prelNumLabel.setValue(prelevement.getNumeroLabo());
-      prelNatureLabel.setValue(prelevement.getNature().getNom());
+      if(prelevement.getNature() != null) {
+         prelNatureLabel.setValue(prelevement.getNature().getNom());
+      }
 
       currentMaladie = prelevement.getMaladie();
       if(currentMaladie != null && currentMaladie.getPatient() != null){

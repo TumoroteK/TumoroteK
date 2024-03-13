@@ -157,7 +157,7 @@ public class Formulaire
       final Rubrique rb3 = new Rubrique();
       rb3.setCodRub("TXT_NAT_PRLVT3");
       if(prel.getNature() != null){
-         rb3.getValeurs().add(prel.getNature().getNature());
+         rb3.getValeurs().add(prel.getNature().getNom());
       }else{
          rb3.getValeurs().add("");
       }

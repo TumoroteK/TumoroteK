@@ -984,7 +984,7 @@ public class FicheTemplateModale extends AbstractImpressionController
    public void createBlocPrincipalPrelevement(final Prelevement prelevement){
       final CoupleValeur cp1 = new CoupleValeur(Labels.getLabel("Champ.Prelevement.Code"), prelevement.getCode());
       final CoupleValeur cp2 = new CoupleValeur(Labels.getLabel("Champ.Prelevement.NumeroLabo"), prelevement.getNumeroLabo());
-      final CoupleValeur cp3 = new CoupleValeur(Labels.getLabel("Champ.Prelevement.Nature"), prelevement.getNature().getNom());
+      final CoupleValeur cp3 = new CoupleValeur(Labels.getLabel("Champ.Prelevement.Nature"), (prelevement.getNature()!=null) ? prelevement.getNature().getNom() : "");
       CoupleValeur cp4 = new CoupleValeur("", "");
 
       // HACK Serologie
@@ -1453,7 +1453,7 @@ public class FicheTemplateModale extends AbstractImpressionController
       final Prelevement prlvt = ManagerLocator.getEchantillonManager().getPrelevementManager(echantillon);
       if(prlvt != null){
          final CoupleValeur cp1 = new CoupleValeur(Labels.getLabel("Champ.Prelevement.Code"), prlvt.getCode());
-         final CoupleValeur cp2 = new CoupleValeur(Labels.getLabel("Champ.Prelevement.Nature"), prlvt.getNature().getNom());
+         final CoupleValeur cp2 = new CoupleValeur(Labels.getLabel("Champ.Prelevement.Nature"), (prlvt.getNature()!=null) ? prlvt.getNature().getNom() : "");
          final LigneParagraphe li1 = new LigneParagraphe("li1", new CoupleValeur[] {cp1, cp2});
 
          final CoupleValeur cp3 =
@@ -1756,9 +1756,9 @@ public class FicheTemplateModale extends AbstractImpressionController
 
             // code
             final CoupleValeur cp1 = new CoupleValeur(Labels.getLabel("Champ.Prelevement.Code"), parentPrlvt.getCode());
-            // type
+            // nature
             final CoupleValeur cp2 =
-               new CoupleValeur(Labels.getLabel("Champ.Prelevement.Nature"), parentPrlvt.getNature().getNom());
+               new CoupleValeur(Labels.getLabel("Champ.Prelevement.Nature"), (parentPrlvt.getNature()!=null) ? parentPrlvt.getNature().getNom() : "");
             li1 = new LigneParagraphe("", new CoupleValeur[] {cp1, cp2});
 
             // date

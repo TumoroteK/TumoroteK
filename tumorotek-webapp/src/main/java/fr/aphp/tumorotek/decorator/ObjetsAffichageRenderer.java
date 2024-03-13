@@ -536,7 +536,7 @@ public class ObjetsAffichageRenderer
                         }else if(parent.getChampEntite().getNom().equals("NatureId")){
                            if(null != recup && recup.getNature() != null){
                               if(nomChampEntite.equals("Nature")){
-                                 listeStrings.add(recup.getNature().getNature());
+                                 listeStrings.add(recup.getNature().getNom());
                               }
                            }else{
                               listeStrings.add("-");
@@ -559,7 +559,7 @@ public class ObjetsAffichageRenderer
                         }else if(parent.getChampEntite().getNom().equals("ConsentTypeId")){
                            if(null != recup && recup.getConsentType() != null){
                               if(nomChampEntite.equals("Type")){
-                                 listeStrings.add(recup.getConsentType().getType());
+                                 listeStrings.add(recup.getConsentType().getNom());
                               }
                            }else{
                               listeStrings.add("-");
