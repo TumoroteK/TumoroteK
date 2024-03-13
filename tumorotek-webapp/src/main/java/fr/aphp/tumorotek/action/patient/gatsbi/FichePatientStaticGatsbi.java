@@ -256,6 +256,6 @@ public class FichePatientStaticGatsbi extends FichePatientStatic
    // donc l'identifiant n'est pas affiché
    //TG-182
    public String getPatientIdentifiant() {
-      return patient.getIdentifiantAsString();
+      return patient.getIdentifiant();
    }
 }

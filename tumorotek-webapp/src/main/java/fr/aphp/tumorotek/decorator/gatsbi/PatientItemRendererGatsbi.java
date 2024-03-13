@@ -132,7 +132,7 @@ public class PatientItemRendererGatsbi extends PatientItemRenderer
          
          return tb;
       }else{ // affichage identifiant
-         new Listcell(pat.getIdentifiantAsString()).setParent(li);
+         new Listcell(pat.getIdentifiant()).setParent(li);
       }
       
       return null;

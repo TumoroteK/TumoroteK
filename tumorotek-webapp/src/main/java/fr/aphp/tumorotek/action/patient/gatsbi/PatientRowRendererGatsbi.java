@@ -116,7 +116,7 @@ public class PatientRowRendererGatsbi extends PatientRowRenderer implements RowR
          //TG-182 : on associe la patient à la banque courante pour récupérer l'identifiant associé si il existe
          pat.setBanque(curBanque);
          identifiantLabel = new Label(pat.hasIdentifiant() ? 
-            (pat.getIdentifiantAsString()) : Labels.getLabel("gatsbi.patient.include"));
+            (pat.getIdentifiant()) : Labels.getLabel("gatsbi.patient.include"));
         
          identifiantLabel.setParent(row);
          /*         

@@ -84,11 +84,12 @@ public class ResultatRowRenderer implements RowRenderer<ResultatRow>
       if(res != null && res.getChamp() != null && res.getChamp().getChampEntite() != null){
          final Entite entite = res.getChamp().getChampEntite().getEntite();
          final String nomChampEntite = res.getChamp().getChampEntite().getNom();
-         if(entite.getNom().equals("Patient") && nomChampEntite.equals("Nip")){
+         if(entite.getNom().equals("Patient") 
+               && (nomChampEntite.equals("Nip") || nomChampEntite.equals("Identifiant")) ) {
             Patient recup = null;
             if(obj instanceof Patient){
                recup = (Patient) obj;
-               label.addForward(null, label.getParent(), "onClickPatientNip", recup);
+               label.addForward(null, label.getParent(), "onClickPatientNipOrIdentifiant", recup);
                label.setClass("formLink");
             }
          }else if(entite.getNom().equals("Prelevement") && nomChampEntite.equals("Code")){
