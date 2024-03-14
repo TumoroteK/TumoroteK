@@ -479,6 +479,8 @@ public class Export extends Thread
 			switch(ctx)	{
 				case SEROLOGIE:
 					return "{call select_cession_data_sero(?,?)}";
+				case GATSBI:
+				   return "{call select_cession_data_gatsbi(?,?, " + etudeId + ")}";
 				default:
 					return "{call select_cession_data(?,?)}";
 			}
