@@ -1665,7 +1665,8 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
 
       if(getParentObject() != null){
          if(getParentObject().getCode() != null){
-            setCodePrefixe(getParentObject().getCode());
+            //TG-244
+            initCodePrefixe();
          }
          if(getParentObject().getOperateur() != null && getCollaborateurs().contains(getParentObject().getOperateur())){
             setSelectedCollaborateur(getParentObject().getOperateur());
@@ -1823,7 +1824,12 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
          }
       }
    }
-
+   
+   //TG-244 : sera surchargé par Gatsbi pour prendre en compte le paramétrage sur le code échantillon
+   protected void initCodePrefixe() {
+      setCodePrefixe(getParentObject().getCode());
+   }
+   
    /*********************************************************/
    /********************** ACCESSEURS. **********************/
    /*********************************************************/
