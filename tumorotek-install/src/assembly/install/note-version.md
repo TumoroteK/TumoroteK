@@ -1,5 +1,15 @@
 #### Notes de version
 
+##### Version 2.3.0.8 - Publiée le 25/03/2024
+###### Corrections dans TK pour un contexte Gatsbi
+- YouTrack [TG-236](https://tumorotek.myjetbrains.com/youtrack/issue/TG-236) : [TK] - ${recherche-complexe} Lors du choix d'afficher la colonne Patient - Identifiant, le nom de colonne n'est pas valorisée
+- YouTrack [TG-238](https://tumorotek.myjetbrains.com/youtrack/issue/TG-238) : [TK] - ${recherche-complexe} La colonne identifiant patient est toujours vide dans le tableau résultat
+- YouTrack [TG-237](https://tumorotek.myjetbrains.com/youtrack/issue/TG-237) : [TK] - ${prelevement} Impossible de changer de maladie si le contexte ne contient pas le champ nature
+- YouTrack [TG-240](https://tumorotek.myjetbrains.com/youtrack/issue/TG-240) : [TK] - Fiche ${prelevement} en édition : info patient affichées dans les mauvaises colonnes du tableau
+- YouTrack [TG-242](https://tumorotek.myjetbrains.com/youtrack/issue/TG-242) : [TK] - ${cession} Plantage lors de l'export des échantillons d'une collection Gatsbi
+- YouTrack [TG-244](https://tumorotek.myjetbrains.com/youtrack/issue/TG-244) : [TK] - ${echantillon} Création depuis un prélèvement : le paramétrage Gatsbi défini pour les codes n'est pas pris en compte
+
+
 ##### Version 2.3.0.7 - Publiée le 31/01/2024
 ###### Corrections dans TK pour un contexte Gatsbi
 - YouTrack [TG-228](https://tumorotek.myjetbrains.com/youtrack/issue/TG-228) : [TK] - Fiche ${patient} : dans la liste des prélèvements les données ne sont pas affichées dans les bonnes colonnes si le service préleveur est à afficher
