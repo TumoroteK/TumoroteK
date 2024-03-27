@@ -20,5 +20,5 @@
 	<include file="liquibase/changelog/db.changelog-gatsbi-2-createTableGatsbi.xml"/>
 	<include file="liquibase/changelog/db.changelog-gatsbi-3-loadTableGatsbi.xml"/>
     <include file="liquibase/changelog/db.changelog-2.2.8.xml"/>
-    <include file="liquibase/changelog/db.changelog-2.3.0.9.xml"/>
+    <include file="liquibase/changelog/db.changelog-2.3.0.8.xml"/>
 </databaseChangeLog>
