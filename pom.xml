@@ -7,6 +7,7 @@
     <packaging>pom</packaging>
     <version>2.2.3-fix302</version>
     <name>APHP :: TumoroteK</name>
+	<!-- test intégration Youtrack -->
 
 
     <properties>
