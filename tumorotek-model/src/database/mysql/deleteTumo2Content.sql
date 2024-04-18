@@ -125,7 +125,7 @@ delete from PLATEFORME where plateforme_id > 1;
 update PLATEFORME set collaborateur_id=null;
 
 delete from UTILISATEUR where utilisateur_id > 1;
-update UTILISATEUR set login='ADMIN_TUMO', password='tk4[teAm]' where utilisateur_id=1;
+update UTILISATEUR set login='ADMIN_TUMO', password='ADMIN_TUMO' where utilisateur_id=1;
 update UTILISATEUR set collaborateur_id=null;
 
 delete from COLLABORATEUR_COORDONNEE;

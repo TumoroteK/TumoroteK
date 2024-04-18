@@ -533,12 +533,13 @@
 						<separator/>
 					</row>
 					<row spans="4">
-						<vbox align="center">
+						<vbox align="center" hflex="1" vflex="1">
 						<grid id="echantillonsGrid"
 							fixedLayout="true" 
-							height="100%"
-							width="98%"
+							hflex="1"
 							sclass="gridListStyle"
+							span="true"
+							sizedByContent="false"
 							model="@{fwinPrelevementStaticSero$composer.echantillons}"
 							rowRenderer="@{fwinPrelevementStaticSero$composer.echantillonRenderer}"
 							style="overflow-y:scroll">
