@@ -1,5 +1,10 @@
 #### Notes de version
 
+##### Version 2.3.0.9 - Publiée le 19/04/2024
+###### Corrections dans TK
+- YouTrack [TK-498](https://tumorotek.myjetbrains.com/youtrack/issue/TK-498) : Fiche ${prelevement} séro > zone échantillons : des colonnes ne sont pas affichées
+
+
 ##### Version 2.3.0.8 - Publiée le 25/03/2024
 ###### Corrections dans TK pour un contexte Gatsbi
 - YouTrack [TG-236](https://tumorotek.myjetbrains.com/youtrack/issue/TG-236) : [TK] - ${recherche-complexe} Lors du choix d'afficher la colonne Patient - Identifiant, le nom de colonne n'est pas valorisée
