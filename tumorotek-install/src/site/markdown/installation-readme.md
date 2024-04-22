@@ -1,5 +1,5 @@
-#### Installation de TumoroteK version 2.3.0.8
-![TumoroteK version 2.3.0.8](https://img.shields.io/badge/TumoroteK-2.3.0.8-brightgreen.svg "TumoroteK version 2.3.0.8")
+#### Installation de TumoroteK version 2.3.0.9
+![TumoroteK version 2.3.0.9](https://img.shields.io/badge/TumoroteK-2.3.0.9-brightgreen.svg "TumoroteK version 2.3.0.9")
 ![Java version 8](https://img.shields.io/badge/Java->=_8-blue.svg "Java version 8")
 ![Apache Tomcat version 7](https://img.shields.io/badge/Apache_Tomcat->=_7-yellow.svg "Apache Tomcat version 7")
 
@@ -21,7 +21,7 @@ sous Unix, dans la variable `CATALINA_OPTS`, par l'intermédiaire du script de d
 ***
 
 ##### A. Télécharger puis dézipper le package d'installation :
-[Dossier d'installation](https://github.com/TumoroteK/TumoroteK/releases/download/v2.3.0.8/tumorotek-install-2.3.0.8.zip)
+[Dossier d'installation](https://github.com/TumoroteK/TumoroteK/releases/download/v2.3.0.9/tumorotek-install-2.3.0.9.zip)
 
 
 ##### B. Recommandé : création d'un utilisateur de base de données dédié à l'application TumoroteK + autorisations sur les trois bases de données
@@ -102,9 +102,9 @@ adaptez ces lignes et le niveau de sécurité en cas de l'utilisation d'un serve
         
 4. Niveaux de logs Log4j
     
-    Se référer à la documentation Log4j pour l'édition du fichier `<TOMCAT_PATH>/webapps/tumorotek##2.3.0.8/WEB-INF/classes/log4j.properties`
+    Se référer à la documentation Log4j pour l'édition du fichier `<TOMCAT_PATH>/webapps/tumorotek##2.3.0.9/WEB-INF/classes/log4j.properties`
 
-5. Déplacer la web archive `tumorotek##2.3.0.8.war` dans le dossier `<PATH_TOMCAT>/webapps`  
+5. Déplacer la web archive `tumorotek##2.3.0.9.war` dans le dossier `<PATH_TOMCAT>/webapps`  
 6. Démarrer le service Apache Tomcat
     > L'application TumoroteK va créer et initialiser les bases de données (tumorotek, tumorotek_codes et tumorotek_interfacages) automatiquement.
     
