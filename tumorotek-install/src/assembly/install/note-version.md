@@ -1,7 +1,12 @@
 #### Notes de version
 
+##### Version 2.2.10 - Publiée le 20/05/2024
+###### Amélioration
+- YouTrack [TK-486](https://tumorotek.myjetbrains.com/youtrack/issue/TK-486) : Interfaçage identité patient : les noms (usuel et patronymique) et le prénom transmis par l'interfaçage sont tronqués s'ils font plus de 50 caractères, pour que l'intégration dans TK se fasse correctement
+
+
 ##### Version 2.2.9 - Publiée le 14/09/2023
-###### Corrections
+###### Correction
 - YouTrack [TK-446](https://tumorotek.myjetbrains.com/youtrack/issue/TK-446) : ${export} correction du plantage avec Mysql8 à cause de la valeur par défaut de sql_mode (pas de problème avec Mariadb)
 
 

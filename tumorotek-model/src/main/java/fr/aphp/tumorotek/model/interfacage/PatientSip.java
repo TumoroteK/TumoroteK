@@ -58,6 +58,7 @@ import javax.persistence.Transient;
 import org.hibernate.annotations.GenericGenerator;
 
 import fr.aphp.tumorotek.model.coeur.patient.Patient;
+import fr.aphp.tumorotek.model.utils.Utils;
 
 /**
  *
@@ -83,6 +84,13 @@ import fr.aphp.tumorotek.model.coeur.patient.Patient;
 public class PatientSip
 {
 
+   //TK-486 : 
+   //Pour les données ci-dessous, si la valeur transmise est supérieure à la limite TK,
+   //le patient sera intégré avec les valeurs tronquées
+   public static final int TAILLE_MAX__NOM = 50;
+   public static final int TAILLE_MAX__NOM_NAISSANCE = 50;
+   public static final int TAILLE_MAX__PRENOM = 50;
+   
    private Integer patientSipId;
    private String nip;
    private String nom;
@@ -133,7 +141,7 @@ public class PatientSip
    }
 
    public void setNom(final String n){
-      this.nom = n;
+      this.nom = Utils.truncateIfNecessary(n, TAILLE_MAX__NOM);//TK-486
    }
 
    @Column(name = "NOM_NAISSANCE", nullable = true, length = 50)
@@ -142,7 +150,7 @@ public class PatientSip
    }
 
    public void setNomNaissance(final String naissance){
-      this.nomNaissance = naissance;
+      this.nomNaissance = Utils.truncateIfNecessary(naissance, TAILLE_MAX__NOM_NAISSANCE);//TK-486
    }
 
    @Column(name = "PRENOM", nullable = false, length = 50)
@@ -151,7 +159,7 @@ public class PatientSip
    }
 
    public void setPrenom(final String pren){
-      this.prenom = pren;
+      this.prenom = Utils.truncateIfNecessary(pren, TAILLE_MAX__PRENOM);//TK-486
    }
 
    @Column(name = "SEXE", nullable = false, length = 3)
