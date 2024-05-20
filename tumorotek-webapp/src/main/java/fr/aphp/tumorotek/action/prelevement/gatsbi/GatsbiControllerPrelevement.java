@@ -209,7 +209,7 @@ public class GatsbiControllerPrelevement {
          return true;
       }
       
-      // vérifie si au moins un des champs de formulaires est affiché
+      // vérifie si au moins un des champs du formulaire est à afficher
       final boolean oneDivVisible = contexte.getChampEntites().stream()
          .filter(c -> Arrays.asList(35, 36, 37, 38, 39, 40, 256, 267, 268).contains(c.getChampEntiteId()))
          .anyMatch(c -> c.getVisible());

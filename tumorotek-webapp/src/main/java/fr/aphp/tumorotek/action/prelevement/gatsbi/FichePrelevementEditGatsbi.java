@@ -174,13 +174,13 @@ public class FichePrelevementEditGatsbi extends FichePrelevementEdit
 
       log.debug("Surcharge Gastbi pour vérifier que la page de transfert des sites intermédiaire est affichée");
 
-      // vérifie si au moins un des champs de formulaires est affiché
+      // vérifie si au moins un des champs du formulaire est à afficher
       final boolean oneDivVisible = GatsbiControllerPrelevement.isSitesIntermPageDisplayed(contexte);
 
       if(oneDivVisible){
          super.onLaterNextStep();
       }else{ // aucun formulaire n'est affiché -> passage direct à l'onglet échantillon
-         log.debug("Aucun formulaire à affiché dans la page transfert vers le site préleveur...");
+         log.debug("Aucun champ à afficher dans la page transfert des sites intermédiaire...");
          if(this.prelevement.getPrelevementId() != null){
             getObjectTabController().switchToMultiEchantillonsEditMode(this.prelevement, new ArrayList<LaboInter>(),
                new ArrayList<LaboInter>());
@@ -192,7 +192,8 @@ public class FichePrelevementEditGatsbi extends FichePrelevementEdit
             // En effet le test "paramétrages définis ou non" est fait dans addNewObjectForContext
             // mais l'utilisation de cette méthode introduit l'affichage pendant une fraction de seconde de la liste des échantillons (cf TG-222)
             // amélioration du code à faire dans le ticket TG-223 quand TG-222 aura été corrigée
-            if(contexte.getParametrages().isEmpty()){
+            Contexte echanContexte = SessionUtils.getCurrentGatsbiContexteForEntiteId(3);//TG-259
+            if(echanContexte == null || echanContexte.getParametrages().isEmpty()){
                getObjectTabController().switchToMultiEchantillonsCreateMode(this.prelevement, new ArrayList<LaboInter>());
             }
             else {
