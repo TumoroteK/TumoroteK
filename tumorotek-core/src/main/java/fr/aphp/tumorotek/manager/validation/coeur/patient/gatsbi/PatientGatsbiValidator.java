@@ -77,7 +77,7 @@ public class PatientGatsbiValidator extends RequiredValueValidator
          if(!patient.getIdentifiant().matches(ValidationUtilities.CODEREGEXP)){
             errs.rejectValue("identifiant", "patient.identifiant.illegal");
          }
-         if(patient.getIdentifiant().length() > 20){
+         if(patient.getIdentifiant().length() > 50){//TG-262
             errs.rejectValue("identifiant", "patient.identifiant.tooLong");
          }
       }

@@ -125,7 +125,7 @@ public class PatientItemRendererGatsbi extends PatientItemRenderer
          // tb.setInplace(true);
         final Textbox tb = new Textbox();
          tb.setAttribute("patient", pat);
-         tb.setConstraint(PatientConstraints.getCodeConstraint());
+         tb.setConstraint(PatientConstraints.getIdentifiantConstraint());
          Listcell cell = new Listcell();
          tb.setParent(cell);
          cell.setParent(li);

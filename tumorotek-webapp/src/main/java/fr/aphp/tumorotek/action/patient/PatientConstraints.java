@@ -60,18 +60,20 @@ public final class PatientConstraints
       villeNaissanceConstraint.setNullable(true);
    }
 
+   //code correspond au Nip
    private static ConstCode codeNullConstraint = new ConstCode();
    static{
       codeNullConstraint.setNullable(true);
       codeNullConstraint.setSize(20);
    }
-   
-   private static ConstCode codeConstraint = new ConstCode();
-   static{
-      codeConstraint.setNullable(false);
-      codeConstraint.setSize(20);
-   }
 
+   //TG-262 :
+   private static ConstCode identifiantConstraint = new ConstCode();
+   static{
+      identifiantConstraint.setNullable(false);
+      identifiantConstraint.setSize(50);
+   }
+   
    private static ConstWord nomConstraint = new ConstWord();
    static{
       nomConstraint.setNullable(false);
@@ -116,7 +118,7 @@ public final class PatientConstraints
       return paysNaissanceConstraint;
    }
 
-   public static ConstCode getCodeConstraint(){
-      return codeConstraint;
+   public static ConstCode getIdentifiantConstraint(){
+      return identifiantConstraint;
    }
 }

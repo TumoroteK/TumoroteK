@@ -340,6 +340,6 @@ public class FichePatientEditGatsbi extends FichePatientEdit
    }
    
    public ConstCode getIdentifiantConstraint(){
-      return PatientConstraints.getCodeConstraint();
+      return PatientConstraints.getIdentifiantConstraint();
    }
 }
