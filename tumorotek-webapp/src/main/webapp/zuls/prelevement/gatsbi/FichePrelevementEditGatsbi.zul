@@ -198,7 +198,8 @@
 									<label value="${c:l('Champ.Prelevement.Risque')}" sclass="formLabel" />
 									<label value="*" sclass="requiredMark"/>
 								</div>
-								<listbox id="risquesBox" mold="select" multiple="true" rows="4" width="150px" model="@{fwinPrelevementEdit$composer.risques}">
+								<!-- TG-251 : la hauteur du composant est forcé dans le doAfterCompose : l'attribut rows ne peut être utilisé car la liste des données est alimentée après la création du composant  -->
+								<listbox id="risquesBox" mold="select" multiple="true" width="150px" model="@{fwinPrelevementEdit$composer.risques}">
 									<listitem self="@{each='risque'}" value="@{risque.nom}">
 										<listcell label="@{risque.nom}" />
 									</listitem>
