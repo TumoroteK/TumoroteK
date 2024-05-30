@@ -61,11 +61,15 @@ public class EchantillonRowRendererGatsbi extends EchantillonRowRenderer impleme
    private Contexte contexte;
 
    private boolean iconesRendered = true;
+   
+   private boolean calculerNbDerivesNbCessions = false;
 
  
-   public EchantillonRowRendererGatsbi(final boolean select, final boolean cols) {
-      super(select, cols);
-
+   public EchantillonRowRendererGatsbi(final boolean afficherColonneSelection, final boolean afficherColonneToutesCollections,
+                                       final boolean calculerNbDerivesNbCessions) {
+      super(afficherColonneSelection, afficherColonneToutesCollections);
+      this.calculerNbDerivesNbCessions=calculerNbDerivesNbCessions;
+      
       contexte = SessionUtils.getCurrentGatsbiContexteForEntiteId(3);
    }   
 
@@ -81,8 +85,10 @@ public class EchantillonRowRendererGatsbi extends EchantillonRowRenderer impleme
       EchantillonRowRenderer.renderObjetStatut(row, echan);
       EchantillonRowRenderer.renderEmplacement(row, echan, isAnonyme(), isAccessStockage());
       
-      renderNbDerives(row, echan);
-      renderNbCessions(row, echan);
+      if(calculerNbDerivesNbCessions) {
+         renderNbDerives(row, echan);
+         renderNbCessions(row, echan);
+      }
    }
 
    @Override

@@ -71,7 +71,7 @@ public class ListeEchantillonGatsbi extends ListeEchantillon
       
       contexte = SessionUtils.getCurrentGatsbiContexteForEntiteId(3);
       
-      setListObjectsRenderer(new EchantillonRowRendererGatsbi(true, false));
+      setListObjectsRenderer(new EchantillonRowRendererGatsbi(true, false, true));
    }
 
    public void onCheckAll$gridColumns(){
@@ -109,10 +109,11 @@ public class ListeEchantillonGatsbi extends ListeEchantillon
       //Colonnes fixes : les 2 premières sont visibles par défaut les 2 suivantes cachées par défaut
       GatsbiControllerEchantillon.drawObjetStatutColumn(objectsListGrid, false);
       GatsbiControllerEchantillon.drawEmplacementColumn(objectsListGrid, false);
-      // nb dérivés
-      nbProdDerivesColumn = GatsbiControllerEchantillon.drawNbDerivesColumn(objectsListGrid, false);
-      // nb cessions
-      nbCessionsColumn = GatsbiControllerEchantillon.drawNbCessionsColumn(objectsListGrid, false);
+      
+      // nb dérivés (attribut du parent)
+      this.nbProdDerivesColumn = GatsbiControllerEchantillon.drawNbDerivesColumn(objectsListGrid, false);
+      // nb cessions (attribut du parent)
+      this.nbCessionsColumn = GatsbiControllerEchantillon.drawNbCessionsColumn(objectsListGrid, false);
    }
 
    /**

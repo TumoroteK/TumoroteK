@@ -73,7 +73,7 @@ public class FichePrelevementStaticGatsbi extends FichePrelevementStatic
    private Contexte contexte;
 
    private final EchantillonRowRendererGatsbi echantillonRendererGatsbi =
-      new EchantillonRowRendererGatsbi(false, false);
+      new EchantillonRowRendererGatsbi(false, false, false);
 
    @Override
    public void doAfterCompose(final Component comp) throws Exception{
