@@ -53,9 +53,10 @@
                    Le panneau ci-dessous contient les paramètres de l'application.
                    Il ne peut pas être replié (collapsible="false") et ne peut pas être fermé (closable="false").
                    -->
-                <group label="${c:l('params.toutes.plateformes.title')}" id="toutesPlateformes" />
 
                 <rows>
+                    <group label="${c:l('params.toutes.plateformes.title')}" id="toutesPlateformes" />
+
                     <!--
                                       Première ligne: Image de bienvenue.
                                   -->
@@ -123,10 +124,14 @@
         Il ne peut pas être replié (collapsible="false") et ne peut pas être fermé (closable="false").
         -->
 
-                <group label="${c:l('params.plateforme.title')}" id="toutesPlateformes" />
 
 
                 <template name="model">
+                    <group label="${c:l('params.plateforme.title')}" id="toutesPlateformes" />
+                    <rows>
+
+
+
                     <!-- Chaque ligne (row) représente un paramètre -->
                     <row>
                         <!-- Première cellule: Afficher la clé du paramètre -->
@@ -186,6 +191,8 @@
                         </cell>
 
                     </row>
+                    </rows>
+
                 </template>
 
             </grid>
