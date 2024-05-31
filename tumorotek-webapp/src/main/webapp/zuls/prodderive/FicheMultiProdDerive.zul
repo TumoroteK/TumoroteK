@@ -204,10 +204,9 @@
 						<calendarbox id="dateTransfoCalBox" value="@{fwinMultiProdDerive$composer.object.dateTransformation,
 			        			save-when='validate.onClick, create.onClick, self.onBlur, interfacage.onClick'}" />
 							
-						<!-- Quantité utilisée dans la transformation -->
 						<hbox>
 							<label id="transfoQuantiteLabel" value="${c:l('ficheProdDerive.transformation.quantité')}" sclass="formLabel"/>
-							<label id="requiredtransfoQuantiteLabel" value="*" sclass="requiredMark" visible="false" />
+							<label id="requiredtransfoQuantiteLabel" value="*" sclass="requiredMark" />
 						</hbox>
 
 						<div id="transfoQuantiteDiv">
