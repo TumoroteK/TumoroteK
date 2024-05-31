@@ -69,8 +69,7 @@ import fr.aphp.tumorotek.param.TkParam;
 import fr.aphp.tumorotek.param.TumorotekProperties;
 import fr.aphp.tumorotek.utils.Utils;
 import fr.aphp.tumorotek.webapp.gatsbi.GatsbiController;
-import fr.aphp.tumorotek.dto.ParametreDTO;
-import fr.aphp.tumorotek.manager.administration.ParametresManager;
+
 /**
  * Regroupe les méthodes utilisées après la connexion de l'utilisateur.
  * @author pierre
@@ -317,9 +316,8 @@ public final class ConnexionUtils
          sessionScp.put("User", user);
       }
       if(pf != null){
-         sessionScp.put("Plateforme", pf);
          // Enregistre la liste de paramètres dans la session
-         SessionUtils.savePlatformParamsToSession(sessionScp);
+         SessionUtils.savePlatformAndPlatformParametersInSession(pf, sessionScp);
       }
 
       if(bank != null){

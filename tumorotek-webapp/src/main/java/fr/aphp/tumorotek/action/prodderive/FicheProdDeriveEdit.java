@@ -45,8 +45,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import fr.aphp.tumorotek.dto.ParametreDTO;
-import fr.aphp.tumorotek.param.EParametreValeurParDefaut;
 import org.springframework.validation.Errors;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
@@ -125,8 +123,6 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
    protected Textbox codeLaboBoxDerive;
 
    protected Label volumeBoxDerive;
-
-   private Label requiredtransfoQuantiteLabel;
 
    protected Decimalbox volumeInitBoxDerive;
 
@@ -338,8 +334,6 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
    public void doAfterCompose(final Component comp) throws Exception{
       super.doAfterCompose(comp);
 
-      initializeQuantiteUtiliseObligatoireFromSession();
-
       setWaitLabel("ficheProdDerive.creation.encours");
 
       // liste de composants pour le prlvt parent
@@ -355,28 +349,6 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
       setObjLabelsTransformation(new Component[] {this.rowTransformation1, this.rowTransformation2,});
    }
 
-   /**
-    * Initialise la quantité utilisée obligatoire à partir de la session.
-    *
-    * Note: La condition d'affichage de l'astérisque rouge est gérée dynamiquement dans cette méthode.
-    * Si la quantité utilisée n'est pas obligatoire, l'astérisque est masqué, sinon il est affiché.
-    *
-    */
-   private void initializeQuantiteUtiliseObligatoireFromSession(){
-      // Récupérer le Enum
-      EParametreValeurParDefaut deriveQteObligatoire = EParametreValeurParDefaut.DERIVE_QTE_OBLIGATOIRE;
-      // Obtenir le DTO associé au paramètre
-      ParametreDTO deriveQteObligatoireDto = SessionUtils.getParametreByCode(deriveQteObligatoire.getCode(), sessionScope);
-      // Vérifier si le DTO n'est pas nul
-      if (deriveQteObligatoireDto != null){
-         // Convertir la valeur du paramètre en un boolean
-         isQuantiteObligatoire = Boolean.parseBoolean(deriveQteObligatoireDto.getValeur());
-         if (isQuantiteObligatoire){
-            // Masquer le label de transformation obligatoire si la quantité n'est pas utilisée
-            requiredtransfoQuantiteLabel.setVisible(true);
-         }
-      }
-   }
 
    @Override
    public void setObject(final TKdataObject pd){
@@ -2632,11 +2604,5 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
       return ObjectTypesFormatters.ILNObjectStatut(getObject().getObjetStatut());
    }
 
-   public Label getRequiredtransfoQuantiteLabel(){
-      return requiredtransfoQuantiteLabel;
-   }
 
-   public void setRequiredtransfoQuantiteLabel(Label requiredtransfoQuantiteLabel){
-      this.requiredtransfoQuantiteLabel = requiredtransfoQuantiteLabel;
-   }
 }

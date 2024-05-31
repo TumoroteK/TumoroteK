@@ -292,23 +292,30 @@ public final class SessionUtils {
          && ((List<Banque>) Sessions.getCurrent()
             .getAttribute("ToutesCollections")).stream().anyMatch(b -> b.getEtude() != null);  
    }
-
    /**
-    * Stocke les paramètres de la plateforme dans la session.
+    * Sauvegarde la Plateforme donnée ainsi que ses paramètres associés dans la session.
+    * Si la Plateforme est nulle, elle supprime la Plateforme et les paramètres de la session.
     *
-    * @param sessionScp La map de session où les paramètres seront stockés.
-    *
+    * @param plateforme La Plateforme à sauvegarder dans la session. Peut être nulle.
+    * @param sessionScp La Map de session où la Plateforme et les paramètres seront sauvegardés.
     */
-   public static void savePlatformParamsToSession(final Map<String, Object> sessionScp) {
-      // Récupère la plateforme depuis la session
-      Plateforme plateforme = getPlateforme(sessionScp);
 
-      // Obtient les paramètres associés à l'ID de la plateforme
-      List<ParametreDTO> parametres = ManagerLocator.getManager(ParametresManager.class)
-         .findParametresByPlateformeId(plateforme.getPlateformeId());
+   public static void savePlatformAndPlatformParametersInSession(final Plateforme plateforme, final Map<String, Object> sessionScp) {
+      if (plateforme == null){
+         // nettoyage du cache
+         sessionScp.remove("Plateforme");
+         sessionScp.remove("Parametres");
+      }
+      else {
+         sessionScp.put("Plateforme", plateforme);
+         // Obtient les paramètres associés à l'ID de la plateforme
+         List<ParametreDTO> parametres = ManagerLocator.getManager(ParametresManager.class)
+                 .findParametresByPlateformeId(plateforme.getPlateformeId());
 
-      // Stocke la liste de paramètres dans la session sous la clé "Parametres"
-      sessionScp.put("Parametres", parametres);
+         // Stocke la liste de paramètres dans la session sous la clé "Parametres"
+         sessionScp.put("Parametres", parametres);
+      }
+
    }
 
 

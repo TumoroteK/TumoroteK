@@ -201,6 +201,9 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
 
    private Button stockageDerives;
 
+   private Label requiredTransfoQuantiteLabel;
+
+
    //Objets Principaux.
    // ajout de dérivés
    private List<ProdDerive> prodDerives = new ArrayList<>();
@@ -248,6 +251,7 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
    public void doAfterCompose(final Component comp) throws Exception{
       super.doAfterCompose(comp);
 
+      initializeQuantiteUtiliseObligatoireFromSession();
 
       setWaitLabel("ficheProdDerive.multi.creation.encours");
 
@@ -909,7 +913,6 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
     * Méthode exécutée lors du clic sur le bouton addProdDerives.
     * Les nouveaux dérivés seront créés (mais pas encore
     * sauvegardés) et ajoutés à la liste.
-    * @param Event : clic sur le lien addProdDerives.
     */
    public void onClick$addProdDerives(){
 
@@ -1220,7 +1223,7 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
    /**
     * Met à jour la liste de dérivés décorées
     * @since 2.0.13.2
-    * @param table dérivé - emplacements
+    * @param results: table dérivé - emplacements
     */
    private void updateDecoList(final Hashtable<ProdDerive, Emplacement> results){
 
@@ -2550,6 +2553,14 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
       return deriveDecoRenderer;
    }
 
+   public Label getRequiredTransfoQuantiteLabel() {
+      return requiredTransfoQuantiteLabel;
+   }
+
+   public void setRequiredTransfoQuantiteLabel(Label requiredTransfoQuantiteLabel) {
+      this.requiredTransfoQuantiteLabel = requiredTransfoQuantiteLabel;
+   }
+
    public void onClick$changeNumerotation(){
       changeNumerotation.setVisible(false);
       choixNumerotation.setVisible(true);
@@ -2649,6 +2660,23 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
       }
    }
 
+   /**
+    * Initialise la quantité utilisée obligatoire à partir de la session.
+    *
+    * Note: La condition d'affichage de l'astérisque rouge est gérée dynamiquement dans cette méthode.
+    * Si la quantité utilisée n'est pas obligatoire, l'astérisque est masqué, sinon il est affiché.
+    *
+    */
+   private void initializeQuantiteUtiliseObligatoireFromSession(){
+      // Récupérer le Enum
+      EParametreValeurParDefaut deriveQteObligatoire = EParametreValeurParDefaut.DERIVE_QTE_OBLIGATOIRE;
+      // Obtenir le DTO associé au paramètre
+      ParametreDTO deriveQteObligatoireDto = SessionUtils.getParametreByCode(deriveQteObligatoire.getCode(), sessionScope);
+      // Définir la visibilité du label
+      requiredTransfoQuantiteLabel.setVisible(Boolean.parseBoolean(deriveQteObligatoireDto.getValeur()));
+
+   }
+
    /*************************************************************************/
    /************************** INTERFACAGES *********************************/
    /*************************************************************************/
@@ -2719,4 +2747,7 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
          dateTransfoCalBox.setFocus(true);
       }
   }
+
+
+
 }

@@ -373,8 +373,7 @@ public class ParametresController
    }
 
    /**
-    * Enregistre les modifications apportées à un paramètre dans la base de données et met à jour
-    * les paramètres de la plateforme en session.
+    * Enregistre les modifications apportées à un paramètre dans la base de données
     *
     * @param parameter Le paramètre à enregistrer.
     */
@@ -384,9 +383,6 @@ public class ParametresController
 
       // Met à jour/sauvegarde le paramètre de la plateforme en base de données
       parametresManager.updateValeur(plateforme.getPlateformeId(), parameter.getCode(), parameter.getValeur());
-
-      // Met à jour les paramètres de la plateforme en session
-      SessionUtils.savePlatformParamsToSession(Sessions.getCurrent().getAttributes());
    }
 
    /**
