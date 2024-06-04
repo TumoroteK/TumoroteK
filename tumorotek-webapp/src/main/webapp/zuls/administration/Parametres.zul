@@ -38,10 +38,7 @@
         apply="org.zkoss.bind.BindComposer"
         viewModel="@id('vm') @init('fr.aphp.tumorotek.action.administration.ParametresController')">
 
-    <!--
-    Le panneau ci-dessous contient les paramètres de l'application.
-    Il ne peut pas être replié (collapsible="false") et ne peut pas être fermé (closable="false").
-    -->
+    <!--       Paramètres pour toutes les plateformes     -->
 
     <panel collapsible="false" title="${c:l('params.application.title')}"
            sclass="fichePanelv2" closable="false">
@@ -55,6 +52,7 @@
 
                 <rows>
                     <group label="${c:l('params.toutes.plateformes.title')}" id="toutesPlateformes" />
+
                     <!--
                                       Première ligne: Image de bienvenue.
                                   -->
@@ -90,7 +88,7 @@
                     <!--
                                        Deuxième ligne: Message de bienvenue.
                                    -->
-                    <row >
+                    <row>
                         <!-- Cellule pour le libellé du message de bienvenue. -->
                         <cell>
                             <label value="${c:l('params.message.accueil')}" sclass="formLabel" style="color: #636363;"/>
@@ -113,20 +111,15 @@
                                     onClick="@command('deleteWelcomeMessage')"/>
                         </cell>
                     </row>
-
-                    <group label="${c:l('params.plateforme.title')}" id="plateformeCourante" style="padding-top:20px" />
+                    <group label="@load(vm.plateformeTitle)"  id="corantePlateforme"  style="padding-top:20px" />
 
                 </rows>
-
-
-
             </grid>
         </panelchildren>
     </panel>
-        <!--
-        Le panneau ci-dessous affiche une liste de paramètres de la plateforme.
-        Il ne peut pas être replié (collapsible="false") et ne peut pas être fermé (closable="false").
-        -->
+
+    <!--         Paramètres de la plateforme courante         -->
+
 
     <panel style="margin-top:10px">
         <panelchildren >

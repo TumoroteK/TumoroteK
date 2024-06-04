@@ -206,7 +206,7 @@
 							
 						<hbox>
 							<label id="transfoQuantiteLabel" value="${c:l('ficheProdDerive.transformation.quantité')}" sclass="formLabel"/>
-							<label id="requiredtransfoQuantiteLabel" value="*" sclass="requiredMark" />
+							<label id="requiredTransfoQuantiteLabel" value="*" sclass="requiredMark" />
 						</hbox>
 
 						<div id="transfoQuantiteDiv">

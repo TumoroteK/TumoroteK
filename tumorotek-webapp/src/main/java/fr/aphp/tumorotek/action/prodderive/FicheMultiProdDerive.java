@@ -2673,6 +2673,9 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
       // Obtenir le DTO associé au paramètre
       ParametreDTO deriveQteObligatoireDto = SessionUtils.getParametreByCode(deriveQteObligatoire.getCode(), sessionScope);
       // Définir la visibilité du label
+
+      isQuantiteObligatoire = Boolean.parseBoolean(deriveQteObligatoireDto.getValeur());
+
       requiredTransfoQuantiteLabel.setVisible(Boolean.parseBoolean(deriveQteObligatoireDto.getValeur()));
 
    }
