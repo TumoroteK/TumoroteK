@@ -56,7 +56,6 @@ import javax.servlet.http.HttpServletRequest;
 import fr.aphp.tumorotek.dto.ParametreDTO;
 import fr.aphp.tumorotek.param.EParametreValeurParDefaut;
 import fr.aphp.tumorotek.utils.MessagesUtils;
-import fr.aphp.tumorotek.utils.TKStringUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -1129,8 +1128,6 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
       }
    }
 
-   private void validateQuantiteUtilise(){
-   }
 
    /**
     * Méthode supprimant un des dérivés que l'utilisateur
@@ -2676,7 +2673,7 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
 
       isQuantiteObligatoire = Boolean.parseBoolean(deriveQteObligatoireDto.getValeur());
 
-      requiredTransfoQuantiteLabel.setVisible(Boolean.parseBoolean(deriveQteObligatoireDto.getValeur()));
+      requiredTransfoQuantiteLabel.setVisible(isQuantiteObligatoire);
 
    }
 

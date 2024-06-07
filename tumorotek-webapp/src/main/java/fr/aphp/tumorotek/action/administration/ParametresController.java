@@ -345,7 +345,6 @@ public class ParametresController
     */
    private void initWelcomeMessage(){
       welcomeMessage = parametresManager.getMessageAccueil(false);
-      welcomeMessage = TKStringUtils.convertHtmlEntities(welcomeMessage);
 
       if(StringUtils.isEmpty(welcomeMessage)){
          welcomeMessage = Labels.getLabel("params.message.empty");

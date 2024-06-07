@@ -35,12 +35,10 @@
  **/
 package fr.aphp.tumorotek.utils;
 
-import org.apache.commons.lang3.StringEscapeUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.parser.Tag;
 import org.jsoup.safety.Whitelist;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+
 
 
 /**
@@ -57,23 +55,6 @@ public final class TKStringUtils
     */
    private TKStringUtils(){}
 
-   /**
-    * Convertit les entités HTML dans une chaîne de texte en caractères Unicode correspondants.
-    * Cette méthode utilise la bibliothèque Apache Commons Lang et la classe StringEscapeUtils
-    * pour effectuer la conversion.
-    * Example
-    * Input HTML Text: Bienvenue sur le syst&egrave;me de gestion des collections de pr&eacute;l&egrave;vements biologiques.
-    * Output Text: Bienvenue sur le système de gestion des collections de prélèvements biologiques.
-    *
-    * @param htmlText La chaîne de texte contenant des entités HTML à convertir.
-    * @return La chaîne de texte avec les entités HTML converties en caractères Unicode.
-    * @throws IllegalArgumentException Si la chaîne de texte en entrée est nulle.
-    *
-    */
-
-   public static String convertHtmlEntities(String htmlText) {
-      return StringEscapeUtils.unescapeHtml4(htmlText);
-   }
 
    /**
     * Echappe, sécurise et nettoie une string HTML
@@ -178,41 +159,5 @@ public final class TKStringUtils
    }
 
 
-
-   /**
-    * Normalise un chemin en remplaçant les caractères de séparation de répertoire par des barres obliques '/' et en
-    * normalisant le chemin résultant à l'aide de la classe {@code Path}.
-    *
-    * @param originalPath Le chemin original à normaliser.
-    * @return Le chemin normalisé résultant.
-
-    *
-    * @see Path
-    * @see Paths#get(String, String...)
-    * @see Path#normalize()
-    */
-
-   public static String normalizePath(String originalPath) {
-      String normalizedPath = originalPath.replace('\\', '/');
-
-      Path path = Paths.get(normalizedPath);
-      Path normalized = path.normalize();
-
-      return normalized.toString();
-   }
-
-
-
-   /**
-    * Cette méthode vérifie si une chaîne de caractères est vide ou fausse.
-    *
-    * @param string La chaîne de caractères à vérifier.
-    * @return true si la chaîne est vide ou fausse, sinon false.
-    */
-
-      public static boolean isEmptyString(String string) {
-         // Vérifier si la chaîne est nulle ou vide
-         return string == null || string.trim().isEmpty();
-      }
 
 }

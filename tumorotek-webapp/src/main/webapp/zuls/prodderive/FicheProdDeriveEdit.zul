@@ -34,12 +34,6 @@
  * accepté les termes. 
 -->
 
-
-<!-- Attention : ce fichier n'est pas utilisé pour créer ou éditer de nouveaux dérivés
-(vous pouvez effectuer un test : modifiez une valeur ici et vérifiez si elle se reflète dans l'application).
-Pour tout ce qui concerne la création ou l'édition de dérivés, veuillez vous référer au fichier fwinMultiProdDerive. -->
-
-
 <?component name="calendarbox" macroURI="/zuls/component/CalendarBox.zul" class="fr.aphp.tumorotek.component.CalendarBox" ?>
 
 <window id="fwinProdDeriveEdit" border="none" apply="fr.aphp.tumorotek.action.prodderive.FicheProdDeriveEdit"

@@ -56,7 +56,7 @@ public class ParametreDTO
    /**
     * Cette méthode retourne la clé d'internationalisation pour le code du paramètre.
     * Si le code n'est pas nul, elle préfixe "params." au code.
-    * Si le code est nul, elle retourne une chaîne vide.
+    * Si le code est nul, elle retourne le code lui-même, qui sera donc null.
     *
     * Pour que cela fonctionne, le code retourné doit avoir une clé correspondante dans le fichier de propriétés de traduction.
     *

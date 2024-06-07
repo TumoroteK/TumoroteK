@@ -65,15 +65,16 @@ import org.springframework.util.StringUtils;
 import java.util.List;
 
 /**
- * Service de gestion des paramètres de l'application et des plateformes.
- * Une plateforme possède des paramètres par défaut définis dans la classe EParametreValeurParDefaut.
- * Lorsque l'utilisateur modifie un paramètre, les modifications sont sauvegardées dans la table "parameter_valeur_specifique".
- * Ces paramètres ont généralement une portée au niveau de la plateforme et peuvent varier d'une plateforme à une autre.
- * Il existe également deux paramètres avec une portée au niveau de l'application, gérés différemment (pour faciliter le déploiement) :
- * le message de bienvenue défini dans "tumorotek.properties" et le logo situé dans "catalina/localhost".
+
+ * Interface du service de gestion des paramètres de l'application et des plateformes.
+ * Une plateforme possède des paramètres dont les valeurs par défaut sont définies dans la classe EParametreValeurParDefaut.
+ * Lorsque l'utilisateur modifie une valeur par défaut, les modifications sont sauvegardées dans la table "PARAMETRE_VALEUR_SPECIFIQUE".
+ * Il existe également deux paramètres partagés par toutes les plateformes.  Ils sont gérés différemment (pour faciliter le déploiement).
+ * Il s'agit du message de bienvenue défini dans "tumorotek.properties" et du logo situé dans "catalina/localhost".
  *
  * @author GCH
  */
+
 
 public class ParametresManagerImpl implements ParametresManager
 {
@@ -317,23 +318,23 @@ public class ParametresManagerImpl implements ParametresManager
       if (paramEnum == null) {
          throw new IllegalArgumentException("Invalid code: " + code);
       }
-         // Trouve le ParametreValeurSpecifique dans la base de données en utilisant l'id de la plateforme et le code
-         ParametreValeurSpecifique plateformParametreValeurSpecifique = findParametresByPlateformeIdAndCode(plateformID, code);
-         if (plateformParametreValeurSpecifique != null) {
-            // Si le ParametreValeurSpecifique existe, met à jour sa valeur
-            plateformParametreValeurSpecifique.setValeur(newValue);
-            parametreValeurSpecifiqueDao.updateObject(plateformParametreValeurSpecifique);
-         } else {
-            // Si le ParametreValeurSpecifique n'existe pas, crée un nouveau ParametreValeurSpecifique
-            ParametreValeurSpecifique newParametreValeurSpecifique = new ParametreValeurSpecifique();
-            newParametreValeurSpecifique.setPlateformeId(plateformID);
-            newParametreValeurSpecifique.setCode(code);
-            newParametreValeurSpecifique.setValeur(newValue);
-            newParametreValeurSpecifique.setType(paramEnum.getType());
-            newParametreValeurSpecifique.setGroupe(paramEnum.getGroupe());
-            parametreValeurSpecifiqueDao.createObject(newParametreValeurSpecifique);
+      // Trouve le ParametreValeurSpecifique dans la base de données en utilisant l'id de la plateforme et le code
+      ParametreValeurSpecifique plateformParametreValeurSpecifique = findParametresByPlateformeIdAndCode(plateformID, code);
+      if (plateformParametreValeurSpecifique != null) {
+         // Si le ParametreValeurSpecifique existe, met à jour sa valeur
+         plateformParametreValeurSpecifique.setValeur(newValue);
+         parametreValeurSpecifiqueDao.updateObject(plateformParametreValeurSpecifique);
+      } else {
+         // Si le ParametreValeurSpecifique n'existe pas, crée un nouveau ParametreValeurSpecifique
+         ParametreValeurSpecifique newParametreValeurSpecifique = new ParametreValeurSpecifique();
+         newParametreValeurSpecifique.setPlateformeId(plateformID);
+         newParametreValeurSpecifique.setCode(code);
+         newParametreValeurSpecifique.setValeur(newValue);
+         newParametreValeurSpecifique.setType(paramEnum.getType());
+         newParametreValeurSpecifique.setGroupe(paramEnum.getGroupe());
+         parametreValeurSpecifiqueDao.createObject(newParametreValeurSpecifique);
 
-         }
+      }
    }
 
 }

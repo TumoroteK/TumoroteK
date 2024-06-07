@@ -2014,7 +2014,7 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
             volume = volumeValue.floatValue();
             // le volume doit être positif
             if(volume < 0){
-               throw new WrongValueException(comp, "Seul les nombres non-négatifs " + "sont autorisés.");
+               throw new WrongValueException(comp, Labels.getLabel("validation.negative.value"));
             }
             // si une valeur est saisie dans le champ volumeInitBox
             if(volumeInit != null){
@@ -2136,7 +2136,7 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
             quantite = quantiteValue.floatValue();
             // la quantite doit être positive
             if(quantite < 0){
-               throw new WrongValueException(comp, "Seul les nombres non-négatifs sont autorisés.");
+               throw new WrongValueException(comp, Labels.getLabel("validation.negative.value"));
             }
             // si une valeur est saisie dans le champ quantiteInitBox
             if(quantiteInit != null){
@@ -2263,7 +2263,12 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
             if(quantiteTransformation < 0){
                throw new WrongValueException(comp, Labels.getLabel("validation.negative.value"));
             }
-            clearErrors(quantiteTransfoValue);
+            // sinon on enlève toutes les erreurs affichées
+            BigDecimal decimal = new BigDecimal(quantiteTransformation);
+            Clients.clearWrongValue(transfoQuantiteBoxDerive);
+            transfoQuantiteBoxDerive.setConstraint("");
+            transfoQuantiteBoxDerive.setValue(decimal);
+            transfoQuantiteBoxDerive.setConstraint(cttQuantiteTransfo);
 
             if(quantiteMax != null && quantiteTransformation > quantiteMax){
                final StringBuffer sb = new StringBuffer();
@@ -2288,15 +2293,13 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
 
                throw new WrongValueException(comp, sb.toString());
             }
-            clearErrors(quantiteTransfoValue);
+            // sinon on enlève toutes les erreurs affichées
+            decimal = new BigDecimal(quantiteTransformation);
+            Clients.clearWrongValue(transfoQuantiteBoxDerive);
+            transfoQuantiteBoxDerive.setConstraint("");
+            transfoQuantiteBoxDerive.setValue(decimal);
+            transfoQuantiteBoxDerive.setConstraint(cttQuantiteTransfo);
          }
-      }
-
-      private void clearErrors(BigDecimal quantiteTransfoValue){
-         Clients.clearWrongValue(transfoQuantiteBoxDerive);
-         transfoQuantiteBoxDerive.setConstraint("");
-         transfoQuantiteBoxDerive.setValue(quantiteTransfoValue);
-         transfoQuantiteBoxDerive.setConstraint(cttQuantiteTransfo);
       }
    }
 

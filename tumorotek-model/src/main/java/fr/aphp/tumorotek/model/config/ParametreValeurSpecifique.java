@@ -11,9 +11,7 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
 @Entity
-@Table(name="PARAMETRE_VALEUR_SPECIFIQUE", uniqueConstraints = {
-      @UniqueConstraint(columnNames = {"plateformeId", "code"})
-})
+@Table(name="PARAMETRE_VALEUR_SPECIFIQUE")
 @NamedQueries({
    @NamedQuery(name = "ParametreValeurSpecifique.findAllByPlateformeId",
                query = "SELECT p FROM ParametreValeurSpecifique p WHERE p.plateformeId = ?1"),

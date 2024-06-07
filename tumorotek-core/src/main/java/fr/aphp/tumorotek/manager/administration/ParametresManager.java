@@ -42,12 +42,12 @@ import java.io.File;
 import java.util.List;
 
 /**
+
  * Interface du service de gestion des paramètres de l'application et des plateformes.
- * Une plateforme possède des paramètres par défaut définis dans la classe EParametreValeurParDefaut.
- * Lorsque l'utilisateur modifie un paramètre, les modifications sont sauvegardées dans la table "parameter_valeur_specifique".
- * Ces paramètres ont généralement une portée au niveau de la plateforme et peuvent varier d'une plateforme à une autre.
- * Il existe également deux paramètres avec une portée au niveau de l'application, gérés différemment (pour faciliter le déploiement) :
- * le message de bienvenue défini dans "tumorotek.properties" et le logo situé dans "catalina/localhost".
+ * Une plateforme possède des paramètres dont les valeurs par défaut sont définies dans la classe EParametreValeurParDefaut.
+ * Lorsque l'utilisateur modifie une valeur par défaut, les modifications sont sauvegardées dans la table "PARAMETRE_VALEUR_SPECIFIQUE".
+ * Il existe également deux paramètres partagés par toutes les plateformes.  Ils sont gérés différemment (pour faciliter le déploiement).
+ * Il s'agit du message de bienvenue défini dans "tumorotek.properties" et du logo situé dans "catalina/localhost".
  *
  * @author GCH
  */

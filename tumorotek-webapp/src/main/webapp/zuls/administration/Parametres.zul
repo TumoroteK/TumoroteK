@@ -111,7 +111,7 @@
                                     onClick="@command('deleteWelcomeMessage')"/>
                         </cell>
                     </row>
-                    <group label="@load(vm.plateformeTitle)"  id="corantePlateforme"  style="padding-top:20px" />
+                    <group label="@load(vm.plateformeTitle)"  id="plateformeCourante"  style="padding-top:20px" />
 
                 </rows>
             </grid>
@@ -174,7 +174,8 @@
                         </cell>
 
 
-                        <!-- Troisième cellule: Boutons pour éditer, enregistrer et annuler les modifications -->                        <cell>
+                        <!-- Troisième cellule: Boutons pour éditer, enregistrer et annuler les modifications -->
+                        <cell>
 
                             <button if="${!vm.isEditMode(each)}" label="${c:l('general.edit')}"
                                     onClick="@command('editParameter', parameter=each)"
