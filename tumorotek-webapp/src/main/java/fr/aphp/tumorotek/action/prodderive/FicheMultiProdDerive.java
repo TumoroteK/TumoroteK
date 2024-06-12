@@ -926,8 +926,8 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
          }
          // TK-434: Sécuriser la saisie de la quantité utilisée
 
-         // Si le champ n'est pas renseigné
-         if (transfoQuantiteBoxDerive.getValue() == null){
+         // Si le champ "quantité" est vide et le type de parent n'est pas "Aucun"
+         if (transfoQuantiteBoxDerive.getValue() == null &&  !getTypeParent().equals("Aucun")){
             // et la plateforme est configurée pour avoir la saisie de quantité utilisée obligatoire, on bloque l'ajout
             if (isQuantiteObligatoire){
                Clients.scrollIntoView(transfoQuantiteBoxDerive);
