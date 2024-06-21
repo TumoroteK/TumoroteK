@@ -337,4 +337,16 @@ public class ParametresManagerImpl implements ParametresManager
       }
    }
 
+   /**
+    * Supprime les enregistrements de la table ParametreValeurSpecifique
+    *
+    * @param parametreValeurSpecifiqueId l'identifiant du ParametreValeurSpecifique
+    * @param plateformeId l'identifiant de la Plateforme
+    * @return le nombre d'enregistrements supprimés
+    */
+   @Override
+   public int deleteByParametreValeurSpecifiqueIdAndPlateformeId(Integer parametreValeurSpecifiqueId, Integer plateformeId) {
+      return parametreValeurSpecifiqueDao.deleteByParametreValeurSpecifiqueIdAndPlateformeId(parametreValeurSpecifiqueId, plateformeId);
+   }
+
 }

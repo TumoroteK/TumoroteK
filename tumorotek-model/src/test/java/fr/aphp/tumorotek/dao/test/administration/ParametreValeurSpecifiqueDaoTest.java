@@ -61,6 +61,31 @@ public class ParametreValeurSpecifiqueDaoTest extends AbstractDaoTest
       assertNotNull(allParameters);
       assertEquals(2, allParameters.size());
    }
+
+   public void testDeleteByParametreValeurSpecifiqueIdAndPlateformeId() {
+      Integer parametreValeurSpecifiqueId = 1;
+      Integer plateformeId = 1;
+
+      // Créer une nouvelle entité et la sauvegarder
+      ParametreValeurSpecifique parametreValeurSpecifique = new ParametreValeurSpecifique();
+      parametreValeurSpecifique.setParametreValeurSpecifiqueId(parametreValeurSpecifiqueId);
+      parametreValeurSpecifique.setPlateformeId(plateformeId);
+      parametreValeurSpecifiqueDao.createObject(parametreValeurSpecifique);
+
+      // Vérifier que l'entité est sauvegardée
+      ParametreValeurSpecifique savedEntity = parametreValeurSpecifiqueDao.findById(parametreValeurSpecifiqueId);
+      assertNotNull(savedEntity);
+
+      // Supprimer l'entité
+      int deletedCount = parametreValeurSpecifiqueDao.deleteByParametreValeurSpecifiqueIdAndPlateformeId(parametreValeurSpecifiqueId, plateformeId);
+
+      // Vérifier que l'entité est supprimée
+
+      ParametreValeurSpecifique deletedEntity = parametreValeurSpecifiqueDao.findById(parametreValeurSpecifiqueId);
+      assertEquals(null, deletedEntity);
+      assertEquals(1, deletedCount);
+      assertEquals(null, deletedEntity);
+   }
 }
 
 
