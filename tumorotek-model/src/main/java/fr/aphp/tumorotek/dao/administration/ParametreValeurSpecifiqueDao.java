@@ -10,7 +10,4 @@ public interface ParametreValeurSpecifiqueDao extends GenericDaoJpa<ParametreVal
    List<ParametreValeurSpecifique> findByPlateformeIdAndCode(Integer plateformeId, String code);
    List<ParametreValeurSpecifique> findAllByPlateformeId(Integer plateformeId);
 
-   int deleteByParametreValeurSpecifiqueIdAndPlateformeId(Integer parametreValeurSpecifiqueId, Integer plateformeId);
-
-
 }

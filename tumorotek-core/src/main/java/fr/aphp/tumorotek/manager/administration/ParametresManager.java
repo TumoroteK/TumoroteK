@@ -101,8 +101,5 @@ public interface ParametresManager
 
     void updateValeur(Integer plateformID, String code, String newValue);
 
-   int deleteByParametreValeurSpecifiqueIdAndPlateformeId(Integer parametreValeurSpecifiqueId, Integer plateformeId);
-
-
 
 }

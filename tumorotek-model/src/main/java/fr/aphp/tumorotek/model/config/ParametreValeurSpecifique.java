@@ -17,8 +17,6 @@ import javax.persistence.Table;
                query = "SELECT p FROM ParametreValeurSpecifique p WHERE p.plateformeId = ?1"),
    @NamedQuery(name = "ParametreValeurSpecifique.findByPlateformeIdAndCode",
       query = "SELECT p FROM ParametreValeurSpecifique p WHERE p.plateformeId = ?1 AND p.code = ?2"),
-   @NamedQuery(name = "ParametreValeurSpecifique.deleteByParametreValeurSpecifiqueIdAndPlateformeId",
-                query = "DELETE FROM ParametreValeurSpecifique p WHERE p.parametreValeurSpecifiqueId = ?1 AND p.plateformeId = ?2")
 })
 
 public class ParametreValeurSpecifique
