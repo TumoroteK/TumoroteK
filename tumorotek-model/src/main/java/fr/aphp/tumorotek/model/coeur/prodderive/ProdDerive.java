@@ -83,7 +83,7 @@ import fr.aphp.tumorotek.model.utils.Utils;
    @NamedQuery(name = "ProdDerive.findByCodeOrLaboWithBanque",
       query = "SELECT p FROM ProdDerive p WHERE " + "(p.code like ?1 OR p.codeLabo like ?1) " + "AND p.banque = ?2"),
    @NamedQuery(name = "ProdDerive.findByCodeInPlateforme",
-      query = "SELECT p FROM ProdDerive p WHERE p.code like ?1 " + "AND p.banque.plateforme = ?2"),
+      query = "SELECT p FROM ProdDerive p WHERE p.code = ?1 " + "AND p.banque.plateforme = ?2"),
    @NamedQuery(name = "ProdDerive.findByCodeExactMatchInPlateforme",
       query = "SELECT p FROM ProdDerive p WHERE p.code = ?1 AND p.banque.plateforme = ?2"),
    @NamedQuery(name = "ProdDerive.findByCodeOrLaboWithBanqueReturnIds",

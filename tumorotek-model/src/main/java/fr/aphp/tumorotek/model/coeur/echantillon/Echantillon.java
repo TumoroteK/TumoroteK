@@ -97,7 +97,7 @@ import fr.aphp.tumorotek.model.utils.Utils;
    @NamedQuery(name="Echantillon.findByCodeExactMatchInPlateforme",
       query="SELECT e From Echantillon e WHERE e.code = ?1 AND e.banque.plateforme =?2"),
    @NamedQuery(name = "Echantillon.findByCodeInPlateforme",
-      query = "SELECT e FROM Echantillon e WHERE e.code like ?1 " + "AND e.banque.plateforme = ?2"),
+           query="SELECT e From Echantillon e WHERE e.code = ?1 AND e.banque.plateforme =?2"),
    @NamedQuery(name = "Echantillon.findByCodeWithBanqueReturnIds",
       query = "SELECT e.echantillonId FROM Echantillon e " + "WHERE e.code like ?1 " + "AND e.banque = ?2"),
    @NamedQuery(name = "Echantillon.findByDateStockAfterDate", query = "SELECT e FROM Echantillon e WHERE e.dateStock >= ?1"),
