@@ -3738,28 +3738,28 @@ public class PrelevementManagerTest extends AbstractManagerTest4
    @Test
    public void testFindByCodeInPlateformeBanqueManager(){
       final Plateforme p1 = plateformeDao.findById(1);
-      List<Prelevement> prels = prelevementManager.findByCodeLikeInPlateformeManager("PRLVT1", p1);
+      List<Prelevement> prels = prelevementManager.findByCodeInPlateformeManager("PRLVT1", p1);
       assertTrue(prels.size() == 1);
-      prels = prelevementManager.findByCodeLikeInPlateformeManager("PRLVT%", p1);
+      prels = prelevementManager.findByCodeInPlateformeManager("PRLVT%", p1);
       assertTrue(prels.size() == 4);
-      prels = prelevementManager.findByCodeLikeInPlateformeManager(null, p1);
+      prels = prelevementManager.findByCodeInPlateformeManager(null, p1);
       assertTrue(prels.size() == 0);
-      prels = prelevementManager.findByCodeLikeInPlateformeManager("PRLVT%", null);
+      prels = prelevementManager.findByCodeInPlateformeManager("PRLVT%", null);
       assertTrue(prels.size() == 0);
    }
 
    @Test
-   public void testFindByCodeExactMatchInPlateforme(){
+   public void testFindByCodeInPlateforme(){
       final Plateforme p1 = plateformeDao.findById(1);
-      List<Prelevement> prels = prelevementManager.findByCodeExactMatchInPlateforme("PRLVT1", p1);
+      List<Prelevement> prels = prelevementManager.findByCodeInPlateformeManager("PRLVT1", p1);
       assertEquals(1, prels.size());
-      prels = prelevementManager.findByCodeExactMatchInPlateforme("PRLVT%", p1);
+      prels = prelevementManager.findByCodeInPlateformeManager("PRLVT%", p1);
       assertTrue(prels.isEmpty());
 
 //      test null
-      prels = prelevementManager.findByCodeExactMatchInPlateforme(null, p1);
+      prels = prelevementManager.findByCodeInPlateformeManager(null, p1);
       assertEquals(0, prels.size());
-      prels = prelevementManager.findByCodeExactMatchInPlateforme("PRLVT1", null);
+      prels = prelevementManager.findByCodeInPlateformeManager("PRLVT1", null);
       assertEquals(0, prels.size());
    }
 

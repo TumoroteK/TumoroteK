@@ -4402,13 +4402,13 @@ public class EchantillonManagerTest extends AbstractManagerTest4
    @Test
    public void testFindByCodeInPlateformeBanqueManager(){
       final Plateforme p1 = plateformeDao.findById(1);
-      List<Echantillon> echans = echantillonManager.findByCodeLikeInPlateformeManager("PTRA.1", p1);
+      List<Echantillon> echans = echantillonManager.findByCodeInPlateformeManager("PTRA.1", p1);
       assertTrue(echans.size() == 1);
-      echans = echantillonManager.findByCodeLikeInPlateformeManager("%", p1);
+      echans = echantillonManager.findByCodeInPlateformeManager("%", p1);
       assertTrue(echans.size() == 4);
-      echans = echantillonManager.findByCodeLikeInPlateformeManager(null, p1);
+      echans = echantillonManager.findByCodeInPlateformeManager(null, p1);
       assertTrue(echans.size() == 0);
-      echans = echantillonManager.findByCodeLikeInPlateformeManager("%", null);
+      echans = echantillonManager.findByCodeInPlateformeManager("%", null);
       assertTrue(echans.size() == 0);
    }
    

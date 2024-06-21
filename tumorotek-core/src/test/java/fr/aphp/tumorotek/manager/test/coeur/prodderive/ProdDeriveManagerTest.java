@@ -4078,13 +4078,13 @@ public class ProdDeriveManagerTest extends AbstractManagerTest4
    @Test
    public void testFindByCodeInPlateformeBanqueManager(){
       final Plateforme p1 = plateformeDao.findById(1);
-      List<ProdDerive> derives = prodDeriveManager.findByCodeLikeInPlateformeManager("PTRA.1.1", p1);
+      List<ProdDerive> derives = prodDeriveManager.findByCodeInPlateformeManager("PTRA.1.1", p1);
       assertTrue(derives.size() == 1);
-      derives = prodDeriveManager.findByCodeLikeInPlateformeManager("%", p1);
+      derives = prodDeriveManager.findByCodeInPlateformeManager("%", p1);
       assertTrue(derives.size() == 4);
-      derives = prodDeriveManager.findByCodeLikeInPlateformeManager(null, p1);
+      derives = prodDeriveManager.findByCodeInPlateformeManager(null, p1);
       assertTrue(derives.size() == 0);
-      derives = prodDeriveManager.findByCodeLikeInPlateformeManager("%", null);
+      derives = prodDeriveManager.findByCodeInPlateformeManager("%", null);
       assertTrue(derives.size() == 0);
    }
 }
