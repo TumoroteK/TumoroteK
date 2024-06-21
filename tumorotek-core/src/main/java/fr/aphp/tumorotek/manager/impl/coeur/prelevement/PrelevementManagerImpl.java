@@ -533,25 +533,22 @@ public class PrelevementManagerImpl implements PrelevementManager
 
    @Override
    public boolean findDoublonManager(final Prelevement prelevement){
-      // Recherche des prélèvements existants avec le même code dans la plateforme de la banque associée.
-      final List<Prelevement> dbls = prelevementDao.findByCodeExactMatchInPlateforme(prelevement.getCode(),
+      // Banque banque = prelevement.getBanque();
+      final List<Prelevement> dbls = prelevementDao.findByCodeInPlateforme(prelevement.getCode(),
          prelevement.getBanque() != null ? prelevement.getBanque().getPlateforme() : null);
+      // .findByCodeOrNumLaboWithBanque(prelevement.getCode(), banque);
 
-      // Vérifie s'il y a des doublons.
       if(!dbls.isEmpty()){
-         // Si le prélèvement en cours n'a pas d'identifiant, il est considéré comme un doublon.
          if(prelevement.getPrelevementId() == null){
             return true;
          }
-         // Parcourt la liste des prélèvements trouvés pour vérifier s'il y a un doublon.
          for(final Prelevement d : dbls){
-            // Vérifie si le prélèvement en cours n'est pas lui-même.
             if(!d.getPrelevementId().equals(prelevement.getPrelevementId())){
                return true;
             }
          }
       }
-      return false; // Aucun doublon trouvé.
+      return false;
    }
 
    @Override
@@ -1755,14 +1752,8 @@ public class PrelevementManagerImpl implements PrelevementManager
    }
 
    @Override
-   public List<Prelevement> findByCodeLikeInPlateformeManager(final String code, final Plateforme pf){
+   public List<Prelevement> findByCodeInPlateformeManager(final String code, final Plateforme pf){
       return prelevementDao.findByCodeInPlateforme(code, pf);
-   }
-
-
-   @Override
-   public List<Prelevement> findByCodeExactMatchInPlateforme(String code, Plateforme plateforme){
-      return prelevementDao.findByCodeExactMatchInPlateforme(code, plateforme);
    }
 
    @Override

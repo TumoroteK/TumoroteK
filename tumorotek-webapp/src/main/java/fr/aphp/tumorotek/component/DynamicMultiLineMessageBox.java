@@ -128,7 +128,7 @@ public class DynamicMultiLineMessageBox
             List<Prelevement> dbls = new ArrayList<Prelevement>();
             //Dans certains cas, plusieurs doublons ont pu être détectés en même temps :
             for(String code : doublonFoundException.getCodes()) {
-               dbls = ManagerLocator.getPrelevementManager().findByCodeExactMatchInPlateforme(code, SessionUtils.getCurrentPlateforme());
+               dbls = ManagerLocator.getPrelevementManager().findByCodeInPlateformeManager(code, SessionUtils.getCurrentPlateforme());
                for(final Prelevement prelevement : dbls){
                   if(!banks.equals("")){
                      banks = banks + ", ";
@@ -144,7 +144,7 @@ public class DynamicMultiLineMessageBox
          case "Echantillon":
             List<Echantillon> dblEs = new ArrayList<Echantillon>();
             for(String code : doublonFoundException.getCodes()) {
-               dblEs = ManagerLocator.getEchantillonManager().findByCodeInPlateforme(code, SessionUtils.getCurrentPlateforme());
+               dblEs = ManagerLocator.getEchantillonManager().findByCodeInPlateformeManager(code, SessionUtils.getCurrentPlateforme());
                for(final Echantillon echantillon : dblEs){
                   if(!banks.equals("")){
                      banks = banks + ", ";
@@ -160,7 +160,7 @@ public class DynamicMultiLineMessageBox
          case "ProdDerive":
             List<ProdDerive> dblDs = new ArrayList<ProdDerive>();
             for(String code : doublonFoundException.getCodes()) {
-               dblDs = ManagerLocator.getProdDeriveManager().findByCodeExactMatchInPlateforme(code, SessionUtils.getCurrentPlateforme());
+               dblDs = ManagerLocator.getProdDeriveManager().findByCodeInPlateformeManager(code, SessionUtils.getCurrentPlateforme());
                for(final ProdDerive derive : dblDs){
                   if(!banks.equals("")){
                      banks = banks + ", ";

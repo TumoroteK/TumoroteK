@@ -640,19 +640,7 @@ public interface ProdDeriveManager
     * @return liste dérivés
     * @since 2.1
     */
-   List<ProdDerive> findByCodeLikeInPlateformeManager(String code, Plateforme pf);
-
-   /**
-    *
-    * Cette méthode recherche un ProdDerive en effectuant une correspondance exacte sur le code spécifié (= et pas LIKE),
-    * limitée à la Banque spécifiée.
-    *
-    * @param code Le code exact pour lequel on recherche un ProdDerive.
-    * @param plateforme La Banque dans laquelle la recherche est effectuée.
-    * @return Une liste des ProdDerive correspondant au code exact dans la Banque spécifiée.
-    *         La liste peut être vide si aucun ProdDerive correspondant n'est trouvé.
-    */
-   List<ProdDerive> findByCodeExactMatchInPlateforme(String code, Plateforme plateforme);
+   List<ProdDerive> findByCodeInPlateformeManager(String code, Plateforme pf);
    
    /**
     * Recherche sur une plateforme les dérivés dont le code est contenu dans la liste passée en paramètre

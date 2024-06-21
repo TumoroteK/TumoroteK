@@ -770,25 +770,14 @@ public interface EchantillonManager
    void removeListFromIdsManager(List<Integer> ids, String comment, Utilisateur u);
 
    /**
-    * Renvoie tous les échantillons pour un code spécifié, en utilisant une correspondance partielle (LIKE),
-    * dans toutes les collections d'une plateforme passée en paramètre.
-    *
-    * @param code Code pour lequel on recherche des échantillons avec une correspondance partielle.
-    * @param pf   Plateforme dans laquelle la recherche est effectuée.
-    * @return Liste d'échantillons correspondant au code avec une correspondance partielle dans la plateforme.
+    * Renvoie tous les échantillons pour un code spécifié dans toutes 
+    * les collections d'une plateforme passée en paramètre.
+    * @param code
+    * @param pf Plateforme
+    * @return liste échantillons
     * @since 2.1
     */
-   List<Echantillon> findByCodeLikeInPlateformeManager(String code, Plateforme pf);
-
-   /**
-    * Renvoie la liste des échantillons avec un code exact correspondant dans la plateforme spécifiée.
-    *
-    * @param codeEchantillon Code exact pour lequel on recherche des échantillons.
-    * @param plateform Plateforme dans laquelle la recherche est effectuée.
-    * @return Liste d'échantillons correspondant au code exact dans la plateforme spécifiée.
-    */
-   List<Echantillon> findByCodeInPlateforme(String codeEchantillon, Plateforme plateform);
-
+   List<Echantillon> findByCodeInPlateformeManager(String code, Plateforme pf);
 
    void updateEchantillon(Echantillon echantillon);
 

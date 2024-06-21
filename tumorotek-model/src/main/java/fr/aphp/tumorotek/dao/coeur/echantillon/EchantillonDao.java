@@ -88,8 +88,8 @@ public interface EchantillonDao extends GenericDaoJpa<Echantillon, Integer>
     * @param statusId statusId (table obect_statut).
     * @return une liste d'échantillons.
     */
-   List<Echantillon> findByIdsAndStatus(List<Integer> ids, Integer statusId);
-
+   List<Echantillon> findByIdsAndStatus(List<Integer> ids, Integer statusId);   
+   
    /**
     * Recherche les échantillons dont le code est égal au paramètre.
     * @param code Code pour lequel on recherche des échantillons.
@@ -107,18 +107,6 @@ public interface EchantillonDao extends GenericDaoJpa<Echantillon, Integer>
     * @since 2.1
     */
    List<Echantillon> findByCodeInPlateforme(String code, Plateforme pf);
-
-   /**
-    *
-    * Cette méthode recherche un échantillon en effectuant une correspondance exacte sur le code spécifié,
-    * limitée à la Banque spécifiée.
-    *
-    * @param codeEchantillon Le code exact pour lequel on recherche un échantillon.
-    * @param plateforme La Banque dans laquelle la recherche est effectuée.
-    * @return Une liste d'échantillons correspondant au code exact dans la Banque spécifiée.
-    *         La liste peut être vide si aucun échantillon correspondant n'est trouvé.
-    */
-   List<Echantillon> findByCodeExactMatchInPlateforme(String codeEchantillon, Plateforme plateforme);
 
    /**
     * Recherche les Ids d'échantillons dont le code est égal au paramètre.
@@ -176,7 +164,12 @@ public interface EchantillonDao extends GenericDaoJpa<Echantillon, Integer>
     */
    List<Echantillon> findByEchantillonType(EchantillonType type);
 
-
+   //	/**
+   //	 * Recherche les échantillons dont le crAnapath est passé en paramètre.
+   //	 * @param crAnapath Fichier des échantillons que l'on recherche.
+   //	 * @return une liste d'échantillons.
+   //	 */
+   //	List<Echantillon> findByCrAnapath(Fichier crAnapath);
 
    /**
     * Recherche les échantillons dont le mode de préparation est passé
@@ -466,6 +459,4 @@ public interface EchantillonDao extends GenericDaoJpa<Echantillon, Integer>
     * @since 2.3.0-gatsbi
     */
    List<Integer> findByPatientIdentifiantOrNomOrNipReturnIds(String search, List<Banque> selectedBanques);
-
-
 }

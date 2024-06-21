@@ -653,7 +653,7 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
    @Override
    public Boolean findDoublonManager(final ProdDerive prodDerive){
       // Banque banque = prodDerive.getBanque();
-      final List<ProdDerive> dbls = prodDeriveDao.findByCodeExactMatchInPlateforme(prodDerive.getCode(),
+      final List<ProdDerive> dbls = prodDeriveDao.findByCodeInPlateforme(prodDerive.getCode(),
          prodDerive.getBanque() != null ? prodDerive.getBanque().getPlateforme() : null);
       //		.findByCodeOrLaboWithBanque(prodDerive.getCode(), banque);
 
@@ -2043,14 +2043,8 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
    }
 
    @Override
-   public List<ProdDerive> findByCodeLikeInPlateformeManager(final String code, final Plateforme pf){
+   public List<ProdDerive> findByCodeInPlateformeManager(final String code, final Plateforme pf){
       return prodDeriveDao.findByCodeInPlateforme(code, pf);
-   }
-
-
-   @Override
-   public List<ProdDerive> findByCodeExactMatchInPlateforme(String code, Plateforme plateforme){
-      return null;
    }
 
    @Override

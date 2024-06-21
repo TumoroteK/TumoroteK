@@ -98,6 +98,7 @@ import fr.aphp.tumorotek.model.coeur.echantillon.EchantillonType;
 import fr.aphp.tumorotek.model.coeur.echantillon.ModePrepa;
 import fr.aphp.tumorotek.model.coeur.prelevement.LaboInter;
 import fr.aphp.tumorotek.model.coeur.prelevement.Prelevement;
+import fr.aphp.tumorotek.model.coeur.prodderive.ProdDerive;
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.contexte.Collaborateur;
 import fr.aphp.tumorotek.model.contexte.EContexte;
@@ -757,7 +758,7 @@ public class FicheEchantillonEdit extends AbstractFicheEditController
 
       // Vérification de l'absence de doublons
       final List<Echantillon> doublons = ManagerLocator.getManager(EchantillonManager.class)
-         .findByCodeInPlateforme(echCode, SessionUtils.getCurrentPlateforme());
+         .findByCodeInPlateformeManager(echCode, SessionUtils.getCurrentPlateforme());
 
       if(!doublons.isEmpty()){
          final String collectionsDoublon =
