@@ -234,48 +234,43 @@ public class EchantillonDaoTest extends AbstractDaoTest
       final Plateforme p1 = plateformeDao.findById(1);
 
       List<Echantillon> echans = echantillonDao.findByCodeInPlateforme("PTRA.1", p1);
-      assertEquals(1, echans.size());
-
+      assertTrue(echans.size() == 1);
       echans = echantillonDao.findByCodeInPlateforme("JEG.1", p1);
-      assertEquals(1, echans.size());
-
+      assertTrue(echans.size() == 1);
       echans = echantillonDao.findByCodeInPlateforme("PTRA.1", null);
-      assertTrue(echans.isEmpty());
-
+      assertTrue(echans.size() == 0);
       echans = echantillonDao.findByCodeInPlateforme("PTRA", p1);
-      assertTrue(echans.isEmpty());
-
+      assertTrue(echans.size() == 0);
       echans = echantillonDao.findByCodeInPlateforme("PTRA", null);
-      assertTrue(echans.isEmpty());
-
+      assertTrue(echans.size() == 0);
       echans = echantillonDao.findByCodeInPlateforme("%.1", p1);
-      assertEquals(0, echans.size());
+      assertTrue(echans.size() == 0);
 
       echans = echantillonDao.findByCodeInPlateforme("PTRA._", p1);
-      assertEquals(0, echans.size());
+      assertTrue(echans.size() == 0);
 
       echans = echantillonDao.findByCodeInPlateforme("%", p1);
-      assertEquals(0 , echans.size());
+      assertTrue(echans.size() == 0);
 
       echans = echantillonDao.findByCodeInPlateforme("%", null);
-      assertTrue(echans.isEmpty());
+      assertTrue(echans.size() == 0);
 
       echans = echantillonDao.findByCodeInPlateforme(null, p1);
-      assertTrue(echans.isEmpty());
+      assertTrue(echans.size() == 0);
 
       final Plateforme p2 = plateformeDao.findById(2);
 
       echans = echantillonDao.findByCodeInPlateforme("PTRA.1", p2);
-      assertTrue(echans.isEmpty());
+      assertTrue(echans.size() == 0);
 
       echans = echantillonDao.findByCodeInPlateforme("PTRA", p2);
-      assertTrue(echans.isEmpty());
+      assertTrue(echans.size() == 0);
 
       echans = echantillonDao.findByCodeInPlateforme("%", p2);
-      assertTrue(echans.isEmpty());
+      assertTrue(echans.size() == 0);
 
       echans = echantillonDao.findByCodeInPlateforme(null, p2);
-      assertTrue(echans.isEmpty());
+      assertTrue(echans.size() == 0);
    }
    /**
     * Test l'appel de la méthode findByCodeWithBanqueReturnIds().

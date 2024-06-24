@@ -868,7 +868,6 @@ public class PrelevementManagerTest extends AbstractManagerTest4
       // Prelevement existant dans la base de données
       final Prelevement existingPrelevement = prelevementManager.findByIdManager(1);
       assertNotNull(existingPrelevement);
-       //        existingPrelevement.getCode() renvoie PRLVT1
       // Test avec le même Prelevement,  si c'est le meme entité c'est n'est pas un doublon selon la methode
       assertFalse(prelevementManager.findDoublonManager(existingPrelevement));
 

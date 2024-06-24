@@ -219,29 +219,29 @@ public class ProdDeriveDaoTest extends AbstractDaoTest
       final Plateforme plateforme = plateformeDao.findById(1);
 
       List<ProdDerive> prodDerives = prodDeriveDao.findByCodeInPlateforme("PTRA.1.1", plateforme);
-      assertEquals(1, prodDerives.size());
+      assertTrue(prodDerives.size() == 1);
 
       prodDerives = prodDeriveDao.findByCodeInPlateforme("JEG.1.1", plateforme);
-      assertEquals(1, prodDerives.size());
+      assertTrue(prodDerives.size() == 1);
 
       // test wildcards
       prodDerives = prodDeriveDao.findByCodeInPlateforme("%.1.1", plateforme);
-      assertTrue( prodDerives.isEmpty());
+      assertTrue(prodDerives.size() == 0);
       prodDerives = prodDeriveDao.findByCodeInPlateforme("PTRA.1._", plateforme);
-      assertTrue( prodDerives.isEmpty());
+      assertTrue(prodDerives.size() == 0);
       prodDerives = prodDeriveDao.findByCodeInPlateforme("%", plateforme);
-      assertTrue( prodDerives.isEmpty());
+      assertTrue(prodDerives.size() == 0);
 
       // test null
       prodDerives = prodDeriveDao.findByCodeInPlateforme("PTRA.1.1", null);
-      assertEquals(0, prodDerives.size());
+      assertTrue(prodDerives.size() == 0);
       prodDerives = prodDeriveDao.findByCodeInPlateforme(null, plateforme);
-      assertEquals(0, prodDerives.size());
+      assertTrue(prodDerives.size() == 0);
 
       // platform different
       final Plateforme p2 = plateformeDao.findById(2);
       prodDerives = prodDeriveDao.findByCodeInPlateforme("PTRA.1.1", p2);
-      assertEquals(0, prodDerives.size());
+      assertTrue(prodDerives.size() == 0);
 
    }
 
