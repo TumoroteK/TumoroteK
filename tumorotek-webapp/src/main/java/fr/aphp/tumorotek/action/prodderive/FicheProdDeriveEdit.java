@@ -2252,9 +2252,8 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
       @Override
       public void validate(final Component comp, final Object value){
          final BigDecimal quantiteTransfoValue = (BigDecimal) value;
-         // Lancer une exception si la quantité est obligatoire, sa valeur est nulle et le type de parent n'est pas "Aucun"
-         //  !getTypeParent().equals("Aucun"): pour permettre l'ajout de produits dérivés lorsque le type de parent est "Aucun"
-         if (isQuantiteObligatoire && quantiteTransfoValue == null &&  !getTypeParent().equals("Aucun")) {
+         // Si isQuantiteObligatoire est null et elle doit être rensigné: Lance une exception
+         if (isQuantiteObligatoire && quantiteTransfoValue == null) {
             throw new WrongValueException(comp, Labels.getLabel("ficheMultiProdDerive.validation.quantite"));
          }
          // Si la valeur est negative : Lance une exception
