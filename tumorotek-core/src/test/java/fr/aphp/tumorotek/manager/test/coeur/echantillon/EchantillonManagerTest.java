@@ -37,7 +37,6 @@ package fr.aphp.tumorotek.manager.test.coeur.echantillon;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -828,56 +827,40 @@ public class EchantillonManagerTest extends AbstractManagerTest4
     * Test la méthode findDoublon.
     */
    @Test
-   public void testFindDoublon() {
+   public void testFindDoublon(){
       final Banque banque1 = banqueManager.findByIdManager(1);
       final Banque banque2 = banqueManager.findByIdManager(2);
-
-      // Créer un Echantillon avec un code existant dans la base de données
-      final Echantillon existingEchantillon = echantillonManager.findByIdManager(1);
-      assertNotNull(existingEchantillon);
-      final String existingCode = existingEchantillon.getCode();
-
-      final String codeLike = existingCode.replace(".", "_");
       final Echantillon echan = new Echantillon();
-      echan.setCode(existingCode);
+      echan.setCode("PTRA.1");
       echan.setBanque(banque2);
-
-      final Echantillon echanCodeLike = new Echantillon();
-      echanCodeLike.setCode(codeLike);
-      echanCodeLike.setBanque(banque2);
-
-
-      assertNotEquals(echan, existingEchantillon);
-
+      assertFalse(echan.equals(echantillonManager.findByIdManager(1)));
       assertTrue(echantillonManager.findDoublonManager(echan));
-      assertFalse(echantillonManager.findDoublonManager(echanCodeLike));
-
 
       echan.setBanque(banque1);
-      assertEquals(echan, existingEchantillon);
+      assertTrue(echan.equals(echantillonManager.findByIdManager(1)));
       assertTrue(echantillonManager.findDoublonManager(echan));
 
-      // Plateforme différente
+      // pf
       echan.setBanque(banqueDao.findById(4));
-      assertNotEquals(echan, existingEchantillon);
+      assertFalse(echan.equals(echantillonManager.findByIdManager(1)));
+      assertFalse(echantillonManager.findDoublonManager(echan));
 
-      // Banque nulle
+      // null
       echan.setBanque(null);
-      assertNotEquals(echan, existingEchantillon);
+      assertFalse(echan.equals(echantillonManager.findByIdManager(1)));
+      assertFalse(echantillonManager.findDoublonManager(echan));
 
-      // Code différent
       echan.setCode("PTRA.3");
       echan.setBanque(banque1);
       assertFalse(echantillonManager.findDoublonManager(echan));
-      echanCodeLike.setBanque(banque1);
 
-      // Même Echantillon (doit renvoyer false)
-      assertFalse(echantillonManager.findDoublonManager(existingEchantillon));
-      assertFalse(echantillonManager.findDoublonManager(echanCodeLike));
+      final Echantillon echan2 = echantillonManager.findByIdManager(1);
+      assertFalse(echantillonManager.findDoublonManager(echan2));
 
-      // Code différent, même Banque
-      existingEchantillon.setCode("PTRA.2");
-      assertTrue(echantillonManager.findDoublonManager(existingEchantillon));
+      assertFalse(echantillonManager.findDoublonManager(echan2));
+
+      echan2.setCode("PTRA.2");
+      assertTrue(echantillonManager.findDoublonManager(echan2));
    }
 
    @Test

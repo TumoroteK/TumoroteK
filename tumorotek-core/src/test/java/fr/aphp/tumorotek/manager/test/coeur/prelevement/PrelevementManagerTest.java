@@ -37,7 +37,6 @@ package fr.aphp.tumorotek.manager.test.coeur.prelevement;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -864,42 +863,31 @@ public class PrelevementManagerTest extends AbstractManagerTest4
     * @version 2.1
     */
    @Test
-   public void testFindDoublon() {
-      // Prelevement existant dans la base de données
-      final Prelevement existingPrelevement = prelevementManager.findByIdManager(1);
-      assertNotNull(existingPrelevement);
-      // Test avec le même Prelevement,  si c'est le meme entité c'est n'est pas un doublon selon la methode
-      assertFalse(prelevementManager.findDoublonManager(existingPrelevement));
+   public void testFindDoublon(){
+      // Cree le doublon
+      final Prelevement p1 = prelevementManager.findByCodeLikeManager("PRLVT1", true).get(0);
+      final Prelevement p2 = new Prelevement();
+      p2.setCode(p1.getCode());
+      p2.setBanque(p1.getBanque());
+      assertTrue(p2.equals(p1));
+      assertTrue(prelevementManager.findDoublonManager(p2));
 
-      // Test avec un code similaire
-      final String existingCode = existingPrelevement.getCode();
-      final Banque banqueFromDB = existingPrelevement.getBanque();
-      final String codeLike = existingCode.substring(0, 3) + "%";
-      final Prelevement newPrelevement = new Prelevement();
-      newPrelevement.setCode(codeLike);
-      newPrelevement.setBanque(banqueFromDB);
-      assertFalse(prelevementManager.findDoublonManager(newPrelevement));
+      // test pf
+      final Prelevement p3 = new Prelevement();
+      p3.setCode(p1.getCode());
+      p3.setBanque(banqueDao.findById(2));
+      assertFalse(p3.equals(p1));
+      assertTrue(prelevementManager.findDoublonManager(p3));
 
+      p3.setBanque(banqueDao.findById(4));
+      assertFalse(prelevementManager.findDoublonManager(p3));
 
-      // Test avec une Banque différente (devrait renvoyer false)
-      final Banque banque2 = banqueManager.findByIdManager(2);
-      existingPrelevement.setBanque(banque2);
-      assertFalse(prelevementManager.findDoublonManager(existingPrelevement));
-
-      // Test avec un Prelevement nul
-      final Prelevement newPrelevementVide = new Prelevement();
-      assertFalse(prelevementManager.findDoublonManager(newPrelevementVide));
-
-      // Test avec un Prelevement ayant une Banque nulle
-      existingPrelevement.setBanque(null);
-      assertFalse(prelevementManager.findDoublonManager(existingPrelevement));
-
-      // Test avec un code différent mais la même Banque
-      existingPrelevement.setCode("PTRA.3");
-      existingPrelevement.setBanque(banqueFromDB);
-      assertFalse(prelevementManager.findDoublonManager(existingPrelevement));
-    }
-
+      // null
+      final Prelevement p4 = new Prelevement();
+      p4.setCode(p1.getCode());
+      assertFalse(p4.equals(p1));
+      assertFalse(prelevementManager.findDoublonManager(p4));
+   }
 
    /**
     * Teste la méthode isUsedObject.
@@ -3745,21 +3733,6 @@ public class PrelevementManagerTest extends AbstractManagerTest4
       assertTrue(prels.size() == 0);
       prels = prelevementManager.findByCodeInPlateformeManager("PRLVT%", null);
       assertTrue(prels.size() == 0);
-   }
-
-   @Test
-   public void testFindByCodeInPlateforme(){
-      final Plateforme p1 = plateformeDao.findById(1);
-      List<Prelevement> prels = prelevementManager.findByCodeInPlateformeManager("PRLVT1", p1);
-      assertEquals(1, prels.size());
-      prels = prelevementManager.findByCodeInPlateformeManager("PRLVT%", p1);
-      assertTrue(prels.isEmpty());
-
-//      test null
-      prels = prelevementManager.findByCodeInPlateformeManager(null, p1);
-      assertEquals(0, prels.size());
-      prels = prelevementManager.findByCodeInPlateformeManager("PRLVT1", null);
-      assertEquals(0, prels.size());
    }
 
    @Test

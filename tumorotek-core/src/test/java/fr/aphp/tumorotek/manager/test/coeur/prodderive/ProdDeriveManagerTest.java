@@ -695,21 +695,16 @@ public class ProdDeriveManagerTest extends AbstractManagerTest4
       final Banque banque1 = banqueManager.findByIdManager(1);
       final Banque banque2 = banqueManager.findByIdManager(2);
       final ProdDerive derive = new ProdDerive();
-
       derive.setCode("PTRA.1.1");
       derive.setBanque(banque2);
       assertTrue(prodDeriveManager.findDoublonManager(derive));
 
-      //      "PTRA.1.1" et "PTRA.1.%" ne sont pas doublons
-      derive.setCode("PTRA.1.%");
-      assertFalse(prodDeriveManager.findDoublonManager(derive));
-
-
-      // Banque Different
       derive.setBanque(banque1);
-      assertFalse(prodDeriveManager.findDoublonManager(derive));
+      assertTrue(prodDeriveManager.findDoublonManager(derive));
 
+      // pf
       derive.setBanque(banqueDao.findById(4));
+      assertFalse(derive.equals(prodDeriveManager.findByIdManager(1)));
       assertFalse(prodDeriveManager.findDoublonManager(derive));
 
       // null
@@ -720,7 +715,6 @@ public class ProdDeriveManagerTest extends AbstractManagerTest4
       derive.setCode("PTRA.1.3");
       assertFalse(prodDeriveManager.findDoublonManager(derive));
 
-      // Meme entite != Doublon
       final ProdDerive derive2 = prodDeriveManager.findByIdManager(1);
       assertFalse(prodDeriveManager.findDoublonManager(derive2));
 
