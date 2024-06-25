@@ -228,7 +228,7 @@ public class EchantillonDaoTest extends AbstractDaoTest
 
 
    /**
-    * Test la requête SQL: SELECT e From Echantillon e WHERE e.code = ?1 AND e.banque =? 2
+    * @since 2.1
     */
    public void testFindByCodeInPlateforme() {
       final Plateforme p1 = plateformeDao.findById(1);

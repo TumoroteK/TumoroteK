@@ -210,39 +210,46 @@ public class ProdDeriveDaoTest extends AbstractDaoTest
    /**
     * @since 2.1
     */
-
-   /**
-    * Test the findByCodeInPlateforme method.
-    * query = "SELECT p FROM ProdDerive p WHERE p.code = ?1 AND p.banque.plateforme = ?2"),
-    */
    public void testFindByCodeInPlateforme(){
-      final Plateforme plateforme = plateformeDao.findById(1);
+      final Plateforme p1 = plateformeDao.findById(1);
+      List<ProdDerive> ders = prodDeriveDao.findByCodeInPlateforme("PTRA.1.1", p1);
+      assertTrue(ders.size() == 1);
+      ders = prodDeriveDao.findByCodeInPlateforme("JEG.1.1", p1);
+      assertTrue(ders.size() == 1);
+      ders = prodDeriveDao.findByCodeInPlateforme("PTRA.1.1", null);
+      assertTrue(ders.size() == 0);
+      ders = prodDeriveDao.findByCodeInPlateforme("PTRA", p1);
+      assertTrue(ders.size() == 0);
+      ders = prodDeriveDao.findByCodeInPlateforme("PTRA", null);
+      assertTrue(ders.size() == 0);
+      ders = prodDeriveDao.findByCodeInPlateforme("%.1.1", p1);
+      assertTrue(ders.size() == 3);
+      ders = prodDeriveDao.findByCodeInPlateforme("PTRA.1._", p1);
+      assertTrue(ders.size() == 2);
+      ders = prodDeriveDao.findByCodeInPlateforme("%", p1);
+      assertTrue(ders.size() == 4);
+      ders = prodDeriveDao.findByCodeInPlateforme("%", null);
+      assertTrue(ders.size() == 0);
+      ders = prodDeriveDao.findByCodeInPlateforme(null, p1);
+      assertTrue(ders.size() == 0);
 
-      List<ProdDerive> prodDerives = prodDeriveDao.findByCodeInPlateforme("PTRA.1.1", plateforme);
-      assertTrue(prodDerives.size() == 1);
-
-      prodDerives = prodDeriveDao.findByCodeInPlateforme("JEG.1.1", plateforme);
-      assertTrue(prodDerives.size() == 1);
-
-      // test wildcards
-      prodDerives = prodDeriveDao.findByCodeInPlateforme("%.1.1", plateforme);
-      assertTrue(prodDerives.size() == 0);
-      prodDerives = prodDeriveDao.findByCodeInPlateforme("PTRA.1._", plateforme);
-      assertTrue(prodDerives.size() == 0);
-      prodDerives = prodDeriveDao.findByCodeInPlateforme("%", plateforme);
-      assertTrue(prodDerives.size() == 0);
-
-      // test null
-      prodDerives = prodDeriveDao.findByCodeInPlateforme("PTRA.1.1", null);
-      assertTrue(prodDerives.size() == 0);
-      prodDerives = prodDeriveDao.findByCodeInPlateforme(null, plateforme);
-      assertTrue(prodDerives.size() == 0);
-
-      // platform different
       final Plateforme p2 = plateformeDao.findById(2);
-      prodDerives = prodDeriveDao.findByCodeInPlateforme("PTRA.1.1", p2);
-      assertTrue(prodDerives.size() == 0);
+      ders = prodDeriveDao.findByCodeInPlateforme("PTRA.1.1", p2);
+      assertTrue(ders.size() == 0);
+      ders = prodDeriveDao.findByCodeInPlateforme("PTRA", p2);
+      assertTrue(ders.size() == 0);
+      ders = prodDeriveDao.findByCodeInPlateforme("%", p2);
+      assertTrue(ders.size() == 0);
+      ders = prodDeriveDao.findByCodeInPlateforme(null, p2);
+      assertTrue(ders.size() == 0);
 
+      // car ne s'applique pas sur numero labo!
+      ders = prodDeriveDao.findByCodeInPlateforme("LABO_PTRA", p1);
+      assertTrue(ders.size() == 0);
+      ders = prodDeriveDao.findByCodeInPlateforme("XXX", p1);
+      assertTrue(ders.size() == 0);
+      ders = prodDeriveDao.findByCodeInPlateforme("LABO%", p1);
+      assertTrue(ders.size() == 0);
    }
 
 

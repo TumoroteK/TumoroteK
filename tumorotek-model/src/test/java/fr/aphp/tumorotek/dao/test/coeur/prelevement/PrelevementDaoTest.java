@@ -291,31 +291,45 @@ public void testFindByNumberEchantillons(){
    /**
     * @since 2.1
     */
-
-
-   /**
-    * Test the findByCodeInPlateforme method.
-    * query = "SELECT p FROM Prelevement p WHERE p.code = ?1 AND p.banque.plateforme = ?2"),
-    */
    public void testFindByCodeInPlateforme(){
       final Plateforme p1 = plateformeDao.findById(1);
 
       List<Prelevement> prels = prelevementDao.findByCodeInPlateforme("PRLVT1", p1);
-      assertEquals(1, prels.size());
-
-      //      test null
-      prels = prelevementDao.findByCodeInPlateforme("PRLVT%", null);
-      assertEquals(0, prels.size());
-      prels = prelevementDao.findByCodeInPlateforme(null, p1);
-      assertEquals(0, prels.size());
-
-      //      test match exact
+      assertTrue(prels.size() == 1);
+      prels = prelevementDao.findByCodeInPlateforme("PRLVT1", null);
+      assertTrue(prels.size() == 0);
+      prels = prelevementDao.findByCodeInPlateforme("PTRA", p1);
+      assertTrue(prels.size() == 0);
+      prels = prelevementDao.findByCodeInPlateforme("PTRA", null);
+      assertTrue(prels.size() == 0);
       prels = prelevementDao.findByCodeInPlateforme("PRLVT%", p1);
-      assertTrue(prels.isEmpty());
+      assertTrue(prels.size() == 4);
       prels = prelevementDao.findByCodeInPlateforme("PRLVT_", p1);
-      assertTrue(prels.isEmpty());
+      assertTrue(prels.size() == 3);
       prels = prelevementDao.findByCodeInPlateforme("%", p1);
-      assertTrue(prels.isEmpty());
+      assertTrue(prels.size() == 5);
+      prels = prelevementDao.findByCodeInPlateforme("PRLVT%", null);
+      assertTrue(prels.size() == 0);
+      prels = prelevementDao.findByCodeInPlateforme(null, p1);
+      assertTrue(prels.size() == 0);
+
+      final Plateforme p2 = plateformeDao.findById(2);
+      prels = prelevementDao.findByCodeInPlateforme("PRLVT3", p2);
+      assertTrue(prels.size() == 0);
+      prels = prelevementDao.findByCodeInPlateforme("PTRA", p2);
+      assertTrue(prels.size() == 0);
+      prels = prelevementDao.findByCodeInPlateforme("PRLVT%", p2);
+      assertTrue(prels.size() == 0);
+      prels = prelevementDao.findByCodeInPlateforme(null, p2);
+      assertTrue(prels.size() == 0);
+
+      // car ne s'applique pas sur numero labo!
+      prels = prelevementDao.findByCodeInPlateforme("12234", p1);
+      assertTrue(prels.size() == 0);
+      prels = prelevementDao.findByCodeInPlateforme("PTRA", p1);
+      assertTrue(prels.size() == 0);
+      prels = prelevementDao.findByCodeInPlateforme("12%", p1);
+      assertTrue(prels.size() == 0);
    }
 
    /**
