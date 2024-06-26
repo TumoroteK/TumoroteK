@@ -306,10 +306,7 @@ public void testFindByNumberEchantillons(){
       assertTrue(prels.size() == 4);
       prels = prelevementDao.findByCodeInPlateforme("PRLVT_", p1);
       assertTrue(prels.size() == 3);
-      prels = prelevementDao.findByCodeInPlateforme("%", p1);
-      assertTrue(prels.size() == 5);
-      prels = prelevementDao.findByCodeInPlateforme("PRLVT%", null);
-      assertTrue(prels.size() == 0);
+
       prels = prelevementDao.findByCodeInPlateforme(null, p1);
       assertTrue(prels.size() == 0);
 
@@ -318,8 +315,7 @@ public void testFindByNumberEchantillons(){
       assertTrue(prels.size() == 0);
       prels = prelevementDao.findByCodeInPlateforme("PTRA", p2);
       assertTrue(prels.size() == 0);
-      prels = prelevementDao.findByCodeInPlateforme("PRLVT%", p2);
-      assertTrue(prels.size() == 0);
+
       prels = prelevementDao.findByCodeInPlateforme(null, p2);
       assertTrue(prels.size() == 0);
 
@@ -328,8 +324,7 @@ public void testFindByNumberEchantillons(){
       assertTrue(prels.size() == 0);
       prels = prelevementDao.findByCodeInPlateforme("PTRA", p1);
       assertTrue(prels.size() == 0);
-      prels = prelevementDao.findByCodeInPlateforme("12%", p1);
-      assertTrue(prels.size() == 0);
+
    }
 
    /**

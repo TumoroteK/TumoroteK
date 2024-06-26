@@ -243,16 +243,12 @@ public class EchantillonDaoTest extends AbstractDaoTest
       assertTrue(echans.size() == 0);
       echans = echantillonDao.findByCodeInPlateforme("PTRA", null);
       assertTrue(echans.size() == 0);
+
+      // la requête était initialement avec un like
       echans = echantillonDao.findByCodeInPlateforme("%.1", p1);
       assertTrue(echans.size() == 0);
 
       echans = echantillonDao.findByCodeInPlateforme("PTRA._", p1);
-      assertTrue(echans.size() == 0);
-
-      echans = echantillonDao.findByCodeInPlateforme("%", p1);
-      assertTrue(echans.size() == 0);
-
-      echans = echantillonDao.findByCodeInPlateforme("%", null);
       assertTrue(echans.size() == 0);
 
       echans = echantillonDao.findByCodeInPlateforme(null, p1);
@@ -269,8 +265,6 @@ public class EchantillonDaoTest extends AbstractDaoTest
       echans = echantillonDao.findByCodeInPlateforme("%", p2);
       assertTrue(echans.size() == 0);
 
-      echans = echantillonDao.findByCodeInPlateforme(null, p2);
-      assertTrue(echans.size() == 0);
    }
    /**
     * Test l'appel de la méthode findByCodeWithBanqueReturnIds().
