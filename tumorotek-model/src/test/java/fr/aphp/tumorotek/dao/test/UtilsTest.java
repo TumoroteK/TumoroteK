@@ -53,4 +53,26 @@ public class UtilsTest extends AbstractDaoTest
       assertNull(Utils.floor(null, 2));
    }
 
+   public void testTruncateIfNecessary_shouldNotTruncateBecauseShorter() {
+      final String VALEUR_A_TRAITER = "Test";
+      final int TAILLE_MAX = 10;
+      final String VALEUR_ATTENDUE = VALEUR_A_TRAITER;
+      assertTrue(Utils.truncateIfNecessary(VALEUR_A_TRAITER, TAILLE_MAX).equals(VALEUR_ATTENDUE));
+   }
+   
+   public void testTruncateIfNecessary_shouldNotTruncateBecauseLimit() {
+      final String VALEUR_A_TRAITER = "TestLimiteMax";
+      final int TAILLE_MAX = 13;
+      final String VALEUR_ATTENDUE = VALEUR_A_TRAITER;
+      assertTrue(Utils.truncateIfNecessary(VALEUR_A_TRAITER, TAILLE_MAX).equals(VALEUR_ATTENDUE));
+   }
+   
+   public void testTruncateIfNecessary_shouldTruncate() {
+      final String VALEUR_A_TRAITER = "TestTropLong";
+      final int TAILLE_MAX = 10;
+      final String VALEUR_ATTENDUE = "TestTropLo";
+      assertTrue(Utils.truncateIfNecessary(VALEUR_A_TRAITER, TAILLE_MAX).equals(VALEUR_ATTENDUE));
+   }
+   
+
 }
