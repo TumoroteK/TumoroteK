@@ -15,7 +15,7 @@
         <skipTests>false</skipTests>
 		<maven.compiler.source>1.8</maven.compiler.source>
     	<maven.compiler.target>1.8</maven.compiler.target>
-    	<camel.version>2.21.0</camel.version>
+    	<camel.version>3.2.0</camel.version>
         <!--<camel.version>2.12.1</camel.version>-->
         <ca.uhn.hapi.version>2.3</ca.uhn.hapi.version>
     </properties>
