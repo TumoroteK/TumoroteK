@@ -9,6 +9,10 @@
 - YouTrack [TG-262](https://tumorotek.myjetbrains.com/youtrack/issue/TG-262) : [TK] - Fiche <span class="badge badge-prelevement">Prélèvement</span> : le contrôle sur le champ identifiant du patient ajouté n'est pas correct
 
 
+###### Corrections dans le module Gatsbi (version 1.0.0.8)
+- YouTrack [TG-257](https://tumorotek.myjetbrains.com/youtrack/issue/TG-257) : [Gatsbi] > Création d'une étude : plantage lors de la recherche d'une maladie
+
+
 ##### Version 2.3.0.9 - Publiée le 19/04/2024
 ###### Corrections dans TK
 - YouTrack [TK-498](https://tumorotek.myjetbrains.com/youtrack/issue/TK-498) : Fiche <span class="badge badge-prelevement">Prélèvement</span> séro > zone échantillons : des colonnes ne sont pas affichées
