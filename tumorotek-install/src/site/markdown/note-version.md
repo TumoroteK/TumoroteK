@@ -1,5 +1,14 @@
 #### Notes de version
 
+##### Version 2.3.0.10 - Publiée le 01/07/2024
+###### Corrections dans TK pour un contexte Gatsbi
+- YouTrack [TG-227](https://tumorotek.myjetbrains.com/youtrack/issue/TG-227) : [TK] - Fiche <span class="badge badge-patient">Patient</span> : modification maladie : champ code diagnostic trop haut
+- YouTrack [TG-251](https://tumorotek.myjetbrains.com/youtrack/issue/TG-251) : [TK] - Fiche <span class="badge badge-prelevement">Prélèvement</span> Gatsbi > champ risque infectieux : problème d'affichage
+- YouTrack [TG-254](https://tumorotek.myjetbrains.com/youtrack/issue/TG-254) : [TK] - Fiche <span class="badge badge-prelevement">Prélèvement</span> en consultation : problème d'affichage des colonnes
+- YouTrack [TG-259](https://tumorotek.myjetbrains.com/youtrack/issue/TG-259) : [TK] - Création d'un <span class="badge badge-prelevement">Prélèvement</span> sans site intermédiaire (collection Gatsbi): rien ne se passe lors du clic sur Suivant, qui devrait afficher l'écran de saisie des échantillons
+- YouTrack [TG-262](https://tumorotek.myjetbrains.com/youtrack/issue/TG-262) : [TK] - Fiche <span class="badge badge-prelevement">Prélèvement</span> : le contrôle sur le champ identifiant du patient ajouté n'est pas correct
+
+
 ##### Version 2.3.0.9 - Publiée le 19/04/2024
 ###### Corrections dans TK
 - YouTrack [TK-498](https://tumorotek.myjetbrains.com/youtrack/issue/TK-498) : Fiche <span class="badge badge-prelevement">Prélèvement</span> séro > zone échantillons : des colonnes ne sont pas affichées
@@ -98,7 +107,11 @@
 
 ***
 
-##### Version 2.2.9 (dernière version sans le module Gatsbi) - Publiée le 14/09/2023
+##### Version 2.2.10 (dernière version sans le module Gatsbi) - Publiée le 20/05/2024
+###### Amélioration
+- YouTrack [TK-486](https://tumorotek.myjetbrains.com/youtrack/issue/TK-486) : Interfaçage identité patient : les noms (usuel et patronymique) et le prénom transmis par l'interfaçage sont tronqués s'ils font plus de 50 caractères, pour que l'intégration dans TK se fasse correctement
+
+##### Version 2.2.9 - Publiée le 14/09/2023
 ###### Corrections
 - YouTrack [TK-446](https://tumorotek.myjetbrains.com/youtrack/issue/TK-446) : <span class="badge badge-export">Export</span> correction du plantage avec Mysql8 à cause de la valeur par défaut de sql_mode (pas de problème avec Mariadb)
 
