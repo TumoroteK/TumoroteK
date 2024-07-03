@@ -37,11 +37,13 @@ package fr.aphp.tumorotek.action.administration;
 
 import fr.aphp.tumorotek.action.ManagerLocator;
 import fr.aphp.tumorotek.component.TexteModale;
+import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
 import fr.aphp.tumorotek.dto.ParametreDTO;
 import fr.aphp.tumorotek.manager.administration.ParametresManager;
+import fr.aphp.tumorotek.model.config.ParametreValeurSpecifique;
 import fr.aphp.tumorotek.model.contexte.Plateforme;
+import fr.aphp.tumorotek.param.EParametreValeurParDefaut;
 import fr.aphp.tumorotek.utils.MessagesUtils;
-import fr.aphp.tumorotek.utils.TKStringUtils;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
@@ -94,12 +96,21 @@ public class ParametresController
    // Liste de paramètres représentant les parameters de la plateforme.
    public List<ParametreDTO> parameterList = new ArrayList<>();
 
+   // Map pour suivre l'état de chaque paramètre : true si le paramètre est en mode édition, false sinon
    final private Map<ParametreDTO, Boolean> editModeMap = new HashMap<>();
+
+   // Map pour suivre l'état de chaque paramètre : true si le bouton de réinitialisation doit être désactivé, false sinon
+   final private Map<ParametreDTO, Boolean> disableResetButtonMap = new HashMap<>();
+
 
    // Map stockant les valeurs originales de chaque paramètre avant toute modification.
    private Map<String, ParametreDTO> originalValuesMap = new HashMap<>();
 
    private ParametresManager parametresManager;
+
+   private Plateforme plateforme;
+
+
 
    // Message de bienvenue affiché dans l'interface utilisateur.
    private String welcomeMessage;
@@ -129,17 +140,34 @@ public class ParametresController
    public void init(){
       // Initialise parameterList et parametresManager
       parameterList = SessionUtils.getParametresPlateforme(Sessions.getCurrent().getAttributes());
+
+      // Initialise la plateforme
+      plateforme = SessionUtils.getPlateforme(Sessions.getCurrent().getAttributes());
+
+      // Trie la liste des paramètres
       Collections.sort(parameterList, new ParametreComparator());
+
+      // Initialise le gestionnaire des paramètres
       parametresManager = ManagerLocator.getManager(ParametresManager.class);
 
-      // Initialise les maps editModeMap et originalValuesMap
+      // Initialise les maps: editModeMap, originalValuesMap, disableResetButtonMap
       for(ParametreDTO parameter : parameterList){
+         // Définit le mode édition à false pour chaque paramètre
          editModeMap.put(parameter, false);
+
+         // Sauvegarde la valeur originale de chaque paramètre
          originalValuesMap.put(parameter.getCode(),
             new ParametreDTO(parameter.getCode(), parameter.getValeur(), parameter.getType(), parameter.getGroupe()));
+         // Vérifie si la valeur du paramètre est égale à sa valeur par défaut
+         boolean isValueEqualDefault = EParametreValeurParDefaut.isDefaultValue(parameter.getCode(), parameter.getValeur());
+
+         // Définit si le bouton de réinitialisation doit être désactivé pour chaque paramètre
+         disableResetButtonMap.put(parameter, isValueEqualDefault);
       }
       initWelcomeMessage();
       initWelcomeImage();
+
+      // Construit et initialise le titre de la plateforme
       plateformeTitle = buildPlateformString();
    }
 
@@ -268,6 +296,42 @@ public class ParametresController
    //      **************************** | Event Listeners : Plateforme Params |  ******************************************
 
    /**
+    * Commande pour réinitialiser un paramètre à sa valeur par défaut.
+    * Cette méthode est appelée lorsqu'un utilisateur clique sur le bouton de réinitialisation.
+    *
+    * @param parametreDTO Le paramètre à réinitialiser.
+    */
+   @Command
+   @NotifyChange({"disableResetButton", "parameterList"})
+   public void resetParameter(@BindingParam("parameter") ParametreDTO parametreDTO) {
+      // Titre & Corps du message de la question pour la modale de confirmation
+      String questionTitle = Labels.getLabel("params.modale.reinitialisation.titre");
+      String questionBody = ObjectTypesFormatters.getLabel("params.modale.reinitialisation.message",
+         new String[] {parametreDTO.getCode()});
+      // Ouvre une modale de confirmation et obtient la réponse de l'utilisateur
+      boolean isConfirmed = MessagesUtils.openQuestionModal(questionTitle, questionBody);
+      if (isConfirmed) {
+         // Supprime le paramètre de la base de données
+         boolean wasDeleted  = parametresManager.removeByPlateformeIdAndCodeManager(
+            plateforme.getPlateformeId(), parametreDTO.getCode());
+
+         if (wasDeleted) {
+            // Désactive le bouton de réinitialisation pour ce paramètre
+            disableResetButtonMap.put(parametreDTO, true);
+
+            // Récupère et définit la valeur par défaut du paramètre
+            String defaultValue = EParametreValeurParDefaut.getDefaultValeurByCode(parametreDTO.getCode());
+            parametreDTO.setValeur(defaultValue);
+
+         } else {
+            // Affiche un message d'erreur si la réinitialisation échoue
+            String errorMessage = ObjectTypesFormatters.getLabel("error.reinitialisation.message", new String[] {parametreDTO.getCode()});            MessagesUtils.openErrorModal(Labels.getLabel("error.title"), errorMessage);
+            logger.error(errorMessage);
+         }
+      }
+   }
+
+   /**
     * Active le mode édition pour un paramètre donné et enregistre la valeur d'origine du paramètre.
     *
     * @param parameter Le paramètre à éditer.
@@ -302,16 +366,33 @@ public class ParametresController
 
    }
 
+   /**
+    * Commande pour enregistrer les modifications apportées à un paramètre.
+    * Cette méthode est appelée lorsqu'un utilisateur clique sur le bouton de sauvegarde.
+    *
+    * @param parameter Le paramètre à sauvegarder.
+    * @param event L'événement déclenché par le clic sur le bouton de sauvegarde.
+    */
    @Command
    @NotifyChange("parameterList")
    public void saveParameter(@BindingParam("parameter") ParametreDTO parameter,
       @ContextParam(ContextType.TRIGGER_EVENT) Event event){
 
-      String selectedValue = parameter.getValeur();
-      parameter.setValeur(selectedValue);
-      // Enregistrer la valeur mise à jour
-      saveParameter(parameter);
+      // Vérifie si la valeur du paramètre est égale à sa valeur par défaut
+      if (EParametreValeurParDefaut.isDefaultValue(parameter.getCode(), parameter.getValeur())) {
+         // Supprime le paramètre de la base de données
+         parametresManager.removeByPlateformeIdAndCodeManager(plateforme.getPlateformeId(), parameter.getCode());
+         // Désactive le bouton de réinitialisation pour ce paramètre
+         disableResetButtonMap.put(parameter, true);
+      }
+      else {
+         // Sauvegarde le paramètre avec la nouvelle valeur
+         saveParameter(parameter);
+         // Active le bouton de réinitialisation pour ce paramètre
+         disableResetButtonMap.put(parameter, false);
 
+      }
+      // Sort du mode édition pour ce paramètre
       editModeMap.put(parameter, false);
    }
 
@@ -361,7 +442,6 @@ public class ParametresController
     * @return La chaîne de titre de la plateforme.
     */
    private String buildPlateformString(){
-      Plateforme plateforme = SessionUtils.getPlateforme(Sessions.getCurrent().getAttributes());
 
       String plateformName = plateforme.getNom();
 
@@ -377,8 +457,6 @@ public class ParametresController
     * @param parameter Le paramètre à enregistrer.
     */
    private void saveParameter(ParametreDTO parameter){
-      // Obtient la plateforme actuelle depuis la session
-      Plateforme plateforme = SessionUtils.getPlateforme(Sessions.getCurrent().getAttributes());
 
       // Met à jour/sauvegarde le paramètre de la plateforme en base de données
       parametresManager.updateValeur(plateforme.getPlateformeId(), parameter.getCode(), parameter.getValeur());
@@ -462,6 +540,19 @@ public class ParametresController
     */
    public boolean isEditMode(ParametreDTO parameter){
       return editModeMap.get(parameter);
+   }
+
+   /**
+    * Vérifie si le bouton de réinitialisation doit être désactivé pour un paramètre donné.
+    * Cette méthode est appelée par le fichier ZUL.
+    *
+    * @param parameter Le paramètre pour lequel vérifier l'état du bouton de réinitialisation.
+    * @return true si le bouton de réinitialisation doit être désactivé, false sinon.
+    */
+
+   public boolean shouldDisableResetButton(ParametreDTO parameter){
+      // Retourne l'état du bouton de réinitialisation pour le paramètre spécifié
+      return disableResetButtonMap.get(parameter);
    }
 
    /**

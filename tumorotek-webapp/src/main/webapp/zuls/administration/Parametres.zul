@@ -176,18 +176,28 @@
 
                         <!-- Troisième cellule: Boutons pour éditer, enregistrer et annuler les modifications -->
                         <cell>
+                            <!-- Bouton pour passer en mode édition si non en mode édition -->
 
                             <button if="${!vm.isEditMode(each)}" label="${c:l('general.edit')}"
                                     onClick="@command('editParameter', parameter=each)"
                                     image="/images/icones/edit.png" sclass="buttonv2"/>
 
+                            <!-- Bouton pour enregistrer les modifications si en mode édition -->
                             <button if="${vm.isEditMode(each)}" label="${c:l('general.save')}"
                                     onClick="@command('saveParameter', parameter=each)"
                                     image="/images/icones/save.png" sclass="buttonv2"/>
 
+                            <!-- Bouton pour annuler les modifications et sortir du mode édition -->
                             <button if="${vm.isEditMode(each)}" label="${c:l('general.cancel')}"
                                     onClick="@command('cancelEdit', parameter=each)"
                                     image="/images/icones/cancel.png" sclass="buttonv2"/>
+
+                            <!-- Bouton pour réinitialiser le paramètre à sa valeur par défaut -->
+                            <button label="${c:l('general.reset')}"
+                                    onClick="@command('resetParameter', parameter=each)"
+                                    image="/images/icones/reset.png" sclass="buttonv2"
+                                    disabled="${vm.shouldDisableResetButton(each)}" />
+
 
                         </cell>
 
