@@ -101,5 +101,6 @@ public interface ParametresManager
 
     void updateValeur(Integer plateformID, String code, String newValue);
 
+    boolean removeByPlateformeIdAndCodeManager(Integer plateformeId, String code);
 
 }

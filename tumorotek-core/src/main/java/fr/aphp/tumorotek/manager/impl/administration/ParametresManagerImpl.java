@@ -337,4 +337,28 @@ public class ParametresManagerImpl implements ParametresManager
       }
    }
 
+   /**
+    * Supprime un enregistrement de la table ParametreValeurSpecifique correspondant à l'identifiant de la Plateforme
+    * et au code donnés.
+    *
+    * @param plateformeId l'identifiant de la Plateforme
+    * @param code le code de ParametreValeurSpecifique
+    * @return boolean indiquant si la suppression a été effectuée
+    */
+   @Override
+   public boolean removeByPlateformeIdAndCodeManager(Integer plateformeId, String code) {
+      // Rechercher le paramètre à supprimer
+      ParametreValeurSpecifique parametreToDelete = findParametresByPlateformeIdAndCode(plateformeId, code);
+      // Si le paramètre est trouvé, on le supprime
+      if (parametreToDelete != null) {
+         Integer parametreId = parametreToDelete.getParametreValeurSpecifiqueId();
+         parametreValeurSpecifiqueDao.removeObject(parametreId);
+         return true;
+         // Si le paramètre n'est pas trouvé dans la base de données, il n'a pas été supprimé, donc on retourne false
+      } else {
+         return false;
+      }
+   }
+
+
 }
