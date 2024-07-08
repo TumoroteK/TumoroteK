@@ -93,7 +93,7 @@ import fr.aphp.tumorotek.model.utils.Utils;
    @NamedQuery(name = "Prelevement.findByCodeOrNumLaboWithBanque",
       query = "SELECT p FROM Prelevement p WHERE (p.code like ?1 " + "OR p.numeroLabo like ?1) " + "AND p.banque = ?2"),
    @NamedQuery(name = "Prelevement.findByCodeInPlateforme",
-      query = "SELECT p FROM Prelevement p WHERE p.code like ?1 " + "AND p.banque.plateforme = ?2"),
+      query = "SELECT p FROM Prelevement p WHERE p.code = ?1 " + "AND p.banque.plateforme = ?2"),
    @NamedQuery(name = "Prelevement" + ".findByCodeOrNumLaboWithBanqueReturnIds",
       query = "SELECT p.prelevementId FROM Prelevement p " + "WHERE (p.code like ?1 " + "OR p.numeroLabo like ?1) "
          + "AND p.banque = ?2"),

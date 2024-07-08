@@ -222,14 +222,12 @@ public class ProdDeriveDaoTest extends AbstractDaoTest
       assertTrue(ders.size() == 0);
       ders = prodDeriveDao.findByCodeInPlateforme("PTRA", null);
       assertTrue(ders.size() == 0);
+      // Requête initialement avec un like
       ders = prodDeriveDao.findByCodeInPlateforme("%.1.1", p1);
-      assertTrue(ders.size() == 3);
-      ders = prodDeriveDao.findByCodeInPlateforme("PTRA.1._", p1);
-      assertTrue(ders.size() == 2);
-      ders = prodDeriveDao.findByCodeInPlateforme("%", p1);
-      assertTrue(ders.size() == 4);
-      ders = prodDeriveDao.findByCodeInPlateforme("%", null);
       assertTrue(ders.size() == 0);
+      ders = prodDeriveDao.findByCodeInPlateforme("PTRA.1._", p1);
+      assertTrue(ders.size() == 0);
+
       ders = prodDeriveDao.findByCodeInPlateforme(null, p1);
       assertTrue(ders.size() == 0);
 
@@ -238,8 +236,7 @@ public class ProdDeriveDaoTest extends AbstractDaoTest
       assertTrue(ders.size() == 0);
       ders = prodDeriveDao.findByCodeInPlateforme("PTRA", p2);
       assertTrue(ders.size() == 0);
-      ders = prodDeriveDao.findByCodeInPlateforme("%", p2);
-      assertTrue(ders.size() == 0);
+
       ders = prodDeriveDao.findByCodeInPlateforme(null, p2);
       assertTrue(ders.size() == 0);
 
@@ -248,9 +245,12 @@ public class ProdDeriveDaoTest extends AbstractDaoTest
       assertTrue(ders.size() == 0);
       ders = prodDeriveDao.findByCodeInPlateforme("XXX", p1);
       assertTrue(ders.size() == 0);
-      ders = prodDeriveDao.findByCodeInPlateforme("LABO%", p1);
-      assertTrue(ders.size() == 0);
+
    }
+
+
+
+
 
    /**
     * Test l'appel de la méthode findByCodeOrLaboWithBanqueReturnIds().
