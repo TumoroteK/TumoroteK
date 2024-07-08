@@ -225,14 +225,11 @@ public class EchantillonDaoTest extends AbstractDaoTest
       assertTrue(echans.size() == 0);
    }
 
-
-
    /**
     * @since 2.1
     */
-   public void testFindByCodeInPlateforme() {
+   public void testFindByCodeInPlateforme(){
       final Plateforme p1 = plateformeDao.findById(1);
-
       List<Echantillon> echans = echantillonDao.findByCodeInPlateforme("PTRA.1", p1);
       assertTrue(echans.size() == 1);
       echans = echantillonDao.findByCodeInPlateforme("JEG.1", p1);
@@ -247,7 +244,6 @@ public class EchantillonDaoTest extends AbstractDaoTest
       // la requête était initialement avec un like
       echans = echantillonDao.findByCodeInPlateforme("%.1", p1);
       assertTrue(echans.size() == 0);
-
       echans = echantillonDao.findByCodeInPlateforme("PTRA._", p1);
       assertTrue(echans.size() == 0);
 
@@ -255,14 +251,11 @@ public class EchantillonDaoTest extends AbstractDaoTest
       assertTrue(echans.size() == 0);
 
       final Plateforme p2 = plateformeDao.findById(2);
-
       echans = echantillonDao.findByCodeInPlateforme("PTRA.1", p2);
       assertTrue(echans.size() == 0);
-
       echans = echantillonDao.findByCodeInPlateforme("PTRA", p2);
       assertTrue(echans.size() == 0);
-
-      echans = echantillonDao.findByCodeInPlateforme("%", p2);
+      echans = echantillonDao.findByCodeInPlateforme(null, p2);
       assertTrue(echans.size() == 0);
 
    }
