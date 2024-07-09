@@ -35,6 +35,8 @@
  **/
 package fr.aphp.tumorotek.manager.validation.systeme;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
@@ -55,6 +57,7 @@ import fr.aphp.tumorotek.model.systeme.Fichier;
  */
 public class FichierValidator implements Validator
 {
+   private final Log log = LogFactory.getLog(FichierValidator.class);
 
    @Override
    public boolean supports(final Class<?> clazz){
@@ -73,9 +76,11 @@ public class FichierValidator implements Validator
       if(fichier.getNom() != null){
          if(!fichier.getNom().matches(ValidationUtilities.FILENAMEREGEXP)){
             errs.rejectValue("nom", "fichier.nom.illegal");
+            log.error("fichier.nom.illegal : " + fichier.getNom());
          }
          if(fichier.getNom().length() > 50){
             errs.rejectValue("nom", "fichier.nom.tooLong");
+            log.error("fichier.nom.tooLong (limite à 50) : " + fichier.getNom());
          }
       }
 
@@ -86,9 +91,11 @@ public class FichierValidator implements Validator
       if(fichier.getPath() != null){
          if(!fichier.getPath().matches(ValidationUtilities.PATHREGEXP)){
             errs.rejectValue("path", "fichier.path.illegal");
+            log.error("fichier.path.illegal : " + fichier.getPath());
          }
          if(fichier.getPath().length() > 250){
             errs.rejectValue("path", "fichier.path.tooLong");
+            log.error("fichier.path.tooLong (limite à 250) : " + fichier.getPath());
          }
       }
    }

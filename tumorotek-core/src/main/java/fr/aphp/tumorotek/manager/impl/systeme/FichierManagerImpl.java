@@ -184,6 +184,7 @@ public class FichierManagerImpl implements FichierManager
 
       }else if(!fichier.getPath().matches(".*_[0-9]+")){
          fichier.setFichierId(null);
+         log.error("fichier.path.illegal : " + fichier.getPath());
          throw new RuntimeException("fichier.path.illegal");
       }
       //			fichierDao.createObject(fichier);
