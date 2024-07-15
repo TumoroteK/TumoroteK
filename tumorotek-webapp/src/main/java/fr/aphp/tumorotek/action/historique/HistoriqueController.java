@@ -322,10 +322,10 @@ public class HistoriqueController extends AbstractObjectTabController
          final Operation op = operations.get(i);
          values = new ArrayList<>();
          values.add(op.getUtilisateur().getLogin());
-         values.add(HistoriqueRenderer.getOperationType(op));
-         values.add(HistoriqueRenderer.getEntite(op));
-         values.add(HistoriqueRenderer.getIdentifiantForOperation(op));
-         values.add(HistoriqueRenderer.getBanqueForOperation(op));
+         values.add(HistoriqueUtils.buildOperationToDisplay(op));
+         values.add(HistoriqueUtils.buildEntiteToDisplay(op));
+         values.add(HistoriqueUtils.buildIdentifiantToDisplay(op));
+         values.add(HistoriqueUtils.buildBanqueToDisplay(op));
          values.add(ObjectTypesFormatters.dateRenderer2(op.getDate()));
          if(op.getV1()){
             values.add("V1");
