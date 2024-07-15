@@ -94,20 +94,20 @@ public class HistoriqueRenderer implements RowRenderer<Operation>
 
       // Type d'opération
       final StringBuffer type = new StringBuffer();
-      final String label = Labels.getLabel("OperationType." + op.getOperationType().getNom());
+      final String operationNom = op.getOperationType().getNom();
+      final String label = Labels.getLabel("OperationType." + operationNom);
       if(label != null){
          type.append(label);
       }else{
-         type.append(op.getOperationType().getNom());
-
-         if(type.toString().equals("Creation")){
-            if(ManagerLocator.getImportHistoriqueManager()
-               .findImportationsByEntiteAndObjectIdManager(op.getEntite(), op.getObjetId()).size() > 0){
-               type.append(" (Import)");
-            }
+         type.append(operationNom);
+      }
+      if(operationNom.equals("Creation")){
+         if(ManagerLocator.getImportHistoriqueManager()
+            .findImportationsByEntiteAndObjectIdManager(op.getEntite(), op.getObjetId()).size() > 0){
+            type.append(" (Import)");
          }
       }
-
+      
       new Label(type.toString()).setParent(row);
 
       // Entité
