@@ -2,13 +2,13 @@ package fr.aphp.tumorotek.model.config;
 
 import org.hibernate.annotations.GenericGenerator;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
 
 @Entity
 @Table(name="PARAMETRE_VALEUR_SPECIFIQUE")
@@ -24,39 +24,32 @@ public class ParametreValeurSpecifique
    @Id
    @GeneratedValue(generator = "autoincrement")
    @GenericGenerator(name = "autoincrement", strategy = "increment")
-   private Integer parameterId;
+   @Column(name = "PARAMETRE_VALEUR_SPECIFIQUE_ID", nullable = false)
+   private Integer parametreValeurSpecifiqueId;
 
+   @Column(name = "PLATEFORME_ID", nullable = false)
    private Integer plateformeId;
+
+   @Column(name = "CODE", nullable = false, length = 50)
    private String code;
+
+   @Column(name = "VALEUR", nullable = false)
    private String valeur;
 
+   @Column(name = "TYPE", length = 25)
    private String type;
 
+   @Column(name = "GROUPE", length = 25)
    private String groupe;
 
+   // Getters and Setters
 
-   public String getType(){
-      return type;
+   public Integer getParametreValeurSpecifiqueId(){
+      return parametreValeurSpecifiqueId;
    }
 
-   public void setType(String type){
-      this.type = type;
-   }
-
-   public String getGroupe(){
-      return groupe;
-   }
-
-   public void setGroupe(String groupe){
-      this.groupe = groupe;
-   }
-
-   public Integer getParameterId(){
-      return parameterId;
-   }
-
-   public void setParameterId(Integer parameterId){
-      this.parameterId = parameterId;
+   public void setParametreValeurSpecifiqueId(Integer parametreValeurSpecifiqueId){
+      this.parametreValeurSpecifiqueId = parametreValeurSpecifiqueId;
    }
 
    public Integer getPlateformeId(){
@@ -81,5 +74,21 @@ public class ParametreValeurSpecifique
 
    public void setValeur(String valeur){
       this.valeur = valeur;
+   }
+
+   public String getType(){
+      return type;
+   }
+
+   public void setType(String type){
+      this.type = type;
+   }
+
+   public String getGroupe(){
+      return groupe;
+   }
+
+   public void setGroupe(String groupe){
+      this.groupe = groupe;
    }
 }
