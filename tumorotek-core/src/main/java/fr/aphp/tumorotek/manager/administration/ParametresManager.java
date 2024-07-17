@@ -99,7 +99,8 @@ public interface ParametresManager
 
     ParametreValeurSpecifique findParametresByPlateformeIdAndCode(Integer plateformID, String code);
 
-    void updateValeur(Integer plateformID, String code, String newValue);
+    void createOrUpdateObject(Integer plateformId, ParametreDTO parametreDTO);
 
+    void removeByPlateformeIdAndCodeManager(Integer plateformeId, String code);
 
 }

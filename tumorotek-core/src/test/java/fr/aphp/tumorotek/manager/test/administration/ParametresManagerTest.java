@@ -5,6 +5,7 @@ import fr.aphp.tumorotek.dto.ParametreDTO;
 import fr.aphp.tumorotek.manager.administration.ParametresManager;
 import fr.aphp.tumorotek.manager.test.AbstractManagerTest4;
 import fr.aphp.tumorotek.model.config.ParametreValeurSpecifique;
+import fr.aphp.tumorotek.param.EParametreType;
 import fr.aphp.tumorotek.param.EParametreValeurParDefaut;
 import org.junit.Before;
 import org.junit.Test;
@@ -32,6 +33,8 @@ public class ParametresManagerTest extends AbstractManagerTest4 {
    private static final Random random = new Random();
 
    String code = "DERIVE_QTE_OBLIGATOIRE";
+   String type = EParametreType.BOOLEAN.getType();
+   String groupe = "DERIVE";
 
    String valueFromDb = "value_from_db";
 
@@ -48,7 +51,7 @@ public class ParametresManagerTest extends AbstractManagerTest4 {
    }
 
    /**
-    * Teste le scénario où la mise à jour de la valeur d'un paramètre, qui n'a jamais été modifiée auparavant
+    * Teste le scénario correspondant à la mise à jour de la valeur d'un paramètre, qui n'a jamais été modifiée auparavant
     * (n'existe pas dans la base de données).
     */
 
@@ -57,13 +60,14 @@ public class ParametresManagerTest extends AbstractManagerTest4 {
       // Arrange
       Integer plateformId = 11244;
       String nouvelleValeur = "value_from_user_input";
+      ParametreDTO parametreDTO = new ParametreDTO(code, nouvelleValeur,type, groupe);
 
       // Vérifie que le paramètre n'existe pas initialement dans la base de données
       ParametreValeurSpecifique parametre = parametresManager.findParametresByPlateformeIdAndCode(plateformId, code);
       assertNull(parametre);
 
       // Act
-      parametresManager.updateValeur(plateformId, code, nouvelleValeur);
+      parametresManager.createOrUpdateObject(plateformId, parametreDTO);
 
       // Assert
       // Vérifie que le paramètre a été créé avec la nouvelle valeur
@@ -74,7 +78,7 @@ public class ParametresManagerTest extends AbstractManagerTest4 {
    }
 
    /**
-    * Teste le scénario où la mise à jour de la valeur d'un paramètre, qui a été modifiée auparavant
+    * Teste le scénario correspondant à la mise à jour de la valeur d'un paramètre, qui a été modifiée auparavant
     * (existe dans la base de données).
     */
    @Test
@@ -82,6 +86,7 @@ public class ParametresManagerTest extends AbstractManagerTest4 {
       Integer plateformeId = 1;
       // Arrange
       String nouvelleValeur = "NOUVELLE_VALEUR";
+      ParametreDTO parametreDTO = new ParametreDTO(code, nouvelleValeur,type, groupe);
 
       // Vérifie que le paramètre existe initialement dans la base de données
       ParametreValeurSpecifique parametreDeLaBase = parametresManager.findParametresByPlateformeIdAndCode(plateformeId, code);
@@ -89,7 +94,7 @@ public class ParametresManagerTest extends AbstractManagerTest4 {
       assertEquals(parametreDeLaBase.getValeur(), valueFromDb);
 
       // Act
-      parametresManager.updateValeur(plateformeId, code, nouvelleValeur);
+      parametresManager.createOrUpdateObject(plateformeId, parametreDTO);
 
       // Assert
       // Récupère l'objet mis à jour depuis la base de données et vérifie ses propriétés
@@ -97,21 +102,6 @@ public class ParametresManagerTest extends AbstractManagerTest4 {
       assertNotNull(parametreMaj);
       assertEquals(nouvelleValeur, parametreMaj.getValeur());
 
-   }
-
-   /***
-    *
-    */
-   @Test
-   public void updateInvalidCode(){
-      try{
-         parametresManager.updateValeur(5, "non_existing_code", "value");
-         // La ligne ci-dessus devrait générer une exception
-         fail("Expected IllegalArgumentException was not thrown");
-      }catch(IllegalArgumentException e){
-         // Vérifier le message de l'exception
-         assertEquals("Invalid code: non_existing_code", e.getMessage());
-      }
    }
 
    /**

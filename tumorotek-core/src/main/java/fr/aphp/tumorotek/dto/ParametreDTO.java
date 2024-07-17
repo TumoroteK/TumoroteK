@@ -14,6 +14,9 @@ public class ParametreDTO
 
    private String groupe;
 
+   public ParametreDTO(){
+   }
+   
    public ParametreDTO(String code, String valeur, String type, String groupe){
       this.code = code;
       this.valeur = valeur;
@@ -53,22 +56,6 @@ public class ParametreDTO
       this.groupe = groupe;
    }
 
-   /**
-    * Cette méthode retourne la clé d'internationalisation pour le code du paramètre.
-    * Si le code n'est pas nul, elle préfixe "params." au code.
-    * Si le code est nul, elle retourne le code lui-même, qui sera donc null.
-    *
-    * Pour que cela fonctionne, le code retourné doit avoir une clé correspondante dans le fichier de propriétés de traduction.
-    *
-    * @return la clé d'internationalisation pour le code du paramètre
-    */
-
-   public String getI18nKey(){
-      if (code != null){
-         return new StringBuilder("params.").append(code).toString();
-      }
-      return code;
-   }
    public static ParametreDTO mapFromEntity(ParametreValeurSpecifique entity) {
       return new ParametreDTO(entity.getCode(),entity.getValeur(),
                                        entity.getType() , entity.getGroupe());
@@ -87,5 +74,9 @@ public class ParametreDTO
       return Objects.hash(code);
    }
 
+   @Override
+   public ParametreDTO clone(){
+      return new ParametreDTO(this.code, this.valeur, this.type, this.groupe);
+   }
 }
 

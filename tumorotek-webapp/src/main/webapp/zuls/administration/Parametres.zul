@@ -123,7 +123,7 @@
 
     <panel style="margin-top:10px">
         <panelchildren >
-            <grid model="@load(vm.parameterList)" sclass="gridForm1">
+            <grid model="@load(vm.parametreDecorators)" sclass="gridForm1">
                 <columns>
                     <column width="30%"/>
                     <column width="40%"/>
@@ -132,11 +132,11 @@
                 <template name="model">
 
 
-                    <!-- Chaque ligne (row) représente un paramètre -->
+                    <!-- Chaque ligne (row) représente un parametreDecorator -->
                     <row>
                         <!-- Première cellule: Afficher la clé du paramètre -->
                         <cell>
-                            <label value="${c:l(each.i18nKey)}" sclass="formLabel" style="color: #636363;"/>
+                            <label value="${each.libelleI18n}" sclass="formLabel" style="color: #636363;"/>
                         </cell>
 
                         <!-- Deuxième cellule: Afficher la valeur du paramètre en mode édition ou lecture -->
@@ -144,30 +144,31 @@
 
                             <!-- Si en mode Lecture -->
 
-                            <div if="${!vm.isEditMode(each)}">
+                            <div if="${!each.editMode}">
                                 <!-- Afficher l'étiquette si c'est une chaîne de caractères -->
-                                <label if="${each.type eq 'string'}" value="@load(each.valeur)" sclass="formValue"/>
+                                <label if="${each.type ne 'Boolean'}" value="@load(each.parametre.valeur)" sclass="formValue"/>
 
-                                <!-- Afficher l'étiquette i18n pour le boolean -->
-                                <label if="${each.type eq 'boolean'}"
-                                       value="@load(each.valeur ? c:l('general.checkbox.true') : c:l('general.checkbox.false'))"
+                                <!-- Afficher l'étiquette i18n pour le Boolean -->
+                                <label if="${each.type eq 'Boolean'}"
+                                       value="@load(each.parametre.valeur ? c:l('general.checkbox.true') : c:l('general.checkbox.false'))"
                                        sclass="formValue"/>
                             </div>
 
 
                             <!-- Si en mode Edition -->
 
-                            <div if="${vm.isEditMode(each)}">
-                                <!-- Afficher les boutons radio 'oui' et 'non' si le type est 'boolean' -->
-                                <radiogroup if="${each.type eq 'boolean'}"
-                                            selectedItem="@load(each.valeur) @save(each.valeur)">
+                            <div if="${each.editMode}">
+                                <!-- Afficher les boutons radio 'oui' et 'non' si le type est 'Boolean' -->
+                                <radiogroup if="${each.type eq 'Boolean'}"
+                                            selectedItem="@load(each.parametre.valeur) @save(each.newValeur)">
                                     <radio label="${c:l('general.checkbox.true')}" value="true" style="margin-right: 25px;"/>
                                     <radio label="${c:l('general.checkbox.false')}" value="false" />
                                 </radiogroup>
 
                                 <!-- Afficher la zone de texte si c'est une chaîne de caractères -->
-                                <textbox if="${each.type eq 'string'}"
-                                         value="@load(each.valeur) @save(each.valeur)"
+                                <textbox if="${each.type ne 'Boolean'}"
+                                		 constraint="${each.constParametreValeur}"
+                                         value="@load(each.parametre.valeur) @save(each.newValeur)"
                                          width="90%"/>
                             </div>
 
@@ -176,18 +177,31 @@
 
                         <!-- Troisième cellule: Boutons pour éditer, enregistrer et annuler les modifications -->
                         <cell>
+                            <!-- Bouton pour passer en mode édition si non en mode édition -->
 
-                            <button if="${!vm.isEditMode(each)}" label="${c:l('general.edit')}"
-                                    onClick="@command('editParameter', parameter=each)"
-                                    image="/images/icones/edit.png" sclass="buttonv2"/>
+                            <button label="${c:l('general.edit')}"
+                                    onClick="@command('editParametre', parametreDecorator=each)"
+                                    image="/images/icones/edit.png" sclass="buttonv2"
+                                    visible="${each.displayModifierButton()}" />
 
-                            <button if="${vm.isEditMode(each)}" label="${c:l('general.save')}"
-                                    onClick="@command('saveParameter', parameter=each)"
-                                    image="/images/icones/save.png" sclass="buttonv2"/>
+                            <!-- Bouton pour enregistrer les modifications si en mode édition -->
+                            <button label="${c:l('general.save')}"
+                                    onClick="@command('saveParametre', parametreDecorator=each)"
+                                    image="/images/icones/save.png" sclass="buttonv2"
+                                    visible="${each.displayEnregistrerButton()}" />
 
-                            <button if="${vm.isEditMode(each)}" label="${c:l('general.cancel')}"
-                                    onClick="@command('cancelEdit', parameter=each)"
-                                    image="/images/icones/cancel.png" sclass="buttonv2"/>
+                            <!-- Bouton pour annuler les modifications et sortir du mode édition -->
+                            <button label="${c:l('general.cancel')}"
+                                    onClick="@command('cancelEdit', parametreDecorator=each)"
+                                    image="/images/icones/cancel.png" sclass="buttonv2"
+                                    visible="${each.displayAnnulerButton()}" />
+
+                            <!-- Bouton pour réinitialiser le paramètre à sa valeur par défaut -->
+                            <button label="${c:l('general.reinit')}"
+                                    onClick="@command('reinitParametre', parametreDecorator=each)"
+                                    image="/images/icones/reset.png" sclass="buttonv2"
+                                    visible="${each.displayReinitButton()}" />
+
 
                         </cell>
 

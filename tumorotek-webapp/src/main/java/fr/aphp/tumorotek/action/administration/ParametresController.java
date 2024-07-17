@@ -35,14 +35,16 @@
  **/
 package fr.aphp.tumorotek.action.administration;
 
-import fr.aphp.tumorotek.action.ManagerLocator;
-import fr.aphp.tumorotek.component.TexteModale;
-import fr.aphp.tumorotek.dto.ParametreDTO;
-import fr.aphp.tumorotek.manager.administration.ParametresManager;
-import fr.aphp.tumorotek.model.contexte.Plateforme;
-import fr.aphp.tumorotek.utils.MessagesUtils;
-import fr.aphp.tumorotek.utils.TKStringUtils;
-import fr.aphp.tumorotek.webapp.general.SessionUtils;
+import static org.apache.camel.util.StringHelper.sanitize;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -61,19 +63,20 @@ import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Fileupload;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import static org.apache.camel.util.StringHelper.sanitize;
+import fr.aphp.tumorotek.action.ManagerLocator;
+import fr.aphp.tumorotek.component.TexteModale;
+import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
+import fr.aphp.tumorotek.decorator.ParametreDecorator;
+import fr.aphp.tumorotek.dto.ParametreDTO;
+import fr.aphp.tumorotek.manager.administration.ParametresManager;
+import fr.aphp.tumorotek.model.contexte.Plateforme;
+import fr.aphp.tumorotek.param.EParametreType;
+import fr.aphp.tumorotek.param.EParametreValeurParDefaut;
+import fr.aphp.tumorotek.utils.MessagesUtils;
+import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
 /**
  * Contrôleur gérant la configuration des paramètres de la plateforme + paramètres communs.
@@ -90,17 +93,18 @@ public class ParametresController
    /** Formats image acceptés */
    private static final MediaType[] AUTHORIZED_IMAGE_MEDIA_TYPES =
       new MediaType[] {MediaType.IMAGE_GIF, MediaType.IMAGE_JPEG, MediaType.IMAGE_PNG};
-
-   // Liste de paramètres représentant les parameters de la plateforme.
-   public List<ParametreDTO> parameterList = new ArrayList<>();
-
-   final private Map<ParametreDTO, Boolean> editModeMap = new HashMap<>();
-
-   // Map stockant les valeurs originales de chaque paramètre avant toute modification.
-   private Map<String, ParametreDTO> originalValuesMap = new HashMap<>();
+   
+   // Liste de parametreDecorator représentant les paramètres de la plateforme avec les éléments nécessaires à la gestion de la modification.
+   private List<ParametreDecorator> parametreDecorators = new ArrayList<>();
+   
+   // attribut alimenté quand l'utilisateur passe en mode édit sur un parametreDecorator.
+   // cela bloque le fait de pouvoir éditer un autre parametreDecorator
+   private ParametreDecorator parametreDecoratorInModeEdit = null;
 
    private ParametresManager parametresManager;
 
+   private Plateforme plateforme;
+   
    // Message de bienvenue affiché dans l'interface utilisateur.
    private String welcomeMessage;
 
@@ -127,19 +131,25 @@ public class ParametresController
     */
    @Init
    public void init(){
-      // Initialise parameterList et parametresManager
-      parameterList = SessionUtils.getParametresPlateforme(Sessions.getCurrent().getAttributes());
-      Collections.sort(parameterList, new ParametreComparator());
+      // Initialise la plateforme
+      plateforme = SessionUtils.getPlateforme(Sessions.getCurrent().getAttributes());
+      // Initialise le gestionnaire des paramètres
       parametresManager = ManagerLocator.getManager(ParametresManager.class);
-
-      // Initialise les maps editModeMap et originalValuesMap
-      for(ParametreDTO parameter : parameterList){
-         editModeMap.put(parameter, false);
-         originalValuesMap.put(parameter.getCode(),
-            new ParametreDTO(parameter.getCode(), parameter.getValeur(), parameter.getType(), parameter.getGroupe()));
+      
+      // Initialise parametreDecorators
+      List<ParametreDTO> parametreList = SessionUtils.getParametresPlateforme(Sessions.getCurrent().getAttributes());
+      // Trie la liste des paramètres
+      Collections.sort(parametreList, new ParametreComparator());
+      parametreDecorators.clear();
+      // Création des decorators :
+      for(ParametreDTO parametre : parametreList){
+         parametreDecorators.add(new ParametreDecorator(parametre));
       }
+      
       initWelcomeMessage();
       initWelcomeImage();
+
+      // Construit et initialise le titre de la plateforme
       plateformeTitle = buildPlateformString();
    }
 
@@ -266,57 +276,172 @@ public class ParametresController
    }
 
    //      **************************** | Event Listeners : Plateforme Params |  ******************************************
-
    /**
-    * Active le mode édition pour un paramètre donné et enregistre la valeur d'origine du paramètre.
+    * Commande pour réinitialiser un paramètre à sa valeur par défaut.
+    * Cette méthode est appelée lorsqu'un utilisateur clique sur le bouton Réinitialiser.
     *
-    * @param parameter Le paramètre à éditer.
+    * @param parametreDecorator Le parametreDecorator associé au paramètre à réinitialiser.
     */
    @Command
-   @NotifyChange("parameterList")
-   public void editParameter(@BindingParam("parameter") ParametreDTO parameter){
-      boolean isEditMode = isEditMode(parameter);
+   @NotifyChange({"parametreDecorators"})
+   public void reinitParametre(@BindingParam("parametreDecorator") ParametreDecorator parametreDecorator) {
 
-      if(!isEditMode){
-         // Save the original value
-         originalValuesMap.put(parameter.getCode(),
-            new ParametreDTO(parameter.getCode(), parameter.getValeur(), parameter.getType(), parameter.getGroupe()));
-         editModeMap.put(parameter, true);
+      //gère le cas où un autre paramètre serait en mode édition
+      manageMultiEdition();
+      
+      // Titre & Corps du message de la question pour la modale de confirmation
+      String questionTitle = Labels.getLabel("params.modale.reinitialisation.titre");
+      String questionBody = buildMessageConfirmationReinit(parametreDecorator);
+      // Ouvre une modale de confirmation et obtient la réponse de l'utilisateur
+      boolean isConfirmed = MessagesUtils.openQuestionModal(questionTitle, questionBody);
+      if (isConfirmed) {
+         // Supprime le paramètre de la base de données
+         parametresManager.removeByPlateformeIdAndCodeManager(
+            plateforme.getPlateformeId(), parametreDecorator.getCode());
+         
+         // Récupère et définit la valeur par défaut du paramètre
+         String defaultValue = EParametreValeurParDefaut.getDefaultValeurByCode(parametreDecorator.getCode());
+         parametreDecorator.getParametre().setValeur(defaultValue);
+         parametreDecorator.setDefaultValeur(true);//permet de rafraichissement du bouton Réinitialiser
       }
+   }
+   
+   /**
+    * Active le mode édition pour un paramètre donné (objet parametreDecorator)
+    *
+    * @param parametreDecorator Le parametreDecorator associé au paramètre à éditer.
+    */
+   @Command
+   @NotifyChange("parametreDecorators")
+   public void editParametre(@BindingParam("parametreDecorator") ParametreDecorator parametreDecorator){
+   
+      //il n'est pas possible d'éditer 2 lignes en même temps => si une édition est en cours, on la gère :
+      manageMultiEdition();
+      enterEditMode(parametreDecorator);
    }
 
    /**
     * Annule les modifications effectuées lors de l'édition d'un paramètre.
     *
-    * @param parameter le paramètre à annuler
+    * @param parametreDecorator Le parametreDecorator associé au paramètre à éditer.
     */
    @Command
-   @NotifyChange("parameterList")
-   public void cancelEdit(@BindingParam("parameter") ParametreDTO parameter){
-      // Rétablit les valeurs originales
-      ParametreDTO originalValues = originalValuesMap.get(parameter.getCode());
-      parameter.setValeur(originalValues.getValeur());
-
-      // Réinitialiser le mode édition à faux
-      editModeMap.put(parameter, false);
-
+   @NotifyChange("parametreDecorators")
+   public void cancelEdit(@BindingParam("parametreDecorator") ParametreDecorator parametreDecorator){
+      doCancelEdit(parametreDecorator);
    }
-
+   
+   /**
+    * Commande pour enregistrer les modifications apportées à un paramètre.
+    * Cette méthode est appelée lorsqu'un utilisateur clique sur le bouton de sauvegarde.
+    *
+    * @param parametreDecorator Le parametreDecorator associé au paramètre à éditer.
+    */
    @Command
-   @NotifyChange("parameterList")
-   public void saveParameter(@BindingParam("parameter") ParametreDTO parameter,
-      @ContextParam(ContextType.TRIGGER_EVENT) Event event){
-
-      String selectedValue = parameter.getValeur();
-      parameter.setValeur(selectedValue);
-      // Enregistrer la valeur mise à jour
-      saveParameter(parameter);
-
-      editModeMap.put(parameter, false);
+   @NotifyChange("parametreDecorators")
+   public void saveParametre(@BindingParam("parametreDecorator") ParametreDecorator parametreDecorator){
+      doSaveParametre(parametreDecorator);
    }
 
-   //      ****************************** | Méthodes utilitaires    | *************************************************
 
+   // construit le message de confirmation dans la langue adéquate : ce message contient 
+   //  - la valeur par défaut (Oui / Non internationalisé dans le cas d'un booléen)
+   //  - le libellé internationalisé du champ
+   private String buildMessageConfirmationReinit(ParametreDecorator parametreDecorator) {
+      String defaultValue = EParametreValeurParDefaut.getDefaultValeurByCode(parametreDecorator.getCode());
+      if(parametreDecorator.getType().equals(EParametreType.BOOLEAN.getType())) {
+         defaultValue = Labels.getLabel(new StringBuilder("general.checkbox.").append(defaultValue).toString());
+      }
+      return ObjectTypesFormatters.getLabel("params.modale.reinitialisation.message",
+         new String[] { defaultValue, parametreDecorator.getLibelleI18n() });
+   }
+   
+
+   //construit le message à afficher quand une modification est en cours au moment où l'utilisateur clique sur Modifier.
+   // ce message contient :
+   //  - le libellé internationalisé du champ en cours de modification
+   //  - la nouvelle valeur pour le champ en cours de saisie au moment du clic
+   private String buildMessageModificationEnCours(ParametreDecorator parametreDecorator) {
+      String newValeur = parametreDecorator.getNewValeur();
+      if(parametreDecorator.getType().equals(EParametreType.BOOLEAN.getType())) {
+         newValeur = Labels.getLabel(new StringBuilder("general.checkbox.").append(newValeur).toString());
+      }
+      return ObjectTypesFormatters.getLabel("params.modale.modification.encours.message",
+         new String[] { parametreDecorator.getLibelleI18n(), newValeur });
+   }
+   
+   private void doCancelEdit(ParametreDecorator parametreDecorator) {
+      exitEditMode(parametreDecorator);
+   }
+   
+   //gère le passage dans le mode édition 
+   private void enterEditMode(ParametreDecorator parametreDecorator) {
+      parametreDecorator.setEditMode(true);
+      parametreDecoratorInModeEdit = parametreDecorator;
+   }
+   //gère la sortie du mode édition
+   private void exitEditMode(ParametreDecorator parametreDecorator) {
+      //réinitialisation du parametreDecorator
+      //NB : le champ defaultValeur n'est pas géré ici car la réinitialisation n'est pas triviale.
+      //     Par conséquent, elle n'est faite que lorsque la valeur à changer.
+      parametreDecorator.setNewValeur(null);
+      parametreDecorator.setEditMode(false);
+      parametreDecoratorInModeEdit = null;
+   }
+
+   //gère le cas où l'utilisateur clique sur le bouton Modifier ou Réinitialiser d'un paramètre alors qu'un autre 
+   //est en mode édition.
+   private void manageMultiEdition() {
+      if(parametreDecoratorInModeEdit != null) {
+         //si l'utilisateur a modifié la valeur 
+         if(parametreDecoratorInModeEdit.getNewValeur() != null) {
+            boolean isConfirmed = MessagesUtils.openQuestionModal(
+               Labels.getLabel("params.modale.modification.encours.titre"),
+               buildMessageModificationEnCours(parametreDecoratorInModeEdit));
+
+            if(isConfirmed) {
+               doSaveParametre(parametreDecoratorInModeEdit);
+            }
+            else {
+               doCancelEdit(parametreDecoratorInModeEdit);
+            }
+         }
+         else {
+            exitEditMode(parametreDecoratorInModeEdit);
+         }
+      }
+   }
+   
+   //méthode qui gère la sauvegarde d'une nouvelle valeur
+   private void doSaveParametre(ParametreDecorator parametreDecorator) {
+      //Vérification que la valeur a été modifiée avant de faire les actions : 
+      //NB : newValeur n'est valorisé que si l'utilisateur a changé la valeur
+      if(parametreDecorator.getNewValeur() != null) {
+         // Vérifie si la valeur du paramètre est égale à sa valeur par défaut, 
+         // si oui, suppression de la valeur spécifique
+         // si non, sauvegarde de la nouvelle valeur
+         boolean isDefaultValue = EParametreValeurParDefaut.isDefaultValue(parametreDecorator.getCode(), parametreDecorator.getNewValeur());
+         if (isDefaultValue) {
+            parametresManager.removeByPlateformeIdAndCodeManager(plateforme.getPlateformeId(), parametreDecorator.getCode());
+         }
+         else {
+            // Sauvegarde le paramètre avec la nouvelle valeur
+            // alimentation de la nouvelle valeur dans le champ parametre du parametreDecorator que si la sauvegarde
+            // se passe bien. On passe donc par un clone :
+            ParametreDTO parametreASauvegarder = parametreDecorator.getParametre().clone();
+            parametreASauvegarder.setValeur(parametreDecorator.getNewValeur());
+            parametresManager.createOrUpdateObject(plateforme.getPlateformeId(), parametreASauvegarder);
+         }
+         //reporte la nouvelle valeur dans l'objet Parametre du parametreDecorator
+         parametreDecorator.populateParametre();
+         // rafraichit la valeur defaultValue
+         parametreDecorator.setDefaultValeur(isDefaultValue);
+      }
+      // dans tous les cas, on sort du mode édition pour ce paramètre
+      exitEditMode(parametreDecorator);
+   }
+   
+   
    /**
     * Initialise l'image de bienvenue en récupérant le fichier image depuis le gestionnaire de paramètres.
     * Si le fichier existe, charge l'image à l'aide de la classe AImage.
@@ -361,7 +486,6 @@ public class ParametresController
     * @return La chaîne de titre de la plateforme.
     */
    private String buildPlateformString(){
-      Plateforme plateforme = SessionUtils.getPlateforme(Sessions.getCurrent().getAttributes());
 
       String plateformName = plateforme.getNom();
 
@@ -369,19 +493,6 @@ public class ParametresController
 
       return String.format("%s %s", translatedTitle, plateformName);
 
-   }
-
-   /**
-    * Enregistre les modifications apportées à un paramètre dans la base de données
-    *
-    * @param parameter Le paramètre à enregistrer.
-    */
-   private void saveParameter(ParametreDTO parameter){
-      // Obtient la plateforme actuelle depuis la session
-      Plateforme plateforme = SessionUtils.getPlateforme(Sessions.getCurrent().getAttributes());
-
-      // Met à jour/sauvegarde le paramètre de la plateforme en base de données
-      parametresManager.updateValeur(plateforme.getPlateformeId(), parameter.getCode(), parameter.getValeur());
    }
 
    /**
@@ -453,17 +564,6 @@ public class ParametresController
       MessagesUtils.openErrorModal(messageHeader, messageBody);
    }
 
-
-   /**
-    * Indique si le mode édition est activé pour un paramètre donné.
-    *
-    * @param parameter Le paramètre à vérifier.
-    * @return true si le mode édition est activé, sinon false.
-    */
-   public boolean isEditMode(ParametreDTO parameter){
-      return editModeMap.get(parameter);
-   }
-
    /**
     * Comparateur pour trier les paramètres par groupe puis par code.
     */
@@ -484,8 +584,12 @@ public class ParametresController
       }
    }
 
-   public List<ParametreDTO> getParameterList(){
-      return parameterList;
+   public List<ParametreDecorator> getParametreDecorators(){
+      return parametreDecorators;
+   }
+
+   public void setParametreDecorators(List<ParametreDecorator> parametreDecorators){
+      this.parametreDecorators = parametreDecorators;
    }
 
    public String getPlateformeTitle(){
@@ -510,11 +614,6 @@ public class ParametresController
 
    public void setWelcomeImage(AImage welcomeImage){
       this.welcomeImage = welcomeImage;
-   }
-
-
-   public void setParameterList(List<ParametreDTO> parameterList){
-      this.parameterList = parameterList;
    }
 
    public boolean isWelcomeImageExists(){
