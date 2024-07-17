@@ -47,6 +47,8 @@ import java.util.Properties;
 import fr.aphp.tumorotek.dao.administration.ParametreValeurSpecifiqueDao;
 import fr.aphp.tumorotek.dto.ParametreDTO;
 import fr.aphp.tumorotek.manager.administration.ParametresManager;
+import fr.aphp.tumorotek.manager.validation.BeanValidator;
+import fr.aphp.tumorotek.manager.validation.systeme.ParametreValeurSpecifiqueValidator;
 import fr.aphp.tumorotek.model.config.ParametreValeurSpecifique;
 import fr.aphp.tumorotek.param.EParametreValeurParDefaut;
 import fr.aphp.tumorotek.param.TkParam;
@@ -61,6 +63,7 @@ import org.apache.commons.configuration2.ex.ConfigurationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
+import org.springframework.validation.Validator;
 
 import java.util.List;
 
@@ -82,6 +85,8 @@ public class ParametresManagerImpl implements ParametresManager
    public static final Logger log = LoggerFactory.getLogger(ParametresManagerImpl.class);
 
    private ParametreValeurSpecifiqueDao parametreValeurSpecifiqueDao;
+   
+   private ParametreValeurSpecifiqueValidator parametreValeurSpecifiqueValidator;
 
    private final static String LOGO_FILEPATH = TumorotekProperties.TUMO_PROPERTIES_DIR + "/logo.png";
 
@@ -91,6 +96,10 @@ public class ParametresManagerImpl implements ParametresManager
    public void setParametreValeurSpecifiqueDao(ParametreValeurSpecifiqueDao parametreValeurSpecifiqueDao){
       this.parametreValeurSpecifiqueDao = parametreValeurSpecifiqueDao;
    }
+   public void setParametreValeurSpecifiqueValidator(ParametreValeurSpecifiqueValidator parametreValeurSpecifiqueValidator){
+      this.parametreValeurSpecifiqueValidator = parametreValeurSpecifiqueValidator;
+   }  
+   
 
    /**
     * @see fr.aphp.tumorotek.manager.administration.ParametresManager#getMessageAccueil(boolean)
@@ -304,36 +313,41 @@ public class ParametresManagerImpl implements ParametresManager
    }
 
    /**
-    * Met à jour la valeur d'un ParametreValeurSpecifique en fonction de l'identifiant de la plateforme, du code
-    * et de la nouvelle valeur fournie. Crée un nouveau ParametreValeurSpecifique s'il n'existe pas.
+    * Crée ou met à jour un ParametreValeurSpecifique en fonction de l'identifiant de la plateforme, du code
+    * et de la nouvelle valeur fournie.
     *
     * @param plateformID L'identifiant de la plateforme.
     * @param code Le code du ParametreValeurSpecifique.
     * @param newValue La nouvelle valeur du ParametreValeurSpecifique.
     */
    @Override
-   public void updateValeur(Integer plateformID, String code, String newValue){
+   public void createOrUpdateObject(Integer plateformId, ParametreDTO parametreDTO){
       // Vérifie si le code existe dans l'énumération
-      EParametreValeurParDefaut paramEnum = EParametreValeurParDefaut.findByCode(code);
+      EParametreValeurParDefaut paramEnum = EParametreValeurParDefaut.findByCode(parametreDTO.getCode());
       if (paramEnum == null) {
-         throw new IllegalArgumentException("Invalid code: " + code);
+         log.warn("Le code du paramètre : {} n'est pas valide", parametreDTO.getCode());
       }
-      // Trouve le ParametreValeurSpecifique dans la base de données en utilisant l'id de la plateforme et le code
-      ParametreValeurSpecifique plateformParametreValeurSpecifique = findParametresByPlateformeIdAndCode(plateformID, code);
-      if (plateformParametreValeurSpecifique != null) {
-         // Si le ParametreValeurSpecifique existe, met à jour sa valeur
-         plateformParametreValeurSpecifique.setValeur(newValue);
-         parametreValeurSpecifiqueDao.updateObject(plateformParametreValeurSpecifique);
-      } else {
-         // Si le ParametreValeurSpecifique n'existe pas, crée un nouveau ParametreValeurSpecifique
-         ParametreValeurSpecifique newParametreValeurSpecifique = new ParametreValeurSpecifique();
-         newParametreValeurSpecifique.setPlateformeId(plateformID);
-         newParametreValeurSpecifique.setCode(code);
-         newParametreValeurSpecifique.setValeur(newValue);
-         newParametreValeurSpecifique.setType(paramEnum.getType());
-         newParametreValeurSpecifique.setGroupe(paramEnum.getGroupe());
-         parametreValeurSpecifiqueDao.createObject(newParametreValeurSpecifique);
-
+      else {
+         // validation de la saisie de l'utilisateur
+         BeanValidator.validateObject(parametreDTO, new Validator[] {parametreValeurSpecifiqueValidator});
+         
+         // Trouve le ParametreValeurSpecifique dans la base de données en utilisant l'id de la plateforme et le code
+         ParametreValeurSpecifique plateformParametreValeurSpecifique = findParametresByPlateformeIdAndCode(plateformId, parametreDTO.getCode());
+         if (plateformParametreValeurSpecifique != null) {
+            // Si le ParametreValeurSpecifique existe, met à jour sa valeur
+            plateformParametreValeurSpecifique.setValeur(parametreDTO.getValeur());
+            parametreValeurSpecifiqueDao.updateObject(plateformParametreValeurSpecifique);
+         } else {
+            // Si le ParametreValeurSpecifique n'existe pas, crée un nouveau ParametreValeurSpecifique
+            ParametreValeurSpecifique newParametreValeurSpecifique = new ParametreValeurSpecifique();
+            newParametreValeurSpecifique.setPlateformeId(plateformId);
+            newParametreValeurSpecifique.setCode(parametreDTO.getCode());
+            newParametreValeurSpecifique.setValeur(parametreDTO.getValeur());
+            newParametreValeurSpecifique.setType(paramEnum.getType());
+            newParametreValeurSpecifique.setGroupe(paramEnum.getGroupe());
+            parametreValeurSpecifiqueDao.createObject(newParametreValeurSpecifique);
+   
+         }
       }
    }
 
@@ -343,21 +357,16 @@ public class ParametresManagerImpl implements ParametresManager
     *
     * @param plateformeId l'identifiant de la Plateforme
     * @param code le code de ParametreValeurSpecifique
-    * @return boolean indiquant si la suppression a été effectuée
     */
    @Override
-   public boolean removeByPlateformeIdAndCodeManager(Integer plateformeId, String code) {
+   public void removeByPlateformeIdAndCodeManager(Integer plateformeId, String code) {
       // Rechercher le paramètre à supprimer
       ParametreValeurSpecifique parametreToDelete = findParametresByPlateformeIdAndCode(plateformeId, code);
       // Si le paramètre est trouvé, on le supprime
       if (parametreToDelete != null) {
          Integer parametreId = parametreToDelete.getParametreValeurSpecifiqueId();
          parametreValeurSpecifiqueDao.removeObject(parametreId);
-         return true;
-         // Si le paramètre n'est pas trouvé dans la base de données, il n'a pas été supprimé, donc on retourne false
-      } else {
-         return false;
-      }
+      } 
    }
 
 

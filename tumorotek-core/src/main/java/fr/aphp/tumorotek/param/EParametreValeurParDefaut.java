@@ -1,12 +1,13 @@
 package fr.aphp.tumorotek.param;
 
 /**
- * Énumération représentant les paramètres par défaut dans chaque platform de TK
+ * Énumération représentant les paramètres par défaut pour chaque platforme de TK
  * Ces paramètres sont accessibles sous l'onglet administrateur - paramètres.
  * Si l'utilisateur modifie les valeurs par défaut via l'interface utilisateur, les modifications sont enregistrées
  * dans la table PARAMETRE_VALEUR_SPECIFIQUE.
  *
- * Chaque élément de l'énumération est défini par un code, une valeur par défaut, un type et un groupe auquel il appartient.
+ * Chaque élément de l'énumération est défini par un code, une valeur, un type et le groupe auquel il appartient.
+ * /!\ La valeur ne peut pas être null
  *
  * Exemple d'utilisation :
  * <pre>
@@ -20,8 +21,15 @@ package fr.aphp.tumorotek.param;
  */
 public enum EParametreValeurParDefaut
 {
+   //TK-435 : un seul paramètre dépendant de la plateforme est nécessaire lors de la mise en oeuvre
+   //mais le mécanisme est prévu pour en gérer d'autres sans aucune modification au niveau de l'écran Administration/Paramètres.
+   //L'ajout d'un paramètre consiste donc :
+   // - à définir une nouvelle entrée pour l'enum en définissant notamment la valeur par défaut.
+   //   mais ATTENTION, celle-ci ne peut pas être null. Il faut utiliser "" dans ce cas.
+   // - mettre en oeuvre son utilisation dans l'application
+   
    // paramètre quantité utilisé obligatoire lors de la création du dérivé :
-   DERIVE_QTE_OBLIGATOIRE("DERIVE_QTE_OBLIGATOIRE", "true", "boolean", "DERIVE");
+   DERIVE_QTE_OBLIGATOIRE("DERIVE_QTE_OBLIGATOIRE", "true", EParametreType.BOOLEAN, "DERIVE");
 
    private String code;
 
@@ -31,10 +39,10 @@ public enum EParametreValeurParDefaut
 
    private String groupe;
 
-   EParametreValeurParDefaut(String code, String valeur, String type, String groupe){
+   EParametreValeurParDefaut(String code, String valeur, EParametreType typeEnum, String groupe){
       this.code = code;
       this.valeur = valeur;
-      this.type = type;
+      this.type = typeEnum.getType();
       this.groupe = groupe;
    }
 
