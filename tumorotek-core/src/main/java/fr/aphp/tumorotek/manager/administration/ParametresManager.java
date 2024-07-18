@@ -35,13 +35,23 @@
  **/
 package fr.aphp.tumorotek.manager.administration;
 
+import fr.aphp.tumorotek.dto.ParametreDTO;
+import fr.aphp.tumorotek.model.config.ParametreValeurSpecifique;
+
 import java.io.File;
+import java.util.List;
 
 /**
- * Interface du service de gestion des paramètres de l'application
- * @author GCH
+
+ * Interface du service de gestion des paramètres de l'application et des plateformes.
+ * Une plateforme possède des paramètres dont les valeurs par défaut sont définies dans la classe EParametreValeurParDefaut.
+ * Lorsque l'utilisateur modifie une valeur par défaut, les modifications sont sauvegardées dans la table "PARAMETRE_VALEUR_SPECIFIQUE".
+ * Il existe également deux paramètres partagés par toutes les plateformes.  Ils sont gérés différemment (pour faciliter le déploiement).
+ * Il s'agit du message de bienvenue défini dans "tumorotek.properties" et du logo situé dans "catalina/localhost".
  *
+ * @author GCH
  */
+
 public interface ParametresManager
 {
 
@@ -54,21 +64,20 @@ public interface ParametresManager
 
    /**
     * Sauvegarde le message d'accueil
-    * @param msgAccueil
+    * @param msgAccueil le nouveau message d'accueil
     * @return true si le message a bien eété sauvegardé
     */
    boolean saveMessageAccueil(String msgAccueil);
 
    /**
     * Supprime le message d'accueil
-    * @param msgAccueil
     * @return true si le message a bien eété supprimé
     */
    boolean deleteMessageAccueil();
 
    /**
     * Récupère le fichier du logo affiché sur la page d'accueil
-    * @return
+    * @return File
     */
    File getLogoFile();
 
@@ -84,5 +93,14 @@ public interface ParametresManager
     * @return true si le logo a bien été suprimé
     */
    boolean deleteLogo();
+
+   List<ParametreDTO> findParametresByPlateformeId(Integer idPlateforme);
+
+
+    ParametreValeurSpecifique findParametresByPlateformeIdAndCode(Integer plateformID, String code);
+
+    void createOrUpdateObject(Integer plateformId, ParametreDTO parametreDTO);
+
+    void removeByPlateformeIdAndCodeManager(Integer plateformeId, String code);
 
 }

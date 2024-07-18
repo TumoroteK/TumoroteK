@@ -42,8 +42,18 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Properties;
-
+import fr.aphp.tumorotek.dao.administration.ParametreValeurSpecifiqueDao;
+import fr.aphp.tumorotek.dto.ParametreDTO;
+import fr.aphp.tumorotek.manager.administration.ParametresManager;
+import fr.aphp.tumorotek.manager.validation.BeanValidator;
+import fr.aphp.tumorotek.manager.validation.systeme.ParametreValeurSpecifiqueValidator;
+import fr.aphp.tumorotek.model.config.ParametreValeurSpecifique;
+import fr.aphp.tumorotek.param.EParametreValeurParDefaut;
+import fr.aphp.tumorotek.param.TkParam;
+import fr.aphp.tumorotek.param.TumorotekProperties;
+import fr.aphp.tumorotek.utils.TKStringUtils;
 import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.configuration2.FileBasedConfiguration;
 import org.apache.commons.configuration2.PropertiesConfiguration;
@@ -53,25 +63,45 @@ import org.apache.commons.configuration2.ex.ConfigurationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
+import org.springframework.validation.Validator;
 
-import fr.aphp.tumorotek.manager.administration.ParametresManager;
-import fr.aphp.tumorotek.param.TkParam;
-import fr.aphp.tumorotek.param.TumorotekProperties;
-import fr.aphp.tumorotek.utils.TKStringUtils;
+import java.util.List;
 
 /**
- * Service de gestion de paramètres de l'application
- * @author GCH
+
+ * Interface du service de gestion des paramètres de l'application et des plateformes.
+ * Une plateforme possède des paramètres dont les valeurs par défaut sont définies dans la classe EParametreValeurParDefaut.
+ * Lorsque l'utilisateur modifie une valeur par défaut, les modifications sont sauvegardées dans la table "PARAMETRE_VALEUR_SPECIFIQUE".
+ * Il existe également deux paramètres partagés par toutes les plateformes.  Ils sont gérés différemment (pour faciliter le déploiement).
+ * Il s'agit du message de bienvenue défini dans "tumorotek.properties" et du logo situé dans "catalina/localhost".
  *
+ * @author GCH
  */
+
+
 public class ParametresManagerImpl implements ParametresManager
 {
 
    public static final Logger log = LoggerFactory.getLogger(ParametresManagerImpl.class);
 
+   private ParametreValeurSpecifiqueDao parametreValeurSpecifiqueDao;
+   
+   private ParametreValeurSpecifiqueValidator parametreValeurSpecifiqueValidator;
+
    private final static String LOGO_FILEPATH = TumorotekProperties.TUMO_PROPERTIES_DIR + "/logo.png";
 
-   /* (non-Javadoc)
+
+   // Dependency injection
+
+   public void setParametreValeurSpecifiqueDao(ParametreValeurSpecifiqueDao parametreValeurSpecifiqueDao){
+      this.parametreValeurSpecifiqueDao = parametreValeurSpecifiqueDao;
+   }
+   public void setParametreValeurSpecifiqueValidator(ParametreValeurSpecifiqueValidator parametreValeurSpecifiqueValidator){
+      this.parametreValeurSpecifiqueValidator = parametreValeurSpecifiqueValidator;
+   }  
+   
+
+   /**
     * @see fr.aphp.tumorotek.manager.administration.ParametresManager#getMessageAccueil(boolean)
     */
    @Override
@@ -80,10 +110,10 @@ public class ParametresManagerImpl implements ParametresManager
       //On utilise un nouveau Properties à chaque appel pour que le message soit mis à jour sans nécessiter
       //un redémarrage de l'application
       final Properties tumoProperties = new Properties();
-      try( InputStream is = Files.newInputStream(Paths.get(TumorotekProperties.TUMO_PROPERTIES_PATH))){
+      try( InputStream is = Files.newInputStream(Paths.get(TumorotekProperties.TUMO_PROPERTIES_PATH)) ){
          tumoProperties.load(is);
       }catch(final IOException e){
-         log.error("Erreur lors du chargement du fichier {}",  TumorotekProperties.TUMO_PROPERTIES_PATH, e);
+         log.error("Erreur lors du chargement du fichier {}", TumorotekProperties.TUMO_PROPERTIES_PATH, e);
       }
 
       String msgAccueil = tumoProperties.getProperty(TkParam.MSG_ACCUEIL.getKey());
@@ -96,8 +126,9 @@ public class ParametresManagerImpl implements ParametresManager
       return msgAccueil;
    }
 
-   /* (non-Javadoc)
-    * @see fr.aphp.tumorotek.manager.administration.ParametresManager#saveMessageAccueil(java.lang.String)
+
+   /**
+    * @see fr.aphp.tumorotek.manager.administration.ParametresManager#saveMessageAccueil(String)
     */
    @Override
    public boolean saveMessageAccueil(final String msgAccueil){
@@ -111,8 +142,8 @@ public class ParametresManagerImpl implements ParametresManager
 
       final Parameters params = new Parameters();
       final FileBasedConfigurationBuilder<FileBasedConfiguration> builder =
-         new FileBasedConfigurationBuilder<FileBasedConfiguration>(PropertiesConfiguration.class)
-            .configure(params.properties().setFile(propertiesFile));
+         new FileBasedConfigurationBuilder<FileBasedConfiguration>(PropertiesConfiguration.class).configure(
+            params.properties().setFile(propertiesFile));
 
       try{
          final Configuration config = builder.getConfiguration();
@@ -127,16 +158,15 @@ public class ParametresManagerImpl implements ParametresManager
 
    }
 
-   @Override
-   /*
-    * (non-Javadoc)
+   /**
     * @see fr.aphp.tumorotek.manager.administration.ParametresManager#deleteMessageAccueil()
     */
+   @Override
    public boolean deleteMessageAccueil(){
       return saveMessageAccueil("");
    }
 
-   /* (non-Javadoc)
+   /**
     * @see fr.aphp.tumorotek.manager.administration.ParametresManager#getLogoFile()
     */
    @Override
@@ -144,8 +174,9 @@ public class ParametresManagerImpl implements ParametresManager
       return new File(LOGO_FILEPATH);
    }
 
-   /* (non-Javadoc)
-    * @see fr.aphp.tumorotek.manager.administration.ParametresManager#saveLogo(java.io.File)
+
+   /**
+    * @see fr.aphp.tumorotek.manager.administration.ParametresManager#saveLogo(File)
     */
    @Override
    public boolean saveLogo(final File logoFile){
@@ -162,7 +193,7 @@ public class ParametresManagerImpl implements ParametresManager
       }
 
       try( InputStream is = new ByteArrayInputStream(Files.readAllBytes(logoFile.toPath()));
-         FileOutputStream fos = new FileOutputStream(logo)){
+         FileOutputStream fos = new FileOutputStream(logo) ){
 
          final byte[] buf = new byte[1024];
          int i = 0;
@@ -180,7 +211,7 @@ public class ParametresManagerImpl implements ParametresManager
 
          oldLogo.renameTo(logo);
 
-         log.error("Erreur lors de la sauvegarde du fichier {}",  LOGO_FILEPATH, e);
+         log.error("Erreur lors de la sauvegarde du fichier {}", LOGO_FILEPATH, e);
 
       }finally{
 
@@ -193,11 +224,10 @@ public class ParametresManagerImpl implements ParametresManager
       return saved;
    }
 
-   @Override
-   /*
-    * (non-Javadoc)
+   /**
     * @see fr.aphp.tumorotek.manager.administration.ParametresManager#deleteLogo()
     */
+   @Override
    public boolean deleteLogo(){
 
       boolean deleted = false;
@@ -210,5 +240,134 @@ public class ParametresManagerImpl implements ParametresManager
       return deleted;
 
    }
+
+   /**
+    * Récupère une liste de ParametreDTO en fonction de l'identifiant de la plateforme.
+    *
+    * @param plateformeId L'identifiant de la plateforme.
+    * @return Set de ParametreDTO.
+    */
+   public List<ParametreDTO> findParametresByPlateformeId(Integer plateformeId) {
+      // Récupère les ParametreValeurSpecifique modifiés pour la plateforme donnée
+      List<ParametreValeurSpecifique> parametresModifies = parametreValeurSpecifiqueDao.findAllByPlateformeId(plateformeId);
+
+      // Initialise le set qui contiendra les ParametreDTO résultants
+      List<ParametreDTO> listOfParametres = new ArrayList<>();
+
+
+      // Parcours des valeurs par défaut des paramètres
+      for (EParametreValeurParDefaut eParametreValeurParDefaut : EParametreValeurParDefaut.values()) {
+         String code = eParametreValeurParDefaut.getCode();
+
+         // Vérifie s'il existe un ParametreValeurSpecifique modifié avec le même code
+         ParametreValeurSpecifique parametreModifie = findModifiedParamByCode(parametresModifies, code);
+
+         if (parametreModifie != null) {
+            // Si oui, mappe-le vers ParametreDTO et ajoute-le au set
+            ParametreDTO parametreDTO = ParametreDTO.mapFromEntity(parametreModifie);
+            listOfParametres.add(parametreDTO);
+         } else {
+            // Si aucun ParametreValeurSpecifique modifié n'est trouvé, ajoute les valeurs par défaut au set
+            listOfParametres.add(new ParametreDTO(code, eParametreValeurParDefaut.getValeur(), eParametreValeurParDefaut.getType(), eParametreValeurParDefaut.getGroupe()));
+         }
+      }
+
+      // Retourne le set des ParametreDTO
+      return listOfParametres;
+   }
+
+   /**
+    * Recherche un ParametreValeurSpecifique modifié avec le code donné dans la liste spécifiée.
+    *
+    * @param modifiedParams Liste des ParametreValeurSpecifique modifiés.
+    * @param code           Le code du paramètre à rechercher.
+    * @return Le ParametreValeurSpecifique modifié correspondant au code, ou null s'il n'est pas trouvé.
+    */
+   private ParametreValeurSpecifique findModifiedParamByCode(List<ParametreValeurSpecifique> modifiedParams, String code) {
+      // Itère à travers la liste des ParametreValeurSpecifique modifiés et trouve celui avec le code correspondant
+      for (ParametreValeurSpecifique param : modifiedParams) {
+         if (code.equals(param.getCode())) {
+            return param;
+         }
+      }
+      return null; // Retourne null si non trouvé
+   }
+
+
+   /**
+    * Recherche un ParametreValeurSpecifique en fonction de l'identifiant de la plateforme et du code.
+    *
+    * @param plateformID L'identifiant de la plateforme.
+    * @param code Le code du ParametreValeurSpecifique.
+    * @return Le ParametreValeurSpecifique trouvé.
+    */
+   @Override
+   public ParametreValeurSpecifique findParametresByPlateformeIdAndCode(Integer plateformID, String code) {
+      List<ParametreValeurSpecifique> parametres = parametreValeurSpecifiqueDao.findByPlateformeIdAndCode(plateformID, code);
+
+      if (!parametres.isEmpty()) {
+         return parametres.get(0);
+      } else {
+         return null;
+      }
+   }
+
+   /**
+    * Crée ou met à jour un ParametreValeurSpecifique en fonction de l'identifiant de la plateforme, du code
+    * et de la nouvelle valeur fournie.
+    *
+    * @param plateformID L'identifiant de la plateforme.
+    * @param code Le code du ParametreValeurSpecifique.
+    * @param newValue La nouvelle valeur du ParametreValeurSpecifique.
+    */
+   @Override
+   public void createOrUpdateObject(Integer plateformId, ParametreDTO parametreDTO){
+      // Vérifie si le code existe dans l'énumération
+      EParametreValeurParDefaut paramEnum = EParametreValeurParDefaut.findByCode(parametreDTO.getCode());
+      if (paramEnum == null) {
+         log.warn("Le code du paramètre : {} n'est pas valide", parametreDTO.getCode());
+      }
+      else {
+         // validation de la saisie de l'utilisateur
+         BeanValidator.validateObject(parametreDTO, new Validator[] {parametreValeurSpecifiqueValidator});
+         
+         // Trouve le ParametreValeurSpecifique dans la base de données en utilisant l'id de la plateforme et le code
+         ParametreValeurSpecifique plateformParametreValeurSpecifique = findParametresByPlateformeIdAndCode(plateformId, parametreDTO.getCode());
+         if (plateformParametreValeurSpecifique != null) {
+            // Si le ParametreValeurSpecifique existe, met à jour sa valeur
+            plateformParametreValeurSpecifique.setValeur(parametreDTO.getValeur());
+            parametreValeurSpecifiqueDao.updateObject(plateformParametreValeurSpecifique);
+         } else {
+            // Si le ParametreValeurSpecifique n'existe pas, crée un nouveau ParametreValeurSpecifique
+            ParametreValeurSpecifique newParametreValeurSpecifique = new ParametreValeurSpecifique();
+            newParametreValeurSpecifique.setPlateformeId(plateformId);
+            newParametreValeurSpecifique.setCode(parametreDTO.getCode());
+            newParametreValeurSpecifique.setValeur(parametreDTO.getValeur());
+            newParametreValeurSpecifique.setType(paramEnum.getType());
+            newParametreValeurSpecifique.setGroupe(paramEnum.getGroupe());
+            parametreValeurSpecifiqueDao.createObject(newParametreValeurSpecifique);
+   
+         }
+      }
+   }
+
+   /**
+    * Supprime un enregistrement de la table ParametreValeurSpecifique correspondant à l'identifiant de la Plateforme
+    * et au code donnés.
+    *
+    * @param plateformeId l'identifiant de la Plateforme
+    * @param code le code de ParametreValeurSpecifique
+    */
+   @Override
+   public void removeByPlateformeIdAndCodeManager(Integer plateformeId, String code) {
+      // Rechercher le paramètre à supprimer
+      ParametreValeurSpecifique parametreToDelete = findParametresByPlateformeIdAndCode(plateformeId, code);
+      // Si le paramètre est trouvé, on le supprime
+      if (parametreToDelete != null) {
+         Integer parametreId = parametreToDelete.getParametreValeurSpecifiqueId();
+         parametreValeurSpecifiqueDao.removeObject(parametreId);
+      } 
+   }
+
 
 }

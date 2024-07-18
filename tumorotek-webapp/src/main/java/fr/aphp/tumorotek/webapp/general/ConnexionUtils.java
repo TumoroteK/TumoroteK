@@ -46,6 +46,7 @@ import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -315,7 +316,8 @@ public final class ConnexionUtils
          sessionScp.put("User", user);
       }
       if(pf != null){
-         sessionScp.put("Plateforme", pf);
+         // Enregistre la liste de paramètres dans la session
+         SessionUtils.savePlatformAndPlatformParametersInSession(pf, sessionScp);
       }
 
       if(bank != null){

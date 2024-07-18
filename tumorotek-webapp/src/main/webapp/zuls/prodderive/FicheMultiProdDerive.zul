@@ -204,8 +204,10 @@
 						<calendarbox id="dateTransfoCalBox" value="@{fwinMultiProdDerive$composer.object.dateTransformation,
 			        			save-when='validate.onClick, create.onClick, self.onBlur, interfacage.onClick'}" />
 							
-						<!-- Quantité utilisé dans la transformation -->
-						<label id="transfoQuantiteLabel" value="${c:l('ficheProdDerive.transformation.quantité')}" sclass="formLabel"/>
+						<hbox>
+							<label id="transfoQuantiteLabel" value="${c:l('ficheProdDerive.transformation.quantité')}" sclass="formLabel"/>
+							<label id="requiredTransfoQuantiteLabel" value="*" sclass="requiredMark" />
+						</hbox>
 
 						<div id="transfoQuantiteDiv">
 							<decimalbox id="transfoQuantiteBoxDerive"
@@ -216,7 +218,7 @@
 								format="##0.###" scale="3"
 								locale="en"
 							/>
-							
+						<!--	Les unités-->
 							<label id="transfoQuantiteUnitesBoxDerive"
 								value="@{fwinMultiProdDerive$composer.selectedTransfoQuantiteUnite.unite
 								load-after='codesParentBoxDerive.onSelect'}"

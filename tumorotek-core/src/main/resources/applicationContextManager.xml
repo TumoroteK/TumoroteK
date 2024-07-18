@@ -10,9 +10,12 @@
 
 	<import resource="applicationContextAOP.xml" />
 
+
+
 	<!-- Package coeur.patient -->
 	<bean id="lienFamilialValidator"
 		class="fr.aphp.tumorotek.manager.validation.coeur.patient.LienFamilialValidator" />
+
 
 	<bean id="lienFamilialManager" parent="txProxyTemplate">
 		<property name="target">
@@ -2585,9 +2588,19 @@
 	</bean>
 
 	<!-- Package administration -->
-	<bean id="parametresManager"
-		class="fr.aphp.tumorotek.manager.impl.administration.ParametresManagerImpl" />
-  
+	<bean id="parametreValeurSpecifiqueValidator"
+		class="fr.aphp.tumorotek.manager.validation.systeme.ParametreValeurSpecifiqueValidator" />
+
+	<bean id="parametresManager" parent="txProxyTemplate">
+		<property name="target">
+			<bean
+				  class="fr.aphp.tumorotek.manager.impl.administration.ParametresManagerImpl" >
+				  <property name="parametreValeurSpecifiqueDao" ref="parametreValeurSpecifiqueDao" />
+				  <property name="parametreValeurSpecifiqueValidator" ref="parametreValeurSpecifiqueValidator" />
+			</bean>
+		</property>
+	</bean>
+
 	<bean id="configItemManager" parent="txProxyTemplate">
 		<property name="target">
 			<bean

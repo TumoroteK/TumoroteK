@@ -35,12 +35,9 @@
  **/
 package fr.aphp.tumorotek.webapp.general;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
-import org.zkoss.zk.ui.Sessions;
-
+import fr.aphp.tumorotek.action.ManagerLocator;
+import fr.aphp.tumorotek.dto.ParametreDTO;
+import fr.aphp.tumorotek.manager.administration.ParametresManager;
 import fr.aphp.tumorotek.manager.impl.interfacage.ResultatInjection;
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.contexte.EContexte;
@@ -51,6 +48,11 @@ import fr.aphp.tumorotek.model.interfacage.Recepteur;
 import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
 import fr.aphp.tumorotek.param.TkParam;
 import fr.aphp.tumorotek.utils.Utils;
+import org.zkoss.zk.ui.Sessions;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Utility class fournissant les methodes récupérant les variables de session.
@@ -290,5 +292,71 @@ public final class SessionUtils {
          && ((List<Banque>) Sessions.getCurrent()
             .getAttribute("ToutesCollections")).stream().anyMatch(b -> b.getEtude() != null);  
    }
+   /**
+    * Sauvegarde la Plateforme donnée ainsi que ses paramètres associés dans la session.
+    * Si la Plateforme est nulle, elle supprime la Plateforme et les paramètres de la session.
+    *
+    * @param plateforme La Plateforme à sauvegarder dans la session. Peut être nulle.
+    * @param sessionScp La Map de session où la Plateforme et les paramètres seront sauvegardés.
+    */
+
+   public static void savePlatformAndPlatformParametersInSession(final Plateforme plateforme, final Map<String, Object> sessionScp) {
+      if (plateforme == null){
+         // nettoyage du cache
+         sessionScp.remove("Plateforme");
+         sessionScp.remove("Parametres");
+      }
+      else {
+         sessionScp.put("Plateforme", plateforme);
+         // Obtient les paramètres associés à l'ID de la plateforme
+         List<ParametreDTO> parametres = ManagerLocator.getManager(ParametresManager.class)
+                 .findParametresByPlateformeId(plateforme.getPlateformeId());
+
+         // Stocke la liste de paramètres dans la session sous la clé "Parametres"
+         sessionScp.put("Parametres", parametres);
+      }
+
+   }
+
+
+
+
+   /**
+    * Récupère les paramètres de la plateforme depuis la session.
+    *
+    * @return List<ParametreDTO> L'ensemble des paramètres de la plateforme.
+    */
+   public static List<ParametreDTO> getParametresPlateforme(final Map<String, Object> sessionScp) {
+      if(sessionScp.get("Parametres") != null){
+         return (List<ParametreDTO>) sessionScp.get("Parametres");
+      }
+      return new ArrayList<>();
+   }
+
+
+
+   /**
+    * Récupère un ParametreDTO en utilisant le code spécifié.
+    *
+    * @param codeToFind Le code à utiliser pour récupérer le ParametreDTO.
+    * @return Le ParametreDTO correspondant au code spécifié, ou null s'il n'est pas trouvé.
+    */
+   public static ParametreDTO getParametreByCode(String codeToFind, Map<String, Object> sessionScp) {
+      // Récupère l'ensemble des ParametreDTO à partir de la session de la plateforme
+      List<ParametreDTO> parametreDTOList = getParametresPlateforme(sessionScp);
+
+      // Parcours l'ensemble des ParametreDTO pour trouver celui avec le code spécifié
+      for (ParametreDTO parametreDTO : parametreDTOList) {
+         // Vérifie si le code du ParametreDTO actuel correspond au code recherché
+         if (parametreDTO.getCode().equals(codeToFind)) {
+            // Retourne le ParametreDTO trouvé
+            return parametreDTO;
+         }
+      }
+
+      // Aucun ParametreDTO correspondant n'a été trouvé, retourne null
+      return null;
+   }
+
 
 }

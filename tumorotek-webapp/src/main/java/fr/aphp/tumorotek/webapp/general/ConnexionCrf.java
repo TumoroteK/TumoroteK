@@ -258,7 +258,10 @@ public class ConnexionCrf extends GenericForwardComposer<Component>
    public void redirect(){
       if(selectedBanque != null){
          sessionScope.put("User", user);
-         sessionScope.put("Plateforme", selectedBanque.getPlateforme());
+
+         // Enregistre la liste de paramètres dans la session
+         SessionUtils.savePlatformAndPlatformParametersInSession(selectedBanque.getPlateforme(), sessionScope);
+
          sessionScope.put("Banque", selectedBanque);
          final List<Banque> bks = new ArrayList<>();
          bks.add(selectedBanque);

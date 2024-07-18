@@ -1983,5 +1983,20 @@
 				</constructor-arg>
 			</bean>
 		</property>
-	</bean>	
+	</bean>
+
+	<bean id="parametreValeurSpecifiqueDao" parent="abstractDao">
+		<property name="proxyInterfaces">
+			<value>fr.aphp.tumorotek.dao.administration.ParametreValeurSpecifiqueDao</value>
+		</property>
+		<property name="target">
+			<bean parent="abstractDaoTarget">
+				<constructor-arg>
+					<value>fr.aphp.tumorotek.model.config.ParametreValeurSpecifique</value>
+				</constructor-arg>
+			</bean>
+		</property>
+	</bean>
+
+
 </beans>

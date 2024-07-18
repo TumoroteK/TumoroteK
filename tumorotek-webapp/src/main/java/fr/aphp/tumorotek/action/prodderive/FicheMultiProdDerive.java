@@ -53,6 +53,9 @@ import java.util.stream.IntStream;
 
 import javax.servlet.http.HttpServletRequest;
 
+import fr.aphp.tumorotek.dto.ParametreDTO;
+import fr.aphp.tumorotek.param.EParametreValeurParDefaut;
+import fr.aphp.tumorotek.utils.MessagesUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -197,6 +200,9 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
 
    private Button stockageDerives;
 
+   private Label requiredTransfoQuantiteLabel;
+
+
    //Objets Principaux.
    // ajout de dérivés
    private List<ProdDerive> prodDerives = new ArrayList<>();
@@ -244,6 +250,8 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
    public void doAfterCompose(final Component comp) throws Exception{
       super.doAfterCompose(comp);
 
+      initializeQuantiteUtiliseObligatoireFromSession();
+
       setWaitLabel("ficheProdDerive.multi.creation.encours");
 
       // liste de composants pour le prlvt parent
@@ -261,6 +269,9 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
 
       getBinder().loadAll();
    }
+
+
+
 
    /**
     * Change le mode de la fiche en creation.
@@ -901,7 +912,6 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
     * Méthode exécutée lors du clic sur le bouton addProdDerives.
     * Les nouveaux dérivés seront créés (mais pas encore
     * sauvegardés) et ajoutés à la liste.
-    * @param Event : clic sur le lien addProdDerives.
     */
    public void onClick$addProdDerives(){
 
@@ -913,6 +923,26 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
          if(getSelectedType() == null){
             Clients.scrollIntoView(typesBoxDerive);
             throw new WrongValueException(typesBoxDerive, Labels.getLabel("ficheProdDerive.error.type"));
+         }
+         // TK-434: Sécuriser la saisie de la quantité utilisée si ce champ est pertinent (visible) c'est-à-dire
+         // typeParent est différent de Aucun
+         if (!getTypeParent().equals("Aucun")) {
+            // si le champ "quantité" est vide, contrôles liés au paramètre défini dans l'administration (obligatoire ou non)
+            if (transfoQuantiteBoxDerive.getValue() == null){
+               // et la plateforme est configurée pour avoir la saisie de quantité utilisée obligatoire, on bloque l'ajout
+               if (isQuantiteObligatoire){
+                  Clients.scrollIntoView(transfoQuantiteBoxDerive);
+                  // afficher un message d'erreur à côté du champ "quantité utilisée obligatoire"
+                  throw new WrongValueException(transfoQuantiteBoxDerive, Labels.getLabel("ficheMultiProdDerive.validation.quantite"));
+               } else{
+                  // si la valeur du paramètre "quantité utilisée obligatoire" est false,  afficher une fenêtre d'avertissement
+                  boolean userAnswer = MessagesUtils.openQuestionModal(Labels.getLabel("general.warning"),
+                                                                       Labels.getLabel("ficheProdDerive.warning.quantite"));
+                  if (!userAnswer) {
+                     return;
+                  }
+               }
+            }
          }
 
          // si le dérivé est issu d'un parent connu
@@ -1100,6 +1130,7 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
       }
    }
 
+
    /**
     * Méthode supprimant un des dérivés que l'utilisateur
     * souhaitait créer.
@@ -1140,6 +1171,7 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
       }
 
    }
+
 
    /**
     * Méthode appelée après la saisie d'une valeur dans le champ
@@ -1190,7 +1222,7 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
    /**
     * Met à jour la liste de dérivés décorées
     * @since 2.0.13.2
-    * @param table dérivé - emplacements
+    * @param results: table dérivé - emplacements
     */
    private void updateDecoList(final Hashtable<ProdDerive, Emplacement> results){
 
@@ -2520,6 +2552,14 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
       return deriveDecoRenderer;
    }
 
+   public Label getRequiredTransfoQuantiteLabel() {
+      return requiredTransfoQuantiteLabel;
+   }
+
+   public void setRequiredTransfoQuantiteLabel(Label requiredTransfoQuantiteLabel) {
+      this.requiredTransfoQuantiteLabel = requiredTransfoQuantiteLabel;
+   }
+
    public void onClick$changeNumerotation(){
       changeNumerotation.setVisible(false);
       choixNumerotation.setVisible(true);
@@ -2619,6 +2659,26 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
       }
    }
 
+   /**
+    * Initialise la quantité utilisée obligatoire à partir de la session.
+    *
+    * Note: La condition d'affichage de l'astérisque rouge est gérée dynamiquement dans cette méthode.
+    * Si la quantité utilisée n'est pas obligatoire, l'astérisque est masqué, sinon il est affiché.
+    *
+    */
+   private void initializeQuantiteUtiliseObligatoireFromSession(){
+      // Récupérer le Enum
+      EParametreValeurParDefaut deriveQteObligatoire = EParametreValeurParDefaut.DERIVE_QTE_OBLIGATOIRE;
+      // Obtenir le DTO associé au paramètre
+      ParametreDTO deriveQteObligatoireDto = SessionUtils.getParametreByCode(deriveQteObligatoire.getCode(), sessionScope);
+      // Définir la visibilité du label
+
+      isQuantiteObligatoire = Boolean.parseBoolean(deriveQteObligatoireDto.getValeur());
+
+      requiredTransfoQuantiteLabel.setVisible(isQuantiteObligatoire);
+
+   }
+
    /*************************************************************************/
    /************************** INTERFACAGES *********************************/
    /*************************************************************************/
@@ -2689,4 +2749,7 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
          dateTransfoCalBox.setFocus(true);
       }
   }
+
+
+
 }

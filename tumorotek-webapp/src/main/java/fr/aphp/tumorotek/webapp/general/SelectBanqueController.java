@@ -46,6 +46,7 @@ import java.util.ResourceBundle;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
+
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Execution;
@@ -328,7 +329,10 @@ public class SelectBanqueController extends GenericForwardComposer<Component>
             || ManagerLocator.getUtilisateurManager().getPlateformesManager(user).contains(selectedPlateforme)){
             final Map<String, Object> sessionScp = session.getAttributes();
             sessionScp.put("User", user);
-            sessionScp.put("Plateforme", selectedPlateforme);
+
+            // Enregistre la liste de paramètres dans la session
+            SessionUtils.savePlatformAndPlatformParametersInSession(selectedPlateforme, sessionScope);
+
             ConnexionUtils.generateDroitsForSelectedBanque(null, selectedPlateforme, user, sessionScope);
             Executions.sendRedirect("/zuls/main/main.zul");
          }

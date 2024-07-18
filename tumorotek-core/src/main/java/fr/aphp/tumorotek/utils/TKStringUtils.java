@@ -39,6 +39,8 @@ import org.jsoup.Jsoup;
 import org.jsoup.parser.Tag;
 import org.jsoup.safety.Whitelist;
 
+
+
 /**
  * @author GCH
  *
@@ -46,10 +48,13 @@ import org.jsoup.safety.Whitelist;
 public final class TKStringUtils
 {
 
+
+
    /**
     * Constructeur privé
     */
    private TKStringUtils(){}
+
 
    /**
     * Echappe, sécurise et nettoie une string HTML
@@ -152,5 +157,7 @@ public final class TKStringUtils
       return cleanString;
 
    }
+
+
 
 }

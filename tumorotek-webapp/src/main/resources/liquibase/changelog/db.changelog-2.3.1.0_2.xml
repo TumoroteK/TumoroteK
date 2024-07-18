@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.10.xsd">
+
+    <changeSet author="tk_434" id="createTable_PARAMETRE_VALEUR_SPECIFIQUE_v2">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="PARAMETRE_VALEUR_SPECIFIQUE"/>
+            </not>
+        </preConditions>
+        <createTable tableName="PARAMETRE_VALEUR_SPECIFIQUE">
+            <column name="PARAMETRE_VALEUR_SPECIFIQUE_ID" type="INT">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="PLATEFORME_ID" type="INT">
+                <constraints nullable="false" foreignKeyName="FK_PARAM_PLATEFORME_ID" referencedTableName="PLATEFORME"  referencedColumnNames="PLATEFORME_ID"/>
+            </column>
+            <column name="CODE" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="VALEUR" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="TYPE" type="VARCHAR(25)"/>
+            <column name="GROUPE" type="VARCHAR(25)"/>
+        </createTable>
+    </changeSet>
+
+</databaseChangeLog>

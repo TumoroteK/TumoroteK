@@ -115,6 +115,7 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
 
    private static final long serialVersionUID = 4384639895874573764L;
 
+
    protected Textbox codePrefixeLabelDerive;
 
    protected Textbox codeBoxDerive;
@@ -153,7 +154,6 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
 
    protected Listbox modePrepaBoxDerive;
 
-   // private Label transfoQuantiteUnitesBoxDerive;
    protected Combobox collabBoxDerive;
 
    protected Label operateurAideSaisieDerive;
@@ -303,6 +303,9 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
 
    private String emplacementAdrl = "";
 
+   protected boolean isQuantiteObligatoire;
+
+
    //Labels anonymisables
    private Label emplacementLabelDerive;
 
@@ -345,6 +348,7 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
       // liste de composants pour la transformation
       setObjLabelsTransformation(new Component[] {this.rowTransformation1, this.rowTransformation2,});
    }
+
 
    @Override
    public void setObject(final TKdataObject pd){
@@ -847,19 +851,8 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
     */
 
    public void initEditableMode(){
-      //    volume = null;
-      //    volumeInit = null;
-      //    quantite = null;
-      //    quantiteInit = null;
-      //    dateCongelation = null;
-      //    dateTransformation = null;
-      //    quantiteMax = null;
-      //    quantiteTransformation = null;
 
       codePrefixe = this.prodDerive.getCode();
-
-      //codePrefixe = this.prodDerive.getCode().substring(0,
-      //    this.prodDerive.getCode().lastIndexOf("."));
 
       // si le parent est un prlvt
       if(typeParent != null){
@@ -1117,16 +1110,7 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
    /*************************************************************************/
    /************************** FORMATTERS ***********************************/
    /*************************************************************************/
-//   // /!\ le composant codeBoxDerive ne semble plus utilisé : code en commentaire dans le zul
-//   // utilisation à la place de codePrefixeLabelDerive...
-//   //  A SUPPRIMER ......
-//   /**
-//    * Méthode appelée après la saisie d'une valeur dans le champ
-//    * codeBoxDerive. Cette valeur sera mise en majuscules.
-//    */
-//   public void onBlur$codeBoxDerive(){
-//      codeBoxDerive.setValue(codeBoxDerive.getValue().toUpperCase().trim());
-//   }
+
 
    /**
     * Méthode appelée après la saisie d'une valeur dans le champ
@@ -1546,7 +1530,6 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
 
    /**
     * Select les non conformites dans la dropdown list.
-    * @param risks liste à selectionner
     */
 
    public void selectNonConformites(){
@@ -2031,7 +2014,7 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
             volume = volumeValue.floatValue();
             // le volume doit être positif
             if(volume < 0){
-               throw new WrongValueException(comp, "Seul les nombres non-négatifs " + "sont autorisés.");
+               throw new WrongValueException(comp, Labels.getLabel("validation.negative.value"));
             }
             // si une valeur est saisie dans le champ volumeInitBox
             if(volumeInit != null){
@@ -2153,7 +2136,7 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
             quantite = quantiteValue.floatValue();
             // la quantite doit être positive
             if(quantite < 0){
-               throw new WrongValueException(comp, "Seul les nombres non-négatifs sont autorisés.");
+               throw new WrongValueException(comp, Labels.getLabel("validation.negative.value"));
             }
             // si une valeur est saisie dans le champ quantiteInitBox
             if(quantiteInit != null){
@@ -2190,7 +2173,6 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
             }else{
                Clients.clearWrongValue(quantiteInitBoxDerive);
                quantiteInitBoxDerive.setConstraint("");
-               //quantiteInitBoxDerive.setValue(null);
                quantiteInitBoxDerive.setValue("");
                quantiteInitBoxDerive.setConstraint(cttQuantiteInit);
             }
@@ -2254,60 +2236,72 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
 
    /**
     * Contrainte vérifiant que la quantite de transformation n'est
-    * pas inférieure à 0 et n'est pas supérieure à celle du parent.
+    * pas inférieure à 0, n'est pas supérieure à celle du parent et n'est pas null si isQuantiteObligatoire == true.
     * @author Pierre Ventadour.
     *
     */
    public class ConstQuantiteTransformation implements Constraint
    {
       /**
-       * Méthode de validation du champ quantiteInitBox.
+       * Valide la quantité de transformation. Ce champ n'est visible que si un parent est défini
+       *
+       * @param comp  Le composant associé à la contrainte.
+       * @param value La valeur de la quantité de transformation.
+       * @throws WrongValueException Si la validation échoue.
        */
       @Override
       public void validate(final Component comp, final Object value){
-         final BigDecimal quantiteTransfoValue = (BigDecimal) value;
-         if(quantiteTransfoValue != null){
-            quantiteTransformation = quantiteTransfoValue.floatValue();
-
-            if(quantiteTransformation < 0){
-               throw new WrongValueException(comp, "Seul les nombres positifs sont acceptés.");
+         // Contrôle à  faire que si un parent est renseigné
+         if(!getTypeParent().equals("Aucun")) {
+            final BigDecimal quantiteTransfoValue = (BigDecimal) value;
+            // Si isQuantiteObligatoire est null et elle doit être rensigné: Lance une exception
+            if (isQuantiteObligatoire && quantiteTransfoValue == null) {
+               throw new WrongValueException(comp, Labels.getLabel("ficheMultiProdDerive.validation.quantite"));
             }
-            // sinon on enlève toutes les erreurs affichées
-            BigDecimal decimal = new BigDecimal(quantiteTransformation);
-            Clients.clearWrongValue(transfoQuantiteBoxDerive);
-            transfoQuantiteBoxDerive.setConstraint("");
-            transfoQuantiteBoxDerive.setValue(decimal);
-            transfoQuantiteBoxDerive.setConstraint(cttQuantiteTransfo);
-
-            if(quantiteMax != null && quantiteTransformation > quantiteMax){
-               final StringBuffer sb = new StringBuffer();
-               sb.append("La quantité utilisée ne peut dépasser " + "celle disponible dans ");
-
-               if(typeParent.equals("Prelevement")){
-                  sb.append("le prélèvement parent : ");
-                  sb.append(quantiteMax);
-                  sb.append(((Prelevement) getParentObject()).getQuantiteUnite().getNom());
-                  sb.append(".");
-               }else if(typeParent.equals("Echantillon")){
-                  sb.append("l'échantillon parent : ");
-                  sb.append(quantiteMax);
-                  sb.append(((Echantillon) getParentObject()).getQuantiteUnite().getNom());
-                  sb.append(".");
-               }else if(typeParent.equals("ProdDerive")){
-                  sb.append("le produit dérivé parent : ");
-                  sb.append(quantiteMax);
-                  sb.append(((ProdDerive) getParentObject()).getQuantiteUnite().getNom());
-                  sb.append(".");
+            // Si la valeur est negative : Lance une exception
+            if(quantiteTransfoValue != null){
+               quantiteTransformation = quantiteTransfoValue.floatValue();
+   
+               if(quantiteTransformation < 0){
+                  throw new WrongValueException(comp, Labels.getLabel("validation.negative.value"));
                }
-
-               throw new WrongValueException(comp, sb.toString());
+               // sinon on enlève toutes les erreurs affichées
+               BigDecimal decimal = new BigDecimal(quantiteTransformation);
+               Clients.clearWrongValue(transfoQuantiteBoxDerive);
+               transfoQuantiteBoxDerive.setConstraint("");
+               transfoQuantiteBoxDerive.setValue(decimal);
+               transfoQuantiteBoxDerive.setConstraint(cttQuantiteTransfo);
+   
+               if(quantiteMax != null && quantiteTransformation > quantiteMax){
+                  final StringBuffer sb = new StringBuffer();
+                  sb.append("La quantité utilisée ne peut dépasser " + "celle disponible dans ");
+   
+                  if(typeParent.equals("Prelevement")){
+                     sb.append("le prélèvement parent : ");
+                     sb.append(quantiteMax);
+                     sb.append(((Prelevement) getParentObject()).getQuantiteUnite().getNom());
+                     sb.append(".");
+                  }else if(typeParent.equals("Echantillon")){
+                     sb.append("l'échantillon parent : ");
+                     sb.append(quantiteMax);
+                     sb.append(((Echantillon) getParentObject()).getQuantiteUnite().getNom());
+                     sb.append(".");
+                  }else if(typeParent.equals("ProdDerive")){
+                     sb.append("le produit dérivé parent : ");
+                     sb.append(quantiteMax);
+                     sb.append(((ProdDerive) getParentObject()).getQuantiteUnite().getNom());
+                     sb.append(".");
+                  }
+   
+                  throw new WrongValueException(comp, sb.toString());
+               }
+               // sinon on enlève toutes les erreurs affichées
+               decimal = new BigDecimal(quantiteTransformation);
+               Clients.clearWrongValue(transfoQuantiteBoxDerive);
+               transfoQuantiteBoxDerive.setConstraint("");
+               transfoQuantiteBoxDerive.setValue(decimal);
+               transfoQuantiteBoxDerive.setConstraint(cttQuantiteTransfo);
             }
-            // sinon on enlève toutes les erreurs affichées
-            decimal = new BigDecimal(quantiteTransformation);
-            Clients.clearWrongValue(transfoQuantiteBoxDerive);
-            transfoQuantiteBoxDerive.setConstraint("");
-            transfoQuantiteBoxDerive.setValue(decimal);
-            transfoQuantiteBoxDerive.setConstraint(cttQuantiteTransfo);
          }
       }
    }
@@ -2615,4 +2609,6 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
    public String getObjetStatut(){
       return ObjectTypesFormatters.ILNObjectStatut(getObject().getObjetStatut());
    }
+
+
 }
