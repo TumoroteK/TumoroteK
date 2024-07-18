@@ -2243,7 +2243,7 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
    public class ConstQuantiteTransformation implements Constraint
    {
       /**
-       * Valide la quantité de transformation.
+       * Valide la quantité de transformation. Ce champ n'est visible que si un parent est défini
        *
        * @param comp  Le composant associé à la contrainte.
        * @param value La valeur de la quantité de transformation.
@@ -2251,54 +2251,57 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
        */
       @Override
       public void validate(final Component comp, final Object value){
-         final BigDecimal quantiteTransfoValue = (BigDecimal) value;
-         // Si isQuantiteObligatoire est null et elle doit être rensigné: Lance une exception
-         if (isQuantiteObligatoire && quantiteTransfoValue == null) {
-            throw new WrongValueException(comp, Labels.getLabel("ficheMultiProdDerive.validation.quantite"));
-         }
-         // Si la valeur est negative : Lance une exception
-         if(quantiteTransfoValue != null){
-            quantiteTransformation = quantiteTransfoValue.floatValue();
-
-            if(quantiteTransformation < 0){
-               throw new WrongValueException(comp, Labels.getLabel("validation.negative.value"));
+         // Contrôle à  faire que si un parent est renseigné
+         if(!getTypeParent().equals("Aucun")) {
+            final BigDecimal quantiteTransfoValue = (BigDecimal) value;
+            // Si isQuantiteObligatoire est null et elle doit être rensigné: Lance une exception
+            if (isQuantiteObligatoire && quantiteTransfoValue == null) {
+               throw new WrongValueException(comp, Labels.getLabel("ficheMultiProdDerive.validation.quantite"));
             }
-            // sinon on enlève toutes les erreurs affichées
-            BigDecimal decimal = new BigDecimal(quantiteTransformation);
-            Clients.clearWrongValue(transfoQuantiteBoxDerive);
-            transfoQuantiteBoxDerive.setConstraint("");
-            transfoQuantiteBoxDerive.setValue(decimal);
-            transfoQuantiteBoxDerive.setConstraint(cttQuantiteTransfo);
-
-            if(quantiteMax != null && quantiteTransformation > quantiteMax){
-               final StringBuffer sb = new StringBuffer();
-               sb.append("La quantité utilisée ne peut dépasser " + "celle disponible dans ");
-
-               if(typeParent.equals("Prelevement")){
-                  sb.append("le prélèvement parent : ");
-                  sb.append(quantiteMax);
-                  sb.append(((Prelevement) getParentObject()).getQuantiteUnite().getNom());
-                  sb.append(".");
-               }else if(typeParent.equals("Echantillon")){
-                  sb.append("l'échantillon parent : ");
-                  sb.append(quantiteMax);
-                  sb.append(((Echantillon) getParentObject()).getQuantiteUnite().getNom());
-                  sb.append(".");
-               }else if(typeParent.equals("ProdDerive")){
-                  sb.append("le produit dérivé parent : ");
-                  sb.append(quantiteMax);
-                  sb.append(((ProdDerive) getParentObject()).getQuantiteUnite().getNom());
-                  sb.append(".");
+            // Si la valeur est negative : Lance une exception
+            if(quantiteTransfoValue != null){
+               quantiteTransformation = quantiteTransfoValue.floatValue();
+   
+               if(quantiteTransformation < 0){
+                  throw new WrongValueException(comp, Labels.getLabel("validation.negative.value"));
                }
-
-               throw new WrongValueException(comp, sb.toString());
+               // sinon on enlève toutes les erreurs affichées
+               BigDecimal decimal = new BigDecimal(quantiteTransformation);
+               Clients.clearWrongValue(transfoQuantiteBoxDerive);
+               transfoQuantiteBoxDerive.setConstraint("");
+               transfoQuantiteBoxDerive.setValue(decimal);
+               transfoQuantiteBoxDerive.setConstraint(cttQuantiteTransfo);
+   
+               if(quantiteMax != null && quantiteTransformation > quantiteMax){
+                  final StringBuffer sb = new StringBuffer();
+                  sb.append("La quantité utilisée ne peut dépasser " + "celle disponible dans ");
+   
+                  if(typeParent.equals("Prelevement")){
+                     sb.append("le prélèvement parent : ");
+                     sb.append(quantiteMax);
+                     sb.append(((Prelevement) getParentObject()).getQuantiteUnite().getNom());
+                     sb.append(".");
+                  }else if(typeParent.equals("Echantillon")){
+                     sb.append("l'échantillon parent : ");
+                     sb.append(quantiteMax);
+                     sb.append(((Echantillon) getParentObject()).getQuantiteUnite().getNom());
+                     sb.append(".");
+                  }else if(typeParent.equals("ProdDerive")){
+                     sb.append("le produit dérivé parent : ");
+                     sb.append(quantiteMax);
+                     sb.append(((ProdDerive) getParentObject()).getQuantiteUnite().getNom());
+                     sb.append(".");
+                  }
+   
+                  throw new WrongValueException(comp, sb.toString());
+               }
+               // sinon on enlève toutes les erreurs affichées
+               decimal = new BigDecimal(quantiteTransformation);
+               Clients.clearWrongValue(transfoQuantiteBoxDerive);
+               transfoQuantiteBoxDerive.setConstraint("");
+               transfoQuantiteBoxDerive.setValue(decimal);
+               transfoQuantiteBoxDerive.setConstraint(cttQuantiteTransfo);
             }
-            // sinon on enlève toutes les erreurs affichées
-            decimal = new BigDecimal(quantiteTransformation);
-            Clients.clearWrongValue(transfoQuantiteBoxDerive);
-            transfoQuantiteBoxDerive.setConstraint("");
-            transfoQuantiteBoxDerive.setValue(decimal);
-            transfoQuantiteBoxDerive.setConstraint(cttQuantiteTransfo);
          }
       }
    }
