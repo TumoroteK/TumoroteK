@@ -22,6 +22,7 @@ import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.ClientInfoEvent;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
+import org.zkoss.zul.Html;
 import org.zkoss.zul.Row;
 
 import fr.aphp.tumorotek.action.ManagerLocator;
@@ -68,10 +69,13 @@ public class ConnexionCrf extends GenericForwardComposer<Component>
 
    private Utilisateur user = null;
 
+   private Html htmlMsg;
+   
    @Override
    public void doAfterCompose(final Component comp) throws Exception{
       super.doAfterCompose(comp);
-
+      // Récupération du message d'accueil à afficher
+      ConnexionUtils.assignWelcomeMessage(htmlMsg);
       // on vérifie que la connexion est bien active
       if(connexionActive()){
          rowInactive.setVisible(false);
@@ -210,11 +214,9 @@ public class ConnexionCrf extends GenericForwardComposer<Component>
    }
 
    /**
-    * Log un utilisateur et renvoie true si la connection s'est
+    * Log un utilisateur et renvoie true si la connexion s'est
     * bien passée.
-    * @param login
-    * @param pass
-    * @return
+    * @return true si la connexion s'est bien passée
     */
    public boolean logUser(){
       boolean ok = false;

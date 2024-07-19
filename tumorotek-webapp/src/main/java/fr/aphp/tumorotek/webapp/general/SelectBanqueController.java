@@ -135,11 +135,16 @@ public class SelectBanqueController extends GenericForwardComposer<Component>
    private Row rowRedirect;
 
    private Row rowResourceRedirect;
+   
+   private Html htmlMsg;
 
    @Override
    public void doAfterCompose(final Component comp) throws Exception{
       super.doAfterCompose(comp);
 
+      //Chargement du message d'accueil personnalisé
+      ConnexionUtils.assignWelcomeMessage(htmlMsg);
+      
       selectionComponents =
          new Component[] {this.rowPlateformeTitle, this.rowPlateforme, this.rowBanqueTitle, this.rowBanque, this.validate};
       archiveComponents = new Component[] {this.rowMdpArchive1, this.rowMdpArchive2, this.rowMdpArchive3};

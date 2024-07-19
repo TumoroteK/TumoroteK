@@ -46,15 +46,12 @@ import java.util.Comparator;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.InvalidMediaTypeException;
 import org.springframework.http.MediaType;
 import org.zkoss.bind.annotation.BindingParam;
 import org.zkoss.bind.annotation.Command;
-import org.zkoss.bind.annotation.ContextParam;
-import org.zkoss.bind.annotation.ContextType;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.bind.annotation.NotifyChange;
 import org.zkoss.image.AImage;
@@ -63,7 +60,6 @@ import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
-import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Fileupload;
 
 import fr.aphp.tumorotek.action.ManagerLocator;
@@ -76,6 +72,8 @@ import fr.aphp.tumorotek.model.contexte.Plateforme;
 import fr.aphp.tumorotek.param.EParametreType;
 import fr.aphp.tumorotek.param.EParametreValeurParDefaut;
 import fr.aphp.tumorotek.utils.MessagesUtils;
+import fr.aphp.tumorotek.utils.TKStringUtils;
+import fr.aphp.tumorotek.webapp.general.ConnexionUtils;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
 /**
@@ -117,8 +115,8 @@ public class ParametresController
    // Indicateur indiquant si une image de bienvenue existe.
    private boolean welcomeImageExists;
 
-   // Indicateur indiquant si un message de bienvenue existe.
-   private boolean welcomeMessageExists;
+   // Indicateur indiquant si un message de bienvenue spécifique a été défini par l'administrateur.
+   private boolean specificWelcomeMessageExists;
 
    private String imageUpdateError = "error.params.image.update";
 
@@ -222,37 +220,35 @@ public class ParametresController
     *
     */
    @Command
-   @NotifyChange({"welcomeMessage", "welcomeMessageExists"})
-   public void deleteWelcomeMessage(){
+   @NotifyChange({"welcomeMessage", "specificWelcomeMessageExists"})
+   public void reinitWelcomeMessage(){
 
-      String messageBody = Labels.getLabel("params.modale.message.delete");
-      String messageHeader = Labels.getLabel("params.modale.message.libelle");
-
+      String messageHeader = Labels.getLabel("params.modale.welcomeMessage.reinitialisation.titre");
+      String messageBody = Labels.getLabel("params.modale.welcomeMessage.reinitialisation.message");
+ 
       boolean isOk = MessagesUtils.openQuestionModal(messageHeader, messageBody);
 
       if(isOk){
 
-         final boolean deleted = parametresManager.deleteMessageAccueil();
+         final boolean reinitialized = parametresManager.reinitMessageAccueil();
 
-         if(deleted){
-            welcomeMessage = Labels.getLabel("params.message.empty");
-            welcomeMessageExists = false;
+         if(reinitialized){
+            welcomeMessage = Labels.getLabel("login.welcome");
+            specificWelcomeMessageExists = false;
          }else{
             displayError(Labels.getLabel("error.params.message.update"));
-
          }
-
       }
-
    }
-
+   
+   
    /**
     * Méthode appelée lors de la modification du message d'accueil.
     * Affiche une boîte de dialogue modale permettant à l'utilisateur
     * de modifier le message d'accueil de l'application.
     */
    @Command
-   @NotifyChange({"welcomeMessage", "welcomeMessageExists"})
+   @NotifyChange({"welcomeMessage", "specificWelcomeMessageExists"})
    public void modifyWelcomeMessage(){
 
       EventListener<Event> onCloseListener = event -> {
@@ -261,7 +257,7 @@ public class ParametresController
             boolean saved = parametresManager.saveMessageAccueil(newMessage);
             if(saved){
                welcomeMessage = newMessage;
-               welcomeMessageExists = true;
+               specificWelcomeMessageExists = true;
             }else{
                displayError(Labels.getLabel("error.params.message.update"));
 
@@ -269,9 +265,8 @@ public class ParametresController
          }
       };
 
-      String currentMsg = parametresManager.getMessageAccueil(true);
-      TexteModale.show(Labels.getLabel("params.modale.message.titre"), Labels.getLabel("params.modale.message.libelle"),
-         currentMsg, 5, true, onCloseListener);
+      TexteModale.show(Labels.getLabel("params.modale.welcomeMessage.titre"), Labels.getLabel("params.message.accueil"),
+         ConnexionUtils.buildWelcomeMessageToDisplay(true), 5, true, onCloseListener);
 
    }
 
@@ -469,14 +464,13 @@ public class ParametresController
     * Le message est ensuite converti en entités HTML et, s'il est vide, il est remplacé par la valeur de "params.message.empty"
     */
    private void initWelcomeMessage(){
-      welcomeMessage = parametresManager.getMessageAccueil(false);
+      welcomeMessage = parametresManager.getMessageAccueilSpecifique(false);
 
-      if(StringUtils.isEmpty(welcomeMessage)){
-         welcomeMessage = Labels.getLabel("params.message.empty");
-         welcomeMessageExists = false;
+      if(TKStringUtils.isEmptyOrBlank(welcomeMessage)){
+         welcomeMessage = Labels.getLabel("login.welcome");
+         specificWelcomeMessageExists = false;
       } else {
-         welcomeMessageExists = true;
-
+         specificWelcomeMessageExists = true;
       }
    }
 
@@ -624,11 +618,11 @@ public class ParametresController
       this.welcomeImageExists = welcomeImageExists;
    }
 
-   public boolean isWelcomeMessageExists(){
-      return welcomeMessageExists;
+   public boolean isSpecificWelcomeMessageExists(){
+      return specificWelcomeMessageExists;
    }
 
-   public void setWelcomeMessageExists(boolean welcomeMessageExists){
-      this.welcomeMessageExists = welcomeMessageExists;
+   public void setSpecificWelcomeMessageExists(boolean specificWelcomeMessageExists){
+      this.specificWelcomeMessageExists = specificWelcomeMessageExists;
    }
 }
