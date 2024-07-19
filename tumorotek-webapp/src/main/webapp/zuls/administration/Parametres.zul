@@ -105,10 +105,10 @@
                             <button label="${c:l('general.edit')}"
                                     image="/images/icones/edit.png" sclass="buttonv2"
                                     onClick="@command('modifyWelcomeMessage')"/>
-                            <button visible="@load(vm.welcomeMessageExists)"
-                                    label="${c:l('general.delete')}"
+                            <button visible="@load(vm.specificWelcomeMessageExists)"
+                                    label="${c:l('general.reinit')}"
                                     image="/images/icones/trash.png" sclass="buttonv2"
-                                    onClick="@command('deleteWelcomeMessage')"/>
+                                    onClick="@command('reinitWelcomeMessage')"/>
                         </cell>
                     </row>
                     <group label="@load(vm.plateformeTitle)"  id="plateformeCourante"  style="padding-top:20px" />

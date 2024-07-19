@@ -52,9 +52,11 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Session;
+import org.zkoss.zul.Html;
 
 import fr.aphp.tumorotek.action.ManagerLocator;
 import fr.aphp.tumorotek.action.prelevement.gatsbi.exception.GatsbiException;
+import fr.aphp.tumorotek.manager.administration.ParametresManager;
 import fr.aphp.tumorotek.model.coeur.annotation.Catalogue;
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.contexte.Plateforme;
@@ -67,6 +69,7 @@ import fr.aphp.tumorotek.model.utilisateur.ProfilUtilisateur;
 import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
 import fr.aphp.tumorotek.param.TkParam;
 import fr.aphp.tumorotek.param.TumorotekProperties;
+import fr.aphp.tumorotek.utils.TKStringUtils;
 import fr.aphp.tumorotek.utils.Utils;
 import fr.aphp.tumorotek.webapp.gatsbi.GatsbiController;
 
@@ -488,4 +491,34 @@ public final class ConnexionUtils
       toutesColl.setPlateforme(pf);
       return toutesColl;
    }
+   
+   //TK-475
+   /**
+    * - Récupère le message d'accueil du fichier tumorotek.properties si il n'est pas vide sinon de zk-label.properties.
+    * - Remplace par &lt tous les caractères < qui ne correspondent pas à un début de balise
+    * - assigne la valeur au composant passé en paramètre
+    * @param htmlMsg le composant à alimenter
+    **/
+   public static void assignWelcomeMessage(Html htmlMsg){
+      htmlMsg.setContent(buildWelcomeMessageToDisplay(false));
+   }
+   
+   /**
+    * - Récupère le message d'accueil du fichier tumorotek.properties si il n'est pas vide sinon de zk-label.properties.
+    * - Remplace par &lt tous les caractères < qui ne correspondent pas à un début de balise
+    * - retourne le message à afficher
+    * @param htmlMsg le composant à alimenter
+    **/
+   public static String buildWelcomeMessageToDisplay(boolean raw){
+      ParametresManager parametresManager = ManagerLocator.getManager(ParametresManager.class);
+      // Récupération du message d'accueil depuis le gestionnaire de paramètres
+      String welcomeMessage = parametresManager.getMessageAccueilSpecifique(false);
+      // Si le message d'accueil est vide, utiliser le message par défaut
+      if(TKStringUtils.isEmptyOrBlank(welcomeMessage)){
+         welcomeMessage = Labels.getLabel("login.welcome");
+      }
+      
+      return TKStringUtils.cleanHtmlString(welcomeMessage);
+   }
+   
 }

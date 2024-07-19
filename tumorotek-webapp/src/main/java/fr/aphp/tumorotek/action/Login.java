@@ -50,6 +50,7 @@ import org.zkoss.zul.Label;
 import fr.aphp.tumorotek.action.controller.AbstractController;
 import fr.aphp.tumorotek.manager.administration.ParametresManager;
 import fr.aphp.tumorotek.utils.TKStringUtils;
+import fr.aphp.tumorotek.webapp.general.ConnexionUtils;
 
 public class Login extends AbstractController
 {
@@ -70,12 +71,8 @@ public class Login extends AbstractController
       final ParametresManager parametresManager = ManagerLocator.getManager(ParametresManager.class);
 
       //Chargement du message d'accueil personnalisé
-      String msgAccueil = parametresManager.getMessageAccueil(false);
-
-      if(StringUtils.isEmpty(msgAccueil)){
-         msgAccueil = Labels.getLabel("login.welcome");
-      }
-
+      ConnexionUtils.assignWelcomeMessage(htmlMsg);
+      
       //Chargement du logo personnalisé
       AImage logo = null;
 
@@ -87,11 +84,6 @@ public class Login extends AbstractController
       if(logo != null){
          imgLogo.setVisible(true);
          imgLogo.setContent(logo);
-      }
-
-      if(StringUtils.isNotEmpty(msgAccueil)){
-         htmlMsg.setVisible(true);
-         htmlMsg.setContent(TKStringUtils.cleanHtmlString(msgAccueil));
       }
 
       final AuthenticationException loginException =

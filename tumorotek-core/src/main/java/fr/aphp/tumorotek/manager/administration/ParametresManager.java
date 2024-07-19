@@ -56,11 +56,11 @@ public interface ParametresManager
 {
 
    /**
-    * Récupère le message d'accueil actuel
+    * Récupère le message d'accueil actuel depuis le fichier tumorotek.properties
     * @param raw si true renvoie le message tel qu'il a été saisi (et stocké), si false, renvoie le html qui sera effectivement traité
     * @return message d'accueil
     */
-   String getMessageAccueil(boolean raw);
+   String getMessageAccueilSpecifique(boolean raw);
 
    /**
     * Sauvegarde le message d'accueil
@@ -70,10 +70,11 @@ public interface ParametresManager
    boolean saveMessageAccueil(String msgAccueil);
 
    /**
-    * Supprime le message d'accueil
-    * @return true si le message a bien eété supprimé
+    * Supprime le message d'accueil spécifique défini dans le fichier tumorotek.properties
+    * c'est le libellé "login.welcome" de zk-label_fr.properties qui sera alors affiché à l'utilisateur
+    * @return true si le message a bien été supprimé
     */
-   boolean deleteMessageAccueil();
+   boolean reinitMessageAccueil();
 
    /**
     * Récupère le fichier du logo affiché sur la page d'accueil

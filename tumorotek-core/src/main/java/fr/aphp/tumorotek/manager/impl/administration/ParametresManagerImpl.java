@@ -62,7 +62,6 @@ import org.apache.commons.configuration2.builder.fluent.Parameters;
 import org.apache.commons.configuration2.ex.ConfigurationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.util.StringUtils;
 import org.springframework.validation.Validator;
 
 import java.util.List;
@@ -102,10 +101,10 @@ public class ParametresManagerImpl implements ParametresManager
    
 
    /**
-    * @see fr.aphp.tumorotek.manager.administration.ParametresManager#getMessageAccueil(boolean)
+    * @see fr.aphp.tumorotek.manager.administration.ParametresManager#getMessageAccueilSpecifique(boolean)
     */
    @Override
-   public String getMessageAccueil(final boolean raw){
+   public String getMessageAccueilSpecifique(final boolean raw){
 
       //On utilise un nouveau Properties à chaque appel pour que le message soit mis à jour sans nécessiter
       //un redémarrage de l'application
@@ -118,7 +117,7 @@ public class ParametresManagerImpl implements ParametresManager
 
       String msgAccueil = tumoProperties.getProperty(TkParam.MSG_ACCUEIL.getKey());
 
-      if(!StringUtils.isEmpty(msgAccueil) && !raw){
+      if(!TKStringUtils.isEmptyOrBlank(msgAccueil) && !raw){
          msgAccueil = TKStringUtils.cleanHtmlString(msgAccueil);
          msgAccueil = TKStringUtils.cleanPlaceholders(msgAccueil, "${", "}");
       }
@@ -159,10 +158,10 @@ public class ParametresManagerImpl implements ParametresManager
    }
 
    /**
-    * @see fr.aphp.tumorotek.manager.administration.ParametresManager#deleteMessageAccueil()
+    * @see fr.aphp.tumorotek.manager.administration.ParametresManager#reinitMessageAccueil()
     */
    @Override
-   public boolean deleteMessageAccueil(){
+   public boolean reinitMessageAccueil(){
       return saveMessageAccueil("");
    }
 

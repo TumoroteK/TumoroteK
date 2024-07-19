@@ -158,6 +158,17 @@ public final class TKStringUtils
 
    }
 
+   /**
+    * Cette méthode vérifie si une chaîne de caractères est vide ou ne contient que des espaces.
+    *
+    * @param string La chaîne de caractères à vérifier.
+    * @return true si la chaîne est vide ou ne contient que des espaces, sinon false.
+    */
+
+      public static boolean isEmptyOrBlank(String string) {
+         // Vérifier si la chaîne est nulle ou vide
+         return string == null || string.trim().isEmpty();
+      }
 
 
 }
