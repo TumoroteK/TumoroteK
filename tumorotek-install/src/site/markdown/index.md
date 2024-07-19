@@ -1,6 +1,6 @@
 #### Notes de version
 
-##### Version 2.3.1.0-SNAPSHOT - Publiée le ??? (en cours)
+##### Version 2.3.1.0-SNAPSHOT - Publiée le ??? (en cours) 
 
 ##### Version 2.3.0.10 - Publiée le 01/07/2024
 ###### Corrections dans TK pour un contexte Gatsbi
