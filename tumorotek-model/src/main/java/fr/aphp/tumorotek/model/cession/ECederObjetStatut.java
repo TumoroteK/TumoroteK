@@ -10,6 +10,7 @@ package fr.aphp.tumorotek.model.cession;
  */
 public enum ECederObjetStatut
 {
+   //TK-516 - 1ere étape : la valeur TRAITEMENT est à supprimer car elle correspond à une fonctionnalité qui n'a jamais été mis en oeuvre...
    TRAITEMENT("TRAITEMENT"), TRAITE("TRAITE"), ANNULE("ANNULE");
 
    private String statut;

@@ -579,6 +579,9 @@ public class EchantillonManagerImpl implements EchantillonManager
    @Override
    public List<String> findAllCodesForDerivesByBanque(final Banque banque){
       if(banque != null){
+         //TK-516 - 1ere étape : findAllCodesByBanqueAndQuantiteNotNullOrInCessionTraitement ne ramène que
+         //les échantillons avec une quantité non renseignée ou renseignée mais supérieure à 0 (1ere partie du OR de la requête)
+         //car la cession de type TRAITEMENT n'a finalement jamais été mis en oeuvre. Besoin de Cochin abandonné.         
          return echantillonDao.findAllCodesByBanqueAndQuantiteNotNullOrInCessionTraitement(banque);
       }
       return new ArrayList<>();

@@ -122,7 +122,7 @@ import fr.aphp.tumorotek.model.utils.Utils;
       query = "SELECT e.code FROM Echantillon e " + "WHERE e.banque = ?1 " + "AND (((quantite > 0 OR quantite IS NULL) "
          + "AND e.objetStatut.statut not in ('EPUISE', 'ENCOURS', 'RESERVE'))" + "OR ("
          + "e.echantillonId in (SELECT c.pk.objetId FROM CederObjet c WHERE c.pk.entite.nom = 'Echantillon' AND c.pk.cession.cessionType.type = 'Traitement' AND c.statut = 'TRAITEMENT'"
-         + ")))"),
+         + ")))"),//TK-516 - 1ere étape : la 2e clause du OR n'est jamais remplie car l'ajout de la valeur Traitement n'a jamais été fait dans la table CESSION_TYPE ni la valeur TRAITEMENT dans CESSION_STATUT 
    @NamedQuery(name = "Echantillon.findByBanqueStatutSelectCode",
       query = "SELECT e.code FROM Echantillon e " + "WHERE e.banque = ?1 AND e.objetStatut=?2 " + "ORDER BY e.code"),
    @NamedQuery(name = "Echantillon.findByBanqueInListStatutSelectCode",

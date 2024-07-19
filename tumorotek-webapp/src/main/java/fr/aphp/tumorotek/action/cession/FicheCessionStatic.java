@@ -774,6 +774,8 @@ public class FicheCessionStatic extends AbstractFicheStaticController
 		displayObjectsListData(new ArrayList<TKAnnotableObject>(cdDerivesFactory.undecorateListe(decos)));
 	}
 
+	//************* TK-516 - 1ere étape : les 6 méthodes ci-dessous sont à supprimer car elle corresponde à une fonctionnalité finalement non mise à disposition
+   //car elle s'appuie sur l'ajout dans la table CESSION_TYPE de la valeur Traitement, ce qui n'a jamais été fait !
 	/**
 	 * Clique sur le bouton 'Retourné' pour les cessions de type traitement (Echantillons)
 	 * Créé un nouveau produit dérivé lié à l'objet cédé
@@ -833,6 +835,8 @@ public class FicheCessionStatic extends AbstractFicheStaticController
 		this.setObject(cession);
 	}
 
+	//************* fin TK-516 - 1ere étape **************************************
+	
 	public void onClick$contratLabel(){
 		if(this.cession.getContrat() != null){
 			openFicheContratWindow(page, this.cession.getContrat());
@@ -1348,6 +1352,7 @@ public class FicheCessionStatic extends AbstractFicheStaticController
 		return checkedDeriveIds;
 	}
 
+   //TK-516 - 1ere étape : code à supprimer car correspond à une fonctionnalité non mise en oeuvre (la valeur Traitement n'existe pas dans la table CESSION_TYPE)
 	/**
 	 * Test si la cession est de type Traitement
 	 * @return
@@ -1360,6 +1365,7 @@ public class FicheCessionStatic extends AbstractFicheStaticController
 		return false;
 	}
 
+   //TK-516 - 1ere étape : code à supprimer car correspond à une fonctionnalité non mise en oeuvre (la valeur Traitement n'existe pas dans la table CESSION_TYPE)
 	/**
 	 * Test si la cession est de type Traitement
 	 * @return

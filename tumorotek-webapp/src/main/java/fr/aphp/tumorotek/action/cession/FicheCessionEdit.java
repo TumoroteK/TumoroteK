@@ -2196,7 +2196,8 @@ public class FicheCessionEdit extends AbstractFicheEditController
 		// pour chaque échantillon cédé
 		// Float temperatureEpuisement = null;
 		for(final CederObjetDecorator deco : cedeDecos){
-
+         //TK-516 - 1ere étape : le type Traitement pour une cession n'a finalement jamais été ajouté en base de données
+         //cela correspondait à un besoin de Cochin qui a été abandonné.
 			if(selectedCessionType.getType().equals("Traitement")){
 				if(null == deco.getCederObjet().getPk() || null == deco.getCederObjet().getStatut()){
 					deco.getCederObjet().setStatut(ECederObjetStatut.TRAITEMENT);

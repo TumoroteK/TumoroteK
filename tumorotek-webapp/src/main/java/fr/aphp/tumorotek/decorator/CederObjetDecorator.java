@@ -781,6 +781,7 @@ public class CederObjetDecorator
       return res;
    }
 
+   //TK-516 - 1ere étape : à supprimer car la valeur TRAITEMENT correspond à une fonctionnalité qui n'a jamais été mis en oeuvre...
    public Boolean getIsEnTraitement(){
       boolean res = false;
       if(null != this.cederObjet){

@@ -924,6 +924,8 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
             Clients.scrollIntoView(typesBoxDerive);
             throw new WrongValueException(typesBoxDerive, Labels.getLabel("ficheProdDerive.error.type"));
          }
+
+         
          // TK-434: Sécuriser la saisie de la quantité utilisée si ce champ est pertinent (visible) c'est-à-dire
          // typeParent est différent de Aucun
          if (!getTypeParent().equals("Aucun")) {
@@ -945,10 +947,13 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
             }
          }
 
+         ///////// code ci-dessous surprenant car il ne semble rien faire
          // si le dérivé est issu d'un parent connu
          if(selectParent && !getTypeParent().equals("Aucun")){
             codesParentBoxDerive.getValue();
          }
+         ////////
+         
          // on remplit le dérivé en fonction des champs nulls
          setEmptyToNulls();
 
@@ -2119,20 +2124,29 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
       statuts.add("ENCOURS");
       statuts.add("RESERVE");
 
+      //TK-516 - 1ere étape : suite à échange avec Mathieu le 06/06/2024
+      //la possibilité de choisir comme parent un objet mis dans une cession de type Traitement (associé à un statut de cession TRAITEMENT)
+      //avait été envisagé pour un besoin de Cochin (sur des échantillons d'os) mais n'a jamais été finalisé.
+      //Par contre, le code n'a pas été nettoyé :-(
+      //On constate en effet que cederObjetRef est toujours vide car tkStockObj ne peut pas être au statut TRAITEMENT EN COURS :
+      //Au niveau interface, le code parent doit être contenu dans la liste "Code échantillon (par collection)" associée à l'objet ListBox "banquesEchantillonsBox" 
+      //qui ne ramène pas les échantillons appartenant déjà à une cession.
+      //Par conséquent, le code ne passe jamais dans createGridForListeParent()      
       final List<CederObjet> cederObjetRef =
          ManagerLocator.getCederObjetManager().findByObjetAndStatutManager(tkStockObj, ECederObjetStatut.TRAITEMENT);
 
       final String objetStockeStatus = tkStockObj.getObjetStatut() != null ? tkStockObj.getObjetStatut().getStatut() : null;
 
       if((null == tkStockObj.getQuantite() || 0 < tkStockObj.getQuantite()) && !statuts.contains(objetStockeStatus)){
+         //TK-516 - 1ere étape : ce if n'est jamais à true (cf commentaire ci-dessus)
          if(!cederObjetRef.isEmpty()){
             createGridForListeParent(tkStockObj, cederObjetRef);
          }else{
             switchToCreateMode(tkStockObj);
          }
-      }else if(cederObjetRef.size() > 1){
+      }else if(cederObjetRef.size() > 1){//TK-516 - 1ere étape : ce if n'est jamais à true (cf commentaire ci-dessus)
          createGridForListeParent(cederObjetRef);
-      }else if(cederObjetRef.size() == 1){
+      }else if(cederObjetRef.size() == 1){//TK-516 - 1ere étape : ce if n'est jamais à true (cf commentaire ci-dessus)
          switchToCreateMode(cederObjetRef.get(0));
       }
 
@@ -2207,6 +2221,8 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
       return row;
    }
 
+   //TK-516 - 1ere étape : suite à échange avec Mathieu le 06/06/2024
+   //le code ne passe jamais dans cette méthode (cf commentaire dans la méthode createComponentForListeParent plus haut)
    /**
     * Ouverture d'une fenêtre avec la liste des ojets en stock et en cédés
     * @param tkStockObj l'objet en stock
@@ -2233,6 +2249,8 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
       win.onModal();
    }
 
+   //TK-516 - 1ere étape : suite à échange avec Mathieu le 06/06/2024
+   //le code ne passe jamais dans cette méthode - cf commentaire dans la méthode createComponentForListeParent plus haut
    /**
     * Ouverture d'une fenêtre avec uniquement une liste d'objets cédés
     * @param cederObjetRef la liste des objets cédés

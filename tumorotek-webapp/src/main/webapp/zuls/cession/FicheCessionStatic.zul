@@ -94,6 +94,7 @@
 											<label value="${c:l('cederObjet.sorties')}" style="font-weight : bold;" />
 										</vbox>
 									</column>
+									<-- TK-516 - 1ere étape : ces 4 colonnes ne sont jamais affichées car l'attribut visible s'appuie sur des attributs faisant référence à du code "mort" -->
 									<column label="${c:l('cederObjet.statut')}" visible="@{fwinCessionStatic$composer.isCessionTraitementAndValide}" />
 									<column label="${c:l('cederObjet.produitRetour')}" visible="@{fwinCessionStatic$composer.isCessionTraitementAndValide}" />
 									<column label="" visible="@{fwinCessionStatic$composer.isCessionTraitementAndValide}" />
@@ -120,6 +121,7 @@
 										<label value="@{echanCede.cederQuantiteUnite}" />
 										<label value="@{echanCede.emplacementAdrl}" />
 										<label value="@{echanCede.nbSorties}" />
+										<-- TK-516 - 1ere étape : ces 4 colonnes ne sont jamais affichées car l'attribut visible s'appuie sur des attributs faisant référence à du code "mort" -->
 										<label value="@{echanCede.statut}" />
 										<label id="produitRetourListEch" value="@{echanCede.produitRetourList}" visible="@{echanCede.hasProduitRetour}" sclass="formLink" />
 										<button id="retourBtnEch" label="${c:l('cederObjet.retourBtn')}" visible="@{echanCede.isEnTraitement}" />
