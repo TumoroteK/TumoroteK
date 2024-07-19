@@ -35,7 +35,6 @@
  **/
 package fr.aphp.tumorotek.action.historique;
 
-import org.zkoss.util.resource.Labels;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.RowRenderer;
@@ -93,25 +92,10 @@ public class HistoriqueRenderer implements RowRenderer<Operation>
       new Label(op.getUtilisateur().getLogin()).setParent(row);
 
       // Type d'opération
-      final StringBuffer type = new StringBuffer();
-      final String label = Labels.getLabel("OperationType." + op.getOperationType().getNom());
-      if(label != null){
-         type.append(label);
-      }else{
-         type.append(op.getOperationType().getNom());
-
-         if(type.toString().equals("Creation")){
-            if(ManagerLocator.getImportHistoriqueManager()
-               .findImportationsByEntiteAndObjectIdManager(op.getEntite(), op.getObjetId()).size() > 0){
-               type.append(" (Import)");
-            }
-         }
-      }
-
-      new Label(type.toString()).setParent(row);
+      new Label(HistoriqueUtils.buildOperationToDisplay(op)).setParent(row);
 
       // Entité
-      new Label(getEntite(op)).setParent(row);
+      new Label(HistoriqueUtils.buildEntiteToDisplay(op)).setParent(row);
 
       // Identifiant
       new Label(identifiant).setParent(row);
@@ -132,35 +116,6 @@ public class HistoriqueRenderer implements RowRenderer<Operation>
          new Label().setParent(row);
       }
 
-   }
-
-   public static String getOperationType(final Operation op){
-      final StringBuffer type = new StringBuffer();
-      type.append(op.getOperationType().getNom());
-
-      if(type.toString().equals("Creation")){
-         if(ManagerLocator.getImportHistoriqueManager()
-            .findImportationsByEntiteAndObjectIdManager(op.getEntite(), op.getObjetId()).size() > 0){
-            type.append(" (Import)");
-         }
-      }
-
-      return type.toString();
-   }
-
-   public static String getEntite(final Operation op){
-      String nom = "-";
-
-      if(op.getEntite() != null){
-         if(op.getEntite().getNom().equals("Fantome")){
-            final Object obj = ManagerLocator.getEntiteManager().findObjectByEntiteAndIdManager(op.getEntite(), op.getObjetId());
-            nom = ((Fantome) obj).getEntite().getNom();
-         }else{
-            nom = op.getEntite().getNom();
-         }
-      }
-
-      return nom;
    }
 
    public void setIdentifiantAndBanque(final Operation op){
@@ -219,82 +174,6 @@ public class HistoriqueRenderer implements RowRenderer<Operation>
       }else if(op.getIdentificationDossier() != null){
          identifiant = op.getIdentificationDossier();
       }
-   }
-
-   public static String getIdentifiantForOperation(final Operation op){
-      Object obj = null;
-      String value = "-";
-      if(!op.getEntite().getNom().contains("Code")){
-         obj = ManagerLocator.getEntiteManager().findObjectByEntiteAndIdManager(op.getEntite(), op.getObjetId());
-      }
-
-      if(obj != null){
-         if(op.getEntite().getNom().equals("Fantome")){
-            value = ((Fantome) obj).getNom();
-         }else if(op.getEntite().getNom().equals("Patient")){
-            value = ((Patient) obj).getNom();
-         }else if(op.getEntite().getNom().equals("Maladie")){
-            value = ((Maladie) obj).getLibelle();
-         }else if(op.getEntite().getNom().equals("Prelevement")){
-            value = ((Prelevement) obj).getCode();
-         }else if(op.getEntite().getNom().equals("Echantillon")){
-            value = ((Echantillon) obj).getCode();
-         }else if(op.getEntite().getNom().equals("ProdDerive")){
-            value = ((ProdDerive) obj).getCode();
-         }else if(op.getEntite().getNom().equals("Cession")){
-            value = ((Cession) obj).getNumero();
-         }else if(op.getEntite().getNom().equals("Conteneur")){
-            value = ((Conteneur) obj).getCode();
-         }else if(op.getEntite().getNom().equals("Enceinte")){
-            value = ((Enceinte) obj).getNom();
-         }else if(op.getEntite().getNom().equals("Terminale")){
-            value = ((Terminale) obj).getNom();
-         }else if(op.getEntite().getNom().equals("Collaborateur")){
-            value = ((Collaborateur) obj).getNom();
-         }else if(op.getEntite().getNom().equals("Etablissement")){
-            value = ((Etablissement) obj).getNom();
-         }else if(op.getEntite().getNom().equals("Service")){
-            value = ((Service) obj).getNom();
-         }else if(op.getEntite().getNom().equals("Transporteur")){
-            value = ((Transporteur) obj).getNom();
-         }else if(op.getEntite().getNom().equals("Contrat")){
-            value = ((Contrat) obj).getNumero();
-         }else if(op.getEntite().getNom().equals("Profil")){
-            value = ((Profil) obj).getNom();
-         }else if(op.getEntite().getNom().equals("Utilisateur")){
-            value = ((Utilisateur) obj).getLogin();
-         }else if(op.getEntite().getNom().equals("Banque")){
-            value = ((Banque) obj).getNom();
-         }else if(op.getEntite().getNom().equals("TableAnnotation")){
-            value = ((TableAnnotation) obj).getNom();
-         }
-      }
-
-      return value;
-   }
-
-   public static String getBanqueForOperation(final Operation op){
-      Object obj = null;
-      String value = "-";
-      if(!op.getEntite().getNom().contains("Code")){
-         obj = ManagerLocator.getEntiteManager().findObjectByEntiteAndIdManager(op.getEntite(), op.getObjetId());
-      }
-
-      if(obj != null){
-         if(op.getEntite().getNom().equals("Prelevement")){
-            value = ((Prelevement) obj).getBanque().getNom();
-         }else if(op.getEntite().getNom().equals("Echantillon")){
-            value = ((Echantillon) obj).getBanque().getNom();
-         }else if(op.getEntite().getNom().equals("ProdDerive")){
-            value = ((ProdDerive) obj).getBanque().getNom();
-         }else if(op.getEntite().getNom().equals("Cession")){
-            value = ((Cession) obj).getBanque().getNom();
-         }else if(op.getEntite().getNom().equals("Banque")){
-            value = ((Banque) obj).getNom();
-         }
-      }
-
-      return value;
    }
 
    public String getIdentifiant(){

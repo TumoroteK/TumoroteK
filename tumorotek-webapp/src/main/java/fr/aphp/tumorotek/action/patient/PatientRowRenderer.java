@@ -40,7 +40,9 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Label;
@@ -53,6 +55,7 @@ import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
 import fr.aphp.tumorotek.decorator.TKSelectObjectRenderer;
 import fr.aphp.tumorotek.model.coeur.patient.Maladie;
 import fr.aphp.tumorotek.model.coeur.patient.Patient;
+import fr.aphp.tumorotek.model.coeur.patient.gatsbi.PatientIdentifiant;
 import fr.aphp.tumorotek.model.contexte.Banque;
 
 /**
@@ -133,7 +136,17 @@ public class PatientRowRenderer extends TKSelectObjectRenderer<Patient>
       renderAnonymisableAndClickableAlphanumProperty(row, pat, "prenom", anonyme, null, null);
 
       // nip
-      renderAnonymisableAndClickableAlphanumProperty(row, pat, "nip", anonyme, "onClickObject", pat);
+      //TG-192 : cas particulier "Toutes collections" et patient "empty" :
+      if(Sessions.getCurrent().hasAttribute("ToutesCollections") && pat.isEmptyPatient()) {
+         //le patient étant empty il n'est forcément rattaché qu'à une seule banque donc n'a qu'un seul identifiant
+         //on affiche le nom de celle-ci entre [], après l'identifiant 
+         String identifiantAAfficher = PatientUtils.concatPatientIdentifiantEtCollectionForUniquePatientIdentifiant(pat);
+         renderClickableValue(row, identifiantAAfficher, pat);
+      }
+      else {
+         // tous les autres cas (cas standard) :
+         renderAnonymisableAndClickableAlphanumProperty(row, pat, "nip", anonyme, "onClickObject", pat);
+      }
 
       // sexe
       new Label(PatientUtils.setSexeFromDBValue(pat)).setParent(row);

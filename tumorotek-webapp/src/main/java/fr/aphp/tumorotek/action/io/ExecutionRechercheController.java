@@ -553,7 +553,7 @@ public class ExecutionRechercheController extends AbstractObjectTabController
     *            forwardé depuis le label Nip Patient cliquable (event.getData
     *            contient l'objet Prelevement).
     */
-   public void onClickPatientNip(final Event event){
+   public void onClickPatientNipOrIdentifiant(final Event event){
 
       final PatientController tabController = (PatientController) PatientController.backToMe(getMainWindow(), page);
 

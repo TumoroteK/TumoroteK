@@ -35,12 +35,10 @@
  **/
 package fr.aphp.tumorotek.action.historique;
 
-import org.zkoss.util.resource.Labels;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.RowRenderer;
 
-import fr.aphp.tumorotek.action.ManagerLocator;
 import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
 import fr.aphp.tumorotek.model.qualite.Operation;
 
@@ -65,7 +63,7 @@ public class OperationRenderer implements RowRenderer<Operation>
       new Label(op.getUtilisateur() != null ? op.getUtilisateur().getLogin() : null).setParent(row);
 
       // Type d'opération
-      new Label(getOperationType(op)).setParent(row);
+      new Label(HistoriqueUtils.buildOperationToDisplay(op)).setParent(row);
 
       // date de stockage
       new Label(ObjectTypesFormatters.dateRenderer2(op.getDate())).setParent(row);
@@ -80,25 +78,4 @@ public class OperationRenderer implements RowRenderer<Operation>
          new Label().setParent(row);
       }
    }
-
-   public String getOperationType(final Operation op){
-      final StringBuffer type = new StringBuffer();
-      final String label = Labels.getLabel("OperationType." + op.getOperationType().getNom());
-
-      if(label != null){
-         type.append(label);
-      }else{
-         type.append(op.getOperationType().getNom());
-      }
-
-      if(type.toString().equals("Creation")){
-         if(ManagerLocator.getImportHistoriqueManager()
-            .findImportationsByEntiteAndObjectIdManager(op.getEntite(), op.getObjetId()).size() > 0){
-            type.append(" (Import)");
-         }
-      }
-
-      return type.toString();
-   }
-
 }

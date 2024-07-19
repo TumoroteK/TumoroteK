@@ -410,6 +410,21 @@ public class TKSelectObjectRenderer<T extends TKdataObject> implements RowRender
       }
    }
 
+   public static void renderClickableValue(Row row, String value, Object objectForlink) {
+      if(value == null) {
+         value = "";
+      }
+      Label label = new Label(value);
+      label.setParent(row);
+      if(objectForlink != null) {
+         // rend identifiant cliquable
+         Component parent = null; // -> remonte l'évènement jusqu'au ListeController
+         label.addForward(null, parent, "onClickObject", objectForlink);
+         label.setClass("formLink");
+      }
+   }
+   
+   
    /**
     * Sera surchargée par Gatsbi pour ne pas dessiner les icones
     * quand les champs correspondants ne sont plus affichés dans les
@@ -422,4 +437,6 @@ public class TKSelectObjectRenderer<T extends TKdataObject> implements RowRender
    }
 
    public void setIconesRendered(final boolean _i){}
+   
+
 }

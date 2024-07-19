@@ -42,13 +42,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.zkoss.util.resource.Labels;
 
 import fr.aphp.tumorotek.action.ManagerLocator;
 import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
 import fr.aphp.tumorotek.model.coeur.patient.Patient;
+import fr.aphp.tumorotek.model.coeur.patient.gatsbi.PatientIdentifiant;
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
+import fr.aphp.tumorotek.webapp.general.export.Export;
 
 /**
  * Utility class fournissant les methodes récupérant et formattant les valeurs
@@ -61,6 +65,8 @@ import fr.aphp.tumorotek.webapp.general.SessionUtils;
 public final class PatientUtils
 {
 
+   protected static Log log = LogFactory.getLog(PatientUtils.class);
+   
    private PatientUtils(){}
 
    public static final LabelCodeItem SEXE_EMPTY = new LabelCodeItem("", null);
@@ -237,4 +243,45 @@ public final class PatientUtils
       }
       return ObjectTypesFormatters.dateRenderer2(patient.getDateDeces());
    }
+
+   /**
+    * retourne l'identifiant du patient suivi du nom de la collection associé à celui-ci
+    * @param patientIdentifiant
+    * @return "id [nomCollection]"
+    */
+   public static String concatPatientIdentifiantEtCollection(PatientIdentifiant patientIdentifiant) {
+      if(patientIdentifiant != null) { 
+         return  patientIdentifiant.getIdentifiant().concat(" [").concat(patientIdentifiant.getBanque().getNom()).concat("]");
+      }
+      return null;
+   }
+   
+   /**
+    * renvoie la concaténation "identifiant [nomCollection]" pour l'unique identifiant patient
+    * du patient passé en paramètre.
+    * Ne doit donc être appelé que sur des patients dont on est sûr qu'il n'y a qu'un identifiant. 
+    * Ex : le patient "empty".
+    * @param patient
+    * @return "id [nomCollection]"
+    * @throws IllegalArgumentException si la patient à plus d'un patient identifiant
+    */
+   //NB : Généralement patient empty est testé avant appel de cette méthode donc on ne reteste pas pour des questions de perf
+   //(cette méthode est généralement appelée en Toutes collections donc sur de gros volumes)
+   //Par contre, pour sécuriser, test qu'il n'y a bien qu'un seul identifiant...
+   public static String concatPatientIdentifiantEtCollectionForUniquePatientIdentifiant(Patient patient) {
+      String result = "";
+      if(patient != null) {
+         int nbPatientIdentifiant = patient.getPatientIdentifiants().size();
+         if(nbPatientIdentifiant == 1) { 
+            PatientIdentifiant patientIdentifiant = patient.getPatientIdentifiants().iterator().next();
+            result = concatPatientIdentifiantEtCollection(patientIdentifiant);
+         }
+         else if (nbPatientIdentifiant > 1) {
+            log.error("le patient 'empty' d'id "+ patient.getPatientId() +" a plusieurs identifiants.");//ce cas ne doit pas se produire : un patient "empty" ne peut pas avoir été rattaché sur 2 études différentes...
+         }
+      }
+      
+      return result;
+   }
+
 }

@@ -39,11 +39,13 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
+import org.apache.commons.collections4.map.CaseInsensitiveMap;
 import org.apache.poi.ss.usermodel.FormulaEvaluator;
 
 import fr.aphp.tumorotek.model.coeur.annotation.AnnotationValeur;
 import fr.aphp.tumorotek.model.coeur.annotation.ChampAnnotation;
 import fr.aphp.tumorotek.model.contexte.Banque;
+import fr.aphp.tumorotek.model.io.export.ChampEntite;
 import fr.aphp.tumorotek.model.io.imports.ImportColonne;
 import fr.aphp.tumorotek.model.io.imports.ImportTemplate;
 import fr.aphp.tumorotek.model.systeme.Entite;
@@ -68,15 +70,16 @@ public class ImportProperties
 
    /**
     * Hashtable contenant les valeurs des thésaurus en fct de leur
-    * ebtité.
+    * entité.
     */
-   private Hashtable<Object, Hashtable<String, Object>> thesaurusValues = new Hashtable<>();
+   // TG-185 & TG-204 :
+   private Hashtable<ChampEntite, CaseInsensitiveMap<String, Object>> thesaurusValues = new Hashtable<>();
 
    /**
     * hashtable contenant les valeurs des annotations thésaurus en fct
     * de leur ChampAnnotation.
     */
-   private Hashtable<ChampAnnotation, Hashtable<String, Object>> annotationThesaurusValues = new Hashtable<>();
+   private Hashtable<ChampAnnotation, CaseInsensitiveMap<String, Object>> annotationThesaurusValues = new Hashtable<>();
 
    /**
     * Hashtable contenant les AnnotationsValeurs à enregistrer en fct
@@ -116,11 +119,11 @@ public class ImportProperties
       this.colonnesForEntites = c;
    }
 
-   public Hashtable<Object, Hashtable<String, Object>> getThesaurusValues(){
+   public Hashtable<ChampEntite, CaseInsensitiveMap<String, Object>> getThesaurusValues(){
       return thesaurusValues;
    }
 
-   public void setThesaurusValues(final Hashtable<Object, Hashtable<String, Object>> t){
+   public void setThesaurusValues(final Hashtable<ChampEntite, CaseInsensitiveMap<String, Object>> t){
       this.thesaurusValues = t;
    }
 
@@ -132,11 +135,11 @@ public class ImportProperties
       this.banque = b;
    }
 
-   public Hashtable<ChampAnnotation, Hashtable<String, Object>> getAnnotationThesaurusValues(){
+   public Hashtable<ChampAnnotation, CaseInsensitiveMap<String, Object>> getAnnotationThesaurusValues(){
       return annotationThesaurusValues;
    }
 
-   public void setAnnotationThesaurusValues(final Hashtable<ChampAnnotation, Hashtable<String, Object>> aValues){
+   public void setAnnotationThesaurusValues(final Hashtable<ChampAnnotation, CaseInsensitiveMap<String, Object>> aValues){
       this.annotationThesaurusValues = aValues;
    }
 

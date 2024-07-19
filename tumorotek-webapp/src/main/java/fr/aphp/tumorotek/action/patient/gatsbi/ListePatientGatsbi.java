@@ -104,7 +104,8 @@ public class ListePatientGatsbi extends ListePatient
       GatsbiController.addColumn(objectsListGrid, null, "40px", null, cbox, null, true);
       
       // identifiant column, toujours affichée
-      GatsbiController.addColumn(objectsListGrid, "Champ.Patient.Identifiant", null, null, null, "auto(identifiant)", true);
+      //TG-182 : tri sur le champ identifiant du getter getIdentifiant() (qui retourne un PatientIdentifiant) de patient
+      GatsbiController.addColumn(objectsListGrid, "Champ.Patient.Identifiant", null, null, null, "auto(identifiant.identifiant)", true);
 
       // variable columns
       for(final Integer chpId : contexte.getChampEntiteInTableauOrdered()){

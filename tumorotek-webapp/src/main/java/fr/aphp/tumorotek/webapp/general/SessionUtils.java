@@ -237,28 +237,17 @@ public final class SessionUtils {
     * @return Contexte gatsbi
     */
    @SuppressWarnings("unchecked")
-   public static Contexte getCurrentGatsbiContexteForEntiteId(Integer eId) {
+   public static Contexte getCurrentGatsbiContexteForEntiteId(Integer entiteId) {
 	   Contexte gatsbiContexte = null;
 	   
-	   // trouve le contexte depuis l'étude GATSBI, venant de la banque sélectionnée, 
-	   // ou la première banque de la liste si 'Toutes collections' sélectionné
+	   // trouve le contexte depuis l'étude GATSBI, venant de la banque sélectionnée 
 	   if (Sessions.getCurrent().getAttribute("Banque") != null
 			   && ((Banque) Sessions.getCurrent().getAttribute("Banque")).getEtude() != null) {
 		   gatsbiContexte = ((Banque) Sessions.getCurrent().getAttribute("Banque"))
-	        	.getEtude().getContexteForEntite(eId);
-	   } else if (Sessions.getCurrent().getAttribute("ToutesCollections") != null 
-			   && ((List<Banque>) Sessions.getCurrent()
-					.getAttribute("ToutesCollections"))
-			      .stream().map(c -> c.getEtude()).distinct().count() == 1) {
-	      
-	      if (((List<Banque>) Sessions.getCurrent().getAttribute("ToutesCollections"))
-            .get(0).getEtude() != null) {
-               gatsbiContexte = ((List<Banque>) Sessions.getCurrent().getAttribute("ToutesCollections"))
-                  .get(0).getEtude().getContexteForEntite(eId);
-            }
-	   }
+	        	.getEtude().getContexteForEntite(entiteId);
+	   } 
  	   
-	  return gatsbiContexte;
+	   return gatsbiContexte;
    }
 
    /**

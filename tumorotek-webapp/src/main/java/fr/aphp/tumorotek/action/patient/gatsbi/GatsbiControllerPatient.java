@@ -79,6 +79,8 @@ public class GatsbiControllerPatient
    
    private static final Logger log = LoggerFactory.getLogger(GatsbiController.class);
 
+   // Ressemble beaucoup à addListHeadForChpId mais est utilisée pour la liste de l'onglet Patients (composant Grid)
+   // alors que addListHeadForChpId est utilisée pour les listes de patients "embedded" (composant ListBox)
    public static void addColumnForChpId(final Integer chpId, final Grid grid)
       throws ClassNotFoundException, InstantiationException, IllegalAccessException{
       switch(chpId){
@@ -261,6 +263,10 @@ public class GatsbiControllerPatient
             .collect(Collectors.toList()));
    } 
    
+   // Ressemble beaucoup à addColumnForChpId mais est utilisée pour les listes de patients embedded (composant Listbox)
+   // alors que addColumnForChpId est utilisée pour la liste de l'onglet Patients (composant Grid)
+   // /!\ pour les liste embedded on n'affiche pas certains champs même si ils sont demandés
+   // => bien garder la cohérence avec PatientItemRendererGatsbi.renderPatient()
    public static void addListHeadForChpId(final Integer chpId, final Listbox listbox, Map<Integer,String> widths) {
       switch(chpId){
          case 2: // nip
@@ -291,7 +297,6 @@ public class GatsbiControllerPatient
          case 12: // date décès
             break;
          case 227: // medecins
-            drawPatientMedecinsListheader(listbox, widths != null ? widths.get(227) : null);
             break;       
          default:
             break;

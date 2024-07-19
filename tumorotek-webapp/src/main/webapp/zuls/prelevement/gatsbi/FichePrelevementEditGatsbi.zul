@@ -40,7 +40,7 @@
 
 <window id="fwinPrelevementEdit" border="none"
 	 apply="fr.aphp.tumorotek.action.prelevement.gatsbi.FichePrelevementEditGatsbi"
-	 forward="onGatsbiParamSelected=onGetInjectionDossierExterneDone">
+	 forward="onGatsbiParamSelected=onGetInjectionDossierExterneDone, onSelectParametrage=onGetSelectedParametrage">
 	<panel collapsible="false" title="${c:l('fichePrelevement.panel.title')}" sclass="fichePanelv2" id="winPanel" closable="true">
 		<panelchildren style="overflow-y:scroll" id="panelChildrenWithScroll">
 			<div id="gatsbiContainer" class="main-container gridForm1">
@@ -55,7 +55,7 @@
 							<div class="row-container">
 								<textbox id="codeBoxPrlvt" value="@{fwinPrelevementEdit$composer.object.code,
 				        			save-when='validate.onClick, create.onClick, next.onClick'
-				        			load-after='numerotation.onClick'}" width="150px" 
+				        			load-after='numerotation.onClick'}" width="150px" height="20px"
 				        			constraint="${fwinPrelevementEdit$composer.codeConstraint}" />
 								<button id="numerotation" image="/images/icones/numerotation.png" sclass="buttonv2" visible="false" />
 								<button id="interfacage" image="/images/icones/wizard.png" sclass="buttonv2" visible="false" />
@@ -198,7 +198,8 @@
 									<label value="${c:l('Champ.Prelevement.Risque')}" sclass="formLabel" />
 									<label value="*" sclass="requiredMark"/>
 								</div>
-								<listbox id="risquesBox" mold="select" multiple="true" rows="4" width="150px" model="@{fwinPrelevementEdit$composer.risques}">
+								<!-- TG-251 : la hauteur du composant est forcé dans le doAfterCompose : l'attribut rows ne peut être utilisé car la liste des données est alimentée après la création du composant  -->
+								<listbox id="risquesBox" mold="select" multiple="true" width="150px" model="@{fwinPrelevementEdit$composer.risques}">
 									<listitem self="@{each='risque'}" value="@{risque.nom}">
 										<listcell label="@{risque.nom}" />
 									</listitem>
@@ -230,6 +231,8 @@
 								</div>
 							</div>
 							<div class="item item-wide" id="preleveurDiv"><!-- Préleveur du prélèvement -->
+								<!-- TG-204 : le filtre du contexte Gatsbi sur cette liste n''est pas géré comme les autres thesaurus car la liste des toutes les valeurs n''est pas initialisée au même moment
+									=> pas besoin de l'attribut listmodel   -->
 								<custom-attributes champId="28" />
 								<div class="row-container chpLabel">
 									<label value="${c:l('Champ.Prelevement.Preleveur')}" sclass="formLabel" />
@@ -274,7 +277,7 @@
 									<label value="${c:l('Champ.Prelevement.ConditNbr')}" sclass="formLabel" />
 									<label value="*" sclass="requiredMark"/>
 								</div>
-								<intbox id="nbConditBoxPrlvt" width="50px" value="@{fwinPrelevementEdit$composer.object.conditNbr,
+								<intbox id="nbConditBoxPrlvt" width="50px" height="20px" value="@{fwinPrelevementEdit$composer.object.conditNbr,
 									save-when='validate.onClick, create.onClick, next.onClick'}" constraint="no negative" />
 							</div>
 							<div class="item item-mid" id="conditMilieuDiv"><!-- Milieu de Condit -->

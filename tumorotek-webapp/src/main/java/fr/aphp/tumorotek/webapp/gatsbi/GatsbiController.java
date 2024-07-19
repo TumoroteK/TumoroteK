@@ -105,6 +105,8 @@ import fr.aphp.tumorotek.model.coeur.patient.Maladie;
 import fr.aphp.tumorotek.model.coeur.patient.Patient;
 import fr.aphp.tumorotek.model.coeur.prelevement.Prelevement;
 import fr.aphp.tumorotek.model.contexte.Banque;
+import fr.aphp.tumorotek.model.contexte.Collaborateur;
+import fr.aphp.tumorotek.model.contexte.Transporteur;
 import fr.aphp.tumorotek.model.contexte.gatsbi.Contexte;
 import fr.aphp.tumorotek.model.contexte.gatsbi.ContexteType;
 import fr.aphp.tumorotek.model.contexte.gatsbi.Etude;
@@ -127,7 +129,16 @@ public class GatsbiController
 {
 
    private static final Logger log = LoggerFactory.getLogger(GatsbiController.class);
-
+   
+   public static final Integer CHAMP_ENTITE_ID_PRELEVEUR = 28;
+   public static final Integer CHAMP_ENTITE_ID_OPERATEUR_PRELEVEMENT = 39;
+   public static final Integer CHAMP_ENTITE_ID_OPERATEUR_ECHANTILLON = 53;
+   //tableau de tous les champs id qui contiennent un objet Collaborateur :
+   public static final List<Integer> CHAMP_ENTITE_ID_FOR_COLLABORATEUR = new ArrayList<Integer>(Arrays.asList(
+                                    CHAMP_ENTITE_ID_PRELEVEUR, 
+                                    CHAMP_ENTITE_ID_OPERATEUR_PRELEVEMENT, 
+                                    CHAMP_ENTITE_ID_OPERATEUR_ECHANTILLON));
+   
    private static final Map<ContexteType, String[]> divBlockIds = new HashMap<ContexteType, String[]>()
    {
       private static final long serialVersionUID = 1L;
@@ -453,23 +464,36 @@ public class GatsbiController
       
       if (!values.isEmpty()) {  
          
+         int nbDataNotNullInLModel = lModel.size();
          if(lModel.contains(null)){
             thesObjs.add(null);
+            nbDataNotNullInLModel = nbDataNotNullInLModel-1;
          }
          
-         for(ThesaurusValue val : values){
-            thesObjs.add(lModel.stream().filter(
-               v -> v != null && (((v instanceof TKThesaurusObject) && ((TKThesaurusObject) v).getId().equals(val.getThesaurusId()))
-                  || ((v instanceof Unite) && ((Unite) v).getNom().equals(val.getThesaurusValue()))))
-               .findAny().orElseThrow(() -> new TKException("gatsbi.thesaurus.value.notfound", val.getThesaurusValue())));
+         //optimisation liée au fait que Gatsbi renvoie tous les thesaurus si il n'y a aucun filtre défini :
+         if(values.size() != nbDataNotNullInLModel) {
+            for(ThesaurusValue val : values){
+               thesObjs.add(lModel.stream().filter(
+                  v -> v != null && (((v instanceof TKThesaurusObject) && ((TKThesaurusObject) v).getId().equals(val.getThesaurusId()))
+                     || ((v instanceof Unite) && ((Unite) v).getNom().equals(val.getThesaurusValue())) 
+                     || ((v instanceof Transporteur) && ((Transporteur) v).getNom().equals(val.getThesaurusValue()))
+                     || ((v instanceof Collaborateur) && ((Collaborateur) v).getNomAndPrenom().equals(val.getThesaurusValue())) ))
+                  .findAny().orElseThrow(() -> new TKException("gatsbi.thesaurus.value.notfound", val.getThesaurusValue())));
+            }
+            
+            return thesObjs;
          }
-      } else { // adds all thesaurus values
-         //une évolution a été faite côté Gatsbi qui renvoie désormais toutes les valeurs du thesaurus si 
-         //l'utilisateur n'en a saisi aucun (TG-148) => on ne passe plus ici que si il n'y a aucune valeur pour la plateforme
-         //dans ce cas lModel est vide.
-         thesObjs.addAll(lModel);
       }
-
+      
+      // adds all thesaurus values si :
+      // - values est vide - ne doit jamais se présenter depuis qu'une évolution a été faite côté Gatsbi pour renvoyer toutes les valeurs du thesaurus si 
+      //l'utilisateur n'en a saisi aucun (TG-148) 
+      // - le nombre d'éléments dans values est égal à celui dans lModel : cas où il n'y a pas de filtre (depuis la TG-148) 
+      // TG-232 : Il ne faut pas ajouter 2 fois null. Si thesObjs le contient c'est que lModel le contient aussi (cf code ci-dessus) => clear()
+      if(thesObjs.contains(null)) {
+         thesObjs.clear();
+      }
+      thesObjs.addAll(lModel);
       return thesObjs;
    }
 
@@ -670,12 +694,17 @@ public class GatsbiController
          // surcharge la propriété deletable suivant le contexte gastbi
          Contexte c;
          for(ImportColonneDecorator deco : decos){
-            c = SessionUtils
-               .getCurrentGatsbiContexteForEntiteId(deco.getColonne().getChamp().getChampEntite().getEntite().getEntiteId());
-            if(c != null){
-               deco.setCanDelete(
-                  !getRequiredChampEntiteIdsForContexte(c).contains(deco.getColonne().getChamp().getChampEntite().getId()));
-               deco.setVisiteGatsbi(c.getContexteType().equals(ContexteType.MALADIE));
+            //TG-197 : dans le cas d'une annotation : deco.getColonne().getChamp().getChampEntite() est null 
+            // mais le champ n'est pas concerné par le contexte Gatsbi donc les valeurs par défaut de ImportColonneDecorator ne sont pas à surcharger
+            //=> test ci-dessous
+            if (deco.getColonne().getChamp() != null && deco.getColonne().getChamp().getChampEntite() != null) {
+               c = SessionUtils
+                  .getCurrentGatsbiContexteForEntiteId(deco.getColonne().getChamp().getChampEntite().getEntite().getEntiteId());
+               if(c != null){
+                  deco.setCanDelete(
+                     !getRequiredChampEntiteIdsForContexte(c).contains(deco.getColonne().getChamp().getChampEntite().getId()));
+                  deco.setVisiteGatsbi(c.getContexteType().equals(ContexteType.MALADIE));
+               }
             }
          }
       }
@@ -940,22 +969,35 @@ public class GatsbiController
             for(ParametrageValueDTO value : param.getParametrageValueDTOs()){
                if(!contexte.getHiddenChampEntiteIds().contains(value.getChampEntiteId())
                   && !StringUtils.isBlank(value.getDefaultValue())){
+                  //TG-204 : dans la majorité des cas, la valeur de thesaurus transmise par Gatsbi est à injecter tel
+                  //quel dans l'écran mais dans certains cas (collaborateur et service), il faut faire un transcodification pour transmettre l'id TK.
+                  //même mécanisme que pour les injections des données externes 
+                  String paramValueToInject = null;
                   if(value.getThesaurusTableNom() != null && value.getThesaurusTableNom().trim().length() != 0 
                      && !contexte.getThesaurusValuesForChampEntiteId(value.getChampEntiteId()).isEmpty()){ // thesaurus value check!
+                     Optional<ThesaurusValue> thesaurusValueForParamValue = null;
                      for(String defvalue : value.getDefaultValue().split(";")){
-                        if(!contexte.getThesaurusValuesForChampEntiteId(value.getChampEntiteId()).stream()
-                           .anyMatch(v -> v.getThesaurusValue().equalsIgnoreCase(defvalue))){
+                        thesaurusValueForParamValue = contexte.getThesaurusValuesForChampEntiteId(value.getChampEntiteId()).stream()
+                           .filter(v -> v.getThesaurusValue().equalsIgnoreCase(defvalue)).findFirst();
+                        if(thesaurusValueForParamValue.isPresent()) {
+                           paramValueToInject = transcodeParamValueIfNecessary(thesaurusValueForParamValue.get(), value.getDefaultValue());
+                        }
+                        else {
                            throw new TKException("gatsbi.thesaurus.value.notfound", defvalue);
                         }
                      }
                   }
+                  else {
+                     paramValueToInject = value.getDefaultValue();
+                  }
+                  
                   val = new ValeurExterne();
                   val.setChampEntiteId(value.getChampEntiteId());
-                  val.setValeur(value.getDefaultValue());
+                  val.setValeur(paramValueToInject);
                   bloc.getValeurs().add(val);
                }
             }
-
+            
             ManagerLocator.getInjectionManager().injectBlocExterneInObject(tkObj, banque, bloc,
                new ArrayList<AnnotationValeur>());
          }
@@ -968,6 +1010,16 @@ public class GatsbiController
       return injection;
    }
 
+   //Pour certains cas (champ collaborateur et service), il faut injecter l'id et non la valeur transmise par Gatsbi
+   private static String transcodeParamValueIfNecessary(ThesaurusValue thesaurusValue, String gatsbiParamValue) {
+      Integer champEntiteId = thesaurusValue.getChampEntiteId();
+      if(CHAMP_ENTITE_ID_FOR_COLLABORATEUR.contains(champEntiteId)) {
+         return Integer.toString(thesaurusValue.getThesaurusId());
+      }
+      //cas standard : on ne fait rien
+      return gatsbiParamValue;
+   }
+   
    /**
     * Applique au rendement d'une page (contenu d'un onglet, formulaire), le wire des divs 
     * représentant chaque champ d'information, afin d'appliquer:
@@ -1070,18 +1122,55 @@ public class GatsbiController
     */
    public static Column addColumn(Grid grid, String nameKey, String width, String align, Component child, String sort,
       Boolean visible) throws ClassNotFoundException, InstantiationException, IllegalAccessException{
+      return addColumn(grid, nameKey, width, align, child, sort, visible, false);
+   }
+   
+   //TG-200 : plantage lors du clic sur les colonnes du tableau des échantillons embarqué dans FicheMultiEchantillonsGatsbi 
+   /**
+    * Dessine une colonne.
+    * @param grid composant parent
+    * @param nameKey
+    * @param width
+    * @param align
+    * @param child
+    * @param sort
+    * @param visible
+    * @param bloquerTri
+    * @return composant column dessiné.
+    * @throws ClassNotFoundException
+    * @throws InstantiationException
+    * @throws IllegalAccessException
+    */
+   public static Column addColumn(Grid grid, String nameKey, String width, String align, Component child, String sort,
+      Boolean visible, Boolean bloquerTri) throws ClassNotFoundException, InstantiationException, IllegalAccessException{
       // check box first immutable column
       Column col = new Column();
       col.setLabel(Labels.getLabel(nameKey));
       if(width != null){
+         //NB : les tests faits dans le cadre de la TG-198 montre que zk / le navigateur (?) ne prend pas en compte la valeur pour l'attribut width 
+         //(peut-être dû au fait que c'est un <th>)
          col.setWidth(width);
-         col.setStyle("max-width: " + width);
-      } else {
-         col.setHflex("1");
       }
+      /*
+      TG-198 : ajout du min-width corrige le problème d'affichage TG-198 avec FireFox mais pas avec Chrome
+      => comme le problème est introduit par le Hflex à 1, mise en commentaire du else... Peut-être qu'une montée de version de zk ou
+      du navigateur permettra de revenir à ce code. 
+      A date la largeur des colonnes est un peut trop grande pour les colonnes sans entête si il y a peu de colonne mais les valeurs ne sont
+      pas tronquées lors de l'affichage de la fiche à côté de la liste.
+      else {
+         col.setHflex("1");
+         col.setStyle("min-width: 150px");//corrige TG-198 sous FireFox
+      }
+      */
+      //NB : les tests faits dans le cadre de la TG-198 montre que zk / le navigateur (?) ne prend pas en compte la valeur pour l'attribut align 
+      //(peut-être dû au fait que c'est un <th>)      
       col.setAlign(align);
       if(child != null){
          child.setParent(col);
+      }
+      //TG-199
+      if(bloquerTri) {
+         sort = "none";
       }
       col.setSort(sort);
       col.setVisible(visible);

@@ -54,6 +54,7 @@ import fr.aphp.tumorotek.action.echantillon.AbstractEchantillonDecoratorRowRende
 import fr.aphp.tumorotek.action.echantillon.FicheMultiEchantillons;
 import fr.aphp.tumorotek.action.prelevement.gatsbi.exception.GatsbiException;
 import fr.aphp.tumorotek.manager.impl.interfacage.ResultatInjection;
+import fr.aphp.tumorotek.model.contexte.Collaborateur;
 import fr.aphp.tumorotek.model.contexte.gatsbi.Contexte;
 import fr.aphp.tumorotek.webapp.gatsbi.GatsbiController;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
@@ -99,8 +100,8 @@ public class FicheMultiEchantillonsGatsbi extends FicheMultiEchantillons
 
       // inner list
       // deletable
-      // force pas affichage emplacement et statut stockage en fin de grid
-      GatsbiControllerEchantillon.drawColumnsForEchantillons(contexte, echantillonsList, echanDecoRendererGatsbi, true, true, false);
+      // la colonne "toutes collections" qui ne peut jamais être visible ne doit pas être créée pour éviter un décalage lié au fait que la création des colonnes n'est pas cohérente avec le renderer
+      GatsbiControllerEchantillon.drawColumnsForEchantillons(contexte, echantillonsList, echanDecoRendererGatsbi, true, false, false);
    }
 
    @Override
@@ -208,4 +209,29 @@ public class FicheMultiEchantillonsGatsbi extends FicheMultiEchantillons
    public void onSelectParametrageClose(){
       super.scrollToBottom();    
    }
+   
+   //TG-204 : définition d'un "thesaurus dans Gatsbi" pour le champ opérateur
+   //le mécanisme standard de gestion des thesaurus (GatsbiController.appliThesaurusValues()) 
+   //ne peut pas s'appliquer ici car le composant est un combobox et non une liste 
+   @Override
+   public List<Collaborateur> findCollaborateursToDisplayForOperateur() {
+      //récupération de tous les collaborateurs (cas standard sans le filtre Gatsbi) :
+      List<Collaborateur> allCollaborateur = super.findCollaborateursToDisplayForOperateur();
+      return GatsbiControllerEchantillon.filterOperateursFromContexte(allCollaborateur);  
+   }
+   
+   //TG-244
+   /**
+    * si un paramétrage est défini sur code échantillon, il faut le concaténer au code prélèvement, sans séparateur 
+    */
+   @Override
+   protected void initCodePrefixe() {
+      if(getCodePrefixe() != null) {
+         setCodePrefixe(new StringBuilder(getParentObject().getCode()).append(getCodePrefixe()).toString());
+      }
+      else {
+         setCodePrefixe(getParentObject().getCode());
+      }
+   }
+
 }

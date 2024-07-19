@@ -60,6 +60,7 @@ import java.util.Map;
 
 import javax.sql.DataSource;
 
+import org.apache.commons.collections4.map.CaseInsensitiveMap;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -479,7 +480,7 @@ public class ImportManagerTest extends AbstractManagerTest4
    public void testExtractValuesForOneThesaurus(){
       final ImportTemplate it = importTemplateManager.findByIdManager(1);
       final ChampEntite ceNature = champEntiteDao.findById(111);
-      Hashtable<String, Object> values = importManager.extractValuesForOneThesaurus(ceNature, it.getBanque());
+      CaseInsensitiveMap<String, Object> values = importManager.extractValuesForOneThesaurus(ceNature, it.getBanque());
       assertTrue(values.size() == 3);
       final Nature nat = (Nature) values.get("TISSU");
       assertNotNull(nat);
@@ -505,14 +506,14 @@ public class ImportManagerTest extends AbstractManagerTest4
       values = importManager.extractValuesForOneThesaurus(confArrivee, it.getBanque());
       assertTrue(values.size() == 2);
 
-      assertTrue(values.contains(nonConformiteDao.findById(1)));
-      assertTrue(values.contains(nonConformiteDao.findById(2)));
+      assertTrue(values.get(nonConformiteDao.findById(1)) != null);
+      assertTrue(values.get(nonConformiteDao.findById(2)) != null);
 
       final ChampEntite confCessDerive = champEntiteDao.findById(264);
       values = importManager.extractValuesForOneThesaurus(confCessDerive, it.getBanque());
       assertTrue(values.size() == 2);
-      assertTrue(values.contains(nonConformiteDao.findById(10)));
-      assertTrue(values.contains(nonConformiteDao.findById(11)));
+      assertTrue(values.get(nonConformiteDao.findById(10)) != null);
+      assertTrue(values.get(nonConformiteDao.findById(11)) != null);
    }
 
    /**
@@ -522,7 +523,7 @@ public class ImportManagerTest extends AbstractManagerTest4
    public void testExtractValuesForOneAnnotationThesaurus(){
       final Banque b1 = importTemplateManager.findByIdManager(1).getBanque();
       final ChampAnnotation ca = champAnnotationManager.findByNomManager("009 : version cTNM").get(0);
-      Hashtable<String, Object> values = importManager.extractValuesForOneAnnotationThesaurus(ca, b1);
+      CaseInsensitiveMap<String, Object> values = importManager.extractValuesForOneAnnotationThesaurus(ca, b1);
       assertTrue(values.size() == 5);
       final Item it = (Item) values.get("X");
       assertNotNull(it);
@@ -548,7 +549,7 @@ public class ImportManagerTest extends AbstractManagerTest4
     */
    @Test
    public void testGenerateThesaurusHashtable(){
-      Hashtable<Object, Hashtable<String, Object>> thesaurus = new Hashtable<>();
+      Hashtable<ChampEntite, CaseInsensitiveMap<String, Object>> thesaurus = new Hashtable<>();
       final ImportTemplate it = importTemplateManager.findByIdManager(1);
       thesaurus = importManager.generateThesaurusHashtable(it);
       assertTrue(thesaurus.size() == 8);
@@ -567,7 +568,7 @@ public class ImportManagerTest extends AbstractManagerTest4
     */
    @Test
    public void testGenerateAnnotationsThesaurusHashtable(){
-      Hashtable<ChampAnnotation, Hashtable<String, Object>> thesaurus = new Hashtable<>();
+      Hashtable<ChampAnnotation, CaseInsensitiveMap<String, Object>> thesaurus = new Hashtable<>();
       final ImportTemplate it = importTemplateManager.findByIdManager(1);
       thesaurus = importManager.generateAnnotationsThesaurusHashtable(it);
       assertTrue(thesaurus.size() == 2);
@@ -2864,7 +2865,7 @@ public class ImportManagerTest extends AbstractManagerTest4
 
       // 1 seule valeur LIQUIDE D'ASCITE retenue pour le thesaurus nature
       final ChampEntite ceNature = champEntiteDao.findById(111);
-      Hashtable<String, Object> values = importManager.extractValuesForOneThesaurus(ceNature, it.getBanque());
+      CaseInsensitiveMap<String, Object>  values = importManager.extractValuesForOneThesaurus(ceNature, it.getBanque());
       assertTrue(values.size() == 1);
       final Nature nat = (Nature) values.get("LIQUIDE D'ASCITE");
       assertNotNull(nat);
@@ -2887,7 +2888,7 @@ public class ImportManagerTest extends AbstractManagerTest4
       final ChampEntite confArrivee = champEntiteDao.findById(257);
       values = importManager.extractValuesForOneThesaurus(confArrivee, it.getBanque());
       assertTrue(values.size() == 1);
-      assertTrue(values.contains(nonConformiteDao.findById(2)));
+      assertTrue(values.get(nonConformiteDao.findById(2)) != null);
 
       // 1 valeur retenue pour Consent type
       fr.aphp.tumorotek.model.contexte.gatsbi.ChampEntite consentType = new fr.aphp.tumorotek.model.contexte.gatsbi.ChampEntite();

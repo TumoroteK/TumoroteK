@@ -341,7 +341,7 @@ public class PatientManagerImpl implements PatientManager
          // recherche d'abord par identifiant si existe pour la banque
          if (findPatientDoublonOnIdentifiant(patient)) {
             PatientDoublonFound df = new PatientDoublonFound();
-            df.setIdentifiant(patient.getIdentifiantAsString());
+            df.setIdentifiant(patient.getIdentifiant());
             return Optional.of(df);
          }
          
@@ -353,7 +353,7 @@ public class PatientManagerImpl implements PatientManager
    private boolean findPatientDoublonOnIdentifiant(final Patient patient) {
       // un seul patient avec l'identifiant au max doit exister 
       List<Patient> existings = patientDao
-         .findByIdentifiant(patient.getIdentifiantAsString(), Arrays.asList(patient.getBanque()));
+         .findByIdentifiant(patient.getIdentifiant(), Arrays.asList(patient.getBanque()));
       if(patient.getPatientId() == null){ // nouveau, aucun patient avec cet identifiant ne doit exister
          return !existings.isEmpty();
       }else{ // en modification, seul LE patient avec LE même id peut exister
@@ -402,7 +402,7 @@ public class PatientManagerImpl implements PatientManager
          // recherche si le patient existant correspond à un identifiant
          if (pat.getBanque() != null) {
             patients.addAll(patientDao
-               .findByIdentifiant(pat.getIdentifiantAsString(), Arrays.asList(pat.getBanque())));
+               .findByIdentifiant(pat.getIdentifiant(), Arrays.asList(pat.getBanque())));
             return patients.get(0); // un seul patient possible par identifiant par banque
          }
          

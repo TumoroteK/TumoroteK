@@ -252,7 +252,10 @@ public class FichePatientStaticGatsbi extends FichePatientStatic
    }
    
    // TODO toutes collections ? Afficher une liste ?
+   // CHT : pour le moment, en toutes collections, on est sur l'affichage standard (hors Gatsbi)
+   // donc l'identifiant n'est pas affiché
+   //TG-182
    public String getPatientIdentifiant() {
-      return patient.getIdentifiantAsString(SessionUtils.getCurrentBanque(sessionScope));
+      return patient.getIdentifiant();
    }
 }

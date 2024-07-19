@@ -134,7 +134,7 @@ import fr.aphp.tumorotek.model.contexte.Banque;
    @NamedQuery(name = "Patient.findByIdentifiant", query = "SELECT distinct p FROM Patient p JOIN p.patientIdentifiants i "
          + "WHERE i.identifiant like ?1 AND i.pk.banque in (?2)"),
    @NamedQuery(name = "Patient.findIdentifiantsByPatientAndBanques", 
-      query = "SELECT distinct i "
+      query = "SELECT i "
          + "FROM PatientIdentifiant i "
          + "WHERE i.pk.patient = (?1) AND i.pk.banque in (?2) ORDER BY i.pk.banque.nom")
 })
@@ -188,6 +188,8 @@ public class Patient extends TKDelegetableObject<Patient> implements TKAnnotable
    
    // flag
    private boolean newIdentifiantAdded = false;
+   
+   private final static String EMPTY_PATIENT = "{Empty Patient}";
 
    /** Constructeur par défaut. */
    public Patient(){}
@@ -206,10 +208,15 @@ public class Patient extends TKDelegetableObject<Patient> implements TKAnnotable
          //  }else if(this.identifiant != null){
          //    return "{" + this.identifiant + "}";
       }else{
-         return "{Empty Patient}";
+         return EMPTY_PATIENT;
       }
    }
 
+   @Transient
+   public boolean isEmptyPatient() {
+      return this.toString().equals(EMPTY_PATIENT);
+   }
+   
    @Id
    @Column(name = "PATIENT_ID", unique = true, nullable = false)
    @GeneratedValue(generator = "autoincrement")
@@ -427,36 +434,34 @@ public class Patient extends TKDelegetableObject<Patient> implements TKAnnotable
       this.patientIdentifiants = _i;
    }
    
+   //TG-182
    @Transient
-   public PatientIdentifiant getIdentifiant(Banque _b) {
-      return patientIdentifiants.stream()
-         .filter(i -> i.getBanque().equals(_b)).findFirst()
-         .orElse(new PatientIdentifiant(this, _b));
+   public String setBanqueAndGetIdentifiant(Banque _b) {
+      setBanque(_b);
+      return getIdentifiant();
    }
    
    @Transient
-   public String getIdentifiantAsString(Banque _b) {
-      return getIdentifiant(_b).getIdentifiant();
-   }
-   
-   @Transient
-   public PatientIdentifiant getIdentifiant() {
+   public PatientIdentifiant getPatientIdentifiant() {
+      // TG-238 : gérer le cas où la banque n'est pas valorisée (recherche complexe) mais qu'il n'y a qu'un seul identifiant : cas le plus courant
+      if(banque == null && patientIdentifiants.size() == 1) {
+         return patientIdentifiants.iterator().next();
+      }
       return patientIdentifiants.stream()
          .filter(i -> i.getBanque().equals(banque)).findFirst()
          .orElse(new PatientIdentifiant(this, banque));
    }
    
+   // TG-238 /!\ cette méthode est obligatoire et ne doit pas être renommé car elle simule le nom d'un attribut de patient utilisé dans champEntite (id 272)
+   // pour éviter d'avoir à afficher à l'utilisateur la notion PatientIdentifiant lors de la demande de sélection d'un champ (recherche, import ...).
    @Transient
-   public String getIdentifiantAsString() {
-      return getIdentifiant(banque).getIdentifiant();
+   public String getIdentifiant() {
+      return getPatientIdentifiant().getIdentifiant();
    }
    
    public boolean hasIdentifiant() {
-      return getIdentifiant(banque) != null && !getIdentifiant(banque).isEmpty();
-   }
-   
-   public boolean hasIdentifiant(Banque bank) {
-      return getIdentifiant(bank) != null && !getIdentifiant(bank).isEmpty();
+      PatientIdentifiant patientIdentifiant = getPatientIdentifiant();
+      return patientIdentifiant != null && !patientIdentifiant.isEmpty();
    }
    
    public void addToIdentifiants(PatientIdentifiant ident) {
@@ -497,6 +502,15 @@ public class Patient extends TKDelegetableObject<Patient> implements TKAnnotable
          return false;
       }
       final Patient test = (Patient) obj;
+      
+      //TG-183 : si les 2 patients à comparer n'ont aucun champ renseigné (EMPTY_PATIENT) : cas de patient Gatsbi avec uniquement un identifiant,
+      //il faut considérer qu'ils ne sont jamais égaux sauf si ils ont le même patientId
+      if(isEmptyPatient() && test.toString().equals(toString())) {
+         if(patientId != null && test.getPatientId() != null) {
+            return patientId.equals(test.getPatientId());
+         }
+         return false;
+      }
 
       final boolean eq = Objects.equals(nom, test.getNom())
          && Objects.equals(prenom, test.getPrenom())
@@ -598,14 +612,14 @@ public class Patient extends TKDelegetableObject<Patient> implements TKAnnotable
       // @since gatsbi
       // se base sur identifiant si banque (transient)
       // attribuée au patient
-      if (getIdentifiantAsString(banque) == null) {
+      if (getIdentifiant() == null) {//TG-182
          if(getPrenom() != null){
             return getNom() + " " + getPrenom();
          }else{
             return getNom();
          }
       } else { // supprime patient créé depuis collection étude gatsbi
-         return getIdentifiantAsString(banque);
+         return getIdentifiant();
       }
    }
 

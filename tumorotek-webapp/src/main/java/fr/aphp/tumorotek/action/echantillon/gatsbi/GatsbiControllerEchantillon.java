@@ -38,6 +38,7 @@ package fr.aphp.tumorotek.action.echantillon.gatsbi;
 
 import java.lang.reflect.InvocationTargetException;
 import java.text.ParseException;
+import java.util.List;
 
 import org.zkoss.zul.Column;
 import org.zkoss.zul.Grid;
@@ -48,9 +49,11 @@ import fr.aphp.tumorotek.action.echantillon.EchantillonRowRenderer;
 import fr.aphp.tumorotek.decorator.TKSelectObjectRenderer;
 import fr.aphp.tumorotek.dto.EchantillonDTO;
 import fr.aphp.tumorotek.model.coeur.echantillon.Echantillon;
+import fr.aphp.tumorotek.model.contexte.Collaborateur;
 import fr.aphp.tumorotek.model.contexte.gatsbi.Contexte;
 import fr.aphp.tumorotek.webapp.gatsbi.GatsbiController;
 import fr.aphp.tumorotek.webapp.gatsbi.RowRendererGatsbi;
+import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
 /**
  * Gatsbi controller regroupant les fonctionalités de modification dynamique de
@@ -65,58 +68,57 @@ public class GatsbiControllerEchantillon
 
    public static void addColumnForChpId(final Integer chpId, final Grid grid)
       throws ClassNotFoundException, InstantiationException, IllegalAccessException{
+      addColumnForChpId(chpId, grid, false);
+   }
+   
+   public static void addColumnForChpId(final Integer chpId, final Grid grid, final boolean bloquerTri)
+      throws ClassNotFoundException, InstantiationException, IllegalAccessException{
       switch(chpId){
          case 53: // collaborateur
-            drawOperateurColumn(grid);
+            drawOperateurColumn(grid, bloquerTri);
             break;
          case 54:
             // "code" toujours rendu par défaut
             break;
-         case 55:
-            drawObjetStatutColumn(grid);
-            break;
          case 56: // date stock
-            drawDateStockColumn(grid);
-            break;
-         case 57: // emplacement
-            drawEmplacementColumn(grid);
+            drawDateStockColumn(grid, bloquerTri);
             break;
          case 58: // type
-            drawEchantillonTypeColumn(grid);
+            drawEchantillonTypeColumn(grid, bloquerTri);
             break;
          case 60: // lateralite
-            drawLateraliteColumn(grid);
+            drawLateraliteColumn(grid, bloquerTri);
             break;
          case 61: // quantite (chpid=62 quantite_init & chpid=63 quantite unite, ignore)
-            drawQuantiteColumn(grid);
+            drawQuantiteColumn(grid, bloquerTri);
             break;
          case 67: // delai cgl
-            drawDelaiCglColumn(grid);
+            drawDelaiCglColumn(grid, bloquerTri);
             break;
          case 68: // qualite
-            drawQualiteColumn(grid);
+            drawQualiteColumn(grid, bloquerTri);
             break;
          case 69: // tumoral
-            drawTumoralColumn(grid);
+            drawTumoralColumn(grid, bloquerTri);
             break;
          case 70: // preparation
-            drawModePrepaColumn(grid);
+            drawModePrepaColumn(grid, bloquerTri);
             break;
          case 72: // sterile
-            drawSterileColumn(grid);
+            drawSterileColumn(grid, bloquerTri);
             break;
          case 229: // codes organes
-            drawCodesOrganeColumn(grid);
+            drawCodesOrganeColumn(grid, bloquerTri);
             break;
          case 230: // codes lesionnels
-            drawCodesLesionnelColumn(grid);
+            drawCodesLesionnelColumn(grid, bloquerTri);
             break;
          case 243: // conforme traitement -> rendu sous la forme d'une icône
             break;
          case 244: // conforme cession -> rendu sous la forme d'une icône
             break;
          case 255: // cr anapath
-            drawCrAnapathColumn(grid);
+            drawCrAnapathColumn(grid, bloquerTri);
             break;
          default:
             break;
@@ -124,116 +126,116 @@ public class GatsbiControllerEchantillon
    }
 
    // code, colonne toujours affichée
-   public static Column drawCodeColumn(final Grid grid)
+   public static Column drawCodeColumn(final Grid grid, final boolean bloquerTri)
       throws ClassNotFoundException, InstantiationException, IllegalAccessException{
-      return GatsbiController.addColumn(grid, "general.code", null, null, null, "auto(code)", true);
+      return GatsbiController.addColumn(grid, "general.code", null, null, null, "auto(code)", true, bloquerTri);
    }
 
-   public static Column drawBanqueColumn(final Grid grid, final boolean visible)
+   public static Column drawBanqueColumn(final Grid grid, final boolean visible, final boolean bloquerTri)
       throws ClassNotFoundException, InstantiationException, IllegalAccessException{
-      return GatsbiController.addColumn(grid, "Entite.Banque", null, null, null, "auto(code)", visible);
+      return GatsbiController.addColumn(grid, "Entite.Banque", null, null, null, "auto(code)", visible, bloquerTri);
    }
 
    // patient, colonne toujours affichée
-   public static Column drawPatientColumn(final Grid grid)
+   public static Column drawPatientColumn(final Grid grid, final boolean bloquerTri)
       throws ClassNotFoundException, InstantiationException, IllegalAccessException{
-      return GatsbiController.addColumn(grid, "prelevement.patient", null, null, null, "auto(maladie.patient.nom)", false);
+      return GatsbiController.addColumn(grid, "prelevement.patient", null, null, null, "auto(maladie.patient.nom)", false, bloquerTri);
    }
 
    // nb dérivés toujours affichée
-   public static Column drawNbDerivesColumn(final Grid grid)
+   public static Column drawNbDerivesColumn(final Grid grid, final boolean bloquerTri)
       throws ClassNotFoundException, InstantiationException, IllegalAccessException{
-      final Column nbProdDerivesColumn = GatsbiController.addColumn(grid, "derives.nb", null, null, null, "auto", true);
+      final Column nbProdDerivesColumn = GatsbiController.addColumn(grid, "derives.nb", null, null, null, "auto", false, bloquerTri);//TG-199 : avant dernier param (visible) passé à false pour être cohénrent avec anapath' et séro
       nbProdDerivesColumn.setId("nbProdDerivesColumn");
       return nbProdDerivesColumn;
    }
 
    // nb cessions
-   public static Column drawNbCessionsColumn(final Grid grid)
+   public static Column drawNbCessionsColumn(final Grid grid, final boolean bloquerTri)
       throws ClassNotFoundException, InstantiationException, IllegalAccessException{
-      final Column nbCessionsColumn = GatsbiController.addColumn(grid, "cession.nb", null, null, null, "auto", true);
+      final Column nbCessionsColumn = GatsbiController.addColumn(grid, "cession.nb", null, null, null, "auto", false, bloquerTri);//TG-199 : avant dernier param (visible) passé à false pour être cohénrent avec anapath' et séro
       nbCessionsColumn.setId("nbCessionsColumn");
       return nbCessionsColumn;
    }
 
    // collaborateur
-   public static Column drawOperateurColumn(final Grid grid)
+   public static Column drawOperateurColumn(final Grid grid, final boolean bloquerTri)
       throws ClassNotFoundException, InstantiationException, IllegalAccessException{
       return GatsbiController.addColumn(grid, "Champ.Echantillon.Collaborateur", null, null, null,
-         "auto(collaborateur.nomAndPrenom)", true);
+         "auto(collaborateur.nomAndPrenom)", true, bloquerTri);
    }
 
-   public static Column drawObjetStatutColumn(final Grid grid)
+   public static Column drawObjetStatutColumn(final Grid grid, final boolean bloquerTri)
       throws ClassNotFoundException, InstantiationException, IllegalAccessException{
-      return GatsbiController.addColumn(grid, "Champ.Echantillon.ObjetStatut", null, null, null, "auto(objetStatut.nom)", true);
+      return GatsbiController.addColumn(grid, "Champ.Echantillon.ObjetStatut", null, null, null, "auto(objetStatut.statut)", true, bloquerTri);
    }
 
-   public static Column drawDateStockColumn(final Grid grid)
+   public static Column drawDateStockColumn(final Grid grid, final boolean bloquerTri)
       throws ClassNotFoundException, InstantiationException, IllegalAccessException{
-      return GatsbiController.addColumn(grid, "Champ.Echantillon.DateStock", null, null, null, "auto(dateStock)", true);
+      return GatsbiController.addColumn(grid, "Champ.Echantillon.DateStock", null, null, null, "auto(dateStock)", true, bloquerTri);
    }
 
-   public static Column drawEmplacementColumn(final Grid grid)
+   public static Column drawEmplacementColumn(final Grid grid, final boolean bloquerTri)
       throws ClassNotFoundException, InstantiationException, IllegalAccessException{
       return GatsbiController.addColumn(grid, "Champ.Echantillon.Emplacement", null, null, null,
-         "auto(emplacement.emplacementId)", true);
+         "none", true);//TG-199 : tri passé à none pour être cohérent avec les contextes anapath' et séro
    }
 
-   public static Column drawEchantillonTypeColumn(final Grid grid)
+   public static Column drawEchantillonTypeColumn(final Grid grid, final boolean bloquerTri)
       throws ClassNotFoundException, InstantiationException, IllegalAccessException{
 
       return GatsbiController.addColumn(grid, "Champ.Echantillon.EchantillonType.Type", null, null, null,
-         "auto(echantillonType.nom)", true);
+         "auto(echantillonType.nom)", true, bloquerTri);
    }
 
-   public static Column drawLateraliteColumn(final Grid grid)
+   public static Column drawLateraliteColumn(final Grid grid, final boolean bloquerTri)
       throws ClassNotFoundException, InstantiationException, IllegalAccessException{
-      return GatsbiController.addColumn(grid, "Champ.Echantillon.Lateralite", null, null, null, "auto(lateralite)", true);
+      return GatsbiController.addColumn(grid, "Champ.Echantillon.Lateralite", null, null, null, "auto(lateralite)", true, bloquerTri);
    }
 
-   public static Column drawQuantiteColumn(final Grid grid)
+   public static Column drawQuantiteColumn(final Grid grid, final boolean bloquerTri)
       throws ClassNotFoundException, InstantiationException, IllegalAccessException{
-      return GatsbiController.addColumn(grid, "ficheEchantillon.quantiteLabel", null, null, null, "auto(quantite)", true);
+      return GatsbiController.addColumn(grid, "ficheEchantillon.quantiteLabel", null, null, null, "none", true, bloquerTri);//TG-199 : tri passé à none pour être cohérent avec les contextes anapath' et séro:
    }
 
-   public static Column drawDelaiCglColumn(final Grid grid)
+   public static Column drawDelaiCglColumn(final Grid grid, final boolean bloquerTri)
       throws ClassNotFoundException, InstantiationException, IllegalAccessException{
-      return GatsbiController.addColumn(grid, "Champ.Echantillon.DelaiCgl", null, null, null, "auto(delaiCgl)", true);
+      return GatsbiController.addColumn(grid, "Champ.Echantillon.DelaiCgl", null, null, null, "auto(delaiCgl)", true, bloquerTri);
    }
 
-   public static Column drawQualiteColumn(final Grid grid)
+   public static Column drawQualiteColumn(final Grid grid, final boolean bloquerTri)
       throws ClassNotFoundException, InstantiationException, IllegalAccessException{
-      return GatsbiController.addColumn(grid, "Champ.Echantillon.EchanQualite", null, null, null, "auto(echanQualite.nom)", true);
+      return GatsbiController.addColumn(grid, "Champ.Echantillon.EchanQualite", null, null, null, "auto(echanQualite.nom)", true, bloquerTri);
    }
 
-   public static Column drawTumoralColumn(final Grid grid)
+   public static Column drawTumoralColumn(final Grid grid, final boolean bloquerTri)
       throws ClassNotFoundException, InstantiationException, IllegalAccessException{
-      return GatsbiController.addColumn(grid, "Champ.Echantillon.Tumoral", null, null, null, "auto(tumoral)", true);
+      return GatsbiController.addColumn(grid, "Champ.Echantillon.Tumoral", null, null, null, "auto(tumoral)", true, bloquerTri);
    }
 
-   public static Column drawModePrepaColumn(final Grid grid)
+   public static Column drawModePrepaColumn(final Grid grid, final boolean bloquerTri)
       throws ClassNotFoundException, InstantiationException, IllegalAccessException{
-      return GatsbiController.addColumn(grid, "Champ.Echantillon.ModePrepa", null, null, null, "auto(modePrepa.nom)", true);
+      return GatsbiController.addColumn(grid, "Champ.Echantillon.ModePrepa", null, null, null, "auto(modePrepa.nom)", true, bloquerTri);
    }
 
-   public static Column drawSterileColumn(final Grid grid)
+   public static Column drawSterileColumn(final Grid grid, final boolean bloquerTri)
       throws ClassNotFoundException, InstantiationException, IllegalAccessException{
-      return GatsbiController.addColumn(grid, "Champ.Echantillon.Sterile", null, null, null, "auto(sterile)", true);
+      return GatsbiController.addColumn(grid, "Champ.Echantillon.Sterile", null, null, null, "auto(sterile)", true, bloquerTri);
    }
 
-   public static Column drawCodesOrganeColumn(final Grid grid)
+   public static Column drawCodesOrganeColumn(final Grid grid, final boolean bloquerTri)
       throws ClassNotFoundException, InstantiationException, IllegalAccessException{
-      return GatsbiController.addColumn(grid, "Champ.Echantillon.Organe", null, null, null, "auto", true);
+      return GatsbiController.addColumn(grid, "Champ.Echantillon.Organe", null, null, null, "auto", true, bloquerTri);
    }
 
-   public static Column drawCodesLesionnelColumn(final Grid grid)
+   public static Column drawCodesLesionnelColumn(final Grid grid, final boolean bloquerTri)
       throws ClassNotFoundException, InstantiationException, IllegalAccessException{
-      return GatsbiController.addColumn(grid, "ficheEchantillon.codeLesionelLabel", null, null, null, "auto", true);
+      return GatsbiController.addColumn(grid, "ficheEchantillon.codeLesionelLabel", null, null, null, "auto", true, bloquerTri);
    }
 
-   public static Column drawCrAnapathColumn(final Grid grid)
+   public static Column drawCrAnapathColumn(final Grid grid, final boolean bloquerTri)
       throws ClassNotFoundException, InstantiationException, IllegalAccessException{
-      return GatsbiController.addColumn(grid, "ficheEchantillon.crAnapathLabel", null, null, null, "auto(crAnapath.nom)", true);
+      return GatsbiController.addColumn(grid, "ficheEchantillon.crAnapathLabel", null, null, null, "auto(crAnapath.nom)", true, bloquerTri);
    }
 
    /**
@@ -286,15 +288,13 @@ public class GatsbiControllerEchantillon
          case 54:
             // "code" toujours rendu par défaut
             break;
-         case 55:
-            EchantillonRowRenderer.renderObjetStatut(row, echan);
+         case 55: // statut - normalement jamais transmis mais systématiquement affiché (TG-199)
             break;
-         case 56: // date prelevement
+         case 56: // date stock
             TKSelectObjectRenderer.renderDateProperty(row, echan, "dateStock");
             break;
-         case 57: // emplacement
-            EchantillonRowRenderer.renderEmplacement(row, echan, anonyme, accessStockage);
-            break;
+         case 57: // emplacement - normalement jamais transmis mais systématiquement affiché (TG-199)
+            break;            
          case 58: // type
             TKSelectObjectRenderer.renderThesObjectProperty(row, echan, "echantillonType");
             break;
@@ -363,14 +363,12 @@ public class GatsbiControllerEchantillon
          case 54:
             // "code" toujours rendu par défaut
             break;
-         case 55:
-            EchantillonRowRenderer.renderObjetStatut(row, deco.getEchantillon());
+         case 55: // statut - normalement jamais transmis mais systématiquement affiché (TG-199)
             break;
-         case 56: // date prelevement
+         case 56: // date stock
             TKSelectObjectRenderer.renderDateProperty(row, deco, "dateStockage");
             break;
-         case 57: // emplacement
-            TKSelectObjectRenderer.renderAlphanumPropertyAsStringNoFormat(row, deco, "emplacementAdrlinMulti");
+         case 57: // emplacement - normalement jamais transmis mais systématiquement affiché (TG-199)
             break;
          case 58: // type
             TKSelectObjectRenderer.renderThesObjectProperty(row, deco.getEchantillon(), "echantillonType");
@@ -414,6 +412,10 @@ public class GatsbiControllerEchantillon
       }
    }
 
+   // /!\ cette méthode dessine les colonnes pour des grids qui s'appuient sur des renderers différents EchantillonRowRendererGatsbi et EchantillonDecoratorRowRendererGatsbi 
+   // => il y a un risque d'incohérence entre les entêtes et les lignes d'autant plus que cette methode se focalise sur des tableaux embarqués 
+   // alors que EchantillonRowRendererGatsbi est également utilisé pour afficher le tableau de l'onglet Echantillon.
+   // il aurait mieux fallu définir une méthode d'affichage des colonnes par Renderer...
    /**
     * Polymorphismes s'appliquent sur  deletable et force affichage emplacement et statut de stockage
     * car cette méthode est appelée pour rendre des inner lists de l'onglet Echantillon (échantillons
@@ -422,15 +424,18 @@ public class GatsbiControllerEchantillon
     * @param grid
     * @param rowRenderer
     * @param deletable si true, affiche une dernière colonne avec un bouton delete
-    * @param forceEmplacementAndStatut si true, affiche obligatoire les deux colonnes, à la fin.
+    * @param creerColonneTtesCollections si true, la colonne "toutes collections" sera créée et visible ou non selon la valeur du @param ttesCollections.
     * @throws ClassNotFoundException
     * @throws InstantiationException
     * @throws IllegalAccessException
     */
    public static void drawColumnsForEchantillons(final Contexte contexte, final Grid grid, final RowRendererGatsbi rowRenderer,
-      final boolean deletable, final boolean forceEmplacementAndStatut, final boolean ttesCollections)
+      final boolean deletable, final boolean creerColonneTtesCollections, final boolean ttesCollections)
       throws ClassNotFoundException, InstantiationException, IllegalAccessException{
 
+      //dans le cas des listes embarquées, le tri n'est pas autorisé (même règle de gestion que pour les contextes anapath' et sérologie) :
+      boolean bloquerTri = true;
+      
       // icones column, visible si non conformites OU risque est visible
       if(contexte.isChampIdVisible(249) || contexte.isChampIdVisible(243) || contexte.isChampIdVisible(244)){
 
@@ -445,41 +450,44 @@ public class GatsbiControllerEchantillon
             colsize = colsize + 35;
          }
 
-         GatsbiController.addColumn(grid, null, String.valueOf(colsize).concat("px"), "center", null, null, true);
+         GatsbiController.addColumn(grid, null, String.valueOf(colsize).concat("px"), "center", null, null, true, bloquerTri);
 
          // indique au row renderer qu'il doit dessiner les icones
          rowRenderer.setIconesRendered(true);
       }
 
       // code echan column, toujours affichée
-      GatsbiControllerEchantillon.drawCodeColumn(grid);
+      GatsbiControllerEchantillon.drawCodeColumn(grid, bloquerTri);
       
-      // ttes collection
-      // colonne ne doit pas être écrite invisible dans ficheMultiEchantillons inner list car jamais affichée
-      // et produit un décalage
-      if (!deletable && !forceEmplacementAndStatut) { 
-         GatsbiControllerEchantillon.drawBanqueColumn(grid, ttesCollections);
+      // dans certains cas, le fait de créer la colonne "ttes collections" invisible peut créer un décalage 
+      //(ex dans ficheMultiEchantillons inner list car elle n'est jamais affichée - utilisation d'un renderer différent des autres cas...)
+      if (creerColonneTtesCollections) { 
+         GatsbiControllerEchantillon.drawBanqueColumn(grid, ttesCollections, bloquerTri);
       }
 
       // variable columns
       for(final Integer chpId : contexte.getChampEntiteInTableauOrdered()){
          // statut et emplacement toujours affichés
-         if(!forceEmplacementAndStatut || (chpId != 55 && chpId != 57)){
-            GatsbiControllerEchantillon.addColumnForChpId(chpId, grid);
-         }
+         GatsbiControllerEchantillon.addColumnForChpId(chpId, grid, bloquerTri);
       }
 
-      if(forceEmplacementAndStatut){
-         // emplacement, toujours affiché
-         GatsbiControllerEchantillon.drawEmplacementColumn(grid);
+      // TG-199 :
+      // emplacement et statut sont toujours affichés
+      GatsbiControllerEchantillon.drawObjetStatutColumn(grid, bloquerTri);
+      GatsbiControllerEchantillon.drawEmplacementColumn(grid, bloquerTri);
 
-         // statut, toujours affiché
-         GatsbiControllerEchantillon.drawObjetStatutColumn(grid);
-      }
-
+      // TG-199 : pour les listes échantillons embarquées dans un écran, on ne crée pas les colonnes pour nb cessions ou nb dérivés. 
+      // le renderer ne les génèrera pas car l'attribut 
+      
       // delete col
       if(deletable){
-         GatsbiController.addColumn(grid, null, "35px", "center", null, null, true);
+         GatsbiController.addColumn(grid, null, "35px", "center", null, null, true, bloquerTri);
       }
    }
+
+   public static List<Collaborateur> filterOperateursFromContexte(List<Collaborateur> allCollaborateur) {
+      Contexte contexte = SessionUtils.getCurrentGatsbiContexteForEntiteId(3);
+      return GatsbiController.filterExistingListModel(contexte, allCollaborateur, 53);
+   }
+
 }

@@ -60,33 +60,18 @@ public class EchantillonRowRendererGatsbi extends EchantillonRowRenderer impleme
 
    private Contexte contexte;
 
-   // par défaut les icones sont toujours dessinées car impact evt de stockage
    private boolean iconesRendered = true;
+   
+   private boolean calculerNbDerivesNbCessions = false;
 
-   private boolean renderNbs = true;
-
-   private boolean drawCheckbox = true;
-
-   public EchantillonRowRendererGatsbi(final boolean select, final boolean cols, 
-                     final boolean _c, final boolean _r) {
-      super(select, cols);
-
-      this.drawCheckbox = _c;
-      this.renderNbs = _r;
-
+ 
+   public EchantillonRowRendererGatsbi(final boolean afficherColonneSelection, final boolean afficherColonneToutesCollections,
+                                       final boolean calculerNbDerivesNbCessions) {
+      super(afficherColonneSelection, afficherColonneToutesCollections);
+      this.calculerNbDerivesNbCessions=calculerNbDerivesNbCessions;
+      
       contexte = SessionUtils.getCurrentGatsbiContexteForEntiteId(3);
-   }
-
-   @Override
-   public void render(final Row row, final Echantillon data, final int index){
-
-      if(drawCheckbox){
-         // dessine le checkbox
-         super.render(row, data, index);
-      }
-
-      renderObjets(row, data);
-   }
+   }   
 
    @Override
    protected void renderEchantillon(final Row row, final Echantillon echan)
@@ -96,9 +81,12 @@ public class EchantillonRowRendererGatsbi extends EchantillonRowRenderer impleme
          GatsbiControllerEchantillon.applyEchantillonChpRender(chpId, row, echan, isAnonyme(), isAccessStockage());
       }
 
-      if(renderNbs){
+      //TG-199 : le statut et l'emplacement sont systématiquement affichés
+      EchantillonRowRenderer.renderObjetStatut(row, echan);
+      EchantillonRowRenderer.renderEmplacement(row, echan, isAnonyme(), isAccessStockage());
+      
+      if(calculerNbDerivesNbCessions) {
          renderNbDerives(row, echan);
-
          renderNbCessions(row, echan);
       }
    }

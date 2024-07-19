@@ -157,8 +157,6 @@ public class SelectBanqueController extends GenericForwardComposer<Component>
 		}
 
       initWindow();
-
-      ConnexionUtils.initToutesCollectionsAccesses(banques, selectedPlateforme, user);
    }
 
    public void initWindow(){
@@ -295,7 +293,10 @@ public class SelectBanqueController extends GenericForwardComposer<Component>
 
       // init des banques
       banques = ManagerLocator.getUtilisateurManager().getAvailableBanquesByPlateformeManager(user, selectedPlateforme, false);
-
+      if(ConnexionUtils.canAccessToutesCollections(banques, selectedPlateforme, user)){
+         banques.add(ConnexionUtils.initFakeToutesCollBankItem(selectedPlateforme));
+      }
+      
       if(banques.size() > 0){
          selectedBanque = banques.get(0);
       }else{
@@ -377,7 +378,9 @@ public class SelectBanqueController extends GenericForwardComposer<Component>
          banques = new ArrayList<>();
       }
 
-      ConnexionUtils.initToutesCollectionsAccesses(banques, selectedPlateforme, user);
+      if(ConnexionUtils.canAccessToutesCollections(banques, selectedPlateforme, user)){
+         banques.add(ConnexionUtils.initFakeToutesCollBankItem(selectedPlateforme));
+      }
 
       if(banques.size() > 0){
          selectedBanque = banques.get(0);

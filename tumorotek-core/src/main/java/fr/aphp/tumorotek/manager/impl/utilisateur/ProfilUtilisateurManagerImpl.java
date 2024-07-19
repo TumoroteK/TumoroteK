@@ -37,9 +37,7 @@ package fr.aphp.tumorotek.manager.impl.utilisateur;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,7 +51,6 @@ import fr.aphp.tumorotek.manager.exception.RequiredObjectIsNullException;
 import fr.aphp.tumorotek.manager.utilisateur.ProfilUtilisateurManager;
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.contexte.Plateforme;
-import fr.aphp.tumorotek.model.contexte.gatsbi.Etude;
 import fr.aphp.tumorotek.model.utilisateur.Profil;
 import fr.aphp.tumorotek.model.utilisateur.ProfilUtilisateur;
 import fr.aphp.tumorotek.model.utilisateur.ProfilUtilisateurPK;
@@ -249,12 +246,5 @@ public class ProfilUtilisateurManagerImpl implements ProfilUtilisateurManager
       final Long count = profilUtilisateurDao.findCountDistinctProfilForUserAndPlateforme(u, p).get(0);
       return count;
    }
-
-   @Override
-   public Map<Etude, Long> countDistinctProfilForUserAndPlateformeGroupedByEtudeManager(final Utilisateur u, final Plateforme p){
-      final Map<Etude, Long> counts = new HashMap<>();
-      profilUtilisateurDao.findCountDistinctProfilForUserAndPlateformeGroupedByEtude(u, p).stream()
-         .forEach(c -> counts.put(c.getEtude(), c.getCount()));
-      return counts;
-   }
 }
+

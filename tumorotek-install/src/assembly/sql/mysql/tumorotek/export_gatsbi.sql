@@ -498,3 +498,136 @@ CREATE PROCEDURE `fill_tmp_table_echan_gatsbi`(IN echan_id INTEGER, IN etude_id 
     DEALLOCATE PREPARE stmt;
 
 END&&
+
+
+-- delimiter &&
+DROP PROCEDURE IF EXISTS `select_cession_data_gatsbi`&&
+CREATE PROCEDURE `select_cession_data_gatsbi`(IN entite_id INTEGER, IN count_annotation INTEGER, IN etude_id INTEGER)
+  BEGIN
+
+    DECLARE iter INTEGER DEFAULT 0;
+
+    SET @annocols = get_anno_cols(count_annotation, entite_id);
+
+    IF entite_id = 3
+    THEN
+      SET @sql = CONCAT('SELECT a.cession_id, a.numero,
+			tee.ECHANTILLON_ID,
+			tee.BANQUE,
+			tee.CODE,',
+			IF (is_chp_visible(58, etude_id), 'tee.ECHANTILLON_TYPE, ', ''),
+			'a.quantite_demandee, ', 
+			'a.quantite_unite_id, ',
+			IF (is_chp_visible(61, etude_id), 'tee.QUANTITE, tee.QUANTITE_INIT, tee.QUANTITE_UNITE, ', ''),
+            IF (is_chp_visible(56, etude_id), 'tee.DATE_STOCK, ', ''),
+            IF (is_chp_visible(67, etude_id), 'tee.DELAI_CGL, ', ''),
+			IF (is_chp_visible(53, etude_id), 'tee.COLLABORATEUR, ', ''),
+			'tee.EMPLACEMENT, ',
+			IF (is_chp_visible(265, etude_id), 'tee.TEMP_STOCK, ', ''),
+			IF (is_chp_visible(55, etude_id), 'tee.OBJET_STATUT, ', ''),
+			IF (is_chp_visible(68, etude_id), 'tee.ECHAN_QUALITE, ', ''),
+			IF (is_chp_visible(70, etude_id), 'tee.MODE_PREPA, ', ''),
+			IF (is_chp_visible(72, etude_id), 'tee.STERILE, ', ''),
+			IF (is_chp_visible(243, etude_id), 'tee.CONFORME_TRAITEMENT, tee.RAISON_NC_TRAITEMENT, ', ''),
+			IF (is_chp_visible(244, etude_id), 'tee.CONFORME_CESSION, RAISON_NC_CESSION , ', ''),
+			IF (is_chp_visible(69, etude_id), 'tee.TUMORAL, ', ''),            
+			IF (is_chp_visible(60, etude_id), 'tee.LATERALITE, ', ''),
+			IF (is_chp_visible(229, etude_id), 'tee.CODE_ORGANES, ', ''),
+			IF (is_chp_visible(230, etude_id), 'tee.CODE_MORPHOS, ', ''),
+            'tee.NOMBRE_DERIVES, 
+			tee.EVTS_STOCK_E, 
+			tee.DATE_HEURE_SAISIE, 
+			tee.UTILISATEUR_SAISIE,  
+            tee.PRELEVEMENT_ID, ');
+
+      iterwhile: WHILE iter < count_annotation DO
+
+        SET iter = iter + 1;
+        SET @sql = CONCAT(@sql, 'tee.A', iter, '_3, ');
+      END WHILE iterwhile;
+
+      SET @sql = CONCAT(@sql, 'tpe.*, tpae.* FROM TMP_ECHANTILLON_EXPORT tee
+			JOIN TMP_CESSION_ADDS a on a.objet_id = tee.echantillon_id 
+			LEFT JOIN TMP_PRELEVEMENT_EXPORT tpe ON tee.prelevement_id = tpe.prelevement_id 
+			LEFT JOIN TMP_PATIENT_EXPORT tpae ON tpe.patient_id = tpae.patient_id 
+			WHERE a.entite_id = 3');
+    ELSE
+      -- identique à la procédure "standard" tant que Gatsbi ne gère pas les dérivés
+      SET @sql = 'SELECT a.cession_id, a.numero,
+				tde.PROD_DERIVE_ID,
+				tde.BANQUE,
+				tde.CODE,
+				tde.PROD_TYPE,
+				tde.DATE_TRANSFORMATION,
+				tde.QUANTITE_UTILISEE,
+				tde.QUANTITE_UTILISEE_UNITE,
+				tde.CODE_LABO,
+				a.quantite_demandee, 
+				a.quantite_unite_id, 
+				tde.VOLUME,
+				tde.VOLUME_INIT,
+				tde.VOLUME_UNITE,
+				tde.CONC,
+				tde.CONC_UNITE,
+				tde.QUANTITE,
+				tde.QUANTITE_INIT,
+				tde.QUANTITE_UNITE,
+				tde.DATE_STOCK,
+				tde.MODE_PREPA_DERIVE,
+				tde.PROD_QUALITE,
+				tde.COLLABORATEUR,
+				tde.EMPLACEMENT,
+				tde.TEMP_STOCK,
+				tde.OBJET_STATUT,
+				tde.CONFORME_TRAITEMENT,
+				tde.RAISON_NC_TRAITEMENT,
+				tde.CONFORME_CESSION,
+				tde.RAISON_NC_CESSION,
+				tde.NOMBRE_DERIVES,
+				tde.EVTS_STOCK_D,
+				tde.DATE_HEURE_SAISIE,
+				tde.UTILISATEUR_SAISIE, 
+				tde.PARENT_DERIVE_ID,
+				tde.ECHANTILLON_ID, 
+				tde.PRELEVEMENT_ID, ';
+
+      iterwhile: WHILE iter < count_annotation DO
+
+        SET iter = iter + 1;
+        SET @sql = CONCAT(@sql, 'tde.A', iter, '_8, ');
+      END WHILE iterwhile;
+
+      SET @sql = CONCAT(@sql, 'tee.*, tpe.*, tpae.* FROM TMP_DERIVE_EXPORT tde
+			JOIN TMP_CESSION_ADDS a on a.objet_id = tde.prod_derive_id 
+			LEFT JOIN TMP_ECHANTILLON_EXPORT tee ON tde.echantillon_id = tee.echantillon_id 
+			LEFT JOIN TMP_PRELEVEMENT_EXPORT tpe ON tde.prelevement_id = tpe.prelevement_id OR tee.prelevement_id = tpe.prelevement_id 
+			LEFT JOIN TMP_PATIENT_EXPORT tpae ON tpe.patient_id = tpae.patient_id 
+			WHERE a.entite_id = 8');
+    END IF;
+
+
+    
+    PREPARE stmt FROM @sql;
+    EXECUTE stmt;
+    DEALLOCATE PREPARE stmt;
+
+    DROP TEMPORARY TABLE IF EXISTS TMP_CESSION_ADDS;
+    DROP TEMPORARY TABLE IF EXISTS TMP_ECHANTILLON_EXPORT;
+    DROP TEMPORARY TABLE IF EXISTS TMP_PRELEVEMENT_EXPORT;
+    DROP TEMPORARY TABLE IF EXISTS TMP_PATIENT_EXPORT;
+    DROP TEMPORARY TABLE IF EXISTS TMP_MALADIE_EXPORT;
+    DROP TEMPORARY TABLE IF EXISTS TMP_CESSION_EXPORT;
+    DROP TEMPORARY TABLE IF EXISTS TMP_DERIVE_EXPORT;
+    -- DROP TEMPORARY TABLE IF EXISTS TMP_ANNOTATION;
+    -- DROP TEMPORARY TABLE IF EXISTS TMP_OBJET_ANNOTATION;
+    DROP TEMPORARY TABLE IF EXISTS TMP_TABLE_ANNOTATION;
+    DROP TEMPORARY TABLE IF EXISTS TMP_CORRESPONDANCE_ANNOTATION;
+    -- DROP TEMPORARY TABLE IF EXISTS TMP_TABLE_ANNOTATION_RESTRICT;
+    DROP TEMPORARY TABLE IF EXISTS TMP_ANNO_DATE_IDX;
+    DROP TEMPORARY TABLE IF EXISTS TMP_ANNO_NUMS_IDX;
+    DROP TEMPORARY TABLE IF EXISTS TMP_ANNO_BOOLS_IDX;
+    DROP TEMPORARY TABLE IF EXISTS TMP_ANNO_TEXTES_IDX;
+    DROP TEMPORARY TABLE IF EXISTS TMP_OBJET_ID;
+    DROP TEMPORARY TABLE IF EXISTS TMP_BIOCAP_EXPORT;
+  END&&
+

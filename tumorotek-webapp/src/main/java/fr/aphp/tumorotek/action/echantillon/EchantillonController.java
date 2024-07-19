@@ -179,10 +179,6 @@ public class EchantillonController extends AbstractObjectTabController
 
    @Override
    public ListeEchantillon getListe(){
-      if(SEROLOGIE.equals(getCurrentContexte())){
-         return ((ListeEchantillonSero) self.getFellow("lwinEchantillonSero").getAttributeOrFellow("lwinEchantillonSero$composer",
-            true));
-      }
       return ((ListeEchantillon) self.getFellow("lwinEchantillon").getAttributeOrFellow("lwinEchantillon$composer", true));
    }
 

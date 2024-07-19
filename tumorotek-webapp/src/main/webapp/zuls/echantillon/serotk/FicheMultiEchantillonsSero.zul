@@ -467,8 +467,8 @@
 								<column label="${c:l('general.code')}" />
 								<column label="${c:l('Champ.Echantillon.EchantillonType.Type')}" />
 								<column label="${c:l('Champ.Echantillon.Quantite')}" />
+								<column label="${c:l('Champ.Echantillon.ObjetStatut')}" />								
 								<column label="${c:l('Champ.Echantillon.Emplacement')}" />
-								<column label="${c:l('Champ.Echantillon.ObjetStatut')}" />
 								<column width="35px"/>
 							</columns>
 							<rows id="rows">

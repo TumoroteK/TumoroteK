@@ -41,7 +41,6 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.List;
-import java.util.Map;
 
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,7 +52,6 @@ import fr.aphp.tumorotek.dao.utilisateur.UtilisateurDao;
 import fr.aphp.tumorotek.manager.test.AbstractManagerTest4;
 import fr.aphp.tumorotek.manager.utilisateur.ProfilUtilisateurManager;
 import fr.aphp.tumorotek.model.contexte.Banque;
-import fr.aphp.tumorotek.model.contexte.gatsbi.Etude;
 import fr.aphp.tumorotek.model.utilisateur.Profil;
 import fr.aphp.tumorotek.model.utilisateur.ProfilUtilisateur;
 import fr.aphp.tumorotek.model.utilisateur.ProfilUtilisateurPK;
@@ -524,26 +522,5 @@ public class ProfilUtilisateurManagerTest extends AbstractManagerTest4
 				.countDistinctProfilForUserAndPlateformeManager(utilisateurDao.findById(1), null);
 		assertTrue(counts == 0L);
 	}
-	
-	/**
-	 * @since 2.3.0-gatsbi
-	 */
-	@Test
-	public void testCountDistinctProfilForUserAndPlateformeGroupedByEtudeManager(){
 
-		Map<Etude, Long> counts = profilUtilisateurManager
-			.countDistinctProfilForUserAndPlateformeGroupedByEtudeManager(utilisateurDao.findById(1), 
-				plateformeDao.findById(1));
-		assertTrue(counts.isEmpty());
-		
-		counts = profilUtilisateurManager
-			.countDistinctProfilForUserAndPlateformeGroupedByEtudeManager(null, 
-				plateformeDao.findById(1));
-		assertTrue(counts.isEmpty());
-		
-		counts = profilUtilisateurManager
-			.countDistinctProfilForUserAndPlateformeGroupedByEtudeManager(utilisateurDao.findById(1), 
-				null);
-		assertTrue(counts.isEmpty());
-	}
 } 

@@ -54,5 +54,20 @@ public final class Utils
          return null;
       }
    }
+   
+   //TK-486
+   /**
+    * tronque la chaîne passée en paramètre si sa longueur est supérieure à la taille max autorisée
+    * @param chaine, chaîne de caractères à traiter
+    * @param tailleMax, taille maximale autorisée pour la chaîne de caractères
+    * @return la chaîne transmise si son nombre de caractères est inférieur ou égal à la taille max autorisée
+    * sinon retourne les n premiers caractères avec n la taille max autorisée
+    */
+   public static String truncateIfNecessary(String chaine, int tailleMax) {
+      if(chaine != null && chaine.length() > tailleMax) {
+         return chaine.substring(0,tailleMax);
+      }
+      return chaine;
+   }
 
 }

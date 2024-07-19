@@ -106,6 +106,9 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
    @NamedQuery(name = "Collaborateur.findByServiceIdArchiveWithOrder",
       query = "SELECT c FROM Collaborateur c " + "left join c.services s " + "WHERE s.serviceId = ?1 " + "AND c.archive = ?2 "
          + "ORDER BY c.nom, c.prenom"),
+   @NamedQuery(name = "Collaborateur.findByServiceIdCollaborateurIdsWithOrder",
+   query = "SELECT c FROM Collaborateur c " + "join c.services s " + "WHERE s.serviceId = ?1 " + "AND c.collaborateurId in (?2) "
+      + "ORDER BY c.nom, c.prenom"),
    @NamedQuery(name = "Collaborateur.findByServiceId",
       query = "SELECT c FROM Collaborateur c " + "left join c.services s " + "WHERE s.serviceId = ?1"),
    @NamedQuery(name = "Collaborateur.findByPlateformeId",
@@ -520,7 +523,9 @@ public class Collaborateur implements TKdataObject, TKFantomableObject, java.io.
       if(this.prenom != null){
          sb.append(this.prenom);
       }
-      return sb.toString();
+      
+      //TG-204 : ajout d'un trim pour avoir exactement la même chose que dans VGATSI_COLLABORATEUR utilisée par Gatsbi
+      return sb.toString().trim();
    }
 
    public String nomAndPrenom(){

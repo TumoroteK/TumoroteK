@@ -276,7 +276,8 @@ public class FicheLaboInter extends AbstractFicheEditController
 
       // init des collaborateurs
       nomsAndPrenoms = new ArrayList<>();
-      collaborateurs = ManagerLocator.getCollaborateurManager().findAllActiveObjectsWithOrderManager();
+      //collaborateurs = ManagerLocator.getCollaborateurManager().findAllActiveObjectsWithOrderManager();
+      collaborateurs = findCollaborateursToDisplay();
       for(int i = 0; i < collaborateurs.size(); i++){
          nomsAndPrenoms.add(collaborateurs.get(i).getNomAndPrenom());
       }
@@ -309,6 +310,17 @@ public class FicheLaboInter extends AbstractFicheEditController
       selectedNonConformite = null;
    }
 
+   /**
+    * renvoie les collaborateurs à afficher pour le champ opérateur
+    * sera surchargé pour Gatsbi pour n'afficher que ceux sélectionnés dans le paramétrage voire le contexte
+    * @return liste de collaborateur
+    * @since Gatsbi : TG-204 : filtre sur les collaborateurs gérés comme un thesaurus
+    */
+   public List<Collaborateur> findCollaborateursToDisplay() {
+      return ManagerLocator.getCollaborateurManager().findAllActiveObjectsWithOrderManager();
+   }
+   
+   
    /**
     * Select les non conformites dans la dropdown list.
     *

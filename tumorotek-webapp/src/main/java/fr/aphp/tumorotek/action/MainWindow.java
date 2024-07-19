@@ -307,22 +307,19 @@ public class MainWindow extends GenericForwardComposer<Component>
 
       // init des banques
       banques = ManagerLocator.getUtilisateurManager().getAvailableBanquesByPlateformeManager(user, pf, false);
-      ConnexionUtils.initToutesCollectionsAccesses(banques, pf, user);
-      
+      // banque fictive "Toutes collections" :
       final Banque toutesColl = ConnexionUtils.initFakeToutesCollBankItem(pf);
-      
+      if(ConnexionUtils.canAccessToutesCollections(banques, pf, user)){
+         banques.add(toutesColl);
+      }
+
       if(sessionScope.containsKey("Banque")){
          selectedBanque = (Banque) sessionScope.get("Banque");
-      }else if (sessionScope.containsKey("ToutesCollections")) {
-      
-         // toutes collections par étude ?.
-         if (SessionUtils.getSelectedBanques(sessionScope)
-            .stream().filter(b -> b.getEtude() != null).map(b -> b.getEtude()).distinct().count() == 1) {
-            toutesColl.setNom(Labels.getLabel("select.banque.toutesCollection.gatsbi", 
-               new String[] {SessionUtils.getSelectedBanques(sessionScope).get(0).getEtude().getTitre()}));
-         }
-         
+      }else if(sessionScope.containsKey("ToutesCollections")){
          selectedBanque = toutesColl;
+      }else{
+         selectedBanque = null;
+         // selectedBanque = banques.get(0);
       }
    }
 

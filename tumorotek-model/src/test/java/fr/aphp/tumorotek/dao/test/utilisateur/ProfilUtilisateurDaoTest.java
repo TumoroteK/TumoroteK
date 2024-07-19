@@ -501,32 +501,4 @@ public class ProfilUtilisateurDaoTest extends AbstractDaoTest
 						null);
 		assertTrue(counts.get(0) == 0L);
 	}
-
-	/**
-	 * @since 2.3.0-gatsbi
-	 */
-	public void testFindCountDistinctProfilForUserAndPlateformeGroupedByEtude(){
-
-		List<ProfilByEtudeCount> counts = profilUtilisateurDao
-				.findCountDistinctProfilForUserAndPlateformeGroupedByEtude(utilisateurDao.findById(1), 
-						plateformeDao.findById(1));
-		assertTrue(counts.size() == 0);
-
-		counts = profilUtilisateurDao
-				.findCountDistinctProfilForUserAndPlateformeGroupedByEtude(utilisateurDao.findById(1), 
-						plateformeDao.findById(2));
-		assertTrue(counts.size() == 0);
-
-
-		// nulls
-		counts = profilUtilisateurDao
-				.findCountDistinctProfilForUserAndPlateformeGroupedByEtude(null, 
-						plateformeDao.findById(1));
-		assertTrue(counts.size() == 0);
-
-		counts = profilUtilisateurDao
-				.findCountDistinctProfilForUserAndPlateformeGroupedByEtude(utilisateurDao.findById(1), 
-						null);
-		assertTrue(counts.size() == 0);
-	}
 }

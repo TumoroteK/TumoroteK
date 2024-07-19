@@ -1,21 +1,108 @@
 #### Notes de version
 
-##### Version 2.3.0.4-SNAPSHOT - Publiée le ????
+##### Version 2.3.1.0-SNAPSHOT - Publiée le ??? (en cours)
+
+##### Version 2.3.0.10 - Publiée le 01/07/2024
+###### Corrections dans TK pour un contexte Gatsbi
+- YouTrack [TG-227](https://tumorotek.myjetbrains.com/youtrack/issue/TG-227) : [TK] - Fiche <span class="badge badge-patient">Patient</span> : modification maladie : champ code diagnostic trop haut
+- YouTrack [TG-251](https://tumorotek.myjetbrains.com/youtrack/issue/TG-251) : [TK] - Fiche <span class="badge badge-prelevement">Prélèvement</span> Gatsbi > champ risque infectieux : problème d'affichage
+- YouTrack [TG-254](https://tumorotek.myjetbrains.com/youtrack/issue/TG-254) : [TK] - Fiche <span class="badge badge-prelevement">Prélèvement</span> en consultation : problème d'affichage des colonnes
+- YouTrack [TG-259](https://tumorotek.myjetbrains.com/youtrack/issue/TG-259) : [TK] - Création d'un <span class="badge badge-prelevement">Prélèvement</span> sans site intermédiaire (collection Gatsbi): rien ne se passe lors du clic sur Suivant, qui devrait afficher l'écran de saisie des échantillons
+- YouTrack [TG-262](https://tumorotek.myjetbrains.com/youtrack/issue/TG-262) : [TK] - Fiche <span class="badge badge-prelevement">Prélèvement</span> : le contrôle sur le champ identifiant du patient ajouté n'est pas correct
+
+
+###### Corrections dans le module Gatsbi (version 1.0.0.8)
+- YouTrack [TG-257](https://tumorotek.myjetbrains.com/youtrack/issue/TG-257) : [Gatsbi] > Création d'une étude : plantage lors de la recherche d'une maladie
+
+
+##### Version 2.3.0.9 - Publiée le 19/04/2024
+###### Corrections dans TK
+- YouTrack [TK-498](https://tumorotek.myjetbrains.com/youtrack/issue/TK-498) : Fiche <span class="badge badge-prelevement">Prélèvement</span> séro > zone échantillons : des colonnes ne sont pas affichées
+
+
+##### Version 2.3.0.8 - Publiée le 25/03/2024
+###### Corrections dans TK pour un contexte Gatsbi
+- YouTrack [TG-236](https://tumorotek.myjetbrains.com/youtrack/issue/TG-236) : [TK] - <span class="badge badge-recherche">Recherche Complexe</span> Lors du choix d'afficher la colonne Patient - Identifiant, le nom de colonne n'est pas valorisée
+- YouTrack [TG-238](https://tumorotek.myjetbrains.com/youtrack/issue/TG-238) : [TK] - <span class="badge badge-recherche">Recherche Complexe</span> La colonne identifiant patient est toujours vide dans le tableau résultat
+- YouTrack [TG-237](https://tumorotek.myjetbrains.com/youtrack/issue/TG-237) : [TK] - <span class="badge badge-prelevement">Prélèvement</span> Impossible de changer de maladie si le contexte ne contient pas le champ nature
+- YouTrack [TG-240](https://tumorotek.myjetbrains.com/youtrack/issue/TG-240) : [TK] - Fiche <span class="badge badge-prelevement">Prélèvement</span> en édition : info patient affichées dans les mauvaises colonnes du tableau
+- YouTrack [TG-242](https://tumorotek.myjetbrains.com/youtrack/issue/TG-242) : [TK] - <span class="badge badge-cession">Cession</span> Plantage lors de l'export des échantillons d'une collection Gatsbi
+- YouTrack [TG-244](https://tumorotek.myjetbrains.com/youtrack/issue/TG-244) : [TK] - <span class="badge badge-echantillon">Echantillon</span> Création depuis un prélèvement : le paramétrage Gatsbi défini pour les codes n'est pas pris en compte
+
+
+##### Version 2.3.0.7 - Publiée le 31/01/2024
+###### Corrections dans TK pour un contexte Gatsbi
+- YouTrack [TG-228](https://tumorotek.myjetbrains.com/youtrack/issue/TG-228) : [TK] - Fiche <span class="badge badge-patient">Patient</span> : dans la liste des prélèvements les données ne sont pas affichées dans les bonnes colonnes si le service préleveur est à afficher
+- YouTrack [TG-232](https://tumorotek.myjetbrains.com/youtrack/issue/TG-232) : [TK] - En édition, les listes des thésaurus affichent 2 lignes blanches si aucun filtre n'est défini
+
+##### Version 2.3.0.6 - Publiée le 24/01/2024
+###### Corrections dans TK pour un contexte Gatsbi
+- YouTrack [TG-171](https://tumorotek.myjetbrains.com/youtrack/issue/TG-171) : [TK] - <span class="badge badge-echantillon">Echantillon</span> bug d'affichage de la quantité : champ trop haut
+- YouTrack [TG-214](https://tumorotek.myjetbrains.com/youtrack/issue/TG-214) : [TK] - <span class="badge badge-echantillon">Echantillon</span> : bug d'affichage du délai de congélation : champ trop haut  
+- YouTrack [TG-215](https://tumorotek.myjetbrains.com/youtrack/issue/TG-215) : [TK] - <span class="badge badge-prelevement">Prélèvement</span> : bug d'affichage du bloc informations patient : champs "text" trop hauts
+- YouTrack [TG-185](https://tumorotek.myjetbrains.com/youtrack/issue/TG-185) : [TK] - Import : amélioration de la gestion des thesaurus et du filtre défini dans Gatsbi
+- YouTrack [TG-197](https://tumorotek.myjetbrains.com/youtrack/issue/TG-197) : [TK] - Modèle d'import avec annotation : Plantage lors du clic sur le bouton modifier
+- YouTrack [TG-198](https://tumorotek.myjetbrains.com/youtrack/issue/TG-198) : [TK] - Affichage de la liste non optimale lors de l'ouverture d'une fiche <span class="badge badge-prelevement">Prélèvement</span> ou <span class="badge badge-echantillon">Echantillon</span> d'une collection Gatsbi
+- YouTrack [TG-199](https://tumorotek.myjetbrains.com/youtrack/issue/TG-199) : [TK] - Liste <span class="badge badge-echantillon">Echantillon</span> d'une collection Gatsbi : afficher systématiquement les colonnes Statut et Emplacement
+- YouTrack [TG-200](https://tumorotek.myjetbrains.com/youtrack/issue/TG-200) : [TK] - Modification d'un <span class="badge badge-prelevement">Prélèvement</span> "Gatsbi"- écran des échantillons : plantage lors du clic sur l'entête des colonnes du tableau des échantillons
+- YouTrack [TG-203](https://tumorotek.myjetbrains.com/youtrack/issue/TG-203) : [TK & Gatsbi] - Contexte <span class="badge badge-prelevement">Prélèvement</span> : gérer le champ Transporteur comme un thesaurus
+- YouTrack [TG-204](https://tumorotek.myjetbrains.com/youtrack/issue/TG-204) : [TK & Gatsbi] - Contextes <span class="badge badge-prelevement">Prélèvement</span> et <span class="badge badge-echantillon">Echantillon</span> : gérer les champs liés à la table "Collaborateur" comme un thesaurus
+- YouTrack [TG-206](https://tumorotek.myjetbrains.com/youtrack/issue/TG-206) : [TK & Gatsbi] - Contexte <span class="badge badge-prelevement">Prélèvement</span> : gérer le champ "Service préleveur" à partir du thesaurus Collaborateur
+- YouTrack [TG-209](https://tumorotek.myjetbrains.com/youtrack/issue/TG-209) : [TK] - <span class="badge badge-export">Export</span> <span class="badge badge-echantillon">Echantillon</span> plantage si évènements de stockage présents
+- YouTrack [TG-211](https://tumorotek.myjetbrains.com/youtrack/issue/TG-211) : [Gatsbi & TK] - Création <span class="badge badge-prelevement">Prélèvement</span> : affichage des visites non triées
+- YouTrack [TG-216](https://tumorotek.myjetbrains.com/youtrack/issue/TG-216) : [TK] - <span class="badge badge-stockage">Evènement de stockage</span> : appliquer le filtre Gatsbi (Echantillon) sur le champ Opérateur
+- YouTrack [TG-217](https://tumorotek.myjetbrains.com/youtrack/issue/TG-217) : [TK] - <span class="badge badge-echantillon">Echantillon</span> Avoir systématiquement date de stockage et délai de stockage sur la même ligne
+- YouTrack [TG-218](https://tumorotek.myjetbrains.com/youtrack/issue/TG-218) : [TK] - Création <span class="badge badge-prelevement">Prélèvement</span>, saisie informations patient : entête du tableau incorrecte
+- YouTrack [TG-219](https://tumorotek.myjetbrains.com/youtrack/issue/TG-219) : [TK] - Contexte <span class="badge badge-echantillon">Echantillon</span> par défaut : la quantité n'est pas affichée dans le tableau de l'onglet Echantillon
+- YouTrack [TG-220](https://tumorotek.myjetbrains.com/youtrack/issue/TG-220) : [TK] - Liste <span class="badge badge-prelevement">Prélèvement</span> : renommer la colonne Maladie en Visite pour les collections Gatsbi
+- YouTrack [TG-221](https://tumorotek.myjetbrains.com/youtrack/issue/TG-221) : [TK] - Création d'un <span class="badge badge-prelevement">Prélèvement</span> sans site intermédiaire : la popup de sélection du paramétrage échantillon n'apparaît pas.
+
+
+###### Corrections dans le module Gatsbi (version 1.0.0.6)
+- YouTrack [TG-155](https://tumorotek.myjetbrains.com/youtrack/issue/TG-155) : [Gatsbi] - création schéma de visite : ne proposer que les paramétrages actifs au niveau des visites
+- YouTrack [TG-207](https://tumorotek.myjetbrains.com/youtrack/issue/TG-207) : [Gatsbi] - popup thesaurus : perte du tri lors de la désélection d'un élément
+- YouTrack [TG-208](https://tumorotek.myjetbrains.com/youtrack/issue/TG-208) : [Gatsbi] - doublon suite à la sélection des valeurs de thesaurus, dans un cas particulier
+
+
+##### Version 2.3.0.5 - Publiée le 07/11/2023
+###### Corrections hors Gatsbi
+- YouTrack [TK-442](https://tumorotek.myjetbrains.com/youtrack/issue/TK-442) : <span class="badge badge-cession">Cession</span> en contexte sérologie : plantage lors de l'ajout multiple d'échantillons
+
+###### Corrections dans le module Gatsbi (version 1.0.0.5)
+- YouTrack [TG-170](https://tumorotek.myjetbrains.com/youtrack/issue/TG-170) : [Gatsbi] - Contexte : erreur lors de la désélection du champ "risques infectieux" précédemment visible, pour certains adhérents (bases de données mariaDb).
+
+
+##### Version 2.3.0.4 - Publiée le 19/10/2023
+###### Corrections hors Gatsbi
 - intégration de la correction de la version 2.2.9
+- YouTrack [TG-168](https://tumorotek.myjetbrains.com/youtrack/issue/TG-168) : [TK] - Imports : plantage lors du clic sur Nouveau modèle dérivés
+
+###### Corrections dans TK pour un contexte Gatsbi
+- YouTrack [TG-181](https://tumorotek.myjetbrains.com/youtrack/issue/TG-181) : [TK] - Import <span class="badge badge-echantillon">Echantillon</span> : échec systématique à cause du champ unité de la quantité
+- YouTrack [TG-182](https://tumorotek.myjetbrains.com/youtrack/issue/TG-182) : [TK] - Liste <span class="badge badge-patient">Patient</span> : plantage lors du tri sur la colonne identifiant
+- YouTrack [TG-183](https://tumorotek.myjetbrains.com/youtrack/issue/TG-183) : [TK] - Fiche <span class="badge badge-patient">Patient</span> : erreur "doublon" quand modification du libellé d'une visite
+- YouTrack [TG-187](https://tumorotek.myjetbrains.com/youtrack/issue/TG-187) : [TK] - Plantage sur la liste <span class="badge badge-patient">Patient</span> en "toutes collections"
+- YouTrack [TG-188](https://tumorotek.myjetbrains.com/youtrack/issue/TG-188) : [TK] - Fiche <span class="badge badge-echantillon">Echantillon</span> : Patient vide dans bloc Prélèvement pour collection Gatsbi et patient avec uniquement un identifiant
+- YouTrack [TG-192](https://tumorotek.myjetbrains.com/youtrack/issue/TG-192) : [TK] - Liste <span class="badge badge-patient">Patient</span> en toutes collections, affichage de l'identifiant pour les patients anonymes "Gatsbi" pour éviter les lignes vides
+- YouTrack [TG-193](https://tumorotek.myjetbrains.com/youtrack/issue/TG-193) : [TK] - Fiche <span class="badge badge-patient">Patient</span> anonyme "Gatsbi", en toutes collections : affichage de l'identifiant du patient (unique dans ce cas) pour éviter un haut de fiche vide
+
+###### Corrections dans le module Gatsbi (version 1.0.0.4)
+- YouTrack [TG-184](https://tumorotek.myjetbrains.com/youtrack/issue/TG-184) : [Gatsbi] - Contexte : même valeur présente plusieurs fois sur certains thesaurus
+
 
 ##### Version 2.3.0.3 - Publiée le 17/07/2023
 ###### Corrections dans TK pour un contexte Gatsbi
-- YouTrack [TG-163](https://tumorotek.myjetbrains.com/youtrack/issue/TG-163) : [TK] - Prélèvement & Echantillon : filtre sur les thesaurus d'un champ lié non pris en compte
+- YouTrack [TG-163](https://tumorotek.myjetbrains.com/youtrack/issue/TG-163) : [TK] - <span class="badge badge-prelevement">Prélèvement</span> & <span class="badge badge-echantillon">Echantillon</span> : filtre sur les thesaurus d'un champ lié non pris en compte
 - YouTrack [TG-165](https://tumorotek.myjetbrains.com/youtrack/issue/TG-165) : [TK] - Permettre de définir une collection Gatsbi sans le niveau maladie
-- YouTrack [TG-173](https://tumorotek.myjetbrains.com/youtrack/issue/TG-173) : [TK & Gatsbi] - Contexte Prélèvement par défaut : le champ statut juridique n'est pas obligatoire
-- YouTrack [TG-174](https://tumorotek.myjetbrains.com/youtrack/issue/TG-174) : [TK & Gatsbi] - Création Echantillon : le champ quantité défini comme obligatoire dans Gatsbi n'a pas l'astérisque rouge dans TK
-- YouTrack [TG-175](https://tumorotek.myjetbrains.com/youtrack/issue/TG-175) : [TK] - Création d'un Prélèvement / Echantillon : trier les paramétrages par ordre alphabétique dans la popup de sélection
+- YouTrack [TG-173](https://tumorotek.myjetbrains.com/youtrack/issue/TG-173) : [TK & Gatsbi] - Contexte <span class="badge badge-prelevement">Prélèvement</span> par défaut : le champ statut juridique n'est pas obligatoire
+- YouTrack [TG-174](https://tumorotek.myjetbrains.com/youtrack/issue/TG-174) : [TK & Gatsbi] - Création <span class="badge badge-echantillon">Echantillon</span> : le champ quantité défini comme obligatoire dans Gatsbi n'a pas l'astérisque rouge dans TK
+- YouTrack [TG-175](https://tumorotek.myjetbrains.com/youtrack/issue/TG-175) : [TK] - Création d'un <span class="badge badge-prelevement">Prélèvement</span> / <span class="badge badge-echantillon">Echantillon</span> : trier les paramétrages par ordre alphabétique dans la popup de sélection
 
 
-###### Corrections dans le module Gatsbi
+###### Corrections dans le module Gatsbi (version 1.0.0.3)
 - YouTrack [TG-152](https://tumorotek.myjetbrains.com/youtrack/issue/TG-152) : [Gatsbi] - Schéma de visite : en mode édition, le champ étude n'est plus affiché en gris
-- YouTrack [TG-159](https://tumorotek.myjetbrains.com/youtrack/issue/TG-159) : [Gatsbi] - Echantillon : Supprimer le lien entre Date de stockage et délai de congélation
-- YouTrack [TG-160](https://tumorotek.myjetbrains.com/youtrack/issue/TG-160) : [Gatsbi] - Contexte Echantillon : erreur de traduction : quantity au lieu de Quality
+- YouTrack [TG-159](https://tumorotek.myjetbrains.com/youtrack/issue/TG-159) : [Gatsbi] - <span class="badge badge-echantillon">Echantillon</span> : Supprimer le lien entre Date de stockage et délai de congélation
+- YouTrack [TG-160](https://tumorotek.myjetbrains.com/youtrack/issue/TG-160) : [Gatsbi] - Contexte <span class="badge badge-echantillon">Echantillon</span> : erreur de traduction : quantity au lieu de Quality
 - YouTrack [TG-161](https://tumorotek.myjetbrains.com/youtrack/issue/TG-161) : [Gatsbi] - Contexte et Paramétrage : les noms des champs de TK sont en anglais ...
 - YouTrack [TG-164](https://tumorotek.myjetbrains.com/youtrack/issue/TG-164) : [Gatsbi] - Contexte : non prise en compte en base de données d'une mise à jour de filtre de thesaurus
 
@@ -26,7 +113,11 @@
 
 ***
 
-##### Version 2.2.9 (dernière version sans le module Gatsbi) - Publiée le 14/09/2023
+##### Version 2.2.10 (dernière version sans le module Gatsbi) - Publiée le 20/05/2024
+###### Amélioration
+- YouTrack [TK-486](https://tumorotek.myjetbrains.com/youtrack/issue/TK-486) : Interfaçage identité patient : les noms (usuel et patronymique) et le prénom transmis par l'interfaçage sont tronqués s'ils font plus de 50 caractères, pour que l'intégration dans TK se fasse correctement
+
+##### Version 2.2.9 - Publiée le 14/09/2023
 ###### Corrections
 - YouTrack [TK-446](https://tumorotek.myjetbrains.com/youtrack/issue/TK-446) : <span class="badge badge-export">Export</span> correction du plantage avec Mysql8 à cause de la valeur par défaut de sql_mode (pas de problème avec Mariadb)
 
@@ -76,7 +167,7 @@
 
 ##### Version 2.2.5 - Publiée le 06/07/2022
 ###### Corrections
-- YouTrack [TK-330](https://tumorotek.myjetbrains.com/youtrack/issue/TK-330) : <span class="badge badge-prelevement">Prélèvement</span> Saisie d'un prélèvement en contexte sérologique : ajout de l'aide à la saisie du statut juridique comme pour le contexte anapath
+- YouTrack [TK-330](https://tumorotek.myjetbrains.com/youtrack/issue/TK-330) : <span class="badge badge-prelevement">Prélèvement</span> Saisie d'un <span class="badge badge-prelevement">Prélèvement</span> en contexte sérologique : ajout de l'aide à la saisie du statut juridique comme pour le contexte anapath
 - YouTrack [TK-328](https://tumorotek.myjetbrains.com/youtrack/issue/TK-328) : <span class="badge badge-export">Export</span> Mauvaise gestion de l'anonymisation pour les profils "administrateur de collections" 
 - YouTrack [TK-313](https://tumorotek.myjetbrains.com/youtrack/issue/TK-313) : <span class="badge badge-administration">Administration</span> Conteneurs partagés : mauvaise prise en compte de la restriction de stockage à l'administrateur - déplacements bloqués à tort
 - YouTrack [TK-314](https://tumorotek.myjetbrains.com/youtrack/issue/TK-314) : <span class="badge badge-administration">Administration</span> Conteneurs partagés : mauvaise prise en compte de la restriction de stockage à l'administrateur - problème d'affichage des conteneurs

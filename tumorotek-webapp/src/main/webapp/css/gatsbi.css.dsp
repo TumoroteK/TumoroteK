@@ -50,7 +50,6 @@ div.item > .z-select {
 div.row-container {
   display: flex;
   flex-direction: row;
-  align-content: center;
   justify-content: start;
 }
 

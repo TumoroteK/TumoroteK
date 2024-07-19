@@ -341,7 +341,7 @@ public class FicheEchantillonEdit extends AbstractFicheEditController
 
    public String getNomPatient(){
       if(this.prelevement != null){
-         return PrelevementUtils.getPatientNomAndPrenom(prelevement);
+         return PrelevementUtils.getPatientNomAndPrenomOrIdentifiantGatsbi(prelevement);
       }
       return null;
    }
@@ -693,6 +693,9 @@ public class FicheEchantillonEdit extends AbstractFicheEditController
       // les collaborateurs peuvent être modifiés dans la fenêtre
       // d'aide => maj de ceux-ci
       nomsAndPrenoms = new ArrayList<>();
+      // TG-204 : cette méthode onGetObjectFromSelection() correspond à la modale d'aide à la saisie - pas de surcharge pour Gatsbi
+      // car si il y a un filtre, cette aide à la saisie n'a pas d'utilité et si il n'y a pas de filtre, ce sont toutes 
+      // les valeurs qu'il faut prendre en compte => pas d'appel de findCollaborateursToDisplay()
       collaborateurs = ManagerLocator.getCollaborateurManager().findAllActiveObjectsWithOrderManager();
       for(int i = 0; i < collaborateurs.size(); i++){
          nomsAndPrenoms.add(collaborateurs.get(i).getNomAndPrenom());
@@ -715,6 +718,16 @@ public class FicheEchantillonEdit extends AbstractFicheEditController
       }
    }
 
+   /**
+    * renvoie les collaborateurs à afficher pour le champ opérateur
+    * sera surchargé pour Gatsbi pour n'afficher que ceux sélectionnés dans le paramétrage voire le contexte
+    * @return liste de collaborateur
+    * @since Gatsbi : TG-204 : filtre sur les collaborateurs gérés comme un thesaurus
+    */
+   public List<Collaborateur> findCollaborateursToDisplayForOperateur() {
+      return ManagerLocator.getCollaborateurManager().findAllActiveObjectsWithOrderManager();
+   }
+   
    /*************************************************************************/
    /************************** FORMATTERS ***********************************/
    /*************************************************************************/
@@ -922,7 +935,7 @@ public class FicheEchantillonEdit extends AbstractFicheEditController
 
       // init des collaborateurs
       nomsAndPrenoms = new ArrayList<>();
-      collaborateurs = ManagerLocator.getCollaborateurManager().findAllActiveObjectsWithOrderManager();
+      collaborateurs = findCollaborateursToDisplayForOperateur();
       for(int i = 0; i < collaborateurs.size(); i++){
          nomsAndPrenoms.add(collaborateurs.get(i).getNomAndPrenom());
       }

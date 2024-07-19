@@ -135,16 +135,4 @@ public interface ProfilUtilisateurDao extends GenericDaoJpa<ProfilUtilisateur, P
     * @since 2.2.4.1
     */
    List<Long> findCountDistinctProfilForUserAndPlateforme(Utilisateur u, Plateforme p);
-
-   /**
-    * Compte pour un utilisateur le nombre de profils différents qui lui sont attribués
-    * pour accéder aux banques d'une même étude (donc de contexte GATSBI) pour une plateforme donnée.
-    * Cette méthode permet de visualiser rapidement, si le nombre de profils est supérieur à 1,
-    * si l'utilisateur pourra accéder en mode 'toutes collections' pour chacune de ces études
-    * @param u utilisateur
-    * @param p plateforme
-    * @return nombre de profils d'accès distincts
-    * @since 2.3.0-gatsbi
-    */
-   List<ProfilByEtudeCount> findCountDistinctProfilForUserAndPlateformeGroupedByEtude(Utilisateur u, Plateforme p);
 }

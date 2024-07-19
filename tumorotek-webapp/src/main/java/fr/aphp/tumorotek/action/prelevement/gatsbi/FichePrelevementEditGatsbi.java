@@ -37,7 +37,10 @@
 package fr.aphp.tumorotek.action.prelevement.gatsbi;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.zkoss.util.resource.Labels;
@@ -49,14 +52,24 @@ import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Groupbox;
+import org.zkoss.zul.Label;
+import org.zkoss.zul.ListModel;
+import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Listbox;
+import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Textbox;
 
+import fr.aphp.tumorotek.action.ManagerLocator;
 import fr.aphp.tumorotek.action.patient.ResumePatient;
 import fr.aphp.tumorotek.action.prelevement.FichePrelevementEdit;
+import fr.aphp.tumorotek.action.prelevement.gatsbi.exception.GatsbiException;
 import fr.aphp.tumorotek.decorator.gatsbi.PatientItemRendererGatsbi;
+import fr.aphp.tumorotek.dto.ServicesEtEtablissementsLiesADesCollaborateurs;
 import fr.aphp.tumorotek.model.coeur.patient.Patient;
 import fr.aphp.tumorotek.model.coeur.prelevement.LaboInter;
+import fr.aphp.tumorotek.model.contexte.Collaborateur;
+import fr.aphp.tumorotek.model.contexte.Etablissement;
+import fr.aphp.tumorotek.model.contexte.Service;
 import fr.aphp.tumorotek.model.contexte.gatsbi.Contexte;
 import fr.aphp.tumorotek.webapp.gatsbi.GatsbiController;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
@@ -88,6 +101,20 @@ public class FichePrelevementEditGatsbi extends FichePrelevementEdit
    
    private Div ndaDiv;
 
+
+   //TG-206 (Préleveur comme thesaurus et déduction du filtre pour le service préleveur à partir de celui-ci)
+   //Ainsi si un filtre est défini dans Gatsbi sur le préleveur, ce champ est maître pour l'affichage 
+   //des listes services et établissement. On garde l'information dans un champ
+   private boolean filterOnPreleveurDefined = false;
+   
+   //booleans indiquant si les champs préleveur et service préleveur sont visibles
+   private boolean champPreleveurVisible = true;
+   private boolean champServicePreleveurVisible = true;
+   
+   private Label operateurAideSaisiePrel;
+   private Label operateurAideSaisieServ;
+   //TG-206 fin
+   
    @Override
    public void doAfterCompose(final Component comp) throws Exception{
       super.doAfterCompose(comp);
@@ -98,13 +125,9 @@ public class FichePrelevementEditGatsbi extends FichePrelevementEdit
       // affichage conditionnel des champs patients
       GatsbiControllerPrelevement.applyPatientContext(groupPatient, true);
 
-      // setRows ne marche pas ?
-      // seul moyen trouvé pour augmenter hauteur et voir tous les items de la listbox
-      //  correction bug TG-124 (getThesaurusValuesForChampEntiteId ne récupère pas tous les thesaurus quand l'utilisateur n'a rien défini dans Gatsbi) :
-      //  risquesBox.setHeight(contexte.getThesaurusValuesForChampEntiteId(249).size() * 25 + "px");
-      //  une évolution a été faite côté Gatsbi pour envoyer tous les thesaurus quand l'utilisateur n'en a sélectionné aucun (TG-148)
-      //  => la ligne ci-dessus fonctionnerait désormais...
-      risquesBox.setHeight(reqListboxes.size() * 25 + "px");
+      // TG-251 : setRows ne fonctionne pas car le composant est dessiné avant l'alimentation de la liste des données
+      // on force donc la hauteur à 4 valeurs ici :
+      risquesBox.setHeight(4 * 20 + "px");
    }
    
    @Override
@@ -147,23 +170,66 @@ public class FichePrelevementEditGatsbi extends FichePrelevementEdit
 
       log.debug("Surcharge Gastbi pour vérifier que la page de transfert des sites intermédiaire est affichée");
 
-      // vérifie si au moins un des champs de formulaires est affiché
+      // vérifie si au moins un des champs du formulaire est à afficher
       final boolean oneDivVisible = GatsbiControllerPrelevement.isSitesIntermPageDisplayed(contexte);
 
       if(oneDivVisible){
          super.onLaterNextStep();
       }else{ // aucun formulaire n'est affiché -> passage direct à l'onglet échantillon
-         log.debug("Aucun formulaire à affiché dans la page transfert vers le site préleveur...");
+         log.debug("Aucun champ à afficher dans la page transfert des sites intermédiaire...");
          if(this.prelevement.getPrelevementId() != null){
             getObjectTabController().switchToMultiEchantillonsEditMode(this.prelevement, new ArrayList<LaboInter>(),
                new ArrayList<LaboInter>());
          }else{
             // si nous sommes dans une action de création, on
-            // appelle la page FicheMultiEchantillons en mode create
-            getObjectTabController().switchToMultiEchantillonsCreateMode(this.prelevement, new ArrayList<LaboInter>());
+            // appelle la page FicheMultiEchantillons en mode create 
+            // TG-221 : si besoin la modale de sélection des paramétrages sera affichée en amont ...
+            // /!\ correction TG-221 ci-dessous à revoir car elle n'est pas optimale.
+            // En effet le test "paramétrages définis ou non" est fait dans addNewObjectForContext
+            // mais l'utilisation de cette méthode introduit l'affichage pendant une fraction de seconde de la liste des échantillons (cf TG-222)
+            // amélioration du code à faire dans le ticket TG-223 quand TG-222 aura été corrigée
+            Contexte echanContexte = SessionUtils.getCurrentGatsbiContexteForEntiteId(3);//TG-259
+            if(echanContexte == null || echanContexte.getParametrages().isEmpty()){
+               getObjectTabController().switchToMultiEchantillonsCreateMode(this.prelevement, new ArrayList<LaboInter>());
+            }
+            else {
+               GatsbiController.addNewObjectForContext(SessionUtils.getCurrentGatsbiContexteForEntiteId(3), self, e -> {
+                  try{
+                     //getObjectTabController().switchToMultiEchantillonsCreateMode(this.prelevement, new ArrayList<LaboInter>());
+                  }catch(final Exception ex){
+                     Messagebox.show(handleExceptionMessage(ex), "Error", Messagebox.OK, Messagebox.ERROR);
+                  }
+               }, null, this.prelevement);
+            }
+            // Fin correction TG-221
          }
 
          Clients.clearBusy();
+      }
+   }
+   
+   //TG-221
+   /**
+    * Un parametrage échantillon a été sélectionné (cas où la page "laboInter" n'est pas affiché).
+    *
+    * @param param
+    * @throws Exception
+    * @since Gatsbi
+    */
+   public void onGetSelectedParametrage(final ForwardEvent evt) throws Exception{
+      try{
+
+         GatsbiController.getSelectedParametrageFromSelectEvent(SessionUtils.getCurrentGatsbiContexteForEntiteId(3),
+            SessionUtils.getCurrentBanque(sessionScope), getObjectTabController().getReferencedObjectsControllers(true).get(0),
+            null, () -> {
+               try{
+                  getObjectTabController().switchToMultiEchantillonsCreateMode(this.prelevement, new ArrayList<LaboInter>());
+               }catch(final Exception ex){
+                  Messagebox.show(handleExceptionMessage(ex), "Error", Messagebox.OK, Messagebox.ERROR);
+               }
+            }, evt);
+      }catch(final GatsbiException e){
+         Messagebox.show(handleExceptionMessage(e), "Error", Messagebox.OK, Messagebox.ERROR);
       }
    }
    
@@ -268,5 +334,408 @@ public class FichePrelevementEditGatsbi extends FichePrelevementEdit
 
    public Contexte getContexte(){
       return contexte;
+   }
+
+   /**
+    * surcharge pour gérer les services préleveurs à partir du filtre défini sur les préleveur considérés comme un thesaurus Collaborateur
+    * @since Gatsbi : TG-206 
+    */
+   @Override
+   protected void initAllCollaborationPossible(){
+      Contexte contexte = SessionUtils.getCurrentGatsbiContexteForEntiteId(2);
+      //Le champ préleveur est-il visbible ?
+      champPreleveurVisible = contexte.isChampIdVisible(28);
+      //Le champ service préleveur est-il visbible ?
+      champServicePreleveurVisible = contexte.isChampIdVisible(29);
+      
+      if(champPreleveurVisible) {
+         //récupération de tous les collaborateurs (cas hors Gatsbi) pour ensuite filtrer éventuellement :
+         List<Collaborateur> allCollaborateurSansFiltreGatsbi =
+            ManagerLocator.getCollaborateurManager().findAllActiveObjectsWithOrderManager();
+   
+         //application du filtre en fonction du paramétrage Gatsbi
+         List<Collaborateur> listCollaborateurFiltree =
+            GatsbiController.filterExistingListModel(contexte, allCollaborateurSansFiltreGatsbi, 28);
+         if(allCollaborateurSansFiltreGatsbi.size() == listCollaborateurFiltree.size()){
+            populateAllEtablissementsAndAllServicesInDatabaseIfNecessary();
+            allCollaborateurs = addNullCollaborateurIfNecessary(allCollaborateurSansFiltreGatsbi);
+            filterOnPreleveurDefined = false;
+         }else{
+            populateEtablissementsServicesAndCollaborateurs(listCollaborateurFiltree);
+            filterOnPreleveurDefined = true;
+         }
+         //on n'affiche pas l'aide à la saisie sur un filtre est défini sur les collaborateurs
+         operateurAideSaisiePrel.setVisible(!filterOnPreleveurDefined);
+      }
+      else {
+         populateAllEtablissementsAndAllServicesInDatabaseIfNecessary();
+         allCollaborateurs = new ArrayList<Collaborateur>();
+      }
+      
+      if(champServicePreleveurVisible) {
+         //on n'affiche pas l'aide à la saisie sur un filtre est défini sur les collaborateurs
+         operateurAideSaisieServ.setVisible(!filterOnPreleveurDefined);
+      }
+   }
+   
+   //TG-206 : si un filtre collaborateur est défini, on remonte les services à partir du collaborateur
+   protected void doAfterSelectingCollaborateur() {
+      if(champPreleveurVisible && filterOnPreleveurDefined) {
+         if(selectedCollaborateur != null) {
+            Etablissement currentSelectedEtablissement = selectedEtablissement;
+            //récupération de ses services :
+            List<Service> servicesDuCollaborateur =
+               ManagerLocator.getServiceManager().findServicesActifsForOneCollaborateur(selectedCollaborateur);
+            services = addNullServiceIfNecessary(servicesDuCollaborateur);
+            if(servicesDuCollaborateur != null && servicesDuCollaborateur.size() == 1){
+               selectedService = servicesDuCollaborateur.get(0);
+               if(selectedService != null){
+                  selectedEtablissement = selectedService.getEtablissement();
+               }
+            }else{
+               selectedService = null;
+               selectedEtablissement = selectedCollaborateur.getEtablissement();
+            }
+
+            //si l'établissement a été modifié (ça veut dire qu'avant il était null, sinon tous les services proposés appartiennent au même établissement),
+            //filtre pour ne garder que les services de cet établissement et les collaborateurs de ces services
+            if(selectedEtablissement != currentSelectedEtablissement){
+               refreshServicesAndCollaborateursFromSelectedEtablissement();
+            }
+
+            refreshCollaborationComponents();            
+         }
+      }
+   }
+   
+   private void populateAllEtablissementsAndAllServicesInDatabaseIfNecessary() {
+      if(champServicePreleveurVisible) {
+         allEtablissements =
+            addNullEtablissementIfNecessary(ManagerLocator.getEtablissementManager().findAllActiveObjectsWithOrderManager());
+         allServices = addNullServiceIfNecessary(ManagerLocator.getServiceManager().findAllActiveObjectsWithOrderManager());
+      }
+      else {
+         allEtablissements = new ArrayList<Etablissement>();
+         allServices = new ArrayList<Service>();
+      }
+   }
+
+   //Charge les listes établissements et services à partir des données du collaborateur
+   private void populateEtablissementsServicesAndCollaborateurs(List<Collaborateur> listCollaborateurFiltree){
+      //les services ne sont pas accessibles depuis le collaborateur (lazy implementation et pas de récupération avant "détachement du JPA" des objets services)
+      //=> passage par un service :
+      if(champServicePreleveurVisible) {
+         ServicesEtEtablissementsLiesADesCollaborateurs servicesEtEtabs =
+            ManagerLocator.getServiceManager().retrieveServicesEtEtablissementsLiesADesCollaborateurs(listCollaborateurFiltree);
+         allEtablissements = addNullEtablissementIfNecessary(
+            new ArrayList<Etablissement>(servicesEtEtabs.getEtablissementsActifsDesCollaborateurs()));
+         allServices = addNullServiceIfNecessary(new ArrayList<Service>(servicesEtEtabs.getServicesActifsDesCollaborateurs()));
+      }
+      else {
+         allEtablissements = new ArrayList<Etablissement>();
+         allServices = new ArrayList<Service>();
+      }
+      
+      if(champPreleveurVisible) {
+         allCollaborateurs = addNullCollaborateurIfNecessary(new ArrayList<Collaborateur>(listCollaborateurFiltree));
+      }
+      else {
+         allCollaborateurs = new ArrayList<Collaborateur>();
+      }
+   }
+
+   /**
+    * Sélectionne le collaborateur.
+    *
+    * @param event Event : seléction sur la liste collaborateursBoxPrlvt.
+    * @throws Exception
+    */
+   public void onSelect$collaborateursBoxPrlvt(final Event event) throws Exception{
+      //le champ préleveur est "maître" pour les 2 listes services et établissement
+      if(filterOnPreleveurDefined){
+         final int ind = collaborateursBoxPrlvt.getSelectedIndex();
+         selectedCollaborateur = collaborateurs.get(ind);
+         doAfterSelectingCollaborateur();
+      }else{
+         super.onSelect$collaborateursBoxPrlvt(event);
+      }
+   }
+
+   @Override
+   public void onSelect$servicesBoxPrlvt(final Event event) throws Exception{
+      super.onSelect$servicesBoxPrlvt(event);
+      //mise à jour éventuel de l'établissement si celui-ci est null 
+      //(cas d'une page initialisée avec un collaborateur sélectionné ayant plusieurs services sur plusieurs établissements => c'est à l'utilisateur de choisir le service)
+      if(selectedEtablissement == null){
+         // /!\ la sélection du service ne doit pas être perdu => il faudra surcharger la règle générale contenue dans selectEtablissementFromSelectedServiceAndRefreshList
+         Service currentSelectedService = selectedService;
+         selectEtablissementFromSelectedServiceAndRefreshList();
+         selectedService = currentSelectedService;
+         refreshCollaborationComponents();
+      }
+   }
+
+   @Override
+   protected void initCollaborateurs(){
+      if(champPreleveurVisible) {
+         // /!\ bien qu'on appelle la méthode super, la ligne ci-dessous est bien spécifique à Gatsbi (application du filtre si existant)
+         // car super.initCollaborateurs() appelle populateCollaborateursForSelectedService() qui
+         // s'appuie sur retrieveActiveCollaborateursWithOrder(), méthode surchargé dans Gatsbi
+         super.initCollaborateurs();
+   
+         //dans le cas de Gatsbi, si un filtre est défini sur les collaborateurs,
+         //on peut remonter du service à l'établissement 
+         if(filterOnPreleveurDefined){
+            if(selectedService == null){ //
+               if(allEtablissements.size() == 2){
+                  selectedEtablissement = allEtablissements.get(1);
+               }else{
+                  selectedEtablissement = null;
+               }
+            }else{
+               selectedEtablissement = selectedService.getEtablissement();
+            }
+            if(collaborateurs.size() == 2){
+               selectedCollaborateur = allCollaborateurs.get(1);
+            }else{
+               if(!collaborateurs.contains(selectedCollaborateur)){
+                  selectedCollaborateur = null;
+               }
+            }
+         }
+      }
+   }
+
+   // le nombre de collaborateurs étant relativement faible car un filtre est appliqué, si l'utilisateur
+   // ne sélectionne pas de service alors qu'un établissement est sélectionné,
+   // on affichera uniquement les collaborateurs rattachés à un service de l'établissement
+   // /!\ un collaborateur sans service mais défini sur l'établissement sélectionné n'apparaîtra pas contrairement au cas standard 
+   @Override
+   protected void populateCollaborateursForSelectedService(){
+      if(filterOnPreleveurDefined) {
+         if(champPreleveurVisible) {
+            if(selectedService != null){
+               collaborateurs = addNullCollaborateurIfNecessary(retrieveActiveCollaborateursWithOrder(selectedService));
+            }else{
+               if(selectedEtablissement == null) {
+                  collaborateurs = allCollaborateurs;
+               }
+               else {
+                  populateCollaborateurForSelectedEtablissement();
+               }
+            }
+         }
+      }
+      else {
+         super.populateCollaborateursForSelectedService();
+      }
+   }
+   
+
+   
+   //affiche tous les collaborateurs rattachés à tous les services possibles à l'instant t (services de 
+   //l'établissement sélectionné)
+   @Override
+   protected void populateCollaborateurForSelectedEtablissement(){
+      if(selectedEtablissement != null && filterOnPreleveurDefined){
+         populateCollaborateursForAllServicesOfSelectedEtablissement();
+      }
+      else {
+         super.populateCollaborateurForSelectedEtablissement();
+      }
+   }
+   
+   private void populateCollaborateursForAllServicesOfSelectedEtablissement() {
+      //on affiche tous les collaborateurs des services (de l'établissement sélectionné) :
+      List<Collaborateur> collaborateursForSelectedEtablissement = new ArrayList<Collaborateur>();
+      for(Service service : services){
+         if(service !=null) {
+            //un collaborateur peut appartenir à plusieurs services : il ne doit être présent qu'une fois
+            List<Collaborateur> collaborateursForService = filterCollaborateursByService(service);
+            for(Collaborateur collabToAdd : collaborateursForService){
+               if(collabToAdd != null && !collaborateursForSelectedEtablissement.contains(collabToAdd)){
+                  collaborateursForSelectedEtablissement.add(collabToAdd);
+               }
+            }
+         }
+      }
+      //tri :
+      Collections.sort(collaborateursForSelectedEtablissement, Comparator.comparing(Collaborateur::getNomAndPrenom));
+      collaborateurs = addNullCollaborateurIfNecessary(collaborateursForSelectedEtablissement);
+   }
+   
+   @Override
+   protected List<Collaborateur> retrieveActiveCollaborateursWithOrder(Service selectedService){
+      if(champPreleveurVisible) {
+         if(selectedService == null){
+            return allCollaborateurs;
+         }
+   
+         List<Collaborateur> allCollaborateursForService = super.retrieveActiveCollaborateursWithOrder(selectedService);
+         if(filterOnPreleveurDefined){
+            List<Collaborateur> collaborateursForServiceToReturn = new ArrayList<Collaborateur>();
+   
+            //filtre pour ne garder que ceux présents dans all :
+            for(Collaborateur collaborateur : allCollaborateursForService){
+               if(allCollaborateurs.contains(collaborateur)){
+                  collaborateursForServiceToReturn.add(collaborateur);
+               }
+            }
+   
+            return collaborateursForServiceToReturn;
+         }
+   
+         return allCollaborateursForService;
+      }
+      
+      return new ArrayList<Collaborateur>();
+   }
+
+   protected List<Service> retrieveActiveServicesWithOrder(Etablissement selectedEtablissement){
+      if(champServicePreleveurVisible) {
+         if(selectedEtablissement == null){
+            return allServices;
+         }
+   
+         List<Service> allServicesForEtablissement = super.retrieveActiveServicesWithOrder(selectedEtablissement);
+         if(filterOnPreleveurDefined){
+            List<Service> serviceForEtablissementToReturn = new ArrayList<Service>();
+   
+            //filtre pour ne garder que ceux présents dans all :
+            for(Service service : allServicesForEtablissement){
+               if(allServices.contains(service)){
+                  serviceForEtablissementToReturn.add(service);
+               }
+            }
+   
+            return serviceForEtablissementToReturn;
+         }
+   
+         return allServicesForEtablissement;
+      }
+      
+      return new ArrayList<Service>();
+   }
+
+   private void selectEtablissementFromSelectedServiceAndRefreshList(){
+      if(selectedService != null){
+         selectedEtablissement = selectedService.getEtablissement();
+         refreshServicesAndCollaborateursFromSelectedEtablissement();
+      }
+   }
+
+   private void refreshServicesAndCollaborateursFromSelectedEtablissement(){
+      if(selectedEtablissement == null){
+         services = allServices;
+         collaborateurs = allCollaborateurs;
+      }else{
+         if(champServicePreleveurVisible) {
+            //récupération de tous les services de l'établissement sélectionné
+            //pour lesquels au moins un collaborateur fait partie du filtre Gatsbi
+            // => utilisation de allServices déjà filtré sur les collaborateurs avec suppression
+            // de la valeur null (subList)
+            List<Service> serviceForSelectedEtablissement = allServices.subList(1, allServices.size()).stream()
+               .filter(service -> service.getEtablissement().equals(selectedEtablissement)).collect(Collectors.toList());
+            services = addNullServiceIfNecessary(serviceForSelectedEtablissement);
+   
+            if(services.size() == 2){
+               selectedService = services.get(1);
+               if(champPreleveurVisible) {
+                  collaborateurs = addNullCollaborateurIfNecessary(filterCollaborateursByService(selectedService));
+               }
+            }else{
+               selectedService = null;
+               
+               if(champPreleveurVisible) {
+                  populateCollaborateursForAllServicesOfSelectedEtablissement();
+               }
+            }
+         }
+         else {
+            if(champPreleveurVisible) {
+               collaborateurs = allCollaborateurs;
+            }
+         }
+      }
+   }
+
+   private List<Collaborateur> filterCollaborateursByService(Service service){
+      if(champPreleveurVisible) {
+         //récupération des collaborateurs pour ce service : on s'appuie sur tous les collaborateurs possibles (sans la valeur null)
+         List<Collaborateur> collaborateursConcernes = allCollaborateurs.subList(1, allCollaborateurs.size());
+         return addNullCollaborateurIfNecessary(
+            ManagerLocator.getCollaborateurManager().filterCollaborateursByServiceWithOrder(service, collaborateursConcernes));
+      }
+      
+      return new ArrayList<Collaborateur>(); 
+   }
+
+   //TG-206 : cette méthode pourrait être définie dans FichePrelevementEdit.java (à la place de celle existante)
+   //pour faire profiter les "collections hors Gatsbi" de la valorisation automatique du service si il n'y a en qu'un
+   //et celle du collaborateur si il n'y en a également qu'un seul. 
+   //Mais avec la volumétrie des collaborations des HCL, il y a un temps de latence important entre la modification de l'établissement
+   //et le rafraichissement des listes qui est perturbant => mise en place uniquement pour Gatsbi où les listes sont filtrées
+   @Override
+   public void onSelect$etabsBoxPrlvt(final Event event) throws Exception{
+      if(filterOnPreleveurDefined) {
+         populateServicesForSelectedEtablissement();
+         
+         if(selectedEtablissement == null) {
+            services = allServices;
+            selectedService = null;
+            collaborateurs = allCollaborateurs;
+            selectedCollaborateur = null;
+         }
+         else {
+            if(!services.contains(selectedService)){
+               selectedService = null;
+               populateCollaborateurForSelectedEtablissement();
+            }
+            
+            if(services.size() == 2) {
+               selectedService = services.get(1);//le premier est la ligne vide
+               //mise à jour des collaborateurs 
+               populateCollaborateursForSelectedService();
+               if(!collaborateurs.contains(selectedCollaborateur)){
+                  selectedCollaborateur = null;
+               }
+            }
+            
+            if(collaborateurs.size() == 2) {
+               selectedCollaborateur = collaborateurs.get(1);//le premier est la ligne vide
+            }      
+         }
+         
+         final ListModel<Service> list = new ListModelList<>(services);
+         servicesBoxPrlvt.setModel(list);
+         servicesBoxPrlvt.setSelectedIndex(services.indexOf(selectedService));
+         getBinder().loadComponent(servicesBoxPrlvt);
+         
+         collaborateursBoxPrlvt.setModel(new ListModelList<>(collaborateurs));
+         collaborateursBoxPrlvt.setSelectedIndex(collaborateurs.indexOf(selectedCollaborateur));
+         getBinder().loadComponent(collaborateursBoxPrlvt);
+      }
+      else {
+         super.onSelect$etabsBoxPrlvt(event);
+      }
+   }
+
+   
+   private void refreshCollaborationComponents(){
+      if(champServicePreleveurVisible) {
+         etabsBoxPrlvt.setModel(new ListModelList<>(etablissements));
+         etabsBoxPrlvt.setSelectedIndex(etablissements.indexOf(selectedEtablissement));
+         getBinder().loadComponent(etabsBoxPrlvt);
+   
+         servicesBoxPrlvt.setModel(new ListModelList<>(services));
+         servicesBoxPrlvt.setSelectedIndex(services.indexOf(selectedService));
+         getBinder().loadComponent(servicesBoxPrlvt);
+      }
+      
+      if(champPreleveurVisible) {
+         collaborateursBoxPrlvt.setModel(new ListModelList<>(collaborateurs));
+         collaborateursBoxPrlvt.setSelectedIndex(collaborateurs.indexOf(selectedCollaborateur));
+         getBinder().loadComponent(collaborateursBoxPrlvt);
+      }
    }
 }

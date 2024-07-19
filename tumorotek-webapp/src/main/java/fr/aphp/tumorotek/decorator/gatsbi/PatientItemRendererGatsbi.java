@@ -69,47 +69,70 @@ public class PatientItemRendererGatsbi extends PatientItemRenderer
       this.isIdentifiantEditable = _i;
    }
 
+   // /!\ dans le cas des listes de patient "embedded", on n'affiche pas tous les champs choisis par l'utilisateur.
+   // => veillez à la cohérence avec la définition des colonnes du tableau : GatsbiControllerPatient.addListHeadForChpId()
    @Override
    protected void renderPatient(Listitem li, Patient pat){
       
+      //TG-182 : affectation du patient à la banque courante :
+      pat.setBanque(banque);
       identifiantBox = renderIdentifiantForBanque(li, pat);
       
-      if (contexte.isChampIdVisible(2)) {
-         renderNip(li, pat);
-      }
-      
-      if (contexte.isChampIdVisible(3)) {
-         renderNom(li, pat);
-      }
-      
-      if (contexte.isChampIdVisible(5)) {
-         renderPrenom(li, pat);
-      }
-      
-      if (contexte.isChampIdVisible(6)) {
-      renderSexe(li, pat);
-      }
-      
-      if (contexte.isChampIdVisible(7)) {
-      renderDateNais(li, pat);  
+      for(final Integer chpId : contexte.getChampEntiteInTableauOrdered()){
+         switch(chpId){
+            case 2: // nip
+               renderNip(li, pat);
+               break;
+            case 3: // nom
+               renderNom(li, pat);
+               break;
+            case 4: // nom naissance
+               break;
+            case 5: // prenom
+               renderPrenom(li, pat);
+               break;
+            case 6: // sexe
+               renderSexe(li, pat);
+               break;
+            case 7: // date naissance
+               renderDateNais(li, pat);
+               break;
+            case 8: // ville naissance
+               break;
+            case 9: // pays naissance
+               break;
+            case 10: // état
+               break;
+            case 11: // date état
+               break;
+            case 227: // médecins
+               break;
+            default:
+               break;
+         }
       }
    }
-
+   
+   //renvoie true si le champ est visible et à afficher dans le tableau pour le contexte courant
+   private boolean display(Integer champEntiteId) {
+      return contexte.isChampIdVisible(champEntiteId) && contexte.isChampInTableau(champEntiteId);
+   }
+   
    private Textbox renderIdentifiantForBanque(Listitem li, Patient pat) {
             
       // textbox pour ajouter un identifiant
-      if(isIdentifiantEditable && !pat.hasIdentifiant(banque)){
+      if(isIdentifiantEditable && !pat.hasIdentifiant()){
          // tb.setInplace(true);
         final Textbox tb = new Textbox();
          tb.setAttribute("patient", pat);
-         tb.setConstraint(PatientConstraints.getCodeConstraint());
+         tb.setConstraint(PatientConstraints.getIdentifiantConstraint());
          Listcell cell = new Listcell();
          tb.setParent(cell);
          cell.setParent(li);
          
          return tb;
       }else{ // affichage identifiant
-         new Listcell(pat.getIdentifiantAsString(banque)).setParent(li);
+         new Listcell(pat.getIdentifiant()).setParent(li);
       }
       
       return null;

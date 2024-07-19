@@ -109,15 +109,21 @@ public class PatientRowRendererGatsbi extends PatientRowRenderer implements RowR
       Label identifiantLabel;
       
       // mode collection -> affiche identifiant / inclure
-      if (!Sessions.getCurrent().hasAttribute("ToutesCollections")) {
+      //à date, la colonne identifiant n'est pas affichée dans le cas "Toutes collections" (on est dans le masque d'affichage "standard")
+      //donc on ne passe jamais dans ce code => mise en commentaire du if et du bloc else pour garder l'implémentation qui pourrait servir plus tard.
+/*      if (!Sessions.getCurrent().hasAttribute("ToutesCollections")) { */
          
-         identifiantLabel = new Label(pat.hasIdentifiant(curBanque) ? 
-            (pat.getIdentifiantAsString(curBanque)) : Labels.getLabel("gatsbi.patient.include"));
+         //TG-182 : on associe la patient à la banque courante pour récupérer l'identifiant associé si il existe
+         pat.setBanque(curBanque);
+         identifiantLabel = new Label(pat.hasIdentifiant() ? 
+            (pat.getIdentifiant()) : Labels.getLabel("gatsbi.patient.include"));
         
          identifiantLabel.setParent(row);
-
-      } else { // identifiants pour plusieurs collections
-
+         /*         
+      } 
+      else { // identifiants pour plusieurs collections
+         //Pour info, pour le cas des patients empty pour lesquels les lignes seraient toutes vides en Toutes collections, l'identifiant est mis dans la colonne n° patient
+         //Ceci est fait dans la classe PatientRowRender utilisée pour le "Toutes collections" (cf TG-192)
          // on va afficher les maladies de la plus récente
          // à la plus ancienne
          final List<String> identifiants = 
@@ -128,11 +134,11 @@ public class PatientRowRendererGatsbi extends PatientRowRenderer implements RowR
          
          identifiantLabel = drawListStringLabel(row, identifiants);
       }
-      
+*/
       // rend identifiant cliquable
       Component parent = null; // -> remonte l'évènement jusqu'au ListeController
       identifiantLabel.addForward(null, parent, "onClickObject", pat);
-      identifiantLabel.setClass("formLink");    
+      identifiantLabel.setClass("formLink");
    }
    
    @Override

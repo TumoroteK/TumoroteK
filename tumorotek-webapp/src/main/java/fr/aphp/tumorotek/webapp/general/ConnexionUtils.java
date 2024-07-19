@@ -359,77 +359,31 @@ public final class ConnexionUtils
     * Test si l'utilisateur a accès à l'option "Toutes collections".
     * @return True s'il a accès.
     * @since 2.2.4 méthode migrée en static utils car appelé par deux SelectBanqueController et MainWindow
-    * @since 2.3.0 GATSBI ajoute un lien Toutes collection par étude
     */
-   public static void initToutesCollectionsAccesses(final List<Banque> banques, final Plateforme pf, final Utilisateur user){
+   public static boolean canAccessToutesCollections(List<Banque> banques, Plateforme pf, Utilisateur user){
+      boolean can = true;
 
-      final Set<Plateforme> pfs = ManagerLocator.getUtilisateurManager().getPlateformesManager(user);
-
-      // contextes non GATSBI
       // s'il y a plusieurs banques disponibles
-      final long noGatsbiBanksCC = banques.stream().filter(b -> b.getEtude() == null).count();
-
-      boolean canTtesCollNoGATSBI = false;
-      
-      if(noGatsbiBanksCC > 1){
-
-         canTtesCollNoGATSBI = true;
-         
-         // si l'utilisateur n'est admin de la plateforme
-         // compte les profils distincts pour contexte non GATSBI
+      if(banques.size() > 1){
+         //Récupération de toutes les plateformes dont l'utilisateur est admin (méthode getPlateformesManager() mal nommée ....)
+         final Set<Plateforme> pfs = ManagerLocator.getUtilisateurManager().getPlateformesManager(user);
+         // si l'utilisateur n'est pas admin de la plateforme
          if(!pfs.contains(pf) && !user.isSuperAdmin()){
-
+            
             // @since 2.2.4.1
             // compte le nombre de profils d'accès différents par contexte cette plateforme
             // si les profils sont différents, il n'a pas accès à
             // l'option "Toutes collections"
             if(ManagerLocator.getProfilUtilisateurManager()
                .countDistinctProfilForUserAndPlateformeManager(user, pf) != 1L){
-               canTtesCollNoGATSBI = false;
-            }         
+               can = false;
+            }
          }
-      } // else no gatsbi banques max one!
-
-      // GATSBI
-
-      final Map<Etude, Long> profilByEtudeCountForUser =
-         ManagerLocator.getProfilUtilisateurManager().countDistinctProfilForUserAndPlateformeGroupedByEtudeManager(user, pf);
-
-      final Map<Etude, List<Banque>> etudeBanksMap =
-         banques.stream().filter(b -> b.getEtude() != null).collect(Collectors.groupingBy(Banque::getEtude));
-
-      for(final Etude etude : etudeBanksMap.keySet()){
-         // s'il y a plusieurs banques disponibles pour l'étude
-         if(etudeBanksMap.get(etude).size() > 1){
-
-            boolean canTtesCollEtude = true;
-
-            // si l'utilisateur n'est admin de la plateforme
-            // compte les profils distincts pour l'étude non GATSBI
-            if(!pfs.contains(pf) && !user.isSuperAdmin()){
-
-               // compte le nombre de profils d'accès différents par contexte cette étude
-               // si les profils sont différents, il n'a pas accès à
-               // l'option "Toutes collections"
-               if(profilByEtudeCountForUser.get(etude) != 1L){
-                  canTtesCollEtude = false;
-               }
-            }
-
-            // ajout toutes collections non GATSBI
-            if(canTtesCollEtude){
-               final Banque toutesCollEtude = initFakeToutesCollBankItem(pf);
-               toutesCollEtude.setEtude(etude);
-               toutesCollEtude.setNom(Labels.getLabel("select.banque.toutesCollection.gatsbi", new String[] {etude.getTitre()}));
-               banques.add(toutesCollEtude);
-            }
-         } // else gatsbi banques max one pour cette étude!
+      }else{
+         can = false;
       }
-      
-      // ajout toutes collections non 
-      if(canTtesCollNoGATSBI){
-         banques.add(initFakeToutesCollBankItem(pf));
-      }
+
+      return can;
    }
 
    /**
@@ -477,11 +431,12 @@ public final class ConnexionUtils
       }
    }
 
+   //CHT - à supprimer
    /**
     * Produit la collecion virtuelle banque_id = null qui va correspondre
     * à l'item 'Toutes collections' proposé dans le choix des banques.
-    * Le nom de cette banque sera modifié par ajout de l'étude GATSBI si le regroupement
-    * des banques se fait en toutes collections.
+//    * Le nom de cette banque sera modifié par ajout de l'étude GATSBI si le regroupement
+//    * des banques se fait en toutes collections.
     * @param pf
     * @return
     */

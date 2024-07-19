@@ -71,7 +71,7 @@ public class ListeEchantillonGatsbi extends ListeEchantillon
       
       contexte = SessionUtils.getCurrentGatsbiContexteForEntiteId(3);
       
-      setListObjectsRenderer(new EchantillonRowRendererGatsbi(true, false, true, true));
+      setListObjectsRenderer(new EchantillonRowRendererGatsbi(true, false, true));
    }
 
    public void onCheckAll$gridColumns(){
@@ -93,24 +93,27 @@ public class ListeEchantillonGatsbi extends ListeEchantillon
          null, null, true);
 
       // code prel column, toujours affichée
-      GatsbiControllerEchantillon.drawCodeColumn(objectsListGrid);
+      GatsbiControllerEchantillon.drawCodeColumn(objectsListGrid, false);
 
       // ttes collection
-      GatsbiControllerEchantillon.drawBanqueColumn(objectsListGrid, isTtesCollection());
+      GatsbiControllerEchantillon.drawBanqueColumn(objectsListGrid, isTtesCollection(), false);
 
       // patient, colonne toujours affichée
-      GatsbiControllerEchantillon.drawPatientColumn(objectsListGrid);
+      GatsbiControllerEchantillon.drawPatientColumn(objectsListGrid, false);
 
       // variable columns
       for(final Integer chpId : contexte.getChampEntiteInTableauOrdered()){
-         GatsbiControllerEchantillon.addColumnForChpId(chpId, objectsListGrid);
+         GatsbiControllerEchantillon.addColumnForChpId(chpId, objectsListGrid, false);
       }
 
-      // nb dérivés
-      nbProdDerivesColumn = GatsbiControllerEchantillon.drawNbDerivesColumn(objectsListGrid);
-
-      // nb cessions
-      nbCessionsColumn = GatsbiControllerEchantillon.drawNbCessionsColumn(objectsListGrid);
+      //Colonnes fixes : les 2 premières sont visibles par défaut les 2 suivantes cachées par défaut
+      GatsbiControllerEchantillon.drawObjetStatutColumn(objectsListGrid, false);
+      GatsbiControllerEchantillon.drawEmplacementColumn(objectsListGrid, false);
+      
+      // nb dérivés (attribut du parent)
+      this.nbProdDerivesColumn = GatsbiControllerEchantillon.drawNbDerivesColumn(objectsListGrid, false);
+      // nb cessions (attribut du parent)
+      this.nbCessionsColumn = GatsbiControllerEchantillon.drawNbCessionsColumn(objectsListGrid, false);
    }
 
    /**

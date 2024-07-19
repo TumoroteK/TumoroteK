@@ -40,6 +40,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -261,6 +262,15 @@ public class CollaborateurManagerImpl implements CollaborateurManager
       return new ArrayList<>();
    }
 
+   @Override
+   public List<Collaborateur> filterCollaborateursByServiceWithOrder(final Service service, final List<Collaborateur> collaborateurs){
+      if(service != null && service.getServiceId() != null && collaborateurs != null){
+         List<Integer> collaborateurIds = collaborateurs.stream().map(collaborateur -> collaborateur.getCollaborateurId()).collect(Collectors.toList());
+         return collaborateurDao.findByServiceIdCollaborateurIdsWithOrder(service.getServiceId(), collaborateurIds);
+      }
+      return new ArrayList<>();
+   }
+   
    /**
     * Recherche les coordonnées liées au collaborateur passé en paramètre.
     * @param collaborateur Collaborateur pour lequel on recherche des
@@ -970,4 +980,7 @@ public class CollaborateurManagerImpl implements CollaborateurManager
          removeObjectManager(cPassif, "fusion id: " + idActif + " ." + comments, user);
       }
    }
+
+
+
 }

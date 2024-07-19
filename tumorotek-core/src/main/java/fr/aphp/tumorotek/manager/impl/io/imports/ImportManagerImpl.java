@@ -46,7 +46,6 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -67,6 +66,7 @@ import javax.persistence.TypedQuery;
 import javax.sql.DataSource;
 
 import org.apache.commons.beanutils.PropertyUtils;
+import org.apache.commons.collections4.map.CaseInsensitiveMap;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -115,7 +115,6 @@ import fr.aphp.tumorotek.manager.qualite.ObjetNonConformeManager;
 import fr.aphp.tumorotek.manager.stockage.EmplacementManager;
 import fr.aphp.tumorotek.manager.systeme.EntiteManager;
 import fr.aphp.tumorotek.model.TKAnnotableObject;
-import fr.aphp.tumorotek.model.TKThesaurusObject;
 import fr.aphp.tumorotek.model.code.CodeAssigne;
 import fr.aphp.tumorotek.model.coeur.ObjetStatut;
 import fr.aphp.tumorotek.model.coeur.annotation.AnnotationValeur;
@@ -132,6 +131,7 @@ import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.contexte.Collaborateur;
 import fr.aphp.tumorotek.model.contexte.Service;
 import fr.aphp.tumorotek.model.contexte.gatsbi.Contexte;
+import fr.aphp.tumorotek.model.contexte.gatsbi.Etude;
 import fr.aphp.tumorotek.model.io.export.Champ;
 import fr.aphp.tumorotek.model.io.export.ChampEntite;
 import fr.aphp.tumorotek.model.io.imports.ImportColonne;
@@ -430,56 +430,46 @@ public class ImportManagerImpl implements ImportManager
    }
 
    @Override
-   public Hashtable<String, Object> extractValuesForOneThesaurus(final ChampEntite champEntite, final Banque banque){
-      final Hashtable<String, Object> values = new Hashtable<>();
-
-      if(champEntite != null){
-
-         List<Integer> thesValueIds = null;
-         // prépare le filtre les valeurs de thésaurus par leur ids suivant les restrictions gatsbi
-         if(banque.getEtude() != null){
-            final Contexte contexte =
-               banque.getEtude().getContexteForEntite(translateChpIdToFindContexteEntite(champEntite.getId()));
-            if(contexte != null){
-               thesValueIds =
-                  contexte.getThesaurusValuesForChampEntiteId(translateChpIdToMatchGatsbiContexte(champEntite.getId())).stream()
-                     .map(v -> v.getThesaurusId()).collect(Collectors.toList());
-            }
-         }
-
-         if(!champEntite.getNom().matches("Conforme.*Raison")){
+   public CaseInsensitiveMap<String, Object> extractValuesForOneThesaurus(final ChampEntite champDeLaTableThesaurus, final Banque banque){
+      final CaseInsensitiveMap<String, Object> values = new CaseInsensitiveMap<>();
+      
+      if(champDeLaTableThesaurus != null){
+         
+            String nomEntiteDuThesaurus = champDeLaTableThesaurus.getEntite().getNom();
             // creation de la requête permettant de récupérer toutes
             // les valeurs du thésaurus
             final StringBuffer sql = new StringBuffer();
             sql.append("SELECT e FROM ");
-            sql.append(champEntite.getEntite().getNom());
+            sql.append(nomEntiteDuThesaurus);
             sql.append(" as e");
-
-            if(!champEntite.getEntite().getNom().equals("Collaborateur") && !champEntite.getEntite().getNom().equals("Service")
-               && !champEntite.getEntite().getNom().equals("Transporteur") && !champEntite.getEntite().getNom().equals("Unite")
-               && !champEntite.getEntite().getNom().equals("ObjetStatut")){
+   
+            if(nomEntiteDuThesaurus.equals("Collaborateur") || nomEntiteDuThesaurus.equals("Service")
+               || nomEntiteDuThesaurus.equals("Transporteur")){
+               sql.append(" where e.archive = false");
+            }
+            else if (!nomEntiteDuThesaurus.equals("Unite") && !nomEntiteDuThesaurus.equals("ObjetStatut")){
                sql.append(" where e.plateforme = :pf");
             }
-
+   
             final EntityManager em = entityManagerFactory.createEntityManager();
             final TypedQuery<Object> query = em.createQuery(sql.toString(), Object.class);
-            if(!champEntite.getEntite().getNom().equals("Collaborateur") && !champEntite.getEntite().getNom().equals("Service")
-               && !champEntite.getEntite().getNom().equals("Transporteur") && !champEntite.getEntite().getNom().equals("Unite")
-               && !champEntite.getEntite().getNom().equals("ObjetStatut")){
+            if(!nomEntiteDuThesaurus.equals("Collaborateur") && !nomEntiteDuThesaurus.equals("Service")
+               && !nomEntiteDuThesaurus.equals("Transporteur") && !nomEntiteDuThesaurus.equals("Unite")
+               && !nomEntiteDuThesaurus.equals("ObjetStatut")){
                query.setParameter("pf", banque.getPlateforme());
             }
             final List<Object> objets = query.getResultList();
             em.close();
-
+   
             // pour chaque valeur
             for(int i = 0; i < objets.size(); i++){
                String value = null;
                // si ce n'est pas un thésaurus sur les collaborateurs
-               if(!champEntite.getEntite().getNom().equals("Collaborateur")
-                  && !champEntite.getEntite().getNom().equals("Service")){
+               if(!nomEntiteDuThesaurus.equals("Collaborateur")
+                  && !nomEntiteDuThesaurus.equals("Service")){
                   // on formate le champ du thésaurus à extraire
                   final String nomChamp =
-                     champEntite.getNom().replaceFirst(".", (champEntite.getNom().charAt(0) + "").toLowerCase());
+                     champDeLaTableThesaurus.getNom().replaceFirst(".", (champDeLaTableThesaurus.getNom().charAt(0) + "").toLowerCase());
                   try{
                      // extraction de la valeur de l'objet
                      value = (String) PropertyUtils.getSimpleProperty(objets.get(i), nomChamp);
@@ -490,11 +480,11 @@ public class ImportManagerImpl implements ImportManager
                   }catch(final NoSuchMethodException e){
                      log.error(e.getMessage(), e); 
                   }
-               }else if(champEntite.getEntite().getNom().equals("Collaborateur")){
+               }else if(nomEntiteDuThesaurus.equals("Collaborateur")){
                   // si c'est un collaborateur, on extrait une
                   // concaténation du nom et du prénom
                   value = ((Collaborateur) objets.get(i)).getNomAndPrenom();
-               }else if(champEntite.getEntite().getNom().equals("Service")){
+               }else if(nomEntiteDuThesaurus.equals("Service")){
                   // si c'est un service, on extrait une
                   // concaténation du nom de l'établissement et du service
                   final StringBuffer sb = new StringBuffer();
@@ -504,147 +494,25 @@ public class ImportManagerImpl implements ImportManager
                      sb.append(" - ");
                   }
                   sb.append(serv.getNom());
-
+   
                   value = sb.toString();
                }
-
+   
                // ajout de l'objet de la valeur string dans la
                // hashtable
                if(value != null && !values.containsKey(value)){
-                  valuesPut(values, value, objets.get(i), thesValueIds);
+                  values.put(value, objets.get(i));
                }
             }
-         }else{ //non conformites
-            final Pattern p = Pattern.compile("Conforme(.*)\\.Raison");
-            final Matcher m = p.matcher(champEntite.getNom());
-            final boolean b = m.matches();
-            if(b && m.groupCount() > 0){
-               final String cNom = m.group(1);
-               final Iterator<NonConformite> ncfs = nonConformiteManager
-                  .findByPlateformeEntiteAndTypeStringManager(banque.getPlateforme(), cNom, champEntite.getEntite()).iterator();
-               NonConformite nc;
-               while(ncfs.hasNext()){
-                  nc = ncfs.next();
-                  valuesPut(values, nc.getNom().toLowerCase(), nc, thesValueIds);
-               }
-            }
-         }
       }
       return values;
    }
 
-   /**
-    * Hackish méthode pour retrouver la valeur entite_id 
-    * à partir du champ_entite_id utilisé par importManager 
-    * qui correspond au QUERY_CHAMP_ID
-    * @param id
-    * @return id
-    */
-   private Integer translateChpIdToFindContexteEntite(final Integer id){
-
-      // prelevement
-      if(Arrays.asList(111, 113, 116, 144, 118, 247, 257).contains(id)){
-         return 2;
-      }
-
-      // echantillon
-      if(Arrays.asList(120, 131, 133, 215, 261, 262).contains(id)){
-         return 3;
-      }
-
-      return id;
-   }
-
-   /**
-    * Hackish méthode pour retrouver le champ_entite_id envoyé 
-    * par le Contexte à partir du champ_entite_id utilisé par importManager 
-    * qui correspond au QUERY_CHAMP_ID
-    * @param id
-    * @return id
-    * TODO pourrait remplacer ce mapping par req en base, sauf pour certains champs (ex: qte unite 120 -> 61)!
-    */
-   private Integer translateChpIdToMatchGatsbiContexte(final Integer id){
-
-      // retrouve le chpId à partir du query champ id
-      // prelevement 
-      if(id == 111){
-         return 24; // nature
-      }
-      if(id == 113){
-         return 26; // consent type
-      }
-      if(id == 116){
-         return 31; // prelevement type
-      }
-      if(id == 144){
-         return 32; // condit type
-      }
-      if(id == 118){
-         return 33; // condit milieu
-      }
-      if(id == 247){
-         return 249; // risques
-      }
-      if(id == 257){
-         return 256; // non conformites arrivée raisons car chpId uniquement sur booleen dans Gatsbi
-      }
-
-      // echantillon
-      if(id == 120){
-         return 61; // quantite unite car chpId uniquement sur quantite dans Gatsbi
-      }
-      if(id == 131){
-         return 68; // echan qualite
-      }
-      if(id == 133){
-         return 70; // mode prepa
-      }
-      if(id == 215){
-         return 58; // echantillon type
-      }
-      if(id == 261){
-         return 243; // non conformites traitement raisons
-      }
-      if(id == 262){
-         return 244; // non conformites cession raisons
-      }
-
-      // derives
-      if(id == 263){
-         return 251; // non conformites traitement raisons
-      }
-      if(id == 264){
-         return 252; // non conformites cession raisons
-      }
-
-      return id;
-   }
-
-   /**
-    * Ajoute la valeur de thésaurus si elle est configurée par le gestionnaire Gatsbi.
-    * @since 2.3.0-gatsbi
-    * @param values
-    * @param key
-    * @param val
-    * @param allowedIds
-    */
-   private void valuesPut(final Hashtable<String, Object> values, final String key, final Object val,
-      final List<Integer> allowedIds){
-      if(val != null){
-         if(val instanceof TKThesaurusObject){ // le filtre gatsbi s'applique
-            if(allowedIds == null || allowedIds.contains(((TKThesaurusObject) val).getId())){
-               values.put(key, val);
-            }
-         }else{ // val instanceof Service/Collaborateur/Transporteur
-            values.put(key, val);
-         }
-      }
-   }
 
    @Override
-   public Hashtable<String, Object> extractValuesForOneAnnotationThesaurus(final ChampAnnotation champAnnotation,
+   public CaseInsensitiveMap<String, Object> extractValuesForOneAnnotationThesaurus(final ChampAnnotation champAnnotation,
       final Banque banque){
-      final Hashtable<String, Object> values = new Hashtable<>();
+      final CaseInsensitiveMap<String, Object> values = new CaseInsensitiveMap<>();
 
       if(champAnnotation != null && banque != null){
          final Set<Item> items = champAnnotationManager.getItemsManager(champAnnotation, banque);
@@ -659,8 +527,15 @@ public class ImportManagerImpl implements ImportManager
    }
 
    @Override
-   public Hashtable<Object, Hashtable<String, Object>> generateThesaurusHashtable(final ImportTemplate importTemplate){
-      final Hashtable<Object, Hashtable<String, Object>> thesaurus = new Hashtable<>();
+   public Hashtable<ChampEntite, CaseInsensitiveMap<String, Object>> generateThesaurusHashtable(final ImportTemplate importTemplate){
+      // TG-185 et TG-204
+      // Depuis Gatsbi, les valeurs pour un thesaurus peuvent être différentes en fonction du champ utilisant ce thésaurus 
+      // (ex : filtre des collaborateurs pour le champ préleveur différent de celui pour le champ opérateur - sur la fiche prélèvement)
+      // La Hashtable des thesaurus retournée aura donc désormais comme clé un ChampEntite et non une Entite
+      // Par contre, pour ne pas détériorer les performances et aller chercher plusieurs fois tous les collaborateurs dans le cas non Gatsbi
+      // une map temporaire sera utilisée avec comme clé l'Entité pour gérer un cache lors de ce traitement
+      final Hashtable<ChampEntite, CaseInsensitiveMap<String, Object>> thesaurusByChampAImporter = new Hashtable<>();
+      final Hashtable<Entite, CaseInsensitiveMap<String, Object>> valuesByEntiteThesaurus = new Hashtable<>();
 
       if(importTemplate != null){
          // on extrait toutes les colonnes du template
@@ -671,32 +546,117 @@ public class ImportManagerImpl implements ImportManager
          for(int i = 0; i < colThes.size(); i++){
             // Extraction du ChampEntite correspondant au champ
             // du thésaurus à extraire
-            ChampEntite champ;
-            if(!colThes.get(i).getChamp().getChampEntite().getNom().matches("Conforme.*Raison")){
-               champ = colThes.get(i).getChamp().getChampEntite().getQueryChamp();
-               // ajout à la hashtable
-               if(!thesaurus.containsKey(champ.getEntite())){
-                  thesaurus.put(champ.getEntite(), extractValuesForOneThesaurus(champ, importTemplate.getBanque()));
-               }
-            }else{ // pas extraction du champ correspondant car plusieurs noconfs
-               // convergent vers le même champ
-               champ = colThes.get(i).getChamp().getChampEntite();
-               // ajout à la hashtable
-               if(!thesaurus.containsKey(champ.getEntite())){
-                  thesaurus.put(champ, extractValuesForOneThesaurus(champ, importTemplate.getBanque()));
+            ChampEntite champAImporter = colThes.get(i).getChamp().getChampEntite();
+            ChampEntite champDeLaTableThesaurus = colThes.get(i).getChamp().getChampEntite().getQueryChamp();
+            // cas standard : 
+            //  - récupération de toutes les valeurs du thesaurus et mise en cache
+            //  - affectation des valeurs éventuellement filtrées par le contexte Gatsbi à chaque champ importé
+            if(!champAImporter.getNom().matches("Conforme.*Raison")){
+               // ajout à la hashtable "byEntite" de toutes les valeurs du thesaurus
+               if(!valuesByEntiteThesaurus.containsKey(champDeLaTableThesaurus.getEntite())){
+                  valuesByEntiteThesaurus.put(champDeLaTableThesaurus.getEntite(), extractValuesForOneThesaurus(champDeLaTableThesaurus, importTemplate.getBanque()));
                }
             }
 
+            // ajout à la hashtable "byChampEntite" qui sera retournée par la méthode :
+            // applications successives d'éventuels filtres : fonctionnels comme pour les non conformités puis Gatsbi
+            CaseInsensitiveMap<String, Object> mapValeurThesaurusForThisChamp = extractValeurThesaurusForThisChampEntite(champAImporter, valuesByEntiteThesaurus.get(champDeLaTableThesaurus.getEntite()), importTemplate.getBanque());
+            thesaurusByChampAImporter.put(champAImporter, mapValeurThesaurusForThisChamp);
          }
       }
 
-      return thesaurus;
+      return thesaurusByChampAImporter;
+   }
+   
+   private CaseInsensitiveMap<String, Object> extractValeurThesaurusForThisChampEntite(ChampEntite champAImporter, CaseInsensitiveMap<String, Object> allValuesForThisThesaurus, 
+                                                Banque banque) {
+      // map qui sera renvoyée par la méthode :
+      CaseInsensitiveMap<String, Object> mapValeurThesaurusForThisChamp = null;
+      // map à filtrer si besoin. Elle est initialisée par toutes les valeurs du thesaurus : 
+      CaseInsensitiveMap<String, Object> mapValeurAFiltrer = allValuesForThisThesaurus;
+      // Gestion des cas particuliers notamment les non conformités (particularités liées à la structure de la table des non conformités) : 
+      mapValeurThesaurusForThisChamp = manageCasParticuliers(champAImporter, banque);
+      if(mapValeurThesaurusForThisChamp != null) {
+         mapValeurAFiltrer = mapValeurThesaurusForThisChamp;
+      }
+      mapValeurThesaurusForThisChamp = applyFiltreGatsbi(champAImporter, banque, mapValeurAFiltrer);
+      
+      return mapValeurThesaurusForThisChamp;
    }
 
+   //gère les cas particuliers où la table thesaurus a une colonne type donc les valeurs doivent être filtrée en fonction du champ utilisant ce thesaurus
+   private CaseInsensitiveMap<String, Object> manageCasParticuliers(ChampEntite champAImporter, Banque banque){
+      CaseInsensitiveMap<String, Object> mapValeurThesaurusForThisChamp = null;
+      // si non conformité récupération directement en base des valeurs appropriées à chaque champ
+      if(champAImporter.getNom().matches("Conforme.*Raison")){
+         final Pattern p = Pattern.compile("Conforme(.*)\\.Raison");
+         final Matcher m = p.matcher(champAImporter.getNom());
+         final boolean b = m.matches();
+         if(b && m.groupCount() > 0){
+            final String cNom = m.group(1);
+            final Iterator<NonConformite> ncfs = nonConformiteManager
+                  .findByPlateformeEntiteAndTypeStringManager(banque.getPlateforme(), cNom, champAImporter.getEntite()).iterator();
+            mapValeurThesaurusForThisChamp = new CaseInsensitiveMap<String, Object>();
+            NonConformite nc;
+            while(ncfs.hasNext()){
+               nc = ncfs.next();
+               mapValeurThesaurusForThisChamp.put(nc.getNom(), nc); 
+            }
+         }
+      }
+      //TODO : le thesuarus Unité à la même particularité que non_conformite, il contient un champ type
+      // il faudrait traiter ce cas ici... en utilisant les éléments CHAMP_ENTITE.thesaurus_clause_where ???? 
+      return mapValeurThesaurusForThisChamp;
+   }
+   
+   //renvoie toutes les valeurs, si pas de filtre Gatsbi défini
+   private CaseInsensitiveMap<String, Object> applyFiltreGatsbi(ChampEntite champAImporter, Banque banque,
+      CaseInsensitiveMap<String, Object> mapValeurAFiltrer){
+      if(banque != null) {
+         Etude etudeGatsbi = banque.getEtude();
+         if(etudeGatsbi != null){
+            final Contexte contexte = etudeGatsbi.getContexteForEntite(champAImporter.getEntite().getEntiteId());
+            if(contexte != null){
+               List<String> listValeurFiltree =
+                  contexte.getThesaurusValuesForChampEntiteId(champAImporter.getId()).stream()
+                     .map(v -> v.getThesaurusValue()).collect(Collectors.toList());
+               return filterValeurThesaurus(champAImporter, mapValeurAFiltrer, listValeurFiltree);
+            }
+         }
+      }
+      return mapValeurAFiltrer;
+   }
+
+
+   // Filtre la map mapValeurThesaurusAFiltrer pour ne garder que les valeurs dont la clé est présente dans listValeurFiltree
+   // /!\ si listValeurFiltree est null ou vide, la méthode renvoie tout
+   private CaseInsensitiveMap<String, Object> filterValeurThesaurus(ChampEntite champAImporter, CaseInsensitiveMap<String, Object> mapValeurThesaurusAFiltrer, List<String> listValeurFiltree){
+      if(listValeurFiltree != null && !listValeurFiltree.isEmpty()) {
+         if(mapValeurThesaurusAFiltrer != null) {
+            if(listValeurFiltree.size() != mapValeurThesaurusAFiltrer.size()) {
+               // NB : Gatsbi applique toujours la même règle que TK pour la valeur (pour Collaborateur "Nom Prénom", pour Service "Nom Etab - Nom Service"
+               // Par conséquent, il est possible de travailler sur les valeurs au format String
+               CaseInsensitiveMap<String, Object> mapThesaurusFiltree = new CaseInsensitiveMap<String, Object>();
+               Object thesaurusObjet = null;
+               for(String valeurThesaurus : listValeurFiltree) {
+                  thesaurusObjet = mapValeurThesaurusAFiltrer.get(valeurThesaurus);
+                  if(thesaurusObjet != null) {
+                     mapThesaurusFiltree.put(valeurThesaurus, thesaurusObjet);
+                  }
+               }
+               
+               return mapThesaurusFiltree;
+            }
+         }
+      }
+
+      return mapValeurThesaurusAFiltrer;
+   }
+   
    @Override
-   public Hashtable<ChampAnnotation, Hashtable<String, Object>>
+   public Hashtable<ChampAnnotation, CaseInsensitiveMap<String, Object>>
       generateAnnotationsThesaurusHashtable(final ImportTemplate importTemplate){
-      final Hashtable<ChampAnnotation, Hashtable<String, Object>> thesaurus = new Hashtable<>();
+      final Hashtable<ChampAnnotation, CaseInsensitiveMap<String, Object>> thesaurus = new Hashtable<>();
 
       if(importTemplate != null){
          // on extrait toutes les colonnes du template
@@ -940,19 +900,19 @@ public class ImportManagerImpl implements ImportManager
             }
          }
          if(value != null && !((String) value).equals("")){
+            // TG-185
             // si le champ de la colonne est un thésaurus
-            if(colonne.getChamp().getChampEntite().getQueryChamp() != null){
+            ChampEntite champAImporter = colonne.getChamp().getChampEntite();
+            if(champAImporter.getQueryChamp() != null){
                // Entité liée au thésaurus
-               final Entite e = colonne.getChamp().getChampEntite().getQueryChamp().getEntite();
+               final Entite e = champAImporter.getQueryChamp().getEntite();
                // on récupère la hashtable contenant les valeurs du
-               // thésaurus
-               if(properties.getThesaurusValues().containsKey(e)){
-                  final Hashtable<String, Object> thesValues = properties.getThesaurusValues().get(e);
+               // thésaurus pour ce champ
+               if(properties.getThesaurusValues().containsKey(champAImporter)){
+                  final CaseInsensitiveMap<String, Object> thesValues = properties.getThesaurusValues().get(champAImporter);
                   // on récupère l'objet correspondant à la valeur
                   // présente dans le fichier
-                  if(thesValues.containsKey(((String) value).toUpperCase())){
-                     value = thesValues.get(((String) value).toUpperCase());
-                  }else if(thesValues.containsKey(value)){
+                  if(thesValues.containsKey(value)){
                      value = thesValues.get(value);
                   }else{
                      throw new WrongImportValueException(colonne, e.getNom());
@@ -980,7 +940,8 @@ public class ImportManagerImpl implements ImportManager
       final ImportProperties properties){
       boolean addedRisque = false;
       if(prlvt != null && colonne != null && row != null && properties != null){
-         if(colonne.getChamp().getChampEntite().getNom().equals("Risques")){
+         ChampEntite champAImporter = colonne.getChamp().getChampEntite();
+         if(champAImporter.getNom().equals("Risques")){
             addedRisque = true;
             int ind = -1;
             // on récupère l'indice de la colonne dans le fichier
@@ -994,15 +955,13 @@ public class ImportManagerImpl implements ImportManager
                value = getCellContent(row.getCell(ind), false, properties.getEvaluator());
             }
             if(value != null && !((String) value).equals("")){
-               // Entité liée au thésaurus Risque
-               final Entite e = entiteManager.findByIdManager(62);
                // on récupère la hashtable contenant les valeurs du
                // thésaurus
-               Hashtable<String, Object> thesValues = new Hashtable<>();
-               if(properties.getThesaurusValues().containsKey(e)){
-                  thesValues = properties.getThesaurusValues().get(e);
+               CaseInsensitiveMap<String, Object> thesValues = new CaseInsensitiveMap<>();
+               if(properties.getThesaurusValues().containsKey(champAImporter)){
+                  thesValues = properties.getThesaurusValues().get(champAImporter);
                }else{
-                  throw new WrongImportValueException(colonne, e.getNom());
+                  throw new WrongImportValueException(colonne, champAImporter.getQueryChamp().getEntite().getNom());
                }
 
                // on va spliter la valeur de la colonne : les
@@ -1016,7 +975,7 @@ public class ImportManagerImpl implements ImportManager
                      if(thesValues.containsKey(split[i].trim())){
                         risques.add((Risque) thesValues.get(split[i].trim()));
                      }else{
-                        throw new WrongImportValueException(colonne, e.getNom());
+                        throw new WrongImportValueException(colonne, champAImporter.getQueryChamp().getEntite().getNom());
                      }
                   }
                }else{
@@ -1025,7 +984,7 @@ public class ImportManagerImpl implements ImportManager
                   if(thesValues.containsKey((value))){
                      risques.add((Risque) thesValues.get(((String) value).trim()));
                   }else{
-                     throw new WrongImportValueException(colonne, e.getNom());
+                     throw new WrongImportValueException(colonne, champAImporter.getQueryChamp().getEntite().getNom());
                   }
                }
 
@@ -1059,14 +1018,14 @@ public class ImportManagerImpl implements ImportManager
          }
          if(value != null && !((String) value).equals("")){
             // Entité liée au thésaurus NonConformite
-            final ChampEntite e = colonne.getChamp().getChampEntite();
+            final ChampEntite champAImporter = colonne.getChamp().getChampEntite();
             // on récupère la hashtable contenant les valeurs du
             // thésaurus
-            Hashtable<String, Object> thesValues = new Hashtable<>();
-            if(properties.getThesaurusValues().containsKey(e)){
-               thesValues = properties.getThesaurusValues().get(e);
+            CaseInsensitiveMap<String, Object> thesValues = new CaseInsensitiveMap<>();
+            if(properties.getThesaurusValues().containsKey(champAImporter)){
+               thesValues = properties.getThesaurusValues().get(champAImporter);
             }else{
-               throw new WrongImportValueException(colonne, e.getNom());
+               throw new WrongImportValueException(colonne, champAImporter.getNom());
             }
 
             // on va spliter la valeur de la colonne : les
@@ -1076,10 +1035,10 @@ public class ImportManagerImpl implements ImportManager
                for(int i = 0; i < split.length; i++){
                   // on récupère l'objet correspondant à la valeur
                   // présente dans le fichier
-                  if(thesValues.containsKey(split[i].trim().toLowerCase())){
-                     ncfs.add((NonConformite) thesValues.get(split[i].trim().toLowerCase()));
+                  if(thesValues.containsKey(split[i].trim())){
+                     ncfs.add((NonConformite) thesValues.get(split[i].trim()));
                   }else{
-                     throw new WrongImportValueException(colonne, e.getNom());
+                     throw new WrongImportValueException(colonne, champAImporter.getNom());
                   }
                }
             }else{
@@ -1088,7 +1047,7 @@ public class ImportManagerImpl implements ImportManager
                if(thesValues.containsKey(((String) value).trim().toLowerCase())){
                   ncfs.add((NonConformite) thesValues.get(((String) value).trim().toLowerCase()));
                }else{
-                  throw new WrongImportValueException(colonne, e.getNom());
+                  throw new WrongImportValueException(colonne, champAImporter.getNom());
                }
             }
          }
@@ -1194,17 +1153,11 @@ public class ImportManagerImpl implements ImportManager
                // on récupère la hashtable contenant les valeurs du
                // thésaurus
                if(properties.getAnnotationThesaurusValues().containsKey(colonne.getChamp().getChampAnnotation())){
-                  final Hashtable<String, Object> thesValues =
+                  final CaseInsensitiveMap<String, Object> thesValues =
                      properties.getAnnotationThesaurusValues().get(colonne.getChamp().getChampAnnotation());
                   // on récupère l'objet correspondant à la valeur
                   // présente dans le fichier
-                  Object itemVal = null;
-                  for(final String key : thesValues.keySet()){
-                     if(key.equalsIgnoreCase((String) value)){
-                        itemVal = thesValues.get(key);
-                        break;
-                     }
-                  }
+                  Object itemVal = thesValues.get((String) value);
                   // found in keyset
                   if(itemVal != null){
                      value = itemVal;
@@ -1219,7 +1172,7 @@ public class ImportManagerImpl implements ImportManager
                // on récupère la hashtable contenant les valeurs du
                // thésaurus
                if(properties.getAnnotationThesaurusValues().containsKey(colonne.getChamp().getChampAnnotation())){
-                  final Hashtable<String, Object> thesValues =
+                  final CaseInsensitiveMap<String, Object> thesValues =
                      properties.getAnnotationThesaurusValues().get(colonne.getChamp().getChampAnnotation());
 
                   // on va spliter la valeur de la colonne : les
@@ -1227,16 +1180,8 @@ public class ImportManagerImpl implements ImportManager
                   Object itemVal = null;
                   final String[] split = ((String) value).split(";");
                   for(int i = 0; i < split.length; i++){
-
-                     // présente dans le fichier
-                     // on récupère l'item correspondant à la valeur
-                     // présente dans le fichier
-                     for(final String key : thesValues.keySet()){
-                        if(key.equalsIgnoreCase(split[i].trim())){
-                           itemVal = thesValues.get(key);
-                           break;
-                        }
-                     }
+                     // on récupère l'item correspondant à la valeur présente dans le fichier
+                     itemVal = thesValues.get(split[i].trim());
                      // found in keyset
                      if(itemVal != null){
                         final AnnotationValeur av = new AnnotationValeur();
@@ -1931,7 +1876,6 @@ public class ImportManagerImpl implements ImportManager
          derive.setVolume(derive.getVolumeInit());
       }
 
-      //	if (parent != null) {	
       DerivesImportBatches deriveBatch = new DerivesImportBatches(parent, transfoQte, observations, dateSortie);
       if(batches.contains(deriveBatch)){ // un batch de dérivés existe déja pour cette transformation
          deriveBatch = batches.get(batches.indexOf(deriveBatch));
@@ -1952,7 +1896,6 @@ public class ImportManagerImpl implements ImportManager
       if(ncfsDeriveCess != null && ncfsDeriveCess.containsKey(derive)){
          deriveBatch.getNcfsCess().put(derive, ncfsDeriveCess.get(derive));
       }
-      //	}
    }
 
    @Override

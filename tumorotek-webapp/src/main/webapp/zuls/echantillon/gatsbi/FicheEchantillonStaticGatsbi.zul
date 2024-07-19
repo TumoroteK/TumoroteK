@@ -131,6 +131,9 @@
 								<label value="${c:l('Champ.Prelevement.Risque')}" sclass="chpLabel formLabel"/>	
 								<vbox id="risquesBox" />
 							</div>
+							<!-- TG-217 : ajout d''une div toute largeur, de hauteur 0px pour forcer le retour à la ligne
+									et avoir ainsi Date de stockage et Délai de congélation toujours sur la même ligne -->
+							<div class="item item-wide" style="min-height:0px"/>
 							<div class="item item-mid" id="echanDateStockDiv"><!-- Date de stockage -->
 								<custom-attributes champId="56" />
 								<label value="${c:l('Champ.Echantillon.DateStock')}" sclass="chpLabel formLabel"/>
@@ -151,15 +154,13 @@
 									value="@{fwinEchantillonStatic$composer.object.collaborateur.nomAndPrenom}"
 									sclass="@{fwinEchantillonStatic$composer.sClassOperateur}" />
 							</div>
-							<div class="item item-mid" id="echanStatutDiv"><!-- Statut de l'objet -->
-								<custom-attributes champId="55" />
+							<div class="item item-mid" id="echanStatutDiv"><!-- Statut de l'objet : toujours affiché -->
 								<label value="${c:l('Champ.Echantillon.ObjetStatut')}" sclass="chpLabel formLabel"/>
 								<label id="statutLabelEchan" 
 									value="@{fwinEchantillonStatic$composer.objetStatut}"
 									sclass="formValue" />	
 							</div>
-							<div class="item item-mid" id="echanEmplacementDiv"><!-- Emplacement de stockage -->
-								<custom-attributes champId="57" />
+							<div class="item item-mid" id="echanEmplacementDiv"><!-- Emplacement de stockage : toujours affiché-->
 								<label value="${c:l('Champ.Echantillon.Emplacement')}" sclass="chpLabel formLabel"/>
 								<label id="emplacementLabelEchan" 
 									value="@{fwinEchantillonStatic$composer.emplacementAdrl}"

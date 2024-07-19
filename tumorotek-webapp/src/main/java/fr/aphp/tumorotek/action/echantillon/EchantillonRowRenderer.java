@@ -187,7 +187,7 @@ public class EchantillonRowRenderer extends TKSelectObjectRenderer<Echantillon>
       final Prelevement prlvt = ManagerLocator.getEchantillonManager().getPrelevementManager(echan);
 
       if(prlvt != null){
-         return PrelevementUtils.getPatientNomAndPrenom(prlvt);
+         return PrelevementUtils.getPatientNomAndPrenomOrIdentifiantGatsbi(prlvt);
       }
       return "";
    }

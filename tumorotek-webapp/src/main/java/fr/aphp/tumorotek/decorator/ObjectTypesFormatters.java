@@ -517,7 +517,15 @@ public final class ObjectTypesFormatters
 
          if(champ.getChampEntite() != null){
             nomEntite = champ.getChampEntite().getEntite().getNom();
-            nomChamp = champ.getChampEntite().getNom().replace("Id", "");
+            // nomChamp = champ.getChampEntite().getNom().replace("Id", "");
+            // TG-236 : le code ci-dessus pose problème pour le champ Identifiant.
+            // En effet, il est transformé en entifiant (suppression de Id)
+            // => la clé n'est pas trouvée !
+            // Par conséquent, modification de l'algorithme de suppression du suffixe Id
+            nomChamp = champ.getChampEntite().getNom();
+            if(nomChamp.endsWith("Id")) {
+               nomChamp = nomChamp.substring(0, nomChamp.length()-2);
+            };
             propertyKey += nomEntite + "." + nomChamp;
          }else if(champ.getChampDelegue() != null){
             final EContexte contexte = champ.getChampDelegue().getContexte();

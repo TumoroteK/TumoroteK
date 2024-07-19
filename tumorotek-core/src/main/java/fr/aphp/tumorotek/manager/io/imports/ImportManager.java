@@ -41,6 +41,7 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.collections4.map.CaseInsensitiveMap;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.FormulaEvaluator;
 import org.apache.poi.ss.usermodel.Row;
@@ -109,28 +110,30 @@ public interface ImportManager
 
    /**
     * Extrait toutes les valeurs d'un thésaurus et les met dans 1
-    * hashtable : <valeur, Objet>.
+    * map dont la clé est casse "insensitive" : <valeur, Objet> car les valeurs des clés sont utilisées 
+    * pour valider les données importées par l'utilisateur. Ne pas tenir compte de la casse permet d'être plus souple pour cette validation
     * @param champEntite Champ thésaurus.
     * @param banque
-    * @return Hashtable.
+    * @return map dont les clés sont les valeurs autorisées et les valeurs, les objets associés à cette valeur".
     */
-   Hashtable<String, Object> extractValuesForOneThesaurus(ChampEntite champEntite, Banque banque);
+   CaseInsensitiveMap<String, Object> extractValuesForOneThesaurus(ChampEntite champEntite, Banque banque);
 
    /**
     * Extrait toutes les valeurs d'un thésaurus et les met dans 1
-    * hashtable : <valeur, Objet>.
+    * map dont la clé est casse "insensitive" : <valeur, Objet>.
     * @param champAnnotation Champ thésaurus.
     * @return Hashtable.
     */
-   Hashtable<String, Object> extractValuesForOneAnnotationThesaurus(ChampAnnotation champAnnotation, Banque banque);
+   CaseInsensitiveMap<String, Object> extractValuesForOneAnnotationThesaurus(ChampAnnotation champAnnotation, Banque banque);
 
    /**
     * Extrait toutes les valeurs de tous les thésaurus d'un ImportTemplate
-    * et les place dans une Hashtable <Entite|ChampEntite (si non conformites), Valeurs>.
+    * applique éventuellement le filtre Gatsbi pour le champ courant
+    * et les place dans une Hashtable <ChampEntite, Valeurs>.
     * @param importTemplate ImportTemplate.
     * @return Hashtable.
     */
-   Hashtable<Object, Hashtable<String, Object>> generateThesaurusHashtable(ImportTemplate importTemplate);
+   Hashtable<ChampEntite, CaseInsensitiveMap<String, Object>> generateThesaurusHashtable(ImportTemplate importTemplate);
 
    /**
     * Extrait toutes les valeurs de tous les thésaurus d'annotations
@@ -139,7 +142,7 @@ public interface ImportManager
     * @param importTemplate ImportTemplate.
     * @return Hashtable.
     */
-   Hashtable<ChampAnnotation, Hashtable<String, Object>> generateAnnotationsThesaurusHashtable(ImportTemplate importTemplate);
+   Hashtable<ChampAnnotation, CaseInsensitiveMap<String, Object>> generateAnnotationsThesaurusHashtable(ImportTemplate importTemplate);
 
    /**
     * Set la valeur passée en paramètre à l'objet.

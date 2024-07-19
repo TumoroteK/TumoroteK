@@ -90,10 +90,7 @@ import fr.aphp.tumorotek.model.contexte.Banque;
       query = "SELECT p FROM ProfilUtilisateur p " + "WHERE p.pk.banque = ?1 AND p.pk.profil = ?2"),
    @NamedQuery(name = "ProfilUtilisateur.findCountDistinctProfilForUserAndPlateforme",
       query = "SELECT count(distinct p.pk.profil) FROM ProfilUtilisateur p JOIN p.pk.banque b "
-         + "WHERE p.pk.utilisateur = ?1 AND b.plateforme = ?2"), // AND b.contexte.nom not like 'GATSBI'"),
-   @NamedQuery(name = "ProfilUtilisateur.findCountDistinctProfilForUserAndPlateformeGroupedByEtude",
-      query = "SELECT new fr.aphp.tumorotek.model.utilisateur.ProfilByEtudeCount(b.etude, count(distinct p.pk.profil)) FROM ProfilUtilisateur p JOIN p.pk.banque b "
-         + "WHERE p.pk.utilisateur = ?1 AND b.plateforme = ?2 GROUP BY b.etude")})
+         + "WHERE p.pk.utilisateur = ?1 AND b.plateforme = ?2")})
 public class ProfilUtilisateur implements Serializable, Comparable<ProfilUtilisateur>
 {
 

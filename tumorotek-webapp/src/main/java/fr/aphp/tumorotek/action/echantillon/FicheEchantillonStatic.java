@@ -2040,7 +2040,7 @@ public class FicheEchantillonStatic extends AbstractFicheStaticController
 
    public String getNomPatient(){
       if(this.prelevement != null){
-         return PrelevementUtils.getPatientNomAndPrenom(prelevement);
+         return PrelevementUtils.getPatientNomAndPrenomOrIdentifiantGatsbi(prelevement);
       }
       return null;
    }

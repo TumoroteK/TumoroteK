@@ -71,7 +71,7 @@ public class EchantillonDecoratorRowRendererGatsbi extends AbstractEchantillonDe
    protected void renderEchantillon(final Row row, final EchantillonDTO deco)
       throws IllegalAccessException, InvocationTargetException, NoSuchMethodException, ParseException{
       for(final Integer chpId : contexte.getChampEntiteInTableauOrdered()){
-         if(!chpId.equals(55) && !chpId.equals(57)){ // statut et emplacement toujours rendus
+         if(!chpId.equals(55) && !chpId.equals(57)){ // statut et emplacement toujours rendus - leur affichage est géré par super.render();  
             GatsbiControllerEchantillon.applyEchantillonDecoratorChpRender(chpId, row, deco, false, false);
          }
       }

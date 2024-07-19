@@ -93,18 +93,32 @@ public enum TkParam
 	GATSBI_API_URL_PARAMETRAGE_PATH("gatsbi.api.url.parametrage.path"),
 	GATSBI_API_URL_SCHEMAVISITES_PATH("gatsbi.api.url.schema.visite.path"),
 	//durée de vie en millisecondes - la clé est facultative : une valeur par défaut est gérée dans le code
-	GATSBI_JWT_EXPIRATION("gatsbi.jwt.expiration");
+	GATSBI_JWT_EXPIRATION("gatsbi.jwt.expiration", false);
 
 	private String paramKey;
+	//Dans certains cas, la propriété peut être facultative pour éventuellement surcharger une valeur par défaut
+	//dans un cas précis => on gère un attribut qui correspond au cas le plus courant où c'est obligatoire
+	private boolean mandatory;
 
+   /**
+   * Constructeur
+   * @param paramKey clé du paramètre dans le fichier tumorotek.properties
+   */
+  private TkParam(final String paramKey, final boolean mandatory){
+     this.paramKey = paramKey;
+     this.mandatory = mandatory;
+  }
+	
 	/**
 	 * Constructeur
 	 * @param paramKey clé du paramètre dans le fichier tumorotek.properties
 	 */
 	private TkParam(final String paramKey){
-		this.paramKey = paramKey;
+		this(paramKey, true);
 	}
 
+
+	
 	/**
 	 * Renvoie la clé du paramètre dans le fihcier tumorotek.properties
 	 */
@@ -117,7 +131,7 @@ public enum TkParam
 	 * @return
 	 */
 	public String getValue(){
-		return TumorotekProperties.getValue(paramKey);
+		return TumorotekProperties.getValue(paramKey, mandatory);
 	}
 
 	@Override

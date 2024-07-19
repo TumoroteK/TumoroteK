@@ -471,7 +471,7 @@
 			<column name="THESAURUS_ID" type="INT">
 				<constraints nullable="false" />
 			</column>
-			<column name="THESAURUS_VALUE" type="VARCHAR(100)">
+			<column name="THESAURUS_VALUE" type="VARCHAR(200)">
 				<constraints nullable="false" />
 			</column>
 			<!--  CHT - A REVOIR - c'est l'id de la table GATSBI_CHAMP_ENTITE_ID qui devrait être utilisé => impact sur la FK composite définie ci-dessous-->
@@ -570,7 +570,7 @@
 					foreignKeyName="FK_PARAMETRAGE_ITEM_CONTEXTE_PARAMETRAGE_ID" 
 						referencedTableName="GATSBI_CONTEXTE_PARAMETRAGE" referencedColumnNames="CONTEXTE_PARAMETRAGE_ID" />
 			</column>
-			<column name="DEFAULT_VALUE" type="VARCHAR(100)" />
+			<column name="DEFAULT_VALUE" type="VARCHAR(200)" />
 		</createTable>
 		<modifySql dbms="mysql">
    			<append value="ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4"/>
@@ -709,7 +709,7 @@
 		</preConditions>
 		<createView
             replaceIfExists="false"  
-            viewName="VGATSBI_COLLABORATEUR">SELECT * FROM COLLABORATEUR
+            viewName="VGATSBI_COLLABORATEUR">SELECT COLLABORATEUR_ID, NOM, PRENOM, trim(concat(coalesce(NOM, ''), ' ', coalesce(PRENOM, ''))) as NOM_ET_PRENOM, ARCHIVE FROM COLLABORATEUR
          </createView>
 	</changeSet>
 	<changeSet author="tkgatsbi" id="gatsbi-init-ajout-vue-4">

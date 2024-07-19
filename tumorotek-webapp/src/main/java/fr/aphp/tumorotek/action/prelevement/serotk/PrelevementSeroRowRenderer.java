@@ -122,7 +122,7 @@ public class PrelevementSeroRowRenderer extends PrelevementRowRenderer
             // nip @version 2.0.12
             createAnonymeLabelIsClickable(false).setParent(row);
          }else{
-            final Label patientLabel = new Label(PrelevementUtils.getPatientNomAndPrenom(prel));
+            final Label patientLabel = new Label(PrelevementUtils.getPatientNomAndPrenomOrIdentifiantGatsbi(prel));
             if(getAccessPatient()){
                patientLabel.addForward(null, patientLabel.getParent(), "onClickPatient", prel);
                patientLabel.setClass("formLink");
