@@ -665,6 +665,13 @@ public class FicheConteneur extends AbstractFicheCombineStockageController
 		}
 	}
 
+	public void onClick$generateWithBoxes(){
+		Clients.showNotification("You clicked on 'Generate With Boxes'", "info", null, "middle_center", 3000);
+	}
+
+	public void onClick$generateWithoutBoxes(){
+		Clients.showNotification("You clicked on 'Generate Without Boxes'", "info", null, "middle_center", 3000);
+	}
 	@Override
 	public void updateObject(){
 

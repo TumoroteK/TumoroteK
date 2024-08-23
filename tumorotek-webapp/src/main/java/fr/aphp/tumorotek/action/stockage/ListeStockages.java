@@ -599,6 +599,14 @@ public class ListeStockages extends AbstractController
 		getStockageController().switchToFicheConteneurCreateMode();
 	}
 
+	public void onClick$generateWithBoxes(){
+		Clients.showNotification("You clicked on 'Generate With Boxes'", "info", null, "middle_center", 3000);
+	}
+
+	public void onClick$generateWithoutBoxes(){
+		Clients.showNotification("You clicked on 'Generate Without Boxes'", "info", null, "middle_center", 3000);
+	}
+
 	public void updateConteneur(final Conteneur conteneur){
 
 		final ConteneurNode node = new ConteneurNode(conteneur, null, curPf);
