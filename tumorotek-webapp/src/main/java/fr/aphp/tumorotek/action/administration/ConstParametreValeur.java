@@ -18,8 +18,11 @@ public class ConstParametreValeur implements Constraint
    
    @Override
    public void validate(Component component, Object value) throws WrongValueException{
-      String erreurDetectee = ParametreValeurSpecifiqueValidator.checkValeur((String)value, typeValue);
-      
+//      La conversion en `String` assure que toutes les valeurs sont traitées uniformément par la validation, évitant ainsi les erreurs de type
+      String stringValue = value != null ? value.toString() : "";
+      String erreurDetectee = ParametreValeurSpecifiqueValidator.checkValeur(stringValue, typeValue);
+
+
       if(erreurDetectee != null) {
          throw new WrongValueException(component, Labels.getLabel(erreurDetectee));
       }

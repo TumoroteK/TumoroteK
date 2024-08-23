@@ -517,11 +517,15 @@
 					<menu label="${c:l('general.actions')}" image="/images/icones/small_action.png" 
 						width="36px" height="24px">
 						<menupopup>
-							<menuitem id="addIncidentItem" image="/images/icones/addIncident.png" 
+							<menuitem id="addIncidentItem" image="/images/icones/addIncident.png"
 								label="${c:l('conteneur.add.incident')}"/>
-							<menuitem id="numerotation" image="/images/icones/terminale.png" 
+							<menuitem id="generateWithoutBoxes" image="/images/icones/plan.png"
+									  label="${c:l('stockage.generate.without.boite')}"/>
+							<menuitem id="generateWithBoxes" image="/images/icones/plan_with_boxes.png"
+									  label="${c:l('stockage.generate.with.boite')}"/>
+							<menuitem id="numerotation" image="/images/icones/terminale.png"
 								label="${c:l('terminale.numerotation.edit')}"/>
-							<menuitem id="historique" image="/images/icones/history.png" 
+							<menuitem id="historique" image="/images/icones/history.png"
 								label="${c:l('general.historique')}"/>
 						</menupopup>
 					</menu>

@@ -166,10 +166,16 @@
                                 </radiogroup>
 
                                 <!-- Afficher la zone de texte si c'est une chaîne de caractères -->
-                                <textbox if="${each.type ne 'Boolean'}"
-                                		 constraint="${each.constParametreValeur}"
+                                <textbox if="${each.type eq 'String'}"
+                                         constraint="${each.constParametreValeur}"
                                          value="@load(each.parametre.valeur) @save(each.newValeur)"
                                          width="90%"/>
+
+                                <!-- Afficher le champ numérique si c'est un nombre -->
+                                <intbox  if="${each.type eq 'Integer'}"
+                                        constraint="${each.constParametreValeur}"
+                                        value="@load(each.parametre.valeur) @save(each.newValeur)"
+                                        width="10%"/>
                             </div>
 
                         </cell>

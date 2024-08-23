@@ -64,6 +64,10 @@
 						<menupopup>
 							<menuitem id="etiquettes" image="/images/icones/printer.png" 
 								label="${c:l('general.actions.print.etiquette')}"/>
+							<menuitem id="generateWithoutBoxes" image="/images/icones/plan.png"
+									  label="${c:l('stockage.generate.without.boite')}"/>
+							<menuitem id="generateWithBoxes" image="/images/icones/plan_with_boxes.png"
+									  label="${c:l('stockage.generate.with.boite')}"/>
 							<menuitem id="addNewConteneur" image="/images/icones/addConteneur.png" 
 								label="${c:l('general.new.conteneur')}"/>
 						</menupopup>
