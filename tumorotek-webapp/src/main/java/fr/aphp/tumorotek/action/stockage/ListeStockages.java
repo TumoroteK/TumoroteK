@@ -38,6 +38,16 @@ package fr.aphp.tumorotek.action.stockage;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Arrays;
+import java.util.function.Consumer;
+
+import fr.aphp.tumorotek.manager.administration.ParametresManager;
+import fr.aphp.tumorotek.model.config.ParametreValeurSpecifique;
+import fr.aphp.tumorotek.param.EParametreValeurParDefaut;
+import org.zkoss.zk.ui.Executions;
+import org.zkoss.zul.Window;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -143,6 +153,9 @@ public class ListeStockages extends AbstractController
 	private Enceinte selectedEnceinte;
 	private Terminale selectedTerminale;
 
+	private int maxContainersToPrint;
+
+
 	@Override
 	public AnnotateDataBinder getBinder(){
 		return stockageBinder;
@@ -153,6 +166,13 @@ public class ListeStockages extends AbstractController
 		super.doAfterCompose(comp);
 		
 		curPf = SessionUtils.getCurrentPlateforme();
+
+		final ParametresManager parametresManager = ManagerLocator.getManager(ParametresManager.class);
+
+		ParametreValeurSpecifique maxParametre = parametresManager.findParametresByPlateformeIdAndCode(
+				curPf.getPlateformeId(),
+				EParametreValeurParDefaut.STOCKAGE_NB_MAX_CONTENEUR_A_IMPRIMER.getCode());
+		maxContainersToPrint = Integer.parseInt(maxParametre.getValeur());
 
 		stockageBinder = new AnnotateDataBinder(comp);
 		stockageBinder.loadAll();
@@ -599,12 +619,66 @@ public class ListeStockages extends AbstractController
 		getStockageController().switchToFicheConteneurCreateMode();
 	}
 
+	/**
+	 * Méthode appelée lorsqu'on clique pour générer le plan avec les boites.
+	 *
+	 */
 	public void onClick$generateWithBoxes(){
-		Clients.showNotification("You clicked on 'Generate With Boxes'", "info", null, "middle_center", 3000);
+		// Création des arguments pour la fenêtre en incluant les cases à cocher
+		Map<String, Object> windowArgs = createSelectionWindowArguments(true);
+
+		// Création de la fenêtre modale avec les arguments spécifiés
+		Window selectionWindow = (Window) Executions.createComponents("/zuls/modales/SelectionModale.zul", null, windowArgs);
+
+		// Affichage de la fenêtre modale en mode modal
+		selectionWindow.doModal();	}
+
+
+	/**
+	 * Méthode appelée lorsqu'on clique pour générer le plan sans les boites.
+	 *
+	 */
+	public void onClick$generateWithoutBoxes(){
+		Map<String, Object> windowArgs = createSelectionWindowArguments(false);
+		Window selectionWindow = (Window) Executions.createComponents("/zuls/modales/SelectionModale.zul", null, windowArgs);
+		selectionWindow.doModal();
 	}
 
-	public void onClick$generateWithoutBoxes(){
-		Clients.showNotification("You clicked on 'Generate Without Boxes'", "info", null, "middle_center", 3000);
+
+	/**
+	 * Création des arguments pour la fenêtre de sélection.
+	 *
+	 * @param avecBoites 
+	 * @return Map contenant les arguments nécessaires pour créer la fenêtre de sélection.
+	 */
+	public Map<String, Object> createSelectionWindowArguments(boolean avecBoites){
+		Map<String, Object> windowArgs = new HashMap<>();
+
+		// Détermination du titre de la fenêtre en fonction de la présence des boites
+		String titleKey = avecBoites ? "stockage.generate.with.boite" : "stockage.generate.without.boite";
+		windowArgs.put("title", Labels.getLabel(titleKey));
+
+		// Ajout des autres labels nécessaires pour la fenêtre SelectionModale.zul
+		windowArgs.put("mainLabel", Labels.getLabel("stockage.selection.window.mainLabel"));
+		System.out.println(Labels.getLabel("stockage.selection.window.mainLabel"));
+		windowArgs.put("listHeaderLabel", Labels.getLabel("stockage.selection.window.listHeaderLabel"));
+		windowArgs.put("itemList", Arrays.asList("Mary", "John", "Jane", "Henry", "Mark", "Jeffery", "Rebecca"));
+
+
+		windowArgs.put("selectedLabel", Labels.getLabel("stockage.selection.window.selectedLabel", new String[] {String.valueOf(maxContainersToPrint)}));
+		windowArgs.put("max", maxContainersToPrint);
+
+		if (avecBoites) {
+			windowArgs.put("callback", (Consumer<List<String>>) selectedItems -> {
+				Clients.showNotification("You clicked on 'Generate With Boxes' " + selectedItems, "info", null, "middle_center", 3000);
+			});
+		}
+
+		windowArgs.put("callback", (Consumer<List<String>>) selectedItems -> {
+			Clients.showNotification("Selected items: " + selectedItems);
+		});
+
+		return windowArgs;
 	}
 
 	public void updateConteneur(final Conteneur conteneur){

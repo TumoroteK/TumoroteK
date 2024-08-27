@@ -1,0 +1,51 @@
+<!--
+    Ce fichier ZUL définit une fenêtre (Modale). Voici une description des éléments présents dans cette fenêtre :
+
+    - Titre de la fenêtre : le variable`title`.
+    - Sous-titre : `mainLabel`, qui guide l'utilisateur en indiquant ce qu'il doit faire (par exemple : "Veuillez sélectionner...").
+    - Étiquette pour sélectionner toutes les options dans la liste : `listHeaderLabel`.
+    - Liste des options : `itemList`, une liste de chaînes de caractères, qui est affichée dans un Listbox. Les éléments de cette liste sont dynamiques et peuvent être sélectionnés.
+    - Étiquette personnalisée : `selectedLabel`, Ce label affiche le nombre d'options sélectionnées (selectedCountLabel) et un texte personnalisé (selectedLabel). Cette étiquette peut devenir rouge si le nombre d'options sélectionnées dépasse une valeur maximale spécifiée. Pour cela, il est nécessaire de passer une valeur pour l'attribut `max` lors de l'instanciation de la fenêtre.
+    - Deux boutons :
+        - Un bouton "Annuler" (`cancelButton`), qui ferme la fenêtre sans apporter de modifications.
+        - Un bouton "Valider" (`validateButton`), qui exécute une commande spécifique pour confirmer les sélections effectuées par l'utilisateur.
+
+    Pour voir un exemple de l'utilisation de ce fichier ZUL et du ViewModel associé, référez-vous au fichier ListeStockages.java. Assurez-vous de passer la valeur appropriée pour l'attribut `max` si vous souhaitez que l'étiquette personnalisée change de couleur lorsque le nombre de sélections dépasse la limite spécifiée.
+
+-->
+<zk>
+    <window id="win" title="@bind(vm.title)" border="normal"
+            apply="org.zkoss.bind.BindComposer"
+            viewModel="@id('vm') @init('fr.aphp.tumorotek.modales.SelectionModale')"
+            width="25%"
+            sizable="true"
+            maximizable="true"
+            closable="true">
+
+    <vbox  style="padding-top: 10px; padding-bottom: 10px; padding-left:10px; padding-right:10px;">
+        <label id="mainLabel" value="@bind(vm.mainLabel)"   />
+
+        <listbox id="dynamicListbox" multiple="true" checkmark="true" model="@bind(vm.itemList)"
+                 onSelect="@command('updateSelectedCount')" >
+            <listhead>
+                <listheader label="@bind(vm.listHeaderLabel)"/>
+            </listhead>
+            <template name="model" var="item">
+                <listitem>
+                    <listcell label="@bind(item)"/>
+                </listitem>
+            </template>
+        </listbox>
+        <hbox>
+            <label id="selectedCountLabel" value="@bind(vm.selectedCount)"
+                   style="@bind(vm.selectedCount > vm.max ? 'color: red;' : '')"/>
+            <label id="selectedLabel" value="@bind(vm.selectedLabel)"
+                   style="@bind(vm.selectedCount > vm.max ? 'color: red;' : '')"/>
+            <hbox hflex="1" align="end">
+                <button id="cancelButton" label="Cancel" onClick="@command('closeModal')"/>
+                <button id="validateButton" label="Validate" onClick="@command('executeCallback')"/>
+            </hbox>
+        </hbox>
+    </vbox>
+</window>
+</zk>
