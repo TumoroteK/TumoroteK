@@ -36,6 +36,7 @@
 
 package fr.aphp.tumorotek.modales;
 
+import fr.aphp.tumorotek.dto.SelectableItemDTO;
 import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.ContextParam;
 import org.zkoss.bind.annotation.ContextType;
@@ -58,19 +59,71 @@ public class SelectionModale {
     private String title;
     private String mainLabel;
     private String listHeaderLabel;
-    private List<String> itemList;
+    private List<SelectableItemDTO> itemList;
     private int selectedCount = 0;  // This should be an integer
     private String selectedLabel;
-    private Consumer<List<String>> callback;
+    private Consumer<List<SelectableItemDTO>> callback;
     private int max;
     private String dangerStyle;
 
 
-    public String getDangerStyle(){ return dangerStyle; }
 
-    public int getMax(){
-        return max;
+
+    @Init
+    public void init(@ExecutionArgParam("title") String title,
+                     @ExecutionArgParam("mainLabel") String mainLabel,
+                     @ExecutionArgParam("listHeaderLabel") String listHeaderLabel,
+                     @ExecutionArgParam("itemList") List<SelectableItemDTO> itemList,
+                     @ExecutionArgParam("selectedLabel") String selectedLabel,
+                     @ExecutionArgParam("max") int max,
+                     @ExecutionArgParam("callback") Consumer<List<SelectableItemDTO>> callback) {
+        this.title = title;
+        this.mainLabel = mainLabel;
+        this.listHeaderLabel = listHeaderLabel;
+        this.itemList = itemList;
+        this.selectedLabel = selectedLabel;
+        this.callback = callback;
+        this.max = max;
     }
+
+    @Command
+    @NotifyChange({"selectedCount"}) // Notify the UI to refresh selectedCount
+    public void updateSelectedCount(@ContextParam(ContextType.COMPONENT) Component component) {
+        // Get the Listbox component from the context
+        Listbox listbox = (Listbox) Selectors.find(component, "#dynamicListbox").get(0);
+
+        // Get the selected items from the Listbox
+        Set<Listitem> selectedItems = listbox.getSelectedItems();
+
+        // Update the selectedCount with the number of selected items
+        selectedCount = selectedItems.size();
+
+
+        // Update styles based on selected count
+        if (selectedCount > max) {
+            dangerStyle = "color: red;";
+        }
+    }
+
+    @Command
+    public void executeCallback(@ContextParam(ContextType.COMPONENT) Component component) {
+        if (callback != null) {
+            Listbox listbox = (Listbox) Selectors.find(component, "#dynamicListbox").get(0);
+            List<SelectableItemDTO> selectedValues = listbox.getSelectedItems().stream()
+                    .map(item -> (SelectableItemDTO) item.getValue())
+                    .collect(Collectors.toList());
+            callback.accept(selectedValues);
+        }
+        closeModal(component);
+    }
+
+    @Command
+    public void closeModal(@ContextParam(ContextType.COMPONENT) Component component) {
+        // Close the modal window
+        Window window = (Window) Selectors.iterable(component, "#win").iterator().next();
+        window.detach();
+    }
+
     public String getTitle() {
         return title;
     }
@@ -83,81 +136,31 @@ public class SelectionModale {
         return listHeaderLabel;
     }
 
-    public List<String> getItemList() {
+    public List<SelectableItemDTO> getItemList() {
         return itemList;
     }
 
-    // Method to get the selected count as a string for binding
-    public String getSelectedCount() {
-        return String.valueOf(selectedCount);  // Convert the integer to a string
+    public int getSelectedCount() {
+        return selectedCount;
     }
 
     public String getSelectedLabel() {
         return selectedLabel;
     }
 
-    public Consumer<List<String>> getCallback() {
+    public Consumer<List<SelectableItemDTO>> getCallback() {
         return callback;
     }
 
-    @Init
-    public void init(@ExecutionArgParam("title") String title,
-                     @ExecutionArgParam("mainLabel") String mainLabel,
-                     @ExecutionArgParam("listHeaderLabel") String listHeaderLabel,
-                     @ExecutionArgParam("itemList") List<String> itemList,
-                     @ExecutionArgParam("selectedLabel") String selectedLabel,
-                     @ExecutionArgParam("max") int max,
-                     @ExecutionArgParam("callback") Consumer<List<String>> callback) {
-        this.title = title;
-        this.mainLabel = mainLabel;
-        this.listHeaderLabel = listHeaderLabel;
-        this.itemList = itemList;
-        this.selectedLabel = selectedLabel;
-        this.callback = callback;
-        this.max = max;
+    public int getMax() {
+        return max;
     }
 
-    @Command
-    @NotifyChange("selectedCount") // Notify the UI to refresh selectedCount
-    public void updateSelectedCount(@ContextParam(ContextType.COMPONENT) Component component) {
-        // Get the Listbox component from the context
-        Listbox listbox = (Listbox) Selectors.find(component, "#dynamicListbox").get(0);
-
-        // Get the selected items from the Listbox
-        Set<Listitem> selectedItems = listbox.getSelectedItems();
-
-        // Update the selectedCount with the number of selected items
-        selectedCount = selectedItems.size();
-
-        // Update styles based on selected count
-        if (selectedCount > max) {
-            dangerStyle = "color: red;";
-        }
+    public String getDangerStyle() {
+        return dangerStyle;
     }
 
-    @Command
-    public void executeCallback(@ContextParam(ContextType.COMPONENT) Component component) {
-        if (callback != null) {
-            // Get the selected items
-            Listbox listbox = (Listbox) Selectors.find(component, "#dynamicListbox").get(0);
-            Set<Listitem> selectedItems = listbox.getSelectedItems();
 
-            // Extract the labels of the selected items
-            List<String> selectedValues = selectedItems.stream()
-                    .map(Listitem::getLabel)
-                    .collect(Collectors.toList());
 
-            // Pass the selected items to the callback
-            callback.accept(selectedValues);
-        }
-        closeModal(component);
-    }
-
-    @Command
-    public void closeModal(@ContextParam(ContextType.COMPONENT) Component component) {
-        // Close the modal window
-        Window window = (Window) Selectors.iterable(component, "#win").iterator().next();
-        window.detach();
-    }
 }
 

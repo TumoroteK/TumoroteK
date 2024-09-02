@@ -42,7 +42,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Arrays;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
+import fr.aphp.tumorotek.dto.SelectableItemDTO;
 import fr.aphp.tumorotek.manager.administration.ParametresManager;
 import fr.aphp.tumorotek.model.config.ParametreValeurSpecifique;
 import fr.aphp.tumorotek.param.EParametreValeurParDefaut;
@@ -153,8 +155,6 @@ public class ListeStockages extends AbstractController
 	private Enceinte selectedEnceinte;
 	private Terminale selectedTerminale;
 
-	private int maxContainersToPrint;
-
 
 	@Override
 	public AnnotateDataBinder getBinder(){
@@ -166,13 +166,6 @@ public class ListeStockages extends AbstractController
 		super.doAfterCompose(comp);
 		
 		curPf = SessionUtils.getCurrentPlateforme();
-
-		final ParametresManager parametresManager = ManagerLocator.getManager(ParametresManager.class);
-
-		ParametreValeurSpecifique maxParametre = parametresManager.findParametresByPlateformeIdAndCode(
-				curPf.getPlateformeId(),
-				EParametreValeurParDefaut.STOCKAGE_NB_MAX_CONTENEUR_A_IMPRIMER.getCode());
-		maxContainersToPrint = Integer.parseInt(maxParametre.getValeur());
 
 		stockageBinder = new AnnotateDataBinder(comp);
 		stockageBinder.loadAll();
@@ -619,6 +612,26 @@ public class ListeStockages extends AbstractController
 		getStockageController().switchToFicheConteneurCreateMode();
 	}
 
+	public int determineMaxContainersToPrint(){
+		final ParametresManager parametresManager = ManagerLocator.getManager(ParametresManager.class);
+		int maxContainersToPrint = Integer.parseInt(EParametreValeurParDefaut.STOCKAGE_NB_MAX_CONTENEUR_A_IMPRIMER.getValeur());
+
+		ParametreValeurSpecifique maxParametre = parametresManager.findParametresByPlateformeIdAndCode(
+				curPf.getPlateformeId(),
+				EParametreValeurParDefaut.STOCKAGE_NB_MAX_CONTENEUR_A_IMPRIMER.getCode());
+		if (maxParametre!= null){
+			maxContainersToPrint = Integer.parseInt(maxParametre.getValeur());
+
+		}
+		return maxContainersToPrint;
+	}
+
+	public List<SelectableItemDTO> getSelectableItemsFromConteneurs() {
+		return getRootConteneurs().stream()
+				.map(conteneur -> new SelectableItemDTO(conteneur.getConteneurId(), conteneur.getNom()))
+				.collect(Collectors.toList());
+	}
+
 	/**
 	 * Méthode appelée lorsqu'on clique pour générer le plan avec les boites.
 	 *
@@ -648,12 +661,12 @@ public class ListeStockages extends AbstractController
 	/**
 	 * Création des arguments pour la fenêtre de sélection.
 	 *
-	 * @param avecBoites 
+	 * @param avecBoites
 	 * @return Map contenant les arguments nécessaires pour créer la fenêtre de sélection.
 	 */
 	public Map<String, Object> createSelectionWindowArguments(boolean avecBoites){
 		Map<String, Object> windowArgs = new HashMap<>();
-
+		int maxContainersToPrint = determineMaxContainersToPrint();
 		// Détermination du titre de la fenêtre en fonction de la présence des boites
 		String titleKey = avecBoites ? "stockage.generate.with.boite" : "stockage.generate.without.boite";
 		windowArgs.put("title", Labels.getLabel(titleKey));
@@ -662,21 +675,21 @@ public class ListeStockages extends AbstractController
 		windowArgs.put("mainLabel", Labels.getLabel("stockage.selection.window.mainLabel"));
 		System.out.println(Labels.getLabel("stockage.selection.window.mainLabel"));
 		windowArgs.put("listHeaderLabel", Labels.getLabel("stockage.selection.window.listHeaderLabel"));
-		windowArgs.put("itemList", Arrays.asList("Mary", "John", "Jane", "Henry", "Mark", "Jeffery", "Rebecca"));
-
-
-		windowArgs.put("selectedLabel", Labels.getLabel("stockage.selection.window.selectedLabel", new String[] {String.valueOf(maxContainersToPrint)}));
+		windowArgs.put("itemList", getSelectableItemsFromConteneurs());
+		String selectLabel = Labels.getLabel("stockage.selection.window.selectedLabel", new String[]{String.valueOf(maxContainersToPrint)});
+		System.out.println(selectLabel);
+		windowArgs.put("selectedLabel", selectLabel);
 		windowArgs.put("max", maxContainersToPrint);
 
 		if (avecBoites) {
-			windowArgs.put("callback", (Consumer<List<String>>) selectedItems -> {
-				Clients.showNotification("You clicked on 'Generate With Boxes' " + selectedItems, "info", null, "middle_center", 3000);
+			windowArgs.put("callback", (Consumer<List<SelectableItemDTO>>) selectedItems -> {
+				Clients.showNotification("You clicked on 'Generate With Boxes' " + selectedItems.stream().map(SelectableItemDTO::getName).collect(Collectors.joining(", ")), "info", null, "middle_center", 3000);
+			});
+		} else {
+			windowArgs.put("callback", (Consumer<List<SelectableItemDTO>>) selectedItems -> {
+				Clients.showNotification("Selected items: " + selectedItems.stream().map(SelectableItemDTO::getName).collect(Collectors.joining(", ")));
 			});
 		}
-
-		windowArgs.put("callback", (Consumer<List<String>>) selectedItems -> {
-			Clients.showNotification("Selected items: " + selectedItems);
-		});
 
 		return windowArgs;
 	}

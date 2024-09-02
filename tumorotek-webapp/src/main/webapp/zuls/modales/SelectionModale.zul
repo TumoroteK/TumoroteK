@@ -22,30 +22,41 @@
             maximizable="true"
             closable="true">
 
-    <vbox  style="padding-top: 10px; padding-bottom: 10px; padding-left:10px; padding-right:10px;">
-        <label id="mainLabel" value="@bind(vm.mainLabel)"   />
+        <vbox style="padding-top: 10px; padding-bottom: 10px; padding-left:10px; padding-right:10px;">
+            <label id="mainLabel" value="@bind(vm.mainLabel)" style="color: grey; padding-left:5px;"/>
 
-        <listbox id="dynamicListbox" multiple="true" checkmark="true" model="@bind(vm.itemList)"
-                 onSelect="@command('updateSelectedCount')" >
-            <listhead>
-                <listheader label="@bind(vm.listHeaderLabel)"/>
-            </listhead>
-            <template name="model" var="item">
-                <listitem>
-                    <listcell label="@bind(item)"/>
-                </listitem>
-            </template>
-        </listbox>
-        <hbox>
-            <label id="selectedCountLabel" value="@bind(vm.selectedCount)"
-                   style="@bind(vm.selectedCount > vm.max ? 'color: red;' : '')"/>
-            <label id="selectedLabel" value="@bind(vm.selectedLabel)"
-                   style="@bind(vm.selectedCount > vm.max ? 'color: red;' : '')"/>
-            <hbox hflex="1" align="end">
-                <button id="cancelButton" label="Cancel" onClick="@command('closeModal')"/>
-                <button id="validateButton" label="Validate" onClick="@command('executeCallback')"/>
-            </hbox>
-        </hbox>
-    </vbox>
-</window>
+            <listbox id="dynamicListbox" multiple="true" checkmark="true" model="@bind(vm.itemList)"
+                     onSelect="@command('updateSelectedCount')" height="600px">
+                <listhead>
+                    <listheader label="@bind(vm.listHeaderLabel)"/>
+                </listhead>
+                <template name="model" var="item">
+                    <listitem>
+                        <listcell label="@bind(item.name)"/>
+                    </listitem>
+                </template>
+            </listbox>
+
+            <div style="display: grid; grid-template-columns: auto 1fr;">
+                <!-- Labels Section -->
+                <div style="color: grey; font-weight: bold; padding-top: 5px;">
+                    <label id="selectedCountLabel" value="@bind(vm.selectedCount)"
+                           style="@bind(vm.selectedCount > vm.max ? 'color: red;' : '')"/>
+                    <label sclass="z-valign-middle" id="selectedLabel" value="@bind(vm.selectedLabel)"
+                           style="@bind(vm.selectedCount > vm.max ? 'color: red;' : '')"/>
+                    <image src="/images/icones/warning.png"
+                           visible="@bind(vm.selectedCount > vm.max)" style="padding-top: 5px;"/>
+                </div>
+
+                <!-- Buttons Section -->
+                <div style="display: flex; justify-content: flex-end; align-items: center;">
+                    <button id="cancelButton" label="Cancel" onClick="@command('closeModal')"
+                            image="/images/icones/cancel.png" sclass="buttonv2"/>
+                    <button id="validateButton" label="Validate" onClick="@command('executeCallback')"
+                            image="/images/icones/validate.png" sclass="buttonv2" disabled="@bind(vm.selectedCount > vm.max)"/>
+                </div>
+            </div>
+
+        </vbox>
+    </window>
 </zk>
