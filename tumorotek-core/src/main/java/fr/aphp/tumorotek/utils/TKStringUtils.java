@@ -49,6 +49,7 @@ public final class TKStringUtils
 {
 
 
+   private static final String FORBIDDEN_CHARS = "[\\\\/:*?\"<>|\\x00-\\x1F]";;
 
    /**
     * Constructeur privé
@@ -170,5 +171,49 @@ public final class TKStringUtils
          return string == null || string.trim().isEmpty();
       }
 
+
+   /**
+    * Génère un nom de feuille Excel sûr à partir d'une chaîne donnée en remplaçant
+    * les caractères interdits et en tronquant la chaîne à une longueur maximale de 31 caractères.
+    *
+    * Règles d'ajustement appliquées :
+    * - Les caractères interdits dans les noms de feuilles Excel (/, \, ?, *) sont remplacés par '-'.
+    * - Les crochets '[' et ']' sont remplacés par des parenthèses '(' et ')'.
+    * - Si le nom de la feuille dépasse 31 caractères, il est tronqué pour respecter cette limite.
+    *
+    * Cas particuliers :
+    * - Si l'entrée est `null`, la méthode retourne "Sheet" comme nom par défaut.
+    * - Si l'entrée est une chaîne vide, une exception IllegalArgumentException est levée pour indiquer
+    *   que le nom de la feuille ne peut pas être vide après le traitement.
+    *
+    * @param input La chaîne d'entrée à convertir en un nom de feuille Excel valide.
+    * @return Un nom de feuille Excel conforme aux restrictions de nommage d'Excel.
+    * @throws IllegalArgumentException si le nom de la feuille est vide après traitement.
+    */
+   public static String getSafeSheetName(String input) {
+      if (input == null) {
+         return "Sheet";  // Renvoie "Sheet" pour une entrée nulle
+      }
+
+      // Remplacement des caractères interdits par des caractères sûrs
+      String safeName = input.replace("/", "-")
+              .replace("\\", "-")
+              .replace("?", "-")
+              .replace("*", "-")
+              .replace("[", "(")
+              .replace("]", ")");
+
+      // Tronque à 31 caractères si nécessaire
+      if (safeName.length() > 31) {
+         safeName = safeName.substring(0, 32);
+      }
+
+      // Vérifie si le nom est vide après traitement
+      if (safeName.isEmpty()) {
+         throw new IllegalArgumentException("Le nom de la feuille ne peut pas être vide après traitement.");
+      }
+
+      return safeName;
+   }
 
 }
