@@ -38,6 +38,14 @@ package fr.aphp.tumorotek.manager.io.document;
 
 import java.util.List;
 
+
+/**
+ * La classe représente le contexte d'un document, contenant des paires étiquette-valeur.
+ *
+ * <p>Elle gère une liste de paires étiquette-valeur ({@link LabelValue}), qui peuvent être utilisées pour stocker
+ * des informations contextuelles ou des métadonnées à inclure dans le document.</p>
+ *
+ */
 public class DocumentContext {
     private List<LabelValue> listLabelValue;
 

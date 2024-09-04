@@ -33,50 +33,59 @@
  * avez pris connaissance de la licence CeCILL, et que vous en avez
  * accepté les termes.
  **/
-package fr.aphp.tumorotek.manager.io.document.detail.array;
+package fr.aphp.tumorotek.dto;
 
+import java.io.ByteArrayOutputStream;
 
-import java.util.ArrayList;
-import java.util.List;
+public class OutputStreamData {
+    String fileName;
 
+// Ne pas coder en dur les formats et contentType, utilisez ConfigManager
+    String format;
 
-/**
- * La classe représente une rangée de cellules dans un tableau ou une feuille de calcul.
- *
- * <p>Elle contient une liste de cellules, chacune étant un objet {@link DataCell}. Cette classe permet de
- * regrouper et gérer les cellules d'une même rangée.</p>
- *
- * <p><b>Exemple d'utilisation :</b></p>
- * <pre>{@code
- * List<DataCell> cells = new ArrayList<>();
- * CellRow row = new CellRow();
- * row.listDataCell = cells;
- * }</pre>
- */
-public class CellRow {
-    private List<DataCell> listDataCell;
+    String contentType;
 
-    public CellRow() {
-        this.listDataCell = new ArrayList<>();
+    ByteArrayOutputStream outputStream;
+
+    public OutputStreamData() {
     }
 
-    /**
-     * Ajoute une cellule à la rangée.
-     *
-     * @param cell la cellule à ajouter.
-     */
-    public void addDataCell(DataCell cell) {
-        listDataCell.add(cell);
+    public OutputStreamData(String fileName, String format, String contentType, ByteArrayOutputStream outputStream) {
+        this.fileName = fileName;
+        this.format = format;
+        this.contentType = contentType;
+        this.outputStream = outputStream;
     }
 
-    /**
-     * Ajoute plusieurs cellules à la rangée.
-     *
-     * @param cells les cellules à ajouter.
-     */
-    public void addAllDataCells(List<DataCell> cells) {
-        listDataCell.addAll(cells);
+    public String getDocumentName() {
+        return fileName;
     }
 
+    public void setDocumentName(String documentName) {
+        this.fileName = documentName;
+    }
 
+    public String getFormat() {
+        return format;
+    }
+
+    public void setFormat(String format) {
+        this.format = format;
+    }
+
+    public String getContentType() {
+        return contentType;
+    }
+
+    public void setContentType(String contentType) {
+        this.contentType = contentType;
+    }
+
+    public ByteArrayOutputStream getOutputStream() {
+        return outputStream;
+    }
+
+    public void setOutputStream(ByteArrayOutputStream outputStream) {
+        this.outputStream = outputStream;
+    }
 }

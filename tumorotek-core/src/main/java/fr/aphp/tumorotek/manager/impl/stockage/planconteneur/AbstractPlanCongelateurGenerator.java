@@ -35,65 +35,96 @@
  **/
 package fr.aphp.tumorotek.manager.impl.stockage.planconteneur;
 
+import fr.aphp.tumorotek.manager.io.document.LabelValue;
 import fr.aphp.tumorotek.manager.io.production.DocumentProducer;
-import fr.aphp.tumorotek.manager.io.production.OutputStreamData;
+import fr.aphp.tumorotek.dto.OutputStreamData;
 import fr.aphp.tumorotek.manager.io.document.DocumentContext;
 import fr.aphp.tumorotek.manager.io.document.DocumentData;
 import fr.aphp.tumorotek.manager.io.document.DocumentFooter;
 import fr.aphp.tumorotek.manager.io.document.DocumentWithDataAsArray;
 import fr.aphp.tumorotek.model.stockage.Conteneur;
+import fr.aphp.tumorotek.model.stockage.Terminale;
+import net.sf.cglib.core.Local;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * Classe abstraite fournissant une implémentation de base pour la génération de plans de congélateurs.
- *
- * Cette classe implémente l'interface {@link PlanCongelateurGenerator} et fournit une
- * implémentation de la méthode  generate. Les classes concrètes
- * qui étendent cette classe abstraite devront fournir des implémentations spécifiques
- * pour les méthodes abstraites définies ici.
- *
- * <p>
- * La méthode {@code generate} génère des données de sortie en se basant sur une liste de
- * conteneurs, un paramètre de locale, et un nom de fichier. Elle utilise des méthodes protégées
- * pour construire les différentes sections du plan.
- * </p>
+ * Elle devrait se concentrer uniquement sur la génération du contenu  * (c'est-à-dire, `DocumentWithDataAsArray`).
+ * Les spécificités de format devraient être gérées par les implémentations  * concrètes et les producteurs.
  *
  */
 
 public abstract class AbstractPlanCongelateurGenerator implements PlanCongelateurGenerator {
 
     public OutputStreamData generate(List<Conteneur> list, Locale locale) {
-        List<DocumentWithDataAsArray> listPlanConteneur = new ArrayList();
+        List<DocumentWithDataAsArray> listPlanConteneur = new ArrayList<>();
         for (Conteneur conteneur : list) {
             listPlanConteneur.add(buildPlanConteneur(conteneur, locale));
         }
-
-        return getDocumentProducer().produce(listPlanConteneur);
-
+        return produceOutput(listPlanConteneur);
     }
 
-    protected DocumentWithDataAsArray buildPlanConteneur(Conteneur c, Locale locale) {
-        return new DocumentWithDataAsArray(buildNomPlan(), buildEntetePlan(c, locale), buildDetailPlan(c, locale),
-                buildPiedPagePlan(c));
+    protected abstract OutputStreamData produceOutput(List<DocumentWithDataAsArray> listPlanConteneur);
+
+    protected DocumentWithDataAsArray buildPlanConteneur(Conteneur conteneur, Locale locale) {
+        return new DocumentWithDataAsArray(
+                buildFileName(),
+                buildEntetePlan(conteneur, locale),
+                buildDetailPlan(conteneur, locale),
+                buildPiedPagePlan(conteneur)
+        );
     }
 
-    protected DocumentContext buildEntetePlan(Conteneur c, Locale locale) {
-        //pini to implement
-        return null;
+    private void sortBoitesByPosition(List<Terminale> boites) {
+        if (boites == null) return;
+
+        Collections.sort(boites, Comparator.comparingInt(Terminale::getPosition));
     }
 
 
-    protected DocumentFooter buildPiedPagePlan(Conteneur c) {
-        //pini to implement
-        return null;
+
+    protected DocumentContext buildEntetePlan(Conteneur conteneur, Locale locale) {
+        List<LabelValue> listLabelValue = new ArrayList<>();
+
+        // 1. Date label based on Locale
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", locale);
+        String currentDate = dateFormat.format(new Date());
+        listLabelValue.add(new LabelValue("Date", currentDate, false, false));
+
+        // 2. Label for "Champ.Retour.Conteneur" and its value
+//        String retourConteneurLabel = LabelFinder.getLabel("Champ.Retour.Conteneur");
+        String retourConteneurLabel = "LabelFinder.getLabel()";
+        String nomConteneur = conteneur.getNom();
+        listLabelValue.add(new LabelValue(retourConteneurLabel, nomConteneur, false, false));
+
+        // 3. Label for "conteneur.description" and its value
+//        String descriptionLabel = LabelFinder.getLabel("conteneur.description");
+        String descriptionLabel = "LabelFinder.getLabel(conteneur.description)";
+        String conteneurDescription = conteneur.getDescription();
+        listLabelValue.add(new LabelValue(descriptionLabel, conteneurDescription, false, false));
+
+        // 4. Label for "stockage.excel.plan.etablish.service" and its value
+
+//        String serviceLabel = LabelFinder.getLabel("stockage.excel.plan.etablish.service");
+        String serviceLabel = "LabelFinder.getLabel(stockage.excel.plan.etablish.service";
+        String serviceValue = conteneur.getService().getNom();
+        listLabelValue.add(new LabelValue(serviceLabel, serviceValue ,false,false ));
+
+
+        return new DocumentContext(listLabelValue);
     }
 
-    protected abstract DocumentData buildDetailPlan(Conteneur c, Locale locale);
 
-    protected abstract String buildNomPlan();
+    protected DocumentFooter buildPiedPagePlan(Conteneur conteneur) {
+        String contenurName = conteneur.getNom();
+        return new DocumentFooter(contenurName, null, null);
+    }
+
+    protected abstract DocumentData buildDetailPlan(Conteneur conteneur, Locale locale);
+
+    protected abstract String buildFileName();
 
     protected abstract DocumentProducer getDocumentProducer();
 

@@ -36,23 +36,31 @@
 
 package fr.aphp.tumorotek.manager.io.document;
 
+import fr.aphp.tumorotek.manager.io.document.detail.array.CellRow;
+
+import java.util.List;
 
 
+/**
+ * La classe <code>DataAsArray</code> représente un ensemble de données structurées sous forme de tableau.
+ * Elle implémente l'interface <code>DocumentData</code> et contient une liste de lignes de cellules.
+ *
+ * Cette classe est utilisée pour manipuler des données tabulaires dans le contexte de la gestion des documents.
+ *
+ * <p>La structure des données est représentée par une liste de <code>CellRow</code>, chaque <code>CellRow</code>
+ * représentant une ligne du tableau.</p>
+ *
+ */
 
 public class DataAsArray implements DocumentData {
     private List<CellRow> listCellRow;
+
+    public DataAsArray() {
+    }
 
     public DataAsArray(List<CellRow> listCellRow) {
         this.listCellRow = listCellRow;
     }
 
-    // Method to add a DataCell to the list
-    public void addCellRow(CellRow cellRow) {
-        this.listCellRow.add(cellRow);
-    }
 
-
-    public List<CellRow> getListCellRow() {
-        return listCellRow;
-    }
 }
