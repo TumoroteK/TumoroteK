@@ -70,8 +70,8 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
 @Entity
 @Table(name = "IMPORT_HISTORIQUE")
 @NamedQueries(value = {
-   @NamedQuery(name = "ImportHistorique.findByTemplateWithOrder",
-      query = "SELECT i FROM ImportHistorique i " + "WHERE i.importTemplate = ?1 ORDER BY i.date desc"),
+   @NamedQuery(name = "ImportHistorique.findByTemplateIdAndImportBanqueIdWithOrder",
+      query = "SELECT i FROM ImportHistorique i " + "WHERE i.importTemplateId = ?1 and i.importBanqueId = ?2 ORDER BY i.date desc"),
    @NamedQuery(name = "ImportHistorique.findByExcludedId",
       query = "SELECT i FROM ImportHistorique i " + "WHERE i.importHistoriqueId != ?1"),
    @NamedQuery(name = "ImportHistorique.findPrelevementByImportHistorique",
@@ -84,13 +84,18 @@ public class ImportHistorique implements java.io.Serializable, TKdataObject
 
    private Integer importHistoriqueId;
 
-   private ImportTemplate importTemplate;
+   //TK-537 : pour casser le lien bidirectionnel qui n'a plus de sens (un importTemplate a des historiques dépendant de la banque en cours)
+   //on n'utilise que importTemplateId
+   private Integer importTemplateId;
 
    private Utilisateur utilisateur;
 
    private Calendar date;
 
    private Set<Importation> importations = new HashSet<>();
+   
+   //TK-537 : l'objet Banque n'est pas utile dans cet objet. Mais ce champ sera utilisé pour des requêtes
+   private Integer importBanqueId;
 
    public ImportHistorique(){
 
@@ -108,16 +113,16 @@ public class ImportHistorique implements java.io.Serializable, TKdataObject
       this.importHistoriqueId = id;
    }
 
-   @ManyToOne
-   @JoinColumn(name = "IMPORT_TEMPLATE_ID", nullable = false)
-   public ImportTemplate getImportTemplate(){
-      return importTemplate;
+   @Column(name = "IMPORT_TEMPLATE_ID", nullable = false)
+   public Integer getImportTemplateId(){
+      return importTemplateId;
    }
-
-   public void setImportTemplate(final ImportTemplate it){
-      this.importTemplate = it;
+   
+   public void setImportTemplateId(final Integer importTemplateId){
+      this.importTemplateId = importTemplateId;
    }
-
+   
+   
    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
    @JoinColumn(name = "UTILISATEUR_ID", nullable = false)
    public Utilisateur getUtilisateur(){
@@ -158,6 +163,15 @@ public class ImportHistorique implements java.io.Serializable, TKdataObject
       this.importations = i;
    }
 
+   @Column(name = "IMPORT_BANQUE_ID", nullable = false)
+   public Integer getImportBanqueId(){
+      return importBanqueId;
+   }
+
+   public void setImportBanqueId(Integer banqueId){
+      this.importBanqueId = banqueId;
+   }
+   
    @Override
    public boolean equals(final Object obj){
       if(this == obj){
@@ -167,25 +181,20 @@ public class ImportHistorique implements java.io.Serializable, TKdataObject
          return false;
       }
       final ImportHistorique test = (ImportHistorique) obj;
-      return ((this.importTemplate == test.importTemplate
-         || (this.importTemplate != null && this.importTemplate.equals(test.importTemplate)))
+      return ((this.importTemplateId == test.importTemplateId
+         || (this.importTemplateId != null && this.importTemplateId.equals(test.importTemplateId)))
          && (this.date == test.date || (this.date != null && this.date.equals(test.date))));
    }
 
    @Override
    public int hashCode(){
       int hash = 7;
-      int hashImportTemplate = 0;
       int hashDate = 0;
 
-      if(this.importTemplate != null){
-         hashImportTemplate = this.importTemplate.hashCode();
-      }
       if(this.date != null){
          hashDate = this.date.hashCode();
       }
 
-      hash = 31 * hash + hashImportTemplate;
       hash = 31 * hash + hashDate;
 
       return hash;
@@ -193,8 +202,8 @@ public class ImportHistorique implements java.io.Serializable, TKdataObject
 
    @Override
    public String toString(){
-      if(this.importTemplate != null && this.date != null){
-         return "{" + this.date + ", " + importTemplate.getNom() + "(ImportTemplate)}";
+      if(this.date != null){
+         return "{" + this.date + ", " + importTemplateId + "(ImportTemplateId), "+ importBanqueId +"(ImportBanqueId)}";
       }else{
          return "{Empty ImportHistorique}";
       }
@@ -205,10 +214,11 @@ public class ImportHistorique implements java.io.Serializable, TKdataObject
       final ImportHistorique clone = new ImportHistorique();
 
       clone.setImportHistoriqueId(this.importHistoriqueId);
-      clone.setImportTemplate(this.importTemplate);
+      clone.setImportTemplateId(importTemplateId);
       clone.setUtilisateur(this.utilisateur);
       clone.setDate(this.date);
       clone.setImportations(this.importations);
+      clone.setImportBanqueId(importBanqueId);
 
       return clone;
    }

@@ -48,6 +48,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import fr.aphp.tumorotek.dao.contexte.BanqueDao;
 import fr.aphp.tumorotek.dao.io.export.ChampEntiteDao;
 import fr.aphp.tumorotek.dao.systeme.EntiteDao;
+import fr.aphp.tumorotek.dao.utilisateur.UtilisateurDao;
 import fr.aphp.tumorotek.manager.io.export.ChampManager;
 import fr.aphp.tumorotek.manager.io.imports.ImportColonneManager;
 import fr.aphp.tumorotek.manager.io.imports.ImportTemplateManager;
@@ -57,6 +58,7 @@ import fr.aphp.tumorotek.model.io.export.Champ;
 import fr.aphp.tumorotek.model.io.imports.ImportColonne;
 import fr.aphp.tumorotek.model.io.imports.ImportTemplate;
 import fr.aphp.tumorotek.model.systeme.Entite;
+import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
 
 /**
  *
@@ -85,6 +87,9 @@ public class ImportTemplateManagerTest extends AbstractManagerTest4
    @Autowired
    private ChampEntiteDao champEntiteDao;
 
+   @Autowired
+   private UtilisateurDao utilisateurDao;
+   
    @Autowired
    private ChampManager champManager;
 
@@ -202,6 +207,8 @@ public class ImportTemplateManagerTest extends AbstractManagerTest4
       final ImportColonne ic1 = importColonneManager.findByIdManager(1);
       List<ImportColonne> colonnes = new ArrayList<>();
 
+      final Utilisateur loggedUser = utilisateurDao.findById(1);
+      
       final int tots = importTemplateManager.findAllObjectsManager().size();
       final int cTots = importColonneManager.findAllObjectsManager().size();
       final int aTots = champManager.findAllObjectsManager().size();
@@ -209,7 +216,7 @@ public class ImportTemplateManagerTest extends AbstractManagerTest4
       Boolean catched = false;
       // on test l'insertion avec la banque null
       try{
-         importTemplateManager.createObjectManager(it1, null, null, null);
+         importTemplateManager.createObjectManager(it1, null, null, null, loggedUser);
       }catch(final Exception e){
          if(e.getClass().getSimpleName().equals("RequiredObjectIsNullException")){
             catched = true;
@@ -222,7 +229,7 @@ public class ImportTemplateManagerTest extends AbstractManagerTest4
       // on test l'insertion d'un doublon
       it1.setNom("IMPORT AUTO");
       try{
-         importTemplateManager.createObjectManager(it1, b1, null, null);
+         importTemplateManager.createObjectManager(it1, b1, null, null, loggedUser);
       }catch(final Exception e){
          if(e.getClass().getSimpleName().equals("DoublonFoundException")){
             catched = true;
@@ -236,7 +243,7 @@ public class ImportTemplateManagerTest extends AbstractManagerTest4
       colonnes.add(ic1);
       colonnes.add(ic1);
       try{
-         importTemplateManager.createObjectManager(it1, b1, null, colonnes);
+         importTemplateManager.createObjectManager(it1, b1, null, colonnes, loggedUser);
       }catch(final Exception e){
          if(e.getClass().getSimpleName().equals("DoublonFoundException")){
             catched = true;
@@ -253,7 +260,7 @@ public class ImportTemplateManagerTest extends AbstractManagerTest4
       ic2.setNom("COL");
       colonnes.add(ic2);
       try{
-         importTemplateManager.createObjectManager(it1, b1, null, colonnes);
+         importTemplateManager.createObjectManager(it1, b1, null, colonnes, loggedUser);
       }catch(final Exception e){
          if(e.getClass().getSimpleName().equals("RequiredObjectIsNullException")){
             catched = true;
@@ -278,7 +285,7 @@ public class ImportTemplateManagerTest extends AbstractManagerTest4
       it1.setNom("Template de test");
       it1.setDescription("DESC");
       it1.setIsEditable(true);
-      importTemplateManager.createObjectManager(it1, b1, null, null);
+      importTemplateManager.createObjectManager(it1, b1, null, null, loggedUser);
       assertTrue(importTemplateManager.findAllObjectsManager().size() == tots + 1);
       assertTrue(importColonneManager.findAllObjectsManager().size() == cTots);
       final Integer idT1 = it1.getImportTemplateId();
@@ -314,7 +321,7 @@ public class ImportTemplateManagerTest extends AbstractManagerTest4
       colonnes.add(ic2);
       colonnes.add(ic3);
 
-      importTemplateManager.createObjectManager(it2, b1, entites, colonnes);
+      importTemplateManager.createObjectManager(it2, b1, entites, colonnes, loggedUser);
       assertTrue(importTemplateManager.findAllObjectsManager().size() == tots + 2);
       assertTrue(importColonneManager.findAllObjectsManager().size() == cTots + 2);
       assertTrue(champManager.findAllObjectsManager().size() == aTots + 2);
@@ -352,6 +359,8 @@ public class ImportTemplateManagerTest extends AbstractManagerTest4
       final Entite e2 = entiteDao.findById(2);
       final Entite e3 = entiteDao.findById(3);
 
+      final Utilisateur loggedUser = utilisateurDao.findById(1);
+      
       final int tots = importTemplateManager.findAllObjectsManager().size();
       final int cTots = importColonneManager.findAllObjectsManager().size();
       final int aTots = champManager.findAllObjectsManager().size();
@@ -384,7 +393,7 @@ public class ImportTemplateManagerTest extends AbstractManagerTest4
       colonnes.add(ic3);
 
       it.setNom("TEST");
-      importTemplateManager.createObjectManager(it, b1, null, colonnes);
+      importTemplateManager.createObjectManager(it, b1, null, colonnes, loggedUser);
       assertTrue(importTemplateManager.findAllObjectsManager().size() == tots + 1);
       assertTrue(importColonneManager.findAllObjectsManager().size() == cTots + 3);
       assertTrue(champManager.findAllObjectsManager().size() == aTots + 3);
@@ -394,7 +403,7 @@ public class ImportTemplateManagerTest extends AbstractManagerTest4
       Boolean catched = false;
       // on test l'update avec la banque null
       try{
-         importTemplateManager.updateObjectManager(itUp, null, null, null, null);
+         importTemplateManager.updateObjectManager(itUp, null, null, null, null, loggedUser);
       }catch(final Exception e){
          if(e.getClass().getSimpleName().equals("RequiredObjectIsNullException")){
             catched = true;
@@ -407,7 +416,7 @@ public class ImportTemplateManagerTest extends AbstractManagerTest4
       // on test l'update d'un doublon
       itUp.setNom("IMPORT AUTO");
       try{
-         importTemplateManager.updateObjectManager(itUp, b1, null, null, null);
+         importTemplateManager.updateObjectManager(itUp, b1, null, null, null, loggedUser);
       }catch(final Exception e){
          if(e.getClass().getSimpleName().equals("DoublonFoundException")){
             catched = true;
@@ -423,7 +432,7 @@ public class ImportTemplateManagerTest extends AbstractManagerTest4
       colonnes.add(icE);
       colonnes.add(icE);
       try{
-         importTemplateManager.updateObjectManager(itUp, b1, null, colonnes, null);
+         importTemplateManager.updateObjectManager(itUp, b1, null, colonnes, null, loggedUser);
       }catch(final Exception e){
          if(e.getClass().getSimpleName().equals("DoublonFoundException")){
             catched = true;
@@ -441,7 +450,7 @@ public class ImportTemplateManagerTest extends AbstractManagerTest4
       colonnes.add(ic4);
       ic4.setImportTemplate(itUp);
       try{
-         importTemplateManager.updateObjectManager(itUp, b1, null, colonnes, null);
+         importTemplateManager.updateObjectManager(itUp, b1, null, colonnes, null, loggedUser);
       }catch(final Exception e){
          if(e.getClass().getSimpleName().equals("RequiredObjectIsNullException")){
             catched = true;
@@ -465,7 +474,7 @@ public class ImportTemplateManagerTest extends AbstractManagerTest4
       itUp.setNom("Template de test");
       itUp.setDescription("DESC");
       itUp.setIsEditable(true);
-      importTemplateManager.updateObjectManager(itUp, b1, null, null, null);
+      importTemplateManager.updateObjectManager(itUp, b1, null, null, null, loggedUser);
       assertTrue(importTemplateManager.findAllObjectsManager().size() == tots + 1);
 
       // Vérification
@@ -480,7 +489,7 @@ public class ImportTemplateManagerTest extends AbstractManagerTest4
       List<Entite> entites = new ArrayList<>();
       entites.add(e1);
       entites.add(e2);
-      importTemplateManager.updateObjectManager(itTest, b1, entites, null, null);
+      importTemplateManager.updateObjectManager(itTest, b1, entites, null, null, loggedUser);
       assertTrue(importTemplateManager.findAllObjectsManager().size() == tots + 1);
 
       // Vérification
@@ -509,7 +518,7 @@ public class ImportTemplateManagerTest extends AbstractManagerTest4
       colsToRemove.add(ic3);
 
       itTest2.setNom("TEST");
-      importTemplateManager.updateObjectManager(itTest2, b1, entites, colonnes, colsToRemove);
+      importTemplateManager.updateObjectManager(itTest2, b1, entites, colonnes, colsToRemove, loggedUser);
       assertTrue(importTemplateManager.findAllObjectsManager().size() == tots + 1);
       assertTrue(importColonneManager.findAllObjectsManager().size() == cTots + 3);
       assertTrue(champManager.findAllObjectsManager().size() == aTots + 3);
@@ -546,6 +555,7 @@ public class ImportTemplateManagerTest extends AbstractManagerTest4
 
       final Banque b1 = banqueDao.findById(1);
       boolean catchedInsert = false;
+      final Utilisateur loggedUser = utilisateurDao.findById(1);
 
       // On teste une insertion avec un attribut nom non valide
       String[] emptyValues = new String[] {null, "", "  ", "%¢¢kjs", createOverLength(50)};
@@ -553,7 +563,7 @@ public class ImportTemplateManagerTest extends AbstractManagerTest4
          catchedInsert = false;
          try{
             template.setNom(emptyValues[i]);
-            importTemplateManager.createObjectManager(template, b1, null, null);
+            importTemplateManager.createObjectManager(template, b1, null, null, loggedUser);
          }catch(final Exception e){
             if(e.getClass().getSimpleName().equals("ValidationException")){
                catchedInsert = true;
@@ -569,7 +579,7 @@ public class ImportTemplateManagerTest extends AbstractManagerTest4
          catchedInsert = false;
          try{
             template.setDescription(emptyValues[i]);
-            importTemplateManager.createObjectManager(template, b1, null, null);
+            importTemplateManager.createObjectManager(template, b1, null, null, loggedUser);
          }catch(final Exception e){
             if(e.getClass().getSimpleName().equals("ValidationException")){
                catchedInsert = true;
@@ -589,6 +599,7 @@ public class ImportTemplateManagerTest extends AbstractManagerTest4
 
       final Banque b1 = banqueDao.findById(1);
       boolean catchedInsert = false;
+      final Utilisateur loggedUser = utilisateurDao.findById(1);
 
       // On teste un update avec un attribut nom non valide
       String[] emptyValues = new String[] {null, "", "  ", "%¢¢kjs", createOverLength(50)};
@@ -596,7 +607,7 @@ public class ImportTemplateManagerTest extends AbstractManagerTest4
          catchedInsert = false;
          try{
             template.setNom(emptyValues[i]);
-            importTemplateManager.updateObjectManager(template, b1, null, null, null);
+            importTemplateManager.updateObjectManager(template, b1, null, null, null, loggedUser);
          }catch(final Exception e){
             if(e.getClass().getSimpleName().equals("ValidationException")){
                catchedInsert = true;
@@ -612,7 +623,7 @@ public class ImportTemplateManagerTest extends AbstractManagerTest4
          catchedInsert = false;
          try{
             template.setDescription(emptyValues[i]);
-            importTemplateManager.updateObjectManager(template, b1, null, null, null);
+            importTemplateManager.updateObjectManager(template, b1, null, null, null, loggedUser);
          }catch(final Exception e){
             if(e.getClass().getSimpleName().equals("ValidationException")){
                catchedInsert = true;

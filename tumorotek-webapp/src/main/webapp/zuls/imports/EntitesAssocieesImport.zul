@@ -43,7 +43,7 @@
 			span="true"
 			sizedByContent="true">
 			<columns sizable="true">
-				<column id="linkHeader" />
+				<column id="linkHeader" visible="false" />
 				<column id="staticHeader" />
 				<column id="deleteHeader" visible="false" />
 			</columns>

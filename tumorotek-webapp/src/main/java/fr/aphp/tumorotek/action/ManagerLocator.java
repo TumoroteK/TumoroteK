@@ -146,6 +146,7 @@ import fr.aphp.tumorotek.manager.io.export.RechercheManager;
 import fr.aphp.tumorotek.manager.io.export.RequeteManager;
 import fr.aphp.tumorotek.manager.io.export.ResultatManager;
 import fr.aphp.tumorotek.manager.io.export.standard.ExportCatalogueManager;
+import fr.aphp.tumorotek.manager.io.imports.CompatibiliteEntreImportTemplateEtBanqueValidator;
 import fr.aphp.tumorotek.manager.io.imports.ImportColonneManager;
 import fr.aphp.tumorotek.manager.io.imports.ImportHistoriqueManager;
 import fr.aphp.tumorotek.manager.io.imports.ImportManager;
@@ -792,6 +793,10 @@ public final class ManagerLocator
       return (ImportHistoriqueManager) (ContextLoader.getCurrentWebApplicationContext()).getBean("importHistoriqueManager");
    }
 
+   public static CompatibiliteEntreImportTemplateEtBanqueValidator getCompatibiliteEntreImportTemplateEtBanqueValidator(){
+      return (CompatibiliteEntreImportTemplateEtBanqueValidator) (ContextLoader.getCurrentWebApplicationContext()).getBean("compatibiliteEntreImportTemplateEtBanqueValidator");
+   }
+   
    /****************** Imprimante. ************************/
    public static ImprimanteManager getImprimanteManager(){
       return (ImprimanteManager) (ContextLoader.getCurrentWebApplicationContext()).getBean("imprimanteManager");

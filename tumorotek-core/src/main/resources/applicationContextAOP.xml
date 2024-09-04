@@ -28,7 +28,18 @@
 			</props>
 		</property>
 	</bean>
-
+	
+	<!-- définition d'un nouveau TransactionProxyFactoryBean pour utiliser une "transaction" readonly sans s'appuyer sur le nom d'une méthode qui peut être modifié... -->
+	<bean id="txProxyTemplateForSupportAndReadonly" abstract="true"
+		class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+		<property name="transactionManager" ref="txManager" />
+		<property name="transactionAttributes">
+			<props>
+				<prop key="*">PROPAGATION_SUPPORTS, readOnly</prop>
+			</props>
+		</property>
+	</bean>
+	
 	<!-- <tx:advice id="serviceTxAdvice" transaction-manager="txManager"> -->
 	<!-- <tx:attributes> -->
 	<!-- <tx:method name="find*" propagation="REQUIRED" read-only="true" /> -->

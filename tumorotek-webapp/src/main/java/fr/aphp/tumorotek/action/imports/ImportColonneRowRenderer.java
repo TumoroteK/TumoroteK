@@ -42,9 +42,12 @@ import org.zkoss.zul.Row;
 import org.zkoss.zul.RowRenderer;
 
 import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
+import fr.aphp.tumorotek.model.contexte.EContexte;
 import fr.aphp.tumorotek.model.contexte.gatsbi.Contexte;
+import fr.aphp.tumorotek.model.contexte.gatsbi.Etude;
 import fr.aphp.tumorotek.model.io.export.ChampEntite;
 import fr.aphp.tumorotek.model.io.imports.ImportColonne;
+import fr.aphp.tumorotek.webapp.gatsbi.GatsbiController;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
 /**
@@ -54,11 +57,13 @@ import fr.aphp.tumorotek.webapp.general.SessionUtils;
  */
 public class ImportColonneRowRenderer implements RowRenderer<ImportColonne>
 {
-
-   private boolean visiteGatsbi = false;
    
-   public ImportColonneRowRenderer(boolean _g) {
-      visiteGatsbi = _g;
+   private EContexte templateContexte = null;
+   //gestion d'un template Gatsbi :
+   private Etude templateEtude = null;
+   
+   public ImportColonneRowRenderer(EContexte templateContexte, Etude templateEtude) {
+      initContexte(templateContexte, templateEtude);
    }
    
    @Override
@@ -68,7 +73,7 @@ public class ImportColonneRowRenderer implements RowRenderer<ImportColonne>
       // nom colonne
       final Label colonneLabel = new Label(colonne.getNom());
       colonneLabel.setParent(row);
-      String champ = ImportUtils.extractChamp(colonne, visiteGatsbi);
+      String champ = ImportUtils.extractChamp(colonne, templateContexte);
       // Champ associé
       final Label champLabel = new Label(champ);
       champLabel.setParent(row);
@@ -105,7 +110,7 @@ public class ImportColonneRowRenderer implements RowRenderer<ImportColonne>
       String entite = "";
       if(colonne.getChamp() != null){
          if(colonne.getChamp().getChampEntite() != null){
-            if (!visiteGatsbi || colonne.getChamp().getChampEntite().getEntite().getEntiteId() != 7) {
+            if (EContexte.GATSBI != templateContexte || colonne.getChamp().getChampEntite().getEntite().getEntiteId() != 7) {
                entite = Labels.getLabel("Entite." + colonne.getChamp().getChampEntite().getEntite().getNom());
             } else { // rendu entite Maladie -> Visite
                entite = Labels.getLabel("gatsbi.visite");
@@ -134,13 +139,12 @@ public class ImportColonneRowRenderer implements RowRenderer<ImportColonne>
       if(colonne.getChamp() != null){
          if(colonne.getChamp().getChampEntite() != null){
             // @since 2.3.0-gatsbi
-            // vérifie si contexte Gatsbi s'applique
-            final Contexte c =
-               SessionUtils.getCurrentGatsbiContexteForEntiteId(colonne.getChamp().getChampEntite().getEntite().getEntiteId());
-            if(c == null){ // TK-defaut
+            if(templateEtude == null){ // TK-defaut
                ob = !colonne.getChamp().getChampEntite().isNullable();
             }else{ // gatsbi
-               ob = c.isChampIdRequired(colonne.getChamp().getChampEntite().getId());
+               Integer entiteId = colonne.getChamp().getChampEntite().getEntite().getEntiteId();
+               Contexte templateGatsbiContexte = GatsbiController.retrieveContexteForEtudeAndEntiteId(templateEtude, entiteId);
+               ob = templateGatsbiContexte.isChampIdRequired(colonne.getChamp().getChampEntite().getId());
             }
          }
       }else{ // subderive header
@@ -172,4 +176,8 @@ public class ImportColonneRowRenderer implements RowRenderer<ImportColonne>
       return Labels.getLabel(iProperty.toString());
    }
 
+   public void initContexte(EContexte contexte, Etude etude) {
+      this.templateContexte = contexte;
+      this.templateEtude = etude;
+   }
 }

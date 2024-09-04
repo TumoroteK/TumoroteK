@@ -37,6 +37,7 @@ package fr.aphp.tumorotek.action.imports;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
@@ -55,33 +56,36 @@ public class ListeImportTemplate extends AbstractListeController2
 
    private static final long serialVersionUID = 4014789287342931361L;
 
-   private List<ImportTemplate> listObjects = new ArrayList<>();
+   //TK-537
+   private List<ImportTemplateDecorator> listObjects = new ArrayList<>();
 
    @Override
    public void doAfterCompose(final Component comp) throws Exception{
       super.doAfterCompose(comp);
 
-      final int height = getMainWindow().getListPanelHeight() + 145;
+      //TK-537 : 90 est la hauteur du bloc "templates partagés non utilisés"
+      //ne peut pas être récupéré dynamiquement car getObjectTabController() est null lors de l'appel de cette méthode
+      final int height = getMainWindow().getListPanelHeight() + 145 - 90;
       listPanel.setHeight(height + "px");
    }
 
    @Override
-   public List<ImportTemplate> getListObjects(){
+   public List<ImportTemplateDecorator> getListObjects(){
       return this.listObjects;
    }
 
    @Override
    public void setListObjects(final List<? extends TKdataObject> objs){
       this.listObjects.clear();
-      this.listObjects.addAll((List<ImportTemplate>) objs);
+      this.listObjects.addAll((List<ImportTemplateDecorator>) objs);
    }
 
    @Override
    public void addToListObjects(final TKdataObject obj, final Integer pos){
       if(pos != null){
-         getListObjects().add(pos.intValue(), (ImportTemplate) obj);
+         getListObjects().add(pos.intValue(), (ImportTemplateDecorator)obj);
       }else{
-         getListObjects().add((ImportTemplate) obj);
+         getListObjects().add((ImportTemplateDecorator)obj);
       }
    }
 
@@ -95,10 +99,13 @@ public class ListeImportTemplate extends AbstractListeController2
       List<ImportTemplate> templates = new ArrayList<>();
       if(!SessionUtils.getSelectedBanques(sessionScope).isEmpty()){
          templates =
-            ManagerLocator.getImportTemplateManager().findByBanqueManager(SessionUtils.getSelectedBanques(sessionScope).get(0));
+            ManagerLocator.getImportTemplateManager().findImportTemplateCreatedOrUsedByBanqueWithOrder(SessionUtils.getSelectedBanques(sessionScope).get(0));
       }
 
-      listObjects = templates;
+      
+      if(templates != null) {
+         listObjects = templates.stream().map(template -> buildImportTemplateDecorator(template)).collect(Collectors.toList());
+      }
       setCurrentRow(null);
       setCurrentObject(null);
 
@@ -119,8 +126,8 @@ public class ListeImportTemplate extends AbstractListeController2
       // on passe en mode fiche & liste
       getObjectTabController().switchToFicheAndListeMode();
 
-      // on envoie l'échantillon à la fiche
-      final ImportTemplate edit = ((ImportTemplate) getCurrentObject()).clone();
+      // on envoie le template à la fiche
+      final ImportTemplateDecorator edit = ((ImportTemplateDecorator) getCurrentObject()).clone();
       getFiche().setObject(edit);
       getFiche().switchToStaticMode();
    }
@@ -182,5 +189,20 @@ public class ListeImportTemplate extends AbstractListeController2
    @Override
    public List<? extends TKdataObject> extractLastObjectsCreated(){
       return null;
+   }
+
+   public ImportTemplateDecorator buildImportTemplateDecorator(ImportTemplate importTemplate) {
+      return new ImportTemplateDecorator(importTemplate, !isInCurrentBanque(importTemplate), false);
+   }
+   
+   private boolean isInCurrentBanque(ImportTemplate importTemplate) {
+      if(importTemplate != null) {
+         return importTemplate.getBanque().equals(SessionUtils.getCurrentBanque(sessionScope));
+      }
+      return false;
+   }
+   
+   public void reloadThis() {
+      getBinder().loadComponent(self);
    }
 }

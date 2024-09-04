@@ -2186,6 +2186,9 @@
 				<property name="entiteDao" ref="entiteDao" />
 				<property name="importColonneManager"
 					ref="importColonneManager" />
+				<property name="operationManager" ref="operationManager" />
+				<property name="operationTypeDao" ref="operationTypeDao" />	
+				<property name="importHistoriqueManager" ref="importHistoriqueManager" />								
 			</bean>
 		</property>
 	</bean>
@@ -2203,6 +2206,18 @@
 				<property name="importColonneValidator"
 					ref="importColonneValidator" />
 				<property name="dataTypeDao" ref="dataTypeDao" />
+			</bean>
+		</property>
+	</bean>
+
+	<!-- cet objet a un état => scope prototype + utilisation d'un txProxy spécifique pour forcer le readonly sinon une mise à jour intempestive est faite :-( )-->
+	<bean id="compatibiliteEntreImportTemplateEtBanqueValidator" parent="txProxyTemplateForSupportAndReadonly" scope="prototype">
+		<property name="target">
+			<bean
+				class="fr.aphp.tumorotek.manager.io.imports.CompatibiliteEntreImportTemplateEtBanqueValidator">
+				<property name="importColonneManager" ref="importColonneManager" />
+				<property name="tableAnnotationManager" ref="tableAnnotationManager" />
+				<property name="champEntiteManager" ref="champEntiteManager" />
 			</bean>
 		</property>
 	</bean>
@@ -2258,9 +2273,9 @@
 		<property name="target">
 			<bean
 				class="fr.aphp.tumorotek.manager.impl.io.imports.ImportHistoriqueManagerImpl">
+				<property name="entityManagerFactory" ref="entityManagerFactory" />
 				<property name="importHistoriqueDao"
 					ref="importHistoriqueDao" />
-				<property name="importTemplateDao" ref="importTemplateDao" />
 				<property name="utilisateurDao" ref="utilisateurDao" />
 				<property name="importationDao" ref="importationDao" />
 				<property name="entiteDao" ref="entiteDao" />

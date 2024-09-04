@@ -43,7 +43,45 @@
 	<borderlayout sclass="tabBorderLayout" id="mainBorder">
 		<west title="${c:l('importTemplate.liste.title')}" size="25%"
 			border="normal" splittable="true" collapsible="true" id="listeRegion">
+			<vbox id="westVbox">
 			<listeImportTemplate id="listeImportTemplate"/>
+			<panel id="templatesPartagesNonUtilisesPanel" title="${c:l('importTemplate.filtre.nonUtilises')}" collapsible="false" sclass="panelv2" height="90px">
+				<panelchildren>
+					<vbox  width="95%" >
+						<div height="20px" style="padding-top:5px;padding-left:5px">
+						<listbox id="banquesBox" mold="select" rows="1"
+							model="@{winImportTemplate$composer.banques}"
+							selectedItem="@{winImportTemplate$composer.selectedBanque}">
+							<listitem self="@{each='banque'}" value="@{banque}">
+								<listcell label="@{banque.nom}"/>
+							</listitem>
+						</listbox>
+						</div>
+
+						<hbox>
+						<div height="20px" style="padding-left:5px">
+						<listbox id="templatesPartagesNonUtilisesBox" mold="select" rows="1"
+							width="200px"
+							model="@{winImportTemplate$composer.templatesPartagesNonUtilises}"
+							selectedItem="@{winImportTemplate$composer.selectedTemplatePartageNonUtilise}" >
+							<listitem self="@{each='templateDecorator'}" value="@{templateDecorator}">			
+								<listcell label="@{templateDecorator.nom}" />
+							</listitem>
+						</listbox>
+						</div>
+						<!-- <hbox align="end"> -->
+						<!-- <separator width="30px"/>-->
+						<div style="vertical-align:baseline">
+							<button id="displaySelectedImportTemplate" label="${c:l('general.actions.afficher')}"
+								height="24px"
+								image="/images/icones/small_validate.png" sclass="buttonv2"/>
+						</div>
+						</hbox>
+						<!-- </hbox>-->
+					</vbox>
+				</panelchildren>
+			</panel>
+			</vbox>				
 		</west>
 		<center id="ficheRegion">
 			<ficheImportTemplate id="ficheImportTemplate" hflex="1"/>

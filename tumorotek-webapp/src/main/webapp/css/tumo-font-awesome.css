@@ -1,0 +1,9 @@
+/*!
+ * ce fichier permet de surcharger certaines classes fourni par font-awesome pour personnaliser notamment l'alignement vertical
+ */
+@charset "ISO-8859-1";
+/* "surchage" de .fa-lg{font-size:1.33333333em;line-height:.75em;vertical-align:-15%} pour 
+ * qu'un icône suivant un texte soit aligné verticalement par rapport à celui-ci
+ * et prise en compte de la couleur  
+ */
+ .tumo-fa-orange{color:#F3A313;line-height:normal}
