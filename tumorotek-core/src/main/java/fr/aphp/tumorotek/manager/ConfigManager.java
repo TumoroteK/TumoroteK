@@ -63,9 +63,16 @@ public class ConfigManager
    public static final String[] aSheetName =
       {"Patient List", "Prelevement List", "Echantillon List", "Derive List", "Cession List"};
 
+
+
+   // Type MIME pour les fichiers Excel au format Open XML (".xlsx"), utilisé par Excel 2007 et les versions ultérieures.
+   // Ce format est basé sur XML et la compression ZIP, ce qui rend les fichiers plus petits.
    public static final String OFFICE_OPENXML_MIME_TYPE = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
 
+   // Type MIME pour les anciens fichiers Excel au format binaire (".xls").
    public static final String OFFICE_EXCEL_MIME_TYPE = "application/vnd.ms-excel";
+   public static final String EXCEL_XLS_FILETYPE = ".xls";
+   public static final String EXCEL_XLSX_FILETYPE = ".xlsx";
 
    public static final String UNICODE_CHARSET = "UTF-8";
 
