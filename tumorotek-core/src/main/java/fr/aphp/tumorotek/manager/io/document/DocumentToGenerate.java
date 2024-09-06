@@ -47,8 +47,9 @@ package fr.aphp.tumorotek.manager.io.document;
  */
 public class DocumentToGenerate {
 
-    // Nom du document (ou nom de la feuille Excel)
+    // Nom du document (peut aussi servir pour le nom de la feuille Excel)
     private String documentName;
+
     // Contexte du document (en-tête, informations contextuelles)
     private DocumentContext context;
 
@@ -73,8 +74,8 @@ public class DocumentToGenerate {
     public DocumentData getData() {
         return data;
     }
-    public DataAsArray getDataAsArray() {
-        return (DataAsArray) data;
+    public DataAsTable getDataAsArray() {
+        return (DataAsTable) data;
     }
 
     public DocumentFooter getFooter() {

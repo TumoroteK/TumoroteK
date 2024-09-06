@@ -33,7 +33,7 @@
  * avez pris connaissance de la licence CeCILL, et que vous en avez
  * accepté les termes.
  **/
-package fr.aphp.tumorotek.manager.io.document.detail.array;
+package fr.aphp.tumorotek.manager.io.document.detail.table;
 
 
 /**
@@ -73,5 +73,22 @@ public class CellContent {
         this.complementInItalic = complementInItalic;
     }
 
+    public CellContent(String text, String complement, boolean complementInItalic, boolean complementOnAnotherLine) {
+        this.text = text;
+        this.complement = complement;
+        this.complementInItalic = complementInItalic;
+        this.complementOnAnotherLine = complementOnAnotherLine;
+    }
 
+    /**
+     * Vérifie si le contenu de la cellule est vide.
+     * Un contenu est considéré comme vide si le texte et le complément
+     * sont tous les deux nuls ou constitués uniquement d'espaces blancs.
+     *
+     * @return true si le texte et le complément sont vides ou nuls, false sinon.
+     */
+    public boolean isEmpty() {
+        return (text == null || text.trim().isEmpty()) &&
+                (complement == null || complement.trim().isEmpty());
+    }
 }

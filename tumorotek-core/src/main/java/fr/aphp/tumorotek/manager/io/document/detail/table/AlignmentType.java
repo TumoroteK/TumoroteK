@@ -33,7 +33,7 @@
  * avez pris connaissance de la licence CeCILL, et que vous en avez
  * accepté les termes.
  **/
-package fr.aphp.tumorotek.manager.io.document.detail.array;
+package fr.aphp.tumorotek.manager.io.document.detail.table;
 
 
 public enum AlignmentType {

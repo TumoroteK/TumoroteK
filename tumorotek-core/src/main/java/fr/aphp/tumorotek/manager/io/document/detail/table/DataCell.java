@@ -33,7 +33,7 @@
  * avez pris connaissance de la licence CeCILL, et que vous en avez
  * accepté les termes.
  **/
-package fr.aphp.tumorotek.manager.io.document.detail.array;
+package fr.aphp.tumorotek.manager.io.document.detail.table;
 
 /**
  * La classe représente une cellule de données dans un tableau.
@@ -61,10 +61,20 @@ public class DataCell {
         this.cellContent = cellContent;
     }
 
+
+    public DataCell(String text) {
+        this.cellContent = new CellContent(text);
+    }
     public DataCell(CellContent cellContent, String borderLeftColor) {
         this.cellContent = cellContent;
         this.borderLeftColor = borderLeftColor;
     }
+
+    public DataCell(CellContent cellContent, boolean withBorder) {
+        this.cellContent = cellContent;
+        this.withBorder = withBorder;
+    }
+
 
     public DataCell(CellContent cellContent, String borderLeftColor, int colspan, AlignmentType alignmentType) {
         this.cellContent = cellContent;
@@ -73,12 +83,10 @@ public class DataCell {
         this.alignmentType = alignmentType;
     }
 
-    public DataCell(CellContent cellContent, String borderLeftColor, int colspan, boolean withBorder, AlignmentType alignmentType) {
+    public DataCell(CellContent cellContent, String borderLeftColor, boolean withBorder) {
         this.cellContent = cellContent;
         this.borderLeftColor = borderLeftColor;
-        this.colspan = colspan;
         this.withBorder = withBorder;
-        this.alignmentType = alignmentType;
     }
 
     public CellContent getCellContent() {

@@ -33,50 +33,42 @@
  * avez pris connaissance de la licence CeCILL, et que vous en avez
  * accepté les termes.
  **/
-package fr.aphp.tumorotek.manager.io.document.detail.array;
 
+package fr.aphp.tumorotek.manager.io.document;
 
-import java.util.ArrayList;
+import fr.aphp.tumorotek.manager.io.document.detail.table.CellRow;
+import fr.aphp.tumorotek.manager.io.document.detail.table.DataCell;
+
 import java.util.List;
 
 
 /**
- * La classe représente une rangée de cellules dans un tableau ou une feuille de calcul.
+ * La classe <code>DataAsArray</code> représente un ensemble de données structurées sous forme de tableau.
+ * Elle implémente l'interface <code>DocumentData</code> et contient une liste de lignes de cellules.
  *
- * <p>Elle contient une liste de cellules, chacune étant un objet {@link DataCell}. Cette classe permet de
- * regrouper et gérer les cellules d'une même rangée.</p>
+ * Cette classe est utilisée pour manipuler des données tabulaires dans le contexte de la gestion des documents.
  *
- * <p><b>Exemple d'utilisation :</b></p>
- * <pre>{@code
- * List<DataCell> cells = new ArrayList<>();
- * CellRow row = new CellRow();
- * row.listDataCell = cells;
- * }</pre>
+ * <p>La structure des données est représentée par une liste de <code>CellRow</code>, chaque <code>CellRow</code>
+ * représentant une ligne du tableau.</p>
+ *
  */
-public class CellRow {
-    private List<DataCell> listDataCell;
 
-    public CellRow() {
-        this.listDataCell = new ArrayList<>();
+public class DataAsTable implements DocumentData {
+    private List<CellRow> listCellRow;
+
+    public DataAsTable() {
     }
 
-    /**
-     * Ajoute une cellule à la rangée.
-     *
-     * @param cell la cellule à ajouter.
-     */
-    public void addDataCell(DataCell cell) {
-        listDataCell.add(cell);
-    }
-
-    /**
-     * Ajoute plusieurs cellules à la rangée.
-     *
-     * @param cells les cellules à ajouter.
-     */
-    public void addAllDataCells(List<DataCell> cells) {
-        listDataCell.addAll(cells);
+    public DataAsTable(List<CellRow> listCellRow) {
+        this.listCellRow = listCellRow;
     }
 
 
+    public List<CellRow> getListCellRow() {
+        return listCellRow;
+    }
+
+    public void setListCellRow(List<CellRow> listCellRow) {
+        this.listCellRow = listCellRow;
+    }
 }

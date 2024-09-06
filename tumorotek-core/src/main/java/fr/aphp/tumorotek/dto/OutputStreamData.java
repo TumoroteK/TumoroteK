@@ -37,14 +37,25 @@ package fr.aphp.tumorotek.dto;
 
 import java.io.ByteArrayOutputStream;
 
+/**
+ * Représente les données associées à un flux de sortie pour un fichier, y compris le nom du fichier,
+ * le format, le type de contenu et le flux de sortie associé (ByteArrayOutputStream).
+ */
+
 public class OutputStreamData {
+
+//  Nom du fichier associé au flux de sortie. extention inclus
     String fileName;
 
-// Ne pas coder en dur les formats et contentType, utilisez ConfigManager
-    String format;
 
+//   Format du fichier. Ne pas coder en dur les formats, utilisez ConfigManager pour la gestion des formats.
+     String format;
+
+
+//   Type de contenu du fichier. Ne pas coder en dur les types de contenu, utilisez  ConfigManager pour la gestion des types.
     String contentType;
 
+//   Flux de sortie associé aux données du fichier. Utilisé pour écrire les données du fichier.
     ByteArrayOutputStream outputStream;
 
     public OutputStreamData() {
@@ -57,12 +68,12 @@ public class OutputStreamData {
         this.outputStream = outputStream;
     }
 
-    public String getDocumentName() {
+    public String getFileName() {
         return fileName;
     }
 
-    public void setDocumentName(String documentName) {
-        this.fileName = documentName;
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
     }
 
     public String getFormat() {
