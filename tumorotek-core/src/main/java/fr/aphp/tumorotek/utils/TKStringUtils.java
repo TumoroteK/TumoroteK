@@ -38,6 +38,9 @@ package fr.aphp.tumorotek.utils;
 import org.jsoup.Jsoup;
 import org.jsoup.parser.Tag;
 import org.jsoup.safety.Whitelist;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 
 
 
@@ -173,22 +176,16 @@ public final class TKStringUtils
 
 
    /**
-    * Génère un nom de feuille Excel sûr à partir d'une chaîne donnée en remplaçant
-    * les caractères interdits et en tronquant la chaîne à une longueur maximale de 31 caractères.
+    * Renvoie une chaîne de caractères conforme aux restrictions de nom de fichier
+    * dans certaines applications. Remplace les caractères interdits et tronque
+    * le nom à une longueur maximale de 31 caractères.
     *
-    * Règles d'ajustement appliquées :
-    * - Les caractères interdits dans les noms de feuilles Excel (/, \, ?, *) sont remplacés par '-'.
-    * - Les crochets '[' et ']' sont remplacés par des parenthèses '(' et ')'.
-    * - Si le nom de la feuille dépasse 31 caractères, il est tronqué pour respecter cette limite.
-    *
-    * Cas particuliers :
-    * - Si l'entrée est `null`, la méthode retourne "Sheet" comme nom par défaut.
-    * - Si l'entrée est une chaîne vide, une exception IllegalArgumentException est levée pour indiquer
-    *   que le nom de la feuille ne peut pas être vide après le traitement.
-    *
-    * @param input La chaîne d'entrée à convertir en un nom de feuille Excel valide.
-    * @return Un nom de feuille Excel conforme aux restrictions de nommage d'Excel.
-    * @throws IllegalArgumentException si le nom de la feuille est vide après traitement.
+    * @param input Le nom initial fourni par l'utilisateur.
+    *              Si null, le nom par défaut "DefaultName" est utilisé.
+    * @return Un nom sécurisé, avec les caractères interdits remplacés par des
+    *         caractères sûrs et une longueur maximale de 31 caractères.
+    * @throws IllegalArgumentException Si le nom résultant est vide
+    *                                  après le traitement des caractères interdits.
     */
    public static String getSafeSheetName(String input) {
       if (input == null) {
@@ -215,5 +212,36 @@ public final class TKStringUtils
 
       return safeName;
    }
+
+   /**
+    * Retourne la date actuelle formatée selon le modèle fourni.
+    * Si le modèle est null, le format par défaut "dd MM yyyy" est utilisé.
+    *
+    * @param pattern Le modèle de format de date-temps (par exemple, "yyyyMMddHHmm").
+    *                Si null, le format "dd/MM/yyyy" est utilisé.
+    * @return Une chaîne de date formatée ou un message d'erreur si le modèle est invalide.
+    */
+   public static String getCurrentDate(String pattern) {
+      try {
+         // Crée la date et l'heure actuelles
+         LocalDateTime now = LocalDateTime.now();
+
+         // Utilise le format par défaut si le modèle est null
+         if (pattern == null || pattern.isEmpty()) {
+            pattern = "dd/MM/yyyy";
+         }
+
+         // Définit le formateur avec le modèle fourni ou par défaut
+         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
+
+         // Formate la date et l'heure actuelles
+         return now.format(formatter);
+      } catch (IllegalArgumentException | DateTimeParseException e) {
+         // Gère le cas où le modèle est invalide
+         return "Modèle de date invalide : " + pattern;
+      }
+   }
+
+
 
 }
