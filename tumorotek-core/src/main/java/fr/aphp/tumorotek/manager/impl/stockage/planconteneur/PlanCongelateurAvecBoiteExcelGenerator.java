@@ -37,9 +37,11 @@ package fr.aphp.tumorotek.manager.impl.stockage.planconteneur;
 
 
 import fr.aphp.tumorotek.dto.OutputStreamData;
+import fr.aphp.tumorotek.manager.ConfigManager;
 import fr.aphp.tumorotek.manager.impl.io.production.DocumentWithDataAsArrayExcelProducer;
 import fr.aphp.tumorotek.manager.io.document.DocumentWithDataAsArray;
 import fr.aphp.tumorotek.manager.io.production.DocumentProducer;
+import fr.aphp.tumorotek.utils.TKStringUtils;
 
 import java.util.List;
 
@@ -58,13 +60,17 @@ public class PlanCongelateurAvecBoiteExcelGenerator extends AbstractPlanCongelat
     @Override
     protected OutputStreamData produceOutput(List<DocumentWithDataAsArray> listPlanConteneur) {
         OutputStreamData outputStreamData = new OutputStreamData();
+        outputStreamData.setFormat(".xls");
+        outputStreamData.setContentType(ConfigManager.OFFICE_EXCEL_MIME_TYPE);
+        outputStreamData.setFileName(buildFileName());
         documentWithDataAsArrayExcelProducer.produce(listPlanConteneur, outputStreamData);
         return outputStreamData;
     }
 
     @Override
     protected String buildFileName() {
-        return "plan_congelateur_avec_boite.xlsx";
+        String date = TKStringUtils.getCurrentDate("yyyyMMddHHmm");
+        return String.format("plan_conteneur_avec_boites_%s.xlsx", date);
     }
 
     @Override

@@ -45,7 +45,7 @@ import java.util.List;
 
 
 /**
- * La classe  étend {@link AbstractPlanCongelateurSansBoiteGenerator}  et est responsable de la génération d'un plan
+ * La classe  étend {@link PlanCongelateurSansBoiteGenerator}  et est responsable de la génération d'un plan
  * pour un congélateur sans boîte au format Excel.
  *
  * <p>Elle utilise un producteur de documents {@link DocumentWithDataAsArrayExcelProducer} pour créer le fichier
@@ -53,7 +53,7 @@ import java.util.List;
  * Excel basé sur une liste de conteneurs.</p>
  *
  */
-public class PlanCongelateurSansBoiteExcelGenerator extends AbstractPlanCongelateurSansBoiteGenerator {
+public class PlanCongelateurSansBoiteExcelGenerator extends PlanCongelateurSansBoiteGenerator {
 
 
     private DocumentWithDataAsArrayExcelProducer documentWithDataAsArrayExcelProducer;

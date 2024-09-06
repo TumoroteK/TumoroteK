@@ -10,6 +10,15 @@
 
 	<import resource="applicationContextAOP.xml" />
 
+	<bean id="documentWithDataAsArrayExcelProducer" class="fr.aphp.tumorotek.manager.impl.io.production.DocumentWithDataAsArrayExcelProducer"/>
+
+	<bean id="planCongelateurAvecBoiteExcelGenerator" class="fr.aphp.tumorotek.manager.impl.stockage.planconteneur.PlanCongelateurAvecBoiteExcelGenerator">
+	</bean>
+
+	<bean id="planCongelateurSansBoiteExcelGenerator"
+		  class="fr.aphp.tumorotek.manager.impl.stockage.planconteneur.PlanCongelateurSansBoiteExcelGenerator">
+		<property name="conteneurManager" ref="conteneurManager"/>
+	</bean>
 
 
 	<!-- Package coeur.patient -->

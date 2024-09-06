@@ -42,13 +42,13 @@ import java.util.Locale;
 /**
  * Classe abstraite pour la génération de plans de congélateurs avec boîte.
  *
- * Cette classe étend {@link AbstractPlanCongelateurGenerator} et fournit une
+ * Cette classe étend {@link PlanCongelateurAvecBoiteGenerator} et fournit une
  * implémentation spécifique pour la génération de plans de congélateurs qui
  * incluent des boîtes. Elle est conçue pour être étendue par des classes concrètes
  * qui doivent définir la logique spécifique à la génération des détails du plan.
  *
  */
-public abstract class AbstractPlanCongelateurAvecBoiteGenerator extends AbstractPlanCongelateurGenerator {
+public abstract class AbstractPlanCongelateurAvecBoiteGenerator extends PlanCongelateurAvecBoiteGenerator {
     @Override
     protected DocumentData buildDetailPlan(Conteneur c, Locale locale) {
         return null;

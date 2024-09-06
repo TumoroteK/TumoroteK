@@ -1,10 +1,10 @@
 /**
  * Copyright ou © ou Copr. Ministère de la santé, FRANCE (01/01/2011)
  * dsi-projet.tk@aphp.fr
- *
+ * <p>
  * Ce logiciel est un programme informatique servant à la gestion de
  * l'activité de biobanques.
- *
+ * <p>
  * Ce logiciel est régi par la licence CeCILL soumise au droit français
  * et respectant les principes de diffusion des logiciels libres. Vous
  * pouvez utiliser, modifier et/ou redistribuer ce programme sous les
@@ -16,7 +16,7 @@
  * Pour les mêmes raisons, seule une responsabilité restreinte pèse sur
  * l'auteur du programme, le titulaire des droits patrimoniaux et les
  * concédants successifs.
- *
+ * <p>
  * A cet égard  l'attention de l'utilisateur est attirée sur les
  * risques associés au chargement,  à l'utilisation,  à la modification
  * et/ou au  développement et à la reproduction du logiciel par
@@ -28,25 +28,20 @@
  * besoins dans des conditions permettant d'assurer la sécurité de leurs
  * systèmes et ou de leurs données et, plus généralement, à l'utiliser
  * et l'exploiter dans les mêmes conditions de sécurité.
- *
+ * <p>
  * Le fait que vous puissiez accéder à cet en-tête signifie que vous
  * avez pris connaissance de la licence CeCILL, et que vous en avez
  * accepté les termes.
  **/
 package fr.aphp.tumorotek.manager.impl.stockage.planconteneur;
 
-import fr.aphp.tumorotek.manager.io.document.LabelValue;
-import fr.aphp.tumorotek.manager.io.production.DocumentProducer;
 import fr.aphp.tumorotek.dto.OutputStreamData;
-import fr.aphp.tumorotek.manager.io.document.DocumentContext;
-import fr.aphp.tumorotek.manager.io.document.DocumentData;
-import fr.aphp.tumorotek.manager.io.document.DocumentFooter;
-import fr.aphp.tumorotek.manager.io.document.DocumentWithDataAsArray;
+import fr.aphp.tumorotek.manager.io.document.*;
+import fr.aphp.tumorotek.manager.io.production.DocumentProducer;
 import fr.aphp.tumorotek.model.stockage.Conteneur;
 import fr.aphp.tumorotek.model.stockage.Terminale;
-import net.sf.cglib.core.Local;
+import fr.aphp.tumorotek.utils.TKStringUtils;
 
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -56,7 +51,7 @@ import java.util.*;
  *
  */
 
-public abstract class AbstractPlanCongelateurGenerator implements PlanCongelateurGenerator {
+public abstract class PlanCongelateurAvecBoiteGenerator implements PlanCongelateurGenerator {
 
     public OutputStreamData generate(List<Conteneur> list, Locale locale) {
         List<DocumentWithDataAsArray> listPlanConteneur = new ArrayList<>();
@@ -84,40 +79,34 @@ public abstract class AbstractPlanCongelateurGenerator implements PlanCongelateu
     }
 
 
-
-    protected DocumentContext buildEntetePlan(Conteneur conteneur, Locale locale) {
+    public DocumentContext buildEntetePlan(Conteneur conteneur, Locale locale) {
         List<LabelValue> listLabelValue = new ArrayList<>();
 
-        // 1. Date label based on Locale
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", locale);
-        String currentDate = dateFormat.format(new Date());
-        listLabelValue.add(new LabelValue("Date", currentDate, false, false));
+        String currentDate = TKStringUtils.getCurrentDate(null);
+        listLabelValue.add(new LabelValue(currentDate, "", true, false));
 
         // 2. Label for "Champ.Retour.Conteneur" and its value
-//        String retourConteneurLabel = LabelFinder.getLabel("Champ.Retour.Conteneur");
-        String retourConteneurLabel = "LabelFinder.getLabel()";
+        String containerNameLabel = "Nom de congélateur";
         String nomConteneur = conteneur.getNom();
-        listLabelValue.add(new LabelValue(retourConteneurLabel, nomConteneur, false, false));
+        listLabelValue.add(new LabelValue(containerNameLabel, nomConteneur, false, true));
 
         // 3. Label for "conteneur.description" and its value
-//        String descriptionLabel = LabelFinder.getLabel("conteneur.description");
-        String descriptionLabel = "LabelFinder.getLabel(conteneur.description)";
+        String descriptionLabel = "Description";
         String conteneurDescription = conteneur.getDescription();
         listLabelValue.add(new LabelValue(descriptionLabel, conteneurDescription, false, false));
 
         // 4. Label for "stockage.excel.plan.etablish.service" and its value
-
-//        String serviceLabel = LabelFinder.getLabel("stockage.excel.plan.etablish.service");
-        String serviceLabel = "LabelFinder.getLabel(stockage.excel.plan.etablish.service";
+        // todo: add etablish
+        String serviceLabel = "Etablissement / service";
         String serviceValue = conteneur.getService().getNom();
-        listLabelValue.add(new LabelValue(serviceLabel, serviceValue ,false,false ));
+        listLabelValue.add(new LabelValue(serviceLabel, serviceValue, false, false));
 
 
         return new DocumentContext(listLabelValue);
     }
 
 
-    protected DocumentFooter buildPiedPagePlan(Conteneur conteneur) {
+    public DocumentFooter buildPiedPagePlan(Conteneur conteneur) {
         String contenurName = conteneur.getNom();
         return new DocumentFooter(contenurName, null, null);
     }
