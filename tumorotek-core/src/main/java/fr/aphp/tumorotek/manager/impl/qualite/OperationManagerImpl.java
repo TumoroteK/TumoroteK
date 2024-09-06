@@ -42,6 +42,7 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -50,6 +51,8 @@ import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.sql.DataSource;
 
+import org.hibernate.SQLQuery;
+import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.CannotGetJdbcConnectionException;
@@ -267,6 +270,20 @@ public class OperationManagerImpl implements OperationManager
          objetId = getObjetIdFromObject(obj);
       }
       return operationDao.findByObjetIdEntiteAndOperationType(objetId, entite, oType);
+   }
+   
+   @Override
+   public Date findMaxDateForObjetIdEntiteIdAndOperationTypeId(Integer objetId, Integer entiteId, Integer operationTypeId) {
+      final EntityManager em = entityManagerFactory.createEntityManager();
+      
+      Session session = em.unwrap(Session.class);
+      SQLQuery query = session.createSQLQuery("SELECT max(DATE_) FROM OPERATION WHERE OBJET_ID = :objetId AND" +
+      " ENTITE_ID = :entiteId AND OPERATION_TYPE_ID = :operationTypeId");
+      query.setParameter("objetId", objetId);
+      query.setParameter("entiteId", entiteId);
+      query.setParameter("operationTypeId", operationTypeId);
+      
+      return (Date)query.uniqueResult();
    }
 
    @Override

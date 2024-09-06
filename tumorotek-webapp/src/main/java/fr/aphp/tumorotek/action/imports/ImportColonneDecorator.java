@@ -41,6 +41,7 @@ import java.util.List;
 
 import org.zkoss.util.resource.Labels;
 
+import fr.aphp.tumorotek.model.contexte.EContexte;
 import fr.aphp.tumorotek.model.io.imports.ImportColonne;
 
 /**
@@ -62,21 +63,23 @@ public class ImportColonneDecorator
    private Boolean disableEditLabel = false;
    
    // decorateur s'applique dans un contexte gatsbi?
-   //la maladie doit être considérée comme une visite => date de début est en fait la date de la visite 
-   private boolean visiteGatsbi = false;
+   //la maladie doit être considérée comme une visite => date de début est en fait la date de la visite
+   //TK-537 : le contexte à utiliser doit être celui du template si non null sinon, prendre celui de la session
+   //utilisé pour affiché le libellé du champ en prenant le bon contexte.
+   private EContexte importTemplateContexte;
 
+   //TK-537 : constructeur utilisé lors du passage en mode édition. visiteGatsbi est valorisé a posteriori
+   // /!\ visiteGatsbi non valorisé dans un cas d'appel (onClick$addChamp)
    public ImportColonneDecorator(final ImportColonne ic){
       colonne = ic;
    }
    
-   /*
-    * @since 2.3.0-gatsbi
-    */
-   public ImportColonneDecorator(final ImportColonne ic, final boolean _g){
+   public ImportColonneDecorator(final ImportColonne ic, final EContexte importTemplateContexte){      
       colonne = ic;
-      visiteGatsbi = _g;
+      this.importTemplateContexte = importTemplateContexte;
    }
-
+   
+   
    public ImportColonne getColonne(){
       return colonne;
    }
@@ -86,7 +89,7 @@ public class ImportColonneDecorator
    }
 
    public String getChamp(){
-    return ImportUtils.extractChamp(colonne, visiteGatsbi);
+    return ImportUtils.extractChamp(colonne, importTemplateContexte);
    }
 
    public String getFormat(){
@@ -121,7 +124,7 @@ public class ImportColonneDecorator
       String entite = "";
       if(colonne.getChamp() != null){
          if(colonne.getChamp().getChampEntite() != null){
-            if (!visiteGatsbi) {
+            if (EContexte.GATSBI != importTemplateContexte || colonne.getChamp().getChampEntite().getEntite().getEntiteId() != 7) {
                entite = Labels.getLabel("Entite." + colonne.getChamp().getChampEntite().getEntite().getNom());
             } else { // rendu entite Maladie -> Visite
                entite = Labels.getLabel("gatsbi.visite");
@@ -173,12 +176,12 @@ public class ImportColonneDecorator
     *            rend artificiellement les 3 colonnes de l'entete non supprimables
     * @return ImportColonnes décorées.
     */
-   public static List<ImportColonneDecorator> decorateListe(final List<ImportColonne> cols, final boolean isSubderive){
+   public static List<ImportColonneDecorator> decorateListe(final List<ImportColonne> cols, EContexte templateContexte, final boolean isSubderive){
       final List<ImportColonneDecorator> liste = new ArrayList<>();
       final Iterator<ImportColonne> it = cols.iterator();
       int i = 0;
       while(it.hasNext()){
-         liste.add(new ImportColonneDecorator(it.next()));
+         liste.add(new ImportColonneDecorator(it.next(), templateContexte));
          // rend les 3 premiers decorateurs non supprimables
          if(i < 3 && isSubderive){
             liste.get(i).setCanDelete(false);
@@ -241,7 +244,10 @@ public class ImportColonneDecorator
       this.canDelete = canDelete;
    }
 
-   public void setVisiteGatsbi(boolean _v){
-      this.visiteGatsbi = _v;
+   public void setImportTemplateContexte(EContexte importTemplateContexte){
+      this.importTemplateContexte = importTemplateContexte;
    }
+
+
+   
 }

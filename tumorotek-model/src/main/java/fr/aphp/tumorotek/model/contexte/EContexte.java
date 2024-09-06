@@ -67,4 +67,13 @@ public enum EContexte
    public String toString(){
       return nom;
    }
+   
+   public static EContexte findByNom(String nom) {
+      for (EContexte contexte : values()) {
+         if (contexte.getNom().equals(nom)) {
+            return contexte;
+         }
+      }
+      return null;
+   }
 }

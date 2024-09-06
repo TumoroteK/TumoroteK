@@ -35,6 +35,7 @@
  **/
 package fr.aphp.tumorotek.manager.io.imports;
 
+import java.util.Date;
 import java.util.List;
 
 import fr.aphp.tumorotek.model.coeur.prelevement.Prelevement;
@@ -69,12 +70,14 @@ public interface ImportHistoriqueManager
     */
    List<ImportHistorique> findAllObjectsManager();
 
+   //TK-537
    /**
-    * Recherche un ImportHistorique dont le la banque est passée en paramètre.
-    * @param importTemplate Template de l'objet que l'on recherche.
-    * @return Une liste d'ImportHistoriques.
+    * recherche tous le ImportHistoriques associés à un modèle et exécutés par une banque donnée
+    * @param templateId : l'id du modèle dont on recherche les historiques
+    * @param importBanqueId : l'id de la banque d'exécution pour laquelle on recherche les historiques d'un modèle
+    * @return Liste de ImportHistoriques.
     */
-   List<ImportHistorique> findByTemplateWithOrderManager(ImportTemplate importTemplate);
+   List<ImportHistorique> findByTemplateIdAndImportBanqueIdWithOrderManager(Integer templateId, Integer importBanqueId);
 
    /**
     * Recherche les Importations d'un ImportHistorique.
@@ -110,12 +113,10 @@ public interface ImportHistoriqueManager
    /**
     * Persist une instance d'ImportHistorique dans la base de données.
     * @param ImportHistorique Nouvelle instance de l'objet à créer.
-    * @param importTemplate ImportTemplate de l'historique.
     * @param utilisateur Utilisateur.
     * @param importations Importations réalisées lors de l'historique.
     */
-   void createObjectManager(ImportHistorique importHistorique, ImportTemplate importTemplate, Utilisateur utilisateur,
-      List<Importation> importations);
+   void createObjectManager(ImportHistorique importHistorique, Utilisateur utilisateur, List<Importation> importations);
 
    /**
     * Supprime un ImportHistorique de la base de données.
@@ -138,4 +139,14 @@ public interface ImportHistoriqueManager
     */
    List<Prelevement> findPrelevementByImportHistoriqueManager(ImportHistorique ih);
 
+   Date findMaxDateImportationForImportTemplateId(Integer importTemplateId, Integer utilisateurBanqueId);
+   
+   //TK-537
+   /**
+    * Retourne le nom de toutes les banques utilisant un modèle partagé (sans renvoyer la banque du modèle)
+    * @param importTemplateId id du modèle
+    * @param templateBanqueId id de la banque du modèle à exclure
+    * @return le nom de toutes les banques utilisant un modèle partagé (sans renvoyer la banque du modèle)
+    */
+   List<String> findNomBanqueUtilisantUnTemplatePartage(Integer importTemplateId, Integer templateBanqueId);
 }

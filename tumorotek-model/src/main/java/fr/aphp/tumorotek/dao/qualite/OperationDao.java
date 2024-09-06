@@ -98,7 +98,7 @@ public interface OperationDao extends GenericDaoJpa<Operation, Integer>
     * @return Liste des Operation.
     */
    List<Operation> findByObjetIdEntiteAndOperationType(Integer objetId, Entite entite, OperationType operationType);
-
+   
    /**
     * Recherche les opérations faites à une date.
     * @param date date recherchée.

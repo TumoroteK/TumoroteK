@@ -228,10 +228,17 @@ public abstract class AbstractFicheCombineController extends AbstractFicheContro
    }
 
    /**
-    * Change mode de la fiche en mode création.
+    * Bascule la fiche en mode création en réinitialisant l'objet
     */
    public void switchToCreateMode(){
       setNewObject();
+      switchToCreateModeWithoutReinitObject();
+   }
+   
+   /**
+    * Change mode de la fiche en mode création.
+    */
+   protected void switchToCreateModeWithoutReinitObject(){
       switchButtonsToCreateOrEdit(true);
       switchComponentsVisibility(false);
       setFocusOnElement();
@@ -256,7 +263,7 @@ public abstract class AbstractFicheCombineController extends AbstractFicheContro
       }
    }
 
-   private void switchButtonsToCreateOrEdit(final boolean isCreate){
+   protected void switchButtonsToCreateOrEdit(final boolean isCreate){
       validateC.setVisible(!isCreate);
       revertC.setVisible(!isCreate);
       createC.setVisible(isCreate);

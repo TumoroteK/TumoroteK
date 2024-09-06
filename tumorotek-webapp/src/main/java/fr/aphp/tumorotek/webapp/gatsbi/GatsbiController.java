@@ -63,6 +63,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.Events;
@@ -106,6 +107,7 @@ import fr.aphp.tumorotek.model.coeur.patient.Patient;
 import fr.aphp.tumorotek.model.coeur.prelevement.Prelevement;
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.contexte.Collaborateur;
+import fr.aphp.tumorotek.model.contexte.EContexte;
 import fr.aphp.tumorotek.model.contexte.Transporteur;
 import fr.aphp.tumorotek.model.contexte.gatsbi.Contexte;
 import fr.aphp.tumorotek.model.contexte.gatsbi.ContexteType;
@@ -190,86 +192,6 @@ public class GatsbiController
 
    public GatsbiController(){}
 
-   /**
-    * Récupére tous les ids des champs à ne plus afficher.
-    * Surcharge l'appel de contexte.getHiddenChampEntiteIds afin d'ajouter 
-    * des dépendances spécifiques par entité entre certains champs.
-    * @param contexte 
-    * @return liste ids
-    */
-   public static List<Integer> getHiddenChampEntiteIdsForContexte(Contexte c){
-      List<Integer> hiddenIds = new ArrayList<Integer>();
-      if(c != null){
-         hiddenIds.addAll(c.getHiddenChampEntiteIds());
-      }
-      
-      // correctif spécifique champs associés
-      addAssociatedChampEntite(c, hiddenIds);
-
-      return hiddenIds;
-   }  
-      
-   /**
-    * Récupére tous les ids des champs obligatoires.
-    * @param contexte 
-    * @return liste ids
-    */
-   public static List<Integer> getRequiredChampEntiteIdsForContexte(Contexte c){
-      List<Integer> requiredIds = new ArrayList<Integer>();
-      if(c != null){
-         requiredIds.addAll(c.getRequiredChampEntiteIds());
-      }
-      
-      // correctif spécifique champs associés
-      addAssociatedChampEntite(c, requiredIds);
-
-      return requiredIds;
-   }
-   
-   /**
-    * Ajoute les champs entites associés au comportement hidden/required 
-    * si nécessaire afin d'éviter toute incohérence
-    * @param c contexte
-    * @param hiddenIds
-    */
-   private static void addAssociatedChampEntite(Contexte c, List<Integer> ids){
-      // prelevement: nonconfs
-      if (c.getContexteType().equals(ContexteType.PRELEVEMENT)) {
-         // ncfs arrive
-         if (ids.contains(256)) {
-            if (!ids.contains(257)) ids.add(257); // raisons   
-         } else {
-            ids.remove(Integer.valueOf(257));
-         }
-      }
-      
-      // echantillon: quantite et nonconfs
-      if (c.getContexteType().equals(ContexteType.ECHANTILLON)) {
-         // quantite
-         if (ids.contains(61)) {
-            if (!ids.contains(62)) ids.add(62); // quantite_init    
-            if (!ids.contains(63)) ids.add(63); // quantite_unite    
-         } else {
-            ids.remove(Integer.valueOf(62));
-            ids.remove(Integer.valueOf(63));
-         }
-         
-         // ncfs traitement
-         if (ids.contains(243)) {
-            if (!ids.contains(261)) ids.add(261); // raisons   
-         } else {
-            ids.remove(Integer.valueOf(261));
-         }
-         
-         // ncfs cession
-         if (ids.contains(244)) {
-            if (!ids.contains(262)) ids.add(262); // raisons   
-         } else {
-            ids.remove(Integer.valueOf(262));
-         }
-      }
-   }
-
    public static List<Div> wireBlockDivsFromMainComponent(ContexteType type, Component main){
       if(divBlockIds.containsKey(type)){
          return Arrays.stream(divBlockIds.get(type)).map(id -> (Div) main.getFellowIfAny(id)).filter(d -> d != null)
@@ -297,7 +219,7 @@ public class GatsbiController
       log.debug("showing or hiding items");
       if(items != null && c != null){
 
-         List<Integer> hidden = getHiddenChampEntiteIdsForContexte(c);
+         List<Integer> hidden = ManagerLocator.getChampEntiteManager().retrieveHiddenChampEntiteIdsForGatsbiContexte(c);
 
          for(Div div : items){
             div.setVisible(
@@ -328,7 +250,7 @@ public class GatsbiController
       log.debug("switch items required or not");
       if(items != null && c != null){
 
-         List<Integer> required = getRequiredChampEntiteIdsForContexte(c);
+         List<Integer> required = ManagerLocator.getChampEntiteManager().retrieveRequiredChampEntiteIdsForGatsbiContexte(c);
 
          if(!required.isEmpty()){
             boolean isReq;
@@ -624,67 +546,43 @@ public class GatsbiController
       return constraint;
    }
 
+   //TK-537 : cette signature de méthode qui existait avant la TK-537 est gardée pour éviter des erreurs de refactoring
+   //mais dans ce cas, les champs anapat' qui ne concernent pas le contexte sérologie sont ramenés.
+   //potentiellement les appels ne concernent peut-être pas les spécificités de la sérologie
+   public static List<ChampEntite> findByEntiteImportAndIsNullableManager(final Entite entite, final Boolean canImport,
+      final Boolean isNullable){
+      return findByEntiteImportAndIsNullableManager(entite, canImport, isNullable, null);
+   }
+   
    // Interceptions
    // imports
    // recherche > affichages
    public static List<ChampEntite> findByEntiteImportAndIsNullableManager(final Entite entite, final Boolean canImport,
-      final Boolean isNullable){
-
-      final List<ChampEntite> chpE = new ArrayList<ChampEntite>();
-
-      final Contexte contexte = SessionUtils.getCurrentGatsbiContexteForEntiteId(entite.getEntiteId());
-
-      if(contexte == null){ // TK defaut
-         if(isNullable != null){
-            chpE
-               .addAll(ManagerLocator.getChampEntiteManager().findByEntiteImportAndIsNullableManager(entite, canImport, isNullable));
-         } else {
-            chpE
-               .addAll(ManagerLocator.getChampEntiteManager().findByEntiteAndImportManager(entite, true));
-         }
-         
-         // removes patient identifiant !!
-         chpE.removeIf(c -> c.getId().equals(272));       
-      }else{ // surcharge gatsbi
-         chpE.addAll(ManagerLocator.getChampEntiteManager().findByEntiteAndImportManager(entite, canImport));
-
-         // filtre les champs visibles suivant le contexte Gatsbi
-         List<Integer> hiddenIds = getHiddenChampEntiteIdsForContexte(contexte);
-         chpE.removeIf(chp -> hiddenIds.contains(chp.getId()));
-
-         if(isNullable != null){
-            // filtre les champs obligatoires suivant le contexte Gatsbi
-            // surcharge la propriété isNullable de manière non persistante
-            List<Integer> reqIds = getRequiredChampEntiteIdsForContexte(contexte);
-            if(isNullable){ // champs non obligatoires
-               chpE.removeIf(chp -> reqIds.contains(chp.getId()));
-               chpE.stream().forEach(chp -> chp.setNullable(true));
-            }else{ // obligatoires
-               chpE.removeIf(chp -> !reqIds.contains(chp.getId()));
-               chpE.stream().forEach(chp -> chp.setNullable(false));
-            }
+      final Boolean isNullable, Banque banqueAPrendreEnCompte){
+       
+      EContexte banqueContexte = null;
+      Contexte gatsbiContexte = null;
+      
+      if(banqueAPrendreEnCompte == null) {
+         //on laisse EContexte à null on ne s'intéresse qu'à la partie Gatsbi en prenant la banque ne session, comme c'était fait avant la TK-587
+         gatsbiContexte = SessionUtils.getCurrentGatsbiContexteForEntiteId(entite.getEntiteId());
+      }
+      //sinon on s'appuie sur la banque transmise pour récupérer le contexte de la collection et l'éventuelle contexte Gatsbi :
+      //la banque peut être celle du template ou celle de la session
+      else {
+         banqueContexte = EContexte.findByNom(banqueAPrendreEnCompte.getContexte().getNom());
+         if(banqueAPrendreEnCompte.getEtude() != null) {
+            gatsbiContexte = banqueAPrendreEnCompte.getEtude().getContexteForEntite(entite.getEntiteId());
          }
       }
-
-      Collections.sort(chpE, Comparator.comparing(ChampEntite::getId));
-
-      // ajout identifiant au début
-      if (contexte != null && contexte.getContexteType().equals(ContexteType.PATIENT)) {
-         Optional<ChampEntite> patientIdentifiantChpOpt = 
-            chpE.stream().filter(c -> c.getId().equals(272)).findFirst();
-         if (patientIdentifiantChpOpt.isPresent()) {
-            chpE.remove(patientIdentifiantChpOpt.get());
-            chpE.add(0, patientIdentifiantChpOpt.get());
-         }
-      }
-
-      return chpE;
+     
+      return ManagerLocator.getChampEntiteManager().findByEntiteImportAndIsNullableManager(entite, canImport, isNullable, banqueContexte, gatsbiContexte);
    }
+   
 
+   public static List<ImportColonneDecorator> decorateImportColonnes(final List<ImportColonne> cols, EContexte templateContexte, final boolean isSubderive){
 
-   public static List<ImportColonneDecorator> decorateImportColonnes(final List<ImportColonne> cols, final boolean isSubderive){
-
-      List<ImportColonneDecorator> decos = ImportColonneDecorator.decorateListe(cols, isSubderive);
+      List<ImportColonneDecorator> decos = ImportColonneDecorator.decorateListe(cols, templateContexte, isSubderive);
 
       //Bug TG-168 : actuellement, l'entité produit dérivé n'est pas gérée dans Gatsbi => on ne peut jamais passer 
       //dans ce bloc spécifique à Gatsbi => test pour corriger "facilement" le bug
@@ -702,36 +600,13 @@ public class GatsbiController
                   .getCurrentGatsbiContexteForEntiteId(deco.getColonne().getChamp().getChampEntite().getEntite().getEntiteId());
                if(c != null){
                   deco.setCanDelete(
-                     !getRequiredChampEntiteIdsForContexte(c).contains(deco.getColonne().getChamp().getChampEntite().getId()));
-                  deco.setVisiteGatsbi(c.getContexteType().equals(ContexteType.MALADIE));
+                     !ManagerLocator.getChampEntiteManager().retrieveRequiredChampEntiteIdsForGatsbiContexte(c).contains(deco.getColonne().getChamp().getChampEntite().getId()));
                }
             }
          }
       }
       return decos;
    }
-
-   // test only
-//   public static ContexteDTO mockOneContexteTEST() throws JsonParseException, JsonMappingException, IOException{
-//
-//      ObjectMapper mapper = new ObjectMapper();
-//      mapper.configure(Feature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-//
-//      ContexteDTO cont = mapper.readValue(GatsbiController.class.getResourceAsStream("contexte.json"), ContexteDTO.class);
-//
-//      return cont;
-//   }
-//
-//   // test only
-//   public static ParametrageDTO mockOneParametrageTEST(Integer pId) throws JsonParseException, JsonMappingException, IOException{
-//
-//      ObjectMapper mapper = new ObjectMapper();
-//      mapper.configure(Feature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-//
-//      return mapper.readValue(GatsbiController.class.getResourceAsStream("parametrage".concat(pId.toString()).concat(".json")),
-//         ParametrageDTO.class);
-//
-//   }
 
    /**
     * Vérifie la visibilité d'un champ entité en - retrouvant le contexte - puis la
@@ -744,29 +619,11 @@ public class GatsbiController
       if(c != null){
          Contexte contexte = SessionUtils.getCurrentGatsbiContexteForEntiteId(c.getEntite().getEntiteId());
          if(contexte != null){
-            return !getHiddenChampEntiteIdsForContexte(contexte).contains(c.getId());
+            return !ManagerLocator.getChampEntiteManager().retrieveHiddenChampEntiteIdsForGatsbiContexte(contexte).contains(c.getId());
          }
       }
       return true;
    }
-
-   //	/**
-   //	 * Vérifie le caractère obligatoire d'un champ entité à partir du contexte
-   //	 * 
-   //	 * @param c ChampEntite
-   //	 * @return obligatoire ?
-   //	 */
-   //	public static boolean isChampEntiteRequired(Integer eId, Integer cId, boolean isObligDefault) {
-   //		if (eId != null && cId != null) {
-   //			Contexte contexte = SessionUtils.getCurrentGatsbiContexteForEntiteId(eId);
-   //			if (contexte != null) {
-   //				return getRequiredChampEntiteIdsForContexte(contexte).contains(cId);
-   //			} else {
-   //				return isObligDefault;
-   //			}
-   //		}
-   //		return false;
-   //	}
 
    /**
     * 
@@ -824,6 +681,37 @@ public class GatsbiController
    }
 
    /**
+    * va chercher le contexte du type demandé pour l'étude demandée et l'ajoute à l'étude
+    * @param etude
+    * @param contexteType
+    * @throws GatsbiException
+    */
+   public static void addContexteToEtude(Etude etude, ContexteType contexteType) throws GatsbiException{
+
+      UriComponentsBuilder contexteURIBld = UriComponentsBuilder
+            .fromUriString(TkParam.GATSBI_API_URL_BASE.getValue().concat(TkParam.GATSBI_API_URL_CONTEXTE_PATH.getValue()));
+
+      try{
+         RestTemplate restTemplate = new RestTemplate();
+ 
+         log.debug("fetch contexte from URL:"
+            + (contexteURIBld.build(false).expand(etude.getEtudeId(), contexteType.getType())).toUriString());
+
+         etude.addToContextes(
+            restTemplate.getForObject(contexteURIBld.build(false).expand(etude.getEtudeId(), contexteType.getType()).toUri(),
+               ContexteDTO.class).toContexte());
+
+      }catch(ResourceAccessException e){ // gatsbi inaccessible
+         throw new GatsbiException("gatsbi.connexion.error");
+      }catch(HttpClientErrorException e){ // étude inexistante
+         throw new GatsbiException("gatsbi.resource.notfound");
+      }catch(Exception e){
+         throw new GatsbiException(e.getMessage());
+      }
+      
+   }
+   
+   /**
     * Enrichit la banque avec les contextes GATSBI, si nécessaire.
     * Si la banque à enrichir est égale à l'instance banque courante (session), renvoie cette 
     * instance car elle est déja enrichie, sinon appel webservices GATSBI pour enrichissement.
@@ -831,6 +719,10 @@ public class GatsbiController
     * @param sessionScp
     * @return banque enrichie des contextes GATSBI
     */
+   //CHT : c'est surprenant de renvoie un objet passé en paramètre. Puisque l'objet passé en paramètre est modifié
+   //dans l'absolu ce n'est pas nécessaire de le renvoyé : l'appel de la méthode le modifie automatique
+   //ceci est sans doute fait pour "simplifier" les appels de cette méthode notamment lorsque la banque doit être enrichie
+   //avant d'être passée en paramètre d'une méthode...
    public static Banque enrichesBanqueWithEtudeContextes(Banque bank, final Map<?, ?> sessionScp){
 
       if(bank != null){
@@ -845,7 +737,7 @@ public class GatsbiController
                }
             }
          }
-      }else{
+      }else{//CHT : si bank passée en param null, renvoie la banque courante... un peu surprenant de faire dans cette méthode ....
          return SessionUtils.getCurrentBanque(sessionScp);
       }
 
@@ -1284,5 +1176,29 @@ public class GatsbiController
    
    public static boolean isInGatsbiContexte(Banque banque) {
       return banque.getEtude() != null;
+   }
+
+   /**
+    * renvoie le Contexte Gatsbi pour l'étude et le type (entiteId) passés en paramètre. Si ce contexte n'existe pas dans l'étude, la méthode va le chercher
+    * @param etude
+    * @param entiteId
+    * @return le Contexte Gatsbi demandé
+    * @throws GatsbiException
+    */
+   public static Contexte retrieveContexteForEtudeAndEntiteId(Etude etude, Integer entiteId) throws GatsbiException{
+      if(etude != null) {
+         Contexte contexteForEntiteId = etude.getContexteForEntite(entiteId);
+         if(contexteForEntiteId == null) {
+            addContexteToEtude(etude, ContexteType.getById(entiteId));
+            
+            return etude.getContexteForEntite(entiteId);
+         }
+         else {
+            return contexteForEntiteId;
+         }
+         
+      }
+      
+      return null;
    }
 }

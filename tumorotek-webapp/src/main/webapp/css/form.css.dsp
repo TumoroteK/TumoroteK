@@ -516,6 +516,14 @@ div.impact {
 	background: url(${c:encodeURL('/images/icones/flag.png')});
 }
 
+div.locked {
+	background: url(${c:encodeURL('/images/icones/locked.png')});
+}
+
+div.warning {
+	background: url(${c:encodeURL('/images/icones/small_warning.png')});
+}
+
 div.inca {
 	background: url(${c:encodeURL('/images/icones/catalogues/inca.gif')});
 }

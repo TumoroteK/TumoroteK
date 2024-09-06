@@ -1,6 +1,7 @@
 /**
- * Copyright ou © ou Copr. Ministère de la santé, FRANCE (01/01/2011)
- * dsi-projet.tk@aphp.fr
+ * Copyright ou © ou Copr. Assistance Publique des Hôpitaux de
+ * PARIS et SESAN
+ * projet-tk@sesan.fr
  *
  * Ce logiciel est un programme informatique servant à la gestion de
  * l'activité de biobanques.
@@ -33,58 +34,48 @@
  * avez pris connaissance de la licence CeCILL, et que vous en avez
  * accepté les termes.
  **/
-package fr.aphp.tumorotek.dao;
+package fr.aphp.tumorotek.utils;
 
-import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * classe générique qui permet de définir un objet pour afficher un message à l'utilisateur suite à une erreur de validation.
+ * Cette classe comprend :
+ *  - un message explicitant l'erreur, représenté par une clé d'internationalisation
+ *  - une liste des données en erreur pour explicter le message
+ *  - un dernier message proposant une solution à l'utilisateur
+ * @author chuet
  *
- * Interface du Generic DAO.
- * @param <T> est la classe de l'objet.
- * @param <PK> est sa clé primaire.
- *
- * @author Pierre Ventadour
- * @version 09/09/2009
- *
+ * @param <T> classe des objets contenu dans la liste des données explictant le message d'erreur
  */
-public interface GenericDaoJpa<T, PK extends Serializable>
+public class ItemForErrorResult<T>
 {
+   
+   private String erreurKeyI18n = null;
+   private List<T> listDataInError = new ArrayList<T>();
+   private String todoKeyI18n = null;
+   
+   public ItemForErrorResult(String erreurKeyI18n, List<T> listDataInError, String todoKeyI18n) {
+      this.erreurKeyI18n = erreurKeyI18n;
+      this.listDataInError = listDataInError;
+      this.todoKeyI18n = todoKeyI18n;
+   }
 
-   /**
-    * Persist une instance d'objet dans la base de données.
-    * @param newInstance est  une instance de l'objet à créer.
-    */
-   void createObject(T newInstance);
+   public String getErreurKeyI18n(){
+      return erreurKeyI18n;
+   }
 
-   T mergeObject(T o);
+   public List<T> getListDataInError(){
+      return listDataInError;
+   }
 
-   /**
-    *   Retrouve un objet qui était persistant dans la base de données en
-    *   utilisant sa clé primaire.
-    *   @param id est la clé primaire de l'objet.
-    *   @return l'objet ou null si aucun trouvé.
-    */
-   T findById(PK id);
+   public String getTodoKeyI18n(){
+      return todoKeyI18n;
+   }
 
-   /**
-    * Renvoie tous les objets d'une certaine table présents dans la base
-    * de données.
-    * @return tous les objets d'une table.
-    */
-   List<T> findAll();
-
-   /**
-    * Sauvegarde les modifications apportées à un objet persistant.
-    * @param transientObject est l'objet à mettre à jour dans la base
-    * de données.
-    */
-   void updateObject(T transientObject);
-
-   /**
-    * Supprime un objet de la base de données.
-    * @param id est la clé primaire de l'objet à surrpimer.
-    */
-   void removeObject(PK id);
+   public void setTodoKeyI18n(String todoKeyI18n){
+      this.todoKeyI18n = todoKeyI18n;
+   }
 
 }

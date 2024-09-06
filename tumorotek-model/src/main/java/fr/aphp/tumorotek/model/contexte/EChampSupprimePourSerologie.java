@@ -1,6 +1,7 @@
 /**
- * Copyright ou © ou Copr. Ministère de la santé, FRANCE (01/01/2011)
- * dsi-projet.tk@aphp.fr
+ * Copyright ou © ou Copr. Assistance Publique des Hôpitaux de
+ * PARIS et SESAN
+ * projet-tk@sesan.fr
  *
  * Ce logiciel est un programme informatique servant à la gestion de
  * l'activité de biobanques.
@@ -33,58 +34,32 @@
  * avez pris connaissance de la licence CeCILL, et que vous en avez
  * accepté les termes.
  **/
-package fr.aphp.tumorotek.dao;
+package fr.aphp.tumorotek.model.contexte;
 
-import java.io.Serializable;
-import java.util.List;
+import fr.aphp.tumorotek.model.systeme.EEntiteId;
 
-/**
- *
- * Interface du Generic DAO.
- * @param <T> est la classe de l'objet.
- * @param <PK> est sa clé primaire.
- *
- * @author Pierre Ventadour
- * @version 09/09/2009
- *
- */
-public interface GenericDaoJpa<T, PK extends Serializable>
+public enum EChampSupprimePourSerologie
 {
+   LATERALITE("Lateralite", EEntiteId.ECHANTILLON.getId()), 
+   TUMORAL("Tumoral", EEntiteId.ECHANTILLON.getId()), 
+   CODE_ORGANES("CodeOrganes", EEntiteId.ECHANTILLON.getId()), 
+   CODE_LESIONNEL("CodeMorphos", EEntiteId.ECHANTILLON.getId());
+   
+   private String nom;
+   private Integer entiteId;
 
-   /**
-    * Persist une instance d'objet dans la base de données.
-    * @param newInstance est  une instance de l'objet à créer.
-    */
-   void createObject(T newInstance);
+   EChampSupprimePourSerologie(String nom, Integer entiteId){
+      this.nom = nom;
+      this.entiteId = entiteId;
+   }
 
-   T mergeObject(T o);
+   public String getNom(){
+      return nom;
+   }
 
-   /**
-    *   Retrouve un objet qui était persistant dans la base de données en
-    *   utilisant sa clé primaire.
-    *   @param id est la clé primaire de l'objet.
-    *   @return l'objet ou null si aucun trouvé.
-    */
-   T findById(PK id);
-
-   /**
-    * Renvoie tous les objets d'une certaine table présents dans la base
-    * de données.
-    * @return tous les objets d'une table.
-    */
-   List<T> findAll();
-
-   /**
-    * Sauvegarde les modifications apportées à un objet persistant.
-    * @param transientObject est l'objet à mettre à jour dans la base
-    * de données.
-    */
-   void updateObject(T transientObject);
-
-   /**
-    * Supprime un objet de la base de données.
-    * @param id est la clé primaire de l'objet à surrpimer.
-    */
-   void removeObject(PK id);
-
+   public Integer getEntiteId(){
+      return entiteId;
+   }
+   
 }
+

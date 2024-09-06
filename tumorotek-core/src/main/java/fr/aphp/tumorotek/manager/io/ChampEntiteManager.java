@@ -38,6 +38,8 @@ package fr.aphp.tumorotek.manager.io;
 import java.util.List;
 
 import fr.aphp.tumorotek.model.coeur.annotation.DataType;
+import fr.aphp.tumorotek.model.contexte.EContexte;
+import fr.aphp.tumorotek.model.contexte.gatsbi.Contexte;
 import fr.aphp.tumorotek.model.io.export.ChampEntite;
 import fr.aphp.tumorotek.model.systeme.Entite;
 
@@ -82,15 +84,7 @@ public interface ChampEntiteManager
     */
    List<ChampEntite> findByEntiteAndNomManager(Entite entite, String nom);
 
-   /**
-    * Renvoie les ChampEntites importables (ou non) pour
-    * une entité.
-    * @param entite
-    * @param canImport
-    * @return Liste de ChampEntites.
-    */
-   List<ChampEntite> findByEntiteAndImportManager(Entite entite, Boolean canImport);
-
+   //@TODO - CHT : Ne semble plus utilisé => à supprimer avec le code dans Impl, Dao et la requête dans l'entité 
    /**
     * Renvoie les ChampEntites importables (ou non), selon les datatypes, pour
     * une entité.
@@ -101,6 +95,7 @@ public interface ChampEntiteManager
     */
    List<ChampEntite> findByEntiteAndImportManagerAndDatatype(Entite entite, Boolean canImport, List<DataType> dataTypeList);
 
+   //@TODO - CHT : Ne semble plus utilisé => à supprimer avec le code dans Impl, Dao et la requête dans l'entité
    /**
     * Renvoie les ChampEntites importables (ou non), selon les datatypes, pour
     * une entité.
@@ -114,15 +109,43 @@ public interface ChampEntiteManager
       final List<DataType> dataTypeList, final Boolean excludeIds);
 
    /**
-    * Renvoie les ChampEntites importables, nullable (ou non) pour
-    * une entité.
+    * Récupére tous les ids des champs à ne pas afficher pour un contexte Gatsbi.
+    * Surcharge l'appel de contexte.getHiddenChampEntiteIds afin d'ajouter 
+    * des dépendances spécifiques par entité entre certains champs.
+    * @param gatsbiContexte 
+    * @return liste ids
+    */
+   List<Integer> retrieveHiddenChampEntiteIdsForGatsbiContexte(Contexte gatsbiContexte);
+   
+   /**
+    * Récupére tous les ids des champs obligatoires.
+    * @param gatsbiContexte 
+    * @return liste ids
+    */
+   List<Integer> retrieveRequiredChampEntiteIdsForGatsbiContexte(Contexte gatsbiContexte);
+   
+   /**
+    * Renvoie les ChampEntites importables, nullable (ou non), si param non null pour
+    * une entité pour un contexte de collection et un contexte Gatsbi si collection Gatsbi.
     * @param entite
     * @param canImport
-    * @param isNullable
+    * @param isNullable peut être null dans ce champ, ne prend pas en compte ce critère
+    * @param banqueContexte de type EContexte :  le contexte de collection à considérer (celle de l'import)
+    * @param gatsbiContexte : dans le cas d'un modèle d'import d'une collection Gatsbi, le contexte Gatsbi à prendre en compte
     * @return Liste de ChampEntites.
     */
-   List<ChampEntite> findByEntiteImportAndIsNullableManager(Entite entite, Boolean canImport, Boolean isNullable);
-
+   List<ChampEntite> findByEntiteImportAndIsNullableManager(final Entite entite, final Boolean canImport,
+      final Boolean isNullable, EContexte banqueContexte, Contexte gatsbiContexte);
+   
+   /**
+    * filtre la liste listChampEntite pour ne garder que les champs non obligatoires ou obligatoires (selon le paramètre isNullable)
+    * d'après un contexte Gatsbi
+    * @param isNullable
+    * @param gatsbiContexte
+    * @param listChampEntite
+    */
+   void filterNullableOrNotChampEntite(final Boolean isNullable, Contexte gatsbiContexte, List<ChampEntite> listChampEntite);
+   
    /**
     * Renvoie la valeur (en String) du champEntite pour l'objet.
     * @param champ ChampEntite à extraire.

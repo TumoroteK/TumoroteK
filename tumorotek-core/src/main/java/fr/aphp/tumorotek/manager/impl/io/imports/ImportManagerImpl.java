@@ -1984,6 +1984,7 @@ public class ImportManagerImpl implements ImportManager
 
    }
 
+   //Methode appelée que dans les tests ..... 
    @Override
    public ImportHistorique importFileManager(final ImportTemplate importTemplate, final Utilisateur utilisateur,
       final Banque banque, final InputStream is){
@@ -2029,7 +2030,7 @@ public class ImportManagerImpl implements ImportManager
    public ImportHistorique importFileManager(final ImportTemplate importTemplate, final Utilisateur utilisateur,
       final Banque banque, final Sheet sheet){ //TODO Refactorer
       final ImportProperties properties = new ImportProperties();
-      properties.setBanque(banque != null ? banque : importTemplate.getBanque());
+      properties.setBanque(banque);
       final List<ImportError> errors = new ArrayList<>();
       ImportHistorique historique = null;
       final List<Importation> importations = new ArrayList<>();
@@ -2222,10 +2223,11 @@ public class ImportManagerImpl implements ImportManager
 
          if(errors.isEmpty() && !importations.isEmpty()){
             historique = new ImportHistorique();
-            historique.setImportTemplate(importTemplate);
+            historique.setImportTemplateId(importTemplate.getImportTemplateId());
+            historique.setImportBanqueId(properties.getBanque().getBanqueId());
             historique.setUtilisateur(utilisateur);
             historique.setDate(Calendar.getInstance());
-            importHistoriqueManager.createObjectManager(historique, importTemplate, utilisateur, importations);
+            importHistoriqueManager.createObjectManager(historique, utilisateur, importations);
          }
       }catch(final BadFileFormatException bdfe){
          final ImportError error = new ImportError();
@@ -2411,10 +2413,11 @@ public class ImportManagerImpl implements ImportManager
 
          if(errors.isEmpty() && !importations.isEmpty()){
             historique = new ImportHistorique();
-            historique.setImportTemplate(importTemplate);
+            historique.setImportTemplateId(importTemplate.getImportTemplateId());
+            historique.setImportBanqueId(properties.getBanque().getBanqueId());
             historique.setUtilisateur(utilisateur);
             historique.setDate(Calendar.getInstance());
-            importHistoriqueManager.createObjectManager(historique, importTemplate, utilisateur, importations);
+            importHistoriqueManager.createObjectManager(historique, utilisateur, importations);
          }
       }catch(final BadFileFormatException bdfe){
          final ImportError error = new ImportError();

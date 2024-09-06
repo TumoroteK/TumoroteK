@@ -152,4 +152,15 @@ public class ChampDelegue extends AbstractTKChamp
       }
       return null;
    }
+
+   /**
+    * Méthode surchargeant le toString() de l'objet.
+    */
+   @Override
+   public String toString(){
+      if(this.getNom() != null){
+         return "{" + this.getNom() + "}";
+      }
+      return "{Empty ChampEntite}";
+   }
 }
