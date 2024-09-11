@@ -222,15 +222,19 @@ public class FicheMultiEchantillonsGatsbi extends FicheMultiEchantillons
    
    //TG-244
    /**
-    * si un paramétrage est défini sur code échantillon, il faut le concaténer au code prélèvement, sans séparateur 
+    * si un paramétrage est défini sur code échantillon (code préfixe initialisé par injectEchantillon()), il faut le concaténer au code prélèvement, sans séparateur 
     */
    @Override
    protected void initCodePrefixe() {
       if(getCodePrefixe() != null) {
-         setCodePrefixe(new StringBuilder(getParentObject().getCode()).append(getCodePrefixe()).toString());
+         if(getParentObject() != null && getParentObject().getCode() != null) {
+            setCodePrefixe(new StringBuilder(getParentObject().getCode()).append(getCodePrefixe()).toString());
+         }
       }
       else {
-         setCodePrefixe(getParentObject().getCode());
+         //TG-265 : permet de gérer le caas standard : initialisation avec le code du parent si un parent est défini
+         //ou par la numérotation si une est définie
+         super.initCodePrefixe();
       }
    }
 

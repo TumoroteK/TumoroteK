@@ -46,6 +46,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.validation.Errors;
@@ -1716,6 +1717,18 @@ public class FichePrelevementEdit extends AbstractFicheEditController
                newPat = newObj.getMaladie().getPatient();
             }
          }
+         //TG-265 : prise en compte de la numérotation automatique éventuellement définie
+         //dans ce cas, le codePrelevement a été initialisé précédemment :
+         //on regarde donc si dans le cas de la création (prelevementId == null), un code est attaché au prélèvement courant
+         //si oui, on le reporte si aucune valeur par défaut n'est définie dans le paramétrage
+         if(getObject() != null && getObject().getPrelevementId() == null && !StringUtils.isBlank(getObject().getCode())) {
+            //si au niveau injection (paramétrage dans le cas Gatsbi), le code n'est pas défini, on l'alimente
+            if(StringUtils.isBlank(newObj.getCode())) {
+               newObj.setCode(getObject().getCode());
+            }
+         }
+         //
+         
          setObject(newObj);
          if(getObjectTabController() != null && getObjectTabController().getFicheAnnotation() != null
             && res.getAnnosPrelevement() != null){
