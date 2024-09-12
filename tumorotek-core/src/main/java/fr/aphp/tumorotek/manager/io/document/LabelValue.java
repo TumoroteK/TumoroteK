@@ -47,8 +47,7 @@ package fr.aphp.tumorotek.manager.io.document;
 public class LabelValue {
     private String label;
     private String value;
-    private boolean labelInBold;
-    private boolean valueInBold;
+    private StylingAttributes stylingAttributes;
 
 
     public LabelValue() {
@@ -57,8 +56,7 @@ public class LabelValue {
     public LabelValue(String label, String value, boolean labelInBold, boolean valueInBold) {
         this.label = label;
         this.value = value;
-        this.labelInBold = labelInBold;
-        this.valueInBold = valueInBold;
+
     }
 
     public String getLabel() {
@@ -78,18 +76,19 @@ public class LabelValue {
     }
 
     public boolean isLabelInBold() {
-        return labelInBold;
+        return stylingAttributes.isFirstTextInBold();
     }
 
     public void setLabelInBold(boolean labelInBold) {
-        this.labelInBold = labelInBold;
+        this.stylingAttributes.setFirstTextInBold(labelInBold);
     }
 
     public boolean isValueInBold() {
-        return valueInBold;
+        return stylingAttributes.isSecondTextInBold();
     }
 
     public void setValueInBold(boolean valueInBold) {
-        this.valueInBold = valueInBold;
+        this.stylingAttributes.setSecondTextInBold(valueInBold);
+
     }
 }

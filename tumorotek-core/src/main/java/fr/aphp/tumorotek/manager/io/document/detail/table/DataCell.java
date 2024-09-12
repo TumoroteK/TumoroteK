@@ -35,6 +35,8 @@
  **/
 package fr.aphp.tumorotek.manager.io.document.detail.table;
 
+import fr.aphp.tumorotek.manager.io.document.StylingAttributes;
+
 /**
  * La classe représente une cellule de données dans un tableau.
  *
@@ -45,48 +47,15 @@ public class DataCell {
     // Le contenu de la cellule, encapsulé dans un objet CellContent
     private CellContent cellContent;
 
-    // La couleur de la bordure gauche de la cellule, spécifiée en code hexadécimal.
-    private String borderLeftColor;
-
-    // Le nombre de colonnes que la cellule occupe, avec une valeur par défaut de 1.
-    private int colspan = 1;
-
-    // Indique si la cellule doit avoir une bordure ou non.
-    private boolean withBorder;
-
-    // Le type d'alignement du contenu de la cellule, avec une valeur par défaut.
-    private AlignmentType alignmentType = AlignmentType.LEFT;
+    private StylingAttributes stylingAttributes;
 
     public DataCell(CellContent cellContent) {
         this.cellContent = cellContent;
     }
 
-
-    public DataCell(String text) {
-        this.cellContent = new CellContent(text);
-    }
-    public DataCell(CellContent cellContent, String borderLeftColor) {
+    public DataCell(CellContent cellContent, StylingAttributes stylingAttributes) {
         this.cellContent = cellContent;
-        this.borderLeftColor = borderLeftColor;
-    }
-
-    public DataCell(CellContent cellContent, boolean withBorder) {
-        this.cellContent = cellContent;
-        this.withBorder = withBorder;
-    }
-
-
-    public DataCell(CellContent cellContent, String borderLeftColor, int colspan, AlignmentType alignmentType) {
-        this.cellContent = cellContent;
-        this.borderLeftColor = borderLeftColor;
-        this.colspan = colspan;
-        this.alignmentType = alignmentType;
-    }
-
-    public DataCell(CellContent cellContent, String borderLeftColor, boolean withBorder) {
-        this.cellContent = cellContent;
-        this.borderLeftColor = borderLeftColor;
-        this.withBorder = withBorder;
+        this.stylingAttributes = stylingAttributes;
     }
 
     public CellContent getCellContent() {
@@ -97,35 +66,11 @@ public class DataCell {
         this.cellContent = cellContent;
     }
 
-    public String getBorderLeftColor() {
-        return borderLeftColor;
+    public StylingAttributes getStylingAttributes() {
+        return stylingAttributes;
     }
 
-    public void setBorderLeftColor(String borderLeftColor) {
-        this.borderLeftColor = borderLeftColor;
-    }
-
-    public int getColspan() {
-        return colspan;
-    }
-
-    public void setColspan(int colspan) {
-        this.colspan = colspan;
-    }
-
-    public boolean isWithBorder() {
-        return withBorder;
-    }
-
-    public void setWithBorder(boolean withBorder) {
-        this.withBorder = withBorder;
-    }
-
-    public AlignmentType getAlignmentType() {
-        return alignmentType;
-    }
-
-    public void setAlignmentType(AlignmentType alignmentType) {
-        this.alignmentType = alignmentType;
+    public void setStylingAttributes(StylingAttributes stylingAttributes) {
+        this.stylingAttributes = stylingAttributes;
     }
 }

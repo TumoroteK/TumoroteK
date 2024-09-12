@@ -36,6 +36,8 @@
 package fr.aphp.tumorotek.manager.io.document.detail.table;
 
 
+import fr.aphp.tumorotek.manager.io.document.StylingAttributes;
+
 /**
  * La classe représente le contenu d'une cellule dans un tableau.
  *
@@ -50,34 +52,40 @@ public class CellContent {
     // Le complément de texte à ajouter après le texte principal.
     private String complement;
 
-    // Indique si le complément de texte doit être affiché en italique.
-    private boolean complementInItalic;
+    private StylingAttributes stylingAttributes;
 
-    // Indique si le complément de texte doit être affiché sur une autre ligne.
-    private boolean complementOnAnotherLine;
+    public String getText() {
+        return text;
+    }
 
-
+    public void setText(String text) {
+        this.text = text;
+    }
 
     public CellContent(String text) {
         this.text = text;
     }
 
-    public CellContent(String text, String complement) {
+    public CellContent(String text, String complement, StylingAttributes stylingAttributes) {
         this.text = text;
+        this.complement = complement;
+        this.stylingAttributes = stylingAttributes;
+    }
+
+    public String getComplement() {
+        return complement;
+    }
+
+    public void setComplement(String complement) {
         this.complement = complement;
     }
 
-    public CellContent(String text, String complement, boolean complementInItalic) {
-        this.text = text;
-        this.complement = complement;
-        this.complementInItalic = complementInItalic;
+    public StylingAttributes getStylingAttributes() {
+        return stylingAttributes;
     }
 
-    public CellContent(String text, String complement, boolean complementInItalic, boolean complementOnAnotherLine) {
-        this.text = text;
-        this.complement = complement;
-        this.complementInItalic = complementInItalic;
-        this.complementOnAnotherLine = complementOnAnotherLine;
+    public void setStylingAttributes(StylingAttributes stylingAttributes) {
+        this.stylingAttributes = stylingAttributes;
     }
 
     /**
