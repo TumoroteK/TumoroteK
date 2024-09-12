@@ -81,4 +81,24 @@ public class DocumentToGenerate {
     public DocumentFooter getFooter() {
         return footer;
     }
+
+    public String getDocumentName() {
+        return documentName;
+    }
+
+    public void setDocumentName(String documentName) {
+        this.documentName = documentName;
+    }
+
+    public void setContext(DocumentContext context) {
+        this.context = context;
+    }
+
+    public void setData(DocumentData data) {
+        this.data = data;
+    }
+
+    public void setFooter(DocumentFooter footer) {
+        this.footer = footer;
+    }
 }

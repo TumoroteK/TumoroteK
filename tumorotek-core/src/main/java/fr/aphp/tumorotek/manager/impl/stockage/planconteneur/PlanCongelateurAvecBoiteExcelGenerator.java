@@ -37,6 +37,7 @@ package fr.aphp.tumorotek.manager.impl.stockage.planconteneur;
 
 import fr.aphp.tumorotek.manager.impl.io.production.DocumentWithDataAsTableExcelProducer;
 import fr.aphp.tumorotek.manager.io.production.DocumentProducer;
+import fr.aphp.tumorotek.manager.stockage.EnceinteManager;
 
 
 /**
@@ -50,6 +51,14 @@ import fr.aphp.tumorotek.manager.io.production.DocumentProducer;
 public class PlanCongelateurAvecBoiteExcelGenerator extends AbstractPlanCongelateurAvecBoiteGenerator {
 
     private DocumentWithDataAsTableExcelProducer documentWithDataAsTableExcelProducer;
+
+    private EnceinteManager enceinteManager;
+
+
+    public void setEnceinteManager(EnceinteManager enceinteManager) {
+        this.enceinteManager = enceinteManager;
+    }
+
 
 
 
