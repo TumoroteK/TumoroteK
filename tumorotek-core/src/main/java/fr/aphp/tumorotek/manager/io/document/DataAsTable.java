@@ -38,6 +38,7 @@ package fr.aphp.tumorotek.manager.io.document;
 
 import fr.aphp.tumorotek.manager.io.document.detail.table.CellRow;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -56,8 +57,8 @@ public class DataAsTable implements DocumentData {
     private List<CellRow> listCellRow;
 
     public DataAsTable() {
+        this.listCellRow = new ArrayList<>();
     }
-
     public DataAsTable(List<CellRow> listCellRow) {
         this.listCellRow = listCellRow;
     }
@@ -71,6 +72,19 @@ public class DataAsTable implements DocumentData {
     }
 
     public void addCellRow(CellRow cellRow) {
-        this.listCellRow.add(cellRow);
+        if (cellRow != null){
+            this.listCellRow.add(cellRow);
+
+        }
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder("DataAsTable[\n");
+        for (CellRow cellRow : listCellRow) {
+            sb.append(cellRow.toString()).append("\n");
+        }
+        sb.append("]");
+        return sb.toString();
     }
 }

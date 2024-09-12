@@ -73,4 +73,9 @@ public class DataCell {
     public void setStylingAttributes(StylingAttributes stylingAttributes) {
         this.stylingAttributes = stylingAttributes;
     }
+
+    @Override
+    public String toString() {
+        return String.format("[%s]", (cellContent != null ? cellContent.toString() : "null"));
+    }
 }

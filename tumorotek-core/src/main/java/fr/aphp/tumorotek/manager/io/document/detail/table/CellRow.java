@@ -89,4 +89,15 @@ public class CellRow {
     public void setListDataCell(List<DataCell> listDataCell) {
         this.listDataCell = listDataCell;
     }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder("CellRow: { ");
+        for (DataCell dataCell : listDataCell) {
+            sb.append(dataCell.toString()).append(" ");
+
+        }
+        sb.append("}");
+        return sb.toString();
+    }
 }

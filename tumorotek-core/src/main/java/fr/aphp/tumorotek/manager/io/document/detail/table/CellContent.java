@@ -99,4 +99,12 @@ public class CellContent {
         return (text == null || text.trim().isEmpty()) &&
                 (complement == null || complement.trim().isEmpty());
     }
+
+    @Override
+    public String toString() {
+        // Format to represent Excel-like cell content
+        return String.format("| %s %s |",
+                (text != null ? text : ""),
+                (complement != null ? complement : ""));
+    }
 }
