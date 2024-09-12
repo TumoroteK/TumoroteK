@@ -52,7 +52,6 @@ public final class TKStringUtils
 {
 
 
-   private static final String FORBIDDEN_CHARS = "[\\\\/:*?\"<>|\\x00-\\x1F]";;
 
    /**
     * Constructeur privé
@@ -175,43 +174,7 @@ public final class TKStringUtils
       }
 
 
-   /**
-    * Renvoie une chaîne de caractères conforme aux restrictions de nom de fichier
-    * dans certaines applications. Remplace les caractères interdits et tronque
-    * le nom à une longueur maximale de 31 caractères.
-    *
-    * @param input Le nom initial fourni par l'utilisateur.
-    *              Si null, le nom par défaut "DefaultName" est utilisé.
-    * @return Un nom sécurisé, avec les caractères interdits remplacés par des
-    *         caractères sûrs et une longueur maximale de 31 caractères.
-    * @throws IllegalArgumentException Si le nom résultant est vide
-    *                                  après le traitement des caractères interdits.
-    */
-   public static String getSafeSheetName(String input) {
-      if (input == null) {
-         return "Sheet";  // Renvoie "Sheet" pour une entrée nulle
-      }
 
-      // Remplacement des caractères interdits par des caractères sûrs
-      String safeName = input.replace("/", "-")
-              .replace("\\", "-")
-              .replace("?", "-")
-              .replace("*", "-")
-              .replace("[", "(")
-              .replace("]", ")");
-
-      // Tronque à 31 caractères si nécessaire
-      if (safeName.length() > 31) {
-         safeName = safeName.substring(0, 32);
-      }
-
-      // Vérifie si le nom est vide après traitement
-      if (safeName.isEmpty()) {
-         throw new IllegalArgumentException("Le nom de la feuille ne peut pas être vide après traitement.");
-      }
-
-      return safeName;
-   }
 
    /**
     * Retourne la date actuelle formatée selon le modèle fourni.
