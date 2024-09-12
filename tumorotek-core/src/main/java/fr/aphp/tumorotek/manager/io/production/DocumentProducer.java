@@ -36,7 +36,7 @@
 package fr.aphp.tumorotek.manager.io.production;
 
 import fr.aphp.tumorotek.dto.OutputStreamData;
-import fr.aphp.tumorotek.manager.io.document.DocumentWithDataAsArray;
+import fr.aphp.tumorotek.manager.io.document.DocumentWithDataAsTable;
 
 import java.util.List;
 
@@ -44,7 +44,7 @@ import java.util.List;
  * Interface pour la production de documents à partir d'une liste d'objets de données.
  *
  * L'interface  définit une méthode pour produire des documents à partir
- * d'une liste d'objets {@link DocumentWithDataAsArray} et pour écrire la sortie dans un {@link OutputStreamData}.
+ * d'une liste d'objets {@link DocumentWithDataAsTable} et pour écrire la sortie dans un {@link OutputStreamData}.
  * Les implémentations de cette interface sont responsables de la gestion des spécificités de la création
  * et du formatage des documents.
  *
@@ -52,5 +52,5 @@ import java.util.List;
 
 public interface DocumentProducer {
 
-    void  produce(List<DocumentWithDataAsArray> listDocumentWithDataAsArray, OutputStreamData outputStreamData);
+    void  produce(List<DocumentWithDataAsTable> listDocumentWithDataAsTable, OutputStreamData outputStreamData);
 }

@@ -43,19 +43,9 @@ package fr.aphp.tumorotek.manager.io.document;
  * en héritant des propriétés de base d'un document à générer, telles que le nom du document, le contexte,
  * les données et le pied de page.</p>
  *
-
- *
- * <p><b>Exemple d'utilisation :</b></p>
- * <pre>{@code
- * DocumentContext context = new DocumentContext();
- * DocumentData data = new DocumentData();
- * DocumentFooter footer = new DocumentFooter("Gauche", "Centre", "Droite");
- * DocumentWithDataAsArray doc = new DocumentWithDataAsArray("NomDuDocument", context, data, footer);
- * }</pre>
- *
  */
-public class DocumentWithDataAsArray extends DocumentToGenerate {
-    public DocumentWithDataAsArray(String documentName, DocumentContext context, DocumentData data, DocumentFooter footer) {
+public class DocumentWithDataAsTable extends DocumentToGenerate {
+    public DocumentWithDataAsTable(String documentName, DocumentContext context, DocumentData data, DocumentFooter footer) {
         super(documentName, context, data, footer);
     }
 }

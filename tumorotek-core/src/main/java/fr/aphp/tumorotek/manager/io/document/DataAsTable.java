@@ -37,7 +37,6 @@
 package fr.aphp.tumorotek.manager.io.document;
 
 import fr.aphp.tumorotek.manager.io.document.detail.table.CellRow;
-import fr.aphp.tumorotek.manager.io.document.detail.table.DataCell;
 
 import java.util.List;
 
@@ -63,12 +62,15 @@ public class DataAsTable implements DocumentData {
         this.listCellRow = listCellRow;
     }
 
-
     public List<CellRow> getListCellRow() {
         return listCellRow;
     }
 
     public void setListCellRow(List<CellRow> listCellRow) {
         this.listCellRow = listCellRow;
+    }
+
+    public void addCellRow(CellRow cellRow) {
+        this.listCellRow.add(cellRow);
     }
 }
