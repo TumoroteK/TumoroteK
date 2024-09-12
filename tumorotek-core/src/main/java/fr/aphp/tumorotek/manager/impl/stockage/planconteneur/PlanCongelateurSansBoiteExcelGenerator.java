@@ -36,43 +36,38 @@
 package fr.aphp.tumorotek.manager.impl.stockage.planconteneur;
 
 
-import fr.aphp.tumorotek.dto.OutputStreamData;
-import fr.aphp.tumorotek.manager.impl.io.production.DocumentWithDataAsArrayExcelProducer;
-import fr.aphp.tumorotek.manager.io.document.DocumentWithDataAsArray;
+import fr.aphp.tumorotek.manager.impl.io.production.DocumentWithDataAsTableExcelProducer;
 import fr.aphp.tumorotek.manager.io.production.DocumentProducer;
-
-import java.util.List;
+import fr.aphp.tumorotek.manager.stockage.EnceinteManager;
 
 
 /**
- * La classe  étend {@link PlanCongelateurSansBoiteGenerator}  et est responsable de la génération d'un plan
+ * La classe  étend {@link AbstractPlanCongelateurSansBoiteGenerator}  et est responsable de la génération d'un plan
  * pour un congélateur sans boîte au format Excel.
  *
- * <p>Elle utilise un producteur de documents {@link DocumentWithDataAsArrayExcelProducer} pour créer le fichier
+ * <p>Elle utilise un producteur de documents {@link DocumentWithDataAsTableExcelProducer} pour créer le fichier
  * Excel à partir des données fournies. La méthode {@code buildFileName} génère le nom de fichier pour le document
  * Excel basé sur une liste de conteneurs.</p>
- *
  */
-public class PlanCongelateurSansBoiteExcelGenerator extends PlanCongelateurSansBoiteGenerator {
+public class PlanCongelateurSansBoiteExcelGenerator extends AbstractPlanCongelateurSansBoiteGenerator {
+
+    private EnceinteManager enceinteManager;
 
 
-    private DocumentWithDataAsArrayExcelProducer documentWithDataAsArrayExcelProducer;
-
-
-    @Override
-    protected OutputStreamData produceOutput(List<DocumentWithDataAsArray> listPlanConteneur) {
-        OutputStreamData outputStreamData = new OutputStreamData();
-        documentWithDataAsArrayExcelProducer.produce(listPlanConteneur, outputStreamData);
-        return outputStreamData;
+    public void setEnceinteManager(EnceinteManager enceinteManager) {
+        this.enceinteManager = enceinteManager;
     }
 
     @Override
-    protected String buildFileName() {
+    protected EnceinteManager getEnceinteManager() {
         return null;
     }
 
+    private DocumentWithDataAsTableExcelProducer documentWithDataAsTableExcelProducer;
+
+
     @Override
     protected DocumentProducer getDocumentProducer() {
-        return documentWithDataAsArrayExcelProducer;
+        return documentWithDataAsTableExcelProducer;
     }
 }

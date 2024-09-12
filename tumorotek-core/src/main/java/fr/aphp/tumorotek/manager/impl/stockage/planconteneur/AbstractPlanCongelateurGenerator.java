@@ -39,82 +39,122 @@ import fr.aphp.tumorotek.dto.OutputStreamData;
 import fr.aphp.tumorotek.manager.io.document.*;
 import fr.aphp.tumorotek.manager.io.production.DocumentProducer;
 import fr.aphp.tumorotek.model.stockage.Conteneur;
-import fr.aphp.tumorotek.model.stockage.Terminale;
 import fr.aphp.tumorotek.utils.TKStringUtils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
 /**
  * Classe abstraite fournissant une implémentation de base pour la génération de plans de congélateurs.
- * Elle devrait se concentrer uniquement sur la génération du contenu  * (c'est-à-dire, `DocumentWithDataAsArray`).
- * Les spécificités de format devraient être gérées par les implémentations  * concrètes et les producteurs.
- *
+ * Elle devrait se concentrer uniquement sur la génération du contenu (c'est-à-dire, `DocumentWithDataAsTable`).
+ * Les spécificités de format devraient être gérées par les implémentations  concrètes et les producteurs.
  */
 
-public abstract class PlanCongelateurAvecBoiteGenerator implements PlanCongelateurGenerator {
+public abstract class AbstractPlanCongelateurGenerator implements PlanCongelateurGenerator {
 
-    public OutputStreamData generate(List<Conteneur> list, Locale locale) {
-        List<DocumentWithDataAsArray> listPlanConteneur = new ArrayList<>();
-        for (Conteneur conteneur : list) {
+    protected static final String DATE_FORMAT = "yyyyMMddHHmm";
+
+
+    @Override
+    public OutputStreamData generate(List<Conteneur> listConteneurs, Locale locale) {
+        OutputStreamData outputStreamData = new OutputStreamData();
+        List<DocumentWithDataAsTable> listPlanConteneur = new ArrayList<>();
+
+        for (Conteneur conteneur : listConteneurs) {
             listPlanConteneur.add(buildPlanConteneur(conteneur, locale));
         }
-        return produceOutput(listPlanConteneur);
+        getDocumentProducer().produce(listPlanConteneur, outputStreamData);
+        String filename = String.format("%s.%s", getFileNamePrefix(listConteneurs), outputStreamData.getFormat());
+        outputStreamData.setFileName(filename);
+        return outputStreamData;
     }
 
-    protected abstract OutputStreamData produceOutput(List<DocumentWithDataAsArray> listPlanConteneur);
+    /**
+     * Construit le préfixe du nom de fichier sans l'extension. La liste est nécessaire pour obtenir les informations.
+     *
+     * @param listConteneurs indique s'il y a plusieurs conteneurs ou un
+     * @return le préfixe du nom de fichier
+     */
+    protected abstract String getFileNamePrefix(List<Conteneur> listConteneurs);
 
-    protected DocumentWithDataAsArray buildPlanConteneur(Conteneur conteneur, Locale locale) {
-        return new DocumentWithDataAsArray(
-                buildFileName(),
+
+    /**
+     * Construit un plan de conteneur sous forme de {@link DocumentWithDataAsTable}, représentant une feuille Excel avec des données sous forme de tableau.
+     *
+     * @param conteneur le conteneur à traiter
+     * @param locale    la locale à utiliser pour la génération
+     * @return un document contenant les données du conteneur sous forme de tableau
+     */
+    protected DocumentWithDataAsTable buildPlanConteneur(Conteneur conteneur, Locale locale) {
+        return new DocumentWithDataAsTable(
+                conteneur.getNom(),
                 buildEntetePlan(conteneur, locale),
                 buildDetailPlan(conteneur, locale),
                 buildPiedPagePlan(conteneur)
         );
     }
 
-    private void sortBoitesByPosition(List<Terminale> boites) {
-        if (boites == null) return;
 
-        Collections.sort(boites, Comparator.comparingInt(Terminale::getPosition));
-    }
-
-
+    /**
+     * Construit l'en-tête du plan, fournissant des informations sur le conteneur.
+     *
+     * @param conteneur le conteneur pour lequel construire l'en-tête
+     * @param locale    la locale à utiliser pour la génération
+     * @return le contexte du document contenant les labels et valeurs
+     */
     public DocumentContext buildEntetePlan(Conteneur conteneur, Locale locale) {
         List<LabelValue> listLabelValue = new ArrayList<>();
 
         String currentDate = TKStringUtils.getCurrentDate(null);
         listLabelValue.add(new LabelValue(currentDate, "", true, false));
 
-        // 2. Label for "Champ.Retour.Conteneur" and its value
         String containerNameLabel = "Nom de congélateur";
         String nomConteneur = conteneur.getNom();
         listLabelValue.add(new LabelValue(containerNameLabel, nomConteneur, false, true));
 
-        // 3. Label for "conteneur.description" and its value
         String descriptionLabel = "Description";
         String conteneurDescription = conteneur.getDescription();
         listLabelValue.add(new LabelValue(descriptionLabel, conteneurDescription, false, false));
 
-        // 4. Label for "stockage.excel.plan.etablish.service" and its value
-        // todo: add etablish
         String serviceLabel = "Etablissement / service";
-        String serviceValue = conteneur.getService().getNom();
-        listLabelValue.add(new LabelValue(serviceLabel, serviceValue, false, false));
-
+        String service = conteneur.getService().getNom();
+        String etabli = conteneur.getService().getEtablissement().getNom();
+        String serviceEtabliValue = etabli + " / " + service;
+        listLabelValue.add(new LabelValue(serviceLabel, serviceEtabliValue, false, false));
 
         return new DocumentContext(listLabelValue);
     }
 
 
+    /**
+     * Construit le pied de page du plan. Dans l'implémentation Excel, le pied de page est affiché uniquement lors de l'impression.
+     *
+     * @param conteneur le conteneur pour lequel construire le pied de page
+     * @return le pied de page du document
+     */
     public DocumentFooter buildPiedPagePlan(Conteneur conteneur) {
         String contenurName = conteneur.getNom();
         return new DocumentFooter(contenurName, null, null);
     }
 
+    /**
+     * Construit les détails du plan principal où les données principales sont écrites.
+     *
+     * @param conteneur le conteneur pour lequel construire les détails du plan
+     * @param locale    la locale à utiliser pour la génération
+     * @return les données du document
+     */
     protected abstract DocumentData buildDetailPlan(Conteneur conteneur, Locale locale);
 
-    protected abstract String buildFileName();
 
+    /**
+     * Obtient le producteur de documents utilisé pour produire le fichier.
+     * Ce producteur est spécifique au type de fichier : par exemple, Excel aura sa propre implémentation,
+     * PDF la sienne, etc.
+     *
+     * @return le producteur
+     */
     protected abstract DocumentProducer getDocumentProducer();
 
 }

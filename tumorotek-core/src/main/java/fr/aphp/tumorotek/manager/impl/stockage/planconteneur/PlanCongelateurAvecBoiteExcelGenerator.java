@@ -35,46 +35,28 @@
  **/
 package fr.aphp.tumorotek.manager.impl.stockage.planconteneur;
 
-
-import fr.aphp.tumorotek.dto.OutputStreamData;
-import fr.aphp.tumorotek.manager.ConfigManager;
-import fr.aphp.tumorotek.manager.impl.io.production.DocumentWithDataAsArrayExcelProducer;
-import fr.aphp.tumorotek.manager.io.document.DocumentWithDataAsArray;
+import fr.aphp.tumorotek.manager.impl.io.production.DocumentWithDataAsTableExcelProducer;
 import fr.aphp.tumorotek.manager.io.production.DocumentProducer;
-import fr.aphp.tumorotek.utils.TKStringUtils;
 
-import java.util.List;
 
 /**
  * La classe  étend {@link AbstractPlanCongelateurAvecBoiteGenerator}  et est responsable de la génération d'un plan
  * pour un congélateur avec boîtes au format Excel.
  *
- * <p>Elle utilise un producteur de documents {@link DocumentWithDataAsArrayExcelProducer} pour créer le fichier
+ * <p>Elle utilise un producteur de documents {@link DocumentWithDataAsTableExcelProducer} pour créer le fichier
  * Excel à partir des données fournies. La méthode {@code buildFileName} génère le nom de fichier pour le document
  * Excel basé sur une liste de conteneurs.</p>
  */
 public class PlanCongelateurAvecBoiteExcelGenerator extends AbstractPlanCongelateurAvecBoiteGenerator {
 
-    private DocumentWithDataAsArrayExcelProducer documentWithDataAsArrayExcelProducer;
+    private DocumentWithDataAsTableExcelProducer documentWithDataAsTableExcelProducer;
 
-    @Override
-    protected OutputStreamData produceOutput(List<DocumentWithDataAsArray> listPlanConteneur) {
-        OutputStreamData outputStreamData = new OutputStreamData();
-        outputStreamData.setFormat(".xls");
-        outputStreamData.setContentType(ConfigManager.OFFICE_EXCEL_MIME_TYPE);
-        outputStreamData.setFileName(buildFileName());
-        documentWithDataAsArrayExcelProducer.produce(listPlanConteneur, outputStreamData);
-        return outputStreamData;
-    }
 
-    @Override
-    protected String buildFileName() {
-        String date = TKStringUtils.getCurrentDate("yyyyMMddHHmm");
-        return String.format("plan_conteneur_avec_boites_%s.xlsx", date);
-    }
+
+
 
     @Override
     protected DocumentProducer getDocumentProducer() {
-        return documentWithDataAsArrayExcelProducer;
+        return documentWithDataAsTableExcelProducer;
     }
 }

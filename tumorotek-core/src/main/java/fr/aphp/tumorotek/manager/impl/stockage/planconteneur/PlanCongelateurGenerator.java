@@ -51,12 +51,24 @@ import java.util.Locale;
  * basées sur une liste de conteneurs. Les classes qui implémentent cette interface
  * doivent fournir une implémentation concrète de la méthode {@code generate}.
  *
- * <p>
- * La méthode {@code generate} prend en entrée une liste de conteneurs et retourne un
- * objet de type {@link OutputStreamData} qui représente les données de sortie du plan.
- * </p>
  *
  */
 public interface PlanCongelateurGenerator  {
+
+
+    /**
+     * Génère des données de sortie basées sur une liste de conteneurs.
+     *
+     * Cette méthode crée un fichier contenant le plan des conteneurs. Les classes
+     * qui implémentent cette méthode doivent produire un fichier structuré en fonction
+     * des conteneurs fournis dans la liste et en tenant compte de la locale spécifiée.
+     *
+     * @param conteneurList Liste des conteneurs pour lesquels le plan doit être généré.
+     * @param locale Locale à utiliser pour la génération des données, influençant
+     *               la mise en forme et le contenu du fichier.
+     * @return Un objet {@link OutputStreamData} représentant les données du fichier généré.
+     *         Cet objet peut être utilisé pour écrire les données dans un flux de sortie.
+     */
+
     OutputStreamData generate(List<Conteneur> conteneurList, Locale locale);
 }
