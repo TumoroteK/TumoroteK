@@ -54,13 +54,17 @@ public class PlanCongelateurSansBoiteExcelGenerator extends AbstractPlanCongelat
     private EnceinteManager enceinteManager;
 
 
-    public void setEnceinteManager(EnceinteManager enceinteManager) {
+    public PlanCongelateurSansBoiteExcelGenerator(EnceinteManager enceinteManager) {
         this.enceinteManager = enceinteManager;
     }
 
+
     @Override
     protected EnceinteManager getEnceinteManager() {
-        return null;
+        if (this.enceinteManager == null) {
+            throw new IllegalStateException("EnceinteManager has not been initialized.");
+        }
+        return this.enceinteManager;
     }
 
     private DocumentWithDataAsTableExcelProducer documentWithDataAsTableExcelProducer;

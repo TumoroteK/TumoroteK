@@ -11,17 +11,6 @@
 	<import resource="applicationContextAOP.xml" />
 
 
-	<bean id="planCongelateurAvecBoiteExcelGenerator"
-		  class="fr.aphp.tumorotek.manager.impl.stockage.planconteneur.PlanCongelateurAvecBoiteExcelGenerator">
-		<property name="enceinteManager" ref="enceinteManager"/>
-
-	</bean>
-
-	<bean id="planCongelateurSansBoiteExcelGenerator"
-		  class="fr.aphp.tumorotek.manager.impl.stockage.planconteneur.PlanCongelateurSansBoiteExcelGenerator">
-		<property name="enceinteManager" ref="enceinteManager"/>
-	</bean>
-
 
 	<!-- Package coeur.patient -->
 	<bean id="lienFamilialValidator"
@@ -1083,6 +1072,18 @@
 	</bean>
 
 	<!-- Beans Managers du package stockage -->
+
+
+	<bean id="planCongelateurAvecBoiteExcelGenerator"
+		  class="fr.aphp.tumorotek.manager.impl.stockage.planconteneur.PlanCongelateurAvecBoiteExcelGenerator">
+		<property name="enceinteManager" ref="enceinteManager"/>
+
+	</bean>
+
+	<bean id="planCongelateurSansBoiteExcelGenerator"
+		  class="fr.aphp.tumorotek.manager.impl.stockage.planconteneur.PlanCongelateurSansBoiteExcelGenerator">
+		<constructor-arg ref="enceinteManager"/>
+	</bean>
 
 	<bean id="conteneurValidator"
 		class="fr.aphp.tumorotek.manager.validation.stockage.ConteneurValidator" />

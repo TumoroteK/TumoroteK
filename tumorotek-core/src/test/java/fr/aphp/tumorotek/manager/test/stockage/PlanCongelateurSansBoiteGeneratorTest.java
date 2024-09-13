@@ -36,105 +36,66 @@
 package fr.aphp.tumorotek.manager.test.stockage;
 
 import fr.aphp.tumorotek.manager.impl.stockage.planconteneur.PlanCongelateurSansBoiteExcelGenerator;
-import fr.aphp.tumorotek.manager.io.document.*;
+import fr.aphp.tumorotek.manager.io.document.DataAsTable;
+import fr.aphp.tumorotek.manager.io.document.DocumentData;
+import fr.aphp.tumorotek.manager.io.document.detail.table.CellRow;
 import fr.aphp.tumorotek.manager.stockage.ConteneurManager;
+import fr.aphp.tumorotek.manager.stockage.EnceinteManager;
 import fr.aphp.tumorotek.manager.test.AbstractManagerTest4;
-import fr.aphp.tumorotek.model.contexte.Etablissement;
-import fr.aphp.tumorotek.model.contexte.Service;
+import fr.aphp.tumorotek.model.contexte.Plateforme;
 import fr.aphp.tumorotek.model.stockage.Conteneur;
-import fr.aphp.tumorotek.utils.TKStringUtils;
+import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import static junit.framework.TestCase.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 
 public class PlanCongelateurSansBoiteGeneratorTest extends AbstractManagerTest4 {
+    private PlanCongelateurSansBoiteExcelGenerator generator;
 
     @Autowired
     private ConteneurManager conteneurManager;
-    @Test
-    public void testBuildEntetePlan() {
-        // Arrange
-        Conteneur conteneur = new Conteneur();
-        Service service = new Service();
-        service.setNom("Service Name");
-        Etablissement etabli = new Etablissement();
-        etabli.setNom("Etab Name");
-        service.setEtablissement(etabli);
-        conteneur.setNom("NBT -80 / Congél VI1");
-        conteneur.setDescription("TSU 400 V601");
-        conteneur.setService(service);
-        Locale locale = Locale.ENGLISH;
 
-        // Expected values
-        String expectedDate = TKStringUtils.getCurrentDate(null);
-        System.out.println(expectedDate);
-        List<LabelValue> expectedLabelValues = new ArrayList<>();
-        expectedLabelValues.add(new LabelValue( expectedDate, null,  true, false));
-        expectedLabelValues.add(new LabelValue("Nom de congélateur", conteneur.getNom(), false, true));
-        expectedLabelValues.add(new LabelValue("Description", conteneur.getDescription(), false, false));
-        expectedLabelValues.add(new LabelValue("Etablissement / service", "Service Name", false, false));
+    @Autowired
+    private EnceinteManager enceinteManager;
 
-        PlanCongelateurSansBoiteExcelGenerator PlanCongelateurSansBoiteExcelGenerator = new PlanCongelateurSansBoiteExcelGenerator();
+    private List<Conteneur> containers;
 
-        // Act
-        DocumentContext documentContext = PlanCongelateurSansBoiteExcelGenerator.buildEntetePlan(conteneur, locale);
+    @Before
+    public void setUp() {
+        generator = new PlanCongelateurSansBoiteExcelGenerator(enceinteManager);
+        Plateforme plateforme = new Plateforme();
+        plateforme.setPlateformeId(1);
 
-        // Assert
-        List<LabelValue> actualLabelValues = documentContext.getListLabelValue();
-        assertEquals(expectedLabelValues.size(), actualLabelValues.size());
-
-        for (int i = 0; i < expectedLabelValues.size(); i++) {
-            LabelValue expected = expectedLabelValues.get(i);
-            LabelValue actual = actualLabelValues.get(i);
-            System.out.println( expected + "e:a" +  actual);
-            // Assert the value
-            if (i==0) {
-                // Special handling for the date to ensure it matches the expected date format
-                assertEquals(expected.getLabel(), actual.getLabel());
-            } else {
-                assertEquals(expected.getLabel(), actual.getLabel());
-                assertEquals(expected.getValue(), actual.getValue());
-                assertEquals(expected.isLabelInBold(), actual.isLabelInBold());
-                assertEquals(expected.isValueInBold(), actual.isValueInBold());
-            }
-
-
-        }
-    }
-    
-
-    @Test
-        public void testBuildPiedPagePlan() {
-        // Arrange
-        Conteneur conteneur = new Conteneur();
-        conteneur.setNom("Test Conteneur");
-        PlanCongelateurSansBoiteExcelGenerator PlanCongelateurSansBoiteExcelGenerator = new PlanCongelateurSansBoiteExcelGenerator();
-
-        // Act
-        DocumentFooter result = PlanCongelateurSansBoiteExcelGenerator.buildPiedPagePlan(conteneur);
-
-        // Assert
-        assertNotNull(result);
-        assertEquals("Test Conteneur", result.getLeftData());
-        assertNull(result.getRightData()); // Assuming field1 and field2 are set to null in the constructor of DocumentFooter
-        assertNull(result.getCenterData());
+        containers = conteneurManager.findByPlateformeOrigWithOrderManager(plateforme);
     }
 
-//    @Test
-//    public void buildDetailPlanTest(){
-//        Conteneur c = conteneurManager.findByIdManager(1);
-//        Locale locale = Locale.ENGLISH;
-//        PlanCongelateurSansBoiteExcelGenerator planCongelateurSansBoiteExcelGenerator = new PlanCongelateurSansBoiteExcelGenerator();
-//        DataAsTable doculment = (DataAsTable) planCongelateurSansBoiteExcelGenerator.buildDetailPlan(c, locale);
-//        System.out.println(doculment);
-//
-//    }
+    @Test
+    public void test() {
+        System.out.println(containers);
+    }
+
+
+
+    @Test
+    public void testBuildDetailPlan() {
+        // Assume we are testing the first container
+        Conteneur conteneur = containers.get(0);
+        Locale locale = Locale.getDefault(); // Use the default locale or specify one
+
+        DocumentData documentData = generator.buildDetailPlan(conteneur, locale);
+        assertNotNull(documentData);
+        System.out.println(documentData);
+        assertTrue(documentData instanceof DataAsTable);
+
+        DataAsTable dataAsTable = (DataAsTable) documentData;
+        List<CellRow> cellRows = dataAsTable.getListCellRow(); // Adjust method based on actual DataAsTable implementation
+        assertNotNull(cellRows);
+    }
+
 }

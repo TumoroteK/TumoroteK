@@ -78,6 +78,10 @@ public class DataAsTable implements DocumentData {
         }
     }
 
+    public void addListOfCellsRows(List<CellRow> listCellRow){
+        listCellRow.addAll(listCellRow);
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("DataAsTable[\n");

@@ -47,6 +47,8 @@ import fr.aphp.tumorotek.model.stockage.Enceinte;
 import fr.aphp.tumorotek.utils.TKStringUtils;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 
@@ -64,9 +66,7 @@ public abstract class AbstractPlanCongelateurSansBoiteGenerator extends Abstract
 
     private static final String FILE_PREFIX_MULTIPLE = "plans_conteneurs_sans_boites_";
     private static final String FILE_PREFIX_SINGLE = "plan_conteneur_sans_boites_";
-
-
-    protected EnceinteManager enceinteManager;
+    private static final String EMPTY_CELL_CONTENT = "vide";
 
     abstract protected EnceinteManager getEnceinteManager();
 
@@ -84,80 +84,107 @@ public abstract class AbstractPlanCongelateurSansBoiteGenerator extends Abstract
     }
 
     /**
-     * Construit un DataAsArray basé sur les enceintes d'un conteneur.
+     * Builds a detailed plan representation of a container by organizing its
+     * compartments and sub-compartments in a structured manner.
      *
-     * @param conteneur
-     * @param locale
-     * @return
+     * @param conteneur The container for which the detail plan is to be built.
+     * @return DataAsTable representing the detailed plan structure of the container.
      */
     @Override
     public DocumentData buildDetailPlan(Conteneur conteneur, Locale locale) {
-
-        // Initialisation d'un nouvel objet DataAsTable.
         DataAsTable dataAsTable = new DataAsTable();
 
-        // Récupération des enceintes associées au conteneur et tri des enceintes.
-        List<Enceinte> encientes = getEnceinteManager().findAllEnceinteByConteneurManager(conteneur);
-        //        sortEnceintesRecursively(encientes);
+        List<Enceinte> enceintes = getEnceinteManager().findAllEnceinteByConteneurManager(conteneur);
 
-        // Traitement de chaque enceinte.
-        for (Enceinte enceinte : encientes) {
+        // Sort enceintes by position for proper arrangement
+        Collections.sort(enceintes, Comparator.comparingInt(Enceinte::getPosition));
 
-            //  Création des attributs de style et du contenu de cellule.
-            StylingAttributes stylingAttributes = new StylingAttributes();
-            stylingAttributes.setSecondTextInItalic(true);
-            stylingAttributes.setBorderLeftColor(enceinte.getCouleur().getHexa());
+        for (Enceinte enceinte : enceintes) {
+            int nbPlaces = enceinte.getNbPlaces();
 
-            CellContent cellContent = new CellContent(
-                    enceinte.getPosition() == null ? "vide" : enceinte.getNom(),
-                    enceinte.getAlias(),
-                    stylingAttributes
-            );
+            if (nbPlaces != enceintes.size()) {
+                checkIfEmpty(enceinte, enceintes, nbPlaces);
+            }
 
-            // Création de la cellule de données.
-            DataCell dataCell = new DataCell(cellContent, stylingAttributes);
+            CellContent cellContent = new CellContent();
+            if (enceinte.getPosition() == null) {
+                cellContent.setText(EMPTY_CELL_CONTENT);
+            } else {
+                cellContent.setText(enceinte.getNom());
+                cellContent.setComplement(enceinte.getAlias());
+                StylingAttributes stylingAttributes = new StylingAttributes();
+                stylingAttributes.setSecondTextInItalic(true);
+                DataCell dataCell = new DataCell(cellContent, stylingAttributes);
 
-            // Création d'une ligne de cellules pour l'enceinte.
-            // La méthode createCellRow détermine combien de DataCell doivent être ajoutées en fonction du niveau de l'enceinte.
-            CellRow cellRow = createCellRow(dataCell, getEnceinteManager().getLevelEnceinte(enceinte));
+                List<DataCell> dataCells = addToCellRow(dataCell, getEnceinteManager().getLevelEnceinte(enceinte));
 
-            // Ajout de la ligne de cellules au tableau de données.
-            dataAsTable.addCellRow(cellRow);
+                // Write the CellRow for this compartment
+                dataAsTable.addCellRow(new CellRow(dataCells));
+            }
+
+            // Continue recursively if there are sub-compartments
+            if (!getEnceinteManager().checkLastEnceinte(enceinte)) {
+                dataAsTable.addListOfCellsRows(buildDetailPlanRecursively(getEnceinteManager().findByEnceintePereWithOrderManager(enceinte), 1));
+            }
         }
 
-        // Retour de l'objet DataAsTable complété.
         return dataAsTable;
     }
 
+    private void checkIfEmpty(Enceinte enceinte, List<Enceinte> enceintes, int nbPlaces) {
+        //TODO: implement
+    }
 
-//    public void sortEnceintesRecursively(List<Enceinte> enceintes) {
-//        // sort the list of enceintes at the current level
-//        Collections.sort(enceintes, Comparator.comparingInt(Enceinte::getPosition));
-//
-//        //  sort each sub-enceinte recursively
-//        for (Enceinte enceinte : enceintes) {
-//            Set<Enceinte> subEnceintes = enceinte.getEnceintes(); // Assume getSubEnceintes() returns the sub-enceintes withot lazy loading problems
-//            if (subEnceintes != null) {
-//                sortEnceintesRecursively(subEnceintes);
-//            }
-//        }
-//    }
+    /**
+     * Recursively builds a detailed plan representation of sub-compartments within an enclosure.
+     *
+     * @param sousEnceintes The list of sub-compartments within an enclosure.
+     * @param level         The current nesting level of the sub-compartments.
+     * @return List of CellRows representing the detailed plan structure of the sub-compartments.
+     */
+    private List<CellRow>  buildDetailPlanRecursively(List<Enceinte> sousEnceintes, int level) {
+        List<CellRow> cellRows = new ArrayList<>();
+        StylingAttributes stylingAttributesText = new StylingAttributes();
+        StylingAttributes stylingAttributesCell = new StylingAttributes();
+        stylingAttributesText.setSecondTextInItalic(true);
+        for (Enceinte sousEnceinte : sousEnceintes) {
+            CellContent cellContent = new CellContent(sousEnceinte.getNom(), sousEnceinte.getAlias(), stylingAttributesText);
+            if (sousEnceinte.getCouleur() != null){
+                stylingAttributesCell.setBorderLeftColor(sousEnceinte.getCouleur().getHexa());
+            }
+            DataCell dataCell = new DataCell(cellContent, stylingAttributesCell);
+            List<DataCell> dataCells = addToCellRow(dataCell, level);
 
-    private CellRow createCellRow(DataCell datacell, int level) {
-        List<DataCell> dataCellList = new ArrayList<>();
+            // Write the CellRow for this sub-compartment
+            cellRows.add(new CellRow(dataCells));
 
-        for (int i = 0; i < level; i++) {
-            if (i == level - 1) {
-                dataCellList.add(datacell); // Add the provided datacell at the last position
-            } else {
-                dataCellList.add(createEmptyDataCell()); // Add empty DataCells for other positions in the row
+            // Continue recursively if there are more sub-compartments
+            if (!getEnceinteManager().checkLastEnceinte(sousEnceinte)) {
+                cellRows.addAll(buildDetailPlanRecursively(getEnceinteManager().findByEnceintePereWithOrderManager(sousEnceinte), level + 1));
             }
         }
-        return new CellRow(dataCellList);
+
+        return cellRows;
+    }
+
+    /**
+     * Adds a given Datacell to a row at a specific level within a structured array representation.
+     *
+     * @param datacell The Datacell to add to the row.
+     * @param level The current nesting level at which the Datacell should be added.
+     * @return List of Datacells representing the row with added content at specified level.
+     */
+    private List<DataCell> addToCellRow(DataCell datacell, int level) {
+        List<DataCell> result= new ArrayList<>();
+        for(int i=0; i<level; i++){
+            result.add(createEmptyDataCell());
+        }
+        result.add(datacell);
+    
+        return result;
     }
 
     private DataCell createEmptyDataCell() {
-        // Crée une cellule vide avec un contenu par défaut.
         return new DataCell(new CellContent(""));
     }
 }

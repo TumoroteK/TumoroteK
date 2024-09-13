@@ -54,12 +54,7 @@ public class CellContent {
 
     private StylingAttributes stylingAttributes;
 
-    public String getText() {
-        return text;
-    }
-
-    public void setText(String text) {
-        this.text = text;
+    public CellContent() {
     }
 
     public CellContent(String text) {
@@ -71,7 +66,13 @@ public class CellContent {
         this.complement = complement;
         this.stylingAttributes = stylingAttributes;
     }
+    public String getText() {
+        return text;
+    }
 
+    public void setText(String text) {
+        this.text = text;
+    }
     public String getComplement() {
         return complement;
     }
