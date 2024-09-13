@@ -101,6 +101,8 @@
                     <vlayout height="100px" style="margin: 10px" spacing="10px">
 						<label sclass="formLink" value="${c:l('main.userguide')}" 
 							onClick='doOpen("../doc/userguide.zul");'/>
+						<label sclass="formLink" value="${c:l('main.gatsbiuserguide')}" 
+							onClick='doOpen("../doc/gatsbiuserguide.zul");'/>							
 						<label sclass="formLink" value="${c:l('main.exploitguide')}" 
 							onClick='doOpen("../doc/exploitguide.zul");'/>
 						

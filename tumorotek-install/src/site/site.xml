@@ -35,6 +35,7 @@
         <menu name="TumoroteK">
             <item name="Notes de version" href="note-version.html" />
             <item name="Manuel d'utilisation" href="TumoroteK-Manuel.pdf" />
+            <item name="Manuel d'utilisation du module Gatsbi" href="TK-GATSBI-Manuel.pdf" />
         </menu>
         <menu name="Procédures">
             <item name="Installation" href="installation-readme.html" />
