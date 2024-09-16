@@ -69,7 +69,7 @@
                 <panelchildren>
                 	<hlayout style="overflow-y: scroll;" hflex="1"  vflex="1" >
 	                	<vbox pack="center" align="center" vflex="1" hflex="1">
-	               			<image src="/images/portail/logo-tk.png" />
+	               			<image src="/images/portail/logo-tk.png" width="150px" height="150px"/>
 	           				<hlayout style="margin: 5px">
 	           					<label sclass="formLabel" value="${c:l('accueil.principal.site')}"/>
 	           					<separator width="10px"/>
@@ -99,25 +99,16 @@
             	 sclass="portalPanel" height="100px">
                 <panelchildren>
                     <vlayout height="100px" style="margin: 10px" spacing="10px">
-						<label sclass="formLink" value="${c:l('main.userguide')}" 
-							onClick='doOpen("../doc/userguide.zul");'/>
-						<label sclass="formLink" value="${c:l('main.gatsbiuserguide')}" 
-							onClick='doOpen("../doc/gatsbiuserguide.zul");'/>							
-						<label sclass="formLink" value="${c:l('main.exploitguide')}" 
-							onClick='doOpen("../doc/exploitguide.zul");'/>
-						
+                    	<a href="../../../tumorotek-site-static/TumoroteK-Manuel.pdf" style="text-decoration:none" target='_blank'>
+							<label sclass="formLink" value="${c:l('main.userguide')}" />
+						</a>
+						<a href="../../../tumorotek-site-static/TK-GATSBI-Manuel.pdf" style="text-decoration:none" target='_blank'>
+							<label sclass="formLink" value="${c:l('main.gatsbiuserguide')}" />
+						</a>
+						<a href="../../../tumorotek-site-static/TumoroteK-DossierExploitation.pdf" style="text-decoration:none" target='_blank'>
+							<label sclass="formLink" value="${c:l('main.exploitguide')}" />
+						</a>
 					</vlayout>
-					<zscript><![CDATA[
-					void doOpen(String path) {
-						try {
-							((Window)Executions.getCurrent()
-									.createComponents(path, 
-							winAccueil, null)).doModal();		
-						} catch (Exception e) {
-							e.printStackTrace();
-						}
-					}
-					]]></zscript>
                 </panelchildren>
             </panel>
         </portalchildren>
