@@ -1196,6 +1196,10 @@ public class FicheProfil extends AbstractFicheCombineController
       }else{
          accesAdministrationBox.setDisabled(false);
       }
+      
+      //l'anonymisation ou non de l'affichage impacte les choix proposés pour l'anonymisation des export
+      getBinder().loadComponent(exportListBox);
+
    }
 
    /**
@@ -1374,10 +1378,16 @@ public class FicheProfil extends AbstractFicheCombineController
       };
    }
 
+   //TK-553 : si l'affichage est anonyme, l'export ne peut pas être nominatif :
    public List<ProfilExport> getProfilExportsModel(){
-      return Arrays.asList(ProfilExport.values());
+      //on veut pouvoir modifier les éléments de la liste donc on doit en créer une nouvelle à partir de values()
+      List<ProfilExport> values = new ArrayList<ProfilExport>(Arrays.asList(ProfilExport.values()));
+      if(anonymeBox != null && anonymeBox.isChecked()) {
+         values.removeIf(profilExport -> profilExport.equals(ProfilExport.NOMINATIF));
+      }
+      return values;
    }
-
+   
    public ProfilExport getSelectedExport(){
       return this.selectedExport;
    }
