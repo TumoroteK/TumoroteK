@@ -239,15 +239,6 @@ public class PrelevementController extends AbstractObjectTabController
    }
 
    @Override
-   public void drawListe(){
-      if(SEROLOGIE.equals(getCurrentContexte())){
-         setListZulPath("/zuls/prelevement/serotk/ListePrelevementSero.zul");
-         setListRenderer(new PrelevementSeroRowRenderer(true, SessionUtils.getSelectedBanques(sessionScope).size() > 1));
-      }
-      super.drawListe();
-   }
-
-   @Override
    public void populateFicheStatic(){
       if(SEROLOGIE.equals(getCurrentContexte())){
          setStaticZulPath("/zuls/prelevement/serotk/FichePrelevementStaticSero.zul");
