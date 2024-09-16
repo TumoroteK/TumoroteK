@@ -1,5 +1,22 @@
 #### Notes de version
 
+##### Version 2.3.0.11 - Publiée le 16/09/2024
+- YouTrack [TG-154](https://tumorotek.myjetbrains.com/youtrack/issue/TG-154) : [TK] : Ajout du guide utilisateur de Gatsbi sur la page d'accueil de TK
+
+
+###### Corrections ano tous contextes
+- YouTrack [TG-266](https://tumorotek.myjetbrains.com/youtrack/issue/TG-266) : Fiche <span class="badge badge-prelevement">Prélèvement</span> en édition : le n° de dossier patient (nda) n'est plus modifiable (régression)
+- YouTrack [TK-539](https://tumorotek.myjetbrains.com/youtrack/issue/TK-539) : Historique (d'un objet ou dans l'admin) : l'information "import" n'est pas précisée lorsque la création a été effectuée par un import
+- YouTrack [TK-552](https://tumorotek.myjetbrains.com/youtrack/issue/TK-552) : Liste <span class="badge badge-prelevement">Prélèvement</span> en contexte sérologie : les informations patient ne sont pas cachées si le profil a Anonymisation est à Oui (régression)
+- YouTrack [TK-553](https://tumorotek.myjetbrains.com/youtrack/issue/TK-553) : Fiche Profil : ne pas proposer l'export nominatif si anonymisation est coché
+
+
+###### Corrections ano pour un contexte Gatsbi
+- YouTrack [TG-235](https://tumorotek.myjetbrains.com/youtrack/issue/TG-235) : [TK] - Contexte Gatsbi : Plantage lors de la modification multiple sur des patients
+- YouTrack [TG-256](https://tumorotek.myjetbrains.com/youtrack/issue/TG-256) : [TK] - Contexte Gatsbi : import prélèvement : erreur IndexOutOfBoundException pour certaines lignes
+- YouTrack [TG-265](https://tumorotek.myjetbrains.com/youtrack/issue/TG-265) : [TK] - Contexte Gatsbi, création <span class="badge badge-prelevement">Prélèvement</span> avec utilisation de la numérotation : incrémentation de 2 au lieu de 1 quand un paramétrage Gatsbi est défini
+
+
 ##### Version 2.3.0.10 - Publiée le 01/07/2024
 ###### Corrections dans TK pour un contexte Gatsbi
 - YouTrack [TG-227](https://tumorotek.myjetbrains.com/youtrack/issue/TG-227) : [TK] - Fiche <span class="badge badge-patient">Patient</span> : modification maladie : champ code diagnostic trop haut
