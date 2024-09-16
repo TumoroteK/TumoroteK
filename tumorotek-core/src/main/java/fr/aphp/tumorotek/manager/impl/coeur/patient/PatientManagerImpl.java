@@ -403,7 +403,12 @@ public class PatientManagerImpl implements PatientManager
          if (pat.getBanque() != null) {
             patients.addAll(patientDao
                .findByIdentifiant(pat.getIdentifiant(), Arrays.asList(pat.getBanque())));
-            return patients.get(0); // un seul patient possible par identifiant par banque
+            //TG-256 : le patient peut exister mais avec un autre identifiant, dans ce cas, on le récupèrera avec 
+            //le recherche sur le nom faite sur dans le bloc if (patients.isEmpty()) ...
+            //=> ajout d'un test !patients.isEmpty()
+            if(!patients.isEmpty()) {
+               return patients.get(0); // un seul patient possible par identifiant par banque
+            }
          }
          
          // le patient existant porte sur l'identité
