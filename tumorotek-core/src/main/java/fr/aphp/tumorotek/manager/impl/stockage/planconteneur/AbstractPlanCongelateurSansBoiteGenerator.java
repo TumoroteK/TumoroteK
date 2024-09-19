@@ -37,20 +37,18 @@ package fr.aphp.tumorotek.manager.impl.stockage.planconteneur;
 
 import fr.aphp.tumorotek.manager.io.document.DataAsTable;
 import fr.aphp.tumorotek.manager.io.document.DocumentData;
-import fr.aphp.tumorotek.manager.io.document.StylingAttributes;
 import fr.aphp.tumorotek.manager.io.document.detail.table.CellContent;
 import fr.aphp.tumorotek.manager.io.document.detail.table.CellRow;
 import fr.aphp.tumorotek.manager.io.document.detail.table.DataCell;
 import fr.aphp.tumorotek.manager.stockage.EnceinteManager;
 import fr.aphp.tumorotek.model.stockage.Conteneur;
 import fr.aphp.tumorotek.model.stockage.Enceinte;
-import fr.aphp.tumorotek.utils.TKStringUtils;
+import fr.aphp.tumorotek.model.systeme.Couleur;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
+import java.util.Map;
+import java.util.Optional;
 
 
 /**
@@ -64,24 +62,100 @@ import java.util.Locale;
 
 public abstract class AbstractPlanCongelateurSansBoiteGenerator extends AbstractPlanCongelateurGenerator {
 
-    private static final String FILE_PREFIX_MULTIPLE = "plans_conteneurs_sans_boites_";
-    private static final String FILE_PREFIX_SINGLE = "plan_conteneur_sans_boites_";
+
     private static final String EMPTY_CELL_CONTENT = "vide";
 
     abstract protected EnceinteManager getEnceinteManager();
 
+    private CellRow addToCellRowWithEmptyPlaces(DataCell datacell, int level) {
+        CellRow cellRow = new CellRow();
+        for (int i = 0; i < level; i++) {
+            cellRow.addDataCell(createEmptyDataCell());
+        }
+        cellRow.addDataCell(datacell);
 
-    @Override
-    protected String getFileNamePrefix(List<Conteneur> listConteneurs) {
-        if (listConteneurs == null || listConteneurs.isEmpty()) {
-            return "";
-        }
-        String currentDate = TKStringUtils.getCurrentDate(DATE_FORMAT);
-        if (listConteneurs.size() > 1) {
-            return FILE_PREFIX_MULTIPLE + currentDate;
-        }
-        return FILE_PREFIX_SINGLE + currentDate;
+        return cellRow;
     }
+
+
+    public Map<Integer, Enceinte> createPositionMap(List<Enceinte> enceintes){
+        if (enceintes == null) {
+            throw new IllegalArgumentException("List of enceintes cannot be null");
+        }
+        Map<Integer, Enceinte> positionMap = new HashMap<>();
+
+        for (Enceinte enceinte : enceintes) {
+            positionMap.put(enceinte.getPosition(), enceinte);
+        }
+        return positionMap;
+    }
+
+
+
+    private void writeEnceintes(Map<Integer, Enceinte> positionMap, int numberOfPlaces, int niveau, DataAsTable dataAsTable) {
+
+        for (int i = 1; i <= numberOfPlaces; i++) {
+            Enceinte enceinte = positionMap.get(i);
+
+            CellRow enceinteCellRow = writeEnceinteToCellRow(enceinte, niveau);
+            dataAsTable.addCellRow(enceinteCellRow);
+
+            if (enceinte != null && !getEnceinteManager().checkLastEnceinte(enceinte)) {
+                int numberOfPlaces2 = enceinte.getNbPlaces();
+
+                writeEnceintes(getSubEnceintes(enceinte), numberOfPlaces2, niveau + 1, dataAsTable);
+            }
+        }
+    }
+
+
+    private Map<Integer, Enceinte> getSubEnceintes(Enceinte parentEnceinte) {
+        List<Enceinte> subEnceintes = getEnceinteManager().findByEnceintePereWithOrderManager(parentEnceinte);
+
+        return createPositionMap(subEnceintes);
+
+    }
+
+    /**
+     * This reporeenst a line that is reasy to be added to DataAsTable
+     * *
+     * /
+     *
+     **/
+    public CellRow writeEnceinteToCellRow(Enceinte enceinte, int level) {
+        DataCell enceinteDataCell;
+        if (enceinte != null) {
+            // create datacell for the enceintes
+            enceinteDataCell = createEnceinteDataCell(enceinte);
+        } else {
+            enceinteDataCell = createEmptyPositionDataCell();
+
+        }
+        // add the empty datacell before it with addToCellRowWithEmptyPlaces
+        return addToCellRowWithEmptyPlaces(enceinteDataCell, level);
+
+    }
+
+
+
+    public DataCell createEnceinteDataCell(Enceinte enceinte){
+        String color = Optional.ofNullable(enceinte.getCouleur())
+                .map(Couleur::getHexa)
+                .orElse("");
+        return new DataCell(createCellContent(enceinte), color);
+
+    }
+
+    public DataCell createEmptyPositionDataCell(){
+        return new DataCell(EMPTY_CELL_CONTENT);
+
+    }
+
+    public CellContent createCellContent(Enceinte enceinte){
+        return new CellContent(enceinte.getNom(), enceinte.getAlias(), true, false);
+
+    }
+
 
     /**
      * Builds a detailed plan representation of a container by organizing its
@@ -91,98 +165,20 @@ public abstract class AbstractPlanCongelateurSansBoiteGenerator extends Abstract
      * @return DataAsTable representing the detailed plan structure of the container.
      */
     @Override
-    public DocumentData buildDetailPlan(Conteneur conteneur, Locale locale) {
+    public DocumentData buildDetailPlan(Conteneur conteneur) {
+        // represent all the data part
         DataAsTable dataAsTable = new DataAsTable();
 
-        List<Enceinte> enceintes = getEnceinteManager().findAllEnceinteByConteneurManager(conteneur);
+        List<Enceinte> enceintes = getEnceinteManager().findByConteneurWithOrderManager(conteneur);
+        int numberOfPlaces = conteneur.getNbrNiv();
 
-        // Sort enceintes by position for proper arrangement
-        Collections.sort(enceintes, Comparator.comparingInt(Enceinte::getPosition));
-
-        for (Enceinte enceinte : enceintes) {
-            int nbPlaces = enceinte.getNbPlaces();
-
-            if (nbPlaces != enceintes.size()) {
-                checkIfEmpty(enceinte, enceintes, nbPlaces);
-            }
-
-            CellContent cellContent = new CellContent();
-            if (enceinte.getPosition() == null) {
-                cellContent.setText(EMPTY_CELL_CONTENT);
-            } else {
-                cellContent.setText(enceinte.getNom());
-                cellContent.setComplement(enceinte.getAlias());
-                StylingAttributes stylingAttributes = new StylingAttributes();
-                stylingAttributes.setSecondTextInItalic(true);
-                DataCell dataCell = new DataCell(cellContent, stylingAttributes);
-
-                List<DataCell> dataCells = addToCellRow(dataCell, getEnceinteManager().getLevelEnceinte(enceinte));
-
-                // Write the CellRow for this compartment
-                dataAsTable.addCellRow(new CellRow(dataCells));
-            }
-
-            // Continue recursively if there are sub-compartments
-            if (!getEnceinteManager().checkLastEnceinte(enceinte)) {
-                dataAsTable.addListOfCellsRows(buildDetailPlanRecursively(getEnceinteManager().findByEnceintePereWithOrderManager(enceinte), 1));
-            }
-        }
-
-        return dataAsTable;
+        Map<Integer, Enceinte> positionMap = createPositionMap(enceintes);
+        writeEnceintes(positionMap, numberOfPlaces, 0, dataAsTable);
+        return dataAsTable; // Return the final table after recursion
     }
 
-    private void checkIfEmpty(Enceinte enceinte, List<Enceinte> enceintes, int nbPlaces) {
-        //TODO: implement
-    }
 
-    /**
-     * Recursively builds a detailed plan representation of sub-compartments within an enclosure.
-     *
-     * @param sousEnceintes The list of sub-compartments within an enclosure.
-     * @param level         The current nesting level of the sub-compartments.
-     * @return List of CellRows representing the detailed plan structure of the sub-compartments.
-     */
-    private List<CellRow>  buildDetailPlanRecursively(List<Enceinte> sousEnceintes, int level) {
-        List<CellRow> cellRows = new ArrayList<>();
-        StylingAttributes stylingAttributesText = new StylingAttributes();
-        StylingAttributes stylingAttributesCell = new StylingAttributes();
-        stylingAttributesText.setSecondTextInItalic(true);
-        for (Enceinte sousEnceinte : sousEnceintes) {
-            CellContent cellContent = new CellContent(sousEnceinte.getNom(), sousEnceinte.getAlias(), stylingAttributesText);
-            if (sousEnceinte.getCouleur() != null){
-                stylingAttributesCell.setBorderLeftColor(sousEnceinte.getCouleur().getHexa());
-            }
-            DataCell dataCell = new DataCell(cellContent, stylingAttributesCell);
-            List<DataCell> dataCells = addToCellRow(dataCell, level);
 
-            // Write the CellRow for this sub-compartment
-            cellRows.add(new CellRow(dataCells));
-
-            // Continue recursively if there are more sub-compartments
-            if (!getEnceinteManager().checkLastEnceinte(sousEnceinte)) {
-                cellRows.addAll(buildDetailPlanRecursively(getEnceinteManager().findByEnceintePereWithOrderManager(sousEnceinte), level + 1));
-            }
-        }
-
-        return cellRows;
-    }
-
-    /**
-     * Adds a given Datacell to a row at a specific level within a structured array representation.
-     *
-     * @param datacell The Datacell to add to the row.
-     * @param level The current nesting level at which the Datacell should be added.
-     * @return List of Datacells representing the row with added content at specified level.
-     */
-    private List<DataCell> addToCellRow(DataCell datacell, int level) {
-        List<DataCell> result= new ArrayList<>();
-        for(int i=0; i<level; i++){
-            result.add(createEmptyDataCell());
-        }
-        result.add(datacell);
-    
-        return result;
-    }
 
     private DataCell createEmptyDataCell() {
         return new DataCell(new CellContent(""));

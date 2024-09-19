@@ -36,6 +36,7 @@
 package fr.aphp.tumorotek.manager.io.document.detail.table;
 
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -57,6 +58,7 @@ public class CellRow {
 
 
     public CellRow() {
+        this.listDataCell = new ArrayList<>();
     }
 
 

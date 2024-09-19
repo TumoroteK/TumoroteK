@@ -45,6 +45,11 @@ package fr.aphp.tumorotek.manager.io.document;
  *
  */
 public class DocumentWithDataAsTable extends DocumentToGenerate {
+
+
+    public DataAsTable getData(){
+        return (DataAsTable) super.getData();
+    }
     public DocumentWithDataAsTable(String documentName, DocumentContext context, DocumentData data, DocumentFooter footer) {
         super(documentName, context, data, footer);
     }

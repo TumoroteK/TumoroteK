@@ -37,10 +37,6 @@ package fr.aphp.tumorotek.manager.impl.stockage.planconteneur;
 
 import fr.aphp.tumorotek.manager.io.document.DocumentData;
 import fr.aphp.tumorotek.model.stockage.Conteneur;
-import fr.aphp.tumorotek.utils.TKStringUtils;
-
-import java.util.List;
-import java.util.Locale;
 
 /**
  * Classe abstraite pour la génération de plans de congélateurs avec boîte.
@@ -53,21 +49,10 @@ import java.util.Locale;
  */
 public abstract class AbstractPlanCongelateurAvecBoiteGenerator extends AbstractPlanCongelateurGenerator {
     @Override
-    protected DocumentData buildDetailPlan(Conteneur c, Locale locale) {
+    protected DocumentData buildDetailPlan(Conteneur c) {
         return null;
     }
 
-    @Override
-    protected String getFileNamePrefix(List<Conteneur> listConteneurs) {
-        String fileNamePrefix = "";
-        String currentDate = TKStringUtils.getCurrentDate("yyyyMMddHHmm");
 
-        if (listConteneurs.size() > 1) {
-            fileNamePrefix = "plans_conteneurs_avec_boites_" + currentDate;
-        } else if (listConteneurs.size() == 1) {
-            fileNamePrefix = "plan_conteneur_avec_boites_" + currentDate;
-        }
-        return fileNamePrefix;
-    }
 
 }
