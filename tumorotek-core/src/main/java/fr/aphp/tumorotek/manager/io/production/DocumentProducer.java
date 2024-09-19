@@ -35,6 +35,7 @@
  **/
 package fr.aphp.tumorotek.manager.io.production;
 
+import fr.aphp.tumorotek.dto.DocumentProducerResult;
 import fr.aphp.tumorotek.dto.OutputStreamData;
 import fr.aphp.tumorotek.manager.io.document.DocumentWithDataAsTable;
 
@@ -52,5 +53,5 @@ import java.util.List;
 
 public interface DocumentProducer {
 
-    void  produce(List<DocumentWithDataAsTable> listDocumentWithDataAsTable, OutputStreamData outputStreamData);
+    DocumentProducerResult produce(List<DocumentWithDataAsTable> listDocumentWithDataAsTable);
 }

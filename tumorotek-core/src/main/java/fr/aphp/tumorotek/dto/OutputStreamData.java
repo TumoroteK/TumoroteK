@@ -68,6 +68,13 @@ public class OutputStreamData {
         this.outputStream = outputStream;
     }
 
+    public OutputStreamData(String fileName, DocumentProducerResult documentProducerResult) {
+        this.fileName = fileName;
+        this.format = documentProducerResult.format;
+        this.contentType = documentProducerResult.contentType;
+        this.outputStream = documentProducerResult.outputStream;
+    }
+
     public String getFileName() {
         return fileName;
     }

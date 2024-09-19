@@ -35,17 +35,14 @@
  **/
 package fr.aphp.tumorotek.manager.impl.io.production;
 
+import fr.aphp.tumorotek.dto.DocumentProducerResult;
 import fr.aphp.tumorotek.dto.OutputStreamData;
 import fr.aphp.tumorotek.manager.ConfigManager;
 import fr.aphp.tumorotek.manager.io.document.DocumentFooter;
 import fr.aphp.tumorotek.manager.io.document.DocumentWithDataAsTable;
 import fr.aphp.tumorotek.manager.io.document.LabelValue;
-import fr.aphp.tumorotek.manager.io.document.StylingAttributes;
-import fr.aphp.tumorotek.manager.io.document.detail.table.CellContent;
-import fr.aphp.tumorotek.manager.io.document.detail.table.DataCell;
 import fr.aphp.tumorotek.manager.io.production.DocumentProducer;
 import fr.aphp.tumorotek.utils.io.ExcelUtility;
-import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -83,10 +80,13 @@ public class DocumentWithDataAsTableExcelProducer implements DocumentProducer {
      * Produit des documents au format Excel et les écrit dans un flux de sortie.
      *
      * @param listDocumentWithDataAsTable Liste des documents à produire.
-     * @param outputStreamData            Données du flux de sortie où les documents seront écrits.
-     */
+$     */
     @Override
-    public void produce(List<DocumentWithDataAsTable> listDocumentWithDataAsTable, OutputStreamData outputStreamData) {
+    public DocumentProducerResult produce(List<DocumentWithDataAsTable> listDocumentWithDataAsTable) {
+
+        OutputStreamData outputStreamData = new OutputStreamData();
+
+        DocumentProducerResult documentProducerResult = new DocumentProducerResult();
 
         setupOutputStreamData(outputStreamData);
 
@@ -126,6 +126,7 @@ public class DocumentWithDataAsTableExcelProducer implements DocumentProducer {
             throw new RuntimeException("Erreur lors de la génération du document Excel", e);
 
         }
+        return documentProducerResult;
     }
 
     public static void writeLabelValue(Sheet sheet, int startRow, int startColumn, LabelValue labelValue) {
@@ -144,54 +145,8 @@ public class DocumentWithDataAsTableExcelProducer implements DocumentProducer {
     }
 
 
-    private void writeDataCellWithStyle(XSSFSheet sheet, int rowNum, int colNum, DataCell dataCell) {
-
-        CellContent cellContent = dataCell.getCellContent();
-        StylingAttributes stylingAttributes = dataCell.getStylingAttributes();
-
-        String text = cellContent.getText();
-        String complement = cellContent.getComplement();
-        String stringToWrite = text + " " + complement;
-        Cell cell = ExcelUtility.writeToCell(sheet, rowNum, colNum, stringToWrite);
-
-        applyStyles(sheet, rowNum, colNum, stylingAttributes, text, complement, stringToWrite, cell);
-    }
-
-    private static void applyStyles(XSSFSheet sheet, int rowNum, int colNum, StylingAttributes stylingAttributes, String text, String complement, String stringToWrite, Cell cell) {
-        // Apply styling attributes
-        if (stylingAttributes != null) {
-            // Set border left color
-            if (stylingAttributes.getBorderLeftColor() != null) {
-                ExcelUtility.applyLeftBorderColor(cell, stylingAttributes.getBorderLeftColor());
-            }
-            // Apply border if required
-            if (stylingAttributes.isWithBorder()) {
-                // Code to apply border on cell
-                ExcelUtility.applyTableBorderStyle(cell, null, false);
-                // Example: cellStyle.setBorderBottom(BorderStyle.THIN);
-            }
-            // Set alignment type
-            if (stylingAttributes.getAlignmentType() != null) {
-                ExcelUtility.applyAlignment(cell, stylingAttributes.getAlignmentType());
-
-            }
-            if (stylingAttributes.getColspan() > 1) {
-                int colSpan = stylingAttributes.getColspan();
-                // Code to set colspan on cell
-                ExcelUtility.mergeCells(sheet, rowNum, rowNum, colNum, colNum + colSpan, stringToWrite);
-                // Example: sheet.addMergedRegion(new CellRangeAddress(rowNum, rowNum, colNum, colNum + stylingAttributes.getColspan() - 1));
-            }
-
-            // Apply italic formatting if needed
-            if (stylingAttributes.isFirstTextInItalic()) {
-                // Code to apply italic formatting on cell content
-                ExcelUtility.writeToCellWithHalfItalic(sheet, rowNum, colNum, text, complement);
-                // Example: fontStyle.setItalic(true);
-            }
 
 
-        }
 
-    }
 
 }

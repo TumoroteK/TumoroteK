@@ -37,12 +37,10 @@
 package fr.aphp.tumorotek.manager.impl.stockage.planconteneur;
 
 
-
 import fr.aphp.tumorotek.dto.OutputStreamData;
 import fr.aphp.tumorotek.model.stockage.Conteneur;
 
 import java.util.List;
-import java.util.Locale;
 
 /**
  * Interface pour la génération de plans de congélateurs.
@@ -70,5 +68,5 @@ public interface PlanCongelateurGenerator  {
      *         Cet objet peut être utilisé pour écrire les données dans un flux de sortie.
      */
 
-    OutputStreamData generate(List<Conteneur> conteneurList, Locale locale);
+    OutputStreamData generate(List<Conteneur> conteneurList);
 }

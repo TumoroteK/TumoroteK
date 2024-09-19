@@ -35,15 +35,19 @@
  **/
 package fr.aphp.tumorotek.manager.impl.stockage.planconteneur;
 
+import fr.aphp.tumorotek.dto.DocumentProducerResult;
 import fr.aphp.tumorotek.dto.OutputStreamData;
-import fr.aphp.tumorotek.manager.io.document.*;
+import fr.aphp.tumorotek.manager.io.document.DocumentContext;
+import fr.aphp.tumorotek.manager.io.document.DocumentData;
+import fr.aphp.tumorotek.manager.io.document.DocumentFooter;
+import fr.aphp.tumorotek.manager.io.document.DocumentWithDataAsTable;
+import fr.aphp.tumorotek.manager.io.document.LabelValue;
 import fr.aphp.tumorotek.manager.io.production.DocumentProducer;
 import fr.aphp.tumorotek.model.stockage.Conteneur;
 import fr.aphp.tumorotek.utils.TKStringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 /**
  * Classe abstraite fournissant une implémentation de base pour la génération de plans de congélateurs.
@@ -54,43 +58,39 @@ import java.util.Locale;
 public abstract class AbstractPlanCongelateurGenerator implements PlanCongelateurGenerator {
 
     protected static final String DATE_FORMAT = "yyyyMMddHHmm";
+    protected static final String PREFIX_FILE_NAME = "plan_conteneur";
 
 
     @Override
-    public OutputStreamData generate(List<Conteneur> listConteneurs, Locale locale) {
-        OutputStreamData outputStreamData = new OutputStreamData();
+    public OutputStreamData generate(List<Conteneur> listConteneurs) {
         List<DocumentWithDataAsTable> listPlanConteneur = new ArrayList<>();
 
         for (Conteneur conteneur : listConteneurs) {
-            listPlanConteneur.add(buildPlanConteneur(conteneur, locale));
+            listPlanConteneur.add(buildPlanConteneur(conteneur));
         }
-        getDocumentProducer().produce(listPlanConteneur, outputStreamData);
-        String filename = String.format("%s.%s", getFileNamePrefix(listConteneurs), outputStreamData.getFormat());
-        outputStreamData.setFileName(filename);
-        return outputStreamData;
+        DocumentProducerResult producerResult  = getDocumentProducer().produce(listPlanConteneur);
+        String currentDate = TKStringUtils.getCurrentDate(DATE_FORMAT);
+
+        String fileName = new StringBuilder(PREFIX_FILE_NAME ).append("_").append(currentDate).append(".").append(producerResult.getFormat()).toString();
+
+
+        return new OutputStreamData(fileName, producerResult);
     }
 
-    /**
-     * Construit le préfixe du nom de fichier sans l'extension. La liste est nécessaire pour obtenir les informations.
-     *
-     * @param listConteneurs indique s'il y a plusieurs conteneurs ou un
-     * @return le préfixe du nom de fichier
-     */
-    protected abstract String getFileNamePrefix(List<Conteneur> listConteneurs);
+
 
 
     /**
      * Construit un plan de conteneur sous forme de {@link DocumentWithDataAsTable}, représentant une feuille Excel avec des données sous forme de tableau.
      *
      * @param conteneur le conteneur à traiter
-     * @param locale    la locale à utiliser pour la génération
      * @return un document contenant les données du conteneur sous forme de tableau
      */
-    protected DocumentWithDataAsTable buildPlanConteneur(Conteneur conteneur, Locale locale) {
+    protected DocumentWithDataAsTable buildPlanConteneur(Conteneur conteneur) {
         return new DocumentWithDataAsTable(
                 conteneur.getNom(),
-                buildEntetePlan(conteneur, locale),
-                buildDetailPlan(conteneur, locale),
+                buildEntetePlan(conteneur),
+                buildDetailPlan(conteneur),
                 buildPiedPagePlan(conteneur)
         );
     }
@@ -100,10 +100,9 @@ public abstract class AbstractPlanCongelateurGenerator implements PlanCongelateu
      * Construit l'en-tête du plan, fournissant des informations sur le conteneur.
      *
      * @param conteneur le conteneur pour lequel construire l'en-tête
-     * @param locale    la locale à utiliser pour la génération
      * @return le contexte du document contenant les labels et valeurs
      */
-    public DocumentContext buildEntetePlan(Conteneur conteneur, Locale locale) {
+    public DocumentContext buildEntetePlan(Conteneur conteneur) {
         List<LabelValue> listLabelValue = new ArrayList<>();
 
         String currentDate = TKStringUtils.getCurrentDate(null);
@@ -142,10 +141,9 @@ public abstract class AbstractPlanCongelateurGenerator implements PlanCongelateu
      * Construit les détails du plan principal où les données principales sont écrites.
      *
      * @param conteneur le conteneur pour lequel construire les détails du plan
-     * @param locale    la locale à utiliser pour la génération
      * @return les données du document
      */
-    protected abstract DocumentData buildDetailPlan(Conteneur conteneur, Locale locale);
+    protected abstract DocumentData buildDetailPlan(Conteneur conteneur);
 
 
     /**
