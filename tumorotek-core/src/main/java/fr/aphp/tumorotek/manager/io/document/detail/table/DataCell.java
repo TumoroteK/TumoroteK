@@ -61,6 +61,14 @@ public class DataCell {
         this.cellContent = cellContent;
     }
 
+    public DataCell(CellContent cellContent, String borderLeftColor, int colspan, boolean withBorder,
+       AlignmentType alignmentType){
+        this.cellContent = cellContent;
+        this.borderLeftColor = borderLeftColor;
+        this.colspan = colspan;
+        this.withBorder = withBorder;
+        this.alignmentType = alignmentType;
+    }
 
     public DataCell(String text) {
         this.cellContent = new CellContent(text);
@@ -80,8 +88,42 @@ public class DataCell {
         this.cellContent = cellContent;
     }
 
+    public static DataCell createEmptyDataCell() {
+        // Create a DataCell with an empty CellContent and default settings.
+        return new DataCell(new CellContent(""));
+    }
 
+    public String getBorderLeftColor(){
+        return borderLeftColor;
+    }
 
+    public void setBorderLeftColor(String borderLeftColor){
+        this.borderLeftColor = borderLeftColor;
+    }
+
+    public int getColspan(){
+        return colspan;
+    }
+
+    public void setColspan(int colspan){
+        this.colspan = colspan;
+    }
+
+    public boolean isWithBorder(){
+        return withBorder;
+    }
+
+    public void setWithBorder(boolean withBorder){
+        this.withBorder = withBorder;
+    }
+
+    public AlignmentType getAlignmentType(){
+        return alignmentType;
+    }
+
+    public void setAlignmentType(AlignmentType alignmentType){
+        this.alignmentType = alignmentType;
+    }
 
     @Override
     public String toString() {

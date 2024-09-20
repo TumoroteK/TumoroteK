@@ -62,107 +62,163 @@ import java.util.Optional;
 
 public abstract class AbstractPlanCongelateurSansBoiteGenerator extends AbstractPlanCongelateurGenerator {
 
-
+    // Constante représentant le contenu d'une cellule vide
     private static final String EMPTY_CELL_CONTENT = "vide";
 
-    abstract protected EnceinteManager getEnceinteManager();
+    // Méthode abstraite pour récupérer le gestionnaire d'enceinte
+    protected abstract EnceinteManager getEnceinteManager();
 
-    private CellRow addToCellRowWithEmptyPlaces(DataCell datacell, int level) {
+    /**
+     * Ajoute des cellules vides à une ligne de cellules jusqu'à un certain niveau,
+     * puis ajoute une cellule de données.
+     *
+     * @param datacell La cellule de données à ajouter.
+     * @param level Le nombre de cellules vides à ajouter avant la cellule de données.
+     * @return La ligne de cellules complétée.
+     */
+    private CellRow fillRowWithCells(DataCell datacell, int level) {
         CellRow cellRow = new CellRow();
+        // Ajouter des cellules vides en fonction du niveau spécifié
         for (int i = 0; i < level; i++) {
-            cellRow.addDataCell(createEmptyDataCell());
+            cellRow.addDataCell(DataCell.createEmptyDataCell());
         }
+        // Ajouter la cellule de données passée en paramètre
         cellRow.addDataCell(datacell);
 
         return cellRow;
     }
 
 
-    public Map<Integer, Enceinte> createPositionMap(List<Enceinte> enceintes){
-        if (enceintes == null) {
-            throw new IllegalArgumentException("List of enceintes cannot be null");
-        }
+    /**
+     * Crée une Map de position associant des positions d'enceintes à leurs objets respectifs.
+     * Cela facilite la gestion et l'accès aux enceintes en fonction de leurs positions.
+     * @param enceintes La liste d'enceintes à mapper.
+     * @return Une map associant les positions aux enceintes.
+     */
+
+    public Map<Integer, Enceinte> mapEnceintesByPosition(List<Enceinte> enceintes) {
         Map<Integer, Enceinte> positionMap = new HashMap<>();
 
-        for (Enceinte enceinte : enceintes) {
-            positionMap.put(enceinte.getPosition(), enceinte);
+        if (enceintes != null) {
+            for (Enceinte enceinte : enceintes) {
+                positionMap.put(enceinte.getPosition(), enceinte);
+            }
         }
+
         return positionMap;
     }
 
 
+    /**
+     * Écrit les enceintes dans une structure de tableau en fonction de leurs positions
+     * et sous-enceintes.
+     *
+     * @param positionMap Une carte des positions des enceintes.
+     * @param numberOfPlaces Le nombre de places disponibles dans l'enceinte.
+     * @param level Le niveau d'imbrication des enceintes.
+     * @param dataAsTable La table où les lignes de cellules doivent être ajoutées.
+     */
 
-    private void writeEnceintes(Map<Integer, Enceinte> positionMap, int numberOfPlaces, int niveau, DataAsTable dataAsTable) {
-
+    private void writeEnceintes(Map<Integer, Enceinte> positionMap,
+                                int numberOfPlaces, int level, DataAsTable dataAsTable) {
+        // Boucle sur toutes les places disponibles
         for (int i = 1; i <= numberOfPlaces; i++) {
             Enceinte enceinte = positionMap.get(i);
 
-            CellRow enceinteCellRow = writeEnceinteToCellRow(enceinte, niveau);
+            // Écriture de l'enceinte dans une ligne de cellules
+            CellRow enceinteCellRow = insertEnceinteIntoRow(enceinte, level);
             dataAsTable.addCellRow(enceinteCellRow);
 
+            // Si l'enceinte n'est pas la dernière, écrire ses sous-enceintes
             if (enceinte != null && !getEnceinteManager().checkLastEnceinte(enceinte)) {
                 int numberOfPlaces2 = enceinte.getNbPlaces();
-
-                writeEnceintes(getSubEnceintes(enceinte), numberOfPlaces2, niveau + 1, dataAsTable);
+                // Appel récursif pour écrire les sous-enceintes
+                writeEnceintes(retrieveSubEnceintes(enceinte), numberOfPlaces2, level + 1, dataAsTable);
             }
         }
     }
 
-
-    private Map<Integer, Enceinte> getSubEnceintes(Enceinte parentEnceinte) {
+    /**
+     * Récupère les sous-enceintes d'une enceinte parent.
+     *
+     * @param parentEnceinte L'enceinte parent dont les sous-enceintes doivent être récupérées.
+     * @return Une carte des positions des sous-enceintes.
+     */
+    private Map<Integer, Enceinte> retrieveSubEnceintes(Enceinte parentEnceinte) {
         List<Enceinte> subEnceintes = getEnceinteManager().findByEnceintePereWithOrderManager(parentEnceinte);
 
-        return createPositionMap(subEnceintes);
+        return mapEnceintesByPosition(subEnceintes);
 
     }
 
     /**
-     * This reporeenst a line that is reasy to be added to DataAsTable
-     * *
-     * /
+     * Écrit une enceinte dans une ligne de cellules en ajoutant des cellules vides
+     * selon le niveau.
      *
-     **/
-    public CellRow writeEnceinteToCellRow(Enceinte enceinte, int level) {
+     * @param enceinte L'enceinte à écrire.
+     * @param level Le niveau auquel l'enceinte doit être écrite.
+     * @return La ligne de cellules créée avec l'enceinte.
+     */
+    public CellRow insertEnceinteIntoRow(Enceinte enceinte, int level) {
         DataCell enceinteDataCell;
+        // Si l'enceinte est non nulle, créer une cellule de données pour l'enceinte
         if (enceinte != null) {
-            // create datacell for the enceintes
-            enceinteDataCell = createEnceinteDataCell(enceinte);
+            enceinteDataCell = createDataCellFromEnceinte(enceinte);
         } else {
+            // Si l'enceinte est nulle, créer une cellule vide
             enceinteDataCell = createEmptyPositionDataCell();
 
         }
-        // add the empty datacell before it with addToCellRowWithEmptyPlaces
-        return addToCellRowWithEmptyPlaces(enceinteDataCell, level);
+        // Ajouter des cellules vides avant la cellule d'enceinte en fonction du niveau
+        return fillRowWithCells(enceinteDataCell, level);
 
     }
 
 
-
-    public DataCell createEnceinteDataCell(Enceinte enceinte){
+    /**
+     * Crée le contenu d'une cellule pour une enceinte donnée.
+     *
+     * @param enceinte L'enceinte pour laquelle créer le contenu.
+     * @return Un objet CellContent contenant les informations de l'enceinte.
+     */
+    public DataCell createDataCellFromEnceinte(Enceinte enceinte){
         String color = Optional.ofNullable(enceinte.getCouleur())
                 .map(Couleur::getHexa)
                 .orElse("");
-        return new DataCell(createCellContent(enceinte), color);
+        return new DataCell(buildCellContentForEnceinte(enceinte), color);
 
     }
 
+    /**
+     * Crée une cellule vide pour une position vide.
+     *
+     * @return Une cellule de données vide.
+     */
     public DataCell createEmptyPositionDataCell(){
         return new DataCell(EMPTY_CELL_CONTENT);
 
     }
 
-    public CellContent createCellContent(Enceinte enceinte){
+    /**
+     * Crée le contenu d'une cellule pour une enceinte donnée.
+     *
+     * @param enceinte L'enceinte pour laquelle créer le contenu.
+     * @return Un objet CellContent contenant les informations de l'enceinte.
+     */
+    public CellContent buildCellContentForEnceinte(Enceinte enceinte){
         return new CellContent(enceinte.getNom(), enceinte.getAlias(), true, false);
 
     }
 
 
     /**
-     * Builds a detailed plan representation of a container by organizing its
-     * compartments and sub-compartments in a structured manner.
+     * Construit une représentation d'un conteneur en indiquant
+     * ce qui se trouve à chaque position (enceinte ou vide).
+     * Organise les compartiments et sous-compartiments par position.
      *
-     * @param conteneur The container for which the detail plan is to be built.
-     * @return DataAsTable representing the detailed plan structure of the container.
+     * @param conteneur Le conteneur pour lequel le plan détaillé est construit.
+     * @return Une instance de DataAsTable représentant la structure du conteneur
+     *         et précisant la présence d'une enceinte ou d'un espace vide à chaque position.
      */
     @Override
     public DocumentData buildDetailPlan(Conteneur conteneur) {
@@ -172,15 +228,11 @@ public abstract class AbstractPlanCongelateurSansBoiteGenerator extends Abstract
         List<Enceinte> enceintes = getEnceinteManager().findByConteneurWithOrderManager(conteneur);
         int numberOfPlaces = conteneur.getNbrNiv();
 
-        Map<Integer, Enceinte> positionMap = createPositionMap(enceintes);
+        Map<Integer, Enceinte> positionMap = mapEnceintesByPosition(enceintes);
         writeEnceintes(positionMap, numberOfPlaces, 0, dataAsTable);
-        return dataAsTable; // Return the final table after recursion
+        return dataAsTable;
     }
 
 
 
-
-    private DataCell createEmptyDataCell() {
-        return new DataCell(new CellContent(""));
-    }
 }
