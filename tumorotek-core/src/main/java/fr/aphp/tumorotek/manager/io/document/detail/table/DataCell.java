@@ -73,6 +73,7 @@ public class DataCell {
     public DataCell(String text) {
         this.cellContent = new CellContent(text);
     }
+    
     public DataCell(CellContent cellContent, String borderLeftColor) {
         this.cellContent = cellContent;
         this.borderLeftColor = borderLeftColor;
@@ -88,9 +89,11 @@ public class DataCell {
         this.cellContent = cellContent;
     }
 
+    //Corinne : erreur de conception : une classe ne peut pas créer une instance d'elle-même par une méthode statique
+    //si besoin de créer des instances particulières, il faut passer par une factory (cf commentaire au niveau de AbstractPlanCongelateurSansBoiteGenerator createEmptyPositionDataCell)
     public static DataCell createEmptyDataCell() {
         // Create a DataCell with an empty CellContent and default settings.
-        return new DataCell(new CellContent(""));
+        return new DataCell(new CellContent(""));//Corinne : ce serait mieux d'utiliser null car cette cellule ne correspond à rien fonctionnellement parlant
     }
 
     public String getBorderLeftColor(){

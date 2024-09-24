@@ -76,11 +76,15 @@ public abstract class AbstractPlanCongelateurSansBoiteGenerator extends Abstract
      * @param level Le nombre de cellules vides à ajouter avant la cellule de données.
      * @return La ligne de cellules complétée.
      */
+    //Corinne :
+    //Lorsqu'on définit une méthode spécifique, il faut faire abstraction de l'appelabt. Ainsi, le paramètre int ne doit pas s'appeler
+    //level car ça ne correspond à rien dans cette méthode. level doit plutôt s'appeler nbCellToAdd
+    //Par ailleurs, ces cellules à ajouter ne correspondent à rien donc il faudrait mieux ajouter null
     private CellRow fillRowWithCells(DataCell datacell, int level) {
         CellRow cellRow = new CellRow();
         // Ajouter des cellules vides en fonction du niveau spécifié
         for (int i = 0; i < level; i++) {
-            cellRow.addDataCell(DataCell.createEmptyDataCell());
+            cellRow.addDataCell(DataCell.createEmptyDataCell());//Corinne : méthode static incorrecte
         }
         // Ajouter la cellule de données passée en paramètre
         cellRow.addDataCell(datacell);
@@ -126,10 +130,16 @@ public abstract class AbstractPlanCongelateurSansBoiteGenerator extends Abstract
             Enceinte enceinte = positionMap.get(i);
 
             // Écriture de l'enceinte dans une ligne de cellules
+            //Corinne : cette méthode crée la row et ajoute l'enceinte 
+            //le terme insert fait penser à la base de données. Il faudrait plutôt la nommer createRowAndAddEnceinte ou addEnceinteIntoNewRow. 
+            // Attention, cette méthode donne des rows de longueur différente. Ce n'est pas "normal" pour un tableau donc ça pourrait générer un bug
+            //il faut prévoir de compléter les lignes ...
             CellRow enceinteCellRow = insertEnceinteIntoRow(enceinte, level);
             dataAsTable.addCellRow(enceinteCellRow);
 
             // Si l'enceinte n'est pas la dernière, écrire ses sous-enceintes
+            //Corinne : la méthode checkLastEnceinte est un traitement assez lourd donc dans une boucle, ce n'est pas optimal
+            //il faut voir pour s'en passer, par exemple en ayant le nombre de niveaux du conteneur en paramètre
             if (enceinte != null && !getEnceinteManager().checkLastEnceinte(enceinte)) {
                 int numberOfPlaces2 = enceinte.getNbPlaces();
                 // Appel récursif pour écrire les sous-enceintes
@@ -151,6 +161,14 @@ public abstract class AbstractPlanCongelateurSansBoiteGenerator extends Abstract
 
     }
 
+    //Corinne : l'attribut level n'est pas facile à comprendre :
+    //soit il s'agit du niveau de l'enceinte (et non du niveau auquel l'enceinte doit être écrite) : on s'appuie donc 
+    //sur une caractéristique métier qu'il faut appeler comme partout dans l'application, donc en français : niveau
+    //soit il s'agit de la colonne du tableau dans laquelle l'enceinte doit être écrite. Dans ce cas là, il faut l'appeler indexColonne ou numeroColonne
+    //selon que la 1ere valeur est 0 ou 1.
+    //cette méthode ressemble beaucoup à CellRow.addDataCell(int indexColonne, DataCell dataCell) proposée pour la partie avec boîte
+    //Par contre dans le cas des sans boîtes, il n'y a qu'une valeur par ligne donc il faut prévoir des null après pour que toutes les lignes aient la même size
+    //comme c'est attendu dans un tableau. Il faut alors en paramètre le nombre de niveaux du conteneur
     /**
      * Écrit une enceinte dans une ligne de cellules en ajoutant des cellules vides
      * selon le niveau.
@@ -184,9 +202,18 @@ public abstract class AbstractPlanCongelateurSansBoiteGenerator extends Abstract
     public DataCell createDataCellFromEnceinte(Enceinte enceinte){
         String color = Optional.ofNullable(enceinte.getCouleur())
                 .map(Couleur::getHexa)
-                .orElse("");
+                .orElse("");//Corinne : il faudrait mieux null que ""....
+
         return new DataCell(buildCellContentForEnceinte(enceinte), color);
 
+         //Corinne : Optional est une "value-class" pensée pour "typer" les objets "retournés".
+         //Il n'est pas approprié dans le cas de l'utilisation présente.
+         //Le code ci-dessous hyper basique suffit : 
+//       Couleur couleurEnceinte = enceinte.getCouleur();
+//       String color = (couleurEnceinte != null ? couleurEnceinte.getHexa() : null);
+//       CellContent cellContent = new CellContent(enceinte.getNom(), enceinte.getAlias(), true, false);
+//       return new DataCell(cellContent, color);
+       
     }
 
     /**
@@ -194,6 +221,13 @@ public abstract class AbstractPlanCongelateurSansBoiteGenerator extends Abstract
      *
      * @return Une cellule de données vide.
      */
+    //Corinne : 
+    //Nom de méthode pas facilement compréhensible alors que l'implémentation est assez parlante
+    //Par conséquent, créer cette méthode complique la lecture du code d'appel
+    //Comme elle n'est appelée qu'une seule fois et n'appelle qu'une seule méthode, elle n'est pas nécessaire
+    //Si il y a un besoin de créer une méthode pour instancier différents "type" de DataCell, il faut passer par une factory
+    //NB : c'est bien d'être passé par une constante, ça semble suffisant pour la "mutualisation" si
+    //la création de plusieurs DataCell devait être appelée dans différentes méthodes 
     public DataCell createEmptyPositionDataCell(){
         return new DataCell(EMPTY_CELL_CONTENT);
 
@@ -205,6 +239,8 @@ public abstract class AbstractPlanCongelateurSansBoiteGenerator extends Abstract
      * @param enceinte L'enceinte pour laquelle créer le contenu.
      * @return Un objet CellContent contenant les informations de l'enceinte.
      */
+    //Corinne : cette méthode est appelée à un seul endroit et appelle une seule méthode donc ce n'est pas nécessaire de la définir
+    //dans ce cas, il vaut mieux privilégier la "simplification de la lecture du code" plutôt que la mutualisation inutile pour le moment.
     public CellContent buildCellContentForEnceinte(Enceinte enceinte){
         return new CellContent(enceinte.getNom(), enceinte.getAlias(), true, false);
 
@@ -225,10 +261,18 @@ public abstract class AbstractPlanCongelateurSansBoiteGenerator extends Abstract
         // represent all the data part
         DataAsTable dataAsTable = new DataAsTable();
 
+        //Corinne : enceintes de 1er niveau (leur père est le conteneur) => donner un nom plus parlant à la liste d'enceintes
         List<Enceinte> enceintes = getEnceinteManager().findByConteneurWithOrderManager(conteneur);
+        //Corinne : la valeur récupérée correspond au nombre de niveaux donc ce serait plus parlant de reprendre
+        //la même terminologie : int nbrNiveaux plutôt que numberOfPlaces 
         int numberOfPlaces = conteneur.getNbrNiv();
 
+        //Corinne : j'ai été un peu perturbé par le nom de méthode mapEnceintesByPosition qui fait
+        //plus penser à un nom de variable.
+        //mapEnceintesByPosition pour la map et createMapEnceintesByPosition pour la méthode me semble moins ambigu
         Map<Integer, Enceinte> positionMap = mapEnceintesByPosition(enceintes);
+        //Corinne : write laisse à penser qu'on écrit quelque chose, ce qui n'est pas le cas
+        //buildEnceinteRow serait plus parlant
         writeEnceintes(positionMap, numberOfPlaces, 0, dataAsTable);
         return dataAsTable;
     }
