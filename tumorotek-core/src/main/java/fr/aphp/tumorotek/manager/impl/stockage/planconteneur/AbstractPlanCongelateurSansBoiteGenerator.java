@@ -264,7 +264,9 @@ public abstract class AbstractPlanCongelateurSansBoiteGenerator extends Abstract
         //Corinne : enceintes de 1er niveau (leur père est le conteneur) => donner un nom plus parlant à la liste d'enceintes
         List<Enceinte> enceintes = getEnceinteManager().findByConteneurWithOrderManager(conteneur);
         //Corinne : la valeur récupérée correspond au nombre de niveaux donc ce serait plus parlant de reprendre
-        //la même terminologie : int nbrNiveaux plutôt que numberOfPlaces 
+        //la même terminologie : int nbrNiveaux plutôt que numberOfPlaces
+        //Par ailleurs, ce nombre de niveau inclut le niveau boîte donc dans le cas présent, il faut prendre nbrNiveaux-1
+        //et donc plutôt appeler la variable nbrNiveauxEnceinte
         int numberOfPlaces = conteneur.getNbrNiv();
 
         //Corinne : j'ai été un peu perturbé par le nom de méthode mapEnceintesByPosition qui fait
