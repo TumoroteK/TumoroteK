@@ -88,11 +88,6 @@ public class DataCell {
         this.cellContent = cellContent;
     }
 
-    public static DataCell createEmptyDataCell() {
-        // Create a DataCell with an empty CellContent and default settings.
-        return new DataCell(new CellContent(""));
-    }
-
     public String getBorderLeftColor(){
         return borderLeftColor;
     }
