@@ -76,6 +76,8 @@ public abstract class AbstractPlanCongelateurSansBoiteGenerator extends Abstract
      * @return La ligne de cellules complétée.
      */
     private CellRow fillRowWithCells(DataCell datacell, int nbCellToAdd) {
+        // Crée une nouvelle instance de CellRow pour contenir les cellules.
+
         CellRow cellRow = new CellRow();
         // Ajouter des cellules vides en fonction du niveau spécifié
         for (int i = 0; i < nbCellToAdd; i++) {
@@ -88,6 +90,31 @@ public abstract class AbstractPlanCongelateurSansBoiteGenerator extends Abstract
         return cellRow;
     }
 
+    /**
+     * Vérifie si l'enceinte donnée est la dernière sous-enceinte par rapport à son enceinte parent.
+     *
+     * @param enceinte L'enceinte dont il faut vérifier si elle est la dernière sous-enceinte.
+     * @param lastEnceinteCache Cache pour éviter des vérifications redondantes sur les enceintes parentes.
+     *
+     * @return true si c'est la dernière enceinte, sinon false.
+     */
+    public boolean isLastEncienteByPere(final Enceinte enceinte, Map<Enceinte, Boolean> lastEnceinteCache) {
+        // Récupérer l'enceinte parent
+        Enceinte pere = enceinte.getEnceintePere();
+        if (pere != null) {
+            // Vérifier si déjà mis en cache.Nous vérifions si le résultat a déjà été calculé pour cet parent particulier dans notre cache.
+            // Cela permet d'éviter des appels redondants aux méthodes coûteuses lorsqu'elles ont déjà été exécutées auparavant.
+            if (lastEnceinteCache.containsKey(pere)) {
+                return lastEnceinteCache.get(pere);
+            } else {
+                Boolean isLast = getEnceinteManager().checkLastEnceinte(enceinte);
+                lastEnceinteCache.put(pere, isLast);
+                return isLast;
+            }
+        }
+        // Si aucun père n'existe, retourner false
+        return false;
+    }
 
     /**
      * Crée une Map de position associant des positions d'enceintes à leurs objets respectifs.
@@ -97,10 +124,13 @@ public abstract class AbstractPlanCongelateurSansBoiteGenerator extends Abstract
      */
 
     public Map<Integer, Enceinte> createMapEnceintesByPosition(List<Enceinte> enceintes) {
+        // Créer une nouvelle Map vide pour stocker les associations entre positions et enceintes
         Map<Integer, Enceinte> positionMap = new HashMap<>();
 
+        // Vérifier que le paramètre liste n’est pas nul
         if (enceintes != null) {
             for (Enceinte enceinte : enceintes) {
+                // Insérer chaque enceinte dans map selon sa position
                 positionMap.put(enceinte.getPosition(), enceinte);
             }
         }
@@ -110,8 +140,8 @@ public abstract class AbstractPlanCongelateurSansBoiteGenerator extends Abstract
 
 
     /**
-     * Écrit les enceintes dans une structure de tableau en fonction de leurs positions
-     * et sous-enceintes.
+     * Cette méthode remplit un tableau structuré contenant différentes lignes liées aux enceints et sous-en ceints
+     * selon leurs emplacements respectifs tout en tenant compte hierarchie ordonnée existante .
      *
      * @param positionMap Une carte des positions des enceintes.
      * @param numberOfPlaces Le nombre de places disponibles dans l'enceinte.
@@ -123,6 +153,7 @@ public abstract class AbstractPlanCongelateurSansBoiteGenerator extends Abstract
                                                   int numberOfPlaces, int niveau, DataAsTable dataAsTable) {
         // Boucle sur toutes les places disponibles
         for (int i = 1; i <= numberOfPlaces; i++) {
+
             Enceinte enceinte = positionMap.get(i);
 
             // Écriture de l'enceinte dans une ligne de cellules
@@ -202,30 +233,29 @@ public abstract class AbstractPlanCongelateurSansBoiteGenerator extends Abstract
      */
     @Override
     public DocumentData buildDetailPlan(Conteneur conteneur) {
-        // represent all the data part
+        // Initialisation d'une table de données pour stocker la structure du conteneur.
         DataAsTable dataAsTable = new DataAsTable();
+
+        // Récupération des enceintes de niveau 1, ce qui est essentiel pour construire la représentation du conteneur.
         List<Enceinte> enceintesNiveau1 = getEnceinteManager().findByConteneurWithOrderManager(conteneur);
-        int nbrNiveauxEnceinte = conteneur.getNbrNiv() - 1;
+
+        // Obtenir le nombre max d’enceintes attendues (
+        int nbrNiveauxEnceinte = conteneur.getNbrEnc();
+
+        // Utiliser un cache pour économiser les appels à checkLastEnceinte
         Map<Enceinte, Boolean> lastEnceinteCache = new HashMap<>();
+
+        // Création d'une carte pour associer chaque enceinte à sa position, facilitant l'accès rapide lors de l'ajout dans la table.
         Map<Integer, Enceinte> positionMap = createMapEnceintesByPosition(enceintesNiveau1);
+
+        // Remplissage de la table de données avec les enceintes en fonction de leur position, ce qui constitue le cœur de la méthode.
         populateDataAsTableWithEnceintes(positionMap,lastEnceinteCache,  nbrNiveauxEnceinte, 0, dataAsTable);
-        System.out.println(lastEnceinteCache);
+
+
+        // Retourne la table de données construite pour une utilisation ultérieure.
         return dataAsTable;
     }
 
-    public Boolean isLastEncienteByPere(final Enceinte enceinte, Map<Enceinte, Boolean> lastEnceinteCache) {
-        Enceinte pere = enceinte.getEnceintePere();
-        if (pere != null) {
-            // Check if already cached
-            if (lastEnceinteCache.containsKey(pere)) {
-                return lastEnceinteCache.get(pere);
-            } else {
-                Boolean isLast = getEnceinteManager().checkLastEnceinte(enceinte);
-                lastEnceinteCache.put(pere, isLast);
-                return isLast;
-            }
-        }
-        return false;
-    }
+
 
 }
