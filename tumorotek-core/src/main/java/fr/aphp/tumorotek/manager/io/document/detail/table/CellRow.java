@@ -1,10 +1,10 @@
 /**
  * Copyright ou © ou Copr. Ministère de la santé, FRANCE (01/01/2011)
  * dsi-projet.tk@aphp.fr
- *
+ * <p>
  * Ce logiciel est un programme informatique servant à la gestion de
  * l'activité de biobanques.
- *
+ * <p>
  * Ce logiciel est régi par la licence CeCILL soumise au droit français
  * et respectant les principes de diffusion des logiciels libres. Vous
  * pouvez utiliser, modifier et/ou redistribuer ce programme sous les
@@ -16,7 +16,7 @@
  * Pour les mêmes raisons, seule une responsabilité restreinte pèse sur
  * l'auteur du programme, le titulaire des droits patrimoniaux et les
  * concédants successifs.
- *
+ * <p>
  * A cet égard  l'attention de l'utilisateur est attirée sur les
  * risques associés au chargement,  à l'utilisation,  à la modification
  * et/ou au  développement et à la reproduction du logiciel par
@@ -28,7 +28,7 @@
  * besoins dans des conditions permettant d'assurer la sécurité de leurs
  * systèmes et ou de leurs données et, plus généralement, à l'utiliser
  * et l'exploiter dans les mêmes conditions de sécurité.
- *
+ * <p>
  * Le fait que vous puissiez accéder à cet en-tête signifie que vous
  * avez pris connaissance de la licence CeCILL, et que vous en avez
  * accepté les termes.
@@ -56,6 +56,7 @@ import java.util.List;
 public class CellRow {
     private List<DataCell> listDataCell;
 
+    private int nbDataCell = 0;
 
     public CellRow() {
         this.listDataCell = new ArrayList<>();
@@ -66,13 +67,20 @@ public class CellRow {
         this.listDataCell = listDataCell;
     }
 
-    /**
-     * Ajoute une cellule à la rangée.
-     *
-     * @param cell la cellule à ajouter.
-     */
-    public void addDataCell(DataCell cell) {
-        listDataCell.add(cell);
+    public void addDataCell(DataCell dataCell) {
+        listDataCell.add(dataCell);
+        nbDataCell++;
+    }
+
+    public void addDataCell(int indexColonne, DataCell dataCell) {
+        while (nbDataCell < indexColonne) { // "<" car on veut s'arrêter juste avant la colonne concernée
+            addDataCell(null);
+        }
+        addDataCell(dataCell);
+    }
+
+    public int getNbDataCell() {
+        return nbDataCell;
     }
 
     /**
@@ -92,14 +100,41 @@ public class CellRow {
         this.listDataCell = listDataCell;
     }
 
+
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder("CellRow: { ");
-        for (DataCell dataCell : listDataCell) {
-            sb.append(dataCell.toString()).append(" ");
+        StringBuilder sb = new StringBuilder();
+        // Vérifier si la liste de DataCell n'est pas nulle et n'est pas vide
 
+        if (listDataCell != null && !listDataCell.isEmpty()) {
+            // Itérer à travers chaque DataCell dans la liste
+
+            for (DataCell cell : listDataCell) {
+                // Ajouter le contenu de la cellule au StringBuilder
+
+                sb.append(cell.getCellContent()).append(" ");
+                // Vérifier si la cellule a un colspan supérieur à 1
+
+                if (cell.getColspan() > 1) {
+                    // Ajouter des tabulations pour chaque colspan supplémentaire
+
+                    for (int i = 1; i < cell.getColspan(); i++) {
+                        sb.append("\t");
+                    }
+                }
+                sb.append("| ");
+            }
+            // Supprimer les deux derniers caractères ("| ") pour le formatage
+
+            sb.setLength(sb.length() - 2);
+        } else {
+            sb.append("[empty row]");
         }
-        sb.append("}");
+
         return sb.toString();
     }
+
 }
+
+
+

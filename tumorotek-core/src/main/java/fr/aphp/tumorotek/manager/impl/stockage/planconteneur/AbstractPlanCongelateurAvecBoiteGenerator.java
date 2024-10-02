@@ -35,8 +35,22 @@
  **/
 package fr.aphp.tumorotek.manager.impl.stockage.planconteneur;
 
-import fr.aphp.tumorotek.manager.io.document.DocumentData;
+import fr.aphp.tumorotek.manager.io.document.DataAsTable;
+import fr.aphp.tumorotek.manager.io.document.detail.table.CellContent;
+import fr.aphp.tumorotek.manager.io.document.detail.table.CellRow;
+import fr.aphp.tumorotek.manager.io.document.detail.table.DataCell;
+import fr.aphp.tumorotek.manager.stockage.EnceinteManager;
 import fr.aphp.tumorotek.model.stockage.Conteneur;
+import fr.aphp.tumorotek.model.stockage.Enceinte;
+import fr.aphp.tumorotek.model.stockage.Terminale;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Classe abstraite pour la génération de plans de congélateurs avec boîte.
@@ -48,10 +62,133 @@ import fr.aphp.tumorotek.model.stockage.Conteneur;
  *
  */
 public abstract class AbstractPlanCongelateurAvecBoiteGenerator extends AbstractPlanCongelateurGenerator {
-    @Override
-    protected DocumentData buildDetailPlan(Conteneur c) {
-        return null;
+
+    abstract protected EnceinteManager getEnceinteManager();
+
+
+    public DataAsTable buildDetailPlan(Conteneur conteneur){
+        DataAsTable dataAsTable = new DataAsTable();
+// Le code est commenté car il ne compile pas.
+
+//        List<EnceinteEmplacement> listEnceinteEmplacementPlusBasNiveau = listListEnceinteEmplacementParNiveau.get(nbLigneEntete-1);
+//        int nbEnceinteEmplacement = listEnceinteEmplacementPlusBasNiveau.size();
+//        for(int i=0; i< nbEnceinteEmplacement; i++) {
+//            EnceinteEmplacement enceinteEmplacement = listEnceinteEmplacementPlusBasNiveau.get(i);
+//            if(enceinteEmplacement != null) {
+//                Enceinte enceinteContenantLesBoites = enceinteEmplacement.getEnceinte();
+//                if(enceinteContenantLesBoites != null) {
+//                    buildColonneBoitePourUneEnceinte(dataAsTable, i, enceinteContenantLesBoites.getNbPlaces(), enceinteContenantLesBoites.getTerminales());
+//                }
+//            }
+//        }
+//        //si la ou les dernières enceintes sont vide, on ajoute null aux listes pour être cohérent avec les autres emplacement d'une enceinte vide
+//        int nbEnceinteEmplacementPlusBasNiveau = listEnceinteEmplacementPlusBasNiveau.size();
+//        for(CellRow cellRow : dataAsTable.getListCellRow()) {
+//            while(cellRow.getNbDataCell()<nbEnceinteEmplacementPlusBasNiveau) {
+//                cellRow.addDataCell(null);
+//            }
+//        }
+
+        //////////////////////////////////////////////////////////////////////////////////////
+
+        // Affichage du résultat pour valider le traitement.
+        // J'ai remplacé write() par print() pour mieux décrire ce que fait la fonction
+        dataAsTable.print();
+
+        return dataAsTable;
     }
+
+
+
+    //NB : DataAsTable.addDataCell() appelée ci-dessous se charge de créer la CellRow si celle-ci n'existe pas
+    private void buildColonneBoitePourUneEnceinte(DataAsTable dataAsTable, int indexColonne, int nbPlace, Set<Terminale> setTerminales) {
+        List<Terminale> listTerminaleATraiter = new ArrayList<Terminale>(setTerminales);
+        Collections.sort(listTerminaleATraiter, Comparator.comparing(Terminale::getPosition));
+        int nbTerminalesATraiter = listTerminaleATraiter.size();
+        //j est l'index des places du conteneur
+        int j = 0;
+        for(int i=0; i<nbTerminalesATraiter; i++) {
+            Terminale terminaleATraiter = listTerminaleATraiter.get(i);
+            //ajout des boîtes vides en cas de trous :
+            while(j<terminaleATraiter.getPosition()-1) {
+                dataAsTable.addDataCell(new DataCell(EMPTY_CELL_CONTENT), j, indexColonne);
+                j++;
+            }
+            //ajout de la cellule correspondant à la boîte :
+            // /!\ ils manquent les parenthèses autour de l'alias
+            DataCell cellBoite = new DataCell(
+                    terminaleATraiter.getNom(),
+                    terminaleATraiter.getAlias(),
+                    terminaleATraiter.getCouleur() == null ? null : terminaleATraiter.getCouleur().getHexa());
+            dataAsTable.addDataCell(cellBoite, j, indexColonne);
+            j++;
+        }
+        //Gestion des trous en dernière position
+        while(j<nbPlace) {
+            dataAsTable.addDataCell(new DataCell(EMPTY_CELL_CONTENT), j, indexColonne);
+            j++;
+        }
+    }
+
+    /**
+     * Cette méthode crée un objet DataAsTable, représentant toutes les enceintes d'un conteneur spécifié.
+     * La méthode récupère toutes les enceintes, y compris celles des sous-niveaux, et les organise dans une structure
+     * de type tableau.
+     *
+     <p>Cette méthode effectue les étapes suivantes :</p>
+     * <ol>
+     *   <li>Récupère toutes les enceintes du conteneur spécifié.</li>
+     *   <li>Regroupe les enceintes récupérées par leur niveau à l'aide d'une Map, où la clé est le niveau et la valeur est une liste d'enceintes.</li>
+     *   <li>Pour chaque niveau, crée une {@link CellRow} et la remplit avec le nom, l'alias et la couleur de chaque enceinte.</li>
+     *   <li>Ajoute chaque {@link CellRow} rempli à l'instance de {@link DataAsTable}.</li>
+     * </ol>
+     *
+     * @param conteneur le conteneur à partir duquel récupérer les enceintes ; ne doit pas être {@code null}.
+     * @return un objet {@link DataAsTable} contenant les enceintes regroupées par niveau.
+     */
+
+
+    public DataAsTable createEnceintesSection(Conteneur conteneur) {
+        DataAsTable enceintesData = new DataAsTable();
+
+        // Récupérer toutes les enceintes du conteneur, sans se limiter à un seul niveau. La méthode findAllEnceinteByConteneurManager
+        // renvoie toutes les enceintes d'un conteneur, y compris celles des sous-niveaux
+        List<Enceinte> encientes = getEnceinteManager().findAllEnceinteByConteneurManager(conteneur);
+
+        // Grouper les enceintes par leur niveau. On utilise une Map où la clé représente le niveau de l'enceinte,
+        // et la valeur est une liste  contenant toutes les enceintes associées à ce niveau.
+        Map<Integer, List<Enceinte>> leveledEncientes = new HashMap<>();
+
+        for (Enceinte enceinte : encientes) {
+            // On récupère le niveau de chaque enceinte en appelant la méthode getLevelEnceinte.
+            int level = getEnceinteManager().getLevelEnceinte(enceinte);
+            // On utilise computeIfAbsent pour ajouter les enceintes à la liste associée à leur niveau.
+            leveledEncientes.computeIfAbsent(level, k -> new ArrayList<>()).add(enceinte);
+        }
+
+        for (Map.Entry<Integer, List<Enceinte>> entry : leveledEncientes.entrySet()) {
+            CellRow levelCellRow = new CellRow();
+            List<Enceinte> encientesAtLevel = entry.getValue();
+            for (Enceinte enceinte :  encientesAtLevel){
+                // Créer un objet CellContent avec le nom de l'enceinte et son alias
+                CellContent cellContent = new CellContent(enceinte.getNom(), enceinte.getAlias());
+                // Si l'enceinte a une couleur, on récupère son code hexadécimal, sinon on utilise une chaîne vide
+                String colorHash = enceinte.getCouleur() != null ? enceinte.getCouleur().getHexa() : null;
+                // On crée un DataCell pour l'enceinte, en ajoutant un colspan si l'enceinte a des sous-ensembles
+                Integer totalNumberOfPlaces = getEnceinteManager().calculateTotalNbPlaces(enceinte);
+                DataCell dataCell = new DataCell(cellContent,  colorHash, totalNumberOfPlaces);
+                // Ajouter la cellule à la ligne de cellules
+                levelCellRow.addDataCell(dataCell);
+            }
+            // Ajouter la ligne de cellules à l'objet DataAsTable
+            enceintesData.addCellRow(levelCellRow);
+
+
+        }
+        return enceintesData;
+    }
+
+
 
 
 

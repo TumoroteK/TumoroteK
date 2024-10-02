@@ -46,13 +46,13 @@ public class DataCell {
     private CellContent cellContent;
 
     // La couleur de la bordure gauche de la cellule, spécifiée en code hexadécimal.
-    private String borderLeftColor;
+    private String hexaColorCodeForLeftBorder;
 
     // Le nombre de colonnes que la cellule occupe, avec une valeur par défaut de 1.
     private int colspan = 1;
 
     // Indique si la cellule doit avoir une bordure ou non.
-    private boolean withBorder;
+    private boolean withBorder = true;
 
     // Le type d'alignement du contenu de la cellule, avec une valeur par défaut.
     private AlignmentType alignmentType = AlignmentType.LEFT;
@@ -61,10 +61,10 @@ public class DataCell {
         this.cellContent = cellContent;
     }
 
-    public DataCell(CellContent cellContent, String borderLeftColor, int colspan, boolean withBorder,
-       AlignmentType alignmentType){
+    public DataCell(CellContent cellContent, String hexaColorCodeForLeftBorder, int colspan, boolean withBorder,
+                    AlignmentType alignmentType){
         this.cellContent = cellContent;
-        this.borderLeftColor = borderLeftColor;
+        this.hexaColorCodeForLeftBorder = hexaColorCodeForLeftBorder;
         this.colspan = colspan;
         this.withBorder = withBorder;
         this.alignmentType = alignmentType;
@@ -73,9 +73,19 @@ public class DataCell {
     public DataCell(String text) {
         this.cellContent = new CellContent(text);
     }
-    public DataCell(CellContent cellContent, String borderLeftColor) {
+    public DataCell(CellContent cellContent, String hexaColorCodeForLeftBorder) {
         this.cellContent = cellContent;
-        this.borderLeftColor = borderLeftColor;
+        this.hexaColorCodeForLeftBorder = hexaColorCodeForLeftBorder;
+    }
+
+    public DataCell(CellContent cellContent, String hexaColorCodeForLeftBorder, int colspan) {
+        this.cellContent = cellContent;
+        this.hexaColorCodeForLeftBorder = hexaColorCodeForLeftBorder;
+        this.colspan = colspan;
+    }
+
+    public DataCell(String text, String complement, String hexaColorCodeForLeftBorder) {
+        this(new CellContent(text, complement), hexaColorCodeForLeftBorder);
     }
 
 
@@ -88,12 +98,12 @@ public class DataCell {
         this.cellContent = cellContent;
     }
 
-    public String getBorderLeftColor(){
-        return borderLeftColor;
+    public String getHexaColorCodeForLeftBorder(){
+        return hexaColorCodeForLeftBorder;
     }
 
-    public void setBorderLeftColor(String borderLeftColor){
-        this.borderLeftColor = borderLeftColor;
+    public void setHexaColorCodeForLeftBorder(String hexaColorCodeForLeftBorder){
+        this.hexaColorCodeForLeftBorder = hexaColorCodeForLeftBorder;
     }
 
     public int getColspan(){

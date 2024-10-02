@@ -51,10 +51,10 @@ public class CellContent {
     private String complement;
 
     // Indique si le complément de texte doit être affiché en italique.
-    private boolean complementInItalic;
+    private boolean complementInItalic = true;
 
     // Indique si le complément de texte doit être affiché sur une autre ligne.
-    private boolean complementOnAnotherLine;
+    private boolean complementOnAnotherLine = false;
 
 
 
@@ -63,20 +63,50 @@ public class CellContent {
     }
 
     public CellContent(String text, String complement) {
-        this.text = text;
+        this(text);
         this.complement = complement;
     }
 
-    public CellContent(String text, String complement, boolean complementInItalic) {
-        this.text = text;
-        this.complement = complement;
-        this.complementInItalic = complementInItalic;
+    public CellContent(String text, String complement, boolean complementOnAnotherLine){
+        this(text, complement);
+        this.complementOnAnotherLine = complementOnAnotherLine;
     }
-
     public CellContent(String text, String complement, boolean complementInItalic, boolean complementOnAnotherLine) {
         this.text = text;
         this.complement = complement;
         this.complementInItalic = complementInItalic;
+        this.complementOnAnotherLine = complementOnAnotherLine;
+    }
+
+    public String getText() {
+        return text;
+    }
+
+    public void setText(String text) {
+        this.text = text;
+    }
+
+    public String getComplement() {
+        return complement;
+    }
+
+    public void setComplement(String complement) {
+        this.complement = complement;
+    }
+
+    public boolean isComplementInItalic() {
+        return complementInItalic;
+    }
+
+    public void setComplementInItalic(boolean complementInItalic) {
+        this.complementInItalic = complementInItalic;
+    }
+
+    public boolean isComplementOnAnotherLine() {
+        return complementOnAnotherLine;
+    }
+
+    public void setComplementOnAnotherLine(boolean complementOnAnotherLine) {
         this.complementOnAnotherLine = complementOnAnotherLine;
     }
 

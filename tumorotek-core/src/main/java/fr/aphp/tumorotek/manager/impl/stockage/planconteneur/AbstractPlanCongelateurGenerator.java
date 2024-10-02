@@ -58,6 +58,10 @@ import java.util.List;
 public abstract class AbstractPlanCongelateurGenerator implements PlanCongelateurGenerator {
 
     protected static final String DATE_FORMAT = "yyyyMMddHHmm";
+
+    // Constante représentant le contenu d'une cellule vide
+    protected static final String EMPTY_CELL_CONTENT = "vide";
+
     protected static final String PREFIX_FILE_NAME = "plan_conteneur";
 
 
