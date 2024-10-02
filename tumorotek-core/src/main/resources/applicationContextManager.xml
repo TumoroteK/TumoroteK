@@ -1076,8 +1076,8 @@
 
 	<bean id="planCongelateurAvecBoiteExcelGenerator"
 		  class="fr.aphp.tumorotek.manager.impl.stockage.planconteneur.PlanCongelateurAvecBoiteExcelGenerator">
-		<property name="enceinteManager" ref="enceinteManager"/>
-
+<!--		<property name="enceinteManager" ref="enceinteManager"/>-->
+		<constructor-arg ref="enceinteManager"/>
 	</bean>
 
 	<bean id="planCongelateurSansBoiteExcelGenerator"

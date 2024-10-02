@@ -35,9 +35,6 @@
  **/
 package fr.aphp.tumorotek.manager.stockage;
 
-import java.util.List;
-import java.util.Set;
-
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.qualite.OperationType;
 import fr.aphp.tumorotek.model.stockage.Conteneur;
@@ -48,6 +45,9 @@ import fr.aphp.tumorotek.model.stockage.Terminale;
 import fr.aphp.tumorotek.model.systeme.Couleur;
 import fr.aphp.tumorotek.model.systeme.Entite;
 import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
+
+import java.util.List;
+import java.util.Set;
 
 /**
  *
@@ -406,4 +406,14 @@ public interface EnceinteManager
     * @since 2.2.1
     */
    List<Banque> getDistinctBanquesFromTkObjectsManager(Enceinte enc);
+
+
+   /**
+    * Calcule le nombre total de places dans l'instance 'Enceinte' spécifiée et dans ses sous-enseintes de manière récursive.
+    *
+    * @param enceinte l'instance 'Enceinte' pour laquelle calculer le nombre total de places
+    * @return le nombre total de places, y compris celles des sous-enseintes
+    */
+    Integer calculateTotalNbPlaces(Enceinte enceinte);
+
 }

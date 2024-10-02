@@ -35,21 +35,6 @@
  **/
 package fr.aphp.tumorotek.manager.impl.stockage;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.orm.jpa.JpaTransactionManager;
-import org.springframework.validation.Validator;
-
 import fr.aphp.tumorotek.dao.contexte.BanqueDao;
 import fr.aphp.tumorotek.dao.qualite.OperationTypeDao;
 import fr.aphp.tumorotek.dao.stockage.ConteneurDao;
@@ -87,6 +72,20 @@ import fr.aphp.tumorotek.model.systeme.Couleur;
 import fr.aphp.tumorotek.model.systeme.Entite;
 import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
 import fr.aphp.tumorotek.utils.Utils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.orm.jpa.JpaTransactionManager;
+import org.springframework.validation.Validator;
+
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -1493,4 +1492,22 @@ public class EnceinteManagerImpl implements EnceinteManager
 
       return banks;
    }
+
+   @Override
+   public Integer calculateTotalNbPlaces(Enceinte enceinte) {
+      // Initialiser le nombre total de places avec la valeur actuelle de l' 'Enceinte'
+      int totalNbPlaces = enceinte.getNbPlaces() != null ? enceinte.getNbPlaces() : 0;
+
+      // Récupérer la liste des sous-enseintes (enfants) pour l' 'Enceinte' actuelle
+      List<Enceinte> children = findByEnceintePereWithOrderManager(enceinte);
+
+      // Itérer à travers chaque enfant 'Enceinte' pour ajouter leurs places totales de manière récursive
+      for (Enceinte child : children) {
+         totalNbPlaces += calculateTotalNbPlaces(child);  // Ajouter le total de chaque enfant
+      }
+
+      return totalNbPlaces;
+   }
+
+
 }

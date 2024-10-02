@@ -61,8 +61,6 @@ import java.util.Map;
 
 public abstract class AbstractPlanCongelateurSansBoiteGenerator extends AbstractPlanCongelateurGenerator {
 
-    // Constante représentant le contenu d'une cellule vide
-    private static final String EMPTY_CELL_CONTENT = "vide";
 
     // Méthode abstraite pour récupérer le gestionnaire d'enceinte
     protected abstract EnceinteManager getEnceinteManager();
