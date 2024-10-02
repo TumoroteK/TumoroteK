@@ -67,8 +67,8 @@ public abstract class AbstractPlanCongelateurAvecBoiteGenerator extends Abstract
 
 
     public DataAsTable buildDetailPlan(Conteneur conteneur){
-        DataAsTable dataAsTable = new DataAsTable();
-// Le code est commenté car il ne compile pas.
+        DataAsTable dataAsTable = createEnceintesSection(conteneur);
+        int nbLigneEntete = dataAsTable.getNbCellRow();
 
 //        List<EnceinteEmplacement> listEnceinteEmplacementPlusBasNiveau = listListEnceinteEmplacementParNiveau.get(nbLigneEntete-1);
 //        int nbEnceinteEmplacement = listEnceinteEmplacementPlusBasNiveau.size();

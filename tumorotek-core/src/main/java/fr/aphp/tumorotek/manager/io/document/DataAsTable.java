@@ -99,6 +99,9 @@ public class DataAsTable implements DocumentData {
         }
     }
 
+    public int getNbCellRow() {
+        return nbCellRow;
+    }
 
     @Override
     public String toString() {
