@@ -1,6 +1,6 @@
 package fr.aphp.tumorotek.dto;
 
-import java.io.ByteArrayOutputStream;
+import org.apache.commons.io.output.ByteArrayOutputStream;
 
 /**
  * La classe DocumentProducerResult représente le résultat produit par un générateur de documents.
@@ -16,11 +16,15 @@ import java.io.ByteArrayOutputStream;
  *   <li>contentType : le type MIME du contenu (par exemple, application/pdf, application/msword).</li>
  *   <li>outputStream : le flux de sortie contenant les données du document généré.</li>
  * </ul>
+ * <p>Le modèle de conception et l'architecture de cette classe ont été fournis par C.H.</p>
  */
 public class DocumentProducerResult {
-
+    // Merci de ne pas coder en dur les valeurs. Utilise plutôt les constantes de ConfigManager.
     String format;
+
+    // Merci de ne pas coder en dur les valeurs. Utilise plutôt les constantes de ConfigManager.
     String contentType;
+
     ByteArrayOutputStream outputStream;
 
     public String getFormat() {

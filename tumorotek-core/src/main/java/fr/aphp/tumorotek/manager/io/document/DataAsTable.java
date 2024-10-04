@@ -52,6 +52,7 @@ import java.util.List;
  * <p>La structure des données est représentée par une liste de <code>CellRow</code>, chaque <code>CellRow</code>
  * représentant une ligne du tableau.</p>
  *
+ * <p>Le modèle de conception et l'architecture de cette classe ont été fournis par C.H.</p>
  */
 
 public class DataAsTable implements DocumentData {
