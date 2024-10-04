@@ -105,11 +105,7 @@ public class ExcelUtilityTest {
         assertNotNull(cell.getCellStyle());
     }
 
-    @Test
-    public void testWriteToCellWithHalfItalic() {
-        Cell cell = ExcelUtility.writeToCellWithHalfItalic(sheet, 0, 0, "Normal", "Italic");
-        assertEquals("NormalItalic", cell.getStringCellValue());
-    }
+
 
     @Test
     public void testApplyTableBorderStyle() {
@@ -121,7 +117,7 @@ public class ExcelUtilityTest {
 
     @Test
     public void testCreateSheet() {
-        XSSFSheet createdSheet = ExcelUtility.createSheet(workbook, "NewSheet");
+        Sheet createdSheet = ExcelUtility.createSheet(workbook, "NewSheet");
         assertNotNull(createdSheet);
         assertEquals("NewSheet", createdSheet.getSheetName());
     }

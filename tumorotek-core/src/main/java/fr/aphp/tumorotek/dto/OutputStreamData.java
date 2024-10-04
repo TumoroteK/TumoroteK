@@ -35,11 +35,12 @@
  **/
 package fr.aphp.tumorotek.dto;
 
-import java.io.ByteArrayOutputStream;
+import org.apache.commons.io.output.ByteArrayOutputStream;
 
 /**
  * Représente les données associées à un flux de sortie pour un fichier, y compris le nom du fichier,
  * le format, le type de contenu et le flux de sortie associé (ByteArrayOutputStream).
+ * Le modèle de conception et l'architecture de cette classe ont été fournis par C.H.
  */
 
 public class OutputStreamData {
