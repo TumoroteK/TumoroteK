@@ -46,6 +46,7 @@ import fr.aphp.tumorotek.manager.io.production.DocumentProducer;
 import fr.aphp.tumorotek.model.stockage.Conteneur;
 import fr.aphp.tumorotek.utils.TKStringUtils;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -66,7 +67,7 @@ public abstract class AbstractPlanCongelateurGenerator implements PlanCongelateu
 
 
     @Override
-    public OutputStreamData generate(List<Conteneur> listConteneurs) {
+    public OutputStreamData generate(List<Conteneur> listConteneurs) throws IOException {
         List<DocumentWithDataAsTable> listPlanConteneur = new ArrayList<>();
 
         for (Conteneur conteneur : listConteneurs) {

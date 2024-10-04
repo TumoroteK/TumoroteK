@@ -53,9 +53,13 @@ public class PlanCongelateurSansBoiteExcelGenerator extends AbstractPlanCongelat
 
     private EnceinteManager enceinteManager;
 
+    private DocumentWithDataAsTableExcelProducer documentWithDataAsTableExcelProducer;
 
-    public PlanCongelateurSansBoiteExcelGenerator(EnceinteManager enceinteManager) {
+
+
+    public PlanCongelateurSansBoiteExcelGenerator(EnceinteManager enceinteManager, DocumentWithDataAsTableExcelProducer documentWithDataAsTableExcelProducer) {
         this.enceinteManager = enceinteManager;
+        this.documentWithDataAsTableExcelProducer = documentWithDataAsTableExcelProducer;
     }
 
 
@@ -67,11 +71,13 @@ public class PlanCongelateurSansBoiteExcelGenerator extends AbstractPlanCongelat
         return this.enceinteManager;
     }
 
-    private DocumentWithDataAsTableExcelProducer documentWithDataAsTableExcelProducer;
 
 
     @Override
     protected DocumentProducer getDocumentProducer() {
-        return documentWithDataAsTableExcelProducer;
+        if (this.documentWithDataAsTableExcelProducer == null) {
+            throw new IllegalStateException("documentWithDataAsTableExcelProducer has not been initialized.");
+        }
+        return this.documentWithDataAsTableExcelProducer;
     }
 }

@@ -50,16 +50,16 @@ import fr.aphp.tumorotek.manager.stockage.EnceinteManager;
  */
 public class PlanCongelateurAvecBoiteExcelGenerator extends AbstractPlanCongelateurAvecBoiteGenerator {
 
-    private DocumentWithDataAsTableExcelProducer documentWithDataAsTableExcelProducer;
 
     private EnceinteManager enceinteManager;
 
+    private DocumentWithDataAsTableExcelProducer documentWithDataAsTableExcelProducer;
 
-    public PlanCongelateurAvecBoiteExcelGenerator(EnceinteManager enceinteManager) {
+
+    public PlanCongelateurAvecBoiteExcelGenerator(EnceinteManager enceinteManager, DocumentWithDataAsTableExcelProducer documentWithDataAsTableExcelProducer) {
         this.enceinteManager = enceinteManager;
+        this.documentWithDataAsTableExcelProducer = documentWithDataAsTableExcelProducer;
     }
-
-
 
     public void setEnceinteManager(EnceinteManager enceinteManager) {
         this.enceinteManager = enceinteManager;

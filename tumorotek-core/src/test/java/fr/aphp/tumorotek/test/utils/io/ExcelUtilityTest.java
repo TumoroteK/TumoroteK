@@ -73,6 +73,13 @@ public class ExcelUtilityTest {
     }
 
     @Test
+    public void testAddFooterWithNull() {
+        ExcelUtility.addFooter(sheet, "Left Footer", null, null);
+        Footer footer = sheet.getFooter();
+        assertEquals("Left Footer", footer.getLeft());
+    }
+
+    @Test
     public void testWriteToCell() {
         Cell cell = ExcelUtility.writeToCell(sheet, 0, 0, "Test Value");
         assertEquals("Test Value", cell.getStringCellValue());

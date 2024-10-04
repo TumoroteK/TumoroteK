@@ -71,8 +71,8 @@ public class ConfigManager
 
    // Type MIME pour les anciens fichiers Excel au format binaire (".xls").
    public static final String OFFICE_EXCEL_MIME_TYPE = "application/vnd.ms-excel";
-   public static final String EXCEL_XLS_FILETYPE = ".xls";
-   public static final String EXCEL_XLSX_FILETYPE = ".xlsx";
+   public static final String EXCEL_XLS_FILETYPE = "xls";
+   public static final String EXCEL_XLSX_FILETYPE = "xlsx";
 
    public static final String UNICODE_CHARSET = "UTF-8";
 

@@ -51,6 +51,7 @@ public class CellContent {
     private String complement;
 
     // Indique si le complément de texte doit être affiché en italique.
+    // todo: can create bug if the complement is null. Can be improved
     private boolean complementInItalic = true;
 
     // Indique si le complément de texte doit être affiché sur une autre ligne.
@@ -92,6 +93,9 @@ public class CellContent {
 
     public void setComplement(String complement) {
         this.complement = complement;
+        if (complement == null || complement.isEmpty()) {
+            this.complementInItalic = false;
+        }
     }
 
     public boolean isComplementInItalic() {
@@ -99,7 +103,9 @@ public class CellContent {
     }
 
     public void setComplementInItalic(boolean complementInItalic) {
-        this.complementInItalic = complementInItalic;
+        if (this.complement != null && !this.complement.isEmpty()) {
+            this.complementInItalic = complementInItalic;
+        }
     }
 
     public boolean isComplementOnAnotherLine() {

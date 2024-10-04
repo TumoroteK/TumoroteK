@@ -40,6 +40,7 @@ package fr.aphp.tumorotek.manager.impl.stockage.planconteneur;
 import fr.aphp.tumorotek.dto.OutputStreamData;
 import fr.aphp.tumorotek.model.stockage.Conteneur;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -68,5 +69,5 @@ public interface PlanCongelateurGenerator  {
      *         Cet objet peut être utilisé pour écrire les données dans un flux de sortie.
      */
 
-    OutputStreamData generate(List<Conteneur> conteneurList);
+    OutputStreamData generate(List<Conteneur> conteneurList) throws IOException;
 }

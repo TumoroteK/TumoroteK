@@ -53,11 +53,16 @@ public class ExcelUtility {
      */
     public static void addFooter(Sheet sheet, String leftString, String centerString, String rightString) {
         Footer footer = sheet.getFooter();
-        footer.setLeft(leftString);
-        footer.setCenter(centerString);
-        footer.setRight(rightString);
+        if (leftString != null) {
+            footer.setLeft(leftString);
+        }
+        if (centerString != null) {
+            footer.setCenter(centerString);
+        }
+        if (rightString != null) {
+            footer.setRight(rightString);
+        }
     }
-
 
     /**
      * Écrit une valeur de chaîne dans une cellule spécifiée de la feuille.
@@ -194,16 +199,7 @@ public class ExcelUtility {
     }
 
 
-    /**
-     * Ajuste automatiquement la taille de toutes les colonnes dans la feuille.
-     *
-     * @param sheet La feuille où les colonnes seront ajustées.
-     */
-    public static void autoSize(Sheet sheet) {
-        int lastRowNum = sheet.getLastRowNum();
-        for (int colNum = 0; colNum < lastRowNum; colNum++)
-            sheet.autoSizeColumn(colNum);
-    }
+
 
     /**
      * Applique des styles de bordure à une plage de cellules avec une couleur de bordure gauche personnalisée en option.
@@ -275,6 +271,16 @@ public class ExcelUtility {
      * @param italicText  Le texte à écrire en police italique.
      */
     public static void writeToCellWithHalfItalic(Cell cell, String normalText, String italicText) {
+
+        if (cell == null) {
+            throw new NullPointerException("Cell cannot be null");
+        }
+        if (normalText == null) {
+            throw new NullPointerException("Normal text cannot be null");
+        }
+        if (italicText == null) {
+            throw new NullPointerException("Italic text cannot be null");
+        }
         Workbook workbook = cell.getSheet().getWorkbook();
 
         // Créer les polices
