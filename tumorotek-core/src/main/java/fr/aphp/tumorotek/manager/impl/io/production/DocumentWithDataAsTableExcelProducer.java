@@ -36,18 +36,22 @@
 package fr.aphp.tumorotek.manager.impl.io.production;
 
 import fr.aphp.tumorotek.dto.DocumentProducerResult;
-import fr.aphp.tumorotek.dto.OutputStreamData;
 import fr.aphp.tumorotek.manager.ConfigManager;
-import fr.aphp.tumorotek.manager.io.document.DocumentFooter;
+import fr.aphp.tumorotek.manager.io.document.DataAsTable;
 import fr.aphp.tumorotek.manager.io.document.DocumentWithDataAsTable;
 import fr.aphp.tumorotek.manager.io.document.LabelValue;
+import fr.aphp.tumorotek.manager.io.document.detail.table.CellContent;
+import fr.aphp.tumorotek.manager.io.document.detail.table.CellRow;
+import fr.aphp.tumorotek.manager.io.document.detail.table.DataCell;
 import fr.aphp.tumorotek.manager.io.production.DocumentProducer;
 import fr.aphp.tumorotek.utils.io.ExcelUtility;
+import org.apache.commons.io.output.ByteArrayOutputStream;
+import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.poi.xssf.streaming.SXSSFWorkbook;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.List;
 
@@ -68,85 +72,117 @@ import java.util.List;
  * DocumentWithDataAsTableExcelProducer producer = new DocumentWithDataAsTableExcelProducer();
  * producer.produce(data, output);
  * }</pre>
+ *
+ * <p>Le modèle de conception et l'architecture de cette classe ont été fournis par C.H.</p>
  */
 
 public class DocumentWithDataAsTableExcelProducer implements DocumentProducer {
 
-    private static final int START_ROW = 0;
+    private final Logger log = LoggerFactory.getLogger(DocumentWithDataAsTableExcelProducer.class);
+
     private static final int START_COLUMN = 0;
 
-
-    /**
-     * Produit des documents au format Excel et les écrit dans un flux de sortie.
-     *
-     * @param listDocumentWithDataAsTable Liste des documents à produire.
-$     */
     @Override
-    public DocumentProducerResult produce(List<DocumentWithDataAsTable> listDocumentWithDataAsTable) {
+    public DocumentProducerResult produce(List<DocumentWithDataAsTable> listDocumentWithDataAsTable) throws IOException {
+        DocumentProducerResult result = new DocumentProducerResult();
+        result.setFormat(ConfigManager.EXCEL_XLSX_FILETYPE);
+        result.setContentType(ConfigManager.OFFICE_OPENXML_MIME_TYPE);
 
-        OutputStreamData outputStreamData = new OutputStreamData();
+        System.out.println("Trying to create ByteArrayOutputStream");
 
-        DocumentProducerResult documentProducerResult = new DocumentProducerResult();
+        // Use try-with-resources to ensure the resources are closed properly
+        try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+             SXSSFWorkbook workbook = new SXSSFWorkbook()) {  // Optimized for large data sets
 
-        setupOutputStreamData(outputStreamData);
-
-
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-
-        try {
-            XSSFWorkbook workbook = new XSSFWorkbook();
+            workbook.setCompressTempFiles(true);  // Optional: compress temp files for better performance
+            System.out.println("Iterating over documents and generating sheets");
 
             for (DocumentWithDataAsTable document : listDocumentWithDataAsTable) {
-                XSSFSheet sheet = ExcelUtility.createSheet(workbook, document.getDocumentName());
-                int rowNum = START_ROW;
+                String sheetName = document.getDocumentName();
+                Sheet sheet = ExcelUtility.createSheet(workbook, sheetName);
+                System.out.println(   "// Write document context");
 
-                // Écrire le context
+                // Write document context
+                writeDocumentContext(sheet, document.getContext().getListLabelValue());
+                System.out.println(   "//  Write document data");
 
-                for (LabelValue labelValue : document.getContext().getListLabelValue()) {
-                    writeLabelValue(sheet, rowNum, START_COLUMN, labelValue);
-                    rowNum++;
+                // Write document data
+                writeDocumentData(sheet, document.getData());
+                System.out.println(   "//  Write footer");
 
-                }
-
-                //    Ecrire le data: use the method
-                // get create DocumenyWithDataAsArry and call getData
-//                it will give you a list of Cell rows (inside)
-//                loop the list of cell rows and for eac cell row write the cell row. how?
-//                write a method the gets CellRow loop over it and for each datacell call writeDataCellWithStyle()
-
-                // Écrire le pied de page
-                DocumentFooter documentFooter = document.getFooter();
-                ExcelUtility.addFooter(sheet, documentFooter.getLeftData(), documentFooter.getCenterData(), documentFooter.getRightData());
+                // Write footer
+                ExcelUtility.addFooter(sheet,
+                        document.getFooter().getLeftData(),
+                        document.getFooter().getCenterData(),
+                        document.getFooter().getRightData());
             }
 
-            workbook.write(byteArrayOutputStream);
+            // Write workbook directly to output stream
+            workbook.write(outputStream);
+            System.out.println("Wrote to stream");
+            System.out.println(outputStream.toByteArray().length);
 
-            outputStreamData.setOutputStream(byteArrayOutputStream);
-        } catch (IOException e) {
-            throw new RuntimeException("Erreur lors de la génération du document Excel", e);
+            result.setOutputStream(outputStream);
+
+        }  // Auto-close resources when done
+
+        return result;
+    }
+
+    private void writeDocumentContext(Sheet sheet, List<LabelValue> labelValues) {
+        int rowIndex = 0;
+        for (LabelValue labelValue : labelValues) {
+            ExcelUtility.writeToCellWithOptionalBold(sheet, rowIndex, START_COLUMN, labelValue.getLabel(), labelValue.isLabelInBold());
+            ExcelUtility.writeToCellWithOptionalBold(sheet, rowIndex, START_COLUMN + 1, labelValue.getValue(), labelValue.isValueInBold());
+            rowIndex++;
+        }
+
+    }
+
+    private void writeDocumentData(Sheet sheet, DataAsTable data) {
+        int rowIndex = sheet.getLastRowNum() + 1; // Start where last written ended
+        for (CellRow cellRow : data.getListCellRow()) {
+            writeCellRow(sheet, rowIndex, cellRow);
 
         }
-        return documentProducerResult;
-    }
-
-    public static void writeLabelValue(Sheet sheet, int startRow, int startColumn, LabelValue labelValue) {
-        String key = labelValue.getLabel();
-        String value = labelValue.getValue();
-        ExcelUtility.writeToCellWithBold(sheet, startRow, startColumn, key, labelValue.isLabelInBold());
-        ExcelUtility.writeToCellWithBold(sheet, startRow, startColumn, value, labelValue.isValueInBold());
 
     }
 
-    private void setupOutputStreamData(OutputStreamData outputStreamData) {
-        outputStreamData.setContentType(ConfigManager.OFFICE_OPENXML_MIME_TYPE);
-        outputStreamData.setFormat(ConfigManager.EXCEL_XLSX_FILETYPE);
+    private void writeCellRow(Sheet sheet, int rowIndex, CellRow cellrow) {
+        int colIndex = 0;
+        for (DataCell dataCell : cellrow.getListDataCell()) {
+            Cell cell = ExcelUtility.getOrCreateCell(sheet, rowIndex, colIndex);
 
-        // Other setup tasks related to workbook creation
+            CellContent content = dataCell.getCellContent();
+
+            String textToWrite = content.getText();
+            if (content.isComplementOnAnotherLine()) {
+                textToWrite += "\n" + content.getComplement();
+            } else {
+                textToWrite += " " + content.getComplement();
+            }
+
+            // Handle colspan by skipping cells accordingly
+            if (dataCell.getColspan() > 1) {
+                cell = ExcelUtility.mergeCells(sheet, rowIndex, rowIndex, colIndex, colIndex + dataCell.getColspan(), textToWrite);
+            }
+
+            // Apply border if required
+            if (dataCell.isWithBorder()) {
+                ExcelUtility.applyTableBorderStyle(cell, dataCell.getHexaColorCodeForLeftBorder(), true);
+            }
+
+            // Write text with optional italic complement
+            if (content.isComplementInItalic() && content.getComplement() != null) {
+                ExcelUtility.writeToCellWithHalfItalic(cell, content.getText(), content.getComplement());
+            } else {
+                cell.setCellValue(textToWrite);
+                ExcelUtility.applyAlignment(cell, dataCell.getAlignmentType());
+                colIndex++;
+            }
+
+        }
     }
-
-
-
-
 
 
 }

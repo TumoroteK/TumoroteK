@@ -39,6 +39,7 @@ import fr.aphp.tumorotek.dto.DocumentProducerResult;
 import fr.aphp.tumorotek.dto.OutputStreamData;
 import fr.aphp.tumorotek.manager.io.document.DocumentWithDataAsTable;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -53,5 +54,5 @@ import java.util.List;
 
 public interface DocumentProducer {
 
-    DocumentProducerResult produce(List<DocumentWithDataAsTable> listDocumentWithDataAsTable);
+    DocumentProducerResult produce(List<DocumentWithDataAsTable> listDocumentWithDataAsTable) throws IOException;
 }
