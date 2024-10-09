@@ -22,11 +22,42 @@ public class ExcelUtilityTest {
         workbook = new XSSFWorkbook();
         sheet = workbook.createSheet("TestSheet");
     }
+    @Test
+    public void testGetOrCreateCell_doesNotEraseAdjacentCell() {
+        // Create a new workbook and sheet
+        Workbook workbook = new XSSFWorkbook();
+        Sheet sheet = workbook.createSheet("Test Sheet");
+
+        // Define row and column indices for testing
+        int rowIndex = 0;
+        int initialColIndex = 0;
+        int adjacentColIndex = 1;
+
+        // Write an initial value to the cell at (row, col)
+        Cell initialCell = ExcelUtility.getOrCreateCell(sheet, rowIndex, initialColIndex);
+        initialCell.setCellValue("Initial Value");
+
+        // Write a different value to the adjacent cell (row, col + 1)
+        Cell adjacentCell = ExcelUtility.getOrCreateCell(sheet, rowIndex, adjacentColIndex);
+        adjacentCell.setCellValue("Adjacent Value");
+
+        // Verify that the value in the initial cell (row, col) is still intact
+        Cell retrievedInitialCell = sheet.getRow(rowIndex).getCell(initialColIndex);
+        assertNotNull(retrievedInitialCell);
+        assertEquals("Initial Value", retrievedInitialCell.getStringCellValue()
+           );
+
+        // Verify that the adjacent cell (row, col + 1) contains the correct value
+        Cell retrievedAdjacentCell = sheet.getRow(rowIndex).getCell(adjacentColIndex);
+        assertNotNull(retrievedAdjacentCell );
+        assertEquals("Adjacent Value", retrievedAdjacentCell.getStringCellValue());
+    }
 
 
-    /**
-     getSafeSheetName: Test de la méthode avec des caractères interdits:
-     */
+
+           /**
+            getSafeSheetName: Test de la méthode avec des caractères interdits:
+            */
     @Test
     public void testSafeSheetNameWithForbiddenCharacters() {
         String input = "Sheet/Name\\With?Forbidden*Characters[]";

@@ -14,8 +14,10 @@ import org.apache.poi.xssf.usermodel.*;
  */
 public class ExcelUtility {
 
-
-
+    private static final String VALID_HEX_COLOR_PATTERN = "^#[0-9A-Fa-f]{6}$";
+    private ExcelUtility(){
+        throw new IllegalStateException("Utility class");
+    }
     /**
      * Récupère une cellule existante ou en crée une nouvelle dans la feuille spécifiée aux indices de ligne et de colonne donnés.
      *
@@ -34,11 +36,17 @@ public class ExcelUtility {
             throw new IllegalArgumentException("Row index and column index must be non-negative.");
         }
 
-        // Créer ou récupérer la ligne directement
-        Row row = sheet.createRow(rowIndex);
+        // Retrieve the existing row or create it if it does not exist
+        Row row = sheet.getRow(rowIndex);
+        if (row == null) {
+            row = sheet.createRow(rowIndex);
+        }
 
-        // Créer ou récupérer la cellule directement
-        Cell cell = row.createCell(colIndex);
+        // Retrieve the existing cell or create it if it does not exist
+        Cell cell = row.getCell(colIndex);
+        if (cell == null) {
+            cell = row.createCell(colIndex);
+        }
 
         return cell;
     }
@@ -78,7 +86,8 @@ public class ExcelUtility {
         Cell cell = getOrCreateCell(sheet, rowIndex, colIndex);
 
         // Définir la valeur de la cellule
-        cell.setCellValue(value);
+        String valueToWrite = (value != null) ? value : "";
+        cell.setCellValue(valueToWrite);
 
         return cell;
     }
@@ -178,7 +187,7 @@ public class ExcelUtility {
      * @throws IllegalArgumentException si le hexColor n'est pas au format "#RRGGBB".
      */
     public static void applyLeftBorderColor(Cell cell, String hexColor) {
-        if (hexColor != null && hexColor.matches("^#[0-9A-Fa-f]{6}$")) {
+        if (hexColor != null && hexColor.matches(VALID_HEX_COLOR_PATTERN)) {
             // Convertir hex en RGB
             int red = Integer.parseInt(hexColor.substring(1, 3), 16);
             int green = Integer.parseInt(hexColor.substring(3, 5), 16);
@@ -219,7 +228,7 @@ public class ExcelUtility {
         XSSFColor leftBorderColor = blackColor;
         BorderStyle leftBorderStyle = BorderStyle.THIN;
 
-        if (hexColor != null && hexColor.matches("^#[0-9A-Fa-f]{6}$")) {
+        if (hexColor != null && hexColor.matches(VALID_HEX_COLOR_PATTERN)) {
             // Convertir hex en RGB
             int red = Integer.parseInt(hexColor.substring(1, 3), 16);
             int green = Integer.parseInt(hexColor.substring(3, 5), 16);
@@ -319,7 +328,7 @@ public class ExcelUtility {
         BorderStyle leftBorderStyle = BorderStyle.THIN;
 
         // Si une couleur hexadécimale valide est fournie, l'utiliser pour la bordure gauche
-        if (hexColor != null && hexColor.matches("^#[0-9A-Fa-f]{6}$")) {
+        if (hexColor != null && hexColor.matches(VALID_HEX_COLOR_PATTERN)) {
             int red = Integer.parseInt(hexColor.substring(1, 3), 16);
             int green = Integer.parseInt(hexColor.substring(3, 5), 16);
             int blue = Integer.parseInt(hexColor.substring(5, 7), 16);
