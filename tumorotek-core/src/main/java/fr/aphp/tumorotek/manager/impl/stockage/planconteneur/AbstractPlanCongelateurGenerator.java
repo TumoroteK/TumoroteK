@@ -44,16 +44,21 @@ import fr.aphp.tumorotek.manager.io.document.DocumentWithDataAsTable;
 import fr.aphp.tumorotek.manager.io.document.LabelValue;
 import fr.aphp.tumorotek.manager.io.production.DocumentProducer;
 import fr.aphp.tumorotek.model.stockage.Conteneur;
+import fr.aphp.tumorotek.model.stockage.Enceinte;
 import fr.aphp.tumorotek.utils.TKStringUtils;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Classe abstraite fournissant une implémentation de base pour la génération de plans de congélateurs.
  * Elle devrait se concentrer uniquement sur la génération du contenu (c'est-à-dire, `DocumentWithDataAsTable`).
- * Les spécificités de format devraient être gérées par les implémentations  concrètes et les producteurs.
+ * Les spécificités de format devraient être gérées par les implémentations concrètes et les producteurs.
+ *
+ *  * <p>Le modèle de conception et l'architecture de cette classe ont été fournis par C.H.</p>
  */
 
 public abstract class AbstractPlanCongelateurGenerator implements PlanCongelateurGenerator {
@@ -126,7 +131,6 @@ public abstract class AbstractPlanCongelateurGenerator implements PlanCongelateu
         String etabli = conteneur.getService().getEtablissement().getNom();
         String serviceEtabliValue = etabli + " / " + service;
         listLabelValue.add(new LabelValue(serviceLabel, serviceEtabliValue, false, false));
-
         return new DocumentContext(listLabelValue);
     }
 
@@ -159,5 +163,27 @@ public abstract class AbstractPlanCongelateurGenerator implements PlanCongelateu
      * @return le producteur
      */
     protected abstract DocumentProducer getDocumentProducer();
+
+    /**
+     * Crée une Map de position associant des positions d'enceintes à leurs objets respectifs.
+     * Cela facilite la gestion et l'accès aux enceintes en fonction de leurs positions.
+     * @param enceintes La liste d'enceintes à mapper.
+     * @return Une map associant les positions aux enceintes.
+     */
+
+    protected Map<Integer, Enceinte> createMapEnceintesByPosition(List<Enceinte> enceintes){
+        // Créer une nouvelle Map vide pour stocker les associations entre positions et enceintes
+        Map<Integer, Enceinte> positionMap = new HashMap<>();
+
+        // Vérifier que le paramètre liste n’est pas nul
+        if(enceintes != null){
+            for(Enceinte enceinte : enceintes){
+                // Insérer chaque enceinte dans map selon sa position
+                positionMap.put(enceinte.getPosition(), enceinte);
+            }
+        }
+
+        return positionMap;
+    }
 
 }

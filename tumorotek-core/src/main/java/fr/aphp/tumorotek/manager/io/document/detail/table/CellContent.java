@@ -42,6 +42,7 @@ package fr.aphp.tumorotek.manager.io.document.detail.table;
  * <p>Cette classe encapsule les informations à afficher dans une cellule, y compris le texte principal, tout
  * complément de texte, et les options de mise en forme pour le complément.</p>
  *
+ * <p>Le modèle de conception et l'architecture de cette classe ont été fournis par C.H.</p>
  */
 public class CellContent {
     // Le texte principal affiché dans la cellule.
@@ -51,8 +52,7 @@ public class CellContent {
     private String complement;
 
     // Indique si le complément de texte doit être affiché en italique.
-    // todo: can create bug if the complement is null. Can be improved
-    private boolean complementInItalic = true;
+    private boolean complementInItalic;
 
     // Indique si le complément de texte doit être affiché sur une autre ligne.
     private boolean complementOnAnotherLine = false;
@@ -60,22 +60,26 @@ public class CellContent {
 
 
     public CellContent(String text) {
-        this.text = text;
+        this.text = (text == null) ? "" : text;
+        this.complement = "";
+        this.complementInItalic = false;
     }
 
     public CellContent(String text, String complement) {
-        this(text);
-        this.complement = complement;
+        this.text = (text == null) ? "" : text;
+        this.complement = (complement == null) ? "" : complement;
+        this.complementInItalic = !this.complement.isEmpty();
     }
 
-    public CellContent(String text, String complement, boolean complementOnAnotherLine){
+    public CellContent(String text, String complement, boolean complementOnAnotherLine) {
         this(text, complement);
         this.complementOnAnotherLine = complementOnAnotherLine;
     }
+
     public CellContent(String text, String complement, boolean complementInItalic, boolean complementOnAnotherLine) {
-        this.text = text;
-        this.complement = complement;
-        this.complementInItalic = complementInItalic;
+        this.text = (text == null) ? "" : text;
+        this.complement = (complement == null) ? "" : complement;
+        this.complementInItalic = complementInItalic && !this.complement.isEmpty();
         this.complementOnAnotherLine = complementOnAnotherLine;
     }
 
@@ -84,7 +88,7 @@ public class CellContent {
     }
 
     public void setText(String text) {
-        this.text = text;
+        this.text = (text == null) ? "" : text;
     }
 
     public String getComplement() {
@@ -92,47 +96,32 @@ public class CellContent {
     }
 
     public void setComplement(String complement) {
-        this.complement = complement;
-        if (complement == null || complement.isEmpty()) {
-            this.complementInItalic = false;
-        }
+        this.complement = (complement == null) ? "" : complement;
+        this.complementInItalic = !this.complement.isEmpty();
     }
 
     public boolean isComplementInItalic() {
-        return complementInItalic;
+        return complement != null && !complement.isEmpty() && complementInItalic;
     }
 
     public void setComplementInItalic(boolean complementInItalic) {
-        if (this.complement != null && !this.complement.isEmpty()) {
+        if (!this.complement.isEmpty()) {
             this.complementInItalic = complementInItalic;
         }
     }
 
     public boolean isComplementOnAnotherLine() {
-        return complementOnAnotherLine;
+        return complement != null && !complement.isEmpty() && complementOnAnotherLine;
     }
 
     public void setComplementOnAnotherLine(boolean complementOnAnotherLine) {
         this.complementOnAnotherLine = complementOnAnotherLine;
     }
 
-    /**
-     * Vérifie si le contenu de la cellule est vide.
-     * Un contenu est considéré comme vide si le texte et le complément
-     * sont tous les deux nuls ou constitués uniquement d'espaces blancs.
-     *
-     * @return true si le texte et le complément sont vides ou nuls, false sinon.
-     */
-    public boolean isEmpty() {
-        return (text == null || text.trim().isEmpty()) &&
-                (complement == null || complement.trim().isEmpty());
-    }
+
 
     @Override
     public String toString() {
-        // Format to represent Excel-like cell content
-        return String.format("| %s %s |",
-                (text != null ? text : ""),
-                (complement != null ? complement : ""));
+        return String.format("| %s %s |", text, complement);
     }
 }

@@ -55,7 +55,6 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.util.List;
 
-
 /**
  * La classe implémente l'interface {@link DocumentProducer}
  * et fournit la fonctionnalité pour produire des documents Excel à partir d'une liste d'objets {@link DocumentWithDataAsTable}.
@@ -76,113 +75,122 @@ import java.util.List;
  * <p>Le modèle de conception et l'architecture de cette classe ont été fournis par C.H.</p>
  */
 
-public class DocumentWithDataAsTableExcelProducer implements DocumentProducer {
+public class DocumentWithDataAsTableExcelProducer implements DocumentProducer
+{
 
-    private final Logger log = LoggerFactory.getLogger(DocumentWithDataAsTableExcelProducer.class);
+   private static final Logger log = LoggerFactory.getLogger(DocumentWithDataAsTableExcelProducer.class);
 
-    private static final int START_COLUMN = 0;
+   private static final int START_COLUMN = 0;
 
-    @Override
-    public DocumentProducerResult produce(List<DocumentWithDataAsTable> listDocumentWithDataAsTable) throws IOException {
-        DocumentProducerResult result = new DocumentProducerResult();
-        result.setFormat(ConfigManager.EXCEL_XLSX_FILETYPE);
-        result.setContentType(ConfigManager.OFFICE_OPENXML_MIME_TYPE);
+   @Override
+   public DocumentProducerResult produce(List<DocumentWithDataAsTable> listDocumentWithDataAsTable) throws IOException{
+      DocumentProducerResult result = new DocumentProducerResult();
+      result.setFormat(ConfigManager.EXCEL_XLSX_FILETYPE);
+      result.setContentType(ConfigManager.OFFICE_OPENXML_MIME_TYPE);
 
-        System.out.println("Trying to create ByteArrayOutputStream");
 
-        // Use try-with-resources to ensure the resources are closed properly
-        try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-             SXSSFWorkbook workbook = new SXSSFWorkbook()) {  // Optimized for large data sets
+      // Use try-with-resources to ensure the resources are closed properly
+      try( ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+         SXSSFWorkbook workbook = new SXSSFWorkbook() ){  // Optimized for large data sets
 
-            workbook.setCompressTempFiles(true);  // Optional: compress temp files for better performance
-            System.out.println("Iterating over documents and generating sheets");
+         workbook.setCompressTempFiles(true);  // Optional: compress temp files for better performance
 
-            for (DocumentWithDataAsTable document : listDocumentWithDataAsTable) {
-                String sheetName = document.getDocumentName();
-                Sheet sheet = ExcelUtility.createSheet(workbook, sheetName);
-                System.out.println(   "// Write document context");
+         for(DocumentWithDataAsTable document : listDocumentWithDataAsTable){
+            String sheetName = document.getDocumentName();
+            Sheet sheet = ExcelUtility.createSheet(workbook, sheetName);
 
-                // Write document context
-                writeDocumentContext(sheet, document.getContext().getListLabelValue());
-                System.out.println(   "//  Write document data");
+            // Write document context
+            writeDocumentContext(sheet, document.getContext().getListLabelValue());
 
-                // Write document data
-                writeDocumentData(sheet, document.getData());
-                System.out.println(   "//  Write footer");
 
-                // Write footer
-                ExcelUtility.addFooter(sheet,
-                        document.getFooter().getLeftData(),
-                        document.getFooter().getCenterData(),
-                        document.getFooter().getRightData());
-            }
+            // Write document data
+            writeDocumentData(sheet, document.getData());
 
-            // Write workbook directly to output stream
-            workbook.write(outputStream);
-            System.out.println("Wrote to stream");
-            System.out.println(outputStream.toByteArray().length);
+            // Write footer
+            ExcelUtility.addFooter(sheet, document.getFooter().getLeftData(), document.getFooter().getCenterData(),
+               document.getFooter().getRightData());
+         }
 
-            result.setOutputStream(outputStream);
+         // Write workbook directly to output stream
+         workbook.write(outputStream);
 
-        }  // Auto-close resources when done
+         result.setOutputStream(outputStream);
 
-        return result;
-    }
+      }  // Auto-close resources when done
 
-    private void writeDocumentContext(Sheet sheet, List<LabelValue> labelValues) {
-        int rowIndex = 0;
-        for (LabelValue labelValue : labelValues) {
-            ExcelUtility.writeToCellWithOptionalBold(sheet, rowIndex, START_COLUMN, labelValue.getLabel(), labelValue.isLabelInBold());
-            ExcelUtility.writeToCellWithOptionalBold(sheet, rowIndex, START_COLUMN + 1, labelValue.getValue(), labelValue.isValueInBold());
-            rowIndex++;
-        }
+      return result;
+   }
 
-    }
+   private void writeDocumentContext(Sheet sheet, List<LabelValue> labelValues){
+      int rowIndex = 0;
+      for(LabelValue labelValue : labelValues){
+         ExcelUtility.writeToCellWithOptionalBold(sheet, rowIndex, START_COLUMN, labelValue.getLabel(),
+            labelValue.isLabelInBold());
+         ExcelUtility.writeToCellWithOptionalBold(sheet, rowIndex, START_COLUMN + 1, labelValue.getValue(),
+            labelValue.isValueInBold());
+         rowIndex++;
+      }
+      int emptyRow = rowIndex + 1;
+      ExcelUtility.writeToCell(sheet, emptyRow, START_COLUMN, "");
 
-    private void writeDocumentData(Sheet sheet, DataAsTable data) {
-        int rowIndex = sheet.getLastRowNum() + 1; // Start where last written ended
-        for (CellRow cellRow : data.getListCellRow()) {
-            writeCellRow(sheet, rowIndex, cellRow);
+   }
 
-        }
+   private void writeDocumentData(Sheet sheet, DataAsTable data){
+      int rowIndex = sheet.getLastRowNum(); // Start where last written ended
+      for(CellRow cellRow : data.getListCellRow()){
+         writeCellRow(sheet, rowIndex, cellRow);
+         rowIndex++;
 
-    }
+      }
 
-    private void writeCellRow(Sheet sheet, int rowIndex, CellRow cellrow) {
-        int colIndex = 0;
-        for (DataCell dataCell : cellrow.getListDataCell()) {
-            Cell cell = ExcelUtility.getOrCreateCell(sheet, rowIndex, colIndex);
+   }
 
-            CellContent content = dataCell.getCellContent();
+   private void writeCellRow(Sheet sheet, int rowIndex, CellRow cellrow){
+      int colIndex = 0;
+      for(DataCell dataCell : cellrow.getListDataCell()){
+         Cell cell = ExcelUtility.getOrCreateCell(sheet, rowIndex, colIndex);
 
-            String textToWrite = content.getText();
-            if (content.isComplementOnAnotherLine()) {
-                textToWrite += "\n" + content.getComplement();
-            } else {
-                textToWrite += " " + content.getComplement();
-            }
+         CellContent content = dataCell.getCellContent();
 
-            // Handle colspan by skipping cells accordingly
-            if (dataCell.getColspan() > 1) {
-                cell = ExcelUtility.mergeCells(sheet, rowIndex, rowIndex, colIndex, colIndex + dataCell.getColspan(), textToWrite);
-            }
+         String textToWrite = buildText(content);
 
-            // Apply border if required
-            if (dataCell.isWithBorder()) {
-                ExcelUtility.applyTableBorderStyle(cell, dataCell.getHexaColorCodeForLeftBorder(), true);
-            }
 
-            // Write text with optional italic complement
-            if (content.isComplementInItalic() && content.getComplement() != null) {
-                ExcelUtility.writeToCellWithHalfItalic(cell, content.getText(), content.getComplement());
-            } else {
-                cell.setCellValue(textToWrite);
-                ExcelUtility.applyAlignment(cell, dataCell.getAlignmentType());
-                colIndex++;
-            }
 
-        }
-    }
+         // Handle colspan by skipping cells accordingly
+         if(dataCell.getColspan() > 1){
+            cell = ExcelUtility.mergeCells(sheet, rowIndex, rowIndex, colIndex, colIndex + dataCell.getColspan(), textToWrite);
+         }
+
+         // Apply border if required
+         if(dataCell.isWithBorder()){
+            ExcelUtility.applyTableBorderStyle(cell, dataCell.getHexaColorCodeForLeftBorder(), true);
+         }
+
+         // Write text with optional italic complement
+
+         if(content.isComplementInItalic() && content.getComplement() != null){
+            ExcelUtility.writeToCellWithHalfItalic(cell, content.getText(), content.getComplement());
+         }else{
+            cell.setCellValue(textToWrite);
+            ExcelUtility.applyAlignment(cell, dataCell.getAlignmentType());
+            colIndex++;
+         }
+
+      }
+   }
+
+   private String buildText(CellContent content) {
+      StringBuilder sb = new StringBuilder(content.getText());
+
+      // Handle complement text
+      if (!content.isComplementOnAnotherLine()) {
+         sb.append(" ").append(content.getComplement() != null ? content.getComplement() : "");
+      }
+
+      return sb.toString();
+   }
+
+
 
 
 }
