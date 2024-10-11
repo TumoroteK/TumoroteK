@@ -52,7 +52,7 @@ public class DataCell {
     private int colspan = 1;
 
     // Indique si la cellule doit avoir une bordure ou non.
-    private boolean withBorder = true;
+    private boolean withBorder;
 
     // Le type d'alignement du contenu de la cellule, avec une valeur par défaut.
     private AlignmentType alignmentType = AlignmentType.LEFT;

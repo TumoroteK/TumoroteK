@@ -58,96 +58,93 @@ import java.io.IOException;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+public class PlanCongelateurSansBoiteGeneratorTest extends AbstractManagerTest4
+{
+   private PlanCongelateurSansBoiteExcelGenerator sansBoiteGenerator;
 
-public class PlanCongelateurSansBoiteGeneratorTest extends AbstractManagerTest4 {
-    private PlanCongelateurSansBoiteExcelGenerator sansBoiteGenerator;
-    private PlanCongelateurAvecBoiteExcelGenerator avecBoiteGenerator;
+   private PlanCongelateurAvecBoiteExcelGenerator avecBoiteGenerator;
 
-    @Autowired
-    private DocumentWithDataAsTableExcelProducer documentWithDataAsTableExcelProducer;
+   @Autowired
+   private DocumentWithDataAsTableExcelProducer documentWithDataAsTableExcelProducer;
 
-    @Autowired
-    private ConteneurManager conteneurManager;
+   @Autowired
+   private ConteneurManager conteneurManager;
 
-    @Autowired
-    private EnceinteManager enceinteManager;
+   @Autowired
+   private EnceinteManager enceinteManager;
 
-    private List<Conteneur> containers;
+   private List<Conteneur> containers;
 
+   @Before
+   public void setUp(){
+      System.out.println(enceinteManager);
+      System.out.println(documentWithDataAsTableExcelProducer);
+      sansBoiteGenerator = new PlanCongelateurSansBoiteExcelGenerator(enceinteManager, documentWithDataAsTableExcelProducer);
+      avecBoiteGenerator = new PlanCongelateurAvecBoiteExcelGenerator(enceinteManager, documentWithDataAsTableExcelProducer);
+      Plateforme plateforme = new Plateforme();
+      plateforme.setPlateformeId(1);
 
-
-    @Before
-    public void setUp() {
-        System.out.println(enceinteManager);
-        System.out.println(documentWithDataAsTableExcelProducer);
-        sansBoiteGenerator = new PlanCongelateurSansBoiteExcelGenerator(enceinteManager, documentWithDataAsTableExcelProducer);
-        avecBoiteGenerator = new PlanCongelateurAvecBoiteExcelGenerator(enceinteManager, documentWithDataAsTableExcelProducer);
-        Plateforme plateforme = new Plateforme();
-        plateforme.setPlateformeId(1);
-
-        containers = conteneurManager.findByPlateformeOrigWithOrderManager(plateforme);
-    }
-
-    @Test
-    public void test() {
-        System.out.println(containers);
-    }
+      containers = conteneurManager.findByPlateformeOrigWithOrderManager(plateforme);
+   }
 
 
-    @Test
-    public void testBuildDetailPlanSansBoites() {
-        // Assume we are testing the first container
-        Conteneur conteneur = containers.get(0);
+   @Test
+   public void testBuildDetailPlanSansBoites(){
+      Conteneur conteneur = containers.get(0);
+      long startTime = System.currentTimeMillis();
+      DocumentData documentData = sansBoiteGenerator.buildDetailPlan(conteneur);
 
-        DocumentData documentData = sansBoiteGenerator.buildDetailPlan(conteneur);
-        assertNotNull(documentData);
-        System.out.println(documentData);
-        assertTrue(documentData instanceof DataAsTable);
+      long endTime = System.currentTimeMillis();
+      long executionTime = endTime - startTime;
+      assertNotNull(documentData);
+      System.out.println(documentData);
+      System.out.println(executionTime);
+      assertTrue(documentData instanceof DataAsTable);
 
-        DataAsTable dataAsTable = (DataAsTable) documentData;
-        List<CellRow> cellRows = dataAsTable.getListCellRow(); // Adjust method based on actual DataAsTable implementation
-        assertNotNull(cellRows);
-    }
+      DataAsTable dataAsTable = (DataAsTable) documentData;
+      List<CellRow> cellRows = dataAsTable.getListCellRow();
+      assertNotNull(cellRows);
+      assertFalse(cellRows.isEmpty());
+   }
 
+   @Test
+   public void testBuildDetailPlanAvecBoites(){
+      // Assume we are testing the first container
+      Conteneur conteneur = containers.get(0);
 
-    @Test
-    public void testBuildDetailPlanAvecBoites() {
-        // Assume we are testing the first container
-        Conteneur conteneur = containers.get(0);
+      DataAsTable data = avecBoiteGenerator.createEnceintesSection(conteneur);
+      data.print();
+      System.out.println(data.getNbCellRow());
 
-        DataAsTable data = avecBoiteGenerator.createEnceintesSection(conteneur);
-        data.print();
-        System.out.println(data.getNbCellRow());
+   }
 
-    }
+   @Test
+   public void testGenerateWithPOI() throws IOException{
+      long startTime = System.nanoTime();
+      OutputStreamData result = sansBoiteGenerator.generate(containers);
+      long endTime = System.nanoTime();
+      long executionTime = endTime - startTime; // in nanoseconds
 
+      long executionTimeMillis = executionTime / 1_000_000;
+      System.out.println("Execution time: " + executionTimeMillis + " ms");
 
-    @Test
-    public void testGenerateWithPOI() throws IOException {
-        long startTime = System.nanoTime();
-        OutputStreamData result = sansBoiteGenerator.generate(containers);
-        long endTime = System.nanoTime();
-        long executionTime = endTime - startTime; // in nanoseconds
+      // Assert
+      assertNotNull(result);
+      System.out.println("File Name: " + result.getFileName());
+      assertEquals("xlsx", result.getFormat());
+      assertEquals("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", result.getContentType());
 
-        long executionTimeMillis = executionTime / 1_000_000;
-        System.out.println("Execution time: " + executionTimeMillis + " ms");
+      ByteArrayOutputStream byteArrayOutputStream = result.getOutputStream();
 
-        // Assert
-        assertNotNull(result);
-        System.out.println("File Name: " + result.getFileName());
-        assertEquals("xlsx", result.getFormat());
-        assertEquals("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", result.getContentType());
+      try( FileOutputStream fileOutputStream = new FileOutputStream(new File(result.getFileName())) ){
+         byteArrayOutputStream.writeTo(fileOutputStream);
+         //        }
 
-        ByteArrayOutputStream byteArrayOutputStream = result.getOutputStream();
+      }
 
-        try (FileOutputStream fileOutputStream = new FileOutputStream(new File(result.getFileName()))) {
-            byteArrayOutputStream.writeTo(fileOutputStream);
-        }
-
-    }
-
-
+   }
 }
