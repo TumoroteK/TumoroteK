@@ -65,9 +65,9 @@ public class ScanTube implements java.io.Serializable
    private Integer scanTubeId;
    private ScanTerminale scanTerminale;
    private String code;
-   private String cell;
-   private String row;
-   private String col;
+   private String cellule;
+   private String ligne;
+   private String colonne;
 
    public ScanTube(){
       super();
@@ -104,31 +104,31 @@ public class ScanTube implements java.io.Serializable
       this.code = _c;
    }
 
-   @Column(name = "CELL", nullable = false)
-   public String getCell(){
-      return cell;
+   @Column(name = "CELLULE", nullable = false)
+   public String getCellule(){
+      return cellule;
    }
 
-   public void setCell(final String _c){
-      this.cell = _c;
+   public void setCellule(final String _c){
+      this.cellule = _c;
    }
 
-   @Column(name = "ROW", nullable = false)
-   public String getRow(){
-      return row;
+   @Column(name = "LIGNE", nullable = false)
+   public String getLigne(){
+      return ligne;
    }
 
-   public void setRow(final String _r){
-      this.row = _r;
+   public void setLigne(final String ligne){
+      this.ligne = ligne;
    }
 
-   @Column(name = "COL", nullable = false)
-   public String getCol(){
-      return col;
+   @Column(name = "COLONNE", nullable = false)
+   public String getColonne(){
+      return colonne;
    }
 
-   public void setCol(final String _c){
-      this.col = _c;
+   public void setColonne(final String _c){
+      this.colonne = _c;
    }
 
    @Override
@@ -142,7 +142,7 @@ public class ScanTube implements java.io.Serializable
       final ScanTube test = (ScanTube) obj;
       return ((this.scanTerminale == test.scanTerminale
          || (this.scanTerminale != null && this.scanTerminale.equals(test.scanTerminale)))
-         && (this.cell == test.cell || (this.cell != null && this.cell.equals(test.cell))));
+         && (this.cellule == test.cellule || (this.cellule != null && this.cellule.equals(test.cellule))));
    }
 
    @Override
@@ -155,8 +155,8 @@ public class ScanTube implements java.io.Serializable
       if(this.scanTerminale != null){
          hashTerminale = this.scanTerminale.hashCode();
       }
-      if(this.cell != null){
-         hashCell = this.cell.hashCode();
+      if(this.cellule != null){
+         hashCell = this.cellule.hashCode();
       }
 
       hash = 7 * hash + hashTerminale;
@@ -168,8 +168,8 @@ public class ScanTube implements java.io.Serializable
    @Transient
    public int getPosition(){
       int pos = 0;
-      if(row != null && col != null){
-         pos = ("ABCDEFGHIJKLMNOPQRSTUVWXYZ".indexOf(row)) * getScanTerminale().getWidth() + new Integer(col);
+      if(ligne != null && colonne != null){
+         pos = ("ABCDEFGHIJKLMNOPQRSTUVWXYZ".indexOf(ligne)) * getScanTerminale().getWidth() + new Integer(colonne);
       }
       return pos;
    }
