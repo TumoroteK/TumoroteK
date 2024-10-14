@@ -93,29 +93,29 @@ public class ScanTerminaleManagerTest extends AbstractManagerTest4
 
       final ScanTube t1 = new ScanTube();
       t1.setCode("PTRA.1.1");
-      t1.setCell("A01");
-      t1.setRow("A");
-      t1.setCol("1");
+      t1.setCellule("A01");
+      t1.setLigne("A");
+      t1.setColonne("1");
       sT.addTube(t1);
 
       final ScanTube t2 = new ScanTube();
       t2.setCode("PTRA.1.2");
-      t2.setCell("A01");
-      t2.setRow("A");
-      t2.setCol("2");
+      t2.setCellule("A01");
+      t2.setLigne("A");
+      t2.setColonne("2");
       sT.addTube(t2);
 
       final ScanTube t3 = new ScanTube();
       t3.setCode("PTRA.2");
-      t3.setCell("A03");
-      t3.setRow("A");
-      t3.setCol("3");
+      t3.setCellule("A03");
+      t3.setLigne("A");
+      t3.setColonne("3");
       sT.addTube(t3);
 
       final ScanTube emptyT = new ScanTube();
-      emptyT.setCell("A04");
-      emptyT.setRow("A");
-      emptyT.setCol("4");
+      emptyT.setCellule("A04");
+      emptyT.setLigne("A");
+      emptyT.setColonne("4");
       sT.addTube(emptyT);
 
       scanTerminaleManager.createObjectManager(sT, scanDeviceDao.findById(1));
@@ -184,9 +184,9 @@ public class ScanTerminaleManagerTest extends AbstractManagerTest4
       final ScanTube t1 = new ScanTube();
       t1.setScanTerminale(sT);
       t1.setCode("PTRA.1.1");
-      t1.setRow("A");
-      t1.setCol("1");
-      t1.setCell("A01");
+      t1.setLigne("A");
+      t1.setColonne("1");
+      t1.setCellule("A01");
       sT.getScanTubes().add(t1);
       // restrict search to T1 to avoid ScannedTerminaleNotUniqueException
       scanDTO = scanTerminaleManager.compareScanAndTerminaleManager(sT, enceinteManager.findByIdManager(3), conts);
@@ -201,9 +201,9 @@ public class ScanTerminaleManagerTest extends AbstractManagerTest4
       final ScanTube t2 = new ScanTube();
       t2.setScanTerminale(sT);
       t2.setCode("DERIVE1");
-      t2.setRow("A");
-      t2.setCol("2");
-      t2.setCell("A02");
+      t2.setLigne("A");
+      t2.setColonne("2");
+      t2.setCellule("A02");
       sT.getScanTubes().add(t2);
       // restrict search to T1 to avoid ScannedTerminaleNotUniqueException
       scanDTO = scanTerminaleManager.compareScanAndTerminaleManager(sT, enceinteManager.findByIdManager(3), conts);
@@ -219,9 +219,9 @@ public class ScanTerminaleManagerTest extends AbstractManagerTest4
       final ScanTube t3 = new ScanTube();
       t3.setScanTerminale(sT);
       t3.setCode("NEWTUBE1");
-      t3.setRow("B");
-      t3.setCol("1");
-      t3.setCell("B01");
+      t3.setLigne("B");
+      t3.setColonne("1");
+      t3.setCellule("B01");
       sT.getScanTubes().add(t3);
       // restrict search to T1 to avoid ScannedTerminaleNotUniqueException
       scanDTO = scanTerminaleManager.compareScanAndTerminaleManager(sT, enceinteManager.findByIdManager(3), conts);
@@ -237,9 +237,9 @@ public class ScanTerminaleManagerTest extends AbstractManagerTest4
       final ScanTube t4 = new ScanTube();
       t4.setScanTerminale(sT);
       t4.setCode("OVERPLACED");
-      t4.setRow("M");
-      t4.setCol("3");
-      t4.setCell("M03");
+      t4.setLigne("M");
+      t4.setColonne("3");
+      t4.setCellule("M03");
       sT.getScanTubes().add(t4);
       assertTrue(t4.getPosition() == 123);
       try{
@@ -256,9 +256,9 @@ public class ScanTerminaleManagerTest extends AbstractManagerTest4
 
       // scantube -> emplacement à créer
       // CC1.R1.T1.BT1.66
-      t4.setRow("G");
-      t4.setCol("6");
-      t4.setCell("G06");
+      t4.setLigne("G");
+      t4.setColonne("6");
+      t4.setCellule("G06");
       assertTrue(t4.getPosition() == 66);
       // restrict search to T1 to avoid ScannedTerminaleNotUniqueException
       scanDTO = scanTerminaleManager.compareScanAndTerminaleManager(sT, enceinteManager.findByIdManager(3), conts);
@@ -295,9 +295,9 @@ public class ScanTerminaleManagerTest extends AbstractManagerTest4
       // CC1.R1.T1.BT1.1 à vider
       final ScanTube t1 = new ScanTube();
       t1.setScanTerminale(sT);
-      t1.setRow("A");
-      t1.setCol("1");
-      t1.setCell("A01");
+      t1.setLigne("A");
+      t1.setColonne("1");
+      t1.setCellule("A01");
       sT.getScanTubes().add(t1);
       // restrict search to T1 to avoid ScannedTerminaleNotUniqueException
       scanDTO = scanTerminaleManager.compareScanAndTerminaleManager(sT, enceinteManager.findByIdManager(3), conts);
@@ -312,9 +312,9 @@ public class ScanTerminaleManagerTest extends AbstractManagerTest4
       // CC1.R1.T1.BT1.11 vide emplacement_id = 5
       final ScanTube t2 = new ScanTube();
       t2.setScanTerminale(sT);
-      t2.setRow("B");
-      t2.setCol("1");
-      t2.setCell("B01");
+      t2.setLigne("B");
+      t2.setColonne("1");
+      t2.setCellule("B01");
       sT.getScanTubes().add(t2);
       // restrict search to T1 to avoid ScannedTerminaleNotUniqueException
       scanDTO = scanTerminaleManager.compareScanAndTerminaleManager(sT, enceinteManager.findByIdManager(3), conts);
@@ -328,9 +328,9 @@ public class ScanTerminaleManagerTest extends AbstractManagerTest4
       // CC1.R1.T1.BT1.123
       final ScanTube t4 = new ScanTube();
       t4.setScanTerminale(sT);
-      t4.setRow("M");
-      t4.setCol("3");
-      t4.setCell("M03");
+      t4.setLigne("M");
+      t4.setColonne("3");
+      t4.setCellule("M03");
       sT.getScanTubes().add(t4);
       assertTrue(t4.getPosition() == 123);
       try{
@@ -351,9 +351,9 @@ public class ScanTerminaleManagerTest extends AbstractManagerTest4
       final ScanTube t3 = new ScanTube();
       t3.setScanTerminale(sT);
       t3.setCode("NEWTUBE1");
-      t3.setRow("B");
-      t3.setCol("1");
-      t3.setCell("B01");
+      t3.setLigne("B");
+      t3.setColonne("1");
+      t3.setCellule("B01");
       sT.getScanTubes().add(t3);
       // restrict search to T1 to avoid ScannedTerminaleNotUniqueExceptionm
       scanDTO = scanTerminaleManager.compareScanAndTerminaleManager(sT, enceinteManager.findByIdManager(3), conts);
@@ -371,9 +371,9 @@ public class ScanTerminaleManagerTest extends AbstractManagerTest4
       final ScanTube t5 = new ScanTube();
       t5.setScanTerminale(sT);
       t5.setCode("NEWTUBE2");
-      t5.setRow("G");
-      t5.setCol("6");
-      t5.setCell("G06");
+      t5.setLigne("G");
+      t5.setColonne("6");
+      t5.setCellule("G06");
       sT.getScanTubes().add(t5);
       assertTrue(t5.getPosition() == 66);
       // restrict search to T1 to avoid ScannedTerminaleNotUniqueException
@@ -394,9 +394,9 @@ public class ScanTerminaleManagerTest extends AbstractManagerTest4
       final ScanTube t6 = new ScanTube();
       t6.setScanTerminale(sT);
       t6.setCode("DERIVE1");
-      t6.setRow("A");
-      t6.setCol("2");
-      t6.setCell("A02");
+      t6.setLigne("A");
+      t6.setColonne("2");
+      t6.setCellule("A02");
       sT.getScanTubes().add(t6);
       // restrict search to T1 to avoid ScannedTerminaleNotUniqueException
       scanDTO = scanTerminaleManager.compareScanAndTerminaleManager(sT, enceinteManager.findByIdManager(3), conts);

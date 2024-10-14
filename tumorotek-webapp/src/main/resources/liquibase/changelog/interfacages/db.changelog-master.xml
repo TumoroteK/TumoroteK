@@ -7,4 +7,5 @@
 
 	<include file="liquibase/changelog/interfacages/db.changelog-init-interfacages.xml"/>
 	<include file="liquibase/changelog/interfacages/db.changelog-2.2.3.xml"/>
+	<include file="liquibase/changelog/interfacages/db.changelog-2.2.11.xml"/>
 </databaseChangeLog>

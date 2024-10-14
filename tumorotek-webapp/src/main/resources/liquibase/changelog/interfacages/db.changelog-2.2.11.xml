@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+				   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+				   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="TK-568" author="CH" runAlways="false" context="*">
+    	<!-- l'utilisation du code "xml" pour faire le renommage de la colonne ne marche pas car ROW est considéré comme le mot réservé dans le sql généré
+    		=> écriture de la requête sql avec le caractère "d'échappement" ` que ne prend pas bien en compte liquibase dans le xml
+    		Pour les mêmes raisons, le test n'est pas fait sur columnName ROW mais sur COL car ROW pose un problème
+    	-->        
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="SCAN_TUBE" columnName="COL" />
+            </not>
+    	</preConditions>
+
+        <sqlFile encoding="utf8" path="../../sql/mysql/tumorotek_interfacages/tk-568.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+
+</databaseChangeLog>
