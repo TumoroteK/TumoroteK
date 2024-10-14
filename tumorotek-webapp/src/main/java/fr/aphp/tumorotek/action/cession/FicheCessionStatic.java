@@ -1264,39 +1264,41 @@ public class FicheCessionStatic extends AbstractFicheStaticController
 		// false checked objects
 		if(!falseCkeckEchantillonCodes.isEmpty() || !falseCkeckDeriveCodes.isEmpty()){
 
-			final StringBuilder codesDetails = new StringBuilder();
+			final StringBuilder messageToDisplay = new StringBuilder(Labels.getLabel("scan.cession.objects.notfound"));
+			
 			// echans
 			if(!falseCkeckEchantillonCodes.isEmpty()){
-				codesDetails.append(Labels.getLabel("Entite.Echantillon.pluriel"));
-				codesDetails.append(": ");
+			   messageToDisplay.append("<br>");
+			   messageToDisplay.append(Labels.getLabel("Entite.Echantillon.pluriel"));
+				messageToDisplay.append(": ");
 				final Iterator<String> cIt = falseCkeckEchantillonCodes.iterator();
 				while(cIt.hasNext()){
-					codesDetails.append(cIt.next());
+					messageToDisplay.append(cIt.next());
 					if(cIt.hasNext()){
-						codesDetails.append(", ");
+						messageToDisplay.append(", ");
 					}
 				}
 			}
 			// derives
 			if(!falseCkeckDeriveCodes.isEmpty()){
-				if(!falseCkeckEchantillonCodes.isEmpty()){
-					codesDetails.append("<br>");
-				}
-				codesDetails.append(Labels.getLabel("Entite.ProdDerive.pluriel"));
-				codesDetails.append(": ");
+				//if(!falseCkeckEchantillonCodes.isEmpty()){
+					messageToDisplay.append("<br>");
+				//}
+				messageToDisplay.append(Labels.getLabel("Entite.ProdDerive.pluriel"));
+				messageToDisplay.append(": ");
 				final Iterator<String> cIt = falseCkeckDeriveCodes.iterator();
 				while(cIt.hasNext()){
-					codesDetails.append(cIt.next());
+					messageToDisplay.append(cIt.next());
 					if(cIt.hasNext()){
-						codesDetails.append(", ");
+						messageToDisplay.append(", ");
 					}
 				}
 			}
 
 			final HashMap<String, Object> map = new HashMap<>();
 			map.put("title", Labels.getLabel("general.warning"));
-			map.put("message", Labels.getLabel("scan.cession.objects.notfound"));
-			map.put("exceptionDetails", codesDetails);
+			//map.put("message", Labels.getLabel("scan.cession.objects.notfound"));//TK-569
+			map.put("exceptionDetails", messageToDisplay);
 
 			final Window window = (Window) Executions.createComponents("/zuls/component/DynamicMultiLineMessageBox.zul", null, map);
 			window.doModal();
@@ -1341,6 +1343,7 @@ public class FicheCessionStatic extends AbstractFicheStaticController
 	 * contenant une liste de codes, afin de les ajouter à la cession
 	 * @throws IOException 
 	 */
+	//TK-569 : semble être du code mort ....
 	public void onClick$addListCodesEchan() throws IOException{
 
 		Clients.clearBusy();

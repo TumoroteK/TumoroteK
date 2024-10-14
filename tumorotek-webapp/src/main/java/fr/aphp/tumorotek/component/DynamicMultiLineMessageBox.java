@@ -86,12 +86,20 @@ public class DynamicMultiLineMessageBox
       Selectors.wireComponents(view, this, false);
    }
 
+   //TK-569 : correction la plus simple sur cette branche.
+   //A REVOIR pour supprimer l'attribut exceptionDetails et utiliser plutôt message => impact dans le zul et dans les classes appelantes
+   //message est toujours passé mais jamais utilisé
+   //Le principe de cette classe semble être :
+   // - si exception transmise => si DoublonFoundException => construction d'un message spécifique
+   // - sinon, le texte à afficher est transmis tel quel => attribut message plus approprié que exceptionDetails.
+   // Dans l'absolu, il faudrait également gérer le cas d'une exception autre que DoublonFoundException même si pour le moment,n'est jamais appelé dans ce cas 
    @Init
    public void init(@ExecutionArgParam("title") final String _t, @ExecutionArgParam("message") final String _m,
-      @ExecutionArgParam("exception") final Exception _e){
+      @ExecutionArgParam("exception") final Exception _e, @ExecutionArgParam("exceptionDetails") final String _exceptionDetails){
       this.title = _t;
       this.message = _m;
       this.exception = _e;
+      this.exceptionDetails=_exceptionDetails;
       details();
       
    }
