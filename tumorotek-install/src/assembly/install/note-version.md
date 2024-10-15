@@ -3,7 +3,7 @@
 ##### Version 2.3.0.12 - Publiée le 14/10/2024
 ###### Report de la correction faite sur la version 2.2.11
 - YouTrack [TK-568](https://tumorotek.myjetbrains.com/youtrack/issue/TK-568) : Interfaçage VisionMate : erreur lors du scan des boîtes avec mysql v8
-
+- YouTrack [TK-569](https://tumorotek.myjetbrains.com/youtrack/issue/TK-569) : Scan de boîte pour contrôle d'une cession : en cas d'échantillon / dérivé ne faisant pas partie de la cession, popup d'avertissement vide
 
 ##### Version 2.3.0.11 - Publiée le 16/09/2024
 - YouTrack [TG-154](https://tumorotek.myjetbrains.com/youtrack/issue/TG-154) : [TK] : Ajout du guide utilisateur de Gatsbi sur la page d'accueil de TK
@@ -135,6 +135,7 @@
 ##### Version 2.2.11 - Publiée le 14/10/2024
 ###### Correction
 - YouTrack [TK-568](https://tumorotek.myjetbrains.com/youtrack/issue/TK-568) : Interfaçage VisionMate : erreur lors du scan des boîtes avec mysql v8
+- YouTrack [TK-569](https://tumorotek.myjetbrains.com/youtrack/issue/TK-569) : Scan de boîte pour contrôle d'une cession : en cas d'échantillon / dérivé ne faisant pas partie de la cession, popup d'avertissement vide
 
 ##### Version 2.2.10 (dernière version sans le module Gatsbi) - Publiée le 20/05/2024
 ###### Amélioration
