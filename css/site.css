@@ -76,7 +76,12 @@ svg.fa-exclamation-triangle{
     border-radius: .25rem;
 }
 
-.badge-annotation-champ-calcule {
+.badge-administration {
+    color: #0080FF;
+    background-color: #A9E3FC;
+}
+
+.badge-annotation {
     color: #4da400;
     background-color: #e6f6cf;
 }
@@ -86,14 +91,44 @@ svg.fa-exclamation-triangle{
     background-color: #bababa;
 }
 
-.badge-impression-doc {
+.badge-echantillon {
     color: #dc5766;
     background-color: #fce5f1;
+}
+
+.badge-export {
+    color: #DF53DF;
+    background-color: #F5CBF5;
+}
+
+.badge-impression {
+    color: #808000;
+    background-color:#E1E100;
+}
+
+.badge-patient {
+    color: #D5AAAA;
+    background-color: #804040;
 }
 
 .badge-prelevement {
     color: #b45f06;
     background-color: #ffee9c;
+}
+
+.badge-produit-derive {
+    color: #ff8000;
+    background-color: #FFCA95;
+}
+
+.badge-recherche {
+    color: #9E83FE;
+    background-color: #DACFFE;
+}
+
+.badge-stockage {
+    color: #804000;
+    background-color: #D5B898;
 }
 
 .badge-statistiques {
