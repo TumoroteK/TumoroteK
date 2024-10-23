@@ -106,6 +106,8 @@ public class DocumentWithDataAsTableExcelProducer implements DocumentProducer
 
       // Utilisation de try-with-resources pour gérer automatiquement la fermeture des ressources
       try( ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+         //CHT : l'usage de cette classe n'est pas nécessaire : XSSFWorkbook suffit car on n'est pas sur des nombres de lignes importants
+         //De plus c'est l'utilisation de cette classe qui empêche de gérer l'italique et le standard dans une cellule
          SXSSFWorkbook workbook = new SXSSFWorkbook() ){  // Optimized for large data sets
 
          // Optimise l'utilisation de la mémoire pour les grands ensembles de données
@@ -131,6 +133,8 @@ public class DocumentWithDataAsTableExcelProducer implements DocumentProducer
          result.setOutputStream(outputStream); // Définit le flux de sortie dans le résultat
 
       }  // Auto-close resources when done
+      //CHT : ces blocs catchs sont inutiles vu que les exceptions sont renvoyées.
+      //C'est la classe qui gère l'exception qui trace l'erreur.
       catch(ExcelWriteException e){
          log.error("Error occurred while writing the excel file: {}", e.getMessage(), e);
          throw e; // Relance l'exception en cas d'erreur
@@ -144,6 +148,8 @@ public class DocumentWithDataAsTableExcelProducer implements DocumentProducer
    }
 
 
+   //CHT : Il faudrait mieux que cette méthode prenne un documentContext et non uniquement la liste de labelValues
+   //c'est plus cohérent avec le nom de la méthode et plus évolutif si DocumentContext a d'autres attributs
    /**
     * Écrit le contexte du document dans une feuille donnée.
     *
@@ -151,8 +157,11 @@ public class DocumentWithDataAsTableExcelProducer implements DocumentProducer
     * @param labelValues Liste des paires label-valeur à écrire (non nulle).
     */
    private void writeDocumentContext(Sheet sheet, List<LabelValue> labelValues){
+      //CHT : ne faire quelque chose que si sheet et labelValues sont non null. On pourrait avoir un document sans contexte
       int rowIndex = 0; // Indice initial pour les lignes
       for(LabelValue labelValue : labelValues){
+         //CHT : il faut descendre dans 4 méthodes pour comprendre comment sont écrits ces objets
+         //alors que ce qu'il faut faire est relativement simple
          ExcelUtility.writeToCellWithOptionalBold(sheet, rowIndex, FIRST_COLUMN_INDEX, labelValue.getLabel(),
             labelValue.isLabelInBold());
          ExcelUtility.writeToCellWithOptionalBold(sheet, rowIndex, FIRST_COLUMN_INDEX + 1, labelValue.getValue(),
@@ -173,6 +182,7 @@ public class DocumentWithDataAsTableExcelProducer implements DocumentProducer
     * @param data Les données sous forme de tableau à écrire.
     */
    private void writeDocumentData(Sheet sheet, DataAsTable data){
+      //CHT : ne faire quelque chose que si sheet et data sont non null.
       int rowIndex = sheet.getPhysicalNumberOfRows(); // Start where last written ended
       for(CellRow cellRow : data.getListCellRow()){
          writeCellRow(sheet, rowIndex, cellRow);
@@ -182,6 +192,11 @@ public class DocumentWithDataAsTableExcelProducer implements DocumentProducer
 
    }
 
+   //CHT : cette méthode ne semble pas gérer le retour à la ligne
+   //par ailleurs, bien que le découpage semble bien définir les différentes étapes (bonne intention)
+   //la mise en oeuvre apparaît compliquée à comprendre car des choses essentielles sont encapsulées dans des méthodes et même sous méthodes
+   //de ExcelUtility comme "créer une Row" et "créer une Cell", responsabilité première de cette méthode. Ces 2 appels 
+   //devraient donc être les premières lignes de la méthode pour ensuite appliquer les caractéristiques de DataCell sur Cell
    /**
     * Écrit une ligne complète composée des cellules spécifiées dans une feuille donnée.
     *
@@ -198,6 +213,7 @@ public class DocumentWithDataAsTableExcelProducer implements DocumentProducer
     *
     */
    private void writeCellRow(Sheet sheet, int rowIndex, CellRow cellRow){
+      //CHT : il vaut mieux sortir cellRow.getListDataCell().size() dans une variable pour appeler qu'une seule fois ces méthodes
       for(int colIndex = 0; colIndex < cellRow.getListDataCell().size(); colIndex++){
          DataCell dataCell = cellRow.getListDataCell().get(colIndex);
          CellContent content = dataCell.getCellContent();
@@ -210,9 +226,11 @@ public class DocumentWithDataAsTableExcelProducer implements DocumentProducer
 
             // Sauter les colonnes fusionnées pour éviter de traiter ces cellules à nouveau.
             colIndex += (dataCell.getColspan() - 1);
+            //CHT : pourquoi faire un continue. Le besoin semble être un if / else.
             continue; // Passer à l'itération suivante après la fusion
          }
 
+         //CHT : On sait qu'on veut créer la cellule donc row.createCell(colIndex) suffisait
          // Créer ou obtenir la cellule existante à l'emplacement spécifié.
          Cell cell = ExcelUtility.getOrCreateCell(sheet, rowIndex, colIndex);
 
@@ -242,13 +260,17 @@ public class DocumentWithDataAsTableExcelProducer implements DocumentProducer
 
       // Extraire le texte normal et le texte en italique du contenu
       String normalText = content.getText();
+      //CHT : variable à renommer en complement. Si isComplementInItalic() est à false le texte n'est pas en italique donc le nom de variable est trompeur
       String italicText = content.getComplement();
 
       // Vérifier si le complément doit être affiché en italique
       if (content.isComplementInItalic() && italicText!= null && !italicText.isEmpty()) {
          // Écrire dans la cellule avec une partie en italique
+         //CHT : String.format() n'est pas fait pour faire de la concaténation, utiliser StringBuilder
+         //les parenthèses n'ont pas à être mises ici mais avant : il faut prendre le texte tel quel comme c'est fait plus bas
+         //sinon on a une règle métier dans une classe qui ne doit pas en avoir
          String alias = String.format("(%s)", italicText);
-         ExcelUtility.writeToCellWithHalfItalic(cell, normalText, alias , (short) 11);
+         ExcelUtility.writeToCellWithHalfItalic(cell, normalText, alias , (short) 11);//CHT : 11 à mettre en constante mais pourquoi dans ce cas on gère une taille alors que ce n'est pas le cas dans les autres méthodes ?
       } else {
          // Écrire seulement le texte normal dans la cellule
          ExcelUtility.writeToCell(cell.getSheet(), cell.getRowIndex(), cell.getColumnIndex(), normalText);
@@ -260,6 +282,7 @@ public class DocumentWithDataAsTableExcelProducer implements DocumentProducer
       }
    }
 
+   //CHT : l'utilisation de la mécanique des Border est trop compliquée. Il faut appeler directement l'api
    /**
     * Applique les bordures à la cellule spécifiée selon les propriétés définies dans DataCell.
     *

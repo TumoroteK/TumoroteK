@@ -49,34 +49,63 @@ import fr.aphp.tumorotek.manager.stockage.EnceinteManager;
  * Excel basé sur une liste de conteneurs.</p>
  */
 public class PlanCongelateurAvecBoiteExcelGenerator extends AbstractPlanCongelateurAvecBoiteGenerator {
+   //CHT : fait pour que l'injection marche. Utiliser la même implémentation que pour le "sans boîte"
+   
+   /*
+   private EnceinteManager enceinteManager;
+
+   private DocumentWithDataAsTableExcelProducer documentWithDataAsTableExcelProducer;
 
 
-    private EnceinteManager enceinteManager;
+   public PlanCongelateurAvecBoiteExcelGenerator(EnceinteManager enceinteManager, DocumentWithDataAsTableExcelProducer documentWithDataAsTableExcelProducer) {
+       this.enceinteManager = enceinteManager;
+       this.documentWithDataAsTableExcelProducer = documentWithDataAsTableExcelProducer;
+   }
 
-    private DocumentWithDataAsTableExcelProducer documentWithDataAsTableExcelProducer;
+   public void setEnceinteManager(EnceinteManager enceinteManager) {
+       this.enceinteManager = enceinteManager;
+   }
 
+   @Override
+   protected DocumentProducer getDocumentProducer() {
+       return documentWithDataAsTableExcelProducer;
+   }
 
-    public PlanCongelateurAvecBoiteExcelGenerator(EnceinteManager enceinteManager, DocumentWithDataAsTableExcelProducer documentWithDataAsTableExcelProducer) {
-        this.enceinteManager = enceinteManager;
-        this.documentWithDataAsTableExcelProducer = documentWithDataAsTableExcelProducer;
-    }
+   @Override
+   protected EnceinteManager getEnceinteManager() {
+       return this.enceinteManager;
+   }
+ */
+   
+ 
+ //2e implémentation
+   private EnceinteManager enceinteManager;
 
-    public void setEnceinteManager(EnceinteManager enceinteManager) {
-        this.enceinteManager = enceinteManager;
-    }
+   private DocumentProducer documentProducer;
 
+   public PlanCongelateurAvecBoiteExcelGenerator() {}
 
+   public PlanCongelateurAvecBoiteExcelGenerator(EnceinteManager enceinteManager, DocumentWithDataAsTableExcelProducer documentWithDataAsTableExcelProducer) {
+       this.enceinteManager = enceinteManager;
+       this.documentProducer = documentWithDataAsTableExcelProducer;
+   }
 
+   public void setEnceinteManager(EnceinteManager enceinteManager) {
+       this.enceinteManager = enceinteManager;
+   }
 
+   public void setDocumentProducer(DocumentProducer documentWithDataAsTableExcelProducer){
+      this.documentProducer = documentWithDataAsTableExcelProducer;
+   }
 
+   @Override
+   protected DocumentProducer getDocumentProducer() {
+       return documentProducer;
+   }
 
-    @Override
-    protected DocumentProducer getDocumentProducer() {
-        return documentWithDataAsTableExcelProducer;
-    }
+   @Override
+   protected EnceinteManager getEnceinteManager() {
+       return this.enceinteManager;
+   }
 
-    @Override
-    protected EnceinteManager getEnceinteManager() {
-        return this.enceinteManager;
-    }
 }

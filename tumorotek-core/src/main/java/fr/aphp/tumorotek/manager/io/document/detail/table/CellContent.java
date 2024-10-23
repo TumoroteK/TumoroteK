@@ -58,7 +58,11 @@ public class CellContent {
     private boolean complementOnAnotherLine = false;
 
 
-
+    //CHT :
+    //les 4 méthodes ci-dessous sont des constructeurs donc elles doivent juste compléter l'initialisation faite par le constructeur sans paramètre
+    //(pour les String, valeur à null et pour les booleans valeur à false
+    //Il vaut mieux garder la valeur null si non défini et c'est avec le get qu'il faut renvoyer "" si null si cela est plus pratique pour les appelants
+    //=> constructeurs basiques
     public CellContent(String text) {
         this.text = (text == null) ? "" : text;
         this.complement = "";
@@ -84,10 +88,16 @@ public class CellContent {
     }
 
     public String getText() {
+        //CHT : si on considère que pour les appelants, c'est plus pratique de renvoyer "" à la place de null, on gère ici
+        //ajout mis en commentaire pour ne pas impacter le reste du code pour le moment
+        //if(text == null) {
+        //   return "";
+        //} 
         return text;
     }
 
     public void setText(String text) {
+        //CHT : revenir au setter classique - cf commenaire sur les constructeurs
         this.text = (text == null) ? "" : text;
     }
 
@@ -95,21 +105,29 @@ public class CellContent {
         return complement;
     }
 
+    //CHT : un setter ne doit pas gérer 2 attributs. A ce niveau il faut les considérer indépendamment
+    //si besoin d'une méthode qui gère les 2 attributs, il faut en définir une méthode spécifique pour cela qui n'est pas un setter
     public void setComplement(String complement) {
         this.complement = (complement == null) ? "" : complement;
         this.complementInItalic = !this.complement.isEmpty();
     }
 
+    // CHT : même principe que ci dessus
+    // le rôle de l'attribut complementInItalic est d'indiquer que le complement est en italic mais ce n'est pas de sa responsabilité
+    // de savoir si le complement existe
+    //=> son getter isComplementInItalic() ne doit retourner que cette valeur sans autre règle de gestion
     public boolean isComplementInItalic() {
         return complement != null && !complement.isEmpty() && complementInItalic;
     }
 
+    //CHT : idem setComplement
     public void setComplementInItalic(boolean complementInItalic) {
         if (!this.complement.isEmpty()) {
             this.complementInItalic = complementInItalic;
         }
     }
 
+    //CHT : idem isComplementInItalic()
     public boolean isComplementOnAnotherLine() {
         return complement != null && !complement.isEmpty() && complementOnAnotherLine;
     }
@@ -122,6 +140,9 @@ public class CellContent {
 
     @Override
     public String toString() {
+        //CHT : il ne faut pas prendre l'habitude d'utiliser String.format() pour faire de la concaténation basique.
+        //ce n'est pas fait pour ça : ce n'est pas performant dans ce cas. Il faut utiliser le code ci-dessous mis en commentaire pour rester sur le code d'origine
+        //return new StringBuilder("| ").append(text).append(" ").append(complement).append(" |").toString();
         return String.format("| %s %s |", text, complement);
     }
 }

@@ -170,7 +170,7 @@ public abstract class AbstractPlanCongelateurGenerator implements PlanCongelateu
      * @param enceintes La liste d'enceintes à mapper.
      * @return Une map associant les positions aux enceintes.
      */
-
+    //CHT : cette méthode ne devrait pas être utilisée par le plan "avec boîte", donc il vaut mieux la redecendre dans la classe AbstractPlanCongelateurSansBoiteGenerator
     protected Map<Integer, Enceinte> createMapEnceintesByPosition(List<Enceinte> enceintes){
         // Créer une nouvelle Map vide pour stocker les associations entre positions et enceintes
         Map<Integer, Enceinte> positionMap = new HashMap<>();

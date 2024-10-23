@@ -1081,18 +1081,37 @@
 
 	<bean id="planCongelateurAvecBoiteExcelGenerator"
 		  class="fr.aphp.tumorotek.manager.impl.stockage.planconteneur.PlanCongelateurAvecBoiteExcelGenerator">
-		<constructor-arg ref="enceinteManager"/>
-		<constructor-arg ref="documentWithDataAsTableExcelProducer"/>
+		<!--<constructor-arg ref="enceinteManager"/>
+		<constructor-arg ref="documentWithDataAsTableExcelProducer"/>-->
+		<property name="enceinteManager" ref="enceinteManager"/>
+		<property name="documentProducer" ref="documentWithDataAsTableExcelProducer"/>
 
 	</bean>
 
+<!-- 1ere implémentation (Pini)-->
+<!-- 
 	<bean id="planCongelateurSansBoiteExcelGenerator"
 		  class="fr.aphp.tumorotek.manager.impl.stockage.planconteneur.PlanCongelateurSansBoiteExcelGenerator">
 		<constructor-arg ref="enceinteManager"/>
 		<constructor-arg ref="documentWithDataAsTableExcelProducer"/>
 	</bean>
+ -->
 
+<!-- 2e implémentation (CHT )-->
+<!--  	<bean id="planCongelateurSansBoiteExcelGenerator"
+		  class="fr.aphp.tumorotek.manager.impl.stockage.planconteneur.PlanCongelateurSansBoiteExcelGenerator">
+		<property name="enceinteManager" ref="enceinteManager"/>
+		<property name="documentProducer" ref="documentWithDataAsTableExcelProducer"/>
+	</bean> -->
+<!-- fin 2e implémentation -->
 
+<!-- 3e implémentation (CHT )-->
+  	<bean id="planCongelateurSansBoiteExcelGenerator"
+		  class="fr.aphp.tumorotek.manager.impl.stockage.planconteneur.PlanCongelateurSansBoiteExcelGenerator">
+		<property name="enceinteManager" ref="enceinteManager"/>
+		<property name="documentWithDataAsTableExcelProducer" ref="documentWithDataAsTableExcelProducer"/>
+	</bean>
+<!-- fin 3e implémentation -->
 
 	<bean id="conteneurValidator"
 		class="fr.aphp.tumorotek.manager.validation.stockage.ConteneurValidator" />

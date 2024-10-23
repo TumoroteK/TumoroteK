@@ -50,34 +50,117 @@ import fr.aphp.tumorotek.manager.stockage.EnceinteManager;
  * Excel basé sur une liste de conteneurs.</p>
  */
 public class PlanCongelateurSansBoiteExcelGenerator extends AbstractPlanCongelateurSansBoiteGenerator {
+   //3e implémentation (CHT)
+   private EnceinteManager enceinteManager;
+   //CHT : définir le documentProducer avec le type concret permet de mettre en évidence que c'est un producer excel
+   //Par contre, ça nécessite de définir un getter nommé getDocumentWithDataAsTableExcelProducer pour que l'injection de dépendance marche
+   //La méthode getDocumentProducer() nécessaire pour le polymorphisme fera donc juste un appel au getter getDocumentWithDataAsTableExcelProducer
+   private DocumentWithDataAsTableExcelProducer documentWithDataAsTableExcelProducer;
 
-    private EnceinteManager enceinteManager;
+   public PlanCongelateurSansBoiteExcelGenerator() {}
 
-    private DocumentWithDataAsTableExcelProducer documentWithDataAsTableExcelProducer;
-
-
-
-    public PlanCongelateurSansBoiteExcelGenerator(EnceinteManager enceinteManager, DocumentWithDataAsTableExcelProducer documentWithDataAsTableExcelProducer) {
-        this.enceinteManager = enceinteManager;
-        this.documentWithDataAsTableExcelProducer = documentWithDataAsTableExcelProducer;
+   public void setEnceinteManager(EnceinteManager enceinteManager){
+      this.enceinteManager = enceinteManager;
     }
+   
+   public void setDocumentWithDataAsTableExcelProducer(DocumentWithDataAsTableExcelProducer documentWithDataAsTableExcelProducer){
+       this.documentWithDataAsTableExcelProducer = documentWithDataAsTableExcelProducer;
+   }
+
+   @Override
+   protected EnceinteManager getEnceinteManager() {
+       if (this.enceinteManager == null) {
+           throw new IllegalStateException("EnceinteManager has not been initialized.");
+       }
+       return this.enceinteManager;
+   }
 
 
-    @Override
-    protected EnceinteManager getEnceinteManager() {
-        if (this.enceinteManager == null) {
-            throw new IllegalStateException("EnceinteManager has not been initialized.");
-        }
-        return this.enceinteManager;
-    }
+   protected DocumentWithDataAsTableExcelProducer getDocumentWithDataAsTableExcelProducer() {
+       if (this.documentWithDataAsTableExcelProducer == null) {
+           throw new IllegalStateException("documentWithDataAsTableExcelProducer has not been initialized.");
+       }
+       return this.documentWithDataAsTableExcelProducer;
+   }
+
+   @Override
+   protected DocumentProducer getDocumentProducer() {
+       return getDocumentWithDataAsTableExcelProducer();
+   }
+
+   
+   
+//   //1ere implémentation (Pini)
+//   private EnceinteManager enceinteManager;
+//
+//   private DocumentWithDataAsTableExcelProducer documentWithDataAsTableExcelProducer;
+//
+//
+//
+//   public PlanCongelateurSansBoiteExcelGenerator(EnceinteManager enceinteManager, DocumentWithDataAsTableExcelProducer documentWithDataAsTableExcelProducer) {
+//       this.enceinteManager = enceinteManager;
+//       this.documentWithDataAsTableExcelProducer = documentWithDataAsTableExcelProducer;
+//   }
+//
+//
+//   @Override
+//   protected EnceinteManager getEnceinteManager() {
+//       if (this.enceinteManager == null) {
+//           throw new IllegalStateException("EnceinteManager has not been initialized.");
+//       }
+//       return this.enceinteManager;
+//   }
+//
+//
+//   @Override
+//   protected DocumentWithDataAsTableExcelProducer getDocumenProducer() {
+//       if (this.documentWithDataAsTableExcelProducer == null) {
+//           throw new IllegalStateException("documentWithDataAsTableExcelProducer has not been initialized.");
+//       }
+//       return this.documentWithDataAsTableExcelProducer;
+//   }
+
+   
+   //2e implémentation (CHT)
+   /*
+   private EnceinteManager enceinteManager;
+   //CHT : renommage
+   private DocumentProducer documentProducer;
 
 
 
-    @Override
-    protected DocumentProducer getDocumentProducer() {
-        if (this.documentWithDataAsTableExcelProducer == null) {
-            throw new IllegalStateException("documentWithDataAsTableExcelProducer has not been initialized.");
-        }
-        return this.documentWithDataAsTableExcelProducer;
-    }
+   public PlanCongelateurSansBoiteExcelGenerator() {}
+
+   public void setEnceinteManager(EnceinteManager enceinteManager){
+     this.enceinteManager = enceinteManager;
+   }
+   public void setDocumentProducer(DocumentProducer documentWithDataAsTableExcelProducer){
+      this.documentProducer = documentWithDataAsTableExcelProducer;
+   }
+  
+   //CHT : à supprimer car utilisé que pour les tests. Il faut passer par les setters qui manquent (indispensable pour l'injection de dépendance)
+   public PlanCongelateurSansBoiteExcelGenerator(EnceinteManager enceinteManager, DocumentWithDataAsTableExcelProducer documentWithDataAsTableExcelProducer) {
+       this.enceinteManager = enceinteManager;
+       this.documentProducer = documentWithDataAsTableExcelProducer;
+   }
+
+
+   @Override
+   protected EnceinteManager getEnceinteManager() {
+       if (this.enceinteManager == null) {
+           throw new IllegalStateException("EnceinteManager has not been initialized.");
+       }
+       return this.enceinteManager;
+   }
+
+
+
+   @Override
+   protected DocumentProducer getDocumentProducer() {
+       if (this.documentProducer == null) {
+           throw new IllegalStateException("documentWithDataAsTableExcelProducer has not been initialized.");
+       }
+       return this.documentProducer;
+   }
+   */
 }

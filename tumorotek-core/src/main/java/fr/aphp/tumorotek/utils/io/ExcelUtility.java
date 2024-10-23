@@ -24,6 +24,7 @@ public class ExcelUtility
       throw new IllegalStateException("Utility class");
    }
 
+   //CHT : on est sur une classe utilitaire : c'est à l'appelant de maîtriser les créations sinon ça complique la compréhension et le débogage
    /**
     * Récupère une cellule existante ou en crée une nouvelle dans la feuille spécifiée aux indices de ligne et de colonne donnés.
     *
@@ -39,6 +40,8 @@ public class ExcelUtility
          throw new IllegalArgumentException("Sheet cannot be null.");
       }
       if(rowIndex < 0 || colIndex < 0){
+        //CHT : pourquoi ne pas renvoyer une IllegalArgumentException également ici ?
+        //Faut-il faire planter ou juste ne pas créer ces cellules ? 
          throw new ExcelWriteException("Row index and column index must be non-negative.");
       }
 
@@ -78,6 +81,8 @@ public class ExcelUtility
       }
    }
 
+   //CHT : c'est simple d'écrire dans une cellule : cette surcouche complique la compréhension
+   //la création des cellules doit être maîtrisée par l'appelant et non par une classe utilitaire.
    /**
     * Écrit une valeur de chaîne dans une cellule spécifiée de la feuille.
     *
@@ -98,6 +103,9 @@ public class ExcelUtility
       return cell;
    }
 
+   //CHT : Fait trop de chose pour une classe utilitaire. 
+   //risque de bug car si la cellule qu'on passe a déjà un style tout est écrasé
+   //mettre en gras est assez simple donc cette méthode n'est pas nécessaire
    /**
     * Écrit une valeur de chaîne dans une cellule spécifiée de la feuille avec un formatage en gras.
     *
@@ -117,6 +125,7 @@ public class ExcelUtility
 
       // Créer un nouveau style de cellule avec une police en gras
       CellStyle cellStyle = workbook.createCellStyle(); // Crée un nouveau style de cellule
+      //CHT : utiliser un cache pour éviter de créer une nouvelle Font à chaque fois
       Font font = workbook.createFont(); // Crée une nouvelle police
       font.setBold(true); // Définit la police en gras
       cellStyle.setFont(font); // Applique la police au style de cellule
@@ -145,6 +154,8 @@ public class ExcelUtility
       }
    }
 
+   //CHT : fusionner des cellules c'est 2 lignes de code => cette surcouche amène de la complexité dans la compréhension
+   //car finalement, il y a plus de lignes de code pour ajouter la valeur...
    /**
     * Fusionne des cellules dans une région rectangulaire et définit la valeur de la cellule ainsi que le style.
     *
@@ -169,8 +180,8 @@ public class ExcelUtility
       // Créer et appliquer un style de cellule pour centrer le texte
       Workbook wb = sheet.getWorkbook();
       CellStyle cellStyle = wb.createCellStyle();
-      cellStyle.setAlignment(HorizontalAlignment.CENTER);
-      cellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+      cellStyle.setAlignment(HorizontalAlignment.CENTER);//CHT : si classe utilitaire, on ne peut pas forcer arbitrairement l'alignement ou alors il faut l'indiquer dans le nom de la méthode
+      cellStyle.setVerticalAlignment(VerticalAlignment.CENTER);//CHT : si classe utilitaire, on ne peut pas forcer arbitrairement l'alignement ou alors il faut l'indiquer dans le nom de la méthode
 
       // Fusionner les cellules
       CellRangeAddress region = new CellRangeAddress(startRow, endRow, startCol, endCol);
@@ -181,7 +192,7 @@ public class ExcelUtility
    }
 
 
-
+   //CHT : apparemment pas utilisée
    /**
     * Applique des styles de bordure à une plage de cellules avec une couleur de bordure gauche personnalisée en option.
     *
@@ -201,9 +212,10 @@ public class ExcelUtility
       XSSFColor leftBorderColor = blackColor;
       BorderStyle leftBorderStyle = BorderStyle.THIN;
 
+      //CHT : une méthode existe pour faire cela : cf commentaire au niveau de createColorFromHex()
       if(hexColor != null && hexColor.matches(VALID_HEX_COLOR_PATTERN)){
          // Convertir hex en RGB
-         int red = Integer.parseInt(hexColor.substring(1, 3), 16);
+         int red = Integer.parseInt(hexColor.substring(1, 3), 16);//CHT : aurait dû s'appuyer sur la méthode spécifique createColorFromHex()
          int green = Integer.parseInt(hexColor.substring(3, 5), 16);
          int blue = Integer.parseInt(hexColor.substring(5, 7), 16);
 
@@ -245,7 +257,9 @@ public class ExcelUtility
       }
    }
 
-
+   //CHT : 
+   //pourquoi indiquer (par défaut 11) sur fontHeight vu que le code prend toujours la valeur en param
+   //méthode assez spécifique à DocumentWithDataAsTableExcelProducer donc plutôt à mettre dans DocumentWithDataAsTableExcelProducer
    /**
     * Écrit deux chaînes de caractères dans une cellule fournie, avec la première chaîne
     * en police normale et la deuxième chaîne en italique. Un espace est toujours inclus entre les deux chaînes.
@@ -257,16 +271,22 @@ public class ExcelUtility
     * @throws ExcelWriteException si un argument est nul ou vide.
     */
    public static void writeToCellWithHalfItalic(Cell cell, String normalText, String italicText, short fontHeight) {
+      //CHT : Pourquoi faire planter si cell est null ? 
+      //De plus les autres méthodes writeToCell crée la cellule donc ça peut créer une confusion dans l'utilisation
       if (cell == null) {
          throw new ExcelWriteException("Cell cannot be null.");
       }
+      //CHT : pour normalText, italicText : une solution moins impactante serait que 
+      //si normalText est null, on écrit rien en normal et si italic est null on écrit rien en italique
+      //en loggant un warning
       if (normalText == null || normalText.isEmpty()) {
          throw new ExcelWriteException("Normal text cannot be null or empty.");
       }
       if (italicText == null || italicText.isEmpty()) {
          throw new ExcelWriteException("Italic text cannot be null or empty.");
       }
-
+      //CHT try catch inutile car aucune méthode ne lance une Exception qui n'est pas une RuntimeException
+      //=> elle sera gérée par les appelants
       try {
          Workbook workbook = cell.getSheet().getWorkbook();
 
@@ -282,7 +302,7 @@ public class ExcelUtility
          richText.applyFont(0, normalText.length(), normalFont);
 
 
-         richText.applyFont(normalText.length() + 1, richText.length(), italicFont);
+         richText.applyFont(normalText.length() + 1, richText.length(), italicFont);//CHT le +1 fait que l'espace n'a pas de font donc potentiellement une taille différente des autres caractères...
 
          cell.setCellValue(richText);
 
@@ -291,6 +311,8 @@ public class ExcelUtility
       }
    }
 
+   //CHT : trop compliqué toute la mécanique mise en place pour la gestion des bordures
+   //Appliquer un border est simple (2 lignes de code donc pas besoin de mettre cette surcouche sur l'api)
    /**
     * Applique les styles de bordure spécifiés à une cellule donnée.
     *
@@ -309,6 +331,7 @@ public class ExcelUtility
 
       Workbook workbook = cell.getSheet().getWorkbook(); // Obtenir le classeur de la cellule
 
+      //CHT : cette création d'un nouveau style et son application à cell écrasent le style précédemment défini => peut générer un bug
       CellStyle cellStyle = workbook.createCellStyle(); // Créer un nouveau style de cellule
       for (BorderProperties border : borders) { // Parcourir chaque propriété de bordure
          XSSFColor customColor = createColorFromHex(border.getColor()); // Créer une couleur à partir du code hexadécimal
@@ -345,19 +368,36 @@ public class ExcelUtility
       }
    }
 
-
-   private static XSSFColor createColorFromHex(String color){
-      // Create XSSFColor if a valid hex color code is provided
-      if(color != null && color.matches("^#[0-9a-fA-F]{6}$")){
-         int red = Integer.parseInt(color.substring(1, 3), 16);
-         int green = Integer.parseInt(color.substring(3, 5), 16);
-         int blue = Integer.parseInt(color.substring(5, 7), 16);
-         return new XSSFColor(new java.awt.Color(red, green, blue));
+   //CHT : plutôt que de tester les valeurs possibles avec une regex, s'appuyer sur NumberFormatException
+   //MAIS un méthode existe dans POI pour faire ça : XSSFColor xSSFColor = new XSSFColor(); xSSFColor.setARGBHex(hexCode.substring(1));
+   //idéalement utiliser une map de cache pour ne pas recréer la couleur à chaque fois. clé : hexCode - valeur XSSFColor
+   public static XSSFColor createColorFromHex(String color){
+//      // Create XSSFColor if a valid hex color code is provided
+//      if(color != null && color.matches("^#[0-9a-fA-F]{6}$")){//CHT Défini en constante donc VALID_HEX_COLOR_PATTERN à utiliser
+//         int red = Integer.parseInt(color.substring(1, 3), 16);
+//         int green = Integer.parseInt(color.substring(3, 5), 16);
+//         int blue = Integer.parseInt(color.substring(5, 7), 16);
+//         return new XSSFColor(new java.awt.Color(red, green, blue));
+//      }
+//      return new XSSFColor();
+      
+      final XSSFColor BLACK__XSSF_COLOR = new XSSFColor(new java.awt.Color(0, 0, 0));
+      if(color != null) {
+         try {
+            int red = Integer.parseInt(color.substring(1, 3), 16);
+            int green = Integer.parseInt(color.substring(3, 5), 16);
+            int blue = Integer.parseInt(color.substring(5, 7), 16);
+            return new XSSFColor(new java.awt.Color(red, green, blue));  
+         }
+         catch (NumberFormatException e) {
+            //trace de debug !
+            return BLACK__XSSF_COLOR;
+         }
       }
-      return new XSSFColor();
-
+      return BLACK__XSSF_COLOR;
    }
 
+   //CHT : cette méthode existe déjà dans l'API : WorkbookUtil.createSafeSheetName(input)
    /**
     * Renvoie une chaîne de caractères conforme aux restrictions de nom de fichier
     * dans certaines applications. Remplace les caractères interdits et tronque
@@ -392,10 +432,18 @@ public class ExcelUtility
       return safeName;
    }
 
+   //CHT : à revoir pour utiliser le code standard workbook.createSheet(WorkbookUtil.createSafeSheetName(sheetName));
+   //Par contre, il faut gérer le cas d'un doublon qui peut arriver notamment si le nom est tronqué.
+   //Le plus simple est de catcher l'IllegalArgumentException renvoyée dans ce cas et appeler l'onglet "(i)" avec i le n° de feuille (nb sheet)
+   //tester sheetName non null et créer aussi avec onglet n°i si null
    public static Sheet createSheet(Workbook workbook, String sheetName){
       return workbook.createSheet(getSafeSheetName(sheetName));
    }
 
+   //CHT : cette méthode écrase le style éventuellement précédemment défini sur la cellule ...
+   //il faudait plutôt récupérer le style existant sur la cellule et appliqué l'alignement
+   //mais dans l'absolu, il faut gérer toutes les caractéristiques du style d'une cellule au même endroit
+   //ou alors récupérer le CellStyle de la cell en param pour le compléter à chaque fois... 
    public static void applyAlignment(Cell cell, AlignmentType alignmentType){
       CellStyle cellStyle = cell.getSheet().getWorkbook().createCellStyle();
 
@@ -414,6 +462,8 @@ public class ExcelUtility
       cell.setCellStyle(cellStyle);
    }
 
+   //CHT : trop compliqué toute la mécanique mise en place pour la gestion des bordures
+   //et normalement si une classe est public, elle doit être dans son propre fichier
    /**
     * Représente les propriétés d'une bordure pour une cellule dans une feuille Excel.
     */
