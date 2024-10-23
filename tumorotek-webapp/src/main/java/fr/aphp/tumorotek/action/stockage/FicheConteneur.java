@@ -35,11 +35,14 @@
  **/
 package fr.aphp.tumorotek.action.stockage;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.zkoss.util.media.AMedia;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
@@ -55,6 +58,7 @@ import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Decimalbox;
 import org.zkoss.zul.Div;
+import org.zkoss.zul.Filedownload;
 import org.zkoss.zul.Grid;
 import org.zkoss.zul.Group;
 import org.zkoss.zul.Intbox;
@@ -75,6 +79,8 @@ import fr.aphp.tumorotek.action.ManagerLocator;
 import fr.aphp.tumorotek.component.CalendarBox;
 import fr.aphp.tumorotek.decorator.EnceinteDecorator;
 import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
+import fr.aphp.tumorotek.dto.OutputStreamData;
+import fr.aphp.tumorotek.manager.impl.stockage.planconteneur.PlanCongelateurSansBoiteExcelGenerator;
 import fr.aphp.tumorotek.model.TKdataObject;
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.contexte.Service;
@@ -536,6 +542,7 @@ public class FicheConteneur extends AbstractFicheCombineStockageController
 		if(this.conteneur.getConteneurId() != null){
 			switchToEditMode();
 		}
+
 	}
 
 	@Override
@@ -670,7 +677,28 @@ public class FicheConteneur extends AbstractFicheCombineStockageController
 	}
 
 	public void onClick$generateWithoutBoxes(){
-		Clients.showNotification("You clicked on 'Generate Without Boxes'", "info", null, "middle_center", 3000);
+		//Clients.showNotification("You clicked on 'Generate Without Boxes'", "info", null, "middle_center", 3000);
+      List<Conteneur> conteneurs = new ArrayList<Conteneur>();
+      conteneurs.add(conteneur);
+      org.apache.commons.io.output.ByteArrayOutputStream out = null;
+      try{
+         OutputStreamData outputStreamData = ((PlanCongelateurSansBoiteExcelGenerator)(org.springframework.web.context.ContextLoader.getCurrentWebApplicationContext()).getBean("planCongelateurSansBoiteExcelGenerator")).generate(conteneurs);
+         out = outputStreamData.getOutputStream();
+         final AMedia media = new AMedia(outputStreamData.getFileName(), outputStreamData.getFormat(), outputStreamData.getContentType(), out.toByteArray());
+         Filedownload.save(media);
+      }catch(final Exception e){
+         log.error(e.getMessage(), e); 
+         e.printStackTrace();
+      }finally{
+         if(out != null){
+            try{
+               out.close();
+            }catch(final IOException e){
+               out = null;
+            }
+         }
+      }
+	   
 	}
 	@Override
 	public void updateObject(){

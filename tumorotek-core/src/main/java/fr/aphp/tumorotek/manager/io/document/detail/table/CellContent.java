@@ -51,24 +51,36 @@ public class CellContent {
     // Le complément de texte à ajouter après le texte principal.
     private String complement;
 
-    // Indique si le complément de texte doit être affiché en italique.
-    private boolean complementInItalic;
+
+    private boolean complementInItalic = true;//CHT : passage à true cf commentaire dans CellContent(String text, String complement)
 
     // Indique si le complément de texte doit être affiché sur une autre ligne.
     private boolean complementOnAnotherLine = false;
 
-
-
+    //CHT :
+    //les 4 méthodes ci-dessous sont des constructeurs donc elles doivent juste compléter l'initialisation sans paramètre
+    //(pour les String, valeur à null et pour les booleans valeur à false
+    //Il vaut mieux garder la valeur null si non défini et c'est avec le get qu'il faut renvoyer "" si null si cela est plus pratique pour la suite
+    //mais je me rends-compte que l'appelant teste également le null (sauf dans un cas). Il faut homogénéiser et idéalement garder le null dans cette classe
+    //On revient alors des à constructeur à l'implémentation basique
     public CellContent(String text) {
-        this.text = (text == null) ? "" : text;
-        this.complement = "";
+        //CHT
+        this.text = text;
         this.complementInItalic = false;
+        //this.text = (text == null) ? "" : text;
+        //this.complement = "";
     }
 
     public CellContent(String text, String complement) {
-        this.text = (text == null) ? "" : text;
-        this.complement = (complement == null) ? "" : complement;
-        this.complementInItalic = !this.complement.isEmpty();
+        //CHT
+        //this.text = (text == null) ? "" : text;
+        //this.complement = (complement == null) ? "" : complement;
+        //CHT : si je comprends bien, ça revient à dire que par défaut this.complementInItalic est à true.
+        //dans ce cas, il vaut mieux forcer true au niveau de la déclaration de complementInItalic, comme proposé dans le code que je t'avais fourni
+        //mettre en italique vide n'est pas gênant et complementInItalic a bien une seule responsabilité indépendante du fait que complement est non null 
+        //this.complementInItalic = !this.complement.isEmpty();
+        this(text);
+        this.complement=complement;
     }
 
     public CellContent(String text, String complement, boolean complementOnAnotherLine) {
@@ -77,51 +89,92 @@ public class CellContent {
     }
 
     public CellContent(String text, String complement, boolean complementInItalic, boolean complementOnAnotherLine) {
-        this.text = (text == null) ? "" : text;
-        this.complement = (complement == null) ? "" : complement;
-        this.complementInItalic = complementInItalic && !this.complement.isEmpty();
-        this.complementOnAnotherLine = complementOnAnotherLine;
+        //CHT
+        //this.text = (text == null) ? "" : text;
+        //this.complement = (complement == null) ? "" : complement;
+        //this.complementInItalic = complementInItalic && !this.complement.isEmpty();
+        //this.complementOnAnotherLine = complementOnAnotherLine;
+        this(text, complement, complementOnAnotherLine);
+        this.complementInItalic = complementInItalic;
     }
 
     public String getText() {
+        //CHT : si on considère que pour les appelants, c'est plus pratique de renvoyer "" à la place de null, on gère ici
+        if(text == null) {
+           return "";
+        }
         return text;
     }
 
     public void setText(String text) {
-        this.text = (text == null) ? "" : text;
+        //CHT :
+        //this.text = (text == null) ? "" : text;
+        this.text = text;
     }
 
     public String getComplement() {
+        //CHT : si on considère que pour les appelants, c'est plus pratique de renvoyer "" à la place de null, on gère ici      
+        if(complement == null) {
+           return "";
+        }
         return complement;
     }
 
     public void setComplement(String complement) {
-        this.complement = (complement == null) ? "" : complement;
-        this.complementInItalic = !this.complement.isEmpty();
+        //CHT : 
+        //this.complement = (complement == null) ? "" : complement;
+        this.complement = complement;
+        //this.complementInItalic = !this.complement.isEmpty();
     }
 
+    // CHT : le rôle de l'attribut complementInItalic est d'indiquer que le complement est en italic mais ce n'est pas de sa responsabilité
+    // de savoir si le complement existe
+    //=> son getter isComplementInItalic() ne doit retourner que cette valeur sans autre règle de gestion
     public boolean isComplementInItalic() {
-        return complement != null && !complement.isEmpty() && complementInItalic;
+        //return complement != null && !complement.isEmpty() && complementInItalic;
+       return complementInItalic;
     }
 
     public void setComplementInItalic(boolean complementInItalic) {
-        if (!this.complement.isEmpty()) {
-            this.complementInItalic = complementInItalic;
-        }
+//CHT :
+//        if (!this.complement.isEmpty()) {
+//            this.complementInItalic = complementInItalic;
+//        }
+       this.complementInItalic = complementInItalic;
     }
 
+    //CHT : même règle que pour isComplementInItalic
     public boolean isComplementOnAnotherLine() {
-        return complement != null && !complement.isEmpty() && complementOnAnotherLine;
+        //return complement != null && !complement.isEmpty() && complementOnAnotherLine;
+       return complementOnAnotherLine;
     }
 
     public void setComplementOnAnotherLine(boolean complementOnAnotherLine) {
         this.complementOnAnotherLine = complementOnAnotherLine;
     }
 
+    public String buildContentValue() {
+       //faire une méthode dans CellContent qui ramène la concaténation
+       String separateur = " ";
+       if(isComplementOnAnotherLine()) {
+          separateur = System.getProperty("line.separator");
+       }
+       if(text == null) {
+          return "";
+       }
+       if(complement != null){
+          return new StringBuilder(text).append(separateur).append(complement).toString();
+       }
+       return text;
+       
+    }
 
 
     @Override
     public String toString() {
-        return String.format("| %s %s |", text, complement);
+       //CHT : il ne faut pas prendre l'habitude d'utiliser String.format() pour faire de la concaténation basique.
+       //ce n'est pas fait pour ça : ce n'est pas performant dans ce cas.
+       //return String.format("| %s %s |", text, complement);
+       return new StringBuilder("| ").append(text).append(" ").append(complement).append(" |").toString();
     }
 }

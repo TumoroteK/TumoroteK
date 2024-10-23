@@ -52,14 +52,23 @@ import fr.aphp.tumorotek.manager.stockage.EnceinteManager;
 public class PlanCongelateurSansBoiteExcelGenerator extends AbstractPlanCongelateurSansBoiteGenerator {
 
     private EnceinteManager enceinteManager;
+    //CHT : renommage
+    private DocumentProducer documentProducer;
 
-    private DocumentWithDataAsTableExcelProducer documentWithDataAsTableExcelProducer;
 
 
+    public PlanCongelateurSansBoiteExcelGenerator() {}
 
+    public void setEnceinteManager(EnceinteManager enceinteManager){
+      this.enceinteManager = enceinteManager;
+    }
+    public void setDocumentProducer(DocumentProducer documentWithDataAsTableExcelProducer){
+       this.documentProducer = documentWithDataAsTableExcelProducer;
+    }
+   
     public PlanCongelateurSansBoiteExcelGenerator(EnceinteManager enceinteManager, DocumentWithDataAsTableExcelProducer documentWithDataAsTableExcelProducer) {
         this.enceinteManager = enceinteManager;
-        this.documentWithDataAsTableExcelProducer = documentWithDataAsTableExcelProducer;
+        this.documentProducer = documentWithDataAsTableExcelProducer;
     }
 
 
@@ -75,9 +84,9 @@ public class PlanCongelateurSansBoiteExcelGenerator extends AbstractPlanCongelat
 
     @Override
     protected DocumentProducer getDocumentProducer() {
-        if (this.documentWithDataAsTableExcelProducer == null) {
+        if (this.documentProducer == null) {
             throw new IllegalStateException("documentWithDataAsTableExcelProducer has not been initialized.");
         }
-        return this.documentWithDataAsTableExcelProducer;
+        return this.documentProducer;
     }
 }

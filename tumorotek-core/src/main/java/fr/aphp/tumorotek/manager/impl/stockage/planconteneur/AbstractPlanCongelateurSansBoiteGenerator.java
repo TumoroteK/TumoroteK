@@ -62,6 +62,9 @@ import java.util.Map;
 public abstract class AbstractPlanCongelateurSansBoiteGenerator extends AbstractPlanCongelateurGenerator
 {
 
+    //A renommer en PREMIER_NIVEAU
+    //personnellement, j'aurai laissé cette affection comme constante de la méthode et non de la classe
+    //ou alors il faut la déclarer public. En private, ça a peu d'intérêt vu le code
     private static final int PREMIERE_NIVEAU = 1;
 
 
@@ -80,6 +83,8 @@ public abstract class AbstractPlanCongelateurSansBoiteGenerator extends Abstract
     @Override
     public DocumentData buildDetailPlan(Conteneur conteneur){
 
+        //Pour rappel : le nombre de niveaux du conteneur contient le niveau boîte => pour avoir uniquement le 
+        //nombre de niveaux d'enceinte on soustrait 1
         int nbNiveauDeEnceinte = conteneur.getNbrNiv() - 1;
         // Initialisation d'une table de données pour stocker la structure du conteneur.
         DataAsTable dataAsTable = new DataAsTable();
@@ -134,7 +139,6 @@ public abstract class AbstractPlanCongelateurSansBoiteGenerator extends Abstract
      * @param niveau Le niveau d'imbrication des enceintes.
      * @param dataAsTable La table où les lignes de cellules doivent être ajoutées.
      */
-
     private void recursivelyAddEntriesToTable(Map<Integer, Enceinte> positionMap,
        int numberOfPlaces, int niveau, DataAsTable dataAsTable, int nbNiveauDeEnceinte){
 
@@ -212,11 +216,19 @@ public abstract class AbstractPlanCongelateurSansBoiteGenerator extends Abstract
         Couleur couleurEnceinte = enceinte.getCouleur();
         String color = (couleurEnceinte != null ? couleurEnceinte.getHexa() : null);
 
+        //CHT
+        // Ce n'est pas ici qu'il faut faire la conversion du null en "" mais dans CellContent
         // Récupère l'alias de l'enceinte (ou une chaîne vide si l'alias est nul)
-        String alias = (enceinte.getAlias() != null ? enceinte.getAlias(): "");
+        //String alias = (enceinte.getAlias() != null ? enceinte.getAlias(): "");
+        String alias = enceinte.getAlias();
+        //si non null, ajout des parenthèse
+        String aliasAvecParenthese = null;
+        if(alias != null) {
+           aliasAvecParenthese = new StringBuilder("(").append(alias).append(")").toString();
+        }
 
         // Crée le contenu de la cellule avec le nom et l'alias de l'enceinte
-        CellContent cellContent = new CellContent(enceinte.getNom(), alias, true, false);
+        CellContent cellContent = new CellContent(enceinte.getNom(), aliasAvecParenthese, true, false);
 
         // Retourne l'objet DataCell contenant le contenu de la cellule et la couleur
         return new DataCell(cellContent, color);

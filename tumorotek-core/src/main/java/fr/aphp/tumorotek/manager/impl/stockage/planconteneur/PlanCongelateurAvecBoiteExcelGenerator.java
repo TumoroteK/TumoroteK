@@ -53,18 +53,22 @@ public class PlanCongelateurAvecBoiteExcelGenerator extends AbstractPlanCongelat
 
     private EnceinteManager enceinteManager;
 
-    private DocumentWithDataAsTableExcelProducer documentWithDataAsTableExcelProducer;
+    private DocumentProducer documentProducer;
 
+    public PlanCongelateurAvecBoiteExcelGenerator() {}
 
     public PlanCongelateurAvecBoiteExcelGenerator(EnceinteManager enceinteManager, DocumentWithDataAsTableExcelProducer documentWithDataAsTableExcelProducer) {
         this.enceinteManager = enceinteManager;
-        this.documentWithDataAsTableExcelProducer = documentWithDataAsTableExcelProducer;
+        this.documentProducer = documentWithDataAsTableExcelProducer;
     }
 
     public void setEnceinteManager(EnceinteManager enceinteManager) {
         this.enceinteManager = enceinteManager;
     }
 
+    public void setDocumentProducer(DocumentProducer documentWithDataAsTableExcelProducer){
+       this.documentProducer = documentWithDataAsTableExcelProducer;
+    }
 
 
 
@@ -72,7 +76,7 @@ public class PlanCongelateurAvecBoiteExcelGenerator extends AbstractPlanCongelat
 
     @Override
     protected DocumentProducer getDocumentProducer() {
-        return documentWithDataAsTableExcelProducer;
+        return documentProducer;
     }
 
     @Override

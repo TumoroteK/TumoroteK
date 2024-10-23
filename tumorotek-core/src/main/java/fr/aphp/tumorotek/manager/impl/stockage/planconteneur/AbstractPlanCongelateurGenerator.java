@@ -71,6 +71,9 @@ public abstract class AbstractPlanCongelateurGenerator implements PlanCongelateu
     protected static final String PREFIX_FILE_NAME = "plan_conteneur";
 
 
+    //Il faudrait mieux renvoyer une exception fonctionnelle de type Exception et non RuntimeException
+    //C'est plus facile à gérer par le front.
+    //C'est ici qu'il faut faire le try catch.
     @Override
     public OutputStreamData generate(List<Conteneur> listConteneurs) throws IOException {
         List<DocumentWithDataAsTable> listPlanConteneur = new ArrayList<>();
@@ -164,6 +167,7 @@ public abstract class AbstractPlanCongelateurGenerator implements PlanCongelateu
      */
     protected abstract DocumentProducer getDocumentProducer();
 
+    //Si cette méthode n'est pas utilisée par le avec boîte, il vaut mieux la redecendre dans la classe AbstractPlanCongelateurSansBoiteGenerator
     /**
      * Crée une Map de position associant des positions d'enceintes à leurs objets respectifs.
      * Cela facilite la gestion et l'accès aux enceintes en fonction de leurs positions.
