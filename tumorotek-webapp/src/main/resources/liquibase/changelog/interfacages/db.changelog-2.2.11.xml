@@ -4,15 +4,30 @@
 				   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
     http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
+<!-- le script live_scans.sql n'était jusqu'alors passé par liquibase qu'à l'initialisation de la base tumorotek_interfacages
+     Or les instances installées avant la mise en oeuvre de l'interfaçage avec le VisionMate n'ont pas ces tables si elles n'utilisent pas le VisionMate
+     l'ajout de l'alter concernant le nom des colonnes de SCAN_TUBE (TK-568) plante alors dans ce cas, car il teste qu'une des colonnes renommées existent 
+     mais pas que la table existe. Ajout donc dans ce changeset de l'appel du script de création de ces tables.
+     NB : le script a été mis à jour pour créer la table directement avec les bons noms de colonne désormais.
+     Ainsi pour ces cas là, l'alter (changeset TK-568) ne fera rien car la colonne testée n'existera pas. -->
+    <changeSet id="TK-574" author="CH" runAlways="false" context="*">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="SCAN_TUBE" />
+            </not>
+    	</preConditions>
+
+        <sqlFile encoding="utf8" path="../../sql/mysql/tumorotek_interfacages/live_scans.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+
     <changeSet id="TK-568" author="CH" runAlways="false" context="*">
     	<!-- l'utilisation du code "xml" pour faire le renommage de la colonne ne marche pas car ROW est considéré comme le mot réservé dans le sql généré
     		=> écriture de la requête sql avec le caractère "d'échappement" ` que ne prend pas bien en compte liquibase dans le xml
     		Pour les mêmes raisons, le test n'est pas fait sur columnName ROW mais sur COL car ROW pose un problème
+    		Si COL existe ROW et CELL également donc on fait l'ALTER sinon, c'est que la table a été créée récemment avec les bons noms de colonne.
     	-->        
         <preConditions onFail="MARK_RAN">
-            <not>
-                <columnExists tableName="SCAN_TUBE" columnName="COL" />
-            </not>
+	        <columnExists tableName="SCAN_TUBE" columnName="COL" />
     	</preConditions>
 
         <sqlFile encoding="utf8" path="../../sql/mysql/tumorotek_interfacages/tk-568.sql" relativeToChangelogFile="true"/>
