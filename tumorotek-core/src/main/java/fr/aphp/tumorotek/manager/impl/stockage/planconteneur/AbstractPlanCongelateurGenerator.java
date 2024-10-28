@@ -58,132 +58,133 @@ import java.util.Map;
  * Elle devrait se concentrer uniquement sur la génération du contenu (c'est-à-dire, `DocumentWithDataAsTable`).
  * Les spécificités de format devraient être gérées par les implémentations concrètes et les producteurs.
  *
- *  * <p>Le modèle de conception et l'architecture de cette classe ont été fournis par C.H.</p>
+ * <p>Le modèle de conception et l'architecture de cette classe ont été fournis par C.H.</p>
  */
 
-public abstract class AbstractPlanCongelateurGenerator implements PlanCongelateurGenerator {
+public abstract class AbstractPlanCongelateurGenerator implements PlanCongelateurGenerator
+{
 
-    protected static final String DATE_FORMAT = "yyyyMMddHHmm";
+   // Format de date utilisé pour les noms de fichiers
+   protected static final String DATE_FORMAT = "yyyyMMddHHmm";
 
-    // Constante représentant le contenu d'une cellule vide
-    protected static final String EMPTY_CELL_CONTENT = "vide";
+   // Constante représentant le contenu d'une cellule vide
+   protected static final String EMPTY_CELL_CONTENT = "vide";
 
-    protected static final String PREFIX_FILE_NAME = "plan_conteneur";
+   // Préfixe utilisé pour nommer les fichiers générés
+   protected static final String PREFIX_FILE_NAME = "plan_conteneur";
 
+   // Largeur par défaut des colonnes dans le document généré
+   protected static final int DEFAULT_COLUMN_WIDE = 25;
 
-    @Override
-    public OutputStreamData generate(List<Conteneur> listConteneurs) throws IOException {
-        List<DocumentWithDataAsTable> listPlanConteneur = new ArrayList<>();
+   @Override
+   public OutputStreamData generate(List<Conteneur> listConteneurs) throws IOException{
+      // Crée une liste pour stocker les plans de chaque conteneur
+      List<DocumentWithDataAsTable> listPlanConteneur = new ArrayList<>();
 
-        for (Conteneur conteneur : listConteneurs) {
-            listPlanConteneur.add(buildPlanConteneur(conteneur));
-        }
-        DocumentProducerResult producerResult  = getDocumentProducer().produce(listPlanConteneur);
-        String currentDate = TKStringUtils.getCurrentDate(DATE_FORMAT);
+      for(Conteneur conteneur : listConteneurs){
+         listPlanConteneur.add(buildPlanConteneur(conteneur));
+      }
+      // Produit le document final avec le format spécifique (Excel, PDF, etc.)
+      DocumentProducerResult producerResult = getDocumentProducer().produce(listPlanConteneur, DEFAULT_COLUMN_WIDE);
+      // Génère un nom de fichier unique basé sur la date courante
+      String currentDate = TKStringUtils.getCurrentDate(DATE_FORMAT);
 
-        String fileName = new StringBuilder(PREFIX_FILE_NAME ).append("_").append(currentDate).append(".").append(producerResult.getFormat()).toString();
+      String fileName =
+         new StringBuilder(PREFIX_FILE_NAME).append("_").append(currentDate).append(".").append(producerResult.getFormat())
+            .toString();
 
+      return new OutputStreamData(fileName, producerResult);
+   }
 
-        return new OutputStreamData(fileName, producerResult);
-    }
+   /**
+    * Construit un plan de conteneur sous forme de {@link DocumentWithDataAsTable}, représentant une feuille Excel avec des données sous forme de tableau.
+    *
+    * @param conteneur le conteneur à traiter
+    * @return un document contenant les données du conteneur sous forme de tableau
+    */
+   protected DocumentWithDataAsTable buildPlanConteneur(Conteneur conteneur){
+      // Crée un document structuré avec en-tête, contenu et pied de page
 
+      return new DocumentWithDataAsTable(conteneur.getNom(),  // Titre du document
+         buildEntetePlan(conteneur),  // Information générale sur le conteneur
+         buildDetailPlan(conteneur), // Contenu principal (implémenté par les classes filles)
+         buildPiedPagePlan(conteneur) // Informations de bas de page
+      );
+   }
 
+   /**
+    * Construit l'en-tête du plan, fournissant des informations sur le conteneur.
+    *
+    * @param conteneur le conteneur pour lequel construire l'en-tête
+    * @return le contexte du document contenant les labels et valeurs
+    */
+   public DocumentContext buildEntetePlan(Conteneur conteneur){
+      // Liste pour stocker les paires label/valeur de l'en-tête
+      List<LabelValue> listLabelValue = new ArrayList<>();
 
+      // Ajoute la date courante en première ligne
+      listLabelValue.add(new LabelValue(TKStringUtils.getCurrentDate(null), "", true, false));
 
-    /**
-     * Construit un plan de conteneur sous forme de {@link DocumentWithDataAsTable}, représentant une feuille Excel avec des données sous forme de tableau.
-     *
-     * @param conteneur le conteneur à traiter
-     * @return un document contenant les données du conteneur sous forme de tableau
-     */
-    protected DocumentWithDataAsTable buildPlanConteneur(Conteneur conteneur) {
-        return new DocumentWithDataAsTable(
-                conteneur.getNom(),
-                buildEntetePlan(conteneur),
-                buildDetailPlan(conteneur),
-                buildPiedPagePlan(conteneur)
-        );
-    }
+      // Ajoute les informations du conteneur
+      listLabelValue.add(new LabelValue("Nom de congélateur", conteneur.getNom(), false, true));
+      listLabelValue.add(new LabelValue("Description", conteneur.getDescription(), false, false));
 
+      // Crée la valeur de service/établissement en une seule ligne
+      String serviceEtabliValue = conteneur.getService().getEtablissement().getNom() + " / " +
+         conteneur.getService().getNom();
+      listLabelValue.add(new LabelValue("Etablissement / service", serviceEtabliValue, false, false));
 
-    /**
-     * Construit l'en-tête du plan, fournissant des informations sur le conteneur.
-     *
-     * @param conteneur le conteneur pour lequel construire l'en-tête
-     * @return le contexte du document contenant les labels et valeurs
-     */
-    public DocumentContext buildEntetePlan(Conteneur conteneur) {
-        List<LabelValue> listLabelValue = new ArrayList<>();
+      return new DocumentContext(listLabelValue);
+   }
 
-        String currentDate = TKStringUtils.getCurrentDate(null);
-        listLabelValue.add(new LabelValue(currentDate, "", true, false));
+   /**
+    * Construit le pied de page du plan. Dans l'implémentation Excel, le pied de page est affiché uniquement lors de l'impression.
+    *
+    * @param conteneur le conteneur pour lequel construire le pied de page
+    * @return le pied de page du document
+    */
+   public DocumentFooter buildPiedPagePlan(Conteneur conteneur){
+      String contenurName = conteneur.getNom();
+      return new DocumentFooter(contenurName, null, null);
+   }
 
-        String containerNameLabel = "Nom de congélateur";
-        String nomConteneur = conteneur.getNom();
-        listLabelValue.add(new LabelValue(containerNameLabel, nomConteneur, false, true));
+   /**
+    * Construit les détails du plan principal où les données principales sont écrites.
+    *
+    * @param conteneur le conteneur pour lequel construire les détails du plan
+    * @return les données du document
+    */
+   protected abstract DocumentData buildDetailPlan(Conteneur conteneur);
 
-        String descriptionLabel = "Description";
-        String conteneurDescription = conteneur.getDescription();
-        listLabelValue.add(new LabelValue(descriptionLabel, conteneurDescription, false, false));
+   /**
+    * Obtient le producteur de documents utilisé pour produire le fichier.
+    * Ce producteur est spécifique au type de fichier : par exemple, Excel aura sa propre implémentation,
+    * PDF la sienne, etc.
+    *
+    * @return le producteur
+    */
+   protected abstract DocumentProducer getDocumentProducer();
 
-        String serviceLabel = "Etablissement / service";
-        String service = conteneur.getService().getNom();
-        String etabli = conteneur.getService().getEtablissement().getNom();
-        String serviceEtabliValue = etabli + " / " + service;
-        listLabelValue.add(new LabelValue(serviceLabel, serviceEtabliValue, false, false));
-        return new DocumentContext(listLabelValue);
-    }
+   /**
+    * Crée une Map de position associant des positions d'enceintes à leurs objets respectifs.
+    * Cela facilite la gestion et l'accès aux enceintes en fonction de leurs positions.
+    * @param enceintes La liste d'enceintes à mapper.
+    * @return Une map associant les positions aux enceintes.
+    */
 
+   protected Map<Integer, Enceinte> createMapEnceintesByPosition(List<Enceinte> enceintes){
+      // Créer une nouvelle Map vide pour stocker les associations entre positions et enceintes
+      Map<Integer, Enceinte> positionMap = new HashMap<>();
 
-    /**
-     * Construit le pied de page du plan. Dans l'implémentation Excel, le pied de page est affiché uniquement lors de l'impression.
-     *
-     * @param conteneur le conteneur pour lequel construire le pied de page
-     * @return le pied de page du document
-     */
-    public DocumentFooter buildPiedPagePlan(Conteneur conteneur) {
-        String contenurName = conteneur.getNom();
-        return new DocumentFooter(contenurName, null, null);
-    }
+      // Vérifier que le paramètre liste n’est pas nul
+      if(enceintes != null){
+         for(Enceinte enceinte : enceintes){
+            // Insérer chaque enceinte dans map selon sa position
+            positionMap.put(enceinte.getPosition(), enceinte);
+         }
+      }
 
-    /**
-     * Construit les détails du plan principal où les données principales sont écrites.
-     *
-     * @param conteneur le conteneur pour lequel construire les détails du plan
-     * @return les données du document
-     */
-    protected abstract DocumentData buildDetailPlan(Conteneur conteneur);
-
-
-    /**
-     * Obtient le producteur de documents utilisé pour produire le fichier.
-     * Ce producteur est spécifique au type de fichier : par exemple, Excel aura sa propre implémentation,
-     * PDF la sienne, etc.
-     *
-     * @return le producteur
-     */
-    protected abstract DocumentProducer getDocumentProducer();
-
-    /**
-     * Crée une Map de position associant des positions d'enceintes à leurs objets respectifs.
-     * Cela facilite la gestion et l'accès aux enceintes en fonction de leurs positions.
-     * @param enceintes La liste d'enceintes à mapper.
-     * @return Une map associant les positions aux enceintes.
-     */
-
-    protected Map<Integer, Enceinte> createMapEnceintesByPosition(List<Enceinte> enceintes){
-        // Créer une nouvelle Map vide pour stocker les associations entre positions et enceintes
-        Map<Integer, Enceinte> positionMap = new HashMap<>();
-
-        // Vérifier que le paramètre liste n’est pas nul
-        if(enceintes != null){
-            for(Enceinte enceinte : enceintes){
-                // Insérer chaque enceinte dans map selon sa position
-                positionMap.put(enceinte.getPosition(), enceinte);
-            }
-        }
-
-        return positionMap;
-    }
+      return positionMap;
+   }
 
 }

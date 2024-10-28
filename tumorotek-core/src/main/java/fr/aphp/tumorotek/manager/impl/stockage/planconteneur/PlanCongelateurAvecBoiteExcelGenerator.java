@@ -47,32 +47,36 @@ import fr.aphp.tumorotek.manager.stockage.EnceinteManager;
  * <p>Elle utilise un producteur de documents {@link DocumentWithDataAsTableExcelProducer} pour créer le fichier
  * Excel à partir des données fournies. La méthode {@code buildFileName} génère le nom de fichier pour le document
  * Excel basé sur une liste de conteneurs.</p>
+ *
+ * <p>Le modèle de conception et l'architecture de cette classe ont été fournis par C.H.</p>
  */
 public class PlanCongelateurAvecBoiteExcelGenerator extends AbstractPlanCongelateurAvecBoiteGenerator {
 
 
     private EnceinteManager enceinteManager;
 
-    private DocumentWithDataAsTableExcelProducer documentWithDataAsTableExcelProducer;
+    private DocumentProducer documentProducer;
 
+    public PlanCongelateurAvecBoiteExcelGenerator() {}
 
     public PlanCongelateurAvecBoiteExcelGenerator(EnceinteManager enceinteManager, DocumentWithDataAsTableExcelProducer documentWithDataAsTableExcelProducer) {
         this.enceinteManager = enceinteManager;
-        this.documentWithDataAsTableExcelProducer = documentWithDataAsTableExcelProducer;
+        this.documentProducer = documentWithDataAsTableExcelProducer;
     }
 
     public void setEnceinteManager(EnceinteManager enceinteManager) {
         this.enceinteManager = enceinteManager;
     }
 
-
-
+    public void setDocumentProducer(DocumentProducer documentWithDataAsTableExcelProducer){
+       this.documentProducer = documentWithDataAsTableExcelProducer;
+    }
 
 
 
     @Override
     protected DocumentProducer getDocumentProducer() {
-        return documentWithDataAsTableExcelProducer;
+        return documentProducer;
     }
 
     @Override

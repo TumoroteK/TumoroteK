@@ -60,15 +60,13 @@ public class CellContent {
 
 
     public CellContent(String text) {
-        this.text = (text == null) ? "" : text;
-        this.complement = "";
+        this.text = text;
         this.complementInItalic = false;
     }
 
     public CellContent(String text, String complement) {
-        this.text = (text == null) ? "" : text;
-        this.complement = (complement == null) ? "" : complement;
-        this.complementInItalic = !this.complement.isEmpty();
+        this(text);
+        this.complement=complement;
     }
 
     public CellContent(String text, String complement, boolean complementOnAnotherLine) {
@@ -77,51 +75,73 @@ public class CellContent {
     }
 
     public CellContent(String text, String complement, boolean complementInItalic, boolean complementOnAnotherLine) {
-        this.text = (text == null) ? "" : text;
-        this.complement = (complement == null) ? "" : complement;
-        this.complementInItalic = complementInItalic && !this.complement.isEmpty();
-        this.complementOnAnotherLine = complementOnAnotherLine;
+        this(text, complement, complementOnAnotherLine);
+        this.complementInItalic = complementInItalic;
     }
 
     public String getText() {
+        if(text == null) {
+           return "";
+        }
         return text;
     }
 
     public void setText(String text) {
-        this.text = (text == null) ? "" : text;
+        this.text = text;
     }
 
     public String getComplement() {
+        if(complement == null) {
+           return "";
+        }
         return complement;
     }
 
     public void setComplement(String complement) {
-        this.complement = (complement == null) ? "" : complement;
-        this.complementInItalic = !this.complement.isEmpty();
+        this.complement = complement;
     }
 
+
     public boolean isComplementInItalic() {
-        return complement != null && !complement.isEmpty() && complementInItalic;
+       return complementInItalic;
     }
 
     public void setComplementInItalic(boolean complementInItalic) {
-        if (!this.complement.isEmpty()) {
+
             this.complementInItalic = complementInItalic;
         }
-    }
 
     public boolean isComplementOnAnotherLine() {
-        return complement != null && !complement.isEmpty() && complementOnAnotherLine;
+       return complementOnAnotherLine;
     }
 
     public void setComplementOnAnotherLine(boolean complementOnAnotherLine) {
         this.complementOnAnotherLine = complementOnAnotherLine;
     }
 
+    /**
+     * Construit une représentation textuelle complète combinant les informations principales et complémentaires.
+     *
+     * @return Une chaîne contenant les parties pertinentes, bien agencées avec espaces/sauts de ligne selon les préférences.
+     */
+    public String buildContentValue() {
+       String separateur = " ";
+       if(isComplementOnAnotherLine()) {
+          separateur = System.getProperty("line.separator");
+       }
+       if(text == null) {
+          return "";
+       }
+       if(complement != null){
+          return new StringBuilder(text).append(separateur).append(complement).toString();
+       }
+       return text;
+
+    }
 
 
     @Override
     public String toString() {
-        return String.format("| %s %s |", text, complement);
+       return new StringBuilder("| ").append(text).append(" ").append(complement).append(" |").toString();
     }
 }

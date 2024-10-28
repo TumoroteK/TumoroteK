@@ -1,7 +1,7 @@
 package fr.aphp.tumorotek.manager.exception;
 
-public class ExcelWriteException extends RuntimeException {
-   // Constructor that accepts a message
+public class ExcelWriteException extends Exception {
+
    public ExcelWriteException(String message) {
       super(message);
    }

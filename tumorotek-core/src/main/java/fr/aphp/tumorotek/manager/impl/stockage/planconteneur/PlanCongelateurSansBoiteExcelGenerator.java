@@ -48,18 +48,29 @@ import fr.aphp.tumorotek.manager.stockage.EnceinteManager;
  * <p>Elle utilise un producteur de documents {@link DocumentWithDataAsTableExcelProducer} pour créer le fichier
  * Excel à partir des données fournies. La méthode {@code buildFileName} génère le nom de fichier pour le document
  * Excel basé sur une liste de conteneurs.</p>
+ *
+ *  * <p>Le modèle de conception et l'architecture de cette classe ont été fournis par C.H.</p>
  */
 public class PlanCongelateurSansBoiteExcelGenerator extends AbstractPlanCongelateurSansBoiteGenerator {
 
     private EnceinteManager enceinteManager;
 
-    private DocumentWithDataAsTableExcelProducer documentWithDataAsTableExcelProducer;
+    private DocumentProducer documentProducer;
 
 
+
+    public PlanCongelateurSansBoiteExcelGenerator() {}
+
+    public void setEnceinteManager(EnceinteManager enceinteManager){
+      this.enceinteManager = enceinteManager;
+    }
+    public void setDocumentProducer(DocumentProducer documentWithDataAsTableExcelProducer){
+       this.documentProducer = documentWithDataAsTableExcelProducer;
+    }
 
     public PlanCongelateurSansBoiteExcelGenerator(EnceinteManager enceinteManager, DocumentWithDataAsTableExcelProducer documentWithDataAsTableExcelProducer) {
         this.enceinteManager = enceinteManager;
-        this.documentWithDataAsTableExcelProducer = documentWithDataAsTableExcelProducer;
+        this.documentProducer = documentWithDataAsTableExcelProducer;
     }
 
 
@@ -75,9 +86,9 @@ public class PlanCongelateurSansBoiteExcelGenerator extends AbstractPlanCongelat
 
     @Override
     protected DocumentProducer getDocumentProducer() {
-        if (this.documentWithDataAsTableExcelProducer == null) {
+        if (this.documentProducer == null) {
             throw new IllegalStateException("documentWithDataAsTableExcelProducer has not been initialized.");
         }
-        return this.documentWithDataAsTableExcelProducer;
+        return this.documentProducer;
     }
 }

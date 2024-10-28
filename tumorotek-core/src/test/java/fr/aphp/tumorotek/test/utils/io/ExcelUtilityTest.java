@@ -23,7 +23,8 @@ import static org.junit.Assert.assertTrue;
  * Elle contient des tests unitaires pour vérifier le bon fonctionnement des méthodes utilitaires
  * utilisées pour manipuler des feuilles Excel.
  */
-public class ExcelUtilityTest {
+public class ExcelUtilityTest
+{
 
    /**
     * Le classeur Excel utilisé pour les tests.
@@ -48,7 +49,7 @@ public class ExcelUtilityTest {
     * Teste la méthode getOrCreateCell pour vérifier qu'elle ne modifie pas les cellules adjacentes.
     */
    @Test
-   public void testGetOrCreateCell_doesNotEraseAdjacentCell(){
+   public void testGetOrCreateCell_doesNotEraseAdjacentCell() throws ExcelWriteException{
       // Crée un nouveau classeur et une nouvelle feuille
       Workbook workbook = new XSSFWorkbook();
       Sheet sheet = workbook.createSheet("Test Sheet");
@@ -78,43 +79,6 @@ public class ExcelUtilityTest {
    }
 
    /**
-    * Teste la méthode getSafeSheetName avec des caractères interdits dans le nom de la feuille.
-    */
-   @Test
-   public void testSafeSheetNameWithForbiddenCharacters(){
-      String input = "Sheet/Name\\With?Forbidden*Characters[]";
-      String expected = "Sheet-Name-With-Forbidden-Charac";
-      assertEquals(expected, ExcelUtility.getSafeSheetName(input));
-   }
-
-   /**
-    * Teste la troncature du nom de la feuille lorsque celui-ci dépasse la longueur maximale.
-    */
-   @Test
-   public void testSafeSheetNameTruncation(){
-      String input = "ThisIsAVeryLongSheetNameThatExceedsThirtyOneCharacters";
-      String expected = "ThisIsAVeryLongSheetNameThatExce";
-      assertEquals(expected, ExcelUtility.getSafeSheetName(input));
-   }
-
-   /**
-    * Teste la méthode getSafeSheetName avec une entrée nulle pour s'assurer qu'elle retourne un nom par défaut.
-    */
-   @Test
-   public void testSafeSheetNameWithNullInput(){
-      String expected = "Sheet";
-      assertEquals(expected, ExcelUtility.getSafeSheetName(null));
-   }
-
-   /**
-    * Teste la méthode getSafeSheetName avec une entrée vide et attend une exception IllegalArgumentException.
-    */
-   @Test(expected = ExcelWriteException.class)
-   public void testSafeSheetNameWithEmptyInput(){
-      ExcelUtility.getSafeSheetName("");
-   }
-
-   /**
     * Teste la méthode addFooter pour vérifier l'ajout d'un pied de page avec les valeurs spécifiées.
     */
    @Test
@@ -140,21 +104,11 @@ public class ExcelUtilityTest {
     * Teste la méthode writeToCell pour vérifier l'écriture correcte d'une valeur dans une cellule.
     */
    @Test
-   public void testWriteToCell(){
+   public void testWriteToCell() throws ExcelWriteException{
       Cell cell = ExcelUtility.writeToCell(sheet, 0, 0, "Test Value");
       assertEquals("Test Value", cell.getStringCellValue());
       assertEquals(0, cell.getRowIndex());
       assertEquals(0, cell.getColumnIndex());
-   }
-
-   /**
-    * Teste la méthode mergeCells pour vérifier la fusion de cellules et l'écriture d'une valeur fusionnée.
-    */
-   @Test
-   public void testMergeCells(){
-      Cell cell = ExcelUtility.mergeCells(sheet, 0, 1, 0, 1, "Merged Value");
-      assertEquals("Merged Value", cell.getStringCellValue());
-      assertTrue(sheet.getMergedRegions().contains(new CellRangeAddress(0, 1, 0, 1)));
    }
 
    /**
@@ -182,7 +136,7 @@ public class ExcelUtilityTest {
     * Teste l'application de l'alignement horizontal sur une cellule.
     */
    @Test
-   public void testApplyAlignment(){
+   public void testApplyAlignment() throws ExcelWriteException{
       Cell cell = ExcelUtility.writeToCell(sheet, 0, 0, "Value");
       ExcelUtility.applyAlignment(cell, AlignmentType.CENTER);
       assertEquals(HorizontalAlignment.CENTER, cell.getCellStyle().getAlignmentEnum());

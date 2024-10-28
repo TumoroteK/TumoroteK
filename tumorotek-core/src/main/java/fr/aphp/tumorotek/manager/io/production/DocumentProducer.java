@@ -45,14 +45,26 @@ import java.util.List;
 /**
  * Interface pour la production de documents à partir d'une liste d'objets de données.
  *
- * L'interface  définit une méthode pour produire des documents à partir
+ * L'interface définit une méthode pour produire des documents à partir
  * d'une liste d'objets {@link DocumentWithDataAsTable} et pour écrire la sortie dans un {@link OutputStreamData}.
  * Les implémentations de cette interface sont responsables de la gestion des spécificités de la création
  * et du formatage des documents.
  *
+ *  <p>Le modèle de conception et l'architecture de cette classe ont été fournis par C.H.</p>
  */
 
 public interface DocumentProducer {
 
-    DocumentProducerResult produce(List<DocumentWithDataAsTable> listDocumentWithDataAsTable) throws IOException;
+    /**
+     * Produit un document basé sur une liste donnée d'objets contenant des données sous forme
+     * de tableau et écrit le résultat dans un flux de sortie spécifié.
+     *
+     * @param listDocumentWithDataAsTable La liste des objets qui contiennent les données à inclure dans le document.
+     * @param defaultColumnWidth La largeur par défaut des colonnes du tableau dans le document
+     * @return DocumentProducerResult Le résultat produit par cette opération
+     *
+     * @throws IOException Si une erreur se produit lors de l'écriture du document dans le flux de sortie.
+     */
+
+    DocumentProducerResult produce(List<DocumentWithDataAsTable> listDocumentWithDataAsTable, int defaultColumnWidth) throws IOException;
 }

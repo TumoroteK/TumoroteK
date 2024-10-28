@@ -1081,17 +1081,16 @@
 
 	<bean id="planCongelateurAvecBoiteExcelGenerator"
 		  class="fr.aphp.tumorotek.manager.impl.stockage.planconteneur.PlanCongelateurAvecBoiteExcelGenerator">
-		<constructor-arg ref="enceinteManager"/>
-		<constructor-arg ref="documentWithDataAsTableExcelProducer"/>
+		<property name="enceinteManager" ref="enceinteManager"/>
+		<property name="documentProducer" ref="documentWithDataAsTableExcelProducer"/>
 
 	</bean>
 
 	<bean id="planCongelateurSansBoiteExcelGenerator"
 		  class="fr.aphp.tumorotek.manager.impl.stockage.planconteneur.PlanCongelateurSansBoiteExcelGenerator">
-		<constructor-arg ref="enceinteManager"/>
-		<constructor-arg ref="documentWithDataAsTableExcelProducer"/>
+		<property name="enceinteManager" ref="enceinteManager"/>
+		<property name="documentProducer" ref="documentWithDataAsTableExcelProducer"/>
 	</bean>
-
 
 
 	<bean id="conteneurValidator"
