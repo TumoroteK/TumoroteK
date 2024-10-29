@@ -63,72 +63,95 @@ import java.util.Set;
  */
 public abstract class AbstractPlanCongelateurAvecBoiteGenerator extends AbstractPlanCongelateurGenerator {
 
-    abstract protected EnceinteManager getEnceinteManager();
+    protected abstract EnceinteManager getEnceinteManager();
 
+    /**
+     * Creates a list of EnceinteEmplacement objects for the highest level of a container.
+     * This method maps each position in the container to either an existing Enceinte or an empty placement.
+     *
+     * @param conteneur The container for which to create the EnceinteEmplacement list
+     * @return A list of EnceinteEmplacement objects representing all positions at the highest level
+     */
+    public List<EnceinteEmplacement> createHighestLevelEnceinteEmplacementList(Conteneur conteneur) {
+        List<EnceinteEmplacement> emplacementList = new ArrayList<>();
+        List<Enceinte> enceintes = getEnceinteManager()
+           .findByConteneurWithOrderManager(conteneur);
 
-    public DataAsTable buildDetailPlan(Conteneur conteneur){
-        DataAsTable dataAsTable = createEnceintesSection(conteneur);
-        int nbLigneEntete = dataAsTable.getNbCellRow();
+        Map<Integer, Enceinte> positionMap = createMapEnceintesByPosition(enceintes);
 
-//        List<EnceinteEmplacement> listEnceinteEmplacementPlusBasNiveau = listListEnceinteEmplacementParNiveau.get(nbLigneEntete-1);
-//        int nbEnceinteEmplacement = listEnceinteEmplacementPlusBasNiveau.size();
-//        for(int i=0; i< nbEnceinteEmplacement; i++) {
-//            EnceinteEmplacement enceinteEmplacement = listEnceinteEmplacementPlusBasNiveau.get(i);
-//            if(enceinteEmplacement != null) {
-//                Enceinte enceinteContenantLesBoites = enceinteEmplacement.getEnceinte();
-//                if(enceinteContenantLesBoites != null) {
-//                    buildColonneBoitePourUneEnceinte(dataAsTable, i, enceinteContenantLesBoites.getNbPlaces(), enceinteContenantLesBoites.getTerminales());
-//                }
-//            }
-//        }
-//        //si la ou les dernières enceintes sont vide, on ajoute null aux listes pour être cohérent avec les autres emplacement d'une enceinte vide
-//        int nbEnceinteEmplacementPlusBasNiveau = listEnceinteEmplacementPlusBasNiveau.size();
-//        for(CellRow cellRow : dataAsTable.getListCellRow()) {
-//            while(cellRow.getNbDataCell()<nbEnceinteEmplacementPlusBasNiveau) {
-//                cellRow.addDataCell(null);
-//            }
-//        }
+        for (int pos = 1; pos <= conteneur.getNbrEnc(); pos++) {
+            EnceinteEmplacement emplacement = new EnceinteEmplacement();
+            emplacement.setEnceinte(positionMap.get(pos));
+            emplacementList.add(emplacement);
+        }
 
-        //////////////////////////////////////////////////////////////////////////////////////
-
-        // Affichage du résultat pour valider le traitement.
-        // J'ai remplacé write() par print() pour mieux décrire ce que fait la fonction
-        dataAsTable.print();
-
-        return dataAsTable;
+        return emplacementList;
     }
 
-
-
-    //NB : DataAsTable.addDataCell() appelée ci-dessous se charge de créer la CellRow si celle-ci n'existe pas
-    private void buildColonneBoitePourUneEnceinte(DataAsTable dataAsTable, int indexColonne, int nbPlace, Set<Terminale> setTerminales) {
-        List<Terminale> listTerminaleATraiter = new ArrayList<Terminale>(setTerminales);
-        Collections.sort(listTerminaleATraiter, Comparator.comparing(Terminale::getPosition));
-        int nbTerminalesATraiter = listTerminaleATraiter.size();
-        //j est l'index des places du conteneur
-        int j = 0;
-        for(int i=0; i<nbTerminalesATraiter; i++) {
-            Terminale terminaleATraiter = listTerminaleATraiter.get(i);
-            //ajout des boîtes vides en cas de trous :
-            while(j<terminaleATraiter.getPosition()-1) {
-                dataAsTable.addDataCell(new DataCell(EMPTY_CELL_CONTENT), j, indexColonne);
-                j++;
+    protected void createLowestLevelEnceinteList(List<EnceinteEmplacement> parentList,
+       List<EnceinteEmplacement> resultList) {
+        for (EnceinteEmplacement parentEmplacement : parentList) {
+            Enceinte parent = parentEmplacement.getEnceinte();
+            if (parent == null) {
+                resultList.add(new EnceinteEmplacement());
+                continue;
             }
-            //ajout de la cellule correspondant à la boîte :
-            // /!\ ils manquent les parenthèses autour de l'alias
-            DataCell cellBoite = new DataCell(
-                    terminaleATraiter.getNom(),
-                    terminaleATraiter.getAlias(),
-                    terminaleATraiter.getCouleur() == null ? null : terminaleATraiter.getCouleur().getHexa());
-            dataAsTable.addDataCell(cellBoite, j, indexColonne);
-            j++;
-        }
-        //Gestion des trous en dernière position
-        while(j<nbPlace) {
-            dataAsTable.addDataCell(new DataCell(EMPTY_CELL_CONTENT), j, indexColonne);
-            j++;
+
+            List<Enceinte> children = getEnceinteManager()
+               .findByEnceintePereWithOrderManager(parent);
+
+            int position = 1;
+            for (Enceinte child : children) {
+                // Fill gaps before current position
+                while (position < child.getPosition()) {
+                    resultList.add(new EnceinteEmplacement());
+                    position++;
+                }
+
+                EnceinteEmplacement childEmplacement = new EnceinteEmplacement();
+                childEmplacement.setEnceinte(child);
+                resultList.add(childEmplacement);
+                position++;
+            }
+
+            // Fill remaining positions
+            while (position <= parent.getNbPlaces()) {
+                resultList.add(new EnceinteEmplacement());
+                position++;
+            }
         }
     }
+
+    private void buildColonneBoitePourUneEnceinte(DataAsTable dataAsTable,int columnIndex,int totalPlaces,Set<Terminale> terminals) {
+        List<Terminale> sortedTerminals = new ArrayList<>(terminals);
+        Collections.sort(sortedTerminals, Comparator.comparing(Terminale::getPosition));
+
+        int currentPosition = 0;
+        for (Terminale terminal : sortedTerminals) {
+            // Fill empty spaces
+            while (currentPosition < terminal.getPosition() - 1) {
+                dataAsTable.addDataCell(new DataCell(EMPTY_CELL_CONTENT),
+                   currentPosition, columnIndex);
+                currentPosition++;
+            }
+
+            // Add terminal box
+            DataCell boxCell = new DataCell(
+               terminal.getNom(),
+               terminal.getAlias(),
+               terminal.getCouleur() != null ? terminal.getCouleur().getHexa() : null
+            );
+            dataAsTable.addDataCell(boxCell, currentPosition, columnIndex);
+            currentPosition++;
+        }
+
+        while (currentPosition < totalPlaces) {
+            dataAsTable.addDataCell(new DataCell(EMPTY_CELL_CONTENT),
+               currentPosition, columnIndex);
+            currentPosition++;
+        }
+    }
+
 
     /**
      * Cette méthode crée un objet DataAsTable, représentant toutes les enceintes d'un conteneur spécifié.
@@ -187,6 +210,43 @@ public abstract class AbstractPlanCongelateurAvecBoiteGenerator extends Abstract
         }
         return enceintesData;
     }
+
+
+
+
+
+    public DataAsTable buildDetailPlan(Conteneur conteneur) {
+        DataAsTable dataAsTable = createEnceintesSection(conteneur);
+        List<List<EnceinteEmplacement>> levelsList = new ArrayList<>();
+
+        // Create top level
+        levelsList.add(createHighestLevelEnceinteEmplacementList(conteneur));
+
+        // Create intermediate levels
+        for (int i = 0; i < conteneur.getNbrNiv() - 2; i++) {
+            List<EnceinteEmplacement> currentLevel = new ArrayList<>();
+            createLowestLevelEnceinteList(levelsList.get(i), currentLevel);
+            levelsList.add(currentLevel);
+        }
+
+        // Process lowest level boxes
+        List<EnceinteEmplacement> lowestLevel = levelsList.get(levelsList.size() - 1);
+        for (int i = 0; i < lowestLevel.size(); i++) {
+            EnceinteEmplacement emplacement = lowestLevel.get(i);
+            if (emplacement != null && emplacement.getEnceinte() != null) {
+                Enceinte enceinte = emplacement.getEnceinte();
+                buildColonneBoitePourUneEnceinte(
+                   dataAsTable,
+                   i,
+                   enceinte.getNbPlaces(),
+                   enceinte.getTerminales()
+                );
+            }
+        }
+        return dataAsTable;
+    }
+
+   
 
 
 
