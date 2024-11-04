@@ -104,36 +104,42 @@ public class CellRow {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        // Vérifier si la liste de DataCell n'est pas nulle et n'est pas vide
 
+        // Check if listDataCell is not null and not empty
         if (listDataCell != null && !listDataCell.isEmpty()) {
-            // Itérer à travers chaque DataCell dans la liste
-
+            // Iterate through each DataCell in the list
             for (DataCell cell : listDataCell) {
-                // Ajouter le contenu de la cellule au StringBuilder
+                // Ensure cell is not null before accessing its methods
+                if (cell != null) {
+                    // Add cell content to StringBuilder
+                    sb.append(cell.getCellContent()).append(" ");
 
-                sb.append(cell.getCellContent()).append(" ");
-                // Vérifier si la cellule a un colspan supérieur à 1
-
-                if (cell.getColspan() > 1) {
-                    // Ajouter des tabulations pour chaque colspan supplémentaire
-
-                    for (int i = 1; i < cell.getColspan(); i++) {
-                        sb.append("\t");
+                    // Check if the cell has colspan greater than 1
+                    if (cell.getColspan() > 1) {
+                        // Add tabs for each additional colspan
+                        for (int i = 1; i < cell.getColspan(); i++) {
+                            sb.append("\t");
+                        }
                     }
-                }
-                sb.append("| ");
-            }
-            // Supprimer les deux derniers caractères ("| ") pour le formatage
 
-            sb.setLength(sb.length() - 2);
+                    sb.append("| ");
+                } else {
+                    // Handle case where DataCell is null, e.g., append placeholder text or skip.
+                    sb.append("empty cell").append("| ");
+                }
+            }
+
+            // Remove last two characters ("| ") for formatting only if there's content added.
+            if (sb.length() >= 2) {
+                sb.setLength(sb.length() - 2);
+            }
+
         } else {
             sb.append("[empty row]");
         }
 
         return sb.toString();
     }
-
 }
 
 
