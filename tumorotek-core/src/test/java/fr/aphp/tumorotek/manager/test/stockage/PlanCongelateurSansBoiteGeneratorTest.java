@@ -116,14 +116,14 @@ public class PlanCongelateurSansBoiteGeneratorTest extends AbstractManagerTest4
       // Assume we are testing the first container
       Conteneur conteneur = containers.get(0);
 
-      DataAsTable data = avecBoiteGenerator.createEnceintesSection(conteneur);
-      data.print();
-      System.out.println(data.getNbCellRow());
+      DocumentData data = avecBoiteGenerator.buildDetailPlan(conteneur);
+
+      System.out.println(data);
 
    }
 
    @Test
-   public void testGenerateWithPOI() throws IOException{
+   public void testGenerateSansBoiteWithPOI() throws IOException{
       long startTime = System.nanoTime();
       OutputStreamData result = sansBoiteGenerator.generate(containers);
       long endTime = System.nanoTime();
@@ -142,7 +142,56 @@ public class PlanCongelateurSansBoiteGeneratorTest extends AbstractManagerTest4
 
       try( FileOutputStream fileOutputStream = new FileOutputStream(new File(result.getFileName())) ){
          byteArrayOutputStream.writeTo(fileOutputStream);
-         //        }
+
+      }
+
+   }
+
+   @Test
+   public void testGenerateAvecBoiteWithPOI() throws IOException{
+      long startTime = System.nanoTime();
+      OutputStreamData result = avecBoiteGenerator.generate(containers);
+      long endTime = System.nanoTime();
+      long executionTime = endTime - startTime; // in nanoseconds
+
+      long executionTimeMillis = executionTime / 1_000_000;
+      System.out.println("Execution time: " + executionTimeMillis + " ms");
+
+      // Assert
+      assertNotNull(result);
+      System.out.println("File Name: " + result.getFileName());
+      assertEquals("xlsx", result.getFormat());
+      assertEquals("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", result.getContentType());
+
+      ByteArrayOutputStream byteArrayOutputStream = result.getOutputStream();
+
+      try( FileOutputStream fileOutputStream = new FileOutputStream(new File(result.getFileName())) ){
+         byteArrayOutputStream.writeTo(fileOutputStream);
+
+      }
+
+   }
+
+   @Test
+   public void testGenerateAvecBoite2WithPOI2() throws IOException{
+      long startTime = System.nanoTime();
+      OutputStreamData result = avecBoiteGenerator.generate(containers);
+      long endTime = System.nanoTime();
+      long executionTime = endTime - startTime; // in nanoseconds
+
+      long executionTimeMillis = executionTime / 1_000_000;
+      System.out.println("Execution time: " + executionTimeMillis + " ms");
+
+      // Assert
+      assertNotNull(result);
+      System.out.println("File Name: " + result.getFileName());
+      assertEquals("xlsx", result.getFormat());
+      assertEquals("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", result.getContentType());
+
+      ByteArrayOutputStream byteArrayOutputStream = result.getOutputStream();
+
+      try( FileOutputStream fileOutputStream = new FileOutputStream(new File(result.getFileName())) ){
+         byteArrayOutputStream.writeTo(fileOutputStream);
 
       }
 

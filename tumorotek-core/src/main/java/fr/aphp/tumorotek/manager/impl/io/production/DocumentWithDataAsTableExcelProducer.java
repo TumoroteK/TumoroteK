@@ -345,24 +345,12 @@ public class DocumentWithDataAsTableExcelProducer implements DocumentProducer
          // Gestion des colonnes fusionnées : vérifier si le DataCell doit occuper plusieurs colonnes
          if (dataCell.getColspan() > 1) {
             int endColIndex = colIndex + dataCell.getColspan() - 1;
-            CellRangeAddress newRegion = new CellRangeAddress(rowIndex, rowIndex, colIndex, endColIndex);
-
-            // Vérifier si la nouvelle région chevauche déjà des régions fusionnées existantes
-            boolean canMerge = true;
-            for (int i = 0; i < sheet.getNumMergedRegions(); i++) {
-               CellRangeAddress existing = sheet.getMergedRegion(i);
-               if (areRegionsOverlapping(existing, newRegion)) {
-                  canMerge = false;
-                  logger.warn("Cannot merge region {}:{} due to overlap with existing region {}:{}",
-                     newRegion.formatAsString(), existing.formatAsString());
-                  break;
-               }
-            }
-
-            if (canMerge) {
-               sheet.addMergedRegion(newRegion); // Ajouter une nouvelle région fusionnée si possible
-               colIndex += (dataCell.getColspan() - 1); // todo: SonarLint Remove this useless assignment to local variable "colIndex".
-            }
+            // Créer une adresse de plage pour les cellules fusionnées dans Excel
+            CellRangeAddress region = new CellRangeAddress(rowIndex, rowIndex, colIndex, endColIndex);
+            // Ajouter cette région fusionnée à la feuille pour que l'affichage soit correct
+            sheet.addMergedRegion(region);
+            // Sauter les colonnes qui ont été fusionnées afin d'éviter un traitement redondant lors des prochaines itérations
+            colIndex += (dataCell.getColspan() - 1); // !! SonarLint advice:  The value '(dataCell.getColspan() - 1)' assigned to 'colIndex' is never used
          }
          // Appliquer le contenu récupéré au format approprié dans la cellule créée
          applyCellContent(cell, content);
@@ -371,40 +359,6 @@ public class DocumentWithDataAsTableExcelProducer implements DocumentProducer
          logger.warn("DataCell est null à rowIndex {} and colIndex {}", rowIndex, colIndex);
 
       }
-   }
-   /**
-    * Vérifie si deux plages de cellules se chevauchent.
-    *
-    * Cette méthode détermine si deux objets CellRangeAddress, représentant des
-    * plages de cellules dans une feuille de calcul, se chevauchent. Deux plages
-    * se chevauchent si elles partagent au moins une cellule en commun.
-    *
-    * @param region1 La première plage de cellules à vérifier.
-    * @param region2 La deuxième plage de cellules à vérifier.
-    * @return true si les deux régions se chevauchent, false sinon.
-    */
-   private boolean areRegionsOverlapping(CellRangeAddress region1, CellRangeAddress region2) {
-      // Vérifie si l'une des régions est complètement avant ou après l'autre **horizontalement**
-      // Cela signifie que nous comparons les colonnes finales et premières des deux régions
-      if (region1.getLastColumn() < region2.getFirstColumn() ||
-         region2.getLastColumn() < region1.getFirstColumn()) {
-         // Si la dernière colonne de la région 1 est inférieure à la première colonne de la région 2,
-         // ou vice versa, cela signifie qu'il n'y a pas de chevauchement horizontal. Donc, nous retournons false.
-         return false;
-      }
-
-      // Vérifie si l'une des régions est complètement au-dessus ou en dessous de l'autre **verticalement**
-      // Ici, nous comparons les lignes finales et premières des deux régions
-      if (region1.getLastRow() < region2.getFirstRow() ||
-         region2.getLastRow() < region1.getFirstRow()) {
-         // Si la dernière ligne de la région 1 est inférieure à la première ligne de la région 2,
-         // ou vice versa, cela signifie qu'il n'y a pas de chevauchement vertical. Donc, nous retournons false.
-         return false;
-      }
-
-      // Si nous arrivons ici, cela signifie que les régions se chevauchent d'une manière ou d'une autre,
-      // soit horizontalement soit verticalement (ou les deux). Nous retournons true pour indiquer le chevauchement.
-      return true;
    }
 
    /**
@@ -551,7 +505,7 @@ public class DocumentWithDataAsTableExcelProducer implements DocumentProducer
 
    private enum ExcelFontStyle
    {
-      NORMAL, BOLD, ITALIC;
+      NORMAL, BOLD, ITALIC
    }
 
    /**

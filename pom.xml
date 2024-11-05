@@ -26,7 +26,7 @@
 		<!-- Tests -->
 		<test.database.host>localhost</test.database.host>
 		<test.database.username>root</test.database.username>
-		<test.database.password>root</test.database.password>
+		<test.database.password>Snufkin2417@</test.database.password>
 		<test.database.tumorotek.name>test_tumorotek</test.database.tumorotek.name>
 		<test.database.tumorotek_codes.name>test_tumorotek_codes</test.database.tumorotek_codes.name>
 		<test.database.tumorotek_interfacages.name>test_tumorotek_interfacages</test.database.tumorotek_interfacages.name>
