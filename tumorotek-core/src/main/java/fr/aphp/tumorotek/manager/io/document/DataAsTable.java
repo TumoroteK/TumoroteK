@@ -36,6 +36,7 @@
 
 package fr.aphp.tumorotek.manager.io.document;
 
+import fr.aphp.tumorotek.manager.io.document.detail.table.CellContent;
 import fr.aphp.tumorotek.manager.io.document.detail.table.CellRow;
 import fr.aphp.tumorotek.manager.io.document.detail.table.DataCell;
 
@@ -94,11 +95,7 @@ public class DataAsTable implements DocumentData {
     }
 
 
-    public void print() {
-        for (CellRow cellRow : listCellRow) {
-            System.out.println(cellRow);
-        }
-    }
+
 
     public int getNbCellRow() {
         return nbCellRow;
@@ -106,11 +103,30 @@ public class DataAsTable implements DocumentData {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder("DataAsTable[\n");
-        for (CellRow cellRow : listCellRow) {
-            sb.append(cellRow.toString()).append("\n");
+        if (listCellRow == null || listCellRow.isEmpty()) {
+            return "Empty Table";
         }
-        sb.append("]");
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("DataAsTable:\n");
+
+        // Process each row
+        for (CellRow row : listCellRow) {
+            if (row != null) {
+                // Add horizontal border
+                sb.append(row.getHorizontalBorder()).append("\n");
+                // Add row content
+                sb.append(row.toString()).append("\n");
+            } else {
+                sb.append("| <null row> |\n");
+            }
+        }
+
+        // Add final horizontal border
+        if (!listCellRow.isEmpty() && listCellRow.get(listCellRow.size() - 1) != null) {
+            sb.append(listCellRow.get(listCellRow.size() - 1).getHorizontalBorder()).append("\n");
+        }
+
         return sb.toString();
     }
 }

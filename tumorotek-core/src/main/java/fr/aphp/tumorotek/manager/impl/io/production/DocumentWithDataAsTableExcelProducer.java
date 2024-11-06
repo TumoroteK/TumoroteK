@@ -300,158 +300,86 @@ public class DocumentWithDataAsTableExcelProducer implements DocumentProducer
       }
    }
 
-   private void writeCellRowToExcel(Row row, CellRow cellRow, int rowIndex, int startColIndex) {
+   private void writeCellRowToExcel(Row row, CellRow cellRow, int rowIndex, int colIndex) {
       if (row == null) {
          logger.warn("Row is null at rowIndex {}", rowIndex);
          return;
       }
 
       Sheet sheet = row.getSheet();
-      int currentColIndex = startColIndex;
-      List<DataCell> dataCells = cellRow.getListDataCell();
+      DataCell dataCell = cellRow.getListDataCell().get(colIndex);
+      
+      if (dataCell != null) {
+         // Find the next available column that's not in any merged region
+         int nextAvailableCol = findNextAvailableColumn(sheet, rowIndex, colIndex);
+         
+         // Create cell at the next available position
+         Cell cell = row.createCell(nextAvailableCol);
+         CellStyle cellStyle = sheet.getWorkbook().createCellStyle();
+         cell.setCellStyle(cellStyle);
+         applyStyle(dataCell, cellStyle);
 
-      for (int i = 0; i < dataCells.size(); i++) {
-         DataCell dataCell = dataCells.get(i);
-
-         // Skip if we're in a previously merged region
-         if (isInMergedRegion(sheet, rowIndex, currentColIndex)) {
-            currentColIndex++;
-            continue;
+         CellContent content = dataCell.getCellContent();
+         if (content != null) {
+            cellStyle.setWrapText(content.isComplementOnAnotherLine());
          }
 
-         // Create cell at current position
-         Cell cell = row.createCell(currentColIndex);
+         // Handle colspan
+         if (dataCell.getColspan() > 1) {
+            int lastColIndex = nextAvailableCol + dataCell.getColspan() - 1;
 
-         if (dataCell != null) {
-            CellStyle cellStyle = sheet.getWorkbook().createCellStyle();
-            cell.setCellStyle(cellStyle);
-            applyStyle(dataCell, cellStyle);
-
-            CellContent content = dataCell.getCellContent();
-            if (content != null) {
-               cellStyle.setWrapText(content.isComplementOnAnotherLine());
+            if (logger.isDebugEnabled()) {
+               logger.debug("Creating merge region: row={}, startCol={}, endCol={}", 
+                  rowIndex, nextAvailableCol, lastColIndex);
             }
 
-            // Handle colspan
-            if (dataCell.getColspan() > 1) {
-               int endColIndex = currentColIndex + dataCell.getColspan() - 1;
-
-               if (logger.isDebugEnabled()) {
-                  logger.debug("Creating merge region: row={}, startCol={}, endCol={}, colspan={}",
-                     rowIndex, currentColIndex, endColIndex, dataCell.getColspan());
-               }
-
-               CellRangeAddress region = new CellRangeAddress(rowIndex, rowIndex,
-                  currentColIndex, endColIndex);
-
-               try {
-                  sheet.addMergedRegion(region);
-               } catch (IllegalArgumentException e) {
-                  logger.error("Failed to create merged region: {}", e.getMessage());
-               }
-
-               // Skip the columns we just merged
-               currentColIndex = endColIndex + 1;
-            } else {
-               currentColIndex++;
+            try {
+               CellRangeAddress region = new CellRangeAddress(
+                  rowIndex, rowIndex, nextAvailableCol, lastColIndex);
+               sheet.addMergedRegion(region);
+            } catch (IllegalArgumentException e) {
+               logger.error("Failed to merge: row={}, cols={}-{}: {}", 
+                  rowIndex, nextAvailableCol, lastColIndex, e.getMessage());
             }
-
-            applyCellContent(cell, content);
-         } else {
-            logger.warn("DataCell is null at rowIndex {} and colIndex {}",
-               rowIndex, currentColIndex);
-            currentColIndex++;
          }
+
+         applyCellContent(cell, content);
       }
    }
 
    /**
-    * Helper method to check if a cell position is part of an existing merged region
+    * Finds the next available column that's not part of any merged region
     */
-   private boolean isInMergedRegion(Sheet sheet, int rowIndex, int colIndex) {
-      for (int i = 0; i < sheet.getNumMergedRegions(); i++) {
-         CellRangeAddress region = sheet.getMergedRegion(i);
-         if (region.isInRange(rowIndex, colIndex)) {
-            return true;
-         }
-      }
-      return false;
-   }
-
-/*
-   *//**
-    * Ajoute une cellule à une ligne Excel avec le formatage approprié.
-    * 
-    * <p>Cette méthode gère :</p>
-    * <ul>
-    *   <li>La création de la cellule</li>
-    *   <li>L'application des styles (alignement, bordures, etc.)</li>
-    *   <li>La fusion des cellules si nécessaire</li>
-    *   <li>L'insertion du contenu</li>
-    * </ul>
-    *
-    * @param row La ligne Excel où ajouter la cellule
-    * @param cellRow Les données de la ligne complète
-    * @param rowIndex L'index de la ligne
-    * @param colIndex L'index de la colonne où ajouter la cellule
-    *//*
-   private void writeCellRowToExcel(Row row, CellRow cellRow, int rowIndex, int colIndex){
-      // Vérifie si l'objet Row n'est pas nul pour éviter NullPointerException
-      if (row == null) {
-         logger.warn("Row is null at rowIndex {}", rowIndex);
-         return; // Quitter la méthode si la ligne est nulle
-      }
-
-      // Créer une nouvelle cellule à l'index spécifié dans la ligne
-      Cell cell = row.createCell(colIndex);
-      // Obtenir la feuille associée à cette ligne pour appliquer des styles et des régions fusionnées
-      Sheet sheet = row.getSheet();
-      // Récupérer l'objet DataCell correspondant à la colonne actuelle depuis CellRow
-      DataCell dataCell = cellRow.getListDataCell().get(colIndex);
-
-      if(dataCell != null){ // Vérifier si le DataCell n'est pas nul avant de continuer
-         // Création d'un style pour cette cellule
-         CellStyle cellStyle = sheet.getWorkbook().createCellStyle();
-         // Appliquer le style au CellStyle créé en fonction du contenu et des propriétés du DataCell
-         cell.setCellStyle(cellStyle);
-         applyStyle(dataCell, cellStyle);
-         // Récupération du contenu de la cellule pour déterminer si un retour à la ligne est nécessaire
-         CellContent content = dataCell.getCellContent();
-         if(content != null){
-            // Si le contenu existe, définir le texte sur plusieurs lignes si indiqué
-            cellStyle.setWrapText(content.isComplementOnAnotherLine());
-         }
-         // Gestion des colonnes fusionnées : vérifier si le DataCell doit occuper plusieurs colonnes
-         if (dataCell.getColspan() > 1) {
-            int endColIndex = colIndex + dataCell.getColspan() - 1;
+   private int findNextAvailableColumn(Sheet sheet, int row, int startCol) {
+      int currentCol = startCol;
+      boolean foundSpot = false;
+      
+      while (!foundSpot) {
+         boolean isInMergedRegion = false;
+         
+         // Check all merged regions
+         for (int i = 0; i < sheet.getNumMergedRegions(); i++) {
+            CellRangeAddress region = sheet.getMergedRegion(i);
             
-            // Debug prints
-            System.out.println("Attempting to create merge region:");
-            System.out.println("Row Index: " + rowIndex);
-            System.out.println("Start Column: " + colIndex);
-            System.out.println("End Column: " + endColIndex);
-            System.out.println("Colspan: " + dataCell.getColspan());
-            
-            // Print existing merged regions
-            System.out.println("Existing merged regions:");
-            for (int i = 0; i < sheet.getNumMergedRegions(); i++) {
-                CellRangeAddress existing = sheet.getMergedRegion(i);
-                System.out.println("Region " + i + ": " + existing.formatAsString());
+            // If current position is in any merged region
+            if (row == region.getFirstRow() && 
+               currentCol >= region.getFirstColumn() && 
+               currentCol <= region.getLastColumn()) {
+               isInMergedRegion = true;
+               // Skip to end of this merged region
+               currentCol = region.getLastColumn() + 1;
+               break;
             }
-
-            CellRangeAddress region = new CellRangeAddress(rowIndex, rowIndex, colIndex, endColIndex);
-            System.out.println("New region to add: " + region.formatAsString());
-            
-            sheet.addMergedRegion(region);
          }
-         // Appliquer le contenu récupéré au format approprié dans la cellule créée
-         applyCellContent(cell, content);
-      }else{
-         // Journaliser un avertissement si aucune donnée n'est disponible pour cette cellule spécifique
-         logger.warn("DataCell est null à rowIndex {} and colIndex {}", rowIndex, colIndex);
-
+         
+         // If we found a spot not in any merged region
+         if (!isInMergedRegion) {
+            foundSpot = true;
+         }
       }
-   }*/
+      
+      return currentCol;
+   }
 
    /**
     * Applique le contenu à une cellule Excel avec le formatage de texte approprié.
