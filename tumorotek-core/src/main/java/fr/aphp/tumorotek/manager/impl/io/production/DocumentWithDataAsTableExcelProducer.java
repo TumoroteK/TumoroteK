@@ -283,23 +283,54 @@ public class DocumentWithDataAsTableExcelProducer implements DocumentProducer
     * @param rowIndex L'index de la ligne à créer
     * @param cellRow L'objet contenant les données de la ligne à écrire
     */
-   private void writeCellRow(Sheet sheet, int rowIndex, CellRow cellRow){
-      if(cellRow != null && cellRow.getListDataCell() != null){
+   private void writeCellRow(Sheet sheet, int rowIndex, CellRow cellRow) {
+      if(cellRow != null && cellRow.getListDataCell() != null) {
          Row row = sheet.createRow(rowIndex);
-         int currentColumn = 0; // Track the current column position
+         int currentColumn = 0;
 
-         for(DataCell dataCell : cellRow.getListDataCell()){
-            writeCellRowToExcel(row, dataCell, rowIndex, currentColumn);
+         for(DataCell dataCell : cellRow.getListDataCell()) {
+            if(dataCell != null) {
+               // Create and style the cell at the correct column position
+               Cell mainCell = row.createCell(currentColumn);
+               CellStyle mainCellStyle = sheet.getWorkbook().createCellStyle();
+               mainCell.setCellStyle(mainCellStyle);
+               applyStyle(dataCell, mainCellStyle);
 
-            // Increment by colspan or 1 if no colspan
-            if(dataCell != null){
-               currentColumn += Math.max(dataCell.getColspan(), 1);
-               System.out.println("Next column position will be: " + currentColumn);
+               // Handle cell merging if colspan > 1
+               if(dataCell.getColspan() > 1) {
+                  int lastColIndex = currentColumn + dataCell.getColspan() - 1;
+
+                  // Create all cells in the merge range
+                  for(int i = currentColumn + 1; i <= lastColIndex; i++) {
+                     Cell cell = row.createCell(i);
+                     CellStyle cellStyle = sheet.getWorkbook().createCellStyle();
+                     cell.setCellStyle(cellStyle);
+                     applyStyle(dataCell, cellStyle);
+                  }
+
+                  // Merge the cells
+                  CellRangeAddress region = new CellRangeAddress(
+                     rowIndex, rowIndex, currentColumn, lastColIndex);
+                  sheet.addMergedRegion(region);
+               }
+
+               // Apply content to the main cell
+               CellContent content = dataCell.getCellContent();
+               if(content != null) {
+                  mainCellStyle.setWrapText(content.isComplementOnAnotherLine());
+               }
+               applyCellContent(mainCell, content);
+
+               // Increment column position by colspan
+               currentColumn += dataCell.getColspan();
+            } else {
+               // For null cells, still create an empty cell and increment position
+               row.createCell(currentColumn++);
             }
-
          }
       }
    }
+
 
    private void writeCellRowToExcel(Row row, DataCell dataCell, int rowIndex, int colIndex){
       if(row == null){
@@ -372,42 +403,37 @@ public class DocumentWithDataAsTableExcelProducer implements DocumentProducer
     * @param cell La cellule Excel à remplir
     * @param content Le contenu à appliquer à la cellule
     */
-   private void applyCellContent(Cell cell, CellContent content){
-      System.out.println("applyCellContent to  " + content);
-      if(cell != null && content != null){
+   private void applyCellContent(Cell cell, CellContent content) {
+      if(cell != null && content != null) {
          Workbook wb = cell.getSheet().getWorkbook();
          Row row = cell.getRow();
-
-
-         String contentAsString = content.buildContentValue();
-
-         // Enable text wrapping for the cell
          CellStyle style = cell.getCellStyle();
-         style.setWrapText(true);
+         
+         // Enable text wrapping if needed
+         if(content.isShouldWrapText()) {
+             style.setWrapText(true);
+             
+             String contentAsString = content.buildContentValue();
+             // Count actual lines in content
+             int numberOfLines = contentAsString.split("\n").length;
+             // Use a minimum of 2 lines if wrapping is enabled
+             numberOfLines = Math.max(numberOfLines, 2);
+             // Adjust row height (use 300 for better visibility)
+             row.setHeight((short)(numberOfLines * 300));
+         }
 
+         // Set the content value
+         String contentAsString = content.buildContentValue();
+         if(content.isComplementInItalic()) {
+             RichTextString richText = new XSSFRichTextString(contentAsString);
+             richText.applyFont(0, content.getText().length(), getFont(ExcelFontStyle.NORMAL, wb));
+             richText.applyFont(content.getText().length(), richText.length(), getFont(ExcelFontStyle.ITALIC, wb));
+             cell.setCellValue(richText);
+         } else {
+             cell.setCellValue(contentAsString);
+         }
+         
          cell.setCellStyle(style);
-
-         if(content.isComplementOnAnotherLine()){
-            // Count number of lines (newline characters + 1)
-            // Count number of lines and add 50% padding (1.5 multiplier)
-            int numberOfLines = contentAsString.split("\n").length;
-            short newHeight = (short)(numberOfLines * 1.5 * 255);
-            row.setHeight(newHeight);
-         }
-         System.out.println("Content to write: " + contentAsString);
-
-         if(content.isComplementInItalic()){
-            System.out.println("trying to write in italic: ");
-            RichTextString richText = new XSSFRichTextString(contentAsString);
-            richText.applyFont(0, content.getText().length(), getFont(ExcelFontStyle.NORMAL, wb));
-            richText.applyFont(content.getText().length(), richText.length(), getFont(ExcelFontStyle.ITALIC, wb));
-            System.out.println(richText);
-            cell.setCellValue(richText);
-         }else{
-            cell.setCellValue(contentAsString);
-         }
-      }else{
-         logger.warn("Cell or content is null when applying content");
       }
    }
 

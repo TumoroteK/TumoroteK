@@ -57,11 +57,16 @@ public class CellContent {
     // Indique si le complément de texte doit être affiché sur une autre ligne.
     private boolean complementOnAnotherLine = false;
 
+    // Add a new field to explicitly control text wrapping
+    private boolean shouldWrapText = false;
+
 
 
     public CellContent(String text) {
         this.text = text;
         this.complementInItalic = false;
+        // Check if text needs wrapping (contains long strings or line breaks)
+        this.shouldWrapText = text != null && (text.contains("\n") || text.length() > 50);
     }
 
     public CellContent(String text, String complement) {
@@ -119,24 +124,62 @@ public class CellContent {
         this.complementOnAnotherLine = complementOnAnotherLine;
     }
 
+    // Add getter/setter for the new field
+    public boolean isShouldWrapText() {
+        return shouldWrapText || isComplementOnAnotherLine() || 
+               (text != null && text.contains("\n")) ||
+               (complement != null && complement.contains("\n"));
+    }
+
+    public void setShouldWrapText(boolean shouldWrapText) {
+        this.shouldWrapText = shouldWrapText;
+    }
+
     /**
      * Construit une représentation textuelle complète combinant les informations principales et complémentaires.
      *
      * @return Une chaîne contenant les parties pertinentes, bien agencées avec espaces/sauts de ligne selon les préférences.
      */
     public String buildContentValue() {
-       String separateur = " ";
-       if(isComplementOnAnotherLine()) {
-          separateur = System.getProperty("line.separator");
-       }
-       if(text == null) {
-          return "";
-       }
-       if(complement != null){
-          return new StringBuilder(text).append(separateur).append(complement).toString();
-       }
-       return text;
+        if(text == null) {
+            return "";
+        }
 
+        StringBuilder result = new StringBuilder(text);
+        
+        if(complement != null && !complement.isEmpty()) {
+            String separateur = isComplementOnAnotherLine() ? 
+                System.getProperty("line.separator") : " ";
+            result.append(separateur).append(complement);
+        }
+        
+        // If text should wrap but doesn't have explicit line breaks,
+        // add artificial line breaks for long content
+        if (shouldWrapText && !result.toString().contains("\n")) {
+            int maxLineLength = 50;
+            String content = result.toString();
+            if (content.length() > maxLineLength) {
+                result = new StringBuilder();
+                int start = 0;
+                while (start < content.length()) {
+                    int end = Math.min(start + maxLineLength, content.length());
+                    if (end < content.length()) {
+                        // Try to break at a space
+                        int lastSpace = content.lastIndexOf(' ', end);
+                        if (lastSpace > start) {
+                            end = lastSpace;
+                        }
+                    }
+                    result.append(content.substring(start, end));
+                    if (end < content.length()) {
+                        result.append("\n");
+                    }
+                    start = end + (end < content.length() && content.charAt(end) == ' ' ? 1 : 0);
+                }
+            }
+        }
+        
+        return result.toString();
     }
 
 
