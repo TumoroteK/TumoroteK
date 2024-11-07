@@ -44,7 +44,7 @@ public class EnceinteEmplacement {
         }
 
         int span;
-        if (this.enceinte == null) {
+        if (this.enceinte == null || isLastEnceinte) {
             span = 1;
         } else if (children.isEmpty() || isLastEnceinte) {
             span = enceinte.getNbPlaces();
