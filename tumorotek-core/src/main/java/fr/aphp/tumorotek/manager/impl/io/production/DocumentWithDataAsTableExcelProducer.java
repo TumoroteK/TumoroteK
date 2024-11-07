@@ -146,7 +146,7 @@ public class DocumentWithDataAsTableExcelProducer implements DocumentProducer
             Sheet sheet = ExcelUtility.createSheet(workbook, sheetName);
 
             // Définit la largeur par défaut des colonnes pour une meilleure lisibilité
-            sheet.setDefaultColumnWidth(defaultColumnWidth);
+//            sheet.setDefaultColumnWidth(defaultColumnWidth);
 
             // Écrit le contexte du document dans la feuille afin que les utilisateurs aient un aperçu des informations du contexte
             writeDocumentContext(sheet, document.getContext());
@@ -302,7 +302,7 @@ public class DocumentWithDataAsTableExcelProducer implements DocumentProducer
 
    private void writeCellRowToExcel(Row row, CellRow cellRow, int rowIndex, int colIndex) {
       if (row == null) {
-         logger.warn("Row is null at rowIndex {}", rowIndex);
+         System.out.println("Row is null at rowIndex " + rowIndex);
          return;
       }
 
@@ -310,75 +310,92 @@ public class DocumentWithDataAsTableExcelProducer implements DocumentProducer
       DataCell dataCell = cellRow.getListDataCell().get(colIndex);
       
       if (dataCell != null) {
-         // Find the next available column that's not in any merged region
-         int nextAvailableCol = findNextAvailableColumn(sheet, rowIndex, colIndex);
-         
-         // Create cell at the next available position
-         Cell cell = row.createCell(nextAvailableCol);
-         CellStyle cellStyle = sheet.getWorkbook().createCellStyle();
-         cell.setCellStyle(cellStyle);
-         applyStyle(dataCell, cellStyle);
+         // Print current cell info
+         System.out.println("\n=== Processing new cell ===");
+         System.out.println(String.format("Row: %d, Column: %d", rowIndex, colIndex));
+         System.out.println(String.format("Cell content: %s", 
+             dataCell.getCellContent() != null ? dataCell.getCellContent().getText() : "null"));
+         System.out.println(String.format("Colspan: %d", dataCell.getColspan()));
 
-         CellContent content = dataCell.getCellContent();
-         if (content != null) {
-            cellStyle.setWrapText(content.isComplementOnAnotherLine());
-         }
-
-         // Handle colspan
-         if (dataCell.getColspan() > 1) {
-            int lastColIndex = nextAvailableCol + dataCell.getColspan() - 1;
-
-            if (logger.isDebugEnabled()) {
-               logger.debug("Creating merge region: row={}, startCol={}, endCol={}", 
-                  rowIndex, nextAvailableCol, lastColIndex);
-            }
-
-            try {
-               CellRangeAddress region = new CellRangeAddress(
-                  rowIndex, rowIndex, nextAvailableCol, lastColIndex);
-               sheet.addMergedRegion(region);
-            } catch (IllegalArgumentException e) {
-               logger.error("Failed to merge: row={}, cols={}-{}: {}", 
-                  rowIndex, nextAvailableCol, lastColIndex, e.getMessage());
-            }
-         }
-
-         applyCellContent(cell, content);
-      }
-   }
-
-   /**
-    * Finds the next available column that's not part of any merged region
-    */
-   private int findNextAvailableColumn(Sheet sheet, int row, int startCol) {
-      int currentCol = startCol;
-      boolean foundSpot = false;
-      
-      while (!foundSpot) {
-         boolean isInMergedRegion = false;
-         
-         // Check all merged regions
+         // Print existing merged regions
+         System.out.println("\nCurrent merged regions:");
          for (int i = 0; i < sheet.getNumMergedRegions(); i++) {
-            CellRangeAddress region = sheet.getMergedRegion(i);
-            
-            // If current position is in any merged region
-            if (row == region.getFirstRow() && 
-               currentCol >= region.getFirstColumn() && 
-               currentCol <= region.getLastColumn()) {
-               isInMergedRegion = true;
-               // Skip to end of this merged region
-               currentCol = region.getLastColumn() + 1;
-               break;
-            }
+             CellRangeAddress region = sheet.getMergedRegion(i);
+             System.out.println(String.format("Region %d: %s%d to %s%d", 
+                 i,
+                 CellReference.convertNumToColString(region.getFirstColumn()),
+                 region.getFirstRow(),
+                 CellReference.convertNumToColString(region.getLastColumn()),
+                 region.getLastRow()));
          }
-         
-         // If we found a spot not in any merged region
-         if (!isInMergedRegion) {
-            foundSpot = true;
+
+         Cell mainCell = row.createCell(colIndex);
+         CellStyle mainCellStyle = sheet.getWorkbook().createCellStyle();
+         mainCell.setCellStyle(mainCellStyle);
+         applyStyle(dataCell, mainCellStyle);
+
+         if (dataCell.getColspan() > 1) {
+             int lastColIndex = colIndex + dataCell.getColspan() - 1;
+             
+             // Print merge attempt details
+             System.out.println(String.format("\nAttempting to merge: %s%d to %s%d", 
+                 CellReference.convertNumToColString(colIndex),
+                 rowIndex,
+                 CellReference.convertNumToColString(lastColIndex),
+                 rowIndex));
+
+             // Create and style merged cells
+             for (int i = colIndex + 1; i <= lastColIndex; i++) {
+                 Cell cell = row.createCell(i);
+                 CellStyle cellStyle = sheet.getWorkbook().createCellStyle();
+                 if (dataCell.isWithBorder()) {
+                     cellStyle.setBorderBottom(BorderStyle.THIN);
+                     cellStyle.setBorderTop(BorderStyle.THIN);
+                     cellStyle.setBorderRight(BorderStyle.THIN);
+                     cellStyle.setBorderLeft(BorderStyle.THIN);
+                 }
+                 cell.setCellStyle(cellStyle);
+             }
+
+             try {
+                 CellRangeAddress newRegion = new CellRangeAddress(
+                     rowIndex, rowIndex, colIndex, lastColIndex);
+                 
+                 // Check for overlap
+                 boolean hasOverlap = false;
+                 for (int i = 0; i < sheet.getNumMergedRegions(); i++) {
+                     CellRangeAddress existing = sheet.getMergedRegion(i);
+                     if (newRegion.intersects(existing)) {
+                         hasOverlap = true;
+                         System.out.println(String.format("\n!!! OVERLAP DETECTED !!!")); 
+                         System.out.println(String.format("New region: %s%d to %s%d", 
+                             CellReference.convertNumToColString(newRegion.getFirstColumn()),
+                             newRegion.getFirstRow(),
+                             CellReference.convertNumToColString(newRegion.getLastColumn()),
+                             newRegion.getLastRow()));
+                         System.out.println(String.format("Overlaps with existing: %s%d to %s%d", 
+                             CellReference.convertNumToColString(existing.getFirstColumn()),
+                             existing.getFirstRow(),
+                             CellReference.convertNumToColString(existing.getLastColumn()),
+                             existing.getLastRow()));
+                         break;
+                     }
+                 }
+
+                 if (!hasOverlap) {
+                     sheet.addMergedRegion(newRegion);
+                     System.out.println("Merge successful!");
+                 } else {
+                     System.out.println("Skipping merge due to overlap");
+                 }
+                 
+             } catch (Exception e) {
+                 System.out.println("\nMERGE ERROR: " + e.getMessage());
+             }
          }
+
+         System.out.println("=== Cell processing complete ===\n");
       }
-      
-      return currentCol;
    }
 
    /**

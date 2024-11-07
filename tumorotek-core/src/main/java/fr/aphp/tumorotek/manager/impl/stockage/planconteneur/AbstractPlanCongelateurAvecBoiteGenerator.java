@@ -121,7 +121,7 @@ public abstract class AbstractPlanCongelateurAvecBoiteGenerator extends Abstract
          for(EnceinteEmplacement emp : currentLevel){
             if(emp != null && emp.getEnceinte() != null){
                int colspan = emp.getColumnSpan();
-               System.out.printf(" Adding cell: Nom=%s, Colspan=%d", emp.getEnceinte().getNom(), colspan);
+               System.out.printf("| Adding cell: Nom=%s, Colspan=%d", emp.getEnceinte().getNom(), colspan);
                CellContent enceinteCellContent =
                   new CellContent(emp.getEnceinte().getNom(), emp.getEnceinte().getAlias(), true, true);
 
@@ -131,8 +131,10 @@ public abstract class AbstractPlanCongelateurAvecBoiteGenerator extends Abstract
 
                positionCellRow.addDataCell(cell);
             }else{
+               System.out.printf("| Adding cell: vide");
+
                // Create a "(vide)" cell instead of null
-               DataCell emptyCell = new DataCell(LIBELLE_EMPLACEMENT_BOITE_VIDE);
+               DataCell emptyCell = createDataCellForVide();
                // Should we set colspan for empty cells? Depends on your requirements
                emptyCell.setColspan(1);
                positionCellRow.addDataCell(emptyCell);
@@ -140,6 +142,12 @@ public abstract class AbstractPlanCongelateurAvecBoiteGenerator extends Abstract
          }
          dataAsTable.getListCellRow().add(0, positionCellRow);
       }
+   }
+
+   private DataCell createDataCellForVide(){
+      return  new DataCell(new CellContent(LIBELLE_EMPLACEMENT_BOITE_VIDE), null, 1, true, AlignmentType.CENTER);
+
+
    }
 
    private void HandleTerminales(DataAsTable dataAsTable){
@@ -272,7 +280,7 @@ public abstract class AbstractPlanCongelateurAvecBoiteGenerator extends Abstract
                   Enceinte childEnceinte = positionMap.get(position);
                   EnceinteEmplacement childEmplacement = new EnceinteEmplacement(childEnceinte);
 
-                  if (currentLevelNumber == totalEnceinteRowsNumber - 2) { // -2 because we're creating the next level
+                  if (currentLevelNumber == totalEnceinteRowsNumber - 1) { // -2 because we're creating the next level
                      childEmplacement.setIsLastEnceinte(true);
                   }
 
@@ -321,8 +329,7 @@ public abstract class AbstractPlanCongelateurAvecBoiteGenerator extends Abstract
 
             dataAsTable.addDataCell(cell, position - 1, currentColumn);
          }else{
-            DataCell emptyTerminaleCell =
-               new DataCell(new CellContent(LIBELLE_EMPLACEMENT_BOITE_VIDE), null, 1, true, AlignmentType.CENTER);
+            DataCell emptyTerminaleCell = createDataCellForVide();
             dataAsTable.addDataCell(emptyTerminaleCell, position - 1, currentColumn);
          }
       }
