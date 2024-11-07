@@ -4,12 +4,15 @@ import fr.aphp.tumorotek.model.stockage.Enceinte;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class EnceinteEmplacement {
     private final Enceinte enceinte;
     private final List<EnceinteEmplacement> children;
     private boolean isLastEnceinte;
+    private static final Map<EnceinteEmplacement, Integer> spanCache = new HashMap<>();
 
     public EnceinteEmplacement(Enceinte enceinte) {
         this.enceinte = enceinte;
@@ -35,21 +38,33 @@ public class EnceinteEmplacement {
      * @return number of terminal enceintes
      */
     public int getColumnSpan() {
-        // If this is a leaf node with no children, use nbPlaces
-        if (children.isEmpty() || isLastEnceinte) {
-            return 1;
+        // Check cache first
+        if (spanCache.containsKey(this)) {
+            return spanCache.get(this);
         }
 
-     
-        // For parent nodes, sum up children's spans
-        int span = 0;
-        for (EnceinteEmplacement child : children) {
-            if (child != null && child.getEnceinte() != null) {
-                span += child.getColumnSpan();
+        int span;
+        if (this.enceinte == null) {
+            span = 1;
+        } else if (children.isEmpty() || isLastEnceinte) {
+            span = enceinte.getNbPlaces();
+        } else {
+            span = 0;
+            for (EnceinteEmplacement child : children) {
+                if (child == null) {
+                    span += 1;
+                } else {
+                    span += child.getColumnSpan();
+                }
             }
+            span = Math.max(span, enceinte.getNbPlaces());
         }
 
-        return Math.max(span, enceinte.getNbPlaces());
+        // Cache the result
+        spanCache.put(this, span);
+        System.out.println("Final span for " + this + ": " + span);
+
+        return span;
     }
 
     public Enceinte getEnceinte() {
