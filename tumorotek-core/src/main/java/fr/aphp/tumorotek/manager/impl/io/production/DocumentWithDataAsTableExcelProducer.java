@@ -146,7 +146,7 @@ public class DocumentWithDataAsTableExcelProducer implements DocumentProducer
             Sheet sheet = ExcelUtility.createSheet(workbook, sheetName);
 
             // Définit la largeur par défaut des colonnes pour une meilleure lisibilité
-//            sheet.setDefaultColumnWidth(defaultColumnWidth);
+            sheet.setDefaultColumnWidth(defaultColumnWidth);
 
             // Écrit le contexte du document dans la feuille afin que les utilisateurs aient un aperçu des informations du contexte
             writeDocumentContext(sheet, document.getContext());
@@ -285,116 +285,83 @@ public class DocumentWithDataAsTableExcelProducer implements DocumentProducer
     * @param rowIndex L'index de la ligne à créer
     * @param cellRow L'objet contenant les données de la ligne à écrire
     */
-   private void writeCellRow(Sheet sheet, int rowIndex, CellRow cellRow){
-      // Récupère le nombre de cellules à partir de l'objet CellRow.
-      // Cette information est essentielle pour déterminer combien de fois nous devons itérer
-      // afin d'ajouter toutes les cellules à la nouvelle ligne.
-      int nbCell = cellRow.getListDataCell().size();
+   private void writeCellRow(Sheet sheet, int rowIndex, CellRow cellRow) {
+      if (cellRow != null && cellRow.getListDataCell() != null) {
+          Row row = sheet.createRow(rowIndex);
+          int currentColumn = 0; // Track the current column position
+          
+          for (DataCell dataCell : cellRow.getListDataCell()) {
+              writeCellRowToExcel(row, dataCell, rowIndex, currentColumn);
+              
+              // Increment by colspan or 1 if no colspan
+             if (dataCell != null ){
+                currentColumn += Math.max(dataCell.getColspan(), 1);
+                System.out.println("Next column position will be: " + currentColumn);
+             }
 
-      // Crée une nouvelle ligne à l'index spécifié dans la feuille donnée.
-      Row row = sheet.createRow(rowIndex);
-
-      // Itère sur chaque cellule que nous devons ajouter
-      for(int colIndex = 0; colIndex < nbCell; colIndex++){
-         writeCellRowToExcel(row, cellRow, rowIndex, colIndex);
+          }
       }
    }
 
-   private void writeCellRowToExcel(Row row, CellRow cellRow, int rowIndex, int colIndex) {
+   private void writeCellRowToExcel(Row row, DataCell dataCell, int rowIndex, int colIndex) {
       if (row == null) {
-         System.out.println("Row is null at rowIndex " + rowIndex);
-         return;
+          logger.warn("Row is null at rowIndex {}", rowIndex);
+          return;
       }
 
       Sheet sheet = row.getSheet();
-      DataCell dataCell = cellRow.getListDataCell().get(colIndex);
       
       if (dataCell != null) {
-         // Print current cell info
-         System.out.println("\n=== Processing new cell ===");
-         System.out.println(String.format("Row: %d, Column: %d", rowIndex, colIndex));
-         System.out.println(String.format("Cell content: %s", 
-             dataCell.getCellContent() != null ? dataCell.getCellContent().getText() : "null"));
-         System.out.println(String.format("Colspan: %d", dataCell.getColspan()));
+          System.out.println("\ntrying to write datacell to excel: " + dataCell.toString());
+          System.out.println(" at column: " + colIndex);
 
-         // Print existing merged regions
-         System.out.println("\nCurrent merged regions:");
-         for (int i = 0; i < sheet.getNumMergedRegions(); i++) {
-             CellRangeAddress region = sheet.getMergedRegion(i);
-             System.out.println(String.format("Region %d: %s%d to %s%d", 
-                 i,
-                 CellReference.convertNumToColString(region.getFirstColumn()),
-                 region.getFirstRow(),
-                 CellReference.convertNumToColString(region.getLastColumn()),
-                 region.getLastRow()));
-         }
+          Cell mainCell = row.createCell(colIndex);
+          CellStyle mainCellStyle = sheet.getWorkbook().createCellStyle();
+          mainCell.setCellStyle(mainCellStyle);
+          applyStyle(dataCell, mainCellStyle);
 
-         Cell mainCell = row.createCell(colIndex);
-         CellStyle mainCellStyle = sheet.getWorkbook().createCellStyle();
-         mainCell.setCellStyle(mainCellStyle);
-         applyStyle(dataCell, mainCellStyle);
+          if (dataCell.getColspan() > 1) {
+              int lastColIndex = colIndex + dataCell.getColspan() - 1;
+              System.out.println(" merging to column: " + lastColIndex);
+              
+              // Create and style all cells in the merge range
+              for (int i = colIndex + 1; i <= lastColIndex; i++) {
+                  Cell cell = row.createCell(i);
+                  CellStyle cellStyle = sheet.getWorkbook().createCellStyle();
+                  if (dataCell.isWithBorder()) {
+                      cellStyle.setBorderBottom(BorderStyle.THIN);
+                      cellStyle.setBorderTop(BorderStyle.THIN);
+                      cellStyle.setBorderRight(BorderStyle.THIN);
+                      cellStyle.setBorderLeft(BorderStyle.THIN);
+                  }
+                  
+                  // Apply special left border if specified
+                  if (dataCell.getHexaColorCodeForLeftBorder() != null) {
+                      cellStyle.setBorderLeft(BorderStyle.THICK);
+                      ((XSSFCellStyle) cellStyle).setLeftBorderColor(
+                          retrieveXSSFColorFromHex(dataCell.getHexaColorCodeForLeftBorder())
+                      );
+                  }
+                  
+                  cell.setCellStyle(cellStyle);
+              }
 
-         if (dataCell.getColspan() > 1) {
-             int lastColIndex = colIndex + dataCell.getColspan() - 1;
-             
-             // Print merge attempt details
-             System.out.println(String.format("\nAttempting to merge: %s%d to %s%d", 
-                 CellReference.convertNumToColString(colIndex),
-                 rowIndex,
-                 CellReference.convertNumToColString(lastColIndex),
-                 rowIndex));
+              try {
+                  CellRangeAddress region = new CellRangeAddress(
+                      rowIndex, rowIndex, colIndex, lastColIndex);
+                  sheet.addMergedRegion(region);
+              } catch (IllegalArgumentException e) {
+                  logger.error("Failed to merge: row={}, cols={}-{}: {}", 
+                      rowIndex, colIndex, lastColIndex, e.getMessage());
+              }
+          }
 
-             // Create and style merged cells
-             for (int i = colIndex + 1; i <= lastColIndex; i++) {
-                 Cell cell = row.createCell(i);
-                 CellStyle cellStyle = sheet.getWorkbook().createCellStyle();
-                 if (dataCell.isWithBorder()) {
-                     cellStyle.setBorderBottom(BorderStyle.THIN);
-                     cellStyle.setBorderTop(BorderStyle.THIN);
-                     cellStyle.setBorderRight(BorderStyle.THIN);
-                     cellStyle.setBorderLeft(BorderStyle.THIN);
-                 }
-                 cell.setCellStyle(cellStyle);
-             }
+          CellContent content = dataCell.getCellContent();
+          if (content != null) {
+              mainCellStyle.setWrapText(content.isComplementOnAnotherLine());
+          }
 
-             try {
-                 CellRangeAddress newRegion = new CellRangeAddress(
-                     rowIndex, rowIndex, colIndex, lastColIndex);
-                 
-                 // Check for overlap
-                 boolean hasOverlap = false;
-                 for (int i = 0; i < sheet.getNumMergedRegions(); i++) {
-                     CellRangeAddress existing = sheet.getMergedRegion(i);
-                     if (newRegion.intersects(existing)) {
-                         hasOverlap = true;
-                         System.out.println(String.format("\n!!! OVERLAP DETECTED !!!")); 
-                         System.out.println(String.format("New region: %s%d to %s%d", 
-                             CellReference.convertNumToColString(newRegion.getFirstColumn()),
-                             newRegion.getFirstRow(),
-                             CellReference.convertNumToColString(newRegion.getLastColumn()),
-                             newRegion.getLastRow()));
-                         System.out.println(String.format("Overlaps with existing: %s%d to %s%d", 
-                             CellReference.convertNumToColString(existing.getFirstColumn()),
-                             existing.getFirstRow(),
-                             CellReference.convertNumToColString(existing.getLastColumn()),
-                             existing.getLastRow()));
-                         break;
-                     }
-                 }
-
-                 if (!hasOverlap) {
-                     sheet.addMergedRegion(newRegion);
-                     System.out.println("Merge successful!");
-                 } else {
-                     System.out.println("Skipping merge due to overlap");
-                 }
-                 
-             } catch (Exception e) {
-                 System.out.println("\nMERGE ERROR: " + e.getMessage());
-             }
-         }
-
-         System.out.println("=== Cell processing complete ===\n");
+          applyCellContent(mainCell, content);
       }
    }
 
@@ -411,30 +378,21 @@ public class DocumentWithDataAsTableExcelProducer implements DocumentProducer
     * @param content Le contenu à appliquer à la cellule
     */
    private void applyCellContent(Cell cell, CellContent content){
-      // Vérifie si la cellule et le contenu ne sont pas nuls
-      if(cell != null && content != null){
-         // Récupère le classeur associé à la feuille contenant la cellule
-         Workbook wb = cell.getSheet().getWorkbook();
-         // Convertit le contenu en chaîne de caractères
-         String contentAsString = content.buildContentValue();
+      System.out.println("applyCellContent to  " + content.getText());
+      if (cell != null && content != null) {
+          Workbook wb = cell.getSheet().getWorkbook();
+          String contentAsString = content.buildContentValue();
 
-         // Vérifie si le texte doit être affiché en italique
-         if(content.isComplementInItalic()){
-            // Crée un objet RichTextString pour gérer les styles de texte
-            RichTextString richText = new XSSFRichTextString(contentAsString);
-            // Applique une police normale au début du texte jusqu'à sa longueur normale
-            richText.applyFont(0, content.getText().length(), getFont(ExcelFontStyle.NORMAL, wb));
-            // Applique une police italique après la partie normale du texte
-            richText.applyFont(content.getText().length(), richText.length(), getFont(ExcelFontStyle.ITALIC, wb));
-            // Définit la valeur de la cellule comme étant l'objet RichTextString formaté
-            cell.setCellValue(richText);
-         }else{
-            // Si aucun style spécial n'est nécessaire, définit simplement la valeur de la cellule comme chaîne
-            cell.setCellValue(contentAsString);
-         }
-      }else{
-         // Enregistre un avertissement si la cellule ou le contenu est nul pour faciliter le débogage
-         logger.warn("La cellule est nulle lors de l'application du contenu.");
+          if (content.isComplementInItalic()) {
+              RichTextString richText = new XSSFRichTextString(contentAsString);
+              richText.applyFont(0, content.getText().length(), getFont(ExcelFontStyle.NORMAL, wb));
+              richText.applyFont(content.getText().length(), richText.length(), getFont(ExcelFontStyle.ITALIC, wb));
+              cell.setCellValue(richText);
+          } else {
+              cell.setCellValue(contentAsString);
+          }
+      } else {
+          logger.warn("Cell or content is null when applying content");
       }
    }
 
