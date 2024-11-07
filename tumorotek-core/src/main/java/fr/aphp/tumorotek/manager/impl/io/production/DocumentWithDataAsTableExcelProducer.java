@@ -106,10 +106,9 @@ public class DocumentWithDataAsTableExcelProducer implements DocumentProducer
    // EnumMap est utilisé ici pour une meilleure performance et efficacité mémoire avec des clés enum.
    private final EnumMap<ExcelFontStyle, Font> fontCacheMap = new EnumMap<>(ExcelFontStyle.class);
 
-
-    /**
+   /**
     * Produit un document Excel à partir d'une liste de documents contenant des données tabulaires.
-    * 
+    *
     * <p>Cette méthode génère un fichier Excel XLSX en créant une feuille distincte pour chaque document 
     * de la liste fournie. Pour chaque document, elle :</p>
     * <ul>
@@ -136,7 +135,7 @@ public class DocumentWithDataAsTableExcelProducer implements DocumentProducer
 
       // Utilisation de try-with-resources pour gérer automatiquement la fermeture des ressources
       try( ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-           Workbook workbook = new XSSFWorkbook() ){ // Création d'un nouveau classeur Ex
+         Workbook workbook = new XSSFWorkbook() ){ // Création d'un nouveau classeur Ex
          // Parcourt chaque document dans la liste fournie
          for(DocumentWithDataAsTable document : listDocumentWithDataAsTable){
 
@@ -146,7 +145,7 @@ public class DocumentWithDataAsTableExcelProducer implements DocumentProducer
             Sheet sheet = ExcelUtility.createSheet(workbook, sheetName);
 
             // Définit la largeur par défaut des colonnes pour une meilleure lisibilité
-//            sheet.setDefaultColumnWidth(defaultColumnWidth);
+            //            sheet.setDefaultColumnWidth(defaultColumnWidth);
 
             // Écrit le contexte du document dans la feuille afin que les utilisateurs aient un aperçu des informations du contexte
             writeDocumentContext(sheet, document.getContext());
@@ -155,9 +154,8 @@ public class DocumentWithDataAsTableExcelProducer implements DocumentProducer
             writeDocumentData(sheet, document.getData());
 
             // Ajoute un pied de page à la feuille pour fournir des informations supplémentaires ou des références
-            ExcelUtility.addFooter(sheet, document.getFooter().getLeftData(),
-                                          document.getFooter().getCenterData(),
-                                          document.getFooter().getRightData());
+            ExcelUtility.addFooter(sheet, document.getFooter().getLeftData(), document.getFooter().getCenterData(),
+               document.getFooter().getRightData());
          }
 
          // Écrit le contenu complet du classeur dans le flux de sortie pour être utilisé ultérieurement
@@ -179,14 +177,14 @@ public class DocumentWithDataAsTableExcelProducer implements DocumentProducer
 
    /**
     * Écrit le contexte du document dans une feuille Excel.
-    * 
+    *
     * <p>Cette méthode parcourt la liste des paires label-valeur du contexte et les écrit
     * dans la feuille Excel. Chaque paire est écrite sur une nouvelle ligne, avec :</p>
     * <ul>
     *   <li>Le label dans la première colonne</li>
     *   <li>La valeur dans la deuxième colonne</li>
     * </ul>
-    * 
+    *
     * <p>Le formatage en gras est appliqué selon les propriétés isLabelInBold() et isValueInBold()
     * de chaque LabelValue.</p>
     *
@@ -242,7 +240,7 @@ public class DocumentWithDataAsTableExcelProducer implements DocumentProducer
 
    /**
     * Écrit les données tabulaires dans une feuille Excel.
-    * 
+    *
     * <p>Cette méthode prend les données structurées d'un DataAsTable et les transcrit
     * dans la feuille Excel fournie. L'écriture commence à la première ligne disponible
     * après le contenu existant dans la feuille.</p>
@@ -277,7 +275,7 @@ public class DocumentWithDataAsTableExcelProducer implements DocumentProducer
 
    /**
     * Écrit une ligne de données dans une feuille Excel.
-    * 
+    *
     * <p>Cette méthode crée une nouvelle ligne dans la feuille et y ajoute les cellules
     * selon les spécifications de l'objet CellRow fourni.</p>
     *
@@ -285,89 +283,86 @@ public class DocumentWithDataAsTableExcelProducer implements DocumentProducer
     * @param rowIndex L'index de la ligne à créer
     * @param cellRow L'objet contenant les données de la ligne à écrire
     */
-   private void writeCellRow(Sheet sheet, int rowIndex, CellRow cellRow) {
-      if (cellRow != null && cellRow.getListDataCell() != null) {
-          Row row = sheet.createRow(rowIndex);
-          int currentColumn = 0; // Track the current column position
-          
-          for (DataCell dataCell : cellRow.getListDataCell()) {
-              writeCellRowToExcel(row, dataCell, rowIndex, currentColumn);
-              
-              // Increment by colspan or 1 if no colspan
-             if (dataCell != null ){
-                currentColumn += Math.max(dataCell.getColspan(), 1);
-                System.out.println("Next column position will be: " + currentColumn);
-             }
+   private void writeCellRow(Sheet sheet, int rowIndex, CellRow cellRow){
+      if(cellRow != null && cellRow.getListDataCell() != null){
+         Row row = sheet.createRow(rowIndex);
+         int currentColumn = 0; // Track the current column position
 
-          }
+         for(DataCell dataCell : cellRow.getListDataCell()){
+            writeCellRowToExcel(row, dataCell, rowIndex, currentColumn);
+
+            // Increment by colspan or 1 if no colspan
+            if(dataCell != null){
+               currentColumn += Math.max(dataCell.getColspan(), 1);
+               System.out.println("Next column position will be: " + currentColumn);
+            }
+
+         }
       }
    }
 
-   private void writeCellRowToExcel(Row row, DataCell dataCell, int rowIndex, int colIndex) {
-      if (row == null) {
-          logger.warn("Row is null at rowIndex {}", rowIndex);
-          return;
+   private void writeCellRowToExcel(Row row, DataCell dataCell, int rowIndex, int colIndex){
+      if(row == null){
+         logger.warn("Row is null at rowIndex {}", rowIndex);
+         return;
       }
 
       Sheet sheet = row.getSheet();
-      
-      if (dataCell != null) {
-          System.out.println("\ntrying to write datacell to excel: " + dataCell.toString());
-          System.out.println(" at column: " + colIndex);
 
-          Cell mainCell = row.createCell(colIndex);
-          CellStyle mainCellStyle = sheet.getWorkbook().createCellStyle();
-          mainCell.setCellStyle(mainCellStyle);
-          applyStyle(dataCell, mainCellStyle);
+      if(dataCell != null){
+         System.out.println("\ntrying to write datacell to excel: " + dataCell.toString());
+         System.out.println(" at column: " + colIndex);
 
-          if (dataCell.getColspan() > 1) {
-              int lastColIndex = colIndex + dataCell.getColspan() - 1;
-              System.out.println(" merging to column: " + lastColIndex);
-              
-              // Create and style all cells in the merge range
-              for (int i = colIndex + 1; i <= lastColIndex; i++) {
-                  Cell cell = row.createCell(i);
-                  CellStyle cellStyle = sheet.getWorkbook().createCellStyle();
-                  if (dataCell.isWithBorder()) {
-                      cellStyle.setBorderBottom(BorderStyle.THIN);
-                      cellStyle.setBorderTop(BorderStyle.THIN);
-                      cellStyle.setBorderRight(BorderStyle.THIN);
-                      cellStyle.setBorderLeft(BorderStyle.THIN);
-                  }
-                  
-                  // Apply special left border if specified
-                  if (dataCell.getHexaColorCodeForLeftBorder() != null) {
-                      cellStyle.setBorderLeft(BorderStyle.THICK);
-                      ((XSSFCellStyle) cellStyle).setLeftBorderColor(
-                          retrieveXSSFColorFromHex(dataCell.getHexaColorCodeForLeftBorder())
-                      );
-                  }
-                  
-                  cell.setCellStyle(cellStyle);
-              }
+         Cell mainCell = row.createCell(colIndex);
+         CellStyle mainCellStyle = sheet.getWorkbook().createCellStyle();
+         mainCell.setCellStyle(mainCellStyle);
+         applyStyle(dataCell, mainCellStyle);
 
-              try {
-                  CellRangeAddress region = new CellRangeAddress(
-                      rowIndex, rowIndex, colIndex, lastColIndex);
-                  sheet.addMergedRegion(region);
-              } catch (IllegalArgumentException e) {
-                  logger.error("Failed to merge: row={}, cols={}-{}: {}", 
-                      rowIndex, colIndex, lastColIndex, e.getMessage());
-              }
-          }
+         if(dataCell.getColspan() > 1){
+            int lastColIndex = colIndex + dataCell.getColspan() - 1;
+            System.out.println(" merging to column: " + lastColIndex);
 
-          CellContent content = dataCell.getCellContent();
-          if (content != null) {
-              mainCellStyle.setWrapText(content.isComplementOnAnotherLine());
-          }
+            // Create and style all cells in the merge range
+            for(int i = colIndex + 1; i <= lastColIndex; i++){
+               Cell cell = row.createCell(i);
+               CellStyle cellStyle = sheet.getWorkbook().createCellStyle();
+               if(dataCell.isWithBorder()){
+                  cellStyle.setBorderBottom(BorderStyle.THIN);
+                  cellStyle.setBorderTop(BorderStyle.THIN);
+                  cellStyle.setBorderRight(BorderStyle.THIN);
+                  cellStyle.setBorderLeft(BorderStyle.THIN);
+               }
 
-          applyCellContent(mainCell, content);
+               // Apply special left border if specified
+               if(dataCell.getHexaColorCodeForLeftBorder() != null){
+                  cellStyle.setBorderLeft(BorderStyle.THICK);
+                  ((XSSFCellStyle) cellStyle).setLeftBorderColor(
+                     retrieveXSSFColorFromHex(dataCell.getHexaColorCodeForLeftBorder()));
+               }
+
+               cell.setCellStyle(cellStyle);
+            }
+
+            try{
+               CellRangeAddress region = new CellRangeAddress(rowIndex, rowIndex, colIndex, lastColIndex);
+               sheet.addMergedRegion(region);
+            }catch(IllegalArgumentException e){
+               logger.error("Failed to merge: row={}, cols={}-{}: {}", rowIndex, colIndex, lastColIndex, e.getMessage());
+            }
+         }
+
+         CellContent content = dataCell.getCellContent();
+         if(content != null){
+            mainCellStyle.setWrapText(content.isComplementOnAnotherLine());
+         }
+
+         applyCellContent(mainCell, content);
       }
    }
 
    /**
     * Applique le contenu à une cellule Excel avec le formatage de texte approprié.
-    * 
+    *
     * <p>Cette méthode gère le formatage du texte, notamment :</p>
     * <ul>
     *   <li>L'application de l'italique sur les parties complémentaires du texte</li>
@@ -378,27 +373,47 @@ public class DocumentWithDataAsTableExcelProducer implements DocumentProducer
     * @param content Le contenu à appliquer à la cellule
     */
    private void applyCellContent(Cell cell, CellContent content){
-      System.out.println("applyCellContent to  " + content.getText());
-      if (cell != null && content != null) {
-          Workbook wb = cell.getSheet().getWorkbook();
-          String contentAsString = content.buildContentValue();
+      System.out.println("applyCellContent to  " + content);
+      if(cell != null && content != null){
+         Workbook wb = cell.getSheet().getWorkbook();
+         Row row = cell.getRow();
 
-          if (content.isComplementInItalic()) {
-              RichTextString richText = new XSSFRichTextString(contentAsString);
-              richText.applyFont(0, content.getText().length(), getFont(ExcelFontStyle.NORMAL, wb));
-              richText.applyFont(content.getText().length(), richText.length(), getFont(ExcelFontStyle.ITALIC, wb));
-              cell.setCellValue(richText);
-          } else {
-              cell.setCellValue(contentAsString);
-          }
-      } else {
-          logger.warn("Cell or content is null when applying content");
+
+         String contentAsString = content.buildContentValue();
+
+         // Enable text wrapping for the cell
+         CellStyle style = cell.getCellStyle();
+         style.setWrapText(true);
+
+         cell.setCellStyle(style);
+
+         if(content.isComplementOnAnotherLine()){
+            // Count number of lines (newline characters + 1)
+            // Count number of lines and add 50% padding (1.5 multiplier)
+            int numberOfLines = contentAsString.split("\n").length;
+            short newHeight = (short)(numberOfLines * 1.5 * 255);
+            row.setHeight(newHeight);
+         }
+         System.out.println("Content to write: " + contentAsString);
+
+         if(content.isComplementInItalic()){
+            System.out.println("trying to write in italic: ");
+            RichTextString richText = new XSSFRichTextString(contentAsString);
+            richText.applyFont(0, content.getText().length(), getFont(ExcelFontStyle.NORMAL, wb));
+            richText.applyFont(content.getText().length(), richText.length(), getFont(ExcelFontStyle.ITALIC, wb));
+            System.out.println(richText);
+            cell.setCellValue(richText);
+         }else{
+            cell.setCellValue(contentAsString);
+         }
+      }else{
+         logger.warn("Cell or content is null when applying content");
       }
    }
 
-    /**
+   /**
     * Applique les styles visuels à une cellule Excel.
-    * 
+    *
     * <p>Cette méthode configure :</p>
     * <ul>
     *   <li>L'alignement horizontal du contenu</li>
@@ -409,39 +424,38 @@ public class DocumentWithDataAsTableExcelProducer implements DocumentProducer
     * @param dataCell L'objet contenant les spécifications de style
     * @param cellStyle Le style de cellule Excel à configurer
     */
-   private void applyStyle(DataCell dataCell, CellStyle cellStyle) {
-      if(dataCell != null && cellStyle != null) {
+   private void applyStyle(DataCell dataCell, CellStyle cellStyle){
+      if(dataCell != null && cellStyle != null){
          // Récupération du type d'alignement défini dans la cellule de données
-          AlignmentType alignmentType = dataCell.getAlignmentType();
+         AlignmentType alignmentType = dataCell.getAlignmentType();
          // Application du type d'alignement au style de cellule
-          switch(alignmentType) {
-              case CENTER:
-                  cellStyle.setAlignment(HorizontalAlignment.CENTER);
-                  break;
-              case LEFT:
-                  cellStyle.setAlignment(HorizontalAlignment.LEFT);
-                  break;
-              case RIGHT:
-                  cellStyle.setAlignment(HorizontalAlignment.RIGHT);
-                  break;
-          }
+         switch(alignmentType){
+            case CENTER:
+               cellStyle.setAlignment(HorizontalAlignment.CENTER);
+               break;
+            case LEFT:
+               cellStyle.setAlignment(HorizontalAlignment.LEFT);
+               break;
+            case RIGHT:
+               cellStyle.setAlignment(HorizontalAlignment.RIGHT);
+               break;
+         }
          // Vérification si la cellule doit avoir des bordures visibles
-          if(dataCell.isWithBorder()) {
-              cellStyle.setBorderBottom(BorderStyle.THIN);
-              cellStyle.setBorderTop(BorderStyle.THIN);
-              cellStyle.setBorderRight(BorderStyle.THIN);
-              cellStyle.setBorderLeft(BorderStyle.THIN);
-          }
+         if(dataCell.isWithBorder()){
+            cellStyle.setBorderBottom(BorderStyle.THIN);
+            cellStyle.setBorderTop(BorderStyle.THIN);
+            cellStyle.setBorderRight(BorderStyle.THIN);
+            cellStyle.setBorderLeft(BorderStyle.THIN);
+         }
          // Vérifie s'il y a un code couleur hexadécimal pour la bordure gauche
-          if(dataCell.getHexaColorCodeForLeftBorder() != null) {
-             // Définit une bordure épaisse pour la bordure gauche afin d'accentuer cette partie
-              cellStyle.setBorderLeft(BorderStyle.THICK);
-              ((XSSFCellStyle) cellStyle).setLeftBorderColor(
-                 // Récupère et applique la couleur correspondante à partir du code hexadécimal fourni
-                  retrieveXSSFColorFromHex(dataCell.getHexaColorCodeForLeftBorder())
-              );
-          }
-      } else {
+         if(dataCell.getHexaColorCodeForLeftBorder() != null){
+            // Définit une bordure épaisse pour la bordure gauche afin d'accentuer cette partie
+            cellStyle.setBorderLeft(BorderStyle.THICK);
+            ((XSSFCellStyle) cellStyle).setLeftBorderColor(
+               // Récupère et applique la couleur correspondante à partir du code hexadécimal fourni
+               retrieveXSSFColorFromHex(dataCell.getHexaColorCodeForLeftBorder()));
+         }
+      }else{
          // Enregistre un avertissement si l'un des paramètres est nul pour éviter des erreurs lors du traitement ultérieur.
          logger.warn("DataCell ou CellStyle est nul lors de l'application du style.");
       }
@@ -449,7 +463,7 @@ public class DocumentWithDataAsTableExcelProducer implements DocumentProducer
 
    /**
     * Récupère ou crée une couleur XSSFColor à partir d'un code hexadécimal.
-    * 
+    *
     * <p>Cette méthode utilise un cache pour optimiser les performances en évitant
     * de recréer les mêmes couleurs. Si le code hexadécimal est invalide ou null,
     * retourne la couleur noire par défaut.</p>
@@ -457,39 +471,39 @@ public class DocumentWithDataAsTableExcelProducer implements DocumentProducer
     * @param hexCode Le code hexadécimal de la couleur (format "#RRGGBB")
     * @return La couleur XSSFColor correspondante
     */
-   private XSSFColor retrieveXSSFColorFromHex(String hexCode) {
+   private XSSFColor retrieveXSSFColorFromHex(String hexCode){
       // Vérification initiale du code hexadécimal pour éviter le traitement de valeurs nulles
-      if(hexCode != null) {
-          // Tentative de récupération de la couleur depuis le cache
-          // L'utilisation du cache améliore significativement les performances en évitant
-          // de recréer les mêmes couleurs plusieurs fois
-          XSSFColor result = colorCacheMap.get(hexCode);
-          
-          // Si la couleur n'existe pas encore dans le cache, nous devons la créer
-          if(result == null) {
-              try {
-                  // Création d'une nouvelle instance de XSSFColor
-                  // Cette approche est plus coûteuse en ressources, d'où l'importance du cache
-                  result = new XSSFColor();
-                  
-                  // Conversion du code hexadécimal en format compatible avec XSSFColor
-                  // Le substring(1) retire le caractère '#' du début du code hexadécimal
-                  result.setARGBHex(hexCode.substring(1));
-                  
-                  // Stockage de la nouvelle couleur dans le cache pour une utilisation future
-                  // Optimisation cruciale pour les documents contenant beaucoup de cellules colorées
-                  colorCacheMap.put(hexCode, result);
-                  
-              } catch(IllegalArgumentException e) {
-                  // Gestion appropriée des erreurs pour les codes hexadécimaux invalides
-                  // La journalisation aide au débogage tout en maintenant la stabilité du programme
-                  logger.error("Invalid hex color code: {}", hexCode, e);
-                  // Retour d'une couleur par défaut (noir) pour assurer la continuité du programme
-                  return BLACK_XSSF_COLOR;
-              }
-          }
-          // Retour de la couleur, qu'elle soit nouvelle ou récupérée du cache
-          return result;
+      if(hexCode != null){
+         // Tentative de récupération de la couleur depuis le cache
+         // L'utilisation du cache améliore significativement les performances en évitant
+         // de recréer les mêmes couleurs plusieurs fois
+         XSSFColor result = colorCacheMap.get(hexCode);
+
+         // Si la couleur n'existe pas encore dans le cache, nous devons la créer
+         if(result == null){
+            try{
+               // Création d'une nouvelle instance de XSSFColor
+               // Cette approche est plus coûteuse en ressources, d'où l'importance du cache
+               result = new XSSFColor();
+
+               // Conversion du code hexadécimal en format compatible avec XSSFColor
+               // Le substring(1) retire le caractère '#' du début du code hexadécimal
+               result.setARGBHex(hexCode.substring(1));
+
+               // Stockage de la nouvelle couleur dans le cache pour une utilisation future
+               // Optimisation cruciale pour les documents contenant beaucoup de cellules colorées
+               colorCacheMap.put(hexCode, result);
+
+            }catch(IllegalArgumentException e){
+               // Gestion appropriée des erreurs pour les codes hexadécimaux invalides
+               // La journalisation aide au débogage tout en maintenant la stabilité du programme
+               logger.error("Invalid hex color code: {}", hexCode, e);
+               // Retour d'une couleur par défaut (noir) pour assurer la continuité du programme
+               return BLACK_XSSF_COLOR;
+            }
+         }
+         // Retour de la couleur, qu'elle soit nouvelle ou récupérée du cache
+         return result;
       }
       // Retour de la couleur noire par défaut si le code hexadécimal est null
       // Cela assure que la méthode renvoie toujours une valeur valide
@@ -505,7 +519,7 @@ public class DocumentWithDataAsTableExcelProducer implements DocumentProducer
 
    /**
     * Récupère ou crée une police Excel selon le type spécifié.
-    * 
+    *
     * <p>Cette méthode utilise un cache pour optimiser les performances en évitant
     * de recréer les mêmes polices. Les types de police disponibles sont :</p>
     * <ul>
