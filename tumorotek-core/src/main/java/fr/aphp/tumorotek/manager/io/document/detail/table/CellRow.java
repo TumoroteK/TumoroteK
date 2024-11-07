@@ -103,40 +103,40 @@ public class CellRow {
 
     @Override
     public String toString() {
+        if (listDataCell == null || listDataCell.isEmpty()) {
+            return "| <empty row> |";
+        }
+
         StringBuilder sb = new StringBuilder();
 
-        // Check if listDataCell is not null and not empty
-        if (listDataCell != null && !listDataCell.isEmpty()) {
-            // Iterate through each DataCell in the list
-            for (DataCell cell : listDataCell) {
-                // Ensure cell is not null before accessing its methods
-                if (cell != null) {
-                    // Add cell content to StringBuilder
-                    sb.append(cell.getCellContent()).append(" ");
-
-                    // Check if the cell has colspan greater than 1
-                    if (cell.getColspan() > 1) {
-                        // Add tabs for each additional colspan
-                        for (int i = 1; i < cell.getColspan(); i++) {
-                            sb.append("\t");
-                        }
-                    }
-
-                    sb.append("| ");
-                } else {
-                    // Handle case where DataCell is null, e.g., append placeholder text or skip.
-                    sb.append("empty cell").append("| ");
-                }
-            }
-
-            // Remove last two characters ("| ") for formatting only if there's content added.
-            if (sb.length() >= 2) {
-                sb.setLength(sb.length() - 2);
-            }
-
-        } else {
-            sb.append("[empty row]");
+        // Process each cell in the row
+        for (DataCell cell : listDataCell) {
+            sb.append("| ");
+            sb.append(cell != null ? cell.toString() : "(vide)");
+            sb.append(" ");
         }
+        sb.append("|");
+
+        return sb.toString();
+    }
+
+    public String getHorizontalBorder() {
+        if (listDataCell == null) {
+            return "+---------------+";
+        }
+
+        StringBuilder sb = new StringBuilder();
+        for (DataCell cell : listDataCell) {
+            sb.append("+");
+            int length = 15; // base length for each cell
+            if (cell != null && cell.getColspan() > 1) {
+                length = length * cell.getColspan();
+            }
+            for (int i = 0; i < length; i++) {
+                sb.append("-");
+            }
+        }
+        sb.append("+");
 
         return sb.toString();
     }

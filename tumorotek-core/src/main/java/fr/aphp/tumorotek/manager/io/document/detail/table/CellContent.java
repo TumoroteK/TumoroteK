@@ -140,8 +140,17 @@ public class CellContent {
     }
 
 
-    @Override
-    public String toString() {
-       return new StringBuilder("| ").append(text).append(" ").append(complement).append(" |").toString();
-    }
+   @Override
+   public String toString() {
+      StringBuilder sb = new StringBuilder();
+
+      if (text != null) {
+         sb.append(text);
+         if (complement != null && !complement.isEmpty()) {
+            sb.append(" (").append(complement).append(")");
+         }
+      }
+
+      return sb.toString();
+   }
 }

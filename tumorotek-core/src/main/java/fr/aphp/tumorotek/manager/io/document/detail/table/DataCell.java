@@ -132,6 +132,28 @@ public class DataCell {
 
     @Override
     public String toString() {
-        return String.format("[%s]", (cellContent != null ? cellContent.toString() : "null"));
+        StringBuilder sb = new StringBuilder();
+
+        if (cellContent != null) {
+            sb.append(cellContent.toString());
+
+            // Add colspan visual representation
+            if (colspan > 1) {
+                sb.append(" <colspan=").append(colspan).append(">");
+                // Add extra spacing for colspan
+                for (int i = 1; i < colspan; i++) {
+                    sb.append("\t");
+                }
+            }
+
+            // Add color code if present
+            if (hexaColorCodeForLeftBorder != null) {
+                sb.append(" [color=").append(hexaColorCodeForLeftBorder).append("]");
+            }
+        } else {
+            sb.append("(vide)");
+        }
+
+        return sb.toString();
     }
 }
