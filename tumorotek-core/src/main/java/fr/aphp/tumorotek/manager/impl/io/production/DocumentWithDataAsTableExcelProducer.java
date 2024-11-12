@@ -143,9 +143,9 @@ public class DocumentWithDataAsTableExcelProducer implements DocumentProducer
 
             // Crée une nouvelle feuille dans le classeur avec le nom spécifié
             Sheet sheet = ExcelUtility.createSheet(workbook, sheetName);
-
+            // ToDo: A discuter.Lors des tests, décommentez cette ligne pour comprendre pourquoi elle a été commentée.
             // Définit la largeur par défaut des colonnes pour une meilleure lisibilité
-            //            sheet.setDefaultColumnWidth(defaultColumnWidth);
+            // sheet.setDefaultColumnWidth(defaultColumnWidth);
 
             // Écrit le contexte du document dans la feuille afin que les utilisateurs aient un aperçu des informations du contexte
             writeDocumentContext(sheet, document.getContext());
@@ -284,112 +284,67 @@ public class DocumentWithDataAsTableExcelProducer implements DocumentProducer
     * @param cellRow L'objet contenant les données de la ligne à écrire
     */
    private void writeCellRow(Sheet sheet, int rowIndex, CellRow cellRow) {
+      // Vérifie que cellRow et sa liste de cellules ne sont pas nulles
       if(cellRow != null && cellRow.getListDataCell() != null) {
-         Row row = sheet.createRow(rowIndex);
-         int currentColumn = 0;
+          // Crée une nouvelle ligne dans la feuille Excel à l'index spécifié
+          Row row = sheet.createRow(rowIndex);
+          // Initialise l'index de la colonne courante à 0
+          int currentColumn = 0;
 
-         for(DataCell dataCell : cellRow.getListDataCell()) {
-            if(dataCell != null) {
-               // Create and style the cell at the correct column position
-               Cell mainCell = row.createCell(currentColumn);
-               CellStyle mainCellStyle = sheet.getWorkbook().createCellStyle();
-               mainCell.setCellStyle(mainCellStyle);
-               applyStyle(dataCell, mainCellStyle);
+          // Parcourt chaque cellule de données dans la ligne
+          for(DataCell dataCell : cellRow.getListDataCell()) {
+              if(dataCell != null) { // Si la cellule de données n'est pas nulle
+                  // Crée une nouvelle cellule Excel à la position courante
+                  Cell mainCell = row.createCell(currentColumn);
+                  // Crée un nouveau style pour la cellule
+                  CellStyle mainCellStyle = sheet.getWorkbook().createCellStyle();
+                  // Applique le style à la cellule
+                  mainCell.setCellStyle(mainCellStyle);
+                  // Applique les styles spécifiques (alignement, bordures, etc.)
+                  applyStyle(dataCell, mainCellStyle);
 
-               // Handle cell merging if colspan > 1
-               if(dataCell.getColspan() > 1) {
-                  int lastColIndex = currentColumn + dataCell.getColspan() - 1;
+                  // Gestion du colspan (fusion de cellules) si nécessaire
+                  if(dataCell.getColspan() > 1) {
+                      // Calcule l'index de la dernière colonne pour la fusion
+                      int lastColIndex = currentColumn + dataCell.getColspan() - 1;
 
-                  // Create all cells in the merge range
-                  for(int i = currentColumn + 1; i <= lastColIndex; i++) {
-                     Cell cell = row.createCell(i);
-                     CellStyle cellStyle = sheet.getWorkbook().createCellStyle();
-                     cell.setCellStyle(cellStyle);
-                     applyStyle(dataCell, cellStyle);
+                      // Crée toutes les cellules dans la plage de fusion
+                      for(int i = currentColumn + 1; i <= lastColIndex; i++) {
+                          // Crée une cellule supplémentaire
+                          Cell cell = row.createCell(i);
+                          // Crée un style pour cette cellule
+                          CellStyle cellStyle = sheet.getWorkbook().createCellStyle();
+                          // Applique le style à la cellule
+                          cell.setCellStyle(cellStyle);
+                          // Applique les styles spécifiques à la cellule
+                          applyStyle(dataCell, cellStyle);
+                      }
+
+                      // Fusionne les cellules dans la plage spécifiée
+                      CellRangeAddress region = new CellRangeAddress(
+                          rowIndex, rowIndex, currentColumn, lastColIndex);
+                      sheet.addMergedRegion(region); // Ajoute la région fusionnée à la feuille Excel
                   }
 
-                  // Merge the cells
-                  CellRangeAddress region = new CellRangeAddress(
-                     rowIndex, rowIndex, currentColumn, lastColIndex);
-                  sheet.addMergedRegion(region);
-               }
+                  // Récupère le contenu de la cellule
+                  CellContent content = dataCell.getCellContent();
+                  // Si le contenu existe, configure le retour à la ligne si nécessaire
+                  if(content != null) {
+                      mainCellStyle.setWrapText(content.isComplementOnAnotherLine());
+                  }
+                  // Applique le contenu à la cellule principale
+                  applyCellContent(mainCell, content);
 
-               // Apply content to the main cell
-               CellContent content = dataCell.getCellContent();
-               if(content != null) {
-                  mainCellStyle.setWrapText(content.isComplementOnAnotherLine());
-               }
-               applyCellContent(mainCell, content);
-
-               // Increment column position by colspan
-               currentColumn += dataCell.getColspan();
-            } else {
-               // For null cells, still create an empty cell and increment position
-               row.createCell(currentColumn++);
-            }
-         }
+                  // Incrémente la position de la colonne en tenant compte du colspan
+                  currentColumn += dataCell.getColspan();
+              } else {
+                  // Si la cellule est nulle, crée quand même une cellule vide et incrémente la position
+                  row.createCell(currentColumn++);
+              }
+          }
       }
    }
 
-
-   private void writeCellRowToExcel(Row row, DataCell dataCell, int rowIndex, int colIndex){
-      if(row == null){
-         logger.warn("Row is null at rowIndex {}", rowIndex);
-         return;
-      }
-
-      Sheet sheet = row.getSheet();
-
-      if(dataCell != null){
-         System.out.println("\ntrying to write datacell to excel: " + dataCell.toString());
-         System.out.println(" at column: " + colIndex);
-
-         Cell mainCell = row.createCell(colIndex);
-         CellStyle mainCellStyle = sheet.getWorkbook().createCellStyle();
-         mainCell.setCellStyle(mainCellStyle);
-         applyStyle(dataCell, mainCellStyle);
-
-         if(dataCell.getColspan() > 1){
-            int lastColIndex = colIndex + dataCell.getColspan() - 1;
-            System.out.println(" merging to column: " + lastColIndex);
-
-            // Create and style all cells in the merge range
-            for(int i = colIndex + 1; i <= lastColIndex; i++){
-               Cell cell = row.createCell(i);
-               CellStyle cellStyle = sheet.getWorkbook().createCellStyle();
-               if(dataCell.isWithBorder()){
-                  cellStyle.setBorderBottom(BorderStyle.THIN);
-                  cellStyle.setBorderTop(BorderStyle.THIN);
-                  cellStyle.setBorderRight(BorderStyle.THIN);
-                  cellStyle.setBorderLeft(BorderStyle.THIN);
-               }
-
-               // Apply special left border if specified
-               if(dataCell.getHexaColorCodeForLeftBorder() != null){
-                  cellStyle.setBorderLeft(BorderStyle.THICK);
-                  ((XSSFCellStyle) cellStyle).setLeftBorderColor(
-                     retrieveXSSFColorFromHex(dataCell.getHexaColorCodeForLeftBorder()));
-               }
-
-               cell.setCellStyle(cellStyle);
-            }
-
-            try{
-               CellRangeAddress region = new CellRangeAddress(rowIndex, rowIndex, colIndex, lastColIndex);
-               sheet.addMergedRegion(region);
-            }catch(IllegalArgumentException e){
-               logger.error("Failed to merge: row={}, cols={}-{}: {}", rowIndex, colIndex, lastColIndex, e.getMessage());
-            }
-         }
-
-         CellContent content = dataCell.getCellContent();
-         if(content != null){
-            mainCellStyle.setWrapText(content.isComplementOnAnotherLine());
-         }
-
-         applyCellContent(mainCell, content);
-      }
-   }
 
    /**
     * Applique le contenu à une cellule Excel avec le formatage de texte approprié.
@@ -404,36 +359,53 @@ public class DocumentWithDataAsTableExcelProducer implements DocumentProducer
     * @param content Le contenu à appliquer à la cellule
     */
    private void applyCellContent(Cell cell, CellContent content) {
+      // Vérification de base pour éviter les NullPointerException
+      // Ces objets sont essentiels pour toutes les opérations suivantes
       if(cell != null && content != null) {
-         Workbook wb = cell.getSheet().getWorkbook();
-         Row row = cell.getRow();
-         CellStyle style = cell.getCellStyle();
-         
-         // Enable text wrapping if needed
-         if(content.isShouldWrapText()) {
-             style.setWrapText(true);
-             
-             String contentAsString = content.buildContentValue();
-             // Count actual lines in content
-             int numberOfLines = contentAsString.split("\n").length;
-             // Use a minimum of 2 lines if wrapping is enabled
-             numberOfLines = Math.max(numberOfLines, 2);
-             // Adjust row height (use 300 for better visibility)
-             row.setHeight((short)(numberOfLines * 300));
-         }
+          // Récupération du Workbook et de la Row pour accéder aux fonctionnalités de formatage
+          // Nécessaire car le style et la hauteur sont gérés à différents niveaux
+          Workbook wb = cell.getSheet().getWorkbook();
+          Row row = cell.getRow();
+          CellStyle style = cell.getCellStyle();
+          
+          // Gestion du wrapping (retour à la ligne automatique)
+          if(content.isShouldWrapText()) {
+              // Active le wrapping pour permettre le texte sur plusieurs lignes
+              style.setWrapText(true);
+              
+              // Conversion du contenu en string pour calculer le nombre de lignes
+              String contentAsString = content.buildContentValue();
+              // Compte le nombre réel de lignes dans le contenu
+              // split("\n") permet de compter les retours à la ligne explicites
+              int numberOfLines = contentAsString.split("\n").length;
+              // Force un minimum de 2 lignes si le wrapping est activé
+              // Cela garantit un espace suffisant même pour les contenus courts
+              numberOfLines = Math.max(numberOfLines, 2);
+              // Ajuste la hauteur de la ligne (300 unités par ligne)
+              // La valeur 300 est choisie pour une meilleure lisibilité
+              row.setHeight((short)(numberOfLines * 300));
+          }
 
-         // Set the content value
-         String contentAsString = content.buildContentValue();
-         if(content.isComplementInItalic()) {
-             RichTextString richText = new XSSFRichTextString(contentAsString);
-             richText.applyFont(0, content.getText().length(), getFont(ExcelFontStyle.NORMAL, wb));
-             richText.applyFont(content.getText().length(), richText.length(), getFont(ExcelFontStyle.ITALIC, wb));
-             cell.setCellValue(richText);
-         } else {
-             cell.setCellValue(contentAsString);
-         }
-         
-         cell.setCellStyle(style);
+          // Construction et application du contenu
+          String contentAsString = content.buildContentValue();
+          // Gestion spéciale pour le texte en italique
+          if(content.isComplementInItalic()) {
+              // Utilisation de RichTextString pour permettre différents styles dans la même cellule
+              RichTextString richText = new XSSFRichTextString(contentAsString);
+              // Applique la police normale au texte principal
+              richText.applyFont(0, content.getText().length(), getFont(ExcelFontStyle.NORMAL, wb));
+              // Applique l'italique au texte complémentaire
+              // Le texte complémentaire commence après le texte principal
+              richText.applyFont(content.getText().length(), richText.length(), getFont(ExcelFontStyle.ITALIC, wb));
+              cell.setCellValue(richText);
+          } else {
+              // Si pas d'italique nécessaire, applique le texte directement
+              cell.setCellValue(contentAsString);
+          }
+          
+          // Application finale du style
+          // Nécessaire car certaines modifications de style peuvent avoir été faites
+          cell.setCellStyle(style);
       }
    }
 

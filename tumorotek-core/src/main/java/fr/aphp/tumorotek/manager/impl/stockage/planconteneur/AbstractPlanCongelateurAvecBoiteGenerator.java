@@ -62,118 +62,59 @@ import java.util.stream.Collectors;
  */
 public abstract class AbstractPlanCongelateurAvecBoiteGenerator extends AbstractPlanCongelateurGenerator
 {
-   /**
-    * Libellé utilisé pour représenter un emplacement de boîte vide dans le plan.
-    * Cette constante est utilisée lors de l'affichage des positions sans boîte assignée.
-    */
-   public static final String LIBELLE_EMPLACEMENT_BOITE_VIDE = "(vide)";
 
-   /**
-    * Liste des listes d'emplacements d'enceintes organisée par niveau.
-    * Chaque niveau contient une liste d'EnceinteEmplacement représentant la structure
-    * physique du congélateur à ce niveau spécifique.
-    */
+
+     /**
+     * Structure de données principale stockant la hiérarchie des enceintes.
+     * Organisée par niveau, chaque niveau contenant une liste d'emplacements.
+     * Le premier niveau (index 0) correspond aux enceintes directement sous le conteneur.
+     */
    protected List<List<EnceinteEmplacement>> enceinteHierarchyByNiveau;
 
-   /**
-    * Nombre de lignes d'en-tête dans le plan.
-    * Correspond au nombre de niveaux dans la hiérarchie des enceintes,
-    * utilisé pour structurer l'affichage du plan.
-    */
-   protected int enceinteRowsNumber;
+   /** Nombre de niveaux actuellement dans la hiérarchie */
+   protected int currentHierarchyLevel;
 
+    /** Nombre total de niveaux possibles dans la hiérarchie. Déterminé par la configuration du conteneur (getNbrNiv() - 1) */
    protected int totalEnceinteRowsNumber;
 
    protected abstract EnceinteManager getEnceinteManager();
 
    /**
-    * Cette méthode construit un tableau de données détaillé à partir d'un conteneur donné.
+    * Construit un plan détaillé du congélateur à partir d'un conteneur donné.
+    * Le plan est construit en trois étapes :
+    * 1. Construction de la hiérarchie des enceintes
+    * 2. Remplissage des colonnes de terminales (niveau le plus bas)
+    * 3. Remplissage des en-têtes d'enceintes (de bas en haut)
     *
-    * @param conteneur Le conteneur dont les détails doivent être extraits pour construire le tableau.
-    * @return Un objet DataAsTable contenant les informations organisées en lignes et colonnes.
+    * @param conteneur Le conteneur pour lequel construire le plan
+    * @return Un tableau de données (DataAsTable) représentant le plan du congélateur
     */
-
    @Override
    public DataAsTable buildDetailPlan(Conteneur conteneur){
-      // Création d'une nouvelle instance de DataAsTable pour stocker les données organisées.
+      // Initialisation de la structure de données qui contiendra le plan
       DataAsTable dataAsTable = new DataAsTable();
+
+      // Calcul du nombre de niveaux d'enceintes possibles
+      // On soustrait 1 car getNbrNiv() inclut le niveau des terminales
       totalEnceinteRowsNumber = conteneur.getNbrNiv() - 1;
-      // Construction de la hiérarchie des enceintes à partir du conteneur fourni et assignation à listListEnceinteEmplacementParNiveau
-      buildEnceinteHierarchy(conteneur);
 
-      debugPrintHierarchy();
+      // Étape 1 : Construction de la hiérarchie complète des enceintes
+      // Cette étape est nécessaire avant de pouvoir remplir les données
+      buildEnceinteTreeStructure(conteneur);
 
-      HandleTerminales(dataAsTable);
+      // Étape 2 : Remplissage des colonnes de terminales (boîtes)
+      // Cette étape doit être effectuée en premier car elle définit la structure de base du tableau
+      populateTerminalesColumns(dataAsTable);
 
-      handleEncintes(dataAsTable);
+      // Étape 3 : Remplissage des en-têtes d'enceintes
+      // Cette étape ajoute les en-têtes au-dessus des colonnes de terminales
+      populateEnceinteHeaderRows(dataAsTable);
 
-      return dataAsTable; // Retourne le tableau finalisé avec toutes les données ajoutées correctement structurées.
+      // Retourne le plan finalisé avec toutes les données structurées
+      return dataAsTable;
    }
 
-   private void handleEncintes(DataAsTable dataAsTable){
-      // Ajout des lignes d'en-tête pour chaque niveau d'enceintes, en commençant par le plus bas niveau.
-      for(int level = enceinteRowsNumber - 1; level >= 0; level--){
-         System.out.println("\nCreating a CellRow for level " + level);
-         List<EnceinteEmplacement> currentLevel = enceinteHierarchyByNiveau.get(level);
-         CellRow positionCellRow = new CellRow();
 
-         for(EnceinteEmplacement emp : currentLevel){
-            if(emp != null && emp.getEnceinte() != null){
-               int colspan = emp.getColumnSpan();
-               System.out.printf("| Adding cell: Nom=%s, Colspan=%d", emp.getEnceinte().getNom(), colspan);
-               String alias = createAlias(emp.getEnceinte().getAlias());
-               CellContent enceinteCellContent =
-                  new CellContent(emp.getEnceinte().getNom(), alias, true, true);
-
-               DataCell cell = new DataCell(enceinteCellContent,
-                  emp.getEnceinte().getCouleur() != null ? emp.getEnceinte().getCouleur().getHexa() : null, colspan, true,
-                  AlignmentType.CENTER);
-
-               positionCellRow.addDataCell(cell);
-            }else{
-               System.out.printf("| Adding cell: vide");
-
-               // Create a "(vide)" cell instead of null
-               DataCell emptyCell = createDataCellForVide();
-               // Should we set colspan for empty cells? Depends on your requirements
-               emptyCell.setColspan(1);
-               positionCellRow.addDataCell(emptyCell);
-            }
-         }
-         dataAsTable.getListCellRow().add(0, positionCellRow);
-      }
-   }
-
-   private String createAlias(String alias){
-      if(alias != null){
-         return new StringBuilder("( ").append(alias).append(" )").toString();
-      }else{
-         return "";
-      }
-   }
-
-   private DataCell createDataCellForVide(){
-      return new DataCell(new CellContent(LIBELLE_EMPLACEMENT_BOITE_VIDE), null, 1, true, AlignmentType.CENTER);
-
-   }
-
-   private void HandleTerminales(DataAsTable dataAsTable){
-      // Traitement du dernier niveau (enceintes contenant des boites)
-      if(!enceinteHierarchyByNiveau.isEmpty()){
-         // Récupération de la liste des enceintes au dernier niveau.
-         List<EnceinteEmplacement> lastLevel = enceinteHierarchyByNiveau.get(enceinteRowsNumber - 1);
-         // Parcours de chaque enceinte au dernier niveau pour ajouter une colonne de boîte dans le tableau.
-         for(int i = 0; i < lastLevel.size(); i++){
-            EnceinteEmplacement emp = lastLevel.get(i);
-            // Vérification que l'emplacement et l'enceinte ne sont pas nuls avant d'ajouter les colonnes.
-            if(emp != null && emp.getEnceinte() != null){
-               Set<Terminale> terminales= getEnceinteManager().getTerminalesManager(emp.getEnceinte());
-               System.out.println("Enceinte " + emp.getEnceinte().getNom() + " : " + "has " + terminales.size() + " termianles and " + emp.getEnceinte().getNbPlaces() + " places");
-               AddTerminalesToDataAsTable(dataAsTable, i, emp.getEnceinte().getNbPlaces(), terminales);
-            }
-         }
-      }
-   }
 
    /**
     * Cette méthode construit la hiérarchie des enceintes à partir d'un conteneur donné.
@@ -183,12 +124,12 @@ public abstract class AbstractPlanCongelateurAvecBoiteGenerator extends Abstract
     *
     * @param conteneur Le conteneur à partir duquel les enceintes sont extraites pour construire la hiérarchie.
     */
-   protected void buildEnceinteHierarchy(Conteneur conteneur){
+   protected void buildEnceinteTreeStructure(Conteneur conteneur){
       // Initialisation d'une liste pour stocker les enceintes par niveau
       enceinteHierarchyByNiveau = new ArrayList<>();
 
       // Compteur pour le nombre de lignes d'en-tête, utilisé pour suivre le niveau actuel
-      enceinteRowsNumber = 0;
+      currentHierarchyLevel = 0;
 
       // Création d'une liste pour le premier niveau (les enceintes directement sous le conteneur)
       List<EnceinteEmplacement> firstLevel = new ArrayList<>();
@@ -206,50 +147,13 @@ public abstract class AbstractPlanCongelateurAvecBoiteGenerator extends Abstract
       // Ajout du premier niveau à la liste principale des niveaux d'enceintes
       enceinteHierarchyByNiveau.add(firstLevel);
       // Incrémentation du compteur d'en-tête car nous avons ajouté un nouveau niveau
-      enceinteRowsNumber++;
+      currentHierarchyLevel++;
 
       // Traitement de chaque niveau tant qu'il y a un niveau suivant à traiter
       boolean hasNextLevel = true;
       while(hasNextLevel){
          hasNextLevel = addNextHierarchyLevel(); // Appel à une méthode qui ajoute le prochain niveau hiérarchique
       }
-   }
-
-   private void debugPrintHierarchy(){
-      System.out.println("\n=== DEBUG: Enceinte Hierarchy Structure ===");
-
-      for(int level = 0; level < enceinteHierarchyByNiveau.size(); level++){
-         System.out.println("\nLevel " + level + ":");
-         System.out.println("----------------------------------------");
-
-         List<EnceinteEmplacement> currentLevel = enceinteHierarchyByNiveau.get(level);
-         for(int position = 0; position < currentLevel.size(); position++){
-            EnceinteEmplacement emp = currentLevel.get(position);
-
-            StringBuilder sb = new StringBuilder().append("Position ").append(position).append(": ");
-
-            if(emp != null && emp.getEnceinte() != null){
-               Enceinte enceinte = emp.getEnceinte();
-               sb.append(
-                  String.format("Nom: %-15s | Alias: %-15s | Position: %-3d | NbPlaces: %-3d | Colspan: %-3d", enceinte.getNom(),
-                     enceinte.getAlias() != null ? enceinte.getAlias() : "N/A", enceinte.getPosition(), enceinte.getNbPlaces(),
-                     emp.getColumnSpan()));
-
-               // Add color info if available
-               if(enceinte.getCouleur() != null){
-                  sb.append(" | Color: ").append(enceinte.getCouleur().getHexa());
-               }
-
-               // Add isLastEnceinte info
-               sb.append(" | isLast: ").append(emp.isLastEnceinte());
-            }else{
-               sb.append("(vide)");
-            }
-
-            System.out.println(sb.toString());
-         }
-      }
-      System.out.println("\n=== End of Hierarchy Structure ===\n");
    }
 
    /**
@@ -262,99 +166,188 @@ public abstract class AbstractPlanCongelateurAvecBoiteGenerator extends Abstract
     *
     * @return true si des enfants ont été ajoutés au niveau suivant, false sinon.
     */
-   private boolean addNextHierarchyLevel(){
-      List<EnceinteEmplacement> parentLevelEnceintes = enceinteHierarchyByNiveau.get(enceinteRowsNumber - 1);
+   private boolean addNextHierarchyLevel() {
+      // Récupère la liste des enceintes du niveau parent (niveau actuel - 1)
+      List<EnceinteEmplacement> parentLevelEnceintes = enceinteHierarchyByNiveau.get(currentHierarchyLevel - 1);
+      // Initialise la liste qui contiendra les enceintes enfants du nouveau niveau
       List<EnceinteEmplacement> childLevelEnceintes = new ArrayList<>();
+      // Flag pour indiquer si des enfants ont été trouvés
       boolean hasChildEnceintes = false;
-      int currentLevelNumber = enceinteRowsNumber - 1;
+      // Calcul du niveau actuel (0-based)
+      int currentLevelNumber = currentHierarchyLevel - 1;
 
-      for(EnceinteEmplacement parentEmplacement : parentLevelEnceintes){
-         if(parentEmplacement != null && parentEmplacement.getEnceinte() != null){
+      // Parcourt chaque emplacement d'enceinte du niveau parent
+      for(EnceinteEmplacement parentEmplacement : parentLevelEnceintes) {
+         if(parentEmplacement != null && parentEmplacement.getEnceinte() != null) {
+            // Récupère toutes les enceintes enfants de l'enceinte parent actuelle
             List<Enceinte> childEnceintes =
                getEnceinteManager().findByEnceintePereWithOrderManager(parentEmplacement.getEnceinte());
 
-            if(!childEnceintes.isEmpty()){
+            if(!childEnceintes.isEmpty()) {
                hasChildEnceintes = true;
+               // Crée une map des enceintes indexées par leur position
                Map<Integer, Enceinte> positionMap = createMapEnceintesByPosition(childEnceintes);
-               int nbPlaces = parentEmplacement.getEnceinte().getNbPlaces(); // Use NbPlaces instead of Position
+               // Récupère le nombre total de places disponibles dans l'enceinte parent
+               int nbPlaces = parentEmplacement.getEnceinte().getNbPlaces();
 
-               // Loop through all available places
+               // Parcourt toutes les positions possibles dans l'enceinte parent
                for(int position = 1; position <= nbPlaces; position++){
+                  // Récupère l'enceinte enfant à cette position (peut être null)
                   Enceinte childEnceinte = positionMap.get(position);
                   EnceinteEmplacement childEmplacement = new EnceinteEmplacement(childEnceinte);
 
-                  if(currentLevelNumber == totalEnceinteRowsNumber - 1){ // -2 because we're creating the next level
-                     childEmplacement.setIsLastEnceinte(true);
+                  // Si on est au dernier niveau possible, marque l'emplacement comme feuille
+                  if(currentLevelNumber == totalEnceinteRowsNumber - 1){
+                     childEmplacement.setLeafNode(true);
                   }
 
+                  // Ajoute l'enfant au parent et à la liste du nouveau niveau
                   parentEmplacement.addChild(childEmplacement);
                   childLevelEnceintes.add(childEmplacement);
                }
-            }else{
-               // Add null child to maintain structure
+            } else {
+               // Si pas d'enfants, ajoute des emplacements null pour maintenir la structure
                parentEmplacement.addChild(null);
                childLevelEnceintes.add(null);
             }
-         }else{
+         } else {
+            // Si le parent est null, ajoute un emplacement null pour maintenir la structure
             childLevelEnceintes.add(null);
          }
       }
 
-      if(hasChildEnceintes){
+      // Si des enfants ont été trouvés, ajoute le nouveau niveau à la hiérarchie
+      if(hasChildEnceintes) {
          enceinteHierarchyByNiveau.add(childLevelEnceintes);
-         enceinteRowsNumber++;
+         currentHierarchyLevel++;
          return true;
       }
       return false;
    }
 
-   private void AddTerminalesToDataAsTable(DataAsTable dataAsTable, int baseColumnIndex, int totalPlaces,
-      Set<Terminale> terminals){
+   /**
+    * Construit les en-têtes pour chaque niveau d'enceintes dans le plan du congélateur.
+    * Les en-têtes sont construits de bas en haut pour respecter l'ordre d'affichage.
+    * Chaque en-tête contient le nom de l'enceinte, son alias et peut s'étendre sur plusieurs colonnes.
+    *
+    * @param dataAsTable La structure de données qui contiendra les en-têtes formatés
+    */
+   private void populateEnceinteHeaderRows(DataAsTable dataAsTable){
+      // Parcours des niveaux de bas en haut pour construire les en-têtes
+      // On commence par le niveau le plus bas (currentHierarchyLevel - 1) jusqu'au niveau 0
+      for(int level = currentHierarchyLevel - 1; level >= 0; level--){
+         // Récupération des enceintes du niveau courant
+         List<EnceinteEmplacement> currentLevel = enceinteHierarchyByNiveau.get(level);
+         // Création d'une nouvelle ligne pour ce niveau d'en-têtes
+         CellRow positionCellRow = new CellRow();
 
-      // Calculate actual column index based on previous siblings' colspan
-      int actualColumnIndex = calculateActualColumnIndex(baseColumnIndex);
-      System.out.println("trying to write terminales in " + actualColumnIndex + " col");
+         // Parcours de chaque emplacement d'enceinte dans le niveau courant
+         for(EnceinteEmplacement emp : currentLevel){
+            if(emp != null && emp.getEnceinte() != null){
+               // Pour les emplacements contenant une enceinte valide
+               
+               // Calcul du nombre de colonnes que cette enceinte doit occuper
+               int colspan = emp.getColumnSpan();
+               // Création de l'alias formaté pour l'enceinte
+               String alias = createAlias(emp.getEnceinte().getAlias());
+               
+               // Création du contenu de la cellule avec le nom et l'alias de l'enceinte
+               CellContent enceinteCellContent =
+                  new CellContent(emp.getEnceinte().getNom(), alias, true, true);
 
-      Map<Integer, Terminale> terminalsByPosition =
-         terminals.stream().collect(Collectors.toMap(Terminale::getPosition, terminal -> terminal));
-
-      for(int position = 0; position <= totalPlaces; position++){
-         Terminale terminal = terminalsByPosition.get(position+1);
-
-         if(terminal != null){
-            String alias = createAlias(terminal.getAlias());
-            CellContent terminaleCell = new CellContent(terminal.getNom(), alias, true, false);
-            DataCell cell =
-               new DataCell(terminaleCell, terminal.getCouleur() == null ? null : terminal.getCouleur().getHexa(), 1, true,
+               // Création de la cellule avec mise en forme (couleur, alignement, etc.)
+               DataCell cell = new DataCell(enceinteCellContent,
+                  emp.getEnceinte().getCouleur() != null ? emp.getEnceinte().getCouleur().getHexa() : null, 
+                  colspan, true,
                   AlignmentType.CENTER);
-            dataAsTable.addDataCell(cell, position , baseColumnIndex);
-         }else{
-            DataCell emptyTerminaleCell = createDataCellForVide();
-            dataAsTable.addDataCell(emptyTerminaleCell, position, baseColumnIndex);
+
+               // Ajout de la cellule à la ligne
+               positionCellRow.addDataCell(cell);
+            }else{
+               // Pour les emplacements vides, création d'une cellule "(vide)"
+               DataCell emptyCell = new DataCell(
+                  new CellContent(EMPTY_POSITION), 
+                  null, // pas de couleur pour les cellules vides
+                  1,    // colspan de 1 pour les cellules vides
+                  true, 
+                  AlignmentType.CENTER
+               );
+               positionCellRow.addDataCell(emptyCell);
+            }
+         }
+         // Ajout de la ligne d'en-têtes au début du tableau
+         // L'insertion en position 0 permet de construire le tableau de haut en bas
+         dataAsTable.getListCellRow().add(0, positionCellRow);
+      }
+   }
+
+
+  /**
+    * Remplit les données des terminales (boîtes) dans le tableau.
+    * Cette méthode traite le dernier niveau de la hiérarchie qui contient
+    * les enceintes terminales (celles qui contiennent directement les boîtes).
+    *
+    * @param dataAsTable La structure de données à remplir avec les informations des terminales
+    */
+   private void populateTerminalesColumns(DataAsTable dataAsTable) {
+      // Vérifie qu'il existe au moins un niveau dans la hiérarchie
+      if(enceinteHierarchyByNiveau.isEmpty()) {
+         return;
+      }
+
+      // Récupère le dernier niveau de la hiérarchie (niveau le plus profond)
+      List<EnceinteEmplacement> lastLevel = enceinteHierarchyByNiveau.get(currentHierarchyLevel - 1);
+
+      // Parcourt chaque emplacement du dernier niveau
+      for(int columnIndex = 0; columnIndex < lastLevel.size(); columnIndex++) {
+         EnceinteEmplacement emp = lastLevel.get(columnIndex);
+
+         // Passe les emplacements vides
+         if(emp == null || emp.getEnceinte() == null) {
+            continue;
+         }
+
+         // Récupère toutes les terminales (boîtes) associées à cette enceinte
+         Set<Terminale> terminales = getEnceinteManager().getTerminalesManager(emp.getEnceinte());
+         int totalPlaces = emp.getEnceinte().getNbPlaces();
+
+         // Crée une map des terminales indexées par leur position pour un accès rapide
+         Map<Integer, Terminale> terminalsByPosition = terminales.stream()
+            .collect(Collectors.toMap(Terminale::getPosition, terminal -> terminal));
+
+         // Parcourt toutes les positions possibles dans l'enceinte
+         for(int position = 0; position < totalPlaces; position++) {
+            // Récupère la terminale à la position actuelle (position+1 car les positions commencent à 1)
+            Terminale terminal = terminalsByPosition.get(position + 1);
+
+            DataCell cell;
+            if(terminal != null) {
+               // Si une terminale existe à cette position, crée une cellule avec ses informations
+               String alias = createAlias(terminal.getAlias());
+               CellContent terminaleCell = new CellContent(terminal.getNom(), alias, true, false);
+
+               cell = new DataCell(
+                  terminaleCell,
+                  terminal.getCouleur() == null ? null : terminal.getCouleur().getHexa(),
+                  1, // colspan de 1 pour les terminales
+                  true,
+                  AlignmentType.CENTER
+               );
+            } else {
+               // Si pas de terminale à cette position, crée une cellule vide
+               cell = new DataCell(
+                  new CellContent(EMPTY_POSITION),
+                  null, // pas de couleur pour les cellules vides
+                  1,    // colspan de 1
+                  true,
+                  AlignmentType.CENTER
+               );
+            }
+
+            dataAsTable.addDataCell(cell, position, columnIndex);
          }
       }
    }
 
-   private int calculateActualColumnIndex(int baseIndex) {
-      // Get the last level (where terminals are)
-      List<EnceinteEmplacement> lastLevel = enceinteHierarchyByNiveau.get(enceinteRowsNumber - 1);
 
-      if (baseIndex == 0) {
-         return 0;
-      }
-
-      // Calculate total width of all previous enceintes at this level
-      int actualIndex = 0;
-      for (int i = 0; i < baseIndex; i++) {
-         EnceinteEmplacement emp = lastLevel.get(i);
-         if (emp != null && emp.getEnceinte() != null) {
-            actualIndex += emp.getEnceinte().getNbPlaces();
-         } else {
-            actualIndex++; // For empty/null positions
-         }
-      }
-
-      System.out.println("Calculated column index for baseIndex " + baseIndex + ": " + actualIndex);
-      return actualIndex;
-   }
 }

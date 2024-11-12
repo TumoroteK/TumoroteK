@@ -73,6 +73,7 @@ public class DataCell {
     public DataCell(String text) {
         this.cellContent = new CellContent(text);
     }
+
     public DataCell(CellContent cellContent, String hexaColorCodeForLeftBorder) {
         this.cellContent = cellContent;
         this.hexaColorCodeForLeftBorder = hexaColorCodeForLeftBorder;
@@ -134,26 +135,26 @@ public class DataCell {
     public String toString() {
         StringBuilder sb = new StringBuilder();
 
+        // Vérifie si le contenu de la cellule n'est pas nul
         if (cellContent != null) {
-            sb.append(cellContent.toString());
+            sb.append(cellContent.toString()); // Ajoute la représentation en chaîne du contenu de la cellule
 
-            // Add colspan visual representation
+            // Si la cellule occupe plus d'une colonne, ajoute l'information de colspan
             if (colspan > 1) {
                 sb.append(" <colspan=").append(colspan).append(">");
-                // Add extra spacing for colspan
                 for (int i = 1; i < colspan; i++) {
-                    sb.append("\t");
+                    sb.append("\t"); // Ajoute des tabulations pour chaque colonne supplémentaire
                 }
             }
 
-            // Add color code if present
+            // Si la couleur de la bordure gauche est spécifiée, l'ajoute à la chaîne
             if (hexaColorCodeForLeftBorder != null) {
                 sb.append(" [color=").append(hexaColorCodeForLeftBorder).append("]");
             }
         } else {
-            sb.append("(vide)");
+            sb.append("(vide)"); // Indique que la cellule est vide si le contenu est nul
         }
 
-        return sb.toString();
+        return sb.toString(); // Retourne la représentation finale de la cellule
     }
 }

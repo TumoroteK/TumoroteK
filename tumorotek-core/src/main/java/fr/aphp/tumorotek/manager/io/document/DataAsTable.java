@@ -36,7 +36,6 @@
 
 package fr.aphp.tumorotek.manager.io.document;
 
-import fr.aphp.tumorotek.manager.io.document.detail.table.CellContent;
 import fr.aphp.tumorotek.manager.io.document.detail.table.CellRow;
 import fr.aphp.tumorotek.manager.io.document.detail.table.DataCell;
 
@@ -86,12 +85,28 @@ public class DataAsTable implements DocumentData {
     }
 
 
+    /**
+     * Ajoute une cellule de données à une ligne spécifique dans le tableau.
+     *
+     * @param dataCell     La cellule de données à ajouter.
+     * @param indexLigne   L'indice de la ligne où la cellule doit être ajoutée.
+     * @param indexColonne L'indice de la colonne où la cellule doit être ajoutée.
+     * @throws IllegalArgumentException si les indices sont négatifs.
+     */
     public void addDataCell(DataCell dataCell, int indexLigne, int indexColonne) {
-        while (nbCellRow <= indexLigne) {
-            addCellRow(new CellRow());
+        // Vérifie que les indices sont non négatifs
+        if (indexLigne < 0 || indexColonne < 0) {
+            throw new IllegalArgumentException("Indices must be non-negative."); // Lance une exception si les indices sont négatifs
         }
+        
+        // Ajoute des lignes vides si nécessaire jusqu'à atteindre l'indice de ligne spécifié
+        while (nbCellRow <= indexLigne) {
+            addCellRow(new CellRow()); // Ajoute une nouvelle ligne vide
+        }
+        
+        // Récupère la ligne concernée à partir de la liste des lignes
         CellRow cellRowConcernee = getListCellRow().get(indexLigne);
-        cellRowConcernee.addDataCell(indexColonne, dataCell);
+        cellRowConcernee.addDataCell(indexColonne, dataCell); // Ajoute la cellule de données à la ligne spécifiée
     }
 
 
@@ -103,30 +118,31 @@ public class DataAsTable implements DocumentData {
 
     @Override
     public String toString() {
+        // Vérifie si la liste des lignes de cellules est vide ou nulle
         if (listCellRow == null || listCellRow.isEmpty()) {
-            return "Empty Table";
+            return "Tableau vide"; // Retourne un message indiquant que le tableau est vide
         }
 
         StringBuilder sb = new StringBuilder();
-        sb.append("DataAsTable:\n");
+        sb.append("DataAsTable:\n"); // Ajoute l'en-tête pour le tableau
 
-        // Process each row
+        // Traite chaque ligne
         for (CellRow row : listCellRow) {
             if (row != null) {
-                // Add horizontal border
+                // Ajoute la bordure horizontale de la ligne
                 sb.append(row.getHorizontalBorder()).append("\n");
-                // Add row content
+                // Ajoute le contenu de la ligne
                 sb.append(row.toString()).append("\n");
             } else {
-                sb.append("| <null row> |\n");
+                sb.append("| <ligne nulle> |\n"); // Indique qu'une ligne est nulle
             }
         }
 
-        // Add final horizontal border
+        // Ajoute la bordure horizontale finale
         if (!listCellRow.isEmpty() && listCellRow.get(listCellRow.size() - 1) != null) {
             sb.append(listCellRow.get(listCellRow.size() - 1).getHorizontalBorder()).append("\n");
         }
 
-        return sb.toString();
+        return sb.toString(); // Retourne la représentation finale du tableau
     }
 }

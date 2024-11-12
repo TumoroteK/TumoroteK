@@ -68,7 +68,7 @@ public abstract class AbstractPlanCongelateurGenerator implements PlanCongelateu
    protected static final String DATE_FORMAT = "yyyyMMddHHmm";
 
    // Constante représentant le contenu d'une cellule vide
-   protected static final String EMPTY_CELL_CONTENT = "vide";
+   protected static final String EMPTY_POSITION = "(vide)";
 
    // Préfixe utilisé pour nommer les fichiers générés
    protected static final String PREFIX_FILE_NAME = "plan_conteneur";
@@ -187,4 +187,17 @@ public abstract class AbstractPlanCongelateurGenerator implements PlanCongelateu
       return positionMap;
    }
 
+/**
+    * Crée un alias formaté en ajoutant des parenthèses autour de l'alias fourni.
+    *
+    * @param alias L'alias à formater. Peut être nul.
+    * @return L'alias formaté avec des parenthèses, ou une chaîne vide si l'alias est nul.
+    */
+   protected String createAlias(String alias){
+      if(alias != null){
+         return new StringBuilder("( ").append(alias).append(" )").toString();
+      }else{
+         return "";
+      }
+   }
 }
