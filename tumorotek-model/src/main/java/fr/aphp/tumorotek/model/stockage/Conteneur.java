@@ -35,10 +35,13 @@
  **/
 package fr.aphp.tumorotek.model.stockage;
 
-import java.io.Serializable;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.Set;
+import fr.aphp.tumorotek.model.TKFantomableObject;
+import fr.aphp.tumorotek.model.TKdataObject;
+import fr.aphp.tumorotek.model.cession.Retour;
+import fr.aphp.tumorotek.model.contexte.Banque;
+import fr.aphp.tumorotek.model.contexte.Plateforme;
+import fr.aphp.tumorotek.model.contexte.Service;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -54,15 +57,10 @@ import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-
-import org.hibernate.annotations.GenericGenerator;
-
-import fr.aphp.tumorotek.model.TKFantomableObject;
-import fr.aphp.tumorotek.model.TKdataObject;
-import fr.aphp.tumorotek.model.cession.Retour;
-import fr.aphp.tumorotek.model.contexte.Banque;
-import fr.aphp.tumorotek.model.contexte.Plateforme;
-import fr.aphp.tumorotek.model.contexte.Service;
+import java.io.Serializable;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  *
@@ -90,8 +88,8 @@ import fr.aphp.tumorotek.model.contexte.Service;
       @NamedQuery(name = "Conteneur.findByExcludedId",
          query = "SELECT c FROM Conteneur c " + "WHERE c.conteneurId != ?1 AND c.archive = 0 "),
       @NamedQuery(name = "Conteneur.findByCode", query = "SELECT c FROM Conteneur c WHERE c.code = ?1 AND c.archive = 0"),
-      @NamedQuery(name = "Conteneur.findByIds",
-         query = "SELECT c FROM Conteneur c WHERE c.conteneurId IN ?1 AND c.archive = 0"),
+      @NamedQuery(name = "Conteneur.findByIdList",
+         query = "SELECT c FROM Conteneur c WHERE c.conteneurId IN ?1 AND c.archive = 0 "),
       @NamedQuery(name = "Conteneur.findByNom", query = "SELECT c FROM Conteneur c WHERE c.nom = ?1 AND c.archive = 0"),
       @NamedQuery(name = "Conteneur.findByTemp", query = "SELECT c FROM Conteneur c WHERE c.temp = ?1 AND c.archive = 0"),
       @NamedQuery(name = "Conteneur.findByPiece", query = "SELECT c FROM Conteneur c WHERE c.piece = ?1 AND c.archive = 0"),

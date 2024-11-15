@@ -35,53 +35,16 @@
  **/
 package fr.aphp.tumorotek.action.stockage;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Arrays;
-import java.util.function.Consumer;
-import java.util.stream.Collectors;
-
+import fr.aphp.tumorotek.action.ManagerLocator;
+import fr.aphp.tumorotek.action.controller.AbstractController;
+import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
 import fr.aphp.tumorotek.dto.OutputStreamData;
 import fr.aphp.tumorotek.dto.SelectableItemDTO;
 import fr.aphp.tumorotek.manager.administration.ParametresManager;
 import fr.aphp.tumorotek.manager.impl.io.production.DocumentWithDataAsTableExcelProducer;
 import fr.aphp.tumorotek.manager.impl.stockage.planconteneur.PlanCongelateurAvecBoiteExcelGenerator;
-import fr.aphp.tumorotek.model.config.ParametreValeurSpecifique;
-import fr.aphp.tumorotek.param.EParametreValeurParDefaut;
-import org.apache.commons.io.output.ByteArrayOutputStream;
-import org.zkoss.zk.ui.Executions;
-import org.zkoss.zul.Filedownload;
-import org.zkoss.zul.Window;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.zkoss.util.resource.Labels;
-import org.zkoss.zk.ui.Component;
-import org.zkoss.zk.ui.event.Event;
-import org.zkoss.zk.ui.event.Events;
-import org.zkoss.zk.ui.util.Clients;
-import org.zkoss.zkplus.databind.AnnotateDataBinder;
-import org.zkoss.zul.Button;
-import org.zkoss.zul.Menubar;
-import org.zkoss.zul.Menuitem;
-import org.zkoss.zul.Messagebox;
-import org.zkoss.zul.Panel;
-import org.zkoss.zul.Textbox;
-import org.zkoss.zul.Tree;
-import org.zkoss.zul.Treecell;
-import org.zkoss.zul.Treechildren;
-import org.zkoss.zul.Treeitem;
-import org.zkoss.zul.ext.TreeOpenableModel;
-import org.zkoss.zul.ext.TreeSelectableModel;
-
-import fr.aphp.tumorotek.action.ManagerLocator;
-import fr.aphp.tumorotek.action.controller.AbstractController;
-import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
 import fr.aphp.tumorotek.manager.interfacage.scan.TKScanTerminaleDTO;
+import fr.aphp.tumorotek.model.config.ParametreValeurSpecifique;
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.contexte.Plateforme;
 import fr.aphp.tumorotek.model.imprimante.AffectationImprimante;
@@ -89,6 +52,7 @@ import fr.aphp.tumorotek.model.stockage.Conteneur;
 import fr.aphp.tumorotek.model.stockage.Emplacement;
 import fr.aphp.tumorotek.model.stockage.Enceinte;
 import fr.aphp.tumorotek.model.stockage.Terminale;
+import fr.aphp.tumorotek.param.EParametreValeurParDefaut;
 import fr.aphp.tumorotek.utils.AffichageUtils;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
 import fr.aphp.tumorotek.webapp.tree.TumoTreeModel;
@@ -98,8 +62,39 @@ import fr.aphp.tumorotek.webapp.tree.stockage.EnceinteNode;
 import fr.aphp.tumorotek.webapp.tree.stockage.StockageRootNode;
 import fr.aphp.tumorotek.webapp.tree.stockage.StockageTreeItemRenderer;
 import fr.aphp.tumorotek.webapp.tree.stockage.TerminaleNode;
+import org.apache.commons.io.output.ByteArrayOutputStream;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.zkoss.util.resource.Labels;
+import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.util.Clients;
+import org.zkoss.zkplus.databind.AnnotateDataBinder;
+import org.zkoss.zul.Button;
+import org.zkoss.zul.Filedownload;
+import org.zkoss.zul.Menubar;
+import org.zkoss.zul.Menuitem;
+import org.zkoss.zul.Messagebox;
+import org.zkoss.zul.Panel;
+import org.zkoss.zul.Textbox;
+import org.zkoss.zul.Tree;
+import org.zkoss.zul.Treecell;
+import org.zkoss.zul.Treechildren;
+import org.zkoss.zul.Treeitem;
+import org.zkoss.zul.Window;
+import org.zkoss.zul.ext.TreeOpenableModel;
+import org.zkoss.zul.ext.TreeSelectableModel;
 
-import javax.persistence.criteria.CriteriaBuilder;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -640,6 +635,10 @@ public class ListeStockages extends AbstractController
 				.collect(Collectors.toList());
 	}
 
+
+
+
+
 	/**
 	 * Méthode appelée lorsqu'on clique pour générer le plan avec les boites.
 	 *
@@ -682,21 +681,15 @@ public class ListeStockages extends AbstractController
 
 		// Ajout des autres labels nécessaires pour la fenêtre SelectionModale.zul
 		windowArgs.put("mainLabel", Labels.getLabel("stockage.selection.window.mainLabel"));
-		System.out.println(Labels.getLabel("stockage.selection.window.mainLabel"));
 		windowArgs.put("listHeaderLabel", Labels.getLabel("stockage.selection.window.listHeaderLabel"));
 		windowArgs.put("itemList", getSelectableItemsFromConteneurs());
 		String selectLabel = Labels.getLabel("stockage.selection.window.selectedLabel", new String[]{String.valueOf(maxContainersToPrint)});
-		System.out.println(selectLabel);
 		windowArgs.put("selectedLabel", selectLabel);
 		windowArgs.put("max", maxContainersToPrint);
 
 		if (avecBoites) {
 			windowArgs.put("callback", (Consumer<List<SelectableItemDTO>>) selectedItems -> {
 				List<Integer> listIds = selectedItems.stream().map(SelectableItemDTO::getId).collect(Collectors.toList());
-				System.out.println(listIds);
-				for (Integer integer : listIds){
-					System.out.println(integer);
-				}
 				creteExcelWithBoites(listIds);
 			});
 		} else {
@@ -708,18 +701,37 @@ public class ListeStockages extends AbstractController
 		return windowArgs;
 	}
 
+	/**
+	 * Génère un fichier Excel détaillant les conteneurs et leurs terminales associées.
+	 * Le fichier généré inclut :
+	 * <ul>
+	 *     <li>Les informations détaillées des conteneurs sélectionnés</li>
+	 *     <li>La liste exhaustive des terminales pour chaque conteneur</li>
+	 * </ul>
+	 * 
+	 * @param selectedItemsIds Liste des identifiants uniques des conteneurs à traiter
+	 * @throws IllegalArgumentException si la liste des identifiants est vide ou null
+	 * @throws IOException en cas d'erreur lors de la génération du fichier
+	 * @see PlanCongelateurAvecBoiteExcelGenerator
+	 * @since 2.5.0
+	 */
 	private void creteExcelWithBoites(List<Integer> selectedItemsIds){
-		List<Conteneur> conteneurs = ManagerLocator.getConteneurManager().findByIdsManager(selectedItemsIds);
+		if (selectedItemsIds == null || selectedItemsIds.isEmpty()) {
+			throw new IllegalArgumentException(Labels.getLabel("excel.generation.no.selection"));
+		}
+		// Récupération des conteneurs à partir des IDs sélectionnés pour le traitement
+		List<Conteneur> conteneurs = ManagerLocator.getConteneurManager().findByIdListManager(selectedItemsIds);
 		try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()) {
 
-			// Step 1: Retrieve necessary beans from ManagerLocator
+			// Récupération du producteur de document Excel qui gère la création du fichier
 			DocumentWithDataAsTableExcelProducer documentProducer = ManagerLocator.getDocumentWithDataAsTableExcelProducer();
 
-			// Step 2: Create an instance of PlanCongelateurSansBoiteExcelGenerator
+			// Création du générateur spécifique pour les plans de congélateur avec boîtes
+			// Ce générateur contient la logique métier pour structurer les données
 			PlanCongelateurAvecBoiteExcelGenerator avecBoiteGenerator = new PlanCongelateurAvecBoiteExcelGenerator(ManagerLocator.getEnceinteManager(), documentProducer);
 
-
-			// Step 4: Generate the Excel file into ByteArrayOutputStream directly
+			// Génération du fichier Excel directement dans le flux de sortie
+			// Cette approche évite de stocker le fichier temporairement sur le serveur
 			OutputStreamData result = avecBoiteGenerator.generate(conteneurs);
 
 			if (result != null) {
@@ -728,15 +740,24 @@ public class ListeStockages extends AbstractController
 
 			String fileName = result.getFileName();
 
-			// Ensure that we flush any remaining data before sending it out.
+			// Vider le buffer pour s'assurer que toutes les données sont écrites
 			byteArrayOutputStream.flush();
 
-			// Step 6: Send the generated file back to the user
+			// Envoi du fichier généré à l'utilisateur avec le type MIME approprié pour Excel
 			Filedownload.save(byteArrayOutputStream.toByteArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
 
+		} catch(IOException e) {
+			String errorMessage = Labels.getLabel("excel.generation.io.error", new Object[]{e.getMessage()});
+			Clients.showNotification(errorMessage, "error", null, null, 3000);
+			log.error(errorMessage, e);
+		} catch(IllegalArgumentException e) {
+			String errorMessage = Labels.getLabel("excel.generation.data.error", new Object[]{e.getMessage()});
+			Clients.showNotification(errorMessage, "error", null, null, 3000);
+			log.error(errorMessage, e);
 		} catch(Exception e) {
-			Clients.showNotification("Error generating file: " + e.getMessage(), "error", null, null, 3000);
-			log.error("Error generating Excel file", e);
+			String errorMessage = Labels.getLabel("excel.generation.error", new Object[]{e.getMessage()});
+			Clients.showNotification(errorMessage, "error", null, null, 3000);
+			log.error(errorMessage, e);
 		}
 	}
 

@@ -35,9 +35,6 @@
  **/
 package fr.aphp.tumorotek.manager.stockage;
 
-import java.util.List;
-import java.util.Set;
-
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.contexte.Plateforme;
 import fr.aphp.tumorotek.model.contexte.Service;
@@ -49,6 +46,9 @@ import fr.aphp.tumorotek.model.stockage.Enceinte;
 import fr.aphp.tumorotek.model.stockage.Incident;
 import fr.aphp.tumorotek.model.stockage.Terminale;
 import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
+
+import java.util.List;
+import java.util.Set;
 
 /**
  *
@@ -69,7 +69,13 @@ public interface ConteneurManager
     */
    Conteneur findByIdManager(Integer conteneurId);
 
-   List<Conteneur> findByIdsManager(List<Integer> listIds);
+   /**
+    * Recherche des Conteneurs qui ont des identifiants dans la liste
+    * passée en paramètre.
+    * @param listIds liste des identifiants de Conteneur que l'on recherche.
+    * @return Liste de Conteneurs.
+    */
+   List<Conteneur> findByIdListManager(List<Integer> listIds);
 
    /**
     * Recherche tous les Conteneurs présents dans la base.
