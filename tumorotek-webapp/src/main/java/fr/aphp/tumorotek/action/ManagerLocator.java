@@ -38,6 +38,7 @@ package fr.aphp.tumorotek.action;
 import java.util.HashMap;
 import java.util.Map;
 
+import fr.aphp.tumorotek.manager.impl.io.production.DocumentWithDataAsTableExcelProducer;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.web.context.ContextLoader;
 
@@ -938,5 +939,10 @@ public final class ManagerLocator
     */
    public static EtudeManager getEtudeManager(){
       return (EtudeManager) (ContextLoader.getCurrentWebApplicationContext()).getBean("etudeManager");
+   }
+
+   public static DocumentWithDataAsTableExcelProducer getDocumentWithDataAsTableExcelProducer() {
+      return (DocumentWithDataAsTableExcelProducer) ContextLoader.getCurrentWebApplicationContext()
+         .getBean("documentWithDataAsTableExcelProducer");
    }
 }

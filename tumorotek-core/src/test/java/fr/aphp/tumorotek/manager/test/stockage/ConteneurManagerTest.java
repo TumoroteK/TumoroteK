@@ -130,6 +130,7 @@ public class ConteneurManagerTest extends AbstractManagerTest4
 
    public ConteneurManagerTest(){}
 
+
    @Test
    public void testFindById(){
       Conteneur c = conteneurManager.findByIdManager(1);
@@ -142,6 +143,42 @@ public class ConteneurManagerTest extends AbstractManagerTest4
       final Conteneur cNull = conteneurManager.findByIdManager(10);
       assertNull(cNull);
    }
+@Test(expected = NullPointerException.class)
+public void testFindByIdsManager_NullIdList() {
+   conteneurManager.findByIdsManager(null);
+}
+@Test
+public void testFindByIdsManager() {
+    // Arrange
+    List<Integer> idList = Arrays.asList(1, 2, 3);
+   List<Conteneur> conteneurs = new ArrayList<>();
+
+   // Data to populate
+   int[] ids = {1, 2, 3};
+   String[] names = {
+      "Congélateur 1",
+      "Congélateur 589",
+      "Cryo conservateur"
+   };
+
+   // Creating and setting up Conteneur objects
+   for (int i = 0; i < ids.length; i++) {
+      Conteneur conteneur = new Conteneur();
+      conteneur.setConteneurId(ids[i]);
+      conteneur.setNom(names[i]);
+      conteneurs.add(conteneur);
+   }
+   // Act
+
+   List<Conteneur> expectedConteneurs = conteneurManager.findByIdsManager(idList);
+
+// Act
+
+// Assert
+assertEquals(expectedConteneurs, conteneurs);
+}
+
+
 
    /**
     * Test la méthode findAllObjects.

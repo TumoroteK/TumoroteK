@@ -69,6 +69,8 @@ public interface ConteneurManager
     */
    Conteneur findByIdManager(Integer conteneurId);
 
+   List<Conteneur> findByIdsManager(List<Integer> listIds);
+
    /**
     * Recherche tous les Conteneurs présents dans la base.
     * @return Liste de Conteneurs.

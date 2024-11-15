@@ -90,6 +90,8 @@ import fr.aphp.tumorotek.model.contexte.Service;
       @NamedQuery(name = "Conteneur.findByExcludedId",
          query = "SELECT c FROM Conteneur c " + "WHERE c.conteneurId != ?1 AND c.archive = 0 "),
       @NamedQuery(name = "Conteneur.findByCode", query = "SELECT c FROM Conteneur c WHERE c.code = ?1 AND c.archive = 0"),
+      @NamedQuery(name = "Conteneur.findByIds",
+         query = "SELECT c FROM Conteneur c WHERE c.conteneurId IN ?1 AND c.archive = 0"),
       @NamedQuery(name = "Conteneur.findByNom", query = "SELECT c FROM Conteneur c WHERE c.nom = ?1 AND c.archive = 0"),
       @NamedQuery(name = "Conteneur.findByTemp", query = "SELECT c FROM Conteneur c WHERE c.temp = ?1 AND c.archive = 0"),
       @NamedQuery(name = "Conteneur.findByPiece", query = "SELECT c FROM Conteneur c WHERE c.piece = ?1 AND c.archive = 0"),

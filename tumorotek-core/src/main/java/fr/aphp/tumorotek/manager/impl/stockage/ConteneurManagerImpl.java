@@ -174,6 +174,10 @@ public class ConteneurManagerImpl implements ConteneurManager
    }
 
    @Override
+   public List<Conteneur> findByIdsManager(List<Integer>  IdList){
+      return conteneurDao.findByIds(IdList);
+   }
+   @Override
    public List<Conteneur> findAllObjectsManager(){
       return conteneurDao.findAll();
    }

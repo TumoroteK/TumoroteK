@@ -62,6 +62,9 @@ public interface ConteneurDao extends GenericDaoJpa<Conteneur, Integer>
     */
    List<Conteneur> findByBanqueIdWithOrder(Integer banqueId);
 
+   List<Conteneur> findByIds(List<Integer> listIds);
+
+
    /**
     * Recherche tous les Conteneurs d'une banque en fct de son
     * code.

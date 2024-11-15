@@ -36,6 +36,7 @@
 package fr.aphp.tumorotek.action.stockage;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.HashMap;
@@ -44,11 +45,16 @@ import java.util.Arrays;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
+import fr.aphp.tumorotek.dto.OutputStreamData;
 import fr.aphp.tumorotek.dto.SelectableItemDTO;
 import fr.aphp.tumorotek.manager.administration.ParametresManager;
+import fr.aphp.tumorotek.manager.impl.io.production.DocumentWithDataAsTableExcelProducer;
+import fr.aphp.tumorotek.manager.impl.stockage.planconteneur.PlanCongelateurAvecBoiteExcelGenerator;
 import fr.aphp.tumorotek.model.config.ParametreValeurSpecifique;
 import fr.aphp.tumorotek.param.EParametreValeurParDefaut;
+import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zul.Filedownload;
 import org.zkoss.zul.Window;
 
 import org.slf4j.Logger;
@@ -92,6 +98,8 @@ import fr.aphp.tumorotek.webapp.tree.stockage.EnceinteNode;
 import fr.aphp.tumorotek.webapp.tree.stockage.StockageRootNode;
 import fr.aphp.tumorotek.webapp.tree.stockage.StockageTreeItemRenderer;
 import fr.aphp.tumorotek.webapp.tree.stockage.TerminaleNode;
+
+import javax.persistence.criteria.CriteriaBuilder;
 
 /**
  *
@@ -644,7 +652,8 @@ public class ListeStockages extends AbstractController
 		Window selectionWindow = (Window) Executions.createComponents("/zuls/modales/SelectionModale.zul", null, windowArgs);
 
 		// Affichage de la fenêtre modale en mode modal
-		selectionWindow.doModal();	}
+		selectionWindow.doModal();
+	}
 
 
 	/**
@@ -683,7 +692,12 @@ public class ListeStockages extends AbstractController
 
 		if (avecBoites) {
 			windowArgs.put("callback", (Consumer<List<SelectableItemDTO>>) selectedItems -> {
-				Clients.showNotification("You clicked on 'Generate With Boxes' " + selectedItems.stream().map(SelectableItemDTO::getName).collect(Collectors.joining(", ")), "info", null, "middle_center", 3000);
+				List<Integer> listIds = selectedItems.stream().map(SelectableItemDTO::getId).collect(Collectors.toList());
+				System.out.println(listIds);
+				for (Integer integer : listIds){
+					System.out.println(integer);
+				}
+				creteExcelWithBoites(listIds);
 			});
 		} else {
 			windowArgs.put("callback", (Consumer<List<SelectableItemDTO>>) selectedItems -> {
@@ -692,6 +706,38 @@ public class ListeStockages extends AbstractController
 		}
 
 		return windowArgs;
+	}
+
+	private void creteExcelWithBoites(List<Integer> selectedItemsIds){
+		List<Conteneur> conteneurs = ManagerLocator.getConteneurManager().findByIdsManager(selectedItemsIds);
+		try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()) {
+
+			// Step 1: Retrieve necessary beans from ManagerLocator
+			DocumentWithDataAsTableExcelProducer documentProducer = ManagerLocator.getDocumentWithDataAsTableExcelProducer();
+
+			// Step 2: Create an instance of PlanCongelateurSansBoiteExcelGenerator
+			PlanCongelateurAvecBoiteExcelGenerator avecBoiteGenerator = new PlanCongelateurAvecBoiteExcelGenerator(ManagerLocator.getEnceinteManager(), documentProducer);
+
+
+			// Step 4: Generate the Excel file into ByteArrayOutputStream directly
+			OutputStreamData result = avecBoiteGenerator.generate(conteneurs);
+
+			if (result != null) {
+				byteArrayOutputStream.write(result.getOutputStream().toByteArray());
+			}
+
+			String fileName = result.getFileName();
+
+			// Ensure that we flush any remaining data before sending it out.
+			byteArrayOutputStream.flush();
+
+			// Step 6: Send the generated file back to the user
+			Filedownload.save(byteArrayOutputStream.toByteArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
+
+		} catch(Exception e) {
+			Clients.showNotification("Error generating file: " + e.getMessage(), "error", null, null, 3000);
+			log.error("Error generating Excel file", e);
+		}
 	}
 
 	public void updateConteneur(final Conteneur conteneur){
