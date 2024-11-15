@@ -44,123 +44,164 @@ import org.zkoss.bind.annotation.ExecutionArgParam;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.bind.annotation.NotifyChange;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.select.Selectors;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Window;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
-public class SelectionModale {
+/**
+ * Classe SelectionModale - Contrôleur pour la fenêtre modale de sélection d'éléments.
+ *
+ * Cette classe gère l'affichage et les interactions avec une fenêtre modale ZK,
+ * permettant à l'utilisateur de sélectionner un ou plusieurs éléments d'une liste.
+ *
+ * Les annotations @Command et @NotifyChange sont spécifiques à ZK et lient les méthodes aux événements de l'interface utilisateur,
+ * tandis que @Init est utilisée pour l'initialisation du ViewModel.
+ */
+public class SelectionModale
+{
 
-    private String title;
-    private String mainLabel;
-    private String listHeaderLabel;
-    private List<SelectableItemDTO> itemList;
-    private int selectedCount = 0;  // This should be an integer
-    private String selectedLabel;
-    private Consumer<List<SelectableItemDTO>> callback;
-    private int max;
-    private String dangerStyle;
+   private String title; // Titre de la fenêtre modale
 
+   private String mainLabel; // Texte principal affiché en haut de la fenêtre modale
 
+   private String listHeaderLabel; // Titre de l'en-tête de la liste des éléments sélectionnables
 
+   private List<SelectableItemDTO> itemList; // Liste des éléments sélectionnables
 
-    @Init
-    public void init(@ExecutionArgParam("title") String title,
-                     @ExecutionArgParam("mainLabel") String mainLabel,
-                     @ExecutionArgParam("listHeaderLabel") String listHeaderLabel,
-                     @ExecutionArgParam("itemList") List<SelectableItemDTO> itemList,
-                     @ExecutionArgParam("selectedLabel") String selectedLabel,
-                     @ExecutionArgParam("max") int max,
-                     @ExecutionArgParam("callback") Consumer<List<SelectableItemDTO>> callback) {
-        this.title = title;
-        this.mainLabel = mainLabel;
-        this.listHeaderLabel = listHeaderLabel;
-        this.itemList = itemList;
-        this.selectedLabel = selectedLabel;
-        this.callback = callback;
-        this.max = max;
-    }
+   private int selectedCount = 0; // Nombre d'éléments actuellement sélectionnés
 
-    @Command
-    @NotifyChange({"selectedCount"}) // Notify the UI to refresh selectedCount
-    public void updateSelectedCount(@ContextParam(ContextType.COMPONENT) Component component) {
-        // Get the Listbox component from the context
-        Listbox listbox = (Listbox) Selectors.find(component, "#dynamicListbox").get(0);
+   private String selectedLabel; // Texte affiché pour indiquer le nombre d'éléments sélectionnés
 
-        // Get the selected items from the Listbox
-        Set<Listitem> selectedItems = listbox.getSelectedItems();
+   private Consumer<List<SelectableItemDTO>> callback; // Fonction de rappel à exécuter après la sélection
 
-        // Update the selectedCount with the number of selected items
-        selectedCount = selectedItems.size();
+   private int max; // Nombre maximum d'éléments qui peuvent être sélectionnés
 
+   private String dangerStyle; // Style appliqué pour indiquer une sélection invalide
 
-        // Update styles based on selected count
-        if (selectedCount > max) {
-            dangerStyle = "color: red;";
-        }
-    }
+   /**
+    * Affiche la fenêtre de sélection modale avec les paramètres fournis.
+    * @param params Paramètres de configuration pour la fenêtre modale.
+    * @param onSelectionComplete Fonction de rappel à exécuter après la sélection des éléments.
+    */
+   public static void displaySelectionWindow(Map<String, Object> params, Consumer<List<SelectableItemDTO>> onSelectionComplete){
+      params.put("callback", onSelectionComplete);  // Ajout de la fonction de rappel aux paramètres
+      // Création et affichage de la fenêtre modale
+      Window selectionWindow = (Window) Executions.createComponents("/zuls/modales/SelectionModale.zul", null, params);
+      selectionWindow.doModal(); // Affiche la fenêtre modale en mode modal
+   }
 
-    @Command
-    public void executeCallback(@ContextParam(ContextType.COMPONENT) Component component) {
-        if (callback != null) {
-            Listbox listbox = (Listbox) Selectors.find(component, "#dynamicListbox").get(0);
-            List<SelectableItemDTO> selectedValues = listbox.getSelectedItems().stream()
-                    .map(item -> (SelectableItemDTO) item.getValue())
-                    .collect(Collectors.toList());
-            callback.accept(selectedValues);
-        }
-        closeModal(component);
-    }
+   /**
+    * Initialisation du ViewModel. Cette méthode est appelée automatiquement lors de la création de la fenêtre modale.
+    * Elle configure la fenêtre avec les arguments passés lors de l'appel à createComponents.
+    */
+   @Init
+   public void init(@ExecutionArgParam("title") String title, @ExecutionArgParam("mainLabel") String mainLabel,
+      @ExecutionArgParam("listHeaderLabel") String listHeaderLabel,
+      @ExecutionArgParam("itemList") List<SelectableItemDTO> itemList, @ExecutionArgParam("selectedLabel") String selectedLabel,
+      @ExecutionArgParam("max") int max, @ExecutionArgParam("callback") Consumer<List<SelectableItemDTO>> callback){
+      this.title = title;
+      this.mainLabel = mainLabel;
+      this.listHeaderLabel = listHeaderLabel;
+      this.itemList = itemList;
+      this.selectedLabel = selectedLabel;
+      this.callback = callback;
+      this.max = max;
+   }
 
-    @Command
-    public void closeModal(@ContextParam(ContextType.COMPONENT) Component component) {
-        // Close the modal window
-        Window window = (Window) Selectors.iterable(component, "#win").iterator().next();
-        window.detach();
-    }
+   /**
+    *  Elle est appelée en réponse à un événement de l'interface utilisateur.
+    * Elle met à jour le nombre d'éléments sélectionnés et notifie l'interface utilisateur pour rafraîchir l'affichage.
+    */
+   @Command
+   @NotifyChange({"selectedCount"})
+   public void updateSelectedCount(@ContextParam(ContextType.COMPONENT) Component component){
+      // Récupération du composant Listbox depuis le contexte
+      Listbox listbox = (Listbox) Selectors.find(component, "#dynamicListbox").get(0);
 
-    public String getTitle() {
-        return title;
-    }
+      // Récupération des éléments sélectionnés dans la Listbox
+      Set<Listitem> selectedItems = listbox.getSelectedItems();
 
-    public String getMainLabel() {
-        return mainLabel;
-    }
+      // Mise à jour du nombre d'éléments sélectionnés
+      selectedCount = selectedItems.size();
 
-    public String getListHeaderLabel() {
-        return listHeaderLabel;
-    }
+      // Mise à jour du style en cas de dépassement du nombre maximum d'éléments sélectionnables
+      dangerStyle = selectedCount > max ? "color: red;" : "";
+   }
 
-    public List<SelectableItemDTO> getItemList() {
-        return itemList;
-    }
+   /**
+    * Appelée lorsque l'utilisateur confirme sa sélection.
+    * Elle exécute la fonction de rappel avec les éléments sélectionnés et ferme la fenêtre modale.
+    */
+   @Command
+   public void executeCallback(@ContextParam(ContextType.COMPONENT) Component component){
+      if(callback != null){
+         // Récupération de la Listbox et des éléments sélectionnés
 
-    public int getSelectedCount() {
-        return selectedCount;
-    }
+         Listbox listbox = (Listbox) Selectors.find(component, "#dynamicListbox").get(0);
+         List<SelectableItemDTO> selectedValues =
+            listbox.getSelectedItems().stream().map(item -> (SelectableItemDTO) item.getValue()).collect(Collectors.toList());
+         // Exécution de la fonction de rappel
 
-    public String getSelectedLabel() {
-        return selectedLabel;
-    }
+         callback.accept(selectedValues);
+      }
+      // Fermeture de la fenêtre modale
 
-    public Consumer<List<SelectableItemDTO>> getCallback() {
-        return callback;
-    }
+      closeModal(component);
+   }
 
-    public int getMax() {
-        return max;
-    }
+   /**
+    * Ferme la fenêtre modale.
+    */
+   @Command
+   public void closeModal(@ContextParam(ContextType.COMPONENT) Component component){
+      // Fermeture de la fenêtre modale
+      Window window = (Window) Selectors.iterable(component, "#win").iterator().next();
+      window.detach();
+   }
 
-    public String getDangerStyle() {
-        return dangerStyle;
-    }
+   public String getTitle(){
+      return title;
+   }
 
+   public String getMainLabel(){
+      return mainLabel;
+   }
 
+   public String getListHeaderLabel(){
+      return listHeaderLabel;
+   }
+
+   public List<SelectableItemDTO> getItemList(){
+      return itemList;
+   }
+
+   public int getSelectedCount(){
+      return selectedCount;
+   }
+
+   public String getSelectedLabel(){
+      return selectedLabel;
+   }
+
+   public Consumer<List<SelectableItemDTO>> getCallback(){
+      return callback;
+   }
+
+   public int getMax(){
+      return max;
+   }
+
+   public String getDangerStyle(){
+      return dangerStyle;
+   }
 
 }
 
