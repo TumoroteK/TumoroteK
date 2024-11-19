@@ -145,7 +145,7 @@ public class DocumentWithDataAsTableExcelProducer implements DocumentProducer
             Sheet sheet = ExcelUtility.createSheet(workbook, sheetName);
             // ToDo: A discuter.Lors des tests, décommentez cette ligne pour comprendre pourquoi elle a été commentée.
             // Définit la largeur par défaut des colonnes pour une meilleure lisibilité
-            // sheet.setDefaultColumnWidth(defaultColumnWidth);
+             sheet.setDefaultColumnWidth(defaultColumnWidth);
 
             // Écrit le contexte du document dans la feuille afin que les utilisateurs aient un aperçu des informations du contexte
             writeDocumentContext(sheet, document.getContext());

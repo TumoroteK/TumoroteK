@@ -43,6 +43,7 @@ import fr.aphp.tumorotek.manager.io.document.DocumentFooter;
 import fr.aphp.tumorotek.manager.io.document.DocumentWithDataAsTable;
 import fr.aphp.tumorotek.manager.io.document.LabelValue;
 import fr.aphp.tumorotek.manager.io.production.DocumentProducer;
+import fr.aphp.tumorotek.manager.stockage.EnceinteManager;
 import fr.aphp.tumorotek.model.stockage.Conteneur;
 import fr.aphp.tumorotek.model.stockage.Enceinte;
 import fr.aphp.tumorotek.utils.TKStringUtils;
@@ -165,6 +166,8 @@ public abstract class AbstractPlanCongelateurGenerator implements PlanCongelateu
     */
    protected abstract DocumentProducer getDocumentProducer();
 
+
+   protected  abstract EnceinteManager getEnceinteManager();
    /**
     * Crée une Map de position associant des positions d'enceintes à leurs objets respectifs.
     * Cela facilite la gestion et l'accès aux enceintes en fonction de leurs positions.
