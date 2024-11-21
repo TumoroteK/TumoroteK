@@ -60,30 +60,15 @@ public class DataCell {
     public DataCell(CellContent cellContent) {
         this.cellContent = cellContent;
     }
-    public DataCell(String texte, String complement, boolean complementOnAnotherLine, String hexaColorCodeForLeftBorder) {
-        this(new CellContent(texte, complement, complementOnAnotherLine), hexaColorCodeForLeftBorder);
-    }
 
     public DataCell(String texte, String complement, boolean complementOnAnotherLine, String hexaColorCodeForLeftBorder, boolean withBorder) {
         this(new CellContent(texte, complement, complementOnAnotherLine), hexaColorCodeForLeftBorder, withBorder);
     }
 
-    public DataCell(String texte, String complement, String hexaColorCodeForLeftBorder, int colspan) {
-        this(texte, complement, hexaColorCodeForLeftBorder);
-        this.colspan=colspan;
-    }
 
     public DataCell(String texte, String complement, String hexaColorCodeForLeftBorder, int colspan, boolean withBorder) {
         this(texte, complement, hexaColorCodeForLeftBorder, withBorder);
         this.colspan=colspan;
-    }
-    public DataCell(CellContent cellContent, String hexaColorCodeForLeftBorder, int colspan, boolean withBorder,
-                    AlignmentType alignmentType){
-        this.cellContent = cellContent;
-        this.hexaColorCodeForLeftBorder = hexaColorCodeForLeftBorder;
-        this.colspan = colspan;
-        this.withBorder = withBorder;
-        this.alignmentType = alignmentType;
     }
 
     public DataCell(String text) {
@@ -106,16 +91,8 @@ public class DataCell {
         this.withBorder = withBorder;
     }
 
-    public DataCell(CellContent cellContent, String hexaColorCodeForLeftBorder, int colspan) {
-        this.cellContent = cellContent;
-        this.hexaColorCodeForLeftBorder = hexaColorCodeForLeftBorder;
-        this.colspan = colspan;
-    }
 
-    public DataCell(String text, String complement, String hexaColorCodeForLeftBorder) {
-        this(new CellContent(text, complement), hexaColorCodeForLeftBorder);
-    }
-    public DataCell(String text, String complement, String hexaColorCodeForLeftBorder, boolean withBorder) {
+       public DataCell(String text, String complement, String hexaColorCodeForLeftBorder, boolean withBorder) {
         this(new CellContent(text, complement), hexaColorCodeForLeftBorder, withBorder);
     }
 

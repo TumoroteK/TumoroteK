@@ -58,7 +58,7 @@ public class CellContent {
     private boolean complementOnAnotherLine = false;
 
     // Add a new field to explicitly control text wrapping
-    private boolean shouldWrapText = false;
+    private boolean wrapText = false;
 
 
 
@@ -66,7 +66,7 @@ public class CellContent {
         this.text = text;
         this.complementInItalic = false;
         // Check if text needs wrapping (contains long strings or line breaks)
-        this.shouldWrapText = text != null && (text.contains("\n") || text.length() > 50);
+        this.wrapText = text != null && (text.contains("\n") || text.length() > 50);
     }
 
     public CellContent(String text, String complement) {
@@ -125,14 +125,14 @@ public class CellContent {
     }
 
     // Add getter/setter for the new field
-    public boolean isShouldWrapText() {
-        return shouldWrapText || isComplementOnAnotherLine() || 
+    public boolean isWrapText() {
+        return wrapText || isComplementOnAnotherLine() ||
                (text != null && text.contains("\n")) ||
                (complement != null && complement.contains("\n"));
     }
 
-    public void setShouldWrapText(boolean shouldWrapText) {
-        this.shouldWrapText = shouldWrapText;
+    public void setWrapText(boolean wrapText) {
+        this.wrapText = wrapText;
     }
 
     /**
@@ -155,7 +155,7 @@ public class CellContent {
         
         // If text should wrap but doesn't have explicit line breaks,
         // add artificial line breaks for long content
-        if (shouldWrapText && !result.toString().contains("\n")) {
+        if (wrapText && !result.toString().contains("\n")) {
             int maxLineLength = 50;
             String content = result.toString();
             if (content.length() > maxLineLength) {
