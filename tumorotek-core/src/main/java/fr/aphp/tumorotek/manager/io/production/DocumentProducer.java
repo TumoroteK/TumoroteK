@@ -60,11 +60,10 @@ public interface DocumentProducer {
      * de tableau et écrit le résultat dans un flux de sortie spécifié.
      *
      * @param listDocumentWithDataAsTable La liste des objets qui contiennent les données à inclure dans le document.
-     * @param defaultColumnWidth La largeur par défaut des colonnes du tableau dans le document
      * @return DocumentProducerResult Le résultat produit par cette opération
      *
      * @throws IOException Si une erreur se produit lors de l'écriture du document dans le flux de sortie.
      */
 
-    DocumentProducerResult produce(List<DocumentWithDataAsTable> listDocumentWithDataAsTable, int defaultColumnWidth) throws IOException;
+    DocumentProducerResult produce(List<DocumentWithDataAsTable> listDocumentWithDataAsTable) throws IOException;
 }

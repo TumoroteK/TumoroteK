@@ -120,12 +120,11 @@ public class DocumentWithDataAsTableExcelProducer implements DocumentProducer
     * </ul>
     *
     * @param listDocumentWithDataAsTable Liste des documents à traiter
-    * @param defaultColumnWidth Largeur par défaut des colonnes (en unités de caractères)
     * @return Un objet DocumentProducerResult contenant le fichier Excel généré
     * @throws IOException En cas d'erreur lors de l'écriture du fichier
     */
    @Override
-   public DocumentProducerResult produce(List<DocumentWithDataAsTable> listDocumentWithDataAsTable, int defaultColumnWidth)
+   public DocumentProducerResult produce(List<DocumentWithDataAsTable> listDocumentWithDataAsTable)
       throws IOException{
       // Initialisation du résultat à renvoyer
       DocumentProducerResult result = new DocumentProducerResult();
@@ -143,11 +142,13 @@ public class DocumentWithDataAsTableExcelProducer implements DocumentProducer
 
             // Crée une nouvelle feuille dans le classeur avec le nom spécifié
             Sheet sheet = ExcelUtility.createSheet(workbook, sheetName);
-            // ToDo: A discuter.Lors des tests, décommentez cette ligne pour comprendre pourquoi elle a été commentée.
-            // Définit la largeur par défaut des colonnes pour une meilleure lisibilité
-             sheet.setDefaultColumnWidth(defaultColumnWidth);
+             // Gestion de la largeur de colonne par défaut
+             if (document.getColumnWidth() > 0) {
+             sheet.setDefaultColumnWidth(document.getColumnWidth());
+             }
 
-            // Écrit le contexte du document dans la feuille afin que les utilisateurs aient un aperçu des informations du contexte
+
+             // Écrit le contexte du document dans la feuille afin que les utilisateurs aient un aperçu des informations du contexte
             writeDocumentContext(sheet, document.getContext());
 
             // Écrit les données du document dans la feuille, ce qui constitue l'essentiel du contenu
@@ -204,9 +205,12 @@ public class DocumentWithDataAsTableExcelProducer implements DocumentProducer
 
             // Crée un style de cellule en gras pour les labels ou valeurs qui nécessitent ce formatage.
             CellStyle boldCellStyle = sheet.getWorkbook().createCellStyle();
-            boldCellStyle.setFont(getFont(ExcelFontStyle.BOLD, sheet.getWorkbook()));
+            Font boldFont = sheet.getWorkbook().createFont();
+            boldFont.setBold(true);
+            boldCellStyle.setFont(boldFont);
 
-            // Parcourt chaque LabelValue dans la liste fournie par le DocumentContext.
+
+             // Parcourt chaque LabelValue dans la liste fournie par le DocumentContext.
             for(LabelValue labelValue : labelValues){
                // Crée une nouvelle ligne dans la feuille pour chaque paire label-valeur.
                Row row = sheet.createRow(rowIndex);
@@ -369,7 +373,7 @@ public class DocumentWithDataAsTableExcelProducer implements DocumentProducer
           CellStyle style = cell.getCellStyle();
           
           // Gestion du wrapping (retour à la ligne automatique)
-          if(content.isShouldWrapText()) {
+          if(content.isWrapText()) {
               // Active le wrapping pour permettre le texte sur plusieurs lignes
               style.setWrapText(true);
               

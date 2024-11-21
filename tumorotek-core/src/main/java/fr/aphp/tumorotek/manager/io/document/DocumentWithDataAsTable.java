@@ -46,11 +46,32 @@ package fr.aphp.tumorotek.manager.io.document;
  */
 public class DocumentWithDataAsTable extends DocumentToGenerate {
 
+    // La largeur des colonnes dans le document généré
+   private int columnWidth;
+
+   //L'espacement gauche dans le document généré.
+    private int leftPadding;
 
     public DataAsTable getData(){
         return (DataAsTable) super.getData();
     }
     public DocumentWithDataAsTable(String documentName, DocumentContext context, DocumentData data, DocumentFooter footer) {
         super(documentName, context, data, footer);
+    }
+
+    public int getColumnWidth() {
+        return columnWidth;
+    }
+
+    public void setColumnWidth(int columnWidth) {
+        this.columnWidth = columnWidth;
+    }
+
+    public int getLeftPadding() {
+        return leftPadding;
+    }
+
+    public void setLeftPadding(int leftPadding) {
+        this.leftPadding = leftPadding;
     }
 }

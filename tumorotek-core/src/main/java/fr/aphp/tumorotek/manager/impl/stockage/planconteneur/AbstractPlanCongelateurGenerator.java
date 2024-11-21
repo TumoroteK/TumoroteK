@@ -74,8 +74,6 @@ public abstract class AbstractPlanCongelateurGenerator implements PlanCongelateu
    // Préfixe utilisé pour nommer les fichiers générés
    protected static final String PREFIX_FILE_NAME = "plan_conteneur";
 
-   // Largeur par défaut des colonnes dans le document généré
-   protected static final int DEFAULT_COLUMN_WIDE = 25;
 
    @Override
    public OutputStreamData generate(List<Conteneur> listConteneurs) throws IOException{
@@ -86,7 +84,7 @@ public abstract class AbstractPlanCongelateurGenerator implements PlanCongelateu
          listPlanConteneur.add(buildPlanConteneur(conteneur));
       }
       // Produit le document final avec le format spécifique (Excel, PDF, etc.)
-      DocumentProducerResult producerResult = getDocumentProducer().produce(listPlanConteneur, DEFAULT_COLUMN_WIDE);
+      DocumentProducerResult producerResult = getDocumentProducer().produce(listPlanConteneur);
       // Génère un nom de fichier unique basé sur la date courante
       String currentDate = TKStringUtils.getCurrentDate(DATE_FORMAT);
 
