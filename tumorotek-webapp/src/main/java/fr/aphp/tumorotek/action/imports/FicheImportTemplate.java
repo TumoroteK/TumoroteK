@@ -45,6 +45,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -588,16 +589,59 @@ public class FicheImportTemplate extends AbstractFicheCombineController
       Events.echoEvent("onLaterCreate", self, null);
    }
 
+   
    public void onClick$copyEmptyFields() throws Exception{
+      //TK-370 : Si le nom de l'importColonne n'est pas renseigné, on l'alimente avec le libellé internationalisé du champ entité associé
+      //Mais /!\ cela peut générer des doublons si un même libellé existe dans 2 entités différentes (TK-586)
+      //=> dans le cas de doublon, le libellé doit être suivi du nom internationalisé de l'entité associée pour éviter une erreur bloquante
+      //On fera de même pour les champs entités de nom "Libelle" car c'est une valeur peu explicite
+      //Utilisation d'une map dont la clé est le nom du champ en minuscule et la valeur une liste d'ImportColonneDecorator :
+      Map<String, List<ImportColonneDecorator>> mapImportColonneDecoratorByNomChamp = new HashMap<String, List<ImportColonneDecorator>>();
+
+      //On passe sur tous les importColonneDecorator pour alimenter la map :
       for(ImportColonneDecorator importColonneDecorator : importColonnesDecorator){
-         //        si null , l'utilisateur n'a pas rempli l'entrée
+         //        si null , l'utilisateur n'a pas rempli l'entrée donc on l'alimente
          if(importColonneDecorator.getColonne().getNom() == null){
-            String champName = importColonneDecorator.getChamp();
-            log.debug("l'entrée a été remplie avec la chaîne {}", champName);
-            importColonneDecorator.getColonne().setNom(champName);
+            mapImportColonneDecoratorByNomChamp.computeIfAbsent(
+               importColonneDecorator.getChamp().toLowerCase(), 
+               key -> new ArrayList<ImportColonneDecorator>())
+            .add(importColonneDecorator);
          }
       }
+
+      //parcours de la map par clé pour affecter les valeurs selon la règle de gestion
+      Set<Map.Entry<String, List<ImportColonneDecorator>>> allMapEntry = mapImportColonneDecoratorByNomChamp.entrySet();
+      for(Map.Entry<String, List<ImportColonneDecorator>> oneMapEntry : allMapEntry) {
+         List<ImportColonneDecorator> listImportColonneDecoratorForOneNomChamp = oneMapEntry.getValue();
+         if(listImportColonneDecoratorForOneNomChamp.size() == 1) {
+            ImportColonneDecorator importColonneDecorator = listImportColonneDecoratorForOneNomChamp.get(0);
+            boolean appendEntite = (importColonneDecorator.getColonne().getChamp().getChampEntite() !=null ? importColonneDecorator.getColonne().getChamp().getChampEntite().getNom().equals("Libelle") : false);
+            populateImportColonneDecoratorWithChampNom(importColonneDecorator, appendEntite);
+         }
+         else {//doublon
+            for(ImportColonneDecorator importColonneDecorator : listImportColonneDecoratorForOneNomChamp) {
+               populateImportColonneDecoratorWithChampNom(importColonneDecorator, true);
+            }
+         }
+      }
+      
       copyEmptyFields.setDisabled(true);
+   }
+   
+   /**
+    * renseigne le champ Nom de l'attribut colonne (de type ImportColonne) de l'importColonneDecorator passé en paramètre.
+    * Par défaut c'est le libellé internationalisé du champ associé (méthode getChamp() de importColonneDecorator).
+    * Mais si le paramètre appendEntite vaut true, le libellé internationalisé de l'entité associé est ajouté à la suite du libellé du champ avec un espace entre les 2
+    * @param importColonneDecorator
+    * @param appendEntite
+    */
+   private void populateImportColonneDecoratorWithChampNom(ImportColonneDecorator importColonneDecorator, boolean appendEntite) {
+      StringBuilder nomChamp = new StringBuilder(importColonneDecorator.getChamp());
+      if(appendEntite) {
+         nomChamp.append(" ").append(importColonneDecorator.getEntite());
+      }
+      importColonneDecorator.getColonne().setNom(nomChamp.toString());
+      log.debug("la colonne 'Nom de la colonne' pour le champ '{}' a été remplie avec la valeur '{}'", importColonneDecorator.getColonne().getChamp().toString(), nomChamp);
    }
 
    @Override
