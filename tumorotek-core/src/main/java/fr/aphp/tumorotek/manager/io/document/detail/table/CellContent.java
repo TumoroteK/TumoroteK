@@ -65,7 +65,6 @@ public class CellContent {
     public CellContent(String text) {
         this.text = text;
         this.complementInItalic = false;
-        // Check if text needs wrapping (contains long strings or line breaks)
         this.wrapText = text != null && (text.contains("\n") || text.length() > 50);
     }
 
@@ -124,7 +123,6 @@ public class CellContent {
         this.complementOnAnotherLine = complementOnAnotherLine;
     }
 
-    // Add getter/setter for the new field
     public boolean isWrapText() {
         return wrapText || isComplementOnAnotherLine() ||
                (text != null && text.contains("\n")) ||
@@ -153,8 +151,8 @@ public class CellContent {
             result.append(separateur).append(complement);
         }
         
-        // If text should wrap but doesn't have explicit line breaks,
-        // add artificial line breaks for long content
+        // Si le texte doit être enroulé mais ne contient pas de sauts de ligne explicites,
+        // ajoutez des sauts de ligne artificiels pour le contenu long
         if (wrapText && !result.toString().contains("\n")) {
             int maxLineLength = 50;
             String content = result.toString();

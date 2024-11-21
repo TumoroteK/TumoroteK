@@ -103,12 +103,15 @@ public abstract class AbstractPlanCongelateurGenerator implements PlanCongelateu
     */
    protected DocumentWithDataAsTable buildPlanConteneur(Conteneur conteneur){
       // Crée un document structuré avec en-tête, contenu et pied de page
-
-      return new DocumentWithDataAsTable(conteneur.getNom(),  // Titre du document
-         buildEntetePlan(conteneur),  // Information générale sur le conteneur
-         buildDetailPlan(conteneur), // Contenu principal (implémenté par les classes filles)
-         buildPiedPagePlan(conteneur) // Informations de bas de page
+      DocumentWithDataAsTable documentWithDataAsTable = new DocumentWithDataAsTable(
+                           conteneur.getNom(),       // Titre du document
+                           buildEntetePlan(conteneur),  // Information g├®n├®rale sur le conteneur
+                           buildDetailPlan(conteneur), // Contenu principal (impl├®ment├® par les classes filles)
+                           buildPiedPagePlan(conteneur) // Informations de bas de page
       );
+      documentWithDataAsTable.setColumnWidth(22);
+      return documentWithDataAsTable;
+
    }
 
    /**

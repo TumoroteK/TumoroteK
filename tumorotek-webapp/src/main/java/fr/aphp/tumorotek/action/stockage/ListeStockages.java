@@ -792,8 +792,8 @@ public class ListeStockages extends AbstractController
          byteArrayOutputStream.flush();
 
          // Envoi du fichier généré à l'utilisateur avec le type MIME approprié pour Excel
-         Filedownload.save(byteArrayOutputStream.toByteArray(),
-            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
+         Filedownload.save(byteArrayOutputStream.toByteArray(), result.getContentType(), result.getFileName());
+
       } catch (IOException e) {
          handleError("excel.generation.io.error", e);
       } catch (IllegalArgumentException e) {
