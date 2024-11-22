@@ -61,14 +61,12 @@ public class DataCell {
         this.cellContent = cellContent;
     }
 
-    public DataCell(String texte, String complement, boolean complementOnAnotherLine, String hexaColorCodeForLeftBorder, boolean withBorder) {
-        this(new CellContent(texte, complement, complementOnAnotherLine), hexaColorCodeForLeftBorder, withBorder);
-    }
 
-
-    public DataCell(String texte, String complement, String hexaColorCodeForLeftBorder, int colspan, boolean withBorder) {
-        this(texte, complement, hexaColorCodeForLeftBorder, withBorder);
-        this.colspan=colspan;
+    public DataCell(CellContent cellContent, String hexaColorCodeForLeftBorder, int colspan, boolean withBorder) {
+        this.cellContent = cellContent;
+        this.hexaColorCodeForLeftBorder = hexaColorCodeForLeftBorder;
+        this.colspan = colspan;
+        this.withBorder = withBorder;
     }
 
     public DataCell(String text) {

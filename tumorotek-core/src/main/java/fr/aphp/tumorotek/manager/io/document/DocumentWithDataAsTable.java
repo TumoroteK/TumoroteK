@@ -43,6 +43,7 @@ package fr.aphp.tumorotek.manager.io.document;
  * en héritant des propriétés de base d'un document à générer, telles que le nom du document, le contexte,
  * les données et le pied de page.</p>
  *
+ *  <p>Le modèle de conception et l'architecture de cette classe ont été fournis par C.H.</p>
  */
 public class DocumentWithDataAsTable extends DocumentToGenerate {
 

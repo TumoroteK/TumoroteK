@@ -61,22 +61,19 @@ import java.util.stream.Collectors;
  * incluent des boîtes. Elle est conçue pour être étendue par des classes concrètes
  * qui doivent définir la logique spécifique à la génération des détails du plan.
  *
+ * <p>Le modèle de conception et l'architecture de cette classe ont été fournis par C.H.</p>
+ *
+ * @author C.H.
  */
 public abstract class AbstractPlanCongelateurAvecBoiteGenerator extends AbstractPlanCongelateurGenerator
 {
 
-   public static final String LIBELLE_EMPLACEMENT_ENCEINTE_VIDE = "vide"; // à i18n !!!!!
-   public static final String LIBELLE_EMPLACEMENT_BOITE_VIDE = "(vide)"; // à i18n !!!!!
-
-   //private ConteneurManager conteneurManager;//plus nécessaire
-
+   public static final String LIBELLE_EMPLACEMENT_ENCEINTE_VIDE = "vide";
+   public static final String LIBELLE_EMPLACEMENT_BOITE_VIDE = "(vide)";
 
 
    //liste des enceintes par niveau (chaque niveau correspond à une liste). Elle constituera les lignes d'entête du tableau final
    //cet objet est un objet interne au traitement de génération du DataAsTable
-
-
-
 
 
    //remplacer DataAsTable par DocumentData
@@ -154,12 +151,15 @@ public abstract class AbstractPlanCongelateurAvecBoiteGenerator extends Abstract
             Enceinte enceinte = enceinteEmplacement.getEnceinte();
             if(enceinte == null) {
                dataCellForEnceinteEmplacementPlusBasNiveau = new DataCell(LIBELLE_EMPLACEMENT_ENCEINTE_VIDE, true);
+               dataCellForEnceinteEmplacementPlusBasNiveau.setAlignmentType(AlignmentType.CENTER);
             }
             else {
-               dataCellForEnceinteEmplacementPlusBasNiveau = new DataCell(enceinte.getNom(),
-                  addParentheseToAlias(enceinte.getAlias()),
-                  true,
-                  enceinte.getCouleur() == null ? null : enceinte.getCouleur().getHexa(), true);
+
+               CellContent cellContent = new CellContent(enceinte.getNom(),createAlias(enceinte.getAlias()), true, true);
+               dataCellForEnceinteEmplacementPlusBasNiveau = new DataCell(cellContent,
+                       enceinte.getCouleur() == null ? null : enceinte.getCouleur().getHexa(),
+                        true);
+               dataCellForEnceinteEmplacementPlusBasNiveau.setAlignmentType(AlignmentType.CENTER);
             }
          }
          rowDernierNiveauEnceinte.addDataCell(dataCellForEnceinteEmplacementPlusBasNiveau);
@@ -184,12 +184,14 @@ public abstract class AbstractPlanCongelateurAvecBoiteGenerator extends Abstract
                Enceinte enceinte = enceinteEmplacementATraiter.getEnceinte();
                if(enceinte == null) {
                   dataCellForEnceinteEmplacement = new DataCell(LIBELLE_EMPLACEMENT_ENCEINTE_VIDE, true);
+                  dataCellForEnceinteEmplacement.setAlignmentType(AlignmentType.CENTER);
                }
                else {
-                  dataCellForEnceinteEmplacement = new DataCell(enceinte.getNom(),
-                     addParentheseToAlias(enceinte.getAlias()),
+                  CellContent enceinteCellContent = new CellContent(enceinte.getNom(), createAlias(enceinte.getAlias()), true, true);
+                  dataCellForEnceinteEmplacement = new DataCell(enceinteCellContent,
                      enceinte.getCouleur() == null ? null : enceinte.getCouleur().getHexa(),
                      enceinteEmplacementATraiter.getNbEnceinteDernierNiveau(), true);
+                  dataCellForEnceinteEmplacement.setAlignmentType(AlignmentType.CENTER);
                }
             }
             rowNiveauEnceinteATraiter.addDataCell(dataCellForEnceinteEmplacement);
@@ -207,8 +209,6 @@ public abstract class AbstractPlanCongelateurAvecBoiteGenerator extends Abstract
       //création de la ligne d'enceinte pour l'entête de 1er niveau et ajout à la liste des enceintes par niveau
       List<EnceinteEmplacement> listEnceintePour1erNiveau = new ArrayList<EnceinteEmplacement>();
       listListEnceinteEmplacementParNiveau.add(listEnceintePour1erNiveau);
-      System.out.println("enceinte: " + getEnceinteManager());
-      System.out.println(" conten" + conteneur);
       //on est sur la première ligne donc l'emplacement parent est null :
       addlistEnceinteToListEntete(conteneur.getNbrEnc(), getEnceinteManager().findByConteneurWithOrderManager(conteneur), null, listEnceintePour1erNiveau);
    }
@@ -295,7 +295,7 @@ public abstract class AbstractPlanCongelateurAvecBoiteGenerator extends Abstract
          //ajout de la cellule correspondant à la boîte :
          DataCell cellBoite = new DataCell(
             terminaleATraiter.getNom(),
-            addParentheseToAlias(terminaleATraiter.getAlias()),
+            createAlias(terminaleATraiter.getAlias()),
             terminaleATraiter.getCouleur() == null ? null : terminaleATraiter.getCouleur().getHexa(), true);
 
          dataAsTable.addDataCell(cellBoite, j, indexColonne);
@@ -309,9 +309,7 @@ public abstract class AbstractPlanCongelateurAvecBoiteGenerator extends Abstract
    }
 
 
-   private String addParentheseToAlias(String alias) {
-      return new StringBuilder("(").append(alias == null ? "" : alias).append(")").toString();
-   }
+
 
    //on va passer dans chaque emplacement de dernier niveau et on va
    //remonter les parents pour ajouter 1 à son nbEnceinteDernierNiveau
