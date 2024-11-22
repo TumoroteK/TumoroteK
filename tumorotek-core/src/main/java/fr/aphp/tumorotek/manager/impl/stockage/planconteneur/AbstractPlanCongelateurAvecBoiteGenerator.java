@@ -40,7 +40,6 @@ import fr.aphp.tumorotek.manager.io.document.detail.table.AlignmentType;
 import fr.aphp.tumorotek.manager.io.document.detail.table.CellContent;
 import fr.aphp.tumorotek.manager.io.document.detail.table.CellRow;
 import fr.aphp.tumorotek.manager.io.document.detail.table.DataCell;
-import fr.aphp.tumorotek.manager.stockage.EnceinteManager;
 import fr.aphp.tumorotek.model.stockage.Conteneur;
 import fr.aphp.tumorotek.model.stockage.Enceinte;
 import fr.aphp.tumorotek.model.stockage.Terminale;
@@ -49,9 +48,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * Classe abstraite pour la génération de plans de congélateurs avec boîte.
@@ -60,8 +57,6 @@ import java.util.stream.Collectors;
  * implémentation spécifique pour la génération de plans de congélateurs qui
  * incluent des boîtes. Elle est conçue pour être étendue par des classes concrètes
  * qui doivent définir la logique spécifique à la génération des détails du plan.
- *
- * <p>Le modèle de conception et l'architecture de cette classe ont été fournis par C.H.</p>
  *
  * @author C.H.
  */
@@ -187,7 +182,7 @@ public abstract class AbstractPlanCongelateurAvecBoiteGenerator extends Abstract
                   dataCellForEnceinteEmplacement.setAlignmentType(AlignmentType.CENTER);
                }
                else {
-                  CellContent enceinteCellContent = new CellContent(enceinte.getNom(), createAlias(enceinte.getAlias()), true, true);
+                  CellContent enceinteCellContent = new CellContent(enceinte.getNom(), createAlias(enceinte.getAlias()), true, false);
                   dataCellForEnceinteEmplacement = new DataCell(enceinteCellContent,
                      enceinte.getCouleur() == null ? null : enceinte.getCouleur().getHexa(),
                      enceinteEmplacementATraiter.getNbEnceinteDernierNiveau(), true);

@@ -45,8 +45,11 @@ import java.util.List;
  * <p>Elle gère une liste de paires étiquette-valeur ({@link LabelValue}), qui peuvent être utilisées pour stocker
  * des informations contextuelles ou des métadonnées à inclure dans le document.</p>
  *
+ * <p>Le modèle de conception et l'architecture de cette classe ont été fournis par C.H.</p>
  */
 public class DocumentContext {
+
+    // Liste des étiquettes et valeurs associées pour le contexte du document.
     private List<LabelValue> listLabelValue;
 
     public DocumentContext(List<LabelValue> listLabelValue) {

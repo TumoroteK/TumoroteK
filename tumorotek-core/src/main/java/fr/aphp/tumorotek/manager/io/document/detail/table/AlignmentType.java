@@ -35,7 +35,20 @@
  **/
 package fr.aphp.tumorotek.manager.io.document.detail.table;
 
-
+/**
+ * Enumération représentant les types d'alignement disponibles.
+ * Elle est utilisée pour définir l'alignement du contenu dans un document (par exemple, texte, colonnes).
+ *
+ * <ul>
+ *   <li><b>LEFT</b> : Aligne le contenu à gauche.</li>
+ *   <li><b>CENTER</b> : Centre le contenu.</li>
+ *   <li><b>RIGHT</b> : Aligne le contenu à droite.</li>
+ * </ul>
+ *
+ * <p>Cette énumération est principalement utilisée pour spécifier l'alignement du texte ou d'autres éléments
+ * dans les documents générés (Excel, PDF, etc.).</p>
+ *
+ */
 public enum AlignmentType {
     LEFT, CENTER, RIGHT;
 }

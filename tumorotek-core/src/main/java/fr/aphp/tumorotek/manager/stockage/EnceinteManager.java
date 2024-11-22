@@ -406,14 +406,4 @@ public interface EnceinteManager
     * @since 2.2.1
     */
    List<Banque> getDistinctBanquesFromTkObjectsManager(Enceinte enc);
-
-
-   /**
-    * Calcule le nombre total de places dans l'instance 'Enceinte' spécifiée et dans ses sous-enseintes de manière récursive.
-    *
-    * @param enceinte l'instance 'Enceinte' pour laquelle calculer le nombre total de places
-    * @return le nombre total de places, y compris celles des sous-enseintes
-    */
-    Integer calculateTotalNbPlaces(Enceinte enceinte);
-
 }

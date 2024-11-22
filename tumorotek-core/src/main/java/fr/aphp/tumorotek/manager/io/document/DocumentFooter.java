@@ -37,22 +37,30 @@
 package fr.aphp.tumorotek.manager.io.document;
 
 /**
- * La classe représente le pied de page d'un document, avec des sections pour les données
- * alignées à gauche, au centre et à droite.
+ * La classe <code>DocumentFooter</code> représente le pied de page d'un document.
+ * Elle contient des données disposées sur trois sections : à gauche, au centre et à droite.
  *
+ * <p>Cette classe est utilisée pour structurer et gérer les informations affichées dans
+ * le pied de page d'un document généré, que ce soit pour un rapport, une facture, ou tout autre type de document.</p>
  *
- * <p><b>Exemple d'utilisation :</b></p>
- * <pre>{@code
- * DocumentFooter footer = new DocumentFooter();
- * footer.setLeftData("Données à gauche");
- * footer.setCenterData("Données au centre");
- * footer.setRightData("Données à droite");
- * }</pre>
+ * <ul>
+ *   <li><b>leftData</b> : Les données à afficher à gauche dans le pied de page.</li>
+ *   <li><b>centerData</b> : Les données à afficher au centre du pied de page.</li>
+ *   <li><b>rightData</b> : Les données à afficher à droite dans le pied de page.</li>
+ * </ul>
  *
+ * <p>Le modèle de conception et l'architecture de cette classe ont été fournis par C.H.</p>
  */
+
 public class DocumentFooter {
+
+    // Données à afficher à gauche dans le pied de page.
     private String leftData;
+
+    // Données à afficher au centre dans le pied de page.
     private String centerData;
+
+    // Données à afficher à droite dans le pied de page.
     private String rightData;
 
 

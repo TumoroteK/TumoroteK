@@ -35,7 +35,21 @@
  **/
 package fr.aphp.tumorotek.manager.io.document;
 
-// Define the DocumentData class and its fields here
+
+/**
+ * L'interface <code>DocumentData</code> sert de contrat pour toutes les classes représentant des données
+ * utilisées dans le contexte de la génération de documents.
+ *
+ * <p>Les classes qui implémentent cette interface doivent contenir des données structurées qui peuvent être
+ * manipulées et intégrées dans un document. L'interface ne définit pas de structure particulière, mais elle sert
+ * de base pour différents types de données qui seront ensuite utilisés pour la création de documents comme des
+ * fichiers Excel, PDF, etc.</p>
+ *
+ * <p>Cette interface est utilisée pour garantir qu'une classe contient des données qui peuvent être représentées
+ * ou extraites sous forme de document.</p>
+ *
+ * <p>Le modèle de conception et l'architecture de cette interface ont été fournis par C.H.</p>
+ */
 public interface DocumentData  {
 
 }

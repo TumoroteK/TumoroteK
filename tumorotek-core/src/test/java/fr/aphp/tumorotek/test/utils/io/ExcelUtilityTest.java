@@ -111,16 +111,7 @@ public class ExcelUtilityTest
       assertEquals(0, cell.getColumnIndex());
    }
 
-   /**
-    * Teste l'application du style de bordure sur une plage de cellules fusionnées.
-    */
-   @Test
-   public void testApplyTableBorderStyleOnMerge(){
-      ExcelUtility.applyTableBorderStyleOnMerge(sheet, 0, 1, 0, 1, "#FF5733");
-      // Vérifie les styles de bordure; une inspection plus approfondie nécessite de vérifier les styles des cellules.
-      Cell cell = sheet.getRow(0).getCell(0);
-      assertNotNull(cell.getCellStyle());
-   }
+
 
    /**
     * Teste la création d'une nouvelle feuille dans le classeur.

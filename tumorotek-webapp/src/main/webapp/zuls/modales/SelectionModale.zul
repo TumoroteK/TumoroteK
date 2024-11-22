@@ -1,4 +1,40 @@
 <!--
+ * Copyright ou © ou Copr. Ministère de la santé, FRANCE (01/01/2011)
+ * dsi-projet.tk@aphp.fr
+ *
+ * Ce logiciel est un programme informatique servant à la gestion de
+ * l'activité de biobanques.
+ *
+ * Ce logiciel est régi par la licence CeCILL soumise au droit français
+ * et respectant les principes de diffusion des logiciels libres. Vous
+ * pouvez utiliser, modifier et/ou redistribuer ce programme sous les
+ * conditions de la licence CeCILL telle que diffusée par le CEA, le
+ * CNRS et l'INRIA sur le site "http://www.cecill.info".
+ * En contrepartie de l'accessibilité au code source et des droits de
+ * copie, de modification et de redistribution accordés par cette
+ * licence, il n'est offert aux utilisateurs qu'une garantie limitée.
+ * Pour les mêmes raisons, seule une responsabilité restreinte pèse sur
+ * l'auteur du programme, le titulaire des droits patrimoniaux et les
+ * concédants successifs.
+ *
+ * A cet égard  l'attention de l'utilisateur est attirée sur les
+ * risques associés au chargement,  à l'utilisation,  à la modification
+ * et/ou au  développement et à la reproduction du logiciel par
+ * l'utilisateur étant donné sa spécificité de logiciel libre, qui peut
+ * le rendre complexe à manipuler et qui le réserve donc à des
+ * développeurs et des professionnels  avertis possédant  des
+ * connaissances  informatiques approfondies.  Les utilisateurs sont
+ * donc invités à charger  et  tester  l'adéquation  du logiciel à leurs
+ * besoins dans des conditions permettant d'assurer la sécurité de leurs
+ * systèmes et ou de leurs données et, plus généralement, à l'utiliser
+ * et l'exploiter dans les mêmes conditions de sécurité.
+ *
+ * Le fait que vous puissiez accéder à cet en-tête signifie que vous
+ * avez pris connaissance de la licence CeCILL, et que vous en avez
+ * accepté les termes.
+-->
+
+<!--
     Ce fichier ZUL définit une fenêtre (Modale). Voici une description des éléments présents dans cette fenêtre :
 
     - Titre de la fenêtre : le variable`title`.
@@ -23,14 +59,18 @@
             closable="true">
 
         <vbox style="padding-top: 10px; padding-bottom: 10px; padding-left:10px; padding-right:10px;">
+                    <!-- Label principal qui guide l'utilisateur -->
             <label id="mainLabel" value="@bind(vm.mainLabel)" style="color: grey; padding-left:5px;"/>
 
+            <!-- Liste déroulante avec des éléments dynamiques et possibilité de sélection multiple -->
             <listbox id="dynamicListbox" multiple="true" checkmark="true" model="@bind(vm.itemList)"
                      onSelect="@command('updateSelectedCount')" height="600px">
                 <listhead>
+                                    <!-- Étiquette de la liste -->
                     <listheader label="@bind(vm.listHeaderLabel)"/>
                 </listhead>
                 <template name="model" var="item">
+                                    <!-- Affichage des éléments dans la liste -->
                     <listitem>
                         <listcell label="@bind(item.name)"/>
                     </listitem>
@@ -38,20 +78,24 @@
             </listbox>
 
             <div style="display: grid; grid-template-columns: auto 1fr;">
-                <!-- Labels Section -->
+                <!-- Section des Labels -->
                 <div style="color: grey; font-weight: bold; padding-top: 5px;">
+                    <!-- Affichage du nombre d'éléments sélectionnés, avec gestion du dépassement de la limite -->
                     <label id="selectedCountLabel" value="@bind(vm.selectedCount)"
                            style="@bind(vm.selectedCount > vm.max ? 'color: red;' : '')"/>
                     <label sclass="z-valign-middle" id="selectedLabel" value="@bind(vm.selectedLabel)"
                            style="@bind(vm.selectedCount > vm.max ? 'color: red;' : '')"/>
+                    <!-- Icône de warning si le nombre d'éléments sélectionnés dépasse la limite -->
                     <image src="/images/icones/warning.png"
                            visible="@bind(vm.selectedCount > vm.max)" style="padding-top: 5px;"/>
                 </div>
 
-                <!-- Buttons Section -->
+                <!-- Section des Boutons -->
                 <div style="display: flex; justify-content: flex-end; align-items: center;">
+                                    <!-- Bouton "Annuler" pour fermer la fenêtre sans modification -->
                     <button id="cancelButton" label="Cancel" onClick="@command('closeModal')"
                             image="/images/icones/cancel.png" sclass="buttonv2"/>
+                                    <!-- Bouton "Valider" pour confirmer la sélection -->
                     <button id="validateButton" label="Validate" onClick="@command('executeCallback')"
                             image="/images/icones/validate.png" sclass="buttonv2" disabled="@bind(vm.selectedCount > vm.max)"/>
                 </div>

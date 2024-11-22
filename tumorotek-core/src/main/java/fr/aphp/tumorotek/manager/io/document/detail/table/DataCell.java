@@ -36,9 +36,14 @@
 package fr.aphp.tumorotek.manager.io.document.detail.table;
 
 /**
- * La classe représente une cellule de données dans un tableau.
+ * Représente une cellule de données dans un tableau ou une feuille de calcul.
  *
- * <p>Cette classe encapsule les informations nécessaires pour définir le contenu et la présentation d'une cellule </p>
+ * <p>Cette classe encapsule les informations nécessaires pour définir le contenu (via un objet {@link CellContent}),
+ * l'apparence et la disposition d'une cellule de tableau.
+ * Elle permet de spécifier le contenu de la cellule, les styles de bordure, le nombre de colonnes occupées,
+ * ainsi que l'alignement du contenu.</p>
+ *
+ * <p>Le modèle de conception et l'architecture de cette classe ont été fournis par C.H.</p>
  *
  */
 public class DataCell {

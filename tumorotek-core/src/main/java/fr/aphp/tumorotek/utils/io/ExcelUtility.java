@@ -24,7 +24,6 @@ import org.apache.poi.xssf.usermodel.XSSFColor;
 public class ExcelUtility
 {
 
-   private static final String VALID_HEX_COLOR_PATTERN = "^#[0-9A-Fa-f]{6}$";
 
    private ExcelUtility(){
       throw new IllegalStateException("Utility class");
@@ -110,69 +109,6 @@ public class ExcelUtility
    }
 
 
-
-   /**
-    * Applique des styles de bordure à une plage de cellules avec une couleur de bordure gauche personnalisée en option.
-    *
-    * @param sheet    La feuille où les styles de bordure seront appliqués.
-    * @param startRow L'indice de la ligne de départ (basé sur zéro) pour la bordure.
-    * @param endRow   L'indice de la ligne de fin (basé sur zéro) pour la bordure.
-    * @param startCol L'indice de la colonne de départ (basé sur zéro) pour la bordure.
-    * @param endCol   L'indice de la colonne de fin (basé sur zéro) pour la bordure.
-    * @param hexColor Le code couleur hexadécimal pour la bordure gauche (ex : "#FF5733").
-    */
-   public static void applyTableBorderStyleOnMerge(Sheet sheet, int startRow, int endRow, int startCol, int endCol,
-      String hexColor){
-      Workbook workbook = sheet.getWorkbook();
-      XSSFCellStyle cellStyle = (XSSFCellStyle) workbook.createCellStyle();
-
-      XSSFColor blackColor = new XSSFColor(java.awt.Color.BLACK);
-      XSSFColor leftBorderColor = blackColor;
-      BorderStyle leftBorderStyle = BorderStyle.THIN;
-
-      if(hexColor != null && hexColor.matches(VALID_HEX_COLOR_PATTERN)){
-         // Convertir hex en RGB
-         int red = Integer.parseInt(hexColor.substring(1, 3), 16);
-         int green = Integer.parseInt(hexColor.substring(3, 5), 16);
-         int blue = Integer.parseInt(hexColor.substring(5, 7), 16);
-
-         leftBorderColor = new XSSFColor(new java.awt.Color(red, green, blue));
-         leftBorderStyle = BorderStyle.THICK;
-      }
-
-      // Appliquer le style de bordure
-      cellStyle.setBorderTop(BorderStyle.THIN);
-      cellStyle.setTopBorderColor(blackColor);
-
-      cellStyle.setBorderRight(BorderStyle.THIN);
-      cellStyle.setRightBorderColor(blackColor);
-
-      cellStyle.setBorderBottom(BorderStyle.THIN);
-      cellStyle.setBottomBorderColor(blackColor);
-
-      cellStyle.setBorderLeft(leftBorderStyle);
-      cellStyle.setLeftBorderColor(leftBorderColor);
-
-      // Centrer l'alignement du texte
-      cellStyle.setAlignment(HorizontalAlignment.CENTER);
-      cellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
-
-      // Appliquer le style de cellule à chaque cellule de la plage
-      for(int rowNum = startRow; rowNum <= endRow; rowNum++){
-         Row row = sheet.getRow(rowNum);
-         if(row == null){
-            row = sheet.createRow(rowNum);
-         }
-
-         for(int colNum = startCol; colNum <= endCol; colNum++){
-            Cell cell = row.getCell(colNum);
-            if(cell == null){
-               cell = row.createCell(colNum);
-            }
-            cell.setCellStyle(cellStyle);
-         }
-      }
-   }
 
 
 

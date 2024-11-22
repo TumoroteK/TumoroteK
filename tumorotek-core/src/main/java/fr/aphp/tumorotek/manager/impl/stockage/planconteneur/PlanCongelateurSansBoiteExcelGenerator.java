@@ -49,12 +49,16 @@ import fr.aphp.tumorotek.manager.stockage.EnceinteManager;
  * Excel à partir des données fournies. La méthode {@code buildFileName} génère le nom de fichier pour le document
  * Excel basé sur une liste de conteneurs.</p>
  *
- *  * <p>Le modèle de conception et l'architecture de cette classe ont été fournis par C.H.</p>
+ * <p>Le modèle de conception et l'architecture de cette classe ont été fournis par C.H.</p>
  */
 public class PlanCongelateurSansBoiteExcelGenerator extends AbstractPlanCongelateurSansBoiteGenerator {
 
+    // Gestionnaire pour les opérations liées aux enceintes (containers de stockage).
+    // Utilisé pour interagir avec les données des enceintes dans le cadre de la génération de plan.
+
     private EnceinteManager enceinteManager;
 
+    // Producteur de documents responsable de la création des fichiers Excel
     private DocumentProducer documentProducer;
 
 
@@ -77,7 +81,7 @@ public class PlanCongelateurSansBoiteExcelGenerator extends AbstractPlanCongelat
     @Override
     protected EnceinteManager getEnceinteManager() {
         if (this.enceinteManager == null) {
-            throw new IllegalStateException("EnceinteManager has not been initialized.");
+            throw new IllegalStateException("EnceinteManager n'a pas été initialisé.");
         }
         return this.enceinteManager;
     }
@@ -87,7 +91,7 @@ public class PlanCongelateurSansBoiteExcelGenerator extends AbstractPlanCongelat
     @Override
     protected DocumentProducer getDocumentProducer() {
         if (this.documentProducer == null) {
-            throw new IllegalStateException("documentWithDataAsTableExcelProducer has not been initialized.");
+            throw new IllegalStateException("DocumentProducer n'a pas été initialisé.");
         }
         return this.documentProducer;
     }

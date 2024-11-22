@@ -44,6 +44,8 @@ package fr.aphp.tumorotek.manager.io.document;
  * <p>Le champ <code>documentName</code> est particulièrement pertinent lors du travail avec des
  * fichiers Excel, car il représente le nom de la feuille. Le <code>context</code> contient des
  * informations sur l'en-tête du document et le <code>footer</code> représente le pied de page.</p>
+ *
+ * <p>Le modèle de conception et l'architecture de cette classe ont été fournis par C.H.</p>
  */
 public class DocumentToGenerate {
 

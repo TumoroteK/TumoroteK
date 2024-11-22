@@ -40,7 +40,8 @@ import org.apache.commons.io.output.ByteArrayOutputStream;
 /**
  * Représente les données associées à un flux de sortie pour un fichier, y compris le nom du fichier,
  * le format, le type de contenu et le flux de sortie associé (ByteArrayOutputStream).
- * Le modèle de conception et l'architecture de cette classe ont été fournis par C.H.
+ *
+ * <p>Le modèle de conception et l'architecture de cette classe ont été fournis par C.H.</p>
  */
 
 public class OutputStreamData {
@@ -53,7 +54,8 @@ public class OutputStreamData {
      String format;
 
 
-//   Type de contenu du fichier. Ne pas coder en dur les types de contenu, utilisez  ConfigManager pour la gestion des types.
+//   Type de contenu du fichier. Ne pas coder en dur les types de contenu,
+//   utilisez  ConfigManager pour la gestion des types.
     String contentType;
 
 //   Flux de sortie associé aux données du fichier. Utilisé pour écrire les données du fichier.

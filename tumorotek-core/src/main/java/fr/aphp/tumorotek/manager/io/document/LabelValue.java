@@ -43,11 +43,19 @@ package fr.aphp.tumorotek.manager.io.document;
  * <p>Cette classe est utilisée pour stocker et gérer une étiquette et une valeur associée, avec des options
  * pour appliquer du texte en gras à l'étiquette ou à la valeur.</p>
  *
+ *  <p>Le modèle de conception et l'architecture de cette classe ont été fournis par C.H.</p>
  */
 public class LabelValue {
+    // L'étiquette associée à la valeur.
     private String label;
+
+    // La valeur correspondant à l'étiquette.
     private String value;
+
+    // Indique si l'étiquette doit être affichée en gras.
     private boolean labelInBold;
+
+    // Indique si la valeur doit être affichée en gras.
     private boolean valueInBold;
 
 

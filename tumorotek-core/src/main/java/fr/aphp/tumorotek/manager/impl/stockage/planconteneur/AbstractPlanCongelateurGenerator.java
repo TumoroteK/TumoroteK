@@ -124,11 +124,16 @@ public abstract class AbstractPlanCongelateurGenerator implements PlanCongelateu
       // Liste pour stocker les paires label/valeur de l'en-tête
       List<LabelValue> listLabelValue = new ArrayList<>();
 
-      // Ajoute la date courante en première ligne
-      listLabelValue.add(new LabelValue(TKStringUtils.getCurrentDate(null), "", true, false));
+      // Ajoute la date courante en première ligne -> Le {date}
+      String date = TKStringUtils.getCurrentDate(null);
+      String labelText = new StringBuilder("Le ")
+              .append(date)
+              .toString();
+      listLabelValue.add(new LabelValue(labelText, "", true, false));
+
 
       // Ajoute les informations du conteneur
-      listLabelValue.add(new LabelValue("Nom de congélateur", conteneur.getNom(), false, true));
+      listLabelValue.add(new LabelValue("Conteneur", conteneur.getNom(), false, true));
       listLabelValue.add(new LabelValue("Description", conteneur.getDescription(), false, false));
 
       // Crée la valeur de service/établissement en une seule ligne

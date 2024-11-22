@@ -1492,22 +1492,4 @@ public class EnceinteManagerImpl implements EnceinteManager
 
       return banks;
    }
-
-   @Override
-   public Integer calculateTotalNbPlaces(Enceinte enceinte) {
-      // Initialiser le nombre total de places avec la valeur actuelle de l' 'Enceinte'
-      int totalNbPlaces = enceinte.getNbPlaces() != null ? enceinte.getNbPlaces() : 0;
-
-      // Récupérer la liste des sous-enseintes (enfants) pour l' 'Enceinte' actuelle
-      List<Enceinte> children = findByEnceintePereWithOrderManager(enceinte);
-
-      // Itérer à travers chaque enfant 'Enceinte' pour ajouter leurs places totales de manière récursive
-      for (Enceinte child : children) {
-         totalNbPlaces += calculateTotalNbPlaces(child);  // Ajouter le total de chaque enfant
-      }
-
-      return totalNbPlaces;
-   }
-
-
 }

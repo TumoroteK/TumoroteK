@@ -50,7 +50,7 @@ import java.util.List;
  * basées sur une liste de conteneurs. Les classes qui implémentent cette interface
  * doivent fournir une implémentation concrète de la méthode {@code generate}.
  *
- *
+ * <p>Le modèle de conception et l'architecture de cette classe ont été fournis par C.H.</p>
  */
 public interface PlanCongelateurGenerator  {
 

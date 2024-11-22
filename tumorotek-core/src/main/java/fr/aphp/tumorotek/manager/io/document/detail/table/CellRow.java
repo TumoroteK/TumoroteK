@@ -41,21 +41,19 @@ import java.util.List;
 
 
 /**
- * La classe représente une rangée de cellules dans un tableau ou une feuille de calcul.
+ * Représente une rangée de cellules dans un tableau ou une feuille de calcul.
  *
- * <p>Elle contient une liste de cellules, chacune étant un objet {@link DataCell}. Cette classe permet de
- * regrouper et gérer les cellules d'une même rangée.</p>
+ * <p>Cette classe contient une liste de cellules, chacune étant un objet {@link DataCell}. Elle permet
+ * de regrouper et de gérer les cellules d'une même rangée.</p>
  *
- * <p><b>Exemple d'utilisation :</b></p>
- * <pre>{@code
- * List<DataCell> cells = new ArrayList<>();
- * CellRow row = new CellRow();
- * row.listDataCell = cells;
- * }</pre>
+ * <p>Le modèle de conception et l'architecture de cette classe ont été fournis par C.H.</p>
  */
 public class CellRow {
+
+    // Liste des cellules contenues dans cette rangée.
     private List<DataCell> listDataCell;
 
+    // Nombre de cellules dans cette rangée.
     private int nbDataCell = 0;
 
     public CellRow() {
@@ -72,6 +70,13 @@ public class CellRow {
         nbDataCell++;
     }
 
+    /**
+     * Ajoute une cellule à une position spécifiée dans la rangée.
+     * Si nécessaire, des cellules nulles sont ajoutées pour combler l'espace.
+     *
+     * @param indexColonne la position de la cellule à ajouter.
+     * @param dataCell la cellule à ajouter.
+     */
     public void addDataCell(int indexColonne, DataCell dataCell) {
         while (nbDataCell < indexColonne) { // "<" car on veut s'arrêter juste avant la colonne concernée
             addDataCell(null);
