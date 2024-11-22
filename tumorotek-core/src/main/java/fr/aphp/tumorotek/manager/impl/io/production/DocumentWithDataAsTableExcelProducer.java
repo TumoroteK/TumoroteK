@@ -373,11 +373,11 @@ public class DocumentWithDataAsTableExcelProducer implements DocumentProducer
           CellStyle style = cell.getCellStyle();
           
           // Gestion du wrapping (retour à la ligne automatique)
-          if(content.isWrapText()) {
+          if(content.shouldWrapText()) {
               // Active le wrapping pour permettre le texte sur plusieurs lignes
               style.setWrapText(true);
-              
-              // Conversion du contenu en string pour calculer le nombre de lignes
+
+              // Construction  du contenu
               String contentAsString = content.buildContentValue();
               // Compte le nombre réel de lignes dans le contenu
               // split("\n") permet de compter les retours à la ligne explicites
@@ -390,7 +390,7 @@ public class DocumentWithDataAsTableExcelProducer implements DocumentProducer
               row.setHeight((short)(numberOfLines * 300));
           }
 
-          // Construction et application du contenu
+          // Construction  du contenu
           String contentAsString = content.buildContentValue();
           // Gestion spéciale pour le texte en italique
           if(content.isComplementInItalic()) {

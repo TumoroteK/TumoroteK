@@ -35,6 +35,13 @@
  **/
 package fr.aphp.tumorotek.manager.test.stockage;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
+
+import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import fr.aphp.tumorotek.dao.coeur.echantillon.EchantillonDao;
 import fr.aphp.tumorotek.dao.contexte.BanqueDao;
 import fr.aphp.tumorotek.dao.contexte.PlateformeDao;
@@ -47,11 +54,7 @@ import fr.aphp.tumorotek.dao.systeme.EntiteDao;
 import fr.aphp.tumorotek.dao.utilisateur.UtilisateurDao;
 import fr.aphp.tumorotek.manager.coeur.cession.RetourManager;
 import fr.aphp.tumorotek.manager.exception.ObjectUsedException;
-import fr.aphp.tumorotek.manager.stockage.ConteneurManager;
-import fr.aphp.tumorotek.manager.stockage.EmplacementManager;
-import fr.aphp.tumorotek.manager.stockage.EnceinteManager;
-import fr.aphp.tumorotek.manager.stockage.IncidentManager;
-import fr.aphp.tumorotek.manager.stockage.TerminaleManager;
+import fr.aphp.tumorotek.manager.stockage.*;
 import fr.aphp.tumorotek.manager.test.AbstractManagerTest4;
 import fr.aphp.tumorotek.model.TKFantomableObject;
 import fr.aphp.tumorotek.model.cession.Retour;
@@ -60,34 +63,10 @@ import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.contexte.Plateforme;
 import fr.aphp.tumorotek.model.contexte.Service;
 import fr.aphp.tumorotek.model.qualite.Operation;
-import fr.aphp.tumorotek.model.stockage.Conteneur;
-import fr.aphp.tumorotek.model.stockage.ConteneurPlateforme;
-import fr.aphp.tumorotek.model.stockage.ConteneurType;
-import fr.aphp.tumorotek.model.stockage.Emplacement;
-import fr.aphp.tumorotek.model.stockage.Enceinte;
-import fr.aphp.tumorotek.model.stockage.EnceinteType;
-import fr.aphp.tumorotek.model.stockage.Incident;
-import fr.aphp.tumorotek.model.stockage.Terminale;
-import fr.aphp.tumorotek.model.stockage.TerminaleNumerotation;
-import fr.aphp.tumorotek.model.stockage.TerminaleType;
+import fr.aphp.tumorotek.model.stockage.*;
 import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
-import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 /**
  *
@@ -150,7 +129,6 @@ public class ConteneurManagerTest extends AbstractManagerTest4
    private IncidentManager incidentManager;
 
    public ConteneurManagerTest(){}
-
 
    @Test
    public void testFindById(){

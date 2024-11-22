@@ -57,15 +57,12 @@ public class CellContent {
     // Indique si le complément de texte doit être affiché sur une autre ligne.
     private boolean complementOnAnotherLine = false;
 
-    // Add a new field to explicitly control text wrapping
-    private boolean wrapText = false;
 
 
 
     public CellContent(String text) {
         this.text = text;
         this.complementInItalic = false;
-        this.wrapText = text != null && (text.contains("\n") || text.length() > 50);
     }
 
     public CellContent(String text, String complement) {
@@ -123,15 +120,12 @@ public class CellContent {
         this.complementOnAnotherLine = complementOnAnotherLine;
     }
 
-    public boolean isWrapText() {
-        return wrapText || isComplementOnAnotherLine() ||
+    public boolean shouldWrapText() {
+        return isComplementOnAnotherLine() ||
                (text != null && text.contains("\n")) ||
                (complement != null && complement.contains("\n"));
     }
 
-    public void setWrapText(boolean wrapText) {
-        this.wrapText = wrapText;
-    }
 
     /**
      * Construit une représentation textuelle complète combinant les informations principales et complémentaires.
@@ -139,45 +133,19 @@ public class CellContent {
      * @return Une chaîne contenant les parties pertinentes, bien agencées avec espaces/sauts de ligne selon les préférences.
      */
     public String buildContentValue() {
+        //faire une méthode dans CellContent qui ramène la concaténation
+        String separateur = " ";
+        if(isComplementOnAnotherLine()) {
+            separateur = System.getProperty("line.separator");
+        }
         if(text == null) {
             return "";
         }
+        if(complement != null){
+            return new StringBuilder(text).append(separateur).append(complement).toString();
+        }
+        return text;
 
-        StringBuilder result = new StringBuilder(text);
-        
-        if(complement != null && !complement.isEmpty()) {
-            String separateur = isComplementOnAnotherLine() ? 
-                System.getProperty("line.separator") : " ";
-            result.append(separateur).append(complement);
-        }
-        
-        // Si le texte doit être enroulé mais ne contient pas de sauts de ligne explicites,
-        // ajoutez des sauts de ligne artificiels pour le contenu long
-        if (wrapText && !result.toString().contains("\n")) {
-            int maxLineLength = 50;
-            String content = result.toString();
-            if (content.length() > maxLineLength) {
-                result = new StringBuilder();
-                int start = 0;
-                while (start < content.length()) {
-                    int end = Math.min(start + maxLineLength, content.length());
-                    if (end < content.length()) {
-                        // Try to break at a space
-                        int lastSpace = content.lastIndexOf(' ', end);
-                        if (lastSpace > start) {
-                            end = lastSpace;
-                        }
-                    }
-                    result.append(content.substring(start, end));
-                    if (end < content.length()) {
-                        result.append("\n");
-                    }
-                    start = end + (end < content.length() && content.charAt(end) == ' ' ? 1 : 0);
-                }
-            }
-        }
-        
-        return result.toString();
     }
 
 
