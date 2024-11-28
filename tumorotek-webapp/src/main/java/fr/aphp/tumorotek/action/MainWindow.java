@@ -76,7 +76,7 @@ import org.zkoss.zul.Tabpanel;
 import org.zkoss.zul.Tabpanels;
 import org.zkoss.zul.Timer;
 import org.zkoss.zul.Window;
-
+import org.zkoss.zul.Label;
 import fr.aphp.tumorotek.action.controller.AbstractController;
 import fr.aphp.tumorotek.action.controller.AbstractObjectTabController;
 import fr.aphp.tumorotek.action.io.AffichageController;
