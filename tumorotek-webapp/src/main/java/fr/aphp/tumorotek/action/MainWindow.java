@@ -238,12 +238,19 @@ public class MainWindow extends GenericForwardComposer<Component>
       mainBorderLayout.setHeight(getWindowAvailableHeight() + "px");
       mainBorderLayout.setWidth(getWindowAvailableWidth() + "px");
 
-      // Définition de la taille du div central de la bannière
-      /*
-       * Div divSeparator = (Div) mainBorderLayout .getFellow("northTopBanniere")
-       * .getFellow("hboxTopBanniere") .getFellow("divSeparator");
-       * divSeparator.setWidth(getDivSeparatorWidth() + "px");
-       */
+      // Récupération de la plateforme actuelle de la session
+      final Plateforme pf = SessionUtils.getPlateforme(sessionScope);
+      // Récupération des plateformes disponibles pour l'utilisateur
+      List<Plateforme> availablePlateformes = ManagerLocator.getUtilisateurManager().getAvailablePlateformesManager(user);
+      // Affiche le nom de la plateforme uniquement s'il y en a plusieurs disponibles. Cela est surtout utile pour
+      // les administrateurs qui gèrent plusieurs plateformes et doivent savoir sur laquelle ils sont connectés (TK-526).
+      if (pf != null && availablePlateformes.size() > 1) {
+         // Récupération du label de la plateforme
+         plateformeLabel = (Label) mainBorderLayout.getFellow("northTopBanniere").getFellow("plateformeLabel");
+
+         // Définir le nom de la plateforme sur le label
+         plateformeLabel.setValue(pf.getNom());
+      }
 
       // background
       final North north = (North) mainBorderLayout.getFellow("northTopBanniere");
@@ -302,20 +309,6 @@ public class MainWindow extends GenericForwardComposer<Component>
       genno = (Div) mainBorderLayout.getFellow("northTopBanniere").getFellow("genno");
       genno.addForward("onClick", self, "onOpenDossierExternes");
 
-      // Récupération de la plateforme actuelle de la session
-      final Plateforme pf = SessionUtils.getPlateforme(sessionScope);
-      // Récupération des plateformes disponibles pour l'utilisateur
-      List<Plateforme> availablePlateformes = ManagerLocator.getUtilisateurManager().getAvailablePlateformesManager(user);
-
-      // Affiche le nom de la plateforme uniquement s'il y en a plusieurs disponibles. Cela est surtout utile pour
-      // les administrateurs qui gèrent plusieurs plateformes et doivent savoir sur laquelle ils sont connectés (TK-526).
-      if (pf != null && availablePlateformes.size() > 1) {
-         // Récupération du label de la plateforme
-         plateformeLabel = (Label) mainBorderLayout.getFellow("northTopBanniere").getFellow("platformeLabel");
-
-         // Définir le nom de la plateforme sur le label
-         plateformeLabel.setValue(pf.getNom());
-      }
    }
 
    public void prepareListBanques(){
