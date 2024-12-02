@@ -130,7 +130,7 @@ public class MainWindow extends GenericForwardComposer<Component>
 
    private Box mainCenterVbox;
 
-   private Label platformLabel;
+   private Label plateformeLabel;
 
    private Tabbox mainTabbox;
 
@@ -311,10 +311,10 @@ public class MainWindow extends GenericForwardComposer<Component>
       // les administrateurs qui gèrent plusieurs plateformes et doivent savoir sur laquelle ils sont connectés (TK-526).
       if (pf != null && availablePlateformes.size() > 1) {
          // Récupération du label de la plateforme
-         platformLabel = (Label) mainBorderLayout.getFellow("northTopBanniere").getFellow("platformLabel");
+         plateformeLabel = (Label) mainBorderLayout.getFellow("northTopBanniere").getFellow("platformeLabel");
 
          // Définir le nom de la plateforme sur le label
-         platformLabel.setValue(pf.getNom());
+         plateformeLabel.setValue(pf.getNom());
       }
    }
 
