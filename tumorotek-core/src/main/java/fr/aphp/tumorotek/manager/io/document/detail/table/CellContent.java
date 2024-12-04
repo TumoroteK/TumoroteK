@@ -55,11 +55,9 @@ public class CellContent {
     private boolean complementInItalic;
 
     // Indique si le complément de texte doit être affiché sur une autre ligne.
-    private boolean complementOnAnotherLine = false;
+    private boolean complementOnAnotherLine;
 
-
-
-
+    
     public CellContent(String text) {
         this.text = text;
         this.complementInItalic = false;
@@ -70,15 +68,10 @@ public class CellContent {
         this.complement=complement;
     }
 
-    public CellContent(String text, String complement, boolean complementOnAnotherLine) {
-        this(text, complement);
-        this.complementOnAnotherLine = complementOnAnotherLine;
-    }
-
-    public CellContent(String text, String complement, boolean complementInItalic, boolean complementOnAnotherLine) {
-        this(text, complement, complementOnAnotherLine);
-        this.complementInItalic = complementInItalic;
-    }
+    public CellContent(String text, String complement, boolean complementInItalic) {
+       this(text, complement);
+       this.complementInItalic = complementInItalic;
+   }
 
     public String getText() {
         if(text == null) {

@@ -123,13 +123,15 @@ public abstract class AbstractPlanCongelateurSansBoiteGenerator extends Abstract
    }
 
    /**
-    * Cette méthode remplit un tableau structuré contenant différentes lignes liées aux enceints et sous-en ceints
-    * selon leurs emplacements respectifs tout en tenant compte hierarchie ordonnée existante .
+    * Cette méthode remplit un tableau structuré contenant différentes lignes liées aux enceintes et sous-enceintes
+    * selon leurs emplacements respectifs tout en tenant compte de la hierarchie ordonnée existante .
     *
-    * @param positionMap Une carte des positions des enceintes.
-    * @param numberOfPlaces Le nombre de places disponibles dans l'enceinte.
-    * @param niveau Le niveau d'imbrication des enceintes.
+    * @param positionMap map dont la clé est la position d'une enceinte et la valeur cette enceinte 
+    * @param numberOfPlaces Le nombre de places disponibles dans l'enceinte parent.
+    * @param niveau Le niveau d'imbrication dans la hiérarchie des enceintes. Cette valeur permettra de définir la colonne d'affichage de l'enceinte
     * @param dataAsTable La table où les lignes de cellules doivent être ajoutées.
+    * @param nbNiveauDeEnceinte nombre de niveaux d'enceintes du niveau courant au niveau le plus bas (ce nombre -1 est le nombre de niveau
+    *  à récupérer pour chaque enceinte à traiter
     */
 
    private void recursivelyAddEntriesToTable(Map<Integer, Enceinte> positionMap, int numberOfPlaces, int niveau,
@@ -145,16 +147,10 @@ public abstract class AbstractPlanCongelateurSansBoiteGenerator extends Abstract
          // Écriture de l'enceinte dans une ligne de cellules
          CellRow enceinteCellRow = addEnceinteToRow(enceinte, columnIndex);
          dataAsTable.addCellRow(enceinteCellRow); // Ajout de la ligne au tableau (dataAsTable)
-         int numberOfNiveauATraiter = nbNiveauDeEnceinte - 1; // Calcul du nombre de niveaux restants à traiter
-         for(int j = 0; j < numberOfNiveauATraiter; j++){
-            if(enceinte != null){
-               int subEnceintePlacesCount = enceinte.getNbPlaces(); // Récupération du nombre de places pour les sous-enceintes
-
-               // Appel récursif pour écrire les sous-enceintes
-               recursivelyAddEntriesToTable(retrieveSubEnceintes(enceinte), subEnceintePlacesCount, niveau + 1, dataAsTable,
-                  nbNiveauDeEnceinte - 1);
-            }
-
+         if(enceinte != null && nbNiveauDeEnceinte > 1) {
+            // Appel récursif pour écrire les sous-enceintes
+            recursivelyAddEntriesToTable(retrieveSubEnceintes(enceinte), enceinte.getNbPlaces(), niveau + 1, dataAsTable,
+               nbNiveauDeEnceinte - 1);
          }
       }
    }
@@ -210,10 +206,10 @@ public abstract class AbstractPlanCongelateurSansBoiteGenerator extends Abstract
       String color = (couleurEnceinte != null ? couleurEnceinte.getHexa() : null);
 
       // Récupère l'alias de l'enceinte (ou une chaîne vide si l'alias est nul)
-      String alias = createAlias(enceinte.getAlias());
+      String alias = formatAlias(enceinte.getAlias());
 
       // Crée le contenu de la cellule avec le nom et l'alias de l'enceinte
-      CellContent cellContent = new CellContent(enceinte.getNom(), alias, true, false);
+      CellContent cellContent = new CellContent(enceinte.getNom(), alias, true);
 
       // Retourne l'objet DataCell contenant le contenu de la cellule et la couleur
       return new DataCell(cellContent, color);

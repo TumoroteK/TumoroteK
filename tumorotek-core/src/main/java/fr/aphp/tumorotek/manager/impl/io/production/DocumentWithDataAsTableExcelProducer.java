@@ -57,6 +57,7 @@ import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.RichTextString;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.VerticalAlignment;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
@@ -302,6 +303,9 @@ public class DocumentWithDataAsTableExcelProducer implements DocumentProducer
                   Cell mainCell = row.createCell(currentColumn);
                   // Crée un nouveau style pour la cellule
                   CellStyle mainCellStyle = sheet.getWorkbook().createCellStyle();
+                  //par défaut, on force l'alignement vertical à TOP sinon le nom des enceintes peut être caché
+                  //si le nom + l'alias est sur plus de lignes que prévues
+                  mainCellStyle.setVerticalAlignment(VerticalAlignment.TOP);
                   // Applique le style à la cellule
                   mainCell.setCellStyle(mainCellStyle);
                   // Applique les styles spécifiques (alignement, bordures, etc.)

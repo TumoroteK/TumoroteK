@@ -44,9 +44,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 /**
- * Classe représentant un emplacement au sein d'un plan de conteneur.
- * Un emplacement est caractérisé par une enceinte (potentiellement vide)
- * et peut être imbriqué dans une structure hiérarchique grâce à un emplacement parent.
+ * Classe représentant l'emplacement d'une enceinte dans un conteneur.
+ * Il est lié à l'enceinte qu'il contient potentiellement (celle-ci peut être null si l'emplacement est vide).
+ * Les enceintes d'un conteneur étant imbriquées les unes dans les autres, l'emplacement sera rattaché
+ * à un emplacement parent correspondant à celui rattaché à l'enceinte parent de son enceinte.
+ * Un emplacement peut avoir un emplacement parent sans enceinte. Il sera alors considéré comme fictif.
+ * Cela permet de remonter l'arborescence depuis n'importe quel niveau d'enceinte.  
  *
  * <p>
  * Chaque emplacement possède également un compteur (`nbEnceinteDernierNiveau`)
@@ -57,6 +60,7 @@ import java.util.Map;
  * <ul>
  *    <li><b>enceinte</b> : L'enceinte associée à cet emplacement. Peut être null si l'emplacement est vide.</li>
  *    <li><b>emplacementParent</b> : Référence vers l'emplacement parent pour gérer l'arborescence.</li>
+ *    <li><b>fictif</b> : Emplacement dont l'emplacement parent ne contient pas d'enceinte.</li>
  *    <li><b>nbEnceinteDernierNiveau</b> : Compteur incrémenté pour représenter le nombre d'enceintes enfants au dernier niveau.</li>
  * </ul>
 
@@ -71,6 +75,9 @@ public class EnceinteEmplacement
 
    private EnceinteEmplacement emplacementParent;
 
+   //sera forcé à true si l'emplacement parent n'a pas d'enceinte.
+   private boolean fictif;
+
    //valeur qui sera incrémentée lors de la lecture de l'arborescence du conteneur
    //cette valeur correspondra au colspan stocké dans les cellules d'entête du tableau final
    private int nbEnceinteDernierNiveau = 0;
@@ -79,7 +86,14 @@ public class EnceinteEmplacement
    public EnceinteEmplacement(Enceinte enceinte, EnceinteEmplacement emplacementParent) {
       this.enceinte = enceinte;
       this.emplacementParent = emplacementParent;
+      this.fictif = (emplacementParent != null && emplacementParent.getEnceinte() == null);
    }
+   
+//   public EnceinteEmplacement(Enceinte enceinte, EnceinteEmplacement emplacementParent, boolean fictif) {
+//      this.enceinte = enceinte;
+//      this.emplacementParent = emplacementParent;
+//      this.fictif = fictif;
+//   }
 
    public void increaseNbEnceinteDernierNiveau() {
       nbEnceinteDernierNiveau++;
@@ -94,6 +108,11 @@ public class EnceinteEmplacement
       return emplacementParent;
    }
 
+   
+   public boolean isFictif(){
+      return fictif;
+   }
+   
    public int getNbEnceinteDernierNiveau(){
       return nbEnceinteDernierNiveau;
    }

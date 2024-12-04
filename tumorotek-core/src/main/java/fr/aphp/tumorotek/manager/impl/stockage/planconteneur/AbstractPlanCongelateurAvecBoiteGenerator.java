@@ -62,11 +62,6 @@ import java.util.Set;
  */
 public abstract class AbstractPlanCongelateurAvecBoiteGenerator extends AbstractPlanCongelateurGenerator
 {
-
-   public static final String LIBELLE_EMPLACEMENT_ENCEINTE_VIDE = "vide";
-   public static final String LIBELLE_EMPLACEMENT_BOITE_VIDE = "(vide)";
-
-
    //liste des enceintes par niveau (chaque niveau correspond à une liste). Elle constituera les lignes d'entête du tableau final
    //cet objet est un objet interne au traitement de génération du DataAsTable
 
@@ -141,21 +136,10 @@ public abstract class AbstractPlanCongelateurAvecBoiteGenerator extends Abstract
       dataAsTable.getListCellRow().add(0, rowDernierNiveauEnceinte);
       for(int i=0; i< nbEnceinteEmplacement; i++) {
          EnceinteEmplacement enceinteEmplacement = listEnceinteEmplacementPlusBasNiveau.get(i);
-         DataCell dataCellForEnceinteEmplacementPlusBasNiveau = null;
-         if(enceinteEmplacement != null) {
-            Enceinte enceinte = enceinteEmplacement.getEnceinte();
-            if(enceinte == null) {
-               dataCellForEnceinteEmplacementPlusBasNiveau = new DataCell(LIBELLE_EMPLACEMENT_ENCEINTE_VIDE, true);
-               dataCellForEnceinteEmplacementPlusBasNiveau.setAlignmentType(AlignmentType.CENTER);
-            }
-            else {
-
-               CellContent cellContent = new CellContent(enceinte.getNom(),createAlias(enceinte.getAlias()), true, true);
-               dataCellForEnceinteEmplacementPlusBasNiveau = new DataCell(cellContent,
-                       enceinte.getCouleur() == null ? null : enceinte.getCouleur().getHexa(),
-                        true);
-               dataCellForEnceinteEmplacementPlusBasNiveau.setAlignmentType(AlignmentType.CENTER);
-            }
+         DataCell dataCellForEnceinteEmplacementPlusBasNiveau = createDataCellForEnceinteEmplacement(enceinteEmplacement);
+         //Pour cette ligne, l'alias est mis à la ligne pour faire une rupture visuelle avant l'affichage des boîtes (la ligne sera plus haute)
+         if(dataCellForEnceinteEmplacementPlusBasNiveau != null) {
+            dataCellForEnceinteEmplacementPlusBasNiveau.getCellContent().setComplementOnAnotherLine(true);
          }
          rowDernierNiveauEnceinte.addDataCell(dataCellForEnceinteEmplacementPlusBasNiveau);
          populateNbEnceintesDernierNiveauPourNiveauxSuperieurs(enceinteEmplacement);
@@ -174,20 +158,10 @@ public abstract class AbstractPlanCongelateurAvecBoiteGenerator extends Abstract
          int nbEnceinteEmplacementATraiter = listEnceinteEmplacementATraiter.size();
          for(int j = 0; j<nbEnceinteEmplacementATraiter; j++) {
             EnceinteEmplacement enceinteEmplacementATraiter = listEnceinteEmplacementATraiter.get(j);
-            DataCell dataCellForEnceinteEmplacement = null;
-            if(enceinteEmplacementATraiter != null) {
-               Enceinte enceinte = enceinteEmplacementATraiter.getEnceinte();
-               if(enceinte == null) {
-                  dataCellForEnceinteEmplacement = new DataCell(LIBELLE_EMPLACEMENT_ENCEINTE_VIDE, true);
-                  dataCellForEnceinteEmplacement.setAlignmentType(AlignmentType.CENTER);
-               }
-               else {
-                  CellContent enceinteCellContent = new CellContent(enceinte.getNom(), createAlias(enceinte.getAlias()), true, false);
-                  dataCellForEnceinteEmplacement = new DataCell(enceinteCellContent,
-                     enceinte.getCouleur() == null ? null : enceinte.getCouleur().getHexa(),
-                     enceinteEmplacementATraiter.getNbEnceinteDernierNiveau(), true);
-                  dataCellForEnceinteEmplacement.setAlignmentType(AlignmentType.CENTER);
-               }
+            DataCell dataCellForEnceinteEmplacement = createDataCellForEnceinteEmplacement(enceinteEmplacementATraiter);
+            //Pour ces lignes, on gère les colspans :
+            if(dataCellForEnceinteEmplacement != null) {
+               dataCellForEnceinteEmplacement.setColspan(enceinteEmplacementATraiter.getNbEnceinteDernierNiveau());
             }
             rowNiveauEnceinteATraiter.addDataCell(dataCellForEnceinteEmplacement);
          }
@@ -208,47 +182,34 @@ public abstract class AbstractPlanCongelateurAvecBoiteGenerator extends Abstract
       addlistEnceinteToListEntete(conteneur.getNbrEnc(), getEnceinteManager().findByConteneurWithOrderManager(conteneur), null, listEnceintePour1erNiveau);
    }
 
-
-
    private void buildListEnceinteEmplacementPourNiveauDEnteteSuivant(List<EnceinteEmplacement> listEnceinteEmplacementPourNiveauDEntete,  List<List<EnceinteEmplacement>> listListEnceinteEmplacementParNiveau) {
       //création de la ligne d'enceinte pour l'entête de niveau suivant et ajout à la liste des enceintes par niveau
       List<EnceinteEmplacement> listEnceinteEmplacementPourNiveauDEnteteInferieur = new ArrayList<EnceinteEmplacement>();
       listListEnceinteEmplacementParNiveau.add(listEnceinteEmplacementPourNiveauDEnteteInferieur);
 
       int nbEnceinteATraiter = listEnceinteEmplacementPourNiveauDEntete.size();
-      //parcourt de la liste triée pour gérer les enceintes supprimées
+      //parcours de la liste triée pour gérer les enceintes supprimées : 
+      //listEnceinteEmplacementPourNiveauDEnteteInferieur s'incrémente au fur et à mesure du traitement des emplacements "parents"
       for(int i=0; i<nbEnceinteATraiter; i++) {
          EnceinteEmplacement enceinteEmplacementParent = listEnceinteEmplacementPourNiveauDEntete.get(i);
-         //si l'emplacement est null ou vide, les emplacements des niveaux inférieurs sont mis à null
-         if(enceinteEmplacementParent == null || enceinteEmplacementParent.getEnceinte() == null) {
-            listEnceinteEmplacementPourNiveauDEnteteInferieur.add(null);
-         }
-         else {
-            //listEnceinteEmplacementPourNiveauDEnteteInferieur passée en paramètre s'incrémente au fur et à mesure du traitement des emplacements "parents"
-            addListEnceinteEmplacementEnfant(enceinteEmplacementParent, listEnceinteEmplacementPourNiveauDEnteteInferieur);
-         }
-      }
-   }
-
-   //Ajouter les enceintes "fille" d'une enceinte "père", passée en paramètre, à la ligne d'entête en cours de construction, passée en paramètre
-   private void addListEnceinteEmplacementEnfant(EnceinteEmplacement enceinteEmplacementParent, List<EnceinteEmplacement> listEnceinteEmplacementPourUneLigneEnteteACompleter) {
-      if(enceinteEmplacementParent == null) {
-         listEnceinteEmplacementPourUneLigneEnteteACompleter.add(null);
-      }
-      else {
          Enceinte enceinteParent = enceinteEmplacementParent.getEnceinte();
          if(enceinteParent == null) {
-            listEnceinteEmplacementPourUneLigneEnteteACompleter.add(new EnceinteEmplacement(null, enceinteEmplacementParent));
+            listEnceinteEmplacementPourNiveauDEnteteInferieur.add(new EnceinteEmplacement(null, enceinteEmplacementParent));
          }
          else {
             int nbPlace = enceinteParent.getNbPlaces();
-            addlistEnceinteToListEntete(nbPlace, getEnceinteManager().findByEnceintePereWithOrderManager(enceinteParent), enceinteEmplacementParent, listEnceinteEmplacementPourUneLigneEnteteACompleter);
+            addlistEnceinteToListEntete(nbPlace, getEnceinteManager().findByEnceintePereWithOrderManager(enceinteParent), 
+               enceinteEmplacementParent, listEnceinteEmplacementPourNiveauDEnteteInferieur);
          }
       }
    }
-
-   //Prend en compte un set d'enceintes, le trie selon la position et les ajoute à la ligne d'entête en cours de construction, passée en paramètre
+   
+   //Prend en compte une liste d'enceintes (rattachées à la même enceinte "parent")  et les ajoute à la ligne d'entête en cours de construction (passée en paramètre)
    //en gérant les emplacements vide
+   //listEnceinteATraiter : liste d'enceintes ayant toutes la même enceinte "parent". Cette liste est triée selon la position des enceintes dans l'enceinte "parent"
+   //emplacementParent : EnceinteEmplacement de l'enceinte "parent" des enceintes de listEnceinteATraiter
+   //nbEnceinteAAjouter : nombre d'enceintes max pouvant être mises dans l'enceinte parent
+   //listEnceinteEmplacementPourUneLigneEnteteACompleter : la liste des enceintes en cours de traitement. Celle-ci correspond à un niveau du conteneur
    private void addlistEnceinteToListEntete(int nbEnceinteAAjouter, List<Enceinte> listEnceinteATraiter, EnceinteEmplacement emplacementParent,List<EnceinteEmplacement> listEnceinteEmplacementPourUneLigneEnteteACompleter) {
       int nbEnceinteATraiter = listEnceinteATraiter.size();
       int j = 0;//correspond à la position - 1 de l'emplacement
@@ -284,13 +245,13 @@ public abstract class AbstractPlanCongelateurAvecBoiteGenerator extends Abstract
          Terminale terminaleATraiter = listTerminaleATraiter.get(i);
          //ajout des boîtes vides en cas de trous :
          while(j<terminaleATraiter.getPosition()-1) {
-            dataAsTable.addDataCell(new DataCell(LIBELLE_EMPLACEMENT_BOITE_VIDE, true), j, indexColonne);
+            dataAsTable.addDataCell(new DataCell(EMPTY_POSITION, true), j, indexColonne);
             j++;
          }
          //ajout de la cellule correspondant à la boîte :
          DataCell cellBoite = new DataCell(
             terminaleATraiter.getNom(),
-            createAlias(terminaleATraiter.getAlias()),
+            formatAlias(terminaleATraiter.getAlias()),
             terminaleATraiter.getCouleur() == null ? null : terminaleATraiter.getCouleur().getHexa(), true);
 
          dataAsTable.addDataCell(cellBoite, j, indexColonne);
@@ -298,14 +259,34 @@ public abstract class AbstractPlanCongelateurAvecBoiteGenerator extends Abstract
       }
       //Gestion des trous en dernière position
       while(j<nbPlace) {
-         dataAsTable.addDataCell(new DataCell(LIBELLE_EMPLACEMENT_BOITE_VIDE, true), j, indexColonne);
+         dataAsTable.addDataCell(new DataCell(EMPTY_POSITION, true), j, indexColonne);
          j++;
       }
    }
 
 
+   private DataCell createDataCellForEnceinteEmplacement(EnceinteEmplacement enceinteEmplacement) {
+      DataCell dataCellForEnceinteEmplacementPlusBasNiveau = null;
+      if(enceinteEmplacement != null && !enceinteEmplacement.isFictif()) {
+         Enceinte enceinte = enceinteEmplacement.getEnceinte();
+         if(enceinte == null) {
+            dataCellForEnceinteEmplacementPlusBasNiveau = new DataCell(EMPTY_POSITION, true);
+         }
+         else {
 
+            CellContent cellContent = new CellContent(enceinte.getNom(),formatAlias(enceinte.getAlias()), true);
+            dataCellForEnceinteEmplacementPlusBasNiveau = new DataCell(cellContent,
+                    enceinte.getCouleur() == null ? null : enceinte.getCouleur().getHexa(),
+                     true);
+         }
+         
+         dataCellForEnceinteEmplacementPlusBasNiveau.setAlignmentType(AlignmentType.CENTER);
+      }
+      
+      return dataCellForEnceinteEmplacementPlusBasNiveau;
+   }
 
+  
    //on va passer dans chaque emplacement de dernier niveau et on va
    //remonter les parents pour ajouter 1 à son nbEnceinteDernierNiveau
    //les nbEnceinteDernierNiveau vont donc s'incrémenter petit à petit au fur et à mesure de la lecture des enceintes de dernier niveau
