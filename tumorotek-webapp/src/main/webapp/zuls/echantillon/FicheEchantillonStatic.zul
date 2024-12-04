@@ -50,10 +50,13 @@
 				<rows>
 					<row>
 						<!-- Code de l'échantillon -->
-						<label value="${c:l('Champ.Echantillon.Code')}" sclass="formLabel"/>		
-						<label id="codeLabelEchan" sclass="formValue"
-							value="@{fwinEchantillonStatic$composer.object.code}" />
-													
+						<label value="${c:l('Champ.Echantillon.Code')}" sclass="formLabel"/>
+						<hbox>
+							<label id="codeLabelEchan" sclass="formValue" value="@{fwinEchantillonStatic$composer.object.code}" />
+							<!-- Image représentant une icône de drapeau pour signaler un impact
+							 (dégradation probable de la qualité du matériel). -->
+							<image id="impactIcon" src="/images/icones/flag.png"/>
+						</hbox>
 						<!-- Type de l'échantillon -->
 						<box orient="horizontal" widths=",50%" pack="center" >
 							<label value="${c:l('Champ.Echantillon.EchantillonType.Type')}" sclass="formLabel"/>

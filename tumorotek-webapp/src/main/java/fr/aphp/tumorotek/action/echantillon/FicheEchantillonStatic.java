@@ -73,6 +73,7 @@ import org.zkoss.zul.Menuitem;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.Tabpanel;
 import org.zkoss.zul.Vbox;
+import org.zkoss.zul.Image;
 
 import fr.aphp.tumorotek.action.ManagerLocator;
 import fr.aphp.tumorotek.action.cession.retour.ListeRetour;
@@ -99,6 +100,7 @@ import fr.aphp.tumorotek.model.TKAnnotableObject;
 import fr.aphp.tumorotek.model.TKStockableObject;
 import fr.aphp.tumorotek.model.TKdataObject;
 import fr.aphp.tumorotek.model.cession.Cession;
+import fr.aphp.tumorotek.model.cession.Retour;
 import fr.aphp.tumorotek.model.coeur.annotation.AnnotationValeur;
 import fr.aphp.tumorotek.model.coeur.annotation.ChampAnnotation;
 import fr.aphp.tumorotek.model.coeur.annotation.TableAnnotation;
@@ -108,6 +110,7 @@ import fr.aphp.tumorotek.model.coeur.patient.Patient;
 import fr.aphp.tumorotek.model.coeur.prelevement.Prelevement;
 import fr.aphp.tumorotek.model.coeur.prelevement.Risque;
 import fr.aphp.tumorotek.model.coeur.prodderive.ProdDerive;
+import fr.aphp.tumorotek.model.coeur.ObjetStatut;
 import fr.aphp.tumorotek.model.contexte.BanqueTableCodage;
 import fr.aphp.tumorotek.model.contexte.Coordonnee;
 import fr.aphp.tumorotek.model.qualite.ObjetNonConforme;
@@ -211,6 +214,10 @@ public class FicheEchantillonStatic extends AbstractFicheStaticController
 
    protected Div codesMorphoDiv;
 
+   // Une image représentant un drapeau rouge, utilisée si l'échantillon a au moins un retour avec impact
+   // ce qui signifie une dégradation probable de la qualité du matériel.
+   protected Image impactIcon;
+
    // INCa
    private Integer nbItemsINCaTotaux;
 
@@ -236,7 +243,7 @@ public class FicheEchantillonStatic extends AbstractFicheStaticController
       this.prodDerivesGrid.setVisible(false);
       this.cessionsGrid.setVisible(false);
       this.addDerive.setDisabled(true);
-
+      this.impactIcon.setVisible(false);
       // **************** gastbi
       setGroupDerivesEchanOpen(false);
       setGroupCessionsEchanOpen(false);
@@ -254,8 +261,23 @@ public class FicheEchantillonStatic extends AbstractFicheStaticController
       return (EchantillonController) super.getObjectTabController();
    }
 
+   /**
+    * Initialise l'objet de type {@code Echantillon} et met à jour les composants UI associés.
+    *
+    * <p>
+    * Cette méthode configure les groupes (produits dérivés, cessions, sorties) et les informations
+    * complémentaires liées à l'échantillon.
+    * Elle ajuste également l'affichage en fonction des droits utilisateur et des données disponibles.
+    * </p>
+    *
+    * @param e l'objet {@code TKdataObject} à associer, converti en {@code Echantillon}.
+    *
+    * @see AbstractController
+    * @see ObjetStatut
+    */
    @Override
    public void setObject(final TKdataObject e){
+
       this.echantillon = (Echantillon) e;
 
       initAssociations();
@@ -282,6 +304,13 @@ public class FicheEchantillonStatic extends AbstractFicheStaticController
       // Initilisation des variables formulaires
       initQuantite();
       initDelaiCgl();
+      // Récupère la liste des retours associés à l'échantillon ayant un impact (dégradation probable de la qualité du matériel).
+      List<Retour>retours = ManagerLocator.getRetourManager().findByObjectAndImpactManager(echantillon, true);
+      // Définit une info-bulle pour l'icône d'impact indiquant la présence de retours avec impact.
+      impactIcon.setTooltiptext(Labels.getLabel("Champ.Retour.Impact"));
+      // Rend l'icône d'impact visible uniquement si des retours avec impact sont trouvés.
+      impactIcon.setVisible(!retours.isEmpty());
+
 
       if(derives.size() == 0){
          this.prodDerivesGrid.setVisible(false);
