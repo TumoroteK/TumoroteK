@@ -110,7 +110,6 @@ import fr.aphp.tumorotek.model.coeur.patient.Patient;
 import fr.aphp.tumorotek.model.coeur.prelevement.Prelevement;
 import fr.aphp.tumorotek.model.coeur.prelevement.Risque;
 import fr.aphp.tumorotek.model.coeur.prodderive.ProdDerive;
-import fr.aphp.tumorotek.model.coeur.ObjetStatut;
 import fr.aphp.tumorotek.model.contexte.BanqueTableCodage;
 import fr.aphp.tumorotek.model.contexte.Coordonnee;
 import fr.aphp.tumorotek.model.qualite.ObjetNonConforme;
@@ -272,8 +271,6 @@ public class FicheEchantillonStatic extends AbstractFicheStaticController
     *
     * @param e l'objet {@code TKdataObject} à associer, converti en {@code Echantillon}.
     *
-    * @see AbstractController
-    * @see ObjetStatut
     */
    @Override
    public void setObject(final TKdataObject e){
