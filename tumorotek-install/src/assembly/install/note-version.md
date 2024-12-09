@@ -1,5 +1,9 @@
 #### Notes de version
 
+##### Version ....
+- YouTrack [TK-589](https://tumorotek.myjetbrains.com/youtrack/issue/TK-589) : Problème lors de la création d'un index à cause d'une valeur par défaut à 0000-00-00 00:00:00, valeur qui n'est plus autorisée
+
+
 ##### Version 2.3.0.12 - Publiée le 14/10/2024
 ###### Report de la correction faite sur la version 2.2.11
 - YouTrack [TK-568](https://tumorotek.myjetbrains.com/youtrack/issue/TK-568) : Interfaçage VisionMate : erreur lors du scan des boîtes avec mysql v8
