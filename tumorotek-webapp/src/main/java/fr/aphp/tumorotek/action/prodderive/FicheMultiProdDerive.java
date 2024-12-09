@@ -931,25 +931,25 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
          // quantiteMax qui est valorisé avec la quantité présente dans le parent quelque soit son type.
          // Il est donc null si le parent n'a pas de quantité
          if (!getTypeParent().equals("Aucun") && getQuantiteMax() != null) {
-               // si le champ "quantité" est vide, contrôles liés au paramètre défini dans l'administration (obligatoire ou non)
-               if (transfoQuantiteBoxDerive.getValue() == null){
-                  if (isQuantiteObligatoire){
-                     // Si la quantité est obligatoire, on fait défiler vers le champ de quantité dérivée pour attirer l'attention de l'utilisateur.
-                     Clients.scrollIntoView(transfoQuantiteBoxDerive);
-                     // Afficher un message d'erreur à côté du champ "quantité utilisée obligatoire"
-                     throw new WrongValueException(transfoQuantiteBoxDerive, Labels.getLabel("ficheMultiProdDerive.validation.quantite"));
-                  //  Si la valeur du paramètre "quantité utilisée obligatoire" est false:
-                  } else{
-                   // Affiche un modal demandant à l'utilisateur s'il souhaite continuer malgré les avertissements sur la quantité
-                     boolean userAnswer = MessagesUtils.openQuestionModal(Labels.getLabel("general.warning"),
-                        Labels.getLabel("ficheProdDerive.warning.quantite"));
-                     // Si l'utilisateur choisit de ne pas continuer (réponse négative), on sort de la méthode ici
-                     if (!userAnswer) {
-                        return;
-                     }
+            // si le champ "quantité" est vide, contrôles liés au paramètre défini dans l'administration (obligatoire ou non)
+            if (transfoQuantiteBoxDerive.getValue() == null){
+               if (isQuantiteObligatoire){
+                  // Si la quantité est obligatoire, on fait défiler vers le champ de quantité dérivée pour attirer l'attention de l'utilisateur.
+                  Clients.scrollIntoView(transfoQuantiteBoxDerive);
+                  // Afficher un message d'erreur à côté du champ "quantité utilisée obligatoire"
+                  throw new WrongValueException(transfoQuantiteBoxDerive, Labels.getLabel("ficheMultiProdDerive.validation.quantite"));
+               //  Si la valeur du paramètre "quantité utilisée obligatoire" est false:
+               } else{
+                // Affiche un modal demandant à l'utilisateur s'il souhaite continuer malgré les avertissements sur la quantité
+                  boolean userAnswer = MessagesUtils.openQuestionModal(Labels.getLabel("general.warning"),
+                     Labels.getLabel("ficheProdDerive.warning.quantite"));
+                  // Si l'utilisateur choisit de ne pas continuer (réponse négative), on sort de la méthode ici
+                  if (!userAnswer) {
+                     return;
                   }
                }
             }
+         }
 
          ///////// code ci-dessous surprenant car il ne semble rien faire
          // si le dérivé est issu d'un parent connu
