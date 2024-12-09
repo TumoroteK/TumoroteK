@@ -2610,27 +2610,5 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
       return ObjectTypesFormatters.ILNObjectStatut(getObject().getObjetStatut());
    }
 
-   /**
-    * Récupère la quantité de l'objet parent, qui peut être un Prelevement, un Echantillon ou un ProdDerive.
-    *
-    * @return la quantité de l'objet parent si celui-ci n'est pas null et correspond à l'un des types connus ;
-    *         sinon, retourne null.
-    */
-   public Float getParentQuantity() {
-      if (parentObj != null) {
-         if (typeParent.equals(Prelevement.class.getSimpleName())) {
-            Prelevement prelevement = (Prelevement) parentObj;
-            return prelevement.getQuantite();
-         } else if (typeParent.equals(Echantillon.class.getSimpleName())) {
-            Echantillon echantillon = (Echantillon) parentObj;
-            return echantillon.getQuantite();
-         } else if (typeParent.equals(ProdDerive.class.getSimpleName())) {
-            ProdDerive parentDerive = (ProdDerive) parentObj;
-            return parentDerive.getQuantite();
-         }
-      }
-      return null;
-   }
-
 
 }
