@@ -250,8 +250,10 @@
 					</div>	
 				</hlayout>
 			
-				<hlayout>
+				<hlayout sclass="z-valign-middle">
 					<label value="${c:l('general.banque')}" sclass="formLabel"/>
+					<!--					label pour afficher le nom de la plateforme-->
+					<label id="plateformeLabel" sclass="formLabel" style="color: #001A61" />
 					<listbox use="fr.aphp.tumorotek.webapp.general.MainBanquesListBox"
 						id="mainBanquesListBox" mold="select" rows="1"
 						model="@{mainWin$composer.banques}"
