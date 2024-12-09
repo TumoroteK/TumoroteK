@@ -925,21 +925,25 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
             throw new WrongValueException(typesBoxDerive, Labels.getLabel("ficheProdDerive.error.type"));
          }
 
-         
          // TK-434: Sécuriser la saisie de la quantité utilisée si ce champ est pertinent (visible) c'est-à-dire
-         // typeParent est différent de Aucun
-         if (!getTypeParent().equals("Aucun")) {
+         // typeParent est différent de Aucun.
+         // TK-581 : ignorer les vérifications de Quantité si la quantité parente est nulle. Le code s'appuie sur le champ
+         // quantiteMax qui est valorisé avec la quantité présente dans le parent quelque soit son type.
+         // Il est donc null si le parent n'a pas de quantité
+         if (!getTypeParent().equals("Aucun") && getQuantiteMax() != null) {
             // si le champ "quantité" est vide, contrôles liés au paramètre défini dans l'administration (obligatoire ou non)
             if (transfoQuantiteBoxDerive.getValue() == null){
-               // et la plateforme est configurée pour avoir la saisie de quantité utilisée obligatoire, on bloque l'ajout
                if (isQuantiteObligatoire){
+                  // Si la quantité est obligatoire, on fait défiler vers le champ de quantité dérivée pour attirer l'attention de l'utilisateur.
                   Clients.scrollIntoView(transfoQuantiteBoxDerive);
-                  // afficher un message d'erreur à côté du champ "quantité utilisée obligatoire"
+                  // Afficher un message d'erreur à côté du champ "quantité utilisée obligatoire"
                   throw new WrongValueException(transfoQuantiteBoxDerive, Labels.getLabel("ficheMultiProdDerive.validation.quantite"));
+               //  Si la valeur du paramètre "quantité utilisée obligatoire" est false:
                } else{
-                  // si la valeur du paramètre "quantité utilisée obligatoire" est false,  afficher une fenêtre d'avertissement
+                // Affiche un modal demandant à l'utilisateur s'il souhaite continuer malgré les avertissements sur la quantité
                   boolean userAnswer = MessagesUtils.openQuestionModal(Labels.getLabel("general.warning"),
-                                                                       Labels.getLabel("ficheProdDerive.warning.quantite"));
+                     Labels.getLabel("ficheProdDerive.warning.quantite"));
+                  // Si l'utilisateur choisit de ne pas continuer (réponse négative), on sort de la méthode ici
                   if (!userAnswer) {
                      return;
                   }
