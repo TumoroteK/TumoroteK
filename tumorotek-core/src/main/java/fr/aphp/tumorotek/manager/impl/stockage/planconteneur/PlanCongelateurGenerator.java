@@ -46,9 +46,8 @@ import java.util.List;
 /**
  * Interface pour la génération de plans de congélateurs.
  *
- * Cette interface définit la méthode nécessaire pour générer des données de sortie
- * basées sur une liste de conteneurs. Les classes qui implémentent cette interface
- * doivent fournir une implémentation concrète de la méthode {@code generate}.
+ * Cette interface expose une méthode unique {@code generate} permettant de générer un fichier représentant le contenu 
+ * d'une liste de conteneurs.
  *
  * <p>Le modèle de conception et l'architecture de cette classe ont été fournis par C.H.</p>
  */
@@ -56,15 +55,10 @@ public interface PlanCongelateurGenerator  {
 
 
     /**
-     * Génère des données de sortie basées sur une liste de conteneurs.
-     *
-     * Cette méthode crée un fichier contenant le plan des conteneurs. Les classes
-     * qui implémentent cette méthode doivent produire un fichier structuré en fonction
-     * des conteneurs fournis dans la liste et en tenant compte de la locale spécifiée.
+     * Génère un fichier représentant le contenu d'une liste de conteneurs.
+     * Le contenu du fichier est en langue française
      *
      * @param conteneurList Liste des conteneurs pour lesquels le plan doit être généré.
-     * @param locale Locale à utiliser pour la génération des données, influençant
-     *               la mise en forme et le contenu du fichier.
      * @return Un objet {@link OutputStreamData} représentant les données du fichier généré.
      *         Cet objet peut être utilisé pour écrire les données dans un flux de sortie.
      */

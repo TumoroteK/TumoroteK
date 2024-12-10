@@ -41,10 +41,10 @@ import java.util.List;
 
 
 /**
- * Représente une rangée de cellules dans un tableau ou une feuille de calcul.
+ * Représente une ligne de cellules dans un tableau.
  *
  * <p>Cette classe contient une liste de cellules, chacune étant un objet {@link DataCell}. Elle permet
- * de regrouper et de gérer les cellules d'une même rangée.</p>
+ * de regrouper et de gérer les cellules d'une même ligne.</p>
  *
  * <p>Le modèle de conception et l'architecture de cette classe ont été fournis par C.H.</p>
  */
@@ -71,8 +71,8 @@ public class CellRow {
     }
 
     /**
-     * Ajoute une cellule à une position spécifiée dans la rangée.
-     * Si nécessaire, des cellules nulles sont ajoutées pour combler l'espace.
+     * Ajoute une cellule à une position spécifiée dans la ligne.
+     * Si nécessaire, des cellules nulles sont ajoutées pour que la dataCell ait la bonne position dans la cellRow.
      *
      * @param indexColonne la position de la cellule à ajouter.
      * @param dataCell la cellule à ajouter.

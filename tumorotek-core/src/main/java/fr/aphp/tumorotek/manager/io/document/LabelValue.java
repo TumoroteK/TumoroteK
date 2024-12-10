@@ -37,10 +37,10 @@ package fr.aphp.tumorotek.manager.io.document;
 
 
 /**
- * La classe représente une paire étiquette-valeur avec des options de mise en forme pour
- * l'étiquette et la valeur.
+ * La classe représente une paire libellé-valeur avec des options de mise en forme pour
+ * le libellé et la valeur.
  *
- * <p>Cette classe est utilisée pour stocker et gérer une étiquette et une valeur associée, avec des options
+ * <p>Cette classe est utilisée pour stocker et gérer un libellé et une valeur associée, avec des options
  * pour appliquer du texte en gras à l'étiquette ou à la valeur.</p>
  *
  *  <p>Le modèle de conception et l'architecture de cette classe ont été fournis par C.H.</p>

@@ -37,6 +37,7 @@ package fr.aphp.tumorotek.action.stockage;
 
 import fr.aphp.tumorotek.action.CustomSimpleListModel;
 import fr.aphp.tumorotek.action.ManagerLocator;
+import fr.aphp.tumorotek.action.utils.StockageUtils;
 import fr.aphp.tumorotek.component.CalendarBox;
 import fr.aphp.tumorotek.decorator.EnceinteDecorator;
 import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
@@ -718,64 +719,14 @@ public class FicheConteneur extends AbstractFicheCombineStockageController
       }
    }
 
-   public void onClick$generateWithBoxes() {
-      try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()) {
-
-         // Step 1: Retrieve necessary beans from ManagerLocator
-         DocumentWithDataAsTableExcelProducer documentProducer = ManagerLocator.getDocumentWithDataAsTableExcelProducer();
-
-         // Step 2: Create an instance of PlanCongelateurSansBoiteExcelGenerator
-         PlanCongelateurAvecBoiteExcelGenerator avecBoiteGenerator = new PlanCongelateurAvecBoiteExcelGenerator(ManagerLocator.getEnceinteManager(), documentProducer);
-
-         // Step 3: Prepare the list of containers (in this case, just one)
-         List<Conteneur> containerList = Collections.singletonList(conteneur);
-
-         // Step 4: Generate the Excel file into ByteArrayOutputStream directly
-         OutputStreamData result = avecBoiteGenerator.generate(containerList);
-
-         if (result != null) {
-            byteArrayOutputStream.write(result.getOutputStream().toByteArray());
-         }
-
-         String fileName = result.getFileName();
-
-         // Ensure that we flush any remaining data before sending it out.
-         byteArrayOutputStream.flush();
-
-         // Step 6: Send the generated file back to the user
-         Filedownload.save(byteArrayOutputStream.toByteArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
-
-      } catch(Exception e) {
-         Clients.showNotification("Error generating file: " + e.getMessage(), "error", null, null, 3000);
-         log.error("Error generating Excel file", e);
-      }
+   public void onClick$generateAvecBoite() {
+      List<Conteneur> containerList = Collections.singletonList(conteneur);
+      StockageUtils.createExcelForPlanConteneur(containerList, true);
    }
-   public void onClick$generateWithoutBoxes(){
-      try{
-         // Step 1: Retrieve necessary beans from ManagerLocator
-         DocumentWithDataAsTableExcelProducer documentProducer = ManagerLocator.getDocumentWithDataAsTableExcelProducer();
 
-         // Step 2: Create an instance of PlanCongelateurSansBoiteExcelGenerator
-         PlanCongelateurSansBoiteExcelGenerator sansBoiteGenerator =
-            new PlanCongelateurSansBoiteExcelGenerator(ManagerLocator.getEnceinteManager(), documentProducer);
-
-         // Step 3: Prepare the list of containers (in this case, just one)
-         List<Conteneur> containerList = Collections.singletonList(conteneur);
-
-         // Step 4: Generate the Excel file
-         OutputStreamData result = sansBoiteGenerator.generate(containerList);
-
-         // Step 5: Retrieve the output stream and file name
-         ByteArrayOutputStream byteArrayOutputStream = result.getOutputStream();
-
-         // Step 6: Send the generated file back to the user
-         Filedownload.save(byteArrayOutputStream.toByteArray(), result.getContentType(), result.getFileName());
-
-      }catch(Exception e){
-         // Step 7: Handle exceptions gracefully
-         Clients.showNotification("Error generating file: " + e.getMessage(), "error", null, null, 3000);
-         log.error("Error generating Excel file", e);
-      }
+   public void onClick$generateSansBoite(){
+      List<Conteneur> containerList = Collections.singletonList(conteneur);
+      StockageUtils.createExcelForPlanConteneur(containerList, false);
    }
 
    @Override

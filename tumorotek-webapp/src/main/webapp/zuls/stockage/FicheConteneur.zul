@@ -519,9 +519,9 @@
 						<menupopup>
 							<menuitem id="addIncidentItem" image="/images/icones/addIncident.png"
 								label="${c:l('conteneur.add.incident')}"/>
-							<menuitem id="generateWithoutBoxes" image="/images/icones/plan_conteneur.png"
+							<menuitem id="generateSansBoite" image="/images/icones/plan_conteneur.png"
 									  label="${c:l('stockage.generate.without.boite')}"/>
-							<menuitem id="generateWithBoxes" image="/images/icones/plan_conteneur.png"
+							<menuitem id="generateAvecBoite" image="/images/icones/plan_conteneur.png"
 									  label="${c:l('stockage.generate.with.boite')}"/>
 							<menuitem id="numerotation" image="/images/icones/terminale.png"
 								label="${c:l('terminale.numerotation.edit')}"/>

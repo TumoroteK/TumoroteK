@@ -77,27 +77,30 @@
                 </template>
             </listbox>
 
+
+		
             <div style="display: grid; grid-template-columns: auto 1fr;">
                 <!-- Section des Labels -->
-                <div style="color: grey; font-weight: bold; padding-top: 5px;">
-                    <!-- Affichage du nombre d'éléments sélectionnés, avec gestion du dépassement de la limite -->
-                    <label id="selectedCountLabel" value="@bind(vm.selectedCount)"
-                           style="@bind(vm.selectedCount > vm.max ? 'color: red;' : '')"/>
-                    <label sclass="z-valign-middle" id="selectedLabel" value="@bind(vm.selectedLabel)"
-                           style="@bind(vm.selectedCount > vm.max ? 'color: red;' : '')"/>
+                <div style="color: grey; padding-top: 5px;">
                     <!-- Icône de warning si le nombre d'éléments sélectionnés dépasse la limite -->
                     <image src="/images/icones/warning.png"
-                           visible="@bind(vm.selectedCount > vm.max)" style="padding-top: 5px;"/>
+                           visible="@bind(vm.selectedCount > vm.max)" style="vertical-align: middle;"/>
+                    <!-- Affichage du nombre d'éléments sélectionnés, avec gestion du dépassement de la limite -->
+                    <label id="selectedCountLabel" value="@bind(vm.selectedCount)"
+                           style="@bind(vm.invalideSelectionStyle)"/>
+                    <label sclass="z-valign-middle" id="selectedLabel" value="@bind(vm.selectedLabel)"
+                           style="@bind(vm.invalideSelectionStyle)"/>
+
                 </div>
 
                 <!-- Section des Boutons -->
                 <div style="display: flex; justify-content: flex-end; align-items: center;">
                                     <!-- Bouton "Annuler" pour fermer la fenêtre sans modification -->
-                    <button id="cancelButton" label="Cancel" onClick="@command('closeModal')"
+                    <button id="cancelButton" label="${c:l('general.cancel')}" onClick="@command('closeModal')"
                             image="/images/icones/cancel.png" sclass="buttonv2"/>
                                     <!-- Bouton "Valider" pour confirmer la sélection -->
-                    <button id="validateButton" label="Validate" onClick="@command('executeCallback')"
-                            image="/images/icones/validate.png" sclass="buttonv2" disabled="@bind(vm.selectedCount > vm.max)"/>
+                    <button id="validateButton" label="${c:l('general.validate')}" onClick="@command('executeCallback')"
+                            image="/images/icones/validate.png" sclass="buttonv2" disabled="@bind(vm.boutonValidateDisabled)"/>
                 </div>
             </div>
 

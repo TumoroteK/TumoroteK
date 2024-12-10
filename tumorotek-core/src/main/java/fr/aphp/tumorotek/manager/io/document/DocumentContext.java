@@ -40,22 +40,19 @@ import java.util.List;
 
 
 /**
- * La classe représente le contexte d'un document, contenant des paires étiquette-valeur.
- *
- * <p>Elle gère une liste de paires étiquette-valeur ({@link LabelValue}), qui peuvent être utilisées pour stocker
- * des informations contextuelles ou des métadonnées à inclure dans le document.</p>
+ * La classe représente le contexte des données affichées dans le document. 
+ * Ce contexte est constitué d'une liste de paires libellé-valeur ({@link LabelValue}).
  *
  * <p>Le modèle de conception et l'architecture de cette classe ont été fournis par C.H.</p>
  */
 public class DocumentContext {
 
-    // Liste des étiquettes et valeurs associées pour le contexte du document.
+    // Liste des libellés et valeurs constituant le contexte du document.
     private List<LabelValue> listLabelValue;
 
     public DocumentContext(List<LabelValue> listLabelValue) {
         this.listLabelValue = listLabelValue;
     }
-
 
     public DocumentContext() {
 

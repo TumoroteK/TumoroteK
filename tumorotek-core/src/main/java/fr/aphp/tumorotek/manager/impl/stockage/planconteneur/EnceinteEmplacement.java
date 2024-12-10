@@ -73,6 +73,7 @@ public class EnceinteEmplacement
    //l'enceinte présente à l'emplacement peut être null dans le cas d'un emplacement vide
    private Enceinte enceinte;
 
+   //emplacement de l'enceinte "parent" de l'enceinte de l'EnceinteEmplacement courant
    private EnceinteEmplacement emplacementParent;
 
    //sera forcé à true si l'emplacement parent n'a pas d'enceinte.
@@ -88,17 +89,10 @@ public class EnceinteEmplacement
       this.emplacementParent = emplacementParent;
       this.fictif = (emplacementParent != null && emplacementParent.getEnceinte() == null);
    }
-   
-//   public EnceinteEmplacement(Enceinte enceinte, EnceinteEmplacement emplacementParent, boolean fictif) {
-//      this.enceinte = enceinte;
-//      this.emplacementParent = emplacementParent;
-//      this.fictif = fictif;
-//   }
 
    public void increaseNbEnceinteDernierNiveau() {
       nbEnceinteDernierNiveau++;
    }
-
 
    public Enceinte getEnceinte(){
       return enceinte;

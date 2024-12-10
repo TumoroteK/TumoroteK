@@ -46,47 +46,20 @@ import fr.aphp.tumorotek.manager.stockage.EnceinteManager;
  * pour un congélateur sans boîte au format Excel.
  *
  * <p>Elle utilise un producteur de documents {@link DocumentWithDataAsTableExcelProducer} pour créer le fichier
- * Excel à partir des données fournies. La méthode {@code buildFileName} génère le nom de fichier pour le document
- * Excel basé sur une liste de conteneurs.</p>
+ * Excel à partir des données fournies.</p>
  *
  * <p>Le modèle de conception et l'architecture de cette classe ont été fournis par C.H.</p>
  */
 public class PlanCongelateurSansBoiteExcelGenerator extends AbstractPlanCongelateurSansBoiteGenerator {
 
-    // Gestionnaire pour les opérations liées aux enceintes (containers de stockage).
-    // Utilisé pour interagir avec les données des enceintes dans le cadre de la génération de plan.
-
-    private EnceinteManager enceinteManager;
-
-    // Producteur de documents responsable de la création des fichiers Excel
+    // L'implémentation de ce producteur de documents correspond à la création d'un fichier Excel (cf applicationContexteManager.xml)
     private DocumentProducer documentProducer;
-
-
 
     public PlanCongelateurSansBoiteExcelGenerator() {}
 
-    public void setEnceinteManager(EnceinteManager enceinteManager){
-      this.enceinteManager = enceinteManager;
-    }
     public void setDocumentProducer(DocumentProducer documentWithDataAsTableExcelProducer){
        this.documentProducer = documentWithDataAsTableExcelProducer;
     }
-
-    public PlanCongelateurSansBoiteExcelGenerator(EnceinteManager enceinteManager, DocumentWithDataAsTableExcelProducer documentWithDataAsTableExcelProducer) {
-        this.enceinteManager = enceinteManager;
-        this.documentProducer = documentWithDataAsTableExcelProducer;
-    }
-
-
-    @Override
-    protected EnceinteManager getEnceinteManager() {
-        if (this.enceinteManager == null) {
-            throw new IllegalStateException("EnceinteManager n'a pas été initialisé.");
-        }
-        return this.enceinteManager;
-    }
-
-
 
     @Override
     protected DocumentProducer getDocumentProducer() {

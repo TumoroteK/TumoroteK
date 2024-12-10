@@ -39,19 +39,12 @@ package fr.aphp.tumorotek.manager.io.document;
  * La classe étend {@link DocumentToGenerate} pour représenter un document avec
  * des données organisées sous forme de tableau.
  *
- * <p>Cette classe est conçue pour gérer des documents où les données sont structurées sous forme de tableau,
- * en héritant des propriétés de base d'un document à générer, telles que le nom du document, le contexte,
- * les données et le pied de page.</p>
- *
  *  <p>Le modèle de conception et l'architecture de cette classe ont été fournis par C.H.</p>
  */
 public class DocumentWithDataAsTable extends DocumentToGenerate {
 
     // La largeur des colonnes dans le document généré
-   private int columnWidth;
-
-   //L'espacement gauche dans le document généré.
-    private int leftPadding;
+    private int columnWidth;
 
     public DataAsTable getData(){
         return (DataAsTable) super.getData();
@@ -68,11 +61,4 @@ public class DocumentWithDataAsTable extends DocumentToGenerate {
         this.columnWidth = columnWidth;
     }
 
-    public int getLeftPadding() {
-        return leftPadding;
-    }
-
-    public void setLeftPadding(int leftPadding) {
-        this.leftPadding = leftPadding;
-    }
 }

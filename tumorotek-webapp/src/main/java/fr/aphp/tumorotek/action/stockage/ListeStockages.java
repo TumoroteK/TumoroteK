@@ -35,19 +35,43 @@
  **/
 package fr.aphp.tumorotek.action.stockage;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.function.Consumer;
+import java.util.stream.Collectors;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.zkoss.util.resource.Labels;
+import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.util.Clients;
+import org.zkoss.zkplus.databind.AnnotateDataBinder;
+import org.zkoss.zul.Button;
+import org.zkoss.zul.Menubar;
+import org.zkoss.zul.Menuitem;
+import org.zkoss.zul.Messagebox;
+import org.zkoss.zul.Panel;
+import org.zkoss.zul.Textbox;
+import org.zkoss.zul.Tree;
+import org.zkoss.zul.Treecell;
+import org.zkoss.zul.Treechildren;
+import org.zkoss.zul.Treeitem;
+import org.zkoss.zul.Window;
+import org.zkoss.zul.ext.TreeOpenableModel;
+import org.zkoss.zul.ext.TreeSelectableModel;
+
 import fr.aphp.tumorotek.action.ManagerLocator;
 import fr.aphp.tumorotek.action.controller.AbstractController;
+import fr.aphp.tumorotek.action.utils.StockageUtils;
 import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
-import fr.aphp.tumorotek.dto.OutputStreamData;
 import fr.aphp.tumorotek.dto.SelectableItemDTO;
-import fr.aphp.tumorotek.manager.administration.ParametresManager;
-import fr.aphp.tumorotek.manager.impl.io.production.DocumentWithDataAsTableExcelProducer;
-import fr.aphp.tumorotek.manager.impl.stockage.planconteneur.AbstractPlanCongelateurGenerator;
-import fr.aphp.tumorotek.manager.impl.stockage.planconteneur.PlanCongelateurAvecBoiteExcelGenerator;
-import fr.aphp.tumorotek.manager.impl.stockage.planconteneur.PlanCongelateurSansBoiteExcelGenerator;
 import fr.aphp.tumorotek.manager.interfacage.scan.TKScanTerminaleDTO;
-import fr.aphp.tumorotek.modales.SelectionModale;
-import fr.aphp.tumorotek.model.config.ParametreValeurSpecifique;
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.contexte.Plateforme;
 import fr.aphp.tumorotek.model.imprimante.AffectationImprimante;
@@ -65,37 +89,6 @@ import fr.aphp.tumorotek.webapp.tree.stockage.EnceinteNode;
 import fr.aphp.tumorotek.webapp.tree.stockage.StockageRootNode;
 import fr.aphp.tumorotek.webapp.tree.stockage.StockageTreeItemRenderer;
 import fr.aphp.tumorotek.webapp.tree.stockage.TerminaleNode;
-import org.apache.commons.io.output.ByteArrayOutputStream;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.zkoss.util.resource.Labels;
-import org.zkoss.zk.ui.Component;
-import org.zkoss.zk.ui.event.Event;
-import org.zkoss.zk.ui.event.Events;
-import org.zkoss.zk.ui.util.Clients;
-import org.zkoss.zkplus.databind.AnnotateDataBinder;
-import org.zkoss.zul.Button;
-import org.zkoss.zul.Filedownload;
-import org.zkoss.zul.Menubar;
-import org.zkoss.zul.Menuitem;
-import org.zkoss.zul.Messagebox;
-import org.zkoss.zul.Panel;
-import org.zkoss.zul.Textbox;
-import org.zkoss.zul.Tree;
-import org.zkoss.zul.Treecell;
-import org.zkoss.zul.Treechildren;
-import org.zkoss.zul.Treeitem;
-import org.zkoss.zul.ext.TreeOpenableModel;
-import org.zkoss.zul.ext.TreeSelectableModel;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.function.Consumer;
-import java.util.stream.Collectors;
 
 /**
  *
@@ -621,133 +614,75 @@ public class ListeStockages extends AbstractController
       getStockageController().switchToFicheConteneurCreateMode();
    }
 
-   /**
-    * Détermine le nombre maximal de conteneurs à imprimer.
-    * Cette méthode récupère la valeur par défaut ou la valeur spécifique à la plateforme si elle est définie.
-    *
-    * @return Le nombre maximal de conteneurs à imprimer.
-    */
-   public int determineMaxContainersToPrint(){
-      // Récupération du gestionnaire de paramètres
-
-      final ParametresManager parametresManager = ManagerLocator.getManager(ParametresManager.class);
-      // Valeur par défaut du nombre maximal de conteneurs à imprimer
-
-      int maxContainersToPrint = Integer.parseInt(EParametreValeurParDefaut.STOCKAGE_NB_MAX_CONTENEUR_A_IMPRIMER.getValeur());
-      // Recherche d'une valeur spécifique à la plateforme
-
-      ParametreValeurSpecifique maxParametre = parametresManager.findParametresByPlateformeIdAndCode(curPf.getPlateformeId(),
-         EParametreValeurParDefaut.STOCKAGE_NB_MAX_CONTENEUR_A_IMPRIMER.getCode());
-      // Si une valeur spécifique est trouvée, elle est utilisée
-
-      if(maxParametre != null){
-         maxContainersToPrint = Integer.parseInt(maxParametre.getValeur());
-
-      }
-      return maxContainersToPrint;
-   }
-
-   /**
-    * Construit une liste de SelectableItemDTO à partir des conteneurs racines.
-    *
-    * Cette méthode transforme chaque conteneur en un objet SelectableItemDTO
-    * en utilisant l'identifiant et le nom du conteneur. Les objets DTO sont
-    * collectés dans une liste et retournés.
-    *
-    * @return une liste de SelectableItemDTO représentant les conteneurs racines.
-    */
-   public List<SelectableItemDTO> buildSelectableContainerDTOs(){
-      // Transformation des conteneurs en SelectableItemDTO et collecte dans une liste
-      return getRootConteneurs().stream().map(conteneur -> new SelectableItemDTO(conteneur.getConteneurId(), conteneur.getNom()))
-         .collect(Collectors.toList());
-   }
-
-   /**
-    * Fournit un Consumer qui sera utilisé comme callback après la sélection des éléments dans la fenêtre modale.
-    * Ce Consumer encapsule la logique de callback qui sera exécutée après la sélection.
-    *
-    * @param avecBoites Indique si la sélection inclut des boîtes.
-    * @return Un Consumer prenant en charge la liste des éléments sélectionnés.
-    */
-   public Consumer<List<SelectableItemDTO>> prepareSelectionCallback(boolean avecBoites){
-      return selectedItems -> {
-         // Logique de callback exécutée après la sélection
-         executeSelectionCallback(avecBoites, selectedItems);
-      };
-   }
 
    /**
     * Méthode appelée lorsqu'on clique pour générer le plan avec les boîtes.
     * Elle prépare les arguments pour la fenêtre modale et affiche cette dernière.
     */
-   public void onClick$generateWithBoxes(){
-      // Création des arguments pour la fenêtre modale
-      Map<String, Object> windowArgs = buildModalWindowArguments(true);
-      // Récupération du Consumer avec le comportement souhaité
-      Consumer<List<SelectableItemDTO>> onSelectionComplete = prepareSelectionCallback(true);
-      // Affichage de la fenêtre modale avec les arguments et le Consumer
-      SelectionModale.displaySelectionWindow(windowArgs, onSelectionComplete);
-
+   public void onClick$generateAvecBoite(){
+      // Affiche la modale de sélection des conteneurs.
+      // La validation de la sélection entraine l'appel de la création du plan de conteneur approprié (callback de la modale)
+      displaySelectionModaleForPlanConteneur(true);
    }
 
    /**
     * Méthode appelée lorsqu'on clique pour générer le plan sans les boîtes.
     * Elle prépare les arguments pour la fenêtre modale et affiche cette dernière.
     */
-   public void onClick$generateWithoutBoxes(){
-      // Création des arguments pour la fenêtre modale
-      Map<String, Object> windowArgs = buildModalWindowArguments(false);
-      // Récupération du Consumer avec le comportement souhaité
-      Consumer<List<SelectableItemDTO>> onSelectionComplete = prepareSelectionCallback(false);
-      // Affichage de la fenêtre modale avec les arguments et le Consumer
-      SelectionModale.displaySelectionWindow(windowArgs, onSelectionComplete);
+   public void onClick$generateSansBoite() {
+      // Affiche la modale de sélection des conteneurs.
+      // La validation de la sélection entraine l'appel de la création du plan de conteneur approprié (callback de la modale)
+      displaySelectionModaleForPlanConteneur(false);
    }
 
-   /**
-    * Crée les arguments nécessaires pour la fenêtre de sélection modale.
-    * Cette méthode prépare un Map avec les paramètres requis par la fenêtre modale.
-    *
-    * @param avecBoites Indique si les boîtes doivent être incluses dans la sélection.
-    * @return Un Map contenant les arguments pour la fenêtre modale.
-    */
-   public Map<String, Object> buildModalWindowArguments(boolean avecBoites){
-      Map<String, Object> windowArgs = new HashMap<>();
-      // Détermination du nombre maximal de conteneurs à imprimer
-      int maxContainersToPrint = determineMaxContainersToPrint();
-      // Détermination du titre de la fenêtre en fonction de la présence des boites
-      String titleKey = avecBoites ? "stockage.generate.with.boite" : "stockage.generate.without.boite";
-      windowArgs.put("title", Labels.getLabel(titleKey));
-      // Ajout des autres labels nécessaires pour la fenêtre modale
-      windowArgs.put("mainLabel", Labels.getLabel("stockage.selection.window.mainLabel"));
-      windowArgs.put("listHeaderLabel", Labels.getLabel("stockage.selection.window.listHeaderLabel"));
+   public void displaySelectionModaleForPlanConteneur(boolean avecBoites){
+      Map<String, Object> modaleArgs = new HashMap<>();
+      
       // Ajout de la liste des éléments sélectionnables
-      windowArgs.put("itemList", buildSelectableContainerDTOs());
-      // Ajout du label indiquant le nombre d'éléments sélectionnés
+      modaleArgs.put("itemList", 
+         getRootConteneurs().stream().map(conteneur -> new SelectableItemDTO(conteneur.getConteneurId(), conteneur.getNom()))
+         .collect(Collectors.toList()));
+      
+      //modaleArgs dépendant du type de congélation :
+      String titleKey = avecBoites ? "stockage.generate.with.boite" : "stockage.generate.without.boite";
+      modaleArgs.put("title", Labels.getLabel(titleKey));
+      Consumer<List<SelectableItemDTO>> callback = selectedItems -> {
+         // Logique de callback exécutée après la sélection
+         executeCallbackAfterSelectionForPlanConteneur(avecBoites, selectedItems);
+      };
+      modaleArgs.put("callback", callback);
+      
+      //autres modaleArgs dépendant du contexte
+      int maxContainersToPrint = Integer.parseInt(SessionUtils.getParametreValeurByCode(EParametreValeurParDefaut.STOCKAGE_NB_MAX_CONTENEUR_A_IMPRIMER.getCode(), sessionScope));
+      // Ajout du nombre maximal d'éléments sélectionnables
+      modaleArgs.put("max", maxContainersToPrint);
       String selectLabel =
          Labels.getLabel("stockage.selection.window.selectedLabel", new String[] {String.valueOf(maxContainersToPrint)});
-      windowArgs.put("selectedLabel", selectLabel);
-      // Ajout du nombre maximal d'éléments sélectionnables
-      windowArgs.put("max", maxContainersToPrint);
+      modaleArgs.put("selectedLabel", selectLabel);
+      
 
-      return windowArgs;
+      // Autres libellés communs à tous les appels : titre de la fenêtre en fonction de la présence des boites
+      // Ajout des autres labels nécessaires pour la fenêtre modale
+      modaleArgs.put("mainLabel", Labels.getLabel("stockage.selection.window.mainLabel"));
+      modaleArgs.put("listHeaderLabel", Labels.getLabel("stockage.selection.window.listHeaderLabel"));
+
+      // Création et affichage de la fenêtre modale
+      Window selectionWindow = (Window) Executions.createComponents("/zuls/modales/SelectionModale.zul", self, modaleArgs);
+      selectionWindow.doModal(); // Affiche la fenêtre modale en mode modal
    }
-
+ 
    /**
-    * Gère le callback après la sélection des éléments dans la fenêtre modale.
+    * Gère le callback après la sélection des éléments dans la fenêtre modale pour les plans de conteneur.
     * Cette méthode est appelée avec les éléments sélectionnés et déclenche la création d'un document Excel.
     *
     * @param avecBoites Indique si la sélection inclut des boîtes.
     * @param selectedItems Les éléments sélectionnés à traiter.
     */
-   public void executeSelectionCallback(boolean avecBoites, List<SelectableItemDTO> selectedItems){
+   public void executeCallbackAfterSelectionForPlanConteneur(boolean avecBoites, List<SelectableItemDTO> selectedItems) {
       // Transformation des éléments sélectionnés en liste d'identifiants
       List<Integer> listIds = selectedItems.stream().map(SelectableItemDTO::getId).collect(Collectors.toList());
       // Création d'un document Excel avec ou sans boîtes selon le paramètre
-      if(avecBoites){
-         createExcelForPlanConteneur(listIds, true);
-      }else{
-         createExcelForPlanConteneur(listIds, false);
-      }
+      createExcelForPlanConteneur(listIds, avecBoites);
    }
 
 
@@ -760,48 +695,15 @@ public class ListeStockages extends AbstractController
     * ensuite envoyé à l'utilisateur avec le type MIME approprié.
     *
     * @param selectedItemsIds Liste des identifiants uniques des conteneurs à traiter.
-    * @param withBoxes Indique si le fichier Excel doit inclure des informations sur les boîtes.
-    * @throws IllegalArgumentException si la liste des identifiants est vide ou null.
-    * @throws IOException en cas d'erreur lors de la génération du fichier.
+    * @param avecBoites Indique si le fichier Excel doit inclure des informations sur les boîtes.
     */
-   private void createExcelForPlanConteneur(List<Integer> selectedItemsIds, boolean withBoxes) {
-      if (selectedItemsIds == null || selectedItemsIds.isEmpty()) {
-         throw new IllegalArgumentException(Labels.getLabel("excel.generation.no.selection"));
-      }
-
+   private void createExcelForPlanConteneur(List<Integer> selectedItemsIds, boolean avecBoites) {
       // Récupération des conteneurs à partir des IDs sélectionnés pour le traitement
       List<Conteneur> conteneurs = ManagerLocator.getConteneurManager().findByIdListManager(selectedItemsIds);
-
-      try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()) {
-         // Récupération du producteur de document Excel qui gère la création du fichier
-         DocumentWithDataAsTableExcelProducer documentProducer = ManagerLocator.getDocumentWithDataAsTableExcelProducer();
-
-         // Création du générateur spécifique selon le besoin (avec ou sans boîtes)
-         AbstractPlanCongelateurGenerator generator = withBoxes
-            ? new PlanCongelateurAvecBoiteExcelGenerator(ManagerLocator.getEnceinteManager(), documentProducer)
-            : new PlanCongelateurSansBoiteExcelGenerator(ManagerLocator.getEnceinteManager(), documentProducer);
-
-         // Génération du fichier Excel directement dans le flux de sortie
-         OutputStreamData result = generator.generate(conteneurs);
-
-         if (result != null) {
-            byteArrayOutputStream.write(result.getOutputStream().toByteArray());
-         }
-
-         String fileName = result.getFileName();
-         byteArrayOutputStream.flush();
-
-         // Envoi du fichier généré à l'utilisateur avec le type MIME approprié pour Excel
-         Filedownload.save(byteArrayOutputStream.toByteArray(), result.getContentType(), result.getFileName());
-
-      } catch (IOException e) {
-         handleError("excel.generation.io.error", e);
-      } catch (IllegalArgumentException e) {
-         handleError("excel.generation.data.error", e);
-      } catch (Exception e) {
-         handleError("excel.generation.error", e);
-      }
+      
+      StockageUtils.createExcelForPlanConteneur(conteneurs, avecBoites);
    }
+
    /**
     * Gère les erreurs survenues lors de la génération du fichier Excel.
     *
@@ -815,9 +717,6 @@ public class ListeStockages extends AbstractController
       Clients.showNotification(errorMessage, "error", null, null, 3000);
       log.error(errorMessage, e);
    }
-
-
-
 
 
    public void updateConteneur(final Conteneur conteneur){

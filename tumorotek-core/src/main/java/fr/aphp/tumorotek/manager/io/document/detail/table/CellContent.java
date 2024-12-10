@@ -113,13 +113,6 @@ public class CellContent {
         this.complementOnAnotherLine = complementOnAnotherLine;
     }
 
-    public boolean shouldWrapText() {
-        return isComplementOnAnotherLine() ||
-               (text != null && text.contains("\n")) ||
-               (complement != null && complement.contains("\n"));
-    }
-
-
     /**
      * Construit une représentation textuelle complète combinant les informations principales et complémentaires.
      *

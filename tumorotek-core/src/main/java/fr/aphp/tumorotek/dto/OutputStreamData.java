@@ -38,8 +38,8 @@ package fr.aphp.tumorotek.dto;
 import org.apache.commons.io.output.ByteArrayOutputStream;
 
 /**
- * Représente les données associées à un flux de sortie pour un fichier, y compris le nom du fichier,
- * le format, le type de contenu et le flux de sortie associé (ByteArrayOutputStream).
+ * Représente les éléments à transmettre au front pour afficher le fichier généré : comprend le nom du fichier,
+ * le type MIME du contenu et le flux de sortie associé (ByteArrayOutputStream).
  *
  * <p>Le modèle de conception et l'architecture de cette classe ont été fournis par C.H.</p>
  */
@@ -49,64 +49,31 @@ public class OutputStreamData {
 //  Nom du fichier associé au flux de sortie. extention inclus
     String fileName;
 
-
-//   Format du fichier. Ne pas coder en dur les formats, utilisez ConfigManager pour la gestion des formats.
-     String format;
-
-
 //   Type de contenu du fichier. Ne pas coder en dur les types de contenu,
 //   utilisez  ConfigManager pour la gestion des types.
     String contentType;
 
-//   Flux de sortie associé aux données du fichier. Utilisé pour écrire les données du fichier.
+//   Flux de sortie associé au contenu du fichier. Utilisé pour écrire le fichier.
     ByteArrayOutputStream outputStream;
 
     public OutputStreamData() {
     }
 
-    public OutputStreamData(String fileName, String format, String contentType, ByteArrayOutputStream outputStream) {
+    public OutputStreamData(String fileName, String contentType, ByteArrayOutputStream outputStream) {
         this.fileName = fileName;
-        this.format = format;
         this.contentType = contentType;
         this.outputStream = outputStream;
-    }
-
-    public OutputStreamData(String fileName, DocumentProducerResult documentProducerResult) {
-        this.fileName = fileName;
-        this.format = documentProducerResult.format;
-        this.contentType = documentProducerResult.contentType;
-        this.outputStream = documentProducerResult.outputStream;
     }
 
     public String getFileName() {
         return fileName;
     }
 
-    public void setFileName(String fileName) {
-        this.fileName = fileName;
-    }
-
-    public String getFormat() {
-        return format;
-    }
-
-    public void setFormat(String format) {
-        this.format = format;
-    }
-
     public String getContentType() {
         return contentType;
     }
 
-    public void setContentType(String contentType) {
-        this.contentType = contentType;
-    }
-
     public ByteArrayOutputStream getOutputStream() {
         return outputStream;
-    }
-
-    public void setOutputStream(ByteArrayOutputStream outputStream) {
-        this.outputStream = outputStream;
     }
 }

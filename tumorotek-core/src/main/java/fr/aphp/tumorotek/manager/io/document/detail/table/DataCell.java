@@ -36,7 +36,7 @@
 package fr.aphp.tumorotek.manager.io.document.detail.table;
 
 /**
- * Représente une cellule de données dans un tableau ou une feuille de calcul.
+ * Représente une cellule de données dans un tableau.
  *
  * <p>Cette classe encapsule les informations nécessaires pour définir le contenu (via un objet {@link CellContent}),
  * l'apparence et la disposition d'une cellule de tableau.
@@ -94,12 +94,9 @@ public class DataCell {
         this.withBorder = withBorder;
     }
 
-
-       public DataCell(String text, String complement, String hexaColorCodeForLeftBorder, boolean withBorder) {
+    public DataCell(String text, String complement, String hexaColorCodeForLeftBorder, boolean withBorder) {
         this(new CellContent(text, complement), hexaColorCodeForLeftBorder, withBorder);
     }
-
-
 
     public CellContent getCellContent() {
         return cellContent;
@@ -162,7 +159,7 @@ public class DataCell {
                 sb.append(" [color=").append(hexaColorCodeForLeftBorder).append("]");
             }
         } else {
-            sb.append("(vide)"); // Indique que la cellule est vide si le contenu est nul
+            sb.append("(Vide)"); // Indique que la cellule est vide si le contenu est nul
         }
 
         return sb.toString(); // Retourne la représentation finale de la cellule

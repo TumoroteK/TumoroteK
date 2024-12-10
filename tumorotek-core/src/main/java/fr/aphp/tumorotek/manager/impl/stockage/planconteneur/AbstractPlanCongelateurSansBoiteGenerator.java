@@ -45,17 +45,22 @@ import fr.aphp.tumorotek.model.stockage.Conteneur;
 import fr.aphp.tumorotek.model.stockage.Enceinte;
 import fr.aphp.tumorotek.model.systeme.Couleur;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 /**
- * Classe abstraite pour la génération de plans de congélateurs avec boîte.
- * <p>
- * Cette classe étend {@link AbstractPlanCongelateurGenerator} et fournit une
- * implémentation spécifique pour la génération de plans de congélateurs qui
- * sans boîtes. Elle est conçue pour être étendue par des classes concrètes
- * qui doivent définir la logique spécifique à la génération des détails du plan.
- * </p>
+ * Classe qui  étend {@link AbstractPlanCongelateurGenerator} mais reste abstraite 
+ * car elle ne gère pas le format de sortie du document (excel, pdf ...)
+ * Celui-ci est pris en charge par l'attribut documentProducer défini dans chacune de classes concrètes (classes filles) 
+ * 
+ * Cette classe gère les spécificités liées à l'affichage du plan SANS afficher les boîtes.
+ * Elle n'expose qu'une seule méthode buildDetailPlan() qui contient toute la logique
+ * métier pour structurer sous forme de tableau (DataAsTable) les données d'un plan de conteneur sans les boîtes
+ * Ce tableau "fictif" sera constitué d'autant de lignes qu'il y a d'emplacements pour enceinte dans le congélateur
+ * Pour chaque ligne une seule colonne sera renseignée avec le nom de l'enceinte (ou (Vide) si emplacement vide).
+ * La position de cette colonne correspondra au niveau de l'emplacement dans l'arborescence.
+ * 
  * <p>Le modèle de conception et l'architecture de cette classe ont été fournis par C.H.</p>
  */
 
@@ -64,13 +69,9 @@ public abstract class AbstractPlanCongelateurSansBoiteGenerator extends Abstract
 
    private static final int PREMIERE_NIVEAU = 1;
 
-   // Méthode abstraite pour récupérer le gestionnaire d'enceinte
-   protected abstract EnceinteManager getEnceinteManager();
-
    /**
     * Construit une représentation d'un conteneur en indiquant
-    * ce qui se trouve à chaque position (enceinte ou vide).
-    * Organise les compartiments et sous-compartiments par position.
+    * ce qui se trouve à chaque emplacement dédié à une enceinte.
     *
     * @param conteneur Le conteneur pour lequel le plan détaillé est construit.
     * @return Une instance de DataAsTable représentant la structure du conteneur
@@ -156,7 +157,7 @@ public abstract class AbstractPlanCongelateurSansBoiteGenerator extends Abstract
    }
 
    /**
-    * Récupère les sous-enceintes d'une enceinte parente.
+    * Récupère les sous-enceintes d'une enceinte parente et les stocke dans une map dont la clé est la position de l'enceinte.
     *
     * Cette méthode utilise le gestionnaire d'enceintes pour récupérer la liste des sous-enceintes
     * d'une enceinte parente donnée, puis crée une carte (Map) des sous-enceintes triées par position.
@@ -179,7 +180,7 @@ public abstract class AbstractPlanCongelateurSansBoiteGenerator extends Abstract
     * @param numEmptyCellsBefore Le nombre de cellules vides à insérer avant l'enceinte.
     * @return La ligne de cellules créée contenant l'enceinte.
     */
-   public CellRow addEnceinteToRow(Enceinte enceinte, int numEmptyCellsBefore){
+   private CellRow addEnceinteToRow(Enceinte enceinte, int numEmptyCellsBefore){
       DataCell enceinteDataCell;
       // Si l'enceinte est non nulle, créer une cellule de données pour l'enceinte
       if(enceinte != null){
@@ -200,7 +201,7 @@ public abstract class AbstractPlanCongelateurSansBoiteGenerator extends Abstract
     * @param enceinte L'enceinte pour laquelle créer le contenu.
     * @return Un objet CellContent contenant les informations de l'enceinte.
     */
-   public DataCell createDataCellFromEnceinte(Enceinte enceinte){
+   private DataCell createDataCellFromEnceinte(Enceinte enceinte){
       // Récupère la couleur de l'enceinte (si disponible)
       Couleur couleurEnceinte = enceinte.getCouleur();
       String color = (couleurEnceinte != null ? couleurEnceinte.getHexa() : null);
@@ -216,4 +217,24 @@ public abstract class AbstractPlanCongelateurSansBoiteGenerator extends Abstract
 
    }
 
+   /**
+    * Crée une Map de position associant des positions d'enceintes à leurs objets respectifs.
+    * Cela facilite la gestion et l'accès aux enceintes en fonction de leurs positions.
+    * @param enceintes La liste d'enceintes à mapper.
+    * @return Une map associant les positions aux enceintes.
+    */
+   private Map<Integer, Enceinte> createMapEnceintesByPosition(List<Enceinte> enceintes){
+      // Créer une nouvelle Map vide pour stocker les associations entre positions et enceintes
+      Map<Integer, Enceinte> positionMap = new HashMap<>();
+
+      // Vérifier que le paramètre liste n’est pas nul
+      if(enceintes != null){
+         for(Enceinte enceinte : enceintes){
+            // Insérer chaque enceinte dans map selon sa position
+            positionMap.put(enceinte.getPosition(), enceinte);
+         }
+      }
+
+      return positionMap;
+   }
 }

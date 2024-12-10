@@ -35,20 +35,17 @@
  **/
 package fr.aphp.tumorotek.manager.io.production;
 
-import fr.aphp.tumorotek.dto.DocumentProducerResult;
-import fr.aphp.tumorotek.dto.OutputStreamData;
-import fr.aphp.tumorotek.manager.io.document.DocumentWithDataAsTable;
-
 import java.io.IOException;
 import java.util.List;
 
+import fr.aphp.tumorotek.manager.io.document.DocumentWithDataAsTable;
+
 /**
- * Interface pour la production de documents à partir d'une liste d'objets de données.
+ * Interface pour la production d'un fichier à partir d'une liste d'objets de données.
  *
- * L'interface définit une méthode pour produire des documents à partir
- * d'une liste d'objets {@link DocumentWithDataAsTable} et pour écrire la sortie dans un {@link OutputStreamData}.
- * Les implémentations de cette interface sont responsables de la gestion des spécificités de la création
- * et du formatage des documents.
+ * L'interface définit une méthode pour produire le fichier à partir
+ * d'une liste d'objets {@link DocumentWithDataAsTable} pouvant correspondre à des feuilles excel ou à des pages
+ * les éléments de sortie du traitement sont encapsulés dans un {@link DocumentProducerResult}.
  *
  *  <p>Le modèle de conception et l'architecture de cette classe ont été fournis par C.H.</p>
  */
@@ -56,7 +53,7 @@ import java.util.List;
 public interface DocumentProducer {
 
     /**
-     * Produit un document basé sur une liste donnée d'objets contenant des données sous forme
+     * Produit un fichier basé sur une liste d'objets contenant des données sous forme
      * de tableau et écrit le résultat dans un flux de sortie spécifié.
      *
      * @param listDocumentWithDataAsTable La liste des objets qui contiennent les données à inclure dans le document.

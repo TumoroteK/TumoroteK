@@ -171,11 +171,11 @@
                                          value="@load(each.parametre.valeur) @save(each.newValeur)"
                                          width="90%"/>
 
-                                <!-- Afficher le champ numérique si c'est un nombre -->
+                                <!-- Afficher le champ numérique si c'est un nombre : pas de contrôle de saisie dans ce cas -->
                                 <intbox  if="${each.type eq 'Integer'}"
-                                        constraint="${each.constParametreValeur}"
                                         value="@load(each.parametre.valeur) @save(each.newValeur)"
                                         width="10%"/>
+                                        
                             </div>
 
                         </cell>

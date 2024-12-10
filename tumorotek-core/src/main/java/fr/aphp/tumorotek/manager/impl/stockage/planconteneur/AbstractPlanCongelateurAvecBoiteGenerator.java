@@ -51,62 +51,85 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Classe abstraite pour la génération de plans de congélateurs avec boîte.
- *
- * Cette classe étend {@link AbstractPlanCongelateurGenerator} et fournit une
- * implémentation spécifique pour la génération de plans de congélateurs qui
- * incluent des boîtes. Elle est conçue pour être étendue par des classes concrètes
- * qui doivent définir la logique spécifique à la génération des détails du plan.
+ * Classe qui  étend {@link AbstractPlanCongelateurGenerator} mais reste abstraite 
+ * car elle ne gère pas le format de sortie du document (excel, pdf ...)
+ * Celui-ci est pris en charge par l'attribut documentProducer défini dans chacune de classes concrètes (classes filles) 
+ * 
+ * Cette classe gère les spécificités liées à l'affichage du plan AVEC boîtes.
+ * Elle n'expose qu'une seule méthode buildDetailPlan() qui contient toute la logique
+ * métier pour structurer sous forme de tableau (DataAsTable) les données d'un plan de conteneur avec boîtes
+ * Ce tableau sera constitué d'autant de lignes d'entête qu'il y a de niveaux d'enceintes dans le conteneur
+ * Toutes les enceintes de plus bas niveau se retrouveront donc sur une même ligne. 
+ * Et pour chacune d'elle, ses boîtes seront affichées les unes en dessous des autres
+ * Cette classe s'appuiera sur {@link EnceinteEmplacement} qui permet de gérer l'affichage des emplacements sans enceinte
+ *   
+ * Exemple de structuration des données
+ * (Vide)    |R2        |          |          |          |          |          |          |          |          |R3        |          |          |          |          |          |
+ * null      |C1-MODIF  |          |          |          |          |C2        |          |(Vide)    |C4        |          |C1        |          |C2        |          |C3        |          |(Vide)    |
+ * null      |C1        |C2        |C3        |C4        |C5        |C1        |C2        |null      |C1        |C2        |C1        |C2        |C1        |C2 MODIF  |C1        |C2        |null      |
+ * null      |BT1       |BT1       |BT1       |BT1       |BT1       |BT1       |BT1       |null      |BT1       |(Vide)    |BT1       |BT1       |BT1       |BT1       |BT1       |BT1       |null      |
+ * null      |BT2       |BT2       |BT2       |BT2       |BT2       |BT2       |BT2       |null      |BT2       |BT2       |BT2       |BT2       |BT2       |BT2       |BT2       |BT2       |null      |
+ * null      |(Vide)    |BT3       |BT3       |BT3       |BT3       |BT3       |BT3       |null      |BT3       |BT3       |BT3       |BT3       |BT3       |BT3       |BT3       |BT3       |null      |
+ * null      |BT4       |BT4       |BT4       |BT4       |BT4       |BT4       |BT4       |null      |BT4       |BT4       |BT4       |BT4       |BT4       |BT4       |BT4       |BT4       |null      |
+ * null      |BT5       |BT5       |BT5       |BT5       |BT5       |BT5       |BT5       |null      |BT5       |BT5       |BT5       |BT5       |BT5       |BT5       |BT5       |BT5       |null      |
+ * null      |null      |null      |null      |null      |null      |BT6       |BT6       |null      |BT6       |BT6       |BT6       |BT6       |BT6       |BT6       |BT6       |BT6       |null      |
+ * null      |null      |null      |null      |null      |null      |BT7       |BT7       |null      |BT7       |(Vide)    |BT7       |BT7       |BT7       |BT7       |BT7       |BT7       |null      |
+ * null      |null      |null      |null      |null      |null      |BT8       |BT8       |null      |BT8       |BT8       |BT8       |BT8       |BT8       |BT8       |BT8       |BT8       |null      |
+ * null      |null      |null      |null      |null      |null      |BT9       |BT9       |null      |BT9       |BT9       |BT9       |BT9       |BT9       |BT9       |BT9       |BT9       |null      |
+ * null      |null      |null      |null      |null      |null      |BT10      |BT10      |null      |BT10      |BT10      |(Vide)    |BT10      |BT10      |BT10      |BT10      |BT10      |null      |
  *
  * @author C.H.
  */
 public abstract class AbstractPlanCongelateurAvecBoiteGenerator extends AbstractPlanCongelateurGenerator
 {
-   //liste des enceintes par niveau (chaque niveau correspond à une liste). Elle constituera les lignes d'entête du tableau final
-   //cet objet est un objet interne au traitement de génération du DataAsTable
-
-
-   //remplacer DataAsTable par DocumentData
    @Override
    public DataAsTable buildDetailPlan(Conteneur conteneur){
-      List<List<EnceinteEmplacement>> listListEnceinteEmplacementParNiveau = new ArrayList<List<EnceinteEmplacement>>();
-
-      DataAsTable dataAsTable = new DataAsTable();
-
+      //Petit rappel des attributs d'un conteneur :
       //un conteneur contient un nombre de niveaux => nb niveaux enceinte + 1 niveau boîtes
       //un conteneur contient un nombre d'enceintes => nombre d'enceintes sur le niveau 1
       //une enceinte contient un nombre de places => nombre d'emplacements pour les enceintes fille ou les boîtes selon le niveau de l'enceinte
-
       int nbNiveauDuConteneur = conteneur.getNbrNiv();
-
-      //liste des enceintes par niveau (ligne "header" du tableau correspondant aux enceintes)
+                  //liste des enceintes par niveau (ligne "header" du tableau correspondant aux enceintes)
+      //dans le DataAsTable à générer
       int nbLigneEntete = nbNiveauDuConteneur-1;//on retire le niveau boîtes
 
-      //initialisation du conteneur car la session hibernate est "fermée" donc les getEnceintes ne sont pas accessibles dans cela
-      //      conteneur = conteneurManager.findByIdManager(conteneur.getConteneurId());
-
-      //Pour la première ligne, les enceintes seront issues du conteneur
-      //Pour les lignes suivantes, elles seront tirées d'une enceinte
-      // /!\ getEnceinte() (sur conteneur ou sur enceinte) renvoie un Set qui ne permet pas de trier => on passe à chaque fois par une liste qu'on triera
-
-      //préparation : construction de la liste de liste d'enceintes correspondant à l'entête du document
+      //Le traitement s'appuie sur : 
+      // - une étape de préparation consistant à alimenter une liste de listes d'EnceinteEmplacement.
+      //   Chaque liste d'EnceinteEmplacement correspond à un niveau de type enceinte dans le conteneur
+      //   La liste de listes contiendra donc nbLigneEntete listes.
+      // - le traitement de génération du DataAsTable qui se découpera en :
+      //     - une première lecture de la liste d'EnceinteEmplacement de plus bas niveau pour créer les lignes de boîtes
+      //     - une 2e lecture de la liste d'EnceinteEmplacement pour construire la ligne d'entête correspondant, l'ajouter en position 0
+      //       et valoriser le nombre d'emplacements d'enceinte de plus bas niveau pour tous les emplacements parents (colspan)
+      //     - lecture des autres listes d'emplacements enceinte contenues dans la liste de liste pour ajouter les CellRow correspondant
+      //       en partant par le niveau le plus bas et en remontant.
+      
+      //liste de listes d'emplacement pour enceintes correspondant à l'entête du document :
+      List<List<EnceinteEmplacement>> listListEnceinteEmplacementParNiveau = new ArrayList<List<EnceinteEmplacement>>();
+      
+      //------- préparation : alimentation de listListEnceinteEmplacementParNiveau
       //cette liste temporaire sera utilisée pour créer la liste final de CellRow
       //gestion de la première ligne d'enceintes qui est liée au conteneur
       buildListEnceinteEmplacementPour1erNiveauDEntete(conteneur, listListEnceinteEmplacementParNiveau);
-      // gestion des lignes suivantes
+      // gestion des lignes suivantes qui sont liées à des enceintes
       for(int i=1;i<nbLigneEntete;i++) {
          //on passe en paramètre la liste du niveau supérieur (c'est à dire la liste des enceintes parents des enceintes à traiter)
          buildListEnceinteEmplacementPourNiveauDEnteteSuivant(listListEnceinteEmplacementParNiveau.get(i-1), listListEnceinteEmplacementParNiveau);
       }
-      //fin de la préparation
+      //------- fin de la préparation
 
-      //////////////////////////////////////////////////////////////////////////////////////
-      //parcours de la dernière ligne de listEnceinteEmplacementParNiveau :
-      //-pour construire les lignes correspondant aux terminales
-      //-ajouter en position 0 la ligne d'entête correspondant au niveau juste avant les boîtes
-      //----
-      //1ere lecture de la dernière ligne de listEnceinteParNiveau pour construire le tableau des boîtes
+      //------- traitement de construction du dataAsTable à partir de la liste de plus bas niveau d'EnceinteEmplacement
+      DataAsTable dataAsTable = new DataAsTable();
       List<EnceinteEmplacement> listEnceinteEmplacementPlusBasNiveau = listListEnceinteEmplacementParNiveau.get(nbLigneEntete-1);
+      createAllCellRowForBoite(dataAsTable, listEnceinteEmplacementPlusBasNiveau);
+      createAllCellRowForEnceinte(dataAsTable, listListEnceinteEmplacementParNiveau, nbLigneEntete);
+
+      return dataAsTable;
+   }
+
+   //lecture de la dernière ligne de listListEnceinteEmplacementParNiveau (listEnceinteEmplacementPlusBasNiveau)
+   //pour alimenter les lignes du tableau correspondant aux boîtes : les boîtes sont en colonne sous leurs enceintes parents
+   private void createAllCellRowForBoite(DataAsTable dataAsTable, List<EnceinteEmplacement> listEnceinteEmplacementPlusBasNiveau){
       int nbEnceinteEmplacement = listEnceinteEmplacementPlusBasNiveau.size();
       for(int i=0; i< nbEnceinteEmplacement; i++) {
          EnceinteEmplacement enceinteEmplacement = listEnceinteEmplacementPlusBasNiveau.get(i);
@@ -118,23 +141,30 @@ public abstract class AbstractPlanCongelateurAvecBoiteGenerator extends Abstract
             }
          }
       }
-      //si la ou les dernières enceintes sont vide, on ajoute null aux listes pour être cohérent avec les autres emplacement d'une enceinte vide
+      
+      //si la ou les dernières enceintes sont vide, on ajoute null à chaque CellRow
+      //pour gérer de la même façon tous les autres emplacement sans enceinte.
+      //(tous les CellRow auront donc le même nombre d'éléments)
       int nbEnceinteEmplacementPlusBasNiveau = listEnceinteEmplacementPlusBasNiveau.size();
       for(CellRow cellRow : dataAsTable.getListCellRow()) {
          while(cellRow.getNbDataCell()<nbEnceinteEmplacementPlusBasNiveau) {
             cellRow.addDataCell(null);
          }
       }
+   }
 
-      //////////////////////////////////////////////////////////////////////////////////////
-
-
-
-      //2e lecture de la dernière ligne de listEnceinteEmplacementParNiveau pour construire la ligne d'entête correspondant et l'ajouter en position 0
-      //et valoriser le nombre d'emplacement d'enceinte de plus bas niveau pour tous les emplacements parents
+   //création et alimentation des CellRow pour les Enceintes : 
+   private void createAllCellRowForEnceinte(DataAsTable dataAsTable, List<List<EnceinteEmplacement>> listListEnceinteEmplacementParNiveau,
+       int nbLigneEntete){
+      //- lecture de la dernière ligne de listEnceinteEmplacementParNiveau (listEnceinteEmplacementPlusBasNiveau) 
+      //    pour construire la ligne d'entête correspondant, l'ajouter en position 0
+      //    et valoriser le nombre d'emplacement d'enceinte de plus bas niveau pour tous les emplacements parents
       CellRow rowDernierNiveauEnceinte = new CellRow();
       dataAsTable.getListCellRow().add(0, rowDernierNiveauEnceinte);
-      for(int i=0; i< nbEnceinteEmplacement; i++) {
+      int indexDerniereLigneEntete = nbLigneEntete-1;
+      List<EnceinteEmplacement> listEnceinteEmplacementPlusBasNiveau = listListEnceinteEmplacementParNiveau.get(indexDerniereLigneEntete);
+      int nbEnceinteEmplacementPlusBasNiveau = listEnceinteEmplacementPlusBasNiveau.size();
+      for(int i=0; i< nbEnceinteEmplacementPlusBasNiveau; i++) {
          EnceinteEmplacement enceinteEmplacement = listEnceinteEmplacementPlusBasNiveau.get(i);
          DataCell dataCellForEnceinteEmplacementPlusBasNiveau = createDataCellForEnceinteEmplacement(enceinteEmplacement);
          //Pour cette ligne, l'alias est mis à la ligne pour faire une rupture visuelle avant l'affichage des boîtes (la ligne sera plus haute)
@@ -146,9 +176,8 @@ public abstract class AbstractPlanCongelateurAvecBoiteGenerator extends Abstract
       }
       //--------------------
 
-      //remonter listEnceinteEmplacementParNiveau pour ajouter toujours en position 0 les lignes d'entête des lignes supérieures
+      //remonte listEnceinteEmplacementParNiveau pour ajouter toujours en position 0 les lignes d'entête des lignes supérieures
       //=> boucle à partir de l'avant dernière car la dernière a déjà été traitée précédemment
-      int indexDerniereLigneEntete = nbLigneEntete-1;
       int indexAvantDerniereLigneEntete = indexDerniereLigneEntete-1;
       for(int i = indexAvantDerniereLigneEntete; i>=0 ; i--) {
          CellRow rowNiveauEnceinteATraiter = new CellRow();
@@ -166,14 +195,16 @@ public abstract class AbstractPlanCongelateurAvecBoiteGenerator extends Abstract
             rowNiveauEnceinteATraiter.addDataCell(dataCellForEnceinteEmplacement);
          }
       }
-
-
-      return dataAsTable;
    }
 
 
 
 
+
+
+
+   //Ajoute un élément (une liste d'EnceinteEmplacement) à la liste listListEnceinteEmplacementParNiveau passée en paramètre
+   //Cette liste EnceinteEmplacement correspond à tous les emplacements de 1er niveau dans l'arborescence du conteneur passé en paramètre
    private void buildListEnceinteEmplacementPour1erNiveauDEntete(Conteneur conteneur,  List<List<EnceinteEmplacement>> listListEnceinteEmplacementParNiveau) {
       //création de la ligne d'enceinte pour l'entête de 1er niveau et ajout à la liste des enceintes par niveau
       List<EnceinteEmplacement> listEnceintePour1erNiveau = new ArrayList<EnceinteEmplacement>();
@@ -182,13 +213,15 @@ public abstract class AbstractPlanCongelateurAvecBoiteGenerator extends Abstract
       addlistEnceinteToListEntete(conteneur.getNbrEnc(), getEnceinteManager().findByConteneurWithOrderManager(conteneur), null, listEnceintePour1erNiveau);
    }
 
+   //Ajoute un élément (une liste d'EnceinteEmplacement) à la liste listListEnceinteEmplacementParNiveau passée en paramètre
+   //Cette liste EnceinteEmplacement correspond à tous les emplacements "enfants" des EnceinteEmplacements de listEnceinteEmplacementPourNiveauDEntete passé en paramètre
    private void buildListEnceinteEmplacementPourNiveauDEnteteSuivant(List<EnceinteEmplacement> listEnceinteEmplacementPourNiveauDEntete,  List<List<EnceinteEmplacement>> listListEnceinteEmplacementParNiveau) {
       //création de la ligne d'enceinte pour l'entête de niveau suivant et ajout à la liste des enceintes par niveau
       List<EnceinteEmplacement> listEnceinteEmplacementPourNiveauDEnteteInferieur = new ArrayList<EnceinteEmplacement>();
       listListEnceinteEmplacementParNiveau.add(listEnceinteEmplacementPourNiveauDEnteteInferieur);
 
       int nbEnceinteATraiter = listEnceinteEmplacementPourNiveauDEntete.size();
-      //parcours de la liste triée pour gérer les enceintes supprimées : 
+      //parcours de la liste triée pour gérer les enceintes "supprimées" (emplacements disponibles) : 
       //listEnceinteEmplacementPourNiveauDEnteteInferieur s'incrémente au fur et à mesure du traitement des emplacements "parents"
       for(int i=0; i<nbEnceinteATraiter; i++) {
          EnceinteEmplacement enceinteEmplacementParent = listEnceinteEmplacementPourNiveauDEntete.get(i);
@@ -287,8 +320,8 @@ public abstract class AbstractPlanCongelateurAvecBoiteGenerator extends Abstract
    }
 
   
-   //on va passer dans chaque emplacement de dernier niveau et on va
-   //remonter les parents pour ajouter 1 à son nbEnceinteDernierNiveau
+   //passe dans chaque emplacement de dernier niveau et remonte
+   //les parents pour ajouter 1 à son nbEnceinteDernierNiveau
    //les nbEnceinteDernierNiveau vont donc s'incrémenter petit à petit au fur et à mesure de la lecture des enceintes de dernier niveau
    private void populateNbEnceintesDernierNiveauPourNiveauxSuperieurs(EnceinteEmplacement enceinteEmplacementDernierNiveau) {
       if(enceinteEmplacementDernierNiveau != null) {

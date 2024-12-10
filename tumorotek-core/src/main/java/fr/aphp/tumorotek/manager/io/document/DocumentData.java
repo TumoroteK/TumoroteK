@@ -37,8 +37,8 @@ package fr.aphp.tumorotek.manager.io.document;
 
 
 /**
- * L'interface <code>DocumentData</code> sert de contrat pour toutes les classes représentant des données
- * utilisées dans le contexte de la génération de documents.
+ * L'interface <code>DocumentData</code> sert de contrat pour toutes les classes représentant les données
+ * à afficher lors de la génération de documents.
  *
  * <p>Les classes qui implémentent cette interface doivent contenir des données structurées qui peuvent être
  * manipulées et intégrées dans un document. L'interface ne définit pas de structure particulière, mais elle sert

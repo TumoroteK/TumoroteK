@@ -36,28 +36,30 @@
 
 package fr.aphp.tumorotek.modales;
 
-import fr.aphp.tumorotek.dto.SelectableItemDTO;
+import java.util.List;
+import java.util.Set;
+import java.util.function.Consumer;
+import java.util.stream.Collectors;
+
 import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.ContextParam;
 import org.zkoss.bind.annotation.ContextType;
 import org.zkoss.bind.annotation.ExecutionArgParam;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.bind.annotation.NotifyChange;
+import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
-import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.select.Selectors;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listitem;
+import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Window;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.function.Consumer;
-import java.util.stream.Collectors;
+import fr.aphp.tumorotek.dto.SelectableItemDTO;
 
 /**
  * Classe SelectionModale - Contrôleur pour la fenêtre modale de sélection d'éléments.
+ * Elle est notamment utilisée par ListeStockages pour sélection les conteneurs pour lesquels afficher les plans
  *
  * Cette classe gère l'affichage et les interactions avec une fenêtre modale ZK,
  * permettant à l'utilisateur de sélectionner un ou plusieurs éléments d'une liste.
@@ -84,19 +86,11 @@ public class SelectionModale
 
    private int max; // Nombre maximum d'éléments qui peuvent être sélectionnés
 
-   private String dangerStyle; // Style appliqué pour indiquer une sélection invalide
+   private String invalideSelectionStyle = ""; // Style appliqué pour indiquer une sélection invalide. Vaut "" si la sélection est correcte
 
-   /**
-    * Affiche la fenêtre de sélection modale avec les paramètres fournis.
-    * @param params Paramètres de configuration pour la fenêtre modale.
-    * @param onSelectionComplete Fonction de rappel à exécuter après la sélection des éléments.
-    */
-   public static void displaySelectionWindow(Map<String, Object> params, Consumer<List<SelectableItemDTO>> onSelectionComplete){
-      params.put("callback", onSelectionComplete);  // Ajout de la fonction de rappel aux paramètres
-      // Création et affichage de la fenêtre modale
-      Window selectionWindow = (Window) Executions.createComponents("/zuls/modales/SelectionModale.zul", null, params);
-      selectionWindow.doModal(); // Affiche la fenêtre modale en mode modal
-   }
+   private boolean boutonValidateDisabled = true;
+
+
 
    /**
     * Initialisation du ViewModel. Cette méthode est appelée automatiquement lors de la création de la fenêtre modale.
@@ -121,7 +115,7 @@ public class SelectionModale
     * Elle met à jour le nombre d'éléments sélectionnés et notifie l'interface utilisateur pour rafraîchir l'affichage.
     */
    @Command
-   @NotifyChange({"selectedCount"})
+   @NotifyChange({"selectedCount", "invalideSelectionStyle", "boutonValidateDisabled"})
    public void updateSelectedCount(@ContextParam(ContextType.COMPONENT) Component component){
       // Récupération du composant Listbox depuis le contexte
       Listbox listbox = (Listbox) Selectors.find(component, "#dynamicListbox").get(0);
@@ -133,7 +127,9 @@ public class SelectionModale
       selectedCount = selectedItems.size();
 
       // Mise à jour du style en cas de dépassement du nombre maximum d'éléments sélectionnables
-      dangerStyle = selectedCount > max ? "color: red;" : "";
+      invalideSelectionStyle = (selectedCount > max ? "font-weight: bold;color: red;" : "");
+      
+      boutonValidateDisabled = (selectedCount == 0 || selectedCount > max);
    }
 
    /**
@@ -199,9 +195,20 @@ public class SelectionModale
       return max;
    }
 
-   public String getDangerStyle(){
-      return dangerStyle;
+   public String getInvalideSelectionStyle(){
+      return invalideSelectionStyle;
+   }
+   
+   public void setInvalideSelectionStyle(String invalideSelectionStyle){
+      this.invalideSelectionStyle = invalideSelectionStyle;
+   }
+   
+   public boolean isBoutonValidateDisabled(){
+      return boutonValidateDisabled;
    }
 
+   public void setBoutonValidateDisabled(boolean boutonValidateDisabled){
+      this.boutonValidateDisabled = boutonValidateDisabled;
+   }
 }
 

@@ -33,56 +33,55 @@
  * avez pris connaissance de la licence CeCILL, et que vous en avez
  * accepté les termes.
  **/
-package fr.aphp.tumorotek.dto;
+package fr.aphp.tumorotek.manager.io.production;
 
 import org.apache.commons.io.output.ByteArrayOutputStream;
 
 /**
- * La classe DocumentProducerResult représente le résultat produit par un générateur de documents.
+ * La classe DocumentProducerResult représente le résultat produit par la génération, à un format donné,
+ * d'un fichier (contenant potentiellement plusieurs {@DocumentToGenerate})
  * Elle contient des informations sur le format du document, le type de contenu associé, ainsi que
- * le flux de sortie où le document est généré.
+ * le flux de sortie correspondant au document généré.
  *
- * <p>Cette classe est utilisée pour encapsuler ces informations afin de les retourner après la
- * génération d'un document, facilitant ainsi le traitement ultérieur des résultats.</p>
+ * <p>Cette classe est utilisée pour encapsuler les informations liées à la production d'un document afin de
+ * les transmettre à l'appelant qui transformera cet objet en un {@link OutoutStreanData} attendu par la couche front 
  *
  * <p>Les attributs principaux sont :
  * <ul>
- *   <li>format : le format du document (par exemple, pdf, docx).</li>
- *   <li>contentType : le type MIME du contenu (par exemple, application/pdf, application/msword).</li>
+ *   <li>format : le format du document (par exemple, pdf, docx, xlsx) utilisé comme extension dans le nom du fichier associé au document généré.
+ *   <li>contentType : le type MIME du contenu (par exemple, application/pdf, application/msword).
  *   <li>outputStream : le flux de sortie contenant les données du document généré.</li>
  * </ul>
  * <p>Le modèle de conception et l'architecture de cette classe ont été fournis par C.H.</p>
  */
 public class DocumentProducerResult {
-    // Merci de ne pas coder en dur les valeurs. Utilise plutôt les constantes de ConfigManager.
-    String format;
+    //format du document (par exemple, pdf, docx, xlsx). 
+    //Cette valeur sera utilisée comme extension dans le nom du fichier correspondant au document généré.
+    //Utiliser une constante de ConfigManager.
+    private String format;
 
-    // Merci de ne pas coder en dur les valeurs. Utilise plutôt les constantes de ConfigManager.
-    String contentType;
+    //le type MIME du contenu (par exemple, application/pdf, application/msword)
+    //Utiliser une constante de ConfigManager.
+    private String contentType;
 
-    ByteArrayOutputStream outputStream;
+    //le flux de sortie contenant les données du document généré.
+    private ByteArrayOutputStream outputStream;
+    
+    public DocumentProducerResult(String format, String contentType, ByteArrayOutputStream outputStream) {
+       this.format = format;
+       this.contentType = contentType;
+       this.outputStream = outputStream;
+    }
 
     public String getFormat() {
         return format;
-    }
-
-    public void setFormat(String format) {
-        this.format = format;
     }
 
     public String getContentType() {
         return contentType;
     }
 
-    public void setContentType(String contentType) {
-        this.contentType = contentType;
-    }
-
     public ByteArrayOutputStream getOutputStream() {
         return outputStream;
-    }
-
-    public void setOutputStream(ByteArrayOutputStream outputStream) {
-        this.outputStream = outputStream;
     }
 }

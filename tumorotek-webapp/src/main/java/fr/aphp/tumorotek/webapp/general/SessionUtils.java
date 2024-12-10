@@ -46,6 +46,7 @@ import fr.aphp.tumorotek.model.contexte.gatsbi.Contexte;
 import fr.aphp.tumorotek.model.interfacage.Emetteur;
 import fr.aphp.tumorotek.model.interfacage.Recepteur;
 import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
+import fr.aphp.tumorotek.param.EParametreValeurParDefaut;
 import fr.aphp.tumorotek.param.TkParam;
 import fr.aphp.tumorotek.utils.Utils;
 import org.zkoss.zk.ui.Sessions;
@@ -328,6 +329,7 @@ public final class SessionUtils {
     * Récupère un ParametreDTO en utilisant le code spécifié.
     *
     * @param codeToFind Le code à utiliser pour récupérer le ParametreDTO.
+    * @sessionScp map contenant les attributs de la session
     * @return Le ParametreDTO correspondant au code spécifié, ou null s'il n'est pas trouvé.
     */
    public static ParametreDTO getParametreByCode(String codeToFind, Map<String, Object> sessionScp) {
@@ -347,5 +349,15 @@ public final class SessionUtils {
       return null;
    }
 
+   /**
+    * Récupère un ParametreDTO en utilisant le code spécifié et retourne sa valeur.
+    *
+    * @param codeToFind Le code à utiliser pour récupérer le ParametreDTO.
+    * @sessionScp map contenant les attributs de la session
+    * @return La valeur du code spécifié au format String, ou null s'il n'est pas trouvé.
+    */
+   public static String getParametreValeurByCode(String codeToFind, Map<String, Object> sessionScp) {
+      return getParametreByCode(codeToFind, sessionScp).getValeur();
+   }
 
 }

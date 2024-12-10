@@ -5,6 +5,7 @@ import org.zkoss.zul.Constraint;
 
 import fr.aphp.tumorotek.action.administration.ConstParametreValeur;
 import fr.aphp.tumorotek.dto.ParametreDTO;
+import fr.aphp.tumorotek.param.EParametreType;
 import fr.aphp.tumorotek.param.EParametreValeurParDefaut;
 
 /**
@@ -43,7 +44,11 @@ public class ParametreDecorator
       else {
          this.parametre = parametre;
          this.defaultValeur=EParametreValeurParDefaut.isDefaultValue(parametre.getCode(), parametre.getValeur());
-         this.constParametreValeur = new ConstParametreValeur(parametre.getType());
+         //contrôle de saisie uniquement dans le cas du type String (vérification de la longueur).
+         //Pour les autres types un composant spécifique est utilisé (intbox, decimalbox, radiogroup) qui sécurise déjà la saisie
+         if(parametre.getType().equals(EParametreType.STRING.getType())) {
+            this.constParametreValeur = new ConstParametreValeur();
+         }
       }
    }
    

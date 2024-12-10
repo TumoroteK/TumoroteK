@@ -38,9 +38,12 @@ package fr.aphp.tumorotek.utils;
 import org.jsoup.Jsoup;
 import org.jsoup.parser.Tag;
 import org.jsoup.safety.Whitelist;
+
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.Calendar;
 
 
 
@@ -51,7 +54,9 @@ import java.time.format.DateTimeParseException;
 public final class TKStringUtils
 {
 
-
+   // Format de date utilisé pour les noms de fichiers
+   static final String DATE_HEURE_ISO_FORMAT = "yyyyMMddHHmm";
+   static final String DATE_ISO_FORMAT = "yyyyMMdd";
 
    /**
     * Constructeur privé
@@ -173,38 +178,25 @@ public final class TKStringUtils
          return string == null || string.trim().isEmpty();
       }
 
-
-
-
    /**
     * Retourne la date actuelle formatée selon le modèle fourni.
-    * Si le modèle est null, le format par défaut "dd MM yyyy" est utilisé.
     *
-    * @param pattern Le modèle de format de date-temps (par exemple, "yyyyMMddHHmm").
-    *                Si null, le format "dd/MM/yyyy" est utilisé.
-    * @return Une chaîne de date formatée ou un message d'erreur si le modèle est invalide.
+    * @param pattern Le pattern de date-temps (par exemple, "yyyyMMddHHmm").
+    *                Si pattern invalide, le format ISO "yyyyMMdd" est utilisé.
+    * @return Une chaîne de date formatée
     */
    public static String getCurrentDate(String pattern) {
       try {
-         // Crée la date et l'heure actuelles
-         LocalDateTime now = LocalDateTime.now();
+         return new SimpleDateFormat(pattern).format(Calendar.getInstance().getTime());
 
-         // Utilise le format par défaut si le modèle est null
-         if (pattern == null || pattern.isEmpty()) {
-            pattern = "dd/MM/yyyy";
-         }
-
-         // Définit le formateur avec le modèle fourni ou par défaut
-         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
-
-         // Formate la date et l'heure actuelles
-         return now.format(formatter);
-      } catch (IllegalArgumentException | DateTimeParseException e) {
-         // Gère le cas où le modèle est invalide
-         return "Modèle de date invalide : " + pattern;
+      } catch (IllegalArgumentException | NullPointerException e) {
+         // l'exception est forcément lié au pattern invalide
+         return new SimpleDateFormat(DATE_ISO_FORMAT).format(Calendar.getInstance().getTime());
       }
    }
 
-
+   public static String getCurrentDateHeureInIsoFormat() {
+      return getCurrentDate(DATE_HEURE_ISO_FORMAT);
+   }
 
 }

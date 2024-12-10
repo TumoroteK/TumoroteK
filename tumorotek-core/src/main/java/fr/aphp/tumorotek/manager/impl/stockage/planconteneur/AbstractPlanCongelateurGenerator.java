@@ -35,7 +35,6 @@
  **/
 package fr.aphp.tumorotek.manager.impl.stockage.planconteneur;
 
-import fr.aphp.tumorotek.dto.DocumentProducerResult;
 import fr.aphp.tumorotek.dto.OutputStreamData;
 import fr.aphp.tumorotek.manager.io.document.DocumentContext;
 import fr.aphp.tumorotek.manager.io.document.DocumentData;
@@ -43,6 +42,7 @@ import fr.aphp.tumorotek.manager.io.document.DocumentFooter;
 import fr.aphp.tumorotek.manager.io.document.DocumentWithDataAsTable;
 import fr.aphp.tumorotek.manager.io.document.LabelValue;
 import fr.aphp.tumorotek.manager.io.production.DocumentProducer;
+import fr.aphp.tumorotek.manager.io.production.DocumentProducerResult;
 import fr.aphp.tumorotek.manager.stockage.EnceinteManager;
 import fr.aphp.tumorotek.model.stockage.Conteneur;
 import fr.aphp.tumorotek.model.stockage.Enceinte;
@@ -55,29 +55,29 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Classe abstraite fournissant une implémentation de base pour la génération de plans de congélateurs.
- * Elle devrait se concentrer uniquement sur la génération du contenu (c'est-à-dire, `DocumentWithDataAsTable`).
- * Les spécificités de format devraient être gérées par les implémentations concrètes et les producteurs.
+ * Classe abstraite fournissant la logique d'implémentation pour la génération de plans de congélateurs.
+ * Sa méthode principale generate() s'appuie sur des méthodes abstraites qui seront définies 
+ * dans ses classes filles spécifiques d'une part au type de plans (avec ou sans boîtes) et ensuite au format (excel, ...).
  *
  * <p>Le modèle de conception et l'architecture de cette classe ont été fournis par C.H.</p>
  */
 
+//TODO : internationaliser la génération du document
 public abstract class AbstractPlanCongelateurGenerator implements PlanCongelateurGenerator
 {
 
-   // Format de date utilisé pour les noms de fichiers
-   protected static final String DATE_FORMAT = "yyyyMMddHHmm";
-
+   private EnceinteManager enceinteManager;
+   
    // Constante représentant le contenu d'une cellule correspondant à un emplacement sans enceinte
    protected static final String EMPTY_POSITION = "(Vide)";
 
    // Préfixe utilisé pour nommer les fichiers générés
    protected static final String PREFIX_FILE_NAME = "plan_conteneur";
-
+   
 
    @Override
    public OutputStreamData generate(List<Conteneur> listConteneurs) throws IOException{
-      // Crée une liste pour stocker les plans de chaque conteneur
+      // Crée une liste pour stocker les plans de chaque conteneur dans des objets indépendants du format de sortie
       List<DocumentWithDataAsTable> listPlanConteneur = new ArrayList<>();
 
       for(Conteneur conteneur : listConteneurs){
@@ -86,17 +86,18 @@ public abstract class AbstractPlanCongelateurGenerator implements PlanCongelateu
       // Produit le document final avec le format spécifique (Excel, PDF, etc.)
       DocumentProducerResult producerResult = getDocumentProducer().produce(listPlanConteneur);
       // Génère un nom de fichier unique basé sur la date courante
-      String currentDate = TKStringUtils.getCurrentDate(DATE_FORMAT);
-
+      String currentDate = TKStringUtils.getCurrentDateHeureInIsoFormat();
       String fileName =
          new StringBuilder(PREFIX_FILE_NAME).append("_").append(currentDate).append(".").append(producerResult.getFormat())
             .toString();
 
-      return new OutputStreamData(fileName, producerResult);
+      //retourne l'objet encapsulant toutes les informations nécessaire au front pour afficher le fichier
+      return new OutputStreamData(fileName, producerResult.getContentType(), producerResult.getOutputStream());
    }
 
    /**
-    * Construit un plan de conteneur sous forme de {@link DocumentWithDataAsTable}, représentant une feuille Excel avec des données sous forme de tableau.
+    * Construit un plan de conteneur sous forme de {@link DocumentWithDataAsTable}, 
+    * objet représentant un document avec des données sous forme de tableau.
     *
     * @param conteneur le conteneur à traiter
     * @return un document contenant les données du conteneur sous forme de tableau
@@ -105,11 +106,14 @@ public abstract class AbstractPlanCongelateurGenerator implements PlanCongelateu
       // Crée un document structuré avec en-tête, contenu et pied de page
       DocumentWithDataAsTable documentWithDataAsTable = new DocumentWithDataAsTable(
                            conteneur.getNom(),       // Titre du document
-                           buildEntetePlan(conteneur),  // Information g├®n├®rale sur le conteneur
-                           buildDetailPlan(conteneur), // Contenu principal (impl├®ment├® par les classes filles)
+                           buildEntetePlan(conteneur),  // Informations générales sur le contexte des données affichées dans le détail
+                           buildDetailPlan(conteneur), // Données du document (implémentation définie dans les classes filles)
                            buildPiedPagePlan(conteneur) // Informations de bas de page
       );
       documentWithDataAsTable.setColumnWidth(22);
+      //le paramètre withLeftMargin à true permet de rendre bien visibles les couleurs des éléments de la 1ere colonne du tableau notamment en excel 
+      //(ajout d'une colonne vide en première position)
+      documentWithDataAsTable.setWithLeftMargin(true);
       return documentWithDataAsTable;
 
    }
@@ -118,17 +122,17 @@ public abstract class AbstractPlanCongelateurGenerator implements PlanCongelateu
     * Construit l'en-tête du plan, fournissant des informations sur le conteneur.
     *
     * @param conteneur le conteneur pour lequel construire l'en-tête
-    * @return le contexte du document contenant les labels et valeurs
+    * @return le contexte du document contenant des labels et valeurs
     */
    public DocumentContext buildEntetePlan(Conteneur conteneur){
       // Liste pour stocker les paires label/valeur de l'en-tête
       List<LabelValue> listLabelValue = new ArrayList<>();
 
       // Ajoute la date courante en première ligne -> Le {date}
-      String date = TKStringUtils.getCurrentDate(null);
+      String date = TKStringUtils.getCurrentDate("dd/MM/yyyy");//TODO à internationaliser dans un 2e temps
       String labelText = new StringBuilder("Le ")
               .append(date)
-              .toString();
+              .toString();//TODO à internationaliser dans un 2e temps
       listLabelValue.add(new LabelValue(labelText, "", true, false));
 
 
@@ -156,9 +160,9 @@ public abstract class AbstractPlanCongelateurGenerator implements PlanCongelateu
    }
 
    /**
-    * Construit les détails du plan principal où les données principales sont écrites.
+    * Construit le tableau des données (contenu du conteneur).
     *
-    * @param conteneur le conteneur pour lequel construire les détails du plan
+    * @param conteneur le conteneur dont il faut afficher les données
     * @return les données du document
     */
    protected abstract DocumentData buildDetailPlan(Conteneur conteneur);
@@ -172,31 +176,18 @@ public abstract class AbstractPlanCongelateurGenerator implements PlanCongelateu
     */
    protected abstract DocumentProducer getDocumentProducer();
 
-
-   protected  abstract EnceinteManager getEnceinteManager();
-   /**
-    * Crée une Map de position associant des positions d'enceintes à leurs objets respectifs.
-    * Cela facilite la gestion et l'accès aux enceintes en fonction de leurs positions.
-    * @param enceintes La liste d'enceintes à mapper.
-    * @return Une map associant les positions aux enceintes.
-    */
-
-   protected Map<Integer, Enceinte> createMapEnceintesByPosition(List<Enceinte> enceintes){
-      // Créer une nouvelle Map vide pour stocker les associations entre positions et enceintes
-      Map<Integer, Enceinte> positionMap = new HashMap<>();
-
-      // Vérifier que le paramètre liste n’est pas nul
-      if(enceintes != null){
-         for(Enceinte enceinte : enceintes){
-            // Insérer chaque enceinte dans map selon sa position
-            positionMap.put(enceinte.getPosition(), enceinte);
-         }
-      }
-
-      return positionMap;
+   protected EnceinteManager getEnceinteManager() {
+       if (this.enceinteManager == null) {
+           throw new IllegalStateException("EnceinteManager n'a pas été initialisé.");
+       }
+       return this.enceinteManager;
    }
 
-/**
+   public void setEnceinteManager(EnceinteManager enceinteManager) {
+      this.enceinteManager = enceinteManager;
+   }   
+   
+   /**
     * formate l'alias en ajoutant des parenthèses autour de l'alias fourni, si celui-ci existe.
     *
     * @param alias L'alias à formater. Peut être nul.
