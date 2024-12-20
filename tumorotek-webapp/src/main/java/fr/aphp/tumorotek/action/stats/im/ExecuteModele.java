@@ -177,14 +177,14 @@ public class ExecuteModele
    }
 
    private void callExecute(final PreparedStatement call, final Indicateur st) throws SQLException{
-      if(call.execute()){
-         log.debug("Call to string : {}", call);
-         ResultSet rSet = null;
-         try{
+      ResultSet rSet = null;
+      try{
+         if(call.execute()){
+            log.debug("Call to string : " + call.toString());
+
             rSet = call.getResultSet();
 
             while(rSet.next()){
-
                Number f = rSet.getFloat(2);
                if(rSet.wasNull()){
                   f = null;
@@ -194,15 +194,18 @@ public class ExecuteModele
 
                   rSet.getInt(3), rSet.getInt(4)));
             }
-         }catch(final SQLException e){
-            log.error(e.getMessage(), e); 
-            throw e;
-         }finally{
-            if(rSet != null){
-               rSet.close();
-            }
          }
-
+      }catch(final SQLException e){
+         //NB : le stackTrace est géré plus loin (méthode ExecuteModele.start()
+         log.error("erreur lors de l'appel de la requête : {} ", call.toString());
+         throw e;
+      }finally{
+         if(rSet != null){
+            rSet.close();
+         }
+         if(call != null) {
+            call.close();
+         }
       }
    }
 

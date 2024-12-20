@@ -97,7 +97,7 @@ CREATE PROCEDURE stats_count_prel_group_tot(IN date_debut DATE, IN date_fin DATE
 
     SET @sql = CONCAT(@sql, ' FROM BANQUE b');
     SET @sql = CONCAT(@sql, ' LEFT JOIN
-                (SELECT xx.banque_id, count(xx.dp) as cc from (SELECT banque_id, m.patient_id, p.date_prelevement dp from PRELEVEMENT p join MALADIE m on p.maladie_id=m.maladie_id');
+                (SELECT xx.banque_id, count(xx.dp) as cc from (SELECT p.banque_id, m.patient_id, p.date_prelevement dp from PRELEVEMENT p join MALADIE m on p.maladie_id=m.maladie_id');
     SET @sql = CONCAT(@sql, ' WHERE p.DATE_PRELEVEMENT BETWEEN ''', date_debut, ''' AND ''', date_fin, '''');
     SET @sql = CONCAT(@sql, ' GROUP by p.banque_id, m.patient_id, p.date_prelevement) xx GROUP by xx.banque_id) zz ');
     SET @sql = CONCAT(@sql, ' ON b.banque_id = zz.banque_id');
