@@ -140,10 +140,10 @@ public class DocumentWithDataAsTableExcelProducer implements DocumentProducer
 
             // Écrit le contexte du document dans la feuille afin que les utilisateurs 
             // sachent à quoi correspondent les données qui seront ensuite affichées sous forme de tableau
-            writeDocumentContext(sheet, document.getContext(), document.isWithLeftMargin());
+            writeDocumentContext(sheet, document.getContext());
 
             // Écrit les données du document dans la feuille, ce qui constitue l'essentiel du contenu
-            writeDocumentData(sheet, document.getData(), document.isWithLeftMargin());
+            writeDocumentData(sheet, document.getData());
 
             // Ajoute un pied de page à la feuille pour fournir des informations supplémentaires ou des références
             ExcelUtility.addFooter(sheet, document.getFooter().getLeftData(), document.getFooter().getCenterData(),
@@ -178,11 +178,9 @@ public class DocumentWithDataAsTableExcelProducer implements DocumentProducer
     *
     * @param sheet La feuille Excel où écrire le contexte
     * @param documentContext Le contexte du document contenant les paires label-valeur
-    * @param withLeftMargin ajoute une colonne vide en première position pour simuler une marge (peut être utile par exemple 
-    * dans le cas des plans de conteneur pour que la couleur des éléments dans la première colonne soit bien visible)
     * 
     */
-   private void writeDocumentContext(Sheet sheet, DocumentContext documentContext, boolean withLeftMargin){
+   private void writeDocumentContext(Sheet sheet, DocumentContext documentContext){
       // Vérifie si la feuille et le contexte du document ne sont pas nuls avant de procéder.
       if(sheet != null && documentContext != null){
          // Récupère la liste des LabelValue à partir du contexte du document.
@@ -191,7 +189,7 @@ public class DocumentWithDataAsTableExcelProducer implements DocumentProducer
          if(labelValues != null){
             // Initialisation des indices de ligne et colonne pour l'écriture dans la feuille.
             int rowIndex = 0; // on commence sur la 1ere ligne du document
-            int colIndexLabel = (withLeftMargin ? 1 : 0); // Colonne pour le label.
+            int colIndexLabel = 0; // Colonne pour le label.
             
             // Crée un style de cellule en gras pour les labels ou valeurs qui nécessitent ce formatage.
             CellStyle boldCellStyle = sheet.getWorkbook().createCellStyle();
@@ -238,10 +236,8 @@ public class DocumentWithDataAsTableExcelProducer implements DocumentProducer
     *
     * @param sheet La feuille Excel où écrire les données
     * @param dataAsTable L'objet contenant les données à écrire sous forme de tableau
-    * @param withLeftMargin ajoute une colonne vide en première position pour simuler une marge (peut être utile par exemple 
-    * dans le cas des plans de conteneur pour que la couleur des éléments dans la première colonne soit bien visible)
     */
-   private void writeDocumentData(Sheet sheet, DataAsTable dataAsTable, boolean withLeftMargin){
+   private void writeDocumentData(Sheet sheet, DataAsTable dataAsTable){
       // Vérifiez si la feuille (sheet) et le tableau de données (dataAsTable) ne sont pas nuls.
       if(sheet != null && dataAsTable != null){
          // Obtenez le nombre de lignes physiques dans la feuille,
@@ -251,7 +247,7 @@ public class DocumentWithDataAsTableExcelProducer implements DocumentProducer
          // Chaque CellRow représente une ligne à écrire dans la feuille.
          for(CellRow cellRow : dataAsTable.getListCellRow()){
             // Écrivez la ligne actuelle (cellRow) dans la feuille à l'index spécifié (rowIndex).
-            writeCellRow(sheet, rowIndex, cellRow, withLeftMargin);
+            writeCellRow(sheet, rowIndex, cellRow);
             // Incrémentez l'index de ligne pour passer à la prochaine ligne disponible
             // afin d'éviter d'écraser les données précédemment écrites.
             rowIndex++;
@@ -275,16 +271,13 @@ public class DocumentWithDataAsTableExcelProducer implements DocumentProducer
     * @param sheet La feuille Excel où écrire la ligne
     * @param rowIndex L'index de la ligne à créer
     * @param cellRow L'objet contenant les données de la ligne à écrire
-    * @param withLeftMargin ajoute une colonne vide en première position pour simuler une marge (peut être utile par exemple 
-    * dans le cas des plans de conteneur pour que la couleur des éléments dans la première colonne soit bien visible)
     */
-   private void writeCellRow(Sheet sheet, int rowIndex, CellRow cellRow, boolean withLeftMargin) {
+   private void writeCellRow(Sheet sheet, int rowIndex, CellRow cellRow) {
       // Vérifie que cellRow et sa liste de cellules ne sont pas nulles
       if(cellRow != null && cellRow.getListDataCell() != null) {
           // Crée une nouvelle ligne dans la feuille Excel à l'index spécifié
           Row row = sheet.createRow(rowIndex);
-          //currentColumn commence à 0 ou à 1 selon la demande d'avoir une marge à gauche ou non
-          int currentColumn = (withLeftMargin ? 1 : 0);
+          int currentColumn = 0;
 
           // Parcourt chaque cellule de données dans la ligne
           for(DataCell dataCell : cellRow.getListDataCell()) {

@@ -111,9 +111,7 @@ public abstract class AbstractPlanCongelateurGenerator implements PlanCongelateu
                            buildPiedPagePlan(conteneur) // Informations de bas de page
       );
       documentWithDataAsTable.setColumnWidth(22);
-      //le paramètre withLeftMargin à true permet de rendre bien visibles les couleurs des éléments de la 1ere colonne du tableau notamment en excel 
-      //(ajout d'une colonne vide en première position)
-      documentWithDataAsTable.setWithLeftMargin(true);
+
       return documentWithDataAsTable;
 
    }

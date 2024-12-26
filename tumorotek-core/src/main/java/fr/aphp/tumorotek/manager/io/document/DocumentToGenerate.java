@@ -61,10 +61,6 @@ public class DocumentToGenerate {
     // Pied de page du document
     private DocumentFooter footer;
 
-    // permet d'ajouter une marge à gauche des données. Peut être utile par exemple pour les plans de conteneur
-    // au format excel afin que la couleur soit bien visible pour les éléments de la 1ere colonne
-    private boolean withLeftMargin;
-
     public DocumentToGenerate(String documentName, DocumentContext context, DocumentData data, DocumentFooter footer) {
         this.documentName = documentName;
         this.context = context;
@@ -105,13 +101,5 @@ public class DocumentToGenerate {
 
     public void setFooter(DocumentFooter footer) {
         this.footer = footer;
-    }
-    
-    public boolean isWithLeftMargin(){
-       return withLeftMargin;
-    }
-
-    public void setWithLeftMargin(boolean withLeftMargin){
-       this.withLeftMargin = withLeftMargin;
     }
 }
