@@ -38,7 +38,6 @@ package fr.aphp.tumorotek.model.io.imports;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -48,8 +47,8 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.GenericGenerator;
 
@@ -71,9 +70,16 @@ import fr.aphp.tumorotek.model.systeme.Entite;
 @NamedQueries(value = {
    @NamedQuery(name = "ImportTemplate.findByBanqueWithOrder",
       query = "SELECT i FROM ImportTemplate i " + "WHERE i.banque = ?1 ORDER BY i.nom"),
+   @NamedQuery(name = "ImportTemplate.findTemplateByStatutPartageAndBanqueWithOrder",
+   query = "SELECT i FROM ImportTemplate i " + "WHERE i.statutPartageCode = ?1 and i.banque = ?2 ORDER BY i.nom"),
+   @NamedQuery(name = "ImportTemplate.findTemplateByStatutPartageAndArchiveAndPlateformeWithOrder",
+   query = "SELECT i FROM ImportTemplate i " + "WHERE i.statutPartageCode = ?1 and i.archive = ?2 and i.banque.plateforme = ?3 ORDER BY i.nom"),
+   @NamedQuery(name = "ImportTemplate.findTemplatePartageUtiliseByBanque",
+   query = "SELECT template FROM ImportTemplate template where template.banque.banqueId <> ?1 "
+            + "and template.importTemplateId in (select distinct importTemplateId from ImportHistorique WHERE importBanqueId = ?1)"),
    @NamedQuery(name = "ImportTemplate.findByExcludedId",
       query = "SELECT i FROM ImportTemplate i " + "WHERE i.importTemplateId != ?1")})
-public class ImportTemplate implements java.io.Serializable, TKdataObject
+public class ImportTemplate implements java.io.Serializable, TKdataObject, Comparable<ImportTemplate>
 {
 
    private static final long serialVersionUID = -319499964642320756L;
@@ -94,7 +100,13 @@ public class ImportTemplate implements java.io.Serializable, TKdataObject
 
    private Set<Entite> entites = new HashSet<>();
 
-   private Set<ImportHistorique> importHistoriques = new HashSet<>();
+   //TK-537 : un modèle d'import peut être partagé => l'historique sera lié à la collection d'exécution de l'import
+   //et non à la collection d'origine du modèle => on sort l'historique de l'objet. Il sera récupéré au besoin
+//   private Set<ImportHistorique> importHistoriques = new HashSet<>();
+   
+   private Boolean archive = false;
+   
+   private Integer statutPartageCode = EImportTemplateStatutPartage.JAMAIS_PARTAGE.getImportTemplateStatutPartageCode();
 
    public ImportTemplate(){
 
@@ -168,15 +180,6 @@ public class ImportTemplate implements java.io.Serializable, TKdataObject
       this.entites = e;
    }
 
-   @OneToMany(mappedBy = "importTemplate", cascade = CascadeType.REMOVE)
-   public Set<ImportHistorique> getImportHistoriques(){
-      return importHistoriques;
-   }
-
-   public void setImportHistoriques(final Set<ImportHistorique> historiques){
-      this.importHistoriques = historiques;
-   }
-
    @Column(name = "IS_UPDATE", nullable = false)
    public Boolean getIsUpdate(){
       return isUpdate;
@@ -186,6 +189,29 @@ public class ImportTemplate implements java.io.Serializable, TKdataObject
       this.isUpdate = isUpdate;
    }
 
+   @Column(name = "ARCHIVE", nullable = false)
+   public Boolean isArchive(){
+      return archive;
+   }
+
+   public void setArchive(Boolean archive){
+      this.archive = archive;
+   }
+
+   @Column(name = "STATUT_PARTAGE_CODE", nullable = false)
+   public Integer getStatutPartageCode(){
+      return statutPartageCode;
+   }
+
+   public void setStatutPartageCode(Integer statutPartageCode){
+      this.statutPartageCode = statutPartageCode;
+   }
+   
+   @Transient
+   public EImportTemplateStatutPartage getStatutPartage() {
+      return EImportTemplateStatutPartage.findByCode(statutPartageCode);
+   }   
+   
    /**
     * 2 templates sont considérées comme égales s'ils ont le même nom
     * et la même reference vers la banque.
@@ -240,9 +266,10 @@ public class ImportTemplate implements java.io.Serializable, TKdataObject
       clone.setDescription(this.description);
       clone.setIsEditable(this.isEditable);
       clone.setEntites(this.entites);
-      clone.setImportHistoriques(this.importHistoriques);
       clone.setDeriveParentEntite(this.getDeriveParentEntite());
       clone.setIsUpdate(getIsUpdate());
+      clone.setStatutPartageCode(statutPartageCode);
+      clone.setArchive(archive);
 
       return clone;
    }
@@ -262,5 +289,15 @@ public class ImportTemplate implements java.io.Serializable, TKdataObject
    @Override
    public Integer listableObjectId(){
       return this.importTemplateId;
+   }
+
+   @Transient
+   public boolean isPartage() {
+      return statutPartageCode == EImportTemplateStatutPartage.PARTAGE_ENCOURS.getImportTemplateStatutPartageCode();
+   }
+   
+   @Override
+   public int compareTo(ImportTemplate importTemplate){
+      return this.getNom().compareToIgnoreCase(importTemplate.getNom());
    }
 }

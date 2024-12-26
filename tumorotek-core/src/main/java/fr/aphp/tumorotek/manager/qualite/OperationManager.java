@@ -36,6 +36,7 @@
 package fr.aphp.tumorotek.manager.qualite;
 
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import fr.aphp.tumorotek.model.TKFantomableObject;
@@ -195,6 +196,15 @@ public interface OperationManager
     */
    List<Operation> findByObjetIdEntiteAndOpeTypeManager(Object obj, OperationType oType);
 
+   /**
+    * Recherche la date la plus récente pour une opération sur un objetId, entite et pour un operationType.
+    * @param objetId Integer.
+    * @param entiteId Integer.
+    * @param operationTypeId Integer.
+    * @return Calendar.
+    */
+   Date findMaxDateForObjetIdEntiteIdAndOperationTypeId(Integer objetId, Integer entiteId, Integer operationTypeId);
+   
    /**
     * Trouve une opération effectuée par un utilisateur pour un type
     * donnée. Utilise le positionnement dans la liste parmi les opérations

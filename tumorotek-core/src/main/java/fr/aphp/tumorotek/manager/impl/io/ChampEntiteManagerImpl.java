@@ -39,8 +39,11 @@ import java.lang.reflect.InvocationTargetException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.slf4j.Logger;
@@ -51,6 +54,10 @@ import fr.aphp.tumorotek.manager.exception.RequiredObjectIsNullException;
 import fr.aphp.tumorotek.manager.io.ChampEntiteManager;
 import fr.aphp.tumorotek.manager.io.export.AffichageManager;
 import fr.aphp.tumorotek.model.coeur.annotation.DataType;
+import fr.aphp.tumorotek.model.contexte.EChampSupprimePourSerologie;
+import fr.aphp.tumorotek.model.contexte.EContexte;
+import fr.aphp.tumorotek.model.contexte.gatsbi.Contexte;
+import fr.aphp.tumorotek.model.contexte.gatsbi.ContexteType;
 import fr.aphp.tumorotek.model.io.export.ChampEntite;
 import fr.aphp.tumorotek.model.systeme.Entite;
 import fr.aphp.tumorotek.model.systeme.Fichier;
@@ -130,14 +137,7 @@ public class ChampEntiteManagerImpl implements ChampEntiteManager
       return new ArrayList<>();
    }
 
-   @Override
-   public List<ChampEntite> findByEntiteAndImportManager(final Entite entite, final Boolean canImport){
-      if(entite != null && canImport != null){
-         return champEntiteDao.findByEntiteAndImport(entite, canImport);
-      }
-      return new ArrayList<>();
-   }
-
+   //@TODO : CHT - Ne semble pas / plus appelé... A SUPPRIMER avec la méthode du Dao et la requête...
    @Override
    public List<ChampEntite> findByEntiteAndImportManagerAndDatatype(final Entite entite, final Boolean canImport,
       final List<DataType> dataTypeList){
@@ -147,6 +147,7 @@ public class ChampEntiteManagerImpl implements ChampEntiteManager
       return new ArrayList<>();
    }
 
+   //@TODO : CHT - Ne semble pas / plus appelé... A SUPPRIMER avec la méthode du Dao et la requête...
    @Override
    public List<ChampEntite> findByEntiteAndImportManagerAndDatatype(final Entite entite, final Boolean canImport,
       final List<DataType> dataTypeList, final Boolean excludeIds){
@@ -164,16 +165,81 @@ public class ChampEntiteManagerImpl implements ChampEntiteManager
       }
       return champEntiteList;
    }
-
+   
    @Override
    public List<ChampEntite> findByEntiteImportAndIsNullableManager(final Entite entite, final Boolean canImport,
-      final Boolean isNullable){
-      if(entite != null && canImport != null && isNullable != null){
-         return champEntiteDao.findByEntiteImportObligatoire(entite, canImport, isNullable);
+      final Boolean isNullable, EContexte banqueContexte, Contexte gatsbiContexte){
+
+      List<ChampEntite> listChampEntite = new ArrayList<ChampEntite>();
+
+      if(gatsbiContexte == null) {//TK standard :
+         //Récupération des données de la base en fonction de isNullable
+         if(isNullable == null){
+            listChampEntite.addAll(champEntiteDao.findByEntiteAndImport(entite, canImport));
+         }
+         else {
+            listChampEntite.addAll(champEntiteDao.findByEntiteImportObligatoire(entite, canImport, isNullable));            
+         }
+         
+         //suppression de patient identifiant puisque contexte non Gatsbi
+         listChampEntite.removeIf(c -> c.getId().equals(272));
+         
+         //contexte sérologie :
+         if(banqueContexte != null && banqueContexte == EContexte.SEROLOGIE) {
+            // - suppression des champs non appropriés :
+            if(entite.getEntiteId() == 3) {
+               EChampSupprimePourSerologie[] tabEChampSupprimePourSerologie = EChampSupprimePourSerologie.values();
+               int nbChampsASupprimer = tabEChampSupprimePourSerologie.length;
+               for(int i=0; i<nbChampsASupprimer; i++) {
+                  listChampEntite.remove(new ChampEntite(entite, tabEChampSupprimePourSerologie[i].getNom(), null));
+               }
+            }
+            //NB : les champs spécifiques au contexte sérologie sont gérés comme des champs délégués et ne sont donc pas remontés
+            // par les requêtes ci-dessus faites uniquement sur la table CHAMP_ENTITE
+         }
       }
-      return new ArrayList<>();
+      else {//cas Gatsbi
+         listChampEntite.addAll(champEntiteDao.findByEntiteAndImport(entite, canImport));
+
+         // filtre les champs visibles suivant le contexte Gatsbi
+         List<Integer> hiddenIds = retrieveHiddenChampEntiteIdsForGatsbiContexte(gatsbiContexte);
+         listChampEntite.removeIf(chp -> hiddenIds.contains(chp.getId()));
+
+         filterNullableOrNotChampEntite(isNullable, gatsbiContexte, listChampEntite);
+      }
+
+      Collections.sort(listChampEntite, Comparator.comparing(ChampEntite::getId));
+
+      // ajout identifiant au début si il est présent
+      if (gatsbiContexte != null && gatsbiContexte.getContexteType().equals(ContexteType.PATIENT)) {
+         Optional<ChampEntite> patientIdentifiantChpOpt = 
+            listChampEntite.stream().filter(c -> c.getId().equals(272)).findFirst();
+         if (patientIdentifiantChpOpt.isPresent()) {
+            listChampEntite.remove(patientIdentifiantChpOpt.get());
+            listChampEntite.add(0, patientIdentifiantChpOpt.get());
+         }
+      }
+
+      return listChampEntite;
    }
 
+   @Override
+   public void filterNullableOrNotChampEntite(final Boolean isNullable, Contexte gatsbiContexte,
+      List<ChampEntite> listChampEntite){
+      if(isNullable != null){
+         // filtre les champs obligatoires suivant le contexte Gatsbi
+         // surcharge la propriété isNullable de manière non persistante
+         List<Integer> reqIds = retrieveRequiredChampEntiteIdsForGatsbiContexte(gatsbiContexte);
+         if(isNullable){ // champs non obligatoires
+            listChampEntite.removeIf(chp -> reqIds.contains(chp.getId()));
+            listChampEntite.stream().forEach(chp -> chp.setNullable(true));
+         }else{ // obligatoires
+            listChampEntite.removeIf(chp -> !reqIds.contains(chp.getId()));
+            listChampEntite.stream().forEach(chp -> chp.setNullable(false));
+         }
+      }
+   }
+   
    @Override
    public Object getValueForObjectManager(final ChampEntite champ, final Object obj, final boolean prettyFormat){
       Object res = null;
@@ -289,5 +355,87 @@ public class ChampEntiteManagerImpl implements ChampEntiteManager
       }
       return res;
    }
+
+   /**
+    * Récupére tous les ids des champs à ne pas afficher pour un contexte Gatsbi.
+    * Surcharge l'appel de contexte.getHiddenChampEntiteIds afin d'ajouter 
+    * des dépendances spécifiques par entité entre certains champs.
+    * @param contexte 
+    * @return liste ids
+    */
+   @Override
+   public List<Integer> retrieveHiddenChampEntiteIdsForGatsbiContexte(Contexte gatsbiContexte){
+      List<Integer> hiddenIds = new ArrayList<Integer>();
+      if(gatsbiContexte != null){
+         hiddenIds.addAll(gatsbiContexte.getHiddenChampEntiteIds());
+      }
+      
+      // correctif spécifique champs associés
+      addAssociatedChampEntite(gatsbiContexte, hiddenIds);
+
+      return hiddenIds;
+   }  
+   
+   /**
+    * Récupére tous les ids des champs obligatoires.
+    * @param contexte 
+    * @return liste ids
+    */
+   @Override
+   public List<Integer> retrieveRequiredChampEntiteIdsForGatsbiContexte(Contexte gatsbiContexte){
+      List<Integer> requiredIds = new ArrayList<Integer>();
+      if(gatsbiContexte != null){
+         requiredIds.addAll(gatsbiContexte.getRequiredChampEntiteIds());
+         // correctif spécifique champs associés
+         addAssociatedChampEntite(gatsbiContexte, requiredIds);
+      }
+
+      return requiredIds;
+   }
+
+   /**
+    * Ajoute les champs entites associés au comportement hidden/required 
+    * si nécessaire afin d'éviter toute incohérence
+    * @param c contexte
+    * @param hiddenIds
+    */
+   private void addAssociatedChampEntite(Contexte c, List<Integer> ids){
+      // prelevement: nonconfs
+      if (c.getContexteType().equals(ContexteType.PRELEVEMENT)) {
+         // ncfs arrive
+         if (ids.contains(256)) {
+            if (!ids.contains(257)) ids.add(257); // raisons   
+         } else {
+            ids.remove(Integer.valueOf(257));
+         }
+      }
+      
+      // echantillon: quantite et nonconfs
+      if (c.getContexteType().equals(ContexteType.ECHANTILLON)) {
+         // quantite
+         if (ids.contains(61)) {
+            if (!ids.contains(62)) ids.add(62); // quantite_init    
+            if (!ids.contains(63)) ids.add(63); // quantite_unite    
+         } else {
+            ids.remove(Integer.valueOf(62));
+            ids.remove(Integer.valueOf(63));
+         }
+         
+         // ncfs traitement
+         if (ids.contains(243)) {
+            if (!ids.contains(261)) ids.add(261); // raisons   
+         } else {
+            ids.remove(Integer.valueOf(261));
+         }
+         
+         // ncfs cession
+         if (ids.contains(244)) {
+            if (!ids.contains(262)) ids.add(262); // raisons   
+         } else {
+            ids.remove(Integer.valueOf(262));
+         }
+      }
+   }
+
 
 }

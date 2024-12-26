@@ -159,27 +159,6 @@ public class ImportHistoriqueManagerTest extends AbstractManagerTest4
    }
 
    /**
-    * Test la méthode findByTemplateWithOrderManager.
-    */
-   @Test
-   public void testFindByTemplateWithOrderManager(){
-      ImportTemplate it = importTemplateDao.findById(1);
-      List<ImportHistorique> list = importHistoriqueManager.findByTemplateWithOrderManager(it);
-      assertTrue(list.size() == 2);
-
-      it = importTemplateDao.findById(2);
-      list = importHistoriqueManager.findByTemplateWithOrderManager(it);
-      assertTrue(list.size() == 1);
-
-      it = importTemplateDao.findById(3);
-      list = importHistoriqueManager.findByTemplateWithOrderManager(it);
-      assertTrue(list.size() == 0);
-
-      list = importHistoriqueManager.findByTemplateWithOrderManager(null);
-      assertTrue(list.size() == 0);
-   }
-
-   /**
     * Test la méthode findImportationsByHistoriqueManager.
     */
    @Test
@@ -288,14 +267,14 @@ public class ImportHistoriqueManagerTest extends AbstractManagerTest4
       final Entite e3 = entiteDao.findById(3);
 
       final ImportHistorique ih1 = new ImportHistorique();
-      ih1.setImportTemplate(it1);
+      ih1.setImportTemplateId(it1.getImportTemplateId());
       ih1.setUtilisateur(u);
       ih1.setDate(cal);
 
       Boolean catched = false;
       // on test l'insertion avec le template null
       try{
-         importHistoriqueManager.createObjectManager(ih1, null, u, null);
+         importHistoriqueManager.createObjectManager(ih1, u, null);
       }catch(final Exception e){
          if(e.getClass().getSimpleName().equals("RequiredObjectIsNullException")){
             catched = true;
@@ -307,7 +286,7 @@ public class ImportHistoriqueManagerTest extends AbstractManagerTest4
 
       // on test l'insertion avec l'utilisateur null
       try{
-         importHistoriqueManager.createObjectManager(ih1, it1, null, null);
+         importHistoriqueManager.createObjectManager(ih1, null, null);
       }catch(final Exception e){
          if(e.getClass().getSimpleName().equals("RequiredObjectIsNullException")){
             catched = true;
@@ -318,7 +297,7 @@ public class ImportHistoriqueManagerTest extends AbstractManagerTest4
       assertTrue(importHistoriqueManager.findAllObjectsManager().size() == 3);
 
       // insertion valide avec les assos à null
-      importHistoriqueManager.createObjectManager(ih1, it1, u, null);
+      importHistoriqueManager.createObjectManager(ih1, u, null);
       assertTrue(importHistoriqueManager.findAllObjectsManager().size() == 4);
       assertTrue(importationDao.findAll().size() == 2);
       final Integer idH1 = ih1.getImportHistoriqueId();
@@ -327,13 +306,13 @@ public class ImportHistoriqueManagerTest extends AbstractManagerTest4
       final ImportHistorique ihTest = importHistoriqueManager.findByIdManager(idH1);
       assertNotNull(ihTest);
       assertNotNull(ihTest.getDate());
-      assertNotNull(ihTest.getImportTemplate());
+      assertNotNull(ihTest.getImportTemplateId());
       assertNotNull(ihTest.getUtilisateur());
       assertTrue(importHistoriqueManager.findImportationsByHistoriqueManager(ihTest).size() == 0);
 
       // insertion valide avec les assos
       final ImportHistorique ih2 = new ImportHistorique();
-      ih2.setImportTemplate(it1);
+      ih2.setImportTemplateId(it1.getImportTemplateId());
       ih2.setUtilisateur(u);
       final Calendar cal2 = Calendar.getInstance();
       cal2.add(Calendar.MONTH, 2);
@@ -351,7 +330,7 @@ public class ImportHistoriqueManagerTest extends AbstractManagerTest4
       importations.add(i1);
       importations.add(i2);
 
-      importHistoriqueManager.createObjectManager(ih2, it1, u, importations);
+      importHistoriqueManager.createObjectManager(ih2, u, importations);
       assertTrue(importHistoriqueManager.findAllObjectsManager().size() == 5);
       assertTrue(importationDao.findAll().size() == 4);
       final Integer idH2 = ih2.getImportHistoriqueId();
@@ -360,7 +339,7 @@ public class ImportHistoriqueManagerTest extends AbstractManagerTest4
       final ImportHistorique ihTest2 = importHistoriqueManager.findByIdManager(idH2);
       assertNotNull(ihTest2);
       assertNotNull(ihTest2.getDate());
-      assertNotNull(ihTest2.getImportTemplate());
+      assertNotNull(ihTest2.getImportTemplateId());
       assertNotNull(ihTest2.getUtilisateur());
       assertTrue(importHistoriqueManager.findImportationsByHistoriqueManager(ihTest2).size() == 2);
 
@@ -401,7 +380,7 @@ public class ImportHistoriqueManagerTest extends AbstractManagerTest4
       final ProdType pType = prodTypeDao.findById(1);
 
       final ImportHistorique ih1 = new ImportHistorique();
-      ih1.setImportTemplate(it1);
+      ih1.setImportTemplateId(it1.getImportTemplateId());
       ih1.setUtilisateur(u);
       ih1.setDate(cal);
 
@@ -459,7 +438,7 @@ public class ImportHistoriqueManagerTest extends AbstractManagerTest4
       importations.add(i4);
 
       // Historique
-      importHistoriqueManager.createObjectManager(ih1, it1, u, importations);
+      importHistoriqueManager.createObjectManager(ih1, u, importations);
       assertEquals(6, importationDao.findAll().size());
 
       // Suppression

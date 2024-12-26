@@ -39,9 +39,12 @@ import java.util.List;
 import java.util.Set;
 
 import fr.aphp.tumorotek.model.contexte.Banque;
+import fr.aphp.tumorotek.model.contexte.Plateforme;
+import fr.aphp.tumorotek.model.io.imports.EImportTemplateStatutPartage;
 import fr.aphp.tumorotek.model.io.imports.ImportColonne;
 import fr.aphp.tumorotek.model.io.imports.ImportTemplate;
 import fr.aphp.tumorotek.model.systeme.Entite;
+import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
 
 /**
  *
@@ -75,6 +78,57 @@ public interface ImportTemplateManager
     */
    List<ImportTemplate> findByBanqueManager(Banque banque);
 
+   //TK-537
+   /**
+    * récupère la liste des modèles d'imports créés par la banque en paramètre (utilisés ou non) ainsi que ceux partagés 
+    * par les autres collections et utilisés par cette banque (au moins un import a été fait sur ceux-ci)
+    * @param banque
+    * @return liste de modèles
+    */
+   List<ImportTemplate> findImportTemplateCreatedOrUsedByBanqueWithOrder(Banque banque);
+   
+   //TK-537
+   /**
+    * récupère la liste des modèles au statut de partage passé en paramètre pour une banque donnée
+    * La liste est triée par nom des modèles 
+    * @param eImportTemplateStatutPartage
+    * @param banque
+    * @return
+    */
+   List<ImportTemplate> findTemplateByStatutPartageAndBanqueWithOrder(EImportTemplateStatutPartage eImportTemplateStatutPartage,
+      Banque banque);
+
+   //TK-537
+   /**
+    * récupère la liste des modèles d'import non archivés pour un statut partagé donné pour toutes les collections d'une plateforme donnée
+    * La liste est triée par nom des modèles 
+    * @param eImportTemplateStatutPartage
+    * @param plateforme
+    * @return
+    */
+   List<ImportTemplate> findTemplateNotArchiveByStatutPartageAndPlateformeWithOrder(EImportTemplateStatutPartage eImportTemplateStatutPartage,
+      Plateforme plateforme);
+
+   /**
+    * met à jour le champ statutPartage d'un modèle d'import donné avec la valeur passée en paramètre. 
+    * La mise à jour est tracée avec l'utilisateur passé en paramètre
+    * @param importTemplateId
+    * @param newValue
+    * @param loggedUser
+    * @throws IllegalArgumentException
+    */
+   void updateStatutPartage(Integer importTemplateId, EImportTemplateStatutPartage newValue, Utilisateur loggedUser) throws IllegalArgumentException;
+   
+   /**
+    * met à jour le champ archive d'un modèle d'import donné avec la valeur passée en paramètre. 
+    * La mise à jour est tracée avec l'utilisateur passé en paramètre
+    * @param importTemplateId
+    * @param newValue
+    * @param loggedUser
+    */
+   void updateArchive(Integer importTemplateId, Boolean newValue, Utilisateur loggedUser);
+   //fin TK-537
+   
    /**
     * Renvoie les entités d'un ImportTemplate.
     * @param importTemplate ImportTemplate
@@ -98,7 +152,7 @@ public interface ImportTemplateManager
     * @param colonnes Liste d'ImportColonnes.
     */
    void createObjectManager(ImportTemplate importTemplate, Banque banque, List<Entite> entites,
-      List<ImportColonne> colonnesToCreate);
+      List<ImportColonne> colonnesToCreate, Utilisateur loggedUser);
 
    /**
     * Persist une instance d'ImportTemplate dans la base de données.
@@ -108,12 +162,18 @@ public interface ImportTemplateManager
     * @param colonnes Liste d'ImportColonnes.
     */
    void updateObjectManager(ImportTemplate importTemplate, Banque banque, List<Entite> entites,
-      List<ImportColonne> colonnesToCreate, List<ImportColonne> colonnesToremove);
+      List<ImportColonne> colonnesToCreate, List<ImportColonne> colonnesToremove, Utilisateur loggedUser);
 
    /**
     * Supprime un ImportTemplate de la base de données.
     * @param importTemplate Template à supprimer de la base de données.
     */
    void removeObjectManager(ImportTemplate importTemplate);
+   
+   /**
+    * @param importTemplate modèle considéré
+    * @return  true si le mdodèle passé en paramètre a été modifié après la dernière exécution
+    */
+   boolean hasBeenModifiedAfterLastExecution(ImportTemplate importTemplate, Banque utilisateurBanque);
 
 }

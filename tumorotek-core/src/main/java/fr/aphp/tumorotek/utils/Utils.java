@@ -42,9 +42,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
+
+import org.apache.commons.collections.map.HashedMap;
 
 import fr.aphp.tumorotek.model.coeur.annotation.ChampAnnotation;
 import fr.aphp.tumorotek.model.contexte.Banque;
@@ -424,4 +429,37 @@ public final class Utils
        return resultat;
    }      
    
+   /**
+    * dans une map dont les valeurs sont des listes, ajoute une valeur à la liste correspondant à la clé passée en paramètre
+    */
+   public static <K, T> void addElementToListMapForThisKey(Map<K, List<T>> map, K key, T elementToAdded) {
+      if(key != null) {
+         if(map == null) {
+            map = new HashMap<K, List<T>>();
+         }
+         List<T> listForAdd = map.get(key);
+         if(listForAdd == null) {
+            listForAdd = new ArrayList<T>();
+            map.put(key, listForAdd);
+         }
+         listForAdd.add(elementToAdded);
+      }
+   }
+   
+   /**
+    * retourne une liste aggrégeant toutes les listes contenues dans une map
+    * @param <K>
+    * @param <T>
+    * @param map
+    * @return
+    */
+   public static <K, T> List<T> addAllMapValues(Map<K, List<T>> map) {
+      List<T> listResult = new ArrayList<T>();
+      Iterator<List<T>> iterator = map.values().iterator();
+      while (iterator.hasNext()) {
+         listResult.addAll(iterator.next());
+      }
+      
+      return listResult;
+   }
 }

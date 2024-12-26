@@ -53,14 +53,15 @@ import fr.aphp.tumorotek.model.io.imports.ImportTemplate;
  */
 public interface ImportHistoriqueDao extends GenericDaoJpa<ImportHistorique, Integer>
 {
-
+   
+   //TK-537
    /**
-    * Recherche les ImportHistoriques d'un ImportTemplate ordonnés par date.
-    * Ordre descendant.
-    * @param importTemplate ImportTemplate.
-    * @return Liste d'ImportHistoriques.
+    * recherche tous le ImportHistoriques associés à un modèle et exécutés par une banque donnée
+    * @param templateId : l'id du modèle dont on recherche les historiques
+    * @param importBanqueId : l'id de la banque d'exécution pour laquelle on recherche les historiques d'un modèle
+    * @return Liste de ImportHistoriques.
     */
-   List<ImportHistorique> findByTemplateWithOrder(ImportTemplate importTemplate);
+   List<ImportHistorique> findByTemplateIdAndImportBanqueIdWithOrder(Integer importTemplateId, Integer importBanqueId);
 
    /**
     * Recherche les ImportHistoriques dont l'id est différent de celui

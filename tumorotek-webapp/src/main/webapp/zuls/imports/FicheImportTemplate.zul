@@ -43,6 +43,33 @@
 					<column/>
 				</columns>
 				<rows>
+				<!-- *********************** Messages d'alerte ***********************  -->
+										<!-- Alerte Archivé -->
+					<row spans="2" id="rowAlerteArchive" align="center" 
+						visible="@{fwinImportTemplate$composer.importTemplateDecorator.archive}" >
+						<div>
+							<label value="${c:l('importTemplate.alerte.modeleArchive')}" sclass="formErrorValue"	/>
+						</div>
+					</row>
+					<row spans="2" id="rowModifiedAfterLastExecution" align="center" visible="false" >
+							<label value="${c:l('importTemplate.alerte.modeleModifie')}" sclass="formErrorValue"	/>
+					</row>
+										<!-- Alerte  exécution impossible -->
+					<row spans="2" id="rowAlerteExecution" align="center" visible="false">
+						<vbox>
+							<div align="center">
+								<label id="labelAlerteExecutionError" sclass="formErrorValue"	/>
+							</div>						
+							<div align="center">
+								<label id="labelAlerteExecutionDetailChamp"	sclass="formErrorValue"/>
+							</div>						
+							<div align="center">
+								<label id="labelAlerteExecutionToDo" sclass="formErrorValue" />
+							</div>				
+						</vbox>
+
+					</row>
+				<!-- *********************** Fin des messages d'alerte ***********************  -->					
 					<!-- NOM -->
 					<row>
 						<hbox>
@@ -51,14 +78,15 @@
 							<label id="nomRequired" value="*" sclass="requiredMark"
 												 visible="false"/>
 						</hbox>
+						<hbox>
 						<div>
 							<label id="nomLabel" 
-								value="@{fwinImportTemplate$composer.importTemplate.nom}" 
+								value="@{fwinImportTemplate$composer.importTemplateDecorator.nom}" 
 								sclass="formValue" 
 							/>
 							
 							<textbox id="nomBox" 
-								value="@{fwinImportTemplate$composer.importTemplate.nom,
+								value="@{fwinImportTemplate$composer.importTemplateDecorator.nom,
 			        				save-when='validateC.onClick, createC.onClick'
 			        				load-after='editC.onClick, createC.onClick'}" 
 								width="250px" 
@@ -66,19 +94,26 @@
 								visible="false"
 							/>
 						</div>
+						<separator width="5px"/>
+						<div id="iconePartage" 
+							sclass="@{fwinImportTemplate$composer.importTemplateDecorator.classForIconePartage}"
+							tooltiptext="@{fwinImportTemplate$composer.importTemplateDecorator.tooltiptextForIconePartage}"
+							visible="@{fwinImportTemplate$composer.importTemplateDecorator.partage}">
+						</div>
+						</hbox> 
 					</row>
-					<!-- Modification -->
+					<!-- Modification !!!! à supprimer !
+					
 					<row visible="false">
 						<div />
-						<!-- visible="@{fwinImportTemplate$composer.nonSubderive}"> -->
 						<hlayout>
 							<checkbox id="updateTemplateCheckbox" visible="false"
-								checked="@{fwinImportTemplate$composer.importTemplate.isUpdate}"/>
+								checked="@{fwinImportTemplate$composer.importTemplateDecorator.importTemplate.isUpdate}"/>
 							<label id="updateTemplateLabel" sclass="formValueItalics" 
 								value="${c:l('importTemplate.is.update')}" 
 								visible="@{fwinImportTemplate$composer.updateTemplateLabelVisible}" />
 						</hlayout>
-					</row>
+					</row>-->
 					<!-- Subderive -->
 					<row visible="@{fwinImportTemplate$composer.subderive}">
 						<label value="${c:l('importTemplate.subderive.entite.parent')}" 
@@ -90,7 +125,7 @@
 												load-after='editC.onClick, addNewC.onClick'}"
 								visible="false"
 								itemRenderer="${fwinImportTemplate$composer.entiteRenderer}"
-								selectedItem="@{fwinImportTemplate$composer.importTemplate.deriveParentEntite}">
+								selectedItem="@{fwinImportTemplate$composer.importTemplateDecorator.deriveParentEntite}">
 								<listitem self="@{each='entite'}" value="entite" />
 							</listbox>
 							<label id="subderiveParentLabel" sclass="formValue" 
@@ -102,7 +137,7 @@
 						<label value="${c:l('importTemplate.banque')}" 
 							sclass="formLabel"/>
 						<label id="banqueLabel" 
-							value="@{fwinImportTemplate$composer.importTemplate.banque.nom}" 
+							value="@{fwinImportTemplate$composer.importTemplateDecorator.banque.nom}" 
 							sclass="formValue" 
 						/>
 					</row>
@@ -114,12 +149,12 @@
 						</hbox>
 						<div>
 							<label id="descriptionLabel" 
-								value="@{fwinImportTemplate$composer.importTemplate.description}" 
+								value="@{fwinImportTemplate$composer.importTemplateDecorator.description}" 
 								sclass="formValue" 
 							/>
 							
 							<textbox id="descriptionBox" 
-								value="@{fwinImportTemplate$composer.importTemplate.description,
+								value="@{fwinImportTemplate$composer.importTemplateDecorator.description,
 			        				save-when='validateC.onClick, createC.onClick'
 			        				load-after='editC.onClick, createC.onClick'}" 
 								width="400px"
@@ -283,10 +318,20 @@
 		</panelchildren>
 		<toolbar height="30px" id="toolbarEchan" align="end">
 			<hbox spacing="5" align="center">
-				<button id="importer" label="${c:l('importTemplate.execute.import')}" height="24px" visible="true"
-					image="/images/icones/fileimport.png" sclass="buttonv2"/>
-				<button id="exporterHeader" label="${c:l('importTemplate.export.header')}" height="24px" visible="true"
-					image="/images/icones/export.png" sclass="buttonv2"/>
+				<menubar sclass="menuBarV2" id="menuBarActions">
+					<menu label="${c:l('general.actions')}" image="/images/icones/small_action.png" width="36px" height="24px">
+						<menupopup>
+							<menuitem id="menuImporter" image="/images/icones/fileimport.png" label="${c:l('importTemplate.execute.import')}" />
+							<menuitem id="menuExporterHeader" image="/images/icones/export.png" label="${c:l('importTemplate.export.header')}" />
+							<menuitem id="menuAddNewFrom" image="/images/icones/new.png" label="${c:l('importTemplate.new.from')}" />
+							<menuitem id="menuPartager" image="/images/icones/small_action.png" label="${c:l('importTemplate.partager.template')}" />
+							<menuitem id="menuSupprimerPartage" image="/images/icones/small_action.png" label="${c:l('importTemplate.supprimer.partage')}" />
+							<menuitem id="menuArchiver" image="/images/icones/small_action.png" label="${c:l('general.archive')}" />
+							<menuitem id="menuReactiver" image="/images/icones/small_action.png" label="${c:l('general.reactivate')}" />
+							<menuitem id="historique" image="/images/icones/history.png" label="${c:l('general.historique')}" />
+						</menupopup>
+					</menu>
+				</menubar>			
 				<button id="addNewC" label="${c:l('general.new')}" height="24px" visible="true"
 					image="/images/icones/new.png" sclass="buttonv2"/>
 				<button id="addNewSubderiveC" label="${c:l('importTemplate.new.subderive')}" height="24px" visible="true"
@@ -303,8 +348,6 @@
 					image="/images/icones/save.png" sclass="buttonv2"/>
 				<button id="cancelC" label="${c:l('general.cancel')}" height="24px" visible="false"
 					image="/images/icones/cancel.png" sclass="buttonv2"/>
-					<menubar sclass="menuBarV2" id="menuBarEchantillons">
-			</menubar>
 			</hbox>
 		</toolbar>
 	</panel>

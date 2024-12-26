@@ -54,6 +54,7 @@ import fr.aphp.tumorotek.model.contexte.Collaborateur;
 import fr.aphp.tumorotek.model.contexte.Etablissement;
 import fr.aphp.tumorotek.model.contexte.Service;
 import fr.aphp.tumorotek.model.contexte.Transporteur;
+import fr.aphp.tumorotek.model.io.imports.ImportTemplate;
 import fr.aphp.tumorotek.model.qualite.Fantome;
 import fr.aphp.tumorotek.model.qualite.Operation;
 import fr.aphp.tumorotek.model.stockage.Conteneur;
@@ -169,6 +170,9 @@ public class HistoriqueRenderer implements RowRenderer<Operation>
                collection = ((Banque) obj).getNom();
             }else if(op.getEntite().getNom().equals("TableAnnotation")){
                identifiant = ((TableAnnotation) obj).getNom();
+            }else if(op.getEntite().getNom().equals("ImportTemplate")){
+               identifiant = ((ImportTemplate) obj).getNom();
+               collection = ((ImportTemplate) obj).getBanque().getNom();
             }
          }
       }else if(op.getIdentificationDossier() != null){

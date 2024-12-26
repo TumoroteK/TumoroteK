@@ -1,6 +1,7 @@
 /**
- * Copyright ou © ou Copr. Ministère de la santé, FRANCE (01/01/2011)
- * dsi-projet.tk@aphp.fr
+ * Copyright ou © ou Copr. Assistance Publique des Hôpitaux de
+ * PARIS et SESAN
+ * projet-tk@sesan.fr
  *
  * Ce logiciel est un programme informatique servant à la gestion de
  * l'activité de biobanques.
@@ -33,58 +34,85 @@
  * avez pris connaissance de la licence CeCILL, et que vous en avez
  * accepté les termes.
  **/
-package fr.aphp.tumorotek.dao;
+package fr.aphp.tumorotek.model.systeme;
 
-import java.io.Serializable;
-import java.util.List;
-
-/**
- *
- * Interface du Generic DAO.
- * @param <T> est la classe de l'objet.
- * @param <PK> est sa clé primaire.
- *
- * @author Pierre Ventadour
- * @version 09/09/2009
- *
- */
-public interface GenericDaoJpa<T, PK extends Serializable>
+public enum EEntiteId
 {
+   PATIENT(1),    
+   PRELEVEMENT(2),      
+   ECHANTILLON(3),      
+   STOCKAGE(4),      
+   CESSION(5),
+   ADMINISTRATION(6),
+   MALADIE(7),
+   PROD_DERIVE(8),
+   BOITE(9),
+   CONTENEUR(10),
+   INDICATEUR(11),
+   CONFORMITE(12),
+   UTILISATEUR(13),
+   PROFIL(14),
+   ANNOTATION(15),
+   CODE_ASSIGNE(16),
+   PROTOCOLE(17),
+   CONTRAT(18),
+   RETOUR(19),
+   MODELE(20),
+   INCIDENT(21),
+   REQUETE(22),
+   FILTRE_IMPORT(23),
+   AFFICHAGE_SYNTH(24),
+   ETABLISSEMENT(25),
+   SERVICE(26),
+   COLLABORATEUR(27),
+   TRANSPORTEUR(28),
+   TABLE_ANNOTATION(29),
+   CHAMP_ANNOTATION(30),
+   ANNOTATION_VALEUR(31),
+   CODE_SELECT(32),
+   CODE_UTILISATEUR(33),
+   BANQUE(34),
+   NATURE(35),
+   CONSENT_TYPE(36),
+   PRELEVEMENT_TYPE(37),
+   CONDIT_MILIEU(38),
+   UNITE(39),
+   OBJET_STATUT(40),
+   CODE_ORGANE(41),
+   ECHAN_QUALITE(42),
+   MODE_PREPA(43),
+   RESERVATION(44),
+   PROD_TYPE(45),
+   PROD_QUALITE(46),
+   CONDIT_TYPE(47),
+   CESSION_TYPE(48),
+   CESSION_EXAMEN(49),
+   CESSION_STATUT(50),
+   DESTRUCTION_MOTIF(51),
+   ECHANTILLON_TYPE(52),
+   CODE_DOSSIER(53),
+   CODE_MORPHO(54),
+   PATIENT_MEDECIN(55),
+   TERMINALE(56),
+   ENCEINTE(57),
+   FANTOME(58),
+   MODE_PREPA_DERIVE(59),
+   TRANSFORMATION(60),
+   PLATEFORME(61),
+   RISQUE(62),
+   NON_CONFORMITE(63),
+   CONFORMITE_TYPE(64),
+   DIAGNOSTIC(65),
+   IMPORT_TEMPLATE(66);
+     
+   private EEntiteId(Integer id) {
+      this.id = id;
+   }
+      
+   private Integer id;
 
-   /**
-    * Persist une instance d'objet dans la base de données.
-    * @param newInstance est  une instance de l'objet à créer.
-    */
-   void createObject(T newInstance);
-
-   T mergeObject(T o);
-
-   /**
-    *   Retrouve un objet qui était persistant dans la base de données en
-    *   utilisant sa clé primaire.
-    *   @param id est la clé primaire de l'objet.
-    *   @return l'objet ou null si aucun trouvé.
-    */
-   T findById(PK id);
-
-   /**
-    * Renvoie tous les objets d'une certaine table présents dans la base
-    * de données.
-    * @return tous les objets d'une table.
-    */
-   List<T> findAll();
-
-   /**
-    * Sauvegarde les modifications apportées à un objet persistant.
-    * @param transientObject est l'objet à mettre à jour dans la base
-    * de données.
-    */
-   void updateObject(T transientObject);
-
-   /**
-    * Supprime un objet de la base de données.
-    * @param id est la clé primaire de l'objet à surrpimer.
-    */
-   void removeObject(PK id);
+   public Integer getId(){
+      return id;
+   }
 
 }

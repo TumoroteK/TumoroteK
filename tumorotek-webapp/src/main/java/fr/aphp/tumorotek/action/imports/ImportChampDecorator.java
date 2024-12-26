@@ -46,6 +46,8 @@ import fr.aphp.tumorotek.model.io.export.ChampDelegue;
 import fr.aphp.tumorotek.model.io.export.ChampEntite;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
+//Decorator utilisé pour afficher les objet Champ dans la liste déroulante "Champ à importer" sur le modèle d'import 
+//en création ou modification 
 public class ImportChampDecorator
 {
 
@@ -99,8 +101,8 @@ public class ImportChampDecorator
    }
 
    /**
-    * Decore une liste de cederobjets.
-    * @param cederobjets
+    * Decore une liste de champs.
+    * @param objets
     * @return CederObjets décorées.
     */
    public static List<ImportChampDecorator> decorateListe(final List<Champ> objets){
@@ -113,13 +115,13 @@ public class ImportChampDecorator
    }
 
    /**
-    * Extrait les CederObjets d'une liste de Decorator.
-    * @param CederObjets
-    * @return CederObjets décorés.
+    * Extrait les Champ d'une liste de Decorator.
+    * @param objets
+    * @return objets décorés.
     */
-   public static List<Champ> extractListe(final List<ImportChampDecorator> cedes){
+   public static List<Champ> extractListe(final List<ImportChampDecorator> objets){
       final List<Champ> liste = new ArrayList<>();
-      final Iterator<ImportChampDecorator> it = cedes.iterator();
+      final Iterator<ImportChampDecorator> it = objets.iterator();
 
       while(it.hasNext()){
          liste.add(it.next().getChamp());

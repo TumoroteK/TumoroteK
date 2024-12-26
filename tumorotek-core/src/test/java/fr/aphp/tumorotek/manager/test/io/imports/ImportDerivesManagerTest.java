@@ -224,7 +224,7 @@ public class ImportDerivesManagerTest extends AbstractManagerTest4
 
       // restaure le statut du template
       template.setIsUpdate(true);
-      importTemplateManager.updateObjectManager(template, template.getBanque(), null, null, null);
+      importTemplateManager.updateObjectManager(template, template.getBanque(), null, null, null, u);
 
       // Removes
       importHistoriqueManager.removeObjectManager(ih);
@@ -1521,6 +1521,8 @@ public class ImportDerivesManagerTest extends AbstractManagerTest4
       // creation du filtre
       final ImportTemplate itDerive = new ImportTemplate();
       itDerive.setNom("Import SubDerive");
+      
+      final Utilisateur loggedUser = utilisateurDao.findById(1);
 
       // itDerive.setDeriveParentEntite(entiteDao.findByNom("ProdDerive").get(0));
       final List<Entite> entites = new ArrayList<>();
@@ -1606,7 +1608,7 @@ public class ImportDerivesManagerTest extends AbstractManagerTest4
          importTemplateManager.removeObjectManager(toDelete);
       }
 
-      importTemplateManager.createObjectManager(itDerive, b, entites, colonnes);
+      importTemplateManager.createObjectManager(itDerive, b, entites, colonnes, loggedUser);
       final Integer idT2 = itDerive.getImportTemplateId();
       // Vérification de la creation du filtre
       final ImportTemplate itTest2 = importTemplateManager.findByIdManager(idT2);

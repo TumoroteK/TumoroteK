@@ -36,28 +36,46 @@
 package fr.aphp.tumorotek.manager.impl.io.imports;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import javax.persistence.EntityManager;
+
+import org.hibernate.SQLQuery;
+import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.validation.Validator;
 
 import fr.aphp.tumorotek.dao.contexte.BanqueDao;
 import fr.aphp.tumorotek.dao.io.imports.ImportTemplateDao;
+import fr.aphp.tumorotek.dao.qualite.OperationDao;
+import fr.aphp.tumorotek.dao.qualite.OperationTypeDao;
 import fr.aphp.tumorotek.dao.systeme.EntiteDao;
 import fr.aphp.tumorotek.manager.exception.DoublonFoundException;
 import fr.aphp.tumorotek.manager.exception.RequiredObjectIsNullException;
+import fr.aphp.tumorotek.manager.impl.coeur.CreateOrUpdateUtilities;
 import fr.aphp.tumorotek.manager.io.imports.ImportColonneManager;
+import fr.aphp.tumorotek.manager.io.imports.ImportHistoriqueManager;
 import fr.aphp.tumorotek.manager.io.imports.ImportTemplateManager;
+import fr.aphp.tumorotek.manager.qualite.OperationManager;
 import fr.aphp.tumorotek.manager.validation.BeanValidator;
 import fr.aphp.tumorotek.manager.validation.io.imports.ImportTemplateValidator;
 import fr.aphp.tumorotek.model.contexte.Banque;
+import fr.aphp.tumorotek.model.contexte.Plateforme;
+import fr.aphp.tumorotek.model.io.imports.EImportTemplateStatutPartage;
 import fr.aphp.tumorotek.model.io.imports.ImportColonne;
 import fr.aphp.tumorotek.model.io.imports.ImportTemplate;
+import fr.aphp.tumorotek.model.qualite.EOperationTypeId;
+import fr.aphp.tumorotek.model.qualite.Operation;
+import fr.aphp.tumorotek.model.systeme.EEntiteId;
 import fr.aphp.tumorotek.model.systeme.Entite;
+import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
+import fr.aphp.tumorotek.utils.Utils;
 
 public class ImportTemplateManagerImpl implements ImportTemplateManager
 {
@@ -76,6 +94,13 @@ public class ImportTemplateManagerImpl implements ImportTemplateManager
    private ImportTemplateValidator importTemplateValidator;
 
    private ImportColonneManager importColonneManager;
+   
+   private OperationManager operationManager;
+   
+   private OperationTypeDao operationTypeDao;
+   
+   private ImportHistoriqueManager importHistoriqueManager;
+      
 
    public void setImportTemplateDao(final ImportTemplateDao iDao){
       this.importTemplateDao = iDao;
@@ -97,6 +122,18 @@ public class ImportTemplateManagerImpl implements ImportTemplateManager
       this.importColonneManager = iManager;
    }
 
+   public void setOperationManager(OperationManager operationManager){
+      this.operationManager = operationManager;
+   }
+
+   public void setOperationTypeDao(OperationTypeDao operationTypeDao){
+      this.operationTypeDao = operationTypeDao;
+   }
+
+   public void setImportHistoriqueManager(ImportHistoriqueManager importHistoriqueManager){
+      this.importHistoriqueManager = importHistoriqueManager;
+   }
+   
    @Override
    public ImportTemplate findByIdManager(final Integer importTemplateId){
       return importTemplateDao.findById(importTemplateId);
@@ -117,7 +154,47 @@ public class ImportTemplateManagerImpl implements ImportTemplateManager
          return new ArrayList<>();
       }
    }
-
+   
+   //TK-537
+   @Override
+   public List<ImportTemplate> findTemplateByStatutPartageAndBanqueWithOrder(EImportTemplateStatutPartage eImportTemplateStatutPartage,
+          Banque banque) {
+      log.debug("Recherche de tous les ImportTemplates de la banque {} qui sont partagés.", banque.getNom());
+      if(banque != null){
+         return importTemplateDao.findTemplateByStatutPartageAndBanqueWithOrder(eImportTemplateStatutPartage.getImportTemplateStatutPartageCode(), banque);
+      }else{
+         return new ArrayList<>();
+      }      
+   }
+   
+   @Override
+   public List<ImportTemplate> findImportTemplateCreatedOrUsedByBanqueWithOrder(Banque banque) {
+      if(banque != null){
+         log.debug("Recherche de tous les ImportTemplates créés par la banque {} ou partagés et utilisés pour cette banque.", banque.getNom());
+         List<ImportTemplate> resultat = new ArrayList<ImportTemplate>();
+         List<ImportTemplate> banqueTemplates = findByBanqueManager(banque);///!\ dans dao : order qu'on peut supprimer
+         resultat.addAll(banqueTemplates);
+         List<ImportTemplate> otherUsedTemplates = importTemplateDao.findTemplatePartageUtiliseByBanque(banque.getBanqueId());
+         resultat.addAll(otherUsedTemplates);
+         Collections.sort(resultat);
+         return resultat;
+      }else{
+         return new ArrayList<>();
+      }      
+   }
+   
+   @Override
+   public List<ImportTemplate> findTemplateNotArchiveByStatutPartageAndPlateformeWithOrder(EImportTemplateStatutPartage eImportTemplateStatutPartage,
+          Plateforme plateforme) {
+      if(plateforme != null){
+         log.debug("Recherche de tous les ImportTemplates partagés sur la plateforme {}.", plateforme.getNom());
+         return importTemplateDao.findTemplateByStatutPartageAndArchiveAndPlateformeWithOrder(eImportTemplateStatutPartage.getImportTemplateStatutPartageCode(), false, plateforme);
+      }else{
+         return new ArrayList<>();
+      }      
+   }
+   //
+   
    @Override
    public Set<Entite> getEntiteManager(ImportTemplate importTemplate){
       if(importTemplate != null && importTemplate.getImportTemplateId() != null){
@@ -145,7 +222,7 @@ public class ImportTemplateManagerImpl implements ImportTemplateManager
 
    @Override
    public void createObjectManager(final ImportTemplate importTemplate, final Banque banque, final List<Entite> entites,
-      final List<ImportColonne> colonnesToCreate){
+      final List<ImportColonne> colonnesToCreate, Utilisateur loggedUser){
       // banque required
       if(banque != null){
          importTemplate.setBanque(banqueDao.mergeObject(banque));
@@ -178,6 +255,14 @@ public class ImportTemplateManagerImpl implements ImportTemplateManager
          updateAssociations(importTemplate, entites, colonnesToCreate, null);
 
          log.info("Enregistrement objet ImportTemplate {}",  importTemplate);
+         
+         // Enregistrement de l'operation associee
+         final Operation creationOp = new Operation();
+         creationOp.setDate(Utils.getCurrentSystemCalendar());
+         operationManager.createObjectManager(creationOp, loggedUser, operationTypeDao.findByNom("Creation").get(0),
+            importTemplate);
+
+         log.info("Enregistrement de l'opération Création par {} ", loggedUser);
 
       }else{
          log.warn("Doublon lors creation objet ImportTemplate {}",  importTemplate);
@@ -187,7 +272,7 @@ public class ImportTemplateManagerImpl implements ImportTemplateManager
 
    @Override
    public void updateObjectManager(final ImportTemplate importTemplate, final Banque banque, final List<Entite> entites,
-      final List<ImportColonne> colonnesToCreate, final List<ImportColonne> colonnesToremove){
+      final List<ImportColonne> colonnesToCreate, final List<ImportColonne> colonnesToremove, Utilisateur loggedUser){
       // banque required
       if(banque != null){
          importTemplate.setBanque(banqueDao.mergeObject(banque));
@@ -220,10 +305,81 @@ public class ImportTemplateManagerImpl implements ImportTemplateManager
          updateAssociations(importTemplate, entites, colonnesToCreate, colonnesToremove);
 
          log.info("Enregistrement objet ImportTemplate {}",  importTemplate);
+         
+         // Enregistrement de l'operation associee
+         final Operation creationOp = new Operation();
+         creationOp.setDate(Utils.getCurrentSystemCalendar());
+         operationManager.createObjectManager(creationOp, loggedUser, operationTypeDao.findByNom("Modification").get(0),
+            importTemplate);
+
+         log.info("Enregistrement de l'opération Modification par {} ", loggedUser);
 
       }else{
          log.warn("Doublon lors modification objet ImportTemplate {}",  importTemplate);
          throw new DoublonFoundException("ImportTemplate", "modification");
+      }
+   }
+
+   //TK-537
+   @Override
+   public void updateStatutPartage(Integer importTemplateId, EImportTemplateStatutPartage newValue, Utilisateur loggedUser) throws IllegalArgumentException {
+      ImportTemplate importTemplate = importTemplateDao.findById(importTemplateId);
+      if(importTemplate != null && newValue != null) {
+         if(importTemplate.getStatutPartage() != newValue) {
+            if(EImportTemplateStatutPartage.checkCoherenceUpdate(importTemplate.getStatutPartage(), newValue)) {
+               importTemplate.setStatutPartageCode(newValue.getImportTemplateStatutPartageCode());
+               importTemplateDao.updateObject(importTemplate);
+               
+               String operationTypeNom = "Partage";
+               if(newValue != EImportTemplateStatutPartage.PARTAGE_ENCOURS) {
+                  operationTypeNom = "SuppressionPartage";
+               }
+               // Enregistrement de l'operation associee
+               final Operation creationOp = new Operation();
+               creationOp.setDate(Utils.getCurrentSystemCalendar());
+               operationManager.createObjectManager(creationOp, loggedUser, operationTypeDao.findByNom(operationTypeNom).get(0),
+                  importTemplate);
+            }
+            else {
+               throw new IllegalArgumentException("Impossible de modifier le partage à cause de valeurs incohérentes :  en cours =  " + EImportTemplateStatutPartage.findByCode(importTemplate.getStatutPartage().getImportTemplateStatutPartageCode()) + " / nouveau = " + newValue);
+            }
+         }
+         else {
+            log.warn("Aucune mise à jour faite : le modèle {} avait déjà le champ 'statut_partage' à {}", importTemplateId, newValue.getImportTemplateStatutPartageCode());
+         }
+      }
+      else {
+         log.warn("Aucune mise à jour faite car des valeurs sont nulles : importTemplateId = {}, newValue = {}", importTemplate, newValue);
+      }      
+   }
+   
+   //TK-537
+   @Override
+   public void updateArchive(Integer importTemplateId, Boolean newValue, Utilisateur loggedUser){
+      ImportTemplate importTemplate = importTemplateDao.findById(importTemplateId);
+      if(importTemplate != null && newValue != null) {
+         if(importTemplate.isArchive() != newValue) {
+            importTemplate.setArchive(newValue);
+            importTemplateDao.updateObject(importTemplate);
+            
+            String operationTypeNom = "Archivage";
+            if(!newValue) {
+               operationTypeNom = "Restauration";
+            }
+            // Enregistrement de l'operation associee
+            final Operation creationOp = new Operation();
+            creationOp.setDate(Utils.getCurrentSystemCalendar());
+            operationManager.createObjectManager(creationOp, loggedUser, operationTypeDao.findByNom(operationTypeNom).get(0),
+               importTemplate);
+
+            log.info("Enregistrement de l'opération Modification par {} ", loggedUser);
+         }
+         else {
+            log.warn("Aucune mise à jour faite : le modèle {} avait déjà la champ 'archive' à {}", importTemplateId, newValue);
+         }
+      }
+      else {
+         log.warn("Aucune mise à jour faite car des valeurs sont nulles : importTemplateId = {}, newValue = {}", importTemplate, newValue);
       }
    }
 
@@ -324,4 +480,19 @@ public class ImportTemplateManagerImpl implements ImportTemplateManager
          }
       }
    }
-}
+   
+   //TK-537
+   @Override
+   public boolean hasBeenModifiedAfterLastExecution(ImportTemplate importTemplate, Banque utilisateurBanque) {
+      if(importTemplate != null && utilisateurBanque != null) {
+         Date dateLastModification = operationManager.findMaxDateForObjetIdEntiteIdAndOperationTypeId(importTemplate.getImportTemplateId(), 
+            EEntiteId.IMPORT_TEMPLATE.getId(), EOperationTypeId.MODIFICATION.getId());
+         Date dateLastExecution = importHistoriqueManager.findMaxDateImportationForImportTemplateId(importTemplate.getImportTemplateId(), utilisateurBanque.getBanqueId());
+         if(dateLastModification != null &&  dateLastExecution != null) {
+            return dateLastModification.compareTo(dateLastExecution) >= 0;
+         }
+      }
+      
+      return false;
+   }
+ }

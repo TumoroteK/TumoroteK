@@ -1,6 +1,7 @@
 /**
- * Copyright ou © ou Copr. Ministère de la santé, FRANCE (01/01/2011)
- * dsi-projet.tk@aphp.fr
+ * Copyright ou © ou Copr. Assistance Publique des Hôpitaux de
+ * PARIS et SESAN
+ * projet-tk@sesan.fr
  *
  * Ce logiciel est un programme informatique servant à la gestion de
  * l'activité de biobanques.
@@ -33,58 +34,43 @@
  * avez pris connaissance de la licence CeCILL, et que vous en avez
  * accepté les termes.
  **/
-package fr.aphp.tumorotek.dao;
+package fr.aphp.tumorotek.model.qualite;
 
-import java.io.Serializable;
-import java.util.List;
-
-/**
- *
- * Interface du Generic DAO.
- * @param <T> est la classe de l'objet.
- * @param <PK> est sa clé primaire.
- *
- * @author Pierre Ventadour
- * @version 09/09/2009
- *
- */
-public interface GenericDaoJpa<T, PK extends Serializable>
+public enum EOperationTypeId
 {
-
-   /**
-    * Persist une instance d'objet dans la base de données.
-    * @param newInstance est  une instance de l'objet à créer.
-    */
-   void createObject(T newInstance);
-
-   T mergeObject(T o);
-
-   /**
-    *   Retrouve un objet qui était persistant dans la base de données en
-    *   utilisant sa clé primaire.
-    *   @param id est la clé primaire de l'objet.
-    *   @return l'objet ou null si aucun trouvé.
-    */
-   T findById(PK id);
-
-   /**
-    * Renvoie tous les objets d'une certaine table présents dans la base
-    * de données.
-    * @return tous les objets d'une table.
-    */
-   List<T> findAll();
-
-   /**
-    * Sauvegarde les modifications apportées à un objet persistant.
-    * @param transientObject est l'objet à mettre à jour dans la base
-    * de données.
-    */
-   void updateObject(T transientObject);
-
-   /**
-    * Supprime un objet de la base de données.
-    * @param id est la clé primaire de l'objet à surrpimer.
-    */
-   void removeObject(PK id);
-
+   CONSULTATION(1),
+   EXPORT(2),
+   CREATION(3),
+   IMPORT(4),
+   MODIFICATION(5),
+   MODIF_MULTIPLE(6),
+   ARCHIVAGE(7),
+   RESTAURATION(8),
+   VALIDATION(9),
+   ANNOTATION(10),
+   EXPORT_ANONYME(11),
+   STOCKAGE(12),
+   DESTOCKAGE(13),
+   DEPLACEMENT(14),
+   SUPPRESSION(15),
+   LOGIN(16),
+   LOGOUT(17),
+   CHANGE_COLLECTION(18),
+   SYNCHRONISATION(19),
+   FUSION(20),
+   EXPORT_TVGSO(21),
+   EXPORT_INCA(22),
+   EXPORT_BIOCAP(23),
+   PARTAGE(24),
+   SUPPRESSION_PARTAGE(25);
+   
+   private EOperationTypeId(Integer id) {
+      this.id = id;
+   }
+   
+   private Integer id;
+   
+   public Integer getId(){
+      return id;
+   }
 }

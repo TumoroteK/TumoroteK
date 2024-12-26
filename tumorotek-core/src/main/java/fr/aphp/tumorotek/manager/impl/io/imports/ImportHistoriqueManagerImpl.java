@@ -36,9 +36,15 @@
 package fr.aphp.tumorotek.manager.impl.io.imports;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+
+import org.hibernate.SQLQuery;
+import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -64,9 +70,9 @@ public class ImportHistoriqueManagerImpl implements ImportHistoriqueManager
 
    private final Logger log = LoggerFactory.getLogger(ImportHistoriqueManager.class);
 
+   private EntityManagerFactory entityManagerFactory;
+   
    private ImportHistoriqueDao importHistoriqueDao;
-
-   private ImportTemplateDao importTemplateDao;
 
    private UtilisateurDao utilisateurDao;
 
@@ -74,12 +80,13 @@ public class ImportHistoriqueManagerImpl implements ImportHistoriqueManager
 
    private EntiteDao entiteDao;
 
+
+   public void setEntityManagerFactory(EntityManagerFactory entityManagerFactory){
+      this.entityManagerFactory = entityManagerFactory;
+   }
+   
    public void setImportHistoriqueDao(final ImportHistoriqueDao iDao){
       this.importHistoriqueDao = iDao;
-   }
-
-   public void setImportTemplateDao(final ImportTemplateDao iDao){
-      this.importTemplateDao = iDao;
    }
 
    public void setUtilisateurDao(final UtilisateurDao uDao){
@@ -100,20 +107,16 @@ public class ImportHistoriqueManagerImpl implements ImportHistoriqueManager
    }
 
    @Override
-   public List<ImportHistorique> findAllObjectsManager(){
+   public List<ImportHistorique> findAllObjectsManager(){// A CREUSER !!
       log.debug("Recherche de tous les ImportHistoriques.");
       return importHistoriqueDao.findAll();
    }
 
    @Override
-   public List<ImportHistorique> findByTemplateWithOrderManager(final ImportTemplate importTemplate){
-      if(importTemplate != null){
-         return importHistoriqueDao.findByTemplateWithOrder(importTemplate);
-      }else{
-         return new ArrayList<>();
-      }
+   public List<ImportHistorique> findByTemplateIdAndImportBanqueIdWithOrderManager(Integer templateId, Integer importBanqueId) {
+         return importHistoriqueDao.findByTemplateIdAndImportBanqueIdWithOrder(templateId, importBanqueId);
    }
-
+   
    @Override
    public List<Importation> findImportationsByHistoriqueManager(final ImportHistorique importHistorique){
       if(importHistorique != null){
@@ -171,16 +174,7 @@ public class ImportHistoriqueManagerImpl implements ImportHistoriqueManager
    }
 
    @Override
-   public void createObjectManager(final ImportHistorique importHistorique, final ImportTemplate importTemplate,
-      final Utilisateur utilisateur, final List<Importation> importations){
-      // importTemplate required
-      if(importTemplate != null){
-         importHistorique.setImportTemplate(importTemplateDao.mergeObject(importTemplate));
-      }else{
-         log.warn("Objet obligatoire ImportTemplate manquant  lors de la création d'un ImportHistorique");
-         throw new RequiredObjectIsNullException("ImportHistorique", "creation", "importTemplate");
-      }
-
+   public void createObjectManager(final ImportHistorique importHistorique, final Utilisateur utilisateur, final List<Importation> importations){
       // utilisateur required
       if(utilisateur != null){
          importHistorique.setUtilisateur(utilisateurDao.mergeObject(utilisateur));
@@ -202,7 +196,8 @@ public class ImportHistoriqueManagerImpl implements ImportHistoriqueManager
       importHistoriqueDao.createObject(importHistorique);
       log.info("Enregistrement objet ImportHistorique {}",  importHistorique);
    }
-
+   
+   
    @Override
    public void removeObjectManager(final ImportHistorique importHistorique){
       if(importHistorique != null){
@@ -227,4 +222,31 @@ public class ImportHistoriqueManagerImpl implements ImportHistoriqueManager
    public List<Prelevement> findPrelevementByImportHistoriqueManager(final ImportHistorique ih){
       return importHistoriqueDao.findPrelevementByImportHistorique(ih);
    }
+   
+   @Override
+   public Date findMaxDateImportationForImportTemplateId(Integer importTemplateId, Integer utilisateurBanqueId) {
+      final EntityManager em = entityManagerFactory.createEntityManager();
+      
+      Session session = em.unwrap(Session.class);
+      SQLQuery query = session.createSQLQuery("SELECT max(DATE_) FROM IMPORT_HISTORIQUE WHERE IMPORT_TEMPLATE_ID = :importTemplateId and IMPORT_BANQUE_ID = :utilisateurBanqueId");
+      query.setParameter("importTemplateId", importTemplateId);
+      query.setParameter("utilisateurBanqueId", utilisateurBanqueId);
+       
+      return (Date)query.uniqueResult();
+   }
+
+   
+   @Override
+   public List<String> findNomBanqueUtilisantUnTemplatePartage(Integer importTemplateId, Integer templateBanqueId) {
+      final EntityManager em = entityManagerFactory.createEntityManager();
+      
+      Session session = em.unwrap(Session.class);
+      SQLQuery query = session.createSQLQuery("SELECT distinct b.nom FROM IMPORT_HISTORIQUE h inner join BANQUE b on b.BANQUE_ID = h.IMPORT_BANQUE_ID WHERE IMPORT_TEMPLATE_ID = :importTemplateId and IMPORT_BANQUE_ID != :templateBanqueId");
+      query.setParameter("importTemplateId", importTemplateId);
+      query.setParameter("templateBanqueId", templateBanqueId);
+       
+      return query.list();
+   }
+
+   
 }

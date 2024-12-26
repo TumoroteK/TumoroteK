@@ -102,7 +102,7 @@ CREATE PROCEDURE stats_count_prepasimples(IN date_debut DATE, IN date_fin DATE, 
 	LEFT OUTER JOIN TRANSFORMATION t on e.ECHANTILLON_ID=t.objet_id and t.entite_id = 3
 	JOIN PROD_DERIVE d on t.transformation_id=d.transformation_id 
 	JOIN PROD_TYPE x on d.prod_type_id=d.prod_type_id ');
-    SET @sql = CONCAT(@sql, ' WHERE p.DATE_PRELEVEMENT BETWEEN ''', date_debut, ''' AND ''', date_fin, '''');
+    SET @sql = CONCAT(@sql, ' WHERE e.DATE_STOCK BETWEEN ''', date_debut, ''' AND ''', date_fin, '''');
     SET @sql = CONCAT(@sql, ' AND (y.type not in (''PBMC'', ''CELLULES'') AND y.type not like ''%TISSU%'' AND (x.type is null OR x.type not in (''ADN'', ''ARN'', ''PROTEINE'', ''ADNc'')))');
     SET @sql = CONCAT(@sql, ' GROUP BY e.banque_id) zz ');
     SET @sql = CONCAT(@sql, ' ON b.banque_id = zz.banque_id');

@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.10.xsd">
+        
+        
+    <changeSet id="updateTable_IMPORT_TEMPLATE-1" author="TK-537" runAlways="false" context="*">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="IMPORT_TEMPLATE" columnName="STATUT_PARTAGE_CODE" />
+            </not>
+        </preConditions>
+        <comment>Ajout d'un champ pour gérer le partage d''un modèle</comment>
+        <addColumn tableName="IMPORT_TEMPLATE">
+            <column name="STATUT_PARTAGE_CODE" type="INT(3)" defaultValueNumeric="1">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet id="updateTable_IMPORT_TEMPLATE-2" author="TK-537" runAlways="false" context="*">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="IMPORT_TEMPLATE" columnName="ARCHIVE" />
+            </not>
+        </preConditions>
+        <comment>Ajout d'un champ pour gérer l'archivage d''un modèle</comment>
+        <addColumn tableName="IMPORT_TEMPLATE">
+            <column name="ARCHIVE" type="BIT(1)" defaultValueBoolean="false">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet id="createIndex_IMPORT_TEMPLATE" author="TK-537" runAlways="false" context="*">
+        <preConditions onFail="MARK_RAN">
+	        <not>
+	            <indexExists indexName="BANQUE_PARTAGE_ARCHIVE_IDX" tableName="IMPORT_TEMPLATE" />
+	        </not>
+    	</preConditions>
+        <createIndex  indexName="BANQUE_PARTAGE_ARCHIVE_IDX" tableName="IMPORT_TEMPLATE" unique="false">  
+        	<column  name="BANQUE_ID"/>
+        	<column  name="STATUT_PARTAGE_CODE"/>
+        	<column  name="ARCHIVE"/>  
+    	</createIndex> 
+    </changeSet>
+    <changeSet id="updateTable_IMPORT_HISTORIQUE" author="TK-537" runAlways="false" context="*">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="IMPORT_HISTORIQUE" columnName="IMPORT_BANQUE_ID" />
+            </not>
+        </preConditions>
+        <comment>Ajout de la banque sur laquelle l'import a été effectué. Depuis TK-537, celle-ci peut être différente de celle du modèle</comment>
+        <addColumn tableName="IMPORT_HISTORIQUE">
+            <column name="IMPORT_BANQUE_ID" type="INT(10)" remarks="banque pour laquelle l''import a été réalisé">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet id="setConstraintTable_IMPORT_HISTORIQUE" author="TK-537" context="*">
+        <preConditions onFail="MARK_RAN">
+            <not>
+            	<foreignKeyConstraintExists foreignKeyName="FK_IMPORT_BANQUE_ID" foreignKeyTableName="IMPORT_HISTORIQUE" />
+            </not>
+        </preConditions>
+        <comment>Alimentation du nouveau champ IMPORT_HISTORIQUE.BANQUE_ID et pose de la FK</comment>
+        <!-- script identique pour Oracle donc le fichier est mis dans le répertoire mysql mais il peut aussi être lancé avec Oracle  -->
+        <sqlFile encoding="utf8" path="../sql/mysql/tumorotek/TK-537--FK_IMPORT_BANQUE_ID.sql" relativeToChangelogFile="true"/>
+    </changeSet> 
+    <changeSet id="setValue_ENTITE_ImportTemplate" author="TK-537" context="*"> 
+    	<preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">SELECT COUNT(1) FROM ENTITE
+                WHERE NOM = 'ImportTemplate'
+            </sqlCheck>
+        </preConditions>
+        <comment>Ajout de la valeur ImportTemplate pour gérer l'historique des modèles d'import</comment>
+        <insert tableName="ENTITE">
+            <column name="ENTITE_ID" value="66"/>
+            <column name="NOM" value="ImportTemplate"/>
+             <column name="MASC" value="1" />
+            <column name="ANNOTABLE" value="0"/>
+        </insert>
+    </changeSet>   
+    <changeSet id="setValue_OPERATION_TYPE_PARTAGE" author="TK-537" context="*"> 
+    	<preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">SELECT COUNT(1) FROM OPERATION_TYPE
+                WHERE NOM = 'Partage'
+            </sqlCheck>
+        </preConditions>
+        <comment>Ajout de la valeur Partage pour l'historique des modèles d'import</comment>
+        <insert tableName="OPERATION_TYPE">
+            <column name="OPERATION_TYPE_ID" value="24"/>
+            <column name="NOM" value="Partage"/>
+             <column name="PROFILABLE" value="0" />
+        </insert>
+    </changeSet>     
+    <changeSet id="setValue_OPERATION_TYPE_SUPP_PARTAGE" author="TK-537" context="*"> 
+    	<preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">SELECT COUNT(1) FROM OPERATION_TYPE
+                WHERE NOM = 'SuppressionPartage'
+            </sqlCheck>
+        </preConditions>
+        <comment>Ajout de la valeur Partage pour l'historique des modèles d'import</comment>
+        <insert tableName="OPERATION_TYPE">
+            <column name="OPERATION_TYPE_ID" value="25"/>
+            <column name="NOM" value="SuppressionPartage"/>
+             <column name="PROFILABLE" value="0" />
+        </insert>
+    </changeSet>                 
+</databaseChangeLog>

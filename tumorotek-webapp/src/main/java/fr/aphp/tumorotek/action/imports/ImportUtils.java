@@ -1,5 +1,6 @@
 package fr.aphp.tumorotek.action.imports;
 
+import fr.aphp.tumorotek.model.contexte.EContexte;
 import fr.aphp.tumorotek.model.io.export.*;
 import fr.aphp.tumorotek.model.io.imports.*;
 import fr.aphp.tumorotek.webapp.general.*;
@@ -7,18 +8,18 @@ import org.zkoss.util.resource.*;
 
 public class ImportUtils
 {
-   public static String extractChamp(ImportColonne colonne, boolean visiteGatsbi){
+   public static String extractChamp(ImportColonne colonne, EContexte templateContexte){
       String champ = "";
       if(colonne.getChamp() != null){
          if(colonne.getChamp().getChampEntite() != null){
-            if (!visiteGatsbi || colonne.getChamp().getChampEntite().getId() != 20) {
+            if (templateContexte != EContexte.GATSBI || colonne.getChamp().getChampEntite().getId() != 20) {
                champ = getLabelForChampEntite(colonne.getChamp().getChampEntite());
             } else { // rendu date debut -> date de visite
                champ = Labels.getLabel("gatsbi.visite.date");
             }
          }else if(colonne.getChamp().getChampDelegue() != null){
             champ = Labels
-               .getLabel(colonne.getChamp().getChampDelegue().getILNLabelForChampDelegue(SessionUtils.getCurrentContexte()));
+               .getLabel(colonne.getChamp().getChampDelegue().getILNLabelForChampDelegue(templateContexte));
          }else{
             champ = colonne.getChamp().getChampAnnotation().getNom();
          }

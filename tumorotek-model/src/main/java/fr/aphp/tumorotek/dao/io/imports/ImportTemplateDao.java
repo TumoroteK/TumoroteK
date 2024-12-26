@@ -39,6 +39,7 @@ import java.util.List;
 
 import fr.aphp.tumorotek.dao.GenericDaoJpa;
 import fr.aphp.tumorotek.model.contexte.Banque;
+import fr.aphp.tumorotek.model.contexte.Plateforme;
 import fr.aphp.tumorotek.model.io.imports.ImportTemplate;
 
 /**
@@ -59,7 +60,33 @@ public interface ImportTemplateDao extends GenericDaoJpa<ImportTemplate, Integer
     * @return Liste d'ImportTemplate.
     */
    List<ImportTemplate> findByBanqueWithOrder(Banque banque);
+   
+   //TK-537 : début
+   /**
+    * Recherche les ImportTemplates d'une banque à un statut de partage donné et trie le résultat par nom.
+    * @param partageStatutCode code du statut de partage à prendre en compte
+    * @param banque Banque des ImportTemplates.
+    * @return Liste d'ImportTemplate triés par nom.
+    */
+   List<ImportTemplate> findTemplateByStatutPartageAndBanqueWithOrder(Integer partageStatutCode, Banque banque);
 
+   /**
+    * Recherche les ImportTemplates d'une plateforme à un statut de partage donné et à une valeur "archive" donnée et tri le résultat par nom.
+    * @param partageStatutCode code du statut de partage à prendre en compte
+    * @param archive valeur (true ou false) pour ne ramener que les modèles archivés ou non
+    * @param plateforme Plateforme des ImportTemplates.
+    * @return Liste d'ImportTemplate triés par nom.
+    */
+   List<ImportTemplate> findTemplateByStatutPartageAndArchiveAndPlateformeWithOrder(Integer partageStatutCode, Boolean archive, Plateforme plateforme);
+   
+   /**
+    * Recherche les ImportTemplates partagés et utilisés par une banque donnée
+    * @param banqueId l'id de la banque à prendre en compte
+    * @return Liste d'ImportTemplate triés par nom
+    */
+   List<ImportTemplate> findTemplatePartageUtiliseByBanque(Integer banqueId);
+   //TK-537 : fin 
+   
    /**
     * Recherche les ImportTemplates dont l'id est différent de celui
     * passé en paramètres.

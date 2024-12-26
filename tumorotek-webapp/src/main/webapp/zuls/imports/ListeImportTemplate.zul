@@ -47,10 +47,18 @@
 			<columns sizable="true" >
 				<column />
 			</columns>
-			<rows>
+			<rows> 
 				<row self="@{each='currImportTemplate'}">
-					<label id="viewObject" value="@{currImportTemplate.nom}" 
-					sclass="formLink"/>
+					<hbox>
+						<div>
+							<label id="viewObject" value="@{currImportTemplate.nom}" sclass="@{currImportTemplate.sclassForList}"/>
+						</div>
+						<separator width="5px"/>
+						<div sclass="@{currImportTemplate.classForIconePartage}" 
+							tooltiptext="@{currImportTemplate.tooltiptextForIconePartage}"
+							visible="@{currImportTemplate.partage}">
+						</div>
+					</hbox>
 				</row>
 			</rows>
 		</grid>

@@ -1,6 +1,10 @@
 #### Notes de version
 
 ##### Version 2.3.1.0-SNAPSHOT - Publiée le ??? (en cours)
+- YouTrack [TK-589](https://tumorotek.myjetbrains.com/youtrack/issue/TK-589) : Problème lors de la création d'un index à cause d'une valeur par défaut à 0000-00-00 00:00:00, valeur qui n'est plus autorisée
+
+
+
 
 ##### Version 2.3.0.10 - Publiée le 01/07/2024
 ###### Corrections dans TK pour un contexte Gatsbi

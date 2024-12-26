@@ -338,11 +338,6 @@ public class ImportTemplateDaoTest extends AbstractDaoTest
          assertNull(t2.getEntites());
       }
 
-      if(t1.getImportHistoriques() != null){
-         assertTrue(t1.getImportHistoriques().equals(t2.getImportHistoriques()));
-      }else{
-         assertNull(t2.getImportHistoriques());
-      }
       assertTrue(t1.getDeriveParentEntite().equals(t2.getDeriveParentEntite()));
    }
 
