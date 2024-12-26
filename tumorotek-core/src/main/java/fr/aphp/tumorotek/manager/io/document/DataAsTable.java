@@ -1,0 +1,157 @@
+/**
+ * Copyright ou © ou Copr. Ministère de la santé, FRANCE (01/01/2011)
+ * dsi-projet.tk@aphp.fr
+ * <p>
+ * Ce logiciel est un programme informatique servant à la gestion de
+ * l'activité de biobanques.
+ * <p>
+ * Ce logiciel est régi par la licence CeCILL soumise au droit français
+ * et respectant les principes de diffusion des logiciels libres. Vous
+ * pouvez utiliser, modifier et/ou redistribuer ce programme sous les
+ * conditions de la licence CeCILL telle que diffusée par le CEA, le
+ * CNRS et l'INRIA sur le site "http://www.cecill.info".
+ * En contrepartie de l'accessibilité au code source et des droits de
+ * copie, de modification et de redistribution accordés par cette
+ * licence, il n'est offert aux utilisateurs qu'une garantie limitée.
+ * Pour les mêmes raisons, seule une responsabilité restreinte pèse sur
+ * l'auteur du programme, le titulaire des droits patrimoniaux et les
+ * concédants successifs.
+ * <p>
+ * A cet égard  l'attention de l'utilisateur est attirée sur les
+ * risques associés au chargement,  à l'utilisation,  à la modification
+ * et/ou au  développement et à la reproduction du logiciel par
+ * l'utilisateur étant donné sa spécificité de logiciel libre, qui peut
+ * le rendre complexe à manipuler et qui le réserve donc à des
+ * développeurs et des professionnels  avertis possédant  des
+ * connaissances  informatiques approfondies.  Les utilisateurs sont
+ * donc invités à charger  et  tester  l'adéquation  du logiciel à leurs
+ * besoins dans des conditions permettant d'assurer la sécurité de leurs
+ * systèmes et ou de leurs données et, plus généralement, à l'utiliser
+ * et l'exploiter dans les mêmes conditions de sécurité.
+ * <p>
+ * Le fait que vous puissiez accéder à cet en-tête signifie que vous
+ * avez pris connaissance de la licence CeCILL, et que vous en avez
+ * accepté les termes.
+ **/
+
+package fr.aphp.tumorotek.manager.io.document;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import fr.aphp.tumorotek.manager.io.document.detail.table.CellRow;
+import fr.aphp.tumorotek.manager.io.document.detail.table.DataCell;
+
+
+/**
+ * La classe <code>DataAsArray</code> représente un ensemble de données structurées sous forme de tableau.
+ * Elle implémente l'interface <code>DocumentData</code> et contient une liste de lignes de cellules.
+ *
+ * Cette classe est utilisée pour manipuler des données sous la forme d'un tableau dans le contexte de la génération de documents.
+ *
+ * <p>La structure des données est représentée par une liste de <code>CellRow</code>, chaque <code>CellRow</code>
+ * représentant une ligne du tableau.</p>
+ *
+ * <p>Le modèle de conception et l'architecture de cette classe ont été fournis par C.H.</p>
+ */
+
+public class DataAsTable implements DocumentData {
+    
+   private static final Logger logger = LoggerFactory.getLogger(DataAsTable.class);
+   
+   private List<CellRow> listCellRow;
+
+    // Stocke le nombre de cellules par ligne pour éviter d'appeler .size() à chaque ajout de DataCell
+    // ce qui permet d'optimiser l'accès à la dernière ligne existante.
+    // ce champ est incrémenté automatiquement à chaque ajout d'une CellRow
+    private int nbCellRow = 0;
+
+
+    public DataAsTable() {
+        this.listCellRow = new ArrayList<>();
+    }
+
+    public DataAsTable(List<CellRow> listCellRow) {
+        this.listCellRow = listCellRow;
+    }
+
+    public List<CellRow> getListCellRow() {
+        return listCellRow;
+    }
+
+    public void setListCellRow(List<CellRow> listCellRow) {
+        this.listCellRow = listCellRow;
+    }
+
+    /**
+     * Ajoute une {@CellRow} à la liste de l'objet et incrémente l'attribut nbCellRow.
+     */
+    public void addCellRow(CellRow cellRow) {
+        listCellRow.add(cellRow);
+        nbCellRow++;
+    }
+
+    /**
+     * Ajoute une cellule de données à une ligne spécifique dans le tableau.
+     *
+     * @param dataCell     La cellule de données {@linkDataCell} à ajouter.
+     * @param indexLigne   L'indice de la ligne où la cellule doit être ajoutée.
+     * @param indexColonne L'indice de la colonne où la cellule doit être ajoutée.
+     * @throws IllegalArgumentException si les indices sont négatifs.
+     */
+    public void addDataCell(DataCell dataCell, int indexLigne, int indexColonne) {
+        // Vérifie que les indices sont non négatifs
+        if (indexLigne < 0 || indexColonne < 0) {
+            logger.error("Échec de lors de l'ajout de la dataCell : en index de ligne {}, index de colonne : {}", 
+               Integer.valueOf(indexLigne), Integer.valueOf(indexColonne));
+            throw new IllegalArgumentException("Échec de lors de l'ajout de la dataCell : les indexes de ligne et colonne ne peuvent pas être négatifs."); // Lance une exception si les indices sont négatifs
+        }
+        
+        // Ajoute des lignes vides si nécessaire jusqu'à atteindre l'indice de ligne spécifié
+        while (nbCellRow <= indexLigne) {
+            addCellRow(new CellRow()); // Ajoute une nouvelle ligne vide
+        }
+        
+        // Récupère la ligne concernée à partir de la liste des lignes
+        CellRow cellRowConcernee = getListCellRow().get(indexLigne);
+        cellRowConcernee.addDataCell(indexColonne, dataCell); // Ajoute la cellule de données à la ligne spécifiée
+    }
+
+    public int getNbCellRow() {
+        return nbCellRow;
+    }
+
+    public String write() {
+        // Vérifie si la liste des lignes de cellules est vide ou nulle
+        if (listCellRow == null || listCellRow.isEmpty()) {
+            return "Tableau vide"; // Retourne un message indiquant que le tableau est vide
+        }
+
+        String lineSeparator = System.getProperty("line.separator");
+        
+        StringBuilder sb = new StringBuilder();
+        sb.append("DataAsTable:").append(lineSeparator); // Ajoute l'en-tête pour le tableau
+
+        // Traite chaque ligne
+        for (CellRow row : listCellRow) {
+            if (row != null) {
+                // Ajoute la bordure horizontale de la ligne
+                sb.append(row.getHorizontalBorder()).append(lineSeparator);
+                // Ajoute le contenu de la ligne
+                sb.append(row.toString()).append(lineSeparator);
+            } else {
+                sb.append("| <ligne nulle> |").append(lineSeparator); // Indique qu'une ligne est nulle
+            }
+        }
+
+        // Ajoute la bordure horizontale finale
+        if (!listCellRow.isEmpty() && listCellRow.get(listCellRow.size() - 1) != null) {
+            sb.append(listCellRow.get(listCellRow.size() - 1).getHorizontalBorder()).append(lineSeparator);
+        }
+
+        return sb.toString(); // Retourne la représentation finale du tableau
+    }
+}

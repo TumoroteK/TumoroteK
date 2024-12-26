@@ -1073,6 +1073,26 @@
 
 	<!-- Beans Managers du package stockage -->
 
+
+
+	<bean id="documentWithDataAsTableExcelProducer"
+		  class="fr.aphp.tumorotek.manager.impl.io.production.DocumentWithDataAsTableExcelProducer">
+	</bean>
+
+	<bean id="planCongelateurAvecBoiteExcelGenerator"
+		  class="fr.aphp.tumorotek.manager.impl.stockage.planconteneur.PlanCongelateurAvecBoiteExcelGenerator">
+		<property name="enceinteManager" ref="enceinteManager"/>
+		<property name="documentProducer" ref="documentWithDataAsTableExcelProducer"/>
+
+	</bean>
+
+	<bean id="planCongelateurSansBoiteExcelGenerator"
+		  class="fr.aphp.tumorotek.manager.impl.stockage.planconteneur.PlanCongelateurSansBoiteExcelGenerator">
+		<property name="enceinteManager" ref="enceinteManager"/>
+		<property name="documentProducer" ref="documentWithDataAsTableExcelProducer"/>
+	</bean>
+
+
 	<bean id="conteneurValidator"
 		class="fr.aphp.tumorotek.manager.validation.stockage.ConteneurValidator" />
 

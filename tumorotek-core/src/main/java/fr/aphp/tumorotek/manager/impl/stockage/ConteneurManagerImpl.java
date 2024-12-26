@@ -35,16 +35,6 @@
  **/
 package fr.aphp.tumorotek.manager.impl.stockage;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.validation.Validator;
-
 import fr.aphp.tumorotek.dao.contexte.BanqueDao;
 import fr.aphp.tumorotek.dao.contexte.ServiceDao;
 import fr.aphp.tumorotek.dao.qualite.OperationTypeDao;
@@ -77,6 +67,15 @@ import fr.aphp.tumorotek.model.stockage.Incident;
 import fr.aphp.tumorotek.model.stockage.Terminale;
 import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
 import fr.aphp.tumorotek.utils.Utils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.validation.Validator;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
 /**
  * @version 2.2.1-IRELEC
@@ -173,6 +172,10 @@ public class ConteneurManagerImpl implements ConteneurManager
       return conteneurDao.findById(conteneurId);
    }
 
+   @Override
+   public List<Conteneur> findByIdListManager(List<Integer>  IdList){
+      return conteneurDao.findByIdList(IdList);
+   }
    @Override
    public List<Conteneur> findAllObjectsManager(){
       return conteneurDao.findAll();

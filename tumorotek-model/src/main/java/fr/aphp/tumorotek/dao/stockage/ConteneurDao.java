@@ -35,12 +35,12 @@
  **/
 package fr.aphp.tumorotek.dao.stockage;
 
-import java.util.List;
-
 import fr.aphp.tumorotek.dao.GenericDaoJpa;
 import fr.aphp.tumorotek.model.contexte.Plateforme;
 import fr.aphp.tumorotek.model.contexte.Service;
 import fr.aphp.tumorotek.model.stockage.Conteneur;
+
+import java.util.List;
 
 /**
  *
@@ -61,6 +61,15 @@ public interface ConteneurDao extends GenericDaoJpa<Conteneur, Integer>
     * @return Liste ordonnée de Conteneurs.
     */
    List<Conteneur> findByBanqueIdWithOrder(Integer banqueId);
+
+   /**
+    * Recherche des Conteneurs qui ont des identifiants dans la liste
+    * passée en paramètre.
+    * @param listIds liste des identifiants de Conteneur que l'on recherche.
+    * @return Liste de Conteneurs.
+    */
+   List<Conteneur> findByIdList(List<Integer> listIds);
+
 
    /**
     * Recherche tous les Conteneurs d'une banque en fct de son

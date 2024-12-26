@@ -39,6 +39,12 @@ import org.jsoup.Jsoup;
 import org.jsoup.parser.Tag;
 import org.jsoup.safety.Whitelist;
 
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.util.Calendar;
+
 
 
 /**
@@ -48,7 +54,9 @@ import org.jsoup.safety.Whitelist;
 public final class TKStringUtils
 {
 
-
+   // Format de date utilisé pour les noms de fichiers
+   static final String DATE_HEURE_ISO_FORMAT = "yyyyMMddHHmm";
+   static final String DATE_ISO_FORMAT = "yyyyMMdd";
 
    /**
     * Constructeur privé
@@ -170,5 +178,25 @@ public final class TKStringUtils
          return string == null || string.trim().isEmpty();
       }
 
+   /**
+    * Retourne la date actuelle formatée selon le modèle fourni.
+    *
+    * @param pattern Le pattern de date-temps (par exemple, "yyyyMMddHHmm").
+    *                Si pattern invalide, le format ISO "yyyyMMdd" est utilisé.
+    * @return Une chaîne de date formatée
+    */
+   public static String getCurrentDate(String pattern) {
+      try {
+         return new SimpleDateFormat(pattern).format(Calendar.getInstance().getTime());
+
+      } catch (IllegalArgumentException | NullPointerException e) {
+         // l'exception est forcément lié au pattern invalide
+         return new SimpleDateFormat(DATE_ISO_FORMAT).format(Calendar.getInstance().getTime());
+      }
+   }
+
+   public static String getCurrentDateHeureInIsoFormat() {
+      return getCurrentDate(DATE_HEURE_ISO_FORMAT);
+   }
 
 }

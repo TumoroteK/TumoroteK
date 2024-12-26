@@ -112,6 +112,8 @@ import fr.aphp.tumorotek.manager.dto.EchantillonDTOManager;
 import fr.aphp.tumorotek.manager.etiquettes.TumoBarcodePrinter;
 import fr.aphp.tumorotek.manager.etiquettes.TumoPrinterUtilsManager;
 import fr.aphp.tumorotek.manager.exception.TKException;
+import fr.aphp.tumorotek.manager.impl.stockage.planconteneur.PlanCongelateurAvecBoiteExcelGenerator;
+import fr.aphp.tumorotek.manager.impl.stockage.planconteneur.PlanCongelateurSansBoiteExcelGenerator;
 import fr.aphp.tumorotek.manager.impression.BlocImpressionManager;
 import fr.aphp.tumorotek.manager.impression.BlocImpressionTemplateManager;
 import fr.aphp.tumorotek.manager.impression.ChampEntiteBlocManager;
@@ -943,5 +945,18 @@ public final class ManagerLocator
     */
    public static EtudeManager getEtudeManager(){
       return (EtudeManager) (ContextLoader.getCurrentWebApplicationContext()).getBean("etudeManager");
+   }
+
+   /**
+    * @since 2.3.1.0 - TK-102
+    * @return
+    */
+   public static PlanCongelateurAvecBoiteExcelGenerator getPlanCongelateurAvecBoiteExcelGenerator() {
+      return (PlanCongelateurAvecBoiteExcelGenerator) ContextLoader.getCurrentWebApplicationContext()
+         .getBean("planCongelateurAvecBoiteExcelGenerator");
+   }
+   public static PlanCongelateurSansBoiteExcelGenerator getPlanCongelateurSansBoiteExcelGenerator() {
+      return (PlanCongelateurSansBoiteExcelGenerator) ContextLoader.getCurrentWebApplicationContext()
+         .getBean("planCongelateurSansBoiteExcelGenerator");
    }
 }
