@@ -46,7 +46,7 @@
 				hflex="1"
 				>
 				<columns sizable="true">
-					<column width="40px" />
+					<column width="30px" />
 					<column label="${c:l('Champ.Retour.DateSortie')}" />
 					<column label="${c:l('Champ.Retour.DateRetour')}" />
 					<column label="${c:l('listeRetour.delai')}" />

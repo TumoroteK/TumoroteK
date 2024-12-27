@@ -302,7 +302,7 @@ public class FicheEchantillonStatic extends AbstractFicheStaticController
       initQuantite();
       initDelaiCgl();
       // Récupère la liste des retours associés à l'échantillon ayant un impact (dégradation probable de la qualité du matériel).
-      List<Retour>retours = ManagerLocator.getRetourManager().findByObjectAndImpactManager(echantillon, true);
+      List<Retour> retours = ManagerLocator.getRetourManager().findByObjectAndImpactManager(echantillon, true);
 
       // Rend l'icône d'impact visible uniquement si des retours avec impact sont trouvés.
       impactIcon.setVisible(!retours.isEmpty());

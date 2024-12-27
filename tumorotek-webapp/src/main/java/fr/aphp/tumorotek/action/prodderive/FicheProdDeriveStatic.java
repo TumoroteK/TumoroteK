@@ -41,6 +41,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import fr.aphp.tumorotek.model.cession.Retour;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
@@ -53,6 +54,7 @@ import org.zkoss.zul.Group;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Row;
+import org.zkoss.zul.Image;
 
 import fr.aphp.tumorotek.action.ManagerLocator;
 import fr.aphp.tumorotek.action.cession.retour.ListeRetour;
@@ -141,6 +143,10 @@ public class FicheProdDeriveStatic extends AbstractFicheStaticController
 
    private Row rowTransformation3;
 
+   // Une image représentant un drapeau rouge. Utilisée lorsque le dérivé a au moins un retour avec impact,
+   // ce qui signifie une dégradation probable de la qualité du matériel.
+   protected Image impactIcon;
+
    //private Row transformationInconnueLabel;
    private Component[] objLabelsPrlvtParent;
 
@@ -211,6 +217,7 @@ public class FicheProdDeriveStatic extends AbstractFicheStaticController
       // liste de composants pour la transformation
       this.objLabelsTransformation = new Component[] {this.rowTransformation1, this.rowTransformation2, this.rowTransformation3};
 
+      this.impactIcon.setVisible(false);
       this.prodDerivesGrid.setVisible(false);
       this.cessionsGrid.setVisible(false);
       this.addDerive.setDisabled(true);
@@ -256,6 +263,11 @@ public class FicheProdDeriveStatic extends AbstractFicheStaticController
       updateSortiesHeader(false);
 
       initQuantiteVolumeAndConc();
+      // Récupère la liste des retours associés à la dérive ayant un impact (dégradation probable de la qualité du matériel).
+
+      List<Retour> retours = ManagerLocator.getRetourManager().findByObjectAndImpactManager(prodDerive, true);
+
+      impactIcon.setVisible(!retours.isEmpty());
 
       if(derives.size() == 0){
          prodDerivesGrid.setVisible(false);
