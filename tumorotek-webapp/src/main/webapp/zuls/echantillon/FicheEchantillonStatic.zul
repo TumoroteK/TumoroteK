@@ -51,11 +51,12 @@
 					<row>
 						<!-- Code de l'échantillon -->
 						<label value="${c:l('Champ.Echantillon.Code')}" sclass="formLabel"/>
-						<hbox>
+						<hbox spacing="10px">
 							<label id="codeLabelEchan" sclass="formValue" value="@{fwinEchantillonStatic$composer.object.code}" />
 							<!-- Image représentant une icône de drapeau pour signaler un impact
 							 (dégradation probable de la qualité du matériel). -->
-							<image id="impactIcon" src="/images/icones/flag.png"/>
+
+						<image id="impactIcon" src="/images/icones/flag.png" tooltiptext="${c:l('Champ.Retour.Impact')}"/>
 						</hbox>
 						<!-- Type de l'échantillon -->
 						<box orient="horizontal" widths=",50%" pack="center" >
