@@ -1105,7 +1105,8 @@ public class PrelevementManagerImpl implements PrelevementManager
                null, null, null, null, null, null,
                utilisateur, "creation", baseDir, false);              
          } else if (maladie.getPatient().isNewIdentifiantAdded()) { // update patient existant, ajout gatsbi
-            visites.addAll(maladie.getPatient().getMaladies());
+            //TG-255
+            visites.addAll(maladieManager.findAllByPatientManager(maladie.getPatient()));
             patientManager.createOrUpdateObjectManager(maladie.getPatient(), null,
               // visites.isEmpty() ? null : visites, null 
                null, null, null, null, null, null,
@@ -1113,10 +1114,10 @@ public class PrelevementManagerImpl implements PrelevementManager
          }
          
          if(maladie.getMaladieId() == null){ // creation maladie conjointe
-                  
             // @since gatsbi, creation de la visite si n'a pas été créé auparavant 
             // dans la liste de visites
-            if (visites.isEmpty() || maladie.getPatient().getMaladies().stream()
+            //TG-255
+            if (visites.isEmpty() || visites.stream()
                   .noneMatch(v -> v.getLibelle().equals(maladie.getLibelle()))) { 
                maladieManager.createOrUpdateObjectManager(maladie, maladie.getPatient(), null, utilisateur, "creation");
                maladieManager.getMaladiesManager(maladie.getPatient()).add(maladie);
