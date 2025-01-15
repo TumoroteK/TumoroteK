@@ -250,7 +250,7 @@ public abstract class AbstractListGridVM
             manager = ManagerLocator.getEchantillonTypeManager();
          }else if(getGridSubdivision().getChampEntite().getEntite().getNom().equals("ProdType")){
             manager = ManagerLocator.getProdTypeManager();
-         }else if(getGridSubdivision().getChampEntite().getNom().matches("Conforme.*Raison")){ // non conformite prelevement
+         }else if(getGridSubdivision().getChampEntite().getNom().startsWith("Conforme") && getGridSubdivision().getChampEntite().getNom().endsWith("Raison")){ // non conformite prelevement
              manager = ManagerLocator.getNonConformiteManager();
           }
          
@@ -259,17 +259,23 @@ public abstract class AbstractListGridVM
         	 final List<TKThesaurusObject> thObjs = new ArrayList<TKThesaurusObject>();
         	 if (!(manager instanceof NonConformiteManager)) {
 	            thObjs.addAll(manager.findByOrderManager(SessionUtils.getCurrentPlateforme()));
-        	 } else { // thes de non conformité
-        		 final Pattern p = Pattern.compile("Conforme(.*)\\.Raison");
- 				final Matcher m = p.matcher(getGridSubdivision().getChampEntite().getNom());
- 				final boolean b = m.matches();
- 				if(b && m.groupCount() > 0){
- 					final String cNom = m.group(1);
- 					thObjs.addAll(((NonConformiteManager) manager)
- 						.findByPlateformeEntiteAndTypeStringManager(SessionUtils.getCurrentPlateforme(), 
- 								cNom, getGridSubdivision().getChampEntite().getEntite()));
- 				}
-        	 }
+        	 } else {
+                // thes de non conformité
+                final String champNom = getGridSubdivision().getChampEntite().getNom();
+
+                if(champNom.startsWith("Conforme") && champNom.endsWith(".Raison")) {
+                   // On extrait la partie entre "Conforme" et ".Raison"
+                   // (longueur de "Conforme" = 8, longueur de ".Raison" = 7)
+                   final String cNom = champNom.substring(8, champNom.length() - 7);
+
+                   thObjs.addAll(((NonConformiteManager) manager)
+                           .findByPlateformeEntiteAndTypeStringManager(
+                                   SessionUtils.getCurrentPlateforme(),
+                                   cNom,
+                                   getGridSubdivision().getChampEntite().getEntite()
+                           ));
+                }
+             }
         	 for(final TKThesaurusObject o: thObjs){
 	               getSubdivMap().put(o.getId(), o.getNom());
 	            }
