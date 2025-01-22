@@ -56,7 +56,7 @@
 							<!-- Image représentant une icône de drapeau pour signaler un impact
 							 (dégradation probable de la qualité du matériel). -->
 
-						<image id="impactIcon" src="/images/icones/flag.png" tooltiptext="${c:l('Champ.Retour.Impact')}"/>
+						<image id="impactIcon" src="/images/icones/flag.png" />
 						</hbox>
 						<!-- Type de l'échantillon -->
 						<box orient="horizontal" widths=",50%" pack="center" >

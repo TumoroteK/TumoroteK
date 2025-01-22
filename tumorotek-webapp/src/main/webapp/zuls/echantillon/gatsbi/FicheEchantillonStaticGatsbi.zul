@@ -55,7 +55,7 @@
 									value="@{fwinEchantillonStatic$composer.object.code}" />
 							<!-- Image représentant une icône de drapeau pour signaler un impact
                                  (dégradation probable de la qualité du matériel). -->
-							<image id="impactIcon" src="/images/icones/flag.png" tooltiptext="${c:l('Champ.Retour.Impact')}"/>
+							<image id="impactIcon" src="/images/icones/flag.png" />
 							</hbox>
 						</div>
 						<div class="item item-mid" id="echantillonTypeDiv"><!-- Type échantillon -->	
