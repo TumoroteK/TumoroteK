@@ -242,8 +242,8 @@ public class FicheEchantillonStatic extends AbstractFicheStaticController
       this.prodDerivesGrid.setVisible(false);
       this.cessionsGrid.setVisible(false);
       this.addDerive.setDisabled(true);
-      impactIcon.setVisible(false);
-      impactIcon.setTooltiptext(Labels.getLabel("Champ.Retour.Impact"));
+      this.impactIcon.setVisible(false);
+      this.impactIcon.setTooltiptext(Labels.getLabel("Champ.Retour.Impact"));
       // **************** gastbi
       setGroupDerivesEchanOpen(false);
       setGroupCessionsEchanOpen(false);
