@@ -62,7 +62,7 @@
 					 appelez l'objet Retour du RetourDecorator -->
 					<row self="@{each='currRetour'}" value="@{currRetour}" style="@{currRetour.rowStyle}">
 						<!-- Une icône pour signaler un impact (dégradation probable de la qualité du matériel). -->
-						<image src="/images/icones/flag.png" visible="@{currRetour.retour.impact}"/>
+						<image src="/images/icones/flag.png" visible="@{currRetour.retour.impact}" tooltiptext="${c:l('Champ.Retour.Impact')}"/>
 						<label id="viewObj" value="@{currRetour.dateSortie}" class="formLink"
 							   style="@{currRetour.linkStyle}"/>
 						<label value="@{currRetour.dateRetour}"/>
