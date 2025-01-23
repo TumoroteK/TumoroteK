@@ -40,6 +40,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import fr.aphp.tumorotek.model.cession.Retour;
 import org.zkoss.util.resource.Labels;
@@ -58,6 +59,7 @@ import org.zkoss.zul.Image;
 
 import fr.aphp.tumorotek.action.ManagerLocator;
 import fr.aphp.tumorotek.action.cession.retour.ListeRetour;
+import fr.aphp.tumorotek.action.cession.retour.RetourDecorator;
 import fr.aphp.tumorotek.action.controller.AbstractController;
 import fr.aphp.tumorotek.action.controller.AbstractFicheStaticController;
 import fr.aphp.tumorotek.action.controller.AbstractListeController2;
@@ -263,11 +265,6 @@ public class FicheProdDeriveStatic extends AbstractFicheStaticController
       updateSortiesHeader(false);
 
       initQuantiteVolumeAndConc();
-      // Récupère la liste des retours associés à la dérive ayant un impact (dégradation probable de la qualité du matériel).
-
-      List<Retour> retours = ManagerLocator.getRetourManager().findByObjectAndImpactManager(prodDerive, true);
-
-      impactIcon.setVisible(!retours.isEmpty());
 
       if(derives.size() == 0){
          prodDerivesGrid.setVisible(false);
@@ -283,17 +280,30 @@ public class FicheProdDeriveStatic extends AbstractFicheStaticController
          cessionsGrid.setVisible(true);
          groupCessionsDerive.setOpen(true);
       }
+      
+      boolean impactIconVisible = false;
       if(listeRetour.getListObjects().size() == 0){
          if(listeRetour.getObjectsListGrid().isVisible()){
             groupSortiesDerive.setOpen(false);
             listeRetour.getObjectsListGrid().setVisible(false);
          }
       }else{
+         // TK-499 : gestion de l'affichage du drapeau rouge au niveau du code du dérivé si celui-ci contient au moins
+         // un évènement de stockage indiqué comme "avec une dégradation probable de la qualité du matériel"
+         // Filtre la liste des retourDecorators associés à l'échantillon pour garder ceux avec un impact (dégradation probable de la qualité du matériel).
+         List<RetourDecorator> retourDecoratorsAvecImpact = listeRetour.getListObjects().stream()
+                                       .map(tkDataObject -> ((RetourDecorator)tkDataObject))
+                                       .filter(retourDecorator -> retourDecorator.getRetour().getImpact()).collect(Collectors.toList());
+
+         // Rend l'icône d'impact visible uniquement si des retours avec impact sont trouvés.
+         impactIconVisible = !retourDecoratorsAvecImpact.isEmpty();
+         
          if(!listeRetour.getObjectsListGrid().isVisible()){
             groupSortiesDerive.setOpen(true);
             listeRetour.getObjectsListGrid().setVisible(true);
          }
       }
+      impactIcon.setVisible(impactIconVisible);
       listeRetour.getLwinRetour().invalidate();
 
       showParentInformation();

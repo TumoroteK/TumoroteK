@@ -45,6 +45,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -77,6 +78,7 @@ import org.zkoss.zul.Image;
 
 import fr.aphp.tumorotek.action.ManagerLocator;
 import fr.aphp.tumorotek.action.cession.retour.ListeRetour;
+import fr.aphp.tumorotek.action.cession.retour.RetourDecorator;
 import fr.aphp.tumorotek.action.controller.AbstractController;
 import fr.aphp.tumorotek.action.controller.AbstractFicheStaticController;
 import fr.aphp.tumorotek.action.controller.AbstractListeController2;
@@ -302,12 +304,6 @@ public class FicheEchantillonStatic extends AbstractFicheStaticController
       // Initilisation des variables formulaires
       initQuantite();
       initDelaiCgl();
-      // Récupère la liste des retours associés à l'échantillon ayant un impact (dégradation probable de la qualité du matériel).
-      List<Retour> retours = ManagerLocator.getRetourManager().findByObjectAndImpactManager(echantillon, true);
-
-      // Rend l'icône d'impact visible uniquement si des retours avec impact sont trouvés.
-      impactIcon.setVisible(!retours.isEmpty());
-
 
       if(derives.size() == 0){
          this.prodDerivesGrid.setVisible(false);
@@ -323,17 +319,30 @@ public class FicheEchantillonStatic extends AbstractFicheStaticController
          cessionsGrid.setVisible(true);
          setGroupCessionsEchanOpen(true);
       }
+      
+      boolean impactIconVisible = false;
       if(listeRetour.getListObjects().size() == 0){
          if(listeRetour.getObjectsListGrid().isVisible()){
             setGroupSortiesEchanOpen(false);
             listeRetour.getObjectsListGrid().setVisible(false);
          }
       }else{
+         // TK-499 : gestion de l'affichage du drapeau rouge au niveau du code de l'échantillon si celui-ci contient au moins
+         // un évènement de stockage indiqué comme "avec une dégradation probable de la qualité du matériel"
+         // Filtre la liste des retourDecorators associés à l'échantillon pour garder ceux avec un impact (dégradation probable de la qualité du matériel).
+         List<RetourDecorator> retourDecoratorsAvecImpact = listeRetour.getListObjects().stream()
+                                       .map(tkDataObject -> ((RetourDecorator)tkDataObject))
+                                       .filter(retourDecorator -> retourDecorator.getRetour().getImpact()).collect(Collectors.toList());
+
+         // Rend l'icône d'impact visible uniquement si des retours avec impact sont trouvés.
+         impactIconVisible = !retourDecoratorsAvecImpact.isEmpty();
+        
          if(!listeRetour.getObjectsListGrid().isVisible()){
             setGroupSortiesEchanOpen(true);
             listeRetour.getObjectsListGrid().setVisible(true);
          }
       }
+      impactIcon.setVisible(impactIconVisible);
       listeRetour.getLwinRetour().invalidate();
 
       if(prelevement != null){
