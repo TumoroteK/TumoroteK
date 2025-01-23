@@ -52,11 +52,17 @@
 					<row>
 						<!-- Code du Produit dérivé -->
 						<label value="${c:l('Champ.ProdDerive.Code')}" sclass="formLabel"/>
+						<hbox spacing="10px">
+
 						<label id="codeLabelDerive" 
 							value="@{fwinProdDeriveStatic$composer.object.code}"
 							sclass="formValue" />
-							
-						
+							<!-- Image représentant une icône de drapeau pour signaler un impact
+                         (dégradation probable de la qualité du matériel). -->
+						<image id="impactIcon" src="/images/icones/flag.png" tooltiptext="${c:l('Champ.Retour.Impact')}"/>
+
+						</hbox>
+
 						<!-- Type du Produit dérivé -->
 						<label value="${c:l('Champ.ProdDerive.ProdType')}" sclass="formLabel"/>
 						<label id="typeLabelDerive" 
