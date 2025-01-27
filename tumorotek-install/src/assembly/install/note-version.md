@@ -1,7 +1,19 @@
-#### Notes de version
+#### Notes
 
-##### Version ....
+##### Version 2.3.0.14 - Publiée le 27/01/2025
+###### Corrections ano pour un contexte Gatsbi
+- YouTrack [TK-611](https://tumorotek.myjetbrains.com/youtrack/issue/TK-611) : Export collection Gatsbi avec un contexte non défini : les colonnes de ce contexte n'apparaissent pas
+- YouTrack [TG-272](https://tumorotek.myjetbrains.com/youtrack/issue/TG-272) : Impossible de supprimer une collection Gatsbi dans un cas particulier
+
+###### Amélioration du code dans le module Gatsbi (version 1.0.0.9)
+
+
+##### Version 2.3.0.13 - Publiée le 13/01/2025
 - YouTrack [TK-589](https://tumorotek.myjetbrains.com/youtrack/issue/TK-589) : Problème lors de la création d'un index à cause d'une valeur par défaut à 0000-00-00 00:00:00, valeur qui n'est plus autorisée
+- YouTrack [TK-593](https://tumorotek.myjetbrains.com/youtrack/issue/TK-593) : Indicateurs : plantage lors l'exécution si sélection de l'indicateur "Prélèvements groupés par patient et par date de prélèvement"
+
+###### Corrections ano pour un contexte Gatsbi
+- YouTrack [TG-255](https://tumorotek.myjetbrains.com/youtrack/issue/TG-255) : [TK] ${prelevement} : erreur lors de la création d'un prélèvement (failed to lazily initialize a collection of role) dans un cas bien particulier
 
 
 ##### Version 2.3.0.12 - Publiée le 14/10/2024
