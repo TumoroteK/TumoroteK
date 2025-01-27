@@ -209,21 +209,18 @@ public interface BanqueManager
     */
    boolean findDoublonManager(Banque banque);
 
+   //TG-272
    /**
     * Supprime la banque et ses opérations associées du système.
+    * Attention, cette méthode ne doit pas être appelée directement car elle ne gère
+    * que les données en base - pas le file system associé. Il faut passer par {@link BanqueSuppressionProcessor.removeObjectAndFileSystem} 
+    * pour bien gérer la "transaction" entre les 2
     * @param comments commentaires liés à la suppression
     * @param Utilisateur réalisant la suppression.
     * @param base directory pour effacer dossiers sytèmes associés.
     * @param boolean force true pour forcer la suppression de la banque.
     */
-   void removeObjectManager(Banque banque, String comments, Utilisateur user, String basedir, boolean force);
-
-   //	/**
-   //	 * Recherche les codifications liées à la banque passée en paramètre.
-   //	 * @param banque Banque pour laquelle on recherche des codifications.
-   //	 * @return Liste de TableCodage.
-   //	 */
-   //	Set<TableCodage> getTablesCodageManager(Banque banque);
+   void removeObjectInBddOnly(Banque banque, String comments, Utilisateur user, String basedir, boolean force);
 
    /**
     * Recherche les conteneurs liés à la banque passée en paramètre.

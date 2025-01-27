@@ -94,6 +94,7 @@ import fr.aphp.tumorotek.manager.coeur.prodderive.ProdQualiteManager;
 import fr.aphp.tumorotek.manager.coeur.prodderive.ProdTypeManager;
 import fr.aphp.tumorotek.manager.coeur.prodderive.TransformationManager;
 import fr.aphp.tumorotek.manager.context.BanqueManager;
+import fr.aphp.tumorotek.manager.context.BanqueSuppressionProcessor;
 import fr.aphp.tumorotek.manager.context.CategorieManager;
 import fr.aphp.tumorotek.manager.context.CollaborateurManager;
 import fr.aphp.tumorotek.manager.context.ContexteManager;
@@ -316,6 +317,10 @@ public final class ManagerLocator
 
    public static BanqueManager getBanqueManager(){
       return (BanqueManager) (ContextLoader.getCurrentWebApplicationContext()).getBean("banqueManager");
+   }
+   
+   public static BanqueSuppressionProcessor getBanqueSuppressionProcessor(){
+      return (BanqueSuppressionProcessor) (ContextLoader.getCurrentWebApplicationContext()).getBean("banqueSuppressionProcessor");
    }
 
    public static TransporteurManager getTransporteurManager(){

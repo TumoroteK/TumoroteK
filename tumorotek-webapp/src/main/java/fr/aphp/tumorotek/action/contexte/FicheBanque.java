@@ -752,7 +752,9 @@ public class FicheBanque extends AbstractFicheCombineController
 
    @Override
    public void removeObject(final String comments){
-      ManagerLocator.getBanqueManager().removeObjectManager(getObject(), comments, SessionUtils.getLoggedUser(sessionScope),
+      //TG-272 : il faut passer par l'objet BanqueSuppressionProcessor et non directement BanqueManager pour bien gérer la "transaction"
+      //entre la base de données et le file system
+      ManagerLocator.getBanqueSuppressionProcessor().removeObjectAndFileSystem(getObject(), comments, SessionUtils.getLoggedUser(sessionScope),
          SessionUtils.getSystemBaseDir(), false);
       ManagerLocator.getPlateformeManager().getBanquesManager(SessionUtils.getPlateforme(sessionScope)).remove(getObject());
    }

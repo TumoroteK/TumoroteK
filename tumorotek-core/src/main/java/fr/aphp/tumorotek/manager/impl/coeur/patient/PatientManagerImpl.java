@@ -52,10 +52,12 @@ import java.util.Set;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.orm.jpa.EntityManagerFactoryUtils;
 import org.springframework.validation.Validator;
 
 import fr.aphp.tumorotek.dao.coeur.patient.MaladieDao;
@@ -1226,5 +1228,27 @@ public class PatientManagerImpl implements PatientManager
          return patientDao.findIdentifiantsByPatientAndBanques(patient, banques);
       }
       return new ArrayList<PatientIdentifiant>();
+   }
+   
+   //TG-272
+   /**
+    * Supprime tous les patientIdentifiants de la banque passée en paramètre.
+    * @since 2.3.0 (gatsbi), les patients sont rattachés à la collection quand lors de la création de leurs prélèvements
+    * sur une collection Gatsbi
+    * @param banque
+    */
+   @Override
+   public void removeAllPatientIdentifiantsForBanque(Banque banque){
+      // /!\ cette méthode est une mise à jour : il ne faut créer un entityManager que si une transaction 
+      // n'est pas déjà en cours...
+      //normalement vu que la propogation définie sur la méthode est REQUIRED - d'après la conf dans applicationContextAOP.xml, 
+      //ça doit toujours être le cas mais on sécurise quand même en créant un entityManager si celui récupéré est null
+      EntityManager em = EntityManagerFactoryUtils.getTransactionalEntityManager(entityManagerFactory);
+      if(em == null) {
+         em = entityManagerFactory.createEntityManager();
+      }
+      Query queryDelete = em.createNamedQuery("PatientIdentifiant.removeAllForBanque");
+      queryDelete.setParameter(1, banque);
+      queryDelete.executeUpdate(); 
    }
 }
