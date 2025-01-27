@@ -3,9 +3,14 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
 	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
-	<changeSet id="${project.artifactId}-2.3.0.13" author="TK-593" runAlways="false" context="*">
+	<changeSet id="${project.artifactId}-TK-593" author="CH" runAlways="false" context="*">
 		<comment>Rechargement de la procédure stockée des indicateurs</comment>
 		<sqlFile encoding="utf8" path="../sql/mysql/tumorotek/indicateurs.sql" endDelimiter="&amp;&amp;" relativeToChangelogFile="true" stripComments="true"/>
+	</changeSet>
+	
+	<changeSet id="${project.artifactId}-TK-611" author="CH" runAlways="false" context="*">
+		<comment>Rechargement des procédures d'export spécifiques à Gatsbi pour gestion des études pour lesquelles au moins un contexte n'est pas défini (TK-611)</comment>
+		<sqlFile encoding="utf8" path="../sql/mysql/tumorotek/export_gatsbi.sql" endDelimiter="&amp;&amp;" relativeToChangelogFile="true" stripComments="true"/>
 	</changeSet>
    	    
 </databaseChangeLog>
