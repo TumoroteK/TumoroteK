@@ -254,6 +254,11 @@
 					<label value="${c:l('general.banque')}" sclass="formLabel"/>
 					<!--					label pour afficher le nom de la plateforme-->
 					<label id="plateformeLabel" sclass="formLabel" style="color: #001A61" />
+					<!-- Image permettant à l'utilisateur de changer de banque sans se déconnecter -->
+					<image id="changePlateforme" src="/images/icones/change_red.png"
+						   tooltiptext="${c:l('generale.changement.plateforme')}"
+						   height="18px" style="cursor: pointer"
+					/>
 					<listbox use="fr.aphp.tumorotek.webapp.general.MainBanquesListBox"
 						id="mainBanquesListBox" mold="select" rows="1"
 						model="@{mainWin$composer.banques}"
