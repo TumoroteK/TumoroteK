@@ -257,7 +257,7 @@
 					<!-- Image permettant à l'utilisateur de changer de banque sans se déconnecter -->
 					<image id="changePlateforme" src="/images/icones/change_red.png"
 						   tooltiptext="${c:l('generale.changement.plateforme')}"
-						   height="18px" style="cursor: pointer"
+						   height="18px" style="cursor: pointer" visible="false"
 					/>
 					<listbox use="fr.aphp.tumorotek.webapp.general.MainBanquesListBox"
 						id="mainBanquesListBox" mold="select" rows="1"

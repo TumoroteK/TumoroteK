@@ -43,6 +43,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import fr.aphp.tumorotek.manager.ConfigManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.util.resource.Labels;
@@ -67,6 +68,7 @@ import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Box;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Div;
+import org.zkoss.zul.Image;
 import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.North;
@@ -250,6 +252,10 @@ public class MainWindow extends GenericForwardComposer<Component>
 
          // Définir le nom de la plateforme sur le label
          plateformeLabel.setValue(pf.getNom());
+
+         Image changePlateformeImage = (Image) mainBorderLayout.getFellow("northTopBanniere").getFellow("changePlateforme");
+         changePlateformeImage.setVisible(true);
+         changePlateformeImage.addForward("onClick", self, "onChangePlateforme");
       }
 
       // background
@@ -303,6 +309,7 @@ public class MainWindow extends GenericForwardComposer<Component>
 
       scanButtonDiv = (Div) mainBorderLayout.getFellow("northTopBanniere").getFellow("scanButtonDiv");
       scanButtonDiv.addForward("onClick", self, "onSwitchScanButton");
+
       scanTimer = (Timer) scanButtonDiv.getFellow("scanTimer");
       scanTimer.addForward("onTimer", self, "onScanTimer");
 
@@ -310,6 +317,8 @@ public class MainWindow extends GenericForwardComposer<Component>
       genno.addForward("onClick", self, "onOpenDossierExternes");
 
    }
+
+
 
    public void prepareListBanques(){
       final Utilisateur user = SessionUtils.getLoggedUser(sessionScope);
@@ -1428,6 +1437,16 @@ public class MainWindow extends GenericForwardComposer<Component>
          onSelectScan(ev);
       }
       ManagerLocator.getScanTerminaleManager().removeObjectManager((ScanTerminale) ev.getData());
+   }
+
+   public void onChangePlateforme() {
+      try {
+         Executions.sendRedirect(ConfigManager.SELECT_BANQUE_URL);
+         sessionScope.remove(SessionUtils.SESSION_BANQUE);
+         sessionScope.remove(SessionUtils.SESSION_PLATEFORME);
+      } catch (Exception e) {
+         log.error("Erreur lors du changement de plateforme", e);
+      }
    }
 
    /**** since 2.2.3-genno dossier externjes multiple integration *******/
