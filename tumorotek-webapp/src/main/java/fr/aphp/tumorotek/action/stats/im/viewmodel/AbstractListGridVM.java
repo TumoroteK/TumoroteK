@@ -265,13 +265,11 @@ public abstract class AbstractListGridVM
 
                 if(champNom.startsWith("Conforme") && champNom.endsWith(".Raison")) {
                    // On extrait la partie entre "Conforme" et ".Raison"
-                   // (longueur de "Conforme" = 8, longueur de ".Raison" = 7)
-                   final String cNom = champNom.substring(8, champNom.length() - 7);
-
+                   final String nonConformiteNom = champNom.substring("Conforme".length(), champNom.length() - ".Raison".length());
                    thObjs.addAll(((NonConformiteManager) manager)
                            .findByPlateformeEntiteAndTypeStringManager(
                                    SessionUtils.getCurrentPlateforme(),
-                                   cNom,
+                                   nonConformiteNom,
                                    getGridSubdivision().getChampEntite().getEntite()
                            ));
                 }
