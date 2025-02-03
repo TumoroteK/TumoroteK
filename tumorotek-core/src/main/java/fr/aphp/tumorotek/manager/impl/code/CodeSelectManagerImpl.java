@@ -38,6 +38,7 @@ package fr.aphp.tumorotek.manager.impl.code;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,6 +59,7 @@ import fr.aphp.tumorotek.model.code.CodeDossier;
 import fr.aphp.tumorotek.model.code.CodeSelect;
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
+
 
 /**
  *
@@ -127,13 +129,13 @@ public class CodeSelectManagerImpl implements CodeSelectManager
 
    @Override
    public List<CodeCommon> findCodesFromSelectByDossierManager(final CodeDossier parent){
-      return extractCodeCommonFromCodeSelect(codeSelectDao.findByCodeDossier(parent), null);
+      return extractCodeCommonFromCodeSelect(codeSelectDao.findByCodeDossier(parent));
    }
 
    @Override
    public List<CodeCommon> findByRootDossierManager(final Utilisateur u, final Banque bank){
       final List<CodeSelect> codes = codeSelectDao.findByRootDossier(u, bank);
-      return extractCodeCommonFromCodeSelect(codes, null);
+      return extractCodeCommonFromCodeSelect(codes);
    }
 
    @Override
@@ -143,7 +145,7 @@ public class CodeSelectManagerImpl implements CodeSelectManager
 
    @Override
    public List<CodeCommon> findCodesFromSelectByUtilisateurAndBanqueManager(final Utilisateur u, final Banque b){
-      return extractCodeCommonFromCodeSelect(codeSelectDao.findByUtilisateurAndBanque(u, b), null);
+      return extractCodeCommonFromCodeSelect(codeSelectDao.findByUtilisateurAndBanque(u, b));
    }
 
    @Override
@@ -248,44 +250,78 @@ public class CodeSelectManagerImpl implements CodeSelectManager
          codeUserBanque.addAll(findByUtilisateurAndBanqueManager(u, b));
       }
 
-      return extractCodeCommonFromCodeSelect(codeUserBanque, codeOrLibelle);
+      return extractAndFilterCodeCommonFromCodeSelect(codeUserBanque, codeOrLibelle, false);
    }
 
+
+
    /**
-    * Extrait les codes (CodeCommon) pour affichage
-    * a partir d'une liste de code favoris.
-    * Filtre eventuellement sur le code et libelle.
-    * Embarque une back reference vers l'objet code select.
-    * @param codes
-    * @param codeOrLibelle
-    * @return liste de CodeCommon pour affichage
+    * Extrait les codes (CodeCommon) à partir d'une liste de CodeSelect.
+    *
+    * @param codes Liste de CodeSelect à traiter.
+    * @return Liste de CodeCommon extraits des CodeSelect fournis.
     */
-   private List<CodeCommon> extractCodeCommonFromCodeSelect(final List<CodeSelect> codes, final String codeOrLibelle){
+   private List<CodeCommon> extractCodeCommonFromCodeSelect(final List<CodeSelect> codes){
       final List<CodeCommon> res = new ArrayList<>();
 
       final Iterator<CodeSelect> it = codes.iterator();
-      CodeSelect next;
+      CodeSelect next ;
       CodeCommon ref;
       while(it.hasNext()){
          next = it.next();
          ref = commonUtilsManager.findCodeByTableCodageAndIdManager(next.getCodeId(), next.getTableCodage());
-
-         if(ref != null){
-            ref.setCodeSelect(next);
-            if(codeOrLibelle != null){
-               if(ref.getCode().matches(codeOrLibelle) || ref.getLibelle().matches(codeOrLibelle)){
-                  res.add(ref);
-               }
-            }else{
-               res.add(ref);
-            }
-         }
+         res.add(ref);
       }
       return res;
    }
 
-   @Override
+   // TODO : Je trouve cette méthode un peu difficile à comprendre (le besoin de crteer un Objet Iterator et les variables),
+   //  donc j'ai envisagé deux autres options.
+   //    La deuxième suit la même architecture que extractAndFilterCodeCommonFromCodeSelect, car elle utilise Java Flux.
+   //    Lors de ton revue de code, merci de voir si tu souhaite accepter l'une de mes propositions.
+
+   // Option 1:
+   //   private List<CodeCommon> extractCodeCommonFromCodeSelect(final List<CodeSelect> codes) {
+   //      final List<CodeCommon> res = new ArrayList<>();
+   //      for (CodeSelect next : codes) {
+   //         CodeCommon ref = commonUtilsManager.findCodeByTableCodageAndIdManager(next.getCodeId(), next.getTableCodage());
+   //         if (ref != null) {
+   //            ref.setCodeSelect(next); // Référence vers l'objet CodeSelect
+   //            res.add(ref);
+   //         }
+   //      }
+   //      return res;
+   //   }
+
+      // Option 2:
+   //   private List<CodeCommon> extractCodeCommonFromCodeSelect(final List<CodeSelect> codes) {
+   //      return codes.stream()
+   //         .map(cs -> commonUtilsManager.findCodeByTableCodageAndIdManager(cs.getCodeId(), cs.getTableCodage()))
+   //         .filter(Objects::nonNull)
+   //         .collect(Collectors.toList());
+   //   }
+
+   /**
+    * Extrait et filtre les CodesCommuns à partir d'une liste de CodeSelect,
+    * en fonction du code ou du libellé spécifié.
+    *
+    * @param codes Liste de CodeSelect à traiter.
+    * @param codeOrLibelle Chaîne de caractères pour filtrer les résultats.
+    * @param exactMatch Indique si la correspondance doit être exacte ou non.
+    * @return Liste filtrée de CodeCommon selon le critère spécifié.
+    */
+
+   private List<CodeCommon> extractAndFilterCodeCommonFromCodeSelect(final List<CodeSelect> codes, final String codeOrLibelle,
+      boolean exactMatch){
+      return extractCodeCommonFromCodeSelect(codes).stream().filter(
+         ref -> (exactMatch && (ref.getCode().equals(codeOrLibelle) || ref.getLibelle().equals(codeOrLibelle))) ||
+                (!exactMatch && (ref.getCode().contains(codeOrLibelle) || ref.getLibelle()
+            .contains(codeOrLibelle)))).collect(Collectors.toList());
+   }
+
+
+      @Override
    public List<CodeCommon> findByRootDossierAndBanqueManager(final Banque bank){
-      return extractCodeCommonFromCodeSelect(codeSelectDao.findByRootDossierAndBanque(bank), null);
+      return extractCodeCommonFromCodeSelect(codeSelectDao.findByRootDossierAndBanque(bank));
    }
 }
