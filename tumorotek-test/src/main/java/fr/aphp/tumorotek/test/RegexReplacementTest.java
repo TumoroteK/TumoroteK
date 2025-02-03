@@ -52,177 +52,321 @@ import static org.junit.Assert.assertEquals;
 public class RegexReplacementTest
 {
 
-   //   Tester l'expression régulière  ".*\|+$"
-   @Test
-   public void testEndsWith_SimpleCase(){
-      String input = "Hello|";
-      assertEquals("Cas simple avec une seule barre verticale", input.matches(".*\\|+$"), input.endsWith("|"));
-   }
 
+   // ***************** Tester l'expression régulière ".*XXX.*", qui a été remplacée par contains() *****************************
    @Test
-   public void testEndsWith_MultiplePipes(){
-      String input = "Hello||||";
-      assertEquals("Des barres verticales multiples à la fin doivent correspondre aux deux modèles", input.matches(".*\\|+$"),
-         input.endsWith("|"));
-   }
-
-   @Test
-   public void testEndsWith_EmptyString(){
-      String input = "";
-      assertEquals("Une chaîne vide ne doit correspondre à aucun modèle", input.matches(".*\\|+$"), input.endsWith("|"));
-   }
-
-   @Test
-   public void testEndsWith_PipeInMiddle(){
-      String input = "Hel|lo";
-      assertEquals("Une barre verticale au milieu ne doit correspondre à aucun modèle", input.matches(".*\\|+$"),
-         input.endsWith("|"));
-   }
-
-   //   Tester l'expression régulière  ".*ACK.*
-   @Test
-   public void testContainsACK_SimpleCase(){
+   public void testContains_SimpleCase(){
       String input = "This is an ACK message";
       assertEquals("Cas simple avec ACK", input.matches(".*ACK.*"), input.contains("ACK"));
    }
 
    @Test
-   public void testContainsACK_PartialMatch(){
+   public void testContains_ExactMatch(){
+      String input = "ACK";
+      assertEquals("Cas exact où la chaîne est strictement égale", input.matches("ACK"), input.equals("ACK"));
+   }
+
+   @Test
+   public void testContains_PartialMatch(){
       String input = "BACKUP";
       assertEquals("Cas de chaîne BACKUP", input.matches(".*ACK.*"), input.contains("ACK"));
 
    }
 
    @Test
-   public void testContainsACK_CaseSensitivity(){
+   public void testContains_CaseSensitivity(){
       String input = "This is an ack message";
       assertEquals("ACK est sensible à la casse pour input.matches", input.matches(".*ACK.*"), input.contains("ACK"));
    }
 
-   //   Tester l'expression régulière  ".*STORAGE.*"
 
    @Test
-   public void testContainsStorage_SimpleCase(){
-      String input = "STORAGE device";
-      assertEquals("Cas simple avec STORAGE", input.matches(".*STORAGE.*"), input.contains("STORAGE"));
-   }
-
-   @Test
-   public void testContainsStorage_EmptyString(){
+   public void testContains_EmptyString(){
       String input = "";
       assertEquals("Une chaîne vide ne doit correspondre à aucun modèle", input.matches(".*STORAGE.*"),
          input.contains("STORAGE"));
    }
 
-   //   Tester l'expression régulière  ".*Biothèque Sein.*"
    @Test
-   public void testContainsBiotheque_SimpleCase(){
-      String input = "Test Biothèque Sein case";
-      assertEquals("Cas simple avec Biothèque Sein", input.matches(".*Biothèque Sein.*"), input.contains("Biothèque Sein"));
+   public void testContains_StartOfString(){
+      String input = "ACK is here";
+      assertEquals("ACK au début de la chaîne", input.matches(".*ACK.*"), input.contains("ACK"));
    }
 
    @Test
-   public void testContainsBiotheque_SpecialCharacters(){
-      String input = "Test Biotheque Sein case"; // Without è
+   public void testContains_EndOfString(){
+      String input = "Message contains ACK";
+      assertEquals("ACK à la fin de la chaîne", input.matches(".*ACK.*"), input.contains("ACK"));
+   }
+
+   @Test
+   public void testContains_SpecialCharacters(){
+      String input = "Test Biotheque Sein case"; // Sans è
       assertEquals("Les caractères spéciaux doivent correspondre exactement", input.matches(".*Biothèque Sein.*"),
          input.contains("Biothèque Sein"));
    }
 
    @Test
-   public void testContainsBiotheque_PartialMatch(){
-      String input = "Biothèque without Sein";
-      assertEquals("Une correspondance partielle ne doit pas réussir", input.matches(".*Biothèque Sein.*"),
-         input.contains("Biothèque Sein"));
+   public void testContains_WithSpaces(){
+      String input = " A C K ";
+      assertEquals("ACK avec des espaces", input.matches(".*ACK.*"), input.contains("ACK"));
    }
 
-   //   Tester l'expression régulière  "BoolBox"
+   @Test
+   public void testContains_WithNumbers(){
+      String input = "123ACK456";
+      assertEquals("ACK entouré de nombres", input.matches(".*ACK.*"), input.contains("ACK"));
+   }
+
+
+   // ******************  Tester l'expression régulière  ".*XXX", , qui a été remplacée par endsWith() ***************************
 
    @Test
-   public void testBoolBox_SimpleCase(){
+      public void testEndsWithX_SimpleCase(){
       String input = "TestBoolBox";
       assertEquals("Cas simple avec suffixe BoolBox", input.matches(".*BoolBox"), input.endsWith("BoolBox"));
    }
 
+
    @Test
-   public void testBoolBox_EmptyString(){
-      String input = "";
-      assertEquals("Une chaîne vide ne doit pas correspondre", input.matches(".*BoolBox"), input.endsWith("BoolBox"));
+   public void testEndsWith_ExactMatch(){
+      String input = "Model";
+      assertEquals("Cas où la chaîne est exactement Model", input.matches(".*Model"), input.endsWith("Model"));
    }
 
    @Test
-   public void testBoolBox_PartialMatch(){
+   public void testEndsWith_PartialMatch(){
       String input = "BoolBoxExtra";
       assertEquals("Ne doit pas correspondre lorsque BoolBox n'est pas à la fin", input.matches(".*BoolBox"),
-         input.endsWith("BoolBox"));
+                  input.endsWith("BoolBox"));
    }
 
    @Test
-   public void testAnnoBox_SimpleCase(){
+   public void testEndsWith_CaseSensitivity(){
+      String input = "Testboolbox"; // Different casing
+      assertEquals("BoolBox est sensible à la casse pour input.matches", input.matches(".*BoolBox"),
+                  input.endsWith("BoolBox"));
+   }
+
+   @Test
+   public void testEndsWith_EmptyString(){
+      String input = "";
+      assertEquals("Une chaîne vide ne doit correspondre à aucun modèle", input.matches(".*Storage"),
+                   input.endsWith("Storage"));
+   }
+
+   @Test
+   public void testEndsWith_SpecialCharacters(){
+      String input = "Test_BoolBox!";
+      assertEquals("Les caractères spéciaux doivent correspondre exactement", input.matches(".*BoolBox!"),
+                   input.endsWith("BoolBox!"));
+   }
+
+   @Test
+   public void testEndsWith_WithSpaces(){
+      String input = "Test BoolBox ";
+      assertEquals("BoolBox avec un espace final ne doit pas correspondre", input.matches(".*BoolBox"),
+                  input.endsWith("BoolBox"));
+   }
+
+   @Test
+   public void testEndsWith_WithNumbers(){
+      String input = "Model2024";
+      assertEquals("Model ne doit correspondre que s'il est à la fin", input.matches(".*Model"),
+                  input.endsWith("Model"));
+   }
+
+
+
+   // **************************  Tester l'expression régulière  "XXX.*", qui a été remplacée par startsWith() *******************
+
+
+   @Test
+   public void testStartsWith_SimpleCase(){
       String input = "annoBoxTest";
       assertEquals("Cas simple avec préfixe annoBox", input.matches("annoBox.*"), input.startsWith("annoBox"));
    }
 
-   //   Tester l'expression régulière  "annoBox"
 
    @Test
-   public void testAnnoBox_ExactMatch(){
+   public void testStartsWith_ExactMatch(){
       String input = "annoBox";
       assertEquals("Cas de correspondance exacte", input.matches("annoBox.*"), input.startsWith("annoBox"));
    }
 
    @Test
-   public void testAnnoBox_EmptyString(){
+   public void testStartsWith_PartialMatch(){
+      String input = "annoBoxTest";
+      assertEquals("Le préfixe 'annoBox' doit correspondre correctement", input.matches("annoBox.*"), input.startsWith("annoBox"));
+   }
+
+   @Test
+   public void testStartsWith_CaseSensitive(){
+      String input = "DateTest";
+      assertEquals("Le préfixe date doit être sensible à la casse", input.matches("date.*"), input.startsWith("date"));
+   }
+
+   @Test
+   public void testStartsWith_SpecialCharacters(){
+      String input = "thesaurus@#";
+      assertEquals("Cas avec des caractères spéciaux après thesaurus", input.matches("thesaurus.*"),
+         input.startsWith("thesaurus"));
+   }
+
+   @Test
+   public void testStartsWith_EmptyString(){
       String input = "";
       assertEquals("Une chaîne vide ne doit pas correspondre", input.matches("annoBox.*"), input.startsWith("annoBox"));
    }
 
-   //   Tester l'expression régulière  "Conforme.*Raison"
+   @Test
+   public void testStartsWith_WithSpaces(){
+      String input = " annoBoxTest";  // Note the leading space
+      assertEquals("La chaîne avec un espace au début ne doit pas correspondre", input.matches("annoBox.*"), input.startsWith("annoBox"));
+   }
 
    @Test
-   public void testConformeRaison_SimpleCase(){
+   public void testStartsWith_WithNumbers(){
+      String input = "2023Test";
+      assertEquals("Le préfixe numérique '2023' doit être traité correctement", input.matches("2023.*"),
+                  input.startsWith("2023"));
+   }
+
+   @Test
+   public void testStartsWith_WithNumbersAndText(){
+      String input = "2023Test2024";
+      assertEquals("Les chaînes avec des nombres et du texte au début doivent être traitées correctement",
+                  input.matches("2023.*"), input.startsWith("2023"));
+   }
+
+   @Test
+   public void testStartsWith_SingleCharacter(){
+      String input = "A";
+      assertEquals("Une chaîne avec un seul caractère comme préfixe doit fonctionner", input.matches("A.*"),
+                           input.startsWith("A"));
+   }
+
+   @Test
+   public void testStartsWith_NotMatchingPrefix(){
+      String input = "TestBox";
+      assertEquals("La chaîne ne doit pas correspondre si le préfixe est incorrect", input.matches("annoBox.*"),
+                           input.startsWith("annoBox"));
+   }
+
+   @Test
+   public void testStartsWith_SpecialCharactersAtStart(){
+      String input = "@hello";
+      assertEquals("Les caractères spéciaux en début de chaîne doivent être pris en compte", input.matches("@.*"),
+                            input.startsWith("@"));
+   }
+
+   //   ********** Tester l'expression régulière  "XXX.*YYY", qui a été remplacée par startsWith() && endsWith() *****************
+
+   @Test
+   public void testStartsWithEndsWith_SimpleCase(){
       String input = "ConformeTestRaison";
       assertEquals("Cas simple avec Conforme et Raison", input.matches("Conforme.*Raison"),
          input.startsWith("Conforme") && input.endsWith("Raison"));
    }
 
    @Test
-   public void testConformeRaison_ExactMatch(){
+   public void testStartsWithEndsWith_ExactMatch(){
       String input = "ConformeRaison";
       assertEquals("Cas de correspondance exacte", input.matches("Conforme.*Raison"),
          input.startsWith("Conforme") && input.endsWith("Raison"));
    }
 
    @Test
-   public void testConformeRaison_OnlyPrefix(){
+   public void testStartsWithEndsWith_OnlyPrefix(){
       String input = "Conforme";
       assertEquals("Seulement le préfixe. Ne doit pas correspondre", input.matches("Conforme.*Raison"),
          input.startsWith("Conforme") && input.endsWith("Raison"));
    }
 
-   //   Tester l'expression régulière  "Conforme(.*)\.Raison"
+
 
    @Test
-   public void testConformeDotRaison_SimpleCase(){
-      String input = "Conforme.Raison";
-      assertEquals("Cas simple avec un point", input.matches("Conforme(.*)\\.Raison"),
-         input.startsWith("Conforme") && input.endsWith(".Raison"));
-   }
-
-   @Test
-   public void testConformeDotRaison_WithContent(){
+   public void testStartsWithEndsWithDotIncluded_WithDot(){
       String input = "ConformeTest.Raison";
       assertEquals("Cas avec du contenu entre Conforme et .Raison", input.matches("Conforme(.*)\\.Raison"),
          input.startsWith("Conforme") && input.endsWith(".Raison"));
    }
 
    @Test
-   public void testConformeDotRaison_NoDot(){
+   public void testStartsWithEndsWithDotIncluded_NoDot(){
       String input = "ConformeRaison";
       assertEquals("Cas sans point ne doit pas correspondre", input.matches("Conforme(.*)\\.Raison"),
          input.startsWith("Conforme") && input.endsWith(".Raison"));
    }
 
-   //   Tester l'expression régulière  ".*-[0-9]+"
+   @Test
+   public void testStartsWithEndsWith_EmptyString(){
+      String input = "";
+      assertEquals("Une chaîne vide ne doit pas correspondre", input.matches("Conforme.*Raison"),
+         input.startsWith("Conforme") && input.endsWith("Raison"));
+   }
+
+   @Test
+   public void testStartsWithEndsWith_SpecialCharacters(){
+      String input = "Conforme@123Raison!";
+      assertEquals("Cas avec des caractères spéciaux", input.matches("Conforme.*Raison"),
+         input.startsWith("Conforme") && input.endsWith("Raison"));
+   }
+
+   @Test
+   public void testStartsWithEndsWith_Spaces(){
+      String input = "Conforme Test Raison ";
+      assertEquals("Cas avec des espaces entre Conforme et Raison", input.matches("Conforme.*Raison"),
+         input.startsWith("Conforme") && input.endsWith("Raison"));
+   }
+
+   @Test
+   public void testStartsWithEndsWith_MixedCase(){
+      String input = "ConformeTestRaison";
+      assertEquals("La casse doit correspondre exactement", input.matches("Conforme.*Raison"),
+         input.startsWith("Conforme") && input.endsWith("Raison"));
+   }
+
+   @Test
+   public void testStartsWithEndsWith_Numbers(){
+      String input = "Conforme123Raison456";
+      assertEquals("Cas avec des nombres entre Conforme et Raison", input.matches("Conforme.*Raison"),
+         input.startsWith("Conforme") && input.endsWith("Raison"));
+   }
+
+   @Test
+   public void testStartsWithEndsWith_PartialMatch(){
+      String input = "ConformeSomethingElseRaison";
+      assertEquals("Cas avec un autre mot entre Conforme et Raison", input.matches("Conforme.*Raison"),
+         input.startsWith("Conforme") && input.endsWith("Raison"));
+   }
+
+   @Test
+   public void testStartsWithEndsWith_NonMatchingPrefix(){
+      String input = "TestConformeRaison";
+      assertEquals("Le préfixe ne doit pas correspondre si c'est incorrect", input.matches("Conforme.*Raison"),
+         input.startsWith("Conforme") && input.endsWith("Raison"));
+   }
+
+   @Test
+   public void testStartsWithEndsWith_NonMatchingSuffix(){
+      String input = "ConformeTestRaisonTest";
+      assertEquals("Le suffixe ne doit pas correspondre si c'est incorrect", input.matches("Conforme.*Raison"),
+         input.startsWith("Conforme") && input.endsWith("Raison"));
+   }
+
+   @Test
+   public void testStartsWithEndsWith_MissingPrefix(){
+      String input = "RaisonConforme";
+      assertEquals("Le préfixe 'Conforme' doit être au début", input.matches("Conforme.*Raison"),
+         input.startsWith("Conforme") && input.endsWith("Raison"));
+   }
+
+//   ******************** Cas spécifiques à tester pour les expressions régulières *********************************************
+
+
+//     Tester l'expression régulière  ".*-[0-9]+" (chaîne contient un tiret suivi d'au moins un chiffre,
+//     peu importe ce qui précède.
 
    @Test
    public void testNumberSuffix_SimpleCase(){
@@ -239,140 +383,93 @@ public class RegexReplacementTest
    }
 
    @Test
+   public void testNumberSuffix_NoHyphen(){
+      String input = "test123";
+      assertEquals("L'expression régulière ne doit pas correspondre à une chaîne sans tiret",
+         input.matches(".*-[0-9]+"),
+         input.lastIndexOf("-") != -1 && input.substring(input.lastIndexOf("-") + 1).matches("[0-9]+"));
+   }
+
+   @Test
+   public void testNumberSuffix_HyphenNoDigits(){
+      String input = "test-abc";
+      assertEquals("L'expression régulière ne doit pas correspondre à une chaîne avec un tiret mais sans chiffres après",
+         input.matches(".*-[0-9]+"),
+         input.lastIndexOf("-") != -1 && input.substring(input.lastIndexOf("-") + 1).matches("[0-9]+"));
+   }
+
+   @Test
+   public void testNumberSuffix_DigitsBeforeHyphen(){
+      String input = "123-test-456";
+      assertEquals("L'expression régulière doit correspondre à un modèle avec des chiffres après le tiret",
+         input.matches(".*-[0-9]+"),
+         input.lastIndexOf("-") != -1 && input.substring(input.lastIndexOf("-") + 1).matches("[0-9]+"));
+   }
+
+   @Test
+   public void testNumberSuffix_LeadingWhitespace(){
+      String input = "  test-123";
+      assertEquals("L'expression régulière doit correspondre même avec un espace avant le tiret",
+         input.matches(".*-[0-9]+"),
+         input.lastIndexOf("-") != -1 && input.substring(input.lastIndexOf("-") + 1).matches("[0-9]+"));
+   }
+
+   @Test
    public void testNumberSuffix_NoMatch(){
       String input = "test-abc";
       assertEquals("Cas sans suffixe numérique", input.matches(".*-[0-9]+"),
          input.lastIndexOf("-") != -1 && input.substring(input.lastIndexOf("-") + 1).matches("[0-9]+"));
    }
 
-   //   Tester l'expression régulière  "INCa.*"
-   @Test
-   public void testINCa_SimpleCase(){
-      String input = "INCaTest";
-      assertEquals("Cas simple avec le préfixe INCa", input.matches("INCa.*"), input.startsWith("INCa"));
-   }
 
+   //   Tester l'expression régulière  ".*\|+$"
    @Test
-   public void testINCa_CaseInsensitive(){
-      String input = "incatest";
-      assertEquals("Le préfixe doit être sensible à la casse", input.matches("INCa.*"), input.startsWith("INCa"));
-
+   public void testEndsWith_SimpleCase(){
+      String input = "Hello|";
+      assertEquals("Cas simple avec une seule barre verticale", input.matches(".*\\|+$"), input.endsWith("|"));
    }
 
    @Test
-   public void testINCa_WithAdditionalContent(){
-      String input = "INCaExtraContent";
-      assertEquals("Cas avec du contenu supplémentaire après INCa", input.matches("INCa.*"), input.startsWith("INCa"));
+   public void testEndsWith_NoPipe(){
+      String input = "Hello";
+      assertEquals("L'expression régulière ne doit pas correspondre à une chaîne sans barre verticale à la fin",
+         input.matches(".*\\|+$"),
+         input.endsWith("|"));
    }
 
    @Test
-   public void testINCa_EmptyString(){
-      String input = "";
-      assertEquals("Une chaîne vide ne doit pas correspondre", input.matches("INCa.*"), input.startsWith("INCa"));
-   }
-
-   //   Tester l'expression régulière  "thesaurus.*"
-   @Test
-   public void testThesaurus_SimpleCase(){
-      String input = "thesaurusTest";
-      assertEquals("Cas simple avec le préfixe thesaurus", input.matches("thesaurus.*"), input.startsWith("thesaurus"));
-   }
-
-   public void testThesaurus_CaseInsensitive(){
-      String input = "ThesaurusTest";
-      assertEquals("Le préfixe thesaurus doit être sensible à la casse", input.matches("thesaurus.*"),
-         input.startsWith("thesaurus.*"));
-
+   public void testEndsWith_MultiplePipes(){
+      String input = "Hello||||";
+      assertEquals("Des barres verticales multiples à la fin doivent correspondre aux deux modèles", input.matches(".*\\|+$"),
+         input.endsWith("|"));
    }
 
    @Test
-   public void testThesaurus_WithNumbers(){
-      String input = "thesaurus123Test";
-      assertEquals("Cas avec des chiffres dans le suffixe", input.matches("thesaurus.*"), input.startsWith("thesaurus"));
+   public void testEndsWith_MixedCaseMultiplePipes(){
+      String input = "Test|AB|C|";
+      assertEquals("L'expression régulière doit correspondre avec des barres verticales multiples à la fin",
+         input.matches(".*\\|+$"),
+         input.endsWith("|"));
    }
+
 
    @Test
-   public void testThesaurus_WithSpecialCharacters(){
-      String input = "thesaurus@#";
-      assertEquals("Cas avec des caractères spéciaux après thesaurus", input.matches("thesaurus.*"),
-         input.startsWith("thesaurus"));
+   public void testEndsWith_PipesInMiddle(){
+      String input = "Hel|lo";
+      assertEquals("L'expression régulière ne doit pas correspondre lorsque la barre verticale est au milieu",
+         input.matches(".*\\|+$"),
+         input.endsWith("|"));
    }
 
-   //   Tester l'expression régulière  ".*Model"
-   @Test
-   public void testModel_SimpleCase(){
-      String input = "TestModel";
-      assertEquals("Cas simple avec le suffixe Model", input.matches(".*Model"), input.endsWith("Model"));
-   }
 
    @Test
-   public void testModel_MultipleOccurrences(){
-      String input = "FirstModelSecondModel";
-      assertEquals("Cas avec plusieurs occurrences de Model", input.matches(".*Model"), input.endsWith("Model"));
+   public void testEndsWith_PipeInMiddle(){
+      String input = "Hel|lo";
+      assertEquals("Une barre verticale au milieu ne doit correspondre à aucun modèle", input.matches(".*\\|+$"),
+         input.endsWith("|"));
    }
 
-   @Test
-   public void testModel_ExactMatch(){
-      String input = "Model";
-      assertEquals("Cas où la chaîne est exactement Model", input.matches(".*Model"), input.endsWith("Model"));
-   }
 
-   @Test
-   public void testModel_WithWhitespace(){
-      String input = "Test Model";
-      assertEquals("Les espaces dans la chaîne ne doivent pas correspondre", input.matches(".*Model"), input.endsWith("Model"));
 
-   }
-
-   //   Tester l'expression régulière  "Maximum.*"
-
-   @Test
-   public void testMaximum_SimpleCase(){
-      String input = "MaximumTest";
-      assertEquals("Cas simple avec le préfixe Maximum", input.matches("Maximum.*"), input.startsWith("Maximum"));
-   }
-
-   @Test
-   public void testMaximum_ContainsSpecialCharacters(){
-      String input = "Maximum-Extra";
-      assertEquals("Cas avec des caractères spéciaux après Maximum", input.matches("Maximum.*"), input.startsWith("Maximum"));
-   }
-
-   @Test
-   public void testMaximum_MixedCase(){
-      String input = "MAXIMUMTest";
-      assertEquals("Le préfixe Maximum doit être sensible à la casse", input.matches("Maximum.*"), input.startsWith("Maximum"));
-   }
-
-   @Test
-   public void testMaximum_WhitespaceBeforePrefix(){
-      String input = " MaximumTest";
-      assertEquals("Cas avec un espace avant le préfixe Maximum", input.matches("Maximum.*"), input.startsWith("Maximum"));
-   }
-
-   //   Tester l'expression régulière  "date.*"
-   @Test
-   public void testDate_SimpleCase(){
-      String input = "dateTest";
-      assertEquals("Cas simple avec le préfixe dat", input.matches("date.*"), input.startsWith("date"));
-   }
-
-   @Test
-   public void testDate_CaseInsensitive(){
-      String input = "DateTest";
-      assertEquals("Le préfixe date doit être sensible à la casse", input.matches("date.*"), input.startsWith("date"));
-   }
-
-   @Test
-   public void testDate_WithMultipleWords(){
-      String input = "dateExtraTest";
-      assertEquals("Cas avec plusieurs mots après le préfixe date", input.matches("date.*"), input.startsWith("date"));
-   }
-
-   @Test
-   public void testDate_EmptyString(){
-      String input = "";
-      assertEquals("Une chaîne vide ne doit pas correspondre", input.matches("date.*"), input.startsWith("date"));
-   }
 }
 
