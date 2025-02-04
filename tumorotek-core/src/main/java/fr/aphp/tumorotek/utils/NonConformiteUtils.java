@@ -41,7 +41,19 @@ package fr.aphp.tumorotek.utils;
  */
 public final class NonConformiteUtils {
    private static final String PREFIX = "Conforme";
-   private static final String SUFFIX = ".Raison";
+   private static final String SUFFIX_AVEC_POINT = ".Raison";
+
+   private static final String SUFFIX_SANS_POINT = "Raison";
+
+   // TODO: Il y a deux regex qui sont utilisées dans la verification de NonConformite:
+   //  1. sans point "Conforme.*Raison"
+   //  2. avec point "Conforme(.*)\\.Raison",
+   // mais les méthodes proposées ne prennent en charge qu’un seul de ces cas (".Raison").
+   // Étant donné que je ne peux pas modifier l’intention du code et utiliser une seule méthode pour les deux cas
+   // (qui vérifierait soit le premier, soit le second), et qu’il n’y a pas d’intérêt à alourdir la méthode avec un booléen
+   // (pour distinguer "avec point" ou "sans point"), j’ai préféré créer deux méthodes distinctes pour chaque cas.
+
+
 
    /**
     * Constructeur privé pour empêcher l'instanciation de la classe utilitaire.
@@ -57,8 +69,8 @@ public final class NonConformiteUtils {
     * @return vrai si le nom commence par "Conforme" et se termine par ".Raison"
     * @throws NullPointerException si champEntiteNom est null
     */
-   public static boolean isUneRaisonDeNonConformite(String champEntiteNom) {
-      return champEntiteNom.startsWith(PREFIX) && champEntiteNom.endsWith(SUFFIX);
+   public static boolean isUneRaisonDeNonConformiteAvecPoint (String champEntiteNom) {
+      return champEntiteNom.startsWith(PREFIX) && champEntiteNom.endsWith(SUFFIX_AVEC_POINT);
    }
 
    /**
@@ -68,11 +80,38 @@ public final class NonConformiteUtils {
     * @return le nom de la non-conformité, ou null si ce n'est pas un champ de non-conformité
     * @throws NullPointerException si champEntiteNom est null
     */
-   public static String retrieveNomDeLaNonConformiteOrNull(String champEntiteNom) {
-      if (isUneRaisonDeNonConformite(champEntiteNom)) {
+   public static String retrieveNomDeLaNonConformiteAvecPointOrNull(String champEntiteNom) {
+      if (isUneRaisonDeNonConformiteAvecPoint(champEntiteNom)) {
          return champEntiteNom.substring(
             PREFIX.length(),
-            champEntiteNom.length() - SUFFIX.length()
+            champEntiteNom.length() - SUFFIX_AVEC_POINT.length()
+         );
+      }
+      return null;
+   }
+   /**
+    * Vérifie si le nom du champ d'entité correspond à une raison de non-conformité.
+    *
+    * @param champEntiteNom le nom du champ d'entité
+    * @return vrai si le nom commence par "Conforme" et se termine par ".Raison"
+    * @throws NullPointerException si champEntiteNom est null
+    */
+   public static boolean isUneRaisonDeNonConformiteSansPoint  (String champEntiteNom) {
+      return champEntiteNom.startsWith(PREFIX) && champEntiteNom.endsWith(SUFFIX_SANS_POINT);
+   }
+
+   /**
+    * Récupère le nom de la non-conformité si le champ est une raison de non-conformité.
+    *
+    * @param champEntiteNom le nom du champ d'entité
+    * @return le nom de la non-conformité, ou null si ce n'est pas un champ de non-conformité
+    * @throws NullPointerException si champEntiteNom est null
+    */
+   public static String retrieveNomDeLaNonConformiteSansPointOrNull(String champEntiteNom) {
+      if (isUneRaisonDeNonConformiteSansPoint(champEntiteNom)) {
+         return champEntiteNom.substring(
+            PREFIX.length(),
+            champEntiteNom.length() - SUFFIX_SANS_POINT.length()
          );
       }
       return null;

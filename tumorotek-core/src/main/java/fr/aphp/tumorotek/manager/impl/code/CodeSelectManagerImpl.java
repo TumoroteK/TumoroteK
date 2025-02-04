@@ -275,7 +275,7 @@ public class CodeSelectManagerImpl implements CodeSelectManager
       return res;
    }
 
-   // TODO : Je trouve cette méthode un peu difficile à comprendre (le besoin de crteer un Objet Iterator et les variables),
+   // TODO : Je trouve cette méthode un peu difficile à comprendre (le besoin de creer un Objet Iterator et les variables),
    //  donc j'ai envisagé deux autres options.
    //    La deuxième suit la même architecture que extractAndFilterCodeCommonFromCodeSelect, car elle utilise Java Flux.
    //    Lors de ton revue de code, merci de voir si tu souhaite accepter l'une de mes propositions.
