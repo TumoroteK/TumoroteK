@@ -2171,6 +2171,7 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
                premiereLettre = sValue.toUpperCase();
 
                // si le premier code est invalide
+               // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
                if(!premiereLettre.matches("[A-Z]")){
                   throw new WrongValueException(comp, Labels.getLabel("ficheMultiEchantillons.lettre.invalide"));
                }
@@ -2280,6 +2281,7 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
                derniereLettre = sValue.toUpperCase();
 
                // si la derniere lettre n'est pas valide
+               // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
                if(!derniereLettre.matches("[A-Z]")){
                   throw new WrongValueException(comp, Labels.getLabel("ficheMultiEchantillons.lettre.invalide"));
                }

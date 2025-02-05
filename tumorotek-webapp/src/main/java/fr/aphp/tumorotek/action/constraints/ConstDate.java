@@ -73,10 +73,8 @@ public class ConstDate implements Constraint
       if(dateValue != null && !dateValue.equals("")){
          final boolean isValide = true;
          if(((Datebox) comp).getFormat().equals("dd/MM/yyyy hh:mm:ss")){
-            //isValide = dateValue.matches(DATE_FR_REGEXP);
             new SimpleDateFormat("dd/MM/yyyy hh:mm:ss").format(dateValue);
          }else if(((Datebox) comp).getFormat().equals("MM/dd/yyyy hh:mm:ss")){
-            //isValide = dateValue.matches(DATE_EN_REGEXP);
             new SimpleDateFormat("MM/dd/yyyy hh:mm:ss").format(dateValue);
          }
          if(!isValide){

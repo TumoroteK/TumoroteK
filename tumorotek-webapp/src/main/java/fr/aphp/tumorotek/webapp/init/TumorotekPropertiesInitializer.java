@@ -138,7 +138,7 @@ public class TumorotekPropertiesInitializer
 
          sb.append(System.lineSeparator());
          sb.append(System.lineSeparator());
-
+         // TK-491: regex "\\\\" safe d'après ReDoS checker (analyse faite en décembre 2024)
          final String tkFileSystem = ((String) ctx.lookup("java:comp/env/tk/tkFileSystem")).replaceAll("\\\\", "/");
          final String tkConfDir = ((String) ctx.lookup("java:comp/env/tk/tkTumoPropertiesSystem")).replaceAll("\\\\", "/");
          final String tkMbioSystem = ((String) ctx.lookup("java:comp/env/tk/tkMbioSystem")).replaceAll("\\\\", "/");

@@ -116,6 +116,7 @@ public final class ObjectTypesFormatters
       String label = org.zkoss.util.resource.Labels.getLabel(key);
       for(int i = 0; i < parameters.length; i++){
          final String parameter = parameters[i];
+         // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
          label = label.replaceAll("\\{" + (i + 1) + "\\}", parameter);
       }
       return label;
@@ -145,6 +146,7 @@ public final class ObjectTypesFormatters
    public static String numericFormatter(final Object o){
       if(o != null && o instanceof Number){
          String s = o.toString();
+         // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
          s = s.replaceAll("\\.0+$", "");
          return s;
       }
@@ -909,7 +911,9 @@ public final class ObjectTypesFormatters
    public static List<String> formateStringToList(String value){
       final List<String> res = new ArrayList<>();
       if(value != null && value.contains(",")){
+         // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
          value = value.replaceAll(" ", "");
+         // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
          final String[] split = value.split(",");
          for(int i = 0; i < split.length; i++){
             res.add(split[i]);
@@ -939,6 +943,7 @@ public final class ObjectTypesFormatters
 
    public static String ILNObjectStatut(final ObjetStatut statut){
       if(statut != null){
+         // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
          return Labels.getLabel("Statut." + statut.getStatut().replaceAll("\\s", "_"));
       }
       return null;
@@ -946,6 +951,7 @@ public final class ObjectTypesFormatters
 
    public static String ILNObjectStatut(final CessionStatut statut){
       if(statut != null){
+         // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
          return Labels.getLabel("Statut." + statut.getStatut().replaceAll("\\s", "_"));
       }
       return null;
@@ -966,7 +972,7 @@ public final class ObjectTypesFormatters
    public static void drawComplementDiagnosticLabel(final String compDiag, final Row row, final Listitem li){
 
       if(!StringUtils.isEmpty(compDiag)){
-
+         // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
          final String[] strs = compDiag.trim().split(" ");
          final Label c1Label = new Label(strs[0]);
          // dessine le label avec un lien vers popup

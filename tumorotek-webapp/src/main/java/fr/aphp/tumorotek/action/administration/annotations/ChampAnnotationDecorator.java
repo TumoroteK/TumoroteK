@@ -427,18 +427,22 @@ public class ChampAnnotationDecorator extends SmallObjDecorator
    }
 
    public boolean isThesaurus(){
+      // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
       return (this.champ.getDataType().getType().matches("thesaurus.?"));
    }
 
    public boolean isThesaurusM(){
+      // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
       return (this.champ.getDataType().getType().matches("thesaurusM"));
    }
 
    public boolean isHyperlien(){
+      // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
       return (this.champ.getDataType().getType().matches("hyperlien"));
    }
 
    public boolean isChampCalcule(){
+      // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
       return this.champ.getDataType().getType().matches("calcule");
    }
 

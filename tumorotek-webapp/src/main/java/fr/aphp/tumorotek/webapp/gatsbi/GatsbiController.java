@@ -868,6 +868,7 @@ public class GatsbiController
                   if(value.getThesaurusTableNom() != null && value.getThesaurusTableNom().trim().length() != 0 
                      && !contexte.getThesaurusValuesForChampEntiteId(value.getChampEntiteId()).isEmpty()){ // thesaurus value check!
                      Optional<ThesaurusValue> thesaurusValueForParamValue = null;
+                     // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
                      for(String defvalue : value.getDefaultValue().split(";")){
                         thesaurusValueForParamValue = contexte.getThesaurusValuesForChampEntiteId(value.getChampEntiteId()).stream()
                            .filter(v -> v.getThesaurusValue().equalsIgnoreCase(defvalue)).findFirst();

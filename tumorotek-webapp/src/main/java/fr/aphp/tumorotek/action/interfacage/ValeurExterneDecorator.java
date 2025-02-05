@@ -371,8 +371,10 @@ public class ValeurExterneDecorator
             String[] codesVal = null;
             // DIAMIC Hack
             if(val.getValeur().contains("~")){
+               // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
                codesVal = val.getValeur().split("~");
             }else{
+               // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
                codesVal = val.getValeur().split(";");
             }
 

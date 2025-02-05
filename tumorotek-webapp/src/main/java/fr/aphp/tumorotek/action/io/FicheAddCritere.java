@@ -319,6 +319,7 @@ public class FicheAddCritere extends GenericForwardComposer<Component>
          }
 
          //Si le champ est un identifiant, on alimente la liste de sousChamps.
+         // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
          if(nomChamp.matches("^[a-zA-Z]+Id$")){
 
             this.rowOperateur.setVisible(false);
@@ -379,6 +380,7 @@ public class FicheAddCritere extends GenericForwardComposer<Component>
 
             //Si on n'est pas dans un cas particulier, alors le nom de l'entité est celui du champ (moins le suffixe "Id")
             if(nomEntiteReel == null){
+               // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
                nomEntiteReel = nomChamp.replaceAll("Id$", "");
             }
 
@@ -393,7 +395,7 @@ public class FicheAddCritere extends GenericForwardComposer<Component>
                ManagerLocator.getManager(ChampEntiteManager.class).findByEntiteManager(entite2).stream();
             final Stream<? extends AbstractTKChamp> champsDeleguesStream = ManagerLocator.getManager(ChampDelegueManager.class)
                .findByEntiteAndContexte(entite2, SessionUtils.getCurrentContexte()).stream();
-
+            // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
             Stream.concat(champsEntitesStream, champsDeleguesStream).filter(c -> !c.getNom().matches("^[a-zA-Z]+Id$"))
                .map(c -> new Champ(c, champ)).map(ChampDecorator::new).forEach(sousChamps::add);
 

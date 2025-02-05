@@ -653,6 +653,7 @@ public class FicheNumerotation extends AbstractFicheCombineController
             //Regex qui matche le placholder de la date en début ou fin de chaîne
             final String datePlaceholderPattern =
                "^" + Pattern.quote(DATE_PLACEHOLDER) + "-|-" + Pattern.quote(DATE_PLACEHOLDER) + "$";
+            // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
             final String codeFormula = numerotation.getCodeFormula().replaceAll(datePlaceholderPattern, "");
             codePrefixe = codeFormula.substring(0, codeFormula.indexOf("["));
             codeSuffixe = codeFormula.substring(codeFormula.indexOf("]") + 1);

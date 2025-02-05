@@ -66,6 +66,7 @@ public class TemplateUtils
    public static SimpleDateFormat FORMAT_DATE = new SimpleDateFormat("yyyy_MM_dd_HH.mm.ss");
 
    //TODO permettre à l'utilisateur d'utiliser un pattern différent ?
+   // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
    public final static Pattern CLE_PATTERN = Pattern.compile("\\[{2}(.*?)\\]{2}");
 
    /**
@@ -103,7 +104,9 @@ public class TemplateUtils
    public static void saveDocTemplate(final Media media, final Template template){
       String nomTemplate = template.getNom();
       //TODO A placer dans un Utils : remplace les charactères spéciaux par des "_"
+      // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
       nomTemplate = Normalizer.normalize(nomTemplate, Normalizer.Form.NFD).replaceAll("\\p{InCombiningDiacriticalMarks}+", "_");
+      // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
       nomTemplate = nomTemplate.replaceAll("[-+.^:,\'\"&()]", "_");
 
       final String newFileName = FORMAT_DATE.format(new Date()) + "_" + nomTemplate + "." + media.getFormat();
