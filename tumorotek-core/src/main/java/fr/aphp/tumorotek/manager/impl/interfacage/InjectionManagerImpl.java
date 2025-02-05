@@ -241,6 +241,7 @@ public class InjectionManagerImpl implements InjectionManager
             }
 
             // création de la requête
+            // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
             final String nomChampId =
                champEntite.getEntite().getNom().replaceFirst(".", (champEntite.getEntite().getNom().charAt(0) + "").toLowerCase())
                   + "Id";
@@ -331,6 +332,7 @@ public class InjectionManagerImpl implements InjectionManager
       if(attribut != null && obj != null){
          // on formate l'attribut pour qu'il corresponde à celui
          // de l'objet
+         // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
          String nomChamp = attribut.getNom().replaceFirst(".", (attribut.getNom().charAt(0) + "").toLowerCase());
          if(nomChamp.endsWith("Id")){
             nomChamp = nomChamp.substring(0, nomChamp.length() - 2);
@@ -528,6 +530,7 @@ public class InjectionManagerImpl implements InjectionManager
             final ChampEntite champ = champEntiteDao.findById(valeurExterne.getChampEntiteId());
             if(champ != null){
                // on va extraire le type de l'attibut à remplir
+               // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
                String nomChamp = champ.getNom().replaceFirst(".", (champ.getNom().charAt(0) + "").toLowerCase());
                if(nomChamp.endsWith("Id")){
                   nomChamp = nomChamp.substring(0, nomChamp.length() - 2);
@@ -545,6 +548,7 @@ public class InjectionManagerImpl implements InjectionManager
                               value = extractValueForOneThesaurus(champ.getQueryChamp(), banque, valeurExterne.getValeur());
                            }else{
                               final Set<Object> values = new HashSet<>();
+                              // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
                               for(final String val : valeurExterne.getValeur().split(";")){
                                  values.add(extractValueForOneThesaurus(champ.getQueryChamp(), banque, val));
                               }
@@ -792,8 +796,10 @@ public class InjectionManagerImpl implements InjectionManager
       String[] codes = null;
       // DIAMIC Hack
       if(val.getValeur().contains("~")){
+         // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
          codes = val.getValeur().split("~");
       }else{
+         // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
          codes = val.getValeur().split(";");
       }
 
@@ -805,6 +811,7 @@ public class InjectionManagerImpl implements InjectionManager
          if(!codes[j].contains("&")){
             codeAs.setCode(codes[j].trim());
          }else{ // code & libelle
+            // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
             final String[] codeAndLibelle = codes[j].split("&");
             if(codeAndLibelle.length > 0){
                codeAs.setCode(codeAndLibelle[0].trim());

@@ -697,7 +697,7 @@ public class XmlUtilsImpl implements XmlUtils
          }
 
       }else{
-
+         // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
          final String[] values = boite.getTerminaleType().getScheme().split(";");
          int cpt = 0;
          final List<Element> lignes = new ArrayList<>();
@@ -1138,7 +1138,7 @@ public class XmlUtilsImpl implements XmlUtils
          }
 
       }else{
-
+         // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
          final String[] values = boite.getTerminaleType().getScheme().split(";");
          int cpt = 0;
          final List<Element> lignes = new ArrayList<>();

@@ -632,6 +632,7 @@ public class RechercheUtilsManager
                   }
                }
                return sb.toString();
+               // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
             }else if(parent.getChampEntite().getNom().matches("ConformeArrivee.Raison")){
 
                return formatNonConformites(prel, parent.getChampEntite());

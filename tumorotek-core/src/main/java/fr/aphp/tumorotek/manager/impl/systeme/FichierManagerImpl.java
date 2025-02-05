@@ -329,6 +329,7 @@ public class FichierManagerImpl implements FichierManager
       if(file != null && dest != null && filesToMove != null){
          log.debug("modification chemin et déplacement du fichier: {}",  file.getNom());
          final String actualPathStr = file.getPath();
+         // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
          final String destPathStr = actualPathStr.replaceFirst("coll_\\d+", "coll_" + dest.getBanqueId());
 
          // programme de déplacement physique du fichier

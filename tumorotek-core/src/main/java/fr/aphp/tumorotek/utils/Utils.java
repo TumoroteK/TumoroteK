@@ -253,6 +253,7 @@ public final class Utils
          value = value.replace(" ", "");
          String[] pfs = null;
          if(value.contains(":")){
+            // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
             pfs = value.split(";");
          }else{
             pfs = new String[1];
@@ -265,6 +266,7 @@ public final class Utils
                final String tmp = pfs[i].substring(pfs[i].indexOf(":") + 1);
                String[] ems = null;
                if(tmp.contains(",")){
+                  // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
                   ems = tmp.split(",");
                }else{
                   ems = new String[1];
@@ -361,6 +363,7 @@ public final class Utils
    public static String getReadablePropertyFromChampEntite(final ChampEntite chpE){
       String readProp = null;
       if(chpE != null){
+         // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
          readProp = chpE.getNom().replaceFirst(".", (chpE.getNom().charAt(0) + "").toLowerCase());
          if(readProp.endsWith("Id")){
             readProp = readProp.substring(0, readProp.length() - 2);
