@@ -45,7 +45,7 @@ public class ConstPassword extends TumoPasswordConstraint implements Constraint
 
    @Override
    public void validate(final Component comp, final Object value){
-      super.validatePassword(comp, value, ValidationUtilities.PASSWORDREGEXP, this);
+      super.validatePassword(comp, value,  this);
    }
 
 }
