@@ -159,8 +159,12 @@ public class FichierManagerImpl implements FichierManager
 
    @Override
    public void createObjectManager(final Fichier fichier, final InputStream stream, final List<File> filesCreated){
+      String path = fichier.getPath();
+      int lastUnderscoreIndex = fichier.getPath().lastIndexOf('_');
+      String afterUnderscore = path.substring(lastUnderscoreIndex + 1);
+
       if(findDoublonManager(fichier)){
-         log.warn("Doublon lors de la creation de l'objet Fichier : {}",  fichier);
+         log.warn("Doublon lors de la creation de l'objet Fichier : {}", fichier);
          throw new DoublonFoundException("Fichier", "creation");
       }
 
@@ -177,12 +181,19 @@ public class FichierManagerImpl implements FichierManager
       }
       fichierDao.createObject(fichier);
       if(stream != null){
-         log.info("Enregistrement de l'objet Fichier : {}",  fichier);
+         log.info("Enregistrement de l'objet Fichier : {}", fichier);
          fichier.setPath(fichier.getPath() + "_" + fichier.getFichierId());
          fichierDao.updateObject(fichier);
          storeFile(stream, fichier.getPath(), filesCreated);
 
-      }else if(!fichier.getPath().matches(".*_[0-9]+")){
+         // TODO: j'ai implementé ta version avec la double négation
+         // mais je trouve que la double négation reste plus difficile à comprendre.
+         // Bien que cela fonctionne, une structure plus simple pourrait être plus lisible (et facile à comprendre) en Java.
+         // La différence de logique entre les deux est la suivante :
+         // Double négation : Si ce n'est pas le cas qu'un underscore est présent et que la partie après l'underscore est composée uniquement de chiffres.
+         // Négation simple : Si aucun underscore n'est présent ou si la partie après l'underscore n'est pas composée uniquement de chiffres.
+
+      }else if(!(lastUnderscoreIndex != -1 && afterUnderscore.chars().allMatch(Character::isDigit))){
          fichier.setFichierId(null);
          log.error("fichier.path.illegal : " + fichier.getPath());
          throw new RuntimeException("fichier.path.illegal");
@@ -194,7 +205,7 @@ public class FichierManagerImpl implements FichierManager
    public Fichier updateObjectManager(final Fichier fichier, final InputStream stream, final List<File> filesCreated,
       final List<File> filesToDelete){
       if(findDoublonManager(fichier)){
-         log.warn("Doublon lors de la modification de l'objet Fichier : {}",  fichier);
+         log.warn("Doublon lors de la modification de l'objet Fichier : {}", fichier);
          throw new DoublonFoundException("Fichier", "modification");
       }
 
@@ -221,7 +232,7 @@ public class FichierManagerImpl implements FichierManager
 
       // path doit être inchangé
       fichierDao.updateObject(fichier);
-      log.info("Modification de l'objet Fichier : {}",  fichier);
+      log.info("Modification de l'objet Fichier : {}", fichier);
       return fichier;
    }
 
@@ -265,10 +276,10 @@ public class FichierManagerImpl implements FichierManager
                filesCreated.add(new File(path));
             }
          }else{
-            log.info("Fichier existe déjà path: {}",  path);
+            log.info("Fichier existe déjà path: {}", path);
          }
       }catch(final FileNotFoundException fe){
-         log.error("Annotation fichier: Erreur survenue dans la creation du fichier au chemin specifie: {}",  path);
+         log.error("Annotation fichier: Erreur survenue dans la creation du fichier au chemin specifie: {}", path);
          throw new RuntimeException(fe);
       }catch(final java.io.IOException e){
          log.error("Annotation fichier: Erreur survenue dans l'ecriture fichier");
@@ -327,7 +338,7 @@ public class FichierManagerImpl implements FichierManager
    public void switchBanqueManager(final Fichier file, final Banque dest, final Set<MvFichier> filesToMove){
 
       if(file != null && dest != null && filesToMove != null){
-         log.debug("modification chemin et déplacement du fichier: {}",  file.getNom());
+         log.debug("modification chemin et déplacement du fichier: {}", file.getNom());
          final String actualPathStr = file.getPath();
          final String destPathStr = actualPathStr.replaceFirst("coll_\\d+", "coll_" + dest.getBanqueId());
 

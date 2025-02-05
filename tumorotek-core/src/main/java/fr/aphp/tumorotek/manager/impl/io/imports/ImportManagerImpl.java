@@ -65,6 +65,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.TypedQuery;
 import javax.sql.DataSource;
 
+import fr.aphp.tumorotek.utils.NonConformiteUtils;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.collections4.map.CaseInsensitiveMap;
 import org.apache.commons.lang3.StringUtils;
@@ -551,7 +552,7 @@ public class ImportManagerImpl implements ImportManager
             // cas standard : 
             //  - récupération de toutes les valeurs du thesaurus et mise en cache
             //  - affectation des valeurs éventuellement filtrées par le contexte Gatsbi à chaque champ importé
-            if(!champAImporter.getNom().matches("Conforme.*Raison")){
+            if(!NonConformiteUtils.isUneRaisonDeNonConformiteSansPoint(champAImporter.getNom())){
                // ajout à la hashtable "byEntite" de toutes les valeurs du thesaurus
                if(!valuesByEntiteThesaurus.containsKey(champDeLaTableThesaurus.getEntite())){
                   valuesByEntiteThesaurus.put(champDeLaTableThesaurus.getEntite(), extractValuesForOneThesaurus(champDeLaTableThesaurus, importTemplate.getBanque()));
@@ -588,14 +589,11 @@ public class ImportManagerImpl implements ImportManager
    private CaseInsensitiveMap<String, Object> manageCasParticuliers(ChampEntite champAImporter, Banque banque){
       CaseInsensitiveMap<String, Object> mapValeurThesaurusForThisChamp = null;
       // si non conformité récupération directement en base des valeurs appropriées à chaque champ
-      if(champAImporter.getNom().matches("Conforme.*Raison")){
-         final Pattern p = Pattern.compile("Conforme(.*)\\.Raison");
-         final Matcher m = p.matcher(champAImporter.getNom());
-         final boolean b = m.matches();
-         if(b && m.groupCount() > 0){
-            final String cNom = m.group(1);
+      if(NonConformiteUtils.isUneRaisonDeNonConformiteSansPoint(champAImporter.getNom())){
+         if(NonConformiteUtils.isUneRaisonDeNonConformiteAvecPoint(champAImporter.getNom())){
+            final String nonConformiteNom = NonConformiteUtils.retrieveNomDeLaNonConformiteAvecPointOrNull(champAImporter.getNom());
             final Iterator<NonConformite> ncfs = nonConformiteManager
-                  .findByPlateformeEntiteAndTypeStringManager(banque.getPlateforme(), cNom, champAImporter.getEntite()).iterator();
+                  .findByPlateformeEntiteAndTypeStringManager(banque.getPlateforme(), nonConformiteNom, champAImporter.getEntite()).iterator();
             mapValeurThesaurusForThisChamp = new CaseInsensitiveMap<String, Object>();
             NonConformite nc;
             while(ncfs.hasNext()){
@@ -1135,7 +1133,7 @@ public class ImportManagerImpl implements ImportManager
 
             final DataType dt = colonne.getChamp().getChampAnnotation().getDataType();
             boolean isDate = false;
-            if(dt.getType().matches("date.*")){
+            if(dt.getType().startsWith("date")){
                isDate = true;
             }
 
@@ -1359,7 +1357,7 @@ public class ImportManagerImpl implements ImportManager
                if(colonnes.get(i).getChamp().getChampEntite() != null){
 
                   // non conformites
-                  if(colonnes.get(i).getChamp().getChampEntite().getNom().matches("Conforme.*Raison")){
+                  if(NonConformiteUtils.isUneRaisonDeNonConformiteSansPoint(colonnes.get(i).getChamp().getChampEntite().getNom())){
                      if(ncfsPrelevement == null){ // init la liste
                         ncfsPrelevement = new HashMap<>();
                      }
@@ -1526,7 +1524,7 @@ public class ImportManagerImpl implements ImportManager
                // de l'objet
                if(colonnes.get(i).getChamp().getChampEntite() != null){
                   // non conformites
-                  if(!colonnes.get(i).getChamp().getChampEntite().getNom().matches("Conforme.*Raison")){
+                  if(!NonConformiteUtils.isUneRaisonDeNonConformiteSansPoint(colonnes.get(i).getChamp().getChampEntite().getNom())){
 
                      setPropertyForImportColonne(derive, colonnes.get(i), row, properties);
                   }else if(colonnes.get(i).getChamp().getChampEntite().getNom().equals("ConformeTraitement.Raison")){
