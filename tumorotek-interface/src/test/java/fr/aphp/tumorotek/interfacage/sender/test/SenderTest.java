@@ -208,7 +208,7 @@ public class SenderTest
 
 		try {						
 			storageRobotSender.writeOneRecetteLine(baos, "test.csv", u1, "|");
-
+			// TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
 			String[] out = baos.toString().split("\\\n");
 
 			assertTrue(out.length == 1);
@@ -237,7 +237,7 @@ public class SenderTest
 		
 		try {						
 			storageRobotSender.makeCSVfromMap(robot, baos, movs, "|");
-
+			// TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
 			String[] out = baos.toString().split("\\\n");
 
 			assertTrue(out.length == 3);
@@ -250,7 +250,7 @@ public class SenderTest
 
 			baos = new ByteArrayOutputStream();
 			storageRobotSender.makeCSVfromMap(robot, baos, movs, ";");
-
+			// TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
 			out = baos.toString().split("\\\n");
 			assertTrue(out.length == 3);
 			assertTrue("1;ECHAN1;0;0;0;1;1;1;1;10;".equals(out[0]));

@@ -81,9 +81,10 @@ public class StorageMovementComparator implements Comparator<StorageMovement>
       if(l2 == null){
          return -1;
       }
-
+      // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
       if(l1.matches("^[0-9]{1,2}$")){ // boite transfert
          return Integer.valueOf(l1).compareTo(Integer.valueOf(l2));
+         // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
       }else if(l1.split("\\.").length == 4){
          final String[] splitted1 = l1.split("\\.");
          final String[] splitted2 = l2.split("\\.");
