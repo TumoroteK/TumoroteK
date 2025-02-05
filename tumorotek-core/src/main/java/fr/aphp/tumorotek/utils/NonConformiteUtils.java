@@ -38,6 +38,18 @@ package fr.aphp.tumorotek.utils;
 
 /**
  * Classe utilitaire pour la gestion des non-conformités.
+ * <p>
+ * Cette classe a été créée pour répondre au besoin de vérifier si un champ d'entité
+ * correspond à une raison de non-conformité, en prenant en compte deux cas distincts :
+ * <ul>
+ *     <li>Les noms de champ respectant le format <code>Conforme(.*)\.Raison</code>, où un point est explicitement attendu avant "Raison".</li>
+ *     <li>Les noms de champ respectant le format <code>Conforme.*Raison</code>, sans contrainte spécifique sur le point.</li>
+ * </ul>
+ * Unification sous une seule expression <code>Conforme.*Raison</code> aurait pu entraîner des bugs silencieux,
+ * en acceptant par erreur des valeurs non conformes ou en rejetant des valeurs valides.
+ * C'est pourquoi la classe distingue ces deux cas en proposant des méthodes spécifiques
+ * pour chaque situation.
+ * </p>
  */
 public final class NonConformiteUtils {
    private static final String PREFIX = "Conforme";
@@ -63,7 +75,7 @@ public final class NonConformiteUtils {
    }
 
    /**
-    * Vérifie si le nom du champ d'entité correspond à une raison de non-conformité.
+    * Vérifie si le nom du champ d'entité correspond à une raison de non-conformité avec un point avant "Raison".
     *
     * @param champEntiteNom le nom du champ d'entité
     * @return vrai si le nom commence par "Conforme" et se termine par ".Raison"
@@ -74,10 +86,10 @@ public final class NonConformiteUtils {
    }
 
    /**
-    * Récupère le nom de la non-conformité si le champ est une raison de non-conformité.
+    * Extrait le nom de la non-conformité à partir du champ d'entité si celui-ci suit le format avec point.
     *
     * @param champEntiteNom le nom du champ d'entité
-    * @return le nom de la non-conformité, ou null si ce n'est pas un champ de non-conformité
+    * @return le nom de la non-conformité, ou null si ce n'est pas un champ valide
     * @throws NullPointerException si champEntiteNom est null
     */
    public static String retrieveNomDeLaNonConformiteAvecPointOrNull(String champEntiteNom) {
@@ -90,10 +102,10 @@ public final class NonConformiteUtils {
       return null;
    }
    /**
-    * Vérifie si le nom du champ d'entité correspond à une raison de non-conformité.
+    * Vérifie si le nom du champ d'entité correspond à une raison de non-conformité sans point avant "Raison".
     *
     * @param champEntiteNom le nom du champ d'entité
-    * @return vrai si le nom commence par "Conforme" et se termine par ".Raison"
+    * @return vrai si le nom commence par "Conforme" et se termine par "Raison"
     * @throws NullPointerException si champEntiteNom est null
     */
    public static boolean isUneRaisonDeNonConformiteSansPoint  (String champEntiteNom) {
@@ -101,10 +113,10 @@ public final class NonConformiteUtils {
    }
 
    /**
-    * Récupère le nom de la non-conformité si le champ est une raison de non-conformité.
+    * Extrait le nom de la non-conformité à partir du champ d'entité si celui-ci suit le format sans point.
     *
     * @param champEntiteNom le nom du champ d'entité
-    * @return le nom de la non-conformité, ou null si ce n'est pas un champ de non-conformité
+    * @return le nom de la non-conformité, ou null si ce n'est pas un champ valide
     * @throws NullPointerException si champEntiteNom est null
     */
    public static String retrieveNomDeLaNonConformiteSansPointOrNull(String champEntiteNom) {
