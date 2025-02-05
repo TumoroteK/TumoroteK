@@ -145,6 +145,7 @@ public class ChampDelegue extends AbstractTKChamp
 
       if(ctx != null && getEntite() != null && getNom() != null){
          final StringBuffer iProperty = new StringBuffer().append("Champ.").append(getEntite().getNom()).append(".").append(ctx)
+            // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
             .append(".").append(getNom().replaceAll("Id$", ""));
 
          // on ajoute la valeur du champ
