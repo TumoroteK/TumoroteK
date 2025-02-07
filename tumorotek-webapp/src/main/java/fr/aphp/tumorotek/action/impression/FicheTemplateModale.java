@@ -45,6 +45,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import fr.aphp.tumorotek.action.utilisateur.ProfilExport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.jdom.Document;
@@ -227,6 +228,15 @@ public class FicheTemplateModale extends AbstractImpressionController
    private BlocImpressionRowRenderer blocImpressionRendererEdit = new BlocImpressionRowRenderer(true);
 
    private List<CleImpressionDecorator> cleImpressionDecoratorList = new ArrayList<>();
+
+   private  final String BLOCK_CESSION_PROD_DERIVES = "bloc.cession.prodDerives";
+
+   private  final String BLOCK_CESSION_ECHANTILLONS = "bloc.cession.echantillons";
+
+   private final String CHAMP_NOM = "Nom"; // Define constant
+
+
+
 
    @Override
    public TKdataObject getObject(){
@@ -451,11 +461,25 @@ public class FicheTemplateModale extends AbstractImpressionController
       if("SEROLOGIE".equalsIgnoreCase(SessionUtils.getCurrentContexte().getNom())){
          blocImpressions.removeIf(b -> b.getNom().equals("bloc.echantillon.informations.complementaires"));
       }
-
+      // TK-436 : ne proposer la colonne "Nom usuel" que pour les profils avec un export "nominatif" autorisé
+      boolean hasNominatifRights = getProfilExport().equals(ProfilExport.NOMINATIF);
       for(int i = 0; i < blocImpressions.size(); i++){
          final BlocImpressionDecorator deco =
             new BlocImpressionDecorator(blocImpressions.get(i), null, template, SessionUtils.getCurrentContexte());
+         if (!hasNominatifRights &&
+            (blocImpressions.get(i).getNom().equals(BLOCK_CESSION_ECHANTILLONS) ||
+               blocImpressions.get(i).getNom().equals(BLOCK_CESSION_PROD_DERIVES))) {
+            List<ChampEntite> champEntites = deco.getChampEntites();
+            if (champEntites != null) {
+               champEntites.removeIf(champ -> champ.getNom().equals(CHAMP_NOM));
+               // Il est important d'appeler updateListeChamps() après avoir modifié la liste des champs,
+               // afin de garantir que la description du bloc reflète toujours correctement les champs actuels.
+               // Sans cette mise à jour, la description inclut "Nom usuel", même après leur retrait.
+               deco.updateListeChamps();
+            }
+         }
          blocImpressionsDecorated.add(deco);
+
       }
 
       // on récupère toutes les tables d'annotations pour
@@ -845,14 +869,14 @@ public class FicheTemplateModale extends AbstractImpressionController
             if(blocImpressionsDecorated.get(i).getBlocImpression() != null){
                if(blocImpressionsDecorated.get(i).getBlocImpression().getNom().equals("bloc.cession.principal")){
                   createBlocPrincipalCession(cession);
-               }else if(blocImpressionsDecorated.get(i).getBlocImpression().getNom().equals("bloc.cession.echantillons")){
+               }else if(blocImpressionsDecorated.get(i).getBlocImpression().getNom().equals(BLOCK_CESSION_ECHANTILLONS)){
 
                   createBlocListeCederObjets(
                      cedeObjFactory
                         .decorateListe(ManagerLocator.getCederObjetManager().getEchantillonsCedesByCessionManager(cession)),
                      blocImpressionsDecorated.get(i).getChampEntites(), true);
 
-               }else if(blocImpressionsDecorated.get(i).getBlocImpression().getNom().equals("bloc.cession.prodDerives")){
+               }else if(blocImpressionsDecorated.get(i).getBlocImpression().getNom().equals(BLOCK_CESSION_PROD_DERIVES)){
 
                   createBlocListeCederObjets(
                      cedeObjFactory
@@ -2553,9 +2577,9 @@ public class FicheTemplateModale extends AbstractImpressionController
       // ajout du paragraphe
       final StringBuffer titre = new StringBuffer();
       if(areEchantillons){
-         titre.append(Labels.getLabel("bloc.cession.echantillons"));
+         titre.append(Labels.getLabel(BLOCK_CESSION_ECHANTILLONS));
       }else{
-         titre.append(Labels.getLabel("bloc.cession.prodDerives"));
+         titre.append(Labels.getLabel(BLOCK_CESSION_PROD_DERIVES));
       }
       titre.append(" (");
       titre.append(cedes.size());
