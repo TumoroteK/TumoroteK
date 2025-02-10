@@ -233,7 +233,7 @@ public class FicheTemplateModale extends AbstractImpressionController
 
    private  final String BLOCK_CESSION_ECHANTILLONS = "bloc.cession.echantillons";
 
-   private final String CHAMP_NOM = "Nom"; // Define constant
+   private final String CHAMP_NOM = "Nom";
 
 
 
@@ -472,8 +472,6 @@ public class FicheTemplateModale extends AbstractImpressionController
             List<ChampEntite> champEntites = deco.getChampEntites();
             if (champEntites != null) {
                champEntites.removeIf(champ -> champ.getNom().equals(CHAMP_NOM));
-               // Il est important d'appeler updateListeChamps() après avoir modifié la liste des champs,
-               // afin de garantir que la description du bloc reflète toujours correctement les champs actuels.
                // Sans cette mise à jour, la description inclut "Nom usuel", même après leur retrait.
                deco.updateListeChamps();
             }
