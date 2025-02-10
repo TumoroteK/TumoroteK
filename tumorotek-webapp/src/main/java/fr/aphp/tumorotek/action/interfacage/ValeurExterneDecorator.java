@@ -221,7 +221,7 @@ public class ValeurExterneDecorator
       if(valeurExterne.getChampEntiteId() != null){
          final ChampEntite ce = ManagerLocator.getChampEntiteManager().findByIdManager(valeurExterne.getChampEntiteId());
          // on formate la nouvelle valeur si c'est une date
-         if(ce.getDataType().getType().matches("date.*")){
+         if(ce.getDataType().getType().startsWith("date")){
             // si l'attibut est un calendar, on caste
             // la valeur issue du fichier
             Date date = null;

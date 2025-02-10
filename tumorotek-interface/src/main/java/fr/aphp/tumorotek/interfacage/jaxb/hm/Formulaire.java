@@ -120,7 +120,7 @@ public class Formulaire
       final Rubrique rb1 = new Rubrique();
       rb1.setCodRub("LST_TYPPRELVT1");
       if(prel.getBanque() != null){
-         if(prel.getBanque().getNom() != null && prel.getBanque().getNom().matches(".*Biothèque Sein.*")){
+         if(prel.getBanque().getNom() != null && prel.getBanque().getNom().contains("Biothèque Sein")){
             rb1.getValeurs().add("LIQ");
          }else{
             rb1.getValeurs().add("TIS");

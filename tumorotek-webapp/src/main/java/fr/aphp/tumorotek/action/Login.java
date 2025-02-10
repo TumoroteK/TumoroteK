@@ -95,7 +95,7 @@ public class Login extends AbstractController
 
    public void setErrorMessage(final Exception ex){
       if(ex != null){
-         if((ex instanceof SessionAuthenticationException) && (ex.getMessage().matches("Maximum.*"))){
+         if((ex instanceof SessionAuthenticationException) && (ex.getMessage().startsWith("Maximum"))){
             errorLabel.setValue(Labels.getLabel("login.conc.error"));
          }else{
             errorLabel.setValue(Labels.getLabel("login.error"));
