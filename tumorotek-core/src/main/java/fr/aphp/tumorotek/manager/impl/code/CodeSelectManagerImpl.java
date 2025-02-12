@@ -263,10 +263,10 @@ public class CodeSelectManagerImpl implements CodeSelectManager
     */
    private List<CodeCommon> extractCodeCommonFromCodeSelect(final List<CodeSelect> codes){
       final List<CodeCommon> res = new ArrayList<>();
-      for (CodeSelect next : codes) {
-         CodeCommon ref = commonUtilsManager.findCodeByTableCodageAndIdManager(next.getCodeId(), next.getTableCodage());
+      for (CodeSelect codeSelect : codes) {
+         CodeCommon ref = commonUtilsManager.findCodeByTableCodageAndIdManager(codeSelect.getCodeId(), codeSelect.getTableCodage());
          if (ref != null) {
-            ref.setCodeSelect(next); // Référence vers l'objet CodeSelect
+            ref.setCodeSelect(codeSelect); // Référence vers l'objet CodeSelect
             res.add(ref);
          }
       }
