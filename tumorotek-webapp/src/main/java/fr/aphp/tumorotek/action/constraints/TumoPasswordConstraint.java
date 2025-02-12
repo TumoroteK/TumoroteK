@@ -114,6 +114,7 @@ public class TumoPasswordConstraint
             boolean hasUppercase = false;
             boolean hasDigit = false;
             boolean hasSpecialChar = false;
+            boolean validationOK = false;
 
             for(char c : textValue.toCharArray()){
                if(Character.isLowerCase(c))
@@ -126,19 +127,21 @@ public class TumoPasswordConstraint
                   hasSpecialChar = true;
 
                // Optimisation : arrêter la vérification dès que toutes les conditions sont remplies
-               if(hasLowercase && hasUppercase && hasDigit && hasSpecialChar)
+               if(hasLowercase && hasUppercase && hasDigit && hasSpecialChar) {
+                  validationOK  = true;
                   break;
+               }
             }
-
             // Si une condition n'est pas remplie, lever une exception
-            if(!(hasLowercase && hasUppercase && hasDigit && hasSpecialChar)){
+            if(!validationOK){
                throw new WrongValueException(comp, Labels.getLabel("validation.password.illegal"));
             }
          }else{
-            // Effacer la contrainte lorsqu'aucune valeur n'est fournie
+            // la contrainte est retiree
             ((Textbox) comp).setConstraint("");
             ((Textbox) comp).clearErrorMessage(true);
             ((Textbox) comp).setValue(null);
+            // on remet la contrainte
             ((Textbox) comp).setConstraint(constr);
          }
       } catch(final WrongValueException e){

@@ -330,7 +330,7 @@ public class TraitementQueryManagerImpl implements TraitementQueryManager
                            sb.append(" WHERE ca.isOrgane = 1)");
                         }
                      }
-                  }else if(NonConformiteUtils.isUneRaisonDeNonConformiteSansPoint(nomChampMinFirst)){
+                  }else if(NonConformiteUtils.isUneRaisonDeNonConformite(nomChampMinFirst)){
                      appendNonConformitesSb(critere, sb, nomEntiteMajFirst);
                   }else if(nomChampMinFirst.startsWith("count")){
                      sb.append("SELECT DISTINCT e From " + nomEntiteMajFirst + " as e " + "JOIN e.echantillons z "
@@ -477,7 +477,7 @@ public class TraitementQueryManagerImpl implements TraitementQueryManager
    }
 
    private void appendNonConformitesSb(final Critere critere, final StringBuffer sb, final String nomEntiteMajFirst){
-      String nonConformiteNom = NonConformiteUtils.retrieveNomDeLaNonConformiteAvecPointOrNull(critere.getChamp().getChampEntite().getNom());
+      String nonConformiteNom = NonConformiteUtils.retrieveNomDeLaNonConformiteOrNull(critere.getChamp().getChampEntite().getNom());
 
       if(!critere.getOperateur().equals("is null")){
 

@@ -633,7 +633,7 @@ public class RechercheUtilsManager
                   }
                }
                return sb.toString();
-            }else if(parent.getChampEntite().getNom().matches("ConformeArrivee.Raison")){
+            }else if(parent.getChampEntite().getNom().equals("ConformeArrivee.Raison")){
 
                return formatNonConformites(prel, parent.getChampEntite());
             }else{
@@ -699,7 +699,7 @@ public class RechercheUtilsManager
     * @return
     */
    private static String formatNonConformites(final Object obj, final ChampEntite champEntite){
-      String nonConformiteNom = NonConformiteUtils.retrieveNomDeLaNonConformiteAvecPointOrNull(champEntite.getNom());
+      String nonConformiteNom = NonConformiteUtils.retrieveNomDeLaNonConformiteOrNull(champEntite.getNom());
 
       final Iterator<ObjetNonConforme> ncsIt = objetNonConformeManager
          .findByObjetAndTypeManager(obj, conformiteTypeManager.findByEntiteAndTypeManager(nonConformiteNom, champEntite.getEntite()).get(0))
@@ -758,7 +758,7 @@ public class RechercheUtilsManager
             }
             if(parent.getChampEntite().getNom().equals("PrelevementId") && echanDeco.getEchantillon().getPrelevement() != null){
                return getChampValueFromPrelevement(echanDeco.getEchantillon().getPrelevement(), parent, null);
-            }else if(NonConformiteUtils.isUneRaisonDeNonConformiteSansPoint(parent.getChampEntite().getNom())){
+            }else if(NonConformiteUtils.isUneRaisonDeNonConformite(parent.getChampEntite().getNom())){
                return formatNonConformites(echanDeco.getEchantillon(), parent.getChampEntite());
             }else{
                return getChampValueForObject(parent, echanDeco.getEchantillon(), false);
@@ -843,7 +843,7 @@ public class RechercheUtilsManager
                   return getChampValueForObject(chp, prodDerive, false);
                }
             }
-            if(null != parent && NonConformiteUtils.isUneRaisonDeNonConformiteSansPoint(parent.getChampEntite().getNom())){
+            if(null != parent && NonConformiteUtils.isUneRaisonDeNonConformite(parent.getChampEntite().getNom())){
                return formatNonConformites(prodDerive, parent.getChampEntite());
             }
 

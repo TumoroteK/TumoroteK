@@ -249,7 +249,7 @@ public abstract class AbstractListGridVM
             manager = ManagerLocator.getEchantillonTypeManager();
          }else if(getGridSubdivision().getChampEntite().getEntite().getNom().equals("ProdType")){
             manager = ManagerLocator.getProdTypeManager();
-         }else if(NonConformiteUtils.isUneRaisonDeNonConformiteSansPoint(getGridSubdivision().getChampEntite().getNom())){ // non conformite prelevement
+         }else if(NonConformiteUtils.isUneRaisonDeNonConformite(getGridSubdivision().getChampEntite().getNom())){ // non conformite prelevement
              manager = ManagerLocator.getNonConformiteManager();
           }
          
@@ -259,7 +259,7 @@ public abstract class AbstractListGridVM
         	 if (!(manager instanceof NonConformiteManager)) {
 	            thObjs.addAll(manager.findByOrderManager(SessionUtils.getCurrentPlateforme()));
         	 } else { // thes de non conformité
-             String nonConformiteNom = NonConformiteUtils.retrieveNomDeLaNonConformiteAvecPointOrNull(
+             String nonConformiteNom = NonConformiteUtils.retrieveNomDeLaNonConformiteOrNull(
                 getGridSubdivision().getChampEntite().getNom()
              );
 

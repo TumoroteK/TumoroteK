@@ -185,14 +185,7 @@ public class FichierManagerImpl implements FichierManager
          fichier.setPath(fichier.getPath() + "_" + fichier.getFichierId());
          fichierDao.updateObject(fichier);
          storeFile(stream, fichier.getPath(), filesCreated);
-
-         // TODO: j'ai implementé ta version avec la double négation
-         // mais je trouve que la double négation reste plus difficile à comprendre.
-         // Bien que cela fonctionne, une structure plus simple pourrait être plus lisible (et facile à comprendre) en Java.
-         // La différence de logique entre les deux est la suivante :
-         // Double négation : Si ce n'est pas le cas qu'un underscore est présent et que la partie après l'underscore est composée uniquement de chiffres.
-         // Négation simple : Si aucun underscore n'est présent ou si la partie après l'underscore n'est pas composée uniquement de chiffres.
-
+      //  Si aucun underscore n'est présent ou si la partie après l'underscore n'est pas composée uniquement de chiffres
       }else if(!(lastUnderscoreIndex != -1 && afterUnderscore.chars().allMatch(Character::isDigit))){
          fichier.setFichierId(null);
          log.error("fichier.path.illegal : " + fichier.getPath());

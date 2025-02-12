@@ -552,7 +552,7 @@ public class ImportManagerImpl implements ImportManager
             // cas standard : 
             //  - récupération de toutes les valeurs du thesaurus et mise en cache
             //  - affectation des valeurs éventuellement filtrées par le contexte Gatsbi à chaque champ importé
-            if(!NonConformiteUtils.isUneRaisonDeNonConformiteSansPoint(champAImporter.getNom())){
+            if(!NonConformiteUtils.isUneRaisonDeNonConformite(champAImporter.getNom())){
                // ajout à la hashtable "byEntite" de toutes les valeurs du thesaurus
                if(!valuesByEntiteThesaurus.containsKey(champDeLaTableThesaurus.getEntite())){
                   valuesByEntiteThesaurus.put(champDeLaTableThesaurus.getEntite(), extractValuesForOneThesaurus(champDeLaTableThesaurus, importTemplate.getBanque()));
@@ -588,18 +588,16 @@ public class ImportManagerImpl implements ImportManager
    //gère les cas particuliers où la table thesaurus a une colonne type donc les valeurs doivent être filtrée en fonction du champ utilisant ce thesaurus
    private CaseInsensitiveMap<String, Object> manageCasParticuliers(ChampEntite champAImporter, Banque banque){
       CaseInsensitiveMap<String, Object> mapValeurThesaurusForThisChamp = null;
-      // si non conformité récupération directement en base des valeurs appropriées à chaque champ
-      if(NonConformiteUtils.isUneRaisonDeNonConformiteSansPoint(champAImporter.getNom())){
-         if(NonConformiteUtils.isUneRaisonDeNonConformiteAvecPoint(champAImporter.getNom())){
-            final String nonConformiteNom = NonConformiteUtils.retrieveNomDeLaNonConformiteAvecPointOrNull(champAImporter.getNom());
-            final Iterator<NonConformite> ncfs = nonConformiteManager
-                  .findByPlateformeEntiteAndTypeStringManager(banque.getPlateforme(), nonConformiteNom, champAImporter.getEntite()).iterator();
-            mapValeurThesaurusForThisChamp = new CaseInsensitiveMap<String, Object>();
-            NonConformite nc;
-            while(ncfs.hasNext()){
-               nc = ncfs.next();
-               mapValeurThesaurusForThisChamp.put(nc.getNom(), nc); 
-            }
+      // Récupération du nom de la non-conformité
+      String nonConformiteNom = NonConformiteUtils.retrieveNomDeLaNonConformiteOrNull(champAImporter.getNom());
+      if (nonConformiteNom != null) {
+         final Iterator<NonConformite> ncfs = nonConformiteManager.findByPlateformeEntiteAndTypeStringManager(
+                 banque.getPlateforme(), nonConformiteNom, champAImporter.getEntite()).iterator();
+         mapValeurThesaurusForThisChamp = new CaseInsensitiveMap<>();
+         NonConformite nc;
+         while (ncfs.hasNext()) {
+            nc = ncfs.next();
+            mapValeurThesaurusForThisChamp.put(nc.getNom(), nc);
          }
       }
       //TODO : le thesuarus Unité à la même particularité que non_conformite, il contient un champ type
@@ -1357,7 +1355,7 @@ public class ImportManagerImpl implements ImportManager
                if(colonnes.get(i).getChamp().getChampEntite() != null){
 
                   // non conformites
-                  if(NonConformiteUtils.isUneRaisonDeNonConformiteSansPoint(colonnes.get(i).getChamp().getChampEntite().getNom())){
+                  if(NonConformiteUtils.isUneRaisonDeNonConformite(colonnes.get(i).getChamp().getChampEntite().getNom())){
                      if(ncfsPrelevement == null){ // init la liste
                         ncfsPrelevement = new HashMap<>();
                      }
@@ -1507,6 +1505,7 @@ public class ImportManagerImpl implements ImportManager
    @Override
    public ProdDerive setAllPropertiesForProdDerive(final Row row, final ImportProperties properties){
       ProdDerive derive = null;
+
       if(row != null && properties != null){
          // nouvel échantillon
          derive = new ProdDerive();
@@ -1520,14 +1519,10 @@ public class ImportManagerImpl implements ImportManager
             final List<AnnotationValeur> annotations = new ArrayList<>();
             // pour chaque colonne, on set la valeur
             for(int i = 0; i < colonnes.size(); i++){
-               // si la colonne correspond à un attribut
-               // de l'objet
+               // si la colonne correspond à un attribut de l'objet
                if(colonnes.get(i).getChamp().getChampEntite() != null){
-                  // non conformites
-                  if(!NonConformiteUtils.isUneRaisonDeNonConformiteSansPoint(colonnes.get(i).getChamp().getChampEntite().getNom())){
-
-                     setPropertyForImportColonne(derive, colonnes.get(i), row, properties);
-                  }else if(colonnes.get(i).getChamp().getChampEntite().getNom().equals("ConformeTraitement.Raison")){
+                  // non conformites (2 cas possibles à date)
+                  if(colonnes.get(i).getChamp().getChampEntite().getNom().equals("ConformeTraitement.Raison")){
                      if(ncfsDeriveTrait == null){ // init la liste
                         ncfsDeriveTrait = new HashMap<>();
                      }
@@ -1537,6 +1532,9 @@ public class ImportManagerImpl implements ImportManager
                         ncfsDeriveCess = new HashMap<>();
                      }
                      setNonConformites(derive, colonnes.get(i), row, properties, ncfsDeriveCess);
+                  }
+                  else {//champs autres que non conformité :
+                     setPropertyForImportColonne(derive, colonnes.get(i), row, properties);
                   }
 
                }else if(colonnes.get(i).getChamp().getChampAnnotation() != null){

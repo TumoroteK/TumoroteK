@@ -263,43 +263,17 @@ public class CodeSelectManagerImpl implements CodeSelectManager
     */
    private List<CodeCommon> extractCodeCommonFromCodeSelect(final List<CodeSelect> codes){
       final List<CodeCommon> res = new ArrayList<>();
-
-      final Iterator<CodeSelect> it = codes.iterator();
-      CodeSelect next ;
-      CodeCommon ref;
-      while(it.hasNext()){
-         next = it.next();
-         ref = commonUtilsManager.findCodeByTableCodageAndIdManager(next.getCodeId(), next.getTableCodage());
-         res.add(ref);
+      for (CodeSelect next : codes) {
+         CodeCommon ref = commonUtilsManager.findCodeByTableCodageAndIdManager(next.getCodeId(), next.getTableCodage());
+         if (ref != null) {
+            ref.setCodeSelect(next); // Référence vers l'objet CodeSelect
+            res.add(ref);
+         }
       }
       return res;
    }
 
-   // TODO : Je trouve cette méthode un peu difficile à comprendre (le besoin de creer un Objet Iterator et les variables),
-   //  donc j'ai envisagé deux autres options.
-   //    La deuxième suit la même architecture que extractAndFilterCodeCommonFromCodeSelect, car elle utilise Java Flux.
-   //    Lors de ton revue de code, merci de voir si tu souhaite accepter l'une de mes propositions.
 
-   // Option 1:
-   //   private List<CodeCommon> extractCodeCommonFromCodeSelect(final List<CodeSelect> codes) {
-   //      final List<CodeCommon> res = new ArrayList<>();
-   //      for (CodeSelect next : codes) {
-   //         CodeCommon ref = commonUtilsManager.findCodeByTableCodageAndIdManager(next.getCodeId(), next.getTableCodage());
-   //         if (ref != null) {
-   //            ref.setCodeSelect(next); // Référence vers l'objet CodeSelect
-   //            res.add(ref);
-   //         }
-   //      }
-   //      return res;
-   //   }
-
-      // Option 2:
-   //   private List<CodeCommon> extractCodeCommonFromCodeSelect(final List<CodeSelect> codes) {
-   //      return codes.stream()
-   //         .map(cs -> commonUtilsManager.findCodeByTableCodageAndIdManager(cs.getCodeId(), cs.getTableCodage()))
-   //         .filter(Objects::nonNull)
-   //         .collect(Collectors.toList());
-   //   }
 
    /**
     * Extrait et filtre les CodesCommuns à partir d'une liste de CodeSelect,
