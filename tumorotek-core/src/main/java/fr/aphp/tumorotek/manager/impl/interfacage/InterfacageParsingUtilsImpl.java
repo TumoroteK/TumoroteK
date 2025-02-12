@@ -1000,7 +1000,6 @@ public class InterfacageParsingUtilsImpl implements InterfacageParsingUtils
             final List<Element> spmBlocs = new ArrayList<>();
             final List<?> blocs = racine.getChildren("Bloc");
             for(final Object e : blocs){
-               // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
                if(!(((Element) e).getAttributeValue("nom")).matches("SPM.*")
                   || (emetteur.getIdentification().matches(".*Genno.*"))){ // SSU messages SPM = bloc principal
                   dossierBlocs.add((Element) e);
