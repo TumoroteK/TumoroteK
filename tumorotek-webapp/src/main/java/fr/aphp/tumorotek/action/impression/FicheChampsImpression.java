@@ -38,6 +38,7 @@ package fr.aphp.tumorotek.action.impression;
 import java.util.ArrayList;
 import java.util.List;
 
+import fr.aphp.tumorotek.action.utilisateur.ProfilExport;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Path;
 import org.zkoss.zk.ui.event.Event;
@@ -226,14 +227,20 @@ public class FicheChampsImpression extends AbstractFicheController
 
       // since @gatsbi, retire tous les champs invisible
       cebs.removeIf(c -> !GatsbiController.isChampEntiteVisible(c.getChampEntite()));
+      // TK-436 : ne proposer la colonne "Nom usuel" que pour les profils avec un export "nominatif" autorisé
+      if (!getProfilExport().equals(ProfilExport.NOMINATIF)){
+         cebs.removeIf( champEntiteBloc-> champEntiteBloc.getChampEntite().getNom().equals("Nom"));
+      }
 
       // decoration
       for(int i = 0; i < cebs.size(); i++){
-         if(!blocImpressionDecorator.getChampEntites().contains(cebs.get(i).getChampEntite())){
+         if(!blocImpressionDecorator.getChampEntites().contains(cebs.get(i).getChampEntite()) ||
+            cebs.get(i).getChampEntite().getNom().equals("Nom") ){
             final ChampImpressionDecorator deco = new ChampImpressionDecorator(cebs.get(i).getChampEntite());
             deco.setImprimer(false);
             champs.add(deco);
          }
+
       }
 
       // Vilain HACK !! contexte SEROLOGIE
