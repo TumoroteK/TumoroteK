@@ -463,12 +463,11 @@ public class FicheTemplateModale extends AbstractImpressionController
       }
       // TK-436 : ne proposer la colonne "Nom usuel" que pour les profils avec un export "nominatif" autorisé
       boolean hasNominatifRights = getProfilExport().equals(ProfilExport.NOMINATIF);
+
       for(int i = 0; i < blocImpressions.size(); i++){
          final BlocImpressionDecorator deco =
             new BlocImpressionDecorator(blocImpressions.get(i), null, template, SessionUtils.getCurrentContexte());
-         if (!hasNominatifRights &&
-            (blocImpressions.get(i).getNom().equals(BLOCK_CESSION_ECHANTILLONS) ||
-               blocImpressions.get(i).getNom().equals(BLOCK_CESSION_PROD_DERIVES))) {
+         if (!hasNominatifRights) {
             List<ChampEntite> champEntites = deco.getChampEntites();
             if (champEntites != null) {
                champEntites.removeIf(champ -> champ.getNom().equals(CHAMP_NOM));

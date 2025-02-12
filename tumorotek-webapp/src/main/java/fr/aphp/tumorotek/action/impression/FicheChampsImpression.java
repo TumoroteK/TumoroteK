@@ -80,6 +80,9 @@ public class FicheChampsImpression extends AbstractFicheController
 
    private String path;
 
+   private final String CHAMP_NOM = "Nom";
+
+
    private ChampImpressionRowRenderer champImpressionRenderer = new ChampImpressionRowRenderer();
 
    @Override
@@ -229,13 +232,13 @@ public class FicheChampsImpression extends AbstractFicheController
       cebs.removeIf(c -> !GatsbiController.isChampEntiteVisible(c.getChampEntite()));
       // TK-436 : ne proposer la colonne "Nom usuel" que pour les profils avec un export "nominatif" autorisé
       if (!getProfilExport().equals(ProfilExport.NOMINATIF)){
-         cebs.removeIf( champEntiteBloc-> champEntiteBloc.getChampEntite().getNom().equals("Nom"));
+         cebs.removeIf( champEntiteBloc-> champEntiteBloc.getChampEntite().getNom().equals(CHAMP_NOM));
       }
 
       // decoration
       for(int i = 0; i < cebs.size(); i++){
          if(!blocImpressionDecorator.getChampEntites().contains(cebs.get(i).getChampEntite()) ||
-            cebs.get(i).getChampEntite().getNom().equals("Nom") ){
+            cebs.get(i).getChampEntite().getNom().equals(CHAMP_NOM) ){
             final ChampImpressionDecorator deco = new ChampImpressionDecorator(cebs.get(i).getChampEntite());
             deco.setImprimer(false);
             champs.add(deco);
