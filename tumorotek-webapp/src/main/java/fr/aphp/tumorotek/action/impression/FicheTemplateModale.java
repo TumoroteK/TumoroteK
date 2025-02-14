@@ -235,6 +235,10 @@ public class FicheTemplateModale extends AbstractImpressionController
 
    private final String CHAMP_NOM = "Nom";
 
+   private final String CESSION = "Cession";
+
+
+
 
 
 
@@ -674,7 +678,7 @@ public class FicheTemplateModale extends AbstractImpressionController
       }else if(selectedEntite.getNom().equals("ProdDerive")){
          final ProdDerive prod = (ProdDerive) objectToPrint;
          titre = ObjectTypesFormatters.getLabel("impression.titre.prodDerive", new String[] {prod.getCode()});
-      }else if(selectedEntite.getNom().equals("Cession")){
+      }else if(selectedEntite.getNom().equals(CESSION)){
          final Cession cess = (Cession) objectToPrint;
          titre = ObjectTypesFormatters.getLabel("impression.titre.cession", new String[] {String.valueOf(cess.getNumero())});
       }
@@ -683,6 +687,7 @@ public class FicheTemplateModale extends AbstractImpressionController
 
       // ajout de la date en pied de page
       final StringBuffer sb = new StringBuffer();
+
       if(template.getPiedPage() != null && !template.getPiedPage().equals("")){
          sb.append(template.getPiedPage());
          sb.append(" - ");
@@ -691,7 +696,13 @@ public class FicheTemplateModale extends AbstractImpressionController
       final String date = new SimpleDateFormat("dd/MM/yyyy").format(cal.getTime());
       sb.append(date);
 
-      ManagerLocator.getXmlUtils().addBasDePage(root, sb.toString());
+      String numeroSession = "";
+
+      if (CESSION.equals(selectedEntite.getNom())) {
+         final Cession cession = (Cession) objectToPrint;
+         numeroSession = cession.getNumero();
+      }
+      ManagerLocator.getXmlUtils().addBasDePage(root, sb.toString(), numeroSession);
       ManagerLocator.getXmlUtils().addHautDePage(root, template.getEnTete(), false, null);
 
       if(selectedEntite.getNom().equals("Patient")){

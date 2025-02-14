@@ -195,11 +195,23 @@ public interface XmlUtils
    void addHautDePage(Element parent, String legende, boolean addImage, String adr);
 
    /**
-    * Ajoute un bas de page au document JDOM.
+    * Ajoute un bas de page au document JDOM. La légende sera affichée sur le côté gauche.
     * @param parent Parent auquel on va ajouter la légende.
     * @param legende Bas de page.
     */
    void addBasDePage(Element parent, String legende);
+
+   /**
+    * Ajoute un bas de page au document JDOM avec deux éléments : un texte à gauche et un texte au centre.
+    * @param parent Parent auquel on va ajouter la légende.
+    * @param left Texte à afficher à gauche.
+    * @param middle Texte à afficher au centre.
+    *
+    * <b>Prérequis :</b> Pour que ces éléments soient visibles dans le fichier final, le template XSL doit contenir
+    * les éléments correspondants avec les attributs "TexteGauche" et "TexteCentre".
+    */
+
+   void addBasDePage(Element parent, String left, String middle);
 
    /**
     * Crée le fichier XML associé au Document JDOM.

@@ -421,6 +421,27 @@ public class XmlUtilsImpl implements XmlUtils
    }
 
    @Override
+   public void addBasDePage(final Element parent, final String left, final String middle) {
+      if (parent != null) {
+
+         final Element basDePage = new Element("BasDePage");
+
+         final Element leftElement = new Element("TexteGauche");
+         leftElement.setText(left != null ? left : "");
+
+
+         final Element middleElement = new Element("TexteCentre");
+         middleElement.setText(middle != null ? middle : "");
+
+         // Ajout des deux éléments à l'élément BasDePage
+         basDePage.addContent(leftElement);
+         basDePage.addContent(middleElement);
+
+         parent.addContent(basDePage);
+      }
+   }
+
+   @Override
    public void createXMLFile(final Document doc, final String folder, final String file){
       try{
          final File fileFolder = new File(folder);
