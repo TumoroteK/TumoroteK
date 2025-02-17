@@ -1439,6 +1439,10 @@ public class MainWindow extends GenericForwardComposer<Component>
       ManagerLocator.getScanTerminaleManager().removeObjectManager((ScanTerminale) ev.getData());
    }
 
+   /**
+    * Méthode appelée lorsque l'utilisateur clique sur l'image avec l'ID "changePlateformeImage".
+    * Redirige l'utilisateur vers la page de sélection de la banque.
+    */
    public void onChangePlateforme() {
          Executions.sendRedirect(ConfigManager.SELECT_BANQUE_URL);
    }
