@@ -248,7 +248,7 @@ public class MainWindow extends GenericForwardComposer<Component>
       // les administrateurs qui gèrent plusieurs plateformes et doivent savoir sur laquelle ils sont connectés (TK-526).
       if (pf != null && availablePlateformes.size() > 1) {
          // Récupération du label de la plateforme
-         plateformeLabel = (Label) mainBorderLayout.getFellow("northTopBanniere").getFellow("plateformeLabel");
+         Label plateformeLabel = (Label) mainBorderLayout.getFellow("northTopBanniere").getFellow("plateformeLabel");
 
          // Définir le nom de la plateforme sur le label
          plateformeLabel.setValue(pf.getNom());
@@ -1440,13 +1440,7 @@ public class MainWindow extends GenericForwardComposer<Component>
    }
 
    public void onChangePlateforme() {
-      try {
          Executions.sendRedirect(ConfigManager.SELECT_BANQUE_URL);
-         sessionScope.remove(SessionUtils.SESSION_BANQUE);
-         sessionScope.remove(SessionUtils.SESSION_PLATEFORME);
-      } catch (Exception e) {
-         log.error("Erreur lors du changement de plateforme", e);
-      }
    }
 
    /**** since 2.2.3-genno dossier externjes multiple integration *******/
