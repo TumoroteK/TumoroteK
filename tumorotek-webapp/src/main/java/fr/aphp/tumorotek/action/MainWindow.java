@@ -1442,7 +1442,7 @@ public class MainWindow extends GenericForwardComposer<Component>
     * Redirige l'utilisateur vers la page de sélection de la banque.
     */
    public void onChangePlateforme() {
-         Executions.sendRedirect(ConfigManager.SELECT_BANQUE_URL);
+      Executions.sendRedirect(ConfigManager.SELECT_BANQUE_URL);
    }
 
    /**** since 2.2.3-genno dossier externjes multiple integration *******/
