@@ -40,6 +40,7 @@ import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import fr.aphp.tumorotek.manager.ConfigManager;
 import org.springframework.security.web.RedirectStrategy;
 import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
 import org.springframework.security.web.savedrequest.SavedRequest;
@@ -65,7 +66,7 @@ public class CustomSuccessRedirection implements RedirectStrategy
       // d'une requête HTTP
       if(savedRequest == null || (!savedRequest.getParameterMap().containsKey("id")
          && !savedRequest.getParameterMap().containsKey("bId") && !savedRequest.getParameterMap().containsKey("pCode"))){
-         response.sendRedirect(response.encodeRedirectURL(request.getContextPath() + "/login/SelectBanque.zul"));
+         response.sendRedirect(response.encodeRedirectURL(request.getContextPath() + ConfigManager.SELECT_BANQUE_URL));
       }else{
          response.sendRedirect(savedRequest.getRedirectUrl());
 
