@@ -132,8 +132,6 @@ public class MainWindow extends GenericForwardComposer<Component>
 
    private Box mainCenterVbox;
 
-   private Label plateformeLabel;
-
    private Tabbox mainTabbox;
 
    private List<Banque> banques = new ArrayList<>();
@@ -253,7 +251,7 @@ public class MainWindow extends GenericForwardComposer<Component>
          // Définir le nom de la plateforme sur le label
          plateformeLabel.setValue(pf.getNom());
 
-         Image changePlateformeImage = (Image) mainBorderLayout.getFellow("northTopBanniere").getFellow("changePlateforme");
+         Image changePlateformeImage = (Image) mainBorderLayout.getFellow("northTopBanniere").getFellow("changePlateformeImage");
          changePlateformeImage.setVisible(true);
          changePlateformeImage.addForward("onClick", self, "onChangePlateforme");
       }
