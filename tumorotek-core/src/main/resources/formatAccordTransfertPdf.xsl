@@ -60,7 +60,7 @@
 					<fo:table-cell border="0">
 						<fo:block font-size="10pt" text-align="left"
 							font-style="italic">
-							<xsl:value-of select="text()" />
+							<xsl:value-of select="TexteGauche/text()" />
 						</fo:block>
 					</fo:table-cell>
 					<fo:table-cell border="0">

@@ -87,39 +87,24 @@
 	<xsl:template match="BasDePage">
 		<fo:table width="100%" table-layout="fixed" font-size="10pt">
 			<!-- Définition des colonnes pour le contenu gauche, centre et droit -->
-
-			<fo:table-column border="0" />
-			<fo:table-column border="0" />
-			<fo:table-column border="0" />
 			<fo:table-body>
 				<fo:table-row>
 					<!-- Contenu aligné à gauche -->
-					<fo:table-cell border="0">
-						<fo:block font-size="10pt" text-align="left" color="#00227c" font-style="italic">
-							<xsl:choose>
-								<!-- Si TexteGauche existe, utilisez-le -->
-								<xsl:when test="TexteGauche">
-									<xsl:value-of select="TexteGauche/text()" />
-								</xsl:when>
-								<!-- Sinon, utilisez la valeur par défaut de text() -->
-								<xsl:otherwise>
-									<xsl:value-of select="text()" />
-								</xsl:otherwise>
-							</xsl:choose>
-						</fo:block>
-					</fo:table-cell>
-
-					<!-- Contenu centré -->
-					<fo:table-cell border="0">
-						<fo:block font-size="10pt" text-align="center" color="#00227c" font-style="italic">
-							<!-- Affiche TexteCentre seulement s'il existe -->
-
-							<xsl:if test="TexteCentre">
-								<xsl:value-of select="TexteCentre/text()" />
-							</xsl:if>
-						</fo:block>
-					</fo:table-cell>
-
+					<xsl:if test="TexteGauche">
+						<fo:table-cell border="0">
+							<fo:block font-size="10pt" text-align="left" color="#00227c" font-style="italic">
+										<xsl:value-of select="TexteGauche/text()" />
+							</fo:block>
+						</fo:table-cell>
+					</xsl:if>
+					<!-- Contenu au centre -->
+					<xsl:if test="TexteCentre">
+						<fo:table-cell border="0">
+							<fo:block font-size="10pt" text-align="center" color="#00227c" font-style="italic">
+										<xsl:value-of select="TexteCentre/text()" />
+							</fo:block>
+						</fo:table-cell>
+					</xsl:if>
 					<!-- Numéro de page aligné à droite -->
 					<fo:table-cell border="0">
 						<fo:block font-size="10pt" text-align="right" color="#00227c" font-weight="bold">
