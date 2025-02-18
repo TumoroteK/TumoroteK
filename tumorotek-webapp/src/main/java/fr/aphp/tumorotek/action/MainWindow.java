@@ -43,6 +43,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import fr.aphp.tumorotek.manager.ConfigManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.util.resource.Labels;
@@ -67,6 +68,7 @@ import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Box;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Div;
+import org.zkoss.zul.Image;
 import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.North;
@@ -129,8 +131,6 @@ public class MainWindow extends GenericForwardComposer<Component>
    private Window mainWinBottom;
 
    private Box mainCenterVbox;
-
-   private Label plateformeLabel;
 
    private Tabbox mainTabbox;
 
@@ -246,10 +246,14 @@ public class MainWindow extends GenericForwardComposer<Component>
       // les administrateurs qui gèrent plusieurs plateformes et doivent savoir sur laquelle ils sont connectés (TK-526).
       if (pf != null && availablePlateformes.size() > 1) {
          // Récupération du label de la plateforme
-         plateformeLabel = (Label) mainBorderLayout.getFellow("northTopBanniere").getFellow("plateformeLabel");
+         Label plateformeLabel = (Label) mainBorderLayout.getFellow("northTopBanniere").getFellow("plateformeLabel");
 
          // Définir le nom de la plateforme sur le label
          plateformeLabel.setValue(pf.getNom());
+
+         Image changePlateformeImage = (Image) mainBorderLayout.getFellow("northTopBanniere").getFellow("changePlateformeImage");
+         changePlateformeImage.setVisible(true);
+         changePlateformeImage.addForward("onClick", self, "onChangePlateforme");
       }
 
       // background
@@ -303,6 +307,7 @@ public class MainWindow extends GenericForwardComposer<Component>
 
       scanButtonDiv = (Div) mainBorderLayout.getFellow("northTopBanniere").getFellow("scanButtonDiv");
       scanButtonDiv.addForward("onClick", self, "onSwitchScanButton");
+
       scanTimer = (Timer) scanButtonDiv.getFellow("scanTimer");
       scanTimer.addForward("onTimer", self, "onScanTimer");
 
@@ -310,6 +315,8 @@ public class MainWindow extends GenericForwardComposer<Component>
       genno.addForward("onClick", self, "onOpenDossierExternes");
 
    }
+
+
 
    public void prepareListBanques(){
       final Utilisateur user = SessionUtils.getLoggedUser(sessionScope);
@@ -1428,6 +1435,14 @@ public class MainWindow extends GenericForwardComposer<Component>
          onSelectScan(ev);
       }
       ManagerLocator.getScanTerminaleManager().removeObjectManager((ScanTerminale) ev.getData());
+   }
+
+   /**
+    * Méthode appelée lorsque l'utilisateur clique sur l'image avec l'ID "changePlateformeImage".
+    * Redirige l'utilisateur vers la page de sélection de la banque.
+    */
+   public void onChangePlateforme() {
+      Executions.sendRedirect(ConfigManager.SELECT_BANQUE_URL);
    }
 
    /**** since 2.2.3-genno dossier externjes multiple integration *******/

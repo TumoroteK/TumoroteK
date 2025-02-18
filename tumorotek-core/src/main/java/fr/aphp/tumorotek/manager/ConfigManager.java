@@ -79,6 +79,10 @@ public class ConfigManager
    // STATS INDICATEURS
    public static final String SUBDIVISION_TYPE_THESAURUS = "Thesaurus";
 
+   /// URLs de l'application
+   public static final String SELECT_BANQUE_URL = "/login/SelectBanque.zul";
+
+
    public static final Map<String, String> translateMonthMap;
    static{
       translateMonthMap = new HashMap<>();
