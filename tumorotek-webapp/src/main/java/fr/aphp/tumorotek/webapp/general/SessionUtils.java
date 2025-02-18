@@ -65,11 +65,6 @@ import java.util.Map;
  */
 public final class SessionUtils {
 
-   public static final String SESSION_BANQUE = "Banque";
-   public static final String SESSION_PLATEFORME = "Plateforme";
-
-
-
    private SessionUtils(){
    }
 
