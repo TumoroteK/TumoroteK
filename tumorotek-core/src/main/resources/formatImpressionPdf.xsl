@@ -37,6 +37,9 @@
 				<xsl:apply-templates select="Titre" />
 				<xsl:apply-templates select="Paragraphe" />
 				<xsl:apply-templates select="Liste" />
+				<!-- Marque la fin du document pour la pagination (ex: Page X of Y) -->
+				<fo:block id="last-page"/>
+
 			</fo:flow>
 		</fo:page-sequence>
 	</xsl:template>
@@ -108,7 +111,7 @@
 					<!-- Numéro de page aligné à droite -->
 					<fo:table-cell border="0">
 						<fo:block font-size="10pt" text-align="right" color="#00227c" font-weight="bold">
-							Page <fo:page-number />
+							Page <fo:page-number /> / <fo:page-number-citation ref-id="last-page"/>
 						</fo:block>
 					</fo:table-cell>
 				</fo:table-row>
