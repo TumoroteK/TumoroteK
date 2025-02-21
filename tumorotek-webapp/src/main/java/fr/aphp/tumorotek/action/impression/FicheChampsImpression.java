@@ -81,9 +81,6 @@ public class FicheChampsImpression extends AbstractFicheController
 
    private String path;
 
-   private final String CHAMP_NOM = "Nom";
-
-
    private ChampImpressionRowRenderer champImpressionRenderer = new ChampImpressionRowRenderer();
 
    @Override
