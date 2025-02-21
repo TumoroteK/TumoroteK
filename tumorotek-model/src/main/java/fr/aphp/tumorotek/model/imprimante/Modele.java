@@ -58,7 +58,8 @@ import fr.aphp.tumorotek.model.contexte.Plateforme;
 
 /**
  *
- * Objet persistant mappant la table MODELE.
+ * Objet persistant mappant la table MODELE correspondant aux modèles d'étiquette créés par l'utilisateur
+ * A ne pas confondre avec la table TEMPLATE correspondant aux modèles d'impression des fiches Patient, Prélèvement, Echantillon ... créés par l'utilisateur
  * Classe créée le 17/03/11.
  *
  * @author Pierre Ventadour

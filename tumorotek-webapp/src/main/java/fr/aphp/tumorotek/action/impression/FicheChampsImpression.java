@@ -49,10 +49,12 @@ import org.zkoss.zul.Row;
 
 import fr.aphp.tumorotek.action.ManagerLocator;
 import fr.aphp.tumorotek.action.controller.AbstractFicheController;
+import fr.aphp.tumorotek.action.utilisateur.ProfilExport;
 import fr.aphp.tumorotek.decorator.BlocImpressionDecorator;
 import fr.aphp.tumorotek.decorator.ChampImpressionDecorator;
 import fr.aphp.tumorotek.decorator.ChampImpressionRowRenderer;
 import fr.aphp.tumorotek.model.TKdataObject;
+import fr.aphp.tumorotek.model.impression.BlocImpression;
 import fr.aphp.tumorotek.model.impression.ChampEntiteBloc;
 import fr.aphp.tumorotek.model.io.export.ChampEntite;
 import fr.aphp.tumorotek.webapp.gatsbi.GatsbiController;
@@ -226,14 +228,28 @@ public class FicheChampsImpression extends AbstractFicheController
 
       // since @gatsbi, retire tous les champs invisible
       cebs.removeIf(c -> !GatsbiController.isChampEntiteVisible(c.getChampEntite()));
-
-      // decoration
+      // ajout des champs non sélectionnés mais sélectionnables :
+      //TK-463 : gestion particulière du nom du patient dans le cas de l'impression d'une cession : en effet, pour les impressions à la volée (bouton Imprimer sur la fiche Cession > sélection "Définir un nouveau modèle"),
+      // le nom ne doit pas être coché par défaut et ne doit être proposé que pour les admin et les profils "export nominatif"... 
+      //NB : il faudrait revoir la classe BlocImpressionDecorator pour qu'elle porte toutes les règles spécifiques c'est-à-dire qu'elle gère également les champs "non cochés". Ainsi
+      //cette classe FicheChampsImpression serait complètement générique... (à faire avec TK-591 - cf commentaire dans BlocImpressionDecorator)
+      boolean droitsOK = sessionScope.containsKey("AdminPF") || getProfilExport().equals(ProfilExport.NOMINATIF);
       for(int i = 0; i < cebs.size(); i++){
          if(!blocImpressionDecorator.getChampEntites().contains(cebs.get(i).getChampEntite())){
-            final ChampImpressionDecorator deco = new ChampImpressionDecorator(cebs.get(i).getChampEntite());
-            deco.setImprimer(false);
-            champs.add(deco);
+            BlocImpression blocImpression = blocImpressionDecorator.getBlocImpression();
+            //TK-483 : cas de l'exception où on ne doit pas ajouter le champ :
+            if ((blocImpression.getNom().equals("bloc.cession.echantillons") || blocImpression.getNom().equals("bloc.cession.prodDerives")) 
+                  && cebs.get(i).getChampEntite().getNom().equals("Nom")
+                  && !droitsOK) {
+               //on ne fait rien
+            }
+            else {//cas général, on ajoute
+               final ChampImpressionDecorator deco = new ChampImpressionDecorator(cebs.get(i).getChampEntite());
+               deco.setImprimer(false);
+               champs.add(deco);
+            }
          }
+
       }
 
       // Vilain HACK !! contexte SEROLOGIE
@@ -248,7 +264,7 @@ public class FicheChampsImpression extends AbstractFicheController
                new ChampEntite(ManagerLocator.getEntiteManager().findByIdManager(3), "CodeAssigneId", null)));
          }
       }
-
+      
       getBinder().loadComponent(self);
    }
 

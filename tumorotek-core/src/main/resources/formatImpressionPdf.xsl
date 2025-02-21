@@ -37,6 +37,9 @@
 				<xsl:apply-templates select="Titre" />
 				<xsl:apply-templates select="Paragraphe" />
 				<xsl:apply-templates select="Liste" />
+				<!-- Marque la fin du document pour la pagination (ex: Page X of Y) -->
+				<fo:block id="last-page"/>
+
 			</fo:flow>
 		</fo:page-sequence>
 	</xsl:template>
@@ -86,21 +89,29 @@
 	<!-- Pied de page -->
 	<xsl:template match="BasDePage">
 		<fo:table width="100%" table-layout="fixed" font-size="10pt">
-			<fo:table-column border="0" />
-			<fo:table-column border="0" />
+			<!-- Définition des colonnes pour le contenu gauche, centre et droit -->
 			<fo:table-body>
 				<fo:table-row>
+					<!-- Contenu aligné à gauche -->
+					<xsl:if test="TexteGauche">
+						<fo:table-cell border="0">
+							<fo:block font-size="10pt" text-align="left" color="#00227c" font-style="italic">
+										<xsl:value-of select="TexteGauche/text()" />
+							</fo:block>
+						</fo:table-cell>
+					</xsl:if>
+					<!-- Contenu au centre -->
+					<xsl:if test="TexteCentre">
+						<fo:table-cell border="0">
+							<fo:block font-size="10pt" text-align="center" color="#00227c" font-style="italic">
+										<xsl:value-of select="TexteCentre/text()" />
+							</fo:block>
+						</fo:table-cell>
+					</xsl:if>
+					<!-- Numéro de page aligné à droite -->
 					<fo:table-cell border="0">
-						<fo:block font-size="10pt" text-align="left"
-							color="#00227c" font-style="italic">
-							<xsl:value-of select="text()" />
-						</fo:block>
-					</fo:table-cell>
-					<fo:table-cell border="0">
-						<fo:block font-size="10pt" text-align="right"
-							color="#00227c" font-weight="bold">
-							Page
-							<fo:page-number />
+						<fo:block font-size="10pt" text-align="right" color="#00227c" font-weight="bold">
+							Page <fo:page-number /> / <fo:page-number-citation ref-id="last-page"/>
 						</fo:block>
 					</fo:table-cell>
 				</fo:table-row>
