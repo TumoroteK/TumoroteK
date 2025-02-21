@@ -229,19 +229,6 @@ public class FicheTemplateModale extends AbstractImpressionController
 
    private List<CleImpressionDecorator> cleImpressionDecoratorList = new ArrayList<>();
 
-   private  final String BLOCK_CESSION_PROD_DERIVES = "bloc.cession.prodDerives";
-
-   private  final String BLOCK_CESSION_ECHANTILLONS = "bloc.cession.echantillons";
-
-   private final String CHAMP_NOM = "Nom";
-
-   private final String CESSION = "Cession";
-
-
-
-
-
-
    @Override
    public TKdataObject getObject(){
       return this.template;
@@ -465,22 +452,11 @@ public class FicheTemplateModale extends AbstractImpressionController
       if("SEROLOGIE".equalsIgnoreCase(SessionUtils.getCurrentContexte().getNom())){
          blocImpressions.removeIf(b -> b.getNom().equals("bloc.echantillon.informations.complementaires"));
       }
-      // TK-436 : ne proposer la colonne "Nom usuel" que pour les profils avec un export "nominatif" autorisé
-      boolean hasNominatifRights = getProfilExport().equals(ProfilExport.NOMINATIF);
 
       for(int i = 0; i < blocImpressions.size(); i++){
          final BlocImpressionDecorator deco =
             new BlocImpressionDecorator(blocImpressions.get(i), null, template, SessionUtils.getCurrentContexte());
-         if (!hasNominatifRights) {
-            List<ChampEntite> champEntites = deco.getChampEntites();
-            if (champEntites != null) {
-               champEntites.removeIf(champ -> champ.getNom().equals(CHAMP_NOM));
-               // Sans cette mise à jour, la description inclut "Nom usuel", même après leur retrait.
-               deco.updateListeChamps();
-            }
-         }
          blocImpressionsDecorated.add(deco);
-
       }
 
       // on récupère toutes les tables d'annotations pour
@@ -683,7 +659,7 @@ public class FicheTemplateModale extends AbstractImpressionController
          final ProdDerive prod = (ProdDerive) objectToPrint;
          titre = ObjectTypesFormatters.getLabel("impression.titre.prodDerive", new String[] {prod.getCode()});
          titreBasDePage = prod.getCode();
-      }else if(selectedEntite.getNom().equals(CESSION)){
+      }else if(selectedEntite.getNom().equals("Cession")){
          final Cession cess = (Cession) objectToPrint;
          titre = ObjectTypesFormatters.getLabel("impression.titre.cession", new String[] {String.valueOf(cess.getNumero())});
          titreBasDePage = cess.getNumero();
@@ -693,7 +669,6 @@ public class FicheTemplateModale extends AbstractImpressionController
 
       // ajout de la date en pied de page
       final StringBuffer sb = new StringBuffer();
-
       if(template.getPiedPage() != null && !template.getPiedPage().equals("")){
          sb.append(template.getPiedPage());
          sb.append(" - ");
@@ -877,14 +852,14 @@ public class FicheTemplateModale extends AbstractImpressionController
             if(blocImpressionsDecorated.get(i).getBlocImpression() != null){
                if(blocImpressionsDecorated.get(i).getBlocImpression().getNom().equals("bloc.cession.principal")){
                   createBlocPrincipalCession(cession);
-               }else if(blocImpressionsDecorated.get(i).getBlocImpression().getNom().equals(BLOCK_CESSION_ECHANTILLONS)){
+               }else if(blocImpressionsDecorated.get(i).getBlocImpression().getNom().equals("bloc.cession.echantillons")){
 
                   createBlocListeCederObjets(
                      cedeObjFactory
                         .decorateListe(ManagerLocator.getCederObjetManager().getEchantillonsCedesByCessionManager(cession)),
                      blocImpressionsDecorated.get(i).getChampEntites(), true);
 
-               }else if(blocImpressionsDecorated.get(i).getBlocImpression().getNom().equals(BLOCK_CESSION_PROD_DERIVES)){
+               }else if(blocImpressionsDecorated.get(i).getBlocImpression().getNom().equals("bloc.cession.prodDerives")){
 
                   createBlocListeCederObjets(
                      cedeObjFactory
@@ -2585,9 +2560,9 @@ public class FicheTemplateModale extends AbstractImpressionController
       // ajout du paragraphe
       final StringBuffer titre = new StringBuffer();
       if(areEchantillons){
-         titre.append(Labels.getLabel(BLOCK_CESSION_ECHANTILLONS));
+         titre.append(Labels.getLabel("bloc.cession.echantillons"));
       }else{
-         titre.append(Labels.getLabel(BLOCK_CESSION_PROD_DERIVES));
+         titre.append(Labels.getLabel("bloc.cession.prodDerives"));
       }
       titre.append(" (");
       titre.append(cedes.size());
