@@ -1113,7 +1113,6 @@ public class PrelevementManagerImpl implements PrelevementManager
          }
          
          if(maladie.getMaladieId() == null){ // creation maladie conjointe
-                  
             // @since gatsbi, creation de la visite si n'a pas été créé auparavant 
             // dans la liste de visites
             //TG-255

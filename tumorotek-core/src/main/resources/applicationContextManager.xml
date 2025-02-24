@@ -83,6 +83,7 @@
 				<property name="patientValidator" ref="patientValidator" />
 				<property name="operationManager" ref="operationManager" />
 				<property name="operationTypeDao" ref="operationTypeDao" />
+				<property name="entityManagerFactory" ref="entityManagerFactory" />
 			</bean>
 		</property>
 	</bean>
@@ -803,8 +804,15 @@
 				<property name="templateManager" ref="templateManager" />
 				<property name="utilisateurManager"
 					ref="utilisateurManager" />
+				<property name="maladieManager"	ref="maladieManager" />
+				<property name="patientManager"	ref="patientManager" />
 			</bean>
 		</property>
+	</bean>
+
+	<!-- ce bean ne prends pas en charge de transaction au niveau de la bdd. Elle sera gérée par le banqueManagerImpl associé -->
+	<bean id="banqueSuppressionProcessor" class="fr.aphp.tumorotek.manager.impl.contexte.BanqueSuppressionProcessorImpl">
+		<property name="banqueManager" ref="banqueManager" />	
 	</bean>
 
 	<bean id="categorieValidator"

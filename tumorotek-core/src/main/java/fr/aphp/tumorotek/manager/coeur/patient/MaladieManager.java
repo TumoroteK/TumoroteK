@@ -38,6 +38,7 @@ package fr.aphp.tumorotek.manager.coeur.patient;
 import java.util.List;
 import java.util.Set;
 
+import fr.aphp.tumorotek.manager.impl.coeur.patient.MaladieManagerImpl;
 import fr.aphp.tumorotek.model.coeur.patient.Maladie;
 import fr.aphp.tumorotek.model.coeur.patient.Patient;
 import fr.aphp.tumorotek.model.coeur.prelevement.Prelevement;
@@ -199,4 +200,12 @@ public interface MaladieManager
     * @return une liste de Maladie/Visite.
     */
    List<Maladie> findVisitesManager(Patient patient, Banque banque);
+
+   //TG-272 :
+   /**
+    * Supprime toutes les maladies de la banque passée en paramètre.
+    * @since 2.3.0 (gatsbi)
+    * {@link MaladieManagerImpl.removeAllMaladiesForBanque}
+    */
+   void removeAllMaladiesForBanque(Banque banque);
 }

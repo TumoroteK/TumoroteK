@@ -45,6 +45,8 @@ import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -65,6 +67,10 @@ import fr.aphp.tumorotek.model.contexte.Banque;
  */
 @Entity
 @Table(name = "PATIENT_IDENTIFIANT")
+@NamedQueries(value = {
+   @NamedQuery(name = "PatientIdentifiant.removeAllForBanque", 
+      query = "DELETE FROM PatientIdentifiant pi WHERE pi.pk.banque = ?1")
+})
 @AssociationOverrides({
    @AssociationOverride(name = "pk.banque",
       joinColumns = @JoinColumn(name = "BANQUE_ID", referencedColumnName = "BANQUE_ID")),
@@ -101,7 +107,7 @@ public class PatientIdentifiant implements Serializable
    }
 
    @EmbeddedId
-   @AttributeOverrides({@AttributeOverride(name = "collaborateur", column = @Column(name = "COLLABORATEUR_ID")),
+   @AttributeOverrides({@AttributeOverride(name = "banque", column = @Column(name = "BANQUE_ID")),
       @AttributeOverride(name = "patient", column = @Column(name = "PATIENT_ID"))})
    public PatientIdentifiantPK getPk(){
       return pk;

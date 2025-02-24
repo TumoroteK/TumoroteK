@@ -1666,6 +1666,8 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
 
       super.initEditableMode();
 
+      //TG-244 & TG-265
+      initCodePrefixe();
       if(getParentObject() != null){
          if(getParentObject().getCode() != null){
             //TG-244
@@ -2885,6 +2887,10 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
       if(echan != null){
          clearForm(false);
 
+         //TG-265 : la gestion de la numérotation n'est pas faite lors de l'inject contrairement au cas de la fiche Prélèvement
+         //car : 
+         //- d'une part l'appel de clearForm(false) ci-dessus à supprimer l'initialisation faite dans onClick$numerotation
+         //- d'autre part, une méthode spécifique initCodePrefixe() existe : elle est appelée dans initEditableMode() elle même appelée ci-dessous
          setCodePrefixe(echan.getCode());
          setSelectedType(echan.getEchantillonType());
 
