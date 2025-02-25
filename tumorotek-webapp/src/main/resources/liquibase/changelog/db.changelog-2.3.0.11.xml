@@ -1,0 +1,18 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd
+    http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+    
+    <changeSet id="${project.artifactId}-2.3.0.11" author="TK-553" context="*">
+        <preConditions onFail="MARK_RAN">
+	        <tableExists tableName="PROFIL"/>
+        </preConditions>
+        <comment>TK-553 : mise en cohérence de l'anonymisation des profils</comment>
+       	<update tableName="PROFIL">
+			<column name="PROFIL_EXPORT" value="3" />
+			<where>ANONYME = 1 and PROFIL_EXPORT = 2</where>
+		</update>
+    </changeSet>
+</databaseChangeLog>

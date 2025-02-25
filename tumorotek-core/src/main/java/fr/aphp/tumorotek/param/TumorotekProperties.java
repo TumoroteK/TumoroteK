@@ -101,7 +101,7 @@ public final class TumorotekProperties
             new PropertyPlaceholderHelper(PLACEHOLDER_START_DELIMITER, PLACEHOLDER_END_DELIMITER, "#", false);
          res = pph.replacePlaceholders(value, TUMOROTEK_PROPERTIES);
       }
-      else if (mandatory) {//Gatbi
+      else if (mandatory) {//Gatsbi
          log.error("la clé : {} n'a pas été trouvée dans tumorotek.properties", key);
       }
       else {

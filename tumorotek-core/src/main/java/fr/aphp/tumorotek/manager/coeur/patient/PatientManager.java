@@ -44,6 +44,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import fr.aphp.tumorotek.manager.impl.coeur.patient.PatientDoublonFound;
+import fr.aphp.tumorotek.manager.impl.coeur.patient.PatientManagerImpl;
 import fr.aphp.tumorotek.model.coeur.annotation.AnnotationValeur;
 import fr.aphp.tumorotek.model.coeur.patient.Maladie;
 import fr.aphp.tumorotek.model.coeur.patient.Patient;
@@ -446,4 +447,11 @@ public interface PatientManager
     * @since 2.3.0-gatsbi
     */
    List<PatientIdentifiant> findIdentifiantsByPatientAndBanquesManager(Patient patient, List<Banque> banques);
+   
+   /**
+    * Supprime tous les patientIdentifiants de la banque passée en paramètre.
+    * @since 2.3.0-gatsbi
+    * {@link PatientManagerImpl.removeAllPatientIdentifiantsForBanque}
+    */
+   void removeAllPatientIdentifiantsForBanque(Banque banque);
 }

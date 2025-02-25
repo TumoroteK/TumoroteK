@@ -69,6 +69,8 @@ import fr.aphp.tumorotek.manager.coeur.annotation.AnnotationValeurManager;
 import fr.aphp.tumorotek.manager.coeur.annotation.TableAnnotationManager;
 import fr.aphp.tumorotek.manager.coeur.cession.CessionManager;
 import fr.aphp.tumorotek.manager.coeur.echantillon.EchantillonManager;
+import fr.aphp.tumorotek.manager.coeur.patient.MaladieManager;
+import fr.aphp.tumorotek.manager.coeur.patient.PatientManager;
 import fr.aphp.tumorotek.manager.coeur.prelevement.PrelevementManager;
 import fr.aphp.tumorotek.manager.coeur.prodderive.ProdDeriveManager;
 import fr.aphp.tumorotek.manager.context.BanqueManager;
@@ -183,6 +185,11 @@ public class BanqueManagerImpl implements BanqueManager
    private TemplateManager templateManager;
 
    private UtilisateurManager utilisateurManager;
+  
+   //TG-272 : gestion des relations entre maladie / banque et patient / banque ajoutées avec Gatsbi
+   private MaladieManager maladieManager;
+   private PatientManager patientManager;
+   //fin TG-272
 
    public void setBanqueDao(final BanqueDao bDao){
       this.banqueDao = bDao;
@@ -296,6 +303,15 @@ public class BanqueManagerImpl implements BanqueManager
       this.utilisateurManager = utilisateurManager;
    }
 
+   public void setMaladieManager(MaladieManager maladieManager){
+      this.maladieManager = maladieManager;
+   }
+   
+   public void setPatientManager(PatientManager patientManager){
+      this.patientManager = patientManager;
+   }
+
+   
    /**
     * Recherche une Banque dont l'identifiant est passé en paramètre.
     * @param banqueId Identifiant de la banque que l'on recherche.
@@ -537,7 +553,7 @@ public class BanqueManagerImpl implements BanqueManager
                   oType = operationTypeDao.findByNom("Creation").get(0);
 
                   // creation filesystem
-                  manageFileSystemForBanque(basedir, banque, false);
+                  createFileSystemForBanque(basedir, banque);
                }else{
                   banqueDao.updateObject(banque);
                   log.info("Modification objet Banque {}",  banque);
@@ -602,9 +618,18 @@ public class BanqueManagerImpl implements BanqueManager
                   }
 
                }
-
             }catch(final RuntimeException re){
-               // rollback du a erreur dans creation systeme fichier
+               // "rollback" du a erreur dans creation systeme fichier
+               // remarque liée à TG-272 : 
+               // /!\ si erreur au niveau de la bdd, l'arborescence sera créée pour rien
+               // si le tomcat n'est pas redémarré, la prochaine tentative de création ne posera pas de pb
+               // car le générateur d'id donnera le nombre suivant. Par contre, si le tomcat est redémarré
+               // plantage car tentative de création de l'arborescence avec l'id qui a été "rollbacké". Or elle existe déjà
+               // cas très particulier et refactoring lourd  : il faut passer par BanqueSuppressionProcessor - à renommer
+               // et catcher l'exception puis tester si cas de la création pour supprimer l'arborescence et remettre setBanqueId à null (après)
+               // mais cette méthode renvoie des exceptions dans des cas à ne pas gérer donc il faut la découper pour 
+               // "ne pas prendre en compte les contrôles avant création en bdd".
+               // => pas fait avec la TG-272 (plus gênante) - cf TK-613
                if(operation.equals("creation")){
                   banque.setBanqueId(null);
                }
@@ -844,8 +869,7 @@ public class BanqueManagerImpl implements BanqueManager
       }
    }
 
-   @Override
-   public void removeObjectManager(Banque banque, final String comments, final Utilisateur user, final String basedir,
+   public void removeObjectInBddOnly(Banque banque, final String comments, final Utilisateur user, final String basedir,
       final boolean force){
       if(banque != null){
          if(!isReferencedObjectManager(banque) || force){
@@ -882,8 +906,10 @@ public class BanqueManagerImpl implements BanqueManager
             while(tempIt.hasNext()){
                templateManager.removeObjectManager(tempIt.next());
             }
-
+           
+            //NB : code mort : on ne passe jamais dedans car il y a eu un warning d'ajouter pour ne pas permettre de supprimer si il y a du matériel
             // suppression totale de la banque et son contenu
+            // A supprimer : TK-612
             if(force){
                final Iterator<Cession> cesIt = banque.getCessions().iterator();
                while(cesIt.hasNext()){
@@ -914,7 +940,9 @@ public class BanqueManagerImpl implements BanqueManager
                }
                banque.getPrelevements().clear();
             }
-
+            // fin du code mort
+            
+            
             // suppr valeurs annotations PATIENT pour cette banque
             final Iterator<TableAnnotation> tablesPatIt =
                tableAnnotationManager.findByEntiteAndBanqueManager(entiteDao.findByNom("Patient").get(0), banque).iterator();
@@ -923,6 +951,12 @@ public class BanqueManagerImpl implements BanqueManager
                   annotationValeurManager.findByTableAndBanqueManager(tablesPatIt.next(), banque), filesToDelete);
             }
 
+            //TG-272 : suppression des associations ajoutées par Gatsbi :
+            //maladies et patientIdentifiant
+            maladieManager.removeAllMaladiesForBanque(banque);
+            patientManager.removeAllPatientIdentifiantsForBanque(banque);
+            //fin TG-272
+            
             //Supprime operations associes
             CreateOrUpdateUtilities.removeAssociateOperations(banque, operationManager, comments, user);
 
@@ -936,9 +970,6 @@ public class BanqueManagerImpl implements BanqueManager
             for(final File f : filesToDelete){
                f.delete();
             }
-
-            // deletion filesystem
-            manageFileSystemForBanque(basedir, banque, true);
          }else{
             throw new ObjectReferencedException("banque.deletion.isReferenced", false);
          }
@@ -983,33 +1014,24 @@ public class BanqueManagerImpl implements BanqueManager
     * @param delete
     * @throws FileNotFoundException
     */
-   private void manageFileSystemForBanque(final String basedir, final Banque bank, final boolean delete){
+   private void createFileSystemForBanque(final String basedir, final Banque bank){
       final String path = Utils.writeAnnoFilePath(basedir, bank, null, null);
-      if(!delete){
-         if(!new File(path).exists()){
-            if(new File(path + "/anno").mkdirs()){
-               log.info("Creation file system {}/anno", path);
-            }else{
-               log.error("Erreur dans la creation du systeme de fichier anno pour la banque {}",  bank);
-               throw new RuntimeException("banque.filesystem.anno.error");
-            }
-            if(new File(path + "/cr_anapath").mkdirs()){
-               log.info("Creation file system {}/cr_anapath", path);
-            }else{
-               log.error("Erreur dans la creation du systeme de fichier anapath pour la banque {}",  bank);
-               throw new RuntimeException("banque.filesystem.anapath.error");
-            }
+      if(!new File(path).exists()){
+         if(new File(path + "/anno").mkdirs()){
+            log.info("Creation file system {}/anno", path);
          }else{
-            log.error("Le systeme de fichier pour la banque {} existes deja", bank);
-            throw new RuntimeException("banque.filesystem.exists.error");
+            log.error("Erreur dans la creation du systeme de fichier anno pour la banque {}", bank);
+            throw new RuntimeException("banque.filesystem.anno.error");
+         }
+         if(new File(path + "/cr_anapath").mkdirs()){
+            log.info("Creation file system {}/cr_anapath", path);
+         }else{
+            log.error("Erreur dans la creation du systeme de fichier anapath pour la banque {}", bank);
+            throw new RuntimeException("banque.filesystem.anapath.error");
          }
       }else{
-         if(Utils.deleteDirectory(new File(path))){
-            log.info("Filesystem complet supprimé pour la banque {}",  bank);
-         }else{
-            log.error("Erreur dans la suppression du systeme de fichier anapath pour la banque {}",  bank);
-            throw new RuntimeException("banque.filesystem.delete.error");
-         }
+         log.error("Le systeme de fichier pour la banque {} existe deja", bank);
+         throw new RuntimeException("banque.filesystem.exists.error");
       }
    }
 
