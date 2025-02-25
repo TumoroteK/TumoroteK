@@ -810,7 +810,7 @@
 		</property>
 	</bean>
 
-	<!-- ce bean ne prends pas en charge de transaction au niveau de la bdd. Elle sera gérée par le banqueManagerImpl associé -->
+	<!-- ce bean ne prend pas en charge de transaction au niveau de la bdd. Elle sera gérée par le banqueManagerImpl associé -->
 	<bean id="banqueSuppressionProcessor" class="fr.aphp.tumorotek.manager.impl.contexte.BanqueSuppressionProcessorImpl">
 		<property name="banqueManager" ref="banqueManager" />	
 	</bean>

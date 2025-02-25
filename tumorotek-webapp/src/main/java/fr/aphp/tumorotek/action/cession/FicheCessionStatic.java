@@ -1322,9 +1322,7 @@ public class FicheCessionStatic extends AbstractFicheStaticController
 			}
 			// derives
 			if(!falseCkeckDeriveCodes.isEmpty()){
-				//if(!falseCkeckEchantillonCodes.isEmpty()){
-					messageToDisplay.append("<br>");
-				//}
+				messageToDisplay.append("<br>");
 				messageToDisplay.append(Labels.getLabel("Entite.ProdDerive.pluriel"));
 				messageToDisplay.append(": ");
 				final Iterator<String> cIt = falseCkeckDeriveCodes.iterator();
