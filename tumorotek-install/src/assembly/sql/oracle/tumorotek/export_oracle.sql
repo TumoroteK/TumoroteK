@@ -299,6 +299,7 @@ EXECUTE IMMEDIATE
             CONG_ARRIVEE NUMBER(1),
             LABO_INTER varchar2(3),
             QUANTITE DECIMAL(12,3),
+            QUANTITE_UNITE varchar2(50),
             PATIENT_NDA varchar2(20),
 			CODE_ORGANE varchar2(500),
 			DIAGNOSTIC	varchar2(500),
@@ -913,11 +914,12 @@ BEGIN
 		      TRANSPORT_TEMP ,
 		      DATE_ARRIVEE,
 		      OPERATEUR,
-		      	CONG_DEPART,
-		      	CONG_ARRIVEE,
+              CONG_DEPART,
+              CONG_ARRIVEE,
 		      LABO_INTER,
 		      QUANTITE ,
-		      PATIENT_NDA ,
+              QUANTITE_UNITE,
+              PATIENT_NDA ,
 		      CODE_ORGANE,
 		 	  DIAGNOSTIC,
 		      ECHAN_TOTAL,
@@ -927,12 +929,12 @@ BEGIN
 		      NOMBRE_DERIVES,
 		      DATE_HEURE_SAISIE,
 		      UTILISATEUR_SAISIE,
-		      	MALADIE_ID,
-		        LIBELLE,
-				CODE_MALADIE,
-				DATE_DIAGNOSTIC,
-				DATE_DEBUT,
-				MEDECIN_MALADIE,
+              MALADIE_ID,
+              LIBELLE,
+              CODE_MALADIE,
+              DATE_DIAGNOSTIC,
+              DATE_DEBUT,
+              MEDECIN_MALADIE,
 		      PATIENT_ID
 		    )
 		  SELECT p.prelevement_id,
@@ -963,6 +965,7 @@ BEGIN
 		    p.cong_arrivee,
 		    (select Count(*) FROM LABO_INTER l where l.prelevement_id = prel_id),
 		    p.quantite,
+            u.unite,
 		    p.patient_nda AS Num_Dossier_Patient,
 		   	SUBSTR((SELECT stragg(code) from (select distinct ca.code, ca.ordre FROM CODE_ASSIGNE ca INNER JOIN ECHANTILLON e 
 		    	ON e.echantillon_id = ca.echantillon_id WHERE ca.IS_ORGANE=1 AND e.prelevement_id = prel_id ORDER BY ca.ordre)), 0, 500),
@@ -1022,6 +1025,8 @@ BEGIN
 		  ON p.transporteur_id = tr.transporteur_id
 		  LEFT JOIN COLLABORATEUR coco
 		  ON p.operateur_id = coco.collaborateur_id
+          LEFT JOIN UNITE u
+          ON p.quantite_unite_id = u.unite_id
 		  LEFT JOIN MALADIE m
 		  ON p.maladie_id = m.maladie_id
 		  LEFT JOIN PATIENT pat
