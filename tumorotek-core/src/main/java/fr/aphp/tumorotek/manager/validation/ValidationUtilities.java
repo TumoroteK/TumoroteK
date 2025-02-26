@@ -81,9 +81,6 @@ public final class ValidationUtilities
    public static final String PATHREGEXP = "[:a-zA-Z0-9_\\.\\-\\/\\s]+";
 
    public static final String FILENAMEREGEXP = "[a-zA-Z0-9_\\.\\-]+";
-
-   public static final String PASSWORDREGEXP = "^.*(?=.*[a-z])(?=.*[A-Z])(?=.*[\\d])(?=.*[\\W]).*$";
-
    public static final String IPREGEXP =
       "^\\b(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}" + "(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\b$";
 

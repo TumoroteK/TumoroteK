@@ -998,8 +998,8 @@ public class InterfacageParsingUtilsImpl implements InterfacageParsingUtils
             final List<Element> spmBlocs = new ArrayList<>();
             final List<?> blocs = racine.getChildren("Bloc");
             for(final Object e : blocs){
-               if(!(((Element) e).getAttributeValue("nom")).matches("SPM.*")
-                  || (emetteur.getIdentification().matches(".*Genno.*"))){ // SSU messages SPM = bloc principal
+               if(!(((Element) e).getAttributeValue("nom")).startsWith("SPM")
+                  || (emetteur.getIdentification().contains("Genno"))){ // SSU messages SPM = bloc principal
                   dossierBlocs.add((Element) e);
                }else{ // SPM{X} = bloc echantillon
                   spmBlocs.add((Element) e);
