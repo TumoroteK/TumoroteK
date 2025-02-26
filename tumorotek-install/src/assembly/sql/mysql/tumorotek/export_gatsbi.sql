@@ -226,7 +226,7 @@ CREATE PROCEDURE `create_tmp_prelevement_table_gatsbi`(IN etude_id INTEGER)
 	    IF ((is_chp_visible(269, etude_id)), 'CONG_DEPART boolean, ', ''),
 	    IF ((is_chp_visible(270, etude_id)), 'CONG_ARRIVEE boolean, ', ''),
 	    IF ((is_chp_visible(273, etude_id)), 'LABO_INTER varchar(3), ', ''),
-	    IF ((is_chp_visible(40, etude_id)), 'QUANTITE DECIMAL(12, 3), ', ''),
+        IF ((is_chp_visible(40, etude_id)), 'QUANTITE DECIMAL(12, 3), QUANTITE_UNITE varchar(25), ', ''),
 	    IF ((is_chp_visible(44, etude_id)), 'PATIENT_NDA varchar(20), ', ''),
 	    IF ((is_chp_visible(229, etude_id)), 'CODE_ORGANE VARCHAR(500), ', ''),
 	    IF ((is_chp_visible(230, etude_id)), 'DIAGNOSTIC VARCHAR(500), ', ''),
@@ -289,7 +289,7 @@ CREATE PROCEDURE `fill_tmp_table_prel_gatsbi`(IN prel_id INTEGER, IN etude_id IN
         IF ((is_chp_visible(269, etude_id)), 'p.cong_depart, ', ''),
         IF ((is_chp_visible(270, etude_id)), 'p.cong_arrivee, ', ''),
         IF ((is_chp_visible(273, etude_id)), CONCAT('(select count(l.labo_inter_id) FROM LABO_INTER l where l.prelevement_id = ', prel_id, '),'), ''),
-        IF ((is_chp_visible(40, etude_id)), 'p.quantite, ', ''),
+        IF ((is_chp_visible(40, etude_id)), 'p.quantite, u.unite, ', ''),
         IF ((is_chp_visible(44, etude_id)), 'p.patient_nda, ', ''),
         IF ((is_chp_visible(229, etude_id)), CONCAT('LEFT((SELECT GROUP_CONCAT(distinct(ca.code) ORDER BY ca.ordre) FROM CODE_ASSIGNE ca INNER JOIN ECHANTILLON e ON e.echantillon_id = ca.echantillon_id WHERE ca.IS_ORGANE = 1 AND e.prelevement_id = ', prel_id, '), 500), '), ''), 
         IF ((is_chp_visible(230, etude_id)), CONCAT('LEFT((SELECT GROUP_CONCAT(distinct(ca.code) ORDER BY ca.ordre) FROM CODE_ASSIGNE ca INNER JOIN ECHANTILLON e ON e.echantillon_id = ca.echantillon_id WHERE ca.IS_MORPHO = 1 AND e.prelevement_id =',  prel_id, '), 500), '), ''),  
@@ -335,6 +335,7 @@ CREATE PROCEDURE `fill_tmp_table_prel_gatsbi`(IN prel_id INTEGER, IN etude_id IN
            LEFT JOIN COLLABORATEUR coco ON p.operateur_id = coco.collaborateur_id
            LEFT JOIN MALADIE m on p.maladie_id = m.maladie_id
            LEFT JOIN PATIENT pat ON m.patient_id = pat.patient_id
+           LEFT JOIN UNITE u ON p.quantite_unite_id = u.unite_id
     WHERE p.banque_id = b.banque_id
       AND ent.ENTITE_ID = 2
       AND p.prelevement_id = ', prel_id);
