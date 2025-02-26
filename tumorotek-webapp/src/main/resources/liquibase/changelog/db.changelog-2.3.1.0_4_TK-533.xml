@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="tag-version-2.3.1.0-TK-533" author="PZ" context="*">
+        <tagDatabase tag="${project.parent.version}"/>
+    </changeSet>
+    <changeSet id="export-proc-add-quantite-unite-TK-533" author="PZ" runAlways="false" context="*">
+        <comment>Ajout de QUANTITE_UNITE aux procédures d'exportation</comment>
+        <!-- MySQL procedures -->
+        <sqlFile encoding="utf8" path="../sql/mysql/tumorotek/export_gatsbi.sql" endDelimiter="&amp;&amp;" relativeToChangelogFile="true" stripComments="true"/>
+        <sqlFile encoding="utf8" path="../sql/mysql/tumorotek/export_mysql.sql" endDelimiter="&amp;&amp;" relativeToChangelogFile="true" stripComments="true"/>
+        <sqlFile encoding="utf8" path="../sql/mysql/tumorotek/export_sero.sql" endDelimiter="&amp;&amp;" relativeToChangelogFile="true" stripComments="true"/>
+        <!-- Oracle procedure -->
+        <sqlFile encoding="utf8" path="../sql/oracle/tumorotek/export_oracle.sql" endDelimiter="&amp;&amp;" relativeToChangelogFile="true" stripComments="true"/>
+    </changeSet>
+</databaseChangeLog>
