@@ -18,12 +18,15 @@ ALTER TABLE SCAN_TERMINALE
       FOREIGN KEY (SCAN_DEVICE_ID)
       REFERENCES SCAN_DEVICE (SCAN_DEVICE_ID);
 
+-- TK-568 : changement du nom des colonnes pour éviter les problèmes avec ROW qui est un mot réservé de mysql
+-- => ROW devient LIGNE. Et pour éviter d'éventuels problèmes futurs, CELL devient CELLULE et COL devient COLONNE
+-- avec des termes en français, il n'y a plus de risque d'être sur un futur mot réservé.      
 create table SCAN_TUBE (SCAN_TUBE_ID int(10) not null, 
 	SCAN_TERMINALE_ID int(10) not null,
 	CODE varchar(50),
-	CELL varchar(10) not null,
-	`ROW` varchar(10) not null,
-	COL varchar(10) not null,
+	CELLULE varchar(10) not null,
+	LIGNE varchar(10) not null,
+	COLONNE varchar(10) not null,
 	primary key(SCAN_TUBE_ID)
 );
 

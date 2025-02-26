@@ -138,22 +138,22 @@ public class ExcelVMateParser
                // cell
                cell = row.getCell(colsPosition.get("LocationCell").intValue());
                cell.setCellType(CellType.STRING);
-               tube.setCell(cell.getStringCellValue());
+               tube.setCellule(cell.getStringCellValue());
                // row
                cell = row.getCell(colsPosition.get("LocationRow").intValue());
                cell.setCellType(CellType.STRING);
-               tube.setRow(cell.getStringCellValue());
+               tube.setLigne(cell.getStringCellValue());
                // col
                cell = row.getCell(colsPosition.get("LocationColumn").intValue());
                cell.setCellType(CellType.STRING);
-               tube.setCol(cell.getStringCellValue());
+               tube.setColonne(cell.getStringCellValue());
 
-               if(tube.getRow() != previousRow){
+               if(tube.getLigne() != previousRow){
                   termHeight++;
                   if(previousRow != null){ // first line parsed
                      firstLigneDone = true;
                   }
-                  previousRow = tube.getRow();
+                  previousRow = tube.getLigne();
                }else if(!firstLigneDone){
                   termWidth++;
                }

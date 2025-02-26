@@ -476,7 +476,7 @@ public class InjectionManagerImpl implements InjectionManager
                }else{
                   annoValeur = null;
                }
-            }else if(dt.getType().matches("date.*")){
+            }else if(dt.getType().startsWith("date")){
                // si l'attibut est un calendar, on caste
                // la valeur issue du fichier
                Date date = null;

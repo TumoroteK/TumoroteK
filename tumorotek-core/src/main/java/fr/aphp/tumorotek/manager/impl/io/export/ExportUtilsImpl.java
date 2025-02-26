@@ -455,7 +455,7 @@ public class ExportUtilsImpl implements ExportUtils
          for(int i = 0; i < champAnnotations.size(); i++){
             final List<AnnotationValeur> avs = annotationValeurManager.findByChampAndObjetManager(champAnnotations.get(i), obj);
             if(!avs.isEmpty()){
-               if(champAnnotations.get(i).getDataType().getType().matches("date.*")){
+               if(champAnnotations.get(i).getDataType().getType().startsWith("date")){
                   indCell = addDateCell(indCell, row, avs.get(0).getValeur(), wb);
                }else if(!champAnnotations.get(i).getDataType().getType().equals("thesaurusM")){
                   indCell = addCell(indCell, row, avs.get(0).getValeur());

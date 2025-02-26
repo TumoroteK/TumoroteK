@@ -42,8 +42,6 @@ import java.util.Date;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
@@ -51,6 +49,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
+import fr.aphp.tumorotek.utils.NonConformiteUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
@@ -332,9 +331,9 @@ public class TraitementQueryManagerImpl implements TraitementQueryManager
                            sb.append(" WHERE ca.isOrgane = 1)");
                         }
                      }
-                  }else if(nomChampMinFirst.matches("conforme.*Raison")){
+                  }else if(NonConformiteUtils.isUneRaisonDeNonConformite(nomChampMinFirst)){
                      appendNonConformitesSb(critere, sb, nomEntiteMajFirst);
-                  }else if(nomChampMinFirst.matches("count.*")){
+                  }else if(nomChampMinFirst.startsWith("count")){
                      sb.append("SELECT DISTINCT e From " + nomEntiteMajFirst + " as e " + "JOIN e.echantillons z "
                         + "having count(z) " + critere.getOperateur());
 
@@ -479,21 +478,14 @@ public class TraitementQueryManagerImpl implements TraitementQueryManager
    }
 
    private void appendNonConformitesSb(final Critere critere, final StringBuffer sb, final String nomEntiteMajFirst){
-
-      String cNom = null;
-      final Pattern p = Pattern.compile("Conforme(.*)\\.Raison");
-      final Matcher m = p.matcher(critere.getChamp().getChampEntite().getNom());
-      final boolean b = m.matches();
-      if(b && m.groupCount() > 0){
-         cNom = m.group(1);
-      }
+      String nonConformiteNom = NonConformiteUtils.retrieveNomDeLaNonConformiteOrNull(critere.getChamp().getChampEntite().getNom());
 
       if(!critere.getOperateur().equals("is null")){
          // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
          sb.append("SELECT DISTINCT e From " + nomEntiteMajFirst + " as e, ObjetNonConforme r " + "WHERE  r.objetId = e."
             + nomEntiteMajFirst.replaceFirst(".", (nomEntiteMajFirst.charAt(0) + "").toLowerCase()) + "Id "
             + "AND r.entite.entiteId = " + critere.getChamp().getChampEntite().getEntite().getEntiteId().toString()
-            + " AND r.nonConformite.conformiteType.conformiteType = '" + cNom + "'"
+            + " AND r.nonConformite.conformiteType.conformiteType = '" + nonConformiteNom + "'"
             + " AND r.nonConformite.conformiteType.entite.entiteId = "
             + critere.getChamp().getChampEntite().getEntite().getEntiteId().toString() + " AND r.nonConformite.nom "
             + critere.getOperateur());
@@ -505,7 +497,7 @@ public class TraitementQueryManagerImpl implements TraitementQueryManager
             + nomEntiteMajFirst.replaceFirst(".", (nomEntiteMajFirst.charAt(0) + "").toLowerCase()) + "Id "
             + "NOT IN (SELECT r.objetId  FROM ObjetNonConforme r " + "WHERE r.entite.entiteId = "
             + critere.getChamp().getChampEntite().getEntite().getEntiteId().toString()
-            + " AND r.nonConformite.conformiteType.conformiteType = '" + cNom + "'"
+            + " AND r.nonConformite.conformiteType.conformiteType = '" + nonConformiteNom + "'"
             + " AND r.nonConformite.conformiteType.entite.entiteId = "
             + critere.getChamp().getChampEntite().getEntite().getEntiteId().toString() + ")");
       }

@@ -306,7 +306,7 @@ public class StorageRobotSenderImpl implements StorageRobotSender
    @Override
    public boolean useRecepteur(final Recepteur r){
       if(r != null && r.getLogiciel() != null && r.getLogiciel().getNom().equals("IRELEC")
-         && r.getIdentification().matches(".*STORAGE.*")){
+         && r.getIdentification().contains("STORAGE")){
          return true;
       }
       return false;

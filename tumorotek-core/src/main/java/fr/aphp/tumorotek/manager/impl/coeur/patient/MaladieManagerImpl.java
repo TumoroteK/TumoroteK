@@ -43,6 +43,12 @@ import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Query;
+
+import org.springframework.orm.jpa.EntityManagerFactoryUtils;
 import org.springframework.validation.Validator;
 
 import fr.aphp.tumorotek.dao.coeur.patient.MaladieDao;
@@ -100,6 +106,8 @@ public class MaladieManagerImpl implements MaladieManager
 
    private OperationManager operationManager;
 
+   private EntityManagerFactory entityManagerFactory;
+   
    public MaladieManagerImpl(){}
 
    /* Properties setters */
@@ -133,6 +141,10 @@ public class MaladieManagerImpl implements MaladieManager
 
    public void setOperationTypeDao(final OperationTypeDao otDao){
       this.operationTypeDao = otDao;
+   }
+   
+   public void setEntityManagerFactory(EntityManagerFactory entityManagerFactory){
+      this.entityManagerFactory = entityManagerFactory;
    }
 
    @Override
@@ -395,5 +407,28 @@ public class MaladieManagerImpl implements MaladieManager
    @Override
    public List<Maladie> findVisitesManager(Patient patient, Banque banque){
       return maladieDao.findVisites(patient, banque);
+   }
+   
+   //TG-272
+   /**
+    * Supprime toutes les maladies de la banque passée en paramètre.
+    * @since 2.3.0 (gatsbi), les maladies sont rattachés à la collection 
+    * quand il s'agit des visites (récupérées du schéma de visites défini dans Gatsbi)
+    * ou lorsqu'elles sont ajoutées par l'utilisateur au moment de la saisie d'un prélèvement sur une collection Gatsbi
+    * @param banque
+    */
+   @Override
+   public void removeAllMaladiesForBanque(Banque banque){
+      // /!\ cette méthode est une mise à jour : il ne faut créer un entityManager que si une transaction 
+      // n'est pas déjà en cours...
+      //normalement vu que la propogation définie sur la méthode est REQUIRED - d'après la conf dans applicationContextAOP.xml, 
+      //ça doit toujours être le cas mais on sécurise quand même en créant un entityManager si celui récupéré est null
+      EntityManager em = EntityManagerFactoryUtils.getTransactionalEntityManager(entityManagerFactory);
+      if(em == null) {
+         em = entityManagerFactory.createEntityManager();
+      }
+      Query queryDelete = em.createNamedQuery("Maladie.removeAllForBanque");
+      queryDelete.setParameter(1, banque);
+      queryDelete.executeUpdate(); 
    }
 }

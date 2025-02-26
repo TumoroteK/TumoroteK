@@ -308,8 +308,8 @@ public class FicheModifMultiPatient extends AbstractFicheModifMultiController
 
    public void onClick$etatMultiLabel(){
 
-      dateDecesRow.setVisible(true);
-      dateEtatRow.setVisible(true);
+      setVisibilityOnDateDeces(true);
+      setVisibilityOnDateEtat(true);
 
       List<? extends Object> etats = PatientUtils.getEtats();
       if("F".equals(getObject().getSexe())){
@@ -348,12 +348,12 @@ public class FicheModifMultiPatient extends AbstractFicheModifMultiController
             nullifier.setValue(null);
             if(!((LabelCodeItem) tmp.getValue()).getCode().equals("D")){ // nullify dateDeces
                nullifier.setChamp("dateDeces");
-               dateDecesRow.setVisible(false);
-               dateEtatRow.setVisible(true);
+               setVisibilityOnDateDeces(false);
+               setVisibilityOnDateEtat(true);
             }else{ // nullify dateEtat
                nullifier.setChamp("dateEtat");
-               dateEtatRow.setVisible(false);
-               dateDecesRow.setVisible(true);
+               setVisibilityOnDateEtat(false);
+               setVisibilityOnDateDeces(true);
             }
             Events.postEvent(new Event("onGetChangeOnChamp", self, nullifier));
          }
@@ -375,4 +375,19 @@ public class FicheModifMultiPatient extends AbstractFicheModifMultiController
 
    @Override
    public void setParentObject(final TKdataObject obj){}
+   
+   //TG-235 : Pour l'écran Gatsbi, dateDeces et dateEtat ne sont pas des Row mais des Div
+   //=> on encapsule le type du composant dans ces méthodes qui seront surchargées dans Gatsbi
+   protected void setVisibilityOnDateDeces(boolean visible) {
+      setVisibilityOnRow(dateDecesRow, visible);
+   }
+   
+   protected void setVisibilityOnDateEtat(boolean visible) {
+      setVisibilityOnRow(dateEtatRow, visible);
+   }
+
+   private void setVisibilityOnRow(Row row, boolean visible) {
+      row.setVisible(visible);
+   }
+   //
 }

@@ -3,8 +3,6 @@ package fr.aphp.tumorotek.manager.impl.io.utils;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import fr.aphp.tumorotek.dto.EchantillonDTO;
@@ -40,6 +38,7 @@ import fr.aphp.tumorotek.model.io.export.ChampEntite;
 import fr.aphp.tumorotek.model.io.export.Resultat;
 import fr.aphp.tumorotek.model.qualite.ObjetNonConforme;
 import fr.aphp.tumorotek.model.systeme.Entite;
+import fr.aphp.tumorotek.utils.NonConformiteUtils;
 
 /**
  * Classe utilitaire manager regroupant les methodes optimisées
@@ -632,9 +631,7 @@ public class RechercheUtilsManager
                   }
                }
                return sb.toString();
-               // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
-            }else if(parent.getChampEntite().getNom().matches("ConformeArrivee.Raison")){
-
+            }else if(parent.getChampEntite().getNom().equals("ConformeArrivee.Raison")){
                return formatNonConformites(prel, parent.getChampEntite());
             }else{
                return getChampValueForObject(parent, prel, false);
@@ -699,15 +696,10 @@ public class RechercheUtilsManager
     * @return
     */
    private static String formatNonConformites(final Object obj, final ChampEntite champEntite){
-      String cNom = "";
-      final Pattern p = Pattern.compile("Conforme(.*)\\.Raison");
-      final Matcher m = p.matcher(champEntite.getNom());
-      final boolean b = m.matches();
-      if(b && m.groupCount() > 0){
-         cNom = m.group(1);
-      }
+      String nonConformiteNom = NonConformiteUtils.retrieveNomDeLaNonConformiteOrNull(champEntite.getNom());
+
       final Iterator<ObjetNonConforme> ncsIt = objetNonConformeManager
-         .findByObjetAndTypeManager(obj, conformiteTypeManager.findByEntiteAndTypeManager(cNom, champEntite.getEntite()).get(0))
+         .findByObjetAndTypeManager(obj, conformiteTypeManager.findByEntiteAndTypeManager(nonConformiteNom, champEntite.getEntite()).get(0))
          .iterator();
       final StringBuffer sb = new StringBuffer();
       while(ncsIt.hasNext()){
@@ -763,7 +755,7 @@ public class RechercheUtilsManager
             }
             if(parent.getChampEntite().getNom().equals("PrelevementId") && echanDeco.getEchantillon().getPrelevement() != null){
                return getChampValueFromPrelevement(echanDeco.getEchantillon().getPrelevement(), parent, null);
-            }else if(parent.getChampEntite().getNom().matches("Conforme.*Raison")){
+            }else if(NonConformiteUtils.isUneRaisonDeNonConformite(parent.getChampEntite().getNom())){
                return formatNonConformites(echanDeco.getEchantillon(), parent.getChampEntite());
             }else{
                return getChampValueForObject(parent, echanDeco.getEchantillon(), false);
@@ -848,7 +840,7 @@ public class RechercheUtilsManager
                   return getChampValueForObject(chp, prodDerive, false);
                }
             }
-            if(null != parent && parent.getChampEntite().getNom().matches("Conforme.*Raison")){
+            if(null != parent && NonConformiteUtils.isUneRaisonDeNonConformite(parent.getChampEntite().getNom())){
                return formatNonConformites(prodDerive, parent.getChampEntite());
             }
 

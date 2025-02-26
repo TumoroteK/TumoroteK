@@ -255,7 +255,7 @@ public class FicheAnnotation extends AbstractFicheController
             // couleur des Labels
             String colClass = null;
             if(tabs.get(i).getCatalogue() != null){
-               if(tabs.get(i).getCatalogue().getNom().matches("INCa.*")){
+               if(tabs.get(i).getCatalogue().getNom().startsWith("INCa")){
                   colClass = "incaLabel";
                }
             }

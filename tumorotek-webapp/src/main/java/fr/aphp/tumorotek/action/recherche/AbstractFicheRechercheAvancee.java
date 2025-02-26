@@ -437,7 +437,7 @@ public abstract class AbstractFicheRechercheAvancee extends AbstractFicheCombine
 			value = current.getValue() + "%";
 		}
 
-		if(!searchForProdDerives || current.getId().matches("annoBox.*")){
+		if(!searchForProdDerives || current.getId().startsWith("annoBox")){
 			// création du critère
 			final Critere critere = createCritereForQuery(current, parent1, "like");
 
@@ -485,7 +485,7 @@ public abstract class AbstractFicheRechercheAvancee extends AbstractFicheCombine
 			obj = current.getSelectedItem().getValue();
 		}
 
-		if(current.getId().matches(".*BoolBox")){
+		if(current.getId().endsWith("BoolBox")){
 			obj = new Boolean((String) obj);
 		}
 
@@ -497,7 +497,7 @@ public abstract class AbstractFicheRechercheAvancee extends AbstractFicheCombine
 			}
 		}
 
-		if(!searchForProdDerives || current.getId().matches("annoBox.*")){
+		if(!searchForProdDerives || current.getId().startsWith("annoBox")){
 			// création du critère
 			final Critere critere = createCritereForQuery(current, parent1, "=");
 			// exécution de lam2 requête
@@ -542,7 +542,7 @@ public abstract class AbstractFicheRechercheAvancee extends AbstractFicheCombine
 			obj = current.getSelectedItem().getValue();
 		}
 
-		if(current.getId().matches(".*BoolBox")){
+		if(current.getId().endsWith("BoolBox")){
 			obj = new Boolean((String) obj);
 		}
 
@@ -554,7 +554,7 @@ public abstract class AbstractFicheRechercheAvancee extends AbstractFicheCombine
 			}
 		}
 
-		if(!searchForProdDerives || current.getId().matches("annoBox.*")){
+		if(!searchForProdDerives || current.getId().startsWith("annoBox")){
 			// création du critère
 			final Critere critere = createCritereForQuery(current, parent1, "=");
 			// exécution de la requête
@@ -631,7 +631,7 @@ public abstract class AbstractFicheRechercheAvancee extends AbstractFicheCombine
 		}else{
 			obj = val;
 		}
-		if(!searchForProdDerives || current.getId().matches("annoBox.*")){
+		if(!searchForProdDerives || current.getId().startsWith("annoBox")){
 			// création du critère
 			final Critere critere = createCritereForQuery(current, parent1, operateur);
 			// exécution de la requête
@@ -669,7 +669,7 @@ public abstract class AbstractFicheRechercheAvancee extends AbstractFicheCombine
 		// on récupère la valeur saisie
 		final Duree val = current.getDuree();
 		BigDecimal obj = new BigDecimal(val.getTemps(Duree.SECONDE));
-		if(!searchForProdDerives || current.getId().matches("annoBox.*")){
+		if(!searchForProdDerives || current.getId().startsWith("annoBox")){
 			// création du critère
 			final Critere critere = createCritereForQuery(current, parent1, operateur);
 			// exécution de la requête
@@ -751,7 +751,7 @@ public abstract class AbstractFicheRechercheAvancee extends AbstractFicheCombine
 		// 	val = val.substring(0, val.indexOf("."));
 		//	val = val.concat("%");
 		// }
-		if(!searchForProdDerives || current.getId().matches("annoBox.*")){
+		if(!searchForProdDerives || current.getId().startsWith("annoBox")){
 			// création du critère
 			final Critere critere = createCritereForQuery(current, parent1, operateur);
 			// exécution de la requête
@@ -795,7 +795,7 @@ public abstract class AbstractFicheRechercheAvancee extends AbstractFicheCombine
 			obj = tmp;
 		}
 
-		if(!searchForProdDerives || current.getId().matches("annoBox.*")){
+		if(!searchForProdDerives || current.getId().startsWith("annoBox")){
 			// création du critère
 			final Critere critere = createCritereForQuery(current, parent1, operateur);
 			// exécution de la requête
@@ -839,7 +839,7 @@ public abstract class AbstractFicheRechercheAvancee extends AbstractFicheCombine
 			value.add(Calendar.DATE, 1);
 		}
 
-		if(!searchForProdDerives || current.getId().matches("annoBox.*")){
+		if(!searchForProdDerives || current.getId().startsWith("annoBox")){
 			// création du critère
 			final Critere critere = createCritereForQuery(current, parent1, operateur);
 			// exécution de la requêteDer
@@ -1024,7 +1024,7 @@ public abstract class AbstractFicheRechercheAvancee extends AbstractFicheCombine
 			obj = current.getSelectedItem().getValue();
 		}
 
-		if(current.getId().matches(".*BoolBox")){
+		if(current.getId().endsWith("BoolBox")){
 			obj = new Boolean((String) obj);
 		}
 

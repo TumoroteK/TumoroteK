@@ -140,7 +140,7 @@ public class ScanTerminale implements java.io.Serializable
    }
 
    @OneToMany(mappedBy = "scanTerminale", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-   @OrderBy("cell")
+   @OrderBy("cellule")
    public List<ScanTube> getScanTubes(){
       return scanTubes;
    }

@@ -58,6 +58,8 @@ import fr.aphp.tumorotek.model.systeme.Entite;
 /**
  *
  * Objet persistant mappant la table BLOC_IMPRESSION.
+ * Cette table est la référence des différents blocs d'impression proposés par TK
+ * Elle est alimentée à la création de la base TK
  * Classe créée le 21/07/2010.
  *
  * @author Pierre Ventadour.
@@ -79,16 +81,28 @@ public class BlocImpression implements Serializable
 
    private Integer ordre;
 
+   //un bloc d'impression correspond à une zone de l'impression
+   //une zone peut contenir un ensemble de champs liés directement ou indirectement à la notion à imprimer (Patient, Prélèvement ...)
+   //ou un tableau d'objets rattachés à cette notion à imprimer.
+   //isListe vaut true si le bloc correspond à un tableau d'objets rattachés et false sinon
+   //Dans le cas des tableaux, l'utilisateur peut filtrer les champs à afficher dans celui-ci
    private Boolean isListe;
 
    private Boolean imprime = true;
 
    private Entite entite;
 
+   //Liste des champs entités constituant les blocs : la table CHAMP_ENTITE_BLOC associée est alimentée à la création de la base
    private Set<ChampEntiteBloc> champEntiteBlocs = new HashSet<>();
 
+   //Lien avec tous les modèles d'impression - créés par l'utilisateur - s'appuyant sur ce bloc d'impression
    private Set<BlocImpressionTemplate> blocImpressionTemplates = new HashSet<>();
 
+   //Liste des champs à imprimer. Cette liste ne devrait pas être rattachée à BlocImpression mais à BlocImpressionTemplate
+   //car c'est au moment de la définition d'un modèle d'impression que l'utilisateur choisit les champs à imprimer pour ce bloc
+   //cette liste semble contenir tous les champs à imprimer pour ce bloc d'impression quelque soit le modèle d'impression.
+   //cela n'a pas de sens fonctionnel
+   //CECI EXPLIQUE POURQUOI CETTE LISTE NE SEMBLE JAMAIS APPELEE ...
    private Set<ChampImprime> champImprimes = new HashSet<>();
 
    public BlocImpression(){

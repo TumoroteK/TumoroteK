@@ -56,6 +56,7 @@ import fr.aphp.tumorotek.dao.contexte.CollaborateurDao;
 import fr.aphp.tumorotek.dao.contexte.ContexteDao;
 import fr.aphp.tumorotek.dao.stockage.ConteneurPlateformeDao;
 import fr.aphp.tumorotek.manager.context.BanqueManager;
+import fr.aphp.tumorotek.manager.context.BanqueSuppressionProcessor;
 import fr.aphp.tumorotek.manager.context.PlateformeManager;
 import fr.aphp.tumorotek.manager.exception.ObjectReferencedException;
 import fr.aphp.tumorotek.manager.qualite.OperationManager;
@@ -112,6 +113,9 @@ public class PlateformeManagerTest extends AbstractManagerTest4
 
    @Autowired
    private BanqueManager banqueManager;
+
+   @Autowired
+   private BanqueSuppressionProcessor banqueSuppressionProcessor;
 
    public PlateformeManagerTest(){}
 
@@ -530,7 +534,7 @@ public class PlateformeManagerTest extends AbstractManagerTest4
 
       b = banqueManager.findByPlateformeAndArchiveManager(pf, false).get(0);
 
-      banqueManager.removeObjectManager(b, null, u1, baseDirFolder.getAbsolutePath().toString(), true);
+      banqueSuppressionProcessor.removeObjectAndFileSystem(b, null, u1, baseDirFolder.getAbsolutePath().toString(), true);
       assertFalse(plateformeManager.isReferencedObjectManager(pf));
 
       // clean

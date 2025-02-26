@@ -160,7 +160,7 @@ public class FichierManagerImpl implements FichierManager
    @Override
    public void createObjectManager(final Fichier fichier, final InputStream stream, final List<File> filesCreated){
       if(findDoublonManager(fichier)){
-         log.warn("Doublon lors de la creation de l'objet Fichier : {}",  fichier);
+         log.warn("Doublon lors de la creation de l'objet Fichier : {}", fichier);
          throw new DoublonFoundException("Fichier", "creation");
       }
 
@@ -177,15 +177,23 @@ public class FichierManagerImpl implements FichierManager
       }
       fichierDao.createObject(fichier);
       if(stream != null){
-         log.info("Enregistrement de l'objet Fichier : {}",  fichier);
+         log.info("Enregistrement de l'objet Fichier : {}", fichier);
          fichier.setPath(fichier.getPath() + "_" + fichier.getFichierId());
          fichierDao.updateObject(fichier);
          storeFile(stream, fichier.getPath(), filesCreated);
-
-      }else if(!fichier.getPath().matches(".*_[0-9]+")){
-         fichier.setFichierId(null);
-         log.error("fichier.path.illegal : " + fichier.getPath());
-         throw new RuntimeException("fichier.path.illegal");
+      //  Si aucun underscore n'est présent ou si la partie après l'underscore n'est pas composée uniquement de chiffres
+      }else {
+         //le nom du fichier doit se terminer par _fichierId, sinon lancement d'une RuntimeException pour entrainer un rollback sur
+         //l'appel de "fichierDao.createObject(fichier);" fait avant "if(stream != null){"
+         String path = fichier.getPath();
+         int lastUnderscoreIndex = fichier.getPath().lastIndexOf('_');
+         String afterUnderscore = path.substring(lastUnderscoreIndex + 1);
+         //nom du fichier incorrect : 
+         if(!(lastUnderscoreIndex != -1 && afterUnderscore.chars().allMatch(Character::isDigit))){
+            fichier.setFichierId(null);
+            log.error("fichier.path.illegal : " + fichier.getPath());
+            throw new RuntimeException("fichier.path.illegal");
+         }
       }
       //			fichierDao.createObject(fichier);
    }
@@ -194,7 +202,7 @@ public class FichierManagerImpl implements FichierManager
    public Fichier updateObjectManager(final Fichier fichier, final InputStream stream, final List<File> filesCreated,
       final List<File> filesToDelete){
       if(findDoublonManager(fichier)){
-         log.warn("Doublon lors de la modification de l'objet Fichier : {}",  fichier);
+         log.warn("Doublon lors de la modification de l'objet Fichier : {}", fichier);
          throw new DoublonFoundException("Fichier", "modification");
       }
 
@@ -221,7 +229,7 @@ public class FichierManagerImpl implements FichierManager
 
       // path doit être inchangé
       fichierDao.updateObject(fichier);
-      log.info("Modification de l'objet Fichier : {}",  fichier);
+      log.info("Modification de l'objet Fichier : {}", fichier);
       return fichier;
    }
 
@@ -265,10 +273,10 @@ public class FichierManagerImpl implements FichierManager
                filesCreated.add(new File(path));
             }
          }else{
-            log.info("Fichier existe déjà path: {}",  path);
+            log.info("Fichier existe déjà path: {}", path);
          }
       }catch(final FileNotFoundException fe){
-         log.error("Annotation fichier: Erreur survenue dans la creation du fichier au chemin specifie: {}",  path);
+         log.error("Annotation fichier: Erreur survenue dans la creation du fichier au chemin specifie: {}", path);
          throw new RuntimeException(fe);
       }catch(final java.io.IOException e){
          log.error("Annotation fichier: Erreur survenue dans l'ecriture fichier");
@@ -327,7 +335,7 @@ public class FichierManagerImpl implements FichierManager
    public void switchBanqueManager(final Fichier file, final Banque dest, final Set<MvFichier> filesToMove){
 
       if(file != null && dest != null && filesToMove != null){
-         log.debug("modification chemin et déplacement du fichier: {}",  file.getNom());
+         log.debug("modification chemin et déplacement du fichier: {}", file.getNom());
          final String actualPathStr = file.getPath();
          // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
          final String destPathStr = actualPathStr.replaceFirst("coll_\\d+", "coll_" + dest.getBanqueId());

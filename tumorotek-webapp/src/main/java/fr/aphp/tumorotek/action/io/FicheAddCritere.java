@@ -464,7 +464,7 @@ public class FicheAddCritere extends GenericForwardComposer<Component>
                   operateurs.add("like");
                   operateurs.add("not like");
                }
-            }else if(dataType.getType().matches("date.*") || dataType.getType().equals("num")){
+            }else if(dataType.getType().startsWith("date") || dataType.getType().equals("num")){
                operateurs.add("=");
                operateurs.add("!=");
                operateurs.add("<");

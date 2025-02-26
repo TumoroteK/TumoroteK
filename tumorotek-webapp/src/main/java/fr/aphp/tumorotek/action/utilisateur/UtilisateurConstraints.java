@@ -73,7 +73,7 @@ public final class UtilisateurConstraints
 
    private static ConstPassword passwordConstraint = new ConstPassword();
    static{
-      passwordConstraint.setMinSize(6);
+      passwordConstraint.setMinSize(8);
       passwordConstraint.setMaxSize(20);
    }
 

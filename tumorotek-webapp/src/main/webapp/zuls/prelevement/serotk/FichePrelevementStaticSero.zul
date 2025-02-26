@@ -410,7 +410,7 @@
 													sclass="formLabel"/>
 												</div>
 												<div width="140px">
-													<label value="@{laboPrlvt.labo.sterile}"
+													<label value="@{laboPrlvt.sterileFormatted}"
 													sclass="formValue"/>
 												</div>
 											</hbox>
