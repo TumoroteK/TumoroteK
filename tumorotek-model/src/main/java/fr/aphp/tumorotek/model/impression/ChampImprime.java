@@ -55,6 +55,8 @@ import fr.aphp.tumorotek.model.io.export.ChampEntite;
 /**
  *
  * Objet persistant mappant la table CHAMP_IMPRIME.
+ * Cette table permet de stocker les champs définis dans les modèles d'impression des fiches Patient, Prélèvement, Echantillon ... créés par l'utilisateur 
+ * (table TEMPLATE à ne pas confondre avec la table MODELE correspondant aux modèles d'étiquette)
  * Classe créée le 21/07/2010.
  *
  * @author Pierre Ventadour

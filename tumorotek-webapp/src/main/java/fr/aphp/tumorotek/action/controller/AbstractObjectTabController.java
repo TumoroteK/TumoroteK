@@ -1204,10 +1204,17 @@ public abstract class AbstractObjectTabController extends AbstractController
 			// since 2.2.2-diamic
 			// url peut représenter plusieurs prélèvements
 			if (recept.getLogiciel().getNom().contains("DIAMIC")) {
+				int lastHyphenIndex = dosExtId.lastIndexOf("-");
+				String dosCode = (lastHyphenIndex != -1 &&
+						dosExtId.substring(lastHyphenIndex + 1).matches("[0-9]+"))
+						? dosExtId.substring(0, lastHyphenIndex)
+						: dosExtId;
+
 				url = url.concat(req.getContextPath())
-						.concat("/ext/prelevement?bId=").concat(prel.getBanque().getBanqueId().toString())
-						.concat("&pCode=").concat(dosExtId.matches(".*-[0-9]+") ? 
-								dosExtId.substring(0, dosExtId.lastIndexOf("-")) : dosExtId);
+						.concat("/ext/prelevement?bId=")
+						.concat(prel.getBanque().getBanqueId().toString())
+						.concat("&pCode=")
+						.concat(dosCode);
 			} else {
 				url = url + req.getContextPath() + "/ext/prelevement?id=" + prel.getPrelevementId();
 			}

@@ -134,7 +134,7 @@ public class TumoLinkUrdImpl implements TumoLinkUrd
    @Override
    public boolean useRecepteur(final Recepteur r){
       if(r != null && r.getLogiciel() != null && r.getLogiciel().getNom().equals("DIAMIC")
-         && r.getIdentification().matches(".*ACK.*")){
+         && r.getIdentification().contains("ACK")){
          return true;
       }
       return false;

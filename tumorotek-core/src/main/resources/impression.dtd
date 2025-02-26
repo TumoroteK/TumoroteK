@@ -4,7 +4,9 @@
 <!ELEMENT Paragraphe (TitreParagraphe, Inconnu, LigneParagraphe+, SousParagraphe*, Liste*)>
 
 <!ELEMENT HautDePage (#PCDATA)>
-<!ELEMENT BasDePage (#PCDATA)>
+<!ELEMENT BasDePage (TexteGauche, TexteCentre)>
+<!ELEMENT TexteGauche (#PCDATA)>
+<!ELEMENT TexteCentre (#PCDATA)>
 <!ELEMENT TitreParagraphe (#PCDATA)>
 <!ELEMENT SousParagraphe (TitreSousParagraphe, Inconnu, LigneParagraphe+, Liste*)>
 <!ELEMENT TitreSousParagraphe (#PCDATA)>

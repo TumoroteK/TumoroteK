@@ -365,13 +365,11 @@ public class ResumePatient
     * @param visible
     */
    public void setNdaBoxVisible(final boolean visible){
-      if (patientContexte != null) {
-         if(ndaBox != null){
-            ndaBox.setVisible(visible);
-         }
-         if(ndaLabel != null){
-            ndaLabel.setVisible(!visible);
-         }
+      if(ndaBox != null){
+         ndaBox.setVisible(visible);
+      }
+      if(ndaLabel != null){
+         ndaLabel.setVisible(!visible);
       }
    }
 

@@ -1109,7 +1109,7 @@ public class FicheTableAnnotation extends AbstractFicheCombineController
 
       final ChampAnnotationDecorator deco =
          (ChampAnnotationDecorator) AbstractListeController2.getBindingData((ForwardEvent) event, false);
-      if(deco != null && deco.getChamp().getDataType() != null && deco.getChamp().getDataType().getType().matches("thesaurus.*")){
+      if(deco != null && deco.getChamp().getDataType() != null && deco.getChamp().getDataType().getType().startsWith("thesaurus")){
          openAnnotationDefautModal(event, deco, self, true);
       }
    }

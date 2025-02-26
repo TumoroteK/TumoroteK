@@ -245,6 +245,8 @@ public class FicheTemplate extends AbstractImpressionController
 
       setRequiredMarks(new Component[] {nomRequired, typeRequired, entiteRequired});
 
+      hidePartieDetailTemplate();
+      
       initEditableMode();
 
       drawActionsForTemplate();
@@ -288,7 +290,6 @@ public class FicheTemplate extends AbstractImpressionController
       this.template = Template.class.cast(obj);
       blocImpressionRenderer.setTemplate(template);
       blocImpressionsDecorated = new ArrayList<>();
-      switchToStaticMode();
 
       super.setObject(obj);
    }
@@ -1002,10 +1003,7 @@ public class FicheTemplate extends AbstractImpressionController
    public void switchToStaticMode(){
       super.switchToStaticMode(this.template.equals(new Template()));
       if(null == this.template.getTemplateId()){
-         groupContenu.setVisible(false);
-         contenuStaticGrid.setVisible(false);
-         groupClesChamps.setVisible(false);
-         cleImpressionStaticGrid.setVisible(false);
+         hidePartieDetailTemplate();
       }else{
          if(ETemplateType.BLOC == this.template.getType()){
             fichierRow.setVisible(false);
@@ -1243,4 +1241,10 @@ public class FicheTemplate extends AbstractImpressionController
       this.selectedChamp = selectedChamp;
    }
 
+   private void hidePartieDetailTemplate(){
+      groupContenu.setVisible(false);
+      contenuStaticGrid.setVisible(false);
+      groupClesChamps.setVisible(false);
+      cleImpressionStaticGrid.setVisible(false);
+   }
 }

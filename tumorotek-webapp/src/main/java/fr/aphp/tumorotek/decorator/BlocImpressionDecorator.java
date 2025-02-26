@@ -65,6 +65,15 @@ import fr.aphp.tumorotek.webapp.gatsbi.GatsbiController;
  * @version 2.3.0-gatsbi
  *
  */
+// CHT (TK-463) : cette classe est à revoir pour gérer à la fois les champs cochés par défaut et ceux pouvant être cochés en plus. 
+// Cela permettra d'avoir toutes les règles de gestion associées dans cette classe et d'avoir du code complètement générique dans FicheChampsImpression
+// A faire avec TK-591 (Cession > imprimer : proposer d'afficher des champs supplémentaires) : 
+//  - ajout d'un boolean a_imprimer_par_defaut dans la table CHAMP_ENTITE_BLOC pour gérer plus facilement ces champs proposés pour l'impression mais pas imprimables par défaut
+//  - remplacement dans cette classe de champEntites (correspondant au champs cochés) par une liste de classe ChampEntiteBlocDto - classe contenant un boolean aImprimer - (allChampsImprimables) qui permet de garder l'ordre d'affichage et l'info "coché ou non"
+//  => 
+//       getChampEntites() à renommer en getChampsAImprimer() serait le filtre de allChampsImprimables avec aImprimer à true
+//       ajout de getAutresChampsImprimables() qui serait le filtre de allChampsImprimables avec aImprimer à false
+//       idéalement : renommer description en champsAImprimerAsString et définir une autre String autresChampsImprimablesAsString pour afficher les autres champs possibles et avoir l'info sans avoir à cliquer sur Editer les colonnes
 public class BlocImpressionDecorator
 {
 
@@ -164,7 +173,7 @@ public class BlocImpressionDecorator
     */
    public void generateContenuForBlocInConsulation(){
       final StringBuffer sb = new StringBuffer();
-      final List<ChampEntite> champs = new ArrayList<>();
+      final List<ChampEntite> champs = new ArrayList<>();//bizarre cette variable champs qui semble faire doublon avec l'attribut de classe champEntites ...
 
       // si c'est une liste en mode consulation
       if(blocImpression.getIsListe() && template.getTemplateId() != null){
@@ -182,11 +191,19 @@ public class BlocImpressionDecorator
          champEntites = new ArrayList<>();
          final List<ChampEntiteBloc> cebs = ManagerLocator.getChampEntiteBlocManager().findByBlocManager(blocImpression);
          for(int i = 0; i < cebs.size(); i++){
-            champs.add(cebs.get(i).getChampEntite());
-            champEntites.add(cebs.get(i).getChampEntite());
+            //TK-463 : la règle de gestion concernant le Nom du patient qu'il ne faut jamais précocher dans le cas de la cession ... 
+            //code "moche" mais il faudrait revoir tout le code de la fonctionnalité (cf commentaire en début de classe)
+            if ((blocImpression.getNom().equals("bloc.cession.echantillons") ||
+               blocImpression.getNom().equals("bloc.cession.prodDerives")) && cebs.get(i).getChampEntite().getNom().equals("Nom")) {
+               //on n'ajoute pas => on ne fait rien
+            }
+            else {
+               champs.add(cebs.get(i).getChampEntite());
+               champEntites.add(cebs.get(i).getChampEntite());
+            }
          }
       }
-
+      
       // Vilain HACK !! contexte SEROLOGIE
       if(contexte != null && "SEROLOGIE".equals(contexte.getNom())){
          // prelevement
@@ -242,6 +259,10 @@ public class BlocImpressionDecorator
       champs.removeIf(c -> !GatsbiController.isChampEntiteVisible(c));
       champEntites.removeIf(c -> !GatsbiController.isChampEntiteVisible(c));
 
+      //code identique à updateListeChamps :-(
+      //normalement en appelant updateListeChamps() qui s'appuie sur champEntites et non champs
+      //ça doit faire la même chose...
+      //et ensuite on doit pouvoir supprimer le param champs ....
       final Iterator<ChampEntite> it = champs.iterator();
       int i = 0;
       while(it.hasNext()){

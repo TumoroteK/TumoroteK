@@ -251,7 +251,7 @@ public abstract class AbstractListGridVM
             manager = ManagerLocator.getProdTypeManager();
          }else if(NonConformiteUtils.isUneRaisonDeNonConformite(getGridSubdivision().getChampEntite().getNom())){ // non conformite prelevement
              manager = ManagerLocator.getNonConformiteManager();
-          }
+         }
          
          
          if(manager != null){
@@ -273,9 +273,9 @@ public abstract class AbstractListGridVM
                 );
              }
           }
-        	 for(final TKThesaurusObject o: thObjs){
+        	for(final TKThesaurusObject o: thObjs){
 	               getSubdivMap().put(o.getId(), o.getNom());
-	            }
+	          }
          }
       }
    }
