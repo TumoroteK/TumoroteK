@@ -245,6 +245,7 @@ public class ChampEntiteManagerImpl implements ChampEntiteManager
       Object res = null;
       String value = null;
       // on formate le nom du champ
+      // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
       String nomChamp = champ.getNom().replaceFirst(".", (champ.getNom().charAt(0) + "").toLowerCase());
       if(nomChamp.endsWith("Id")){
          nomChamp = nomChamp.substring(0, nomChamp.length() - 2);
@@ -330,6 +331,7 @@ public class ChampEntiteManagerImpl implements ChampEntiteManager
 
                // on formate le nom du champ de thesaurus
                String nomChampThes =
+                  // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
                   champ.getQueryChamp().getNom().replaceFirst(".", (champ.getQueryChamp().getNom().charAt(0) + "").toLowerCase());
                if(nomChampThes.endsWith("Id")){
                   nomChampThes = nomChampThes.substring(0, nomChampThes.length() - 2);

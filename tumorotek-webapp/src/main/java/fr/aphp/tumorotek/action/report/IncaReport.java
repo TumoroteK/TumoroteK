@@ -311,6 +311,7 @@ public class IncaReport extends AbstractFicheController
             sheetname = banks.get(0).getNom();
 
             // xlsx sheet infamous 7 chars
+            // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
             sheetname = sheetname.replaceAll(ValidationUtilities.SHEETNAME_INFAMOUSCHARS, "");
 
             // si une collection nommée uniquement avec des caractères illegaux pour sheet name

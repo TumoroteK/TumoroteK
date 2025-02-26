@@ -357,6 +357,7 @@ public class InterfacageParsingUtilsImpl implements InterfacageParsingUtils
                   if(!StringUtils.isBlank(values.get(0))){
                      key = key.concat(values.get(0));
                   }
+                  // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
                   if(key.matches("SPM[0-9]*")){
                      currentOBXKey = key;
                   }
@@ -920,6 +921,7 @@ public class InterfacageParsingUtilsImpl implements InterfacageParsingUtils
                   emplacementAdrl.append(".");
                   emplacementAdrl.append(coords[0].trim());
                   emplacementAdrl.append("-");
+                  // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
                   emplacementAdrl.append(coords[1].trim().replaceFirst("^0+(?!$)", ""));
 
                   value = emplacementAdrl.toString(); // l'adresse de stockage sera enregistrée comme valeur externe
@@ -1116,6 +1118,7 @@ public class InterfacageParsingUtilsImpl implements InterfacageParsingUtils
             // blocs SPM -> 1 blocExterne / echantillon
             // isole les segments SPM parents
             final List<String> spmKeys = new ArrayList<>();
+            // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
             spmKeys.addAll(record.keySet().stream().filter(k -> k.matches("^SPM[0-9]+$")).collect(Collectors.toList()));
             Collections.sort(spmKeys);
 

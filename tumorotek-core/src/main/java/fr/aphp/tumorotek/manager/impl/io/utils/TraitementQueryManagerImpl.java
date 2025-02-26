@@ -161,6 +161,7 @@ public class TraitementQueryManagerImpl implements TraitementQueryManager
             if(ca.getTableAnnotation() != null && ca.getTableAnnotation().getEntite() != null){
                final String nomEntite = ca.getTableAnnotation().getEntite().getNom();
                if(nomEntite != null){
+                  // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
                   final String nomEntiteMajFirst = nomEntite.replaceFirst(".", (nomEntite.charAt(0) + "").toUpperCase());
                   final String nomEntiteMinFirst = nomEntite.replaceFirst(".", (nomEntite.charAt(0) + "").toLowerCase());
                   if(!critere.getOperateur().equals("is null")){
@@ -216,7 +217,7 @@ public class TraitementQueryManagerImpl implements TraitementQueryManager
             if(ce != null && ce.getEntite() != null){
                final String nomEntite = ce.getEntite().getNom();
                if(nomEntite != null){
-
+                  // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
                   String nomEntiteMajFirst = nomEntite.replaceFirst(".", (nomEntite.charAt(0) + "").toUpperCase());
                   String nomChampMinFirst = ce.getNom().replaceFirst(".", (ce.getNom().charAt(0) + "").toLowerCase());
                   boolean delegate = false;
@@ -247,9 +248,10 @@ public class TraitementQueryManagerImpl implements TraitementQueryManager
                         nomEntiteParent = parent.getChampDelegue().getEntite().getNom();
                         delegate = true;
                      }
-
+                     // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
                      String nomParent = ceParent.getNom().replaceFirst(".", (ceParent.getNom().charAt(0) + "").toLowerCase());
                      // On enlève le suffixe "Id"
+                     // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
                      nomParent = nomParent.replaceFirst("Id$", "");
 
                      if(!critere.getOperateur().equals("is null")){
@@ -259,6 +261,7 @@ public class TraitementQueryManagerImpl implements TraitementQueryManager
                      }
 
                      // On change le nom de l'entiteMajFirst
+                     // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
                      nomEntiteMajFirst = nomEntiteParent.replaceFirst(".", (nomEntiteParent.charAt(0) + "").toUpperCase());
 
                      parent = parent.getChampParent();
@@ -478,7 +481,7 @@ public class TraitementQueryManagerImpl implements TraitementQueryManager
       String nonConformiteNom = NonConformiteUtils.retrieveNomDeLaNonConformiteOrNull(critere.getChamp().getChampEntite().getNom());
 
       if(!critere.getOperateur().equals("is null")){
-
+         // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
          sb.append("SELECT DISTINCT e From " + nomEntiteMajFirst + " as e, ObjetNonConforme r " + "WHERE  r.objetId = e."
             + nomEntiteMajFirst.replaceFirst(".", (nomEntiteMajFirst.charAt(0) + "").toLowerCase()) + "Id "
             + "AND r.entite.entiteId = " + critere.getChamp().getChampEntite().getEntite().getEntiteId().toString()
@@ -489,6 +492,7 @@ public class TraitementQueryManagerImpl implements TraitementQueryManager
 
          sb.append(" :valeur");
       }else{
+         // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
          sb.append("SELECT DISTINCT e From " + nomEntiteMajFirst + " as e WHERE e."
             + nomEntiteMajFirst.replaceFirst(".", (nomEntiteMajFirst.charAt(0) + "").toLowerCase()) + "Id "
             + "NOT IN (SELECT r.objetId  FROM ObjetNonConforme r " + "WHERE r.entite.entiteId = "
@@ -527,6 +531,7 @@ public class TraitementQueryManagerImpl implements TraitementQueryManager
                   final String nomEntite = ca.getTableAnnotation().getEntite().getNom();
                   if(nomEntite != null){
                      withAnno = true;
+                     // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
                      nomEntiteMajFirst = nomEntite.replaceFirst(".", (nomEntite.charAt(0) + "").toUpperCase());
                   }
                }
@@ -538,6 +543,7 @@ public class TraitementQueryManagerImpl implements TraitementQueryManager
                final String nomEntite = ca.getTableAnnotation().getEntite().getNom();
                if(nomEntite != null){
                   withAnno = true;
+                  // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
                   nomEntiteMajFirst = nomEntite.replaceFirst(".", (nomEntite.charAt(0) + "").toUpperCase());
                   final String nomEntiteMinFirst = nomEntite.replaceFirst(".", (nomEntite.charAt(0) + "").toLowerCase());
 
@@ -550,12 +556,14 @@ public class TraitementQueryManagerImpl implements TraitementQueryManager
                      parents.add(0, parent);
 
                      final ChampEntite ceParent = parent.getChampEntite();
+                     // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
                      String nomParent = ceParent.getNom().replaceFirst(".", (ceParent.getNom().charAt(0) + "").toLowerCase());
                      // On enlève le suffixe "Id"
                      if(nomParent.endsWith("Id")){
                         nomParent = nomParent.substring(0, nomParent.length() - 2);
                      }
                      final String nomEntiteParent = ceParent.getEntite().getNom();
+                     // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
                      nomEntiteMajFirst = nomEntiteParent.replaceFirst(".", (nomEntiteParent.charAt(0) + "").toUpperCase());
 
                      parent = parent.getChampParent();
@@ -568,6 +576,7 @@ public class TraitementQueryManagerImpl implements TraitementQueryManager
                      if(!allParents.containsKey(parent)){
                         allParents.put(parent, "p" + cpt);
                         final ChampEntite ceParent = parent.getChampEntite();
+                        // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
                         String nomParent = ceParent.getNom().replaceFirst(".", (ceParent.getNom().charAt(0) + "").toLowerCase());
                         // On enlève le suffixe "Id"
                         if(nomParent.endsWith("Id")){
@@ -680,7 +689,7 @@ public class TraitementQueryManagerImpl implements TraitementQueryManager
                final String nomEntite = entite.getNom();
 
                if(nomEntite != null){
-
+                  // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
                   nomEntiteMajFirst = nomEntite.replaceFirst(".", (nomEntite.charAt(0) + "").toUpperCase());
                   String nomChampMinFirst = ce.getNom().replaceFirst(".", (ce.getNom().charAt(0) + "").toLowerCase());
 
@@ -706,12 +715,13 @@ public class TraitementQueryManagerImpl implements TraitementQueryManager
                         ceParent = parent.getChampDelegue();
                         nomEntiteParent = parent.getChampDelegue().getEntite().getNom();
                      }
-
+                     // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
                      String nomParent = ceParent.getNom().replaceFirst(".", (ceParent.getNom().charAt(0) + "").toLowerCase());
                      // On enlève le suffixe "Id"
                      if(nomParent.endsWith("Id")){
                         nomParent = nomParent.substring(0, nomParent.length() - 2);
                      }
+                     // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
                      nomEntiteMajFirst = nomEntiteParent.replaceFirst(".", (nomEntiteParent.charAt(0) + "").toUpperCase());
 
                      parent = parent.getChampParent();
@@ -733,6 +743,7 @@ public class TraitementQueryManagerImpl implements TraitementQueryManager
                         }else if(null != parent.getChampDelegue()){
                            ceParent = parent.getChampDelegue();
                         }
+                        // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
                         String nomParent = ceParent.getNom().replaceFirst(".", (ceParent.getNom().charAt(0) + "").toLowerCase());
                         // On enlève le suffixe "Id"
                         if(nomParent.endsWith("Id")){
@@ -980,6 +991,7 @@ public class TraitementQueryManagerImpl implements TraitementQueryManager
          sql.append("SELECT e FROM ");
          sql.append(entite);
          sql.append(" as e WHERE e.");
+         // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
          sql.append(entite.replaceFirst(".", (entite.charAt(0) + "").toLowerCase()));
          sql.append("Id in (:list)");
          final EntityManager em = entityManagerFactory.createEntityManager();
@@ -1150,7 +1162,7 @@ public class TraitementQueryManagerImpl implements TraitementQueryManager
          }else if(null != parent.getChampDelegue()){
             ceParent = parent.getChampDelegue();
          }
-
+         // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
          String nomParent = ceParent.getNom().replaceFirst(".", (ceParent.getNom().charAt(0) + "").toLowerCase());
          // On enlève le suffixe "Id"
          if(nomParent.endsWith("Id")){
@@ -1175,6 +1187,7 @@ public class TraitementQueryManagerImpl implements TraitementQueryManager
             }else if(null != parent.getChampDelegue()){
                ceParent = parent.getChampDelegue();
             }
+            // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
             String nomParent = ceParent.getNom().replaceFirst(".", (ceParent.getNom().charAt(0) + "").toLowerCase());
             // On enlève le suffixe "Id"
             if(nomParent.endsWith("Id")){
@@ -1229,6 +1242,7 @@ public class TraitementQueryManagerImpl implements TraitementQueryManager
                if(ca != null && ca.getTableAnnotation() != null && ca.getTableAnnotation().getEntite() != null){
                   final String nomEntite = ca.getTableAnnotation().getEntite().getNom();
                   if(nomEntite != null){
+                     // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
                      final String nomEntiteMajFirst = nomEntite.replaceFirst(".", (nomEntite.charAt(0) + "").toUpperCase());
                      final String nomEntiteMinFirst = nomEntite.replaceFirst(".", (nomEntite.charAt(0) + "").toLowerCase());
                      sb.append("SELECT e From " + nomEntiteMajFirst + " as e, AnnotationValeur av"
@@ -1262,6 +1276,7 @@ public class TraitementQueryManagerImpl implements TraitementQueryManager
                if(ce != null && ce.getEntite() != null){
                   final String nomEntite = ce.getEntite().getNom();
                   if(nomEntite != null){
+                     // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
                      String nomEntiteMajFirst = nomEntite.replaceFirst(".", (nomEntite.charAt(0) + "").toUpperCase());
                      String nomChampMinFirst = ce.getNom().replaceFirst(".", (ce.getNom().charAt(0) + "").toLowerCase());
                      // recherche à partir des ids implique
@@ -1276,12 +1291,14 @@ public class TraitementQueryManagerImpl implements TraitementQueryManager
                         parents.add(0, parent);
 
                         final ChampEntite ceParent = parent.getChampEntite();
+                        // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
                         String nomParent = ceParent.getNom().replaceFirst(".", (ceParent.getNom().charAt(0) + "").toLowerCase());
                         // On enlève le suffixe "Id"
                         if(nomParent.endsWith("Id")){
                            nomParent = nomParent.substring(0, nomParent.length() - 2);
                         }
                         final String nomEntiteParent = ceParent.getEntite().getNom();
+                        // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
                         nomEntiteMajFirst = nomEntiteParent.replaceFirst(".", (nomEntiteParent.charAt(0) + "").toUpperCase());
 
                         parent = parent.getChampParent();
@@ -1290,6 +1307,7 @@ public class TraitementQueryManagerImpl implements TraitementQueryManager
                      for(int i = 0; i < parents.size(); i++){
                         parent = parents.get(i);
                         final ChampEntite ceParent = parent.getChampEntite();
+                        // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
                         String nomParent = ceParent.getNom().replaceFirst(".", (ceParent.getNom().charAt(0) + "").toLowerCase());
                         // On enlève le suffixe "Id"
                         if(nomParent.endsWith("Id")){
@@ -1316,6 +1334,7 @@ public class TraitementQueryManagerImpl implements TraitementQueryManager
                      // création de la requête
                      sb.append("SELECT DISTINCT e");
                      if(idSearch){
+                        // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
                         sb.append(
                            "." + nomEntiteMajFirst.replaceFirst(".", (nomEntiteMajFirst.charAt(0) + "").toLowerCase()) + "Id");
                      }
@@ -1392,6 +1411,7 @@ public class TraitementQueryManagerImpl implements TraitementQueryManager
                   if(ce != null && entite != null){
                      final String nomEntite = entite.getNom();
                      if(nomEntite != null){
+                        // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
                         nomEntiteMajFirst = nomEntite.replaceFirst(".", (nomEntite.charAt(0) + "").toUpperCase());
                         String nomChampMinFirst = ce.getNom().replaceFirst(".", (ce.getNom().charAt(0) + "").toLowerCase());
                         if(nomChampMinFirst.endsWith("Id")){
@@ -1418,13 +1438,14 @@ public class TraitementQueryManagerImpl implements TraitementQueryManager
                            }else{
                               entiteTransformation = parent.getChampEntite().getEntite();
                            }
-
+                           // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
                            String nomParent =
                               ceParent.getNom().replaceFirst(".", (ceParent.getNom().charAt(0) + "").toLowerCase());
                            // On enlève le suffixe "Id"
                            if(nomParent.endsWith("Id")){
                               nomParent = nomParent.substring(0, nomParent.length() - 2);
                            }
+                           // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
                            nomEntiteMajFirst = nomEntiteParent.replaceFirst(".", (nomEntiteParent.charAt(0) + "").toUpperCase());
 
                            parent = parent.getChampParent();
@@ -1445,6 +1466,7 @@ public class TraitementQueryManagerImpl implements TraitementQueryManager
                               }else if(null != parent.getChampDelegue()){
                                  ceParent = parent.getChampDelegue();
                               }
+                              // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
                               String nomParent =
                                  ceParent.getNom().replaceFirst(".", (ceParent.getNom().charAt(0) + "").toLowerCase());
                               // On enlève le suffixe "Id"
@@ -1627,6 +1649,7 @@ public class TraitementQueryManagerImpl implements TraitementQueryManager
                if(ce != null && ce.getEntite() != null){
                   final String nomEntite = ce.getEntite().getNom();
                   if(nomEntite != null){
+                     // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
                      String nomEntiteMajFirst = nomEntite.replaceFirst(".", (nomEntite.charAt(0) + "").toUpperCase());
                      String nomChampMinFirst = ce.getNom().replaceFirst(".", (ce.getNom().charAt(0) + "").toLowerCase());
                      if(nomChampMinFirst.endsWith("Id") && !idSearch){
@@ -1643,12 +1666,14 @@ public class TraitementQueryManagerImpl implements TraitementQueryManager
                         }
 
                         final ChampEntite ceParent = parent.getChampEntite();
+                        // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
                         String nomParent = ceParent.getNom().replaceFirst(".", (ceParent.getNom().charAt(0) + "").toLowerCase());
                         // On enlève le suffixe "Id"
                         if(nomParent.endsWith("Id")){
                            nomParent = nomParent.substring(0, nomParent.length() - 2);
                         }
                         final String nomEntiteParent = ceParent.getEntite().getNom();
+                        // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
                         nomEntiteMajFirst = nomEntiteParent.replaceFirst(".", (nomEntiteParent.charAt(0) + "").toUpperCase());
 
                         parent = parent.getChampParent();
@@ -1657,6 +1682,7 @@ public class TraitementQueryManagerImpl implements TraitementQueryManager
                      for(int i = 0; i < parents.size(); i++){
                         parent = parents.get(i);
                         final ChampEntite ceParent = parent.getChampEntite();
+                        // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
                         String nomParent = ceParent.getNom().replaceFirst(".", (ceParent.getNom().charAt(0) + "").toLowerCase());
                         // On enlève le suffixe "Id"
                         if(nomParent.endsWith("Id")){
@@ -1696,6 +1722,7 @@ public class TraitementQueryManagerImpl implements TraitementQueryManager
                      }else{
                         sb.append("SELECT DISTINCT e");
                         if(idSearch){
+                           // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
                            sb.append(
                               "." + nomEntiteMajFirst.replaceFirst(".", (nomEntiteMajFirst.charAt(0) + "").toLowerCase()) + "Id");
                         }
@@ -1802,6 +1829,7 @@ public class TraitementQueryManagerImpl implements TraitementQueryManager
                final String sbPart = sb.toString();
                for(int i = 2; i < values.size() + 1; i++){
                   sb.append(" AND av.objetId in ");
+                  // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
                   sb.append("(" + sbPart.replaceFirst(":val1", ":val" + i).replaceAll(" av", " av" + i) + ") ");
                }
             }
@@ -1809,12 +1837,13 @@ public class TraitementQueryManagerImpl implements TraitementQueryManager
             final ChampEntite ce = critere.getChamp().getChampEntite();
             if(ce != null && ce.getEntite() != null){
                nomEntite = ce.getEntite().getNom();
+               // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
                nomChampMinFirst = ce.getNom().replaceFirst(".", (ce.getNom().charAt(0) + "").toLowerCase());
                if(nomChampMinFirst.endsWith("Id")){
                   nomChampMinFirst = nomChampMinFirst.substring(0, nomChampMinFirst.length() - 2);
                }
             }
-
+            // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
             nomEntiteMajFirst = nomEntite.replaceFirst(".", (nomEntite.charAt(0) + "").toUpperCase());
 
             Champ parent = champ.getChampParent();
@@ -1824,12 +1853,14 @@ public class TraitementQueryManagerImpl implements TraitementQueryManager
                parents.add(0, parent);
 
                final ChampEntite ceParent = parent.getChampEntite();
+               // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
                String nomParent = ceParent.getNom().replaceFirst(".", (ceParent.getNom().charAt(0) + "").toLowerCase());
                // On enlève le suffixe "Id"
                if(nomParent.endsWith("Id")){
                   nomParent = nomParent.substring(0, nomParent.length() - 2);
                }
                final String nomEntiteParent = ceParent.getEntite().getNom();
+               // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
                nomEntiteMajFirst = nomEntiteParent.replaceFirst(".", (nomEntiteParent.charAt(0) + "").toUpperCase());
 
                parent = parent.getChampParent();
@@ -1838,6 +1869,7 @@ public class TraitementQueryManagerImpl implements TraitementQueryManager
             for(int i = 0; i < parents.size(); i++){
                parent = parents.get(i);
                final ChampEntite ceParent = parent.getChampEntite();
+               // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
                String nomParent = ceParent.getNom().replaceFirst(".", (ceParent.getNom().charAt(0) + "").toLowerCase());
                // On enlève le suffixe "Id"
                if(nomParent.endsWith("Id")){
@@ -1901,6 +1933,7 @@ public class TraitementQueryManagerImpl implements TraitementQueryManager
 
                for(int i = 2; i < values.size() + 1; i++){
                   sb.append(" AND e." + joinCol + " in ");
+                  // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
                   sb.append("(" + sbPart.replaceFirst(":val1", ":val" + i) + ") ");
                }
             }
@@ -1946,6 +1979,7 @@ public class TraitementQueryManagerImpl implements TraitementQueryManager
          if(ce != null && ce.getEntite() != null){
             final String nomEntite = ce.getEntite().getNom();
             if(nomEntite != null){
+               // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
                String nomEntiteMajFirst = nomEntite.replaceFirst(".", (nomEntite.charAt(0) + "").toUpperCase());
                String nomChampMinFirst = ce.getNom().replaceFirst(".", (ce.getNom().charAt(0) + "").toLowerCase());
                if(nomChampMinFirst.endsWith("Id")){
@@ -1958,12 +1992,14 @@ public class TraitementQueryManagerImpl implements TraitementQueryManager
                   parents.add(0, parent);
 
                   final ChampEntite ceParent = parent.getChampEntite();
+                  // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
                   String nomParent = ceParent.getNom().replaceFirst(".", (ceParent.getNom().charAt(0) + "").toLowerCase());
                   // On enlève le suffixe "Id"
                   if(nomParent.endsWith("Id")){
                      nomParent = nomParent.substring(0, nomParent.length() - 2);
                   }
                   final String nomEntiteParent = ceParent.getEntite().getNom();
+                  // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
                   nomEntiteMajFirst = nomEntiteParent.replaceFirst(".", (nomEntiteParent.charAt(0) + "").toUpperCase());
 
                   parent = parent.getChampParent();
@@ -1972,6 +2008,7 @@ public class TraitementQueryManagerImpl implements TraitementQueryManager
                for(int i = 0; i < parents.size(); i++){
                   parent = parents.get(i);
                   final ChampEntite ceParent = parent.getChampEntite();
+                  // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
                   String nomParent = ceParent.getNom().replaceFirst(".", (ceParent.getNom().charAt(0) + "").toLowerCase());
                   // On enlève le suffixe "Id"
                   if(nomParent.endsWith("Id")){
@@ -2463,7 +2500,7 @@ public class TraitementQueryManagerImpl implements TraitementQueryManager
 
          // construction de la requête
          final StringBuffer sb = new StringBuffer();
-
+         // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
          final String queryCol =
             !fetchIds ? "e" : ent.getNom().replaceFirst(".", (ent.getNom().charAt(0) + "").toLowerCase()) + "Id";
 

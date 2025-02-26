@@ -68,6 +68,7 @@ public class LienFamilialValidator implements Validator
       ValidationUtils.rejectIfEmptyOrWhitespace(errs, "nom", "lienFamilial.nom.empty");
       //nom valide
       if(lien.getNom() != null){
+         // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
          if(!lien.getNom().matches("[A-Za-z]+-[A-Za-z]+")){
             errs.rejectValue("nom", "lienFamilial.nom.illegal");
          }

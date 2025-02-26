@@ -1896,7 +1896,7 @@ public class FicheTerminale extends AbstractFicheCombineStockageController
 			}
 
 		}else{
-
+			// TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
 			final String[] values = terminale.getTerminaleType().getScheme().split(";");
 			final Vbox mainVbox = new Vbox();
 			mainVbox.setSpacing("0");

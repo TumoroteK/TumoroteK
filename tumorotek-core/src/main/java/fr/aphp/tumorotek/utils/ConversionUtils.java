@@ -308,7 +308,7 @@ public abstract class ConversionUtils
       String format = null;
 
       for(final Entry<String, String> entry : FORMATS_DATE_CONNUS.entrySet()){
-
+         // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
          if(dateAsString.matches(entry.getValue())){
             format = entry.getKey();
             break;

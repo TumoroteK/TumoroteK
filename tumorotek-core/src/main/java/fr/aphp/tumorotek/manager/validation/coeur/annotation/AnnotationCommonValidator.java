@@ -84,6 +84,7 @@ public class AnnotationCommonValidator implements Validator
                   errs.rejectValue("alphanum", "anno.alphanum.illegal");
                }
             }else if(anno.getChampAnnotation().getDataType().getType().equals("num")){
+               // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
                if(!anno.getAlphanum().matches("-?[0-9]+(\\.|,)?[0-9]*E?[0-9]*")
                   && !anno.getAlphanum().equals("system.tk.unknownExistingValue")){
                   errs.rejectValue("alphanum", "anno.num.illegal");

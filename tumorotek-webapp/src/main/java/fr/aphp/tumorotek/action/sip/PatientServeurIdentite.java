@@ -305,6 +305,7 @@ public class PatientServeurIdentite implements Sip
    public List<Patient> getPatientsServeurNip(final String nip){
       final List<Patient> listPatient = new ArrayList<>();
       if("ENTIER".equalsIgnoreCase(NIP_TYPE)){
+         // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
          if(nip.matches("[0-9]+")){
             listPatient.addAll(getPatientsServeur("NIP", nip));
          }

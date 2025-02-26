@@ -467,6 +467,7 @@ public class ImportManagerImpl implements ImportManager
                if(!nomEntiteDuThesaurus.equals("Collaborateur")
                   && !nomEntiteDuThesaurus.equals("Service")){
                   // on formate le champ du thésaurus à extraire
+                  // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
                   final String nomChamp =
                      champDeLaTableThesaurus.getNom().replaceFirst(".", (champDeLaTableThesaurus.getNom().charAt(0) + "").toLowerCase());
                   try{
@@ -678,6 +679,7 @@ public class ImportManagerImpl implements ImportManager
       if(attribut != null && obj != null){
          // on formate l'attribut pour qu'il corresponde à celui
          // de l'objet
+         // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
          String nomChamp = attribut.getNom().replaceFirst(".", (attribut.getNom().charAt(0) + "").toLowerCase());
          if(nomChamp.endsWith("Id")){
             nomChamp = nomChamp.substring(0, nomChamp.length() - 2);
@@ -860,6 +862,7 @@ public class ImportManagerImpl implements ImportManager
          Object value = null;
          if(ind > -1){
             // on va extraire le type de l'attibut à remplir
+            // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
             String nomChamp = colonne.getChamp().getChampEntite().getNom().replaceFirst(".",
                (colonne.getChamp().getChampEntite().getNom().charAt(0) + "").toLowerCase());
             if(nomChamp.endsWith("Id")){
@@ -962,6 +965,7 @@ public class ImportManagerImpl implements ImportManager
                // risques peuvent être séparés par des virgules
                final Set<Risque> risques = new HashSet<>();
                if(((String) value).contains(";")){
+                  // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
                   final String[] split = ((String) value).split(";");
                   for(int i = 0; i < split.length; i++){
                      // on récupère l'objet correspondant à la valeur
@@ -1025,6 +1029,7 @@ public class ImportManagerImpl implements ImportManager
             // on va spliter la valeur de la colonne : les
             // non conformites peuvent être séparés par des points-virgules
             if(((String) value).contains(";")){
+               // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
                final String[] split = ((String) value).split(";");
                for(int i = 0; i < split.length; i++){
                   // on récupère l'objet correspondant à la valeur
@@ -1136,6 +1141,7 @@ public class ImportManagerImpl implements ImportManager
             value = getCellContent(row.getCell(ind), isDate, properties.getEvaluator());
 
             // boolean corresp
+            // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
             if(dt.getType().matches("boolean")){
                value = translateBoolValue((String) value);
             }
@@ -1172,6 +1178,7 @@ public class ImportManagerImpl implements ImportManager
                   // on va spliter la valeur de la colonne : les
                   // valeurs peuvent être séparés par des points-virgules
                   Object itemVal = null;
+                  // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
                   final String[] split = ((String) value).split(";");
                   for(int i = 0; i < split.length; i++){
                      // on récupère l'item correspondant à la valeur présente dans le fichier

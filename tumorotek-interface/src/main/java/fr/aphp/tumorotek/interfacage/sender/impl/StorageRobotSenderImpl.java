@@ -194,6 +194,7 @@ public class StorageRobotSenderImpl implements StorageRobotSender
          if(_a.matches("[0-9]+")){ // rack transport integer position
             _a = "0.0.0." + _a;
          }
+         // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
          final String[] splitted = _a.split("\\.");
          // IRELEC check
          if(splitted.length != 4 && re.getLogiciel().getNom().equals("IRELEC")){

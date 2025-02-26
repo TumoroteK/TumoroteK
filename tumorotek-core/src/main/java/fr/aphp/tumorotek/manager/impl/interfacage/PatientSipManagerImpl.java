@@ -356,11 +356,13 @@ public class PatientSipManagerImpl implements PatientSipManager
       String usualName = null;
 
       final String pid5 = interfacageParsingUtils.getValueFromBlocAndEmplacement(contenu, config, "PID", "5");
+      // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
       final List<String> names = Arrays.asList(pid5.split(config.getSeparateurSousComposants()));
 
       String[] splt;
       String nameType;
       for(final String st : names){
+         // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
          splt = st.split("\\" + config.getSeparateurComposants());
          if(splt.length == 7){
             nameType = splt[6];
@@ -397,6 +399,7 @@ public class PatientSipManagerImpl implements PatientSipManager
          .parseHl7Date(interfacageParsingUtils.getValueFromBlocAndEmplacement(contenu, config, "PID", "7")));
 
       final String sexe = interfacageParsingUtils.getValueFromBlocAndEmplacement(contenu, config, "PID", "8");
+      // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
       if(sexe != null && sexe.matches("F|M")){
          pSip.setSexe(sexe);
       }else{

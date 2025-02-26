@@ -176,6 +176,7 @@ public class ExportToExcel extends ResultSetToExcel
 
       for(final Sheet sh : sheetList){
          //?probleme avec ligne du dessous?
+         // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
          final String tmp[] = sh.getSheetName().split("-");
          //ne passe pas là
          if(tmp != null && tmp.length == 2){

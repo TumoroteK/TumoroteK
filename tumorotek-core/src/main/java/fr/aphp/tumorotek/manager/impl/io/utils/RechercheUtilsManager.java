@@ -632,7 +632,6 @@ public class RechercheUtilsManager
                }
                return sb.toString();
             }else if(parent.getChampEntite().getNom().equals("ConformeArrivee.Raison")){
-
                return formatNonConformites(prel, parent.getChampEntite());
             }else{
                return getChampValueForObject(parent, prel, false);

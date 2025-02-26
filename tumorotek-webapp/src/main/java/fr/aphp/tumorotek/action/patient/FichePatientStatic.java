@@ -596,6 +596,7 @@ public class FichePatientStatic extends AbstractFicheStaticController
       final Iterator<Component> it = self.getFellow("malaDiv").getFellows().iterator();
       while(it.hasNext()){
          final Component comp = it.next();
+         // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
          if(comp.getId().matches("ficheMaladie\\d+")){
             ((Panel) comp.getFellow("fwinMaladie").getFellow("container")).setOpen(false);
          }
@@ -671,7 +672,7 @@ public class FichePatientStatic extends AbstractFicheStaticController
             PatientUtils.getNbPrelsForPatientAndUser(patient, PatientUtils.getBanquesConsultForPrelevement(sessionScope)));
 
       }
-
+      // TK-491: les 2 regex sont safe d'après ReDoS checker (analyse faite en décembre 2024)
       this.maladieGroupHeader = (maladieGroupHeaderTemplate.replaceFirst("\\{1\\}", String.valueOf(this.maladies.size())))
          .replaceFirst("\\{2\\}", nbPrelevements);
 

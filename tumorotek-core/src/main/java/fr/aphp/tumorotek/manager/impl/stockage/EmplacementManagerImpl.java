@@ -251,6 +251,7 @@ public class EmplacementManagerImpl implements EmplacementManager
    public Emplacement findByEmplacementAdrlManager(final String adrl, final Banque banque){
       Emplacement empl = null;
       if(adrl != null && !adrl.equals("")){
+         // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
          final String[] elts = adrl.split("\\.");
          if(elts.length >= 3){
             final String position = elts[elts.length - 1];
@@ -666,6 +667,7 @@ public class EmplacementManagerImpl implements EmplacementManager
             int nbEmpAct = 0;
             int cptLigne = 1;
             // on récupère le nb d'emplacements par ligne
+            // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
             final String[] values = terminale.getTerminaleType().getScheme().split(";");
             int i = 0;
             // on cherche le numéro de ligne et de colonne de
@@ -744,6 +746,7 @@ public class EmplacementManagerImpl implements EmplacementManager
 
       if(terminale != null && adrlPos != null){
          // pos like
+         // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
          if(adrlPos.matches("\\d+") || terminale.getTerminaleNumerotation().getLigne().equals("POS")){
             if(Integer.valueOf(adrlPos) <= terminale.getTerminaleType().getNbPlaces()){
                return Integer.valueOf(adrlPos);
@@ -752,6 +755,7 @@ public class EmplacementManagerImpl implements EmplacementManager
          }
          Integer numLigne;
          Integer numColonne;
+         // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
          final String[] adrlPosLigneCol = adrlPos.split("-");
 
          // numLigne
@@ -762,6 +766,7 @@ public class EmplacementManagerImpl implements EmplacementManager
                numLigne = Utils.createListChars(terminale.getTerminaleType().getHauteur(), null, new ArrayList<String>())
                   .indexOf(adrlPosLigneCol[0]) + 1;
             }else{
+               // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
                numLigne =
                   Utils.createListChars(terminale.getTerminaleType().getScheme().split(";").length, null, new ArrayList<String>())
                      .indexOf(adrlPosLigneCol[0]) + 1;
@@ -775,6 +780,7 @@ public class EmplacementManagerImpl implements EmplacementManager
                numColonne = Utils.createListChars(terminale.getTerminaleType().getLongueur(), null, new ArrayList<String>())
                   .indexOf(adrlPosLigneCol[1]) + 1;
             }else{
+               // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
                numColonne = Utils.createListChars(Integer.parseInt(terminale.getTerminaleType().getScheme().split(";")[numLigne]),
                   null, new ArrayList<String>()).indexOf(adrlPosLigneCol[1]) + 1;
             }
@@ -793,6 +799,7 @@ public class EmplacementManagerImpl implements EmplacementManager
          && numColonne > 0){
 
          if(terminale.getTerminaleType().getScheme() != null){
+            // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
             final String[] lignes = terminale.getTerminaleType().getScheme().split(";");
 
             if(numLigne <= lignes.length){
