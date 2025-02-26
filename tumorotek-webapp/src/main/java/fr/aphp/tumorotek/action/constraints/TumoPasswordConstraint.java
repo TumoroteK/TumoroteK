@@ -93,11 +93,11 @@ public class TumoPasswordConstraint
     * @throws WrongValueException Si le mot de passe ne respecte pas les critères définis.
     */
    public void validatePassword(final Component comp, final Object value, final Constraint constr){
-      // Récupérer la valeur depuis textBox
+      // on récupère la valeur dans textBox
       final String textValue = (String) value;
       try{
-         // Vérifier si textValue n'est pas null et non vide
-         if(textValue != null && !textValue.isEmpty()){
+         // Vérifier si textValue n'est pas null
+         if(textValue != null){
 
             // Valider la taille minimale (définie dans UtilisateurConstraints)
             if(this.minSize != null && textValue.length() < this.minSize){

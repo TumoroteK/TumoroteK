@@ -159,10 +159,6 @@ public class FichierManagerImpl implements FichierManager
 
    @Override
    public void createObjectManager(final Fichier fichier, final InputStream stream, final List<File> filesCreated){
-      String path = fichier.getPath();
-      int lastUnderscoreIndex = fichier.getPath().lastIndexOf('_');
-      String afterUnderscore = path.substring(lastUnderscoreIndex + 1);
-
       if(findDoublonManager(fichier)){
          log.warn("Doublon lors de la creation de l'objet Fichier : {}", fichier);
          throw new DoublonFoundException("Fichier", "creation");
@@ -186,10 +182,18 @@ public class FichierManagerImpl implements FichierManager
          fichierDao.updateObject(fichier);
          storeFile(stream, fichier.getPath(), filesCreated);
       //  Si aucun underscore n'est présent ou si la partie après l'underscore n'est pas composée uniquement de chiffres
-      }else if(!(lastUnderscoreIndex != -1 && afterUnderscore.chars().allMatch(Character::isDigit))){
-         fichier.setFichierId(null);
-         log.error("fichier.path.illegal : " + fichier.getPath());
-         throw new RuntimeException("fichier.path.illegal");
+      }else {
+         //le nom du fichier doit se terminer par _fichierId, sinon lancement d'une RuntimeException pour entrainer un rollback sur
+         //l'appel de "fichierDao.createObject(fichier);" fait avant "if(stream != null){"
+         String path = fichier.getPath();
+         int lastUnderscoreIndex = fichier.getPath().lastIndexOf('_');
+         String afterUnderscore = path.substring(lastUnderscoreIndex + 1);
+         //nom du fichier incorrect : 
+         if(!(lastUnderscoreIndex != -1 && afterUnderscore.chars().allMatch(Character::isDigit))){
+            fichier.setFichierId(null);
+            log.error("fichier.path.illegal : " + fichier.getPath());
+            throw new RuntimeException("fichier.path.illegal");
+         }
       }
       //			fichierDao.createObject(fichier);
    }
