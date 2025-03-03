@@ -464,8 +464,11 @@ public class AdministrationController extends AbstractObjectTabController
 
    /**
     * Sélection d'un panel. Cette méthode n'est utilisée que pour les
-    * panels quidoivent être accédés à partir d'autres panels.
-    * 
+    * panels qui ne sont pas "rendus" lors de la création de Administration.zul qui les "instancie" : le tabpanel est alors vide. 
+    * Exemple pour les collections : 
+    * <tabpanel id="banquePanel" hflex="1" vflex="1"/>
+    * Ces panels (écrans liés à un menu) ont généralement beaucoup de code dynamique ce qui les rend "lourds à charger" d'où leur génération uniquement au besoin 
+    * c'est-à-dire à chaque sélection du menu.
     * @version 2.1
     */
    public void onSelect$adminTabbox(){
