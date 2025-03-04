@@ -299,7 +299,7 @@ EXECUTE IMMEDIATE
             CONG_ARRIVEE NUMBER(1),
             LABO_INTER varchar2(3),
             QUANTITE DECIMAL(12,3),
-            QUANTITE_UNITE varchar2(50),
+            QUANTITE_UNITE varchar2(25),
             PATIENT_NDA varchar2(20),
 			CODE_ORGANE varchar2(500),
 			DIAGNOSTIC	varchar2(500),

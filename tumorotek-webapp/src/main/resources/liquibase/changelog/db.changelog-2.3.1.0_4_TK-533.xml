@@ -8,12 +8,12 @@
         <tagDatabase tag="${project.parent.version}"/>
     </changeSet>
     <changeSet id="export-proc-add-quantite-unite-TK-533" author="PZ" runAlways="false" context="*">
-        <comment>Ajout de QUANTITE_UNITE aux procédures d'exportation</comment>
+        <comment>Ajout aux procédures d'export de QUANTITE_UNITE pour la quantité à l'arrivée au site de stockage (Prélèvement)</comment>
         <!-- MySQL procedures -->
-        <sqlFile encoding="utf8" path="../sql/mysql/tumorotek/export_gatsbi.sql" endDelimiter="&amp;&amp;"  stripComments="true"/>
-        <sqlFile encoding="utf8" path="../sql/mysql/tumorotek/export_mysql.sql" endDelimiter="&amp;&amp;"  stripComments="true"/>
-        <sqlFile encoding="utf8" path="../sql/mysql/tumorotek/export_sero.sql" endDelimiter="&amp;&amp;"  stripComments="true"/>
-        <!-- Oracle procedure -->
-        <sqlFile encoding="utf8" path="../sql/oracle/tumorotek/export_oracle.sql" endDelimiter="&amp;&amp;"  stripComments="true"/>
+        <sqlFile encoding="utf8" path="../sql/mysql/tumorotek/export_gatsbi.sql" endDelimiter="&amp;&amp;" relativeToChangelogFile="true" stripComments="true"/>
+        <sqlFile encoding="utf8" path="../sql/mysql/tumorotek/export_mysql.sql" endDelimiter="&amp;&amp;" relativeToChangelogFile="true" stripComments="true"/>
+        <sqlFile encoding="utf8" path="../sql/mysql/tumorotek/export_sero.sql" endDelimiter="&amp;&amp;" relativeToChangelogFile="true" stripComments="true"/>
+        <!-- procédure Oracle mise en commentaire et à décommenter pour les adhérents utilisant Oracle en commentant les lignes précédentes-->
+        <!-- <sqlFile encoding="utf8" path="../sql/oracle/tumorotek/export_oracle.sql" endDelimiter="&amp;&amp;" relativeToChangelogFile="true" stripComments="true"/> -->
     </changeSet>
 </databaseChangeLog>
