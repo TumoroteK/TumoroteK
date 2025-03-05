@@ -39,6 +39,7 @@ import java.util.List;
 
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.contexte.Plateforme;
+import fr.aphp.tumorotek.model.io.export.Affichage;
 import fr.aphp.tumorotek.model.io.export.Groupement;
 import fr.aphp.tumorotek.model.io.export.Requete;
 import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
@@ -175,5 +176,18 @@ public interface RequeteManager
     */
    List<Requete> findByIntituleInPlateformeManager(String intitule, Plateforme plateforme);
 
+   /**
+    * Vérifie si une requête avec le même intitulé existe déjà dans la plateforme donnée.
+    *
+    * Cette méthode remplace la méthode findDoublonManager en traitant le ticket TK-524.
+    * Elle vérifie si deux requêtes sont considérées comme égales uniquement si elles ont
+    * le même intitulé sous la même plateforme. Le nom de la méthode a été modifié pour
+    * mieux refléter sa responsabilité.
+    *
+    * @param requete La requête à vérifier pour l'existence d'un doublon.
+    * @return true si un doublon est trouvé, false sinon.
+    */
+
+    boolean checkIntituleExistantManager(final Requete requete);
 
 }

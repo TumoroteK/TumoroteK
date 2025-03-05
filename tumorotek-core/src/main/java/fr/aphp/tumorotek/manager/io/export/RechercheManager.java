@@ -200,4 +200,19 @@ public interface RechercheManager
     * @return la liste des Recherches correspondantes
     */
    List<Recherche> findByIntituleInPlateformeManager(String intitule, Plateforme plateforme);
+
+
+   /**
+    * Vérifie si une recherche avec le même intitulé existe déjà dans la plateforme donnée.
+    *
+    * Cette méthode remplace la méthode findDoublonManager en traitant le ticket TK-524.
+    * Elle vérifie si deux recherches sont considérées comme égales uniquement si elles ont
+    * le même intitulé sous la même plateforme. Le nom de la méthode a été modifié pour
+    * mieux refléter sa responsabilité.
+    *
+    * @param recherche La recherche à vérifier pour l'existence d'un doublon. Ne doit pas être nulle.
+    * @return true si un doublon est trouvé, false sinon.
+    */
+
+    boolean checkIntituleExistantManager(final Recherche recherche);
 }

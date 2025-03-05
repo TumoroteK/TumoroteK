@@ -196,4 +196,18 @@ public interface AffichageManager
     * @return la liste des Affichages correspondants
     */
    List<Affichage> findByIntituleInPlateformeManager(String intitule, Plateforme plateforme);
+
+
+   /**
+    * Vérifie si un affichage avec le même intitulé existe déjà dans la plateforme donnée.
+    *
+    * Cette méthode remplace la méthode findDoublonManager en traitant le ticket TK-524.
+    * Elle vérifie si deux affichages sont considérés comme égaux uniquement s'ils ont
+    * le même intitulé sous la même plateforme. Le nom de la méthode a été modifié pour
+    * mieux refléter sa responsabilité.
+    *
+    * @param affichage L'affichage à vérifier pour l'existence d'un doublon.
+    * @return true si un doublon est trouvé, false sinon.
+    */
+   boolean checkIntituleExistantManager(final Affichage affichage);
 }

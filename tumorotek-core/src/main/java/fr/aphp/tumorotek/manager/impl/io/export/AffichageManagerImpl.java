@@ -686,4 +686,24 @@ public class AffichageManagerImpl implements AffichageManager
       return affichageDao.findByIntituleInPlateforme(intitule, plateforme);
    }
 
+   @Override
+   public boolean checkIntituleExistantManager(final Affichage affichage) {
+      final List<Affichage> intitulesExistants =   affichageDao.findByIntituleInPlateforme(
+              affichage.getIntitule(),
+              affichage.getBanque() != null ? affichage.getBanque().getPlateforme() : null);
+
+      if(!intitulesExistants.isEmpty()) {
+         // Si l'affichage n'a pas d'ID, cela signifie que c'est un nouvel ajout
+         if(affichage.getAffichageId() == null)  {
+            return true;
+         }
+
+         for(final Affichage affichageCourant : intitulesExistants) {
+            if(!affichage.getAffichageId().equals(affichageCourant.getAffichageId())) return true;
+         }
+      }
+      return false;
+   }
+
+
 }

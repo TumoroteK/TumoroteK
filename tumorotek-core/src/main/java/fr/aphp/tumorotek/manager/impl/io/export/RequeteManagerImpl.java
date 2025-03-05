@@ -475,4 +475,26 @@ public class RequeteManagerImpl implements RequeteManager
       return requeteDao.findByIntituleInPlateforme(intitule, plateforme);
    }
 
+   @Override
+   public boolean checkIntituleExistantManager(final Requete requete) {
+      final List<Requete> intitulesExistants = requeteDao.findByIntituleInPlateforme(
+              requete.getIntitule(),
+              requete.getBanque() != null ? requete.getBanque().getPlateforme() : null
+      );
+
+      if (!intitulesExistants.isEmpty()) {
+         // Si l'affichage n'a pas d'ID, cela signifie que c'est un nouvel ajout
+         if (requete.getRequeteId() == null) {
+            return true;
+         }
+
+         for (final Requete requeteCourante : intitulesExistants) {
+            if (!requete.getRequeteId().equals(requeteCourante.getRequeteId())) {
+               return true;
+            }
+         }
+      }
+      return false;
+   }
+
 }

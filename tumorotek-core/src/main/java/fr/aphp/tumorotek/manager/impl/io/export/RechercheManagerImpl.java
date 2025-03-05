@@ -699,4 +699,9 @@ public class RechercheManagerImpl implements RechercheManager
       return rechercheDao.findByIntituleInPlateforme(intitule, plateforme);
    }
 
+   @Override
+   public boolean checkIntituleExistantManager(final Recherche recherche) {
+      return findDoublonManager(recherche);
+   }
+
 }
