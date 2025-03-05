@@ -36,9 +36,11 @@
 package fr.aphp.tumorotek.manager.impl.io.export;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
+import fr.aphp.tumorotek.model.contexte.Plateforme;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.validation.Validator;
@@ -675,4 +677,13 @@ public class AffichageManagerImpl implements AffichageManager
       }
       return new ArrayList<>();
    }
+
+   @Override
+   public List<Affichage> findByIntituleInPlateformeManager(String intitule, Plateforme plateforme) {
+      if (intitule == null || plateforme == null) {
+         return Collections.emptyList();
+      }
+      return affichageDao.findByIntituleInPlateforme(intitule, plateforme);
+   }
+
 }
