@@ -77,7 +77,11 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
       @NamedQuery(name = "Recherche.findByBanqueId",
          query = "SELECT r FROM Recherche r " + "left join r.banques b " + "WHERE b.banqueId = ?1"),
       @NamedQuery(name = "Recherche.findByBanqueIdinList",
-         query = "SELECT distinct(r) FROM Recherche r " + "left join r.banques b " + "WHERE b.banqueId in (?1)")})
+         query = "SELECT distinct(r) FROM Recherche r " + "left join r.banques b " + "WHERE b.banqueId in (?1)"),
+      @NamedQuery(name = "Recherche.findByIntituleInPlateforme",
+         query = "SELECT r FROM Recherche r WHERE r.intitule = ?1 " +
+                 "AND EXISTS (SELECT b FROM r.banques b WHERE b.plateforme = ?2)")
+   })
 public class Recherche implements TKdataObject, Comparable<Recherche>
 {
 
