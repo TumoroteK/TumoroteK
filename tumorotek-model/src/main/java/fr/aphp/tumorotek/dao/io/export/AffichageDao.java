@@ -39,6 +39,7 @@ import java.util.List;
 
 import fr.aphp.tumorotek.dao.GenericDaoJpa;
 import fr.aphp.tumorotek.model.contexte.Banque;
+import fr.aphp.tumorotek.model.contexte.Plateforme;
 import fr.aphp.tumorotek.model.io.export.Affichage;
 import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
 
@@ -97,4 +98,13 @@ public interface AffichageDao extends GenericDaoJpa<Affichage, Integer>
    * @return une liste d'Affichages.
    */
    List<Affichage> findByExcludedId(Integer affichageId);
+
+   /**
+    * Recherche les Affichages par intitulé dans une plateforme spécifique.
+    *
+    * @param intitule : L'intitulé de l'Affichage à rechercher
+    * @param plateforme : La plateforme dans laquelle rechercher
+    * @return la liste des Affichages correspondants
+    */
+   List<Affichage> findByIntituleInPlateforme(String intitule, Plateforme plateforme);
 }

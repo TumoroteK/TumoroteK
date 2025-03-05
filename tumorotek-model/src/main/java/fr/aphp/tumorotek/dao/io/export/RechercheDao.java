@@ -38,6 +38,7 @@ package fr.aphp.tumorotek.dao.io.export;
 import java.util.List;
 
 import fr.aphp.tumorotek.dao.GenericDaoJpa;
+import fr.aphp.tumorotek.model.contexte.Plateforme;
 import fr.aphp.tumorotek.model.io.export.Affichage;
 import fr.aphp.tumorotek.model.io.export.Recherche;
 import fr.aphp.tumorotek.model.io.export.Requete;
@@ -114,5 +115,14 @@ public interface RechercheDao extends GenericDaoJpa<Recherche, Integer>
    * @return une liste de Recherches.
    */
    List<Recherche> findByExcludedId(Integer rechercheId);
+
+   /**
+    * Recherche les Recherches par intitulé dans une plateforme spécifique.
+    *
+    * @param intitule : L'intitulé de la Recherche à rechercher
+    * @param plateforme : La plateforme dans laquelle rechercher
+    * @return la liste des Recherches correspondantes
+    */
+   List<Recherche> findByIntituleInPlateforme(String intitule, Plateforme plateforme);
 
 }

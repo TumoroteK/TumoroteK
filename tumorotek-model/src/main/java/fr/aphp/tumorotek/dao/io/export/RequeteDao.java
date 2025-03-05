@@ -39,6 +39,7 @@ import java.util.List;
 
 import fr.aphp.tumorotek.dao.GenericDaoJpa;
 import fr.aphp.tumorotek.model.contexte.Banque;
+import fr.aphp.tumorotek.model.contexte.Plateforme;
 import fr.aphp.tumorotek.model.io.export.Requete;
 import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
 
@@ -97,5 +98,15 @@ public interface RequeteDao extends GenericDaoJpa<Requete, Integer>
     * @return la liste des Requetes de l'intitulé
     */
    List<Requete> findByIntituleUtilisateur(String intitule, Utilisateur utilisateur);
+
+
+   /**
+    * Recherche les Requêtes par intitulé dans une plateforme spécifique.
+    *
+    * @param intitule : L'intitulé de la Requête à rechercher
+    * @param plateforme : La plateforme dans laquelle rechercher
+    * @return la liste des Requêtes correspondantes
+    */
+   List<Requete> findByIntituleInPlateforme(String intitule, Plateforme plateforme);
 
 }
