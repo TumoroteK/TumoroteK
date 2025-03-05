@@ -334,6 +334,11 @@ public class RechercheManagerImpl implements RechercheManager
          log.warn("Objet obligatoire Utilisateur manquant lors de la création d'un objet Recherche");
          throw new RequiredObjectIsNullException("Recherche", "création", "Utilisateur");
       }
+      // On vérifie si une recherche avec le même intitulé existe déjà
+      if(checkIntituleExistantManager(recherche)){
+         log.warn("Doublon lors de la creation de l'objet Recherche : {}",  recherche);
+         throw new DoublonFoundException("Recherche", "creation");
+      }
       if(affichage.getAffichageId() != null){
          affichage = affichageDao.mergeObject(affichage);
       }else{
@@ -392,6 +397,11 @@ public class RechercheManagerImpl implements RechercheManager
       if(createur == null){
          log.warn("Objet obligatoire Utilisateur manquant lors de la modification d'un objet Recherche");
          throw new RequiredObjectIsNullException("Recherche", "modification", "Utilisateur");
+      }
+      // On vérifie si une recherche avec le même intitulé existe déjà
+      if(checkIntituleExistantManager(recherche)){
+         log.warn("Doublon lors de la creation de l'objet Recherche : {}",  recherche);
+         throw new DoublonFoundException("Recherche", "creation");
       }
       if(affichage.getAffichageId() != null){
          affichage = affichageDao.mergeObject(affichage);

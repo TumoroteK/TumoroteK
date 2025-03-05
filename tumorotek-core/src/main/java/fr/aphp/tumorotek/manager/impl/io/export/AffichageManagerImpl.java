@@ -171,7 +171,7 @@ public class AffichageManagerImpl implements AffichageManager
       //on modifie l'intitule de l'affichage
       affichage.setIntitule(intitule);
       //On met a jour l'affichage
-      if(findDoublonManager(affichage)){
+      if(checkIntituleExistantManager(affichage)){
          log.warn("Doublon lors de la modification de l'objet Affichage : {}",  affichage);
          throw new DoublonFoundException("Affichage", "modification");
       }
@@ -210,7 +210,7 @@ public class AffichageManagerImpl implements AffichageManager
       a.setBanque(banque);
 
       // On vérifie que l'affichage est bien enregistré
-      if(findDoublonManager(a)){
+      if(checkIntituleExistantManager(a)){
          log.warn("Doublon lors de la modification de l'objet Affichage : {}",  a);
          throw new DoublonFoundException("Affichage", "modification");
       }
@@ -254,14 +254,15 @@ public class AffichageManagerImpl implements AffichageManager
          log.warn("Objet obligatoire Banque manquant lors de la création d'un objet Affichage");
          throw new RequiredObjectIsNullException("Affichage", "création", "Banque");
       }
+      // On vérifie si un affichage avec le même intitulé existe déjà
+      if(checkIntituleExistantManager(affichage)){
+         log.warn("Doublon lors de la creation de l'objet Affichage : {}",  affichage);
+         throw new DoublonFoundException("Affichage", "creation");
+      }
       // On met l'utilisateur dans l'affichage
       affichage.setBanque(banque);
 
       // On enregistre l'affichage
-      if(findDoublonManager(affichage)){
-         log.warn("Doublon lors de la creation de l'objet Affichage : {}",  affichage);
-         throw new DoublonFoundException("Affichage", "creation");
-      }
       BeanValidator.validateObject(affichage, new Validator[] {affichageValidator});
       affichageDao.createObject(affichage);
 
@@ -290,7 +291,7 @@ public class AffichageManagerImpl implements AffichageManager
          throw new SearchedObjectIdNotExistException("Affichage", affichage.getAffichageId());
       }
       //On met à jour l'affichage
-      if(findDoublonManager(affichage)){
+      if(checkIntituleExistantManager(affichage)){
          log.warn("Doublon lors de la modification de l'objet Affichage : {}",  affichage);
          throw new DoublonFoundException("Affichage", "modification");
       }
@@ -510,24 +511,7 @@ public class AffichageManagerImpl implements AffichageManager
       }
    }
 
-   /**
-    * Recherche les doublons d'un Affichage passé en paramètre.
-    * @param affichage un Affichage pour lequel on cherche des doublons.
-    * @return True s'il existe des doublons.
-    */
-   @Override
-   public Boolean findDoublonManager(final Affichage affichage){
-      //On vérifie que l'affichage n'est pas nul
-      if(affichage == null){
-         log.warn("Objet obligatoire Affichage manquant lors de la recherche de doublon d'un objet Affichage");
-         throw new RequiredObjectIsNullException("Affichage", "recherche de doublon", "Affichage");
-      }
-      if(affichage.getAffichageId() == null){
-         return affichageDao.findAll().contains(affichage);
-      }
-      return affichageDao.findByExcludedId(affichage.getAffichageId()).contains(affichage);
 
-   }
 
    /**
     * Méthode qui permet de vérifier que 2 Affichages sont des copies.

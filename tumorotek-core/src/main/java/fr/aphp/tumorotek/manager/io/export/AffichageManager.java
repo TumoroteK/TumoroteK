@@ -166,12 +166,6 @@ public interface AffichageManager
     */
    void moveResultatManager(Affichage affichage, Resultat resultat, int nouvellePosition);
 
-   /**
-    * Recherche les doublons d'un Affichage passé en paramètre.
-    * @param affichage un Affichage pour lequel on cherche des doublons.
-    * @return True s'il existe des doublons.
-    */
-   Boolean findDoublonManager(Affichage affichage);
 
    /**
     * Méthode qui vérifie que l'affichage n'est pas utilisé.

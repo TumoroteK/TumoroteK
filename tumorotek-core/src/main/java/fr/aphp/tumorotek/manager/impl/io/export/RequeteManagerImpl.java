@@ -248,6 +248,11 @@ public class RequeteManagerImpl implements RequeteManager
          log.warn("Objet obligatoire Banque manquant lors de la création d'un objet Requete");
          throw new RequiredObjectIsNullException("Requete", "création", "Banque");
       }
+      // On vérifie si une requête avec le même intitulé existe déjà dans la plateforme donnée.
+      if (checkIntituleExistantManager(requete)){
+         log.warn("Doublon lors de la creation de l'objet Requete : {}",  requete);
+         throw new DoublonFoundException("Requete", "creation");
+      }
       requete.setBanque(banque);
       if(groupement.getGroupementId() != null){
          groupement = groupementDao.mergeObject(groupement);
@@ -286,6 +291,11 @@ public class RequeteManagerImpl implements RequeteManager
       if(createur == null){
          log.warn("Objet obligatoire Utilisateur manquant lors de la modification d'un objet Requete");
          throw new RequiredObjectIsNullException("Requete", "modification", "Utilisateur");
+      }
+      // On vérifie si une requête avec le même intitulé existe déjà dans la plateforme donnée.
+      if (checkIntituleExistantManager(requete)){
+         log.warn("Doublon lors de la creation de l'objet Requete : {}",  requete);
+         throw new DoublonFoundException("Requete", "creation");
       }
       final Groupement oldGroupement = requete.getGroupementRacine();
       if(groupement.getGroupementId() != null){
