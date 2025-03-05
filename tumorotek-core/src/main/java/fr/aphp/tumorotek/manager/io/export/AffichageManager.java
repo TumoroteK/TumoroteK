@@ -38,6 +38,7 @@ package fr.aphp.tumorotek.manager.io.export;
 import java.util.List;
 
 import fr.aphp.tumorotek.model.contexte.Banque;
+import fr.aphp.tumorotek.model.contexte.Plateforme;
 import fr.aphp.tumorotek.model.io.export.Affichage;
 import fr.aphp.tumorotek.model.io.export.Resultat;
 import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
@@ -186,4 +187,13 @@ public interface AffichageManager
     * @return true si les 2 Affichages sont des copies, false sinon.
     */
    Boolean isCopyManager(Affichage a, Affichage copie);
+
+   /**
+    * Recherche les Affichages par intitulé dans une plateforme spécifique.
+    *
+    * @param intitule L'intitulé de l'Affichage à rechercher
+    * @param plateforme La plateforme dans laquelle rechercher
+    * @return la liste des Affichages correspondants
+    */
+   List<Affichage> findByIntituleInPlateformeManager(String intitule, Plateforme plateforme);
 }

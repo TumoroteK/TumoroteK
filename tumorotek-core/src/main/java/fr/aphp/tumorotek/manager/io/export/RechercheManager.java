@@ -38,6 +38,7 @@ package fr.aphp.tumorotek.manager.io.export;
 import java.util.List;
 
 import fr.aphp.tumorotek.model.contexte.Banque;
+import fr.aphp.tumorotek.model.contexte.Plateforme;
 import fr.aphp.tumorotek.model.io.export.Affichage;
 import fr.aphp.tumorotek.model.io.export.Recherche;
 import fr.aphp.tumorotek.model.io.export.Requete;
@@ -189,4 +190,14 @@ public interface RechercheManager
     * @return la liste de tous les Recherches des Banques.
     */
    List<Recherche> findByBanqueInLIstManager(List<Banque> banques);
+
+
+   /**
+    * Recherche les Recherches par intitulé dans une plateforme spécifique.
+    *
+    * @param intitule L'intitulé de la Recherche à rechercher
+    * @param plateforme La plateforme dans laquelle rechercher
+    * @return la liste des Recherches correspondantes
+    */
+   List<Recherche> findByIntituleInPlateformeManager(String intitule, Plateforme plateforme);
 }
