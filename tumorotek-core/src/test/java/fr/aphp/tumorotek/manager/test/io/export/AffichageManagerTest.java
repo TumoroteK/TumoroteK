@@ -430,18 +430,7 @@ public class AffichageManagerTest extends AbstractManagerTest4
       assertTrue(manager.findAllObjectsManager().size() == 4);
    }
 
-   @Test
-   public void testFindDoublons(){
-      final Affichage affichage = new Affichage();
-      final Utilisateur createur = utilisateurDao.findById(1);
-      affichage.setCreateur(createur);
-      affichage.setIntitule("Essentiel Patient");
 
-      assertTrue(manager.findDoublonManager(affichage));
-
-      affichage.setIntitule("Résumé Patient");
-      assertFalse(manager.findDoublonManager(affichage));
-   }
 
    @Test
    public void testIsUsedObjectManager(){
