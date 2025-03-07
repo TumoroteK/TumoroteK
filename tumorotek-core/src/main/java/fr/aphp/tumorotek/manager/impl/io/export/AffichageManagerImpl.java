@@ -676,12 +676,13 @@ public class AffichageManagerImpl implements AffichageManager
               affichage.getIntitule(),
               affichage.getBanque() != null ? affichage.getBanque().getPlateforme() : null);
 
+      // Si la liste n'est pas vide, cela signifie que l'intitulé existe déjà
       if(!intitulesExistants.isEmpty()) {
          // Si l'affichage n'a pas d'ID, cela signifie que c'est un nouvel ajout
          if(affichage.getAffichageId() == null)  {
             return true;
          }
-
+         // Sinon, on modifie l'objet : vérifier si l'intitulé appartient à un **autre** Affichage
          for(final Affichage affichageCourant : intitulesExistants) {
             if(!affichage.getAffichageId().equals(affichageCourant.getAffichageId())) return true;
          }

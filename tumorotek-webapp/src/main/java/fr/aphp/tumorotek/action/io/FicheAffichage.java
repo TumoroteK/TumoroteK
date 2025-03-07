@@ -39,6 +39,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import fr.aphp.tumorotek.model.contexte.Plateforme;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.util.resource.Labels;
@@ -46,6 +47,7 @@ import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.HtmlMacroComponent;
 import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
+import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.DropEvent;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -431,6 +433,31 @@ public class FicheAffichage extends AbstractFicheCombineController
       clearConstraints();
       super.onClick$revertC();
    }
+
+
+
+   public void onBlur$intituleBox() {
+      String intitule = intituleBox.getValue().trim();
+      Plateforme currentPlateforme = SessionUtils.getCurrentPlateforme();
+
+      // Vérifier si on est en mode création ou modification
+      boolean isCreation = (affichage == null || affichage.getAffichageId() == null);
+
+      // Vérifier l'unicité de l'intitulé :
+      // - En mode création, toujours vérifier l'unicité
+      // - En mode modification, vérifier l'unicité seulement si l'intitulé a été modifié
+      if (!intitule.isEmpty() && (isCreation || !intitule.equals(affichage.getIntitule()))) {
+         List<Affichage> intituleExists = ManagerLocator.getAffichageManager()
+                 .findByIntituleInPlateformeManager(intitule, currentPlateforme);
+         if (!intituleExists.isEmpty()) {
+            throw new WrongValueException(
+                    intituleBox,
+                    Labels.getLabel("error.validation.title.duplicate")
+            );
+         }
+      }
+   }
+
 
    @Override
    public void onClick$validateC(){
