@@ -214,5 +214,5 @@ public interface RechercheManager
     * @return true si un doublon est trouvé, false sinon.
     */
 
-    boolean checkIntituleExistantManager(final Recherche recherche);
+    boolean checkIntituleExistantManager(final Recherche recherche, Plateforme plateforme);
 }

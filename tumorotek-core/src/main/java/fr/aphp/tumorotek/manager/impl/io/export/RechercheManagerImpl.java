@@ -335,7 +335,7 @@ public class RechercheManagerImpl implements RechercheManager
          throw new RequiredObjectIsNullException("Recherche", "création", "Utilisateur");
       }
       // On vérifie si une recherche avec le même intitulé existe déjà
-      if(checkIntituleExistantManager(recherche)){
+      if(checkIntituleExistantManager(recherche, banque.getPlateforme())){
          log.warn("Doublon lors de la creation de l'objet Recherche : {}",  recherche);
          throw new DoublonFoundException("Recherche", "creation");
       }
@@ -399,7 +399,7 @@ public class RechercheManagerImpl implements RechercheManager
          throw new RequiredObjectIsNullException("Recherche", "modification", "Utilisateur");
       }
       // On vérifie si une recherche avec le même intitulé existe déjà
-      if(checkIntituleExistantManager(recherche)){
+      if(checkIntituleExistantManager(recherche,banque.getPlateforme())){
          log.warn("Doublon lors de la creation de l'objet Recherche : {}",  recherche);
          throw new DoublonFoundException("Recherche", "creation");
       }
@@ -710,8 +710,24 @@ public class RechercheManagerImpl implements RechercheManager
    }
 
    @Override
-   public boolean checkIntituleExistantManager(final Recherche recherche) {
-      return findDoublonManager(recherche);
+   public boolean checkIntituleExistantManager(final Recherche recherche, Plateforme plateforme) {
+         final List<Recherche> intitulesExistants = rechercheDao.findByIntituleInPlateforme(
+                 recherche.getIntitule(), plateforme);
+
+         if(!intitulesExistants.isEmpty()) {
+            // Cas d'une nouvelle recherche
+            if(recherche.getRechercheId() == null) {
+               return true;
+            }
+
+            // Cas d'une modification : vérifier si l'intitulé appartient à une autre Recherche
+            for(final Recherche rechercheCourante : intitulesExistants) {
+               if(!recherche.getRechercheId().equals(rechercheCourante.getRechercheId()))
+                  return true;
+            }
+         }
+         return false;
+      }
    }
 
-}
+
