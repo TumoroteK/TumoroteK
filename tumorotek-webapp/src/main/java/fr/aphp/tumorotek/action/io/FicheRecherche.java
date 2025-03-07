@@ -400,7 +400,7 @@ public class FicheRecherche extends AbstractFicheCombineController
       // - En mode création, toujours vérifier l'unicité
       // - En mode modification, vérifier l'unicité seulement si l'intitulé a été modifié
       if (!intitule.isEmpty() && (isCreation || !intitule.equals(recherche.getIntitule()))) {
-         List<Requete> intituleExists = ManagerLocator.getRequeteManager()
+         List<Recherche> intituleExists = ManagerLocator.getRechercheManager()
                  .findByIntituleInPlateformeManager(intitule, currentPlateforme);
          if (!intituleExists.isEmpty()) {
             throw new WrongValueException(

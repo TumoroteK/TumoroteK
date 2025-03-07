@@ -210,7 +210,12 @@ public interface RechercheManager
     * le même intitulé sous la même plateforme. Le nom de la méthode a été modifié pour
     * mieux refléter sa responsabilité.
     *
+    * Le paramètre plateforme est nécessaire car l'objet Recherche peut être associé
+    * à plusieurs Banques via une liste, ce qui ne permet pas de déterminer directement
+    * la Plateforme concernée pour la vérification d'unicité.
+    *
     * @param recherche La recherche à vérifier pour l'existence d'un doublon. Ne doit pas être nulle.
+    * @param plateforme La plateforme dans laquelle vérifier l'unicité de l'intitulé.
     * @return true si un doublon est trouvé, false sinon.
     */
 
