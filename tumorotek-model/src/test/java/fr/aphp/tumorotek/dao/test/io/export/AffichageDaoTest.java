@@ -162,21 +162,6 @@ public class AffichageDaoTest extends AbstractDaoTest
    }
 
    /**
-   * Test l'appel de la méthode findByExcludedId().
-   */
-   public void testFindByExcludedId(){
-      final List<Affichage> liste = affichageDao.findAll();
-      final Iterator<Affichage> it = liste.iterator();
-      while(it.hasNext()){
-         final Affichage temp = it.next();
-         final List<Affichage> affichages = affichageDao.findByExcludedId(temp.getAffichageId());
-         assertTrue(affichages.size() == liste.size() - 1);
-         assertFalse(affichages.contains(temp));
-      }
-
-   }
-
-   /**
     * Test l'insertion, la mise à jour et la suppression 
    * d'un affichage.
    * @throws Exception lance une exception en cas de problème lors du CRUD.

@@ -390,7 +390,7 @@ public class FicheRecherche extends AbstractFicheCombineController
    }
 
    public void onBlur$intituleBox() {
-      String intitule = intituleBox.getValue().trim();
+      String intitule = intituleBox.getValue();
       Plateforme currentPlateforme = SessionUtils.getCurrentPlateforme();
 
       // Vérifier si on est en mode création ou modification
@@ -399,7 +399,7 @@ public class FicheRecherche extends AbstractFicheCombineController
       // Vérifier l'unicité de l'intitulé :
       // - En mode création, toujours vérifier l'unicité
       // - En mode modification, vérifier l'unicité seulement si l'intitulé a été modifié
-      if (!intitule.isEmpty() && (isCreation || !intitule.equals(recherche.getIntitule()))) {
+      if (!intitule.trim().isEmpty() && (isCreation || !intitule.equals(recherche.getIntitule()))) {
          List<Recherche> intituleExists = ManagerLocator.getRechercheManager()
                  .findByIntituleInPlateformeManager(intitule, currentPlateforme);
          if (!intituleExists.isEmpty()) {

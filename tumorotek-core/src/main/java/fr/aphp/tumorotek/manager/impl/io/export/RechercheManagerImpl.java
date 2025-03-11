@@ -223,7 +223,7 @@ public class RechercheManagerImpl implements RechercheManager
       // on modifie l'intitule
       recherche.setIntitule(intitule);
       // On met a jour la recherche
-      if(findDoublonManager(recherche)){
+      if(isDoublonIntituleInPlateformeManager(recherche, recherche.getBanques().get(0).getPlateforme())){//une recherche est rattachée à tort à plusieurs banques :-(
          log.warn("Doublon lors de la modification de l'objet Recherche : {}",  recherche);
          throw new DoublonFoundException("Recherche", "modification");
       }
@@ -334,11 +334,19 @@ public class RechercheManagerImpl implements RechercheManager
          log.warn("Objet obligatoire Utilisateur manquant lors de la création d'un objet Recherche");
          throw new RequiredObjectIsNullException("Recherche", "création", "Utilisateur");
       }
+      
+      //On vérifie que la banque n'est pas nul
+      if(banque == null){
+         log.warn("Objet obligatoire Banque manquant lors de la création d'un objet Recherche");
+         throw new RequiredObjectIsNullException("Recherche", "création", "Banque");
+      }
+      
       // On vérifie si une recherche avec le même intitulé existe déjà
-      if(checkIntituleExistantManager(recherche, banque.getPlateforme())){
+      if(isDoublonIntituleInPlateformeManager(recherche, banque.getPlateforme())){
          log.warn("Doublon lors de la creation de l'objet Recherche : {}",  recherche);
          throw new DoublonFoundException("Recherche", "creation");
       }
+      
       if(affichage.getAffichageId() != null){
          affichage = affichageDao.mergeObject(affichage);
       }else{
@@ -398,10 +406,15 @@ public class RechercheManagerImpl implements RechercheManager
          log.warn("Objet obligatoire Utilisateur manquant lors de la modification d'un objet Recherche");
          throw new RequiredObjectIsNullException("Recherche", "modification", "Utilisateur");
       }
+      //On vérifie que la banque n'est pas nul
+      if(banque == null){
+         log.warn("Objet obligatoire Banque manquant lors de la création d'un objet Recherche");
+         throw new RequiredObjectIsNullException("Recherche", "modification", "Banque");
+      }
       // On vérifie si une recherche avec le même intitulé existe déjà
-      if(checkIntituleExistantManager(recherche,banque.getPlateforme())){
+      if(isDoublonIntituleInPlateformeManager(recherche, banque.getPlateforme())){
          log.warn("Doublon lors de la creation de l'objet Recherche : {}",  recherche);
-         throw new DoublonFoundException("Recherche", "creation");
+         throw new DoublonFoundException("Recherche", "modification");
       }
       if(affichage.getAffichageId() != null){
          affichage = affichageDao.mergeObject(affichage);
@@ -709,10 +722,12 @@ public class RechercheManagerImpl implements RechercheManager
       return rechercheDao.findByIntituleInPlateforme(intitule, plateforme);
    }
 
+   //Depuis le ticket TK-524, cette méthode remplace la méthode findDoublonManager :
+   //le contrôle de "doublon" est désormais fait sur l'intitulé uniquement pour une plateforme donnée. 
+   //Le nom de la méthode a été modifié pour mieux refléter ce qu'elle fait.
    @Override
-   public boolean checkIntituleExistantManager(final Recherche recherche, Plateforme plateforme) {
-         final List<Recherche> intitulesExistants = rechercheDao.findByIntituleInPlateforme(
-                 recherche.getIntitule(), plateforme);
+   public boolean isDoublonIntituleInPlateformeManager(Recherche recherche, Plateforme plateforme) {
+         final List<Recherche> intitulesExistants = findByIntituleInPlateformeManager(recherche.getIntitule(), plateforme);
 
          if(!intitulesExistants.isEmpty()) {
             // Cas d'une nouvelle recherche

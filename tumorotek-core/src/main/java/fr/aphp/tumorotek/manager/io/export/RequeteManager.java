@@ -178,16 +178,14 @@ public interface RequeteManager
 
    /**
     * Vérifie si une requête avec le même intitulé existe déjà dans la plateforme donnée.
+    * Si la requête passée en paramètre existe déjà en base de données (champ requeteId valorisé) - cas de la modification de l'intitulé - 
+    * l'id de la requête trouvée en base de données sera comparé avec celui de la requête en paramètre
+    * pour ne renvoyer true que si les 2 sont différents.
     *
-    * Cette méthode remplace la méthode findDoublonManager en traitant le ticket TK-524.
-    * Elle vérifie si deux requêtes sont considérées comme égales uniquement si elles ont
-    * le même intitulé sous la même plateforme. Le nom de la méthode a été modifié pour
-    * mieux refléter sa responsabilité.
-    *
-    * @param requete La requête à vérifier pour l'existence d'un doublon.
-    * @return true si un doublon est trouvé, false sinon.
+    * @param requete La requête de laquelle sera récupéré l'intitulé pour vérifier l'existence d'un doublon.
+    * @param plateforme La plateforme dans laquelle vérifier l'unicité de l'intitulé.
+    * @return true / false.
     */
-
-    boolean checkIntituleExistantManager(final Requete requete);
+   boolean isDoublonIntituleInPlateformeManager(final Requete requete, Plateforme plateforme);
 
 }

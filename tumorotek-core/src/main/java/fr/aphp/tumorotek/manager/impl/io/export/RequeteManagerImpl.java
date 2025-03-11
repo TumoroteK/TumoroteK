@@ -174,7 +174,7 @@ public class RequeteManagerImpl implements RequeteManager
          //on modifie l'intitule
          requete.setIntitule(intitule);
          //On met a jour la requete
-         if(findDoublonManager(requete)){
+         if(isDoublonIntituleInPlateformeManager(requete, requete.getBanque().getPlateforme())){
             log.warn("Doublon lors de la modification de l'objet Requete : {}",  requete);
             throw new DoublonFoundException("Requete", "modification");
          }else{
@@ -249,11 +249,12 @@ public class RequeteManagerImpl implements RequeteManager
          throw new RequiredObjectIsNullException("Requete", "création", "Banque");
       }
       // On vérifie si une requête avec le même intitulé existe déjà dans la plateforme donnée.
-      if (checkIntituleExistantManager(requete)){
+      if (isDoublonIntituleInPlateformeManager(requete, banque.getPlateforme())){
          log.warn("Doublon lors de la creation de l'objet Requete : {}",  requete);
          throw new DoublonFoundException("Requete", "creation");
       }
       requete.setBanque(banque);
+      
       if(groupement.getGroupementId() != null){
          groupement = groupementDao.mergeObject(groupement);
       }else{
@@ -293,7 +294,7 @@ public class RequeteManagerImpl implements RequeteManager
          throw new RequiredObjectIsNullException("Requete", "modification", "Utilisateur");
       }
       // On vérifie si une requête avec le même intitulé existe déjà dans la plateforme donnée.
-      if (checkIntituleExistantManager(requete)){
+      if (isDoublonIntituleInPlateformeManager(requete, requete.getBanque().getPlateforme())){
          log.warn("Doublon lors de la creation de l'objet Requete : {}",  requete);
          throw new DoublonFoundException("Requete", "creation");
       }
@@ -485,12 +486,12 @@ public class RequeteManagerImpl implements RequeteManager
       return requeteDao.findByIntituleInPlateforme(intitule, plateforme);
    }
 
+   //Depuis le ticket TK-524, cette méthode remplace la méthode findDoublonManager :
+   //le contrôle de "doublon" est désormais fait sur l'intitulé uniquement pour une plateforme donnée. 
+   //Le nom de la méthode a été modifié pour mieux refléter ce qu'elle fait.
    @Override
-   public boolean checkIntituleExistantManager(final Requete requete) {
-      final List<Requete> intitulesExistants = requeteDao.findByIntituleInPlateforme(
-              requete.getIntitule(),
-              requete.getBanque() != null ? requete.getBanque().getPlateforme() : null
-      );
+   public boolean isDoublonIntituleInPlateformeManager(Requete requete, Plateforme plateforme) {
+      final List<Requete> intitulesExistants = findByIntituleInPlateformeManager(requete.getIntitule(), plateforme);
 
       if (!intitulesExistants.isEmpty()) {
          // Si l'affichage n'a pas d'ID, cela signifie que c'est un nouvel ajout

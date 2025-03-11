@@ -201,23 +201,15 @@ public interface RechercheManager
     */
    List<Recherche> findByIntituleInPlateformeManager(String intitule, Plateforme plateforme);
 
-
    /**
     * Vérifie si une recherche avec le même intitulé existe déjà dans la plateforme donnée.
+    * Si la recherche passé en paramètre existe déjà en base de données (champ rechercheId valorisé) - cas de la modification de l'intitulé - 
+    * l'id de la recherche trouvée en base de données sera comparé avec celui de la recherche en paramètre
+    * pour ne renvoyer true que si les 2 sont différents.
     *
-    * Cette méthode remplace la méthode findDoublonManager en traitant le ticket TK-524.
-    * Elle vérifie si deux recherches sont considérées comme égales uniquement si elles ont
-    * le même intitulé sous la même plateforme. Le nom de la méthode a été modifié pour
-    * mieux refléter sa responsabilité.
-    *
-    * Le paramètre plateforme est nécessaire car l'objet Recherche peut être associé
-    * à plusieurs Banques via une liste, ce qui ne permet pas de déterminer directement
-    * la Plateforme concernée pour la vérification d'unicité.
-    *
-    * @param recherche La recherche à vérifier pour l'existence d'un doublon. Ne doit pas être nulle.
+    * @param recherche La recherche de laquelle sera récupéré l'intitulé pour vérifier l'existence d'un doublon.
     * @param plateforme La plateforme dans laquelle vérifier l'unicité de l'intitulé.
-    * @return true si un doublon est trouvé, false sinon.
+    * @return true / false.
     */
-
-    boolean checkIntituleExistantManager(final Recherche recherche, Plateforme plateforme);
+    boolean isDoublonIntituleInPlateformeManager(Recherche recherche, Plateforme plateforme);
 }

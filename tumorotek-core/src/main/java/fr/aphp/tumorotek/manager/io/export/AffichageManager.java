@@ -194,14 +194,13 @@ public interface AffichageManager
 
    /**
     * Vérifie si un affichage avec le même intitulé existe déjà dans la plateforme donnée.
+    * Si l'affichage passé en paramètre existe déjà en base de données (champ affichageId valorisé) - cas de la modification de l'intitulé - 
+    * l'id de l'affichage trouvé en base de données sera comparé avec celui de l'affichage en paramètre
+    * pour ne renvoyer true que si les 2 sont différents.
     *
-    * Cette méthode remplace la méthode findDoublonManager en traitant le ticket TK-524.
-    * Elle vérifie si deux affichages sont considérés comme égaux uniquement s'ils ont
-    * le même intitulé sous la même plateforme. Le nom de la méthode a été modifié pour
-    * mieux refléter sa responsabilité.
-    *
-    * @param affichage L'affichage à vérifier pour l'existence d'un doublon.
-    * @return true si un doublon est trouvé, false sinon.
+    * @param affichage L'affichage duquel sera récupérer l'intitulé pour vérifier l'existence d'un doublon.
+    * @param plateforme La plateforme à prendre en compte pour le contrôle de l'existence du doublon
+    * @return true / false.
     */
-   boolean checkIntituleExistantManager(final Affichage affichage);
+   boolean isDoublonIntituleInPlateformeManager(Affichage affichage, Plateforme plateforme);
 }
