@@ -39,6 +39,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import fr.aphp.tumorotek.model.contexte.Plateforme;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
@@ -386,6 +387,28 @@ public class FicheRecherche extends AbstractFicheCombineController
       revertRecherche();
       clearConstraints();
       super.onClick$revertC();
+   }
+
+   public void onBlur$intituleBox() {
+      String intitule = intituleBox.getValue();
+      Plateforme currentPlateforme = SessionUtils.getCurrentPlateforme();
+
+      // Vérifier si on est en mode création ou modification
+      boolean isCreation = ( recherche == null || recherche.getRechercheId() == null);
+
+      // Vérifier l'unicité de l'intitulé :
+      // - En mode création, toujours vérifier l'unicité
+      // - En mode modification, vérifier l'unicité seulement si l'intitulé a été modifié
+      if (!intitule.trim().isEmpty() && (isCreation || !intitule.equals(recherche.getIntitule()))) {
+         List<Recherche> intituleExists = ManagerLocator.getRechercheManager()
+                 .findByIntituleInPlateformeManager(intitule, currentPlateforme);
+         if (!intituleExists.isEmpty()) {
+            throw new WrongValueException(
+                    intituleBox,
+                    Labels.getLabel("error.validation.title.duplicate")
+            );
+         }
+      }
    }
 
    @Override

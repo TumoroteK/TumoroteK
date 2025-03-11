@@ -36,9 +36,11 @@
 package fr.aphp.tumorotek.manager.impl.io.export;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
+import fr.aphp.tumorotek.model.contexte.Plateforme;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.validation.Validator;
@@ -172,7 +174,7 @@ public class RequeteManagerImpl implements RequeteManager
          //on modifie l'intitule
          requete.setIntitule(intitule);
          //On met a jour la requete
-         if(findDoublonManager(requete)){
+         if(isDoublonIntituleInPlateformeManager(requete, requete.getBanque().getPlateforme())){
             log.warn("Doublon lors de la modification de l'objet Requete : {}",  requete);
             throw new DoublonFoundException("Requete", "modification");
          }else{
@@ -246,7 +248,13 @@ public class RequeteManagerImpl implements RequeteManager
          log.warn("Objet obligatoire Banque manquant lors de la création d'un objet Requete");
          throw new RequiredObjectIsNullException("Requete", "création", "Banque");
       }
+      // On vérifie si une requête avec le même intitulé existe déjà dans la plateforme donnée.
+      if (isDoublonIntituleInPlateformeManager(requete, banque.getPlateforme())){
+         log.warn("Doublon lors de la creation de l'objet Requete : {}",  requete);
+         throw new DoublonFoundException("Requete", "creation");
+      }
       requete.setBanque(banque);
+      
       if(groupement.getGroupementId() != null){
          groupement = groupementDao.mergeObject(groupement);
       }else{
@@ -284,6 +292,11 @@ public class RequeteManagerImpl implements RequeteManager
       if(createur == null){
          log.warn("Objet obligatoire Utilisateur manquant lors de la modification d'un objet Requete");
          throw new RequiredObjectIsNullException("Requete", "modification", "Utilisateur");
+      }
+      // On vérifie si une requête avec le même intitulé existe déjà dans la plateforme donnée.
+      if (isDoublonIntituleInPlateformeManager(requete, requete.getBanque().getPlateforme())){
+         log.warn("Doublon lors de la creation de l'objet Requete : {}",  requete);
+         throw new DoublonFoundException("Requete", "creation");
       }
       final Groupement oldGroupement = requete.getGroupementRacine();
       if(groupement.getGroupementId() != null){
@@ -463,6 +476,36 @@ public class RequeteManagerImpl implements RequeteManager
       }else{
          return new ArrayList<>();
       }
+   }
+
+   @Override
+   public List<Requete> findByIntituleInPlateformeManager(String intitule, Plateforme plateforme) {
+      if (intitule == null || plateforme == null) {
+         return Collections.emptyList();
+      }
+      return requeteDao.findByIntituleInPlateforme(intitule, plateforme);
+   }
+
+   //Depuis le ticket TK-524, cette méthode remplace la méthode findDoublonManager :
+   //le contrôle de "doublon" est désormais fait sur l'intitulé uniquement pour une plateforme donnée. 
+   //Le nom de la méthode a été modifié pour mieux refléter ce qu'elle fait.
+   @Override
+   public boolean isDoublonIntituleInPlateformeManager(Requete requete, Plateforme plateforme) {
+      final List<Requete> intitulesExistants = findByIntituleInPlateformeManager(requete.getIntitule(), plateforme);
+
+      if (!intitulesExistants.isEmpty()) {
+         // Si l'affichage n'a pas d'ID, cela signifie que c'est un nouvel ajout
+         if (requete.getRequeteId() == null) {
+            return true;
+         }
+
+         for (final Requete requeteCourante : intitulesExistants) {
+            if (!requete.getRequeteId().equals(requeteCourante.getRequeteId())) {
+               return true;
+            }
+         }
+      }
+      return false;
    }
 
 }

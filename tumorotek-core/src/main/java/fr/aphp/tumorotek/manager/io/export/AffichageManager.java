@@ -38,6 +38,7 @@ package fr.aphp.tumorotek.manager.io.export;
 import java.util.List;
 
 import fr.aphp.tumorotek.model.contexte.Banque;
+import fr.aphp.tumorotek.model.contexte.Plateforme;
 import fr.aphp.tumorotek.model.io.export.Affichage;
 import fr.aphp.tumorotek.model.io.export.Resultat;
 import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
@@ -165,12 +166,6 @@ public interface AffichageManager
     */
    void moveResultatManager(Affichage affichage, Resultat resultat, int nouvellePosition);
 
-   /**
-    * Recherche les doublons d'un Affichage passé en paramètre.
-    * @param affichage un Affichage pour lequel on cherche des doublons.
-    * @return True s'il existe des doublons.
-    */
-   Boolean findDoublonManager(Affichage affichage);
 
    /**
     * Méthode qui vérifie que l'affichage n'est pas utilisé.
@@ -186,4 +181,26 @@ public interface AffichageManager
     * @return true si les 2 Affichages sont des copies, false sinon.
     */
    Boolean isCopyManager(Affichage a, Affichage copie);
+
+   /**
+    * Recherche les Affichages par intitulé dans une plateforme spécifique.
+    *
+    * @param intitule L'intitulé de l'Affichage à rechercher
+    * @param plateforme La plateforme dans laquelle rechercher
+    * @return la liste des Affichages correspondants
+    */
+   List<Affichage> findByIntituleInPlateformeManager(String intitule, Plateforme plateforme);
+
+
+   /**
+    * Vérifie si un affichage avec le même intitulé existe déjà dans la plateforme donnée.
+    * Si l'affichage passé en paramètre existe déjà en base de données (champ affichageId valorisé) - cas de la modification de l'intitulé - 
+    * l'id de l'affichage trouvé en base de données sera comparé avec celui de l'affichage en paramètre
+    * pour ne renvoyer true que si les 2 sont différents.
+    *
+    * @param affichage L'affichage duquel sera récupérer l'intitulé pour vérifier l'existence d'un doublon.
+    * @param plateforme La plateforme à prendre en compte pour le contrôle de l'existence du doublon
+    * @return true / false.
+    */
+   boolean isDoublonIntituleInPlateformeManager(Affichage affichage, Plateforme plateforme);
 }

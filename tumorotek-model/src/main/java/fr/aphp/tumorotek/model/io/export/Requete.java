@@ -77,7 +77,9 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
       @NamedQuery(name = "Requete.findByIntitule", query = "SELECT r FROM Requete r " + "WHERE r.intitule like ?1"),
       @NamedQuery(name = "Requete.findByIntituleUtilisateur",
          query = "SELECT r FROM Requete r " + "WHERE r.intitule like ?1 " + "AND r.createur = ?2"),
-      @NamedQuery(name = "Requete.findByExcludedId", query = "SELECT r FROM Requete r " + "WHERE r.requeteId != ?1")})
+      @NamedQuery(name = "Requete.findByExcludedId", query = "SELECT r FROM Requete r " + "WHERE r.requeteId != ?1"),
+      @NamedQuery(name = "Requete.findByIntituleInPlateforme",
+                   query="SELECT r FROM Requete r WHERE r.intitule = ?1 AND r.banque.plateforme = ?2")})
 public class Requete implements TKdataObject, Comparable<Requete>
 {
 

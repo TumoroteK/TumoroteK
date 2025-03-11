@@ -38,6 +38,7 @@ package fr.aphp.tumorotek.manager.io.export;
 import java.util.List;
 
 import fr.aphp.tumorotek.model.contexte.Banque;
+import fr.aphp.tumorotek.model.contexte.Plateforme;
 import fr.aphp.tumorotek.model.io.export.Affichage;
 import fr.aphp.tumorotek.model.io.export.Recherche;
 import fr.aphp.tumorotek.model.io.export.Requete;
@@ -189,4 +190,26 @@ public interface RechercheManager
     * @return la liste de tous les Recherches des Banques.
     */
    List<Recherche> findByBanqueInLIstManager(List<Banque> banques);
+
+
+   /**
+    * Recherche les Recherches par intitulé dans une plateforme spécifique.
+    *
+    * @param intitule L'intitulé de la Recherche à rechercher
+    * @param plateforme La plateforme dans laquelle rechercher
+    * @return la liste des Recherches correspondantes
+    */
+   List<Recherche> findByIntituleInPlateformeManager(String intitule, Plateforme plateforme);
+
+   /**
+    * Vérifie si une recherche avec le même intitulé existe déjà dans la plateforme donnée.
+    * Si la recherche passé en paramètre existe déjà en base de données (champ rechercheId valorisé) - cas de la modification de l'intitulé - 
+    * l'id de la recherche trouvée en base de données sera comparé avec celui de la recherche en paramètre
+    * pour ne renvoyer true que si les 2 sont différents.
+    *
+    * @param recherche La recherche de laquelle sera récupéré l'intitulé pour vérifier l'existence d'un doublon.
+    * @param plateforme La plateforme dans laquelle vérifier l'unicité de l'intitulé.
+    * @return true / false.
+    */
+    boolean isDoublonIntituleInPlateformeManager(Recherche recherche, Plateforme plateforme);
 }

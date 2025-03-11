@@ -36,9 +36,11 @@
 package fr.aphp.tumorotek.manager.impl.io.export;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
+import fr.aphp.tumorotek.model.contexte.Plateforme;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.validation.Validator;
@@ -169,7 +171,7 @@ public class AffichageManagerImpl implements AffichageManager
       //on modifie l'intitule de l'affichage
       affichage.setIntitule(intitule);
       //On met a jour l'affichage
-      if(findDoublonManager(affichage)){
+      if(isDoublonIntituleInPlateformeManager(affichage, affichage.getBanque().getPlateforme())){
          log.warn("Doublon lors de la modification de l'objet Affichage : {}",  affichage);
          throw new DoublonFoundException("Affichage", "modification");
       }
@@ -208,7 +210,7 @@ public class AffichageManagerImpl implements AffichageManager
       a.setBanque(banque);
 
       // On vérifie que l'affichage est bien enregistré
-      if(findDoublonManager(a)){
+      if(isDoublonIntituleInPlateformeManager(a, banque.getPlateforme())){
          log.warn("Doublon lors de la modification de l'objet Affichage : {}",  a);
          throw new DoublonFoundException("Affichage", "modification");
       }
@@ -252,14 +254,15 @@ public class AffichageManagerImpl implements AffichageManager
          log.warn("Objet obligatoire Banque manquant lors de la création d'un objet Affichage");
          throw new RequiredObjectIsNullException("Affichage", "création", "Banque");
       }
-      // On met l'utilisateur dans l'affichage
-      affichage.setBanque(banque);
-
-      // On enregistre l'affichage
-      if(findDoublonManager(affichage)){
+      // On vérifie si un affichage avec le même intitulé existe déjà
+      if(isDoublonIntituleInPlateformeManager(affichage, banque.getPlateforme())){
          log.warn("Doublon lors de la creation de l'objet Affichage : {}",  affichage);
          throw new DoublonFoundException("Affichage", "creation");
       }
+      // On met l'utilisateur dans l'affichage
+      affichage.setBanque(banque);
+      
+      // On enregistre l'affichage
       BeanValidator.validateObject(affichage, new Validator[] {affichageValidator});
       affichageDao.createObject(affichage);
 
@@ -288,7 +291,7 @@ public class AffichageManagerImpl implements AffichageManager
          throw new SearchedObjectIdNotExistException("Affichage", affichage.getAffichageId());
       }
       //On met à jour l'affichage
-      if(findDoublonManager(affichage)){
+      if(isDoublonIntituleInPlateformeManager(affichage, affichage.getBanque().getPlateforme())){
          log.warn("Doublon lors de la modification de l'objet Affichage : {}",  affichage);
          throw new DoublonFoundException("Affichage", "modification");
       }
@@ -508,24 +511,7 @@ public class AffichageManagerImpl implements AffichageManager
       }
    }
 
-   /**
-    * Recherche les doublons d'un Affichage passé en paramètre.
-    * @param affichage un Affichage pour lequel on cherche des doublons.
-    * @return True s'il existe des doublons.
-    */
-   @Override
-   public Boolean findDoublonManager(final Affichage affichage){
-      //On vérifie que l'affichage n'est pas nul
-      if(affichage == null){
-         log.warn("Objet obligatoire Affichage manquant lors de la recherche de doublon d'un objet Affichage");
-         throw new RequiredObjectIsNullException("Affichage", "recherche de doublon", "Affichage");
-      }
-      if(affichage.getAffichageId() == null){
-         return affichageDao.findAll().contains(affichage);
-      }
-      return affichageDao.findByExcludedId(affichage.getAffichageId()).contains(affichage);
 
-   }
 
    /**
     * Méthode qui permet de vérifier que 2 Affichages sont des copies.
@@ -675,4 +661,35 @@ public class AffichageManagerImpl implements AffichageManager
       }
       return new ArrayList<>();
    }
+
+   @Override
+   public List<Affichage> findByIntituleInPlateformeManager(String intitule, Plateforme plateforme) {
+      if (intitule == null || plateforme == null) {
+         return Collections.emptyList();
+      }
+      return affichageDao.findByIntituleInPlateforme(intitule, plateforme);
+   }
+
+   //Depuis le ticket TK-524, cette méthode remplace la méthode findDoublonManager :
+   //le contrôle de "doublon" est désormais fait sur l'intitulé uniquement pour une plateforme donnée. 
+   //Le nom de la méthode a été modifié pour mieux refléter ce qu'elle fait.
+   @Override
+   public boolean isDoublonIntituleInPlateformeManager(Affichage affichage, Plateforme plateforme) {
+      List<Affichage> intitulesExistants = findByIntituleInPlateformeManager(affichage.getIntitule(), plateforme);
+      
+      // Si la liste n'est pas vide, cela signifie que l'intitulé existe déjà
+      if(!intitulesExistants.isEmpty()) {
+         // Si l'affichage n'a pas d'ID, cela signifie que c'est un nouvel ajout
+         if(affichage.getAffichageId() == null)  {
+            return true;
+         }
+         // Sinon, on modifie l'objet : vérifier si l'intitulé appartient à un **autre** Affichage
+         for(final Affichage affichageCourant : intitulesExistants) {
+            if(!affichage.getAffichageId().equals(affichageCourant.getAffichageId())) return true;
+         }
+      }
+      return false;
+   }
+
+
 }

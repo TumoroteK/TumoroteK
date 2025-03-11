@@ -81,7 +81,8 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
       @NamedQuery(name = "Affichage.findByIntitule", query = "SELECT a FROM Affichage a " + "WHERE a.intitule like ?1"),
       @NamedQuery(name = "Affichage.findByIntituleUtilisateur",
          query = "SELECT a FROM Affichage a " + "WHERE a.intitule like ?1 " + "AND a.createur = ?2"),
-      @NamedQuery(name = "Affichage.findByExcludedId", query = "SELECT a FROM Affichage a " + "WHERE a.affichageId != ?1")})
+      @NamedQuery(name = "Affichage.findByIntituleInPlateforme",
+                   query="SELECT a FROM Affichage a WHERE a.intitule = ?1 AND a.banque.plateforme = ?2")})
 public class Affichage implements TKdataObject, Comparable<Affichage>
 {
 
