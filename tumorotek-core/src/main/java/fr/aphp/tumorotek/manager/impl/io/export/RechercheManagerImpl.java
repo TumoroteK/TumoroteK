@@ -202,6 +202,13 @@ public class RechercheManagerImpl implements RechercheManager
       return rechercheDao.findAll();
    }
 
+   //A brancher sur le front (TK-641)
+   //NB : la modification en base de l'intitulé est faite
+   //par l'appel de l'update global sur l'objet donc
+   //il vaut mieux le récupérer avant pour ne pas écraser
+   //des modifications faites entre temps par un autre utilisateur
+   //Sinon, il faut écrire une requête hql pour mettre à jour uniquement
+   //ce champ. Ceci serai la méthode la plus optimisée.
    /**
     * Renomme une Recherche (change son intitulé).
     *
@@ -217,18 +224,19 @@ public class RechercheManagerImpl implements RechercheManager
          log.warn("Objet obligatoire Recherche manquant lors du renommage d'un objet Recherche");
          throw new RequiredObjectIsNullException("Recherche", "modification", "Recherche");
       }
-      if(findByIdManager(recherche.getRechercheId()) == null){
+      Recherche refreshedRecherche = findByIdManager(recherche.getRechercheId());
+      if(refreshedRecherche == null){
          throw new SearchedObjectIdNotExistException("Recherche", recherche.getRechercheId());
       }
       // on modifie l'intitule
-      recherche.setIntitule(intitule);
+      refreshedRecherche.setIntitule(intitule);
       // On met a jour la recherche
-      if(isDoublonIntituleInPlateformeManager(recherche, recherche.getBanques().get(0).getPlateforme())){//une recherche est rattachée à tort à plusieurs banques :-(
+      if(isDoublonIntituleInPlateformeManager(refreshedRecherche, refreshedRecherche.getBanques().get(0).getPlateforme())){//une recherche est rattachée à tort à plusieurs banques :-(
          log.warn("Doublon lors de la modification de l'objet Recherche : {}",  recherche);
          throw new DoublonFoundException("Recherche", "modification");
       }
-      BeanValidator.validateObject(recherche, new Validator[] {rechercheValidator});
-      rechercheDao.updateObject(recherche);
+      BeanValidator.validateObject(refreshedRecherche, new Validator[] {rechercheValidator});
+      rechercheDao.updateObject(refreshedRecherche);
    }
 
    /**

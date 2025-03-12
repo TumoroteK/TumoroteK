@@ -40,7 +40,6 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import fr.aphp.tumorotek.model.contexte.Plateforme;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.validation.Validator;
@@ -57,6 +56,7 @@ import fr.aphp.tumorotek.manager.io.export.RequeteManager;
 import fr.aphp.tumorotek.manager.validation.BeanValidator;
 import fr.aphp.tumorotek.manager.validation.io.export.RequeteValidator;
 import fr.aphp.tumorotek.model.contexte.Banque;
+import fr.aphp.tumorotek.model.contexte.Plateforme;
 import fr.aphp.tumorotek.model.io.export.Groupement;
 import fr.aphp.tumorotek.model.io.export.Requete;
 import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
@@ -156,6 +156,13 @@ public class RequeteManagerImpl implements RequeteManager
       return requeteDao.findAll();
    }
 
+   //A brancher sur le front (TK-641)
+   //NB : la modification en base de l'intitulé est faite
+   //par l'appel de l'update global sur l'objet donc
+   //il vaut mieux le récupérer avant pour ne pas écraser
+   //des modifications faites entre temps par un autre utilisateur
+   //Sinon, il faut écrire une requête hql pour mettre à jour uniquement
+   //ce champ. Ceci serai la méthode la plus optimisée.
    /**
     * Renomme une Requête (change son intitulé).
     * @param requete Requête à renommer.
@@ -168,18 +175,19 @@ public class RequeteManagerImpl implements RequeteManager
          log.warn("Objet obligatoire Requete manquant lors du renommage d'un objet Requete");
          throw new RequiredObjectIsNullException("Requete", "modification", "Requete");
       }
-      if(findByIdManager(requete.getRequeteId()) == null){
-         throw new SearchedObjectIdNotExistException("Requete", requete.getRequeteId());
+      Requete refreshedRequete = findByIdManager(requete.getRequeteId());
+      if(refreshedRequete == null){
+         throw new SearchedObjectIdNotExistException("Requete", refreshedRequete.getRequeteId());
       }else{
          //on modifie l'intitule
-         requete.setIntitule(intitule);
+         refreshedRequete.setIntitule(intitule);
          //On met a jour la requete
-         if(isDoublonIntituleInPlateformeManager(requete, requete.getBanque().getPlateforme())){
+         if(isDoublonIntituleInPlateformeManager(refreshedRequete, refreshedRequete.getBanque().getPlateforme())){
             log.warn("Doublon lors de la modification de l'objet Requete : {}",  requete);
             throw new DoublonFoundException("Requete", "modification");
          }else{
-            BeanValidator.validateObject(requete, new Validator[] {requeteValidator});
-            requeteDao.updateObject(requete);
+            BeanValidator.validateObject(refreshedRequete, new Validator[] {requeteValidator});
+            requeteDao.updateObject(refreshedRequete);
          }
       }
    }

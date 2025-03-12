@@ -58,6 +58,7 @@ import fr.aphp.tumorotek.manager.validation.BeanValidator;
 import fr.aphp.tumorotek.manager.validation.io.export.AffichageValidator;
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.io.export.Affichage;
+import fr.aphp.tumorotek.model.io.export.Recherche;
 import fr.aphp.tumorotek.model.io.export.Resultat;
 import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
 
@@ -153,6 +154,13 @@ public class AffichageManagerImpl implements AffichageManager
       return affichageDao.findAll();
    }
 
+   //A brancher sur le front (TK-641)
+   //NB : la modification en base de l'intitulé est faite
+   //par l'appel de l'update global sur l'objet donc
+   //il vaut mieux le récupérer avant pour ne pas écraser
+   //des modifications faites entre temps par un autre utilisateur
+   //Sinon, il faut écrire une requête hql pour mettre à jour uniquement
+   //ce champ. Ceci serai la méthode la plus optimisée.
    /**
     * Renomme un Affichage (change son intitulé).
     * @param affichage Affichage à renommer.
@@ -165,19 +173,20 @@ public class AffichageManagerImpl implements AffichageManager
          log.warn("Objet obligatoire Affichage manquant lors du renommage d'un objet Affichage");
          throw new RequiredObjectIsNullException("Affichage", "modification", "Affichage");
       }
-      if(findByIdManager(affichage.getAffichageId()) == null){
+      Affichage refreshedAffichage = findByIdManager(affichage.getAffichageId());
+      if(refreshedAffichage == null){
          throw new SearchedObjectIdNotExistException("Affichage", affichage.getAffichageId());
       }
       //on modifie l'intitule de l'affichage
-      affichage.setIntitule(intitule);
+      refreshedAffichage.setIntitule(intitule);
       //On met a jour l'affichage
-      if(isDoublonIntituleInPlateformeManager(affichage, affichage.getBanque().getPlateforme())){
+      if(isDoublonIntituleInPlateformeManager(refreshedAffichage, refreshedAffichage.getBanque().getPlateforme())){
          log.warn("Doublon lors de la modification de l'objet Affichage : {}",  affichage);
          throw new DoublonFoundException("Affichage", "modification");
       }
-      BeanValidator.validateObject(affichage, new Validator[] {affichageValidator});
-      affichageDao.updateObject(affichage);
-      log.info("Modification de l'objet Affichage : {}",  affichage);
+      BeanValidator.validateObject(refreshedAffichage, new Validator[] {affichageValidator});
+      affichageDao.updateObject(refreshedAffichage);
+      log.info("Modification de l'objet Affichage : {}",  refreshedAffichage);
    }
 
    /**
