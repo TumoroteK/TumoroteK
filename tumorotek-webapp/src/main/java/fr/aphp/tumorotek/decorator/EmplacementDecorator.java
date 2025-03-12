@@ -35,6 +35,8 @@
  **/
 package fr.aphp.tumorotek.decorator;
 
+import org.zkoss.util.resource.Labels;
+
 import fr.aphp.tumorotek.action.ManagerLocator;
 import fr.aphp.tumorotek.model.TKStockableObject;
 import fr.aphp.tumorotek.model.coeur.ObjetStatut;
@@ -246,6 +248,14 @@ public class EmplacementDecorator
       this.terminale = t;
    }
 
+   /**
+    * retourne le libellé internationalisé associé à l'entité contenu à l'emplacement
+    * 
+    */
+   public String getTypeEntite() {
+      return Labels.getLabel(new StringBuilder("Entite.").append(getEmplacement().getEntite().getNom()).toString());
+   }
+   
    public String getType(){
       return type;
    }
