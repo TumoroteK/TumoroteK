@@ -56,7 +56,7 @@
 						<hlayout sclass="z-valign-middle">
 							<textbox id="numeroBox" 
 								value="@{fwinCessionEdit$composer.cession.numero,
-									save-when='validate.onClick, create.onClick, self.onBlur'
+									save-when='validate.onClick, create.onClick'
 									load-after='numerotation.onClick'}" 
 								width="200px" 
 								constraint="${fwinCessionEdit$composer.numeroConstraint}"
