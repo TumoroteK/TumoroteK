@@ -303,6 +303,8 @@ public class RechercheManagerImpl implements RechercheManager
    //		return r;
    //	}
 
+   //code à revoir (TK-638), la liste de banques passées en paramètre est une erreur de conception au niveau de l'objet Recherche : 
+   //le fait de transmettre la banque courante suffit 
    /**
     * Créé une nouvelle Recherche en BDD.
     *

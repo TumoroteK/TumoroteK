@@ -164,6 +164,9 @@ public class Recherche implements TKdataObject, Comparable<Recherche>
       this.requete = req;
    }
 
+   //Ce @ManyToMany est une erreur de conception car la banque concernée est celle à laquelle la requête est rattachée
+   //et non celles sur lesquelles la recherche peut être exécutée. Celles-ci ne sont pas stockées en base...
+   //à revoir (TK-638)
    @ManyToMany(targetEntity = Banque.class)
    @JoinTable(name = "RECHERCHE_BANQUE", joinColumns = @JoinColumn(name = "RECHERCHE_ID"),
       inverseJoinColumns = @JoinColumn(name = "BANQUE_ID"))

@@ -39,7 +39,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import fr.aphp.tumorotek.model.contexte.Plateforme;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.util.resource.Labels;
@@ -435,10 +434,9 @@ public class FicheAffichage extends AbstractFicheCombineController
    }
 
 
-
+   //TK-524 :
    public void onBlur$intituleBox() {
       String intitule = intituleBox.getValue();
-      Plateforme currentPlateforme = SessionUtils.getCurrentPlateforme();
 
       // Vérifier si on est en mode création ou modification
       boolean isCreation = (affichage == null || affichage.getAffichageId() == null);
@@ -447,13 +445,11 @@ public class FicheAffichage extends AbstractFicheCombineController
       // - En mode création, toujours vérifier l'unicité
       // - En mode modification, vérifier l'unicité seulement si l'intitulé a été modifié
       if (!intitule.trim().isEmpty() && (isCreation || !intitule.equals(affichage.getIntitule()))) {
-         List<Affichage> intituleExists = ManagerLocator.getAffichageManager()
-                 .findByIntituleInPlateformeManager(intitule, currentPlateforme);
-         if (!intituleExists.isEmpty()) {
-            throw new WrongValueException(
-                    intituleBox,
-                    Labels.getLabel("error.validation.title.duplicate")
-            );
+         List<Affichage> affichageAvecIntituleExists = ManagerLocator.getAffichageManager()
+                 .findByIntituleInPlateformeManager(intitule, SessionUtils.getCurrentPlateforme());
+         if (!affichageAvecIntituleExists.isEmpty()) {
+            final String banque = affichageAvecIntituleExists.get(0).getBanque().getNom();
+            throw new WrongValueException(intituleBox, Labels.getLabel("onglet.requete.doublon.error.intitule", new String[] {intitule, banque}));
          }
       }
    }
