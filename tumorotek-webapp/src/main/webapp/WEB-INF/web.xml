@@ -14,7 +14,6 @@
     <context-param>
         <param-name>contextConfigLocation</param-name>
         <param-value>
-        	classpath:applicationContext.xml
             classpath:applicationContextDaoBase.xml
             classpath:applicationContextManagerBase.xml
             <!-- configuration standard avec applicationContext-security.xml, pour intégrer TK dans un portail avec un SSO, commenter la ligne suivante et décommenter classpath:applicationContext-securityCas.xml
