@@ -1977,7 +1977,7 @@ public class EchantillonManagerImpl implements EchantillonManager
          echantillon.setBanque(banque);
       }else if(echantillon.getBanque() == null){
          log.warn("Objet obligatoire Banque manquant lors de la {} d'un Echantillon", operation);
-         throw new RequiredObjectIsNullException("Prelevement", operation, "Banque");
+         throw new RequiredObjectIsNullException("Echantillon", operation, "Banque");
       }
 
       // Gatsbi required
