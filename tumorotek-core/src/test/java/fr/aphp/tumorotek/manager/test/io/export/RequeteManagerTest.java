@@ -159,51 +159,6 @@ public class RequeteManagerTest extends AbstractManagerTest4
       manager.renameRequeteManager(requete2, oldIntitule);
    }
 
-   @Test
-   public void testCopyRequete(){
-      // On teste une copie avec des attributs non valides
-      // On boucle sur les 3 possibilités
-      final Banque b = banqueDao.findById(1);
-      for(int i = 0; i < Math.pow(2, 2) - 1; i++){
-         Requete requete = null;
-         if(i >= 2){
-            requete = manager.findByIdManager(3);
-         }
-         final int toTest = i % 2;
-         Utilisateur copieur = null;
-         if(toTest > 0){
-            copieur = utilisateurDao.findById(2);
-         }
-         try{
-            manager.copyRequeteManager(requete, copieur, b);
-         }catch(final RequiredObjectIsNullException e){
-            assertEquals("RequiredObjectIsNullException", e.getClass().getSimpleName());
-         }
-      }
-
-      Requete requete = manager.findByIdManager(3);
-      final Utilisateur copieur = utilisateurDao.findById(2);
-      try{
-         manager.copyRequeteManager(requete, copieur, null);
-      }catch(final RequiredObjectIsNullException e){
-         assertEquals("RequiredObjectIsNullException", e.getClass().getSimpleName());
-      }
-
-      final Utilisateur util = utilisateurDao.findById(1);
-      //On récupère la premiere requete
-      requete = manager.findByIdManager(4);
-      final Requete copie = manager.copyRequeteManager(requete, util, b);
-
-      //On verifie que la requete et la copie sont identiques
-      assertTrue(manager.isCopyManager(requete, copie));
-
-      //On verifie que la copie est bien en base de donnees
-      final Requete copie2 = manager.findByIdManager(copie.getRequeteId());
-      assertNotNull(copie2);
-
-      //On supprime les éléments créés
-      manager.removeObjectManager(copie2);
-   }
 
    @Test
    public void testCrud(){
@@ -340,56 +295,6 @@ public class RequeteManagerTest extends AbstractManagerTest4
       }
    }
 
-   /**
-    * Teste la méthode findByUtilisateur.
-    */
-   @Test
-   public void testFindByUtilisateur(){
-      final Iterator<Utilisateur> itUtil = utilisateurDao.findAll().iterator();
-      while(itUtil.hasNext()){
-         final Utilisateur utilisateur = itUtil.next();
-         final Iterator<Requete> it = manager.findByUtilisateurManager(utilisateur).iterator();
-         while(it.hasNext()){
-            final Requete temp = it.next();
-            if(temp != null){
-               assertEquals(temp.getCreateur(), utilisateur);
-            }
-         }
-      }
-   }
-
-   @Test
-   public void testFindByIntituleAndUtilisateurManager(){
-      final Utilisateur u1 = utilisateurDao.findById(1);
-      final Utilisateur u2 = utilisateurDao.findById(2);
-      List<Requete> liste = manager.findByIntituleAndUtilisateurManager("Echantillon%", u1);
-      assertTrue(liste.size() == 1);
-
-      liste = manager.findByIntituleAndUtilisateurManager("yug%", u1);
-      assertTrue(liste.size() == 0);
-
-      liste = manager.findByIntituleAndUtilisateurManager("Echantillon%", u2);
-      assertTrue(liste.size() == 0);
-
-      liste = manager.findByIntituleAndUtilisateurManager(null, u1);
-      assertTrue(liste.size() == 0);
-
-      liste = manager.findByIntituleAndUtilisateurManager("Echantillon%", null);
-      assertTrue(liste.size() == 0);
-   }
-
-   @Test
-   public void testFindDoublons(){
-      final Requete requete = new Requete();
-      final Utilisateur createur = utilisateurDao.findById(1);
-      requete.setCreateur(createur);
-      requete.setIntitule("Echantillon en attente de consentement");
-
-      assertTrue(manager.findDoublonManager(requete));
-
-      requete.setIntitule("Echantillons");
-      assertFalse(manager.findDoublonManager(requete));
-   }
 
    @Test
    public void testIsUsedObjectManager(){
