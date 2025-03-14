@@ -124,17 +124,6 @@ public class GroupementManagerImpl implements GroupementManager
       this.groupementValidator = validator;
    }
 
-   /**
-    * Copie un Groupement en BDD.
-    *
-    * @param groupement
-    *            Groupement à copier.
-    * @return le Groupement copié.
-    */
-   @Override
-   public Groupement copyGroupementManager(final Groupement groupement){
-      return copyGroupementWithParentManager(groupement, null);
-   }
 
    /**
     * Créé un Groupement en BDD.
@@ -351,8 +340,7 @@ public class GroupementManagerImpl implements GroupementManager
    /**
     * Recherche un Groupement dont l'identifiant est passé en paramètre.
     *
-    * @param groupementId
-    *            Identifiant du Groupement que l'on recherche.
+    * @param id: Identifiant du Groupement que l'on recherche.
     * @return un Groupement.
     */
    @Override
@@ -375,130 +363,6 @@ public class GroupementManagerImpl implements GroupementManager
       return groupementDao.findAll();
    }
 
-   /**
-    * Méthode qui permet de vérifier que 2 Groupements sont des copies (et que
-    * leurs enfants aussi).
-    *
-    * @param g
-    *            Groupement premier Groupement à vérifier.
-    * @param copie
-    *            deuxième Groupement à vérifier.
-    * @return true si les 2 Groupements sont des copies, false sinon.
-    */
-   @Override
-   public Boolean isCopyManager(final Groupement g, final Groupement copie){
-      if(copie == null){
-         return false;
-      }
-      boolean ok = false;
-      if(g.getOperateur() == null){
-         if(copie.getOperateur() == null){
-            if(g.getCritere1() == null){
-               if(copie.getCritere1() == null){
-                  if(g.getCritere2() == null){
-                     ok = (copie.getCritere2() == null);
-                  }else{
-                     ok = (g.getCritere2().equals(copie.getCritere2()));
-                  }
-               }else{
-                  ok = false;
-               }
-            }else if(g.getCritere1().equals(copie.getCritere1())){
-               if(g.getCritere2() == null){
-                  ok = (copie.getCritere2() == null);
-               }else{
-                  ok = (g.getCritere2().equals(copie.getCritere2()));
-               }
-            }else{
-               ok = false;
-            }
-         }else{
-            ok = false;
-         }
-      }else if(g.getOperateur().equals(copie.getOperateur())){
-         if(g.getCritere1() == null){
-            if(copie.getCritere1() == null){
-               if(g.getCritere2() == null){
-                  ok = (copie.getCritere2() == null);
-               }else{
-                  ok = (g.getCritere2().equals(copie.getCritere2()));
-               }
-            }else{
-               ok = false;
-            }
-         }else if(g.getCritere1().equals(copie.getCritere1())){
-            if(g.getCritere2() == null){
-               ok = (copie.getCritere2() == null);
-            }else{
-               ok = (g.getCritere2().equals(copie.getCritere2()));
-            }
-         }else{
-            ok = false;
-         }
-      }else{
-         ok = false;
-      }
-      if(!ok){
-         return false;
-      }
 
-      // On vérifie que les enfants sont des copies
-      final Iterator<Groupement> it = findEnfantsManager(g).iterator();
-      while(it.hasNext()){
-         boolean found = false;
-         final Groupement temp = it.next();
-         final Iterator<Groupement> it2 = findEnfantsManager(g).iterator();
-         while(it2.hasNext()){
-            final Groupement copyTemp = it2.next();
-            if(isCopyManager(temp, copyTemp)){
-               found = true;
-               break;
-            }
-         }
-         if(!found){
-            ok = false;
-            break;
-         }
-      }
-      return ok;
-   }
 
-   /**
-    * Copie un Groupement en BDD.
-    *
-    * @param groupement
-    *            Groupement à copier.
-    * @param parent
-    *            Groupement parent de celui à copier.
-    * @return le Groupement copié.
-    */
-   private Groupement copyGroupementWithParentManager(final Groupement groupement, final Groupement parent){
-      Groupement temp = null;
-      // On vérifie que le groupement n'est pas nul
-      if(groupement == null){
-         log.warn("Objet obligatoire Groupement manquant lors de la copie d'un objet Groupement");
-         throw new RequiredObjectIsNullException("Groupement", "copie", "Groupement");
-      }
-      BeanValidator.validateObject(groupement, new Validator[] {groupementValidator});
-      // On copie les 2 criteres
-      Critere critere1 = null;
-      if(groupement.getCritere1() != null){
-         critere1 = critereManager.copyCritereManager(groupement.getCritere1());
-      }
-      Critere critere2 = null;
-      if(groupement.getCritere2() != null){
-         critere2 = critereManager.copyCritereManager(groupement.getCritere2());
-      }
-      temp = new Groupement(critere1, critere2, groupement.getOperateur(), parent);
-      BeanValidator.validateObject(temp, new Validator[] {groupementValidator});
-      groupementDao.createObject(temp);
-
-      // On copie ses enfants
-      final Iterator<Groupement> it = findEnfantsManager(temp).iterator();
-      while(it.hasNext()){
-         final Groupement enfTemp = it.next();
-         copyGroupementWithParentManager(enfTemp, temp);
-      }
-      return temp;
-   }
 }
