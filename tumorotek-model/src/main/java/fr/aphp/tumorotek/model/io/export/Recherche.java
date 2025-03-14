@@ -67,13 +67,9 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
 @Entity
 @Table(name = "RECHERCHE")
 @NamedQueries(
-   value = {@NamedQuery(name = "Recherche.findByUtilisateur", query = "SELECT r FROM Recherche r WHERE " + "r.createur = ?1"),
-      @NamedQuery(name = "Recherche.findByExcludedId", query = "SELECT r FROM Recherche r " + "WHERE r.rechercheId != ?1"),
+   value = {
       @NamedQuery(name = "Recherche.findByAffichage", query = "SELECT r FROM Recherche r " + "WHERE r.affichage = ?1"),
       @NamedQuery(name = "Recherche.findByRequete", query = "SELECT r FROM Recherche r " + "WHERE r.requete = ?1"),
-      @NamedQuery(name = "Recherche.findByIntituleUtilisateur",
-         query = "SELECT r FROM Recherche r " + "WHERE r.intitule like ?1 " + "AND r.createur = ?2"),
-      @NamedQuery(name = "Recherche.findByIntitule", query = "SELECT r FROM Recherche r " + "WHERE r.intitule like ?1"),
       @NamedQuery(name = "Recherche.findByBanqueId",
          query = "SELECT r FROM Recherche r " + "left join r.banques b " + "WHERE b.banqueId = ?1"),
       @NamedQuery(name = "Recherche.findByBanqueIdinList",
