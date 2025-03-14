@@ -153,7 +153,7 @@ public class RechercheDaoTest extends AbstractDaoTest
 
 
    /**
-   * Test l'appel de la méthode findByExcludedId().
+   * Test l'appel de la méthode findByRequete().
    */
 
 

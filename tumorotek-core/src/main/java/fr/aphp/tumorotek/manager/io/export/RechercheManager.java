@@ -76,15 +76,6 @@ public interface RechercheManager
     */
    void renameRechercheManager(Recherche recherche, String intitule);
 
-   //	/**
-   //	 * Copie une Recherche en BDD.
-   //	 * @param recherche Recherche à copier.
-   //	 * @param copieur Utilisateur qui copie la Recherche.
-   //	 * @return la Recherche copiée.
-   //	 */
-   //	Recherche copyRechercheManager(Recherche recherche, Utilisateur copieur,
-   //			Banque banque);
-
    /**
     * Créé une nouvelle Recherche en BDD.
     * @param recherche Recherche à créer.
@@ -114,31 +105,6 @@ public interface RechercheManager
    void removeObjectManager(Recherche recherche);
 
    /**
-    * Recherche les Recherches dont l'utilisateur créateur est passé en
-    * paramètre.
-    * @param util Utilisateur qui à créé les Recherches recherchées.
-    * @return la liste de toutes les Recherches de l'Utilisateur.
-    */
-   List<Recherche> findByUtilisateurManager(Utilisateur util);
-
-   /**
-    * Recherche les Recherches dont l'intitulé est passé en paramètre.
-    *
-    * @param intitule Intitulé des Recherches recherchées.
-    * @return la liste de toutes les Recherches de l'intitulé.
-    */
-   List<Recherche> findByIntituleManager(String intitule);
-
-   /**
-    * Recherche les Recherches dont l'intitulé et l'utilisateur
-    * sont passés en paramètre.
-    * @param intitilé des Recherches recherchés.
-    * @param util Utilisateur qui à créé les Recherches recherchés.
-    * @return la liste de toutes les Recherches de l'intitulé.
-    */
-   List<Recherche> findByIntituleAndUtilisateurManager(String intitule, Utilisateur util);
-
-   /**
     * Recherche les Recherches dont la Requête est passée en paramètre.
     *
     * @param requete Requete des Recherches recherchées.
@@ -154,20 +120,6 @@ public interface RechercheManager
     */
    List<Recherche> findByAffichageManager(Affichage affichage);
 
-   /**
-    * Recherche les doublons d'un Affichage passé en paramètre.
-    * @param affichage un Affichage pour lequel on cherche des doublons.
-    * @return True s'il existe des doublons.
-    */
-   Boolean findDoublonManager(Recherche recherche);
-
-   /**
-    * Méthode qui permet de vérifier que 2 Recherches sont des copies.
-    * @param r Recherche première Recherche à vérifier.
-    * @param copie deuxième Recherche à vérifier.
-    * @return true si les 2 Recherches sont des copies, false sinon.
-    */
-   Boolean isCopyManager(Recherche r, Recherche copie);
 
    /**
     * Récupère les banques d'une Recherche.
