@@ -5,7 +5,7 @@
     http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
     http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.0.xsd">
 
-	<bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer" depends-on="tkPropertiesInit">
+	<bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
 		<property name="order" value="1"/>
 		<property name="valueSeparator" value="#"/>
 		<property name="ignoreUnresolvablePlaceholders" value="true"/>
