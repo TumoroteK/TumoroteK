@@ -2666,19 +2666,26 @@ public class FicheCessionEdit extends AbstractFicheEditController
 		}
 	}
 
+	/**
+	 * Méthode appelée lorsque le champ 'numeroBox' perd le focus.
+	 * Vérifie si le numéro de cession a été modifié et s'il existe des doublons de ce numéro
+	 * dans la plateforme actuelle. Si des doublons sont trouvés, un message d'erreur est affiché.
+	 *
+	 * @throws WrongValueException Si un doublon du numéro de cession est trouvé dans la plateforme.
+	 */
 	public void onBlur$numeroBox(){
 
 		final String numCession = numeroBox.getValue();
-
-		final List<Cession> doublons = ManagerLocator.getManager(CessionManager.class)
-				.findByNumeroInPlateformeManager(numCession, SessionUtils.getCurrentPlateforme());
-
-		if(!doublons.isEmpty()){
-			final String banques =
-					doublons.stream().map(Cession::getBanque).distinct().map(Banque::getNom).collect(Collectors.joining(", "));
-			throw new WrongValueException(numeroBox, Labels.getLabel("cession.doublon.error.num", new String[] {numCession, banques}));
+		// TK-531 : Empêcher l'apparition d'un message de doublon intempestif en mode modification
+		if (!numCession.equals(cession.getNumero())){
+			final List<Cession> doublons = ManagerLocator.getManager(CessionManager.class)
+					.findByNumeroInPlateformeManager(numCession, SessionUtils.getCurrentPlateforme());
+			if(!doublons.isEmpty()){
+				final String banques =
+						doublons.stream().map(Cession::getBanque).distinct().map(Banque::getNom).collect(Collectors.joining(", "));
+				throw new WrongValueException(numeroBox, Labels.getLabel("cession.doublon.error.num", new String[] {numCession, banques}));
+			}
 		}
-
 	}
 
 	/**
