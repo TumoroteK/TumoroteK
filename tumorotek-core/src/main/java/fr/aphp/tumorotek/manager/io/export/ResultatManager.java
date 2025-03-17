@@ -66,12 +66,6 @@ public interface ResultatManager
     */
    List<Resultat> findAllObjectsManager();
 
-   /**
-    * Copie un Résultat en BDD.
-    * @param resultat Résultat à copier.
-    * @return le Résultat copié.
-    */
-   Resultat copyResultatManager(Resultat resultat, Affichage affichage);
 
    /**
     * Créé un Résultat en BDD.

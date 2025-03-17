@@ -76,14 +76,6 @@ public interface AffichageManager
    void renameAffichageManager(Affichage affichage, String intitule);
 
    /**
-    * Copie un Affichage en BDD.
-    * @param affichage Affichage à copier.
-    * @param copieur Utilisateur qui copie l'Affichage.
-    * @return l'Affichage copié.
-    */
-   Affichage copyAffichageManager(Affichage affichage, Utilisateur copieur, Banque banque);
-
-   /**
     * Créé un nouvel Affichage en BDD.
     * @param affichage Affichage à créer.
     * @param resultats Liste de Resultats à associer.
@@ -105,28 +97,6 @@ public interface AffichageManager
    void removeObjectManager(Affichage affichage);
 
    /**
-    * Associe un nouveau Résultat à un Affichage en BDD.
-    * @param affichage Affichage dont on veut associer le Résultat.
-    * @param resultat Résultat à créer puis à associer.
-    */
-   void addResultatManager(Affichage affichage, Resultat resultat);
-
-   /**
-    * Dissocie un Résultat d'un Affichage puis le supprime en BDD.
-    * @param affichage Affichage dont on veut dissocier le Résultat.
-    * @param resultat Résultat à dissocier puis à supprimer.
-    */
-   void removeResultatManager(Affichage affichage, Resultat resultat);
-
-   /**
-    * Recherche les Affichages dont l'utilisateur créateur est passé en
-    * paramètre.
-    * @param util Utilisateur qui à créé les Affichages recherchés.
-    * @return la liste de tous les Affichages de l'Utilisateur.
-    */
-   List<Affichage> findByUtilisateurManager(Utilisateur util);
-
-   /**
     * Recherche les Affichages dont la Banque est passée en
     * paramètre.
     * @param banque Banque qui à créé les Affichages recherchés.
@@ -143,44 +113,11 @@ public interface AffichageManager
    List<Affichage> findByBanqueInLIstManager(List<Banque> banques);
 
    /**
-    * Recherche les Affichages dont l'intitulé est passé en paramètre.
-    * @param intitilé des Affichages recherchés.
-    * @return la liste de tous les Affichages de l'intitulé.
-    */
-   List<Affichage> findByIntituleManager(String intitule);
-
-   /**
-    * Recherche les Affichages dont l'intitulé et l'utilisateur
-    * sont passés en paramètre.
-    * @param intitilé des Affichages recherchés.
-    * @param util Utilisateur qui à créé les Affichages recherchés.
-    * @return la liste de tous les Affichages de l'intitulé.
-    */
-   List<Affichage> findByIntituleAndUtilisateurManager(String intitule, Utilisateur util);
-
-   /**
-    * Déplace un Résultat pour un Affichage.
-    * @param affichage Affichage dont les résultats vont changer de position.
-    * @param resultat Résultat à déplacer.
-    * @param nouvellePosition position à atteindre pour le Résultat.
-    */
-   void moveResultatManager(Affichage affichage, Resultat resultat, int nouvellePosition);
-
-
-   /**
     * Méthode qui vérifie que l'affichage n'est pas utilisé.
     * @param affichage Affichage.
     * @return True si l'affichage est associé à une recherche.
     */
    Boolean isUsedObjectManager(Affichage affichage);
-
-   /**
-    * Méthode qui permet de vérifier que 2 Affichages sont des copies.
-    * @param a Affichage premier Affichage à vérifier.
-    * @param copie deuxième Affichage à vérifier.
-    * @return true si les 2 Affichages sont des copies, false sinon.
-    */
-   Boolean isCopyManager(Affichage a, Affichage copie);
 
    /**
     * Recherche les Affichages par intitulé dans une plateforme spécifique.
@@ -190,7 +127,6 @@ public interface AffichageManager
     * @return la liste des Affichages correspondants
     */
    List<Affichage> findByIntituleInPlateformeManager(String intitule, Plateforme plateforme);
-
 
    /**
     * Vérifie si un affichage avec le même intitulé existe déjà dans la plateforme donnée.

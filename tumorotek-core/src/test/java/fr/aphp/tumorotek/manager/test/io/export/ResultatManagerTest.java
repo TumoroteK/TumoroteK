@@ -102,39 +102,7 @@ public class ResultatManagerTest extends AbstractManagerTest4
       }
    }
 
-   @Test
-   public void testCopyResultat(){
-      // On teste une copie avec des attributs non valides
-      // On boucle sur les 3 possibilités
-      for(int i = 0; i < Math.pow(2, 2) - 1; i++){
-         Resultat resultat = null;
-         if(i >= 2){
-            resultat = manager.findByIdManager(3);
-         }
-         final int toTest = i % 2;
-         Affichage affichage = null;
-         if(toTest > 0){
-            affichage = affichageDao.findById(2);
-         }
-         try{
-            manager.copyResultatManager(resultat, affichage);
-         }catch(final RequiredObjectIsNullException e){
-            assertEquals("RequiredObjectIsNullException", e.getClass().getSimpleName());
-         }
-      }
 
-      final Affichage affichage = affichageDao.findById(3);
-      final Resultat resultat = manager.findByIdManager(4);
-      final Resultat copie = manager.copyResultatManager(resultat, affichage);
-      assertTrue(copie.getResultatId() > 0);
-      //On verifie que le resultat et la copie sont identiques
-      assertTrue(resultat.isCopy(copie));
-      //On verifie que la copie est bien en BDD
-      assertTrue(copie.equals(manager.findByIdManager(copie.getResultatId())));
-
-      //On supprime les éléments créés
-      manager.removeObjectManager(copie);
-   }
 
    @Test
    public void testCrud(){

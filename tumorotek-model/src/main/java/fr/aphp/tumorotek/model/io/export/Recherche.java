@@ -67,20 +67,14 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
 @Entity
 @Table(name = "RECHERCHE")
 @NamedQueries(
-   value = {@NamedQuery(name = "Recherche.findByUtilisateur", query = "SELECT r FROM Recherche r WHERE " + "r.createur = ?1"),
-      @NamedQuery(name = "Recherche.findByExcludedId", query = "SELECT r FROM Recherche r " + "WHERE r.rechercheId != ?1"),
-      @NamedQuery(name = "Recherche.findByAffichage", query = "SELECT r FROM Recherche r " + "WHERE r.affichage = ?1"),
+   value = {@NamedQuery(name = "Recherche.findByAffichage", query = "SELECT r FROM Recherche r " + "WHERE r.affichage = ?1"),
       @NamedQuery(name = "Recherche.findByRequete", query = "SELECT r FROM Recherche r " + "WHERE r.requete = ?1"),
-      @NamedQuery(name = "Recherche.findByIntituleUtilisateur",
-         query = "SELECT r FROM Recherche r " + "WHERE r.intitule like ?1 " + "AND r.createur = ?2"),
-      @NamedQuery(name = "Recherche.findByIntitule", query = "SELECT r FROM Recherche r " + "WHERE r.intitule like ?1"),
       @NamedQuery(name = "Recherche.findByBanqueId",
          query = "SELECT r FROM Recherche r " + "left join r.banques b " + "WHERE b.banqueId = ?1"),
       @NamedQuery(name = "Recherche.findByBanqueIdinList",
          query = "SELECT distinct(r) FROM Recherche r " + "left join r.banques b " + "WHERE b.banqueId in (?1)"),
       @NamedQuery(name = "Recherche.findByIntituleInPlateforme",
-      query = "SELECT r FROM Recherche r join r.banques b WHERE r.intitule = ?1 and b.plateforme = ?2")
-   })
+      query = "SELECT r FROM Recherche r join r.banques b WHERE r.intitule = ?1 and b.plateforme = ?2")})
 public class Recherche implements TKdataObject, Comparable<Recherche>
 {
 
