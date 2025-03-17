@@ -468,11 +468,9 @@
 					 			</combobox>
 					 			<label id="demandeurHelpLabel" 
 									value="@{fwinCessionEdit$composer.selectedContrat.collaborateur.nomAndPrenom,
-									load-after='contratsComboBox.onSelect,
-										contratsComboBox.onBulr'}" 
+									load-after='contratsComboBox.onSelect'}" 
 									sclass="@{fwinCessionEdit$composer.sClassCollaborateurHelp,
-									load-after='contratsComboBox.onSelect,
-										contratsComboBox.onBulr'}" 
+									load-after='contratsComboBox.onSelect'}" 
 									style="font-style:italic"
 								/>
 								</vbox>
@@ -546,8 +544,7 @@
 								/>
 								<label id="titreEtudeHelpLabel" 
 									value="@{fwinCessionEdit$composer.selectedContrat.titreProjet,
-									load-after='contratsComboBox.onSelect,
-										contratsComboBox.onBulr'}" 
+									load-after='contratsComboBox.onSelect'}" 
 									sclass="formValue" 
 									style="font-style:italic"
 								/>
@@ -590,8 +587,7 @@
 							/>
 							<label id="descriptionHelpLabel" 
 									value="@{fwinCessionEdit$composer.selectedContrat.description,
-									load-after='contratsComboBox.onSelect,
-										contratsComboBox.onBulr'}" 
+									load-after='contratsComboBox.onSelect'}" 
 									sclass="formValue" 
 									style="font-style:italic"
 								/>
@@ -680,8 +676,7 @@
 								/>
 								<label id="dateValidationHelpLabel" 
 									value="@{fwinCessionEdit$composer.dateValidationContratFormated,
-									load-after='contratsComboBox.onSelect,
-										contratsComboBox.onBulr'}" 
+									load-after='contratsComboBox.onSelect'}" 
 									sclass="formValue" 
 									style="font-style:italic"
 								/>
