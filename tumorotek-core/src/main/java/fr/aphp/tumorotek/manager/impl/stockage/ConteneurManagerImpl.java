@@ -72,6 +72,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.validation.Validator;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -291,23 +292,36 @@ public class ConteneurManagerImpl implements ConteneurManager
    }
 
    @Override
-   public Boolean findDoublonManager(final Conteneur conteneur, final List<Banque> banques){
-      if(conteneur != null && banques != null){
-         final List<Conteneur> conteneurs = new ArrayList<>();
-         if(conteneur.getConteneurId() == null){
-            for(int i = 0; i < banques.size(); i++){
-               conteneurs.addAll(conteneurDao.findByBanqueIdWithOrder(banques.get(i).getBanqueId()));
-            }
-         }else{
-            for(int i = 0; i < banques.size(); i++){
-               conteneurs
-                  .addAll(conteneurDao.findByBanqueIdWithExcludedId(banques.get(i).getBanqueId(), conteneur.getConteneurId()));
-            }
-         }
-         return conteneurs.contains(conteneur);
+   public boolean findDoublonManager(final Conteneur conteneur) {
+      // Vérification des paramètres obligatoires
+      if (conteneur == null || conteneur.getCode() == null || conteneur.getPlateformeOrig() == null) {
+         return false;
       }
-      return false;
+
+      log.debug("Vérification des doublons pour le Conteneur : {}", conteneur);
+
+      List<Conteneur> doublons;
+      if (conteneur.getConteneurId() == null) {
+         // Pour les nouveaux conteneurs sans ID, utiliser la requête sans exclusion d'ID
+         doublons = findByCodeAndPlateforme(
+                 conteneur.getCode(),
+                 conteneur.getPlateformeOrig()
+         );
+      } else {
+         // Pour les conteneurs existants avec ID, utiliser la requête avec exclusion d'ID
+         doublons = findByCodeAndPlateformeExcludingId(
+                 conteneur.getCode(),
+                 conteneur.getPlateformeOrig(),
+                 conteneur.getConteneurId()
+         );
+      }
+
+      // Vérifier si des doublons ont été trouvés
+      boolean hasDuplicates = !doublons.isEmpty();
+      log.info("Résultat de la vérification des doublons pour le Conteneur {} : {}", conteneur.getCode(), hasDuplicates);
+      return hasDuplicates;
    }
+
 
    @Override
    public Boolean isUsedObjectManager(final Conteneur conteneur){
@@ -348,7 +362,7 @@ public class ConteneurManagerImpl implements ConteneurManager
       conteneur.setConteneurType(conteneurTypeDao.mergeObject(conteneurType));
 
       // Test s'il y a des doublons
-      if(findDoublonManager(conteneur, banques)){
+      if(findDoublonManager(conteneur)){
          log.warn("Doublon lors de la creation de l'objet Conteneur : {}",  conteneur);
          throw new DoublonFoundException("Conteneur", "creation");
       }
@@ -408,7 +422,7 @@ public class ConteneurManagerImpl implements ConteneurManager
       }
 
       // Test s'il y a des doublons
-      if(findDoublonManager(conteneur, banques)){
+      if(findDoublonManager(conteneur)){
          log.warn("Doublon lors de la modification de l'objet Conteneur : {}",  conteneur);
          throw new DoublonFoundException("Conteneur", "modification");
       }
@@ -742,4 +756,21 @@ public class ConteneurManagerImpl implements ConteneurManager
       }
       return null;
    }
+
+   @Override
+   public List<Conteneur> findByCodeAndPlateformeExcludingId(String code, Plateforme plateforme, Integer conteneurId) {
+      if (code == null || plateforme == null || conteneurId == null) {
+         return Collections.emptyList();
+      }
+      return conteneurDao.findByCodeAndPlateformeExcludingId(code, plateforme, conteneurId);
+   }
+
+   @Override
+   public List<Conteneur> findByCodeAndPlateforme(String code, Plateforme plateforme) {
+      if (code == null || plateforme == null) {
+         return Collections.emptyList();
+      }
+      return conteneurDao.findByCodeAndPlateforme(code, plateforme);
+   }
+
 }

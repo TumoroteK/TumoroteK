@@ -150,11 +150,16 @@ public interface ConteneurManager
    Set<ConteneurPlateforme> getConteneurPlateformesManager(Conteneur conteneur);
 
    /**
-    * Recherche les doublons du Conteneur passé en paramètre.
-    * @param conteneur Conteneur pour lequel on cherche des doublons.
-    * @return True s'il existe des doublons.
+    * Vérifie l'existence de doublons pour un conteneur donné en fonction de son code et de sa plateforme.
+    *
+    * Cette méthode recherche des conteneurs ayant le même code et appartenant à la même plateforme.
+    * - Si le conteneur n'a pas encore d'ID (nouveau conteneur), elle recherche simplement par code et plateforme.
+    * - Si le conteneur a déjà un ID (modification), elle exclut ce dernier de la recherche pour éviter une fausse détection de doublon.
+    *
+    * @param conteneur Le conteneur à vérifier. Ne doit pas être null et doit contenir un code et une plateforme valides.
+    * @return {@code true} si un doublon est détecté, {@code false} sinon.
     */
-   Boolean findDoublonManager(Conteneur conteneur, List<Banque> banques);
+   boolean findDoublonManager(Conteneur conteneur);
 
    /**
     * Teste si le Conteneur passé en paramètre est utilisé par
@@ -296,4 +301,30 @@ public interface ConteneurManager
     * @since 2.2.1-IRELEC
     */
    ConteneurPlateforme getOneConteneurPlateformeManager(Conteneur conteneur, Plateforme pf);
+
+   /**
+    * Recherche une liste de conteneurs ayant le même code et appartenant à la même plateforme,
+    * tout en excluant un conteneur spécifique identifié par son ID.
+    * Cette méthode est utilisée pour détecter d'éventuels doublons lors de la modification
+    * d'un conteneur, en tenant compte de la distinction par plateforme introduite en version 2.
+    *
+    * @param code        Le code du conteneur recherché.
+    * @param plateforme  La plateforme à laquelle appartient le conteneur.
+    * @param conteneurId L'identifiant du conteneur à exclure de la recherche (pour éviter la détection de soi-même).
+    * @return            Une liste de conteneurs correspondants aux critères spécifiés.
+    */
+   List<Conteneur> findByCodeAndPlateformeExcludingId(String code, Plateforme plateforme, Integer conteneurId);
+
+   /**
+    * Recherche une liste de conteneurs ayant le même code et appartenant à la même plateforme,
+    * tout en excluant un conteneur spécifique identifié par son ID.
+    * Cette méthode est utilisée pour détecter d'éventuels doublons lors de la création
+    * d'un conteneur, en tenant compte de la distinction par plateforme introduite en version 2.
+    *
+    * @param code        Le code du conteneur recherché.
+    * @param plateforme  La plateforme à laquelle appartient le conteneur.
+    * @return            Une liste de conteneurs correspondants aux critères spécifiés.
+    */
+   List<Conteneur> findByCodeAndPlateforme(String code, Plateforme plateforme);
+
 }

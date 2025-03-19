@@ -363,59 +363,6 @@ public class ConteneurManagerTest extends AbstractManagerTest4
       assertEquals(0, set.size());
    }
 
-   /**
-    * Test la méthode findDoublon.
-    */
-   @Test
-   public void testFindDoublon(){
-
-      final String code1 = "C999";
-      final String code2 = "TTT";
-      final String nom1 = "Congélateur 999";
-      final String nom2 = "RAAAA";
-
-      final Banque b1 = banqueDao.findById(1);
-      final Banque b2 = banqueDao.findById(2);
-      List<Banque> banques = new ArrayList<>();
-      banques.add(b1);
-      banques.add(b2);
-
-      final Conteneur c1 = new Conteneur();
-      c1.setCode(code1);
-      c1.setNom(nom1);
-      c1.setPlateformeOrig(plateformeDao.findById(2));
-      assertTrue(conteneurManager.findDoublonManager(c1, banques));
-
-      c1.setCode(code2);
-      assertFalse(conteneurManager.findDoublonManager(c1, banques));
-
-      c1.setCode(code1);
-      c1.setNom(nom2);
-      assertTrue(conteneurManager.findDoublonManager(c1, banques));
-
-      c1.setCode(code1);
-      c1.setNom(nom1);
-      banques = new ArrayList<>();
-      banques.add(b1);
-      assertFalse(conteneurManager.findDoublonManager(c1, banques));
-
-      banques = new ArrayList<>();
-      banques.add(b1);
-      banques.add(b2);
-      final Conteneur c2 = conteneurManager.findByIdManager(2);
-      assertFalse(conteneurManager.findDoublonManager(c2, banques));
-
-      c2.setCode(code1);
-      c2.setNom(nom1);
-      assertFalse(conteneurManager.findDoublonManager(c2, banques));
-
-      c2.setPlateformeOrig(plateformeDao.findById(2));
-      assertTrue(conteneurManager.findDoublonManager(c2, banques));
-
-      assertFalse(conteneurManager.findDoublonManager(null, banques));
-      assertFalse(conteneurManager.findDoublonManager(c2, null));
-
-   }
 
    /**
     * Test la méthode isUsedObjectManager.

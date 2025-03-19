@@ -130,4 +130,25 @@ public interface ConteneurDao extends GenericDaoJpa<Conteneur, Integer>
     * @return liste Float
     */
    List<Float> findTempForEmplacementId(Integer emplacementId);
+
+   /**
+    * Recherche une liste de conteneurs ayant le même code et appartenant à la même plateforme,
+    * tout en excluant un conteneur spécifique identifié par son ID.
+    *
+    * @param code        Le code du conteneur recherché.
+    * @param plateforme  La plateforme à laquelle appartient le conteneur.
+    * @param conteneurId L'identifiant du conteneur à exclure de la recherche (pour éviter la détection de soi-même).
+    * @return            Une liste de conteneurs correspondants aux critères spécifiés.
+    */
+   List<Conteneur> findByCodeAndPlateformeExcludingId(String code, Plateforme plateforme, Integer conteneurId);
+
+   /**
+    * Recherche une liste de conteneurs ayant le même code et appartenant à la même plateforme.
+    *
+    * @param code        Le code du conteneur recherché.
+    * @param plateforme  La plateforme à laquelle appartient le conteneur.
+    * @return            Une liste de conteneurs correspondants aux critères spécifiés.
+    */
+   List<Conteneur> findByCodeAndPlateforme(String code, Plateforme plateforme);
+
 }
