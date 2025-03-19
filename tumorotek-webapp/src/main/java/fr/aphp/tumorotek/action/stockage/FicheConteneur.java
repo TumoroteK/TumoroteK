@@ -47,6 +47,7 @@ import fr.aphp.tumorotek.manager.impl.stockage.planconteneur.PlanCongelateurAvec
 import fr.aphp.tumorotek.manager.impl.stockage.planconteneur.PlanCongelateurSansBoiteExcelGenerator;
 import fr.aphp.tumorotek.model.TKdataObject;
 import fr.aphp.tumorotek.model.contexte.Banque;
+import fr.aphp.tumorotek.model.contexte.Plateforme;
 import fr.aphp.tumorotek.model.contexte.Service;
 import fr.aphp.tumorotek.model.stockage.Conteneur;
 import fr.aphp.tumorotek.model.stockage.ConteneurType;
@@ -919,13 +920,37 @@ public class FicheConteneur extends AbstractFicheCombineStockageController
    //	}
 
    /**
-    * Méthode appelée après la saisie d'une valeur dans le champ
-    * codeBox. Cette valeur sera mise en majuscules.
+    * Méthode appelée lors de la perte de focus sur le champ de code (codeBox).
+    * Elle valide le code saisi par l'utilisateur en vérifiant s'il existe déjà dans la plateforme actuelle.
+    * Cette valeur sera mise en majuscules.
     */
-   public void onBlur$codeBox(){
-      codeBox.setValue(codeBox.getValue().toUpperCase().trim());
-   }
+   public void onBlur$codeBox() {
+      String code = codeBox.getValue().toUpperCase().trim();
+      codeBox.setValue(code);
 
+      Plateforme currentPlateforme = SessionUtils.getPlateforme(sessionScope);
+      // Récupère l'ID du conteneur existant (null si création, non-null si modification)
+      Integer conteneurId = (conteneur != null) ? conteneur.getConteneurId() : null;
+
+      if (!code.isEmpty()) {
+         List<Conteneur> existingContainers;
+
+         if (conteneurId != null) {
+            existingContainers = ManagerLocator.getConteneurManager()
+                    .findByCodeAndPlateformeExcludingId(code, currentPlateforme, conteneurId);
+         } else {
+            existingContainers = ManagerLocator.getConteneurManager()
+                    .findByCodeAndPlateforme(code, currentPlateforme);
+         }
+
+         if (!existingContainers.isEmpty()) {
+            throw new WrongValueException(
+                    codeBox,
+                    Labels.getLabel("error.validation.code.duplicate", new String[] {code})
+            );
+         }
+      }
+   }
    @Override
    public void setFieldsToUpperCase(){
       if(this.conteneur.getCode() != null){
