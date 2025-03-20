@@ -757,13 +757,21 @@ public class ConteneurManagerImpl implements ConteneurManager
       return null;
    }
 
+
    @Override
    public List<Conteneur> findByCodeAndPlateformeExcludingId(String code, Plateforme plateforme, Integer conteneurId) {
-      if (code == null || plateforme == null || conteneurId == null) {
+      if (code == null || plateforme == null) {
          return Collections.emptyList();
       }
+
+      if (conteneurId == null) {
+         // Si l'ID est null, on utilise la méthode sans exclusion
+         return this.findByCodeAndPlateforme(code, plateforme);
+      }
+
       return conteneurDao.findByCodeAndPlateformeExcludingId(code, plateforme, conteneurId);
    }
+
 
    @Override
    public List<Conteneur> findByCodeAndPlateforme(String code, Plateforme plateforme) {
@@ -772,5 +780,29 @@ public class ConteneurManagerImpl implements ConteneurManager
       }
       return conteneurDao.findByCodeAndPlateforme(code, plateforme);
    }
+
+
+   @Override
+   public List<Conteneur> findByNomAndPlateforme(String nom, Plateforme plateforme) {
+      if (nom == null || plateforme == null) {
+         return Collections.emptyList();
+      }
+      return conteneurDao.findByNomAndPlateforme(nom, plateforme);
+   }
+
+   @Override
+   public List<Conteneur> findByNomAndPlateformeExcludingId(String nom, Plateforme plateforme, Integer conteneurId) {
+      if (nom == null || plateforme == null) {
+         return Collections.emptyList();
+      }
+
+      if (conteneurId == null) {
+         // Si l'ID est null, on utilise la méthode sans exclusion
+         return this.findByNomAndPlateforme(nom, plateforme);
+      }
+
+      return conteneurDao.findByNomAndPlateformeExcludingId(nom, plateforme, conteneurId);
+   }
+
 
 }

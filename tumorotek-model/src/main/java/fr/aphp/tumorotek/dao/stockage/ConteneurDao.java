@@ -133,11 +133,12 @@ public interface ConteneurDao extends GenericDaoJpa<Conteneur, Integer>
 
    /**
     * Recherche une liste de conteneurs ayant le même code et appartenant à la même plateforme,
-    * tout en excluant un conteneur spécifique identifié par son ID.
+    * en excluant un conteneur spécifique dont l'identifiant est fourni.
+    * Cette exclusion permet d'éviter de récupérer le même conteneur lors d'une mise à jour.
     *
     * @param code        Le code du conteneur recherché.
     * @param plateforme  La plateforme à laquelle appartient le conteneur.
-    * @param conteneurId L'identifiant du conteneur à exclure de la recherche (pour éviter la détection de soi-même).
+    * @param conteneurId L'identifiant du conteneur à exclure de la recherche.
     * @return            Une liste de conteneurs correspondants aux critères spécifiés.
     */
    List<Conteneur> findByCodeAndPlateformeExcludingId(String code, Plateforme plateforme, Integer conteneurId);
@@ -150,5 +151,26 @@ public interface ConteneurDao extends GenericDaoJpa<Conteneur, Integer>
     * @return            Une liste de conteneurs correspondants aux critères spécifiés.
     */
    List<Conteneur> findByCodeAndPlateforme(String code, Plateforme plateforme);
+
+   /**
+    * Recherche une liste de conteneurs ayant le même nom et appartenant à la même plateforme.
+    *
+    * @param nom         Le nom du conteneur recherché.
+    * @param plateforme  La plateforme à laquelle appartient le conteneur.
+    * @return            Une liste de conteneurs correspondants aux critères spécifiés.
+    */
+   List<Conteneur> findByNomAndPlateforme(String nom, Plateforme plateforme);
+
+   /**
+    * Recherche une liste de conteneurs ayant le même nom et appartenant à la même plateforme,
+    * en excluant un conteneur spécifique dont l'identifiant est fourni.
+    * Cette exclusion permet d'éviter de récupérer le même conteneur
+    *
+    * @param nom         Le nom du conteneur recherché.
+    * @param plateforme  La plateforme à laquelle appartient le conteneur.
+    * @param id          L'identifiant du conteneur à exclure de la recherche.
+    * @return            Une liste de conteneurs correspondants aux critères spécifiés.
+    */
+   List<Conteneur> findByNomAndPlateformeExcludingId(String nom, Plateforme plateforme, Integer id);
 
 }

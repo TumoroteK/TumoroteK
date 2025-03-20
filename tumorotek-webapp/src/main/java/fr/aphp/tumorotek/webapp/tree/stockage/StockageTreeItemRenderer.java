@@ -100,9 +100,16 @@ public class StockageTreeItemRenderer implements TreeitemRenderer<Object>
       if(data instanceof ConteneurNode){
          final ConteneurNode node = (ConteneurNode) data;
             
-         // on affiche le nom du conteneur
+         // on affiche le nom du conteneur (et son code :  TK-421)
+
+         String containerName = node.getLibelle();
+         String containerCode = node.getConteneur().getCode();
+
+         // Append the code in parentheses to the name
+         String displayName = containerName + " (" + containerCode + ")";
+
          final org.zkoss.zul.Label nomLabel = new org.zkoss.zul.Label();
-         nomLabel.setValue(node.getLibelle());
+         nomLabel.setValue(displayName);
          nomLabel.setParent(tcNamn);
          nomLabel.setStyle("font-weight:bold;");
                  

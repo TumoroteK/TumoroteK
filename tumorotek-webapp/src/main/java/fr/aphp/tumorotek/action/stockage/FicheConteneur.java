@@ -41,10 +41,6 @@ import fr.aphp.tumorotek.action.utils.StockageUtils;
 import fr.aphp.tumorotek.component.CalendarBox;
 import fr.aphp.tumorotek.decorator.EnceinteDecorator;
 import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
-import fr.aphp.tumorotek.dto.OutputStreamData;
-import fr.aphp.tumorotek.manager.impl.io.production.DocumentWithDataAsTableExcelProducer;
-import fr.aphp.tumorotek.manager.impl.stockage.planconteneur.PlanCongelateurAvecBoiteExcelGenerator;
-import fr.aphp.tumorotek.manager.impl.stockage.planconteneur.PlanCongelateurSansBoiteExcelGenerator;
 import fr.aphp.tumorotek.model.TKdataObject;
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.contexte.Plateforme;
@@ -56,8 +52,8 @@ import fr.aphp.tumorotek.model.stockage.EnceinteType;
 import fr.aphp.tumorotek.model.stockage.Terminale;
 import fr.aphp.tumorotek.model.stockage.TerminaleNumerotation;
 import fr.aphp.tumorotek.model.stockage.TerminaleType;
+import fr.aphp.tumorotek.utils.MessagesUtils;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
-import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.util.resource.Labels;
@@ -76,6 +72,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @version 2.2.1-IRELEC
@@ -576,6 +573,14 @@ public class FicheConteneur extends AbstractFicheCombineStockageController
       clearData();
    }
 
+   /**
+    * Méthode appelée lorsque l'utilisateur clique sur le bouton "Enregistrer".
+    *
+    * Vérifie si l'arborescence a été créée avant de poursuivre l'enregistrement.
+    * Si l'arborescence n'a pas été créée, lance une exception.
+    *
+    * @throws WrongValueException si l'arborescence n'a pas été créée
+    */
    @Override
    public void onClick$createC(){
 
@@ -599,6 +604,11 @@ public class FicheConteneur extends AbstractFicheCombineStockageController
       super.onClick$revertC();
    }
 
+
+   /**
+    * Méthode appelée lorsque l'utilisateur clique sur le bouton "Valider" pour mettre à jour un conteneur.
+    * Elle déclenche l'événement "onLaterUpdate" pour finaliser la mise à jour.
+    */
    @Override
    public void onClick$validateC(){
       Clients.showBusy(Labels.getLabel("conteneur.creation.encours"));
@@ -988,12 +998,25 @@ public class FicheConteneur extends AbstractFicheCombineStockageController
       }
    }
 
+   /**
+    * Méthode appelée après le clic sur "Enregistrer" pour finaliser la création d'un conteneur.
+    *
+    * Cette méthode vérifie si un conteneur avec le même nom existe déjà sur la plateforme.
+    * Si c'est le cas, un avertissement est affiché à l'utilisateur avec la possibilité d'annuler l'opération.
+    *
+    * Si l'utilisateur confirme ou si aucun doublon n'est trouvé, le conteneur est créé.
+    * Si la liste des stockages est disponible, elle est mise à jour via `updateAllConteneurs(true)`.
+    * Enfin, le mode passe en affichage statique.
+    *
+    * @throws RuntimeException si une erreur se produit lors de la création de l'objet.
+    */
    @Override
    public void onLaterCreate(){
-
+      //      TK-421: lors de la création d'un conteneur, afficher une fenêtre d'avertissement,
+      //      si un conteneur avec le même nom existe déjà sur la plateforme
+      if (validateUniqueContainerName()) return;
       try{
          createNewObject();
-
          // on vérifie que l'on retrouve bien la page contenant la liste
          // des stockages
          if(getObjectTabController().getListeStockages() != null){
@@ -1011,7 +1034,24 @@ public class FicheConteneur extends AbstractFicheCombineStockageController
 
    }
 
+   /**
+    * Méthode appelée après le clic sur "Valider" pour finaliser la mise à jour d'un conteneur existant.
+    *
+    * Cette méthode vérifie si un conteneur avec le même nom existe déjà sur la plateforme.
+    * Si c'est le cas, un avertissement est affiché à l'utilisateur avec la possibilité d'annuler l'opération.
+    *
+    * Si l'utilisateur confirme ou si aucun doublon n'est trouvé, le conteneur est mis à jour.
+    * Si la liste des stockages est disponible, le conteneur mis à jour est reflété via `updateConteneur(conteneur)`.
+    *
+    * Enfin, le mode passe en affichage statique.
+    *
+    * @throws RuntimeException si une erreur se produit lors de la mise à jour de l'objet.
+    */
+
    public void onLaterUpdate(){
+      //      TK-421: lors de la création d'un conteneur, afficher une fenêtre d'avertissement,
+      //      si un conteneur avec le même nom existe déjà sur la plateforme
+      if (validateUniqueContainerName()) return;
 
       // s'il n'y a pas d'erreurs lors de l'update
       try{
@@ -1035,6 +1075,60 @@ public class FicheConteneur extends AbstractFicheCombineStockageController
          Clients.clearBusy();
       }
    }
+
+   /**
+    * Vérifie si un conteneur avec le même nom existe déjà sur la plateforme et affiche un avertissement.
+    *
+    * Cette méthode recherche les conteneurs existants ayant le même nom sur la plateforme en cours.
+    * Si un ou plusieurs doublons sont trouvés, une fenêtre de confirmation est affichée à l'utilisateur.
+    * L'utilisateur peut alors choisir de continuer ou d'annuler l'opération.
+    *
+    * @return {@code true} si l'utilisateur annule l'opération à cause d'un doublon, sinon {@code false}.
+    */
+   private boolean validateUniqueContainerName() {
+      String name = conteneur.getNom();
+      Plateforme plateforme = SessionUtils.getCurrentPlateforme();
+
+      // Recherche des conteneurs avec le même nom et sur la même plateforme, à l'exception de l'ID actuel du conteneur.
+      List<Conteneur> listDoublonFound = ManagerLocator.getConteneurManager()
+              .findByNomAndPlateformeExcludingId(name, plateforme, conteneur.getConteneurId());
+      int numberDoublonFound = listDoublonFound.size();
+
+      // Si des doublons sont trouvés
+      if (numberDoublonFound > 0) {
+         String title = Labels.getLabel("error.validation.title.duplicate.container.name");
+
+         // On distingue les cas où il y a un seul doublon ou plusieurs doublons (pour les messages spécifiques)
+         String messageToDisplay;
+         if (numberDoublonFound == 1) {
+            Conteneur doublon = listDoublonFound.get(0);
+            Set<Banque> banques  = ManagerLocator.getConteneurManager().getBanquesManager(doublon);
+
+            int numberOfBanques = banques.size();
+
+            // Message spécifique pour un seul doublon, incluant le nombre de banques associées
+            String messageForOneDoublon = Labels.getLabel("error.validation.duplicate.container.single",
+                    new String[] { name, String.valueOf(numberOfBanques) });
+            messageToDisplay = messageForOneDoublon;
+         } else {
+            // Si plusieurs doublons sont trouvés, on crée un message différent qui indique le nombre de doublons
+            String messageForMultiDoublons = Labels.getLabel("error.validation.duplicate.container.multiple",
+                    new String[] { String.valueOf(numberDoublonFound), name });
+            messageToDisplay = messageForMultiDoublons;
+         }
+
+         // Affichage du message sous forme d'une boîte de dialogue avec la question
+         boolean isOk = MessagesUtils.openQuestionModal(title, messageToDisplay);
+
+         // Si l'utilisateur refuse, on retourne 'true' pour indiquer qu'il y a un problème.
+         if (!isOk) {
+            nomBox.focus();
+            return true;
+         }
+      }
+      return false;
+   }
+
 
    //	/**
    //	 * Met à jour la liste des conteneurs au niveau d'une fiche banque
