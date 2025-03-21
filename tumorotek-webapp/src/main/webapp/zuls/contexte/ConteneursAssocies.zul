@@ -75,8 +75,8 @@
 				 use="fr.aphp.tumorotek.component.TKDisablableButton" />
 			<box orient="horizontal" id="addObjBox" visible="false">
 				<listbox id="objectsBox" mold="select" rows="1">
-					<listitem self="@{each='obj'}" value="@{obj}">	
-						<listcell label="@{obj.conteneur.nom}" />
+					<listitem self="@{each='containerDecorator'}" value="@{containerDecorator}">
+						<listcell label="@{containerDecorator.libelle}" />
 					</listitem>
 				</listbox>
 				<image id="addSelObj" src="/images/icones/small_validate.png" style="cursor:pointer" />

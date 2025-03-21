@@ -49,114 +49,152 @@ import fr.aphp.tumorotek.model.stockage.Conteneur;
  * @version 2.0.10
  * @since 2.0.10
  */
-public class ConteneurDecorator
-{
+   public class ConteneurDecorator
+   {
 
-   private Conteneur conteneur;
+      private Conteneur conteneur;
 
-   private Plateforme current;
+      //plateforme nécessaire pour appliquer des règles de gestion particulières dans le cas de conteneur partagé
+      // (mis à disposition par une autre plateforme)
+      private Plateforme plateforme;
 
-   private Boolean deleteHeaderVisible;
+      private Boolean deleteHeaderVisible;
 
-   public ConteneurDecorator(final Conteneur c, final Plateforme current){
-      setConteneur(c);
-      setCurrent(current);
-      setDeleteHeaderVisible(current != null ? !current.equals(c.getPlateformeOrig()) : true);
-   }
+      private String libelle;
 
-   public Boolean getDeleteHeaderVisible(){
-      return deleteHeaderVisible;
-   }
+      public ConteneurDecorator(final Conteneur c, final Plateforme currentPlateforme){
+         setConteneur(c);
+         setPlateforme(currentPlateforme);
+         setDeleteHeaderVisible(currentPlateforme != null ? !currentPlateforme.equals(c.getPlateformeOrig()) : true);
+         this.libelle = generateLibelle();
 
-   public void setDeleteHeaderVisible(final Boolean i){
-      this.deleteHeaderVisible = i;
-   }
-
-   public Conteneur getConteneur(){
-      return conteneur;
-   }
-
-   public void setConteneur(final Conteneur c){
-      this.conteneur = c;
-   }
-
-   public Plateforme getCurrent(){
-      return current;
-   }
-
-   public void setCurrent(final Plateforme current){
-      this.current = current;
-   }
-
-   public static List<ConteneurDecorator> decorateListe(final List<Conteneur> conts, final Plateforme current){
-      List<ConteneurDecorator> decos = null;
-
-      if(conts != null){
-         decos = new ArrayList<>();
-         for(final Conteneur c : conts){
-            decos.add(new ConteneurDecorator(c, current));
-         }
       }
 
-      return decos;
-   }
 
-   @Override
-   public ConteneurDecorator clone(){
-      return new ConteneurDecorator(getConteneur(), getCurrent());
-   }
 
-   /**
-    * Récupère les conteneurs à passer dans la méthode d'update afin de
-    * modifier les relations Conteneur_Plateforme.
-    * Exclue de la liste tous les conteneurs dont la plateforme de création
-    * correspond à la plateforme en cours
-    * @param decos
-    * @return List<Conteneur>
-    */
-   public static List<Conteneur> extractConteneursFromDecos(final List<ConteneurDecorator> decos){
-      List<Conteneur> conts = null;
-      if(decos != null){
-         conts = new ArrayList<>();
-         for(final ConteneurDecorator deco : decos){
-            if(deco.getDeleteHeaderVisible()){
-               conts.add(deco.getConteneur());
+      public Boolean getDeleteHeaderVisible(){
+         return deleteHeaderVisible;
+      }
+
+      public void setDeleteHeaderVisible(final Boolean i){
+         this.deleteHeaderVisible = i;
+      }
+
+      public String getLibelle() {
+         return libelle;
+      }
+
+      public void setLibelle(String libelle) {
+         this.libelle = libelle;
+      }
+
+      public Conteneur getConteneur(){
+         return conteneur;
+      }
+
+      public void setConteneur(final Conteneur c){
+         this.conteneur = c;
+      }
+
+      public Plateforme getPlateforme(){
+         return plateforme;
+      }
+
+      public void setPlateforme(final Plateforme plateforme){
+         this.plateforme = plateforme;
+      }
+
+      public static List<ConteneurDecorator> decorateListe(final List<Conteneur> conts, final Plateforme current){
+         List<ConteneurDecorator> decos = null;
+
+         if(conts != null){
+            decos = new ArrayList<>();
+            for(final Conteneur c : conts){
+               decos.add(new ConteneurDecorator(c, current));
             }
          }
+
+         return decos;
       }
-      return conts;
+
+      @Override
+      public ConteneurDecorator clone(){
+         return new ConteneurDecorator(getConteneur(), getPlateforme());
+      }
+
+      /**
+       * Récupère les conteneurs à passer dans la méthode d'update afin de
+       * modifier les relations Conteneur_Plateforme.
+       * Exclue de la liste tous les conteneurs dont la plateforme de création
+       * correspond à la plateforme en cours
+       * @param decos
+       * @return List<Conteneur>
+       */
+      public static List<Conteneur> extractConteneursFromDecos(final List<ConteneurDecorator> decos){
+         List<Conteneur> conts = null;
+         if(decos != null){
+            conts = new ArrayList<>();
+            for(final ConteneurDecorator deco : decos){
+               if(deco.getDeleteHeaderVisible()){
+                  conts.add(deco.getConteneur());
+               }
+            }
+         }
+         return conts;
+      }
+
+      /**
+       * Crée et renvoie une chaîne de caractères formatée pour l'affichage du conteneur.
+       * Le format suit le modèle : "[Nom du Conteneur] ([Code du Conteneur])"
+       * Si la plateforme d'origine du conteneur est différente de la plateforme courante,
+       * le nom de la plateforme d'origine est ajouté : "[Nom du Conteneur] ([Code du Conteneur]) [Plateforme d'Origine]"
+       *
+       * @return Une représentation formatée du conteneur avec son code et éventuellement les informations de plateforme
+       */
+      private String generateLibelle() {
+         StringBuilder sb = new StringBuilder();
+         sb.append(conteneur.getNom())
+                 .append(" (")
+                 .append(conteneur.getCode())
+                 .append(")");
+         if (plateforme != null && !plateforme.equals(conteneur.getPlateformeOrig())) {
+            sb.append(" [")
+                    .append(conteneur.getPlateformeOrig().getNom())
+                    .append("]");
+         }
+         return sb.toString();
+      }
+
+      @Override
+      public boolean equals(final Object obj){
+         if(this == obj){
+            return true;
+         }
+         if((obj == null) || obj.getClass() != this.getClass()){
+            return false;
+         }
+         final ConteneurDecorator test = (ConteneurDecorator) obj;
+         return ((this.plateforme == test.plateforme || (this.plateforme != null && this.plateforme.equals(test.plateforme)))
+            && (this.conteneur == test.conteneur || (this.conteneur != null && this.conteneur.equals(test.conteneur))));
+      }
+
+      @Override
+      public int hashCode(){
+
+         int hash = 7;
+         int hashConteneur = 0;
+         int hashPf = 0;
+
+         if(this.conteneur != null){
+            hashConteneur = this.conteneur.hashCode();
+         }
+         if(this.plateforme != null){
+            hashPf = this.plateforme.hashCode();
+         }
+
+         hash = 31 * hash + hashConteneur;
+         hash = 31 * hash + hashPf;
+
+         return hash;
+      }
    }
-
-   @Override
-   public boolean equals(final Object obj){
-      if(this == obj){
-         return true;
-      }
-      if((obj == null) || obj.getClass() != this.getClass()){
-         return false;
-      }
-      final ConteneurDecorator test = (ConteneurDecorator) obj;
-      return ((this.current == test.current || (this.current != null && this.current.equals(test.current)))
-         && (this.conteneur == test.conteneur || (this.conteneur != null && this.conteneur.equals(test.conteneur))));
-   }
-
-   @Override
-   public int hashCode(){
-
-      int hash = 7;
-      int hashConteneur = 0;
-      int hashPf = 0;
-
-      if(this.conteneur != null){
-         hashConteneur = this.conteneur.hashCode();
-      }
-      if(this.current != null){
-         hashPf = this.current.hashCode();
-      }
-
-      hash = 31 * hash + hashConteneur;
-      hash = 31 * hash + hashPf;
-
-      return hash;
-   }
-}

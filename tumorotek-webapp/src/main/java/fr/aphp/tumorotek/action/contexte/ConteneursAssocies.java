@@ -38,6 +38,7 @@ package fr.aphp.tumorotek.action.contexte;
 import java.util.ArrayList;
 import java.util.List;
 
+import fr.aphp.tumorotek.model.stockage.Conteneur;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
@@ -59,6 +60,8 @@ public class ConteneursAssocies extends OneToManyComponent<ConteneurDecorator>
 
    private List<ConteneurDecorator> objects = new ArrayList<>();
 
+   //conteneursDeBanque vaut true si le composant ConteneursAssocies est utilisé dans FicheBanque.java / .zul
+   //vaut false si il est utilisé dans FichePlateforme.java / .zul
    private boolean conteneursDeBanque = true;
 
    private Plateforme plateforme;
@@ -128,19 +131,41 @@ public class ConteneursAssocies extends OneToManyComponent<ConteneurDecorator>
       return sb.toString();
    }
 
+   /**
+    * Récupère la liste des conteneurs pouvant être ajoutés à la Banque.
+    * <p>
+    * Cette méthode récupère les conteneurs à partir de deux sources :
+    * <ul>
+    *   <li>Les conteneurs appartenant à la plateforme actuelle
+    *       ({@code findByPlateformeOrigWithOrderManager}).</li>
+    *   <li>Les conteneurs partagés avec la plateforme actuelle
+    *       ({@code findByPartageManager}).</li>
+    * </ul>
+    * </p>
+    * <p>
+    * Après récupération, les conteneurs déjà associés à la Banque sont filtrés
+    * afin d'éviter les doublons.
+    * </p>
+    *
+    * @return Une liste de {@link ConteneurDecorator} représentant les conteneurs
+    *         pouvant être ajoutés à la Banque.
+    */
    @Override
    public List<ConteneurDecorator> findObjectsAddable(){
       // conteneurs ajoutables
       final List<ConteneurDecorator> conts = new ArrayList<>();
+      if (conteneursDeBanque) {
+         List<Conteneur> conteneurs = ManagerLocator
+                 .getConteneurManager()
+                 .findByPlateformeOrigWithOrderManager(getPlateforme());
 
-      if(conteneursDeBanque){
-         conts.addAll(ConteneurDecorator
-            .decorateListe(ManagerLocator.getConteneurManager().findByPlateformeOrigWithOrderManager(getPlateforme()), null));
+         conts.addAll(ConteneurDecorator.decorateListe(conteneurs, getPlateforme()));
       }
+      List<Conteneur> conteneursPartages = ManagerLocator
+              .getConteneurManager()
+              .findByPartageManager(getPlateforme(), conteneursDeBanque);
 
-      conts.addAll(ConteneurDecorator.decorateListe(
-         ManagerLocator.getConteneurManager().findByPartageManager(getPlateforme(), conteneursDeBanque),
-         !conteneursDeBanque ? getPlateforme() : null));
+      conts.addAll(ConteneurDecorator.decorateListe(conteneursPartages, getPlateforme()));
 
       // retire les conteneurs deja assignés
       for(int i = 0; i < getObjects().size(); i++){
@@ -186,7 +211,7 @@ public class ConteneursAssocies extends OneToManyComponent<ConteneurDecorator>
       if(!isConteneursDeBanque()){ // referencement depuis plateforme
          if(ManagerLocator.getConteneurManager()
             .findByBanquesWithOrderManager(
-               new ArrayList<>(ManagerLocator.getPlateformeManager().getBanquesManager(cur.getCurrent())))
+               new ArrayList<>(ManagerLocator.getPlateformeManager().getBanquesManager(cur.getPlateforme())))
             .contains(cur.getConteneur())){
             Messagebox.show(Labels.getLabel("plateforme.conteneur.remove.error"), Labels.getLabel("general.warning"),
                Messagebox.OK, Messagebox.ERROR);
