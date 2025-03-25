@@ -50,7 +50,7 @@
 				<column label="${c:l('Champ.Banque.Nom')}" sort="auto(LOWER(nom))" />
 				<column label="${c:l('Champ.Banque.Contexte')}" sort="auto(LOWER(contexte.libelle))" />
 				<column label="${c:l('Champ.Banque.Proprietaire')}" sort="auto(LOWER(proprietaire.nom))" />
-				<column label="${c:l('Champ.Banque.Collaborateur')}" sort="auto(LOWER(collaborateur.nom))" />/>
+				<column label="${c:l('Champ.Banque.Collaborateur')}" sort="auto(LOWER(collaborateur.nom))" />
 			</columns>
 			<rows>
 			</rows>
