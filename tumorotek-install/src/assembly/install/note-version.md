@@ -10,7 +10,7 @@
 
 ##### Version 2.3.0.13 - Publiée le 13/01/2025
 - YouTrack [TK-589](https://tumorotek.myjetbrains.com/youtrack/issue/TK-589) : Problème lors de la création d'un index à cause d'une valeur par défaut à 0000-00-00 00:00:00, valeur qui n'est plus autorisée
-- YouTrack [TK-593](https://tumorotek.myjetbrains.com/youtrack/issue/TK-593) : Indicateurs : plantage lors l'exécution si sélection de l'indicateur "Prélèvements groupés par patient et par date de prélèvement"
+- YouTrack [TK-593](https://tumorotek.myjetbrains.com/youtrack/issue/TK-593) : Indicateurs : plantage lors de l'exécution si sélection de l'indicateur "Prélèvements groupés par patient et par date de prélèvement"
 
 ###### Corrections ano pour un contexte Gatsbi
 - YouTrack [TG-255](https://tumorotek.myjetbrains.com/youtrack/issue/TG-255) : [TK] ${prelevement} : erreur lors de la création d'un prélèvement (failed to lazily initialize a collection of role) dans un cas bien particulier
