@@ -46,6 +46,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
+import fr.aphp.tumorotek.model.stockage.Conteneur;
 import org.apache.commons.collections4.ListUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -1263,7 +1264,7 @@ public class FicheBanque extends AbstractFicheCombineController
          selectedDeriveCouleur = banque.getProdDeriveCouleur();
 
          conteneurs.addAll(
-            ConteneurDecorator.decorateListe(ManagerLocator.getConteneurManager().findByBanqueWithOrderManager(banque), null));
+            ConteneurDecorator.decorateListe(ManagerLocator.getConteneurManager().findByBanqueWithOrderManager(banque), banque.getPlateforme()));
 
          codifications.addAll(ManagerLocator.getBanqueManager().getBanqueTableCodageByBanqueManager(banque));
 
@@ -1701,51 +1702,76 @@ public class FicheBanque extends AbstractFicheCombineController
     * Ajout les infos conteneurs à imprimer.
     * @param page
     */
-   public void addInfosConteneursToPrint(final Element page){
-      // Entete
-      final String[] listeEntete = new String[5];
-      listeEntete[0] = Labels.getLabel("conteneur.code");
-      listeEntete[1] = Labels.getLabel("conteneur.nom");
-      listeEntete[2] = Labels.getLabel("conteneur.temp");
-      listeEntete[3] = Labels.getLabel("conteneur.service");
-      listeEntete[4] = Labels.getLabel("service.etablissement");
-      final EnteteListe entetes = new EnteteListe(listeEntete);
+   public void addInfosConteneursToPrint(final Element page) {
+      // TK-635 : La colonne de la plateforme d'origine n'est ajoutée que si au moins un conteneur dans la liste est partagé entre
+      // différentes plateformes. Cette condition évite d'encombrer le tableau avec une colonne inutile lorsque tous les
+      // conteneurs sont issus de la même plateforme
+      boolean hasSharedContainers = conteneurs.stream()
+         .anyMatch(ConteneurDecorator::isShared);
+
+      // Création d'une liste d'en-têtes pour le tableau
+      List<String> colonnesTableau  = new ArrayList<>();
+      colonnesTableau .add(Labels.getLabel("conteneur.code"));
+      colonnesTableau .add(Labels.getLabel("conteneur.nom"));
+      colonnesTableau .add(Labels.getLabel("conteneur.temp"));
+      colonnesTableau .add(Labels.getLabel("conteneur.service"));
+      colonnesTableau .add(Labels.getLabel("service.etablissement"));
+
+      // Ajout uniquement si nécessaire
+      if (hasSharedContainers) {
+         colonnesTableau .add(Labels.getLabel("conteneur.plateformeOrig"));
+      }
+
+      final String[] entetesTableau  = colonnesTableau.toArray(new String[0]);
+      final EnteteListe entetes = new EnteteListe(entetesTableau);
 
       // liste des cédés
-      final LigneListe[] liste = new LigneListe[conteneurs.size()];
-      for(int i = 0; i < conteneurs.size(); i++){
-         final String[] valeurs = new String[5];
-         // code
-         valeurs[0] = conteneurs.get(i).getConteneur().getCode();
-         // nom
-         valeurs[1] = conteneurs.get(i).getConteneur().getNom();
-         // température
+      final LigneListe[] lignesTableau = new LigneListe[conteneurs.size()];
+      for (int i = 0; i < conteneurs.size(); i++) {
+         ConteneurDecorator decorator = conteneurs.get(i);
+         Conteneur conteneur = decorator.getConteneur();
+
+         // Create values array with appropriate size
+         String[] valeurs = new String[colonnesTableau .size()];
+
+         valeurs[0] = conteneur.getCode(); // Code
+         valeurs[1] = conteneur.getNom(); // Nom
+
+         // Temperature
          final StringBuffer sb = new StringBuffer();
-         sb.append(conteneurs.get(i).getConteneur().getTemp());
+         sb.append(conteneur.getTemp());
          sb.append("°C");
          valeurs[2] = sb.toString();
-         // service
-         if(conteneurs.get(i).getConteneur().getService() != null){
-            valeurs[3] = conteneurs.get(i).getConteneur().getService().getNom();
-         }else{
+
+         // Service
+         if (conteneur.getService() != null) {
+            valeurs[3] = conteneur.getService().getNom();
+         } else {
             valeurs[3] = "-";
          }
-         // etablissement
-         if(conteneurs.get(i).getConteneur().getService() != null
-            && conteneurs.get(i).getConteneur().getService().getEtablissement() != null){
-            valeurs[4] = conteneurs.get(i).getConteneur().getService().getEtablissement().getNom();
-         }else{
+
+         // Establishment
+         if (conteneur.getService() != null && conteneur.getService().getEtablissement() != null) {
+            valeurs[4] = conteneur.getService().getEtablissement().getNom();
+         } else {
             valeurs[4] = "-";
          }
+
+         // Platforme (si besoin)
+         if (hasSharedContainers && conteneur.getPlateformeOrig() != null) {
+            valeurs[5] = conteneur.getPlateformeOrig().getNom();
+         }
+
          final LigneListe ligne = new LigneListe(valeurs);
-         liste[i] = ligne;
-      }
-      ListeElement listeSites = null;
-      if(conteneurs.size() > 0){
-         listeSites = new ListeElement(null, entetes, liste);
+         lignesTableau[i] = ligne;
       }
 
-      // ajout du paragraphe
+      ListeElement listeSites = null;
+      if (conteneurs.size() > 0) {
+         listeSites = new ListeElement(null, entetes, lignesTableau);
+      }
+
+      // Ajout du paragraphe
       final StringBuffer sb = new StringBuffer();
       sb.append(Labels.getLabel("Champ.Banque.Conteneurs"));
       sb.append(" (");

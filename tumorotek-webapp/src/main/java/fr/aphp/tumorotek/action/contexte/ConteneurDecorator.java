@@ -42,34 +42,99 @@ import fr.aphp.tumorotek.model.contexte.Plateforme;
 import fr.aphp.tumorotek.model.stockage.Conteneur;
 
 /**
- * Decore le conteneur afin de distinguer ceux dont la plateforme
- * courante est la plateforme d'origine.
+ * Classe de décoration étendant les fonctionnalités d'un conteneur avec des informations
+ * contextuelles spécifiques à une plateforme. Cette classe permet de gérer et de représenter un conteneur
+ * en ajoutant des métadonnées et des comportements dynamiques basés sur la plateforme "courante".
+ *
+ * Principales fonctionnalités :
+ * - Gestion de la visibilité de l'icône de suppression
+ * - Détection du partage de conteneurs entre différentes plateformes
+ * - Génération de libellés contextuels
  *
  * @author mathieu BARTHELEMY
  * @version 2.0.10
  * @since 2.0.10
+ * @see Conteneur
+ * @see Plateforme
  */
 public class ConteneurDecorator
 {
 
    private Conteneur conteneur;
 
-   //plateforme nécessaire pour appliquer des règles de gestion particulières dans le cas de conteneur partagé
-   // (mis à disposition par une autre plateforme)
+   /**
+    * Plateforme nécessaire pour appliquer des règles de gestion particulières dans le cas de conteneur partagé
+    *  (mis à disposition par une autre plateforme)
+    *
+    * IMPORTANT : La signification de cette variable varie selon le contexte de l'application :
+    *
+    * 1. Dans l'onglet administration => Plateforme:
+    *    - Représente la plateforme sur laquelle l'utilisateur a cliqué/sélectionné
+    *    - Peut ne pas être la plateforme actuellement active
+    *
+    * 2. Dans les autres sections de l'application :
+    *    - Représente la plateforme actuellement active
+    */
+
    private Plateforme plateforme;
 
+   /**
+    * Indique si l'en-tête de suppression doit être visible.
+    * Déterminé en fonction de la relation entre la plateforme courante
+    * et la plateforme d'origine du conteneur.
+    */
    private Boolean deleteHeaderVisible;
 
+   /**
+    * Libellé formaté représentant le conteneur.
+    * Inclut le nom du conteneur, son code,
+    * et éventuellement le nom de sa plateforme d'origine.
+    */
    private String libelle;
 
-   public ConteneurDecorator(final Conteneur c, final Plateforme currentPlateforme){
-      setConteneur(c);
-      setPlateforme(currentPlateforme);
-      setDeleteHeaderVisible(currentPlateforme != null ? !currentPlateforme.equals(c.getPlateformeOrig()) : true);
-      this.libelle = generateLibelle();
 
+   //Indique si le conteneur est partagé entre différentes plateformes (mis à disposition par une autre plateforme)
+   private boolean shared;
+
+   public ConteneurDecorator(final Conteneur c, final Plateforme currentPlateforme){
+      this.conteneur = c;
+      this.plateforme = currentPlateforme;
+      this.deleteHeaderVisible = currentPlateforme == null || !currentPlateforme.equals(c.getPlateformeOrig());
+      this.shared = determineSharedStatus();
+      this.libelle = generateLibelle();
    }
 
+   /**
+    * Détermine si le conteneur est partagé
+    * @return vrai si la plateforme courante est différente de la plateforme d'origine du conteneur
+    */
+   private boolean determineSharedStatus() {
+      return plateforme != null &&
+         conteneur != null &&
+         !plateforme.equals(conteneur.getPlateformeOrig());
+   }
+
+
+
+   /**
+    * Met à jour les variables d'instance dépendantes de l'objet.
+    */
+   private void updateDependentVariables() {
+      this.shared = determineSharedStatus();
+
+      this.deleteHeaderVisible = plateforme != null ?
+         !plateforme.equals(conteneur.getPlateformeOrig()) : true;
+
+      this.libelle = generateLibelle();
+   }
+
+   public void setShared(boolean shared){
+      this.shared = shared;
+   }
+
+   public boolean isShared() {
+      return shared;
+   }
 
 
    public Boolean getDeleteHeaderVisible(){
@@ -94,6 +159,9 @@ public class ConteneurDecorator
 
    public void setConteneur(final Conteneur c){
       this.conteneur = c;
+      if (plateforme != null) {
+         updateDependentVariables();
+      }
    }
 
    public Plateforme getPlateforme(){
@@ -102,8 +170,10 @@ public class ConteneurDecorator
 
    public void setPlateforme(final Plateforme plateforme){
       this.plateforme = plateforme;
+      if (conteneur != null) {
+         updateDependentVariables();
+      }
    }
-
    public static List<ConteneurDecorator> decorateListe(final List<Conteneur> conts, final Plateforme current){
       List<ConteneurDecorator> decos = null;
 
@@ -157,13 +227,14 @@ public class ConteneurDecorator
               .append(" (")
               .append(conteneur.getCode())
               .append(")");
-      if (plateforme != null && !plateforme.equals(conteneur.getPlateformeOrig())) {
+      if (shared) {
          sb.append(" [")
                  .append(conteneur.getPlateformeOrig().getNom())
                  .append("]");
       }
       return sb.toString();
    }
+
 
    @Override
    public boolean equals(final Object obj){
