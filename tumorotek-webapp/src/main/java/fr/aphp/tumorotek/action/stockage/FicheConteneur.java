@@ -931,36 +931,35 @@ public class FicheConteneur extends AbstractFicheCombineStockageController
 
    /**
     * Méthode appelée lors de la perte de focus sur le champ de code (codeBox).
-    * Elle valide le code saisi par l'utilisateur en vérifiant s'il existe déjà dans la plateforme actuelle.
+    * Elle valide le code saisi par l'utilisateur en vérifiant qu'il n'existe pas déjà dans la plateforme courante.
     * Cette valeur sera mise en majuscules.
     */
    public void onBlur$codeBox() {
       String code = codeBox.getValue().toUpperCase().trim();
       codeBox.setValue(code);
-
-      Plateforme currentPlateforme = SessionUtils.getPlateforme(sessionScope);
-      // Récupère l'ID du conteneur existant (null si création, non-null si modification)
-      Integer conteneurId = (conteneur != null) ? conteneur.getConteneurId() : null;
-
-      if (!code.isEmpty()) {
-         List<Conteneur> existingContainers;
-
-         if (conteneurId != null) {
-            existingContainers = ManagerLocator.getConteneurManager()
-                    .findByCodeAndPlateformeExcludingId(code, currentPlateforme, conteneurId);
-         } else {
-            existingContainers = ManagerLocator.getConteneurManager()
-                    .findByCodeAndPlateforme(code, currentPlateforme);
+      
+      //TK-649 : ajout d'un "contrôle de doublon" qui n'est fait que si le code a été modifié. Dans le cas de la création conteneur.getCode() est null
+      if(!code.equals(conteneur.getCode())) {
+         //le contrôle est fait par plateforme :
+         Plateforme plateforme = conteneur.getPlateformeOrig();
+         //normalement la plateforme d'origine a bien été valorisée dans le conteneur même dans le cas de la création
+         //mais pas sécurité, on gère le cas où cela n'aurait pas été fait :
+         if(plateforme == null) {
+            plateforme = SessionUtils.getPlateforme(sessionScope);
          }
-
+         
+         List<Conteneur> existingContainers = ManagerLocator.getConteneurManager().findByCodeAndPlateforme(code, plateforme);
+         
          if (!existingContainers.isEmpty()) {
             throw new WrongValueException(
                     codeBox,
-                    Labels.getLabel("error.validation.code.duplicate", new String[] {code})
+                    Labels.getLabel("error.validation.doublonParPlateforme.code", new String[] {code})
             );
-         }
+         }//revoir la clé pour homogénéiser
+         
       }
    }
+   
    @Override
    public void setFieldsToUpperCase(){
       if(this.conteneur.getCode() != null){
@@ -1107,12 +1106,12 @@ public class FicheConteneur extends AbstractFicheCombineStockageController
             int numberOfBanques = banques.size();
 
             // Message spécifique pour un seul doublon, incluant le nombre de banques associées
-            String messageForOneDoublon = Labels.getLabel("error.validation.duplicate.container.single",
+            String messageForOneDoublon = Labels.getLabel("warning.doublonfound.container.nom",
                     new String[] { name, String.valueOf(numberOfBanques) });
             messageToDisplay = messageForOneDoublon;
          } else {
             // Si plusieurs doublons sont trouvés, on crée un message différent qui indique le nombre de doublons
-            String messageForMultiDoublons = Labels.getLabel("error.validation.duplicate.container.multiple",
+            String messageForMultiDoublons = Labels.getLabel("warning.doublonfound.container.nom.multiple",
                     new String[] { String.valueOf(numberDoublonFound), name });
             messageToDisplay = messageForMultiDoublons;
          }
