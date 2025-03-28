@@ -150,14 +150,15 @@ public interface ConteneurManager
    Set<ConteneurPlateforme> getConteneurPlateformesManager(Conteneur conteneur);
 
    /**
-    * Vérifie l'existence de doublons pour un conteneur donné en fonction de son code et de sa plateforme.
+    * Vérifie s'il existe déjà en base de données, un conteneur différent de celui passé en paramètre,
+    * ayant le même code et la même plateforme d'origine.
     *
-    * Cette méthode recherche des conteneurs ayant le même code et appartenant à la même plateforme.
-    * - Si le conteneur n'a pas encore d'ID (nouveau conteneur), elle recherche simplement par code et plateforme.
-    * - Si le conteneur a déjà un ID (modification), elle exclut ce dernier de la recherche pour éviter une fausse détection de doublon.
-    *
-    * @param conteneur Le conteneur à vérifier. Ne doit pas être null et doit contenir un code et une plateforme valides.
-    * @return {@code true} si un doublon est détecté, {@code false} sinon.
+    * Cette méthode est utilisée pour le contrôle lors de la création (conteneurId null) 
+    * et de la modification (conteneurId non null). Dans ce dernier cas, le contrôle fera la recherche 
+    * en excluant ce conteneurId.
+    * 
+    * @param conteneur Le conteneur à vérifier. Ne doit pas être null et doit contenir un code et une plateforme non null.
+    * @return {@code true} si la recherche ramène un conteneur, {@code false} sinon.
     */
    boolean findDoublonManager(Conteneur conteneur);
 
@@ -303,50 +304,53 @@ public interface ConteneurManager
    ConteneurPlateforme getOneConteneurPlateformeManager(Conteneur conteneur, Plateforme pf);
 
    /**
-    * Recherche une liste de conteneurs ayant le même code et appartenant à la même plateforme,
+    * Recherche une liste de conteneurs ayant le code spécifié en paramètre et appartenant à une plateforme donnée,
     * tout en excluant un conteneur spécifique identifié par son ID.
-    * Cette méthode est utilisée pour détecter d'éventuels doublons lors de la modification
+    * Cette méthode est utilisée pour détecter d'éventuels doublons de code lors de la modification
     * d'un conteneur, en tenant compte de la distinction par plateforme introduite en version 2.
     *
     * @param code        Le code du conteneur recherché.
-    * @param plateforme  La plateforme à laquelle appartient le conteneur.
-    * @param conteneurId L'identifiant du conteneur à exclure de la recherche (pour éviter la détection de soi-même).
-    * @return            Une liste de conteneurs correspondants aux critères spécifiés.
+    * @param plateforme  La plateforme sur laquelle faire la recherche.
+    * @param conteneurId L'identifiant du conteneur à exclure de la recherche.
+    * @return            La liste des conteneurs correspondant aux critères spécifiés.
     */
-   List<Conteneur> findByCodeAndPlateformeExcludingId(String code, Plateforme plateforme, Integer conteneurId);
+   List<Conteneur> findByCodeAndPlateformeExcludedId(String code, Plateforme plateforme, Integer conteneurId);
 
    /**
-    * Recherche une liste de conteneurs ayant le même code et appartenant à la même plateforme,
-    * tout en excluant un conteneur spécifique identifié par son ID.
+    * Recherche les conteneurs ayant le code spécifié en paramètre et appartenant à une plateforme donnée.
     * Cette méthode est utilisée pour détecter d'éventuels doublons lors de la création
     * d'un conteneur, en tenant compte de la distinction par plateforme introduite en version 2.
+    * NB : normalement cette méthode ne doit ramener qu'un seul élément maximum mais vu qu'en version 1
+    * le contrôle de doublons était à la collection, il pourrait rester sur la plateforme, plusieurs conteneurs avec le même code.
+    * Par conséquent, par sécurité, la méthode renvoie une liste.
     *
     * @param code        Le code du conteneur recherché.
-    * @param plateforme  La plateforme à laquelle appartient le conteneur.
-    * @return            Une liste de conteneurs correspondants aux critères spécifiés.
+    * @param plateforme  La plateforme sur laquelle faire la recherche.
+    * @return            La liste des conteneurs correspondants aux critères spécifiés.
     */
    List<Conteneur> findByCodeAndPlateforme(String code, Plateforme plateforme);
 
 
    /**
-    * Recherche une liste de conteneurs ayant le même nom et appartenant à la même plateforme.
+    * Recherche une liste de conteneurs ayant le nom spécifié en paramètre et appartenant à une plateforme donnée.
     *
-    * @param nom         Le nom du conteneur recherché.
-    * @param plateforme  La plateforme à laquelle appartient le conteneur.
-    * @return            Une liste de conteneurs correspondants aux critères spécifiés.
+    * @param nom         Le nom des conteneurs recherchés.
+    * @param plateforme  La plateforme sur laquelle faire la recherche.
+    * @return            La liste des conteneurs correspondant aux critères spécifiés.
     */
    List<Conteneur> findByNomAndPlateforme(String nom, Plateforme plateforme);
 
    /**
-    * Recherche une liste de conteneurs ayant le même nom et appartenant à la même plateforme,
-    * en excluant un conteneur spécifique dont l'identifiant est fourni.
-    * Cette exclusion permet d'éviter de récupérer le même conteneur lors d'une mise à jour.
+    * Recherche une liste de conteneurs ayant le nom spécifié en paramètre et appartenant à une plateforme donnée,
+    * tout en excluant un conteneur spécifique identifié par son ID.
+    * Cette méthode est utilisée pour détecter d'éventuels doublons de nom lors de la modification
+    * d'un conteneur.
     *
     * @param nom         Le nom du conteneur recherché.
     * @param plateforme  La plateforme à laquelle appartient le conteneur.
     * @param id          L'identifiant du conteneur à exclure de la recherche.
     * @return            Une liste de conteneurs correspondants aux critères spécifiés.
     */
-   List<Conteneur> findByNomAndPlateformeExcludingId(String nom, Plateforme plateforme, Integer id);
+   List<Conteneur> findByNomAndPlateformeExcludedId(String nom, Plateforme plateforme, Integer id);
 
 }

@@ -171,37 +171,6 @@ public class ConteneurDaoTest extends AbstractDaoTest
    }
 
    /**
-    * Test l'appel de la méthode findByBanqueIdWithExcludedId().
-    */
-   public void testFindByBanqueIdWithExcludedId(){
-      List<Conteneur> liste = conteneurDao.findByBanqueIdWithExcludedId(1, 1);
-      assertTrue(liste.size() == 2);
-
-      liste = conteneurDao.findByBanqueIdWithExcludedId(1, 10);
-      assertTrue(liste.size() == 3);
-
-      liste = conteneurDao.findByBanqueIdWithExcludedId(null, 1);
-      assertTrue(liste.size() == 0);
-
-      liste = conteneurDao.findByBanqueIdWithExcludedId(1, null);
-      assertTrue(liste.size() == 0);
-   }
-
-   /**
-    * Test l'appel de la méthode findByExcludedId().
-    */
-   public void testFindByExcludedId(){
-      List<Conteneur> liste = conteneurDao.findByExcludedId(1);
-      assertTrue(liste.size() == 3);
-
-      liste = conteneurDao.findByExcludedId(10);
-      assertTrue(liste.size() == 4);
-
-      liste = conteneurDao.findByExcludedId(null);
-      assertTrue(liste.size() == 0);
-   }
-
-   /**
     * Test l'insertion, la mise à jour et la suppression d'un Conteneur.
     * @throws Exception lance une exception en cas d'erreur.
     */

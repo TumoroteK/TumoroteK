@@ -294,22 +294,30 @@ public class ConteneurManagerImpl implements ConteneurManager
    @Override
    public boolean findDoublonManager(final Conteneur conteneur) {
       // Vérification des paramètres obligatoires
-      if (conteneur == null || conteneur.getCode() == null || conteneur.getPlateformeOrig() == null) {
-         return false;
+      //todo : il faudrait gérer l'internationalisation des messages définis côté back car ils sont affichés tels quels à l'utilisateur (AbstractController.handleExceptionMessage())
+      //dans le cas présent, l'exception ne doit jamais être rencontrée donc pas prioritaire
+      if (conteneur == null) {
+         throw new IllegalArgumentException("Méthode ConteneurManagerImpl.findDoublonManager : le paramètre conteneur ne peut pas être null");
       }
-
-      log.debug("Vérification des doublons pour le Conteneur : {}", conteneur);
+      if(conteneur.getCode() == null) {
+         throw new IllegalArgumentException("Méthode ConteneurManagerImpl.findDoublonManager : le code du paramètre conteneur ne peut pas être null");
+      }
+      if(conteneur.getPlateformeOrig() == null) {
+         throw new IllegalArgumentException("Méthode ConteneurManagerImpl.findDoublonManager : la plateforme d'origine du paramètre conteneur ne peut pas être null");
+      }
 
       List<Conteneur> doublons;
       if (conteneur.getConteneurId() == null) {
+         log.debug("Vérification des doublons lors de la création du conteneur : {}", conteneur.getCode());
          // Pour les nouveaux conteneurs sans ID, utiliser la requête sans exclusion d'ID
          doublons = findByCodeAndPlateforme(
                  conteneur.getCode(),
                  conteneur.getPlateformeOrig()
          );
       } else {
+         log.debug("Vérification des doublons lors de la modification du conteneur : {}", conteneur.getCode());
          // Pour les conteneurs existants avec ID, utiliser la requête avec exclusion d'ID
-         doublons = findByCodeAndPlateformeExcludingId(
+         doublons = findByCodeAndPlateformeExcludedId(
                  conteneur.getCode(),
                  conteneur.getPlateformeOrig(),
                  conteneur.getConteneurId()
@@ -317,9 +325,9 @@ public class ConteneurManagerImpl implements ConteneurManager
       }
 
       // Vérifier si des doublons ont été trouvés
-      boolean hasDuplicates = !doublons.isEmpty();
-      log.info("Résultat de la vérification des doublons pour le Conteneur {} : {}", conteneur.getCode(), hasDuplicates);
-      return hasDuplicates;
+      boolean hasDoublons = !doublons.isEmpty();
+      log.debug("Résultat de la vérification des doublons pour le Conteneur {} et la plateforme {} : {}", conteneur.getCode(), conteneur.getPlateformeOrig().getNom(), hasDoublons);
+      return hasDoublons;
    }
 
 
@@ -759,7 +767,7 @@ public class ConteneurManagerImpl implements ConteneurManager
 
 
    @Override
-   public List<Conteneur> findByCodeAndPlateformeExcludingId(String code, Plateforme plateforme, Integer conteneurId) {
+   public List<Conteneur> findByCodeAndPlateformeExcludedId(String code, Plateforme plateforme, Integer conteneurId) {
       if (code == null || plateforme == null) {
          return Collections.emptyList();
       }
@@ -769,7 +777,7 @@ public class ConteneurManagerImpl implements ConteneurManager
          return this.findByCodeAndPlateforme(code, plateforme);
       }
 
-      return conteneurDao.findByCodeAndPlateformeExcludingId(code, plateforme, conteneurId);
+      return conteneurDao.findByCodeAndPlateformeExcludedId(code, plateforme, conteneurId);
    }
 
 
@@ -791,7 +799,7 @@ public class ConteneurManagerImpl implements ConteneurManager
    }
 
    @Override
-   public List<Conteneur> findByNomAndPlateformeExcludingId(String nom, Plateforme plateforme, Integer conteneurId) {
+   public List<Conteneur> findByNomAndPlateformeExcludedId(String nom, Plateforme plateforme, Integer conteneurId) {
       if (nom == null || plateforme == null) {
          return Collections.emptyList();
       }
@@ -801,7 +809,7 @@ public class ConteneurManagerImpl implements ConteneurManager
          return this.findByNomAndPlateforme(nom, plateforme);
       }
 
-      return conteneurDao.findByNomAndPlateformeExcludingId(nom, plateforme, conteneurId);
+      return conteneurDao.findByNomAndPlateformeExcludedId(nom, plateforme, conteneurId);
    }
 
 

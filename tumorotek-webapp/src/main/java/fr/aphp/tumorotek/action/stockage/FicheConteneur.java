@@ -937,7 +937,7 @@ public class FicheConteneur extends AbstractFicheCombineStockageController
    public void onBlur$codeBox() {
       String code = codeBox.getValue().toUpperCase().trim();
       codeBox.setValue(code);
-      
+   
       //TK-649 : ajout d'un "contrôle de doublon" qui n'est fait que si le code a été modifié. Dans le cas de la création conteneur.getCode() est null
       if(!code.equals(conteneur.getCode())) {
          //le contrôle est fait par plateforme :
@@ -1090,7 +1090,7 @@ public class FicheConteneur extends AbstractFicheCombineStockageController
 
       // Recherche des conteneurs avec le même nom et sur la même plateforme, à l'exception de l'ID actuel du conteneur.
       List<Conteneur> listDoublonFound = ManagerLocator.getConteneurManager()
-              .findByNomAndPlateformeExcludingId(name, plateforme, conteneur.getConteneurId());
+              .findByNomAndPlateformeExcludedId(name, plateforme, conteneur.getConteneurId());
       int numberDoublonFound = listDoublonFound.size();
 
       // Si des doublons sont trouvés
