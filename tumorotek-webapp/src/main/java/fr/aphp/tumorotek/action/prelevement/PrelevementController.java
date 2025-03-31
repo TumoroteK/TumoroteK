@@ -50,18 +50,12 @@ import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Components;
 import org.zkoss.zk.ui.Executions;
-import org.zkoss.zk.ui.HtmlMacroComponent;
 import org.zkoss.zk.ui.Page;
-import org.zkoss.zk.ui.Path;
-import org.zkoss.zk.ui.SuspendNotAllowedException;
-import org.zkoss.zk.ui.event.Event;
-import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Tabbox;
 import org.zkoss.zul.Tabpanel;
-import org.zkoss.zul.Timer;
-import org.zkoss.zul.Window;
+
 
 import fr.aphp.tumorotek.action.MainWindow;
 import fr.aphp.tumorotek.action.ManagerLocator;
@@ -77,7 +71,6 @@ import fr.aphp.tumorotek.action.patient.PatientController;
 import fr.aphp.tumorotek.action.prelevement.serotk.FichePrelevementEditSero;
 import fr.aphp.tumorotek.action.prelevement.serotk.FichePrelevementStaticSero;
 import fr.aphp.tumorotek.action.prelevement.serotk.ListePrelevementSero;
-import fr.aphp.tumorotek.action.prelevement.serotk.PrelevementSeroRowRenderer;
 import fr.aphp.tumorotek.action.prodderive.ProdDeriveController;
 import fr.aphp.tumorotek.model.TKAnnotableObject;
 import fr.aphp.tumorotek.model.TKdataObject;
@@ -116,10 +109,8 @@ public class PrelevementController extends AbstractObjectTabController
 
    private Div divLaboInter;
 
-   //private Div divMultiEchantillons;
    private Div modifMultiDiv;
-   // private Component listePrelevement;
-   // private Component listePrelevementSero;
+
 
    // flag ordonnant le retour vers la fiche patient
    // et rafraichissement et ouverture panel maladie
@@ -390,7 +381,6 @@ public class PrelevementController extends AbstractObjectTabController
       divPrelevementStatic.setVisible(false);
       divPrelevementEdit.setVisible(false);
       divLaboInter.setVisible(true);
-      //divMultiEchantillons.setVisible(false);
 
       boolean needsComponentCreation = divLaboInter.getChildren().isEmpty();
 
@@ -445,8 +435,7 @@ public class PrelevementController extends AbstractObjectTabController
     */
    public void switchToMultiEchantillonsEditMode(final Prelevement prlvt, final List<LaboInter> labos,
       final List<LaboInter> labosToDelete){
-      //divPrelevementStatic.setVisible(false);
-      //divPrelevementEdit.setVisible(false);
+
       divLaboInter.setVisible(true);
 
       // enregistre le flag lors du premier acces a l'echantillon.
@@ -513,7 +502,7 @@ public class PrelevementController extends AbstractObjectTabController
       divPrelevementStatic.setVisible(false);
       divPrelevementEdit.setVisible(false);
       divLaboInter.setVisible(true);
-      //divMultiEchantillons.setVisible(false);
+
       // change d'onglet
       PrelevementController.backToMe(getMainWindow(), page);
    }
@@ -626,7 +615,6 @@ public class PrelevementController extends AbstractObjectTabController
       }
 
       // on efface le dossier externe
-      // setDossierExterne(null);
       SessionUtils.setDossierExterneInjection(sessionScope, null);
    }
 
