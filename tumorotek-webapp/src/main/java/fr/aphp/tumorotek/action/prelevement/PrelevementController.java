@@ -385,23 +385,26 @@ public class PrelevementController extends AbstractObjectTabController
     * @param prlvt Prlvt.
     */
    public void switchToLaboInterEditMode(final Prelevement prlvt){
-      final Prelevement edit = prlvt;
+      final Prelevement prelevementToEdit = prlvt;
+
       divPrelevementStatic.setVisible(false);
       divPrelevementEdit.setVisible(false);
       divLaboInter.setVisible(true);
       //divMultiEchantillons.setVisible(false);
 
-      if(divLaboInter.getChildren().size() == 0){
+      boolean needsComponentCreation = divLaboInter.getChildren().isEmpty();
+
+      if(needsComponentCreation){
          if(SessionUtils.getCurrentGatsbiContexteForEntiteId(2) == null){
             Executions.createComponents("/zuls/prelevement/FicheLaboInter.zul", divLaboInter, null);
          }else{
             Executions.createComponents("/zuls/prelevement/gatsbi/FicheLaboInterGatsbi.zul", divLaboInter, null);
          }
-         getFicheLaboInter().setObjectTabController(this);
-         getFicheLaboInter().setObject(edit);
-         getFicheLaboInter().switchToEditMode();
       }
 
+      getFicheLaboInter().setObjectTabController(this);
+      getFicheLaboInter().setObject(prelevementToEdit);
+      getFicheLaboInter().switchToEditMode();
    }
 
    /**
@@ -416,19 +419,22 @@ public class PrelevementController extends AbstractObjectTabController
       divPrelevementStatic.setVisible(false);
       divPrelevementEdit.setVisible(false);
       divLaboInter.setVisible(true);
-      //divMultiEchantillons.setVisible(false);
 
-      if(divLaboInter.getChildren().size() == 0){
+      boolean needsComponentCreation = divLaboInter.getChildren().isEmpty();
+
+      if(needsComponentCreation){
          if(SessionUtils.getCurrentGatsbiContexteForEntiteId(2) == null){
             Executions.createComponents("/zuls/prelevement/FicheLaboInter.zul", divLaboInter, null);
          }else{
             Executions.createComponents("/zuls/prelevement/gatsbi/FicheLaboInterGatsbi.zul", divLaboInter, null);
          }
-         getFicheLaboInter().setObjectTabController(this);
-         getFicheLaboInter().setObject(newPrlvt);
-         getFicheLaboInter().setOldLaboInters(labos);
-         getFicheLaboInter().switchToCreateMode();
       }
+
+      getFicheLaboInter().setObjectTabController(this);
+      getFicheLaboInter().setObject(newPrlvt);
+      getFicheLaboInter().setOldLaboInters(labos);
+      getFicheLaboInter().switchToCreateMode();
+
    }
 
    /**
@@ -445,12 +451,12 @@ public class PrelevementController extends AbstractObjectTabController
 
       // enregistre le flag lors du premier acces a l'echantillon.
       if(!nextToEchanClicked){
-         ((EchantillonController) getReferencedObjectsControllers(true).get(0)).switchToPrelevementEditMode(prlvt);
-         getFicheMultiEchantillons().setPrelevementProcedure(true);
-         getFicheMultiEchantillons().setLaboInters(labos);
-         getFicheMultiEchantillons().setLaboIntersToDelete(labosToDelete);
          nextToEchanClicked = true;
       }
+      retrieveEchantillonController().switchToPrelevementEditMode(prlvt);
+      getFicheMultiEchantillons().setPrelevementProcedure(true);
+      getFicheMultiEchantillons().setLaboInters(labos);
+      getFicheMultiEchantillons().setLaboIntersToDelete(labosToDelete);
 
       // change d'onglet
       EchantillonController.backToMe(getMainWindow(), page);
@@ -468,14 +474,16 @@ public class PrelevementController extends AbstractObjectTabController
 
       // enregistre le flag lors du premier acces a l'echantillon.
       if(!nextToEchanClicked){
-         ((EchantillonController) getReferencedObjectsControllers(true).get(0)).switchToCreateMode(prlvt);
+         retrieveEchantillonController().switchToCreateMode(prlvt);
          getFicheMultiEchantillons().setPrelevementProcedure(true);
          nextToEchanClicked = true;
       }else{
-         if(((EchantillonController) getReferencedObjectsControllers(true).get(0)).hasMultiFicheEdit()){
-            getFicheMultiEchantillons().setParentObject(prlvt);
+         if(retrieveEchantillonController().hasMultiFicheEdit()){
+            retrieveEchantillonController().switchToPrelevementEditMode(prlvt);
+            getFicheMultiEchantillons().setPrelevementProcedure(true);
+
          }else{
-            ((EchantillonController) getReferencedObjectsControllers(true).get(0)).switchToCreateMode(prlvt);
+            retrieveEchantillonController().switchToCreateMode(prlvt);
             getFicheMultiEchantillons().setPrelevementProcedure(true);
             nextToEchanClicked = true;
          }
@@ -539,7 +547,16 @@ public class PrelevementController extends AbstractObjectTabController
     * @return fiche FicheMultiEchantillons
     */
    public FicheMultiEchantillons getFicheMultiEchantillons(){
-      return ((EchantillonController) getReferencedObjectsControllers(true).get(0)).getMultiFicheEdit();
+      return retrieveEchantillonController().getMultiFicheEdit();
+   }
+
+   /**
+    * Récupère le contrôleur de l'échantillon en s'assurant qu'il est créé si nécessaire.
+    *
+    * @return le contrôleur de l'échantillon.
+    */
+   public EchantillonController retrieveEchantillonController() {
+      return (EchantillonController) getReferencedObjectsControllers(true).get(0);
    }
 
    /**
@@ -574,7 +591,7 @@ public class PrelevementController extends AbstractObjectTabController
    public void onCreateDone(){
       // create done hors fiche echantillon atteinte pourtant
       if(nextToEchanClicked){
-         ((EchantillonController) getReferencedObjectsControllers(true).get(0)).onCancel();
+         retrieveEchantillonController().onCancel();
          nextToEchanClicked = false;
       }
       super.onCreateDone();
@@ -584,7 +601,7 @@ public class PrelevementController extends AbstractObjectTabController
    public void onEditDone(final TKdataObject obj){
       // update done hors fiche echantillon atteinte pourtant
       if(nextToEchanClicked){
-         ((EchantillonController) getReferencedObjectsControllers(true).get(0)).onCancel();
+         retrieveEchantillonController().onCancel();
          nextToEchanClicked = false;
       }
       super.onEditDone(obj);
@@ -626,7 +643,7 @@ public class PrelevementController extends AbstractObjectTabController
    public void onRevert(){
       // cancel done hors fiche echantillon atteinte pourtant
       if(nextToEchanClicked){
-         ((EchantillonController) getReferencedObjectsControllers(true).get(0)).onCancel();
+         retrieveEchantillonController().onCancel();
          nextToEchanClicked = false;
       }
       super.onRevert();
