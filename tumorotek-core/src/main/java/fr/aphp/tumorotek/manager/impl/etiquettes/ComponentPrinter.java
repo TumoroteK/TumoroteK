@@ -67,6 +67,7 @@ import fr.aphp.tumorotek.model.imprimante.Modele;
 
 //import javassist.bytecode.annotation.ArrayMemberValue;
 
+// /!\ il existe une autre classe ComponentPrinter avec une méthode printComponents(). Elle se trouve dans fr.aphp.tumorotek.utils.etiquettes
 public class ComponentPrinter
 {
 
@@ -325,7 +326,7 @@ public class ComponentPrinter
                codeRetour = 1;
                log.debug(codeRetour);
             }catch(final Exception e){
-               e.printStackTrace();
+               log.error("Erreur lors de l'impression : ", e);
             }finally{
                if(clientSocket != null){
                   try{

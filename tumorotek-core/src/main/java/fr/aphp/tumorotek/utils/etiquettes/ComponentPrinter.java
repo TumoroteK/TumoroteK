@@ -53,6 +53,7 @@ import org.apache.commons.logging.LogFactory;
 
 import fr.aphp.tumorotek.model.imprimante.Imprimante;
 
+// /!\ il existe une autre classe ComponentPrinter avec une méthode printComponents(). Elle se trouve dans fr.aphp.tumorotek.manager.impl.etiquettes
 public class ComponentPrinter
 {
 
@@ -126,9 +127,9 @@ public class ComponentPrinter
                   printJob.print();
                   codeRetour = 1;
                }catch(final PrinterException pe){
-                  log.error("printComponents:PrinterException" + pe);
+                  log.error("printComponents:PrinterException", pe);
                }catch(final Exception e){
-                  log.error("printComponents:Exception" + e);
+                  log.error("printComponents:Exception", e);
                }
             }
          }
