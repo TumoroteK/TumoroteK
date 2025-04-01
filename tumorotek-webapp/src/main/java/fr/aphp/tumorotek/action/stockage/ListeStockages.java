@@ -704,31 +704,29 @@ public class ListeStockages extends AbstractController
       StockageUtils.createExcelForPlanConteneur(conteneurs, avecBoites);
    }
 
-   /**
-    * Gère les erreurs survenues lors de la génération du fichier Excel.
-    *
-    * Cette méthode affiche une notification à l'utilisateur et enregistre l'erreur dans les logs.
-    *
-    * @param labelKey Clé du label pour le message d'erreur.
-    * @param e L'exception qui a été levée.
-    */
-   private void handleError(String labelKey, Exception e) {
-      String errorMessage = Labels.getLabel(labelKey, new Object[]{e.getMessage()});
-      Clients.showNotification(errorMessage, "error", null, null, 3000);
-      log.error(errorMessage, e);
-   }
-
-
+   //la méthode est mal nommée : elle ferme tous les noeuds ouverts, resélectionne le noeud de l'arborescence 
+   //associé au conteneur et l'ouvre  
    public void updateConteneur(final Conteneur conteneur){
 
       final ConteneurNode node = new ConteneurNode(conteneur, null, curPf);
 
       ((TreeOpenableModel) ttm).clearOpen();
-      selectedItem = mainTreeContext.renderItemByPath(ttm.getPath(node));
+      int[] nodePath = ttm.getConteneurPath(node);
+      selectedItem = mainTreeContext.renderItemByPath(nodePath);
 
-      ttm.addOpenPath(ttm.getPath(node));
+      ttm.addOpenPath(nodePath);
    }
-
+   
+   
+   //TK-421 :
+   //impossible de mettre à jour uniquement le node concerné car beaucoup d'objets ListeStockage font référence
+   //aux conteneurs donc il y a un risque d'introduction d'incohérence.
+   //Par ailleurs, cette méthode n'est appelée que dans le cas de la mise à jour des code ou libellé d'un conteneur
+   //ce qui doit être assez rare. Donc le rapport bénéfice / risque fait prévilégier la sécurité à l'optimisation.
+   public void updateLibelleConteneurNode(final Conteneur conteneur) {
+      updateAllConteneurs(false);
+   }
+   
    /**
     * Mets à jour la liste des conteneurs
     * @version 2.1

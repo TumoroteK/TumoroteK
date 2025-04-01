@@ -82,29 +82,11 @@ public interface ConteneurDao extends GenericDaoJpa<Conteneur, Integer>
    List<Conteneur> findByBanqueIdAndCode(Integer banqueId, String code);
 
    /**
-    * Recherche tous les Conteneurs d'une banque ordonnées sauf
-    * celui dont l'ID est passé en paramètre.
-    * @param banqueId Identifiant de la Banque des Conteneurs
-    * recherchés.
-    * @param conteneurId Id du conteneur à exclure.
-    * @return Liste ordonnée de Conteneurs.
-    */
-   List<Conteneur> findByBanqueIdWithExcludedId(Integer banqueId, Integer conteneurId);
-
-   /**
     * Recherche tous les Conteneurs initialement crée par une plateforme.
     * @param plateforme.
     * @return Liste ordonnée de Conteneurs.
     */
    List<Conteneur> findByPlateformeOrigWithOrder(Plateforme orig);
-
-   /**
-    * Recherche les Conteneurs sauf celui dont l'identifiant
-    * est en paramètre.
-    * @param id Identifiant du Conteneur à exclure.
-    * @return Liste de Conteneurs.
-    */
-   List<Conteneur> findByExcludedId(Integer conteneurId);
 
    /**
     * Recherche tous les conteneurs qui sont accessibles à partir
@@ -130,4 +112,54 @@ public interface ConteneurDao extends GenericDaoJpa<Conteneur, Integer>
     * @return liste Float
     */
    List<Float> findTempForEmplacementId(Integer emplacementId);
+
+   /**
+    * Recherche une liste de conteneurs ayant le code spécifié en paramètre et appartenant à une plateforme donnée,
+    * tout en excluant un conteneur spécifique identifié par son ID.
+    * Cette méthode est utilisée pour détecter d'éventuels doublons de code lors de la modification
+    * d'un conteneur, en tenant compte de la distinction par plateforme introduite en version 2.
+    *
+    * @param code        Le code du conteneur recherché.
+    * @param plateforme  La plateforme sur laquelle faire la recherche.
+    * @param conteneurId L'identifiant du conteneur à exclure de la recherche.
+    * @return            La liste des conteneurs correspondant aux critères spécifiés.
+    */
+   List<Conteneur> findByCodeAndPlateformeExcludedId(String code, Plateforme plateforme, Integer conteneurId);
+
+   /**
+    * Recherche les conteneurs ayant le code spécifié en paramètre et appartenant à une plateforme donnée.
+    * Cette méthode est utilisée pour détecter d'éventuels doublons lors de la création
+    * d'un conteneur, en tenant compte de la distinction par plateforme introduite en version 2.
+    * NB : normalement cette méthode ne doit ramener qu'un seul élément maximum mais vu qu'en version 1
+    * le contrôle de doublons était à la collection, il pourrait rester sur la plateforme, plusieurs conteneurs avec le même code.
+    * Par conséquent, par sécurité, la méthode renvoie une liste.
+    *
+    * @param code        Le code du conteneur recherché.
+    * @param plateforme  La plateforme sur laquelle faire la recherche.
+    * @return            La liste des conteneurs correspondants aux critères spécifiés.
+    */
+   List<Conteneur> findByCodeAndPlateforme(String code, Plateforme plateforme);
+
+   /**
+    * Recherche une liste de conteneurs ayant le nom spécifié en paramètre et appartenant à une plateforme donnée.
+    *
+    * @param nom         Le nom des conteneurs recherchés.
+    * @param plateforme  La plateforme sur laquelle faire la recherche.
+    * @return            La liste des conteneurs correspondant aux critères spécifiés.
+    */
+   List<Conteneur> findByNomAndPlateforme(String nom, Plateforme plateforme);
+
+   /**
+    * Recherche une liste de conteneurs ayant le nom spécifié en paramètre et appartenant à une plateforme donnée,
+    * tout en excluant un conteneur spécifique identifié par son ID.
+    * Cette méthode est utilisée pour détecter d'éventuels doublons de nom lors de la modification
+    * d'un conteneur.
+    *
+    * @param nom         Le nom du conteneur recherché.
+    * @param plateforme  La plateforme sur laquelle faire la recherche.
+    * @param id          L'identifiant du conteneur à exclure de la recherche.
+    * @return            La liste des conteneurs correspondant aux critères spécifiés.
+    */
+   List<Conteneur> findByNomAndPlateformeExcludedId(String nom, Plateforme plateforme, Integer id);
+
 }

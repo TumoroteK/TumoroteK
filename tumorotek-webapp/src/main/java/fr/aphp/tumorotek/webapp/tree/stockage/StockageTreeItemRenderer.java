@@ -35,9 +35,6 @@
  **/
 package fr.aphp.tumorotek.webapp.tree.stockage;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;

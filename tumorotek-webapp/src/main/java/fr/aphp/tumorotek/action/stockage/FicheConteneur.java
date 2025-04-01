@@ -41,12 +41,9 @@ import fr.aphp.tumorotek.action.utils.StockageUtils;
 import fr.aphp.tumorotek.component.CalendarBox;
 import fr.aphp.tumorotek.decorator.EnceinteDecorator;
 import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
-import fr.aphp.tumorotek.dto.OutputStreamData;
-import fr.aphp.tumorotek.manager.impl.io.production.DocumentWithDataAsTableExcelProducer;
-import fr.aphp.tumorotek.manager.impl.stockage.planconteneur.PlanCongelateurAvecBoiteExcelGenerator;
-import fr.aphp.tumorotek.manager.impl.stockage.planconteneur.PlanCongelateurSansBoiteExcelGenerator;
 import fr.aphp.tumorotek.model.TKdataObject;
 import fr.aphp.tumorotek.model.contexte.Banque;
+import fr.aphp.tumorotek.model.contexte.Plateforme;
 import fr.aphp.tumorotek.model.contexte.Service;
 import fr.aphp.tumorotek.model.stockage.Conteneur;
 import fr.aphp.tumorotek.model.stockage.ConteneurType;
@@ -55,8 +52,8 @@ import fr.aphp.tumorotek.model.stockage.EnceinteType;
 import fr.aphp.tumorotek.model.stockage.Terminale;
 import fr.aphp.tumorotek.model.stockage.TerminaleNumerotation;
 import fr.aphp.tumorotek.model.stockage.TerminaleType;
+import fr.aphp.tumorotek.utils.MessagesUtils;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
-import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.util.resource.Labels;
@@ -75,6 +72,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @version 2.2.1-IRELEC
@@ -245,7 +243,7 @@ public class FicheConteneur extends AbstractFicheCombineStockageController
    private Terminale terminale;
 
    private EnceinteRowRenderer enceinteRenderer = new EnceinteRowRenderer();
-
+   
    /**
     *  Variables formulaire.
     */
@@ -256,6 +254,11 @@ public class FicheConteneur extends AbstractFicheCombineStockageController
    // @since 2.2.1-IRELEC
    private boolean canNumerotation;
 
+   
+   //@since 2.3.1 : TK-421 : on garde en cache les codes et nom à l'ouverture de l'écran en mode edit
+   private String codeInitial;
+   private String nomInitial;
+   
    @Override
    public void doAfterCompose(final Component comp) throws Exception{
       super.doAfterCompose(comp);
@@ -575,14 +578,33 @@ public class FicheConteneur extends AbstractFicheCombineStockageController
       clearData();
    }
 
+   /**
+    * Méthode appelée lorsque l'utilisateur clique sur le bouton "Enregistrer" de la fiche en mode création.
+    *
+    * Vérifie si l'arborescence a été créée avant de poursuivre l'enregistrement.
+    * Si l'arborescence n'a pas été créée, lance une exception.
+    *
+    * @throws WrongValueException si l'arborescence n'a pas été créée
+    */
    @Override
    public void onClick$createC(){
 
       if(!arborescenceCreee){
          throw new WrongValueException(createC, Labels.getLabel("conteneur.error.arborescence"));
       }
-      Clients.showBusy(Labels.getLabel("conteneur.creation.encours"));
-      Events.echoEvent("onLaterCreate", self, null);
+      //TK-421 : il faut tester si ce libellé renseigné existe déjà pour la même plateforme 
+      //si oui, on lui demande si il veut continuer avec ce libellé :
+      //- si oui appel du traitement de création 
+      //- si non on ne fait rien et on met le focus dans le champ du nom
+      //NB : le contrôle sur le code est bloquant (doublon impossible) contrairement à celui sur le libellé donc il est fait dès 
+      //la sortie du champ "codeBox"
+      if (continuerSiDoublonSurLeNom()) {
+         Clients.showBusy(Labels.getLabel("conteneur.creation.encours"));
+         Events.echoEvent("onLaterCreate", self, null);
+      }
+      else {
+         nomBox.focus();
+      }         
    }
 
    @Override
@@ -598,10 +620,26 @@ public class FicheConteneur extends AbstractFicheCombineStockageController
       super.onClick$revertC();
    }
 
+
+   /**
+    * Méthode appelée lorsque l'utilisateur clique sur le bouton "Valider" de la fiche en mode modification afin de mettre à jour un conteneur.
+    */
    @Override
    public void onClick$validateC(){
-      Clients.showBusy(Labels.getLabel("conteneur.creation.encours"));
-      Events.echoEvent("onLaterUpdate", self, null);
+      //TK-421: si l'utilisateur a modifié le nom du conteneur, il faut tester si ce libellé existe déjà pour la même plateforme 
+      //si oui, on lui demande si il veut continuer sa mise à jour :
+      //- si oui on fait la mise à jour 
+      //- si non on ne fait rien et on met le focus dans le champ du nom
+      //NB : le contrôle sur le code est bloquant (doublon impossible) contrairement à celui sur le libellé donc il est fait dès 
+      //la sortie du champ "codeBox"
+      //NB : le premier test est pour le cas standard où la modification n'a pas concernée le nom
+      if (conteneur.getNom().equals(nomInitial) || continuerSiDoublonSurLeNom()) {
+         Clients.showBusy(Labels.getLabel("conteneur.creation.encours"));//NB : la clé est mal nommée : le message est générique "Enregistrement du conteneur en cours... "
+         Events.echoEvent("onLaterUpdate", self, null);
+      }
+      else {
+         nomBox.focus();
+      }          
    }
 
    /**
@@ -919,13 +957,36 @@ public class FicheConteneur extends AbstractFicheCombineStockageController
    //	}
 
    /**
-    * Méthode appelée après la saisie d'une valeur dans le champ
-    * codeBox. Cette valeur sera mise en majuscules.
+    * Méthode appelée lors de la perte de focus sur le champ de code (codeBox).
+    * Elle valide le code saisi par l'utilisateur en vérifiant qu'il n'existe pas déjà dans la plateforme courante.
+    * Cette valeur sera mise en majuscules.
     */
-   public void onBlur$codeBox(){
-      codeBox.setValue(codeBox.getValue().toUpperCase().trim());
+   public void onBlur$codeBox() {
+      String code = codeBox.getValue().toUpperCase().trim();
+      codeBox.setValue(code);
+   
+      //TK-649 : ajout d'un "contrôle de doublon" qui n'est fait que si le code a été modifié. Dans le cas de la création conteneur.getCode() est null
+      if(!code.equals(conteneur.getCode())) {
+         //le contrôle est fait par plateforme :
+         Plateforme plateforme = conteneur.getPlateformeOrig();
+         //normalement la plateforme d'origine a bien été valorisée dans le conteneur même dans le cas de la création
+         //mais pas sécurité, on gère le cas où cela n'aurait pas été fait :
+         if(plateforme == null) {
+            plateforme = SessionUtils.getPlateforme(sessionScope);
+         }
+         
+         List<Conteneur> existingContainers = ManagerLocator.getConteneurManager().findByCodeAndPlateforme(code, plateforme);
+         
+         if (!existingContainers.isEmpty()) {
+            throw new WrongValueException(
+                    codeBox,
+                    Labels.getLabel("error.validation.doublonParPlateforme.code", new String[] {code})
+            );
+         }//revoir la clé pour homogénéiser
+         
+      }
    }
-
+   
    @Override
    public void setFieldsToUpperCase(){
       if(this.conteneur.getCode() != null){
@@ -963,12 +1024,13 @@ public class FicheConteneur extends AbstractFicheCombineStockageController
       }
    }
 
+   /**
+    * Méthode appelée après le clic sur "Enregistrer" pour créer un conteneur.
+    */
    @Override
    public void onLaterCreate(){
-
       try{
          createNewObject();
-
          // on vérifie que l'on retrouve bien la page contenant la liste
          // des stockages
          if(getObjectTabController().getListeStockages() != null){
@@ -983,11 +1045,12 @@ public class FicheConteneur extends AbstractFicheCombineStockageController
       }finally{
          Clients.clearBusy();
       }
-
    }
 
+   /**
+    * Méthode appelée après le clic sur "Valider" pour mettre à jour un conteneur existant.
+    */
    public void onLaterUpdate(){
-
       // s'il n'y a pas d'erreurs lors de l'update
       try{
          updateObject();
@@ -995,6 +1058,12 @@ public class FicheConteneur extends AbstractFicheCombineStockageController
          // on vérifie que l'on retrouve bien la page contenant la liste
          // des stockages
          if(getObjectTabController().getListeStockages() != null){
+            //TK-421 : si le code ou le nom a été modifié, il faut mettre à jour le noeud car il contient ces éléments
+            if(!conteneur.getNom().equals(nomInitial) || !conteneur.getCode().equals(codeInitial)) {
+               getObjectTabController().getListeStockages().updateLibelleConteneurNode(conteneur);               
+            }
+            //NB : la méthode est mal nommée : elle resélectionne juste le noeud de l'arborescence 
+            //associé au conteneur et l'ouvre  
             getObjectTabController().getListeStockages().updateConteneur(conteneur);
          }
 
@@ -1010,6 +1079,50 @@ public class FicheConteneur extends AbstractFicheCombineStockageController
          Clients.clearBusy();
       }
    }
+
+   /**
+    * Vérifie si un conteneur avec le même nom existe déjà sur la plateforme et affiche un avertissement.
+    *
+    * Cette méthode recherche les conteneurs existants ayant le même nom et la même plateforme.
+    * Si un ou plusieurs conteneurs sont trouvés, une fenêtre de confirmation est affichée à l'utilisateur.
+    * L'utilisateur peut alors choisir de continuer ou d'annuler l'opération.
+    *
+    * @return {@code true} s'il n'y a pas de doublon sur le nom ou si l'utilisateur décide de continuer quand même
+    *  {@code false} sinon.
+    */
+   private boolean continuerSiDoublonSurLeNom() {
+      // Recherche des conteneurs avec le même nom et sur la même plateforme, à l'exception de l'ID actuel du conteneur.
+      List<Conteneur> listAutresConteneursAvecMemeNom = ManagerLocator.getConteneurManager()
+              .findAutreAvecMemeNomEtMemePlateformeManager(conteneur);
+      int nbAutresConteneursAvecMemeNom = listAutresConteneursAvecMemeNom.size();
+
+      // Si des doublons sont trouvés
+      if (nbAutresConteneursAvecMemeNom > 0) {
+         String title = Labels.getLabel("error.validation.title.duplicate.container.name");
+
+         // On distingue les cas où il y a un seul doublon ou plusieurs doublons (pour les messages spécifiques)
+         String messageToDisplay;
+         if (nbAutresConteneursAvecMemeNom == 1) {
+            Conteneur autreConteneurAvecMemeNom = listAutresConteneursAvecMemeNom.get(0);
+            Set<Banque> banques  = ManagerLocator.getConteneurManager().getBanquesManager(autreConteneurAvecMemeNom);
+
+            // Message spécifique pour un seul doublon, incluant le nombre de banques associées
+            String messageForOneDoublon = Labels.getLabel("warning.doublonfound.container.nom",
+                    new String[] { conteneur.getNom(), String.valueOf(banques.size()) });
+            messageToDisplay = messageForOneDoublon;
+         } else {
+            // Si plusieurs doublons sont trouvés, on crée un message différent qui indique le nombre de doublons
+            String messageForMultiDoublons = Labels.getLabel("warning.doublonfound.container.nom.multiple",
+                    new String[] { String.valueOf(nbAutresConteneursAvecMemeNom), conteneur.getNom() });
+            messageToDisplay = messageForMultiDoublons;
+         }
+
+         // Affichage du message sous forme d'une boîte de dialogue avec la demande de confirmation pour continuer
+         return MessagesUtils.openQuestionModal(title, messageToDisplay);
+      }
+      return true;
+   }
+
 
    //	/**
    //	 * Met à jour la liste des conteneurs au niveau d'une fiche banque
@@ -1068,6 +1181,10 @@ public class FicheConteneur extends AbstractFicheCombineStockageController
 
    public void initEditableMode(){
 
+      //TK-421 : on garde en cache les code et nom lors de l'ouverture de l'écran en mode edit
+      codeInitial = conteneur.getCode();
+      nomInitial = conteneur.getNom();
+      
       types = ManagerLocator.getConteneurTypeManager().findByOrderManager(SessionUtils.getPlateforme(sessionScope));
       types.add(0, null);
       selectedConteneurType = this.conteneur.getConteneurType();
@@ -1097,6 +1214,7 @@ public class FicheConteneur extends AbstractFicheCombineStockageController
       checkPaillettes.setChecked(false);
       paillettesSizeBox.setVisible(true);
       paillettesSizeBox.setSelectedIndex(0);
+      
    }
 
    /**

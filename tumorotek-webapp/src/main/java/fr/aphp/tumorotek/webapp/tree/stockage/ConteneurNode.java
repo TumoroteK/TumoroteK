@@ -66,11 +66,17 @@ public class ConteneurNode extends TumoTreeNode
    public ConteneurNode(final Conteneur cont, final Banque banque, final Plateforme curPf){
       this.conteneur = cont;
       this.selectedBanque = banque;
-      if(this.conteneur != null && !this.conteneur.equals(new Conteneur())){
-         if(this.conteneur.getNom() != null){
-            this.libelle = this.conteneur.getNom();
+      initLibelle(curPf);
+   }
+
+   public void initLibelle(final Plateforme curPf){
+      if(conteneur != null && !conteneur.equals(new Conteneur())){
+         if(conteneur.getNom() != null){
+            //TK-421 : ajout du code entre parenthèse pour distinguer les conteneurs pouvant avoir le même nom
+            StringBuilder nomSuiviCode = new StringBuilder(conteneur.getNom()).append(" (").append(conteneur.getCode()).append(")");
+            this.libelle = nomSuiviCode.toString();
          }else{
-            this.libelle = this.conteneur.getCode();
+            this.libelle = conteneur.getCode();
          }
 
          // conteneur partagé depuis pf extérieur
