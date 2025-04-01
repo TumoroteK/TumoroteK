@@ -156,9 +156,9 @@ public interface ConteneurDao extends GenericDaoJpa<Conteneur, Integer>
     * d'un conteneur.
     *
     * @param nom         Le nom du conteneur recherché.
-    * @param plateforme  La plateforme à laquelle appartient le conteneur.
+    * @param plateforme  La plateforme sur laquelle faire la recherche.
     * @param id          L'identifiant du conteneur à exclure de la recherche.
-    * @return            Une liste de conteneurs correspondants aux critères spécifiés.
+    * @return            La liste des conteneurs correspondant aux critères spécifiés.
     */
    List<Conteneur> findByNomAndPlateformeExcludedId(String nom, Plateforme plateforme, Integer id);
 

@@ -163,6 +163,19 @@ public interface ConteneurManager
    boolean findDoublonManager(Conteneur conteneur);
 
    /**
+    * Recherche les conteneurs différents de celui passé en paramètre,
+    * ayant le même nom et la même plateforme d'origine.
+    *
+    * Cette méthode est utilisée pour avertir l'utilisateur lors de la création (conteneurId null) 
+    * et de la modification (conteneurId non null). Dans ce dernier cas, le contrôle fera la recherche 
+    * en excluant ce conteneurId.
+    * 
+    * @param conteneur Le conteneur à vérifier. Ne doit pas être null et doit contenir un nom et une plateforme non null.
+    * @return la liste des conteneurs trouvés.
+    */
+   List<Conteneur> findAutreAvecMemeNomEtMemePlateformeManager(final Conteneur conteneur);
+   
+   /**
     * Teste si le Conteneur passé en paramètre est utilisé par
     * d'autres objets.
     * @param conteneur Conteneur que l'on test.
@@ -304,19 +317,6 @@ public interface ConteneurManager
    ConteneurPlateforme getOneConteneurPlateformeManager(Conteneur conteneur, Plateforme pf);
 
    /**
-    * Recherche une liste de conteneurs ayant le code spécifié en paramètre et appartenant à une plateforme donnée,
-    * tout en excluant un conteneur spécifique identifié par son ID.
-    * Cette méthode est utilisée pour détecter d'éventuels doublons de code lors de la modification
-    * d'un conteneur, en tenant compte de la distinction par plateforme introduite en version 2.
-    *
-    * @param code        Le code du conteneur recherché.
-    * @param plateforme  La plateforme sur laquelle faire la recherche.
-    * @param conteneurId L'identifiant du conteneur à exclure de la recherche.
-    * @return            La liste des conteneurs correspondant aux critères spécifiés.
-    */
-   List<Conteneur> findByCodeAndPlateformeExcludedId(String code, Plateforme plateforme, Integer conteneurId);
-
-   /**
     * Recherche les conteneurs ayant le code spécifié en paramètre et appartenant à une plateforme donnée.
     * Cette méthode est utilisée pour détecter d'éventuels doublons lors de la création
     * d'un conteneur, en tenant compte de la distinction par plateforme introduite en version 2.
@@ -339,18 +339,5 @@ public interface ConteneurManager
     * @return            La liste des conteneurs correspondant aux critères spécifiés.
     */
    List<Conteneur> findByNomAndPlateforme(String nom, Plateforme plateforme);
-
-   /**
-    * Recherche une liste de conteneurs ayant le nom spécifié en paramètre et appartenant à une plateforme donnée,
-    * tout en excluant un conteneur spécifique identifié par son ID.
-    * Cette méthode est utilisée pour détecter d'éventuels doublons de nom lors de la modification
-    * d'un conteneur.
-    *
-    * @param nom         Le nom du conteneur recherché.
-    * @param plateforme  La plateforme à laquelle appartient le conteneur.
-    * @param id          L'identifiant du conteneur à exclure de la recherche.
-    * @return            Une liste de conteneurs correspondants aux critères spécifiés.
-    */
-   List<Conteneur> findByNomAndPlateformeExcludedId(String nom, Plateforme plateforme, Integer id);
 
 }

@@ -35,9 +35,6 @@
  **/
 package fr.aphp.tumorotek.webapp.tree.stockage;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -100,16 +97,9 @@ public class StockageTreeItemRenderer implements TreeitemRenderer<Object>
       if(data instanceof ConteneurNode){
          final ConteneurNode node = (ConteneurNode) data;
             
-         // on affiche le nom du conteneur (et son code :  TK-421)
-
-         String containerName = node.getLibelle();
-         String containerCode = node.getConteneur().getCode();
-
-         // Append the code in parentheses to the name
-         String displayName = containerName + " (" + containerCode + ")";
-
+         // on affiche le nom du conteneur
          final org.zkoss.zul.Label nomLabel = new org.zkoss.zul.Label();
-         nomLabel.setValue(displayName);
+         nomLabel.setValue(node.getLibelle());
          nomLabel.setParent(tcNamn);
          nomLabel.setStyle("font-weight:bold;");
                  

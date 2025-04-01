@@ -85,7 +85,7 @@ import java.util.Set;
          query = "SELECT c FROM Conteneur c " + "WHERE c.plateformeOrig = ?1 AND c.archive = 0 " + "ORDER BY c.nom"),
       @NamedQuery(name = "Conteneur.findByCode", query = "SELECT c FROM Conteneur c WHERE c.code = ?1 AND c.archive = 0"),
       @NamedQuery(name = "Conteneur.findByCodeAndPlateformeExcludedId",
-         query = "SELECT c FROM Conteneur c WHERE c.code = ?1 AND c.plateformeOrig = ?2 AND c.conteneurId != ?3 AND c.archive = false"),
+         query = "SELECT c FROM Conteneur c WHERE c.code = ?1 AND c.plateformeOrig = ?2 AND c.conteneurId != ?3 AND c.archive = 0"),
       @NamedQuery(name = "Conteneur.findByCodeAndPlateforme",
          query = "SELECT c FROM Conteneur c WHERE c.code = ?1 AND c.plateformeOrig = ?2 AND c.archive = 0"),
       @NamedQuery(name = "Conteneur.findByNomAndPlateforme",

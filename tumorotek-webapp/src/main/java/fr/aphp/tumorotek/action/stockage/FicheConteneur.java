@@ -243,7 +243,7 @@ public class FicheConteneur extends AbstractFicheCombineStockageController
    private Terminale terminale;
 
    private EnceinteRowRenderer enceinteRenderer = new EnceinteRowRenderer();
-
+   
    /**
     *  Variables formulaire.
     */
@@ -254,6 +254,11 @@ public class FicheConteneur extends AbstractFicheCombineStockageController
    // @since 2.2.1-IRELEC
    private boolean canNumerotation;
 
+   
+   //@since 2.3.1 : TK-421 : on garde en cache les codes et nom à l'ouverture de l'écran en mode edit
+   private String codeInitial;
+   private String nomInitial;
+   
    @Override
    public void doAfterCompose(final Component comp) throws Exception{
       super.doAfterCompose(comp);
@@ -574,7 +579,7 @@ public class FicheConteneur extends AbstractFicheCombineStockageController
    }
 
    /**
-    * Méthode appelée lorsque l'utilisateur clique sur le bouton "Enregistrer".
+    * Méthode appelée lorsque l'utilisateur clique sur le bouton "Enregistrer" de la fiche en mode création.
     *
     * Vérifie si l'arborescence a été créée avant de poursuivre l'enregistrement.
     * Si l'arborescence n'a pas été créée, lance une exception.
@@ -587,8 +592,19 @@ public class FicheConteneur extends AbstractFicheCombineStockageController
       if(!arborescenceCreee){
          throw new WrongValueException(createC, Labels.getLabel("conteneur.error.arborescence"));
       }
-      Clients.showBusy(Labels.getLabel("conteneur.creation.encours"));
-      Events.echoEvent("onLaterCreate", self, null);
+      //TK-421 : il faut tester si ce libellé renseigné existe déjà pour la même plateforme 
+      //si oui, on lui demande si il veut continuer avec ce libellé :
+      //- si oui appel du traitement de création 
+      //- si non on ne fait rien et on met le focus dans le champ du nom
+      //NB : le contrôle sur le code est bloquant (doublon impossible) contrairement à celui sur le libellé donc il est fait dès 
+      //la sortie du champ "codeBox"
+      if (continuerSiDoublonSurLeNom()) {
+         Clients.showBusy(Labels.getLabel("conteneur.creation.encours"));
+         Events.echoEvent("onLaterCreate", self, null);
+      }
+      else {
+         nomBox.focus();
+      }         
    }
 
    @Override
@@ -606,13 +622,24 @@ public class FicheConteneur extends AbstractFicheCombineStockageController
 
 
    /**
-    * Méthode appelée lorsque l'utilisateur clique sur le bouton "Valider" pour mettre à jour un conteneur.
-    * Elle déclenche l'événement "onLaterUpdate" pour finaliser la mise à jour.
+    * Méthode appelée lorsque l'utilisateur clique sur le bouton "Valider" de la fiche en mode modification afin de mettre à jour un conteneur.
     */
    @Override
    public void onClick$validateC(){
-      Clients.showBusy(Labels.getLabel("conteneur.creation.encours"));
-      Events.echoEvent("onLaterUpdate", self, null);
+      //TK-421: si l'utilisateur a modifié le nom du conteneur, il faut tester si ce libellé existe déjà pour la même plateforme 
+      //si oui, on lui demande si il veut continuer sa mise à jour :
+      //- si oui on fait la mise à jour 
+      //- si non on ne fait rien et on met le focus dans le champ du nom
+      //NB : le contrôle sur le code est bloquant (doublon impossible) contrairement à celui sur le libellé donc il est fait dès 
+      //la sortie du champ "codeBox"
+      //NB : le premier test est pour le cas standard où la modification n'a pas concernée le nom
+      if (conteneur.getNom().equals(nomInitial) || continuerSiDoublonSurLeNom()) {
+         Clients.showBusy(Labels.getLabel("conteneur.creation.encours"));//NB : la clé est mal nommée : le message est générique "Enregistrement du conteneur en cours... "
+         Events.echoEvent("onLaterUpdate", self, null);
+      }
+      else {
+         nomBox.focus();
+      }          
    }
 
    /**
@@ -998,22 +1025,10 @@ public class FicheConteneur extends AbstractFicheCombineStockageController
    }
 
    /**
-    * Méthode appelée après le clic sur "Enregistrer" pour finaliser la création d'un conteneur.
-    *
-    * Cette méthode vérifie si un conteneur avec le même nom existe déjà sur la plateforme.
-    * Si c'est le cas, un avertissement est affiché à l'utilisateur avec la possibilité d'annuler l'opération.
-    *
-    * Si l'utilisateur confirme ou si aucun doublon n'est trouvé, le conteneur est créé.
-    * Si la liste des stockages est disponible, elle est mise à jour via `updateAllConteneurs(true)`.
-    * Enfin, le mode passe en affichage statique.
-    *
-    * @throws RuntimeException si une erreur se produit lors de la création de l'objet.
+    * Méthode appelée après le clic sur "Enregistrer" pour créer un conteneur.
     */
    @Override
    public void onLaterCreate(){
-      //      TK-421: lors de la création d'un conteneur, afficher une fenêtre d'avertissement,
-      //      si un conteneur avec le même nom existe déjà sur la plateforme
-      if (validateUniqueContainerName()) return;
       try{
          createNewObject();
          // on vérifie que l'on retrouve bien la page contenant la liste
@@ -1030,28 +1045,12 @@ public class FicheConteneur extends AbstractFicheCombineStockageController
       }finally{
          Clients.clearBusy();
       }
-
    }
 
    /**
-    * Méthode appelée après le clic sur "Valider" pour finaliser la mise à jour d'un conteneur existant.
-    *
-    * Cette méthode vérifie si un conteneur avec le même nom existe déjà sur la plateforme.
-    * Si c'est le cas, un avertissement est affiché à l'utilisateur avec la possibilité d'annuler l'opération.
-    *
-    * Si l'utilisateur confirme ou si aucun doublon n'est trouvé, le conteneur est mis à jour.
-    * Si la liste des stockages est disponible, le conteneur mis à jour est reflété via `updateConteneur(conteneur)`.
-    *
-    * Enfin, le mode passe en affichage statique.
-    *
-    * @throws RuntimeException si une erreur se produit lors de la mise à jour de l'objet.
+    * Méthode appelée après le clic sur "Valider" pour mettre à jour un conteneur existant.
     */
-
    public void onLaterUpdate(){
-      //      TK-421: lors de la création d'un conteneur, afficher une fenêtre d'avertissement,
-      //      si un conteneur avec le même nom existe déjà sur la plateforme
-      if (validateUniqueContainerName()) return;
-
       // s'il n'y a pas d'erreurs lors de l'update
       try{
          updateObject();
@@ -1059,6 +1058,12 @@ public class FicheConteneur extends AbstractFicheCombineStockageController
          // on vérifie que l'on retrouve bien la page contenant la liste
          // des stockages
          if(getObjectTabController().getListeStockages() != null){
+            //TK-421 : si le code ou le nom a été modifié, il faut mettre à jour le noeud car il contient ces éléments
+            if(!conteneur.getNom().equals(nomInitial) || !conteneur.getCode().equals(codeInitial)) {
+               getObjectTabController().getListeStockages().updateLibelleConteneurNode(conteneur);               
+            }
+            //NB : la méthode est mal nommée : elle resélectionne juste le noeud de l'arborescence 
+            //associé au conteneur et l'ouvre  
             getObjectTabController().getListeStockages().updateConteneur(conteneur);
          }
 
@@ -1078,54 +1083,44 @@ public class FicheConteneur extends AbstractFicheCombineStockageController
    /**
     * Vérifie si un conteneur avec le même nom existe déjà sur la plateforme et affiche un avertissement.
     *
-    * Cette méthode recherche les conteneurs existants ayant le même nom sur la plateforme en cours.
-    * Si un ou plusieurs doublons sont trouvés, une fenêtre de confirmation est affichée à l'utilisateur.
+    * Cette méthode recherche les conteneurs existants ayant le même nom et la même plateforme.
+    * Si un ou plusieurs conteneurs sont trouvés, une fenêtre de confirmation est affichée à l'utilisateur.
     * L'utilisateur peut alors choisir de continuer ou d'annuler l'opération.
     *
-    * @return {@code true} si l'utilisateur annule l'opération à cause d'un doublon, sinon {@code false}.
+    * @return {@code true} s'il n'y a pas de doublon sur le nom ou si l'utilisateur décide de continuer quand même
+    *  {@code false} sinon.
     */
-   private boolean validateUniqueContainerName() {
-      String name = conteneur.getNom();
-      Plateforme plateforme = SessionUtils.getCurrentPlateforme();
-
+   private boolean continuerSiDoublonSurLeNom() {
       // Recherche des conteneurs avec le même nom et sur la même plateforme, à l'exception de l'ID actuel du conteneur.
-      List<Conteneur> listDoublonFound = ManagerLocator.getConteneurManager()
-              .findByNomAndPlateformeExcludedId(name, plateforme, conteneur.getConteneurId());
-      int numberDoublonFound = listDoublonFound.size();
+      List<Conteneur> listAutresConteneursAvecMemeNom = ManagerLocator.getConteneurManager()
+              .findAutreAvecMemeNomEtMemePlateformeManager(conteneur);
+      int nbAutresConteneursAvecMemeNom = listAutresConteneursAvecMemeNom.size();
 
       // Si des doublons sont trouvés
-      if (numberDoublonFound > 0) {
+      if (nbAutresConteneursAvecMemeNom > 0) {
          String title = Labels.getLabel("error.validation.title.duplicate.container.name");
 
          // On distingue les cas où il y a un seul doublon ou plusieurs doublons (pour les messages spécifiques)
          String messageToDisplay;
-         if (numberDoublonFound == 1) {
-            Conteneur doublon = listDoublonFound.get(0);
-            Set<Banque> banques  = ManagerLocator.getConteneurManager().getBanquesManager(doublon);
-
-            int numberOfBanques = banques.size();
+         if (nbAutresConteneursAvecMemeNom == 1) {
+            Conteneur autreConteneurAvecMemeNom = listAutresConteneursAvecMemeNom.get(0);
+            Set<Banque> banques  = ManagerLocator.getConteneurManager().getBanquesManager(autreConteneurAvecMemeNom);
 
             // Message spécifique pour un seul doublon, incluant le nombre de banques associées
             String messageForOneDoublon = Labels.getLabel("warning.doublonfound.container.nom",
-                    new String[] { name, String.valueOf(numberOfBanques) });
+                    new String[] { conteneur.getNom(), String.valueOf(banques.size()) });
             messageToDisplay = messageForOneDoublon;
          } else {
             // Si plusieurs doublons sont trouvés, on crée un message différent qui indique le nombre de doublons
             String messageForMultiDoublons = Labels.getLabel("warning.doublonfound.container.nom.multiple",
-                    new String[] { String.valueOf(numberDoublonFound), name });
+                    new String[] { String.valueOf(nbAutresConteneursAvecMemeNom), conteneur.getNom() });
             messageToDisplay = messageForMultiDoublons;
          }
 
-         // Affichage du message sous forme d'une boîte de dialogue avec la question
-         boolean isOk = MessagesUtils.openQuestionModal(title, messageToDisplay);
-
-         // Si l'utilisateur refuse, on retourne 'true' pour indiquer qu'il y a un problème.
-         if (!isOk) {
-            nomBox.focus();
-            return true;
-         }
+         // Affichage du message sous forme d'une boîte de dialogue avec la demande de confirmation pour continuer
+         return MessagesUtils.openQuestionModal(title, messageToDisplay);
       }
-      return false;
+      return true;
    }
 
 
@@ -1186,6 +1181,10 @@ public class FicheConteneur extends AbstractFicheCombineStockageController
 
    public void initEditableMode(){
 
+      //TK-421 : on garde en cache les code et nom lors de l'ouverture de l'écran en mode edit
+      codeInitial = conteneur.getCode();
+      nomInitial = conteneur.getNom();
+      
       types = ManagerLocator.getConteneurTypeManager().findByOrderManager(SessionUtils.getPlateforme(sessionScope));
       types.add(0, null);
       selectedConteneurType = this.conteneur.getConteneurType();
@@ -1215,6 +1214,7 @@ public class FicheConteneur extends AbstractFicheCombineStockageController
       checkPaillettes.setChecked(false);
       paillettesSizeBox.setVisible(true);
       paillettesSizeBox.setSelectedIndex(0);
+      
    }
 
    /**
