@@ -2398,10 +2398,10 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
          ((CalendarBox) comp).clearErrorMessage(dateToValidate);
          ((CalendarBox) comp).setValue(null);
 
-         if(dateTransfoCalBox.equals(comp)){
-            this.prodDerive.setDateTransformation(null);
-         }else if(dateStockCalBox.equals(comp)){
-            this.prodDerive.setDateStock(null);
+         if(dateStockCalBox.equals(comp)){
+            prodDerive.setDateStock(null);
+         }else if(dateTransfoCalBox.equals(comp)){
+            prodDerive.setDateTransformation(null);
          }
 
       }else{
