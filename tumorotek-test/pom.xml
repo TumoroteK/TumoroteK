@@ -52,11 +52,25 @@
 	</dependencies>
 
 	<build>
+		<!-- Main resources (keep existing) -->
 		<resources>
 			<resource>
 				<directory>src/main/resources</directory>
 				<filtering>true</filtering>
 			</resource>
 		</resources>
+
+		<!-- NEW: Test resources -->
+		<testResources>
+			<testResource>
+				<directory>src/test/resources</directory>
+				<includes>
+					<include>**/*.xml</include>
+					<include>**/*.properties</include>
+				</includes>
+				<!-- Enable if you use property placeholders (e.g., ${...}) -->
+				<filtering>true</filtering>
+			</testResource>
+		</testResources>
 	</build>
 </project>
