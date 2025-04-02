@@ -35,11 +35,9 @@
  **/
 package fr.aphp.tumorotek.manager.test;
 
-import static org.junit.Assert.assertEquals;
-
-import java.util.ArrayList;
-import java.util.List;
-
+import fr.aphp.tumorotek.dao.qualite.FantomeDao;
+import fr.aphp.tumorotek.manager.qualite.OperationManager;
+import fr.aphp.tumorotek.model.TKFantomableObject;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
@@ -47,14 +45,19 @@ import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 
-import fr.aphp.tumorotek.dao.qualite.FantomeDao;
-import fr.aphp.tumorotek.manager.qualite.OperationManager;
-import fr.aphp.tumorotek.model.TKFantomableObject;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(
    locations = {
-      "classpath:applicationContextDaoBase-test-mysql.xml",
+
+       "classpath:db-config-test-h2.xml",
+       "classpath:applicationContextDao.xml",
+      "classpath:applicationContextDao-codes.xml",
+      "classpath:applicationContextDao-interfacages.xml",
       "classpath:applicationContextManagerBase.xml",
    })
 @TestExecutionListeners({DependencyInjectionTestExecutionListener.class})
@@ -152,12 +155,5 @@ public abstract class AbstractManagerTest4
       assertEquals(19, operationManager.findAllObjectsManager().size());
    }
 
-   //    /**
-   //     * Spring will automatically inject the SessionFactory 
-   //     * instance on startup.
-   //     * Only necessary for Hibernate-backed DAO testing
-   //     */
-   //     public void setEntityManagerFactory(EntityManagerFactory factory) {
-   // 		this.entityManagerFactory = factory;
-   // 	}
+
 }
