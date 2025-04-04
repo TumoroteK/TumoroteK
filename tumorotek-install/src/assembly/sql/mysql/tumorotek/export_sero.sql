@@ -92,6 +92,7 @@ CREATE PROCEDURE `fill_tmp_table_prel_sero`(IN id INTEGER)
                                         CONG_ARRIVEE,
                                         LABO_INTER,
                                         QUANTITE,
+                                        QUANTITE_UNITE,                                        
                                         PATIENT_NDA,
                                         DIAGNOSTIC,
                                         ECHAN_TOTAL,
@@ -157,6 +158,7 @@ CREATE PROCEDURE `fill_tmp_table_prel_sero`(IN id INTEGER)
            p.cong_arrivee,
            (select count(l.labo_inter_id) FROM LABO_INTER l where l.prelevement_id = id),
            p.quantite,
+           u.unite,           
            p.patient_nda                                                                                 as 'Num_Dossier_Patient',
            (SELECT d.nom
             FROM PRELEVEMENT prel
@@ -214,6 +216,7 @@ CREATE PROCEDURE `fill_tmp_table_prel_sero`(IN id INTEGER)
            LEFT JOIN CONSENT_TYPE consent ON p.consent_type_id = consent.consent_type_id
            LEFT JOIN TRANSPORTEUR tr ON p.transporteur_id = tr.transporteur_id
            LEFT JOIN COLLABORATEUR coco ON p.operateur_id = coco.collaborateur_id
+           LEFT JOIN UNITE u ON p.quantite_unite_id = u.unite_id           
            LEFT JOIN MALADIE m on p.maladie_id = m.maladie_id
            LEFT JOIN PATIENT pat ON m.patient_id = pat.patient_id
     WHERE p.banque_id = b.banque_id
