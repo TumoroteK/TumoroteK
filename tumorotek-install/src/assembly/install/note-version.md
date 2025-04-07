@@ -1,5 +1,20 @@
 #### Notes
 
+##### Version 2.3.0.15 - Publiée le 07/04/2025
+###### Corrections dans TK
+- YouTrack [TK-533](https://tumorotek.myjetbrains.com/youtrack/issue/TK-533) : Export ${prelevement} : pour le champ quantité du bloc "Arrivée au site de stockage" (page 2), l'unité n'est pas exportée
+
+###### Corrections dans TK pour un contexte Gatsbi
+- YouTrack [TK-658](https://tumorotek.myjetbrains.com/youtrack/issue/TK-658) : Export Gatsbi : le statut de l'échantillon n'est pas exporté
+
+###### Améliorations dans le module Gatsbi (version 1.0.0.10)
+- YouTrack [TK-661](https://tumorotek.myjetbrains.com/youtrack/issue/TK-661) : Contexte > popup de sélection des études : Améliorer l'affichage quand il y en a beaucoup
+- YouTrack [TK-663](https://tumorotek.myjetbrains.com/youtrack/issue/TK-663) : Contexte : Améliorer l'affichage des études quand il y en a beaucoup
+- YouTrack [TK-664](https://tumorotek.myjetbrains.com/youtrack/issue/TK-664) : Avertir l'utilisateur quand il a oublié de rattacher le contexte à une étude
+- YouTrack [TK-662](https://tumorotek.myjetbrains.com/youtrack/issue/TK-662) : Figer le menu lors du scroll
+- YouTrack [TK-665](https://tumorotek.myjetbrains.com/youtrack/issue/TK-665) : Liste : toujours afficher la pagination et le champ de  recherche sans avoir à scroller
+
+
 ##### Version 2.3.0.14 - Publiée le 27/01/2025
 ###### Corrections ano pour un contexte Gatsbi
 - YouTrack [TK-611](https://tumorotek.myjetbrains.com/youtrack/issue/TK-611) : Export collection Gatsbi avec un contexte non défini : les colonnes de ce contexte n'apparaissent pas
