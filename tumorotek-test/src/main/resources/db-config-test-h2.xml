@@ -134,13 +134,4 @@
 		<jdbc:script location="${db.populate.tables.script.path}" />
 	</jdbc:initialize-database>
 
-	<jdbc:initialize-database data-source="dataSourceCodes" ignore-failures="DROPS">
-		<jdbc:script location="${db.codes.create.tables.script.path}" />
-		<jdbc:script location="${db.codes.populate.tables.script.path}" />
-	</jdbc:initialize-database>
-
-	<jdbc:initialize-database data-source="dataSourceInterfacages" ignore-failures="DROPS">
-		<jdbc:script location="${db.interfacages.create.tables.script.path}" />
-		<jdbc:script location="${db.interfacages.populate.tables.script.path}" />
-	</jdbc:initialize-database>
 </beans>
