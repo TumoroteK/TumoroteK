@@ -1,0 +1,58 @@
+DROP TABLE IF EXISTS C3P0TEST;
+DROP TABLE IF EXISTS VALEUR_EXTERNE;
+DROP TABLE IF EXISTS BLOC_EXTERNE;
+DROP TABLE IF EXISTS DOSSIER_EXTERNE;
+DROP TABLE IF EXISTS EMETTEUR;
+DROP TABLE IF EXISTS LOGICIEL;
+
+-- Create tables in dependency order
+CREATE TABLE LOGICIEL (
+                          LOGICIEL_ID INT NOT NULL,
+                          NOM VARCHAR(50) NOT NULL,
+                          EDITEUR VARCHAR(50) DEFAULT NULL,
+                          VERSION VARCHAR(50) DEFAULT NULL,
+                          PRIMARY KEY (LOGICIEL_ID)
+);
+
+CREATE TABLE EMETTEUR (
+                          EMETTEUR_ID INT NOT NULL,
+                          LOGICIEL_ID INT NOT NULL,
+                          IDENTIFICATION VARCHAR(50) NOT NULL,
+                          SERVICE VARCHAR(50) DEFAULT NULL,
+                          OBSERVATIONS TEXT DEFAULT NULL,
+                          PRIMARY KEY (EMETTEUR_ID),
+                          CONSTRAINT FK_EMETTEUR_LOGICIEL_ID FOREIGN KEY (LOGICIEL_ID) REFERENCES LOGICIEL (LOGICIEL_ID)
+);
+
+CREATE TABLE DOSSIER_EXTERNE (
+                                 DOSSIER_EXTERNE_ID INT NOT NULL,
+                                 EMETTEUR_ID INT NOT NULL,
+                                 IDENTIFICATION_DOSSIER VARCHAR(100) NOT NULL,
+                                 DATE_OPERATION TIMESTAMP DEFAULT NULL,
+                                 OPERATION VARCHAR(50) DEFAULT NULL,
+                                 PRIMARY KEY (DOSSIER_EXTERNE_ID),
+                                 CONSTRAINT FK_DOSSIER_EXTERNE_EMETTEUR_ID FOREIGN KEY (EMETTEUR_ID) REFERENCES EMETTEUR (EMETTEUR_ID)
+);
+
+CREATE TABLE BLOC_EXTERNE (
+                              BLOC_EXTERNE_ID INT NOT NULL,
+                              DOSSIER_EXTERNE_ID INT NOT NULL,
+                              ENTITE_ID INT NOT NULL,
+                              ORDRE INT NOT NULL,
+                              PRIMARY KEY (BLOC_EXTERNE_ID),
+                              CONSTRAINT FK_BLOC_EXTERNE_DOSSIER_EXTERNE_ID FOREIGN KEY (DOSSIER_EXTERNE_ID) REFERENCES DOSSIER_EXTERNE (DOSSIER_EXTERNE_ID)
+);
+
+CREATE TABLE VALEUR_EXTERNE (
+                                VALEUR_EXTERNE_ID INT NOT NULL,
+                                BLOC_EXTERNE_ID INT NOT NULL,
+                                VALEUR VARCHAR(250) DEFAULT NULL,
+                                CHAMP_ENTITE_ID INT DEFAULT NULL,
+                                CHAMP_ANNOTATION_ID INT DEFAULT NULL,
+                                PRIMARY KEY (VALEUR_EXTERNE_ID),
+                                CONSTRAINT FK_VALEUR_EXTERNE_BLOC_EXTERNE_ID FOREIGN KEY (BLOC_EXTERNE_ID) REFERENCES BLOC_EXTERNE (BLOC_EXTERNE_ID)
+);
+
+CREATE TABLE C3P0TEST (
+    A CHAR(1) DEFAULT NULL
+);
