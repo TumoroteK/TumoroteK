@@ -275,14 +275,23 @@ public interface ConteneurManager
    boolean hasRetoursManager(Conteneur conteneur);
 
    /**
-    * Recherche tous les conteneurs qui sont accessibles à partir
-    * d'une plateforme, et si ils sont actuellement déja assignés en partage ou pas.
+    * Recherche tous les conteneurs mis à disposition de la plateforme en paramètre (par une autre plateforme) en filtrant sur la caractéristique "partage"
+    * qui indique que la plateforme destinataire à accepter ou pas le partage. L'acceptation (partage valant true) assigne le conteneur à la plateforme et 
+    * permet ensuite d'ajouter ce conteneur à ses collections.
     * @param Plateforme pf
     * @param partage true/false
     * @return Liste de conteneurs.
     */
    List<Conteneur> findByPartageManager(Plateforme pf, Boolean partage);
 
+   /**
+    * Recherche tous les conteneurs mis à disposition de la plateforme en paramètre (par une autre plateforme) que celle-ci l'aie accepté ou non.
+    * @param Plateforme pf
+    * @param partage true/false
+    * @return Liste de conteneurs.
+    */
+   List<Conteneur> findAllPartagesManager(Plateforme pf);
+   
    /**
     * Recherche la température de stockage correspondant à un emplacement.
     * Renvoie null si aucune température ou emplacement null.

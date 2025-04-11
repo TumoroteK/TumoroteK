@@ -35,15 +35,15 @@
  **/
 package fr.aphp.tumorotek.action.contexte;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import fr.aphp.tumorotek.model.contexte.Plateforme;
 import fr.aphp.tumorotek.model.stockage.Conteneur;
 
 /**
- * Decore le conteneur afin de distinguer ceux dont la plateforme
- * courante est la plateforme d'origine.
+ * Decore le conteneur pour lui appliquer des caractérisitiques liées à la plateforme du cas d'utilisation
+ * En effet un conteneur peut être partagé par une autre plateforme ce qui amène des règles de gestion particulières
+ * notamment concernant :
+ * - la suppression
+ * - l'affichage du libellé du conteneur
  *
  * @author mathieu BARTHELEMY
  * @version 2.0.10
@@ -54,77 +54,44 @@ public class ConteneurDecorator
 
    private Conteneur conteneur;
 
-   private Plateforme current;
+   //plateforme dépendant du cas d'utilisation (Fiche Banque ou Fiche Plateforme notamment). 
+   //Elle est comparée à la plateforme du conteneur pour appliquer des règles de gestion particulières dans le cas d'un conteneur partagé
+   private Plateforme plateforme;
 
-   private Boolean deleteHeaderVisible;
-
-   public ConteneurDecorator(final Conteneur c, final Plateforme current){
-      setConteneur(c);
-      setCurrent(current);
-      setDeleteHeaderVisible(current != null ? !current.equals(c.getPlateformeOrig()) : true);
+   //indique que ce conteneurDecorator est supprimable (ce n'est pas toujours le cas notamment pour la Fiche Plateforme pour laquelle seuls les conteneurs partagés le sont).
+   //permettra donc notamment d'afficher ou non la croix rouge associée à la suppression en mode édition
+   private Boolean supprimable;
+   
+   public ConteneurDecorator(Conteneur conteneur, Plateforme plateforme, Boolean supprimable) {
+      this.conteneur = conteneur;
+      this.plateforme = plateforme;
+      this.supprimable = supprimable;
    }
 
-   public Boolean getDeleteHeaderVisible(){
-      return deleteHeaderVisible;
-   }
-
-   public void setDeleteHeaderVisible(final Boolean i){
-      this.deleteHeaderVisible = i;
+   public Boolean isSupprimable(){
+      return supprimable;
    }
 
    public Conteneur getConteneur(){
       return conteneur;
    }
 
-   public void setConteneur(final Conteneur c){
-      this.conteneur = c;
+   public Plateforme getPlateforme(){
+      return plateforme;
    }
 
-   public Plateforme getCurrent(){
-      return current;
+   public void setPlateforme(final Plateforme plateforme){
+      this.plateforme = plateforme;
    }
 
-   public void setCurrent(final Plateforme current){
-      this.current = current;
+   //TK-636
+   public String getLibelleComplet() {
+      return getConteneur().getLibelleForPlateforme(plateforme);
    }
-
-   public static List<ConteneurDecorator> decorateListe(final List<Conteneur> conts, final Plateforme current){
-      List<ConteneurDecorator> decos = null;
-
-      if(conts != null){
-         decos = new ArrayList<>();
-         for(final Conteneur c : conts){
-            decos.add(new ConteneurDecorator(c, current));
-         }
-      }
-
-      return decos;
-   }
-
+   
    @Override
    public ConteneurDecorator clone(){
-      return new ConteneurDecorator(getConteneur(), getCurrent());
-   }
-
-   /**
-    * Récupère les conteneurs à passer dans la méthode d'update afin de
-    * modifier les relations Conteneur_Plateforme.
-    * Exclue de la liste tous les conteneurs dont la plateforme de création
-    * correspond à la plateforme en cours
-    * @param decos
-    * @return List<Conteneur>
-    */
-   public static List<Conteneur> extractConteneursFromDecos(final List<ConteneurDecorator> decos){
-      List<Conteneur> conts = null;
-      if(decos != null){
-         conts = new ArrayList<>();
-         for(final ConteneurDecorator deco : decos){
-            if(deco.getDeleteHeaderVisible()){
-               conts.add(deco.getConteneur());
-            }
-         }
-      }
-      return conts;
+      return new ConteneurDecorator(getConteneur(), getPlateforme(), isSupprimable());
    }
 
    @Override
@@ -136,7 +103,7 @@ public class ConteneurDecorator
          return false;
       }
       final ConteneurDecorator test = (ConteneurDecorator) obj;
-      return ((this.current == test.current || (this.current != null && this.current.equals(test.current)))
+      return ((this.plateforme == test.plateforme || (this.plateforme != null && this.plateforme.equals(test.plateforme)))
          && (this.conteneur == test.conteneur || (this.conteneur != null && this.conteneur.equals(test.conteneur))));
    }
 
@@ -150,8 +117,8 @@ public class ConteneurDecorator
       if(this.conteneur != null){
          hashConteneur = this.conteneur.hashCode();
       }
-      if(this.current != null){
-         hashPf = this.current.hashCode();
+      if(this.plateforme != null){
+         hashPf = this.plateforme.hashCode();
       }
 
       hash = 31 * hash + hashConteneur;
@@ -159,4 +126,5 @@ public class ConteneurDecorator
 
       return hash;
    }
+
 }

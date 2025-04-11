@@ -115,6 +115,7 @@ import fr.aphp.tumorotek.model.contexte.Collaborateur;
 import fr.aphp.tumorotek.model.contexte.Contexte;
 import fr.aphp.tumorotek.model.contexte.Service;
 import fr.aphp.tumorotek.model.contexte.gatsbi.Etude;
+import fr.aphp.tumorotek.model.stockage.Conteneur;
 import fr.aphp.tumorotek.model.systeme.Couleur;
 import fr.aphp.tumorotek.model.systeme.CouleurEntiteType;
 import fr.aphp.tumorotek.model.utilisateur.Profil;
@@ -304,9 +305,12 @@ public class FicheBanque extends AbstractFicheCombineController
 
    private Couleur selectedDeriveCouleur;
 
-   private final List<ConteneurDecorator> conteneurs = new ArrayList<>();
-
-   private final List<ConteneurDecorator> copyConteneurs = new ArrayList<>();
+   // TK-636 : les conteneurs sont gérés par conteneursAssocies.zul mis dans la Div conteneursAssocies de cet objet
+   // et récupéré par getConteneursAssocies() (qui renvoie un objet ConteneursAssocies)
+   // Par conséquent, ils n'ont pas à être définis comme attribut de cet objet ...
+//   private final List<ConteneurDecorator> conteneurs = new ArrayList<>(); 
+//
+//   private final List<ConteneurDecorator> copyConteneurs = new ArrayList<>();
 
    private final List<BanqueTableCodage> codifications = new ArrayList<>();
 
@@ -365,12 +369,15 @@ public class FicheBanque extends AbstractFicheCombineController
          winPanel.setHeight(getMainWindow().getPanelHeight() - 5 + "px");
       }
 
-      // passe les refrences des group headers
+      // passe les references des group headers
       Executions.createComponents("/zuls/contexte/ConteneursAssocies.zul", conteneursAssocies, null);
+      getConteneursAssocies().setConteneursAssociesStrategy(new ConteneursAssociesForBanque());//TK-636
       getConteneursAssocies().setGroupHeader(groupConteneurs);
+      
       Executions.createComponents("/zuls/contexte/CodificationsAssociees.zul", codificationsAssociees, null);
       getCodificationsAssociees().setGroupHeader(groupCodifications);
 
+      
       final Map<String, Object> coulTypesEchanArgs = new HashMap<>();
       coulTypesEchanArgs.put("isEchantillonTyped", Boolean.TRUE);
       Executions.createComponents("/zuls/contexte/CoulEntiteTypesAssociees.zul", coulTypesEchanWin, coulTypesEchanArgs);
@@ -434,14 +441,6 @@ public class FicheBanque extends AbstractFicheCombineController
    @Override
    public void cloneObject(){
       setClone(this.banque.clone());
-      copyConteneurs.clear();
-      for(int i = 0; i < conteneurs.size(); i++){
-         copyConteneurs.add(conteneurs.get(i).clone());
-      }
-      //		copyCodifications.clear();
-      //		for (int i = 0; i < codifications.size(); i++) {
-      //			copyCodifications.add(codifications.get(i).clone());
-      //		}
       copyCoulTypesEchan.clear();
       for(int i = 0; i < coulTypesEchan.size(); i++){
          copyCoulTypesEchan.add(coulTypesEchan.get(i).clone());
@@ -455,8 +454,7 @@ public class FicheBanque extends AbstractFicheCombineController
    @Override
    public void revertObject(){
       super.revertObject();
-      setConteneurs(getCopyConteneurs());
-      //setCodifications(getCopyCodifications());
+      getConteneursAssocies().revert();
       setCoulTypesEchan(getCopyCoulTypesEchan());
       setCoulTypesDerives(getCopyCoulTypesDerives());
    }
@@ -657,9 +655,10 @@ public class FicheBanque extends AbstractFicheCombineController
          this.banque.setEtude(selectedEtude);
       }
 
+      List<Conteneur> conteneursAAjouter = getConteneursAssocies().retrieveListConteneurForAssociation();
       ManagerLocator.getBanqueManager().createOrUpdateObjectManager(banque, SessionUtils.getPlateforme(sessionScope),
          selectedContexte, selectedService, selectedCollaborateur, selectedContact,
-         ConteneurDecorator.extractConteneursFromDecos(conteneurs), codifications, tabsPat, tabsPrel, tabsEchan, tabsDerive,
+         conteneursAAjouter, codifications, tabsPat, tabsPrel, tabsEchan, tabsDerive,
          tabsCess, coulTypes, selectedEchanCouleur, selectedDeriveCouleur, SessionUtils.getLoggedUser(sessionScope),
          updatedUtilisateurs, "creation", SessionUtils.getSystemBaseDir());
 
@@ -681,18 +680,6 @@ public class FicheBanque extends AbstractFicheCombineController
    public void onClick$addNewC(){
       switchToCreateMode();
    }
-
-   //	@Override
-   //	public void onClick$cancelC() {
-   //		Clients.showBusy(null, true);
-   //		Events.echoEvent("onLaterCancel", self, null);
-   //	}
-   //
-   //	public void onLaterCancel() {
-   //		clearData();
-   //		super.onClick$cancelC();
-   //		Clients.showBusy(null, false);
-   //	}
 
    @Override
    public void onClick$createC(){
@@ -798,12 +785,6 @@ public class FicheBanque extends AbstractFicheCombineController
       Clients.clearBusy();
       Events.echoEvent("onLaterRevert", self, null);
    }
-
-   //	public void onLaterRevert() {
-   //		clearConstraints();
-   //		super.onClick$revertC();
-   //		Clients.showBusy(null, false);
-   //	}
 
    @Override
    public void onClick$validateC(){
@@ -986,15 +967,6 @@ public class FicheBanque extends AbstractFicheCombineController
          }
       }
 
-      // Gestion du contexte
-      //		selectedContexte = null;
-      //		if (contexteBox.getSelectedItem() != null) {
-      //			if (((Contexte) contexteBox.getSelectedItem().getValue())
-      //					.getContexteId() != null) {
-      //				selectedContexte = (Contexte) contexteBox
-      //										.getSelectedItem().getValue();
-      //			}
-      //		}
       if(selectedContexte != null && selectedContexte.getContexteId() == null){
          selectedContexte = null;
       }
@@ -1096,8 +1068,9 @@ public class FicheBanque extends AbstractFicheCombineController
 
       coulTypes.forEach(ct -> ct.setBanque(banque));
 
+      List<Conteneur> conteneursAAjouter = getConteneursAssocies().retrieveListConteneurForAssociation();
       ManagerLocator.getBanqueManager().createOrUpdateObjectManager(banque, null, selectedContexte, selectedService,
-         selectedCollaborateur, selectedContact, ConteneurDecorator.extractConteneursFromDecos(conteneurs), codifications,
+         selectedCollaborateur, selectedContact, conteneursAAjouter, codifications,
          tabsPat, tabsPrel, tabsEchan, tabsDerive, tabsCess, coulTypes, selectedEchanCouleur, selectedDeriveCouleur,
          SessionUtils.getLoggedUser(sessionScope), updatedUtilisateurs, "modification", null);
 
@@ -1181,7 +1154,6 @@ public class FicheBanque extends AbstractFicheCombineController
     * Etablit les associations de la banque courante.
     */
    private void initAssociations(){
-      conteneurs.clear();
       codifications.clear();
       coulTypesEchan.clear();
       coulTypesDerives.clear();
@@ -1205,6 +1177,8 @@ public class FicheBanque extends AbstractFicheCombineController
       contactBox.setValue("");
       proprioBox.setValue("");
 
+      List<Conteneur> conteneurs = null;
+      
       if(banque.getBanqueId() != null){
          selectedContexte = this.banque.getContexte();
          if(selectedContexte != null){
@@ -1262,9 +1236,8 @@ public class FicheBanque extends AbstractFicheCombineController
          selectedEchanCouleur = banque.getEchantillonCouleur();
          selectedDeriveCouleur = banque.getProdDeriveCouleur();
 
-         conteneurs.addAll(
-            ConteneurDecorator.decorateListe(ManagerLocator.getConteneurManager().findByBanqueWithOrderManager(banque), null));
-
+         conteneurs = ManagerLocator.getConteneurManager().findByBanqueWithOrderManager(banque);
+         
          codifications.addAll(ManagerLocator.getBanqueManager().getBanqueTableCodageByBanqueManager(banque));
 
          coulTypesEchan.addAll(ManagerLocator.getCouleurEntiteTypeManager().findAllCouleursForEchanTypeByBanqueManager(banque));
@@ -1287,8 +1260,7 @@ public class FicheBanque extends AbstractFicheCombineController
             .findByEntiteAndBanqueManager(ManagerLocator.getEntiteManager().findByNomManager("Cession").get(0), banque));
       }
 
-      getConteneursAssocies().setPlateforme(SessionUtils.getCurrentPlateforme());
-      getConteneursAssocies().setObjects(conteneurs);
+      getConteneursAssocies().initData(conteneurs, SessionUtils.getCurrentPlateforme());//TK-636
       getCodificationsAssociees().setObjects(codifications);
       getCoulTypesEchanAssociees().setObjects(coulTypesEchan);
       getCoulTypesProdDeriveAssociees().setObjects(coulTypesDerives);
@@ -1711,6 +1683,9 @@ public class FicheBanque extends AbstractFicheCombineController
       listeEntete[4] = Labels.getLabel("service.etablissement");
       final EnteteListe entetes = new EnteteListe(listeEntete);
 
+      //TK-636 :
+      List<ConteneurDecorator> conteneurs = getConteneursAssocies().getObjects();
+      
       // liste des cédés
       final LigneListe[] liste = new LigneListe[conteneurs.size()];
       for(int i = 0; i < conteneurs.size(); i++){
@@ -2057,18 +2032,6 @@ public class FicheBanque extends AbstractFicheCombineController
    /*************************************************************************/
    /************************** CONTENEURS************************************/
    /*************************************************************************/
-   public List<ConteneurDecorator> getConteneurs(){
-      return conteneurs;
-   }
-
-   public void setConteneurs(final List<ConteneurDecorator> cts){
-      this.conteneurs.clear();
-      this.conteneurs.addAll(cts);
-   }
-
-   public List<ConteneurDecorator> getCopyConteneurs(){
-      return copyConteneurs;
-   }
 
    /**
     * Renvoie le controller associe au composant permettant la getsion
@@ -2077,18 +2040,6 @@ public class FicheBanque extends AbstractFicheCombineController
    public ConteneursAssocies getConteneursAssocies(){
       return (ConteneursAssocies) self.getFellow("conteneursAssocies").getFellow("winConteneursAssocies")
          .getAttributeOrFellow("winConteneursAssocies$composer", true);
-   }
-
-   /**
-    * Met à jour le composant conteneurs. Cette méthode est appelée
-    * depuis d'autre onglets comme Stockage si mise à jour ou
-    * suppression d'un conteneur.
-    */
-   public void updateConteneurs(){
-      if(this.banque != null && this.banque.getBanqueId() != null){
-         getConteneursAssocies().setObjects(ConteneurDecorator
-            .decorateListe(ManagerLocator.getConteneurManager().findByBanqueWithOrderManager(banque), banque.getPlateforme()));
-      }
    }
 
    /*************************************************************************/
@@ -2102,10 +2053,6 @@ public class FicheBanque extends AbstractFicheCombineController
       this.codifications.clear();
       this.codifications.addAll(cdf);
    }
-
-   //	public List<TableCodage> getCopyCodifications() {
-   //		return copyCodifications;
-   //	}
 
    /**
     * Renvoie le controller associe au composant permettant la gestion

@@ -71,21 +71,7 @@ public class ConteneurNode extends TumoTreeNode
 
    public void initLibelle(final Plateforme curPf){
       if(conteneur != null && !conteneur.equals(new Conteneur())){
-         if(conteneur.getNom() != null){
-            //TK-421 : ajout du code entre parenthèse pour distinguer les conteneurs pouvant avoir le même nom
-            StringBuilder nomSuiviCode = new StringBuilder(conteneur.getNom()).append(" (").append(conteneur.getCode()).append(")");
-            this.libelle = nomSuiviCode.toString();
-         }else{
-            this.libelle = conteneur.getCode();
-         }
-
-         // conteneur partagé depuis pf extérieur
-         // ajoute au libellé
-         // TK-289
-         if(!conteneur.getPlateformeOrig().equals(curPf)){
-            this.libelle = this.libelle.concat(" [").concat(conteneur.getPlateformeOrig().getAlias() != null
-               ? conteneur.getPlateformeOrig().getAlias() : conteneur.getPlateformeOrig().getNom()).concat("]");
-         }
+         this.libelle = conteneur.getLibelleForPlateforme(curPf);
       }else{
          this.libelle = "(Vide)";
       }
