@@ -37,8 +37,8 @@ package fr.aphp.tumorotek.action.contexte;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
+import org.jdom.Element;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
@@ -46,10 +46,15 @@ import org.zkoss.zk.ui.event.ForwardEvent;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Messagebox;
 
+import fr.aphp.tumorotek.action.ManagerLocator;
 import fr.aphp.tumorotek.action.controller.AbstractListeController2;
 import fr.aphp.tumorotek.action.exception.ForbiddenI18nException;
 import fr.aphp.tumorotek.action.stockage.StockageController;
 import fr.aphp.tumorotek.component.OneToManyComponent;
+import fr.aphp.tumorotek.manager.impl.xml.EnteteListe;
+import fr.aphp.tumorotek.manager.impl.xml.LigneListe;
+import fr.aphp.tumorotek.manager.impl.xml.ListeElement;
+import fr.aphp.tumorotek.manager.impl.xml.Paragraphe;
 import fr.aphp.tumorotek.model.contexte.Plateforme;
 import fr.aphp.tumorotek.model.stockage.Conteneur;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
@@ -165,7 +170,7 @@ public class ConteneursAssocies extends OneToManyComponent<ConteneurDecorator>
    @Override
    public String getGroupHeaderValue(){
       final StringBuffer sb = new StringBuffer();
-      sb.append(Labels.getLabel("Champ.Banque.Conteneurs"));
+      sb.append(Labels.getLabel("Champ.ConteneursAssocies.Conteneurs"));
       sb.append(" (");
       sb.append(getObjects().size());
       sb.append(")");
@@ -232,4 +237,83 @@ public class ConteneursAssocies extends OneToManyComponent<ConteneurDecorator>
       }
 
    }
+   
+   /**
+    * Ajoute les infos conteneurs à imprimer à la page passée en paramètre.
+    * @param page
+    */
+   public void addInfosConteneursToPrint(final Element page){
+      // TK-635 : La colonne de la plateforme d'origine n'est ajoutée que si au moins un conteneur dans la liste est partagé par une
+      // autre plateforme. 
+      // Cette condition évite d'encombrer le tableau avec une colonne inutile lorsque tous les conteneurs appartiennent à la plateforme
+      // de l'objet en cours d'impression (banque ou plateforme)
+      boolean existsConteneurPartage = 
+         objects.stream(). anyMatch(conteneurDecorator -> !plateforme.equals(conteneurDecorator.getConteneur().getPlateformeOrig()));
+      
+      int nbColonne = 5;
+      if(existsConteneurPartage) {
+         nbColonne = 6;
+      }
+     
+      // Entete
+      final String[] listeEntete = new String[nbColonne];
+      listeEntete[0] = Labels.getLabel("conteneur.code");
+      listeEntete[1] = Labels.getLabel("conteneur.nom");
+      listeEntete[2] = Labels.getLabel("conteneur.temp");
+      listeEntete[3] = Labels.getLabel("conteneur.service");
+      listeEntete[4] = Labels.getLabel("service.etablissement");
+      if(existsConteneurPartage) {
+         listeEntete[5] = Labels.getLabel("conteneur.plateformeOrig");
+      }
+      final EnteteListe entetes = new EnteteListe(listeEntete);
+
+      // liste des conteneurs
+      final LigneListe[] liste = new LigneListe[objects.size()];
+      for(int i = 0; i < objects.size(); i++){
+         final String[] valeurs = new String[nbColonne];
+         Conteneur conteneur = objects.get(i).getConteneur();
+         // code
+         valeurs[0] = conteneur.getCode();
+         // nom
+         valeurs[1] = conteneur.getNom();
+         // température
+         final StringBuffer sb = new StringBuffer();
+         sb.append(conteneur.getTemp());
+         sb.append("°C");
+         valeurs[2] = sb.toString();
+         // service
+         if(conteneur.getService() != null){
+            valeurs[3] = conteneur.getService().getNom();
+         }else{
+            valeurs[3] = "-";
+         }
+         // etablissement
+         if(conteneur.getService() != null
+            && conteneur.getService().getEtablissement() != null){
+            valeurs[4] = conteneur.getService().getEtablissement().getNom();
+         }else{
+            valeurs[4] = "-";
+         }
+         if(existsConteneurPartage) {
+            valeurs[5] = conteneur.getPlateformeOrig().getNom();
+         }
+         
+         final LigneListe ligne = new LigneListe(valeurs);
+         liste[i] = ligne;
+      }
+      ListeElement listeSites = null;
+      if(objects.size() > 0){
+         listeSites = new ListeElement(null, entetes, liste);
+      }
+
+      // ajout du paragraphe
+      final StringBuffer sb = new StringBuffer();
+      sb.append(Labels.getLabel("Champ.ConteneursAssocies.Conteneurs"));
+      sb.append(" (");
+      sb.append(objects.size());
+      sb.append(")");
+      final Paragraphe par = new Paragraphe(sb.toString(), null, null, null, listeSites);
+      ManagerLocator.getXmlUtils().addParagraphe(page, par);
+   }
+
 }

@@ -774,7 +774,7 @@ public class FichePlateforme extends AbstractFicheCombineController
       addInfosPlateformeToPrint(page1);
       addInfosListeUtilisateurs(page1);
       addInfosListeBanques(page1);
-      addInfosConteneursToPrint(page1);
+      getConteneursAssocies().addInfosConteneursToPrint(page1);//TK-636 et TK-635
 
       return document;
    }
@@ -909,66 +909,6 @@ public class FichePlateforme extends AbstractFicheCombineController
       sb.append(Labels.getLabel("plateforme.banques.title"));
       sb.append(" (");
       sb.append(banques.size());
-      sb.append(")");
-      final Paragraphe par = new Paragraphe(sb.toString(), null, null, null, listeSites);
-      ManagerLocator.getXmlUtils().addParagraphe(page, par);
-   }
-
-   /**
-    * Ajout les infos conteneurs à imprimer.
-    * @param page
-    */
-   public void addInfosConteneursToPrint(final Element page){
-      // Entete
-      final String[] listeEntete = new String[5];
-      listeEntete[0] = Labels.getLabel("conteneur.code");
-      listeEntete[1] = Labels.getLabel("conteneur.nom");
-      listeEntete[2] = Labels.getLabel("conteneur.temp");
-      listeEntete[3] = Labels.getLabel("conteneur.service");
-      listeEntete[4] = Labels.getLabel("service.etablissement");
-      final EnteteListe entetes = new EnteteListe(listeEntete);
-
-      List<ConteneurDecorator> conteneurDecorators = getConteneursAssocies().getObjects();
-      
-      // liste des cédés
-      final LigneListe[] liste = new LigneListe[conteneurDecorators.size()];
-      for(int i = 0; i < conteneurDecorators.size(); i++){
-         final String[] valeurs = new String[5];
-         // code
-         valeurs[0] = conteneurDecorators.get(i).getConteneur().getCode();
-         // nom
-         valeurs[1] = conteneurDecorators.get(i).getConteneur().getNom();
-         // température
-         final StringBuffer sb = new StringBuffer();
-         sb.append(conteneurDecorators.get(i).getConteneur().getTemp());
-         sb.append("°C");
-         valeurs[2] = sb.toString();
-         // service
-         if(conteneurDecorators.get(i).getConteneur().getService() != null){
-            valeurs[3] = conteneurDecorators.get(i).getConteneur().getService().getNom();
-         }else{
-            valeurs[3] = "-";
-         }
-         // etablissement
-         if(conteneurDecorators.get(i).getConteneur().getService() != null
-            && conteneurDecorators.get(i).getConteneur().getService().getEtablissement() != null){
-            valeurs[4] = conteneurDecorators.get(i).getConteneur().getService().getEtablissement().getNom();
-         }else{
-            valeurs[4] = "-";
-         }
-         final LigneListe ligne = new LigneListe(valeurs);
-         liste[i] = ligne;
-      }
-      ListeElement listeSites = null;
-      if(conteneurDecorators.size() > 0){
-         listeSites = new ListeElement(null, entetes, liste);
-      }
-
-      // ajout du paragraphe
-      final StringBuffer sb = new StringBuffer();
-      sb.append(Labels.getLabel("Champ.Banque.Conteneurs"));
-      sb.append(" (");
-      sb.append(conteneurDecorators.size());
       sb.append(")");
       final Paragraphe par = new Paragraphe(sb.toString(), null, null, null, listeSites);
       ManagerLocator.getXmlUtils().addParagraphe(page, par);
