@@ -748,6 +748,11 @@ public class ConteneurManagerImpl implements ConteneurManager
    }
 
    @Override
+   public List<Conteneur> findAllPartagesManager(final Plateforme pf){
+      return conteneurDao.findAllPartages(pf);
+   }
+   
+   @Override
    public Float findTempForEmplacementManager(final Emplacement emplacement){
       if(emplacement != null){
          final List<Float> temps = conteneurDao.findTempForEmplacementId(emplacement.getEmplacementId());

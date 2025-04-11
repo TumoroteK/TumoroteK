@@ -112,6 +112,9 @@ import java.util.Set;
       @NamedQuery(name = "Conteneur.findByPartage",
          query = "SELECT c FROM Conteneur c " + "JOIN c.conteneurPlateformes p WHERE p.pk.plateforme = ?1 "
             + "AND p.partage = ?2 " + "AND c.archive = 0 ORDER by c.nom"),
+      @NamedQuery(name = "Conteneur.findAllPartages",
+      query = "SELECT c FROM Conteneur c " + "JOIN c.conteneurPlateformes p WHERE p.pk.plateforme = ?1 "
+         + "AND c.archive = 0 ORDER by c.nom"),
       @NamedQuery(name = "Conteneur.findByIdWithFetch",
          query = "SELECT c FROM Conteneur c LEFT JOIN FETCH " + "c.conteneurType LEFT JOIN FETCH c.service "
             + "WHERE c.conteneurId = ?1 AND archive = 0"),
@@ -418,6 +421,37 @@ public class Conteneur implements TKdataObject, TKFantomableObject, Serializable
       return getNom();
    }
 
+   /**
+    * retourne le libellé à afficher dans un contexte lié à la plateforme passée en paramètre :
+    * ce libellé est composé du nom suivi du code entre parenthèses. Mais si la plateforme passée en paramètre
+    * ne correspond pas à la plateforme d'origine du conteneur, on rajoute, entre crochets, le nom de la plateforme d'origine du conteneur 
+    * Exemple pour une Plateforme 1 : 
+    *    - son Conteneur 1 aura le libellé : Conteneur 1 (C1)
+    *    - un Conteneur 2 de la Plateforme 2 aura le libellé : Conteneur 2 (C2) [Plateforme 2]
+    * @param plateforme
+    * @return le libellé en fonction de la plateforme passée en paramètre
+    */
+   public String getLibelleForPlateforme(Plateforme plateforme) {
+      StringBuilder libelle = null;
+      if(getNom() != null){
+         //TK-421 : ajout du code entre parenthèse pour distinguer les conteneurs pouvant avoir le même nom
+         libelle = new StringBuilder(getNom()).append(" (").append(getCode()).append(")");
+         //libelle = nomSuiviCode.toString();
+      }else{
+         libelle = new StringBuilder(getCode());
+      }
+
+      // conteneur partagé depuis pf extérieur
+      // ajoute au libellé
+      // TK-289
+      if(!getPlateformeOrig().equals(plateforme)){
+         libelle.append(" [").append(getPlateformeOrig().getAlias() != null
+            ? getPlateformeOrig().getAlias() : getPlateformeOrig().getNom()).append("]");
+      }
+      
+      return libelle.toString();
+   }
+   
    /**
     * Comparator permettant d'ordonner une liste de conteneurs par leur noms.
     * Date: 02/12/2013

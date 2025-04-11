@@ -85,6 +85,7 @@ import fr.aphp.tumorotek.model.TKdataObject;
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.contexte.Collaborateur;
 import fr.aphp.tumorotek.model.contexte.Plateforme;
+import fr.aphp.tumorotek.model.stockage.Conteneur;
 import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
@@ -154,9 +155,12 @@ public class FichePlateforme extends AbstractFicheCombineController
 
    private List<Banque> banques = new ArrayList<>();
 
-   private List<ConteneurDecorator> conteneurs = new ArrayList<>();
-
-   private final List<ConteneurDecorator> copyConteneurs = new ArrayList<>();
+   // TK-636 : les conteneurs sont gérés par conteneursAssocies.zul mis dans la Div conteneursAssocies de cet objet
+   // et récupéré par getConteneursAssocies() (qui renvoie un objet ConteneursAssocies)
+   // Par conséquent, ils n'ont pas à être définis comme attribut de cet objet ...
+//   private List<ConteneurDecorator> conteneurs = new ArrayList<>();
+//
+//   private final List<ConteneurDecorator> copyConteneurs = new ArrayList<>();
 
    private String hautPage;
 
@@ -192,8 +196,8 @@ public class FichePlateforme extends AbstractFicheCombineController
 
       // passe les refrences des group headers
       Executions.createComponents("/zuls/contexte/ConteneursAssocies.zul", conteneursAssocies, null);
+      getConteneursAssocies().setConteneursAssociesStrategy(new ConteneursAssociesForPlateforme());//TK-636
       getConteneursAssocies().setGroupHeader(groupConteneurs);
-      getConteneursAssocies().setConteneursDeBanque(false);
 
       // TK-252
       // collecte les superadmins
@@ -213,7 +217,7 @@ public class FichePlateforme extends AbstractFicheCombineController
    @Override
    public void setObject(final TKdataObject obj){
       this.plateforme = (Plateforme) obj;
-      conteneurs.clear();
+      //conteneurs.clear();
 
       selectedCollaborateur = this.plateforme.getCollaborateur();
       if(this.plateforme.getCollaborateur() != null && collaborateurs.contains(this.plateforme.getCollaborateur())){
@@ -232,6 +236,7 @@ public class FichePlateforme extends AbstractFicheCombineController
 
       administrateurs = new ArrayList<>();
       banques = new ArrayList<>();
+      List<Conteneur> conteneurs = new ArrayList<Conteneur>();
       if(this.plateforme.getPlateformeId() != null){
          // init des admins
          final Iterator<Utilisateur> it = ManagerLocator.getPlateformeManager().getUtilisateursManager(plateforme).iterator();
@@ -242,30 +247,23 @@ public class FichePlateforme extends AbstractFicheCombineController
          // init des banques
          banques = ManagerLocator.getBanqueManager().findByPlateformeAndArchiveManager(plateforme, null);
 
-         getConteneursAssocies().setPlateforme(plateforme);
-         conteneurs = ConteneurDecorator
-            .decorateListe(ManagerLocator.getConteneurManager().findByPlateformeOrigWithOrderManager(plateforme), plateforme);
-         conteneurs.addAll(ConteneurDecorator
-            .decorateListe(ManagerLocator.getConteneurManager().findByPartageManager(plateforme, true), plateforme));
+         conteneurs.addAll(ManagerLocator.getConteneurManager().findByPlateformeOrigWithOrderManager(plateforme));
+         conteneurs.addAll(ManagerLocator.getConteneurManager().findByPartageManager(plateforme, true));
       }
 
-      getConteneursAssocies().setObjects(conteneurs);
+      getConteneursAssocies().initData(conteneurs, plateforme);//TK-636
       super.setObject(plateforme);
    }
 
    @Override
    public void cloneObject(){
       setClone(this.plateforme.clone());
-      copyConteneurs.clear();
-      for(int i = 0; i < conteneurs.size(); i++){
-         copyConteneurs.add(conteneurs.get(i).clone());
-      }
    }
 
    @Override
    public void revertObject(){
       super.revertObject();
-      setConteneurs(getCopyConteneurs());
+      getConteneursAssocies().revert();
    }
 
    @Override
@@ -321,9 +319,6 @@ public class FichePlateforme extends AbstractFicheCombineController
    public void switchToStaticMode(){
       super.switchToStaticMode(this.plateforme.equals(new Plateforme()));
 
-      // addNewC.setVisible(false);
-      // deleteC.setVisible(false);
-
       if(this.plateforme.getPlateformeId() == null){
          menuBar.setVisible(false);
       }else{
@@ -363,8 +358,7 @@ public class FichePlateforme extends AbstractFicheCombineController
       collabBox.setValue(null);
       administrateurs.clear();
       banques.clear();
-      conteneurs.clear();
-      getConteneursAssocies().setObjects(conteneurs);
+      getConteneursAssocies().setObjects(new ArrayList<ConteneurDecorator>());
 
       super.clearData();
    }
@@ -504,8 +498,9 @@ public class FichePlateforme extends AbstractFicheCombineController
       }
 
       // update de l'objet
+      List<Conteneur> conteneursAAjouter = getConteneursAssocies().retrieveListConteneurForAssociation();
       ManagerLocator.getPlateformeManager().updateObjectManager(plateforme, selectedCollaborateur, administrateurs,
-         ConteneurDecorator.extractConteneursFromDecos(conteneurs), SessionUtils.getLoggedUser(sessionScope));
+         conteneursAAjouter, SessionUtils.getLoggedUser(sessionScope));
    }
 
    /**
@@ -779,7 +774,7 @@ public class FichePlateforme extends AbstractFicheCombineController
       addInfosPlateformeToPrint(page1);
       addInfosListeUtilisateurs(page1);
       addInfosListeBanques(page1);
-      addInfosConteneursToPrint(page1);
+      getConteneursAssocies().addInfosConteneursToPrint(page1);//TK-636 et TK-635
 
       return document;
    }
@@ -919,79 +914,9 @@ public class FichePlateforme extends AbstractFicheCombineController
       ManagerLocator.getXmlUtils().addParagraphe(page, par);
    }
 
-   /**
-    * Ajout les infos conteneurs à imprimer.
-    * @param page
-    */
-   public void addInfosConteneursToPrint(final Element page){
-      // Entete
-      final String[] listeEntete = new String[5];
-      listeEntete[0] = Labels.getLabel("conteneur.code");
-      listeEntete[1] = Labels.getLabel("conteneur.nom");
-      listeEntete[2] = Labels.getLabel("conteneur.temp");
-      listeEntete[3] = Labels.getLabel("conteneur.service");
-      listeEntete[4] = Labels.getLabel("service.etablissement");
-      final EnteteListe entetes = new EnteteListe(listeEntete);
-
-      // liste des cédés
-      final LigneListe[] liste = new LigneListe[conteneurs.size()];
-      for(int i = 0; i < conteneurs.size(); i++){
-         final String[] valeurs = new String[5];
-         // code
-         valeurs[0] = conteneurs.get(i).getConteneur().getCode();
-         // nom
-         valeurs[1] = conteneurs.get(i).getConteneur().getNom();
-         // température
-         final StringBuffer sb = new StringBuffer();
-         sb.append(conteneurs.get(i).getConteneur().getTemp());
-         sb.append("°C");
-         valeurs[2] = sb.toString();
-         // service
-         if(conteneurs.get(i).getConteneur().getService() != null){
-            valeurs[3] = conteneurs.get(i).getConteneur().getService().getNom();
-         }else{
-            valeurs[3] = "-";
-         }
-         // etablissement
-         if(conteneurs.get(i).getConteneur().getService() != null
-            && conteneurs.get(i).getConteneur().getService().getEtablissement() != null){
-            valeurs[4] = conteneurs.get(i).getConteneur().getService().getEtablissement().getNom();
-         }else{
-            valeurs[4] = "-";
-         }
-         final LigneListe ligne = new LigneListe(valeurs);
-         liste[i] = ligne;
-      }
-      ListeElement listeSites = null;
-      if(conteneurs.size() > 0){
-         listeSites = new ListeElement(null, entetes, liste);
-      }
-
-      // ajout du paragraphe
-      final StringBuffer sb = new StringBuffer();
-      sb.append(Labels.getLabel("Champ.Banque.Conteneurs"));
-      sb.append(" (");
-      sb.append(conteneurs.size());
-      sb.append(")");
-      final Paragraphe par = new Paragraphe(sb.toString(), null, null, null, listeSites);
-      ManagerLocator.getXmlUtils().addParagraphe(page, par);
-   }
-
    /*************************************************************************/
    /************************** CONTENEURS************************************/
    /*************************************************************************/
-   public List<ConteneurDecorator> getConteneurs(){
-      return conteneurs;
-   }
-
-   public void setConteneurs(final List<ConteneurDecorator> cts){
-      this.conteneurs.clear();
-      this.conteneurs.addAll(cts);
-   }
-
-   public List<ConteneurDecorator> getCopyConteneurs(){
-      return copyConteneurs;
-   }
 
    /**
     * Renvoie le controller associe au composant permettant la getsion

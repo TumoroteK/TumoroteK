@@ -1067,8 +1067,6 @@ public class FicheConteneur extends AbstractFicheCombineStockageController
             getObjectTabController().getListeStockages().updateConteneur(conteneur);
          }
 
-         //updateConteneurInFicheBanque();
-
          setObject(this.conteneur);
          switchToStaticMode();
       }catch(final RuntimeException re){
@@ -1122,34 +1120,6 @@ public class FicheConteneur extends AbstractFicheCombineStockageController
       }
       return true;
    }
-
-
-   //	/**
-   //	 * Met à jour la liste des conteneurs au niveau d'une fiche banque
-   //	 * si elle contient le conteneur selectionné.
-   //	 */
-   //	private void updateConteneurInFicheBanque() {
-   //		if (getMainWindow()
-   //				.isFullfilledComponent("administrationPanel",
-   //											"winAdministration")) {
-   //
-   //			AdministrationController controller = (AdministrationController)
-   //										getMainWindow()
-   //										.getMainTabbox()
-   //										.getTabpanels()
-   //										.getFellow("administrationPanel")
-   //										.getFellow("winAdministration")
-   //						.getAttributeOrFellow("winAdministration$composer", true);
-   //
-   //			// oblige la mise à jour des conteneurs
-   //			if (!((FicheBanque) controller.getBanqueController()
-   //					.getFicheCombine()).getConteneurs().isEmpty()) {
-   //				((FicheBanque) controller
-   //						.getBanqueController().getFicheCombine())
-   //													.updateConteneurs();
-   //			}
-   //		}
-   //	}
 
    @Override
    public void onLaterDelete(final Event event){

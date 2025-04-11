@@ -96,7 +96,16 @@ public interface ConteneurDao extends GenericDaoJpa<Conteneur, Integer>
     * @return Liste de conteneurs.
     */
    List<Conteneur> findByPartage(Plateforme pf, Boolean partage);
-
+   
+   /**
+    * Recherche tous les conteneurs mis à disposition de la plateforme en paramètre (par une autre plateforme) que celle-ci l'aie accepté ou non.
+    * @param Plateforme pf
+    * @param partage true/false
+    * @return Liste de conteneurs.
+    */
+   List<Conteneur> findAllPartages(Plateforme pf);
+   
+   
    /**
     * Recherche tous les conteneurs qui sont accessibles à partir
     * d'un service.
