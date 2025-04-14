@@ -131,7 +131,6 @@
 	<!-- ************* DATABASE INITIALIZATION ************* -->
 	<jdbc:initialize-database data-source="dataSource" ignore-failures="DROPS">
 		<jdbc:script location="${db.create.tables.script.path}" />
-		<jdbc:script location="${db.alter.tables.script.path}" />
 		<jdbc:script location="${db.populate.tables.script.path}" />
 	</jdbc:initialize-database>
 
