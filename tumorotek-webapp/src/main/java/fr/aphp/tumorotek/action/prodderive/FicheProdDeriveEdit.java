@@ -2391,8 +2391,7 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
 
       Errors errs = null;
       String field = "";
-      // Si la date à valider est nulle, on efface le message d'erreur associé
-      // au composant et remet sa valeur à null
+
       if(dateToValidate == null){
 
          ((CalendarBox) comp).clearErrorMessage(dateToValidate);
