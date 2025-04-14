@@ -78,6 +78,10 @@ public class ConteneursAssocies extends OneToManyComponent<ConteneurDecorator>
    
    private List<ConteneurDecorator> copyObjects = new ArrayList<>();
    
+   //TK-636 : optimisation : findObjectsAddable est appelé à chaque ajout / suppression d'un élément
+   //c'est inutile d'aller chercher tous les conteneurs associables à chaque fois car cela ne doit pas changer
+   private List<Conteneur> allConteneursAssociables = new ArrayList<>();
+   
    //TK-636 : certains traitements sont différents selon l'appelant (Fiche Banque ou Fiche Plateforme). 
    //On passe donc par le pattern Strategy : l'appelant instanciera la bonne stratégie
    private ConteneursAssociesStrategy conteneursAssociesStrategy;
@@ -118,6 +122,7 @@ public class ConteneursAssocies extends OneToManyComponent<ConteneurDecorator>
    public void setObjects(final List<ConteneurDecorator> objs){
       this.objects = objs;
       copyObjects = objs;
+      allConteneursAssociables = conteneursAssociesStrategy.retrieveListAllConteneurAssociable(plateforme);
       updateComponent();
    }
    
@@ -183,15 +188,15 @@ public class ConteneursAssocies extends OneToManyComponent<ConteneurDecorator>
       List<ConteneurDecorator> listConteneurDecoratorAjoutable = new ArrayList<>();
       
       //Pour déterminer les conteneurs ajoutables, on va chercher tous les conteneurs "associables" et on retire les conteneurs déjà ajoutés. Cela permet de garder les 2 listes bien synchronisées
-      List<Conteneur> listConteneur = new ArrayList<Conteneur>(conteneursAssociesStrategy.retrieveListAllConteneurAssociable(plateforme));
+      List<Conteneur> listConteneurAjoutable = new ArrayList<Conteneur>(allConteneursAssociables);
 
       //on retire les conteneurs déjà associés
       for(int i = 0; i < getObjects().size(); i++){
-         listConteneur.remove(getObjects().get(i).getConteneur());
+         listConteneurAjoutable.remove(getObjects().get(i).getConteneur());
       }
       
       //transforme en decorator
-      listConteneurDecoratorAjoutable.addAll(decorateConteneurs(listConteneur));
+      listConteneurDecoratorAjoutable.addAll(decorateConteneurs(listConteneurAjoutable));
 
       return listConteneurDecoratorAjoutable;
    }
