@@ -415,8 +415,11 @@ INSERT INTO CONFORMITE_TYPE VALUES (1,'Arrivee'),(2,'Traitement'),(3,'Cession');
 
 INSERT INTO CONSENT_TYPE VALUES (1,'EN ATTENTE',1),(2,'RECHERCHE',2),(3,'DECEDE',1);
 
-INSERT INTO CONTENEUR VALUES (1,1,'CC1','Congélateur 1',-75,'PIECE 01',3,3,'Conteneur de stockage',1,0),(2,1,'CG589','Congélateur 589',-98,'PIECE 01',4,2,'Conteneur de stockage',1,0),(3,3,'CRY25','Cryo conservateur',-120,'PIECE 01',3,2,'Conteneur de stockage très froid',1,0),(4,2,'C999','Congélateur 999',-75,'PIECE 98B',3,3,'Conteneur de stockage',3,0);
-
+INSERT INTO CONTENEUR VALUES
+    (1, 1, 'CC1', 'Congélateur 1', -75, 'PIECE 01', 3, 3, 'Conteneur de stockage', 1, 0, 1, 0),
+    (2, 1, 'CG589', 'Congélateur 589', -98, 'PIECE 01', 4, 2, 'Conteneur de stockage', 1, 0, 1, 0),
+    (3, 3, 'CRY25', 'Cryo conservateur', -120, 'PIECE 01', 3, 2, 'Conteneur de stockage très froid', 1, 0, 1, 0),
+    (4, 2, 'C999', 'Congélateur 999', -75, 'PIECE 98B', 3, 3, 'Conteneur de stockage', 3, 0, 1, 0);
 INSERT INTO CONTENEUR_BANQUE VALUES (1,1),(1,2),(1,3),(1,4),(2,1),(2,2),(3,1),(3,2),(4,2);
 
 INSERT INTO CONTENEUR_PLATEFORME VALUES (1,1),(2,1),(3,1),(1,2),(4,2);
