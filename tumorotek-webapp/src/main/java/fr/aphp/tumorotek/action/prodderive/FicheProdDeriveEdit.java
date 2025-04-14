@@ -2375,6 +2375,15 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
       }
    }
 
+   /**
+    * Cette méthode est utilisée pour vérifier si la date fournie respecte les
+    * contraintes de cohérence spécifiées pour les dates de transformation et
+    * de stockage.
+    *
+    * @param comp Le composant à valider (doit être de type CalendarBox).
+    * @param value La valeur à valider, qui doit être une instance de Calendar ou null.
+    * @throws WrongValueException Si une incohérence de date est détectée.
+    */
    @Override
    protected void validateCoherenceDate(final Component comp, final Object value){
 
@@ -2388,7 +2397,7 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
          ((CalendarBox) comp).clearErrorMessage(dateToValidate);
          ((CalendarBox) comp).setValue(null);
 
-         if(dateTransfoCalBox.equals(comp)){
+         if(dateStockCalBox.equals(comp)){
             prodDerive.setDateStock(null);
          }else if(dateTransfoCalBox.equals(comp)){
             prodDerive.setDateTransformation(null);
@@ -2419,7 +2428,6 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
                this.prodDerive.setTransformation(transformation);
             }
             this.prodDerive.setDateStock((Calendar) value);
-
             errs = ManagerLocator.getProdDeriveValidator().checkDateStockCoherence(this.prodDerive);
          }
 
