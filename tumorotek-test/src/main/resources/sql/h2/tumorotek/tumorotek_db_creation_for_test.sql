@@ -1,0 +1,1771 @@
+DROP TABLE IF EXISTS VERSION;
+DROP TABLE IF EXISTS TEMPERATURE;
+DROP TABLE IF EXISTS COULEUR_ENTITE_TYPE;
+DROP TABLE IF EXISTS OBJET_NON_CONFORME;
+DROP TABLE IF EXISTS NON_CONFORMITE;
+DROP TABLE IF EXISTS CONFORMITE_TYPE;
+DROP TABLE IF EXISTS INDICATEUR_SQL;
+DROP TABLE IF EXISTS INDICATEUR_REQUETE;
+DROP TABLE IF EXISTS INDICATEUR_PLATEFORME;
+DROP TABLE IF EXISTS INDICATEUR_BANQUE;
+DROP TABLE IF EXISTS INDICATEUR;
+DROP TABLE IF EXISTS TIMER;
+DROP TABLE IF EXISTS MESSAGE;
+DROP TABLE IF EXISTS FANTOME;
+DROP TABLE IF EXISTS RESULTAT;
+DROP TABLE IF EXISTS RECHERCHE_BANQUE;
+DROP TABLE IF EXISTS RECHERCHE;
+DROP TABLE IF EXISTS REQUETE;
+DROP TABLE IF EXISTS GROUPEMENT;
+DROP TABLE IF EXISTS CRITERE;
+DROP TABLE IF EXISTS COMBINAISON;
+DROP TABLE IF EXISTS AFFICHAGE;
+DROP TABLE IF EXISTS AFFECTATION_IMPRIMANTE;
+DROP TABLE IF EXISTS IMPRIMANTE;
+DROP TABLE IF EXISTS IMPRIMANTE_API;
+DROP TABLE IF EXISTS CHAMP_LIGNE_ETIQUETTE;
+DROP TABLE IF EXISTS LIGNE_ETIQUETTE;
+DROP TABLE IF EXISTS MODELE;
+DROP TABLE IF EXISTS MODELE_TYPE;
+DROP TABLE IF EXISTS RETOUR;
+DROP TABLE IF EXISTS PROD_DERIVE;
+DROP TABLE IF EXISTS TRANSFORMATION;
+DROP TABLE IF EXISTS CODE_ASSIGNE;
+DROP TABLE IF EXISTS ECHANTILLON;
+DROP TABLE IF EXISTS LABO_INTER;
+DROP TABLE IF EXISTS PRELEVEMENT_SERO_PROTOCOLE;
+DROP TABLE IF EXISTS PRELEVEMENT_XENO;
+DROP TABLE IF EXISTS PRELEVEMENT_SERO;
+DROP TABLE IF EXISTS PRELEVEMENT_DELEGATE;
+DROP TABLE IF EXISTS PRELEVEMENT;
+DROP TABLE IF EXISTS DEM_DERIVE;
+DROP TABLE IF EXISTS CEDER_OBJET;
+DROP TABLE IF EXISTS TABLE_ANNOTATION_TEMPLATE;
+DROP TABLE IF EXISTS TABLE_ANNOTATION_BANQUE;
+DROP TABLE IF EXISTS CHAMP_IMPRIME;
+DROP TABLE IF EXISTS CHAMP_ENTITE_CONTEXTE;
+DROP TABLE IF EXISTS CHAMP_ENTITE_BLOC;
+DROP TABLE IF EXISTS BLOC_IMPRESSION_TEMPLATE;
+DROP TABLE IF EXISTS BLOC_IMPRESSION;
+DROP TABLE IF EXISTS TEMPLATE;
+DROP TABLE IF EXISTS NUMEROTATION;
+DROP TABLE IF EXISTS CATALOGUE_CONTEXTE;
+DROP TABLE IF EXISTS BANQUE_TABLE_CODAGE;
+DROP TABLE IF EXISTS BANQUE_CATALOGUE;
+DROP TABLE IF EXISTS ANNOTATION_VALEUR;
+DROP TABLE IF EXISTS ANNOTATION_DEFAUT;
+DROP TABLE IF EXISTS IMPORTATION;
+DROP TABLE IF EXISTS IMPORT_HISTORIQUE;
+DROP TABLE IF EXISTS IMPORT_COLONNE;
+DROP TABLE IF EXISTS IMPORT_TEMPLATE_ENTITE;
+DROP TABLE IF EXISTS IMPORT_TEMPLATE;
+DROP TABLE IF EXISTS CODE_SELECT;
+DROP TABLE IF EXISTS TRANSCODE_UTILISATEUR;
+DROP TABLE IF EXISTS CODE_UTILISATEUR;
+DROP TABLE IF EXISTS CODE_DOSSIER;
+DROP TABLE IF EXISTS DROIT_OBJET;
+DROP TABLE IF EXISTS PLATEFORME_ADMINISTRATEUR;
+DROP TABLE IF EXISTS PROFIL_UTILISATEUR;
+DROP TABLE IF EXISTS OPERATION;
+DROP TABLE IF EXISTS INCIDENT;
+DROP TABLE IF EXISTS CESSION;
+DROP TABLE IF EXISTS RESERVATION;
+DROP TABLE IF EXISTS EMPLACEMENT;
+DROP TABLE IF EXISTS TERMINALE;
+DROP TABLE IF EXISTS ENCEINTE_BANQUE;
+DROP TABLE IF EXISTS ENCEINTE;
+DROP TABLE IF EXISTS ENCEINTE_TYPE;
+DROP TABLE IF EXISTS CONTENEUR_PLATEFORME;
+DROP TABLE IF EXISTS CONTENEUR_BANQUE;
+DROP TABLE IF EXISTS CONTENEUR;
+DROP TABLE IF EXISTS CONTENEUR_TYPE;
+DROP TABLE IF EXISTS FICHIER;
+DROP TABLE IF EXISTS UTILISATEUR;
+DROP TABLE IF EXISTS CONTRAT;
+DROP TABLE IF EXISTS TRANSPORTEUR;
+DROP TABLE IF EXISTS DESTRUCTION_MOTIF;
+DROP TABLE IF EXISTS CESSION_EXAMEN;
+DROP TABLE IF EXISTS PROFIL;
+DROP TABLE IF EXISTS OPERATION_TYPE;
+DROP TABLE IF EXISTS CESSION_STATUT;
+DROP TABLE IF EXISTS CESSION_TYPE;
+DROP TABLE IF EXISTS TERMINALE_TYPE;
+DROP TABLE IF EXISTS TERMINALE_NUMEROTATION;
+DROP TABLE IF EXISTS MALADIE_MEDECIN;
+DROP TABLE IF EXISTS MALADIE_SERO;
+DROP TABLE IF EXISTS MALADIE_DELEGATE;
+DROP TABLE IF EXISTS MALADIE;
+DROP TABLE IF EXISTS PATIENT_MEDECIN;
+DROP TABLE IF EXISTS PATIENT_LIEN;
+DROP TABLE IF EXISTS LIEN_FAMILIAL;
+DROP TABLE IF EXISTS PATIENT;
+DROP TABLE IF EXISTS PROTOCOLE;
+DROP TABLE IF EXISTS PROTOCOLE_TYPE;
+DROP TABLE IF EXISTS ITEM;
+DROP TABLE IF EXISTS CHAMP;
+DROP TABLE IF EXISTS RISQUE;
+DROP TABLE IF EXISTS CONSENT_TYPE;
+DROP TABLE IF EXISTS CONDIT_MILIEU;
+DROP TABLE IF EXISTS CONDIT_TYPE;
+DROP TABLE IF EXISTS NATURE;
+DROP TABLE IF EXISTS PRELEVEMENT_TYPE;
+DROP TABLE IF EXISTS MODE_PREPA_DERIVE;
+DROP TABLE IF EXISTS PROD_QUALITE;
+DROP TABLE IF EXISTS PROD_TYPE;
+DROP TABLE IF EXISTS ECHAN_QUALITE;
+DROP TABLE IF EXISTS MODE_PREPA;
+DROP TABLE IF EXISTS ECHANTILLON_TYPE;
+DROP TABLE IF EXISTS BANQUE;
+DROP TABLE IF EXISTS CHAMP_ANNOTATION;
+DROP TABLE IF EXISTS CHAMP_ENTITE;
+DROP TABLE IF EXISTS TABLE_ANNOTATION;
+DROP TABLE IF EXISTS PLATEFORME;
+DROP TABLE IF EXISTS SERVICE;
+DROP TABLE IF EXISTS COLLABORATEUR;
+DROP TABLE IF EXISTS ETABLISSEMENT;
+DROP TABLE IF EXISTS UNITE;
+DROP TABLE IF EXISTS OBJET_STATUT;
+DROP TABLE IF EXISTS COULEUR;
+DROP TABLE IF EXISTS TITRE;
+DROP TABLE IF EXISTS SPECIALITE;
+DROP TABLE IF EXISTS COORDONNEE;
+DROP TABLE IF EXISTS CATEGORIE;
+DROP TABLE IF EXISTS TABLE_CODAGE;
+DROP TABLE IF EXISTS CONTEXTE;
+DROP TABLE IF EXISTS CATALOGUE;
+DROP TABLE IF EXISTS ENTITE;
+DROP TABLE IF EXISTS DATA_TYPE;
+
+CREATE TABLE DATA_TYPE (
+                           DATA_TYPE_ID int NOT NULL DEFAULT 0,
+                           TYPE char NOT NULL DEFAULT '',
+                           PRIMARY KEY (DATA_TYPE_ID)
+);
+
+CREATE TABLE ENTITE (
+                        ENTITE_ID int NOT NULL DEFAULT 0,
+                        NOM varchar DEFAULT NULL,
+                        MASC tinyint NOT NULL DEFAULT 0,
+                        ANNOTABLE tinyint NOT NULL DEFAULT 0,
+                        PRIMARY KEY (ENTITE_ID)
+);
+CREATE TABLE CHAMP_DELEGUE (
+                               CHAMP_DELEGUE_ID INT NOT NULL,
+                               NOM VARCHAR(100) NOT NULL,
+                               DATA_TYPE_ID INT NOT NULL,
+                               ENTITE_ID INT NOT NULL,
+                               CONTEXTE VARCHAR(50) NOT NULL,
+                               PRIMARY KEY (CHAMP_DELEGUE_ID),
+                               UNIQUE (ENTITE_ID, CONTEXTE, NOM),
+                               FOREIGN KEY (DATA_TYPE_ID) REFERENCES DATA_TYPE (DATA_TYPE_ID),
+                               FOREIGN KEY (ENTITE_ID) REFERENCES ENTITE (ENTITE_ID)
+);
+CREATE TABLE CATALOGUE (
+                           CATALOGUE_ID int NOT NULL,
+                           NOM char NOT NULL,
+                           DESCRIPTION char DEFAULT NULL,
+                           ICONE char NOT NULL,
+                           PRIMARY KEY (CATALOGUE_ID)
+);
+
+CREATE TABLE CONTEXTE (
+                          CONTEXTE_ID int NOT NULL DEFAULT 0,
+                          NOM char NOT NULL DEFAULT '',
+                          PRIMARY KEY (CONTEXTE_ID)
+);
+
+
+CREATE TABLE CATEGORIE (
+                           CATEGORIE_ID int NOT NULL DEFAULT 0,
+                           NOM varchar NOT NULL DEFAULT '',
+                           PRIMARY KEY (CATEGORIE_ID)
+);
+
+CREATE TABLE TABLE_CODAGE (
+                              TABLE_CODAGE_ID int NOT NULL DEFAULT 0,
+                              NOM varchar NOT NULL DEFAULT '',
+                              VERSION char DEFAULT NULL,
+                              PRIMARY KEY (TABLE_CODAGE_ID)
+);
+
+CREATE TABLE COORDONNEE (
+                            COORDONNEE_ID int NOT NULL DEFAULT 0,
+                            ADRESSE varchar DEFAULT NULL,
+                            CP varchar DEFAULT NULL,
+                            VILLE varchar DEFAULT NULL,
+                            PAYS varchar DEFAULT NULL,
+                            TEL varchar DEFAULT NULL,
+                            FAX varchar DEFAULT NULL,
+                            MAIL varchar DEFAULT NULL,
+                            PRIMARY KEY (COORDONNEE_ID)
+);
+
+CREATE TABLE SPECIALITE (
+                            SPECIALITE_ID int NOT NULL DEFAULT 0,
+                            NOM varchar NOT NULL,
+                            PRIMARY KEY (SPECIALITE_ID)
+);
+
+CREATE TABLE TITRE (
+                       TITRE_ID int NOT NULL DEFAULT 0,
+                       TITRE varchar NOT NULL DEFAULT '',
+                       PRIMARY KEY (TITRE_ID)
+);
+
+CREATE TABLE COULEUR (
+                         COULEUR_ID int NOT NULL DEFAULT 0,
+                         COULEUR varchar NOT NULL,
+                         HEXA varchar NOT NULL,
+                         ORDRE_VISOTUBE int DEFAULT NULL,
+                         PRIMARY KEY (COULEUR_ID)
+);
+
+CREATE TABLE OBJET_STATUT (
+                              OBJET_STATUT_ID int NOT NULL DEFAULT 0,
+                              STATUT varchar NOT NULL DEFAULT '',
+                              PRIMARY KEY (OBJET_STATUT_ID)
+);
+
+CREATE TABLE UNITE (
+                       UNITE_ID int NOT NULL DEFAULT 0,
+                       UNITE varchar NOT NULL DEFAULT '',
+                       TYPE varchar NOT NULL DEFAULT 'masse',
+                       PRIMARY KEY (UNITE_ID)
+);
+
+CREATE TABLE ETABLISSEMENT (
+                               ETABLISSEMENT_ID int NOT NULL DEFAULT 0,
+                               COORDONNEE_ID int DEFAULT NULL,
+                               CATEGORIE_ID int DEFAULT NULL,
+                               NOM varchar NOT NULL DEFAULT '',
+                               FINESS varchar DEFAULT NULL,
+                               LOCAL tinyint DEFAULT 0,
+                               ARCHIVE tinyint DEFAULT 0,
+                               PRIMARY KEY (ETABLISSEMENT_ID),
+                               CONSTRAINT FK_ETABLISSEMENT_CATEGORIE_ID FOREIGN KEY (CATEGORIE_ID) REFERENCES CATEGORIE (CATEGORIE_ID) ON DELETE SET NULL,
+                               CONSTRAINT FK_ETABLISSEMENT_COORDONNEE_ID FOREIGN KEY (COORDONNEE_ID) REFERENCES COORDONNEE (COORDONNEE_ID)
+);
+
+CREATE TABLE COLLABORATEUR (
+                               COLLABORATEUR_ID int NOT NULL DEFAULT 0,
+                               ETABLISSEMENT_ID int DEFAULT NULL,
+                               SPECIALITE_ID int DEFAULT NULL,
+                               NOM varchar NOT NULL DEFAULT '',
+                               PRENOM varchar DEFAULT NULL,
+                               INITIALES varchar DEFAULT NULL,
+                               TITRE_ID int DEFAULT NULL,
+                               ARCHIVE tinyint DEFAULT NULL,
+                               PRIMARY KEY (COLLABORATEUR_ID),
+                               CONSTRAINT FK_COLLABORATEUR_ETABLISSEMENT_ID FOREIGN KEY (ETABLISSEMENT_ID) REFERENCES ETABLISSEMENT (ETABLISSEMENT_ID),
+                               CONSTRAINT FK_COLLABORATEUR_SPECIALITE_ID FOREIGN KEY (SPECIALITE_ID) REFERENCES SPECIALITE (SPECIALITE_ID) ON DELETE SET NULL,
+                               CONSTRAINT FK_COLLABORATEUR_TITRE_ID FOREIGN KEY (TITRE_ID) REFERENCES TITRE (TITRE_ID)
+);
+
+CREATE TABLE SERVICE (
+                         SERVICE_ID int NOT NULL DEFAULT 0,
+                         coordonnee_id int DEFAULT NULL,
+                         ETABLISSEMENT_ID int NOT NULL DEFAULT 0,
+                         NOM varchar NOT NULL DEFAULT '',
+                         ARCHIVE tinyint DEFAULT 0,
+                         PRIMARY KEY (SERVICE_ID),
+                         CONSTRAINT FK_SERVICE_COORDONNEE_ID FOREIGN KEY (coordonnee_id) REFERENCES COORDONNEE (COORDONNEE_ID),
+                         CONSTRAINT FK_SERVICE_ETABLISSEMENT_ID FOREIGN KEY (ETABLISSEMENT_ID) REFERENCES ETABLISSEMENT (ETABLISSEMENT_ID)
+);
+
+CREATE TABLE PLATEFORME (
+                            PLATEFORME_ID int NOT NULL DEFAULT 0,
+                            NOM varchar NOT NULL DEFAULT '',
+                            ALIAS varchar DEFAULT NULL,
+                            COLLABORATEUR_ID int DEFAULT NULL,
+                            PRIMARY KEY (PLATEFORME_ID),
+                            CONSTRAINT FK_PLATEFORME_COLLABORATEUR_ID FOREIGN KEY (COLLABORATEUR_ID) REFERENCES COLLABORATEUR (COLLABORATEUR_ID)
+);
+
+
+CREATE TABLE TABLE_ANNOTATION (
+                                  TABLE_ANNOTATION_ID INT NOT NULL,
+                                  NOM VARCHAR(100),
+                                  DESCRIPTION TEXT,
+                                  ENTITE_ID INT NOT NULL DEFAULT 1,
+                                  CATALOGUE_ID INT,
+                                  PLATEFORME_ID INT,
+                                  INLINE_DISPLAY BOOLEAN DEFAULT FALSE,
+                                  PRIMARY KEY (TABLE_ANNOTATION_ID),
+                                  FOREIGN KEY (CATALOGUE_ID) REFERENCES CATALOGUE (CATALOGUE_ID),
+                                  FOREIGN KEY (ENTITE_ID) REFERENCES ENTITE (ENTITE_ID),
+                                  FOREIGN KEY (PLATEFORME_ID) REFERENCES PLATEFORME (PLATEFORME_ID)
+);
+
+
+CREATE TABLE CHAMP_ENTITE (
+                              CHAMP_ENTITE_ID int NOT NULL DEFAULT 0,
+                              NOM varchar NOT NULL DEFAULT '',
+                              DATA_TYPE_ID int NOT NULL DEFAULT 0,
+                              IS_NULL tinyint NOT NULL DEFAULT 0,
+                              IS_UNIQUE tinyint NOT NULL DEFAULT 0,
+                              VALEUR_DEFAUT varchar DEFAULT NULL,
+                              ENTITE_ID int NOT NULL DEFAULT 0,
+                              CAN_IMPORT tinyint NOT NULL DEFAULT 0,
+                              QUERY_CHAMP_ID int DEFAULT NULL,
+                              PRIMARY KEY (CHAMP_ENTITE_ID),
+                              CONSTRAINT FK_CHAMP_ENTITE_CHAMP_ENTITE_ID FOREIGN KEY (ENTITE_ID) REFERENCES ENTITE (ENTITE_ID),
+                              CONSTRAINT FK_CHAMP_ENTITE_DATA_TYPE_ID FOREIGN KEY (DATA_TYPE_ID) REFERENCES DATA_TYPE (DATA_TYPE_ID)
+);
+
+CREATE TABLE CHAMP_ANNOTATION (
+                                  CHAMP_ANNOTATION_ID int NOT NULL,
+                                  NOM varchar NOT NULL DEFAULT '',
+                                  DATA_TYPE_ID int NOT NULL DEFAULT 0,
+                                  TABLE_ANNOTATION_ID int NOT NULL DEFAULT 0,
+                                  COMBINE tinyint DEFAULT 0,
+                                  ORDRE int NOT NULL DEFAULT 0,
+                                  EDIT tinyint DEFAULT 1,
+                                  PRIMARY KEY (CHAMP_ANNOTATION_ID),
+                                  CONSTRAINT FK_CHAMP_ANNOTATION_DATA_TYPE_ID FOREIGN KEY (DATA_TYPE_ID) REFERENCES DATA_TYPE (DATA_TYPE_ID),
+                                  CONSTRAINT FK_CHAMP_ANNOTATION_TABLE_ANNOTATION_ID FOREIGN KEY (TABLE_ANNOTATION_ID) REFERENCES TABLE_ANNOTATION (TABLE_ANNOTATION_ID)
+);
+
+CREATE TABLE BANQUE (
+                        BANQUE_ID int NOT NULL DEFAULT 0,
+                        COLLABORATEUR_ID int DEFAULT NULL,
+                        CONTACT_ID int DEFAULT NULL,
+                        NOM varchar NOT NULL DEFAULT '',
+                        IDENTIFICATION varchar DEFAULT NULL,
+                        DESCRIPTION text,
+                        PROPRIETAIRE_ID int DEFAULT NULL,
+                        AUTORISE_CROSS_PATIENT tinyint DEFAULT 0,
+                        ARCHIVE tinyint DEFAULT 0,
+                        CONTEXTE_ID int DEFAULT NULL,
+                        PLATEFORME_ID int NOT NULL DEFAULT 0,
+                        DEFMALADIES tinyint NOT NULL DEFAULT 1,
+                        DEFAUT_MALADIE varchar DEFAULT NULL,
+                        ECHANTILLON_COULEUR_ID int DEFAULT NULL,
+                        PROD_DERIVE_COULEUR_ID int DEFAULT NULL,
+                        PRIMARY KEY (BANQUE_ID),
+                        CONSTRAINT FK_BANQUE_COLLABORATEUR_ID FOREIGN KEY (COLLABORATEUR_ID) REFERENCES COLLABORATEUR (COLLABORATEUR_ID),
+                        CONSTRAINT FK_BANQUE_CONTACT_ID FOREIGN KEY (CONTACT_ID) REFERENCES COLLABORATEUR (COLLABORATEUR_ID),
+                        CONSTRAINT FK_BANQUE_CONTEXTE_ID FOREIGN KEY (CONTEXTE_ID) REFERENCES CONTEXTE (CONTEXTE_ID),
+                        CONSTRAINT FK_BANQUE_ECHANTILLON_COULEUR_ID FOREIGN KEY (ECHANTILLON_COULEUR_ID) REFERENCES COULEUR (COULEUR_ID),
+                        CONSTRAINT FK_BANQUE_PLATERORME_ID FOREIGN KEY (PLATEFORME_ID) REFERENCES PLATEFORME (PLATEFORME_ID),
+                        CONSTRAINT FK_BANQUE_PROD_DERIVE_COULEUR_ID FOREIGN KEY (PROD_DERIVE_COULEUR_ID) REFERENCES COULEUR (COULEUR_ID),
+                        CONSTRAINT FK_BANQUE_PROPRIETAIRE_ID FOREIGN KEY (PROPRIETAIRE_ID) REFERENCES SERVICE (SERVICE_ID)
+);
+
+CREATE TABLE ECHANTILLON_TYPE (
+                                  ECHANTILLON_TYPE_ID int NOT NULL DEFAULT 0,
+                                  TYPE varchar NOT NULL,
+                                  INCA_CAT varchar DEFAULT NULL,
+                                  PLATEFORME_ID int NOT NULL,
+                                  PRIMARY KEY (ECHANTILLON_TYPE_ID),
+                                  CONSTRAINT FK_ECHANTILLON_TYPE_PLATEFORME_ID FOREIGN KEY (PLATEFORME_ID) REFERENCES PLATEFORME (PLATEFORME_ID)
+);
+
+CREATE TABLE MODE_PREPA (
+                            MODE_PREPA_ID int NOT NULL DEFAULT 0,
+                            NOM varchar NOT NULL,
+                            NOM_EN varchar DEFAULT NULL,
+                            PLATEFORME_ID int NOT NULL,
+                            PRIMARY KEY (MODE_PREPA_ID),
+                            CONSTRAINT FK_MODE_PREPA_PLATEFORME_ID FOREIGN KEY (PLATEFORME_ID) REFERENCES PLATEFORME (PLATEFORME_ID)
+);
+
+CREATE TABLE ECHAN_QUALITE (
+                               ECHAN_QUALITE_ID int NOT NULL DEFAULT 0,
+                               ECHAN_QUALITE varchar NOT NULL,
+                               PLATEFORME_ID int NOT NULL,
+                               PRIMARY KEY (ECHAN_QUALITE_ID),
+                               CONSTRAINT FK_ECHAN_QUALITE_PLATEFORME_ID FOREIGN KEY (PLATEFORME_ID) REFERENCES PLATEFORME (PLATEFORME_ID)
+);
+
+CREATE TABLE PROD_TYPE (
+                           PROD_TYPE_ID int NOT NULL DEFAULT 0,
+                           TYPE varchar NOT NULL,
+                           PLATEFORME_ID int NOT NULL,
+                           PRIMARY KEY (PROD_TYPE_ID),
+                           CONSTRAINT FK_PROD_TYPE_PLATEFORME_ID FOREIGN KEY (PLATEFORME_ID) REFERENCES PLATEFORME (PLATEFORME_ID)
+);
+
+CREATE TABLE PROD_QUALITE (
+                              PROD_QUALITE_ID int NOT NULL DEFAULT 0,
+                              PROD_QUALITE varchar NOT NULL,
+                              PLATEFORME_ID int NOT NULL,
+                              PRIMARY KEY (PROD_QUALITE_ID),
+                              CONSTRAINT FK_PROD_QUALITE_PLATEFORME_ID FOREIGN KEY (PLATEFORME_ID) REFERENCES PLATEFORME (PLATEFORME_ID)
+);
+
+CREATE TABLE MODE_PREPA_DERIVE (
+                                   MODE_PREPA_DERIVE_ID int NOT NULL,
+                                   NOM varchar NOT NULL,
+                                   NOM_EN varchar DEFAULT NULL,
+                                   PLATEFORME_ID int NOT NULL,
+                                   PRIMARY KEY (MODE_PREPA_DERIVE_ID),
+                                   CONSTRAINT FK_MODE_PREPA_DERIVE_PLATEFORME_ID FOREIGN KEY (PLATEFORME_ID) REFERENCES PLATEFORME (PLATEFORME_ID)
+);
+
+CREATE TABLE PRELEVEMENT_TYPE (
+                                  PRELEVEMENT_TYPE_ID int NOT NULL DEFAULT 0,
+                                  INCA_CAT char DEFAULT NULL,
+                                  TYPE varchar NOT NULL,
+                                  PLATEFORME_ID int NOT NULL,
+                                  PRIMARY KEY (PRELEVEMENT_TYPE_ID),
+                                  CONSTRAINT FK_PRELEVEMENT_TYPE_PLATEFORME_ID FOREIGN KEY (PLATEFORME_ID) REFERENCES PLATEFORME (PLATEFORME_ID)
+);
+
+CREATE TABLE NATURE (
+                        NATURE_ID int NOT NULL DEFAULT 0,
+                        NATURE varchar NOT NULL,
+                        PLATEFORME_ID int NOT NULL,
+                        PRIMARY KEY (NATURE_ID),
+                        CONSTRAINT FK_NATURE_PLATEFORME_ID FOREIGN KEY (PLATEFORME_ID) REFERENCES PLATEFORME (PLATEFORME_ID)
+);
+
+CREATE TABLE CONDIT_TYPE (
+                             CONDIT_TYPE_ID int NOT NULL DEFAULT 0,
+                             TYPE varchar NOT NULL,
+                             PLATEFORME_ID int NOT NULL,
+                             PRIMARY KEY (CONDIT_TYPE_ID),
+                             CONSTRAINT FK_CONDIT_TYPE_PLATEFORME_ID FOREIGN KEY (PLATEFORME_ID) REFERENCES PLATEFORME (PLATEFORME_ID)
+);
+
+CREATE TABLE CONDIT_MILIEU (
+                               CONDIT_MILIEU_ID int NOT NULL DEFAULT 0,
+                               MILIEU varchar NOT NULL,
+                               PLATEFORME_ID int NOT NULL,
+                               PRIMARY KEY (CONDIT_MILIEU_ID),
+                               CONSTRAINT FK_CONDIT_MILIEU_PLATEFORME_ID FOREIGN KEY (PLATEFORME_ID) REFERENCES PLATEFORME (PLATEFORME_ID)
+);
+
+CREATE TABLE CONSENT_TYPE (
+                              CONSENT_TYPE_ID int NOT NULL DEFAULT 0,
+                              TYPE varchar NOT NULL,
+                              PLATEFORME_ID int NOT NULL,
+                              PRIMARY KEY (CONSENT_TYPE_ID),
+                              CONSTRAINT FK_CONSENT_TYPE_PLATEFORME_ID FOREIGN KEY (PLATEFORME_ID) REFERENCES PLATEFORME (PLATEFORME_ID)
+);
+
+CREATE TABLE RISQUE (
+                        RISQUE_ID int NOT NULL DEFAULT 0,
+                        NOM varchar NOT NULL,
+                        INFECTIEUX tinyint NOT NULL DEFAULT 0,
+                        PLATEFORME_ID int NOT NULL,
+                        PRIMARY KEY (RISQUE_ID),
+                        CONSTRAINT FK_RISQUE_PLATEFORME_ID FOREIGN KEY (PLATEFORME_ID) REFERENCES PLATEFORME (PLATEFORME_ID)
+);
+
+
+CREATE TABLE CHAMP (
+                       CHAMP_ID int NOT NULL DEFAULT 0,
+                       CHAMP_ANNOTATION_ID int DEFAULT NULL,
+                       CHAMP_ENTITE_ID int DEFAULT NULL,
+                       CHAMP_PARENT_ID int DEFAULT NULL,
+                       PRIMARY KEY (CHAMP_ID),
+                       CONSTRAINT FK_CHAMP_CHAMP_ANNOTATION_ID FOREIGN KEY (CHAMP_ANNOTATION_ID) REFERENCES CHAMP_ANNOTATION (CHAMP_ANNOTATION_ID),
+                       CONSTRAINT FK_CHAMP_CHAMP_ENTITE_ID FOREIGN KEY (CHAMP_ENTITE_ID) REFERENCES CHAMP_ENTITE (CHAMP_ENTITE_ID)
+);
+
+CREATE TABLE ITEM (
+                      ITEM_ID int NOT NULL,
+                      LABEL varchar NOT NULL DEFAULT '',
+                      VALEUR varchar DEFAULT NULL,
+                      CHAMP_ANNOTATION_ID int NOT NULL DEFAULT 0,
+                      PLATEFORME_ID int DEFAULT NULL,
+                      PRIMARY KEY (ITEM_ID),
+                      CONSTRAINT FK_ITEM_CHAMP_ANNOTATION_ID FOREIGN KEY (CHAMP_ANNOTATION_ID) REFERENCES CHAMP_ANNOTATION (CHAMP_ANNOTATION_ID),
+                      CONSTRAINT FK_ITEM_PLATEFORME_ID FOREIGN KEY (PLATEFORME_ID) REFERENCES PLATEFORME (PLATEFORME_ID)
+);
+
+
+
+CREATE TABLE PROTOCOLE_TYPE (
+                                PROTOCOLE_TYPE_ID int NOT NULL DEFAULT 0,
+                                TYPE varchar NOT NULL,
+                                PLATEFORME_ID int NOT NULL,
+                                PRIMARY KEY (PROTOCOLE_TYPE_ID),
+                                CONSTRAINT FK_PROTOCOLE_TYPE_PLATEFORME_ID FOREIGN KEY (PLATEFORME_ID) REFERENCES PLATEFORME (PLATEFORME_ID)
+);
+
+CREATE TABLE PROTOCOLE (
+                           PROTOCOLE_ID int NOT NULL,
+                           NOM varchar NOT NULL,
+                           DESCRIPTION text,
+                           PLATEFORME_ID int DEFAULT NULL,
+                           PRIMARY KEY (PROTOCOLE_ID),
+                           CONSTRAINT FK_PROTOCOLE_PLATEFORME_ID FOREIGN KEY (PLATEFORME_ID) REFERENCES PLATEFORME (PLATEFORME_ID)
+);
+
+CREATE TABLE PATIENT (
+                         PATIENT_ID int NOT NULL DEFAULT 0,
+                         NIP varchar DEFAULT NULL,
+                         NOM varchar NOT NULL DEFAULT '',
+                         NOM_NAISSANCE varchar DEFAULT NULL,
+                         PRENOM varchar DEFAULT NULL,
+                         SEXE char DEFAULT NULL,
+                         DATE_NAISSANCE date DEFAULT NULL,
+                         VILLE_NAISSANCE varchar DEFAULT NULL,
+                         PAYS_NAISSANCE varchar DEFAULT NULL,
+                         PATIENT_ETAT varchar NOT NULL DEFAULT 'inconnu',
+                         DATE_ETAT date DEFAULT NULL,
+                         DATE_DECES date DEFAULT NULL,
+                         ETAT_INCOMPLET tinyint DEFAULT 0,
+                         ARCHIVE tinyint DEFAULT 0,
+                         PRIMARY KEY (PATIENT_ID)
+);
+
+CREATE TABLE LIEN_FAMILIAL (
+                               LIEN_FAMILIAL_ID int NOT NULL DEFAULT 0,
+                               NOM char NOT NULL DEFAULT '',
+                               RECIPROQUE_ID int DEFAULT NULL,
+                               ASCENDANT tinyint DEFAULT NULL,
+                               PRIMARY KEY (LIEN_FAMILIAL_ID)
+);
+
+CREATE TABLE PATIENT_LIEN (
+                              PATIENT1_ID int NOT NULL DEFAULT 0,
+                              LIEN_FAMILIAL_ID int NOT NULL DEFAULT 0,
+                              PATIENT2_ID int NOT NULL DEFAULT 0,
+                              PRIMARY KEY (PATIENT1_ID,LIEN_FAMILIAL_ID,PATIENT2_ID),
+                              CONSTRAINT FK_PATIENT_LIEN_LIEN_FAMILIAL_ID FOREIGN KEY (LIEN_FAMILIAL_ID) REFERENCES LIEN_FAMILIAL (LIEN_FAMILIAL_ID),
+                              CONSTRAINT FK_PATIENT_LIEN_PATIENT1_ID FOREIGN KEY (PATIENT1_ID) REFERENCES PATIENT (PATIENT_ID),
+                              CONSTRAINT FK_PATIENT_LIEN_PATIENT2_ID FOREIGN KEY (PATIENT2_ID) REFERENCES PATIENT (PATIENT_ID)
+);
+
+CREATE TABLE PATIENT_MEDECIN (
+                                 PATIENT_ID int NOT NULL DEFAULT 0,
+                                 COLLABORATEUR_ID int NOT NULL DEFAULT 0,
+                                 ORDRE int NOT NULL DEFAULT 1,
+                                 PRIMARY KEY (COLLABORATEUR_ID,PATIENT_ID),
+                                 CONSTRAINT FK_PATIENT_MEDECIN_COLLABORATEUR_ID FOREIGN KEY (COLLABORATEUR_ID) REFERENCES COLLABORATEUR (COLLABORATEUR_ID),
+                                 CONSTRAINT FK_PATIENT_MEDECIN_PATIENT_ID FOREIGN KEY (PATIENT_ID) REFERENCES PATIENT (PATIENT_ID)
+);
+
+CREATE TABLE MALADIE (
+                         MALADIE_ID int NOT NULL DEFAULT 0,
+                         PATIENT_ID int NOT NULL DEFAULT 0,
+                         LIBELLE varchar NOT NULL DEFAULT 'Inconnu',
+                         CODE varchar DEFAULT NULL,
+                         DATE_DIAGNOSTIC date DEFAULT NULL,
+                         DATE_DEBUT date DEFAULT NULL,
+                         SYSTEME_DEFAUT tinyint NOT NULL DEFAULT 0,
+                         PRIMARY KEY (MALADIE_ID),
+                         CONSTRAINT FK_MALADIE_PATIENT_ID FOREIGN KEY (PATIENT_ID) REFERENCES PATIENT (PATIENT_ID)
+);
+
+CREATE TABLE MALADIE_DELEGATE (
+                                  MALADIE_DELEGATE_ID int NOT NULL,
+                                  MALADIE_ID int NOT NULL,
+                                  CONTEXTE_ID int NOT NULL,
+                                  PRIMARY KEY (MALADIE_DELEGATE_ID),
+                                  CONSTRAINT FK_MALADIE_DEL_CONTEXTE_ID FOREIGN KEY (CONTEXTE_ID) REFERENCES CONTEXTE (CONTEXTE_ID),
+                                  CONSTRAINT FK_MALADIE_DEL_MALADIE_ID FOREIGN KEY (MALADIE_ID) REFERENCES MALADIE (MALADIE_ID)
+);
+
+CREATE TABLE MALADIE_SERO (
+                              MALADIE_DELEGATE_ID int NOT NULL,
+                              DIAGNOSTIC char NOT NULL,
+                              PRIMARY KEY (MALADIE_DELEGATE_ID),
+                              CONSTRAINT FK_MAL_SERO_MAL_DEL_ID FOREIGN KEY (MALADIE_DELEGATE_ID) REFERENCES MALADIE_DELEGATE (MALADIE_DELEGATE_ID)
+);
+
+CREATE TABLE MALADIE_MEDECIN (
+                                 MALADIE_ID int NOT NULL DEFAULT 0,
+                                 COLLABORATEUR_ID int NOT NULL DEFAULT 0,
+                                 PRIMARY KEY (MALADIE_ID,COLLABORATEUR_ID),
+                                 CONSTRAINT FK_MALADIE_MEDECIN_COLLABORATEUR_ID FOREIGN KEY (COLLABORATEUR_ID) REFERENCES COLLABORATEUR (COLLABORATEUR_ID),
+                                 CONSTRAINT FK_MALADIE_MEDECIN_MALADIE_ID FOREIGN KEY (MALADIE_ID) REFERENCES MALADIE (MALADIE_ID)
+);
+
+
+CREATE TABLE TERMINALE_NUMEROTATION (
+                                        TERMINALE_NUMEROTATION_ID int NOT NULL DEFAULT 0,
+                                        LIGNE char NOT NULL DEFAULT '',
+                                        COLONNE char NOT NULL DEFAULT '',
+                                        PRIMARY KEY (TERMINALE_NUMEROTATION_ID)
+);
+
+CREATE TABLE TERMINALE_TYPE (
+                                TERMINALE_TYPE_ID int NOT NULL,
+                                TYPE varchar NOT NULL DEFAULT '',
+                                NB_PLACES int NOT NULL DEFAULT 0,
+                                HAUTEUR int NOT NULL DEFAULT 0,
+                                LONGUEUR int NOT NULL DEFAULT 0,
+                                SCHEME varchar DEFAULT NULL,
+                                DEPART_NUM_HAUT tinyint NOT NULL,
+                                PRIMARY KEY (TERMINALE_TYPE_ID)
+);
+
+CREATE TABLE CESSION_TYPE (
+                              CESSION_TYPE_ID int NOT NULL DEFAULT 0,
+                              TYPE char NOT NULL DEFAULT '',
+                              PRIMARY KEY (CESSION_TYPE_ID)
+);
+
+CREATE TABLE CESSION_STATUT (
+                                CESSION_STATUT_ID int NOT NULL DEFAULT 0,
+                                STATUT char NOT NULL DEFAULT '',
+                                PRIMARY KEY (CESSION_STATUT_ID)
+);
+
+CREATE TABLE OPERATION_TYPE (
+                                OPERATION_TYPE_ID int NOT NULL DEFAULT 0,
+                                NOM varchar NOT NULL DEFAULT '',
+                                PROFILABLE tinyint NOT NULL DEFAULT 0,
+                                PRIMARY KEY (OPERATION_TYPE_ID)
+);
+
+CREATE TABLE PROFIL (
+                        PROFIL_ID INT NOT NULL,
+                        NOM VARCHAR(100) NOT NULL,
+                        ANONYME BOOLEAN DEFAULT FALSE,
+                        ADMIN BOOLEAN NOT NULL DEFAULT FALSE,
+                        ACCES_ADMINISTRATION BOOLEAN NOT NULL DEFAULT FALSE,
+                        PROFIL_EXPORT INT DEFAULT 0,
+                        ARCHIVE BOOLEAN NOT NULL,
+                        PLATEFORME_ID INT NOT NULL,
+                        PRIMARY KEY (PROFIL_ID),
+                        FOREIGN KEY (PLATEFORME_ID) REFERENCES PLATEFORME (PLATEFORME_ID)
+);
+
+
+
+
+CREATE TABLE CESSION_EXAMEN (
+                                CESSION_EXAMEN_ID int NOT NULL DEFAULT 0,
+                                EXAMEN varchar NOT NULL,
+                                EXAMEN_EN varchar DEFAULT NULL,
+                                PLATEFORME_ID int NOT NULL,
+                                PRIMARY KEY (CESSION_EXAMEN_ID),
+                                CONSTRAINT FK_CESSION_EXAMEN_PLATEFORME_ID FOREIGN KEY (PLATEFORME_ID) REFERENCES PLATEFORME (PLATEFORME_ID)
+);
+
+CREATE TABLE DESTRUCTION_MOTIF (
+                                   DESTRUCTION_MOTIF_ID int NOT NULL DEFAULT 0,
+                                   MOTIF varchar NOT NULL,
+                                   PLATEFORME_ID int NOT NULL,
+                                   PRIMARY KEY (DESTRUCTION_MOTIF_ID),
+                                   CONSTRAINT FK_DESTRUCTION_MOTIF_PLATEFORME_ID FOREIGN KEY (PLATEFORME_ID) REFERENCES PLATEFORME (PLATEFORME_ID)
+);
+
+CREATE TABLE TRANSPORTEUR (
+                              TRANSPORTEUR_ID int NOT NULL DEFAULT 0,
+                              coordonnee_id int DEFAULT NULL,
+                              NOM varchar NOT NULL DEFAULT '',
+                              CONTACT_NOM varchar DEFAULT NULL,
+                              CONTACT_PRENOM varchar DEFAULT NULL,
+                              CONTACT_TEL varchar DEFAULT NULL,
+                              CONTACT_FAX varchar DEFAULT NULL,
+                              CONTACT_MAIL varchar DEFAULT NULL,
+                              ARCHIVE tinyint DEFAULT 0,
+                              PRIMARY KEY (TRANSPORTEUR_ID),
+                              CONSTRAINT FK_TRANSPORTEUR_COORDONNEE_ID FOREIGN KEY (coordonnee_id) REFERENCES COORDONNEE (COORDONNEE_ID)
+);
+
+CREATE TABLE CONTRAT (
+                         CONTRAT_ID int NOT NULL DEFAULT 0,
+                         PLATEFORME_ID int NOT NULL,
+                         NUMERO varchar NOT NULL,
+                         DATE_DEMANDE_CESSION date DEFAULT NULL,
+                         DATE_VALIDATION date DEFAULT NULL,
+                         DATE_DEMANDE_REDACTION date DEFAULT NULL,
+                         DATE_ENVOI_CONTRAT date DEFAULT NULL,
+                         DATE_SIGNATURE date DEFAULT NULL,
+                         TITRE_PROJET varchar DEFAULT NULL,
+                         COLLABORATEUR_ID int DEFAULT NULL,
+                         SERVICE_ID int DEFAULT NULL,
+                         PROTOCOLE_TYPE_ID int DEFAULT NULL,
+                         DESCRIPTION text,
+                         ETABLISSEMENT_ID int DEFAULT NULL,
+                         MONTANT float DEFAULT NULL,
+                         PRIMARY KEY (CONTRAT_ID),
+                         CONSTRAINT FK_CONTRAT_COLLABORATEUR_ID FOREIGN KEY (COLLABORATEUR_ID) REFERENCES COLLABORATEUR (COLLABORATEUR_ID),
+                         CONSTRAINT FK_CONTRAT_ETABLISSEMENT_ID FOREIGN KEY (ETABLISSEMENT_ID) REFERENCES ETABLISSEMENT (ETABLISSEMENT_ID),
+                         CONSTRAINT FK_CONTRAT_PLATEFORME_ID FOREIGN KEY (PLATEFORME_ID) REFERENCES PLATEFORME (PLATEFORME_ID),
+                         CONSTRAINT FK_CONTRAT_PROTOCOLE_TYPE_ID FOREIGN KEY (PROTOCOLE_TYPE_ID) REFERENCES PROTOCOLE_TYPE (PROTOCOLE_TYPE_ID) ON DELETE SET NULL,
+                         CONSTRAINT FK_CONTRAT_SERVICE_ID FOREIGN KEY (SERVICE_ID) REFERENCES SERVICE (SERVICE_ID)
+);
+
+CREATE TABLE UTILISATEUR (
+                             UTILISATEUR_ID INT NOT NULL DEFAULT 0,
+                             LOGIN VARCHAR NOT NULL DEFAULT '',
+                             PASSWORD VARCHAR NOT NULL DEFAULT '',
+                             ARCHIVE TINYINT DEFAULT 0,
+                             LDAP BIT NOT NULL DEFAULT 0,
+                             EMAIL VARCHAR DEFAULT NULL,
+                             TIMEOUT DATE DEFAULT NULL,
+                             COLLABORATEUR_ID INT DEFAULT NULL,
+                             SUPER TINYINT NOT NULL DEFAULT 0,
+                             PLATEFORME_ORIG_ID INT DEFAULT NULL,
+                             PRIMARY KEY (UTILISATEUR_ID),
+                             CONSTRAINT FK_UTILISATEUR_COLLABORATEUR_ID FOREIGN KEY (COLLABORATEUR_ID) REFERENCES COLLABORATEUR (COLLABORATEUR_ID),
+                             CONSTRAINT FK_UTIL_PF_ORIG_ID FOREIGN KEY (PLATEFORME_ORIG_ID) REFERENCES PLATEFORME (PLATEFORME_ID)
+);
+
+CREATE TABLE FICHIER (
+                         FICHIER_ID int NOT NULL DEFAULT 0,
+                         NOM varchar NOT NULL DEFAULT '',
+                         PATH varchar NOT NULL DEFAULT '',
+                         MIMETYPE varchar NOT NULL,
+                         PRIMARY KEY (FICHIER_ID)
+);
+
+
+CREATE TABLE CONTENEUR_TYPE (
+                                CONTENEUR_TYPE_ID int NOT NULL DEFAULT 0,
+                                TYPE varchar NOT NULL,
+                                PLATEFORME_ID int NOT NULL,
+                                PRIMARY KEY (CONTENEUR_TYPE_ID),
+                                CONSTRAINT FK_CONTENEUR_TYPE_PLATEFORME_ID FOREIGN KEY (PLATEFORME_ID) REFERENCES PLATEFORME (PLATEFORME_ID)
+);
+
+CREATE TABLE CONTENEUR (
+                           CONTENEUR_ID INT NOT NULL DEFAULT 0,
+                           CONTENEUR_TYPE_ID INT DEFAULT NULL,
+                           CODE VARCHAR(5) NOT NULL DEFAULT '',
+                           NOM VARCHAR(50) DEFAULT NULL,
+                           TEMP FLOAT DEFAULT NULL,
+                           PIECE VARCHAR(20) DEFAULT NULL,
+                           NBR_NIV INT DEFAULT NULL,
+                           NBR_ENC INT DEFAULT NULL,
+                           DESCRIPTION VARCHAR(250) DEFAULT NULL,
+                           SERVICE_ID INT NOT NULL DEFAULT 0,
+                           ARCHIVE TINYINT DEFAULT 0,
+                           PLATEFORME_ORIG_ID INT NOT NULL DEFAULT 1,
+                           PARTAGE TINYINT NOT NULL DEFAULT 0,
+                           PRIMARY KEY (CONTENEUR_ID),
+                           FOREIGN KEY (CONTENEUR_TYPE_ID) REFERENCES CONTENEUR_TYPE(CONTENEUR_TYPE_ID) ON DELETE SET NULL,
+                           FOREIGN KEY (SERVICE_ID) REFERENCES SERVICE(SERVICE_ID),
+                           FOREIGN KEY (PLATEFORME_ORIG_ID) REFERENCES PLATEFORME(PLATEFORME_ID)
+);
+
+
+
+CREATE TABLE CONTENEUR_BANQUE (
+                                  CONTENEUR_ID int NOT NULL DEFAULT 0,
+                                  BANQUE_ID int NOT NULL DEFAULT 0,
+                                  PRIMARY KEY (BANQUE_ID,CONTENEUR_ID),
+                                  CONSTRAINT FK_CONTENEUR_BANQUE_BANQUE_ID FOREIGN KEY (BANQUE_ID) REFERENCES BANQUE (BANQUE_ID),
+                                  CONSTRAINT FK_CONTENEUR_BANQUE_CONTENEUR_ID FOREIGN KEY (CONTENEUR_ID) REFERENCES CONTENEUR (CONTENEUR_ID)
+);
+
+CREATE TABLE CONTENEUR_PLATEFORME (
+                                      CONTENEUR_ID int NOT NULL DEFAULT 0,
+                                      PLATEFORME_ID int NOT NULL DEFAULT 0,
+                                      PRIMARY KEY (CONTENEUR_ID,PLATEFORME_ID),
+                                      CONSTRAINT FK_CONTENEUR_PLATEFORME_CONTENEUR_ID FOREIGN KEY (CONTENEUR_ID) REFERENCES CONTENEUR (CONTENEUR_ID),
+                                      CONSTRAINT FK_CONTENEUR_PLATEFORME_PLATEFORME_ID FOREIGN KEY (PLATEFORME_ID) REFERENCES PLATEFORME (PLATEFORME_ID)
+);
+
+CREATE TABLE ENCEINTE_TYPE (
+                               ENCEINTE_TYPE_ID int NOT NULL DEFAULT 0,
+                               TYPE varchar NOT NULL,
+                               PREFIXE varchar NOT NULL,
+                               PLATEFORME_ID int NOT NULL,
+                               PRIMARY KEY (ENCEINTE_TYPE_ID),
+                               CONSTRAINT FK_ENCEINTE_TYPE_PLATEFORME_ID FOREIGN KEY (PLATEFORME_ID) REFERENCES PLATEFORME (PLATEFORME_ID)
+);
+
+CREATE TABLE ENCEINTE (
+                          ENCEINTE_ID int NOT NULL DEFAULT 0,
+                          ENCEINTE_TYPE_ID int NOT NULL DEFAULT 0,
+                          CONTENEUR_ID int DEFAULT NULL,
+                          ENCEINTE_PERE_ID int DEFAULT NULL,
+                          NOM varchar NOT NULL,
+                          POSITION int NOT NULL DEFAULT 0,
+                          ALIAS varchar DEFAULT NULL,
+                          NB_PLACES int NOT NULL DEFAULT 0,
+                          ENTITE_ID int DEFAULT NULL,
+                          ARCHIVE tinyint DEFAULT 0,
+                          COULEUR_ID int DEFAULT NULL,
+                          PRIMARY KEY (ENCEINTE_ID),
+                          CONSTRAINT FK_ENCEINTE_CONTENEUR_ID FOREIGN KEY (CONTENEUR_ID) REFERENCES CONTENEUR (CONTENEUR_ID),
+                          CONSTRAINT FK_ENCEINTE_COULEUR_ID FOREIGN KEY (COULEUR_ID) REFERENCES COULEUR (COULEUR_ID),
+                          CONSTRAINT FK_ENCEINTE_ENCEINTE_PERE_ID FOREIGN KEY (ENCEINTE_PERE_ID) REFERENCES ENCEINTE (ENCEINTE_ID),
+                          CONSTRAINT FK_ENCEINTE_ENCEINTE_TYPE_ID FOREIGN KEY (ENCEINTE_TYPE_ID) REFERENCES ENCEINTE_TYPE (ENCEINTE_TYPE_ID),
+                          CONSTRAINT FK_ENCEINTE_ENTITE_ID FOREIGN KEY (ENTITE_ID) REFERENCES ENTITE (ENTITE_ID)
+);
+
+
+CREATE TABLE ENCEINTE_BANQUE (
+                                 ENCEINTE_ID int NOT NULL DEFAULT 0,
+                                 BANQUE_ID int NOT NULL DEFAULT 0,
+                                 PRIMARY KEY (BANQUE_ID,ENCEINTE_ID),
+                                 CONSTRAINT FK_ENCEINTE_BANQUE_BANQUE_ID FOREIGN KEY (BANQUE_ID) REFERENCES BANQUE (BANQUE_ID),
+                                 CONSTRAINT FK_ENCEINTE_BANQUE_ENCEINTE_ID FOREIGN KEY (ENCEINTE_ID) REFERENCES ENCEINTE (ENCEINTE_ID)
+);
+
+
+
+CREATE TABLE TERMINALE (
+                           TERMINALE_ID int NOT NULL DEFAULT 0,
+                           ENCEINTE_ID int NOT NULL DEFAULT 0,
+                           TERMINALE_TYPE_ID int NOT NULL DEFAULT 0,
+                           NOM varchar NOT NULL,
+                           POSITION int NOT NULL DEFAULT 0,
+                           ALIAS varchar DEFAULT NULL,
+                           BANQUE_ID int DEFAULT NULL,
+                           ENTITE_ID int DEFAULT NULL,
+                           ARCHIVE tinyint DEFAULT 0,
+                           TERMINALE_NUMEROTATION_ID int NOT NULL DEFAULT 0,
+                           COULEUR_ID int DEFAULT NULL,
+                           PRIMARY KEY (TERMINALE_ID),
+                           CONSTRAINT FK_TERMINALE_BANQUE_ID FOREIGN KEY (BANQUE_ID) REFERENCES BANQUE (BANQUE_ID) ON DELETE SET NULL,
+                           CONSTRAINT FK_TERMINALE_COULEUR_ID FOREIGN KEY (COULEUR_ID) REFERENCES COULEUR (COULEUR_ID),
+                           CONSTRAINT FK_TERMINALE_ENCEINTE_ID FOREIGN KEY (ENCEINTE_ID) REFERENCES ENCEINTE (ENCEINTE_ID),
+                           CONSTRAINT FK_TERMINALE_ENTITE_ID FOREIGN KEY (ENTITE_ID) REFERENCES ENTITE (ENTITE_ID),
+                           CONSTRAINT FK_TERMINALE_TERMINALE_NUMEROTATION_ID FOREIGN KEY (TERMINALE_NUMEROTATION_ID) REFERENCES TERMINALE_NUMEROTATION (TERMINALE_NUMEROTATION_ID),
+                           CONSTRAINT FK_TERMINALE_TERMINALE_TYPE_ID FOREIGN KEY (TERMINALE_TYPE_ID) REFERENCES TERMINALE_TYPE (TERMINALE_TYPE_ID)
+);
+
+
+CREATE TABLE EMPLACEMENT (
+                             EMPLACEMENT_ID int NOT NULL DEFAULT 0,
+                             TERMINALE_ID int NOT NULL DEFAULT 0,
+                             POSITION int NOT NULL DEFAULT 0,
+                             OBJET_ID int DEFAULT NULL,
+                             ENTITE_ID int DEFAULT NULL,
+                             VIDE tinyint DEFAULT 1,
+                             ADRL varchar DEFAULT NULL,
+                             ADRP varchar DEFAULT NULL,
+                             PRIMARY KEY (EMPLACEMENT_ID),
+                             CONSTRAINT FK_EMPLACEMENT_ENTITE_ID FOREIGN KEY (ENTITE_ID) REFERENCES ENTITE (ENTITE_ID),
+                             CONSTRAINT FK_EMPLACEMENT_TERMINALE_ID FOREIGN KEY (TERMINALE_ID) REFERENCES TERMINALE (TERMINALE_ID)
+);
+
+CREATE TABLE RESERVATION (
+                             RESERVATION_ID int NOT NULL DEFAULT 0,
+                             FIN datetime DEFAULT NULL,
+                             DEBUT datetime DEFAULT NULL,
+                             UTILISATEUR_ID int NOT NULL DEFAULT 0,
+                             PRIMARY KEY (RESERVATION_ID),
+                             CONSTRAINT FK_RESERVATION_UTILISATEUR_ID FOREIGN KEY (UTILISATEUR_ID) REFERENCES UTILISATEUR (UTILISATEUR_ID)
+);
+
+CREATE TABLE CESSION (
+                         CESSION_ID int NOT NULL DEFAULT 0,
+                         NUMERO varchar NOT NULL,
+                         BANQUE_ID int DEFAULT NULL,
+                         CESSION_TYPE_ID int DEFAULT NULL,
+                         DEMANDE_DATE date DEFAULT NULL,
+                         CESSION_EXAMEN_ID int DEFAULT NULL,
+                         CONTRAT_ID int DEFAULT NULL,
+                         ETUDE_TITRE varchar DEFAULT NULL,
+                         DESTINATAIRE_ID int DEFAULT NULL,
+                         SERVICE_DEST_ID int DEFAULT NULL,
+                         DESCRIPTION text,
+                         DEMANDEUR_ID int DEFAULT NULL,
+                         CESSION_STATUT_ID int NOT NULL DEFAULT 0,
+                         VALIDATION_DATE date DEFAULT NULL,
+                         EXECUTANT_ID int DEFAULT NULL,
+                         TRANSPORTEUR_ID int DEFAULT NULL,
+                         DEPART_DATE datetime DEFAULT NULL,
+                         ARRIVEE_DATE datetime DEFAULT NULL,
+                         OBSERVATIONS varchar DEFAULT NULL,
+                         TEMPERATURE float DEFAULT NULL,
+                         DESTRUCTION_MOTIF_ID int DEFAULT NULL,
+                         DESTRUCTION_DATE datetime DEFAULT NULL,
+                         ETAT_INCOMPLET tinyint DEFAULT 0,
+                         ARCHIVE tinyint DEFAULT 0,
+                         PRIMARY KEY (CESSION_ID),
+                         CONSTRAINT FK_CESSION_BANQUE_ID FOREIGN KEY (BANQUE_ID) REFERENCES BANQUE (BANQUE_ID),
+                         CONSTRAINT FK_CESSION_CESSION_EXAMEN_ID FOREIGN KEY (CESSION_EXAMEN_ID) REFERENCES CESSION_EXAMEN (CESSION_EXAMEN_ID) ON DELETE SET NULL,
+                         CONSTRAINT FK_CESSION_CESSION_STATUT_ID FOREIGN KEY (CESSION_STATUT_ID) REFERENCES CESSION_STATUT (CESSION_STATUT_ID),
+                         CONSTRAINT FK_CESSION_CESSION_TYPE_ID FOREIGN KEY (CESSION_TYPE_ID) REFERENCES CESSION_TYPE (CESSION_TYPE_ID),
+                         CONSTRAINT FK_CESSION_CONTRAT_ID FOREIGN KEY (CONTRAT_ID) REFERENCES CONTRAT (CONTRAT_ID),
+                         CONSTRAINT FK_CESSION_DEMANDEUR_ID FOREIGN KEY (DEMANDEUR_ID) REFERENCES COLLABORATEUR (COLLABORATEUR_ID),
+                         CONSTRAINT FK_CESSION_DESTINATAIRE_ID FOREIGN KEY (DESTINATAIRE_ID) REFERENCES COLLABORATEUR (COLLABORATEUR_ID),
+                         CONSTRAINT FK_CESSION_DESTRUCTION_MOTIF_ID FOREIGN KEY (DESTRUCTION_MOTIF_ID) REFERENCES DESTRUCTION_MOTIF (DESTRUCTION_MOTIF_ID) ON DELETE SET NULL,
+                         CONSTRAINT FK_CESSION_EXECUTANT_ID FOREIGN KEY (EXECUTANT_ID) REFERENCES COLLABORATEUR (COLLABORATEUR_ID),
+                         CONSTRAINT FK_CESSION_SERVICE_DEST_ID FOREIGN KEY (SERVICE_DEST_ID) REFERENCES SERVICE (SERVICE_ID),
+                         CONSTRAINT FK_CESSION_TRANSPORTEUR_ID FOREIGN KEY (TRANSPORTEUR_ID) REFERENCES TRANSPORTEUR (TRANSPORTEUR_ID)
+);
+
+CREATE TABLE INCIDENT (
+                          INCIDENT_ID int NOT NULL DEFAULT 0,
+                          NOM varchar NOT NULL DEFAULT '',
+                          DATE_ datetime DEFAULT NULL,
+                          DESCRIPTION text,
+                          CONTENEUR_ID int NOT NULL DEFAULT 0,
+                          PRIMARY KEY (INCIDENT_ID),
+                          CONSTRAINT FK_INCIDENT_CONTENEUR_ID FOREIGN KEY (CONTENEUR_ID) REFERENCES CONTENEUR (CONTENEUR_ID)
+);
+
+CREATE TABLE OPERATION (
+                           OPERATION_ID int NOT NULL AUTO_INCREMENT,
+                           UTILISATEUR_ID int DEFAULT NULL,
+                           DATE_ datetime DEFAULT NULL,
+                           OBJET_ID int NOT NULL DEFAULT 0,
+                           OPERATION_TYPE_ID int NOT NULL DEFAULT 0,
+                           ENTITE_ID int NOT NULL DEFAULT 0,
+                           V1 tinyint NOT NULL DEFAULT 0,
+                           PRIMARY KEY (OPERATION_ID),
+                           CONSTRAINT FK_OPERATION_ENTITE_ID FOREIGN KEY (ENTITE_ID) REFERENCES ENTITE (ENTITE_ID),
+                           CONSTRAINT FK_OPERATION_OPERATION_TYPE_ID FOREIGN KEY (OPERATION_TYPE_ID) REFERENCES OPERATION_TYPE (OPERATION_TYPE_ID),
+                           CONSTRAINT FK_OPERATION_UTILISATEUR_ID FOREIGN KEY (UTILISATEUR_ID) REFERENCES UTILISATEUR (UTILISATEUR_ID)
+);
+
+CREATE TABLE PROFIL_UTILISATEUR (
+                                    UTILISATEUR_ID int NOT NULL DEFAULT 0,
+                                    BANQUE_ID int NOT NULL DEFAULT 0,
+                                    PROFIL_ID int NOT NULL DEFAULT 0,
+                                    PRIMARY KEY (BANQUE_ID,PROFIL_ID,UTILISATEUR_ID),
+                                    CONSTRAINT FK_PROFIL_UTILISATEUR_BANQUE_ID FOREIGN KEY (BANQUE_ID) REFERENCES BANQUE (BANQUE_ID),
+                                    CONSTRAINT FK_PROFIL_UTILISATEUR_PROFIL_ID FOREIGN KEY (PROFIL_ID) REFERENCES PROFIL (PROFIL_ID),
+                                    CONSTRAINT FK_PROFIL_UTILISATEUR_UTILISATEUR_ID FOREIGN KEY (UTILISATEUR_ID) REFERENCES UTILISATEUR (UTILISATEUR_ID)
+);
+
+CREATE TABLE PLATEFORME_ADMINISTRATEUR (
+                                           PLATEFORME_ID int NOT NULL DEFAULT 0,
+                                           UTILISATEUR_ID int NOT NULL DEFAULT 0,
+                                           PRIMARY KEY (PLATEFORME_ID,UTILISATEUR_ID),
+                                           CONSTRAINT FK_PLATEFORME_ADMINISTRATEUR_PLATEFORME_ID FOREIGN KEY (PLATEFORME_ID) REFERENCES PLATEFORME (PLATEFORME_ID),
+                                           CONSTRAINT FK_PLATEFORME_ADMINISTRATEUR_UTILISATEUR_ID FOREIGN KEY (UTILISATEUR_ID) REFERENCES UTILISATEUR (UTILISATEUR_ID)
+);
+
+CREATE TABLE DROIT_OBJET (
+                             PROFIL_ID int NOT NULL DEFAULT 0,
+                             ENTITE_ID int NOT NULL DEFAULT 0,
+                             OPERATION_TYPE_ID int NOT NULL DEFAULT 0,
+                             PRIMARY KEY (PROFIL_ID,ENTITE_ID,OPERATION_TYPE_ID),
+                             CONSTRAINT FK_DROIT_OBJET_ENTITE_ID FOREIGN KEY (ENTITE_ID) REFERENCES ENTITE (ENTITE_ID),
+                             CONSTRAINT FK_DROIT_OBJET_OPERATION_TYPE_ID FOREIGN KEY (OPERATION_TYPE_ID) REFERENCES OPERATION_TYPE (OPERATION_TYPE_ID),
+                             CONSTRAINT FK_DROIT_OBJET_PROFIL_ID FOREIGN KEY (PROFIL_ID) REFERENCES PROFIL (PROFIL_ID)
+);
+
+CREATE TABLE CODE_DOSSIER (
+                              CODE_DOSSIER_ID int NOT NULL,
+                              NOM char NOT NULL,
+                              DESCRIPTION varchar DEFAULT NULL,
+                              DOSSIER_PARENT_ID int DEFAULT NULL,
+                              CODESELECT tinyint NOT NULL DEFAULT 0,
+                              BANQUE_ID int DEFAULT NULL,
+                              UTILISATEUR_ID int DEFAULT NULL,
+                              PRIMARY KEY (CODE_DOSSIER_ID),
+                              CONSTRAINT FK_CODE_DOSSIER_BANQUE_ID FOREIGN KEY (BANQUE_ID) REFERENCES BANQUE (BANQUE_ID),
+                              CONSTRAINT FK_CODE_DOSSIER_DOSSIER_PARENT_ID FOREIGN KEY (DOSSIER_PARENT_ID) REFERENCES CODE_DOSSIER (CODE_DOSSIER_ID),
+                              CONSTRAINT FK_CODE_DOSSIER_UTILISATEUR_ID FOREIGN KEY (UTILISATEUR_ID) REFERENCES UTILISATEUR (UTILISATEUR_ID)
+);
+
+CREATE TABLE CODE_UTILISATEUR (
+                                  CODE_UTILISATEUR_ID int NOT NULL DEFAULT 0,
+                                  CODE varchar NOT NULL,
+                                  LIBELLE varchar DEFAULT NULL,
+                                  UTILISATEUR_ID int NOT NULL DEFAULT 0,
+                                  BANQUE_ID int NOT NULL DEFAULT 0,
+                                  code_dossier_id int DEFAULT NULL,
+                                  CODE_PARENT_ID int DEFAULT NULL,
+                                  PRIMARY KEY (CODE_UTILISATEUR_ID)
+);
+
+CREATE TABLE TRANSCODE_UTILISATEUR (
+                                       CODE_UTILISATEUR_ID int NOT NULL,
+                                       TABLE_CODAGE_ID int NOT NULL,
+                                       CODE_ID int NOT NULL,
+                                       TRANSCODE_UTILISATEUR_ID int NOT NULL,
+                                       PRIMARY KEY (TRANSCODE_UTILISATEUR_ID)
+);
+
+CREATE TABLE CODE_SELECT (
+                             CODE_SELECT_ID int NOT NULL,
+                             UTILISATEUR_ID int NOT NULL,
+                             BANQUE_ID int NOT NULL,
+                             CODE_ID int NOT NULL,
+                             TABLE_CODAGE_ID int NOT NULL,
+                             CODE_DOSSIER_ID int DEFAULT NULL,
+                             PRIMARY KEY (CODE_SELECT_ID),
+                             CONSTRAINT FK_CODE_SELECT_BANQUE_ID FOREIGN KEY (BANQUE_ID) REFERENCES BANQUE (BANQUE_ID),
+                             CONSTRAINT FK_CODE_SELECT_CODE_DOSSIER_ID FOREIGN KEY (CODE_DOSSIER_ID) REFERENCES CODE_DOSSIER (CODE_DOSSIER_ID),
+                             CONSTRAINT FK_CODE_SELECT_TABLE_CODAGE_ID FOREIGN KEY (TABLE_CODAGE_ID) REFERENCES TABLE_CODAGE (TABLE_CODAGE_ID),
+                             CONSTRAINT FK_CODE_SELECT_UTILISATEUR_ID FOREIGN KEY (UTILISATEUR_ID) REFERENCES UTILISATEUR (UTILISATEUR_ID)
+);
+
+CREATE TABLE IMPORT_TEMPLATE (
+                                 IMPORT_TEMPLATE_ID int NOT NULL,
+                                 BANQUE_ID int NOT NULL,
+                                 NOM varchar NOT NULL,
+                                 DESCRIPTION varchar DEFAULT NULL,
+                                 IS_EDITABLE tinyint DEFAULT 1,
+                                 PRIMARY KEY (IMPORT_TEMPLATE_ID),
+                                 CONSTRAINT FK_IMPORT_TEMPLATE_BANQUE_ID FOREIGN KEY (BANQUE_ID) REFERENCES BANQUE (BANQUE_ID)
+);
+
+CREATE TABLE IMPORT_TEMPLATE_ENTITE (
+                                        IMPORT_TEMPLATE_ID int NOT NULL,
+                                        ENTITE_ID int NOT NULL,
+                                        PRIMARY KEY (IMPORT_TEMPLATE_ID,ENTITE_ID),
+                                        CONSTRAINT FK_IMPORT_TEMPLATE_ENTITE_ID FOREIGN KEY (ENTITE_ID) REFERENCES ENTITE (ENTITE_ID),
+                                        CONSTRAINT FK_IMPORT_TEMPLATE_ENTITE_IMPORT_TEMPLATE_ID FOREIGN KEY (IMPORT_TEMPLATE_ID) REFERENCES IMPORT_TEMPLATE (IMPORT_TEMPLATE_ID)
+);
+
+CREATE TABLE IMPORT_COLONNE (
+                                IMPORT_COLONNE_ID int NOT NULL,
+                                IMPORT_TEMPLATE_ID int NOT NULL,
+                                CHAMP_ID int NOT NULL,
+                                NOM varchar NOT NULL,
+                                ORDRE int DEFAULT 0,
+                                PRIMARY KEY (IMPORT_COLONNE_ID),
+                                CONSTRAINT FK_IMPORT_COLONNE_CHAMP_ID FOREIGN KEY (CHAMP_ID) REFERENCES CHAMP (CHAMP_ID),
+                                CONSTRAINT FK_IMPORT_COLONNE_IMPORT_TEMPLATE_ID FOREIGN KEY (IMPORT_TEMPLATE_ID) REFERENCES IMPORT_TEMPLATE (IMPORT_TEMPLATE_ID)
+);
+
+CREATE TABLE IMPORT_HISTORIQUE (
+                                   IMPORT_HISTORIQUE_ID int NOT NULL,
+                                   IMPORT_TEMPLATE_ID int NOT NULL,
+                                   UTILISATEUR_ID int NOT NULL,
+                                   DATE_ datetime DEFAULT NULL,
+                                   PRIMARY KEY (IMPORT_HISTORIQUE_ID),
+                                   CONSTRAINT FK_IMPORT_HISTORIQUE_IMPORT_TEMPLATE_ID FOREIGN KEY (IMPORT_TEMPLATE_ID) REFERENCES IMPORT_TEMPLATE (IMPORT_TEMPLATE_ID),
+                                   CONSTRAINT FK_IMPORT_HISTORIQUE_IMPORT_UTILISATEUR_ID FOREIGN KEY (UTILISATEUR_ID) REFERENCES UTILISATEUR (UTILISATEUR_ID)
+);
+
+CREATE TABLE IMPORTATION (
+                             IMPORTATION_ID int NOT NULL,
+                             OBJET_ID int NOT NULL,
+                             ENTITE_ID int NOT NULL,
+                             DATE_IMPORT datetime DEFAULT NULL,
+                             IMPORT_HISTORIQUE_ID int DEFAULT NULL,
+                             PRIMARY KEY (IMPORTATION_ID)
+);
+
+CREATE TABLE ANNOTATION_DEFAUT (
+                                   ANNOTATION_DEFAUT_ID int NOT NULL DEFAULT 0,
+                                   CHAMP_ANNOTATION_ID int NOT NULL DEFAULT 0,
+                                   ALPHANUM varchar DEFAULT NULL,
+                                   TEXTE text,
+                                   ANNO_DATE datetime DEFAULT NULL,
+                                   BOOL tinyint DEFAULT NULL,
+                                   ITEM_ID int DEFAULT NULL,
+                                   OBLIGATOIRE tinyint NOT NULL DEFAULT 0,
+                                   BANQUE_ID int DEFAULT NULL,
+                                   PRIMARY KEY (ANNOTATION_DEFAUT_ID),
+                                   CONSTRAINT FK_ANNOTATION_DEFAUT_BANQUE_ID FOREIGN KEY (BANQUE_ID) REFERENCES BANQUE (BANQUE_ID),
+                                   CONSTRAINT FK_ANNOTATION_DEFAUT_CHAMP_ANNOTATION_ID FOREIGN KEY (CHAMP_ANNOTATION_ID) REFERENCES CHAMP_ANNOTATION (CHAMP_ANNOTATION_ID),
+                                   CONSTRAINT FK_ANNOTATION_DEFAUT_ITEM_ID FOREIGN KEY (ITEM_ID) REFERENCES ITEM (ITEM_ID)
+);
+
+CREATE TABLE ANNOTATION_VALEUR (
+                                   ANNOTATION_VALEUR_ID int NOT NULL DEFAULT 0,
+                                   CHAMP_ANNOTATION_ID int NOT NULL DEFAULT 0,
+                                   OBJET_ID int NOT NULL DEFAULT 0,
+                                   ALPHANUM varchar DEFAULT NULL,
+                                   TEXTE text,
+                                   ANNO_DATE datetime DEFAULT NULL,
+                                   BOOL tinyint DEFAULT NULL,
+                                   ITEM_ID int DEFAULT NULL,
+                                   fichier_id int DEFAULT NULL,
+                                   BANQUE_ID int DEFAULT NULL,
+                                   PRIMARY KEY (ANNOTATION_VALEUR_ID),
+                                   CONSTRAINT FK_ANNOTATION_VALEUR_BANQUE_ID FOREIGN KEY (BANQUE_ID) REFERENCES BANQUE (BANQUE_ID),
+                                   CONSTRAINT FK_ANNOTATION_VALEUR_CHAMP_ANNOTATION_ID FOREIGN KEY (CHAMP_ANNOTATION_ID) REFERENCES CHAMP_ANNOTATION (CHAMP_ANNOTATION_ID),
+                                   CONSTRAINT FK_ANNOTATION_VALEUR_FICHIER_ID FOREIGN KEY (fichier_id) REFERENCES FICHIER (FICHIER_ID),
+                                   CONSTRAINT FK_ANNOTATION_VALEUR_ITEM_ID FOREIGN KEY (ITEM_ID) REFERENCES ITEM (ITEM_ID)
+);
+
+CREATE TABLE BANQUE_CATALOGUE (
+                                  BANQUE_ID int NOT NULL,
+                                  CATALOGUE_ID int NOT NULL,
+                                  PRIMARY KEY (BANQUE_ID,CATALOGUE_ID),
+                                  CONSTRAINT FK_BANQUE_CATALOGUE_BANQUE_ID FOREIGN KEY (BANQUE_ID) REFERENCES BANQUE (BANQUE_ID),
+                                  CONSTRAINT FK_BANQUE_CATALOGUE_CATALOGUE_ID FOREIGN KEY (CATALOGUE_ID) REFERENCES CATALOGUE (CATALOGUE_ID)
+);
+
+CREATE TABLE BANQUE_TABLE_CODAGE (
+                                     BANQUE_ID int NOT NULL,
+                                     TABLE_CODAGE_ID int NOT NULL,
+                                     LIBELLE_EXPORT tinyint NOT NULL DEFAULT 0,
+                                     CONSTRAINT FK_BANQUE_TABLE_CODAGE_BANQUE_ID FOREIGN KEY (BANQUE_ID) REFERENCES BANQUE (BANQUE_ID),
+                                     CONSTRAINT FK_BANQUE_TABLE_CODAGE_ID FOREIGN KEY (TABLE_CODAGE_ID) REFERENCES TABLE_CODAGE (TABLE_CODAGE_ID)
+);
+
+CREATE TABLE CATALOGUE_CONTEXTE (
+                                    CATALOGUE_ID int NOT NULL,
+                                    CONTEXTE_ID int NOT NULL,
+                                    PRIMARY KEY (CATALOGUE_ID,CONTEXTE_ID),
+                                    CONSTRAINT FK_CATALOGUE_CONTEXTE_CATALOGUE FOREIGN KEY (CATALOGUE_ID) REFERENCES CATALOGUE (CATALOGUE_ID),
+                                    CONSTRAINT FK_CATALOGUE_CONTEXTE_CONTEXTE FOREIGN KEY (CONTEXTE_ID) REFERENCES CONTEXTE (CONTEXTE_ID)
+);
+
+CREATE TABLE NUMEROTATION (
+                              NUMEROTATION_ID int NOT NULL DEFAULT 0,
+                              BANQUE_ID int NOT NULL DEFAULT 0,
+                              ENTITE_ID int NOT NULL DEFAULT 2,
+                              CODE_FORMULA varchar NOT NULL DEFAULT '',
+                              CURRENT_INCREMENT int NOT NULL DEFAULT 0,
+                              START_INCREMENT int DEFAULT 0,
+                              NB_CHIFFRES tinyint DEFAULT 5,
+                              ZERO_FILL tinyint DEFAULT 1,
+                              PRIMARY KEY (NUMEROTATION_ID),
+                              CONSTRAINT FK_NUMEROTATION_BANQUE_ID FOREIGN KEY (BANQUE_ID) REFERENCES BANQUE (BANQUE_ID),
+                              CONSTRAINT FK_NUMEROTATION_ENTITE_ID FOREIGN KEY (ENTITE_ID) REFERENCES ENTITE (ENTITE_ID)
+);
+
+CREATE TABLE TEMPLATE (
+                          TEMPLATE_ID int NOT NULL,
+                          BANQUE_ID int NOT NULL,
+                          NOM varchar NOT NULL,
+                          ENTITE_ID int NOT NULL,
+                          DESCRIPTION varchar DEFAULT NULL,
+                          EN_TETE varchar DEFAULT NULL,
+                          PIED_PAGE varchar DEFAULT NULL,
+                          PRIMARY KEY (TEMPLATE_ID),
+                          CONSTRAINT FK_TEMPLATE_BANQUE_ID FOREIGN KEY (BANQUE_ID) REFERENCES BANQUE (BANQUE_ID),
+                          CONSTRAINT FK_TEMPLATE_ENTITE_ID FOREIGN KEY (ENTITE_ID) REFERENCES ENTITE (ENTITE_ID)
+);
+
+CREATE TABLE BLOC_IMPRESSION (
+                                 BLOC_IMPRESSION_ID int NOT NULL,
+                                 NOM varchar NOT NULL,
+                                 ENTITE_ID int NOT NULL,
+                                 ORDRE int NOT NULL,
+                                 IS_LISTE tinyint NOT NULL DEFAULT 0,
+                                 PRIMARY KEY (BLOC_IMPRESSION_ID),
+                                 CONSTRAINT FK_BLOC_IMPRESSION_ENTITE_ID FOREIGN KEY (ENTITE_ID) REFERENCES ENTITE (ENTITE_ID)
+);
+
+CREATE TABLE BLOC_IMPRESSION_TEMPLATE (
+                                          BLOC_IMPRESSION_ID int NOT NULL,
+                                          TEMPLATE_ID int NOT NULL,
+                                          ORDRE int NOT NULL,
+                                          PRIMARY KEY (BLOC_IMPRESSION_ID,TEMPLATE_ID),
+                                          CONSTRAINT FK_BLOC_IMPRESSION_TEMPLATE_BLOC_ID FOREIGN KEY (BLOC_IMPRESSION_ID) REFERENCES BLOC_IMPRESSION (BLOC_IMPRESSION_ID),
+                                          CONSTRAINT FK_BLOC_IMPRESSION_TEMPLATE_TEMPLATE_ID FOREIGN KEY (TEMPLATE_ID) REFERENCES TEMPLATE (TEMPLATE_ID)
+);
+
+CREATE TABLE CHAMP_ENTITE_BLOC (
+                                   CHAMP_ENTITE_ID int NOT NULL,
+                                   BLOC_IMPRESSION_ID int NOT NULL,
+                                   ORDRE int NOT NULL,
+                                   PRIMARY KEY (CHAMP_ENTITE_ID,BLOC_IMPRESSION_ID),
+                                   CONSTRAINT FK_CHAMP_ENTITE_BLOC_BLOC_ID FOREIGN KEY (BLOC_IMPRESSION_ID) REFERENCES BLOC_IMPRESSION (BLOC_IMPRESSION_ID),
+                                   CONSTRAINT FK_CHAMP_ENTITE_BLOC_CHAMP_ID FOREIGN KEY (CHAMP_ENTITE_ID) REFERENCES CHAMP_ENTITE (CHAMP_ENTITE_ID)
+);
+
+CREATE TABLE CHAMP_ENTITE_CONTEXTE (
+                                       CHAMP_ENTITE_ID int NOT NULL,
+                                       CONTEXTE_ID int NOT NULL,
+                                       PRIMARY KEY (CHAMP_ENTITE_ID,CONTEXTE_ID),
+                                       CONSTRAINT FK_CHP_ENT_CONT_CHP_ID FOREIGN KEY (CHAMP_ENTITE_ID) REFERENCES CHAMP_ENTITE (CHAMP_ENTITE_ID),
+                                       CONSTRAINT FK_CHP_ENT_CONT_CONT_ID FOREIGN KEY (CONTEXTE_ID) REFERENCES CONTEXTE (CONTEXTE_ID)
+);
+
+CREATE TABLE CHAMP_IMPRIME (
+                               CHAMP_ENTITE_ID int NOT NULL,
+                               TEMPLATE_ID int NOT NULL,
+                               BLOC_IMPRESSION_ID int NOT NULL,
+                               ORDRE int NOT NULL,
+                               PRIMARY KEY (CHAMP_ENTITE_ID,TEMPLATE_ID,BLOC_IMPRESSION_ID),
+                               CONSTRAINT FK_CHAMP_IMPRIME_BLOC_IMPRESSION_ID FOREIGN KEY (BLOC_IMPRESSION_ID) REFERENCES BLOC_IMPRESSION (BLOC_IMPRESSION_ID),
+                               CONSTRAINT FK_CHAMP_IMPRIME_CHAMP_ENTITE_ID FOREIGN KEY (CHAMP_ENTITE_ID) REFERENCES CHAMP_ENTITE (CHAMP_ENTITE_ID),
+                               CONSTRAINT FK_CHAMP_IMPRIME_TEMPLATE_ID FOREIGN KEY (TEMPLATE_ID) REFERENCES TEMPLATE (TEMPLATE_ID)
+);
+
+CREATE TABLE TABLE_ANNOTATION_BANQUE (
+                                         TABLE_ANNOTATION_ID int NOT NULL DEFAULT 0,
+                                         BANQUE_ID int NOT NULL DEFAULT 0,
+                                         ORDRE int NOT NULL DEFAULT 0,
+                                         PRIMARY KEY (TABLE_ANNOTATION_ID,BANQUE_ID),
+                                         CONSTRAINT FK_TABLE_ANNOTATION_BANQUE_BANQUE_ID FOREIGN KEY (BANQUE_ID) REFERENCES BANQUE (BANQUE_ID),
+                                         CONSTRAINT FK_TABLE_ANNOTATION_BANQUE_TABLE_ANNOTATION_ID FOREIGN KEY (TABLE_ANNOTATION_ID) REFERENCES TABLE_ANNOTATION (TABLE_ANNOTATION_ID)
+);
+
+CREATE TABLE TABLE_ANNOTATION_TEMPLATE (
+                                           TABLE_ANNOTATION_ID int NOT NULL,
+                                           TEMPLATE_ID int NOT NULL,
+                                           ORDRE int NOT NULL,
+                                           PRIMARY KEY (TABLE_ANNOTATION_ID,TEMPLATE_ID),
+                                           CONSTRAINT FK_TABLE_ANNOTATION_TEMPLATE_TABLE_ID FOREIGN KEY (TABLE_ANNOTATION_ID) REFERENCES TABLE_ANNOTATION (TABLE_ANNOTATION_ID),
+                                           CONSTRAINT FK_TABLE_ANNOTATION_TEMPLATE_TEMPLATE_ID FOREIGN KEY (TEMPLATE_ID) REFERENCES TEMPLATE (TEMPLATE_ID)
+);
+
+CREATE TABLE CEDER_OBJET (
+                             CESSION_ID int NOT NULL DEFAULT 0,
+                             OBJET_ID int NOT NULL DEFAULT 0,
+                             ENTITE_ID int NOT NULL DEFAULT 3,
+                             QUANTITE float DEFAULT NULL,
+                             QUANTITE_UNITE_ID int DEFAULT NULL,
+                             PRIMARY KEY (CESSION_ID,OBJET_ID,ENTITE_ID),
+                             CONSTRAINT FK_CEDER_OBJET_CESSION_ID FOREIGN KEY (CESSION_ID) REFERENCES CESSION (CESSION_ID),
+                             CONSTRAINT FK_CEDER_OBJET_ENTITE_ID FOREIGN KEY (ENTITE_ID) REFERENCES ENTITE (ENTITE_ID),
+                             CONSTRAINT FK_CEDER_OBJET_QUANTITE_UNITE_ID FOREIGN KEY (QUANTITE_UNITE_ID) REFERENCES UNITE (UNITE_ID)
+);
+
+CREATE TABLE DEM_DERIVE (
+                            CESSION_ID int NOT NULL DEFAULT 0,
+                            PROD_DERIVE_ID int NOT NULL DEFAULT 0,
+                            QUANTITE_CEDEE float DEFAULT NULL,
+                            ADRESSE_LOGIQUE_OLD varchar DEFAULT NULL,
+                            PRIMARY KEY (CESSION_ID,PROD_DERIVE_ID)
+);
+
+CREATE TABLE PRELEVEMENT (
+                             PRELEVEMENT_ID int NOT NULL DEFAULT 0,
+                             BANQUE_ID int NOT NULL DEFAULT 0,
+                             CODE varchar NOT NULL DEFAULT '',
+                             NATURE_ID int NOT NULL DEFAULT 0,
+                             MALADIE_ID int DEFAULT NULL,
+                             CONSENT_TYPE_ID int NOT NULL DEFAULT 0,
+                             CONSENT_DATE date DEFAULT NULL,
+                             PRELEVEUR_ID int DEFAULT NULL,
+                             SERVICE_PRELEVEUR_ID int DEFAULT NULL,
+                             DATE_PRELEVEMENT datetime DEFAULT NULL,
+                             PRELEVEMENT_TYPE_ID int DEFAULT NULL,
+                             CONDIT_TYPE_ID int DEFAULT NULL,
+                             CONDIT_MILIEU_ID int DEFAULT NULL,
+                             CONDIT_NBR int DEFAULT NULL,
+                             DATE_DEPART datetime DEFAULT NULL,
+                             TRANSPORTEUR_ID int DEFAULT NULL,
+                             TRANSPORT_TEMP float DEFAULT NULL,
+                             DATE_ARRIVEE datetime DEFAULT NULL,
+                             OPERATEUR_ID int DEFAULT NULL,
+                             QUANTITE float DEFAULT NULL,
+                             QUANTITE_UNITE_ID int DEFAULT NULL,
+                             PATIENT_NDA varchar DEFAULT NULL,
+                             NUMERO_LABO varchar DEFAULT NULL,
+                             STERILE tinyint DEFAULT NULL,
+                             CONG_ARRIVEE tinyint DEFAULT 1,
+                             CONG_DEPART tinyint DEFAULT NULL,
+                             CONFORME_ARRIVEE tinyint DEFAULT NULL,
+                             ETAT_INCOMPLET tinyint DEFAULT 0,
+                             ARCHIVE tinyint DEFAULT 0,
+                             PRIMARY KEY (PRELEVEMENT_ID),
+                             CONSTRAINT FK_PRELEVEMENT_BANQUE_ID FOREIGN KEY (BANQUE_ID) REFERENCES BANQUE (BANQUE_ID),
+                             CONSTRAINT FK_PRELEVEMENT_CONDIT_MILIEU_ID FOREIGN KEY (CONDIT_MILIEU_ID) REFERENCES CONDIT_MILIEU (CONDIT_MILIEU_ID) ON DELETE SET NULL,
+                             CONSTRAINT FK_PRELEVEMENT_CONDIT_TYPE_ID FOREIGN KEY (CONDIT_TYPE_ID) REFERENCES CONDIT_TYPE (CONDIT_TYPE_ID) ON DELETE SET NULL,
+                             CONSTRAINT FK_PRELEVEMENT_CONSENT_TYPE_ID FOREIGN KEY (CONSENT_TYPE_ID) REFERENCES CONSENT_TYPE (CONSENT_TYPE_ID),
+                             CONSTRAINT FK_PRELEVEMENT_MALADIE_ID FOREIGN KEY (MALADIE_ID) REFERENCES MALADIE (MALADIE_ID),
+                             CONSTRAINT FK_PRELEVEMENT_NATURE_ID FOREIGN KEY (NATURE_ID) REFERENCES NATURE (NATURE_ID),
+                             CONSTRAINT FK_PRELEVEMENT_OPERATEUR_ID FOREIGN KEY (OPERATEUR_ID) REFERENCES COLLABORATEUR (COLLABORATEUR_ID),
+                             CONSTRAINT FK_PRELEVEMENT_PRELEVEMENT_TYPE_ID FOREIGN KEY (PRELEVEMENT_TYPE_ID) REFERENCES PRELEVEMENT_TYPE (PRELEVEMENT_TYPE_ID) ON DELETE SET NULL,
+                             CONSTRAINT FK_PRELEVEMENT_PRELEVEUR_ID FOREIGN KEY (PRELEVEUR_ID) REFERENCES COLLABORATEUR (COLLABORATEUR_ID),
+                             CONSTRAINT FK_PRELEVEMENT_QUANTITE_UNITE_ID FOREIGN KEY (QUANTITE_UNITE_ID) REFERENCES UNITE (UNITE_ID),
+                             CONSTRAINT FK_PRELEVEMENT_SERVICE_PRELEVEUR_ID FOREIGN KEY (SERVICE_PRELEVEUR_ID) REFERENCES SERVICE (SERVICE_ID),
+                             CONSTRAINT FK_PRELEVEMENT_TRANSPORTEUR_ID FOREIGN KEY (TRANSPORTEUR_ID) REFERENCES TRANSPORTEUR (TRANSPORTEUR_ID)
+);
+
+CREATE TABLE PRELEVEMENT_DELEGATE (
+                                      PRELEVEMENT_DELEGATE_ID int NOT NULL,
+                                      PRELEVEMENT_ID int NOT NULL,
+                                      PRIMARY KEY (PRELEVEMENT_DELEGATE_ID),
+                                      CONSTRAINT FK_PREL_DEL_PRELEVEMENT_ID FOREIGN KEY (PRELEVEMENT_ID) REFERENCES PRELEVEMENT (PRELEVEMENT_ID)
+);
+
+CREATE TABLE PRELEVEMENT_SERO (
+                                  PRELEVEMENT_DELEGATE_ID int NOT NULL,
+                                  LIBELLE varchar DEFAULT NULL,
+                                  PRIMARY KEY (PRELEVEMENT_DELEGATE_ID),
+                                  CONSTRAINT FK_PREL_SERO_PREL_DEL_ID FOREIGN KEY (PRELEVEMENT_DELEGATE_ID) REFERENCES PRELEVEMENT_DELEGATE (PRELEVEMENT_DELEGATE_ID)
+);
+
+CREATE TABLE PRELEVEMENT_XENO (
+                                  PRELEVEMENT_DELEGATE_ID int NOT NULL,
+                                  SOURIS varchar DEFAULT NULL,
+                                  PRIMARY KEY (PRELEVEMENT_DELEGATE_ID),
+                                  CONSTRAINT FK_PREL_XENO_PREL_DEL_ID FOREIGN KEY (PRELEVEMENT_DELEGATE_ID) REFERENCES PRELEVEMENT_DELEGATE (PRELEVEMENT_DELEGATE_ID)
+);
+
+
+CREATE TABLE LABO_INTER (
+                            LABO_INTER_ID int NOT NULL DEFAULT 0,
+                            PRELEVEMENT_ID int NOT NULL DEFAULT 0,
+                            ORDRE int NOT NULL DEFAULT 1,
+                            SERVICE_ID int DEFAULT NULL,
+                            DATE_ARRIVEE datetime DEFAULT NULL,
+                            CONSERV_TEMP float DEFAULT NULL,
+                            STERILE tinyint DEFAULT NULL,
+                            CONGELATION tinyint DEFAULT NULL,
+                            TRANSPORT_TEMP float DEFAULT NULL,
+                            DATE_DEPART datetime DEFAULT NULL,
+                            COLLABORATEUR_ID int DEFAULT NULL,
+                            TRANSPORTEUR_ID int DEFAULT NULL,
+                            PRIMARY KEY (LABO_INTER_ID),
+                            CONSTRAINT FK_LABO_INTER_COLLABORATEUR_ID FOREIGN KEY (COLLABORATEUR_ID) REFERENCES COLLABORATEUR (COLLABORATEUR_ID),
+                            CONSTRAINT FK_LABO_INTER_PRELEVEMENT_ID FOREIGN KEY (PRELEVEMENT_ID) REFERENCES PRELEVEMENT (PRELEVEMENT_ID),
+                            CONSTRAINT FK_LABO_INTER_SERVICE_ID FOREIGN KEY (SERVICE_ID) REFERENCES SERVICE (SERVICE_ID),
+                            CONSTRAINT FK_LABO_INTER_TRANSPORTEUR_ID FOREIGN KEY (TRANSPORTEUR_ID) REFERENCES TRANSPORTEUR (TRANSPORTEUR_ID)
+);
+
+CREATE TABLE ECHANTILLON (
+                             ECHANTILLON_ID int NOT NULL AUTO_INCREMENT,
+                             BANQUE_ID int NOT NULL DEFAULT 0,
+                             PRELEVEMENT_ID int DEFAULT 0,
+                             COLLABORATEUR_ID int DEFAULT NULL,
+                             CODE varchar NOT NULL DEFAULT '',
+                             OBJET_STATUT_ID int DEFAULT NULL,
+                             DATE_STOCK datetime DEFAULT NULL,
+                             EMPLACEMENT_ID int DEFAULT NULL,
+                             ECHANTILLON_TYPE_ID int NOT NULL DEFAULT 0,
+                             LATERALITE char DEFAULT NULL,
+                             QUANTITE float DEFAULT 0,
+                             QUANTITE_INIT float DEFAULT NULL,
+                             QUANTITE_UNITE_ID int DEFAULT NULL,
+                             DELAI_CGL float DEFAULT NULL,
+                             ECHAN_QUALITE_ID int DEFAULT NULL,
+                             TUMORAL tinyint DEFAULT NULL,
+                             MODE_PREPA_ID int DEFAULT NULL,
+                             CR_ANAPATH_ID int DEFAULT NULL,
+                             STERILE tinyint DEFAULT NULL,
+                             CONFORME_TRAITEMENT tinyint DEFAULT NULL,
+                             CONFORME_CESSION tinyint DEFAULT NULL,
+                             RESERVATION_ID int DEFAULT NULL,
+                             ETAT_INCOMPLET tinyint DEFAULT 0,
+                             ARCHIVE tinyint DEFAULT 0,
+                             PRIMARY KEY (ECHANTILLON_ID),
+                             CONSTRAINT FK_ECHANTILLON_BANQUE_ID FOREIGN KEY (BANQUE_ID) REFERENCES BANQUE (BANQUE_ID),
+                             CONSTRAINT FK_ECHANTILLON_COLLABORATEUR_ID FOREIGN KEY (COLLABORATEUR_ID) REFERENCES COLLABORATEUR (COLLABORATEUR_ID),
+                             CONSTRAINT FK_ECHANTILLON_CR_ANAPATH_ID FOREIGN KEY (CR_ANAPATH_ID) REFERENCES FICHIER (FICHIER_ID) ON DELETE SET NULL,
+                             CONSTRAINT FK_ECHANTILLON_ECHANTILLON_TYPE_ID FOREIGN KEY (ECHANTILLON_TYPE_ID) REFERENCES ECHANTILLON_TYPE (ECHANTILLON_TYPE_ID),
+                             CONSTRAINT FK_ECHANTILLON_ECHAN_QUALITE_ID FOREIGN KEY (ECHAN_QUALITE_ID) REFERENCES ECHAN_QUALITE (ECHAN_QUALITE_ID) ON DELETE SET NULL,
+                             CONSTRAINT FK_ECHANTILLON_EMPLACEMENT_ID FOREIGN KEY (EMPLACEMENT_ID) REFERENCES EMPLACEMENT (EMPLACEMENT_ID),
+                             CONSTRAINT FK_ECHANTILLON_MODE_PREPA_ID FOREIGN KEY (MODE_PREPA_ID) REFERENCES MODE_PREPA (MODE_PREPA_ID) ON DELETE SET NULL,
+                             CONSTRAINT FK_ECHANTILLON_OBJET_STATUT_ID FOREIGN KEY (OBJET_STATUT_ID) REFERENCES OBJET_STATUT (OBJET_STATUT_ID),
+                             CONSTRAINT FK_ECHANTILLON_PRELEVEMENT_ID FOREIGN KEY (PRELEVEMENT_ID) REFERENCES PRELEVEMENT (PRELEVEMENT_ID),
+                             CONSTRAINT FK_ECHANTILLON_QUANTITE_UNITE_ID FOREIGN KEY (QUANTITE_UNITE_ID) REFERENCES UNITE (UNITE_ID),
+                             CONSTRAINT FK_ECHANTILLON_RESERVATION_ID FOREIGN KEY (RESERVATION_ID) REFERENCES RESERVATION (RESERVATION_ID)
+);
+
+CREATE TABLE CODE_ASSIGNE (
+                              CODE_ASSIGNE_ID int NOT NULL DEFAULT 0,
+                              CODE varchar NOT NULL,
+                              LIBELLE varchar DEFAULT NULL,
+                              IS_MORPHO tinyint DEFAULT NULL,
+                              CODE_REF_ID int DEFAULT NULL,
+                              TABLE_CODAGE_ID int DEFAULT NULL,
+                              IS_ORGANE tinyint NOT NULL,
+                              ECHANTILLON_ID int NOT NULL,
+                              ORDRE int NOT NULL DEFAULT 1,
+                              EXPORT tinyint NOT NULL DEFAULT 0,
+                              PRIMARY KEY (CODE_ASSIGNE_ID),
+                              CONSTRAINT FK_CODE_ASSIGNE_ECHANTILLON_ID FOREIGN KEY (ECHANTILLON_ID) REFERENCES ECHANTILLON (ECHANTILLON_ID),
+                              CONSTRAINT FK_CODE_ASSIGNE_TABLE_CODAGE_ID FOREIGN KEY (TABLE_CODAGE_ID) REFERENCES TABLE_CODAGE (TABLE_CODAGE_ID)
+);
+
+CREATE TABLE TRANSFORMATION (
+                                TRANSFORMATION_ID int NOT NULL DEFAULT 0,
+                                OBJET_ID int NOT NULL DEFAULT 0,
+                                ENTITE_ID int NOT NULL DEFAULT 0,
+                                QUANTITE float DEFAULT NULL,
+                                QUANTITE_UNITE_ID int DEFAULT NULL,
+                                PRIMARY KEY (TRANSFORMATION_ID),
+                                CONSTRAINT FK_TRANSFORMATION_ENTITE_ID FOREIGN KEY (ENTITE_ID) REFERENCES ENTITE (ENTITE_ID),
+                                CONSTRAINT FK_TRANSFORMATION_QUANTITE_UNITE_ID FOREIGN KEY (QUANTITE_UNITE_ID) REFERENCES UNITE (UNITE_ID)
+);
+
+CREATE TABLE PROD_DERIVE (
+                             PROD_DERIVE_ID int NOT NULL DEFAULT 0,
+                             BANQUE_ID int NOT NULL DEFAULT 0,
+                             PROD_TYPE_ID int NOT NULL DEFAULT 0,
+                             CODE varchar NOT NULL DEFAULT '',
+                             CODE_LABO varchar DEFAULT NULL,
+                             OBJET_STATUT_ID int DEFAULT NULL,
+                             COLLABORATEUR_ID int DEFAULT NULL,
+                             VOLUME_INIT float DEFAULT NULL,
+                             VOLUME float DEFAULT NULL,
+                             CONC float DEFAULT NULL,
+                             DATE_STOCK datetime DEFAULT NULL,
+                             EMPLACEMENT_ID int DEFAULT NULL,
+                             VOLUME_UNITE_ID int DEFAULT NULL,
+                             CONC_UNITE_ID int DEFAULT NULL,
+                             QUANTITE_INIT float DEFAULT NULL,
+                             QUANTITE float DEFAULT NULL,
+                             QUANTITE_UNITE_ID int DEFAULT NULL,
+                             PROD_QUALITE_ID int DEFAULT NULL,
+                             TRANSFORMATION_ID int DEFAULT NULL,
+                             DATE_TRANSFORMATION datetime DEFAULT NULL,
+                             RESERVATION_ID int DEFAULT NULL,
+                             ETAT_INCOMPLET tinyint DEFAULT 0,
+                             ARCHIVE tinyint DEFAULT 0,
+                             MODE_PREPA_DERIVE_ID int DEFAULT NULL,
+                             CONFORME_TRAITEMENT tinyint DEFAULT NULL,
+                             CONFORME_CESSION tinyint DEFAULT NULL,
+                             PRIMARY KEY (PROD_DERIVE_ID),
+                             CONSTRAINT FK_PROD_DERIVE_BANQUE_ID FOREIGN KEY (BANQUE_ID) REFERENCES BANQUE (BANQUE_ID),
+                             CONSTRAINT FK_PROD_DERIVE_COLLABORATEUR_ID FOREIGN KEY (COLLABORATEUR_ID) REFERENCES COLLABORATEUR (COLLABORATEUR_ID),
+                             CONSTRAINT FK_PROD_DERIVE_CONC_UNITE_ID FOREIGN KEY (CONC_UNITE_ID) REFERENCES UNITE (UNITE_ID),
+                             CONSTRAINT FK_PROD_DERIVE_EMPLACEMENT_ID FOREIGN KEY (EMPLACEMENT_ID) REFERENCES EMPLACEMENT (EMPLACEMENT_ID),
+                             CONSTRAINT FK_PROD_DERIVE_MODE_PREPA_DERIVE_ID FOREIGN KEY (MODE_PREPA_DERIVE_ID) REFERENCES MODE_PREPA_DERIVE (MODE_PREPA_DERIVE_ID) ON DELETE SET NULL,
+                             CONSTRAINT FK_PROD_DERIVE_OBJET_STATUT_ID FOREIGN KEY (OBJET_STATUT_ID) REFERENCES OBJET_STATUT (OBJET_STATUT_ID),
+                             CONSTRAINT FK_PROD_DERIVE_PROD_QUALITE_ID FOREIGN KEY (PROD_QUALITE_ID) REFERENCES PROD_QUALITE (PROD_QUALITE_ID) ON DELETE SET NULL,
+                             CONSTRAINT FK_PROD_DERIVE_PROD_TYPE_ID FOREIGN KEY (PROD_TYPE_ID) REFERENCES PROD_TYPE (PROD_TYPE_ID),
+                             CONSTRAINT FK_PROD_DERIVE_QUANTITE_UNITE_ID FOREIGN KEY (QUANTITE_UNITE_ID) REFERENCES UNITE (UNITE_ID),
+                             CONSTRAINT FK_PROD_DERIVE_RESERVATION_ID FOREIGN KEY (RESERVATION_ID) REFERENCES RESERVATION (RESERVATION_ID),
+                             CONSTRAINT FK_PROD_DERIVE_TRANSFORMATION_ID FOREIGN KEY (TRANSFORMATION_ID) REFERENCES TRANSFORMATION (TRANSFORMATION_ID),
+                             CONSTRAINT FK_PROD_DERIVE_VOLUME_UNITE_ID FOREIGN KEY (VOLUME_UNITE_ID) REFERENCES UNITE (UNITE_ID)
+);
+
+CREATE TABLE RETOUR (
+                        RETOUR_ID int NOT NULL DEFAULT 0,
+                        OBJET_ID int NOT NULL DEFAULT 0,
+                        ENTITE_ID int NOT NULL DEFAULT 0,
+                        DATE_SORTIE datetime NOT NULL,
+                        DATE_RETOUR datetime DEFAULT NULL,
+                        TEMP_MOYENNE float NOT NULL,
+                        STERILE tinyint DEFAULT NULL,
+                        COLLABORATEUR_ID int DEFAULT NULL,
+                        OBSERVATIONS text,
+                        OLD_EMPLACEMENT_ADRL varchar DEFAULT NULL,
+                        CESSION_ID int DEFAULT NULL,
+                        TRANSFORMATION_ID int DEFAULT NULL,
+                        OLD_EMPLACEMENT_ID int DEFAULT NULL,
+                        INCIDENT_ID int DEFAULT NULL,
+                        PRIMARY KEY (RETOUR_ID),
+                        CONSTRAINT FK_RETOUR_CESSION_ID FOREIGN KEY (CESSION_ID) REFERENCES CESSION (CESSION_ID),
+                        CONSTRAINT FK_RETOUR_COLLABORATEUR_ID FOREIGN KEY (COLLABORATEUR_ID) REFERENCES COLLABORATEUR (COLLABORATEUR_ID),
+                        CONSTRAINT FK_RETOUR_ENTITE_ID FOREIGN KEY (ENTITE_ID) REFERENCES ENTITE (ENTITE_ID),
+                        CONSTRAINT FK_RETOUR_INCIDENT_ID FOREIGN KEY (INCIDENT_ID) REFERENCES INCIDENT (INCIDENT_ID),
+                        CONSTRAINT FK_RETOUR_OLD_EMPLACEMENT_ID FOREIGN KEY (OLD_EMPLACEMENT_ID) REFERENCES EMPLACEMENT (EMPLACEMENT_ID),
+                        CONSTRAINT FK_RETOUR_TRANSFORMATION_ID FOREIGN KEY (TRANSFORMATION_ID) REFERENCES TRANSFORMATION (TRANSFORMATION_ID)
+);
+
+CREATE TABLE MODELE_TYPE (
+                             MODELE_TYPE_ID int NOT NULL DEFAULT 0,
+                             TYPE char NOT NULL DEFAULT '',
+                             PRIMARY KEY (MODELE_TYPE_ID)
+)  ;
+
+CREATE TABLE MODELE (
+                        MODELE_ID int NOT NULL DEFAULT 0,
+                        NOM varchar NOT NULL DEFAULT '',
+                        MODELE_TYPE_ID int NOT NULL DEFAULT 0,
+                        PLATEFORME_ID int NOT NULL DEFAULT 1,
+                        TEXTE_LIBRE varchar DEFAULT NULL,
+                        IS_DEFAULT tinyint NOT NULL DEFAULT 1,
+                        IS_QRCODE tinyint NOT NULL DEFAULT 0,
+                        PRIMARY KEY (MODELE_ID),
+                        KEY FK_MODELE_MODELE_TYPE_ID (MODELE_TYPE_ID),
+                        KEY FK_MODELE_PLATEFORME_ID (PLATEFORME_ID),
+                        CONSTRAINT FK_MODELE_MODELE_TYPE_ID FOREIGN KEY (MODELE_TYPE_ID) REFERENCES MODELE_TYPE (MODELE_TYPE_ID),
+                        CONSTRAINT FK_MODELE_PLATEFORME_ID FOREIGN KEY (PLATEFORME_ID) REFERENCES PLATEFORME (PLATEFORME_ID)
+)  ;
+
+CREATE TABLE LIGNE_ETIQUETTE (
+                                 LIGNE_ETIQUETTE_ID int NOT NULL,
+                                 MODELE_ID int NOT NULL,
+                                 ORDRE int NOT NULL,
+                                 IS_BARCODE tinyint DEFAULT NULL,
+                                 ENTETE varchar DEFAULT NULL,
+                                 CONTENU varchar DEFAULT NULL,
+                                 FONT varchar DEFAULT NULL,
+                                 STYLE varchar DEFAULT NULL,
+                                 FONT_SIZE int DEFAULT NULL,
+                                 PRIMARY KEY (LIGNE_ETIQUETTE_ID),
+                                 KEY FK_LIGNE_ETIQUETTE_MODELE (MODELE_ID),
+                                 CONSTRAINT FK_LIGNE_ETIQUETTE_MODELE FOREIGN KEY (MODELE_ID) REFERENCES MODELE (MODELE_ID)
+)  ;
+
+CREATE TABLE CHAMP_LIGNE_ETIQUETTE (
+                                       CHAMP_LIGNE_ETIQUETTE_ID int NOT NULL,
+                                       LIGNE_ETIQUETTE_ID int NOT NULL,
+                                       CHAMP_ID int NOT NULL DEFAULT 0,
+                                       ENTITE_ID int NOT NULL,
+                                       ORDRE int NOT NULL,
+                                       EXP_REG varchar DEFAULT NULL,
+                                       PRIMARY KEY (CHAMP_LIGNE_ETIQUETTE_ID),
+                                       KEY FK_CHAMP_LIGNE_ETIQUETTE_LIGNE_ETIQUETTE (LIGNE_ETIQUETTE_ID),
+                                       KEY FK_CHAMP_LIGNE_ETIQUETTE_CHAMP_ID (CHAMP_ID),
+                                       KEY FK_CHAMP_LIGNE_ETIQUETTE_ENTITE (ENTITE_ID),
+                                       CONSTRAINT FK_CHAMP_LIGNE_ETIQUETTE_CHAMP_ID FOREIGN KEY (CHAMP_ID) REFERENCES CHAMP (CHAMP_ID),
+                                       CONSTRAINT FK_CHAMP_LIGNE_ETIQUETTE_ENTITE FOREIGN KEY (ENTITE_ID) REFERENCES ENTITE (ENTITE_ID),
+                                       CONSTRAINT FK_CHAMP_LIGNE_ETIQUETTE_LIGNE_ETIQUETTE FOREIGN KEY (LIGNE_ETIQUETTE_ID) REFERENCES LIGNE_ETIQUETTE (LIGNE_ETIQUETTE_ID)
+)  ;
+
+CREATE TABLE IMPRIMANTE_API (
+                                IMPRIMANTE_API_ID int NOT NULL,
+                                NOM varchar NOT NULL,
+                                PRIMARY KEY (IMPRIMANTE_API_ID)
+)  ;
+
+CREATE TABLE IMPRIMANTE (
+                            IMPRIMANTE_ID int NOT NULL DEFAULT 0,
+                            NOM varchar NOT NULL DEFAULT '',
+                            ABSCISSE int NOT NULL DEFAULT 0,
+                            ORDONNEE int NOT NULL DEFAULT 0,
+                            LARGEUR int NOT NULL DEFAULT 0,
+                            LONGUEUR int NOT NULL DEFAULT 0,
+                            ORIENTATION int NOT NULL DEFAULT 0,
+                            MBIO_PRINTER int DEFAULT NULL,
+                            IMPRIMANTE_API_ID int NOT NULL,
+                            PLATEFORME_ID int NOT NULL DEFAULT 1,
+                            PRIMARY KEY (IMPRIMANTE_ID),
+                            KEY FK_IMPRIMANTE_IMPRIMANTE_API_ID (IMPRIMANTE_API_ID),
+                            KEY FK_IMPRIMANTE_PLATEFORME_ID (PLATEFORME_ID),
+                            CONSTRAINT FK_IMPRIMANTE_IMPRIMANTE_API_ID FOREIGN KEY (IMPRIMANTE_API_ID) REFERENCES IMPRIMANTE_API (IMPRIMANTE_API_ID),
+                            CONSTRAINT FK_IMPRIMANTE_PLATEFORME_ID FOREIGN KEY (PLATEFORME_ID) REFERENCES PLATEFORME (PLATEFORME_ID)
+)  ;
+
+CREATE TABLE AFFECTATION_IMPRIMANTE (
+                                        UTILISATEUR_ID int NOT NULL DEFAULT 0,
+                                        BANQUE_ID int NOT NULL DEFAULT 0,
+                                        IMPRIMANTE_ID int NOT NULL DEFAULT 0,
+                                        MODELE_ID int DEFAULT NULL,
+                                        PRIMARY KEY (BANQUE_ID,IMPRIMANTE_ID,UTILISATEUR_ID),
+                                        KEY FK_AFFECTATION_IMPRIMANTE_UTILISATEUR_ID (UTILISATEUR_ID),
+                                        KEY FK_AFFECTATION_IMPRIMANTE_IMPRIMANTE_ID (IMPRIMANTE_ID),
+                                        KEY FK_AFFECTATION_IMPRIMANTE_MODELE_ID (MODELE_ID),
+                                        CONSTRAINT FK_AFFECTATION_IMPRIMANTE_BANQUE_ID FOREIGN KEY (BANQUE_ID) REFERENCES BANQUE (BANQUE_ID),
+                                        CONSTRAINT FK_AFFECTATION_IMPRIMANTE_IMPRIMANTE_ID FOREIGN KEY (IMPRIMANTE_ID) REFERENCES IMPRIMANTE (IMPRIMANTE_ID),
+                                        CONSTRAINT FK_AFFECTATION_IMPRIMANTE_MODELE_ID FOREIGN KEY (MODELE_ID) REFERENCES MODELE (MODELE_ID),
+                                        CONSTRAINT FK_AFFECTATION_IMPRIMANTE_UTILISATEUR_ID FOREIGN KEY (UTILISATEUR_ID) REFERENCES UTILISATEUR (UTILISATEUR_ID)
+)  ;
+
+CREATE TABLE AFFICHAGE (
+                           AFFICHAGE_ID smallint unsigned NOT NULL DEFAULT 0,
+                           CREATEUR_ID int NOT NULL DEFAULT 0,
+                           INTITULE varchar NOT NULL DEFAULT '',
+                           NB_LIGNES smallint unsigned NOT NULL DEFAULT 0,
+                           BANQUE_ID int NOT NULL DEFAULT 1,
+                           PRIMARY KEY (AFFICHAGE_ID),
+                           KEY FK_AFFICHAGE_CREATEUR_ID (CREATEUR_ID),
+                           KEY FK_AFFICHAGE_BANQUE_ID (BANQUE_ID),
+                           CONSTRAINT FK_AFFICHAGE_BANQUE_ID FOREIGN KEY (BANQUE_ID) REFERENCES BANQUE (BANQUE_ID),
+                           CONSTRAINT FK_AFFICHAGE_CREATEUR_ID FOREIGN KEY (CREATEUR_ID) REFERENCES UTILISATEUR (UTILISATEUR_ID)
+)  ;
+
+CREATE TABLE COMBINAISON (
+                             COMBINAISON_ID smallint unsigned NOT NULL DEFAULT 0,
+                             OPERATEUR varchar DEFAULT NULL,
+                             CHAMP1_ID int NOT NULL DEFAULT 0,
+                             CHAMP2_ID int NOT NULL DEFAULT 0,
+                             PRIMARY KEY (COMBINAISON_ID),
+                             KEY FK_CRITERE_CHAMP1_ID (CHAMP1_ID),
+                             KEY FK_CRITERE_CHAMP2_ID (CHAMP2_ID),
+                             CONSTRAINT FK_CRITERE_CHAMP1_ID FOREIGN KEY (CHAMP1_ID) REFERENCES CHAMP (CHAMP_ID),
+                             CONSTRAINT FK_CRITERE_CHAMP2_ID FOREIGN KEY (CHAMP2_ID) REFERENCES CHAMP (CHAMP_ID)
+)  ;
+
+CREATE TABLE CRITERE (
+                         CRITERE_ID smallint unsigned NOT NULL DEFAULT 0,
+                         OPERATEUR varchar NOT NULL DEFAULT '',
+                         VALEUR varchar NOT NULL DEFAULT '',
+                         CHAMP_ID int DEFAULT NULL,
+                         COMBINAISON_ID smallint unsigned DEFAULT NULL,
+                         PRIMARY KEY (CRITERE_ID),
+                         KEY FK_CRITERE_CHAMP_ID (CHAMP_ID),
+                         KEY FK_CRITERE_COMBINAISON_ID (COMBINAISON_ID),
+                         CONSTRAINT FK_CRITERE_CHAMP_ID FOREIGN KEY (CHAMP_ID) REFERENCES CHAMP (CHAMP_ID),
+                         CONSTRAINT FK_CRITERE_COMBINAISON_ID FOREIGN KEY (COMBINAISON_ID) REFERENCES COMBINAISON (COMBINAISON_ID) ON DELETE CASCADE
+)  ;
+
+CREATE TABLE GROUPEMENT (
+                            GROUPEMENT_ID smallint unsigned NOT NULL DEFAULT 0,
+                            CRITERE1_ID smallint unsigned DEFAULT NULL,
+                            CRITERE2_ID smallint unsigned DEFAULT NULL,
+                            PARENT_ID smallint unsigned DEFAULT NULL,
+                            OPERATEUR varchar DEFAULT NULL,
+                            PRIMARY KEY (GROUPEMENT_ID),
+                            KEY FK_GROUPEMENT_CRITERE1_ID (CRITERE1_ID),
+                            KEY FK_GROUPEMENT_CRITERE2_ID (CRITERE2_ID),
+                            CONSTRAINT FK_GROUPEMENT_CRITERE1_ID FOREIGN KEY (CRITERE1_ID) REFERENCES CRITERE (CRITERE_ID) ON DELETE CASCADE,
+                            CONSTRAINT FK_GROUPEMENT_CRITERE2_ID FOREIGN KEY (CRITERE2_ID) REFERENCES CRITERE (CRITERE_ID) ON DELETE CASCADE
+)  ;
+
+CREATE TABLE REQUETE (
+                         REQUETE_ID smallint unsigned NOT NULL DEFAULT 0,
+                         CREATEUR_ID int NOT NULL DEFAULT 0,
+                         INTITULE varchar NOT NULL DEFAULT '',
+                         GROUPEMENT_RACINE_ID smallint unsigned DEFAULT NULL,
+                         BANQUE_ID int NOT NULL DEFAULT 1,
+                         PRIMARY KEY (REQUETE_ID),
+                         KEY FK_REQUETE_CREATEUR_ID (CREATEUR_ID),
+                         KEY FK_REQUETE_BANQUE_ID (BANQUE_ID),
+                         KEY FK_REQUETE_GROUPEMENT_RACINE_ID (GROUPEMENT_RACINE_ID),
+                         CONSTRAINT FK_REQUETE_BANQUE_ID FOREIGN KEY (BANQUE_ID) REFERENCES BANQUE (BANQUE_ID),
+                         CONSTRAINT FK_REQUETE_CREATEUR_ID FOREIGN KEY (CREATEUR_ID) REFERENCES UTILISATEUR (UTILISATEUR_ID),
+                         CONSTRAINT FK_REQUETE_GROUPEMENT_RACINE_ID FOREIGN KEY (GROUPEMENT_RACINE_ID) REFERENCES GROUPEMENT (GROUPEMENT_ID) ON DELETE CASCADE
+)  ;
+
+CREATE TABLE RECHERCHE (
+                           RECHERCHE_ID smallint unsigned NOT NULL DEFAULT 0,
+                           CREATEUR_ID int NOT NULL DEFAULT 0,
+                           INTITULE varchar NOT NULL DEFAULT '',
+                           AFFICHAGE_ID smallint unsigned NOT NULL DEFAULT 0,
+                           REQUETE_ID smallint unsigned NOT NULL DEFAULT 0,
+                           PRIMARY KEY (RECHERCHE_ID),
+                           KEY FK_RECHERCHE_CREATEUR_ID (CREATEUR_ID),
+                           KEY FK_RECHERCHE_AFFICHAGE_ID (AFFICHAGE_ID),
+                           KEY FK_RECHERCHE_REQUETE_ID (REQUETE_ID),
+                           CONSTRAINT FK_RECHERCHE_AFFICHAGE_ID FOREIGN KEY (AFFICHAGE_ID) REFERENCES AFFICHAGE (AFFICHAGE_ID),
+                           CONSTRAINT FK_RECHERCHE_CREATEUR_ID FOREIGN KEY (CREATEUR_ID) REFERENCES UTILISATEUR (UTILISATEUR_ID),
+                           CONSTRAINT FK_RECHERCHE_REQUETE_ID FOREIGN KEY (REQUETE_ID) REFERENCES REQUETE (REQUETE_ID)
+)  ;
+
+CREATE TABLE RECHERCHE_BANQUE (
+                                  RECHERCHE_ID smallint unsigned NOT NULL DEFAULT 0,
+                                  BANQUE_ID int NOT NULL DEFAULT 0,
+                                  PRIMARY KEY (RECHERCHE_ID,BANQUE_ID),
+                                  KEY FK_RECHERCHE_BANQUE_BANQUE_ID (BANQUE_ID),
+                                  CONSTRAINT FK_RECHERCHE_BANQUE_BANQUE_ID FOREIGN KEY (BANQUE_ID) REFERENCES BANQUE (BANQUE_ID),
+                                  CONSTRAINT FK_RECHERCHE_BANQUE_RECHERCHE_ID FOREIGN KEY (RECHERCHE_ID) REFERENCES RECHERCHE (RECHERCHE_ID)
+)  ;
+
+CREATE TABLE RESULTAT (
+                          RESULTAT_ID smallint unsigned NOT NULL DEFAULT 0,
+                          NOM_COLONNE varchar NOT NULL DEFAULT '',
+                          TRI tinyint NOT NULL DEFAULT 0,
+                          ORDRE_TRI smallint unsigned NOT NULL DEFAULT 0,
+                          POSITION smallint unsigned NOT NULL DEFAULT 0,
+                          FORMAT varchar DEFAULT NULL,
+                          CHAMP_ID int NOT NULL DEFAULT 0,
+                          AFFICHAGE_ID smallint unsigned NOT NULL DEFAULT 0,
+                          PRIMARY KEY (RESULTAT_ID),
+                          KEY FK_RESULTAT_CHAMP_ID (CHAMP_ID),
+                          KEY FK_RESULTAT_AFFICHAGE_ID (AFFICHAGE_ID),
+                          CONSTRAINT FK_RESULTAT_AFFICHAGE_ID FOREIGN KEY (AFFICHAGE_ID) REFERENCES AFFICHAGE (AFFICHAGE_ID) ON DELETE CASCADE,
+                          CONSTRAINT FK_RESULTAT_CHAMP_ID FOREIGN KEY (CHAMP_ID) REFERENCES CHAMP (CHAMP_ID)
+)  ;
+
+CREATE TABLE FANTOME (
+                         FANTOME_ID int NOT NULL,
+                         NOM varchar NOT NULL,
+                         COMMENTAIRES text,
+                         ENTITE_ID int NOT NULL DEFAULT 0,
+                         PRIMARY KEY (FANTOME_ID),
+                         KEY FK_FANTOME_ENTITE_ID (ENTITE_ID),
+                         CONSTRAINT FK_FANTOME_ENTITE_ID FOREIGN KEY (ENTITE_ID) REFERENCES ENTITE (ENTITE_ID)
+)  ;
+
+CREATE TABLE MESSAGE (
+                         MESSAGE_ID int NOT NULL DEFAULT 0,
+                         OBJET varchar NOT NULL DEFAULT '',
+                         TEXTE text,
+                         DESTINATAIRE_ID int NOT NULL DEFAULT 0,
+                         EXPEDITEUR_ID int NOT NULL DEFAULT 0,
+                         IMPORTANCE int DEFAULT NULL,
+                         PRIMARY KEY (MESSAGE_ID),
+                         KEY FK_MESSAGE_DESTINATAIRE_ID (DESTINATAIRE_ID),
+                         KEY FK_MESSAGE_EXPEDITEUR_ID (EXPEDITEUR_ID),
+                         CONSTRAINT FK_MESSAGE_DESTINATAIRE_ID FOREIGN KEY (DESTINATAIRE_ID) REFERENCES UTILISATEUR (UTILISATEUR_ID),
+                         CONSTRAINT FK_MESSAGE_EXPEDITEUR_ID FOREIGN KEY (EXPEDITEUR_ID) REFERENCES UTILISATEUR (UTILISATEUR_ID)
+)  ;
+
+CREATE TABLE TIMER (
+                       TIMER_ID int NOT NULL DEFAULT 0,
+                       MIN int DEFAULT NULL,
+                       HEURE int DEFAULT NULL,
+                       NUM_JOUR_MOIS int DEFAULT NULL,
+                       NUM_MOIS int DEFAULT NULL,
+                       NUM_JOUR_SEM int DEFAULT NULL,
+                       PRIMARY KEY (TIMER_ID)
+)  ;
+
+CREATE TABLE INDICATEUR (
+                            INDICATEUR_ID int NOT NULL DEFAULT 0,
+                            NOM varchar NOT NULL DEFAULT '',
+                            GROUPE_COLLECTION tinyint DEFAULT 0,
+                            TIMER_ID int DEFAULT NULL,
+                            PRIMARY KEY (INDICATEUR_ID),
+                            KEY FK_INDICATEUR_TIMER_ID (TIMER_ID),
+                            CONSTRAINT FK_INDICATEUR_TIMER_ID FOREIGN KEY (TIMER_ID) REFERENCES TIMER (TIMER_ID)
+)  ;
+
+CREATE TABLE INDICATEUR_BANQUE (
+                                   INDICATEUR_ID int NOT NULL DEFAULT 0,
+                                   BANQUE_ID int NOT NULL DEFAULT 0,
+                                   PRIMARY KEY (INDICATEUR_ID,BANQUE_ID),
+                                   KEY FK_INDICATEUR_BANQUE_BANQUE_ID (BANQUE_ID),
+                                   CONSTRAINT FK_INDICATEUR_BANQUE_BANQUE_ID FOREIGN KEY (BANQUE_ID) REFERENCES BANQUE (BANQUE_ID),
+                                   CONSTRAINT FK_INDICATEUR_BANQUE_INDICATEUR_ID FOREIGN KEY (INDICATEUR_ID) REFERENCES INDICATEUR (INDICATEUR_ID)
+)  ;
+
+CREATE TABLE INDICATEUR_PLATEFORME (
+                                       INDICATEUR_ID int NOT NULL DEFAULT 0,
+                                       PLATEFORME_ID int NOT NULL DEFAULT 0,
+                                       PRIMARY KEY (INDICATEUR_ID,PLATEFORME_ID),
+                                       KEY FK_INDICATEUR_PLATEFORME_PLATEFORME_ID (PLATEFORME_ID),
+                                       CONSTRAINT FK_INDICATEUR_PLATEFORME_INDICATEUR_ID FOREIGN KEY (INDICATEUR_ID) REFERENCES INDICATEUR (INDICATEUR_ID),
+                                       CONSTRAINT FK_INDICATEUR_PLATEFORME_PLATEFORME_ID FOREIGN KEY (PLATEFORME_ID) REFERENCES PLATEFORME (PLATEFORME_ID)
+)  ;
+
+CREATE TABLE INDICATEUR_REQUETE (
+                                    INDICATEUR_ID int NOT NULL DEFAULT 0,
+                                    REQUETE_ID int NOT NULL DEFAULT 0,
+                                    PRIMARY KEY (INDICATEUR_ID,REQUETE_ID),
+                                    CONSTRAINT FK_INDICATEUR_REQUETE_INDICATEUR_ID FOREIGN KEY (INDICATEUR_ID) REFERENCES INDICATEUR (INDICATEUR_ID)
+)  ;
+
+CREATE TABLE INDICATEUR_SQL (
+                                INDICATEUR_ID int NOT NULL DEFAULT 0,
+                                SQL_ID int NOT NULL DEFAULT 0,
+                                PRIMARY KEY (INDICATEUR_ID,SQL_ID),
+                                CONSTRAINT FK_INDICATEUR_SQL_INDICATEUR_ID FOREIGN KEY (INDICATEUR_ID) REFERENCES INDICATEUR (INDICATEUR_ID)
+)  ;
+
+CREATE TABLE CONFORMITE_TYPE (
+                                 CONFORMITE_TYPE_ID int NOT NULL,
+                                 CONFORMITE_TYPE varchar NOT NULL,
+                                 PRIMARY KEY (CONFORMITE_TYPE_ID)
+)  ;
+
+CREATE TABLE NON_CONFORMITE (
+                                NON_CONFORMITE_ID int NOT NULL,
+                                CONFORMITE_TYPE_ID int NOT NULL,
+                                PLATEFORME_ID int NOT NULL,
+                                NOM varchar NOT NULL,
+                                PRIMARY KEY (NON_CONFORMITE_ID),
+                                KEY FK_NON_CONFORMITE_CONFORMITE_TYPE_ID (CONFORMITE_TYPE_ID),
+                                KEY FK_NON_CONFORMITE_PLATEFORME_ID (PLATEFORME_ID),
+                                CONSTRAINT FK_NON_CONFORMITE_CONFORMITE_TYPE_ID FOREIGN KEY (CONFORMITE_TYPE_ID) REFERENCES CONFORMITE_TYPE (CONFORMITE_TYPE_ID),
+                                CONSTRAINT FK_NON_CONFORMITE_PLATEFORME_ID FOREIGN KEY (PLATEFORME_ID) REFERENCES PLATEFORME (PLATEFORME_ID)
+)  ;
+
+CREATE TABLE OBJET_NON_CONFORME (
+                                    OBJET_NON_CONFORME_ID int NOT NULL,
+                                    NON_CONFORMITE_ID int NOT NULL,
+                                    OBJET_ID int NOT NULL,
+                                    ENTITE_ID int NOT NULL,
+                                    PRIMARY KEY (OBJET_NON_CONFORME_ID),
+                                    KEY FK_OBJET_NON_CONFORME_NON_CONFORMITE_ID (NON_CONFORMITE_ID),
+                                    KEY FK_OBJET_NON_CONFORME_ENTITE_ID (ENTITE_ID),
+                                    CONSTRAINT FK_OBJET_NON_CONFORME_ENTITE_ID FOREIGN KEY (ENTITE_ID) REFERENCES ENTITE (ENTITE_ID),
+                                    CONSTRAINT FK_OBJET_NON_CONFORME_NON_CONFORMITE_ID FOREIGN KEY (NON_CONFORMITE_ID) REFERENCES NON_CONFORMITE (NON_CONFORMITE_ID)
+)  ;
+
+CREATE TABLE COULEUR_ENTITE_TYPE (
+                                     COULEUR_ENTITE_TYPE_ID int NOT NULL,
+                                     COULEUR_ID int NOT NULL,
+                                     BANQUE_ID int NOT NULL,
+                                     ECHANTILLON_TYPE_ID int DEFAULT NULL,
+                                     PROD_TYPE_ID int DEFAULT NULL,
+                                     PRIMARY KEY (COULEUR_ENTITE_TYPE_ID),
+                                     KEY FK_COULEUR_ENTITE_TYPE_COULEUR_ID (COULEUR_ID),
+                                     KEY FK_COULEUR_ENTITE_TYPE_BANQUE_ID (BANQUE_ID),
+                                     KEY FK_COULEUR_ENTITE_TYPE_ECHANTILLON_TYPE_ID (ECHANTILLON_TYPE_ID),
+                                     KEY FK_COULEUR_ENTITE_TYPE_PROD_TYPE_ID (PROD_TYPE_ID),
+                                     CONSTRAINT FK_COULEUR_ENTITE_TYPE_BANQUE_ID FOREIGN KEY (BANQUE_ID) REFERENCES BANQUE (BANQUE_ID),
+                                     CONSTRAINT FK_COULEUR_ENTITE_TYPE_COULEUR_ID FOREIGN KEY (COULEUR_ID) REFERENCES COULEUR (COULEUR_ID),
+                                     CONSTRAINT FK_COULEUR_ENTITE_TYPE_ECHANTILLON_TYPE_ID FOREIGN KEY (ECHANTILLON_TYPE_ID) REFERENCES ECHANTILLON_TYPE (ECHANTILLON_TYPE_ID),
+                                     CONSTRAINT FK_COULEUR_ENTITE_TYPE_PROD_TYPE_ID FOREIGN KEY (PROD_TYPE_ID) REFERENCES PROD_TYPE (PROD_TYPE_ID)
+)  ;
+
+CREATE TABLE TEMPERATURE (
+                             TEMPERATURE_ID int NOT NULL,
+                             TEMPERATURE float NOT NULL,
+                             PRIMARY KEY (TEMPERATURE_ID)
+)  ;
+
+CREATE TABLE VERSION (
+                         VERSION_ID int NOT NULL,
+                         VERSION varchar NOT NULL,
+                         DATE_ datetime DEFAULT NULL,
+                         NOM_SITE varchar DEFAULT NULL,
+                         PRIMARY KEY (VERSION_ID)
+)  ;
+
+CREATE TABLE PRELEVEMENT_SERO_PROTOCOLE (
+                                            PRELEVEMENT_DELEGATE_ID int NOT NULL,
+                                            PROTOCOLE_ID int NOT NULL,
+                                            PRIMARY KEY (PRELEVEMENT_DELEGATE_ID,PROTOCOLE_ID),
+                                            CONSTRAINT FK_PREL_PROTO_PREL_ID FOREIGN KEY (PRELEVEMENT_DELEGATE_ID) REFERENCES PRELEVEMENT_SERO (PRELEVEMENT_DELEGATE_ID),
+                                            CONSTRAINT FK_PREL_PROTO_PROTO_ID FOREIGN KEY (PROTOCOLE_ID) REFERENCES PROTOCOLE (PROTOCOLE_ID)
+);
+
+CREATE TABLE COLLABORATEUR_COORDONNEE (
+                                          COLLABORATEUR_ID INT NOT NULL,
+                                          COORDONNEE_ID INT NOT NULL,
+                                          PRIMARY KEY (COLLABORATEUR_ID, COORDONNEE_ID)
+);
+
+CREATE TABLE PRELEVEMENT_RISQUE (
+                                    PRELEVEMENT_ID INT NOT NULL DEFAULT 0,
+                                    RISQUE_ID INT NOT NULL DEFAULT 0,
+                                    PRIMARY KEY (PRELEVEMENT_ID, RISQUE_ID),
+                                    FOREIGN KEY (PRELEVEMENT_ID) REFERENCES PRELEVEMENT(PRELEVEMENT_ID),
+                                    FOREIGN KEY (RISQUE_ID) REFERENCES RISQUE(RISQUE_ID)
+);
