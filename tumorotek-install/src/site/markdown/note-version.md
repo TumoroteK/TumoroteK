@@ -1,5 +1,10 @@
 #### Notes
 
+##### Version 2.3.0.16 - Publiée le 16/04/2025
+###### Corrections dans TK
+- YouTrack [TK-674](https://tumorotek.myjetbrains.com/youtrack/issue/TK-674) : Création des échantillons dans la foulée du prélèvement : code échantillon non visible en entier dans la liste
+
+
 ##### Version 2.3.0.15 - Publiée le 07/04/2025
 ###### Corrections dans TK
 - YouTrack [TK-533](https://tumorotek.myjetbrains.com/youtrack/issue/TK-533) : Export <span class="badge badge-prelevement">Prélèvement</span> : pour le champ quantité du bloc "Arrivée au site de stockage" (page 2), l'unité n'est pas exportée
