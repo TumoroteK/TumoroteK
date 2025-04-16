@@ -1835,6 +1835,14 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
       }
    }
    
+   //TK-474
+   public void reinitCodePrefixe() {
+      //avant d'appeler initCodePrefixe, codePrefixe est forcé à null. Cela est nécessaire pour Gatsbi (sans paramétrage échantillon)
+      //pour éviter que le code prélèvement soit ajouté à nouveau dans codePrefixe alors qu'il y est déjà.
+      setCodePrefixe(null);
+      initCodePrefixe();
+   }
+   
    /*********************************************************/
    /********************** ACCESSEURS. **********************/
    /*********************************************************/

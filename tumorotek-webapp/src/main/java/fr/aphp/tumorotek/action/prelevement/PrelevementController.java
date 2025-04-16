@@ -401,7 +401,11 @@ public class PrelevementController extends AbstractObjectTabController
          getFicheLaboInter().setObject(edit);
          getFicheLaboInter().switchToEditMode();
       }
-
+      else {
+         //TK-474 : gérer le retour sur le 1er écran et la modification du code prélèvement ou du code nature
+         //affichés dans l'écran "labo inter"
+         getFicheLaboInter().getBinder().loadAll();
+      }
    }
 
    /**
@@ -429,6 +433,11 @@ public class PrelevementController extends AbstractObjectTabController
          getFicheLaboInter().setOldLaboInters(labos);
          getFicheLaboInter().switchToCreateMode();
       }
+      else {
+         //TK-474 : gérer le retour sur le 1er écran et la modification du code prélèvement ou du code nature
+         //affichés dans l'écran "labo inter"
+         getFicheLaboInter().getBinder().loadAll();
+      }
    }
 
    /**
@@ -451,7 +460,13 @@ public class PrelevementController extends AbstractObjectTabController
          getFicheMultiEchantillons().setLaboIntersToDelete(labosToDelete);
          nextToEchanClicked = true;
       }
-
+      else {
+         //TK-474 : réinitialisation du codePrefixe et rafraichissement du composant pour gérer le cas où l'utilisateur est revenu en arrière pour modifier le code prélèvement 
+         //ou le code nature car ces éléments affichés sur l'écran de saisie des échantillons
+         getFicheMultiEchantillons().reinitCodePrefixe();
+         getFicheMultiEchantillons().getBinder().loadAll();
+      }
+      
       // change d'onglet
       EchantillonController.backToMe(getMainWindow(), page);
    }
@@ -474,10 +489,15 @@ public class PrelevementController extends AbstractObjectTabController
       }else{
          if(((EchantillonController) getReferencedObjectsControllers(true).get(0)).hasMultiFicheEdit()){
             getFicheMultiEchantillons().setParentObject(prlvt);
-         }else{
+            //TK-474 : réinitialisation du codePrefixe et rafraichissement du composant pour gérer le cas où l'utilisateur est revenu en arrière pour modifier le code prélèvement 
+            //ou le code nature car ces éléments affichés sur l'écran de saisie des échantillons
+            getFicheMultiEchantillons().reinitCodePrefixe();
+            getFicheMultiEchantillons().getBinder().loadAll();
+         }else{//CHT : bizarre ce else : nextToEchanClicked = true donc pourquoi on remet la valeur. de plus, ça fait exactement la même chose que le bloc if(!nextToEchanClicked)
+               //quand passe-t-on ici ??
             ((EchantillonController) getReferencedObjectsControllers(true).get(0)).switchToCreateMode(prlvt);
             getFicheMultiEchantillons().setPrelevementProcedure(true);
-            nextToEchanClicked = true;
+            nextToEchanClicked = true;//inutile ....
          }
       }
       getFicheMultiEchantillons().setLaboInters(labos);
