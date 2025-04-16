@@ -363,23 +363,6 @@ public class FicheLaboInter extends AbstractFicheEditController
    }
 
    /**
-    * Méthode initialisant les champs de formulaire pour la quantité et le volume.
-    */
-   public void initQuantiteAndVolume(){
-      final StringBuffer sb = new StringBuffer();
-      if(this.prelevement.getQuantite() != null){
-         sb.append(this.prelevement.getQuantite());
-      }else{
-         sb.append("-");
-      }
-      if(this.prelevement.getQuantiteUnite() != null){
-         sb.append(" ");
-         sb.append(this.prelevement.getQuantiteUnite().getNom());
-      }
-      valeurQuantite = sb.toString();
-   }
-
-   /**
     * Méthode initialisant les objets associés.
     */
    public void initAssociations(){
