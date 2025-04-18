@@ -53,6 +53,7 @@ import org.slf4j.LoggerFactory;
 
 import fr.aphp.tumorotek.model.imprimante.Imprimante;
 
+//// /!\ il existe une autre classe ComponentPrinter avec une méthode printComponents(). Elle se trouve dans fr.aphp.tumorotek.manager.impl.etiquettes
 public class ComponentPrinter
 {
 
