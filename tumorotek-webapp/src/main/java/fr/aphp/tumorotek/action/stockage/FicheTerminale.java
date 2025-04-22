@@ -1479,7 +1479,7 @@ public class FicheTerminale extends AbstractFicheCombineStockageController
 			final EmplacementDecorator decoDep = (EmplacementDecorator) imgDep.getAttribute("empDeco");
 			final EmplacementDecorator decoDest = (EmplacementDecorator) imgDest.getAttribute("empDeco");
 
-			// création du message
+			// Création du message de confirmation
 			final StringBuffer sb = new StringBuffer();
 			sb.append(Labels.getLabel("validation.drop.message"));
 			sb.append(" '");
@@ -1494,6 +1494,7 @@ public class FicheTerminale extends AbstractFicheCombineStockageController
 			sb.append(decoDest.getAdrl());
 			sb.append("' ?");
 
+			// Confirmation de l'utilisateur avant d'effectuer l'action
 			if((Messagebox.show(sb.toString(), Labels.getLabel("validation.drop.title"), Messagebox.YES | Messagebox.NO,
 					Messagebox.QUESTION) == Messagebox.YES)){
 
@@ -1530,6 +1531,7 @@ public class FicheTerminale extends AbstractFicheCombineStockageController
 					}
 				}
 
+				// Suppression des anciens emplacements de la liste movedEmplacements
 				if(movedEmplacements.contains(empDep)){
 					movedEmplacements.remove(empDep);
 				}
@@ -1540,11 +1542,13 @@ public class FicheTerminale extends AbstractFicheCombineStockageController
 				final Integer posDep = decoDep.getPosition();
 				final Integer posDest = decoDest.getPosition();
 
+				// Échange des positions
 				decoDep.setPosition(posDest);
 				decoDep.generateLibelle(adrlTerminale, terminale);
 				decoDest.setPosition(posDep);
 				decoDest.generateLibelle(adrlTerminale, terminale);
 
+				// Mise à jour : UI
 				imgDep.setAttribute("empDeco", decoDest);
 				imgDest.setAttribute("empDeco", decoDep);
 				imgDep.setTooltiptext(decoDest.getLibelle());
@@ -1560,11 +1564,11 @@ public class FicheTerminale extends AbstractFicheCombineStockageController
 				imgDep.setOverlay(overlayClassDest);
 				imgDest.setOverlay(overlayClassDep);
 
+				// Mise à jour des positions internes des objets métier
 				empDep.setPosition(decoDep.getPosition());
-				// empDep.setAdrl(decoDep.getAdrl());
 				empDest.setPosition(decoDest.getPosition());
-				// empDest.setAdrl(decoDest.getAdrl());
 
+				// Deperat : Configuration visuelle selon si les emplacements sont vides ou non
 				// si l'image est vide
 				if(decoDep.getVide()){
 					imgDest.setStyle(null);
@@ -1580,6 +1584,7 @@ public class FicheTerminale extends AbstractFicheCombineStockageController
 					imgDest.addForward("onDrop", self, "onDropImage", imgDep);
 					imgDest.setSclass("imageMovedEmplacement");
 				}
+				// Destination : Configuration visuelle selon si les emplacements sont vides ou non
 				// si l'image est vide
 				if(decoDest.getVide()){
 					imgDep.setStyle(null);
@@ -1596,6 +1601,7 @@ public class FicheTerminale extends AbstractFicheCombineStockageController
 					imgDep.setSclass("imageMovedEmplacement");
 				}
 
+				// Ajout des emplacements modifiés dans la liste
 				if(empDep.getEmplacementId() != null){
 					movedEmplacements.add(empDep);
 				}
@@ -1603,28 +1609,49 @@ public class FicheTerminale extends AbstractFicheCombineStockageController
 					movedEmplacements.add(empDest);
 				}
 
+				// Remplissage du tableau (voir le ZUL avec l'id gridHistorique)
+
 				if(!decoDep.getVide()){
+					// Colonne Code
 					final Row depRow = new Row();
 					final Label code = new Label();
 					code.setValue(decoDep.getCode());
+					// Colonne Echantillon/Dérivé
+					final Label echantillonDerive = new Label();
+					echantillonDerive.setValue(decoDep.getTypeEntite());
+					// Colonne Type
+					final Label type = new Label();
+					type.setValue(empDep.getEntite().getNom());
+					// Colonne Ancienne adresse (ADRL source)
 					final Label dep = new Label();
 					dep.setValue(decoDest.getAdrl());
+					// Colonne flèche (image)
 					final Image img = new Image();
 					img.setSrc("/images/icones/next.png");
 					img.setHeight("15px");
+					// Colonne Nouvelle adresse (ADRL destination)
 					final Label dest = new Label();
 					dest.setValue(decoDep.getAdrl());
+					// Colonne Date de stockage (date du transfert)
+					final Label dateStockage = new Label();
+					dateStockage.setValue(decoDep.getTkStockObj().getDateStock().toString());
+
+					// Ajout des composants à la ligne
 					depRow.appendChild(code);
 					depRow.appendChild(dep);
 					depRow.appendChild(img);
 					depRow.appendChild(dest);
 					gridHistorique.getRows().appendChild(depRow);
 				}
-
+				// Bloc similaire pour l'emplacement de destination
 				if(!decoDest.getVide()){
 					final Row destRow = new Row();
 					final Label code = new Label();
 					code.setValue(decoDest.getCode());
+					final Label echantillonDerive = new Label();
+					echantillonDerive.setValue(decoDest.getTypeEntite());
+					final Label type = new Label();
+					type.setValue(empDep.getEntite().getNom());
 					final Label dep = new Label();
 					dep.setValue(decoDep.getAdrl());
 					final Image img = new Image();
@@ -1632,6 +1659,8 @@ public class FicheTerminale extends AbstractFicheCombineStockageController
 					img.setHeight("15px");
 					final Label dest = new Label();
 					dest.setValue(decoDest.getAdrl());
+					final Label dateStockage = new Label();
+					dateStockage.setValue(decoDep.getTkStockObj().getDateStock().toString());
 					destRow.appendChild(code);
 					destRow.appendChild(dep);
 					destRow.appendChild(img);
