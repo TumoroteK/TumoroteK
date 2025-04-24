@@ -82,14 +82,29 @@ public interface UtilisateurManager
     * @return Un Utilisateur.
     */
    List<Utilisateur> findByLoginManager(String login);
+   
+   /**
+    * Recherche l'utilisateur dont le login est égal au paramètre pour le statut archive passé en paramètre.
+    * @param login Login pour lequel on recherche des utilisateurs.
+    * @param boolean archive ou non
+    * @return l'utilisateur ou null si il n'existe pas pour le statut archive demandé.
+    */
+   Utilisateur findByLoginAndArchiveManager(String login, boolean archive);
 
    /**
-    * Recherche un Utilisateur dont le login est passé en paramètre.
+    * @return l'utilisateur actif dont le login est égal au paramètre ou null s'il n'existe pas ou est archivé
+    */
+   Utilisateur findUtilisateurActif(String login);
+
+   /**
+    * Recherche un Utilisateur, non super admin, dont le login est passé en paramètre pour une liste de plateformes donnée.
+    * A noter que le login étant unique pour toutes les plateformes et quelque soit le statut archivé ou non, cette méthode ne peut renvoyer plus d'un élément...
     * @param login Login de l'Utilisateur que l'on recherche.
+    * @param archive statut de l'utilisateur recherché
     * @param pfs liste des plateformes d'origine d'un utilisateur.
     * @return Un Utilisateur.
     */
-   List<Utilisateur> findByLoginAndArchiveManager(String login, boolean archive, List<Plateforme> pfs);
+   List<Utilisateur> findByLoginArchiveAndPlateformeExcludedSuperAdminManager(String login, boolean archive, List<Plateforme> pfs);
 
    /**
     * Recherche tous les Utilisateur présents dans la base.
@@ -113,15 +128,6 @@ public interface UtilisateurManager
     * @return Liste d'utilisateurs.
     */
    List<Utilisateur> findByArchiveManager(boolean archive, List<Plateforme> pfs, Boolean includeSuperAdmin);
-
-   /**
-    * Recherche les utilisateurs par login, mdp et archive.
-    * @param login
-    * @param pass
-    * @param archive True si l'utilisateur n'est pas actif.
-    * @return Liste d'utilisateurs.
-    */
-   List<Utilisateur> findByLoginPasswordAndArchiveManager(String login, String pass, boolean archive);
 
    /**
     * Recherche les doublons de l'Utilisateur passé en paramètre.

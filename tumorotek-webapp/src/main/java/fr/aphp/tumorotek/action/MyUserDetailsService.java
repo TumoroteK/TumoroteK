@@ -116,10 +116,4 @@ public class MyUserDetailsService implements UserDetailsService
          return new User(rs.getString("login"), rs.getString("password"), true, true, true, true, getAuthorities(false));
       }
    }
-
-   /*public static String getEncodedPassword(final String key){
-      final PasswordEncoder encoder = new Md5PasswordEncoder();
-      final String pwd = encoder.encodePassword(key, null);
-      return pwd;
-   }*/
 }

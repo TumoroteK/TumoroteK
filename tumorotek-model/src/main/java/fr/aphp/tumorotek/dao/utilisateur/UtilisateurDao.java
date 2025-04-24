@@ -68,13 +68,23 @@ public interface UtilisateurDao extends GenericDaoJpa<Utilisateur, Integer>
    List<Utilisateur> findByLogin(String login);
 
    /**
-    * Recherche les utilisateurs dont le login est égal au paramètre.
+    * Recherche l'utilisateur dont le login est égal au paramètre pour le statut archive passé en paramètre.
+    * @param login Login pour lequel on recherche des utilisateurs.
+    * @param boolean archive ou non
+    * @return une liste d'un élément maximum.
+    */
+   List<Utilisateur> findByLoginAndArchive(String login, boolean archive);
+   
+   
+   /**
+    * Recherche les utilisateurs, non super admin, dont le login est égal au paramètre pour une liste de plateformes donnée.
+    * A noter que le login étant unique pour toutes les plateformes et quelque soit le statut archivé ou non, cette méthode ne peut renvoyer plus d'un élément...
     * @param login Login pour lequel on recherche des utilisateurs.
     * @param boolean archive ou non
     * @param pfs plateformes d'origine
     * @return une liste d'utilisateurs.
     */
-   List<Utilisateur> findByLoginAndArchive(String login, boolean archive, List<Plateforme> pfs);
+   List<Utilisateur> findByLoginArchiveAndPlateformeExcludedSuperAdmin(String login, boolean archive, List<Plateforme> pfs);
 
    /**
     * Recherche les utilisateurs archivés.
@@ -154,15 +164,6 @@ public interface UtilisateurDao extends GenericDaoJpa<Utilisateur, Integer>
     * @return une liste d'utilisateurs.
     */
    List<Utilisateur> findByOrderWithArchiveIncludeSuperAdmin(boolean archive, List<Plateforme> pfs);
-
-   /**
-    * Recherche les utilisateurs dont le login et le mdp sont égaux
-    * aux paramètres.
-    * @param login Login pour lequel on recherche des utilisateurs.
-    * @param password Mdp pour lequel on recherche des utilisateurs.
-    * @return une liste d'utilisateurs.
-    */
-   List<Utilisateur> findByLoginPassAndArchive(String login, String password, boolean archive);
 
    /**
     * Recherche les utilisateurs superadmin.

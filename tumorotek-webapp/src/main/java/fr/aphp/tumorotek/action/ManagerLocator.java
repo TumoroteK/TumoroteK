@@ -220,6 +220,7 @@ import fr.aphp.tumorotek.model.contexte.Specialite;
 import fr.aphp.tumorotek.model.qualite.NonConformite;
 import fr.aphp.tumorotek.model.stockage.ConteneurType;
 import fr.aphp.tumorotek.model.stockage.EnceinteType;
+import fr.aphp.tumorotek.security.TKDelegatingPasswordEncoder;
 
 /**
  * @version 2.2.1
@@ -964,4 +965,9 @@ public final class ManagerLocator
       return (PlanCongelateurSansBoiteExcelGenerator) ContextLoader.getCurrentWebApplicationContext()
          .getBean("planCongelateurSansBoiteExcelGenerator");
    }
+   
+   public static TKDelegatingPasswordEncoder getTKDelegatingPasswordEncoder(){
+      return (TKDelegatingPasswordEncoder) (ContextLoader.getCurrentWebApplicationContext()).getBean("tkDelegatingPasswordEncoder");
+   }
+   
 }
