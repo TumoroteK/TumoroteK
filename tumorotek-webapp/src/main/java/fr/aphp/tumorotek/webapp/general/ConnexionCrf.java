@@ -11,8 +11,6 @@ import java.util.ResourceBundle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.authentication.encoding.Md5PasswordEncoder;
-import org.springframework.security.authentication.encoding.PasswordEncoder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.GrantedAuthorityImpl;
@@ -81,6 +79,7 @@ public class ConnexionCrf extends GenericForwardComposer<Component>
          rowInactive.setVisible(false);
          extractParameters();
 
+         // /!\ c'est logUser qui contrôle les identifiants et transmets les infos à Spring security ....
          if(selectedBanque != null && logUser()){
             rowWait.setVisible(true);
             rowError.setVisible(false);
@@ -223,15 +222,12 @@ public class ConnexionCrf extends GenericForwardComposer<Component>
 
       if(login != null && pass != null){
 
-         // on transforme le mdp en MD5
-         final PasswordEncoder encoder = new Md5PasswordEncoder();
-         final String pwd = encoder.encodePassword(pass, null);
-
-         if(ManagerLocator.getUtilisateurManager().findByLoginPasswordAndArchiveManager(login, pwd, false).size() > 0){
+         Utilisateur utilisateur = ManagerLocator.getUtilisateurManager().findUtilisateurActif(login);
+         if(utilisateur != null && ManagerLocator.getTKDelegatingPasswordEncoder().matches(pass, utilisateur.getPassword())) {
             ok = true;
 
             // création d'un utilisateur pour SpringSecurity
-            final User u = new User(login, pwd, true, true, true, true, getAuthorities(false));
+            final User u = new User(login, utilisateur.getPassword(), true, true, true, true, getAuthorities(false));
 
             // Authentification de cet utilisateur
             final Authentication auth = new UsernamePasswordAuthenticationToken(u, null, getAuthorities(false));

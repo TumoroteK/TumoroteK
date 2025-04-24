@@ -116,25 +116,25 @@ public class UtilisateurDaoTest extends AbstractDaoTest
    }
 
    /**
-    * Test l'appel de la méthode findByLoginAndArchive().
+    * Test l'appel de la méthode findByLoginArchiveAndPlateformeExcludedSuperAdmin().
     */
-   public void testFindByLoginAndArchive(){
+   public void testfindByLoginArchiveAndPlateformeExcludedSuperAdmin(){
       final List<Plateforme> pfs = new ArrayList<>();
       pfs.add(plateformeDao.findById(1));
-      List<Utilisateur> utilisateurs = utilisateurDao.findByLoginAndArchive("USER1", false, pfs);
+      List<Utilisateur> utilisateurs = utilisateurDao.findByLoginArchiveAndPlateformeExcludedSuperAdmin("USER1", false, pfs);
       assertTrue(utilisateurs.size() == 1);
 
-      utilisateurs = utilisateurDao.findByLoginAndArchive("USER1", true, pfs);
+      utilisateurs = utilisateurDao.findByLoginArchiveAndPlateformeExcludedSuperAdmin("USER1", true, pfs);
       assertTrue(utilisateurs.size() == 0);
 
-      utilisateurs = utilisateurDao.findByLoginAndArchive("USER", true, pfs);
+      utilisateurs = utilisateurDao.findByLoginArchiveAndPlateformeExcludedSuperAdmin("USER", true, pfs);
       assertTrue(utilisateurs.size() == 0);
 
       pfs.clear();
       pfs.add(plateformeDao.findById(2));
-      utilisateurs = utilisateurDao.findByLoginAndArchive("USER1", false, pfs);
+      utilisateurs = utilisateurDao.findByLoginArchiveAndPlateformeExcludedSuperAdmin("USER1", false, pfs);
       assertTrue(utilisateurs.size() == 0);
-      utilisateurs = utilisateurDao.findByLoginAndArchive("USER4", false, pfs);
+      utilisateurs = utilisateurDao.findByLoginArchiveAndPlateformeExcludedSuperAdmin("USER4", false, pfs);
       assertTrue(utilisateurs.size() == 1);
    }
 
@@ -278,21 +278,6 @@ public class UtilisateurDaoTest extends AbstractDaoTest
 
       utilisateurs = utilisateurDao.findByExcludedId(15);
       assertTrue(utilisateurs.size() == 5);
-   }
-
-   public void testFindByLoginPassAndArchive(){
-      List<Utilisateur> utilisateurs =
-         utilisateurDao.findByLoginPassAndArchive("USER5", "b383bb08bd750d8ef04d034ad648a208", false);
-      assertTrue(utilisateurs.size() == 1);
-
-      utilisateurs = utilisateurDao.findByLoginPassAndArchive("USER6", "b383bb08bd750d8ef04d034ad648a208", false);
-      assertTrue(utilisateurs.size() == 0);
-
-      utilisateurs = utilisateurDao.findByLoginPassAndArchive("USER5", "b383bb08bd750d8ef04d034ad648a208qcqsc", false);
-      assertTrue(utilisateurs.size() == 0);
-
-      utilisateurs = utilisateurDao.findByLoginPassAndArchive("USER5", "b383bb08bd750d8ef04d034ad648a208", true);
-      assertTrue(utilisateurs.size() == 0);
    }
 
    /**

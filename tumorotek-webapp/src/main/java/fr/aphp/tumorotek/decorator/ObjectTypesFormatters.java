@@ -561,17 +561,6 @@ public final class ObjectTypesFormatters
    }
 
    /**
-    * Méthode qui encrypte le mot de passe en paramètre en
-    * utilisant l'algorithme MD5.
-    * @param pwd Mot de passe à encrypté.
-    * @return Mot de passe encrypté.
-    */
-   public static String getEncodedPassword(final String pwd){
-      final Md5PasswordEncoder encoder = new Md5PasswordEncoder();
-      return encoder.encodePassword(pwd, null);
-   }
-
-   /**
     * Render les valeurs d'une annotation.
     * @param valeur
     * @return

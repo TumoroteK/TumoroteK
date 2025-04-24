@@ -81,8 +81,10 @@ import fr.aphp.tumorotek.model.imprimante.AffectationImprimante;
 @Entity
 @Table(name = "UTILISATEUR")
 @NamedQueries(value = {
-   @NamedQuery(name = "Utilisateur.findByLogin", query = "SELECT u FROM Utilisateur u WHERE u.login = ?1 " + "ORDER BY archive"),
+   @NamedQuery(name = "Utilisateur.findByLogin", query = "SELECT u FROM Utilisateur u WHERE u.login = ?1 " + "ORDER BY archive"),//le order by ne sert à rien car le login est unique (indépendamment de l'attribut archive)
    @NamedQuery(name = "Utilisateur.findByLoginAndArchive",
+   query = "SELECT u FROM Utilisateur u " + "WHERE u.login = ?1 AND u.archive = ?2 "),
+   @NamedQuery(name = "Utilisateur.findByLoginArchiveAndPlateformeExcludedSuperAdmin",
       query = "SELECT u FROM Utilisateur u " + "WHERE u.login = ?1 AND u.archive = ?2 AND u.superAdmin = 0 "
          + "AND u.plateformeOrig in (?3)"),
    @NamedQuery(name = "Utilisateur.findByArchive",
@@ -104,8 +106,6 @@ import fr.aphp.tumorotek.model.imprimante.AffectationImprimante;
    @NamedQuery(name = "Utilisateur.findByOrderWithArchiveIncludeSuperAdmin",
       query = "SELECT u FROM Utilisateur u " + "WHERE u.archive = ?1 and ( u.plateformeOrig in (?2) OR (u.superAdmin = 1 ))"
          + "ORDER BY u.login"),
-   @NamedQuery(name = "Utilisateur.findByLoginPassAndArchive",
-      query = "SELECT u FROM Utilisateur u " + "WHERE u.login = ?1 " + "AND u.password = ?2 " + "AND u.archive = ?3"),
    @NamedQuery(name = "Utilisateur.findBySuperAndArchive",
       query = "SELECT u FROM Utilisateur u " + "WHERE  u.archive = ?1 and u.superAdmin = ?2 order by u.login")})
 public class Utilisateur implements TKdataObject, java.io.Serializable, Comparable<Utilisateur>
