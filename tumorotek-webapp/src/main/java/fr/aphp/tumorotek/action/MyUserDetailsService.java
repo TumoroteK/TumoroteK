@@ -73,7 +73,8 @@ public class MyUserDetailsService implements UserDetailsService
 
    @Override
    public UserDetails loadUserByUsername(final String username){
-      final String sql = "select * from UTILISATEUR where login = ? and archive = 0";
+      //TK-633 : seul les comptes non topés LDAP peuvent se connecter avec un mot de passe
+      final String sql = "select * from UTILISATEUR where login = ? and ldap=0 and archive = 0";
       final JdbcTemplate jdbcTemplate = new JdbcTemplate();
       jdbcTemplate.setDataSource(getDataSource());
       User user;
