@@ -191,7 +191,7 @@
 										<label value="@{currDeplacement.code}"/>
 										<label value="@{currDeplacement.typeEntite}"/>
 										<label value="@{currDeplacement.type}"/>
-										<label value="@{currDeplacement.tkStockObj.dateStockage}"/>
+										<label value="@{currDeplacement.formattedDateStockage}"/>
 										<label value="@{currDeplacement.adrl}"/>
 										<image src="/images/icones/next.png" height="15px"/>
 										<label value="@{currDeplacement.adrlDestination}"/>

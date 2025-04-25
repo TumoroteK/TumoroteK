@@ -38,7 +38,12 @@ package fr.aphp.tumorotek;
 public interface TKConstants {
    
    public static final String MAP_KEY_DOUBLON = "DOUBLON";
-
    public static final String MAP_KEY_UPDATED = "UPDATED";
+   public static final String PRODUIT_DERIVE = "ProdDerive";
+   public static final String NON_STOCKE = "NON STOCKE";
+
+   public static final String ECHANTILLON = "Echantillon";
+
+
 
 }

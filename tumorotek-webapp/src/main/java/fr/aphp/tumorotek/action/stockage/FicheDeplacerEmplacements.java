@@ -103,6 +103,8 @@ import fr.aphp.tumorotek.utils.Utils;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
 import fr.aphp.tumorotek.webapp.tree.stockage.TerminaleNode;
 
+import static fr.aphp.tumorotek.TKConstants.*;
+
 /**
  * @version 2.2.3-genno fix TK-291
  * @author Mathieu BARTHELEMY
@@ -507,36 +509,43 @@ public class FicheDeplacerEmplacements extends FicheTerminale
       // si l'on souhaite stocker des échantillons
       if(echans != null){
          echantillons = new ArrayList<>();
-         typeEntite = "Echantillon";
+         typeEntite = ECHANTILLON;
          for(int i = 0; i < echans.size(); i++){
+            Echantillon currentEchantillon = echans.get(i);
+
             // on ne traite que les échans non stockés
-            if(echans.get(i).getObjetStatut().getStatut().equals("NON STOCKE")){
-               echantillons.add(echans.get(i));
+            if(echans.get(i).getObjetStatut().getStatut().equals(NON_STOCKE)){
+               echantillons.add(currentEchantillon);
                final EmplacementDecorator deco = new EmplacementDecorator(new Emplacement());
                deco.setAdrl("--");
                deco.setCode(echans.get(i).getCode());
                final Entite e = ManagerLocator.getEntiteManager().findByNomManager(typeEntite).get(0);
                deco.getEmplacement().setEntite(e);
-               deco.getEmplacement().setObjetId(echans.get(i).getEchantillonId());
+               deco.getEmplacement().setObjetId(currentEchantillon.getEchantillonId());
                deco.getEmplacement().setPosition(i + 1);
+               deco.setTkStockObj(currentEchantillon);
+               deco.setType(currentEchantillon.getType().getNom());
                deplacements.add(deco);
             }
          }
       }else if(der != null){
          // si l'on souhaite stocker des dérivés
-         typeEntite = "ProdDerive";
+         typeEntite = PRODUIT_DERIVE;
          derives = new ArrayList<>();
          for(int i = 0; i < der.size(); i++){
+            ProdDerive currentProdDerive = der.get(i);
             // on ne traite que les dérivés non stockés
-            if(der.get(i).getObjetStatut().getStatut().equals("NON STOCKE")){
+            if(currentProdDerive.getObjetStatut().getStatut().equals(NON_STOCKE)){
                derives.add(der.get(i));
                final EmplacementDecorator deco = new EmplacementDecorator(new Emplacement());
                deco.setAdrl("--");
-               deco.setCode(der.get(i).getCode());
+               deco.setCode(currentProdDerive.getCode());
                final Entite e = ManagerLocator.getEntiteManager().findByNomManager(typeEntite).get(0);
                deco.getEmplacement().setEntite(e);
-               deco.getEmplacement().setObjetId(der.get(i).getProdDeriveId());
+               deco.getEmplacement().setObjetId(currentProdDerive.getProdDeriveId());
                deco.getEmplacement().setPosition(i + 1);
+               deco.setTkStockObj(currentProdDerive);
+               deco.setType(currentProdDerive.getType().getNom());
                deplacements.add(deco);
             }
          }
@@ -702,16 +711,6 @@ public class FicheDeplacerEmplacements extends FicheTerminale
     * Annulation de la sélection.
     */
    public void onClick$cancelSelection(){
-      /*emplacementDecos = new ArrayList<EmplacementDecorator>();
-      imagesEmplacements = new ArrayList<Image>();
-      deplacements = new ArrayList<EmplacementDecorator>();
-      emplacementReserves = new ArrayList<EmplacementDecorator>();
-      // on vide la modélisation de la boite
-      modeleBoite.getChildren().clear();
-      getStockageController().getListeStockages()
-      	.setDeplacementMode("normal");
-
-      getStockageController().switchToFicheTerminaleMode(terminale);*/
       postDetachDeplacementEvent();
    }
 
@@ -719,7 +718,6 @@ public class FicheDeplacerEmplacements extends FicheTerminale
     * Annulation des déplacements.
     */
    public void onClick$cancelDeplacement(){
-      // emplacementDecos = new ArrayList<EmplacementDecorator>();
       getEmplacementDecos().clear();
       // imagesEmplacements = new ArrayList<Image>();
       getImagesEmplacements().clear();
@@ -743,82 +741,24 @@ public class FicheDeplacerEmplacements extends FicheTerminale
     * @param event
     */
    public void onClick$cancelStockage(final Event event){
-      /*emplacementDecos = new ArrayList<EmplacementDecorator>();
-      imagesEmplacements = new ArrayList<Image>();
-      deplacementsRestants = new ArrayList<EmplacementDecorator>();
-      emplacementsDestDep = new Hashtable
-      	<EmplacementDecorator, EmplacementDecorator>();
-      deplacements = new ArrayList<EmplacementDecorator>();
-      echantillons = new ArrayList<Echantillon>();
-      derives = new ArrayList<ProdDerive>();
-      emplacementReserves = new ArrayList<EmplacementDecorator>();
-      // on vide la modélisation de la boite
-      modeleBoite.getChildren().clear();
-      getStockageController().getListeStockages()
-      	.switchToNormalMode();
-      getStockageController().clearAllPage();
-      getStockageController().getListeStockages()
-      	.updateAllConteneurs();*/
+
       postDetachDeplacementEvent();
 
-      //		if (returnMethode != null && !returnMethode.equals("")) {
-      //			Tabpanel panel = null;
       getMainWindow().unblockAllPanels();
-      if(typeEntite.equals("Echantillon")){
-         //				panel = (Tabpanel) getMainWindow()
-         //									.getMainTabbox()
-         //									.getTabpanels()
-         //									.getFellow("echantillonPanel");
+      if(typeEntite.equals(ECHANTILLON)){
          EchantillonController.backToMe(getMainWindow(), page);
-      }else if(typeEntite.equals("ProdDerive")){
-         //				panel = (Tabpanel) getMainWindow()
-         //					.getMainTabbox()
-         //					.getTabpanels()
-         //					.getFellow("derivePanel");
+      }else if(typeEntite.equals(PRODUIT_DERIVE)){
          ProdDeriveController.backToMe(getMainWindow(), page);
       }
 
-      // si on arrive à récupérer le panel
-      //			if (panel != null) {
-      //				getMainWindow().unblockAllPanels();
-      //				getMainWindow().getMainTabbox().setSelectedPanel(panel);
-      //			}
-      //		} else {
-      //			Tabpanel panel = null;
-      //			if (typeEntite.equals("Echantillon")) {
-      //				panel = (Tabpanel) getMainWindow()
-      //									.getMainTabbox()
-      //									.getTabpanels()
-      //									.getFellow("echantillonPanel");
-      //			} else if (typeEntite.equals("ProdDerive")) {
-      //				panel = (Tabpanel) getMainWindow()
-      //					.getMainTabbox()
-      //					.getTabpanels()
-      //					.getFellow("derivePanel");
-      //			}
-      //
-      //			// si on arrive à récupérer le panel
-      //			if (panel != null) {
-      //				getMainWindow().unblockAllPanels();
-      //				getMainWindow().getMainTabbox().setSelectedPanel(panel);
-      //			}
-      //		}
+
    }
 
    /**
     * Annulation du déstockage.
     */
    public void onClick$cancelDestockage(){
-      /*emplacementDecos = new ArrayList<EmplacementDecorator>();
-      imagesEmplacements = new ArrayList<Image>();
-      deplacements = new ArrayList<EmplacementDecorator>();
-      emplacementReserves = new ArrayList<EmplacementDecorator>();
-      // on vide la modélisation de la boite
-      modeleBoite.getChildren().clear();
-      getStockageController().getListeStockages()
-      	.setDeplacementMode("normal");
 
-      getStockageController().switchToFicheTerminaleMode(terminale);*/
       postDetachDeplacementEvent();
    }
 
@@ -880,9 +820,9 @@ public class FicheDeplacerEmplacements extends FicheTerminale
          emplacementReserves = new ArrayList<>();
 
          Tabpanel panel = null;
-         if(typeEntite.equals("Echantillon")){
+         if(typeEntite.equals(ECHANTILLON)){
             panel = (Tabpanel) getMainWindow().getMainTabbox().getTabpanels().getFellow("echantillonPanel");
-         }else if(typeEntite.equals("ProdDerive")){
+         }else if(typeEntite.equals(PRODUIT_DERIVE)){
             panel = (Tabpanel) getMainWindow().getMainTabbox().getTabpanels().getFellow("derivePanel");
          }
 
@@ -929,9 +869,9 @@ public class FicheDeplacerEmplacements extends FicheTerminale
       emplacementReserves = new ArrayList<>();
 
       Tabpanel panel = null;
-      if(typeEntite.equals("Echantillon")){
+      if(typeEntite.equals(ECHANTILLON)){
          panel = (Tabpanel) getMainWindow().getMainTabbox().getTabpanels().getFellow("echantillonPanel");
-      }else if(typeEntite.equals("ProdDerive")){
+      }else if(typeEntite.equals(PRODUIT_DERIVE)){
          panel = (Tabpanel) getMainWindow().getMainTabbox().getTabpanels().getFellow("derivePanel");
       }
 
@@ -1014,7 +954,7 @@ public class FicheDeplacerEmplacements extends FicheTerminale
          // pour chaque emplacement, on maj l'objet contenu dans la liste des Echantillons ou des produits dérivés
          for(int i = 0; i < emplacementsFinaux.size(); i++){
             final Emplacement empl = emplacementsFinaux.get(i);
-            if(empl.getEntite() != null && empl.getObjetId() != null && empl.getEntite().getNom().equals("Echantillon")){
+            if(empl.getEntite() != null && empl.getObjetId() != null && empl.getEntite().getNom().equals(ECHANTILLON)){
                final Echantillon echan = ManagerLocator.getEchantillonManager().findByIdManager(empl.getObjetId());
                // on vérifie que l'on retrouve bien la page (onglet)
                // contenant la liste
@@ -1027,7 +967,7 @@ public class FicheDeplacerEmplacements extends FicheTerminale
                         false);
                   }
                }
-            }else if(empl.getEntite() != null && empl.getObjetId() != null && empl.getEntite().getNom().equals("ProdDerive")){
+            }else if(empl.getEntite() != null && empl.getObjetId() != null && empl.getEntite().getNom().equals(PRODUIT_DERIVE)){
                final ProdDerive derive = ManagerLocator.getProdDeriveManager().findByIdManager(empl.getObjetId());
                // on vérifie que l'on retrouve bien la page
                // contenant la liste
@@ -1097,12 +1037,12 @@ public class FicheDeplacerEmplacements extends FicheTerminale
          final EmplacementDecorator deco = deplacements.get(i);
          final Emplacement empl = deco.getEmplacement();
 
-         if(empl.getEntite().getNom().equals("Echantillon")){
+         if(empl.getEntite().getNom().equals(ECHANTILLON)){
             final Echantillon echan = ManagerLocator.getEchantillonManager().findByIdManager(empl.getObjetId());
             if(echan != null){
                echansToDestock.add(echan);
             }
-         }else if(empl.getEntite().getNom().equals("ProdDerive")){
+         }else if(empl.getEntite().getNom().equals(PRODUIT_DERIVE)){
             final ProdDerive derive = ManagerLocator.getProdDeriveManager().findByIdManager(empl.getObjetId());
             if(derive != null){
                derivesToDestock.add(derive);
@@ -1138,20 +1078,20 @@ public class FicheDeplacerEmplacements extends FicheTerminale
 
       final TransactionStatus status = ManagerLocator.getTxManager().getTransaction(def);
       try{
-         final Entite echanEntite = ManagerLocator.getEntiteManager().findByNomManager("Echantillon").get(0);
-         final Entite deriveEntite = ManagerLocator.getEntiteManager().findByNomManager("ProdDerive").get(0);
+         final Entite echanEntite = ManagerLocator.getEntiteManager().findByNomManager(ECHANTILLON).get(0);
+         final Entite deriveEntite = ManagerLocator.getEntiteManager().findByNomManager(PRODUIT_DERIVE).get(0);
          for(int i = 0; i < deplacements.size(); i++){
             final EmplacementDecorator deco = deplacements.get(i);
 
             if(deco.getEmplDestination() != null){
                final Emplacement empl = deco.getEmplDestination().getEmplacement();
 
-               if(typeEntite.equals("Echantillon")){
+               if(typeEntite.equals(ECHANTILLON)){
                   empl.setEntite(echanEntite);
                   empl.setObjetId(echantillons.get(i).getEchantillonId());
                   echansFinaux.add(echantillons.get(i));
                   upObjsIds.add(echantillons.get(i).getEchantillonId());
-               }else if(typeEntite.equals("ProdDerive")){
+               }else if(typeEntite.equals(PRODUIT_DERIVE)){
                   empl.setEntite(deriveEntite);
                   empl.setObjetId(derives.get(i).getProdDeriveId());
                   derivesFinaux.add(derives.get(i));
@@ -1165,13 +1105,13 @@ public class FicheDeplacerEmplacements extends FicheTerminale
 
          ManagerLocator.getEmplacementManager().saveMultiEmplacementsManager(emplacementsFinaux);
 
-         if(typeEntite.equals("Echantillon")){
+         if(typeEntite.equals(ECHANTILLON)){
             updateEchantillons(emplacementsFinaux, echansFinaux);
-         }else if(typeEntite.equals("ProdDerive")){
+         }else if(typeEntite.equals(PRODUIT_DERIVE)){
             updateProdDerives(emplacementsFinaux, derivesFinaux);
          }
 
-         if(typeEntite.equals("Echantillon")){
+         if(typeEntite.equals(ECHANTILLON)){
             if(getObjectTabController().getEchantillonController() != null){
                getObjectTabController().getEchantillonController().getListe().updateGridByIds(upObjsIds, false, true);
             }
@@ -1183,22 +1123,16 @@ public class FicheDeplacerEmplacements extends FicheTerminale
                      ManagerLocator.getEntiteManager().findByNomManager("Prelevement").get(0),
                      SessionUtils.getSelectedBanques(sessionScope), false), false, true);
             }
-         }else if(typeEntite.equals("ProdDerive")){
+         }else if(typeEntite.equals(PRODUIT_DERIVE)){
             if(getObjectTabController().getProdDeriveController() != null){
-               //					for (ProdDerive deriveToUpdate : derivesFinaux) {
-               //						getObjectTabController().
-               //							getProdDeriveController().getListe()
-               //								.updateObjectGridListFromOtherPage(deriveToUpdate, false);
-               //						getObjectTabController().
-               //							getProdDeriveController().switchToOnlyListeMode();
-               //					}
+
                getObjectTabController().getProdDeriveController().getListe().updateGridByIds(upObjsIds, false, true);
             }
             // update echantillon parents
             if(getObjectTabController().getEchantillonController() != null){
                getObjectTabController().getEchantillonController().getListe()
                   .updateGridByIds(ManagerLocator.getCorrespondanceIdManager().findTargetIdsFromIdsManager(upObjsIds,
-                     deriveEntite, ManagerLocator.getEntiteManager().findByNomManager("Echantillon").get(0),
+                     deriveEntite, ManagerLocator.getEntiteManager().findByNomManager(ECHANTILLON).get(0),
                      SessionUtils.getSelectedBanques(sessionScope), false), false, true);
             }
 
@@ -1259,8 +1193,8 @@ public class FicheDeplacerEmplacements extends FicheTerminale
    protected Hashtable<Object, Emplacement> stockNewObjects(){
       final Hashtable<Object, Emplacement> results = new Hashtable<>();
 
-      final Entite echanEntite = ManagerLocator.getEntiteManager().findByNomManager("Echantillon").get(0);
-      final Entite deriveEntite = ManagerLocator.getEntiteManager().findByNomManager("ProdDerive").get(0);
+      final Entite echanEntite = ManagerLocator.getEntiteManager().findByNomManager(ECHANTILLON).get(0);
+      final Entite deriveEntite = ManagerLocator.getEntiteManager().findByNomManager(PRODUIT_DERIVE).get(0);
       for(int i = 0; i < deplacements.size(); i++){
          final EmplacementDecorator deco = deplacements.get(i);
 
@@ -1269,11 +1203,11 @@ public class FicheDeplacerEmplacements extends FicheTerminale
 
             empl.setVide(false);
             empl.setAdrl(deco.getEmplDestination().getAdrl());
-            if(typeEntite.equals("Echantillon")){
+            if(typeEntite.equals(ECHANTILLON)){
                empl.setEntite(echanEntite);
                empl.setObjetId(echantillons.get(i).getEchantillonId());
                results.put(echantillons.get(i), empl);
-            }else if(typeEntite.equals("ProdDerive")){
+            }else if(typeEntite.equals(PRODUIT_DERIVE)){
                empl.setEntite(deriveEntite);
                empl.setObjetId(derives.get(i).getProdDeriveId());
                results.put(derives.get(i), empl);
@@ -1321,78 +1255,7 @@ public class FicheDeplacerEmplacements extends FicheTerminale
     * @return
     */
    protected List<String> destockEmplacements(){
-      /*List<String> errorMsg = new ArrayList<String>();
-      List<Echantillon> echansToDestock = new ArrayList<Echantillon>();
-      List<ProdDerive> derivesToDestock = new ArrayList<ProdDerive>();
-      List<Emplacement> emplacementsFinaux = new ArrayList<Emplacement>();
 
-      try {
-      	// pour chaque destockage
-      	for (int i = 0; i < deplacements.size(); i++) {
-      		EmplacementDecorator deco = deplacements.get(i);
-      		Emplacement empl = deco.getEmplacement();
-
-      		if (empl.getEntite().getNom().equals("Echantillon")) {
-      			Echantillon echan = ManagerLocator.getEchantillonManager()
-      				.findByIdManager(empl.getObjetId());
-      			if (echan != null) {
-      				echansToDestock.add(echan);
-      			}
-      		} else if (empl.getEntite().getNom().equals("ProdDerive")) {
-      			ProdDerive derive = ManagerLocator.getProdDeriveManager()
-      				.findByIdManager(empl.getObjetId());
-      			if (derive != null) {
-      				derivesToDestock.add(derive);
-      			}
-      		}
-      		empl.setVide(true);
-      		empl.setEntite(null);
-      		empl.setObjetId(null);
-      		emplacementsFinaux.add(empl);
-      	}
-
-      	ManagerLocator.getEmplacementManager()
-      		.saveMultiEmplacementsManager(
-      		emplacementsFinaux);
-
-      } catch (ValidationException ve) {
-      	errorMsg.add("- Erreur lors de la validation.");
-      } catch (InvalidPositionException ipose) {
-      	errorMsg.add("- Erreur sur la "
-      			+ "position d'un emplacement.");
-      } catch (RequiredObjectIsNullException re) {
-      	errorMsg.add("- Objet manquant lors du stockage.");
-      } catch (EntiteObjectIdNotExistException nee) {
-      	errorMsg.add("- Objet à stocker inexistant.");
-      } catch (DoublonFoundException de) {
-      	errorMsg.add("- Erreur sur l'emplacement de stockage.");
-      }
-
-      // s'il y a des erreurs, on fait apparaître une fenêtre contenant
-      // la liste de celles-ci
-      if (errorMsg.size() > 0) {
-      	// ferme wait message
-      	Clients.showBusy(null, false);
-
-      	StringBuffer sb = new StringBuffer();
-      	for (int i = 0; i < errorMsg.size(); i++) {
-      		sb.append(errorMsg.get(i));
-      		if (i < errorMsg.size() - 1) {
-      			sb.append("\n");
-      		}
-      	}
-      	try {
-      		Messagebox.show(sb.toString(), "Error",
-      				Messagebox.OK, Messagebox.ERROR);
-      	} catch (InterruptedException e1) {
-      		log.error(e1);
-      	}
-      } else {
-      	destockEchantillons(echansToDestock);
-      	destockProdDerives(derivesToDestock);
-      }
-
-      return errorMsg;*/
       return null;
    }
 
@@ -1629,56 +1492,6 @@ public class FicheDeplacerEmplacements extends FicheTerminale
       return div;
    }
 
-   //	/**
-   //	 * Cette méthode renvoie l'adresse de l'image en fonction du decorator
-   //	 * passé en paramètre.
-   //	 * @param deco Decorator de l'emplacement.
-   //	 * @return Adresse de l'image.
-   //	 */
-   //	public String getImageSrc(EmplacementDecorator deco) {
-   //		StringBuffer sb = new StringBuffer();
-   //		sb.append(imageSrc);
-   //
-   //		// si l'image est vide
-   //		if (deco.getVide()) {
-   //			sb.append("VIDE");
-   //		} else {
-   //			// si l'emplacement contient un échantillon
-   //			if (deco.getEmplacement().getEntite().getNom()
-   //					.equals("Echantillon")) {
-   //
-   //				if (getMainWindow().getEchantillonTypesCouleur()
-   //						.containsKey(deco.getType())) {
-   //					sb.append(getMainWindow().getEchantillonTypesCouleur()
-   //							.get(deco.getType()));
-   //				} else if (getMainWindow().getSelectedBanque()
-   //						.getEchantillonCouleur() != null) {
-   //					sb.append(getMainWindow().getSelectedBanque()
-   //							.getEchantillonCouleur().getCouleur());
-   //				} else {
-   //					sb.append("VERT");
-   //				}
-   //
-   //			} else if (deco.getEmplacement().getEntite().getNom()
-   //					.equals("ProdDerive")) {
-   //				// si l'emplacement contient un dérivé
-   //				if (getMainWindow().getProdDeriveTypesCouleur()
-   //						.containsKey(deco.getType())) {
-   //					sb.append(getMainWindow().getProdDeriveTypesCouleur()
-   //							.get(deco.getType()));
-   //				} else if (getMainWindow().getSelectedBanque()
-   //						.getProdDeriveCouleur() != null) {
-   //					sb.append(getMainWindow().getSelectedBanque()
-   //							.getProdDeriveCouleur().getCouleur());
-   //				} else {
-   //					sb.append("VERT");
-   //				}
-   //			}
-   //
-   //		}
-   //		sb.append(".png");
-   //		return sb.toString();
-   //	}
 
    public void descendreFenetre(){
       final String id = rowHistoriqueTitle.getUuid();
@@ -2417,9 +2230,9 @@ public class FicheDeplacerEmplacements extends FicheTerminale
 
                Echantillon echan = null;
                ProdDerive derive = null;
-               if(typeEntite.equals("Echantillon")){
+               if(typeEntite.equals(ECHANTILLON)){
                   echan = echantillons.get(k);
-               }else if(typeEntite.equals("ProdDerive")){
+               }else if(typeEntite.equals(PRODUIT_DERIVE)){
                   derive = derives.get(k);
                }
 
@@ -2434,14 +2247,14 @@ public class FicheDeplacerEmplacements extends FicheTerminale
                   newBi.setTitreModelisation(Labels.getLabel("impression.boite.title.visualisation"));
                   newBi.setTitreInstructions(Labels.getLabel("impression.boite.title.instructions"));
                   newBi.setNom(ObjectTypesFormatters.getLabel("impression.boite.nom", new String[] {term.getNom()}));
-                  if(typeEntite.equals("Echantillon")){
+                  if(typeEntite.equals(ECHANTILLON)){
                      newBi.setTitreListe(Labels.getLabel("impression.boite.elements" + ".title.stockage.echantillons"));
                   }else{
                      newBi.setTitreListe(Labels.getLabel("impression.boite.elements" + ".title.stockage.prodDerives"));
                   }
                   newBi.setLegendeVide(Labels.getLabel("impression.boite.legende.vide"));
                   newBi.setLegendePris(Labels.getLabel("impression.boite.legende.pris"));
-                  if(typeEntite.equals("Echantillon")){
+                  if(typeEntite.equals(ECHANTILLON)){
                      newBi.setLegendeSelectionne(
                         Labels.getLabel("impression.boite.legende.selectionne" + ".stockage.echantillons"));
                   }else{
@@ -2468,7 +2281,7 @@ public class FicheDeplacerEmplacements extends FicheTerminale
                   // ajout des instructions à la boite
                   instructions
                      .add(ObjectTypesFormatters.getLabel("impression.boite.instruction.terminale", new String[] {term.getNom()}));
-                  if(typeEntite.equals("Echantillon")){
+                  if(typeEntite.equals(ECHANTILLON)){
                      instructions.add(Labels.getLabel("impression.boite.instruction" + ".stockage.echantillons"));
                   }else{
                      instructions.add(Labels.getLabel("impression.boite.instruction" + ".stockage.prodDerives"));
@@ -2478,7 +2291,7 @@ public class FicheDeplacerEmplacements extends FicheTerminale
                   // ajout de l'élément à la liste des éléments
                   // a extraire
                   final List<String> elements = new ArrayList<>();
-                  if(null != echan && typeEntite.equals("Echantillon")){
+                  if(null != echan && typeEntite.equals(ECHANTILLON)){
                      elements.add(ObjectTypesFormatters.getLabel("impression.boite.numero.echantillon",
                         new String[] {"1", echan.getCode()}));
                   }else if(null != derive){
@@ -2503,7 +2316,7 @@ public class FicheDeplacerEmplacements extends FicheTerminale
                   // éléments à extraire
                   final int pos = bi.getPositions().size() + 1;
                   bi.getPositions().add(empl.getPosition());
-                  if(null != echan && typeEntite.equals("Echantillon")){
+                  if(null != echan && typeEntite.equals(ECHANTILLON)){
                      bi.getElements().add(ObjectTypesFormatters.getLabel("impression.boite.numero.echantillon",
                         new String[] {Integer.toString(pos), echan.getCode()}));
                   }else if(null != derive){
@@ -2570,14 +2383,6 @@ public class FicheDeplacerEmplacements extends FicheTerminale
       this.adrlTerminale = adrl;
    }
 
-   //	public List<EmplacementDecorator> getEmplacementDecos() {
-   //		return emplacementDecos;
-   //	}
-   //
-   //	public void setEmplacementDecos(List<EmplacementDecorator> emplacementD) {
-   //		this.emplacementDecos = emplacementD;
-   //	}
-
    public String getBadTerminaleError(){
       return badTerminaleError;
    }
@@ -2593,14 +2398,6 @@ public class FicheDeplacerEmplacements extends FicheTerminale
    public void setDeplacements(final List<EmplacementDecorator> depls){
       this.deplacements = depls;
    }
-
-   //	public List<Image> getImagesEmplacements() {
-   //		return imagesEmplacements;
-   //	}
-   //
-   //	public void setImagesEmplacements(List<Image> imagesEmpls) {
-   //		this.imagesEmplacements = imagesEmpls;
-   //	}
 
    public boolean isSelectionMode(){
       return selectionMode;
@@ -2748,13 +2545,6 @@ public class FicheDeplacerEmplacements extends FicheTerminale
       this.emplacementReserves = emplacementR;
    }
 
-   //	public static String getImageSrc() {
-   //		return imageSrc;
-   //	}
-   //
-   //	public static void setImageSrc(String src) {
-   //		FicheDeplacerEmplacements.imageSrc = src;
-   //	}
 
    public boolean isDestockageMode(){
       return destockageMode;
@@ -2764,10 +2554,6 @@ public class FicheDeplacerEmplacements extends FicheTerminale
       this.destockageMode = dMode;
    }
 
-   //	@Override
-   //	public TKdataObject getObject() {
-   //		return null;
-   //	}
 
    @Override
    public void setNewObject(){}
@@ -2780,13 +2566,7 @@ public class FicheDeplacerEmplacements extends FicheTerminale
    @Override
    public void setParentObject(final TKdataObject obj){}
 
-   //	public Map<TKStockableObject, Emplacement> getEmplForRetours() {
-   //		return emplForRetours;
-   //	}
-   //
-   //	public void setEmplForRetours(HashMap<TKStockableObject, Emplacement> e) {
-   //		this.emplForRetours = e;
-   //	}
+
 
    // @since 2.2.3-genno TK-291 fix
    @Override
@@ -2799,14 +2579,14 @@ public class FicheDeplacerEmplacements extends FicheTerminale
          if(deco.getEmplDestination() != null){
             final Emplacement empl = deco.getEmplacement();
             if(!empl.getVide()){
-               if(empl.getEntite().getNom().equals("Echantillon")){
+               if(empl.getEntite().getNom().equals(ECHANTILLON)){
                   // getEmplForRetours().put(ManagerLocator.getEchantillonManager().findByIdManager(empl.getObjetId()),
                   //		empl.clone());
                   getEmplForRetours()
                      .add(new OldEmplTrace(ManagerLocator.getEchantillonManager().findByIdManager(empl.getObjetId()),
                         ManagerLocator.getEmplacementManager().getAdrlManager(empl, false),
                         ManagerLocator.getEmplacementManager().getConteneurManager(empl), empl.clone()));
-               }else if(empl.getEntite().getNom().equals("ProdDerive")){
+               }else if(empl.getEntite().getNom().equals(PRODUIT_DERIVE)){
                   // getEmplForRetours().put(ManagerLocator.getProdDeriveManager().findByIdManager(empl.getObjetId()), empl.clone());
                   getEmplForRetours()
                      .add(new OldEmplTrace(ManagerLocator.getProdDeriveManager().findByIdManager(empl.getObjetId()),
@@ -2893,19 +2673,7 @@ public class FicheDeplacerEmplacements extends FicheTerminale
          }
       }
 
-      // notification
-      // warn terminale not found
-      //		if (scanDTO.getTerminale() == null) {
-      //			Clients.showNotification(ObjectTypesFormatters.getLabel("scan.objects.terminale.notfound.warning",
-      //					new String[] {scanDTO.getScanTerminale().getName(), ObjectTypesFormatters
-      //							.dateRenderer2(scanDTO.getScanTerminale().getDateScan()),
-      //					(getObjectTabController().getListeStockages().getSelectedEnceinte() != null ?
-      //							getObjectTabController().getListeStockages().getSelectedEnceinte().getNom() :
-      //					getObjectTabController().getListeStockages().getSelectedConteneur() != null ?
-      //							getObjectTabController().getListeStockages().getSelectedConteneur().getCode() : "")}),
-      //					"warning", null, null, 4000, true);
-      //
-      //		} else {
+
       Clients.showNotification(
          ObjectTypesFormatters.getLabel("scan.objects.stock.info",
             new String[] {scanDTO.getScanTerminale().getName(),

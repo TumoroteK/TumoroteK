@@ -114,6 +114,10 @@ import fr.aphp.tumorotek.utils.Utils;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
 import fr.aphp.tumorotek.webapp.tree.stockage.TerminaleNode;
 
+import static fr.aphp.tumorotek.TKConstants.ECHANTILLON;
+import static fr.aphp.tumorotek.TKConstants.PRODUIT_DERIVE;
+import static fr.aphp.tumorotek.utils.ConversionUtils.formatToStringValue;
+
 /**
  * Backing bean Fiche détail Terminale.
  *
@@ -929,7 +933,7 @@ public class FicheTerminale extends AbstractFicheCombineStockageController
 									false);
 						}
 					}
-				}else if(empl.getEntite() != null && empl.getObjetId() != null && empl.getEntite().getNom().equals("ProdDerive")){
+				}else if(empl.getEntite() != null && empl.getObjetId() != null && empl.getEntite().getNom().equals(PRODUIT_DERIVE)){
 					final ProdDerive derive = ManagerLocator.getProdDeriveManager().findByIdManager(empl.getObjetId());
 					// on vérifie que l'on retrouve bien la page
 					// contenant la liste
@@ -1172,8 +1176,8 @@ public class FicheTerminale extends AbstractFicheCombineStockageController
 
 		entites = new ArrayList<>();
 		entites.add(null);
-		entites.add(ManagerLocator.getEntiteManager().findByNomManager("Echantillon").get(0));
-		entites.add(ManagerLocator.getEntiteManager().findByNomManager("ProdDerive").get(0));
+		entites.add(ManagerLocator.getEntiteManager().findByNomManager(ECHANTILLON).get(0));
+		entites.add(ManagerLocator.getEntiteManager().findByNomManager(PRODUIT_DERIVE).get(0));
 		selectedEntite = this.terminale.getEntite();
 
 		types = ManagerLocator.getTerminaleTypeManager().findAllObjectsManager();
@@ -1291,7 +1295,7 @@ public class FicheTerminale extends AbstractFicheCombineStockageController
 			final EmplacementDecorator deco = (EmplacementDecorator) img.getAttribute("empDeco");
 
 			if(!deco.getVide()){
-				if(deco.getEmplacement().getEntite().getNom().equals("Echantillon")){
+				if(deco.getEmplacement().getEntite().getNom().equals(ECHANTILLON)){
 					final Echantillon echan = (Echantillon) ManagerLocator.getEntiteManager()
 							.findObjectByEntiteAndIdManager(deco.getEmplacement().getEntite(), deco.getEmplacement().getObjetId());
 
@@ -1309,7 +1313,7 @@ public class FicheTerminale extends AbstractFicheCombineStockageController
 						}
 					}
 
-				}else if(deco.getEmplacement().getEntite().getNom().equals("ProdDerive")){
+				}else if(deco.getEmplacement().getEntite().getNom().equals(PRODUIT_DERIVE)){
 					final ProdDerive derive = (ProdDerive) ManagerLocator.getEntiteManager()
 							.findObjectByEntiteAndIdManager(deco.getEmplacement().getEntite(), deco.getEmplacement().getObjetId());
 
@@ -1398,7 +1402,7 @@ public class FicheTerminale extends AbstractFicheCombineStockageController
 					acces = true;
 				}else{
 					final List<OperationType> operations =
-							ManagerLocator.getDroitObjetManager().getOperationsByProfilEntiteManager(profil, "Echantillon");
+							ManagerLocator.getDroitObjetManager().getOperationsByProfilEntiteManager(profil, ECHANTILLON);
 					final OperationType opeation =
 							ManagerLocator.getOperationTypeManager().findByNomLikeManager("Consultation", true).get(0);
 					if(operations.contains(opeation)){
@@ -1451,7 +1455,7 @@ public class FicheTerminale extends AbstractFicheCombineStockageController
 					acces = true;
 				}else{
 					final List<OperationType> operations =
-							ManagerLocator.getDroitObjetManager().getOperationsByProfilEntiteManager(profil, "ProdDerive");
+							ManagerLocator.getDroitObjetManager().getOperationsByProfilEntiteManager(profil, PRODUIT_DERIVE);
 					final OperationType opeation =
 							ManagerLocator.getOperationTypeManager().findByNomLikeManager("Consultation", true).get(0);
 					if(operations.contains(opeation)){
@@ -1503,12 +1507,12 @@ public class FicheTerminale extends AbstractFicheCombineStockageController
 
 				// retours
 				if(!empDep.getVide()){
-					if(empDep.getEntite().getNom().equals("Echantillon")){
+					if(empDep.getEntite().getNom().equals(ECHANTILLON)){
 						// emplForRetours.put(ManagerLocator.getEchantillonManager().findByIdManager(empDep.getObjetId()), empDep.clone());
 						emplForRetours.add(new OldEmplTrace(ManagerLocator.getEchantillonManager().findByIdManager(empDep.getObjetId()), 
 								ManagerLocator.getEmplacementManager().getAdrlManager(empDep, false), 
 								ManagerLocator.getEmplacementManager().getConteneurManager(empDep), empDep.clone()));
-					}else if(empDep.getEntite().getNom().equals("ProdDerive")){
+					}else if(empDep.getEntite().getNom().equals(PRODUIT_DERIVE)){
 						// emplForRetours.put(ManagerLocator.getProdDeriveManager().findByIdManager(empDep.getObjetId()), empDep.clone());
 						emplForRetours.add(new OldEmplTrace(ManagerLocator.getProdDeriveManager().findByIdManager(empDep.getObjetId()), 
 								ManagerLocator.getEmplacementManager().getAdrlManager(empDep, false), 
@@ -1516,13 +1520,13 @@ public class FicheTerminale extends AbstractFicheCombineStockageController
 					}
 				}
 				if(!empDest.getVide()){
-					if(empDest.getEntite().getNom().equals("Echantillon")){
+					if(empDest.getEntite().getNom().equals(ECHANTILLON)){
 						// emplForRetours.put(ManagerLocator.getEchantillonManager().findByIdManager(empDest.getObjetId()),
 						//   empDest.clone());
 						emplForRetours.add(new OldEmplTrace(ManagerLocator.getEchantillonManager().findByIdManager(empDep.getObjetId()), 
 								ManagerLocator.getEmplacementManager().getAdrlManager(empDest, false), 
 								ManagerLocator.getEmplacementManager().getConteneurManager(empDest), empDest.clone()));
-					}else if(empDest.getEntite().getNom().equals("ProdDerive")){
+					}else if(empDest.getEntite().getNom().equals(PRODUIT_DERIVE)){
 						// emplForRetours.put(ManagerLocator.getProdDeriveManager().findByIdManager(empDest.getObjetId()),
 						//   empDest.clone());
 						emplForRetours.add(new OldEmplTrace(ManagerLocator.getProdDeriveManager().findByIdManager(empDep.getObjetId()), 
@@ -1616,31 +1620,35 @@ public class FicheTerminale extends AbstractFicheCombineStockageController
 					final Row depRow = new Row();
 					final Label code = new Label();
 					code.setValue(decoDep.getCode());
+					depRow.appendChild(code);
+
 					// Colonne Echantillon/Dérivé
 					final Label echantillonDerive = new Label();
 					echantillonDerive.setValue(decoDep.getTypeEntite());
-					// Colonne Type
-					final Label type = new Label();
-					type.setValue(empDep.getEntite().getNom());
+					depRow.appendChild(echantillonDerive);
+
 					// Colonne Ancienne adresse (ADRL source)
 					final Label dep = new Label();
 					dep.setValue(decoDest.getAdrl());
+					depRow.appendChild(dep);
+
 					// Colonne flèche (image)
 					final Image img = new Image();
 					img.setSrc("/images/icones/next.png");
 					img.setHeight("15px");
+					depRow.appendChild(img);
+
 					// Colonne Nouvelle adresse (ADRL destination)
 					final Label dest = new Label();
 					dest.setValue(decoDep.getAdrl());
+					depRow.appendChild(dest);
+
 					// Colonne Date de stockage (date du transfert)
 					final Label dateStockage = new Label();
-					dateStockage.setValue(decoDep.getTkStockObj().getDateStock().toString());
+					dateStockage.setValue(formatToStringValue(decoDep.getTkStockObj().getDateStock()));
+					depRow.appendChild(dateStockage);
 
-					// Ajout des composants à la ligne
-					depRow.appendChild(code);
-					depRow.appendChild(dep);
-					depRow.appendChild(img);
-					depRow.appendChild(dest);
+
 					gridHistorique.getRows().appendChild(depRow);
 				}
 				// Bloc similaire pour l'emplacement de destination
@@ -1648,23 +1656,29 @@ public class FicheTerminale extends AbstractFicheCombineStockageController
 					final Row destRow = new Row();
 					final Label code = new Label();
 					code.setValue(decoDest.getCode());
+					destRow.appendChild(code);
+
 					final Label echantillonDerive = new Label();
 					echantillonDerive.setValue(decoDest.getTypeEntite());
-					final Label type = new Label();
-					type.setValue(empDep.getEntite().getNom());
+					destRow.appendChild(echantillonDerive);
+
 					final Label dep = new Label();
 					dep.setValue(decoDep.getAdrl());
+					destRow.appendChild(dep);
+
 					final Image img = new Image();
 					img.setSrc("/images/icones/next.png");
 					img.setHeight("15px");
+					destRow.appendChild(img);
+
 					final Label dest = new Label();
 					dest.setValue(decoDest.getAdrl());
-					final Label dateStockage = new Label();
-					dateStockage.setValue(decoDep.getTkStockObj().getDateStock().toString());
-					destRow.appendChild(code);
-					destRow.appendChild(dep);
-					destRow.appendChild(img);
 					destRow.appendChild(dest);
+
+					final Label dateStockage = new Label();
+					dateStockage.setValue(formatToStringValue(decoDep.getTkStockObj().getDateStock()));
+					destRow.appendChild(dateStockage);
+
 					gridHistorique.getRows().appendChild(destRow);
 				}
 				getBinder().loadComponent(gridHistorique);
@@ -2032,57 +2046,7 @@ public class FicheTerminale extends AbstractFicheCombineStockageController
 		return div;
 	}
 
-	//	/**
-	//	 * Cette méthode renvoie l'adresse de l'image en fonction du decorator
-	//	 * passé en paramètre.
-	//	 * @param deco Decorator de l'emplacement.
-	//	 * @return Adresse de l'image.
-	//	 */
-	//	public String getImageSrc(EmplacementDecorator deco) {
-	//		StringBuffer sb = new StringBuffer();
-	//
-	//		sb.append(imageSrc);
-	//		
-	//		// si l'image est vide
-	//		if (deco.getVide()) {
-	//			sb.append("VIDE");
-	//		} else {
-	//
-	//			// si l'emplacement contient un échantillon
-	//			if (deco.getEmplacement().getEntite().getNom()
-	//					.equals("Echantillon")) {
-	//				
-	//				if (getMainWindow().getEchantillonTypesCouleur()
-	//						.containsKey(deco.getType())) {
-	//					sb.append(getMainWindow().getEchantillonTypesCouleur()
-	//							.get(deco.getType()));
-	//				} else if (getMainWindow().getSelectedBanque()
-	//						.getEchantillonCouleur() != null) {
-	//					sb.append(getMainWindow().getSelectedBanque()
-	//							.getEchantillonCouleur().getCouleur());
-	//				} else {
-	//					sb.append("VERT");
-	//				}
-	//				
-	//			} else if (deco.getEmplacement().getEntite().getNom()
-	//					.equals("ProdDerive")) {
-	//				// si l'emplacement contient un dérivé
-	//				if (getMainWindow().getProdDeriveTypesCouleur()
-	//						.containsKey(deco.getType())) {
-	//					sb.append(getMainWindow().getProdDeriveTypesCouleur()
-	//							.get(deco.getType()));
-	//				} else if (getMainWindow().getSelectedBanque()
-	//						.getProdDeriveCouleur() != null) {
-	//					sb.append(getMainWindow().getSelectedBanque()
-	//							.getProdDeriveCouleur().getCouleur());
-	//				} else {
-	//					sb.append("VERT");
-	//				}
-	//			}
-	//		}
-	//		sb.append(".png");
-	//		return sb.toString();
-	//	}
+
 
 	/**
 	 * Cette méthode renvoie le style à appliquer à la Div pour dessiner 
@@ -2102,7 +2066,7 @@ public class FicheTerminale extends AbstractFicheCombineStockageController
 		}else{
 
 			// si l'emplacement contient un échantillon
-			if(deco.getEmplacement().getEntite().getNom().equals("Echantillon")){
+			if(deco.getEmplacement().getEntite().getNom().equals(ECHANTILLON)){
 
 				if(getMainWindow().getEchantillonTypesCouleur().containsKey(deco.getType())){
 					sb.append(getMainWindow().getEchantillonTypesCouleur().get(deco.getType()));
@@ -2112,7 +2076,7 @@ public class FicheTerminale extends AbstractFicheCombineStockageController
 					sb.append("VERT");
 				}
 
-			}else if(deco.getEmplacement().getEntite().getNom().equals("ProdDerive")){
+			}else if(deco.getEmplacement().getEntite().getNom().equals(PRODUIT_DERIVE)){
 				// si l'emplacement contient un dérivé
 				if(getMainWindow().getProdDeriveTypesCouleur().containsKey(deco.getType())){
 					sb.append(getMainWindow().getProdDeriveTypesCouleur().get(deco.getType()));
@@ -2128,75 +2092,6 @@ public class FicheTerminale extends AbstractFicheCombineStockageController
 		return "background: transparent url('" + Executions.getCurrent().encodeURL(sb.toString()) + "');";
 	}
 
-	//	/**
-	//	 * Cette méthode renvoie l'adresse de l'image en fonction du decorator passé
-	//	 * en paramètre.
-	//	 * 
-	//	 * @param deco
-	//	 *            Decorator de l'emplacement.
-	//	 * @return Adresse de l'image.
-	//	 */
-	//	public String getImageSrc(EmplacementDecorator deco) {
-	//
-	//		// recupere le code du produit selectionne
-	//		String[] split = deco.getLibelle().split(" : ");
-	//		String currentObj = null;
-	//		if (getCurrentSelection() != null) {
-	//			if (split.length > 1
-	//					&& split[1].equals(getCurrentSelection().getCode())) {
-	//				currentObj = split[1];
-	//			}
-	//		}
-	//
-	//		StringBuffer sb = new StringBuffer();
-	//
-	//		if (currentObj != null) {
-	//			sb.append("/images/icones/emplacements/emplacementROUGE-Fond");
-	//			currentObj = null;
-	//		} else {
-	//			sb.append(imageSrc);
-	//
-	//			// si l'image est vide
-	//			if (deco.getVide()) {
-	//				sb.append("VIDE");
-	//			} else {
-	//				// si l'emplacement contient un échantillon
-	//				if (deco.getEmplacement().getEntite().getNom()
-	//						.equals("Echantillon")) {
-	//
-	//					if (getMainWindow().getEchantillonTypesCouleur()
-	//							.containsKey(deco.getType())) {
-	//						sb.append(getMainWindow().getEchantillonTypesCouleur()
-	//								.get(deco.getType()));
-	//					} else if (getMainWindow().getSelectedBanque()
-	//							.getEchantillonCouleur() != null) {
-	//						sb.append(getMainWindow().getSelectedBanque()
-	//								.getEchantillonCouleur().getCouleur());
-	//					} else {
-	//						sb.append("VERT");
-	//					}
-	//
-	//				} else if (deco.getEmplacement().getEntite().getNom()
-	//						.equals("ProdDerive")) {
-	//					// si l'emplacement contient un dérivé
-	//					if (getMainWindow().getProdDeriveTypesCouleur()
-	//							.containsKey(deco.getType())) {
-	//						sb.append(getMainWindow().getProdDeriveTypesCouleur()
-	//								.get(deco.getType()));
-	//					} else if (getMainWindow().getSelectedBanque()
-	//							.getProdDeriveCouleur() != null) {
-	//						sb.append(getMainWindow().getSelectedBanque()
-	//								.getProdDeriveCouleur().getCouleur());
-	//					} else {
-	//						sb.append("VERT");
-	//					}
-	//				}
-	//
-	//			}
-	//		}
-	//		sb.append(".png");
-	//		return sb.toString();
-	//	}
 
 	/**
 	 * Rend les boutons d'actions cliquables ou non.
@@ -2207,14 +2102,14 @@ public class FicheTerminale extends AbstractFicheCombineStockageController
       //gestion des boutons dont l'affichage est exclusivement lié aux droits (ça ne change pas en fonction de la navigation)
 		//Menu Sélections :
       if(afficherEchantillons != null){
-         if(getDroitOnAction("Echantillon", "Consultation")){
+         if(getDroitOnAction(ECHANTILLON, "Consultation")){
             afficherEchantillons.setDisabled(false);
          }else{
             afficherEchantillons.setDisabled(true);
          }
       }
       if(afficherDerives != null){
-         if(getDroitOnAction("ProdDerive", "Consultation")){
+         if(getDroitOnAction(PRODUIT_DERIVE, "Consultation")){
             afficherDerives.setDisabled(false);
          }else{
             afficherDerives.setDisabled(true);

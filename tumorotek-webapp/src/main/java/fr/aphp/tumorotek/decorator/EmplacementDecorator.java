@@ -43,6 +43,8 @@ import fr.aphp.tumorotek.model.coeur.ObjetStatut;
 import fr.aphp.tumorotek.model.stockage.Emplacement;
 import fr.aphp.tumorotek.model.stockage.Terminale;
 
+import static fr.aphp.tumorotek.utils.ConversionUtils.formatToStringValue;
+
 /**
  * Classe permettant de décorer un Emplacement.
  * @author Pierre Ventadour.
@@ -117,6 +119,19 @@ public class EmplacementDecorator
 
    }
 
+   /**
+    * Retourne la date de stockage formatée sous forme de chaîne de caractères.
+    *
+    * @return Une chaîne représentant la date de stockage formatée,
+    *         ou une chaîne vide si l'objet qui extends TKStockableObject est null.
+    */
+   public String getFormattedDateStockage(){
+      if (getTkStockObj() == null) {
+         return "";
+      }
+      return formatToStringValue(getTkStockObj().getDateStock());
+   }
+
    public Emplacement getEmplacement(){
       return emplacement;
    }
@@ -133,18 +148,7 @@ public class EmplacementDecorator
       this.vide = v;
    }
 
-   //	public Echantillon getEchantillon() {
-   //		return echantillon;
-   //	}
-   //	public void setEchantillon(Echantillon e) {
-   //		this.echantillon = e;
-   //	}
-   //	public ProdDerive getProdDerive() {
-   //		return prodDerive;
-   //	}
-   //	public void setProdDerive(ProdDerive p) {
-   //		this.prodDerive = p;
-   //	}
+
    public Integer getPosition(){
       return position;
    }
