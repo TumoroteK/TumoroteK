@@ -100,6 +100,18 @@ public class EmplacementDecorator
    }
 
    /**
+    * Retourne la date de stockage formatée sous forme de chaîne de caractères.
+    *
+    * @return Une chaîne représentant la date de stockage formatée,
+    *         ou une chaîne vide si l'objet qui extends TKStockableObject est null.
+    */
+   public String getFormattedDateStockage(){
+      if (getTkStockObj() == null) {
+         return "";
+      }
+      return ObjectTypesFormatters.dateRenderer2(getTkStockObj().getDateStock());
+   }
+   /**
     * Méthode générant le libellé à afficher sur un emplacement.
     */
    public void generateLibelle(final String adrlTerminale, final Terminale t){

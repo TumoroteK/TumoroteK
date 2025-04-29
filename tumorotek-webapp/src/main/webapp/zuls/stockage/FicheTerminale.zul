@@ -361,13 +361,16 @@
 					<row spans="4" id="rowHistorique" visible="false" align="center">
 						<grid sclass="gridListStyle"
 							fixedLayout="true"
-							id="gridHistorique" 
-							width="520px">
-							<columns sizable="true">
-								<column label="${c:l('terminale.historique.code')}" width="150px"/>
-								<column label="${c:l('terminale.historique.oldAdresse')}" width="160px"/>
+							id="gridHistorique"
+							  width="100%">
+							<columns sizable="true" menupopup="auto">
+								<column label="${c:l('terminale.historique.code')}" />
+								<column label="${c:l('terminale.historique.echantillonDerive')}"/>
+								<column label="${c:l('terminale.historique.type')}"/>
+								<column label="${c:l('terminale.historique.dateStockage')}" visible="false"/>
+								<column label="${c:l('terminale.historique.oldAdresse')}" />
 								<column width="30px" align="center"/>
-								<column label="${c:l('terminale.historique.newAdresse')}" width="160px"/>
+								<column label="${c:l('terminale.historique.newAdresse')}" />
 							</columns>
 							<rows>
 							</rows>

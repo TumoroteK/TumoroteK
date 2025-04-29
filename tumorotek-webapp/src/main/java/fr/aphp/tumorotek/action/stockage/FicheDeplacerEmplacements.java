@@ -515,6 +515,8 @@ public class FicheDeplacerEmplacements extends FicheTerminale
                final EmplacementDecorator deco = new EmplacementDecorator(new Emplacement());
                deco.setAdrl("--");
                deco.setCode(echans.get(i).getCode());
+               deco.setTkStockObj(echans.get(i));
+               deco.setType(echans.get(i).getType().getNom());
                final Entite e = ManagerLocator.getEntiteManager().findByNomManager(typeEntite).get(0);
                deco.getEmplacement().setEntite(e);
                deco.getEmplacement().setObjetId(echans.get(i).getEchantillonId());
@@ -533,6 +535,8 @@ public class FicheDeplacerEmplacements extends FicheTerminale
                final EmplacementDecorator deco = new EmplacementDecorator(new Emplacement());
                deco.setAdrl("--");
                deco.setCode(der.get(i).getCode());
+               deco.setTkStockObj(der.get(i));
+               deco.setType(der.get(i).getType().getNom());
                final Entite e = ManagerLocator.getEntiteManager().findByNomManager(typeEntite).get(0);
                deco.getEmplacement().setEntite(e);
                deco.getEmplacement().setObjetId(der.get(i).getProdDeriveId());

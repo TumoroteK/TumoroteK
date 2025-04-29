@@ -1607,6 +1607,12 @@ public class FicheTerminale extends AbstractFicheCombineStockageController
 					final Row depRow = new Row();
 					final Label code = new Label();
 					code.setValue(decoDep.getCode());
+					final Label echantillonDerive = new Label();
+					echantillonDerive.setValue(decoDep.getTypeEntite());
+					final Label type = new Label();
+					type.setValue(decoDep.getType());
+					final Label dateStockage = new Label();
+					dateStockage.setValue(ObjectTypesFormatters.dateRenderer2(decoDep.getTkStockObj().getDateStock()));
 					final Label dep = new Label();
 					dep.setValue(decoDest.getAdrl());
 					final Image img = new Image();
@@ -1615,6 +1621,9 @@ public class FicheTerminale extends AbstractFicheCombineStockageController
 					final Label dest = new Label();
 					dest.setValue(decoDep.getAdrl());
 					depRow.appendChild(code);
+					depRow.appendChild(echantillonDerive);
+					depRow.appendChild(type);
+					depRow.appendChild(dateStockage);
 					depRow.appendChild(dep);
 					depRow.appendChild(img);
 					depRow.appendChild(dest);
@@ -1625,6 +1634,12 @@ public class FicheTerminale extends AbstractFicheCombineStockageController
 					final Row destRow = new Row();
 					final Label code = new Label();
 					code.setValue(decoDest.getCode());
+					final Label echantillonDerive = new Label();
+					echantillonDerive.setValue(decoDest.getTypeEntite());
+					final Label type = new Label();
+					type.setValue(decoDest.getType());
+					final Label dateStockage = new Label();
+					dateStockage.setValue(ObjectTypesFormatters.dateRenderer2(decoDep.getTkStockObj().getDateStock()));
 					final Label dep = new Label();
 					dep.setValue(decoDep.getAdrl());
 					final Image img = new Image();
@@ -1633,6 +1648,9 @@ public class FicheTerminale extends AbstractFicheCombineStockageController
 					final Label dest = new Label();
 					dest.setValue(decoDest.getAdrl());
 					destRow.appendChild(code);
+					destRow.appendChild(echantillonDerive);
+					destRow.appendChild(type);
+					destRow.appendChild(dateStockage);
 					destRow.appendChild(dep);
 					destRow.appendChild(img);
 					destRow.appendChild(dest);
