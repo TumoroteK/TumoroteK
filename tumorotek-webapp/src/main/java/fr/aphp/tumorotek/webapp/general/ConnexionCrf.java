@@ -30,6 +30,9 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
 import fr.aphp.tumorotek.param.TkParam;
 import fr.aphp.tumorotek.param.TumorotekProperties;
 
+//Code spécifique pour l'instance MELBASE qui est intégrée dans un portail d'application (AP-HP Saint-Louis).
+//A noter que l'instance MELBASE n'est pas supportée par SESAN (doit disparaître).
+//Le code est conservé, pour le moment, et adpaté "mécaniquement" mais non testé.
 @SuppressWarnings("deprecation")
 public class ConnexionCrf extends GenericForwardComposer<Component>
 {
