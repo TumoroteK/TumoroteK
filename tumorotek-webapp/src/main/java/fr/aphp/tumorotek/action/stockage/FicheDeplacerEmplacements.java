@@ -312,9 +312,7 @@ public class FicheDeplacerEmplacements extends FicheTerminale
       // creation de EmplacementDecorator
       EmplacementDecorator emplacementDecorator = new EmplacementDecorator(emplacement);
       emplacementDecorator.setTkStockObj(tkStockableObject);
-      emplacementDecorator.setCode(tkStockableObject.getCode());
       emplacementDecorator.setEmplacementDepart(true);
-      emplacementDecorator.setType(tkStockableObject.getType().getNom());
       emplacementDecorator.setTerminale(emplacement.getTerminale());
       emplacementDecorator.setAdrl(ManagerLocator.getEmplacementManager().getAdrlManager(emplacement, false));
       // ajouter au deplacements
