@@ -103,7 +103,7 @@ public class PatientHandler
    }
 
    /**
-    * Cree un patient dans la base temporaire.
+    * Cree un patient dans la base temporaire pour les messages de type différent de hl7.
     * @param body SipMessage
     */
    public void handleCreation(final SipMessage body){
