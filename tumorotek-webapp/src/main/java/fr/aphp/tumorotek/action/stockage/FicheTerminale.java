@@ -611,7 +611,7 @@ public class FicheTerminale extends AbstractFicheCombineStockageController
 	/**
 	 * Change mode de la fiche en mode déplacement.
 	 */
-	public void switchToContenuMode(){
+	public void switchToContenuMode(){ 
 		gridHistorique.getRows().getChildren().clear();
 
 		for(int i = 0; i < objDeplacementComponents.length; i++){
@@ -1470,6 +1470,8 @@ public class FicheTerminale extends AbstractFicheCombineStockageController
 	 * @param e
 	 * @version 2.0.13
 	 */
+	//TK-642 : les objets "stockables" (échantillon ou dérivé) des emplacementDecorator ont été valorisés par la méthode initEmplacements()
+	//=> il suffit de faire des get sur les décorators pour récupérer les valeurs associées au matériel stocké (type, date de stockage...).
 	public void onDropImage(final DropEvent e){
 		e.getTarget();
 		if(e.getTarget() != null){
@@ -1540,6 +1542,8 @@ public class FicheTerminale extends AbstractFicheCombineStockageController
 				final Integer posDep = decoDep.getPosition();
 				final Integer posDest = decoDest.getPosition();
 
+				//valorisation de la position de DESTINATION pour les 2 emplacementDecortor concernés par le déplacement
+				//et calcul de la nouvelle adrl par appel de la méthode generateLibelle() :
 				decoDep.setPosition(posDest);
 				decoDep.generateLibelle(adrlTerminale, terminale);
 				decoDest.setPosition(posDep);
@@ -1614,6 +1618,9 @@ public class FicheTerminale extends AbstractFicheCombineStockageController
 					final Label dateStockage = new Label();
 					dateStockage.setValue(ObjectTypesFormatters.dateRenderer2(decoDep.getTkStockObj().getDateStock()));
 					final Label dep = new Label();
+					//decoDep est valorisé avec sa position cible (cf plus haut). Par conséquent, la récupération de sa position d'origine
+					//se fait avec l'autre decorator concerné par le déplacement (decoDest) qui est lui également valorisé avec sa position cible
+					//qui est la position d'origine de decoDep
 					dep.setValue(decoDest.getAdrl());
 					final Image img = new Image();
 					img.setSrc("/images/icones/next.png");
@@ -1639,8 +1646,11 @@ public class FicheTerminale extends AbstractFicheCombineStockageController
 					final Label type = new Label();
 					type.setValue(decoDest.getType());
 					final Label dateStockage = new Label();
-					dateStockage.setValue(ObjectTypesFormatters.dateRenderer2(decoDep.getTkStockObj().getDateStock()));
+					dateStockage.setValue(ObjectTypesFormatters.dateRenderer2(decoDest.getTkStockObj().getDateStock()));
 					final Label dep = new Label();
+	            //decoDest est valorisé avec sa position cible (cf plus haut). Par conséquent, la récupération de sa position d'origine
+               //se fait avec l'autre decorator concerné par le déplacement (decoDep) qui est lui également valorisé avec sa position cible
+               //qui est la position d'origine de decoDest
 					dep.setValue(decoDep.getAdrl());
 					final Image img = new Image();
 					img.setSrc("/images/icones/next.png");

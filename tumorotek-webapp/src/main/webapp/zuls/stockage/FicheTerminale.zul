@@ -365,9 +365,9 @@
 							  width="100%">
 							<columns sizable="true" menupopup="auto">
 								<column label="${c:l('terminale.historique.code')}" />
-								<column label="${c:l('terminale.historique.echantillonDerive')}"/>
+								<column label="${c:l('terminale.historique.echantillonDerive')}" width="90px" />
 								<column label="${c:l('terminale.historique.type')}"/>
-								<column label="${c:l('terminale.historique.dateStockage')}" visible="false"/>
+								<column label="${c:l('terminale.historique.dateStockage')}" width="110px" visible="false"/>
 								<column label="${c:l('terminale.historique.oldAdresse')}" />
 								<column width="30px" align="center"/>
 								<column label="${c:l('terminale.historique.newAdresse')}" />

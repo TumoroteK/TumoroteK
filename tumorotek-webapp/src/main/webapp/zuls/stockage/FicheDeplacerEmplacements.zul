@@ -178,9 +178,9 @@
 								model="@{fwinDeplacerEmplacements$composer.deplacements}">
 								<columns sizable="true" menupopup="auto">
 									<column label="${c:l('terminale.historique.code')}"/>
-									<column label="${c:l('terminale.historique.echantillonDerive')}" />
+									<column label="${c:l('terminale.historique.echantillonDerive')}" width="90px" />
 									<column label="${c:l('terminale.historique.type')}"/>
-									<column label="${c:l('terminale.historique.dateStockage')}" visible="false"/>
+									<column label="${c:l('terminale.historique.dateStockage')}" width="110px" visible="false"/>
 									<column label="${c:l('terminale.historique.oldAdresse')}" id="oldAdresseColonne"/>
 									<column width="30px" align="center" id="flecheColonne"/>
 									<column label="${c:l('terminale.historique.newAdresse')}" id="newAdresseColonne"/>

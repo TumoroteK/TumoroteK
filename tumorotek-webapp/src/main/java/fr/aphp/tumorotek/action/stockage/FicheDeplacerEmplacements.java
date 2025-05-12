@@ -86,6 +86,7 @@ import fr.aphp.tumorotek.manager.impl.coeur.cession.OldEmplTrace;
 import fr.aphp.tumorotek.manager.impl.xml.BoiteImpression;
 import fr.aphp.tumorotek.manager.interfacage.scan.TKScanTerminaleDTO;
 import fr.aphp.tumorotek.model.TKStockableObject;
+import fr.aphp.tumorotek.model.TKThesaurusObject;
 import fr.aphp.tumorotek.model.TKdataObject;
 import fr.aphp.tumorotek.model.coeur.ObjetStatut;
 import fr.aphp.tumorotek.model.coeur.echantillon.Echantillon;
@@ -504,6 +505,7 @@ public class FicheDeplacerEmplacements extends FicheTerminale
       deplacementsRestants = new ArrayList<>();
       emplacementDepart = new ArrayList<>();
       deplacements = new ArrayList<>();
+      //TODO TK-687 : mutualiser le code pour gérer les échantillons et les dérivés avec la même méthode
       // si l'on souhaite stocker des échantillons
       if(echans != null){
          echantillons = new ArrayList<>();
@@ -514,9 +516,10 @@ public class FicheDeplacerEmplacements extends FicheTerminale
                echantillons.add(echans.get(i));
                final EmplacementDecorator deco = new EmplacementDecorator(new Emplacement());
                deco.setAdrl("--");
-               deco.setCode(echans.get(i).getCode());
+               //TK-642 : les informations liées à l'échantillon (type et date de stockage) seront récupérées de l'échantillon rattaché 
+               //=> pour être cohérent, le code sera également récupéré de l'objet
+               //deco.setCode(echans.get(i).getCode());
                deco.setTkStockObj(echans.get(i));
-               deco.setType(echans.get(i).getType().getNom());
                final Entite e = ManagerLocator.getEntiteManager().findByNomManager(typeEntite).get(0);
                deco.getEmplacement().setEntite(e);
                deco.getEmplacement().setObjetId(echans.get(i).getEchantillonId());
@@ -534,9 +537,9 @@ public class FicheDeplacerEmplacements extends FicheTerminale
                derives.add(der.get(i));
                final EmplacementDecorator deco = new EmplacementDecorator(new Emplacement());
                deco.setAdrl("--");
-               deco.setCode(der.get(i).getCode());
+               //TK-642 : les informations liées au dérivé seront récupérées du dérivé rattaché 
+               //deco.setCode(der.get(i).getCode());
                deco.setTkStockObj(der.get(i));
-               deco.setType(der.get(i).getType().getNom());
                final Entite e = ManagerLocator.getEntiteManager().findByNomManager(typeEntite).get(0);
                deco.getEmplacement().setEntite(e);
                deco.getEmplacement().setObjetId(der.get(i).getProdDeriveId());
