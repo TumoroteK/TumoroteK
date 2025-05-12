@@ -48,6 +48,7 @@ import fr.aphp.tumorotek.model.stockage.Terminale;
  * @author Pierre Ventadour.
  *
  */
+//TODO TK-686 : revoir l'initialisation des champs
 public class EmplacementDecorator
 {
 
@@ -99,6 +100,20 @@ public class EmplacementDecorator
       }
    }
 
+   /**
+    * Retourne la date de stockage formatée sous forme de chaîne de caractères.
+    *
+    * @return Une chaîne représentant la date de stockage formatée,
+    *         ou null si l'objet "TKStockableObject" est null ou que sa date de stockage est nulle.
+    */
+   public String getFormattedDateStockage(){
+      if (getTkStockObj() != null) {
+         return ObjectTypesFormatters.dateRenderer2(getTkStockObj().getDateStock());
+      }
+      
+      return null;
+      
+   }
    /**
     * Méthode générant le libellé à afficher sur un emplacement.
     */
@@ -161,7 +176,14 @@ public class EmplacementDecorator
       this.libelle = l;
    }
 
+   //TK-642 : selon les cas, le code est alimenté directement par la méthode setCode ou implicitement par le passage 
+   //de l'objet (Echantillon ou  dérivé) complet via la méthode  setTkStockObj()
    public String getCode(){
+      if(code == null || code.equals("")) {
+         if(tkStockObj != null) {
+            return tkStockObj.getCode();
+         }
+      }
       return code;
    }
 
@@ -256,7 +278,15 @@ public class EmplacementDecorator
       return Labels.getLabel(new StringBuilder("Entite.").append(getEmplacement().getEntite().getNom()).toString());
    }
    
+   //TK-642 : selon les cas, le type est alimenté directement par la méthode setType ou implicitement par le passage 
+   //de l'objet (Echantillon ou  dérivé) complet via la méthode setTkStockObj()
    public String getType(){
+      if(type == null || type.equals("")) {
+         if(tkStockObj != null && tkStockObj.getType() != null) {
+            return tkStockObj.getType().getNom();
+         }
+      }
+
       return type;
    }
 
