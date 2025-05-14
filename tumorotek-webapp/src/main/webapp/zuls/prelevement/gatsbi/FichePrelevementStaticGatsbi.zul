@@ -528,7 +528,7 @@
 
 							<!--				Derives-->
 				<groupbox  id="groupDerives">
-				<caption label="@{fwinPrelevementStatic$composer.totalProdDerivesHeader}"  />
+				<caption label="@{fwinPrelevementStatic$composer.totalProdDerivesGroupHeader}"  />
 					<!--selectionner tous les derives-->
 					<div class="item item-wide">
 						<vbox align="center" hflex="1" vflex="1"  id="selectAllDerivesVbox">

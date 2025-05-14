@@ -46,6 +46,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import fr.aphp.tumorotek.utils.TimeAndDateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.apache.commons.lang3.StringUtils;
@@ -229,6 +230,7 @@ public class FichePrelevementEdit extends AbstractFicheEditController
 
    protected Div refPatientDiv;
 
+
    //protected Boolean banqueOrgane;
    // boolean conditionnant l'affichage dans le group Patient
    protected boolean maladieEmbedded = false;
@@ -265,6 +267,7 @@ public class FichePrelevementEdit extends AbstractFicheEditController
    public void doAfterCompose(final Component comp) throws Exception{
       super.doAfterCompose(comp);
 
+
       // Initialisation du mode (listes, valeurs...)
       initLists();
 
@@ -278,6 +281,7 @@ public class FichePrelevementEdit extends AbstractFicheEditController
 
       // gatsbi overrides
       resumePatient = initResumePatient();
+
    }
 
    // gatsbi surcharge cette méthode
@@ -329,6 +333,9 @@ public class FichePrelevementEdit extends AbstractFicheEditController
 
    @Override
    public void switchToEditMode(){
+
+      getObjectTabController().setPreviousPrelevementDate(datePrelCalBox.getValue());
+
       super.switchToEditMode();
 
       if(getMaladie() != null){
@@ -854,6 +861,7 @@ public class FichePrelevementEdit extends AbstractFicheEditController
       // valide les dates donc
       validateAllDateComps();
 
+
       super.onClick$validate();
    }
 
@@ -877,6 +885,7 @@ public class FichePrelevementEdit extends AbstractFicheEditController
          return false;
       }
    }
+
 
    @Override
    public void onClick$revert(){
@@ -935,6 +944,8 @@ public class FichePrelevementEdit extends AbstractFicheEditController
          getObject().getRisques().clear();
          getObject().getRisques().addAll(findSelectedRisques());
 
+
+
          //Update de l'objet
          ManagerLocator.getPrelevementManager().updateObjectManager(prelevement,
             GatsbiController.enrichesBanqueWithEtudeContextes(prelevement.getBanque(), sessionScope), selectedNature, maladie,
@@ -943,6 +954,15 @@ public class FichePrelevementEdit extends AbstractFicheEditController
             getObjectTabController().getFicheAnnotation().getValeursToCreateOrUpdate(),
             getObjectTabController().getFicheAnnotation().getValeursToDelete(), filesCreated, filesToDelete,
             SessionUtils.getLoggedUser(sessionScope), cascadeNonSterile, true, SessionUtils.getSystemBaseDir(), false);
+
+         // TK-427: Mettre à jour le délai de congélation des échantillons
+         Calendar previousPrelevementDate = getObjectTabController().getPreviousPrelevementDate();
+         // Si la date de prélèvement précédente est nulle ou la date de prélèvement actuelle n'est pas valide,
+         // ou si elles ne sont pas égales,
+         if (previousPrelevementDate == null || TimeAndDateUtils.isDateAndTimeValid(prelevement.getDatePrelevement()) ||
+                                             !previousPrelevementDate.equals(prelevement.getDatePrelevement())) {
+            getObjectTabController().miseAJourDelaiCongelation(prelevement);
+         }
 
          getObjectTabController().handleExtCom(null, getObject(), getObjectTabController());
 
@@ -957,6 +977,7 @@ public class FichePrelevementEdit extends AbstractFicheEditController
          throw (re);
       }
    }
+
 
    protected Set<Risque> findSelectedRisques(){
       final Set<Risque> rs = new HashSet<>();
@@ -1304,7 +1325,6 @@ public class FichePrelevementEdit extends AbstractFicheEditController
     * codeBoxPrlvt. Cette valeur sera mise en majuscules.
     */
    public void onBlur$codeBoxPrlvt(){
-
       codeBoxPrlvt.setValue(codeBoxPrlvt.getValue().toUpperCase().trim());
 
       //On ne contrôle le code que s'il s'agit d'un nouveau prélèvement ou si le code a été modifié
@@ -1537,6 +1557,7 @@ public class FichePrelevementEdit extends AbstractFicheEditController
    public ConditMilieu getSelectedConditMilieu(){
       return selectedConditMilieu;
    }
+
 
    public void setSelectedConditMilieu(final ConditMilieu selected){
       this.selectedConditMilieu = selected;

@@ -46,6 +46,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import fr.aphp.tumorotek.utils.MessagesUtils;
+import fr.aphp.tumorotek.utils.TimeAndDateUtils;
 import org.springframework.validation.Errors;
 import org.zkoss.util.media.Media;
 import org.zkoss.util.resource.Labels;
@@ -98,7 +100,6 @@ import fr.aphp.tumorotek.model.coeur.echantillon.EchantillonType;
 import fr.aphp.tumorotek.model.coeur.echantillon.ModePrepa;
 import fr.aphp.tumorotek.model.coeur.prelevement.LaboInter;
 import fr.aphp.tumorotek.model.coeur.prelevement.Prelevement;
-import fr.aphp.tumorotek.model.coeur.prodderive.ProdDerive;
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.contexte.Collaborateur;
 import fr.aphp.tumorotek.model.contexte.EContexte;
@@ -234,6 +235,9 @@ public class FicheEchantillonEdit extends AbstractFicheEditController
 
    private Integer minDelai = null;
 
+   private boolean isDelayManuallyUpdated;
+
+
    protected String codePrefixe = "";
 
    // private String codeSuffixe = "";
@@ -250,6 +254,7 @@ public class FicheEchantillonEdit extends AbstractFicheEditController
    protected Float quantite;
 
    protected Float quantiteInit;
+
 
    @Override
    public void doAfterCompose(final Component comp) throws Exception{
@@ -399,6 +404,7 @@ public class FicheEchantillonEdit extends AbstractFicheEditController
 
    @Override
    public void updateObject(){
+
 
       // création du code échantillon en fct de celui du prlvt et
       // de celui saisi
@@ -871,9 +877,19 @@ public class FicheEchantillonEdit extends AbstractFicheEditController
    }
 
    /**
-    * Méthode initialisant le champs de formulaire pour le délai de congélation.
+    * Méthode initialisant les champs de formulaire pour le délai de congélation.
     */
    public void initDelaiCgl(){
+
+      long delaiCongelationCalculated = ManagerLocator.getEchantillonManager().calculDelaiStockage(echantillon, getParentObject());
+      float delaiInMinutes = TimeAndDateUtils.convertMillisecondsToMinutes(delaiCongelationCalculated);
+      Float delaiCongelFromEchantillon = echantillon.getDelaiCgl();
+
+      // Comparaison entre le délai calculé et le délai actuel de l'échantillon.
+      if (delaiCongelFromEchantillon != null && !delaiCongelFromEchantillon.equals(delaiInMinutes)) {
+         // Le délai a été modifié manuellement
+         isDelayManuallyUpdated = true;
+      }
 
       if(this.echantillon.getDelaiCgl() != null && this.echantillon.getDelaiCgl() < 0){
          this.echantillon.setDelaiCgl(null);
@@ -1537,6 +1553,7 @@ public class FicheEchantillonEdit extends AbstractFicheEditController
     * Applique la validation sur la date.
     */
    public void onBlur$dateStockCalBox(){
+      // Récupération de la boîte de date (Datebox) à partir de la première et de la deuxième enfant de dateStockCalBox.
       final Datebox box = (Datebox) dateStockCalBox.getFirstChild().getFirstChild();
       boolean badDateFormat = false;
       if(box.getErrorMessage() != null && box.getErrorMessage().contains(box.getFormat())){
@@ -1553,7 +1570,25 @@ public class FicheEchantillonEdit extends AbstractFicheEditController
          validateCoherenceDate(dateStockCalBox, dateStockCalBox.getValue());
          // }
          echantillon.setDateStock(dateStockCalBox.getValue());
-         calculDelaiCgl();
+         // TK-427: demande de confirmation de l'utilisateur pour éviter d'écraser
+         // un délai de congélation renseigné manuellement.
+         if(isDelayManuallyUpdated){
+            // Ouverture d'une boîte de dialogue pour confirmer l'action.
+            String title = Labels.getLabel("message.title.maj.delaicongelation");
+            String message = Labels.getLabel("message.maj.delaicgl.echantillon");
+            boolean isUserAccepted = MessagesUtils.openQuestionModal(title, message);
+
+            // Si la réponse est "oui", on recalcule la valeur et on remplit les champs. si "non" on ne fait rien
+            if(isUserAccepted){
+               calculDelaiCgl();
+               isDelayManuallyUpdated = false;
+            }
+          // Le délai est calculé, on ne demande pas la confirmation de l'utilisateur
+         } else {
+            calculDelaiCgl();
+            isDelayManuallyUpdated = false;
+         }
+
          dateStockCalBox.setHasChanged(true);
       }else{
          throw new WrongValueException(dateStockCalBox, Labels.getLabel("validation.invalid.date"));
@@ -1811,7 +1846,7 @@ public class FicheEchantillonEdit extends AbstractFicheEditController
     */
    @Override
    public void onClick$validate(){
-      onBlur$dateStockCalBox();
+//      onBlur$dateStockCalBox();
       Clients.showBusy(Labels.getLabel(getWaitLabel()));
       Events.echoEvent("onLaterUpdate", self, null);
    }
