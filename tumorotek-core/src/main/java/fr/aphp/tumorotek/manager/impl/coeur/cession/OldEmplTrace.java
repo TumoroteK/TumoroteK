@@ -15,6 +15,9 @@ import fr.aphp.tumorotek.model.stockage.Emplacement;
  * @author Mathieu BARTHELEMY
  * @version 2.2.3-genno
  */
+///!\ cette classe est mal nommée ainsi que ces attributs. En effet, l'objet contient les éléments adresse, conteneur et emplacement
+//d'un objet à l'instant t. Il ne devrait donc pas y avoir de notion de Old et de current...
+//Si lors de l'instanciation, l'objet correspond à un emplacement qui va changer c'est l'instance qui doit s'appeler old mais pas la classe
 public class OldEmplTrace
 {
 
