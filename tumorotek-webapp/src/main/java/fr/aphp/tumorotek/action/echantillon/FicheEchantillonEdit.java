@@ -46,8 +46,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import fr.aphp.tumorotek.utils.MessagesUtils;
-import fr.aphp.tumorotek.utils.TimeAndDateUtils;
 import org.springframework.validation.Errors;
 import org.zkoss.util.media.Media;
 import org.zkoss.util.resource.Labels;
@@ -89,8 +87,10 @@ import fr.aphp.tumorotek.action.utils.PrelevementUtils;
 import fr.aphp.tumorotek.component.CalendarBox;
 import fr.aphp.tumorotek.component.SmallObjDecorator;
 import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
+import fr.aphp.tumorotek.manager.coeur.echantillon.ECasMajDelaiCongelFromEchantillon;
 import fr.aphp.tumorotek.manager.coeur.echantillon.EchantillonManager;
 import fr.aphp.tumorotek.manager.exception.DoublonFoundException;
+import fr.aphp.tumorotek.manager.impl.coeur.echantillon.ModaleMajDelaiCongelationConstants;
 import fr.aphp.tumorotek.model.TKdataObject;
 import fr.aphp.tumorotek.model.code.CodeAssigne;
 import fr.aphp.tumorotek.model.coeur.ObjetStatut;
@@ -110,6 +110,8 @@ import fr.aphp.tumorotek.model.stockage.Emplacement;
 import fr.aphp.tumorotek.model.systeme.Entite;
 import fr.aphp.tumorotek.model.systeme.Fichier;
 import fr.aphp.tumorotek.model.systeme.Unite;
+import fr.aphp.tumorotek.utils.MessagesUtils;
+import fr.aphp.tumorotek.utils.TKDateUtils;
 import fr.aphp.tumorotek.webapp.gatsbi.GatsbiController;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
@@ -235,12 +237,13 @@ public class FicheEchantillonEdit extends AbstractFicheEditController
 
    private Integer minDelai = null;
 
-   private boolean isDelayManuallyUpdated;
-
+   //TK-427 : e délai de congélation est calculé (date de stockage - date de prélèvement) mais cette valeur peut être modifiée par l'utilisateur
+   //la modification de la date de stockage peut donc avoir un impact différent selon les cas avant modification
+   //casMajDelaiCongel permet de stocker le cas à l'ouverture de l'écran.
+   private ECasMajDelaiCongelFromEchantillon casMajDelaiCongel;
 
    protected String codePrefixe = "";
 
-   // private String codeSuffixe = "";
    private String emplacementAdrl = "";
 
    private List<CodeAssigne> codesToCreateOrEdit = new ArrayList<>();
@@ -254,7 +257,6 @@ public class FicheEchantillonEdit extends AbstractFicheEditController
    protected Float quantite;
 
    protected Float quantiteInit;
-
 
    @Override
    public void doAfterCompose(final Component comp) throws Exception{
@@ -404,7 +406,6 @@ public class FicheEchantillonEdit extends AbstractFicheEditController
 
    @Override
    public void updateObject(){
-
 
       // création du code échantillon en fct de celui du prlvt et
       // de celui saisi
@@ -880,32 +881,51 @@ public class FicheEchantillonEdit extends AbstractFicheEditController
     * Méthode initialisant les champs de formulaire pour le délai de congélation.
     */
    public void initDelaiCgl(){
-
-      long delaiCongelationCalculated = ManagerLocator.getEchantillonManager().calculDelaiStockage(echantillon, getParentObject());
-      float delaiInMinutes = TimeAndDateUtils.convertMillisecondsToMinutes(delaiCongelationCalculated);
-      Float delaiCongelFromEchantillon = echantillon.getDelaiCgl();
-
-      // Comparaison entre le délai calculé et le délai actuel de l'échantillon.
-      if (delaiCongelFromEchantillon != null && !delaiCongelFromEchantillon.equals(delaiInMinutes)) {
-         // Le délai a été modifié manuellement
-         isDelayManuallyUpdated = true;
+      Calendar datePrelevement = null;
+      Prelevement prelevement = getParentObject();
+      if(prelevement != null) {
+         datePrelevement = prelevement.getDatePrelevement();
       }
-
+      
       if(this.echantillon.getDelaiCgl() != null && this.echantillon.getDelaiCgl() < 0){
          this.echantillon.setDelaiCgl(null);
       }
-
-      if(this.echantillon.getDelaiCgl() != null){
-
-         final int delaiRound = Math.round(this.echantillon.getDelaiCgl());
+            
+      //si le délai récupéré en bdd est null, on calcule le délai théorique dans le cas où la date de prélèvement aurait été renseignée
+      //après la saisie de la date de stockage. En effet, avant TK-427, le délai n'était pas mis à jour dans ce cas.
+      //si le délai est non null, on regarde si la valeur correspond au théorique - pour garder l'information qui 
+      //servira plus tard - avant de valoriser les champs en heures et minutes.
+      Float delaiCongelFromEchantillonEnMinutes = echantillon.getDelaiCgl();
+      if(delaiCongelFromEchantillonEnMinutes == null) {
+         casMajDelaiCongel = ECasMajDelaiCongelFromEchantillon.CAS2__DELAI_AVANT__NULL;
+         //la méthode calculDelaiCgl calcule le délai de congélation théorique, convertit la valeur en heures, minutes et 
+         //applique les valeurs dans les champs du formulaire
+         populateDelaiCongelWithTheoriqueOrNull();
+      }
+      else {
+         //TK-427 : calcul du délai théorique (si dates renseignées avec les heures) : date de stockage - date de prélèvement
+         long delaiCongelTheoriqueEnMillisecondes = ManagerLocator.getEchantillonManager().calculDelaiStockage(echantillon, prelevement);
+         Float delaiCongelTheoriqueEnMinutes = null;
+         if(delaiCongelTheoriqueEnMillisecondes > 0) {
+            delaiCongelTheoriqueEnMinutes = TKDateUtils.convertMillisecondsToMinutes(delaiCongelTheoriqueEnMillisecondes);
+         }
+         // Comparaison entre le délai théorique et le délai actuel de l'échantillon.
+         if (delaiCongelFromEchantillonEnMinutes.equals(delaiCongelTheoriqueEnMinutes)) {
+            casMajDelaiCongel = ECasMajDelaiCongelFromEchantillon.CAS1__DELAI_AVANT__THEORIQUE;
+         }
+         else {
+            casMajDelaiCongel = ECasMajDelaiCongelFromEchantillon.CAS3__DELAI_AVANT__SAISI;
+         }
+         /// fin TK-427
+         
+         //valorisation des champs en heures et minutes
+         final int delaiRound = Math.round(delaiCongelFromEchantillonEnMinutes);
          if(delaiRound > 59){
             setHeureDelai(delaiRound / 60);
             setMinDelai(delaiRound - (heureDelai * 60));
          }else{
             setMinDelai(delaiRound);
          }
-      }else{
-         calculDelaiCgl();
       }
    }
 
@@ -915,24 +935,42 @@ public class FicheEchantillonEdit extends AbstractFicheEditController
     * labointer ou la date de stockage de l' echantillon. Ces dates doivent
     * contenir des heures/minutes pour etre prise en compte dans le calcul.
     */
-   public void calculDelaiCgl(){
-      setHeureDelai(null);
-      setMinDelai(null);
-
+   public void populateDelaiCongelWithTheoriqueOrNull(){
+      int[] delaiCongelTheorique =  calculDelaiCongelEnHeures();
+      if(delaiCongelTheorique == null) {
+         setHeureDelai(null);
+         setMinDelai(null);
+      }
+      else {
+         setHeureDelai(delaiCongelTheorique[0]);
+         setMinDelai(delaiCongelTheorique[1]);
+      }
+   }
+   
+   /**
+    * calule le délai théorique date de stockage - date de prélèvement si ces deux dates sont non null et définies avec les heures
+    * return le résultat sous la forme d'un tableau de 2 entiers : les heures et les minutes comme attendu dans le formulaire ou un tableau null
+    */
+   public int[] calculDelaiCongelEnHeures() {
+      int[] delaiCongelTheorique = null;
       final long milli = ManagerLocator.getEchantillonManager().calculDelaiStockage(echantillon, getParentObject());
 
       if(milli > 0){
-         final Float min = (float) (milli / 60000);
+         delaiCongelTheorique = new int[2];
+         final Float minute = (float) (milli / 60000);
 
-         final Float heure = min / 60;
+         final Float heure = minute / 60;
          if(heure > 0){
-            setHeureDelai(heure.intValue());
-            setMinDelai(min.intValue() - (getHeureDelai() * 60));
+            delaiCongelTheorique[0] = heure.intValue();
+            delaiCongelTheorique[1] = minute.intValue() - (delaiCongelTheorique[0] * 60);
+
          }else{
-            setHeureDelai(0);
-            setMinDelai(min.intValue());
+            delaiCongelTheorique[0] = 0;
+            delaiCongelTheorique[1] = minute.intValue();
          }
       }
+      
+      return delaiCongelTheorique;
    }
 
    /**
@@ -1552,7 +1590,7 @@ public class FicheEchantillonEdit extends AbstractFicheEditController
    /**
     * Applique la validation sur la date.
     */
-   public void onBlur$dateStockCalBox(){
+    public void onBlur$dateStockCalBox(){
       // Récupération de la boîte de date (Datebox) à partir de la première et de la deuxième enfant de dateStockCalBox.
       final Datebox box = (Datebox) dateStockCalBox.getFirstChild().getFirstChild();
       boolean badDateFormat = false;
@@ -1560,33 +1598,28 @@ public class FicheEchantillonEdit extends AbstractFicheEditController
          badDateFormat = true;
       }
       if(!badDateFormat){
-         // if(!dateStockCalBox.isHasChanged() && dateStockCalBox.getValue() == null){
-         // if(getParentObject() != null){
-         // dateStockCalBox.setValue(ObjectTypesFormatters.getDateWithoutHoursAndMins(getParentObject().getDatePrelevement()));
-         // getEchantillon().setDateStock(dateStockCalBox.getValue());
-         // }
-         // }else{
          dateStockCalBox.clearErrorMessage(dateStockCalBox.getValue());
          validateCoherenceDate(dateStockCalBox, dateStockCalBox.getValue());
-         // }
          echantillon.setDateStock(dateStockCalBox.getValue());
-         // TK-427: demande de confirmation de l'utilisateur pour éviter d'écraser
-         // un délai de congélation renseigné manuellement.
-         if(isDelayManuallyUpdated){
-            // Ouverture d'une boîte de dialogue pour confirmer l'action.
-            String title = Labels.getLabel("message.title.maj.delaicongelation");
-            String message = Labels.getLabel("message.maj.delaicgl.echantillon");
-            boolean isUserAccepted = MessagesUtils.openQuestionModal(title, message);
+         // TK-427: si la saisie du délai a été fait précédemment manuellement, il faut demander confirmation à l'utilisateur 
+         // avant d'écraser avec le théorique. Or l'ouverture d'un modale se gère mal sur un évènement onBlur surtout quand il
+         // concerne 2 champs (heures et minutes). On ne gère donc ici que le cas de la mise à jour du délai théorique (si date de stockage
+         // non null) car sinon, on demande également une confirmation.
+         // Les demandes de confirmation sont gérèes sur l'évènement "onClick$validate()" 
+         switch(casMajDelaiCongel){
+            case CAS1__DELAI_AVANT__THEORIQUE :
+               if(TKDateUtils.isDateNonNullWithHeureSignificative(echantillon.getDateStock())) {
+                  populateDelaiCongelWithTheoriqueOrNull();
+               }
+               break;
 
-            // Si la réponse est "oui", on recalcule la valeur et on remplit les champs. si "non" on ne fait rien
-            if(isUserAccepted){
-               calculDelaiCgl();
-               isDelayManuallyUpdated = false;
-            }
-          // Le délai est calculé, on ne demande pas la confirmation de l'utilisateur
-         } else {
-            calculDelaiCgl();
-            isDelayManuallyUpdated = false;
+            case CAS2__DELAI_AVANT__NULL:
+               //dans ce cas, on met à jour dans tous les cas car le délai théorique a été chargé au moment de l'ouverture de l'écran : rien de vient de l'utilisateur
+               populateDelaiCongelWithTheoriqueOrNull();
+               break;
+               
+            default:
+               break;
          }
 
          dateStockCalBox.setHasChanged(true);
@@ -1846,7 +1879,9 @@ public class FicheEchantillonEdit extends AbstractFicheEditController
     */
    @Override
    public void onClick$validate(){
-//      onBlur$dateStockCalBox();
+      if(dateStockCalBox.isHasChanged()) {//ce boolean correspond plutôt au passage dans le champ qu'à une modification réelle.
+         doMajDelaiCongelIfConfirmationUtilisateur();
+      }
       Clients.showBusy(Labels.getLabel(getWaitLabel()));
       Events.echoEvent("onLaterUpdate", self, null);
    }
@@ -1913,5 +1948,54 @@ public class FicheEchantillonEdit extends AbstractFicheEditController
 
    protected void setGroupInfosCompEchanOpen(final boolean b){
       ((Group) groupInfosCompEchan).setOpen(b);
+   }
+
+   //gère la mise à jour du délai de congélation dans le cas où une confirmation de l'utilisateur est nécessaire
+   private void doMajDelaiCongelIfConfirmationUtilisateur() {
+      String titleModale = Labels.getLabel(ModaleMajDelaiCongelationConstants.KEY_TITLE__ECHANTILLON__CONFIRMATION);
+      boolean confirmationUtilisateur = false;
+      
+      switch(casMajDelaiCongel){
+         case CAS1__DELAI_AVANT__THEORIQUE:
+            //dans ce cas, si la date de stockage n'est plus valide pour le calcul du théorique et que l'utilisateur n'a pas effacé le délai, 
+            //on lui demande si il faut supprimer le délai théorique existant
+            //sinon la mise à jour est faite automatiquement sans demande de confirmation
+            if(!TKDateUtils.isDateNonNullWithHeureSignificative(echantillon.getDateStock())
+                  && getHeureDelai() != null && getMinDelai() != null) {
+               confirmationUtilisateur = MessagesUtils.openQuestionModal(titleModale, 
+                  Labels.getLabel(ModaleMajDelaiCongelationConstants.KEY_MSG__ECHANTILLON__CONFIRMATION__SUPPRIMER_THEORIQUE));
+               // Si la réponse est "oui", on recalcule la valeur et on remplit les champs. si "non" on ne fait rien
+               if(confirmationUtilisateur){
+                  resetDelaiCgl();
+               }
+            }
+            break;
+            
+         case CAS2__DELAI_AVANT__NULL:
+            //dans ce cas, on ne fait : la maj est automatique sans demande de confirmation si le délai théorique est calculable et sinon, on ne fait rien
+            break;
+           
+         case CAS3__DELAI_AVANT__SAISI:
+            //si les dates de prélèvement et de stockage sont définies avec les heures, on demande à l'utilisateur si il faut mettre à jour le délai avec le nouveau théorique
+            if(TKDateUtils.isDateNonNullWithHeureSignificative(echantillon.getDateStock()) 
+                  && getParentObject() != null && TKDateUtils.isDateNonNullWithHeureSignificative(getParentObject().getDatePrelevement())) {
+               int[] calculDelaiCongelEnHeures = calculDelaiCongelEnHeures();
+
+               String messageConfirmation = ObjectTypesFormatters.getLabel(ModaleMajDelaiCongelationConstants.KEY_MSG__ECHANTILLON__CONFIRMATION__ECRASER_AVEC_THEORIQUE, 
+                  new String[] {String.valueOf(calculDelaiCongelEnHeures[0]), 
+                                 String.valueOf(calculDelaiCongelEnHeures[1])});
+
+               confirmationUtilisateur = MessagesUtils.openQuestionModal(titleModale,  messageConfirmation);
+               // Si la réponse est "oui", on recalcule la valeur et on remplit les champs. si "non" on ne fait rien
+               if(confirmationUtilisateur){
+                  populateDelaiCongelWithTheoriqueOrNull();
+               }
+            }
+            
+            break;
+         
+            default:
+               break;
+      }
    }
 }

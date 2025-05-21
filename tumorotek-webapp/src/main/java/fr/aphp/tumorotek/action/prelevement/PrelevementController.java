@@ -46,7 +46,7 @@ import java.util.Map;
 import java.util.Set;
 
 import fr.aphp.tumorotek.utils.MessagesUtils;
-import fr.aphp.tumorotek.utils.TimeAndDateUtils;
+import fr.aphp.tumorotek.utils.TKDateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.util.resource.Labels;
@@ -75,6 +75,8 @@ import fr.aphp.tumorotek.action.prelevement.serotk.FichePrelevementStaticSero;
 import fr.aphp.tumorotek.action.prelevement.serotk.ListePrelevementSero;
 import fr.aphp.tumorotek.action.prelevement.serotk.PrelevementSeroRowRenderer;
 import fr.aphp.tumorotek.action.prodderive.ProdDeriveController;
+import fr.aphp.tumorotek.dto.MajDelaiCongelFromPrelevementDTO;
+import fr.aphp.tumorotek.manager.impl.coeur.echantillon.ETypeDelaiCongelation;
 import fr.aphp.tumorotek.model.TKAnnotableObject;
 import fr.aphp.tumorotek.model.TKdataObject;
 import fr.aphp.tumorotek.model.coeur.echantillon.Echantillon;
@@ -131,16 +133,18 @@ public class PrelevementController extends AbstractObjectTabController
 
    private PatientSip patientSip;
 
-
-   private Calendar previousPrelevementDate;
-
-
-   public Calendar getPreviousPrelevementDate(){
-      return previousPrelevementDate;
+   //TK-427 : permet de conserver la valeur de la date de prélèvement à l'ouverture de la fiche
+   private Calendar oldDatePrelevement;
+   //TK-427 : objet qui permet de stocker tous les éléments nécessaires à la bonne gestion de la mise
+   //à jour des délais de congélation des échantillons en cas de mise à jour de la date de prélèvement
+   private MajDelaiCongelFromPrelevementDTO majDelaiCongelDTO;
+   
+   public Calendar getOldDatePrelevement(){
+      return oldDatePrelevement;
    }
 
-   public void setPreviousPrelevementDate(Calendar previousPrelevementDate) {
-         this.previousPrelevementDate = previousPrelevementDate;
+   public void setOldDatePrelevement(Calendar oldDatePrelevement) {
+         this.oldDatePrelevement = oldDatePrelevement;
    }
 
 
@@ -640,6 +644,7 @@ public class PrelevementController extends AbstractObjectTabController
       // on efface le dossier externe
       // setDossierExterne(null);
       SessionUtils.setDossierExterneInjection(sessionScope, null);
+
    }
 
    @Override
@@ -717,7 +722,7 @@ public class PrelevementController extends AbstractObjectTabController
       if(canUpdateAnnotation()){
          getFicheAnnotation().switchToStaticOrEditMode(false, false);
       }
-
+      
       if(!annoRegion.isOpen() && annoRegion.isVisible()){
          annoRegion.setOpen(true);
       }
@@ -803,43 +808,12 @@ public class PrelevementController extends AbstractObjectTabController
 
       return parents;
    }
-
-   /**
-    * Met à jour le délai de congélation pour un prélèvement, en vérifiant s'il existe des échantillons
-    * avec des délais non calculés, avec interaction utilisateur le cas échéant.
-    *
-    * @param prelevement Le prélèvement à gérer.
-    */
-   public void miseAJourDelaiCongelation(Prelevement prelevement) {
-      // Vérifie s'il existe au moins un échantillon avec un délai non calculé
-      boolean hasEchantillonWithNonCalculatedDelai = ManagerLocator.getEchantillonManager()
-         .hasEchantillonWithNonCalculatedDelai(prelevement, previousPrelevementDate);
-
-      // S'il y en a, ouvre la boîte de dialogue
-      if (hasEchantillonWithNonCalculatedDelai) {
-         String title = Labels.getLabel("message.title.maj.delaicongelation");
-         String message = Labels.getLabel("message.maj.delaicg.echantillons");
-         if  (!TimeAndDateUtils.isDateAndTimeValid(prelevement.getDatePrelevement())){
-            message = Labels.getLabel("message.maj.delaicg.date.prlv.non.valide");
-         }
-         // Ouvre la fenêtre modale et récupère la réponse de l'utilisateur
-         boolean isUserAccepted = MessagesUtils.openQuestionModal(title, message);
-
-         // Si l'utilisateur clique sur "Oui", met à jour tous les échantillons
-         if (isUserAccepted) {
-            ManagerLocator.getEchantillonManager().updateDelaiCongelation(prelevement);
-         } else {
-            // Met à jour uniquement les échantillons dont le délai n'est pas saisi manuellement
-            List<Echantillon> echantillonsWithCalculatedDelai = ManagerLocator.getEchantillonManager()
-               .findEchantillonsWithCalculatedDelai(prelevement, previousPrelevementDate);
-
-            ManagerLocator.getEchantillonManager().updateDelaiCongelation(echantillonsWithCalculatedDelai);
-         }
-         // S'il y en a pas, mettre à jour tous les échantillons
-      } else {
-         ManagerLocator.getEchantillonManager().updateDelaiCongelation(prelevement);
-
-      }
+   
+   public MajDelaiCongelFromPrelevementDTO getMajDelaiCongelDTO(){
+      return majDelaiCongelDTO;
    }
 
+   public void setMajDelaiCongelDTO(MajDelaiCongelFromPrelevementDTO majDelaiCongelDTO){
+      this.majDelaiCongelDTO = majDelaiCongelDTO;
+   }
 }

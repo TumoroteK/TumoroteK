@@ -46,7 +46,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import fr.aphp.tumorotek.utils.TimeAndDateUtils;
+import fr.aphp.tumorotek.utils.MessagesUtils;
+import fr.aphp.tumorotek.utils.TKDateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.apache.commons.lang3.StringUtils;
@@ -88,11 +89,14 @@ import fr.aphp.tumorotek.action.patient.ResumePatient;
 import fr.aphp.tumorotek.component.CalendarBox;
 import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
 import fr.aphp.tumorotek.decorator.PrelevementDecorator2;
+import fr.aphp.tumorotek.dto.MajDelaiCongelFromPrelevementDTO;
 import fr.aphp.tumorotek.manager.coeur.prelevement.PrelevementManager;
 import fr.aphp.tumorotek.manager.exception.DoublonFoundException;
+import fr.aphp.tumorotek.manager.impl.coeur.echantillon.ETypeDelaiCongelation;
 import fr.aphp.tumorotek.manager.impl.interfacage.ResultatInjection;
 import fr.aphp.tumorotek.model.TKdataObject;
 import fr.aphp.tumorotek.model.coeur.annotation.AnnotationValeur;
+import fr.aphp.tumorotek.model.coeur.echantillon.Echantillon;
 import fr.aphp.tumorotek.model.coeur.patient.Maladie;
 import fr.aphp.tumorotek.model.coeur.patient.Patient;
 import fr.aphp.tumorotek.model.coeur.prelevement.ConditMilieu;
@@ -230,7 +234,6 @@ public class FichePrelevementEdit extends AbstractFicheEditController
 
    protected Div refPatientDiv;
 
-
    //protected Boolean banqueOrgane;
    // boolean conditionnant l'affichage dans le group Patient
    protected boolean maladieEmbedded = false;
@@ -267,7 +270,6 @@ public class FichePrelevementEdit extends AbstractFicheEditController
    public void doAfterCompose(final Component comp) throws Exception{
       super.doAfterCompose(comp);
 
-
       // Initialisation du mode (listes, valeurs...)
       initLists();
 
@@ -281,7 +283,6 @@ public class FichePrelevementEdit extends AbstractFicheEditController
 
       // gatsbi overrides
       resumePatient = initResumePatient();
-
    }
 
    // gatsbi surcharge cette méthode
@@ -299,6 +300,8 @@ public class FichePrelevementEdit extends AbstractFicheEditController
 
       getObjectTabController().setCodeUpdated(false);
       getObjectTabController().setOldCode(null);
+      //TK-427 : réinitialisation des éléments pour la gestion des délais de congélation
+      reinitElementsForGestionDelaiCongelation();
 
       // affiche le composant de référencement vers le patient
       this.groupPatient.setClass("z-group");
@@ -329,13 +332,11 @@ public class FichePrelevementEdit extends AbstractFicheEditController
          ((ReferenceurPatient) referenceur.getAttributeOrFellow("winRefPatient$composer", true))
             .initialize(SessionUtils.getSelectedBanques(sessionScope).get(0).getDefMaladies());
       }
+
    }
 
    @Override
    public void switchToEditMode(){
-
-      getObjectTabController().setPreviousPrelevementDate(datePrelCalBox.getValue());
-
       super.switchToEditMode();
 
       if(getMaladie() != null){
@@ -362,6 +363,10 @@ public class FichePrelevementEdit extends AbstractFicheEditController
 
       getObjectTabController().setCodeUpdated(false);
       getObjectTabController().setOldCode(null);
+      
+      //TK-427 :
+      getObjectTabController().setOldDatePrelevement(datePrelCalBox.getValue());
+      reinitElementsForGestionDelaiCongelation();
    }
 
    /**
@@ -593,7 +598,7 @@ public class FichePrelevementEdit extends AbstractFicheEditController
     */   
    protected void initAllCollaborationPossible() {
       //les listes all contiennent la valeur null pour pouvoir ensuite affecter la référence aux objets etablissements, services, collaborateurs
-      //et éviter de recréer un objet contenant potentiellement plusieurs centaines de références !!!!!!!!
+      //et éviter de recréer un objet contenant potentiellement plusieurs centaines de références !
       allEtablissements = addNullEtablissementIfNecessary(
          ManagerLocator.getEtablissementManager().findAllActiveObjectsWithOrderManager());
       allServices = addNullServiceIfNecessary(
@@ -860,7 +865,9 @@ public class FichePrelevementEdit extends AbstractFicheEditController
 
       // valide les dates donc
       validateAllDateComps();
-
+      
+      //TK-427 : si besoin, demande à l'utilisateur si les délais de congélation saisis manuellement doivent être mis à jour
+      confirmMiseAjourDelaiCongelationAvecTheoriqueIfNecessary();
 
       super.onClick$validate();
    }
@@ -885,7 +892,6 @@ public class FichePrelevementEdit extends AbstractFicheEditController
          return false;
       }
    }
-
 
    @Override
    public void onClick$revert(){
@@ -944,8 +950,6 @@ public class FichePrelevementEdit extends AbstractFicheEditController
          getObject().getRisques().clear();
          getObject().getRisques().addAll(findSelectedRisques());
 
-
-
          //Update de l'objet
          ManagerLocator.getPrelevementManager().updateObjectManager(prelevement,
             GatsbiController.enrichesBanqueWithEtudeContextes(prelevement.getBanque(), sessionScope), selectedNature, maladie,
@@ -953,16 +957,8 @@ public class FichePrelevementEdit extends AbstractFicheEditController
             transporteur, operateur, quantiteUnite, null,
             getObjectTabController().getFicheAnnotation().getValeursToCreateOrUpdate(),
             getObjectTabController().getFicheAnnotation().getValeursToDelete(), filesCreated, filesToDelete,
-            SessionUtils.getLoggedUser(sessionScope), cascadeNonSterile, true, SessionUtils.getSystemBaseDir(), false);
-
-         // TK-427: Mettre à jour le délai de congélation des échantillons
-         Calendar previousPrelevementDate = getObjectTabController().getPreviousPrelevementDate();
-         // Si la date de prélèvement précédente est nulle ou la date de prélèvement actuelle n'est pas valide,
-         // ou si elles ne sont pas égales,
-         if (previousPrelevementDate == null || TimeAndDateUtils.isDateAndTimeValid(prelevement.getDatePrelevement()) ||
-                                             !previousPrelevementDate.equals(prelevement.getDatePrelevement())) {
-            getObjectTabController().miseAJourDelaiCongelation(prelevement);
-         }
+            SessionUtils.getLoggedUser(sessionScope), cascadeNonSterile, true, SessionUtils.getSystemBaseDir(), false,
+            getObjectTabController().getMajDelaiCongelDTO());//TK-427
 
          getObjectTabController().handleExtCom(null, getObject(), getObjectTabController());
 
@@ -977,7 +973,6 @@ public class FichePrelevementEdit extends AbstractFicheEditController
          throw (re);
       }
    }
-
 
    protected Set<Risque> findSelectedRisques(){
       final Set<Risque> rs = new HashSet<>();
@@ -1000,9 +995,6 @@ public class FichePrelevementEdit extends AbstractFicheEditController
       }else{
          this.prelevement.setPatientNda(null);
       }
-
-      // calendarboxes
-      // prelevement.setDatePrelevement(datePrelCalBox.getValue());
    }
 
    @Override
@@ -1147,6 +1139,9 @@ public class FichePrelevementEdit extends AbstractFicheEditController
 
       // valide les dates donc
       validateAllDateComps();
+      
+      //TK-427 : si besoin, demande à l'utilisateur si les délais de congélation saisis manuellement doivent être mis à jour
+      confirmMiseAjourDelaiCongelationAvecTheoriqueIfNecessary();
 
       // récupere les objets à partir des formulaires embarqués
       setEmbeddedObjects();
@@ -1325,6 +1320,7 @@ public class FichePrelevementEdit extends AbstractFicheEditController
     * codeBoxPrlvt. Cette valeur sera mise en majuscules.
     */
    public void onBlur$codeBoxPrlvt(){
+
       codeBoxPrlvt.setValue(codeBoxPrlvt.getValue().toUpperCase().trim());
 
       //On ne contrôle le code que s'il s'agit d'un nouveau prélèvement ou si le code a été modifié
@@ -1481,6 +1477,13 @@ public class FichePrelevementEdit extends AbstractFicheEditController
          ((EchantillonController) getObjectTabController().getReferencedObjectsControllers(true).get(0)).getMultiFicheEdit()
             .resetDelaiCgl();
       }
+      //TK-427 : si on est dans le cas de la modification, initialisation de l'objet MajDelaiCongelFromPrelevementDTO
+      //qui va permettre de faire les mises à jour des délais de congélation des échantillons du prélèvement, si besoin.
+      if(prelevement.getPrelevementId() != null) {
+         MajDelaiCongelFromPrelevementDTO majDelaiCongelDTO = new MajDelaiCongelFromPrelevementDTO(prelevement);
+         majDelaiCongelDTO.setOldDatePrelevement(getObjectTabController().getOldDatePrelevement());
+         getObjectTabController().setMajDelaiCongelDTO(majDelaiCongelDTO);
+      }
    }
 
    /**
@@ -1557,7 +1560,6 @@ public class FichePrelevementEdit extends AbstractFicheEditController
    public ConditMilieu getSelectedConditMilieu(){
       return selectedConditMilieu;
    }
-
 
    public void setSelectedConditMilieu(final ConditMilieu selected){
       this.selectedConditMilieu = selected;
@@ -2012,6 +2014,34 @@ public class FichePrelevementEdit extends AbstractFicheEditController
    protected List<Collaborateur> addNullCollaborateurIfNecessary(List<Collaborateur> values) {
       addNullIfNecessary(values);
       return values;
+   }
+   
+   //TK-427 : si la date de prélèvement a été modifiée, gestion de l'éventuel message à afficher à l'utilisation
+   //pour confirmation de l'impact envisagé sur le délai de congélation des échantillons et stockage de la réponse.
+   //(cf ECasMajDelaiCongelFromPrelevement)
+   private void confirmMiseAjourDelaiCongelationAvecTheoriqueIfNecessary() {
+      if(getObjectTabController().getMajDelaiCongelDTO() != null) {
+         //MajDelaiCongelDTO contient tous les éléments nécessaires à la gestion de la mise à jour du délai de congélation.
+         //ces champs sont alimentés au fur et à mesure du process :
+         MajDelaiCongelFromPrelevementDTO majDelaiCongelDTO = getObjectTabController().getMajDelaiCongelDTO();
+         ManagerLocator.getMajDelaiCongelFromPrelevementProcessor().defineConfirmationADemander(majDelaiCongelDTO);
+         Boolean reponseUtilisateur = null;
+         if(majDelaiCongelDTO.getKeyI18nMessageModaleConfirmation() != null) {
+            
+            String messageConfirmation = ObjectTypesFormatters.getLabel(majDelaiCongelDTO.getKeyI18nMessageModaleConfirmation(), 
+               new String[] {String.valueOf(majDelaiCongelDTO.getNbEchantillonConcerneParConfirmation()), 
+                              String.valueOf(majDelaiCongelDTO.getNbTotalEchantillon())});
+            
+            reponseUtilisateur = MessagesUtils.openQuestionModal(Labels.getLabel(majDelaiCongelDTO.getKeyI18nTitreModaleConfirmation()), 
+               messageConfirmation);
+         }
+         majDelaiCongelDTO.setConfirmationUtilisateur(reponseUtilisateur);
+      }
+   }
+   
+   //TK-427 : réinitialisation des éléments pour la gestion des délais de congélation
+   private void reinitElementsForGestionDelaiCongelation() {
+      getObjectTabController().setMajDelaiCongelDTO(null);
    }
 }
 

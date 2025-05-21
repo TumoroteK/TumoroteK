@@ -1703,11 +1703,11 @@ public class ImportManagerImpl implements ImportManager
                            prlvt.getPrelevementType(), prlvt.getConditType(), prlvt.getConditMilieu(), prlvt.getTransporteur(),
                            prlvt.getOperateur(), prlvt.getQuantiteUnite(), null, !toUpdate.isEmpty() ? toUpdate : null,
                            utilisateur, true, null, true, ncfsPrelevement != null ? ncfsPrelevement.get(prlvt) : null);
-                     }else{ // update Objet
+                     }else{ // update Objet - on ne passe jamais ici car l'import en modification n'est pas possible (21/05/2025)
 
                         toDelete.addAll(prlvtDuo.getSecondAnnoVals());
 
-                        prelevementManager.updateObjectWithNonConformitesManager(prlvt, prlvt.getBanque(), prlvt.getNature(),
+                        prelevementManager.updateObjectWithNonConformitesSansGestionImpactSurDelaiCongelManager(prlvt, prlvt.getBanque(), prlvt.getNature(),
                            prlvt.getMaladie(), prlvt.getConsentType(), prlvt.getPreleveur(), prlvt.getServicePreleveur(),
                            prlvt.getPrelevementType(), prlvt.getConditType(), prlvt.getConditMilieu(), prlvt.getTransporteur(),
                            prlvt.getOperateur(), prlvt.getQuantiteUnite(), null, !toUpdate.isEmpty() ? toUpdate : null,

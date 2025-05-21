@@ -113,6 +113,7 @@ import fr.aphp.tumorotek.manager.dto.EchantillonDTOManager;
 import fr.aphp.tumorotek.manager.etiquettes.TumoBarcodePrinter;
 import fr.aphp.tumorotek.manager.etiquettes.TumoPrinterUtilsManager;
 import fr.aphp.tumorotek.manager.exception.TKException;
+import fr.aphp.tumorotek.manager.impl.coeur.prelevement.MajDelaiCongelFromPrelevementProcessor;
 import fr.aphp.tumorotek.manager.impl.stockage.planconteneur.PlanCongelateurAvecBoiteExcelGenerator;
 import fr.aphp.tumorotek.manager.impl.stockage.planconteneur.PlanCongelateurSansBoiteExcelGenerator;
 import fr.aphp.tumorotek.manager.impression.BlocImpressionManager;
@@ -390,6 +391,10 @@ public final class ManagerLocator
       return (FichierManager) (ContextLoader.getCurrentWebApplicationContext()).getBean("fichierManager");
    }
 
+   public static MajDelaiCongelFromPrelevementProcessor getMajDelaiCongelFromPrelevementProcessor(){
+      return (MajDelaiCongelFromPrelevementProcessor) (ContextLoader.getCurrentWebApplicationContext()).getBean("majDelaiCongelFromPrelevementProcessor");
+   }
+   
    /* Managers du package divers */
    public static EntiteManager getEntiteManager(){
       return (EntiteManager) (ContextLoader.getCurrentWebApplicationContext()).getBean("entiteManager");
@@ -801,6 +806,7 @@ public final class ManagerLocator
       return (ImportHistoriqueManager) (ContextLoader.getCurrentWebApplicationContext()).getBean("importHistoriqueManager");
    }
 
+   //NB : compatibiliteEntreImportTemplateEtBanqueValidator a un état contrairement à la majorité des autres bean : chaque appel de cette méthode génére une nouvelle instance
    public static CompatibiliteEntreImportTemplateEtBanqueValidator getCompatibiliteEntreImportTemplateEtBanqueValidator(){
       return (CompatibiliteEntreImportTemplateEtBanqueValidator) (ContextLoader.getCurrentWebApplicationContext()).getBean("compatibiliteEntreImportTemplateEtBanqueValidator");
    }

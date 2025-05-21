@@ -287,6 +287,8 @@
 				<property name="dossierExterneDao" ref="dossierExterneDao" />
 				<property name="objetNonConformeManager"
 					ref="objetNonConformeManager" />
+				<property name="majDelaiCongelFromPrelevementProcessor"
+					ref="majDelaiCongelFromPrelevementProcessor" />					
 				<!-- <property name="prelevementDelegateDao" ref="prelevementDelegateDao" 
 					/> -->
 			</bean>
@@ -365,6 +367,15 @@
 			</bean>
 		</property>
 	</bean>
+
+	<bean id="majDelaiCongelFromPrelevementProcessor" parent="txProxyTemplate">
+		<property name="target">
+			<bean
+				class="fr.aphp.tumorotek.manager.impl.coeur.prelevement.MajDelaiCongelFromPrelevementProcessor">
+				<property name="echantillonManager" ref="echantillonManager" />
+			</bean>
+		</property>
+	</bean>				
 
 	<bean id="prelEchanManager" parent="txProxyTemplate">
 		<property name="target">

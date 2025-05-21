@@ -610,7 +610,7 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
 
       // Update du prlvt
       final Maladie maladie = ((Prelevement) getParentObject()).getMaladie();
-      ManagerLocator.getPrelevementManager().updateObjectManager(((Prelevement) getParentObject()),
+      ManagerLocator.getPrelevementManager().updateObjectSansGestionImpactSurDelaiCongelManager(((Prelevement) getParentObject()),
          ((Prelevement) getParentObject()).getBanque(), ((Prelevement) getParentObject()).getNature(), maladie,
          ((Prelevement) getParentObject()).getConsentType(), ((Prelevement) getParentObject()).getPreleveur(),
          ((Prelevement) getParentObject()).getServicePreleveur(), ((Prelevement) getParentObject()).getPrelevementType(),
