@@ -44,6 +44,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.persistence.EntityManager;
@@ -74,6 +75,7 @@ import fr.aphp.tumorotek.dao.interfacage.DossierExterneDao;
 import fr.aphp.tumorotek.dao.qualite.OperationTypeDao;
 import fr.aphp.tumorotek.dao.systeme.EntiteDao;
 import fr.aphp.tumorotek.dao.systeme.UniteDao;
+import fr.aphp.tumorotek.dto.MajDelaiCongelFromPrelevementDTO;
 import fr.aphp.tumorotek.manager.coeur.annotation.AnnotationValeurManager;
 import fr.aphp.tumorotek.manager.coeur.cession.CederObjetManager;
 import fr.aphp.tumorotek.manager.coeur.echantillon.EchantillonManager;
@@ -90,6 +92,7 @@ import fr.aphp.tumorotek.manager.exception.ObjectUsedException;
 import fr.aphp.tumorotek.manager.exception.RequiredObjectIsNullException;
 import fr.aphp.tumorotek.manager.exception.TKException;
 import fr.aphp.tumorotek.manager.impl.coeur.CreateOrUpdateUtilities;
+import fr.aphp.tumorotek.manager.impl.coeur.echantillon.ETypeDelaiCongelation;
 import fr.aphp.tumorotek.manager.impl.systeme.MvFichier;
 import fr.aphp.tumorotek.manager.io.imports.ImportHistoriqueManager;
 import fr.aphp.tumorotek.manager.qualite.ObjetNonConformeManager;
@@ -200,6 +203,8 @@ public class PrelevementManagerImpl implements PrelevementManager
 
    private ObjetNonConformeManager objetNonConformeManager;
    //   private PrelevementDelegateDao prelevementDelegateDao;
+   
+   private MajDelaiCongelFromPrelevementProcessor majDelaiCongelFromPrelevementProcessor;
 
    public PrelevementManagerImpl(){}
 
@@ -333,6 +338,11 @@ public class PrelevementManagerImpl implements PrelevementManager
    public void setObjetNonConformeManager(final ObjetNonConformeManager oM){
       this.objetNonConformeManager = oM;
    }
+   
+   public void setMajDelaiCongelFromPrelevementProcessor(
+      MajDelaiCongelFromPrelevementProcessor majDelaiCongelFromPrelevementProcessor){
+      this.majDelaiCongelFromPrelevementProcessor = majDelaiCongelFromPrelevementProcessor;
+   }
 
    @Override
    public void createObjectManager(final Prelevement prelevement, final Banque banque, final Nature nature, final Maladie maladie,
@@ -442,13 +452,29 @@ public class PrelevementManagerImpl implements PrelevementManager
    }
 
    @Override
-   public void updateObjectManager(final Prelevement prelevement, final Banque banque, final Nature nature, final Maladie maladie,
+   public void updateObjectSansGestionImpactSurDelaiCongelManager(final Prelevement prelevement, final Banque banque, final Nature nature, final Maladie maladie,
       final ConsentType consentType, final Collaborateur preleveur, final Service servicePreleveur,
       final PrelevementType prelevementType, final ConditType conditType, final ConditMilieu conditMilieu,
       final Transporteur transporteur, final Collaborateur operateur, final Unite quantiteUnite, final List<LaboInter> laboInters,
       final List<AnnotationValeur> listAnnoToCreateOrUpdate, final List<AnnotationValeur> listAnnoToDelete,
       final List<File> filesCreated, final List<File> filesToDelete, final Utilisateur utilisateur,
       final Integer cascadeNonSterile, final boolean doValidation, final String baseDir, final boolean multiple){
+      
+      updateObjectManager(prelevement, banque, nature, maladie, consentType, preleveur, servicePreleveur,
+         prelevementType, conditType, conditMilieu, transporteur, operateur, quantiteUnite, laboInters,
+         listAnnoToCreateOrUpdate, listAnnoToDelete, filesCreated, filesToDelete, utilisateur,
+         cascadeNonSterile, doValidation, baseDir, multiple, null);
+   }
+   
+   @Override
+   public void updateObjectManager(final Prelevement prelevement, final Banque banque, final Nature nature, final Maladie maladie,
+      final ConsentType consentType, final Collaborateur preleveur, final Service servicePreleveur,
+      final PrelevementType prelevementType, final ConditType conditType, final ConditMilieu conditMilieu,
+      final Transporteur transporteur, final Collaborateur operateur, final Unite quantiteUnite, final List<LaboInter> laboInters,
+      final List<AnnotationValeur> listAnnoToCreateOrUpdate, final List<AnnotationValeur> listAnnoToDelete,
+      final List<File> filesCreated, final List<File> filesToDelete, final Utilisateur utilisateur,
+      final Integer cascadeNonSterile, final boolean doValidation, final String baseDir, final boolean multiple, 
+      final MajDelaiCongelFromPrelevementDTO majDelaiCongelDTO){
 
       mergeNonRequiredObjects(prelevement, /*maladie,*/ preleveur, servicePreleveur, prelevementType, conditType, conditMilieu,
          transporteur, operateur, quantiteUnite);
@@ -489,6 +515,11 @@ public class PrelevementManagerImpl implements PrelevementManager
          }
 
          updateLaboInters(laboInters, prelevement);
+         
+         //gestion de l'éventuelle mise à jour des délais de congélation des échantillons si la date de prélèvement a été modifiée
+         if(majDelaiCongelDTO != null) {
+            majDelaiCongelFromPrelevementProcessor.process(majDelaiCongelDTO);
+         }
 
          // Annotations
          // suppr les annotations
@@ -1549,7 +1580,7 @@ public class PrelevementManagerImpl implements PrelevementManager
       for(int i = 0; i < prelevements.size(); i++){
          final Prelevement prel = prelevements.get(i);
          try{
-            updateObjectManager(prel, prel.getBanque(), prel.getNature(), null, prel.getConsentType(), prel.getPreleveur(), prel.getServicePreleveur(),
+            updateObjectSansGestionImpactSurDelaiCongelManager(prel, prel.getBanque(), prel.getNature(), null, prel.getConsentType(), prel.getPreleveur(), prel.getServicePreleveur(),
                prel.getPrelevementType(), prel.getConditType(), prel.getConditMilieu(), prel.getTransporteur(),
                prel.getOperateur(), prel.getQuantiteUnite(), null, null, null, filesCreated, filesToDelete, utilisateur,
                nosterile, true, baseDir, true);
@@ -1671,13 +1702,34 @@ public class PrelevementManagerImpl implements PrelevementManager
    }
 
    @Override
-   public void updateObjectWithNonConformitesManager(final Prelevement prelevement, final Banque banque, final Nature nature,
+   public void updateObjectWithNonConformitesSansGestionImpactSurDelaiCongelManager(final Prelevement prelevement, final Banque banque, final Nature nature,
       final Maladie maladie, final ConsentType consentType, final Collaborateur preleveur, final Service servicePreleveur,
       final PrelevementType prelevementType, final ConditType conditType, final ConditMilieu conditMilieu,
       final Transporteur transporteur, final Collaborateur operateur, final Unite quantiteUnite, final List<LaboInter> laboInters,
       final List<AnnotationValeur> listAnnoToCreateOrUpdate, final List<AnnotationValeur> listAnnoToDelete,
       final Utilisateur utilisateur, final Integer cascadeNonSterile, final boolean doValidation, final String baseDir,
       final boolean multiple, final List<NonConformite> noconfs){
+      
+      updateObjectWithNonConformitesManager(prelevement, banque, nature,
+         maladie, consentType, preleveur, servicePreleveur,
+         prelevementType, conditType, conditMilieu,
+         transporteur, operateur, quantiteUnite, laboInters,
+         listAnnoToCreateOrUpdate, listAnnoToDelete,
+         utilisateur, cascadeNonSterile, doValidation, baseDir,
+         multiple, null, noconfs);
+      
+   }
+   
+   //TK-427 : ajout d'un paramètre => pas très propre d'avoir autant de paramètre, il faudrait passer par un DTO mais le refactoring est risqué 
+   //car c'est une fonctionnalité essentielle donc évolution gérée ainsi
+   @Override
+   public void updateObjectWithNonConformitesManager(final Prelevement prelevement, final Banque banque, final Nature nature,
+      final Maladie maladie, final ConsentType consentType, final Collaborateur preleveur, final Service servicePreleveur,
+      final PrelevementType prelevementType, final ConditType conditType, final ConditMilieu conditMilieu,
+      final Transporteur transporteur, final Collaborateur operateur, final Unite quantiteUnite, final List<LaboInter> laboInters,
+      final List<AnnotationValeur> listAnnoToCreateOrUpdate, final List<AnnotationValeur> listAnnoToDelete,
+      final Utilisateur utilisateur, final Integer cascadeNonSterile, final boolean doValidation, final String baseDir,
+      final boolean multiple, final MajDelaiCongelFromPrelevementDTO majDelaiCongelDTO, final List<NonConformite> noconfs){
 
       if(noconfs != null && !noconfs.isEmpty()){
          prelevement.setConformeArrivee(false);
@@ -1689,7 +1741,7 @@ public class PrelevementManagerImpl implements PrelevementManager
       try{
          updateObjectManager(prelevement, banque, nature, maladie, consentType, preleveur, servicePreleveur, prelevementType,
             conditType, conditMilieu, transporteur, operateur, quantiteUnite, laboInters, listAnnoToCreateOrUpdate,
-            listAnnoToDelete, filesCreated, filesToDelete, utilisateur, cascadeNonSterile, doValidation, baseDir, multiple);
+            listAnnoToDelete, filesCreated, filesToDelete, utilisateur, cascadeNonSterile, doValidation, baseDir, multiple, majDelaiCongelDTO);
 
          objetNonConformeManager.createUpdateOrRemoveListObjectManager(prelevement, noconfs, "Arrivee");
 

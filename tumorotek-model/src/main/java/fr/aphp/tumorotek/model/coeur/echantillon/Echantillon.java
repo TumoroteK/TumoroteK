@@ -326,6 +326,7 @@ public class Echantillon extends TKDelegetableObject<Echantillon> implements TKS
       this.quantiteInit = Utils.floor(quant, 3);
    }
 
+   //délai en minutes :
    @Column(name = "DELAI_CGL", nullable = true, precision = 9, scale = 2)
    public Float getDelaiCgl(){
       return this.delaiCgl;

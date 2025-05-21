@@ -407,7 +407,7 @@ public class ImportDossierExterneModale extends AbstractFicheCombineController
                   .findByChampAndObjetManager(prelevementAnnoValeurs.get(i).getChampAnnotation(), prelevement));
             }
 
-            ManagerLocator.getPrelevementManager().updateObjectManager(prelevement, prelevement.getBanque(),
+            ManagerLocator.getPrelevementManager().updateObjectSansGestionImpactSurDelaiCongelManager(prelevement, prelevement.getBanque(),
                prelevement.getNature(), maladie, prelevement.getConsentType(), prelevement.getPreleveur(),
                prelevement.getServicePreleveur(), prelevement.getPrelevementType(), prelevement.getConditType(),
                prelevement.getConditMilieu(), prelevement.getTransporteur(), prelevement.getOperateur(),

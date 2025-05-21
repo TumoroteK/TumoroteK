@@ -692,7 +692,14 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
       }
 
       if(ok){
-         super.onClick$validate();
+         //TK-427 : on ne passe plus par super.onClick$validate() pour ne pas passer dans le contrôle ajouté
+         //pour gérer les mises à jour des délais de congélation. En effet dans l'écran courant on est toujours
+         //en création d'échantillon => la date de stockage ne peut pas être modifiée donc pas de maj de délai.
+         //super.onClick$validate();
+         Clients.showBusy(Labels.getLabel(getWaitLabel()));
+         //NB : la méthode de l'event s'appelle "onLaterUpdate" car on est dans le cas d'une mise à jour du Prelevement
+         //(3e étape) mais concernant les échantillons il s'agit bien d'une création et non d'une mise à jour
+         Events.echoEvent("onLaterUpdate", self, null);
       }
    }
 
@@ -2584,7 +2591,7 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
          setParentObject(ManagerLocator.getPrelevementManager().findByCodeOrNumLaboLikeWithBanqueManager(getCodePrefixe(),
             SessionUtils.getSelectedBanques(sessionScope).get(0), true).get(0));
 
-         calculDelaiCgl();
+         populateDelaiCongelWithTheoriqueOrNull();
          clearConstraints();
 
          initAssociations();
@@ -2626,7 +2633,7 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
          connaissancesBoxEchan.setSelectedIndex(0);
       }
 
-      calculDelaiCgl();
+      populateDelaiCongelWithTheoriqueOrNull();
       clearConstraints();
 
       initAssociations();
@@ -2718,7 +2725,7 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
             }
          }
          getEchantillon().setDateStock(dateStockCalBox.getValue());
-         calculDelaiCgl();
+         populateDelaiCongelWithTheoriqueOrNull();
          dateStockCalBox.setHasChanged(true);
       }else{
          throw new WrongValueException(dateStockCalBox, Labels.getLabel("validation.invalid.date"));

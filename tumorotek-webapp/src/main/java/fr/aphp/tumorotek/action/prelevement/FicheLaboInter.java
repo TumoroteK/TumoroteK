@@ -42,6 +42,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import fr.aphp.tumorotek.utils.TKDateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.validation.Errors;
@@ -716,6 +717,7 @@ public class FicheLaboInter extends AbstractFicheEditController
          selectedCollaborateur = null;
       }
 
+      /////////////////////// CECI DEVRAIT ETRE FAIT DANS UNE TRANSACTION COTE METIER ////////////////////////////
       // délétion des labos à supprimer
       for(int i = 0; i < laboIntersToDelete.size(); i++){
          final LaboInter lab = laboIntersToDelete.get(i);
@@ -728,8 +730,11 @@ public class FicheLaboInter extends AbstractFicheEditController
          preleveur, servicePreleveur, mode, conditType, conditMilieu, selectedTransporteur, selectedCollaborateur,
          selectedQuantiteUnite, laboInters, getObjectTabController().getFicheAnnotation().getValeursToCreateOrUpdate(),
          getObjectTabController().getFicheAnnotation().getValeursToDelete(), SessionUtils.getLoggedUser(sessionScope),
-         cascadeNonSterile, true, SessionUtils.getSystemBaseDir(), false, ncfs);
+         cascadeNonSterile, true, SessionUtils.getSystemBaseDir(), false, 
+         getObjectTabController().getMajDelaiCongelDTO(), ncfs);//TK-427
 
+      /////////////////////////////////////////////////////////////////////////////////
+      
       // // pour chaque LaboInter
       // for (int i = 0; i < laboInters.size(); i++) {
       // LaboInter labo = laboInters.get(i);
@@ -753,6 +758,8 @@ public class FicheLaboInter extends AbstractFicheEditController
       // labo.getTransporteur());
       // }
       // }
+      
+      //ceci concerne la base interfaçage donc ne peut pas être fait dans la même transaction que la partie précédente
       getObjectTabController().handleExtCom(null, (Prelevement) getObject(), getObjectTabController());
    }
 

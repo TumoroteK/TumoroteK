@@ -39,29 +39,25 @@ import static fr.aphp.tumorotek.model.contexte.EContexte.SEROLOGIE;
 import static fr.aphp.tumorotek.webapp.general.SessionUtils.getCurrentContexte;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import fr.aphp.tumorotek.utils.MessagesUtils;
+import fr.aphp.tumorotek.utils.TKDateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Components;
 import org.zkoss.zk.ui.Executions;
-import org.zkoss.zk.ui.HtmlMacroComponent;
 import org.zkoss.zk.ui.Page;
-import org.zkoss.zk.ui.Path;
-import org.zkoss.zk.ui.SuspendNotAllowedException;
-import org.zkoss.zk.ui.event.Event;
-import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Tabbox;
 import org.zkoss.zul.Tabpanel;
-import org.zkoss.zul.Timer;
-import org.zkoss.zul.Window;
 
 import fr.aphp.tumorotek.action.MainWindow;
 import fr.aphp.tumorotek.action.ManagerLocator;
@@ -79,6 +75,8 @@ import fr.aphp.tumorotek.action.prelevement.serotk.FichePrelevementStaticSero;
 import fr.aphp.tumorotek.action.prelevement.serotk.ListePrelevementSero;
 import fr.aphp.tumorotek.action.prelevement.serotk.PrelevementSeroRowRenderer;
 import fr.aphp.tumorotek.action.prodderive.ProdDeriveController;
+import fr.aphp.tumorotek.dto.MajDelaiCongelFromPrelevementDTO;
+import fr.aphp.tumorotek.manager.impl.coeur.echantillon.ETypeDelaiCongelation;
 import fr.aphp.tumorotek.model.TKAnnotableObject;
 import fr.aphp.tumorotek.model.TKdataObject;
 import fr.aphp.tumorotek.model.coeur.echantillon.Echantillon;
@@ -134,6 +132,21 @@ public class PrelevementController extends AbstractObjectTabController
    // private DossierExterne dossierExterne;
 
    private PatientSip patientSip;
+
+   //TK-427 : permet de conserver la valeur de la date de prélèvement à l'ouverture de la fiche
+   private Calendar oldDatePrelevement;
+   //TK-427 : objet qui permet de stocker tous les éléments nécessaires à la bonne gestion de la mise
+   //à jour des délais de congélation des échantillons en cas de mise à jour de la date de prélèvement
+   private MajDelaiCongelFromPrelevementDTO majDelaiCongelDTO;
+   
+   public Calendar getOldDatePrelevement(){
+      return oldDatePrelevement;
+   }
+
+   public void setOldDatePrelevement(Calendar oldDatePrelevement) {
+         this.oldDatePrelevement = oldDatePrelevement;
+   }
+
 
    public Maladie getMaladie(){
       return maladie;
@@ -631,6 +644,7 @@ public class PrelevementController extends AbstractObjectTabController
       // on efface le dossier externe
       // setDossierExterne(null);
       SessionUtils.setDossierExterneInjection(sessionScope, null);
+
    }
 
    @Override
@@ -708,7 +722,7 @@ public class PrelevementController extends AbstractObjectTabController
       if(canUpdateAnnotation()){
          getFicheAnnotation().switchToStaticOrEditMode(false, false);
       }
-
+      
       if(!annoRegion.isOpen() && annoRegion.isVisible()){
          annoRegion.setOpen(true);
       }
@@ -793,5 +807,13 @@ public class PrelevementController extends AbstractObjectTabController
          patEntite, SessionUtils.getSelectedBanques(sessionScope), true));
 
       return parents;
+   }
+   
+   public MajDelaiCongelFromPrelevementDTO getMajDelaiCongelDTO(){
+      return majDelaiCongelDTO;
+   }
+
+   public void setMajDelaiCongelDTO(MajDelaiCongelFromPrelevementDTO majDelaiCongelDTO){
+      this.majDelaiCongelDTO = majDelaiCongelDTO;
    }
 }

@@ -920,7 +920,7 @@ public class ServiceManagerTest extends AbstractManagerTest4
       }
       assertTrue(catched);
 
-      prelevementManager.updateObjectManager(p, p.getBanque(), p.getNature(), null, p.getConsentType(), null, null, null, null,
+      prelevementManager.updateObjectSansGestionImpactSurDelaiCongelManager(p, p.getBanque(), p.getNature(), null, p.getConsentType(), null, null, null, null,
          null, null, null, null, null, null, null, null, null, u, null, false, "/tmp/", false);
 
       serviceManager.removeObjectCascadeManager(sTest1, null, u);
