@@ -1,6 +1,5 @@
 /**
- * Copyright ou © ou Copr. Assistance Publique des Hôpitaux de 
- * PARIS et SESAN
+ * Copyright ou © ou Copr. SESAN
  * projet-tk@sesan.fr
  *
  * Ce logiciel est un programme informatique servant à la gestion de
