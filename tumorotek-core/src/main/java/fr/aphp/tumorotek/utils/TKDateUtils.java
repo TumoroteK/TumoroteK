@@ -8,8 +8,8 @@ import java.util.Calendar;
 public class TKDateUtils
 {
 
-   public static final long UNDEFINED_VALUE_EN_MILLISECONDES = -1;
-   public static final float UNDEFINED_VALUE_EN_MINUTES = -1;
+   public static final long UNDEFINED_VALUE_IN_MILLISECONDS = -1;
+   public static final float UNDEFINED_VALUE_IN_MINUTES = -1;
    
    private TKDateUtils(){
    }
@@ -24,7 +24,7 @@ public class TKDateUtils
          if (milliseconds >= 0) {
             return (float) milliseconds / (60 * 1000);
          }
-         return UNDEFINED_VALUE_EN_MINUTES;
+         return UNDEFINED_VALUE_IN_MINUTES;
       }
 
    /**

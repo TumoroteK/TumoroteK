@@ -1945,12 +1945,12 @@ public class EchantillonManagerImpl implements EchantillonManager
          return calculDelaiStockage(echan, prel.getDatePrelevement());
       }
 
-      return TKDateUtils.UNDEFINED_VALUE_EN_MILLISECONDES;
+      return TKDateUtils.UNDEFINED_VALUE_IN_MILLISECONDS;
    }
 
    @Override
    public long calculDelaiStockage(final Echantillon echan, final Calendar datePrelevement) {
-      long milli = TKDateUtils.UNDEFINED_VALUE_EN_MILLISECONDES;
+      long milli = TKDateUtils.UNDEFINED_VALUE_IN_MILLISECONDS;
 
       if (TKDateUtils.isDateNonNullWithHeureSignificative(datePrelevement) && TKDateUtils.isDateNonNullWithHeureSignificative(echan.getDateStock())) {
          milli = echan.getDateStock().getTimeInMillis() - datePrelevement.getTimeInMillis();
@@ -2109,7 +2109,7 @@ public class EchantillonManagerImpl implements EchantillonManager
             long delaiCongelation = calculDelaiStockage(echantillon, datePrelevement);
             // Conversion du délai de congélation en float pour la mise à jour (en minutes)
             Float delaiCongelationInMinutes = TKDateUtils.convertMillisecondsToMinutes(delaiCongelation);
-            if (delaiCongelationInMinutes != -1 ){
+            if (delaiCongelationInMinutes != TKDateUtils.UNDEFINED_VALUE_IN_MINUTES ){
                // Mise à jour de l'échantillon dans la base de données
                updateDelaiCongelation(delaiCongelationInMinutes, echantillon.getEchantillonId());
             }
