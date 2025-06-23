@@ -51,9 +51,16 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
  * @author Mathieu BARTHELEMY
  * @version 2.2.1-IRELEC
  */
+//TK-697 : ce n'est pas une factory : une factory crée des objets.
+//Aurait dû s'appeler SenderImpl voire sendProcessorImpl.
+//Dans l'absolu, définir une interface n'était sans doute pas nécessaire
 public class SenderFactoryImpl implements SenderFactory
 {
 
+   //TK-697 : ces 3 attributs implémentent la même interface : ExtMessageSender donc
+   //le polymorphisme permet de ne définir qu'un seul attribut de type ExtMessageSender
+   //et d'appeler les méthodes sendMessage et sendMessages de ces objets. Les ifs sont alors inutiles...
+   //(application du pattern Strategy)
    private HmMessageSender hmMessageSender;
 
    private TumoLinkUrd tumoLinkUrd;
@@ -85,7 +92,7 @@ public class SenderFactoryImpl implements SenderFactory
 
    @Override
    public void sendMessages(final Recepteur re, final List<TKAnnotableObject> tkObjs, final Integer b){
-      // seul Hopital Manager DME n'est concerné pour l'instant
+      // seul Hopital Manager DME est concerné pour l'instant
       if(hmMessageSender.useRecepteur(re)){
          hmMessageSender.sendMessages(tkObjs, b);
       }

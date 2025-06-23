@@ -55,6 +55,9 @@ import fr.aphp.tumorotek.model.TKAnnotableObject;
 import fr.aphp.tumorotek.model.coeur.prelevement.Prelevement;
 import fr.aphp.tumorotek.model.interfacage.Recepteur;
 
+//Acquittement fonctionnel (contenant le lien du prélèvement créé ou mis à jour) pour les SGL (segment URD du message UDM de la norme HL7)
+//TK-697 : cette classe devrait s'appeler SglAcquittementDefaultSender pour être cohérent avec le nom de la route camel
+//et devrait hériter d'une interface AcquittementSender (fille de ExtMessageSender) - et non de TumoLinkUrd qui ne sert à rien - voire de AbstractAcquittementSender, comme HmMessageSenderImpl
 public class TumoLinkUrdImpl implements TumoLinkUrd
 {
 

@@ -41,7 +41,9 @@ import fr.aphp.tumorotek.manager.interfacage.ExtMessageSender;
 /**
  * Produit et dépose un fichier HL7 - URD  à destination de DIAMIC
  * afin de transmettre les informations concernant le prélèvement
- * enregistré dans TK à partir du dossier externe
+ * enregistré dans TK.
+ * Cet envoi peut être déclenché par la prise en compte d'un dossier externe ou par la création / modification manuelle
+ * d'un prélèvement
  *
  * Date: 08/10/2014
  *

@@ -51,6 +51,10 @@ import fr.aphp.tumorotek.model.TKAnnotableObject;
 import fr.aphp.tumorotek.model.coeur.prelevement.Prelevement;
 import fr.aphp.tumorotek.model.interfacage.Recepteur;
 
+//TK-697 : Préfixe Hm dans le nom de la classe pour Hôpital Manager. Devrait plutôt s'appeler DmeAcquittementSender
+//car correspond à l'envoi d'un acquittement - suite à la création ou à la modification d'un prélèvement -
+//au format DME (dossier médical électronique) - xml particulier - utilisé par Hôpital Manager
+//et devrait hériter d'une interface AcquittementSender (fille de ExtMessageSender) - et non de HmMessageSender qui ne sert à rien - voire de AbstractAcquittementSender, comme TumoLinkUdrImpl
 public class HmMessageSenderImpl implements HmMessageSender
 {
 
