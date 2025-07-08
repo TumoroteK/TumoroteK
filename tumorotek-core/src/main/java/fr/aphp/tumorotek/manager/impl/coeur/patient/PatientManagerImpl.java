@@ -1028,6 +1028,11 @@ public class PatientManagerImpl implements PatientManager
             if(sip.getPaysNaissance() != null && !sip.getPaysNaissance().equals(inBase.getPaysNaissance())){
                fields.add(inBase.getClass().getDeclaredField("paysNaissance"));
             }
+            //TK-707 : Pb dans le cas où un flux de mise à jour envoie "Vivant" avec une date de décès à null
+            //alors que la patient a été préalablement déclaré décédé avec une date de décès.
+            //En effet, le statut va passer à vivant mais la date de décès ne va pas être mise à jour car la valeur transmise est null
+            //Or il y a un test pour ne pas prendre en compte le passage à null de la date de décès
+            //le validator va détecter une incohérence
             if(!sip.getPatientEtat().equals(inBase.getPatientEtat())){
                fields.add(inBase.getClass().getDeclaredField("patientEtat"));
             }
