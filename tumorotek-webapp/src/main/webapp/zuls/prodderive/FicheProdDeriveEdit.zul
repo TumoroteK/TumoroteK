@@ -55,12 +55,13 @@
 							<label value="${c:l('Champ.ProdDerive.Code')}" sclass="formLabel"/>
 							<label id="requiredCodeDerive" value="*" sclass="requiredMark" />
 						</hbox>
-						<div>
+						<div> <!-- attention, le textbox et l'attribut associé sont mal nommés. Il s'agit de code et non de codePrefixe (cf TK-709)
+									la contrainte par contre, est la bonne (TK-669) -->
 							<textbox id="codePrefixeLabelDerive" 
 								value="@{fwinProdDeriveEdit$composer.codePrefixe,
 			        					save-when='validate.onClick, create.onClick'}" 
 								width="150px" 
-								constraint="${fwinProdDeriveEdit$composer.codePrefixConstraint}"
+								constraint="${fwinProdDeriveEdit$composer.codeConstraint}"
 							/>
 
 						</div>

@@ -919,6 +919,25 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
 
          validateCalendarBox(dateStockCalBox);
          validateCalendarBox(dateTransfoCalBox);
+         
+         //TK-668 : contrôle sur la longueur du code
+         String lastSuffix = "";
+         //si c'est un nombre, ça peut être plus : 
+         if(numNombres.isChecked()){
+            lastSuffix = String.valueOf(dernierCodeBoxDerive.getValue());
+         }
+         else {
+            lastSuffix = derniereLettreBoxDerive.getValue();
+         }
+
+         // 2.0.10.6 VIROBIOTEC création codes sans prefixe
+         final String prefix = Optional.ofNullable(getCodePrefixe()).orElse("").trim();
+         final String separator = Optional.ofNullable(separatorBox.getValue()).orElse("");
+         
+         String codeLastProdDerive = new StringBuilder(prefix).append(separator).append(lastSuffix).toString();
+         validateCodeSize(codeLastProdDerive);
+         ///
+         
 
          if(getSelectedType() == null){
             Clients.scrollIntoView(typesBoxDerive);
@@ -1051,11 +1070,6 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
             first = premiereLettreBoxDerive.getValue().toUpperCase().charAt(0);
             last = derniereLettreBoxDerive.getValue().toUpperCase().charAt(0);
          }
-
-         // 2.0.10.6 VIROBIOTEC création codes sans prefixe
-         final String prefix = Optional.ofNullable(getCodePrefixe()).orElse("").trim();
-         final String separator = Optional.ofNullable(separatorBox.getValue()).orElse("");
-
          // Création de tous les nouveaux produits dérivés
          for(int i = first; i <= last; i++){
 
@@ -1134,7 +1148,8 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
             stockageDerives.setDisabled(false);
          }
 
-      }catch(final ValidationException ve){
+      }//TK-668 : /!\ 2 classes ValidationException sont définies et utilisées dans la méthode car la gestion de l'affichage du message d'erreur est différente et plus appropriée selon les cas
+      catch(ValidationException | fr.aphp.tumorotek.manager.exception.ValidationException ve){
          Messagebox.show(handleExceptionMessage(ve), "Error", Messagebox.OK, Messagebox.ERROR);
       }
    }
@@ -2489,6 +2504,22 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
 
    }
 
+   //TK-668
+   /**
+    * Valide la longueur totale du code (concaténation des 3 parties)
+    * @param calendarBox
+    */
+   private void validateCodeSize(final String codeProdDerive){
+      
+      if(codeProdDerive.length() > ProdDeriveConstraints.CODE__MAX_SIZE) {
+         String messageError = Labels.getLabel("ficheMultiProdDerive.error.code.size",
+            new String[] { String.valueOf(ProdDeriveConstraints.CODE__MAX_SIZE) });
+         // /!\ fr.aphp.tumorotek.manager.validation.exception.ValidationException ne convient pas dans le cas présent car la gestion du message à afficher à l'utilisateur 
+         // n'est pas approprié. Passage par fr.aphp.tumorotek.manager.exception.ValidationException qui permettra d'afficher simplement le messageError
+         throw new fr.aphp.tumorotek.manager.exception.ValidationException(messageError); 
+      }
+   }
+   
    /**
     * Applique la validation sur la date.
     */
