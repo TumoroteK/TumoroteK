@@ -1106,7 +1106,9 @@ public class PrelevementManagerImpl implements PrelevementManager
                utilisateur, "creation", baseDir, false);              
          } else if (maladie.getPatient().isNewIdentifiantAdded()) { // update patient existant, ajout gatsbi
             //TG-255
-            visites.addAll(maladieManager.findAllByPatientManager(maladie.getPatient()));
+            //visites.addAll(maladieManager.findAllByPatientManager(maladie.getPatient()));
+            //Retour arrière (TG-255) pour CLCC de Rennes qui rencontre désormais un bug (TK-711)
+            visites.addAll(maladie.getPatient().getMaladies());
             patientManager.createOrUpdateObjectManager(maladie.getPatient(), null,
               // visites.isEmpty() ? null : visites, null 
                null, null, null, null, null, null,
@@ -1117,7 +1119,9 @@ public class PrelevementManagerImpl implements PrelevementManager
             // @since gatsbi, creation de la visite si n'a pas été créé auparavant 
             // dans la liste de visites
             //TG-255
-            if (visites.isEmpty() || visites.stream()
+            //if (visites.isEmpty() || visites.stream()
+            //Retour arrière (TG-255) pour CLCC de Rennes qui rencontre désormais un bug (TK-711)
+            if (visites.isEmpty() || maladie.getPatient().getMaladies().stream()
                   .noneMatch(v -> v.getLibelle().equals(maladie.getLibelle()))) { 
                maladieManager.createOrUpdateObjectManager(maladie, maladie.getPatient(), null, utilisateur, "creation");
                maladieManager.getMaladiesManager(maladie.getPatient()).add(maladie);
