@@ -205,13 +205,13 @@ public class ReferenceurPatientGatsbi extends ReferenceurPatient
    }
    
    @Override
-   protected void fetchAndDecorateMaladieForPatient(Patient pat){
+   protected void filterAndDecorateMaladieForPatient(Patient pat){
       
       patient = pat;
 
       // commence par ajouter les maladies communes à toutes les 
       // collections
-      super.fetchAndDecorateMaladieForPatient(patient);
+      super.filterAndDecorateMaladieForPatient(patient);
       
       // si patient n'a pas encore d'identifiant pour la collection, 
       // ajout du schéma de visites - callback : méthode onFromDateProvided

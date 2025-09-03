@@ -415,8 +415,7 @@ public class ReferenceurPatient extends GenericForwardComposer<Component>
          //filtre sur les maladies du patient pour ne garder que celles gérées par l'utilisateur :
          //suppression a minima des "maladies defaut" et des visites dans le cas de Gatsbi
          //Ensuite décoration des maladies gardées
-         //A RENOMMER en filtreAndDecorate
-         fetchAndDecorateMaladieForPatient(selected);
+         filterAndDecorateMaladieForPatient(selected);
          
          //selectionne automatiquement la premiere maladie
          if(maladies.size() > 0){
@@ -470,7 +469,7 @@ public class ReferenceurPatient extends GenericForwardComposer<Component>
    }
    
    // @since 2.3.0-gatsbi, sera surchargée
-   protected void fetchAndDecorateMaladieForPatient(Patient patient) {
+   protected void filterAndDecorateMaladieForPatient(Patient patient) {
  
       maladies.clear();
       
